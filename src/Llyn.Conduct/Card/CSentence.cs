@@ -10,13 +10,26 @@ public sealed class CSentence
 
     private readonly LPhonologyPort _cSentencePhonologyPort;
 
-    internal CSentence(CDesk desk, LPhonologyPort phonology)
+    private readonly LDraftPort _cSentenceDraftPort;
+
+    private readonly LSettingsPort _cSentenceSettingsPort;
+
+    private readonly CEnvoy _cSentenceEnvoy;
+
+    internal CSentence(
+        CDesk desk, LPhonologyPort phonology, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(phonology);
+        ArgumentNullException.ThrowIfNull(drafts);
+        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(envoy);
 
         _cSentenceDesk = desk;
         _cSentencePhonologyPort = phonology;
+        _cSentenceDraftPort = drafts;
+        _cSentenceSettingsPort = settings;
+        _cSentenceEnvoy = envoy;
     }
 
     private LTenure? CSentenceTenure => _cSentenceDesk.CDeskFilling ? null : _cSentenceDesk.CDeskTenure;
@@ -82,6 +95,71 @@ public sealed class CSentence
     public void CSentenceMentionAdd(long cardId, long sentenceId, string text, int start, int length, long entryId)
     {
         _cSentenceDesk.CDeskChip?.LQuillMentionAdd(cardId, sentenceId, text, start, length, entryId);
+    }
+
+    public void CSentenceSenseSet(long cardId, long sentenceId, string text, int start, int length, long senseId)
+    {
+        _cSentenceDesk.CDeskChip?.LQuillSenseSet(cardId, sentenceId, text, start, length, senseId);
+    }
+
+    public void CSentenceMentionRemove(long cardId, long sentenceId, long mentionId)
+    {
+        _cSentenceDesk.CDeskQuill?.LQuillMentionRemove(cardId, sentenceId, mentionId);
+    }
+
+    public void CSentenceMentionRemove(long cardId, long sentenceId, string text, int start, int length)
+    {
+        _cSentenceDesk.CDeskChip?.LQuillMentionRemove(cardId, sentenceId, text, start, length);
+    }
+
+    public bool CSentenceMentionCheck(long cardId, long sentenceId, string text, int start, int length)
+    {
+        return _cSentenceDesk.CDeskTenure?.LTenureMentionCheck(cardId, sentenceId, text, start, length) is true;
+    }
+
+    public bool CSentenceSenseCheck(long cardId, long sentenceId, string text, int start, int length)
+    {
+        return _cSentenceDesk.CDeskTenure?.LTenureSenseCheck(cardId, sentenceId, text, start, length) is true;
+    }
+
+    public IReadOnlyList<CMeaning>? CSentenceSenseRead(
+        long cardId, long sentenceId, string text, int start, int length)
+    {
+        if (_cSentenceDesk.CDeskTenure is not LTenure held)
+        {
+            return null;
+        }
+
+        try
+        {
+            return _cSentenceDraftPort.LEngineSenseRead(
+                    held, cardId, sentenceId, text, start, length, "Display.Unknown") is { } rows
+                ? CCatalog.LCatalogMeaningRead(rows)
+                : null;
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cSentenceEnvoy, _cSentenceSettingsPort, "Mention.FindFailed", exception);
+            return null;
+        }
+    }
+
+    public IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> CSentenceMentionRead()
+    {
+        if (_cSentenceDesk.CDeskTenure is not LTenure held)
+        {
+            return new Dictionary<long, IReadOnlyList<CMentionLabel>>();
+        }
+
+        try
+        {
+            return CMention.LMentionLineRead(_cSentenceDraftPort.LEngineMentionResolve(held));
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cSentenceEnvoy, _cSentenceSettingsPort, "Mention.FindFailed", exception);
+            return new Dictionary<long, IReadOnlyList<CMentionLabel>>();
+        }
     }
 
     public CSentenceFrame CSentenceFrameRead()

@@ -101,8 +101,7 @@ internal static class CFolio
             : new CExampleDraft(
                 CFolioStateRead(example.LExampleDraftText),
                 example.LExampleDraftReference.LStateAnchorShown,
-                CFolioGlossRead(example.LExampleDraftGloss),
-                CFolioMentionRead(example.LExampleDraftMention));
+                CFolioGlossRead(example.LExampleDraftGloss));
     }
 
     internal static IReadOnlyList<CGlossDraft> CFolioGlossRead(IReadOnlyList<LGlossDraft> glosses)

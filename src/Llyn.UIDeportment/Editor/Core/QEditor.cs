@@ -39,7 +39,7 @@ internal sealed class QEditor
         editor.CEditorSounding.CSoundingChanged += surface.PReflexAnchorShow;
         editor.CEditorSounding.CSoundingChanged += surface.PReadingRefine;
         editor.CEditorTimbre.CTimbreReflexChanged += surface.PReflexPendingShow;
-        editor.CEditorSentence.CSentenceReferenceChanged += surface.PSentenceLoad;
+        editor.CEditorSentence.CSentenceReferenceChanged += surface.PSentenceCitationRefine;
 
         editor.CEditorDraftChanged += surface.PEditorDraftRefine;
         editor.CEditorDraftChanged += surface.PPronunciationRefine;
@@ -56,12 +56,13 @@ internal sealed class QEditor
         editor.CEditorDraftChanged += surface.PSentenceFrameRefine;
         editor.CEditorDraftChanged += surface.PMeaningRefine;
         editor.CEditorDraftChanged += surface.PCollocationRefine;
+        editor.CEditorDraftChanged += surface.PSentenceMentionRefine;
         editor.CEditorDraftChanged += surface.PEtymologyRefine;
         editor.CEditorDraftChanged += surface.PPlaybackRefine;
         editor.CEditorDraftChanged += surface.PReflexPrepare;
 
         CWorkspace workspace = host.PWindowAtelier.CAtelierWorkspace;
-        workspace.CWorkspaceOpened += surface.PSentenceLoad;
+        workspace.CWorkspaceOpened += surface.PSentenceCitationRefine;
         workspace.CWorkspaceOpened += surface.PLanguageRefine;
         workspace.CWorkspaceOpened += surface.PVolumeLoad;
 

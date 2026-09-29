@@ -11,8 +11,6 @@ public partial class PEditor
     private readonly ObservableCollection<PCard> _pMeaningList = [];
     private readonly ObservableCollection<PCard> _pCollocationList = [];
 
-    private readonly PCollocationTemplate _pCollocationTemplate;
-
     private ItemsControl PMeaningList => (ItemsControl)FindName(nameof(PMeaningList));
 
     private Button PMeaningAddition => (Button)FindName(nameof(PMeaningAddition));
@@ -126,14 +124,14 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Button>(container, "PCardImageChooser") is Button image)
         {
-            image.Click -= _pCollocationTemplate.PImageAddHandle;
-            image.Click += _pCollocationTemplate.PImageAddHandle;
+            image.Click -= PImageAddHandle;
+            image.Click += PImageAddHandle;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PCardVideoChooser") is Button video)
         {
-            video.Click -= _pCollocationTemplate.PVideoAddHandle;
-            video.Click += _pCollocationTemplate.PVideoAddHandle;
+            video.Click -= PVideoAddHandle;
+            video.Click += PVideoAddHandle;
         }
     }
 

@@ -8,9 +8,10 @@ The rules about the rows live in the Application clerk, so no gate trims, clamps
 A gate does nothing while the desk is filling a draft, since the quill reads null then.
 It is the reference example of the pipeline in `docs-work/JobPrinciple.md` section 13.
 
-## `internal CSentence(CDesk desk, LPhonologyPort phonology)`
+## `internal CSentence(`
 
 Builds the gates over the editor's desk and the phonology port.
+The draft port reads the chip lines, and the settings port with the envoy reports a failed read.
 
 ## `private LTenure? CSentenceTenure`
 
@@ -74,6 +75,42 @@ The gate for the cross on a gloss row.
 
 The gate for an Entry picked for a card sentence's selection, with the box's raw text and selection.
 The span rule and the request are ShellEngine's, shared with the corpus transcript's gate.
+The silence command calls it too, with Entry 0, since a silent Mention is a Mention linking nothing.
+
+## `public void CSentenceSenseSet(long cardId, long sentenceId, string text, int start, int length, long senseId)`
+
+The gate for a sense picked in the window's Meaning menu, with the box's raw text and selection.
+ShellEngine persists pending typing, finds the Mention under the selection and narrows it.
+
+## `public void CSentenceMentionRemove(long cardId, long sentenceId, long mentionId)`
+
+The gate for the unlink button on a chip, which names its Mention by id.
+
+## `public void CSentenceMentionRemove(long cardId, long sentenceId, string text, int start, int length)`
+
+The gate for the unlink command on a field, which drops the Mention the selection lies inside.
+
+## `public bool CSentenceMentionCheck(long cardId, long sentenceId, string text, int start, int length)`
+
+Whether the selection lies inside any Mention, the ready verdict the unlink command runs on.
+It reads the held draft even while the desk fills, as the find did.
+
+## `public bool CSentenceSenseCheck(long cardId, long sentenceId, string text, int start, int length)`
+
+Whether the selection lies inside a Mention that links an Entry, the ready verdict of the choose command.
+
+## `public IReadOnlyList<CMeaning>? CSentenceSenseRead(long cardId, long sentenceId, string text, int start, int length)`
+
+The Meanings the sense menu offers, ready in reading order, for the linked Mention under the selection.
+It answers null when no linked Mention lies there, so no menu opens.
+It chooses the fallback key `Display.Unknown`, which the engine words, as the window's Meaning read does.
+A failed read shows `Mention.FindFailed` and answers null.
+
+## `public IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> CSentenceMentionRead()`
+
+The chip lines of every sentence row in the held draft, keyed by the row.
+A failed read shows `Mention.FindFailed` once and answers no rows, so the form keeps its lines as drawn.
+Each unlinked chip carries its own key, so the driver passes no silent word.
 
 ## `public CSentenceFrame CSentenceFrameRead()`
 

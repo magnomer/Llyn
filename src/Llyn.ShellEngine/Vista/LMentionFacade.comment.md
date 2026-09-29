@@ -46,3 +46,8 @@ The code-point offset of a UTF-16 index in the text.
 ## `public IReadOnlyList<LMentionLabel> LEngineMentionResolve(string text, IReadOnlyList<LMentionDraft> mentions)`
 
 The clerk's labels for every Mention of a chip line, under the gate.
+
+## `public IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LTenure held)`
+
+The clerk's mention lines for every sentence row of the held draft, under the gate.
+The draft is read before the gate is taken, as the other held reads do.

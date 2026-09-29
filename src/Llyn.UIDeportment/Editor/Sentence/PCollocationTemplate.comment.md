@@ -3,11 +3,8 @@
 ## `public class PCollocationTemplate : ResourceDictionary`
 
 The collocation card as a template — the same card shape a meaning uses, over the expression a collocation adds.
-Like every template dictionary here, it only hands its events back to the panel.
+It holds resources only, and the editor's fill subscribes its own handlers on each realized part.
 
-The host's fill subscribes the two media forwarders on the realized part.
-The card's drag, badge and eraser handlers are subscribed from the host directly.
-
-## `internal PCollocationTemplate(PEditor host)`
+## `internal PCollocationTemplate()`
 
 Merges the markup the Veneer holds, since the dictionary carries no class of its own there.

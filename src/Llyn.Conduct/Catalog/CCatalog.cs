@@ -131,15 +131,22 @@ public sealed class CCatalog
 
         try
         {
-            return _cCatalogAtelier.CAtelierEntryPort.LEngineMeaningRead(entryId, "Display.Unknown")
-                .Select(static row => new CMeaning(row.LMeaningId, row.LMeaningName, row.LMeaningDepth))
-                .ToList();
+            return LCatalogMeaningRead(
+                _cCatalogAtelier.CAtelierEntryPort.LEngineMeaningRead(entryId, "Display.Unknown"));
         }
         catch (Exception exception)
         {
             CLedger.LLedgerFailureShow(envoy, _cCatalogAtelier.CAtelierSettingsPort, "Mention.FindFailed", exception);
             return null;
         }
+    }
+
+    internal static IReadOnlyList<CMeaning> LCatalogMeaningRead(
+        IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        return rows.Select(static row => new CMeaning(row.LMeaningId, row.LMeaningName, row.LMeaningDepth)).ToList();
     }
 
     public (int, int)? CCatalogEntryLoad(long id)

@@ -272,7 +272,7 @@ public sealed class TCard
         LReference notes = engine.TEngineCitationCreate("Field notes");
         (_, CCard card) = TCardPrepare(engine);
 
-        Assert.Contains(card.CCardReferenceFind(), row => row.CCatalogReferenceId == notes.LReferenceId);
+        Assert.Contains(card.CCardReferenceRead(), row => row.CCatalogReferenceId == notes.LReferenceId);
     }
 
     [Fact]

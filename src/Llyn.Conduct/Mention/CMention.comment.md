@@ -29,6 +29,7 @@ Every other answer is empty, so the driver's menu shows nothing.
 
 The chips of a mention line, each named by its linked headword.
 An unlinked Mention takes `silent`, the label the driver looked up for a word standing for nothing.
+The etymology and the corpus transcript still read their lines here.
 
 ## `public IReadOnlyList<CMentionPiece> CMentionDivide(string text, IReadOnlyList<CMentionMark> mentions)`
 
@@ -75,9 +76,15 @@ Both stay internal, since they name engine types.
 Maps what a click on a text found to its shape, and a stored Mention under the click with it.
 The corpus excerpt and the lectern both hand the window this shape, so the lectern calls it too.
 
-## `private static IReadOnlyList<CMentionLabel> CMentionLabelRead(IReadOnlyList<LMentionLabel> labels, string silent)`
+## `internal static IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> LMentionLineRead(`
 
-Names each label by its headword while linked, and by `silent` otherwise.
+The chip lines of the draft's sentence rows, keyed by the row, as the sentence area answers them.
+It only maps, so the sentence area names no engine record.
+
+## `private static IReadOnlyList<CMentionLabel> LMentionLabelRead(IReadOnlyList<LMentionLabel> labels)`
+
+Copies the engine's labels field for field, with no rule of its own.
+The label's own key names an unlinked chip, so no silent word is written here.
 
 ## `public CMentionDraft? CMentionFind(CDesk desk, long cardId, long sentenceId, string text, int start, int length)`
 

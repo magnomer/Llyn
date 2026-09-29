@@ -74,6 +74,13 @@ public sealed class LDraftOutlet : LDraftPort
     public LReferenceOffer LEngineReferenceFind(LTenure held, long card, long sentence, string text) =>
         _lDraftOutletEngine.LEngineReference.LEngineReferenceFind(held, card, sentence, text);
 
+    public long LEngineCitationResolve(LTenure held, long card, long sentence, string title)
+    {
+        ArgumentNullException.ThrowIfNull(held);
+
+        return _lDraftOutletEngine.LEngineReference.LEngineCitationResolve(held.LTenureId, card, sentence, title);
+    }
+
     public string LEngineBylineRead(string? text) => LAuthorFacade.LEngineBylineRead(text);
 
     public LEntry? LEngineTranslationResolve(string word, long? entryId) =>
@@ -90,6 +97,13 @@ public sealed class LDraftOutlet : LDraftPort
 
     public bool LEngineSpanCheck(string text, int start, int length) =>
         _lDraftOutletEngine.LEngineMention.LEngineSpanCheck(text, start, length);
+
+    public IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LTenure held) =>
+        _lDraftOutletEngine.LEngineMention.LEngineMentionResolve(held);
+
+    public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(
+        LTenure held, long card, long sentence, string text, int start, int length, string key) =>
+        _lDraftOutletEngine.LEngineCard.LEngineSenseRead(held, card, sentence, text, start, length, key);
 
     public int LEngineOffsetRead(string text, int unit) =>
         _lDraftOutletEngine.LEngineMention.LEngineOffsetRead(text, unit);

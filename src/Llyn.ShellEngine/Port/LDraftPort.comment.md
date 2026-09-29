@@ -60,6 +60,21 @@ The held draft names the card's links, so those are left out.
 The stored Sources a card sentence's citation field offers for the typed text, ready to show.
 The held draft names the Source the sentence cites, so typing its byline offers nothing.
 
+## `long LEngineCitationResolve(LTenure held, long card, long sentence, string title);`
+
+The id of the Source a typed title names, minting it when none matches.
+The held draft names the Source the sentence cites now, so an unchanged title keeps it.
+
+## `IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LTenure held);`
+
+The chip line of every sentence row on every card of the held draft, keyed by the row.
+Each chip carries the words it covers, the linked headword and the chosen sense.
+
+## `IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(`
+
+The Meanings the sense menu offers for the linked Mention under a sentence field's selection.
+Pending typing is persisted before the find, and no linked Mention answers null.
+
 ## `string LEngineBylineRead(string? text);`
 
 The word a typed credit searches and highlights the byline with.

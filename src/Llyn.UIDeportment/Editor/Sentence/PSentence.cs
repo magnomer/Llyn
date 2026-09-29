@@ -41,7 +41,6 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         PSentenceCitation = example?.CExampleDraftReference;
         _pSentenceParticle = draft.CSentenceDraftParticle;
         _pSentenceDependence = draft.CSentenceDraftDependence;
-        _pSentenceMention = example?.CExampleDraftMention ?? [];
         PSentenceGlossShow(example?.CExampleDraftGloss ?? []);
     }
 
@@ -178,7 +177,6 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         CExampleDraft? example = draft.CSentenceDraftExample;
 
         _pSentenceRow = draft.CSentenceDraftId;
-        _pSentenceMention = example?.CExampleDraftMention ?? [];
         PSentenceGlossShow(example?.CExampleDraftGloss ?? []);
         PSentenceText = example?.CExampleDraftText ?? CStateValue.CStateValueEmpty;
         PSentenceCitation = example?.CExampleDraftReference;

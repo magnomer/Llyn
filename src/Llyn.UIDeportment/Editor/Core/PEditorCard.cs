@@ -52,7 +52,6 @@ public partial class PEditor
         card.PCardExpressionShow(draft.CCardDraftExpression);
         card.PCardDefinitionShow(draft.CCardDraftMeaning);
         card.PCardSentenceShow(draft.CCardDraftSentence, _pSentenceOrder);
-        PSentenceMentionShow(card);
         card.PCardContextShow(draft.CCardDraftSituation);
         card.PCardRegisterShow(draft.CCardDraftRegister);
         card.PCardLinkShow(draft.CCardDraftTranslation);

@@ -41,6 +41,16 @@ internal sealed class LCardFacade
             LEngineMeaningRead(entryId, LOwner.LOwnerEntry), _lCardFacadeEngine.LEngineSettings.LEngineTextRead(key));
     }
 
+    public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(
+        LTenure held, long card, long sentence, string text, int start, int length, string key)
+    {
+        ArgumentNullException.ThrowIfNull(held);
+
+        return held.LTenureSenseRead(card, sentence, text, start, length) is long entry
+            ? LEngineMeaningRead(entry, key)
+            : null;
+    }
+
     internal IReadOnlyList<LTag> LEngineTagRead()
     {
         lock (_lCardFacadeGate)

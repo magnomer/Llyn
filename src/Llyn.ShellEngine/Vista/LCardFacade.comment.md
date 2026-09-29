@@ -25,6 +25,12 @@ Reads the Meanings of the Entry identified by `entryId`, ready in reading order.
 The clerk's `LMeaningClerkSort` owns the order and the name fallback.
 `key` is the localization key of that fallback, which the caller chooses and the engine words.
 
+## `public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(`
+
+The Meanings a sense menu offers for the linked Mention under a sentence field's selection.
+The held draft finds the Mention first, then its Entry's Meanings are read in reading order.
+No linked Mention under the selection answers null, so no menu opens.
+
 ## `internal IReadOnlyList<LTag> LEngineTagRead()`
 
 Reads every Tag the workspace holds, once each, in alphabetical order.

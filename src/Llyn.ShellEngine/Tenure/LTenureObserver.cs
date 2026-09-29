@@ -155,6 +155,26 @@ public sealed partial class LTenure
         return LTenureKeptRead()?.LDraftMentionFind(cardId, sentenceId, span);
     }
 
+    public bool LTenureMentionCheck(long cardId, long sentenceId, string text, int start, int length)
+    {
+        return LTenureMentionFind(cardId, sentenceId, LMentionClerk.LMentionSpanRead(text, start, length)) is not null;
+    }
+
+    public bool LTenureSenseCheck(long cardId, long sentenceId, string text, int start, int length)
+    {
+        return LTenureMentionFind(cardId, sentenceId, LMentionClerk.LMentionSpanRead(text, start, length))
+            is { LMentionDraftLinked: true };
+    }
+
+    public long? LTenureSenseRead(long cardId, long sentenceId, string text, int start, int length)
+    {
+        LTenurePersist();
+        return LTenureMentionFind(cardId, sentenceId, LMentionClerk.LMentionSpanRead(text, start, length))
+            is { LMentionDraftLinked: true } found
+            ? found.LMentionDraftEntry
+            : null;
+    }
+
     private LDraft? LTenureKeptRead()
     {
         int round;

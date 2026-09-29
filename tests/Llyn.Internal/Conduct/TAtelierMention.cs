@@ -43,8 +43,8 @@ public sealed class TAtelierMention
             [new CMentionDraft(1, 4, 3, 7, 0), new CMentionDraft(2, 8, 3, 0, 0)],
             "silent");
 
-        Assert.Equal(new CMentionLabel(1, "cat", "Cat", "animal"), labels[0]);
-        Assert.Equal(new CMentionLabel(2, "Tom", "silent", string.Empty), labels[1]);
+        Assert.Equal(new CMentionLabel(1, "cat", "Cat", "animal", true), labels[0]);
+        Assert.Equal(new CMentionLabel(2, "Tom", "silent", string.Empty, false), labels[1]);
     }
 
     [Fact]

@@ -67,9 +67,10 @@ With no chip quill the answer offers nothing.
 
 The plain map from the engine's citation offer to the dropdown record, carrying each row's ready count.
 
-## `public IReadOnlyList<CCatalogReference> CCardReferenceFind()`
+## `public IReadOnlyList<CCatalogReference> CCardReferenceRead()`
 
 Every stored Source in author order, as the sentence menu offers them.
+A failed read shows the load failure through the envoy and answers no Sources.
 
 ## `internal static CRegister LCardRegisterRead(LRegister register)`
 
@@ -144,6 +145,8 @@ The gate for a tag chip erased from a card.
 
 Points the sentence's citation at the Reference the engine resolves the typed title to.
 The engine reads the Reference cited now off the held draft, so an unchanged title keeps it.
+One chip quill call resolves the title and cites it, since the order of those steps is a data rule.
+A failure shows the create failure through the envoy and leaves the citation as it was.
 
 ## `public void CCardEtymologySet(string text)`
 

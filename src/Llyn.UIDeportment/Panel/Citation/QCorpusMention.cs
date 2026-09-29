@@ -1,4 +1,5 @@
 using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Conduct;
@@ -55,9 +56,9 @@ internal sealed partial class QCorpus
             QTranscriptSenseRead(mention.CMentionDraftId));
     }
 
-    private Action<long> QTranscriptSenseRead(long mention)
+    private Action<FrameworkElement, long> QTranscriptSenseRead(long mention)
     {
-        return sense => QTranscriptQuill?.LQuillMentionSet(0, 0, mention, sense);
+        return (_, sense) => QTranscriptQuill?.LQuillMentionSet(0, 0, mention, sense);
     }
 
     private void QTranscriptSilenceHandle(object sender, ExecutedRoutedEventArgs e)

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Llyn.Conduct;
 using Llyn.Core;
@@ -53,7 +55,7 @@ public sealed class TCardReference
         (long sheet, long sentence) = TCard.TCardSentenceAdd(desk);
         (long other, long uncited) = TCard.TCardSentenceAdd(desk);
         card.CCardCitationSet(sheet, sentence, "Field notes");
-        string byline = card.CCardReferenceFind()
+        string byline = card.CCardReferenceRead()
             .Single(row => row.CCatalogReferenceId == notes.LReferenceId).CCatalogReferenceByline;
 
         CProffer cited = card.CCardReferenceFind(sheet, sentence, " " + byline + " ");
@@ -82,5 +84,42 @@ public sealed class TCardReference
 
         Assert.Equal(8, offer.CProfferRows.Count);
         Assert.All(offer.CProfferRows, static row => Assert.Equal("Diary", row.CProfferRowMark));
+    }
+
+    [Fact]
+    public void CitationSet_EngineFails_ShowsTheCreateFailureAndKeepsTheCitation()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        List<string> asked = [];
+        CDesk desk = TInterfaceCitation.TDeskFailCreate(engine, TInterfaceConduct.TEnvoyCreate(false, []));
+        desk.CDeskStart(null);
+        CCard card = TInterfaceConduct.TCardCreate(engine, desk, TInterfaceConduct.TEnvoyCreate(false, asked));
+        (long sheet, long sentence) = TCard.TCardSentenceAdd(desk);
+
+        card.CCardCitationSet(sheet, sentence, "Field notes");
+
+        Assert.Equal(["Reference.CreateFailed"], asked);
+        LExampleDraft? example = TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet)
+            .LCardDraftSentence.Single(row => row.LSentenceDraftId == sentence).LSentenceDraftExample;
+        Assert.Null(example?.LExampleDraftReference.LStateAnchorShown);
+    }
+
+    [Fact]
+    public void ReferenceRead_EngineFails_ShowsTheLoadFailureAndAnswersNone()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        List<string> asked = [];
+        CDesk desk = TInterfaceConduct.TDeskCreate(
+            engine, "Input", TInterfaceConduct.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
+        CCard card = TInterfaceCitation.TCardFailCreate(engine, desk, TInterfaceConduct.TEnvoyCreate(false, asked));
+
+        IReadOnlyList<CCatalogReference> read = card.CCardReferenceRead();
+
+        Assert.Empty(read);
+        Assert.Equal(["Reference.LoadFailed"], asked);
     }
 }

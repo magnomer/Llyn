@@ -76,6 +76,11 @@ The order and the name fallback are the engine's, and this read only maps the ro
 It chooses the fallback key `Display.Unknown`, which the engine words.
 A failed read shows `Mention.FindFailed` through `envoy` and answers null, so no menu opens.
 
+## `internal static IReadOnlyList<CMeaning> LCatalogMeaningRead(`
+
+Maps the engine's Meaning rows to sense-menu rows by name, with no rule of its own.
+The sentence area's sense read shares it.
+
 ## `public (int, int)? CCatalogEntryLoad(long id)`
 
 How many meaning and collocation cards a stored entry holds, children included.

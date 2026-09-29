@@ -32,9 +32,10 @@ The Mention under the selection is handed straight to the sense show.
 Opens the Meaning menu on the Entry a linked Mention stands for.
 A Mention standing for nothing offers no Meanings, so the menu stays shut for it.
 
-## `private Action<long> QTranscriptSenseRead(long mention)`
+## `private Action<FrameworkElement, long> QTranscriptSenseRead(long mention)`
 
 The pick the Meaning menu answers with, which points the Mention at the chosen sense.
+The transcript has one field, so it ignores the anchor the menu hands back.
 
 ## `private void QTranscriptSilenceHandle(object sender, ExecutedRoutedEventArgs e)`
 

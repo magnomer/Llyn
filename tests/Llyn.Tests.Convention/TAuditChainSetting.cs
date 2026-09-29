@@ -359,8 +359,8 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["cross:Llyn.UIDeportment>Llyn.Application"] = 43,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 87,
+        ["cross:Llyn.UIDeportment>Llyn.Application"] = 39,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 86,
         ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 24,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 1,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,

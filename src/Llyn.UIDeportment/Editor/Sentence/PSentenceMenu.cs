@@ -1,50 +1,20 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using Llyn.Application;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
 public partial class PEditor
 {
-    private readonly PSentenceTemplate _pSentenceTemplate;
-
-    private readonly ObservableCollection<QCitationItem> _pEditorCitation = [];
-
     private readonly ObservableCollection<string> _pEditorParticle = [];
 
     private readonly ObservableCollection<string> _pEditorDependence = [];
 
     private CSentenceOrder? _pSentenceOrder;
-
-    internal void PSentenceLoad()
-    {
-        _pEditorCitation.Clear();
-
-        IReadOnlyList<CCatalogReference> references;
-        try
-        {
-            references = _qEditor.QEditorArea.CEditorCard.CCardReferenceFind();
-        }
-        catch (Exception exception)
-        {
-            _pEditorHost.PWindowFailureRefine("Reference.LoadFailed", exception);
-            references = [];
-        }
-
-        foreach (CCatalogReference row in references)
-        {
-            _pEditorCitation.Add(QCitationItem.QCitationItemCreate(row));
-        }
-
-        PSentenceCitationShow();
-    }
 
     internal void PSentenceFrameRefine(CEntryDraft _)
     {
@@ -84,21 +54,13 @@ public partial class PEditor
         if (QLook.QLookPartFind<Grid>(container, "PSentenceReach") is Grid reach && reach.CommandBindings.Count == 0)
         {
             reach.CommandBindings.Add(new CommandBinding(
-                PMentionCommand.PMentionCommandLink,
-                _pSentenceTemplate.PSentenceLinkHandle,
-                _pSentenceTemplate.PSentenceLinkCheck));
+                PMentionCommand.PMentionCommandLink, PSentenceLinkRefine, PSentenceSpanRefine));
             reach.CommandBindings.Add(new CommandBinding(
-                PMentionCommand.PMentionCommandChoose,
-                _pSentenceTemplate.PSentenceSenseHandle,
-                _pSentenceTemplate.PSentenceSenseCheck));
+                PMentionCommand.PMentionCommandChoose, PSentenceMeaningRefine, PSentenceSenseRefine));
             reach.CommandBindings.Add(new CommandBinding(
-                PMentionCommand.PMentionCommandSilence,
-                _pSentenceTemplate.PSentenceSilenceHandle,
-                _pSentenceTemplate.PSentenceLinkCheck));
+                PMentionCommand.PMentionCommandSilence, PSentenceSilenceObserve, PSentenceSpanRefine));
             reach.CommandBindings.Add(new CommandBinding(
-                PMentionCommand.PMentionCommandUnlink,
-                _pSentenceTemplate.PSentenceUnlinkHandle,
-                _pSentenceTemplate.PSentenceUnlinkCheck));
+                PMentionCommand.PMentionCommandUnlink, PSentenceUnlinkObserve, PSentenceUnlinkRefine));
             reach.CommandBindings.Add(new CommandBinding(
                 PGlossCommand.PGlossCommandRemoval, PGlossRemoveObserve));
         }
@@ -131,12 +93,14 @@ public partial class PEditor
         {
             citation.PreviewKeyDown -= PProfferKeyRefine;
             citation.PreviewKeyDown -= PProfferKeyObserve;
-            citation.PreviewKeyDown -= _pSentenceTemplate.PCitationKeyHandle;
+            citation.PreviewKeyDown -= PCitationCommitObserve;
+            citation.PreviewKeyDown -= PCitationEscapeRefine;
             citation.PreviewKeyDown += PProfferKeyRefine;
             citation.PreviewKeyDown += PProfferKeyObserve;
-            citation.PreviewKeyDown += _pSentenceTemplate.PCitationKeyHandle;
-            citation.LostKeyboardFocus -= _pSentenceTemplate.PCitationLeaveHandle;
-            citation.LostKeyboardFocus += _pSentenceTemplate.PCitationLeaveHandle;
+            citation.PreviewKeyDown += PCitationCommitObserve;
+            citation.PreviewKeyDown += PCitationEscapeRefine;
+            citation.LostKeyboardFocus -= PCitationLeaveRefine;
+            citation.LostKeyboardFocus += PCitationLeaveRefine;
         }
 
         if (QLook.QLookPartFind<ItemsControl>(container, "PSentenceMentionLine") is ItemsControl mention)
@@ -153,7 +117,7 @@ public partial class PEditor
 
         if (ItemsControl.ItemsControlFromItemContainer(container) is ItemsControl list)
         {
-            PSentenceRevealApply(list);
+            PSentenceRevealRefine(list);
         }
     }
 
@@ -185,15 +149,9 @@ public partial class PEditor
         _qEditor.QEditorArea.CEditorSentence.CSentenceRemove(card.PCardId, row.PSentenceRow);
     }
 
-    internal void PSentenceLinkHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PSentenceLinkRefine(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Source is not TextBox { DataContext: PSentence } box)
-        {
-            return;
-        }
-
-        (_, int length) = PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowAtelier);
-        if (length == 0)
         {
             return;
         }
@@ -202,114 +160,108 @@ public partial class PEditor
         PProspectOpenRefine(_qEditor.QEditorArea.CEditorCard.CCardMentionRead(box.SelectedText));
     }
 
-    internal void PSentenceSenseHandle(object sender, ExecutedRoutedEventArgs e)
-    {
-        if (e.Source is not TextBox { DataContext: PSentence row } box
-            || PCardSentenceFind(row) is not PCard card)
-        {
-            return;
-        }
-
-        PSentenceSenseShow(box, card, row, PSentenceMentionFind(box, card, row, true));
-    }
-
-    private void PSentenceSenseShow(TextBox box, PCard card, PSentence row, CMentionDraft? mention)
-    {
-        if (mention is not { CMentionDraftLinked: true })
-        {
-            return;
-        }
-
-        long cardId = card.PCardId;
-        long rowId = row.PSentenceRow;
-        _pEditorHost.PWindowSenseRefine(
-            box,
-            PMentionSelection.PMentionSelectionPlace(box),
-            mention.CMentionDraftEntry,
-            senseId => PEditorRequestSend(
-                new LRequestMentionSense(PEditorDraft, cardId, rowId, mention.CMentionDraftId, senseId)));
-    }
-
-    internal void PSentenceSilenceHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PSentenceMeaningRefine(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Source is not TextBox { DataContext: PSentence row } box || PCardSentenceFind(row) is not PCard card)
         {
             return;
         }
 
-        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowAtelier);
-        if (length == 0)
+        if (_qEditor.QEditorArea.CEditorSentence.CSentenceSenseRead(
+                card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength)
+            is IReadOnlyList<CMeaning> meanings)
+        {
+            _pEditorHost.PMentionMenuShow(
+                box, PMentionSelection.PMentionSelectionPlace(box), meanings, PSentenceSenseObserve);
+        }
+    }
+
+    private void PSentenceSenseObserve(FrameworkElement anchor, long sense)
+    {
+        if (anchor is not TextBox { DataContext: PSentence row } box || PCardSentenceFind(row) is not PCard card)
         {
             return;
         }
 
-        PEditorRequestSend(
-            new LRequestMentionAddition(PEditorDraft, card.PCardId, row.PSentenceRow, offset, length, 0, 0));
+        _qEditor.QEditorArea.CEditorSentence.CSentenceSenseSet(
+            card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength, sense);
     }
 
-    internal void PSentenceUnlinkHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PSentenceSilenceObserve(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Source is not TextBox { DataContext: PSentence row } box || PCardSentenceFind(row) is not PCard card)
+        {
+            return;
+        }
+
+        _qEditor.QEditorArea.CEditorSentence.CSentenceMentionAdd(
+            card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength, 0);
+    }
+
+    private void PSentenceUnlinkObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: PSentence row } || PCardSentenceFind(row) is not PCard card)
         {
             return;
         }
 
-        long? mentionId = e.Parameter is PMentionChip chip
-            ? chip.PMentionChipId
-            : e.Source is TextBox box
-                ? PSentenceMentionFind(box, card, row, true)?.CMentionDraftId
-                : null;
-        if (mentionId is not long id)
+        if (e.Parameter is PMentionChip chip)
         {
-            return;
+            _qEditor.QEditorArea.CEditorSentence.CSentenceMentionRemove(
+                card.PCardId, row.PSentenceRow, chip.PMentionChipId);
         }
-
-        PEditorRequestSend(new LRequestMentionRemoval(PEditorDraft, card.PCardId, row.PSentenceRow, id));
+        else if (e.Source is TextBox box)
+        {
+            _qEditor.QEditorArea.CEditorSentence.CSentenceMentionRemove(
+                card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength);
+        }
     }
 
-    internal void PSentenceLinkCheck(object sender, CanExecuteRoutedEventArgs e)
+    private void PSentenceSpanRefine(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = e.Source is TextBox box
-            && PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowAtelier).PMentionSelectionLength > 0;
+            && _pEditorHost.PWindowAtelier.CAtelierMention.CMentionSpanCheck(
+                box.Text, box.SelectionStart, box.SelectionLength);
     }
 
-    internal void PSentenceSenseCheck(object sender, CanExecuteRoutedEventArgs e)
+    private void PSentenceSenseRefine(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = e.Source is TextBox { DataContext: PSentence row } box
             && PCardSentenceFind(row) is PCard card
-            && PSentenceMentionFind(box, card, row, false) is { CMentionDraftEntry: not 0 };
+            && _qEditor.QEditorArea.CEditorSentence.CSentenceSenseCheck(
+                card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength);
     }
 
-    internal void PSentenceUnlinkCheck(object sender, CanExecuteRoutedEventArgs e)
+    private void PSentenceUnlinkRefine(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = e.Parameter is PMentionChip
             || (e.Source is TextBox { DataContext: PSentence row } box
                 && PCardSentenceFind(row) is PCard card
-                && PSentenceMentionFind(box, card, row, false) is not null);
+                && _qEditor.QEditorArea.CEditorSentence.CSentenceMentionCheck(
+                    card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength));
     }
 
-    internal void PSentenceMentionShow(PCard card)
+    internal void PSentenceMentionRefine(CEntryDraft _)
     {
-        string silent = QLocalizationCatalog.QLocalizationTextRead("Mention.Silent");
-        foreach (PSentence row in card.PCardSentence)
+        IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> lines =
+            _qEditor.QEditorArea.CEditorSentence.CSentenceMentionRead();
+        PSentenceChipRefine(_pMeaningList, lines);
+        PSentenceChipRefine(_pCollocationList, lines);
+    }
+
+    private static void PSentenceChipRefine(
+        IReadOnlyList<PCard> cards, IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> lines)
+    {
+        foreach (PCard card in cards)
         {
-            try
+            foreach (PSentence row in card.PCardSentence)
             {
-                row.PSentenceMentionShow(_pEditorHost.PWindowAtelier, silent);
-            }
-            catch (Exception exception)
-            {
-                _pEditorHost.PWindowFailureRefine("Mention.FindFailed", exception);
-                return;
+                if (lines.TryGetValue(row.PSentenceRow, out IReadOnlyList<CMentionLabel>? labels))
+                {
+                    row.PSentenceChip.PMentionLineRefine(labels);
+                }
             }
         }
-    }
-
-    private CMentionDraft? PSentenceMentionFind(TextBox box, PCard card, PSentence row, bool settled)
-    {
-        return _pEditorHost.PWindowAtelier.CAtelierMention.CMentionFind(
-            _qEditor.QEditorArea.CEditorDesk, card.PCardId, row.PSentenceRow,
-            box.Text, box.SelectionStart, box.SelectionLength, settled);
     }
 
     private void PSentenceGlossObserve(PCard card, PSentence row, PGloss gloss, string language)

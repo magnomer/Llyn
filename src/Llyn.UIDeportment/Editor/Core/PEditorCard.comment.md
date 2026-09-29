@@ -38,6 +38,6 @@ What was waiting is written before the read, so the draft already holds what the
 The sentence frame's order goes with the rows, as the last `CSentenceFrameRead` answered it.
 The frame is painted before the cards show, so a new row is built in its language's order.
 The links come ready on the draft card, so the paint asks Conduct nothing per card.
-The chip lines under the rows are redrawn after, because the rows hold no engine to read headwords from.
+The chip lines under the rows are painted by `PSentenceMentionRefine`, which answers the same draft change after the cards.
 A picture or film row is built with the atelier, which the card itself does not hold.
 Each card takes the number the draft carries, not its place in the loop.

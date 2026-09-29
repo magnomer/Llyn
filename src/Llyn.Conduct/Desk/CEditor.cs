@@ -28,7 +28,7 @@ public sealed class CEditor
         CEditorDesk = new CDesk(drafts, "Input", envoy);
         CEditorDisplay = new LDisplay(drafts, entries, phonology, settings, media, envoy);
         CEditorCard = new CCard(CEditorDesk, drafts, entries, settings, envoy);
-        CEditorSentence = new CSentence(CEditorDesk, phonology);
+        CEditorSentence = new CSentence(CEditorDesk, phonology, drafts, settings, envoy);
         CEditorSounding = new CSounding(
             CEditorDesk, phonology, drafts, settings, CEditorDisplay.LDisplaySound, envoy);
         CEditorEsteem = new CEsteem(CEditorDesk, CEditorDisplay);

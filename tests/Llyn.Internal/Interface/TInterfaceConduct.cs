@@ -275,7 +275,7 @@ internal static class TInterfaceConduct
     internal static CCardList TCardListCreate(CDesk desk) => new(desk);
 
     internal static CSentence TSentenceCreate(LEngine engine, CDesk desk) => new(
-        desk, new LPhonologyOutlet(engine));
+        desk, new LPhonologyOutlet(engine), new LDraftOutlet(engine), TSettingsCreate(), TEnvoyCreate(false, []));
 
     internal static CSounding TSoundingCreate(
         CDesk desk, LPhonologyPort phonology, LDraftPort drafts, CEnvoy envoy, LSettingsPort? pack = null)

@@ -135,9 +135,17 @@ public sealed class CCard
             offer.LReferenceOfferShown);
     }
 
-    public IReadOnlyList<CCatalogReference> CCardReferenceFind()
+    public IReadOnlyList<CCatalogReference> CCardReferenceRead()
     {
-        return COeuvre.COeuvreReferenceRead(_cCardEntryPort.LEngineReferenceFind());
+        try
+        {
+            return COeuvre.COeuvreReferenceRead(_cCardEntryPort.LEngineReferenceFind());
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cCardEnvoy, _cCardSettingsPort, "Reference.LoadFailed", exception);
+            return [];
+        }
     }
 
     internal static CTag LCardTagRead(LTag tag)
@@ -236,8 +244,14 @@ public sealed class CCard
 
     public void CCardCitationSet(long cardId, long sentenceId, string title)
     {
-        long reference = _cCardEntryPort.LEngineCitationResolve(_cCardDesk.CDeskId, cardId, sentenceId, title);
-        _cCardDesk.CDeskQuill?.LQuillCitationSet(cardId, sentenceId, reference);
+        try
+        {
+            _cCardDesk.CDeskChip?.LQuillCitationResolve(cardId, sentenceId, title);
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cCardEnvoy, _cCardSettingsPort, "Reference.CreateFailed", exception);
+        }
     }
 
     public void CCardEtymologySet(string text)

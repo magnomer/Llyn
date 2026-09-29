@@ -150,6 +150,34 @@ public sealed class LMentionClerk
         return labels;
     }
 
+    public IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LMentionClerkResolve(LDraft? draft)
+    {
+        Dictionary<long, IReadOnlyList<LMentionLabel>> lines = [];
+        if (draft is not null)
+        {
+            LMentionClerkResolve(draft.LDraftContent.LEntryDraftMeanings, lines);
+            LMentionClerkResolve(draft.LDraftContent.LEntryDraftCollocations, lines);
+        }
+
+        return lines;
+    }
+
+    private void LMentionClerkResolve(
+        IReadOnlyList<LCardDraft> cards, Dictionary<long, IReadOnlyList<LMentionLabel>> lines)
+    {
+        foreach (LCardDraft card in cards)
+        {
+            foreach (LSentenceDraft sentence in card.LCardDraftSentence)
+            {
+                lines[sentence.LSentenceDraftId] = sentence.LSentenceDraftExample is LExampleDraft example
+                    ? LMentionClerkResolve(example.LExampleDraftText.LStateValueShow(), example.LExampleDraftMention)
+                    : [];
+            }
+
+            LMentionClerkResolve(card.LCardDraftChild, lines);
+        }
+    }
+
     private string LMentionSenseRead(long sense)
     {
         LMeaning? meaning = _lMentionClerkMeanings.LMeaningSingleRead(sense);

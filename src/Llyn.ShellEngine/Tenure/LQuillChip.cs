@@ -109,6 +109,15 @@ public sealed class LQuillChip
         }
     }
 
+    public void LQuillCitationResolve(long card, long sentence, string title)
+    {
+        ArgumentNullException.ThrowIfNull(title);
+
+        long reference = _lQuillChipDrafts.LEngineCitationResolve(_lQuillChipTenure, card, sentence, title);
+        _lQuillChipTenure.LTenureRequestApply(
+            new LRequestSentenceReference(_lQuillChipTenure.LTenureId, card, sentence, reference));
+    }
+
     public LTranslationOffer LQuillTranslationAdd(long card, string text, int position)
     {
         ArgumentNullException.ThrowIfNull(text);
@@ -213,6 +222,36 @@ public sealed class LQuillChip
         LMentionDraft span = _lQuillChipDrafts.LEngineSpanRead(text, start, length);
         _lQuillChipTenure.LTenureRequestApply(new LRequestMentionAddition(
             _lQuillChipTenure.LTenureId, card, sentence, span.LMentionDraftOffset, span.LMentionDraftLength, entry, 0));
+    }
+
+    public void LQuillSenseSet(long card, long sentence, string text, int start, int length, long sense)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillChipTenure.LTenurePersist();
+        if (_lQuillChipTenure.LTenureMentionFind(card, sentence, _lQuillChipDrafts.LEngineSpanRead(text, start, length))
+            is not LMentionDraft found)
+        {
+            return;
+        }
+
+        _lQuillChipTenure.LTenureRequestApply(new LRequestMentionSense(
+            _lQuillChipTenure.LTenureId, card, sentence, found.LMentionDraftId, sense));
+    }
+
+    public void LQuillMentionRemove(long card, long sentence, string text, int start, int length)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillChipTenure.LTenurePersist();
+        if (_lQuillChipTenure.LTenureMentionFind(card, sentence, _lQuillChipDrafts.LEngineSpanRead(text, start, length))
+            is not LMentionDraft found)
+        {
+            return;
+        }
+
+        _lQuillChipTenure.LTenureRequestApply(new LRequestMentionRemoval(
+            _lQuillChipTenure.LTenureId, card, sentence, found.LMentionDraftId));
     }
 
     private LTagOffer LQuillTagFind(long card, string kept)

@@ -60,7 +60,15 @@ public sealed class CMention
                 mention.CMentionDraftSense));
         }
 
-        return CMentionLabelRead(_cMentionAtelier.CAtelierEntryPort.LEngineMentionResolve(text, drafts), silent);
+        IReadOnlyList<CMentionLabel> labels =
+            LMentionLabelRead(_cMentionAtelier.CAtelierEntryPort.LEngineMentionResolve(text, drafts));
+        List<CMentionLabel> named = new(labels.Count);
+        foreach (CMentionLabel label in labels)
+        {
+            named.Add(label.CMentionLabelKey is null ? label : label with { CMentionLabelName = silent });
+        }
+
+        return named;
     }
 
     public IReadOnlyList<CMentionPiece> CMentionDivide(string text, IReadOnlyList<CMentionMark> mentions)
@@ -213,16 +221,33 @@ public sealed class CMention
         return read;
     }
 
-    private static IReadOnlyList<CMentionLabel> CMentionLabelRead(IReadOnlyList<LMentionLabel> labels, string silent)
+    internal static IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> LMentionLineRead(
+        IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> lines)
     {
+        ArgumentNullException.ThrowIfNull(lines);
+
+        Dictionary<long, IReadOnlyList<CMentionLabel>> read = new(lines.Count);
+        foreach ((long sentence, IReadOnlyList<LMentionLabel> labels) in lines)
+        {
+            read[sentence] = LMentionLabelRead(labels);
+        }
+
+        return read;
+    }
+
+    private static IReadOnlyList<CMentionLabel> LMentionLabelRead(IReadOnlyList<LMentionLabel> labels)
+    {
+        ArgumentNullException.ThrowIfNull(labels);
+
         List<CMentionLabel> read = new(labels.Count);
         foreach (LMentionLabel label in labels)
         {
             read.Add(new CMentionLabel(
                 label.LMentionLabelId,
                 label.LMentionLabelWord,
-                label.LMentionLabelLinked ? label.LMentionLabelName : silent,
-                label.LMentionLabelSense));
+                label.LMentionLabelName,
+                label.LMentionLabelSense,
+                label.LMentionLabelLinked));
         }
 
         return read;

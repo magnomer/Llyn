@@ -15,11 +15,23 @@ internal sealed class PMentionLine
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(mentions);
 
-        List<PMentionChip> wanted = new(mentions.Count);
-        foreach (CMentionLabel label in atelier.CAtelierMention.CMentionResolve(text, mentions, silent))
+        PMentionLineRefine(atelier.CAtelierMention.CMentionResolve(text, mentions, silent));
+    }
+
+    internal void PMentionLineRefine(IReadOnlyList<CMentionLabel> labels)
+    {
+        ArgumentNullException.ThrowIfNull(labels);
+
+        List<PMentionChip> wanted = new(labels.Count);
+        foreach (CMentionLabel label in labels)
         {
             wanted.Add(new PMentionChip(
-                label.CMentionLabelId, label.CMentionLabelWord, label.CMentionLabelName, label.CMentionLabelSense));
+                label.CMentionLabelId,
+                label.CMentionLabelWord,
+                label.CMentionLabelKey is string key
+                    ? QLocalizationCatalog.QLocalizationTextRead(key)
+                    : label.CMentionLabelName,
+                label.CMentionLabelSense));
         }
 
         for (int index = 0; index < wanted.Count; index++)

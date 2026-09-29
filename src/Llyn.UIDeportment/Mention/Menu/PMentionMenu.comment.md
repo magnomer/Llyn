@@ -21,12 +21,12 @@ An empty list only closes the menu.
 A picked row opens its Entry through the navigation's gate.
 The menu is already hidden by the pick, and a landing hides it too.
 
-## `internal void PMentionMenuShow(FrameworkElement anchor, Rect place, long entryId, IReadOnlyList<CMeaning> meanings, Action<long> chosen)`
+## `internal void PMentionMenuShow(FrameworkElement anchor, Rect place, IReadOnlyList<CMeaning> meanings, Action<FrameworkElement, long> chosen)`
 
 Sense mode.
-The window reads the Meanings before calling, so the menu stays free of the engine.
-A picked row calls `chosen` with its sense id, and zero means the whole Entry.
-The linking gesture calls it from the card row and from the corpus scribe.
+The caller hands the Meanings a Conduct read answered, so the menu stays free of the engine.
+A picked row calls `chosen` with the anchor and its sense id, and zero means the whole Entry.
+The card row calls it directly with the sentence area's read, and the corpus scribe through `PWindowSenseRefine`.
 
 ## `internal void PMentionMenuHandle(object sender, MouseButtonEventArgs e)`
 

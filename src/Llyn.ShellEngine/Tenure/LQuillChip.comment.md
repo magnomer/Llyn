@@ -69,12 +69,31 @@ A failed search throws, since the picker's caller shows the failure notice.
 Links the span a selection covers to an Entry, sent at once.
 The selection is read into a span of whole units by the engine's span rule.
 A card and sentence of zero name the held Example itself, as the corpus transcript does.
+An Entry of zero marks the span as standing for nothing, which the silence command sends.
+
+## `public void LQuillSenseSet(long card, long sentence, string text, int start, int length, long sense)`
+
+Narrows the Mention a selection lies inside to one sense of its Entry, sent at once.
+Pending typing is persisted first, so the Mention is found against the text the field shows.
+A selection inside no Mention sends nothing.
+
+## `public void LQuillMentionRemove(long card, long sentence, string text, int start, int length)`
+
+Drops the Mention a selection lies inside, sent at once.
+Pending typing is persisted first, and a selection inside no Mention sends nothing.
+A chip's own unlink names its Mention by id through `LQuill.LQuillMentionRemove` instead.
 
 ## `public LReferenceOffer LQuillReferenceFind(long card, long sentence, string text)`
 
 The stored Sources a card sentence's citation field offers for the typed text.
 Typing a citation writes nothing, so this only finds.
 A failed search offers nothing, since no one asked yet.
+
+## `public void LQuillCitationResolve(long card, long sentence, string title)`
+
+Resolves the typed title to a Source and points the sentence's citation at it.
+The resolve and the request are one call, since their order is a data rule.
+A failure is not caught here, so the gate shows it.
 
 ## `public LTranslationOffer LQuillTranslationAdd(long card, string text, int position)`
 

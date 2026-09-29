@@ -37,7 +37,7 @@ public partial class PWindow
     }
 
     internal void PMentionMenuShow(
-        FrameworkElement anchor, Rect place, long entryId, IReadOnlyList<CMeaning> meanings, Action<long> chosen)
+        FrameworkElement anchor, Rect place, IReadOnlyList<CMeaning> meanings, Action<FrameworkElement, long> chosen)
     {
         ArgumentNullException.ThrowIfNull(meanings);
         ArgumentNullException.ThrowIfNull(chosen);
@@ -46,9 +46,8 @@ public partial class PWindow
             anchor,
             place,
             "Mention.Sense",
-            PMentionItem.PMentionItemCreate(
-                entryId, meanings, QLocalizationCatalog.QLocalizationTextRead("Mention.Whole")),
-            item => chosen(item.PMentionItemSense));
+            PMentionItem.PMentionItemCreate(meanings, QLocalizationCatalog.QLocalizationTextRead("Mention.Whole")),
+            item => chosen(anchor, item.PMentionItemSense));
     }
 
     private void PMentionRowApply(FrameworkElement container, object item, string? _)

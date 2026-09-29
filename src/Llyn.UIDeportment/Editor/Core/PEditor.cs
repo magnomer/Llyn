@@ -26,8 +26,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         Content = surface;
         NameScope.SetNameScope(this, NameScope.GetNameScope(surface));
 
-        _pSentenceTemplate = new PSentenceTemplate(this);
-        Resources.MergedDictionaries.Add(_pSentenceTemplate);
+        Resources.MergedDictionaries.Add(new PSentenceTemplate());
         _pContextTemplate = new PContextTemplate();
         Resources.MergedDictionaries.Add(_pContextTemplate);
         _pRegisterTemplate = new PRegisterTemplate();
@@ -46,8 +45,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         _pSlateTemplate = new PSlateTemplate();
         Resources.MergedDictionaries.Add(_pSlateTemplate);
         Resources.MergedDictionaries.Add(new PMeaningTemplate());
-        _pCollocationTemplate = new PCollocationTemplate(this);
-        Resources.MergedDictionaries.Add(_pCollocationTemplate);
+        Resources.MergedDictionaries.Add(new PCollocationTemplate());
         Resources.MergedDictionaries.Add(new PLanguageTemplate());
         _pMarkerTemplate = new PMarkerTemplate();
         Resources.MergedDictionaries.Add(_pMarkerTemplate);

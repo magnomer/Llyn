@@ -54,6 +54,16 @@ The headwords are read in one batched call, each Meaning once however many Menti
 A Mention standing for nothing gets an empty name, for the line to substitute its own word.
 The offsets count code points, so the span is cut at the UTF-16 units the sentence maps them to.
 
+## `public IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LMentionClerkResolve(LDraft? draft)`
+
+The mention line of every sentence row on every card of a draft, keyed by the row.
+A row with no Example yet answers an empty line, so its chips are cleared.
+A missing draft answers no rows.
+
+## `private void LMentionClerkResolve(IReadOnlyList<LCardDraft> cards, Dictionary<long, IReadOnlyList<LMentionLabel>> lines)`
+
+Adds the lines of every row on the given cards and their child cards.
+
 ## `private string LMentionSenseRead(long sense)`
 
 The title of one Meaning, its definition when the title is empty, empty when the Meaning is gone.

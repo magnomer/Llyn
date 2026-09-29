@@ -2,26 +2,17 @@
 
 ## `public partial class PEditor`
 
-The editor's side of an Example row: opening and dropping rows, and the Source list a row cites from.
+The editor's side of an Example row: opening and dropping rows, and the mentions and gloss it carries.
 The rows themselves hold no engine.
 Adding, dropping and typing in a row are torn apart by role, as `docs-work/JobPrinciple.md` section 13 asks.
 Each Observe finds the card that owns the row and hands the raw value to one `CSentence` gate.
-The mention commands still send their own requests, left for their own job.
-One list of Sources serves every row on the form, Example and Situation alike.
+The mention commands each hand the raw selection to one sentence gate or read.
 The field a row cites through is answered in [PSentenceCitation.cs](PSentenceCitation.comment.md).
-The linking gesture on a row's sentence is answered here too, four commands sent as Mention requests.
+The linking gesture on a row's sentence is answered here too, four commands over the sentence area.
 The frame the rows read a sentence under is settled here too.
 That is the order its two fields take and what each has been saved holding.
 Both follow the language the entry is written in.
 Switching language redraws every row rather than leaving one language's order over another's.
-
-## `internal void PSentenceLoad()`
-
-Reads every Source the workspace holds, with its byline, into the list the form offers.
-It then has every row read the byline of the Source it cites again.
-It answers each opened workspace and every reference change the sentence area raises.
-So a byline edited elsewhere is never stale here.
-A workspace that cannot be read leaves the list empty rather than failing the form.
 
 ## `internal void PSentenceFrameRefine(CEntryDraft _)`
 
@@ -43,60 +34,65 @@ Hears the add button of a row and hands the row's place to the gate, which adds 
 
 Hears the erase button of a row and hands the row to the gate to drop.
 
-## `internal void PSentenceLinkHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private void PSentenceLinkRefine(object sender, ExecutedRoutedEventArgs e)`
 
 Opens the Entry picker over the selected word, from the editor's mention read.
 The gesture lives in the editor and not the display.
 A link is an edit, and every edit goes through a draft.
+The command runs only on a selection with length, so no span is measured here.
 The pick is heard by `PProspectPickObserve`, which finds the card and row from the box.
 Its gate `CSentenceMentionAdd` reads the span in code points below Conduct.
 
-## `internal void PSentenceSenseHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private void PSentenceMeaningRefine(object sender, ExecutedRoutedEventArgs e)`
 
-Opens the window's Meaning menu on the Entry the Mention under the selection stands for.
-The chosen sense goes out as a request naming the Mention, and the redraw shows it on the chip.
-Pending typing is persisted first, so the Mention is found against the text the field shows.
+Opens the window's Meaning menu on the Meanings the sentence area reads under the selection.
+The read persists pending typing first, and answers none when no linked Mention lies there.
+It reports its own failure, so the menu only shows what it answered.
+The menu hands the pick to `PSentenceSenseObserve` with the box as its anchor.
 
-## `private void PSentenceSenseShow(TextBox box, PCard card, PSentence row, CMentionDraft? mention)`
+## `private void PSentenceSenseObserve(FrameworkElement anchor, long sense)`
 
-Opens the menu for the found Mention, and does nothing when it is missing or links no Entry.
-The Mention arrives as a parameter, so the handler branches on no engine answer.
+Hears a sense picked in the Meaning menu and hands it to the sense gate with the box's raw selection.
+The row and card are found from the anchor.
+So no Mention id is held between the open and the pick.
 
-## `internal void PSentenceSilenceHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private void PSentenceSilenceObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Marks the selection as standing for nothing, which is an addition with Entry 0.
+Marks the selection as standing for nothing, through the mention gate with Entry 0.
 
-## `internal void PSentenceUnlinkHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private void PSentenceUnlinkObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Drops the Mention under the selection, or the one whose chip was asked from.
+Drops the Mention whose chip was asked from, or the one under the field's selection.
 The row is read from the element the command was bound on, because a chip button is not the field.
-Pending typing is persisted first, so the Mention is found against the text the field shows.
+A chip names its Mention by id, and a field hands its raw selection to the other remove gate.
 
-## `internal void PSentenceLinkCheck(object sender, CanExecuteRoutedEventArgs e)`
+## `private void PSentenceSpanRefine(object sender, CanExecuteRoutedEventArgs e)`
 
-Link and silence apply when the selection has length.
+Link and silence apply when the selection spans a code point, the verdict the mention gates answer.
 
-## `internal void PSentenceSenseCheck(object sender, CanExecuteRoutedEventArgs e)`
+## `private void PSentenceSenseRefine(object sender, CanExecuteRoutedEventArgs e)`
 
-Choose applies when the selection lies inside a Mention that has an Entry.
+Choose applies when the sentence area says the selection lies inside a Mention that has an Entry.
 
-## `internal void PSentenceUnlinkCheck(object sender, CanExecuteRoutedEventArgs e)`
+## `private void PSentenceUnlinkRefine(object sender, CanExecuteRoutedEventArgs e)`
 
-Unlink applies from a chip always, and from the field when the selection lies inside any Mention.
+Unlink applies from a chip always, and from the field when the sentence area finds a Mention there.
 
-## `internal void PSentenceMentionShow(PCard card)`
+## `internal void PSentenceMentionRefine(CEntryDraft _)`
 
-Redraws every row's chip line after the card was redrawn, since the rows hold no engine.
-A headword read that fails is reported once and the rest of the card is left as drawn.
+Paints every row's chip line from the sentence area's read after the cards were redrawn.
+`QEditor` subscribes it to every draft change after the two card lists, so every row stands first.
+A failed read answers none, so the form keeps its lines.
 
-## `private readonly PSentenceTemplate _pSentenceTemplate`
+## `private static void PSentenceChipRefine(IReadOnlyList<PCard> cards, IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> lines)`
 
-The sentence row dictionary, held so its fill can subscribe the row's forwarders.
+Paints the chip line of each row on the given cards from its line, paired by the row's id.
 
 ## `private void PSentenceApply(FrameworkElement container, object item, string? _)`
 
-Fills one sentence row and subscribes its forwarders, where event attributes stood.
+Fills one sentence row and subscribes its handlers, where event attributes stood.
 The five command bindings are added once, since a refill finds them already there.
+Each binding takes the editor's own handlers, since the dictionary keeps no forwarders.
 It hands the chip line and the Gloss line their items and fills.
 The citation field hears the dropdown's key Refine and key Observe before its own key handler.
 It then asks the list to redraw its reveal, since the citation may have emptied.

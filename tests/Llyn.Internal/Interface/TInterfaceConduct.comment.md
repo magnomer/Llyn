@@ -135,7 +135,8 @@ The word order a language's pack gives, mapped as the sentence frame maps it.
 
 ## `internal static CSentence TSentenceCreate(LEngine engine, CDesk desk)`
 
-Builds the sentence gates over `desk`, a real phonology outlet and an atelier's catalog on `engine`.
+Builds the sentence gates over `desk` with real phonology, draft and settings outlets on `engine`.
+Its envoy answers no to every question.
 
 ## `internal static CStateValue TCardStateRead(LStateValue value)`
 

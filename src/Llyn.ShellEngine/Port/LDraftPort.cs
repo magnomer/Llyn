@@ -48,6 +48,8 @@ public interface LDraftPort
 
     LReferenceOffer LEngineReferenceFind(LTenure held, long card, long sentence, string text);
 
+    long LEngineCitationResolve(LTenure held, long card, long sentence, string title);
+
     string LEngineBylineRead(string? text);
 
     LEntry? LEngineTranslationResolve(string word, long? entryId);
@@ -59,6 +61,11 @@ public interface LDraftPort
     LMentionDraft LEngineSpanRead(string text, int start, int length);
 
     bool LEngineSpanCheck(string text, int start, int length);
+
+    IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LTenure held);
+
+    IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(
+        LTenure held, long card, long sentence, string text, int start, int length, string key);
 
     int LEngineOffsetRead(string text, int unit);
 

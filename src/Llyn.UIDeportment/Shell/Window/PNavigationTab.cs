@@ -202,7 +202,8 @@ public partial class PWindow
         _qLibrary.QLibraryDisplay.PDisplayCardScroll(sense);
     }
 
-    internal void PWindowSenseRefine(FrameworkElement anchor, Rect place, long entryId, Action<long> chosen)
+    internal void PWindowSenseRefine(
+        FrameworkElement anchor, Rect place, long entryId, Action<FrameworkElement, long> chosen)
     {
         ArgumentNullException.ThrowIfNull(anchor);
         ArgumentNullException.ThrowIfNull(chosen);
@@ -210,7 +211,7 @@ public partial class PWindow
         if (PWindowAtelier.CAtelierCatalog.CCatalogMeaningRead(entryId, PWindowEnvoy)
             is IReadOnlyList<CMeaning> meanings)
         {
-            PMentionMenuShow(anchor, place, entryId, meanings, chosen);
+            PMentionMenuShow(anchor, place, meanings, chosen);
         }
     }
 

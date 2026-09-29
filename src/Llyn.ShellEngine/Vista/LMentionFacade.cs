@@ -78,4 +78,15 @@ internal sealed class LMentionFacade
             return LMentionFacadeStaff.LEngineStaffMention.LMentionClerkResolve(text, mentions);
         }
     }
+
+    public IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LTenure held)
+    {
+        ArgumentNullException.ThrowIfNull(held);
+
+        LDraft? draft = held.LTenureRead();
+        lock (_lMentionFacadeGate)
+        {
+            return LMentionFacadeStaff.LEngineStaffMention.LMentionClerkResolve(draft);
+        }
+    }
 }
