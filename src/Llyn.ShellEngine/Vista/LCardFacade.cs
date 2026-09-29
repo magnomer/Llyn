@@ -57,12 +57,14 @@ internal sealed class LCardFacade
         }
     }
 
-    public IReadOnlyList<LTag> LEngineTagFind(LTenure? held, long card, string query, LCatalogOrder order)
+    public LTagOffer LEngineTagFind(LTenure held, long card, string text)
     {
-        LDraft? draft = held?.LTenureRead();
+        ArgumentNullException.ThrowIfNull(held);
+
+        LDraft? draft = held.LTenureRead();
         lock (_lCardFacadeGate)
         {
-            return LCardFacadeStaff.LEngineStaffTag.LTagClerkFind(query, order, draft, card);
+            return LCardFacadeStaff.LEngineStaffTag.LTagClerkFind(text, draft, card);
         }
     }
 

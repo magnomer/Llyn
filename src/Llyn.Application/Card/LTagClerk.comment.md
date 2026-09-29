@@ -32,11 +32,19 @@ The tags answering `query`, in `order`.
 The tag catalog is held whole rather than searched in the store.
 The match is made over what was read.
 
-## `public IReadOnlyList<LTag> LTagClerkFind(string query, LCatalogOrder order, LDraft? draft, long card)`
+## `public LTagOffer LTagClerkFind(string text, LDraft? draft, long card)`
 
-The stored Tags a card's field offers, leaving out every Tag the card already shows.
-A Tag is held when a chip reads its trimmed text, the rule `LDraftHeldCheck` owns.
+The stored Tags a card's tag field offers for the text it keeps, ready to show.
+The text is trimmed, and a blank text offers nothing, since an empty query would list the whole catalog.
+The Tags come in usage order, and a Tag whose trimmed text is blank is skipped.
+A Tag is held when a chip reads its trimmed text, the rule `LDraftHeldCheck` owns, and is left out.
 No draft or no such card holds nothing, so every match is offered.
+Each row is split around the word by `LCatalog.LCatalogMarkFind`.
+The offer shows only when some Tag is left.
+
+## `private const int LTagClerkLimit`
+
+The most Tags the field offers, so a short word never floods the dropdown.
 
 ## `public void LTagClerkSave(long ownerId, IReadOnlyList<LTagDraft> drafts, bool collocation, Dictionary<long, long> identity)`
 

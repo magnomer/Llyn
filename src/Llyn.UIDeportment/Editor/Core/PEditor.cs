@@ -44,7 +44,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         Resources.MergedDictionaries.Add(_pProspectTemplate);
         _pCandidateTemplate = new PCandidateTemplate(this);
         Resources.MergedDictionaries.Add(_pCandidateTemplate);
-        _pSlateTemplate = new PSlateTemplate(this);
+        _pSlateTemplate = new PSlateTemplate();
         Resources.MergedDictionaries.Add(_pSlateTemplate);
         Resources.MergedDictionaries.Add(new PMeaningTemplate());
         _pCollocationTemplate = new PCollocationTemplate(this);

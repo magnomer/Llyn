@@ -175,6 +175,8 @@ internal static class TAuditChainSetting
             "CCategory",
             "CCategoryRow",
             "CProspect",
+            "CSlate",
+            "CSlateRow",
             "CDesk",
             "CEditor",
             "CNavigation",

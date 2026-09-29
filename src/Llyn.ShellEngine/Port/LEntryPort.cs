@@ -61,8 +61,6 @@ public interface LEntryPort
     IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> LEngineMeaningRead(
         long entryId, string key);
 
-    IReadOnlyList<LTag> LEngineTagFind(LTenure? held, long card, string query, LCatalogOrder order);
-
     IReadOnlyList<LCatalogTag> LEngineTagFind(LVista vista);
 
     LTag LEngineTagCreate(string text);

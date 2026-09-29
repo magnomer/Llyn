@@ -40,6 +40,11 @@ Starts a fresh entry already carrying the Register, as a new member of the tenor
 
 The Authors a typed credit may already name, left out those the draft credits.
 
+## `LTagOffer LEngineTagFind(LTenure held, long card, string text);`
+
+The stored Tags a card's tag field offers for the text it keeps, ready to show.
+It sits beside the other finds a chip field makes as the user types.
+
 ## `string LEngineBylineRead(string? text);`
 
 The word a typed credit searches and highlights the byline with.

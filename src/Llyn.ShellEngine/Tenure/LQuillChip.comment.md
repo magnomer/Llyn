@@ -19,11 +19,12 @@ The draft port a typed translation is resolved through.
 
 Builds the chip edits over one tenure, which it never swaps, and the port its translations resolve through.
 
-## `public string LQuillTagAdd(long card, string text, int position, bool settled)`
+## `public LTagOffer LQuillTagAdd(long card, string text, int position, bool settled)`
 
 Adds a tag for each completed part of the typed list, sent at once, and answers what the entry keeps.
 `LDraftListParse` reads the list, and each tag lands after the one before it.
 The clerk skips a part the card already holds.
+The same answer carries the stored Tags the kept text matches, so the field paints both at once.
 
 ## `public string LQuillSituationAdd(long card, string text, int position, bool settled)`
 
@@ -84,6 +85,11 @@ The link leaves the draft before the court is touched, so nothing points at a dy
 A stored entry has no court row, and nothing more happens.
 A tentative one loses its court row and the draft it was holding, which no other draft can name.
 A court that cannot be read or dropped is left alone, since the link is already gone.
+
+## `private LTagOffer LQuillTagFind(long card, string kept)`
+
+The stored Tags for the text a typed tag list keeps, found after the completed tags went onto the card.
+A failed search offers nothing, since no one asked yet.
 
 ## `private LTranslationOffer LQuillProspectFind(string kept)`
 

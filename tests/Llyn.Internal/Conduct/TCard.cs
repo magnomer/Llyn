@@ -136,16 +136,54 @@ public sealed class TCard
     }
 
     [Fact]
-    public void TagFind_TypedPrefix_FindsTheStoredTag()
+    public void TagAdd_TypedPrefix_OffersTheStoredTagSplitAroundTheWord()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTag tag = engine.TEngineTagCreate("animal");
         (_, CCard card) = TCardPrepare(engine);
 
-        IReadOnlyList<CTag> found = card.CCardTagFind(0, "ani");
+        CSlate slate = card.CCardTagAdd(0, " ani", 0, false);
 
-        Assert.Contains(new CTag(tag.LTagId, "animal"), found);
+        Assert.Equal(" ani", slate.CSlateText);
+        Assert.True(slate.CSlateShown);
+        Assert.Contains(new CSlateRow(tag.LTagId, string.Empty, "ani", "mal"), slate.CSlateRows);
+    }
+
+    [Fact]
+    public void TagAdd_BlankOrUnmatchedText_OffersNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineTagCreate("animal");
+        (_, CCard card) = TCardPrepare(engine);
+
+        CSlate blank = card.CCardTagAdd(0, "   ", 0, false);
+        CSlate unmatched = card.CCardTagAdd(0, "zz", 0, false);
+
+        Assert.Equal("   ", blank.CSlateText);
+        Assert.False(blank.CSlateShown);
+        Assert.Empty(blank.CSlateRows);
+        Assert.False(unmatched.CSlateShown);
+        Assert.Empty(unmatched.CSlateRows);
+    }
+
+    [Fact]
+    public void TagAdd_NineMatchingTags_OffersTheFirstEight()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        for (int index = 1; index <= 9; index++)
+        {
+            engine.TEngineTagCreate("tag " + index);
+        }
+
+        (_, CCard card) = TCardPrepare(engine);
+
+        CSlate slate = card.CCardTagAdd(0, "tag", 0, false);
+
+        Assert.Equal(8, slate.CSlateRows.Count);
+        Assert.Equal("tag 1", slate.CSlateRows[0].CSlateRowMark + slate.CSlateRows[0].CSlateRowTail);
     }
 
     [Fact]
@@ -202,8 +240,8 @@ public sealed class TCard
         (CDesk desk, CCard card) = TCardPrepare(engine);
         long sheet = TCardSheetAdd(desk);
 
-        string kept = card.CCardTagAdd(sheet, " ani", 0, false);
-        string rest = card.CCardTagAdd(sheet, "animal, , plant,  wi", 0, false);
+        string kept = card.CCardTagAdd(sheet, " ani", 0, false).CSlateText;
+        string rest = card.CCardTagAdd(sheet, "animal, , plant,  wi", 0, false).CSlateText;
 
         Assert.Equal(" ani", kept);
         Assert.Equal("wi", rest);
@@ -211,7 +249,7 @@ public sealed class TCard
     }
 
     [Fact]
-    public void TagFind_TagHeldOnTheCard_LeavesItOut()
+    public void TagAdd_TagHeldOnTheCard_LeavesItOutOfTheOffer()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -221,8 +259,9 @@ public sealed class TCard
         long other = TCardSheetAdd(desk);
         card.CCardTagInsert(sheet, tag.LTagId, 0);
 
-        Assert.DoesNotContain(new CTag(tag.LTagId, "animal"), card.CCardTagFind(sheet, "ani"));
-        Assert.Contains(new CTag(tag.LTagId, "animal"), card.CCardTagFind(other, "ani"));
+        CSlateRow row = new(tag.LTagId, string.Empty, "ani", "mal");
+        Assert.DoesNotContain(row, card.CCardTagAdd(sheet, "ani", 1, false).CSlateRows);
+        Assert.Contains(row, card.CCardTagAdd(other, "ani", 0, false).CSlateRows);
     }
 
     [Fact]

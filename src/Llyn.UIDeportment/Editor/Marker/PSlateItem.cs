@@ -1,32 +1,13 @@
-using System.Globalization;
-
 namespace Llyn.UIDeportment;
 
 internal sealed class PSlateItem
 {
-    internal PSlateItem(long id, string text, string word)
+    internal PSlateItem(long id, string lead, string mark, string tail)
     {
         PSlateItemId = id;
-
-        int found = -1;
-        int size = 0;
-        if (word.Length != 0)
-        {
-            found = CultureInfo.CurrentCulture.CompareInfo.IndexOf(
-                text, word, CompareOptions.IgnoreCase, out size);
-        }
-
-        if (found < 0)
-        {
-            PSlateItemLead = text;
-            PSlateItemMark = string.Empty;
-            PSlateItemTail = string.Empty;
-            return;
-        }
-
-        PSlateItemLead = text[..found];
-        PSlateItemMark = text.Substring(found, size);
-        PSlateItemTail = text[(found + size)..];
+        PSlateItemLead = lead;
+        PSlateItemMark = mark;
+        PSlateItemTail = tail;
     }
 
     internal long PSlateItemId { get; }

@@ -14,7 +14,7 @@ Reaching the entry itself is shared with the Situation field, which is written t
 ## `private void PLabelTextObserve(PLabelCaret caret, string text)`
 
 Hears each edit of a Tag caret and hands the raw text to the tag gate, unsettled.
-The card's `PCardLabelRefine` then shows the answer the gate keeps in the entry.
+`PSlateRefine` then paints the answer: the text the entry keeps, and the dropdown of stored Tags.
 
 ## `private void PLabelChipObserve(object sender, RoutedEventArgs e)`
 

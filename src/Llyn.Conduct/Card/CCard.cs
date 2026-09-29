@@ -137,14 +137,6 @@ public sealed class CCard
         return COeuvre.COeuvreReferenceRead(_cCardEntryPort.LEngineReferenceFind());
     }
 
-    public IReadOnlyList<CTag> CCardTagFind(long cardId, string word)
-    {
-        return _cCardEntryPort.LEngineTagFind(
-                _cCardDesk.CDeskTenure, cardId, word, LCatalogOrder.LCatalogOrderUsage)
-            .Select(LCardTagRead)
-            .ToList();
-    }
-
     internal static CTag LCardTagRead(LTag tag)
     {
         ArgumentNullException.ThrowIfNull(tag);
@@ -152,9 +144,21 @@ public sealed class CCard
         return new CTag(tag.LTagId, tag.LTagText);
     }
 
-    public string CCardTagAdd(long cardId, string text, int position, bool settled)
+    public CSlate CCardTagAdd(long cardId, string text, int position, bool settled)
     {
-        return _cCardDesk.CDeskChip?.LQuillTagAdd(cardId, text, position, settled) ?? text;
+        return _cCardDesk.CDeskChip?.LQuillTagAdd(cardId, text, position, settled) is LTagOffer offer
+            ? LCardSlateRead(offer)
+            : new CSlate(text, [], false);
+    }
+
+    private static CSlate LCardSlateRead(LTagOffer offer)
+    {
+        return new CSlate(
+            offer.LTagOfferText,
+            offer.LTagOfferRows
+                .Select(static row => new CSlateRow(row.LTagRowId, row.LTagRowLead, row.LTagRowMark, row.LTagRowTail))
+                .ToList(),
+            offer.LTagOfferShown);
     }
 
     public void CCardTagInsert(long cardId, long tagId, int position)

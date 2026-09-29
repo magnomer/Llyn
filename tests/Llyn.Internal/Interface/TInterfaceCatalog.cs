@@ -76,6 +76,9 @@ internal static partial class TInterface
         this LEngine engine, long draftId, long cardId, long sentenceId, string title) =>
         engine.LEngineReference.LEngineCitationResolve(draftId, cardId, sentenceId, title);
 
+    internal static (string, string, string) TCatalogMarkFind(string text, string word) =>
+        LCatalog.LCatalogMarkFind(text, word);
+
     internal static string TCatalogOrderFormat(LCatalogOrder order) =>
         LCatalog.LCatalogOrderFormat(order);
 

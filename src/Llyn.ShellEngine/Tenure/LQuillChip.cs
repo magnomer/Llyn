@@ -19,17 +19,18 @@ public sealed class LQuillChip
         _lQuillChipDrafts = drafts;
     }
 
-    public string LQuillTagAdd(long card, string text, int position, bool settled)
+    public LTagOffer LQuillTagAdd(long card, string text, int position, bool settled)
     {
         ArgumentNullException.ThrowIfNull(text);
 
         int placed = position;
-        return LDraftClerkList.LDraftListParse(text, settled, part =>
+        string kept = LDraftClerkList.LDraftListParse(text, settled, part =>
         {
             _lQuillChipTenure.LTenureRequestApply(
                 new LRequestTagAddition(_lQuillChipTenure.LTenureId, card, part, placed++));
             return true;
         });
+        return LQuillTagFind(card, kept);
     }
 
     public void LQuillTagInsert(long card, long tag, int position)
@@ -167,6 +168,18 @@ public sealed class LQuillChip
         }
         catch (Exception)
         {
+        }
+    }
+
+    private LTagOffer LQuillTagFind(long card, string kept)
+    {
+        try
+        {
+            return _lQuillChipDrafts.LEngineTagFind(_lQuillChipTenure, card, kept);
+        }
+        catch (Exception)
+        {
+            return new LTagOffer(kept, [], false);
         }
     }
 

@@ -218,7 +218,7 @@
       "src/Llyn.UIDeportment/Editor/List/PCardDrag.cs": 2,
       "src/Llyn.UIDeportment/Editor/List/PCardList.cs": 5,
       "src/Llyn.UIDeportment/Editor/Marker/PMarker.cs": 9,
-      "src/Llyn.UIDeportment/Editor/Marker/PSlate.cs": 5,
+      "src/Llyn.UIDeportment/Editor/Marker/PSlate.cs": 9,
       "src/Llyn.UIDeportment/Editor/Pick/PCandidate.cs": 15,
       "src/Llyn.UIDeportment/Editor/Pick/PProspect.cs": 10,
       "src/Llyn.UIDeportment/Editor/Register/PRegisterMenu.cs": 2,

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace Llyn.Core;
 
@@ -80,6 +81,24 @@ public static class LCatalog
     public static string LCatalogTextNormalize(string? text)
     {
         return (text ?? string.Empty).Trim().ToLowerInvariant();
+    }
+
+    public static (string LCatalogMarkLead, string LCatalogMarkText, string LCatalogMarkTail) LCatalogMarkFind(
+        string text, string word)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        ArgumentNullException.ThrowIfNull(word);
+
+        int found = -1;
+        int size = 0;
+        if (word.Length != 0)
+        {
+            found = CultureInfo.CurrentCulture.CompareInfo.IndexOf(text, word, CompareOptions.IgnoreCase, out size);
+        }
+
+        return found < 0
+            ? (text, string.Empty, string.Empty)
+            : (text[..found], text.Substring(found, size), text[(found + size)..]);
     }
 
     public static bool LCatalogTextMatch(string? text, string query)

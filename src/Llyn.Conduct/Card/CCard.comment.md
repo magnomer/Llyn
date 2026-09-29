@@ -4,7 +4,7 @@
 
 The gates of the editor's cards: what a card's fields ask while the user types into them.
 The translation field finds prospects, resolves a typed word, and links or unlinks an Entry.
-The register, situation, tag and source fields find the stored rows a typed word matches.
+The register, situation and source fields find the stored rows a typed word matches.
 The translation, situation, register and tag fields add what the user typed and pick stored rows.
 The sentence menu reads the particles and dependences of a language.
 The etymology field sends its narrative, its source links and its spans through it, over the editor's desk.
@@ -57,10 +57,6 @@ The stored Registers the card's field offers for a typed word, leaving out those
 
 The stored Situations the card's field offers for a typed word, most used first, leaving out those the card links.
 
-## `public IReadOnlyList<CTag> CCardTagFind(long cardId, string word)`
-
-The stored Tags the card's field offers for a typed word, most used first, leaving out those the card shows.
-
 ## `public IReadOnlyList<CCatalogReference> CCardReferenceFind()`
 
 Every stored Source in author order, as the sentence menu offers them.
@@ -75,14 +71,20 @@ It is the one owner of that map, so the chip search and the tenor rows share it.
 ## `internal static CTag LCardTagRead(LTag tag)`
 
 The Conduct copy of a Tag the engine handed over, its id and its text.
-It is the one owner of that map, so the chip search and the taxonomy rows share it.
+It is the one owner of that map, which the taxonomy rows read.
 
-## `public string CCardTagAdd(long cardId, string text, int position, bool settled)`
+## `public CSlate CCardTagAdd(long cardId, string text, int position, bool settled)`
 
 The gate for a tag typed into a card, as the user wrote it, and answers what the entry keeps.
 The field hands every change unsettled, and Enter or leaving the field hands the text settled.
+The same answer carries the dropdown of stored Tags the kept text matches, so the field paints both at once.
 It holds no rule of its own.
 The list parse and the clerk split, trim and skip blank or held text.
+The tag clerk trims, filters, limits and splits the offered rows, and a failed search offers nothing.
+
+## `private static CSlate LCardSlateRead(LTagOffer offer)`
+
+A plain map of the engine's tag offer, with no rule.
 
 ## `public string CCardSituationAdd(long cardId, string text, int position, bool settled)`
 

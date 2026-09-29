@@ -9,6 +9,8 @@ The etymology gates write the narrative, the source links and the spans of the h
 A typed title cites the Source the engine resolves it to.
 The lookups find the stored rows a typed word matches, leaving out the rows the card already holds.
 A typed tag lands trimmed and once, a picked tag keeps its stored id, and an erased tag leaves.
+A typed tag offers the stored Tags split around the word, at most eight.
+A blank or unmatched tag offers nothing.
 A typed list adds its completed tags, situations and registers once each and answers the rest.
 A picked situation or register lands once under its stored id, and an erased situation leaves.
 The frame line follows the order, and an unknown value shows the mark.

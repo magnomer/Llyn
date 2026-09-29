@@ -53,29 +53,39 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Grid>(container, "PSlateRow") is Grid surface)
         {
-            surface.PreviewMouseLeftButtonDown -= _pSlateTemplate.PSlateHandle;
-            surface.PreviewMouseLeftButtonDown += _pSlateTemplate.PSlateHandle;
+            surface.PreviewMouseLeftButtonDown -= PSlateMissRefine;
+            surface.PreviewMouseLeftButtonDown -= PSlatePickObserve;
+            surface.PreviewMouseLeftButtonDown += PSlateMissRefine;
+            surface.PreviewMouseLeftButtonDown += PSlatePickObserve;
         }
     }
 
-    private const int PSlateLimit = 8;
     private const double PSlateShade = 10;
     private const double PSlateGap = 6;
 
     private readonly ObservableCollection<PSlateItem> _pSlateItem = [];
 
-    private PCard? _pSlateCard;
-
-    internal void PSlateHandle(object sender, MouseButtonEventArgs e)
+    private void PSlateMissRefine(object sender, MouseButtonEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PSlateItem item })
+        if (sender is not FrameworkElement { DataContext: PSlateItem })
         {
-            PSlateHide();
+            PSlateShutRefine();
+        }
+    }
+
+    private void PSlatePickObserve(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: PSlateItem item }
+            || Keyboard.FocusedElement is not FrameworkElement { DataContext: PLabelCaret row }
+            || PCardLabelFind(row) is not PCard card)
+        {
             return;
         }
 
-        PSlateSelect(item);
+        _qEditor.QEditorArea.CEditorCard.CCardTagInsert(card.PCardId, item.PSlateItemId, card.PCardLabelPosition);
         e.Handled = true;
+        PSlateShutRefine();
+        card.PCardLabelClear();
     }
 
     private void PSlateKeyRefine(object sender, KeyEventArgs e)
@@ -87,7 +97,7 @@ public partial class PEditor
 
         if (e.Key == Key.Escape)
         {
-            PSlateHide();
+            PSlateShutRefine();
             e.Handled = true;
             return;
         }
@@ -128,71 +138,32 @@ public partial class PEditor
 
         _qEditor.QEditorArea.CEditorCard.CCardTagInsert(card.PCardId, item.PSlateItemId, card.PCardLabelPosition);
         e.Handled = true;
-        PSlateHide();
+        PSlateShutRefine();
         card.PCardLabelClear();
     }
 
-    private void PSlateSelect(PSlateItem item)
+    private void PSlateRefine(PCard card, CSlate slate)
     {
-        PCard? card = _pSlateCard;
-        PSlateHide();
-
-        if (card is null)
+        card.PCardLabelRefine(slate.CSlateText);
+        if (slate.CSlateShown)
         {
+            PSlateOpenRefine(card, slate.CSlateRows);
             return;
         }
 
-        _qEditor.QEditorArea.CEditorCard.CCardTagInsert(card.PCardId, item.PSlateItemId, card.PCardLabelPosition);
-
-        card.PCardLabelClear();
+        PSlateShutRefine();
     }
 
-    private void PSlateShow(PCard card, string text)
+    private void PSlateOpenRefine(PCard card, IReadOnlyList<CSlateRow> rows)
     {
-        string word = (text ?? string.Empty).Trim();
-        if (word.Length == 0)
-        {
-            PSlateHide();
-            return;
-        }
-
-        IReadOnlyList<CTag> found;
-        try
-        {
-            found = _qEditor.QEditorArea.CEditorCard.CCardTagFind(card.PCardId, word);
-        }
-        catch (Exception)
-        {
-            PSlateHide();
-            return;
-        }
-
         _pSlateItem.Clear();
-        foreach (CTag tag in found)
+        foreach (CSlateRow row in rows)
         {
-            string written = tag.CTagText.Trim();
-            if (written.Length == 0)
-            {
-                continue;
-            }
-
-            _pSlateItem.Add(new PSlateItem(tag.CTagId, written, word));
-
-            if (_pSlateItem.Count == PSlateLimit)
-            {
-                break;
-            }
-        }
-
-        if (_pSlateItem.Count == 0)
-        {
-            PSlateHide();
-            return;
+            _pSlateItem.Add(new PSlateItem(row.CSlateRowId, row.CSlateRowLead, row.CSlateRowMark, row.CSlateRowTail));
         }
 
         TextBox? box = PSlateBoxFind(card);
 
-        _pSlateCard = card;
         PSlate.PlacementTarget = PSlateFrameFind(box) ?? box ?? (UIElement)PContents;
         PSlateSheet.SetBinding(
             FrameworkElement.MinWidthProperty,
@@ -201,12 +172,11 @@ public partial class PEditor
         PSlateList.SelectedIndex = -1;
     }
 
-    private void PSlateHide()
+    private void PSlateShutRefine()
     {
         PSlate.IsOpen = false;
         PSlateList.SelectedIndex = -1;
         _pSlateItem.Clear();
-        _pSlateCard = null;
     }
 
     private TextBox? PSlateBoxFind(PCard card)

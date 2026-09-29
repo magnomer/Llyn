@@ -24,7 +24,8 @@ The card's own three fields, each handed to its own gate.
 Brings one list into line with the draft's cards, pairing each control with its card by id.
 The ids are the draft's, and the draft never holds two cards under one id.
 A card the form does not show yet is built empty and filled like a kept one.
-Its notices are subscribed as it is built, so each typed text and each Gloss pick reaches the editor.
+Its notices are subscribed as it is built.
+So a typed situation or register and a Gloss pick reach the editor.
 A card the draft no longer names is dropped.
 A card that moved is moved to the place the ready list holds it at.
 The rest keep their controls, so the caret stays in a card while its neighbours change.

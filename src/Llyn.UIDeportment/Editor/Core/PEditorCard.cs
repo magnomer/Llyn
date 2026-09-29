@@ -23,7 +23,6 @@ public partial class PEditor
                 card.PCardSentenceNotice += PSentenceGlossObserve;
                 card.PCardContextNotice += PCandidateShow;
                 card.PCardRegisterNotice += PCandidateRegisterShow;
-                card.PCardLabelNotice += PSlateShow;
                 cards.Add(card);
             }
 

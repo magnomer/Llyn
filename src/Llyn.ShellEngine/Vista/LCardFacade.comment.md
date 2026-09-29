@@ -33,9 +33,10 @@ Reads every Tag the workspace holds, once each, in alphabetical order.
 
 The stored Tags answering `query`, in `order`, as the taxonomy vista lists them.
 
-## `public IReadOnlyList<LTag> LEngineTagFind(LTenure? held, long card, string query, LCatalogOrder order)`
+## `public LTagOffer LEngineTagFind(LTenure held, long card, string text)`
 
-The stored Tags a card's field offers, leaving out those the held draft's card already shows.
+The stored Tags a card's tag field offers for the text it keeps.
+Those the held draft's card already shows are left out.
 The draft is read before the gate is taken, as the tenure guards itself.
 
 ## `public IReadOnlyList<LTag> LEngineTagFind(LVista vista)`

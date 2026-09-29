@@ -92,9 +92,6 @@ public sealed class LEntryOutlet : LEntryPort
         long entryId, string key) =>
         _lEntryOutletEngine.LEngineCard.LEngineMeaningRead(entryId, key);
 
-    public IReadOnlyList<LTag> LEngineTagFind(LTenure? held, long card, string query, LCatalogOrder order) =>
-        _lEntryOutletEngine.LEngineCard.LEngineTagFind(held, card, query, order);
-
     public IReadOnlyList<LCatalogTag> LEngineTagFind(LVista vista) =>
         _lEntryOutletEngine.LEngineCard.LEngineTagFind(vista);
 

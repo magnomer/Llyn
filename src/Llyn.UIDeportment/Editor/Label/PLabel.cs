@@ -75,7 +75,7 @@ public partial class PEditor
     {
         if (PCardLabelFind(caret) is PCard card)
         {
-            card.PCardLabelRefine(_qEditor.QEditorArea.CEditorCard.CCardTagAdd(
+            PSlateRefine(card, _qEditor.QEditorArea.CEditorCard.CCardTagAdd(
                 card.PCardId, text, card.PCardLabelPosition, false));
         }
     }
@@ -100,7 +100,7 @@ public partial class PEditor
         _qEditor.QEditorArea.CEditorCard.CCardTagAdd(
             card.PCardId, card.PCardLabelText, card.PCardLabelPosition, true);
         e.Handled = true;
-        PSlateHide();
+        PSlateShutRefine();
         card.PCardLabelClear();
     }
 
@@ -142,7 +142,7 @@ public partial class PEditor
 
     private void PLabelBlurRefine(object sender, RoutedEventArgs e)
     {
-        PSlateHide();
+        PSlateShutRefine();
     }
 
     private void PLabelCloseObserve(object sender, RoutedEventArgs e)

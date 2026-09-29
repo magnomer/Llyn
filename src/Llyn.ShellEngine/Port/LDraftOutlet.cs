@@ -59,6 +59,9 @@ public sealed class LDraftOutlet : LDraftPort
     public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query) =>
         _lDraftOutletEngine.LEngineAuthor.LEngineBylineFind(draft, query);
 
+    public LTagOffer LEngineTagFind(LTenure held, long card, string text) =>
+        _lDraftOutletEngine.LEngineCard.LEngineTagFind(held, card, text);
+
     public string LEngineBylineRead(string? text) => LAuthorFacade.LEngineBylineRead(text);
 
     public LEntry? LEngineTranslationResolve(string word, long? entryId) =>

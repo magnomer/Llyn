@@ -6,6 +6,8 @@ namespace Llyn.Application;
 
 public sealed class LTagClerk
 {
+    private const int LTagClerkLimit = 8;
+
     private readonly LTagVault _lTagClerkTags;
 
     public LTagClerk(LRig rig)
@@ -36,22 +38,38 @@ public sealed class LTagClerk
         return LCatalogTag.LCatalogTagSort(found, order);
     }
 
-    public IReadOnlyList<LTag> LTagClerkFind(string query, LCatalogOrder order, LDraft? draft, long card)
+    public LTagOffer LTagClerkFind(string text, LDraft? draft, long card)
     {
+        ArgumentNullException.ThrowIfNull(text);
+
+        string word = text.Trim();
+        if (word.Length == 0)
+        {
+            return new LTagOffer(text, [], false);
+        }
+
         IReadOnlyList<LTagDraft> held = draft is null
             ? []
             : LDraftClerkCard.LCardFind(draft.LDraftContent, card)?.LCardDraftTag ?? [];
 
-        List<LTag> found = [];
-        foreach (LTag tag in LTagClerkFind(query, order))
+        List<LTagRow> rows = [];
+        foreach (LTag tag in LTagClerkFind(word, LCatalogOrder.LCatalogOrderUsage))
         {
-            if (!LDraftClerkList.LDraftHeldCheck(held, static row => row.LTagDraftText, tag.LTagText.Trim()))
+            string written = tag.LTagText.Trim();
+            if (written.Length == 0 || LDraftClerkList.LDraftHeldCheck(held, static row => row.LTagDraftText, written))
             {
-                found.Add(tag);
+                continue;
+            }
+
+            (string lead, string mark, string tail) = LCatalog.LCatalogMarkFind(written, word);
+            rows.Add(new LTagRow(tag.LTagId, lead, mark, tail));
+            if (rows.Count == LTagClerkLimit)
+            {
+                break;
             }
         }
 
-        return found;
+        return new LTagOffer(text, rows, rows.Count > 0);
     }
 
     public void LTagClerkSave(

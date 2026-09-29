@@ -5,3 +5,4 @@
 Covers the tag catalog, which is ordered and matched over one text and nothing else.
 It covers name order and its reverse.
 It covers the query, which ignores case because a tag is read as a word.
+It covers the split of a found text around the typed word, which a picker draws in weight.

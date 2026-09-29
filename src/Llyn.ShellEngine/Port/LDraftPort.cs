@@ -38,6 +38,8 @@ public interface LDraftPort
 
     IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query);
 
+    LTagOffer LEngineTagFind(LTenure held, long card, string text);
+
     string LEngineBylineRead(string? text);
 
     LEntry? LEngineTranslationResolve(string word, long? entryId);

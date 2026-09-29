@@ -41,6 +41,15 @@ It is the same fold the database's `lfold` helper applies.
 A match made in memory therefore agrees with one made in a query.
 Every place that asks whether two typed wordings name one row folds both sides with this.
 
+## `public static (string LCatalogMarkLead, string LCatalogMarkText, string LCatalogMarkTail) LCatalogMarkFind(`
+
+Splits a found text around the first place the typed word stands in it, ignoring case in the current culture.
+A picker draws the middle piece in weight, so a reader sees why the row is offered.
+The comparison reports how long the match ran.
+A match under a culture's rules is not always as long as the word that found it.
+A text the word does not stand in reads whole as its lead.
+So no row is lost to a wildcard search.
+
 ## `public static bool LCatalogTextMatch(string? text, string query)`
 
 Whether one text answers the query, both folded the same way `LCatalogTextNormalize` folds.

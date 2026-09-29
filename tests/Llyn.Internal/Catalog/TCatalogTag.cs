@@ -48,6 +48,14 @@ public sealed class TCatalogTag
                 .Select(tag => tag.LTagText));
     }
 
+    [Fact]
+    public void CatalogMarkFind_WordInsideText_SplitsAroundTheMatchIgnoringCase()
+    {
+        Assert.Equal(("phrasal ", "Verb", " form"), TInterface.TCatalogMarkFind("phrasal Verb form", "verb"));
+        Assert.Equal(("animal", string.Empty, string.Empty), TInterface.TCatalogMarkFind("animal", "plant"));
+        Assert.Equal(("animal", string.Empty, string.Empty), TInterface.TCatalogMarkFind("animal", string.Empty));
+    }
+
     private static void TCatalogTagSave(LEngine engine, IReadOnlyList<string> texts)
     {
         engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
