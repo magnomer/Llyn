@@ -5,6 +5,7 @@
 The typed text edits of one tenure, each building exactly one request.
 A driver hands it raw values, and it chooses whether the request is sent or deferred.
 Which member runs for a field is the caller's decision, not the quill's.
+A card's chip rows went to `LQuillChip` in job39, the tag members with them, so this type stays small.
 
 ## `private readonly LTenure _lQuillTenure;`
 
@@ -57,19 +58,6 @@ Drops one Mention, sent at once.
 ## `public void LQuillMentionSet(long card, long sentence, long mention, long sense)`
 
 Points one Mention at a sense of its Entry, sent at once.
-
-## `public void LQuillTagAdd(long card, string text, int position)`
-
-Adds a tag with the typed text to a card, sent at once.
-The clerk trims it and skips blank or held text.
-
-## `public void LQuillTagInsert(long card, long tag, int position)`
-
-Links a stored tag to a card, sent at once.
-
-## `public void LQuillTagRemove(long card, long tag)`
-
-Unlinks one tag from a card, sent at once.
 
 ## `public void LQuillSentenceAdd(long card, int position)`
 

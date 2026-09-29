@@ -26,8 +26,13 @@ A workspace that cannot be read leaves the list empty rather than failing the fo
 
 Paints the Example frame the sentence gate answers for the held draft's language.
 The two lists are refilled, and every row on the form takes the word order.
-Neither the editor nor a card keeps the order, so a row opened later reads it when built.
+The editor keeps the order it painted, so a row opened later is built under it.
 The gate owns the language and the empty lists a failed read leaves.
+
+## `private CSentenceOrder? _pSentenceOrder;`
+
+The word order the frame last painted, which is the GUI's own copy of what the rows show.
+A row built between two frame reads takes it, so no card reads the engine for an order.
 
 ## `internal void PSentenceAttach(PCard card)`
 

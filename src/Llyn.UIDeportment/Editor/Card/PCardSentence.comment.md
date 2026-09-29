@@ -17,13 +17,14 @@ Typed text never comes this way, since a row holds no copy of what is typed.
 ## `internal void PCardSentenceApply(CSentenceOrder order)`
 
 Hands the language pack's field order to every row the card holds.
-The card keeps no order of its own, so a row opened later reads the engine's when it is built.
+The card keeps no order of its own.
+A row opened later is built under the order the editor hands it.
 
-## `internal void PCardSentenceShow(IReadOnlyList<CSentenceDraft> drafts, string language)`
+## `internal void PCardSentenceShow(IReadOnlyList<CSentenceDraft> drafts, CSentenceOrder? order)`
 
 Makes the rows show the engine's rows, matched by sentence id.
 A field already reading what the engine holds is left alone.
-The language names the field order a new row is built under.
+The order is the one `CSentenceFrameRead` last answered, and a new row is built under it.
 The engine keeps a blank row, so a card always offers somewhere to write without the card adding one.
 
 ## `internal int PCardSentenceFind(PSentence row)`
@@ -32,10 +33,11 @@ Where the row stands, which is what an addition beneath it is asked at.
 
 ## Inline notes
 
-### `private PSentence PCardSentenceCreate(LSentenceDraft draft, string language)`
+### `private PSentence PCardSentenceCreate(CSentenceDraft draft, CSentenceOrder? order)`
 
 Builds one row from the engine's row and starts listening to it.
-The order is read from the engine at birth, so a row never draws in the default order first.
+The frame's order is applied at birth, so a row never draws in the default order first.
+No order yet means no frame was read, and the row keeps its default columns.
 
 ### `private void PCardSentenceChange(object? sender, PropertyChangedEventArgs arguments)`
 

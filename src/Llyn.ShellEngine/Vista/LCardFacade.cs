@@ -57,6 +57,15 @@ internal sealed class LCardFacade
         }
     }
 
+    public IReadOnlyList<LTag> LEngineTagFind(LTenure? held, long card, string query, LCatalogOrder order)
+    {
+        LDraft? draft = held?.LTenureRead();
+        lock (_lCardFacadeGate)
+        {
+            return LCardFacadeStaff.LEngineStaffTag.LTagClerkFind(query, order, draft, card);
+        }
+    }
+
     public IReadOnlyList<LCatalogTag> LEngineTagFind(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
@@ -89,11 +98,12 @@ internal sealed class LCardFacade
         return created;
     }
 
-    public IReadOnlyList<LRegister> LEngineRegisterFind(string query, string language)
+    public IReadOnlyList<LRegister> LEngineRegisterFind(LTenure? held, long card, string query, string language)
     {
+        LDraft? draft = held?.LTenureRead();
         lock (_lCardFacadeGate)
         {
-            return LCardFacadeStaff.LEngineStaffRegister.LRegisterClerkFind(query, language);
+            return LCardFacadeStaff.LEngineStaffRegister.LRegisterClerkFind(query, language, draft, card);
         }
     }
 

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace Llyn.Conduct;
@@ -13,9 +12,7 @@ public interface CEnvoy
 
     void CEnvoyFailureShow(string key);
 
-    void CEnvoyFailureShow(string key, Exception exception);
-
-    bool CEnvoyDiscardConfirm();
+    void CEnvoyFailureShow(string key, CLedgerNotice notice);
 
     bool? CEnvoyLeaveConfirm();
 

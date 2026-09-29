@@ -20,14 +20,14 @@ internal sealed partial class PCard
         }
     }
 
-    internal void PCardSentenceShow(IReadOnlyList<CSentenceDraft> drafts, string language)
+    internal void PCardSentenceShow(IReadOnlyList<CSentenceDraft> drafts, CSentenceOrder? order)
     {
         PCardRowShow(
             PCardSentence,
             drafts,
             static row => row.PSentenceRow,
             static draft => draft.CSentenceDraftId,
-            draft => PCardSentenceCreate(draft, language),
+            draft => PCardSentenceCreate(draft, order),
             (row, draft) =>
             {
                 row.PSentenceShow(draft);
@@ -40,10 +40,14 @@ internal sealed partial class PCard
         return PCardSentence.IndexOf(row);
     }
 
-    private PSentence PCardSentenceCreate(CSentenceDraft draft, string language)
+    private PSentence PCardSentenceCreate(CSentenceDraft draft, CSentenceOrder? order)
     {
         PSentence row = new(_pCardCitation, _pCardParticle, _pCardDependence, _pCardLanguage, draft);
-        row.PSentenceOrderApply(_pCardAtelier.CAtelierCatalog.CCatalogOrderRead(language));
+        if (order is not null)
+        {
+            row.PSentenceOrderApply(order);
+        }
+
         row.PropertyChanged += PCardSentenceChange;
         return row;
     }

@@ -21,6 +21,7 @@ public sealed class CFootnote
     internal CFootnote(
         LEntryPort entries,
         LPortraitPort portraits,
+        LSettingsPort settings,
         CEditor editor,
         CEnvoy envoy,
         Func<bool, bool> finishSeam,
@@ -28,13 +29,16 @@ public sealed class CFootnote
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
+        ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(editor);
 
         _cFootnoteEntryPort = entries;
         _cFootnotePortraitPort = portraits;
         _cFootnoteEditor = editor;
         CFootnotePanel = new CPanel(
-            envoy, "List.LoadFailed", null, editor.CEditorDesk.LDeskChangeCheck, finishSeam, shownSeam);
+            envoy,
+            settings,
+            "List.LoadFailed", null, editor.CEditorDesk.LDeskChangeCheck, finishSeam, shownSeam);
         CFootnotePanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         CFootnotePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
     }
@@ -84,6 +88,7 @@ public sealed class CFootnote
     {
         return CPortrait.LPortraitTicketPrint(
             envoy,
+            settings,
             chosen => _cFootnotePortraitPort.LEnginePortraitPrint(
                 _cFootnoteVista, CPortrait.LPortraitLabelRead(settings), chosen));
     }
@@ -92,6 +97,7 @@ public sealed class CFootnote
     {
         return CPortrait.LPortraitFileExport(
             envoy,
+            settings,
             LFootnoteFileRead(),
             (file, medium) => _cFootnotePortraitPort.LEnginePortraitExport(
                 _cFootnoteVista, file, medium, CPortrait.LPortraitLabelRead(settings)));

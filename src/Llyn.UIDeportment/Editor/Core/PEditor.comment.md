@@ -71,7 +71,7 @@ The glyph typography goes into the glyph list's resources, so the field takes it
 
 The one routed handler left, for the fields inside cards that come and go with them.
 The spine's own boxes report through their own handlers.
-A chip field's entry writes its text back into its caret row here, where a two-way binding stood.
+A chip field's entry hands its text to that field's text observer, which calls one gate.
 
 ## `private void PEditorStateUpdate()`
 

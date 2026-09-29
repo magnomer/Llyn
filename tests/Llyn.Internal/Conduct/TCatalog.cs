@@ -62,6 +62,31 @@ public sealed class TCatalog
     }
 
     [Fact]
+    public void CatalogMeaningRead_ReadFails_HandsTheEnvoyTheReadyNotice()
+    {
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
+            engine,
+            new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineMeaningRead"] = _ => throw new InvalidOperationException("gone"),
+            });
+        List<CLedgerNotice> handed = [];
+        CEnvoy envoy = TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["CEnvoyFailureShow"] = args =>
+            {
+                handed.Add((CLedgerNotice)args![1]!);
+                return null;
+            },
+        });
+
+        atelier.CAtelierCatalog.CCatalogMeaningRead(7, envoy);
+
+        Assert.Equal([new CLedgerNotice("Notice.Unexpected", null, null)], handed);
+    }
+
+    [Fact]
     public void CatalogEntryLoad_StoredEntry_CountsMeaningAndCollocationCards()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

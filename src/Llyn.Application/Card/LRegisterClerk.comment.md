@@ -21,6 +21,11 @@ It holds every Register, because a Register belongs to no language.
 `language` only names the pack whose rows are seeded before the shelf is read, so a first card sees them.
 An empty query offers the whole shelf.
 
+## `public IReadOnlyList<LRegister> LRegisterClerkFind(string query, string language, LDraft? draft, long card)`
+
+The stored Registers a card's field offers, leaving out every Register the card already links by id.
+No draft or no such card holds nothing, so every match is offered.
+
 ## `public IReadOnlyList<LCatalogRegister> LRegisterClerkFind(string query, LCatalogOrder order)`
 
 The shelf the tenor panel browses, every Register counted and ordered.

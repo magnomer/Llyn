@@ -72,7 +72,15 @@ public partial class PEditor
     internal void PRegisterAttach(PCard card)
     {
         card.PCardRegisterNotice = text => PCandidateRegisterShow(card, text);
-        card.PCardRegisterDispatcher = text => PRegisterSend(card, text);
+    }
+
+    private void PRegisterTextObserve(PRegisterCaret caret, string text)
+    {
+        if (PCardRegisterFind(caret) is PCard card)
+        {
+            card.PCardRegisterRefine(_lEditor.LEditorStudio.CEditorCard.CCardRegisterAdd(
+                card.PCardId, text, card.PCardRegisterPosition, false));
+        }
     }
 
     internal void PRegisterChipHandle(object sender, RoutedEventArgs e)
@@ -104,7 +112,7 @@ public partial class PEditor
 
         if (e.Key == Key.Enter)
         {
-            PRegisterCommit(card);
+            PRegisterCommitObserve(card);
             e.Handled = true;
             return;
         }
@@ -127,7 +135,7 @@ public partial class PEditor
         PCard? card = PCardRegisterFind(row);
         if (card is not null)
         {
-            PRegisterCommit(card);
+            PRegisterCommitObserve(card);
         }
     }
 
@@ -170,31 +178,12 @@ public partial class PEditor
         return null;
     }
 
-    private void PRegisterCommit(PCard card)
+    private void PRegisterCommitObserve(PCard card)
     {
         PCandidateHide();
-        PRegisterSend(card, card.PCardRegisterText);
+        _lEditor.LEditorStudio.CEditorCard.CCardRegisterAdd(
+            card.PCardId, card.PCardRegisterText, card.PCardRegisterPosition, true);
         card.PCardRegisterClear();
-    }
-
-    private bool PRegisterSend(PCard card, string text)
-    {
-        string written = (text ?? string.Empty).Trim();
-        if (written.Length == 0 || card.PCardRegisterCheck(written))
-        {
-            return false;
-        }
-
-        PRegisterSend(card, null, written);
-        return true;
-    }
-
-    private void PRegisterSend(PCard card, long? id, string written)
-    {
-        int position = card.PCardRegisterPosition;
-        PEditorRequestSend(id is long picked
-            ? new LRequestRegisterPick(PEditorDraft, card.PCardId, picked, position)
-            : new LRequestRegisterAddition(PEditorDraft, card.PCardId, new LStateWritten(written), position));
     }
 
     private void PRegisterRemove(PCard card, PRegister? chip)

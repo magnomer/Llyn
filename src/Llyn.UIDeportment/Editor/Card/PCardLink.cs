@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -11,14 +10,11 @@ internal sealed partial class PCard
     private const string PCardLinkHint = "Card.TranslationHint";
 
     private readonly PLinkCaret _pCardLinkCaret = new();
-    private bool _pCardLinkBusy;
 
     private static readonly Func<object, long?> _pCardLinkKey =
         row => row is LLinkChip chip ? chip.LLinkChipId : null;
 
     public ObservableCollection<object> PCardLink { get; } = [];
-
-    internal Func<string, bool, bool>? PCardLinkDispatcher { get; set; }
 
     internal Action<string>? PCardLinkNotice { get; set; }
 
@@ -70,39 +66,10 @@ internal sealed partial class PCard
         return true;
     }
 
-    internal void PCardLinkCommit()
-    {
-        string written = _pCardLinkCaret.PLinkCaretText.Trim();
-        if (written.Length == 0)
-        {
-            return;
-        }
-
-        if (PCardLinkDispatcher?.Invoke(written, true) == true)
-        {
-            PCardLinkClear();
-        }
-    }
-
     internal void PCardLinkClear()
     {
-        _pCardLinkBusy = true;
         _pCardLinkCaret.PLinkCaretText = string.Empty;
-        _pCardLinkBusy = false;
         PCardLinkUpdate();
-    }
-
-    internal bool PCardLinkCheck(long id)
-    {
-        foreach (object row in PCardLink)
-        {
-            if (row is LLinkChip chip && chip.LLinkChipId == id)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     internal void PCardFlagUpdate()
@@ -130,45 +97,15 @@ internal sealed partial class PCard
 
     private void PCardLinkStart()
     {
-        _pCardLinkCaret.PropertyChanged += PCardLinkChange;
         PCardLink.Add(_pCardLinkCaret);
         PCardLinkUpdate();
     }
 
-    private void PCardLinkChange(object? sender, PropertyChangedEventArgs arguments)
+    internal void PCardLinkRefine(string rest)
     {
-        if (_pCardLinkBusy ||
-            !string.Equals(
-                arguments.PropertyName,
-                nameof(PLinkCaret.PLinkCaretText),
-                StringComparison.Ordinal))
+        if (!string.Equals(_pCardLinkCaret.PLinkCaretText, rest, StringComparison.Ordinal))
         {
-            return;
-        }
-
-        string written = _pCardLinkCaret.PLinkCaretText;
-        if (written.IndexOf(',', StringComparison.Ordinal) >= 0)
-        {
-            _pCardLinkBusy = true;
-            string[] parts = written.Split(',');
-            List<string> unresolved = [];
-            for (int index = 0; index < parts.Length - 1; index++)
-            {
-                string part = parts[index].Trim();
-                if (part.Length == 0)
-                {
-                    continue;
-                }
-
-                if (PCardLinkDispatcher?.Invoke(part, false) != true)
-                {
-                    unresolved.Add(part);
-                }
-            }
-
-            unresolved.Add(parts[^1].TrimStart());
-            _pCardLinkCaret.PLinkCaretText = string.Join(", ", unresolved);
-            _pCardLinkBusy = false;
+            _pCardLinkCaret.PLinkCaretText = rest;
             PCardLinkUpdate();
         }
 

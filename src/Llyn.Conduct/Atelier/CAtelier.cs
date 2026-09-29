@@ -127,7 +127,7 @@ public sealed class CAtelier : IDisposable
         string path = chosen.Trim();
         if (path.Length == 0
             || string.Equals(path, CAtelierPathRead(), StringComparison.Ordinal)
-            || !envoy.CEnvoyDiscardConfirm())
+            || !CAtelierWorkspace.LWorkspaceQuitConfirm(envoy))
         {
             return null;
         }

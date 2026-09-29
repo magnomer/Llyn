@@ -16,6 +16,11 @@ Hands the card a way to say what is being typed into its Tag entry.
 The dropdown of stored tags answers that, so the card need not know the dropdown exists.
 The Situation field is wired the same way.
 
+## `private void PLabelTextObserve(PLabelCaret caret, string text)`
+
+Hears each edit of a Tag caret and hands the raw text to the tag gate, unsettled.
+The card's `PCardLabelRefine` then shows the answer the gate keeps in the entry.
+
 ## `private void PLabelChipObserve(object sender, RoutedEventArgs e)`
 
 Hears the close button of a chip and erases that Tag.

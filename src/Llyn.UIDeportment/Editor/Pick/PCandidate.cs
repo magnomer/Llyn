@@ -144,20 +144,14 @@ public partial class PEditor
 
         if (register)
         {
-            if (!card.PCardRegisterMatch(item.PCandidateItemId))
-            {
-                PRegisterSend(card, item.PCandidateItemId, item.PCandidateItemTitle);
-            }
-
+            _lEditor.LEditorStudio.CEditorCard.CCardRegisterInsert(
+                card.PCardId, item.PCandidateItemId, card.PCardRegisterPosition);
             card.PCardRegisterClear();
             return;
         }
 
-        if (!card.PCardContextMatch(item.PCandidateItemId))
-        {
-            PContextSend(card, item.PCandidateItemId, item.PCandidateItemTitle);
-        }
-
+        _lEditor.LEditorStudio.CEditorCard.CCardSituationInsert(
+            card.PCardId, item.PCandidateItemId, card.PCardContextPosition);
         card.PCardContextClear();
     }
 
@@ -173,7 +167,8 @@ public partial class PEditor
         IReadOnlyList<CRegister> found;
         try
         {
-            found = _lEditor.LEditorStudio.CEditorCard.CCardRegisterFind(word, _lEditor.LEditorLanguage);
+            found = _lEditor.LEditorStudio.CEditorCard.CCardRegisterFind(
+                card.PCardId, word, _lEditor.LEditorLanguage);
         }
         catch (Exception)
         {
@@ -185,7 +180,7 @@ public partial class PEditor
         foreach (CRegister row in found)
         {
             string name = row.CRegisterName.Trim();
-            if (name.Length == 0 || card.PCardRegisterMatch(row.CRegisterId))
+            if (name.Length == 0)
             {
                 continue;
             }
@@ -228,7 +223,7 @@ public partial class PEditor
         IReadOnlyList<CCatalogSituation> found;
         try
         {
-            found = _lEditor.LEditorStudio.CEditorCard.CCardSituationFind(word);
+            found = _lEditor.LEditorStudio.CEditorCard.CCardSituationFind(card.PCardId, word);
         }
         catch (Exception)
         {
@@ -240,7 +235,7 @@ public partial class PEditor
         foreach (CCatalogSituation row in found)
         {
             string title = row.CCatalogSituationTitle.Trim();
-            if (title.Length == 0 || card.PCardContextMatch(row.CCatalogSituationId))
+            if (title.Length == 0)
             {
                 continue;
             }

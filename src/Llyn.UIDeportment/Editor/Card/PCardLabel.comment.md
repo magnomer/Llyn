@@ -5,15 +5,11 @@
 The Tags a card shows, held as the items of one field.
 The collection is a run of Tag chips with one open entry among them, which is the caret.
 The engine holds the chips, the card renders them by id, and every commit or removal is a request.
-Duplicates are refused before a request is sent.
+The engine's clerk skips a text the card already holds, and hands every text ready trimmed.
 
 ## `internal Action<string>? PCardLabelNotice { get; set; }`
 
 Where the entry's text goes as it is typed, so the editor can offer matching Tags.
-
-## `internal Action<string>? PCardLabelDispatcher { get; set; }`
-
-Where a typed tag goes to become a chip, as the user wrote it.
 
 ## `internal string PCardLabelText`
 
@@ -37,19 +33,16 @@ Steps the entry one place along the field and reports whether there was anywhere
 
 ## `internal void PCardLabelClear()`
 
-Empties the entry without reading it as a further edit.
+Empties the entry after a commit or a pick.
+The empty text reaches the gate as any edit does, and an empty text adds nothing.
 
-## `internal bool PCardLabelCheck(string text)`
+## `internal void PCardLabelRefine(string rest)`
 
-Whether the card already carries a Tag with this text.
+Puts the tag gate's answer in the entry, then tells the editor what now stands there.
+The editor's text observer hands every edit to the gate, which reads the comma.
+So a pasted comma ends a tag as a typed one does.
 
 ## Inline notes
-
-### `private void PCardLabelChange(object? sender, PropertyChangedEventArgs arguments)`
-
-The comma is read off the entry's text, so a pasted comma ends a tag as a typed one does.
-Everything before the last comma is dispatched and the remainder stays in the entry.
-The guard around the rewrite keeps the handler from answering itself.
 
 ### `private void PCardLabelUpdate()`
 

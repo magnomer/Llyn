@@ -31,6 +31,10 @@ The lectern's sound area, built once here over the sound half and the header are
 The envoy a refused load, mark or name lookup is shown through, with its text key.
 The sound half's failures go to it too, so every driver over this display shows each one once.
 
+## `private readonly LSettingsPort _lDisplaySettings;`
+
+The port a failure's ready notice is read through before the envoy shows it.
+
 ## `public void LDisplayVistaRestore(LVista vista)`
 
 Takes the vista the display follows, then lets the area subscribe its plan on it.

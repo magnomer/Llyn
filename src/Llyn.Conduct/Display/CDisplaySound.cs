@@ -94,7 +94,7 @@ public sealed class CDisplaySound
         }
         catch (Exception exception)
         {
-            _cDisplayEnvoy.CEnvoyFailureShow("Sound.LoadFailed", exception);
+            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
             return _cDisplayMute;
         }
     }
@@ -156,7 +156,7 @@ public sealed class CDisplaySound
         }
         catch (Exception exception)
         {
-            _cDisplayEnvoy.CEnvoyFailureShow("Sound.LoadFailed", exception);
+            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
             return new CLecternPlayback(false, false);
         }
     }
@@ -184,7 +184,7 @@ public sealed class CDisplaySound
         }
         catch (Exception exception)
         {
-            _cDisplayEnvoy.CEnvoyFailureShow("Sound.PlayFailed", exception);
+            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.PlayFailed", exception);
         }
     }
 
@@ -210,7 +210,7 @@ public sealed class CDisplaySound
         }
         catch (Exception exception)
         {
-            _cDisplayEnvoy.CEnvoyFailureShow("Sound.LoadFailed", exception);
+            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
             return blank;
         }
 
@@ -231,7 +231,8 @@ public sealed class CDisplaySound
     public bool CDisplayGlyphOpen(string character, string language)
     {
         if (CCatalog.LCatalogGlyphOpen(
-                _cDisplayEnvoy, () => _cDisplayPort.LEngineGlyphResolve(character, language)) is not long entry)
+                _cDisplayEnvoy, _cDisplaySettings, () => _cDisplayPort.LEngineGlyphResolve(character, language))
+            is not long entry)
         {
             return false;
         }
@@ -253,7 +254,7 @@ public sealed class CDisplaySound
         }
         catch (Exception exception)
         {
-            _cDisplayEnvoy.CEnvoyFailureShow("Sound.LoadFailed", exception);
+            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
             return [];
         }
     }
@@ -315,7 +316,8 @@ public sealed class CDisplaySound
         }
         catch (Exception exception)
         {
-            _cDisplayEnvoy.CEnvoyFailureShow("Display.FanqieRepresentativeFailed", exception);
+            CLedger.LLedgerFailureShow(
+                _cDisplayEnvoy, _cDisplaySettings, "Display.FanqieRepresentativeFailed", exception);
         }
     }
 

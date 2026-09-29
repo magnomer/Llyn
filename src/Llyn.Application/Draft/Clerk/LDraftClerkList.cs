@@ -202,4 +202,51 @@ public static class LDraftClerkList
 
         return named ?? items;
     }
+
+    public static string LDraftListParse(string? text, bool settled, Func<string, bool> accept)
+    {
+        ArgumentNullException.ThrowIfNull(accept);
+
+        string written = text ?? string.Empty;
+        string[] parts = written.Split(',');
+        if (!settled && parts.Length == 1)
+        {
+            return written;
+        }
+
+        int done = settled ? parts.Length : parts.Length - 1;
+        List<string> kept = [];
+        for (int index = 0; index < done; index++)
+        {
+            string part = parts[index].Trim();
+            if (part.Length != 0 && !accept(part))
+            {
+                kept.Add(part);
+            }
+        }
+
+        if (!settled)
+        {
+            kept.Add(parts[^1].TrimStart());
+        }
+
+        return string.Join(", ", kept);
+    }
+
+    public static bool LDraftHeldCheck<LDraftItem>(
+        IReadOnlyList<LDraftItem> items, Func<LDraftItem, string> text, string written)
+    {
+        ArgumentNullException.ThrowIfNull(items);
+        ArgumentNullException.ThrowIfNull(text);
+
+        foreach (LDraftItem item in items)
+        {
+            if (string.Equals(text(item), written, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

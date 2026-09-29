@@ -12,7 +12,9 @@ A volume step plays at once, and only a settled level reaches the stored posture
 A second atelier over the same engine reads the stored posture.
 A level held only in memory therefore shows as unwritten there.
 A workspace change moves the engine, writes the pointer and answers the new view state.
-A blank path, the folder in use or a declined question moves nothing and asks nothing more.
+A blank path or the folder in use moves nothing and asks nothing.
+Unsaved work is asked about once, as the quit asks, and a cancelled leave moves nothing and finishes nothing.
+A stored answer finishes every area before the move.
 A folder that fails leaves the engine where it stood and writes no pointer.
 The status strip is shown the status at once, and a detached strip is shown nothing more.
 The status carries the wording keys the atelier chose from the engine's verdicts, and the amount in their unit.
@@ -23,6 +25,3 @@ A missing workspace file and no location answer nothing.
 
 A media port that records every level handed to the player.
 
-## `private static CEnvoy TAtelierEnvoyCreate(bool discard)`
-
-An envoy that answers the discard question with `discard`.

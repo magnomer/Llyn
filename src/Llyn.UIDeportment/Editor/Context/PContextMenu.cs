@@ -1,10 +1,7 @@
-using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Llyn.Application;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -20,10 +17,10 @@ public partial class PEditor
             {
                 entry.SetValue(QField.QFieldHintProperty, caret.PContextCaretHint);
                 entry.Text = caret.PContextCaretText;
-                entry.PreviewKeyDown -= _pContextTemplate.PContextCaretHandle;
-                entry.PreviewKeyDown += _pContextTemplate.PContextCaretHandle;
-                entry.LostKeyboardFocus -= _pContextTemplate.PContextCloseHandle;
-                entry.LostKeyboardFocus += _pContextTemplate.PContextCloseHandle;
+                entry.PreviewKeyDown -= PContextCaretObserve;
+                entry.PreviewKeyDown += PContextCaretObserve;
+                entry.LostKeyboardFocus -= PContextCloseObserve;
+                entry.LostKeyboardFocus += PContextCloseObserve;
             }
 
             return;
@@ -45,8 +42,8 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Button>(container, "PContextEraser") is Button eraser)
         {
-            eraser.Click -= _pContextTemplate.PContextChipHandle;
-            eraser.Click += _pContextTemplate.PContextChipHandle;
+            eraser.Click -= PContextChipObserve;
+            eraser.Click += PContextChipObserve;
             if (QLook.QLookPartFind<QIconImage>(eraser, "PContextIcon") is QIconImage icon)
             {
                 icon.QIconSource = QIcon.QIconResolve("close", 12);
@@ -64,26 +61,34 @@ public partial class PEditor
         QLookItem.QLookItemAttach(list, PContextApply);
         if (QLook.QLookPartFind<Border>(list, "PContextFrame") is Border frame)
         {
-            frame.MouseLeftButtonDown -= _pContextTemplate.PContextFocusHandle;
-            frame.MouseLeftButtonDown += _pContextTemplate.PContextFocusHandle;
+            frame.MouseLeftButtonDown -= PContextFocusRefine;
+            frame.MouseLeftButtonDown += PContextFocusRefine;
         }
     }
 
     internal void PContextAttach(PCard card)
     {
         card.PCardContextNotice = text => PCandidateShow(card, text);
-        card.PCardContextDispatcher = text => PContextSend(card, text);
     }
 
-    internal void PContextChipHandle(object sender, RoutedEventArgs e)
+    private void PContextTextObserve(PContextCaret caret, string text)
     {
-        if (sender is FrameworkElement { DataContext: PContext chip } && PCardContextFind(chip) is PCard card)
+        if (PCardContextFind(caret) is PCard card)
         {
-            PContextRemove(card, chip);
+            card.PCardContextRefine(_lEditor.LEditorStudio.CEditorCard.CCardSituationAdd(
+                card.PCardId, text, card.PCardContextPosition, false));
         }
     }
 
-    internal void PContextCaretHandle(object sender, KeyEventArgs e)
+    private void PContextChipObserve(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { DataContext: PContext chip } && PCardContextFind(chip) is PCard card)
+        {
+            PContextEraseObserve(card, chip);
+        }
+    }
+
+    private void PContextCaretObserve(object sender, KeyEventArgs e)
     {
         if (sender is not TextBox { DataContext: PContextCaret row } box)
         {
@@ -104,7 +109,7 @@ public partial class PEditor
 
         if (e.Key == Key.Enter)
         {
-            PContextCommit(card);
+            PContextCommitObserve(card);
             e.Handled = true;
             return;
         }
@@ -112,26 +117,20 @@ public partial class PEditor
         e.Handled = PCaretKeyApply(
             box,
             e.Key,
-            step => PContextRemove(card, card.PCardContextFind(step)),
+            step => PContextEraseObserve(card, card.PCardContextFind(step)),
             card.PCardContextMove,
             () => PEditorCaretApply(box, row, 0));
     }
 
-    internal void PContextCloseHandle(object sender, RoutedEventArgs e)
+    private void PContextCloseObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PContextCaret row })
+        if (sender is FrameworkElement { DataContext: PContextCaret row } && PCardContextFind(row) is PCard card)
         {
-            return;
-        }
-
-        PCard? card = PCardContextFind(row);
-        if (card is not null)
-        {
-            PContextCommit(card);
+            PContextCommitObserve(card);
         }
     }
 
-    internal void PContextFocusHandle(object sender, MouseButtonEventArgs e)
+    private void PContextFocusRefine(object sender, MouseButtonEventArgs e)
     {
         if (sender is not DependencyObject surface)
         {
@@ -149,38 +148,19 @@ public partial class PEditor
         e.Handled = true;
     }
 
-    private void PContextCommit(PCard card)
+    private void PContextCommitObserve(PCard card)
     {
         PCandidateHide();
-        PContextSend(card, card.PCardContextText);
+        _lEditor.LEditorStudio.CEditorCard.CCardSituationAdd(
+            card.PCardId, card.PCardContextText, card.PCardContextPosition, true);
         card.PCardContextClear();
     }
 
-    private bool PContextSend(PCard card, string text)
-    {
-        string written = (text ?? string.Empty).Trim();
-        if (written.Length == 0 || card.PCardContextCheck(written))
-        {
-            return false;
-        }
-
-        PContextSend(card, null, written);
-        return true;
-    }
-
-    private void PContextSend(PCard card, long? id, string written)
-    {
-        int position = card.PCardContextPosition;
-        PEditorRequestSend(id is long picked
-            ? new LRequestSituationPick(PEditorDraft, card.PCardId, picked, position)
-            : new LRequestSituationAddition(PEditorDraft, card.PCardId, new LStateWritten(written), position));
-    }
-
-    private void PContextRemove(PCard card, PContext? chip)
+    private void PContextEraseObserve(PCard card, PContext? chip)
     {
         if (chip is not null)
         {
-            PEditorRequestSend(new LRequestSituationRemoval(PEditorDraft, card.PCardId, chip.PContextId));
+            _lEditor.LEditorStudio.CEditorCard.CCardSituationRemove(card.PCardId, chip.PContextId);
         }
     }
 

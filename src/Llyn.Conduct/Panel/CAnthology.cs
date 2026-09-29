@@ -20,6 +20,7 @@ public sealed class CAnthology
     internal CAnthology(
         LEntryPort entries,
         LPortraitPort portraits,
+        LSettingsPort settings,
         CDesk desk,
         Func<bool> shownSeam,
         CEnvoy envoy,
@@ -27,13 +28,16 @@ public sealed class CAnthology
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
+        ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(desk);
 
         _cAnthologyEntryPort = entries;
         _cAnthologyPortraitPort = portraits;
         _cAnthologyDesk = desk;
         CAnthologyPanel = new CPanel(
-            envoy, "Example.LoadFailed", "Example", desk.LDeskChangeCheck, finishSeam, shownSeam);
+            envoy,
+            settings,
+            "Example.LoadFailed", "Example", desk.LDeskChangeCheck, finishSeam, shownSeam);
     }
 
     internal static CAnthology LAnthologyCreate(
@@ -42,7 +46,13 @@ public sealed class CAnthology
         ArgumentNullException.ThrowIfNull(atelier);
 
         return new CAnthology(
-            atelier.CAtelierEntryPort, atelier.CAtelierPortraitPort, desk, shownSeam, envoy, finishSeam);
+            atelier.CAtelierEntryPort,
+            atelier.CAtelierPortraitPort,
+            atelier.CAtelierSettingsPort,
+            desk,
+            shownSeam,
+            envoy,
+            finishSeam);
     }
 
     public CPanel CAnthologyPanel { get; }
@@ -103,6 +113,7 @@ public sealed class CAnthology
     {
         return CPortrait.LPortraitTicketPrint(
             envoy,
+            settings,
             chosen => _cAnthologyPortraitPort.LEnginePortraitPrint(
                 _cAnthologyVista, CPortrait.LPortraitLegendRead(settings, "Example"), chosen));
     }

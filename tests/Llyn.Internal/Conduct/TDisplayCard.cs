@@ -28,7 +28,7 @@ public sealed class TDisplayCard
 
         CLecternCard card = wing.CWingDisplay.CDisplayArea.CDisplayCardRead();
 
-        Assert.Equal(atelier.CAtelierCatalog.CCatalogOrderRead("English"), card.CLecternCardOrder);
+        Assert.Equal(TInterfaceConduct.TCatalogOrderRead(engine, "English"), card.CLecternCardOrder);
         CTranslationTarget target = Assert.Single(card.CLecternCardTargets);
         Assert.Equal((eau.LEntryId, "eau", "French"), (
             target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage));

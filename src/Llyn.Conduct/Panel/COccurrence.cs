@@ -19,6 +19,7 @@ public sealed class COccurrence
     internal COccurrence(
         LEntryPort entries,
         LPortraitPort portraits,
+        LSettingsPort settings,
         CEnvoy envoy,
         Func<bool> changeSeam,
         Func<bool, bool> finishSeam,
@@ -26,10 +27,11 @@ public sealed class COccurrence
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
+        ArgumentNullException.ThrowIfNull(settings);
 
         _cOccurrenceEntryPort = entries;
         _cOccurrencePortraitPort = portraits;
-        COccurrencePanel = new CPanel(envoy, "List.LoadFailed", null, changeSeam, finishSeam, shownSeam);
+        COccurrencePanel = new CPanel(envoy, settings, "List.LoadFailed", null, changeSeam, finishSeam, shownSeam);
     }
 
     public CPanel COccurrencePanel { get; }
@@ -70,6 +72,7 @@ public sealed class COccurrence
     {
         return CPortrait.LPortraitTicketPrint(
             envoy,
+            settings,
             chosen => _cOccurrencePortraitPort.LEnginePortraitPrint(
                 _cOccurrenceVista, CPortrait.LPortraitLabelRead(settings), chosen));
     }
@@ -78,6 +81,7 @@ public sealed class COccurrence
     {
         return CPortrait.LPortraitFileExport(
             envoy,
+            settings,
             LOccurrenceFileRead(),
             (file, medium) => _cOccurrencePortraitPort.LEnginePortraitExport(
                 _cOccurrenceVista, file, medium, CPortrait.LPortraitLabelRead(settings)));

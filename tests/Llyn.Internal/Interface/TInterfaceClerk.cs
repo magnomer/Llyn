@@ -10,6 +10,9 @@ internal static partial class TInterface
         IReadOnlyList<LMeaning> meanings, string unknown) =>
         LMeaningClerk.LMeaningClerkSort(meanings, unknown);
 
+    internal static string TDraftListParse(string? text, bool settled, Func<string, bool> accept) =>
+        LDraftClerkList.LDraftListParse(text, settled, accept);
+
     internal static LRig TRigClerkCreate(LEntryVault entries) =>
         TRigFake.TRigFakeBuild(entries) with
         {

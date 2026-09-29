@@ -25,6 +25,16 @@ internal sealed class LSituationFacade
     }
 
     public IReadOnlyList<LCatalogSituation> LEngineSituationFind(
+        LTenure? held, long card, string query, LCatalogOrder order)
+    {
+        LDraft? draft = held?.LTenureRead();
+        lock (_lSituationFacadeGate)
+        {
+            return LSituationFacadeStaff.LEngineStaffSituation.LSituationClerkFind(query, order, draft, card);
+        }
+    }
+
+    public IReadOnlyList<LCatalogSituation> LEngineSituationFind(
         LVista vista, string unknown = "", string untitled = "")
     {
         ArgumentNullException.ThrowIfNull(vista);

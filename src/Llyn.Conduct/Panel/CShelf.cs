@@ -37,10 +37,18 @@ public sealed class CShelf
         CShelfEditor = editor;
         CShelfImprint = new CImprint(atelier.CAtelierDraftPort, atelier.CAtelierEntryPort, envoy);
         CShelfPanel = new CPanel(
-            envoy, "Source.LoadFailed", "Source",
+            envoy,
+            _cShelfSettingsPort,
+            "Source.LoadFailed", "Source",
             CShelfImprint.CImprintDesk.LDeskChangeCheck, LShelfDraftFinish, shownSeam);
         CShelfFootnote = new CFootnote(
-            atelier.CAtelierEntryPort, atelier.CAtelierPortraitPort, editor, envoy, LShelfDraftFinish, shownSeam);
+            atelier.CAtelierEntryPort,
+            atelier.CAtelierPortraitPort,
+            atelier.CAtelierSettingsPort,
+            editor,
+            envoy,
+            LShelfDraftFinish,
+            shownSeam);
         CShelfPanel.CPanelRowsChanged += CShelfFootnote.CFootnotePanel.CPanelRowsResonate;
         CShelfPanel.CPanelCleared += CShelfImprint.LImprintCancel;
         CShelfPanel.CPanelEdited += id => CShelfImprint.LImprintOpen(id);
@@ -387,6 +395,7 @@ public sealed class CShelf
         {
             return CPortrait.LPortraitTicketPrint(
                 _cShelfEnvoy,
+                _cShelfSettingsPort,
                 chosen => _cShelfPortraitPort.LEnginePortraitPrint(
                     _cShelfVista, CPortrait.LPortraitLegendRead(_cShelfSettingsPort, "Source"), chosen));
         }

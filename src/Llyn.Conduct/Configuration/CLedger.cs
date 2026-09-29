@@ -70,11 +70,24 @@ public sealed class CLedger
 
     public CLedgerNotice CLedgerNoticeRead(Exception exception)
     {
+        return LLedgerNoticeRead(_cLedgerAtelier.CAtelierSettingsPort, exception);
+    }
+
+    internal static CLedgerNotice LLedgerNoticeRead(LSettingsPort settings, Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(exception);
 
-        (string notice, string? label, string? path) = _cLedgerAtelier.CAtelierSettingsPort.LEngineFailureRead(
+        (string notice, string? label, string? path) = settings.LEngineFailureRead(
             exception, "Notice.Unexpected", "Notice.Recorded");
         return new CLedgerNotice(notice, label, path);
+    }
+
+    internal static void LLedgerFailureShow(CEnvoy envoy, LSettingsPort settings, string key, Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(envoy);
+
+        envoy.CEnvoyFailureShow(key, LLedgerNoticeRead(settings, exception));
     }
 
     public IReadOnlyList<string> CLedgerFind(string text)

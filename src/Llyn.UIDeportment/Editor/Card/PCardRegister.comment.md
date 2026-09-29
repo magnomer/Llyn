@@ -5,15 +5,11 @@
 The Registers a card shows, held as the items of one field the way the Situations are.
 The collection is a run of Register chips with one open entry among them, which is the caret.
 The engine holds the chips, the card renders them by id, and every commit or removal is a request.
-Duplicates are refused before a request is sent, by id and by wording alike.
+The engine's clerk skips a Register the card already holds, by id and by wording alike.
 
 ## `internal Action<string>? PCardRegisterNotice { get; set; }`
 
 Where the entry's text goes as it is typed, so the editor can offer matching Registers.
-
-## `internal Func<string, bool>? PCardRegisterDispatcher { get; set; }`
-
-Where a typed name goes to become a chip, answering whether a request went out.
 
 ## `internal string PCardRegisterText`
 
@@ -37,23 +33,16 @@ Steps the entry one place along the field and reports whether there was anywhere
 
 ## `internal void PCardRegisterClear()`
 
-Empties the entry without reading it as a further edit.
+Empties the entry after a commit or a pick.
+The empty text reaches the gate as any edit does, and an empty text adds nothing.
 
-## `internal bool PCardRegisterMatch(long? id)`
+## `internal void PCardRegisterRefine(string rest)`
 
-Whether the card already carries the stored Register.
-
-## `internal bool PCardRegisterCheck(string text)`
-
-Whether the card already carries a Register with this wording.
+Puts the register gate's answer in the entry, then tells the editor what now stands there.
+The editor's text observer hands every edit to the gate, which reads the comma.
+So a pasted comma ends a name as a typed one does.
 
 ## Inline notes
-
-### `private void PCardRegisterChange(object? sender, PropertyChangedEventArgs arguments)`
-
-The comma is read off the entry's text, so a pasted comma ends a name as a typed one does.
-Everything before the last comma is dispatched and the remainder stays in the entry.
-The guard around the rewrite keeps the handler from answering itself.
 
 ### `private void PCardRegisterUpdate()`
 

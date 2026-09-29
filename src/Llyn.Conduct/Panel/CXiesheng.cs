@@ -42,6 +42,7 @@ public sealed class CXiesheng
         CXieshengEditor = editor;
         CXieshengPanel = new CPanel(
             envoy,
+            _cXieshengSettingsPort,
             "Xiesheng.LoadFailed",
             "Scribe",
             editor.CEditorDesk.LDeskChangeCheck,
@@ -224,7 +225,9 @@ public sealed class CXiesheng
         }
 
         if (CCatalog.LCatalogGlyphOpen(
-                _cXieshengEnvoy, () => _cXieshengPort.LEngineStemResolve(_cXieshengGrove?.LVistaChosen, character))
+                _cXieshengEnvoy,
+                _cXieshengSettingsPort,
+                () => _cXieshengPort.LEngineStemResolve(_cXieshengGrove?.LVistaChosen, character))
             is long entry)
         {
             _cXieshengAtelier.CAtelierNavigation.CNavigationEntryOpen(entry);
@@ -245,6 +248,7 @@ public sealed class CXiesheng
 
         return CPortrait.LPortraitTicketPrint(
             _cXieshengEnvoy,
+            _cXieshengSettingsPort,
             chosen => _cXieshengPortraitPort.LEnginePortraitPrint(
                 _cXieshengKindred, CPortrait.LPortraitLabelRead(_cXieshengSettingsPort), chosen));
     }
@@ -253,6 +257,7 @@ public sealed class CXiesheng
     {
         return CPortrait.LPortraitFileExport(
             _cXieshengEnvoy,
+            _cXieshengSettingsPort,
             LXieshengFileRead(),
             (file, medium) => _cXieshengPortraitPort.LEnginePortraitExport(
                 _cXieshengKindred, file, medium, CPortrait.LPortraitLabelRead(_cXieshengSettingsPort)));

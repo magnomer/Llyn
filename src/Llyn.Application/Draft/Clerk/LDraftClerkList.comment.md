@@ -59,3 +59,18 @@ No card taking the change means the draft holds no such row, and that is refused
 
 Drops every item `blank` marks and passes the rest through `name`, which issues an id to a new one.
 The list comes back untouched when nothing was dropped or renamed, so a save can tell by reference.
+
+## `public static string LDraftListParse(string? text, bool settled, Func<string, bool> accept)`
+
+Reads a typed list of chips, split at commas, and answers what the entry keeps.
+Each completed part is trimmed, a blank part is skipped, and the rest are handed to `accept` in order.
+A part `accept` refuses is kept, so an unresolved word stays for the user to fix.
+While the user types, the part after the last comma is not complete yet and stays, its leading space dropped.
+Text without a comma is then kept whole, since nothing is complete.
+A settled list, as on Enter or on leaving the field, completes every part.
+It holds in a markup import as much as in a field, so it is a data rule.
+
+## `public static bool LDraftHeldCheck<LDraftItem>(`
+
+Whether one of the items already reads exactly the written text.
+The chip clerks and the chip finds ask it, so a typed duplicate and a held suggestion are one rule.

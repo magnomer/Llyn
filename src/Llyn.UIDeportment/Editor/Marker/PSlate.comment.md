@@ -58,7 +58,7 @@ The second placement puts it above the frame, for a caret near the foot of the s
 
 The tag is matched anywhere inside a stored tag, ignoring case, because this is a search rather than a prefix.
 So "verb" finds "phrasal verb".
-A tag the card already carries is left out, since it cannot be written twice.
+The card find leaves out a tag the card already carries, since it cannot be written twice.
 The list stays shut when nothing matches, rather than standing empty.
 
 ### `private void PSlateSelect(PSlateItem item)`

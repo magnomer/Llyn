@@ -29,6 +29,15 @@ The clerk's `LMeaningClerkSort` owns the order and the name fallback.
 
 Reads every Tag the workspace holds, once each, in alphabetical order.
 
+## `public IReadOnlyList<LTag> LEngineTagFind(string query, LCatalogOrder order)`
+
+The stored Tags answering `query`, in `order`, as the taxonomy vista lists them.
+
+## `public IReadOnlyList<LTag> LEngineTagFind(LTenure? held, long card, string query, LCatalogOrder order)`
+
+The stored Tags a card's field offers, leaving out those the held draft's card already shows.
+The draft is read before the gate is taken, as the tenure guards itself.
+
 ## `public IReadOnlyList<LTag> LEngineTagFind(LVista vista)`
 
 The tags the taxonomy panel's vista lists, with the query and order read off the vista.
@@ -40,6 +49,10 @@ A vista whose chosen tag no longer answers is deselected.
 The tag clerk's create, then the tag bulletin raised outside the gate.
 The catalog is announced so every panel listing Tags shows the new row.
 The rename and the delete raise the same bulletin the same way.
+
+## `public IReadOnlyList<LRegister> LEngineRegisterFind(LTenure? held, long card, string query, string language)`
+
+The stored Registers a card's field offers in `language`, leaving out those the held draft's card links.
 
 ## `public IReadOnlyList<LCatalogRegister> LEngineRegisterFind(LVista vista)`
 

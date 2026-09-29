@@ -30,30 +30,33 @@ public sealed class LDraftClerkChip
 
         LStateValue title = LStateValue.LStateValueRead(request.LRequestValue);
         LSituation? stored = LSituationResolve(_lDraftClerkSituations, title);
-        if (stored is not null)
-        {
-            LSituationDraft found = LSituationRead(stored);
-            return LSituationApply(
-                content,
-                request.LRequestCardId,
-                situations => LDraftClerkList.LDraftListInsert(
-                    situations,
-                    found,
-                    stored.LSituationId,
-                    request.LRequestPosition,
-                    static row => row.LSituationDraftId));
-        }
-
-        LSituationDraft situation = new(
-            title,
-            _lDraftClerkIdentity.LIdentityCreate(),
-            LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified);
-
         return LSituationApply(
             content,
             request.LRequestCardId,
-            situations => LDraftClerkList.LDraftListAdd(situations, situation, request.LRequestPosition));
+            situations =>
+            {
+                if (title.LStateValueShown is string shown && LDraftClerkList.LDraftHeldCheck(
+                        situations, static row => row.LSituationDraftTitle.LStateValueShow(), shown))
+                {
+                    return situations;
+                }
+
+                return stored is not null
+                    ? LDraftClerkList.LDraftListInsert(
+                        situations,
+                        LSituationRead(stored),
+                        stored.LSituationId,
+                        request.LRequestPosition,
+                        static row => row.LSituationDraftId)
+                    : LDraftClerkList.LDraftListAdd(
+                        situations,
+                        new LSituationDraft(
+                            title,
+                            _lDraftClerkIdentity.LIdentityCreate(),
+                            LStateValue.LStateValueUnspecified,
+                            LStateValue.LStateValueUnspecified),
+                        request.LRequestPosition);
+            });
     }
 
     public LEntryDraft LSituationInsert(LEntryDraft content, LRequestSituationPick request)
@@ -198,26 +201,29 @@ public sealed class LDraftClerkChip
 
         LStateValue name = LStateValue.LStateValueRead(request.LRequestValue);
         LRegister? stored = LRegisterResolve(_lDraftClerkRegisters, name.LStateValueShow());
-        if (stored is not null)
-        {
-            LRegisterDraft found = new(stored.LRegisterName, stored.LRegisterId);
-            return LRegisterApply(
-                content,
-                request.LRequestCardId,
-                registers => LDraftClerkList.LDraftListInsert(
-                    registers,
-                    found,
-                    stored.LRegisterId,
-                    request.LRequestPosition,
-                    static row => row.LRegisterDraftId));
-        }
-
-        LRegisterDraft register = new(name, _lDraftClerkIdentity.LIdentityCreate());
-
         return LRegisterApply(
             content,
             request.LRequestCardId,
-            registers => LDraftClerkList.LDraftListAdd(registers, register, request.LRequestPosition));
+            registers =>
+            {
+                if (name.LStateValueShown is string shown && LDraftClerkList.LDraftHeldCheck(
+                        registers, static row => row.LRegisterDraftName.LStateValueShow(), shown))
+                {
+                    return registers;
+                }
+
+                return stored is not null
+                    ? LDraftClerkList.LDraftListInsert(
+                        registers,
+                        new LRegisterDraft(stored.LRegisterName, stored.LRegisterId),
+                        stored.LRegisterId,
+                        request.LRequestPosition,
+                        static row => row.LRegisterDraftId)
+                    : LDraftClerkList.LDraftListAdd(
+                        registers,
+                        new LRegisterDraft(name, _lDraftClerkIdentity.LIdentityCreate()),
+                        request.LRequestPosition);
+            });
     }
 
     public LEntryDraft LRegisterInsert(LEntryDraft content, LRequestRegisterPick request)
@@ -327,7 +333,7 @@ public sealed class LDraftClerkChip
         return LTagApply(
             content,
             request.LRequestCardId,
-            tags => LTagHeldCheck(tags, text)
+            tags => LDraftClerkList.LDraftHeldCheck(tags, static row => row.LTagDraftText, text)
                 ? tags
                 : LDraftClerkList.LDraftListAdd(
                     tags, new LTagDraft(_lDraftClerkIdentity.LIdentityCreate(), text), request.LRequestPosition));
@@ -350,23 +356,10 @@ public sealed class LDraftClerkChip
         return LTagApply(
             content,
             request.LRequestCardId,
-            tags => LTagHeldCheck(tags, stored.LTagText)
+            tags => LDraftClerkList.LDraftHeldCheck(tags, static row => row.LTagDraftText, stored.LTagText)
                 ? tags
                 : LDraftClerkList.LDraftListInsert(
                     tags, tag, stored.LTagId, request.LRequestPosition, static row => row.LTagDraftId));
-    }
-
-    private static bool LTagHeldCheck(IReadOnlyList<LTagDraft> tags, string text)
-    {
-        foreach (LTagDraft held in tags)
-        {
-            if (string.Equals(held.LTagDraftText, text, StringComparison.Ordinal))
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public static LEntryDraft LTagRemove(LEntryDraft content, LRequestTagRemoval request)
@@ -394,7 +387,7 @@ public sealed class LDraftClerkChip
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        string text = request.LRequestText ?? string.Empty;
+        string text = (request.LRequestText ?? string.Empty).Trim();
 
         return LDraftClerkList.LDraftRowChange(content, card =>
         {

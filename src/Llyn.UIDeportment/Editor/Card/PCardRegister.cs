@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -11,7 +10,6 @@ internal sealed partial class PCard
     private const string PCardRegisterHint = "Card.RegisterHint";
 
     private readonly PRegisterCaret _pCardRegisterCaret = new();
-    private bool _pCardRegisterBusy;
 
     private static readonly Func<object, long?> _pCardRegisterKey =
         row => row is PRegister chip ? chip.PRegisterId : null;
@@ -19,8 +17,6 @@ internal sealed partial class PCard
     public ObservableCollection<object> PCardRegister { get; } = [];
 
     internal Action<string>? PCardRegisterNotice { get; set; }
-
-    internal Func<string, bool>? PCardRegisterDispatcher { get; set; }
 
     internal string PCardRegisterText => _pCardRegisterCaret.PRegisterCaretText;
 
@@ -70,51 +66,8 @@ internal sealed partial class PCard
 
     internal void PCardRegisterClear()
     {
-        _pCardRegisterBusy = true;
         _pCardRegisterCaret.PRegisterCaretText = string.Empty;
-        _pCardRegisterBusy = false;
         PCardRegisterUpdate();
-    }
-
-    internal bool PCardRegisterMatch(long? id)
-    {
-        if (id is null or <= 0)
-        {
-            return false;
-        }
-
-        foreach (object row in PCardRegister)
-        {
-            if (row is PRegister chip && chip.PRegisterId == id)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    internal bool PCardRegisterCheck(string text)
-    {
-        if (text.Length == 0)
-        {
-            return false;
-        }
-
-        foreach (object row in PCardRegister)
-        {
-            if (row is not PRegister chip)
-            {
-                continue;
-            }
-
-            if (string.Equals(chip.PRegisterText.CStateValueText, text, StringComparison.Ordinal))
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private static object PCardRegisterCreate(CRegisterDraft draft)
@@ -124,32 +77,15 @@ internal sealed partial class PCard
 
     private void PCardRegisterStart()
     {
-        _pCardRegisterCaret.PropertyChanged += PCardRegisterChange;
         PCardRegister.Add(_pCardRegisterCaret);
         PCardRegisterUpdate();
     }
 
-    private void PCardRegisterChange(object? sender, PropertyChangedEventArgs arguments)
+    internal void PCardRegisterRefine(string rest)
     {
-        if (_pCardRegisterBusy ||
-            !string.Equals(
-                arguments.PropertyName, nameof(PRegisterCaret.PRegisterCaretText), StringComparison.Ordinal))
+        if (!string.Equals(_pCardRegisterCaret.PRegisterCaretText, rest, StringComparison.Ordinal))
         {
-            return;
-        }
-
-        string written = _pCardRegisterCaret.PRegisterCaretText;
-        if (written.IndexOf(',', StringComparison.Ordinal) >= 0)
-        {
-            _pCardRegisterBusy = true;
-            string[] parts = written.Split(',');
-            for (int index = 0; index < parts.Length - 1; index++)
-            {
-                PCardRegisterDispatcher?.Invoke(parts[index]);
-            }
-
-            _pCardRegisterCaret.PRegisterCaretText = parts[^1].TrimStart();
-            _pCardRegisterBusy = false;
+            _pCardRegisterCaret.PRegisterCaretText = rest;
             PCardRegisterUpdate();
         }
 

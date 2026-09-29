@@ -29,7 +29,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
         _pSentenceTemplate = new PSentenceTemplate(this);
         Resources.MergedDictionaries.Add(_pSentenceTemplate);
-        _pContextTemplate = new PContextTemplate(this);
+        _pContextTemplate = new PContextTemplate();
         Resources.MergedDictionaries.Add(_pContextTemplate);
         _pRegisterTemplate = new PRegisterTemplate(this);
         Resources.MergedDictionaries.Add(_pRegisterTemplate);
@@ -268,8 +268,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         _qCadence.QCadenceReadingShow(PHeadword.Text);
 
         IReadOnlyDictionary<long, CTranslationTarget> targets = _lEditor.LEditorStudio.CEditorTargetRead();
-        PCardShow(_pMeaningList, "Meaning", draft.CEntryDraftMeanings, targets, draft.CEntryDraftLanguage);
-        PCardShow(_pCollocationList, "Collocation", draft.CEntryDraftCollocations, targets, draft.CEntryDraftLanguage);
+        PCardShow(_pMeaningList, "Meaning", draft.CEntryDraftMeanings, targets);
+        PCardShow(_pCollocationList, "Collocation", draft.CEntryDraftCollocations, targets);
 
         PEtymologyShow(draft);
         QField.QFieldNoteShow(PNoteContents, draft.CEntryDraftNote);
@@ -322,16 +322,16 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
                 PEditorFieldHandle(box);
                 break;
             case TextBox { DataContext: PContextCaret caret } box:
-                caret.PContextCaretText = box.Text;
+                PContextTextObserve(caret, box.Text);
                 break;
             case TextBox { DataContext: PRegisterCaret caret } box:
-                caret.PRegisterCaretText = box.Text;
+                PRegisterTextObserve(caret, box.Text);
                 break;
             case TextBox { DataContext: PLinkCaret caret } box:
-                caret.PLinkCaretText = box.Text;
+                PLinkTextObserve(caret, box.Text);
                 break;
             case TextBox { DataContext: PLabelCaret caret } box:
-                caret.PLabelCaretText = box.Text;
+                PLabelTextObserve(caret, box.Text);
                 break;
         }
     }

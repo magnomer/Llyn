@@ -14,8 +14,7 @@ public partial class PEditor
         ObservableCollection<PCard> cards,
         string prefix,
         IReadOnlyList<CCardDraft> drafts,
-        IReadOnlyDictionary<long, CTranslationTarget> targets,
-        string language)
+        IReadOnlyDictionary<long, CTranslationTarget> targets)
     {
         List<PCard> shown = new(drafts.Count);
         foreach (CCardDraft draft in drafts)
@@ -28,7 +27,7 @@ public partial class PEditor
             }
 
             PCardTextShow(card, draft);
-            PCardListShow(card, draft, targets, language);
+            PCardListShow(card, draft, targets);
             card.PCardPosition = draft.CCardDraftPosition;
             shown.Add(card);
         }
@@ -80,10 +79,9 @@ public partial class PEditor
         return card;
     }
 
-    private void PCardListShow(
-        PCard card, CCardDraft draft, IReadOnlyDictionary<long, CTranslationTarget> targets, string language)
+    private void PCardListShow(PCard card, CCardDraft draft, IReadOnlyDictionary<long, CTranslationTarget> targets)
     {
-        card.PCardSentenceShow(draft.CCardDraftSentence, language);
+        card.PCardSentenceShow(draft.CCardDraftSentence, _pSentenceOrder);
         PSentenceMentionShow(card);
         card.PCardContextShow(draft.CCardDraftSituation);
         card.PCardRegisterShow(draft.CCardDraftRegister);

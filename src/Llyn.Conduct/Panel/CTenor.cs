@@ -37,6 +37,7 @@ public sealed class CTenor
         CTenorEditor = editor;
         CTenorPanel = new CPanel(
             envoy,
+            _cTenorSettingsPort,
             "Register.LoadFailed",
             "Scribe",
             editor.CEditorDesk.LDeskChangeCheck,
@@ -177,7 +178,7 @@ public sealed class CTenor
         }
         catch (Exception exception)
         {
-            _cTenorEnvoy.CEnvoyFailureShow("Register.CreateFailed", exception);
+            CLedger.LLedgerFailureShow(_cTenorEnvoy, _cTenorSettingsPort, "Register.CreateFailed", exception);
             return;
         }
 
@@ -206,6 +207,7 @@ public sealed class CTenor
 
         return CPortrait.LPortraitTicketPrint(
             _cTenorEnvoy,
+            _cTenorSettingsPort,
             chosen => _cTenorPortraitPort.LEnginePortraitPrint(
                 _cTenorCohort, CPortrait.LPortraitLabelRead(_cTenorSettingsPort), chosen));
     }
@@ -219,6 +221,7 @@ public sealed class CTenor
 
         return CPortrait.LPortraitFileExport(
             _cTenorEnvoy,
+            _cTenorSettingsPort,
             LTenorFileRead(),
             (file, medium) => _cTenorPortraitPort.LEnginePortraitExport(
                 _cTenorCohort, file, medium, CPortrait.LPortraitLabelRead(_cTenorSettingsPort)));

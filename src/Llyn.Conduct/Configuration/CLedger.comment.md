@@ -58,6 +58,16 @@ The notice a failure shows, ready for a driver to word.
 A refusal shows its own reason, since it is a position the user can act on.
 A fault shows `Notice.Unexpected`, and names its audit file under `Notice.Recorded` when one was written.
 The engine answers in one call with the two keys this read hands down, and the map holds no rule.
+A driver catch site that still owns its failure asks it, until its own gate reports through `CEnvoy`.
+
+## `internal static CLedgerNotice LLedgerNoticeRead(LSettingsPort settings, Exception exception)`
+
+The one owner of the notice read, which `CLedgerNoticeRead` and every gate's failure policy share.
+
+## `internal static void LLedgerFailureShow(CEnvoy envoy, LSettingsPort settings, string key, Exception exception)`
+
+A gate's failure policy: the gate chose `key`, and the envoy gets the ready notice to show with it.
+The driver's consult never reads Conduct again, so it only shows what it was handed.
 
 ## `public IReadOnlyList<string> CLedgerFind(string text)`
 

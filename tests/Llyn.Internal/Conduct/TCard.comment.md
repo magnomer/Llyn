@@ -7,8 +7,11 @@ An entry row copies every field and its chosen mark.
 A written value keeps the engine's verdict, and a draft splits its main pronunciation from the accents.
 The etymology gates write the narrative, the source links and the spans of the held draft.
 A typed title cites the Source the engine resolves it to.
-The lookups find the stored rows a typed word matches.
+The lookups find the stored rows a typed word matches, leaving out the rows the card already holds.
 A typed tag lands trimmed and once, a picked tag keeps its stored id, and an erased tag leaves.
+A typed list adds its completed tags, situations and registers once each and answers the rest.
+A picked situation or register lands once under its stored id, and an erased situation leaves.
+A typed list of translations links each resolved word and keeps the unresolved beside the rest.
 A court opened and then dropped leaves neither the link nor its draft.
 The frame line follows the order, and an unknown value shows the mark.
 
@@ -27,6 +30,18 @@ Adds a meaning card to the held draft and answers its id.
 ## `private static IReadOnlyList<LTagDraft> TCardTagRead(CDesk desk, long sheet)`
 
 The tags the held draft's card carries.
+
+## `private static IReadOnlyList<LSituationDraft> TCardSituationRead(CDesk desk, long sheet)`
+
+The situations the held draft's card carries.
+
+## `private static IReadOnlyList<LRegisterDraft> TCardRegisterRead(CDesk desk, long sheet)`
+
+The registers the held draft's card carries.
+
+## `private static IReadOnlyList<long> TCardTranslationRead(CDesk desk, long sheet)`
+
+The entries the held draft's card links as translations.
 
 ## `private static (long TCardSheet, long TCardSentence) TCardSentenceAdd(CDesk desk)`
 

@@ -5,16 +5,41 @@
 The gates of the editor's cards: what a card's fields ask while the user types into them.
 The translation field finds prospects, resolves a typed word and opens or drops a court link.
 The register, situation, tag and source fields find the stored rows a typed word matches.
+The translation, situation, register and tag fields add what the user typed and pick stored rows.
 The sentence menu reads the particles and dependences of a language.
 The etymology field sends its narrative, its source links and its spans through it, over the editor's desk.
 The maps from engine drafts to their shapes sit on `CFolio`.
 It holds no state of its own.
 The editor owns one and hands it to the card views beside the desk.
 
-## `internal CCard(CDesk desk, LDraftPort drafts, LEntryPort entries)`
+## `internal CCard(CDesk desk, LDraftPort drafts, LEntryPort entries, LSettingsPort settings, CEnvoy envoy)`
 
 Takes the editor's desk, so an etymology request lands on the held draft.
+A failed translation shows through `envoy`, with the ready notice `settings` reads.
 Only the editor builds one, so the constructor is internal.
+
+## `public string CCardTranslationAdd(long cardId, string text, int position)`
+
+The gate for the translation field's typed text, heard on every change.
+The quill links each completed word that resolves to one entry and answers what the field keeps.
+A word that resolves to nothing stays in the answer, which is the gate's verdict for the field.
+A failed resolve shows `Input.TranslationFailed` and keeps the text as typed.
+
+## `public void CCardTranslationInsert(long cardId, long entryId, int position)`
+
+The gate for an entry picked from the prospects, or a court target just started, linked to the card.
+
+## `public IReadOnlyList<CRegister> CCardRegisterFind(long cardId, string word, string language)`
+
+The stored Registers the card's field offers for a typed word, leaving out those the card already links.
+
+## `public IReadOnlyList<CCatalogSituation> CCardSituationFind(long cardId, string word)`
+
+The stored Situations the card's field offers for a typed word, most used first, leaving out those the card links.
+
+## `public IReadOnlyList<CTag> CCardTagFind(long cardId, string word)`
+
+The stored Tags the card's field offers for a typed word, most used first, leaving out those the card shows.
 
 ## `public IReadOnlyList<CCatalogReference> CCardReferenceFind()`
 
@@ -32,10 +57,32 @@ It is the one owner of that map, so the chip search and the tenor rows share it.
 The Conduct copy of a Tag the engine handed over, its id and its text.
 It is the one owner of that map, so the chip search and the taxonomy rows share it.
 
-## `public void CCardTagAdd(long cardId, string text, int position)`
+## `public string CCardTagAdd(long cardId, string text, int position, bool settled)`
 
-The gate for a tag typed into a card, as the user wrote it.
-It holds no rule of its own: the clerk trims and skips blank or held text.
+The gate for a tag typed into a card, as the user wrote it, and answers what the entry keeps.
+The field hands every change unsettled, and Enter or leaving the field hands the text settled.
+It holds no rule of its own.
+The list parse and the clerk split, trim and skip blank or held text.
+
+## `public string CCardSituationAdd(long cardId, string text, int position, bool settled)`
+
+The gate for a situation typed into a card, shaped as the tag gate is.
+
+## `public void CCardSituationInsert(long cardId, long situationId, int position)`
+
+The gate for a stored situation picked from the suggestions.
+
+## `public void CCardSituationRemove(long cardId, long situationId)`
+
+The gate for a situation chip erased from a card.
+
+## `public string CCardRegisterAdd(long cardId, string text, int position, bool settled)`
+
+The gate for a register typed into a card, shaped as the tag gate is.
+
+## `public void CCardRegisterInsert(long cardId, long registerId, int position)`
+
+The gate for a stored register picked from the suggestions.
 
 ## `public void CCardTagInsert(long cardId, long tagId, int position)`
 

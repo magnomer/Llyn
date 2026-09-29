@@ -37,6 +37,7 @@ public sealed class CPhonology
         CPhonologyEditor = editor;
         CPhonologyPanel = new CPanel(
             envoy,
+            _cPhonologySettingsPort,
             "Sound.LoadFailed",
             "Scribe",
             editor.CEditorDesk.LDeskChangeCheck,
@@ -123,6 +124,7 @@ public sealed class CPhonology
     {
         return CPortrait.LPortraitTicketPrint(
             _cPhonologyEnvoy,
+            _cPhonologySettingsPort,
             chosen => _cPhonologyPortraitPort.LEnginePortraitPrint(
                 _cPhonologyVista, CPortrait.LPortraitLabelRead(_cPhonologySettingsPort), chosen));
     }
@@ -131,6 +133,7 @@ public sealed class CPhonology
     {
         return CPortrait.LPortraitFileExport(
             _cPhonologyEnvoy,
+            _cPhonologySettingsPort,
             LPhonologyFileRead(),
             (file, medium) => _cPhonologyPortraitPort.LEnginePortraitExport(
                 _cPhonologyVista, file, medium, CPortrait.LPortraitLabelRead(_cPhonologySettingsPort)));

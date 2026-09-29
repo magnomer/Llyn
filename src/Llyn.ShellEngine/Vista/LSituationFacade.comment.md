@@ -16,6 +16,10 @@ Stores the engine and its gate for situation operations.
 
 The Situations answering `query`, in `order`, as rows already carrying how many places reference them.
 
+## `public IReadOnlyList<LCatalogSituation> LEngineSituationFind(LTenure? held, long card, string query, LCatalogOrder order)`
+
+The stored Situations a card's field offers, leaving out those the held draft's card links.
+
 ## `public IReadOnlyList<LCatalogSituation> LEngineSituationFind(LVista vista, string unknown = "", string untitled = "")`
 
 The Situations the repertoire panel's vista lists, with the query and order read off the vista.

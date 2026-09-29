@@ -20,7 +20,7 @@ internal static class TRigFake
             new TRigFakeVault(),
             new TRigFakeDoctor(),
             new TRigFakeSettings(),
-            TRigStubCreate<LAuditVault>(),
+            new TRigFakeAudit(),
             new TPostureFake(),
             entries,
             TRigStubCreate<LEtymologyVault>(),
@@ -103,6 +103,11 @@ internal static class TRigFake
         public void Dispose()
         {
         }
+    }
+
+    private sealed class TRigFakeAudit : LAuditVault
+    {
+        public string? LAuditRecord(Exception exception) => null;
     }
 
     private sealed class TRigFakeDoctor : LDoctorVault

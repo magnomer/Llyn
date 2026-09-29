@@ -125,7 +125,7 @@ public sealed class CWing
         }
         catch (Exception exception)
         {
-            _cWingEnvoy.CEnvoyFailureShow("Duplex.LoadFailed", exception);
+            CLedger.LLedgerFailureShow(_cWingEnvoy, _cWingAtelier.CAtelierSettingsPort, "Duplex.LoadFailed", exception);
             return;
         }
 

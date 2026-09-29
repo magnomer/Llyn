@@ -61,7 +61,7 @@ The second placement puts it above the frame, for a caret near the foot of the s
 The wording is matched anywhere inside a stored title, ignoring case, because this is a search rather than a prefix.
 So "the situation" finds "This is the situation".
 Rows are ordered by how many cards already use them, so the settled wordings stand first.
-A Situation the card already carries is left out, since it cannot be attached twice.
+The card find leaves out a Situation the card already carries, since it cannot be attached twice.
 The list stays shut when nothing matches, rather than standing empty.
 
 ### `private void PCandidateCitationShow(PCard card, PSentence row, TextBox box)`
@@ -73,6 +73,6 @@ Rows carry the `Author (Year)` byline and are ordered by how many rows already c
 
 ### `private void PCandidateSelect(PCandidateItem item)`
 
-Asks the engine to link the row the user chose, at the caret, and empties the entry.
-A row the card already carries is not asked for again.
+Hands the row the user chose to the card's insert gate, at the caret, and empties the entry.
+The engine's clerk skips a row the card already carries.
 A pick from the citation field cites the chosen Source on that sentence row instead.

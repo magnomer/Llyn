@@ -36,6 +36,24 @@ public sealed class LTagClerk
         return LCatalogTag.LCatalogTagSort(found, order);
     }
 
+    public IReadOnlyList<LTag> LTagClerkFind(string query, LCatalogOrder order, LDraft? draft, long card)
+    {
+        IReadOnlyList<LTagDraft> held = draft is null
+            ? []
+            : LDraftClerkCard.LCardFind(draft.LDraftContent, card)?.LCardDraftTag ?? [];
+
+        List<LTag> found = [];
+        foreach (LTag tag in LTagClerkFind(query, order))
+        {
+            if (!LDraftClerkList.LDraftHeldCheck(held, static row => row.LTagDraftText, tag.LTagText.Trim()))
+            {
+                found.Add(tag);
+            }
+        }
+
+        return found;
+    }
+
     public void LTagClerkSave(
         long ownerId, IReadOnlyList<LTagDraft> drafts, bool collocation, Dictionary<long, long> identity)
     {

@@ -92,16 +92,16 @@ public sealed class LEntryOutlet : LEntryPort
         long entryId, string key) =>
         _lEntryOutletEngine.LEngineCard.LEngineMeaningRead(entryId, key);
 
-    public IReadOnlyList<LTag> LEngineTagFind(string query, LCatalogOrder order) =>
-        _lEntryOutletEngine.LEngineCard.LEngineTagFind(query, order);
+    public IReadOnlyList<LTag> LEngineTagFind(LTenure? held, long card, string query, LCatalogOrder order) =>
+        _lEntryOutletEngine.LEngineCard.LEngineTagFind(held, card, query, order);
 
     public IReadOnlyList<LCatalogTag> LEngineTagFind(LVista vista) =>
         _lEntryOutletEngine.LEngineCard.LEngineTagFind(vista);
 
     public LTag LEngineTagCreate(string text) => _lEntryOutletEngine.LEngineCard.LEngineTagCreate(text);
 
-    public IReadOnlyList<LRegister> LEngineRegisterFind(string query, string language) =>
-        _lEntryOutletEngine.LEngineCard.LEngineRegisterFind(query, language);
+    public IReadOnlyList<LRegister> LEngineRegisterFind(LTenure? held, long card, string query, string language) =>
+        _lEntryOutletEngine.LEngineCard.LEngineRegisterFind(held, card, query, language);
 
     public IReadOnlyList<LCatalogRegister> LEngineRegisterFind(LVista vista) =>
         _lEntryOutletEngine.LEngineCard.LEngineRegisterFind(vista);
@@ -109,8 +109,9 @@ public sealed class LEntryOutlet : LEntryPort
     public LRegister LEngineRegisterCreate(string name) =>
         _lEntryOutletEngine.LEngineCard.LEngineRegisterCreate(name);
 
-    public IReadOnlyList<LCatalogSituation> LEngineSituationFind(string query, LCatalogOrder order) =>
-        _lEntryOutletEngine.LEngineSituation.LEngineSituationFind(query, order);
+    public IReadOnlyList<LCatalogSituation> LEngineSituationFind(
+        LTenure? held, long card, string query, LCatalogOrder order) =>
+        _lEntryOutletEngine.LEngineSituation.LEngineSituationFind(held, card, query, order);
 
     public IReadOnlyList<LCatalogSituation> LEngineSituationFind(
         LVista vista,

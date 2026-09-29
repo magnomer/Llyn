@@ -138,7 +138,7 @@ public partial class PEditor
         IReadOnlyList<CTag> found;
         try
         {
-            found = _lEditor.LEditorStudio.CEditorCard.CCardTagFind(word);
+            found = _lEditor.LEditorStudio.CEditorCard.CCardTagFind(card.PCardId, word);
         }
         catch (Exception)
         {
@@ -150,7 +150,7 @@ public partial class PEditor
         foreach (CTag tag in found)
         {
             string written = tag.CTagText.Trim();
-            if (written.Length == 0 || card.PCardLabelCheck(written))
+            if (written.Length == 0)
             {
                 continue;
             }

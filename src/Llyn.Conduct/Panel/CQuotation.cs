@@ -19,6 +19,7 @@ public sealed class CQuotation
     internal CQuotation(
         LEntryPort entries,
         LPortraitPort portraits,
+        LSettingsPort settings,
         CEnvoy envoy,
         Func<bool> changeSeam,
         Func<bool, bool> finishSeam,
@@ -26,10 +27,11 @@ public sealed class CQuotation
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
+        ArgumentNullException.ThrowIfNull(settings);
 
         _cQuotationEntryPort = entries;
         _cQuotationPortraitPort = portraits;
-        CQuotationPanel = new CPanel(envoy, "List.LoadFailed", null, changeSeam, finishSeam, shownSeam);
+        CQuotationPanel = new CPanel(envoy, settings, "List.LoadFailed", null, changeSeam, finishSeam, shownSeam);
     }
 
     public CPanel CQuotationPanel { get; }
@@ -70,6 +72,7 @@ public sealed class CQuotation
     {
         return CPortrait.LPortraitTicketPrint(
             envoy,
+            settings,
             chosen => _cQuotationPortraitPort.LEnginePortraitPrint(
                 _cQuotationVista, CPortrait.LPortraitLabelRead(settings), chosen));
     }
@@ -78,6 +81,7 @@ public sealed class CQuotation
     {
         return CPortrait.LPortraitFileExport(
             envoy,
+            settings,
             LQuotationFileRead(),
             (file, medium) => _cQuotationPortraitPort.LEnginePortraitExport(
                 _cQuotationVista, file, medium, CPortrait.LPortraitLabelRead(settings)));

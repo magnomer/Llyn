@@ -38,6 +38,11 @@ The usage tally is counted from the rows referencing it, as the catalog counts i
 The Situations answering `query`, in `order`, as rows already carrying how many places reference them.
 A Situation is matched over its title, its description and its kind.
 
+## `public IReadOnlyList<LCatalogSituation> LSituationClerkFind(string query, LCatalogOrder order, LDraft? draft, long card)`
+
+The stored Situations a card's field offers, leaving out every Situation the card already links by id.
+No draft or no such card holds nothing, so every match is offered.
+
 ## `public void LSituationClerkUpdate(LSituation situation)`
 
 Rewrites the title, description and kind of the Situation `situation` identifies, and settles its media.

@@ -12,10 +12,11 @@ It holds no state beyond the shown header, since the shown draft stays in the so
 
 The header while nothing is shown, every field empty.
 
-## `internal CDisplay(LDisplay display, LEntryPort entries, LPhonologyPort phonology, CEnvoy envoy)`
+## `internal CDisplay(LDisplay display, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, CEnvoy envoy)`
 
 Only the display builds its area, over the ports and the envoy the panel handed down.
 A refused read is shown through `envoy`, so every driver over this display shows it once.
+`settings` reads the ready notice the envoy shows with it.
 
 ## `public event Action? CDisplayOpened;`
 

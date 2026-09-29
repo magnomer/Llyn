@@ -15,6 +15,22 @@ The draft handed in is untouched, since a clerk answers with a new draft.
 A tag added by text lands first in the card's list under a minted negative id.
 The issuer over the fake workspace row is what mints it.
 
+## `public void DraftClerkApply_TagText_TrimsTheWording()`
+
+A tag's rewritten text is held trimmed, so every chip reads ready to show.
+
+## `public void DraftListParse_UnsettledWithoutComma_KeepsTheTextWhole()`
+
+Text still being typed with no comma completes nothing and is kept as typed.
+
+## `public void DraftListParse_TypedList_HandsTrimmedPartsAndKeepsRefusedBeforeTheRest()`
+
+Each completed part is handed trimmed, a blank part is skipped, and a refused part is kept before the rest.
+
+## `public void DraftListParse_Settled_HandsEveryPartAndKeepsOnlyTheRefused()`
+
+A settled list completes its last part too, and a blank settled list hands nothing.
+
 ## `public void DraftClerkApply_DuplicateScheme_ThrowsRefusal()`
 
 A second transcription row under a scheme the draft already carries is refused.

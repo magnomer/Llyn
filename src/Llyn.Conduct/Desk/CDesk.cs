@@ -25,6 +25,8 @@ public sealed class CDesk
 
     private LEasel? _cDeskEasel;
 
+    private LQuillChip? _cDeskChip;
+
     private bool _cDeskFilling;
 
     private bool _cDeskHalted;
@@ -68,6 +70,8 @@ public sealed class CDesk
     internal LQuill? CDeskQuill => CDeskFilling ? null : _cDeskQuill;
 
     internal LEasel? CDeskEasel => CDeskFilling ? null : _cDeskEasel;
+
+    internal LQuillChip? CDeskChip => CDeskFilling ? null : _cDeskChip;
 
     public CErrand CDeskErrand { get; }
 
@@ -186,6 +190,7 @@ public sealed class CDesk
             _cDeskTenure = started;
             _cDeskQuill = new LQuill(started);
             _cDeskEasel = new LEasel(started);
+            _cDeskChip = new LQuillChip(started, _cDeskPort);
             _cDeskHalted = false;
             CDeskVigil.LVigilApply(started);
             CDeskStarted?.Invoke();
@@ -372,6 +377,7 @@ public sealed class CDesk
         _cDeskTenure = null;
         _cDeskQuill = null;
         _cDeskEasel = null;
+        _cDeskChip = null;
         CDeskStateChanged?.Invoke();
         if (kept is long id)
         {
@@ -396,6 +402,7 @@ public sealed class CDesk
         _cDeskTenure = null;
         _cDeskQuill = null;
         _cDeskEasel = null;
+        _cDeskChip = null;
         held.LTenureCancel();
         CDeskStateChanged?.Invoke();
     }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -11,7 +10,6 @@ internal sealed partial class PCard
     private const string PCardLabelHint = "Add tags";
 
     private readonly PLabelCaret _pCardLabelCaret = new();
-    private bool _pCardLabelBusy;
 
     private static readonly Func<object, long?> _pCardLabelKey =
         row => row is PLabelChip chip ? chip.PLabelChipId : null;
@@ -19,8 +17,6 @@ internal sealed partial class PCard
     public ObservableCollection<object> PCardLabel { get; } = [];
 
     internal Action<string>? PCardLabelNotice { get; set; }
-
-    internal Action<string>? PCardLabelDispatcher { get; set; }
 
     internal string PCardLabelText => _pCardLabelCaret.PLabelCaretText;
 
@@ -37,7 +33,7 @@ internal sealed partial class PCard
             PCardLabelCreate,
             static (row, draft) =>
                 row is PLabelChip chip
-                && string.Equals(chip.PLabelChipName, draft.CTagDraftText.Trim(), StringComparison.Ordinal)
+                && string.Equals(chip.PLabelChipName, draft.CTagDraftText, StringComparison.Ordinal)
                     ? row
                     : PCardLabelCreate(draft));
 
@@ -71,58 +67,26 @@ internal sealed partial class PCard
 
     internal void PCardLabelClear()
     {
-        _pCardLabelBusy = true;
         _pCardLabelCaret.PLabelCaretText = string.Empty;
-        _pCardLabelBusy = false;
         PCardLabelUpdate();
-    }
-
-    internal bool PCardLabelCheck(string text)
-    {
-        foreach (object row in PCardLabel)
-        {
-            if (row is PLabelChip chip &&
-                string.Equals(chip.PLabelChipName, text, StringComparison.Ordinal))
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private static object PCardLabelCreate(CTagDraft draft)
     {
-        return new PLabelChip(draft.CTagDraftId, draft.CTagDraftText.Trim());
+        return new PLabelChip(draft.CTagDraftId, draft.CTagDraftText);
     }
 
     private void PCardLabelStart()
     {
-        _pCardLabelCaret.PropertyChanged += PCardLabelChange;
         PCardLabel.Add(_pCardLabelCaret);
         PCardLabelUpdate();
     }
 
-    private void PCardLabelChange(object? sender, PropertyChangedEventArgs arguments)
+    internal void PCardLabelRefine(string rest)
     {
-        if (_pCardLabelBusy ||
-            !string.Equals(arguments.PropertyName, nameof(PLabelCaret.PLabelCaretText), StringComparison.Ordinal))
+        if (!string.Equals(_pCardLabelCaret.PLabelCaretText, rest, StringComparison.Ordinal))
         {
-            return;
-        }
-
-        string written = _pCardLabelCaret.PLabelCaretText;
-        if (written.IndexOf(',', StringComparison.Ordinal) >= 0)
-        {
-            _pCardLabelBusy = true;
-            string[] parts = written.Split(',');
-            for (int index = 0; index < parts.Length - 1; index++)
-            {
-                PCardLabelDispatcher?.Invoke(parts[index]);
-            }
-
-            _pCardLabelCaret.PLabelCaretText = parts[^1].TrimStart();
-            _pCardLabelBusy = false;
+            _pCardLabelCaret.PLabelCaretText = rest;
             PCardLabelUpdate();
         }
 

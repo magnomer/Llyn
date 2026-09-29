@@ -181,7 +181,8 @@ public partial class PEditor
 
         if (!item.PProspectItemFresh)
         {
-            PLinkSend(card, item.PProspectItemId);
+            _lEditor.LEditorStudio.CEditorCard.CCardTranslationInsert(
+                card.PCardId, item.PProspectItemId, card.PCardLinkPosition);
             card.PCardLinkClear();
             PProspectHide();
             return;
@@ -209,7 +210,7 @@ public partial class PEditor
             return;
         }
 
-        PLinkSend(card, target);
+        _lEditor.LEditorStudio.CEditorCard.CCardTranslationInsert(card.PCardId, target, card.PCardLinkPosition);
         card.PCardLinkClear();
         PProspectHide();
     }

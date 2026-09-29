@@ -63,11 +63,6 @@ public sealed class CCatalog
         return roles.Select(role => CCatalogFontRead(language, role)).ToList();
     }
 
-    public CSentenceOrder CCatalogOrderRead(string language)
-    {
-        return CCatalogOrderRead(_cCatalogAtelier.CAtelierPhonologyPort.LEngineOrderRead(language));
-    }
-
     internal static CSentenceOrder CCatalogOrderRead(LSentenceOrder order)
     {
         return new CSentenceOrder(order.LSentenceOrderParticle, order.LSentenceOrderDependence);
@@ -97,7 +92,7 @@ public sealed class CCatalog
         return glyph is null ? null : new CGlyph(glyph.LGlyphName, glyph.LGlyphSourced);
     }
 
-    internal static long? LCatalogGlyphOpen(CEnvoy envoy, Func<long> resolve)
+    internal static long? LCatalogGlyphOpen(CEnvoy envoy, LSettingsPort settings, Func<long> resolve)
     {
         ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(resolve);
@@ -108,7 +103,7 @@ public sealed class CCatalog
         }
         catch (Exception exception)
         {
-            envoy.CEnvoyFailureShow("Glyph.OpenFailed", exception);
+            CLedger.LLedgerFailureShow(envoy, settings, "Glyph.OpenFailed", exception);
             return null;
         }
     }
@@ -154,7 +149,7 @@ public sealed class CCatalog
         }
         catch (Exception exception)
         {
-            envoy.CEnvoyFailureShow("Mention.FindFailed", exception);
+            CLedger.LLedgerFailureShow(envoy, _cCatalogAtelier.CAtelierSettingsPort, "Mention.FindFailed", exception);
             return null;
         }
     }

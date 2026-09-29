@@ -9,6 +9,10 @@ Every question it puts to the user leaves through `CEnvoy`, so no dialog is know
 The rows a tab lists are the tab's own, so the panel only announces that they need re-reading.
 The engine work is one `LVista` member per step, and the data rules stay in the engine.
 
+## `private readonly LSettingsPort _cPanelSettingsPort;`
+
+The port a failed load or delete reads its ready notice through, before the envoy shows it.
+
 ## `private readonly string? _cPanelDeleteScope;`
 
 The localization scope the delete question, its tally and its failure are worded under.

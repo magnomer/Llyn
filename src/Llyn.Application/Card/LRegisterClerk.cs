@@ -36,6 +36,24 @@ public sealed class LRegisterClerk
         return found;
     }
 
+    public IReadOnlyList<LRegister> LRegisterClerkFind(string query, string language, LDraft? draft, long card)
+    {
+        IReadOnlyList<LRegisterDraft> held = draft is null
+            ? []
+            : LDraftClerkCard.LCardFind(draft.LDraftContent, card)?.LCardDraftRegister ?? [];
+
+        List<LRegister> found = [];
+        foreach (LRegister register in LRegisterClerkFind(query, language))
+        {
+            if (LDraftClerkList.LDraftListFind(held, register.LRegisterId, static row => row.LRegisterDraftId) < 0)
+            {
+                found.Add(register);
+            }
+        }
+
+        return found;
+    }
+
     public IReadOnlyList<LCatalogRegister> LRegisterClerkFind(string query, LCatalogOrder order)
     {
         ArgumentNullException.ThrowIfNull(query);

@@ -19,17 +19,22 @@ public sealed class CDisplay
 
     private readonly CEnvoy _cDisplayEnvoy;
 
-    internal CDisplay(LDisplay display, LEntryPort entries, LPhonologyPort phonology, CEnvoy envoy)
+    private readonly LSettingsPort _cDisplaySettings;
+
+    internal CDisplay(
+        LDisplay display, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(display);
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(phonology);
+        ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _cDisplayRule = display;
         _cDisplayPort = entries;
         _cDisplayPhonology = phonology;
         _cDisplayEnvoy = envoy;
+        _cDisplaySettings = settings;
     }
 
     public event Action? CDisplayOpened;
@@ -276,7 +281,7 @@ public sealed class CDisplay
         }
         catch (Exception exception)
         {
-            _cDisplayEnvoy.CEnvoyFailureShow("Display.IncomingFailed", exception);
+            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Display.IncomingFailed", exception);
             return [];
         }
     }
@@ -333,7 +338,7 @@ public sealed class CDisplay
         }
         catch (Exception exception)
         {
-            _cDisplayEnvoy.CEnvoyFailureShow("Mention.FindFailed", exception);
+            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Mention.FindFailed", exception);
             return null;
         }
     }

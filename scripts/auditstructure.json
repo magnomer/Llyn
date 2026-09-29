@@ -203,8 +203,8 @@
     "System.Diagnostics.Stopwatch"
   ],
   "ceilings": {
-    "cross:Llyn.UIDeportment>Llyn.Application": 77,
-    "cross:Llyn.UIDeportment>Llyn.Core": 110,
+    "cross:Llyn.UIDeportment>Llyn.Application": 70,
+    "cross:Llyn.UIDeportment>Llyn.Core": 107,
     "cross:Llyn.UIDeportment>Llyn.ShellEngine": 33,
     "expose:Llyn.UIDemeanor>Llyn.Core": 1,
     "expose:Llyn.UIDemeanor>Llyn.ShellEngine": 1,
@@ -229,7 +229,8 @@
       "LForay",
       "LPosture",
       "LQuill",
-      "LEasel"
+      "LEasel",
+      "LQuillChip"
     ],
     "Llyn.UIDeportment>Llyn.Conduct": [
       "LDisplay",

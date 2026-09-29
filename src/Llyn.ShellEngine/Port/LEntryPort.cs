@@ -61,19 +61,20 @@ public interface LEntryPort
     IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> LEngineMeaningRead(
         long entryId, string key);
 
-    IReadOnlyList<LTag> LEngineTagFind(string query, LCatalogOrder order);
+    IReadOnlyList<LTag> LEngineTagFind(LTenure? held, long card, string query, LCatalogOrder order);
 
     IReadOnlyList<LCatalogTag> LEngineTagFind(LVista vista);
 
     LTag LEngineTagCreate(string text);
 
-    IReadOnlyList<LRegister> LEngineRegisterFind(string query, string language);
+    IReadOnlyList<LRegister> LEngineRegisterFind(LTenure? held, long card, string query, string language);
 
     IReadOnlyList<LCatalogRegister> LEngineRegisterFind(LVista vista);
 
     LRegister LEngineRegisterCreate(string name);
 
-    IReadOnlyList<LCatalogSituation> LEngineSituationFind(string query, LCatalogOrder order);
+    IReadOnlyList<LCatalogSituation> LEngineSituationFind(
+        LTenure? held, long card, string query, LCatalogOrder order);
 
     IReadOnlyList<LCatalogSituation> LEngineSituationFind(LVista vista, string unknown = "", string untitled = "");
 

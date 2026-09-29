@@ -64,8 +64,15 @@ public partial class PEditor
     internal void PLabelAttach(PCard card)
     {
         card.PCardLabelNotice = text => PSlateShow(card, text);
-        card.PCardLabelDispatcher =
-            text => _lEditor.LEditorStudio.CEditorCard.CCardTagAdd(card.PCardId, text, card.PCardLabelPosition);
+    }
+
+    private void PLabelTextObserve(PLabelCaret caret, string text)
+    {
+        if (PCardLabelFind(caret) is PCard card)
+        {
+            card.PCardLabelRefine(_lEditor.LEditorStudio.CEditorCard.CCardTagAdd(
+                card.PCardId, text, card.PCardLabelPosition, false));
+        }
     }
 
     private void PLabelChipObserve(object sender, RoutedEventArgs e)
@@ -123,7 +130,8 @@ public partial class PEditor
 
     private void PLabelCommitObserve(PCard card)
     {
-        _lEditor.LEditorStudio.CEditorCard.CCardTagAdd(card.PCardId, card.PCardLabelText, card.PCardLabelPosition);
+        _lEditor.LEditorStudio.CEditorCard.CCardTagAdd(
+            card.PCardId, card.PCardLabelText, card.PCardLabelPosition, true);
         card.PCardLabelClear();
     }
 

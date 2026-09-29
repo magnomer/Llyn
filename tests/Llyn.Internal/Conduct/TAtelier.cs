@@ -105,7 +105,7 @@ public sealed class TAtelier
 
         string chosen = "  " + second.TWorkspaceFolder + "  ";
 
-        Assert.NotNull(atelier.CAtelierWorkspaceChange(chosen, TAtelierEnvoyCreate(true)));
+        Assert.NotNull(atelier.CAtelierWorkspaceChange(chosen, TEngineFake.TEngineStubCreate<CEnvoy>()));
 
         Assert.Equal([second.TWorkspaceFolder], pointed);
     }
@@ -120,7 +120,8 @@ public sealed class TAtelier
             pointed.Add);
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
 
-        Assert.Throws<IOException>(() => atelier.CAtelierWorkspaceChange("fake-broken", TAtelierEnvoyCreate(true)));
+        Assert.Throws<IOException>(
+            () => atelier.CAtelierWorkspaceChange("fake-broken", TEngineFake.TEngineStubCreate<CEnvoy>()));
 
         Assert.Equal("fake", engine.TEngineWorkspaceRead());
         Assert.Empty(pointed);
@@ -145,19 +146,42 @@ public sealed class TAtelier
     }
 
     [Fact]
-    public void AtelierWorkspaceChange_DiscardDeclined_Stays()
+    public void AtelierWorkspaceChange_LeaveCancelled_AsksOnceAndStays()
     {
         List<string> pointed = [];
+        List<bool> closed = [];
         using LEngine engine = new(
             TRigFake.TRigFakeBuild(),
             workspace => TRigFake.TRigFakeBuild(new TVaultFake(), workspace),
             pointed.Add);
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
+        atelier.CAtelierWorkspace.TWorkspaceDraftAdd(static () => true, store => { closed.Add(store); return true; });
+        List<string> asked = [];
 
-        Assert.Null(atelier.CAtelierWorkspaceChange("fake-next", TAtelierEnvoyCreate(false)));
+        Assert.Null(atelier.CAtelierWorkspaceChange("fake-next", TInterfaceConduct.TEnvoyCreate(null, asked)));
 
         Assert.Equal("fake", atelier.CAtelierPathRead());
         Assert.Empty(pointed);
+        Assert.Equal(["Leave"], asked);
+        Assert.Empty(closed);
+    }
+
+    [Fact]
+    public void AtelierWorkspaceChange_UnsavedStored_AsksOnceAndStoresEveryArea()
+    {
+        using TWorkspace first = TWorkspace.TWorkspacePrepare();
+        using TWorkspace second = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(first.TWorkspaceRigCreate(), _ => second.TWorkspaceRigCreate(), _ => { });
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<bool> closed = [];
+        atelier.CAtelierWorkspace.TWorkspaceDraftAdd(static () => true, store => { closed.Add(store); return true; });
+        List<string> asked = [];
+
+        Assert.NotNull(
+            atelier.CAtelierWorkspaceChange(second.TWorkspaceFolder, TInterfaceConduct.TEnvoyCreate(true, asked)));
+
+        Assert.Equal(["Leave"], asked);
+        Assert.Equal([true], closed);
     }
 
     [Fact]
@@ -168,7 +192,8 @@ public sealed class TAtelier
         using LEngine engine = new(first.TWorkspaceRigCreate(), _ => second.TWorkspaceRigCreate(), _ => { });
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
 
-        CWorkspaceState? state = atelier.CAtelierWorkspaceChange(second.TWorkspaceFolder, TAtelierEnvoyCreate(true));
+        CWorkspaceState? state =
+            atelier.CAtelierWorkspaceChange(second.TWorkspaceFolder, TEngineFake.TEngineStubCreate<CEnvoy>());
 
         Assert.Equal(atelier.TAtelierStateOpen(), state);
     }
@@ -295,10 +320,8 @@ public sealed class TAtelier
         using LEngine engine = new(first.TWorkspaceRigCreate(), _ => second.TWorkspaceRigCreate(), _ => { });
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CEnvoy envoy = null!;
-        envoy = TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
+        CEnvoy envoy = TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
         {
-            ["CEnvoyDiscardConfirm"] = _ => atelier.CAtelierQuitConfirm(envoy),
             ["CEnvoyLeaveConfirm"] = _ =>
             {
                 asked.Add("Leave");
@@ -342,14 +365,6 @@ public sealed class TAtelier
         Assert.Equal(["Leave"], asked);
         Assert.Equal([false], closed);
         Assert.False(editor.CEditorDesk.CDeskHeld);
-    }
-
-    private static CEnvoy TAtelierEnvoyCreate(bool discard)
-    {
-        return TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["CEnvoyDiscardConfirm"] = _ => discard,
-        });
     }
 
     private static LMediaPort TAtelierMediaCreate(List<double> played)

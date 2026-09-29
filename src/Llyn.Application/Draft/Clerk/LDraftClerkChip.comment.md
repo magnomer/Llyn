@@ -17,6 +17,7 @@ Holds the three shelves a chip is looked up on and the issuer that names a new o
 A situation with the typed title, at the place asked for.
 The title is looked up first, and a stored Situation reading the same way is picked under its own id.
 Only a title nothing matches becomes a new situation with a minted id.
+A title the card already shows is nothing to add, so a typed duplicate leaves the draft unchanged.
 The clerk holds this rule so the form, an import and a test all get one row for one wording.
 
 ## `public LEntryDraft LSituationInsert(LEntryDraft content, LRequestSituationPick request)`
@@ -51,6 +52,7 @@ A register with the typed name, at the place asked for.
 The name is looked up on the whole shelf.
 A stored Register reading the same way is picked under its own id.
 Only a name nothing matches becomes a new register with a minted id.
+A name the card already shows is nothing to add, so a typed duplicate leaves the draft unchanged.
 
 ## `public LEntryDraft LRegisterInsert(LEntryDraft content, LRequestRegisterPick request)`
 
@@ -75,14 +77,12 @@ Every driver and the markup import meet the same rule here, not in a view.
 
 Copies the stored tag under its own id into the card, unless the card already holds it.
 A stored tag whose text the card already holds is skipped too.
-
-## `private static bool LTagHeldCheck(IReadOnlyList<LTagDraft> tags, string text)`
-
-Whether one of the card's tags already reads exactly this text.
+Both ask `LDraftClerkList.LDraftHeldCheck`, the one owner of the held-text rule.
 
 ## `public static LEntryDraft LTagChange(LEntryDraft content, LRequestTagText request)`
 
 Rewrites the tag in every card holding it, and refuses when none does.
+The text is trimmed, so every tag a draft holds reads ready to show.
 
 ## `public static LEntryDraft LTranslationInsert(LEntryDraft content, LRequestTranslationPick request)`
 

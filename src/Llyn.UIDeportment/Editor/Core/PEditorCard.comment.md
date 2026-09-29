@@ -45,7 +45,8 @@ So a new card and a kept one take one path.
 ### `private void PCardListShow(`
 
 Shows one card every list the draft card holds, each list diffed by id.
-The draft's language goes with the rows, since a new row reads its field order from the engine under it.
+The sentence frame's order goes with the rows, as the last `CSentenceFrameRead` answered it.
+The language update reads the frame before the cards show, so a new row is built in its language's order.
 Each card takes its own words out of the one translation answer, in the order the card holds them.
 The chip lines under the rows are redrawn after, because the rows hold no engine to read headwords from.
 An id the answer does not name is passed over, as a chip with no Entry has nothing to say.

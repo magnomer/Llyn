@@ -16,17 +16,22 @@ public sealed class CSounding
 
     private readonly CEnvoy _cSoundingEnvoy;
 
-    internal CSounding(CDesk desk, LPhonologyPort phonology, LDraftPort drafts, CEnvoy envoy)
+    private readonly LSettingsPort _cSoundingSettingsPort;
+
+    internal CSounding(
+        CDesk desk, LPhonologyPort phonology, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(drafts);
+        ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _cSoundingDesk = desk;
         _cSoundingPhonologyPort = phonology;
         _cSoundingDraftPort = drafts;
         _cSoundingEnvoy = envoy;
+        _cSoundingSettingsPort = settings;
     }
 
     public event Action? CSoundingChanged;
@@ -146,7 +151,7 @@ public sealed class CSounding
         }
         catch (Exception exception)
         {
-            _cSoundingEnvoy.CEnvoyFailureShow(key, exception);
+            CLedger.LLedgerFailureShow(_cSoundingEnvoy, _cSoundingSettingsPort, key, exception);
             return;
         }
 

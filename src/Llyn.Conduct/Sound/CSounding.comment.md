@@ -9,9 +9,10 @@ A fresh draft has no stored entry, so every read answers empty and every gate do
 Every read swallows a refusal and answers empty, since a box that cannot fetch still has to draw.
 Every gate announces the change, or asks the envoy to show the refusal under its own notice key.
 
-## `internal CSounding(CDesk desk, LPhonologyPort phonology, LDraftPort drafts, CEnvoy envoy)`
+## `internal CSounding(CDesk desk, LPhonologyPort phonology, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy)`
 
 Takes the editor's desk, the phonology port every sound read goes through, and the draft port the anchors ask.
+A refused load shows through `envoy`, with the ready notice `settings` reads.
 Only the editor builds one, so the constructor is internal.
 
 ## `public event Action? CSoundingChanged;`

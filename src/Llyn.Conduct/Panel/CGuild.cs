@@ -35,15 +35,18 @@ public sealed class CGuild
         _cGuildSettingsPort = atelier.CAtelierSettingsPort;
         CGuildAutograph = new CDesk(atelier.CAtelierDraftPort, "Guild", envoy);
         CGuildPanel = new CPanel(
-            envoy, "Guild.LoadFailed", "Guild",
+            envoy,
+            _cGuildSettingsPort,
+            "Guild.LoadFailed", "Guild",
             CGuildAutograph.LDeskChangeCheck, store => CGuildSession!.LSessionFinish(store), shownSeam);
-        CGuildOeuvre = new COeuvre(atelier.CAtelierEntryPort, envoy, shownSeam);
+        CGuildOeuvre = new COeuvre(atelier.CAtelierEntryPort, atelier.CAtelierSettingsPort, envoy, shownSeam);
         CGuildPanel.CPanelRowsChanged += CGuildOeuvre.COeuvrePanel.CPanelRowsResonate;
         CGuildSession = new CSession(
             CGuildAutograph, [CGuildPanel.LPanelChangeCheck], null, static () => false, static _ => true,
             LGuildAutographCheck, LGuildStoredShow);
         CGuildSession.CSessionChanged += () => CGuildChanged?.Invoke();
-        CGuildSession.CSessionFailed += envoy.CEnvoyFailureShow;
+        CGuildSession.CSessionFailed +=
+            (key, exception) => CLedger.LLedgerFailureShow(envoy, _cGuildSettingsPort, key, exception);
         CGuildPanel.CPanelCleared += CGuildSession.CSessionCancel;
         CGuildPanel.CPanelEdited += id => CGuildSession.CSessionStart(id);
         atelier.CAtelierNavigation.LNavigationTabAdd(
@@ -321,6 +324,7 @@ public sealed class CGuild
 
         return CPortrait.LPortraitTicketPrint(
             _cGuildEnvoy,
+            _cGuildSettingsPort,
             chosen => _cGuildPortraitPort.LEnginePortraitPrint(
                 CGuildOeuvre.COeuvrePanel.CPanelVista,
                 CPortrait.LPortraitLegendRead(_cGuildSettingsPort, "Source"),
@@ -357,7 +361,7 @@ public sealed class CGuild
         }
         catch (Exception exception)
         {
-            _cGuildEnvoy.CEnvoyFailureShow("Guild.MergeFailed", exception);
+            CLedger.LLedgerFailureShow(_cGuildEnvoy, _cGuildSettingsPort, "Guild.MergeFailed", exception);
             return;
         }
 

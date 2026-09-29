@@ -60,9 +60,22 @@ internal sealed class QEnvoy : CEnvoy
             MessageBoxImage.Question) == MessageBoxResult.Yes;
     }
 
-    public void CEnvoyFailureShow(string key, Exception exception)
+    public void CEnvoyFailureShow(string key, CLedgerNotice notice)
     {
-        _qEnvoyHost.PWindowFailureRefine(key, exception);
+        ArgumentNullException.ThrowIfNull(notice);
+
+        string detail = QLocalizationCatalog.QLocalizationTextRead(notice.CLedgerNoticeKey);
+        if (notice is { CLedgerNoticeLabel: string label, CLedgerNoticePath: string path })
+        {
+            detail = $"{detail}\n\n{QLocalizationCatalog.QLocalizationTextRead(label)}\n{path}";
+        }
+
+        MessageBox.Show(
+            _qEnvoySurface,
+            $"{QLocalizationCatalog.QLocalizationTextRead(key)}\n\n{detail}",
+            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
+            MessageBoxButton.OK,
+            MessageBoxImage.Warning);
     }
 
     public void CEnvoyFailureShow(string key)
@@ -73,11 +86,6 @@ internal sealed class QEnvoy : CEnvoy
             QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.OK,
             MessageBoxImage.Warning);
-    }
-
-    public bool CEnvoyDiscardConfirm()
-    {
-        return _qEnvoyHost.PWindowAtelier.CAtelierQuitConfirm(this);
     }
 
     public bool? CEnvoyLeaveConfirm()

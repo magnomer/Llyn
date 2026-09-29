@@ -31,6 +31,7 @@ public sealed class CCorpus
         CCorpusQuotation = new CQuotation(
             atelier.CAtelierEntryPort,
             atelier.CAtelierPortraitPort,
+            atelier.CAtelierSettingsPort,
             envoy,
             editor.CEditorDesk.LDeskChangeCheck,
             store => CCorpusSession!.LSessionFinish(store),
@@ -46,7 +47,8 @@ public sealed class CCorpus
             LCorpusStoredShow);
         CCorpusSession.CSessionHeld += () => CCorpusTranscriptChanged?.Invoke(CCorpusTranscriptRead());
         CCorpusSession.CSessionChanged += () => CCorpusChanged?.Invoke();
-        CCorpusSession.CSessionFailed += envoy.CEnvoyFailureShow;
+        CCorpusSession.CSessionFailed +=
+            (key, exception) => CLedger.LLedgerFailureShow(envoy, _cCorpusSettingsPort, key, exception);
         CCorpusAnthology.CAnthologyPanel.CPanelEdited += id => CCorpusSession.CSessionStart(id);
         CCorpusAnthology.CAnthologyPanel.CPanelCleared += CCorpusSession.CSessionCancel;
         CCorpusAnthology.CAnthologyPanel.CPanelDraftChanged +=
@@ -127,7 +129,7 @@ public sealed class CCorpus
         }
         catch (Exception exception)
         {
-            _cCorpusEnvoy.CEnvoyFailureShow("Example.HoldFailed", exception);
+            CLedger.LLedgerFailureShow(_cCorpusEnvoy, _cCorpusSettingsPort, "Example.HoldFailed", exception);
             return null;
         }
     }

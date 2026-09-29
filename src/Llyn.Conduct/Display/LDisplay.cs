@@ -13,6 +13,8 @@ public sealed class LDisplay
 
     private readonly CEnvoy _lDisplayEnvoy;
 
+    private readonly LSettingsPort _lDisplaySettings;
+
     private LVista? _lDisplayVista;
 
     private (long, int)? _lDisplayGrasp;
@@ -30,9 +32,11 @@ public sealed class LDisplay
 
         _lEntryPort = entries;
         _lDisplayEnvoy = envoy;
+        _lDisplaySettings = settings;
         LDisplaySound = new LDisplaySound(entries, phonology, media, settings);
-        LDisplaySound.LDisplaySoundFailed += envoy.CEnvoyFailureShow;
-        CDisplayArea = new CDisplay(this, entries, phonology, envoy);
+        LDisplaySound.LDisplaySoundFailed +=
+            (key, exception) => CLedger.LLedgerFailureShow(envoy, settings, key, exception);
+        CDisplayArea = new CDisplay(this, entries, phonology, settings, envoy);
         CDisplaySound = new CDisplaySound(
             LDisplaySound, CDisplayArea, drafts, entries, phonology, media, settings, envoy);
     }
@@ -87,7 +91,7 @@ public sealed class LDisplay
         }
         catch (Exception exception)
         {
-            _lDisplayEnvoy.CEnvoyFailureShow("Sound.LoadFailed", exception);
+            CLedger.LLedgerFailureShow(_lDisplayEnvoy, _lDisplaySettings, "Sound.LoadFailed", exception);
             return;
         }
 
@@ -144,7 +148,7 @@ public sealed class LDisplay
         }
         catch (Exception exception)
         {
-            _lDisplayEnvoy.CEnvoyFailureShow("Favorite.MarkFailed", exception);
+            CLedger.LLedgerFailureShow(_lDisplayEnvoy, _lDisplaySettings, "Favorite.MarkFailed", exception);
         }
     }
 
@@ -213,7 +217,7 @@ public sealed class LDisplay
         }
         catch (Exception exception)
         {
-            _lDisplayEnvoy.CEnvoyFailureShow("Display.NameFailed", exception);
+            CLedger.LLedgerFailureShow(_lDisplayEnvoy, _lDisplaySettings, "Display.NameFailed", exception);
             return labels;
         }
     }
@@ -259,7 +263,7 @@ public sealed class LDisplay
         }
         catch (Exception exception)
         {
-            _lDisplayEnvoy.CEnvoyFailureShow("Grasp.MarkFailed", exception);
+            CLedger.LLedgerFailureShow(_lDisplayEnvoy, _lDisplaySettings, "Grasp.MarkFailed", exception);
         }
     }
 

@@ -7,7 +7,6 @@ internal sealed class PCandidateItem
     internal PCandidateItem(long id, string title, int usage, string word)
     {
         PCandidateItemId = id;
-        PCandidateItemTitle = title;
         PCandidateItemUsage = usage;
 
         int found = -1;
@@ -32,8 +31,6 @@ internal sealed class PCandidateItem
     }
 
     public long PCandidateItemId { get; }
-
-    public string PCandidateItemTitle { get; }
 
     public int PCandidateItemUsage { get; }
 

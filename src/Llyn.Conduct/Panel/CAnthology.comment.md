@@ -7,9 +7,10 @@ It finds the rows and their usage, and takes the query, order and kind filter.
 Its panel loads, edits and deletes the chosen Example, worded under the Example scope.
 It also answers the transcript's citation field and prints the chosen Example.
 
-## `internal CAnthology(LEntryPort entries, LPortraitPort portraits, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)`
+## `internal CAnthology(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)`
 
 Takes the ports it reads and prints through, the corpus desk holding the transcript, and the panel's seams.
+The panel reads a failure's ready notice through `settings`.
 The panel asks whether the desk changed before it leaves an Example.
 
 ## `internal static CAnthology LAnthologyCreate(CAtelier atelier, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)`

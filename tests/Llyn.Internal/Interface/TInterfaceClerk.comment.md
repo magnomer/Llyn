@@ -9,6 +9,10 @@ Each relay is transparent and carries no test logic of its own.
 
 Relays the meaning clerk's reading order, so the rule is tested over handed-in Meanings.
 
+## `internal static string TDraftListParse(string? text, bool settled, Func<string, bool> accept)`
+
+Relays the typed-list parse, so a test reads the rule where it is owned.
+
 ## `internal static LRig TRigClerkCreate(LEntryVault entries)`
 
 A fake rig over `entries` with in-memory workspace, revision, tombstone, pronunciation, transcription and reflex stores.

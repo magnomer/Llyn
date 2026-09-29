@@ -59,6 +59,10 @@ The text edits of the held tenure, built when a tenure starts and dropped when i
 
 The media edits of the held tenure, built when a tenure starts and dropped when it ends.
 
+## `private LQuillChip? _cDeskChip;`
+
+The chip row edits of the held tenure, built when a tenure starts and dropped when it ends.
+
 ## `internal LQuill? CDeskQuill`
 
 The held tenure's text edits, so no driver builds a text request.
@@ -68,6 +72,11 @@ A fill echoes values the draft already holds, so nothing is written back.
 ## `internal LEasel? CDeskEasel`
 
 The held tenure's media edits, so no driver builds a media request.
+It is null while no tenure is held or while the desk fills its controls.
+
+## `internal LQuillChip? CDeskChip`
+
+The held tenure's chip row edits: tags, situations, registers and translations of a card.
 It is null while no tenure is held or while the desk fills its controls.
 
 ## `public CErrand CDeskErrand { get; }`

@@ -32,7 +32,9 @@ public sealed class CFavorite
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CFavoriteEditor = editor;
         CFavoritePanel = new CPanel(
-            envoy, "Favorite.LoadFailed", "Scribe", editor.CEditorDesk.LDeskChangeCheck, editor.LEditorFinish,
+            envoy,
+            _cFavoriteSettingsPort,
+            "Favorite.LoadFailed", "Scribe", editor.CEditorDesk.LDeskChangeCheck, editor.LEditorFinish,
             shownSeam);
         CFavoritePanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CFavoritePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
@@ -114,6 +116,7 @@ public sealed class CFavorite
     {
         return CPortrait.LPortraitTicketPrint(
             _cFavoriteEnvoy,
+            _cFavoriteSettingsPort,
             chosen => _cFavoritePortraitPort.LEnginePortraitPrint(
                 _cFavoriteVista, CPortrait.LPortraitLabelRead(_cFavoriteSettingsPort), chosen));
     }
@@ -122,6 +125,7 @@ public sealed class CFavorite
     {
         return CPortrait.LPortraitFileExport(
             _cFavoriteEnvoy,
+            _cFavoriteSettingsPort,
             LFavoriteFileRead(),
             (file, medium) => _cFavoritePortraitPort.LEnginePortraitExport(
                 _cFavoriteVista, file, medium, CPortrait.LPortraitLabelRead(_cFavoriteSettingsPort)));

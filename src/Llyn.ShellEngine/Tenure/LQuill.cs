@@ -117,23 +117,6 @@ public sealed class LQuill
             new LRequestSentenceReference(_lQuillTenure.LTenureId, card, sentence, reference));
     }
 
-    public void LQuillTagAdd(long card, string text, int position)
-    {
-        ArgumentNullException.ThrowIfNull(text);
-
-        _lQuillTenure.LTenureRequestApply(new LRequestTagAddition(_lQuillTenure.LTenureId, card, text, position));
-    }
-
-    public void LQuillTagInsert(long card, long tag, int position)
-    {
-        _lQuillTenure.LTenureRequestApply(new LRequestTagPick(_lQuillTenure.LTenureId, card, tag, position));
-    }
-
-    public void LQuillTagRemove(long card, long tag)
-    {
-        _lQuillTenure.LTenureRequestApply(new LRequestTagRemoval(_lQuillTenure.LTenureId, card, tag));
-    }
-
     public void LQuillSentenceAdd(long card, int position)
     {
         _lQuillTenure.LTenureRequestApply(new LRequestSentenceAddition(_lQuillTenure.LTenureId, card, position));

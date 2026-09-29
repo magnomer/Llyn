@@ -51,7 +51,7 @@ internal static partial class TInterface
         this LEngine engine,
         string query,
         string language) =>
-        engine.LEngineCard.LEngineRegisterFind(query, language);
+        engine.LEngineCard.LEngineRegisterFind(null, 0, query, language);
 
     internal static IReadOnlyList<LTag> TEngineTagFind(
         this LEngine engine,

@@ -99,6 +99,7 @@ public sealed class TFootnote
         CFootnote footnote = new(
             atelier.CAtelierEntryPort,
             atelier.CAtelierPortraitPort,
+            atelier.CAtelierSettingsPort,
             editor,
             envoy,
             static _ => true,

@@ -24,16 +24,10 @@ Asks the question named by `key` before one record is folded into another, and a
 
 Tells the user the failure named by `key`.
 
-## `void CEnvoyFailureShow(string key, Exception exception);`
+## `void CEnvoyFailureShow(string key, CLedgerNotice notice);`
 
-Tells the user the failure named by `key`, with the exception the engine threw.
-The driver words the detail and records a fault, so nothing diagnosable is lost.
-
-## `bool CEnvoyDiscardConfirm();`
-
-Asks whether unsaved work may be stored or dropped, and answers true once it is settled either way.
-A driver that holds editors of its own walks them, so the question keeps its own medium.
-`CAtelierWorkspaceChange` asks it before leaving a workspace.
+Tells the user the failure named by `key`, with the ready detail Conduct read for it.
+Conduct read the notice once and recorded any fault, so the driver only words the keys it carries.
 
 ## `bool? CEnvoyLeaveConfirm();`
 

@@ -174,7 +174,13 @@ internal static class TInterfaceConduct
 
     internal static CPanel TPanelCreate(
         CEnvoy envoy, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam) =>
-        new(envoy, "List.LoadFailed", deleteScope, changeSeam, finishSeam, static () => true);
+        new(envoy, TSettingsCreate(), "List.LoadFailed", deleteScope, changeSeam, finishSeam, static () => true);
+
+    internal static LSettingsPort TSettingsCreate() =>
+        TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineFailureRead"] = args => ((string)args![1]!, (string?)null, (string?)null),
+        });
 
     internal static void TPanelVistaRestore(this CPanel panel, LVista vista) => panel.CPanelVistaRestore(vista);
 
@@ -189,7 +195,7 @@ internal static class TInterfaceConduct
     internal static LSubject TPanelSubjectRead(CSubject subject) => CPanel.CPanelSubjectRead(subject);
 
     internal static COeuvre TOeuvreCreate(LEngine engine) =>
-        new(new LEntryOutlet(engine), TEnvoyCreate(true, []), static () => true);
+        new(new LEntryOutlet(engine), new LSettingsOutlet(engine), TEnvoyCreate(true, []), static () => true);
 
     internal static void TOeuvreVistaRestore(this COeuvre oeuvre, LVista roll, LVista vista) =>
         oeuvre.LOeuvreVistaRestore(roll, vista);
@@ -200,6 +206,7 @@ internal static class TInterfaceConduct
     internal static COccurrence TOccurrenceCreate(LEngine engine) => new(
         new LEntryOutlet(engine),
         new LPortraitOutlet(engine),
+        new LSettingsOutlet(engine),
         TEnvoyCreate(false, []),
         static () => false,
         static _ => true,
@@ -262,16 +269,20 @@ internal static class TInterfaceConduct
     internal static LVistaRow TVistaRowCreate(long id, string epithet, bool chosen) =>
         new(id, "aqua", "Latin", epithet, "aqua (1)", chosen);
 
-    internal static CCard TCardCreate(LEngine engine, CDesk desk) => new(
-        desk, new LDraftOutlet(engine), new LEntryOutlet(engine));
+    internal static CCard TCardCreate(LEngine engine, CDesk desk, CEnvoy envoy) => new(
+        desk, new LDraftOutlet(engine), new LEntryOutlet(engine), new LSettingsOutlet(engine), envoy);
 
     internal static CSentence TSentenceCreate(LEngine engine, CDesk desk) => new(
         desk, new LPhonologyOutlet(engine));
 
     internal static CSounding TSoundingCreate(
-        CDesk desk, LPhonologyPort phonology, LDraftPort drafts, CEnvoy envoy) => new(desk, phonology, drafts, envoy);
+        CDesk desk, LPhonologyPort phonology, LDraftPort drafts, CEnvoy envoy) =>
+        new(desk, phonology, drafts, TSettingsCreate(), envoy);
 
     internal static CStateValue TCardStateRead(LStateValue value) => CFolio.CFolioStateRead(value);
+
+    internal static CSentenceOrder TCatalogOrderRead(LEngine engine, string language) =>
+        CCatalog.CCatalogOrderRead(new LPhonologyOutlet(engine).LEngineOrderRead(language));
 
     internal static CEntryDraft TCardEntryRead(LEntryDraft draft) => CFolio.CFolioEntryRead(draft);
 
@@ -315,10 +326,10 @@ internal static class TInterfaceConduct
     internal static IReadOnlyList<CPortraitChoice> TPortraitChoiceRead() => CPortrait.LPortraitChoiceRead();
 
     internal static Task TPortraitFileExport(CEnvoy envoy, string file, Func<string, LPortraitMedium, Task> export) =>
-        CPortrait.LPortraitFileExport(envoy, file, export);
+        CPortrait.LPortraitFileExport(envoy, TSettingsCreate(), file, export);
 
     internal static Task TPortraitTicketPrint(CEnvoy envoy, Func<LPressTicket, Task> print) =>
-        CPortrait.LPortraitTicketPrint(envoy, print);
+        CPortrait.LPortraitTicketPrint(envoy, TSettingsCreate(), print);
 
     internal static string TFavoriteFileRead(this CFavorite favorite) => favorite.LFavoriteFileRead();
 

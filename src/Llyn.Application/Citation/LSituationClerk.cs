@@ -78,6 +78,26 @@ public sealed class LSituationClerk
         return LCatalogSituation.LCatalogSituationSort(rows, order);
     }
 
+    public IReadOnlyList<LCatalogSituation> LSituationClerkFind(
+        string query, LCatalogOrder order, LDraft? draft, long card)
+    {
+        IReadOnlyList<LSituationDraft> held = draft is null
+            ? []
+            : LDraftClerkCard.LCardFind(draft.LDraftContent, card)?.LCardDraftSituation ?? [];
+
+        List<LCatalogSituation> found = [];
+        foreach (LCatalogSituation row in LSituationClerkFind(query, order))
+        {
+            if (LDraftClerkList.LDraftListFind(
+                    held, row.LCatalogSituationStored.LSituationId, static item => item.LSituationDraftId) < 0)
+            {
+                found.Add(row);
+            }
+        }
+
+        return found;
+    }
+
     public void LSituationClerkUpdate(LSituation situation)
     {
         ArgumentNullException.ThrowIfNull(situation);

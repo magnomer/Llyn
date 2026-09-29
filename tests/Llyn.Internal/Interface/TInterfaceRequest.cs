@@ -99,6 +99,9 @@ internal static partial class TInterface
     internal static LRequest TRegisterPickCreate(long draftId, long cardId, long registerId, int position) =>
         new LRequestRegisterPick(draftId, cardId, registerId, position);
 
+    internal static LRequest TTagTextCreate(long draftId, long tagId, string text) =>
+        new LRequestTagText(draftId, tagId, text);
+
     internal static LRequest TTagAdditionCreate(long draftId, long cardId, string text, int position) =>
         new LRequestTagAddition(draftId, cardId, text, position);
 

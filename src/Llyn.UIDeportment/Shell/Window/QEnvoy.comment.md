@@ -7,7 +7,7 @@ It puts up a message box over the main window, worded from the key Conduct chose
 
 ## `internal QEnvoy(Window surface, PWindow host)`
 
-Takes the loaded window that owns every box, and the host whose editors the discard question walks.
+Takes the loaded window that owns every box, and the host the customs window is placed over.
 
 ## `public bool CEnvoyConfirm(string key)`
 
@@ -24,20 +24,16 @@ It is the question before a shared record is deleted, so it shows under a questi
 Asks before one record is folded into another, naming both so the direction of the fold is plain.
 The dropped name comes first and the kept name second, joined by an arrow, because the fold reads that way.
 
-## `public void CEnvoyFailureShow(string key, Exception exception)`
+## `public void CEnvoyFailureShow(string key, CLedgerNotice notice)`
 
-Presents a failure that carries an exception through the window, which words the detail and records a fault.
+Shows a failure under the localized headline `key` names, with the ready detail Conduct handed over.
+A refusal's reason, or the unexpected line with the label and path of its audit file, is worded as given.
+It asks Conduct nothing, so the detail is only placed on the lines of the box.
 
 ## `public void CEnvoyFailureShow(string key)`
 
 Presents a request that failed with nothing further to say about why.
 The headline alone is the whole answer, and an empty detail line under it would read as a missing message.
-
-## `public bool CEnvoyDiscardConfirm()`
-
-Asks whether unsaved work may be stored or dropped before a workspace change.
-It hands itself to `CAtelierQuitConfirm`, which asks every area and shows the one question through this envoy.
-It answers true only once every area has finished.
 
 ## `public bool? CEnvoyLeaveConfirm()`
 

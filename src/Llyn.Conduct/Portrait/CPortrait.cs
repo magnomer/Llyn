@@ -61,7 +61,7 @@ internal static class CPortrait
     }
 
     internal static async Task LPortraitFileExport(
-        CEnvoy envoy, string file, Func<string, LPortraitMedium, Task> export)
+        CEnvoy envoy, LSettingsPort settings, string file, Func<string, LPortraitMedium, Task> export)
     {
         ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(export);
@@ -78,11 +78,12 @@ internal static class CPortrait
         }
         catch (Exception exception)
         {
-            envoy.CEnvoyFailureShow("Export.Failed", exception);
+            CLedger.LLedgerFailureShow(envoy, settings, "Export.Failed", exception);
         }
     }
 
-    internal static async Task LPortraitTicketPrint(CEnvoy envoy, Func<LPressTicket, Task> print)
+    internal static async Task LPortraitTicketPrint(
+        CEnvoy envoy, LSettingsPort settings, Func<LPressTicket, Task> print)
     {
         ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(print);
@@ -98,7 +99,7 @@ internal static class CPortrait
         }
         catch (Exception exception)
         {
-            envoy.CEnvoyFailureShow("Print.Failed", exception);
+            CLedger.LLedgerFailureShow(envoy, settings, "Print.Failed", exception);
         }
     }
 

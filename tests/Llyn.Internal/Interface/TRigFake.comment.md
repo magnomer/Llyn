@@ -20,6 +20,10 @@ The trail is the real system adapter, since path rules touch no disk, and the cl
 The press is a `TPress`, which records what it is handed and touches no printer.
 The process id is one, so a claim from another process is any claim not naming one.
 
+## `private sealed class TRigFakeAudit : LAuditVault`
+
+An audit shelf that records nothing, so a gate's failure notice reads with no audit file.
+
 ## `private static TRigFakePort TRigStubCreate<TRigFakePort>() where TRigFakePort : class =>`
 
 One throwing stub for the port `TRigFakePort`, generated over the proxy below.

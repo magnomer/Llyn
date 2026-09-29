@@ -8,9 +8,10 @@ It keeps a handle on the roll vista too, because the engine narrows the rows by 
 It owns the panel over the oeuvre vista, with the Source keys and no delete scope.
 It also holds the reference, author, vita and usage maps that other lists share.
 
-## `internal COeuvre(LEntryPort entries, CEnvoy envoy, Func<bool> shownSeam)`
+## `internal COeuvre(LEntryPort entries, LSettingsPort settings, CEnvoy envoy, Func<bool> shownSeam)`
 
 Builds the oeuvre over the entry port, with its panel asking through `envoy`.
+The panel reads a failure's ready notice through `settings`.
 The panel never edits, so it holds no changes and stores nothing on leaving.
 
 ## `public CPanel COeuvrePanel { get; }`

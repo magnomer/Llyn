@@ -32,14 +32,10 @@ An unknown role throws, so a role added on one side alone fails loudly.
 The fonts of several roles in one read, in the order the roles are given.
 A surface showing two roles together, such as an example and its gloss, asks once.
 
-## `public CSentenceOrder CCatalogOrderRead(string language)`
-
-Where a language puts its particles and its dependents in a sentence.
-
 ## `internal static CSentenceOrder CCatalogOrderRead(LSentenceOrder order)`
 
 Maps the engine's order into the Conduct shape, holding no rule.
-The sentence gates hand it the engine's answer unread, so they name no engine record.
+The sentence frame hands it the engine's answer unread, so it names no engine record.
 
 ## `public IReadOnlyList<string> CCatalogSchemeRead(string language)`
 
@@ -57,11 +53,12 @@ Adds a part of speech to a language, and answers nothing when the engine decline
 
 The glyph set a language writes in, or nothing when it has none.
 
-## `internal static long? LCatalogGlyphOpen(CEnvoy envoy, Func<long> resolve)`
+## `internal static long? LCatalogGlyphOpen(CEnvoy envoy, LSettingsPort settings, Func<long> resolve)`
 
 The one failure owner of every glyph chip that opens a character's entry.
 `resolve` is the gate's one engine call, which finds or makes the entry.
 A refused resolve shows `Glyph.OpenFailed` through the panel's envoy and answers null.
+`settings` reads the ready notice, as `CLedger.LLedgerFailureShow` does for every gate.
 
 ## `public IReadOnlyList<string> CCatalogLanguageRead()`
 

@@ -21,6 +21,8 @@ public partial class PEditor
 
     private readonly ObservableCollection<string> _pEditorDependence = [];
 
+    private CSentenceOrder? _pSentenceOrder;
+
     internal void PSentenceLoad()
     {
         _pEditorCitation.Clear();
@@ -47,6 +49,7 @@ public partial class PEditor
     internal void PSentenceFrameRefine()
     {
         CSentenceFrame frame = _lEditor.LEditorStudio.CEditorSentence.CSentenceFrameRead();
+        _pSentenceOrder = frame.CSentenceFrameOrder;
         PSentenceListRefine(_pEditorParticle, frame.CSentenceFrameParticle);
         PSentenceListRefine(_pEditorDependence, frame.CSentenceFrameDependence);
 

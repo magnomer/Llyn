@@ -14,15 +14,23 @@ public sealed class CCard
 
     private readonly LEntryPort _cCardEntryPort;
 
-    internal CCard(CDesk desk, LDraftPort drafts, LEntryPort entries)
+    private readonly LSettingsPort _cCardSettingsPort;
+
+    private readonly CEnvoy _cCardEnvoy;
+
+    internal CCard(CDesk desk, LDraftPort drafts, LEntryPort entries, LSettingsPort settings, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(envoy);
 
         _cCardDesk = desk;
         _cCardDraftPort = drafts;
         _cCardEntryPort = entries;
+        _cCardSettingsPort = settings;
+        _cCardEnvoy = envoy;
     }
 
     public IReadOnlyList<CVistaRow> CCardProspectFind(string word)
@@ -33,6 +41,24 @@ public sealed class CCard
     public long? CCardTranslationResolve(string word, long? entryId)
     {
         return _cCardDraftPort.LEngineTranslationResolve(word, entryId)?.LEntryId;
+    }
+
+    public string CCardTranslationAdd(long cardId, string text, int position)
+    {
+        try
+        {
+            return _cCardDesk.CDeskChip?.LQuillTranslationAdd(cardId, text, position) ?? text;
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cCardEnvoy, _cCardSettingsPort, "Input.TranslationFailed", exception);
+            return text;
+        }
+    }
+
+    public void CCardTranslationInsert(long cardId, long entryId, int position)
+    {
+        _cCardDesk.CDeskChip?.LQuillTranslationInsert(cardId, entryId, position);
     }
 
     public long CCardCourtStart(long ownerId, string origin, string headword, string language)
@@ -56,9 +82,9 @@ public sealed class CCard
         _cCardDraftPort.LEngineDraftDelete(targetId);
     }
 
-    public IReadOnlyList<CRegister> CCardRegisterFind(string word, string language)
+    public IReadOnlyList<CRegister> CCardRegisterFind(long cardId, string word, string language)
     {
-        return _cCardEntryPort.LEngineRegisterFind(word, language)
+        return _cCardEntryPort.LEngineRegisterFind(_cCardDesk.CDeskTenure, cardId, word, language)
             .Select(LCardRegisterRead)
             .ToList();
     }
@@ -70,9 +96,10 @@ public sealed class CCard
         return new CRegister(register.LRegisterId, CFolio.CFolioStateRead(register.LRegisterName).CStateValueText);
     }
 
-    public IReadOnlyList<CCatalogSituation> CCardSituationFind(string word)
+    public IReadOnlyList<CCatalogSituation> CCardSituationFind(long cardId, string word)
     {
-        return _cCardEntryPort.LEngineSituationFind(word, LCatalogOrder.LCatalogOrderUsage)
+        return _cCardEntryPort.LEngineSituationFind(
+                _cCardDesk.CDeskTenure, cardId, word, LCatalogOrder.LCatalogOrderUsage)
             .Select(CAtlas.LAtlasRowRead)
             .ToList();
     }
@@ -88,9 +115,10 @@ public sealed class CCard
         return COeuvre.COeuvreReferenceRead(_cCardEntryPort.LEngineReferenceFind());
     }
 
-    public IReadOnlyList<CTag> CCardTagFind(string word)
+    public IReadOnlyList<CTag> CCardTagFind(long cardId, string word)
     {
-        return _cCardEntryPort.LEngineTagFind(word, LCatalogOrder.LCatalogOrderUsage)
+        return _cCardEntryPort.LEngineTagFind(
+                _cCardDesk.CDeskTenure, cardId, word, LCatalogOrder.LCatalogOrderUsage)
             .Select(LCardTagRead)
             .ToList();
     }
@@ -102,19 +130,44 @@ public sealed class CCard
         return new CTag(tag.LTagId, tag.LTagText);
     }
 
-    public void CCardTagAdd(long cardId, string text, int position)
+    public string CCardTagAdd(long cardId, string text, int position, bool settled)
     {
-        _cCardDesk.CDeskQuill?.LQuillTagAdd(cardId, text, position);
+        return _cCardDesk.CDeskChip?.LQuillTagAdd(cardId, text, position, settled) ?? text;
     }
 
     public void CCardTagInsert(long cardId, long tagId, int position)
     {
-        _cCardDesk.CDeskQuill?.LQuillTagInsert(cardId, tagId, position);
+        _cCardDesk.CDeskChip?.LQuillTagInsert(cardId, tagId, position);
     }
 
     public void CCardTagRemove(long cardId, long tagId)
     {
-        _cCardDesk.CDeskQuill?.LQuillTagRemove(cardId, tagId);
+        _cCardDesk.CDeskChip?.LQuillTagRemove(cardId, tagId);
+    }
+
+    public string CCardSituationAdd(long cardId, string text, int position, bool settled)
+    {
+        return _cCardDesk.CDeskChip?.LQuillSituationAdd(cardId, text, position, settled) ?? text;
+    }
+
+    public void CCardSituationInsert(long cardId, long situationId, int position)
+    {
+        _cCardDesk.CDeskChip?.LQuillSituationInsert(cardId, situationId, position);
+    }
+
+    public void CCardSituationRemove(long cardId, long situationId)
+    {
+        _cCardDesk.CDeskChip?.LQuillSituationRemove(cardId, situationId);
+    }
+
+    public string CCardRegisterAdd(long cardId, string text, int position, bool settled)
+    {
+        return _cCardDesk.CDeskChip?.LQuillRegisterAdd(cardId, text, position, settled) ?? text;
+    }
+
+    public void CCardRegisterInsert(long cardId, long registerId, int position)
+    {
+        _cCardDesk.CDeskChip?.LQuillRegisterInsert(cardId, registerId, position);
     }
 
     public void CCardCitationSet(long cardId, long sentenceId, string title)

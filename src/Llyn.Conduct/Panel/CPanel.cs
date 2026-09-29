@@ -8,6 +8,8 @@ public sealed class CPanel
 {
     private readonly CEnvoy _cPanelEnvoy;
 
+    private readonly LSettingsPort _cPanelSettingsPort;
+
     private readonly string _cPanelLoadKey;
 
     private readonly string? _cPanelDeleteScope;
@@ -24,6 +26,7 @@ public sealed class CPanel
 
     internal CPanel(
         CEnvoy envoy,
+        LSettingsPort settings,
         string loadKey,
         string? deleteScope,
         Func<bool> changeSeam,
@@ -31,12 +34,14 @@ public sealed class CPanel
         Func<bool> shownSeam)
     {
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(settings);
         ArgumentException.ThrowIfNullOrWhiteSpace(loadKey);
         ArgumentNullException.ThrowIfNull(changeSeam);
         ArgumentNullException.ThrowIfNull(finishSeam);
         ArgumentNullException.ThrowIfNull(shownSeam);
 
         _cPanelEnvoy = envoy;
+        _cPanelSettingsPort = settings;
         _cPanelLoadKey = loadKey;
         _cPanelDeleteScope = deleteScope;
         _cPanelChangeSeam = changeSeam;
@@ -256,7 +261,7 @@ public sealed class CPanel
         }
         catch (Exception exception)
         {
-            _cPanelEnvoy.CEnvoyFailureShow(_cPanelLoadKey, exception);
+            CLedger.LLedgerFailureShow(_cPanelEnvoy, _cPanelSettingsPort, _cPanelLoadKey, exception);
             return false;
         }
 
@@ -342,7 +347,7 @@ public sealed class CPanel
         }
         catch (Exception exception)
         {
-            _cPanelEnvoy.CEnvoyFailureShow(scope + ".DeleteFailed", exception);
+            CLedger.LLedgerFailureShow(_cPanelEnvoy, _cPanelSettingsPort, scope + ".DeleteFailed", exception);
             return;
         }
 

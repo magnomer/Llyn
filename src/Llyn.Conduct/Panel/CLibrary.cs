@@ -34,7 +34,9 @@ public sealed class CLibrary
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CLibraryEditor = editor;
         CLibraryPanel = new CPanel(
-            envoy, "List.LoadFailed", "Scribe", editor.CEditorDesk.LDeskChangeCheck, editor.LEditorFinish,
+            envoy,
+            _cLibrarySettingsPort,
+            "List.LoadFailed", "Scribe", editor.CEditorDesk.LDeskChangeCheck, editor.LEditorFinish,
             shownSeam);
         CLibraryPanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CLibraryPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
@@ -103,6 +105,7 @@ public sealed class CLibrary
     {
         return CPortrait.LPortraitTicketPrint(
             _cLibraryEnvoy,
+            _cLibrarySettingsPort,
             chosen => _cLibraryPortraitPort.LEnginePortraitPrint(
                 _cLibraryVista, CPortrait.LPortraitLabelRead(_cLibrarySettingsPort), chosen));
     }
@@ -111,6 +114,7 @@ public sealed class CLibrary
     {
         return CPortrait.LPortraitFileExport(
             _cLibraryEnvoy,
+            _cLibrarySettingsPort,
             LLibraryFileRead(),
             (file, medium) => _cLibraryPortraitPort.LEnginePortraitExport(
                 _cLibraryVista, file, medium, CPortrait.LPortraitLabelRead(_cLibrarySettingsPort)));
@@ -136,7 +140,7 @@ public sealed class CLibrary
         }
         catch (Exception exception)
         {
-            _cLibraryEnvoy.CEnvoyFailureShow("List.ImportFailed", exception);
+            CLedger.LLedgerFailureShow(_cLibraryEnvoy, _cLibrarySettingsPort, "List.ImportFailed", exception);
         }
     }
 

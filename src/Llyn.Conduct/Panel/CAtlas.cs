@@ -35,7 +35,9 @@ public sealed class CAtlas
         _cAtlasPortraitPort = portraits;
         _cAtlasSettingsPort = settings;
         CAtlasPanel = new CPanel(
-            envoy, "Situation.LoadFailed", "Situation", desk.LDeskChangeCheck, finishSeam, shownSeam);
+            envoy,
+            settings,
+            "Situation.LoadFailed", "Situation", desk.LDeskChangeCheck, finishSeam, shownSeam);
     }
 
     public CPanel CAtlasPanel { get; }
@@ -94,6 +96,7 @@ public sealed class CAtlas
     {
         return CPortrait.LPortraitTicketPrint(
             envoy,
+            settings,
             chosen => _cAtlasPortraitPort.LEnginePortraitPrint(
                 _cAtlasVista, CPortrait.LPortraitLegendRead(settings, "Situation"), chosen));
     }

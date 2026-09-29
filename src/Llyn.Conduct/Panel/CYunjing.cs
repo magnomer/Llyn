@@ -48,6 +48,7 @@ public sealed class CYunjing
         CYunjingEditor = editor;
         CYunjingPanel = new CPanel(
             envoy,
+            _cYunjingSettingsPort,
             "Yunjing.LoadFailed",
             "Scribe",
             editor.CEditorDesk.LDeskChangeCheck,
@@ -288,7 +289,9 @@ public sealed class CYunjing
         }
 
         if (CCatalog.LCatalogGlyphOpen(
-                _cYunjingEnvoy, () => _cYunjingPort.LEngineDiweiResolve(LYunjingSide?.LVistaChosen, character))
+                _cYunjingEnvoy,
+                _cYunjingSettingsPort,
+                () => _cYunjingPort.LEngineDiweiResolve(LYunjingSide?.LVistaChosen, character))
             is long entry)
         {
             _cYunjingAtelier.CAtelierNavigation.CNavigationEntryOpen(entry);
@@ -309,6 +312,7 @@ public sealed class CYunjing
 
         return CPortrait.LPortraitTicketPrint(
             _cYunjingEnvoy,
+            _cYunjingSettingsPort,
             chosen => _cYunjingPortraitPort.LEnginePortraitPrint(
                 _cYunjingXiaoyun, CPortrait.LPortraitLabelRead(_cYunjingSettingsPort), chosen));
     }
@@ -317,6 +321,7 @@ public sealed class CYunjing
     {
         return CPortrait.LPortraitFileExport(
             _cYunjingEnvoy,
+            _cYunjingSettingsPort,
             LYunjingFileRead(),
             (file, medium) => _cYunjingPortraitPort.LEnginePortraitExport(
                 _cYunjingXiaoyun, file, medium, CPortrait.LPortraitLabelRead(_cYunjingSettingsPort)));

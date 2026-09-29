@@ -108,14 +108,25 @@ Starts a fresh entry already citing the Example, as the corpus's new quotation d
 
 Builds one Latin entry row with the given id, epithet and chosen mark.
 
-## `internal static CCard TCardCreate(LEngine engine, CDesk desk)`
+## `internal static CCard TCardCreate(LEngine engine, CDesk desk, CEnvoy envoy)`
 
 Builds the card gates over `desk` and real outlets on `engine`, as the editor does.
+`envoy` is where a failed translation is shown.
 
 ## `internal static CSounding TSoundingCreate(`
 
 Builds the editor's sound sheet over a real desk and ports a test may fake.
 The fake ports let a test refuse an engine call and watch the envoy.
+The settings port is `TSettingsCreate`, so a refusal reaches the envoy with a notice.
+
+## `internal static LSettingsPort TSettingsCreate()`
+
+A settings port that only reads failure notices, each as the unexpected key it is handed.
+A gate over fakes can then show its failure without a real engine behind the notice.
+
+## `internal static CSentenceOrder TCatalogOrderRead(LEngine engine, string language)`
+
+The word order a language's pack gives, mapped as the sentence frame maps it.
 
 ## `internal static CSentence TSentenceCreate(LEngine engine, CDesk desk)`
 

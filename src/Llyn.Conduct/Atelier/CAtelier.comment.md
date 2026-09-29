@@ -98,13 +98,14 @@ The sweep runs before any view restores, so nothing already saved is counted as 
 
 Decides whether the session may end over every area that holds a draft.
 The workspace asks every area and puts the one question through `envoy`.
-The window's closing and the envoy's discard question before a workspace change both reach it.
+The window's closing reaches it, and `CAtelierWorkspaceChange` asks the same workspace quit inside Conduct.
 
 ## `public CWorkspaceState? CAtelierWorkspaceChange(string chosen, CEnvoy envoy)`
 
 Moves the session onto the workspace at `chosen`, trimmed, and answers the state of the workspace moved onto.
 A blank path or the folder already in use changes nothing, asks nothing and answers nothing.
-Otherwise `envoy` is asked first, since the move drops every open form.
+Otherwise the workspace's quit asks first, since the move drops every open form.
+It is the one leave question the window's closing asks, put through `envoy` only when a form holds unsaved work.
 The engine records the folder only once the move succeeds, and a failed move throws to the driver.
 The driver then calls `CAtelierOpen`, which sweeps and restores the views on the new workspace.
 

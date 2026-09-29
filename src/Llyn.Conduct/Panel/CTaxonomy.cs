@@ -36,7 +36,9 @@ public sealed class CTaxonomy
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CTaxonomyEditor = editor;
         CTaxonomyPanel = new CPanel(
-            envoy, "Tag.LoadFailed", "Scribe", editor.CEditorDesk.LDeskChangeCheck, editor.LEditorFinish, shownSeam);
+            envoy,
+            _cTaxonomySettingsPort,
+            "Tag.LoadFailed", "Scribe", editor.CEditorDesk.LDeskChangeCheck, editor.LEditorFinish, shownSeam);
         CTaxonomyPanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         CTaxonomyPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         atelier.CAtelierNavigation.LNavigationTabAdd(
@@ -170,7 +172,7 @@ public sealed class CTaxonomy
         }
         catch (Exception exception)
         {
-            _cTaxonomyEnvoy.CEnvoyFailureShow("Tag.CreateFailed", exception);
+            CLedger.LLedgerFailureShow(_cTaxonomyEnvoy, _cTaxonomySettingsPort, "Tag.CreateFailed", exception);
             return;
         }
 
@@ -199,6 +201,7 @@ public sealed class CTaxonomy
 
         return CPortrait.LPortraitTicketPrint(
             _cTaxonomyEnvoy,
+            _cTaxonomySettingsPort,
             chosen => _cTaxonomyPortraitPort.LEnginePortraitPrint(
                 _cTaxonomyMembership, CPortrait.LPortraitLabelRead(_cTaxonomySettingsPort), chosen));
     }
@@ -212,6 +215,7 @@ public sealed class CTaxonomy
 
         return CPortrait.LPortraitFileExport(
             _cTaxonomyEnvoy,
+            _cTaxonomySettingsPort,
             LTaxonomyFileRead(),
             (file, medium) => _cTaxonomyPortraitPort.LEnginePortraitExport(
                 _cTaxonomyMembership, file, medium, CPortrait.LPortraitLabelRead(_cTaxonomySettingsPort)));

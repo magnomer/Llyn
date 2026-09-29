@@ -38,6 +38,7 @@ public sealed class CRepertoire
         CRepertoireOccurrence = new COccurrence(
             atelier.CAtelierEntryPort,
             atelier.CAtelierPortraitPort,
+            atelier.CAtelierSettingsPort,
             envoy,
             editor.CEditorDesk.LDeskChangeCheck,
             store => CRepertoireSession!.LSessionFinish(store),
@@ -53,7 +54,8 @@ public sealed class CRepertoire
             LRepertoireStoredShow);
         CRepertoireSession.CSessionHeld += () => CRepertoireScenarioChanged?.Invoke(CRepertoireScenarioRead());
         CRepertoireSession.CSessionChanged += () => CRepertoireChanged?.Invoke();
-        CRepertoireSession.CSessionFailed += envoy.CEnvoyFailureShow;
+        CRepertoireSession.CSessionFailed +=
+            (key, exception) => CLedger.LLedgerFailureShow(envoy, _cRepertoireSettingsPort, key, exception);
         CRepertoireAtlas.CAtlasPanel.CPanelEdited += id => CRepertoireSession.CSessionStart(id);
         CRepertoireAtlas.CAtlasPanel.CPanelCleared += CRepertoireSession.CSessionCancel;
         CRepertoireAtlas.CAtlasPanel.CPanelDraftChanged +=
@@ -140,7 +142,7 @@ public sealed class CRepertoire
         }
         catch (Exception exception)
         {
-            _cRepertoireEnvoy.CEnvoyFailureShow("Situation.HoldFailed", exception);
+            CLedger.LLedgerFailureShow(_cRepertoireEnvoy, _cRepertoireSettingsPort, "Situation.HoldFailed", exception);
             return null;
         }
     }

@@ -16,13 +16,16 @@ public sealed class COeuvre
 
     private int _cOeuvreCount;
 
-    internal COeuvre(LEntryPort entries, CEnvoy envoy, Func<bool> shownSeam)
+    internal COeuvre(LEntryPort entries, LSettingsPort settings, CEnvoy envoy, Func<bool> shownSeam)
     {
         ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(settings);
 
         _cOeuvreEntryPort = entries;
         COeuvrePanel = new CPanel(
-            envoy, "Source.LoadFailed", null,
+            envoy,
+            settings,
+            "Source.LoadFailed", null,
             static () => false, static _ => true, shownSeam);
         COeuvrePanel.CPanelDraftChanged += LOeuvreColophonUpdate;
     }

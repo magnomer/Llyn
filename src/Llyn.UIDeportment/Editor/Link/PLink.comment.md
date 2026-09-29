@@ -12,7 +12,13 @@ A card holds ids and knows nothing about how a word becomes one.
 
 ## `internal void PLinkAttach(PCard card)`
 
-Gives a card the way back to the editor its typed words are resolved through.
+Gives a card the prospect notice its entry's text goes to as it is typed.
+
+## `private void PLinkTextObserve(PLinkCaret caret, string text)`
+
+Hears each edit of a Translation caret and hands the raw text to the translation gate.
+The gate links each completed word that resolves and answers the words that stay.
+The card's `PCardLinkRefine` then shows that answer and offers prospects for it.
 Every card the editor builds is attached, whether it was loaded or added by hand.
 
 ## `private void PLinkProspectShow(PCard card, string text)`
@@ -28,7 +34,7 @@ Closes the link whose button was pressed.
 ## `internal void PLinkCaretHandle(object sender, KeyEventArgs e)`
 
 An open dropdown is offered every key first, so it answers the arrows and enter before the field does.
-Enter resolves what is standing in the entry once no dropdown is open.
+Enter resolves what is standing in the entry once no dropdown is open, with the dropdown offered.
 Escape closes an open dropdown and leaves the word alone.
 The chip keys go through `PCaretKeyApply`.
 Every other key is left to the text box.
@@ -71,11 +77,6 @@ Asks the engine to unlink the chip, then closes the court link behind it if ther
 The chip is gone from the draft before the court is touched.
 So nothing points at a target being torn down.
 
-### `private bool PLinkSend(PCard card, long id)`
-
-Asks the engine to link the Entry at the caret, unless the card already links it.
-Answers whether the word is settled, which an id of zero never is.
-
 ### `private void PLinkCourtDelete(long id)`
 
 A chip naming a stored entry has no court row, and nothing happens.
@@ -89,7 +90,8 @@ Its language stands beside it.
 One Entry whose whole headword is the word is chosen already, so a single keystroke confirms it.
 A headword is the same in every language, and only the user knows which language they meant.
 That is what `offered` says.
-When the field is left or a list is pasted, one whole-headword match is linked without asking.
+When the field is left, one whole-headword match is linked without asking, through the insert gate.
+A typed or pasted list goes to the translation gate instead, through `PLinkTextObserve`.
 Anything else is left standing.
 An unasked question leaves the word in the entry, where the user can still see it.
 A search the workspace refuses raises a notice, because a silent nothing reads as no match.

@@ -32,6 +32,12 @@ The tags answering `query`, in `order`.
 The tag catalog is held whole rather than searched in the store.
 The match is made over what was read.
 
+## `public IReadOnlyList<LTag> LTagClerkFind(string query, LCatalogOrder order, LDraft? draft, long card)`
+
+The stored Tags a card's field offers, leaving out every Tag the card already shows.
+A Tag is held when a chip reads its trimmed text, the rule `LDraftHeldCheck` owns.
+No draft or no such card holds nothing, so every match is offered.
+
 ## `public void LTagClerkSave(long ownerId, IReadOnlyList<LTagDraft> drafts, bool collocation, Dictionary<long, long> identity)`
 
 The same line written from the draft rows a card commit carries.

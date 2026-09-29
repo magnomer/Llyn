@@ -12,16 +12,11 @@ Only a comma ends a Situation.
 The engine holds the chips.
 The card renders them by id, and every commit or removal is a request the editor sends.
 Where the caret stands is the card's own, and it is the position a new chip is asked for.
-Duplicates are refused before a request is sent, so what the field shows is what the engine will hold.
+The engine's clerk skips a wording the card already shows, so what the field shows is what the engine holds.
 
 ## `internal Action<string>? PCardContextNotice { get; set; }`
 
 Where the entry's text goes as it is typed, so the editor can offer matching Situations.
-
-## `internal Func<string, bool>? PCardContextDispatcher { get; set; }`
-
-Where a typed wording goes to become a chip.
-The editor sets it when it builds the card and answers whether a request went out.
 
 ## `internal string PCardContextText`
 
@@ -50,33 +45,16 @@ Reports whether there was anywhere left to go.
 
 ## `internal void PCardContextClear()`
 
-Empties the entry without reading it as a further edit.
+Empties the entry after a commit or a pick.
+The empty text reaches the gate as any edit does, and an empty text adds nothing.
 
-## `internal bool PCardContextMatch(long? id)`
+## `internal void PCardContextRefine(string rest)`
 
-Whether the card already carries the stored Situation, which is what keeps the dropdown from offering it twice.
-
-## `internal bool PCardContextCheck(string text)`
-
-Whether the card already carries a Situation with this wording.
-An unknown Situation shows no wording, so it is never counted as a duplicate.
-Two of them on one card stand for two Situations the store could not read.
+Puts the situation gate's answer in the entry, then tells the editor what now stands there.
+The editor's text observer hands every edit to the gate, which reads the comma.
+So a pasted comma ends a Situation as a typed one does.
 
 ## Inline notes
-
-### `private void PCardContextChange(object? sender, PropertyChangedEventArgs arguments)`
-
-Every edit of the entry is reported.
-The editor can offer the Situations the wording matches as it is typed.
-The card cannot read the workspace itself, so it says what was typed and the editor answers.
-
-The comma is read off the entry's text rather than off a keystroke.
-So a comma arriving by paste ends a Situation exactly as a typed one does.
-A paste of several commas leaves several Situations.
-Everything before the last comma is dispatched and the remainder stays in the entry.
-
-The guard around the rewrite is there because the rewrite sets the property being answered.
-Without it the handler would answer itself.
 
 ### `private void PCardContextUpdate()`
 
