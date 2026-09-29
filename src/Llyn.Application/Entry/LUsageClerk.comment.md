@@ -21,10 +21,10 @@ The reference count of every object of that kind at once.
 Reading it once per catalog fill costs one statement rather than one per row.
 Only an Example, a Situation and a Reference are counted this way, and any other side is refused.
 
-## `public string LUsageTallyRead(long? reference)`
+## `public string LUsageTallyRead(long? id, LOwner owner)`
 
-The citation line of one Source, from its count and the Source's usage wording.
-A missing Source or one nothing cites reads as none.
+The citation line of one Source, Example or Situation, from its count and its realm's usage wording.
+A missing record or one nothing cites reads as none.
 
 ## `public IReadOnlyList<LUsage> LUsageClerkRead(long id, LOwner owner, bool epithet)`
 

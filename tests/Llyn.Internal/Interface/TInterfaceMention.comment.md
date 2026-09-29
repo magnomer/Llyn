@@ -5,11 +5,16 @@
 The relay that builds the sentence gates over a draft port whose chip line read fails.
 It also runs the shared chip read over a failing draft port.
 It runs the shared Meaning read over a scripted draft port.
+It runs the corpus rows read over a failing entry port.
 It is transparent and carries no test logic of its own.
 
 ## `internal static CSentence TSentenceFailCreate(LEngine engine, CDesk desk, CEnvoy envoy)`
 
 Builds sentence gates whose chip line read throws, over a real desk.
+
+## `internal static IReadOnlyList<CCatalogExample>? TAnthologyFailRead(LEngine engine, CEnvoy envoy)`
+
+Runs the corpus rows read over an entry port whose Example find throws, on a real vista.
 
 ## `internal static IReadOnlyList<CMentionLabel> TMentionFailRead(LEngine engine, CDesk desk, CEnvoy envoy)`
 

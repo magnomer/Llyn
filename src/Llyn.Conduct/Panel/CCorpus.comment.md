@@ -7,6 +7,7 @@ The two vistas' chosen rows and editing flags are the panel's mode, and the driv
 Every gate holds only the interaction and reaches the engine through a panel, the desk or the editor.
 It asks the user and reports failures through the envoy, never through a seam a driver hands up.
 It restores both vistas itself and chooses which side prints, exports or deletes.
+It attaches its lists to the engine's notices itself, so no driver wires a subject.
 
 ## `private CCorpus(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
@@ -29,11 +30,12 @@ Building it is no user action, so it is no gate on the atelier.
 
 Raised when the desk or the entry editor changes state, so a driver repaints the mode.
 
-## `public event Action<CExample?>? CCorpusTranscriptChanged`
+## `public event Action<CExample>? CCorpusTranscriptChanged`
 
-Raised with the Example the desk holds after a start, or null after a cancel or a refused start.
+Raised with the Example the desk holds after a start.
+After a cancel, a refused start or a failed read it carries the blank Example, never null.
 
-## `public event Action<CExample?>? CCorpusDraftChanged`
+## `public event Action<CExample>? CCorpusDraftChanged`
 
 Raised with the held Example after an edit to its draft, through the marshal the corpus was built with.
 `CCorpusTranscriptChanged` fills the transcript anew, while this one only refreshes what the edit changed.
@@ -45,6 +47,15 @@ Raised with the Example a loaded anthology draft carries, so the excerpt shows i
 ## `public event Action? CCorpusQueryCleared`
 
 Raised once an arrival drops the query and the language filter, so a driver empties both controls.
+
+## `public event Action? CCorpusWorkspaceChanged`
+
+Raised after a workspace notice closed the shown Example, so a driver reloads what belongs to the folder.
+
+## `private readonly Action<Action> _cCorpusMarshal`
+
+The medium's marshal the corpus was built with.
+Every engine notice the corpus answers runs through it, since only the medium knows its thread.
 
 ## `private readonly CAtelier _cCorpusAtelier`
 
@@ -91,6 +102,11 @@ True while either list has a chosen row, so a fresh start opens a quotation.
 Reads the Example the desk holds, which persists the tenure first and so can throw.
 A throw reports `Example.HoldFailed` through the envoy and reads as null.
 `CCorpusDraftChanged` hands it on each draft bulletin, so the desk never hands a driver a draft.
+
+## `private void LCorpusDraftResonate()`
+
+Answers the desk's draft notice with the held Example read afresh.
+A notice with no Example to show raises nothing, so the driver never redraws from nothing.
 
 ## `public void CCorpusMentionOpen(string word)`
 
@@ -192,7 +208,7 @@ Closing the quotation side falls back to the chosen Example, and closing the tra
 
 Shows the chosen Example again in the given mode, or clears both lists when none is chosen.
 
-## `public void CCorpusExampleClose()`
+## `private void LCorpusExampleClose()`
 
 Clears both lists, also when the workspace changes under the panel.
 
@@ -228,18 +244,28 @@ Asks the envoy only over unsaved changes.
 A store finishes the session, and a discard leaves without touching it.
 The finish shows the stored Example only when `shown` holds.
 
-## `public void CCorpusEntryResonate()`
+## `internal void LCorpusEntryResonate()`
 
 Answers the chosen entry's notice by refreshing the quotation draft.
+The quotation list's observers call it through the marshal, so no driver hands the notice over.
 It falls back to the chosen Example once the quotation side has closed.
 It does nothing without a chosen quotation, so a whole-set bulletin never clears a transcript or a new entry.
 The mode is read before the refresh, so a vanished entry under edit reopens the transcript.
 
-## `public IReadOnlyList<CCatalogExample> CCorpusRowsRead(string unknown, string unwritten)`
+## `public IReadOnlyList<CCatalogExample> CCorpusRowsRead()`
 
-Reads the example list's rows, worded by the driver's two placeholders.
+Reads the example list's rows, ready to paint and worded by the engine.
+A failed read is reported by the anthology and answers no rows, and then nothing is cleared.
 When the excerpt shows a chosen Example the rows no longer list, both lists clear before the rows return.
 The clear announces fresh rows, which carry the same Examples, so a driver's nested refill is harmless.
+
+## `public string CCorpusTallyRead()`
+
+The tally chip's sentence for the chosen Example: how many places quote it.
+It is one ShellEngine call, `LVista.LVistaTallyRead` on the anthology vista, worded by Core's `LCatalogTallyFormat`.
+Before a vista arrives it reads empty.
+Every Example the corpus raises carries it, since the transcript edits the chosen Example or a fresh one.
+A fresh Example has no chosen row, so it reads as quoted nowhere.
 
 ## `public void CCorpusExampleDelete()`
 
@@ -265,4 +291,14 @@ The reader is asked for the file and format through the panel's envoy, and a dec
 Starts the `corpus` vista over Examples by text and the `quotation` vista over entries by headword.
 The anthology takes the first, and the quotation list takes both, since its rows follow the chosen Example.
 The entry editor takes the quotation vista, so an entry it stores lands in that list.
+Each list carries its held query into its fresh vista, so a switched workspace keeps both searches.
+Each list then attaches its observers on its fresh vista through `_cCorpusMarshal`.
+The anthology hands a workspace notice to `LCorpusWorkspaceResonate`.
+The quotation list refreshes the example rows on an entry notice and hands its chosen entry to `LCorpusEntryResonate`.
 The forge runs it at build, and the workspace change gate runs it again.
+It paints nothing, since the drivers paint the first rows once their flags are loaded.
+
+## `private void LCorpusWorkspaceResonate()`
+
+Answers the workspace notice: it clears both lists, which cancels the transcript desk.
+It then raises `CCorpusWorkspaceChanged`.

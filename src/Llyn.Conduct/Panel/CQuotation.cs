@@ -50,9 +50,24 @@ public sealed class CQuotation
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(vista);
 
+        vista.LVistaQuerySet(_cQuotationVista?.LVistaQuery ?? string.Empty);
         _cQuotationRoll = roll;
         _cQuotationVista = vista;
         CQuotationPanel.CPanelVistaRestore(vista);
+    }
+
+    internal void LQuotationObserverAttach(Action<Action> marshal, Action roll, Action chosen)
+    {
+        ArgumentNullException.ThrowIfNull(marshal);
+        ArgumentNullException.ThrowIfNull(roll);
+        ArgumentNullException.ThrowIfNull(chosen);
+
+        CQuotationPanel.CPanelObserverAttach(
+            CSubject.CSubjectEntry, bulletin => marshal(() => CQuotationPanel.CPanelEntrySelect(bulletin)));
+        CQuotationPanel.CPanelObserverAttach(CSubject.CSubjectEntry, _ => marshal(roll));
+        CQuotationPanel.CPanelChosenAttach(CSubject.CSubjectEntry, _ => marshal(chosen));
+        CQuotationPanel.CPanelObserverAttach(
+            CSubject.CSubjectVista, _ => marshal(CQuotationPanel.CPanelRowsResonate));
     }
 
     public void CQuotationQuerySet(string query)

@@ -104,8 +104,3 @@ A workspace written by a later build must still open.
 
 The same Reference with every unreadable value dropped to unspecified.
 Called only after the user agreed to lose what the store could not read.
-
-## `public static string LReferenceUsageFormat(int count, Func<string, string> localize)`
-
-The sentence for how many places cite a Source, one of three forms by count.
-It serves the sources panel, the authors panel and the vita alike, so the wording lives once.

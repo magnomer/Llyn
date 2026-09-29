@@ -18,6 +18,7 @@ The corpus tests build an Example desk with it.
 ## `internal static CExample? TAnthologyDraftRead(this CAnthology anthology, LDraft? draft)`
 
 Maps a held draft through the list's internal map, which reads the ready citation line.
+It hands an empty tally, since the tally is `CCorpus`'s read.
 
 ## `internal static CCard TCardFailCreate(LEngine engine, CDesk desk, CEnvoy envoy)`
 

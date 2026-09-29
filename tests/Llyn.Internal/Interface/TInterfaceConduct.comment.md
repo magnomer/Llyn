@@ -93,11 +93,12 @@ Builds the example list through its internal factory, always shown and always fi
 
 Hands the example list its vista through the internal helper the corpus calls.
 
-## `internal static IReadOnlyList<CCatalogExample> TAnthologyRowsRead(this CAnthology anthology, string unknown, string unwritten)`
+## `internal static IReadOnlyList<CCatalogExample> TAnthologyRowsRead(this CAnthology anthology)`
 
 Reads the example rows through their internal helper, without the corpus's stale-selection close.
+A failed read throws, so a test never mistakes a failure for an empty list.
 
-## `internal static CExample? TAnthologyExampleRead(LExample? example, string citation)`
+## `internal static CExample? TAnthologyExampleRead(LExample? example, string citation, string tally)`
 
 Maps a stored Example and a ready citation line through the list's internal helper.
 
@@ -241,3 +242,7 @@ Relays the voyage's state, and the three relays below relay its record and its t
 ## `internal static CExample? TCorpusTranscriptRead(this CCorpus corpus) => corpus.LCorpusTranscriptRead();`
 
 Relays the corpus's read of the Example its transcript desk holds, which its two transcript events hand on.
+
+## `internal static void TCorpusEntryResonate(this CCorpus corpus) => corpus.LCorpusEntryResonate();`
+
+Relays the corpus's answer to the chosen entry's notice, which its quotation observers run.

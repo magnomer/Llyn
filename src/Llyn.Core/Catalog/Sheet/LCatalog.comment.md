@@ -61,6 +61,12 @@ The count an offered row shows for how often its stored row is already used.
 A row nobody uses shows nothing, because an unused row needs no number to say so.
 Every offer that carries a usage count reads it here, so the rows agree.
 
+## `public static string LCatalogTallyFormat(int count, string realm, Func<string, string> localize)`
+
+The sentence for how many places cite a record, one of three forms by count.
+The realm chooses the keys, such as `Source`, `Example` or `Situation`.
+Every tally and the vita word it here, so the wording lives once.
+
 ## `public static bool LCatalogTextMatch(string? text, string query)`
 
 Whether one text answers the query, both folded the same way `LCatalogTextNormalize` folds.

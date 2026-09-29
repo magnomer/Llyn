@@ -1,7 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Conduct;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIDeportment;
 
@@ -9,13 +8,11 @@ internal sealed partial class QCorpus
 {
     private CDesk QTranscriptDesk => _qCorpusDesk;
 
-    private LQuill? QTranscriptQuill => _cCorpus.CCorpusDesk.CDeskQuill;
-
     private void QTranscriptDeskIntroduce()
     {
         QTranscriptDesk.CDeskFailed += _qCorpusHost.PWindowFailureRefine;
         QTranscriptDesk.CDeskRefused += _qCorpusHost.PWindowEnvoy.CEnvoyFailureShow;
-        _cCorpus.CCorpusDraftChanged += QTranscriptShow;
+        _cCorpus.CCorpusDraftChanged += QTranscriptDraftRefine;
     }
 
     public void QChronicleUndo()

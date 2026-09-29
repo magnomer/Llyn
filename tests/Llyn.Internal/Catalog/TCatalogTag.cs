@@ -64,6 +64,14 @@ public sealed class TCatalogTag
         Assert.Equal("12", TInterface.TCatalogUsageFormat(12));
     }
 
+    [Fact]
+    public void CatalogTallyFormat_EachCountAndRealm_WordsTheRealmsForm()
+    {
+        Assert.Equal("text:Source.UsageNone", TInterface.TCatalogTallyFormat(0, "Source"));
+        Assert.Equal("text:Example.UsageOne", TInterface.TCatalogTallyFormat(1, "Example"));
+        Assert.Equal("3 text:Situation.UsageMany", TInterface.TCatalogTallyFormat(3, "Situation"));
+    }
+
     private static void TCatalogTagSave(LEngine engine, IReadOnlyList<string> texts)
     {
         engine.TEngineEntrySave(TInterface.TEntryDraftCreate(

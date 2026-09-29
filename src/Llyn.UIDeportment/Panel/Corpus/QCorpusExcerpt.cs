@@ -21,7 +21,7 @@ internal sealed partial class QCorpus
         QExcerptFlag.Source = LEnsignImage.LEnsignFind(example.CExampleLanguage);
         QExcerptGlossShow(example.CExampleGloss);
         QExcerptCitationShow(example);
-        QExcerptTally.Text = QCorpusTallyRead(_cCorpus.CCorpusAnthology.CAnthologyChosen);
+        QExcerptTally.Text = _cCorpus.CCorpusTallyRead();
     }
 
     private void QExcerptSentenceShow(CExample example)

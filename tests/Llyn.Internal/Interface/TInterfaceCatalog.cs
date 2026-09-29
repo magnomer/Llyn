@@ -93,6 +93,9 @@ internal static partial class TInterface
     internal static string TCatalogUsageFormat(int usage) =>
         LCatalog.LCatalogUsageFormat(usage);
 
+    internal static string TCatalogTallyFormat(int count, string realm) =>
+        LCatalog.LCatalogTallyFormat(count, realm, static key => "text:" + key);
+
     internal static string TCatalogOrderFormat(LCatalogOrder order) =>
         LCatalog.LCatalogOrderFormat(order);
 

@@ -173,6 +173,12 @@ Writes the chosen entry to the left or right slot of the workspace state, whiche
 The next run reopens each duplex side on the entry it last showed.
 The vista itself says which side it is, so no caller copies that.
 
+## `public string LVistaTallyRead()`
+
+The citation line of the chosen stored record, ready to show.
+An Example, a Situation and a Source have one, and any other vista refuses.
+No stored record reads as cited nowhere.
+
 ## `public int LVistaUsageRead()`
 
 How many places the chosen stored record reaches, which a delete would drop.

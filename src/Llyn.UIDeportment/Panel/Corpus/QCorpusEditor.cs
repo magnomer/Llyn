@@ -10,43 +10,35 @@ internal sealed partial class QCorpus
 {
     private string _qTranscriptCitation = string.Empty;
 
-    private string _qTranscriptLanguage = string.Empty;
-
     private void QTranscriptAttach()
     {
-        QTranscriptText.TextChanged += QTranscriptTextHandle;
+        QTranscriptText.TextChanged += QTranscriptTextObserve;
     }
 
     private void QTranscriptDetach()
     {
-        QTranscriptText.TextChanged -= QTranscriptTextHandle;
+        QTranscriptText.TextChanged -= QTranscriptTextObserve;
     }
 
-    private void QSpeakerLoad()
+    private void QSpeakerRefine(IReadOnlyList<string> languages)
     {
-        IReadOnlyList<string> languages;
-        try
-        {
-            languages = _qCorpusHost.PWindowAtelier.CAtelierCatalog.CCatalogLanguageRead();
-        }
-        catch (Exception)
-        {
-            languages = [];
-        }
-
         PLanguageItem.PLanguageItemReset(_qLanguageItem, languages);
-        QSpeakerShow();
     }
 
-    private void QSpeakerHandle(object sender, RoutedEventArgs e)
+    private void QSpeakerObserve(object sender, RoutedEventArgs e)
     {
         if (QSender.QSenderItemRead<PLanguageItem>(sender) is not PLanguageItem item)
         {
             return;
         }
 
+        _cCorpus.CCorpusAnthology.CAnthologySpeakerSet(item.PLanguageItemName);
+        QSpeakerDropperRefine();
+    }
+
+    private void QSpeakerDropperRefine()
+    {
         QSpeaker.IsChecked = false;
-        QTranscriptQuill?.LQuillSpeakerSet(item.PLanguageItemName);
     }
 
     private void QSpeakerApply(FrameworkElement container, object item, string? change)
@@ -55,58 +47,50 @@ internal sealed partial class QCorpus
 
         if (QLook.QLookPartFind<Button>(container, "PSpeakerChoice") is Button choice)
         {
-            choice.Click -= QSpeakerHandle;
-            choice.Click += QSpeakerHandle;
+            choice.Click -= QSpeakerObserve;
+            choice.Click += QSpeakerObserve;
         }
     }
 
-    private void QSpeakerShow()
+    private void QSpeakerShow(string language)
     {
-        QSpeakerName.Text = _qTranscriptLanguage;
-        QSpeakerFlag.Source = LEnsignImage.LEnsignFind(_qTranscriptLanguage);
+        QSpeakerName.Text = language;
+        QSpeakerFlag.Source = LEnsignImage.LEnsignFind(language);
     }
 
-    private void QTranscriptTextHandle(object sender, TextChangedEventArgs e)
+    private void QTranscriptTextObserve(object sender, TextChangedEventArgs e)
     {
-        QTranscriptText.SetValue(QField.QFieldHintProperty, QTranscriptHintRead(false));
-        QTranscriptQuill?.LQuillExampleSet(QTranscriptText.Text);
+        QTranscriptHintRefine(_cCorpus.CCorpusAnthology.CAnthologyTextSet(QTranscriptText.Text));
     }
 
-    private static string QTranscriptHintRead(bool unknown)
+    private void QTranscriptHintRefine(string hint)
     {
-        return QLocalizationCatalog.QLocalizationTextRead(unknown ? "Display.Unknown" : "Example.Text");
+        QTranscriptText.SetValue(QField.QFieldHintProperty, QLocalizationCatalog.QLocalizationTextRead(hint));
     }
 
-    private void QTranscriptApply(CExample? example)
+    private void QTranscriptRefine(CExample example)
     {
         QTranscriptDetach();
 
-        QTranscriptText.Text = example?.CExampleText.CStateValueText ?? string.Empty;
-        QTranscriptText.SetValue(
-            QField.QFieldHintProperty, QTranscriptHintRead(example?.CExampleText.CStateValueUncertain ?? false));
+        QTranscriptText.Text = example.CExampleText.CStateValueText;
+        QTranscriptHintRefine(example.CExampleTextHint);
 
         QTranscriptGlossShow(example);
 
-        _qTranscriptLanguage = example?.CExampleLanguage ?? string.Empty;
-        QSpeakerShow();
+        QSpeakerShow(example.CExampleLanguage);
 
-        _qTranscriptCitation = example?.CExampleCitation ?? string.Empty;
+        _qTranscriptCitation = example.CExampleCitation;
         QCitationRefine();
 
         QTranscriptMentionRefine();
 
-        QTranscriptTally.Text = QCorpusTallyRead(QTranscriptDesk.CDeskStoredRead());
+        QTranscriptTally.Text = example.CExampleTally;
 
         QTranscriptAttach();
     }
 
-    private void QTranscriptShow(CExample? example)
+    private void QTranscriptDraftRefine(CExample example)
     {
-        if (example is null)
-        {
-            return;
-        }
-
         QTranscriptDetach();
 
         if (!CAnthology.CAnthologyTextCheck(QTranscriptText.Text, example.CExampleText))
@@ -114,15 +98,10 @@ internal sealed partial class QCorpus
             QTranscriptText.Text = example.CExampleText.CStateValueText;
         }
 
-        QTranscriptText.SetValue(
-            QField.QFieldHintProperty, QTranscriptHintRead(example.CExampleText.CStateValueUncertain));
+        QTranscriptHintRefine(example.CExampleTextHint);
         QTranscriptGlossShow(example);
 
-        if (!string.Equals(_qTranscriptLanguage, example.CExampleLanguage, StringComparison.Ordinal))
-        {
-            _qTranscriptLanguage = example.CExampleLanguage;
-            QSpeakerShow();
-        }
+        QSpeakerShow(example.CExampleLanguage);
 
         string shown = _qTranscriptCitation;
         _qTranscriptCitation = example.CExampleCitation;
@@ -136,7 +115,7 @@ internal sealed partial class QCorpus
         QTranscriptAttach();
     }
 
-    private void QCorpusFreshHandle(object sender, RoutedEventArgs e)
+    private void QCorpusFreshObserve(object sender, RoutedEventArgs e)
     {
         _cCorpus.CCorpusExampleCreate();
     }

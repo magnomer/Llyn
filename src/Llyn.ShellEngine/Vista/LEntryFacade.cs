@@ -210,9 +210,14 @@ internal sealed class LEntryFacade
 
     public string LEngineTallyRead(long? reference)
     {
+        return LEngineTallyRead(reference, LOwner.LOwnerReference);
+    }
+
+    public string LEngineTallyRead(long? id, LOwner owner)
+    {
         lock (_lEntryFacadeGate)
         {
-            return LEntryFacadeStaff.LEngineStaffUsage.LUsageTallyRead(reference);
+            return LEntryFacadeStaff.LEngineStaffUsage.LUsageTallyRead(id, owner);
         }
     }
 

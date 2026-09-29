@@ -30,7 +30,7 @@ public sealed record LVita(
             named ? shown.LCatalogAuthorName : localize("Guild.Unnamed"),
             named,
             LVitaWorkFormat(shown.LCatalogAuthorWork, localize),
-            LReference.LReferenceUsageFormat(shown.LCatalogAuthorUsage, localize),
+            LCatalog.LCatalogTallyFormat(shown.LCatalogAuthorUsage, "Source", localize),
             fellows,
             usages);
     }

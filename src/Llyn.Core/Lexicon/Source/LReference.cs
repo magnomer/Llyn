@@ -111,18 +111,6 @@ public sealed record LReference(
         return LColophon.LColophonCreate(this, credits, tally, localize);
     }
 
-    public static string LReferenceUsageFormat(int count, Func<string, string> localize)
-    {
-        ArgumentNullException.ThrowIfNull(localize);
-
-        return count switch
-        {
-            0 => localize("Source.UsageNone"),
-            1 => localize("Source.UsageOne"),
-            _ => $"{count.ToString(CultureInfo.CurrentCulture)} {localize("Source.UsageMany")}",
-        };
-    }
-
     public static IReadOnlyList<LReferenceKind> LReferenceKindMenu { get; } =
     [
         LReferenceKind.LReferenceKindUnspecified,

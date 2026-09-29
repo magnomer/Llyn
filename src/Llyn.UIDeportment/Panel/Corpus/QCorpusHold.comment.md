@@ -6,22 +6,18 @@ When what the user typed into the sentence editor reaches the draft the engine h
 The driver holds its controls.
 The desk on the corpus Conduct holds the tenure from start to commit or cancel.
 The driver keeps no draft id, halted flag or timer of its own, since the engine owns each of those.
-Every change goes through the desk's text gate, which defers typing and sends a pick or a row at once.
+Every change goes through a gate on `CAnthology` or `CCorpus`.
+Typing is deferred, and a pick or a row is sent at once.
 
 ## `private CDesk QTranscriptDesk => _qCorpusDesk;`
 
 The desk holding the Example being edited, which the corpus Conduct handed over at introduce.
 
-## `private LQuill? QTranscriptQuill => _cCorpus.CCorpusDesk.CDeskQuill;`
-
-The desk's text edits, which build every request the transcript makes.
-It is null while no tenure is held or the desk fills its controls.
-
 ## `private void QTranscriptDeskIntroduce()`
 
 Subscribes the desk's notices once, and a failure and a refused hold both go straight to the window.
 The corpus raises `CCorpusDraftChanged` with the held Example on each draft bulletin.
-`QTranscriptShow` answers it and redraws the controls where they differ.
+`QTranscriptDraftRefine` answers it and redraws the controls where they differ.
 The forge built the corpus with its marshaller, so the driver hands no marshaller and no reread here.
 
 ## `public void QChronicleUndo()`

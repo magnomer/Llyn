@@ -18,7 +18,7 @@ public sealed class TAnthology
         TAnthologyExampleSave(engine, TInterface.TStateValueCreate("a cat sat"), null);
         CAnthology anthology = TAnthologyPrepare(engine, atelier, out _);
 
-        Assert.Empty(anthology.TAnthologyRowsRead("?", "-"));
+        Assert.Empty(anthology.TAnthologyRowsRead());
         Assert.Null(anthology.CAnthologyChosen);
     }
 
@@ -33,11 +33,37 @@ public sealed class TAnthology
         CAnthology anthology = TAnthologyPrepare(engine, atelier, out _);
         anthology.TAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
 
-        IReadOnlyList<CCatalogExample> rows = anthology.TAnthologyRowsRead("?", "-");
+        IReadOnlyList<CCatalogExample> rows = anthology.TAnthologyRowsRead();
 
-        Assert.Equal("?", rows.Single(row => row.CCatalogExampleId == unknown.LExampleId).CCatalogExampleText);
+        Assert.Equal(
+            TInterface.TLocalizationTextRead("Display.Unknown"),
+            rows.Single(row => row.CCatalogExampleId == unknown.LExampleId).CCatalogExampleText);
         Assert.Equal("a cat sat", rows.Single(row => row.CCatalogExampleId == sound.LExampleId).CCatalogExampleText);
         Assert.All(rows, row => Assert.Equal(string.Empty, row.CCatalogExampleCount));
+    }
+
+    [Fact]
+    public void AnthologyRowsRead_EngineFails_ShowsTheLoadFailureAndAnswersNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+
+        Assert.Null(TInterfaceMention.TAnthologyFailRead(engine, TInterfaceConduct.TEnvoyCreate(false, asked)));
+        Assert.Equal(["Example.LoadFailed"], asked);
+    }
+
+    [Fact]
+    public void AnthologyOrderRead_Menu_OffersTextLanguageSourceAndUsage()
+    {
+        Assert.Equal(
+            [
+                CCatalogOrder.CCatalogOrderText,
+                CCatalogOrder.CCatalogOrderLanguage,
+                CCatalogOrder.CCatalogOrderSource,
+                CCatalogOrder.CCatalogOrderUsage,
+            ],
+            CAnthology.CAnthologyOrderRead());
     }
 
     [Fact]
@@ -53,7 +79,7 @@ public sealed class TAnthology
 
         anthology.CAnthologyQuerySet("dog");
 
-        Assert.Equal(["a dog ran"], anthology.TAnthologyRowsRead("?", "-").Select(row => row.CCatalogExampleText));
+        Assert.Equal(["a dog ran"], anthology.TAnthologyRowsRead().Select(row => row.CCatalogExampleText));
     }
 
     [Fact]
@@ -299,6 +325,25 @@ public sealed class TAnthology
     }
 
     [Fact]
+    public void AnthologyTextSetAndSpeakerSet_TypedTextAndPickedLanguage_WriteTheTranscriptAndAnswerTheTextHint()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CAnthology anthology = TAnthologyPrepare(engine, atelier, out CDesk desk);
+        desk.CDeskStart(null);
+
+        string hint = anthology.CAnthologyTextSet("a cat");
+        desk.CDeskPersist();
+        anthology.CAnthologySpeakerSet("French");
+
+        CExample? held = anthology.TAnthologyDraftRead(desk.TDeskRead());
+        Assert.Equal("Example.Text", hint);
+        Assert.Equal("a cat", held?.CExampleText.CStateValueText);
+        Assert.Equal("French", held?.CExampleLanguage);
+    }
+
+    [Fact]
     public void AnthologyTextCheck_BlankField_MatchesAnEmptyText()
     {
         Assert.True(CAnthology.CAnthologyTextCheck("  ", CStateValue.CStateValueEmpty));
@@ -309,7 +354,7 @@ public sealed class TAnthology
     [Fact]
     public void AnthologyExampleRead_NoExample_ReturnsNone()
     {
-        Assert.Null(TInterfaceConduct.TAnthologyExampleRead(null, string.Empty));
+        Assert.Null(TInterfaceConduct.TAnthologyExampleRead(null, string.Empty, string.Empty));
     }
 
     [Fact]
@@ -319,13 +364,15 @@ public sealed class TAnthology
                 5, "English", TInterface.TStateValueCreate("a cat"), null, TInterface.TStateAnchorRead(9))
             .TExampleMentionAdd(TInterface.TMentionCreate(1, 2, 3, 40));
 
-        CExample? held = TInterfaceConduct.TAnthologyExampleRead(example, "Field Notes");
+        CExample? held = TInterfaceConduct.TAnthologyExampleRead(example, "Field Notes", "2 quotes");
 
         Assert.NotNull(held);
         Assert.Equal("English", held!.CExampleLanguage);
         Assert.Equal("a cat", held.CExampleText.CStateValueText);
         Assert.Equal(9, held.CExampleSource);
         Assert.Equal("Field Notes", held.CExampleCitation);
+        Assert.Equal("Example.Text", held.CExampleTextHint);
+        Assert.Equal("2 quotes", held.CExampleTally);
         Assert.Equal([40L], held.CExampleExcerpt.Select(mention => mention.CMentionMarkEntry));
     }
 
@@ -336,10 +383,11 @@ public sealed class TAnthology
                 5, "English", TInterface.TStateValueResolve(null, true), null, TInterface.TStateAnchorRead(null))
             .TExampleMentionAdd(TInterface.TMentionCreate(1, 2, 3, 40));
 
-        CExample? held = TInterfaceConduct.TAnthologyExampleRead(example, string.Empty);
+        CExample? held = TInterfaceConduct.TAnthologyExampleRead(example, string.Empty, string.Empty);
 
         Assert.NotNull(held);
         Assert.True(held!.CExampleText.CStateValueUncertain);
+        Assert.Equal("Display.Unknown", held.CExampleTextHint);
         Assert.Null(held.CExampleSource);
         Assert.Empty(held.CExampleExcerpt);
     }

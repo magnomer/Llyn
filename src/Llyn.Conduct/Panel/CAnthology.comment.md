@@ -3,7 +3,7 @@
 ## `public sealed class CAnthology`
 
 The corpus panel's example list: the example vista it holds and the panel over it.
-It finds the rows and their usage, and takes the query, order and kind filter.
+It finds the rows, and takes the query, order and kind filter.
 Its panel loads, edits and deletes the chosen Example, worded under the Example scope.
 It also answers the transcript's citation field and prints the chosen Example.
 
@@ -25,19 +25,29 @@ Whether the query or the filter hides any row, as the vista answers it.
 ## `internal void LAnthologyVistaRestore(LVista vista)`
 
 Binds the list and its panel to the corpus vista a workspace start or switch hands over.
+The query the former vista held is carried into the fresh one first, as `COeuvre.LOeuvreVistaRestore` does.
+
+## `internal void LAnthologyObserverAttach(Action<Action> marshal, Action workspace)`
+
+Attaches the list's observers on its vista, each run through the corpus's `marshal`.
+A vista notice refills the rows, since order, filter or query moved.
+A stored Example or Source refills them, because a row cites a Source.
+A reflex fill or a flipped setting rewrites the epithet beside a headword, so each refills them too.
+A workspace notice runs `workspace`, the corpus's own answer.
 
 ## `public void CAnthologyOrderSet(CCatalogOrder? order)`
 
 Hands a chosen ordering to the vista, which keeps its own when the sender is no order row.
 
-## `internal IReadOnlyList<CCatalogExample> LAnthologyRowsRead(string unknown, string unwritten)`
+## `public static IReadOnlyList<CCatalogOrder> CAnthologyOrderRead()`
+
+The orderings the example list offers, in menu order: text, language, Source and usage.
+
+## `internal IReadOnlyList<CCatalogExample>? LAnthologyRowsRead()`
 
 The rows the vista lists, none before a vista arrives.
-The driver hands the words for an unknown or unwritten text, and the engine words each row with them.
-
-## `public IReadOnlyDictionary<long, int> CAnthologyUsageRead()`
-
-How many places quote each Example, keyed by id.
+The words for an unknown or unwritten text are the engine's, read through the settings port.
+A failure shows `Example.LoadFailed` and answers null, so the corpus clears nothing on it.
 
 ## `public CMentionResult? CAnthologyMentionRead(int offset)`
 
@@ -95,27 +105,39 @@ The engine adds the first gloss only when the Example holds none, and answers wh
 
 The gate for the cross on a transcript gloss row.
 
+## `public string CAnthologyTextSet(string text)`
+
+The gate for typing into the transcript's sentence field, handing the raw text to the desk's quill, which defers it.
+It answers the placeholder key for typed text, since typing ends an unknown mark.
+Without a held tenure it writes nothing and still answers the key.
+
+## `public void CAnthologySpeakerSet(string language)`
+
+The gate for picking the transcript's speaker language, sent at once through the desk's quill.
+The chip changes when the draft bulletin returns, as the corpus gloss gates do.
+
 ## `public static bool CAnthologyTextCheck(string text, CStateValue value)`
 
 Whether a field showing `text` already shows `value`, as the engine would store the field.
 The transcript keeps a matching field untouched, so a bulletin never moves the caret.
 It is static, since it reads no state of the list.
 
-## `internal CExample? LAnthologyDraftRead(LDraft? draft)`
+## `internal CExample? LAnthologyDraftRead(LDraft? draft, string tally)`
 
 Maps the Example a draft carries to its shape, and a draft of another subject to null.
 The engine answers the cited Source's line for the draft, so the driver never looks a name up.
 `CCorpus` calls it for the transcript desk and for the anthology's loaded drafts.
 So the corpus names no engine record.
+The corpus hands its tally along, so the transcript's chip needs no read of its own.
 
 ## `private string LAnthologyCitationRead(LDraft draft)`
 
 The ready line of the Source the draft's Example cites.
 A failed read shows `Reference.LoadFailed` and shows no line, as the old Source list read did.
 
-## `internal static CExample? LAnthologyExampleRead(LExample? example, string citation)`
+## `internal static CExample? LAnthologyExampleRead(LExample? example, string citation, string tally)`
 
-Maps a stored Example and its ready citation line to its shape, and null to null.
+Maps a stored Example, its ready citation line and its tally to its shape, and null to null.
 The excerpt links only the Mentions the Example lets a reading link, while the transcript keeps them all.
 
 ## `private static CCatalogExample LAnthologyRowRead(LCatalogExample row)`

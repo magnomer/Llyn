@@ -74,8 +74,23 @@ public sealed class CAnthology
     {
         ArgumentNullException.ThrowIfNull(vista);
 
+        vista.LVistaQuerySet(_cAnthologyVista?.LVistaQuery ?? string.Empty);
         _cAnthologyVista = vista;
         CAnthologyPanel.CPanelVistaRestore(vista);
+    }
+
+    internal void LAnthologyObserverAttach(Action<Action> marshal, Action workspace)
+    {
+        ArgumentNullException.ThrowIfNull(marshal);
+        ArgumentNullException.ThrowIfNull(workspace);
+
+        Action<CBulletin> rows = _ => marshal(CAnthologyPanel.CPanelRowsResonate);
+        CAnthologyPanel.CPanelObserverAttach(CSubject.CSubjectVista, rows);
+        CAnthologyPanel.CPanelObserverAttach(CSubject.CSubjectWorkspace, _ => marshal(workspace));
+        CAnthologyPanel.CPanelObserverAttach(CSubject.CSubjectExample, rows);
+        CAnthologyPanel.CPanelObserverAttach(CSubject.CSubjectReference, rows);
+        CAnthologyPanel.CPanelObserverAttach(CSubject.CSubjectReflex, rows);
+        CAnthologyPanel.CPanelObserverAttach(CSubject.CSubjectSettings, rows);
     }
 
     public void CAnthologyQuerySet(string query)
@@ -90,6 +105,17 @@ public sealed class CAnthology
         _cAnthologyVista?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
     }
 
+    public static IReadOnlyList<CCatalogOrder> CAnthologyOrderRead()
+    {
+        return
+        [
+            CCatalogOrder.CCatalogOrderText,
+            CCatalogOrder.CCatalogOrderLanguage,
+            CCatalogOrder.CCatalogOrderSource,
+            CCatalogOrder.CCatalogOrderUsage,
+        ];
+    }
+
     public void CAnthologyFilterSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
@@ -97,16 +123,28 @@ public sealed class CAnthology
         _cAnthologyVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
-    internal IReadOnlyList<CCatalogExample> LAnthologyRowsRead(string unknown, string unwritten)
+    internal IReadOnlyList<CCatalogExample>? LAnthologyRowsRead()
     {
-        return _cAnthologyVista is LVista vista
-            ? _cAnthologyEntryPort.LEngineExampleFind(vista, unknown, unwritten).Select(LAnthologyRowRead).ToList()
-            : [];
-    }
+        if (_cAnthologyVista is not LVista vista)
+        {
+            return [];
+        }
 
-    public IReadOnlyDictionary<long, int> CAnthologyUsageRead()
-    {
-        return _cAnthologyEntryPort.LEngineUsageRead(LOwner.LOwnerExample);
+        try
+        {
+            return _cAnthologyEntryPort
+                .LEngineExampleFind(
+                    vista,
+                    _cAnthologySettingsPort.LEngineTextRead("Display.Unknown"),
+                    _cAnthologySettingsPort.LEngineTextRead("Example.Unwritten"))
+                .Select(LAnthologyRowRead)
+                .ToList();
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cAnthologyEnvoy, _cAnthologySettingsPort, "Example.LoadFailed", exception);
+            return null;
+        }
     }
 
     public CMentionResult? CAnthologyMentionRead(int offset)
@@ -180,6 +218,21 @@ public sealed class CAnthology
         _cAnthologyDesk.CDeskQuill?.LQuillGlossRemove(0, 0, glossId);
     }
 
+    public string CAnthologyTextSet(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _cAnthologyDesk.CDeskQuill?.LQuillExampleSet(text);
+        return CExample.LExampleHintRead(false);
+    }
+
+    public void CAnthologySpeakerSet(string language)
+    {
+        ArgumentNullException.ThrowIfNull(language);
+
+        _cAnthologyDesk.CDeskQuill?.LQuillSpeakerSet(language);
+    }
+
     public static bool CAnthologyTextCheck(string text, CStateValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
@@ -187,10 +240,10 @@ public sealed class CAnthology
         return LEntryPort.LEngineTextMatch(text, value.CStateValueText);
     }
 
-    internal CExample? LAnthologyDraftRead(LDraft? draft)
+    internal CExample? LAnthologyDraftRead(LDraft? draft, string tally)
     {
         return draft?.LDraftExample is LExample example
-            ? LAnthologyExampleRead(example, LAnthologyCitationRead(draft))
+            ? LAnthologyExampleRead(example, LAnthologyCitationRead(draft), tally)
             : null;
     }
 
@@ -207,7 +260,7 @@ public sealed class CAnthology
         }
     }
 
-    internal static CExample? LAnthologyExampleRead(LExample? example, string citation)
+    internal static CExample? LAnthologyExampleRead(LExample? example, string citation, string tally)
     {
         return example is null
             ? null
@@ -216,6 +269,7 @@ public sealed class CAnthology
                 CFolio.CFolioStateRead(example.LExampleText),
                 example.LExampleSource.LStateAnchorShown,
                 citation,
+                tally,
                 example.LExampleGloss.Select(LAnthologyGlossRead).ToList(),
                 CMention.CMentionRead(example.LExampleExcerpt));
     }

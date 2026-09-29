@@ -108,6 +108,19 @@ public static class LCatalog
         return usage > 0 ? usage.ToString(CultureInfo.CurrentCulture) : string.Empty;
     }
 
+    public static string LCatalogTallyFormat(int count, string realm, Func<string, string> localize)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(realm);
+        ArgumentNullException.ThrowIfNull(localize);
+
+        return count switch
+        {
+            0 => localize(realm + ".UsageNone"),
+            1 => localize(realm + ".UsageOne"),
+            _ => $"{count.ToString(CultureInfo.CurrentCulture)} {localize(realm + ".UsageMany")}",
+        };
+    }
+
     public static bool LCatalogTextMatch(string? text, string query)
     {
         ArgumentNullException.ThrowIfNull(query);

@@ -87,6 +87,10 @@ The usage clerk's counts under the gate.
 
 The usage clerk's citation line for one Source under the gate.
 
+## `public string LEngineTallyRead(long? id, LOwner owner)`
+
+The usage clerk's citation line for one Source, Example or Situation under the gate.
+
 ## `public IReadOnlyList<LUsage> LEngineUsageRead(long id, LOwner owner)`
 
 The usage clerk's itemized rows under the gate, with the epithet the settings ask for.

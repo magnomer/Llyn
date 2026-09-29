@@ -11,12 +11,13 @@ A leave with nothing unsaved asks nothing, and a discard stores nothing.
 A kept leave stays on the transcript, and a stored leave keeps the Example.
 A saved fresh transcript shows the stored Example on the excerpt outside the scribe.
 Closing the transcript cancels the desk, and closing the quotation editor falls back to the chosen Example.
-A quoting entry shows on the display, and a close clears both lists.
+A quoting entry shows on the display, and a workspace notice clears both lists and tells the driver.
 An entry notice keeps the transcript without a chosen quotation, and keeps the display with one.
 A rows read that no longer lists the shown Example clears both lists.
 A confirmed delete removes the chosen Example, and the quotation side deletes nothing.
 The window's exit gate cancels the entry editor's desk and stops its display's playback once.
 The marshal the corpus is built with hands each transcript edit on as the held Example.
+A held stored Example carries its tally and text placeholder, and a cancel raises the blank Example with both.
 
 ## `internal static CCorpus TCorpusPrepare(CAtelier atelier, CEnvoy envoy)`
 

@@ -156,6 +156,18 @@ public sealed class LVista
         };
     }
 
+    public string LVistaTallyRead()
+    {
+        LOwner owner = LVistaSubject switch
+        {
+            LSubject.LSubjectExample => LOwner.LOwnerExample,
+            LSubject.LSubjectSituation => LOwner.LOwnerSituation,
+            LSubject.LSubjectReference => LOwner.LOwnerReference,
+            _ => throw new InvalidOperationException("The vista lists nothing a tally counts."),
+        };
+        return _lEngine.LEngineEntry.LEngineTallyRead(LVistaStored, owner);
+    }
+
     public LRevision? LVistaDelete()
     {
         if (LVistaChosen is not long id || id <= 0)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Llyn.Conduct;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
@@ -14,6 +15,24 @@ internal static class TInterfaceMention
             ["LEngineMentionResolve"] = _ => throw new InvalidOperationException("no headwords"),
         });
         return new CSentence(desk, new LPhonologyOutlet(engine), drafts, new LSettingsOutlet(engine), envoy);
+    }
+
+    internal static IReadOnlyList<CCatalogExample>? TAnthologyFailRead(LEngine engine, CEnvoy envoy)
+    {
+        LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineExampleFind"] = _ => throw new InvalidOperationException("no examples"),
+        });
+        CAnthology anthology = new(
+            entries,
+            new LPortraitOutlet(engine),
+            new LSettingsOutlet(engine),
+            TInterfaceConduct.TDeskCreate(engine, "Example", envoy),
+            static () => true,
+            envoy,
+            static _ => true);
+        anthology.LAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
+        return anthology.LAnthologyRowsRead();
     }
 
     internal static IReadOnlyList<CMentionLabel> TMentionFailRead(LEngine engine, CDesk desk, CEnvoy envoy)

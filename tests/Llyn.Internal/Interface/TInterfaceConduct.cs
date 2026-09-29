@@ -246,12 +246,11 @@ internal static class TInterfaceConduct
     internal static void TAnthologyVistaRestore(this CAnthology anthology, LVista vista) =>
         anthology.LAnthologyVistaRestore(vista);
 
-    internal static IReadOnlyList<CCatalogExample> TAnthologyRowsRead(
-        this CAnthology anthology, string unknown, string unwritten) =>
-        anthology.LAnthologyRowsRead(unknown, unwritten);
+    internal static IReadOnlyList<CCatalogExample> TAnthologyRowsRead(this CAnthology anthology) =>
+        anthology.LAnthologyRowsRead() ?? throw new InvalidOperationException("The rows read failed.");
 
-    internal static CExample? TAnthologyExampleRead(LExample? example, string citation) =>
-        CAnthology.LAnthologyExampleRead(example, citation);
+    internal static CExample? TAnthologyExampleRead(LExample? example, string citation, string tally) =>
+        CAnthology.LAnthologyExampleRead(example, citation, tally);
 
     internal static void TDeskOccurrenceStart(this CDesk desk, long? situation) =>
         desk.LDeskOccurrenceStart(situation);
@@ -463,4 +462,6 @@ internal static class TInterfaceConduct
     }
 
     internal static CExample? TCorpusTranscriptRead(this CCorpus corpus) => corpus.LCorpusTranscriptRead();
+
+    internal static void TCorpusEntryResonate(this CCorpus corpus) => corpus.LCorpusEntryResonate();
 }

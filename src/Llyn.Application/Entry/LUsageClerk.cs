@@ -33,10 +33,17 @@ public sealed class LUsageClerk
         };
     }
 
-    public string LUsageTallyRead(long? reference)
+    public string LUsageTallyRead(long? id, LOwner owner)
     {
-        int count = reference is long id ? LUsageClerkRead(LOwner.LOwnerReference).GetValueOrDefault(id) : 0;
-        return LReference.LReferenceUsageFormat(count, LLocalization.QLocalizationTextRead);
+        int count = id is long held ? LUsageClerkRead(owner).GetValueOrDefault(held) : 0;
+        string realm = owner switch
+        {
+            LOwner.LOwnerReference => "Source",
+            LOwner.LOwnerExample => "Example",
+            LOwner.LOwnerSituation => "Situation",
+            _ => throw LUsageOwnerRaise(owner),
+        };
+        return LCatalog.LCatalogTallyFormat(count, realm, LLocalization.QLocalizationTextRead);
     }
 
     public IReadOnlyList<LUsage> LUsageClerkRead(long id, LOwner owner, bool epithet)

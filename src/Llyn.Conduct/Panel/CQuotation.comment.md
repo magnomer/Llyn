@@ -24,7 +24,16 @@ No query means nothing quotes the Example, and a query means nothing matched.
 ## `internal void LQuotationVistaRestore(LVista roll, LVista vista)`
 
 Takes the example vista as the roll the rows follow, and its own vista for the panel.
+The query the former vista held is carried into the fresh one first.
 Only the corpus's vista restore calls it, so it takes `L`.
+
+## `internal void LQuotationObserverAttach(Action<Action> marshal, Action roll, Action chosen)`
+
+Attaches the list's observers on its vista, each run through the corpus's `marshal`.
+An entry notice goes to the panel first, which may adopt a freshly stored Entry.
+The example rows follow through `roll`, since the store may quote an Example.
+The chosen entry's own notice runs `chosen`, which redraws or drops it.
+A vista notice refills the list's own rows.
 
 ## `public void CQuotationQuerySet(string query)`
 

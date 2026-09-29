@@ -47,8 +47,9 @@ The transcript Gloss list takes the driver's own fill, which wires the row's han
 It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
 It hears the editor's mention pick for the transcript, since that field is the corpus's, not the editor's.
 The corpus's mention offer is wired to the editor's picker Refine, so no record is handed across.
-The engine's change notices drive the mode, and its row notices drive the two lists.
-Its transcript and example notices paint the sheet.
+It builds the ordering menu once, from the orderings `CAnthology.CAnthologyOrderRead` offers.
+The engine's change notices drive the mode, and its row notices drive the two lists and the tally chips.
+Its transcript and example notices paint the sheet, and its workspace notice reloads the speaker menu.
 Its failures reach the window through the envoy, which the Conduct asks directly.
 A dropped search empties the search box and the language menu.
 The window fills the example catalog when it restores the stored ordering.

@@ -14,6 +14,8 @@ public sealed class CCorpus
 
     private readonly LSettingsPort _cCorpusSettingsPort;
 
+    private readonly Action<Action> _cCorpusMarshal;
+
     private CCorpus(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -24,6 +26,7 @@ public sealed class CCorpus
         _cCorpusAtelier = atelier;
         _cCorpusEnvoy = envoy;
         _cCorpusSettingsPort = atelier.CAtelierSettingsPort;
+        _cCorpusMarshal = marshal;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CCorpusEditor = editor;
         CCorpusDesk = new CDesk(atelier.CAtelierDraftPort, "Example", envoy, "Corpus", CSubject.CSubjectExample);
@@ -46,14 +49,15 @@ public sealed class CCorpus
             editor.LEditorFinish,
             static () => true,
             LCorpusStoredShow);
-        CCorpusSession.CSessionHeld += () => CCorpusTranscriptChanged?.Invoke(LCorpusTranscriptRead());
+        CCorpusSession.CSessionHeld += () =>
+            CCorpusTranscriptChanged?.Invoke(LCorpusTranscriptRead() ?? CExample.LExampleBlankRead(CCorpusTallyRead()));
         CCorpusSession.CSessionChanged += () => CCorpusChanged?.Invoke();
         CCorpusSession.CSessionFailed +=
             (key, exception) => CLedger.LLedgerFailureShow(envoy, _cCorpusSettingsPort, key, exception);
         CCorpusAnthology.CAnthologyPanel.CPanelEdited += id => CCorpusSession.CSessionStart(id);
         CCorpusAnthology.CAnthologyPanel.CPanelCleared += CCorpusSession.CSessionCancel;
         CCorpusAnthology.CAnthologyPanel.CPanelDraftChanged +=
-            draft => LCorpusExampleUpdate(CCorpusAnthology.LAnthologyDraftRead(draft));
+            draft => LCorpusExampleUpdate(CCorpusAnthology.LAnthologyDraftRead(draft, CCorpusTallyRead()));
         CCorpusQuotation.CQuotationPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         CCorpusQuotation.CQuotationPanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         atelier.CAtelierNavigation.LNavigationTabAdd(
@@ -65,7 +69,7 @@ public sealed class CCorpus
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CCorpusSession.LSessionChangeCheck, CCorpusSession.LSessionFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CCorpusVistaRestore);
         atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LCorpusClose);
-        CCorpusDesk.CDeskObserverAttach(marshal, () => CCorpusDraftChanged?.Invoke(LCorpusTranscriptRead()));
+        CCorpusDesk.CDeskObserverAttach(marshal, LCorpusDraftResonate);
     }
 
     public static CCorpus CCorpusCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
@@ -75,13 +79,15 @@ public sealed class CCorpus
 
     public event Action? CCorpusChanged;
 
-    public event Action<CExample?>? CCorpusTranscriptChanged;
+    public event Action<CExample>? CCorpusTranscriptChanged;
 
-    public event Action<CExample?>? CCorpusDraftChanged;
+    public event Action<CExample>? CCorpusDraftChanged;
 
     public event Action<CExample>? CCorpusExampleChanged;
 
     public event Action? CCorpusQueryCleared;
+
+    public event Action? CCorpusWorkspaceChanged;
 
     public event Action<CProspect>? CCorpusMentionOffered;
 
@@ -133,12 +139,20 @@ public sealed class CCorpus
     {
         try
         {
-            return CCorpusAnthology.LAnthologyDraftRead(CCorpusDesk.CDeskRead());
+            return CCorpusAnthology.LAnthologyDraftRead(CCorpusDesk.CDeskRead(), CCorpusTallyRead());
         }
         catch (Exception exception)
         {
             CLedger.LLedgerFailureShow(_cCorpusEnvoy, _cCorpusSettingsPort, "Example.HoldFailed", exception);
             return null;
+        }
+    }
+
+    private void LCorpusDraftResonate()
+    {
+        if (LCorpusTranscriptRead() is CExample example)
+        {
+            CCorpusDraftChanged?.Invoke(example);
         }
     }
 
@@ -327,10 +341,10 @@ public sealed class CCorpus
             return;
         }
 
-        CCorpusExampleClose();
+        LCorpusExampleClose();
     }
 
-    public void CCorpusExampleClose()
+    private void LCorpusExampleClose()
     {
         CCorpusQuotation.CQuotationPanel.CPanelEntryClose();
         CCorpusAnthology.CAnthologyPanel.CPanelEntryClose();
@@ -389,7 +403,7 @@ public sealed class CCorpus
         return shown ? CCorpusSession.LSessionFinish(true) : CCorpusSession.CSessionClose(true);
     }
 
-    public void CCorpusEntryResonate()
+    internal void LCorpusEntryResonate()
     {
         if (!CCorpusQuotation.CQuotationPanel.CPanelBinEnabled)
         {
@@ -406,15 +420,24 @@ public sealed class CCorpus
         LCorpusExampleRestore(editing);
     }
 
-    public IReadOnlyList<CCatalogExample> CCorpusRowsRead(string unknown, string unwritten)
+    public IReadOnlyList<CCatalogExample> CCorpusRowsRead()
     {
-        IReadOnlyList<CCatalogExample> rows = CCorpusAnthology.LAnthologyRowsRead(unknown, unwritten);
+        if (CCorpusAnthology.LAnthologyRowsRead() is not IReadOnlyList<CCatalogExample> rows)
+        {
+            return [];
+        }
+
         if (LCorpusRowShown && !rows.Any(static row => row.CCatalogExampleChosen))
         {
-            CCorpusExampleClose();
+            LCorpusExampleClose();
         }
 
         return rows;
+    }
+
+    public string CCorpusTallyRead()
+    {
+        return CCorpusAnthology.CAnthologyPanel.CPanelVista?.LVistaTallyRead() ?? string.Empty;
     }
 
     public void CCorpusExampleDelete()
@@ -461,5 +484,14 @@ public sealed class CCorpus
         CCorpusAnthology.LAnthologyVistaRestore(vista);
         CCorpusQuotation.LQuotationVistaRestore(vista, quotation);
         CCorpusEditor.LEditorVistaRestore(quotation);
+        CCorpusAnthology.LAnthologyObserverAttach(_cCorpusMarshal, LCorpusWorkspaceResonate);
+        CCorpusQuotation.LQuotationObserverAttach(
+            _cCorpusMarshal, CCorpusAnthology.CAnthologyPanel.CPanelRowsResonate, LCorpusEntryResonate);
+    }
+
+    private void LCorpusWorkspaceResonate()
+    {
+        LCorpusExampleClose();
+        CCorpusWorkspaceChanged?.Invoke();
     }
 }

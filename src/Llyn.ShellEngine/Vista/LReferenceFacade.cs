@@ -108,7 +108,8 @@ internal sealed class LReferenceFacade
 
         lock (_lReferenceFacadeGate)
         {
-            string tally = LReferenceFacadeStaff.LEngineStaffUsage.LUsageTallyRead(draft.LDraftReference?.LReferenceId);
+            string tally = LReferenceFacadeStaff.LEngineStaffUsage.LUsageTallyRead(
+                draft.LDraftReference?.LReferenceId, LOwner.LOwnerReference);
             return LReferenceClerk.LReferenceColophonRead(draft, tally);
         }
     }
