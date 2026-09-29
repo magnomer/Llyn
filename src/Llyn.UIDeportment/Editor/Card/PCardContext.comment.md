@@ -14,11 +14,6 @@ The card renders them by id, and every commit or removal is a request the editor
 Where the caret stands is the card's own, and it is the position a new chip is asked for.
 The engine's clerk skips a wording the card already shows, so what the field shows is what the engine holds.
 
-## `internal event Action<PCard, string>? PCardContextNotice;`
-
-Where the entry's text goes as it is typed, so the editor can offer matching Situations.
-It carries the card, since the editor subscribes one handler for every card it builds.
-
 ## `internal string PCardContextText`
 
 What is standing in the entry.
@@ -51,7 +46,7 @@ The empty text reaches the gate as any edit does, and an empty text adds nothing
 
 ## `internal void PCardContextRefine(string rest)`
 
-Puts the situation gate's answer in the entry, then tells the editor what now stands there.
+Puts the situation gate's answer in the entry.
 The editor's text observer hands every edit to the gate, which reads the comma.
 So a pasted comma ends a Situation as a typed one does.
 

@@ -20,7 +20,11 @@ public partial class PEditor
             {
                 entry.SetValue(QField.QFieldHintProperty, caret.PRegisterCaretHint);
                 entry.Text = caret.PRegisterCaretText;
+                entry.PreviewKeyDown -= PProfferKeyRefine;
+                entry.PreviewKeyDown -= PProfferKeyObserve;
                 entry.PreviewKeyDown -= _pRegisterTemplate.PRegisterCaretHandle;
+                entry.PreviewKeyDown += PProfferKeyRefine;
+                entry.PreviewKeyDown += PProfferKeyObserve;
                 entry.PreviewKeyDown += _pRegisterTemplate.PRegisterCaretHandle;
                 entry.LostKeyboardFocus -= _pRegisterTemplate.PRegisterCloseHandle;
                 entry.LostKeyboardFocus += _pRegisterTemplate.PRegisterCloseHandle;
@@ -73,7 +77,7 @@ public partial class PEditor
     {
         if (PCardRegisterFind(caret) is PCard card)
         {
-            card.PCardRegisterRefine(_qEditor.QEditorArea.CEditorCard.CCardRegisterAdd(
+            PProfferRegisterRefine(card, _qEditor.QEditorArea.CEditorCard.CCardRegisterAdd(
                 card.PCardId, text, card.PCardRegisterPosition, false));
         }
     }
@@ -96,12 +100,6 @@ public partial class PEditor
         PCard? card = PCardRegisterFind(row);
         if (card is null)
         {
-            return;
-        }
-
-        if (PCandidate.IsOpen && PCandidateHandle(e.Key))
-        {
-            e.Handled = true;
             return;
         }
 
@@ -175,7 +173,7 @@ public partial class PEditor
 
     private void PRegisterCommitObserve(PCard card)
     {
-        PCandidateHide();
+        PProfferShutRefine();
         _qEditor.QEditorArea.CEditorCard.CCardRegisterAdd(
             card.PCardId, card.PCardRegisterText, card.PCardRegisterPosition, true);
         card.PCardRegisterClear();

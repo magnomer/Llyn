@@ -129,7 +129,11 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<TextBox>(container, "PSentenceCitation") is TextBox citation)
         {
+            citation.PreviewKeyDown -= PProfferKeyRefine;
+            citation.PreviewKeyDown -= PProfferKeyObserve;
             citation.PreviewKeyDown -= _pSentenceTemplate.PCitationKeyHandle;
+            citation.PreviewKeyDown += PProfferKeyRefine;
+            citation.PreviewKeyDown += PProfferKeyObserve;
             citation.PreviewKeyDown += _pSentenceTemplate.PCitationKeyHandle;
             citation.LostKeyboardFocus -= _pSentenceTemplate.PCitationLeaveHandle;
             citation.LostKeyboardFocus += _pSentenceTemplate.PCitationLeaveHandle;
@@ -335,7 +339,9 @@ public partial class PEditor
                 _qEditor.QEditorArea.CEditorSentence.CSentenceDependenceSet(card.PCardId, row.PSentenceRow, box.Text);
                 break;
             case nameof(PSentence.PSentenceCitation):
-                PCandidateCitationShow(card, row, box);
+                PProfferCitationRefine(
+                    box,
+                    _qEditor.QEditorArea.CEditorCard.CCardReferenceFind(card.PCardId, row.PSentenceRow, box.Text));
                 break;
         }
     }

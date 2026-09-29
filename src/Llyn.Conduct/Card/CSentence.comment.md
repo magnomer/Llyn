@@ -47,6 +47,12 @@ The gate for typing in a sentence's particle field.
 
 The gate for typing in a sentence's dependence field.
 
+## `public void CSentenceCitationSet(long cardId, long sentenceId, long referenceId)`
+
+The gate for picking a stored Source from a sentence's citation dropdown.
+The pick carries the Source's id, so nothing is resolved from its byline.
+A typed title is `CCard.CCardCitationSet`'s action instead.
+
 ## `public void CSentenceGlossSet(long cardId, long sentenceId, long glossId, string text)`
 
 A gloss's typed text, deferred like the sentence text.

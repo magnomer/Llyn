@@ -36,22 +36,39 @@ public sealed class LRegisterClerk
         return found;
     }
 
-    public IReadOnlyList<LRegister> LRegisterClerkFind(string query, string language, LDraft? draft, long card)
+    public LRegisterOffer LRegisterClerkFind(string text, string language, LDraft? draft, long card)
     {
+        ArgumentNullException.ThrowIfNull(text);
+
+        string word = text.Trim();
+        if (word.Length == 0)
+        {
+            return new LRegisterOffer(text, [], false);
+        }
+
         IReadOnlyList<LRegisterDraft> held = draft is null
             ? []
             : LDraftClerkCard.LCardFind(draft.LDraftContent, card)?.LCardDraftRegister ?? [];
 
-        List<LRegister> found = [];
-        foreach (LRegister register in LRegisterClerkFind(query, language))
+        List<LRegisterRow> rows = [];
+        foreach (LRegister register in LRegisterClerkFind(word, language))
         {
-            if (LDraftClerkList.LDraftListFind(held, register.LRegisterId, static row => row.LRegisterDraftId) < 0)
+            string name = register.LRegisterName.LStateValueShow().Trim();
+            if (name.Length == 0
+                || LDraftClerkList.LDraftListFind(held, register.LRegisterId, static row => row.LRegisterDraftId) >= 0)
             {
-                found.Add(register);
+                continue;
+            }
+
+            (string lead, string mark, string tail) = LCatalog.LCatalogMarkFind(name, word);
+            rows.Add(new LRegisterRow(register.LRegisterId, lead, mark, tail));
+            if (rows.Count == LCatalog.LCatalogOfferLimit)
+            {
+                break;
             }
         }
 
-        return found;
+        return new LRegisterOffer(text, rows, rows.Count > 0);
     }
 
     public IReadOnlyList<LCatalogRegister> LRegisterClerkFind(string query, LCatalogOrder order)

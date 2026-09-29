@@ -24,13 +24,14 @@ internal sealed class LSituationFacade
         }
     }
 
-    public IReadOnlyList<LCatalogSituation> LEngineSituationFind(
-        LTenure? held, long card, string query, LCatalogOrder order)
+    public LSituationOffer LEngineSituationFind(LTenure held, long card, string text)
     {
-        LDraft? draft = held?.LTenureRead();
+        ArgumentNullException.ThrowIfNull(held);
+
+        LDraft? draft = held.LTenureRead();
         lock (_lSituationFacadeGate)
         {
-            return LSituationFacadeStaff.LEngineStaffSituation.LSituationClerkFind(query, order, draft, card);
+            return LSituationFacadeStaff.LEngineStaffSituation.LSituationClerkFind(text, draft, card);
         }
     }
 

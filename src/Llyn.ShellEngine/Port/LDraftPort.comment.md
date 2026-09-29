@@ -45,6 +45,21 @@ The Authors a typed credit may already name, left out those the draft credits.
 The stored Tags a card's tag field offers for the text it keeps, ready to show.
 It sits beside the other finds a chip field makes as the user types.
 
+## `LRegisterOffer LEngineRegisterFind(LTenure held, long card, string text);`
+
+The stored Registers a card's register field offers for the text it keeps, ready to show.
+The held draft names the language, so the caller passes none.
+
+## `LSituationOffer LEngineSituationFind(LTenure held, long card, string text);`
+
+The stored Situations a card's situation field offers for the text it keeps, ready to show.
+The held draft names the card's links, so those are left out.
+
+## `LReferenceOffer LEngineReferenceFind(LTenure held, long card, long sentence, string text);`
+
+The stored Sources a card sentence's citation field offers for the typed text, ready to show.
+The held draft names the Source the sentence cites, so typing its byline offers nothing.
+
 ## `string LEngineBylineRead(string? text);`
 
 The word a typed credit searches and highlights the byline with.

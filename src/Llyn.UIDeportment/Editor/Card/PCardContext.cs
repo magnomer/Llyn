@@ -16,8 +16,6 @@ internal sealed partial class PCard
 
     public ObservableCollection<object> PCardContext { get; } = [];
 
-    internal event Action<PCard, string>? PCardContextNotice;
-
     internal string PCardContextText => _pCardContextCaret.PContextCaretText;
 
     internal int PCardContextPosition =>
@@ -88,8 +86,6 @@ internal sealed partial class PCard
             _pCardContextCaret.PContextCaretText = rest;
             PCardContextUpdate();
         }
-
-        PCardContextNotice?.Invoke(this, _pCardContextCaret.PContextCaretText);
     }
 
     private void PCardContextUpdate()

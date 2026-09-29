@@ -62,6 +62,15 @@ public sealed class LDraftOutlet : LDraftPort
     public LTagOffer LEngineTagFind(LTenure held, long card, string text) =>
         _lDraftOutletEngine.LEngineCard.LEngineTagFind(held, card, text);
 
+    public LRegisterOffer LEngineRegisterFind(LTenure held, long card, string text) =>
+        _lDraftOutletEngine.LEngineCard.LEngineRegisterFind(held, card, text);
+
+    public LSituationOffer LEngineSituationFind(LTenure held, long card, string text) =>
+        _lDraftOutletEngine.LEngineSituation.LEngineSituationFind(held, card, text);
+
+    public LReferenceOffer LEngineReferenceFind(LTenure held, long card, long sentence, string text) =>
+        _lDraftOutletEngine.LEngineReference.LEngineReferenceFind(held, card, sentence, text);
+
     public string LEngineBylineRead(string? text) => LAuthorFacade.LEngineBylineRead(text);
 
     public LEntry? LEngineTranslationResolve(string word, long? entryId) =>

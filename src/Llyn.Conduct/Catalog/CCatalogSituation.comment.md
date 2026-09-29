@@ -2,7 +2,7 @@
 
 ## `public sealed record CCatalogSituation(`
 
-One situation a search found, as the candidate popup or the atlas lists it.
+One situation a search found, as the Proffer dropdown or the atlas lists it.
 
 **Parameters**
 

@@ -2,8 +2,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <DataTemplate x:Key="Theme.Candidate.Row">
-        <Grid x:Name="PCandidateRow" Background="Transparent">
+    <DataTemplate x:Key="Theme.Proffer.Row">
+        <Grid x:Name="PProfferRow" Background="Transparent">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -13,12 +13,12 @@
                 FontSize="{DynamicResource Theme.Card.SituationSize}"
                 Foreground="{DynamicResource Theme.Ink}"
                 TextTrimming="CharacterEllipsis">
-                <Run x:Name="PCandidateLead" /><Run
-                    x:Name="PCandidateMark"
+                <Run x:Name="PProfferLead" /><Run
+                    x:Name="PProfferMark"
                     FontWeight="SemiBold"
-                    Foreground="{DynamicResource Theme.Accent}" /><Run x:Name="PCandidateTail" />
+                    Foreground="{DynamicResource Theme.Accent}" /><Run x:Name="PProfferTail" />
             </TextBlock>
-            <TextBlock x:Name="PCandidateCount" Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" FontSize="10.5" Foreground="{DynamicResource Theme.Muted}" />
+            <TextBlock x:Name="PProfferCount" Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" FontSize="10.5" Foreground="{DynamicResource Theme.Muted}" />
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

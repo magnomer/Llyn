@@ -42,8 +42,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         Resources.MergedDictionaries.Add(_pLinkTemplate);
         _pProspectTemplate = new PProspectTemplate(this);
         Resources.MergedDictionaries.Add(_pProspectTemplate);
-        _pCandidateTemplate = new PCandidateTemplate(this);
-        Resources.MergedDictionaries.Add(_pCandidateTemplate);
+        _pProfferTemplate = new PProfferTemplate();
+        Resources.MergedDictionaries.Add(_pProfferTemplate);
         _pSlateTemplate = new PSlateTemplate();
         Resources.MergedDictionaries.Add(_pSlateTemplate);
         Resources.MergedDictionaries.Add(new PMeaningTemplate());
@@ -73,7 +73,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         PProspectList.ItemsSource = _pProspectItem;
         QLookItem.QLookItemAttach(PProspectList, PProspectApply);
         PProspect.Closed += PProspectCloseRefine;
-        PCandidateAttach();
+        PProfferAttach();
         PSlateAttach();
         PCategoryAttach();
         PMarkerAttach();

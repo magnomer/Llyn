@@ -104,13 +104,6 @@ public sealed class CCard
             offer.LTranslationOfferChosen);
     }
 
-    public IReadOnlyList<CRegister> CCardRegisterFind(long cardId, string word, string language)
-    {
-        return _cCardEntryPort.LEngineRegisterFind(_cCardDesk.CDeskTenure, cardId, word, language)
-            .Select(LCardRegisterRead)
-            .ToList();
-    }
-
     internal static CRegister LCardRegisterRead(LRegister register)
     {
         ArgumentNullException.ThrowIfNull(register);
@@ -118,18 +111,26 @@ public sealed class CCard
         return new CRegister(register.LRegisterId, CFolio.CFolioStateRead(register.LRegisterName).CStateValueText);
     }
 
-    public IReadOnlyList<CCatalogSituation> CCardSituationFind(long cardId, string word)
+    public CProffer CCardReferenceFind(long cardId, long sentenceId, string text)
     {
-        return _cCardEntryPort.LEngineSituationFind(
-                _cCardDesk.CDeskTenure, cardId, word, LCatalogOrder.LCatalogOrderUsage)
-            .Select(CAtlas.LAtlasRowRead)
-            .ToList();
+        return _cCardDesk.CDeskChip?.LQuillReferenceFind(cardId, sentenceId, text) is LReferenceOffer offer
+            ? LCardProfferRead(offer)
+            : new CProffer(text, [], false);
     }
 
-    public IReadOnlyList<CCatalogReference> CCardReferenceFind(string word)
+    private static CProffer LCardProfferRead(LReferenceOffer offer)
     {
-        return COeuvre.COeuvreReferenceRead(
-            _cCardEntryPort.LEngineReferenceFind(word, LCatalogOrder.LCatalogOrderUsage));
+        return new CProffer(
+            offer.LReferenceOfferText,
+            offer.LReferenceOfferRows
+                .Select(static row => new CProfferRow(
+                    row.LReferenceRowId,
+                    row.LReferenceRowLead,
+                    row.LReferenceRowMark,
+                    row.LReferenceRowTail,
+                    row.LReferenceRowCount))
+                .ToList(),
+            offer.LReferenceOfferShown);
     }
 
     public IReadOnlyList<CCatalogReference> CCardReferenceFind()
@@ -171,9 +172,26 @@ public sealed class CCard
         _cCardDesk.CDeskChip?.LQuillTagRemove(cardId, tagId);
     }
 
-    public string CCardSituationAdd(long cardId, string text, int position, bool settled)
+    public CProffer CCardSituationAdd(long cardId, string text, int position, bool settled)
     {
-        return _cCardDesk.CDeskChip?.LQuillSituationAdd(cardId, text, position, settled) ?? text;
+        return _cCardDesk.CDeskChip?.LQuillSituationAdd(cardId, text, position, settled) is LSituationOffer offer
+            ? LCardProfferRead(offer)
+            : new CProffer(text, [], false);
+    }
+
+    private static CProffer LCardProfferRead(LSituationOffer offer)
+    {
+        return new CProffer(
+            offer.LSituationOfferText,
+            offer.LSituationOfferRows
+                .Select(static row => new CProfferRow(
+                    row.LSituationRowId,
+                    row.LSituationRowLead,
+                    row.LSituationRowMark,
+                    row.LSituationRowTail,
+                    row.LSituationRowCount))
+                .ToList(),
+            offer.LSituationOfferShown);
     }
 
     public void CCardSituationInsert(long cardId, long situationId, int position)
@@ -186,9 +204,22 @@ public sealed class CCard
         _cCardDesk.CDeskChip?.LQuillSituationRemove(cardId, situationId);
     }
 
-    public string CCardRegisterAdd(long cardId, string text, int position, bool settled)
+    public CProffer CCardRegisterAdd(long cardId, string text, int position, bool settled)
     {
-        return _cCardDesk.CDeskChip?.LQuillRegisterAdd(cardId, text, position, settled) ?? text;
+        return _cCardDesk.CDeskChip?.LQuillRegisterAdd(cardId, text, position, settled) is LRegisterOffer offer
+            ? LCardProfferRead(offer)
+            : new CProffer(text, [], false);
+    }
+
+    private static CProffer LCardProfferRead(LRegisterOffer offer)
+    {
+        return new CProffer(
+            offer.LRegisterOfferText,
+            offer.LRegisterOfferRows
+                .Select(static row => new CProfferRow(
+                    row.LRegisterRowId, row.LRegisterRowLead, row.LRegisterRowMark, row.LRegisterRowTail))
+                .ToList(),
+            offer.LRegisterOfferShown);
     }
 
     public void CCardRegisterInsert(long cardId, long registerId, int position)

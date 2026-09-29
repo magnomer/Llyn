@@ -97,18 +97,11 @@ public sealed class LEntryOutlet : LEntryPort
 
     public LTag LEngineTagCreate(string text) => _lEntryOutletEngine.LEngineCard.LEngineTagCreate(text);
 
-    public IReadOnlyList<LRegister> LEngineRegisterFind(LTenure? held, long card, string query, string language) =>
-        _lEntryOutletEngine.LEngineCard.LEngineRegisterFind(held, card, query, language);
-
     public IReadOnlyList<LCatalogRegister> LEngineRegisterFind(LVista vista) =>
         _lEntryOutletEngine.LEngineCard.LEngineRegisterFind(vista);
 
     public LRegister LEngineRegisterCreate(string name) =>
         _lEntryOutletEngine.LEngineCard.LEngineRegisterCreate(name);
-
-    public IReadOnlyList<LCatalogSituation> LEngineSituationFind(
-        LTenure? held, long card, string query, LCatalogOrder order) =>
-        _lEntryOutletEngine.LEngineSituation.LEngineSituationFind(held, card, query, order);
 
     public IReadOnlyList<LCatalogSituation> LEngineSituationFind(
         LVista vista,
@@ -121,9 +114,6 @@ public sealed class LEntryOutlet : LEntryPort
         string unknown = "",
         string unwritten = "") =>
         _lEntryOutletEngine.LEngineExample.LEngineExampleFind(vista, unknown, unwritten);
-
-    public IReadOnlyList<LCatalogReference> LEngineReferenceFind(string query, LCatalogOrder order) =>
-        _lEntryOutletEngine.LEngineReference.LEngineReferenceFind(query, order);
 
     public IReadOnlyList<LCatalogReference> LEngineReferenceFind(LVista vista) =>
         _lEntryOutletEngine.LEngineReference.LEngineReferenceFind(vista);

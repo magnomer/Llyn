@@ -265,98 +265,6 @@ public sealed class TCard
     }
 
     [Fact]
-    public void SituationAdd_TypedList_AddsTheCompletedTitlesOnceAndKeepsTheRest()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        (CDesk desk, CCard card) = TCardPrepare(engine);
-        long sheet = TCardSheetAdd(desk);
-
-        string rest = card.CCardSituationAdd(sheet, "Hearth, ,  Kitchen, Ga", 0, false);
-        string settled = card.CCardSituationAdd(sheet, " Hearth ", 2, true);
-        string blank = card.CCardSituationAdd(sheet, "   ", 2, true);
-
-        Assert.Equal("Ga", rest);
-        Assert.Equal(string.Empty, settled);
-        Assert.Equal(string.Empty, blank);
-        Assert.Equal(
-            ["Hearth", "Kitchen"],
-            TCardSituationRead(desk, sheet).Select(static row => row.LSituationDraftTitle.LStateValueShown));
-    }
-
-    [Fact]
-    public void SituationInsert_StoredSituation_LinksItOnceAndRemoveDropsIt()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LSituation hearth = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, "Hearth", null, null));
-        (CDesk desk, CCard card) = TCardPrepare(engine);
-        long sheet = TCardSheetAdd(desk);
-
-        card.CCardSituationInsert(sheet, hearth.LSituationId, 0);
-        card.CCardSituationInsert(sheet, hearth.LSituationId, 1);
-
-        Assert.Equal(hearth.LSituationId, Assert.Single(TCardSituationRead(desk, sheet)).LSituationDraftId);
-
-        card.CCardSituationRemove(sheet, hearth.LSituationId);
-
-        Assert.Empty(TCardSituationRead(desk, sheet));
-    }
-
-    [Fact]
-    public void SituationFind_SituationHeldOnTheCard_LeavesItOut()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LSituation hearth = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, "Hearth", null, null));
-        (CDesk desk, CCard card) = TCardPrepare(engine);
-        long sheet = TCardSheetAdd(desk);
-        long other = TCardSheetAdd(desk);
-        card.CCardSituationInsert(sheet, hearth.LSituationId, 0);
-
-        Assert.DoesNotContain(
-            card.CCardSituationFind(sheet, "Hear"), row => row.CCatalogSituationId == hearth.LSituationId);
-        Assert.Contains(card.CCardSituationFind(other, "Hear"), row => row.CCatalogSituationId == hearth.LSituationId);
-    }
-
-    [Fact]
-    public void RegisterAdd_TypedList_AddsTheCompletedNamesOnceAndKeepsTheRest()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        (CDesk desk, CCard card) = TCardPrepare(engine);
-        long sheet = TCardSheetAdd(desk);
-
-        string rest = card.CCardRegisterAdd(sheet, "formal,  slang, fo", 0, false);
-        string settled = card.CCardRegisterAdd(sheet, "slang", 2, true);
-
-        Assert.Equal("fo", rest);
-        Assert.Equal(string.Empty, settled);
-        Assert.Equal(
-            ["formal", "slang"],
-            TCardRegisterRead(desk, sheet).Select(static row => row.LRegisterDraftName.LStateValueShown));
-    }
-
-    [Fact]
-    public void RegisterInsert_StoredRegister_LinksItOnceAndFindLeavesItOut()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LRegister formal = engine.TEngineRegisterCreate("formal");
-        (CDesk desk, CCard card) = TCardPrepare(engine);
-        long sheet = TCardSheetAdd(desk);
-        long other = TCardSheetAdd(desk);
-
-        card.CCardRegisterInsert(sheet, formal.LRegisterId, 0);
-        card.CCardRegisterInsert(sheet, formal.LRegisterId, 1);
-
-        Assert.Equal(formal.LRegisterId, Assert.Single(TCardRegisterRead(desk, sheet)).LRegisterDraftId);
-        Assert.DoesNotContain(
-            card.CCardRegisterFind(sheet, "form", "English"), row => row.CRegisterId == formal.LRegisterId);
-        Assert.Contains(card.CCardRegisterFind(other, "form", "English"), row => row.CRegisterId == formal.LRegisterId);
-    }
-
-    [Fact]
     public void ReferenceFind_NoWord_ListsEveryStoredSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -365,19 +273,6 @@ public sealed class TCard
         (_, CCard card) = TCardPrepare(engine);
 
         Assert.Contains(card.CCardReferenceFind(), row => row.CCatalogReferenceId == notes.LReferenceId);
-        Assert.Contains(card.CCardReferenceFind("Field"), row => row.CCatalogReferenceId == notes.LReferenceId);
-    }
-
-    [Fact]
-    public void SituationFind_TypedTitle_FindsTheStoredSituation()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LSituation hearth = engine.TEngineSituationCreate(
-            TInterface.TSituationCreate(0, "Hearth", null, LStateValue.LStateValueUnknown));
-        (_, CCard card) = TCardPrepare(engine);
-
-        Assert.Contains(card.CCardSituationFind(0, "Hear"), row => row.CCatalogSituationId == hearth.LSituationId);
     }
 
     [Fact]
@@ -438,22 +333,12 @@ public sealed class TCard
         return TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet).LCardDraftTag;
     }
 
-    private static IReadOnlyList<LSituationDraft> TCardSituationRead(CDesk desk, long sheet)
-    {
-        return TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet).LCardDraftSituation;
-    }
-
-    private static IReadOnlyList<LRegisterDraft> TCardRegisterRead(CDesk desk, long sheet)
-    {
-        return TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet).LCardDraftRegister;
-    }
-
     internal static IReadOnlyList<long> TCardTranslationRead(CDesk desk, long sheet)
     {
         return TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet).LCardDraftTranslation;
     }
 
-    private static (long TCardSheet, long TCardSentence) TCardSentenceAdd(CDesk desk)
+    internal static (long TCardSheet, long TCardSentence) TCardSentenceAdd(CDesk desk)
     {
         desk.TDeskDefer(TInterface.TRequestAdditionCreate(desk.CDeskId, LCardKind.LCardKindMeaning, 0, int.MaxValue));
         long sheet = desk.TDeskRead()!.LDraftContent.LEntryDraftMeanings[^1].LCardDraftId;

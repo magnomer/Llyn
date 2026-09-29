@@ -2,7 +2,7 @@
 
 ## `public sealed record CRegister(long CRegisterId, string CRegisterName)`
 
-One register a search found, as the candidate popup lists it.
+One register a search found, as the Proffer dropdown lists it.
 
 **Parameters**
 

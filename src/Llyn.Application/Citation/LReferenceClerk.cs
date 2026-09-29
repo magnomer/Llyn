@@ -131,6 +131,36 @@ public sealed class LReferenceClerk
 
     public IReadOnlyList<LCatalogReference> LReferenceCitationFind(string word, LDraft? draft)
     {
+        return LReferenceCitationFind(word, draft?.LDraftExample?.LExampleSource.LStateAnchorShown);
+    }
+
+    public LReferenceOffer LReferenceCitationFind(string text, LDraft? draft, long card, long sentence)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        string word = text.Trim();
+        long? held = draft?.LDraftExampleRead(card, sentence)?.LExampleDraftReference.LStateAnchorShown;
+        List<LReferenceRow> rows = [];
+        foreach (LCatalogReference row in LReferenceCitationFind(word, held))
+        {
+            (string lead, string mark, string tail) = LCatalog.LCatalogMarkFind(row.LCatalogReferenceByline, word);
+            rows.Add(new LReferenceRow(
+                row.LCatalogReferenceStored.LReferenceId,
+                lead,
+                mark,
+                tail,
+                LCatalog.LCatalogUsageFormat(row.LCatalogReferenceUsage)));
+            if (rows.Count == LCatalog.LCatalogOfferLimit)
+            {
+                break;
+            }
+        }
+
+        return new LReferenceOffer(text, rows, rows.Count > 0);
+    }
+
+    private IReadOnlyList<LCatalogReference> LReferenceCitationFind(string word, long? held)
+    {
         ArgumentNullException.ThrowIfNull(word);
 
         string text = word.Trim();
@@ -139,7 +169,6 @@ public sealed class LReferenceClerk
             return [];
         }
 
-        long? held = draft?.LDraftExample?.LExampleSource.LStateAnchorShown;
         IReadOnlyList<LCatalogReference> found = LReferenceClerkFind(text, LCatalogOrder.LCatalogOrderUsage);
         foreach (LCatalogReference row in found)
         {

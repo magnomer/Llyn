@@ -21,8 +21,6 @@ public partial class PEditor
                     PCardId = draft.CCardDraftId,
                 };
                 card.PCardSentenceNotice += PSentenceGlossObserve;
-                card.PCardContextNotice += PCandidateShow;
-                card.PCardRegisterNotice += PCandidateRegisterShow;
                 cards.Add(card);
             }
 

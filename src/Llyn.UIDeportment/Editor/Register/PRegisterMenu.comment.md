@@ -9,7 +9,7 @@ Which card a row belongs to is found from the row itself rather than passed thro
 ## `private void PRegisterTextObserve(PRegisterCaret caret, string text)`
 
 Hears each edit of a Register caret and hands the raw text to the register gate, unsettled.
-The card's `PCardRegisterRefine` then shows the answer the gate keeps in the entry.
+`PProfferRegisterRefine` then paints the answer: the kept text and the offered Registers.
 
 ## `internal void PRegisterChipHandle(object sender, RoutedEventArgs e)`
 
@@ -17,8 +17,8 @@ Drops the chip whose cross was clicked.
 
 ## `internal void PRegisterCaretHandle(object sender, KeyEventArgs e)`
 
-The keys the caret answers.
-The shelf comes first while it stands open, then Enter, then the edits an empty caret allows.
+The keys the caret answers, after the dropdown's key handlers have passed a key on.
+Enter comes first, then the edits an empty caret allows.
 The chip keys go through `PCaretKeyApply`.
 
 ## `internal void PRegisterCloseHandle(object sender, RoutedEventArgs e)`
@@ -52,6 +52,7 @@ The Register dictionary, held so its fill can subscribe the dictionary's forward
 
 Fills one item of a card's Register field, where bindings and event attributes stood.
 An entry gets its hint, its text and its key and leaving handlers.
+The dropdown's key Refine and key Observe come before the caret's, so the open dropdown hears a key first.
 A chip gets its wording, its close icon and its close handler.
 
 ## `private void PRegisterFieldApply(ItemsControl list)`

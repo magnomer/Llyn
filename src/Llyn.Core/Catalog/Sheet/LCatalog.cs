@@ -5,6 +5,8 @@ namespace Llyn.Core;
 
 public static class LCatalog
 {
+    public const int LCatalogOfferLimit = 8;
+
     private const char LCatalogFilterSeparator = ',';
 
     private static readonly char[] LCatalogTextWildcard = ['*', '?'];
@@ -99,6 +101,11 @@ public static class LCatalog
         return found < 0
             ? (text, string.Empty, string.Empty)
             : (text[..found], text.Substring(found, size), text[(found + size)..]);
+    }
+
+    public static string LCatalogUsageFormat(int usage)
+    {
+        return usage > 0 ? usage.ToString(CultureInfo.CurrentCulture) : string.Empty;
     }
 
     public static bool LCatalogTextMatch(string? text, string query)

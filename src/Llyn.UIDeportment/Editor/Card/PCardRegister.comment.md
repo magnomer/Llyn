@@ -7,11 +7,6 @@ The collection is a run of Register chips with one open entry among them, which 
 The engine holds the chips, the card renders them by id, and every commit or removal is a request.
 The engine's clerk skips a Register the card already holds, by id and by wording alike.
 
-## `internal event Action<PCard, string>? PCardRegisterNotice;`
-
-Where the entry's text goes as it is typed, so the editor can offer matching Registers.
-It carries the card, since the editor subscribes one handler for every card it builds.
-
 ## `internal string PCardRegisterText`
 
 What is standing in the entry.
@@ -39,7 +34,8 @@ The empty text reaches the gate as any edit does, and an empty text adds nothing
 
 ## `internal void PCardRegisterRefine(string rest)`
 
-Puts the register gate's answer in the entry, then tells the editor what now stands there.
+Puts the text the register gate keeps in the entry.
+The editor's `PProfferRegisterRefine` calls it and paints the offered Registers from the same answer.
 The editor's text observer hands every edit to the gate, which reads the comma.
 So a pasted comma ends a name as a typed one does.
 

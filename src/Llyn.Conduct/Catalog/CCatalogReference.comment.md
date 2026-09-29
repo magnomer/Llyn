@@ -2,7 +2,7 @@
 
 ## `public sealed record CCatalogReference(`
 
-One reference a catalog lists, as the shelf, the candidates and the citations read it.
+One reference a catalog lists, as the shelf, the Proffer dropdown and the citations read it.
 
 **Parameters**
 

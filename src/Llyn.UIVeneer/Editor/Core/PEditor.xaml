@@ -393,17 +393,17 @@
         </Popup>
 
         <Popup
-            x:Name="PCandidate"
+            x:Name="PProffer"
             MaxWidth="320"
             AllowsTransparency="True"
             Placement="Custom"
             StaysOpen="False">
-            <Border x:Name="PCandidateSheet" Style="{StaticResource Editor.Popup.Frame}">
+            <Border x:Name="PProfferSheet" Style="{StaticResource Editor.Popup.Frame}">
                 <ListBox
-                    x:Name="PCandidateList"
+                    x:Name="PProfferList"
                     MaxHeight="232"
                     ItemContainerStyle="{StaticResource Editor.Popup.Caret}"
-                    ItemTemplate="{DynamicResource Theme.Candidate.Row}"
+                    ItemTemplate="{DynamicResource Theme.Proffer.Row}"
                     Style="{StaticResource Editor.Popup.List}" />
             </Border>
         </Popup>

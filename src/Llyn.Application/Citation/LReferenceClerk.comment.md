@@ -57,9 +57,21 @@ The credits and the counts are read whole rather than one Source at a time.
 
 ## `public IReadOnlyList<LCatalogReference> LReferenceCitationFind(string word, LDraft? draft)`
 
+The Sources the corpus citation field offers for the typed word, held against the draft's own Example.
+
+## `public LReferenceOffer LReferenceCitationFind(string text, LDraft? draft, long card, long sentence)`
+
+The Sources a card sentence's citation field offers, held against that sentence's Example.
+Each byline is split around the trimmed word by `LCatalog.LCatalogMarkFind`.
+The offer keeps at most `LCatalog.LCatalogOfferLimit` rows, the cap every chip dropdown shares.
+Each row carries its usage count ready to show, as `LCatalog.LCatalogUsageFormat` writes it.
+The text comes back unchanged, since typing a citation writes nothing.
+
+## `private IReadOnlyList<LCatalogReference> LReferenceCitationFind(string word, long? held)`
+
 The Sources a citation field offers for the typed word, the most cited first.
 The word is trimmed, and a blank word offers none.
-A word that already names the byline of the Source the draft's Example cites offers none.
+A word that already names the byline of the `held` Source offers none.
 The citation then stands as typed, so nothing is left to pick.
 
 ## `public IReadOnlyList<LCatalogReference> LReferenceOeuvreFind(long? author, string query, LCatalogFilter kind, LCatalogOrder order)`

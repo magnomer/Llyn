@@ -100,12 +100,15 @@ internal sealed class LCardFacade
         return created;
     }
 
-    public IReadOnlyList<LRegister> LEngineRegisterFind(LTenure? held, long card, string query, string language)
+    public LRegisterOffer LEngineRegisterFind(LTenure held, long card, string text)
     {
-        LDraft? draft = held?.LTenureRead();
+        ArgumentNullException.ThrowIfNull(held);
+
+        LDraft? draft = held.LTenureRead();
+        string language = held.LTenureLanguageRead();
         lock (_lCardFacadeGate)
         {
-            return LCardFacadeStaff.LEngineStaffRegister.LRegisterClerkFind(query, language, draft, card);
+            return LCardFacadeStaff.LEngineStaffRegister.LRegisterClerkFind(text, language, draft, card);
         }
     }
 

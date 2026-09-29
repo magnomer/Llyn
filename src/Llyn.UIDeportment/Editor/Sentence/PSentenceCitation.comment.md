@@ -8,12 +8,13 @@ A citation is either a stored Source or nothing, so the field never keeps a line
 ## `internal void PCitationKeyHandle(object sender, KeyEventArgs e)`
 
 Drives the citation field from the keyboard.
-While the dropdown stands open the arrows walk it and enter takes the selected row.
-Enter with nothing selected commits the typed line, and escape puts the cited byline back.
+The dropdown's own key handlers hear each key first, so a key the open dropdown takes never reaches here.
+Enter commits the typed line, and escape puts the cited byline back.
 
 ## `internal void PCitationLeaveHandle(object sender, KeyboardFocusChangedEventArgs e)`
 
-Leaving the field discards whatever was typed and not taken, and shuts the dropdown it opened.
+Leaving the field discards whatever was typed and not taken, and shuts the dropdown.
+Only the focused field can have opened the dropdown, so it is shut without asking which field did.
 A citation is either a stored Source or nothing, so a half-typed line is never kept.
 
 ## `private static void PSentenceRevealAttach(ItemsControl list)`
@@ -44,10 +45,6 @@ The field keeps no line of its own, so discarding the typed one is only a re-rea
 
 Hands the typed line to the deportment, which resolves it against the held draft in one request.
 The field then reads the row again, so a failed line never stays.
-
-### `private void PSentenceCitationSend(PCard card, PSentence row, long reference)`
-
-Asks the engine to cite one picked Source on one row, or none when the id is zero.
 
 ### `private void PSentenceCitationShow()`
 

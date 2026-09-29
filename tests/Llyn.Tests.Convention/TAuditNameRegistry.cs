@@ -196,6 +196,7 @@ internal static class TAuditNameRegistry
         "Posture",
         "Press",
         "Probe",
+        "Proffer",
         "Pronunciation",
         "Prospect",
         "Query",

@@ -6,8 +6,6 @@ namespace Llyn.Application;
 
 public sealed class LTagClerk
 {
-    private const int LTagClerkLimit = 8;
-
     private readonly LTagVault _lTagClerkTags;
 
     public LTagClerk(LRig rig)
@@ -63,7 +61,7 @@ public sealed class LTagClerk
 
             (string lead, string mark, string tail) = LCatalog.LCatalogMarkFind(written, word);
             rows.Add(new LTagRow(tag.LTagId, lead, mark, tail));
-            if (rows.Count == LTagClerkLimit)
+            if (rows.Count == LCatalog.LCatalogOfferLimit)
             {
                 break;
             }

@@ -11,10 +11,10 @@ The lookups find the stored rows a typed word matches, leaving out the rows the 
 A typed tag lands trimmed and once, a picked tag keeps its stored id, and an erased tag leaves.
 A typed tag offers the stored Tags split around the word, at most eight.
 A blank or unmatched tag offers nothing.
-A typed list adds its completed tags, situations and registers once each and answers the rest.
-A picked situation or register lands once under its stored id, and an erased situation leaves.
+A typed list adds its completed tags and situations once each and answers the rest.
+A picked situation lands once under its stored id, and an erased situation leaves.
 The frame line follows the order, and an unknown value shows the mark.
-The translation gates are covered by `TCardTranslation`, over the same helpers.
+The translation gates are covered by `TCardTranslation`, and the register gates by `TCardRegister`, over the same helpers.
 
 ## `internal static (CDesk TCardDesk, CCard TCardCard) TCardPrepare(LEngine engine)`
 
@@ -32,18 +32,11 @@ Adds a meaning card to the held draft and answers its id.
 
 The tags the held draft's card carries.
 
-## `private static IReadOnlyList<LSituationDraft> TCardSituationRead(CDesk desk, long sheet)`
-
-The situations the held draft's card carries.
-
-## `private static IReadOnlyList<LRegisterDraft> TCardRegisterRead(CDesk desk, long sheet)`
-
-The registers the held draft's card carries.
-
 ## `internal static IReadOnlyList<long> TCardTranslationRead(CDesk desk, long sheet)`
 
 The entries the held draft's card links as translations.
 
-## `private static (long TCardSheet, long TCardSentence) TCardSentenceAdd(CDesk desk)`
+## `internal static (long TCardSheet, long TCardSentence) TCardSentenceAdd(CDesk desk)`
 
 Adds a meaning card with one sentence to the held draft, and answers both ids.
+`TCardReference` shares it.

@@ -105,7 +105,7 @@ Only one caret is typed into at a time, so only one list of candidates is ever o
 It hangs off the caret it was opened from, which is why the markup names no placement target.
 Its shutting drops the selection, so enter never takes a row the dropdown no longer shows.
 
-### `PCandidate`
+### `PProffer`
 
 The Situation dropdown hangs under the frame of the caret it was opened from, not under the caret itself.
 The frame is the edge a reader sees, and it is drawn outward of the caret it belongs to.

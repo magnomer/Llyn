@@ -56,6 +56,22 @@ public sealed class TCardSentence
     }
 
     [Fact]
+    public void CitationSet_PickedSource_CitesItById()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LReference notes = engine.TEngineCitationCreate("Field notes");
+        (CDesk desk, CSentence sentence) = TSentencePrepare(engine);
+        (long sheet, long first) = TSentenceCardAdd(desk);
+
+        sentence.CSentenceCitationSet(sheet, first, notes.LReferenceId);
+
+        LSentenceDraft row = TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet)
+            .LCardDraftSentence.Single(held => held.LSentenceDraftId == first);
+        Assert.Equal(notes.LReferenceId, row.LSentenceDraftExample!.LExampleDraftReference.LStateAnchorShown);
+    }
+
+    [Fact]
     public void FrameRead_LanguageWithoutFrame_AnswersEmptyLists()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

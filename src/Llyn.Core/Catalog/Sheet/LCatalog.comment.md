@@ -7,6 +7,11 @@ It names the orderings in the form they are written and read back in.
 It also holds the one text test every catalog match is built from.
 Both live here so no caller decides for itself what a choice is called or what counts as a match.
 
+## `public const int LCatalogOfferLimit`
+
+The most stored rows a typed field offers in its dropdown, so a short word never floods it.
+Every chip field's offer keeps to it, so the dropdowns stay one length.
+
 ## `public static string LCatalogOrderFormat(LCatalogOrder order)`
 
 The text form of one ordering, which is what a stored choice is written as.
@@ -49,6 +54,12 @@ The comparison reports how long the match ran.
 A match under a culture's rules is not always as long as the word that found it.
 A text the word does not stand in reads whole as its lead.
 So no row is lost to a wildcard search.
+
+## `public static string LCatalogUsageFormat(int usage)`
+
+The count an offered row shows for how often its stored row is already used.
+A row nobody uses shows nothing, because an unused row needs no number to say so.
+Every offer that carries a usage count reads it here, so the rows agree.
 
 ## `public static bool LCatalogTextMatch(string? text, string query)`
 

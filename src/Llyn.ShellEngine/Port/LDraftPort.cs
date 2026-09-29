@@ -40,6 +40,12 @@ public interface LDraftPort
 
     LTagOffer LEngineTagFind(LTenure held, long card, string text);
 
+    LRegisterOffer LEngineRegisterFind(LTenure held, long card, string text);
+
+    LSituationOffer LEngineSituationFind(LTenure held, long card, string text);
+
+    LReferenceOffer LEngineReferenceFind(LTenure held, long card, long sentence, string text);
+
     string LEngineBylineRead(string? text);
 
     LEntry? LEngineTranslationResolve(string word, long? entryId);

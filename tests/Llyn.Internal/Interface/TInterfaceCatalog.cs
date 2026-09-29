@@ -51,7 +51,7 @@ internal static partial class TInterface
         this LEngine engine,
         string query,
         string language) =>
-        engine.LEngineCard.LEngineRegisterFind(null, 0, query, language);
+        engine.LEngineStaffHeld.LEngineStaffRegister.LRegisterClerkFind(query, language);
 
     internal static IReadOnlyList<LTag> TEngineTagFind(
         this LEngine engine,
@@ -78,6 +78,9 @@ internal static partial class TInterface
 
     internal static (string, string, string) TCatalogMarkFind(string text, string word) =>
         LCatalog.LCatalogMarkFind(text, word);
+
+    internal static string TCatalogUsageFormat(int usage) =>
+        LCatalog.LCatalogUsageFormat(usage);
 
     internal static string TCatalogOrderFormat(LCatalogOrder order) =>
         LCatalog.LCatalogOrderFormat(order);

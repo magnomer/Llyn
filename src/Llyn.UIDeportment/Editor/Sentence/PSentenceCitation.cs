@@ -2,7 +2,6 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Llyn.Application;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -16,12 +15,6 @@ public partial class PEditor
             return;
         }
 
-        if (PCandidate.IsOpen && PCandidateHandle(e.Key))
-        {
-            e.Handled = true;
-            return;
-        }
-
         if (e.Key == Key.Enter)
         {
             PSentenceCitationCommit(card, row, box);
@@ -31,7 +24,7 @@ public partial class PEditor
 
         if (e.Key == Key.Escape)
         {
-            PCandidateHide();
+            PProfferShutRefine();
             PSentenceCitationReset(box);
             e.Handled = true;
         }
@@ -39,16 +32,12 @@ public partial class PEditor
 
     internal void PCitationLeaveHandle(object sender, KeyboardFocusChangedEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PSentence row } box)
+        if (sender is not TextBox { DataContext: PSentence } box)
         {
             return;
         }
 
-        if (ReferenceEquals(_pCandidateSentence, row))
-        {
-            PCandidateHide();
-        }
-
+        PProfferShutRefine();
         PSentenceCitationReset(box);
     }
 
@@ -119,7 +108,7 @@ public partial class PEditor
 
     private void PSentenceCitationCommit(PCard card, PSentence row, TextBox box)
     {
-        PCandidateHide();
+        PProfferShutRefine();
         try
         {
             _qEditor.QEditorArea.CEditorCard.CCardCitationSet(card.PCardId, row.PSentenceRow, box.Text);
@@ -130,11 +119,6 @@ public partial class PEditor
         }
 
         PSentenceCitationReset(box);
-    }
-
-    private void PSentenceCitationSend(PCard card, PSentence row, long reference)
-    {
-        PEditorRequestSend(new LRequestSentenceReference(PEditorDraft, card.PCardId, row.PSentenceRow, reference));
     }
 
     private void PSentenceCitationShow()

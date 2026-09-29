@@ -8,7 +8,7 @@ Only one card is being typed into at a time.
 So it is retargeted at the caret it was opened from and remembers which card asked for it.
 A card built at runtime could not declare a popup of its own anyway.
 
-It sits beside the other candidate popups the editor owns rather than under the field that opens it.
+It sits beside the Proffer popup the editor also owns rather than under the field that opens it.
 The pronunciation lookup, the recording search and the part-of-speech menu are the same shape.
 
 It has two callers.

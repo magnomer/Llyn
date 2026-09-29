@@ -56,6 +56,14 @@ public sealed class TCatalogTag
         Assert.Equal(("animal", string.Empty, string.Empty), TInterface.TCatalogMarkFind("animal", string.Empty));
     }
 
+    [Fact]
+    public void CatalogUsageFormat_UnusedOrUsedRow_ShowsNothingOrTheCount()
+    {
+        Assert.Equal(string.Empty, TInterface.TCatalogUsageFormat(0));
+        Assert.Equal("1", TInterface.TCatalogUsageFormat(1));
+        Assert.Equal("12", TInterface.TCatalogUsageFormat(12));
+    }
+
     private static void TCatalogTagSave(LEngine engine, IReadOnlyList<string> texts)
     {
         engine.TEngineEntrySave(TInterface.TEntryDraftCreate(

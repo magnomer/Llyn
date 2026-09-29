@@ -54,6 +54,11 @@ public sealed class CSentence
         _cSentenceDesk.CDeskQuill?.LQuillDependenceSet(cardId, sentenceId, text);
     }
 
+    public void CSentenceCitationSet(long cardId, long sentenceId, long referenceId)
+    {
+        _cSentenceDesk.CDeskQuill?.LQuillCitationSet(cardId, sentenceId, referenceId);
+    }
+
     public void CSentenceGlossSet(long cardId, long sentenceId, long glossId, string text)
     {
         _cSentenceDesk.CDeskQuill?.LQuillGlossSet(cardId, sentenceId, glossId, null, text);

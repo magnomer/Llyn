@@ -4,7 +4,7 @@
 
 The gates of the editor's cards: what a card's fields ask while the user types into them.
 The translation field finds prospects, resolves a typed word, and links or unlinks an Entry.
-The register, situation and source fields find the stored rows a typed word matches.
+The situation and source fields find the stored rows a typed word matches.
 The translation, situation, register and tag fields add what the user typed and pick stored rows.
 The sentence menu reads the particles and dependences of a language.
 The etymology field sends its narrative, its source links and its spans through it, over the editor's desk.
@@ -49,24 +49,26 @@ The quill drops the court behind a tentative link in the same call.
 
 A plain map of the engine's offer, with no rule, and its rows through `CPanel.CPanelRowRead`.
 
-## `public IReadOnlyList<CRegister> CCardRegisterFind(long cardId, string word, string language)`
+## `public CProffer CCardReferenceFind(long cardId, long sentenceId, string text)`
 
-The stored Registers the card's field offers for a typed word, leaving out those the card already links.
+The gate for text typed into a card sentence's citation field, as the user wrote it.
+It answers the dropdown ready to show, and writes nothing.
+The trim, the cited-byline check, the split and the cap are the reference clerk's.
+With no chip quill the answer offers nothing.
 
-## `public IReadOnlyList<CCatalogSituation> CCardSituationFind(long cardId, string word)`
+## `private static CProffer LCardProfferRead(LReferenceOffer offer)`
 
-The stored Situations the card's field offers for a typed word, most used first, leaving out those the card links.
+The plain map from the engine's citation offer to the dropdown record, carrying each row's ready count.
 
 ## `public IReadOnlyList<CCatalogReference> CCardReferenceFind()`
 
 Every stored Source in author order, as the sentence menu offers them.
-A typed word instead ranks them by usage, like the other pickers.
 
 ## `internal static CRegister LCardRegisterRead(LRegister register)`
 
 The Conduct copy of a Register the engine handed over, its id and its shown name.
 The name goes through `CFolio.CFolioStateRead`, the one map of a written value.
-It is the one owner of that map, so the chip search and the tenor rows share it.
+It is the one owner of that map, which the tenor rows read.
 
 ## `internal static CTag LCardTagRead(LTag tag)`
 
@@ -86,9 +88,15 @@ The tag clerk trims, filters, limits and splits the offered rows, and a failed s
 
 A plain map of the engine's tag offer, with no rule.
 
-## `public string CCardSituationAdd(long cardId, string text, int position, bool settled)`
+## `public CProffer CCardSituationAdd(long cardId, string text, int position, bool settled)`
 
 The gate for a situation typed into a card, shaped as the tag gate is.
+It answers the kept text and the dropdown of stored Situations that text matches, most used first.
+A card with no chip quill answers the text and no dropdown.
+
+## `private static CProffer LCardProfferRead(LSituationOffer offer)`
+
+The plain map from the engine's situation offer to the dropdown record, carrying each row's ready count.
 
 ## `public void CCardSituationInsert(long cardId, long situationId, int position)`
 
@@ -98,9 +106,16 @@ The gate for a stored situation picked from the suggestions.
 
 The gate for a situation chip erased from a card.
 
-## `public string CCardRegisterAdd(long cardId, string text, int position, bool settled)`
+## `public CProffer CCardRegisterAdd(long cardId, string text, int position, bool settled)`
 
 The gate for a register typed into a card, shaped as the tag gate is.
+The same answer carries the dropdown of stored Registers the kept text matches, so the field paints both at once.
+The register clerk trims, filters, limits and splits the offered rows, and a failed search offers nothing.
+The draft's own language seeds the shelf, so the driver passes none.
+
+## `private static CProffer LCardProfferRead(LRegisterOffer offer)`
+
+A plain map of the engine's register offer, with no rule.
 
 ## `public void CCardRegisterInsert(long cardId, long registerId, int position)`
 

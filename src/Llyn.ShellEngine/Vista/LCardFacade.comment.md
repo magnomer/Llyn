@@ -51,9 +51,12 @@ The tag clerk's create, then the tag bulletin raised outside the gate.
 The catalog is announced so every panel listing Tags shows the new row.
 The rename and the delete raise the same bulletin the same way.
 
-## `public IReadOnlyList<LRegister> LEngineRegisterFind(LTenure? held, long card, string query, string language)`
+## `public LRegisterOffer LEngineRegisterFind(LTenure held, long card, string text)`
 
-The stored Registers a card's field offers in `language`, leaving out those the held draft's card links.
+The stored Registers a card's register field offers for the text it keeps.
+Those the held draft's card already links are left out.
+The language whose pack seeds the shelf is the held draft's own, so no caller passes one.
+The draft is read before the gate is taken, as the tenure guards itself.
 
 ## `public IReadOnlyList<LCatalogRegister> LEngineRegisterFind(LVista vista)`
 

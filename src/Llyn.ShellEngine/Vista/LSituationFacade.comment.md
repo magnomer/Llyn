@@ -16,9 +16,11 @@ Stores the engine and its gate for situation operations.
 
 The Situations answering `query`, in `order`, as rows already carrying how many places reference them.
 
-## `public IReadOnlyList<LCatalogSituation> LEngineSituationFind(LTenure? held, long card, string query, LCatalogOrder order)`
+## `public LSituationOffer LEngineSituationFind(LTenure held, long card, string text)`
 
-The stored Situations a card's field offers, leaving out those the held draft's card links.
+The stored Situations a card's situation field offers for the text it keeps, ready to show.
+Those the held draft's card already links are left out.
+The draft is read before the gate is taken, as the tenure guards itself.
 
 ## `public IReadOnlyList<LCatalogSituation> LEngineSituationFind(LVista vista, string unknown = "", string untitled = "")`
 

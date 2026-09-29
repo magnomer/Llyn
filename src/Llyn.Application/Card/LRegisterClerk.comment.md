@@ -21,10 +21,16 @@ It holds every Register, because a Register belongs to no language.
 `language` only names the pack whose rows are seeded before the shelf is read, so a first card sees them.
 An empty query offers the whole shelf.
 
-## `public IReadOnlyList<LRegister> LRegisterClerkFind(string query, string language, LDraft? draft, long card)`
+## `public LRegisterOffer LRegisterClerkFind(string text, string language, LDraft? draft, long card)`
 
-The stored Registers a card's field offers, leaving out every Register the card already links by id.
+The stored Registers a card's register field offers for the text it keeps, ready to show.
+The text is trimmed, and a blank text offers nothing, since an empty query would list the whole shelf.
+A Register whose trimmed name is blank is skipped.
+A Register the card already links by id is left out.
 No draft or no such card holds nothing, so every match is offered.
+Each row is split around the word by `LCatalog.LCatalogMarkFind`.
+At most `LCatalog.LCatalogOfferLimit` rows are kept.
+The offer shows only when some Register is left.
 
 ## `public IReadOnlyList<LCatalogRegister> LRegisterClerkFind(string query, LCatalogOrder order)`
 

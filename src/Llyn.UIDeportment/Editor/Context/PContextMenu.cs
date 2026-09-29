@@ -17,7 +17,11 @@ public partial class PEditor
             {
                 entry.SetValue(QField.QFieldHintProperty, caret.PContextCaretHint);
                 entry.Text = caret.PContextCaretText;
+                entry.PreviewKeyDown -= PProfferKeyRefine;
+                entry.PreviewKeyDown -= PProfferKeyObserve;
                 entry.PreviewKeyDown -= PContextCaretObserve;
+                entry.PreviewKeyDown += PProfferKeyRefine;
+                entry.PreviewKeyDown += PProfferKeyObserve;
                 entry.PreviewKeyDown += PContextCaretObserve;
                 entry.LostKeyboardFocus -= PContextCloseObserve;
                 entry.LostKeyboardFocus += PContextCloseObserve;
@@ -70,7 +74,7 @@ public partial class PEditor
     {
         if (PCardContextFind(caret) is PCard card)
         {
-            card.PCardContextRefine(_qEditor.QEditorArea.CEditorCard.CCardSituationAdd(
+            PProfferSituationRefine(card, _qEditor.QEditorArea.CEditorCard.CCardSituationAdd(
                 card.PCardId, text, card.PCardContextPosition, false));
         }
     }
@@ -93,12 +97,6 @@ public partial class PEditor
         PCard? card = PCardContextFind(row);
         if (card is null)
         {
-            return;
-        }
-
-        if (PCandidate.IsOpen && PCandidateHandle(e.Key))
-        {
-            e.Handled = true;
             return;
         }
 
@@ -145,7 +143,7 @@ public partial class PEditor
 
     private void PContextCommitObserve(PCard card)
     {
-        PCandidateHide();
+        PProfferShutRefine();
         _qEditor.QEditorArea.CEditorCard.CCardSituationAdd(
             card.PCardId, card.PCardContextText, card.PCardContextPosition, true);
         card.PCardContextClear();

@@ -65,20 +65,13 @@ public interface LEntryPort
 
     LTag LEngineTagCreate(string text);
 
-    IReadOnlyList<LRegister> LEngineRegisterFind(LTenure? held, long card, string query, string language);
-
     IReadOnlyList<LCatalogRegister> LEngineRegisterFind(LVista vista);
 
     LRegister LEngineRegisterCreate(string name);
 
-    IReadOnlyList<LCatalogSituation> LEngineSituationFind(
-        LTenure? held, long card, string query, LCatalogOrder order);
-
     IReadOnlyList<LCatalogSituation> LEngineSituationFind(LVista vista, string unknown = "", string untitled = "");
 
     IReadOnlyList<LCatalogExample> LEngineExampleFind(LVista vista, string unknown = "", string unwritten = "");
-
-    IReadOnlyList<LCatalogReference> LEngineReferenceFind(string query, LCatalogOrder order);
 
     IReadOnlyList<LCatalogReference> LEngineReferenceFind(LVista vista);
 

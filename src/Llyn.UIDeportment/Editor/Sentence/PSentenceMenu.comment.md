@@ -99,6 +99,7 @@ The sentence row dictionary, held so its fill can subscribe the row's forwarders
 Fills one sentence row and subscribes its forwarders, where event attributes stood.
 The five command bindings are added once, since a refill finds them already there.
 It hands the chip line and the Gloss line their items and fills.
+The citation field hears the dropdown's key Refine and key Observe before its own key handler.
 It then asks the list to redraw its reveal, since the citation may have emptied.
 
 ## `private void PSentenceOpeningRefine(object sender, RoutedEventArgs e)`
@@ -117,7 +118,8 @@ The row paints the language only when the draft returns it.
 
 Hands the text typed into one field of a row to the gate for that field.
 The sentence, the marker and the role each have their own gate, which defers the edit.
-The typed citation line is no request at all, and only opens the dropdown of Sources answering it.
+The typed citation line writes nothing.
+Its gate answers the dropdown of Sources, which `PProfferCitationRefine` paints.
 The field is told apart by the row property name its caller passes.
 The gate takes the box's raw text, so the row holds no copy of what was typed.
 

@@ -78,24 +78,45 @@ public sealed class LSituationClerk
         return LCatalogSituation.LCatalogSituationSort(rows, order);
     }
 
-    public IReadOnlyList<LCatalogSituation> LSituationClerkFind(
-        string query, LCatalogOrder order, LDraft? draft, long card)
+    public LSituationOffer LSituationClerkFind(string text, LDraft? draft, long card)
     {
+        ArgumentNullException.ThrowIfNull(text);
+
+        string word = text.Trim();
+        if (word.Length == 0)
+        {
+            return new LSituationOffer(text, [], false);
+        }
+
         IReadOnlyList<LSituationDraft> held = draft is null
             ? []
             : LDraftClerkCard.LCardFind(draft.LDraftContent, card)?.LCardDraftSituation ?? [];
 
-        List<LCatalogSituation> found = [];
-        foreach (LCatalogSituation row in LSituationClerkFind(query, order))
+        List<LSituationRow> rows = [];
+        foreach (LCatalogSituation found in LSituationClerkFind(word, LCatalogOrder.LCatalogOrderUsage))
         {
-            if (LDraftClerkList.LDraftListFind(
-                    held, row.LCatalogSituationStored.LSituationId, static item => item.LSituationDraftId) < 0)
+            string title = found.LCatalogSituationName.Trim();
+            if (title.Length == 0
+                || LDraftClerkList.LDraftListFind(
+                    held, found.LCatalogSituationStored.LSituationId, static item => item.LSituationDraftId) >= 0)
             {
-                found.Add(row);
+                continue;
+            }
+
+            (string lead, string mark, string tail) = LCatalog.LCatalogMarkFind(title, word);
+            rows.Add(new LSituationRow(
+                found.LCatalogSituationStored.LSituationId,
+                lead,
+                mark,
+                tail,
+                LCatalog.LCatalogUsageFormat(found.LCatalogSituationUsage)));
+            if (rows.Count == LCatalog.LCatalogOfferLimit)
+            {
+                break;
             }
         }
 
-        return found;
+        return new LSituationOffer(text, rows, rows.Count > 0);
     }
 
     public void LSituationClerkUpdate(LSituation situation)

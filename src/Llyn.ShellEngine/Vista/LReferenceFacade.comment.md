@@ -33,6 +33,11 @@ Reads the Reference for `id`, or `null` when none has that id.
 
 The Sources answering `query`, in `order`, as rows already carrying their name, credits and citation count.
 
+## `public LReferenceOffer LEngineReferenceFind(LTenure held, long card, long sentence, string text)`
+
+The stored Sources a card sentence's citation field offers, ready to show.
+The held draft names the Source the sentence cites, so its own byline offers nothing.
+
 ## `public IReadOnlyList<LCatalogReference> LEngineReferenceFind(LVista vista)`
 
 The Sources the sources panel's vista lists, with the query and order read off the vista.
