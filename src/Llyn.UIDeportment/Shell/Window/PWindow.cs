@@ -185,7 +185,7 @@ public partial class PWindow
         _qTenor.QTenorAttach(this);
         _qRepertoire.QRepertoireIntroduce(this);
         _qCorpus.QCorpusIntroduce(this);
-        _qReference.QReferenceAttach(this);
+        _qReference.QReferenceIntroduce(this);
         _qGuild.QGuildIntroduce(this);
         _qFavorite.QFavoriteIntroduce(this);
         _qDuplex.QDuplexIntroduce(this);
@@ -200,7 +200,8 @@ public partial class PWindow
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qTenor.QTenorVistaRestore;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qRepertoire.QRepertoireVistaRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qRepertoire.QOccurrenceVistaRefine;
-        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qReference.QReferenceVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qReference.QReferenceVistaRefine;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qReference.QFootnoteVistaRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qCorpus.QCorpusVistaRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qCorpus.QQuotationVistaRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qGuild.QGuildVistaRefine;
@@ -332,7 +333,7 @@ public partial class PWindow
         _qTenor.QTenorClose();
         _qRepertoire.QRepertoireExitRefine();
         _qCorpus.QCorpusExitRefine();
-        _qReference.QReferenceClose();
+        _qReference.QReferenceExitRefine();
         _qGuild.QGuildClose();
         _qFavorite.QFavoriteExitRefine();
         _qEstablishment.QEstablishmentClose();

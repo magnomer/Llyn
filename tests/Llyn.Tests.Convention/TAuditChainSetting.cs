@@ -218,6 +218,7 @@ internal static class TAuditChainSetting
             "COccurrence",
             "CRepertoire",
             "CShelf",
+            "CShelfRoll",
             "CTaxonomy",
             "CTenor",
             "CPhonology",

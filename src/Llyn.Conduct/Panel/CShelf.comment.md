@@ -18,6 +18,7 @@ A stored Source is shown again outside the scribe.
 Either desk's state change is raised as `CShelfChanged`, so a driver repaints the mode.
 The Source panel's row notices reach the entry list, whose rows follow the chosen Source.
 The source editor hears its desk notices through `marshal`.
+The shelf keeps `marshal` for the observers it attaches at each vista restore.
 The shelf's close joins the workspace's closures, so it runs when the atelier closes.
 
 ## `public static CShelf CShelfCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
@@ -63,10 +64,6 @@ On the Source side, whether the Source draft holds a change.
 True while an entry or a Source is shown outside edit mode, so there is something to print.
 `CShelfPortraitAllowed` holds only for a shown entry, since only an entry exports.
 
-## `public bool CShelfEmpty`
-
-True when the last rows read listed no Source.
-
 ## `public bool CShelfFiltered`
 
 True while the Source vista hides some language, so a driver marks its filter.
@@ -79,11 +76,26 @@ The entry list holds a row or edits, so the entry side is in front.
 
 Starts the Source vista and the entry vista through the atelier and hands them to the panels and desks.
 The entry list follows the Source vista as its parent, and the entry editor stands on the entry vista.
+The former Source vista's query is carried into the fresh one, so the driver never re-sends its text.
+Then the shelf attaches its own observers, and the entry list attaches its own with the shelf's answers handed in.
 
-## `public IReadOnlyList<CCatalogReference> CShelfRowsRead()`
+## `private void LShelfObserverAttach()`
 
-Reads the Sources the vista finds, mapped as the oeuvre maps its own, and counts them.
+Attaches the Source list's subjects, each answered through `marshal`.
+Vista, Author, Reference, Example, Reflex and Settings notices refill the Source rows.
+An Author notice also rereads the source draft, and a Workspace notice closes the shown Source.
+
+## `private void LShelfWorkspaceResonate()`
+
+Closes the entry side and the Source side, as a workspace change does.
+No driver repaints on it, so it raises no event.
+
+## `public CShelfRoll CShelfRollRead()`
+
+Reads the Sources the vista finds, mapped as the oeuvre maps its own, into one answer.
 A shown Source the rows no longer choose is closed, so a stale selection never stays in front.
+The tally is read after that close, through the panel's own tally read and its failure report.
+So the tally never counts a Source the panel just left.
 
 ## `public void CShelfOrderSet(CCatalogOrder? order)`
 
@@ -93,10 +105,6 @@ Takes the chosen order, and the vista keeps its own order when none is chosen.
 
 The orders the Source list offers, in the order a driver lists them.
 
-## `public string CShelfTallyRead()`
-
-The engine's worded tally of the chosen Source's citations.
-
 ## `internal bool LShelfChangeRead()`
 
 Whether either panel edits a draft that holds unsaved changes.
@@ -105,10 +113,6 @@ Whether either panel edits a draft that holds unsaved changes.
 
 Asks through the envoy before unsaved work goes out of sight, and answers whether to go on.
 A stored answer finishes the draft of the side in front, and a declined question stays.
-
-## `public void CShelfReferenceClose()`
-
-Closes the entry side and the Source side, as a workspace change does.
 
 ## `public void CShelfReferenceSelect(long? id)`
 
@@ -123,7 +127,7 @@ The navigation's arrival: opens one Source without asking, since the navigation 
 
 Opens the clicked entry after the leave question, keeping the edit mode, and drops the source draft.
 
-## `public void CShelfEntryResonate()`
+## `private void LShelfEntryResonate()`
 
 Answers the chosen entry's notice by refreshing the entry draft.
 It falls back to the chosen Source once the entry side has closed.
@@ -146,7 +150,8 @@ Deletes the chosen Source through its panel, and does nothing on the entry side.
 
 ## `private void LShelfClose()`
 
-Closes the byline when the atelier closes.
+Closes the byline and the entry editor when the atelier closes.
+It also cancels any playback the entry display still holds.
 
 ## `public (bool CShelfBackward, bool CShelfForward) CShelfChronicleRead()`
 

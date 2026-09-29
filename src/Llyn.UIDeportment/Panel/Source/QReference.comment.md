@@ -20,55 +20,87 @@ It subscribes every click, both search fields and both list clicks, and attaches
 
 Each named part of the page is found through `QContract.QContractFind` under its markup name.
 
-## `internal void QReferenceAttach(PWindow host)`
+## `internal void QReferenceIntroduce(PWindow host)`
 
 Puts the driver to work on the panel factory, which builds the Conduct shelf with its own editor.
 It hands the shelf only the shown seam, and subscribes to the notices of both lists.
+The Source rows notice also repaints the imprint's tally, since a stored entry may have moved its count.
+The grade menu is built here once, from the orders `CShelf.CShelfOrderRead` offers.
 The lectern follows the entry list's panel, as the other panel drivers build it.
 The editor's chronicle notice and the imprint desk's state notice refresh the rail's undo and redo.
 The print and portrait command bindings are added last, so no can-execute query meets a shelf not yet built.
 
-## `internal async void QReferenceVistaRestore()`
+## `internal async void QReferenceVistaRefine()`
 
-Attaches the observers that carry each announcement onto the dispatcher.
-A stored entry re-lists the shelf too, because the citation counts on its rows may have moved.
-The offered orders come from `CShelf.CShelfOrderRead`, so the driver lists no order of its own.
+Answers the workspace opening, after the shelf has restored its vistas and attached its own observers.
+It ticks the grade menu and paints the filter mark.
 The flags are loaded before the first rows are built, because an entry row reads its flag at construction.
+The filter menu is built from the languages that load answers, and the Source rows are painted last.
 
-## `private void QShelfUpdate()`
+## `internal async void QFootnoteVistaRefine()`
 
-Refills the shelf from the rows the shelf reads, spliced so the list keeps its scroll position.
-The citation chips of both source areas are rewritten, because a stored entry may have moved the count.
+Answers the workspace opening for the entry list, which has its own first paint.
+It awaits the same flag load, then paints the entry rows.
 
-## `private void QFootnoteUpdate()`
+## `internal void QReferenceExitRefine()`
+
+Releases the entry player and closes both dropdowns when the window exits.
+The imprint's kind menu closes with them.
+
+## `private void QShelfRefine()`
+
+Paints the rows, the empty notice and the colophon tally from one shelf answer.
+The rows are spliced, so the list keeps its scroll position.
+
+## `private void QFootnoteRefine()`
 
 Refills the entry list, and shows the empty text while no row stands.
 `CFootnote` chooses the text's key by whether the list is being searched.
 
-## `private void QReferenceModeUpdate()`
+## `private void QReferenceModeRefine()`
 
 Writes which of the four areas is in front and the enablement the shelf holds into the rail.
 The voyage and chronicle pairs follow the viewer and scribe verdicts.
 
-## `private void QReferenceChronicleUpdate()`
+## `private void QReferenceChronicleRefine()`
 
 Reads the chronicle of the area in front and writes the rail's undo and redo.
 
-## `private async void QReferencePressHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private void QTrellisListRefine(IReadOnlyList<string> languages)`
+
+Builds the filter menu from the languages it is handed, ticking the languages the vista shows.
+
+## `private void QGradeObserve(object sender, RoutedEventArgs e)`
+
+Hands the chosen order to the shelf, then closes the grade dropper.
+
+## `private void QReferenceViewerObserve(object sender, RoutedEventArgs e)`
+
+Asks the shelf to leave edit mode, since the viewer button was pressed.
+
+## `private void QReferenceScribeObserve(object sender, RoutedEventArgs e)`
+
+Asks the shelf to enter edit mode, since the scribe button was pressed.
+
+## `private void QReferencePressRefine(object sender, CanExecuteRoutedEventArgs e)`
+
+Enables the print command from the shelf's one press verdict.
+
+## `private async void QReferencePressObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the entry being read, or else the source being read, as the engine portrays it.
 The shelf asks for the ticket through the envoy, picks the vista and words the page.
 Nothing is read back from the screen.
 
-## `internal void QReferenceVoyageShow(bool past, bool future)`
+## `internal void QReferenceVoyageRefine(bool past, bool future)`
 
 Lights the two trail buttons from the voyage state the navigation raises.
 The navigation owns the trail, so the driver only shows what it is told.
 
-## `private void QReferenceRetreatHandle(object sender, RoutedEventArgs e)`
+## `private void QReferenceRetreatObserve(object sender, RoutedEventArgs e)`
 
 Steps the navigation's trail back one station.
 
-## `private void QReferenceAdvanceHandle(object sender, RoutedEventArgs e)`
+## `private void QReferenceAdvanceObserve(object sender, RoutedEventArgs e)`
 
 Steps the navigation's trail forward one station.

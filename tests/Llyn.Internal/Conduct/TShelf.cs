@@ -33,11 +33,11 @@ public sealed class TShelf
         Assert.Equal("Book", shown?.CColophonTitle);
         Assert.Equal(
             ["Book"],
-            shelf.CShelfRowsRead()
+            shelf.CShelfRollRead().CShelfRollRows
                 .Where(row => row.CCatalogReferenceChosen)
                 .Select(row => row.CCatalogReferenceName));
-        Assert.False(shelf.CShelfEmpty);
-        Assert.Equal(TInterface.TLocalizationTextRead("Source.UsageNone"), shelf.CShelfTallyRead());
+        Assert.False(shelf.CShelfRollRead().CShelfRollEmpty);
+        Assert.Equal(TInterface.TLocalizationTextRead("Source.UsageNone"), shelf.CShelfRollRead().CShelfRollTally);
     }
 
     [Fact]
@@ -123,13 +123,13 @@ public sealed class TShelf
 
         shelf.CShelfReferenceDelete();
 
-        Assert.Contains(shelf.CShelfRowsRead(), row => row.CCatalogReferenceName == "Book");
+        Assert.Contains(shelf.CShelfRollRead().CShelfRollRows, row => row.CCatalogReferenceName == "Book");
 
         shelf.CShelfFootnote.CFootnotePanel.CPanelScribeToggle(false);
         shelf.CShelfReferenceSelect(book.LReferenceId);
         shelf.CShelfReferenceDelete();
 
-        Assert.DoesNotContain(shelf.CShelfRowsRead(), row => row.CCatalogReferenceName == "Book");
+        Assert.DoesNotContain(shelf.CShelfRollRead().CShelfRollRows, row => row.CCatalogReferenceName == "Book");
         Assert.False(shelf.CShelfBinEnabled);
     }
 
@@ -142,7 +142,7 @@ public sealed class TShelf
         CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         engine.TEngineCitationCreate("Beta");
         engine.TEngineCitationCreate("Alpha");
-        int listed = shelf.CShelfRowsRead().Count;
+        int listed = shelf.CShelfRollRead().CShelfRollRows.Count;
 
         Assert.Equal(
             [
@@ -156,7 +156,7 @@ public sealed class TShelf
         {
             shelf.CShelfOrderSet(order);
 
-            Assert.Equal(listed, shelf.CShelfRowsRead().Count);
+            Assert.Equal(listed, shelf.CShelfRollRead().CShelfRollRows.Count);
             Assert.Equal(order, shelf.CShelfPanel.CPanelOrder);
         }
 
@@ -166,7 +166,7 @@ public sealed class TShelf
         Assert.Equal(CCatalogOrder.CCatalogOrderName, shelf.CShelfPanel.CPanelOrder);
         Assert.Equal(
             ["Alpha", "Beta"],
-            shelf.CShelfRowsRead()
+            shelf.CShelfRollRead().CShelfRollRows
                 .Select(row => row.CCatalogReferenceName)
                 .Where(name => name is "Alpha" or "Beta"));
     }
@@ -183,8 +183,8 @@ public sealed class TShelf
 
         shelf.CShelfQuerySet("zzz");
 
-        Assert.Empty(shelf.CShelfRowsRead());
-        Assert.True(shelf.CShelfEmpty);
+        Assert.Empty(shelf.CShelfRollRead().CShelfRollRows);
+        Assert.True(shelf.CShelfRollRead().CShelfRollEmpty);
         Assert.False(shelf.CShelfBinEnabled);
     }
 
@@ -244,7 +244,7 @@ public sealed class TShelf
 
         Assert.Equal(["Leave"], asked);
         Assert.False(shelf.TShelfChangeRead());
-        Assert.Contains(shelf.CShelfRowsRead(), row => row.CCatalogReferenceName == "Tome");
+        Assert.Contains(shelf.CShelfRollRead().CShelfRollRows, row => row.CCatalogReferenceName == "Tome");
         Assert.True(shelf.CShelfColophonShown);
         Assert.True(shelf.CShelfBinEnabled);
     }
@@ -286,7 +286,7 @@ public sealed class TShelf
         Assert.False(shelf.CShelfImprint.CImprintHeld);
         Assert.True(shelf.CShelfColophonShown);
         Assert.Contains(
-            shelf.CShelfRowsRead(),
+            shelf.CShelfRollRead().CShelfRollRows,
             row => row.CCatalogReferenceName == "Tome" && row.CCatalogReferenceChosen);
     }
 
@@ -304,7 +304,7 @@ public sealed class TShelf
 
         Assert.False(shelf.CShelfImprint.CImprintHeld);
         Assert.False(shelf.TShelfChangeRead());
-        Assert.DoesNotContain(shelf.CShelfRowsRead(), row => row.CCatalogReferenceName == "Tome");
+        Assert.DoesNotContain(shelf.CShelfRollRead().CShelfRollRows, row => row.CCatalogReferenceName == "Tome");
     }
 
     [Fact]
@@ -370,7 +370,7 @@ public sealed class TShelf
     }
 
     [Fact]
-    public void ShelfEntryResonate_EntrySideClosed_ReshowsTheChosenSource()
+    public void ShelfEntryNotice_EntrySideClosed_ReshowsTheChosenSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -381,14 +381,14 @@ public sealed class TShelf
         List<CColophon> shown = [];
         shelf.CShelfColophonChanged += shown.Add;
 
-        shelf.CShelfEntryResonate();
+        engine.TEngineBulletinRaise(LSubject.LSubjectEntry, 0);
 
         Assert.Equal("Book", Assert.Single(shown).CColophonTitle);
         Assert.True(shelf.CShelfColophonShown);
     }
 
     [Fact]
-    public void ShelfReferenceClose_SourceShown_ClosesBothSides()
+    public void ShelfWorkspaceNotice_SourceShown_ClosesBothSides()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -397,7 +397,7 @@ public sealed class TShelf
         LReference book = engine.TEngineCitationCreate("Book");
         shelf.TShelfReferenceOpen(book.LReferenceId);
 
-        shelf.CShelfReferenceClose();
+        engine.TEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
 
         Assert.False(shelf.CShelfBinEnabled);
         Assert.False(shelf.CShelfModeEnabled);

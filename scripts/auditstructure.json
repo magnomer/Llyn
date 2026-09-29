@@ -397,6 +397,7 @@
       "COccurrence",
       "CRepertoire",
       "CShelf",
+      "CShelfRoll",
       "CTaxonomy",
       "CTenor",
       "CPhonology",

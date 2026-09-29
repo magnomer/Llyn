@@ -166,7 +166,7 @@
     "src/Llyn.UIDeportment/Panel/Settings/PSettingsEpithet.cs": 2,
     "src/Llyn.UIDeportment/Panel/Source/QColophon.cs": 17,
     "src/Llyn.UIDeportment/Panel/Source/QFootnoteItem.cs": 6,
-    "src/Llyn.UIDeportment/Panel/Source/QReference.cs": 54,
+    "src/Llyn.UIDeportment/Panel/Source/QReference.cs": 47,
     "src/Llyn.UIDeportment/Panel/Source/QShelfItem.cs": 8,
     "src/Llyn.UIDeportment/Panel/Taxonomy/QTaxonomy.cs": 18,
     "src/Llyn.UIDeportment/Panel/Taxonomy/QTaxonomyBrowse.cs": 29,

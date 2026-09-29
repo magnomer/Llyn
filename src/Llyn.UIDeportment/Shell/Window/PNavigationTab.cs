@@ -130,7 +130,7 @@ public partial class PWindow
             },
             new QTab("Reference", PNavigationSource, PReference)
             {
-                QTabVoyage = _qReference.QReferenceVoyageShow
+                QTabVoyage = _qReference.QReferenceVoyageRefine
             },
             new QTab("Guild", PNavigationGuild, PGuild)
             {

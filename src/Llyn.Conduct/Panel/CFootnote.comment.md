@@ -26,6 +26,13 @@ No query means nothing cites the Source, and a query means nothing matched.
 ## `internal void LFootnoteVistaRestore(LVista parent, LVista vista)`
 
 Takes the source vista as the parent the rows follow, and its own vista for the panel.
+The former vista's query is carried into the fresh one before the panel takes it.
+
+## `internal void LFootnoteObserverAttach(Action<Action> marshal, Action roll, Action chosen)`
+
+Attaches the entry list's subjects, each answered through `marshal`.
+An Entry notice selects a stored entry, refills the entry rows, and hands `roll` the Source rows to refill.
+The chosen entry's notice is handed to `chosen`, and a Vista notice refills the entry rows.
 
 ## `public void CFootnoteQuerySet(string query)`
 

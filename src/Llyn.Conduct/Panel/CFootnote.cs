@@ -53,9 +53,24 @@ public sealed class CFootnote
         ArgumentNullException.ThrowIfNull(parent);
         ArgumentNullException.ThrowIfNull(vista);
 
+        vista.LVistaQuerySet(_cFootnoteVista?.LVistaQuery ?? string.Empty);
         _cFootnoteParent = parent;
         _cFootnoteVista = vista;
         CFootnotePanel.CPanelVistaRestore(vista);
+    }
+
+    internal void LFootnoteObserverAttach(Action<Action> marshal, Action roll, Action chosen)
+    {
+        ArgumentNullException.ThrowIfNull(marshal);
+        ArgumentNullException.ThrowIfNull(roll);
+        ArgumentNullException.ThrowIfNull(chosen);
+
+        CFootnotePanel.CPanelObserverAttach(
+            CSubject.CSubjectEntry, bulletin => marshal(() => CFootnotePanel.CPanelEntryResonate(bulletin)));
+        CFootnotePanel.CPanelObserverAttach(CSubject.CSubjectEntry, _ => marshal(roll));
+        CFootnotePanel.CPanelChosenAttach(CSubject.CSubjectEntry, _ => marshal(chosen));
+        CFootnotePanel.CPanelObserverAttach(
+            CSubject.CSubjectVista, _ => marshal(CFootnotePanel.CPanelRowsResonate));
     }
 
     public void CFootnoteQuerySet(string query)
