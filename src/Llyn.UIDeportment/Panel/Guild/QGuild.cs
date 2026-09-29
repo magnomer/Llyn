@@ -55,20 +55,20 @@ internal sealed class QGuild
         QGuildViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
         QGuildScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
-        QMuster.TextChanged += QMusterHandle;
-        QComb.TextChanged += QCombHandle;
-        QGuildFresh.Click += QGuildFreshHandle;
-        QGuildStore.Click += QGuildStoreHandle;
-        QGuildEarlier.Click += QGuildRetreatHandle;
-        QGuildLater.Click += QGuildAdvanceHandle;
-        QGuildBackward.Click += QGuildUndoHandle;
-        QGuildForward.Click += QGuildRedoHandle;
-        QGuildViewer.Click += QGuildScribeHandle;
-        QGuildScribe.Click += QGuildScribeHandle;
-        QGuildBin.Click += QGuildBinHandle;
+        QMuster.TextChanged += QMusterObserve;
+        QComb.TextChanged += QCombObserve;
+        QGuildFresh.Click += QGuildFreshObserve;
+        QGuildStore.Click += QGuildStoreObserve;
+        QGuildEarlier.Click += QGuildRetreatObserve;
+        QGuildLater.Click += QGuildAdvanceObserve;
+        QGuildBackward.Click += QGuildUndoObserve;
+        QGuildForward.Click += QGuildRedoObserve;
+        QGuildViewer.Click += QGuildViewerObserve;
+        QGuildScribe.Click += QGuildScribeObserve;
+        QGuildBin.Click += QGuildBinObserve;
 
-        QRoll.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QRollHandle));
-        QOeuvre.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QOeuvreHandle));
+        QRoll.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QRollObserve));
+        QOeuvre.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QOeuvreObserve));
 
         QLookItem.QLookItemAttach(QRoll, QRollItem.QRollItemApply);
         QLookItem.QLookItemAttach(QOeuvre, QShelfItem.QShelfItemApply);
@@ -136,15 +136,15 @@ internal sealed class QGuild
 
     private QIconImage QGuildBinIcon => QContract.QContractFind<QIconImage>(_qGuildSurface, "PGuildBinIcon");
 
-    internal void QGuildAttach(PWindow host)
+    internal void QGuildIntroduce(PWindow host)
     {
         _qGuildHost = host;
         _cGuild = host.PWindowForge.QForgeGuildCreate(QGuildShownCheck, host.PWindowEnvoy);
         _cGuild.CGuildChanged += QGuildModeUpdate;
         _cGuild.CGuildPanel.CPanelChanged += QGuildModeUpdate;
-        _cGuild.CGuildPanel.CPanelRowsChanged += QRollUpdate;
+        _cGuild.CGuildPanel.CPanelRowsChanged += QRollRefine;
         _cGuild.CGuildOeuvre.COeuvrePanel.CPanelChanged += QGuildModeUpdate;
-        _cGuild.CGuildOeuvre.COeuvrePanel.CPanelRowsChanged += QOeuvreUpdate;
+        _cGuild.CGuildOeuvre.COeuvrePanel.CPanelRowsChanged += QOeuvreRefine;
         _cGuild.CGuildOeuvre.COeuvrePanel.CPanelRowsChanged += QTallyRefine;
         _cGuild.CGuildOeuvre.COeuvrePanel.CPanelCleared += _qColophon.QColophonClear;
         _cGuild.CGuildOeuvre.COeuvreColophonChanged += _qColophon.QColophonShow;
@@ -153,51 +153,21 @@ internal sealed class QGuild
         _cGuild.CGuildAutograph.CDeskFailed += host.PWindowFailureRefine;
         _cGuild.CGuildAutograph.CDeskStateChanged += QGuildChronicleUpdate;
 
+        QChoice.QChoiceOrderBuild(QEchelonList, "Echelon", QEchelonObserve, CGuild.CGuildOrderRead());
+
         QRoll.ItemsSource = _qRollList;
         QOeuvre.ItemsSource = _qOeuvreList;
 
         _qGuildSurface.CommandBindings.Add(
-            new CommandBinding(ApplicationCommands.Print, QGuildPressHandle, QGuildPressCheck));
+            new CommandBinding(ApplicationCommands.Print, QGuildPressObserve, QGuildPressCheck));
     }
 
-    internal void QGuildVistaRestore()
+    internal void QGuildVistaRefine()
     {
-        _cGuild.CGuildPanel.CPanelObserverAttach(
-            CSubject.CSubjectVista,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildPanel.CPanelRowsResonate));
-        _cGuild.CGuildOeuvre.COeuvrePanel.CPanelObserverAttach(
-            CSubject.CSubjectVista,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildOeuvre.COeuvrePanel.CPanelRowsResonate));
-        _cGuild.CGuildPanel.CPanelObserverAttach(
-            CSubject.CSubjectWorkspace,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildAuthorClose));
-        _cGuild.CGuildPanel.CPanelObserverAttach(
-            CSubject.CSubjectAuthor,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildCatalogResonate));
-        _cGuild.CGuildPanel.CPanelObserverAttach(
-            CSubject.CSubjectReference,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildCatalogResonate));
-        _cGuild.CGuildPanel.CPanelObserverAttach(
-            CSubject.CSubjectExample,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildCatalogResonate));
-        _cGuild.CGuildPanel.CPanelObserverAttach(
-            CSubject.CSubjectEntry,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildCatalogResonate));
-        QChoice.QChoiceOrderBuild(
-            QEchelonList,
-            "Echelon",
-            QEchelonHandle,
-            [
-                CCatalogOrder.CCatalogOrderName,
-                CCatalogOrder.CCatalogOrderReverse,
-                CCatalogOrder.CCatalogOrderWork,
-                CCatalogOrder.CCatalogOrderUsage,
-            ]);
         QChoice.QChoiceOrderApply(QEchelonDropdown, _cGuild.CGuildPanel.CPanelOrder);
-        QChoice.QChoiceKindBuild(QLouverList, _cGuild.CGuildPanel.CPanelFilter, QLouverHandle);
-        QLouverUpdate();
-        _cGuild.CGuildQuerySet(QMuster.Text);
-        _cGuild.CGuildPanel.CPanelRowsResonate();
+        QLouverBuild();
+        QLouverRefine();
+        QRollRefine();
     }
 
     internal void QGuildClose()
@@ -211,24 +181,20 @@ internal sealed class QGuild
         return _qGuildSurface.IsVisible;
     }
 
-    private void QRollUpdate()
+    private void QRollRefine()
     {
+        CGuildRoll roll = _cGuild.CGuildRollRead();
         LSplice.LSpliceApply(
             _qRollList,
-            QRollItem.QRollItemBuild(_cGuild.CGuildRollRead()),
+            QRollItem.QRollItemBuild(roll.CGuildRollRows),
             QRollItem.QRollItemMatch,
             QRollItem.QRollItemSync);
-        QRollEmpty.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildEmpty);
-        QVitaApply(_cGuild.CGuildVitaRead());
+        QRollEmpty.Visibility = QLook.QLookVisibleRead(roll.CGuildRollEmpty);
+        _qVita.QVitaShow(roll.CGuildRollVita, _cGuild.CGuildVitaHeld);
+        _qAutograph.QAutographTallyShow(roll.CGuildRollVita);
     }
 
-    private void QVitaApply(CVita vita)
-    {
-        _qVita.QVitaShow(vita, _cGuild.CGuildVitaHeld);
-        _qAutograph.QAutographTallyShow(vita);
-    }
-
-    private void QOeuvreUpdate()
+    internal void QOeuvreRefine()
     {
         LSplice.LSpliceApply(
             _qOeuvreList,
@@ -239,7 +205,7 @@ internal sealed class QGuild
         QOeuvreEmpty.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildOeuvre.COeuvreEmpty);
     }
 
-    private void QTallyRefine()
+    internal void QTallyRefine()
     {
         _qColophon.QColophonTallyShow(_cGuild.CGuildOeuvre.COeuvreTallyRead());
     }
@@ -261,59 +227,74 @@ internal sealed class QGuild
         _qAutograph.QAutographModeUpdate();
     }
 
-    private void QLouverUpdate()
+    private void QLouverBuild()
+    {
+        QChoice.QChoiceKindBuild(QLouverList, _cGuild.CGuildPanel.CPanelFilter, QLouverObserve);
+    }
+
+    private void QLouverRefine()
     {
         QLouverMark.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildFiltered);
     }
 
-    private void QMusterHandle(object sender, TextChangedEventArgs e)
+    private void QMusterObserve(object sender, TextChangedEventArgs e)
     {
         _cGuild.CGuildQuerySet(QMuster.Text);
     }
 
-    private void QCombHandle(object sender, TextChangedEventArgs e)
+    private void QCombObserve(object sender, TextChangedEventArgs e)
     {
         _cGuild.CGuildOeuvre.COeuvreQuerySet(QComb.Text);
     }
 
-    private void QEchelonHandle(object sender, RoutedEventArgs e)
+    private void QEchelonObserve(object sender, RoutedEventArgs e)
+    {
+        _cGuild.CGuildOrderSet(QChoice.QChoiceOrderRead(sender));
+        QEchelonDropperRefine();
+    }
+
+    private void QEchelonDropperRefine()
     {
         QEchelonDropper.IsChecked = false;
-        _cGuild.CGuildOrderSet(QChoice.QChoiceOrderRead(sender));
     }
 
-    private void QLouverHandle(object sender, RoutedEventArgs e)
+    private void QLouverObserve(object sender, RoutedEventArgs e)
     {
         _cGuild.CGuildFilterSet(QChoice.QChoiceFilterRead(sender));
-        QLouverUpdate();
+        QLouverRefine();
     }
 
-    private void QRollHandle(object sender, RoutedEventArgs e)
+    private void QRollObserve(object sender, RoutedEventArgs e)
     {
         _cGuild.CGuildAuthorSelect(QSender.QSenderSourceRead<QRollItem>(e)?.QRollItemId);
     }
 
-    private void QOeuvreHandle(object sender, RoutedEventArgs e)
+    private void QOeuvreObserve(object sender, RoutedEventArgs e)
     {
         _cGuild.CGuildSourceSelect(QSender.QSenderSourceRead<QShelfItem>(e)?.QShelfItemId);
     }
 
-    private void QGuildFreshHandle(object sender, RoutedEventArgs e)
+    private void QGuildFreshObserve(object sender, RoutedEventArgs e)
     {
         _cGuild.CGuildAuthorCreate();
     }
 
-    private void QGuildScribeHandle(object sender, RoutedEventArgs e)
+    private void QGuildViewerObserve(object sender, RoutedEventArgs e)
     {
-        _cGuild.CGuildScribeToggle(ReferenceEquals(sender, QGuildScribe));
+        _cGuild.CGuildScribeToggle(false);
     }
 
-    private void QGuildStoreHandle(object sender, RoutedEventArgs e)
+    private void QGuildScribeObserve(object sender, RoutedEventArgs e)
+    {
+        _cGuild.CGuildScribeToggle(true);
+    }
+
+    private void QGuildStoreObserve(object sender, RoutedEventArgs e)
     {
         _cGuild.CGuildSession.CSessionSave();
     }
 
-    private void QGuildBinHandle(object sender, RoutedEventArgs e)
+    private void QGuildBinObserve(object sender, RoutedEventArgs e)
     {
         _cGuild.CGuildAuthorDelete();
     }
@@ -323,7 +304,7 @@ internal sealed class QGuild
         e.CanExecute = _cGuild.CGuildPressAllowed;
     }
 
-    private async void QGuildPressHandle(object sender, ExecutedRoutedEventArgs e)
+    private async void QGuildPressObserve(object sender, ExecutedRoutedEventArgs e)
     {
         await _cGuild.CGuildPortraitPrint();
     }
@@ -334,22 +315,22 @@ internal sealed class QGuild
         QGuildLater.IsEnabled = future;
     }
 
-    private void QGuildRetreatHandle(object sender, RoutedEventArgs e)
+    private void QGuildRetreatObserve(object sender, RoutedEventArgs e)
     {
         _qGuildHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
-    private void QGuildAdvanceHandle(object sender, RoutedEventArgs e)
+    private void QGuildAdvanceObserve(object sender, RoutedEventArgs e)
     {
         _qGuildHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
-    private void QGuildUndoHandle(object sender, RoutedEventArgs e)
+    private void QGuildUndoObserve(object sender, RoutedEventArgs e)
     {
         QChronicle.QChronicleRun(_cGuild.CGuildSession.CSessionUndo);
     }
 
-    private void QGuildRedoHandle(object sender, RoutedEventArgs e)
+    private void QGuildRedoObserve(object sender, RoutedEventArgs e)
     {
         QChronicle.QChronicleRun(_cGuild.CGuildSession.CSessionRedo);
     }

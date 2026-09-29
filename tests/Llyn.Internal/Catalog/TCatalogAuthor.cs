@@ -31,6 +31,7 @@ public sealed class TCatalogAuthor
         Assert.Equal(["Ahn", "Kim", "Lee"], read.Select(row => row.LCatalogAuthorStored.LAuthorName));
         Assert.Equal([0, 2, 1], read.Select(row => row.LCatalogAuthorWork));
         Assert.Equal([0, 3, 1], read.Select(row => row.LCatalogAuthorUsage));
+        Assert.Equal([string.Empty, "3", "1"], read.Select(row => row.LCatalogAuthorCount));
     }
 
     [Fact]

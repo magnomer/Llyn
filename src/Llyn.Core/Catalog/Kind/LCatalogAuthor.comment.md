@@ -13,6 +13,11 @@ An Author credited nowhere is still a row, because the workspace still holds it.
 - `LCatalogAuthorUsage` — How many Entries and Examples cite the Sources crediting the Author.
 - `LCatalogAuthorChosen` — True on the row of the Author the vista stands on, false until the vista find fills it.
 
+## `public string LCatalogAuthorCount`
+
+The citation count as shown, blank while uncited, by `LCatalog.LCatalogUsageFormat`.
+It is read off the count on every access, so a copied row never shows a stale count.
+
 ## `public static LCatalogAuthor LCatalogAuthorCreate(LAuthor author, IReadOnlyList<LReference>? works, IReadOnlyDictionary<long, int>? usage)`
 
 Builds the row and sums the citations of every Source crediting the Author.

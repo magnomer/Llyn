@@ -22,12 +22,13 @@ public sealed class TGuild
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
 
-        IReadOnlyList<CCatalogAuthor> rows = guild.CGuildRollRead();
+        CGuildRoll roll = guild.CGuildRollRead();
+        IReadOnlyList<CCatalogAuthor> rows = roll.CGuildRollRows;
 
         Assert.Equal([0L, ada.LAuthorId], rows.Select(row => row.CCatalogAuthorId));
         Assert.Equal(TInterface.TLocalizationTextRead("Guild.Uncredited"), rows[0].CCatalogAuthorName);
         Assert.Equal(TInterface.TLocalizationTextRead("Guild.WorkOne"), rows[1].CCatalogAuthorWork);
-        Assert.False(guild.CGuildEmpty);
+        Assert.False(roll.CGuildRollEmpty);
     }
 
     [Fact]
@@ -43,7 +44,7 @@ public sealed class TGuild
 
         guild.CGuildQuerySet("Bo");
 
-        Assert.Equal(["Bob"], guild.CGuildRollRead().Select(row => row.CCatalogAuthorName));
+        Assert.Equal(["Bob"], guild.CGuildRollRead().CGuildRollRows.Select(row => row.CCatalogAuthorName));
     }
 
     [Fact]
@@ -75,7 +76,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void GuildVitaRead_NothingChosen_ReadsNobody()
+    public void GuildRollRead_NothingChosen_ReadsTheVitaOfNobody()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -83,7 +84,7 @@ public sealed class TGuild
         CGuild guild = TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
 
-        CVita vita = guild.CGuildVitaRead();
+        CVita vita = guild.CGuildRollRead().CGuildRollVita;
 
         Assert.False(vita.CVitaNamed);
         Assert.Equal(TInterface.TLocalizationTextRead("Guild.Unnamed"), vita.CVitaName);
@@ -105,7 +106,7 @@ public sealed class TGuild
         engine.TRequestCreditApply(book.LReferenceId, bob.LAuthorId, 1);
 
         guild.CGuildAuthorSelect(ada.LAuthorId);
-        CVita vita = guild.CGuildVitaRead();
+        CVita vita = guild.CGuildRollRead().CGuildRollVita;
 
         Assert.True(guild.CGuildVitaShown);
         Assert.True(guild.CGuildVitaHeld);
@@ -171,7 +172,7 @@ public sealed class TGuild
         Assert.Empty(asked);
         Assert.True(guild.CGuildAutographShown);
         Assert.True(guild.CGuildBinEnabled);
-        Assert.Equal("Ada", guild.CGuildVitaRead().CVitaName);
+        Assert.Equal("Ada", guild.CGuildRollRead().CGuildRollVita.CVitaName);
     }
 
     [Fact]
@@ -191,7 +192,7 @@ public sealed class TGuild
         guild.CGuildAuthorSelect(bob.LAuthorId);
 
         Assert.Equal(new CVoyageState(true, false), Assert.Single(states).CNavigationStateVoyage);
-        Assert.Equal("Bob", guild.CGuildVitaRead().CVitaName);
+        Assert.Equal("Bob", guild.CGuildRollRead().CGuildRollVita.CVitaName);
     }
 
     [Fact]
@@ -304,7 +305,9 @@ public sealed class TGuild
         Assert.True(guild.CGuildAutograph.CDeskHeld);
         Assert.Equal(
             ["Ada"],
-            guild.CGuildRollRead().Where(row => row.CCatalogAuthorChosen).Select(row => row.CCatalogAuthorName));
+            guild.CGuildRollRead().CGuildRollRows
+                .Where(row => row.CCatalogAuthorChosen)
+                .Select(row => row.CCatalogAuthorName));
     }
 
     [Fact]
@@ -346,8 +349,9 @@ public sealed class TGuild
         Assert.Null(engine.TEngineAuthorRead(ada.LAuthorId));
         Assert.False(guild.CGuildAutographShown);
         Assert.True(guild.CGuildVitaShown);
-        Assert.Equal("Adam", guild.CGuildVitaRead().CVitaName);
-        Assert.Equal(TInterface.TLocalizationTextRead("Guild.WorkOne"), guild.CGuildVitaRead().CVitaWork);
+        CVita vita = guild.CGuildRollRead().CGuildRollVita;
+        Assert.Equal("Adam", vita.CVitaName);
+        Assert.Equal(TInterface.TLocalizationTextRead("Guild.WorkOne"), vita.CVitaWork);
         Assert.False(guild.CGuildAutograph.CDeskHeld);
     }
 
@@ -400,7 +404,7 @@ public sealed class TGuild
         guild.CGuildAuthorSelect(ada.LAuthorId);
         engine.TEngineAuthorDelete(ada.LAuthorId, false);
 
-        IReadOnlyList<CCatalogAuthor> rows = guild.CGuildRollRead();
+        IReadOnlyList<CCatalogAuthor> rows = guild.CGuildRollRead().CGuildRollRows;
 
         Assert.DoesNotContain(rows, row => row.CCatalogAuthorId == ada.LAuthorId);
         Assert.False(guild.CGuildBinEnabled);
@@ -425,7 +429,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void GuildAuthorClose_ChosenAuthor_EmptiesThePanel()
+    public void GuildWorkspaceNotice_ChosenAuthor_EmptiesThePanel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -434,14 +438,14 @@ public sealed class TGuild
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         guild.CGuildAuthorSelect(ada.LAuthorId);
 
-        guild.CGuildAuthorClose();
+        engine.TEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
 
         Assert.False(guild.CGuildBinEnabled);
         Assert.False(guild.CGuildVitaHeld);
     }
 
     [Fact]
-    public void GuildCatalogResonate_Notice_RefreshesTheRollAndTheVerdicts()
+    public void GuildAuthorNotice_Catalog_RefreshesTheRollAndTheVerdicts()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -452,7 +456,7 @@ public sealed class TGuild
         guild.CGuildPanel.CPanelRowsChanged += () => refreshed++;
         guild.CGuildChanged += () => changed++;
 
-        guild.CGuildCatalogResonate();
+        engine.TEngineBulletinRaise(LSubject.LSubjectAuthor, 0);
 
         Assert.Equal(1, refreshed);
         Assert.Equal(1, changed);

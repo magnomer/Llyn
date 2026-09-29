@@ -13,6 +13,7 @@ It asks the user through `CEnvoy` and shows every failure through it too.
 ## `private CGuild(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the autograph desk, the panel over the roll, the oeuvre and the draft session over the desk.
+It keeps the marshal, which runs each engine notice's answer on the medium's own thread.
 The panel's rows notice refreshes the oeuvre, since the oeuvre follows the chosen Author.
 A cleared panel drops the held draft, and an edited row starts one.
 A started tenure clears the union offer, raised as `CGuildUnionCleared`.
@@ -66,16 +67,29 @@ A stored row is chosen and read, not written, so a roll that drops it closes the
 ## `public void CGuildVistaRestore()`
 
 Starts the roll and oeuvre vistas through the atelier and binds the panel, the oeuvre and the desk to them.
+The roll's held query carries into the fresh vista, as the oeuvre carries its own.
+So the driver never replays it.
+It then attaches the observers, so a workspace change rebinds them to the fresh vistas.
 The workspace change gate runs it again through `CWorkspace`.
 
-## `public IReadOnlyList<CCatalogAuthor> CGuildRollRead()`
+## `private void LGuildObserverAttach()`
 
-The roll as the view lists it, each work count worded through the engine.
-It counts the rows and closes the panel when a chosen row being read is no longer listed.
+The guild's observer plan, each answer run through the marshal.
+A Vista notice raises the roll, and the oeuvre attaches its own Vista plan.
+A Workspace notice closes the Author.
+An Author, Reference, Example or Entry notice reads the roll and the counts again.
 
-## `public CVita CGuildVitaRead()`
+## `public static IReadOnlyList<CCatalogOrder> CGuildOrderRead()`
 
-The read sheet of the chosen Author, or the sheet of nobody while none is stored.
+The orderings of the roll's order menu, in the order the menu lists them.
+Both media build the menu from it once.
+
+## `public CGuildRoll CGuildRollRead()`
+
+The roll as the view lists it, with its empty verdict and the vita.
+Each work count is worded through the engine.
+It closes the panel when a chosen row being read is no longer listed.
+The vita is read after that close, so it never shows an Author the panel just left.
 The engine builds the sheet, and `COeuvre.LOeuvreVitaRead` maps it to its shape.
 The same sheet feeds the count chips of the autograph, which show the Author being written.
 
@@ -88,15 +102,17 @@ The order menu of the roll, where no order keeps the one the vista holds.
 Asks the leave question when the tab holds unsaved work, and answers whether the tab may be left.
 A store answer finishes the draft first, and a refused store keeps the tab.
 
-## `public void CGuildAuthorClose()`
+## `private void LGuildAuthorClose()`
 
 Closes the oeuvre and the roll panel, as a workspace change or a vanished row asks.
+The observer plan attaches it straight to the Workspace notice, since the close refreshes the rows of both panels.
+No event is raised, since the panels' own row notices repaint every list.
 
-## `public void CGuildCatalogResonate()`
+## `private void LGuildCatalogResonate()`
 
 Something cited or credited changed, so the roll and the counts are read again.
 The colophon is reloaded only while a Source is in front, so no split preference is touched otherwise.
-It answers an engine notice the driver hands over, so it takes the `Resonate` ending.
+It answers an engine notice through the marshal, so it takes the `Resonate` ending.
 
 ## `public void CGuildAuthorSelect(long? id)`
 

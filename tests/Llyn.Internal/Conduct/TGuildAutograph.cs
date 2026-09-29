@@ -24,7 +24,9 @@ public sealed class TGuildAutograph
         Assert.True(guild.CGuildSession.CSessionSave());
         Assert.Equal(
             ["Ada"],
-            guild.CGuildRollRead().Where(row => row.CCatalogAuthorChosen).Select(row => row.CCatalogAuthorName));
+            guild.CGuildRollRead().CGuildRollRows
+                .Where(row => row.CCatalogAuthorChosen)
+                .Select(row => row.CCatalogAuthorName));
     }
 
     [Fact]
@@ -38,7 +40,7 @@ public sealed class TGuildAutograph
         guild.CGuildNameSet("Ada");
 
         Assert.False(guild.CGuildAutograph.CDeskHeld);
-        Assert.True(guild.CGuildEmpty);
+        Assert.All(guild.CGuildRollRead().CGuildRollRows, row => Assert.Equal(0L, row.CCatalogAuthorId));
     }
 
     [Fact]

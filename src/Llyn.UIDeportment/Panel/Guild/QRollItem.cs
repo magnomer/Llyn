@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -19,8 +18,8 @@ internal sealed class QRollItem : INotifyPropertyChanged
         QRollItemId = row.CCatalogAuthorId;
         QRollItemName = row.CCatalogAuthorName;
         QRollItemWork = row.CCatalogAuthorWork;
-        QRollItemCount = row.CCatalogAuthorUsage.ToString(CultureInfo.CurrentCulture);
-        QRollItemMark = QIcon.QIconResolve(QLook.QLookFirstRead(row.CCatalogAuthorStored, "guild", "unlink"), 16);
+        QRollItemCount = row.CCatalogAuthorCount;
+        QRollItemMark = QIcon.QIconResolve(row.CCatalogAuthorIcon, 16);
     }
 
     public long QRollItemId { get; }

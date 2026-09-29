@@ -15,7 +15,7 @@ A blank name is refused through the envoy, and a named one is stored and chosen.
 The union lists other Authors and folds the written one into the kept one on a yes.
 A no keeps both Authors.
 The union question shows the written and kept names trimmed, as the engine reads them.
-A confirmed delete removes the Author, a close empties the panel, and a catalog notice refreshes the roll.
+A confirmed delete removes the Author, a workspace notice empties the panel, and an Author notice refreshes the roll.
 A print on the author side prints nothing.
 An Author click records the station it leaves before the Author opens.
 

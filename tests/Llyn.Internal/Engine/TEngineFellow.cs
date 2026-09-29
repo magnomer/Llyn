@@ -22,6 +22,21 @@ public sealed class TEngineFellow
     }
 
     [Fact]
+    public void FellowFind_SharedOnTwoSources_WordsTheCountAfterTheClerkRaisedIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LAuthor read = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Read"));
+        LAuthor fellow = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Fellow"));
+        TFellowReferenceCreate(engine, "First", read, fellow);
+        TFellowReferenceCreate(engine, "Second", read, fellow);
+
+        IReadOnlyList<LFellow> fellows = engine.TEngineFellowFind(read.LAuthorId);
+
+        Assert.Equal(["2"], fellows.Select(row => row.LFellowCount));
+    }
+
+    [Fact]
     public void FellowFind_SortsBySharedThenName()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

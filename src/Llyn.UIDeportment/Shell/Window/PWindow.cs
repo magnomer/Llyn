@@ -186,7 +186,7 @@ public partial class PWindow
         _qRepertoire.QRepertoireAttach(this);
         _qCorpus.QCorpusIntroduce(this);
         _qReference.QReferenceAttach(this);
-        _qGuild.QGuildAttach(this);
+        _qGuild.QGuildIntroduce(this);
         _qFavorite.QFavoriteIntroduce(this);
         _qDuplex.QDuplexAttach(this);
         PSettings.PSettingsAttach(this);
@@ -202,7 +202,9 @@ public partial class PWindow
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qReference.QReferenceVistaRestore;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qCorpus.QCorpusVistaRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qCorpus.QQuotationVistaRefine;
-        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qGuild.QGuildVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qGuild.QGuildVistaRefine;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qGuild.QOeuvreRefine;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qGuild.QTallyRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qXiesheng.QXieshengVistaRestore;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += PYunjing.PYunjingVistaRestore;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceStateOpened += _qDuplex.QDuplexRestore;

@@ -9,6 +9,7 @@ One author a search found, as the guild's roll and union list read it.
 - `CCatalogAuthorId`: the stored author, zero for the row of uncredited sources.
 - `CCatalogAuthorName`: the author's name as shown.
 - `CCatalogAuthorWork`: how many sources credit the author, worded.
-- `CCatalogAuthorUsage`: how many examples cite the author's sources.
-- `CCatalogAuthorStored`: whether the row is a stored author rather than the uncredited row.
+- `CCatalogAuthorCount`: how many examples cite the author's sources, worded by Core and blank while uncited.
+- `CCatalogAuthorIcon`: the icon key of the row's mark.
+  A stored author wears the guild mark, and the uncredited row the unlink mark.
 - `CCatalogAuthorChosen`: whether the vista has this author chosen.

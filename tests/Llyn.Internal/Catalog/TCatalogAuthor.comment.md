@@ -4,6 +4,7 @@
 
 Covers the Author catalog and the oeuvre read under one Author.
 It covers the counts each row carries: how many Sources credit the Author and how many places cite those.
+The citation count is also worded, blank while nothing cites the Author.
 It covers name order, the two count orders with the busiest first, and the reversed name order.
 It covers the query, which reads the name alone because a name is all an Author carries.
 It covers the oeuvre of a chosen Author, of nobody, and of no choice at all.

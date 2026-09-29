@@ -3,11 +3,11 @@
 ## `internal sealed class QFellowItem`
 
 Presentation item for one co-author row of the vita: the Author's id, its name, and how many Sources credit both.
-The count is worded once here, so the row binds to text.
+The count arrives worded by Core, so the row binds to text.
 
 ## `internal QFellowItem(CFellow fellow)`
 
-Copies one fellow row: its id, its name and its shared source count as text.
+Copies one fellow row: its id, its name and its worded shared source count.
 
 ## `internal static IReadOnlyList<QFellowItem> QFellowItemBuild(IReadOnlyList<CFellow> fellows)`
 

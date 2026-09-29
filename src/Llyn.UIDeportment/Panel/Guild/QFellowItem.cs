@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Conduct;
@@ -13,7 +12,7 @@ internal sealed class QFellowItem
     {
         QFellowItemId = fellow.CFellowId;
         QFellowItemName = fellow.CFellowName;
-        QFellowItemCount = fellow.CFellowShared.ToString(CultureInfo.CurrentCulture);
+        QFellowItemCount = fellow.CFellowCount;
     }
 
     internal static IReadOnlyList<QFellowItem> QFellowItemBuild(IReadOnlyList<CFellow> fellows)

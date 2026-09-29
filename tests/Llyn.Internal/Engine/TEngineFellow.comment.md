@@ -9,6 +9,10 @@ It also covers the two names the union question reads.
 
 An Author credited beside the read one on two Sources is listed once, counted two.
 
+## `public void FellowFind_SharedOnTwoSources_WordsTheCountAfterTheClerkRaisedIt()`
+
+The worded shared count follows the count the clerk raised on a copy, so it reads two.
+
 ## `public void FellowFind_SortsBySharedThenName()`
 
 The higher shared count leads, and equal counts sort by name.

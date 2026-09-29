@@ -57,6 +57,13 @@ public sealed class COeuvre
         COeuvrePanel.CPanelVistaRestore(vista);
     }
 
+    internal void LOeuvreObserverAttach(Action<Action> marshal)
+    {
+        ArgumentNullException.ThrowIfNull(marshal);
+
+        COeuvrePanel.CPanelObserverAttach(CSubject.CSubjectVista, _ => marshal(COeuvrePanel.CPanelRowsResonate));
+    }
+
     public IReadOnlyList<CCatalogReference> COeuvreRowsRead()
     {
         IReadOnlyList<CCatalogReference> rows =
@@ -125,8 +132,8 @@ public sealed class COeuvre
                 row.LCatalogAuthorStored.LAuthorId,
                 row.LCatalogAuthorName,
                 _cOeuvreEntryPort.LEngineWorkFormat(row.LCatalogAuthorWork),
-                row.LCatalogAuthorUsage,
-                row.LCatalogAuthorStored.LAuthorStored,
+                row.LCatalogAuthorCount,
+                row.LCatalogAuthorStored.LAuthorStored ? "guild" : "unlink",
                 row.LCatalogAuthorChosen))
             .ToList();
     }
@@ -141,7 +148,7 @@ public sealed class COeuvre
             vita.LVitaWork,
             vita.LVitaTally,
             vita.LVitaFellows
-                .Select(static fellow => new CFellow(fellow.LFellowId, fellow.LFellowName, fellow.LFellowShared))
+                .Select(static fellow => new CFellow(fellow.LFellowId, fellow.LFellowName, fellow.LFellowCount))
                 .ToList(),
             vita.LVitaUsages.Select(COeuvreUsageRead).ToList());
     }

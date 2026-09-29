@@ -32,6 +32,11 @@ Binds the roll vista the rows follow and the oeuvre vista that holds the query a
 The panel takes the oeuvre vista with it.
 A workspace switch hands fresh vistas, and the comb query carries over, so the driver never replays it.
 
+## `internal void LOeuvreObserverAttach(Action<Action> marshal)`
+
+Attaches the oeuvre list's own observer plan: a Vista notice raises the oeuvre rows, run through `marshal`.
+The guild attaches it after the vistas restore, so the observer stands on the fresh oeuvre vista.
+
 ## `public IReadOnlyList<CCatalogReference> COeuvreRowsRead()`
 
 Reads the rows, counts them, and closes the panel when a chosen Source is no longer listed.
@@ -53,6 +58,8 @@ It is static, so the shelf reads its sheet through the same map without a second
 ## `internal IReadOnlyList<CCatalogAuthor> LOeuvreAuthorRead(IReadOnlyList<LCatalogAuthor> rows)`
 
 Maps the guild's roll or union rows to their shape, each work count worded by the engine.
+The citation count arrives worded by Core.
+The mark's icon key is chosen here, as Conduct chooses every key the driver looks up.
 
 ## `internal static CVita LOeuvreVitaRead(LVita vita)`
 

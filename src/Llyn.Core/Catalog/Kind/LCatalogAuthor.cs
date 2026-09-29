@@ -12,6 +12,8 @@ public sealed record LCatalogAuthor(
 {
     public string LCatalogAuthorName { get; init; } = LCatalogAuthorStored.LAuthorName;
 
+    public string LCatalogAuthorCount => LCatalog.LCatalogUsageFormat(LCatalogAuthorUsage);
+
     public static LCatalogAuthor LCatalogAuthorCreate(
         LAuthor author,
         IReadOnlyList<LReference>? works,

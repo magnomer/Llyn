@@ -18,9 +18,9 @@ public sealed class CGuild
 
     private readonly LSettingsPort _cGuildSettingsPort;
 
-    private LVista? _cGuildVista;
+    private readonly Action<Action> _cGuildMarshal;
 
-    private int _cGuildCount;
+    private LVista? _cGuildVista;
 
     private CGuild(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
@@ -34,6 +34,7 @@ public sealed class CGuild
         _cGuildEntryPort = atelier.CAtelierEntryPort;
         _cGuildPortraitPort = atelier.CAtelierPortraitPort;
         _cGuildSettingsPort = atelier.CAtelierSettingsPort;
+        _cGuildMarshal = marshal;
         CGuildAutograph = new CDesk(atelier.CAtelierDraftPort, "Guild", envoy);
         CGuildPanel = new CPanel(
             envoy,
@@ -98,8 +99,6 @@ public sealed class CGuild
 
     public bool CGuildPressAllowed => LGuildSourceSide;
 
-    public bool CGuildEmpty => _cGuildCount == 0;
-
     public bool CGuildFiltered => _cGuildVista?.LVistaFiltered ?? false;
 
     public bool CGuildUnionShown => CGuildAutograph.CDeskStored;
@@ -120,28 +119,51 @@ public sealed class CGuild
             "guild", CSubject.CSubjectAuthor, CCatalogOrder.CCatalogOrderName);
         LVista oeuvre = _cGuildAtelier.CAtelierVistaStart(
             "oeuvre", CSubject.CSubjectReference, CCatalogOrder.CCatalogOrderName);
+        vista.LVistaQuerySet(_cGuildVista?.LVistaQuery ?? string.Empty);
         _cGuildVista = vista;
         CGuildPanel.CPanelVistaRestore(vista);
         CGuildOeuvre.LOeuvreVistaRestore(vista, oeuvre);
         CGuildAutograph.CDeskVistaRestore(vista);
+        LGuildObserverAttach();
     }
 
-    public IReadOnlyList<CCatalogAuthor> CGuildRollRead()
+    private void LGuildObserverAttach()
+    {
+        CPanel panel = CGuildPanel;
+        Action<CBulletin> catalog = _ => _cGuildMarshal(LGuildCatalogResonate);
+        panel.CPanelObserverAttach(CSubject.CSubjectVista, _ => _cGuildMarshal(panel.CPanelRowsResonate));
+        CGuildOeuvre.LOeuvreObserverAttach(_cGuildMarshal);
+        panel.CPanelObserverAttach(CSubject.CSubjectWorkspace, _ => _cGuildMarshal(LGuildAuthorClose));
+        panel.CPanelObserverAttach(CSubject.CSubjectAuthor, catalog);
+        panel.CPanelObserverAttach(CSubject.CSubjectReference, catalog);
+        panel.CPanelObserverAttach(CSubject.CSubjectExample, catalog);
+        panel.CPanelObserverAttach(CSubject.CSubjectEntry, catalog);
+    }
+
+    public static IReadOnlyList<CCatalogOrder> CGuildOrderRead()
+    {
+        return
+        [
+            CCatalogOrder.CCatalogOrderName,
+            CCatalogOrder.CCatalogOrderReverse,
+            CCatalogOrder.CCatalogOrderWork,
+            CCatalogOrder.CCatalogOrderUsage,
+        ];
+    }
+
+    public CGuildRoll CGuildRollRead()
     {
         IReadOnlyList<CCatalogAuthor> rows =
             CGuildOeuvre.LOeuvreAuthorRead(_cGuildEntryPort.LEngineRollFind(_cGuildVista));
-        _cGuildCount = rows.Count;
         if (LGuildRowShown && !rows.Any(static row => row.CCatalogAuthorChosen))
         {
-            CGuildAuthorClose();
+            LGuildAuthorClose();
         }
 
-        return rows;
-    }
-
-    public CVita CGuildVitaRead()
-    {
-        return COeuvre.LOeuvreVitaRead(_cGuildEntryPort.LEngineVitaRead(_cGuildVista));
+        return new CGuildRoll(
+            rows,
+            rows.Count == 0,
+            COeuvre.LOeuvreVitaRead(_cGuildEntryPort.LEngineVitaRead(_cGuildVista)));
     }
 
     public void CGuildQuerySet(string query)
@@ -178,13 +200,13 @@ public sealed class CGuild
         return !store || CGuildSession.LSessionFinish(true);
     }
 
-    public void CGuildAuthorClose()
+    private void LGuildAuthorClose()
     {
         CGuildOeuvre.COeuvrePanel.CPanelEntryClose();
         CGuildPanel.CPanelEntryClose();
     }
 
-    public void CGuildCatalogResonate()
+    private void LGuildCatalogResonate()
     {
         CGuildPanel.CPanelRowsResonate();
         if (LGuildSourceSide)

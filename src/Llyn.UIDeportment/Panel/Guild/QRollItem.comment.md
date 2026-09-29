@@ -3,14 +3,14 @@
 ## `internal sealed class QRollItem`
 
 Presentation item for one roll row: the Author's name, its worded source count, and its citation count.
-The mark is resolved once here, because the uncredited row wears a different one from every Author.
+The mark is resolved once here from the icon key Conduct chose, because the uncredited row wears a different one.
 The same row serves the union list of the edit area, because both list Authors with their source counts.
 
 ## `internal QRollItem(CCatalogAuthor row, bool chosen)`
 
-Builds the row of one Author from its catalog row, whose source count the controller worded.
+Builds the row of one Author from its catalog row, whose counts arrive worded.
 The chosen mark comes as a parameter, so the mark has one kind of writer.
-The uncredited row arrives as a row that is not stored, and wears the unlink mark for it.
+The icon key arrives ready, so the row only looks the icon up.
 
 ## `internal static IReadOnlyList<QRollItem> QRollItemBuild(IReadOnlyList<CCatalogAuthor> rows)`
 

@@ -4,6 +4,6 @@ public sealed record CCatalogAuthor(
     long CCatalogAuthorId,
     string CCatalogAuthorName,
     string CCatalogAuthorWork,
-    int CCatalogAuthorUsage,
-    bool CCatalogAuthorStored,
+    string CCatalogAuthorCount,
+    string CCatalogAuthorIcon,
     bool CCatalogAuthorChosen);

@@ -206,6 +206,7 @@ internal static class TAuditChainSetting
             "CFavorite",
             "CFootnote",
             "CGuild",
+            "CGuildRoll",
             "CImprint",
             "CByline",
             "CLibrary",

@@ -1,6 +1,6 @@
 # CFellow.cs
 
-## `public sealed record CFellow(long CFellowId, string CFellowName, int CFellowShared)`
+## `public sealed record CFellow(long CFellowId, string CFellowName, string CFellowCount)`
 
 One author who shares a source with the author a vita shows.
 
@@ -8,4 +8,4 @@ One author who shares a source with the author a vita shows.
 
 - `CFellowId`: the fellow author.
 - `CFellowName`: the fellow's name.
-- `CFellowShared`: how many sources the two authors share.
+- `CFellowCount`: how many sources the two authors share, worded by Core.

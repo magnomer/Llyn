@@ -24,7 +24,7 @@ public sealed class TGuildMode
 
         Assert.Empty(asked);
         Assert.True(guild.CGuildBinEnabled);
-        Assert.Equal("Ada", guild.CGuildVitaRead().CVitaName);
+        Assert.Equal("Ada", guild.CGuildRollRead().CGuildRollVita.CVitaName);
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public sealed class TGuildMode
         Assert.True(guild.CGuildAutographShown);
         Assert.True(guild.CGuildScribeChecked);
         Assert.True(guild.CGuildAutograph.CDeskHeld);
-        IReadOnlyList<CCatalogAuthor> rows = guild.CGuildRollRead();
+        IReadOnlyList<CCatalogAuthor> rows = guild.CGuildRollRead().CGuildRollRows;
         Assert.Equal(["Bob"], rows.Where(row => row.CCatalogAuthorChosen).Select(row => row.CCatalogAuthorName));
     }
 
@@ -81,7 +81,7 @@ public sealed class TGuildMode
 
         guild.CGuildAuthorSelect(ada.LAuthorId);
 
-        IReadOnlyList<CCatalogAuthor> rows = guild.CGuildRollRead();
+        IReadOnlyList<CCatalogAuthor> rows = guild.CGuildRollRead().CGuildRollRows;
         Assert.Equal(["Leave"], asked);
         Assert.Contains("Bob", rows.Select(row => row.CCatalogAuthorName));
         Assert.Equal(["Ada"], rows.Where(row => row.CCatalogAuthorChosen).Select(row => row.CCatalogAuthorName));
