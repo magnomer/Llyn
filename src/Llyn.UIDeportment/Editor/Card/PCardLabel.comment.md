@@ -7,9 +7,10 @@ The collection is a run of Tag chips with one open entry among them, which is th
 The engine holds the chips, the card renders them by id, and every commit or removal is a request.
 The engine's clerk skips a text the card already holds, and hands every text ready trimmed.
 
-## `internal Action<string>? PCardLabelNotice { get; set; }`
+## `internal event Action<PCard, string>? PCardLabelNotice;`
 
 Where the entry's text goes as it is typed, so the editor can offer matching Tags.
+It carries the card, since the editor subscribes one handler for every card it builds.
 
 ## `internal string PCardLabelText`
 

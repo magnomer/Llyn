@@ -7,11 +7,6 @@ The templates that draw the field cannot reach the card the Situations belong to
 An item's data context is the Situation or the entry, not the card.
 So each handler finds the owning card by asking which card's collection holds the item.
 
-## `internal void PContextAttach(PCard card)`
-
-Hands the card the way to ask for candidates as its Situation caret is typed into.
-The card holds no engine, so it reports what was typed and the editor answers with the dropdown.
-
 ## `private void PContextTextObserve(PContextCaret caret, string text)`
 
 Hears each edit of a Situation caret and hands the raw text to the situation gate, unsettled.

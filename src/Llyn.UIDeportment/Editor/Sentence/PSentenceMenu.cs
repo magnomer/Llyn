@@ -73,11 +73,6 @@ public partial class PEditor
         }
     }
 
-    internal void PSentenceAttach(PCard card)
-    {
-        card.PCardSentenceNotice = (row, gloss, language) => PSentenceGlossObserve(card, row, gloss, language);
-    }
-
     private void PSentenceApply(FrameworkElement container, object item, string? _)
     {
         if (item is not PSentence row)

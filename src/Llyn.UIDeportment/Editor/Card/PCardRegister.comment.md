@@ -7,9 +7,10 @@ The collection is a run of Register chips with one open entry among them, which 
 The engine holds the chips, the card renders them by id, and every commit or removal is a request.
 The engine's clerk skips a Register the card already holds, by id and by wording alike.
 
-## `internal Action<string>? PCardRegisterNotice { get; set; }`
+## `internal event Action<PCard, string>? PCardRegisterNotice;`
 
 Where the entry's text goes as it is typed, so the editor can offer matching Registers.
+It carries the card, since the editor subscribes one handler for every card it builds.
 
 ## `internal string PCardRegisterText`
 

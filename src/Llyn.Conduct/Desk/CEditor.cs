@@ -35,8 +35,14 @@ public sealed class CEditor
         CEditorTimbre = new CTimbre(CEditorDesk, phonology, CEditorDisplay);
         CEditorSpeech = new CCardSpeech(CEditorDesk);
         CEditorDesk.CDeskFinished += CEditorStoredShow;
-        CEditorDesk.CDeskDraftPrepared +=
-            draft => CEditorDraftChanged?.Invoke(CFolio.CFolioEntryRead(draft.LDraftContent));
+        CEditorDesk.CDeskDraftPrepared += draft =>
+        {
+            if (CEditorDesk.CDeskTenure is LTenure held)
+            {
+                CEditorDraftChanged?.Invoke(
+                    CFolio.CFolioEntryRead(draft.LDraftContent, held.LTenureTranslationRead(draft.LDraftContent)));
+            }
+        };
     }
 
     public static CEditor CEditorCreate(CAtelier atelier, CEnvoy envoy)
@@ -76,6 +82,8 @@ public sealed class CEditor
     public CCardSpeech CEditorSpeech { get; }
 
     public CCardField CEditorField => new(CEditorDesk);
+
+    public CCardList CEditorList => new(CEditorDesk);
 
     public CImage CEditorImage => new(CEditorDesk);
 
@@ -160,7 +168,9 @@ public sealed class CEditor
 
     public CEntryDraft? CEditorDraftRead()
     {
-        return CEditorDesk.CDeskDraft is { } held ? CFolio.CFolioEntryRead(held.LDraftContent) : null;
+        return CEditorDesk.CDeskTenure is LTenure held && held.LTenureRead() is { } draft
+            ? CFolio.CFolioEntryRead(draft.LDraftContent, held.LTenureTranslationRead(draft.LDraftContent))
+            : null;
     }
 
     public IReadOnlyList<CReflexHead> CEditorLeadRead(long reflex, string language)

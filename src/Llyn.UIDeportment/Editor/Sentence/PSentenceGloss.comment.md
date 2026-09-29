@@ -8,10 +8,10 @@ The Gloss rows a card's sentence row shows under its sentence.
 
 The rows in the order the Example keeps them.
 
-## `internal Action<PGloss, string>? PSentenceGlossNotice { get; set; }`
+## `internal event Action<PGloss, string>? PSentenceGlossNotice;`
 
 Where a language picked in one of the rows goes, with the raw language.
-The card sets it when it builds the row, so the pick reaches the editor with its sentence.
+The card subscribes when it builds the row, so the pick reaches the editor with its sentence.
 
 ## `private void PSentenceGlossShow(IReadOnlyList<CGlossDraft> drafts)`
 

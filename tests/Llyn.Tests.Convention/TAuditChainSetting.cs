@@ -51,6 +51,7 @@ internal static class TAuditChainSetting
             "LQuill",
             "LEasel",
             "LQuillChip",
+            "LQuillCard",
         ],
         ["Llyn.UIDeportment>Llyn.Conduct"] =
         [
@@ -167,6 +168,7 @@ internal static class TAuditChainSetting
             "CWorkspace",
             "CCardSpeech",
             "CCardField",
+            "CCardList",
             "CImage",
             "CVideo",
             "CMarker",
@@ -353,8 +355,8 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["cross:Llyn.UIDeportment>Llyn.Application"] = 53,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 91,
+        ["cross:Llyn.UIDeportment>Llyn.Application"] = 48,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 88,
         ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 25,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 1,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,

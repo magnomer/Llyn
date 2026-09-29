@@ -71,11 +71,6 @@ public partial class PEditor
         }
     }
 
-    internal void PLabelIntroduce(PCard card)
-    {
-        card.PCardLabelNotice = text => PSlateShow(card, text);
-    }
-
     private void PLabelTextObserve(PLabelCaret caret, string text)
     {
         if (PCardLabelFind(caret) is PCard card)

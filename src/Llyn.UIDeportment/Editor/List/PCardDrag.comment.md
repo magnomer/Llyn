@@ -63,9 +63,10 @@ That is the top of it on the way up and the bottom of it on the way down.
 So either direction swaps at the same half-card.
 It is the same half-card whatever the grip was.
 
-### `PCardMove(_pCardDragCard!, target);`
+### `_qEditor.QEditorArea.CEditorList.CCardMove(_pCardDragCard!.PCardId, target);`
 
-The move is one shift request, and the list is moved by the answer, not here.
+The place the geometry found goes to the one move gate the position badge also uses.
+The list is moved by the answer, not here.
 Moving it first would show an order the engine may yet refuse.
 
 ### `if (index < current && top < middle)`

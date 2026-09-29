@@ -8,21 +8,26 @@ namespace Llyn.UIDeportment;
 
 public partial class PEditor
 {
-    private void PCardShow(ObservableCollection<PCard> cards, string prefix, IReadOnlyList<CCardDraft> drafts)
+    private void PCardRefine(ObservableCollection<PCard> cards, string prefix, IReadOnlyList<CCardDraft> drafts)
     {
         List<PCard> shown = new(drafts.Count);
         foreach (CCardDraft draft in drafts)
         {
             PCard? card = PCardFind(cards, draft.CCardDraftId);
-            if (card is null || shown.Contains(card))
+            if (card is null)
             {
-                card = PCardCreate(prefix, draft);
+                card = new PCard(prefix, _pEditorCitation, _pEditorParticle, _pEditorDependence, _pLanguageItem)
+                {
+                    PCardId = draft.CCardDraftId,
+                };
+                card.PCardSentenceNotice += PSentenceGlossObserve;
+                card.PCardContextNotice += PCandidateShow;
+                card.PCardRegisterNotice += PCandidateRegisterShow;
+                card.PCardLabelNotice += PSlateShow;
                 cards.Add(card);
             }
 
-            PCardTextShow(card, draft);
-            PCardListShow(card, draft);
-            card.PCardPosition = draft.CCardDraftPosition;
+            PCardDraftRefine(card, draft);
             shown.Add(card);
         }
 
@@ -44,44 +49,20 @@ public partial class PEditor
         }
     }
 
-    private static void PCardTextShow(PCard card, CCardDraft draft)
+    private void PCardDraftRefine(PCard card, CCardDraft draft)
     {
         card.PCardTitleShow(draft.CCardDraftTitle);
         card.PCardExpressionShow(draft.CCardDraftExpression);
         card.PCardDefinitionShow(draft.CCardDraftMeaning);
-    }
-
-    private PCard PCardCreate(string prefix, CCardDraft draft)
-    {
-        PCard card = new(
-            _pEditorHost.PWindowAtelier,
-            prefix,
-            draft.CCardDraftPosition,
-            _pEditorCitation,
-            _pEditorParticle,
-            _pEditorDependence,
-            _pLanguageItem)
-        {
-            PCardId = draft.CCardDraftId,
-        };
-
-        PSentenceAttach(card);
-        PContextAttach(card);
-        PRegisterAttach(card);
-        PLabelIntroduce(card);
-        return card;
-    }
-
-    private void PCardListShow(PCard card, CCardDraft draft)
-    {
         card.PCardSentenceShow(draft.CCardDraftSentence, _pSentenceOrder);
         PSentenceMentionShow(card);
         card.PCardContextShow(draft.CCardDraftSituation);
         card.PCardRegisterShow(draft.CCardDraftRegister);
-        card.PCardLinkShow(_qEditor.QEditorArea.CEditorField.CCardTranslationRead(draft.CCardDraftId));
+        card.PCardLinkShow(draft.CCardDraftTranslation);
         card.PCardLabelShow(draft.CCardDraftTag);
-        card.PCardImageShow(draft.CCardDraftImage);
-        card.PCardVideoShow(draft.CCardDraftVideo);
+        card.PCardImageShow(draft.CCardDraftImage, _pEditorHost.PWindowAtelier);
+        card.PCardVideoShow(draft.CCardDraftVideo, _pEditorHost.PWindowAtelier);
+        card.PCardPosition = draft.CCardDraftPosition;
     }
 
     private static PCard? PCardFind(IReadOnlyList<PCard> cards, long id)

@@ -8,23 +8,18 @@ internal sealed partial class PCard
 {
     public ObservableCollection<PVideo> PCardVideo { get; } = [];
 
-    internal void PCardVideoShow(IReadOnlyList<CVideoDraft> rows)
+    internal void PCardVideoShow(IReadOnlyList<CVideoDraft> rows, CAtelier atelier)
     {
         PCardRowShow(
             PCardVideo,
             rows,
             static row => row.PVideoId,
             static draft => draft.CVideoDraftId,
-            PCardVideoCreate,
+            draft => new PVideo(atelier, draft),
             (row, draft) =>
             {
                 row.PVideoShow(draft);
                 return row;
             });
-    }
-
-    private PVideo PCardVideoCreate(CVideoDraft draft)
-    {
-        return new PVideo(_pCardAtelier, draft);
     }
 }

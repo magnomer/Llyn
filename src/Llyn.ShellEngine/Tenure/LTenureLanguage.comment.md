@@ -44,11 +44,14 @@ A missing reading or a blank variety changes nothing.
 The etymons of the held entry, resolved to their headwords.
 A refused read answers empty, so the etymology field still draws.
 
-## `public IReadOnlyList<LTranslationTarget> LTenureTranslationRead(long card)`
+## `public IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LTenureTranslationRead(LEntryDraft draft)`
 
-The link targets of one held card, in the order the card lists them.
+The link targets of every meaning and collocation of the draft, keyed by card id.
+Each card answers its targets in the order the card lists them.
+One engine read resolves every card's links, so a paint asks nothing per card.
 A target the engine no longer finds is left out, so the chip row never shows a blank.
-A refused read answers empty, so the card still draws.
+A refused read answers every card empty, so the cards still draw.
+Every card of the draft has an entry, so the map to the editor's cards never misses one.
 
 ## `private string? _lTenureSpeechPending;`
 

@@ -9,7 +9,7 @@ internal sealed partial class PSentence
 {
     public ObservableCollection<PGloss> PSentenceGloss { get; } = [];
 
-    internal Action<PGloss, string>? PSentenceGlossNotice { get; set; }
+    internal event Action<PGloss, string>? PSentenceGlossNotice;
 
     private void PSentenceGlossShow(IReadOnlyList<CGlossDraft> drafts)
     {

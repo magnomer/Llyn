@@ -4,8 +4,8 @@
 
 Which cards the editor holds.
 That is the meaning list and the collocation list.
-It is also the buttons that add and remove a card.
-Adding, removing and reordering are requests to the engine, never edits to the lists.
+It is also the buttons that add and remove a card, and the badge that moves one.
+Adding, removing and reordering go to the card gates, never edits to the lists.
 The engine answers with a draft bulletin, and the render brings the lists into line with it.
 The numbering that keeps each list reading 1, 2, 3 is the engine's.
 Each card carries the id the engine minted for it.
@@ -18,8 +18,8 @@ The changed property is passed on, so the card rewrites only that property's tex
 
 ## `private void PCollocationApply(FrameworkElement container, object item, string? changed)`
 
-Fills one collocation card as the meaning fill does, through the collocation dictionary's forwarders.
-The two stay apart because each dictionary holds its own forwarders.
+Fills one collocation card as the meaning fill does.
+The media choosers still go through the collocation dictionary's forwarders, so the two fills stay apart.
 
 ## `private void PCardApply(FrameworkElement container, PCard card)`
 
@@ -32,44 +32,32 @@ Hands both card lists their cards and fill, and subscribes the drag and add hand
 
 ## Inline notes
 
-### `private void PMeaningHandle(object sender, RoutedEventArgs e)`
+### `private void PMeaningAddObserve(object sender, RoutedEventArgs e)`
 
-Asks for a new card at the end of the list.
-The card arrives through the bulletin, already named, so the form never guesses an id.
+Asks the gate for a new meaning card.
+The card arrives through the bulletin, already named and placed, so the form never guesses an id or a place.
 
-### `internal void PCardHandle(object sender, RoutedEventArgs e)`
+### `private void PCardRemoveObserve(object sender, RoutedEventArgs e)`
 
-Removing the last card would leave the tab with nothing to type into, so a list of one keeps it.
-The engine closes the gap in the numbering when it drops the card.
+Hands the pressed card's id to the gate.
+A list of one keeps its card, which the clerk decides, so the eraser sends every press.
 
-### `internal void PCardPositionHandle(object sender, MouseButtonEventArgs e)`
+### `private void PCardPositionRefine(object sender, MouseButtonEventArgs e)`
 
 Opens the badge for writing on a double click, and stops that click from starting a drag.
-A single card cannot be reordered, so its badge never opens.
+A list of one shows no editable badge, as it shows no drag ghost.
+That only decides whether the editor appears, so it stays here.
 The box is focused after the layout runs, because it is not hit tested until then.
 
-### `internal void PCardPositionAccept(object sender, KeyEventArgs e)`
+### `private void PCardPositionRefine(object sender, KeyEventArgs e)`
 
-Enter takes the typed number and Escape drops it.
+Escape drops the typed number and shuts the badge.
 
-### `internal void PCardPositionCommit(object sender, RoutedEventArgs e)`
+### `private void PCardPositionObserve(object sender, RoutedEventArgs e)`
 
-Leaving the badge takes the typed number, as leaving any field here takes what it holds.
-The open badge is checked, so a badge closed by Escape is not read again.
-
-### `private void PCardPositionApply(PCard card)`
-
-Moves the card to the place the typed number names, counting from one.
-A number above the count lands the card last and a number below one lands it first.
-That is the answer a writer means by "9 of 3", rather than a refusal.
-Anything unknown as a number changes no order at all.
-The move is then handed to the engine exactly as a drag is.
-
-### `private void PCardMove(PCard card, int target)`
-
-One shift request, naming the card and the place it should land in its own list.
-The list is not moved here.
-The bulletin's render moves it, so a refused shift leaves the shown order as stored.
+Enter or leaving the badge hands the raw typed text to the move gate, then shuts the badge.
+One handler hears both, since both commit the same text.
+The open badge is checked, so a badge shut by Enter or Escape is not read again.
 
 ### `private ObservableCollection<PCard>? PCardListFind(PCard card)`
 

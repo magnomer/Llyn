@@ -8,23 +8,18 @@ internal sealed partial class PCard
 {
     public ObservableCollection<PImage> PCardImage { get; } = [];
 
-    internal void PCardImageShow(IReadOnlyList<CImageDraft> rows)
+    internal void PCardImageShow(IReadOnlyList<CImageDraft> rows, CAtelier atelier)
     {
         PCardRowShow(
             PCardImage,
             rows,
             static row => row.PImageId,
             static draft => draft.CImageDraftId,
-            PCardImageCreate,
+            draft => new PImage(atelier, draft),
             (row, draft) =>
             {
                 row.PImageShow(draft);
                 return row;
             });
-    }
-
-    private PImage PCardImageCreate(CImageDraft draft)
-    {
-        return new PImage(_pCardAtelier, draft);
     }
 }

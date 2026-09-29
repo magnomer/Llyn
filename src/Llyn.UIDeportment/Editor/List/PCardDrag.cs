@@ -149,7 +149,7 @@ public partial class PEditor
             return;
         }
 
-        PCardMove(_pCardDragCard!, target);
+        _qEditor.QEditorArea.CEditorList.CCardMove(_pCardDragCard!.PCardId, target);
     }
 
     private void PCardDragReset(object sender, MouseEventArgs e)

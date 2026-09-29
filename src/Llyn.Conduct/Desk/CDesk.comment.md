@@ -117,11 +117,6 @@ The tenure halted since the last bulletin.
 
 The held tenure, for the editor that reads the draft's language and reflex state from it.
 
-## `internal LDraft? CDeskDraft`
-
-The held draft as it stands, without applying what still waits, or null while nothing is held.
-A reader inside a keystroke takes this, so the pending request keeps its delay and raises no bulletin mid-typing.
-
 ## `internal void CDeskVistaRestore(LVista vista)`
 
 Takes the vista a start runs over, handed on by the controller that owns the desk.

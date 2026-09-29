@@ -283,7 +283,6 @@ public sealed class TEditor
 
         Assert.Equal(string.Empty, editor.CEditorPronunciationRead());
         Assert.Empty(editor.CEditorEtymonRead());
-        Assert.Empty(editor.CEditorField.CCardTranslationRead(1));
     }
 
     [Fact]

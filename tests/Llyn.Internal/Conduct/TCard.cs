@@ -30,7 +30,8 @@ public sealed class TCard
             ],
         };
 
-        CEntryDraft shaped = TInterfaceConduct.TCardEntryRead(draft);
+        CEntryDraft shaped = TInterfaceConduct.TCardEntryRead(
+            draft, new Dictionary<long, IReadOnlyList<LTranslationTarget>>());
 
         Assert.Equal("RP", shaped.CEntryDraftPronunciation?.CPronunciationDraftVariety);
         Assert.Equal(["GA", "AU"], shaped.CEntryDraftAccents.Select(spoken => spoken.CPronunciationDraftVariety));

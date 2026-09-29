@@ -1,6 +1,5 @@
 using System;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Llyn.UIDeportment;
 
@@ -15,11 +14,6 @@ public class PCollocationTemplate : ResourceDictionary
             new Uri("/Llyn.UIVeneer;component/Editor/Sentence/PCollocationTemplate.xaml", UriKind.Relative)));
     }
 
-    internal void PCardHandle(object sender, RoutedEventArgs e)
-    {
-        _pCollocationHost.PCardHandle(sender, e);
-    }
-
     internal void PImageAddHandle(object sender, RoutedEventArgs e)
     {
         _pCollocationHost.PImageAddHandle(sender, e);
@@ -28,20 +22,5 @@ public class PCollocationTemplate : ResourceDictionary
     internal void PVideoAddHandle(object sender, RoutedEventArgs e)
     {
         _pCollocationHost.PVideoAddHandle(sender, e);
-    }
-
-    internal void PCardPositionHandle(object sender, MouseButtonEventArgs e)
-    {
-        _pCollocationHost.PCardPositionHandle(sender, e);
-    }
-
-    internal void PCardPositionAccept(object sender, KeyEventArgs e)
-    {
-        _pCollocationHost.PCardPositionAccept(sender, e);
-    }
-
-    internal void PCardPositionCommit(object sender, RoutedEventArgs e)
-    {
-        _pCollocationHost.PCardPositionCommit(sender, e);
     }
 }

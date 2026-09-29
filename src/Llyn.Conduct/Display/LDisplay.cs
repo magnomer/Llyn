@@ -168,18 +168,17 @@ public sealed class LDisplay
             }
 
             bool collocated = part == CCompassPart.CCompassPartCollocation;
-            IReadOnlyList<CCardDraft> cards = CFolio.CFolioSheetRead(
-                collocated ? shown.LEntryDraftCollocations : shown.LEntryDraftMeanings);
+            IReadOnlyList<LCardDraft> cards = collocated ? shown.LEntryDraftCollocations : shown.LEntryDraftMeanings;
             string kind = lookup(collocated ? "Display.CollocationSingle" : "Display.MeaningSingle");
             string unknown = lookup("Display.Unknown");
             for (int index = 0; index < cards.Count; index++)
             {
-                CStateValue title = cards[index].CCardDraftTitle;
+                CStateValue title = CFolio.CFolioStateRead(cards[index].LCardDraftTitle);
                 rows.Add(new CCompassRow(
                     part,
                     index,
                     string.Empty,
-                    cards[index].CCardDraftPosition.ToString(CultureInfo.CurrentCulture),
+                    cards[index].LCardDraftPosition.ToString(CultureInfo.CurrentCulture),
                     1));
                 labels.Add(title.CStateValueUncertain ? unknown : title.CStateValueShown ?? kind);
             }

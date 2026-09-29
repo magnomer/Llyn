@@ -24,9 +24,11 @@ internal static class CFolio
             .ToList();
     }
 
-    internal static CEntryDraft CFolioEntryRead(LEntryDraft draft)
+    internal static CEntryDraft CFolioEntryRead(
+        LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets)
     {
         ArgumentNullException.ThrowIfNull(draft);
+        ArgumentNullException.ThrowIfNull(targets);
 
         return new CEntryDraft(
             draft.LEntryDraftHeadword,
@@ -37,8 +39,8 @@ internal static class CFolio
                 ? CSounding.CSoundingPronunciationRead(spoken)
                 : null,
             CSounding.CSoundingPronunciationRead(draft.LEntryDraftAccents),
-            CFolioSheetRead(draft.LEntryDraftMeanings),
-            CFolioSheetRead(draft.LEntryDraftCollocations),
+            CFolioSheetRead(draft.LEntryDraftMeanings, targets),
+            CFolioSheetRead(draft.LEntryDraftCollocations, targets),
             CSounding.CSoundingTranscriptionRead(draft.LEntryDraftTranscriptions),
             CSounding.CSoundingReflexRead(draft.LEntryDraftReflexes),
             new CEtymologyDraft(
@@ -52,10 +54,11 @@ internal static class CFolio
             value.LStateValueShown ?? string.Empty, value.LStateValueUncertain, value.LStateValueLegible);
     }
 
-    internal static IReadOnlyList<CCardDraft> CFolioSheetRead(IReadOnlyList<LCardDraft> cards)
+    private static IReadOnlyList<CCardDraft> CFolioSheetRead(
+        IReadOnlyList<LCardDraft> cards, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets)
     {
         return cards
-            .Select(static card => new CCardDraft(
+            .Select(card => new CCardDraft(
                 card.LCardDraftId,
                 card.LCardDraftPosition,
                 CFolioStateRead(card.LCardDraftTitle),
@@ -75,6 +78,7 @@ internal static class CFolio
                     .Select(static row => new CRegisterDraft(
                         row.LRegisterDraftId, CFolioStateRead(row.LRegisterDraftName)))
                     .ToList(),
+                CFolioTargetRead(targets[card.LCardDraftId]),
                 card.LCardDraftTag.Select(static row => new CTagDraft(row.LTagDraftId, row.LTagDraftText)).ToList(),
                 CFolioImageRead(card.LCardDraftImage),
                 CFolioVideoRead(card.LCardDraftVideo)))

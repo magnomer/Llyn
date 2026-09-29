@@ -69,11 +69,6 @@ public partial class PEditor
         }
     }
 
-    internal void PRegisterAttach(PCard card)
-    {
-        card.PCardRegisterNotice = text => PCandidateRegisterShow(card, text);
-    }
-
     private void PRegisterTextObserve(PRegisterCaret caret, string text)
     {
         if (PCardRegisterFind(caret) is PCard card)

@@ -26,6 +26,29 @@ So the move refuses rather than loops.
 
 Applies one change to the card named, wherever it nests, and refuses when no card carries the id.
 
+## `public static int LCardEndRead(LEntryDraft content, LCardKind kind)`
+
+The place a new card of `kind` takes: after every card its list already holds.
+A card the user adds goes last, whoever asks for it.
+
+## `public static bool LCardLoneCheck(LEntryDraft content, long id)`
+
+Whether the card is the only one in the meanings or in the collocations.
+Removing it would leave the list with nothing to type into, so a user edit keeps it.
+The removal request itself stays free to empty a list, as a replay or an import needs.
+
+## `public static int? LCardOrdinalRead(LEntryDraft content, long id, string ordinal)`
+
+The place a typed number names for a card in its own list, counting from one.
+A number above the count lands the card last, and one below one lands it first.
+That is what a writer means by "9 of 3", rather than a refusal.
+Text that is no number, a card in neither list, or the place it holds already answers null.
+So a list of one never moves, and the caller sends nothing.
+
+## `private static int LCardPlaceRead(IReadOnlyList<LCardDraft> cards, long id)`
+
+The index of the card in one list, or minus one when the list does not hold it.
+
 ## `public static LCardDraft? LCardFind(LEntryDraft content, long id)`
 
 The card `id` names among the meanings, their children or the collocations, or null.

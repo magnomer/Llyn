@@ -1,11 +1,8 @@
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Llyn.Application;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -31,13 +28,13 @@ public partial class PEditor
         PMeaningList.LostMouseCapture += PCardDragReset;
         PMeaningList.MouseLeftButtonUp += PCardDragReset;
         PMeaningList.MouseMove += PCardDragUpdate;
-        PMeaningAddition.Click += PMeaningHandle;
+        PMeaningAddition.Click += PMeaningAddObserve;
         PCollocationList.ItemsSource = _pCollocationList;
         QLookItem.QLookItemAttach(PCollocationList, PCollocationApply);
         PCollocationList.LostMouseCapture += PCardDragReset;
         PCollocationList.MouseLeftButtonUp += PCardDragReset;
         PCollocationList.MouseMove += PCardDragUpdate;
-        PCollocationAddition.Click += PCollocationHandle;
+        PCollocationAddition.Click += PCollocationAddObserve;
     }
 
     private void PMeaningApply(FrameworkElement container, object item, string? changed)
@@ -57,22 +54,24 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Border>(container, "PCardPosition") is Border position)
         {
-            position.MouseLeftButtonDown -= PCardPositionHandle;
-            position.MouseLeftButtonDown += PCardPositionHandle;
+            position.MouseLeftButtonDown -= PCardPositionRefine;
+            position.MouseLeftButtonDown += PCardPositionRefine;
         }
 
         if (QLook.QLookPartFind<TextBox>(container, "PCardPositionText") is TextBox ordinal)
         {
-            ordinal.KeyDown -= PCardPositionAccept;
-            ordinal.KeyDown += PCardPositionAccept;
-            ordinal.LostFocus -= PCardPositionCommit;
-            ordinal.LostFocus += PCardPositionCommit;
+            ordinal.KeyDown -= PCardPositionRefine;
+            ordinal.KeyDown -= PCardPositionObserve;
+            ordinal.LostFocus -= PCardPositionObserve;
+            ordinal.KeyDown += PCardPositionRefine;
+            ordinal.KeyDown += PCardPositionObserve;
+            ordinal.LostFocus += PCardPositionObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PCardEraser") is Button eraser)
         {
-            eraser.Click -= PCardHandle;
-            eraser.Click += PCardHandle;
+            eraser.Click -= PCardRemoveObserve;
+            eraser.Click += PCardRemoveObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PCardImageChooser") is Button image)
@@ -105,22 +104,24 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Border>(container, "PCardPosition") is Border position)
         {
-            position.MouseLeftButtonDown -= _pCollocationTemplate.PCardPositionHandle;
-            position.MouseLeftButtonDown += _pCollocationTemplate.PCardPositionHandle;
+            position.MouseLeftButtonDown -= PCardPositionRefine;
+            position.MouseLeftButtonDown += PCardPositionRefine;
         }
 
         if (QLook.QLookPartFind<TextBox>(container, "PCardPositionText") is TextBox ordinal)
         {
-            ordinal.KeyDown -= _pCollocationTemplate.PCardPositionAccept;
-            ordinal.KeyDown += _pCollocationTemplate.PCardPositionAccept;
-            ordinal.LostFocus -= _pCollocationTemplate.PCardPositionCommit;
-            ordinal.LostFocus += _pCollocationTemplate.PCardPositionCommit;
+            ordinal.KeyDown -= PCardPositionRefine;
+            ordinal.KeyDown -= PCardPositionObserve;
+            ordinal.LostFocus -= PCardPositionObserve;
+            ordinal.KeyDown += PCardPositionRefine;
+            ordinal.KeyDown += PCardPositionObserve;
+            ordinal.LostFocus += PCardPositionObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PCardEraser") is Button eraser)
         {
-            eraser.Click -= _pCollocationTemplate.PCardHandle;
-            eraser.Click += _pCollocationTemplate.PCardHandle;
+            eraser.Click -= PCardRemoveObserve;
+            eraser.Click += PCardRemoveObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PCardImageChooser") is Button image)
@@ -182,36 +183,25 @@ public partial class PEditor
         }
     }
 
-    private void PMeaningHandle(object sender, RoutedEventArgs e)
+    private void PMeaningAddObserve(object sender, RoutedEventArgs e)
     {
-        PEditorRequestSend(
-            new LRequestCardAddition(PEditorDraft, LCardKind.LCardKindMeaning, 0, _pMeaningList.Count));
+        _qEditor.QEditorArea.CEditorList.CCardMeaningAdd();
     }
 
-    private void PCollocationHandle(object sender, RoutedEventArgs e)
+    private void PCollocationAddObserve(object sender, RoutedEventArgs e)
     {
-        PEditorRequestSend(
-            new LRequestCardAddition(PEditorDraft, LCardKind.LCardKindCollocation, 0, _pCollocationList.Count));
+        _qEditor.QEditorArea.CEditorList.CCardCollocationAdd();
     }
 
-    internal void PCardHandle(object sender, RoutedEventArgs e)
+    private void PCardRemoveObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PCard card })
+        if (sender is FrameworkElement { DataContext: PCard card })
         {
-            return;
+            _qEditor.QEditorArea.CEditorList.CCardRemove(card.PCardId);
         }
-
-        ObservableCollection<PCard>? list = PCardListFind(card);
-
-        if (list is null || list.Count <= 1)
-        {
-            return;
-        }
-
-        PEditorRequestSend(new LRequestCardRemoval(PEditorDraft, card.PCardId));
     }
 
-    internal void PCardPositionHandle(object sender, MouseButtonEventArgs e)
+    private void PCardPositionRefine(object sender, MouseButtonEventArgs e)
     {
         if (e.ClickCount < 2 || sender is not FrameworkElement { DataContext: PCard card } badge)
         {
@@ -242,68 +232,31 @@ public partial class PEditor
             });
     }
 
-    internal void PCardPositionAccept(object sender, KeyEventArgs e)
+    private void PCardPositionRefine(object sender, KeyEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PCard card })
-        {
-            return;
-        }
-
-        if (e.Key is Key.Enter)
-        {
-            e.Handled = true;
-            PCardPositionApply(card);
-            return;
-        }
-
-        if (e.Key is Key.Escape)
+        if (e.Key is Key.Escape && sender is FrameworkElement { DataContext: PCard card })
         {
             e.Handled = true;
             card.PCardPositionHide();
         }
     }
 
-    internal void PCardPositionCommit(object sender, RoutedEventArgs e)
+    private void PCardPositionObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PCard card } && card.PCardPositionActive)
+        if (e is KeyEventArgs { Key: not Key.Enter }
+            || sender is not FrameworkElement { DataContext: PCard card }
+            || !card.PCardPositionActive)
         {
-            PCardPositionApply(card);
+            return;
         }
-    }
 
-    private void PCardPositionApply(PCard card)
-    {
-        string written = card.PCardPositionText;
+        _qEditor.QEditorArea.CEditorList.CCardMove(card.PCardId, card.PCardPositionText);
+        if (e is KeyEventArgs)
+        {
+            e.Handled = true;
+        }
+
         card.PCardPositionHide();
-
-        ObservableCollection<PCard>? list = PCardListFind(card);
-
-        if (list is null || list.Count <= 1)
-        {
-            return;
-        }
-
-        int current = list.IndexOf(card);
-
-        if (current < 0 ||
-            !int.TryParse(written, NumberStyles.Integer, CultureInfo.InvariantCulture, out int wanted))
-        {
-            return;
-        }
-
-        int target = wanted < 1 ? 0 : wanted > list.Count ? list.Count - 1 : wanted - 1;
-
-        if (target == current)
-        {
-            return;
-        }
-
-        PCardMove(card, target);
-    }
-
-    private void PCardMove(PCard card, int target)
-    {
-        PEditorRequestSend(new LRequestCardShift(PEditorDraft, card.PCardId, 0, target));
     }
 
     private ObservableCollection<PCard>? PCardListFind(PCard card)

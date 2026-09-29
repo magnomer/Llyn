@@ -30,7 +30,7 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void TranslationRead_LinkedEntries_AnswersThemInTheCardsOrder()
+    public void DraftRead_LinkedEntries_CarriesThemOnTheCardInItsOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -38,23 +38,42 @@ public sealed class TEditorField
         long gato = engine.TEngineTranslationCreate("gato", "Spanish").LEntryId;
         CEditor editor = TEditorFieldPrepare(engine);
         long sheet = TEditorSheetAdd(editor);
+        long bare = TEditorSheetAdd(editor);
         editor.CEditorCard.CCardTranslationInsert(sheet, gato, "gato", "Spanish", 0);
         editor.CEditorCard.CCardTranslationInsert(sheet, chat, "chat", "French", 0);
 
-        IReadOnlyList<CTranslationTarget> targets = editor.CEditorField.CCardTranslationRead(sheet);
+        IReadOnlyList<CTranslationTarget> targets = TEditorCardRead(editor, sheet).CCardDraftTranslation;
 
         Assert.Equal(["chat", "gato"], targets.Select(static target => target.CTranslationTargetHeadword));
-        Assert.Empty(editor.CEditorField.CCardTranslationRead(987654));
+        Assert.Empty(TEditorCardRead(editor, bare).CCardDraftTranslation);
     }
 
     [Fact]
-    public void TranslationRead_EmptyDesk_ReadsNothing()
+    public void DraftChanged_LinkedEntry_CarriesTheLinkOnItsCard()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long chat = engine.TEngineTranslationCreate("chat", "French").LEntryId;
+        CEditor editor = TEditorFieldPrepare(engine);
+        long sheet = TEditorSheetAdd(editor);
+        editor.CEditorCard.CCardTranslationInsert(sheet, chat, "chat", "French", 0);
+        List<CEntryDraft> shown = [];
+        editor.CEditorDraftChanged += shown.Add;
+
+        editor.CEditorDesk.CDeskDraftResonate();
+
+        CCardDraft card = shown[^1].CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
+        Assert.Equal(["chat"], card.CCardDraftTranslation.Select(static target => target.CTranslationTargetHeadword));
+    }
+
+    [Fact]
+    public void DraftRead_EmptyDesk_ReadsNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TInterfaceConduct.TEditorCreate(engine);
 
-        Assert.Empty(editor.CEditorField.CCardTranslationRead(1));
+        Assert.Null(editor.CEditorDraftRead());
     }
 
     [Fact]

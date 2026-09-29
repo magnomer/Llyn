@@ -61,7 +61,8 @@ The driver names the parts that stand on the page, in page order, and its own te
 Conduct chooses every wording key and the driver's lookup turns it into text.
 A card is named by its own title, else by its kind, and an uncertain title by the unknown mark.
 Its number is carried apart from its name, since a number is not part of a sentence.
-The cards are read through the one card map, so no engine card is read here.
+A card's title goes through the one state map, and its number is copied as the engine holds it.
+The full card map is not run, since the contents need no card's lists or links.
 The engine then numbers the names two rows share, so the contents never show two rows alike.
 
 ## `private static string LDisplayKeyRead(CCompassPart part)`

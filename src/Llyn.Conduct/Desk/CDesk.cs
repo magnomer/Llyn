@@ -99,8 +99,6 @@ public sealed class CDesk
 
     internal LTenure? CDeskTenure => _cDeskTenure;
 
-    internal LDraft? CDeskDraft => _cDeskTenure is LTenure held ? held.LTenureRead() : null;
-
     public void CDeskObserverAttach(Action<Action> marshal)
     {
         CDeskObserverAttach(marshal, CDeskDraftResonate);

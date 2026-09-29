@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -175,6 +176,62 @@ public static class LDraftClerkCard
         }
 
         return null;
+    }
+
+    public static int LCardEndRead(LEntryDraft content, LCardKind kind)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+
+        return kind == LCardKind.LCardKindCollocation
+            ? content.LEntryDraftCollocations.Count
+            : content.LEntryDraftMeanings.Count;
+    }
+
+    public static bool LCardLoneCheck(LEntryDraft content, long id)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+
+        return LCardLoneCheck(content.LEntryDraftMeanings, id) || LCardLoneCheck(content.LEntryDraftCollocations, id);
+    }
+
+    private static bool LCardLoneCheck(IReadOnlyList<LCardDraft> cards, long id)
+    {
+        return cards.Count == 1 && cards[0].LCardDraftId == id;
+    }
+
+    public static int? LCardOrdinalRead(LEntryDraft content, long id, string ordinal)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+        ArgumentNullException.ThrowIfNull(ordinal);
+
+        IReadOnlyList<LCardDraft> cards = content.LEntryDraftMeanings;
+        int current = LCardPlaceRead(cards, id);
+        if (current < 0)
+        {
+            cards = content.LEntryDraftCollocations;
+            current = LCardPlaceRead(cards, id);
+        }
+
+        if (current < 0 || !int.TryParse(ordinal, NumberStyles.Integer, CultureInfo.InvariantCulture, out int wanted))
+        {
+            return null;
+        }
+
+        int target = Math.Clamp(wanted, 1, cards.Count) - 1;
+        return target == current ? null : target;
+    }
+
+    private static int LCardPlaceRead(IReadOnlyList<LCardDraft> cards, long id)
+    {
+        for (int index = 0; index < cards.Count; index++)
+        {
+            if (cards[index].LCardDraftId == id)
+            {
+                return index;
+            }
+        }
+
+        return -1;
     }
 
     public static LCardDraft? LCardFind(LEntryDraft content, long id)

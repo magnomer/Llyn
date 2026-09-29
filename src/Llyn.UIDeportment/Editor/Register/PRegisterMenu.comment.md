@@ -6,10 +6,6 @@ The editor's handling of a card's Register field: the keys typed in it and the c
 The templates raise events on the dictionary, which relays them here, because a template has no card of its own.
 Which card a row belongs to is found from the row itself rather than passed through the visual tree.
 
-## `internal void PRegisterAttach(PCard card)`
-
-Points a card's Register field at the shelf, so typing offers what is already stored.
-
 ## `private void PRegisterTextObserve(PRegisterCaret caret, string text)`
 
 Hears each edit of a Register caret and hands the raw text to the register gate, unsettled.

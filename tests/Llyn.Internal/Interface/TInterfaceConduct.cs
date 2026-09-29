@@ -272,6 +272,8 @@ internal static class TInterfaceConduct
     internal static CCard TCardCreate(LEngine engine, CDesk desk, CEnvoy envoy) => new(
         desk, new LDraftOutlet(engine), new LEntryOutlet(engine), new LSettingsOutlet(engine), envoy);
 
+    internal static CCardList TCardListCreate(CDesk desk) => new(desk);
+
     internal static CSentence TSentenceCreate(LEngine engine, CDesk desk) => new(
         desk, new LPhonologyOutlet(engine));
 
@@ -297,7 +299,9 @@ internal static class TInterfaceConduct
     internal static CSentenceOrder TCatalogOrderRead(LEngine engine, string language) =>
         CCatalog.CCatalogOrderRead(new LPhonologyOutlet(engine).LEngineOrderRead(language));
 
-    internal static CEntryDraft TCardEntryRead(LEntryDraft draft) => CFolio.CFolioEntryRead(draft);
+    internal static CEntryDraft TCardEntryRead(
+        LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets) =>
+        CFolio.CFolioEntryRead(draft, targets);
 
     internal static void TDeskVistaRestore(this CDesk desk, LVista vista) => desk.CDeskVistaRestore(vista);
 

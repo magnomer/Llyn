@@ -9,7 +9,7 @@ internal sealed partial class PCard
 {
     public ObservableCollection<PSentence> PCardSentence { get; } = [];
 
-    internal Action<PSentence, PGloss, string>? PCardSentenceNotice { get; set; }
+    internal event Action<PCard, PSentence, PGloss, string>? PCardSentenceNotice;
 
     internal void PCardSentenceApply(CSentenceOrder order)
     {
@@ -47,7 +47,7 @@ internal sealed partial class PCard
             row.PSentenceOrderApply(order);
         }
 
-        row.PSentenceGlossNotice = (gloss, language) => PCardSentenceNotice?.Invoke(row, gloss, language);
+        row.PSentenceGlossNotice += (gloss, language) => PCardSentenceNotice?.Invoke(this, row, gloss, language);
         return row;
     }
 }

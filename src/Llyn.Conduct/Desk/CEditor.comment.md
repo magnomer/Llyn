@@ -32,6 +32,10 @@ The draft's parts of speech as the user builds them, kept across the editor's dr
 
 The typed fields of the held draft's cards, built fresh over the desk since it keeps no state.
 
+## `public CCardList CEditorList`
+
+The gates that add, remove and move the held draft's cards, built fresh over the desk.
+
 ## `public CImage CEditorImage`
 
 The typed image rows of the cards, built fresh over the desk.
@@ -62,7 +66,8 @@ Closing is one user action, and the order of the cancels is the editor's.
 ## `public event Action<CEntryDraft>? CEditorDraftChanged;`
 
 The held entry was read again, so a driver writes its controls from it.
-It carries the content the desk prepared, never a second read.
+It carries the content the desk prepared, never a second read of the draft.
+The tenure resolves the cards' link targets for that same content, so every card paints its links ready.
 
 ## `public LDisplay CEditorDisplay { get; }`
 
@@ -128,6 +133,7 @@ Chooses what opens after a store: a blank draft for a fresh input draft, else th
 ## `public CEntryDraft? CEditorDraftRead()`
 
 The held draft's content as the tenure last read it, applying nothing first.
+Each card carries its link targets, which the tenure resolves for the same draft.
 
 ## `public IReadOnlyList<CReflexHead> CEditorLeadRead(long reflex, string language)`
 

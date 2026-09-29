@@ -121,36 +121,38 @@ public sealed partial class LTenure
         }
     }
 
-    public IReadOnlyList<LTranslationTarget> LTenureTranslationRead(long card)
+    public IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LTenureTranslationRead(LEntryDraft draft)
     {
-        IReadOnlyList<long> ids = LTenureRead()?.LDraftContent is LEntryDraft draft
-            ? LDraftClerkCard.LCardFind(draft, card)?.LCardDraftTranslation ?? []
-            : [];
-        if (ids.Count == 0)
-        {
-            return [];
-        }
+        ArgumentNullException.ThrowIfNull(draft);
 
-        IReadOnlyList<LTranslationTarget> found;
+        IReadOnlyList<LCardDraft> cards = [.. draft.LEntryDraftMeanings, .. draft.LEntryDraftCollocations];
+        List<long> ids = cards.SelectMany(static card => card.LCardDraftTranslation).Distinct().ToList();
+        Dictionary<long, LTranslationTarget> found = [];
         try
         {
-            found = _lEngine.LEngineCard.LEngineTargetRead(LTenureId, ids);
+            IReadOnlyList<LTranslationTarget> read = ids.Count == 0
+                ? []
+                : _lEngine.LEngineCard.LEngineTargetRead(LTenureId, ids);
+            foreach (LTranslationTarget target in read)
+            {
+                found[target.LTranslationTargetId] = target;
+            }
         }
         catch (Exception)
         {
-            return [];
+            found.Clear();
         }
 
-        List<LTranslationTarget> ordered = new(ids.Count);
-        foreach (long id in ids)
+        Dictionary<long, IReadOnlyList<LTranslationTarget>> targets = [];
+        foreach (LCardDraft card in cards)
         {
-            if (found.FirstOrDefault(target => target.LTranslationTargetId == id) is LTranslationTarget target)
-            {
-                ordered.Add(target);
-            }
+            targets[card.LCardDraftId] = card.LCardDraftTranslation
+                .Where(found.ContainsKey)
+                .Select(id => found[id])
+                .ToList();
         }
 
-        return ordered;
+        return targets;
     }
 
     public (IReadOnlyList<string> LSpeechNames, string LSpeechTyped, LSpeechOffer LSpeechFound) LTenureSpeechRead(

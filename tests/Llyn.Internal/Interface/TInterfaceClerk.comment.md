@@ -13,6 +13,10 @@ Relays the meaning clerk's reading order, so the rule is tested over handed-in M
 
 Relays the typed-list parse, so a test reads the rule where it is owned.
 
+## `internal static int? TCardOrdinalRead(LEntryDraft content, long id, string ordinal)`
+
+Relays the card clerk's reading of a typed place, so its clamp is tested over a held draft.
+
 ## `internal static LRig TRigClerkCreate(LEntryVault entries)`
 
 A fake rig over `entries` with in-memory workspace, revision, tombstone, pronunciation, transcription and reflex stores.

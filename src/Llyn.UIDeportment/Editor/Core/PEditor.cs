@@ -241,12 +241,12 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     internal void PMeaningRefine(CEntryDraft draft)
     {
-        PCardShow(_pMeaningList, "Meaning", draft.CEntryDraftMeanings);
+        PCardRefine(_pMeaningList, "Meaning", draft.CEntryDraftMeanings);
     }
 
     internal void PCollocationRefine(CEntryDraft draft)
     {
-        PCardShow(_pCollocationList, "Collocation", draft.CEntryDraftCollocations);
+        PCardRefine(_pCollocationList, "Collocation", draft.CEntryDraftCollocations);
     }
 
     internal void PPlaybackRefine(CEntryDraft draft)

@@ -11,7 +11,6 @@ namespace Llyn.UIDeportment;
 
 internal sealed partial class PCard : INotifyPropertyChanged
 {
-    private readonly CAtelier _pCardAtelier;
     private readonly string _pCardPrefix;
     private readonly ObservableCollection<QCitationItem> _pCardCitation;
     private readonly ObservableCollection<string> _pCardParticle;
@@ -25,20 +24,14 @@ internal sealed partial class PCard : INotifyPropertyChanged
     private CStateValue _pCardExpression = CStateValue.CStateValueEmpty;
 
     internal PCard(
-        CAtelier atelier,
         string prefix,
-        int position,
         ObservableCollection<QCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences,
         ObservableCollection<PLanguageItem> languages)
     {
-        ArgumentNullException.ThrowIfNull(atelier);
-
-        _pCardAtelier = atelier;
         _pCardPrefix = prefix;
-        _pCardPosition = position;
-        _pCardPositionText = position.ToString(CultureInfo.InvariantCulture);
+        _pCardPositionText = _pCardPosition.ToString(CultureInfo.InvariantCulture);
         _pCardCitation = catalog;
         _pCardParticle = particles;
         _pCardDependence = dependences;

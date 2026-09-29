@@ -35,10 +35,6 @@ The gate owns the language and the empty lists a failed read leaves.
 The word order the frame last painted, which is the GUI's own copy of what the rows show.
 A row built between two frame reads takes it, so no card reads the engine for an order.
 
-## `internal void PSentenceAttach(PCard card)`
-
-Points the card's row picks at this editor, so each reaches its gate.
-
 ## `private void PSentenceAddObserve(object sender, RoutedEventArgs e)`
 
 Hears the add button of a row and hands the row's place to the gate, which adds the row below.

@@ -113,6 +113,10 @@ Builds one Latin entry row with the given id, epithet and chosen mark.
 Builds the card gates over `desk` and real outlets on `engine`, as the editor does.
 `envoy` is where a failed translation is shown.
 
+## `internal static CCardList TCardListCreate(CDesk desk)`
+
+Builds the card list gates over `desk`, as the editor does on every use.
+
 ## `internal static CSounding TSoundingCreate(`
 
 Builds the editor's sound sheet over a real desk and ports a test may fake.
@@ -137,7 +141,7 @@ Builds the sentence gates over `desk`, a real phonology outlet and an atelier's 
 
 Relays the internal written-value map.
 
-## `internal static CEntryDraft TCardEntryRead(LEntryDraft draft)`
+## `internal static CEntryDraft TCardEntryRead(`
 
 Relays the entry draft map, so the facts pass engine drafts through the boundary.
 

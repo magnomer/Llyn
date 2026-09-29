@@ -11,12 +11,6 @@ An item's data context is the Tag or the entry, not the card.
 So each handler finds the owning card by asking which card's collection holds the item.
 Reaching the entry itself is shared with the Situation field, which is written the same way.
 
-## `internal void PLabelIntroduce(PCard card)`
-
-Hands the card a way to say what is being typed into its Tag entry.
-The dropdown of stored tags answers that, so the card need not know the dropdown exists.
-The Situation field is wired the same way.
-
 ## `private void PLabelTextObserve(PLabelCaret caret, string text)`
 
 Hears each edit of a Tag caret and hands the raw text to the tag gate, unsettled.

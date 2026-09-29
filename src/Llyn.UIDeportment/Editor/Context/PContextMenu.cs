@@ -66,11 +66,6 @@ public partial class PEditor
         }
     }
 
-    internal void PContextAttach(PCard card)
-    {
-        card.PCardContextNotice = text => PCandidateShow(card, text);
-    }
-
     private void PContextTextObserve(PContextCaret caret, string text)
     {
         if (PCardContextFind(caret) is PCard card)
