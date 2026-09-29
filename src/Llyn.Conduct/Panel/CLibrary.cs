@@ -47,6 +47,7 @@ public sealed class CLibrary
             CLibraryPanel.LPanelScribeRestore,
             id => CLibraryPanel.CPanelRowOpen(id));
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CLibraryPanel.LPanelChangeCheck, editor.LEditorFinish);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CLibraryVistaRestore);
         CLibraryPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }
 

@@ -9,7 +9,7 @@ The display holds one, since the converters it carries keep state per shown entr
 ## `internal PLinkConverter PLeafLink`
 
 Resolves a card's translation ids to chips, from the targets the lectern's card hands it per entry.
-`PLeafCitation` holds the source bylines and `PLeafFrame` the sentence order in the same way.
+`PLeafCitation` holds the ready citation lines and `PLeafFrame` the sentence order in the same way.
 
 ## `internal void PLeafCardApply(FrameworkElement container, object item, string? _)`
 

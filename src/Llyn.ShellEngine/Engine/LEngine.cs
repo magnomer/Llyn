@@ -156,9 +156,15 @@ public sealed class LEngine : IDisposable
         return LEngineAuditRecord(exception) is string path ? (unexpected, recorded, path) : (unexpected, null, null);
     }
 
-    public void LEngineWorkspaceChange(string path)
+    public bool LEngineWorkspaceCheck(string chosen)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        return LWorkspaceClerk.LWorkspaceChosenRead(chosen, LEngineWorkspaceRead()) is not null;
+    }
+
+    public void LEngineWorkspaceChange(string chosen)
+    {
+        string path = LWorkspaceClerk.LWorkspaceChosenRead(chosen, LEngineWorkspaceRead())
+            ?? throw new ArgumentException("The chosen folder names no other workspace.", nameof(chosen));
 
         LEngineRigApply(_lEngineFactory(path));
         _lEnginePointer(path);

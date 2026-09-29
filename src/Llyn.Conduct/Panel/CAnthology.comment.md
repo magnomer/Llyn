@@ -10,7 +10,7 @@ It also answers the transcript's citation field and prints the chosen Example.
 ## `internal CAnthology(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)`
 
 Takes the ports it reads and prints through, the corpus desk holding the transcript, and the panel's seams.
-The panel reads a failure's ready notice through `settings`.
+The panel and the citation gates read a failure's ready notice through `settings` and show it through `envoy`.
 The panel asks whether the desk changed before it leaves an Example.
 
 ## `internal static CAnthology LAnthologyCreate(CAtelier atelier, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)`
@@ -49,20 +49,23 @@ Null while no Example is chosen, so the excerpt hands the window nothing.
 Prints the chosen Example through `CPortrait`, with the Example realm's legend.
 No driver calls it, since `CCorpusPortraitPrint` chooses which side prints.
 
-## `public IReadOnlyList<CCatalogReference> CAnthologyReferenceRead()`
+## `public CProffer CAnthologyCitationRead(string word)`
 
-Every Source the whole shelf lists, in the order the engine keeps for it.
+The Sources the transcript's citation drawer offers for the typed word, ready to show.
+It is the card sentence's citation find over the draft's own Example, so both fields offer alike.
+The engine trims, splits, caps and counts, and answers no rows on a failed search.
+No held transcript offers nothing, and typing a citation writes nothing.
 
-## `public IReadOnlyList<CCitationRow> CAnthologyCitationRead(string word)`
+## `public void CAnthologyCitationSet(long referenceId)`
 
-The Sources the citation field offers for the typed word, split around the match.
-The engine reads the Source cited now off the held transcript, so the driver hands only the word.
+Points the transcript's citation at a Source the drawer offered.
+Nothing is written while the desk fills its fields.
 
 ## `public void CAnthologyCitationSet(string title)`
 
-Points the transcript's citation at the Source the engine resolves the typed title to.
+Points the transcript's citation at the Source the engine resolves the typed title to, in one engine call.
 The engine reads the Source cited now off the held draft, so an unchanged title keeps it.
-Nothing is written while the desk fills its fields.
+A failure shows `Reference.CreateFailed` and leaves the citation as it was.
 
 ## `public static bool CAnthologyTextCheck(string text, CStateValue value)`
 
@@ -70,15 +73,21 @@ Whether a field showing `text` already shows `value`, as the engine would store 
 The transcript keeps a matching field untouched, so a bulletin never moves the caret.
 It is static, since it reads no state of the list.
 
-## `internal static CExample? LAnthologyDraftRead(LDraft? draft)`
+## `internal CExample? LAnthologyDraftRead(LDraft? draft)`
 
 Maps the Example a draft carries to its shape, and a draft of another subject to null.
+The engine answers the cited Source's line for the draft, so the driver never looks a name up.
 `CCorpus` calls it for the transcript desk and for the anthology's loaded drafts.
 So the corpus names no engine record.
 
-## `internal static CExample? LAnthologyExampleRead(LExample? example)`
+## `private string LAnthologyCitationRead(LDraft draft)`
 
-Maps a stored Example to its shape, and null to null.
+The ready line of the Source the draft's Example cites.
+A failed read shows `Reference.LoadFailed` and shows no line, as the old Source list read did.
+
+## `internal static CExample? LAnthologyExampleRead(LExample? example, string citation)`
+
+Maps a stored Example and its ready citation line to its shape, and null to null.
 The excerpt links only the Mentions the Example lets a reading link, while the transcript keeps them all.
 
 ## `private static CCatalogExample LAnthologyRowRead(LCatalogExample row)`

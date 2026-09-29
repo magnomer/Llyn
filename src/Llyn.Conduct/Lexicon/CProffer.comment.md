@@ -4,6 +4,7 @@
 
 What a card field keeps after a gate, and the dropdown of stored rows it offers, ready to show.
 One shape serves every field the shared dropdown opens for.
+The corpus transcript's citation drawer shows the same shape, since it offers the same citation find.
 The driver paints it as it comes and decides nothing about the rows.
 
 **Parameters**

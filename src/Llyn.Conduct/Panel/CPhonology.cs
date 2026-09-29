@@ -52,6 +52,7 @@ public sealed class CPhonology
             CPhonologyPanel.LPanelScribeRestore,
             id => CPhonologyPanel.CPanelRowOpen(id));
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CPhonologyPanel.LPanelChangeCheck, editor.LEditorFinish);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CPhonologyVistaRestore);
         CPhonologyPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }
 

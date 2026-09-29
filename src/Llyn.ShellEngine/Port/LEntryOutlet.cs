@@ -121,14 +121,11 @@ public sealed class LEntryOutlet : LEntryPort
     public IReadOnlyList<LCatalogReference> LEngineReferenceFind() =>
         _lEntryOutletEngine.LEngineReference.LEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderAuthor);
 
-    public IReadOnlyList<LCatalogReference> LEngineCitationFind(long draftId, string word) =>
-        _lEntryOutletEngine.LEngineReference.LEngineCitationFind(draftId, word);
+    public IReadOnlyDictionary<long, string> LEngineCitationRead(LEntryDraft shown) =>
+        _lEntryOutletEngine.LEngineReference.LEngineCitationRead(shown);
 
-    public long LEngineCitationResolve(long draftId, long cardId, long sentenceId, string title) =>
-        _lEntryOutletEngine.LEngineReference.LEngineCitationResolve(draftId, cardId, sentenceId, title);
-
-    public IReadOnlyDictionary<long, string> LEngineCitationRead() =>
-        _lEntryOutletEngine.LEngineReference.LEngineCitationRead();
+    public string LEngineCitationRead(LDraft? draft) =>
+        _lEntryOutletEngine.LEngineReference.LEngineCitationRead(draft);
 
     public IReadOnlyList<LCatalogAuthor> LEngineRollFind(LVista? vista) =>
         _lEntryOutletEngine.LEngineAuthor.LEngineRollFind(vista);

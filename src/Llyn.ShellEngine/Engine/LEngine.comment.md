@@ -133,9 +133,15 @@ A refusal answers its own reason key alone.
 A fault is written to the audit log and answers `unexpected`, with `recorded` and the file when the write succeeded.
 Conduct hands both wording keys down, so the engine chooses no wording of its own.
 
-## `public void LEngineWorkspaceChange(string path)`
+## `public bool LEngineWorkspaceCheck(string chosen)`
 
-Moves the engine onto the folder at `path`, then records it as the workspace.
+Whether `chosen` names a workspace other than the one in use, by the workspace clerk's rule.
+Conduct asks it before the leave question, so a blank or unchanged path asks nothing.
+
+## `public void LEngineWorkspaceChange(string chosen)`
+
+Moves the engine onto the folder `chosen` names, trimmed by the clerk, then records it as the workspace.
+A choice that names no other workspace throws, since the check comes first.
 The pointer is written only after the move succeeds, so a folder that fails never becomes the next launch's workspace.
 
 ## `public void LEngineRigApply(LRig rig)`

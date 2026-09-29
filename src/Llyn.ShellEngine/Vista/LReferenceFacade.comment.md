@@ -20,11 +20,6 @@ The Reference cited now is read off the held draft, so no shell carries it in.
 Zero card and sentence ids name the draft's own Example, as on the corpus panel.
 The clerk decides the match, and only a created Reference is announced.
 
-## `public IReadOnlyList<LCatalogReference> LEngineCitationFind(long draftId, string word)`
-
-The Sources a citation field offers for the typed word, over the held draft's cited Source.
-No draft id reads as no draft, so nothing counts as cited yet.
-
 ## `internal LReference? LEngineReferenceRead(long id)`
 
 Reads the Reference for `id`, or `null` when none has that id.
@@ -62,9 +57,13 @@ The citation line counts the Source the draft holds, which is the one its panel 
 The reference clerk's edit sheet of a Source draft, or of a blank Source with no draft.
 It reads no store, so it takes no gate.
 
-## `public IReadOnlyDictionary<long, string> LEngineCitationRead()`
+## `public IReadOnlyDictionary<long, string> LEngineCitationRead(LEntryDraft shown)`
 
-The `Author (Year)` line every stored Source is cited under, by id.
+The line each Source the shown entry cites is shown under, by id, ready for the display.
+
+## `public string LEngineCitationRead(LDraft? draft)`
+
+The line the Source a draft's own Example cites is shown under, ready for the corpus.
 
 ## `internal LDraft LEngineReferenceStart(string origin, long? referenceId)`
 

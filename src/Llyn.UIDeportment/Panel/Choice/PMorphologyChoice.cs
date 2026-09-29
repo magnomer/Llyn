@@ -4,8 +4,8 @@ namespace Llyn.UIDeportment;
 
 public partial class PSettings
 {
-    private void PMorphologyHandle(object sender, RoutedEventArgs e)
+    private void PMorphologyObserve(object sender, RoutedEventArgs e)
     {
-        PSettingsAtelier.CAtelierLedger.CLedgerMorphologySave(PMorphology.IsChecked == true);
+        PSettingsAtelier.CAtelierLedger.CLedgerMorphologySave(QLook.QLookCheckedRead(PMorphology.IsChecked));
     }
 }

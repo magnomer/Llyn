@@ -1,70 +1,46 @@
-using System;
 using System.Windows;
 using System.Windows.Input;
-using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 public partial class PSettings
 {
-    private void PWorkspaceDialogHandle(object sender, RoutedEventArgs e)
+    private void PWorkspaceDialogObserve(object sender, RoutedEventArgs e)
     {
-        Microsoft.Win32.OpenFolderDialog dialog = new()
-        {
-            Title = QLocalizationCatalog.QLocalizationTextRead("Settings.Workspace"),
-            InitialDirectory = PWorkspacePath.Text
-        };
-
-        if (dialog.ShowDialog(_pSettingsHost.PWindowSurface) == true)
-        {
-            PWorkspaceApply(dialog.FolderName);
-        }
+        PWorkspacePathRefine(PSettingsAtelier.CAtelierWorkspace.CWorkspaceChange(_pSettingsHost.PWindowEnvoy));
     }
 
-    private void PWorkspacePathHandle(object sender, KeyEventArgs e)
+    private void PWorkspacePathObserve(object sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Enter)
+        if (e.Key != Key.Enter)
         {
-            e.Handled = true;
-            PWorkspaceApply(PWorkspacePath.Text);
             return;
         }
 
-        if (e.Key == Key.Escape)
-        {
-            e.Handled = true;
-            PWorkspacePath.Text = PSettingsAtelier.CAtelierPathRead();
-        }
+        string path = PSettingsAtelier.CAtelierWorkspace.CWorkspaceChange(
+            PWorkspacePath.Text, _pSettingsHost.PWindowEnvoy);
+        e.Handled = true;
+        PWorkspacePathRefine(path);
     }
 
-    private void PWorkspaceFocusHandle(object sender, KeyboardFocusChangedEventArgs e)
+    private void PWorkspaceEscapeRefine(object sender, KeyEventArgs e)
     {
-        PWorkspacePath.Text = PSettingsAtelier.CAtelierPathRead();
-    }
-
-    private void PWorkspaceApply(string chosen)
-    {
-        CWorkspaceState? state;
-        try
+        if (e.Key != Key.Escape)
         {
-            state = PSettingsAtelier.CAtelierWorkspaceChange(chosen, _pSettingsHost.PWindowEnvoy);
-        }
-        catch (Exception exception)
-        {
-            PWorkspacePath.Text = _pSettingsState.CLedgerStatePath;
-            _pSettingsHost.PWindowFailureRefine("Workspace.OpenFailed", exception);
             return;
         }
 
-        if (state is null)
-        {
-            PWorkspacePath.Text = _pSettingsState.CLedgerStatePath;
-            return;
-        }
+        e.Handled = true;
+        PWorkspacePathRefine(PSettingsAtelier.CAtelierPathRead());
+    }
 
-        _pSettingsHost.PWindowLayout.PLayoutResetRefine();
-        _pSettingsHost.PWindowLayout.PLayoutRefine();
-        _pSettingsHost.PWindowForge.QForgeVistaRestore();
-        PSettingsAtelier.CAtelierOpen();
+    private void PWorkspaceFocusRefine(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        PWorkspacePathRefine(PSettingsAtelier.CAtelierPathRead());
+    }
+
+    private void PWorkspacePathRefine(string path)
+    {
+        PWorkspacePath.Text = path;
     }
 }

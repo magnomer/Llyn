@@ -15,19 +15,19 @@ public sealed class PEtymology : ContentControl
         nameof(PEtymologyEditable),
         typeof(bool),
         typeof(PEtymology),
-        new FrameworkPropertyMetadata(false, PEtymologyStateHandle));
+        new FrameworkPropertyMetadata(false, PEtymologyStateRefine));
 
     public static readonly DependencyProperty PEtymologyTextProperty = DependencyProperty.Register(
         nameof(PEtymologyText),
         typeof(string),
         typeof(PEtymology),
-        new FrameworkPropertyMetadata(string.Empty, PEtymologyStateHandle));
+        new FrameworkPropertyMetadata(string.Empty, PEtymologyStateRefine));
 
     public static readonly DependencyProperty PEtymologyLanguageProperty = DependencyProperty.Register(
         nameof(PEtymologyLanguage),
         typeof(string),
         typeof(PEtymology),
-        new FrameworkPropertyMetadata(string.Empty, PEtymologyStateHandle));
+        new FrameworkPropertyMetadata(string.Empty, PEtymologyStateRefine));
 
     private readonly StackPanel _pEtymologyBody = new();
     private readonly ItemsControl _pEtymologyField = new();
@@ -118,7 +118,7 @@ public sealed class PEtymology : ContentControl
         return new QSurfacePeer(this);
     }
 
-    private static void PEtymologyStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+    private static void PEtymologyStateRefine(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
         ((PEtymology)sender).PEtymologyStateApply();
     }
@@ -151,8 +151,8 @@ public sealed class PEtymology : ContentControl
         {
             DependencyPropertyDescriptor descriptor =
                 DependencyPropertyDescriptor.FromProperty(watched, typeof(PEtymon));
-            descriptor.RemoveValueChanged(etymon, PEtymologyItemHandle);
-            descriptor.AddValueChanged(etymon, PEtymologyItemHandle);
+            descriptor.RemoveValueChanged(etymon, PEtymologyItemRefine);
+            descriptor.AddValueChanged(etymon, PEtymologyItemRefine);
         }
 
         if (QLook.QLookPartFind<Border>(container, "PEtymonChip") is Border chip)
@@ -200,8 +200,8 @@ public sealed class PEtymology : ContentControl
         box.Text = etymon.PEtymonText;
         box.SetResourceReference(QField.QFieldHintProperty, "Input.EtymonHint");
 
-        box.TextChanged -= PEtymologyBoxHandle;
-        box.TextChanged += PEtymologyBoxHandle;
+        box.TextChanged -= PEtymologyBoxRefine;
+        box.TextChanged += PEtymologyBoxRefine;
         if (box.InputBindings.Count == 0)
         {
             box.InputBindings.Add(new KeyBinding(
@@ -212,12 +212,12 @@ public sealed class PEtymology : ContentControl
         }
     }
 
-    private void PEtymologyItemHandle(object? sender, EventArgs e)
+    private void PEtymologyItemRefine(object? sender, EventArgs e)
     {
         QLookItem.QLookItemApply(_pEtymologyField);
     }
 
-    private static void PEtymologyBoxHandle(object sender, TextChangedEventArgs e)
+    private static void PEtymologyBoxRefine(object sender, TextChangedEventArgs e)
     {
         if (sender is TextBox { DataContext: PEtymon etymon } box)
         {

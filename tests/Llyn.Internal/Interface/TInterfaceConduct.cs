@@ -57,9 +57,6 @@ internal static class TInterfaceConduct
     internal static bool TCatalogFilterMatch(this CCatalogFilter filter, string? language) =>
         filter.CCatalogFilterMatch(language);
 
-    internal static IReadOnlyList<CCitationRow> TCitationRowFind(IReadOnlyList<CCatalogReference> found, string word) =>
-        CCitationRow.CCitationRowFind(found, word);
-
     internal static LExample TExampleMentionAdd(this LExample example, LMention mention) =>
         example with { LExampleMention = [mention] };
 
@@ -241,7 +238,8 @@ internal static class TInterfaceConduct
         this CAnthology anthology, string unknown, string unwritten) =>
         anthology.LAnthologyRowsRead(unknown, unwritten);
 
-    internal static CExample? TAnthologyExampleRead(LExample? example) => CAnthology.LAnthologyExampleRead(example);
+    internal static CExample? TAnthologyExampleRead(LExample? example, string citation) =>
+        CAnthology.LAnthologyExampleRead(example, citation);
 
     internal static void TDeskOccurrenceStart(this CDesk desk, long? situation) =>
         desk.LDeskOccurrenceStart(situation);

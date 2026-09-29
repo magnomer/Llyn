@@ -226,7 +226,7 @@ public sealed class CDisplay
 
         return new CLecternCard(
             LDisplayOrderRead(shown.LEntryDraftLanguage),
-            LDisplayCitationRead(),
+            LDisplayCitationRead(shown),
             LDisplayTargetRead(shown),
             shown.LEntryDraftDefined,
             shown.LEntryDraftCollocated);
@@ -244,11 +244,11 @@ public sealed class CDisplay
         }
     }
 
-    private IReadOnlyDictionary<long, string> LDisplayCitationRead()
+    private IReadOnlyDictionary<long, string> LDisplayCitationRead(LEntryDraft shown)
     {
         try
         {
-            return _cDisplayPort.LEngineCitationRead();
+            return _cDisplayPort.LEngineCitationRead(shown);
         }
         catch (Exception)
         {

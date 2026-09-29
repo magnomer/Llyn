@@ -56,15 +56,6 @@ internal sealed class LReferenceFacade
         }
     }
 
-    public IReadOnlyList<LCatalogReference> LEngineCitationFind(long draftId, string word)
-    {
-        lock (_lReferenceFacadeGate)
-        {
-            LDraft? held = draftId == 0 ? null : _lReferenceFacadeEngine.LEngineDraft.LEngineDraftLoad(draftId);
-            return LReferenceFacadeStaff.LEngineStaffReference.LReferenceCitationFind(word, held);
-        }
-    }
-
     public LReferenceOffer LEngineReferenceFind(LTenure held, long card, long sentence, string text)
     {
         ArgumentNullException.ThrowIfNull(held);
@@ -127,11 +118,21 @@ internal sealed class LReferenceFacade
         return LReferenceClerk.LReferenceImprintRead(draft);
     }
 
-    public IReadOnlyDictionary<long, string> LEngineCitationRead()
+    public IReadOnlyDictionary<long, string> LEngineCitationRead(LEntryDraft shown)
+    {
+        ArgumentNullException.ThrowIfNull(shown);
+
+        lock (_lReferenceFacadeGate)
+        {
+            return LReferenceFacadeStaff.LEngineStaffReference.LCitationRead(shown);
+        }
+    }
+
+    public string LEngineCitationRead(LDraft? draft)
     {
         lock (_lReferenceFacadeGate)
         {
-            return LReferenceFacadeStaff.LEngineStaffReference.LCitationRead();
+            return LReferenceFacadeStaff.LEngineStaffReference.LCitationRead(draft);
         }
     }
 

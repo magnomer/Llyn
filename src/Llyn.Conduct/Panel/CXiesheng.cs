@@ -58,6 +58,7 @@ public sealed class CXiesheng
             id => CXieshengPanel.CPanelRowOpen(id),
             () => LXieshengAllowed);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CXieshengPanel.LPanelChangeCheck, editor.LEditorFinish);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CXieshengVistaRestore);
         atelier.CAtelierNavigation.LNavigationStemAttach(LXieshengStemOpen);
         CXieshengPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }

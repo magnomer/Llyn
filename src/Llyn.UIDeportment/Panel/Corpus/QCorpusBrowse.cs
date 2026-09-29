@@ -12,8 +12,6 @@ internal sealed partial class QCorpus
 {
     private readonly ObservableCollection<QAnthologyItem> _qAnthologyList = [];
 
-    private readonly ObservableCollection<QCitationItem> _qCitationCatalog = [];
-
     private readonly ObservableCollection<PLanguageItem> _qLanguageItem = [];
 
     private IReadOnlyDictionary<long, int> _qAnthologyCount = new Dictionary<long, int>();
@@ -59,7 +57,6 @@ internal sealed partial class QCorpus
         _cCorpus.CCorpusAnthology.CAnthologyQuerySet(QQuery.Text ?? string.Empty);
         _cCorpus.CCorpusQuotation.CQuotationQuerySet(QDredge.Text);
         QSpeakerLoad();
-        QCitationFind();
         anthology.CPanelRowsResonate();
     }
 
@@ -69,19 +66,15 @@ internal sealed partial class QCorpus
         CPanel quotation = _cCorpus.CCorpusQuotation.CQuotationPanel;
         UserControl surface = _qCorpusSurface;
         Action<CBulletin> rows = LObserver.LObserverCreate<CBulletin>(surface, anthology.CPanelRowsResonate);
-        Action<CBulletin> citation = LObserver.LObserverCreate<CBulletin>(surface, QCitationFind);
         anthology.CPanelObserverAttach(CSubject.CSubjectVista, rows);
         anthology.CPanelObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(surface, QCorpusWorkspaceUpdate));
-        anthology.CPanelObserverAttach(CSubject.CSubjectExample, citation);
         anthology.CPanelObserverAttach(CSubject.CSubjectExample, rows);
-        anthology.CPanelObserverAttach(CSubject.CSubjectReference, citation);
         anthology.CPanelObserverAttach(CSubject.CSubjectReference, rows);
         anthology.CPanelObserverAttach(CSubject.CSubjectReflex, rows);
         anthology.CPanelObserverAttach(CSubject.CSubjectSettings, rows);
         quotation.CPanelObserverAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, quotation.CPanelEntrySelect));
-        quotation.CPanelObserverAttach(CSubject.CSubjectEntry, citation);
         quotation.CPanelObserverAttach(CSubject.CSubjectEntry, rows);
         quotation.CPanelChosenAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, _cCorpus.CCorpusEntryResonate));

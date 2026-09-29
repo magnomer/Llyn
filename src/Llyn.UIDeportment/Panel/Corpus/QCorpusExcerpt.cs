@@ -20,7 +20,7 @@ internal sealed partial class QCorpus
         QExcerptLanguage.Text = example.CExampleLanguage;
         QExcerptFlag.Source = LEnsignImage.LEnsignFind(example.CExampleLanguage);
         QExcerptGlossShow(example.CExampleGloss);
-        QExcerptCitationShow(example.CExampleSource);
+        QExcerptCitationShow(example);
         QExcerptTally.Text = QCorpusTallyRead(_cCorpus.CCorpusAnthology.CAnthologyChosen);
     }
 
@@ -36,12 +36,10 @@ internal sealed partial class QCorpus
             text is null ? "Theme.Muted" : "Theme.Ink");
     }
 
-    private void QExcerptCitationShow(long? value)
+    private void QExcerptCitationShow(CExample example)
     {
-        string? text = value is long id ? QCitationNameRead(id) : null;
-
-        QExcerptCitation.Text = text ?? string.Empty;
-        QExcerptCitationSection.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;
+        QExcerptCitation.Text = example.CExampleCitation;
+        QExcerptCitationSection.Visibility = example.CExampleSource is null ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private void QExcerptMentionHandle(object? sender, PMentionArgument e)

@@ -92,6 +92,14 @@ public sealed class LWorkspaceClerk
             : exception.InnerException is null ? null : LWorkspaceNoticeRead(exception.InnerException);
     }
 
+    public static string? LWorkspaceChosenRead(string chosen, string folder)
+    {
+        ArgumentNullException.ThrowIfNull(chosen);
+
+        string path = chosen.Trim();
+        return path.Length == 0 || string.Equals(path, folder, StringComparison.Ordinal) ? null : path;
+    }
+
     public static bool LWorkspaceIllegibleCheck(Exception exception)
     {
         ArgumentNullException.ThrowIfNull(exception);

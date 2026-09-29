@@ -13,6 +13,21 @@ public sealed class TWorkspaceClerk
         Assert.Throws<InvalidOperationException>(() => TInterface.TWorkspaceRescueCreate(rig));
     }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    [InlineData(" held ")]
+    public void WorkspaceChosenRead_BlankOrTheFolderInUse_AnswersNothing(string chosen)
+    {
+        Assert.Null(TInterface.TWorkspaceChosenRead(chosen, "held"));
+    }
+
+    [Fact]
+    public void WorkspaceChosenRead_AnotherFolder_AnswersItTrimmed()
+    {
+        Assert.Equal("other", TInterface.TWorkspaceChosenRead("  other  ", "held"));
+    }
+
     [Fact]
     public void WorkspaceSettingsRead_NothingStored_AnswersTheFallbackUnsettled()
     {

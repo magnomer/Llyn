@@ -147,6 +147,10 @@ Relays the workspace clerk's static settings step.
 
 Relays the workspace clerk's notice read.
 
+## `internal static string? TWorkspaceChosenRead(string chosen, string folder)`
+
+Relays the workspace clerk's rule for a chosen folder.
+
 ## `internal static LRefusal TRefusalCreate(string reason)`
 
 One refusal with `reason`, for a test that wraps it.

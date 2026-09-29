@@ -7,4 +7,5 @@ It is kept as a setting so the next run opens with it.
 Turning it off cancels any fetch still in flight, and the engine does that under its own gate.
 Forms already stored stay, because the switch governs asking, not keeping.
 The next display of an unfilled entry reads the switch, because the engine checks it per fetch.
-The handler only saves, and the settings bulletin the engine raises redraws the panel.
+The observer only hands the raw switch to one ledger save.
+The settings bulletin the engine raises redraws the panel.

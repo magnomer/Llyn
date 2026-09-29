@@ -82,11 +82,6 @@ The citation line of one Source, worded as none when no Source is given.
 
 Every Source as the whole shelf lists it, ordered by author.
 
-## `IReadOnlyList<LCatalogReference> LEngineCitationFind(long draftId, string word);`
-
-The Sources a citation field offers for the typed word, and none for a blank word.
-A word already naming the byline the held draft's Example cites offers none.
-
 ## `static bool LEngineTextMatch(string field, string shown)`
 
 Whether a field showing `field` already shows the text `shown`, a blank field reading as nothing recorded.
@@ -113,3 +108,12 @@ It is static, since it reads only what the click hands over.
 
 Which card list of `draft` holds the card `id`, and at which place, or null when neither does.
 It is static, since it reads only the draft the caller holds.
+
+## `IReadOnlyDictionary<long, string> LEngineCitationRead(LEntryDraft shown);`
+
+The citation line of every Source the shown entry cites, child cards included.
+A Source that is gone reads as its bare id.
+
+## `string LEngineCitationRead(LDraft? draft);`
+
+The citation line of the Source the draft's own Example cites, and empty for no draft or no citation.

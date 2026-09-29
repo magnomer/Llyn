@@ -48,6 +48,7 @@ public sealed class CTaxonomy
             CTaxonomyPanel.LPanelScribeRestore,
             LTaxonomyTagOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CTaxonomyPanel.LPanelChangeCheck, editor.LEditorFinish);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CTaxonomyVistaRestore);
     }
 
     public static CTaxonomy CTaxonomyCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)

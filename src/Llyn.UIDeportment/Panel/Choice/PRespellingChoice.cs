@@ -4,8 +4,8 @@ namespace Llyn.UIDeportment;
 
 public partial class PSettings
 {
-    private void PRespellingHandle(object sender, RoutedEventArgs e)
+    private void PRespellingObserve(object sender, RoutedEventArgs e)
     {
-        PSettingsAtelier.CAtelierLedger.CLedgerRespellingSave(PRespelling.IsChecked == true);
+        PSettingsAtelier.CAtelierLedger.CLedgerRespellingSave(QLook.QLookCheckedRead(PRespelling.IsChecked));
     }
 }

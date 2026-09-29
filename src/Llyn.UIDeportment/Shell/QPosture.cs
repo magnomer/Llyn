@@ -23,6 +23,8 @@ public sealed class QPosture : IDisposable
 
     public event Action? QPostureCleared;
 
+    public event Action? QPostureLinkedChanged;
+
     internal QPosture(Func<string> root)
     {
         ArgumentNullException.ThrowIfNull(root);
@@ -87,8 +89,10 @@ public sealed class QPosture : IDisposable
             }
 
             QPostureSave(content with { LCapsuleContentLinked = linked });
-            return true;
         }
+
+        QPostureLinkedChanged?.Invoke();
+        return true;
     }
 
     public void QPostureLayoutSave(IEnumerable<LCapsuleColumn> layout)

@@ -85,13 +85,22 @@ A chip's own unlink names its Mention by id through `LQuill.LQuillMentionRemove`
 
 ## `public LReferenceOffer LQuillReferenceFind(long card, long sentence, string text)`
 
-The stored Sources a card sentence's citation field offers for the typed text.
+The stored Sources a citation field offers for the typed text.
+Card and sentence 0 name the draft's own Example, so the corpus transcript's drawer finds the same offer.
 Typing a citation writes nothing, so this only finds.
 A failed search offers nothing, since no one asked yet.
 
 ## `public void LQuillCitationResolve(long card, long sentence, string title)`
 
 Resolves the typed title to a Source and points the sentence's citation at it.
+The resolve and the request are one call, since their order is a data rule.
+A failure is not caught here, so the gate shows it.
+
+## `public void LQuillReferenceResolve(string title)`
+
+Resolves the typed title to a Source and points the held Example's citation at it.
+It does for the transcript what `LQuillCitationResolve` does for a card sentence.
+An Example cites through its own request, so the two cannot share one.
 The resolve and the request are one call, since their order is a data rule.
 A failure is not caught here, so the gate shows it.
 

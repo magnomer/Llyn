@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -129,11 +130,6 @@ public sealed class LReferenceClerk
         return LCatalogReference.LCatalogReferenceSort(rows, order);
     }
 
-    public IReadOnlyList<LCatalogReference> LReferenceCitationFind(string word, LDraft? draft)
-    {
-        return LReferenceCitationFind(word, draft?.LDraftExample?.LExampleSource.LStateAnchorShown);
-    }
-
     public LReferenceOffer LReferenceCitationFind(string text, LDraft? draft, long card, long sentence)
     {
         ArgumentNullException.ThrowIfNull(text);
@@ -233,6 +229,37 @@ public sealed class LReferenceClerk
         }
 
         return named;
+    }
+
+    public IReadOnlyDictionary<long, string> LCitationRead(LEntryDraft shown)
+    {
+        ArgumentNullException.ThrowIfNull(shown);
+
+        IReadOnlyDictionary<long, string> named = LCitationRead();
+        Dictionary<long, string> lines = [];
+        foreach (long id in shown.LEntryDraftCitations)
+        {
+            lines[id] = LCitationFormat(named, id);
+        }
+
+        return lines;
+    }
+
+    public string LCitationRead(LDraft? draft)
+    {
+        return LCitationFormat(LCitationRead(), draft?.LDraftExample?.LExampleSource.LStateAnchorShow() ?? 0);
+    }
+
+    internal static string LCitationFormat(IReadOnlyDictionary<long, string> named, long id)
+    {
+        if (id == 0)
+        {
+            return string.Empty;
+        }
+
+        return named.TryGetValue(id, out string? name)
+            ? name
+            : id.ToString(CultureInfo.InvariantCulture);
     }
 
     public void LReferenceClerkUpdate(LReference reference)

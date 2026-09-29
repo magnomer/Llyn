@@ -22,9 +22,9 @@ A never-written sentence reads the unwritten text in the muted colour, because t
 Its Mentions reach the mention text as they are stored.
 The controller's map leaves them out unless the text reads soundly, so the excerpt takes them as they come.
 
-## `private void QExcerptCitationShow(long? value)`
+## `private void QExcerptCitationShow(CExample example)`
 
-Writes the cited Source under its heading, or hides the heading when no citation was ever written.
+Writes the Example's ready citation line under its heading, or hides the heading when no citation was ever written.
 
 ## `private void QExcerptMentionHandle(object? sender, PMentionArgument e)`
 

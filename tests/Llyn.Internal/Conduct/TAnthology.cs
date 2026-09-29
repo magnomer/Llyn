@@ -98,15 +98,21 @@ public sealed class TAnthology
     }
 
     [Fact]
-    public void AnthologyReferenceRead_StoredSource_ListsIt()
+    public void AnthologyDraftRead_TranscriptCitingASource_CarriesItsLine()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LReference notes = engine.TEngineCitationCreate("Field Notes");
-        CAnthology anthology = TAnthologyPrepare(engine, atelier, out _);
+        CAnthology anthology = TAnthologyPrepare(engine, atelier, out CDesk desk);
+        desk.CDeskStart(null);
+        Assert.Equal(string.Empty, anthology.TAnthologyDraftRead(desk.TDeskRead())?.CExampleCitation);
 
-        Assert.Contains(anthology.CAnthologyReferenceRead(), row => row.CCatalogReferenceId == notes.LReferenceId);
+        anthology.CAnthologyCitationSet(notes.LReferenceId);
+
+        CExample? held = anthology.TAnthologyDraftRead(desk.TDeskRead());
+        Assert.Equal(notes.LReferenceId, held?.CExampleSource);
+        Assert.Equal("Field Notes", held?.CExampleCitation);
     }
 
     [Fact]
@@ -121,9 +127,26 @@ public sealed class TAnthology
 
         anthology.CAnthologyCitationSet("Field Notes");
 
-        Assert.Equal(
-            notes.LReferenceId,
-            TInterfaceConduct.TAnthologyExampleRead(desk.TDeskRead()?.LDraftExample)?.CExampleSource);
+        Assert.Equal(notes.LReferenceId, anthology.TAnthologyDraftRead(desk.TDeskRead())?.CExampleSource);
+    }
+
+    [Fact]
+    public void AnthologyCitationSet_EngineFails_ShowsTheCreateFailureAndKeepsTheCitation()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, asked);
+        CDesk desk = TInterfaceCitation.TDeskFailCreate(engine, envoy, "Example", "Corpus", CSubject.CSubjectExample);
+        desk.CDeskStart(null);
+        CAnthology anthology = TInterfaceConduct.TAnthologyCreate(atelier, desk, envoy);
+
+        anthology.CAnthologyCitationSet("Field Notes");
+
+        Assert.Equal(["Reference.CreateFailed"], asked);
+        Assert.Null(anthology.TAnthologyDraftRead(desk.TDeskRead())?.CExampleSource);
     }
 
     [Fact]
@@ -136,23 +159,34 @@ public sealed class TAnthology
         CAnthology anthology = TAnthologyPrepare(engine, atelier, out CDesk desk);
         desk.CDeskStart(null);
 
-        CCitationRow row = Assert.Single(anthology.CAnthologyCitationRead(" field "));
+        CProffer offer = anthology.CAnthologyCitationRead(" field ");
 
-        Assert.Equal(notes.LReferenceId, row.CCitationRowId);
-        Assert.Equal("Field", row.CCitationRowMark);
+        Assert.True(offer.CProfferShown);
+        CProfferRow row = Assert.Single(offer.CProfferRows);
+        Assert.Equal(notes.LReferenceId, row.CProfferRowId);
+        Assert.Equal(string.Empty, row.CProfferRowLead);
+        Assert.Equal("Field", row.CProfferRowMark);
+        Assert.Equal(" Notes", row.CProfferRowTail);
+        Assert.Equal(string.Empty, row.CProfferRowCount);
     }
 
     [Fact]
-    public void AnthologyCitationRead_BlankWord_OffersNothing()
+    public void AnthologyCitationRead_BlankWordOrNoTranscript_OffersNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         engine.TEngineCitationCreate("Field Notes");
         CAnthology anthology = TAnthologyPrepare(engine, atelier, out CDesk desk);
-        desk.CDeskStart(null);
 
-        Assert.Empty(anthology.CAnthologyCitationRead("   "));
+        CProffer unheld = anthology.CAnthologyCitationRead("field");
+        desk.CDeskStart(null);
+        CProffer blank = anthology.CAnthologyCitationRead("   ");
+
+        Assert.False(unheld.CProfferShown);
+        Assert.Empty(unheld.CProfferRows);
+        Assert.False(blank.CProfferShown);
+        Assert.Empty(blank.CProfferRows);
     }
 
     [Fact]
@@ -161,14 +195,13 @@ public sealed class TAnthology
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        LReference notes = engine.TEngineCitationCreate("Field Notes");
+        engine.TEngineCitationCreate("Field Notes");
         CAnthology anthology = TAnthologyPrepare(engine, atelier, out CDesk desk);
         desk.CDeskStart(null);
         anthology.CAnthologyCitationSet("Field Notes");
-        string byline = anthology.CAnthologyReferenceRead()
-            .Single(row => row.CCatalogReferenceId == notes.LReferenceId).CCatalogReferenceByline;
+        string byline = anthology.TAnthologyDraftRead(desk.TDeskRead())!.CExampleCitation;
 
-        Assert.Empty(anthology.CAnthologyCitationRead(byline));
+        Assert.Empty(anthology.CAnthologyCitationRead(byline).CProfferRows);
     }
 
     [Fact]
@@ -182,7 +215,7 @@ public sealed class TAnthology
     [Fact]
     public void AnthologyExampleRead_NoExample_ReturnsNone()
     {
-        Assert.Null(TInterfaceConduct.TAnthologyExampleRead(null));
+        Assert.Null(TInterfaceConduct.TAnthologyExampleRead(null, string.Empty));
     }
 
     [Fact]
@@ -192,12 +225,13 @@ public sealed class TAnthology
                 5, "English", TInterface.TStateValueCreate("a cat"), null, TInterface.TStateAnchorRead(9))
             .TExampleMentionAdd(TInterface.TMentionCreate(1, 2, 3, 40));
 
-        CExample? held = TInterfaceConduct.TAnthologyExampleRead(example);
+        CExample? held = TInterfaceConduct.TAnthologyExampleRead(example, "Field Notes");
 
         Assert.NotNull(held);
         Assert.Equal("English", held!.CExampleLanguage);
         Assert.Equal("a cat", held.CExampleText.CStateValueText);
         Assert.Equal(9, held.CExampleSource);
+        Assert.Equal("Field Notes", held.CExampleCitation);
         Assert.Equal([40L], held.CExampleMention.Select(mention => mention.CMentionDraftEntry));
         Assert.Equal([40L], held.CExampleExcerpt.Select(mention => mention.CMentionMarkEntry));
     }
@@ -209,7 +243,7 @@ public sealed class TAnthology
                 5, "English", TInterface.TStateValueResolve(null, true), null, TInterface.TStateAnchorRead(null))
             .TExampleMentionAdd(TInterface.TMentionCreate(1, 2, 3, 40));
 
-        CExample? held = TInterfaceConduct.TAnthologyExampleRead(example);
+        CExample? held = TInterfaceConduct.TAnthologyExampleRead(example, string.Empty);
 
         Assert.NotNull(held);
         Assert.True(held!.CExampleText.CStateValueUncertain);

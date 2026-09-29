@@ -77,11 +77,9 @@ public interface LEntryPort
 
     IReadOnlyList<LCatalogReference> LEngineReferenceFind();
 
-    IReadOnlyList<LCatalogReference> LEngineCitationFind(long draftId, string word);
+    IReadOnlyDictionary<long, string> LEngineCitationRead(LEntryDraft shown);
 
-    long LEngineCitationResolve(long draftId, long cardId, long sentenceId, string title);
-
-    IReadOnlyDictionary<long, string> LEngineCitationRead();
+    string LEngineCitationRead(LDraft? draft);
 
     IReadOnlyList<LCatalogAuthor> LEngineRollFind(LVista? vista);
 

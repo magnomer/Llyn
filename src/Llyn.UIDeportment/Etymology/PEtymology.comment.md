@@ -65,11 +65,11 @@ The removal button shows only while the field is editable.
 The entry takes the typed text both ways and the addition command on Return.
 It watches the item's text and shown properties, since an etymon raises no property change.
 
-## `private void PEtymologyItemHandle(object? sender, EventArgs e)`
+## `private void PEtymologyItemRefine(object? sender, EventArgs e)`
 
 Fills the field's items again when an etymon's text or shown state changes.
 
-## `private static void PEtymologyBoxHandle(object sender, TextChangedEventArgs e)`
+## `private static void PEtymologyBoxRefine(object sender, TextChangedEventArgs e)`
 
 Writes the typed text back to the caret etymon.
 
@@ -79,7 +79,7 @@ A surface peer, since the control is a box and not a button.
 
 ## Inline notes
 
-### `private static void PEtymologyStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
+### `private static void PEtymologyStateRefine(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
 
 Every property redraws the whole field, which is small enough to build again.
 

@@ -4,7 +4,7 @@
 
 The citation drawer under the corpus transcript's citation field.
 It holds the offered rows and the row the arrow keys stand on, apart from the driver.
-The driver reads its state as arguments, so no driver field decides a request.
+The pick reads the list's selected row, as the card row's dropdown does.
 
 ## `internal QDrawer(Popup popup, Border sheet, ListBox view, MouseButtonEventHandler press)`
 
@@ -15,19 +15,15 @@ Each row's press is the driver's handler, subscribed by the row fill.
 
 Whether the drawer stands open.
 
-## `internal void QDrawerShow(IReadOnlyList<CCitationRow> rows, TextBox field)`
+## `internal void QDrawerShow(CProffer offer, TextBox field)`
 
-Lists the rows the deportment answered, or shuts the drawer when there are none.
+Lists the rows the offer carries, or shuts the drawer when the engine's verdict says it stays shut.
 The drawer opens under the field's frame and is at least as wide as it.
 No row is chosen on opening, so Enter commits the typed line until an arrow is pressed.
 
 ## `internal void QDrawerHide()`
 
 Shuts the drawer, drops the chosen row and empties the list.
-
-## `internal long? QDrawerChosenRead()`
-
-The Source of the row the arrow keys stand on, or null while none is chosen.
 
 ## `internal void QDrawerMove(bool down)`
 

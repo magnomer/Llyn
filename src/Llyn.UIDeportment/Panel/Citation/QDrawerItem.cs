@@ -8,13 +8,13 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QDrawerItem
 {
-    internal QDrawerItem(CCitationRow row)
+    internal QDrawerItem(CProfferRow row)
     {
-        QDrawerItemId = row.CCitationRowId;
-        QDrawerItemLead = row.CCitationRowLead;
-        QDrawerItemMark = row.CCitationRowMark;
-        QDrawerItemTail = row.CCitationRowTail;
-        QDrawerItemCount = row.CCitationRowCount;
+        QDrawerItemId = row.CProfferRowId;
+        QDrawerItemLead = row.CProfferRowLead;
+        QDrawerItemMark = row.CProfferRowMark;
+        QDrawerItemTail = row.CProfferRowTail;
+        QDrawerItemCount = row.CProfferRowCount;
     }
 
     public long QDrawerItemId { get; }

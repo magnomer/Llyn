@@ -92,9 +92,9 @@ Hands the example list its vista through the internal helper the corpus calls.
 
 Reads the example rows through their internal helper, without the corpus's stale-selection close.
 
-## `internal static CExample? TAnthologyExampleRead(LExample? example)`
+## `internal static CExample? TAnthologyExampleRead(LExample? example, string citation)`
 
-Maps a stored Example through the list's internal helper.
+Maps a stored Example and a ready citation line through the list's internal helper.
 
 ## `internal static void TDeskOccurrenceStart(this CDesk desk, long? situation)`
 

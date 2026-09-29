@@ -8,21 +8,12 @@ It keeps no port of its own, so each port has one holder, and job44 sinks it int
 
 ## `public CEditor QForgeInputCreate(CEnvoy envoy)`
 
-The input panel's Conduct editor, standing on the input vista already restored.
+The input panel's Conduct editor, which the atelier builds on the input vista already restored.
 A panel's own editor is built by its Conduct area, which restores it with the panel's vista.
 
 ## `public CCorpus QForgeCorpusCreate(Func<bool> shownSeam, CEnvoy envoy)`
 
 Every panel deportment is handed back with its vistas already started through the posture.
 The corpus, favorites, library, authors, phonology, repertoire, sources, taxonomy and tenor panels are handed back as their Conduct.
-Each Conduct starts its own vistas.
-The forge keeps the restore through `QForgeVistaAdd`, so a workspace change can run it again.
-
-## `public void QForgeVistaRestore()`
-
-Restarts every panel's vistas, which the settings panel asks for after a workspace change.
-
-## `private QForgeHeld QForgeVistaAdd<QForgeHeld>(QForgeHeld held, Action<QForgeHeld> restore)`
-
-Runs one deportment's restore and keeps it for the next workspace change.
-The list holds GUI callbacks, so it stays in Deportment and never reaches Conduct.
+Each Conduct starts its own vistas when the forge asks it here.
+A workspace change restarts them in Conduct, since each area registers its restore with `CWorkspace`.

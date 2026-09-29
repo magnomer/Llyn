@@ -55,13 +55,10 @@ The usage tally is counted from the rows citing the Source, as the catalog count
 The Sources answering `query`, in `order`, as rows already carrying their name, credits and citation count.
 The credits and the counts are read whole rather than one Source at a time.
 
-## `public IReadOnlyList<LCatalogReference> LReferenceCitationFind(string word, LDraft? draft)`
-
-The Sources the corpus citation field offers for the typed word, held against the draft's own Example.
-
 ## `public LReferenceOffer LReferenceCitationFind(string text, LDraft? draft, long card, long sentence)`
 
-The Sources a card sentence's citation field offers, held against that sentence's Example.
+The Sources a citation field offers, held against the Example of the given card sentence.
+Card and sentence 0 name the draft's own Example, which the corpus transcript writes.
 Each byline is split around the trimmed word by `LCatalog.LCatalogMarkFind`.
 The offer keeps at most `LCatalog.LCatalogOfferLimit` rows, the cap every chip dropdown shares.
 Each row carries its usage count ready to show, as `LCatalog.LCatalogUsageFormat` writes it.
@@ -85,6 +82,24 @@ The kinds are matched by their stored word, which is what the filter remembers b
 
 The `Author (Year)` line every stored Source is cited under, by id.
 One read serves a whole catalog fill, because resolving a name per row would be one query per row.
+
+## `public IReadOnlyDictionary<long, string> LCitationRead(LEntryDraft shown)`
+
+The line each Source the shown entry's Examples cite is shown under, by id.
+Every cited id has a line, so the display only looks one up.
+
+## `public string LCitationRead(LDraft? draft)`
+
+The line the Source a draft's own Example cites is shown under.
+The corpus transcript and excerpt both show it beside the Example.
+
+## `internal static string LCitationFormat(IReadOnlyDictionary<long, string> named, long id)`
+
+The line a cited Source is shown under, from the bylines `named` by id.
+A citation of nothing shows nothing.
+A Source no byline names shows its bare id.
+A citation is worth showing even when its Source is gone.
+The catalog rows of `LExampleClerk` and every citation line share this one rule.
 
 ## `public void LReferenceClerkUpdate(LReference reference)`
 

@@ -81,7 +81,7 @@ Every panel area moves to the veneer by the same steps, first proven on taxonomy
 - A control is fed the C record a gate returns, with no Deportment copy of it.
   The excerpt hands `PMention` its `CMentionMark` rows as Conduct stored them.
 - A rule a controller would compute over engine rows sinks below Deportment.
-  `CCitationRow.CCitationRowFind` splits the citation rows in Conduct, and `LEngineGlossRead` picks the gloss language in the engine.
+  `LReferenceClerk.LReferenceCitationFind` splits the citation rows in Application, and `LEngineGlossRead` picks the gloss language in the engine.
 
 ## Gate holders
 

@@ -265,6 +265,9 @@ internal static partial class TInterface
     internal static string? TWorkspaceNoticeRead(Exception exception) =>
         LWorkspaceClerk.LWorkspaceNoticeRead(exception);
 
+    internal static string? TWorkspaceChosenRead(string chosen, string folder) =>
+        LWorkspaceClerk.LWorkspaceChosenRead(chosen, folder);
+
     internal static LRefusal TRefusalCreate(string reason) => new(reason);
 
     internal static LMarkupClerk TMarkupClerkCreate(LRig rig) => new(rig);

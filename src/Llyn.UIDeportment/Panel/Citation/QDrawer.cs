@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -41,18 +40,18 @@ internal sealed class QDrawer
 
     internal bool QDrawerShown => _qDrawerPopup.IsOpen;
 
-    internal void QDrawerShow(IReadOnlyList<CCitationRow> rows, TextBox field)
+    internal void QDrawerShow(CProffer offer, TextBox field)
     {
-        ArgumentNullException.ThrowIfNull(rows);
+        ArgumentNullException.ThrowIfNull(offer);
         ArgumentNullException.ThrowIfNull(field);
 
         _qDrawerList.Clear();
-        foreach (CCitationRow row in rows)
+        foreach (CProfferRow row in offer.CProfferRows)
         {
             _qDrawerList.Add(new QDrawerItem(row));
         }
 
-        if (_qDrawerList.Count == 0)
+        if (!offer.CProfferShown)
         {
             QDrawerHide();
             return;
@@ -70,11 +69,6 @@ internal sealed class QDrawer
         _qDrawerPopup.IsOpen = false;
         QDrawerChosenSet(-1);
         _qDrawerList.Clear();
-    }
-
-    internal long? QDrawerChosenRead()
-    {
-        return _qDrawerChosen < 0 ? null : _qDrawerList[_qDrawerChosen].QDrawerItemId;
     }
 
     internal void QDrawerMove(bool down)

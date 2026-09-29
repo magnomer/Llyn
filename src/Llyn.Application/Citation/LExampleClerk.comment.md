@@ -38,6 +38,7 @@ The cited Source is read for it, and the usage tally is counted from the rows qu
 The Examples answering `query`, in `order`, as rows already carrying their cited name and quotation count.
 An Example is matched over its sentence, its translation and the name of the Source it cites.
 The name is resolved here, because matching on an id the reader never sees would answer the wrong question.
+The cited name follows `LReferenceClerk.LCitationFormat`, the rule every citation line shares.
 
 ## `public void LExampleClerkUpdate(LExample example)`
 
@@ -64,10 +65,6 @@ A blank field reads as nothing recorded, as the engine would store it, so it mat
 The sentence heads the page, its language is the chip, and its usage tally follows.
 Each gloss is a line labelled with its language, under the translation heading.
 The cited source is named as the catalog names it, and an example citing nothing shows no source.
-
-## `private static string LExampleSourceRead(IReadOnlyDictionary<long, string> named, LStateAnchor source)`
-
-The cited name a catalog row shows, the bare id when the Source is gone, nothing when none is cited.
 
 ## `public LExample? LExampleClerkResolve(LSentenceDraft draft, string language, long ownerId, bool collocation, Dictionary<long, long> identity)`
 

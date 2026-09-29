@@ -52,7 +52,7 @@ public sealed class CCorpus
         CCorpusAnthology.CAnthologyPanel.CPanelEdited += id => CCorpusSession.CSessionStart(id);
         CCorpusAnthology.CAnthologyPanel.CPanelCleared += CCorpusSession.CSessionCancel;
         CCorpusAnthology.CAnthologyPanel.CPanelDraftChanged +=
-            draft => LCorpusExampleUpdate(CAnthology.LAnthologyDraftRead(draft));
+            draft => LCorpusExampleUpdate(CCorpusAnthology.LAnthologyDraftRead(draft));
         CCorpusQuotation.CQuotationPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         CCorpusQuotation.CQuotationPanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         atelier.CAtelierNavigation.LNavigationTabAdd(
@@ -62,6 +62,7 @@ public sealed class CCorpus
             CCorpusAnthology.CAnthologyPanel.LPanelScribeRestore,
             LCorpusExampleOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CCorpusSession.LSessionChangeCheck, CCorpusSession.LSessionFinish);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CCorpusVistaRestore);
     }
 
     public static CCorpus CCorpusCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
@@ -127,7 +128,7 @@ public sealed class CCorpus
     {
         try
         {
-            return CAnthology.LAnthologyDraftRead(CCorpusDesk.CDeskRead());
+            return CCorpusAnthology.LAnthologyDraftRead(CCorpusDesk.CDeskRead());
         }
         catch (Exception exception)
         {

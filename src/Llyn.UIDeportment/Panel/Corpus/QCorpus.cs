@@ -26,7 +26,7 @@ internal sealed partial class QCorpus : QChronicleHost
         _qCorpusSurface = surface;
         QLook.QLookStyleAttach(surface.Resources);
         QChronicle.QChronicleAttach(surface, this);
-        _qDrawer = new QDrawer(QCitationDrawer, QCitationSheet, QCitationList, QCitationPressHandle);
+        _qDrawer = new QDrawer(QCitationDrawer, QCitationSheet, QCitationList, QCitationPressObserve);
 
         surface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QCorpusPressHandle, QCorpusPressCheck));
@@ -69,9 +69,12 @@ internal sealed partial class QCorpus : QChronicleHost
 
         QQuery.TextChanged += QQueryHandle;
         QDredge.TextChanged += QDredgeHandle;
-        QCitationField.TextChanged += QCitationTextHandle;
-        QCitationField.PreviewKeyDown += QCitationKeyHandle;
-        QCitationField.LostKeyboardFocus += QCitationLeaveHandle;
+        QCitationField.TextChanged += QCitationTextObserve;
+        QCitationField.PreviewKeyDown += QCitationKeyRefine;
+        QCitationField.PreviewKeyDown += QCitationPickObserve;
+        QCitationField.PreviewKeyDown += QCitationCommitObserve;
+        QCitationField.PreviewKeyDown += QCitationEscapeRefine;
+        QCitationField.LostKeyboardFocus += QCitationLeaveRefine;
         QTranscriptSeedField.GotKeyboardFocus += QTranscriptSeedHandle;
         QExcerptText.PMentionClick += QExcerptMentionHandle;
         QCorpusFresh.Click += QCorpusFreshHandle;

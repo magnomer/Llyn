@@ -64,6 +64,7 @@ public sealed class CShelf
             CShelfPanel.LPanelScribeRestore,
             LShelfReferenceOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(LShelfChangeRead, LShelfDraftFinish);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CShelfVistaRestore);
     }
 
     public static CShelf CShelfCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)

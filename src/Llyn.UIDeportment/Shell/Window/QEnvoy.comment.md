@@ -64,3 +64,9 @@ Everything the dialog offers is carried: printer, sheet, turn, copies, collation
 The sheet is carried as the dialog measured it, and the engine turns it into inches.
 A choice the dialog left unsaid maps to the default the printer applies on its own.
 A dialog that raises, as with the spooler down, is reported by the gate as `Print.Failed`.
+
+## `public string? CEnvoyWorkspaceRead(string workspace)`
+
+Opens the folder dialog on `workspace`, the folder in use, and answers the folder chosen.
+A cancelled dialog answers null, which the gate reads as nothing to move.
+The dialog's title stays here, since only a windowed chooser has one.

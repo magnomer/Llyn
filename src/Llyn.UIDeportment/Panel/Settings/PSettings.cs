@@ -32,16 +32,17 @@ public partial class PSettings : UserControl
         PDialWidth.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("sort", 24));
 
         PWinnow.TextChanged += PWinnowHandle;
-        PWorkspacePath.KeyDown += PWorkspacePathHandle;
-        PWorkspacePath.LostKeyboardFocus += PWorkspaceFocusHandle;
-        PWorkspaceDialog.Click += PWorkspaceDialogHandle;
+        PWorkspacePath.KeyDown += PWorkspaceEscapeRefine;
+        PWorkspacePath.KeyDown += PWorkspacePathObserve;
+        PWorkspacePath.LostKeyboardFocus += PWorkspaceFocusRefine;
+        PWorkspaceDialog.Click += PWorkspaceDialogObserve;
         PDialFolder.Click += PDialFolderHandle;
-        PLocalization.SelectionChanged += PLocalizationHandle;
-        PRespelling.Click += PRespellingHandle;
+        PLocalization.SelectionChanged += PLocalizationObserve;
+        PRespelling.Click += PRespellingObserve;
         PSettingsEpithet.Click += PSettingsEpithetHandle;
-        PFrequency.Click += PFrequencyHandle;
-        PMorphology.Click += PMorphologyHandle;
-        PLayoutLinked.Click += PLayoutLinkedHandle;
+        PFrequency.Click += PFrequencyObserve;
+        PMorphology.Click += PMorphologyObserve;
+        PLayoutLinked.Click += PLayoutLinkedObserve;
         PDialWidth.Click += PDialWidthHandle;
     }
 
@@ -89,6 +90,7 @@ public partial class PSettings : UserControl
     {
         _pSettingsHost = host;
         QLookItem.QLookItemAttach(PLedger, PLedgerApply);
+        PSettingsPosture.QPostureLinkedChanged += PLedgerMetaApply;
         PSettingsAtelier.CAtelierLedger.CLedgerChanged += LObserver.LObserverCreate<CLedgerState>(this, PSettingsShow);
         PDialShow("Workspace");
     }

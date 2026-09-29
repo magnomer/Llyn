@@ -8,7 +8,10 @@ namespace Llyn.Tests;
 
 internal static class TInterfaceCitation
 {
-    internal static CDesk TDeskFailCreate(LEngine engine, CEnvoy envoy)
+    internal static CDesk TDeskFailCreate(LEngine engine, CEnvoy envoy) =>
+        TDeskFailCreate(engine, envoy, "Input", "Input", CSubject.CSubjectEntry);
+
+    internal static CDesk TDeskFailCreate(LEngine engine, CEnvoy envoy, string scope, string origin, CSubject subject)
     {
         LDraftPort real = new LDraftOutlet(engine);
         LDraftPort drafts = TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
@@ -19,8 +22,11 @@ internal static class TInterfaceCitation
             ["LEngineObserverDetach"] = _ => null,
             ["LEngineCitationResolve"] = _ => throw new InvalidOperationException("no sources"),
         });
-        return new CDesk(drafts, "Input", envoy, "Input", CSubject.CSubjectEntry);
+        return new CDesk(drafts, scope, envoy, origin, subject);
     }
+
+    internal static CExample? TAnthologyDraftRead(this CAnthology anthology, LDraft? draft) =>
+        anthology.LAnthologyDraftRead(draft);
 
     internal static CCard TCardFailCreate(LEngine engine, CDesk desk, CEnvoy envoy)
     {

@@ -60,7 +60,18 @@ internal static partial class TInterface
         engine.LEngineCard.LEngineTagFind(query, order);
 
     internal static IReadOnlyDictionary<long, string> TEngineCitationRead(this LEngine engine) =>
-        engine.LEngineReference.LEngineCitationRead();
+        engine.LEngineStaffHeld.LEngineStaffReference.LCitationRead();
+
+    internal static IReadOnlyDictionary<long, string> TEngineCitationRead(this LEngine engine, LEntryDraft shown) =>
+        engine.LEngineReference.LEngineCitationRead(shown);
+
+    internal static string TEngineCitationRead(this LEngine engine, LDraft? draft) =>
+        engine.LEngineReference.LEngineCitationRead(draft);
+
+    internal static IReadOnlyList<long> TEntryCitationRead(this LEntryDraft draft) => draft.LEntryDraftCitations;
+
+    internal static LCardDraft TCardChildSet(this LCardDraft card, LCardDraft child) =>
+        card with { LCardDraftChild = [child] };
 
     internal static string TReferenceNameRead(this LReference reference) =>
         reference.LReferenceNameRead();

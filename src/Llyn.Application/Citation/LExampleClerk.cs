@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Llyn.Core;
 
@@ -74,7 +73,7 @@ public sealed class LExampleClerk
 
             LCatalogExample row = LCatalogExample.LCatalogExampleCreate(
                 example,
-                LExampleSourceRead(cited, example.LExampleSource),
+                LReferenceClerk.LCitationFormat(cited, example.LExampleSource.LStateAnchorShow()),
                 counted);
             if (row.LCatalogExampleMatch(query))
             {
@@ -146,19 +145,6 @@ public sealed class LExampleClerk
             example.LExampleLanguage,
             [legend.LPortraitTallyFormat(count)],
             sections);
-    }
-
-    private static string LExampleSourceRead(IReadOnlyDictionary<long, string> named, LStateAnchor source)
-    {
-        long id = source.LStateAnchorShow();
-        if (id == 0)
-        {
-            return string.Empty;
-        }
-
-        return named.TryGetValue(id, out string? name)
-            ? name
-            : id.ToString(CultureInfo.InvariantCulture);
     }
 
     public LExample? LExampleClerkResolve(

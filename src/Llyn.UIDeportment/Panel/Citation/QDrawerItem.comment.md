@@ -2,7 +2,7 @@
 
 ## `internal sealed class QDrawerItem`
 
-One offered Source in the citation drawer, copied from the row the deportment split.
+One offered Source in the citation drawer, copied from the offer row the engine split.
 It holds text only, so the drawer's rows are fed no Conduct shape.
 
 ## `internal static void QDrawerItemApply(`

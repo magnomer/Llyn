@@ -42,6 +42,11 @@ Whether the entry says anything about its origin, by prose or by link.
 Every entry the etymology names, its source links and the spans of its narrative alike.
 One list lets a reader resolve them all in a single query.
 
+## `public IReadOnlyList<long> LEntryDraftCitations`
+
+Every Source an Example of the entry cites, across meanings, collocations and their child cards.
+The display reads one line for each of them in a single query.
+
 ## `public LPronunciationDraft? LEntryDraftPronunciation`
 
 The primary pronunciation alone, the first of the list, or null when there is none.

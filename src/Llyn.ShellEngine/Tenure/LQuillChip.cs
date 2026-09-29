@@ -118,6 +118,14 @@ public sealed class LQuillChip
             new LRequestSentenceReference(_lQuillChipTenure.LTenureId, card, sentence, reference));
     }
 
+    public void LQuillReferenceResolve(string title)
+    {
+        ArgumentNullException.ThrowIfNull(title);
+
+        long reference = _lQuillChipDrafts.LEngineCitationResolve(_lQuillChipTenure, 0, 0, title);
+        _lQuillChipTenure.LTenureRequestApply(new LRequestExampleReference(_lQuillChipTenure.LTenureId, reference));
+    }
+
     public LTranslationOffer LQuillTranslationAdd(long card, string text, int position)
     {
         ArgumentNullException.ThrowIfNull(text);

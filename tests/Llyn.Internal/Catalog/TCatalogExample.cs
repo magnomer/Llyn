@@ -110,6 +110,43 @@ public sealed class TCatalogExample
         Assert.Equal("Anchor Book", engine.TEngineCitationRead()[stored.LReferenceId]);
     }
 
+    [Fact]
+    public void CitationRead_ShownEntry_WritesEveryCitedSourceItsLine()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LReference stored = TCatalogSourceCreate(engine, "Anchor Book");
+        LCardDraft child = TCatalogCardCreate(TCatalogSentenceCreate(999));
+        LCardDraft meaning = TCatalogCardCreate(
+                TCatalogSentenceCreate(stored.LReferenceId), TCatalogSentenceCreate(null))
+            .TCardChildSet(child);
+        LCardDraft collocation = TCatalogCardCreate(TCatalogSentenceCreate(stored.LReferenceId));
+        LEntryDraft shown = TInterface.TEntryDraftCreate(
+            "stone", "English", string.Empty, string.Empty, [meaning], [collocation]);
+
+        IReadOnlyDictionary<long, string> lines = engine.TEngineCitationRead(shown);
+
+        Assert.Equal([stored.LReferenceId, 999L], shown.TEntryCitationRead().Order());
+        Assert.Equal(2, lines.Count);
+        Assert.Equal("Anchor Book", lines[stored.LReferenceId]);
+        Assert.Equal("999", lines[999]);
+    }
+
+    private static LCardDraft TCatalogCardCreate(params LSentenceDraft[] sentences) =>
+        TInterface.TCardDraftCreate(
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified,
+            sentences,
+            [],
+            [],
+            [],
+            [],
+            0);
+
+    private static LSentenceDraft TCatalogSentenceCreate(long? source) =>
+        TInterface.TSentenceDraftCreate(TInterface.TStateValueCreate("a line"), 0, TInterface.TStateAnchorRead(source));
+
     private static LExample TCatalogExampleCreate(
         LEngine engine,
         string text,

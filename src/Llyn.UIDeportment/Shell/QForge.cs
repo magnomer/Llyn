@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -7,8 +6,6 @@ namespace Llyn.UIDeportment;
 public sealed class QForge
 {
     private readonly CAtelier _qForgeAtelier;
-
-    private readonly List<Action> _qForgeVistas = [];
 
     internal QForge(CAtelier atelier)
     {
@@ -19,99 +16,83 @@ public sealed class QForge
 
     public CEditor QForgeInputCreate(CEnvoy envoy)
     {
-        return QForgeVistaAdd(
-            CEditor.CEditorCreate(_qForgeAtelier, envoy), editor => _qForgeAtelier.CAtelierInputRestore(editor));
+        return _qForgeAtelier.CAtelierInputCreate(envoy);
     }
 
     public CCorpus QForgeCorpusCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        return QForgeVistaAdd(
-            CCorpus.CCorpusCreate(_qForgeAtelier, shownSeam, envoy),
-            static corpus => corpus.CCorpusVistaRestore());
+        CCorpus corpus = CCorpus.CCorpusCreate(_qForgeAtelier, shownSeam, envoy);
+        corpus.CCorpusVistaRestore();
+        return corpus;
     }
 
     public CFavorite QForgeFavoriteCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        return QForgeVistaAdd(
-            CFavorite.CFavoriteCreate(_qForgeAtelier, shownSeam, envoy),
-            static favorite => favorite.CFavoriteVistaRestore());
+        CFavorite favorite = CFavorite.CFavoriteCreate(_qForgeAtelier, shownSeam, envoy);
+        favorite.CFavoriteVistaRestore();
+        return favorite;
     }
 
     public CGuild QForgeGuildCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        return QForgeVistaAdd(
-            CGuild.CGuildCreate(_qForgeAtelier, shownSeam, envoy),
-            static guild => guild.CGuildVistaRestore());
+        CGuild guild = CGuild.CGuildCreate(_qForgeAtelier, shownSeam, envoy);
+        guild.CGuildVistaRestore();
+        return guild;
     }
 
     public CLibrary QForgeLibraryCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        return QForgeVistaAdd(
-            CLibrary.CLibraryCreate(_qForgeAtelier, shownSeam, envoy),
-            static library => library.CLibraryVistaRestore());
+        CLibrary library = CLibrary.CLibraryCreate(_qForgeAtelier, shownSeam, envoy);
+        library.CLibraryVistaRestore();
+        return library;
     }
 
     public CPhonology QForgePhonologyCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        return QForgeVistaAdd(
-            CPhonology.CPhonologyCreate(_qForgeAtelier, shownSeam, envoy),
-            static phonology => phonology.CPhonologyVistaRestore());
+        CPhonology phonology = CPhonology.CPhonologyCreate(_qForgeAtelier, shownSeam, envoy);
+        phonology.CPhonologyVistaRestore();
+        return phonology;
     }
 
     public CShelf QForgeShelfCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        return QForgeVistaAdd(
-            CShelf.CShelfCreate(_qForgeAtelier, shownSeam, envoy),
-            static shelf => shelf.CShelfVistaRestore());
+        CShelf shelf = CShelf.CShelfCreate(_qForgeAtelier, shownSeam, envoy);
+        shelf.CShelfVistaRestore();
+        return shelf;
     }
 
     public CRepertoire QForgeRepertoireCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        return QForgeVistaAdd(
-            CRepertoire.CRepertoireCreate(_qForgeAtelier, shownSeam, envoy),
-            static repertoire => repertoire.CRepertoireVistaRestore());
+        CRepertoire repertoire = CRepertoire.CRepertoireCreate(_qForgeAtelier, shownSeam, envoy);
+        repertoire.CRepertoireVistaRestore();
+        return repertoire;
     }
 
     public CTaxonomy QForgeTaxonomyCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        return QForgeVistaAdd(
-            CTaxonomy.CTaxonomyCreate(_qForgeAtelier, shownSeam, envoy),
-            static taxonomy => taxonomy.CTaxonomyVistaRestore());
+        CTaxonomy taxonomy = CTaxonomy.CTaxonomyCreate(_qForgeAtelier, shownSeam, envoy);
+        taxonomy.CTaxonomyVistaRestore();
+        return taxonomy;
     }
 
     public CTenor QForgeTenorCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        return QForgeVistaAdd(
-            CTenor.CTenorCreate(_qForgeAtelier, shownSeam, envoy),
-            static tenor => tenor.CTenorVistaRestore());
+        CTenor tenor = CTenor.CTenorCreate(_qForgeAtelier, shownSeam, envoy);
+        tenor.CTenorVistaRestore();
+        return tenor;
     }
 
     public CXiesheng QForgeXieshengCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        return QForgeVistaAdd(
-            CXiesheng.CXieshengCreate(_qForgeAtelier, shownSeam, envoy),
-            static xiesheng => xiesheng.CXieshengVistaRestore());
+        CXiesheng xiesheng = CXiesheng.CXieshengCreate(_qForgeAtelier, shownSeam, envoy);
+        xiesheng.CXieshengVistaRestore();
+        return xiesheng;
     }
 
     public CYunjing QForgeYunjingCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        return QForgeVistaAdd(
-            CYunjing.CYunjingCreate(_qForgeAtelier, shownSeam, envoy),
-            static yunjing => yunjing.CYunjingVistaRestore());
-    }
-
-    public void QForgeVistaRestore()
-    {
-        foreach (Action restore in _qForgeVistas)
-        {
-            restore();
-        }
-    }
-
-    private QForgeHeld QForgeVistaAdd<QForgeHeld>(QForgeHeld held, Action<QForgeHeld> restore)
-    {
-        restore(held);
-        _qForgeVistas.Add(() => restore(held));
-        return held;
+        CYunjing yunjing = CYunjing.CYunjingCreate(_qForgeAtelier, shownSeam, envoy);
+        yunjing.CYunjingVistaRestore();
+        return yunjing;
     }
 }

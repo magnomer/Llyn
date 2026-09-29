@@ -45,6 +45,7 @@ public sealed class CFavorite
             CFavoritePanel.LPanelScribeRestore,
             id => CFavoritePanel.CPanelRowOpen(id));
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CFavoritePanel.LPanelChangeCheck, editor.LEditorFinish);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CFavoriteVistaRestore);
         CFavoritePanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }
 

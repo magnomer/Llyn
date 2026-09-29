@@ -221,8 +221,7 @@ public sealed class TEditorField
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CEditor editor = CEditor.CEditorCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        atelier.CAtelierInputRestore(editor);
+        CEditor editor = atelier.CAtelierInputCreate(TInterfaceConduct.TEnvoyCreate(false, []));
 
         atelier.CAtelierOpen();
 

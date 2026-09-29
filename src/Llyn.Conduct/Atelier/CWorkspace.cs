@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
 
@@ -8,6 +9,8 @@ public sealed class CWorkspace
     private readonly CAtelier _cWorkspaceAtelier;
 
     private readonly List<(Func<bool> LWorkspacePending, Func<bool, bool> LWorkspaceClosure)> _cWorkspaceDrafts = [];
+
+    private readonly List<Action> _cWorkspaceVistas = [];
 
     private CEditor? _cWorkspaceInput;
 
@@ -26,6 +29,52 @@ public sealed class CWorkspace
 
     public event Action<CEstablishment>? CWorkspaceEstablishmentChanged;
 
+    public string CWorkspaceChange(string chosen, CEnvoy envoy)
+    {
+        ArgumentNullException.ThrowIfNull(chosen);
+        ArgumentNullException.ThrowIfNull(envoy);
+
+        LSettingsPort settings = _cWorkspaceAtelier.CAtelierSettingsPort;
+        CWorkspaceState state;
+        try
+        {
+            if (!settings.LEngineWorkspaceCheck(chosen) || !LWorkspaceQuitConfirm(envoy))
+            {
+                return _cWorkspaceAtelier.CAtelierPathRead();
+            }
+
+            state = CAtelier.LAtelierStateRead(settings.LEngineWorkspaceChange(chosen));
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(envoy, settings, "Workspace.OpenFailed", exception);
+            return _cWorkspaceAtelier.CAtelierPathRead();
+        }
+
+        LWorkspaceVistaRestore();
+        LWorkspaceOpen(state);
+        return _cWorkspaceAtelier.CAtelierPathRead();
+    }
+
+    public string CWorkspaceChange(CEnvoy envoy)
+    {
+        ArgumentNullException.ThrowIfNull(envoy);
+
+        string? chosen;
+        try
+        {
+            chosen = envoy.CEnvoyWorkspaceRead(_cWorkspaceAtelier.CAtelierPathRead());
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(
+                envoy, _cWorkspaceAtelier.CAtelierSettingsPort, "Workspace.OpenFailed", exception);
+            return _cWorkspaceAtelier.CAtelierPathRead();
+        }
+
+        return chosen is null ? _cWorkspaceAtelier.CAtelierPathRead() : CWorkspaceChange(chosen, envoy);
+    }
+
     internal void LWorkspaceOpen(CWorkspaceState state)
     {
         ArgumentNullException.ThrowIfNull(state);
@@ -41,6 +90,7 @@ public sealed class CWorkspace
         _cWorkspaceAtelier.CAtelierLedger.LLedgerRaise();
         LWorkspaceEstablishmentRaise();
         CWorkspaceStateOpened?.Invoke(state);
+        _cWorkspaceAtelier.CAtelierNavigation.LNavigationTabOpen();
     }
 
     internal bool LWorkspaceQuitConfirm(CEnvoy envoy)
@@ -79,6 +129,26 @@ public sealed class CWorkspace
         ArgumentNullException.ThrowIfNull(closure);
 
         _cWorkspaceDrafts.Add((pending, closure));
+    }
+
+    internal void LWorkspaceVistaAdd(Action restore)
+    {
+        ArgumentNullException.ThrowIfNull(restore);
+
+        _cWorkspaceVistas.Add(restore);
+    }
+
+    private void LWorkspaceVistaRestore()
+    {
+        foreach (Action restore in _cWorkspaceVistas)
+        {
+            restore();
+        }
+
+        if (_cWorkspaceInput is CEditor input)
+        {
+            _cWorkspaceAtelier.LAtelierInputRestore(input);
+        }
     }
 
     internal void LWorkspaceInputSet(CEditor editor)

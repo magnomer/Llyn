@@ -63,9 +63,10 @@ It answers the dropdown ready to show, and writes nothing.
 The trim, the cited-byline check, the split and the cap are the reference clerk's.
 With no chip quill the answer offers nothing.
 
-## `private static CProffer LCardProfferRead(LReferenceOffer offer)`
+## `internal static CProffer LCardProfferRead(LReferenceOffer offer)`
 
 The plain map from the engine's citation offer to the dropdown record, carrying each row's ready count.
+`CAnthology` maps the corpus drawer's offer through it too, so one citation offer has one map.
 
 ## `public IReadOnlyList<CCatalogReference> CCardReferenceRead()`
 

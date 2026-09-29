@@ -50,6 +50,20 @@ public sealed class TCapsulePosture
     }
 
     [Fact]
+    public void PostureLinkedSave_FalseTwice_RaisesLinkedChangedOnce()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using QPosture posture = TInterfaceDeportment.TPostureCreate(workspace.TWorkspaceFolder);
+        int raised = 0;
+        posture.QPostureLinkedChanged += () => raised++;
+
+        posture.QPostureLinkedSave(false);
+        posture.QPostureLinkedSave(false);
+
+        Assert.Equal(1, raised);
+    }
+
+    [Fact]
     public void PostureWindowDefer_AtOnceAndMinimized_KeepsOnlyTheShownWindow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

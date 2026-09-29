@@ -9,6 +9,14 @@ The static open sequence of the workspace clerk over the fake rig, without SQLit
 A rig whose doctor cannot open the database throws out of the first open step.
 The engine therefore keeps its old clerks, which is the unopenable-target contract.
 
+## `public void WorkspaceChosenRead_BlankOrTheFolderInUse_AnswersNothing(string chosen)`
+
+A blank choice or the folder in use, padded or not, names no move.
+
+## `public void WorkspaceChosenRead_AnotherFolder_AnswersItTrimmed()`
+
+Another folder is answered trimmed, as the engine records it.
+
 ## `public void WorkspaceSettingsRead_NothingStored_AnswersTheFallbackUnsettled()`
 
 A rig with no stored settings answers the fallback and says so, so the caller writes it down.

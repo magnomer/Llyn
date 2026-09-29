@@ -4,11 +4,8 @@ namespace Llyn.UIDeportment;
 
 public partial class PSettings
 {
-    private void PLayoutLinkedHandle(object sender, RoutedEventArgs e)
+    private void PLayoutLinkedObserve(object sender, RoutedEventArgs e)
     {
-        PSettingsPosture.QPostureLinkedSave(PLayoutLinked.IsChecked == true);
-        PLedgerMetaApply();
-        _pSettingsHost.PWindowLayout.PLayoutLinkRefine(null);
-        _pSettingsHost.PWindowLayout.PLayoutSave(null);
+        PSettingsPosture.QPostureLinkedSave(QLook.QLookCheckedRead(PLayoutLinked.IsChecked));
     }
 }

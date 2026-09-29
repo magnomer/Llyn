@@ -40,6 +40,12 @@ Records `exception` in the audit and answers the file it went to.
 
 The refusal reason inside `exception`, walking the inner exceptions, or null.
 
+## `public static string? LWorkspaceChosenRead(string chosen, string folder)`
+
+The folder a user chose, trimmed, when it names a workspace other than `folder`.
+A blank choice or the folder already in use answers null, since moving there changes nothing.
+The move's check and the move itself both read it, so the rule has one owner.
+
 ## `public static bool LWorkspaceIllegibleCheck(Exception exception)`
 
 Whether `exception` is a refusal over an unreadable value, so the shell can offer to sweep the draft.

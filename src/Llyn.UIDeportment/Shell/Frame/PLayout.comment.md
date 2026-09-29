@@ -8,6 +8,7 @@ A drag in one tab is then carried to every other tab while the panels are linked
 The widths are stored per tab either way, so unlinking never loses what a tab had.
 They are read from and written through the posture, so the engine never learns how wide a pane is.
 It listens for the posture being cleared and resets the grids, so a width reset is one call.
+It listens for the linked switch flipping and syncs the tabs, so ticking the switch is one call.
 
 ## `internal void PLayoutAttach(Grid host, string tab)`
 
@@ -18,6 +19,7 @@ Every seam standing in that grid is pointed back here, so a drag can report itse
 ## `internal void PLayoutRefine()`
 
 Applies the stored widths to every registered grid before the first tab is shown.
+The window subscribes it to `CWorkspaceOpened`, so a workspace change applies that workspace's widths.
 A tab with no stored record keeps the width its markup declared.
 Only the fixed columns are written, because the last column stays flexible and fills the window.
 While the panels are linked, every tab is then set to one width, so the link holds before any drag.
@@ -38,9 +40,15 @@ Linking the panels mid-session stores them too, after the link copied them, from
 Linked panels store every tab, because every tab was just moved.
 Unlinked panels store only the dragged tab.
 
+## `private void PLayoutLinkedRefine()`
+
+Answers the posture's linked switch flipping by copying the source grid onto the others and storing the result.
+The sync runs either way, since an unlinked sync only stores the source grid's widths, which are already stored.
+
 ## `internal void PLayoutResetRefine()`
 
 Puts every registered grid back at the widths its markup declared.
+It answers a cleared posture and every workspace open, so a workspace without stored widths opens at the markup widths.
 Only the fixed columns are written, because the last column was never pinned.
 The most recent drag is forgotten, so a later link copies from the first registered tab again.
 

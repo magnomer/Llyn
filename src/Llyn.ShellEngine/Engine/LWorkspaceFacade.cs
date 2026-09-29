@@ -24,6 +24,12 @@ internal sealed class LWorkspaceFacade
         return LEngineStateRead();
     }
 
+    public LWorkspaceState LEngineWorkspaceChange(string chosen)
+    {
+        _lWorkspaceFacadeEngine.LEngineWorkspaceChange(chosen);
+        return LEngineWorkspaceStart();
+    }
+
     public LWorkspaceState LEngineStateRead()
     {
         lock (_lWorkspaceFacadeGate)

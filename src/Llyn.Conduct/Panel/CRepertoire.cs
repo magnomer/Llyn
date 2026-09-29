@@ -70,6 +70,7 @@ public sealed class CRepertoire
             LRepertoireSituationOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(
             CRepertoireSession.LSessionChangeCheck, CRepertoireSession.LSessionFinish);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CRepertoireVistaRestore);
     }
 
     public static CRepertoire CRepertoireCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)

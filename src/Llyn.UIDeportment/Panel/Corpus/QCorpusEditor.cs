@@ -8,7 +8,7 @@ namespace Llyn.UIDeportment;
 
 internal sealed partial class QCorpus
 {
-    private long _qTranscriptCitation;
+    private string _qTranscriptCitation = string.Empty;
 
     private string _qTranscriptLanguage = string.Empty;
 
@@ -90,8 +90,8 @@ internal sealed partial class QCorpus
         _qTranscriptLanguage = example?.CExampleLanguage ?? string.Empty;
         QSpeakerShow();
 
-        _qTranscriptCitation = example?.CExampleSource ?? 0;
-        QCitationUpdate();
+        _qTranscriptCitation = example?.CExampleCitation ?? string.Empty;
+        QCitationRefine();
 
         QTranscriptMentionShow(example);
 
@@ -124,11 +124,11 @@ internal sealed partial class QCorpus
             QSpeakerShow();
         }
 
-        long shown = _qTranscriptCitation;
-        _qTranscriptCitation = example.CExampleSource ?? 0;
-        if (shown != _qTranscriptCitation)
+        string shown = _qTranscriptCitation;
+        _qTranscriptCitation = example.CExampleCitation;
+        if (!string.Equals(shown, _qTranscriptCitation, StringComparison.Ordinal))
         {
-            QCitationUpdate();
+            QCitationRefine();
         }
 
         QTranscriptMentionShow(example);

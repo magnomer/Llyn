@@ -12,6 +12,11 @@ It reloads whenever the workspace root it reads has moved, so no engine notice i
 
 Raised once the stored widths are dropped, so `PLayout` puts the grids back at their markup widths.
 
+## `public event Action? QPostureLinkedChanged;`
+
+Raised once the linked switch has flipped.
+The summary row and the tabs on screen follow in the same call.
+
 ## `internal QPosture(Func<string> root)`
 
 Keeps the reader of the current workspace root, and loads nothing until first asked.
@@ -33,6 +38,7 @@ A minimized window stores nothing, so the maximized flag it had survives a close
 ## `public bool QPostureLinkedSave(bool linked)`
 
 Stores whether dragging a panel in one tab sets the same width in every tab, and says whether that changed.
+A change then raises `QPostureLinkedChanged`, outside the gate.
 The widths themselves are stored per tab either way, so a flip neither moves nor loses any panel.
 
 ## `public void QPostureLayoutSave(IEnumerable<LCapsuleColumn> layout)`

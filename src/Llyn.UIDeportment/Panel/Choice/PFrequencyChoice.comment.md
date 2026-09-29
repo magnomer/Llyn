@@ -6,4 +6,5 @@ The frequency switch the user ticks in the settings panel.
 It is kept as a setting so the next run opens with it.
 Nothing already stored is fetched or dropped when it changes.
 The next save or first display of an unfilled entry reads the switch, because the engine checks it per fill.
-The handler only saves, and the settings bulletin the engine raises redraws the panel.
+The observer only hands the raw switch to one ledger save.
+The settings bulletin the engine raises redraws the panel.

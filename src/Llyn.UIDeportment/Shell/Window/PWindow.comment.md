@@ -68,17 +68,14 @@ The flag store is subscribed first, so it empties before any panel reloads on an
 Every panel is attached next, and the status bar after them, so it paints the drafts the panels opened.
 The navigation is heard after every panel attaches, so every panel has registered its tab.
 Each panel's restore answers `CWorkspaceOpened`, and the duplex answers `CWorkspaceStateOpened`.
+The widths answer `CWorkspaceOpened` too: the reset, then the stored widths of the workspace opened.
 So the open is one gate call, and Conduct decides what shows and in which order.
-The widths are registered and applied last, before any tab is shown.
+The widths are registered last, and the open applies them before any tab is shown.
 
 ## `private void PWindowIconRefine()`
 
 Each caption glyph strokes with its button's foreground through a binding set here.
 Each tab button's icon is resolved here.
-
-## `internal PLayout PWindowLayout => _pLayout;`
-
-The keeper of panel widths, reached by the settings panel when the user links or unlinks the tabs.
 
 ## `internal CAtelier PWindowAtelier { get; }`
 
@@ -101,7 +98,7 @@ Registers the root grid of every tab that has a seam, under the name its widths 
 Each panel wears its loaded markup as a `UserControl`, so the grid is that surface's content.
 The duplex panel is left out.
 Its two halves are editors sharing the window, not a catalog beside a display.
-The stored widths are applied right after, before any tab is shown, so nothing jumps on the first view.
+The stored widths are applied by the open that follows, before any tab is shown, so nothing jumps.
 
 ## `private void PWindowClosingObserve(object? sender, CancelEventArgs e)`
 

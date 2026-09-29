@@ -24,4 +24,6 @@ public interface CEnvoy
         string file, IReadOnlyList<CPortraitChoice> choices);
 
     CPressTicket? CEnvoyTicketRead();
+
+    string? CEnvoyWorkspaceRead(string workspace);
 }

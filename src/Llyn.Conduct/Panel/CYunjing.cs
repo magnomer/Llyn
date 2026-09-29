@@ -64,6 +64,7 @@ public sealed class CYunjing
             id => CYunjingPanel.CPanelRowOpen(id),
             () => LYunjingAllowed);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CYunjingPanel.LPanelChangeCheck, editor.LEditorFinish);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CYunjingVistaRestore);
         atelier.CAtelierNavigation.LNavigationDiweiAttach(LYunjingDiweiOpen);
         CYunjingPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }

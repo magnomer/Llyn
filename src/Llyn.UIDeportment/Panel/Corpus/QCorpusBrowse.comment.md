@@ -33,16 +33,16 @@ Takes the vistas the window started for this tab and puts the panel on them.
 The dropdown mark and the filter mark are drawn from the anthology first.
 The flags are loaded before any row is built, then the language menu is built from the loaded packs.
 Search text still standing in the box is handed to the vista, so a switched workspace keeps the search.
-The speakers, the citations and the catalog are then listed.
+The speakers and the catalog are then listed.
 
 ## `private void QCorpusObserverAttach()`
 
 Attaches each subject the panel cares about once, so no handler sorts announcements by subject.
 A vista announcement refills the catalog, since order, filter or query moved.
-A stored Example or Source refills the citations and the catalog, because a row cites a Source.
+A stored Example or Source refills the catalog, because a row cites a Source.
 A reflex fill or a flipped setting rewrites the epithet beside a headword, so each refills the catalog too.
 An entry announcement goes to the quotation panel first, which may adopt a freshly stored Entry.
-The citations and the catalog follow, since the store may quote an Example.
+The catalog follows, since the store may quote an Example.
 The chosen entry's own announcement reaches `CCorpusEntryResonate` last, which redraws or drops it.
 Every observer is bound to the surface, since the driver is no control.
 

@@ -4,7 +4,7 @@ namespace Llyn.UIDeportment;
 
 public partial class PSettings
 {
-    private void PLocalizationHandle(object sender, SelectionChangedEventArgs e)
+    private void PLocalizationObserve(object sender, SelectionChangedEventArgs e)
     {
         if (PLocalization.SelectedValue is not string language)
         {

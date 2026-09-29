@@ -52,6 +52,7 @@ public sealed class CGuild
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Guild", LGuildLeaveConfirm, CGuildPanel.LPanelChosenRead, LGuildScribeRestore, LGuildAuthorOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CGuildSession.LSessionChangeCheck, CGuildSession.LSessionFinish);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CGuildVistaRestore);
     }
 
     public static CGuild CGuildCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)

@@ -81,8 +81,6 @@ public partial class PWindow
 
     internal Window PWindowSurface => _pWindowSurface;
 
-    internal PLayout PWindowLayout => _pLayout;
-
     internal CAtelier PWindowAtelier { get; }
 
     internal QForge PWindowForge { get; }
@@ -207,6 +205,8 @@ public partial class PWindow
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qXiesheng.QXieshengVistaRestore;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += PYunjing.PYunjingVistaRestore;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceStateOpened += _qDuplex.QDuplexRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _pLayout.PLayoutResetRefine;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _pLayout.PLayoutRefine;
 
         PWindowLayoutAttach();
     }
@@ -249,8 +249,6 @@ public partial class PWindow
         _pLayout.PLayoutAttach((Grid)PReference.Content, "reference");
         _pLayout.PLayoutAttach((Grid)PGuild.Content, "guild");
         _pLayout.PLayoutAttach((Grid)PFavorite.Content, "favorite");
-
-        _pLayout.PLayoutRefine();
     }
 
     private void PWindowClosingObserve(object? sender, CancelEventArgs e)

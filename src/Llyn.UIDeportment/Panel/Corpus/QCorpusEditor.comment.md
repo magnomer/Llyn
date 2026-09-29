@@ -9,6 +9,11 @@ A sentence meant for one card alone is a new Example on that card.
 What the controls hold is handed to the desk's text gate, which builds each request.
 The driver keeps no copy of a stored Example, and asks the engine what counts as a change.
 
+## `private string _qTranscriptCitation`
+
+The citation line the field last showed, as the Example carried it ready.
+Escape, leaving the field and a pick redraw the field from it, so they read nothing.
+
 ## `private void QTranscriptAttach()`
 
 Subscribes the sentence field's typing handler.

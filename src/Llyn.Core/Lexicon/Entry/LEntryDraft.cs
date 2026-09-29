@@ -78,6 +78,27 @@ public sealed record LEntryDraft(
             .Distinct()
             .ToList();
 
+    public IReadOnlyList<long> LEntryDraftCitations
+    {
+        get
+        {
+            List<long> cited = [];
+            Stack<LCardDraft> cards = new(LEntryDraftMeanings.Concat(LEntryDraftCollocations));
+            while (cards.Count > 0)
+            {
+                LCardDraft card = cards.Pop();
+                cited.AddRange(card.LCardDraftSentence.Select(
+                    static sentence => sentence.LSentenceDraftExample?.LExampleDraftReference.LStateAnchorShow() ?? 0));
+                foreach (LCardDraft child in card.LCardDraftChild)
+                {
+                    cards.Push(child);
+                }
+            }
+
+            return cited.Where(static id => id > 0).Distinct().ToList();
+        }
+    }
+
     public LEntryDraft LEntryDraftNormalize()
     {
         return this with

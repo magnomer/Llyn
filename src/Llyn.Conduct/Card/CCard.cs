@@ -120,7 +120,7 @@ public sealed class CCard
             : new CProffer(text, [], false);
     }
 
-    private static CProffer LCardProfferRead(LReferenceOffer offer)
+    internal static CProffer LCardProfferRead(LReferenceOffer offer)
     {
         return new CProffer(
             offer.LReferenceOfferText,

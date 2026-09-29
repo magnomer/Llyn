@@ -78,7 +78,14 @@ public sealed class CAtelier : IDisposable
             blank);
     }
 
-    internal void CAtelierInputRestore(CEditor editor)
+    public CEditor CAtelierInputCreate(CEnvoy envoy)
+    {
+        CEditor editor = CEditor.CEditorCreate(this, envoy);
+        LAtelierInputRestore(editor);
+        return editor;
+    }
+
+    internal void LAtelierInputRestore(CEditor editor)
     {
         ArgumentNullException.ThrowIfNull(editor);
 
@@ -109,9 +116,7 @@ public sealed class CAtelier : IDisposable
 
     public void CAtelierOpen()
     {
-        LWorkspaceState state = CAtelierSettingsPort.LEngineWorkspaceStart();
-        CAtelierWorkspace.LWorkspaceOpen(LAtelierStateRead(state));
-        CAtelierNavigation.LNavigationTabOpen();
+        CAtelierWorkspace.LWorkspaceOpen(LAtelierStateRead(CAtelierSettingsPort.LEngineWorkspaceStart()));
     }
 
     public bool CAtelierQuitConfirm(CEnvoy envoy)
@@ -119,29 +124,12 @@ public sealed class CAtelier : IDisposable
         return CAtelierWorkspace.LWorkspaceQuitConfirm(envoy);
     }
 
-    public CWorkspaceState? CAtelierWorkspaceChange(string chosen, CEnvoy envoy)
-    {
-        ArgumentNullException.ThrowIfNull(chosen);
-        ArgumentNullException.ThrowIfNull(envoy);
-
-        string path = chosen.Trim();
-        if (path.Length == 0
-            || string.Equals(path, CAtelierPathRead(), StringComparison.Ordinal)
-            || !CAtelierWorkspace.LWorkspaceQuitConfirm(envoy))
-        {
-            return null;
-        }
-
-        CAtelierSettingsPort.LEngineWorkspaceChange(path);
-        return LAtelierStateRead(CAtelierSettingsPort.LEngineStateRead());
-    }
-
     public string CAtelierPathRead()
     {
         return CAtelierSettingsPort.LEngineWorkspaceRead();
     }
 
-    private static CWorkspaceState LAtelierStateRead(LWorkspaceState state)
+    internal static CWorkspaceState LAtelierStateRead(LWorkspaceState state)
     {
         return new CWorkspaceState(state.LWorkspaceStateLeft, state.LWorkspaceStateRight);
     }

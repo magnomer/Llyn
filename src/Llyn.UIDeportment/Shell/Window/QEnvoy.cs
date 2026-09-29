@@ -169,4 +169,15 @@ internal sealed class QEnvoy : CEnvoy
                 _ => CPressInk.CPressInkDefault,
             });
     }
+
+    public string? CEnvoyWorkspaceRead(string workspace)
+    {
+        Microsoft.Win32.OpenFolderDialog dialog = new()
+        {
+            Title = QLocalizationCatalog.QLocalizationTextRead("Settings.Workspace"),
+            InitialDirectory = workspace,
+        };
+
+        return dialog.ShowDialog(_qEnvoySurface) == true ? dialog.FolderName : null;
+    }
 }

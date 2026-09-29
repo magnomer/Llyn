@@ -15,6 +15,10 @@ public sealed class CAnthology
 
     private readonly CDesk _cAnthologyDesk;
 
+    private readonly CEnvoy _cAnthologyEnvoy;
+
+    private readonly LSettingsPort _cAnthologySettingsPort;
+
     private LVista? _cAnthologyVista;
 
     internal CAnthology(
@@ -30,10 +34,13 @@ public sealed class CAnthology
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(desk);
+        ArgumentNullException.ThrowIfNull(envoy);
 
         _cAnthologyEntryPort = entries;
         _cAnthologyPortraitPort = portraits;
         _cAnthologyDesk = desk;
+        _cAnthologyEnvoy = envoy;
+        _cAnthologySettingsPort = settings;
         CAnthologyPanel = new CPanel(
             envoy,
             settings,
@@ -118,30 +125,32 @@ public sealed class CAnthology
                 _cAnthologyVista, CPortrait.LPortraitLegendRead(settings, "Example"), chosen));
     }
 
-    public IReadOnlyList<CCatalogReference> CAnthologyReferenceRead()
-    {
-        return COeuvre.COeuvreReferenceRead(_cAnthologyEntryPort.LEngineReferenceFind());
-    }
-
-    public IReadOnlyList<CCitationRow> CAnthologyCitationRead(string word)
+    public CProffer CAnthologyCitationRead(string word)
     {
         ArgumentNullException.ThrowIfNull(word);
 
-        return CCitationRow.CCitationRowFind(
-            COeuvre.COeuvreReferenceRead(
-                _cAnthologyEntryPort.LEngineCitationFind(_cAnthologyDesk.CDeskId, word)),
-            word);
+        return _cAnthologyDesk.CDeskChip?.LQuillReferenceFind(0, 0, word) is LReferenceOffer offer
+            ? CCard.LCardProfferRead(offer)
+            : new CProffer(word, [], false);
+    }
+
+    public void CAnthologyCitationSet(long referenceId)
+    {
+        _cAnthologyDesk.CDeskQuill?.LQuillReferenceSet(referenceId);
     }
 
     public void CAnthologyCitationSet(string title)
     {
-        if (_cAnthologyDesk.CDeskQuill is not LQuill quill)
-        {
-            return;
-        }
+        ArgumentNullException.ThrowIfNull(title);
 
-        quill.LQuillReferenceSet(
-            _cAnthologyEntryPort.LEngineCitationResolve(_cAnthologyDesk.CDeskId, 0, 0, title));
+        try
+        {
+            _cAnthologyDesk.CDeskChip?.LQuillReferenceResolve(title);
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cAnthologyEnvoy, _cAnthologySettingsPort, "Reference.CreateFailed", exception);
+        }
     }
 
     public static bool CAnthologyTextCheck(string text, CStateValue value)
@@ -151,12 +160,27 @@ public sealed class CAnthology
         return LEntryPort.LEngineTextMatch(text, value.CStateValueText);
     }
 
-    internal static CExample? LAnthologyDraftRead(LDraft? draft)
+    internal CExample? LAnthologyDraftRead(LDraft? draft)
     {
-        return LAnthologyExampleRead(draft?.LDraftExample);
+        return draft?.LDraftExample is LExample example
+            ? LAnthologyExampleRead(example, LAnthologyCitationRead(draft))
+            : null;
     }
 
-    internal static CExample? LAnthologyExampleRead(LExample? example)
+    private string LAnthologyCitationRead(LDraft draft)
+    {
+        try
+        {
+            return _cAnthologyEntryPort.LEngineCitationRead(draft);
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cAnthologyEnvoy, _cAnthologySettingsPort, "Reference.LoadFailed", exception);
+            return string.Empty;
+        }
+    }
+
+    internal static CExample? LAnthologyExampleRead(LExample? example, string citation)
     {
         return example is null
             ? null
@@ -164,6 +188,7 @@ public sealed class CAnthology
                 example.LExampleLanguage,
                 CFolio.CFolioStateRead(example.LExampleText),
                 example.LExampleSource.LStateAnchorShown,
+                citation,
                 example.LExampleGloss.Select(LAnthologyGlossRead).ToList(),
                 example.LExampleMention.Select(LAnthologyMentionRead).ToList(),
                 CMention.CMentionRead(example.LExampleExcerpt));

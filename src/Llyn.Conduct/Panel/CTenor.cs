@@ -52,6 +52,7 @@ public sealed class CTenor
             CTenorPanel.LPanelScribeRestore,
             LTenorRegisterOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CTenorPanel.LPanelChangeCheck, editor.LEditorFinish);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CTenorVistaRestore);
     }
 
     public static CTenor CTenorCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)

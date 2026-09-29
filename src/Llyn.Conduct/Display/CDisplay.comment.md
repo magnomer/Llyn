@@ -134,9 +134,9 @@ The page thus still draws, as the sentence frame's read does in the editor.
 
 The sentence order of `language`, or the default order when the read is refused.
 
-## `private IReadOnlyDictionary<long, string> LDisplayCitationRead()`
+## `private IReadOnlyDictionary<long, string> LDisplayCitationRead(LEntryDraft shown)`
 
-The byline of every Source, or none when the read is refused.
+The ready line of every Source the shown entry cites, or none when the read is refused.
 It is read on every open, so a Source edited elsewhere reads fresh.
 
 ## `private IReadOnlyList<CTranslationTarget> LDisplayTargetRead(LEntryDraft shown)`

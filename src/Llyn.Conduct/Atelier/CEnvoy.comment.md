@@ -54,3 +54,9 @@ The gate chooses the offered name and the formats, so the question needs no read
 Asks which printer a print goes to and how, and answers the dialog's choice as a ticket.
 It answers null when the user declines, and the gate then prints nothing.
 The gate asks it inside its failure policy, so a dialog that fails is reported as `Print.Failed`.
+
+## `string? CEnvoyWorkspaceRead(string workspace);`
+
+Asks which folder the session moves onto, starting from `workspace`, the folder in use.
+It answers null when the user declines, and the gate then moves nothing.
+The gate asks it inside its failure policy, so a dialog that fails is reported as `Workspace.OpenFailed`.

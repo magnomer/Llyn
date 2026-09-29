@@ -22,9 +22,10 @@ public sealed class LSettingsOutlet : LSettingsPort
 
     public string LEngineWorkspaceFormat() => _lSettingsOutletEngine.LEngineWorkspaceFormat();
 
-    public void LEngineWorkspaceChange(string path) => _lSettingsOutletEngine.LEngineWorkspaceChange(path);
+    public bool LEngineWorkspaceCheck(string chosen) => _lSettingsOutletEngine.LEngineWorkspaceCheck(chosen);
 
-    public LWorkspaceState LEngineStateRead() => _lSettingsOutletEngine.LEngineWorkspace.LEngineStateRead();
+    public LWorkspaceState LEngineWorkspaceChange(string chosen) =>
+        _lSettingsOutletEngine.LEngineWorkspace.LEngineWorkspaceChange(chosen);
 
     public LWorkspaceState LEngineWorkspaceStart() =>
         _lSettingsOutletEngine.LEngineWorkspace.LEngineWorkspaceStart();

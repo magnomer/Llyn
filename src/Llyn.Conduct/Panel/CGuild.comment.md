@@ -59,7 +59,7 @@ A stored row is chosen and read, not written, so a roll that drops it closes the
 ## `public void CGuildVistaRestore()`
 
 Starts the roll and oeuvre vistas through the atelier and binds the panel, the oeuvre and the desk to them.
-A workspace change runs it again through the forge.
+The workspace change gate runs it again through `CWorkspace`.
 
 ## `public IReadOnlyList<CCatalogAuthor> CGuildRollRead()`
 

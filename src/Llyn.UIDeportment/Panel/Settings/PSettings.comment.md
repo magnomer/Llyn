@@ -19,6 +19,7 @@ Each named part of the markup is read through `FindName`, so call sites keep the
 ## `internal void PSettingsAttach(PWindow host)`
 
 Puts the panel to work on the host's atelier by subscribing `CLedgerChanged`, and shows the first card.
+It also subscribes the posture's linked switch, so the summary row follows a tick.
 The ledger raises the state on every open and after every settings or workspace change.
 The ledger rows get their fill through `QLookItemAttach` before the first state arrives.
 

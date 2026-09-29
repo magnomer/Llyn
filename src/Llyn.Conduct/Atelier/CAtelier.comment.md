@@ -59,7 +59,12 @@ The five other port handles below it stand for the same reason.
 job14-30 deletes all six.
 
 
-## `internal void CAtelierInputRestore(CEditor editor)`
+## `public CEditor CAtelierInputCreate(CEnvoy envoy)`
+
+Builds the input tab's editor and binds it to the input vista at once.
+The input tab has no area of its own, so the atelier builds its editor.
+
+## `internal void LAtelierInputRestore(CEditor editor)`
 
 Binds `editor` to the input tab's vista, which lists entries by headword.
 It runs again after a workspace change, so the input tab follows the new workspace.
@@ -89,7 +94,7 @@ A driver passes `settled` once the gesture ends, and a key press is settled at o
 
 ## `public void CAtelierOpen()`
 
-Opens the session on the workspace in use, at startup and after every workspace change.
+Opens the session on the workspace in use at startup.
 One engine call sweeps the leftover drafts and recordings and answers the stored state.
 The sweep runs before any view restores, so nothing already saved is counted as lost work.
 `CAtelierWorkspace` then raises its open events, and the stored tab opens last.
@@ -98,22 +103,13 @@ The sweep runs before any view restores, so nothing already saved is counted as 
 
 Decides whether the session may end over every area that holds a draft.
 The workspace asks every area and puts the one question through `envoy`.
-The window's closing reaches it, and `CAtelierWorkspaceChange` asks the same workspace quit inside Conduct.
-
-## `public CWorkspaceState? CAtelierWorkspaceChange(string chosen, CEnvoy envoy)`
-
-Moves the session onto the workspace at `chosen`, trimmed, and answers the state of the workspace moved onto.
-A blank path or the folder already in use changes nothing, asks nothing and answers nothing.
-Otherwise the workspace's quit asks first, since the move drops every open form.
-It is the one leave question the window's closing asks, put through `envoy` only when a form holds unsaved work.
-The engine records the folder only once the move succeeds, and a failed move throws to the driver.
-The driver then calls `CAtelierOpen`, which sweeps and restores the views on the new workspace.
+The window's closing reaches it, and `CWorkspaceChange` asks the same workspace quit inside Conduct.
 
 ## `public string CAtelierPathRead()`
 
 The workspace folder in use, as a settings view shows it in its path field.
 
-## `private static CWorkspaceState LAtelierStateRead(LWorkspaceState state)`
+## `internal static CWorkspaceState LAtelierStateRead(LWorkspaceState state)`
 
 The plain map from the engine's state row to the entries the duplex wings last stood on.
 

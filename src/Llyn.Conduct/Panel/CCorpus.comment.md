@@ -215,4 +215,4 @@ The reader is asked for the file and format through the panel's envoy, and a dec
 Starts the `corpus` vista over Examples by text and the `quotation` vista over entries by headword.
 The anthology takes the first, and the quotation list takes both, since its rows follow the chosen Example.
 The entry editor takes the quotation vista, so an entry it stores lands in that list.
-The forge runs it at build and again after a workspace change.
+The forge runs it at build, and the workspace change gate runs it again.

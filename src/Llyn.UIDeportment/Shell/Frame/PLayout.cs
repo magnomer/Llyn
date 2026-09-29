@@ -21,6 +21,7 @@ public sealed class PLayout
         ArgumentNullException.ThrowIfNull(posture);
         _pLayoutPosture = posture;
         _pLayoutPosture.QPostureCleared += PLayoutResetRefine;
+        _pLayoutPosture.QPostureLinkedChanged += PLayoutLinkedRefine;
     }
 
     internal void PLayoutAttach(Grid host, string tab)
@@ -133,6 +134,12 @@ public sealed class PLayout
         }
 
         _pLayoutPosture.QPostureLayoutSave(list);
+    }
+
+    private void PLayoutLinkedRefine()
+    {
+        PLayoutLinkRefine(null);
+        PLayoutSave(null);
     }
 
     internal void PLayoutResetRefine()
