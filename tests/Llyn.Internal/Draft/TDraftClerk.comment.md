@@ -36,6 +36,11 @@ A settled list completes its last part too, and a blank settled list hands nothi
 A second transcription row under a scheme the draft already carries is refused.
 The first one stands, so the refusal is the clerk's and not the fake's.
 
+## `public void GlossEmptyCheck_ExampleWithAndWithoutGloss_AnswersOnlyForAnExampleHoldingNone()`
+
+A draft without an Example and an Example that holds a Gloss both answer false.
+An Example holding none answers true.
+
 ## `public void DraftClerkApply_UnknownRequestKind_ThrowsArgument()`
 
 A request kind no switch knows falls to the default arm, which is an argument error and not a refusal.

@@ -26,7 +26,7 @@ The menu is already hidden by the pick, and a landing hides it too.
 Sense mode.
 The caller hands the Meanings a Conduct read answered, so the menu stays free of the engine.
 A picked row calls `chosen` with the anchor and its sense id, and zero means the whole Entry.
-The card row calls it directly with the sentence area's read, and the corpus scribe through `PWindowSenseRefine`.
+The card row and the corpus scribe call it directly, each with its own area's ready read.
 
 ## `internal void PMentionMenuHandle(object sender, MouseButtonEventArgs e)`
 

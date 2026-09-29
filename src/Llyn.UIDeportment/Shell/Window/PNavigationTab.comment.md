@@ -68,14 +68,6 @@ An empty answer only closes any menu already open, so a second click never stack
 Answers `CMentionSenseChosen` by scrolling the stored Mention's sense card into view in the library's display.
 The navigation's entry open lands in the library, so that display is the one showing the entry.
 
-## `internal void PWindowSenseRefine(FrameworkElement anchor, Rect place, long entryId, Action<FrameworkElement, long> chosen)`
-
-Opens the menu in Sense mode on the Meanings `CCatalogMeaningRead` answers ready in reading order.
-A read that fails is reported by the read itself, and nothing opens.
-The linking gesture is the caller, and it passes what to do with the chosen sense.
-The choice hands back the anchor with the sense, so the caller's Observe finds its row from the Veneer.
-The corpus scribe calls it, and the card row now shows the menu from its own ready read.
-
 ## `private void PMentionLeaveRefine(object? sender, EventArgs e)`
 
 The menu closes when the window loses activation.

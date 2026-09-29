@@ -58,9 +58,6 @@ public interface LEntryPort
 
     IReadOnlyList<LReflexDraft> LEngineReflexRead(LEntryDraft draft);
 
-    IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> LEngineMeaningRead(
-        long entryId, string key);
-
     IReadOnlyList<LCatalogTag> LEngineTagFind(LVista vista);
 
     LTag LEngineTagCreate(string text);

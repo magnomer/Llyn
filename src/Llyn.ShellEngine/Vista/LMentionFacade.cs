@@ -79,6 +79,17 @@ internal sealed class LMentionFacade
         }
     }
 
+    public IReadOnlyList<LMentionLabel> LEngineMentionResolve(LTenure held, long card, long sentence)
+    {
+        ArgumentNullException.ThrowIfNull(held);
+
+        LDraft? draft = held.LTenureRead();
+        lock (_lMentionFacadeGate)
+        {
+            return LMentionFacadeStaff.LEngineStaffMention.LMentionClerkResolve(draft, card, sentence);
+        }
+    }
+
     public IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LTenure held)
     {
         ArgumentNullException.ThrowIfNull(held);

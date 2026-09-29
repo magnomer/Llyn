@@ -21,9 +21,9 @@ A picked language lands on the held Example.
 
 A picked Source becomes the held Example's citation.
 
-## `public void GlossAdd_LanguageGiven_AddsGlossInLanguage()`
+## `public void GlossInsert_PlaceGiven_AddsGlossInTheGlossLanguageAtThePlace()`
 
-An added Gloss takes the given language.
+An inserted Gloss takes the language the engine resolves for a new Gloss.
 
 ## `public void GlossRemove_AddedGloss_DropsIt()`
 
@@ -32,18 +32,6 @@ An added Gloss is dropped by its id.
 ## `public void GlossSet_TextThenLanguage_WritesBoth()`
 
 A typed text and then a chosen language both land on the same Gloss.
-
-## `public void MentionAdd_SpanOverEntry_LinksWithoutSense()`
-
-A span links to the Entry with its offset and length, and no sense yet.
-
-## `public void MentionRemove_AddedMention_DropsIt()`
-
-An added Mention is dropped by its id.
-
-## `public void MentionSet_SensePicked_PointsMentionAtSense()`
-
-A picked sense lands on the Mention.
 
 ## `public void SituationSet_UnknownKindLeftEmpty_KeepsKindUnknown()`
 

@@ -1,4 +1,3 @@
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Conduct;
@@ -12,17 +11,11 @@ internal sealed partial class QCorpus
 
     private LQuill? QTranscriptQuill => _cCorpus.CCorpusDesk.CDeskQuill;
 
-    private void QTranscriptDeskAttach()
+    private void QTranscriptDeskIntroduce()
     {
-        QTranscriptDesk.CDeskObserverAttach(
-            LObserver.LObserverCreate<Action>(static run => run()), QTranscriptDraftRestore);
         QTranscriptDesk.CDeskFailed += _qCorpusHost.PWindowFailureRefine;
         QTranscriptDesk.CDeskRefused += _qCorpusHost.PWindowEnvoy.CEnvoyFailureShow;
-    }
-
-    private void QTranscriptDraftRestore()
-    {
-        QTranscriptShow(_cCorpus.CCorpusTranscriptRead());
+        _cCorpus.CCorpusDraftChanged += QTranscriptShow;
     }
 
     public void QChronicleUndo()

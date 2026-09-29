@@ -101,6 +101,9 @@ public sealed class LDraftOutlet : LDraftPort
     public IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LTenure held) =>
         _lDraftOutletEngine.LEngineMention.LEngineMentionResolve(held);
 
+    public IReadOnlyList<LMentionLabel> LEngineMentionResolve(LTenure held, long card, long sentence) =>
+        _lDraftOutletEngine.LEngineMention.LEngineMentionResolve(held, card, sentence);
+
     public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(
         LTenure held, long card, long sentence, string text, int start, int length, string key) =>
         _lDraftOutletEngine.LEngineCard.LEngineSenseRead(held, card, sentence, text, start, length, key);

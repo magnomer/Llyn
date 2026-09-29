@@ -33,6 +33,7 @@ Takes the text typed into the dredge field as the list's query.
 ## `public IReadOnlyList<CVistaRow> CQuotationRowsRead()`
 
 Reads the entries quoting the roll's chosen Example, or every entry while none is chosen.
+A failed read shows `Example.LoadFailed` through the envoy and answers no rows.
 The engine matches the query and drops the hidden languages, so the list decides nothing about matching.
 
 ## `internal string LQuotationFileRead()`

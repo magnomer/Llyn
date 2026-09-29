@@ -21,8 +21,8 @@ The unknown and unwritten wordings were applied by the map, so nothing is decide
 ## `public string QAnthologyItemCount { get; }`
 
 How many Entries, Meanings and Collocations quote this Example, as the row shows it.
-It is the figure that decides whether a delete is legal.
-The catalog carries it and not only the display.
+It is the ready text the catalog row carries, blank while the Example is unused.
+The item only copies it.
 
 ## `public bool QAnthologyItemChosen`
 

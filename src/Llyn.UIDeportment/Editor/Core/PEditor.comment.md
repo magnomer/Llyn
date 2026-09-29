@@ -37,7 +37,12 @@ The driver then subscribes this view's Refines to the editor's notices, so the v
 
 ## `internal void PEditorClose()`
 
-Stops the editor through its one close gate, then releases playback.
+Stops the editor through its one close gate, then releases playback through `PEditorPlayerRefine`.
+
+## `internal void PEditorPlayerRefine()`
+
+Releases the editor's recording player, the Veneer half of a close.
+A panel whose editor the window's exit gate stops in Conduct calls it alone.
 
 ## `internal void PEditorStartRefine()`
 

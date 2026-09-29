@@ -94,6 +94,16 @@ Only the areas call it, each once from its constructor.
 Registers one area's vista restore for a workspace change.
 Only the areas call it, each once from its constructor.
 
+## `internal void LWorkspaceClosureAdd(Action closure)`
+
+Registers one area's own close for the window's exit.
+Only the areas call it, each once from its constructor.
+
+## `internal void LWorkspaceClose()`
+
+Runs every registered area close, in the order the areas were built.
+Only the exit gate `CAtelier.CAtelierClose` calls it, before the leftover sweep.
+
 ## `private void LWorkspaceVistaRestore()`
 
 Restarts every registered area's vistas, then the input tab's, on the workspace just moved onto.

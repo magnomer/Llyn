@@ -162,7 +162,8 @@ It is static, since the host reads the rescue before it builds the atelier.
 ## `public void CAtelierClose()`
 
 Ends the session once the window has closed and every view has stopped.
-It sweeps the leftover drafts once more, then releases the posture, which lets go of every vista it watched.
+It first runs each area's close registered with the workspace, through `CWorkspace.LWorkspaceClose`.
+It then sweeps the leftover drafts once more, then releases the posture, which lets go of every vista it watched.
 Sweeping on the way out as well as on the way in bounds what a long session leaves behind.
 
 ## `public void Dispose()`

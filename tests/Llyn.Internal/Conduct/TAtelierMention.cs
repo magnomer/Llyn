@@ -48,17 +48,6 @@ public sealed class TAtelierMention
     }
 
     [Fact]
-    public void MentionSpanRead_Selection_ReadsCodePointSpan()
-    {
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TAtelierMentionCreate(engine, []);
-
-        (int offset, int length) = atelier.CAtelierMention.CMentionSpanRead("\U0001F600 cat", 3, 3);
-
-        Assert.Equal((2, 3), (offset, length));
-    }
-
-    [Fact]
     public void MentionOffsetRead_UnitRead_RoundTrips()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());

@@ -100,10 +100,6 @@ public sealed class CCatalog
         return _cCatalogAtelier.CAtelierSettingsPort.LEngineLanguageRead();
     }
 
-    public string CCatalogGlossRead()
-    {
-        return _cCatalogAtelier.CAtelierSettingsPort.LEngineGlossRead();
-    }
 
     public Task<IReadOnlyList<string>> CCatalogEnsignLoad(
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)
@@ -123,22 +119,6 @@ public sealed class CCatalog
 
         return _cCatalogAtelier.CAtelierSettingsPort.LEngineEnsignLoad(
             language, varieties, (rows, delete) => store(CCatalogEnsignRead(rows), delete));
-    }
-
-    public IReadOnlyList<CMeaning>? CCatalogMeaningRead(long entryId, CEnvoy envoy)
-    {
-        ArgumentNullException.ThrowIfNull(envoy);
-
-        try
-        {
-            return LCatalogMeaningRead(
-                _cCatalogAtelier.CAtelierEntryPort.LEngineMeaningRead(entryId, "Display.Unknown"));
-        }
-        catch (Exception exception)
-        {
-            CLedger.LLedgerFailureShow(envoy, _cCatalogAtelier.CAtelierSettingsPort, "Mention.FindFailed", exception);
-            return null;
-        }
     }
 
     internal static IReadOnlyList<CMeaning> LCatalogMeaningRead(

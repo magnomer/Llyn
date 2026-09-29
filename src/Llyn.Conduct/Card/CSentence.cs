@@ -125,23 +125,16 @@ public sealed class CSentence
     public IReadOnlyList<CMeaning>? CSentenceSenseRead(
         long cardId, long sentenceId, string text, int start, int length)
     {
-        if (_cSentenceDesk.CDeskTenure is not LTenure held)
-        {
-            return null;
-        }
-
-        try
-        {
-            return _cSentenceDraftPort.LEngineSenseRead(
-                    held, cardId, sentenceId, text, start, length, "Display.Unknown") is { } rows
-                ? CCatalog.LCatalogMeaningRead(rows)
-                : null;
-        }
-        catch (Exception exception)
-        {
-            CLedger.LLedgerFailureShow(_cSentenceEnvoy, _cSentenceSettingsPort, "Mention.FindFailed", exception);
-            return null;
-        }
+        return CMention.LMentionMeaningRead(
+            _cSentenceDraftPort,
+            _cSentenceDesk,
+            cardId,
+            sentenceId,
+            text,
+            start,
+            length,
+            _cSentenceEnvoy,
+            _cSentenceSettingsPort);
     }
 
     public IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> CSentenceMentionRead()

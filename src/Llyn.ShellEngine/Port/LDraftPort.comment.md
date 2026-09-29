@@ -70,6 +70,11 @@ The held draft names the Source the sentence cites now, so an unchanged title ke
 The chip line of every sentence row on every card of the held draft, keyed by the row.
 Each chip carries the words it covers, the linked headword and the chosen sense.
 
+## `IReadOnlyList<LMentionLabel> LEngineMentionResolve(LTenure held, long card, long sentence);`
+
+The chip line of one Example of the held draft, addressed by card and sentence.
+Card 0 and sentence 0 address the draft's own Example.
+
 ## `IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(`
 
 The Meanings the sense menu offers for the linked Mention under a sentence field's selection.

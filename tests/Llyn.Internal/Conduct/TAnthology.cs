@@ -37,6 +37,7 @@ public sealed class TAnthology
 
         Assert.Equal("?", rows.Single(row => row.CCatalogExampleId == unknown.LExampleId).CCatalogExampleText);
         Assert.Equal("a cat sat", rows.Single(row => row.CCatalogExampleId == sound.LExampleId).CCatalogExampleText);
+        Assert.All(rows, row => Assert.Equal(string.Empty, row.CCatalogExampleCount));
     }
 
     [Fact]
@@ -205,6 +206,99 @@ public sealed class TAnthology
     }
 
     [Fact]
+    public void AnthologyGlossAdd_RowBelow_PlacesTheGlossInTheGlossLanguageAfterIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CAnthology anthology = TAnthologyPrepare(engine, atelier, out CDesk desk);
+        desk.CDeskStart(null);
+        desk.TDeskDefer(TInterface.TGlossAdditionCreate(desk.CDeskId, 0, 0, "French", 0));
+        desk.CDeskPersist();
+        desk.TDeskDefer(TInterface.TGlossAdditionCreate(desk.CDeskId, 0, 0, "German", 1));
+        desk.CDeskPersist();
+
+        anthology.CAnthologyGlossAdd(0);
+
+        Assert.Equal(
+            ["French", engine.TEngineGlossRead(), "German"],
+            TAnthologyGlossRead(anthology, desk).Select(static row => row.CGlossDraftLanguage));
+    }
+
+    [Fact]
+    public void AnthologyGlossAdd_BelowTheLastRowAndBeforeTheFirst_PlacesEachAtItsPlace()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CAnthology anthology = TAnthologyPrepare(engine, atelier, out CDesk desk);
+        desk.CDeskStart(null);
+        desk.TDeskDefer(TInterface.TGlossAdditionCreate(desk.CDeskId, 0, 0, "French", 0));
+        desk.CDeskPersist();
+
+        anthology.CAnthologyGlossAdd(0);
+        anthology.CAnthologyGlossAdd(-1);
+
+        Assert.Equal(
+            [engine.TEngineGlossRead(), "French", engine.TEngineGlossRead()],
+            TAnthologyGlossRead(anthology, desk).Select(static row => row.CGlossDraftLanguage));
+    }
+
+    [Fact]
+    public void AnthologyGlossPrepare_EmptyThenHeld_AddsOnlyTheFirstGloss()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CAnthology anthology = TAnthologyPrepare(engine, atelier, out CDesk desk);
+        desk.CDeskStart(null);
+
+        bool first = anthology.CAnthologyGlossPrepare();
+        bool second = anthology.CAnthologyGlossPrepare();
+
+        Assert.True(first);
+        Assert.False(second);
+        CGlossDraft held = Assert.Single(TAnthologyGlossRead(anthology, desk));
+        Assert.Equal(engine.TEngineGlossRead(), held.CGlossDraftLanguage);
+    }
+
+    [Fact]
+    public void AnthologyGlossPrepare_NoTranscriptHeld_AddsNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CAnthology anthology = TAnthologyPrepare(engine, atelier, out _);
+
+        Assert.False(anthology.CAnthologyGlossPrepare());
+    }
+
+    [Fact]
+    public void AnthologyGlossSetAndLanguageSetAndRemove_PickedRows_WriteTheTextRetagAndDropTheGloss()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CAnthology anthology = TAnthologyPrepare(engine, atelier, out CDesk desk);
+        desk.CDeskStart(null);
+        desk.TDeskDefer(TInterface.TGlossAdditionCreate(desk.CDeskId, 0, 0, "French", 0));
+        desk.CDeskPersist();
+        desk.TDeskDefer(TInterface.TGlossAdditionCreate(desk.CDeskId, 0, 0, "German", 1));
+        desk.CDeskPersist();
+        IReadOnlyList<CGlossDraft> added = TAnthologyGlossRead(anthology, desk);
+
+        anthology.CAnthologyGlossSet(added[1].CGlossDraftId, "die Katze");
+        desk.CDeskPersist();
+        anthology.CAnthologyLanguageSet(added[1].CGlossDraftId, "Dutch");
+        anthology.CAnthologyGlossRemove(added[0].CGlossDraftId);
+
+        CGlossDraft kept = Assert.Single(TAnthologyGlossRead(anthology, desk));
+        Assert.Equal(added[1].CGlossDraftId, kept.CGlossDraftId);
+        Assert.Equal("Dutch", kept.CGlossDraftLanguage);
+        Assert.Equal("die Katze", kept.CGlossDraftText.CStateValueShown);
+    }
+
+    [Fact]
     public void AnthologyTextCheck_BlankField_MatchesAnEmptyText()
     {
         Assert.True(CAnthology.CAnthologyTextCheck("  ", CStateValue.CStateValueEmpty));
@@ -232,7 +326,6 @@ public sealed class TAnthology
         Assert.Equal("a cat", held.CExampleText.CStateValueText);
         Assert.Equal(9, held.CExampleSource);
         Assert.Equal("Field Notes", held.CExampleCitation);
-        Assert.Equal([40L], held.CExampleMention.Select(mention => mention.CMentionDraftEntry));
         Assert.Equal([40L], held.CExampleExcerpt.Select(mention => mention.CMentionMarkEntry));
     }
 
@@ -248,7 +341,6 @@ public sealed class TAnthology
         Assert.NotNull(held);
         Assert.True(held!.CExampleText.CStateValueUncertain);
         Assert.Null(held.CExampleSource);
-        Assert.Single(held.CExampleMention);
         Assert.Empty(held.CExampleExcerpt);
     }
 
@@ -257,6 +349,11 @@ public sealed class TAnthology
         CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, []);
         desk = TInterfaceConduct.TDeskCreate(engine, "Example", envoy, "Corpus", CSubject.CSubjectExample);
         return TInterfaceConduct.TAnthologyCreate(atelier, desk, envoy);
+    }
+
+    private static IReadOnlyList<CGlossDraft> TAnthologyGlossRead(CAnthology anthology, CDesk desk)
+    {
+        return anthology.TAnthologyDraftRead(desk.TDeskRead())?.CExampleGloss ?? [];
     }
 
     private static LExample TAnthologyExampleSave(LEngine engine, LStateValue text, long? source)

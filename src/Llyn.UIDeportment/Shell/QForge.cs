@@ -21,7 +21,8 @@ public sealed class QForge
 
     public CCorpus QForgeCorpusCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        CCorpus corpus = CCorpus.CCorpusCreate(_qForgeAtelier, shownSeam, envoy);
+        CCorpus corpus = CCorpus.CCorpusCreate(
+            _qForgeAtelier, shownSeam, envoy, LObserver.LObserverCreate<Action>(static run => run()));
         corpus.CCorpusVistaRestore();
         return corpus;
     }

@@ -64,6 +64,8 @@ public interface LDraftPort
 
     IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LTenure held);
 
+    IReadOnlyList<LMentionLabel> LEngineMentionResolve(LTenure held, long card, long sentence);
+
     IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(
         LTenure held, long card, long sentence, string text, int start, int length, string key);
 

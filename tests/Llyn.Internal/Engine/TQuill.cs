@@ -69,15 +69,16 @@ public sealed class TQuill
     }
 
     [Fact]
-    public void GlossAdd_LanguageGiven_AddsGlossInLanguage()
+    public void GlossInsert_PlaceGiven_AddsGlossInTheGlossLanguageAtThePlace()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTenure tenure = TQuillExampleStart(engine, TInterface.TStateValueCreate("a cat"));
 
-        tenure.TQuillCreate().TQuillGlossAdd("English", 0);
+        tenure.TTenureGlossInsert(0);
 
-        Assert.Equal("English", Assert.Single(tenure.TTenureRead()!.LDraftExample!.LExampleGloss).LGlossLanguage);
+        LGloss added = Assert.Single(tenure.TTenureRead()!.LDraftExample!.LExampleGloss);
+        Assert.Equal(engine.TEngineGlossRead(), added.LGlossLanguage);
     }
 
     [Fact]
@@ -88,7 +89,7 @@ public sealed class TQuill
         LTenure tenure = TQuillExampleStart(engine, TInterface.TStateValueCreate("a cat"));
         LQuill quill = tenure.TQuillCreate();
 
-        quill.TQuillGlossAdd("English", 0);
+        tenure.TTenureGlossInsert(0);
         quill.TQuillGlossRemove(Assert.Single(tenure.TTenureRead()!.LDraftExample!.LExampleGloss).LGlossId);
 
         Assert.Empty(tenure.TTenureRead()!.LDraftExample!.LExampleGloss);
@@ -103,7 +104,7 @@ public sealed class TQuill
         LTenure tenure = TQuillExampleStart(engine, TInterface.TStateValueCreate("a cat"));
         LQuill quill = tenure.TQuillCreate();
 
-        quill.TQuillGlossAdd("English", 0);
+        tenure.TTenureGlossInsert(0);
         long gloss = Assert.Single(tenure.TTenureRead()!.LDraftExample!.LExampleGloss).LGlossId;
         quill.TQuillGlossSet(gloss, null, "un chat");
         quill.TQuillGlossSet(gloss, "French", null);
@@ -111,54 +112,6 @@ public sealed class TQuill
         LGloss held = Assert.Single(tenure.TTenureRead()!.LDraftExample!.LExampleGloss);
         Assert.Equal("French", held.LGlossLanguage);
         Assert.Equal("un chat", held.LGlossText.TStateValueShow());
-    }
-
-    [Fact]
-    public void MentionAdd_SpanOverEntry_LinksWithoutSense()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry entry = TQuillEntrySave(engine);
-        LTenure tenure = TQuillExampleStart(engine, TInterface.TStateValueCreate("a cat"));
-
-        tenure.TQuillCreate().TQuillMentionAdd(2, 3, entry.LEntryId);
-
-        LMention added = Assert.Single(tenure.TTenureRead()!.LDraftExample!.LExampleMention);
-        Assert.Equal(2, added.LMentionOffset);
-        Assert.Equal(3, added.LMentionLength);
-        Assert.Equal(entry.LEntryId, added.LMentionEntryId);
-        Assert.Equal(0, added.LMentionSenseId);
-    }
-
-    [Fact]
-    public void MentionRemove_AddedMention_DropsIt()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry entry = TQuillEntrySave(engine);
-        LTenure tenure = TQuillExampleStart(engine, TInterface.TStateValueCreate("a cat"));
-        LQuill quill = tenure.TQuillCreate();
-
-        quill.TQuillMentionAdd(2, 3, entry.LEntryId);
-        quill.TQuillMentionRemove(Assert.Single(tenure.TTenureRead()!.LDraftExample!.LExampleMention).LMentionId);
-
-        Assert.Empty(tenure.TTenureRead()!.LDraftExample!.LExampleMention);
-    }
-
-    [Fact]
-    public void MentionSet_SensePicked_PointsMentionAtSense()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry entry = TQuillEntrySave(engine);
-        long sense = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
-        LTenure tenure = TQuillExampleStart(engine, TInterface.TStateValueCreate("a cat"));
-        LQuill quill = tenure.TQuillCreate();
-
-        quill.TQuillMentionAdd(2, 3, entry.LEntryId);
-        quill.TQuillMentionSet(Assert.Single(tenure.TTenureRead()!.LDraftExample!.LExampleMention).LMentionId, sense);
-
-        Assert.Equal(sense, Assert.Single(tenure.TTenureRead()!.LDraftExample!.LExampleMention).LMentionSenseId);
     }
 
     [Fact]

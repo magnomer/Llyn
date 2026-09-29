@@ -30,6 +30,14 @@ public sealed class LDraftClerkGloss
             example => LDraftClerkList.LDraftListAdd(example.LExampleDraftGloss, added, request.LRequestPosition));
     }
 
+    public static bool LGlossEmptyCheck(LDraft draft, long cardId, long sentenceId)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        return draft.LDraftExampleRead(cardId, sentenceId) is LExampleDraft example
+            && example.LExampleDraftGloss.Count == 0;
+    }
+
     public static LDraft LGlossRemove(LDraft draft, LRequestGlossRemoval request)
     {
         ArgumentNullException.ThrowIfNull(request);

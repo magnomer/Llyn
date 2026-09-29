@@ -193,6 +193,7 @@ public sealed class CAtelier : IDisposable
 
     public void CAtelierClose()
     {
+        CAtelierWorkspace.LWorkspaceClose();
         CAtelierDraftPort.LEngineLeftoverSweep();
         CAtelierPosture.Dispose();
     }

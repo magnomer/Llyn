@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -28,7 +26,7 @@ public sealed class TCorpus
         Assert.True(corpus.CCorpusTranscriptShown);
         Assert.True(corpus.CCorpusScribeChecked);
         Assert.NotNull(held[^1]);
-        Assert.NotNull(corpus.CCorpusTranscriptRead());
+        Assert.NotNull(corpus.TCorpusTranscriptRead());
     }
 
     [Fact]
@@ -385,71 +383,66 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public async Task CorpusPortraitExport_QuotationOnDisplay_WritesTheEntry()
+    public void AtelierClose_QuotingEntryOnTheEditor_CancelsTheEditorDeskAndStopsPlayback()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        int stopped = 0;
+        LMediaPort media = TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineRecordingStop"] = _ =>
+            {
+                stopped++;
+                return null;
+            },
+        });
+        using CAtelier atelier = TInterfaceConduct.TAtelierMediaCreate(engine, media);
         LExample cat = TCorpusExampleSave(engine, "a cat sat");
-        LEntry water = TCorpusEntrySave(engine);
-        engine.TRequestQuoteApply(water.LEntryId, cat.LExampleId);
-        string path = Path.Combine(workspace.TWorkspaceFolder, "water.md");
-        CCorpus corpus = TCorpusPrepare(
-            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
+        CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         corpus.TCorpusExampleOpen(cat.LExampleId);
+        corpus.CCorpusExampleCreate();
+        Assert.True(corpus.CCorpusEditor.CEditorDesk.CDeskHeld);
 
-        await corpus.CCorpusPortraitExport();
+        atelier.CAtelierClose();
 
-        Assert.False(File.Exists(path));
-
-        corpus.CCorpusQuotationSelect(water.LEntryId);
-        await corpus.CCorpusPortraitExport();
-
-        Assert.Contains("water", File.ReadAllText(path), StringComparison.Ordinal);
+        Assert.False(corpus.CCorpusEditor.CEditorDesk.CDeskHeld);
+        Assert.Equal(1, stopped);
     }
 
     [Fact]
-    public void CorpusPortraitPrint_NothingChosen_PrintsNothing()
+    public void CorpusCreate_TranscriptEdited_HandsTheHeldExampleThroughTheMarshal()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-
-        Task printed = corpus.CCorpusPortraitPrint();
-
-        Assert.Same(Task.CompletedTask, printed);
-        Assert.False(corpus.CCorpusPressAllowed);
-    }
-
-    [Fact]
-    public void CorpusMention_TranscriptWord_OffersTheExampleLanguageAndLinksThePick()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        long english = engine.TEngineTranslationCreate("cat", "English").LEntryId;
-        engine.TEngineTranslationCreate("cat", "French");
+        engine.TEngineDelaySet(0);
         LExample cat = TCorpusExampleSave(engine, "a cat sat");
-        CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        int marshalled = 0;
+        CCorpus corpus = CCorpus.CCorpusCreate(
+            atelier,
+            static () => true,
+            TInterfaceConduct.TEnvoyCreate(false, []),
+            run =>
+            {
+                marshalled++;
+                run();
+            });
+        corpus.CCorpusVistaRestore();
         corpus.TCorpusExampleOpen(cat.LExampleId);
         corpus.CCorpusScribeToggle(true);
+        List<CExample?> drafted = [];
+        corpus.CCorpusDraftChanged += drafted.Add;
 
-        List<CProspect> offered = [];
-        corpus.CCorpusMentionOffered += offered.Add;
+        corpus.CCorpusMentionAdd("a cat sat", 2, 3, 0);
+        corpus.CCorpusDesk.CDeskPersist();
 
-        corpus.CCorpusMentionOpen("cat");
-        corpus.CCorpusMentionAdd("a cat sat", 2, 3, english);
-
-        Assert.Equal(english, Assert.Single(Assert.Single(offered).CProspectRows).CVistaRowId);
-        Assert.True(offered[0].CProspectShown);
-        CMentionDraft linked = Assert.Single(corpus.CCorpusTranscriptRead()!.CExampleMention);
-        Assert.Equal(english, linked.CMentionDraftEntry);
+        Assert.True(marshalled > 0);
+        Assert.Equal("a cat sat", drafted[^1]!.CExampleText.CStateValueText);
     }
 
     internal static CCorpus TCorpusPrepare(CAtelier atelier, CEnvoy envoy)
     {
-        CCorpus corpus = CCorpus.CCorpusCreate(atelier, static () => true, envoy);
+        CCorpus corpus = CCorpus.CCorpusCreate(atelier, static () => true, envoy, static run => run());
         corpus.CCorpusVistaRestore();
         return corpus;
     }

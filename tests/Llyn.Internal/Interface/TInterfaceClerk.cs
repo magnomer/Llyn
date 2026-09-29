@@ -37,6 +37,9 @@ internal static partial class TInterface
         IReadOnlyList<LSpeechValue> values, IReadOnlyList<LSpeechDraft> held, string? typed) =>
         LSpeechClerk.LSpeechFind(values, held, typed);
 
+    internal static bool TGlossEmptyCheck(LDraft draft, long cardId, long sentenceId) =>
+        LDraftClerkGloss.LGlossEmptyCheck(draft, cardId, sentenceId);
+
     internal static int TCardEndRead(LEntryDraft content, LCardKind kind) =>
         LDraftClerkCard.LCardEndRead(content, kind);
 

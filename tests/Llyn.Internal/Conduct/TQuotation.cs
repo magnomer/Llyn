@@ -28,6 +28,17 @@ public sealed class TQuotation
     }
 
     [Fact]
+    public void QuotationRowsRead_EngineFails_ShowsTheLoadFailureAndAnswersNoRows()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+
+        Assert.Empty(TInterfaceMention.TQuotationFailRead(engine, TInterfaceConduct.TEnvoyCreate(false, asked)));
+        Assert.Equal(["Example.LoadFailed"], asked);
+    }
+
+    [Fact]
     public void QuotationRowsRead_NoExampleChosen_ListsEveryEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -15,12 +15,13 @@ A quoting entry shows on the display, and a close clears both lists.
 An entry notice keeps the transcript without a chosen quotation, and keeps the display with one.
 A rows read that no longer lists the shown Example clears both lists.
 A confirmed delete removes the chosen Example, and the quotation side deletes nothing.
-An export writes only the entry on display, and a print with nothing chosen prints nothing.
+The window's exit gate cancels the entry editor's desk and stops its display's playback once.
+The marshal the corpus is built with hands each transcript edit on as the held Example.
 
 ## `internal static CCorpus TCorpusPrepare(CAtelier atelier, CEnvoy envoy)`
 
 Builds the corpus over the atelier with its own editor, and restores both vistas as the forge does.
-Its seam answers that the tab is in front.
+Its seam answers that the tab is in front, and its marshal runs each desk notice at once.
 `TQuotation` builds its corpus the same way.
 
 ## `internal static LExample TCorpusExampleSave(LEngine engine, string text)`

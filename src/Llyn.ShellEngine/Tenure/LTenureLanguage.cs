@@ -196,8 +196,25 @@ public sealed partial class LTenure
 
     public void LTenureGlossAdd(long card, long sentence)
     {
+        LTenureGlossInsert(card, sentence, int.MaxValue);
+    }
+
+    public void LTenureGlossInsert(long card, long sentence, int position)
+    {
         LTenureRequestApply(new LRequestGlossAddition(
-            LTenureId, card, sentence, _lEngine.LEngineLanguage.LEngineGlossRead(), int.MaxValue));
+            LTenureId, card, sentence, _lEngine.LEngineLanguage.LEngineGlossRead(), position));
+    }
+
+    public bool LTenureGlossPrepare(long card, long sentence)
+    {
+        LDraft? held = LTenureRead();
+        if (held is null || !LDraftClerkGloss.LGlossEmptyCheck(held, card, sentence))
+        {
+            return false;
+        }
+
+        LTenureGlossAdd(card, sentence);
+        return true;
     }
 
     private IReadOnlyList<LSpeechDraft> LTenureChipRead()

@@ -5,7 +5,4 @@ public sealed record CMentionDraft(
     long CMentionDraftEntry,
     int CMentionDraftOffset,
     int CMentionDraftLength,
-    long CMentionDraftSense)
-{
-    public bool CMentionDraftLinked => CMentionDraftEntry != 0;
-}
+    long CMentionDraftSense);

@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Globalization;
 using System.Windows.Media;
 using Llyn.Conduct;
 
@@ -18,7 +17,7 @@ internal sealed class QAnthologyItem : INotifyPropertyChanged
         QAnthologyItemName = row.CCatalogExampleName;
         QAnthologyItemLanguage = row.CCatalogExampleLanguage;
         QAnthologyItemFlag = LEnsignImage.LEnsignFind(row.CCatalogExampleLanguage);
-        QAnthologyItemCount = row.CCatalogExampleUsage.ToString(CultureInfo.CurrentCulture);
+        QAnthologyItemCount = row.CCatalogExampleCount;
     }
 
     public long QAnthologyItemId { get; }

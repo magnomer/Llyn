@@ -78,6 +78,7 @@ public sealed class TCatalogExample
             ["busy line", "quiet line"],
             read.Select(row => row.LCatalogExampleStored.LExampleText.TStateValueShow()));
         Assert.Equal([2, 1], read.Select(row => row.LCatalogExampleUsage));
+        Assert.Equal(["2", "1"], read.Select(row => row.LCatalogExampleCount));
     }
 
     [Fact]

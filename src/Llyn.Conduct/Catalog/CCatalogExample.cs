@@ -5,5 +5,5 @@ public sealed record CCatalogExample(
     string CCatalogExampleText,
     string CCatalogExampleName,
     string CCatalogExampleLanguage,
-    int CCatalogExampleUsage,
+    string CCatalogExampleCount,
     bool CCatalogExampleChosen);

@@ -75,6 +75,11 @@ internal static partial class TInterface
     internal static long? TTenureFinish(this LTenure tenure, bool store) =>
         tenure.LTenureFinish(store, static () => false);
 
+    internal static void TTenureGlossInsert(this LTenure tenure, int position)
+    {
+        tenure.LTenureGlossInsert(0, 0, position);
+    }
+
     internal static void TTenureHeadwordSet(this LTenure tenure, string text)
     {
         tenure.LTenureHeadwordSet(text);

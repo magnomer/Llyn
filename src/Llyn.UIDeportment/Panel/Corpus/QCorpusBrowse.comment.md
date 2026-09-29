@@ -16,7 +16,7 @@ Both tally chips read it, so it is held rather than asked for again.
 ## `private async void QCorpusWorkspaceUpdate()`
 
 A workspace that moved reloads the flags and the language menu first, since neither belongs to the old folder's rows.
-The panel is then emptied and listed again.
+The panel is then emptied through `CCorpusExampleClose` and listed again.
 
 ## `private void QQueryHandle(object sender, TextChangedEventArgs e)`
 

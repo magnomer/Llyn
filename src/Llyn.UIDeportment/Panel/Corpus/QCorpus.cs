@@ -29,20 +29,20 @@ internal sealed partial class QCorpus : QChronicleHost
         _qDrawer = new QDrawer(QCitationDrawer, QCitationSheet, QCitationList, QCitationPressObserve);
 
         surface.CommandBindings.Add(
-            new CommandBinding(ApplicationCommands.Print, QCorpusPressHandle, QCorpusPressCheck));
+            new CommandBinding(ApplicationCommands.Print, QCorpusPressObserve, QCorpusPressCheck));
         surface.CommandBindings.Add(new CommandBinding(
-            PDisplayCommand.PDisplayCommandPortrait, QCorpusPortraitHandle, QCorpusPortraitCheck));
+            PDisplayCommand.PDisplayCommandPortrait, QCorpusPortraitObserve, QCorpusPortraitCheck));
         QCorpusPortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
         QCorpusPress.Command = ApplicationCommands.Print;
 
         QTranscript.CommandBindings.Add(new CommandBinding(
-            PMentionCommand.PMentionCommandLink, QTranscriptLinkHandle, QTranscriptLinkCheck));
+            PMentionCommand.PMentionCommandLink, QTranscriptLinkObserve, QTranscriptSpanRefine));
         QTranscript.CommandBindings.Add(new CommandBinding(
-            PMentionCommand.PMentionCommandChoose, QTranscriptSenseHandle, QTranscriptSenseCheck));
+            PMentionCommand.PMentionCommandChoose, QTranscriptMeaningRefine, QTranscriptSenseRefine));
         QTranscript.CommandBindings.Add(new CommandBinding(
-            PMentionCommand.PMentionCommandSilence, QTranscriptSilenceHandle, QTranscriptLinkCheck));
+            PMentionCommand.PMentionCommandSilence, QTranscriptSilenceObserve, QTranscriptSpanRefine));
         QTranscript.CommandBindings.Add(new CommandBinding(
-            PMentionCommand.PMentionCommandUnlink, QTranscriptUnlinkHandle, QTranscriptUnlinkCheck));
+            PMentionCommand.PMentionCommandUnlink, QTranscriptUnlinkObserve, QTranscriptUnlinkRefine));
 
         QChoice.QChoiceDropperAttach(QRankDropper, QRankDropdown, QRank);
         QChoice.QChoiceDropperAttach(QGauzeDropper, QGauzeDropdown, QGauzeDropper);
@@ -75,7 +75,7 @@ internal sealed partial class QCorpus : QChronicleHost
         QCitationField.PreviewKeyDown += QCitationCommitObserve;
         QCitationField.PreviewKeyDown += QCitationEscapeRefine;
         QCitationField.LostKeyboardFocus += QCitationLeaveRefine;
-        QTranscriptSeedField.GotKeyboardFocus += QTranscriptSeedHandle;
+        QTranscriptSeedField.GotKeyboardFocus += QTranscriptSeedObserve;
         QExcerptText.PMentionClick += QExcerptMentionHandle;
         QCorpusFresh.Click += QCorpusFreshHandle;
         QCorpusStore.Click += QCorpusStoreHandle;
@@ -86,7 +86,7 @@ internal sealed partial class QCorpus : QChronicleHost
         QCorpusViewer.Click += QCorpusViewerHandle;
         QCorpusScribe.Click += QCorpusScribeHandle;
         QCorpusBin.Click += QCorpusBinHandle;
-        QTranscriptAddition.Click += QGlossAddHandle;
+        QTranscriptAddition.Click += QGlossAddObserve;
         QTranscriptAttach();
 
         QLookItem.QLookItemAttach(QAnthology, QAnthologyApply);
@@ -226,13 +226,13 @@ internal sealed partial class QCorpus : QChronicleHost
 
     private QIconImage QCorpusBinIcon => QContract.QContractFind<QIconImage>(_qCorpusSurface, "PCorpusBinIcon");
 
-    internal void QCorpusAttach(PWindow host)
+    internal void QCorpusIntroduce(PWindow host)
     {
         _qCorpusHost = host;
         _cCorpus = host.PWindowForge.QForgeCorpusCreate(QCorpusShownCheck, host.PWindowEnvoy);
         QLectern lectern = new(_cCorpus.CCorpusEditor.CEditorDisplay, _cCorpus.CCorpusQuotation.CQuotationPanel);
         _qCorpusDesk = _cCorpus.CCorpusDesk;
-        QTranscriptDeskAttach();
+        QTranscriptDeskIntroduce();
 
         QAnthology.ItemsSource = _qAnthologyList;
         QQuotation.ItemsSource = _qQuotationList;
@@ -258,7 +258,7 @@ internal sealed partial class QCorpus : QChronicleHost
         anthology.CPanelChanged += QCorpusModeUpdate;
         anthology.CPanelRowsChanged += QAnthologyFind;
         quotation.CPanelChanged += QCorpusModeUpdate;
-        quotation.CPanelRowsChanged += QQuotationFind;
+        quotation.CPanelRowsChanged += QQuotationRefine;
     }
 
     private bool QCorpusShownCheck()
@@ -285,15 +285,9 @@ internal sealed partial class QCorpus : QChronicleHost
         QChronicleUpdate();
     }
 
-    internal void QCorpusReset()
+    internal void QCorpusExitRefine()
     {
-        _cCorpus.CCorpusExampleClose();
-    }
-
-    internal void QCorpusClose()
-    {
-        QCorpusEditor.PEditorClose();
-        QCorpusDisplay.PDisplayClose();
+        QCorpusEditor.PEditorPlayerRefine();
         _qDrawer.QDrawerHide();
         QLanguage.IsOpen = false;
         QRankDropdown.IsOpen = false;
@@ -305,7 +299,7 @@ internal sealed partial class QCorpus : QChronicleHost
         e.CanExecute = _cCorpus?.CCorpusPressAllowed ?? false;
     }
 
-    private async void QCorpusPressHandle(object sender, ExecutedRoutedEventArgs e)
+    private async void QCorpusPressObserve(object sender, ExecutedRoutedEventArgs e)
     {
         await _cCorpus.CCorpusPortraitPrint();
     }
@@ -315,7 +309,7 @@ internal sealed partial class QCorpus : QChronicleHost
         e.CanExecute = _cCorpus?.CCorpusPortraitAllowed ?? false;
     }
 
-    private async void QCorpusPortraitHandle(object sender, ExecutedRoutedEventArgs e)
+    private async void QCorpusPortraitObserve(object sender, ExecutedRoutedEventArgs e)
     {
         await _cCorpus.CCorpusPortraitExport();
     }

@@ -12,6 +12,8 @@ public sealed class CWorkspace
 
     private readonly List<Action> _cWorkspaceVistas = [];
 
+    private readonly List<Action> _cWorkspaceClosures = [];
+
     private CEditor? _cWorkspaceInput;
 
     private bool _cWorkspaceHeard;
@@ -136,6 +138,21 @@ public sealed class CWorkspace
         ArgumentNullException.ThrowIfNull(restore);
 
         _cWorkspaceVistas.Add(restore);
+    }
+
+    internal void LWorkspaceClosureAdd(Action closure)
+    {
+        ArgumentNullException.ThrowIfNull(closure);
+
+        _cWorkspaceClosures.Add(closure);
+    }
+
+    internal void LWorkspaceClose()
+    {
+        foreach (Action closure in _cWorkspaceClosures)
+        {
+            closure();
+        }
     }
 
     private void LWorkspaceVistaRestore()

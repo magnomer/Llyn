@@ -43,6 +43,19 @@ Each area passes its own desk, so no driver chooses which draft is searched.
 A desk without a live draft offers nothing.
 A failed search shows `Mention.FindFailed` and offers nothing, so no picker opens.
 
+## `internal static IReadOnlyList<CMeaning>? LMentionMeaningRead(`
+
+The Meanings the sense menu offers for a selection, shared by the editor and the corpus transcript.
+Each area passes its own desk, so no driver chooses which draft is read.
+A selection inside no linked Mention, or a desk without a live draft, answers nothing.
+A failed read shows `Mention.FindFailed` and answers nothing, so no menu opens.
+
+## `internal static IReadOnlyList<CMentionLabel> LMentionChipRead(`
+
+The chip line of one Example of a desk's draft, ready to paint, keyed by card and sentence.
+A desk without a live draft, or an Example with no Mentions, answers no chips.
+A failed read shows `Mention.FindFailed` and answers no chips.
+
 ## `public int CMentionUnitRead(string text, int offset)`
 
 The UTF-16 unit a code-point offset starts at, for placing a caret or a popup.
@@ -50,10 +63,6 @@ The UTF-16 unit a code-point offset starts at, for placing a caret or a popup.
 ## `public int CMentionOffsetRead(string text, int unit)`
 
 The code-point offset a UTF-16 unit falls in, for turning a click into a Mention offset.
-
-## `public (int CMentionSpanOffset, int CMentionSpanLength) CMentionSpanRead(string text, int start, int length)`
-
-A field's selection as a Mention span, measured in code points.
 
 ## `public bool CMentionSpanCheck(string text, int start, int length)`
 
@@ -85,16 +94,3 @@ It only maps, so the sentence area names no engine record.
 
 Copies the engine's labels field for field, with no rule of its own.
 The label's own key names an unlinked chip, so no silent word is written here.
-
-## `public CMentionDraft? CMentionFind(CDesk desk, long cardId, long sentenceId, string text, int start, int length)`
-
-The Mention a selection in a sentence field lies inside, read from the desk's held draft.
-The selection arrives as the field gives it, in UTF-16 units, and the engine measures it.
-The find answers from what the engine holds, never from a list the shell keeps.
-It reads the draft without persisting, so a context menu asking many times sends nothing.
-The tenure keeps the draft it read until the next change, so command checks read no file per keystroke.
-A command about to act on the answer persists first, so pending typing cannot shift the offsets.
-
-## `private static CMentionDraft? CMentionRead(LMentionDraft? found)`
-
-Shapes the found Mention as its Conduct copy, or none when the selection lies in no Mention.

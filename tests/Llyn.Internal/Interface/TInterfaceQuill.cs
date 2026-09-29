@@ -26,10 +26,6 @@ internal static partial class TInterface
         quill.LQuillReferenceSet(reference);
     }
 
-    internal static void TQuillGlossAdd(this LQuill quill, string language, int position)
-    {
-        quill.LQuillGlossAdd(0, 0, language, position);
-    }
 
     internal static void TQuillGlossRemove(this LQuill quill, long gloss)
     {
@@ -39,21 +35,6 @@ internal static partial class TInterface
     internal static void TQuillGlossSet(this LQuill quill, long gloss, string? language, string? text)
     {
         quill.LQuillGlossSet(0, 0, gloss, language, text);
-    }
-
-    internal static void TQuillMentionAdd(this LQuill quill, int offset, int length, long entry)
-    {
-        quill.LQuillMentionAdd(0, 0, offset, length, entry);
-    }
-
-    internal static void TQuillMentionRemove(this LQuill quill, long mention)
-    {
-        quill.LQuillMentionRemove(0, 0, mention);
-    }
-
-    internal static void TQuillMentionSet(this LQuill quill, long mention, long sense)
-    {
-        quill.LQuillMentionSet(0, 0, mention, sense);
     }
 
     internal static void TQuillEtymologySet(this LQuill quill, string text)

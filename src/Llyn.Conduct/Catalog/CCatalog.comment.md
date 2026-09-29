@@ -56,9 +56,6 @@ A refused resolve shows `Glyph.OpenFailed` through the panel's envoy and answers
 
 The lexicon languages the workspace knows.
 
-## `public string CCatalogGlossRead()`
-
-The language a new translation starts in, as the engine resolves it from the settings and the loaded packs.
 
 ## `public Task<IReadOnlyList<string>> CCatalogEnsignLoad(`
 
@@ -69,17 +66,10 @@ It answers the loaded languages, so a language menu fills from the load that fla
 
 Loads the flags of one language's `varieties` and hands the rows to `store` as Conduct rows.
 
-## `public IReadOnlyList<CMeaning>? CCatalogMeaningRead(long entryId, CEnvoy envoy)`
-
-The Meanings of one Entry as sense-menu rows, ready in reading order with their depth.
-The order and the name fallback are the engine's, and this read only maps the rows by name.
-It chooses the fallback key `Display.Unknown`, which the engine words.
-A failed read shows `Mention.FindFailed` through `envoy` and answers null, so no menu opens.
-
 ## `internal static IReadOnlyList<CMeaning> LCatalogMeaningRead(`
 
 Maps the engine's Meaning rows to sense-menu rows by name, with no rule of its own.
-The sentence area's sense read shares it.
+The shared sense read in `CMention` uses it.
 
 ## `public (int, int)? CCatalogEntryLoad(long id)`
 

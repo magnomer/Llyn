@@ -3,8 +3,20 @@
 ## `internal static class TInterfaceMention`
 
 The relay that builds the sentence gates over a draft port whose chip line read fails.
+It also runs the shared chip read over a failing draft port.
+It runs the shared Meaning read over a scripted draft port.
 It is transparent and carries no test logic of its own.
 
 ## `internal static CSentence TSentenceFailCreate(LEngine engine, CDesk desk, CEnvoy envoy)`
 
 Builds sentence gates whose chip line read throws, over a real desk.
+
+## `internal static IReadOnlyList<CMentionLabel> TMentionFailRead(LEngine engine, CDesk desk, CEnvoy envoy)`
+
+Runs the shared chip line read over a draft port whose resolve throws.
+
+## `internal static IReadOnlyList<CMeaning>? TMeaningRead(LEngine engine, CDesk desk, CEnvoy envoy, Func<object?[]?, object?> sense)`
+
+Runs the shared Meaning read on a desk with a live draft.
+The draft port's sense read answers through `sense`.
+A test hands rows to check the map and the key, or a throw to check the failure policy.

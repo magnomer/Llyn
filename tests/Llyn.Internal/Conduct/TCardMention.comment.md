@@ -17,6 +17,6 @@ Starts an entry desk with one meaning card holding one typed sentence row, and a
 
 The Mentions the card's first row holds in the held draft.
 
-## `private static (long TMentionEntry, long TMentionSense) TMentionEntryCreate(LEngine engine)`
+## `internal static (long TMentionEntry, long TMentionSense) TMentionEntryCreate(LEngine engine)`
 
 Stores an Entry with one Meaning, and answers the Entry and the Meaning ids.

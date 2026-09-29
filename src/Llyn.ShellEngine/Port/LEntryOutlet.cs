@@ -88,10 +88,6 @@ public sealed class LEntryOutlet : LEntryPort
     public IReadOnlyList<LReflexDraft> LEngineReflexRead(LEntryDraft draft) =>
         _lEntryOutletEngine.LEngineEntry.LEngineReflexRead(draft);
 
-    public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> LEngineMeaningRead(
-        long entryId, string key) =>
-        _lEntryOutletEngine.LEngineCard.LEngineMeaningRead(entryId, key);
-
     public IReadOnlyList<LCatalogTag> LEngineTagFind(LVista vista) =>
         _lEntryOutletEngine.LEngineCard.LEngineTagFind(vista);
 

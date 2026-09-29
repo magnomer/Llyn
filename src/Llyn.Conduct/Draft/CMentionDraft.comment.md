@@ -12,7 +12,3 @@ It keeps the span and the sense, so a mention line can resolve its labels.
 - `CMentionDraftOffset`: where the Mention starts in the text.
 - `CMentionDraftLength`: how many characters the Mention spans.
 - `CMentionDraftSense`: the sense the Mention links to, zero when none.
-
-## `public bool CMentionDraftLinked`
-
-Whether the Mention names an entry, so the menu offers to follow or unlink it.

@@ -162,6 +162,18 @@ public sealed class LMentionClerk
         return lines;
     }
 
+    public IReadOnlyList<LMentionLabel> LMentionClerkResolve(LDraft? draft, long cardId, long sentenceId)
+    {
+        return LMentionClerkResolve(draft?.LDraftExampleRead(cardId, sentenceId));
+    }
+
+    private IReadOnlyList<LMentionLabel> LMentionClerkResolve(LExampleDraft? example)
+    {
+        return example is null
+            ? []
+            : LMentionClerkResolve(example.LExampleDraftText.LStateValueShow(), example.LExampleDraftMention);
+    }
+
     private void LMentionClerkResolve(
         IReadOnlyList<LCardDraft> cards, Dictionary<long, IReadOnlyList<LMentionLabel>> lines)
     {
@@ -169,9 +181,7 @@ public sealed class LMentionClerk
         {
             foreach (LSentenceDraft sentence in card.LCardDraftSentence)
             {
-                lines[sentence.LSentenceDraftId] = sentence.LSentenceDraftExample is LExampleDraft example
-                    ? LMentionClerkResolve(example.LExampleDraftText.LStateValueShow(), example.LExampleDraftMention)
-                    : [];
+                lines[sentence.LSentenceDraftId] = LMentionClerkResolve(sentence.LSentenceDraftExample);
             }
 
             LMentionClerkResolve(card.LCardDraftChild, lines);

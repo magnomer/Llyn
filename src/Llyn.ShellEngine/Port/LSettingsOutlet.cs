@@ -80,5 +80,4 @@ public sealed class LSettingsOutlet : LSettingsPort
 
     public IReadOnlyList<string> LEngineLanguageRead() => _lSettingsOutletEngine.LEngineLanguage.LEngineLanguageRead();
 
-    public string LEngineGlossRead() => _lSettingsOutletEngine.LEngineLanguage.LEngineGlossRead();
 }

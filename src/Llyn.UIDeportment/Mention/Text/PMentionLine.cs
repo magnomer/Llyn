@@ -51,9 +51,4 @@ internal sealed class PMentionLine
             PMentionLineChip.RemoveAt(PMentionLineChip.Count - 1);
         }
     }
-
-    internal void PMentionLineClear()
-    {
-        PMentionLineChip.Clear();
-    }
 }

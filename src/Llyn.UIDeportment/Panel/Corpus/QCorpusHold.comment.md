@@ -10,23 +10,19 @@ Every change goes through the desk's text gate, which defers typing and sends a 
 
 ## `private CDesk QTranscriptDesk => _qCorpusDesk;`
 
-The desk holding the Example being edited, which the corpus Conduct handed over at attach.
+The desk holding the Example being edited, which the corpus Conduct handed over at introduce.
 
 ## `private LQuill? QTranscriptQuill => _cCorpus.CCorpusDesk.CDeskQuill;`
 
 The desk's text edits, which build every request the transcript makes.
 It is null while no tenure is held or the desk fills its controls.
 
-## `private void QTranscriptDeskAttach()`
+## `private void QTranscriptDeskIntroduce()`
 
-Wires the desk's notices once, and a failure and a refused hold both go straight to the window.
-The desk decides which bulletins refresh it, and the driver hands only its marshaller and its draft reread.
-
-## `private void QTranscriptDraftRestore()`
-
-Reads the held sentence back and redraws the controls from it where they differ.
-This is what the desk's own draft bulletin does.
-The sentence is read inline, so no driver local carries it.
+Subscribes the desk's notices once, and a failure and a refused hold both go straight to the window.
+The corpus raises `CCorpusDraftChanged` with the held Example on each draft bulletin.
+`QTranscriptShow` answers it and redraws the controls where they differ.
+The forge built the corpus with its marshaller, so the driver hands no marshaller and no reread here.
 
 ## `public void QChronicleUndo()`
 

@@ -150,6 +150,11 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
     internal void PEditorClose()
     {
         _qEditor.QEditorArea.CEditorClose();
+        PEditorPlayerRefine();
+    }
+
+    internal void PEditorPlayerRefine()
+    {
         _pDownloaderPlayer.Close();
     }
 

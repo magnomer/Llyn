@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,20 +10,9 @@ internal sealed partial class QCorpus
 {
     private readonly PMentionLine _qTranscriptChip = new();
 
-    private void QTranscriptLinkHandle(object sender, ExecutedRoutedEventArgs e)
+    private void QTranscriptLinkObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Source is not TextBox box)
-        {
-            return;
-        }
-
-        QTranscriptLinkShow(box, PMentionSelection.PMentionSelectionRead(box, _qCorpusHost.PWindowAtelier));
-    }
-
-    private void QTranscriptLinkShow(
-        TextBox box, (int PMentionSelectionOffset, int PMentionSelectionLength) selection)
-    {
-        if (selection.PMentionSelectionLength == 0)
         {
             return;
         }
@@ -37,112 +26,77 @@ internal sealed partial class QCorpus
         _cCorpus.CCorpusMentionAdd(box.Text, box.SelectionStart, box.SelectionLength, entryId);
     }
 
-    private void QTranscriptSenseHandle(object sender, ExecutedRoutedEventArgs e)
+    private void QTranscriptMeaningRefine(object sender, ExecutedRoutedEventArgs e)
     {
-        QTranscriptSenseShow(QTranscriptMentionFind(true));
+        if (_cCorpus.CCorpusSenseRead(
+                QTranscriptText.Text, QTranscriptText.SelectionStart, QTranscriptText.SelectionLength)
+            is IReadOnlyList<CMeaning> meanings)
+        {
+            _qCorpusHost.PMentionMenuShow(
+                QTranscriptText,
+                PMentionSelection.PMentionSelectionPlace(QTranscriptText),
+                meanings,
+                QTranscriptSenseObserve);
+        }
     }
 
-    private void QTranscriptSenseShow(CMentionDraft? mention)
+    private void QTranscriptSenseObserve(FrameworkElement anchor, long sense)
     {
-        if (mention is not { CMentionDraftLinked: true })
+        if (anchor is not TextBox box)
         {
             return;
         }
 
-        _qCorpusHost.PWindowSenseRefine(
-            QTranscriptText,
-            PMentionSelection.PMentionSelectionPlace(QTranscriptText),
-            mention.CMentionDraftEntry,
-            QTranscriptSenseRead(mention.CMentionDraftId));
+        _cCorpus.CCorpusSenseSet(box.Text, box.SelectionStart, box.SelectionLength, sense);
     }
 
-    private Action<FrameworkElement, long> QTranscriptSenseRead(long mention)
-    {
-        return (_, sense) => QTranscriptQuill?.LQuillMentionSet(0, 0, mention, sense);
-    }
-
-    private void QTranscriptSilenceHandle(object sender, ExecutedRoutedEventArgs e)
+    private void QTranscriptSilenceObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Source is not TextBox box)
         {
             return;
         }
 
-        QTranscriptSilenceRun(PMentionSelection.PMentionSelectionRead(box, _qCorpusHost.PWindowAtelier));
+        _cCorpus.CCorpusMentionAdd(box.Text, box.SelectionStart, box.SelectionLength, 0);
     }
 
-    private void QTranscriptSilenceRun((int PMentionSelectionOffset, int PMentionSelectionLength) selection)
+    private void QTranscriptUnlinkObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        if (selection.PMentionSelectionLength == 0)
+        if (e.Parameter is PMentionChip chip)
         {
-            return;
+            _cCorpus.CCorpusMentionRemove(chip.PMentionChipId);
         }
-
-        QTranscriptQuill?.LQuillMentionAdd(
-            0, 0, selection.PMentionSelectionOffset, selection.PMentionSelectionLength, 0);
-    }
-
-    private void QTranscriptUnlinkHandle(object sender, ExecutedRoutedEventArgs e)
-    {
-        QTranscriptUnlinkRun(
-            QSender.QSenderParameterRead<PMentionChip>(e)?.PMentionChipId
-            ?? QTranscriptMentionFind(true)?.CMentionDraftId);
-    }
-
-    private void QTranscriptUnlinkRun(long? mention)
-    {
-        if (mention is not long id)
+        else if (e.Source is TextBox)
         {
-            return;
+            _cCorpus.CCorpusMentionRemove(
+                QTranscriptText.Text, QTranscriptText.SelectionStart, QTranscriptText.SelectionLength);
         }
-
-        QTranscriptQuill?.LQuillMentionRemove(0, 0, id);
     }
 
-    private void QTranscriptLinkCheck(object sender, CanExecuteRoutedEventArgs e)
+    private void QTranscriptSpanRefine(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = e.Source is TextBox box
             && _qCorpusHost.PWindowAtelier.CAtelierMention.CMentionSpanCheck(
                 box.Text, box.SelectionStart, box.SelectionLength);
     }
 
-    private void QTranscriptSenseCheck(object sender, CanExecuteRoutedEventArgs e)
+    private void QTranscriptSenseRefine(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = e.Source is TextBox && QTranscriptMentionFind(false) is { CMentionDraftEntry: not 0 };
+        e.CanExecute = e.Source is TextBox
+            && _cCorpus.CCorpusSenseCheck(
+                QTranscriptText.Text, QTranscriptText.SelectionStart, QTranscriptText.SelectionLength);
     }
 
-    private void QTranscriptUnlinkCheck(object sender, CanExecuteRoutedEventArgs e)
+    private void QTranscriptUnlinkRefine(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = e.Parameter is PMentionChip
-            || (e.Source is TextBox && QTranscriptMentionFind(false) is not null);
+            || (e.Source is TextBox
+                && _cCorpus.CCorpusMentionCheck(
+                    QTranscriptText.Text, QTranscriptText.SelectionStart, QTranscriptText.SelectionLength));
     }
 
-    private CMentionDraft? QTranscriptMentionFind(bool settled)
+    private void QTranscriptMentionRefine()
     {
-        return _qCorpusHost.PWindowAtelier.CAtelierMention.CMentionFind(
-            QTranscriptDesk, 0, 0,
-            QTranscriptText.Text, QTranscriptText.SelectionStart, QTranscriptText.SelectionLength, settled);
-    }
-
-    private void QTranscriptMentionShow(CExample? example)
-    {
-        if (example is null)
-        {
-            _qTranscriptChip.PMentionLineClear();
-            return;
-        }
-
-        try
-        {
-            _qTranscriptChip.PMentionLineShow(
-                _qCorpusHost.PWindowAtelier,
-                example.CExampleText.CStateValueText,
-                example.CExampleMention,
-                QLocalizationCatalog.QLocalizationTextRead("Mention.Silent"));
-        }
-        catch (Exception exception)
-        {
-            _qCorpusHost.PWindowFailureRefine("Mention.FindFailed", exception);
-        }
+        _qTranscriptChip.PMentionLineRefine(_cCorpus.CCorpusMentionRead());
     }
 }

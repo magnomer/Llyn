@@ -170,17 +170,6 @@ public sealed class TDesk
         Assert.Empty(stored);
     }
 
-    [Fact]
-    public void MentionFind_NothingHeld_FindsNone()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
-        CDesk desk = TDeskPrepare(engine);
-
-        Assert.Null(atelier.CAtelierMention.CMentionFind(desk, 0, 0, "happy", 0, 5, true));
-    }
-
     private static CDesk TDeskPrepare(LEngine engine)
     {
         CDesk desk = TInterfaceConduct.TDeskCreate(engine, "Guild", TInterfaceConduct.TEnvoyCreate(false, []));

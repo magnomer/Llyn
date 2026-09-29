@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -12,21 +11,10 @@ internal sealed partial class QCorpus
 {
     private readonly ObservableCollection<QQuotationItem> _qQuotationList = [];
 
-    private void QQuotationFind()
+    private void QQuotationRefine()
     {
-        IReadOnlyList<CVistaRow> read;
-        try
-        {
-            read = _cCorpus.CCorpusQuotation.CQuotationRowsRead();
-        }
-        catch (Exception exception)
-        {
-            _qCorpusHost.PWindowFailureRefine("Example.LoadFailed", exception);
-            return;
-        }
-
         List<QQuotationItem> fresh = [];
-        foreach (CVistaRow entry in read)
+        foreach (CVistaRow entry in _cCorpus.CCorpusQuotation.CQuotationRowsRead())
         {
             fresh.Add(new QQuotationItem(entry, entry.CVistaRowChosen));
         }
@@ -38,7 +26,7 @@ internal sealed partial class QCorpus
         QQuotationEmpty.Visibility = QLook.QLookVisibleRead(_qQuotationList.Count == 0);
     }
 
-    private void QQuotationHandle(object sender, RoutedEventArgs e)
+    private void QQuotationObserve(object sender, RoutedEventArgs e)
     {
         _cCorpus.CCorpusQuotationSelect(QSender.QSenderSourceRead<QQuotationItem>(e)?.QQuotationItemId);
     }
@@ -61,8 +49,8 @@ internal sealed partial class QCorpus
                 row.ClearValue(QLook.QLookCueProperty);
             }
 
-            row.Click -= QQuotationHandle;
-            row.Click += QQuotationHandle;
+            row.Click -= QQuotationObserve;
+            row.Click += QQuotationObserve;
         }
 
         if (QLook.QLookPartFind<Image>(container, "PQuotationFlag") is Image flag)

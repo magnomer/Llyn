@@ -93,7 +93,7 @@ internal sealed partial class QCorpus
         _qTranscriptCitation = example?.CExampleCitation ?? string.Empty;
         QCitationRefine();
 
-        QTranscriptMentionShow(example);
+        QTranscriptMentionRefine();
 
         QTranscriptTally.Text = QCorpusTallyRead(QTranscriptDesk.CDeskStoredRead());
 
@@ -131,7 +131,7 @@ internal sealed partial class QCorpus
             QCitationRefine();
         }
 
-        QTranscriptMentionShow(example);
+        QTranscriptMentionRefine();
 
         QTranscriptAttach();
     }

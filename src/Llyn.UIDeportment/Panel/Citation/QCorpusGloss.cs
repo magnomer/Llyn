@@ -32,7 +32,7 @@ internal sealed partial class QCorpus
             example?.CExampleGloss ?? [],
             static row => row.PGlossId,
             static draft => draft.CGlossDraftId,
-            draft => new PGloss(_qLanguageItem, draft),
+            QTranscriptGlossCreate,
             (row, draft) =>
             {
                 row.PGlossShow(draft);
@@ -42,74 +42,62 @@ internal sealed partial class QCorpus
         QTranscriptSeedShow();
     }
 
-    private void QGlossTextHandle(object sender, TextChangedEventArgs e)
+    private PGloss QTranscriptGlossCreate(CGlossDraft draft)
     {
-        if (sender is not TextBox { DataContext: PGloss gloss } box)
+        PGloss row = new(_qLanguageItem, draft);
+        row.PGlossPicked += QGlossSpeakerObserve;
+        return row;
+    }
+
+    private void QGlossTextObserve(object sender, TextChangedEventArgs e)
+    {
+        if (sender is TextBox { DataContext: PGloss gloss } box)
         {
-            return;
+            _cCorpus.CCorpusAnthology.CAnthologyGlossSet(gloss.PGlossId, box.Text);
         }
-
-        QTranscriptQuill?.LQuillGlossSet(0, 0, gloss.PGlossId, null, box.Text);
     }
 
-    private void QGlossSpeakerHandle(object sender, SelectionChangedEventArgs e)
+    private void QGlossSpeakerObserve(PGloss gloss, string language)
     {
-        if (sender is not ListBox { DataContext: PGloss gloss, SelectedValue: string language })
-        {
-            return;
-        }
-
-        QTranscriptQuill?.LQuillGlossSet(0, 0, gloss.PGlossId, language, null);
+        _cCorpus.CCorpusAnthology.CAnthologyLanguageSet(gloss.PGlossId, language);
     }
 
-    private void QGlossAddHandle(object sender, RoutedEventArgs e)
+    private void QGlossAddObserve(object sender, RoutedEventArgs e)
     {
-        int position = QSender.QSenderItemRead<PGloss>(sender) is PGloss row
-            ? _qTranscriptGloss.IndexOf(row) + 1
-            : _qTranscriptGloss.Count;
+        int below = QSender.QSenderItemRead<PGloss>(sender) is PGloss row
+            ? _qTranscriptGloss.IndexOf(row)
+            : _qTranscriptGloss.Count - 1;
 
-        QTranscriptQuill?.LQuillGlossAdd(
-            0, 0, _qCorpusHost.PWindowAtelier.CAtelierCatalog.CCatalogGlossRead(), position);
+        _cCorpus.CCorpusAnthology.CAnthologyGlossAdd(below);
     }
 
-    private void QGlossRemoveHandle(object sender, RoutedEventArgs e)
+    private void QGlossRemoveObserve(object sender, RoutedEventArgs e)
     {
         if (QSender.QSenderItemRead<PGloss>(sender) is PGloss gloss)
         {
-            QTranscriptQuill?.LQuillGlossRemove(0, 0, gloss.PGlossId);
+            _cCorpus.CCorpusAnthology.CAnthologyGlossRemove(gloss.PGlossId);
         }
     }
 
     private void QTranscriptGlossApply(FrameworkElement container, object item, string? change)
     {
         TextBox? field = QLook.QLookPartFind<TextBox>(container, "PGlossText");
-        ListBox? list = QLook.QLookPartFind<ListBox>(container, "PGlossList");
         if (field is not null)
         {
-            field.TextChanged -= QGlossTextHandle;
-        }
-
-        if (list is not null)
-        {
-            list.SelectionChanged -= QGlossSpeakerHandle;
+            field.TextChanged -= QGlossTextObserve;
         }
 
         PGloss.PGlossRowApply(container, item, change);
 
         if (field is not null)
         {
-            field.TextChanged += QGlossTextHandle;
-        }
-
-        if (list is not null)
-        {
-            list.SelectionChanged += QGlossSpeakerHandle;
+            field.TextChanged += QGlossTextObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PGlossAddition") is Button addition)
         {
-            addition.Click -= QGlossAddHandle;
-            addition.Click += QGlossAddHandle;
+            addition.Click -= QGlossAddObserve;
+            addition.Click += QGlossAddObserve;
             if (addition.Content is QIconImage mark)
             {
                 mark.QIconSource = QIcon.QIconResolve("add", 12);
@@ -118,8 +106,8 @@ internal sealed partial class QCorpus
 
         if (QLook.QLookPartFind<Button>(container, "PGlossRemoval") is Button removal)
         {
-            removal.Click -= QGlossRemoveHandle;
-            removal.Click += QGlossRemoveHandle;
+            removal.Click -= QGlossRemoveObserve;
+            removal.Click += QGlossRemoveObserve;
             if (removal.Content is QIconImage mark)
             {
                 mark.QIconSource = QIcon.QIconResolve("remove", 12);
@@ -132,16 +120,16 @@ internal sealed partial class QCorpus
         QTranscriptSeed.Visibility = _qTranscriptGloss.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void QTranscriptSeedHandle(object sender, KeyboardFocusChangedEventArgs e)
+    private void QTranscriptSeedObserve(object sender, KeyboardFocusChangedEventArgs e)
     {
-        if (_qTranscriptGloss.Count > 0)
+        if (_cCorpus.CCorpusAnthology.CAnthologyGlossPrepare())
         {
-            return;
+            QTranscriptSeedRefine();
         }
+    }
 
-        QTranscriptQuill?.LQuillGlossAdd(
-            0, 0, _qCorpusHost.PWindowAtelier.CAtelierCatalog.CCatalogGlossRead(), 0);
-
+    private void QTranscriptSeedRefine()
+    {
         QTranscriptGlossLine.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, () =>
         {
             if (QTranscriptGlossLine.ItemContainerGenerator.ContainerFromIndex(0) is DependencyObject container

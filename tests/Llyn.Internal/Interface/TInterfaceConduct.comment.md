@@ -13,13 +13,18 @@ Builds an engine font for a fake settings port to answer, so a test never constr
 
 ## `internal static CAtelier TAtelierCreate(LEngine engine) => new(`
 
-Builds the atelier over real outlets on `engine`, with a stub player.
+Builds the atelier over real outlets on `engine`, with a stub player that only accepts a stop.
 A workspace engine is needed, since disposing sweeps drafts through the real draft outlet.
+Disposing also runs each area's registered close, and the corpus's close stops its display's playback.
 
 ## `internal static CAtelier TAtelierCreate(LEngine engine, LMediaPort media) => new(`
 
 Builds Conduct's atelier over outlets on `engine` as Host does, with `media` standing in for the player.
 The draft port is a fake that sweeps nothing, since the fake rig holds no drafts.
+
+## `internal static CAtelier TAtelierMediaCreate(LEngine engine, LMediaPort media) => new(`
+
+Builds Conduct's atelier over every outlet on a real workspace engine, with `media` standing in for the player.
 
 ## `internal static CAtelier TAtelierCreate(LEngine engine, LSettingsPort settings) => new(`
 
@@ -233,32 +238,6 @@ Relays the sources tab's leave question.
 
 Relays the voyage's state, and the three relays below relay its record and its two steps.
 
-## `internal static void TNavigationTabAdd(`
+## `internal static CExample? TCorpusTranscriptRead(this CCorpus corpus) => corpus.LCorpusTranscriptRead();`
 
-Registers a tab on a navigation as a panel area does, with its hooks handed in.
-The landed record is handed to `arrival`, as the area's own open would take it.
-
-## `internal static void TNavigationStationAdd(this CNavigation navigation) => navigation.LNavigationStationAdd();`
-
-Relays the station record the areas' row gates make.
-
-## `internal static void TNavigationDiweiAttach(this CNavigation navigation, Action<string, string, string> open) =>`
-
-Attaches a rime-cell open to a navigation as the yunjing area does.
-
-## `internal static void TNavigationStemAttach(this CNavigation navigation, Action<string, string?> open) =>`
-
-Attaches a series open to a navigation as the xiesheng area does.
-
-## `internal static bool TNavigationDiweiOpen(`
-
-Relays the rime-cell jump, which only the display and the editor's sounding ask in production.
-
-## `internal static bool TNavigationStemOpen(this CNavigation navigation, string language, string? key) =>`
-
-Relays the series jump, which only the display asks in production.
-
-## `internal static void TCorpusExampleOpen(this CCorpus corpus, long id) => corpus.LCorpusExampleOpen(id);`
-
-Relays a panel's arrival open, as the navigation runs it.
-The relays below do the same for the other areas.
+Relays the corpus's read of the Example its transcript desk holds, which its two transcript events hand on.

@@ -14,11 +14,12 @@ public sealed class CCorpus
 
     private readonly LSettingsPort _cCorpusSettingsPort;
 
-    private CCorpus(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    private CCorpus(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(shownSeam);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(marshal);
 
         _cCorpusAtelier = atelier;
         _cCorpusEnvoy = envoy;
@@ -45,7 +46,7 @@ public sealed class CCorpus
             editor.LEditorFinish,
             static () => true,
             LCorpusStoredShow);
-        CCorpusSession.CSessionHeld += () => CCorpusTranscriptChanged?.Invoke(CCorpusTranscriptRead());
+        CCorpusSession.CSessionHeld += () => CCorpusTranscriptChanged?.Invoke(LCorpusTranscriptRead());
         CCorpusSession.CSessionChanged += () => CCorpusChanged?.Invoke();
         CCorpusSession.CSessionFailed +=
             (key, exception) => CLedger.LLedgerFailureShow(envoy, _cCorpusSettingsPort, key, exception);
@@ -63,16 +64,20 @@ public sealed class CCorpus
             LCorpusExampleOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CCorpusSession.LSessionChangeCheck, CCorpusSession.LSessionFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CCorpusVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LCorpusClose);
+        CCorpusDesk.CDeskObserverAttach(marshal, () => CCorpusDraftChanged?.Invoke(LCorpusTranscriptRead()));
     }
 
-    public static CCorpus CCorpusCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    public static CCorpus CCorpusCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
-        return new CCorpus(atelier, shownSeam, envoy);
+        return new CCorpus(atelier, shownSeam, envoy, marshal);
     }
 
     public event Action? CCorpusChanged;
 
     public event Action<CExample?>? CCorpusTranscriptChanged;
+
+    public event Action<CExample?>? CCorpusDraftChanged;
 
     public event Action<CExample>? CCorpusExampleChanged;
 
@@ -124,7 +129,7 @@ public sealed class CCorpus
     private bool LCorpusRowHeld =>
         CCorpusAnthology.CAnthologyPanel.CPanelBinEnabled || CCorpusQuotation.CQuotationPanel.CPanelBinEnabled;
 
-    public CExample? CCorpusTranscriptRead()
+    internal CExample? LCorpusTranscriptRead()
     {
         try
         {
@@ -181,6 +186,51 @@ public sealed class CCorpus
     public void CCorpusMentionAdd(string text, int start, int length, long entryId)
     {
         CCorpusDesk.CDeskChip?.LQuillMentionAdd(0, 0, text, start, length, entryId);
+    }
+
+    public void CCorpusSenseSet(string text, int start, int length, long senseId)
+    {
+        CCorpusDesk.CDeskChip?.LQuillSenseSet(0, 0, text, start, length, senseId);
+    }
+
+    public void CCorpusMentionRemove(long mentionId)
+    {
+        CCorpusDesk.CDeskQuill?.LQuillMentionRemove(0, 0, mentionId);
+    }
+
+    public void CCorpusMentionRemove(string text, int start, int length)
+    {
+        CCorpusDesk.CDeskChip?.LQuillMentionRemove(0, 0, text, start, length);
+    }
+
+    public bool CCorpusMentionCheck(string text, int start, int length)
+    {
+        return CCorpusDesk.CDeskTenure?.LTenureMentionCheck(0, 0, text, start, length) is true;
+    }
+
+    public bool CCorpusSenseCheck(string text, int start, int length)
+    {
+        return CCorpusDesk.CDeskTenure?.LTenureSenseCheck(0, 0, text, start, length) is true;
+    }
+
+    public IReadOnlyList<CMeaning>? CCorpusSenseRead(string text, int start, int length)
+    {
+        return CMention.LMentionMeaningRead(
+            _cCorpusAtelier.CAtelierDraftPort,
+            CCorpusDesk,
+            0,
+            0,
+            text,
+            start,
+            length,
+            _cCorpusEnvoy,
+            _cCorpusSettingsPort);
+    }
+
+    public IReadOnlyList<CMentionLabel> CCorpusMentionRead()
+    {
+        return CMention.LMentionChipRead(
+            _cCorpusAtelier.CAtelierDraftPort, CCorpusDesk, 0, 0, _cCorpusEnvoy, _cCorpusSettingsPort);
     }
 
     public void CCorpusExampleSelect(long? id)
@@ -284,6 +334,12 @@ public sealed class CCorpus
     {
         CCorpusQuotation.CQuotationPanel.CPanelEntryClose();
         CCorpusAnthology.CAnthologyPanel.CPanelEntryClose();
+    }
+
+    private void LCorpusClose()
+    {
+        CCorpusEditor.CEditorClose();
+        CCorpusEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
     }
 
     private void LCorpusQueryClear()

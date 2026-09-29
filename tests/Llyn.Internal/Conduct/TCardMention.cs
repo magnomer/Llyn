@@ -117,7 +117,7 @@ public sealed class TCardMention
             .LCardDraftSentence[0].LSentenceDraftExample!.LExampleDraftMention;
     }
 
-    private static (long TMentionEntry, long TMentionSense) TMentionEntryCreate(LEngine engine)
+    internal static (long TMentionEntry, long TMentionSense) TMentionEntryCreate(LEngine engine)
     {
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "kindle",

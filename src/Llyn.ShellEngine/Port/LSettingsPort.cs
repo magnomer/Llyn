@@ -59,7 +59,6 @@ public interface LSettingsPort
 
     IReadOnlyList<string> LEngineLanguageRead();
 
-    string LEngineGlossRead();
 
     static string LEngineEnsignFormat(string language, string variety)
     {

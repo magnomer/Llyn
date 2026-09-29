@@ -153,6 +153,33 @@ public sealed class CAnthology
         }
     }
 
+    private LTenure? CAnthologyTenure => _cAnthologyDesk.CDeskFilling ? null : _cAnthologyDesk.CDeskTenure;
+
+    public void CAnthologyGlossSet(long glossId, string text)
+    {
+        _cAnthologyDesk.CDeskQuill?.LQuillGlossSet(0, 0, glossId, null, text);
+    }
+
+    public void CAnthologyLanguageSet(long glossId, string language)
+    {
+        _cAnthologyDesk.CDeskQuill?.LQuillGlossSet(0, 0, glossId, language, null);
+    }
+
+    public void CAnthologyGlossAdd(int below)
+    {
+        CAnthologyTenure?.LTenureGlossInsert(0, 0, below + 1);
+    }
+
+    public bool CAnthologyGlossPrepare()
+    {
+        return CAnthologyTenure?.LTenureGlossPrepare(0, 0) == true;
+    }
+
+    public void CAnthologyGlossRemove(long glossId)
+    {
+        _cAnthologyDesk.CDeskQuill?.LQuillGlossRemove(0, 0, glossId);
+    }
+
     public static bool CAnthologyTextCheck(string text, CStateValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
@@ -190,7 +217,6 @@ public sealed class CAnthology
                 example.LExampleSource.LStateAnchorShown,
                 citation,
                 example.LExampleGloss.Select(LAnthologyGlossRead).ToList(),
-                example.LExampleMention.Select(LAnthologyMentionRead).ToList(),
                 CMention.CMentionRead(example.LExampleExcerpt));
     }
 
@@ -201,7 +227,7 @@ public sealed class CAnthology
             row.LCatalogExampleText,
             row.LCatalogExampleName,
             row.LCatalogExampleStored.LExampleLanguage,
-            row.LCatalogExampleUsage,
+            row.LCatalogExampleCount,
             row.LCatalogExampleChosen);
     }
 
@@ -209,15 +235,5 @@ public sealed class CAnthology
     {
         return new CGlossDraft(
             gloss.LGlossId, gloss.LGlossLanguage, CFolio.CFolioStateRead(gloss.LGlossText), gloss.LGlossNamed);
-    }
-
-    private static CMentionDraft LAnthologyMentionRead(LMention mention)
-    {
-        return new CMentionDraft(
-            mention.LMentionId,
-            mention.LMentionEntryId,
-            mention.LMentionOffset,
-            mention.LMentionLength,
-            mention.LMentionSenseId);
     }
 }

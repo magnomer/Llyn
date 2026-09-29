@@ -184,7 +184,7 @@ public partial class PWindow
         _qTaxonomy.QTaxonomyAttach(this);
         _qTenor.QTenorAttach(this);
         _qRepertoire.QRepertoireAttach(this);
-        _qCorpus.QCorpusAttach(this);
+        _qCorpus.QCorpusIntroduce(this);
         _qReference.QReferenceAttach(this);
         _qGuild.QGuildAttach(this);
         _qFavorite.QFavoriteAttach(this);
@@ -328,7 +328,7 @@ public partial class PWindow
         _qTaxonomy.QTaxonomyClose();
         _qTenor.QTenorClose();
         _qRepertoire.QRepertoireClose();
-        _qCorpus.QCorpusClose();
+        _qCorpus.QCorpusExitRefine();
         _qReference.QReferenceClose();
         _qGuild.QGuildClose();
         _qFavorite.QFavoriteClose();

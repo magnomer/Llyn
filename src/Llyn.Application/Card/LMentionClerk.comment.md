@@ -60,6 +60,16 @@ The mention line of every sentence row on every card of a draft, keyed by the ro
 A row with no Example yet answers an empty line, so its chips are cleared.
 A missing draft answers no rows.
 
+## `public IReadOnlyList<LMentionLabel> LMentionClerkResolve(LDraft? draft, long cardId, long sentenceId)`
+
+The mention line of one Example in a draft, addressed by card and sentence.
+Card 0 and sentence 0 address the draft's own Example.
+A missing draft or Example answers an empty line.
+
+## `private IReadOnlyList<LMentionLabel> LMentionClerkResolve(LExampleDraft? example)`
+
+The mention line of one Example draft, from its shown text and its Mentions.
+
 ## `private void LMentionClerkResolve(IReadOnlyList<LCardDraft> cards, Dictionary<long, IReadOnlyList<LMentionLabel>> lines)`
 
 Adds the lines of every row on the given cards and their child cards.

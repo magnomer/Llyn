@@ -20,7 +20,7 @@ internal sealed partial class QCorpus
     {
         await LEnsignImage.LEnsignLoad(_qCorpusHost.PWindowAtelier);
         QSpeakerLoad();
-        QCorpusReset();
+        _cCorpus.CCorpusExampleClose();
     }
 
     private void QQueryHandle(object sender, TextChangedEventArgs e)

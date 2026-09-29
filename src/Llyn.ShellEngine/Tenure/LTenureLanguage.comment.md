@@ -84,6 +84,18 @@ Sends the chips without the named one, the pending typed text still included.
 Appends a Gloss to the sentence's list, in the settings' gloss language when it is loaded.
 The engine's gloss read owns that fallback, so no language name is written in code.
 The end place is past the list, and the clerk's clamp puts it last.
+It is the insert past the list.
+
+## `public void LTenureGlossInsert(long card, long sentence, int position)`
+
+Places a Gloss at the position in the sentence's list, in the same gloss language as the append.
+The clerk's clamp keeps the place inside the list.
+
+## `public bool LTenureGlossPrepare(long card, long sentence)`
+
+Appends a first Gloss only when the sentence's Example holds none, and answers whether it did.
+A draft without that Example answers false.
+The transcript's empty seed hands the focus on only when a row was made.
 
 ## `private IReadOnlyList<LSpeechDraft> LTenureChipRead()`
 

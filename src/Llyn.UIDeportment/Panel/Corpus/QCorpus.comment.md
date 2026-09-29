@@ -35,9 +35,10 @@ It attaches the row fills of the catalog, the quotations and the speaker list.
 
 Each named part of the page is pulled through `QContract.QContractFind` by its contract ID.
 
-## `internal void QCorpusAttach(PWindow host)`
+## `internal void QCorpusIntroduce(PWindow host)`
 
-Takes the corpus Conduct and its editor from the forge, and wires the desk's notices.
+Takes the corpus Conduct from the forge, which built it with its editor and its desk's marshaller.
+It subscribes the desk's failure, refusal and draft notices through `QTranscriptDeskIntroduce`.
 The lectern follows the quotation panel, whose loads and clears reach the display's area, never the veneer.
 Binds the panel to the window it asks for confirmations and panel switches through.
 It binds its lists and subscribes to the engine, and reads nothing yet.
@@ -64,31 +65,30 @@ Paints the mode the engine decides: which page shows, which toggle is checked, w
 The transcript is live only while its desk runs.
 It ends by refreshing the rail's undo and redo.
 
-## `internal void QCorpusReset()`
+## `internal void QCorpusExitRefine()`
 
-Drops both selections through `CCorpusExampleClose`, for when the workspace underneath changed.
-
-## `internal void QCorpusClose()`
-
-Closes the popups the panel owns, the citation drawer among them, so none outlives the window.
+Releases the editor's player and closes the popups the panel owns, the citation drawer among them.
+So none outlives the window.
+It calls no gate: the window's exit gate `CAtelierClose` stops the editor and its playback in Conduct.
 
 ## `private void QCorpusPressCheck(object sender, CanExecuteRoutedEventArgs e)`
 
 Whether the print button is live: an entry is read, or an example is read.
 An editor on screen prints nothing, because what is printed is what is read.
 
-## `private async void QCorpusPressHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private async void QCorpusPressObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Prints the entry being read, or else the example being read, as the engine portrays it.
-The deportment picks the page from the side it shows, and the engine builds it from stored rows.
+Hears the print command and calls the one gate `CCorpusPortraitPrint`.
+The gate picks the page from the side in front and asks for the printer.
+The engine builds the page from stored rows.
 
 ## `private void QCorpusPortraitCheck(object sender, CanExecuteRoutedEventArgs e)`
 
 Whether the export button is live: exactly when an entry is read in the display.
 Print may also act on the other page this panel reads, but export acts on entries alone.
 
-## `private async void QCorpusPortraitHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private async void QCorpusPortraitObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Exports the entry being read, as the engine portrays it.
+Hears the export command and calls the one gate `CCorpusPortraitExport`, which exports the entry being read.
 The gate asks for the file and the format through the envoy.
 The engine writes the document from stored rows.

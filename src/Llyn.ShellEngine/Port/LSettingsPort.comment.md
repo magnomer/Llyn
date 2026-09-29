@@ -36,10 +36,6 @@ The interface languages the build embeds, so the language box lists no language 
 The ready notice of a failure: a refusal's reason key, or `unexpected` with `recorded` and the audit file.
 One call reads the reason and writes the fault, so Conduct decides nothing about the exception.
 
-## `string LEngineGlossRead();`
-
-The language a new translation of an Example starts in.
-It is the gloss language of the settings when its pack is loaded, else the first loaded language.
 
 ## `static string LEngineEnsignFormat(string language, string variety)`
 

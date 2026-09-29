@@ -36,11 +36,6 @@ Points the held Example at the picked Source, sent at once.
 
 Ties or unties one reflex row and one fanqie row, sent at once.
 
-## `public void LQuillGlossAdd(long card, long sentence, string language, int position)`
-
-Adds a Gloss in the given language at the given position, sent at once.
-The card and sentence are zero when the gloss belongs to the held Example itself.
-
 ## `public void LQuillGlossRemove(long card, long sentence, long gloss)`
 
 Drops one Gloss, sent at once.
@@ -50,18 +45,9 @@ Drops one Gloss, sent at once.
 Sends a chosen language at once when one is given.
 Otherwise it defers the typed text, which must then be given.
 
-## `public void LQuillMentionAdd(long card, long sentence, int offset, int length, long entry)`
-
-Links a span of the text to an Entry, or marks it silent when the entry is zero.
-The sense starts unset, since the sense picker opens only on a linked Mention.
-
 ## `public void LQuillMentionRemove(long card, long sentence, long mention)`
 
 Drops one Mention, sent at once.
-
-## `public void LQuillMentionSet(long card, long sentence, long mention, long sense)`
-
-Points one Mention at a sense of its Entry, sent at once.
 
 ## `public void LQuillSentenceAdd(long card, int position)`
 

@@ -8,9 +8,13 @@ namespace Llyn.Conduct;
 
 public sealed class CQuotation
 {
+    private readonly CEnvoy _cQuotationEnvoy;
+
     private readonly LEntryPort _cQuotationEntryPort;
 
     private readonly LPortraitPort _cQuotationPortraitPort;
+
+    private readonly LSettingsPort _cQuotationSettingsPort;
 
     private LVista? _cQuotationRoll;
 
@@ -29,7 +33,9 @@ public sealed class CQuotation
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
 
+        _cQuotationEnvoy = envoy;
         _cQuotationEntryPort = entries;
+        _cQuotationSettingsPort = settings;
         _cQuotationPortraitPort = portraits;
         CQuotationPanel = new CPanel(envoy, settings, "List.LoadFailed", null, changeSeam, finishSeam, shownSeam);
     }
@@ -58,9 +64,17 @@ public sealed class CQuotation
 
     public IReadOnlyList<CVistaRow> CQuotationRowsRead()
     {
-        return _cQuotationEntryPort.LEngineEntryFind(_cQuotationRoll, _cQuotationVista)
-            .Select(CPanel.CPanelRowRead)
-            .ToList();
+        try
+        {
+            return _cQuotationEntryPort.LEngineEntryFind(_cQuotationRoll, _cQuotationVista)
+                .Select(CPanel.CPanelRowRead)
+                .ToList();
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cQuotationEnvoy, _cQuotationSettingsPort, "Example.LoadFailed", exception);
+            return [];
+        }
     }
 
     internal string LQuotationFileRead()

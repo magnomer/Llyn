@@ -98,6 +98,25 @@ public sealed class TDraftClerk
     }
 
     [Fact]
+    public void GlossEmptyCheck_ExampleWithAndWithoutGloss_AnswersOnlyForAnExampleHoldingNone()
+    {
+        LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        LDraft entry = TInterface.TDraftNestedCreate("Input", "kindle");
+        LDraft example = entry with
+        {
+            LDraftExample = TInterface.TExampleCreate(
+                0, "English", TInterface.TStateValueCreate("a cat"), null, TInterface.TStateAnchorRead(null)),
+        };
+
+        LDraft glossed = clerk.TDraftClerkApply(
+            example, TInterface.TGlossAdditionCreate(example.LDraftId, 0, 0, "French", 0));
+
+        Assert.False(TInterface.TGlossEmptyCheck(entry, 0, 0));
+        Assert.True(TInterface.TGlossEmptyCheck(example, 0, 0));
+        Assert.False(TInterface.TGlossEmptyCheck(glossed, 0, 0));
+    }
+
+    [Fact]
     public void DraftClerkApply_UnknownRequestKind_ThrowsArgument()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));

@@ -13,6 +13,12 @@ Holds the issuer that names a new Gloss, the only service a Gloss edit needs.
 
 Adds an empty Gloss in the requested language at the requested position, under a freshly minted negative id.
 
+## `public static bool LGlossEmptyCheck(LDraft draft, long cardId, long sentenceId)`
+
+Whether the draft holds that sentence's Example with no Gloss on it.
+A draft without that Example answers false, so nothing is seeded into it.
+The card and sentence are zero for the held Example itself.
+
 ## `public static LDraft LGlossRemove(LDraft draft, LRequestGlossRemoval request)`
 
 Drops the Gloss named, and refuses when no row carries the id.

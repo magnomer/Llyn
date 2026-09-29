@@ -103,7 +103,7 @@ Whether the selection lies inside a Mention that links an Entry, the ready verdi
 
 The Meanings the sense menu offers, ready in reading order, for the linked Mention under the selection.
 It answers null when no linked Mention lies there, so no menu opens.
-It chooses the fallback key `Display.Unknown`, which the engine words, as the window's Meaning read does.
+The shared read in `CMention` chooses the fallback key `Display.Unknown`, which the engine words.
 A failed read shows `Mention.FindFailed` and answers null.
 
 ## `public IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> CSentenceMentionRead()`

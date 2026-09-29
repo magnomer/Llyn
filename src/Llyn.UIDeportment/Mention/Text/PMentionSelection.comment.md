@@ -2,14 +2,8 @@
 
 ## `internal static class PMentionSelection`
 
-Reads what the user has selected in a sentence field as a span a Mention request can carry.
-Both hosts of the gesture read the field the same way, so the reading lives apart from either.
-
-## `internal static (int PMentionSelectionOffset, int PMentionSelectionLength) PMentionSelectionRead(TextBox box, CAtelier atelier)`
-
-The selection in code points, which is what every Mention is measured in.
-The field counts in UTF-16 units, so the engine converts the span before anything reaches a request.
-The engine also drops whitespace at either end, because a double click selects the space after a word too.
+Places a popup for what the user has selected in a sentence field.
+Both hosts of the gesture place it the same way, so the placing lives apart from either.
 
 ## `internal static Rect PMentionSelectionPlace(TextBox box)`
 

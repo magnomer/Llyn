@@ -6,14 +6,15 @@ The middle column of the Corpus panel, and the entry display it opens on the rig
 `QQuotation` lists the entries quoting the chosen Example, or every Entry while none is chosen.
 A chosen row swaps the Example reading for the entry display in place, without leaving the tab.
 
-## `private void QQuotationFind()`
+## `private void QQuotationRefine()`
 
-Refills the middle column with the rows the quotation list reads.
+Refills the middle column with the rows the quotation list reads, when the list's rows change.
 The engine matches the dredge text and drops the hidden languages, so the driver decides nothing about what matches.
+A failed read is reported by the list, which answers no rows.
 An empty result is shown rather than hidden.
 Its wording key is `CQuotationEmptyKey`, chosen by whether the list holds a query.
 
-## `private void QQuotationHandle(object sender, RoutedEventArgs e)`
+## `private void QQuotationObserve(object sender, RoutedEventArgs e)`
 
 A clicked Entry row asks the gate `CCorpusQuotationSelect` to show it without leaving the tab.
 It shows in the display or the editor, whichever the mode holds.

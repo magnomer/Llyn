@@ -67,6 +67,34 @@ Points the transcript's citation at the Source the engine resolves the typed tit
 The engine reads the Source cited now off the held draft, so an unchanged title keeps it.
 A failure shows `Reference.CreateFailed` and leaves the citation as it was.
 
+## `private LTenure? CAnthologyTenure`
+
+The held transcript draft, or null while the desk fills one, as the quill reads then.
+
+## `public void CAnthologyGlossSet(long glossId, string text)`
+
+The transcript's gloss text, deferred like the sentence text.
+It is the card sentence's gloss gate over the Example itself, with card and sentence zero.
+
+## `public void CAnthologyLanguageSet(long glossId, string language)`
+
+The gate for a language picked in a transcript gloss's language menu, sent at once.
+
+## `public void CAnthologyGlossAdd(int below)`
+
+The gate for the gloss button, adding a gloss below the row at that place.
+Below means the next place, as `CSentenceAdd` puts a sentence.
+The engine picks the gloss language.
+
+## `public bool CAnthologyGlossPrepare()`
+
+The gate for the empty transcript's seed field taking focus.
+The engine adds the first gloss only when the Example holds none, and answers whether it did.
+
+## `public void CAnthologyGlossRemove(long glossId)`
+
+The gate for the cross on a transcript gloss row.
+
 ## `public static bool CAnthologyTextCheck(string text, CStateValue value)`
 
 Whether a field showing `text` already shows `value`, as the engine would store the field.

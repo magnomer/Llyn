@@ -106,6 +106,53 @@ public sealed class CMention
         }
     }
 
+    internal static IReadOnlyList<CMeaning>? LMentionMeaningRead(
+        LDraftPort drafts, CDesk desk, long cardId, long sentenceId, string text, int start, int length,
+        CEnvoy envoy, LSettingsPort settings)
+    {
+        ArgumentNullException.ThrowIfNull(drafts);
+        ArgumentNullException.ThrowIfNull(desk);
+
+        if (desk.CDeskTenure is not LTenure held)
+        {
+            return null;
+        }
+
+        try
+        {
+            return drafts.LEngineSenseRead(held, cardId, sentenceId, text, start, length, "Display.Unknown") is { } rows
+                ? CCatalog.LCatalogMeaningRead(rows)
+                : null;
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(envoy, settings, "Mention.FindFailed", exception);
+            return null;
+        }
+    }
+
+    internal static IReadOnlyList<CMentionLabel> LMentionChipRead(
+        LDraftPort drafts, CDesk desk, long cardId, long sentenceId, CEnvoy envoy, LSettingsPort settings)
+    {
+        ArgumentNullException.ThrowIfNull(drafts);
+        ArgumentNullException.ThrowIfNull(desk);
+
+        if (desk.CDeskTenure is not LTenure held)
+        {
+            return [];
+        }
+
+        try
+        {
+            return LMentionLabelRead(drafts.LEngineMentionResolve(held, cardId, sentenceId));
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(envoy, settings, "Mention.FindFailed", exception);
+            return [];
+        }
+    }
+
     public int CMentionUnitRead(string text, int offset)
     {
         return _cMentionAtelier.CAtelierDraftPort.LEngineUnitRead(text, offset);
@@ -114,39 +161,6 @@ public sealed class CMention
     public int CMentionOffsetRead(string text, int unit)
     {
         return _cMentionAtelier.CAtelierDraftPort.LEngineOffsetRead(text, unit);
-    }
-
-    public (int CMentionSpanOffset, int CMentionSpanLength) CMentionSpanRead(string text, int start, int length)
-    {
-        LMentionDraft span = _cMentionAtelier.CAtelierDraftPort.LEngineSpanRead(text, start, length);
-        return (span.LMentionDraftOffset, span.LMentionDraftLength);
-    }
-
-    public CMentionDraft? CMentionFind(
-        CDesk desk, long cardId, long sentenceId, string text, int start, int length, bool settled)
-    {
-        ArgumentNullException.ThrowIfNull(desk);
-
-        if (settled)
-        {
-            desk.CDeskPersist();
-        }
-
-        return CMentionRead(
-            desk.CDeskTenure?.LTenureMentionFind(
-                cardId, sentenceId, _cMentionAtelier.CAtelierDraftPort.LEngineSpanRead(text, start, length)));
-    }
-
-    private static CMentionDraft? CMentionRead(LMentionDraft? found)
-    {
-        return found is null
-            ? null
-            : new CMentionDraft(
-                found.LMentionDraftId,
-                found.LMentionDraftEntry,
-                found.LMentionDraftOffset,
-                found.LMentionDraftLength,
-                found.LMentionDraftSense);
     }
 
     public bool CMentionSpanCheck(string text, int start, int length)
