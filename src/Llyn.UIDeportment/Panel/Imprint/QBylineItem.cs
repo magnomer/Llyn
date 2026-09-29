@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -11,29 +10,12 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QBylineItem
 {
-    internal QBylineItem(long id, string name, string word)
+    internal QBylineItem(long id, string lead, string mark, string tail)
     {
         QBylineItemId = id;
-
-        int found = -1;
-        int size = 0;
-        if (word.Length != 0)
-        {
-            found = CultureInfo.CurrentCulture.CompareInfo.IndexOf(
-                name, word, CompareOptions.IgnoreCase, out size);
-        }
-
-        if (found < 0)
-        {
-            QBylineItemLead = name;
-            QBylineItemMark = string.Empty;
-            QBylineItemTail = string.Empty;
-            return;
-        }
-
-        QBylineItemLead = name[..found];
-        QBylineItemMark = name.Substring(found, size);
-        QBylineItemTail = name[(found + size)..];
+        QBylineItemLead = lead;
+        QBylineItemMark = mark;
+        QBylineItemTail = tail;
     }
 
     internal long QBylineItemId { get; }
@@ -49,7 +31,7 @@ internal sealed class QBylineItem
         return (chosen as QBylineItem)?.QBylineItemId;
     }
 
-    internal static void QBylineItemApply(FrameworkElement container, object item, MouseButtonEventHandler press)
+    internal static void QBylineItemRefine(FrameworkElement container, object item, MouseButtonEventHandler press)
     {
         if (item is not QBylineItem byline)
         {
@@ -78,15 +60,14 @@ internal sealed class QBylineItem
         }
     }
 
-    internal static IReadOnlyList<QBylineItem> QBylineItemBuild(IReadOnlyList<CAuthor> rows, string word)
+    internal static IReadOnlyList<QBylineItem> QBylineItemBuild(IReadOnlyList<CAuthor> rows)
     {
         ArgumentNullException.ThrowIfNull(rows);
-        ArgumentNullException.ThrowIfNull(word);
 
         List<QBylineItem> built = new(rows.Count);
         foreach (CAuthor author in rows)
         {
-            built.Add(new QBylineItem(author.CAuthorId, author.CAuthorName, word));
+            built.Add(new QBylineItem(author.CAuthorId, author.CAuthorLead, author.CAuthorMark, author.CAuthorTail));
         }
 
         return built;

@@ -15,14 +15,14 @@ internal sealed partial class QCorpus
         _cCorpus.CCorpusDraftChanged += QTranscriptDraftRefine;
     }
 
-    public void QChronicleUndo()
+    public void QChronicleUndoObserve()
     {
-        QChronicle.QChronicleRun(_cCorpus.CCorpusSession.CSessionUndo);
+        QChronicle.QChronicleCaretRefine(_cCorpus.CCorpusSession.CSessionUndo);
     }
 
-    public void QChronicleRedo()
+    public void QChronicleRedoObserve()
     {
-        QChronicle.QChronicleRun(_cCorpus.CCorpusSession.CSessionRedo);
+        QChronicle.QChronicleCaretRefine(_cCorpus.CCorpusSession.CSessionRedo);
     }
 
     private void QCorpusChronicleRefine()
@@ -34,11 +34,11 @@ internal sealed partial class QCorpus
 
     private void QCorpusUndoObserve(object sender, RoutedEventArgs e)
     {
-        QChronicleUndo();
+        QChronicleUndoObserve();
     }
 
     private void QCorpusRedoObserve(object sender, RoutedEventArgs e)
     {
-        QChronicleRedo();
+        QChronicleRedoObserve();
     }
 }

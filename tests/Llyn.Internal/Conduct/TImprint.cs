@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -103,6 +104,23 @@ public sealed class TImprint
     }
 
     [Fact]
+    public void ImprintKindRead_Menu_OffersEachKindWithItsTagAndKeyInMenuOrder()
+    {
+        IReadOnlyList<CReferenceKind> menu = CImprint.CImprintKindRead();
+
+        Assert.Equal(
+            ["unspecified", "book", "journal", "article", "web", "video", "audio", "picture", "other", "unknown"],
+            menu.Select(static kind => kind.CReferenceKindTag));
+        Assert.Equal(
+            [
+                "Source.KindUnspecified", "Source.KindBook", "Source.KindJournal", "Source.KindArticle",
+                "Source.KindWeb", "Source.KindVideo", "Source.KindAudio", "Source.KindPicture",
+                "Source.KindOther", "Source.KindUnknown",
+            ],
+            menu.Select(static kind => kind.CReferenceKindKey));
+    }
+
+    [Fact]
     public void ImprintEmptyRead_NoDraft_ReadsTheBlankSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -138,14 +156,17 @@ public sealed class TImprint
 
         Assert.False(imprint.CImprintHeld);
         Assert.False(imprint.CImprintByline.CBylineShown);
-        Assert.Equal(string.Empty, imprint.CImprintByline.CBylineWord);
+        Assert.Empty(imprint.CImprintByline.CBylineRowsRead());
         Assert.Equal(1, changed);
     }
 
     internal static CImprint TImprintPrepare(LEngine engine, CAtelier atelier)
     {
         CImprint imprint = new(
-            atelier.CAtelierDraftPort, atelier.CAtelierEntryPort, TInterfaceConduct.TEnvoyCreate(false, []));
+            atelier.CAtelierDraftPort,
+            atelier.CAtelierEntryPort,
+            TInterfaceConduct.TEnvoyCreate(false, []),
+            static run => run());
         imprint.CImprintDesk.TDeskVistaRestore(
             engine.TEngineVistaStart("reference", LCatalogOrder.LCatalogOrderName));
         return imprint;

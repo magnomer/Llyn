@@ -16,6 +16,6 @@ A panel's own editor is built by its Conduct area, which restores it with the pa
 Every panel deportment is handed back with its vistas already started through the posture.
 The corpus, favorites, library, authors, phonology, repertoire, sources, taxonomy and tenor panels are handed back as their Conduct.
 Each Conduct starts its own vistas when the forge asks it here.
-The corpus, favorites and authors are also built with the marshal their notices run through.
+The corpus, favorites, authors and sources are also built with the marshal their notices run through.
 Only the medium knows its dispatcher.
 A workspace change restarts them in Conduct, since each area registers its restore with `CWorkspace`.

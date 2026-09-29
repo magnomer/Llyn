@@ -123,22 +123,22 @@ internal static class QChoice
         }
     }
 
-    internal static void QChoiceMenuBuild(Panel list, RoutedEventHandler handler, IReadOnlyList<LReferenceKind> kinds)
+    internal static void QChoiceMenuBuild(Panel list, RoutedEventHandler handler, IReadOnlyList<CReferenceKind> kinds)
     {
         ArgumentNullException.ThrowIfNull(list);
         ArgumentNullException.ThrowIfNull(handler);
         ArgumentNullException.ThrowIfNull(kinds);
 
         list.Children.Clear();
-        foreach (LReferenceKind kind in kinds)
+        foreach (CReferenceKind kind in kinds)
         {
             RadioButton choice = new()
             {
                 GroupName = nameof(QChoiceMenuBuild),
-                Tag = LReference.LReferenceKindFormat(kind),
+                Tag = kind.CReferenceKindTag,
             };
             choice.SetResourceReference(FrameworkElement.StyleProperty, "Theme.Choice.Order");
-            choice.SetResourceReference(ContentControl.ContentProperty, LReference.LReferenceKindResolve(kind));
+            choice.SetResourceReference(ContentControl.ContentProperty, kind.CReferenceKindKey);
             choice.Click += handler;
             list.Children.Add(choice);
         }

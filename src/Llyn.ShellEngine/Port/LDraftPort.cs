@@ -38,7 +38,7 @@ public interface LDraftPort
 
     IReadOnlyList<LVistaRow> LEngineProspectFind(LTenure held, string word);
 
-    IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query);
+    IReadOnlyList<LBylineRow> LEngineBylineFind(long draft, string query);
 
     LTagOffer LEngineTagFind(LTenure held, long card, string text);
 

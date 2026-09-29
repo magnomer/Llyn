@@ -24,12 +24,9 @@ The name the field is filled with, raised on change so a rename elsewhere reache
 
 Whether a row above this one exists, so the move control is offered only where it can act.
 
-## `internal static IReadOnlyList<QAuthorItem> QAuthorItemBuild(IReadOnlyList<CAuthorRow> rows, int blankAt)`
+## `internal static IReadOnlyList<QAuthorItem> QAuthorItemBuild(IReadOnlyList<CAuthorRow> rows)`
 
-One item per credit row, with the blank row spliced in at the index the source editor names.
-The rows are counted here as they are copied, so no engine count enters the compare.
-The blank row takes the position of the credit it precedes, so an addition lands there.
-A negative index adds no blank row, and one equal to the count adds it last.
+One item per credit row the source editor answered, the blank row already placed among them.
 
 ## `internal static bool QAuthorItemMatch(QAuthorItem held, QAuthorItem fresh)`
 
@@ -40,12 +37,12 @@ The name is not part of it, so a rename is synced rather than rebuilt.
 
 The blank row among the rows shown, which the caret goes to after an add.
 
-## `internal static void QAuthorItemRestore(object? source)`
+## `internal static void QAuthorItemRefine(object? source)`
 
 Writes the held name back into the field the event came from, dropping what was typed.
 Anything but a credit field is left alone, so a handler may pass an event source through unchecked.
 
-## `internal static void QAuthorItemApply(FrameworkElement container, object item, string? change)`
+## `internal static void QAuthorItemRefine(FrameworkElement container, object item, string? change)`
 
 Fills one credit row: its name, the order handles' enablement, and the four handle icons.
 The name is refilled only when the row's name changed, so typing in a kept row is never overwritten.

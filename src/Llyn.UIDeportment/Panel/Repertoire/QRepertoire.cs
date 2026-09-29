@@ -22,7 +22,7 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
 
         _qRepertoireSurface = surface;
         QLook.QLookStyleAttach(surface.Resources);
-        QChronicle.QChronicleAttach(surface, this);
+        QChronicle.QChronicleIntroduce(surface, this);
 
         _qImageTemplate = new PImageTemplate(this);
         surface.Resources.MergedDictionaries.Add(_qImageTemplate);

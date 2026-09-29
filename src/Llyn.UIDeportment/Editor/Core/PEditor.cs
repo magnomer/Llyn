@@ -160,14 +160,14 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     internal event Action? PEditorChronicleChanged;
 
-    public void QChronicleUndo()
+    public void QChronicleUndoObserve()
     {
-        QChronicle.QChronicleRun(_qEditor.QEditorArea.CEditorDesk.CDeskUndo);
+        QChronicle.QChronicleCaretRefine(_qEditor.QEditorArea.CEditorDesk.CDeskUndo);
     }
 
-    public void QChronicleRedo()
+    public void QChronicleRedoObserve()
     {
-        QChronicle.QChronicleRun(_qEditor.QEditorArea.CEditorDesk.CDeskRedo);
+        QChronicle.QChronicleCaretRefine(_qEditor.QEditorArea.CEditorDesk.CDeskRedo);
     }
 
     private void PEditorRequestDefer(LRequest request)
@@ -318,12 +318,12 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     private void PEditorUndoObserve(object sender, RoutedEventArgs e)
     {
-        QChronicleUndo();
+        QChronicleUndoObserve();
     }
 
     private void PEditorRedoObserve(object sender, RoutedEventArgs e)
     {
-        QChronicleRedo();
+        QChronicleRedoObserve();
     }
 
     private void PEditorStoreObserve(object sender, RoutedEventArgs e)

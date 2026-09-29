@@ -28,10 +28,17 @@ public sealed class TByline
 
         byline.CBylineWordSet(" Ad ", true);
 
-        Assert.Equal(["Adam"], byline.CBylineRowsRead().Select(author => author.CAuthorName));
+        Assert.Equal(
+            [(string.Empty, "Ad", "am")],
+            byline.CBylineRowsRead().Select(author => (author.CAuthorLead, author.CAuthorMark, author.CAuthorTail)));
         Assert.True(byline.CBylineShown);
         Assert.Equal(-1, byline.CBylineIndex);
-        Assert.Equal("Ad", byline.CBylineWord);
+
+        byline.CBylineWordSet("dA", true);
+
+        Assert.Equal(
+            [("A", "da", "m")],
+            byline.CBylineRowsRead().Select(author => (author.CAuthorLead, author.CAuthorMark, author.CAuthorTail)));
 
         byline.CBylineWordSet(" ", true);
 
@@ -144,7 +151,7 @@ public sealed class TByline
 
         Assert.Equal(0, reverted);
         Assert.False(imprint.CImprintByline.CBylineShown);
-        Assert.Equal(string.Empty, imprint.CImprintByline.CBylineWord);
+        Assert.Empty(imprint.CImprintByline.CBylineRowsRead());
 
         Assert.True(imprint.CImprintAuthorCancel(0, 0));
 

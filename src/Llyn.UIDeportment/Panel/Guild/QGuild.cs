@@ -327,12 +327,12 @@ internal sealed class QGuild
 
     private void QGuildUndoObserve(object sender, RoutedEventArgs e)
     {
-        QChronicle.QChronicleRun(_cGuild.CGuildSession.CSessionUndo);
+        QChronicle.QChronicleCaretRefine(_cGuild.CGuildSession.CSessionUndo);
     }
 
     private void QGuildRedoObserve(object sender, RoutedEventArgs e)
     {
-        QChronicle.QChronicleRun(_cGuild.CGuildSession.CSessionRedo);
+        QChronicle.QChronicleCaretRefine(_cGuild.CGuildSession.CSessionRedo);
     }
 
     private void QGuildChronicleUpdate()

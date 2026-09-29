@@ -6,12 +6,13 @@ The source editor: the desk over one Source draft, its credit rows and the bylin
 The stated fields go down raw, and the draft notice writes back what the engine holds.
 The credit rows are the engine's, and the only credit state kept here is where the one blank row sits.
 Every request is built by the desk's quill, so the editor names no request.
-The sources panel builds it over its ports until `CShelf` does.
+`CShelf` builds it over the atelier's ports.
 
-## `internal CImprint(LDraftPort drafts, LEntryPort entries, CEnvoy envoy)`
+## `internal CImprint(LDraftPort drafts, LEntryPort entries, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the desk under the `Source` scope, and the byline over the same draft port.
 The desk's prepared draft is announced as the reference notice.
+The desk hears its tenure and draft notices through `marshal`, so no driver wires them.
 
 ## `public event Action? CImprintChanged;`
 
@@ -32,10 +33,6 @@ The typed credit is dropped, so the driver writes the row's held name back into 
 ## `public CByline CImprintByline { get; }`
 
 The popup of Authors a typed credit may already name.
-
-## `public int CImprintBlankAt`
-
-The place of the one blank credit row, or `-1` when none is open.
 
 ## `internal void LImprintOpen(long? id)`
 
@@ -69,10 +66,16 @@ While the desk fills its fields from a notice, no quill is offered and nothing i
 
 Hands the picked menu tag to the quill, which sends the kind at once.
 
+## `public static IReadOnlyList<CReferenceKind> CImprintKindRead()`
+
+The kind menu the driver builds once, each option's tag and key already decided by the engine.
+It is static, since the menu is the same for every Source and needs no desk.
+
 ## `public IReadOnlyList<CAuthorRow> CImprintCreditRead()`
 
-The credit rows of the held draft.
+The credit rows of the held draft, with the one blank row already placed among them.
 While a draft is held, the blank row is opened on an empty list and kept within the rows.
+The blank row has id `0`, an empty name, its own place and no move.
 
 ## `public void CImprintAuthorAdd(int? position, long? id)`
 

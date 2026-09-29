@@ -22,11 +22,12 @@ public sealed class CShelf
 
     private int _cShelfCount;
 
-    private CShelf(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    private CShelf(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(shownSeam);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(marshal);
 
         _cShelfAtelier = atelier;
         _cShelfEnvoy = envoy;
@@ -35,7 +36,7 @@ public sealed class CShelf
         _cShelfSettingsPort = atelier.CAtelierSettingsPort;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CShelfEditor = editor;
-        CShelfImprint = new CImprint(atelier.CAtelierDraftPort, atelier.CAtelierEntryPort, envoy);
+        CShelfImprint = new CImprint(atelier.CAtelierDraftPort, atelier.CAtelierEntryPort, envoy, marshal);
         CShelfPanel = new CPanel(
             envoy,
             _cShelfSettingsPort,
@@ -65,11 +66,12 @@ public sealed class CShelf
             LShelfReferenceOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(LShelfChangeRead, LShelfDraftFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CShelfVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LShelfClose);
     }
 
-    public static CShelf CShelfCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    public static CShelf CShelfCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
-        return new CShelf(atelier, shownSeam, envoy);
+        return new CShelf(atelier, shownSeam, envoy, marshal);
     }
 
     public event Action? CShelfChanged;
@@ -336,6 +338,11 @@ public sealed class CShelf
         }
 
         CShelfPanel.CPanelEntryDelete();
+    }
+
+    private void LShelfClose()
+    {
+        CShelfImprint.CImprintByline.CBylineClose();
     }
 
     public (bool CShelfBackward, bool CShelfForward) CShelfChronicleRead()

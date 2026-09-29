@@ -306,6 +306,17 @@ public sealed class LReferenceClerk
             draft.LDraftReference ?? throw new InvalidOperationException("The draft holds no reference."));
     }
 
+    public static IReadOnlyList<(string LReferenceKindTag, string LReferenceKindKey)> LReferenceMenuRead()
+    {
+        List<(string LReferenceKindTag, string LReferenceKindKey)> menu = new(LReference.LReferenceKindMenu.Count);
+        foreach (LReferenceKind kind in LReference.LReferenceKindMenu)
+        {
+            menu.Add((LReference.LReferenceKindFormat(kind), LReference.LReferenceKindResolve(kind)));
+        }
+
+        return menu;
+    }
+
     public static LReferenceKind? LReferenceKindRead(LDraft? draft, string? tag)
     {
         if (tag is null)

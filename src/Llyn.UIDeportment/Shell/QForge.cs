@@ -59,7 +59,8 @@ public sealed class QForge
 
     public CShelf QForgeShelfCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        CShelf shelf = CShelf.CShelfCreate(_qForgeAtelier, shownSeam, envoy);
+        CShelf shelf = CShelf.CShelfCreate(
+            _qForgeAtelier, shownSeam, envoy, LObserver.LObserverCreate<Action>(static run => run()));
         shelf.CShelfVistaRestore();
         return shelf;
     }

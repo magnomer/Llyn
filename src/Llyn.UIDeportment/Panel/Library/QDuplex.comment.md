@@ -11,17 +11,17 @@ The panel itself is the veneer's `PDuplex` page, which the window places.
 Takes the page the window pulled under the contract ID `PDuplex`.
 The page places the veneer's `PWing` twice, and each place gets its own wing driver.
 
-## `internal void QDuplexAttach(PWindow host)`
+## `internal void QDuplexIntroduce(PWindow host)`
 
 Puts both wings to work on the window `host`.
 Each wing subscribes for itself, so the panel subscribes to nothing.
 
-## `internal void QDuplexRestore(CWorkspaceState state)`
+## `internal void QDuplexRefine(CWorkspaceState state)`
 
 Puts both wings back on the workspace open now, each standing on the Entry `state` names for it.
 Each wing gets a vista started now under `left` or `right`, so a switched workspace's layout is read.
 Both vistas are blank, so a wing with nothing typed offers no rows.
 
-## `internal void QDuplexClose()`
+## `internal void QDuplexCloseRefine()`
 
 Releases what both wings hold open.

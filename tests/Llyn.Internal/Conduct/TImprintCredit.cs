@@ -18,12 +18,14 @@ public sealed class TImprintCredit
         CImprint imprint = TImprint.TImprintPrepare(engine, atelier);
 
         Assert.Empty(imprint.CImprintCreditRead());
-        Assert.Equal(-1, imprint.CImprintBlankAt);
 
         imprint.TImprintOpen(null);
 
-        Assert.Empty(imprint.CImprintCreditRead());
-        Assert.Equal(0, imprint.CImprintBlankAt);
+        CAuthorRow blank = Assert.Single(imprint.CImprintCreditRead());
+        Assert.Equal(
+            (0L, string.Empty, 0, false, false),
+            (blank.CAuthorRowId, blank.CAuthorRowName, blank.CAuthorRowPosition, blank.CAuthorRowEarlier,
+                blank.CAuthorRowLater));
     }
 
     [Fact]
@@ -41,14 +43,14 @@ public sealed class TImprintCredit
 
         Assert.Equal(1, focused);
         Assert.Equal(
-            [(ada.LAuthorId, 0)],
+            [(ada.LAuthorId, 0), (0L, 1)],
             imprint.CImprintCreditRead().Select(row => (row.CAuthorRowId, row.CAuthorRowPosition)));
-        Assert.Equal(1, imprint.CImprintBlankAt);
 
         imprint.CImprintAuthorRemove(0);
 
-        Assert.Equal(["Ada"], imprint.CImprintCreditRead().Select(row => row.CAuthorRowName));
-        Assert.Equal(-1, imprint.CImprintBlankAt);
+        Assert.Equal(
+            [(ada.LAuthorId, "Ada")],
+            imprint.CImprintCreditRead().Select(row => (row.CAuthorRowId, row.CAuthorRowName)));
         Assert.False(imprint.CImprintDesk.TDeskChangeCheck());
     }
 
@@ -104,7 +106,7 @@ public sealed class TImprintCredit
 
         IReadOnlyList<CAuthorRow> rows = imprint.CImprintCreditRead();
         Assert.Equal(["Ada"], rows.Select(row => row.CAuthorRowName));
-        Assert.Equal(-1, imprint.CImprintBlankAt);
+        Assert.DoesNotContain(rows, static row => row.CAuthorRowId == 0);
         Assert.True(imprint.CImprintAuthorFinish(0, rows[0].CAuthorRowId, "Ada", null));
         Assert.Equal(["Ada"], imprint.CImprintCreditRead().Select(row => row.CAuthorRowName));
 
@@ -129,14 +131,16 @@ public sealed class TImprintCredit
         Assert.True(imprint.CImprintAuthorFinish(1, 0, " ", null));
 
         Assert.Equal(1, reverted);
-        Assert.Equal(1, imprint.CImprintBlankAt);
+        Assert.Equal(
+            [(ada.LAuthorId, 0), (0L, 1)],
+            imprint.CImprintCreditRead().Select(row => (row.CAuthorRowId, row.CAuthorRowPosition)));
         Assert.False(imprint.CImprintDesk.TDeskChangeCheck());
 
         Assert.True(imprint.CImprintAuthorFinish(1, 0, "Bob", null));
 
         Assert.Equal(1, reverted);
         Assert.Equal(["Ada", "Bob"], imprint.CImprintCreditRead().Select(row => row.CAuthorRowName));
-        Assert.Equal(-1, imprint.CImprintBlankAt);
+        Assert.DoesNotContain(imprint.CImprintCreditRead(), static row => row.CAuthorRowId == 0);
     }
 
     [Fact]

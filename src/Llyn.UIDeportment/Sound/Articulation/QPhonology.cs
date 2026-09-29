@@ -340,12 +340,12 @@ internal sealed class QPhonology
 
     private void QPhonologyUndoHandle(object sender, RoutedEventArgs e)
     {
-        QPhonologyEditor.QChronicleUndo();
+        QPhonologyEditor.QChronicleUndoObserve();
     }
 
     private void QPhonologyRedoHandle(object sender, RoutedEventArgs e)
     {
-        QPhonologyEditor.QChronicleRedo();
+        QPhonologyEditor.QChronicleRedoObserve();
     }
 
     private void QPhonologyChronicleUpdate()

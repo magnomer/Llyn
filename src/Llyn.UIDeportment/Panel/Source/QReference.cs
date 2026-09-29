@@ -158,7 +158,7 @@ internal sealed class QReference
         _cShelf.CShelfChanged += QReferenceModeUpdate;
         _cShelf.CShelfPanel.CPanelChanged += QReferenceModeUpdate;
         _cShelf.CShelfPanel.CPanelRowsChanged += QShelfUpdate;
-        _cShelf.CShelfPanel.CPanelCleared += _qImprint.QImprintClear;
+        _cShelf.CShelfPanel.CPanelCleared += _qImprint.QImprintClearRefine;
         _cShelf.CShelfPanel.CPanelCleared += _qColophon.QColophonClear;
         _cShelf.CShelfColophonChanged += _qColophon.QColophonShow;
         _cShelf.CShelfFootnote.CFootnotePanel.CPanelChanged += QReferenceModeUpdate;
@@ -167,7 +167,7 @@ internal sealed class QReference
         QShelf.ItemsSource = _qShelfList;
         QFootnote.ItemsSource = _qFootnoteList;
 
-        _qImprint.QImprintAttach(host, _cShelf.CShelfImprint);
+        _qImprint.QImprintIntroduce(host, _cShelf.CShelfImprint);
         QReferenceDisplay.PDisplayAttach(host, lectern);
         QReferenceEditor.PEditorIntroduce(host, new QEditor(_cShelf.CShelfEditor));
 
@@ -235,7 +235,7 @@ internal sealed class QReference
 
     internal void QReferenceClose()
     {
-        _qImprint.QImprintClose();
+        _qImprint.QImprintCloseRefine();
         QReferenceEditor.PEditorClose();
         QReferenceDisplay.PDisplayClose();
         QGradeDropdown.IsOpen = false;
@@ -256,7 +256,7 @@ internal sealed class QReference
             QShelfItem.QShelfItemSync);
         QShelfEmpty.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfEmpty);
         _qColophon.QColophonTallyShow(_cShelf.CShelfTallyRead());
-        _qImprint.QImprintTallyShow();
+        _qImprint.QImprintTallyRefine();
     }
 
     private void QFootnoteUpdate()
@@ -363,12 +363,12 @@ internal sealed class QReference
 
     private void QReferenceUndoHandle(object sender, RoutedEventArgs e)
     {
-        QChronicle.QChronicleRun(_cShelf.CShelfDraftUndo);
+        QChronicle.QChronicleCaretRefine(_cShelf.CShelfDraftUndo);
     }
 
     private void QReferenceRedoHandle(object sender, RoutedEventArgs e)
     {
-        QChronicle.QChronicleRun(_cShelf.CShelfDraftRedo);
+        QChronicle.QChronicleCaretRefine(_cShelf.CShelfDraftRedo);
     }
 
     private void QReferenceBinHandle(object sender, RoutedEventArgs e)

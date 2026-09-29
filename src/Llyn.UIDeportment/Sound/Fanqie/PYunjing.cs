@@ -398,12 +398,12 @@ public class PYunjing : UserControl
 
     private void PYunjingUndoHandle(object sender, RoutedEventArgs e)
     {
-        PEditor.QChronicleUndo();
+        PEditor.QChronicleUndoObserve();
     }
 
     private void PYunjingRedoHandle(object sender, RoutedEventArgs e)
     {
-        PEditor.QChronicleRedo();
+        PEditor.QChronicleRedoObserve();
     }
 
     private void PYunjingChronicleUpdate()

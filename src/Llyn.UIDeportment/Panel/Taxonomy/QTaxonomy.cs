@@ -201,12 +201,12 @@ internal sealed partial class QTaxonomy
 
     private void QTaxonomyUndoHandle(object sender, RoutedEventArgs e)
     {
-        QTaxonomyEditor.QChronicleUndo();
+        QTaxonomyEditor.QChronicleUndoObserve();
     }
 
     private void QTaxonomyRedoHandle(object sender, RoutedEventArgs e)
     {
-        QTaxonomyEditor.QChronicleRedo();
+        QTaxonomyEditor.QChronicleRedoObserve();
     }
 
     private void QTaxonomyChronicleUpdate()

@@ -8,16 +8,16 @@ namespace Llyn.UIDeportment;
 
 internal interface QChronicleHost
 {
-    void QChronicleUndo();
+    void QChronicleUndoObserve();
 
-    void QChronicleRedo();
+    void QChronicleRedoObserve();
 }
 
 internal static class QChronicle
 {
     private static readonly ConditionalWeakTable<DependencyObject, QChronicleHost> QChronicleHold = [];
 
-    internal static void QChronicleAttach(DependencyObject surface, QChronicleHost host)
+    internal static void QChronicleIntroduce(DependencyObject surface, QChronicleHost host)
     {
         QChronicleHold.AddOrUpdate(surface, host);
     }
@@ -27,7 +27,7 @@ internal static class QChronicle
         return QChronicleHold.TryGetValue(element, out QChronicleHost? host) ? host : null;
     }
 
-    internal static void QChronicleRun(Action step)
+    internal static void QChronicleCaretRefine(Action step)
     {
         TextBox? focused = Keyboard.FocusedElement as TextBox;
         step();

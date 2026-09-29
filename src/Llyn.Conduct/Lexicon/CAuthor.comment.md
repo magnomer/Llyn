@@ -1,10 +1,12 @@
 # CAuthor.cs
 
-## `public sealed record CAuthor(long CAuthorId, string CAuthorName)`
+## `public sealed record CAuthor(long CAuthorId, string CAuthorLead, string CAuthorMark, string CAuthorTail)`
 
-One author the byline dropdown offers for a typed credit.
+One author the byline dropdown offers for a typed credit, its name already split around the typed word.
 
 **Parameters**
 
 - `CAuthorId`: the stored author.
-- `CAuthorName`: the author's name as shown.
+- `CAuthorLead`: the name before the match, or the whole name when the word is not found in it.
+- `CAuthorMark`: the matched part of the name, empty when the word is not found in it.
+- `CAuthorTail`: the name after the match.

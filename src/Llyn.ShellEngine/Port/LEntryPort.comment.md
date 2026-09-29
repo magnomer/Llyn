@@ -92,6 +92,11 @@ It is static, since it reads no record and a Conduct verdict holds no port for i
 Whether an entry is stored, with its worded creation and update times, empty once it is gone.
 The engine parses and words the stored stamps, so Conduct only copies them.
 
+## `static IReadOnlyList<(string LReferenceKindTag, string LReferenceKindKey)> LEngineKindRead()`
+
+The kind menu of the source editor, each option's tag and localization key, in menu order.
+It is static, since the menu is the same for every Source and needs no port.
+
 ## `static bool LEngineNarrativeCheck(string text)`
 
 Whether an etymology narrative holds words, by the etymology draft's own rule.

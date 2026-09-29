@@ -180,12 +180,12 @@ internal sealed partial class QFavorite
 
     private void QFavoriteUndoObserve(object sender, RoutedEventArgs e)
     {
-        QFavoriteEditor.QChronicleUndo();
+        QFavoriteEditor.QChronicleUndoObserve();
     }
 
     private void QFavoriteRedoObserve(object sender, RoutedEventArgs e)
     {
-        QFavoriteEditor.QChronicleRedo();
+        QFavoriteEditor.QChronicleRedoObserve();
     }
 
     private void QFavoriteChronicleUpdate()

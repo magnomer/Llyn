@@ -20,8 +20,8 @@ internal sealed class QVita
 
         _qVitaSurface = surface;
 
-        QFellow.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QFellowHandle));
-        QVitaCitation.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QVitaCitationHandle));
+        QFellow.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QFellowObserve));
+        QVitaCitation.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QVitaCitationObserve));
 
         QLookItem.QLookItemAttach(QFellow, QFellowItem.QFellowItemApply);
         QLookItem.QLookItemAttach(QVitaCitation, QUsageItem.QUsageItemRefine);
@@ -68,12 +68,12 @@ internal sealed class QVita
         QVitaUnselected.Visibility = QLook.QLookVisibleRead(!held);
     }
 
-    private void QFellowHandle(object sender, RoutedEventArgs e)
+    private void QFellowObserve(object sender, RoutedEventArgs e)
     {
         _cGuild.CGuildAuthorSelect(QSender.QSenderSourceRead<QFellowItem>(e)?.QFellowItemId);
     }
 
-    private void QVitaCitationHandle(object sender, RoutedEventArgs e)
+    private void QVitaCitationObserve(object sender, RoutedEventArgs e)
     {
         _qVitaHost.PWindowAtelier.CAtelierNavigation.CNavigationUsageOpen(
             QSender.QSenderSourceRead<QUsageItem>(e)?.QUsageItemUsage);

@@ -31,14 +31,14 @@ internal sealed partial class QRepertoire
         }
     }
 
-    public void QChronicleUndo()
+    public void QChronicleUndoObserve()
     {
-        QChronicle.QChronicleRun(_cRepertoire.CRepertoireSession.CSessionUndo);
+        QChronicle.QChronicleCaretRefine(_cRepertoire.CRepertoireSession.CSessionUndo);
     }
 
-    public void QChronicleRedo()
+    public void QChronicleRedoObserve()
     {
-        QChronicle.QChronicleRun(_cRepertoire.CRepertoireSession.CSessionRedo);
+        QChronicle.QChronicleCaretRefine(_cRepertoire.CRepertoireSession.CSessionRedo);
     }
 
     public void QChronicleUpdate()
@@ -50,11 +50,11 @@ internal sealed partial class QRepertoire
 
     private void QRepertoireUndoHandle(object sender, RoutedEventArgs e)
     {
-        QChronicleUndo();
+        QChronicleUndoObserve();
     }
 
     private void QRepertoireRedoHandle(object sender, RoutedEventArgs e)
     {
-        QChronicleRedo();
+        QChronicleRedoObserve();
     }
 }

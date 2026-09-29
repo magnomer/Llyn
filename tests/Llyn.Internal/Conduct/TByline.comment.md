@@ -4,6 +4,7 @@
 
 Covers the byline the source editor opens under a typed credit.
 Typing in a field without the keyboard opens nothing, and typing with it offers the Authors not yet credited.
+Each offered name comes split around the word, case-blind, keeping the name's own case.
 The word loses its outer spaces, and a blank word closes the byline again.
 At most eight Authors are offered.
 Down and Up move the lit row and wrap at either end.

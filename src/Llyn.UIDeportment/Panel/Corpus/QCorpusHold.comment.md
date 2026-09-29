@@ -20,12 +20,12 @@ The corpus raises `CCorpusDraftChanged` with the held Example on each draft bull
 `QTranscriptDraftRefine` answers it and redraws the controls where they differ.
 The forge built the corpus with its marshaller, so the driver hands no marshaller and no reread here.
 
-## `public void QChronicleUndo()`
+## `public void QChronicleUndoObserve()`
 
 Steps whichever draft is in front one snapshot back, through the corpus session.
-The step runs inside `QChronicle.QChronicleRun`, so the caret stays at the end of the focused box.
+The step runs inside `QChronicle.QChronicleCaretRefine`, so the caret stays at the end of the focused box.
 
-## `public void QChronicleRedo()`
+## `public void QChronicleRedoObserve()`
 
 Steps whichever draft is in front one snapshot forward again.
 

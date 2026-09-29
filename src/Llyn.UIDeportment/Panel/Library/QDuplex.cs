@@ -18,19 +18,19 @@ internal sealed class QDuplex
         _qRightWing = new QWing(QContract.QContractFind<UserControl>(surface, "PRightWing"));
     }
 
-    internal void QDuplexAttach(PWindow host)
+    internal void QDuplexIntroduce(PWindow host)
     {
         _qLeftWing.QWingAttach(host);
         _qRightWing.QWingAttach(host);
     }
 
-    internal void QDuplexRestore(CWorkspaceState state)
+    internal void QDuplexRefine(CWorkspaceState state)
     {
         _qLeftWing.QWingRestore("left", state.CWorkspaceStateLeft);
         _qRightWing.QWingRestore("right", state.CWorkspaceStateRight);
     }
 
-    internal void QDuplexClose()
+    internal void QDuplexCloseRefine()
     {
         _qLeftWing.QWingClose();
         _qRightWing.QWingClose();

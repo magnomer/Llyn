@@ -111,6 +111,11 @@ public interface LEntryPort
         return LExampleClerk.LExampleTextMatch(field, shown);
     }
 
+    static IReadOnlyList<(string LReferenceKindTag, string LReferenceKindKey)> LEngineKindRead()
+    {
+        return LReferenceClerk.LReferenceMenuRead();
+    }
+
     static bool LEngineNarrativeCheck(string text)
     {
         return new LEtymologyDraft(text).LEtymologyDraftNarrated;

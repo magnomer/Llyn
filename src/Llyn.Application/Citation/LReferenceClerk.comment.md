@@ -127,6 +127,11 @@ The edit sheet of the Source a draft holds.
 With no draft it is the sheet of a blank Source, which the imprint shows while nothing is held.
 A draft holding no Source is a caller's mistake and throws.
 
+## `public static IReadOnlyList<(string LReferenceKindTag, string LReferenceKindKey)> LReferenceMenuRead()`
+
+The kind menu of the source editor, in `LReference.LReferenceKindMenu` order.
+Each option carries the tag a pick sends and the localization key it shows.
+
 ## `public static LReferenceKind? LReferenceKindRead(LDraft? draft, string? tag)`
 
 The kind a picked menu tag sets on the Source a draft holds.

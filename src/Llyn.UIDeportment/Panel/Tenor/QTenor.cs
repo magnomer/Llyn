@@ -201,12 +201,12 @@ internal sealed partial class QTenor
 
     private void QTenorUndoHandle(object sender, RoutedEventArgs e)
     {
-        QTenorEditor.QChronicleUndo();
+        QTenorEditor.QChronicleUndoObserve();
     }
 
     private void QTenorRedoHandle(object sender, RoutedEventArgs e)
     {
-        QTenorEditor.QChronicleRedo();
+        QTenorEditor.QChronicleRedoObserve();
     }
 
     private void QTenorChronicleUpdate()

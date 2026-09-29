@@ -178,7 +178,7 @@ internal sealed class LAuthorFacade
         }
     }
 
-    public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query)
+    public IReadOnlyList<LBylineRow> LEngineBylineFind(long draft, string query)
     {
         ArgumentNullException.ThrowIfNull(query);
 

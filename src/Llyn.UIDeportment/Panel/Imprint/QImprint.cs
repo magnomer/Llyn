@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -22,37 +21,37 @@ internal sealed class QImprint : QChronicleHost
         ArgumentNullException.ThrowIfNull(surface);
 
         _qImprintSurface = surface;
-        QChronicle.QChronicleAttach(surface, this);
+        QChronicle.QChronicleIntroduce(surface, this);
 
         QImprintKindIcon.QIconSource = QIcon.QIconResolve("expand", 12);
 
-        QImprintTitle.TextChanged += QImprintTitleHandle;
-        QImprintYear.TextChanged += QImprintYearHandle;
-        QImprintUrl.TextChanged += QImprintUrlHandle;
-        QImprintNote.TextChanged += QImprintNoteHandle;
+        QImprintTitle.TextChanged += QImprintTitleObserve;
+        QImprintYear.TextChanged += QImprintYearObserve;
+        QImprintUrl.TextChanged += QImprintUrlObserve;
+        QImprintNote.TextChanged += QImprintNoteObserve;
 
-        QAuthorCredit.AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(QAuthorTextHandle));
-        QAuthorCredit.PreviewKeyDown += QAuthorKeyHandle;
-        QAuthorCredit.LostKeyboardFocus += QAuthorLeaveHandle;
-        QAuthorCredit.MouseEnter += (_, _) => QAuthorShelfUpdate();
-        QAuthorCredit.MouseLeave += (_, _) => QAuthorShelfUpdate();
-        QAuthorCredit.IsKeyboardFocusWithinChanged += (_, _) => QAuthorShelfUpdate();
+        QAuthorCredit.AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(QAuthorTextObserve));
+        QAuthorCredit.PreviewKeyDown += QAuthorKeyObserve;
+        QAuthorCredit.LostKeyboardFocus += QAuthorLeaveObserve;
+        QAuthorCredit.MouseEnter += (_, _) => QAuthorShelfRefine();
+        QAuthorCredit.MouseLeave += (_, _) => QAuthorShelfRefine();
+        QAuthorCredit.IsKeyboardFocusWithinChanged += (_, _) => QAuthorShelfRefine();
 
         QChoice.QChoiceDropperAttach(QImprintKind, QImprintKindMenu, QImprintKind);
 
         QAuthorCredit.ItemsSource = _qAuthorList;
         QByline.CustomPopupPlacementCallback = QField.QFieldPopupPlace;
-        QChoice.QChoiceMenuBuild(QImprintKindList, QImprintKindHandle, LReference.LReferenceKindMenu);
+        QChoice.QChoiceMenuBuild(QImprintKindList, QImprintKindObserve, CImprint.CImprintKindRead());
 
         QLookItem.QLookItemAttach(QAuthorCredit, (container, item, change) =>
         {
-            QAuthorItem.QAuthorItemApply(container, item, change);
-            QAuthorShelfAttach(container);
-            QAuthorShelfUpdate();
+            QAuthorItem.QAuthorItemRefine(container, item, change);
+            QAuthorShelfIntroduce(container);
+            QAuthorShelfRefine();
         });
         QLookItem.QLookItemAttach(
             QBylineList,
-            (container, item, _) => QBylineItem.QBylineItemApply(container, item, QBylineHandle));
+            (container, item, _) => QBylineItem.QBylineItemRefine(container, item, QBylineObserve));
     }
 
     private TextBox QImprintTitle => QContract.QContractFind<TextBox>(_qImprintSurface, "PImprintTitle");
@@ -85,45 +84,43 @@ internal sealed class QImprint : QChronicleHost
 
     private TextBox QImprintNote => QContract.QContractFind<TextBox>(_qImprintSurface, "PImprintNote");
 
-    internal void QImprintAttach(PWindow host, CImprint imprint)
+    internal void QImprintIntroduce(PWindow host, CImprint imprint)
     {
         _cImprint = imprint;
-        _cImprint.CImprintChanged += QAuthorUpdate;
-        _cImprint.CImprintFocused += QAuthorFocusDefer;
-        _cImprint.CImprintReverted += QAuthorRestore;
-        _cImprint.CImprintByline.CBylineChanged += QBylineUpdate;
-        _cImprint.CImprintDesk.CDeskObserverAttach(LObserver.LObserverCreate<Action>(static run => run()));
-        _cImprint.CImprintReferenceChanged += QImprintDraftUpdate;
+        _cImprint.CImprintChanged += QAuthorRefine;
+        _cImprint.CImprintFocused += QAuthorFocusRefine;
+        _cImprint.CImprintReverted += QAuthorRestoreRefine;
+        _cImprint.CImprintByline.CBylineChanged += QBylineRefine;
+        _cImprint.CImprintReferenceChanged += QImprintDraftRefine;
         _cImprint.CImprintDesk.CDeskFailed += host.PWindowFailureRefine;
     }
 
-    internal void QImprintClear()
+    internal void QImprintClearRefine()
     {
-        QImprintDraftUpdate(_cImprint.CImprintEmptyRead());
+        QImprintDraftRefine(_cImprint.CImprintEmptyRead());
     }
 
-    internal void QImprintClose()
+    internal void QImprintCloseRefine()
     {
-        _cImprint.CImprintByline.CBylineClose();
         QImprintKindMenu.IsOpen = false;
     }
 
-    internal void QImprintTallyShow()
+    internal void QImprintTallyRefine()
     {
         QImprintTally.Text = _cImprint.CImprintTallyRead();
     }
 
-    public void QChronicleUndo()
+    public void QChronicleUndoObserve()
     {
-        QChronicle.QChronicleRun(_cImprint.CImprintDesk.CDeskUndo);
+        QChronicle.QChronicleCaretRefine(_cImprint.CImprintDesk.CDeskUndo);
     }
 
-    public void QChronicleRedo()
+    public void QChronicleRedoObserve()
     {
-        QChronicle.QChronicleRun(_cImprint.CImprintDesk.CDeskRedo);
+        QChronicle.QChronicleCaretRefine(_cImprint.CImprintDesk.CDeskRedo);
     }
 
-    private void QImprintDraftUpdate(CReference reference)
+    private void QImprintDraftRefine(CReference reference)
     {
         QImprintTitle.Text = reference.CReferenceTitle;
         QImprintTitle.SetResourceReference(QField.QFieldHintProperty, reference.CReferenceTitleHint);
@@ -135,47 +132,47 @@ internal sealed class QImprint : QChronicleHost
         QImprintNote.SetResourceReference(QField.QFieldHintProperty, reference.CReferenceNoteHint);
         QImprintKindName.SetResourceReference(TextBlock.TextProperty, reference.CReferenceKindKey);
         QChoice.QChoiceMenuApply(QImprintKindList, reference.CReferenceKindTag);
-        QImprintTallyShow();
+        QImprintTallyRefine();
     }
 
-    private void QAuthorUpdate()
+    private void QAuthorRefine()
     {
         LSplice.LSpliceApply(
             _qAuthorList,
-            QAuthorItem.QAuthorItemBuild(_cImprint.CImprintCreditRead(), _cImprint.CImprintBlankAt),
+            QAuthorItem.QAuthorItemBuild(_cImprint.CImprintCreditRead()),
             QAuthorItem.QAuthorItemMatch,
             QAuthorItem.QAuthorItemSync);
         QAuthorNotice.Visibility = QLook.QLookVisibleRead(!_cImprint.CImprintHeld);
     }
 
-    private void QAuthorShelfAttach(FrameworkElement container)
+    private void QAuthorShelfIntroduce(FrameworkElement container)
     {
         if (QLook.QLookPartFind<Button>(container, "PAuthorAddition") is Button addition)
         {
-            addition.Click -= QAuthorAddHandle;
-            addition.Click += QAuthorAddHandle;
+            addition.Click -= QAuthorAddObserve;
+            addition.Click += QAuthorAddObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PAuthorRemoval") is Button removal)
         {
-            removal.Click -= QAuthorRemoveHandle;
-            removal.Click += QAuthorRemoveHandle;
+            removal.Click -= QAuthorRemoveObserve;
+            removal.Click += QAuthorRemoveObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PAuthorEarlier") is Button earlier)
         {
-            earlier.Click -= QAuthorRetreatHandle;
-            earlier.Click += QAuthorRetreatHandle;
+            earlier.Click -= QAuthorRetreatObserve;
+            earlier.Click += QAuthorRetreatObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PAuthorLater") is Button later)
         {
-            later.Click -= QAuthorAdvanceHandle;
-            later.Click += QAuthorAdvanceHandle;
+            later.Click -= QAuthorAdvanceObserve;
+            later.Click += QAuthorAdvanceObserve;
         }
     }
 
-    private void QAuthorShelfUpdate()
+    private void QAuthorShelfRefine()
     {
         bool shown = QAuthorCredit.IsMouseOver || QAuthorCredit.IsKeyboardFocusWithin;
         foreach (object item in QAuthorCredit.Items)
@@ -189,20 +186,19 @@ internal sealed class QImprint : QChronicleHost
         }
     }
 
-    private void QAuthorFocusDefer()
+    private void QAuthorFocusRefine()
     {
         QField.QFieldFocusDefer(QAuthorCredit, QAuthorItem.QAuthorItemFind(_qAuthorList));
     }
 
-    private void QAuthorRestore()
+    private void QAuthorRestoreRefine()
     {
-        QAuthorItem.QAuthorItemRestore(Keyboard.FocusedElement);
+        QAuthorItem.QAuthorItemRefine(Keyboard.FocusedElement);
     }
 
-    private void QBylineUpdate()
+    private void QBylineRefine()
     {
-        QBylineList.ItemsSource = QBylineItem.QBylineItemBuild(
-            _cImprint.CImprintByline.CBylineRowsRead(), _cImprint.CImprintByline.CBylineWord);
+        QBylineList.ItemsSource = QBylineItem.QBylineItemBuild(_cImprint.CImprintByline.CBylineRowsRead());
         QByline.PlacementTarget = QField.QFieldSurfaceFind(Keyboard.FocusedElement);
         QBylineFrame.MinWidth = (QByline.PlacementTarget as FrameworkElement)?.ActualWidth ?? 0;
         QByline.IsOpen = _cImprint.CImprintByline.CBylineShown;
@@ -210,45 +206,50 @@ internal sealed class QImprint : QChronicleHost
         QBylineList.ScrollIntoView(QBylineList.SelectedItem);
     }
 
-    private void QImprintTitleHandle(object sender, TextChangedEventArgs e)
+    private void QImprintTitleObserve(object sender, TextChangedEventArgs e)
     {
         _cImprint.CImprintTitleSet(QImprintTitle.Text);
     }
 
-    private void QImprintYearHandle(object sender, TextChangedEventArgs e)
+    private void QImprintYearObserve(object sender, TextChangedEventArgs e)
     {
         _cImprint.CImprintYearSet(QImprintYear.Text);
     }
 
-    private void QImprintUrlHandle(object sender, TextChangedEventArgs e)
+    private void QImprintUrlObserve(object sender, TextChangedEventArgs e)
     {
         _cImprint.CImprintUrlSet(QImprintUrl.Text);
     }
 
-    private void QImprintNoteHandle(object sender, TextChangedEventArgs e)
+    private void QImprintNoteObserve(object sender, TextChangedEventArgs e)
     {
         _cImprint.CImprintNoteSet(QImprintNote.Text);
     }
 
-    private void QImprintKindHandle(object sender, RoutedEventArgs e)
+    private void QImprintKindObserve(object sender, RoutedEventArgs e)
     {
-        QImprintKind.IsChecked = false;
         _cImprint.CImprintKindSet(QSender.QSenderTagRead(sender));
+        QImprintKindRefine();
     }
 
-    private void QAuthorAddHandle(object sender, RoutedEventArgs e)
+    private void QImprintKindRefine()
+    {
+        QImprintKind.IsChecked = false;
+    }
+
+    private void QAuthorAddObserve(object sender, RoutedEventArgs e)
     {
         _cImprint.CImprintAuthorAdd(
             QSender.QSenderItemRead<QAuthorItem>(sender)?.QAuthorItemPosition,
             QSender.QSenderItemRead<QAuthorItem>(sender)?.QAuthorItemId);
     }
 
-    private void QAuthorRemoveHandle(object sender, RoutedEventArgs e)
+    private void QAuthorRemoveObserve(object sender, RoutedEventArgs e)
     {
         _cImprint.CImprintAuthorRemove(QSender.QSenderItemRead<QAuthorItem>(sender)?.QAuthorItemId);
     }
 
-    private void QAuthorRetreatHandle(object sender, RoutedEventArgs e)
+    private void QAuthorRetreatObserve(object sender, RoutedEventArgs e)
     {
         _cImprint.CImprintAuthorMove(
             QSender.QSenderItemRead<QAuthorItem>(sender)?.QAuthorItemPosition,
@@ -256,7 +257,7 @@ internal sealed class QImprint : QChronicleHost
             -1);
     }
 
-    private void QAuthorAdvanceHandle(object sender, RoutedEventArgs e)
+    private void QAuthorAdvanceObserve(object sender, RoutedEventArgs e)
     {
         _cImprint.CImprintAuthorMove(
             QSender.QSenderItemRead<QAuthorItem>(sender)?.QAuthorItemPosition,
@@ -264,14 +265,14 @@ internal sealed class QImprint : QChronicleHost
             1);
     }
 
-    private void QAuthorTextHandle(object sender, TextChangedEventArgs e)
+    private void QAuthorTextObserve(object sender, TextChangedEventArgs e)
     {
         _cImprint.CImprintByline.CBylineWordSet(
             (e.OriginalSource as TextBox)?.Text,
             (e.OriginalSource as TextBox)?.IsKeyboardFocusWithin);
     }
 
-    private void QAuthorKeyHandle(object sender, KeyEventArgs e)
+    private void QAuthorKeyObserve(object sender, KeyEventArgs e)
     {
         e.Handled = QSender.QSenderKeyRead(e) switch
         {
@@ -295,13 +296,13 @@ internal sealed class QImprint : QChronicleHost
         };
     }
 
-    private void QAuthorLeaveHandle(object sender, KeyboardFocusChangedEventArgs e)
+    private void QAuthorLeaveObserve(object sender, KeyboardFocusChangedEventArgs e)
     {
         _cImprint.CImprintByline.CBylineClose();
-        QAuthorItem.QAuthorItemRestore(e.OriginalSource);
+        QAuthorItem.QAuthorItemRefine(e.OriginalSource);
     }
 
-    private void QBylineHandle(object sender, MouseButtonEventArgs e)
+    private void QBylineObserve(object sender, MouseButtonEventArgs e)
     {
         _cImprint.CImprintByline.CBylineSelect(
             QSender.QSenderItemRead<QBylineItem>(sender)?.QBylineItemId,

@@ -341,12 +341,12 @@ internal sealed class QXiesheng
 
     private void QXieshengUndoHandle(object sender, RoutedEventArgs e)
     {
-        QXieshengEditor.QChronicleUndo();
+        QXieshengEditor.QChronicleUndoObserve();
     }
 
     private void QXieshengRedoHandle(object sender, RoutedEventArgs e)
     {
-        QXieshengEditor.QChronicleRedo();
+        QXieshengEditor.QChronicleRedoObserve();
     }
 
     private void QXieshengChronicleUpdate()

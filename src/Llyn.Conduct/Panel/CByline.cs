@@ -32,8 +32,6 @@ public sealed class CByline
 
     public int CBylineIndex => _cBylineIndex;
 
-    public string CBylineWord => _cBylineWord;
-
     public void CBylineWordSet(string? text, bool? focused)
     {
         if (!_cBylineImprint.CImprintHeld)
@@ -117,7 +115,8 @@ public sealed class CByline
         try
         {
             return _cBylineDraftPort.LEngineBylineFind(_cBylineImprint.CImprintDesk.CDeskId, _cBylineWord)
-                .Select(static row => new CAuthor(row.LAuthorId, row.LAuthorName))
+                .Select(static row => new CAuthor(
+                    row.LBylineRowId, row.LBylineRowLead, row.LBylineRowMark, row.LBylineRowTail))
                 .ToList();
         }
         catch (Exception)

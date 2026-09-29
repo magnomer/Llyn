@@ -25,7 +25,7 @@ internal sealed partial class QCorpus : QChronicleHost
 
         _qCorpusSurface = surface;
         QLook.QLookStyleAttach(surface.Resources);
-        QChronicle.QChronicleAttach(surface, this);
+        QChronicle.QChronicleIntroduce(surface, this);
         _qDrawer = new QDrawer(QCitationDrawer, QCitationSheet, QCitationList, QCitationPressObserve);
 
         surface.CommandBindings.Add(

@@ -22,10 +22,11 @@ An entry notice with the entry side closed shows the chosen Source again.
 A close clears both sides, and a print with nothing shown prints nothing.
 An export writes only an entry on display.
 
-## `private static CShelf TShelfPrepare(CAtelier atelier, CEnvoy envoy)`
+## `internal static CShelf TShelfPrepare(CAtelier atelier, CEnvoy envoy)`
 
 Builds the shelf over the atelier with its own editor, and restores both vistas as the forge does.
-Its seam answers that the tab is in front.
+Its seam answers that the tab is in front, and its marshal runs each notice at once.
+`TShelfImprint` shares it.
 
 ## `private static LEntry TShelfEntrySave(LEngine engine, string headword)`
 

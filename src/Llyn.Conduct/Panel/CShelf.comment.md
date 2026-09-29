@@ -8,7 +8,7 @@ Every gate holds only the interaction and reaches the engine through a panel, a 
 It asks the user and reports failures through the envoy, never through a seam a driver hands up.
 It restores both vistas itself and chooses which side prints, exports, saves or deletes.
 
-## `private CShelf(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `private CShelf(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the entry editor, the source editor, the Source panel and the entry list over the atelier's ports.
 The Source panel asks the source desk before it leaves a Source, and both panels finish through `LShelfDraftFinish`.
@@ -17,12 +17,15 @@ A loaded Source draft is shaped into its colophon through `COeuvre`'s map, with 
 A stored Source is shown again outside the scribe.
 Either desk's state change is raised as `CShelfChanged`, so a driver repaints the mode.
 The Source panel's row notices reach the entry list, whose rows follow the chosen Source.
+The source editor hears its desk notices through `marshal`.
+The shelf's close joins the workspace's closures, so it runs when the atelier closes.
 
-## `public static CShelf CShelfCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `public static CShelf CShelfCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the shelf over the atelier and the panel's own entry editor.
 Building it is no user action, so it is no gate on the atelier.
 `shownSeam` answers whether the tab is in front, which only the surface knows until `CNavigation` owns it.
+`marshal` hands an engine notice onto the driver's thread.
 
 ## `public event Action? CShelfChanged`
 
@@ -140,6 +143,10 @@ An entry side that closes falls back to the chosen Source.
 ## `public void CShelfReferenceDelete()`
 
 Deletes the chosen Source through its panel, and does nothing on the entry side.
+
+## `private void LShelfClose()`
+
+Closes the byline when the atelier closes.
 
 ## `public (bool CShelfBackward, bool CShelfForward) CShelfChronicleRead()`
 

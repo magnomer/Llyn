@@ -36,9 +36,10 @@ Starts a fresh entry already carrying the Tag, as a new member of the taxonomy o
 
 Starts a fresh entry already carrying the Register, as a new member of the tenor panel's cohort opens.
 
-## `IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query);`
+## `IReadOnlyList<LBylineRow> LEngineBylineFind(long draft, string query);`
 
 The Authors a typed credit may already name, left out those the draft credits.
+Each name comes split around the typed word, ready to paint.
 
 ## `LTagOffer LEngineTagFind(LTenure held, long card, string text);`
 

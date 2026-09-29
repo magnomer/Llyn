@@ -204,7 +204,7 @@
   ],
   "ceilings": {
     "cross:Llyn.UIDeportment>Llyn.Application": 39,
-    "cross:Llyn.UIDeportment>Llyn.Core": 86,
+    "cross:Llyn.UIDeportment>Llyn.Core": 80,
     "cross:Llyn.UIDeportment>Llyn.ShellEngine": 10,
     "expose:Llyn.UIDemeanor>Llyn.Core": 1,
     "expose:Llyn.UIDemeanor>Llyn.ShellEngine": 1,
@@ -337,6 +337,7 @@
       "CAuthor",
       "CAuthorRow",
       "CReference",
+      "CReferenceKind",
       "CAtelier",
       "CEnvoy",
       "CCatalog",

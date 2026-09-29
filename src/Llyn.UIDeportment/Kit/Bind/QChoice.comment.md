@@ -49,10 +49,10 @@ The rows are built here so six panels share one row shape and one reading of a s
 Builds one ticked box per Source kind, its stored word as the tag and its localized name as the content.
 The kind's word is read twice rather than held, so no local carries it into the filter match.
 
-## `internal static void QChoiceMenuBuild(Panel list, RoutedEventHandler handler, IReadOnlyList<LReferenceKind> kinds)`
+## `internal static void QChoiceMenuBuild(Panel list, RoutedEventHandler handler, IReadOnlyList<CReferenceKind> kinds)`
 
 Builds one option row per kind in `kinds` for the imprint's kind chip, in the order given.
-The imprint hands in `LReference.LReferenceKindMenu`, so the order lives with the kinds.
+The imprint hands in `CImprint.CImprintKindRead`, so the order and the words come ready.
 The stored word is the tag and the localized name the content, as the kind filter builds them.
 
 ## `internal static void QChoiceMenuApply(Panel list, string tag)`

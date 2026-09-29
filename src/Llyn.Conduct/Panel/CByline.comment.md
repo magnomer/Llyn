@@ -18,10 +18,6 @@ The word, the lit row or the open state moved, so the driver reads the byline ag
 
 Whether the last read offered any row.
 
-## `public string CBylineWord`
-
-The word the offered names are searched and highlighted with.
-
 ## `public void CBylineWordSet(string? text, bool? focused)`
 
 Typing in a credit field searches again from no lit row.
@@ -30,6 +26,7 @@ A field the driver wrote itself has no keyboard, and it opens nothing.
 ## `public IReadOnlyList<CAuthor> CBylineRowsRead()`
 
 The Authors the word may name and the draft does not credit yet.
+Each name arrives split around the word, so the driver only paints it.
 
 ## `public bool CBylineMove(int? position, long? id, int step)`
 

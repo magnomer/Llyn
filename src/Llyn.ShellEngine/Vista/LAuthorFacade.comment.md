@@ -81,7 +81,7 @@ Observers hear of both ids, because a panel standing on the dropped Author must 
 
 Reads the Author for `id`, or `null` when none has that id.
 
-## `public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query)`
+## `public IReadOnlyList<LBylineRow> LEngineBylineFind(long draft, string query)`
 
 The byline rows a typed credit may already name, at most `LAuthorFacadeLimit` of them.
 The draft is read here by its id, so the editor never carries the credits it holds back down.

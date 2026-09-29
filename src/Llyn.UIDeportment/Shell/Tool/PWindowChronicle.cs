@@ -51,11 +51,11 @@ public partial class PWindow
 
         if (undo)
         {
-            host.QChronicleUndo();
+            host.QChronicleUndoObserve();
         }
         else
         {
-            host.QChronicleRedo();
+            host.QChronicleRedoObserve();
         }
 
         e.Handled = true;

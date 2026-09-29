@@ -148,11 +148,13 @@ public sealed class LAuthorClerk
         return draft?.LDraftCreditRead() ?? [];
     }
 
-    public IReadOnlyList<LAuthor> LBylineFind(IReadOnlyList<LAuthor> credited, string query, int limit)
+    public IReadOnlyList<LBylineRow> LBylineFind(IReadOnlyList<LAuthor> credited, string query, int limit)
     {
         ArgumentNullException.ThrowIfNull(credited);
+        ArgumentNullException.ThrowIfNull(query);
 
-        List<LAuthor> offered = [];
+        string word = query.Trim();
+        List<LBylineRow> offered = [];
         foreach (LAuthor author in LAuthorClerkFind(query))
         {
             if (!author.LAuthorNamed || LAuthorCheck(credited, author.LAuthorId))
@@ -160,7 +162,8 @@ public sealed class LAuthorClerk
                 continue;
             }
 
-            offered.Add(author with { LAuthorName = author.LAuthorName.Trim() });
+            (string lead, string mark, string tail) = LCatalog.LCatalogMarkFind(author.LAuthorName.Trim(), word);
+            offered.Add(new LBylineRow(author.LAuthorId, lead, mark, tail));
             if (offered.Count == limit)
             {
                 break;

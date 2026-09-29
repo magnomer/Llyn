@@ -23,10 +23,10 @@ Keeps the window and the panel the guild driver built, for the two row clicks.
 
 Writes the vita from its sheet: name, counts, fellows and citing places, and shows or hides the body.
 
-## `private void QFellowHandle(object sender, RoutedEventArgs e)`
+## `private void QFellowObserve(object sender, RoutedEventArgs e)`
 
 A co-author row selects that Author in the same panel.
 
-## `private void QVitaCitationHandle(object sender, RoutedEventArgs e)`
+## `private void QVitaCitationObserve(object sender, RoutedEventArgs e)`
 
 A clicked citing place goes to the navigation's gate `CNavigationUsageOpen`, which opens its Example or its Entry.

@@ -325,12 +325,12 @@ internal sealed class QLibrary
 
     private void QLibraryUndoHandle(object sender, RoutedEventArgs e)
     {
-        QLibraryEditor.QChronicleUndo();
+        QLibraryEditor.QChronicleUndoObserve();
     }
 
     private void QLibraryRedoHandle(object sender, RoutedEventArgs e)
     {
-        QLibraryEditor.QChronicleRedo();
+        QLibraryEditor.QChronicleRedoObserve();
     }
 
     private void QLibraryChronicleUpdate()

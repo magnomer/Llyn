@@ -80,31 +80,19 @@ internal sealed class QAuthorItem : INotifyPropertyChanged
         }
     }
 
-    internal static IReadOnlyList<QAuthorItem> QAuthorItemBuild(IReadOnlyList<CAuthorRow> rows, int blankAt)
+    internal static IReadOnlyList<QAuthorItem> QAuthorItemBuild(IReadOnlyList<CAuthorRow> rows)
     {
         ArgumentNullException.ThrowIfNull(rows);
 
-        List<QAuthorItem> built = [];
-        int position = 0;
+        List<QAuthorItem> built = new(rows.Count);
         foreach (CAuthorRow row in rows)
         {
-            if (position == blankAt)
-            {
-                built.Add(new QAuthorItem(0, string.Empty, blankAt, false, false));
-            }
-
             built.Add(new QAuthorItem(
                 row.CAuthorRowId,
                 row.CAuthorRowName,
                 row.CAuthorRowPosition,
                 row.CAuthorRowEarlier,
                 row.CAuthorRowLater));
-            position++;
-        }
-
-        if (position == blankAt)
-        {
-            built.Add(new QAuthorItem(0, string.Empty, blankAt, false, false));
         }
 
         return built;
@@ -122,7 +110,7 @@ internal sealed class QAuthorItem : INotifyPropertyChanged
         held.QAuthorItemLater = fresh.QAuthorItemLater;
     }
 
-    internal static void QAuthorItemApply(FrameworkElement container, object item, string? change)
+    internal static void QAuthorItemRefine(FrameworkElement container, object item, string? change)
     {
         if (item is not QAuthorItem author)
         {
@@ -180,7 +168,7 @@ internal sealed class QAuthorItem : INotifyPropertyChanged
         return null;
     }
 
-    internal static void QAuthorItemRestore(object? source)
+    internal static void QAuthorItemRefine(object? source)
     {
         if (source is TextBox { DataContext: QAuthorItem row } box)
         {

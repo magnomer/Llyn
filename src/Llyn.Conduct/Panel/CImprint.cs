@@ -14,16 +14,18 @@ public sealed class CImprint
 
     private int _cImprintCount;
 
-    internal CImprint(LDraftPort drafts, LEntryPort entries, CEnvoy envoy)
+    internal CImprint(LDraftPort drafts, LEntryPort entries, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(marshal);
 
         _cImprintEntryPort = entries;
         CImprintDesk = new CDesk(drafts, "Source", envoy);
         CImprintByline = new CByline(this, drafts);
         CImprintDesk.CDeskDraftPrepared += LImprintDraftShow;
+        CImprintDesk.CDeskObserverAttach(marshal);
     }
 
     public event Action? CImprintChanged;
@@ -39,8 +41,6 @@ public sealed class CImprint
     public CByline CImprintByline { get; }
 
     public bool CImprintHeld => CImprintDesk.CDeskHeld;
-
-    public int CImprintBlankAt => _cImprintBlankAt;
 
     internal void LImprintOpen(long? id)
     {
@@ -109,9 +109,16 @@ public sealed class CImprint
         CImprintDesk.CDeskQuill?.LQuillKindSet(tag);
     }
 
+    public static IReadOnlyList<CReferenceKind> CImprintKindRead()
+    {
+        return LEntryPort.LEngineKindRead()
+            .Select(static kind => new CReferenceKind(kind.LReferenceKindTag, kind.LReferenceKindKey))
+            .ToList();
+    }
+
     public IReadOnlyList<CAuthorRow> CImprintCreditRead()
     {
-        IReadOnlyList<CAuthorRow> rows = _cImprintEntryPort.LEngineCreditRead(CImprintDesk.CDeskTenure)
+        List<CAuthorRow> rows = _cImprintEntryPort.LEngineCreditRead(CImprintDesk.CDeskTenure)
             .Select(static row => new CAuthorRow(
                 row.LAuthorRowId,
                 row.LAuthorRowName,
@@ -123,6 +130,11 @@ public sealed class CImprint
         if (CImprintHeld)
         {
             LImprintBlankSet();
+        }
+
+        if (_cImprintBlankAt >= 0 && _cImprintBlankAt <= rows.Count)
+        {
+            rows.Insert(_cImprintBlankAt, new CAuthorRow(0, string.Empty, _cImprintBlankAt, false, false));
         }
 
         return rows;

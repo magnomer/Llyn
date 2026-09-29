@@ -73,11 +73,11 @@ The byline highlights this same word in the names it offers.
 
 The credit rows of the Source a draft holds, in order, or none with no draft.
 
-## `public IReadOnlyList<LAuthor> LBylineFind(IReadOnlyList<LAuthor> credited, string query, int limit)`
+## `public IReadOnlyList<LBylineRow> LBylineFind(IReadOnlyList<LAuthor> credited, string query, int limit)`
 
 The byline rows a typed credit may already name, at most the limit asked.
 An unnamed Author and one the draft already credits are left out, since neither can be picked.
-The names come trimmed, so the byline highlights what was typed without leading blanks.
+Each trimmed name comes split around the trimmed word, culture-aware and case-blind, by `LCatalog.LCatalogMarkFind`.
 
 ## `public IReadOnlyList<LFellow> LFellowFind(long authorId)`
 

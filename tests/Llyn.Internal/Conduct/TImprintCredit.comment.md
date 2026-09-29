@@ -4,6 +4,7 @@
 
 Covers the source editor's credit rows and the one blank row it keeps.
 A fresh draft opens with one blank row, and no draft reads as no rows.
+The blank row arrives placed among the rows, with id zero, no name and no move.
 Add under a credit opens a blank row beneath it and asks for the caret.
 Remove on the blank row closes it again.
 Later and earlier shift a credit through the engine, so the rows come back reordered with their move verdicts.

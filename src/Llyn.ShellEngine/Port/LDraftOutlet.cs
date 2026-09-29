@@ -59,7 +59,7 @@ public sealed class LDraftOutlet : LDraftPort
     public IReadOnlyList<LVistaRow> LEngineProspectFind(LTenure held, string word) =>
         _lDraftOutletEngine.LEngineCard.LEngineProspectFind(held, word);
 
-    public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query) =>
+    public IReadOnlyList<LBylineRow> LEngineBylineFind(long draft, string query) =>
         _lDraftOutletEngine.LEngineAuthor.LEngineBylineFind(draft, query);
 
     public LTagOffer LEngineTagFind(LTenure held, long card, string text) =>
