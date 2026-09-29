@@ -24,7 +24,7 @@ public sealed class TImprint
         Assert.Equal("Book", held.LReferenceTitle.TStateValueShow());
         Assert.True(held.LReferenceYear.LStateValueEmpty);
         Assert.Equal("Source.Year", held.LReferenceYearHint);
-        Assert.True(imprint.CImprintDesk.CDeskChangeCheck());
+        Assert.True(imprint.CImprintDesk.TDeskChangeCheck());
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public sealed class TImprint
 
         imprint.CImprintKindSet("unspecified");
 
-        Assert.False(imprint.CImprintDesk.CDeskChangeCheck());
+        Assert.False(imprint.CImprintDesk.TDeskChangeCheck());
         Assert.False(imprint.CImprintDesk.CDeskChronicleRead().CDeskBackward);
     }
 

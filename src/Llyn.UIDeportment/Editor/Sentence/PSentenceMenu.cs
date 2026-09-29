@@ -32,7 +32,7 @@ public partial class PEditor
         }
         catch (Exception exception)
         {
-            _pEditorHost.PWindowFailureShow("Reference.LoadFailed", exception);
+            _pEditorHost.PWindowFailureRefine("Reference.LoadFailed", exception);
             references = [];
         }
 
@@ -304,7 +304,7 @@ public partial class PEditor
             }
             catch (Exception exception)
             {
-                _pEditorHost.PWindowFailureShow("Mention.FindFailed", exception);
+                _pEditorHost.PWindowFailureRefine("Mention.FindFailed", exception);
                 return;
             }
         }

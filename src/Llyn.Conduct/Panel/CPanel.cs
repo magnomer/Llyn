@@ -104,7 +104,7 @@ public sealed class CPanel
             CPanelSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
     }
 
-    public bool CPanelChangeCheck()
+    internal bool LPanelChangeCheck()
     {
         if (!CPanelEditing)
         {
@@ -116,7 +116,7 @@ public sealed class CPanel
 
     public bool CPanelLeaveConfirm()
     {
-        if (!CPanelChangeCheck())
+        if (!LPanelChangeCheck())
         {
             return true;
         }

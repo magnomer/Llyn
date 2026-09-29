@@ -89,7 +89,7 @@ public partial class PSettings : UserControl
     {
         _pSettingsHost = host;
         QLookItem.QLookItemAttach(PLedger, PLedgerApply);
-        PSettingsAtelier.CAtelierLedger.CLedgerAttach(LObserver.LObserverCreate<CLedgerState>(this, PSettingsShow));
+        PSettingsAtelier.CAtelierLedger.CLedgerChanged += LObserver.LObserverCreate<CLedgerState>(this, PSettingsShow);
         PDialShow("Workspace");
     }
 

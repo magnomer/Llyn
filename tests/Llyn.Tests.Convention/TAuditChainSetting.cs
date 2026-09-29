@@ -163,6 +163,8 @@ internal static class TAuditChainSetting
             "CLedger",
             "CLedgerPage",
             "CLedgerState",
+            "CLedgerNotice",
+            "CWorkspace",
             "CDesk",
             "CEditor",
             "CNavigation",

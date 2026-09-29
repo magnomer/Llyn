@@ -32,7 +32,7 @@ public sealed class CFavorite
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CFavoriteEditor = editor;
         CFavoritePanel = new CPanel(
-            envoy, "Favorite.LoadFailed", "Scribe", editor.CEditorDesk.CDeskChangeCheck, editor.CEditorFinish,
+            envoy, "Favorite.LoadFailed", "Scribe", editor.CEditorDesk.LDeskChangeCheck, editor.LEditorFinish,
             shownSeam);
         CFavoritePanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CFavoritePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
@@ -42,6 +42,7 @@ public sealed class CFavorite
             CFavoritePanel.LPanelChosenRead,
             CFavoritePanel.LPanelScribeRestore,
             id => CFavoritePanel.CPanelRowOpen(id));
+        atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CFavoritePanel.LPanelChangeCheck, editor.LEditorFinish);
         CFavoritePanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }
 

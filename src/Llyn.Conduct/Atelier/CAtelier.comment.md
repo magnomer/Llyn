@@ -5,7 +5,7 @@
 Conduct's root: the working session over one workspace, which Host builds and hands to a driver.
 It holds the six engine ports and the session's posture.
 Its gates are the medium-free actions no single panel owns.
-Those are workspace change, leftover sweep, bulletins, vista start, volume, split and the open view.
+Those are opening, quitting and changing the workspace, bulletins, vista start, volume and split.
 The session reads, the recordings and the folder locations sit here too, since the workspace owns them.
 GUI-only state such as window geometry and panel widths never reaches it.
 
@@ -18,13 +18,15 @@ It is internal, so no driver can build a root of its own.
 
 The mention gates, built once over this atelier's ports.
 
-## `public CMarkdown CAtelierMarkdown { get; }`
+## `public CMarkdown CAtelierMarkdown => new(this);`
 
-The markdown gate, built once over this atelier's entry port.
+The markdown gate over this atelier's entry port.
+It holds no state, so each read builds a fresh one and the atelier keeps no slot for it.
 
-## `public CRespelling CAtelierRespelling { get; }`
+## `public CRespelling CAtelierRespelling => new(this);`
 
-The respelling gates, built once over this atelier's phonology port.
+The respelling gates over this atelier's phonology port.
+They hold no state, so each read builds a fresh one and the atelier keeps no slot for them.
 
 ## `public CNavigation CAtelierNavigation { get; }`
 
@@ -36,10 +38,14 @@ Every panel area registers its tab here, and every jump to a tab goes through it
 The reference reads over this atelier's ports.
 The catalog holds no state, so each read builds a fresh one and the atelier keeps no slot for it.
 
-## `public CLedger CAtelierLedger => new(this);`
+## `public CLedger CAtelierLedger { get; }`
 
-The settings ledger over this atelier's settings port.
-The ledger holds no state, so each read builds a fresh one and the atelier keeps no slot for it.
+The settings ledger, built once, since it raises `CLedgerChanged` to the views that subscribed.
+
+## `public CWorkspace CAtelierWorkspace { get; }`
+
+The workspace's life cycle, built once: the open events and the drafts the quit asks about.
+The gates that open, quit and close it stay on the atelier.
 
 ## `internal LPosture CAtelierPosture { get; }`
 
@@ -57,6 +63,7 @@ job14-30 deletes all six.
 
 Binds `editor` to the input tab's vista, which lists entries by headword.
 It runs again after a workspace change, so the input tab follows the new workspace.
+The workspace keeps the editor, so the quit can ask whether it holds unsaved work.
 
 ## `internal LVista CAtelierVistaStart(string tab, CSubject? subject, CCatalogOrder fallback, bool blank = false)`
 
@@ -80,50 +87,41 @@ Sets the one audio level and hands it to the player.
 The level is written only when `settled`, so a drag costs no write per step.
 A driver passes `settled` once the gesture ends, and a key press is settled at once.
 
-## `public void CAtelierLeftoverSweep()`
+## `public void CAtelierOpen()`
 
-Drops the draft files no editor holds any more, and the recordings no entry keeps.
-A driver calls it once the session opens.
+Opens the session on the workspace in use, at startup and after every workspace change.
+One engine call sweeps the leftover drafts and recordings and answers the stored state.
+The sweep runs before any view restores, so nothing already saved is counted as lost work.
+`CAtelierWorkspace` then raises its open events, and the stored tab opens last.
 
-## `public bool CAtelierQuitConfirm(IReadOnlyList<Func<bool>> pending, IReadOnlyList<Func<bool, bool>> closures, CEnvoy envoy)`
+## `public bool CAtelierQuitConfirm(CEnvoy envoy)`
 
-Decides whether the window may close over every editor it holds.
-Every editor is asked whether it holds unsaved work.
-Each is asked even after one answered yes, because the asking writes a pause-held keystroke down.
-Unsaved work is put to the user through `CEnvoyLeaveConfirm`.
-Nothing unsaved closes every editor without a question, as a discard.
-Storing commits every draft and discarding cancels every one.
-Staying closes nothing and answers no.
-Every editor is told before the answers are read, so one refusal leaves no other draft held.
-The window may go only when all of them are finished.
-A save the engine refuses answers no, so the window stays over the entry it failed to store.
+Decides whether the session may end over every area that holds a draft.
+The workspace asks every area and puts the one question through `envoy`.
+The window's closing and the envoy's discard question before a workspace change both reach it.
 
 ## `public CWorkspaceState? CAtelierWorkspaceChange(string chosen, CEnvoy envoy)`
 
-Moves the session onto the workspace at `chosen`, trimmed, and answers the state its view restores to.
+Moves the session onto the workspace at `chosen`, trimmed, and answers the state of the workspace moved onto.
 A blank path or the folder already in use changes nothing, asks nothing and answers nothing.
 Otherwise `envoy` is asked first, since the move drops every open form.
 The engine records the folder only once the move succeeds, and a failed move throws to the driver.
-The engine's workspace bulletin tells every attached view to show itself again.
+The driver then calls `CAtelierOpen`, which sweeps and restores the views on the new workspace.
 
 ## `public string CAtelierPathRead()`
 
 The workspace folder in use, as a settings view shows it in its path field.
 
-## `public CWorkspaceState CAtelierStateRead()`
+## `private static CWorkspaceState LAtelierStateRead(LWorkspaceState state)`
 
-The entries the duplex wings last stood on.
+The plain map from the engine's state row to the entries the duplex wings last stood on.
 
-## `public CEstablishment CAtelierEstablishmentRead()`
+## `internal CEstablishment LAtelierEstablishmentRead()`
 
 The workspace's size and unsaved work, as the status strip shows it.
 The engine judges the singular count and the unit, and the atelier chooses their wording keys.
 The amount is written with one decimal in megabytes and as a whole number in kilobytes.
-
-## `public Action CAtelierEstablishmentAttach(Action<CEstablishment> show)`
-
-Hands `show` the status at once and again after every bulletin, and answers the detach.
-So a status strip makes one call to open and never polls.
+Only the workspace's status raise reads it.
 
 ## `public bool CAtelierRecordingExist(string? file)`
 
@@ -164,20 +162,26 @@ The wording key of the notice that the database was set aside, or null when it w
 Without the notice the workspace would appear empty and the old data would look lost.
 It is static, since the host reads the rescue before it builds the atelier.
 
-## `public void Dispose()`
+## `public void CAtelierClose()`
 
-Sweeps the leftover drafts once more, then releases the posture, which lets go of every vista it watched.
+Ends the session once the window has closed and every view has stopped.
+It sweeps the leftover drafts once more, then releases the posture, which lets go of every vista it watched.
 Sweeping on the way out as well as on the way in bounds what a long session leaves behind.
 
-## `public Action CAtelierObserverAttach(CSubject subject, Action<CBulletin> observer)`
+## `public void Dispose()`
+
+Closes the session through `CAtelierClose`, for a host or a test that holds the atelier in a `using`.
+
+## `internal Action LAtelierObserverAttach(CSubject subject, Action<CBulletin> observer)`
 
 Hands `observer` only the bulletins about `subject`, and answers the detach.
 The Conduct subject is mapped by name to the engine's, and the compare is between engine values.
+Only the ledger hears through it, since every view now answers a Conduct event.
 
-## `private void CAtelierEstablishmentShow(Action<CEstablishment> show)`
+## `internal Action LAtelierObserverAdd(Action<LBulletin> sent)`
 
-Reads the status and hands it to `show`.
-A read that fails is skipped, so a busy or closing workspace leaves the strip as it stood.
+Hands `sent` every engine bulletin, and answers the detach.
+The workspace hears the status through it.
 
 ## `internal static CBulletin CAtelierBulletinRead(LBulletin bulletin)`
 

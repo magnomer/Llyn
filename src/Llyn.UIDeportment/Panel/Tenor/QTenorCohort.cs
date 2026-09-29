@@ -18,7 +18,7 @@ internal sealed partial class QTenor
         }
         catch (Exception exception)
         {
-            _qTenorHost.PWindowFailureShow(QTenorFailure, exception);
+            _qTenorHost.PWindowFailureRefine(QTenorFailure, exception);
             return;
         }
 

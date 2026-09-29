@@ -23,8 +23,6 @@ internal static class TInterfaceDeportment
 
     internal static QLectern TLecternCreate(LEditor editor) => new(editor.LEditorStudio.CEditorDisplay);
 
-    internal static bool TDeskChangeCheck(this CDesk desk) => desk.CDeskChangeCheck();
-
     internal static (bool CDeskBackward, bool CDeskForward) TDeskChronicleRead(this CDesk desk) =>
         desk.CDeskChronicleRead();
 

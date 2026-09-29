@@ -20,7 +20,7 @@ internal sealed partial class QCorpus
         }
         catch (Exception exception)
         {
-            _qCorpusHost.PWindowFailureShow("Reference.LoadFailed", exception);
+            _qCorpusHost.PWindowFailureRefine("Reference.LoadFailed", exception);
             read = [];
         }
 
@@ -140,7 +140,7 @@ internal sealed partial class QCorpus
         }
         catch (Exception exception)
         {
-            _qCorpusHost.PWindowFailureShow("Reference.CreateFailed", exception);
+            _qCorpusHost.PWindowFailureRefine("Reference.CreateFailed", exception);
         }
 
         QCitationUpdate();

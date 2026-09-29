@@ -35,7 +35,7 @@ public sealed class CAtlas
         _cAtlasPortraitPort = portraits;
         _cAtlasSettingsPort = settings;
         CAtlasPanel = new CPanel(
-            envoy, "Situation.LoadFailed", "Situation", desk.CDeskChangeCheck, finishSeam, shownSeam);
+            envoy, "Situation.LoadFailed", "Situation", desk.LDeskChangeCheck, finishSeam, shownSeam);
     }
 
     public CPanel CAtlasPanel { get; }

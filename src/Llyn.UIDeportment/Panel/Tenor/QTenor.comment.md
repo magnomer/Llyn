@@ -28,14 +28,6 @@ Both catalogs get their row fills here, where their sources are set.
 
 Empties the panel and rebuilds the catalog, for a workspace that has just moved.
 
-## `internal bool QTenorDraftFinish(bool store)`
-
-Stores or discards a standing draft on the way out of the application.
-
-## `internal bool QTenorChangeCheck()`
-
-Whether the editor is the shown side and is holding a change, so leaving would lose work.
-
 ## `internal void QTenorClose()`
 
 Stops listening and closes the reader and the editor.

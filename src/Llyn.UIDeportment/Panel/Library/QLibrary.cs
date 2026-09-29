@@ -204,16 +204,6 @@ internal sealed class QLibrary
         _cLibrary.CLibraryPanel.CPanelEntryClose();
     }
 
-    internal bool QLibraryDraftFinish(bool store)
-    {
-        return QLibraryEditor.PEditorDraftFinish(store);
-    }
-
-    internal bool QLibraryChangeCheck()
-    {
-        return _cLibrary.CLibraryPanel.CPanelChangeCheck();
-    }
-
     private bool QLibraryShownCheck()
     {
         return _qLibrarySurface.IsVisible;

@@ -55,18 +55,6 @@ It ends by refreshing the rail's undo and redo.
 
 Drops both selections through the Conduct and reads the catalog again, for when the workspace underneath changed.
 
-## `internal bool QRepertoireChangeCheck()`
-
-Whether the editor holds work nothing has saved yet.
-The engine answers it against the held draft rather than the panel against a copy of a stored record.
-The window asks before anything can leave the panel.
-The session asks the occurrence side and the atlas side, and each answers only while it edits.
-
-## `internal bool QRepertoireDraftFinish(bool store)`
-
-Ends whichever draft is in front, committing it or discarding it.
-The session finishes the entry editor's draft while it is in front, and the held situation otherwise.
-
 ## `internal void QRepertoireClose()`
 
 Closes the popups the panel owns, so neither outlives the window.

@@ -342,6 +342,8 @@
       "CLedger",
       "CLedgerPage",
       "CLedgerState",
+      "CLedgerNotice",
+      "CWorkspace",
       "CDesk",
       "CEditor",
       "CNavigation",

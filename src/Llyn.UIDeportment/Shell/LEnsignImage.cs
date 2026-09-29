@@ -21,10 +21,10 @@ public static class LEnsignImage
     {
         ArgumentNullException.ThrowIfNull(atelier);
 
-        atelier.CAtelierObserverAttach(CSubject.CSubjectWorkspace, LEnsignBulletinRefine);
+        atelier.CAtelierWorkspace.CWorkspaceOpened += LEnsignOpenRefine;
     }
 
-    private static void LEnsignBulletinRefine(CBulletin bulletin)
+    private static void LEnsignOpenRefine()
     {
         lock (LEnsignStore)
         {

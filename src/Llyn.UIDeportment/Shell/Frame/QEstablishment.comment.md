@@ -22,8 +22,9 @@ Each named part is pulled from the bar by its contract ID on every read.
 
 ## `internal void QEstablishmentAttach(PWindow host)`
 
-Puts the bar to work with one attach to `CAtelierEstablishmentAttach`, which prints the first reading at once.
-The atelier reads again on every bulletin, so a change made anywhere reaches the bar without any panel telling it.
+Subscribes the bar to `CWorkspaceEstablishmentChanged`, which the workspace raises on every open and every bulletin.
+So a change made anywhere reaches the bar without any panel telling it.
+The detach is kept for `QEstablishmentClose`.
 The observer runs on the window's thread, which is the bar's thread too.
 
 ## `internal void QEstablishmentClose()`

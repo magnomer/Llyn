@@ -105,7 +105,7 @@ public sealed class TByline
 
         Assert.False(imprint.CImprintByline.CBylineShown);
         Assert.Equal([adam.LAuthorId], imprint.CImprintCreditRead().Select(row => row.CAuthorRowId));
-        Assert.True(imprint.CImprintDesk.CDeskChangeCheck());
+        Assert.True(imprint.CImprintDesk.TDeskChangeCheck());
     }
 
     [Fact]
@@ -166,7 +166,7 @@ public sealed class TByline
         imprint.CImprintByline.CBylineSelect(ada.LAuthorId, 0, ada.LAuthorId);
 
         Assert.Equal(1, reverted);
-        Assert.False(imprint.CImprintDesk.CDeskChangeCheck());
+        Assert.False(imprint.CImprintDesk.TDeskChangeCheck());
 
         imprint.CImprintByline.CBylineSelect(null, 0, ada.LAuthorId);
 

@@ -36,22 +36,24 @@ public sealed class CAtelier : IDisposable
         CAtelierMediaPort = media;
         CAtelierPortraitPort = portraits;
         CAtelierMention = new CMention(this);
-        CAtelierMarkdown = new CMarkdown(this);
-        CAtelierRespelling = new CRespelling(this);
         CAtelierNavigation = new CNavigation(this);
+        CAtelierLedger = new CLedger(this);
+        CAtelierWorkspace = new CWorkspace(this);
     }
 
     public CMention CAtelierMention { get; }
 
-    public CMarkdown CAtelierMarkdown { get; }
+    public CMarkdown CAtelierMarkdown => new(this);
 
-    public CRespelling CAtelierRespelling { get; }
+    public CRespelling CAtelierRespelling => new(this);
 
     public CNavigation CAtelierNavigation { get; }
 
     public CCatalog CAtelierCatalog => new(this);
 
-    public CLedger CAtelierLedger => new(this);
+    public CLedger CAtelierLedger { get; }
+
+    public CWorkspace CAtelierWorkspace { get; }
 
     internal LPosture CAtelierPosture { get; }
 
@@ -80,6 +82,7 @@ public sealed class CAtelier : IDisposable
     {
         ArgumentNullException.ThrowIfNull(editor);
 
+        CAtelierWorkspace.LWorkspaceInputSet(editor);
         editor.LEditorVistaRestore(
             CAtelierVistaStart("input", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
@@ -104,43 +107,16 @@ public sealed class CAtelier : IDisposable
         }
     }
 
-    public void CAtelierLeftoverSweep()
+    public void CAtelierOpen()
     {
-        CAtelierDraftPort.LEngineLeftoverSweep();
-        CAtelierMediaPort.LEngineRecordingSweep();
+        LWorkspaceState state = CAtelierSettingsPort.LEngineWorkspaceStart();
+        CAtelierWorkspace.LWorkspaceOpen(LAtelierStateRead(state));
+        CAtelierNavigation.LNavigationTabOpen();
     }
 
-    public bool CAtelierQuitConfirm(
-        IReadOnlyList<Func<bool>> pending, IReadOnlyList<Func<bool, bool>> closures, CEnvoy envoy)
+    public bool CAtelierQuitConfirm(CEnvoy envoy)
     {
-        ArgumentNullException.ThrowIfNull(pending);
-        ArgumentNullException.ThrowIfNull(closures);
-        ArgumentNullException.ThrowIfNull(envoy);
-
-        bool unsaved = false;
-        foreach (Func<bool> check in pending)
-        {
-            unsaved |= check();
-        }
-
-        bool store = false;
-        if (unsaved)
-        {
-            if (envoy.CEnvoyLeaveConfirm() is not bool answer)
-            {
-                return false;
-            }
-
-            store = answer;
-        }
-
-        bool finished = true;
-        foreach (Func<bool, bool> finish in closures)
-        {
-            finished &= finish(store);
-        }
-
-        return finished;
+        return CAtelierWorkspace.LWorkspaceQuitConfirm(envoy);
     }
 
     public CWorkspaceState? CAtelierWorkspaceChange(string chosen, CEnvoy envoy)
@@ -157,7 +133,7 @@ public sealed class CAtelier : IDisposable
         }
 
         CAtelierSettingsPort.LEngineWorkspaceChange(path);
-        return CAtelierStateRead();
+        return LAtelierStateRead(CAtelierSettingsPort.LEngineStateRead());
     }
 
     public string CAtelierPathRead()
@@ -165,13 +141,12 @@ public sealed class CAtelier : IDisposable
         return CAtelierSettingsPort.LEngineWorkspaceRead();
     }
 
-    public CWorkspaceState CAtelierStateRead()
+    private static CWorkspaceState LAtelierStateRead(LWorkspaceState state)
     {
-        LWorkspaceState state = CAtelierSettingsPort.LEngineStateRead();
         return new CWorkspaceState(state.LWorkspaceStateLeft, state.LWorkspaceStateRight);
     }
 
-    public CEstablishment CAtelierEstablishmentRead()
+    internal CEstablishment LAtelierEstablishmentRead()
     {
         LEstablishment establishment = CAtelierSettingsPort.LEngineEstablishmentRead();
         return new CEstablishment(
@@ -182,15 +157,6 @@ public sealed class CAtelier : IDisposable
             establishment.LEstablishmentLarge ? "Establishment.Megabyte" : "Establishment.Kilobyte",
             establishment.LEstablishmentAmount.ToString(
                 establishment.LEstablishmentLarge ? "0.0" : "0", CultureInfo.CurrentCulture));
-    }
-
-    public Action CAtelierEstablishmentAttach(Action<CEstablishment> show)
-    {
-        ArgumentNullException.ThrowIfNull(show);
-
-        Action detach = CAtelierObserverAdd(_ => CAtelierEstablishmentShow(show));
-        CAtelierEstablishmentShow(show);
-        return detach;
     }
 
     public bool CAtelierRecordingExist(string? file)
@@ -237,17 +203,22 @@ public sealed class CAtelier : IDisposable
         return done ? "Workspace.DatabaseReset" : null;
     }
 
-    public void Dispose()
+    public void CAtelierClose()
     {
         CAtelierDraftPort.LEngineLeftoverSweep();
         CAtelierPosture.Dispose();
     }
 
-    public Action CAtelierObserverAttach(CSubject subject, Action<CBulletin> observer)
+    public void Dispose()
+    {
+        CAtelierClose();
+    }
+
+    internal Action LAtelierObserverAttach(CSubject subject, Action<CBulletin> observer)
     {
         ArgumentNullException.ThrowIfNull(observer);
 
-        return CAtelierObserverAdd(bulletin =>
+        return LAtelierObserverAdd(bulletin =>
         {
             if (bulletin.LBulletinSubject == CPanel.CPanelSubjectRead(subject))
             {
@@ -256,25 +227,10 @@ public sealed class CAtelier : IDisposable
         });
     }
 
-    private Action CAtelierObserverAdd(Action<LBulletin> sent)
+    internal Action LAtelierObserverAdd(Action<LBulletin> sent)
     {
         CAtelierDraftPort.LEngineObserverAttach(sent);
         return () => CAtelierDraftPort.LEngineObserverDetach(sent);
-    }
-
-    private void CAtelierEstablishmentShow(Action<CEstablishment> show)
-    {
-        CEstablishment establishment;
-        try
-        {
-            establishment = CAtelierEstablishmentRead();
-        }
-        catch (Exception)
-        {
-            return;
-        }
-
-        show(establishment);
     }
 
     internal static CBulletin CAtelierBulletinRead(LBulletin bulletin)

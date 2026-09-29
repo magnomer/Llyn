@@ -23,24 +23,8 @@ It is internal because the navigation tab opens the prospect list on it.
 
 Puts the panel to work on the editor the panel factory builds, and opens the form empty.
 The factory builds it with the input vista already restored.
-
-## `internal void PInputReset()`
-
-Empties the form.
-The workspace folder can change while the window is up.
-A different folder is a different database.
-Whatever was typed against the old one is begun again here.
-
-## `internal bool PInputDraftFinish(bool store)`
-
-Carries the window's exit answer down to the editor this panel owns.
-The panel holds no draft of its own, so it only passes the answer along.
-What the editor answers is passed back up, because a store the engine refused must not close the window.
-
-## `internal bool PInputChangeCheck()`
-
-Whether the form differs from the one the user was given.
-That is what the window asks before typed work would be thrown away.
+A workspace move empties the form through `PInputVistaRestore`, which answers `CWorkspaceOpened`.
+A different folder is a different database, so whatever was typed against the old one is begun again.
 
 ## `internal void PInputClose()`
 
@@ -53,9 +37,3 @@ Stops the panel: the editor is shut down.
 The editor this panel attaches stands on no entry, because this panel creates them.
 A form that stood on one would turn the next store into an update of it.
 That is how a session's second entry used to overwrite its first.
-
-### `_pInputRelease = host.PWindowAtelier.CAtelierObserverAttach(`
-
-The panel listens for the workspace moving and for nothing else.
-It lists nothing, so a stored record elsewhere is none of its business.
-A form standing on the old workspace holds a draft in a folder no longer open, so it is emptied.

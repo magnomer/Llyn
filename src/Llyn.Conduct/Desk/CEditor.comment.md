@@ -83,9 +83,9 @@ Drops the typing by reopening the entry the draft stood on, or a fresh draft.
 
 Stores the held draft when it changed, and reopens what was stored once the desk announces it.
 
-## `public bool CEditorFinish(bool store)`
+## `internal bool LEditorFinish(bool store)`
 
-The window's leave: stores or drops the held draft and reports whether the tenure ended.
+The quit's and the leave's finish: stores or drops the held draft and reports whether the tenure ended.
 A stored draft is reopened the way a save reopens it.
 A hidden tab then comes back showing what it stored.
 

@@ -42,7 +42,7 @@ public partial class PSettings
         }
         catch (Exception exception)
         {
-            _pSettingsHost.PWindowFailureShow("Settings.FolderFailed", exception);
+            _pSettingsHost.PWindowFailureRefine("Settings.FolderFailed", exception);
         }
     }
 

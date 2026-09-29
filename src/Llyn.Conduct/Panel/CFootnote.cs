@@ -34,7 +34,7 @@ public sealed class CFootnote
         _cFootnotePortraitPort = portraits;
         _cFootnoteEditor = editor;
         CFootnotePanel = new CPanel(
-            envoy, "List.LoadFailed", null, editor.CEditorDesk.CDeskChangeCheck, finishSeam, shownSeam);
+            envoy, "List.LoadFailed", null, editor.CEditorDesk.LDeskChangeCheck, finishSeam, shownSeam);
         CFootnotePanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         CFootnotePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
     }

@@ -48,17 +48,6 @@ Attaches the observers that carry each announcement onto the dispatcher.
 The dropdown lists the shared entry orderings, and the mark is drawn from the controller's verdict.
 The flags are loaded before the first rows are built, because a row reads its flag at construction.
 
-## `internal bool QLibraryDraftFinish(bool store)`
-
-Carries the window's exit answer down to the editor this panel owns.
-The panel holds no draft of its own, so it only passes the answer along.
-What the editor answers is passed back up, because a store the engine refused must not close the window.
-
-## `internal bool QLibraryChangeCheck()`
-
-Whether the editor holds modifications that have not been stored, as the controller reads it.
-That is what the window asks before the workspace changes or the program closes.
-
 ## `private bool QLibraryShownCheck()`
 
 The shown seam: whether this tab is the one in front, which only the page knows.

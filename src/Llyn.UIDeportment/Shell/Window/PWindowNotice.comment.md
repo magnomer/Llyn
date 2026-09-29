@@ -3,32 +3,12 @@
 ## `public partial class PWindow`
 
 What the window says to the user in its own voice.
-It is the two message boxes the shell puts up.
-Those are a request that failed, and the question asked before work is thrown away.
+It is the message box the shell puts up when a request failed.
 
-## Inline notes
+## `internal void PWindowFailureRefine(string key, Exception exception)`
 
-### `internal void PWindowFailureShow(string key, Exception exception)`
-
-Presents a request that failed, under the localized headline the given key names.
-A deliberate refusal carries a reason key and resolves through the same catalog as the rest of the interface.
-
-### `private string PWindowDetailRead(Exception exception)`
-
-Reads the detail line out of a failure.
-
-A refusal is a position the user can act on, so its reason is what they are shown.
-The engine reads the reason through `CLedgerNoticeRead`, since the refusal type is its own.
-Anything else is a fault.
-A fault's own message is written for whoever fixes the program, not for whoever uses it.
-A column name and an ordinal tell the user nothing they can act on.
-The box says plainly that something unexpected went wrong.
-The fault itself is written to the workspace's audit log and the box names the file.
-So nothing diagnosable is lost, and nobody is handed a stack trace they did not ask for.
-
-### `internal bool PWindowDiscardConfirm()`
-
-Hands every editor the window closes over to `CAtelierQuitConfirm`, each with its two answers.
-The two lists run in the same order, so a panel is asked and finished as one.
-A panel whose edits have no store path yet belongs in neither list.
-The leave question itself is put through `CEnvoy`.
+Shows a failure under the localized headline `key` names, with the detail Conduct chose.
+`CLedgerNoticeRead` decides the detail: a refusal's reason, or the unexpected line and the audit file.
+A fault's own message is written for whoever fixes the program, so the user never sees it.
+The window only words the keys and places the lines.
+The catch sites that call it still own their failure, until each becomes a gate reporting through `CEnvoy`.

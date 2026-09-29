@@ -26,6 +26,4 @@ public interface LMediaPort
     void LEngineVolumeSet(double volume);
 
     Task<string> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation);
-
-    void LEngineRecordingSweep();
 }

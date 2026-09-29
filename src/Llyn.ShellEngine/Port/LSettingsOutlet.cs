@@ -26,6 +26,9 @@ public sealed class LSettingsOutlet : LSettingsPort
 
     public LWorkspaceState LEngineStateRead() => _lSettingsOutletEngine.LEngineWorkspace.LEngineStateRead();
 
+    public LWorkspaceState LEngineWorkspaceStart() =>
+        _lSettingsOutletEngine.LEngineWorkspace.LEngineWorkspaceStart();
+
     public IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language) =>
         _lSettingsOutletEngine.LEngineSettings.LEngineLocalizationLoad(language);
 
@@ -54,9 +57,9 @@ public sealed class LSettingsOutlet : LSettingsPort
     public void LEngineRespellingSave(bool respelled) =>
         _lSettingsOutletEngine.LEngineSettings.LEngineRespellingSave(respelled);
 
-    public string? LEngineAuditRecord(Exception exception) => _lSettingsOutletEngine.LEngineAuditRecord(exception);
-
-    public string? LEngineNoticeRead(Exception exception) => _lSettingsOutletEngine.LEngineNoticeRead(exception);
+    public (string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(
+        Exception exception, string unexpected, string recorded) =>
+        _lSettingsOutletEngine.LEngineFailureRead(exception, unexpected, recorded);
 
     public LFont LEngineFontRead(string language, LFontRole role) =>
         _lSettingsOutletEngine.LEngineLanguage.LEngineFontRead(language, role);

@@ -13,6 +13,11 @@ Nothing here touches an entry or a draft.
 
 Moves the engine onto another workspace folder and records it, so Conduct changes the workspace without the engine itself.
 
+## `LWorkspaceState LEngineWorkspaceStart();`
+
+Opens the current workspace for the session in one call.
+It sweeps leftover drafts and recordings first, then answers the workspace state.
+
 ## `IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language);`
 
 The interface strings of one language, parsed and ready for the resource dictionary.
@@ -21,9 +26,10 @@ The interface strings of one language, parsed and ready for the resource diction
 
 The interface languages the build embeds, so the language box lists no language named in markup.
 
-## `string? LEngineAuditRecord(Exception exception);`
+## `(string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(`
 
-Writes the failure to the audit log and returns the path written, or null when the log is unreachable.
+The ready notice of a failure: a refusal's reason key, or `unexpected` with `recorded` and the audit file.
+One call reads the reason and writes the fault, so Conduct decides nothing about the exception.
 
 ## `string LEngineGlossRead();`
 

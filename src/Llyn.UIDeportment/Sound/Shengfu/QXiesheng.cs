@@ -203,16 +203,6 @@ internal sealed class QXiesheng
         _cXiesheng.CXieshengStemCancel();
     }
 
-    internal bool QXieshengDraftFinish(bool store)
-    {
-        return QXieshengEditor.PEditorDraftFinish(store);
-    }
-
-    internal bool QXieshengChangeCheck()
-    {
-        return _cXiesheng.CXieshengPanel.CPanelChangeCheck();
-    }
-
     private void QLodestarRefine()
     {
         QLodestar.Text = string.Empty;

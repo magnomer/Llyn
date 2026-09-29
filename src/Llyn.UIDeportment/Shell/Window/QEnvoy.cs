@@ -62,7 +62,7 @@ internal sealed class QEnvoy : CEnvoy
 
     public void CEnvoyFailureShow(string key, Exception exception)
     {
-        _qEnvoyHost.PWindowFailureShow(key, exception);
+        _qEnvoyHost.PWindowFailureRefine(key, exception);
     }
 
     public void CEnvoyFailureShow(string key)
@@ -77,7 +77,7 @@ internal sealed class QEnvoy : CEnvoy
 
     public bool CEnvoyDiscardConfirm()
     {
-        return _qEnvoyHost.PWindowDiscardConfirm();
+        return _qEnvoyHost.PWindowAtelier.CAtelierQuitConfirm(this);
     }
 
     public bool? CEnvoyLeaveConfirm()

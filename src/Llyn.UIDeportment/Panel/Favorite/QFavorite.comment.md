@@ -35,17 +35,6 @@ Puts the panel back on the workspace open now.
 Nothing is selected, the editor is closed, and the roster is re-read.
 A different workspace keeps its own marks.
 
-## `internal bool QFavoriteDraftFinish(bool store)`
-
-Carries the window's exit answer down to the editor this panel owns.
-The panel holds no draft of its own, so it only passes the answer along.
-A store the engine refused must not close the window, so the editor's answer is passed back up.
-
-## `internal bool QFavoriteChangeCheck()`
-
-Reports whether the editor is open and holding unsaved changes.
-A closed editor answers no, whatever it still carries.
-
 ## `internal void QFavoriteClose()`
 
 Stops the editor and the display when the window closes.

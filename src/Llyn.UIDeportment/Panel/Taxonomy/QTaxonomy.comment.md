@@ -34,17 +34,6 @@ No tag is chosen, nothing is selected, the editor is closed, and the tag catalog
 A different workspace has its own tags.
 So the tag this panel stood on may not exist in the one now open.
 
-## `internal bool QTaxonomyDraftFinish(bool store)`
-
-Carries the window's exit answer down to the editor this panel owns.
-The panel holds no draft of its own, so it only passes the answer along.
-What the editor answers is passed back up, because a store the engine refused must not close the window.
-
-## `internal bool QTaxonomyChangeCheck()`
-
-Whether the editor holds modifications that have not been stored.
-That is what the window asks before the workspace changes or the program closes.
-
 ## `internal void QTaxonomyClose()`
 
 Stops the panel: the editor is shut down and the reader releases its playback.

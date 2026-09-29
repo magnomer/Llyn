@@ -38,9 +38,9 @@ public sealed class CShelf
         CShelfImprint = new CImprint(atelier.CAtelierDraftPort, atelier.CAtelierEntryPort, envoy);
         CShelfPanel = new CPanel(
             envoy, "Source.LoadFailed", "Source",
-            CShelfImprint.CImprintDesk.CDeskChangeCheck, CShelfDraftFinish, shownSeam);
+            CShelfImprint.CImprintDesk.LDeskChangeCheck, LShelfDraftFinish, shownSeam);
         CShelfFootnote = new CFootnote(
-            atelier.CAtelierEntryPort, atelier.CAtelierPortraitPort, editor, envoy, CShelfDraftFinish, shownSeam);
+            atelier.CAtelierEntryPort, atelier.CAtelierPortraitPort, editor, envoy, LShelfDraftFinish, shownSeam);
         CShelfPanel.CPanelRowsChanged += CShelfFootnote.CFootnotePanel.CPanelRowsResonate;
         CShelfPanel.CPanelCleared += CShelfImprint.LImprintCancel;
         CShelfPanel.CPanelEdited += id => CShelfImprint.LImprintOpen(id);
@@ -55,6 +55,7 @@ public sealed class CShelf
             CShelfPanel.LPanelChosenRead,
             CShelfPanel.LPanelScribeRestore,
             LShelfReferenceOpen);
+        atelier.CAtelierWorkspace.LWorkspaceDraftAdd(LShelfChangeRead, LShelfDraftFinish);
     }
 
     public static CShelf CShelfCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
@@ -92,7 +93,7 @@ public sealed class CShelf
     public bool CShelfBinEnabled => !LShelfEntrySide && CShelfPanel.CPanelBinEnabled;
 
     public bool CShelfStoreEnabled =>
-        LShelfEntrySide ? CShelfEditor.CEditorDesk.CDeskStorable : CShelfImprint.CImprintDesk.CDeskChangeCheck();
+        LShelfEntrySide ? CShelfEditor.CEditorDesk.CDeskStorable : CShelfImprint.CImprintDesk.LDeskChangeCheck();
 
     public bool CShelfPressAllowed => CShelfFootnote.CFootnotePanel.CPanelPressAllowed || LShelfSourcePrintable;
 
@@ -175,14 +176,14 @@ public sealed class CShelf
         return _cShelfEntryPort.LEngineTallyRead(_cShelfVista?.LVistaChosen);
     }
 
-    public bool CShelfChangeRead()
+    internal bool LShelfChangeRead()
     {
-        return CShelfPanel.CPanelChangeCheck() || CShelfFootnote.CFootnotePanel.CPanelChangeCheck();
+        return CShelfPanel.LPanelChangeCheck() || CShelfFootnote.CFootnotePanel.LPanelChangeCheck();
     }
 
     internal bool LShelfLeaveConfirm()
     {
-        if (!CShelfChangeRead())
+        if (!LShelfChangeRead())
         {
             return true;
         }
@@ -192,7 +193,7 @@ public sealed class CShelf
             return false;
         }
 
-        return !store || CShelfDraftFinish(true);
+        return !store || LShelfDraftFinish(true);
     }
 
     public void CShelfReferenceClose()
@@ -335,10 +336,10 @@ public sealed class CShelf
             : CShelfImprint.CImprintDesk.CDeskChronicleRead();
     }
 
-    public bool CShelfDraftFinish(bool store)
+    internal bool LShelfDraftFinish(bool store)
     {
         return LShelfEntrySide
-            ? CShelfEditor.CEditorFinish(store)
+            ? CShelfEditor.LEditorFinish(store)
             : CShelfImprint.CImprintDesk.CDeskFinish(store);
     }
 

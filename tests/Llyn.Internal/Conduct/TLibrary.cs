@@ -120,6 +120,28 @@ public sealed class TLibrary
     }
 
     [Fact]
+    public void AtelierQuitConfirm_LibraryEditing_AsksOnceAndStoresTheEntry()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry stone = TLibraryEntrySave(engine, "stone", "English");
+        List<string> asked = [];
+        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(true, asked);
+        CLibrary library = TLibraryPrepare(atelier, envoy);
+        library.CLibraryPanel.CPanelRowOpen(stone.LEntryId);
+        library.CLibraryPanel.CPanelScribeToggle(true);
+        library.CLibraryEditor.CEditorHeadwordSet("stones");
+
+        bool quit = atelier.CAtelierQuitConfirm(envoy);
+
+        Assert.True(quit);
+        Assert.Equal(["Leave"], asked);
+        Assert.False(library.CLibraryEditor.CEditorDesk.TDeskChangeCheck());
+        Assert.Equal("stones", engine.TEngineEntryRead(stone.LEntryId)!.LEntryHeadword);
+    }
+
+    [Fact]
     public async Task LibraryPortraitExport_ChosenEntry_WritesIt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

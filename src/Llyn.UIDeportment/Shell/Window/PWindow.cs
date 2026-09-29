@@ -69,70 +69,14 @@ public partial class PWindow
         _qFavorite = new QFavorite(PFavorite);
         _qDuplex = new QDuplex(PDuplex);
         _qGuild = new QGuild(PGuild);
-        _pWindowSurface.Tag = this;
-        _pWindowSurface.SetValue(PMention.PMentionHostProperty, this);
-
-        PRoof.MouseLeftButtonDown += PRoofHandle;
-        PLogo.MouseLeftButtonDown += PLogoRefine;
-        PHeadquarterAbout.MouseLeftButtonDown += PHeadquarterAboutRefine;
-        PHeadquarterExit.MouseLeftButtonDown += PHeadquarterExitRefine;
-        PCaptionMinimize.Click += PCaptionMinimizeHandle;
-        PCaptionMaximize.Click += PCaptionMaximizeHandle;
-        PCaptionExit.Click += PCaptionExitHandle;
-        ((Shape)PCaptionMinimize.Content).SetBinding(
-            Shape.StrokeProperty, new Binding(nameof(Control.Foreground)) { Source = PCaptionMinimize });
-        ((Shape)PCaptionMaximize.Content).SetBinding(
-            Shape.StrokeProperty, new Binding(nameof(Control.Foreground)) { Source = PCaptionMaximize });
-        ((Shape)PCaptionExit.Content).SetBinding(
-            Shape.StrokeProperty, new Binding(nameof(Control.Foreground)) { Source = PCaptionExit });
-
-        PNavigationInput.PTabIcon = QIcon.QIconResolve("input", 24);
-        PNavigationLibrary.PTabIcon = QIcon.QIconResolve("library", 24);
-        PNavigationFavorite.PTabIcon = QIcon.QIconResolve("favorite", 24);
-        PNavigationPhonology.PTabIcon = QIcon.QIconResolve("phonology", 24);
-        PNavigationRepertoire.PTabIcon = QIcon.QIconResolve("repertoire", 24);
-        PNavigationTenor.PTabIcon = QIcon.QIconResolve("tenor", 24);
-        PNavigationTaxonomy.PTabIcon = QIcon.QIconResolve("taxonomy", 24);
-        PNavigationCorpus.PTabIcon = QIcon.QIconResolve("corpus", 24);
-        PNavigationSource.PTabIcon = QIcon.QIconResolve("reference", 24);
-        PNavigationGuild.PTabIcon = QIcon.QIconResolve("guild", 24);
-        PNavigationXiesheng.PTabIcon = QIcon.QIconResolve("xiesheng", 24);
-        PNavigationYunjing.PTabIcon = QIcon.QIconResolve("yunjing", 24);
-        PNavigationDuplex.PTabIcon = QIcon.QIconResolve("duplex", 24);
-        PNavigationSettings.PTabIcon = QIcon.QIconResolve("settings", 24);
-
-        PNavigationInput.Click += PNavigationObserve;
-        PNavigationLibrary.Click += PNavigationObserve;
-        PNavigationFavorite.Click += PNavigationObserve;
-        PNavigationPhonology.Click += PNavigationObserve;
-        PNavigationRepertoire.Click += PNavigationObserve;
-        PNavigationTenor.Click += PNavigationObserve;
-        PNavigationTaxonomy.Click += PNavigationObserve;
-        PNavigationCorpus.Click += PNavigationObserve;
-        PNavigationSource.Click += PNavigationObserve;
-        PNavigationGuild.Click += PNavigationObserve;
-        PNavigationXiesheng.Click += PNavigationObserve;
-        PNavigationYunjing.Click += PNavigationObserve;
-        PNavigationDuplex.Click += PNavigationObserve;
-        PNavigationSettings.Click += PNavigationObserve;
-
         _pMentionMenuTemplate = new PMentionMenuTemplate(this);
-        _pWindowSurface.Resources.MergedDictionaries.Add(_pMentionMenuTemplate);
-        QLook.QLookStyleAttach(_pMentionMenuTemplate);
-        PMentionList.ItemsSource = _pMentionItem;
-        QLookItem.QLookItemAttach(PMentionList, PMentionRowApply);
-        _pWindowSurface.PreviewKeyDown += PMentionKeyHandle;
-        _pWindowSurface.PreviewKeyDown += PChronicleKeyObserve;
-        _pWindowSurface.Deactivated += PMentionLeaveRefine;
-
         _lFootprint = new LFootprint(PWindowPosture);
-        PFootprintRestore();
-        _pWindowSurface.Loaded += (_, _) => PFootprintAttach();
 
-        PWindowAttach();
+        PWindowIconRefine();
+        PFootprintRefine();
+        PWindowIntroduce();
 
-        _pWindowSurface.Closing += PWindowClosingHandle;
-        _pWindowSurface.Closed += PWindowExitHandle;
+        PWindowAtelier.CAtelierOpen();
     }
 
     internal Window PWindowSurface => _pWindowSurface;
@@ -191,13 +135,48 @@ public partial class PWindow
 
     internal CEnvoy PWindowEnvoy { get; }
 
-    private void PWindowAttach()
+    private void PWindowIntroduce()
     {
+        _pWindowSurface.Tag = this;
+        _pWindowSurface.SetValue(PMention.PMentionHostProperty, this);
+
+        PRoof.MouseLeftButtonDown += PRoofRefine;
+        PLogo.MouseLeftButtonDown += PLogoRefine;
+        PHeadquarterAbout.MouseLeftButtonDown += PHeadquarterAboutRefine;
+        PHeadquarterExit.MouseLeftButtonDown += PHeadquarterExitRefine;
+        PCaptionMinimize.Click += PCaptionMinimizeRefine;
+        PCaptionMaximize.Click += PCaptionMaximizeRefine;
+        PCaptionExit.Click += PCaptionExitRefine;
+
+        PNavigationInput.Click += PNavigationObserve;
+        PNavigationLibrary.Click += PNavigationObserve;
+        PNavigationFavorite.Click += PNavigationObserve;
+        PNavigationPhonology.Click += PNavigationObserve;
+        PNavigationRepertoire.Click += PNavigationObserve;
+        PNavigationTenor.Click += PNavigationObserve;
+        PNavigationTaxonomy.Click += PNavigationObserve;
+        PNavigationCorpus.Click += PNavigationObserve;
+        PNavigationSource.Click += PNavigationObserve;
+        PNavigationGuild.Click += PNavigationObserve;
+        PNavigationXiesheng.Click += PNavigationObserve;
+        PNavigationYunjing.Click += PNavigationObserve;
+        PNavigationDuplex.Click += PNavigationObserve;
+        PNavigationSettings.Click += PNavigationObserve;
+
+        _pWindowSurface.Resources.MergedDictionaries.Add(_pMentionMenuTemplate);
+        QLook.QLookStyleAttach(_pMentionMenuTemplate);
+        PMentionList.ItemsSource = _pMentionItem;
+        QLookItem.QLookItemAttach(PMentionList, PMentionRowApply);
+        _pWindowSurface.PreviewKeyDown += PMentionKeyHandle;
+        _pWindowSurface.PreviewKeyDown += PChronicleKeyObserve;
+        _pWindowSurface.Deactivated += PMentionLeaveRefine;
+
+        _pWindowSurface.Loaded += (_, _) => PFootprintAttach();
+        _pWindowSurface.Closing += PWindowClosingObserve;
+        _pWindowSurface.Closed += PWindowExitRefine;
+        _pWindowSurface.Closed += PWindowExitObserve;
+
         LEnsignImage.LEnsignIntroduce(PWindowAtelier);
-
-        PWindowAtelier.CAtelierLeftoverSweep();
-
-        CWorkspaceState state = PWindowAtelier.CAtelierStateRead();
 
         PInput.PInputAttach(this);
         _qLibrary.QLibraryAttach(this);
@@ -216,9 +195,46 @@ public partial class PWindow
         _qEstablishment.QEstablishmentAttach(this);
         PNavigationIntroduce();
 
-        PWindowLayoutAttach();
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += PInput.PInputVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qLibrary.QLibraryVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qPhonology.QPhonologyVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qFavorite.QFavoriteVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qTaxonomy.QTaxonomyVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qTenor.QTenorVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qRepertoire.QRepertoireVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qReference.QReferenceVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qCorpus.QCorpusVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qGuild.QGuildVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qXiesheng.QXieshengVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += PYunjing.PYunjingVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceStateOpened += _qDuplex.QDuplexRestore;
 
-        PWindowViewRestore(state);
+        PWindowLayoutAttach();
+    }
+
+    private void PWindowIconRefine()
+    {
+        ((Shape)PCaptionMinimize.Content).SetBinding(
+            Shape.StrokeProperty, new Binding(nameof(Control.Foreground)) { Source = PCaptionMinimize });
+        ((Shape)PCaptionMaximize.Content).SetBinding(
+            Shape.StrokeProperty, new Binding(nameof(Control.Foreground)) { Source = PCaptionMaximize });
+        ((Shape)PCaptionExit.Content).SetBinding(
+            Shape.StrokeProperty, new Binding(nameof(Control.Foreground)) { Source = PCaptionExit });
+
+        PNavigationInput.PTabIcon = QIcon.QIconResolve("input", 24);
+        PNavigationLibrary.PTabIcon = QIcon.QIconResolve("library", 24);
+        PNavigationFavorite.PTabIcon = QIcon.QIconResolve("favorite", 24);
+        PNavigationPhonology.PTabIcon = QIcon.QIconResolve("phonology", 24);
+        PNavigationRepertoire.PTabIcon = QIcon.QIconResolve("repertoire", 24);
+        PNavigationTenor.PTabIcon = QIcon.QIconResolve("tenor", 24);
+        PNavigationTaxonomy.PTabIcon = QIcon.QIconResolve("taxonomy", 24);
+        PNavigationCorpus.PTabIcon = QIcon.QIconResolve("corpus", 24);
+        PNavigationSource.PTabIcon = QIcon.QIconResolve("reference", 24);
+        PNavigationGuild.PTabIcon = QIcon.QIconResolve("guild", 24);
+        PNavigationXiesheng.PTabIcon = QIcon.QIconResolve("xiesheng", 24);
+        PNavigationYunjing.PTabIcon = QIcon.QIconResolve("yunjing", 24);
+        PNavigationDuplex.PTabIcon = QIcon.QIconResolve("duplex", 24);
+        PNavigationSettings.PTabIcon = QIcon.QIconResolve("settings", 24);
     }
 
     private void PWindowLayoutAttach()
@@ -238,12 +254,12 @@ public partial class PWindow
         _pLayout.PLayoutRefine();
     }
 
-    private void PWindowClosingHandle(object? sender, CancelEventArgs e)
+    private void PWindowClosingObserve(object? sender, CancelEventArgs e)
     {
-        PWindowClosureRun(e, PWindowDiscardConfirm());
+        PWindowClosureRefine(e, PWindowAtelier.CAtelierQuitConfirm(PWindowEnvoy));
     }
 
-    private void PWindowClosureRun(CancelEventArgs e, bool confirmed)
+    private void PWindowClosureRefine(CancelEventArgs e, bool confirmed)
     {
         e.Cancel = !confirmed;
 
@@ -253,7 +269,7 @@ public partial class PWindow
         }
     }
 
-    private void PFootprintRestore()
+    private void PFootprintRefine()
     {
         Window window = _pWindowSurface;
         if (_lFootprint.LFootprintRead(
@@ -305,7 +321,7 @@ public partial class PWindow
             bounds.Left, bounds.Top, bounds.Width, bounds.Height, window.WindowState == WindowState.Maximized);
     }
 
-    private void PWindowExitHandle(object? sender, EventArgs e)
+    private void PWindowExitRefine(object? sender, EventArgs e)
     {
         PInput.PInputClose();
         _qLibrary.QLibraryClose();
@@ -322,6 +338,10 @@ public partial class PWindow
         _qDuplex.QDuplexClose();
         _qEstablishment.QEstablishmentClose();
         PWindowPosture.Dispose();
-        PWindowAtelier.Dispose();
+    }
+
+    private void PWindowExitObserve(object? sender, EventArgs e)
+    {
+        PWindowAtelier.CAtelierClose();
     }
 }

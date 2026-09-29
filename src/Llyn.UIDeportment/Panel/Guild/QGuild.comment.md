@@ -28,14 +28,6 @@ The print command binding is added last, so no can-execute query ever meets a pa
 The panel starts the tab's vistas from the window's posture, so no vista crosses the veneer.
 Attaches the bulletins the panel follows, restores the order and kind menus, and lists.
 
-## `internal bool QGuildChangeCheck()`
-
-Whether the edit area holds a name not yet saved.
-
-## `internal bool QGuildDraftFinish(bool store)`
-
-Finishes the held edit before the panel is left, saving it or dropping it as asked.
-
 ## `internal void QGuildClose()`
 
 Closes the dropdowns, so nothing stays open over a window that is going.
@@ -93,4 +85,3 @@ Walks the autograph desk forward one step, the mirror of the undo.
 
 Lights the two chronicle buttons only while the desk has a step to walk.
 It runs whenever the desk reports its state again.
-

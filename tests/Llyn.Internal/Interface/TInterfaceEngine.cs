@@ -199,6 +199,9 @@ internal static partial class TInterface
         engine.LEngineDraft.LEngineLeftoverSweep();
     }
 
+    internal static LWorkspaceState TEngineWorkspaceStart(this LEngine engine) =>
+        new LSettingsOutlet(engine).LEngineWorkspaceStart();
+
     internal static void TEngineRecordingSweep(this LEngine engine)
     {
         engine.LEnginePronunciation.LEngineRecordingSweep();
@@ -231,6 +234,8 @@ internal static partial class TInterface
 
     internal static LEstablishment TEstablishmentCreate(int unsaved, long entry, long size) =>
         new(unsaved, entry, size);
+
+    internal static LWorkspaceState TWorkspaceStateCreate() => new(1);
 
     internal static void TEngineObserverAttach(this LEngine engine, Action<LBulletin> observer)
     {

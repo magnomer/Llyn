@@ -66,17 +66,6 @@ It ends by refreshing the rail's undo and redo.
 
 Drops both selections through `CCorpusExampleClose`, for when the workspace underneath changed.
 
-## `internal bool QCorpusChangeCheck()`
-
-Whether the editor holds work nothing has saved yet.
-The engine answers it against the held draft rather than the driver against a copy of a stored record.
-The window asks before anything can leave the panel.
-
-## `internal bool QCorpusDraftFinish(bool store)`
-
-Ends whichever draft is in front, committing it or discarding it.
-The deportment finishes the entry editor's draft while it is in front, and the held sentence otherwise.
-
 ## `internal void QCorpusClose()`
 
 Closes the popups the panel owns, the citation drawer among them, so none outlives the window.

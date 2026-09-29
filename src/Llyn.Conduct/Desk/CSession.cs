@@ -77,7 +77,7 @@ public sealed class CSession
         CSessionHeld?.Invoke();
     }
 
-    public bool CSessionFinish(bool store)
+    internal bool LSessionFinish(bool store)
     {
         if (CSessionEditorRead() is not null)
         {
@@ -106,7 +106,7 @@ public sealed class CSession
     {
         if (CSessionEditorRead() is CDesk editor)
         {
-            if (editor.CDeskChangeCheck())
+            if (editor.LDeskChangeCheck())
             {
                 _cSessionFinishSeam(true);
             }
@@ -124,7 +124,7 @@ public sealed class CSession
             return false;
         }
 
-        if (!_cSessionDesk.CDeskChangeCheck())
+        if (!_cSessionDesk.LDeskChangeCheck())
         {
             return true;
         }
@@ -186,7 +186,7 @@ public sealed class CSession
         }
     }
 
-    public bool CSessionChangeCheck()
+    internal bool LSessionChangeCheck()
     {
         foreach (Func<bool> pending in _cSessionPending)
         {

@@ -39,14 +39,14 @@ Starts the desk on a stored record or on nothing, then raises `CSessionHeld`.
 
 Cancels the desk, then raises `CSessionHeld`.
 
-## `public bool CSessionFinish(bool store)`
+## `internal bool LSessionFinish(bool store)`
 
 Finishes the editor while it shows, else the desk, showing a stored record again.
 A store the ready seam refuses leaves the desk open and answers false.
 
 ## `public bool CSessionClose(bool store)`
 
-Finishes like `CSessionFinish` but leaves a stored record unshown, because a row click shows its own row next.
+Finishes like `LSessionFinish` but leaves a stored record unshown, because a row click shows its own row next.
 
 ## `public bool CSessionSave()`
 
@@ -77,7 +77,7 @@ Steps the editor forward while it shows, else the desk.
 
 Runs a desk step and raises `CSessionFailed` with the desk scope's hold key when it throws.
 
-## `public bool CSessionChangeCheck()`
+## `internal bool LSessionChangeCheck()`
 
 True when any panel holds unsaved changes.
 

@@ -134,7 +134,7 @@ internal sealed partial class QCorpus
         }
         catch (Exception exception)
         {
-            _qCorpusHost.PWindowFailureShow("Example.LoadFailed", exception);
+            _qCorpusHost.PWindowFailureRefine("Example.LoadFailed", exception);
             return;
         }
 

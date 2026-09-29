@@ -30,18 +30,17 @@ public sealed class CLedger
         _cLedgerAtelier = atelier;
     }
 
-    public Action CLedgerAttach(Action<CLedgerState> show)
-    {
-        ArgumentNullException.ThrowIfNull(show);
+    public event Action<CLedgerState>? CLedgerChanged;
 
-        Action settings = _cLedgerAtelier.CAtelierObserverAttach(CSubject.CSubjectSettings, _ => show(CLedgerRead()));
-        Action workspace = _cLedgerAtelier.CAtelierObserverAttach(CSubject.CSubjectWorkspace, _ => show(CLedgerRead()));
-        show(CLedgerRead());
-        return () =>
-        {
-            settings();
-            workspace();
-        };
+    internal void LLedgerAttach()
+    {
+        _cLedgerAtelier.LAtelierObserverAttach(CSubject.CSubjectSettings, _ => LLedgerRaise());
+        _cLedgerAtelier.LAtelierObserverAttach(CSubject.CSubjectWorkspace, _ => LLedgerRaise());
+    }
+
+    internal void LLedgerRaise()
+    {
+        CLedgerChanged?.Invoke(LLedgerRead());
     }
 
     public void CLedgerLocalizationSave(string language)
@@ -69,14 +68,13 @@ public sealed class CLedger
         _cLedgerAtelier.CAtelierSettingsPort.LEngineRespellingSave(respelled);
     }
 
-    public string? CLedgerNoticeRead(Exception exception)
+    public CLedgerNotice CLedgerNoticeRead(Exception exception)
     {
-        return _cLedgerAtelier.CAtelierSettingsPort.LEngineNoticeRead(exception);
-    }
+        ArgumentNullException.ThrowIfNull(exception);
 
-    public string? CLedgerAuditRecord(Exception exception)
-    {
-        return _cLedgerAtelier.CAtelierSettingsPort.LEngineAuditRecord(exception);
+        (string notice, string? label, string? path) = _cLedgerAtelier.CAtelierSettingsPort.LEngineFailureRead(
+            exception, "Notice.Unexpected", "Notice.Recorded");
+        return new CLedgerNotice(notice, label, path);
     }
 
     public IReadOnlyList<string> CLedgerFind(string text)
@@ -105,7 +103,7 @@ public sealed class CLedger
             : CLedgerMetaRead(child, CLedgerSettingsRead());
     }
 
-    private CLedgerState CLedgerRead()
+    private CLedgerState LLedgerRead()
     {
         LSettingsPort port = _cLedgerAtelier.CAtelierSettingsPort;
         string localization = port.LEngineLocalizationRead();

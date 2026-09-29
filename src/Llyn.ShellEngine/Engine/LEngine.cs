@@ -145,6 +145,17 @@ public sealed class LEngine : IDisposable
         return LWorkspaceClerk.LWorkspaceNoticeRead(exception);
     }
 
+    public (string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(
+        Exception exception, string unexpected, string recorded)
+    {
+        if (LEngineNoticeRead(exception) is string notice)
+        {
+            return (notice, null, null);
+        }
+
+        return LEngineAuditRecord(exception) is string path ? (unexpected, recorded, path) : (unexpected, null, null);
+    }
+
     public void LEngineWorkspaceChange(string path)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);

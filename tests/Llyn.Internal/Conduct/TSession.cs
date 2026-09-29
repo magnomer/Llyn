@@ -16,14 +16,14 @@ public sealed class TSession
         CDesk desk = TSessionDeskPrepare(engine);
         List<long> shown = [];
         CSession session =
-            TInterfaceConduct.TSessionCreate(desk, [desk.CDeskChangeCheck], static () => true, shown.Add);
+            TInterfaceConduct.TSessionCreate(desk, [desk.LDeskChangeCheck], static () => true, shown.Add);
         int held = 0;
         session.CSessionHeld += () => held++;
 
         session.CSessionStart(null);
         desk.TDeskDefer(TInterface.TRequestAuthorCreate(desk.CDeskId, "Ada"));
 
-        Assert.True(session.CSessionChangeCheck());
+        Assert.True(session.TSessionChangeCheck());
         Assert.True(session.CSessionSave());
         Assert.Equal(1, held);
         Assert.Single(shown);
@@ -38,11 +38,11 @@ public sealed class TSession
         CDesk desk = TSessionDeskPrepare(engine);
         List<long> shown = [];
         CSession session =
-            TInterfaceConduct.TSessionCreate(desk, [desk.CDeskChangeCheck], static () => true, shown.Add);
+            TInterfaceConduct.TSessionCreate(desk, [desk.LDeskChangeCheck], static () => true, shown.Add);
 
         session.CSessionStart(null);
 
-        Assert.False(session.CSessionChangeCheck());
+        Assert.False(session.TSessionChangeCheck());
         Assert.True(session.CSessionSave());
         Assert.True(desk.CDeskHeld);
         Assert.Empty(shown);
@@ -58,10 +58,10 @@ public sealed class TSession
         session.CSessionStart(null);
         desk.TDeskDefer(TInterface.TRequestAuthorCreate(desk.CDeskId, "Ada"));
 
-        Assert.False(session.CSessionFinish(true));
+        Assert.False(session.TSessionFinish(true));
         Assert.False(session.CSessionSave());
         Assert.True(desk.CDeskHeld);
-        Assert.True(session.CSessionFinish(false));
+        Assert.True(session.TSessionFinish(false));
         Assert.False(desk.CDeskHeld);
     }
 
@@ -133,7 +133,7 @@ public sealed class TSession
         List<string> seen = [];
         CSession session = TInterfaceConduct.TSessionCreate(desk, editor, static () => true, seen);
 
-        Assert.True(session.CSessionFinish(true));
+        Assert.True(session.TSessionFinish(true));
         Assert.True(session.CSessionClose(false));
         Assert.True(session.CSessionSave());
         Assert.Equal(["Finish", "Drop"], seen);
@@ -151,7 +151,7 @@ public sealed class TSession
         CSession session = TInterfaceConduct.TSessionCreate(desk, editor, static () => false, seen);
         session.CSessionStart(null);
 
-        Assert.True(session.CSessionFinish(false));
+        Assert.True(session.TSessionFinish(false));
         Assert.Empty(seen);
         Assert.False(desk.CDeskHeld);
     }
@@ -164,10 +164,10 @@ public sealed class TSession
         List<string> asked = [];
         List<bool> closed = [];
 
-        bool quit = atelier.CAtelierQuitConfirm(
-            [static () => false, static () => false],
-            [store => { closed.Add(store); return true; }, store => { closed.Add(store); return true; }],
-            TInterfaceConduct.TEnvoyCreate(true, asked));
+        atelier.CAtelierWorkspace.TWorkspaceDraftAdd(static () => false, store => { closed.Add(store); return true; });
+        atelier.CAtelierWorkspace.TWorkspaceDraftAdd(static () => false, store => { closed.Add(store); return true; });
+
+        bool quit = atelier.CAtelierQuitConfirm(TInterfaceConduct.TEnvoyCreate(true, asked));
 
         Assert.True(quit);
         Assert.Empty(asked);
@@ -182,10 +182,10 @@ public sealed class TSession
         List<string> asked = [];
         List<bool> closed = [];
 
-        bool quit = atelier.CAtelierQuitConfirm(
-            [static () => false, static () => true],
-            [store => { closed.Add(store); return true; }, store => { closed.Add(store); return false; }],
-            TInterfaceConduct.TEnvoyCreate(true, asked));
+        atelier.CAtelierWorkspace.TWorkspaceDraftAdd(static () => false, store => { closed.Add(store); return true; });
+        atelier.CAtelierWorkspace.TWorkspaceDraftAdd(static () => true, store => { closed.Add(store); return false; });
+
+        bool quit = atelier.CAtelierQuitConfirm(TInterfaceConduct.TEnvoyCreate(true, asked));
 
         Assert.False(quit);
         Assert.Equal(["Leave"], asked);
@@ -199,10 +199,9 @@ public sealed class TSession
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
         List<bool> closed = [];
 
-        bool quit = atelier.CAtelierQuitConfirm(
-            [static () => true],
-            [store => { closed.Add(store); return true; }],
-            TInterfaceConduct.TEnvoyCreate(null, []));
+        atelier.CAtelierWorkspace.TWorkspaceDraftAdd(static () => true, store => { closed.Add(store); return true; });
+
+        bool quit = atelier.CAtelierQuitConfirm(TInterfaceConduct.TEnvoyCreate(null, []));
 
         Assert.False(quit);
         Assert.Empty(closed);

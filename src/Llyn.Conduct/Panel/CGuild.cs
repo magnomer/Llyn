@@ -36,11 +36,11 @@ public sealed class CGuild
         CGuildAutograph = new CDesk(atelier.CAtelierDraftPort, "Guild", envoy);
         CGuildPanel = new CPanel(
             envoy, "Guild.LoadFailed", "Guild",
-            CGuildAutograph.CDeskChangeCheck, store => CGuildSession!.CSessionFinish(store), shownSeam);
+            CGuildAutograph.LDeskChangeCheck, store => CGuildSession!.LSessionFinish(store), shownSeam);
         CGuildOeuvre = new COeuvre(atelier.CAtelierEntryPort, envoy, shownSeam);
         CGuildPanel.CPanelRowsChanged += CGuildOeuvre.COeuvrePanel.CPanelRowsResonate;
         CGuildSession = new CSession(
-            CGuildAutograph, [CGuildPanel.CPanelChangeCheck], null, static () => false, static _ => true,
+            CGuildAutograph, [CGuildPanel.LPanelChangeCheck], null, static () => false, static _ => true,
             LGuildAutographCheck, LGuildStoredShow);
         CGuildSession.CSessionChanged += () => CGuildChanged?.Invoke();
         CGuildSession.CSessionFailed += envoy.CEnvoyFailureShow;
@@ -48,6 +48,7 @@ public sealed class CGuild
         CGuildPanel.CPanelEdited += id => CGuildSession.CSessionStart(id);
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Guild", LGuildLeaveConfirm, CGuildPanel.LPanelChosenRead, LGuildScribeRestore, LGuildAuthorOpen);
+        atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CGuildSession.LSessionChangeCheck, CGuildSession.LSessionFinish);
     }
 
     public static CGuild CGuildCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
@@ -83,7 +84,7 @@ public sealed class CGuild
 
     public bool CGuildStoreEnabled =>
         CGuildAutographShown
-        && CGuildAutograph.CDeskChangeCheck()
+        && CGuildAutograph.LDeskChangeCheck()
         && CGuildAutograph.CDeskTenure?.LTenureReadyCheck() is true;
 
     public bool CGuildPressAllowed => LGuildSourceSide;
@@ -155,7 +156,7 @@ public sealed class CGuild
 
     internal bool LGuildLeaveConfirm()
     {
-        if (!CGuildSession.CSessionChangeCheck())
+        if (!CGuildSession.LSessionChangeCheck())
         {
             return true;
         }
@@ -165,7 +166,7 @@ public sealed class CGuild
             return false;
         }
 
-        return !store || CGuildSession.CSessionFinish(true);
+        return !store || CGuildSession.LSessionFinish(true);
     }
 
     public void CGuildAuthorClose()

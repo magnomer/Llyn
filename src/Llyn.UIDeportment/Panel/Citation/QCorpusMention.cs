@@ -145,7 +145,7 @@ internal sealed partial class QCorpus
         }
         catch (Exception exception)
         {
-            _qCorpusHost.PWindowFailureShow("Mention.FindFailed", exception);
+            _qCorpusHost.PWindowFailureRefine("Mention.FindFailed", exception);
         }
     }
 }

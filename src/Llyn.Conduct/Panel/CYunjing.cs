@@ -50,8 +50,8 @@ public sealed class CYunjing
             envoy,
             "Yunjing.LoadFailed",
             "Scribe",
-            editor.CEditorDesk.CDeskChangeCheck,
-            editor.CEditorFinish,
+            editor.CEditorDesk.LDeskChangeCheck,
+            editor.LEditorFinish,
             shownSeam);
         CYunjingPanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CYunjingPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
@@ -62,6 +62,7 @@ public sealed class CYunjing
             CYunjingPanel.LPanelScribeRestore,
             id => CYunjingPanel.CPanelRowOpen(id),
             () => LYunjingAllowed);
+        atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CYunjingPanel.LPanelChangeCheck, editor.LEditorFinish);
         atelier.CAtelierNavigation.LNavigationDiweiAttach(LYunjingDiweiOpen);
         CYunjingPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }

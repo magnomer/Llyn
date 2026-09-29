@@ -8,6 +8,11 @@ The engine's facade for workspace state and trail operations.
 
 Stores the engine and its gate.
 
+## `public LWorkspaceState LEngineWorkspaceStart()`
+
+The order of opening a workspace: the draft sweep, the recording sweep, then the state row.
+Each sweep takes its own facade's lock, so this member holds none.
+
 ## `public LWorkspaceState LEngineStateRead()`
 
 The workspace state row.

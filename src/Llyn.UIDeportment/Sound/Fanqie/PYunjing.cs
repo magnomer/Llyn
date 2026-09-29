@@ -239,16 +239,6 @@ public class PYunjing : UserControl
         _cYunjing.CYunjingDiweiCancel();
     }
 
-    internal bool PYunjingDraftFinish(bool store)
-    {
-        return PEditor.PEditorDraftFinish(store);
-    }
-
-    internal bool PYunjingChangeCheck()
-    {
-        return _cYunjing.CYunjingPanel.CPanelChangeCheck();
-    }
-
     private void PYunjingQueryRefine()
     {
         PPlumb.Text = string.Empty;

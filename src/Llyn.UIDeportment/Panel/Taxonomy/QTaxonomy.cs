@@ -165,16 +165,6 @@ internal sealed partial class QTaxonomy
         QDirectoryFind();
     }
 
-    internal bool QTaxonomyDraftFinish(bool store)
-    {
-        return QTaxonomyEditor.PEditorDraftFinish(store);
-    }
-
-    internal bool QTaxonomyChangeCheck()
-    {
-        return _cTaxonomy.CTaxonomyPanel.CPanelChangeCheck();
-    }
-
     internal void QTaxonomyClose()
     {
         QTaxonomyEditor.PEditorClose();

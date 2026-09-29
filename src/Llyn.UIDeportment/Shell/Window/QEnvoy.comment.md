@@ -36,8 +36,8 @@ The headline alone is the whole answer, and an empty detail line under it would 
 ## `public bool CEnvoyDiscardConfirm()`
 
 Asks whether unsaved work may be stored or dropped before a workspace change.
-The host walks its editors and shows the store, discard or stay question, so the GUI keeps its own dialog.
-It answers true only once every editor has finished.
+It hands itself to `CAtelierQuitConfirm`, which asks every area and shows the one question through this envoy.
+It answers true only once every area has finished.
 
 ## `public bool? CEnvoyLeaveConfirm()`
 

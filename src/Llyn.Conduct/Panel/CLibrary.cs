@@ -34,7 +34,7 @@ public sealed class CLibrary
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CLibraryEditor = editor;
         CLibraryPanel = new CPanel(
-            envoy, "List.LoadFailed", "Scribe", editor.CEditorDesk.CDeskChangeCheck, editor.CEditorFinish,
+            envoy, "List.LoadFailed", "Scribe", editor.CEditorDesk.LDeskChangeCheck, editor.LEditorFinish,
             shownSeam);
         CLibraryPanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CLibraryPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
@@ -44,6 +44,7 @@ public sealed class CLibrary
             CLibraryPanel.LPanelChosenRead,
             CLibraryPanel.LPanelScribeRestore,
             id => CLibraryPanel.CPanelRowOpen(id));
+        atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CLibraryPanel.LPanelChangeCheck, editor.LEditorFinish);
         CLibraryPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }
 

@@ -126,6 +126,13 @@ It answers with the file the fault went to, or `null` when nothing could be writ
 The reason key of a refusal standing anywhere inside the failure, or null for a fault.
 The workspace clerk walks the inner chain, since the shells name no exception type.
 
+## `public (string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(`
+
+The ready notice of a failure, in the order the reasons are tried.
+A refusal answers its own reason key alone.
+A fault is written to the audit log and answers `unexpected`, with `recorded` and the file when the write succeeded.
+Conduct hands both wording keys down, so the engine chooses no wording of its own.
+
 ## `public void LEngineWorkspaceChange(string path)`
 
 Moves the engine onto the folder at `path`, then records it as the workspace.

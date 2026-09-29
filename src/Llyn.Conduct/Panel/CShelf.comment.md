@@ -11,7 +11,7 @@ It restores both vistas itself and chooses which side prints, exports, saves or 
 ## `private CShelf(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
 
 Builds the entry editor, the source editor, the Source panel and the entry list over the atelier's ports.
-The Source panel asks the source desk before it leaves a Source, and both panels finish through `CShelfDraftFinish`.
+The Source panel asks the source desk before it leaves a Source, and both panels finish through `LShelfDraftFinish`.
 A cleared Source panel cancels the source draft, and an edited row opens the source editor on it.
 A loaded Source draft is shaped into its colophon through `COeuvre`'s map, with no second panel.
 A stored Source is shown again outside the scribe.
@@ -94,7 +94,7 @@ The orders the Source list offers, in the order a driver lists them.
 
 The engine's worded tally of the chosen Source's citations.
 
-## `public bool CShelfChangeRead()`
+## `internal bool LShelfChangeRead()`
 
 Whether either panel edits a draft that holds unsaved changes.
 
@@ -145,7 +145,7 @@ Deletes the chosen Source through its panel, and does nothing on the entry side.
 
 Whether the draft of the side in front can step back or forward.
 
-## `public bool CShelfDraftFinish(bool store)`
+## `internal bool LShelfDraftFinish(bool store)`
 
 Finishes the draft of the side in front, storing or dropping it, and answers whether it ended.
 

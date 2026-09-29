@@ -38,14 +38,6 @@ The series column and the entry list observe through Conduct subjects, so the dr
 
 Reloads the flags and resets the panel, as the workspace changes under it.
 
-## `internal bool QXieshengDraftFinish(bool store)`
-
-Closes the held draft, saving it or dropping it, as the shell asks while leaving.
-
-## `internal bool QXieshengChangeCheck()`
-
-True while the panel holds an unsaved change.
-
 ## `private void QLodestarRefine()`
 
 Answers the area's opening of a series a chip names by emptying the column's query field.

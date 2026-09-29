@@ -9,8 +9,6 @@ public class PInput : UserControl
 {
     private LEditor _lEditor = null!;
 
-    private Action? _pInputRelease;
-
     public PInput()
     {
         UserControl surface = (UserControl)System.Windows.Application.LoadComponent(
@@ -25,9 +23,6 @@ public class PInput : UserControl
     {
         _lEditor = host.PWindowForge.QForgeInputCreate(host.PWindowEnvoy);
         PEditor.PEditorAttach(host, _lEditor);
-
-        _pInputRelease = host.PWindowAtelier.CAtelierObserverAttach(
-            CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(this, PInputReset));
     }
 
     internal void PInputVistaRestore()
@@ -35,26 +30,8 @@ public class PInput : UserControl
         PEditor.PEditorVistaRestore();
     }
 
-    internal void PInputReset()
-    {
-        PEditor.PEditorReset();
-    }
-
-    internal bool PInputDraftFinish(bool store)
-    {
-        return PEditor.PEditorDraftFinish(store);
-    }
-
-    internal bool PInputChangeCheck()
-    {
-        return PEditor.PEditorChangeCheck();
-    }
-
     internal void PInputClose()
     {
-        _pInputRelease?.Invoke();
-        _pInputRelease = null;
-
         PEditor.PEditorClose();
     }
 }

@@ -156,13 +156,13 @@ public sealed class TEditor
         editor.CEditorEntryOpen(null);
         editor.CEditorHeadwordSet("salt");
 
-        Assert.True(editor.CEditorFinish(true));
+        Assert.True(editor.TEditorFinish(true));
 
         Assert.True(editor.CEditorDesk.CDeskHeld);
         Assert.Null(editor.CEditorDesk.CDeskStoredRead());
         Assert.Contains(engine.TEngineEntryFind("salt"), row => row.LEntryHeadword == "salt");
 
-        Assert.True(editor.CEditorFinish(false));
+        Assert.True(editor.TEditorFinish(false));
 
         Assert.False(editor.CEditorDesk.CDeskHeld);
         Assert.False(editor.CEditorDesk.CDeskRunning);
@@ -462,7 +462,7 @@ public sealed class TEditor
             steps.Select(step => (step.CHarvestStepRecording is not null, step.CHarvestStepEnded)));
         Assert.Equal("Tagged", steps[0].CHarvestStepSource);
         Assert.Equal("https://example.test/gb.mp3", steps[1].CHarvestStepRecording?.CRecordingAddress);
-        editor.CEditorFinish(false);
+        editor.TEditorFinish(false);
     }
 
     private static LEntry TEditorEntryPrepare(LEngine engine)

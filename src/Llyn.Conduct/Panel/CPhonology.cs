@@ -39,8 +39,8 @@ public sealed class CPhonology
             envoy,
             "Sound.LoadFailed",
             "Scribe",
-            editor.CEditorDesk.CDeskChangeCheck,
-            editor.CEditorFinish,
+            editor.CEditorDesk.LDeskChangeCheck,
+            editor.LEditorFinish,
             shownSeam);
         CPhonologyPanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CPhonologyPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
@@ -50,6 +50,7 @@ public sealed class CPhonology
             CPhonologyPanel.LPanelChosenRead,
             CPhonologyPanel.LPanelScribeRestore,
             id => CPhonologyPanel.CPanelRowOpen(id));
+        atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CPhonologyPanel.LPanelChangeCheck, editor.LEditorFinish);
         CPhonologyPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }
 

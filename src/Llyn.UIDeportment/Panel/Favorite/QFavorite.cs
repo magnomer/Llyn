@@ -148,16 +148,6 @@ internal sealed partial class QFavorite
         _cFavorite.CFavoritePanel.CPanelEntryClose();
     }
 
-    internal bool QFavoriteDraftFinish(bool store)
-    {
-        return QFavoriteEditor.PEditorDraftFinish(store);
-    }
-
-    internal bool QFavoriteChangeCheck()
-    {
-        return _cFavorite.CFavoritePanel.CPanelChangeCheck();
-    }
-
     internal void QFavoriteClose()
     {
         QFavoriteEditor.PEditorClose();

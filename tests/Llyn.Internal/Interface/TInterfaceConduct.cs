@@ -396,6 +396,36 @@ internal static class TInterfaceConduct
     internal static bool TVoyageRedo(this CVoyage voyage, string tab, long id, Func<string, long, bool> show) =>
         voyage.LVoyageRedo(tab, id, show);
 
+    internal static bool TSessionChangeCheck(this CSession session) => session.LSessionChangeCheck();
+
+    internal static bool TSessionFinish(this CSession session, bool store) => session.LSessionFinish(store);
+
+    internal static bool TShelfChangeRead(this CShelf shelf) => shelf.LShelfChangeRead();
+
+    internal static bool TShelfDraftFinish(this CShelf shelf, bool store) => shelf.LShelfDraftFinish(store);
+
+    internal static bool TEditorFinish(this CEditor editor, bool store) => editor.LEditorFinish(store);
+
+    internal static bool TDeskChangeCheck(this CDesk desk) => desk.LDeskChangeCheck();
+
+    internal static CEstablishment TAtelierEstablishmentRead(this CAtelier atelier) =>
+        atelier.LAtelierEstablishmentRead();
+
+    internal static void TWorkspaceDraftAdd(this CWorkspace workspace, Func<bool> pending, Func<bool, bool> closure) =>
+        workspace.LWorkspaceDraftAdd(pending, closure);
+
+    internal static void TNavigationTabOpen(this CNavigation navigation) => navigation.LNavigationTabOpen();
+
+    internal static CWorkspaceState? TAtelierStateOpen(this CAtelier atelier)
+    {
+        CWorkspaceState? opened = null;
+        Action<CWorkspaceState> heard = state => opened = state;
+        atelier.CAtelierWorkspace.CWorkspaceStateOpened += heard;
+        atelier.CAtelierOpen();
+        atelier.CAtelierWorkspace.CWorkspaceStateOpened -= heard;
+        return opened;
+    }
+
     internal static void TNavigationTabAdd(
         this CNavigation navigation,
         string tab,

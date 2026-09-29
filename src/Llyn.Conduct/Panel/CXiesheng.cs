@@ -44,8 +44,8 @@ public sealed class CXiesheng
             envoy,
             "Xiesheng.LoadFailed",
             "Scribe",
-            editor.CEditorDesk.CDeskChangeCheck,
-            editor.CEditorFinish,
+            editor.CEditorDesk.LDeskChangeCheck,
+            editor.LEditorFinish,
             shownSeam);
         CXieshengPanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CXieshengPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
@@ -56,6 +56,7 @@ public sealed class CXiesheng
             CXieshengPanel.LPanelScribeRestore,
             id => CXieshengPanel.CPanelRowOpen(id),
             () => LXieshengAllowed);
+        atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CXieshengPanel.LPanelChangeCheck, editor.LEditorFinish);
         atelier.CAtelierNavigation.LNavigationStemAttach(LXieshengStemOpen);
         CXieshengPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }

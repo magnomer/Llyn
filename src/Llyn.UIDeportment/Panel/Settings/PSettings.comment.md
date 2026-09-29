@@ -18,8 +18,8 @@ Each named part of the markup is read through `FindName`, so call sites keep the
 
 ## `internal void PSettingsAttach(PWindow host)`
 
-Puts the panel to work on the host's atelier with one attach to the ledger, and shows the first card.
-The ledger hands the panel its state at once and after every settings or workspace change.
+Puts the panel to work on the host's atelier by subscribing `CLedgerChanged`, and shows the first card.
+The ledger raises the state on every open and after every settings or workspace change.
 The ledger rows get their fill through `QLookItemAttach` before the first state arrives.
 
 ## `private void PLocalizationBuild(IReadOnlyList<KeyValuePair<string, string>> languages)`

@@ -21,7 +21,7 @@ public sealed class TDesk
         desk.TDeskDefer(TInterface.TRequestAuthorCreate(desk.CDeskId, "Ada"));
 
         Assert.True(desk.CDeskHeld);
-        Assert.True(desk.CDeskChangeCheck());
+        Assert.True(desk.TDeskChangeCheck());
         Assert.True(desk.CDeskFinish(true));
         Assert.False(desk.CDeskHeld);
         Assert.NotNull(finished);
@@ -44,7 +44,7 @@ public sealed class TDesk
         Assert.False(desk.CDeskHeld);
         Assert.Equal(0, finished);
         Assert.Empty(engine.TEngineAuthorFind(string.Empty));
-        Assert.False(desk.CDeskChangeCheck());
+        Assert.False(desk.TDeskChangeCheck());
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public sealed class TDesk
         Assert.Equal("Ada", shown);
         Assert.True(desk.CDeskStored);
         Assert.Equal(ada.LAuthorId, desk.CDeskStoredRead());
-        Assert.False(desk.CDeskChangeCheck());
+        Assert.False(desk.TDeskChangeCheck());
     }
 
     [Fact]

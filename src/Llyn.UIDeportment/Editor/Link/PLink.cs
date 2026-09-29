@@ -257,7 +257,7 @@ public partial class PEditor
         }
         catch (Exception exception)
         {
-            _pEditorHost.PWindowFailureShow(PLinkFailureKey, exception);
+            _pEditorHost.PWindowFailureRefine(PLinkFailureKey, exception);
             return false;
         }
 

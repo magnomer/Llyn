@@ -150,7 +150,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         _lEditor.LEditorStudio.CEditorDesk.CDeskStarted += PEditorStartUpdate;
         PEditorObserverAttach(_lEditor.LEditorStudio.CEditorDesk);
         _lEditor.LEditorStudio.CEditorDraftChanged += PEditorDraftShow;
-        _lEditor.LEditorStudio.CEditorDesk.CDeskFailed += host.PWindowFailureShow;
+        _lEditor.LEditorStudio.CEditorDesk.CDeskFailed += host.PWindowFailureRefine;
         _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += PEditorStateUpdate;
         _lEditor.LEditorStudio.CEditorDesk.CDeskRefused += host.PWindowEnvoy.CEnvoyFailureShow;
         _lEditor.LEditorStudio.CEditorSounding.CSoundingChanged += PEditorFanqieUpdate;
@@ -183,24 +183,9 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         _pDownloaderPlayer.Close();
     }
 
-    internal void PEditorReset()
-    {
-        _lEditor.LEditorStudio.CEditorEntryOpen(null);
-    }
-
     internal void PEditorEntrySave()
     {
         _lEditor.LEditorStudio.CEditorEntrySave();
-    }
-
-    internal bool PEditorDraftFinish(bool store)
-    {
-        return _lEditor.LEditorStudio.CEditorFinish(store);
-    }
-
-    internal bool PEditorChangeCheck()
-    {
-        return _lEditor.LEditorStudio.CEditorDesk.CDeskChangeCheck();
     }
 
     internal event Action? PEditorChronicleChanged;

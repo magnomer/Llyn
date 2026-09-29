@@ -235,16 +235,6 @@ internal sealed class QReference
         _cShelf.CShelfPanel.CPanelRowsResonate();
     }
 
-    internal bool QReferenceChangeCheck()
-    {
-        return _cShelf.CShelfChangeRead();
-    }
-
-    internal bool QReferenceDraftFinish(bool store)
-    {
-        return _cShelf.CShelfDraftFinish(store);
-    }
-
     internal void QReferenceClose()
     {
         _qImprint.QImprintClose();

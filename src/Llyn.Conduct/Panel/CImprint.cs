@@ -58,7 +58,7 @@ public sealed class CImprint
 
     internal void LImprintSave()
     {
-        if (!CImprintDesk.CDeskChangeCheck())
+        if (!CImprintDesk.LDeskChangeCheck())
         {
             return;
         }

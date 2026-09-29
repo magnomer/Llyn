@@ -150,7 +150,7 @@ internal sealed class QGuild
         _cGuild.CGuildOeuvre.COeuvreColophonChanged += _qColophon.QColophonShow;
         _qVita.QVitaAttach(host, _cGuild);
         _qAutograph.QAutographAttach(_cGuild);
-        _cGuild.CGuildAutograph.CDeskFailed += host.PWindowFailureShow;
+        _cGuild.CGuildAutograph.CDeskFailed += host.PWindowFailureRefine;
         _cGuild.CGuildAutograph.CDeskStateChanged += QGuildChronicleUpdate;
 
         QRoll.ItemsSource = _qRollList;
@@ -198,16 +198,6 @@ internal sealed class QGuild
         QLouverUpdate();
         _cGuild.CGuildQuerySet(QMuster.Text);
         _cGuild.CGuildPanel.CPanelRowsResonate();
-    }
-
-    internal bool QGuildChangeCheck()
-    {
-        return _cGuild.CGuildSession.CSessionChangeCheck();
-    }
-
-    internal bool QGuildDraftFinish(bool store)
-    {
-        return _cGuild.CGuildSession.CSessionFinish(store);
     }
 
     internal void QGuildClose()

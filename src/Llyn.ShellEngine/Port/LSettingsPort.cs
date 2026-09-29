@@ -18,6 +18,8 @@ public interface LSettingsPort
 
     LWorkspaceState LEngineStateRead();
 
+    LWorkspaceState LEngineWorkspaceStart();
+
     IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language);
 
     string LEngineLocalizationRead();
@@ -40,9 +42,8 @@ public interface LSettingsPort
 
     void LEngineRespellingSave(bool respelled);
 
-    string? LEngineAuditRecord(Exception exception);
-
-    string? LEngineNoticeRead(Exception exception);
+    (string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(
+        Exception exception, string unexpected, string recorded);
 
     LFont LEngineFontRead(string language, LFontRole role);
 

@@ -224,7 +224,7 @@ public sealed class TShelf
 
         Assert.Equal(0, recorded);
         Assert.Equal(["Leave"], asked);
-        Assert.True(shelf.CShelfChangeRead());
+        Assert.True(shelf.TShelfChangeRead());
         Assert.True(shelf.CShelfImprintShown);
         Assert.False(shelf.CShelfBinEnabled);
     }
@@ -243,7 +243,7 @@ public sealed class TShelf
         Assert.True(shelf.TShelfLeaveConfirm());
 
         Assert.Equal(["Leave"], asked);
-        Assert.False(shelf.CShelfChangeRead());
+        Assert.False(shelf.TShelfChangeRead());
         Assert.Contains(shelf.CShelfRowsRead(), row => row.CCatalogReferenceName == "Tome");
         Assert.True(shelf.CShelfColophonShown);
         Assert.True(shelf.CShelfBinEnabled);
@@ -300,10 +300,10 @@ public sealed class TShelf
         shelf.CShelfReferenceCreate();
         shelf.CShelfImprint.CImprintTitleSet("Tome");
 
-        Assert.True(shelf.CShelfDraftFinish(false));
+        Assert.True(shelf.TShelfDraftFinish(false));
 
         Assert.False(shelf.CShelfImprint.CImprintHeld);
-        Assert.False(shelf.CShelfChangeRead());
+        Assert.False(shelf.TShelfChangeRead());
         Assert.DoesNotContain(shelf.CShelfRowsRead(), row => row.CCatalogReferenceName == "Tome");
     }
 
@@ -320,7 +320,7 @@ public sealed class TShelf
 
         Assert.True(shelf.CShelfEditor.CEditorDesk.CDeskHeld);
 
-        Assert.True(shelf.CShelfDraftFinish(false));
+        Assert.True(shelf.TShelfDraftFinish(false));
 
         Assert.False(shelf.CShelfEditor.CEditorDesk.CDeskHeld);
         Assert.False(shelf.CShelfImprint.CImprintHeld);
@@ -343,7 +343,7 @@ public sealed class TShelf
         Assert.Equal(["Leave"], asked);
         Assert.True(shelf.CShelfImprintShown);
         Assert.False(shelf.CShelfDisplayShown);
-        Assert.True(shelf.CShelfChangeRead());
+        Assert.True(shelf.TShelfChangeRead());
     }
 
     [Fact]

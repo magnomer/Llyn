@@ -47,7 +47,7 @@ public sealed class CNavigation
 
     public event Action? CNavigationArrived;
 
-    public void CNavigationTabOpen()
+    internal void LNavigationTabOpen()
     {
         _cNavigationHidden = LNavigationTabs.Where(tab => !LNavigationAllowedCheck(tab)).ToList();
         string? restored = null;

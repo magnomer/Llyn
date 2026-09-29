@@ -21,7 +21,7 @@ internal sealed partial class QRepertoire
         }
         catch (Exception exception)
         {
-            _qRepertoireHost.PWindowFailureShow("Situation.LoadFailed", exception);
+            _qRepertoireHost.PWindowFailureRefine("Situation.LoadFailed", exception);
             return;
         }
 

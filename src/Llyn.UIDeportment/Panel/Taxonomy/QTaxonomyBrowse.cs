@@ -109,7 +109,7 @@ internal sealed partial class QTaxonomy
         }
         catch (Exception exception)
         {
-            _qTaxonomyHost.PWindowFailureShow("Tag.LoadFailed", exception);
+            _qTaxonomyHost.PWindowFailureRefine("Tag.LoadFailed", exception);
             return;
         }
 

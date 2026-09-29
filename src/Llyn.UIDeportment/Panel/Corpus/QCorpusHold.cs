@@ -16,7 +16,7 @@ internal sealed partial class QCorpus
     {
         QTranscriptDesk.CDeskObserverAttach(
             LObserver.LObserverCreate<Action>(static run => run()), QTranscriptDraftRestore);
-        QTranscriptDesk.CDeskFailed += _qCorpusHost.PWindowFailureShow;
+        QTranscriptDesk.CDeskFailed += _qCorpusHost.PWindowFailureRefine;
         QTranscriptDesk.CDeskRefused += _qCorpusHost.PWindowEnvoy.CEnvoyFailureShow;
     }
 

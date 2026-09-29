@@ -10,15 +10,15 @@ A malformed or unknown flag becomes no image, which lets each surface show its n
 
 ## `public static void LEnsignIntroduce(CAtelier atelier)`
 
-Subscribes the flag store through `atelier`, once, for the whole program.
-It owns no control, so its answer runs on the thread that announced rather than on the shell's.
+Subscribes the flag store to `CWorkspaceOpened` on the atelier's workspace, once, for the whole program.
+The window subscribes it before any panel, so it answers each open first.
 
-## `private static void LEnsignBulletinRefine(CBulletin bulletin)`
+## `private static void LEnsignOpenRefine()`
 
-Throws every kept drawing away when the workspace moves, and answers nothing else.
-The engine has already forgotten the paths before it announces, so a surface reloading on the announcement asks afresh.
-The surfaces reload on the same announcement, and this store is the first subscriber.
-It is empty before they ask.
+Throws every kept drawing away whenever the workspace opens, and answers nothing else.
+The engine forgot its paths when the workspace moved, so a surface reloading afterwards asks afresh.
+A drawing for a language the new workspace lacks therefore never lingers.
+A reload still in flight at the open refills the store once it lands.
 
 ## `public static DrawingImage? LEnsignResolve(string path, Action<string, Exception> delete)`
 

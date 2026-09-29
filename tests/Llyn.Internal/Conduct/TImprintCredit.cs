@@ -49,7 +49,7 @@ public sealed class TImprintCredit
 
         Assert.Equal(["Ada"], imprint.CImprintCreditRead().Select(row => row.CAuthorRowName));
         Assert.Equal(-1, imprint.CImprintBlankAt);
-        Assert.False(imprint.CImprintDesk.CDeskChangeCheck());
+        Assert.False(imprint.CImprintDesk.TDeskChangeCheck());
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public sealed class TImprintCredit
 
         Assert.Equal(["Bob", "Ada"], imprint.CImprintCreditRead().Select(row => row.CAuthorRowName));
         Assert.Equal([false, true], imprint.CImprintCreditRead().Select(row => row.CAuthorRowEarlier));
-        Assert.True(imprint.CImprintDesk.CDeskChangeCheck());
+        Assert.True(imprint.CImprintDesk.TDeskChangeCheck());
 
         imprint.CImprintAuthorMove(1, ada.LAuthorId, -1);
 
@@ -84,7 +84,7 @@ public sealed class TImprintCredit
         imprint.CImprintAuthorMove(0, 0, 1);
         imprint.CImprintAuthorMove(null, 1, 1);
 
-        Assert.False(imprint.CImprintDesk.CDeskChangeCheck());
+        Assert.False(imprint.CImprintDesk.TDeskChangeCheck());
     }
 
     [Fact]
@@ -130,7 +130,7 @@ public sealed class TImprintCredit
 
         Assert.Equal(1, reverted);
         Assert.Equal(1, imprint.CImprintBlankAt);
-        Assert.False(imprint.CImprintDesk.CDeskChangeCheck());
+        Assert.False(imprint.CImprintDesk.TDeskChangeCheck());
 
         Assert.True(imprint.CImprintAuthorFinish(1, 0, "Bob", null));
 
@@ -170,7 +170,7 @@ public sealed class TImprintCredit
         Assert.True(imprint.CImprintAuthorCancel(0, 0));
 
         Assert.Equal(1, reverted);
-        Assert.False(imprint.CImprintDesk.CDeskChangeCheck());
+        Assert.False(imprint.CImprintDesk.TDeskChangeCheck());
     }
 
     private static List<LAuthor> TImprintOpen(LEngine engine, CImprint imprint, params string[] names)

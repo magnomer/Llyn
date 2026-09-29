@@ -16,7 +16,7 @@ public sealed class TNavigation
         CNavigation navigation = atelier.CAtelierNavigation;
         List<CNavigationState> states = TNavigationStateAttach(navigation);
 
-        navigation.CNavigationTabOpen();
+        navigation.TNavigationTabOpen();
 
         CNavigationState state = Assert.Single(states);
         Assert.Null(state.CNavigationStateTab);
@@ -34,7 +34,7 @@ public sealed class TNavigation
         navigation.CNavigationTabSelect("Corpus");
         List<CNavigationState> states = TNavigationStateAttach(navigation);
 
-        navigation.CNavigationTabOpen();
+        navigation.TNavigationTabOpen();
 
         Assert.Equal("Corpus", Assert.Single(states).CNavigationStateTab);
         Assert.Equal([TInterfaceConduct.TAtelierSplitRead(atelier)], scribed);
@@ -51,8 +51,8 @@ public sealed class TNavigation
         navigation.CNavigationTabSelect("Corpus");
         List<CNavigationState> states = TNavigationStateAttach(navigation);
 
-        navigation.CNavigationTabOpen();
-        navigation.CNavigationTabOpen();
+        navigation.TNavigationTabOpen();
+        navigation.TNavigationTabOpen();
 
         Assert.All(states, state => Assert.Equal("Input", state.CNavigationStateTab));
         Assert.All(states, state => Assert.Equal(["Corpus"], state.CNavigationStateHidden));
@@ -91,7 +91,7 @@ public sealed class TNavigation
         List<CNavigationState> states = TNavigationStateAttach(navigation);
 
         bool selected = navigation.CNavigationTabSelect("Corpus");
-        navigation.CNavigationTabOpen();
+        navigation.TNavigationTabOpen();
 
         Assert.False(selected);
         Assert.Equal("Library", Assert.Single(states).CNavigationStateTab);

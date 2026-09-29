@@ -190,7 +190,7 @@ Hands a field request to the tenure to apply in its own time, unless the control
 
 Hands a request to the tenure to apply at once, unless the controls are being filled.
 
-## `public bool CDeskChangeCheck()`
+## `internal bool LDeskChangeCheck()`
 
 Whether the held draft differs from what is stored, after the deferred requests have been applied.
 The tenure writes and answers in one call, and an empty desk answers false.

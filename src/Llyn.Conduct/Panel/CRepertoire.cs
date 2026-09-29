@@ -34,21 +34,21 @@ public sealed class CRepertoire
             CRepertoireDesk,
             shownSeam,
             envoy,
-            store => CRepertoireSession!.CSessionFinish(store));
+            store => CRepertoireSession!.LSessionFinish(store));
         CRepertoireOccurrence = new COccurrence(
             atelier.CAtelierEntryPort,
             atelier.CAtelierPortraitPort,
             envoy,
-            editor.CEditorDesk.CDeskChangeCheck,
-            store => CRepertoireSession!.CSessionFinish(store),
+            editor.CEditorDesk.LDeskChangeCheck,
+            store => CRepertoireSession!.LSessionFinish(store),
             shownSeam);
         CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += CRepertoireOccurrence.COccurrencePanel.CPanelRowsResonate;
         CRepertoireSession = new CSession(
             CRepertoireDesk,
-            [CRepertoireOccurrence.COccurrencePanel.CPanelChangeCheck, CRepertoireAtlas.CAtlasPanel.CPanelChangeCheck],
+            [CRepertoireOccurrence.COccurrencePanel.LPanelChangeCheck, CRepertoireAtlas.CAtlasPanel.LPanelChangeCheck],
             editor.CEditorDesk,
             () => CRepertoireOccurrence.COccurrencePanel.CPanelEditing,
-            editor.CEditorFinish,
+            editor.LEditorFinish,
             static () => true,
             LRepertoireStoredShow);
         CRepertoireSession.CSessionHeld += () => CRepertoireScenarioChanged?.Invoke(CRepertoireScenarioRead());
@@ -66,6 +66,8 @@ public sealed class CRepertoire
             CRepertoireAtlas.CAtlasPanel.LPanelChosenRead,
             CRepertoireAtlas.CAtlasPanel.LPanelScribeRestore,
             LRepertoireSituationOpen);
+        atelier.CAtelierWorkspace.LWorkspaceDraftAdd(
+            CRepertoireSession.LSessionChangeCheck, CRepertoireSession.LSessionFinish);
     }
 
     public static CRepertoire CRepertoireCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
@@ -305,7 +307,7 @@ public sealed class CRepertoire
 
     internal bool LRepertoireLeaveConfirm(bool shown)
     {
-        if (!CRepertoireSession.CSessionChangeCheck())
+        if (!CRepertoireSession.LSessionChangeCheck())
         {
             return true;
         }
@@ -320,7 +322,7 @@ public sealed class CRepertoire
             return true;
         }
 
-        return shown ? CRepertoireSession.CSessionFinish(true) : CRepertoireSession.CSessionClose(true);
+        return shown ? CRepertoireSession.LSessionFinish(true) : CRepertoireSession.CSessionClose(true);
     }
 
     public void CRepertoireEntryResonate()

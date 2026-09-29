@@ -26,7 +26,7 @@ public sealed class TWing
 
         Assert.Equal(1, loaded);
         Assert.Equal(water.LEntryId, wing.CWingDisplay.LDisplayChosen);
-        Assert.Equal(new CWorkspaceState(water.LEntryId, null), atelier.CAtelierStateRead());
+        Assert.Equal(new CWorkspaceState(water.LEntryId, null), atelier.TAtelierStateOpen());
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public sealed class TWing
 
         wing.CWingEntryOpen(water.LEntryId);
 
-        Assert.Equal(new CWorkspaceState(null, water.LEntryId), atelier.CAtelierStateRead());
+        Assert.Equal(new CWorkspaceState(null, water.LEntryId), atelier.TAtelierStateOpen());
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public sealed class TWing
 
         Assert.Equal(1, loaded);
         Assert.Equal(water.LEntryId, wing.CWingDisplay.LDisplayChosen);
-        Assert.Equal(new CWorkspaceState(null, null), atelier.CAtelierStateRead());
+        Assert.Equal(new CWorkspaceState(null, null), atelier.TAtelierStateOpen());
     }
 
     [Fact]
@@ -185,7 +185,7 @@ public sealed class TWing
 
         Assert.Equal(0, loaded);
         Assert.True(wing.CWingRowsRead().Single().CVistaRowChosen);
-        Assert.Equal(new CWorkspaceState(null, null), atelier.CAtelierStateRead());
+        Assert.Equal(new CWorkspaceState(null, null), atelier.TAtelierStateOpen());
     }
 
     private static LEntry TWingWaterSave(LEngine engine)

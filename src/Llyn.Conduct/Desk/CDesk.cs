@@ -316,7 +316,7 @@ public sealed class CDesk
         _cDeskTenure?.LTenureRequestApply(request);
     }
 
-    public bool CDeskChangeCheck()
+    internal bool LDeskChangeCheck()
     {
         return _cDeskTenure?.LTenureChangeCheck() ?? false;
     }

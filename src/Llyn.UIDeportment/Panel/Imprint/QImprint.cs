@@ -94,7 +94,7 @@ internal sealed class QImprint : QChronicleHost
         _cImprint.CImprintByline.CBylineChanged += QBylineUpdate;
         _cImprint.CImprintDesk.CDeskObserverAttach(LObserver.LObserverCreate<Action>(static run => run()));
         _cImprint.CImprintReferenceChanged += QImprintDraftUpdate;
-        _cImprint.CImprintDesk.CDeskFailed += host.PWindowFailureShow;
+        _cImprint.CImprintDesk.CDeskFailed += host.PWindowFailureRefine;
     }
 
     internal void QImprintClear()

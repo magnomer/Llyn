@@ -126,7 +126,7 @@ public partial class PEditor
         }
         catch (Exception exception)
         {
-            _pEditorHost.PWindowFailureShow("Reference.CreateFailed", exception);
+            _pEditorHost.PWindowFailureRefine("Reference.CreateFailed", exception);
         }
 
         PSentenceCitationReset(box);

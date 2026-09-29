@@ -67,7 +67,7 @@ The wrapped delegate is never detached, because the vista lives as long as the t
 
 The same as `CPanelObserverAttach`, but only for notices about the chosen row.
 
-## `public bool CPanelChangeCheck()`
+## `internal bool LPanelChangeCheck()`
 
 Whether the editor holds unstored changes, which can only be so while it is shown.
 

@@ -33,8 +33,10 @@ internal sealed class QEstablishment
 
     internal void QEstablishmentAttach(PWindow host)
     {
-        _qEstablishmentRelease = host.PWindowAtelier.CAtelierEstablishmentAttach(
-            LObserver.LObserverCreate<CEstablishment>(host.PWindowSurface, QEstablishmentRefine));
+        Action<CEstablishment> heard =
+            LObserver.LObserverCreate<CEstablishment>(host.PWindowSurface, QEstablishmentRefine);
+        host.PWindowAtelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged += heard;
+        _qEstablishmentRelease = () => host.PWindowAtelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged -= heard;
     }
 
     internal void QEstablishmentClose()

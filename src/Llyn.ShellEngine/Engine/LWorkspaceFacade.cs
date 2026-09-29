@@ -17,6 +17,13 @@ internal sealed class LWorkspaceFacade
 
     private LEngineStaff LWorkspaceFacadeStaff => _lWorkspaceFacadeEngine.LEngineStaffHeld;
 
+    public LWorkspaceState LEngineWorkspaceStart()
+    {
+        _lWorkspaceFacadeEngine.LEngineDraft.LEngineLeftoverSweep();
+        _lWorkspaceFacadeEngine.LEnginePronunciation.LEngineRecordingSweep();
+        return LEngineStateRead();
+    }
+
     public LWorkspaceState LEngineStateRead()
     {
         lock (_lWorkspaceFacadeGate)

@@ -165,16 +165,6 @@ internal sealed partial class QTenor
         QGamutFind();
     }
 
-    internal bool QTenorDraftFinish(bool store)
-    {
-        return QTenorEditor.PEditorDraftFinish(store);
-    }
-
-    internal bool QTenorChangeCheck()
-    {
-        return _cTenor.CTenorPanel.CPanelChangeCheck();
-    }
-
     internal void QTenorClose()
     {
         QTenorEditor.PEditorClose();

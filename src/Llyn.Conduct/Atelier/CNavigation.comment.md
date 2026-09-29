@@ -26,9 +26,10 @@ Raised after every change the window paints, such as a tab switch, a restore or 
 
 Raised once a jump has landed and the tab's area has opened the record, so the window closes its menus.
 
-## `public void CNavigationTabOpen()`
+## `internal void LNavigationTabOpen()`
 
-Opens the tab the posture names at startup.
+Opens the tab the posture names when the atelier opens a workspace.
+Only `CAtelierOpen` calls it, last, after every view has restored.
 A tab its panel does not offer now is hidden.
 A hidden stored tab falls back to the first tab.
 The tab opened is saved to the posture, so the posture names what shows.

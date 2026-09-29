@@ -125,7 +125,7 @@ public partial class PEditor
         }
         catch (Exception exception)
         {
-            _pEditorHost.PWindowFailureShow("Mention.FindFailed", exception);
+            _pEditorHost.PWindowFailureRefine("Mention.FindFailed", exception);
             return;
         }
 
@@ -205,7 +205,7 @@ public partial class PEditor
         catch (Exception exception)
         {
             PProspectHide();
-            _pEditorHost.PWindowFailureShow(PLinkFailureKey, exception);
+            _pEditorHost.PWindowFailureRefine(PLinkFailureKey, exception);
             return;
         }
 

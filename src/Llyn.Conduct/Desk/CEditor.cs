@@ -99,15 +99,15 @@ public sealed class CEditor
 
     public void CEditorEntrySave()
     {
-        if (!CEditorDesk.CDeskChangeCheck())
+        if (!CEditorDesk.LDeskChangeCheck())
         {
             return;
         }
 
-        CEditorFinish(true);
+        LEditorFinish(true);
     }
 
-    public bool CEditorFinish(bool store)
+    internal bool LEditorFinish(bool store)
     {
         _cEditorFresh = CEditorDesk.CDeskStoredRead() is null;
         return CEditorDesk.CDeskFinish(store);

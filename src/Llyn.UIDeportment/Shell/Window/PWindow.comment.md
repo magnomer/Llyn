@@ -17,13 +17,9 @@ Opening the workspace can fail.
 A failure in a window constructor has nowhere to be shown.
 The host builds the engine and the root, and hands the root over.
 The window keeps the root, and builds the panel factory and the GUI-only posture over it.
-The window disposes its posture and the root when it closes, and the bootstrap disposes the engine on exit.
-The window sets itself as the mention attached property, so every mention block below inherits its host.
-The loaded window carries the class in its `Tag`, so a control inside can find its host.
-The roof, logo, menu lines, caption buttons and tab buttons are subscribed here after the load.
-Each caption glyph strokes with its button's foreground through a binding set here.
-Each tab button's icon is resolved here.
+The window disposes its posture and closes the root when it closes, and the bootstrap disposes the engine on exit.
 The envoy is built over the loaded window and this class, so that window owns every question.
+It paints the chrome, places the stored geometry, introduces every part, then makes its one gate call, `CAtelierOpen`.
 
 ## `private readonly QEstablishment _qEstablishment;`
 
@@ -62,17 +58,23 @@ A panel already moved to the veneer is pulled by its contract ID as a plain page
 
 The window's answer to Conduct's user-question port, which the panels ask through.
 
-## `private void PWindowAttach()`
+## `private void PWindowIntroduce()`
 
-Puts every panel to work on the panel factory, which builds each panel's deportment over the one engine.
-The workspace is swept first, so nothing already saved is counted as lost work.
-The recordings are swept next, while no draft is held, so a file no draft or entry names goes.
-The leftovers are counted next, so the number describes the workspace as it was found.
-The stored view state is read once here and applied after every panel is attached.
-Reading it once is what keeps the panels from each asking the workspace the same question.
-The status bar attaches after every panel, so its first reading already sees the drafts the panels opened.
+Wires the window: every subscription, every panel's attach and every answer to an atelier event.
+The window sets itself as the mention attached property, so every mention block below inherits its host.
+The loaded window carries the class in its `Tag`, so a control inside can find its host.
+The roof, logo, menu lines, caption buttons and tab buttons are subscribed here after the load.
+The flag store is subscribed first, so it empties before any panel reloads on an open.
+Every panel is attached next, and the status bar after them, so it paints the drafts the panels opened.
 The navigation is heard after every panel attaches, so every panel has registered its tab.
-The voyage shortcuts are hooked with it.
+Each panel's restore answers `CWorkspaceOpened`, and the duplex answers `CWorkspaceStateOpened`.
+So the open is one gate call, and Conduct decides what shows and in which order.
+The widths are registered and applied last, before any tab is shown.
+
+## `private void PWindowIconRefine()`
+
+Each caption glyph strokes with its button's foreground through a binding set here.
+Each tab button's icon is resolved here.
 
 ## `internal PLayout PWindowLayout => _pLayout;`
 
@@ -101,13 +103,18 @@ The duplex panel is left out.
 Its two halves are editors sharing the window, not a catalog beside a display.
 The stored widths are applied right after, before any tab is shown, so nothing jumps on the first view.
 
-## `private void PWindowClosingHandle(object? sender, CancelEventArgs e)`
+## `private void PWindowClosingObserve(object? sender, CancelEventArgs e)`
+
+Hears the window closing and asks `CAtelierQuitConfirm` once, through the window's envoy.
+The answer goes straight to `PWindowClosureRefine`.
+
+## `private void PWindowClosureRefine(CancelEventArgs e, bool confirmed)`
 
 Declining leaves the window open on the form exactly as typed, which is the only place the work still exists.
 Geometry is stored only once the close is certain, so a declined close changes nothing.
 The close writes at once, with no delay.
 
-## `private void PFootprintRestore()`
+## `private void PFootprintRefine()`
 
 Runs before the window is shown, while position and size can still be set.
 The footprint places the stored geometry inside the virtual screen the window reads here.
@@ -125,10 +132,14 @@ A killed process, a launcher window shut and a machine turned off all end withou
 
 The window's restored rectangle, which `RestoreBounds` supplies whenever the window is not normal.
 
-## `private void PWindowExitHandle(object? sender, EventArgs e)`
+## `private void PWindowExitRefine(object? sender, EventArgs e)`
 
-Closes every panel, sweeps the workspace once more, lets the posture go, and lets the engine go.
-Sweeping on the way out as well as on the way in bounds what a long session leaves behind.
+Closes every panel and lets the GUI-only posture go.
+It is subscribed before `PWindowExitObserve`, so every panel stops before the session ends.
+
+## `private void PWindowExitObserve(object? sender, EventArgs e)`
+
+Ends the session through `CAtelierClose`, which sweeps the workspace once more and lets the engine's posture go.
 A copy of the program left open for days would otherwise collect nothing it wrote after it started.
 
 ## Navigation rail
@@ -145,7 +156,7 @@ The navigation also keeps the voyage trail the tabs walk.
 
 ## Inline notes
 
-### `PFootprintRestore();`
+### `PFootprintRefine();`
 
 Geometry is applied before any panel is attached, while the window is still unshown.
 
@@ -156,7 +167,7 @@ The window fills each realized row and registers the row chrome with the look sh
 The list is fed from the window's own collection, and the window's preview keys and deactivation drive the menu.
 The popup itself is declared in the markup beside the panels, once, because the window owns it.
 
-### `_pWindowSurface.Closing += PWindowClosingHandle;`
+### `_pWindowSurface.Closing += PWindowClosingObserve;`
 
 Closing runs while the window is still up and can be called off.
 Closed cannot.

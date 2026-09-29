@@ -16,13 +16,21 @@ The settings pages in the order a view lists them, each with the keys its search
 
 ## `internal CLedger(CAtelier atelier)`
 
-Only the atelier builds it, over its own settings port.
+Only the atelier builds it, once, over its own settings port.
 
-## `public Action CLedgerAttach(Action<CLedgerState> show)`
+## `public event Action<CLedgerState>? CLedgerChanged;`
 
-Hands `show` the whole settings state at once, and again after every settings or workspace bulletin.
-So a view makes one call to open and never asks the engine piece by piece.
-It answers the detach, which stops both subscriptions.
+The whole settings state, raised on every open and after every settings or workspace bulletin.
+A settings view subscribes once and never asks the engine piece by piece.
+
+## `internal void LLedgerAttach()`
+
+Attaches the ledger to the settings and workspace bulletins.
+The workspace calls it on its first open only.
+
+## `internal void LLedgerRaise()`
+
+Reads the whole settings state and raises `CLedgerChanged` with it.
 
 ## `public void CLedgerLocalizationSave(string language)`
 
@@ -44,13 +52,12 @@ Stores whether the morphology lookup is on.
 
 Stores whether transcriptions show respelled.
 
-## `public string? CLedgerNoticeRead(Exception exception)`
+## `public CLedgerNotice CLedgerNoticeRead(Exception exception)`
 
-The reason key of a refusal standing anywhere inside the failure, or nothing for a fault.
-
-## `public string? CLedgerAuditRecord(Exception exception)`
-
-Writes one unexpected fault into the workspace's audit log, and answers the file it went to or nothing.
+The notice a failure shows, ready for a driver to word.
+A refusal shows its own reason, since it is a position the user can act on.
+A fault shows `Notice.Unexpected`, and names its audit file under `Notice.Recorded` when one was written.
+The engine answers in one call with the two keys this read hands down, and the map holds no rule.
 
 ## `public IReadOnlyList<string> CLedgerFind(string text)`
 
@@ -64,7 +71,7 @@ The one-line summary one page shows under its title.
 The Layout page's summary follows `linked`, which the driver hands in since the linked switch is GUI-only state.
 Every other page reads the stored settings.
 
-## `private CLedgerState CLedgerRead()`
+## `private CLedgerState LLedgerRead()`
 
 Builds the state a view shows: the settings, folder, language, texts, language list and pages.
 The texts are loaded first, so every title and summary reads in the stored language.

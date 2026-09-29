@@ -267,16 +267,6 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         _cRepertoire.CRepertoireSituationClose();
     }
 
-    internal bool QRepertoireChangeCheck()
-    {
-        return _cRepertoire.CRepertoireSession.CSessionChangeCheck();
-    }
-
-    internal bool QRepertoireDraftFinish(bool store)
-    {
-        return _cRepertoire.CRepertoireSession.CSessionFinish(store);
-    }
-
     internal void QRepertoireClose()
     {
         QRepertoireEditor.PEditorClose();

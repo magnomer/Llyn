@@ -13,7 +13,7 @@ internal sealed partial class QRepertoire
     {
         QScenarioDesk.CDeskObserverAttach(
             LObserver.LObserverCreate<Action>(static run => run()), QScenarioDraftRestore);
-        QScenarioDesk.CDeskFailed += _qRepertoireHost.PWindowFailureShow;
+        QScenarioDesk.CDeskFailed += _qRepertoireHost.PWindowFailureRefine;
         QScenarioDesk.CDeskRefused += _qRepertoireHost.PWindowEnvoy.CEnvoyFailureShow;
     }
 

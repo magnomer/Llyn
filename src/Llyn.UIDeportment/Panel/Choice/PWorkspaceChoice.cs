@@ -52,7 +52,7 @@ public partial class PSettings
         catch (Exception exception)
         {
             PWorkspacePath.Text = _pSettingsState.CLedgerStatePath;
-            _pSettingsHost.PWindowFailureShow("Workspace.OpenFailed", exception);
+            _pSettingsHost.PWindowFailureRefine("Workspace.OpenFailed", exception);
             return;
         }
 
@@ -65,6 +65,6 @@ public partial class PSettings
         _pSettingsHost.PWindowLayout.PLayoutResetRefine();
         _pSettingsHost.PWindowLayout.PLayoutRefine();
         _pSettingsHost.PWindowForge.QForgeVistaRestore();
-        _pSettingsHost.PWindowViewRestore(state);
+        PSettingsAtelier.CAtelierOpen();
     }
 }

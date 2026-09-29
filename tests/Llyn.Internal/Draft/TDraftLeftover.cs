@@ -143,6 +143,27 @@ public sealed class TDraftLeftover
     }
 
     [Fact]
+    public void WorkspaceStart_BlankDraftNamingNoEntry_SweepsItAndAnswersTheState()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        long blank;
+
+        using (LEngine engine = workspace.TWorkspaceEngineStart())
+        {
+            blank = engine.TEngineDraftStart("Input", null).LDraftId;
+        }
+
+        using LEngine launched = workspace.TWorkspaceEngineStart();
+
+        LWorkspaceState state = launched.TEngineWorkspaceStart();
+
+        Assert.Null(launched.TEngineDraftRead(blank));
+        Assert.Empty(launched.TEngineLeftoverRead());
+        Assert.Equal(launched.TEngineStateRead(), state);
+    }
+
+    [Fact]
     public void LeftoverSweep_ClaimWithoutDraftFile_DropsIt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

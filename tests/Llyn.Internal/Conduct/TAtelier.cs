@@ -166,26 +166,27 @@ public sealed class TAtelier
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspacePrepare();
         using LEngine engine = new(first.TWorkspaceRigCreate(), _ => second.TWorkspaceRigCreate(), _ => { });
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
 
         CWorkspaceState? state = atelier.CAtelierWorkspaceChange(second.TWorkspaceFolder, TAtelierEnvoyCreate(true));
 
-        Assert.Equal(atelier.CAtelierStateRead(), state);
+        Assert.Equal(atelier.TAtelierStateOpen(), state);
     }
 
     [Fact]
-    public void AtelierEstablishmentAttach_Attached_ShowsTheStatusAtOnceAndStopsOnDetach()
+    public void WorkspaceEstablishmentChanged_Opened_ShowsTheStatusAtOnceAndStopsOnDetach()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<CEstablishment> shown = [];
 
-        Action detach = atelier.CAtelierEstablishmentAttach(shown.Add);
-        detach();
+        atelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged += shown.Add;
+        atelier.CAtelierOpen();
+        atelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged -= shown.Add;
         atelier.CAtelierLedger.CLedgerEpithetSave(!engine.TEngineSettingsRead().LSettingsEpithet);
 
-        Assert.Equal([atelier.CAtelierEstablishmentRead()], shown);
+        Assert.Equal([atelier.TAtelierEstablishmentRead()], shown);
     }
 
     [Theory]
@@ -204,7 +205,7 @@ public sealed class TAtelier
                 ["LEngineEstablishmentRead"] = _ => TInterface.TEstablishmentCreate(unsaved, entry, size),
             }));
 
-        CEstablishment establishment = atelier.CAtelierEstablishmentRead();
+        CEstablishment establishment = atelier.TAtelierEstablishmentRead();
 
         Assert.Equal(unsaved, establishment.CEstablishmentUnsaved);
         Assert.Equal(entry, establishment.CEstablishmentEntry);
@@ -231,6 +232,116 @@ public sealed class TAtelier
             atelier.CAtelierScreenRead("https://example.com/reel.mp4"));
         Assert.Null(atelier.CAtelierScreenRead("media/dQw4w9WgXcQ.mp4"));
         Assert.Null(atelier.CAtelierScreenRead(null));
+    }
+
+    [Fact]
+    public void AtelierOpen_Opened_RaisesTheViewsBeforeTheirState()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> heard = [];
+        atelier.CAtelierWorkspace.CWorkspaceOpened += () => heard.Add("Opened");
+        atelier.CAtelierWorkspace.CWorkspaceStateOpened +=
+            state => heard.Add(state == new CWorkspaceState(null, null) ? "Blank" : "Kept");
+
+        atelier.CAtelierOpen();
+
+        Assert.Equal(["Opened", "Blank"], heard);
+    }
+
+    [Fact]
+    public void AtelierOpen_BlankLeftoverDraft_SweepsItBeforeTheViewsRestore()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        long blank;
+        using (LEngine earlier = workspace.TWorkspaceEngineStart())
+        {
+            blank = earlier.TEngineDraftStart("Input", null).LDraftId;
+        }
+
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        bool? swept = null;
+        atelier.CAtelierWorkspace.CWorkspaceOpened += () => swept = engine.TEngineDraftRead(blank) is null;
+
+        atelier.CAtelierOpen();
+
+        Assert.True(swept);
+    }
+
+    [Fact]
+    public void AtelierOpen_Reopened_HearsEachLedgerChangeOnce()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<CLedgerState> shown = [];
+        atelier.CAtelierLedger.CLedgerChanged += shown.Add;
+        atelier.CAtelierOpen();
+        atelier.CAtelierOpen();
+        int opened = shown.Count;
+
+        atelier.CAtelierLedger.CLedgerEpithetSave(!engine.TEngineSettingsRead().LSettingsEpithet);
+
+        Assert.Equal(opened + 1, shown.Count);
+    }
+
+    [Fact]
+    public void AtelierWorkspaceChange_InputHeld_OpenLeavesTheInputOnABlankEntry()
+    {
+        using TWorkspace first = TWorkspace.TWorkspacePrepare();
+        using TWorkspace second = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(first.TWorkspaceRigCreate(), _ => second.TWorkspaceRigCreate(), _ => { });
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CEnvoy envoy = null!;
+        envoy = TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["CEnvoyDiscardConfirm"] = _ => atelier.CAtelierQuitConfirm(envoy),
+            ["CEnvoyLeaveConfirm"] = _ =>
+            {
+                asked.Add("Leave");
+                return false;
+            },
+        });
+        CEditor editor = CEditor.CEditorCreate(atelier, envoy);
+        atelier.CAtelierInputRestore(editor);
+        editor.CEditorEntryOpen(null);
+        editor.CEditorHeadwordSet("water");
+        atelier.CAtelierWorkspace.CWorkspaceOpened += () => editor.CEditorEntryOpen(null);
+
+        Assert.NotNull(atelier.CAtelierWorkspaceChange(second.TWorkspaceFolder, envoy));
+        atelier.CAtelierInputRestore(editor);
+        atelier.CAtelierOpen();
+
+        Assert.Equal(["Leave"], asked);
+        Assert.True(editor.CEditorDesk.CDeskHeld);
+        Assert.False(editor.CEditorDesk.TDeskChangeCheck());
+        Assert.Equal(string.Empty, editor.CEditorDraftRead()?.CEntryDraftHeadword);
+    }
+
+    [Fact]
+    public void AtelierQuitConfirm_InputUnsaved_AsksOnceAndDiscardsEveryArea()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        List<bool> closed = [];
+        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, asked);
+        CEditor editor = CEditor.CEditorCreate(atelier, envoy);
+        atelier.CAtelierInputRestore(editor);
+        editor.CEditorEntryOpen(null);
+        editor.CEditorHeadwordSet("water");
+        atelier.CAtelierWorkspace.TWorkspaceDraftAdd(static () => false, store => { closed.Add(store); return true; });
+
+        bool quit = atelier.CAtelierQuitConfirm(envoy);
+
+        Assert.True(quit);
+        Assert.Equal(["Leave"], asked);
+        Assert.Equal([false], closed);
+        Assert.False(editor.CEditorDesk.CDeskHeld);
     }
 
     private static CEnvoy TAtelierEnvoyCreate(bool discard)

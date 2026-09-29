@@ -33,7 +33,7 @@ public sealed class CAnthology
         _cAnthologyPortraitPort = portraits;
         _cAnthologyDesk = desk;
         CAnthologyPanel = new CPanel(
-            envoy, "Example.LoadFailed", "Example", desk.CDeskChangeCheck, finishSeam, shownSeam);
+            envoy, "Example.LoadFailed", "Example", desk.LDeskChangeCheck, finishSeam, shownSeam);
     }
 
     internal static CAnthology LAnthologyCreate(

@@ -35,15 +35,6 @@ A stored entry re-lists the shelf too, because the citation counts on its rows m
 The offered orders come from `CShelf.CShelfOrderRead`, so the driver lists no order of its own.
 The flags are loaded before the first rows are built, because an entry row reads its flag at construction.
 
-## `internal bool QReferenceChangeCheck()`
-
-Whether either edit area holds modifications that have not been stored, as the shelf reads it.
-
-## `internal bool QReferenceDraftFinish(bool store)`
-
-Ends the draft of the area in front, committing it or discarding it.
-The side verdict picks the editor's or the imprint's finish, and its answer is passed back up.
-
 ## `private void QShelfUpdate()`
 
 Refills the shelf from the rows the shelf reads, spliced so the list keeps its scroll position.
@@ -81,4 +72,3 @@ Steps the navigation's trail back one station.
 ## `private void QReferenceAdvanceHandle(object sender, RoutedEventArgs e)`
 
 Steps the navigation's trail forward one station.
-

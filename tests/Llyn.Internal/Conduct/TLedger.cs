@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Llyn.Conduct;
 using Llyn.Core;
@@ -34,7 +35,7 @@ public sealed class TLedger
     }
 
     [Fact]
-    public void LedgerAttach_Attached_ShowsEveryPageAtOnce()
+    public void LedgerChanged_Opened_ShowsEveryPageAtOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -50,7 +51,7 @@ public sealed class TLedger
     }
 
     [Fact]
-    public void LedgerAttach_WebPage_FormatsTheOnlineTallyOutOfTwo()
+    public void LedgerChanged_WebPage_FormatsTheOnlineTallyOutOfTwo()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -67,7 +68,7 @@ public sealed class TLedger
     }
 
     [Fact]
-    public void LedgerAttach_LayoutPage_LeavesTheSummaryToTheDriver()
+    public void LedgerChanged_LayoutPage_LeavesTheSummaryToTheDriver()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -77,7 +78,7 @@ public sealed class TLedger
     }
 
     [Fact]
-    public void LedgerAttach_EpithetSaved_ShowsAgainWithListingOn()
+    public void LedgerChanged_EpithetSaved_ShowsAgainWithListingOn()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -94,22 +95,23 @@ public sealed class TLedger
     }
 
     [Fact]
-    public void LedgerAttach_Detached_ShowsNothingMore()
+    public void LedgerChanged_Detached_ShowsNothingMore()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<CLedgerState> shown = [];
-        Action detach = atelier.CAtelierLedger.CLedgerAttach(shown.Add);
+        atelier.CAtelierLedger.CLedgerChanged += shown.Add;
+        atelier.CAtelierOpen();
+        atelier.CAtelierLedger.CLedgerChanged -= shown.Add;
 
-        detach();
         atelier.CAtelierLedger.CLedgerEpithetSave(!shown[0].CLedgerStateSettings.CSettingsEpithet);
 
         Assert.Single(shown);
     }
 
     [Fact]
-    public void LedgerAttach_FakePort_ReadsTheNormalisedLanguageAndOnlineCount()
+    public void LedgerChanged_FakePort_ReadsTheNormalisedLanguageAndOnlineCount()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TLedgerPortCreate([]));
@@ -124,7 +126,7 @@ public sealed class TLedger
     }
 
     [Fact]
-    public void LedgerAttach_ScannedLanguage_ReadsItsNativeNameAndAnUnscannedOneItsCode()
+    public void LedgerChanged_ScannedLanguage_ReadsItsNativeNameAndAnUnscannedOneItsCode()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TLedgerPortCreate([]));
@@ -159,10 +161,37 @@ public sealed class TLedger
         Assert.Equal([false, true], saved);
     }
 
+    [Fact]
+    public void LedgerNoticeRead_WrappedRefusal_AnswersItsReasonAlone()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        Exception wrapped = new InvalidOperationException("outer", TInterface.TRefusalCreate(LRefusal.LRefusalStale));
+
+        Assert.Equal(
+            new CLedgerNotice(LRefusal.LRefusalStale, null, null), atelier.CAtelierLedger.CLedgerNoticeRead(wrapped));
+    }
+
+    [Fact]
+    public void LedgerNoticeRead_Fault_AnswersTheUnexpectedKeyAndItsAuditFile()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+
+        CLedgerNotice notice = atelier.CAtelierLedger.CLedgerNoticeRead(new InvalidOperationException("bare"));
+
+        Assert.Equal("Notice.Unexpected", notice.CLedgerNoticeKey);
+        Assert.Equal("Notice.Recorded", notice.CLedgerNoticeLabel);
+        Assert.True(File.Exists(notice.CLedgerNoticePath));
+    }
+
     private static List<CLedgerState> TLedgerShowRead(CAtelier atelier)
     {
         List<CLedgerState> shown = [];
-        atelier.CAtelierLedger.CLedgerAttach(shown.Add);
+        atelier.CAtelierLedger.CLedgerChanged += shown.Add;
+        atelier.CAtelierOpen();
         return shown;
     }
 
@@ -172,6 +201,7 @@ public sealed class TLedger
         answers.TryAdd("LEngineLocalizationLoad", _ => new Dictionary<string, string>());
         answers.TryAdd("LEngineLocalizationScan", _ => new List<string> { "de" });
         answers.TryAdd("LEngineWorkspaceRead", _ => "fake");
+        answers.TryAdd("LEngineWorkspaceStart", _ => TInterface.TWorkspaceStateCreate());
         answers.TryAdd("LEngineWorkspaceFormat", _ => "fake");
         answers.TryAdd("LEngineTextRead", args => (string)args![0]!);
         answers.TryAdd(

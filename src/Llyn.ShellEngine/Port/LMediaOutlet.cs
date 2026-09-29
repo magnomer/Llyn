@@ -42,6 +42,4 @@ public sealed class LMediaOutlet : LMediaPort
 
     public Task<string> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation) =>
         _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingPrepare(recording, cancellation);
-
-    public void LEngineRecordingSweep() => _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingSweep();
 }

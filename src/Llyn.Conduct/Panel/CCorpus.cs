@@ -27,21 +27,21 @@ public sealed class CCorpus
         CCorpusEditor = editor;
         CCorpusDesk = new CDesk(atelier.CAtelierDraftPort, "Example", envoy, "Corpus", CSubject.CSubjectExample);
         CCorpusAnthology = CAnthology.LAnthologyCreate(
-            atelier, CCorpusDesk, shownSeam, envoy, store => CCorpusSession!.CSessionFinish(store));
+            atelier, CCorpusDesk, shownSeam, envoy, store => CCorpusSession!.LSessionFinish(store));
         CCorpusQuotation = new CQuotation(
             atelier.CAtelierEntryPort,
             atelier.CAtelierPortraitPort,
             envoy,
-            editor.CEditorDesk.CDeskChangeCheck,
-            store => CCorpusSession!.CSessionFinish(store),
+            editor.CEditorDesk.LDeskChangeCheck,
+            store => CCorpusSession!.LSessionFinish(store),
             shownSeam);
         CCorpusAnthology.CAnthologyPanel.CPanelRowsChanged += CCorpusQuotation.CQuotationPanel.CPanelRowsResonate;
         CCorpusSession = new CSession(
             CCorpusDesk,
-            [CCorpusQuotation.CQuotationPanel.CPanelChangeCheck, CCorpusAnthology.CAnthologyPanel.CPanelChangeCheck],
+            [CCorpusQuotation.CQuotationPanel.LPanelChangeCheck, CCorpusAnthology.CAnthologyPanel.LPanelChangeCheck],
             editor.CEditorDesk,
             () => CCorpusQuotation.CQuotationPanel.CPanelEditing,
-            editor.CEditorFinish,
+            editor.LEditorFinish,
             static () => true,
             LCorpusStoredShow);
         CCorpusSession.CSessionHeld += () => CCorpusTranscriptChanged?.Invoke(CCorpusTranscriptRead());
@@ -59,6 +59,7 @@ public sealed class CCorpus
             CCorpusAnthology.CAnthologyPanel.LPanelChosenRead,
             CCorpusAnthology.CAnthologyPanel.LPanelScribeRestore,
             LCorpusExampleOpen);
+        atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CCorpusSession.LSessionChangeCheck, CCorpusSession.LSessionFinish);
     }
 
     public static CCorpus CCorpusCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
@@ -298,7 +299,7 @@ public sealed class CCorpus
 
     private bool LCorpusLeaveConfirm(bool shown)
     {
-        if (!CCorpusSession.CSessionChangeCheck())
+        if (!CCorpusSession.LSessionChangeCheck())
         {
             return true;
         }
@@ -313,7 +314,7 @@ public sealed class CCorpus
             return true;
         }
 
-        return shown ? CCorpusSession.CSessionFinish(true) : CCorpusSession.CSessionClose(true);
+        return shown ? CCorpusSession.LSessionFinish(true) : CCorpusSession.CSessionClose(true);
     }
 
     public void CCorpusEntryResonate()

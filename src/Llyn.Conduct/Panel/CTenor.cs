@@ -39,8 +39,8 @@ public sealed class CTenor
             envoy,
             "Register.LoadFailed",
             "Scribe",
-            editor.CEditorDesk.CDeskChangeCheck,
-            editor.CEditorFinish,
+            editor.CEditorDesk.LDeskChangeCheck,
+            editor.LEditorFinish,
             shownSeam);
         CTenorPanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         CTenorPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
@@ -50,6 +50,7 @@ public sealed class CTenor
             () => LTenorChosen ?? 0,
             CTenorPanel.LPanelScribeRestore,
             LTenorRegisterOpen);
+        atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CTenorPanel.LPanelChangeCheck, editor.LEditorFinish);
     }
 
     public static CTenor CTenorCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)

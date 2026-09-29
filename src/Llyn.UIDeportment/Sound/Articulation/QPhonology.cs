@@ -222,16 +222,6 @@ internal sealed class QPhonology
         _cPhonology.CPhonologyPanel.CPanelEntryClose();
     }
 
-    internal bool QPhonologyDraftFinish(bool store)
-    {
-        return QPhonologyEditor.PEditorDraftFinish(store);
-    }
-
-    internal bool QPhonologyChangeCheck()
-    {
-        return _cPhonology.CPhonologyPanel.CPanelChangeCheck();
-    }
-
     private bool QPhonologyShownCheck()
     {
         return _qPhonologySurface.IsVisible;

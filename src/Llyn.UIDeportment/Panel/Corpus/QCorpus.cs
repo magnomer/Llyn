@@ -286,16 +286,6 @@ internal sealed partial class QCorpus : QChronicleHost
         _cCorpus.CCorpusExampleClose();
     }
 
-    internal bool QCorpusChangeCheck()
-    {
-        return _cCorpus.CCorpusSession.CSessionChangeCheck();
-    }
-
-    internal bool QCorpusDraftFinish(bool store)
-    {
-        return _cCorpus.CCorpusSession.CSessionFinish(store);
-    }
-
     internal void QCorpusClose()
     {
         QCorpusEditor.PEditorClose();

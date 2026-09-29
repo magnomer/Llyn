@@ -87,4 +87,3 @@ Walks the chronicle of the editor forward one step.
 
 Lights the two chronicle buttons only while the editor has a step to walk.
 It runs whenever the editor reports its state again.
-

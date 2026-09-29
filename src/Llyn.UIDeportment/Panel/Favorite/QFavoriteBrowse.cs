@@ -92,7 +92,7 @@ internal sealed partial class QFavorite
         }
         catch (Exception exception)
         {
-            _qFavoriteHost.PWindowFailureShow("Favorite.LoadFailed", exception);
+            _qFavoriteHost.PWindowFailureRefine("Favorite.LoadFailed", exception);
             favorites = [];
         }
 

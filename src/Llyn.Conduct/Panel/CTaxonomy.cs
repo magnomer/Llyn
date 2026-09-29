@@ -36,7 +36,7 @@ public sealed class CTaxonomy
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CTaxonomyEditor = editor;
         CTaxonomyPanel = new CPanel(
-            envoy, "Tag.LoadFailed", "Scribe", editor.CEditorDesk.CDeskChangeCheck, editor.CEditorFinish, shownSeam);
+            envoy, "Tag.LoadFailed", "Scribe", editor.CEditorDesk.LDeskChangeCheck, editor.LEditorFinish, shownSeam);
         CTaxonomyPanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         CTaxonomyPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         atelier.CAtelierNavigation.LNavigationTabAdd(
@@ -45,6 +45,7 @@ public sealed class CTaxonomy
             () => LTaxonomyChosen ?? 0,
             CTaxonomyPanel.LPanelScribeRestore,
             LTaxonomyTagOpen);
+        atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CTaxonomyPanel.LPanelChangeCheck, editor.LEditorFinish);
     }
 
     public static CTaxonomy CTaxonomyCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
