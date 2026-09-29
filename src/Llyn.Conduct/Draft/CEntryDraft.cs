@@ -9,7 +9,6 @@ public sealed record CEntryDraft(
     string CEntryDraftAudio,
     CPronunciationDraft? CEntryDraftPronunciation,
     IReadOnlyList<CPronunciationDraft> CEntryDraftAccents,
-    IReadOnlyList<CSpeechDraft> CEntryDraftSpeeches,
     IReadOnlyList<CCardDraft> CEntryDraftMeanings,
     IReadOnlyList<CCardDraft> CEntryDraftCollocations,
     IReadOnlyList<CTranscriptionDraft> CEntryDraftTranscriptions,

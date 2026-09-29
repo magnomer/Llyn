@@ -41,7 +41,7 @@ A transcription search returns untagged readings, so no flag would ever be drawn
 A reading's flag is then ready the moment the reading lands.
 A menu closed while the flags loaded starts no search.
 
-### `_lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandTranscriptionStart(`
+### `_qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandTranscriptionStart(`
 
 The tenure starts the search and the menu listens through the wrapped delegate.
 The delegate hands each step back to the errand on the menu's thread, which raises one event per step.
@@ -97,7 +97,7 @@ It says what it is doing, or that there was nothing to find.
 With rows on screen it says nothing.
 The scheme names which empty notice, and comes from the opening before a foray exists and from the foray after.
 
-### `private void PNotationCandidateHandle(CCandidate candidate)`
+### `internal void PNotationCandidateHandle(CCandidate candidate)`
 
 Each source answers exactly once here, whether it found a reading or not.
 The row is resolved in place rather than replaced, so it never jumps under the pointer.

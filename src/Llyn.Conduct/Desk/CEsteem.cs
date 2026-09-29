@@ -21,6 +21,8 @@ public sealed class CEsteem
 
     public event Action? CEsteemGraspChanged;
 
+    public event Action? CEsteemFrequencyChanged;
+
     public bool CEsteemFavorite => _cEsteemDisplay.LDisplayFavoriteRead(LEsteemEntry);
 
     public int CEsteemGrasp => _cEsteemDisplay.LDisplayGraspRead(LEsteemEntry);
@@ -28,6 +30,14 @@ public sealed class CEsteem
     public int CEsteemGraspStep => _cEsteemDisplay.LDisplayGraspStep;
 
     private long? LEsteemEntry => _cEsteemDesk.CDeskStoredRead();
+
+    internal void LEsteemObserverAttach(Action<Action> marshal)
+    {
+        _cEsteemDesk.CDeskVigil.LVigilEntryAttach(
+            CSubject.CSubjectFrequency, _ => marshal(() => CEsteemFrequencyChanged?.Invoke()));
+        _cEsteemDesk.CDeskVigil.LVigilEntryAttach(
+            CSubject.CSubjectGrasp, _ => marshal(() => CEsteemGraspChanged?.Invoke()));
+    }
 
     public void CEsteemFavoriteSet(bool marked)
     {

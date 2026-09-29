@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using Llyn.Application;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -33,8 +30,9 @@ public partial class PEditor
         QLookItem.QLookItemAttach(PMarkerList, PMarkerApply);
         PMarker.SizeChanged += (_, e) => PMarkerList.MaxWidth = e.NewSize.Width;
         PMarkerField.SetResourceReference(QField.QFieldHintProperty, "Speech.Title");
-        PMarkerField.KeyDown += PMarkerFieldHandle;
-        PMarkerField.TextChanged += PMarkerTextHandle;
+        PMarkerField.KeyDown += PMarkerCloseRefine;
+        PMarkerField.KeyDown += PMarkerCommitObserve;
+        PMarkerField.TextChanged += PMarkerTextObserve;
         PMarkerIcon.QIconSource = QIcon.QIconResolve("expand", 12);
     }
 
@@ -57,96 +55,56 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Button>(container, "PMarkerEraser") is Button eraser)
         {
-            eraser.Click -= _pMarkerTemplate.PMarkerChipHandle;
-            eraser.Click += _pMarkerTemplate.PMarkerChipHandle;
+            eraser.Click -= PMarkerEraseObserve;
+            eraser.Click += PMarkerEraseObserve;
         }
     }
 
     private readonly ObservableCollection<PMarkerChip> _pMarkerChip = [];
 
-    internal void PMarkerChipHandle(object sender, RoutedEventArgs e)
+    private void PMarkerEraseObserve(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PMarkerChip chip })
         {
-            _pMarkerChip.Remove(chip);
-            PCategoryUpdate();
-            PEditorSpeechSend();
+            _qEditor.QEditorArea.CEditorSpeech.CCardSpeechRemove(chip.PMarkerChipName);
         }
     }
 
-    private void PMarkerFieldHandle(object sender, KeyEventArgs e)
+    private void PMarkerCloseRefine(object sender, KeyEventArgs e)
     {
         if (e.Key == Key.Escape)
         {
             PMarkerSwitch.IsChecked = false;
             e.Handled = true;
-            return;
         }
+    }
 
+    private void PMarkerCommitObserve(object sender, KeyEventArgs e)
+    {
         if (e.Key != Key.Enter)
         {
             return;
         }
 
-        PMarkerAdd(PMarkerField.Text ?? string.Empty);
+        _qEditor.QEditorArea.CEditorSpeech.CCardSpeechAdd(PMarkerField.Text);
         e.Handled = true;
+        PMarkerFieldRefine();
     }
 
-    private void PMarkerTextHandle(object sender, TextChangedEventArgs e)
+    private void PMarkerTextObserve(object sender, TextChangedEventArgs e)
     {
-        if (_lEditor.LEditorStudio.CEditorDesk.CDeskFilling)
-        {
-            return;
-        }
+        PMarkerDropperRefine(_qEditor.QEditorArea.CEditorSpeech.CCardSpeechSet(PMarkerField.Text));
+    }
 
+    private void PMarkerDropperRefine(bool offered)
+    {
         PCategoryUpdate();
-        _lEditor.LEditorTenure?.LTenureSpeechSet(PMarkerRead(), true);
-
-        string typed = (PMarkerField.Text ?? string.Empty).Trim();
-        PMarkerSwitch.IsChecked = typed.Length > 0 && _pCategoryItem.Count > 0;
+        PMarkerSwitch.IsChecked = offered && _pCategoryItem.Count > 0;
     }
 
-    private void PMarkerAdd(string name)
+    private void PMarkerFieldRefine()
     {
-        string typed = name.Trim();
         PMarkerField.Text = string.Empty;
-
-        if (typed.Length == 0)
-        {
-            return;
-        }
-
-        if (!PMarkerFind(typed))
-        {
-            CSpeechValue? value = PCategoryAdd(typed);
-            _pMarkerChip.Add(value is null
-                ? new PMarkerChip(0, typed)
-                : new PMarkerChip(value.CSpeechValueId, value.CSpeechValueName));
-        }
-
-        PCategoryUpdate();
-        PEditorSpeechSend();
-    }
-
-    private bool PMarkerMatch(IReadOnlyList<CSpeechDraft> speeches)
-    {
-        IReadOnlyList<LSpeechDraft> shown = PMarkerRead();
-        if (shown.Count != speeches.Count)
-        {
-            return false;
-        }
-
-        for (int index = 0; index < shown.Count; index++)
-        {
-            if (shown[index].LSpeechDraftValue != speeches[index].CSpeechDraftValue
-                || !string.Equals(
-                    shown[index].LSpeechDraftName, speeches[index].CSpeechDraftName, StringComparison.Ordinal))
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private bool PMarkerFind(string name)
@@ -162,43 +120,16 @@ public partial class PEditor
         return false;
     }
 
-    private IReadOnlyList<LSpeechDraft> PMarkerRead()
+    internal void PMarkerRefine(CEntryDraft _)
     {
-        List<LSpeechDraft> drafts = new(_pMarkerChip.Count + 1);
-        foreach (PMarkerChip chip in _pMarkerChip)
-        {
-            drafts.Add(chip.PMarkerChipValue > 0
-                ? LSpeechDraft.LSpeechDraftCreate(chip.PMarkerChipValue, chip.PMarkerChipName)
-                : LSpeechDraft.LSpeechDraftCreate(chip.PMarkerChipName));
-        }
-
-        string typed = (PMarkerField.Text ?? string.Empty).Trim();
-        if (typed.Length > 0 && !PMarkerFind(typed))
-        {
-            drafts.Add(LSpeechDraft.LSpeechDraftCreate(typed));
-        }
-
-        return drafts;
-    }
-
-    private void PMarkerShow(IReadOnlyList<CSpeechDraft> speeches)
-    {
-        if (PMarkerMatch(speeches))
-        {
-            return;
-        }
-
+        CMarker marker = _qEditor.QEditorArea.CEditorSpeech.CCardSpeechRead();
         _pMarkerChip.Clear();
-        PMarkerField.Text = string.Empty;
-
-        foreach (CSpeechDraft speech in speeches)
+        foreach (string speech in marker.CMarkerSpeeches)
         {
-            string name = speech.CSpeechDraftName.Trim();
-            if (name.Length > 0 && !PMarkerFind(name))
-            {
-                _pMarkerChip.Add(new PMarkerChip(speech.CSpeechDraftValue, name));
-            }
+            _pMarkerChip.Add(new PMarkerChip(speech));
         }
+
+        QField.QFieldTextShow(PMarkerField, marker.CMarkerTyped);
 
         PCategoryUpdate();
     }

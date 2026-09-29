@@ -135,9 +135,6 @@ public sealed class LPhonologyOutlet : LPhonologyPort
     public IReadOnlyList<LSpeechValue> LEngineSpeechRead(string language) =>
         _lPhonologyOutletEngine.LEngineVocabulary.LEngineSpeechRead(language);
 
-    public LSpeechValue? LEngineSpeechAdd(string language, string name) =>
-        _lPhonologyOutletEngine.LEngineVocabulary.LEngineSpeechAdd(language, name);
-
     public IReadOnlyList<string> LEngineDependenceRead(string language) =>
         _lPhonologyOutletEngine.LEngineVocabulary.LEngineDependenceRead(language);
 

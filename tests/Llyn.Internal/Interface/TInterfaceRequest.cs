@@ -59,6 +59,12 @@ internal static partial class TInterface
     internal static LRequest TMentionRemovalCreate(long draftId, long cardId, long sentenceId, long mentionId) =>
         new LRequestMentionRemoval(draftId, cardId, sentenceId, mentionId);
 
+    internal static LRequest TImageAdditionCreate(long draftId, long cardId, int position) =>
+        new LRequestImageAddition(draftId, cardId, LStateWritten.LStateWrittenEmpty, position);
+
+    internal static LRequest TVideoAdditionCreate(long draftId, long cardId, int position) =>
+        new LRequestVideoAddition(draftId, cardId, LStateWritten.LStateWrittenEmpty, position);
+
     internal static LRequest TGlossAdditionCreate(
         long draftId, long cardId, long sentenceId, string language, int position) =>
         new LRequestGlossAddition(draftId, cardId, sentenceId, language, position);

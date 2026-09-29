@@ -34,7 +34,6 @@ internal sealed partial class QRepertoire
     {
         CPanel atlas = _cRepertoire.CRepertoireAtlas.CAtlasPanel;
         QRepertoireObserverAttach();
-        QRepertoireEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
             QTierList,
             "Tier",

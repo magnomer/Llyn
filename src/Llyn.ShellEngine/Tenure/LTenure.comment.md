@@ -132,11 +132,6 @@ Defers the note without the trailing line breaks a text box carries.
 Sends the chosen language at once.
 An empty choice changes nothing.
 
-## `public void LTenureSpeechSet(IReadOnlyList<LSpeechDraft> speeches, bool deferred)`
-
-Replaces the parts of speech as a whole list.
-Typing defers it, and a chip click sends it at once.
-
 ## `public void LTenureTagAdd(long tag)`
 
 Links a stored tag to the first card at once, as a panel seeding a fresh draft does.

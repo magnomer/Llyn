@@ -2,13 +2,10 @@ namespace Llyn.UIDeportment;
 
 internal sealed class PMarkerChip
 {
-    internal PMarkerChip(long valueId, string name)
+    internal PMarkerChip(string name)
     {
-        PMarkerChipValue = valueId;
         PMarkerChipName = name;
     }
-
-    public long PMarkerChipValue { get; }
 
     public string PMarkerChipName { get; }
 }

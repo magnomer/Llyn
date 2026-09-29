@@ -227,8 +227,7 @@ internal sealed partial class QCorpus : QChronicleHost
     {
         _qCorpusHost = host;
         _cCorpus = host.PWindowForge.QForgeCorpusCreate(QCorpusShownCheck, host.PWindowEnvoy);
-        LEditor editor = new(_cCorpus.CCorpusEditor);
-        QLectern lectern = new(editor.LEditorStudio.CEditorDisplay, _cCorpus.CCorpusQuotation.CQuotationPanel);
+        QLectern lectern = new(_cCorpus.CCorpusEditor.CEditorDisplay, _cCorpus.CCorpusQuotation.CQuotationPanel);
         _qCorpusDesk = _cCorpus.CCorpusDesk;
         QTranscriptDeskAttach();
 
@@ -243,7 +242,7 @@ internal sealed partial class QCorpus : QChronicleHost
         QLookItem.QLookItemAttach(QExcerptGloss, PGloss.PGlossRowApply);
 
         QCorpusDisplay.PDisplayAttach(host, lectern);
-        QCorpusEditor.PEditorAttach(host, editor);
+        QCorpusEditor.PEditorIntroduce(host, new QEditor(_cCorpus.CCorpusEditor));
 
         CPanel anthology = _cCorpus.CCorpusAnthology.CAnthologyPanel;
         CPanel quotation = _cCorpus.CCorpusQuotation.CQuotationPanel;

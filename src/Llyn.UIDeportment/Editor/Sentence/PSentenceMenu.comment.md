@@ -19,10 +19,11 @@ Switching language redraws every row rather than leaving one language's order ov
 
 Reads every Source the workspace holds, with its byline, into the list the form offers.
 It then has every row read the byline of the Source it cites again.
-It runs again whenever the engine reports a Source changed, so a byline edited elsewhere is never stale here.
+It answers each opened workspace and every reference change the sentence area raises.
+So a byline edited elsewhere is never stale here.
 A workspace that cannot be read leaves the list empty rather than failing the form.
 
-## `internal void PSentenceFrameRefine()`
+## `internal void PSentenceFrameRefine(CEntryDraft _)`
 
 Paints the Example frame the sentence gate answers for the held draft's language.
 The two lists are refilled, and every row on the form takes the word order.

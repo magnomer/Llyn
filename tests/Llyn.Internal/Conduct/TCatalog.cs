@@ -111,20 +111,6 @@ public sealed class TCatalog
     }
 
     [Fact]
-    public void CatalogSpeechAdd_EngineDeclines_ReadsNothing()
-    {
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
-            engine,
-            new Dictionary<string, Func<object?[]?, object?>>
-            {
-                ["LEngineSpeechAdd"] = _ => null,
-            });
-
-        Assert.Null(atelier.CAtelierCatalog.CCatalogSpeechAdd("English", "Noun"));
-    }
-
-    [Fact]
     public void CatalogSpeechRead_Values_ReadsIdAndName()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());

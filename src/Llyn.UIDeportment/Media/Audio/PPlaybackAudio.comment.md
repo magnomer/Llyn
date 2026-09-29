@@ -34,7 +34,7 @@ A drag that wrote on every step would put a file write behind every pixel of it.
 
 ## `internal void PVolumeLoad()`
 
-Puts the workspace's volume on the grip and on the form's player when the form is attached.
+Puts the workspace's volume on the grip and on the form's player each time a workspace opens.
 
 ## `private void PPlaybackTrayShow()`
 

@@ -110,7 +110,7 @@ The engine writes the document from stored rows.
 
 ## Inline notes
 
-### `QLibraryEditor.PEditorAttach(host, _lEditor);`
+### `QLibraryEditor.PEditorIntroduce(host, new QEditor(_cLibrary.CLibraryEditor));`
 
 The editor opens on no entry, and this panel puts it on one when the reader asks to write.
 The editor deportment was made for this panel, so its held work is told apart from the input panel's.

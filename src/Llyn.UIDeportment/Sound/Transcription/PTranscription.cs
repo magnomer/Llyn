@@ -170,7 +170,7 @@ public partial class PEditor
             new LRequestTranscriptionText(PEditorDraft, row.QTranscriptionItemId, row.QTranscriptionItemText));
     }
 
-    private void PTranscriptionShow(CEntryDraft draft)
+    internal void PTranscriptionShow(CEntryDraft draft)
     {
         _pTranscriptionSchemes =
             _pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogSchemeRead(draft.CEntryDraftLanguage);
@@ -187,7 +187,7 @@ public partial class PEditor
         foreach (QTranscriptionItem row in _pTranscriptionItem)
         {
             row.QTranscriptionSchemeRefine(
-                _lEditor.LEditorStudio.CEditorSounding.CSoundingSchemeRead(row.QTranscriptionItemId));
+                _qEditor.QEditorArea.CEditorSounding.CSoundingSchemeRead(row.QTranscriptionItemId));
         }
     }
 

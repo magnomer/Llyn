@@ -2,19 +2,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Application;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
 public partial class PEditor
 {
-    private void PCardShow(
-        ObservableCollection<PCard> cards,
-        string prefix,
-        IReadOnlyList<CCardDraft> drafts,
-        IReadOnlyDictionary<long, CTranslationTarget> targets)
+    private void PCardShow(ObservableCollection<PCard> cards, string prefix, IReadOnlyList<CCardDraft> drafts)
     {
         List<PCard> shown = new(drafts.Count);
         foreach (CCardDraft draft in drafts)
@@ -27,7 +21,7 @@ public partial class PEditor
             }
 
             PCardTextShow(card, draft);
-            PCardListShow(card, draft, targets);
+            PCardListShow(card, draft);
             card.PCardPosition = draft.CCardDraftPosition;
             shown.Add(card);
         }
@@ -79,13 +73,13 @@ public partial class PEditor
         return card;
     }
 
-    private void PCardListShow(PCard card, CCardDraft draft, IReadOnlyDictionary<long, CTranslationTarget> targets)
+    private void PCardListShow(PCard card, CCardDraft draft)
     {
         card.PCardSentenceShow(draft.CCardDraftSentence, _pSentenceOrder);
         PSentenceMentionShow(card);
         card.PCardContextShow(draft.CCardDraftSituation);
         card.PCardRegisterShow(draft.CCardDraftRegister);
-        card.PCardLinkShow(PCardTargetRead(targets, draft.CCardDraftTranslation));
+        card.PCardLinkShow(_qEditor.QEditorArea.CEditorField.CCardTranslationRead(draft.CCardDraftId));
         card.PCardLabelShow(draft.CCardDraftTag);
         card.PCardImageShow(draft.CCardDraftImage);
         card.PCardVideoShow(draft.CCardDraftVideo);
@@ -104,22 +98,7 @@ public partial class PEditor
         return null;
     }
 
-    private static IReadOnlyList<CTranslationTarget> PCardTargetRead(
-        IReadOnlyDictionary<long, CTranslationTarget> targets, IReadOnlyList<long> ids)
-    {
-        List<CTranslationTarget> found = [];
-        foreach (long id in ids)
-        {
-            if (targets.GetValueOrDefault(id) is CTranslationTarget target)
-            {
-                found.Add(target);
-            }
-        }
-
-        return found;
-    }
-
-    private void PEditorFieldHandle(TextBox box)
+    private void PEditorFieldObserve(TextBox box)
     {
         UIElement owner = box.TemplatedParent as ComboBox ?? (UIElement)box;
         if (!owner.IsKeyboardFocusWithin)
@@ -128,46 +107,50 @@ public partial class PEditor
         }
 
         string field = QField.QFieldPathRead(box);
-        LStateWritten written = new(box.Text);
         switch (box.DataContext)
         {
+            case PCard card when field == nameof(PCard.PCardPositionText):
+                PCardPositionRefine(card, box.Text);
+                break;
             case PCard card:
-                PCardChangeHandle(card, field, written);
+                PCardFieldObserve(card, field, box.Text);
                 break;
             case PSentence row when PCardSentenceFind(row) is PCard card:
                 PSentenceFieldObserve(card, row, field, box);
                 break;
             case PGloss gloss:
-                PGlossChangeHandle(gloss, written);
+                PGlossTextObserve(gloss, box.Text);
                 break;
             case PImage row:
-                PEditorRequestDefer(new LRequestImageLocation(PEditorDraft, row.PImageId, written));
+                _qEditor.QEditorArea.CEditorImage.CImageLocationSet(row.PImageId, box.Text);
                 break;
             case PVideo row when box.Name == nameof(PVideo.PVideoLocation):
-                PEditorRequestDefer(new LRequestVideoLocation(PEditorDraft, row.PVideoId, written));
+                _qEditor.QEditorArea.CEditorVideo.CVideoLocationSet(row.PVideoId, box.Text);
                 break;
             case PVideo row:
-                PEditorRequestDefer(new LRequestVideoSpan(PEditorDraft, row.PVideoId, written));
+                _qEditor.QEditorArea.CEditorVideo.CVideoSpanSet(row.PVideoId, box.Text);
                 break;
         }
     }
 
-    private void PCardChangeHandle(PCard card, string field, LStateWritten written)
+    private void PCardFieldObserve(PCard card, string field, string text)
     {
         switch (field)
         {
             case nameof(PCard.PTitle):
-                PEditorRequestDefer(new LRequestCardTitle(PEditorDraft, card.PCardId, written));
+                _qEditor.QEditorArea.CEditorField.CCardTitleSet(card.PCardId, text);
                 break;
             case nameof(PCard.PCardExpression):
-                PEditorRequestDefer(new LRequestCardExpression(PEditorDraft, card.PCardId, written));
+                _qEditor.QEditorArea.CEditorField.CCardExpressionSet(card.PCardId, text);
                 break;
             case nameof(PCard.PCardDefinition):
-                PEditorRequestDefer(new LRequestCardMeaning(PEditorDraft, card.PCardId, written));
-                break;
-            case nameof(PCard.PCardPositionText):
-                card.PCardPositionText = written.LStateWrittenText ?? string.Empty;
+                _qEditor.QEditorArea.CEditorField.CCardMeaningSet(card.PCardId, text);
                 break;
         }
+    }
+
+    private static void PCardPositionRefine(PCard card, string text)
+    {
+        card.PCardPositionText = text;
     }
 }

@@ -37,9 +37,6 @@ internal static class CFolio
                 ? CSounding.CSoundingPronunciationRead(spoken)
                 : null,
             CSounding.CSoundingPronunciationRead(draft.LEntryDraftAccents),
-            draft.LEntryDraftSpeeches
-                .Select(static speech => new CSpeechDraft(speech.LSpeechDraftValue, speech.LSpeechDraftName))
-                .ToList(),
             CFolioSheetRead(draft.LEntryDraftMeanings),
             CFolioSheetRead(draft.LEntryDraftCollocations),
             CSounding.CSoundingTranscriptionRead(draft.LEntryDraftTranscriptions),
@@ -78,7 +75,6 @@ internal static class CFolio
                     .Select(static row => new CRegisterDraft(
                         row.LRegisterDraftId, CFolioStateRead(row.LRegisterDraftName)))
                     .ToList(),
-                card.LCardDraftTranslation,
                 card.LCardDraftTag.Select(static row => new CTagDraft(row.LTagDraftId, row.LTagDraftText)).ToList(),
                 CFolioImageRead(card.LCardDraftImage),
                 CFolioVideoRead(card.LCardDraftVideo)))

@@ -91,14 +91,6 @@ It shows with a narrative that holds words or with a link whose entry still stan
 
 The targets of the draft's link ids, so a card resolves its chips in one read.
 
-## `public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId)`
-
-The targets the held draft `ownerId` names, or nothing while the draft targets no entry.
-
-## `public IReadOnlyDictionary<long, LTranslationTarget> LEngineTargetFind(long ownerId)`
-
-The held draft's targets keyed by id, so a card can find its own without a scan.
-
 ## `public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId, IReadOnlyList<long> ids)`
 
 The targets of `ids` as the draft `ownerId` sees them.

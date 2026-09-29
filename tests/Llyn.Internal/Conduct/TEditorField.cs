@@ -1,0 +1,206 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Llyn.Conduct;
+using Llyn.Core;
+using Llyn.ShellEngine;
+using Xunit;
+
+namespace Llyn.Tests;
+
+public sealed class TEditorField
+{
+    [Fact]
+    public void CardFieldSet_TypedTexts_WritesTitleExpressionAndDefinition()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TEditorFieldPrepare(engine);
+        long sheet = TEditorSheetAdd(editor);
+
+        editor.CEditorField.CCardTitleSet(sheet, "Heat");
+        editor.CEditorField.CCardExpressionSet(sheet, "on fire");
+        editor.CEditorField.CCardMeaningSet(sheet, "burning");
+        editor.CEditorDesk.CDeskPersist();
+
+        CCardDraft card = editor.CEditorDraftRead()!.CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
+        Assert.Equal("Heat", card.CCardDraftTitle.CStateValueShown);
+        Assert.Equal("on fire", card.CCardDraftExpression.CStateValueShown);
+        Assert.Equal("burning", card.CCardDraftMeaning.CStateValueShown);
+    }
+
+    [Fact]
+    public void TranslationRead_LinkedEntries_AnswersThemInTheCardsOrder()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long chat = engine.TEngineTranslationCreate("chat", "French").LEntryId;
+        long gato = engine.TEngineTranslationCreate("gato", "Spanish").LEntryId;
+        CEditor editor = TEditorFieldPrepare(engine);
+        long sheet = TEditorSheetAdd(editor);
+        editor.CEditorCard.CCardTranslationInsert(sheet, gato, 0);
+        editor.CEditorCard.CCardTranslationInsert(sheet, chat, 0);
+
+        IReadOnlyList<CTranslationTarget> targets = editor.CEditorField.CCardTranslationRead(sheet);
+
+        Assert.Equal(["chat", "gato"], targets.Select(static target => target.CTranslationTargetHeadword));
+        Assert.Empty(editor.CEditorField.CCardTranslationRead(987654));
+    }
+
+    [Fact]
+    public void TranslationRead_EmptyDesk_ReadsNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+
+        Assert.Empty(editor.CEditorField.CCardTranslationRead(1));
+    }
+
+    [Fact]
+    public void ImageLocationSet_TypedLocation_WritesTheRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TEditorFieldPrepare(engine);
+        long sheet = TEditorSheetAdd(editor);
+        editor.CEditorDesk.TDeskDefer(TInterface.TImageAdditionCreate(editor.CEditorDesk.CDeskId, sheet, 0));
+        long image = TEditorCardRead(editor, sheet).CCardDraftImage[0].CImageDraftId;
+
+        editor.CEditorImage.CImageLocationSet(image, "cat.png");
+        editor.CEditorDesk.CDeskPersist();
+
+        Assert.Equal("cat.png", TEditorCardRead(editor, sheet).CCardDraftImage[0].CImageDraftLocation.CStateValueShown);
+    }
+
+    [Fact]
+    public void VideoSet_TypedLocationAndSpan_WritesTheRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TEditorFieldPrepare(engine);
+        long sheet = TEditorSheetAdd(editor);
+        editor.CEditorDesk.TDeskDefer(TInterface.TVideoAdditionCreate(editor.CEditorDesk.CDeskId, sheet, 0));
+        long video = TEditorCardRead(editor, sheet).CCardDraftVideo[0].CVideoDraftId;
+
+        editor.CEditorVideo.CVideoLocationSet(video, "cat.mp4");
+        editor.CEditorVideo.CVideoSpanSet(video, "0:01-0:03");
+        editor.CEditorDesk.CDeskPersist();
+
+        CVideoDraft row = TEditorCardRead(editor, sheet).CCardDraftVideo[0];
+        Assert.Equal("cat.mp4", row.CVideoDraftLocation.CStateValueShown);
+        Assert.Equal("0:01-0:03", row.CVideoDraftSpan.CStateValueShown);
+    }
+
+    [Fact]
+    public void GlossSet_TypedText_WritesTheGloss()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TEditorFieldPrepare(engine);
+        long sheet = TEditorSheetAdd(editor);
+        long draft = editor.CEditorDesk.CDeskId;
+        editor.CEditorDesk.TDeskDefer(TInterface.TSentenceAdditionCreate(draft, sheet, 0));
+        long sentence = TEditorCardRead(editor, sheet).CCardDraftSentence[0].CSentenceDraftId;
+        editor.CEditorSentence.CSentenceTextSet(sheet, sentence, "the cat sat");
+        editor.CEditorDesk.CDeskPersist();
+        editor.CEditorDesk.TDeskDefer(TInterface.TGlossAdditionCreate(draft, sheet, sentence, "French", 0));
+        long gloss = TEditorCardRead(editor, sheet).CCardDraftSentence[0].CSentenceDraftExample!
+            .CExampleDraftGloss[0].CGlossDraftId;
+
+        editor.CEditorSentence.CSentenceGlossSet(sheet, sentence, gloss, "le chat");
+        editor.CEditorDesk.CDeskPersist();
+
+        Assert.Equal(
+            "le chat",
+            TEditorCardRead(editor, sheet).CCardDraftSentence[0].CSentenceDraftExample!
+                .CExampleDraftGloss[0].CGlossDraftText.CStateValueShown);
+    }
+
+    [Fact]
+    public void EditorClose_HeldDraftAndSearch_LetsBothGo()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TEditorFieldPrepare(engine);
+        editor.CEditorHeadwordSet("water");
+        editor.CEditorDesk.CDeskErrand.CErrandRecordingStart("water", 0, static _ => { });
+
+        editor.CEditorClose();
+
+        Assert.False(editor.CEditorDesk.CDeskHeld);
+        Assert.False(editor.CEditorDesk.CDeskErrand.CErrandRecordingHeld);
+        Assert.Null(editor.CEditorEntry);
+        Assert.Equal(string.Empty, editor.CEditorLanguage);
+    }
+
+    [Fact]
+    public void EditorLanguage_HeldDraft_ReadsTheDraftsLanguage()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TEditorFieldPrepare(engine);
+
+        editor.CEditorLanguageSet("English");
+
+        Assert.Equal("English", editor.CEditorLanguage);
+    }
+
+    [Fact]
+    public void EditorCreate_WorkspaceOpened_OpensAFreshDraft()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CEditor editor = CEditor.CEditorCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        atelier.CAtelierInputRestore(editor);
+
+        atelier.CAtelierOpen();
+
+        Assert.True(editor.CEditorDesk.CDeskHeld);
+        Assert.Null(editor.CEditorEntry);
+    }
+
+    [Fact]
+    public void ObserverAttach_DraftEdited_ShowsTheDraftThroughTheMarshal()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TEditorFieldPrepare(engine);
+        int marshalled = 0;
+        int shown = 0;
+        editor.CEditorObserverAttach(run =>
+        {
+            marshalled++;
+            run();
+        });
+        editor.CEditorDraftChanged += _ => shown++;
+
+        editor.CEditorHeadwordSet("water");
+        editor.CEditorDesk.CDeskPersist();
+
+        Assert.True(marshalled > 0);
+        Assert.True(shown > 0);
+    }
+
+    private static CEditor TEditorFieldPrepare(LEngine engine)
+    {
+        engine.TEngineDelaySet(0);
+        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
+        editor.CEditorEntryOpen(null);
+        return editor;
+    }
+
+    private static long TEditorSheetAdd(CEditor editor)
+    {
+        editor.CEditorDesk.TDeskDefer(TInterface.TRequestAdditionCreate(
+            editor.CEditorDesk.CDeskId, LCardKind.LCardKindMeaning, 0, int.MaxValue));
+        return editor.CEditorDraftRead()!.CEntryDraftMeanings[^1].CCardDraftId;
+    }
+
+    private static CCardDraft TEditorCardRead(CEditor editor, long sheet)
+    {
+        return editor.CEditorDraftRead()!.CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
+    }
+}

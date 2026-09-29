@@ -78,7 +78,7 @@ public partial class PEditor
     {
         if (PCardRegisterFind(caret) is PCard card)
         {
-            card.PCardRegisterRefine(_lEditor.LEditorStudio.CEditorCard.CCardRegisterAdd(
+            card.PCardRegisterRefine(_qEditor.QEditorArea.CEditorCard.CCardRegisterAdd(
                 card.PCardId, text, card.PCardRegisterPosition, false));
         }
     }
@@ -181,7 +181,7 @@ public partial class PEditor
     private void PRegisterCommitObserve(PCard card)
     {
         PCandidateHide();
-        _lEditor.LEditorStudio.CEditorCard.CCardRegisterAdd(
+        _qEditor.QEditorArea.CEditorCard.CCardRegisterAdd(
             card.PCardId, card.PCardRegisterText, card.PCardRegisterPosition, true);
         card.PCardRegisterClear();
     }

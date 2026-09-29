@@ -13,7 +13,6 @@ It mirrors only what the editor's parts read, so the full draft stays between co
 - `CEntryDraftAudio`: the main pronunciation's recording, empty when none is held.
 - `CEntryDraftPronunciation`: the main pronunciation, or null when none is written.
 - `CEntryDraftAccents`: the pronunciations after the main one.
-- `CEntryDraftSpeeches`: the parts of speech.
 - `CEntryDraftMeanings`: the meaning cards.
 - `CEntryDraftCollocations`: the collocation cards.
 - `CEntryDraftTranscriptions`: the transcriptions.

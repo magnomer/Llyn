@@ -213,29 +213,6 @@ internal sealed class LCardFacade
         return (etymons, draft.LEntryDraftEtymology.LEtymologyDraftNarrated || etymons.Count > 0);
     }
 
-    public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId)
-    {
-        LEntryDraft? draft = _lCardFacadeEngine.LEngineDraft.LEngineDraftRead(ownerId)?.LDraftContent;
-        if (draft is null)
-        {
-            return [];
-        }
-
-        List<long> ids = [.. draft.LEntryDraftTargets, .. draft.LEntryDraftSources];
-        return ids.Count == 0 ? [] : LEngineTargetRead(ownerId, ids);
-    }
-
-    public IReadOnlyDictionary<long, LTranslationTarget> LEngineTargetFind(long ownerId)
-    {
-        Dictionary<long, LTranslationTarget> targets = [];
-        foreach (LTranslationTarget target in LEngineTargetRead(ownerId))
-        {
-            targets[target.LTranslationTargetId] = target;
-        }
-
-        return targets;
-    }
-
     public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId, IReadOnlyList<long> ids)
     {
         lock (_lCardFacadeGate)

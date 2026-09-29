@@ -55,7 +55,6 @@ internal sealed partial class QFavorite
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, QRosterFind));
         panel.CPanelChosenAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
-        QFavoriteEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
             QSeriesList,
             "Series",
@@ -174,7 +173,7 @@ internal sealed partial class QFavorite
 
     private void QFavoriteStoreHandle(object sender, RoutedEventArgs e)
     {
-        QFavoriteEditor.PEditorEntrySave();
+        _cFavorite.CFavoriteEditor.CEditorEntrySave();
     }
 
     private void QFavoriteBinHandle(object sender, RoutedEventArgs e)

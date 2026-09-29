@@ -10,13 +10,10 @@ It holds no draft state, and every write reads the editor deportment's esteem.
 
 Wires the strip's clicks once, right after the editor has taken over its markup's name scope.
 
-## `internal void QRegardAttach(LEditor editor)`
+## `internal void QRegardIntroduce(CEditor editor)`
 
-Subscribes the favourite and grasp notices, and sets how many grasp steps the mark draws.
-
-## `internal void QRegardUpdate()`
-
-A tenure started, so every part of the strip is read again at once.
+Subscribes the favourite, grasp and frequency notices, and sets how many grasp steps the mark draws.
+A tenure start reads every part of the strip again, one subscriber each, since a bulletin comes only on change.
 
 ## `private void QRegardHoverHandle(object sender, RoutedEventArgs e)`
 

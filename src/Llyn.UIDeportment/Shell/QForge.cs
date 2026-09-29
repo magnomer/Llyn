@@ -17,15 +17,10 @@ public sealed class QForge
         _qForgeAtelier = atelier;
     }
 
-    public LEditor QForgeEditorCreate(CEnvoy envoy)
-    {
-        return new LEditor(CEditor.CEditorCreate(_qForgeAtelier, envoy));
-    }
-
-    public LEditor QForgeInputCreate(CEnvoy envoy)
+    public CEditor QForgeInputCreate(CEnvoy envoy)
     {
         return QForgeVistaAdd(
-            QForgeEditorCreate(envoy), editor => _qForgeAtelier.CAtelierInputRestore(editor.LEditorStudio));
+            CEditor.CEditorCreate(_qForgeAtelier, envoy), editor => _qForgeAtelier.CAtelierInputRestore(editor));
     }
 
     public CCorpus QForgeCorpusCreate(Func<bool> shownSeam, CEnvoy envoy)

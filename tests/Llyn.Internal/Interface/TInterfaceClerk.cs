@@ -13,6 +13,31 @@ internal static partial class TInterface
     internal static string TDraftListParse(string? text, bool settled, Func<string, bool> accept) =>
         LDraftClerkList.LDraftListParse(text, settled, accept);
 
+    internal static IReadOnlyList<LSpeechDraft> TSpeechParse(IReadOnlyList<LSpeechDraft> held, string? typed) =>
+        LSpeechClerk.LSpeechParse(held, typed);
+
+    internal static IReadOnlyList<LSpeechDraft>? TSpeechAdd(
+        IReadOnlyList<LSpeechDraft> held, string? name, Func<string, LSpeechValue?> declare) =>
+        LSpeechClerk.LSpeechAdd(held, name, declare);
+
+    internal static IReadOnlyList<LSpeechDraft> TSpeechRemove(IReadOnlyList<LSpeechDraft> held, string? name) =>
+        LSpeechClerk.LSpeechRemove(held, name);
+
+    internal static (IReadOnlyList<LSpeechDraft> LSpeechHeld, string LSpeechTyped) TSpeechSettle(
+        IReadOnlyList<LSpeechDraft> shown, IReadOnlyList<LSpeechDraft> held, string typed) =>
+        LSpeechClerk.LSpeechSettle(shown, held, typed);
+
+    internal static IReadOnlyList<LSpeechDraft> TSpeechChipRead(IReadOnlyList<LSpeechDraft> shown, string? pending) =>
+        LSpeechClerk.LSpeechChipRead(shown, pending);
+
+    internal static string? TSpeechPendingRead(IReadOnlyList<LSpeechDraft> held, string? typed) =>
+        LSpeechClerk.LSpeechPendingRead(held, typed);
+
+    internal static LSpeechDraft TSpeechCreate(long value, string name) =>
+        value > 0 ? LSpeechDraft.LSpeechDraftCreate(value, name) : LSpeechDraft.LSpeechDraftCreate(name);
+
+    internal static LSpeechValue TSpeechValueCreate(long value, string name) => new(value, "English", 1, name, 1);
+
     internal static LRig TRigClerkCreate(LEntryVault entries) =>
         TRigFake.TRigFakeBuild(entries) with
         {

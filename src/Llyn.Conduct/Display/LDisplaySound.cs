@@ -92,17 +92,17 @@ public sealed class LDisplaySound
         return source is null ? [] : _lEntryPort.LEngineReflexRead(source);
     }
 
-    public void LDisplayReflexStart(long? id)
+    internal void LDisplayReflexStart(long? id)
     {
         LDisplayMarkSend(_lPhonologyPort.LEngineReflexStart, id);
     }
 
-    public bool LDisplayReflexCheck(long? id)
+    internal bool LDisplayReflexCheck(long? id)
     {
         return LDisplayPendingRead(_lPhonologyPort.LEngineReflexCheck, id);
     }
 
-    public void LDisplayReflexRebuild(long? id)
+    internal void LDisplayReflexRebuild(long? id)
     {
         LDisplayMarkSend(_lPhonologyPort.LEngineReflexRebuild, id);
     }

@@ -121,7 +121,7 @@ public partial class PEditor
             return;
         }
 
-        _lEditor.LEditorStudio.CEditorCard.CCardTagInsert(card.PCardId, item.PSlateItemId, card.PCardLabelPosition);
+        _qEditor.QEditorArea.CEditorCard.CCardTagInsert(card.PCardId, item.PSlateItemId, card.PCardLabelPosition);
 
         card.PCardLabelClear();
     }
@@ -138,7 +138,7 @@ public partial class PEditor
         IReadOnlyList<CTag> found;
         try
         {
-            found = _lEditor.LEditorStudio.CEditorCard.CCardTagFind(card.PCardId, word);
+            found = _qEditor.QEditorArea.CEditorCard.CCardTagFind(card.PCardId, word);
         }
         catch (Exception)
         {

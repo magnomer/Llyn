@@ -80,12 +80,6 @@ public sealed class CCatalog
             .ToList();
     }
 
-    public CSpeechValue? CCatalogSpeechAdd(string language, string name)
-    {
-        LSpeechValue? value = _cCatalogAtelier.CAtelierPhonologyPort.LEngineSpeechAdd(language, name);
-        return value is null ? null : new CSpeechValue(value.LSpeechValueId, value.LSpeechValueName);
-    }
-
     public CGlyph? CCatalogGlyphRead(string language)
     {
         LGlyph? glyph = _cCatalogAtelier.CAtelierEntryPort.LEngineGlyphRead(language);

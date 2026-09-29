@@ -134,9 +134,9 @@ $RECYCLE.BIN/
 !/scripts/detector.json
 !/scripts/tracer.ps1
 !/scripts/tracer.json
-!/scripts/estimateperformance.ps1
-!/scripts/estimateperformance.json
-!/scripts/estimateperformance.comment.md
+!/scripts/performance.ps1
+!/scripts/performance.json
+!/scripts/performance.comment.md
 !/scripts/synccode.ps1
 !/scripts/clean.ps1
 !/scripts/zip.ps1

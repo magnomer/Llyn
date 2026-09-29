@@ -75,7 +75,7 @@ public partial class PEditor
     {
         if (PCardContextFind(caret) is PCard card)
         {
-            card.PCardContextRefine(_lEditor.LEditorStudio.CEditorCard.CCardSituationAdd(
+            card.PCardContextRefine(_qEditor.QEditorArea.CEditorCard.CCardSituationAdd(
                 card.PCardId, text, card.PCardContextPosition, false));
         }
     }
@@ -151,7 +151,7 @@ public partial class PEditor
     private void PContextCommitObserve(PCard card)
     {
         PCandidateHide();
-        _lEditor.LEditorStudio.CEditorCard.CCardSituationAdd(
+        _qEditor.QEditorArea.CEditorCard.CCardSituationAdd(
             card.PCardId, card.PCardContextText, card.PCardContextPosition, true);
         card.PCardContextClear();
     }
@@ -160,7 +160,7 @@ public partial class PEditor
     {
         if (chip is not null)
         {
-            _lEditor.LEditorStudio.CEditorCard.CCardSituationRemove(card.PCardId, chip.PContextId);
+            _qEditor.QEditorArea.CEditorCard.CCardSituationRemove(card.PCardId, chip.PContextId);
         }
     }
 

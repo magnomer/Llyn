@@ -340,5 +340,5 @@ The projects under `tests` are left out on purpose.
 ## Performance project
 
 `performance/Llyn.Performance` is left out on purpose too.
-It holds the drills, fixed workloads that `scripts/estimateperformance.ps1` builds and runs under the sampling profiler.
+It holds the drills, fixed workloads that `scripts/performance.ps1` builds and runs under the sampling profiler.
 It references portable engine projects only, never a UI project.

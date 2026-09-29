@@ -69,7 +69,6 @@ internal sealed partial class QTaxonomy
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
         _cTaxonomy.CTaxonomyObserverAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, QDirectoryFind));
-        QTaxonomyEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
             QFunnelList,
             "Funnel",
@@ -218,7 +217,7 @@ internal sealed partial class QTaxonomy
 
     private void QTaxonomyStoreHandle(object sender, RoutedEventArgs e)
     {
-        QTaxonomyEditor.PEditorEntrySave();
+        _cTaxonomy.CTaxonomyEditor.CEditorEntrySave();
     }
 
     private void QTaxonomyBinHandle(object sender, RoutedEventArgs e)

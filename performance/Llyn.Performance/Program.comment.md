@@ -1,7 +1,7 @@
 # Program.cs
 
 The entry point of the drill process.
-`scripts/estimateperformance.ps1` starts it with the runtime tracing switched on.
+`scripts/performance.ps1` starts it with the runtime tracing switched on.
 
 ## Arguments
 

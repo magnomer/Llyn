@@ -88,7 +88,7 @@ public partial class PEditor
     {
         if (PCardLinkFind(caret) is PCard card)
         {
-            card.PCardLinkRefine(_lEditor.LEditorStudio.CEditorCard.CCardTranslationAdd(
+            card.PCardLinkRefine(_qEditor.QEditorArea.CEditorCard.CCardTranslationAdd(
                 card.PCardId, text, card.PCardLinkPosition));
         }
     }
@@ -105,7 +105,7 @@ public partial class PEditor
         IReadOnlyList<CVistaRow> found;
         try
         {
-            found = _lEditor.LEditorStudio.CEditorCard.CCardProspectFind(word);
+            found = _qEditor.QEditorArea.CEditorCard.CCardProspectFind(word);
         }
         catch (Exception)
         {
@@ -225,7 +225,7 @@ public partial class PEditor
 
         try
         {
-            _lEditor.LEditorStudio.CEditorCard.CCardCourtDelete(PEditorDraft, id);
+            _qEditor.QEditorArea.CEditorCard.CCardCourtDelete(PEditorDraft, id);
         }
         catch (Exception)
         {
@@ -244,9 +244,8 @@ public partial class PEditor
         IReadOnlyList<CVistaRow> found;
         try
         {
-            long? entry = _lEditor.LEditorEntry;
-            single = _lEditor.LEditorStudio.CEditorCard.CCardTranslationResolve(word, entry);
-            found = single is null || offered ? _lEditor.LEditorStudio.CEditorCard.CCardProspectFind(word) : [];
+            single = _qEditor.QEditorArea.CEditorCard.CCardTranslationResolve(word);
+            found = single is null || offered ? _qEditor.QEditorArea.CEditorCard.CCardProspectFind(word) : [];
         }
         catch (Exception exception)
         {
@@ -257,7 +256,7 @@ public partial class PEditor
         if (single is not null && !offered)
         {
             PProspectHide();
-            _lEditor.LEditorStudio.CEditorCard.CCardTranslationInsert(
+            _qEditor.QEditorArea.CEditorCard.CCardTranslationInsert(
                 card.PCardId, single.Value, card.PCardLinkPosition);
             return true;
         }

@@ -121,7 +121,7 @@ public partial class PEditor
         IReadOnlyList<CVistaRow> found;
         try
         {
-            found = _lEditor.LEditorStudio.CEditorCard.CCardProspectFind(word);
+            found = _qEditor.QEditorArea.CEditorCard.CCardProspectFind(word);
         }
         catch (Exception exception)
         {
@@ -181,7 +181,7 @@ public partial class PEditor
 
         if (!item.PProspectItemFresh)
         {
-            _lEditor.LEditorStudio.CEditorCard.CCardTranslationInsert(
+            _qEditor.QEditorArea.CEditorCard.CCardTranslationInsert(
                 card.PCardId, item.PProspectItemId, card.PCardLinkPosition);
             card.PCardLinkClear();
             PProspectHide();
@@ -197,9 +197,9 @@ public partial class PEditor
         long target;
         try
         {
-            target = _lEditor.LEditorStudio.CEditorCard.CCardCourtStart(
+            target = _qEditor.QEditorArea.CEditorCard.CCardCourtStart(
                 PEditorDraft,
-                _lEditor.LEditorStudio.CEditorOrigin,
+                _qEditor.QEditorArea.CEditorOrigin,
                 item.PProspectItemHeadword,
                 item.PProspectItemLanguage);
         }
@@ -210,7 +210,7 @@ public partial class PEditor
             return;
         }
 
-        _lEditor.LEditorStudio.CEditorCard.CCardTranslationInsert(card.PCardId, target, card.PCardLinkPosition);
+        _qEditor.QEditorArea.CEditorCard.CCardTranslationInsert(card.PCardId, target, card.PCardLinkPosition);
         card.PCardLinkClear();
         PProspectHide();
     }
@@ -233,7 +233,7 @@ public partial class PEditor
                 entry.CVistaRowEpithet, entry.CVistaRowName));
         }
 
-        long? self = _lEditor.LEditorEntry;
+        long? self = _qEditor.QEditorArea.CEditorEntry;
         foreach (PProspectItem item in stored)
         {
             if (self is null || item.PProspectItemId != self)
@@ -269,13 +269,13 @@ public partial class PEditor
         List<string> languages = [];
         foreach (PLanguageItem item in _pLanguageItem)
         {
-            if (!item.PLanguageItemMatch(_lEditor.LEditorLanguage))
+            if (!item.PLanguageItemMatch(_qEditor.QEditorArea.CEditorLanguage))
             {
                 languages.Add(item.PLanguageItemName);
             }
         }
 
-        languages.Add(_lEditor.LEditorLanguage);
+        languages.Add(_qEditor.QEditorArea.CEditorLanguage);
         return languages;
     }
 }

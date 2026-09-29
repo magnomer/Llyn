@@ -21,8 +21,6 @@ internal sealed class QPhonology
 
     private CPhonology _cPhonology = null!;
 
-    private LEditor _lEditor = null!;
-
     internal QPhonology(UserControl surface)
     {
         ArgumentNullException.ThrowIfNull(surface);
@@ -152,18 +150,17 @@ internal sealed class QPhonology
     {
         _qPhonologyHost = host;
         _cPhonology = host.PWindowForge.QForgePhonologyCreate(QPhonologyShownCheck, host.PWindowEnvoy);
-        _lEditor = new LEditor(_cPhonology.CPhonologyEditor);
         CPanel panel = _cPhonology.CPhonologyPanel;
-        QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
+        QLectern lectern = new(_cPhonology.CPhonologyEditor.CEditorDisplay, panel);
         panel.CPanelChanged += QPhonologyModeUpdate;
         panel.CPanelRowsChanged += QInventoryUpdate;
-        _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QPhonologyStoreUpdate;
+        _cPhonology.CPhonologyEditor.CEditorDesk.CDeskStateChanged += QPhonologyStoreUpdate;
 
         QInventory.ItemsSource = _qInventoryList;
 
         QPhonologyDisplay.PDisplayAttach(host, lectern);
 
-        QPhonologyEditor.PEditorAttach(host, _lEditor);
+        QPhonologyEditor.PEditorIntroduce(host, new QEditor(_cPhonology.CPhonologyEditor));
 
         QPhonologyEditor.PEditorChronicleChanged += QPhonologyChronicleUpdate;
 
@@ -172,7 +169,7 @@ internal sealed class QPhonology
 
     private void QPhonologyStoreUpdate()
     {
-        QPhonologyStore.IsEnabled = _lEditor.LEditorStorable;
+        QPhonologyStore.IsEnabled = _cPhonology.CPhonologyEditor.CEditorDesk.CDeskStorable;
     }
 
     internal async void QPhonologyVistaRestore()
@@ -191,7 +188,6 @@ internal sealed class QPhonology
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsResonate));
         panel.CPanelChosenAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
-        QPhonologyEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
             QSequenceList,
             "Sequence",
@@ -303,7 +299,7 @@ internal sealed class QPhonology
 
     private void QPhonologyStoreHandle(object sender, RoutedEventArgs e)
     {
-        QPhonologyEditor.PEditorEntrySave();
+        _cPhonology.CPhonologyEditor.CEditorEntrySave();
     }
 
     private void QPhonologyBinHandle(object sender, RoutedEventArgs e)
@@ -354,7 +350,7 @@ internal sealed class QPhonology
 
     private void QPhonologyChronicleUpdate()
     {
-        (bool undo, bool redo) = QPhonologyEditor.PEditorChronicleRead();
+        (bool undo, bool redo) = _cPhonology.CPhonologyEditor.CEditorDesk.CDeskChronicleRead();
         QPhonologyBackward.IsEnabled = undo;
         QPhonologyForward.IsEnabled = redo;
     }

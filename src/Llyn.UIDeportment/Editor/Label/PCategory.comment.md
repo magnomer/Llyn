@@ -30,24 +30,17 @@ The menu hangs under the marker field, where a binding named its target.
 
 ## Inline notes
 
-### `internal void PCategoryLoad()`
+### `internal void PCategoryLoad(CEntryDraft _)`
 
 Reads the presets the chosen language declares and makes them the menu's rows.
-It runs whenever that language changes, because the parts of speech are the language's.
+It answers every draft the editor shows, because the parts of speech are the language's.
+A declaration made by a committed chip changes the draft too, so the menu offers it at once.
 An entry moved from English to Japanese is offered Japanese's presets from that moment.
 
 ### `values = [];`
 
 A vocabulary that cannot be read leaves the field editable and the menu empty.
 The presets are a convenience, and losing them is not a reason to refuse the typing.
-
-### `private CSpeechValue? PCategoryAdd(string name)`
-
-A part of speech no preset names is declared as one, under the chosen language.
-It is what makes the next entry in that language offer what this one taught it.
-The engine returns a name already held as it stands, so picking from the menu declares nothing new.
-A write that fails returns null and leaves the chip standing, because the entry is what the user was writing.
-The presets are read again after the write, so the menu offers what was just declared.
 
 ### `private void PCategoryUpdate()`
 
@@ -64,5 +57,6 @@ The first is the pack's, the second is the user's, and each says so in its own w
 
 ### `internal void PCategoryHandle(object sender, RoutedEventArgs e)`
 
-A preset chosen from the menu, added as a chip by its name.
-The name resolves to the held value, so the chip carries that value's id.
+A preset chosen from the menu, handed to the speech gate by its name.
+The gate declares the name, so the chip carries the preset's id.
+The field is cleared after, as a committed Enter clears it.

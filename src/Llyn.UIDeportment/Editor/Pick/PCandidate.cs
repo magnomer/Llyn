@@ -144,13 +144,13 @@ public partial class PEditor
 
         if (register)
         {
-            _lEditor.LEditorStudio.CEditorCard.CCardRegisterInsert(
+            _qEditor.QEditorArea.CEditorCard.CCardRegisterInsert(
                 card.PCardId, item.PCandidateItemId, card.PCardRegisterPosition);
             card.PCardRegisterClear();
             return;
         }
 
-        _lEditor.LEditorStudio.CEditorCard.CCardSituationInsert(
+        _qEditor.QEditorArea.CEditorCard.CCardSituationInsert(
             card.PCardId, item.PCandidateItemId, card.PCardContextPosition);
         card.PCardContextClear();
     }
@@ -167,8 +167,8 @@ public partial class PEditor
         IReadOnlyList<CRegister> found;
         try
         {
-            found = _lEditor.LEditorStudio.CEditorCard.CCardRegisterFind(
-                card.PCardId, word, _lEditor.LEditorLanguage);
+            found = _qEditor.QEditorArea.CEditorCard.CCardRegisterFind(
+                card.PCardId, word, _qEditor.QEditorArea.CEditorLanguage);
         }
         catch (Exception)
         {
@@ -223,7 +223,7 @@ public partial class PEditor
         IReadOnlyList<CCatalogSituation> found;
         try
         {
-            found = _lEditor.LEditorStudio.CEditorCard.CCardSituationFind(card.PCardId, word);
+            found = _qEditor.QEditorArea.CEditorCard.CCardSituationFind(card.PCardId, word);
         }
         catch (Exception)
         {
@@ -280,7 +280,7 @@ public partial class PEditor
         IReadOnlyList<CCatalogReference> found;
         try
         {
-            found = _lEditor.LEditorStudio.CEditorCard.CCardReferenceFind(word);
+            found = _qEditor.QEditorArea.CEditorCard.CCardReferenceFind(word);
         }
         catch (Exception)
         {

@@ -9,6 +9,11 @@ A fresh draft has no stored entry, so every read answers empty and every gate do
 Every read swallows a refusal and answers empty, since a box that cannot fetch still has to draw.
 Every gate announces the change, or asks the envoy to show the refusal under its own notice key.
 
+
+## `internal void LSoundingObserverAttach(Action<Action> marshal)`
+
+Hears the tenure's fanqie subject and raises `CSoundingChanged` on the driver's thread.
+A fanqie changed elsewhere refreshes the editor as a fanqie set here does.
 ## `internal CSounding(CDesk desk, LPhonologyPort phonology, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy)`
 
 Takes the editor's desk, the phonology port every sound read goes through, and the draft port the anchors ask.

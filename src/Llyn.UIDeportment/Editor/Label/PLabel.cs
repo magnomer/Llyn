@@ -70,7 +70,7 @@ public partial class PEditor
     {
         if (PCardLabelFind(caret) is PCard card)
         {
-            card.PCardLabelRefine(_lEditor.LEditorStudio.CEditorCard.CCardTagAdd(
+            card.PCardLabelRefine(_qEditor.QEditorArea.CEditorCard.CCardTagAdd(
                 card.PCardId, text, card.PCardLabelPosition, false));
         }
     }
@@ -130,7 +130,7 @@ public partial class PEditor
 
     private void PLabelCommitObserve(PCard card)
     {
-        _lEditor.LEditorStudio.CEditorCard.CCardTagAdd(
+        _qEditor.QEditorArea.CEditorCard.CCardTagAdd(
             card.PCardId, card.PCardLabelText, card.PCardLabelPosition, true);
         card.PCardLabelClear();
     }
@@ -139,7 +139,7 @@ public partial class PEditor
     {
         if (chip is not null)
         {
-            _lEditor.LEditorStudio.CEditorCard.CCardTagRemove(card.PCardId, chip.PLabelChipId);
+            _qEditor.QEditorArea.CEditorCard.CCardTagRemove(card.PCardId, chip.PLabelChipId);
         }
     }
 

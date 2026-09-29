@@ -73,7 +73,7 @@ public partial class PEditor
 
     internal void PReflexRebuildHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_lEditor.LEditorEntry is not long entry)
+        if (_qEditor.QEditorArea.CEditorEntry is null)
         {
             return;
         }
@@ -82,7 +82,7 @@ public partial class PEditor
         PReflexTable.MinHeight = PReflexTable.ActualHeight;
         try
         {
-            _lEditor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayReflexRebuild(entry);
+            _qEditor.QEditorArea.CEditorTimbre.CTimbreReflexRebuild();
         }
         catch (Exception)
         {
@@ -125,16 +125,16 @@ public partial class PEditor
         if (string.Equals(field, nameof(QReflexItem.QReflexItemLanguage), StringComparison.Ordinal))
         {
             QReflexItem.QReflexLeadRefine(
-                _pReflexItem, _lEditor.LEditorStudio.CEditorLeadRead(row.QReflexItemId, row.QReflexItemLanguage));
+                _pReflexItem, _qEditor.QEditorArea.CEditorLeadRead(row.QReflexItemId, row.QReflexItemLanguage));
         }
 
         PEditorRequestDefer(request);
     }
 
-    private void PReflexShow(CEntryDraft draft)
+    internal void PReflexShow(CEntryDraft draft)
     {
         string language = draft.CEntryDraftLanguage;
-        PReflexBlock.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorReflexShown);
+        PReflexBlock.Visibility = QLook.QLookVisibleRead(_qEditor.QEditorArea.CEditorTimbre.CTimbreReflexShown);
         PReflexRenewal.Visibility = PReflexBlock.Visibility;
 
         PCard.PCardRowShow(
@@ -146,7 +146,7 @@ public partial class PEditor
             PReflexUpdate);
 
         QReflexItem.QReflexFoldRefine(
-            _pReflexItem, PReflexFold, _lEditor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayFoldOpened);
+            _pReflexItem, PReflexFold, _qEditor.QEditorArea.CEditorDisplay.LDisplaySound.LDisplayFoldOpened);
         PReflexAnchorShow();
         PReflexPendingShow();
     }
@@ -156,22 +156,19 @@ public partial class PEditor
         string headword = PHeadword.Text;
         QReflexItem.QReflexAnchorRefine(
             _pReflexItem,
-            _lEditor.LEditorStudio.CEditorSounding.CSoundingAnchorCheck(headword),
-            anchors => _lEditor.LEditorStudio.CEditorSounding.CSoundingAnchorFormat(anchors, headword));
+            _qEditor.QEditorArea.CEditorSounding.CSoundingAnchorCheck(headword),
+            anchors => _qEditor.QEditorArea.CEditorSounding.CSoundingAnchorFormat(anchors, headword));
     }
 
     internal void PReflexPendingShow()
     {
         bool pending = false;
-        if (_lEditor.LEditorEntry is long entry)
+        try
         {
-            try
-            {
-                pending = _lEditor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayReflexCheck(entry);
-            }
-            catch (Exception)
-            {
-            }
+            pending = _qEditor.QEditorArea.CEditorTimbre.CTimbreReflexPending;
+        }
+        catch (Exception)
+        {
         }
 
         if (!pending)
@@ -188,28 +185,27 @@ public partial class PEditor
 
     internal void PReflexFoldHandle(object sender, RoutedEventArgs e)
     {
-        _lEditor.LEditorStudio.CEditorDisplay.CDisplaySound.CDisplayReflexToggle(
+        _qEditor.QEditorArea.CEditorDisplay.CDisplaySound.CDisplayReflexToggle(
             QLook.QLookCheckedRead(PReflexFold.IsChecked));
         QReflexItem.QReflexFoldRefine(
-            _pReflexItem, PReflexFold, _lEditor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayFoldOpened);
+            _pReflexItem, PReflexFold, _qEditor.QEditorArea.CEditorDisplay.LDisplaySound.LDisplayFoldOpened);
     }
 
-    private void PReflexPrepare(CEntryDraft draft)
+    internal void PReflexPrepare(CEntryDraft draft)
     {
         if (draft.CEntryDraftReflected)
         {
             return;
         }
 
-        long? entry = _lEditor.LEditorEntry;
-        if (entry is null)
+        if (_qEditor.QEditorArea.CEditorEntry is null)
         {
             return;
         }
 
         try
         {
-            _lEditor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayReflexStart(entry.Value);
+            _qEditor.QEditorArea.CEditorTimbre.CTimbreReflexStart();
         }
         catch (Exception)
         {

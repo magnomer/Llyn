@@ -35,7 +35,7 @@ The transcription rows ask it to leave the glyph row out.
 Whether a transcription scheme is the scheme of `glyph`, which may be absent.
 The prepare pass reads the section off the draft's language before the form shows it.
 
-## `private void PGlyphShow(CEntryDraft draft)`
+## `internal void PGlyphShow(CEntryDraft draft)`
 
 Renders the glyph row from the draft's row in the glyph scheme, keyed by its transcription id.
 The pack's glyph section is asked once per render, and the row is shown only while the language declares one.

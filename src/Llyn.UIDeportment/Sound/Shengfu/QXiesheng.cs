@@ -22,8 +22,6 @@ internal sealed class QXiesheng
 
     private CXiesheng _cXiesheng = null!;
 
-    private LEditor _lEditor = null!;
-
     internal QXiesheng(UserControl surface)
     {
         ArgumentNullException.ThrowIfNull(surface);
@@ -137,13 +135,12 @@ internal sealed class QXiesheng
         _qXieshengHost = host;
         _cXiesheng = host.PWindowForge.QForgeXieshengCreate(QXieshengShownCheck, host.PWindowEnvoy);
         _cXiesheng.CXieshengStemOpened += QLodestarRefine;
-        _lEditor = new LEditor(_cXiesheng.CXieshengEditor);
         CPanel panel = _cXiesheng.CXieshengPanel;
-        QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
+        QLectern lectern = new(_cXiesheng.CXieshengEditor.CEditorDisplay, panel);
         panel.CPanelChanged += QXieshengModeUpdate;
         panel.CPanelRowsChanged += QKindredUpdate;
         panel.CPanelCleared += QXieshengClearUpdate;
-        _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QXieshengStoreUpdate;
+        _cXiesheng.CXieshengEditor.CEditorDesk.CDeskStateChanged += QXieshengStoreUpdate;
         _cXiesheng.CXieshengChanged += QXieshengColumnUpdate;
 
         QGrove.ItemsSource = _qGroveList;
@@ -152,14 +149,14 @@ internal sealed class QXiesheng
         QXieshengDisplay.PDisplayAttach(host, lectern);
         _qStem.QStemAttach(host.PWindowAtelier, _cXiesheng);
 
-        QXieshengEditor.PEditorAttach(host, _lEditor);
+        QXieshengEditor.PEditorIntroduce(host, new QEditor(_cXiesheng.CXieshengEditor));
 
         QXieshengEditor.PEditorChronicleChanged += QXieshengChronicleUpdate;
     }
 
     private void QXieshengStoreUpdate()
     {
-        QXieshengStore.IsEnabled = _lEditor.LEditorStorable;
+        QXieshengStore.IsEnabled = _cXiesheng.CXieshengEditor.CEditorDesk.CDeskStorable;
     }
 
     internal void QXieshengVistaRestore()
@@ -181,7 +178,6 @@ internal sealed class QXiesheng
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, _cXiesheng.CXieshengEntryResonate));
         panel.CPanelChosenAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
-        QXieshengEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
             QRungList,
             "Rung",
@@ -304,7 +300,7 @@ internal sealed class QXiesheng
 
     private void QXieshengStoreHandle(object sender, RoutedEventArgs e)
     {
-        QXieshengEditor.PEditorEntrySave();
+        _cXiesheng.CXieshengEditor.CEditorEntrySave();
     }
 
     private void QXieshengBinHandle(object sender, RoutedEventArgs e)
@@ -355,7 +351,7 @@ internal sealed class QXiesheng
 
     private void QXieshengChronicleUpdate()
     {
-        (bool undo, bool redo) = QXieshengEditor.PEditorChronicleRead();
+        (bool undo, bool redo) = _cXiesheng.CXieshengEditor.CEditorDesk.CDeskChronicleRead();
         QXieshengBackward.IsEnabled = undo;
         QXieshengForward.IsEnabled = redo;
     }

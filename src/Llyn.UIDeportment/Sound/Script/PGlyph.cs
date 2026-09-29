@@ -92,7 +92,7 @@ public partial class PEditor
         return glyph is not null && string.Equals(scheme, glyph.CGlyphName, StringComparison.Ordinal);
     }
 
-    private void PGlyphShow(CEntryDraft draft)
+    internal void PGlyphShow(CEntryDraft draft)
     {
         string language = draft.CEntryDraftLanguage;
         _pGlyph = _pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogGlyphRead(language);

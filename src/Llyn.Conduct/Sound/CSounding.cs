@@ -36,6 +36,12 @@ public sealed class CSounding
 
     public event Action? CSoundingChanged;
 
+    internal void LSoundingObserverAttach(Action<Action> marshal)
+    {
+        _cSoundingDesk.CDeskVigil.LVigilObserverAttach(
+            CSubject.CSubjectFanqie, _ => marshal(() => CSoundingChanged?.Invoke()));
+    }
+
     private long? LSoundingEntry => _cSoundingDesk.CDeskStoredRead();
 
     private string LSoundingLanguage => _cSoundingDesk.CDeskTenure?.LTenureLanguageRead() ?? string.Empty;

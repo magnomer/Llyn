@@ -7,15 +7,15 @@ A Meaning card and a Collocation card are the same card, so one pair of paths se
 The panel owns this and not the card, because only the panel knows which list a card stands in.
 Nothing is read back from a card, because every edit reached the engine as a request.
 
-## `private void PEditorFieldHandle(TextBox box)`
+## `private void PEditorFieldObserve(TextBox box)`
 
-A field inside a card, sentence, gloss, picture or film row changed, so its named request is deferred.
+A field inside a card, sentence, gloss, picture or film row changed, so its raw text goes to one gate.
 Only a field with the keyboard in it reports, since a write from the draft echoes through the same event.
-
-## `private void PCardChangeHandle(PCard card, string field, LStateWritten written)`
-
-The card's own three fields, each deferred as its own request.
 The badge number is written straight back into the card, where a two-way binding stood.
+
+## `private void PCardFieldObserve(PCard card, string field, string text)`
+
+The card's own three fields, each handed to its own gate.
 
 ## Inline notes
 
@@ -29,7 +29,7 @@ The rest keep their controls, so the caret stays in a card while its neighbours 
 Every card, new or kept, is then shown its text and its lists, since any of them may have changed.
 Each card takes the number the draft carries, not its place in the loop.
 
-### `private static void PCardTextShow(PCard card, LCardDraft draft)`
+### `private static void PCardTextShow(PCard card, CCardDraft draft)`
 
 Hands a card the draft's three text values, and the card redraws only a field whose value changed.
 What was waiting is written before the read, so the draft already holds what the field shows.
@@ -46,7 +46,6 @@ So a new card and a kept one take one path.
 
 Shows one card every list the draft card holds, each list diffed by id.
 The sentence frame's order goes with the rows, as the last `CSentenceFrameRead` answered it.
-The language update reads the frame before the cards show, so a new row is built in its language's order.
-Each card takes its own words out of the one translation answer, in the order the card holds them.
+The frame is painted before the cards show, so a new row is built in its language's order.
+Each card reads its own links, ready and in the order the card holds them.
 The chip lines under the rows are redrawn after, because the rows hold no engine to read headwords from.
-An id the answer does not name is passed over, as a chip with no Entry has nothing to say.

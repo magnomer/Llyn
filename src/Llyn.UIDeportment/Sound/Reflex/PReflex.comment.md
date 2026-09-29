@@ -39,7 +39,7 @@ Romanization, meaning and note changes become their matching requests.
 Defers a request for the field that changed, so typing is sent in one piece.
 A language change also remarks the leads at once, so the language prints on the right row while typing.
 
-## `private void PReflexShow(CEntryDraft draft)`
+## `internal void PReflexShow(CEntryDraft draft)`
 
 Rebuilds the rows from the draft, keeping a row that is still being typed into.
 The stack is shown when the language declares a rule or the draft carries a row, and hidden otherwise.
@@ -65,7 +65,7 @@ An unsaved entry has no fill and shows nothing.
 Opens or closes the fold as the toggle under the rows was pressed, through the display's fold gate.
 The gate's change event also redraws every reading view over the same display.
 
-## `private void PReflexPrepare(CEntryDraft draft)`
+## `internal void PReflexPrepare(CEntryDraft draft)`
 
 Asks the engine to fill a stored entry that has no rows yet.
 The fill reaches the draft through the engine and lands here by bulletin.

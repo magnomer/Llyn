@@ -38,9 +38,9 @@ public sealed class CCard
         return _cCardDraftPort.LEngineProspectFind(word).Select(CPanel.CPanelRowRead).ToList();
     }
 
-    public long? CCardTranslationResolve(string word, long? entryId)
+    public long? CCardTranslationResolve(string word)
     {
-        return _cCardDraftPort.LEngineTranslationResolve(word, entryId)?.LEntryId;
+        return _cCardDraftPort.LEngineTranslationResolve(word, _cCardDesk.CDeskStoredRead())?.LEntryId;
     }
 
     public string CCardTranslationAdd(long cardId, string text, int position)

@@ -125,10 +125,10 @@ public partial class PEditor
         PEditorRequestDefer(PAccentRequestCreate(row));
     }
 
-    private void PAccentShow(CEntryDraft draft)
+    internal void PAccentShow(CEntryDraft draft)
     {
         string language = draft.CEntryDraftLanguage;
-        bool flagged = _lEditor.LEditorFlagged;
+        bool flagged = _qEditor.QEditorArea.CEditorTimbre.CTimbreFlagged;
         _pAccentLanguage = language;
         _pAccentFlagged = flagged;
         _pAccentPrimary = draft.CEntryDraftPronunciation?.CPronunciationDraftVariety ?? string.Empty;

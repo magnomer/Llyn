@@ -64,15 +64,15 @@ A refused or empty load keeps the rows as they were, and a refusal raises `LDisp
 The written reflexes, as the engine filters them.
 A draft reloaded after a fill wins over the shown draft.
 
-## `public void LDisplayReflexStart(long? id)`
+## `internal void LDisplayReflexStart(long? id)`
 
 Asks the engine to fill the entry's reflex rows, for the editor's reflex block.
 
-## `public bool LDisplayReflexCheck(long? id)`
+## `internal bool LDisplayReflexCheck(long? id)`
 
 Whether a reflex fill runs for the entry, false for no entry or when the engine refuses to say.
 
-## `public void LDisplayReflexRebuild(long? id)`
+## `internal void LDisplayReflexRebuild(long? id)`
 
 Asks the engine to drop the entry's reflex rows and fetch them again.
 

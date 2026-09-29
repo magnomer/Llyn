@@ -22,6 +22,42 @@ Builds an entry editor over the atelier's ports, asking its questions through `e
 Each tab that edits entries holds its own, so no driver ever holds a port for it.
 Building a session is composition, not a user action, so it is no gate.
 The editor's display opens what it is asked to through the atelier's navigation.
+Every opened workspace opens a fresh draft in the editor, so no editor keeps the former workspace's draft.
+
+## `public CCardSpeech CEditorSpeech { get; }`
+
+The draft's parts of speech as the user builds them, kept across the editor's drafts.
+
+## `public CCardField CEditorField`
+
+The typed fields of the held draft's cards, built fresh over the desk since it keeps no state.
+
+## `public CImage CEditorImage`
+
+The typed image rows of the cards, built fresh over the desk.
+
+## `public CVideo CEditorVideo`
+
+The typed video rows of the cards, built fresh over the desk.
+
+## `public string CEditorLanguage`
+
+The held draft's language, or empty while no draft is held.
+
+## `public long? CEditorEntry`
+
+The stored entry the held draft stands on, or null for a fresh draft or an empty desk.
+
+## `public void CEditorObserverAttach(Action<Action> marshal)`
+
+Hands every area of the editor the driver's marshal once.
+Each area then raises its own change event on the driver's thread when the engine announces its subject.
+A settings change reads the held draft again, since the draft's shown form depends on the settings.
+
+## `public void CEditorClose()`
+
+The editor closes with its view: the held draft is let go, then every running search.
+Closing is one user action, and the order of the cancels is the editor's.
 
 ## `public event Action<CEntryDraft>? CEditorDraftChanged;`
 
@@ -111,10 +147,6 @@ The primary reading as the field shows it, respelled when the pack respells.
 ## `public IReadOnlyList<CTranslationTarget> CEditorEtymonRead()`
 
 The etymons of the held entry, as the etymology field lists them.
-
-## `public IReadOnlyDictionary<long, CTranslationTarget> CEditorTargetRead()`
-
-The link targets of the held draft, keyed by entry, for the cards' translation chips.
 
 ## `public void CEditorPronunciationSet(string text)`
 

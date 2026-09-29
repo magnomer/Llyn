@@ -153,9 +153,8 @@ internal sealed class QReference
     {
         _qReferenceHost = host;
         _cShelf = host.PWindowForge.QForgeShelfCreate(QReferenceShownCheck, host.PWindowEnvoy);
-        LEditor editor = new(_cShelf.CShelfEditor);
         CPanel footnote = _cShelf.CShelfFootnote.CFootnotePanel;
-        QLectern lectern = new(editor.LEditorStudio.CEditorDisplay, footnote);
+        QLectern lectern = new(_cShelf.CShelfEditor.CEditorDisplay, footnote);
         _cShelf.CShelfChanged += QReferenceModeUpdate;
         _cShelf.CShelfPanel.CPanelChanged += QReferenceModeUpdate;
         _cShelf.CShelfPanel.CPanelRowsChanged += QShelfUpdate;
@@ -170,7 +169,7 @@ internal sealed class QReference
 
         _qImprint.QImprintAttach(host, _cShelf.CShelfImprint);
         QReferenceDisplay.PDisplayAttach(host, lectern);
-        QReferenceEditor.PEditorAttach(host, editor);
+        QReferenceEditor.PEditorIntroduce(host, new QEditor(_cShelf.CShelfEditor));
 
         _qReferenceSurface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QReferencePressHandle, QReferencePressCheck));
@@ -218,7 +217,6 @@ internal sealed class QReference
         footnote.CPanelObserverAttach(
             CSubject.CSubjectVista,
             LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, footnote.CPanelRowsResonate));
-        QReferenceEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(QGradeList, "Grade", QGradeHandle, CShelf.CShelfOrderRead());
         QChoice.QChoiceOrderApply(QGradeDropdown, _cShelf.CShelfPanel.CPanelOrder);
         QTrellisUpdate();

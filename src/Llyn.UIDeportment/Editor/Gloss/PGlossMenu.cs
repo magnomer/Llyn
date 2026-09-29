@@ -42,20 +42,20 @@ public partial class PEditor
         await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowAtelier);
         PLanguageItem.PLanguageItemReset(
             _pLanguageItem, _pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogLanguageRead());
-        PEditorLanguageUpdate();
+        PSpeakerFlagUpdate();
         PLinkFlagUpdate();
     }
 
     internal void PSpeakerHandle(object sender, RoutedEventArgs e)
     {
-        _lEditor.LEditorStudio.CEditorLanguageSet(PLanguageItem.PLanguageNameRead(sender));
+        _qEditor.QEditorArea.CEditorLanguageSet(PLanguageItem.PLanguageNameRead(sender));
         PSpeaker.IsChecked = false;
     }
 
     private async void PSpeakerFlagUpdate()
     {
         await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowAtelier);
-        LEnsignImage.LEnsignFlagRefine(PSpeakerFlag, PSpeakerGlobe, _lEditor.LEditorLanguage);
+        LEnsignImage.LEnsignFlagRefine(PSpeakerFlag, PSpeakerGlobe, _qEditor.QEditorArea.CEditorLanguage);
     }
 
     private void PSpeakerApply(FrameworkElement container, object item, string? change)
@@ -107,12 +107,12 @@ public partial class PEditor
         }
     }
 
-    private void PGlossChangeHandle(PGloss gloss, LStateWritten written)
+    private void PGlossTextObserve(PGloss gloss, string text)
     {
         if (PSentenceGlossFind(gloss) is (PCard card, PSentence row))
         {
-            PEditorRequestDefer(
-                new LRequestGlossText(PEditorDraft, card.PCardId, row.PSentenceRow, gloss.PGlossId, written));
+            _qEditor.QEditorArea.CEditorSentence.CSentenceGlossSet(
+                card.PCardId, row.PSentenceRow, gloss.PGlossId, text);
         }
     }
 

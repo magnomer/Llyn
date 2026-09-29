@@ -55,7 +55,7 @@ Defers a reading or respelling request when a row's text changes.
 The row model raises the change, not the text box, so a draft render writing the same text raises nothing.
 The fill guard holds during a render, so a render writing a different text raises no request either.
 
-## `private void PAccentShow(CEntryDraft draft)`
+## `internal void PAccentShow(CEntryDraft draft)`
 
 Renders every pronunciation after the primary as a row, keyed by the pronunciation id.
 Whether varieties show as flags is asked of the language pack once per render.

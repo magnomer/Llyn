@@ -32,6 +32,7 @@ public sealed class CEditor
         CEditorSounding = new CSounding(CEditorDesk, phonology, drafts, settings, envoy);
         CEditorEsteem = new CEsteem(CEditorDesk, CEditorDisplay);
         CEditorTimbre = new CTimbre(CEditorDesk, phonology, CEditorDisplay);
+        CEditorSpeech = new CCardSpeech(CEditorDesk);
         CEditorDesk.CDeskFinished += CEditorStoredShow;
         CEditorDesk.CDeskDraftPrepared +=
             draft => CEditorDraftChanged?.Invoke(CFolio.CFolioEntryRead(draft.LDraftContent));
@@ -49,6 +50,7 @@ public sealed class CEditor
             atelier.CAtelierMediaPort,
             envoy);
         editor.CEditorDisplay.LDisplayNavigationAttach(atelier.CAtelierNavigation);
+        atelier.CAtelierWorkspace.CWorkspaceOpened += () => editor.CEditorEntryOpen(null);
         return editor;
     }
 
@@ -68,11 +70,36 @@ public sealed class CEditor
 
     public CTimbre CEditorTimbre { get; }
 
+    public CCardSpeech CEditorSpeech { get; }
+
+    public CCardField CEditorField => new(CEditorDesk);
+
+    public CImage CEditorImage => new(CEditorDesk);
+
+    public CVideo CEditorVideo => new(CEditorDesk);
+
     public bool CEditorOwned => _cEditorVista?.LVistaInput ?? false;
 
     public string CEditorOrigin => _cEditorVista?.LVistaTab ?? string.Empty;
 
+    public string CEditorLanguage => CEditorDesk.CDeskTenure?.LTenureLanguageRead() ?? string.Empty;
+
+    public long? CEditorEntry => CEditorDesk.CDeskStoredRead();
+
     private LTenure? CEditorTenure => CEditorDesk.CDeskFilling ? null : CEditorDesk.CDeskTenure;
+
+    public void CEditorObserverAttach(Action<Action> marshal)
+    {
+        ArgumentNullException.ThrowIfNull(marshal);
+
+        CEditorDesk.CDeskObserverAttach(marshal);
+        CEditorEsteem.LEsteemObserverAttach(marshal);
+        CEditorTimbre.LTimbreObserverAttach(marshal);
+        CEditorSounding.LSoundingObserverAttach(marshal);
+        CEditorSentence.LSentenceObserverAttach(marshal);
+        CEditorDesk.CDeskVigil.LVigilObserverAttach(
+            CSubject.CSubjectSettings, _ => marshal(CEditorDesk.CDeskDraftResonate));
+    }
 
     internal void LEditorVistaRestore(LVista vista)
     {
@@ -90,6 +117,12 @@ public sealed class CEditor
         {
             CEditorDesk.CDeskStart(null);
         }
+    }
+
+    public void CEditorClose()
+    {
+        CEditorDesk.CDeskCancel();
+        CEditorDesk.CDeskErrand.CErrandCancel();
     }
 
     public void CEditorEntryUndo()
@@ -146,17 +179,6 @@ public sealed class CEditor
     public IReadOnlyList<CTranslationTarget> CEditorEtymonRead()
     {
         return CEditorDesk.CDeskTenure is LTenure held ? CFolio.CFolioTargetRead(held.LTenureEtymonRead()) : [];
-    }
-
-    public IReadOnlyDictionary<long, CTranslationTarget> CEditorTargetRead()
-    {
-        if (CEditorDesk.CDeskTenure is not LTenure held)
-        {
-            return new Dictionary<long, CTranslationTarget>();
-        }
-
-        return held.LTenureTargetRead()
-            .ToDictionary(pair => pair.Key, pair => CFolio.CFolioTargetRead([pair.Value])[0]);
     }
 
     public void CEditorHeadwordSet(string text)

@@ -29,51 +29,58 @@ The glyph, accent, transcription and reflex lists are attached to their row fill
 The pronunciation box, found by name.
 It is internal because the phonology panel attaches its probe to it.
 
-## `internal void PEditorAttach(PWindow host, LEditor editor)`
+## `internal void PEditorIntroduce(PWindow host, QEditor driver)`
 
-Puts the editor to work on the deportment its tab built, and subscribes each notice to one control write.
-The reflex block keeps its fold on the editor's display, so no lectern is handed in.
-The sentence frames, the language menu, the categories and the volume are loaded once here.
-They do not follow the draft, so no notice reloads them.
-
-## `internal void PEditorVistaRestore()`
-
-Opens a fresh draft over the entry vista the owner's deportment restored.
-The command rail shows only for the editor that owns its entries, which is the input tab's.
+Takes the editor's driver from the panel that built it, and wires the view's own parts.
+The strip and the sound panels are handed the driver's Conduct editor, since they are driver parts too.
+The driver then subscribes this view's Refines to the editor's notices, so the view never holds a Conduct type.
 
 ## `internal void PEditorClose()`
 
-Stops the editor.
-The tenure is let go, searches in flight are called off, and playback is released.
+Stops the editor through its one close gate, then releases playback.
 
-## `private void PEditorObserverAttach(CDesk desk)`
-
-Registers the marshalling observers on the desk once, which puts them on every tenure it starts.
-The desk's own draft and state updates go through `CDeskObserverAttach`, which decides their subjects.
-The entry-level subjects stay here until job06-10 folds them into one `CEditor` event.
-
-## `private void PEditorStartUpdate()`
+## `internal void PEditorStartRefine()`
 
 A tenure started, so the card lists start empty.
-The entry sections are read again at once, since a bulletin comes only when they change.
 
-## `private void PEditorDraftShow(CEntryDraft draft)`
+## `internal void PEditorDraftRefine(CEntryDraft draft)`
 
-Writes every spine control from the entry the editor announced, then the card and sound parts from it.
-The text boxes are written through the guarded writes, so a box being typed into keeps its caret.
+Writes the headword and the note through the guarded writes, so a box being typed into keeps its caret.
+The command rail shows only for the editor that owns its entries, which is the input tab's.
+The reading line follows the headword just written.
 
-## `private void PEditorLanguageUpdate()`
+## `internal void PTimbreRefine(CEntryDraft _)`
 
-The writes that follow the language: its name and flag, the fonts, the tone contour, and the silent switch.
+The writes that follow the language's sound facts: the brackets, the tone contour and the silent switch.
+
+## `internal void PSpeakerRefine(CEntryDraft _)`
+
+The draft's language name and its flag.
+
+## `internal void PGlyphFontRefine(CEntryDraft _)`
+
 The glyph typography goes into the glyph list's resources, so the field takes it and the scheme label does not.
 
-## `private void PEditorTextHandle(object sender, TextChangedEventArgs e)`
+## `internal void PMeaningRefine(CEntryDraft draft)`
+
+The meaning cards, each reading its own links as it is shown.
+`PCollocationRefine` does the same for the collocation cards.
+
+## `internal void PPlaybackRefine(CEntryDraft draft)`
+
+The recording, then the playback tray, which also counts the accent rows' audio.
+
+## `private void PContourRefine(object sender, TextChangedEventArgs e)`
+
+The contour draws the pronunciation as typed, beside the gate that hears the same text.
+
+## `private void PEditorTextObserve(object sender, TextChangedEventArgs e)`
 
 The one routed handler left, for the fields inside cards that come and go with them.
 The spine's own boxes report through their own handlers.
 A chip field's entry hands its text to that field's text observer, which calls one gate.
 
-## `private void PEditorStateUpdate()`
+## `internal void PEditorStateRefine()`
 
 The controls that follow the desk's state: whether the editor is live, and the store, reset and chronicle buttons.
 
@@ -113,7 +120,7 @@ What is offered is read as what will be taken.
 It carries no line around it, because the shadow already says where it ends.
 A line as well made it a second card.
 
-### `AddHandler(LostFocusEvent, new RoutedEventHandler(PEditorFocusHandle));`
+### `AddHandler(LostFocusEvent, new RoutedEventHandler(PEditorFocusObserve));`
 
 Focus leaving any box is caught as the event bubbles, so unsent typing goes before the focus does.
 
@@ -121,8 +128,3 @@ Focus leaving any box is caught as the event bubbles, so unsent typing goes befo
 
 Says the chronicle may now stand differently, so a host panel can light its own buttons.
 An embedded editor hides its own rail, and the panel around it carries undo and redo.
-
-## `private void PEditorFanqieUpdate()`
-
-A rime-book update moves the reflex anchor, the fanqie panel and the reading line together.
-The headword stays with this control, so the reading takes it as a parameter.

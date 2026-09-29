@@ -332,7 +332,6 @@ public sealed class TAtelier
         atelier.CAtelierInputRestore(editor);
         editor.CEditorEntryOpen(null);
         editor.CEditorHeadwordSet("water");
-        atelier.CAtelierWorkspace.CWorkspaceOpened += () => editor.CEditorEntryOpen(null);
 
         Assert.NotNull(atelier.CAtelierWorkspaceChange(second.TWorkspaceFolder, envoy));
         atelier.CAtelierInputRestore(editor);

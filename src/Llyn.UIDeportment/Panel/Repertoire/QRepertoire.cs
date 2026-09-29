@@ -205,9 +205,8 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
     {
         _qRepertoireHost = host;
         _cRepertoire = host.PWindowForge.QForgeRepertoireCreate(QRepertoireShownCheck, host.PWindowEnvoy);
-        LEditor editor = new(_cRepertoire.CRepertoireEditor);
         QLectern lectern = new(
-            editor.LEditorStudio.CEditorDisplay, _cRepertoire.CRepertoireOccurrence.COccurrencePanel);
+            _cRepertoire.CRepertoireEditor.CEditorDisplay, _cRepertoire.CRepertoireOccurrence.COccurrencePanel);
         QScenarioDeskAttach();
 
         QAtlas.ItemsSource = _qAtlasList;
@@ -223,7 +222,7 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
 
         PMedia.PMediaAttach(_qRepertoireSurface, host.PWindowAtelier);
         QRepertoireDisplay.PDisplayAttach(host, lectern);
-        QRepertoireEditor.PEditorAttach(host, editor);
+        QRepertoireEditor.PEditorIntroduce(host, new QEditor(_cRepertoire.CRepertoireEditor));
 
         CPanel atlas = _cRepertoire.CRepertoireAtlas.CAtlasPanel;
         CPanel occurrence = _cRepertoire.CRepertoireOccurrence.COccurrencePanel;

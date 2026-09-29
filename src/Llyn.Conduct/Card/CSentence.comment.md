@@ -12,6 +12,15 @@ It is the reference example of the pipeline in `docs-work/JobPrinciple.md` secti
 
 Builds the gates over the editor's desk and the phonology port.
 
+## `public event Action? CSentenceReferenceChanged;`
+
+The catalog of references changed, so the citation list of the sentences is read again.
+It is raised on the driver's thread, through the marshal the editor was handed.
+
+## `internal void LSentenceObserverAttach(Action<Action> marshal)`
+
+Hears the reference subject on every tenure the desk starts.
+
 ## `public void CSentenceAdd(long cardId, int below)`
 
 The gate for the add button on a sentence row.
@@ -33,6 +42,10 @@ The gate for typing in a sentence's particle field.
 ## `public void CSentenceDependenceSet(long cardId, long sentenceId, string text)`
 
 The gate for typing in a sentence's dependence field.
+
+## `public void CSentenceGlossSet(long cardId, long sentenceId, long glossId, string text)`
+
+A gloss's typed text, deferred like the sentence text.
 
 ## `public CSentenceFrame CSentenceFrameRead()`
 

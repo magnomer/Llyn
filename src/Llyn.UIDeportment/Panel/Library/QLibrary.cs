@@ -15,8 +15,6 @@ internal sealed class QLibrary
 
     private CLibrary _cLibrary = null!;
 
-    private LEditor _lEditor = null!;
-
     private QIndex _qIndex = null!;
 
     internal QLibrary(UserControl surface)
@@ -127,11 +125,10 @@ internal sealed class QLibrary
     {
         _qLibraryHost = host;
         _cLibrary = host.PWindowForge.QForgeLibraryCreate(QLibraryShownCheck, host.PWindowEnvoy);
-        _lEditor = new LEditor(_cLibrary.CLibraryEditor);
         CPanel panel = _cLibrary.CLibraryPanel;
-        QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
+        QLectern lectern = new(_cLibrary.CLibraryEditor.CEditorDisplay, panel);
         panel.CPanelChanged += QLibraryModeUpdate;
-        _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QLibraryStoreUpdate;
+        _cLibrary.CLibraryEditor.CEditorDesk.CDeskStateChanged += QLibraryStoreUpdate;
 
         QLibraryIndexAttach(
             QContract.QContractFind<ItemsControl>(_qLibrarySurface, "PIndex"),
@@ -139,7 +136,7 @@ internal sealed class QLibrary
 
         QLibraryDisplay.PDisplayAttach(host, lectern);
 
-        QLibraryEditor.PEditorAttach(host, _lEditor);
+        QLibraryEditor.PEditorIntroduce(host, new QEditor(_cLibrary.CLibraryEditor));
 
         QLibraryEditor.PEditorChronicleChanged += QLibraryChronicleUpdate;
     }
@@ -163,7 +160,7 @@ internal sealed class QLibrary
 
     private void QLibraryStoreUpdate()
     {
-        QLibraryStore.IsEnabled = _lEditor.LEditorStorable;
+        QLibraryStore.IsEnabled = _cLibrary.CLibraryEditor.CEditorDesk.CDeskStorable;
     }
 
     internal async void QLibraryVistaRestore()
@@ -182,7 +179,6 @@ internal sealed class QLibrary
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsResonate));
         panel.CPanelChosenAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
-        QLibraryEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(QOrderList, "Order", QOrderHandle, QIndex.QIndexOrder);
         QChoice.QChoiceOrderApply(QOrderDropdown, panel.CPanelOrder);
         QLibrarySieveShow(QSieveMark);
@@ -283,7 +279,7 @@ internal sealed class QLibrary
 
     private void QLibraryStoreHandle(object sender, RoutedEventArgs e)
     {
-        QLibraryEditor.PEditorEntrySave();
+        _cLibrary.CLibraryEditor.CEditorEntrySave();
     }
 
     private void QLibraryBinHandle(object sender, RoutedEventArgs e)
@@ -339,7 +335,7 @@ internal sealed class QLibrary
 
     private void QLibraryChronicleUpdate()
     {
-        (bool undo, bool redo) = QLibraryEditor.PEditorChronicleRead();
+        (bool undo, bool redo) = _cLibrary.CLibraryEditor.CEditorDesk.CDeskChronicleRead();
         QLibraryBackward.IsEnabled = undo;
         QLibraryForward.IsEnabled = redo;
     }

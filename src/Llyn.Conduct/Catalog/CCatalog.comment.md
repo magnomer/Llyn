@@ -45,10 +45,6 @@ The transcription schemes a language offers.
 
 The parts of speech a language offers, each with its id and name.
 
-## `public CSpeechValue? CCatalogSpeechAdd(string language, string name)`
-
-Adds a part of speech to a language, and answers nothing when the engine declines the name.
-
 ## `public CGlyph? CCatalogGlyphRead(string language)`
 
 The glyph set a language writes in, or nothing when it has none.

@@ -56,12 +56,13 @@ public partial class PEditor
 
     private readonly List<PCategoryItem> _pCategoryPreset = [];
 
-    internal void PCategoryLoad()
+    internal void PCategoryLoad(CEntryDraft _)
     {
         IReadOnlyList<CSpeechValue> values;
         try
         {
-            values = _pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogSpeechRead(_lEditor.LEditorLanguage);
+            values = _pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogSpeechRead(
+                _qEditor.QEditorArea.CEditorLanguage);
         }
         catch (Exception)
         {
@@ -75,22 +76,6 @@ public partial class PEditor
         }
 
         PCategoryUpdate();
-    }
-
-    private CSpeechValue? PCategoryAdd(string name)
-    {
-        CSpeechValue? created;
-        try
-        {
-            created = _pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogSpeechAdd(_lEditor.LEditorLanguage, name);
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-
-        PCategoryLoad();
-        return created;
     }
 
     private void PCategoryUpdate()
@@ -123,7 +108,8 @@ public partial class PEditor
             return;
         }
 
-        PMarkerAdd(item.PCategoryItemName);
+        _qEditor.QEditorArea.CEditorSpeech.CCardSpeechAdd(item.PCategoryItemName);
+        PMarkerFieldRefine();
         PMarkerSwitch.IsChecked = false;
     }
 }

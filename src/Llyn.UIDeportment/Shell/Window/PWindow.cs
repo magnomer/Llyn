@@ -195,7 +195,6 @@ public partial class PWindow
         _qEstablishment.QEstablishmentAttach(this);
         PNavigationIntroduce();
 
-        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += PInput.PInputVistaRestore;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qLibrary.QLibraryVistaRestore;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qPhonology.QPhonologyVistaRestore;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qFavorite.QFavoriteVistaRestore;

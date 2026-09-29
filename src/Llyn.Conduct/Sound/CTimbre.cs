@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
@@ -22,6 +23,20 @@ public sealed class CTimbre
         _cTimbreDisplay = display;
     }
 
+    public event Action? CTimbreParadigmChanged;
+
+    public event Action? CTimbreScriptChanged;
+
+    public event Action? CTimbreReflexChanged;
+
+    public bool CTimbreFlagged => _cTimbreDesk.CDeskTenure?.LTenureFlaggedCheck() ?? false;
+
+    public IReadOnlyList<string> CTimbreVarietyNames => _cTimbreDesk.CDeskTenure?.LTenureVarietyNames ?? [];
+
+    public bool CTimbreReflexShown => _cTimbreDesk.CDeskTenure?.LTenureReflexCheck() ?? false;
+
+    public bool CTimbreMorphology => _cTimbreDisplay.LDisplaySound.LDisplayMorphologyRead();
+
     public bool CTimbreTonal => _cTimbrePhonologyPort.LEngineTonalCheck(LTimbreLanguage);
 
     public bool CTimbreSpoken => !_cTimbrePhonologyPort.LEngineSilentCheck(LTimbreLanguage);
@@ -40,7 +55,29 @@ public sealed class CTimbre
 
     public bool CTimbreScriptPending => _cTimbreDisplay.LDisplayScriptCheck(LTimbreEntry);
 
+    public bool CTimbreReflexPending => _cTimbreDisplay.LDisplaySound.LDisplayReflexCheck(LTimbreEntry);
+
     public bool CTimbreParadigmPending => _cTimbreDisplay.LDisplayParadigmCheck(LTimbreEntry);
+
+    public void CTimbreReflexStart()
+    {
+        _cTimbreDisplay.LDisplaySound.LDisplayReflexStart(LTimbreEntry);
+    }
+
+    public void CTimbreReflexRebuild()
+    {
+        _cTimbreDisplay.LDisplaySound.LDisplayReflexRebuild(LTimbreEntry);
+    }
+
+    internal void LTimbreObserverAttach(Action<Action> marshal)
+    {
+        _cTimbreDesk.CDeskVigil.LVigilEntryAttach(
+            CSubject.CSubjectInflection, _ => marshal(() => CTimbreParadigmChanged?.Invoke()));
+        _cTimbreDesk.CDeskVigil.LVigilEntryAttach(
+            CSubject.CSubjectReflex, _ => marshal(() => CTimbreReflexChanged?.Invoke()));
+        _cTimbreDesk.CDeskVigil.LVigilObserverAttach(
+            CSubject.CSubjectScript, _ => marshal(() => CTimbreScriptChanged?.Invoke()));
+    }
 
     private string LTimbreLanguage => _cTimbreDesk.CDeskTenure?.LTenureLanguageRead() ?? string.Empty;
 

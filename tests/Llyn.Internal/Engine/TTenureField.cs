@@ -45,13 +45,14 @@ public sealed class TTenureField
     }
 
     [Fact]
-    public void SpeechSet_Sent_WritesSpeeches()
+    public void SpeechSet_Typed_WritesSpeeches()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTenure tenure = TTenureFieldStart(engine);
 
-        tenure.TTenureSpeechSet(TInterface.TSpeechDraftCreate(["noun"]), false);
+        Assert.True(tenure.TTenureSpeechSet(" noun "));
+        tenure.TTenurePersist();
 
         Assert.Equal(
             "noun", Assert.Single(tenure.TTenureRead()!.LDraftContent.LEntryDraftSpeeches).LSpeechDraftName);

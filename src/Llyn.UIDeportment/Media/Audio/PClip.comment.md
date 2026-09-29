@@ -25,13 +25,13 @@ The download icon is set here, where the markup held an icon lookup.
 
 ## Inline notes
 
-### `if (_lEditor.LEditorFlagged)`
+### `if (_qEditor.QEditorArea.CEditorTimbre.CTimbreFlagged)`
 
 In flag mode every declared variety's flag is resolved before the search starts.
 A recording's flag is then ready the moment the recording lands.
 A menu closed while the flags loaded starts no search.
 
-### `_lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingStart(`
+### `_qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandRecordingStart(`
 
 The tenure starts the search and the menu listens through the wrapped delegate.
 The delegate hands each step back to the errand on the menu's thread, which raises one event per step.
@@ -118,12 +118,12 @@ The draft moved on while the bytes came down, and the foray attached nothing.
 The file stays in the workspace.
 But it is audio of a word the form no longer holds.
 
-### `_lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingPrimary,`
+### `_qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandRecordingPrimary,`
 
 The foray attached the recording to the row it was opened for, and the draft bulletin refills the form.
 The primary row's id is read back after the audio is attached, since the engine mints that row late.
 
-### `_lEditor.LEditorStudio.CEditorVarietySet(`
+### `_qEditor.QEditorArea.CEditorVarietySet(`
 
 Taking a recording tags its row with the variety, exactly as taking a reading does.
 An untagged recording sends nothing, and the row keeps whatever it had.
@@ -136,7 +136,7 @@ Taking a recording closes the menu, the way taking a pronunciation candidate doe
 
 A failed download leaves the row offering another try.
 
-### `private void PClipRecordingHandle(CRecording recording)`
+### `internal void PClipRecordingHandle(CRecording recording)`
 
 Handled the same way as lookup, each answer resolved into the row its source owns.
 A source may answer once per variety, and each answer with an address becomes one more recording on the row.

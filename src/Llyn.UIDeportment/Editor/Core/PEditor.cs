@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Llyn.Application;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -14,7 +13,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 {
     private PWindow _pEditorHost = null!;
 
-    private LEditor _lEditor = null!;
+    private QEditor _qEditor = null!;
 
     private readonly QRegard _qRegard;
 
@@ -53,7 +52,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         Resources.MergedDictionaries.Add(_pCollocationTemplate);
         _pLanguageTemplate = new PLanguageTemplate(this);
         Resources.MergedDictionaries.Add(_pLanguageTemplate);
-        _pMarkerTemplate = new PMarkerTemplate(this);
+        _pMarkerTemplate = new PMarkerTemplate();
         Resources.MergedDictionaries.Add(_pMarkerTemplate);
         _pCategoryTemplate = new PCategoryTemplate(this);
         Resources.MergedDictionaries.Add(_pCategoryTemplate);
@@ -80,29 +79,30 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         PCategoryAttach();
         PMarkerAttach();
         PStackAttach();
-        AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(PEditorTextHandle));
-        PHeadword.TextChanged += PHeadwordHandle;
-        PPronunciationField.TextChanged += PPronunciationHandle;
+        AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(PEditorTextObserve));
+        PHeadword.TextChanged += PEditorHeadwordObserve;
+        PPronunciationField.TextChanged += PContourRefine;
+        PPronunciationField.TextChanged += PEditorPronunciationObserve;
         QField.QFieldGhostAttach(PHeadwordGhost, PHeadword);
         QField.QFieldGhostAttach(PPronunciationMeasure, PPronunciationField);
-        PNoteContents.TextChanged += PNoteHandle;
+        PNoteContents.TextChanged += PEditorNoteObserve;
         _qRegard = new QRegard(this);
         _qCadence = new QCadence(this);
-        PEditorBackward.Click += PEditorUndoHandle;
+        PEditorBackward.Click += PEditorUndoObserve;
         PHeadword.SetResourceReference(QField.QFieldHintProperty, "Input.Headword");
         PPronunciationField.SetResourceReference(QField.QFieldHintProperty, "Input.Pronunciation");
         PNoteContents.SetResourceReference(QField.QFieldHintProperty, "Input.NoteHint");
         PEditorBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
-        PEditorForward.Click += PEditorRedoHandle;
+        PEditorForward.Click += PEditorRedoObserve;
         PEditorForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
-        PEditorDiscard.Click += PEditorDiscardHandle;
+        PEditorDiscard.Click += PEditorDiscardObserve;
         PEditorDiscard.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
-        PEditorStore.Click += PEditorStoreHandle;
+        PEditorStore.Click += PEditorStoreObserve;
         PEditorStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
         PPlaybackAction.Click += PPlaybackActionHandle;
         PPlaybackAction.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("play", 24));
         PEtymologyAttach();
-        AddHandler(LostFocusEvent, new RoutedEventHandler(PEditorFocusHandle));
+        AddHandler(LostFocusEvent, new RoutedEventHandler(PEditorFocusObserve));
         _pDownloaderPlayer.MediaEnded += PClipEndHandle;
         _pDownloaderPlayer.MediaFailed += PClipEndHandle;
     }
@@ -139,187 +139,149 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     private TextBox PNoteContents => (TextBox)FindName(nameof(PNoteContents));
 
-    private long PEditorDraft => _lEditor.LEditorStudio.CEditorDesk.CDeskId;
+    private long PEditorDraft => _qEditor.QEditorArea.CEditorDesk.CDeskId;
 
-    internal void PEditorAttach(PWindow host, LEditor editor)
+    internal void PEditorIntroduce(PWindow host, QEditor driver)
     {
         _pEditorHost = host;
-        _lEditor = editor;
-        _qRegard.QRegardAttach(editor);
-        _qCadence.QCadenceAttach(host, editor);
-        _lEditor.LEditorStudio.CEditorDesk.CDeskStarted += PEditorStartUpdate;
-        PEditorObserverAttach(_lEditor.LEditorStudio.CEditorDesk);
-        _lEditor.LEditorStudio.CEditorDraftChanged += PEditorDraftShow;
-        _lEditor.LEditorStudio.CEditorDesk.CDeskFailed += host.PWindowFailureRefine;
-        _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += PEditorStateUpdate;
-        _lEditor.LEditorStudio.CEditorDesk.CDeskRefused += host.PWindowEnvoy.CEnvoyFailureShow;
-        _lEditor.LEditorStudio.CEditorSounding.CSoundingChanged += PEditorFanqieUpdate;
-        _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandHarvestStarted += PClipSourceHandle;
-        _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingAdded += PClipRecordingHandle;
-        _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandHarvestFinished += PClipFinishHandle;
-        _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandLookupStarted += PNotationSourceHandle;
-        _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandCandidateAdded += PNotationCandidateHandle;
-        _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandLookupFinished += PNotationFinishHandle;
-
-        PSentenceLoad();
-        PSpeakerLoad();
-        PCategoryLoad();
+        _qEditor = driver;
+        _qRegard.QRegardIntroduce(driver.QEditorArea);
+        _qCadence.QCadenceIntroduce(host, driver.QEditorArea);
         PVolumeAttach();
-        PVolumeLoad();
-    }
-
-    internal void PEditorVistaRestore()
-    {
-        PEditorCommand.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorStudio.CEditorOwned);
-        _lEditor.LEditorStudio.CEditorEntryOpen(null);
+        driver.QEditorIntroduce(host, this);
     }
 
     internal void PEditorClose()
     {
-        _lEditor.LEditorStudio.CEditorDesk.CDeskCancel();
-
-        PNotationCancel();
-        PClipCancel();
+        _qEditor.QEditorArea.CEditorClose();
         _pDownloaderPlayer.Close();
-    }
-
-    internal void PEditorEntrySave()
-    {
-        _lEditor.LEditorStudio.CEditorEntrySave();
     }
 
     internal event Action? PEditorChronicleChanged;
 
-    internal (bool PEditorPast, bool PEditorFuture) PEditorChronicleRead()
-    {
-        return _lEditor.LEditorStudio.CEditorDesk.CDeskChronicleRead();
-    }
-
     public void QChronicleUndo()
     {
-        QChronicle.QChronicleRun(_lEditor.LEditorStudio.CEditorDesk.CDeskUndo);
+        QChronicle.QChronicleRun(_qEditor.QEditorArea.CEditorDesk.CDeskUndo);
     }
 
     public void QChronicleRedo()
     {
-        QChronicle.QChronicleRun(_lEditor.LEditorStudio.CEditorDesk.CDeskRedo);
+        QChronicle.QChronicleRun(_qEditor.QEditorArea.CEditorDesk.CDeskRedo);
     }
 
     private void PEditorRequestDefer(LRequest request)
     {
-        _lEditor.LEditorStudio.CEditorDesk.CDeskDefer(request);
+        _qEditor.QEditorArea.CEditorDesk.CDeskDefer(request);
     }
 
     private void PEditorRequestSend(LRequest request)
     {
-        _lEditor.LEditorStudio.CEditorDesk.CDeskSend(request);
+        _qEditor.QEditorArea.CEditorDesk.CDeskSend(request);
     }
 
-    private void PEditorSpeechSend()
-    {
-        _lEditor.LEditorTenure?.LTenureSpeechSet(PMarkerRead(), false);
-    }
-
-    private void PEditorObserverAttach(CDesk desk)
-    {
-        desk.CDeskVigil.LVigilEntryAttach(
-            CSubject.CSubjectFrequency, LObserver.LObserverCreate<CBulletin>(this, _qRegard.QRegardFrequencyUpdate));
-        desk.CDeskVigil.LVigilEntryAttach(
-            CSubject.CSubjectGrasp, LObserver.LObserverCreate<CBulletin>(this, _qRegard.QRegardGraspUpdate));
-        desk.CDeskVigil.LVigilEntryAttach(
-            CSubject.CSubjectInflection, LObserver.LObserverCreate<CBulletin>(this, _qCadence.QCadenceParadigmUpdate));
-        desk.CDeskVigil.LVigilEntryAttach(
-            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(this, PReflexPendingShow));
-        desk.CDeskVigil.LVigilObserverAttach(
-            CSubject.CSubjectScript, LObserver.LObserverCreate<CBulletin>(this, _qCadence.QCadenceScriptUpdate));
-        desk.CDeskVigil.LVigilObserverAttach(
-            CSubject.CSubjectFanqie, LObserver.LObserverCreate<CBulletin>(this, PEditorFanqieUpdate));
-        desk.CDeskVigil.LVigilObserverAttach(
-            CSubject.CSubjectReference, LObserver.LObserverCreate<CBulletin>(this, PSentenceLoad));
-        desk.CDeskVigil.LVigilObserverAttach(
-            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(this, desk.CDeskDraftResonate));
-        desk.CDeskObserverAttach(LObserver.LObserverCreate<Action>(static run => run()));
-    }
-
-    private void PEditorStartUpdate()
+    internal void PEditorStartRefine()
     {
         _pMeaningList.Clear();
         _pCollocationList.Clear();
-        _qRegard.QRegardUpdate();
-        _qCadence.QCadenceParadigmUpdate();
-        _qCadence.QCadenceScriptUpdate();
-        PEditorFanqieUpdate();
     }
 
-    private void PEditorDraftShow(CEntryDraft draft)
+    internal void PEditorDraftRefine(CEntryDraft draft)
     {
         QField.QFieldTextShow(PHeadword, draft.CEntryDraftHeadword);
-        PPronunciationOpener.Text =
-            QLook.QLookFirstRead(_lEditor.LEditorStudio.CEditorTimbre.CTimbrePhonemic, "/", "[");
-        PPronunciationCloser.Text =
-            QLook.QLookFirstRead(_lEditor.LEditorStudio.CEditorTimbre.CTimbrePhonemic, "/", "]");
-        QField.QFieldTextShow(PPronunciationField, _lEditor.LEditorStudio.CEditorPronunciationRead());
-        PAccentShow(draft);
-        PGlyphShow(draft);
-        PTranscriptionShow(draft);
-        PReflexShow(draft);
-        PMarkerShow(draft.CEntryDraftSpeeches);
-        PEditorLanguageUpdate();
-        _qCadence.QCadenceReadingShow(PHeadword.Text);
-
-        IReadOnlyDictionary<long, CTranslationTarget> targets = _lEditor.LEditorStudio.CEditorTargetRead();
-        PCardShow(_pMeaningList, "Meaning", draft.CEntryDraftMeanings, targets);
-        PCardShow(_pCollocationList, "Collocation", draft.CEntryDraftCollocations, targets);
-
-        PEtymologyShow(draft);
         QField.QFieldNoteShow(PNoteContents, draft.CEntryDraftNote);
-        PEditorRecordingShow(draft);
-        PPlaybackTrayShow();
-        PReflexPrepare(draft);
+        PEditorCommand.Visibility = QLook.QLookVisibleRead(_qEditor.QEditorArea.CEditorOwned);
+        PReadingRefine();
     }
 
-    private void PEditorLanguageUpdate()
+    internal void PReadingRefine()
     {
-        PSpeakerName.Text = _lEditor.LEditorLanguage;
+        _qCadence.QCadenceReadingShow(PHeadword.Text);
+    }
+
+    internal void PPronunciationRefine(CEntryDraft _)
+    {
+        QField.QFieldTextShow(PPronunciationField, _qEditor.QEditorArea.CEditorPronunciationRead());
+    }
+
+    internal void PTimbreRefine(CEntryDraft _)
+    {
+        CTimbre timbre = _qEditor.QEditorArea.CEditorTimbre;
+        PPronunciationOpener.Text = QLook.QLookFirstRead(timbre.CTimbrePhonemic, "/", "[");
+        PPronunciationCloser.Text = QLook.QLookFirstRead(timbre.CTimbrePhonemic, "/", "]");
+        PContour.PContourTonal = timbre.CTimbreTonal;
+        PPronunciation.Visibility = QLook.QLookVisibleRead(timbre.CTimbreSpoken);
+        PAccent.Visibility = QLook.QLookVisibleRead(timbre.CTimbreSpoken);
+    }
+
+    internal void PSpeakerRefine(CEntryDraft _)
+    {
+        PSpeakerName.Text = _qEditor.QEditorArea.CEditorLanguage;
         PSpeakerFlagUpdate();
+    }
+
+    internal void PHeadwordFontRefine(CEntryDraft _)
+    {
         LFontFace.LFontRefine(
             _pEditorHost.PWindowAtelier,
-            _lEditor.LEditorLanguage,
+            _qEditor.QEditorArea.CEditorLanguage,
             CFontRole.CFontRoleHeadword,
             PHeadword,
             PHeadwordGhost);
         LFontFace.LFontPlace(PHeadword, PHeadwordGhost);
-        LFontFace.LFontExampleRefine(Resources, _pEditorHost.PWindowAtelier, _lEditor.LEditorLanguage);
-        LFontFace.LFontGlyphRefine(PGlyph.Resources, _pEditorHost.PWindowAtelier, _lEditor.LEditorLanguage);
-        PContour.PContourTonal = _lEditor.LEditorStudio.CEditorTimbre.CTimbreTonal;
-        PPronunciation.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorStudio.CEditorTimbre.CTimbreSpoken);
-        PAccent.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorStudio.CEditorTimbre.CTimbreSpoken);
-        PSentenceFrameRefine();
-        PCategoryLoad();
     }
 
-    private void PHeadwordHandle(object sender, TextChangedEventArgs e)
+    internal void PExampleFontRefine(CEntryDraft _)
     {
-        _lEditor.LEditorStudio.CEditorHeadwordSet(PHeadword.Text);
+        LFontFace.LFontExampleRefine(Resources, _pEditorHost.PWindowAtelier, _qEditor.QEditorArea.CEditorLanguage);
     }
 
-    private void PPronunciationHandle(object sender, TextChangedEventArgs e)
+    internal void PGlyphFontRefine(CEntryDraft _)
+    {
+        LFontFace.LFontGlyphRefine(PGlyph.Resources, _pEditorHost.PWindowAtelier, _qEditor.QEditorArea.CEditorLanguage);
+    }
+
+    internal void PMeaningRefine(CEntryDraft draft)
+    {
+        PCardShow(_pMeaningList, "Meaning", draft.CEntryDraftMeanings);
+    }
+
+    internal void PCollocationRefine(CEntryDraft draft)
+    {
+        PCardShow(_pCollocationList, "Collocation", draft.CEntryDraftCollocations);
+    }
+
+    internal void PPlaybackRefine(CEntryDraft draft)
+    {
+        PEditorRecordingShow(draft);
+        PPlaybackTrayShow();
+    }
+
+    private void PEditorHeadwordObserve(object sender, TextChangedEventArgs e)
+    {
+        _qEditor.QEditorArea.CEditorHeadwordSet(PHeadword.Text);
+    }
+
+    private void PContourRefine(object sender, TextChangedEventArgs e)
     {
         PContour.PContourIpa = PPronunciationField.Text;
-        _lEditor.LEditorStudio.CEditorPronunciationSet(PPronunciationField.Text);
     }
 
-    private void PNoteHandle(object sender, TextChangedEventArgs e)
+    private void PEditorPronunciationObserve(object sender, TextChangedEventArgs e)
     {
-        _lEditor.LEditorStudio.CEditorNoteSet(PNoteContents.Text);
+        _qEditor.QEditorArea.CEditorPronunciationSet(PPronunciationField.Text);
     }
 
-    private void PEditorTextHandle(object sender, TextChangedEventArgs e)
+    private void PEditorNoteObserve(object sender, TextChangedEventArgs e)
+    {
+        _qEditor.QEditorArea.CEditorNoteSet(PNoteContents.Text);
+    }
+
+    private void PEditorTextObserve(object sender, TextChangedEventArgs e)
     {
         switch (e.OriginalSource)
         {
             case TextBox { DataContext: PCard or PSentence or PGloss or PImage or PVideo } box:
-                PEditorFieldHandle(box);
+                PEditorFieldObserve(box);
                 break;
             case TextBox { DataContext: PContextCaret caret } box:
                 PContextTextObserve(caret, box.Text);
@@ -336,46 +298,40 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         }
     }
 
-    private void PEditorFocusHandle(object sender, RoutedEventArgs e)
+    private void PEditorFocusObserve(object sender, RoutedEventArgs e)
     {
-        _lEditor.LEditorStudio.CEditorDesk.CDeskPersist();
+        _qEditor.QEditorArea.CEditorDesk.CDeskPersist();
     }
 
-    private void PEditorStateUpdate()
+    internal void PEditorStateRefine()
     {
-        IsEnabled = _lEditor.LEditorRunning;
-        PEditorDiscard.IsEnabled = _lEditor.LEditorChanged;
-        PEditorStore.IsEnabled = _lEditor.LEditorStorable;
-        (bool undo, bool redo) = _lEditor.LEditorStudio.CEditorDesk.CDeskChronicleRead();
+        CDesk desk = _qEditor.QEditorArea.CEditorDesk;
+        IsEnabled = desk.CDeskRunning;
+        PEditorDiscard.IsEnabled = desk.CDeskChanged;
+        PEditorStore.IsEnabled = desk.CDeskStorable;
+        (bool undo, bool redo) = desk.CDeskChronicleRead();
         PEditorBackward.IsEnabled = undo;
         PEditorForward.IsEnabled = redo;
         PEditorChronicleChanged?.Invoke();
     }
 
-    private void PEditorUndoHandle(object sender, RoutedEventArgs e)
+    private void PEditorUndoObserve(object sender, RoutedEventArgs e)
     {
         QChronicleUndo();
     }
 
-    private void PEditorRedoHandle(object sender, RoutedEventArgs e)
+    private void PEditorRedoObserve(object sender, RoutedEventArgs e)
     {
         QChronicleRedo();
     }
 
-    private void PEditorStoreHandle(object sender, RoutedEventArgs e)
+    private void PEditorStoreObserve(object sender, RoutedEventArgs e)
     {
-        _lEditor.LEditorStudio.CEditorEntrySave();
+        _qEditor.QEditorArea.CEditorEntrySave();
     }
 
-    private void PEditorDiscardHandle(object sender, RoutedEventArgs e)
+    private void PEditorDiscardObserve(object sender, RoutedEventArgs e)
     {
-        _lEditor.LEditorStudio.CEditorEntryUndo();
-    }
-
-    private void PEditorFanqieUpdate()
-    {
-        PReflexAnchorShow();
-        _qCadence.QCadenceFanqieUpdate();
-        _qCadence.QCadenceReadingShow(PHeadword.Text);
+        _qEditor.QEditorArea.CEditorEntryUndo();
     }
 }

@@ -15,8 +15,6 @@ internal sealed partial class QTaxonomy
 
     private CTaxonomy _cTaxonomy = null!;
 
-    private LEditor _lEditor = null!;
-
     internal QTaxonomy(UserControl surface)
     {
         ArgumentNullException.ThrowIfNull(surface);
@@ -136,9 +134,8 @@ internal sealed partial class QTaxonomy
         _qTaxonomyHost = host;
         _cTaxonomy = host.PWindowForge.QForgeTaxonomyCreate(QTaxonomyShownCheck, host.PWindowEnvoy);
         _cTaxonomy.CTaxonomyTagOpened += QDirectoryTagRefine;
-        _lEditor = new LEditor(_cTaxonomy.CTaxonomyEditor);
         CPanel panel = _cTaxonomy.CTaxonomyPanel;
-        QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
+        QLectern lectern = new(_cTaxonomy.CTaxonomyEditor.CEditorDisplay, panel);
         panel.CPanelChanged += QTaxonomyModeUpdate;
         panel.CPanelRowsChanged += QMembershipFind;
 
@@ -148,14 +145,14 @@ internal sealed partial class QTaxonomy
         QLookItem.QLookItemAttach(QMembership, QMembershipApply);
 
         QTaxonomyDisplay.PDisplayAttach(host, lectern);
-        _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QTaxonomyStoreUpdate;
-        QTaxonomyEditor.PEditorAttach(host, _lEditor);
+        _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskStateChanged += QTaxonomyStoreUpdate;
+        QTaxonomyEditor.PEditorIntroduce(host, new QEditor(_cTaxonomy.CTaxonomyEditor));
         QTaxonomyEditor.PEditorChronicleChanged += QTaxonomyChronicleUpdate;
     }
 
     private void QTaxonomyStoreUpdate()
     {
-        QTaxonomyStore.IsEnabled = _lEditor.LEditorStorable;
+        QTaxonomyStore.IsEnabled = _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskStorable;
     }
 
     internal void QTaxonomyReset()
@@ -214,7 +211,7 @@ internal sealed partial class QTaxonomy
 
     private void QTaxonomyChronicleUpdate()
     {
-        (bool undo, bool redo) = QTaxonomyEditor.PEditorChronicleRead();
+        (bool undo, bool redo) = _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskChronicleRead();
         QTaxonomyBackward.IsEnabled = undo;
         QTaxonomyForward.IsEnabled = redo;
     }

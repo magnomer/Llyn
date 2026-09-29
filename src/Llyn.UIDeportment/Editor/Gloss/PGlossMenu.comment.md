@@ -21,10 +21,9 @@ Drops the Gloss the command carries from the sentence row the command was raised
 Sends a chosen language at once, since the Gloss row notices its picker.
 Typed text never comes this way, because the row holds no copy of it.
 
-## `private void PGlossChangeHandle(PGloss gloss, LStateWritten written)`
+## `private void PGlossTextObserve(PGloss gloss, string text)`
 
-Turns the text typed into a Gloss field into its request.
-It is deferred through the tenure, keyed by the request's own Gloss, so a later edit replaces the earlier.
+Hands the text typed into a Gloss field to the sentence's gloss gate, with the row it stands in.
 
 ## `private (PCard, PSentence)? PSentenceGlossFind(PGloss gloss)`
 
@@ -56,7 +55,8 @@ The toggle keeps its arrow and its menu, because here the language is chosen rat
 
 ## `internal async void PSpeakerLoad()`
 
-Loads the flags and the language rows, then shows the editor's language.
+Loads the flags and the language rows, then shows the editor's language flag.
+It answers each opened workspace, since the languages are the workspace's.
 It stands here beside the row fill, since the editor file reached its line limit.
 
 ## `internal void PSpeakerHandle(object sender, RoutedEventArgs e)`

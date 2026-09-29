@@ -65,7 +65,7 @@ A scheme change is sent at once because it is one pick, not a keystroke stream.
 The row model raises the change, not the text box, so a draft render writing the same text raises nothing.
 The fill guard holds during a render, so a render writing a different text raises no request either.
 
-## `private void PTranscriptionShow(CEntryDraft draft)`
+## `internal void PTranscriptionShow(CEntryDraft draft)`
 
 Renders every transcription as a row, keyed by the transcription id.
 The declared schemes are asked of the language pack once per render.

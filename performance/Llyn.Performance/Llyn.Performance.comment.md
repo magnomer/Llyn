@@ -1,6 +1,6 @@
 # Llyn.Performance.csproj
 
-Builds the drills, the fixed workloads `scripts/estimateperformance.ps1` runs under the sampling profiler.
+Builds the drills, the fixed workloads `scripts/performance.ps1` runs under the sampling profiler.
 
 ## `<OutputType>Exe</OutputType>`
 

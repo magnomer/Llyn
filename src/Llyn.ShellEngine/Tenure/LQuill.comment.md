@@ -79,6 +79,18 @@ Writes a sentence's particle as known, deferred like the text.
 
 Writes a sentence's dependence as known, deferred like the text.
 
+## `public void LQuillTitleSet(long card, string text)`
+
+Defers a card's typed title, so each keystroke joins one undo step.
+
+## `public void LQuillExpressionSet(long card, string text)`
+
+Defers a card's typed expression, like its title.
+
+## `public void LQuillMeaningSet(long card, string text)`
+
+Defers a card's typed definition, like its title.
+
 ## `public void LQuillTitleSet(string text)`
 
 Defers the held Source's typed title.

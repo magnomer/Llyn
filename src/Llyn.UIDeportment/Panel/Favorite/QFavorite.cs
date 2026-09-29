@@ -15,8 +15,6 @@ internal sealed partial class QFavorite
 
     private CFavorite _cFavorite = null!;
 
-    private LEditor _lEditor = null!;
-
     internal QFavorite(UserControl surface)
     {
         ArgumentNullException.ThrowIfNull(surface);
@@ -123,9 +121,8 @@ internal sealed partial class QFavorite
     {
         _qFavoriteHost = host;
         _cFavorite = host.PWindowForge.QForgeFavoriteCreate(QFavoriteShownCheck, host.PWindowEnvoy);
-        _lEditor = new LEditor(_cFavorite.CFavoriteEditor);
         CPanel panel = _cFavorite.CFavoritePanel;
-        QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
+        QLectern lectern = new(_cFavorite.CFavoriteEditor.CEditorDisplay, panel);
         panel.CPanelChanged += QFavoriteModeUpdate;
         panel.CPanelRowsChanged += QRosterFind;
 
@@ -133,14 +130,14 @@ internal sealed partial class QFavorite
         QLookItem.QLookItemAttach(QRoster, QRosterApply);
 
         QFavoriteDisplay.PDisplayAttach(host, lectern);
-        _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QFavoriteStoreUpdate;
-        QFavoriteEditor.PEditorAttach(host, _lEditor);
+        _cFavorite.CFavoriteEditor.CEditorDesk.CDeskStateChanged += QFavoriteStoreUpdate;
+        QFavoriteEditor.PEditorIntroduce(host, new QEditor(_cFavorite.CFavoriteEditor));
         QFavoriteEditor.PEditorChronicleChanged += QFavoriteChronicleUpdate;
     }
 
     private void QFavoriteStoreUpdate()
     {
-        QFavoriteStore.IsEnabled = _lEditor.LEditorStorable;
+        QFavoriteStore.IsEnabled = _cFavorite.CFavoriteEditor.CEditorDesk.CDeskStorable;
     }
 
     internal void QFavoriteReset()
@@ -197,7 +194,7 @@ internal sealed partial class QFavorite
 
     private void QFavoriteChronicleUpdate()
     {
-        (bool undo, bool redo) = QFavoriteEditor.PEditorChronicleRead();
+        (bool undo, bool redo) = _cFavorite.CFavoriteEditor.CEditorDesk.CDeskChronicleRead();
         QFavoriteBackward.IsEnabled = undo;
         QFavoriteForward.IsEnabled = redo;
     }

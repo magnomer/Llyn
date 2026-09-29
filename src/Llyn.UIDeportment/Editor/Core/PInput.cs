@@ -1,14 +1,11 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 public class PInput : UserControl
 {
-    private LEditor _lEditor = null!;
-
     public PInput()
     {
         UserControl surface = (UserControl)System.Windows.Application.LoadComponent(
@@ -21,13 +18,7 @@ public class PInput : UserControl
 
     internal void PInputAttach(PWindow host)
     {
-        _lEditor = host.PWindowForge.QForgeInputCreate(host.PWindowEnvoy);
-        PEditor.PEditorAttach(host, _lEditor);
-    }
-
-    internal void PInputVistaRestore()
-    {
-        PEditor.PEditorVistaRestore();
+        PEditor.PEditorIntroduce(host, new QEditor(host.PWindowForge.QForgeInputCreate(host.PWindowEnvoy)));
     }
 
     internal void PInputClose()

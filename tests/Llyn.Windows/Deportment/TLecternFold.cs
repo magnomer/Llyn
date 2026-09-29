@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using Llyn.Conduct;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 using Xunit;
@@ -15,7 +16,7 @@ public sealed class TLecternFold
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEditor editor = TInterfaceDeportment.TEditorCreate(engine);
+        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
         QLectern lectern = TInterfaceDeportment.TLecternCreate(editor);
         bool? shown = null;
         Exception? failure = null;

@@ -22,8 +22,6 @@ public class PYunjing : UserControl
 
     private CYunjing _cYunjing = null!;
 
-    private LEditor _lEditor = null!;
-
     public PYunjing()
     {
         UserControl surface = (UserControl)System.Windows.Application.LoadComponent(
@@ -155,13 +153,12 @@ public class PYunjing : UserControl
         _pYunjingHost = host;
         _cYunjing = host.PWindowForge.QForgeYunjingCreate(PYunjingShownCheck, host.PWindowEnvoy);
         _cYunjing.CYunjingDiweiOpened += PYunjingQueryRefine;
-        _lEditor = new LEditor(_cYunjing.CYunjingEditor);
         CPanel panel = _cYunjing.CYunjingPanel;
-        QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
+        QLectern lectern = new(_cYunjing.CYunjingEditor.CEditorDisplay, panel);
         panel.CPanelChanged += PYunjingModeUpdate;
         panel.CPanelRowsChanged += PXiaoyunUpdate;
         panel.CPanelCleared += PYunjingClearUpdate;
-        _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += PYunjingStoreUpdate;
+        _cYunjing.CYunjingEditor.CEditorDesk.CDeskStateChanged += PYunjingStoreUpdate;
         _cYunjing.CYunjingChanged += PYunjingColumnUpdate;
 
         PShengmu.ItemsSource = _pShengmuList;
@@ -171,7 +168,7 @@ public class PYunjing : UserControl
         PDisplay.PDisplayAttach(host, lectern);
         _qDiwei.QDiweiAttach(host.PWindowAtelier, _cYunjing);
 
-        PEditor.PEditorAttach(host, _lEditor);
+        PEditor.PEditorIntroduce(host, new QEditor(_cYunjing.CYunjingEditor));
 
         PEditor.PEditorChronicleChanged += PYunjingChronicleUpdate;
 
@@ -182,7 +179,7 @@ public class PYunjing : UserControl
 
     private void PYunjingStoreUpdate()
     {
-        PYunjingStore.IsEnabled = _lEditor.LEditorStorable;
+        PYunjingStore.IsEnabled = _cYunjing.CYunjingEditor.CEditorDesk.CDeskStorable;
     }
 
     internal void PYunjingVistaRestore()
@@ -206,7 +203,6 @@ public class PYunjing : UserControl
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, _cYunjing.CYunjingEntryResonate));
         panel.CPanelChosenAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.CPanelDraftResonate));
-        PEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
             PLadderList,
             "Ladder",
@@ -361,7 +357,7 @@ public class PYunjing : UserControl
 
     private void PYunjingStoreHandle(object sender, RoutedEventArgs e)
     {
-        PEditor.PEditorEntrySave();
+        _cYunjing.CYunjingEditor.CEditorEntrySave();
     }
 
     private void PYunjingBinHandle(object sender, RoutedEventArgs e)
@@ -412,7 +408,7 @@ public class PYunjing : UserControl
 
     private void PYunjingChronicleUpdate()
     {
-        (bool undo, bool redo) = PEditor.PEditorChronicleRead();
+        (bool undo, bool redo) = _cYunjing.CYunjingEditor.CEditorDesk.CDeskChronicleRead();
         PYunjingBackward.IsEnabled = undo;
         PYunjingForward.IsEnabled = redo;
     }

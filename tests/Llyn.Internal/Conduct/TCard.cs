@@ -379,7 +379,7 @@ public sealed class TCard
         long chat = engine.TEngineTranslationCreate("chat", "French").LEntryId;
         (_, CCard card) = TCardPrepare(engine);
 
-        Assert.Equal(chat, card.CCardTranslationResolve("chat", null));
+        Assert.Equal(chat, card.CCardTranslationResolve("chat"));
         Assert.Contains(card.CCardProspectFind("chat"), row => row.CVistaRowId == chat);
     }
 

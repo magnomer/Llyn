@@ -14,7 +14,6 @@ One meaning or collocation of an entry, as the editor's card shows it.
 - `CCardDraftSentence`: the card's sentences.
 - `CCardDraftSituation`: the card's situations.
 - `CCardDraftRegister`: the card's registers.
-- `CCardDraftTranslation`: the entries the card translates to, by id.
 - `CCardDraftTag`: the card's tags.
 - `CCardDraftImage`: the card's images.
 - `CCardDraftVideo`: the card's videos.

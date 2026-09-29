@@ -175,18 +175,6 @@ public sealed partial class LTenure
         }
     }
 
-    public void LTenureSpeechSet(IReadOnlyList<LSpeechDraft> speeches, bool deferred)
-    {
-        LRequestSpeech request = new(LTenureId, speeches);
-        if (deferred)
-        {
-            LTenureRequestDefer(request);
-            return;
-        }
-
-        LTenureRequestApply(request);
-    }
-
     public void LTenureTagAdd(long tag)
     {
         LTenureRequestApply(new LRequestTagPick(LTenureId, 0, tag, 0));

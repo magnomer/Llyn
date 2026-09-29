@@ -8,6 +8,8 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LTenure
 {
+    private string? _lTenureSpeechPending;
+
     public bool LTenureFlaggedCheck()
     {
         string language = LTenureLanguageRead();
@@ -94,15 +96,104 @@ public sealed partial class LTenure
         }
     }
 
-    public IReadOnlyDictionary<long, LTranslationTarget> LTenureTargetRead()
+    public IReadOnlyList<LTranslationTarget> LTenureTranslationRead(long card)
     {
+        IReadOnlyList<long> ids = LTenureRead()?.LDraftContent is LEntryDraft draft
+            ? LDraftClerkCard.LCardFind(draft, card)?.LCardDraftTranslation ?? []
+            : [];
+        if (ids.Count == 0)
+        {
+            return [];
+        }
+
+        IReadOnlyList<LTranslationTarget> found;
         try
         {
-            return _lEngine.LEngineCard.LEngineTargetFind(LTenureId);
+            found = _lEngine.LEngineCard.LEngineTargetRead(LTenureId, ids);
         }
         catch (Exception)
         {
-            return new Dictionary<long, LTranslationTarget>();
+            return [];
+        }
+
+        List<LTranslationTarget> ordered = new(ids.Count);
+        foreach (long id in ids)
+        {
+            if (found.FirstOrDefault(target => target.LTranslationTargetId == id) is LTranslationTarget target)
+            {
+                ordered.Add(target);
+            }
+        }
+
+        return ordered;
+    }
+
+    public (IReadOnlyList<string> LSpeechNames, string LSpeechTyped) LTenureSpeechRead(string typed)
+    {
+        IReadOnlyList<LSpeechDraft> shown = LTenureRead()?.LDraftContent.LEntryDraftSpeeches ?? [];
+        (IReadOnlyList<LSpeechDraft> held, string kept) =
+            LSpeechClerk.LSpeechSettle(shown, LSpeechClerk.LSpeechChipRead(shown, _lTenureSpeechPending), typed);
+        if (kept.Length == 0)
+        {
+            _lTenureSpeechPending = null;
+        }
+
+        return (held.Select(static speech => speech.LSpeechDraftName).ToList(), kept);
+    }
+
+    public bool LTenureSpeechSet(string typed)
+    {
+        IReadOnlyList<LSpeechDraft> held = LTenureChipRead();
+        LTenureSpeechSend(held, typed, true);
+        return LSpeechClerk.LSpeechTypedCheck(typed);
+    }
+
+    public void LTenureSpeechAdd(string name)
+    {
+        string language = LTenureLanguageRead();
+        IReadOnlyList<LSpeechDraft>? added =
+            LSpeechClerk.LSpeechAdd(LTenureChipRead(), name, typed => LTenureSpeechCreate(language, typed));
+        if (added is null)
+        {
+            return;
+        }
+
+        LTenureSpeechSend(added, string.Empty, false);
+    }
+
+    public void LTenureSpeechRemove(string name, string typed)
+    {
+        LTenureSpeechSend(LSpeechClerk.LSpeechRemove(LTenureChipRead(), name), typed, false);
+    }
+
+    private IReadOnlyList<LSpeechDraft> LTenureChipRead()
+    {
+        IReadOnlyList<LSpeechDraft> shown = LTenureRead()?.LDraftContent.LEntryDraftSpeeches ?? [];
+        return LSpeechClerk.LSpeechChipRead(shown, _lTenureSpeechPending);
+    }
+
+    private void LTenureSpeechSend(IReadOnlyList<LSpeechDraft> held, string typed, bool deferred)
+    {
+        _lTenureSpeechPending = LSpeechClerk.LSpeechPendingRead(held, typed);
+        LRequestSpeech request = new(LTenureId, LSpeechClerk.LSpeechParse(held, typed));
+        if (deferred)
+        {
+            LTenureRequestDefer(request);
+            return;
+        }
+
+        LTenureRequestApply(request);
+    }
+
+    private LSpeechValue? LTenureSpeechCreate(string language, string name)
+    {
+        try
+        {
+            return _lEngine.LEngineVocabulary.LEngineSpeechAdd(language, name);
+        }
+        catch (Exception)
+        {
+            return null;
         }
     }
 }

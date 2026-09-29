@@ -15,8 +15,6 @@ internal sealed partial class QTenor
 
     private CTenor _cTenor = null!;
 
-    private LEditor _lEditor = null!;
-
     internal QTenor(UserControl surface)
     {
         ArgumentNullException.ThrowIfNull(surface);
@@ -136,9 +134,8 @@ internal sealed partial class QTenor
         _qTenorHost = host;
         _cTenor = host.PWindowForge.QForgeTenorCreate(QTenorShownCheck, host.PWindowEnvoy);
         _cTenor.CTenorRegisterOpened += QGamutRegisterRefine;
-        _lEditor = new LEditor(_cTenor.CTenorEditor);
         CPanel panel = _cTenor.CTenorPanel;
-        QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
+        QLectern lectern = new(_cTenor.CTenorEditor.CEditorDisplay, panel);
         panel.CPanelChanged += QTenorModeUpdate;
         panel.CPanelRowsChanged += QCohortFind;
 
@@ -148,14 +145,14 @@ internal sealed partial class QTenor
         QLookItem.QLookItemAttach(QCohort, QCohortApply);
 
         QTenorDisplay.PDisplayAttach(host, lectern);
-        _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QTenorStoreUpdate;
-        QTenorEditor.PEditorAttach(host, _lEditor);
+        _cTenor.CTenorEditor.CEditorDesk.CDeskStateChanged += QTenorStoreUpdate;
+        QTenorEditor.PEditorIntroduce(host, new QEditor(_cTenor.CTenorEditor));
         QTenorEditor.PEditorChronicleChanged += QTenorChronicleUpdate;
     }
 
     private void QTenorStoreUpdate()
     {
-        QTenorStore.IsEnabled = _lEditor.LEditorStorable;
+        QTenorStore.IsEnabled = _cTenor.CTenorEditor.CEditorDesk.CDeskStorable;
     }
 
     internal void QTenorReset()
@@ -214,7 +211,7 @@ internal sealed partial class QTenor
 
     private void QTenorChronicleUpdate()
     {
-        (bool undo, bool redo) = QTenorEditor.PEditorChronicleRead();
+        (bool undo, bool redo) = _cTenor.CTenorEditor.CEditorDesk.CDeskChronicleRead();
         QTenorBackward.IsEnabled = undo;
         QTenorForward.IsEnabled = redo;
     }

@@ -23,11 +23,11 @@ public partial class PEditor
         PEtymologyField.PEtymologyBox.TextChanged += PEtymologyWriteHandle;
     }
 
-    private void PEtymologyShow(CEntryDraft draft)
+    internal void PEtymologyShow(CEntryDraft draft)
     {
         PEtymologyField.PEtymologyLanguage = draft.CEntryDraftLanguage;
         PEtymologyField.PEtymologyText = draft.CEntryDraftEtymology.CEtymologyDraftText;
-        PEtymologyField.PEtymologySourceShow(_lEditor.LEditorStudio.CEditorEtymonRead());
+        PEtymologyField.PEtymologySourceShow(_qEditor.QEditorArea.CEditorEtymonRead());
         PEtymologyField.PEtymologyMentionShow(
             _pEditorHost,
             draft.CEntryDraftEtymology.CEtymologyDraftText,
@@ -37,7 +37,7 @@ public partial class PEditor
 
     private void PEtymologyWriteHandle(object sender, TextChangedEventArgs e)
     {
-        _lEditor.LEditorStudio.CEditorCard.CCardEtymologySet(PEtymologyField.PEtymologyBox.Text);
+        _qEditor.QEditorArea.CEditorCard.CCardEtymologySet(PEtymologyField.PEtymologyBox.Text);
     }
 
     private void PEtymologyAddHandle(object sender, ExecutedRoutedEventArgs e)
@@ -48,19 +48,19 @@ public partial class PEditor
             box,
             PMentionSelection.PMentionSelectionPlace(box),
             caret.PEtymonText.Trim(),
-            _lEditor.LEditorLanguage,
+            _qEditor.QEditorArea.CEditorLanguage,
             entryId => PEtymonSend(caret, entryId));
     }
 
     private void PEtymonSend(PEtymon caret, long entryId)
     {
         caret.PEtymonText = string.Empty;
-        _lEditor.LEditorStudio.CEditorCard.CCardEtymonAdd(entryId);
+        _qEditor.QEditorArea.CEditorCard.CCardEtymonAdd(entryId);
     }
 
     private void PEtymologyRemoveHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        _lEditor.LEditorStudio.CEditorCard.CCardEtymonRemove(((PEtymon)e.Parameter).PEtymonId);
+        _qEditor.QEditorArea.CEditorCard.CCardEtymonRemove(((PEtymon)e.Parameter).PEtymonId);
     }
 
     private void PEtymologyEntryHandle(object sender, ExecutedRoutedEventArgs e)
@@ -78,14 +78,14 @@ public partial class PEditor
             box,
             PMentionSelection.PMentionSelectionPlace(box),
             box.SelectedText.Trim(),
-            _lEditor.LEditorLanguage,
-            entryId => _lEditor.LEditorStudio.CEditorCard.CCardMentionSave(text, start, length, entryId));
+            _qEditor.QEditorArea.CEditorLanguage,
+            entryId => _qEditor.QEditorArea.CEditorCard.CCardMentionSave(text, start, length, entryId));
     }
 
     private void PEtymologyUnlinkHandle(object sender, ExecutedRoutedEventArgs e)
     {
         TextBox box = PEtymologyField.PEtymologyBox;
-        _lEditor.LEditorStudio.CEditorCard.CCardMentionDelete(box.Text, box.SelectionStart, box.SelectionLength);
+        _qEditor.QEditorArea.CEditorCard.CCardMentionDelete(box.Text, box.SelectionStart, box.SelectionLength);
     }
 
     private void PEtymologyLinkCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -96,7 +96,7 @@ public partial class PEditor
     private void PEtymologyUnlinkCheck(object sender, CanExecuteRoutedEventArgs e)
     {
         TextBox box = PEtymologyField.PEtymologyBox;
-        e.CanExecute = _lEditor.LEditorStudio.CEditorCard.CCardMentionCheck(
+        e.CanExecute = _qEditor.QEditorArea.CEditorCard.CCardMentionCheck(
             box.Text, box.SelectionStart, box.SelectionLength);
     }
 }

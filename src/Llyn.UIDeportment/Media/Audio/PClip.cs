@@ -73,21 +73,23 @@ public partial class PEditor
 
         try
         {
-            if (_lEditor.LEditorFlagged)
+            if (_qEditor.QEditorArea.CEditorTimbre.CTimbreFlagged)
             {
                 await LEnsignImage.LEnsignVarietyLoad(
-                    _pEditorHost.PWindowAtelier, _lEditor.LEditorLanguage, _lEditor.LEditorVarietyNames);
+                    _pEditorHost.PWindowAtelier,
+                    _qEditor.QEditorArea.CEditorLanguage,
+                    _qEditor.QEditorArea.CEditorTimbre.CTimbreVarietyNames);
                 if (!PClip.IsOpen)
                 {
                     return;
                 }
             }
 
-            _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingStart(
+            _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandRecordingStart(
                 word,
                 target,
                 LObserver.LObserverCreate<CHarvestStep>(
-                    this, _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandHarvestResonate));
+                    this, _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandHarvestResonate));
         }
         catch (Exception)
         {
@@ -98,7 +100,7 @@ public partial class PEditor
 
     private void PClipCancel()
     {
-        _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandCancel();
+        _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandCancel();
     }
 
     private PClipItem PClipPlace(string source, int order)
@@ -130,12 +132,12 @@ public partial class PEditor
         }
 
         CVariety regional = CSounding.CSoundingVarietyRead(
-            _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingLanguage, variety);
+            _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandRecordingLanguage, variety);
         return new PClipReading(
             recording,
             QAccentItem.QAccentLabelRefine(regional),
             QAccentItem.QAccentEnsignRefine(
-                regional, _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingFlagged),
+                regional, _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandRecordingFlagged),
             action);
     }
 
@@ -290,7 +292,7 @@ public partial class PEditor
     {
         if (sender is not FrameworkElement { DataContext: PClipReading reading }
             || !reading.PClipReadingReady
-            || !_lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingHeld)
+            || !_qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandRecordingHeld)
         {
             return;
         }
@@ -300,7 +302,7 @@ public partial class PEditor
 
         try
         {
-            bool attached = await _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingSave(
+            bool attached = await _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandRecordingSave(
                 reading.PClipReadingModel);
             reading.PClipReadingAction = QLocalizationCatalog.QLocalizationTextRead("Downloader.Saved");
 
@@ -309,9 +311,9 @@ public partial class PEditor
                 return;
             }
 
-            _lEditor.LEditorStudio.CEditorVarietySet(
-                _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingPrimary,
-                _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingTarget,
+            _qEditor.QEditorArea.CEditorVarietySet(
+                _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandRecordingPrimary,
+                _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandRecordingTarget,
                 reading.PClipReadingVariety);
             PClip.IsOpen = false;
         }
@@ -322,13 +324,13 @@ public partial class PEditor
         }
     }
 
-    private void PClipSourceHandle(string source, int order)
+    internal void PClipSourceHandle(string source, int order)
     {
         PClipPlace(source, order);
         PClipUpdate();
     }
 
-    private void PClipRecordingHandle(CRecording recording)
+    internal void PClipRecordingHandle(CRecording recording)
     {
         PClipPlace(recording.CRecordingSource, recording.CRecordingOrder).PClipItemShow(
             recording,
@@ -338,7 +340,7 @@ public partial class PEditor
         PClipUpdate();
     }
 
-    private void PClipFinishHandle()
+    internal void PClipFinishHandle()
     {
         _pClipSearching = false;
         PClipUpdate();

@@ -15,6 +15,15 @@ The stored entry the held draft stands on, or null for a fresh draft or an empty
 
 The last grasp step, which the star control takes as its limit so it names no engine constant.
 
+## `public event Action? CEsteemFrequencyChanged;`
+
+The held entry's frequency was counted again, raised on the driver's thread.
+
+## `internal void LEsteemObserverAttach(Action<Action> marshal)`
+
+Hears the frequency and grasp subjects of the held entry on every tenure the desk starts.
+A grasp heard from elsewhere raises `CEsteemGraspChanged`, as the grasp gate does.
+
 ## `public void CEsteemFavoriteSet(bool marked)`
 
 Marks or clears the favourite on the stored entry, then announces a re-read so a refusal redraws.

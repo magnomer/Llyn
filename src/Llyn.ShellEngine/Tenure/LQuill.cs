@@ -151,6 +151,30 @@ public sealed class LQuill
             new LRequestSentenceDependence(_lQuillTenure.LTenureId, card, sentence, new LStateWritten(text)));
     }
 
+    public void LQuillTitleSet(long card, string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillTenure.LTenureRequestDefer(
+            new LRequestCardTitle(_lQuillTenure.LTenureId, card, new LStateWritten(text)));
+    }
+
+    public void LQuillExpressionSet(long card, string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillTenure.LTenureRequestDefer(
+            new LRequestCardExpression(_lQuillTenure.LTenureId, card, new LStateWritten(text)));
+    }
+
+    public void LQuillMeaningSet(long card, string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillTenure.LTenureRequestDefer(
+            new LRequestCardMeaning(_lQuillTenure.LTenureId, card, new LStateWritten(text)));
+    }
+
     public void LQuillTitleSet(string text)
     {
         ArgumentNullException.ThrowIfNull(text);

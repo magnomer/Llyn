@@ -16,9 +16,10 @@ A typed note lands without its trailing line breaks.
 
 An empty language choice leaves the chosen language as it was.
 
-## `public void SpeechSet_Sent_WritesSpeeches()`
+## `public void SpeechSet_Typed_WritesSpeeches()`
 
-A sent list of parts of speech replaces the held list.
+Typed text lands trimmed as a pending part of speech once the deferred request is flushed.
+The answer says the text names a part of speech.
 
 ## `public void IpaSet_Typed_WritesPrimaryIpa()`
 
