@@ -195,7 +195,7 @@ public sealed class TLibrary
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(static _ => [], asked));
+        CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(static _ => true, asked));
 
         await library.CLibraryMarkupImport(null);
 
@@ -212,10 +212,10 @@ public sealed class TLibrary
         List<string> asked = [];
         List<CMarkupEntry> shown = [];
         CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(
-            entries =>
+            customs =>
             {
-                shown.AddRange(entries);
-                return [.. entries.Select(static _ => TLibraryRowCreate(CSCustomsMode.CSCustomsModeFresh, 0))];
+                shown.AddRange(customs.CSCustomsEntry);
+                return true;
             },
             asked));
         int refreshed = 0;
@@ -223,7 +223,9 @@ public sealed class TLibrary
 
         await library.CLibraryMarkupImport(TInterface.TMarkupSave(workspace, TInterface.TMarkupLone));
 
-        Assert.Equal("ember", Assert.Single(shown).CMarkupEntryHeadword);
+        CMarkupEntry entry = Assert.Single(shown);
+        Assert.Equal("ember", entry.CMarkupEntryName);
+        Assert.Empty(entry.CMarkupEntryTarget);
         Assert.Equal(1, refreshed);
         Assert.Equal(["Customs", "Omission"], asked.Select(static question => question.Split(':')[0]));
         Assert.Contains("braise", asked[1], StringComparison.Ordinal);
@@ -237,14 +239,44 @@ public sealed class TLibrary
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry ember = TLibraryEntrySave(engine, "ember", "English");
+        List<CMarkupEntry> shown = [];
+        CSCustomsRow? replaced = null;
         CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(
-            _ => [TLibraryRowCreate(CSCustomsMode.CSCustomsModeMerge, ember.LEntryId)], []));
+            customs =>
+            {
+                shown.AddRange(customs.CSCustomsEntry);
+                customs.CSCustomsModeSet(0, CSCustomsMode.CSCustomsModeReplace);
+                replaced = customs.CSCustomsRowRead(0);
+                customs.CSCustomsModeSet(0, CSCustomsMode.CSCustomsModeMerge);
+                return customs.CSCustomsTargetSet(0, ember.LEntryId);
+            },
+            []));
 
         await library.CLibraryMarkupImport(TInterface.TMarkupSave(workspace, TInterface.TMarkupLone));
 
+        Assert.Equal([ember.LEntryId], Assert.Single(shown).CMarkupEntryTarget);
+        Assert.Equal(
+            new CSCustomsRow(CSCustomsMode.CSCustomsModeReplace, ember.LEntryId, true, "Customs.Loss", 1, 0), replaced);
         Assert.Equal(ember.LEntryId, Assert.Single(library.CLibraryRowsRead()).CVistaRowId);
         LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(ember.LEntryId));
         Assert.Equal(2, draft.LEntryDraftMeanings.Count);
+    }
+
+    [Fact]
+    public async Task LibraryMarkupImport_CleanFile_ReportsNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(static _ => true, asked));
+
+        await library.CLibraryMarkupImport(TInterface.TMarkupSave(
+            workspace,
+            "<llyn><entry><headword>ember</headword><language>English</language></entry></llyn>"));
+
+        Assert.Equal(["Customs:1"], asked);
+        Assert.Equal(["ember"], library.CLibraryRowsRead().Select(row => row.CVistaRowHeadword));
     }
 
     [Fact]
@@ -254,7 +286,7 @@ public sealed class TLibrary
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(static _ => null, asked));
+        CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(static _ => false, asked));
         int refreshed = 0;
         library.CLibraryPanel.CPanelRowsChanged += () => refreshed++;
 
@@ -272,7 +304,7 @@ public sealed class TLibrary
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(static _ => [], asked));
+        CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(static _ => true, asked));
 
         await library.CLibraryMarkupImport(TInterface.TMarkupSave(
             workspace, "<llyn><entry><headword>ember</headword></llyn>"));
@@ -331,14 +363,14 @@ public sealed class TLibrary
     }
 
     private static CEnvoy TLibraryEnvoyCreate(
-        Func<IReadOnlyList<CMarkupEntry>, IReadOnlyList<CSCustomsRow>?> customs, List<string> asked) =>
+        Func<CSCustoms, bool> customs, List<string> asked) =>
         TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["CEnvoyCustomsRead"] = args =>
             {
-                IReadOnlyList<CMarkupEntry> entries = (IReadOnlyList<CMarkupEntry>)args![0]!;
-                asked.Add($"Customs:{entries.Count}");
-                return customs(entries);
+                CSCustoms declared = (CSCustoms)args![0]!;
+                asked.Add($"Customs:{declared.CSCustomsEntry.Count}");
+                return customs(declared);
             },
             ["CEnvoyOmissionShow"] = args =>
             {
@@ -353,9 +385,6 @@ public sealed class TLibrary
                 return null;
             },
         });
-
-    private static CSCustomsRow TLibraryRowCreate(CSCustomsMode mode, long target) =>
-        new(mode, target, mode != CSCustomsMode.CSCustomsModeFresh, 0);
 
     private static LEntry TLibraryEntrySave(LEngine engine, string headword, string language)
     {

@@ -47,9 +47,11 @@ public sealed class TAnthology
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
+        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, asked);
 
-        Assert.Null(TInterfaceMention.TAnthologyFailRead(engine, TInterfaceConduct.TEnvoyCreate(false, asked)));
+        Assert.Null(TInterfaceMention.TAnthologyFailRead(engine, atelier, envoy));
         Assert.Equal(["Example.LoadFailed"], asked);
     }
 
@@ -110,18 +112,6 @@ public sealed class TAnthology
 
         Assert.True(anthology.CAnthologyFiltered);
         Assert.Equal(["English"], anthology.CAnthologyPanel.CPanelFilter.CCatalogFilterHidden);
-    }
-
-    [Fact]
-    public void AnthologyMentionRead_NoChosenExample_ReadsNothing()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CAnthology anthology = TAnthologyPrepare(engine, atelier, out _);
-        anthology.TAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
-
-        Assert.Null(anthology.CAnthologyMentionRead(2));
     }
 
     [Fact]
@@ -372,6 +362,8 @@ public sealed class TAnthology
         Assert.Equal(9, held.CExampleSource);
         Assert.Equal("Field Notes", held.CExampleCitation);
         Assert.Equal("Example.Text", held.CExampleTextHint);
+        Assert.Null(held.CExampleWording);
+        Assert.False(held.CExampleMuted);
         Assert.Equal("2 quotes", held.CExampleTally);
         Assert.Equal([40L], held.CExampleExcerpt.Select(mention => mention.CMentionMarkEntry));
     }
@@ -388,8 +380,23 @@ public sealed class TAnthology
         Assert.NotNull(held);
         Assert.True(held!.CExampleText.CStateValueUncertain);
         Assert.Equal("Display.Unknown", held.CExampleTextHint);
+        Assert.Equal("Display.Unknown", held.CExampleWording);
+        Assert.False(held.CExampleMuted);
         Assert.Null(held.CExampleSource);
         Assert.Empty(held.CExampleExcerpt);
+    }
+
+    [Fact]
+    public void AnthologyExampleRead_UnwrittenText_WordsItUnwrittenAndMuted()
+    {
+        LExample example = TInterface.TExampleCreate(
+            5, "English", TInterface.TStateValueCreate(string.Empty), null, TInterface.TStateAnchorRead(null));
+
+        CExample? held = TInterfaceConduct.TAnthologyExampleRead(example, string.Empty, string.Empty);
+
+        Assert.NotNull(held);
+        Assert.Equal("Example.Unwritten", held!.CExampleWording);
+        Assert.True(held.CExampleMuted);
     }
 
     private static CAnthology TAnthologyPrepare(LEngine engine, CAtelier atelier, out CDesk desk)

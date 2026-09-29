@@ -34,14 +34,16 @@ Conduct read the notice once and recorded any fault, so the driver only words th
 Asks whether unsaved work is stored, dropped, or kept open.
 True stores, false discards, and null means the user stays.
 
-## `IReadOnlyList<CSCustomsRow>? CEnvoyCustomsRead(IReadOnlyList<CMarkupEntry> entries);`
+## `bool CEnvoyCustomsRead(CSCustoms customs);`
 
 Asks how each parsed entry of a markup file enters the workspace, one declared row per entry in file order.
-It answers null when the user declines, and the gate then stores nothing.
+The driver shows the rows `customs` holds and records each pick through its gates.
+It answers whether the user accepted, and a decline stores nothing.
 
 ## `void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions);`
 
 Tells the user what a markup import could not place, line by line.
+The library asks it only when something was left behind.
 
 ## `(string? CEnvoyFile, CPortraitMedium CEnvoyMedium) CEnvoyFileRead(string file, IReadOnlyList<CPortraitChoice> choices);`
 

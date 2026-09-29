@@ -246,3 +246,7 @@ Relays the corpus's read of the Example its transcript desk holds, which its two
 ## `internal static void TCorpusEntryResonate(this CCorpus corpus) => corpus.LCorpusEntryResonate();`
 
 Relays the corpus's answer to the chosen entry's notice, which its quotation observers run.
+
+## `internal static bool TCorpusLeaveConfirm(this CCorpus corpus) => corpus.LCorpusLeaveConfirm(true);`
+
+Relays the corpus's leave question, which the navigation's tab and the excerpt's word click ask.

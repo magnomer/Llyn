@@ -25,6 +25,10 @@ public sealed class LPortraitOutlet : LPortraitPort
         _lPortraitOutletEngine.LEnginePortrait.LEnginePortraitExport(vista, path, format, label);
 
     public Task<IReadOnlyList<LMarkupOmission>?> LEngineMarkupStart(
-        string path, Func<IReadOnlyList<LMarkupEntry>, IReadOnlyList<LMarkupIntake>?> declare) =>
+        string path,
+        Func<
+            IReadOnlyList<LMarkupEntry>,
+            IReadOnlyList<IReadOnlyList<LMarkupTarget>>,
+            IReadOnlyList<LMarkupIntake>?> declare) =>
         _lPortraitOutletEngine.LEngineMarkup.LEngineMarkupStart(path, declare);
 }

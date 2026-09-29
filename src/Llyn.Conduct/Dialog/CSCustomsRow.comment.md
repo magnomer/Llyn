@@ -9,4 +9,6 @@ One row of the customs gate as a driver shows it, read in one call.
 - `CSCustomsRowMode`: how the entry enters.
 - `CSCustomsRowTarget`: the stored entry the row is joined to, or zero before one is chosen.
 - `CSCustomsRowTargeted`: whether the mode wants a target, true for Merge and Replace.
-- `CSCustomsRowLoss`: the stored entry a Replace would overwrite, or zero when nothing is lost.
+- `CSCustomsRowLoss`: the wording key of what a Replace would drop, or null when nothing is lost.
+- `CSCustomsRowMeaning`: the meaning cards a Replace would drop, zero when nothing is lost.
+- `CSCustomsRowCollocation`: the collocation cards a Replace would drop, zero when nothing is lost.

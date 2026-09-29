@@ -24,24 +24,27 @@ internal sealed class LMarkupFacade
         return LMarkupFacadeStaff.LEngineStaffMarkup.LMarkupClerkRead(path);
     }
 
-    public IReadOnlyList<LEntry> LEngineMarkupFind(LMarkupEntry entry)
+    public IReadOnlyList<IReadOnlyList<LMarkupTarget>> LEngineMarkupFind(IReadOnlyList<LMarkupEntry> entries)
     {
-        ArgumentNullException.ThrowIfNull(entry);
-
         lock (_lMarkupFacadeGate)
         {
-            return LMarkupFacadeStaff.LEngineStaffEntry.LEntryHeadwordFind(
-                entry.LMarkupEntryHeadword, entry.LMarkupEntryLanguage);
+            return LMarkupFacadeStaff.LEngineStaffIntake.LMarkupTargetFind(entries);
         }
     }
 
     public async Task<IReadOnlyList<LMarkupOmission>?> LEngineMarkupStart(
-        string path, Func<IReadOnlyList<LMarkupEntry>, IReadOnlyList<LMarkupIntake>?> declare)
+        string path,
+        Func<
+            IReadOnlyList<LMarkupEntry>,
+            IReadOnlyList<IReadOnlyList<LMarkupTarget>>,
+            IReadOnlyList<LMarkupIntake>?> declare)
     {
         ArgumentNullException.ThrowIfNull(declare);
 
         LMarkupCargo cargo = await Task.Run(() => LEngineMarkupRead(path)).ConfigureAwait(true);
-        if (declare(cargo.LMarkupCargoEntry) is not IReadOnlyList<LMarkupIntake> intakes)
+        IReadOnlyList<IReadOnlyList<LMarkupTarget>> targets =
+            await Task.Run(() => LEngineMarkupFind(cargo.LMarkupCargoEntry)).ConfigureAwait(true);
+        if (declare(cargo.LMarkupCargoEntry, targets) is not IReadOnlyList<LMarkupIntake> intakes)
         {
             return null;
         }

@@ -4,4 +4,6 @@ public sealed record CSCustomsRow(
     CSCustomsMode CSCustomsRowMode,
     long CSCustomsRowTarget,
     bool CSCustomsRowTargeted,
-    long CSCustomsRowLoss);
+    string? CSCustomsRowLoss,
+    int CSCustomsRowMeaning,
+    int CSCustomsRowCollocation);

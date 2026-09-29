@@ -13,14 +13,15 @@ Stores the engine and its gate.
 
 The file at `path` parsed into a cargo, unknown languages omitted and twin names applied.
 
-## `public IReadOnlyList<LEntry> LEngineMarkupFind(LMarkupEntry entry)`
+## `public IReadOnlyList<IReadOnlyList<LMarkupTarget>> LEngineMarkupFind(IReadOnlyList<LMarkupEntry> entries)`
 
-The stored entries with the headword and language of one parsed entry.
+The stored entries each parsed entry may join, found by the intake clerk under the gate.
 
 ## `public async Task<IReadOnlyList<LMarkupOmission>?> LEngineMarkupStart(`
 
-The whole import in its order: read the file, ask for the intakes, then store the cargo under them.
-The read and the store run on a worker thread, so the window stays live while parsing.
+The whole import in its order: read the file, find the targets, ask for the intakes, then store the cargo.
+The question gets each parsed entry beside its ready targets, so no caller finds them again.
+The read, the find and the store run on a worker thread, so the window stays live while parsing.
 The hops live here because the shell starts no task of its own.
 The question runs back on the caller's thread, since it may put up a window.
 A declaration answered null stores nothing and answers null.

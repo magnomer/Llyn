@@ -63,11 +63,13 @@ Imports the markup file the user picked, and a null path is a cancelled pick tha
 The engine reads the file, asks for the intakes through this panel, and stores the cargo in one call.
 A declined declaration stores nothing, so the rows are not refreshed and nothing is reported.
 After a store the rows refresh, and what the import could not place is shown through the envoy.
+A clean import asks nothing further, so the report is shown only when it holds a line.
 Any failure is shown under `List.ImportFailed`, and the engine stores every entry or none.
 
-## `private IReadOnlyList<LMarkupIntake>? LLibraryIntakeRead(IReadOnlyList<LMarkupEntry> entries)`
+## `private IReadOnlyList<LMarkupIntake>? LLibraryIntakeRead(`
 
-Asks the customs question over the parsed entries, and maps each declared row to its engine intake.
+Builds the customs gate over the parsed entries and their ready targets, then asks the customs question.
+Once accepted, it reads the declared rows back from its own gate and maps each to its engine intake.
 A row's place in the answer is its entry's place in the file, so the index is the position.
 The mode maps by name, and the engine's factory drops the target of a new entry.
 
@@ -76,10 +78,15 @@ The mode maps by name, and the engine's factory drops the target of a new entry.
 Maps each declared mode to the engine's mode by name, holding no rule.
 A mode it does not know throws, so a new member cannot slip through as another.
 
-## `private static CMarkupEntry LLibraryEntryRead(LMarkupEntry entry)`
+## `private static CMarkupEntry LLibraryEntryRead(LMarkupEntry entry, IReadOnlyList<LMarkupTarget> targets)`
 
-Copies what the customs question shows of one parsed entry, holding no rule.
+Copies what the customs question shows of one parsed entry and its engine-found target ids, holding no rule.
+
+## `private static CMarkupTarget LLibraryTargetRead(LMarkupTarget target)`
+
+Copies one engine-found target with its card counts, holding no rule.
 
 ## `private static CMarkupOmission LLibraryOmissionRead(LMarkupOmission omission)`
 
 Copies one line the import left behind, holding no rule.
+The line number is written in the current culture, so a driver only shows it.

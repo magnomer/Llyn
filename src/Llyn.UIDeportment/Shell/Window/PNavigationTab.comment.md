@@ -62,6 +62,13 @@ Every panel that draws a sentence takes this one path.
 The gate decides what opens, and the candidates it answers go to the menu under the clicked word.
 The word's place is read off the control that drew it, at the offset the engine settled on.
 An empty answer only closes any menu already open, so a second click never stacks two.
+The reading display still takes this path until its click becomes one gate.
+
+## `internal void PWindowMentionRefine(PMention anchor, CMentionOffer? offer)`
+
+Shows the menu a word click's gate left, under the found word of `anchor`.
+The gate already asked, found and opened, so the window only paints the offer.
+A null offer shows nothing, and an empty one only closes any open menu.
 
 ## `private void PMentionSenseRefine(long sense)`
 

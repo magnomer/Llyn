@@ -36,6 +36,9 @@ internal static partial class TInterface
     internal static LMarkupIntake TMarkupIntakeCreate(int index, LMarkupMode mode, long target = 0) =>
         new(index, mode, target);
 
+    internal static LMarkupTarget TMarkupTargetCreate(long id, LEntryDraft draft) =>
+        LMarkupTarget.LMarkupTargetCreate(id, draft);
+
     internal static LMarkupEntry TMarkupEntryCreate(
         string headword, string language, IReadOnlyList<LForm>? forms = null, string note = "") =>
         new(headword, language, LMarkupEntryForm: forms, LMarkupEntryNote: note);

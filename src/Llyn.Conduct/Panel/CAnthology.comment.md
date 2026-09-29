@@ -7,11 +7,12 @@ It finds the rows, and takes the query, order and kind filter.
 Its panel loads, edits and deletes the chosen Example, worded under the Example scope.
 It also answers the transcript's citation field and prints the chosen Example.
 
-## `internal CAnthology(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)`
+## `internal CAnthology(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam, CMention mention)`
 
 Takes the ports it reads and prints through, the corpus desk holding the transcript, and the panel's seams.
 The panel and the citation gates read a failure's ready notice through `settings` and show it through `envoy`.
 The panel asks whether the desk changed before it leaves an Example.
+`mention` opens what a word click found.
 
 ## `internal static CAnthology LAnthologyCreate(CAtelier atelier, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)`
 
@@ -49,10 +50,13 @@ The rows the vista lists, none before a vista arrives.
 The words for an unknown or unwritten text are the engine's, read through the settings port.
 A failure shows `Example.LoadFailed` and answers null, so the corpus clears nothing on it.
 
-## `public CMentionResult? CAnthologyMentionRead(int offset)`
+## `internal CMentionOffer? LAnthologyMentionFind(int offset)`
 
-What a click at `offset` in the chosen Example's text found, read fresh from the engine.
-Null while no Example is chosen, so the excerpt hands the window nothing.
+Finds the word at `offset` fresh in the chosen Example and opens what `CMentionResultOpen` opens at once.
+The answer is what the menu offers under the found word.
+Null when no Example is chosen or the find fails, so the window shows nothing.
+A failure shows `Mention.FindFailed`, and the open sits inside the same catch.
+No driver calls it, since `CCorpusMentionFind` asks the leave question first.
 
 ## `internal Task LAnthologyPortraitPrint(CEnvoy envoy, LSettingsPort settings)`
 

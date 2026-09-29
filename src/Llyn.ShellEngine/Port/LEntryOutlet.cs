@@ -156,9 +156,6 @@ public sealed class LEntryOutlet : LEntryPort
 
     public string LEngineTallyRead(long? reference) => _lEntryOutletEngine.LEngineEntry.LEngineTallyRead(reference);
 
-    public IReadOnlyList<LEntry> LEngineMarkupFind(LMarkupEntry entry) =>
-        _lEntryOutletEngine.LEngineMarkup.LEngineMarkupFind(entry);
-
     public IReadOnlyList<string> LEngineNameResolve(IReadOnlyList<string> labels) =>
         _lEntryOutletEngine.LEngineVista.LEngineNameResolve(labels);
 

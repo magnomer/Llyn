@@ -235,6 +235,88 @@ public sealed class TCorpusMention
         Assert.Equal("Notice.Unexpected", notice.CLedgerNoticeKey);
     }
 
+    [Fact]
+    public void CorpusMentionFind_NoChosenExample_FindsNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+
+        Assert.Null(corpus.CCorpusMentionFind(2));
+        Assert.Empty(asked);
+    }
+
+    [Fact]
+    public void CorpusMentionFind_UnsavedTranscriptKept_AsksAndOffersNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(null, asked));
+        corpus.CCorpusExampleCreate();
+        corpus.CCorpusDesk.TDeskDefer(
+            TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterface.TStateValueCreate("a dog")));
+
+        Assert.Null(corpus.CCorpusMentionFind(2));
+        Assert.Equal(["Leave"], asked);
+        Assert.True(corpus.CCorpusDesk.CDeskHeld);
+    }
+
+    [Fact]
+    public void AnthologyMentionFind_EngineFails_ShowsTheFindFailureAndOffersNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LExample cat = TCorpus.TCorpusExampleSave(engine, "a cat sat");
+        List<string> asked = [];
+
+        CMentionOffer? offer = TInterfaceMention.TAnthologyMentionFind(
+            engine, atelier, TInterfaceConduct.TEnvoyCreate(false, asked), cat.LExampleId, null);
+
+        Assert.Null(offer);
+        Assert.Equal(["Mention.FindFailed"], asked);
+    }
+
+    [Fact]
+    public void AnthologyMentionFind_OneEntry_OpensItAndOffersAnEmptyMenu()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LExample cat = TCorpus.TCorpusExampleSave(engine, "a cat sat");
+        List<long> arrived = TMentionLibraryAdd(atelier);
+
+        CMentionOffer? offer = TInterfaceMention.TAnthologyMentionFind(
+            engine, atelier, TInterfaceConduct.TEnvoyCreate(false, []), cat.LExampleId, [8]);
+
+        Assert.NotNull(offer);
+        Assert.Equal(2, offer!.CMentionOfferOffset);
+        Assert.Empty(offer.CMentionOfferEntry);
+        Assert.Equal([8L], arrived);
+    }
+
+    [Fact]
+    public void AnthologyMentionFind_ManyEntries_OffersThemUnderTheFoundWord()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LExample cat = TCorpus.TCorpusExampleSave(engine, "a cat sat");
+        List<long> arrived = TMentionLibraryAdd(atelier);
+
+        CMentionOffer? offer = TInterfaceMention.TAnthologyMentionFind(
+            engine, atelier, TInterfaceConduct.TEnvoyCreate(false, []), cat.LExampleId, [8, 9]);
+
+        Assert.NotNull(offer);
+        Assert.Equal(2, offer!.CMentionOfferOffset);
+        Assert.Equal([8L, 9L], offer.CMentionOfferEntry.Select(entry => entry.CTranslationTargetId));
+        Assert.Empty(arrived);
+    }
+
     private static CCorpus TMentionPrepare(LEngine engine, CAtelier atelier, CEnvoy envoy)
     {
         engine.TEngineDelaySet(0);
@@ -248,5 +330,13 @@ public sealed class TCorpusMention
     private static IReadOnlyList<LMention> TMentionRead(CCorpus corpus)
     {
         return corpus.CCorpusDesk.TDeskRead()!.LDraftExample!.LExampleMention;
+    }
+
+    private static List<long> TMentionLibraryAdd(CAtelier atelier)
+    {
+        List<long> arrived = [];
+        atelier.CAtelierNavigation.TNavigationTabAdd(
+            "Library", static () => true, static () => 0, static _ => { }, arrived.Add);
+        return arrived;
     }
 }

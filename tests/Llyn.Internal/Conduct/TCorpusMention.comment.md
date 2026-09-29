@@ -13,6 +13,9 @@ A failed Meaning read hands the envoy the ledger's ready notice.
 A link over an Entry keeps the selection's span and carries no sense.
 The Meaning read maps each row whole and asks the engine with the unknown key.
 A transcript word is searched in the Example's language, and the pick links it.
+An excerpt click with no chosen Example finds nothing, and a kept leave asks once and finds nothing.
+A failed word find reports `Mention.FindFailed` and offers nothing.
+One found Entry opens at once and leaves an empty menu, and several stay offered under the found word.
 
 ## `private static CCorpus TMentionPrepare(LEngine engine, CAtelier atelier, CEnvoy envoy)`
 
@@ -21,3 +24,7 @@ Stores an Example holding the sentence, opens it and switches the corpus to its 
 ## `private static IReadOnlyList<LMention> TMentionRead(CCorpus corpus)`
 
 The Mentions the held transcript's draft carries.
+
+## `private static List<long> TMentionLibraryAdd(CAtelier atelier)`
+
+Registers a Library tab whose arrivals the test reads, so an Entry open is observable.

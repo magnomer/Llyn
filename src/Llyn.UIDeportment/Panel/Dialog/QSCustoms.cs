@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -20,103 +21,68 @@ internal sealed class QSCustoms
         };
 
     private readonly Window _qsCustomsSurface;
-    private readonly PWindow _qsCustomsHost;
     private readonly CSCustoms _csCustoms;
 
-    private IReadOnlyList<CSCustomsRow>? _qsCustomsRows;
-
-    private QSCustoms(PWindow host, CSCustoms customs, IReadOnlyList<QSCustomsItem> items)
+    private QSCustoms(PWindow host, CSCustoms customs)
     {
         _qsCustomsSurface = QContract.QContractSheetFind<Window>("PSCustoms");
         _qsCustomsSurface.Owner = host.PWindowSurface;
-        _qsCustomsHost = host;
         _csCustoms = customs;
-        QSCustomsList.ItemsSource = new ObservableCollection<QSCustomsItem>(items);
-        QLookItem.QLookItemAttach(QSCustomsList, QSCustomsRowApply);
-        QLookItem.QLookItemAttach(QSCustomsOmission, QSCustomsOmissionApply);
-        QSCustomsAdmit.Click += QSCustomsAcceptHandle;
-        QSCustomsQuit.Click += QSCustomsCancelHandle;
-        QSCustomsDismiss.Click += QSCustomsCloseHandle;
+        QSCustomsList.ItemsSource = new ObservableCollection<QSCustomsItem>(customs.CSCustomsEntry.Select(
+            static (entry, index) => new QSCustomsItem(
+                index,
+                entry.CMarkupEntryName,
+                entry.CMarkupEntryLanguage,
+                entry.CMarkupEntryTarget)));
+        QLookItem.QLookItemAttach(QSCustomsList, QSCustomsRowRefine);
+        QSCustomsAdmit.Click += QSCustomsAcceptObserve;
+        QSCustomsQuit.Click += QSCustomsCancelObserve;
         QSCustomsAdmit.IsEnabled = customs.CSCustomsReadyCheck();
     }
 
     private ItemsControl QSCustomsList => QContract.QContractFind<ItemsControl>(_qsCustomsSurface, "PSCustomsList");
 
-    private ItemsControl QSCustomsOmission =>
-        QContract.QContractFind<ItemsControl>(_qsCustomsSurface, "PSCustomsOmission");
-
-    private Grid QSCustomsDeclaration => QContract.QContractFind<Grid>(_qsCustomsSurface, "PSCustomsDeclaration");
-
-    private Grid QSCustomsReport => QContract.QContractFind<Grid>(_qsCustomsSurface, "PSCustomsReport");
-
     private Button QSCustomsAdmit => QContract.QContractFind<Button>(_qsCustomsSurface, "PSCustomsAdmit");
 
     private Button QSCustomsQuit => QContract.QContractFind<Button>(_qsCustomsSurface, "PSCustomsQuit");
 
-    private Button QSCustomsDismiss => QContract.QContractFind<Button>(_qsCustomsSurface, "PSCustomsDismiss");
-
-    internal static IReadOnlyList<CSCustomsRow>? QSCustomsShow(PWindow host, IReadOnlyList<CMarkupEntry> entries)
+    internal static bool QSCustomsConsult(PWindow host, CSCustoms customs)
     {
         ArgumentNullException.ThrowIfNull(host);
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(customs);
 
-        List<IReadOnlyList<long>> candidates = [];
-        List<QSCustomsItem> items = [];
-        int index = 0;
-        foreach (CMarkupEntry entry in entries)
-        {
-            IReadOnlyList<long> found = host.PWindowAtelier.CAtelierCatalog.CCatalogMarkupFind(
-                entry.CMarkupEntryHeadword, entry.CMarkupEntryLanguage);
-            candidates.Add(found);
-            items.Add(new QSCustomsItem(index, entry.CMarkupEntryName, entry.CMarkupEntryLanguage, found));
-            index++;
-        }
-
-        return QSCustomsIntakeRead(host, new CSCustoms(candidates), items);
+        return new QSCustoms(host, customs)._qsCustomsSurface.ShowDialog() == true;
     }
 
-    internal static void QSCustomsOmissionShow(PWindow host, IReadOnlyList<CMarkupOmission> omissions)
+    internal static void QSCustomsOmissionConsult(PWindow host, IReadOnlyList<CMarkupOmission> omissions)
     {
         ArgumentNullException.ThrowIfNull(host);
         ArgumentNullException.ThrowIfNull(omissions);
 
-        List<KeyValuePair<string, string>> lines = [];
-        foreach (CMarkupOmission omission in omissions)
-        {
-            lines.Add(new KeyValuePair<string, string>(
-                omission.CMarkupOmissionLine.ToString(CultureInfo.CurrentCulture), omission.CMarkupOmissionText));
-        }
-
-        if (lines.Count == 0)
-        {
-            return;
-        }
-
-        QSCustoms dialog = new(host, new CSCustoms([]), []);
-        dialog.QSCustomsOmission.ItemsSource = lines;
-        dialog.QSCustomsDeclaration.Visibility = Visibility.Collapsed;
-        dialog.QSCustomsReport.Visibility = Visibility.Visible;
-        dialog.QSCustomsAdmit.IsDefault = false;
-        dialog.QSCustomsQuit.IsCancel = false;
-        dialog._qsCustomsSurface.ShowDialog();
+        Window surface = QContract.QContractSheetFind<Window>("PSCustoms");
+        surface.Owner = host.PWindowSurface;
+        ItemsControl omission = QContract.QContractFind<ItemsControl>(surface, "PSCustomsOmission");
+        QLookItem.QLookItemAttach(omission, QSCustomsOmissionApply);
+        omission.ItemsSource = omissions
+            .Select(static line => new KeyValuePair<string, string>(line.CMarkupOmissionLine, line.CMarkupOmissionText))
+            .ToList();
+        QContract.QContractFind<Grid>(surface, "PSCustomsDeclaration").Visibility = Visibility.Collapsed;
+        QContract.QContractFind<Grid>(surface, "PSCustomsReport").Visibility = Visibility.Visible;
+        QContract.QContractFind<Button>(surface, "PSCustomsAdmit").IsDefault = false;
+        QContract.QContractFind<Button>(surface, "PSCustomsQuit").IsCancel = false;
+        QContract.QContractFind<Button>(surface, "PSCustomsDismiss").Click += QSCustomsCloseObserve;
+        surface.ShowDialog();
     }
 
-    private static IReadOnlyList<CSCustomsRow>? QSCustomsIntakeRead(
-        PWindow host, CSCustoms customs, IReadOnlyList<QSCustomsItem> items)
-    {
-        QSCustoms dialog = new(host, customs, items);
-        return dialog._qsCustomsSurface.ShowDialog() == true ? dialog._qsCustomsRows : null;
-    }
-
-    private void QSCustomsRowApply(FrameworkElement container, object item, string? _)
+    private void QSCustomsRowRefine(FrameworkElement container, object item, string? _)
     {
         if (item is QSCustomsItem row)
         {
-            QSCustomsRowApply(container, row, _csCustoms.CSCustomsRowRead(row.QSCustomsItemIndex));
+            QSCustomsRowRefine(container, row, _csCustoms.CSCustomsRowRead(row.QSCustomsItemIndex));
         }
     }
 
-    private void QSCustomsRowApply(FrameworkElement container, QSCustomsItem row, CSCustomsRow state)
+    private void QSCustomsRowRefine(FrameworkElement container, QSCustomsItem row, CSCustomsRow state)
     {
         if (QLook.QLookPartFind<TextBlock>(container, "PSCustomsNumber") is TextBlock number)
         {
@@ -145,14 +111,19 @@ internal sealed class QSCustoms
 
         if (QLook.QLookPartFind<TextBlock>(container, "PSCustomsLoss") is TextBlock loss)
         {
-            loss.Text = QSCustomsLossFormat(
-                _qsCustomsHost.PWindowAtelier.CAtelierCatalog.CCatalogEntryLoad(state.CSCustomsRowLoss));
+            loss.Text = state.CSCustomsRowLoss is string key
+                ? string.Format(
+                    CultureInfo.CurrentCulture,
+                    QLocalizationCatalog.QLocalizationTextRead(key),
+                    state.CSCustomsRowMeaning,
+                    state.CSCustomsRowCollocation)
+                : string.Empty;
         }
     }
 
     private void QSCustomsModeApply(FrameworkElement container, ComboBox mode, CSCustomsMode chosen)
     {
-        mode.SelectionChanged -= QSCustomsModeHandle;
+        mode.SelectionChanged -= QSCustomsModeObserve;
         foreach (KeyValuePair<string, CSCustomsMode> pair in QSCustomsChoice)
         {
             if (QLook.QLookPartFind<ComboBoxItem>(container, pair.Key) is ComboBoxItem choice && pair.Value == chosen)
@@ -161,12 +132,12 @@ internal sealed class QSCustoms
             }
         }
 
-        mode.SelectionChanged += QSCustomsModeHandle;
+        mode.SelectionChanged += QSCustomsModeObserve;
     }
 
     private void QSCustomsTargetApply(ComboBox target, QSCustomsItem row, CSCustomsRow state)
     {
-        target.SelectionChanged -= QSCustomsTargetHandle;
+        target.SelectionChanged -= QSCustomsTargetObserve;
         target.IsEnabled = state.CSCustomsRowTargeted;
         if (!ReferenceEquals(target.ItemsSource, row.QSCustomsItemCandidate))
         {
@@ -176,7 +147,7 @@ internal sealed class QSCustoms
         }
 
         target.SelectedItem = state.CSCustomsRowTarget;
-        target.SelectionChanged += QSCustomsTargetHandle;
+        target.SelectionChanged += QSCustomsTargetObserve;
         target.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, () =>
         {
             if (target.SelectedItem is long shown)
@@ -222,61 +193,44 @@ internal sealed class QSCustoms
         }
     }
 
-    private void QSCustomsModeHandle(object sender, SelectionChangedEventArgs e)
+    private void QSCustomsModeObserve(object sender, SelectionChangedEventArgs e)
     {
         if (sender is not ComboBox { DataContext: QSCustomsItem item, SelectedItem: ComboBoxItem choice })
         {
             return;
         }
 
-        QSCustomsAdmit.IsEnabled = _csCustoms.CSCustomsModeSet(item.QSCustomsItemIndex, QSCustomsChoice[choice.Name]);
-        QLookItem.QLookItemApply(QSCustomsList);
+        QSCustomsRefine(_csCustoms.CSCustomsModeSet(item.QSCustomsItemIndex, QSCustomsChoice[choice.Name]));
     }
 
-    private void QSCustomsTargetHandle(object sender, SelectionChangedEventArgs e)
+    private void QSCustomsTargetObserve(object sender, SelectionChangedEventArgs e)
     {
         if (sender is not ComboBox { DataContext: QSCustomsItem item, SelectedItem: long target })
         {
             return;
         }
 
-        QSCustomsAdmit.IsEnabled = _csCustoms.CSCustomsTargetSet(item.QSCustomsItemIndex, target);
+        QSCustomsRefine(_csCustoms.CSCustomsTargetSet(item.QSCustomsItemIndex, target));
+    }
+
+    private void QSCustomsRefine(bool ready)
+    {
+        QSCustomsAdmit.IsEnabled = ready;
         QLookItem.QLookItemApply(QSCustomsList);
     }
 
-    private void QSCustomsAcceptHandle(object sender, RoutedEventArgs e)
+    private void QSCustomsAcceptObserve(object sender, RoutedEventArgs e)
     {
-        List<CSCustomsRow> rows = [];
-        foreach (QSCustomsItem item in (IEnumerable<QSCustomsItem>)QSCustomsList.ItemsSource)
-        {
-            rows.Add(_csCustoms.CSCustomsRowRead(item.QSCustomsItemIndex));
-        }
-
-        _qsCustomsRows = rows;
         _qsCustomsSurface.DialogResult = true;
     }
 
-    private void QSCustomsCancelHandle(object sender, RoutedEventArgs e)
+    private void QSCustomsCancelObserve(object sender, RoutedEventArgs e)
     {
         _qsCustomsSurface.DialogResult = false;
     }
 
-    private void QSCustomsCloseHandle(object sender, RoutedEventArgs e)
+    private static void QSCustomsCloseObserve(object sender, RoutedEventArgs e)
     {
-        _qsCustomsSurface.DialogResult = true;
-    }
-
-    private string QSCustomsLossFormat((int, int)? stored)
-    {
-        if (stored is not (int meanings, int collocations))
-        {
-            return string.Empty;
-        }
-
-        return string.Format(
-            CultureInfo.CurrentCulture,
-            _qsCustomsSurface.TryFindResource("Customs.Loss") as string ?? "Customs.Loss",
-            meanings,
-            collocations);
+        Window.GetWindow((DependencyObject)sender).DialogResult = true;
     }
 }

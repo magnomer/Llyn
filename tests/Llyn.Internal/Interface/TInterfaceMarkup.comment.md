@@ -8,6 +8,7 @@ Text becomes the node tree through `LMarkupFile`, the same adapter the engine's 
 An intake for the import is built here too.
 A test names an index and a mode and nothing more.
 An entry is built here as well, for a writer test that starts from a record rather than text.
+A target is counted here from a stored draft, for a test of what a replacement drops.
 
 ## `internal static LMarkupNode TMarkupNodeCreate(string name, string text)`
 

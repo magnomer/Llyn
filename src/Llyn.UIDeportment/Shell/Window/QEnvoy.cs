@@ -98,14 +98,14 @@ internal sealed class QEnvoy : CEnvoy
         };
     }
 
-    public IReadOnlyList<CSCustomsRow>? CEnvoyCustomsRead(IReadOnlyList<CMarkupEntry> entries)
+    public bool CEnvoyCustomsRead(CSCustoms customs)
     {
-        return QSCustoms.QSCustomsShow(_qEnvoyHost, entries);
+        return QSCustoms.QSCustomsConsult(_qEnvoyHost, customs);
     }
 
     public void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions)
     {
-        QSCustoms.QSCustomsOmissionShow(_qEnvoyHost, omissions);
+        QSCustoms.QSCustomsOmissionConsult(_qEnvoyHost, omissions);
     }
 
     public (string? CEnvoyFile, CPortraitMedium CEnvoyMedium) CEnvoyFileRead(

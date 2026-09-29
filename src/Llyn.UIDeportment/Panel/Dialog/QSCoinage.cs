@@ -12,8 +12,8 @@ internal sealed class QSCoinage
     {
         _qsCoinageSurface = QContract.QContractSheetFind<Window>("PSCoinage");
         _qsCoinageSurface.Owner = owner;
-        QSCoinageWording.TextChanged += QSCoinageWordingHandle;
-        QSCoinageMint.Click += QSCoinageMintHandle;
+        QSCoinageWording.TextChanged += QSCoinageWordingRefine;
+        QSCoinageMint.Click += QSCoinageMintObserve;
         QSCoinageMessage.SetResourceReference(TextBlock.TextProperty, message);
     }
 
@@ -27,16 +27,16 @@ internal sealed class QSCoinage
     {
         QSCoinage dialog = new(owner, message);
         dialog._qsCoinageSurface.Loaded += (_, _) => dialog.QSCoinageWording.Focus();
-        return dialog._qsCoinageSurface.ShowDialog() == true ? dialog.QSCoinageWording.Text.Trim() : null;
+        return dialog._qsCoinageSurface.ShowDialog() == true ? dialog.QSCoinageWording.Text : null;
     }
 
-    private void QSCoinageWordingHandle(object sender, TextChangedEventArgs e)
+    private void QSCoinageWordingRefine(object sender, TextChangedEventArgs e)
     {
         QSCoinageMint.IsEnabled = CSCoinage.CSCoinageWordingCheck(QSCoinageWording.Text);
     }
 
-    private void QSCoinageMintHandle(object sender, RoutedEventArgs e)
+    private void QSCoinageMintObserve(object sender, RoutedEventArgs e)
     {
-        _qsCoinageSurface.DialogResult = CSCoinage.CSCoinageWordingCheck(QSCoinageWording.Text) ? true : null;
+        _qsCoinageSurface.DialogResult = true;
     }
 }

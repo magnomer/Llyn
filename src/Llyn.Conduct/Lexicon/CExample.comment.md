@@ -18,6 +18,17 @@ One stored Example, as the corpus transcript and excerpt read it.
 
 The key of the sentence field's placeholder, which Conduct chooses and the driver looks up.
 
+## `public string? CExampleWording`
+
+The key the excerpt words instead of the text, which Conduct chooses and the driver looks up.
+An unknown text reads the unknown mark, and a never-written one reads `Example.Unwritten`.
+Null while the text itself shows.
+
+## `public bool CExampleMuted`
+
+Whether the excerpt shows its sentence muted, which only a never-written text does.
+An unknown text keeps the ink, since the unknown mark is a written state.
+
 ## `internal static string LExampleHintRead(bool uncertain)`
 
 A never-written sentence asks for a sentence, and an unknown one reads the unknown mark.

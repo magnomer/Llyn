@@ -76,13 +76,13 @@ internal sealed partial class QCorpus : QChronicleHost
         QCitationField.PreviewKeyDown += QCitationEscapeRefine;
         QCitationField.LostKeyboardFocus += QCitationLeaveRefine;
         QTranscriptSeedField.GotKeyboardFocus += QTranscriptSeedObserve;
-        QExcerptText.PMentionClick += QExcerptMentionHandle;
+        QExcerptText.PMentionClick += QExcerptMentionObserve;
         QCorpusFresh.Click += QCorpusFreshObserve;
         QCorpusStore.Click += QCorpusStoreObserve;
         QCorpusEarlier.Click += QCorpusRetreatObserve;
         QCorpusLater.Click += QCorpusAdvanceObserve;
-        QCorpusBackward.Click += QCorpusUndoHandle;
-        QCorpusForward.Click += QCorpusRedoHandle;
+        QCorpusBackward.Click += QCorpusUndoObserve;
+        QCorpusForward.Click += QCorpusRedoObserve;
         QCorpusViewer.Click += QCorpusViewerObserve;
         QCorpusScribe.Click += QCorpusScribeObserve;
         QCorpusBin.Click += QCorpusBinObserve;
@@ -254,7 +254,7 @@ internal sealed partial class QCorpus : QChronicleHost
         CPanel quotation = _cCorpus.CCorpusQuotation.CQuotationPanel;
         _cCorpus.CCorpusChanged += QCorpusModeUpdate;
         _cCorpus.CCorpusTranscriptChanged += QTranscriptRefine;
-        _cCorpus.CCorpusExampleChanged += QExcerptShow;
+        _cCorpus.CCorpusExampleChanged += QExcerptRefine;
         _cCorpus.CCorpusQueryCleared += QQueryClear;
         _cCorpus.CCorpusWorkspaceChanged += QCorpusWorkspaceRefine;
         anthology.CPanelChanged += QCorpusModeUpdate;
@@ -285,7 +285,7 @@ internal sealed partial class QCorpus : QChronicleHost
         QCorpusBin.IsEnabled = _cCorpus.CCorpusBinEnabled;
         QCorpusStore.IsEnabled = _cCorpus.CCorpusStoreEnabled;
         QTranscript.IsEnabled = _cCorpus.CCorpusDesk.CDeskRunning;
-        QChronicleUpdate();
+        QCorpusChronicleRefine();
     }
 
     internal void QCorpusExitRefine()

@@ -29,15 +29,16 @@ The step runs inside `QChronicle.QChronicleRun`, so the caret stays at the end o
 
 Steps whichever draft is in front one snapshot forward again.
 
-## `public void QChronicleUpdate()`
+## `private void QCorpusChronicleRefine()`
 
 Lights `QCorpusBackward` and `QCorpusForward` only when the draft in front has a step to walk.
 The session reads the entry editor's chronicle while `PEditor` is in front, and the held sentence's otherwise.
 
-## `private void QCorpusUndoHandle(object sender, RoutedEventArgs e)`
+## `private void QCorpusUndoObserve(object sender, RoutedEventArgs e)`
 
 The rail's undo, standing for whichever editor is in front, as the rail's save does.
+It is the click's adapter to the chronicle step, which calls the session's gate.
 
-## `private void QCorpusRedoHandle(object sender, RoutedEventArgs e)`
+## `private void QCorpusRedoObserve(object sender, RoutedEventArgs e)`
 
 The rail's redo, the inverse of the one above.

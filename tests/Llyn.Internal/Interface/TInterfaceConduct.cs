@@ -37,10 +37,11 @@ internal static class TInterfaceConduct
 
     internal static int TDisplayGraspRead(this LDisplay display, long? entry) => display.LDisplayGraspRead(entry);
 
-    internal static int TCustomsCardScan(IReadOnlyList<LCardDraft> cards) =>
-        CSCustoms.CSCustomsCardScan(cards, card => card.LCardDraftChild);
+    internal static CSCustoms TCustomsCreate(
+        IReadOnlyList<CMarkupEntry> entries, IReadOnlyList<CMarkupTarget> targets) => new(entries, targets);
 
-    internal static CSCustoms TCustomsCreate(IReadOnlyList<IReadOnlyList<long>> candidates) => new(candidates);
+    internal static IReadOnlyList<CSCustomsRow> TCustomsRowsRead(this CSCustoms customs) =>
+        customs.LSCustomsRowsRead();
 
     internal static CSCustomsRow TCustomsRowRead(this CSCustoms customs, int row) => customs.CSCustomsRowRead(row);
 
@@ -464,4 +465,6 @@ internal static class TInterfaceConduct
     internal static CExample? TCorpusTranscriptRead(this CCorpus corpus) => corpus.LCorpusTranscriptRead();
 
     internal static void TCorpusEntryResonate(this CCorpus corpus) => corpus.LCorpusEntryResonate();
+
+    internal static bool TCorpusLeaveConfirm(this CCorpus corpus) => corpus.LCorpusLeaveConfirm(true);
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Llyn.Core;
@@ -137,7 +138,11 @@ public sealed class CLibrary
             }
 
             CLibraryPanel.CPanelRowsResonate();
-            _cLibraryEnvoy.CEnvoyOmissionShow(omissions.Select(LLibraryOmissionRead).ToList());
+            List<CMarkupOmission> report = omissions.Select(LLibraryOmissionRead).ToList();
+            if (report.Count > 0)
+            {
+                _cLibraryEnvoy.CEnvoyOmissionShow(report);
+            }
         }
         catch (Exception exception)
         {
@@ -145,9 +150,18 @@ public sealed class CLibrary
         }
     }
 
-    private IReadOnlyList<LMarkupIntake>? LLibraryIntakeRead(IReadOnlyList<LMarkupEntry> entries)
+    private IReadOnlyList<LMarkupIntake>? LLibraryIntakeRead(
+        IReadOnlyList<LMarkupEntry> entries, IReadOnlyList<IReadOnlyList<LMarkupTarget>> targets)
     {
-        return _cLibraryEnvoy.CEnvoyCustomsRead(entries.Select(LLibraryEntryRead).ToList())?
+        CSCustoms customs = new(
+            entries.Zip(targets, LLibraryEntryRead).ToList(),
+            targets.SelectMany(static found => found).Select(LLibraryTargetRead).ToList());
+        if (!_cLibraryEnvoy.CEnvoyCustomsRead(customs))
+        {
+            return null;
+        }
+
+        return customs.LSCustomsRowsRead()
             .Select(static (row, index) => LPortraitPort.LEngineIntakeRead(
                 index, LLibraryModeRead(row.CSCustomsRowMode), row.CSCustomsRowTarget))
             .ToList();
@@ -164,13 +178,22 @@ public sealed class CLibrary
         };
     }
 
-    private static CMarkupEntry LLibraryEntryRead(LMarkupEntry entry)
+    private static CMarkupEntry LLibraryEntryRead(LMarkupEntry entry, IReadOnlyList<LMarkupTarget> targets)
     {
-        return new CMarkupEntry(entry.LMarkupEntryHeadword, entry.LMarkupEntryLanguage, entry.LMarkupEntryName);
+        return new CMarkupEntry(
+            entry.LMarkupEntryLanguage,
+            entry.LMarkupEntryName,
+            targets.Select(static target => target.LMarkupTargetId).ToList());
+    }
+
+    private static CMarkupTarget LLibraryTargetRead(LMarkupTarget target)
+    {
+        return new CMarkupTarget(target.LMarkupTargetId, target.LMarkupTargetMeaning, target.LMarkupTargetCollocation);
     }
 
     private static CMarkupOmission LLibraryOmissionRead(LMarkupOmission omission)
     {
-        return new CMarkupOmission(omission.LMarkupOmissionLine, omission.LMarkupOmissionText);
+        return new CMarkupOmission(
+            omission.LMarkupOmissionLine.ToString(CultureInfo.CurrentCulture), omission.LMarkupOmissionText);
     }
 }

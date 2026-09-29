@@ -160,6 +160,13 @@ A failed read shows `Mention.FindFailed`, through the shared read in `CMention`.
 The chip line under the transcript, ready to paint, from the draft the transcript's desk holds.
 A silent chip carries its own word key, and a failed read shows `Mention.FindFailed` and answers no chips.
 
+## `public CMentionOffer? CCorpusMentionFind(int offset)`
+
+The gate for a click at `offset` on a word of the excerpt.
+It asks the leave question first, since the click may open an Entry in another panel.
+The anthology then finds the word, opens what opens at once and reports a failure.
+The answer is what the menu offers under the found word, null when the user stays.
+
 ## `private void LCorpusExampleUpdate(CExample? example)`
 
 Announces the Example a loaded draft carries and ignores drafts of other subjects.
@@ -233,13 +240,10 @@ Opens a fresh entry in the editor, already citing the chosen Example when there 
 The engine starts and cites it in one call, so the first paint shows the citation.
 The fresh open clears the quotation panel, which closes the editor before the blank opens.
 
-## `public bool CCorpusLeaveConfirm()`
+## `internal bool LCorpusLeaveConfirm(bool shown)`
 
 True when nothing is unsaved or the user agrees to leave.
-A save from the dialog shows the stored Example afterwards.
-
-## `private bool LCorpusLeaveConfirm(bool shown)`
-
+No driver asks it, since the navigation's tab and every corpus gate ask it inside.
 Asks the envoy only over unsaved changes.
 A store finishes the session, and a discard leaves without touching it.
 The finish shows the stored Example only when `shown` holds.

@@ -1,10 +1,11 @@
 # CMarkupOmission.cs
 
-## `public sealed record CMarkupOmission(int CMarkupOmissionLine, string CMarkupOmissionText)`
+## `public sealed record CMarkupOmission(string CMarkupOmissionLine, string CMarkupOmissionText)`
 
 One thing a markup import left behind, as the import report lists it.
+Both fields arrive as ready text, so a driver only shows them.
 
 **Parameters**
 
-- `CMarkupOmissionLine`: the line of the file it sits on, zero when unknown.
+- `CMarkupOmissionLine`: the line of the file it sits on, written in the current culture, zero when unknown.
 - `CMarkupOmissionText`: what was skipped.

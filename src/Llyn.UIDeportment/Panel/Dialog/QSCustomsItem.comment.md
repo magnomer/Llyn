@@ -4,7 +4,7 @@
 
 One row of the customs window: an entry from the file, as the window shows it.
 It keeps the entry's position in the file, since the gate and the intake address rows by position.
-The candidates are the ids of the stored entries sharing its headword, looked up once before the row is made.
+The candidates are the ids of the stored entries sharing its headword, found by the engine before the question.
 Its mode and target live in `CSCustoms`, so the row holds nothing the user changes.
 
 ## `public string QSCustomsItemNumber`

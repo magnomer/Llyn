@@ -19,6 +19,8 @@ public sealed class CAnthology
 
     private readonly LSettingsPort _cAnthologySettingsPort;
 
+    private readonly CMention _cAnthologyMention;
+
     private LVista? _cAnthologyVista;
 
     internal CAnthology(
@@ -28,19 +30,22 @@ public sealed class CAnthology
         CDesk desk,
         Func<bool> shownSeam,
         CEnvoy envoy,
-        Func<bool, bool> finishSeam)
+        Func<bool, bool> finishSeam,
+        CMention mention)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(mention);
 
         _cAnthologyEntryPort = entries;
         _cAnthologyPortraitPort = portraits;
         _cAnthologyDesk = desk;
         _cAnthologyEnvoy = envoy;
         _cAnthologySettingsPort = settings;
+        _cAnthologyMention = mention;
         CAnthologyPanel = new CPanel(
             envoy,
             settings,
@@ -59,7 +64,8 @@ public sealed class CAnthology
             desk,
             shownSeam,
             envoy,
-            finishSeam);
+            finishSeam,
+            atelier.CAtelierMention);
     }
 
     public CPanel CAnthologyPanel { get; }
@@ -147,11 +153,24 @@ public sealed class CAnthology
         }
     }
 
-    public CMentionResult? CAnthologyMentionRead(int offset)
+    internal CMentionOffer? LAnthologyMentionFind(int offset)
     {
-        return _cAnthologyVista?.LVistaChosen is long chosen
-            ? CMention.CMentionResultRead(_cAnthologyEntryPort.LEngineMentionFind(chosen, offset))
-            : null;
+        try
+        {
+            if (_cAnthologyVista?.LVistaChosen is not long chosen)
+            {
+                return null;
+            }
+
+            CMentionResult result =
+                CMention.CMentionResultRead(_cAnthologyEntryPort.LEngineMentionFind(chosen, offset));
+            return new CMentionOffer(result.CMentionResultOffset, _cAnthologyMention.CMentionResultOpen(result));
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cAnthologyEnvoy, _cAnthologySettingsPort, "Mention.FindFailed", exception);
+            return null;
+        }
     }
 
     internal Task LAnthologyPortraitPrint(CEnvoy envoy, LSettingsPort settings)

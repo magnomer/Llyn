@@ -1,3 +1,3 @@
 namespace Llyn.Conduct;
 
-public sealed record CMarkupOmission(int CMarkupOmissionLine, string CMarkupOmissionText);
+public sealed record CMarkupOmission(string CMarkupOmissionLine, string CMarkupOmissionText);

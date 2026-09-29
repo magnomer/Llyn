@@ -12,9 +12,15 @@ It is transparent and carries no test logic of its own.
 
 Builds sentence gates whose chip line read throws, over a real desk.
 
-## `internal static IReadOnlyList<CCatalogExample>? TAnthologyFailRead(LEngine engine, CEnvoy envoy)`
+## `internal static IReadOnlyList<CCatalogExample>? TAnthologyFailRead(LEngine engine, CAtelier atelier, CEnvoy envoy)`
 
 Runs the corpus rows read over an entry port whose Example find throws, on a real vista.
+
+## `internal static CMentionOffer? TAnthologyMentionFind(LEngine engine, CAtelier atelier, CEnvoy envoy, long? chosen, IReadOnlyList<long>? found)`
+
+Finds the word at offset 3 of the chosen Example, with `chosen` on a real vista.
+The fake word find answers the word at offset 2 with the `found` Entries, and throws when `found` is null.
+The atelier's navigation opens what the find opens at once.
 
 ## `internal static IReadOnlyList<CMentionLabel> TMentionFailRead(LEngine engine, CDesk desk, CEnvoy envoy)`
 

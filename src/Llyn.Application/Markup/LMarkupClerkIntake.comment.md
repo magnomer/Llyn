@@ -15,6 +15,12 @@ Keeps the clerks the import writes through.
 The intake one declared row stands for, built by the Core record's factory.
 The shell reaches that rule through it, so the shell calls no Core member for it.
 
+## `public IReadOnlyList<IReadOnlyList<LMarkupTarget>> LMarkupTargetFind(IReadOnlyList<LMarkupEntry> entries)`
+
+The stored entries each parsed entry may join, in file order, one list per entry.
+A stored entry shares the parsed headword and language, as the entry clerk's headword find matches them.
+Each target counts its cards, so the import window shows what a replacement drops without a second read.
+
 ## `public LMarkupOutcome LMarkupClerkImport(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)`
 
 One intake per entry, each index once, else the import is refused.

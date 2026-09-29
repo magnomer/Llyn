@@ -147,14 +147,14 @@ public sealed class TCorpus
         List<string> asked = [];
         CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
 
-        Assert.True(corpus.CCorpusLeaveConfirm());
+        Assert.True(corpus.TCorpusLeaveConfirm());
         Assert.Empty(asked);
 
         corpus.CCorpusExampleCreate();
         corpus.CCorpusDesk.TDeskDefer(
             TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterface.TStateValueCreate("a dog")));
 
-        Assert.True(corpus.CCorpusLeaveConfirm());
+        Assert.True(corpus.TCorpusLeaveConfirm());
         Assert.Equal(["Leave"], asked);
         Assert.Empty(corpus.CCorpusAnthology.TAnthologyRowsRead());
     }
@@ -286,7 +286,7 @@ public sealed class TCorpus
         corpus.CCorpusDesk.TDeskDefer(
             TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterface.TStateValueCreate("a dog")));
 
-        Assert.False(corpus.CCorpusLeaveConfirm());
+        Assert.False(corpus.TCorpusLeaveConfirm());
         Assert.Equal(["Leave"], asked);
         Assert.True(corpus.CCorpusTranscriptShown);
         Assert.True(corpus.CCorpusDesk.CDeskHeld);
@@ -303,7 +303,7 @@ public sealed class TCorpus
         corpus.CCorpusDesk.TDeskDefer(
             TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterface.TStateValueCreate("a dog")));
 
-        Assert.True(corpus.CCorpusLeaveConfirm());
+        Assert.True(corpus.TCorpusLeaveConfirm());
         Assert.Single(corpus.CCorpusAnthology.TAnthologyRowsRead());
     }
 

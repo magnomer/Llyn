@@ -13,6 +13,12 @@ public sealed record CExample(
 {
     public string CExampleTextHint => LExampleHintRead(CExampleText.CStateValueUncertain);
 
+    public string? CExampleWording => CExampleText.CStateValueUncertain
+        ? "Display.Unknown"
+        : CExampleText.CStateValueShown is null ? "Example.Unwritten" : null;
+
+    public bool CExampleMuted => !CExampleText.CStateValueUncertain && CExampleText.CStateValueShown is null;
+
     internal static string LExampleHintRead(bool uncertain)
     {
         return uncertain ? "Display.Unknown" : "Example.Text";

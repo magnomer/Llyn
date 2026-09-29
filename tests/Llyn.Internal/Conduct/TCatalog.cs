@@ -13,42 +13,6 @@ namespace Llyn.Tests;
 public sealed class TCatalog
 {
     [Fact]
-    public void CatalogEntryLoad_StoredEntry_CountsMeaningAndCollocationCards()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "tally", "English", string.Empty, string.Empty,
-            [TInterface.TCardCreate("one", 1), TInterface.TCardCreate("two", 2)],
-            [TInterface.TCardCreate("three", 1)]));
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
-
-        Assert.Equal((2, 1), atelier.CAtelierCatalog.CCatalogEntryLoad(entry.LEntryId));
-    }
-
-    [Fact]
-    public void CatalogEntryLoad_MissingEntry_ReadsNothing()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
-
-        Assert.Null(atelier.CAtelierCatalog.CCatalogEntryLoad(987654));
-    }
-
-    [Fact]
-    public void CatalogMarkupFind_Matches_ReadsEntryIds()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "found", "English", string.Empty, string.Empty, [TInterface.TCardCreate("one", 1)], []));
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
-
-        Assert.Equal([entry.LEntryId], atelier.CAtelierCatalog.CCatalogMarkupFind("found", "English"));
-    }
-
-    [Fact]
     public void CatalogFontRead_LanguageAndRole_ReadsThePortFont()
     {
         List<(string, LFontRole)> asked = [];

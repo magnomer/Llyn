@@ -12,9 +12,9 @@ internal sealed class QSLeave
     {
         _qsLeaveSurface = QContract.QContractSheetFind<Window>("PSLeave");
         _qsLeaveSurface.Owner = owner;
-        QSLeaveStore.Click += QSLeaveStoreHandle;
-        QSLeaveDiscard.Click += QSLeaveDiscardHandle;
-        QSLeaveStay.Click += QSLeaveStayHandle;
+        QSLeaveStore.Click += QSLeaveStoreObserve;
+        QSLeaveDiscard.Click += QSLeaveDiscardObserve;
+        QSLeaveStay.Click += QSLeaveStayObserve;
     }
 
     private Button QSLeaveStore => QContract.QContractFind<Button>(_qsLeaveSurface, "PSLeaveStore");
@@ -30,17 +30,17 @@ internal sealed class QSLeave
         return dialog._qsLeaveAnswer;
     }
 
-    private void QSLeaveStoreHandle(object sender, RoutedEventArgs e)
+    private void QSLeaveStoreObserve(object sender, RoutedEventArgs e)
     {
         QSLeaveClose(QSLeaveAnswer.QSLeaveAnswerStore);
     }
 
-    private void QSLeaveDiscardHandle(object sender, RoutedEventArgs e)
+    private void QSLeaveDiscardObserve(object sender, RoutedEventArgs e)
     {
         QSLeaveClose(QSLeaveAnswer.QSLeaveAnswerDiscard);
     }
 
-    private void QSLeaveStayHandle(object sender, RoutedEventArgs e)
+    private void QSLeaveStayObserve(object sender, RoutedEventArgs e)
     {
         QSLeaveClose(QSLeaveAnswer.QSLeaveAnswerStay);
     }

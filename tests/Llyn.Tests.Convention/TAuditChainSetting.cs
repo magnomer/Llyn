@@ -140,6 +140,7 @@ internal static class TAuditChainSetting
             "CMarkupOmission",
             "CExample",
             "CMentionResult",
+            "CMentionOffer",
             "CMention",
             "CMarkdown",
             "CRespelling",

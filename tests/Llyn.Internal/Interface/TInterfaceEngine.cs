@@ -253,8 +253,8 @@ internal static partial class TInterface
     internal static LMarkupCargo TEngineMarkupRead(this LEngine engine, string path) =>
         engine.LEngineMarkup.LEngineMarkupRead(path);
 
-    internal static IReadOnlyList<LEntry> TEngineMarkupFind(this LEngine engine, LMarkupEntry entry) =>
-        engine.LEngineMarkup.LEngineMarkupFind(entry);
+    internal static IReadOnlyList<LMarkupTarget> TEngineMarkupFind(this LEngine engine, LMarkupEntry entry) =>
+        engine.LEngineMarkup.LEngineMarkupFind([entry])[0];
 
     internal static TMarkupOutcome TEngineMarkupImport(
         this LEngine engine, LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)
@@ -262,7 +262,7 @@ internal static partial class TInterface
         List<HashSet<long>> held = [];
         foreach (LMarkupEntry entry in cargo.LMarkupCargoEntry)
         {
-            held.Add([.. engine.TEngineMarkupFind(entry).Select(static found => found.LEntryId)]);
+            held.Add([.. engine.TEngineMarkupFind(entry).Select(static found => found.LMarkupTargetId)]);
         }
 
         LMarkupOutcome outcome = engine.LEngineMarkup.LEngineMarkupImport(cargo, intakes);
@@ -275,7 +275,7 @@ internal static partial class TInterface
             long id = target > 0
                 ? target
                 : engine.TEngineMarkupFind(cargo.LMarkupCargoEntry[index])
-                    .Select(static found => found.LEntryId)
+                    .Select(static found => found.LMarkupTargetId)
                     .Where(found => !held[index].Contains(found) && !taken.Contains(found))
                     .Min();
             taken.Add(id);

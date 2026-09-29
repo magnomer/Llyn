@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -17,7 +18,7 @@ internal static class TInterfaceMention
         return new CSentence(desk, new LPhonologyOutlet(engine), drafts, new LSettingsOutlet(engine), envoy);
     }
 
-    internal static IReadOnlyList<CCatalogExample>? TAnthologyFailRead(LEngine engine, CEnvoy envoy)
+    internal static IReadOnlyList<CCatalogExample>? TAnthologyFailRead(LEngine engine, CAtelier atelier, CEnvoy envoy)
     {
         LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
         {
@@ -30,9 +31,34 @@ internal static class TInterfaceMention
             TInterfaceConduct.TDeskCreate(engine, "Example", envoy),
             static () => true,
             envoy,
-            static _ => true);
+            static _ => true,
+            atelier.CAtelierMention);
         anthology.LAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
         return anthology.LAnthologyRowsRead();
+    }
+
+    internal static CMentionOffer? TAnthologyMentionFind(
+        LEngine engine, CAtelier atelier, CEnvoy envoy, long? chosen, IReadOnlyList<long>? found)
+    {
+        LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineMentionFind"] = _ => found is null
+                ? throw new InvalidOperationException("no words")
+                : new LMentionResult(2, null, [.. found.Select(id => new LTranslationTarget(id, "cat", "English"))]),
+        });
+        CAnthology anthology = new(
+            entries,
+            new LPortraitOutlet(engine),
+            new LSettingsOutlet(engine),
+            TInterfaceConduct.TDeskCreate(engine, "Example", envoy),
+            static () => true,
+            envoy,
+            static _ => true,
+            atelier.CAtelierMention);
+        LVista vista = engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText);
+        anthology.LAnthologyVistaRestore(vista);
+        vista.LVistaSelect(chosen);
+        return anthology.LAnthologyMentionFind(3);
     }
 
     internal static IReadOnlyList<CMentionLabel> TMentionFailRead(LEngine engine, CDesk desk, CEnvoy envoy)

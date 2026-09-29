@@ -40,10 +40,10 @@ The headline alone is the whole answer, and an empty detail line under it would 
 Puts up the leave dialog, which offers three answers rather than two.
 A leaving user often means to keep the word, so discarding is not the only exit.
 
-## `public IReadOnlyList<CSCustomsRow>? CEnvoyCustomsRead(IReadOnlyList<CMarkupEntry> entries)`
+## `public bool CEnvoyCustomsRead(CSCustoms customs)`
 
-Puts up the customs window over the parsed entries and answers the rows the user declared.
-A cancelled window answers null.
+Puts up the customs window over the gate Conduct handed it and answers whether the user accepted.
+The declared rows stay in the gate, so the window hands none back.
 
 ## `public void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions)`
 

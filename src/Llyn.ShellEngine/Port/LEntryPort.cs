@@ -102,8 +102,6 @@ public interface LEntryPort
 
     string LEngineTallyRead(long? reference);
 
-    IReadOnlyList<LEntry> LEngineMarkupFind(LMarkupEntry entry);
-
     IReadOnlyList<string> LEngineNameResolve(IReadOnlyList<string> labels);
 
     IReadOnlyList<LMarkdownBlock> LEngineMarkdownParse(string? text);

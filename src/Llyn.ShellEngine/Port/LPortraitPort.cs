@@ -15,7 +15,11 @@ public interface LPortraitPort
     Task LEnginePortraitExport(LVista? vista, string path, LPortraitMedium format, LPortraitLabel label);
 
     Task<IReadOnlyList<LMarkupOmission>?> LEngineMarkupStart(
-        string path, Func<IReadOnlyList<LMarkupEntry>, IReadOnlyList<LMarkupIntake>?> declare);
+        string path,
+        Func<
+            IReadOnlyList<LMarkupEntry>,
+            IReadOnlyList<IReadOnlyList<LMarkupTarget>>,
+            IReadOnlyList<LMarkupIntake>?> declare);
 
     static LPressTicket LEngineTicketRead(
         string printer,

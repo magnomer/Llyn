@@ -25,19 +25,19 @@ internal sealed partial class QCorpus
         QChronicle.QChronicleRun(_cCorpus.CCorpusSession.CSessionRedo);
     }
 
-    public void QChronicleUpdate()
+    private void QCorpusChronicleRefine()
     {
         (bool undo, bool redo) = _cCorpus.CCorpusSession.CSessionChronicleRead();
         QCorpusBackward.IsEnabled = undo;
         QCorpusForward.IsEnabled = redo;
     }
 
-    private void QCorpusUndoHandle(object sender, RoutedEventArgs e)
+    private void QCorpusUndoObserve(object sender, RoutedEventArgs e)
     {
         QChronicleUndo();
     }
 
-    private void QCorpusRedoHandle(object sender, RoutedEventArgs e)
+    private void QCorpusRedoObserve(object sender, RoutedEventArgs e)
     {
         QChronicleRedo();
     }

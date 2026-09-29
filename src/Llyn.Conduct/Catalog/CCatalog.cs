@@ -129,26 +129,6 @@ public sealed class CCatalog
         return rows.Select(static row => new CMeaning(row.LMeaningId, row.LMeaningName, row.LMeaningDepth)).ToList();
     }
 
-    public (int, int)? CCatalogEntryLoad(long id)
-    {
-        LEntryDraft? draft = _cCatalogAtelier.CAtelierEntryPort.LEngineEntryLoad(id);
-        if (draft is null)
-        {
-            return null;
-        }
-
-        return (
-            CSCustoms.CSCustomsCardScan(draft.LEntryDraftMeanings, static card => card.LCardDraftChild),
-            CSCustoms.CSCustomsCardScan(draft.LEntryDraftCollocations, static card => card.LCardDraftChild));
-    }
-
-    public IReadOnlyList<long> CCatalogMarkupFind(string headword, string language)
-    {
-        return _cCatalogAtelier.CAtelierEntryPort.LEngineMarkupFind(new LMarkupEntry(headword, language))
-            .Select(static entry => entry.LEntryId)
-            .ToList();
-    }
-
     internal static IReadOnlyList<CEnsignRow> CCatalogEnsignRead(IReadOnlyList<LEnsignRow> rows)
     {
         return rows.Select(static row => new CEnsignRow(row.LEnsignRowKey, row.LEnsignRowPath)).ToList();

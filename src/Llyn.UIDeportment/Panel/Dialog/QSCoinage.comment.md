@@ -18,14 +18,14 @@ Each named part is pulled from the window by its contract ID.
 
 Shows the dialog over its owner, saying `message`, and waits for the wording.
 The field takes focus on open, so the user types straight away.
-The answer comes back trimmed, or `null` when the user retreated.
+The answer comes back as typed, or `null` when the user retreated.
+The clerk behind the create gate trims it, since trimming is a data rule.
 
-## `private void QSCoinageWordingHandle(object sender, TextChangedEventArgs e)`
+## `private void QSCoinageWordingRefine(object sender, TextChangedEventArgs e)`
 
 The mint button follows the field, lit only while `CSCoinage` accepts the wording.
 
-## `private void QSCoinageMintHandle(object sender, RoutedEventArgs e)`
+## `private void QSCoinageMintObserve(object sender, RoutedEventArgs e)`
 
-Closes with an answer only when `CSCoinage` accepts the wording.
-Otherwise the result stays unset and the dialog stays open.
-The check guards against the enter key, since the button is dark then anyway.
+Closes the dialog with an answer.
+The button is dark until `CSCoinage` accepts the wording, so a click or the enter key never reaches it blank.

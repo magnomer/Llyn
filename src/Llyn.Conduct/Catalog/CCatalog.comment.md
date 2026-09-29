@@ -71,16 +71,6 @@ Loads the flags of one language's `varieties` and hands the rows to `store` as C
 Maps the engine's Meaning rows to sense-menu rows by name, with no rule of its own.
 The shared sense read in `CMention` uses it.
 
-## `public (int, int)? CCatalogEntryLoad(long id)`
-
-How many meaning and collocation cards a stored entry holds, children included.
-It answers nothing when no entry has `id`.
-The customs window shows the two counts as what a Replace would drop.
-
-## `public IReadOnlyList<long> CCatalogMarkupFind(string headword, string language)`
-
-The stored entries a markup entry could stand for, by id.
-
 ## `internal static IReadOnlyList<CEnsignRow> CCatalogEnsignRead(IReadOnlyList<LEnsignRow> rows)`
 
 Maps the engine's flag rows into Conduct rows.

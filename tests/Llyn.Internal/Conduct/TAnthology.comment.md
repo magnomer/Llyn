@@ -7,7 +7,6 @@ Before a vista arrives the list reads nothing, and an unknown text is worded wit
 A failing find shows `Example.LoadFailed` and answers nothing.
 The ordering menu offers text, language, Source and usage.
 A typed query narrows the rows, no order keeps the ordering, and a hidden language marks the list filtered.
-No chosen Example reads no click result.
 The held transcript carries the ready line of the Source it cites, and none before it cites one.
 A typed title cites the Source it resolves to, and a failing resolve shows `Reference.CreateFailed` and cites nothing.
 The citation drawer offers a Source split around the trimmed word, with no count while nothing cites it.
@@ -19,6 +18,7 @@ The text gate writes the typed sentence and answers the text placeholder, and th
 A blank field matches an empty text.
 The Example map links its excerpt only while the text reads soundly.
 It carries the tally it is handed, and the unknown mark as placeholder only for an unknown text.
+The excerpt's word is the unknown mark or `Example.Unwritten`, and only a never-written text is muted.
 
 ## `private static CAnthology TAnthologyPrepare(LEngine engine, CAtelier atelier, out CDesk desk)`
 

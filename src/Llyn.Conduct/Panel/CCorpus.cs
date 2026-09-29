@@ -62,7 +62,7 @@ public sealed class CCorpus
         CCorpusQuotation.CQuotationPanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Corpus",
-            CCorpusLeaveConfirm,
+            () => LCorpusLeaveConfirm(true),
             CCorpusAnthology.CAnthologyPanel.LPanelChosenRead,
             CCorpusAnthology.CAnthologyPanel.LPanelScribeRestore,
             LCorpusExampleOpen);
@@ -247,6 +247,11 @@ public sealed class CCorpus
             _cCorpusAtelier.CAtelierDraftPort, CCorpusDesk, 0, 0, _cCorpusEnvoy, _cCorpusSettingsPort);
     }
 
+    public CMentionOffer? CCorpusMentionFind(int offset)
+    {
+        return LCorpusLeaveConfirm(true) ? CCorpusAnthology.LAnthologyMentionFind(offset) : null;
+    }
+
     public void CCorpusExampleSelect(long? id)
     {
         if (id is not long chosen)
@@ -378,12 +383,7 @@ public sealed class CCorpus
         CCorpusEditor.CEditorDesk.LDeskQuotationStart(chosen);
     }
 
-    public bool CCorpusLeaveConfirm()
-    {
-        return LCorpusLeaveConfirm(true);
-    }
-
-    private bool LCorpusLeaveConfirm(bool shown)
+    internal bool LCorpusLeaveConfirm(bool shown)
     {
         if (!CCorpusSession.LSessionChangeCheck())
         {

@@ -319,6 +319,7 @@
       "CMarkupOmission",
       "CExample",
       "CMentionResult",
+      "CMentionOffer",
       "CMention",
       "CMarkdown",
       "CRespelling",

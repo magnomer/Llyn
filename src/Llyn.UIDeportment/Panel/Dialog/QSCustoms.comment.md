@@ -2,8 +2,10 @@
 
 ## `internal sealed class QSCustoms`
 
-The customs window's showing: the rows it declares, the intakes Accept sends, and the omission face.
-Each row's mode and target live in the `CSCustoms` gate, and the window only shows and relays them.
+The customs window's showing: the rows it declares and the omission face.
+It implements two `CEnvoy` questions, so it only shows what Conduct handed it and returns the answer.
+Each row's mode and target live in the `CSCustoms` gate Conduct hands over.
+The window calls no other gate and reads nothing else from Conduct.
 The window is the veneer's `PSCustoms` page, pulled fresh by contract ID and held in `_qsCustomsSurface`.
 
 ## `private static readonly IReadOnlyDictionary<string, CSCustomsMode> QSCustomsChoice =`
@@ -11,43 +13,38 @@ The window is the veneer's `PSCustoms` page, pulled fresh by contract ID and hel
 Maps each named mode row of the dropdown to the gate's mode.
 The surface is handed no mode value, so the pick is read back by the row's contract ID.
 
-## `private QSCustoms(PWindow host, CSCustoms customs, IReadOnlyList<QSCustomsItem> items)`
+## `private QSCustoms(PWindow host, CSCustoms customs)`
 
-Pulls the window over the host, attaches both row fills and subscribes the three buttons.
+Pulls the window over the host, lists the gate's entries and subscribes Accept and Cancel.
+Each row carries its entry's ready target ids, so the window finds nothing itself.
 Accept starts lit only when the gate finds every row ready.
-The omission face passes an empty gate and no rows.
 
 ## `private ItemsControl QSCustomsList`
 
 Each named part is pulled from the window by its contract ID.
 
-## `internal static IReadOnlyList<CSCustomsRow>? QSCustomsShow(PWindow host, IReadOnlyList<CMarkupEntry> entries)`
+## `internal static bool QSCustomsConsult(PWindow host, CSCustoms customs)`
 
-Looks up each entry's candidates, so the gate starts every row defaulted before the window opens.
-Every row is numbered by its place in the file, so a reader can tell twin rows apart.
+Shows the declaration and answers whether the user accepted it.
+The declared rows stay in the gate, so Conduct reads them back itself.
 
-## `internal static void QSCustomsOmissionShow(PWindow host, IReadOnlyList<CMarkupOmission> omissions)`
+## `internal static void QSCustomsOmissionConsult(PWindow host, IReadOnlyList<CMarkupOmission> omissions)`
 
 Shows the omissions the import reported on the window's second face.
-Each omission becomes a line number and its text before the window sees it.
-An empty list shows nothing, so a clean import ends without a further click.
+Each omission arrives as ready line and text, and Conduct asks only when one exists.
+The window hands its list a line and text pair of its own, so no Conduct record reaches the surface.
 The declaration's default and cancel keys are released so Close answers both.
 
-## `private static IReadOnlyList<CSCustomsRow>? QSCustomsIntakeRead(`
-
-Shows the declaration and hands back the rows Accept read.
-Null when the window closes without Accept.
-The library controller maps the rows to the engine's intakes, so this dialog names no engine type.
-
-## `private void QSCustomsRowApply(FrameworkElement container, object item, string? _)`
+## `private void QSCustomsRowRefine(FrameworkElement container, object item, string? _)`
 
 Reads the row from the gate in one call and fills it.
 It runs again for every row after any change, so a new mode or loss shows at once.
 
-## `private void QSCustomsRowApply(FrameworkElement container, QSCustomsItem row, CSCustomsRow state)`
+## `private void QSCustomsRowRefine(FrameworkElement container, QSCustomsItem row, CSCustomsRow state)`
 
 Fills one declaration row: number, headword, language, both dropdowns and the loss text.
-The loss reads the entry the gate names, and a zero id reads nothing.
+The loss looks up the wording key the gate chose and fills it with the ready card counts.
+A row with no loss key shows no loss.
 
 ## `private void QSCustomsModeApply(FrameworkElement container, ComboBox mode, CSCustomsMode chosen)`
 
@@ -66,25 +63,29 @@ Fills a candidate with the row's headword and its id, the id muted behind a hash
 
 ## `private static void QSCustomsOmissionApply(FrameworkElement container, object item, string? _)`
 
-Fills an omission row with its line number and its text.
+Fills an omission row with its line and its text.
 
-## `private void QSCustomsModeHandle(object sender, SelectionChangedEventArgs e)`
+## `private void QSCustomsModeObserve(object sender, SelectionChangedEventArgs e)`
 
-Hands the picked mode to the gate, whose answer lights or darkens Accept.
+Hands the picked mode to the gate and its verdict to the window's refresh.
+
+## `private void QSCustomsTargetObserve(object sender, SelectionChangedEventArgs e)`
+
+Hands the picked candidate's id to the gate and its verdict to the window's refresh.
+
+## `private void QSCustomsRefine(bool ready)`
+
+Lights or darkens Accept by the gate's verdict.
 Every row is filled again, since the gate may now answer differently for it.
 
-## `private void QSCustomsTargetHandle(object sender, SelectionChangedEventArgs e)`
+## `private void QSCustomsAcceptObserve(object sender, RoutedEventArgs e)`
 
-Hands the picked candidate's id to the gate, whose answer lights or darkens Accept.
+Closes the declaration as accepted, which answers the customs question.
 
-## `private void QSCustomsAcceptHandle(object sender, RoutedEventArgs e)`
+## `private void QSCustomsCancelObserve(object sender, RoutedEventArgs e)`
 
-Reads the gate's row for every entry in file order, then closes the dialog as accepted.
-The rows are read here, on the one Accept, so opening the dialog sends no second request.
+Closes the declaration as declined.
 
-## `private string QSCustomsLossFormat((int, int)? stored)`
+## `private static void QSCustomsCloseObserve(object sender, RoutedEventArgs e)`
 
-The meanings and collocations a Replace would drop, counted by `CCatalogEntryLoad` over the stored entry.
-The format is the window's localized text, filled with both counts.
-A missing format falls back to its own key, so a broken catalog still shows something.
-Blank when no entry was read.
+Closes the omission face, whose window is found from the pressed button.

@@ -50,6 +50,29 @@ public sealed class LMarkupClerkIntake
         return LMarkupIntake.LMarkupIntakeCreate(index, mode, target);
     }
 
+    public IReadOnlyList<IReadOnlyList<LMarkupTarget>> LMarkupTargetFind(IReadOnlyList<LMarkupEntry> entries)
+    {
+        ArgumentNullException.ThrowIfNull(entries);
+
+        List<IReadOnlyList<LMarkupTarget>> found = new(entries.Count);
+        foreach (LMarkupEntry entry in entries)
+        {
+            List<LMarkupTarget> targets = [];
+            foreach (LEntry stored in _lMarkupIntakeEntries.LEntryHeadwordFind(
+                entry.LMarkupEntryHeadword, entry.LMarkupEntryLanguage))
+            {
+                if (_lMarkupIntakeRows.LEntryLoad(stored.LEntryId) is LEntryDraft draft)
+                {
+                    targets.Add(LMarkupTarget.LMarkupTargetCreate(stored.LEntryId, draft));
+                }
+            }
+
+            found.Add(targets);
+        }
+
+        return found;
+    }
+
     public LMarkupOutcome LMarkupClerkImport(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)
     {
         ArgumentNullException.ThrowIfNull(cargo);

@@ -197,6 +197,18 @@ public partial class PWindow
             PWindowAtelier.CAtelierMention.CMentionResultOpen(result));
     }
 
+    internal void PWindowMentionRefine(PMention anchor, CMentionOffer? offer)
+    {
+        ArgumentNullException.ThrowIfNull(anchor);
+
+        if (offer is null)
+        {
+            return;
+        }
+
+        PMentionMenuShow(anchor, anchor.PMentionPieceRead(offer.CMentionOfferOffset), offer.CMentionOfferEntry);
+    }
+
     private void PMentionSenseRefine(long sense)
     {
         _qLibrary.QLibraryDisplay.PDisplayCardScroll(sense);
