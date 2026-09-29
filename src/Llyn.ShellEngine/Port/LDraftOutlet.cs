@@ -53,8 +53,11 @@ public sealed class LDraftOutlet : LDraftPort
 
     public void LEngineCourtDelete(long linkId) => _lDraftOutletEngine.LEngineRequest.LEngineCourtDelete(linkId);
 
-    public IReadOnlyList<LVistaRow> LEngineProspectFind(string query) =>
-        _lDraftOutletEngine.LEngineCard.LEngineProspectFind(query);
+    public LTranslationOffer LEngineTranslationFind(LTenure held, string text, string word, bool chosen) =>
+        _lDraftOutletEngine.LEngineCard.LEngineTranslationFind(held, text, word, chosen);
+
+    public IReadOnlyList<LVistaRow> LEngineProspectFind(LTenure held, string word) =>
+        _lDraftOutletEngine.LEngineCard.LEngineProspectFind(held, word);
 
     public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query) =>
         _lDraftOutletEngine.LEngineAuthor.LEngineBylineFind(draft, query);

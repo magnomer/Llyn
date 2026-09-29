@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -18,11 +17,6 @@ internal sealed class PLanguageItem
     public string PLanguageItemName { get; }
 
     public ImageSource? PLanguageItemFlag { get; }
-
-    internal bool PLanguageItemMatch(string language)
-    {
-        return string.Equals(PLanguageItemName, language, StringComparison.Ordinal);
-    }
 
     internal static void PLanguageItemReset(ObservableCollection<PLanguageItem> rows, IReadOnlyList<string> languages)
     {

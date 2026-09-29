@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -7,15 +8,16 @@ namespace Llyn.Tests;
 public sealed class TCatalogNames
 {
     [Fact]
-    public void ProspectFind_DuplicateHeadwords_CarriesNamesWithoutChangingStoredText()
+    public void TranslationAdd_DuplicateHeadwords_CarriesNamesWithoutChangingStoredText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineEntrySave(TInterface.TEntryDraftCreate("water", "English", "", "", [], []));
         engine.TEngineEntrySave(TInterface.TEntryDraftCreate("water", "English", "", "", [], []));
-        IReadOnlyList<LVistaRow> rows = engine.TEngineProspectFind("water");
-        Assert.Equal(["water (1)", "water (2)"], rows.Select(row => row.LVistaRowName));
-        Assert.All(rows, row => Assert.Equal("water", row.LVistaRowHeadword));
+        (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
+        IReadOnlyList<CVistaRow> rows = card.CCardTranslationAdd(TCard.TCardSheetAdd(desk), "water", 0).CProspectRows;
+        Assert.Equal(["water (1)", "water (2)"], rows.Select(row => row.CVistaRowName));
+        Assert.All(rows, row => Assert.Equal("water", row.CVistaRowHeadword));
     }
 
     [Fact]

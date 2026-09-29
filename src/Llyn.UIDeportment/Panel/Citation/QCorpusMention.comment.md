@@ -13,12 +13,14 @@ The mention menu stands only on the transcript's sentence field, so the source i
 
 ## `private void QTranscriptLinkShow(`
 
-Opens the Entry picker over a selection that spans anything.
+Places the Entry picker over a selection that spans anything, then calls the corpus's open gate.
 The picker belongs to an editor, so the corpus's own editor shows it.
+The Example's language is read below, so the driver passes none.
 
-## `private Action<long> QTranscriptLinkRead(int offset, int length)`
+## `private void QTranscriptPickObserve(TextBox box, long entryId)`
 
-The pick the Entry picker answers with, which links the selection to the chosen Entry.
+Hears the corpus editor's `PProspectPicked` and links the transcript's selection to the chosen Entry.
+The box's text and selection are handed raw, and the span is read below Conduct.
 
 ## `private void QTranscriptSenseHandle(object sender, ExecutedRoutedEventArgs e)`
 

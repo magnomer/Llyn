@@ -5,9 +5,9 @@
 Duplicate headwords receive numbered display names in prospect, markup, and incoming-use rows.
 Each result preserves the stored headword, so display labels do not alter domain text.
 
-## `ProspectFind_DuplicateHeadwords_CarriesNamesWithoutChangingStoredText()`
+## `TranslationAdd_DuplicateHeadwords_CarriesNamesWithoutChangingStoredText()`
 
-Two identical saved headwords appear as numbered row names.
+Two identical saved headwords appear as numbered row names in a typed translation's offer.
 Both rows retain the original headword.
 
 ## `MarkupRead_DuplicateHeadwords_CarriesSeparateDisplayNames()`

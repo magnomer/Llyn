@@ -2,58 +2,68 @@
 
 ## `public partial class PEditor`
 
-The editor's handling of a card's Register field: the keys typed in it and the chips clicked in it.
-The templates raise events on the dictionary, which relays them here, because a template has no card of its own.
-Which card a row belongs to is found from the row itself rather than passed through the visual tree.
+The Register field's driver, torn apart by role as `docs-work/JobPrinciple.md` section 13 asks.
+Each Observe hears one event and ends in one card gate, and each Refine only changes the look.
+The entry's keys are heard by several handlers in order, and the first to handle a key ends its route.
+The dropdown's key handlers come first, so an open dropdown hears a key before the entry does.
+A chip or caret item's data context is the item, not the card.
+So each handler finds the owning card by asking which card's collection holds the item.
+Reaching the entry itself is shared with the Tag field, which is written the same way.
 
 ## `private void PRegisterTextObserve(PRegisterCaret caret, string text)`
 
 Hears each edit of a Register caret and hands the raw text to the register gate, unsettled.
 `PProfferRegisterRefine` then paints the answer: the kept text and the offered Registers.
 
-## `internal void PRegisterChipHandle(object sender, RoutedEventArgs e)`
+## `private void PRegisterChipObserve(object sender, RoutedEventArgs e)`
 
-Drops the chip whose cross was clicked.
+Hears the close button of a chip and hands that Register to the erase gate.
 
-## `internal void PRegisterCaretHandle(object sender, KeyEventArgs e)`
+## `private void PRegisterCommitObserve(object sender, KeyEventArgs e)`
 
-The keys the caret answers, after the dropdown's key handlers have passed a key on.
-Enter comes first, then the edits an empty caret allows.
-The chip keys go through `PCaretKeyApply`.
+Enter hands the raw text standing in the entry to the register gate at the caret, settled.
+It runs after the dropdown's handlers, so Enter on a chosen stored Register never reaches it.
+`PProfferRegisterRefine` paints the gate's answer, so the entry empties and the dropdown shuts.
+The wording goes to the engine as written, and the engine decides whether it names a stored Register.
 
-## `internal void PRegisterCloseHandle(object sender, RoutedEventArgs e)`
+## `private void PRegisterEraseObserve(object sender, KeyEventArgs e)`
 
-Commits what stands in the caret when focus leaves it, so text is never lost by clicking away.
+Backspace at the entry's start or Delete at its end hands the chip beside the caret to the erase gate.
+`QCaretEdgeApply` decides the edge, and the key is taken at the edge even with no chip there.
 
-## `internal void PRegisterFocusHandle(object sender, MouseButtonEventArgs e)`
+## `private void PRegisterCaretRefine(object sender, KeyEventArgs e)`
 
+A Refine, since the arrows only walk the empty entry past a chip and ask no gate.
+`QCaretStepApply` decides the step, and the caret is put back into the moved entry.
+
+## `private void PRegisterBlurRefine(object sender, RoutedEventArgs e)`
+
+Shuts the dropdown when focus leaves the entry, since the field it was opened for is no longer typed into.
+It is subscribed before the close observer, so the dropdown shuts first.
+
+## `private void PRegisterCloseObserve(object sender, RoutedEventArgs e)`
+
+Commits what is standing in the entry when focus leaves the field, then paints the answer.
+So a Register typed and abandoned is kept rather than silently dropped.
+
+## `private void PRegisterFocusRefine(object sender, MouseButtonEventArgs e)`
+
+A Refine, since the click changes only where the caret stands and asks no gate.
 Puts the caret at the end of the field when the empty space beside the chips is clicked.
 
 ## `internal PCard? PCardRegisterFind(object row)`
 
 The card whose Register field holds this chip or caret, or `null` when no shown card does.
 
-## `private void PRegisterRemove(PCard card, PRegister? chip)`
-
-Asks the engine to unlink the chip, when there is one to unlink.
-
-## `private void PRegisterCommitObserve(PCard card)`
-
-Hides the shelf, hands what stands in the caret to the register gate settled, then empties the caret.
-The wording goes to the engine as written.
-The engine decides whether the wording names a stored Register or starts a new one.
-The panel holds no matching rule of its own, so every client of the engine gets the same answer.
-
 ## `private readonly PRegisterTemplate _pRegisterTemplate`
 
-The Register dictionary, held so its fill can subscribe the dictionary's forwarders.
+The Register dictionary, held for its chip and entry templates.
 
 ## `private void PRegisterApply(FrameworkElement container, object item, string? _)`
 
 Fills one item of a card's Register field, where bindings and event attributes stood.
-An entry gets its hint, its text and its key and leaving handlers.
-The dropdown's key Refine and key Observe come before the caret's, so the open dropdown hears a key first.
-A chip gets its wording, its close icon and its close handler.
+An entry gets its hint, its text and its key and leaving handlers in role order.
+A chip gets its wording, its close icon and its close observer.
 
 ## `private void PRegisterFieldApply(ItemsControl list)`
 

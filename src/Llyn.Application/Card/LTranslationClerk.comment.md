@@ -44,11 +44,24 @@ Resolving asks for the headword itself, so `brea` never silently becomes `breakf
 Both sides are folded the way `LCatalog.LCatalogTextNormalize` folds.
 Several Entries sharing a headword are a question, so this answers nothing and the caller asks.
 
+## `public IReadOnlyList<LEntry> LTranslationMentionFind(string word, LDraft? draft)`
+
+The Entries a mention of `word` may name, in the order the link search gives.
+A mention names a word of the draft's own language, so other languages are left out.
+A draft naming no language, or no draft at all, keeps every language.
+
 ## `public static string? LTranslationWordRead(string text)`
 
 The word a typed translation stands for: the text trimmed, or null when nothing is left.
 A blank word names no Entry, so it neither resolves nor offers prospects.
 Resolving and offering both read the word here, so the rule has one owner.
+
+## `public static IReadOnlyList<string> LTranslationLanguageRead(IReadOnlyList<string> languages, string language)`
+
+The languages a fresh Entry for a typed translation is offered in, one create row each.
+Every language the workspace holds is offered, so the user picks rather than accepts.
+The draft's own `language` comes last, because a link usually crosses into another one.
+It is offered even when the workspace does not hold it, so a fresh Entry is always reachable.
 
 ## `public LEntry LTranslationClerkCreate(string headword, string language)`
 

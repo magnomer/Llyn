@@ -30,7 +30,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         Resources.MergedDictionaries.Add(_pSentenceTemplate);
         _pContextTemplate = new PContextTemplate();
         Resources.MergedDictionaries.Add(_pContextTemplate);
-        _pRegisterTemplate = new PRegisterTemplate(this);
+        _pRegisterTemplate = new PRegisterTemplate();
         Resources.MergedDictionaries.Add(_pRegisterTemplate);
         _pImageTemplate = new PImageTemplate(this);
         Resources.MergedDictionaries.Add(_pImageTemplate);
@@ -40,8 +40,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         Resources.MergedDictionaries.Add(_pLabelTemplate);
         _pLinkTemplate = new PLinkTemplate();
         Resources.MergedDictionaries.Add(_pLinkTemplate);
-        _pProspectTemplate = new PProspectTemplate(this);
-        Resources.MergedDictionaries.Add(_pProspectTemplate);
+        Resources.MergedDictionaries.Add(new PProspectTemplate());
         _pProfferTemplate = new PProfferTemplate();
         Resources.MergedDictionaries.Add(_pProfferTemplate);
         _pSlateTemplate = new PSlateTemplate();

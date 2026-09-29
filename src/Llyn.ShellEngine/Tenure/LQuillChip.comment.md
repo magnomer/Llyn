@@ -4,6 +4,7 @@
 
 The chip row edits of one tenure: a card's tags, situations, registers and translations.
 It also finds the Sources a card sentence's citation field offers, since it holds the draft port.
+The mention picker's find and link sit here for the same port, which reads the Entries and the span.
 It was split off `LQuill` in job39 by role, and the tag members moved here unchanged.
 A typed list goes through `LDraftClerkList.LDraftListParse`, and each completed part is one request.
 Its members keep the `LQuill` base, as `CDisplaySound`'s keep `CDisplay`.
@@ -51,6 +52,24 @@ The same answer carries the stored Registers the kept text matches, so the field
 
 Links a stored register to a card, sent at once.
 
+## `public void LQuillRegisterRemove(long card, long register)`
+
+Unlinks one register from a card, sent at once.
+
+## `public LTranslationOffer LQuillMentionFind(string text)`
+
+The Entries a selected or typed word may be linked to as a mention, ready to show.
+A blank word offers nothing, by the same trim rule a typed translation uses.
+The held draft names the language, so a sentence of the corpus and an entry's text each search their own.
+The picker opens only on a match, and its first row starts selected.
+A failed search throws, since the picker's caller shows the failure notice.
+
+## `public void LQuillMentionAdd(long card, long sentence, string text, int start, int length, long entry)`
+
+Links the span a selection covers to an Entry, sent at once.
+The selection is read into a span of whole units by the engine's span rule.
+A card and sentence of zero name the held Example itself, as the corpus transcript does.
+
 ## `public LReferenceOffer LQuillReferenceFind(long card, long sentence, string text)`
 
 The stored Sources a card sentence's citation field offers for the typed text.
@@ -68,6 +87,7 @@ The order of the resolves, the links and the search is the engine's, so a driver
 ## `public LTranslationOffer LQuillTranslationFind(string text)`
 
 Offers the Entries the typed word matches, and marks the offer chosen when one Entry answers the whole word.
+The offer also carries the languages a fresh Entry is offered in, and never the draft's own Entry.
 A blank word offers nothing.
 A failed search reaches the caller, since the user asked for it and must hear why nothing came.
 
@@ -113,6 +133,7 @@ A failed search offers nothing, since no one asked yet.
 ## `private LTranslationOffer LQuillProspectFind(string kept)`
 
 The prospects for the text a typed list keeps, found as the user types.
+They come in the same shape as `LQuillTranslationFind`'s, with nothing chosen.
 A blank word or a failed search offers nothing, since no one asked yet.
 
 ## `public void LQuillTagInsert(long card, long tag, int position)`

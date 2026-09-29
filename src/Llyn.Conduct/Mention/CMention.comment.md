@@ -35,6 +35,13 @@ An unlinked Mention takes `silent`, the label the driver looked up for a word st
 The whole text as pieces, so a driver draws every character and no gap splits into words.
 A linked piece answers true, a silent piece false, and a gap nothing.
 
+## `internal static CProspect LMentionProspectRead(CDesk desk, string word, CEnvoy envoy, LSettingsPort settings)`
+
+The mention picker's interaction, shared by the editor and the corpus transcript.
+Each area passes its own desk, so no driver chooses which draft is searched.
+A desk without a live draft offers nothing.
+A failed search shows `Mention.FindFailed` and offers nothing, so no picker opens.
+
 ## `public int CMentionUnitRead(string text, int offset)`
 
 The UTF-16 unit a code-point offset starts at, for placing a caret or a popup.

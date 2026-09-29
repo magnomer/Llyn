@@ -108,12 +108,47 @@ public sealed class LTranslationClerk
         return single;
     }
 
+    public IReadOnlyList<LEntry> LTranslationMentionFind(string word, LDraft? draft)
+    {
+        ArgumentNullException.ThrowIfNull(word);
+
+        string language = draft?.LDraftMentionLanguage ?? string.Empty;
+        List<LEntry> found = [];
+        foreach (LEntry entry in LTranslationClerkFind(word, null))
+        {
+            if (language.Length == 0 || string.Equals(entry.LEntryLanguage, language, StringComparison.Ordinal))
+            {
+                found.Add(entry);
+            }
+        }
+
+        return found;
+    }
+
     public static string? LTranslationWordRead(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
 
         string written = text.Trim();
         return written.Length == 0 ? null : written;
+    }
+
+    public static IReadOnlyList<string> LTranslationLanguageRead(IReadOnlyList<string> languages, string language)
+    {
+        ArgumentNullException.ThrowIfNull(languages);
+        ArgumentNullException.ThrowIfNull(language);
+
+        List<string> offered = [];
+        foreach (string held in languages)
+        {
+            if (!string.Equals(held, language, StringComparison.Ordinal))
+            {
+                offered.Add(held);
+            }
+        }
+
+        offered.Add(language);
+        return offered;
     }
 
     public LEntry LTranslationClerkCreate(string headword, string language)

@@ -187,26 +187,19 @@ public partial class PEditor
 
     internal void PSentenceLinkHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Source is not TextBox { DataContext: PSentence row } box || PCardSentenceFind(row) is not PCard card)
+        if (e.Source is not TextBox { DataContext: PSentence } box)
         {
             return;
         }
 
-        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowAtelier);
+        (_, int length) = PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowAtelier);
         if (length == 0)
         {
             return;
         }
 
-        long cardId = card.PCardId;
-        long rowId = row.PSentenceRow;
-        PProspectShow(
-            box,
-            PMentionSelection.PMentionSelectionPlace(box),
-            box.SelectedText.Trim(),
-            _qEditor.QEditorArea.CEditorLanguage,
-            entryId => PEditorRequestSend(
-                new LRequestMentionAddition(PEditorDraft, cardId, rowId, offset, length, entryId, 0)));
+        PProspectPlaceRefine(box, PMentionSelection.PMentionSelectionPlace(box));
+        PProspectOpenRefine(_qEditor.QEditorArea.CEditorCard.CCardMentionRead(box.SelectedText));
     }
 
     internal void PSentenceSenseHandle(object sender, ExecutedRoutedEventArgs e)

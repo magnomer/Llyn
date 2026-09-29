@@ -70,9 +70,19 @@ The announcement is raised either way, so the panel lists and selects the row.
 The rename and the delete raise the same bulletin whether or not the row moved.
 So a shown panel always re-reads.
 
-## `public IReadOnlyList<LVistaRow> LEngineProspectFind(string query)`
+## `public LTranslationOffer LEngineTranslationFind(LTenure held, string text, string word, bool chosen)`
 
-The translation search built into vista rows, for the prospect list under a card.
+The offer a typed translation opens, ready for the dropdown under a card.
+The search is built into vista rows, and the held draft's own stored Entry is dropped afterwards.
+So it joins the numbering first, and its twin keeps the number the catalog shows.
+A card may not translate its own Entry, so that row is never offered.
+The fresh Entry languages come from the languages the workspace holds, with the draft's own last.
+
+## `public IReadOnlyList<LVistaRow> LEngineProspectFind(LTenure held, string word)`
+
+The Entries a mention of `word` in the held draft may name, built into vista rows.
+The held draft names the language, so no caller passes one.
+The draft is read before the gate is taken, as the tenure guards itself.
 
 ## `internal LEntry LEngineTranslationCreate(string headword, string language)`
 

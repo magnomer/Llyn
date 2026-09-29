@@ -243,6 +243,8 @@ internal sealed partial class QCorpus : QChronicleHost
 
         QCorpusDisplay.PDisplayAttach(host, lectern);
         QCorpusEditor.PEditorIntroduce(host, new QEditor(_cCorpus.CCorpusEditor));
+        QCorpusEditor.PProspectPicked += QTranscriptPickObserve;
+        _cCorpus.CCorpusMentionOffered += QCorpusEditor.PProspectOpenRefine;
 
         CPanel anthology = _cCorpus.CCorpusAnthology.CAnthologyPanel;
         CPanel quotation = _cCorpus.CCorpusQuotation.CQuotationPanel;

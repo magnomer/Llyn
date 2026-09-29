@@ -70,6 +70,11 @@ The engine picks the gloss language and puts the new gloss last.
 
 The gate for the cross on a gloss row.
 
+## `public void CSentenceMentionAdd(long cardId, long sentenceId, string text, int start, int length, long entryId)`
+
+The gate for an Entry picked for a card sentence's selection, with the box's raw text and selection.
+The span rule and the request are ShellEngine's, shared with the corpus transcript's gate.
+
 ## `public CSentenceFrame CSentenceFrameRead()`
 
 The frame every sentence row of the held draft offers, in the draft's language.

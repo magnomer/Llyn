@@ -96,11 +96,11 @@ public partial class PEditor
         card.PCardLinkRefine(prospect.CProspectText);
         if (prospect.CProspectShown)
         {
-            PProspectShow(card, prospect.CProspectWord, prospect.CProspectRows, prospect.CProspectChosen);
+            PProspectTranslationRefine(card, prospect);
             return;
         }
 
-        PProspectHide();
+        PProspectShutRefine();
     }
 
     private void PLinkDropObserve(object sender, RoutedEventArgs e)
@@ -164,7 +164,7 @@ public partial class PEditor
 
     private void PLinkBlurRefine(object sender, RoutedEventArgs e)
     {
-        PProspectHide();
+        PProspectShutRefine();
     }
 
     private void PLinkCloseObserve(object sender, RoutedEventArgs e)

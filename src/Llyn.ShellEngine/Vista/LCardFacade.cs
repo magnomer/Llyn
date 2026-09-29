@@ -152,12 +152,34 @@ internal sealed class LCardFacade
         return created;
     }
 
-    public IReadOnlyList<LVistaRow> LEngineProspectFind(string query)
+    public LTranslationOffer LEngineTranslationFind(LTenure held, string text, string word, bool chosen)
     {
+        ArgumentNullException.ThrowIfNull(held);
+
+        long? self = held.LTenureRead()?.LDraftStored;
+        IReadOnlyList<string> languages = LTranslationClerk.LTranslationLanguageRead(
+            _lCardFacadeEngine.LEngineLanguage.LEngineLanguageRead(), held.LTenureLanguageRead());
+        IReadOnlyList<LVistaRow> rows;
         lock (_lCardFacadeGate)
         {
             IReadOnlyList<LEntry> entries =
-                LCardFacadeStaff.LEngineStaffTranslation.LTranslationClerkFind(query, null);
+                LCardFacadeStaff.LEngineStaffTranslation.LTranslationClerkFind(word, null);
+            rows = _lCardFacadeEngine.LEngineVista.LEngineVistaBuild(entries, null);
+        }
+
+        return new LTranslationOffer(
+            text, word, rows.Where(row => row.LVistaRowId != self).ToList(), true, chosen, languages);
+    }
+
+    public IReadOnlyList<LVistaRow> LEngineProspectFind(LTenure held, string word)
+    {
+        ArgumentNullException.ThrowIfNull(held);
+
+        LDraft? draft = held.LTenureRead();
+        lock (_lCardFacadeGate)
+        {
+            IReadOnlyList<LEntry> entries =
+                LCardFacadeStaff.LEngineStaffTranslation.LTranslationMentionFind(word, draft);
             return _lCardFacadeEngine.LEngineVista.LEngineVistaBuild(entries, null);
         }
     }

@@ -23,6 +23,7 @@ Only the editor builds one, so the constructor is internal.
 The gate for the translation field's typed text, heard on every change.
 The quill links each completed word that resolves to one entry and answers what the field keeps.
 The same answer carries the dropdown of Entries the kept word matches, so the field paints both at once.
+The dropdown comes ready below: the edited Entry left out, and the fresh Entry languages listed.
 A failed resolve shows `Input.TranslationFailed`, keeps the text as typed and offers nothing.
 
 ## `public CProspect CCardTranslationResolve(long cardId, string text, int position, bool offered)`
@@ -45,9 +46,15 @@ A failed start shows `Input.TranslationFailed`.
 The gate for a link the user erases, by its close button or a key at the entry's edge.
 The quill drops the court behind a tentative link in the same call.
 
-## `private static CProspect LCardProspectRead(LTranslationOffer offer)`
+## `public CProspect CCardMentionRead(string word)`
+
+The read the editor's mention picker opens with, for a word selected or typed as the user gave it.
+It searches in the editor draft's own language, through `CMention.LMentionProspectRead`.
+
+## `internal static CProspect LCardProspectRead(LTranslationOffer offer)`
 
 A plain map of the engine's offer, with no rule, and its rows through `CPanel.CPanelRowRead`.
+The mention picker's helper in `CMention` reuses it, since both dropdowns answer the same offer.
 
 ## `public CProffer CCardReferenceFind(long cardId, long sentenceId, string text)`
 
@@ -120,6 +127,10 @@ A plain map of the engine's register offer, with no rule.
 ## `public void CCardRegisterInsert(long cardId, long registerId, int position)`
 
 The gate for a stored register picked from the suggestions.
+
+## `public void CCardRegisterRemove(long cardId, long registerId)`
+
+The gate for a register chip erased from a card.
 
 ## `public void CCardTagInsert(long cardId, long tagId, int position)`
 

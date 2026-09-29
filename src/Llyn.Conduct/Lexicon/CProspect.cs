@@ -7,4 +7,5 @@ public sealed record CProspect(
     string CProspectWord,
     IReadOnlyList<CVistaRow> CProspectRows,
     bool CProspectShown,
-    bool CProspectChosen);
+    bool CProspectChosen,
+    IReadOnlyList<string> CProspectLanguages);

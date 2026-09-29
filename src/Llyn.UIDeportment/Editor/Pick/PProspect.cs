@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,8 +11,6 @@ namespace Llyn.UIDeportment;
 
 public partial class PEditor
 {
-    private readonly PProspectTemplate _pProspectTemplate;
-
     private Popup PProspect => (Popup)FindName(nameof(PProspect));
 
     private ListBox PProspectList => (ListBox)FindName(nameof(PProspectList));
@@ -52,27 +49,74 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Grid>(container, "PProspectRow") is Grid surface)
         {
-            surface.PreviewMouseLeftButtonDown -= _pProspectTemplate.PProspectHandle;
-            surface.PreviewMouseLeftButtonDown += _pProspectTemplate.PProspectHandle;
+            surface.PreviewMouseLeftButtonDown -= PProspectMissRefine;
+            surface.PreviewMouseLeftButtonDown -= PProspectPickObserve;
+            surface.PreviewMouseLeftButtonDown += PProspectMissRefine;
+            surface.PreviewMouseLeftButtonDown += PProspectPickObserve;
         }
     }
 
     private readonly ObservableCollection<PProspectItem> _pProspectItem = [];
 
-    private PCard? _pProspectCard;
+    private void PProspectMissRefine(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: PProspectItem })
+        {
+            PProspectShutRefine();
+        }
+    }
 
-    private Action<long>? _pProspectChosen;
-
-    internal void PProspectHandle(object sender, MouseButtonEventArgs e)
+    private void PProspectPickObserve(object sender, MouseButtonEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: PProspectItem item })
         {
-            PProspectHide();
             return;
         }
 
-        PProspectSelect(item);
         e.Handled = true;
+        switch (PProspect.PlacementTarget)
+        {
+            case TextBox { DataContext: PLinkCaret caret }:
+                if (PCardLinkFind(caret) is PCard owner)
+                {
+                    _qEditor.QEditorArea.CEditorCard.CCardTranslationInsert(
+                        owner.PCardId,
+                        item.PProspectItemId,
+                        item.PProspectItemHeadword,
+                        item.PProspectItemLanguage,
+                        owner.PCardLinkPosition);
+                    PProspectShutRefine();
+                    owner.PCardLinkClear();
+                }
+
+                return;
+            case TextBox box when box == PEtymologyField.PEtymologyBox:
+                _qEditor.QEditorArea.CEditorCard.CCardMentionSave(
+                    box.Text, box.SelectionStart, box.SelectionLength, item.PProspectItemId);
+                break;
+            case TextBox { DataContext: PEtymon caret }:
+                _qEditor.QEditorArea.CEditorCard.CCardEtymonAdd(item.PProspectItemId);
+                PEtymonCaretRefine(caret);
+                break;
+            case TextBox { DataContext: PSentence row } box:
+                if (PCardSentenceFind(row) is PCard card)
+                {
+                    _qEditor.QEditorArea.CEditorSentence.CSentenceMentionAdd(
+                        card.PCardId,
+                        row.PSentenceRow,
+                        box.Text,
+                        box.SelectionStart,
+                        box.SelectionLength,
+                        item.PProspectItemId);
+                }
+
+                break;
+            case TextBox box:
+                PProspectPicked?.Invoke(box, item.PProspectItemId);
+                break;
+        }
+
+        PProspectShutRefine();
     }
 
     private void PProspectKeyRefine(object sender, KeyEventArgs e)
@@ -84,7 +128,7 @@ public partial class PEditor
 
         if (e.Key == Key.Escape)
         {
-            PProspectHide();
+            PProspectShutRefine();
             e.Handled = true;
             return;
         }
@@ -130,101 +174,35 @@ public partial class PEditor
             item.PProspectItemLanguage,
             card.PCardLinkPosition);
         e.Handled = true;
-        PProspectHide();
+        PProspectShutRefine();
         card.PCardLinkClear();
     }
 
-    internal void PProspectShow(FrameworkElement anchor, Rect place, string word, string language, Action<long> chosen)
+    internal event Action<TextBox, long>? PProspectPicked;
+
+    internal void PProspectPlaceRefine(FrameworkElement anchor, Rect place)
     {
         ArgumentNullException.ThrowIfNull(anchor);
-        ArgumentNullException.ThrowIfNull(chosen);
-        if (word.Trim().Length == 0)
-        {
-            return;
-        }
 
-        IReadOnlyList<CVistaRow> found;
-        try
-        {
-            found = _qEditor.QEditorArea.CEditorCard.CCardProspectFind(word);
-        }
-        catch (Exception exception)
-        {
-            _pEditorHost.PWindowFailureRefine("Mention.FindFailed", exception);
-            return;
-        }
-
-        PProspectHide();
-
-        List<PProspectItem> stored = new(found.Count);
-        foreach (CVistaRow entry in found)
-        {
-            stored.Add(new PProspectItem(
-                entry.CVistaRowId,
-                entry.CVistaRowHeadword,
-                entry.CVistaRowLanguage,
-                false,
-                entry.CVistaRowEpithet, entry.CVistaRowName));
-        }
-
-        foreach (PProspectItem item in stored)
-        {
-            if (language.Length == 0 || string.Equals(item.PProspectItemLanguage, language, StringComparison.Ordinal))
-            {
-                _pProspectItem.Add(item);
-            }
-        }
-
-        if (_pProspectItem.Count == 0)
-        {
-            return;
-        }
-
-        _pProspectChosen = chosen;
+        PProspectShutRefine();
         PProspect.PlacementTarget = anchor;
         PProspect.HorizontalOffset = place.X;
         PProspect.VerticalOffset = place.Bottom - anchor.ActualHeight;
-        PProspect.IsOpen = true;
-        PProspectList.SelectedIndex = 0;
     }
 
-    private void PProspectSelect(PProspectItem item)
+    internal void PProspectOpenRefine(CProspect prospect)
     {
-        if (_pProspectChosen is Action<long> chosen)
-        {
-            PProspectHide();
-            chosen(item.PProspectItemId);
-            return;
-        }
+        ArgumentNullException.ThrowIfNull(prospect);
 
-        PCard? card = _pProspectCard;
-        if (card is null)
-        {
-            PProspectHide();
-            return;
-        }
-
-        _qEditor.QEditorArea.CEditorCard.CCardTranslationInsert(
-            card.PCardId,
-            item.PProspectItemId,
-            item.PProspectItemHeadword,
-            item.PProspectItemLanguage,
-            card.PCardLinkPosition);
-        card.PCardLinkClear();
-        PProspectHide();
-    }
-
-    private void PProspectShow(PCard card, string word, IReadOnlyList<CVistaRow> found, bool chosen)
-    {
         _pProspectItem.Clear();
-        _pProspectChosen = null;
-        PProspect.HorizontalOffset = 0;
-        PProspect.VerticalOffset = 0;
-
-        List<PProspectItem> stored = new(found.Count);
-        foreach (CVistaRow entry in found)
+        if (!prospect.CProspectShown)
         {
-            stored.Add(new PProspectItem(
+            return;
+        }
+
+        foreach (CVistaRow entry in prospect.CProspectRows)
+        {
+            _pProspectItem.Add(new PProspectItem(
                 entry.CVistaRowId,
                 entry.CVistaRowHeadword,
                 entry.CVistaRowLanguage,
@@ -232,49 +210,29 @@ public partial class PEditor
                 entry.CVistaRowEpithet, entry.CVistaRowName));
         }
 
-        long? self = _qEditor.QEditorArea.CEditorEntry;
-        foreach (PProspectItem item in stored)
+        foreach (string language in prospect.CProspectLanguages)
         {
-            if (self is null || item.PProspectItemId != self)
-            {
-                _pProspectItem.Add(item);
-            }
+            _pProspectItem.Add(new PProspectItem(0, prospect.CProspectWord, language, true));
         }
 
-        foreach (string language in PProspectLanguageRead())
-        {
-            _pProspectItem.Add(new PProspectItem(0, word, language, true));
-        }
-
-        _pProspectCard = card;
-        PProspect.PlacementTarget = PLinkBoxFind(card) ?? (UIElement)PContents;
         PProspect.IsOpen = true;
-        PProspectList.SelectedIndex = chosen ? 0 : -1;
+        PProspectList.SelectedIndex = prospect.CProspectChosen ? 0 : -1;
     }
 
-    private void PProspectHide()
+    private void PProspectTranslationRefine(PCard card, CProspect prospect)
+    {
+        PProspect.HorizontalOffset = 0;
+        PProspect.VerticalOffset = 0;
+        PProspect.PlacementTarget = PLinkBoxFind(card) ?? (UIElement)PContents;
+        PProspectOpenRefine(prospect);
+    }
+
+    private void PProspectShutRefine()
     {
         PProspect.IsOpen = false;
         PProspect.HorizontalOffset = 0;
         PProspect.VerticalOffset = 0;
         PProspectList.SelectedIndex = -1;
         _pProspectItem.Clear();
-        _pProspectCard = null;
-        _pProspectChosen = null;
-    }
-
-    private IReadOnlyList<string> PProspectLanguageRead()
-    {
-        List<string> languages = [];
-        foreach (PLanguageItem item in _pLanguageItem)
-        {
-            if (!item.PLanguageItemMatch(_qEditor.QEditorArea.CEditorLanguage))
-            {
-                languages.Add(item.PLanguageItemName);
-            }
-        }
-
-        languages.Add(_qEditor.QEditorArea.CEditorLanguage);
-        return languages;
     }
 }

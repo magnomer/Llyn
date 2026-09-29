@@ -12,3 +12,5 @@ The engine answers it whole, so the field shows it without deciding anything.
 - `LTranslationOfferRows`: The Entries the word matches, whole headwords first.
 - `LTranslationOfferShown`: True when the word is not blank and the search answered, so the dropdown opens.
 - `LTranslationOfferChosen`: True when one Entry answers the whole word, so its row stands chosen.
+- `LTranslationOfferLanguages`: The languages a fresh Entry for the word is offered in, the draft's own last.
+  A mention offers none, because it may only name an Entry that exists.

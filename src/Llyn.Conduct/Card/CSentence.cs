@@ -79,6 +79,11 @@ public sealed class CSentence
         _cSentenceDesk.CDeskQuill?.LQuillGlossRemove(cardId, sentenceId, glossId);
     }
 
+    public void CSentenceMentionAdd(long cardId, long sentenceId, string text, int start, int length, long entryId)
+    {
+        _cSentenceDesk.CDeskChip?.LQuillMentionAdd(cardId, sentenceId, text, start, length, entryId);
+    }
+
     public CSentenceFrame CSentenceFrameRead()
     {
         string language = _cSentenceDesk.CDeskTenure?.LTenureLanguageRead() ?? string.Empty;

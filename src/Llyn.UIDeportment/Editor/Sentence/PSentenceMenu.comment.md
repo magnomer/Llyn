@@ -45,12 +45,11 @@ Hears the erase button of a row and hands the row to the gate to drop.
 
 ## `internal void PSentenceLinkHandle(object sender, ExecutedRoutedEventArgs e)`
 
-Opens the Entry picker over the selected word.
-On pick it asks for a Mention of that Entry on the span.
+Opens the Entry picker over the selected word, from the editor's mention read.
 The gesture lives in the editor and not the display.
 A link is an edit, and every edit goes through a draft.
-The span is read in code points before anything reaches a request.
-The card and row ids are taken before the picker opens, since the pick answers later.
+The pick is heard by `PProspectPickObserve`, which finds the card and row from the box.
+Its gate `CSentenceMentionAdd` reads the span in code points below Conduct.
 
 ## `internal void PSentenceSenseHandle(object sender, ExecutedRoutedEventArgs e)`
 

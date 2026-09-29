@@ -50,6 +50,23 @@ public sealed class TCardRegister
     }
 
     [Fact]
+    public void RegisterRemove_LinkedRegister_DropsItAndKeepsTheOthers()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
+        long sheet = TCard.TCardSheetAdd(desk);
+        card.CCardRegisterAdd(sheet, "formal, slang", 0, true);
+        IReadOnlyList<LRegisterDraft> linked = TCardRegisterRead(desk, sheet);
+
+        card.CCardRegisterRemove(sheet, linked[0].LRegisterDraftId);
+
+        Assert.Equal(
+            ["slang"],
+            TCardRegisterRead(desk, sheet).Select(static row => row.LRegisterDraftName.LStateValueShown));
+    }
+
+    [Fact]
     public void RegisterAdd_TypedPrefix_OffersTheStoredRegisterSplitAroundTheWord()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -33,9 +33,9 @@ public sealed class CCard
         _cCardEnvoy = envoy;
     }
 
-    public IReadOnlyList<CVistaRow> CCardProspectFind(string word)
+    public CProspect CCardMentionRead(string word)
     {
-        return _cCardDraftPort.LEngineProspectFind(word).Select(CPanel.CPanelRowRead).ToList();
+        return CMention.LMentionProspectRead(_cCardDesk, word, _cCardEnvoy, _cCardSettingsPort);
     }
 
     public CProspect CCardTranslationAdd(long cardId, string text, int position)
@@ -46,12 +46,12 @@ public sealed class CCard
         {
             return _cCardDesk.CDeskChip?.LQuillTranslationAdd(cardId, text, position) is LTranslationOffer offer
                 ? LCardProspectRead(offer)
-                : new CProspect(text, string.Empty, [], false, false);
+                : new CProspect(text, string.Empty, [], false, false, []);
         }
         catch (Exception exception)
         {
             CLedger.LLedgerFailureShow(_cCardEnvoy, _cCardSettingsPort, "Input.TranslationFailed", exception);
-            return new CProspect(text, string.Empty, [], false, false);
+            return new CProspect(text, string.Empty, [], false, false, []);
         }
     }
 
@@ -61,19 +61,20 @@ public sealed class CCard
 
         if (_cCardDesk.CDeskChip is not LQuillChip chip)
         {
-            return new CProspect(text, string.Empty, [], false, false);
+            return new CProspect(text, string.Empty, [], false, false, []);
         }
 
         try
         {
             return offered
                 ? LCardProspectRead(chip.LQuillTranslationFind(text))
-                : new CProspect(chip.LQuillTranslationResolve(cardId, text, position), string.Empty, [], false, false);
+                : new CProspect(
+                    chip.LQuillTranslationResolve(cardId, text, position), string.Empty, [], false, false, []);
         }
         catch (Exception exception)
         {
             CLedger.LLedgerFailureShow(_cCardEnvoy, _cCardSettingsPort, "Input.TranslationFailed", exception);
-            return new CProspect(text, string.Empty, [], false, false);
+            return new CProspect(text, string.Empty, [], false, false, []);
         }
     }
 
@@ -94,14 +95,15 @@ public sealed class CCard
         _cCardDesk.CDeskChip?.LQuillTranslationRemove(cardId, entryId);
     }
 
-    private static CProspect LCardProspectRead(LTranslationOffer offer)
+    internal static CProspect LCardProspectRead(LTranslationOffer offer)
     {
         return new CProspect(
             offer.LTranslationOfferText,
             offer.LTranslationOfferWord,
             offer.LTranslationOfferRows.Select(CPanel.CPanelRowRead).ToList(),
             offer.LTranslationOfferShown,
-            offer.LTranslationOfferChosen);
+            offer.LTranslationOfferChosen,
+            offer.LTranslationOfferLanguages);
     }
 
     internal static CRegister LCardRegisterRead(LRegister register)
@@ -225,6 +227,11 @@ public sealed class CCard
     public void CCardRegisterInsert(long cardId, long registerId, int position)
     {
         _cCardDesk.CDeskChip?.LQuillRegisterInsert(cardId, registerId, position);
+    }
+
+    public void CCardRegisterRemove(long cardId, long registerId)
+    {
+        _cCardDesk.CDeskChip?.LQuillRegisterRemove(cardId, registerId);
     }
 
     public void CCardCitationSet(long cardId, long sentenceId, string title)

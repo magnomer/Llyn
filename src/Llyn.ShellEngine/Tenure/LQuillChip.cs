@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -89,6 +90,11 @@ public sealed class LQuillChip
             new LRequestRegisterPick(_lQuillChipTenure.LTenureId, card, register, position));
     }
 
+    public void LQuillRegisterRemove(long card, long register)
+    {
+        _lQuillChipTenure.LTenureRequestApply(new LRequestRegisterRemoval(_lQuillChipTenure.LTenureId, card, register));
+    }
+
     public LReferenceOffer LQuillReferenceFind(long card, long sentence, string text)
     {
         ArgumentNullException.ThrowIfNull(text);
@@ -128,12 +134,12 @@ public sealed class LQuillChip
 
         if (LTranslationClerk.LTranslationWordRead(text) is not string word)
         {
-            return new LTranslationOffer(text, string.Empty, [], false, false);
+            return new LTranslationOffer(text, string.Empty, [], false, false, []);
         }
 
         long? stored = _lQuillChipTenure.LTenureRead()?.LDraftStored;
         bool chosen = _lQuillChipDrafts.LEngineTranslationResolve(word, stored) is not null;
-        return new LTranslationOffer(text, word, _lQuillChipDrafts.LEngineProspectFind(word), true, chosen);
+        return _lQuillChipDrafts.LEngineTranslationFind(_lQuillChipTenure, text, word, chosen);
     }
 
     public string LQuillTranslationResolve(long card, string text, int position)
@@ -187,6 +193,28 @@ public sealed class LQuillChip
         }
     }
 
+    public LTranslationOffer LQuillMentionFind(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        if (LTranslationClerk.LTranslationWordRead(text) is not string word)
+        {
+            return new LTranslationOffer(text, string.Empty, [], false, false, []);
+        }
+
+        IReadOnlyList<LVistaRow> rows = _lQuillChipDrafts.LEngineProspectFind(_lQuillChipTenure, word);
+        return new LTranslationOffer(text, word, rows, rows.Count > 0, true, []);
+    }
+
+    public void LQuillMentionAdd(long card, long sentence, string text, int start, int length, long entry)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        LMentionDraft span = _lQuillChipDrafts.LEngineSpanRead(text, start, length);
+        _lQuillChipTenure.LTenureRequestApply(new LRequestMentionAddition(
+            _lQuillChipTenure.LTenureId, card, sentence, span.LMentionDraftOffset, span.LMentionDraftLength, entry, 0));
+    }
+
     private LTagOffer LQuillTagFind(long card, string kept)
     {
         try
@@ -227,16 +255,16 @@ public sealed class LQuillChip
     {
         if (LTranslationClerk.LTranslationWordRead(kept) is not string word)
         {
-            return new LTranslationOffer(kept, string.Empty, [], false, false);
+            return new LTranslationOffer(kept, string.Empty, [], false, false, []);
         }
 
         try
         {
-            return new LTranslationOffer(kept, word, _lQuillChipDrafts.LEngineProspectFind(word), true, false);
+            return _lQuillChipDrafts.LEngineTranslationFind(_lQuillChipTenure, kept, word, false);
         }
         catch (Exception)
         {
-            return new LTranslationOffer(kept, string.Empty, [], false, false);
+            return new LTranslationOffer(kept, string.Empty, [], false, false, []);
         }
     }
 }

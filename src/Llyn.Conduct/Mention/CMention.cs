@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
 
@@ -77,6 +78,24 @@ public sealed class CMention
         }
 
         return read;
+    }
+
+    internal static CProspect LMentionProspectRead(CDesk desk, string word, CEnvoy envoy, LSettingsPort settings)
+    {
+        ArgumentNullException.ThrowIfNull(desk);
+        ArgumentNullException.ThrowIfNull(word);
+
+        try
+        {
+            return desk.CDeskChip?.LQuillMentionFind(word) is LTranslationOffer offer
+                ? CCard.LCardProspectRead(offer)
+                : new CProspect(word, string.Empty, [], false, false, []);
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(envoy, settings, "Mention.FindFailed", exception);
+            return new CProspect(word, string.Empty, [], false, false, []);
+        }
     }
 
     public int CMentionUnitRead(string text, int offset)

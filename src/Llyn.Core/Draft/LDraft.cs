@@ -20,6 +20,8 @@ public sealed record LDraft(
 
     public string LDraftAuthorName => LDraftAuthorHeld?.LAuthorName ?? string.Empty;
 
+    public string LDraftMentionLanguage => LDraftExample?.LExampleLanguage ?? LDraftContent.LEntryDraftLanguage;
+
     public LTag? LDraftTag { get; init; }
 
     public LRegister? LDraftRegister { get; init; }

@@ -1,10 +1,7 @@
-using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Llyn.Application;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -22,12 +19,18 @@ public partial class PEditor
                 entry.Text = caret.PRegisterCaretText;
                 entry.PreviewKeyDown -= PProfferKeyRefine;
                 entry.PreviewKeyDown -= PProfferKeyObserve;
-                entry.PreviewKeyDown -= _pRegisterTemplate.PRegisterCaretHandle;
+                entry.PreviewKeyDown -= PRegisterCommitObserve;
+                entry.PreviewKeyDown -= PRegisterEraseObserve;
+                entry.PreviewKeyDown -= PRegisterCaretRefine;
                 entry.PreviewKeyDown += PProfferKeyRefine;
                 entry.PreviewKeyDown += PProfferKeyObserve;
-                entry.PreviewKeyDown += _pRegisterTemplate.PRegisterCaretHandle;
-                entry.LostKeyboardFocus -= _pRegisterTemplate.PRegisterCloseHandle;
-                entry.LostKeyboardFocus += _pRegisterTemplate.PRegisterCloseHandle;
+                entry.PreviewKeyDown += PRegisterCommitObserve;
+                entry.PreviewKeyDown += PRegisterEraseObserve;
+                entry.PreviewKeyDown += PRegisterCaretRefine;
+                entry.LostKeyboardFocus -= PRegisterBlurRefine;
+                entry.LostKeyboardFocus -= PRegisterCloseObserve;
+                entry.LostKeyboardFocus += PRegisterBlurRefine;
+                entry.LostKeyboardFocus += PRegisterCloseObserve;
             }
 
             return;
@@ -49,8 +52,8 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Button>(container, "PRegisterEraser") is Button eraser)
         {
-            eraser.Click -= _pRegisterTemplate.PRegisterChipHandle;
-            eraser.Click += _pRegisterTemplate.PRegisterChipHandle;
+            eraser.Click -= PRegisterChipObserve;
+            eraser.Click += PRegisterChipObserve;
             if (QLook.QLookPartFind<QIconImage>(eraser, "PRegisterIcon") is QIconImage icon)
             {
                 icon.QIconSource = QIcon.QIconResolve("close", 12);
@@ -68,8 +71,8 @@ public partial class PEditor
         QLookItem.QLookItemAttach(list, PRegisterApply);
         if (QLook.QLookPartFind<Border>(list, "PRegisterFrame") is Border frame)
         {
-            frame.MouseLeftButtonDown -= _pRegisterTemplate.PRegisterFocusHandle;
-            frame.MouseLeftButtonDown += _pRegisterTemplate.PRegisterFocusHandle;
+            frame.MouseLeftButtonDown -= PRegisterFocusRefine;
+            frame.MouseLeftButtonDown += PRegisterFocusRefine;
         }
     }
 
@@ -82,57 +85,79 @@ public partial class PEditor
         }
     }
 
-    internal void PRegisterChipHandle(object sender, RoutedEventArgs e)
+    private void PRegisterChipObserve(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PRegister chip } && PCardRegisterFind(chip) is PCard card)
         {
-            PRegisterRemove(card, chip);
+            _qEditor.QEditorArea.CEditorCard.CCardRegisterRemove(card.PCardId, chip.PRegisterId);
         }
     }
 
-    internal void PRegisterCaretHandle(object sender, KeyEventArgs e)
+    private void PRegisterCommitObserve(object sender, KeyEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PRegisterCaret row } box)
+        if (e.Key != Key.Enter
+            || sender is not FrameworkElement { DataContext: PRegisterCaret row }
+            || PCardRegisterFind(row) is not PCard card)
         {
             return;
         }
 
-        PCard? card = PCardRegisterFind(row);
-        if (card is null)
+        e.Handled = true;
+        PProfferRegisterRefine(card, _qEditor.QEditorArea.CEditorCard.CCardRegisterAdd(
+            card.PCardId, card.PCardRegisterText, card.PCardRegisterPosition, true));
+    }
+
+    private void PRegisterEraseObserve(object sender, KeyEventArgs e)
+    {
+        if (sender is not TextBox { DataContext: PRegisterCaret row } box || PCardRegisterFind(row) is not PCard card)
         {
             return;
         }
 
-        if (e.Key == Key.Enter)
+        e.Handled = QCaret.QCaretEdgeApply(
+            e.Key.ToString(),
+            box.CaretIndex,
+            box.Text.Length,
+            box.SelectionLength,
+            step =>
+            {
+                if (card.PCardRegisterFind(step) is PRegister chip)
+                {
+                    _qEditor.QEditorArea.CEditorCard.CCardRegisterRemove(card.PCardId, chip.PRegisterId);
+                }
+            });
+    }
+
+    private void PRegisterCaretRefine(object sender, KeyEventArgs e)
+    {
+        if (sender is not TextBox { DataContext: PRegisterCaret row } box || PCardRegisterFind(row) is not PCard card)
         {
-            PRegisterCommitObserve(card);
-            e.Handled = true;
             return;
         }
 
-        e.Handled = PCaretKeyApply(
-            box,
-            e.Key,
-            step => PRegisterRemove(card, card.PCardRegisterFind(step)),
+        e.Handled = QCaret.QCaretStepApply(
+            e.Key.ToString(),
+            box.Text.Length,
+            box.SelectionLength,
             card.PCardRegisterMove,
             () => PEditorCaretApply(box, row, 0));
     }
 
-    internal void PRegisterCloseHandle(object sender, RoutedEventArgs e)
+    private void PRegisterBlurRefine(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PRegisterCaret row })
-        {
-            return;
-        }
+        PProfferShutRefine();
+    }
 
-        PCard? card = PCardRegisterFind(row);
-        if (card is not null)
+    private void PRegisterCloseObserve(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { DataContext: PRegisterCaret row } && PCardRegisterFind(row) is PCard card)
         {
-            PRegisterCommitObserve(card);
+            PProfferRegisterRefine(card, _qEditor.QEditorArea.CEditorCard.CCardRegisterAdd(
+                card.PCardId, card.PCardRegisterText, card.PCardRegisterPosition, true));
         }
     }
 
-    internal void PRegisterFocusHandle(object sender, MouseButtonEventArgs e)
+    private void PRegisterFocusRefine(object sender, MouseButtonEventArgs e)
     {
         if (sender is not DependencyObject surface)
         {
@@ -169,21 +194,5 @@ public partial class PEditor
         }
 
         return null;
-    }
-
-    private void PRegisterCommitObserve(PCard card)
-    {
-        PProfferShutRefine();
-        _qEditor.QEditorArea.CEditorCard.CCardRegisterAdd(
-            card.PCardId, card.PCardRegisterText, card.PCardRegisterPosition, true);
-        card.PCardRegisterClear();
-    }
-
-    private void PRegisterRemove(PCard card, PRegister? chip)
-    {
-        if (chip is not null)
-        {
-            PEditorRequestSend(new LRequestRegisterRemoval(PEditorDraft, card.PCardId, chip.PRegisterId));
-        }
     }
 }

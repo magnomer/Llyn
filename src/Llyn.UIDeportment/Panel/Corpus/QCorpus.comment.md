@@ -44,6 +44,8 @@ It binds its lists and subscribes to the engine, and reads nothing yet.
 The chip line and the two Gloss lists are attached to their fills, since their templates carry no bindings.
 The transcript Gloss list takes the driver's own fill, which wires the row's handlers around the shared fill.
 It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
+It hears the editor's mention pick for the transcript, since that field is the corpus's, not the editor's.
+The corpus's mention offer is wired to the editor's picker Refine, so no record is handed across.
 The engine's change notices drive the mode, and its row notices drive the two lists.
 Its transcript and example notices paint the sheet.
 Its failures reach the window through the envoy, which the Conduct asks directly.

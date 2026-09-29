@@ -7,4 +7,5 @@ public sealed record LTranslationOffer(
     string LTranslationOfferWord,
     IReadOnlyList<LVistaRow> LTranslationOfferRows,
     bool LTranslationOfferShown,
-    bool LTranslationOfferChosen);
+    bool LTranslationOfferChosen,
+    IReadOnlyList<string> LTranslationOfferLanguages);

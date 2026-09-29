@@ -34,7 +34,9 @@ public interface LDraftPort
 
     void LEngineCourtDelete(long linkId);
 
-    IReadOnlyList<LVistaRow> LEngineProspectFind(string query);
+    LTranslationOffer LEngineTranslationFind(LTenure held, string text, string word, bool chosen);
+
+    IReadOnlyList<LVistaRow> LEngineProspectFind(LTenure held, string word);
 
     IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query);
 

@@ -68,6 +68,11 @@ Called only after the user agreed to lose what the store could not read.
 
 The name of the held Author, or empty while the draft holds none, so a name field writes without branching.
 
+## `public string LDraftMentionLanguage`
+
+The language a word mentioned in this draft is written in.
+A sentence draft names it on its Example, and any other draft names it on its entry contents.
+
 ## Inline notes
 
 ### `private static LSentenceDraft? LDraftSentenceRead(IReadOnlyList<LCardDraft> cards, long cardId, long sentenceId)`

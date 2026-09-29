@@ -422,6 +422,31 @@ public sealed class TCorpus
         Assert.False(corpus.CCorpusPressAllowed);
     }
 
+    [Fact]
+    public void CorpusMention_TranscriptWord_OffersTheExampleLanguageAndLinksThePick()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        long english = engine.TEngineTranslationCreate("cat", "English").LEntryId;
+        engine.TEngineTranslationCreate("cat", "French");
+        LExample cat = TCorpusExampleSave(engine, "a cat sat");
+        CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        corpus.TCorpusExampleOpen(cat.LExampleId);
+        corpus.CCorpusScribeToggle(true);
+
+        List<CProspect> offered = [];
+        corpus.CCorpusMentionOffered += offered.Add;
+
+        corpus.CCorpusMentionOpen("cat");
+        corpus.CCorpusMentionAdd("a cat sat", 2, 3, english);
+
+        Assert.Equal(english, Assert.Single(Assert.Single(offered).CProspectRows).CVistaRowId);
+        Assert.True(offered[0].CProspectShown);
+        CMentionDraft linked = Assert.Single(corpus.CCorpusTranscriptRead()!.CExampleMention);
+        Assert.Equal(english, linked.CMentionDraftEntry);
+    }
+
     internal static CCorpus TCorpusPrepare(CAtelier atelier, CEnvoy envoy)
     {
         CCorpus corpus = CCorpus.CCorpusCreate(atelier, static () => true, envoy);

@@ -42,20 +42,10 @@ public partial class PEditor
 
     private void PEtymologyAddRefine(object sender, ExecutedRoutedEventArgs e)
     {
-        PEtymon caret = (PEtymon)e.Parameter;
         TextBox box = (TextBox)e.OriginalSource;
-        PProspectShow(
-            box,
-            PMentionSelection.PMentionSelectionPlace(box),
-            caret.PEtymonText,
-            _qEditor.QEditorArea.CEditorLanguage,
-            entryId => PEtymonPickObserve(caret, entryId));
-    }
-
-    private void PEtymonPickObserve(PEtymon caret, long entryId)
-    {
-        _qEditor.QEditorArea.CEditorCard.CCardEtymonAdd(entryId);
-        PEtymonCaretRefine(caret);
+        PProspectPlaceRefine(box, PMentionSelection.PMentionSelectionPlace(box));
+        PProspectOpenRefine(
+            _qEditor.QEditorArea.CEditorCard.CCardMentionRead(((PEtymon)e.Parameter).PEtymonText));
     }
 
     private static void PEtymonCaretRefine(PEtymon caret)
@@ -76,20 +66,8 @@ public partial class PEditor
     private void PEtymologyLinkRefine(object sender, ExecutedRoutedEventArgs e)
     {
         TextBox box = PEtymologyField.PEtymologyBox;
-        string text = box.Text;
-        int start = box.SelectionStart;
-        int length = box.SelectionLength;
-        PProspectShow(
-            box,
-            PMentionSelection.PMentionSelectionPlace(box),
-            box.SelectedText,
-            _qEditor.QEditorArea.CEditorLanguage,
-            entryId => PEtymologySpanObserve(text, start, length, entryId));
-    }
-
-    private void PEtymologySpanObserve(string text, int start, int length, long entryId)
-    {
-        _qEditor.QEditorArea.CEditorCard.CCardMentionSave(text, start, length, entryId);
+        PProspectPlaceRefine(box, PMentionSelection.PMentionSelectionPlace(box));
+        PProspectOpenRefine(_qEditor.QEditorArea.CEditorCard.CCardMentionRead(box.SelectedText));
     }
 
     private void PEtymologyUnlinkObserve(object sender, ExecutedRoutedEventArgs e)

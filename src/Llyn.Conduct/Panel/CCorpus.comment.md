@@ -84,6 +84,22 @@ Reads the Example the desk holds, which persists the tenure first and so can thr
 A throw reports `Example.HoldFailed` through the envoy and reads as null.
 A driver reads it on each draft bulletin, so the desk never hands it a draft.
 
+## `public void CCorpusMentionOpen(string word)`
+
+The gate that opens the transcript's mention picker, for the selected word as the user gave it.
+It searches in the held Example's own language, through `CMention.LMentionProspectRead`.
+The offer is raised as `CCorpusMentionOffered`, which the corpus editor's picker paints.
+
+## `public event Action<CProspect>? CCorpusMentionOffered;`
+
+The transcript's mention offer, ready to show.
+The picker belongs to the corpus editor, so its Refine is wired to this event rather than handed a record.
+
+## `public void CCorpusMentionAdd(string text, int start, int length, long entryId)`
+
+The gate for an Entry picked for the transcript's selection, with the box's raw text and selection.
+The span rule and the request are ShellEngine's.
+
 ## `private void LCorpusExampleUpdate(CExample? example)`
 
 Announces the Example a loaded draft carries and ignores drafts of other subjects.

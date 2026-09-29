@@ -99,6 +99,26 @@ public sealed class TCardSentence
         Assert.False(desk.CDeskHeld);
     }
 
+    [Fact]
+    public void SentenceMentionAdd_SelectedWord_LinksTheSpanToTheEntry()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long cat = engine.TEngineTranslationCreate("cat", "English").LEntryId;
+        (CDesk desk, CSentence sentence) = TSentencePrepare(engine);
+        (long sheet, long row) = TSentenceCardAdd(desk);
+        sentence.CSentenceTextSet(sheet, row, "a cat sat");
+
+        sentence.CSentenceMentionAdd(sheet, row, "a cat sat", 2, 3, cat);
+
+        LExampleDraft? example = TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet)
+            .LCardDraftSentence[0].LSentenceDraftExample;
+        LMentionDraft linked = Assert.Single(example!.LExampleDraftMention);
+        Assert.Equal(cat, linked.LMentionDraftEntry);
+        Assert.Equal(2, linked.LMentionDraftOffset);
+        Assert.Equal(3, linked.LMentionDraftLength);
+    }
+
     private static (CDesk TSentenceDesk, CSentence TSentenceGate) TSentencePrepare(LEngine engine)
     {
         engine.TEngineDelaySet(0);

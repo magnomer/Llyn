@@ -23,13 +23,9 @@ The narrative is deferred like every other typed field, so one keystroke is not 
 
 ### `private void PEtymologyAddRefine(object sender, ExecutedRoutedEventArgs e)`
 
-Opens the menu of the entries the typed word matches, and hands the pick to `PEtymonPickObserve`.
+Opens the menu of the entries the typed word matches, from the editor's mention read.
 Only the entry's Return key raises the command, so its parameter and source are the entry and its box.
-
-### `private void PEtymonPickObserve(PEtymon caret, long entryId)`
-
-Links the picked entry, then empties the entry so the word does not stand beside its own chip.
-The prospect menu only answers with a stored entry, so no id needs checking here.
+The pick is heard by `PProspectPickObserve`, which finds the entry from the box the menu stands at.
 
 ### `private void PEtymologyRemoveObserve(object sender, ExecutedRoutedEventArgs e)`
 
@@ -41,8 +37,8 @@ Opens the entry a chip names, as the reading view does.
 
 ### `private void PEtymologyLinkRefine(object sender, ExecutedRoutedEventArgs e)`
 
-Opens the menu for the selected words, and hands the pick to `PEtymologySpanObserve`.
-The selection is read when the menu opens, so a later click cannot move the span.
+Opens the menu for the selected words, from the editor's mention read.
+The pick is heard by `PProspectPickObserve`, which reads the box's selection raw.
 
 ### `private void PEtymologyUnlinkObserve(object sender, ExecutedRoutedEventArgs e)`
 

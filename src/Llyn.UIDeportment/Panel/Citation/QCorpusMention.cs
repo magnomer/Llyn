@@ -27,17 +27,13 @@ internal sealed partial class QCorpus
             return;
         }
 
-        QCorpusEditor.PProspectShow(
-            box,
-            PMentionSelection.PMentionSelectionPlace(box),
-            box.SelectedText.Trim(),
-            _qTranscriptLanguage,
-            QTranscriptLinkRead(selection.PMentionSelectionOffset, selection.PMentionSelectionLength));
+        QCorpusEditor.PProspectPlaceRefine(box, PMentionSelection.PMentionSelectionPlace(box));
+        _cCorpus.CCorpusMentionOpen(box.SelectedText);
     }
 
-    private Action<long> QTranscriptLinkRead(int offset, int length)
+    private void QTranscriptPickObserve(TextBox box, long entryId)
     {
-        return entry => QTranscriptQuill?.LQuillMentionAdd(0, 0, offset, length, entry);
+        _cCorpus.CCorpusMentionAdd(box.Text, box.SelectionStart, box.SelectionLength, entryId);
     }
 
     private void QTranscriptSenseHandle(object sender, ExecutedRoutedEventArgs e)

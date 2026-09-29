@@ -77,6 +77,8 @@ public sealed class CCorpus
 
     public event Action? CCorpusQueryCleared;
 
+    public event Action<CProspect>? CCorpusMentionOffered;
+
     public CEditor CCorpusEditor { get; }
 
     public CDesk CCorpusDesk { get; }
@@ -167,6 +169,17 @@ public sealed class CCorpus
         CCorpusQuotation.CQuotationPanel.CPanelEntryClose();
         CCorpusAnthology.CAnthologyPanel.CPanelScribeSet(editing);
         CCorpusAnthology.CAnthologyPanel.CPanelRowOpen(id);
+    }
+
+    public void CCorpusMentionOpen(string word)
+    {
+        CCorpusMentionOffered?.Invoke(
+            CMention.LMentionProspectRead(CCorpusDesk, word, _cCorpusEnvoy, _cCorpusSettingsPort));
+    }
+
+    public void CCorpusMentionAdd(string text, int start, int length, long entryId)
+    {
+        CCorpusDesk.CDeskChip?.LQuillMentionAdd(0, 0, text, start, length, entryId);
     }
 
     public void CCorpusExampleSelect(long? id)

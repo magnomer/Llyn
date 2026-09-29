@@ -5,7 +5,7 @@
 The dropdown of Entries a typed translation may link to, and the rows it offers.
 It is one popup the editor owns rather than one per card.
 Only one card is being typed into at a time.
-So it is retargeted at the caret it was opened from and remembers which card asked for it.
+So it is retargeted at the caret it was opened from, and a pick finds its card from there.
 A card built at runtime could not declare a popup of its own anyway.
 
 It sits beside the Proffer popup the editor also owns rather than under the field that opens it.
@@ -13,24 +13,52 @@ The pronunciation lookup, the recording search and the part-of-speech menu are t
 
 It has two callers.
 A typed translation opens it at a card's link caret, offering matches and then a create row per language.
-A selected word opens it at the selection in a sentence field, offering matches only, and hands back the pick.
-The corpus scribe reaches the second through the window, so the popup is still declared once.
+A selected or typed word opens it at the selection, offering matches only, for a mention or an etymon.
+The corpus scribe reaches the second through its own editor, so the popup is still declared once.
 
-## `internal void PProspectShow(FrameworkElement anchor, Rect place, string word, string language, Action<long> chosen)`
+## `internal event Action<TextBox, long>? PProspectPicked;`
 
-Opens the dropdown over a selected word, listing the Entries the word matches in the given language.
-No create row is offered, because a Mention may only point at an Entry that already exists.
-A blank word opens nothing, since every Entry would match it.
-The match is the translation lookup, exact headwords first, and an empty language filters nothing.
-Twin numbers are given before the language filter runs, so a row keeps the number the catalog shows.
-The dropdown stands at the selection's rectangle rather than under the field, so it opens where the word is.
-A word matching nothing opens nothing.
-On pick the chosen Entry id is handed to the caller, and the dropdown closes.
+A mention picked in a field the editor does not own, raised with the field and the raw Entry id.
+The corpus transcript is such a field, and its own driver hears the notice and calls its gate.
 
-## `internal void PProspectHandle(object sender, MouseButtonEventArgs e)`
+## `internal void PProspectPlaceRefine(FrameworkElement anchor, Rect place)`
 
-Takes the row the pointer chose out of the dropdown and links it.
+Shuts any open list and stands the mention picker at the selection's rectangle, where the word is.
+An opener places it first, then paints the offer its Conduct read or gate answered.
+
+## `internal void PProspectOpenRefine(CProspect prospect)`
+
+Paints the dropdown from the ready `CProspect`, at the place the opener set.
+The blank word, the find, the self filter, the languages and the failure notice are all settled below.
+The stored rows come first, then one create row per offered language.
+A mention's offer carries no language, because a Mention may only point at an Entry that already exists.
+An offer not shown leaves the dropdown shut.
+The corpus hears its offer as `CCorpusMentionOffered`, so its driver hands the editor no Conduct record.
+
+The plus of a create row is shown in the fill, where a data trigger stood.
+The create row carries the typed word untouched, because that word is what the tentative entry will be called.
+
+## `private void PProspectTranslationRefine(PCard card, CProspect prospect)`
+
+Stands the dropdown under the card's focused link caret, then paints the typed translation's offer.
+A dropdown opened while the user types selects nothing, so enter still means what was typed.
+One opened because a committed word was ambiguous selects its first row, since the user must choose.
+
+## `private void PProspectMissRefine(object sender, MouseButtonEventArgs e)`
+
+Shuts the dropdown when a press lands on no row.
+
+## `private void PProspectPickObserve(object sender, MouseButtonEventArgs e)`
+
+Hands the row the pointer chose to the one gate its field names.
+The field is found from the anchor the dropdown stands at.
 The row is a plain surface rather than a button, so the list beneath it keeps its own selection.
+A card's link caret takes the row through the translation insert gate, then the dropdown shuts and the entry empties.
+The gate starts a tentative entry first on a create row, whose id is zero.
+The etymology text links the selected span, and an etymon entry adds the Entry and empties itself.
+A card sentence links the selected span on its own row.
+Any other field is not the editor's, so the pick is raised through `PProspectPicked`.
+The field's text and selection are read at the pick, raw, since the dropdown never takes focus.
 
 ## `private void PProspectKeyRefine(object sender, KeyEventArgs e)`
 
@@ -42,7 +70,7 @@ A key it does not use falls through to the entry's later handlers.
 ## `private void PProspectCloseRefine(object? sender, EventArgs e)`
 
 Drops the selection whenever the dropdown shuts, however it shut.
-A click elsewhere shuts it without `PProspectHide`, and a kept selection would let enter take a row no one sees.
+A click elsewhere shuts it without `PProspectShutRefine`, and a kept selection would let enter take a row no one sees.
 
 ## `private void PProspectKeyObserve(object sender, KeyEventArgs e)`
 
@@ -50,44 +78,14 @@ Enter on a selected row hands that row's Entry, word and language to the transla
 It runs after the dropdown's Refine and before the entry's own enter, so a chosen row wins.
 The dropdown shuts and the entry empties after the gate.
 
-## `private readonly PProspectTemplate _pProspectTemplate`
+## `private void PProspectShutRefine()`
 
-The prospect dictionary, held so its fill can subscribe the dictionary's forwarders.
+Shuts the dropdown, drops its rows and selection, and takes back any offset a mention placing set.
 
 ## `private void PProspectApply(FrameworkElement container, object item, string? _)`
 
 Fills one prospect row, where bindings and an event attribute stood, and subscribes its press.
+The miss Refine is subscribed before the pick Observe, as on the Proffer dropdown.
 
 The plus of a create row is shown here, where a data trigger stood.
 The epithet takes its leading space here, where a string format stood.
-
-## Inline notes
-
-### `private void PProspectSelect(PProspectItem item)`
-
-When a selection opened the dropdown, hands the row's Entry to the caller and closes.
-Otherwise hands the chosen row to the translation insert gate and closes the dropdown.
-The gate starts a tentative entry first on a create row, whose id is zero.
-No database row is written for it, so an edit thrown away leaves nothing behind.
-The tentative entry carries the typed word and the chosen language, ready to be stored.
-A court row ties it to this draft, and storing this draft stores it too.
-The chip then shows the court's word and language, since no Entry answers a draft id yet.
-A stub that cannot be started raises a notice through the gate rather than leaving the field looking unanswered.
-
-### `private void PProspectShow(PCard card, string word, IReadOnlyList<LEntry> found, bool chosen)`
-
-A dropdown opened while the user types selects nothing, so enter still means what was typed.
-One opened because a committed word was ambiguous selects its first row, since the user must choose.
-
-The create row stands after the matches rather than among them.
-It carries the typed word untouched, because that word is what the tentative entry will be called.
-Rows sharing a headword are numbered by entry id, so each keeps the number the catalog shows.
-The entry being edited joins that numbering and is dropped only afterwards, so its twin keeps its own number.
-Create rows take no number, because their styling already sets them apart.
-
-### `private IReadOnlyList<string> PProspectLanguageRead()`
-
-The stub is offered once per language the workspace holds, so the user picks rather than accepts.
-The language being edited comes last, because a link usually crosses into another one.
-The workspace's own list is asked, because a language it does not hold has no flag to draw.
-A list that has not loaded yet still names the language being edited, so a stub is always reachable.

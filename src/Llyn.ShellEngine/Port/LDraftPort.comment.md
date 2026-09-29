@@ -64,6 +64,11 @@ The held draft names the Source the sentence cites, so typing its byline offers 
 
 The word a typed credit searches and highlights the byline with.
 
-## `IReadOnlyList<LVistaRow> LEngineProspectFind(string query);`
+## `LTranslationOffer LEngineTranslationFind(LTenure held, string text, string word, bool chosen);`
 
-The entries a typed translation may link to, one row per match plus one per language for a new entry.
+The offer a typed translation opens in the held draft.
+It carries one row per match and the languages a new Entry is offered in.
+## `IReadOnlyList<LVistaRow> LEngineProspectFind(LTenure held, string word);`
+
+The Entries a mention of `word` in the held draft may name, in the draft's own language.
+

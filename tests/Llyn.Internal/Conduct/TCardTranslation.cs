@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -47,6 +48,50 @@ public sealed class TCardTranslation
     }
 
     [Fact]
+    public void TranslationAdd_TypedWord_OffersAFreshEntryInEveryLanguageWithTheDraftLanguageLast()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        IReadOnlyList<string> languages = engine.TEngineLanguageRead();
+        (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
+        desk.TDeskDefer(TInterface.TRequestLanguageCreate(desk.CDeskId, "Klingon"));
+        long sheet = TCard.TCardSheetAdd(desk);
+
+        CProspect typed = card.CCardTranslationAdd(sheet, "chat", 0);
+        CProspect resolved = card.CCardTranslationResolve(sheet, "chat", 0, true);
+
+        Assert.Equal([.. languages, "Klingon"], typed.CProspectLanguages);
+        Assert.Equal(typed.CProspectLanguages, resolved.CProspectLanguages);
+        desk.TDeskDefer(TInterface.TRequestLanguageCreate(desk.CDeskId, languages[0]));
+        Assert.Equal(
+            [.. languages.Skip(1), languages[0]], card.CCardTranslationAdd(sheet, "chat", 0).CProspectLanguages);
+        Assert.Empty(card.CCardTranslationAdd(sheet, " ", 0).CProspectLanguages);
+        Assert.Empty(card.CCardMentionRead("chat").CProspectLanguages);
+    }
+
+    [Fact]
+    public void TranslationAdd_EditedEntry_LeavesItOutAndKeepsItsTwinNumbered()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long edited = engine.TEngineEntrySave(
+            TInterface.TEntryDraftCreate("water", "English", "", "", [], [])).LEntryId;
+        long twin = engine.TEngineEntrySave(
+            TInterface.TEntryDraftCreate("water", "English", "", "", [], [])).LEntryId;
+        engine.TEngineDelaySet(0);
+        CDesk desk = TInterfaceConduct.TDeskCreate(
+            engine, "Input", TInterfaceConduct.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
+        desk.CDeskStart(edited);
+        CCard card = TInterfaceConduct.TCardCreate(engine, desk, TInterfaceConduct.TEnvoyCreate(false, []));
+
+        CProspect typed = card.CCardTranslationAdd(TCard.TCardSheetAdd(desk), "water", 0);
+
+        CVistaRow row = Assert.Single(typed.CProspectRows);
+        Assert.Equal(twin, row.CVistaRowId);
+        Assert.Equal("water (2)", row.CVistaRowName);
+    }
+
+    [Fact]
     public void TranslationInsert_StoredEntry_LinksItOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -78,7 +123,8 @@ public sealed class TCardTranslation
         Assert.Contains(offered.CProspectRows, row => row.CVistaRowId == chat);
         Assert.True(offered.CProspectShown);
         Assert.True(offered.CProspectChosen);
-        Assert.Contains(card.CCardProspectFind("chat"), row => row.CVistaRowId == chat);
+        desk.TDeskDefer(TInterface.TRequestLanguageCreate(desk.CDeskId, "French"));
+        Assert.Contains(card.CCardMentionRead("chat").CProspectRows, row => row.CVistaRowId == chat);
         Assert.Empty(TCard.TCardTranslationRead(desk, sheet));
         Assert.False(blank.CProspectShown);
     }
@@ -103,14 +149,50 @@ public sealed class TCardTranslation
     }
 
     [Fact]
-    public void ProspectFind_PaddedWord_FindsTheEntryTheTrimmedWordFinds()
+    public void MentionRead_PaddedWord_FindsTheEntryTheTrimmedWordFinds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long chat = engine.TEngineTranslationCreate("chat", "French").LEntryId;
+        (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
+        desk.TDeskDefer(TInterface.TRequestLanguageCreate(desk.CDeskId, "French"));
+
+        Assert.Equal(chat, Assert.Single(card.CCardMentionRead("  chat ").CProspectRows).CVistaRowId);
+    }
+
+    [Fact]
+    public void MentionRead_DraftInEnglish_OffersOnlyEnglishEntriesWithTheFirstChosen()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long english = engine.TEngineTranslationCreate("cat", "English").LEntryId;
+        engine.TEngineTranslationCreate("cat", "French");
+        (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
+        desk.TDeskDefer(TInterface.TRequestLanguageCreate(desk.CDeskId, "English"));
+
+        CProspect offered = card.CCardMentionRead(" cat ");
+
+        Assert.Equal(english, Assert.Single(offered.CProspectRows).CVistaRowId);
+        Assert.Equal("cat", offered.CProspectWord);
+        Assert.True(offered.CProspectShown);
+        Assert.True(offered.CProspectChosen);
+    }
+
+    [Fact]
+    public void MentionRead_BlankOrUnmatchedWord_OffersNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineTranslationCreate("cat", "English");
         (_, CCard card) = TCard.TCardPrepare(engine);
 
-        Assert.Equal(chat, Assert.Single(card.CCardProspectFind("  chat ")).CVistaRowId);
+        CProspect blank = card.CCardMentionRead("  ");
+        CProspect unmatched = card.CCardMentionRead("zzyzx");
+
+        Assert.Empty(blank.CProspectRows);
+        Assert.False(blank.CProspectShown);
+        Assert.Empty(unmatched.CProspectRows);
+        Assert.False(unmatched.CProspectShown);
     }
 
     [Fact]
@@ -148,7 +230,8 @@ public sealed class TCardTranslation
         card.CCardTranslationRemove(sheet, chat);
 
         Assert.Empty(TCard.TCardTranslationRead(desk, sheet));
-        Assert.Contains(card.CCardProspectFind("chat"), row => row.CVistaRowId == chat);
+        desk.TDeskDefer(TInterface.TRequestLanguageCreate(desk.CDeskId, "French"));
+        Assert.Contains(card.CCardMentionRead("chat").CProspectRows, row => row.CVistaRowId == chat);
     }
 
     [Fact]
