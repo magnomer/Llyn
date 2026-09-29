@@ -136,6 +136,8 @@ public sealed class CTenor
     internal void LTenorRegisterOpen(long id)
     {
         CTenorRegisterSelect(id);
+        _cTenorVista?.LVistaQuerySet(string.Empty);
+        _cTenorCohort?.LVistaQuerySet(string.Empty);
         CTenorRegisterOpened?.Invoke();
     }
 
@@ -163,9 +165,23 @@ public sealed class CTenor
         return _cTenorSettingsPort.LEngineLanguageRead();
     }
 
-    public long CTenorRegisterCreate(string name)
+    public void CTenorRegisterCreate(string name)
     {
-        return _cTenorEntryPort.LEngineRegisterCreate(name).LRegisterId;
+        ArgumentNullException.ThrowIfNull(name);
+
+        long id;
+        try
+        {
+            id = _cTenorEntryPort.LEngineRegisterCreate(name).LRegisterId;
+        }
+        catch (Exception exception)
+        {
+            _cTenorEnvoy.CEnvoyFailureShow("Register.CreateFailed", exception);
+            return;
+        }
+
+        CTenorPanel.CPanelEntryClose();
+        LTenorRegisterOpen(id);
     }
 
     public void CTenorEntryCreate()

@@ -372,6 +372,8 @@ internal static class TInterfaceConduct
 
     internal static long TPanelChosenRead(this CPanel panel) => panel.LPanelChosenRead();
 
+    internal static void TPanelStationAttach(this CPanel panel, Action record) => panel.LPanelStationAttach(record);
+
     internal static void TPanelScribeRestore(this CPanel panel, bool editing) => panel.LPanelScribeRestore(editing);
 
     internal static bool TAtelierSplitRead(CAtelier atelier) => atelier.LAtelierSplitRead();
@@ -408,6 +410,12 @@ internal static class TInterfaceConduct
 
     internal static void TNavigationDiweiAttach(this CNavigation navigation, Action<string, string, string> open) =>
         navigation.LNavigationDiweiAttach(open);
+
+    internal static void TNavigationStemAttach(this CNavigation navigation, Action<string, string?> open) =>
+        navigation.LNavigationStemAttach(open);
+
+    internal static bool TNavigationStemOpen(this CNavigation navigation, string language, string? key) =>
+        navigation.LNavigationStemOpen(language, key);
 
     internal static void TCorpusExampleOpen(this CCorpus corpus, long id) => corpus.LCorpusExampleOpen(id);
 

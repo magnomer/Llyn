@@ -140,6 +140,32 @@ public sealed class TNavigation
         Assert.Empty(arrived);
     }
 
+    [Theory]
+    [InlineData(false, true, 1)]
+    [InlineData(true, false, 2)]
+    public void NavigationEntryOpen_LeaveDeclined_AsksFirstAndRecordsNothing(bool target, bool standing, int questions)
+    {
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
+        CNavigation navigation = atelier.CAtelierNavigation;
+        List<(string, long)> arrived = [];
+        List<string> asked = [];
+        TNavigationTabAdd(navigation, "Library", asked, target, 4, arrived);
+        TNavigationTabAdd(navigation, "Corpus", asked, standing, 9, arrived);
+        navigation.CNavigationTabSelect("Corpus");
+        asked.Clear();
+        List<CNavigationState> states = TNavigationStateAttach(navigation);
+
+        bool opened = navigation.CNavigationEntryOpen(5);
+        bool back = navigation.CNavigationStationUndo();
+
+        Assert.False(opened);
+        Assert.False(back);
+        Assert.Equal(new[] { "Library", "Corpus" }.Take(questions), asked);
+        Assert.Empty(states);
+        Assert.Empty(arrived);
+    }
+
     [Fact]
     public void NavigationStationUndo_RecordedStation_ArrivesThereAndParksTheStandingOne()
     {
@@ -165,6 +191,51 @@ public sealed class TNavigation
         Assert.Equal(["Corpus", "Library"], states.Select(static state => state.CNavigationStateTab));
         Assert.Equal(new CVoyageState(false, true), states[0].CNavigationStateVoyage);
         Assert.Equal(new CVoyageState(true, false), states[1].CNavigationStateVoyage);
+    }
+
+    [Fact]
+    public void NavigationStationUndo_LandingTabDeclines_StaysAndKeepsTheTrail()
+    {
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
+        CNavigation navigation = atelier.CAtelierNavigation;
+        List<(string, long)> arrived = [];
+        List<string> asked = [];
+        bool leaves = true;
+        TNavigationTabAdd(navigation, "Library", asked, true, 4, arrived);
+        navigation.TNavigationTabAdd(
+            "Corpus",
+            () =>
+            {
+                asked.Add("Corpus");
+                return leaves;
+            },
+            static () => 9,
+            static _ => { },
+            id => arrived.Add(("Corpus", id)));
+        navigation.CNavigationTabSelect("Corpus");
+        navigation.CNavigationEntryOpen(4);
+        arrived.Clear();
+        asked.Clear();
+        leaves = false;
+        List<CNavigationState> states = TNavigationStateAttach(navigation);
+
+        bool refused = navigation.CNavigationStationUndo();
+
+        Assert.False(refused);
+        Assert.Equal(["Corpus"], asked);
+        Assert.Empty(arrived);
+        Assert.Empty(states);
+
+        leaves = true;
+        bool back = navigation.CNavigationStationUndo();
+
+        Assert.True(back);
+        Assert.Equal(["Corpus", "Corpus", "Library"], asked);
+        Assert.Equal([("Corpus", 9L)], arrived);
+        CNavigationState state = Assert.Single(states);
+        Assert.Equal("Corpus", state.CNavigationStateTab);
+        Assert.Equal(new CVoyageState(false, true), state.CNavigationStateVoyage);
     }
 
     [Fact]
@@ -220,6 +291,30 @@ public sealed class TNavigation
         Assert.Equal(["Yunjing"], asked);
         Assert.Equal(["Korean initial k"], cells);
         Assert.Equal("Yunjing", Assert.Single(states).CNavigationStateTab);
+    }
+
+    [Fact]
+    public void NavigationStemOpen_Jump_OpensTheXieshengTabAndHandsTheSeriesToItsArea()
+    {
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
+        CNavigation navigation = atelier.CAtelierNavigation;
+        List<(string, long)> arrived = [];
+        List<string> asked = [];
+        TNavigationTabAdd(navigation, "Xiesheng", asked, true, 0, arrived);
+        List<CNavigationState> states = TNavigationStateAttach(navigation);
+
+        bool early = navigation.TNavigationStemOpen("Korean", "k");
+        List<string> series = [];
+        navigation.TNavigationStemAttach((language, key) => series.Add(language + " " + (key ?? "-")));
+        bool opened = navigation.TNavigationStemOpen("Korean", null);
+
+        Assert.False(early);
+        Assert.True(opened);
+        Assert.Equal(["Xiesheng"], asked);
+        Assert.Equal(["Korean -"], series);
+        Assert.Equal("Xiesheng", Assert.Single(states).CNavigationStateTab);
+        Assert.Empty(arrived);
     }
 
     private static void TNavigationTabAdd(

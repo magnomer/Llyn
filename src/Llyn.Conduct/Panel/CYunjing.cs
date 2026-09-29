@@ -249,6 +249,8 @@ public sealed class CYunjing
         ArgumentNullException.ThrowIfNull(kind);
         ArgumentNullException.ThrowIfNull(key);
 
+        _cYunjingShengmu?.LVistaQuerySet(string.Empty);
+        _cYunjingYunmu?.LVistaQuerySet(string.Empty);
         CYunjingDiweiOpened?.Invoke();
 
         if (_cYunjingPort.LEngineDiweiFind(language, kind, key) is not (long cell, bool rime))
@@ -280,11 +282,6 @@ public sealed class CYunjing
         }
 
         if (!CYunjingDiweiShown)
-        {
-            return;
-        }
-
-        if (!CYunjingPanel.CPanelLeaveConfirm())
         {
             return;
         }

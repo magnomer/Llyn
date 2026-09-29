@@ -188,6 +188,10 @@ It records each failure key it is shown.
 
 Relays the record a panel stands on, which only the navigation reads in production.
 
+## `internal static void TPanelStationAttach(this CPanel panel, Action record) => panel.LPanelStationAttach(record);`
+
+Hands a panel the station record its tab's area would attach, so a test can see when it runs.
+
 ## `internal static void TPanelScribeRestore(this CPanel panel, bool editing) => panel.LPanelScribeRestore(editing);`
 
 Relays the startup editor restore, which only the navigation runs in production.
@@ -224,6 +228,14 @@ Relays the station record the areas' row gates make.
 ## `internal static void TNavigationDiweiAttach(this CNavigation navigation, Action<string, string, string> open) =>`
 
 Attaches a rime-cell open to a navigation as the yunjing area does.
+
+## `internal static void TNavigationStemAttach(this CNavigation navigation, Action<string, string?> open) =>`
+
+Attaches a series open to a navigation as the xiesheng area does.
+
+## `internal static bool TNavigationStemOpen(this CNavigation navigation, string language, string? key) =>`
+
+Relays the series jump, which only the display asks in production.
 
 ## `internal static void TCorpusExampleOpen(this CCorpus corpus, long id) => corpus.LCorpusExampleOpen(id);`
 

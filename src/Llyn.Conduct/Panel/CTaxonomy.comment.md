@@ -30,7 +30,7 @@ The shared panel state over the membership vista: the chosen entry, the scribe m
 
 ## `public event Action? CTaxonomyTagOpened;`
 
-Raised when an arrival chooses a Tag, so the driver empties both searches and lists again.
+Raised when an arrival or a coinage opens a Tag, so the driver shows both searches empty and lists again.
 
 ## `public void CTaxonomyTagToggle(long id)`
 
@@ -38,7 +38,8 @@ A click on a row: records the station it leaves, then toggles the Tag.
 
 ## `internal void LTaxonomyTagOpen(long id)`
 
-The navigation's arrival: chooses the Tag, then raises `CTaxonomyTagOpened` so the driver empties its searches.
+The navigation's arrival: chooses the Tag and empties both searches, then raises `CTaxonomyTagOpened`.
+Emptying the searches is the arrival's own, so no driver has to echo it back through the query gates.
 
 ## `internal long? LTaxonomyChosen`
 
@@ -83,9 +84,11 @@ It answers nothing before the vistas are restored.
 
 The entries under the chosen Tag, or every entry while none is chosen, as the engine narrows them.
 
-## `public long CTaxonomyTagCreate(string name)`
+## `public void CTaxonomyTagCreate(string name)`
 
-Makes the Tag and answers only its id, which is all the driver browses by.
+Makes the Tag from the raw wording and opens it as an arrival does.
+The panel is cleared first, so an unsaved fresh entry the leave check already settled does not linger.
+A refused Tag is shown through `CEnvoy` as `Tag.CreateFailed`, and nothing opens.
 
 ## `public void CTaxonomyEntryCreate()`
 

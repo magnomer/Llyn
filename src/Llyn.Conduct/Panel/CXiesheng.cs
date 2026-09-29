@@ -198,6 +198,7 @@ public sealed class CXiesheng
     {
         ArgumentNullException.ThrowIfNull(language);
 
+        _cXieshengGrove?.LVistaQuerySet(string.Empty);
         CXieshengStemOpened?.Invoke();
 
         if (_cXieshengPort.LEngineStemFind(language, key) is not long stem)
@@ -217,11 +218,6 @@ public sealed class CXiesheng
         }
 
         if (!CXieshengStemShown)
-        {
-            return;
-        }
-
-        if (!CXieshengPanel.CPanelLeaveConfirm())
         {
             return;
         }

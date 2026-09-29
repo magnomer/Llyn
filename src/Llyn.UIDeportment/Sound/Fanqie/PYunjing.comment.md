@@ -34,6 +34,8 @@ Attaches the bulletins the panel follows, restores the order menus, and loads.
 ## `private void PYunjingQueryRefine()`
 
 Answers the area's opening of a cell a fanqie chip names by emptying both search fields.
+The area has already emptied both queries, so the fields only show it.
+The fields' own handlers still hear the change, and their gates find the queries already empty.
 
 ## `private void PYunjingColumnUpdate()`
 

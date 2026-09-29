@@ -114,6 +114,27 @@ public sealed class TPanel
         Assert.Equal(chosen, panel.TPanelChosenRead());
     }
 
+    [Theory]
+    [InlineData(false, true)]
+    [InlineData(null, false)]
+    public void PanelRowSelect_UnsavedDraft_AsksBeforeRecordingTheStation(bool? answer, bool left)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+        CPanel panel = TPanelPrepare(engine, answer, asked, [], "Scribe", () => true);
+        panel.TPanelStationAttach(() => asked.Add("Station"));
+        LEntry fire = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "fire", "English", "f", string.Empty, [TInterface.TCardCreate("a flame", 1)], []));
+        long chosen = panel.TPanelChosenRead();
+        panel.CPanelScribeToggle(true);
+
+        panel.CPanelRowSelect(fire.LEntryId);
+
+        Assert.Equal(left ? ["Leave", "Station"] : ["Leave"], asked);
+        Assert.Equal(left ? fire.LEntryId : chosen, panel.TPanelChosenRead());
+    }
+
     [Fact]
     public void PanelRowOpen_StoredRow_ChoosesTheRow()
     {

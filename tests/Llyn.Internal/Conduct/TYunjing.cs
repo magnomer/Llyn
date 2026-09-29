@@ -251,6 +251,27 @@ public sealed class TYunjing
     }
 
     [Fact]
+    public void YunjingDiweiOpen_QueriedColumns_EmptiesBothQueriesBeforeTheOpening()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        string language = pack.TLanguageFixtureName;
+        TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
+        CYunjing yunjing = TYunjingPrepare(atelier);
+        yunjing.CYunjingShengmuFind("zzz");
+        yunjing.CYunjingYunmuFind("zzz");
+        List<string> seen = [];
+        yunjing.CYunjingDiweiOpened += () => seen.Add(yunjing.CYunjingShengmuKey + " " + yunjing.CYunjingYunmuKey);
+
+        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
+
+        Assert.Equal(["Yunjing.ShengmuEmpty Yunjing.YunmuEmpty"], seen);
+        Assert.True(yunjing.CYunjingDiweiShown);
+    }
+
+    [Fact]
     public void YunjingDiweiCancel_CellShown_UnchoosesBothColumns()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);

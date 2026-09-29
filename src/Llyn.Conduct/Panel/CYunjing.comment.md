@@ -25,7 +25,7 @@ Raised whenever a column, the page, the tally or the mode changed and the driver
 
 ## `public event Action? CYunjingDiweiOpened;`
 
-Raised when a fanqie chip's arrival starts, so the driver empties both column searches.
+Raised when a fanqie chip's arrival starts, so the driver shows both column searches empty.
 
 ## `public CEditor CYunjingEditor { get; }`
 
@@ -174,7 +174,7 @@ Whatever entry was read is cleared.
 ## `internal void LYunjingDiweiOpen(string language, string kind, string key)`
 
 The navigation's arrival: opens the cell of that language, kind and key, the request a fanqie chip makes.
-It first raises `CYunjingDiweiOpened`, so the driver empties both search fields.
+It first empties both column searches and raises `CYunjingDiweiOpened`, so the driver shows them empty.
 The engine finds the cell and its column, and nothing happens for a cell never stored.
 Both columns are unchosen first, so the page shows only that cell.
 
@@ -188,7 +188,7 @@ The engine keeps the choice as a setting.
 Resolves the glyph picked off a cell page to its entry, in the language of the page, and opens it.
 The entry opens in the library tab through the navigation.
 Nothing opens while no cell page shows.
-An unsaved draft is asked about through the panel's leave question first.
+The navigation's jump asks every leave question, so the gate asks none of its own.
 The page's language and the resolve are one engine call, so the page is never read whole for its language.
 A refused resolve is shown through the catalog's one glyph failure owner, and nothing opens.
 

@@ -195,6 +195,30 @@ public sealed class TGuild
     }
 
     [Fact]
+    public void GuildAuthorSelect_UnsavedDraftKept_RecordsNoStation()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CGuild guild = TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(null, asked));
+        LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
+        LAuthor bob = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Bob"));
+        atelier.CAtelierNavigation.CNavigationTabSelect("Guild");
+        guild.CGuildAuthorSelect(ada.LAuthorId);
+        guild.CGuildScribeToggle(true);
+        guild.CGuildAutograph.TDeskDefer(TInterface.TAuthorNameCreate(guild.CGuildAutograph.CDeskId, "Zed"));
+        List<CNavigationState> states = [];
+        atelier.CAtelierNavigation.CNavigationChanged += states.Add;
+
+        guild.CGuildAuthorSelect(bob.LAuthorId);
+
+        Assert.Equal(["Leave"], asked);
+        Assert.Empty(states);
+        Assert.Equal(ada.LAuthorId, guild.CGuildPanel.TPanelChosenRead());
+    }
+
+    [Fact]
     public void GuildSourceSelect_Oeuvre_ShowsColophonAndDisablesMode()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

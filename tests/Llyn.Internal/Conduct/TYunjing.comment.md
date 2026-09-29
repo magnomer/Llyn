@@ -9,6 +9,7 @@ The bundled rime-book pack shows the tab, and with nothing placed the panel list
 With no cell chosen, the columns list the first language declaring a book, here the bundled one.
 Opening a cell by key lists its language with the cell chosen, and shows its page and entry.
 An unknown key opens nothing and raises nothing.
+An arrival empties both column searches before the driver hears of it.
 Choosing the chosen rime again hides the page, and a click without an id or a side does nothing.
 The page of an initial cell groups its lines by division, with the characters sorted and the switch flags copied.
 The section label is localized from a shared catalog, so `TDiwei` checks it with a localizer handed in.

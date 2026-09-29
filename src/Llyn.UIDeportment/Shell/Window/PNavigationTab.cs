@@ -39,9 +39,9 @@ public partial class PWindow
 
     private void PNavigationObserve(object sender, RoutedEventArgs e)
     {
-        if (PNavigationFind(sender) is LTab chosen)
+        if (PNavigationFind(sender) is QTab chosen)
         {
-            _cNavigation.CNavigationTabSelect(chosen.LTabMode);
+            _cNavigation.CNavigationTabSelect(chosen.QTabMode);
         }
     }
 
@@ -51,37 +51,37 @@ public partial class PWindow
         _cNavigation = PWindowAtelier.CAtelierNavigation;
         _cNavigation.CNavigationChanged += PNavigationRefine;
         _cNavigation.CNavigationArrived += PMentionMenuHide;
-        _pWindowSurface.PreviewKeyDown += PVoyageKeyHandle;
-        _pWindowSurface.PreviewMouseDown += PVoyageMouseHandle;
+        _pWindowSurface.PreviewKeyDown += PVoyageKeyObserve;
+        _pWindowSurface.PreviewMouseDown += PVoyageMouseObserve;
     }
 
     private void PNavigationRefine(CNavigationState state)
     {
-        foreach (LTab tab in _pNavigationTabs)
+        foreach (QTab tab in _pNavigationTabs)
         {
-            tab.LTabButton.Visibility = state.CNavigationStateHidden.Contains(tab.LTabMode)
+            tab.QTabButton.Visibility = state.CNavigationStateHidden.Contains(tab.QTabMode)
                 ? Visibility.Collapsed
                 : Visibility.Visible;
         }
 
         if (state.CNavigationStateTab is string mode)
         {
-            foreach (LTab tab in _pNavigationTabs)
+            foreach (QTab tab in _pNavigationTabs)
             {
-                bool shown = string.Equals(tab.LTabMode, mode, StringComparison.Ordinal);
-                tab.LTabButton.SetValue(PTab.PTabChosenProperty, shown);
-                tab.LTabPanel.Visibility = shown ? Visibility.Visible : Visibility.Collapsed;
+                bool shown = string.Equals(tab.QTabMode, mode, StringComparison.Ordinal);
+                tab.QTabButton.SetValue(PTab.PTabChosenProperty, shown);
+                tab.QTabPanel.Visibility = shown ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
         PVoyageRefine(state.CNavigationStateVoyage);
     }
 
-    private LTab? PNavigationFind(object? button)
+    private QTab? PNavigationFind(object? button)
     {
-        foreach (LTab tab in _pNavigationTabs)
+        foreach (QTab tab in _pNavigationTabs)
         {
-            if (ReferenceEquals(tab.LTabButton, button))
+            if (ReferenceEquals(tab.QTabButton, button))
             {
                 return tab;
             }
@@ -90,69 +90,69 @@ public partial class PWindow
         return null;
     }
 
-    private LTab[] PNavigationTabRead()
+    private QTab[] PNavigationTabRead()
     {
         return
         [
-            new LTab("Input", PNavigationInput, PInput),
-            new LTab("Library", PNavigationLibrary, PLibrary)
+            new QTab("Input", PNavigationInput, PInput),
+            new QTab("Library", PNavigationLibrary, PLibrary)
             {
-                LTabVoyage = _qLibrary.QLibraryVoyageShow
+                QTabVoyage = _qLibrary.QLibraryVoyageShow
             },
-            new LTab("Phonology", PNavigationPhonology, PPhonology)
+            new QTab("Phonology", PNavigationPhonology, PPhonology)
             {
-                LTabVoyage = _qPhonology.QPhonologyVoyageShow
+                QTabVoyage = _qPhonology.QPhonologyVoyageShow
             },
-            new LTab("Xiesheng", PNavigationXiesheng, PXiesheng)
+            new QTab("Xiesheng", PNavigationXiesheng, PXiesheng)
             {
-                LTabVoyage = _qXiesheng.QXieshengVoyageShow
+                QTabVoyage = _qXiesheng.QXieshengVoyageShow
             },
-            new LTab("Yunjing", PNavigationYunjing, PYunjing)
+            new QTab("Yunjing", PNavigationYunjing, PYunjing)
             {
-                LTabVoyage = PYunjing.PYunjingVoyageShow
+                QTabVoyage = PYunjing.PYunjingVoyageShow
             },
-            new LTab("Taxonomy", PNavigationTaxonomy, PTaxonomy)
+            new QTab("Taxonomy", PNavigationTaxonomy, PTaxonomy)
             {
-                LTabVoyage = _qTaxonomy.QTaxonomyVoyageShow
+                QTabVoyage = _qTaxonomy.QTaxonomyVoyageShow
             },
-            new LTab("Tenor", PNavigationTenor, PTenor)
+            new QTab("Tenor", PNavigationTenor, PTenor)
             {
-                LTabVoyage = _qTenor.QTenorVoyageShow
+                QTabVoyage = _qTenor.QTenorVoyageShow
             },
-            new LTab("Repertoire", PNavigationRepertoire, PRepertoire)
+            new QTab("Repertoire", PNavigationRepertoire, PRepertoire)
             {
-                LTabVoyage = _qRepertoire.QRepertoireVoyageShow
+                QTabVoyage = _qRepertoire.QRepertoireVoyageShow
             },
-            new LTab("Corpus", PNavigationCorpus, PCorpus)
+            new QTab("Corpus", PNavigationCorpus, PCorpus)
             {
-                LTabVoyage = _qCorpus.QCorpusVoyageShow
+                QTabVoyage = _qCorpus.QCorpusVoyageShow
             },
-            new LTab("Reference", PNavigationSource, PReference)
+            new QTab("Reference", PNavigationSource, PReference)
             {
-                LTabVoyage = _qReference.QReferenceVoyageShow
+                QTabVoyage = _qReference.QReferenceVoyageShow
             },
-            new LTab("Guild", PNavigationGuild, PGuild)
+            new QTab("Guild", PNavigationGuild, PGuild)
             {
-                LTabVoyage = _qGuild.QGuildVoyageShow
+                QTabVoyage = _qGuild.QGuildVoyageShow
             },
-            new LTab("Favorite", PNavigationFavorite, PFavorite)
+            new QTab("Favorite", PNavigationFavorite, PFavorite)
             {
-                LTabVoyage = _qFavorite.QFavoriteVoyageShow
+                QTabVoyage = _qFavorite.QFavoriteVoyageShow
             },
-            new LTab("Duplex", PNavigationDuplex, PDuplex),
-            new LTab("Settings", PNavigationSettings, PSettings)
+            new QTab("Duplex", PNavigationDuplex, PDuplex),
+            new QTab("Settings", PNavigationSettings, PSettings)
         ];
     }
 
     private void PVoyageRefine(CVoyageState state)
     {
-        foreach (LTab tab in _pNavigationTabs)
+        foreach (QTab tab in _pNavigationTabs)
         {
-            tab.LTabVoyage?.Invoke(state.CVoyageStatePast, state.CVoyageStateFuture);
+            tab.QTabVoyage?.Invoke(state.CVoyageStatePast, state.CVoyageStateFuture);
         }
     }
 
-    private void PVoyageKeyHandle(object sender, KeyEventArgs e)
+    private void PVoyageKeyObserve(object sender, KeyEventArgs e)
     {
         if (e.Key != Key.System || Keyboard.Modifiers != ModifierKeys.Alt)
         {
@@ -171,7 +171,7 @@ public partial class PWindow
         }
     }
 
-    private void PVoyageMouseHandle(object sender, MouseButtonEventArgs e)
+    private void PVoyageMouseObserve(object sender, MouseButtonEventArgs e)
     {
         if (e.ChangedButton == MouseButton.XButton1)
         {
@@ -183,12 +183,6 @@ public partial class PWindow
             _cNavigation.CNavigationStationRedo();
             e.Handled = true;
         }
-    }
-
-    internal bool PWindowEntryShow(long id)
-    {
-        PMentionMenuHide();
-        return _cNavigation.CNavigationEntryOpen(id);
     }
 
     internal void PWindowMentionHandle(PMention anchor, CMentionResult result)
@@ -205,7 +199,7 @@ public partial class PWindow
                 return;
             }
 
-            PWindowEntryShow(stored.CMentionMarkEntry);
+            _cNavigation.CNavigationEntryOpen(stored.CMentionMarkEntry);
             if (stored.CMentionMarkSense != 0)
             {
                 _qLibrary.QLibraryDisplay.PDisplayCardScroll(stored.CMentionMarkSense);
@@ -216,7 +210,7 @@ public partial class PWindow
 
         if (result.CMentionResultSingle)
         {
-            PWindowEntryShow(result.CMentionResultFirst);
+            _cNavigation.CNavigationEntryOpen(result.CMentionResultFirst);
             return;
         }
 

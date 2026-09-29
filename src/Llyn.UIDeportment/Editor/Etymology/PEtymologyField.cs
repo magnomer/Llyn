@@ -65,7 +65,7 @@ public partial class PEditor
 
     private void PEtymologyEntryHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        _pEditorHost.PWindowEntryShow((long)e.Parameter);
+        _pEditorHost.PWindowAtelier.CAtelierNavigation.CNavigationEntryOpen((long)e.Parameter);
     }
 
     private void PEtymologyLinkHandle(object sender, ExecutedRoutedEventArgs e)

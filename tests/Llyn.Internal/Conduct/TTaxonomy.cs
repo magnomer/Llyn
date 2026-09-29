@@ -27,20 +27,43 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void TaxonomyTagCreate_Name_AnswersTheIdTheRowsList()
+    public void TaxonomyTagCreate_Name_OpensTheNewTagChosenInTheRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        List<string> asked = [];
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+        int opened = 0;
+        taxonomy.CTaxonomyTagOpened += () => opened++;
 
-        long tag = taxonomy.CTaxonomyTagCreate("motion");
-        taxonomy.CTaxonomyTagSelect(tag);
+        taxonomy.CTaxonomyTagCreate("motion");
 
+        long tag = Assert.NotNull(taxonomy.LTaxonomyChosen);
         CCatalogTag row = Assert.Single(taxonomy.CTaxonomyRowsRead(), row => row.CCatalogTagStored.CTagId == tag);
         Assert.Equal(new CTag(tag, "motion"), row.CCatalogTagStored);
         Assert.True(row.CCatalogTagChosen);
         Assert.Equal(tag, taxonomy.LTaxonomyChosen);
+        Assert.Equal(1, opened);
+        Assert.Empty(asked);
+    }
+
+    [Fact]
+    public void TaxonomyTagCreate_BlankName_ShowsTheFailureAndOpensNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+        int opened = 0;
+        taxonomy.CTaxonomyTagOpened += () => opened++;
+
+        taxonomy.CTaxonomyTagCreate(" ");
+
+        Assert.Equal(["Tag.CreateFailed"], asked);
+        Assert.Equal(0, opened);
+        Assert.Null(taxonomy.LTaxonomyChosen);
     }
 
     [Fact]
@@ -251,6 +274,25 @@ public sealed class TTaxonomy
 
         Assert.Equal(first, taxonomy.LTaxonomyChosen);
         Assert.Equal(1, opened);
+    }
+
+    [Fact]
+    public void TaxonomyTagOpen_QueriedLists_EmptiesBothQueriesBeforeTheOpening()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        long first = engine.TEngineTagCreate("motion").LTagId;
+        taxonomy.CTaxonomyQuerySet("zzz");
+        taxonomy.CTaxonomyMembershipFind("zzz");
+        List<string> seen = [];
+        taxonomy.CTaxonomyTagOpened += () =>
+            seen.Add(taxonomy.CTaxonomyEmptyKey + " " + taxonomy.CTaxonomyRowsRead().Count);
+
+        taxonomy.TTaxonomyTagOpen(first);
+
+        Assert.Equal(["Tag.Vacant 1"], seen);
     }
 
     private static CTaxonomy TTaxonomyPrepare(CAtelier atelier, CEnvoy envoy)

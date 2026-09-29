@@ -185,6 +185,26 @@ public sealed class TXiesheng
     }
 
     [Fact]
+    public async Task XieshengStemOpen_QueriedSeries_EmptiesTheQueryBeforeTheOpening()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = TXieshengEngineStart(workspace);
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        string language = pack.TLanguageFixtureName;
+        await TXieshengStemSave(engine, language);
+        CXiesheng xiesheng = TXieshengPrepare(atelier);
+        xiesheng.CXieshengGroveFind("zzz");
+        List<string> seen = [];
+        xiesheng.CXieshengStemOpened += () => seen.Add(xiesheng.CXieshengGroveKey);
+
+        xiesheng.TXieshengStemOpen(language, "龍");
+
+        Assert.Equal(["Xiesheng.GroveEmpty"], seen);
+        Assert.True(xiesheng.CXieshengStemShown);
+    }
+
+    [Fact]
     public void XieshengGroveSet_NullAfterAnOrder_KeepsTheChosenOne()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

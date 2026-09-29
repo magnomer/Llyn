@@ -131,6 +131,8 @@ public sealed class CTaxonomy
     internal void LTaxonomyTagOpen(long id)
     {
         CTaxonomyTagSelect(id);
+        _cTaxonomyVista?.LVistaQuerySet(string.Empty);
+        _cTaxonomyMembership?.LVistaQuerySet(string.Empty);
         CTaxonomyTagOpened?.Invoke();
     }
 
@@ -156,9 +158,23 @@ public sealed class CTaxonomy
         return _cTaxonomySettingsPort.LEngineLanguageRead();
     }
 
-    public long CTaxonomyTagCreate(string name)
+    public void CTaxonomyTagCreate(string name)
     {
-        return _cTaxonomyEntryPort.LEngineTagCreate(name).LTagId;
+        ArgumentNullException.ThrowIfNull(name);
+
+        long id;
+        try
+        {
+            id = _cTaxonomyEntryPort.LEngineTagCreate(name).LTagId;
+        }
+        catch (Exception exception)
+        {
+            _cTaxonomyEnvoy.CEnvoyFailureShow("Tag.CreateFailed", exception);
+            return;
+        }
+
+        CTaxonomyPanel.CPanelEntryClose();
+        LTaxonomyTagOpen(id);
     }
 
     public void CTaxonomyEntryCreate()

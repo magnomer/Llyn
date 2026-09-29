@@ -43,7 +43,7 @@ public partial class PWindow
 
     private CNavigation _cNavigation = null!;
 
-    private LTab[] _pNavigationTabs = [];
+    private QTab[] _pNavigationTabs = [];
 
     public PWindow(CAtelier atelier)
     {

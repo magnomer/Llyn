@@ -30,7 +30,7 @@ The shared panel state over the cohort vista: the chosen entry, the scribe mode,
 
 ## `public event Action? CTenorRegisterOpened;`
 
-Raised when an arrival chooses a Register, so the driver empties both searches and lists again.
+Raised when an arrival or a coinage opens a Register, so the driver shows both searches empty and lists again.
 
 ## `public void CTenorRegisterToggle(long id)`
 
@@ -38,7 +38,8 @@ A click on a row: records the station it leaves, then toggles the Register.
 
 ## `internal void LTenorRegisterOpen(long id)`
 
-The navigation's arrival: chooses the Register, then raises `CTenorRegisterOpened` so the driver empties its searches.
+The navigation's arrival: chooses the Register and empties both searches, then raises `CTenorRegisterOpened`.
+Emptying the searches is the arrival's own, so no driver has to echo it back through the query gates.
 
 ## `internal long? LTenorChosen`
 
@@ -84,9 +85,11 @@ It answers nothing before the vistas are restored.
 
 The entries under the chosen Register, or every entry while none is chosen, as the engine narrows them.
 
-## `public long CTenorRegisterCreate(string name)`
+## `public void CTenorRegisterCreate(string name)`
 
-Makes the Register and answers only its id, which is all the driver browses by.
+Makes the Register from the raw wording and opens it as an arrival does.
+The panel is cleared first, so an unsaved fresh entry the leave check already settled does not linger.
+A refused Register is shown through `CEnvoy` as `Register.CreateFailed`, and nothing opens.
 
 ## `public void CTenorEntryCreate()`
 

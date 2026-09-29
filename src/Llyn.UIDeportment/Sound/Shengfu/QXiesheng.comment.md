@@ -49,6 +49,8 @@ True while the panel holds an unsaved change.
 ## `private void QLodestarRefine()`
 
 Answers the area's opening of a series a chip names by emptying the column's query field.
+The area has already emptied the query, so the field only shows it.
+The field's own handler still hears the change, and its gate finds the query already empty.
 
 ## `internal void QXieshengClose()`
 

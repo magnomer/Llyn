@@ -4,7 +4,9 @@
 
 Covers the tenor panel's gates end to end on a real workspace.
 Before the vistas are restored the rows are empty and nothing is chosen or filtered.
-A created Register answers its id, lists by its name with no usage, and reads chosen once selected.
+A created Register opens as an arrival does, listed by its name with no usage and chosen.
+A blank name shows the refusal through the envoy and opens nothing.
+An arrival empties both searches before the driver hears of it.
 New names a Register while nothing is chosen or shown, and starts an entry once a Register is chosen.
 The empty entry list reads vacant under a blank search and unmatched under a written one.
 A fresh entry under a chosen Register carries it from its first paint and lists under it once stored.

@@ -173,12 +173,6 @@ internal sealed partial class QTaxonomy
         }
     }
 
-    private void QDirectoryTagShow(long id)
-    {
-        _cTaxonomy.CTaxonomyTagSelect(id);
-        QDirectoryTagRefine();
-    }
-
     private void QDirectoryTagRefine()
     {
         QExploration.Text = string.Empty;
@@ -209,25 +203,7 @@ internal sealed partial class QTaxonomy
             return;
         }
 
-        QDirectoryTagCreate(text);
-    }
-
-    private void QDirectoryTagCreate(string text)
-    {
-        try
-        {
-            QDirectoryTagOpen(_cTaxonomy.CTaxonomyTagCreate(text));
-        }
-        catch (Exception exception)
-        {
-            _qTaxonomyHost.PWindowFailureShow("Tag.CreateFailed", exception);
-        }
-    }
-
-    private void QDirectoryTagOpen(long id)
-    {
-        _cTaxonomy.CTaxonomyPanel.CPanelEntryClose();
-        QDirectoryTagShow(id);
+        _cTaxonomy.CTaxonomyTagCreate(text);
     }
 
     private void QTaxonomyScribeHandle(object sender, RoutedEventArgs e)

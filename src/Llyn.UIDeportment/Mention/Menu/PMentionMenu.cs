@@ -33,7 +33,7 @@ public partial class PWindow
             place,
             "Mention.Title",
             PMentionItem.PMentionItemCreate(result.CMentionResultEntry),
-            item => PWindowEntryShow(item.PMentionItemEntry));
+            item => _cNavigation.CNavigationEntryOpen(item.PMentionItemEntry));
     }
 
     internal void PMentionMenuShow(

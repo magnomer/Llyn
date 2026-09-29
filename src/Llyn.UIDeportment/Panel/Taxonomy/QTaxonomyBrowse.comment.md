@@ -74,17 +74,7 @@ Conduct makes that choice, so the view only follows its verdict.
 
 Asks for the wording of a new tag, over the window that holds the clicked button.
 A dismissed dialog changes nothing.
-
-### `private void QDirectoryTagCreate(string text)`
-
-Makes the tag and browses by the id the engine answers.
-The answer goes straight into the helper that opens it, so no local holds it.
-A refused tag is reported by the window.
-
-### `private void QDirectoryTagOpen(long id)`
-
-Browses by the tag just made.
-The panel is cleared first, so an unsaved fresh entry the leave check already settled does not linger.
+The wording goes raw to the create gate, which makes the tag, opens it and reports a refusal.
 
 ### `private void QDirectoryFind()`
 
@@ -95,14 +85,12 @@ A chosen tag the rows no longer hold is dropped through the vista, and the list 
 The panel then falls back to every entry.
 Before a vista is handed over nothing is asked.
 
-### `private void QDirectoryTagShow(long id)`
-
-Chooses a newly coined tag, then hands off to the refine as an arrival does.
-
 ### `private void QDirectoryTagRefine()`
 
-Answers the area's opening event after a chip's arrival, and runs after a coinage too.
-Both queries are emptied and the catalog rebuilt, since the tag may be new to the list.
+Answers the area's opening event after a chip's arrival or a coinage.
+The area has already emptied both queries, so the fields only show it.
+The fields' own handlers still hear the change, and their gates find the queries already empty.
+The catalog is rebuilt, since the tag may be new to the list.
 
 ### `private void QDirectoryHandle(object sender, RoutedEventArgs e)`
 

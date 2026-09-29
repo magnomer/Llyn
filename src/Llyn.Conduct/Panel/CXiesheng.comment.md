@@ -25,7 +25,7 @@ Raised whenever a column, the page or the mode changed and the driver must copy 
 
 ## `public event Action? CXieshengStemOpened;`
 
-Raised when a series chip's arrival starts, so the driver empties the series search.
+Raised when a series chip's arrival starts, so the driver shows the series search empty.
 
 ## `public CEditor CXieshengEditor { get; }`
 
@@ -137,7 +137,7 @@ Toggles that series as the chosen one and clears whatever entry was read.
 ## `internal void LXieshengStemOpen(string language, string? key)`
 
 The navigation's arrival: opens the series of that language and key, the request a series chip makes.
-It first raises `CXieshengStemOpened`, so the driver empties its search field.
+It first empties the series search and raises `CXieshengStemOpened`, so the driver shows it empty.
 The engine finds the series, and nothing happens for a blank key or a series never stored.
 
 ## `public void CXieshengGlyphSelect(string? character)`
@@ -145,7 +145,7 @@ The engine finds the series, and nothing happens for a blank key or a series nev
 Resolves the glyph picked off a series page to its entry, in the language of the page, and opens it.
 The entry opens in the library tab through the navigation.
 Nothing opens while no series page shows.
-An unsaved draft is asked about through the panel's leave question first.
+The navigation's jump asks every leave question, so the gate asks none of its own.
 The page's language and the resolve are one engine call, so the page is never read whole for its language.
 A refused resolve is shown through the catalog's one glyph failure owner, and nothing opens.
 

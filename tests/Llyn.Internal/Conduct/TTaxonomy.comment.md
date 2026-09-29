@@ -4,7 +4,9 @@
 
 Covers the taxonomy panel's gates end to end on a real workspace.
 Before the vistas are restored the rows are empty and nothing is chosen or filtered.
-A created Tag answers its id, lists by its name and reads chosen once selected.
+A created Tag opens as an arrival does, listed by its name and chosen.
+A blank name shows the refusal through the envoy and opens nothing.
+An arrival empties both searches before the driver hears of it.
 New names a Tag while nothing is chosen or shown, and starts an entry once a Tag is chosen.
 The empty entry list reads vacant under a blank search and unmatched under a written one.
 A fresh entry under a chosen Tag carries it from its first paint and lists under it once stored.

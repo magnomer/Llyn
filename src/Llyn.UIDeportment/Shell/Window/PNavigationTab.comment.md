@@ -28,11 +28,11 @@ Hides the tabs the session does not offer, then marks the open tab's button and 
 A state naming no tab leaves the open tab as it is.
 The voyage buttons are lit last.
 
-## `private LTab? PNavigationFind(object? button)`
+## `private QTab? PNavigationFind(object? button)`
 
 The tab owning the given button, or null.
 
-## `private LTab[] PNavigationTabRead()`
+## `private QTab[] PNavigationTabRead()`
 
 The tabs of the window, each with the key the navigation names it by.
 The panels with a record list hand their voyage buttons.
@@ -43,25 +43,22 @@ Input, dual panel and settings hand none.
 Enables each tab's pair only while the matching trail has somewhere to go.
 Every tab is told, because any of them may be the one on screen.
 
-## `private void PVoyageKeyHandle(object sender, KeyEventArgs e)`
+## `private void PVoyageKeyObserve(object sender, KeyEventArgs e)`
 
-`Alt+Left` steps back and `Alt+Right` steps forward.
+`Alt+Left` steps back and `Alt+Right` steps forward, each through its one voyage gate.
 With Alt held the key arrives as a system key, so the arrow is read off `SystemKey`.
+The key binding is the GUI's own, so it stays here.
 
-## `private void PVoyageMouseHandle(object sender, MouseButtonEventArgs e)`
+## `private void PVoyageMouseObserve(object sender, MouseButtonEventArgs e)`
 
 The two side buttons of a mouse step back and forward, as they do in a browser.
-
-## `internal bool PWindowEntryShow(long id)`
-
-Closes any open mention menu and opens one Entry through the navigation's gate.
-The answer says whether the jump went.
+Each button reaches its one voyage gate.
 
 ## `internal void PWindowMentionHandle(PMention anchor, CMentionResult result)`
 
 What a click on a word of a shown sentence opens, decided once for every panel that draws one.
 Any menu already open is closed first, so a second click never stacks two.
-A word stored as standing for an Entry opens that Entry.
+A word stored as standing for an Entry opens that Entry through the navigation's gate.
 The card it is narrowed to is scrolled into view.
 A word stored as standing for nothing opens nothing.
 An unlinked word with exactly one candidate Entry opens it.

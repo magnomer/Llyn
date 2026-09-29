@@ -8,6 +8,8 @@ Keeping stays in the scribe, storing finishes the draft, and discarding shows th
 A clean editor never asks, and entering the scribe hands the chosen row to the editor.
 The fresh gate drops the chosen row and opens the scribe on nothing.
 A refused leave keeps the row the panel stands on.
+A row click asks the leave question before it records the station.
+A declined leave records no station and opens nothing.
 Opening a stored row chooses it, and in edit mode hands it to the editor.
 Opening a row that no longer loads closes the panel without a failure notice.
 A quiet reload repaints a stored entry and closes the panel on a deleted one.

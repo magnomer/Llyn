@@ -84,17 +84,7 @@ Conduct makes that choice, so the view only follows its verdict.
 
 Asks for the wording of a new register, over the window that holds the clicked button.
 A dismissed dialog changes nothing.
-
-### `private void QGamutRegisterCreate(string name)`
-
-Makes the register and browses by the id the engine answers.
-The answer goes straight into the helper that opens it, so no local holds it.
-A refused register is reported by the window.
-
-### `private void QGamutRegisterOpen(long id)`
-
-Browses by the register just made.
-The panel is cleared first, so an unsaved fresh entry the leave check already settled does not linger.
+The wording goes raw to the create gate, which makes the Register, opens it and reports a refusal.
 
 ### `private void QGamutFind()`
 
@@ -105,14 +95,12 @@ A chosen Register the rows no longer hold is dropped through the vista, and the 
 The panel then falls back to every Entry.
 Before a vista is handed over nothing is asked.
 
-### `private void QGamutRegisterShow(long id)`
-
-Chooses a newly coined Register, then hands off to the refine as an arrival does.
-
 ### `private void QGamutRegisterRefine()`
 
-Answers the area's opening event after a chip's arrival, and runs after a coinage too.
-Both queries are emptied and the catalog rebuilt, since the Register may be new to the list.
+Answers the area's opening event after a chip's arrival or a coinage.
+The area has already emptied both queries, so the fields only show it.
+The fields' own handlers still hear the change, and their gates find the queries already empty.
+The catalog is rebuilt, since the Register may be new to the list.
 
 ### `private void QGamutHandle(object sender, RoutedEventArgs e)`
 

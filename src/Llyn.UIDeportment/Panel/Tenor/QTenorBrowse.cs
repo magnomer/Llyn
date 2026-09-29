@@ -184,12 +184,6 @@ internal sealed partial class QTenor
         }
     }
 
-    private void QGamutRegisterShow(long id)
-    {
-        _cTenor.CTenorRegisterSelect(id);
-        QGamutRegisterRefine();
-    }
-
     private void QGamutRegisterRefine()
     {
         QSounding.Text = string.Empty;
@@ -220,25 +214,7 @@ internal sealed partial class QTenor
             return;
         }
 
-        QGamutRegisterCreate(name);
-    }
-
-    private void QGamutRegisterCreate(string name)
-    {
-        try
-        {
-            QGamutRegisterOpen(_cTenor.CTenorRegisterCreate(name));
-        }
-        catch (Exception exception)
-        {
-            _qTenorHost.PWindowFailureShow("Register.CreateFailed", exception);
-        }
-    }
-
-    private void QGamutRegisterOpen(long id)
-    {
-        _cTenor.CTenorPanel.CPanelEntryClose();
-        QGamutRegisterShow(id);
+        _cTenor.CTenorRegisterCreate(name);
     }
 
     private void QTenorScribeHandle(object sender, RoutedEventArgs e)

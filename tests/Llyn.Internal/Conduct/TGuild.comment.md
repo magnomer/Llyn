@@ -8,6 +8,7 @@ A roll that drops the chosen Author closes the panel.
 No order keeps the ordering, and a hidden kind marks the roll filtered.
 With nothing chosen the vita is nobody's, and a chosen Author shows its vita, fellows and Sources.
 A click asks once for unsaved work, a kept answer stays put, and a jump from another panel asks nothing.
+A kept answer records no station on the voyage.
 A Source click shows the colophon, and writing with no stored Author closes the panel.
 A restored scribe mode opens the autograph only over a stored Author.
 A blank name is refused through the envoy, and a named one is stored and chosen.
