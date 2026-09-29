@@ -49,7 +49,7 @@ internal sealed class QColophon
     private TextBlock QColophonUnselected =>
         QContract.QContractFind<TextBlock>(_qColophonSurface, "PColophonUnselected");
 
-    internal void QColophonShow(CColophon sheet)
+    internal void QColophonRefine(CColophon sheet)
     {
         ArgumentNullException.ThrowIfNull(sheet);
 
@@ -75,12 +75,12 @@ internal sealed class QColophon
         QColophonUnselected.Visibility = Visibility.Collapsed;
     }
 
-    internal void QColophonTallyShow(string tally)
+    internal void QColophonTallyRefine(string tally)
     {
         QColophonTally.Text = tally;
     }
 
-    internal void QColophonClear()
+    internal void QColophonClearRefine()
     {
         QColophonBody.Visibility = Visibility.Collapsed;
         QColophonUnselected.Visibility = Visibility.Visible;

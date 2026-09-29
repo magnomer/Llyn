@@ -168,6 +168,7 @@ internal static class TAuditChainSetting
             "CLedger",
             "CLedgerPage",
             "CLedgerState",
+            "CLedgerShown",
             "CLedgerNotice",
             "CWorkspace",
             "CCardSpeech",

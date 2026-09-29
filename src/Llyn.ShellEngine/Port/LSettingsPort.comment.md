@@ -23,6 +23,15 @@ Conduct changes the workspace in one call, without the engine itself.
 Opens the current workspace for the session in one call.
 It sweeps leftover drafts and recordings first, then answers the workspace state.
 
+## `void LEngineFolderOpen();`
+
+Opens the workspace folder in use through the shell usher.
+Conduct opens it in one call, without reading the path first.
+
+## `IReadOnlyList<string> LEngineGroupFind(IReadOnlyList<(string, IReadOnlyList<string>)> groups, string? text);`
+
+The names of the groups with a key whose interface text reads `text`, by the localization's shared match.
+
 ## `IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language);`
 
 The interface strings of one language, parsed and ready for the resource dictionary.

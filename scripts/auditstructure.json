@@ -347,6 +347,7 @@
       "CLedger",
       "CLedgerPage",
       "CLedgerState",
+      "CLedgerShown",
       "CLedgerNotice",
       "CWorkspace",
       "CCardSpeech",

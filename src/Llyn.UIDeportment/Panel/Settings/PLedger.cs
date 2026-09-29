@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,68 +9,58 @@ namespace Llyn.UIDeportment;
 
 public partial class PSettings
 {
-    private readonly ObservableCollection<PLedgerItem> _pLedgerList = [];
+    private readonly List<PLedgerItem> _pLedgerList = [];
 
-    private void PLedgerShow(IReadOnlyList<CLedgerPage> pages)
+    private void PLedgerRefine(CLedgerState state)
     {
-        if (_pLedgerList.Count == 0)
+        foreach (CLedgerPage page in state.CLedgerStatePages)
         {
-            foreach (CLedgerPage page in pages)
-            {
-                _pLedgerList.Add(new PLedgerItem(page.CLedgerPageChild, page.CLedgerPageTitle));
-            }
-
-            PLedger.ItemsSource = _pLedgerList;
-            PLedgerEmpty.Visibility = _pLedgerList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            PLedgerPageRefine(page);
         }
 
-        foreach (CLedgerPage page in pages)
+        PLedgerFindRefine(state.CLedgerStateShown);
+        PLedgerMetaRefine();
+    }
+
+    private void PLedgerPageRefine(CLedgerPage page)
+    {
+        PLedgerItem? item = _pLedgerList.Find(
+            item => string.Equals(item.PLedgerItemChild, page.CLedgerPageChild, StringComparison.Ordinal));
+        if (item is null)
         {
-            foreach (PLedgerItem item in _pLedgerList)
-            {
-                if (string.Equals(item.PLedgerItemChild, page.CLedgerPageChild, StringComparison.Ordinal))
-                {
-                    item.PLedgerItemTitle = page.CLedgerPageTitle;
-                    item.PLedgerItemMeta = page.CLedgerPageMeta;
-                }
-            }
+            item = new PLedgerItem(page.CLedgerPageChild, page.CLedgerPageTitle);
+            _pLedgerList.Add(item);
         }
 
-        PLedgerMetaApply();
+        item.PLedgerItemTitle = page.CLedgerPageTitle;
+        item.PLedgerItemMeta = page.CLedgerPageMeta;
     }
 
-    private void PLedgerMetaApply()
+    private void PLedgerMetaRefine()
     {
-        foreach (PLedgerItem item in _pLedgerList)
-        {
-            if (string.Equals(item.PLedgerItemChild, "Layout", StringComparison.Ordinal))
-            {
-                item.PLedgerItemMeta = PSettingsAtelier.CAtelierLedger.CLedgerMetaRead(
-                    item.PLedgerItemChild, PSettingsPosture.QPostureRead().LCapsuleContentLinked);
-            }
-        }
+        PLedgerPageRefine(PSettingsAtelier.CAtelierLedger.CLedgerMetaRead(
+            PSettingsPosture.QPostureRead().LCapsuleContentLinked));
     }
 
-    private void PLedgerFind(string text)
+    private void PLedgerFindRefine(CLedgerShown shown)
     {
-        HashSet<string> found = PSettingsAtelier.CAtelierLedger.CLedgerFind(text).ToHashSet(StringComparer.Ordinal);
-        List<PLedgerItem> shown = _pLedgerList.Where(item => found.Contains(item.PLedgerItemChild)).ToList();
-
-        PLedger.ItemsSource = shown;
-        PLedgerEmpty.Visibility = shown.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        PLedger.ItemsSource = _pLedgerList
+            .Where(item => shown.CLedgerShownChildren.Contains(item.PLedgerItemChild, StringComparer.Ordinal))
+            .ToList();
+        PLedgerEmpty.Visibility = shown.CLedgerShownEmpty ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void PLedgerHandle(object sender, RoutedEventArgs e)
+    private void PLedgerRowRefine(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement row || row.DataContext is not PLedgerItem item)
         {
             return;
         }
 
-        PDialShow(item.PLedgerItemChild);
+        PDialRefine(item.PLedgerItemChild);
     }
 
-    private void PLedgerApply(FrameworkElement container, object item, string? _)
+    private void PLedgerItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not PLedgerItem ledger)
         {
@@ -89,8 +78,8 @@ public partial class PSettings
                 row.ClearValue(QLook.QLookCueProperty);
             }
 
-            row.Click -= PLedgerHandle;
-            row.Click += PLedgerHandle;
+            row.Click -= PLedgerRowRefine;
+            row.Click += PLedgerRowRefine;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PLedgerTitle") is TextBlock title)
@@ -104,8 +93,8 @@ public partial class PSettings
         }
     }
 
-    private void PWinnowHandle(object sender, TextChangedEventArgs e)
+    private void PWinnowObserve(object sender, TextChangedEventArgs e)
     {
-        PLedgerFind(PWinnow.Text ?? string.Empty);
+        PLedgerFindRefine(PSettingsAtelier.CAtelierLedger.CLedgerFind(PWinnow.Text));
     }
 }

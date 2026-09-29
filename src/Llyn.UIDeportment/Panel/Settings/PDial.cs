@@ -19,7 +19,7 @@ public partial class PSettings
         ];
     }
 
-    private void PDialShow(string child)
+    private void PDialRefine(string child)
     {
         foreach (PLedgerItem item in _pLedgerList)
         {
@@ -34,19 +34,12 @@ public partial class PSettings
         }
     }
 
-    private void PDialFolderHandle(object sender, RoutedEventArgs e)
+    private void PDialFolderObserve(object sender, RoutedEventArgs e)
     {
-        try
-        {
-            PSettingsAtelier.CAtelierLocationOpen(_pSettingsState.CLedgerStatePath);
-        }
-        catch (Exception exception)
-        {
-            _pSettingsHost.PWindowFailureRefine("Settings.FolderFailed", exception);
-        }
+        PSettingsAtelier.CAtelierLedger.CLedgerFolderOpen(_pSettingsHost.PWindowEnvoy);
     }
 
-    private void PDialWidthHandle(object sender, RoutedEventArgs e)
+    private void PDialWidthRefine(object sender, RoutedEventArgs e)
     {
         PSettingsPosture.QPostureLayoutReset();
     }

@@ -11,8 +11,6 @@ public partial class PSettings : UserControl
 {
     private PWindow _pSettingsHost = null!;
 
-    private CLedgerState _pSettingsState = null!;
-
     private CAtelier PSettingsAtelier => _pSettingsHost.PWindowAtelier;
 
     private QPosture PSettingsPosture => _pSettingsHost.PWindowPosture;
@@ -31,19 +29,19 @@ public partial class PSettings : UserControl
         PDialFolder.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("folder", 24));
         PDialWidth.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("sort", 24));
 
-        PWinnow.TextChanged += PWinnowHandle;
+        PWinnow.TextChanged += PWinnowObserve;
         PWorkspacePath.KeyDown += PWorkspaceEscapeRefine;
         PWorkspacePath.KeyDown += PWorkspacePathObserve;
         PWorkspacePath.LostKeyboardFocus += PWorkspaceFocusRefine;
         PWorkspaceDialog.Click += PWorkspaceDialogObserve;
-        PDialFolder.Click += PDialFolderHandle;
+        PDialFolder.Click += PDialFolderObserve;
         PLocalization.SelectionChanged += PLocalizationObserve;
         PRespelling.Click += PRespellingObserve;
-        PSettingsEpithet.Click += PSettingsEpithetHandle;
+        PSettingsEpithet.Click += PSettingsEpithetObserve;
         PFrequency.Click += PFrequencyObserve;
         PMorphology.Click += PMorphologyObserve;
         PLayoutLinked.Click += PLayoutLinkedObserve;
-        PDialWidth.Click += PDialWidthHandle;
+        PDialWidth.Click += PDialWidthRefine;
     }
 
     private TextBox PWinnow => (TextBox)FindName(nameof(PWinnow));
@@ -86,16 +84,17 @@ public partial class PSettings : UserControl
 
     private Button PDialWidth => (Button)FindName(nameof(PDialWidth));
 
-    internal void PSettingsAttach(PWindow host)
+    internal void PSettingsIntroduce(PWindow host)
     {
         _pSettingsHost = host;
-        QLookItem.QLookItemAttach(PLedger, PLedgerApply);
-        PSettingsPosture.QPostureLinkedChanged += PLedgerMetaApply;
-        PSettingsAtelier.CAtelierLedger.CLedgerChanged += LObserver.LObserverCreate<CLedgerState>(this, PSettingsShow);
-        PDialShow("Workspace");
+        QLookItem.QLookItemAttach(PLedger, PLedgerItemRefine);
+        PSettingsPosture.QPostureLinkedChanged += PLedgerMetaRefine;
+        PSettingsAtelier.CAtelierLedger.CLedgerChanged +=
+            LObserver.LObserverCreate<CLedgerState>(this, PSettingsRefine);
+        PDialRefine("Workspace");
     }
 
-    private void PLocalizationBuild(IReadOnlyList<KeyValuePair<string, string>> languages)
+    private void PLocalizationRefine(IReadOnlyList<KeyValuePair<string, string>> languages)
     {
         PLocalization.Items.Clear();
         foreach (KeyValuePair<string, string> language in languages)
@@ -108,14 +107,13 @@ public partial class PSettings : UserControl
         }
     }
 
-    private void PSettingsShow(CLedgerState state)
+    private void PSettingsRefine(CLedgerState state)
     {
-        _pSettingsState = state;
         QLocalizationCatalog.QLocalizationCatalogApply(
             System.Windows.Application.Current.Resources, state.CLedgerStateTexts);
         if (PLocalization.Items.Count == 0)
         {
-            PLocalizationBuild(state.CLedgerStateLanguages);
+            PLocalizationRefine(state.CLedgerStateLanguages);
         }
 
         CSettings settings = state.CLedgerStateSettings;
@@ -126,6 +124,6 @@ public partial class PSettings : UserControl
         PFrequency.IsChecked = settings.CSettingsFrequency;
         PMorphology.IsChecked = settings.CSettingsMorphology;
         PLayoutLinked.IsChecked = PSettingsPosture.QPostureRead().LCapsuleContentLinked;
-        PLedgerShow(state.CLedgerStatePages);
+        PLedgerRefine(state);
     }
 }

@@ -63,7 +63,7 @@ internal sealed class QFootnoteItem : INotifyPropertyChanged
         held.QFootnoteItemChosen = fresh.QFootnoteItemChosen;
     }
 
-    internal static void QFootnoteItemApply(FrameworkElement container, object item, string? _)
+    internal static void QFootnoteItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QFootnoteItem footnote)
         {

@@ -18,9 +18,11 @@ public sealed class TLedger
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
 
+        CLedgerShown shown = atelier.CAtelierLedger.CLedgerFind("  ");
+
         Assert.Equal(
-            ["Workspace", "Language", "Transcription", "Listing", "Web", "Layout"],
-            atelier.CAtelierLedger.CLedgerFind("  "));
+            ["Workspace", "Language", "Transcription", "Listing", "Web", "Layout"], shown.CLedgerShownChildren);
+        Assert.False(shown.CLedgerShownEmpty);
     }
 
     [Fact]
@@ -30,8 +32,92 @@ public sealed class TLedger
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
         string label = engine.TEngineTextRead("Morphology.Switch");
 
-        Assert.Contains("Web", atelier.CAtelierLedger.CLedgerFind(label.ToUpperInvariant()));
-        Assert.DoesNotContain("Language", atelier.CAtelierLedger.CLedgerFind(label));
+        Assert.Contains("Web", atelier.CAtelierLedger.CLedgerFind(label.ToUpperInvariant()).CLedgerShownChildren);
+        Assert.DoesNotContain("Language", atelier.CAtelierLedger.CLedgerFind(label).CLedgerShownChildren);
+    }
+
+    [Fact]
+    public void LedgerFind_NothingReads_AnswersEmpty()
+    {
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
+
+        CLedgerShown shown = atelier.CAtelierLedger.CLedgerFind("qqqzzzxxx");
+
+        Assert.Empty(shown.CLedgerShownChildren);
+        Assert.True(shown.CLedgerShownEmpty);
+    }
+
+    [Fact]
+    public void LedgerChanged_AfterFind_KeepsTheCatalogNarrowed()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<CLedgerState> shown = TLedgerShowRead(atelier);
+        Assert.Equal(6, shown[0].CLedgerStateShown.CLedgerShownChildren.Count);
+
+        CLedgerShown found = atelier.CAtelierLedger.CLedgerFind(engine.TEngineTextRead("Epithet.Switch"));
+        atelier.CAtelierLedger.CLedgerEpithetSave(!shown[^1].CLedgerStateSettings.CSettingsEpithet);
+
+        Assert.Contains("Listing", found.CLedgerShownChildren);
+        Assert.Equal(found.CLedgerShownChildren, shown[^1].CLedgerStateShown.CLedgerShownChildren);
+        Assert.False(shown[^1].CLedgerStateShown.CLedgerShownEmpty);
+    }
+
+    [Theory]
+    [InlineData(true, "Layout.LinkedMeta")]
+    [InlineData(false, "Layout.FreeMeta")]
+    public void LedgerMetaRead_LinkedFlag_WordsTheLayoutPage(bool linked, string key)
+    {
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
+
+        CLedgerPage page = atelier.CAtelierLedger.CLedgerMetaRead(linked);
+
+        Assert.Equal("Layout", page.CLedgerPageChild);
+        Assert.Equal(engine.TEngineTextRead("Settings.Layout"), page.CLedgerPageTitle);
+        Assert.Equal(engine.TEngineTextRead(key), page.CLedgerPageMeta);
+    }
+
+    [Fact]
+    public void LedgerFolderOpen_Pressed_OpensTheWorkspaceFolderAndAsksNothing()
+    {
+        int opened = 0;
+        List<string> asked = [];
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
+            engine,
+            TLedgerPortCreate(new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineFolderOpen"] = _ =>
+                {
+                    opened++;
+                    return null;
+                },
+            }));
+
+        atelier.CAtelierLedger.CLedgerFolderOpen(TInterfaceConduct.TEnvoyCreate(false, asked));
+
+        Assert.Equal(1, opened);
+        Assert.Empty(asked);
+    }
+
+    [Fact]
+    public void LedgerFolderOpen_ShellFails_ShowsTheFolderFailure()
+    {
+        List<string> asked = [];
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
+            engine,
+            TLedgerPortCreate(new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineFolderOpen"] = _ => throw new IOException("moved away"),
+            }));
+
+        atelier.CAtelierLedger.CLedgerFolderOpen(TInterfaceConduct.TEnvoyCreate(false, asked));
+
+        Assert.Equal(["Settings.FolderFailed"], asked);
     }
 
     [Fact]
@@ -204,6 +290,10 @@ public sealed class TLedger
         answers.TryAdd("LEngineWorkspaceStart", _ => TInterface.TWorkspaceStateCreate());
         answers.TryAdd("LEngineWorkspaceFormat", _ => "fake");
         answers.TryAdd("LEngineTextRead", args => (string)args![0]!);
+        answers.TryAdd("LEngineGroupFind", args => ((IReadOnlyList<(string, IReadOnlyList<string>)>)args![0]!)
+            .Select(static group => group.Item1)
+            .ToList());
+        answers.TryAdd("LEngineFailureRead", args => ((string)args![1]!, (string?)null, (string?)null));
         answers.TryAdd(
             "LEngineSettingsRead",
             _ => TInterface.TSettingsCreate("ko", respelled: true, frequency: true, morphology: true, epithet: false));

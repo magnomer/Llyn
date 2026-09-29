@@ -52,4 +52,29 @@ public sealed class TLocalization
         Assert.True(TInterface.TLocalizationDefaultCheck(null));
         Assert.False(TInterface.TLocalizationDefaultCheck("ko"));
     }
+
+    [Fact]
+    public void LocalizationGroupFind_SearchText_ReadsTheGroupsWhoseTextsMatch()
+    {
+        TInterface.TLocalizationLoad(TLocalizationSample, "en");
+        IReadOnlyList<(string, IReadOnlyList<string>)> groups =
+        [
+            ("Note", ["Display.Note"]),
+            ("Tone", ["Display.Missing", "Display.FanqieTone"]),
+        ];
+
+        Assert.Equal(["Note"], TInterface.TLocalizationGroupFind(groups, "  NOTE "));
+        Assert.Equal(["Tone"], TInterface.TLocalizationGroupFind(groups, "class"));
+        Assert.Equal(["Note"], TInterface.TLocalizationGroupFind(groups, "note*entry"));
+        Assert.Empty(TInterface.TLocalizationGroupFind(groups, "absent"));
+    }
+
+    [Fact]
+    public void LocalizationGroupFind_BlankOrNullText_ReadsEveryGroupInOrder()
+    {
+        IReadOnlyList<(string, IReadOnlyList<string>)> groups = [("One", []), ("Two", ["Display.Note"])];
+
+        Assert.Equal(["One", "Two"], TInterface.TLocalizationGroupFind(groups, "   "));
+        Assert.Equal(["One", "Two"], TInterface.TLocalizationGroupFind(groups, null));
+    }
 }

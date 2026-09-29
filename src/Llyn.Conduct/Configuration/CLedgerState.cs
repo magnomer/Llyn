@@ -8,4 +8,5 @@ public sealed record CLedgerState(
     string CLedgerStateLocalization,
     IReadOnlyDictionary<string, string> CLedgerStateTexts,
     IReadOnlyList<KeyValuePair<string, string>> CLedgerStateLanguages,
-    IReadOnlyList<CLedgerPage> CLedgerStatePages);
+    IReadOnlyList<CLedgerPage> CLedgerStatePages,
+    CLedgerShown CLedgerStateShown);

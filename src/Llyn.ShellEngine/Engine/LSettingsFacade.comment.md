@@ -53,6 +53,10 @@ The interface text under a key, or the key itself when none is loaded.
 
 The interface text under a key, or null when none is loaded.
 
+## `internal IReadOnlyList<string> LEngineGroupFind(IReadOnlyList<(string, IReadOnlyList<string>)> groups, string? text)`
+
+The groups whose keys' texts read `text`, as the Application localization matches them.
+
 ## `internal void LEngineLocalizationSave(string language)`
 
 Persists the chosen interface language and keeps it current.

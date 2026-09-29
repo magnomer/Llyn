@@ -75,6 +75,10 @@ internal sealed class LSettingsFacade
 
     internal string? LEngineTextFind(string key) => LLocalization.QLocalizationTextFind(key);
 
+    internal IReadOnlyList<string> LEngineGroupFind(
+        IReadOnlyList<(string, IReadOnlyList<string>)> groups, string? text) =>
+        LLocalization.LLocalizationGroupFind(groups, text);
+
     internal void LEngineLocalizationSave(string language)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);

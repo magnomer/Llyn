@@ -12,3 +12,4 @@ Everything a settings view shows, read in one call.
 - `CLedgerStateTexts`: the interface texts of that language, keyed by localization key.
 - `CLedgerStateLanguages`: each shipped interface language's code with its native name, in scan order.
 - `CLedgerStatePages`: the settings pages with their titles and summaries.
+- `CLedgerStateShown`: the pages the kept search shows, and whether none does.

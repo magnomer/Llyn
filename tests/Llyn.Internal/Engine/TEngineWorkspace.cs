@@ -28,6 +28,17 @@ public sealed class TEngineWorkspace
     }
 
     [Fact]
+    public void FolderOpen_OpenWorkspace_HandsItsFolderToTheUsher()
+    {
+        TUsherOpened usher = new();
+        using LEngine engine = TRigFake.TRigFakeStart(TInterface.TRigUsherSet(TRigFake.TRigFakeBuild(), usher));
+
+        engine.TEngineFolderOpen();
+
+        Assert.Equal(["fake"], usher.TUsherOpenedTargets);
+    }
+
+    [Fact]
     public void WorkspaceFormat_OpenWorkspace_ReturnsFolderName()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -158,5 +169,20 @@ public sealed class TEngineWorkspace
 
         Assert.Equal("ko", reopened.TEngineSettingsRead().LSettingsLocalization);
         Assert.Equal("en", TInterface.TSettingsLoad(first.TWorkspaceFolder).LSettingsLocalization);
+    }
+
+    private sealed class TUsherOpened : LUsher
+    {
+        public List<string> TUsherOpenedTargets { get; } = [];
+
+        public bool LUsherPathExist(string? path) => false;
+
+        public void LUsherPathDelete(string path)
+        {
+        }
+
+        public bool LUsherLockCheck(Exception exception) => false;
+
+        public void LUsherOpen(string target) => TUsherOpenedTargets.Add(target);
     }
 }

@@ -210,6 +210,13 @@ internal static partial class TInterface
     internal static string TEngineWorkspaceRead(this LEngine engine) =>
         engine.LEngineWorkspaceRead();
 
+    internal static void TEngineFolderOpen(this LEngine engine)
+    {
+        new LSettingsOutlet(engine).LEngineFolderOpen();
+    }
+
+    internal static LRig TRigUsherSet(LRig rig, LUsher usher) => rig with { LRigUsher = usher };
+
     internal static void TEngineWorkspaceOpen(this LEngine engine, string path)
     {
         engine.LEngineRigApply(LRigFactory.LRigFactoryBuild(

@@ -31,6 +31,10 @@ internal static partial class TInterface
     internal static string? TLocalizationTextFind(string key) =>
         LLocalization.QLocalizationTextFind(key);
 
+    internal static IReadOnlyList<string> TLocalizationGroupFind(
+        IReadOnlyList<(string, IReadOnlyList<string>)> groups, string? text) =>
+        LLocalization.LLocalizationGroupFind(groups, text);
+
     internal static string TLocalizationNormalize(string? language) =>
         LLocalization.LLocalizationNormalize(language);
 

@@ -45,3 +45,8 @@ The resolved address of a video location and its hosted film id, by the Applicat
 ## `public void LEngineLocationOpen(string target)`
 
 Opens `target` through the shell usher.
+
+## `public void LEngineFolderOpen()`
+
+Opens the workspace folder in use through the shell usher.
+The path is read here, so the caller hands nothing it gathered.

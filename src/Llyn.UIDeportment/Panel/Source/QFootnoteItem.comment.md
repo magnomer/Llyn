@@ -29,7 +29,7 @@ Whether the two rows show the same values, the chosen mark left aside.
 
 Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.
 
-## `internal static void QFootnoteItemApply(FrameworkElement container, object item, string? _)`
+## `internal static void QFootnoteItemRefine(FrameworkElement container, object item, string? _)`
 
 Fills one entry row with its flag, name, epithet and language, and marks the chosen row.
 The epithet is led by an en space, as the other catalog rows set it apart.

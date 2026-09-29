@@ -23,6 +23,8 @@ public sealed class CLedger
 
     private readonly CAtelier _cLedgerAtelier;
 
+    private string? _cLedgerWanted;
+
     internal CLedger(CAtelier atelier)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -90,30 +92,47 @@ public sealed class CLedger
         envoy.CEnvoyFailureShow(key, LLedgerNoticeRead(settings, exception));
     }
 
-    public IReadOnlyList<string> CLedgerFind(string text)
+    public void CLedgerFolderOpen(CEnvoy envoy)
     {
-        ArgumentNullException.ThrowIfNull(text);
+        ArgumentNullException.ThrowIfNull(envoy);
 
-        TextInfo casing = CultureInfo.CurrentCulture.TextInfo;
-        string wanted = casing.ToLower(text.Trim());
-
-        return CLedgerPages
-            .Where(page => wanted.Length == 0 || page.Item2
-                .Prepend("Settings." + page.Item1 + "Helper")
-                .Prepend("Settings." + page.Item1)
-                .Select(key => casing.ToLower(_cLedgerAtelier.CAtelierSettingsPort.LEngineTextRead(key)))
-                .Any(label => label.Contains(wanted, StringComparison.Ordinal)))
-            .Select(static page => page.Item1)
-            .ToList();
+        LSettingsPort port = _cLedgerAtelier.CAtelierSettingsPort;
+        try
+        {
+            port.LEngineFolderOpen();
+        }
+        catch (Exception exception)
+        {
+            LLedgerFailureShow(envoy, port, "Settings.FolderFailed", exception);
+        }
     }
 
-    public string CLedgerMetaRead(string child, bool linked)
+    public CLedgerShown CLedgerFind(string? text)
     {
-        ArgumentNullException.ThrowIfNull(child);
+        _cLedgerWanted = text;
+        return LLedgerShownRead();
+    }
 
-        return string.Equals(child, "Layout", StringComparison.Ordinal)
-            ? _cLedgerAtelier.CAtelierSettingsPort.LEngineTextRead(linked ? "Layout.LinkedMeta" : "Layout.FreeMeta")
-            : CLedgerMetaRead(child, CLedgerSettingsRead());
+    public CLedgerPage CLedgerMetaRead(bool linked)
+    {
+        LSettingsPort port = _cLedgerAtelier.CAtelierSettingsPort;
+        return new CLedgerPage(
+            "Layout",
+            port.LEngineTextRead("Settings.Layout"),
+            port.LEngineTextRead(linked ? "Layout.LinkedMeta" : "Layout.FreeMeta"));
+    }
+
+    private CLedgerShown LLedgerShownRead()
+    {
+        IReadOnlyList<string> children = _cLedgerAtelier.CAtelierSettingsPort.LEngineGroupFind(
+            CLedgerPages
+                .Select(static page => (page.Item1, (IReadOnlyList<string>)page.Item2
+                    .Prepend("Settings." + page.Item1 + "Helper")
+                    .Prepend("Settings." + page.Item1)
+                    .ToList()))
+                .ToList(),
+            _cLedgerWanted);
+        return new CLedgerShown(children, children.Count == 0);
     }
 
     private CLedgerState LLedgerRead()
@@ -134,7 +153,8 @@ public sealed class CLedger
             CLedgerPages
                 .Select(page => new CLedgerPage(
                     page.Item1, port.LEngineTextRead("Settings." + page.Item1), CLedgerMetaRead(page.Item1, settings)))
-                .ToList());
+                .ToList(),
+            LLedgerShownRead());
     }
 
     private CSettings CLedgerSettingsRead()

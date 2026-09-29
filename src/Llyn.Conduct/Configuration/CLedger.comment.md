@@ -14,6 +14,10 @@ How many online lookups the Web page counts against, the frequency and the morph
 
 The settings pages in the order a view lists them, each with the keys its search also reads.
 
+## `private string? _cLedgerWanted;`
+
+The raw text the settings search last handed in, kept so every later state shows the same narrowing.
+
 ## `internal CLedger(CAtelier atelier)`
 
 Only the atelier builds it, once, over its own settings port.
@@ -69,23 +73,34 @@ The one owner of the notice read, which `CLedgerNoticeRead` and every gate's fai
 A gate's failure policy: the gate chose `key`, and the envoy gets the ready notice to show with it.
 The driver's consult never reads Conduct again, so it only shows what it was handed.
 
-## `public IReadOnlyList<string> CLedgerFind(string text)`
+## `public void CLedgerFolderOpen(CEnvoy envoy)`
 
-The pages whose title, helper or own keys read `text`, trimmed and ignoring case.
-A blank text answers every page.
-Labels are read through the engine's texts, so a console searches the same words.
+Opens the workspace folder in use in the shell's file browser.
+The engine reads the folder itself, so the driver hands nothing it gathered.
+A folder the shell cannot open is reported under `Settings.FolderFailed`, since it may have moved away meanwhile.
 
-## `public string CLedgerMetaRead(string child, bool linked)`
+## `public CLedgerShown CLedgerFind(string? text)`
 
-The one-line summary one page shows under its title.
-The Layout page's summary follows `linked`, which the driver hands in since the linked switch is GUI-only state.
-Every other page reads the stored settings.
+Keeps the raw search text and answers the pages it shows.
+The engine matches each page's title, helper and own keys by the shared catalog rule.
+A null or blank text shows every page.
+
+## `public CLedgerPage CLedgerMetaRead(bool linked)`
+
+The Layout page, its summary following `linked`.
+The driver hands `linked` in raw, since the linked switch is GUI-only state kept by its Capsule.
+
+## `private CLedgerShown LLedgerShownRead()`
+
+The pages the kept search text shows, and whether none does, so the empty text shows.
+The keys are Conduct's choice, and the match is the engine's in one call.
 
 ## `private CLedgerState LLedgerRead()`
 
 Builds the state a view shows: the settings, folder, language, texts, language list and pages.
 The texts are loaded first, so every title and summary reads in the stored language.
 The Layout page's summary is left empty, since only the driver knows the linked switch.
+The pages the kept search shows ride along, so a settings change keeps the catalog narrowed.
 
 ## `private CSettings CLedgerSettingsRead()`
 

@@ -16,22 +16,22 @@ The language box starts empty, since its items wait for the atelier.
 
 Each named part of the markup is read through `FindName`, so call sites keep the old generated names.
 
-## `internal void PSettingsAttach(PWindow host)`
+## `internal void PSettingsIntroduce(PWindow host)`
 
 Puts the panel to work on the host's atelier by subscribing `CLedgerChanged`, and shows the first card.
 It also subscribes the posture's linked switch, so the summary row follows a tick.
 The ledger raises the state on every open and after every settings or workspace change.
 The ledger rows get their fill through `QLookItemAttach` before the first state arrives.
 
-## `private void PLocalizationBuild(IReadOnlyList<KeyValuePair<string, string>> languages)`
+## `private void PLocalizationRefine(IReadOnlyList<KeyValuePair<string, string>> languages)`
 
 Fills the language box with one item per interface language the ledger lists.
 Each item shows the native name and carries its language code as `Tag`.
 The markup lists no language, so a new catalog file needs no edit to either side.
 
-## `private void PSettingsShow(CLedgerState state)`
+## `private void PSettingsRefine(CLedgerState state)`
 
-Paints the whole panel from one ledger state and keeps it for the folder field and the dialog.
+Paints the whole panel from one ledger state.
 The interface texts are applied first, so everything painted after reads in the stored language.
 The language box is built once, from the first state.
 Setting the language box raises its selection change, and the handler writes the value back.
@@ -47,10 +47,6 @@ The linked switch is no settings field, so it is read from the posture.
 The window this panel sits in.
 Its envoy asks before a workspace change throws typed work away.
 It also owns the other panels that change moves onto the new workspace.
-
-### `private CLedgerState _pSettingsState = null!;`
-
-The ledger state last painted, which the folder field falls back to after a refused or declined move.
 
 ### `private CAtelier PSettingsAtelier => _pSettingsHost.PWindowAtelier;`
 

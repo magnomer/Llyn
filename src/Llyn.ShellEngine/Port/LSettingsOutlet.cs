@@ -30,6 +30,8 @@ public sealed class LSettingsOutlet : LSettingsPort
     public LWorkspaceState LEngineWorkspaceStart() =>
         _lSettingsOutletEngine.LEngineWorkspace.LEngineWorkspaceStart();
 
+    public void LEngineFolderOpen() => _lSettingsOutletEngine.LEngineWorkspace.LEngineFolderOpen();
+
     public IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language) =>
         _lSettingsOutletEngine.LEngineSettings.LEngineLocalizationLoad(language);
 
@@ -41,6 +43,10 @@ public sealed class LSettingsOutlet : LSettingsPort
     public string LEngineTextRead(string key) => _lSettingsOutletEngine.LEngineSettings.LEngineTextRead(key);
 
     public string? LEngineTextFind(string key) => _lSettingsOutletEngine.LEngineSettings.LEngineTextFind(key);
+
+    public IReadOnlyList<string> LEngineGroupFind(
+        IReadOnlyList<(string, IReadOnlyList<string>)> groups, string? text) =>
+        _lSettingsOutletEngine.LEngineSettings.LEngineGroupFind(groups, text);
 
     public void LEngineLocalizationSave(string language) =>
         _lSettingsOutletEngine.LEngineSettings.LEngineLocalizationSave(language);

@@ -70,7 +70,7 @@ internal sealed class QReference
         QFootnote.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QFootnoteHandle));
 
         QLookItem.QLookItemAttach(QShelf, QShelfItem.QShelfItemApply);
-        QLookItem.QLookItemAttach(QFootnote, QFootnoteItem.QFootnoteItemApply);
+        QLookItem.QLookItemAttach(QFootnote, QFootnoteItem.QFootnoteItemRefine);
     }
 
     private Border QGrade => QContract.QContractFind<Border>(_qReferenceSurface, "PGrade");
@@ -159,8 +159,8 @@ internal sealed class QReference
         _cShelf.CShelfPanel.CPanelChanged += QReferenceModeUpdate;
         _cShelf.CShelfPanel.CPanelRowsChanged += QShelfUpdate;
         _cShelf.CShelfPanel.CPanelCleared += _qImprint.QImprintClearRefine;
-        _cShelf.CShelfPanel.CPanelCleared += _qColophon.QColophonClear;
-        _cShelf.CShelfColophonChanged += _qColophon.QColophonShow;
+        _cShelf.CShelfPanel.CPanelCleared += _qColophon.QColophonClearRefine;
+        _cShelf.CShelfColophonChanged += _qColophon.QColophonRefine;
         _cShelf.CShelfFootnote.CFootnotePanel.CPanelChanged += QReferenceModeUpdate;
         _cShelf.CShelfFootnote.CFootnotePanel.CPanelRowsChanged += QFootnoteUpdate;
 
@@ -255,7 +255,7 @@ internal sealed class QReference
             QShelfItem.QShelfItemMatch,
             QShelfItem.QShelfItemSync);
         QShelfEmpty.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfEmpty);
-        _qColophon.QColophonTallyShow(_cShelf.CShelfTallyRead());
+        _qColophon.QColophonTallyRefine(_cShelf.CShelfTallyRead());
         _qImprint.QImprintTallyRefine();
     }
 

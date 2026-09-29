@@ -106,4 +106,17 @@ public static class LLocalization
             return LLocalizationTexts.TryGetValue(key, out string? text) ? text : null;
         }
     }
+
+    public static IReadOnlyList<string> LLocalizationGroupFind(
+        IReadOnlyList<(string, IReadOnlyList<string>)> groups, string? text)
+    {
+        ArgumentNullException.ThrowIfNull(groups);
+
+        string wanted = (text ?? string.Empty).Trim();
+        return groups
+            .Where(group => wanted.Length == 0
+                || group.Item2.Any(key => LCatalog.LCatalogTextMatch(QLocalizationTextRead(key), wanted)))
+            .Select(static group => group.Item1)
+            .ToList();
+    }
 }

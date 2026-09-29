@@ -69,3 +69,9 @@ The text of a key, or the key itself when the catalog lacks it.
 ## `public static string? QLocalizationTextFind(string key)`
 
 The text of a key, or null when the catalog lacks it.
+
+## `public static IReadOnlyList<string> LLocalizationGroupFind(IReadOnlyList<(string, IReadOnlyList<string>)> groups, string? text)`
+
+The names of the groups with a key whose text reads `text`, in the order handed in.
+The text is trimmed, and a null or blank text reads every group.
+Matching is the catalog's shared rule, so it ignores case and honours its wildcards.

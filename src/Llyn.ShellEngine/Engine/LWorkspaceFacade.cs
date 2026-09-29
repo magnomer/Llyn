@@ -77,4 +77,9 @@ internal sealed class LWorkspaceFacade
     {
         LWorkspaceFacadeStaff.LEngineStaffTrail.LTrailClerkOpen(target);
     }
+
+    public void LEngineFolderOpen()
+    {
+        LEngineLocationOpen(_lWorkspaceFacadeEngine.LEngineWorkspaceRead());
+    }
 }

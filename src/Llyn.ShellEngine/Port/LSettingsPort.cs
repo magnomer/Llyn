@@ -20,6 +20,8 @@ public interface LSettingsPort
 
     LWorkspaceState LEngineWorkspaceStart();
 
+    void LEngineFolderOpen();
+
     IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language);
 
     string LEngineLocalizationRead();
@@ -29,6 +31,8 @@ public interface LSettingsPort
     string LEngineTextRead(string key);
 
     string? LEngineTextFind(string key);
+
+    IReadOnlyList<string> LEngineGroupFind(IReadOnlyList<(string, IReadOnlyList<string>)> groups, string? text);
 
     void LEngineLocalizationSave(string language);
 

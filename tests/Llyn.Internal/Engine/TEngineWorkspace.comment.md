@@ -14,3 +14,8 @@ The target therefore skips that id, and its new draft reads normally.
 Cancelling the stale id releases it without touching any draft of the target.
 The move raises the workspace bulletin once to an attached observer.
 A setting saved after the move lands in the target, and the target reopens on it.
+The folder open hands the workspace folder in use to the usher.
+
+## `private sealed class TUsherOpened : LUsher`
+
+An usher that records every target it is asked to open and touches no disk.

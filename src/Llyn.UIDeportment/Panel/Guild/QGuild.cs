@@ -146,8 +146,8 @@ internal sealed class QGuild
         _cGuild.CGuildOeuvre.COeuvrePanel.CPanelChanged += QGuildModeUpdate;
         _cGuild.CGuildOeuvre.COeuvrePanel.CPanelRowsChanged += QOeuvreRefine;
         _cGuild.CGuildOeuvre.COeuvrePanel.CPanelRowsChanged += QTallyRefine;
-        _cGuild.CGuildOeuvre.COeuvrePanel.CPanelCleared += _qColophon.QColophonClear;
-        _cGuild.CGuildOeuvre.COeuvreColophonChanged += _qColophon.QColophonShow;
+        _cGuild.CGuildOeuvre.COeuvrePanel.CPanelCleared += _qColophon.QColophonClearRefine;
+        _cGuild.CGuildOeuvre.COeuvreColophonChanged += _qColophon.QColophonRefine;
         _qVita.QVitaAttach(host, _cGuild);
         _qAutograph.QAutographIntroduce(_cGuild);
         _cGuild.CGuildAutograph.CDeskFailed += host.PWindowFailureRefine;
@@ -207,7 +207,7 @@ internal sealed class QGuild
 
     internal void QTallyRefine()
     {
-        _qColophon.QColophonTallyShow(_cGuild.CGuildOeuvre.COeuvreTallyRead());
+        _qColophon.QColophonTallyRefine(_cGuild.CGuildOeuvre.COeuvreTallyRead());
     }
 
     private void QGuildModeUpdate()

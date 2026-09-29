@@ -189,7 +189,7 @@ public partial class PWindow
         _qGuild.QGuildIntroduce(this);
         _qFavorite.QFavoriteIntroduce(this);
         _qDuplex.QDuplexIntroduce(this);
-        PSettings.PSettingsAttach(this);
+        PSettings.PSettingsIntroduce(this);
         _qEstablishment.QEstablishmentAttach(this);
         PNavigationIntroduce();
 
