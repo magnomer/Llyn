@@ -8,3 +8,4 @@ A failed read hands the envoy the ready notice, so the driver asks Conduct nothi
 Anchor lists match exactly as the engine decides, and differing lists do not match.
 Fonts map across, an unsized font carries no size, and every role casts to its mirror.
 The flag load hands the store Conduct rows and answers the loaded languages.
+On a workspace the flag load answers the same languages the catalog reads, which the favorites filter offers.

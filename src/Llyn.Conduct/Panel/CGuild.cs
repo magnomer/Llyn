@@ -22,11 +22,12 @@ public sealed class CGuild
 
     private int _cGuildCount;
 
-    private CGuild(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    private CGuild(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(shownSeam);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(marshal);
 
         _cGuildAtelier = atelier;
         _cGuildEnvoy = envoy;
@@ -53,14 +54,18 @@ public sealed class CGuild
             "Guild", LGuildLeaveConfirm, CGuildPanel.LPanelChosenRead, LGuildScribeRestore, LGuildAuthorOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CGuildSession.LSessionChangeCheck, CGuildSession.LSessionFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CGuildVistaRestore);
+        CGuildAutograph.CDeskStarted += () => CGuildUnionCleared?.Invoke();
+        CGuildAutograph.CDeskObserverAttach(marshal);
     }
 
-    public static CGuild CGuildCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    public static CGuild CGuildCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
-        return new CGuild(atelier, shownSeam, envoy);
+        return new CGuild(atelier, shownSeam, envoy, marshal);
     }
 
     public event Action? CGuildChanged;
+
+    public event Action? CGuildUnionCleared;
 
     public CPanel CGuildPanel { get; }
 
@@ -330,6 +335,13 @@ public sealed class CGuild
                 CGuildOeuvre.COeuvrePanel.CPanelVista,
                 CPortrait.LPortraitLegendRead(_cGuildSettingsPort, "Source"),
                 chosen));
+    }
+
+    public void CGuildNameSet(string name)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+
+        CGuildAutograph.CDeskQuill?.LQuillAuthorSet(name);
     }
 
     public IReadOnlyList<CCatalogAuthor> CGuildUnionRead(string typed)

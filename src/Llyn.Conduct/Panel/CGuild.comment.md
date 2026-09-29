@@ -10,16 +10,23 @@ The leave question is asked once for the whole tab before any switch.
 The panel's delete question is worded under the Guild scope and counted by the vista.
 It asks the user through `CEnvoy` and shows every failure through it too.
 
-## `private CGuild(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `private CGuild(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the autograph desk, the panel over the roll, the oeuvre and the draft session over the desk.
 The panel's rows notice refreshes the oeuvre, since the oeuvre follows the chosen Author.
 A cleared panel drops the held draft, and an edited row starts one.
+A started tenure clears the union offer, raised as `CGuildUnionCleared`.
+The autograph desk's tenure and draft bulletins are attached last, each run through the marshal.
 
-## `public static CGuild CGuildCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `public static CGuild CGuildCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the panel over the atelier's ports, as the forge does for every Conduct panel.
 `shownSeam` answers whether the tab is in front.
+`marshal` runs each desk bulletin's answer on the medium's own thread.
+
+## `public event Action? CGuildUnionCleared;`
+
+A tenure started on the autograph, so the union search and its offer are emptied.
 
 ## `public event Action? CGuildChanged;`
 
@@ -144,6 +151,11 @@ Prints the Source read in the colophon, since an Author has no page to print.
 The page is worded with the Source realm's legend.
 The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
 `CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
+
+## `public void CGuildNameSet(string name)`
+
+A keystroke in the name field: the raw name goes to the autograph's quill, which defers it.
+Nothing is written while no tenure is held or while the desk fills its own fields.
 
 ## `public IReadOnlyList<CCatalogAuthor> CGuildUnionRead(string typed)`
 

@@ -9,13 +9,13 @@ internal sealed class QRosterItem : INotifyPropertyChanged
     private bool _qRosterItemChosen;
 
     internal QRosterItem(
-        long id, string headword, string name, string language, string epithet = "", bool chosen = false)
+        long id, string headword, string name, string language, string epithet, bool chosen)
     {
         _qRosterItemChosen = chosen;
         QRosterItemId = id;
         QRosterItemHeadword = headword;
         QRosterItemName = name;
-        QRosterItemEpithet = epithet ?? string.Empty;
+        QRosterItemEpithet = epithet;
         QRosterItemLanguage = language;
         QRosterItemFlag = LEnsignImage.LEnsignFind(language);
     }

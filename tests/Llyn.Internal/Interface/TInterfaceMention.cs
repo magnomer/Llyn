@@ -86,6 +86,19 @@ internal static class TInterfaceMention
             static () => true).CQuotationRowsRead();
     }
 
+    internal static IReadOnlyList<CVistaRow> TFavoriteFailRead(LEngine engine, CEnvoy envoy)
+    {
+        CAtelier atelier = TInterfaceConduct.TAtelierCreate(
+            engine,
+            new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineFavoriteFind"] = _ => throw new InvalidOperationException("no favorites"),
+            });
+        CFavorite favorite = CFavorite.CFavoriteCreate(atelier, static () => true, envoy, static run => run());
+        favorite.CFavoriteVistaRestore();
+        return favorite.CFavoriteRowsRead();
+    }
+
     internal static IReadOnlyList<CMeaning>? TMeaningRead(
         LEngine engine, CDesk desk, CEnvoy envoy, Func<object?[]?, object?> sense)
     {

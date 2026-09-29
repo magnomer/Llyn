@@ -20,7 +20,8 @@ Each part of the page is pulled by its contract ID through `QContract.QContractF
 ## `internal void QGuildAttach(PWindow host)`
 
 Takes the panel's Conduct from the forge with the window's envoy, subscribes its notices, and wires the two lists.
-It hands the panel to the vita and the autograph drivers, which attach their own notices.
+It hands the panel to the vita and the autograph drivers, which answer their own notices.
+The panel itself attaches its autograph desk's bulletins at build.
 The print command binding is added last, so no can-execute query ever meets a panel not yet built.
 
 ## `internal void QGuildVistaRestore()`

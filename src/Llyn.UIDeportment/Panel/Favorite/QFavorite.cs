@@ -22,9 +22,9 @@ internal sealed partial class QFavorite
         _qFavoriteSurface = surface;
 
         surface.CommandBindings.Add(
-            new CommandBinding(ApplicationCommands.Print, QFavoritePressHandle, QFavoritePressCheck));
+            new CommandBinding(ApplicationCommands.Print, QFavoritePressObserve, QFavoritePressCheck));
         surface.CommandBindings.Add(new CommandBinding(
-            PDisplayCommand.PDisplayCommandPortrait, QFavoritePortraitHandle, QFavoritePressCheck));
+            PDisplayCommand.PDisplayCommandPortrait, QFavoritePortraitObserve, QFavoritePressCheck));
         QFavoritePortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
         QFavoritePress.Command = ApplicationCommands.Print;
 
@@ -45,15 +45,15 @@ internal sealed partial class QFavorite
         QFavoriteViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
         QFavoriteScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
-        QRecall.TextChanged += QRecallHandle;
-        QFavoriteStore.Click += QFavoriteStoreHandle;
-        QFavoriteEarlier.Click += QFavoriteRetreatHandle;
-        QFavoriteLater.Click += QFavoriteAdvanceHandle;
-        QFavoriteBackward.Click += QFavoriteUndoHandle;
-        QFavoriteForward.Click += QFavoriteRedoHandle;
-        QFavoriteViewer.Click += QFavoriteScribeHandle;
-        QFavoriteScribe.Click += QFavoriteScribeHandle;
-        QFavoriteBin.Click += QFavoriteBinHandle;
+        QRecall.TextChanged += QRecallObserve;
+        QFavoriteStore.Click += QFavoriteStoreObserve;
+        QFavoriteEarlier.Click += QFavoriteRetreatObserve;
+        QFavoriteLater.Click += QFavoriteAdvanceObserve;
+        QFavoriteBackward.Click += QFavoriteUndoObserve;
+        QFavoriteForward.Click += QFavoriteRedoObserve;
+        QFavoriteViewer.Click += QFavoriteViewerObserve;
+        QFavoriteScribe.Click += QFavoriteScribeObserve;
+        QFavoriteBin.Click += QFavoriteBinObserve;
     }
 
     private Border QSeries => QContract.QContractFind<Border>(_qFavoriteSurface, "PSeries");
@@ -117,14 +117,16 @@ internal sealed partial class QFavorite
 
     private QIconImage QFavoriteBinIcon => QContract.QContractFind<QIconImage>(_qFavoriteSurface, "PFavoriteBinIcon");
 
-    internal void QFavoriteAttach(PWindow host)
+    internal void QFavoriteIntroduce(PWindow host)
     {
         _qFavoriteHost = host;
         _cFavorite = host.PWindowForge.QForgeFavoriteCreate(QFavoriteShownCheck, host.PWindowEnvoy);
         CPanel panel = _cFavorite.CFavoritePanel;
         QLectern lectern = new(_cFavorite.CFavoriteEditor.CEditorDisplay, panel);
+        QChoice.QChoiceOrderBuild(QSeriesList, "Series", QSeriesObserve, CFavorite.CFavoriteOrderRead());
         panel.CPanelChanged += QFavoriteModeUpdate;
-        panel.CPanelRowsChanged += QRosterFind;
+        panel.CPanelRowsChanged += QRosterRefine;
+        _cFavorite.CFavoriteWorkspaceChanged += QFavoriteWorkspaceRefine;
 
         QRoster.ItemsSource = _qRosterList;
         QLookItem.QLookItemAttach(QRoster, QRosterApply);
@@ -140,15 +142,9 @@ internal sealed partial class QFavorite
         QFavoriteStore.IsEnabled = _cFavorite.CFavoriteEditor.CEditorDesk.CDeskStorable;
     }
 
-    internal void QFavoriteReset()
+    internal void QFavoriteExitRefine()
     {
-        _cFavorite.CFavoritePanel.CPanelEntryClose();
-    }
-
-    internal void QFavoriteClose()
-    {
-        QFavoriteEditor.PEditorClose();
-        QFavoriteDisplay.PDisplayClose();
+        QFavoriteEditor.PEditorPlayerRefine();
     }
 
     private void QFavoritePressCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -156,12 +152,12 @@ internal sealed partial class QFavorite
         e.CanExecute = _cFavorite?.CFavoritePanel.CPanelPressAllowed ?? false;
     }
 
-    private async void QFavoritePressHandle(object sender, ExecutedRoutedEventArgs e)
+    private async void QFavoritePressObserve(object sender, ExecutedRoutedEventArgs e)
     {
         await _cFavorite.CFavoritePortraitPrint();
     }
 
-    private async void QFavoritePortraitHandle(object sender, ExecutedRoutedEventArgs e)
+    private async void QFavoritePortraitObserve(object sender, ExecutedRoutedEventArgs e)
     {
         await _cFavorite.CFavoritePortraitExport();
     }
@@ -172,22 +168,22 @@ internal sealed partial class QFavorite
         QFavoriteLater.IsEnabled = future;
     }
 
-    private void QFavoriteRetreatHandle(object sender, RoutedEventArgs e)
+    private void QFavoriteRetreatObserve(object sender, RoutedEventArgs e)
     {
         _qFavoriteHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
-    private void QFavoriteAdvanceHandle(object sender, RoutedEventArgs e)
+    private void QFavoriteAdvanceObserve(object sender, RoutedEventArgs e)
     {
         _qFavoriteHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
-    private void QFavoriteUndoHandle(object sender, RoutedEventArgs e)
+    private void QFavoriteUndoObserve(object sender, RoutedEventArgs e)
     {
         QFavoriteEditor.QChronicleUndo();
     }
 
-    private void QFavoriteRedoHandle(object sender, RoutedEventArgs e)
+    private void QFavoriteRedoObserve(object sender, RoutedEventArgs e)
     {
         QFavoriteEditor.QChronicleRedo();
     }

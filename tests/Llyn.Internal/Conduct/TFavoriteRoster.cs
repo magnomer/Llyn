@@ -17,7 +17,7 @@ public sealed class TFavoriteRoster
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TFavoriteSave(engine, "stone", "English");
         CFavorite favorite = CFavorite.CFavoriteCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []));
+            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []), static run => run());
 
         Assert.Empty(favorite.CFavoriteRowsRead());
         Assert.False(favorite.CFavoriteFiltered);
@@ -89,29 +89,20 @@ public sealed class TFavoriteRoster
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry stone = TFavoriteSave(engine, "stone", "English");
         CFavorite favorite = TFavoriteRosterPrepare(atelier);
         int refreshed = 0;
         favorite.CFavoritePanel.CPanelRowsChanged += () => refreshed++;
 
-        favorite.CFavoriteGraspResonate();
+        engine.TEngineBulletinRaise(LSubject.LSubjectGrasp, stone.LEntryId);
 
         Assert.Equal(0, refreshed);
 
         favorite.CFavoriteOrderSet(CCatalogOrder.CCatalogOrderGrasp);
-        favorite.CFavoriteGraspResonate();
+        refreshed = 0;
+        engine.TEngineBulletinRaise(LSubject.LSubjectGrasp, stone.LEntryId);
 
         Assert.Equal(1, refreshed);
-    }
-
-    [Fact]
-    public void FavoriteLanguageRead_Workspace_OffersTheCatalogLanguages()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CFavorite favorite = TFavoriteRosterPrepare(atelier);
-
-        Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), favorite.CFavoriteLanguageRead());
     }
 
     [Fact]
@@ -137,22 +128,22 @@ public sealed class TFavoriteRoster
         Assert.Null(favorite.CFavoriteEditor.CEditorDesk.CDeskStoredRead());
     }
 
-    private static CFavorite TFavoriteRosterPrepare(CAtelier atelier)
+    internal static CFavorite TFavoriteRosterPrepare(CAtelier atelier)
     {
         CFavorite favorite = CFavorite.CFavoriteCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []));
+            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []), static run => run());
         favorite.CFavoriteVistaRestore();
         return favorite;
     }
 
-    private static LEntry TFavoriteSave(LEngine engine, string headword, string language)
+    internal static LEntry TFavoriteSave(LEngine engine, string headword, string language)
     {
         LEntry entry = TFavoriteEntrySave(engine, headword, language);
         engine.TEngineFavoriteSave(entry.LEntryId);
         return entry;
     }
 
-    private static LEntry TFavoriteEntrySave(LEngine engine, string headword, string language)
+    internal static LEntry TFavoriteEntrySave(LEngine engine, string headword, string language)
     {
         return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             headword, language, string.Empty, string.Empty, [TInterface.TCardCreate("a meaning", 1)], []));

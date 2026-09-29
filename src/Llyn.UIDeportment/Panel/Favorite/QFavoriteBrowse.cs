@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -12,91 +11,58 @@ internal sealed partial class QFavorite
 {
     private readonly ObservableCollection<QRosterItem> _qRosterList = [];
 
-    private async void QFavoriteWorkspaceUpdate()
+    private async void QFavoriteWorkspaceRefine()
     {
-        await LEnsignImage.LEnsignLoad(_qFavoriteHost.PWindowAtelier);
-        QFavoriteReset();
+        await LEnsignImage.LEnsignLoad(_qFavoriteHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
     }
 
-    private void QRecallHandle(object sender, TextChangedEventArgs e)
+    private void QRecallObserve(object sender, TextChangedEventArgs e)
     {
         _cFavorite.CFavoriteQuerySet(QRecall.Text ?? string.Empty);
     }
 
-    private void QSeriesHandle(object sender, RoutedEventArgs e)
+    private void QSeriesObserve(object sender, RoutedEventArgs e)
+    {
+        _cFavorite.CFavoriteOrderSet(QChoice.QChoiceOrderRead(sender));
+        QSeriesDropperRefine();
+    }
+
+    private void QSeriesDropperRefine()
     {
         QSeriesDropper.IsChecked = false;
-        _cFavorite.CFavoriteOrderSet(QChoice.QChoiceOrderRead(sender));
     }
 
-    private void QStrainerHandle(object sender, RoutedEventArgs e)
+    private void QStrainerObserve(object sender, RoutedEventArgs e)
     {
         _cFavorite.CFavoriteFilterSet(QChoice.QChoiceFilterRead(sender));
-        QStrainerRestore();
+        QStrainerRefine();
     }
 
-    internal async void QFavoriteVistaRestore()
+    internal async void QFavoriteVistaRefine()
     {
-        UserControl surface = _qFavoriteSurface;
-        CPanel panel = _cFavorite.CFavoritePanel;
-        panel.CPanelObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, QRosterFind));
-        panel.CPanelObserverAttach(
-            CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(surface, QFavoriteWorkspaceUpdate));
-        panel.CPanelObserverAttach(
-            CSubject.CSubjectGrasp, LObserver.LObserverCreate<CBulletin>(surface, _cFavorite.CFavoriteGraspResonate));
-        panel.CPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryResonate));
-        panel.CPanelObserverAttach(
-            CSubject.CSubjectFavorite, LObserver.LObserverCreate<CBulletin>(surface, QRosterFind));
-        panel.CPanelObserverAttach(
-            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, QRosterFind));
-        panel.CPanelObserverAttach(
-            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, QRosterFind));
-        panel.CPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
-        QChoice.QChoiceOrderBuild(
-            QSeriesList,
-            "Series",
-            QSeriesHandle,
-            [
-                CCatalogOrder.CCatalogOrderHeadword,
-                CCatalogOrder.CCatalogOrderReverse,
-                CCatalogOrder.CCatalogOrderLanguage,
-                CCatalogOrder.CCatalogOrderMarked,
-                CCatalogOrder.CCatalogOrderGrasp,
-            ]);
-        QChoice.QChoiceOrderApply(QSeriesDropdown, panel.CPanelOrder);
-        QStrainerRestore();
+        QChoice.QChoiceOrderApply(QSeriesDropdown, _cFavorite.CFavoritePanel.CPanelOrder);
+        QStrainerRefine();
+        IReadOnlyList<string> languages =
+            await LEnsignImage.LEnsignLoad(_qFavoriteHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
+        QStrainerBuild(languages);
+        QRosterRefine();
+    }
 
-        await LEnsignImage.LEnsignLoad(_qFavoriteHost.PWindowAtelier);
-
+    private void QStrainerBuild(IReadOnlyList<string> languages)
+    {
         QChoice.QChoiceFilterBuild(
-            QStrainerList, _cFavorite.CFavoriteLanguageRead(), panel.CPanelFilter, QStrainerHandle);
-        _cFavorite.CFavoriteQuerySet(QRecall.Text ?? string.Empty);
-        QRosterFind();
+            QStrainerList, languages, _cFavorite.CFavoritePanel.CPanelFilter, QStrainerObserve);
     }
 
-    private void QStrainerRestore()
+    private void QStrainerRefine()
     {
-        QStrainerMark.Visibility = _cFavorite.CFavoriteFiltered ? Visibility.Visible : Visibility.Collapsed;
+        QStrainerMark.Visibility = QLook.QLookVisibleRead(_cFavorite.CFavoriteFiltered);
     }
 
-    private void QRosterFind()
+    private void QRosterRefine()
     {
-        IReadOnlyList<CVistaRow> favorites;
-        try
-        {
-            favorites = _cFavorite.CFavoriteRowsRead();
-        }
-        catch (Exception exception)
-        {
-            _qFavoriteHost.PWindowFailureRefine("Favorite.LoadFailed", exception);
-            favorites = [];
-        }
-
         List<QRosterItem> fresh = [];
-        foreach (CVistaRow row in favorites)
+        foreach (CVistaRow row in _cFavorite.CFavoriteRowsRead())
         {
             fresh.Add(new QRosterItem(
                 row.CVistaRowId,
@@ -110,17 +76,13 @@ internal sealed partial class QFavorite
         LSplice.LSpliceApply(
             _qRosterList, fresh, QRosterItem.QRosterItemMatch, QRosterItem.QRosterItemSync);
 
-        QRosterEmpty.Visibility = _qRosterList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        QRosterEmpty.Visibility = QLook.QLookVisibleRead(_qRosterList.Count == 0);
     }
 
-    private void QRosterHandle(object sender, RoutedEventArgs e)
+    private void QRosterObserve(object sender, RoutedEventArgs e)
     {
-        QRosterRowShow((sender as FrameworkElement)?.DataContext as QRosterItem);
-    }
-
-    private void QRosterRowShow(QRosterItem? item)
-    {
-        _cFavorite.CFavoritePanel.CPanelRowSelect(item?.QRosterItemId);
+        _cFavorite.CFavoritePanel.CPanelRowSelect(
+            ((sender as FrameworkElement)?.DataContext as QRosterItem)?.QRosterItemId);
     }
 
     private void QRosterApply(FrameworkElement container, object item, string? _)
@@ -141,8 +103,8 @@ internal sealed partial class QFavorite
                 row.ClearValue(QLook.QLookCueProperty);
             }
 
-            row.Click -= QRosterHandle;
-            row.Click += QRosterHandle;
+            row.Click -= QRosterObserve;
+            row.Click += QRosterObserve;
         }
 
         if (QLook.QLookPartFind<Image>(container, "PRosterFlag") is Image flag)
@@ -166,17 +128,22 @@ internal sealed partial class QFavorite
         }
     }
 
-    private void QFavoriteScribeHandle(object sender, RoutedEventArgs e)
+    private void QFavoriteViewerObserve(object sender, RoutedEventArgs e)
     {
-        _cFavorite.CFavoritePanel.CPanelScribeToggle(ReferenceEquals(sender, QFavoriteScribe));
+        _cFavorite.CFavoritePanel.CPanelScribeToggle(false);
     }
 
-    private void QFavoriteStoreHandle(object sender, RoutedEventArgs e)
+    private void QFavoriteScribeObserve(object sender, RoutedEventArgs e)
+    {
+        _cFavorite.CFavoritePanel.CPanelScribeToggle(true);
+    }
+
+    private void QFavoriteStoreObserve(object sender, RoutedEventArgs e)
     {
         _cFavorite.CFavoriteEditor.CEditorEntrySave();
     }
 
-    private void QFavoriteBinHandle(object sender, RoutedEventArgs e)
+    private void QFavoriteBinObserve(object sender, RoutedEventArgs e)
     {
         _cFavorite.CFavoritePanel.CPanelEntryDelete();
     }

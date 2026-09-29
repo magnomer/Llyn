@@ -149,7 +149,7 @@ internal sealed class QGuild
         _cGuild.CGuildOeuvre.COeuvrePanel.CPanelCleared += _qColophon.QColophonClear;
         _cGuild.CGuildOeuvre.COeuvreColophonChanged += _qColophon.QColophonShow;
         _qVita.QVitaAttach(host, _cGuild);
-        _qAutograph.QAutographAttach(_cGuild);
+        _qAutograph.QAutographIntroduce(_cGuild);
         _cGuild.CGuildAutograph.CDeskFailed += host.PWindowFailureRefine;
         _cGuild.CGuildAutograph.CDeskStateChanged += QGuildChronicleUpdate;
 

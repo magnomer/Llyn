@@ -187,7 +187,7 @@ public partial class PWindow
         _qCorpus.QCorpusIntroduce(this);
         _qReference.QReferenceAttach(this);
         _qGuild.QGuildAttach(this);
-        _qFavorite.QFavoriteAttach(this);
+        _qFavorite.QFavoriteIntroduce(this);
         _qDuplex.QDuplexAttach(this);
         PSettings.PSettingsAttach(this);
         _qEstablishment.QEstablishmentAttach(this);
@@ -195,7 +195,7 @@ public partial class PWindow
 
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qLibrary.QLibraryVistaRestore;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qPhonology.QPhonologyVistaRestore;
-        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qFavorite.QFavoriteVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qFavorite.QFavoriteVistaRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qTaxonomy.QTaxonomyVistaRestore;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qTenor.QTenorVistaRestore;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qRepertoire.QRepertoireVistaRestore;
@@ -332,7 +332,7 @@ public partial class PWindow
         _qCorpus.QCorpusExitRefine();
         _qReference.QReferenceClose();
         _qGuild.QGuildClose();
-        _qFavorite.QFavoriteClose();
+        _qFavorite.QFavoriteExitRefine();
         _qDuplex.QDuplexClose();
         _qEstablishment.QEstablishmentClose();
         PWindowPosture.Dispose();

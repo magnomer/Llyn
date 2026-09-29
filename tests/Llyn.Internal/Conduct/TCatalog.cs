@@ -109,6 +109,19 @@ public sealed class TCatalog
     }
 
     [Fact]
+    public async Task CatalogEnsignLoad_Workspace_AnswersTheCatalogLanguages()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+
+        IReadOnlyList<string> languages =
+            await atelier.CAtelierCatalog.CCatalogEnsignLoad(static (_, _) => static () => { });
+
+        Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), languages);
+    }
+
+    [Fact]
     public async Task CatalogEnsignLoad_FlagsLoaded_StoresTheRowsAndAnswersTheLanguages()
     {
         List<CEnsignRow> stored = [];

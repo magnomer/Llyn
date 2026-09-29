@@ -29,14 +29,16 @@ public sealed class QForge
 
     public CFavorite QForgeFavoriteCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        CFavorite favorite = CFavorite.CFavoriteCreate(_qForgeAtelier, shownSeam, envoy);
+        CFavorite favorite = CFavorite.CFavoriteCreate(
+            _qForgeAtelier, shownSeam, envoy, LObserver.LObserverCreate<Action>(static run => run()));
         favorite.CFavoriteVistaRestore();
         return favorite;
     }
 
     public CGuild QForgeGuildCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        CGuild guild = CGuild.CGuildCreate(_qForgeAtelier, shownSeam, envoy);
+        CGuild guild = CGuild.CGuildCreate(
+            _qForgeAtelier, shownSeam, envoy, LObserver.LObserverCreate<Action>(static run => run()));
         guild.CGuildVistaRestore();
         return guild;
     }

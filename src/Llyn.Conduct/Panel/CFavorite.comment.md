@@ -7,16 +7,24 @@ It finds the rows, and takes the query, order and language filter.
 Its panel loads, edits and deletes the chosen entry, and its own editor edits it.
 It also prints and exports the chosen entry.
 
-## `private CFavorite(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `private CFavorite(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Takes the atelier's ports and builds the panel's own entry editor.
+It keeps the marshal, so every engine notice it answers runs on the driver's thread.
+It registers its vista restore and its close with the workspace.
 The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
 A cleared panel empties the editor, and an edited row opens in it.
 
-## `public static CFavorite CFavoriteCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `public static CFavorite CFavoriteCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the panel over the atelier, so the driver hands it no port.
 Building it is no user action, so it is no gate on the atelier.
+The forge hands the marshal that runs an answer on the UI thread.
+
+## `public event Action? CFavoriteWorkspaceChanged`
+
+Raised after a workspace notice has closed the chosen entry.
+The driver reloads its language flags on it.
 
 ## `public CEditor CFavoriteEditor { get; }`
 
@@ -31,8 +39,27 @@ Whether the language filter hides any language, as the vista answers it.
 
 Starts the favorite vista through the atelier, headword order before any order is saved.
 The panel and the editor both take it, on a workspace start or switch.
+The query the former vista held is carried into the fresh one, so the search box stays true.
+Then it attaches the area's observers on the fresh vista only.
 
-## `public void CFavoriteGraspResonate()`
+## `private void LFavoriteObserverAttach()`
+
+Attaches each subject the list answers, every answer running through the marshal.
+Vista, favorite, reflex and settings notices refill the rows.
+An entry notice selects and repaints, and a chosen entry reloads its draft.
+The workspace and grasp notices go to their own answers.
+
+## `private void LFavoriteWorkspaceResonate()`
+
+Answers the workspace notice by closing the chosen entry, then raising `CFavoriteWorkspaceChanged`.
+
+## `private void LFavoriteClose()`
+
+The favorites' part of the window's exit gate `CAtelier.CAtelierClose`, registered with the workspace at build.
+It closes the editor and stops the playback the display started.
+The driver releases only its recording player.
+
+## `private void LFavoriteGraspResonate()`
 
 Answers a grasp notice by refreshing the rows, but only while they are ordered by grasp.
 A grasp change in any other order moves no row, so the list is left alone.
@@ -41,14 +68,15 @@ A grasp change in any other order moves no row, so the list is left alone.
 
 Hands a chosen ordering to the vista, which keeps its own when the sender is no order row.
 
+## `public static IReadOnlyList<CCatalogOrder> CFavoriteOrderRead()`
+
+The orderings the favorites offer, in the order the menu lists them.
+
 ## `public IReadOnlyList<CVistaRow> CFavoriteRowsRead()`
 
 The marked rows the engine returns for the vista, none before a vista arrives.
 They come already filtered, sorted and marked, so the list decides nothing about them.
-
-## `public IReadOnlyList<string> CFavoriteLanguageRead()`
-
-The languages the filter offers, as the settings list them.
+A failed read shows `Favorite.LoadFailed` through the envoy and answers no rows.
 
 ## `internal string LFavoriteFileRead()`
 

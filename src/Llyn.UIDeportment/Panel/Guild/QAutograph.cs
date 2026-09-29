@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -20,9 +21,9 @@ internal sealed class QAutograph
 
         QAutographName.SetResourceReference(QField.QFieldHintProperty, "Autograph.Name");
         QAutographUnion.SetResourceReference(QField.QFieldHintProperty, "Autograph.UnionSearch");
-        QAutographName.TextChanged += QAutographNameHandle;
-        QAutographUnion.TextChanged += QAutographUnionHandle;
-        QAutographUnionList.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QAutographUnionSelect));
+        QAutographName.TextChanged += QAutographNameObserve;
+        QAutographUnion.TextChanged += QAutographUnionObserve;
+        QAutographUnionList.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QAutographChoiceObserve));
 
         QLookItem.QLookItemAttach(QAutographUnionList, QRollItem.QRollItemApply);
     }
@@ -44,11 +45,10 @@ internal sealed class QAutograph
     private TextBlock QAutographUnionNotice =>
         QContract.QContractFind<TextBlock>(_qAutographSurface, "PAutographUnionNotice");
 
-    internal void QAutographAttach(CGuild guild)
+    internal void QAutographIntroduce(CGuild guild)
     {
         _cGuild = guild;
-        _cGuild.CGuildAutograph.CDeskStarted += QAutographStartUpdate;
-        _cGuild.CGuildAutograph.CDeskObserverAttach(LObserver.LObserverCreate<Action>(static run => run()));
+        _cGuild.CGuildUnionCleared += QAutographStartRefine;
         _cGuild.CGuildAutograph.CDeskDraftChanged += QAutographDraftUpdate;
     }
 
@@ -66,7 +66,7 @@ internal sealed class QAutograph
         QAutographUnionNotice.Visibility = QLook.QLookVisibleRead(!_cGuild.CGuildUnionShown);
     }
 
-    private void QAutographStartUpdate()
+    private void QAutographStartRefine()
     {
         QAutographUnion.Text = string.Empty;
         QAutographUnionList.ItemsSource = null;
@@ -78,18 +78,22 @@ internal sealed class QAutograph
         QAutographName.Text = draft.CDraftAuthorName;
     }
 
-    private void QAutographNameHandle(object sender, TextChangedEventArgs e)
+    private void QAutographNameObserve(object sender, TextChangedEventArgs e)
     {
-        _cGuild.CGuildAutograph.CDeskQuill?.LQuillAuthorSet(QAutographName.Text);
+        _cGuild.CGuildNameSet(QAutographName.Text);
     }
 
-    private void QAutographUnionHandle(object sender, TextChangedEventArgs e)
+    private void QAutographUnionObserve(object sender, TextChangedEventArgs e)
     {
-        QAutographUnionList.ItemsSource =
-            QRollItem.QRollItemBuild(_cGuild.CGuildUnionRead(QAutographUnion.Text));
+        QAutographUnionRefine(_cGuild.CGuildUnionRead(QAutographUnion.Text));
     }
 
-    private void QAutographUnionSelect(object sender, RoutedEventArgs e)
+    private void QAutographUnionRefine(IReadOnlyList<CCatalogAuthor> rows)
+    {
+        QAutographUnionList.ItemsSource = QRollItem.QRollItemBuild(rows);
+    }
+
+    private void QAutographChoiceObserve(object sender, RoutedEventArgs e)
     {
         _cGuild.CGuildUnionSelect(QSender.QSenderSourceRead<QRollItem>(e)?.QRollItemId);
     }
