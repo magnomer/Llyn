@@ -20,18 +20,24 @@ public sealed class CLibrary
 
     private readonly CEnvoy _cLibraryEnvoy;
 
+    private readonly Action<Action> _cLibraryMarshal;
+
     private LVista? _cLibraryVista;
 
-    private CLibrary(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    private int _cLibraryCount;
+
+    private CLibrary(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(marshal);
 
         _cLibraryAtelier = atelier;
         _cLibraryEntryPort = atelier.CAtelierEntryPort;
         _cLibraryPortraitPort = atelier.CAtelierPortraitPort;
         _cLibrarySettingsPort = atelier.CAtelierSettingsPort;
         _cLibraryEnvoy = envoy;
+        _cLibraryMarshal = marshal;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CLibraryEditor = editor;
         CLibraryPanel = new CPanel(
@@ -49,13 +55,17 @@ public sealed class CLibrary
             id => CLibraryPanel.CPanelRowOpen(id));
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CLibraryPanel.LPanelChangeCheck, editor.LEditorFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CLibraryVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LLibraryClose);
         CLibraryPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }
 
-    public static CLibrary CLibraryCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    public static CLibrary CLibraryCreate(
+        CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
-        return new CLibrary(atelier, shownSeam, envoy);
+        return new CLibrary(atelier, shownSeam, envoy, marshal);
     }
+
+    public event Action? CLibraryWorkspaceChanged;
 
     public CEditor CLibraryEditor { get; }
 
@@ -63,13 +73,42 @@ public sealed class CLibrary
 
     public bool CLibraryFiltered => _cLibraryVista?.LVistaFiltered ?? false;
 
+    public bool CLibraryEmpty => _cLibraryCount == 0;
+
     public void CLibraryVistaRestore()
     {
         LVista vista = _cLibraryAtelier.CAtelierVistaStart(
             "library", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
+        vista.LVistaQuerySet(_cLibraryVista?.LVistaQuery ?? string.Empty);
         _cLibraryVista = vista;
         CLibraryPanel.CPanelVistaRestore(vista);
         CLibraryEditor.LEditorVistaRestore(vista);
+        LLibraryObserverAttach();
+    }
+
+    private void LLibraryObserverAttach()
+    {
+        CPanel panel = CLibraryPanel;
+        Action<CBulletin> rows = _ => _cLibraryMarshal(panel.CPanelRowsResonate);
+        panel.CPanelObserverAttach(CSubject.CSubjectVista, rows);
+        panel.CPanelObserverAttach(CSubject.CSubjectWorkspace, _ => _cLibraryMarshal(LLibraryWorkspaceResonate));
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectEntry, bulletin => _cLibraryMarshal(() => panel.CPanelEntryResonate(bulletin)));
+        panel.CPanelObserverAttach(CSubject.CSubjectReflex, rows);
+        panel.CPanelObserverAttach(CSubject.CSubjectSettings, rows);
+        panel.CPanelChosenAttach(CSubject.CSubjectEntry, _ => _cLibraryMarshal(panel.CPanelDraftResonate));
+    }
+
+    private void LLibraryWorkspaceResonate()
+    {
+        CLibraryPanel.CPanelEntryClose();
+        CLibraryWorkspaceChanged?.Invoke();
+    }
+
+    private void LLibraryClose()
+    {
+        CLibraryEditor.CEditorClose();
+        CLibraryEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
     }
 
     public void CLibraryQuerySet(string query)
@@ -91,11 +130,24 @@ public sealed class CLibrary
         _cLibraryVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
+    public static IReadOnlyList<CCatalogOrder> CLibraryOrderRead()
+    {
+        return
+        [
+            CCatalogOrder.CCatalogOrderHeadword,
+            CCatalogOrder.CCatalogOrderReverse,
+            CCatalogOrder.CCatalogOrderRecent,
+            CCatalogOrder.CCatalogOrderEarliest,
+        ];
+    }
+
     public IReadOnlyList<CVistaRow> CLibraryRowsRead()
     {
-        return _cLibraryVista is LVista vista
+        IReadOnlyList<CVistaRow> rows = _cLibraryVista is LVista vista
             ? _cLibraryEntryPort.LEngineEntryFind(vista).Select(CPanel.CPanelRowRead).ToList()
             : [];
+        _cLibraryCount = rows.Count;
+        return rows;
     }
 
     internal string LLibraryFileRead()
@@ -122,9 +174,9 @@ public sealed class CLibrary
                 _cLibraryVista, file, medium, CPortrait.LPortraitLabelRead(_cLibrarySettingsPort)));
     }
 
-    public async Task CLibraryMarkupImport(string? path)
+    public async Task CLibraryMarkupImport()
     {
-        if (path is null)
+        if (_cLibraryEnvoy.CEnvoyMarkupRead() is not string path)
         {
             return;
         }

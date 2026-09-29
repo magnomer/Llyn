@@ -40,6 +40,11 @@ The headline alone is the whole answer, and an empty detail line under it would 
 Puts up the leave dialog, which offers three answers rather than two.
 A leaving user often means to keep the word, so discarding is not the only exit.
 
+## `public string? CEnvoyMarkupRead()`
+
+Opens the markup file dialog over the main window and answers the file picked.
+A cancelled dialog answers null, which the gate reads as nothing to import.
+
 ## `public bool CEnvoyCustomsRead(CSCustoms customs)`
 
 Puts up the customs window over the gate Conduct handed it and answers whether the user accepted.

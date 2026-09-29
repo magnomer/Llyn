@@ -7,16 +7,22 @@ It finds the rows, and takes the query, order and language filter.
 Its panel loads, edits and deletes the chosen entry, and its own editor edits it.
 It prints and exports the chosen entry, and imports a markup file into the workspace.
 
-## `private CLibrary(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `private CLibrary(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
-Takes the atelier's ports and builds the panel's own entry editor.
+Takes the atelier's ports and the marshal, and builds the panel's own entry editor.
+It registers its vista restore and its close with the workspace.
 The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
 A cleared panel empties the editor, and an edited row opens in it.
 
-## `public static CLibrary CLibraryCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `public static CLibrary CLibraryCreate(`
 
 Builds the panel over the atelier, so the driver hands it no port.
+The marshal puts each engine notice on the driver's thread.
 Building it is no user action, so it is no gate on the atelier.
+
+## `public event Action? CLibraryWorkspaceChanged`
+
+Raised once the workspace notice has closed the chosen entry, so the driver reloads its flags.
 
 ## `public CEditor CLibraryEditor { get; }`
 
@@ -27,19 +33,46 @@ The driver wraps it for the editor view and the lectern.
 
 Whether the language filter hides any language, as the vista answers it.
 
+## `public bool CLibraryEmpty`
+
+Whether the last rows read found nothing, which the list shows as its empty notice.
+The library always answers a request, so an empty list is always shown as empty.
+
 ## `public void CLibraryVistaRestore()`
 
 Starts the library vista through the atelier, headword order before any order is saved.
+The held query is carried into the fresh vista, so a switch keeps the search.
 The panel and the editor both take it, on a workspace start or switch.
+Then it attaches the observers for the vista, workspace, entry, reflex and settings notices through the marshal.
+
+## `private void LLibraryObserverAttach()`
+
+Attaches every notice the panel answers, each handed to the marshal first.
+The chosen entry's draft notice is attached the same way.
+
+## `private void LLibraryWorkspaceResonate()`
+
+Answers the workspace notice by closing the chosen entry and raising `CLibraryWorkspaceChanged`.
+
+## `private void LLibraryClose()`
+
+The window's exit gate runs it, since the workspace holds it as a closure.
+It stops the editor and cancels the display's playback.
 
 ## `public void CLibraryOrderSet(CCatalogOrder? order)`
 
 Hands a chosen ordering to the vista, which keeps its own when the sender is no order row.
 
+## `public static IReadOnlyList<CCatalogOrder> CLibraryOrderRead()`
+
+The orderings the library offers, in the order its dropdown lists them.
+The wings share them, so no driver names an engine ordering.
+
 ## `public IReadOnlyList<CVistaRow> CLibraryRowsRead()`
 
 The rows the engine returns for the vista, none before a vista arrives.
 They come already filtered, sorted, numbered and marked, so the list decides nothing about them.
+The count is kept for `CLibraryEmpty`, so the empty notice follows the rows shown.
 
 ## `internal string LLibraryFileRead()`
 
@@ -57,9 +90,10 @@ Exports the chosen entry to `path` in the chosen format.
 The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.
 
-## `public async Task CLibraryMarkupImport(string? path)`
+## `public async Task CLibraryMarkupImport()`
 
-Imports the markup file the user picked, and a null path is a cancelled pick that changes nothing.
+Asks the envoy for a markup file first, before the customs and omission questions.
+A cancelled pick answers no file and changes nothing.
 The engine reads the file, asks for the intakes through this panel, and stores the cargo in one call.
 A declined declaration stores nothing, so the rows are not refreshed and nothing is reported.
 After a store the rows refresh, and what the import could not place is shown through the envoy.

@@ -16,6 +16,8 @@ public interface CEnvoy
 
     bool? CEnvoyLeaveConfirm();
 
+    string? CEnvoyMarkupRead();
+
     bool CEnvoyCustomsRead(CSCustoms customs);
 
     void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions);

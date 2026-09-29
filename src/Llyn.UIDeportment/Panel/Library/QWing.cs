@@ -85,6 +85,7 @@ internal sealed class QWing
         _qWingLectern = new QLectern(_cWing.CWingDisplay);
 
         _cWing.CWingLoaded += QWingIndexShow;
+        _cWing.CWingRowsChanged += QWingIndexShow;
         _cWing.CWingChanged += LObserver.LObserverCreate<CBulletin>(_qWingSurface, QWingIndexShow);
 
         QWingDisplay.PDisplayAttach(host, _qWingLectern);
@@ -93,10 +94,10 @@ internal sealed class QWing
     internal async void QWingRestore(string tab, long? id)
     {
         _cWing.CWingVistaRestore(tab);
-        _qIndex.QIndexClear();
+        _qIndex.QIndexClearRefine();
         await LEnsignImage.LEnsignLoad(_qWingHost.PWindowAtelier);
 
-        QChoice.QChoiceOrderBuild(QWingOrderList, "Order", QWingOrderHandle, QIndex.QIndexOrder);
+        QChoice.QChoiceOrderBuild(QWingOrderList, "Order", QWingOrderHandle, CLibrary.CLibraryOrderRead());
         QChoice.QChoiceOrderApply(QWingOrderDropdown, _cWing.CWingOrder);
         QWingSieveShow();
         QChoice.QChoiceFilterBuild(
@@ -114,7 +115,7 @@ internal sealed class QWing
 
     private void QWingIndexShow()
     {
-        _qIndex.QIndexShow(_cWing.CWingRowsRead(), _cWing.CWingQueried);
+        _qIndex.QIndexRefine(_cWing.CWingRowsRead(), _cWing.CWingEmpty);
     }
 
     private void QWingSieveShow()
@@ -137,7 +138,7 @@ internal sealed class QWing
     private void QWingQueryHandle(object sender, TextChangedEventArgs e)
     {
         _cWing.CWingQuerySet(QWingQuery.Text ?? string.Empty);
-        _qIndex.QIndexShownSet(_cWing.CWingQueried);
+        _qIndex.QIndexShownRefine(_cWing.CWingQueried);
     }
 
     private void QWingKeyHandle(object sender, KeyEventArgs e)
@@ -149,7 +150,7 @@ internal sealed class QWing
 
         if (e.Key == Key.Escape)
         {
-            _qIndex.QIndexShownSet(false);
+            _qIndex.QIndexShownRefine(false);
             e.Handled = true;
             return;
         }
@@ -166,19 +167,17 @@ internal sealed class QWing
             return;
         }
 
-        e.Handled = QWingRowMove(_qIndex.QIndexNeighbourFind(e.Key == Key.Down));
+        e.Handled = QWingRowMove(e.Key == Key.Down);
     }
 
-    private bool QWingRowMove(long? target)
+    private bool QWingRowMove(bool down)
     {
-        if (target is not long id)
+        if (_cWing.CWingRowMove(down) is not long id)
         {
             return false;
         }
 
-        _cWing.CWingEntrySelect(id);
-        QWingIndexShow();
-        _qIndex.QIndexEntryScroll(id);
+        _qIndex.QIndexScrollRefine(id);
         return true;
     }
 
@@ -190,7 +189,7 @@ internal sealed class QWing
             return;
         }
 
-        _qIndex.QIndexShownSet(false);
+        _qIndex.QIndexShownRefine(false);
     }
 
     private void QWingIndexHandle(object sender, RoutedEventArgs e)
@@ -205,13 +204,13 @@ internal sealed class QWing
             return;
         }
 
-        _qIndex.QIndexShownSet(false);
+        _qIndex.QIndexShownRefine(false);
         _cWing.CWingEntryOpen(chosen);
     }
 
     private void QWingIndexApply(FrameworkElement container, object item, string? change)
     {
-        QIndexItem.QIndexItemApply(container, item, change);
+        QIndexItem.QIndexItemRefine(container, item, change);
 
         if (QLook.QLookPartFind<Button>(container, "PIndexRow") is Button row)
         {

@@ -13,6 +13,8 @@ public sealed class CWing
 
     private LVista? _cWingVista;
 
+    private IReadOnlyList<CVistaRow> _cWingRows = [];
+
     internal CWing(CAtelier atelier, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -39,11 +41,15 @@ public sealed class CWing
 
     public event Action? CWingLoaded;
 
+    public event Action? CWingRowsChanged;
+
     public LDisplay CWingDisplay { get; }
 
     public bool CWingFiltered => _cWingVista?.LVistaFiltered ?? false;
 
     public bool CWingQueried => _cWingVista?.LVistaQueried ?? false;
+
+    public bool CWingEmpty => CWingQueried && _cWingRows.Count == 0;
 
     public CCatalogOrder CWingOrder => CPanel.CPanelOrderRead(LVista.LVistaOrderRead(_cWingVista));
 
@@ -55,6 +61,7 @@ public sealed class CWing
 
         _cWingVista = _cWingAtelier.CAtelierVistaStart(
             tab, CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword, true);
+        _cWingRows = [];
         CWingDisplay.LDisplayVistaRestore(_cWingVista);
         CWingDisplay.LDisplayObserverAttach(CSubject.CSubjectVista, LWingBulletinSend);
         CWingDisplay.LDisplayObserverAttach(CSubject.CSubjectEntry, LWingBulletinSend);
@@ -86,9 +93,28 @@ public sealed class CWing
         _cWingVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
-    public void CWingEntrySelect(long? id)
+    public long? CWingRowMove(bool down)
     {
-        _cWingVista?.LVistaSelect(id);
+        if (_cWingVista is not LVista vista || _cWingRows.Count == 0)
+        {
+            return null;
+        }
+
+        int place = -1;
+        for (int index = 0; index < _cWingRows.Count; index++)
+        {
+            if (_cWingRows[index].CVistaRowId == vista.LVistaChosen)
+            {
+                place = index;
+                break;
+            }
+        }
+
+        place = down ? Math.Min(place + 1, _cWingRows.Count - 1) : Math.Max(place - 1, 0);
+        long id = _cWingRows[place].CVistaRowId;
+        vista.LVistaSelect(id);
+        CWingRowsChanged?.Invoke();
+        return id;
     }
 
     public void CWingEntryRestore(long? id)
@@ -107,9 +133,10 @@ public sealed class CWing
 
     public IReadOnlyList<CVistaRow> CWingRowsRead()
     {
-        return _cWingVista is LVista vista
+        _cWingRows = _cWingVista is LVista vista
             ? _cWingAtelier.CAtelierEntryPort.LEngineEntryFind(vista).Select(CPanel.CPanelRowRead).ToList()
             : [];
+        return _cWingRows;
     }
 
     public IReadOnlyList<string> CWingLanguageRead()

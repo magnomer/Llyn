@@ -34,6 +34,11 @@ Conduct read the notice once and recorded any fault, so the driver only words th
 Asks whether unsaved work is stored, dropped, or kept open.
 True stores, false discards, and null means the user stays.
 
+## `string? CEnvoyMarkupRead();`
+
+Asks which markup file to import, the first question of the library import.
+It answers the file's path, or null for a cancelled pick.
+
 ## `bool CEnvoyCustomsRead(CSCustoms customs);`
 
 Asks how each parsed entry of a markup file enters the workspace, one declared row per entry in file order.

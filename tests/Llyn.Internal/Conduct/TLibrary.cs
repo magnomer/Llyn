@@ -20,7 +20,7 @@ public sealed class TLibrary
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TLibraryEntrySave(engine, "stone", "English");
         CLibrary library = CLibrary.CLibraryCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []));
+            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []), static run => run());
 
         Assert.Empty(library.CLibraryRowsRead());
         Assert.False(library.CLibraryFiltered);
@@ -42,6 +42,24 @@ public sealed class TLibrary
         library.CLibraryQuerySet("riv");
 
         Assert.Equal(["river"], library.CLibraryRowsRead().Select(row => row.CVistaRowHeadword));
+    }
+
+    [Fact]
+    public void LibraryEmpty_QueryMatchingNothing_AnswersEmpty()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        TLibraryEntrySave(engine, "stone", "English");
+        CLibrary library = TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        library.CLibraryRowsRead();
+        bool listed = library.CLibraryEmpty;
+
+        library.CLibraryQuerySet("river");
+        library.CLibraryRowsRead();
+
+        Assert.False(listed);
+        Assert.True(library.CLibraryEmpty);
     }
 
     [Fact]
@@ -189,17 +207,17 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public async Task LibraryMarkupImport_NoPath_AsksNothing()
+    public async Task LibraryMarkupImport_NoFile_AsksNothingMore()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(static _ => true, asked));
+        CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(null, static _ => true, asked));
 
-        await library.CLibraryMarkupImport(null);
+        await library.CLibraryMarkupImport();
 
-        Assert.Empty(asked);
+        Assert.Equal(["Markup"], asked);
         Assert.Empty(library.CLibraryRowsRead());
     }
 
@@ -212,6 +230,7 @@ public sealed class TLibrary
         List<string> asked = [];
         List<CMarkupEntry> shown = [];
         CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(
+            TInterface.TMarkupSave(workspace, TInterface.TMarkupLone),
             customs =>
             {
                 shown.AddRange(customs.CSCustomsEntry);
@@ -221,14 +240,14 @@ public sealed class TLibrary
         int refreshed = 0;
         library.CLibraryPanel.CPanelRowsChanged += () => refreshed++;
 
-        await library.CLibraryMarkupImport(TInterface.TMarkupSave(workspace, TInterface.TMarkupLone));
+        await library.CLibraryMarkupImport();
 
         CMarkupEntry entry = Assert.Single(shown);
         Assert.Equal("ember", entry.CMarkupEntryName);
         Assert.Empty(entry.CMarkupEntryTarget);
         Assert.Equal(1, refreshed);
-        Assert.Equal(["Customs", "Omission"], asked.Select(static question => question.Split(':')[0]));
-        Assert.Contains("braise", asked[1], StringComparison.Ordinal);
+        Assert.Equal(["Markup", "Customs", "Omission"], asked.Select(static question => question.Split(':')[0]));
+        Assert.Contains("braise", asked[2], StringComparison.Ordinal);
         Assert.Equal(["ember"], library.CLibraryRowsRead().Select(row => row.CVistaRowHeadword));
     }
 
@@ -242,6 +261,7 @@ public sealed class TLibrary
         List<CMarkupEntry> shown = [];
         CSCustomsRow? replaced = null;
         CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(
+            TInterface.TMarkupSave(workspace, TInterface.TMarkupLone),
             customs =>
             {
                 shown.AddRange(customs.CSCustomsEntry);
@@ -252,7 +272,7 @@ public sealed class TLibrary
             },
             []));
 
-        await library.CLibraryMarkupImport(TInterface.TMarkupSave(workspace, TInterface.TMarkupLone));
+        await library.CLibraryMarkupImport();
 
         Assert.Equal([ember.LEntryId], Assert.Single(shown).CMarkupEntryTarget);
         Assert.Equal(
@@ -269,13 +289,13 @@ public sealed class TLibrary
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(static _ => true, asked));
+        string file = TInterface.TMarkupSave(
+            workspace, "<llyn><entry><headword>ember</headword><language>English</language></entry></llyn>");
+        CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(file, static _ => true, asked));
 
-        await library.CLibraryMarkupImport(TInterface.TMarkupSave(
-            workspace,
-            "<llyn><entry><headword>ember</headword><language>English</language></entry></llyn>"));
+        await library.CLibraryMarkupImport();
 
-        Assert.Equal(["Customs:1"], asked);
+        Assert.Equal(["Markup", "Customs:1"], asked);
         Assert.Equal(["ember"], library.CLibraryRowsRead().Select(row => row.CVistaRowHeadword));
     }
 
@@ -286,13 +306,14 @@ public sealed class TLibrary
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(static _ => false, asked));
+        string file = TInterface.TMarkupSave(workspace, TInterface.TMarkupLone);
+        CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(file, static _ => false, asked));
         int refreshed = 0;
         library.CLibraryPanel.CPanelRowsChanged += () => refreshed++;
 
-        await library.CLibraryMarkupImport(TInterface.TMarkupSave(workspace, TInterface.TMarkupLone));
+        await library.CLibraryMarkupImport();
 
-        Assert.Equal(["Customs:1"], asked);
+        Assert.Equal(["Markup", "Customs:1"], asked);
         Assert.Equal(0, refreshed);
         Assert.Empty(library.CLibraryRowsRead());
     }
@@ -304,12 +325,12 @@ public sealed class TLibrary
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(static _ => true, asked));
+        string file = TInterface.TMarkupSave(workspace, "<llyn><entry><headword>ember</headword></llyn>");
+        CLibrary library = TLibraryPrepare(atelier, TLibraryEnvoyCreate(file, static _ => true, asked));
 
-        await library.CLibraryMarkupImport(TInterface.TMarkupSave(
-            workspace, "<llyn><entry><headword>ember</headword></llyn>"));
+        await library.CLibraryMarkupImport();
 
-        Assert.Equal(["List.ImportFailed"], asked);
+        Assert.Equal(["Markup", "List.ImportFailed"], asked);
         Assert.Empty(library.CLibraryRowsRead());
     }
 
@@ -355,17 +376,22 @@ public sealed class TLibrary
         Assert.Equal(fire.LEntryId, library.CLibraryPanel.TPanelChosenRead());
     }
 
-    private static CLibrary TLibraryPrepare(CAtelier atelier, CEnvoy envoy)
+    internal static CLibrary TLibraryPrepare(CAtelier atelier, CEnvoy envoy)
     {
-        CLibrary library = CLibrary.CLibraryCreate(atelier, static () => true, envoy);
+        CLibrary library = CLibrary.CLibraryCreate(atelier, static () => true, envoy, static run => run());
         library.CLibraryVistaRestore();
         return library;
     }
 
     private static CEnvoy TLibraryEnvoyCreate(
-        Func<CSCustoms, bool> customs, List<string> asked) =>
+        string? file, Func<CSCustoms, bool> customs, List<string> asked) =>
         TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
         {
+            ["CEnvoyMarkupRead"] = _ =>
+            {
+                asked.Add("Markup");
+                return file;
+            },
             ["CEnvoyCustomsRead"] = args =>
             {
                 CSCustoms declared = (CSCustoms)args![0]!;
@@ -386,7 +412,7 @@ public sealed class TLibrary
             },
         });
 
-    private static LEntry TLibraryEntrySave(LEngine engine, string headword, string language)
+    internal static LEntry TLibraryEntrySave(LEngine engine, string headword, string language)
     {
         return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             headword, language, string.Empty, string.Empty, [TInterface.TCardCreate("a meaning", 1)], []));

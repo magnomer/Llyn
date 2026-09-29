@@ -27,23 +27,15 @@ internal sealed class QIndex
         view.ItemsSource = _qIndexList;
     }
 
-    internal static IReadOnlyList<CCatalogOrder> QIndexOrder { get; } =
-    [
-        CCatalogOrder.CCatalogOrderHeadword,
-        CCatalogOrder.CCatalogOrderReverse,
-        CCatalogOrder.CCatalogOrderRecent,
-        CCatalogOrder.CCatalogOrderEarliest,
-    ];
-
     internal bool QIndexShown { get; private set; }
 
-    internal void QIndexShownSet(bool shown)
+    internal void QIndexShownRefine(bool shown)
     {
         QIndexShown = shown;
         _qIndexView.Visibility = shown ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    internal void QIndexShow(IReadOnlyList<CVistaRow> rows, bool asked)
+    internal void QIndexRefine(IReadOnlyList<CVistaRow> rows, bool empty)
     {
         ArgumentNullException.ThrowIfNull(rows);
 
@@ -52,10 +44,10 @@ internal sealed class QIndex
             QIndexItem.QIndexItemBuild(rows),
             QIndexItem.QIndexItemMatch,
             QIndexItem.QIndexItemSync);
-        _qIndexEmpty.Visibility = asked && _qIndexList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        _qIndexEmpty.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    internal void QIndexClear()
+    internal void QIndexClearRefine()
     {
         _qIndexList.Clear();
     }
@@ -65,35 +57,7 @@ internal sealed class QIndex
         return _qIndexList.FirstOrDefault(row => row.QIndexItemChosen)?.QIndexItemId;
     }
 
-    internal long? QIndexNeighbourFind(bool down)
-    {
-        return QIndexNeighbourFind(_qIndexList, down);
-    }
-
-    internal static long? QIndexNeighbourFind(IReadOnlyList<QIndexItem> items, bool down)
-    {
-        ArgumentNullException.ThrowIfNull(items);
-
-        if (items.Count == 0)
-        {
-            return null;
-        }
-
-        int place = -1;
-        for (int index = 0; index < items.Count; index++)
-        {
-            if (items[index].QIndexItemChosen)
-            {
-                place = index;
-                break;
-            }
-        }
-
-        place = down ? Math.Min(place + 1, items.Count - 1) : Math.Max(place - 1, 0);
-        return items[place].QIndexItemId;
-    }
-
-    internal void QIndexEntryScroll(long id)
+    internal void QIndexScrollRefine(long id)
     {
         if (_qIndexList.FirstOrDefault(row => row.QIndexItemId == id) is not QIndexItem target)
         {

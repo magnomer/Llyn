@@ -169,23 +169,138 @@ public sealed class TWing
     }
 
     [Fact]
-    public void WingEntrySelect_StoredEntry_MarksTheRowWithoutLoading()
+    public void WingRowMove_ListedEntry_MarksTheRowWithoutLoading()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry water = TWingWaterSave(engine);
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        wing.CWingVistaRestore("left");
-        wing.CWingQuerySet("water");
+        CWing wing = TWingQueryPrepare(atelier, "water");
         int loaded = 0;
+        int changed = 0;
         wing.CWingLoaded += () => loaded++;
+        wing.CWingRowsChanged += () => changed++;
 
-        wing.CWingEntrySelect(water.LEntryId);
+        long? moved = wing.CWingRowMove(true);
 
+        Assert.Equal(water.LEntryId, moved);
         Assert.Equal(0, loaded);
+        Assert.Equal(1, changed);
         Assert.True(wing.CWingRowsRead().Single().CVistaRowChosen);
         Assert.Equal(new CWorkspaceState(null, null), atelier.TAtelierStateOpen());
+    }
+
+    [Fact]
+    public void WingRowMove_NoChosenDown_PicksTheFirstRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        IReadOnlyList<LEntry> trio = TWingTrioSave(engine);
+        CWing wing = TWingQueryPrepare(atelier, "water");
+
+        Assert.Equal(trio[0].LEntryId, wing.CWingRowMove(true));
+    }
+
+    [Fact]
+    public void WingRowMove_NoChosenUp_PicksTheFirstRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        IReadOnlyList<LEntry> trio = TWingTrioSave(engine);
+        CWing wing = TWingQueryPrepare(atelier, "water");
+
+        Assert.Equal(trio[0].LEntryId, wing.CWingRowMove(false));
+    }
+
+    [Fact]
+    public void WingRowMove_MiddleChosen_MovesOneRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        IReadOnlyList<LEntry> trio = TWingTrioSave(engine);
+        CWing wing = TWingQueryPrepare(atelier, "water");
+        wing.CWingRowMove(true);
+        wing.CWingRowMove(true);
+
+        Assert.Equal(trio[2].LEntryId, wing.CWingRowMove(true));
+        Assert.Equal(trio[1].LEntryId, wing.CWingRowMove(false));
+        Assert.Equal(trio[0].LEntryId, wing.CWingRowMove(false));
+    }
+
+    [Fact]
+    public void WingRowMove_EndChosen_StaysAtTheEnd()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        IReadOnlyList<LEntry> trio = TWingTrioSave(engine);
+        CWing wing = TWingQueryPrepare(atelier, "water");
+        wing.CWingRowMove(true);
+        wing.CWingRowMove(true);
+        wing.CWingRowMove(true);
+
+        Assert.Equal(trio[2].LEntryId, wing.CWingRowMove(true));
+        wing.CWingRowMove(false);
+        wing.CWingRowMove(false);
+        Assert.Equal(trio[0].LEntryId, wing.CWingRowMove(false));
+        Assert.Equal(trio[0].LEntryId, Assert.Single(wing.CWingRowsRead(), row => row.CVistaRowChosen).CVistaRowId);
+    }
+
+    [Fact]
+    public void WingRowMove_EmptyList_AnswersNull()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        TWingWaterSave(engine);
+        CWing wing = TWingQueryPrepare(atelier, "fire");
+        int changed = 0;
+        wing.CWingRowsChanged += () => changed++;
+
+        Assert.Null(wing.CWingRowMove(true));
+        Assert.Equal(0, changed);
+    }
+
+    [Fact]
+    public void WingEmpty_QueryMatchingNothing_AnswersEmpty()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        TWingWaterSave(engine);
+        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        wing.CWingVistaRestore("left");
+        wing.CWingRowsRead();
+        bool unasked = wing.CWingEmpty;
+
+        wing.CWingQuerySet("fire");
+        wing.CWingRowsRead();
+        bool unmatched = wing.CWingEmpty;
+        wing.CWingQuerySet("water");
+        wing.CWingRowsRead();
+
+        Assert.False(unasked);
+        Assert.True(unmatched);
+        Assert.False(wing.CWingEmpty);
+    }
+
+    private static CWing TWingQueryPrepare(CAtelier atelier, string query)
+    {
+        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        wing.CWingVistaRestore("left");
+        wing.CWingQuerySet(query);
+        wing.CWingRowsRead();
+        return wing;
+    }
+
+    private static IReadOnlyList<LEntry> TWingTrioSave(LEngine engine)
+    {
+        return [.. new[] { "water", "waterfall", "waterway" }.Select(headword => engine.TEngineEntrySave(
+            TInterface.TEntryDraftCreate(
+                headword, "English", string.Empty, string.Empty, [TInterface.TCardCreate("a liquid", 1)], [])))];
     }
 
     private static LEntry TWingWaterSave(LEngine engine)

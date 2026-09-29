@@ -98,6 +98,11 @@ internal sealed class QEnvoy : CEnvoy
         };
     }
 
+    public string? CEnvoyMarkupRead()
+    {
+        return QMarkup.QMarkupConsult(_qEnvoySurface);
+    }
+
     public bool CEnvoyCustomsRead(CSCustoms customs)
     {
         return QSCustoms.QSCustomsConsult(_qEnvoyHost, customs);

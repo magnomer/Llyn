@@ -25,6 +25,7 @@ Each named part is pulled from the place by its contract ID on every read.
 Puts the side to work on the host, building Conduct's side over the host's atelier and envoy.
 The side's announcements re-list the matches on the list's thread.
 A loaded entry re-lists the matches, and the display's area opens it on the lectern itself.
+A key move re-lists the matches on the spot, since it is heard on the list's thread.
 The vista arrives with each restore, since it belongs to the workspace open then.
 The display is its own subscriber, so it stays current on its own.
 
@@ -49,8 +50,8 @@ Stops the side: the display releases its playback.
 ## `private void QWingIndexShow()`
 
 Lists the matches from the vista, already filtered, sorted, numbered and marked by the engine.
-The empty notice shows only while a typed query matched nothing.
-It runs on each announcement and after each entry the side loaded.
+The empty notice shows as `CWingEmpty` answers.
+It runs on each announcement, after each entry the side loaded, and after each key move.
 
 ## `private void QWingSieveShow()`
 
@@ -76,19 +77,18 @@ A closed list lets every key through to the field, so a hidden list is never pic
 The index remembers whether it is shown, since a control's state never gates a request.
 Escape hides the list and takes the key.
 Enter opens the chosen row while the rows still mark it.
-Down and Up move the choice one row, stopping at either end.
-The rows are re-marked in place and the chosen one scrolled into view.
+Down and Up hand the direction to `CWingRowMove`.
 
 ## `private void QWingLeaveHandle(object sender, KeyboardFocusChangedEventArgs e)`
 
 Focus leaving the field and the list hides the list.
 Focus moving between the two is not a leave, since a clicked row takes focus before its click lands.
 
-## `private bool QWingRowMove(long? target)`
+## `private bool QWingRowMove(bool down)`
 
-Moves the choice to the neighbour row, re-marks the rows in place and scrolls it into view.
+Hands the direction to `CWingRowMove` and scrolls the entry it answers into view.
+The gate re-marks the rows through `CWingRowsChanged`.
 It answers whether a row was there, so the key is taken only then.
-The target arrives as a parameter, so the list's answer never feeds a request directly.
 
 ## `private void QWingRowOpen(long? id)`
 

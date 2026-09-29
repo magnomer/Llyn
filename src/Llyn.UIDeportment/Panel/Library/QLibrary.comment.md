@@ -18,91 +18,128 @@ It ties both droppers to their popups, sets every icon, and subscribes every cli
 Each named part is pulled from the page by its contract ID on every read.
 `QLibraryDisplay` is internal, because the window scrolls the display to a sense.
 
-## `internal void QLibraryAttach(PWindow host)`
+## `internal void QLibraryIntroduce(PWindow host)`
 
-Puts the panel to work on the panel factory, which builds its Conduct over the atelier.
+Puts the panel to work through its Conduct `CLibrary`, which the forge builds over the atelier.
 The Conduct builds its own entry editor, which this panel wraps for the editor view and the lectern.
 The lectern follows the panel, and the panel's notices reach its own controls.
-The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
+It builds the ordering menu once, from the orderings `CLibrary` offers.
+It subscribes the area's events and reads nothing yet.
+`QLibraryVistaRefine` fills it when the workspace opens, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.
 The print and portrait command bindings live in the constructor, and their check answers false until the controller exists.
 
-## `private void QLibraryIndexAttach(ItemsControl view, FrameworkElement empty)`
+## `private void QLibraryIndexIntroduce(ItemsControl view, FrameworkElement empty)`
 
 Builds the entry list over the page's controls and refills it whenever the panel announces new rows.
 The list is medium, so it moved here from the controller when the controller was sealed.
 
-## `private void QLibraryIndexShow()`
+## `private void QLibraryIndexRefine()`
 
-Reads the rows and hands them to the list as an answered request.
-The list counts what it holds, so the empty notice needs no count kept here.
+Reads the rows and hands them to the list with the library's empty verdict.
+Conduct counts the rows, so the empty notice needs no count kept here.
 
-## `private void QLibrarySieveShow(FrameworkElement mark)`
+## `private void QLibrarySieveRefine()`
 
 Shows the mark on the sieve button while the vista hides any language.
 
-## `internal async void QLibraryVistaRestore()`
+## `internal async void QLibraryVistaRefine()`
 
-The atelier starts the tab's vistas from the stored posture, so no vista crosses the veneer.
-Attaches the observers that carry each announcement onto the dispatcher.
-The dropdown lists the shared entry orderings, and the mark is drawn from the controller's verdict.
+Answers the opening of a workspace, after the atelier has started the tab's vistas.
+It paints the order and the filter mark, then waits for the flags.
 The flags are loaded before the first rows are built, because a row reads its flag at construction.
+It builds the filter menu from the languages the load answers, then reads the rows once.
+The observers that carry each announcement live in `CLibrary`, so this driver holds none.
+
+## `private void QSieveBuild(IReadOnlyList<string> languages)`
+
+Builds the filter menu from the languages the flag load answered.
+
+## `private async void QLibraryWorkspaceRefine()`
+
+Answers the area's workspace notice by loading the flags of the new workspace.
+The entry was already closed in Conduct.
 
 ## `private bool QLibraryShownCheck()`
 
 The shown seam: whether this tab is the one in front, which only the page knows.
 
-## `internal void QLibraryClose()`
+## `internal void QLibraryExitRefine()`
 
-Stops the panel: the editor is shut down and the shared display releases its playback.
+Releases the editor's recording player when the window closes.
+The editor and the display stop through `CLibrary`'s closure, which the atelier's exit gate runs.
 
-## `private void QLibraryModeUpdate()`
+## `private void QLibraryModeRefine()`
 
 Writes the mode and the enablement the controller holds into the eight controls that show them.
 
-## `private string? QLibraryMarkupOpen()`
+## `private void QOrderObserve(object sender, RoutedEventArgs e)`
 
-The file dialog of the import: the file the reader picked, or null for a cancelled pick.
-
-## `private void QOrderHandle(object sender, RoutedEventArgs e)`
-
-A clicked order row closes the dropdown and sets the ordering its tag carries.
+A clicked order row sets the ordering its tag carries, then closes the dropdown.
 The row's enum is read here, so no ordering is spelled or parsed in the veneer.
 
-## `private void QSieveHandle(object sender, RoutedEventArgs e)`
+## `private void QOrderRefine()`
+
+Unchecks the order button, which closes its dropdown.
+
+## `private void QSieveObserve(object sender, RoutedEventArgs e)`
 
 A clicked language row sets the filter its list now stands for, then redraws the mark at once.
 
-## `private void QLibraryRowSelect(QIndexItem? item)`
+## `private void QLibraryIndexObserve(object sender, RoutedEventArgs e)`
 
 Puts the panel on the clicked row's entry, and the gate records the station first.
-The click hands over the row's item, so no control decides the request.
+The click hands over the row's item id, so no control decides the request.
 A sender without a row selects none, which leaves the panel on no entry.
 
-## `private void QIndexApply(FrameworkElement container, object item, string? change)`
+## `private void QLibraryRowRefine(FrameworkElement container, object item, string? change)`
 
 Fills one index row through the shared index fill, then subscribes its click once.
 The click is removed first, so a refill never doubles it.
 
-## `private async void QLibraryMarkupHandle(object sender, RoutedEventArgs e)`
+## `private void QInquiryObserve(object sender, TextChangedEventArgs e)`
 
-The import button hands the picked path, or null, to `CLibraryMarkupImport`.
-The gate asks the customs question and shows the report through the envoy.
+The search field hands its text to the query gate.
+
+## `private void QLibraryFreshObserve(object sender, RoutedEventArgs e)`
+
+The new button asks the panel for a fresh entry.
+
+## `private void QLibraryViewerObserve(object sender, RoutedEventArgs e)`
+
+The viewer button asks the panel to leave writing.
+
+## `private void QLibraryScribeObserve(object sender, RoutedEventArgs e)`
+
+The scribe button asks the panel to start writing.
+
+## `private void QLibraryStoreObserve(object sender, RoutedEventArgs e)`
+
+The store button asks the editor to save the entry.
+
+## `private void QLibraryBinObserve(object sender, RoutedEventArgs e)`
+
+The bin button asks the panel to delete the chosen entry.
+
+## `private async void QLibraryMarkupObserve(object sender, RoutedEventArgs e)`
+
+The import button calls `CLibraryMarkupImport`, which asks every question itself.
+The gate asks for the file, then the customs question, and shows the report through the envoy.
 Import belongs on this panel rather than the editor.
 What arrives is any number of entries, none of them the one being written.
 
-## `private void QLibraryPressCheck(object sender, CanExecuteRoutedEventArgs e)`
+## `private void QLibraryPressRefine(object sender, CanExecuteRoutedEventArgs e)`
 
 Whether the print button is live: exactly when an entry is read in the display.
 The controller answers, so no control state is read.
 
-## `private async void QLibraryPressHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private async void QLibraryPressObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the entry being read, as the engine portrays it.
 The gate asks for the ticket through the envoy and names the vista.
 Nothing is read back from the screen.
 
-## `private async void QLibraryPortraitHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private async void QLibraryPortraitObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Exports the entry being read, as the engine portrays it.
 The gate asks for the file and the format through the envoy.
@@ -118,28 +155,28 @@ A store may have changed the headword the index lists and the text the display s
 The engine announces it through the vista, so both are read again from what was written.
 It is the same announcement whether the store happened in this panel's editor or in another tab.
 
-## `internal void QLibraryVoyageShow(bool past, bool future)`
+## `internal void QLibraryVoyageRefine(bool past, bool future)`
 
 Lights the two trail buttons from the voyage state the navigation raises.
 The navigation owns the trail, so the panel only shows what it is told.
 
-## `private void QLibraryRetreatHandle(object sender, RoutedEventArgs e)`
+## `private void QLibraryRetreatObserve(object sender, RoutedEventArgs e)`
 
 Steps the navigation's trail back one station.
 
-## `private void QLibraryAdvanceHandle(object sender, RoutedEventArgs e)`
+## `private void QLibraryAdvanceObserve(object sender, RoutedEventArgs e)`
 
 Steps the navigation's trail forward one station.
 
-## `private void QLibraryUndoHandle(object sender, RoutedEventArgs e)`
+## `private void QLibraryUndoObserve(object sender, RoutedEventArgs e)`
 
 Walks the chronicle of the editor back one step.
 
-## `private void QLibraryRedoHandle(object sender, RoutedEventArgs e)`
+## `private void QLibraryRedoObserve(object sender, RoutedEventArgs e)`
 
 Walks the chronicle of the editor forward one step.
 
-## `private void QLibraryChronicleUpdate()`
+## `private void QLibraryChronicleRefine()`
 
 Lights the two chronicle buttons only while the editor has a step to walk.
 It runs whenever the editor reports its state again.

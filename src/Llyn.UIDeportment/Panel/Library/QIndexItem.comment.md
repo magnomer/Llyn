@@ -40,7 +40,7 @@ Whether the two rows show the same values, the chosen mark left aside.
 Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.
 It raises the change only when the mark moved, so untouched rows repaint nothing.
 
-## `internal static void QIndexItemApply(FrameworkElement container, object item, string? _)`
+## `internal static void QIndexItemRefine(FrameworkElement container, object item, string? _)`
 
 Fills one index row from its item, the work its bindings did before.
 The row carries the `Chosen` cue on the chosen item and none otherwise, which the look sheet paints.

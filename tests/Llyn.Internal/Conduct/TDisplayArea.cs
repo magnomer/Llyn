@@ -95,7 +95,7 @@ public sealed class TDisplayArea
         using CAtelier atelier = TDisplayAtelierCreate(engine);
         LEntry river = TDisplayEntrySave(engine, "river");
         CLibrary library = CLibrary.CLibraryCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []));
+            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []), static run => run());
         CDisplay area = library.CLibraryEditor.CEditorDisplay.CDisplayArea;
         area.CDisplayPanelAttach(library.CLibraryPanel);
         library.CLibraryVistaRestore();

@@ -30,9 +30,6 @@ internal static class TInterfaceDeportment
 
     internal static void TIndexItemSync(QIndexItem held, QIndexItem fresh) => QIndexItem.QIndexItemSync(held, fresh);
 
-    internal static long? TIndexNeighbourFind(IReadOnlyList<QIndexItem> items, bool down) =>
-        QIndex.QIndexNeighbourFind(items, down);
-
     internal static bool TCaretKeyApply(
         string key, int caret, int length, int selection, Action<int> remove, Func<int, bool> move, Action place) =>
         QCaret.QCaretKeyApply(key, caret, length, selection, remove, move, place);

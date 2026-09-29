@@ -98,7 +98,7 @@ public partial class PWindow
             new QTab("Input", PNavigationInput, PInput),
             new QTab("Library", PNavigationLibrary, PLibrary)
             {
-                QTabVoyage = _qLibrary.QLibraryVoyageShow
+                QTabVoyage = _qLibrary.QLibraryVoyageRefine
             },
             new QTab("Phonology", PNavigationPhonology, PPhonology)
             {

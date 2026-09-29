@@ -226,7 +226,7 @@ public sealed class TAtelier
         using LEngine engine = new(first.TWorkspaceRigCreate(), _ => second.TWorkspaceRigCreate(), _ => { });
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CLibrary library = CLibrary.CLibraryCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []));
+            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []), static run => run());
         library.CLibraryVistaRestore();
         LVista? held = library.CLibraryPanel.TPanelVistaRead();
         LVista? restored = null;

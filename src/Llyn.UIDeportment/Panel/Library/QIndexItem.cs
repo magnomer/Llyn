@@ -77,7 +77,7 @@ internal sealed class QIndexItem : INotifyPropertyChanged
         held.PropertyChanged?.Invoke(held, QIndexItemMark);
     }
 
-    internal static void QIndexItemApply(FrameworkElement container, object item, string? _)
+    internal static void QIndexItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QIndexItem row)
         {

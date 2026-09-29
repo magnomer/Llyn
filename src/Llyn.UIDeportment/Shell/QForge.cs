@@ -45,7 +45,8 @@ public sealed class QForge
 
     public CLibrary QForgeLibraryCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        CLibrary library = CLibrary.CLibraryCreate(_qForgeAtelier, shownSeam, envoy);
+        CLibrary library = CLibrary.CLibraryCreate(
+            _qForgeAtelier, shownSeam, envoy, LObserver.LObserverCreate<Action>(static run => run()));
         library.CLibraryVistaRestore();
         return library;
     }

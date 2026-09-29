@@ -2,10 +2,10 @@
 
 ## `internal static class QMarkup`
 
-The library panel's import action: the pick of a markup file whose path is handed to the engine.
+The file dialog that answers the library import's file question for the envoy.
 It owns no state and opens no file, because the workspace is the engine's to read.
 
-## `internal static string? QMarkupOpen(Window owner)`
+## `internal static string? QMarkupConsult(Window owner)`
 
 The file the reader picked, or null for a cancelled pick.
 A cancelled pick is not a failure and leaves the workspace exactly as it was.

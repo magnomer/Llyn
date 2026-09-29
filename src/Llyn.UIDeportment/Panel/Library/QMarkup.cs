@@ -4,7 +4,7 @@ namespace Llyn.UIDeportment;
 
 internal static class QMarkup
 {
-    internal static string? QMarkupOpen(Window owner)
+    internal static string? QMarkupConsult(Window owner)
     {
         Microsoft.Win32.OpenFileDialog dialog = new()
         {
