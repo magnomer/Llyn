@@ -44,7 +44,7 @@ public partial class PEditor
     {
         PEtymon caret = (PEtymon)e.Parameter;
         TextBox box = (TextBox)e.OriginalSource;
-        _pEditorHost.PWindowProspectShow(
+        PProspectShow(
             box,
             PMentionSelection.PMentionSelectionPlace(box),
             caret.PEtymonText.Trim(),
@@ -74,7 +74,7 @@ public partial class PEditor
         string text = box.Text;
         int start = box.SelectionStart;
         int length = box.SelectionLength;
-        _pEditorHost.PWindowProspectShow(
+        PProspectShow(
             box,
             PMentionSelection.PMentionSelectionPlace(box),
             box.SelectedText.Trim(),

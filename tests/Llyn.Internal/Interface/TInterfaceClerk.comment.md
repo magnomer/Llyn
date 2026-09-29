@@ -5,6 +5,10 @@
 The relays for the clerks of the application ring, built over a rig of fakes.
 Each relay is transparent and carries no test logic of its own.
 
+## `internal static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> TMeaningClerkSort(`
+
+Relays the meaning clerk's reading order, so the rule is tested over handed-in Meanings.
+
 ## `internal static LRig TRigClerkCreate(LEntryVault entries)`
 
 A fake rig over `entries` with in-memory workspace, revision, tombstone, pronunciation, transcription and reflex stores.

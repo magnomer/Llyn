@@ -27,7 +27,7 @@ internal sealed partial class QCorpus
             return;
         }
 
-        _qCorpusHost.PWindowProspectShow(
+        QCorpusEditor.PProspectShow(
             box,
             PMentionSelection.PMentionSelectionPlace(box),
             box.SelectedText.Trim(),
@@ -52,7 +52,7 @@ internal sealed partial class QCorpus
             return;
         }
 
-        _qCorpusHost.PWindowSenseShow(
+        _qCorpusHost.PWindowSenseRefine(
             QTranscriptText,
             PMentionSelection.PMentionSelectionPlace(QTranscriptText),
             mention.CMentionDraftEntry,

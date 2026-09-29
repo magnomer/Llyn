@@ -142,40 +142,21 @@ public sealed class CCatalog
             language, varieties, (rows, delete) => store(CCatalogEnsignRead(rows), delete));
     }
 
-    public IReadOnlyList<CMeaning> CCatalogMeaningSort(long entryId)
+    public IReadOnlyList<CMeaning>? CCatalogMeaningRead(long entryId, CEnvoy envoy)
     {
-        IReadOnlyList<LMeaning> meanings =
-            _cCatalogAtelier.CAtelierEntryPort.LEngineMeaningRead(entryId, LOwner.LOwnerEntry);
-        string unknown = _cCatalogAtelier.CAtelierSettingsPort.LEngineTextRead("Display.Unknown");
+        ArgumentNullException.ThrowIfNull(envoy);
 
-        Func<long, List<LMeaning>> childrenRead = parent =>
+        try
         {
-            List<LMeaning> children = meanings
-                .Where(meaning => (meaning.LMeaningParentId ?? 0) == parent && meaning.LMeaningId != parent)
+            return _cCatalogAtelier.CAtelierEntryPort.LEngineMeaningRead(entryId, "Display.Unknown")
+                .Select(static row => new CMeaning(row.LMeaningId, row.LMeaningName, row.LMeaningDepth))
                 .ToList();
-            children.Sort((left, right) => left.LMeaningPosition.CompareTo(right.LMeaningPosition));
-            return children;
-        };
-
-        List<CMeaning> rows = [];
-        Stack<(int, int, List<LMeaning>)> path = [];
-        path.Push((0, 0, childrenRead(0)));
-        while (path.Count > 0)
-        {
-            (int depth, int next, List<LMeaning> children) = path.Pop();
-            if (next >= children.Count)
-            {
-                continue;
-            }
-
-            LMeaning meaning = children[next];
-            path.Push((depth, next + 1, children));
-            rows.Add(new CMeaning(
-                meaning.LMeaningId, meaning.LMeaningName.Length > 0 ? meaning.LMeaningName : unknown, depth));
-            path.Push((depth + 1, 0, childrenRead(meaning.LMeaningId)));
         }
-
-        return rows;
+        catch (Exception exception)
+        {
+            envoy.CEnvoyFailureShow("Mention.FindFailed", exception);
+            return null;
+        }
     }
 
     public (int, int)? CCatalogEntryLoad(long id)

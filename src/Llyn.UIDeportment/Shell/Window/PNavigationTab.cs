@@ -51,6 +51,7 @@ public partial class PWindow
         _cNavigation = PWindowAtelier.CAtelierNavigation;
         _cNavigation.CNavigationChanged += PNavigationRefine;
         _cNavigation.CNavigationArrived += PMentionMenuHide;
+        PWindowAtelier.CAtelierMention.CMentionSenseChosen += PMentionSenseRefine;
         _pWindowSurface.PreviewKeyDown += PVoyageKeyObserve;
         _pWindowSurface.PreviewMouseDown += PVoyageMouseObserve;
     }
@@ -185,67 +186,35 @@ public partial class PWindow
         }
     }
 
-    internal void PWindowMentionHandle(PMention anchor, CMentionResult result)
+    internal void PWindowMentionObserve(PMention anchor, CMentionResult result)
     {
         ArgumentNullException.ThrowIfNull(anchor);
         ArgumentNullException.ThrowIfNull(result);
 
-        PMentionMenuHide();
-
-        if (result.CMentionResultStored is CMentionMark stored)
-        {
-            if (stored.CMentionMarkEntry == 0)
-            {
-                return;
-            }
-
-            _cNavigation.CNavigationEntryOpen(stored.CMentionMarkEntry);
-            if (stored.CMentionMarkSense != 0)
-            {
-                _qLibrary.QLibraryDisplay.PDisplayCardScroll(stored.CMentionMarkSense);
-            }
-
-            return;
-        }
-
-        if (result.CMentionResultSingle)
-        {
-            _cNavigation.CNavigationEntryOpen(result.CMentionResultFirst);
-            return;
-        }
-
-        if (result.CMentionResultMany)
-        {
-            PMentionMenuShow(anchor, anchor.PMentionPieceRead(result.CMentionResultOffset), result);
-        }
+        PMentionMenuShow(
+            anchor,
+            anchor.PMentionPieceRead(result.CMentionResultOffset),
+            PWindowAtelier.CAtelierMention.CMentionResultOpen(result));
     }
 
-    internal void PWindowSenseShow(FrameworkElement anchor, Rect place, long entryId, Action<long> chosen)
+    private void PMentionSenseRefine(long sense)
+    {
+        _qLibrary.QLibraryDisplay.PDisplayCardScroll(sense);
+    }
+
+    internal void PWindowSenseRefine(FrameworkElement anchor, Rect place, long entryId, Action<long> chosen)
     {
         ArgumentNullException.ThrowIfNull(anchor);
         ArgumentNullException.ThrowIfNull(chosen);
 
-        IReadOnlyList<CMeaning> meanings;
-        try
+        if (PWindowAtelier.CAtelierCatalog.CCatalogMeaningRead(entryId, PWindowEnvoy)
+            is IReadOnlyList<CMeaning> meanings)
         {
-            meanings = PWindowAtelier.CAtelierCatalog.CCatalogMeaningSort(entryId);
+            PMentionMenuShow(anchor, place, entryId, meanings, chosen);
         }
-        catch (Exception exception)
-        {
-            PWindowFailureShow("Mention.FindFailed", exception);
-            return;
-        }
-
-        PMentionMenuShow(anchor, place, entryId, meanings, chosen);
     }
 
-    internal void PWindowProspectShow(
-        FrameworkElement anchor, Rect place, string word, string language, Action<long> chosen)
-    {
-        PInput.PEditor.PProspectShow(anchor, place, word, language, chosen);
-    }
-
-    private void PMentionLeaveHandle(object? sender, EventArgs e)
+    private void PMentionLeaveRefine(object? sender, EventArgs e)
     {
         PMentionMenuHide();
     }

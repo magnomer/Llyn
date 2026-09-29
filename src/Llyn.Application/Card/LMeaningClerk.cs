@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -20,6 +21,41 @@ public sealed class LMeaningClerk
     public IReadOnlyList<LMeaning> LMeaningClerkScan(long entryId)
     {
         return _lMeaningClerkMeanings.LMeaningRead(entryId);
+    }
+
+    public static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> LMeaningClerkSort(
+        IReadOnlyList<LMeaning> meanings, string unknown)
+    {
+        ArgumentNullException.ThrowIfNull(meanings);
+        ArgumentNullException.ThrowIfNull(unknown);
+
+        Func<long, List<LMeaning>> childrenRead = parent =>
+        {
+            List<LMeaning> children = meanings
+                .Where(meaning => (meaning.LMeaningParentId ?? 0) == parent && meaning.LMeaningId != parent)
+                .ToList();
+            children.Sort((left, right) => left.LMeaningPosition.CompareTo(right.LMeaningPosition));
+            return children;
+        };
+
+        List<(long LMeaningId, string LMeaningName, int LMeaningDepth)> rows = [];
+        Stack<(int, int, List<LMeaning>)> path = [];
+        path.Push((0, 0, childrenRead(0)));
+        while (path.Count > 0)
+        {
+            (int depth, int next, List<LMeaning> children) = path.Pop();
+            if (next >= children.Count)
+            {
+                continue;
+            }
+
+            LMeaning meaning = children[next];
+            path.Push((depth, next + 1, children));
+            rows.Add((meaning.LMeaningId, meaning.LMeaningName.Length > 0 ? meaning.LMeaningName : unknown, depth));
+            path.Push((depth + 1, 0, childrenRead(meaning.LMeaningId)));
+        }
+
+        return rows;
     }
 
     public void LMeaningClerkCreate(

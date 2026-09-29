@@ -79,15 +79,12 @@ Loads the cached flags, handing `store` each row as the Conduct shape.
 
 Loads the flags of one language's `varieties` and hands the rows to `store` as Conduct rows.
 
-## `public IReadOnlyList<CMeaning> CCatalogMeaningSort(long entryId)`
+## `public IReadOnlyList<CMeaning>? CCatalogMeaningRead(long entryId, CEnvoy envoy)`
 
-The Meanings of one Entry as sense-menu rows in reading order, each with its depth.
-The engine returns the Meanings grouped by parent, and the menu wants them in reading order.
-So the children of each parent are picked out and sorted by position before their own children follow.
-The walk keeps its own path, so a deep tree never grows the call stack.
-A Meaning is named by its title, or by its definition when it has no title.
-One with neither reads the engine's text for `Display.Unknown`, so every driver shows the same word.
-A row naming itself as its parent is skipped rather than followed, so it cannot loop the walk.
+The Meanings of one Entry as sense-menu rows, ready in reading order with their depth.
+The order and the name fallback are the engine's, and this read only maps the rows by name.
+It chooses the fallback key `Display.Unknown`, which the engine words.
+A failed read shows `Mention.FindFailed` through `envoy` and answers null, so no menu opens.
 
 ## `public (int, int)? CCatalogEntryLoad(long id)`
 

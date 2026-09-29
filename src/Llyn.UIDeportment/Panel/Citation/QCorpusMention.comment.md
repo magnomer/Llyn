@@ -13,8 +13,8 @@ The mention menu stands only on the transcript's sentence field, so the source i
 
 ## `private void QTranscriptLinkShow(`
 
-Asks the window for the Entry picker over a selection that spans anything.
-The picker belongs to the editor, so the window passes the ask through.
+Opens the Entry picker over a selection that spans anything.
+The picker belongs to an editor, so the corpus's own editor shows it.
 
 ## `private Action<long> QTranscriptLinkRead(int offset, int length)`
 

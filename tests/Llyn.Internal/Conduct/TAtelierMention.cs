@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -101,6 +102,89 @@ public sealed class TAtelierMention
     public void MentionMarkRead_NoDrafts_ReadsEmpty()
     {
         Assert.Empty(CMention.CMentionMarkRead(null));
+    }
+
+    [Theory]
+    [InlineData(7, true)]
+    [InlineData(0, false)]
+    public void MentionResultOpen_StoredMention_OpensItsEntryAndRaisesItsSense(long sense, bool raised)
+    {
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TAtelierMentionCreate(engine, []);
+        List<long> arrived = TMentionLibraryAdd(atelier, true);
+        List<long> senses = [];
+        atelier.CAtelierMention.CMentionSenseChosen += senses.Add;
+
+        IReadOnlyList<CTranslationTarget> offered = atelier.CAtelierMention.CMentionResultOpen(
+            new CMentionResult(2, new CMentionMark(1, 2, 3, 40, sense), [TMentionTargetCreate(8)]));
+
+        Assert.Empty(offered);
+        Assert.Equal([40L], arrived);
+        Assert.Equal(raised ? [sense] : [], senses);
+    }
+
+    [Theory]
+    [InlineData(0, true)]
+    [InlineData(40, false)]
+    public void MentionResultOpen_StoredMentionUnlinkedOrLeaveDeclined_OpensNothingAndRaisesNoSense(
+        long entry, bool leave)
+    {
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TAtelierMentionCreate(engine, []);
+        List<long> arrived = TMentionLibraryAdd(atelier, leave);
+        List<long> senses = [];
+        atelier.CAtelierMention.CMentionSenseChosen += senses.Add;
+
+        IReadOnlyList<CTranslationTarget> offered = atelier.CAtelierMention.CMentionResultOpen(
+            new CMentionResult(2, new CMentionMark(1, 2, 3, entry, 7), []));
+
+        Assert.Empty(offered);
+        Assert.Empty(arrived);
+        Assert.Empty(senses);
+    }
+
+    [Fact]
+    public void MentionResultOpen_SingleCandidate_OpensItAtOnce()
+    {
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TAtelierMentionCreate(engine, []);
+        List<long> arrived = TMentionLibraryAdd(atelier, true);
+
+        IReadOnlyList<CTranslationTarget> offered = atelier.CAtelierMention.CMentionResultOpen(
+            new CMentionResult(2, null, [TMentionTargetCreate(8)]));
+
+        Assert.Empty(offered);
+        Assert.Equal([8L], arrived);
+    }
+
+    [Theory]
+    [InlineData(2)]
+    [InlineData(0)]
+    public void MentionResultOpen_ManyOrNoCandidates_OpensNothingAndOffersTheMany(int count)
+    {
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TAtelierMentionCreate(engine, []);
+        List<long> arrived = TMentionLibraryAdd(atelier, true);
+        List<CTranslationTarget> candidates = [.. Enumerable.Range(8, count).Select(id => TMentionTargetCreate(id))];
+
+        IReadOnlyList<CTranslationTarget> offered = atelier.CAtelierMention.CMentionResultOpen(
+            new CMentionResult(2, null, candidates));
+
+        Assert.Equal(candidates, offered);
+        Assert.Empty(arrived);
+    }
+
+    private static List<long> TMentionLibraryAdd(CAtelier atelier, bool leave)
+    {
+        List<long> arrived = [];
+        atelier.CAtelierNavigation.TNavigationTabAdd(
+            "Library", () => leave, static () => 0, static _ => { }, arrived.Add);
+        return arrived;
+    }
+
+    private static CTranslationTarget TMentionTargetCreate(long id)
+    {
+        return new CTranslationTarget(id, "water", "English");
     }
 
     private static CAtelier TAtelierMentionCreate(LEngine engine, IReadOnlyList<LMentionLabel> labels)

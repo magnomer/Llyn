@@ -68,6 +68,6 @@ internal sealed partial class QCorpus
             return;
         }
 
-        _qCorpusHost.PWindowMentionHandle(QExcerptText, result);
+        _qCorpusHost.PWindowMentionObserve(QExcerptText, result);
     }
 }

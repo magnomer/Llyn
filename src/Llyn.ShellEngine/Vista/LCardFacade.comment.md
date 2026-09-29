@@ -19,6 +19,12 @@ Stores the engine and its shared gate for this facade.
 Reads the Meanings of the Entry identified by `ownerId`, in stored order.
 Only an Entry holds Meanings, so any other owner is refused.
 
+## `public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> LEngineMeaningRead(`
+
+Reads the Meanings of the Entry identified by `entryId`, ready in reading order.
+The clerk's `LMeaningClerkSort` owns the order and the name fallback.
+`key` is the localization key of that fallback, which the caller chooses and the engine words.
+
 ## `internal IReadOnlyList<LTag> LEngineTagRead()`
 
 Reads every Tag the workspace holds, once each, in alphabetical order.

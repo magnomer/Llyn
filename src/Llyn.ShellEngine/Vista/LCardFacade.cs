@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -29,6 +30,15 @@ internal sealed class LCardFacade
 
             return LCardFacadeStaff.LEngineStaffMeaning.LMeaningClerkScan(ownerId);
         }
+    }
+
+    public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> LEngineMeaningRead(
+        long entryId, string key)
+    {
+        ArgumentNullException.ThrowIfNull(key);
+
+        return LMeaningClerk.LMeaningClerkSort(
+            LEngineMeaningRead(entryId, LOwner.LOwnerEntry), _lCardFacadeEngine.LEngineSettings.LEngineTextRead(key));
     }
 
     internal IReadOnlyList<LTag> LEngineTagRead()

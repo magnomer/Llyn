@@ -18,6 +18,16 @@ Reads the meaning port out of `rig` and keeps the card clerk that writes a card'
 
 Reads the Meanings of the Entry identified by `entryId`, in stored order, roots and children together.
 
+## `public static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> LMeaningClerkSort(`
+
+The Meanings of one Entry in reading order, each with its depth and a ready name.
+The store returns them grouped by parent, and a reader wants them in reading order.
+So the children of each parent are picked out and sorted by position before their own children follow.
+The walk keeps its own path, so a deep tree never grows the call stack.
+A Meaning is named by its title, or by its definition when it has no title.
+One with neither takes `unknown`, the worded fallback the caller hands in.
+A row naming itself as its parent is skipped rather than followed, so it cannot loop the walk.
+
 ## `public void LMeaningClerkCreate(long entryId, long? parentId, LCardDraft card, string language, Dictionary<long, long> identity)`
 
 Writes one Meaning and then the Meanings nested under it, parent before child.

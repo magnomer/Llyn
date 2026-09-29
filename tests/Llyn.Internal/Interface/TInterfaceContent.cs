@@ -114,6 +114,10 @@ internal static partial class TInterface
         LOwner owner) =>
         engine.LEngineCard.LEngineMeaningRead(ownerId, owner);
 
+    internal static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> TEngineMeaningRead(
+        this LEngine engine, long entryId, string key) =>
+        engine.LEngineCard.LEngineMeaningRead(entryId, key);
+
     internal static LSituation TEngineSituationCommit(this LEngine engine, long id) =>
         engine.LEngineSituation.LEngineSituationCommit(id);
 

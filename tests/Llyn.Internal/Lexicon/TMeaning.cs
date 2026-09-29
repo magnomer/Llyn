@@ -59,6 +59,60 @@ public sealed class TMeaning
     }
 
     [Fact]
+    public void MeaningRead_ReadyRows_WalksSubSensesUnderTheirParentInReadingOrder()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LCardDraft firstSub =
+            TInterface.TCardDraftCreate(string.Empty, string.Empty, "first sub-sense", [], [], [], [], [], 1);
+        LCardDraft secondSub =
+            TInterface.TCardDraftCreate("second sub-title", string.Empty, string.Empty, [], [], [], [], [], 2);
+        LCardDraft first =
+            TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], [], [], 1)
+            with { LCardDraftChild = [firstSub, secondSub] };
+        LCardDraft second =
+            TInterface.TCardDraftCreate(string.Empty, string.Empty, "another meaning", [], [], [], [], [], 2);
+        LEntry entry = engine.TEngineEntrySave(
+            TInterface.TEntryDraftCreate("word", "English", string.Empty, string.Empty, [first, second], []));
+
+        IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> rows =
+            engine.TEngineMeaningRead(entry.LEntryId, "Display.Unknown");
+
+        Assert.Equal(
+            [("a meaning", 0), ("first sub-sense", 1), ("second sub-title", 1), ("another meaning", 0)],
+            rows.Select(static row => (row.LMeaningName, row.LMeaningDepth)).ToList());
+    }
+
+    [Fact]
+    public void MeaningClerkSort_NestedMeanings_ReadsDepthFirstByPosition()
+    {
+        LStateValue blank = LStateValue.LStateValueUnspecified;
+
+        IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> rows = TInterface.TMeaningClerkSort(
+            [
+                TInterface.TMeaningCreate(3, 7, null, 2, TInterface.TStateValueCreate("second"), blank),
+                TInterface.TMeaningCreate(1, 7, null, 1, TInterface.TStateValueCreate("first"), blank),
+                TInterface.TMeaningCreate(4, 7, 1, 2, TInterface.TStateValueCreate("first-b"), blank),
+                TInterface.TMeaningCreate(2, 7, 1, 1, TInterface.TStateValueCreate("first-a"), blank),
+            ],
+            "unknown");
+
+        Assert.Equal([(1L, "first", 0), (2L, "first-a", 1), (4L, "first-b", 1), (3L, "second", 0)], rows);
+    }
+
+    [Fact]
+    public void MeaningClerkSort_BlankName_TakesTheUnknownText()
+    {
+        LStateValue blank = LStateValue.LStateValueUnspecified;
+
+        IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> rows =
+            TInterface.TMeaningClerkSort([TInterface.TMeaningCreate(1, 7, null, 1, blank, blank)], "unknown");
+
+        Assert.Equal("unknown", Assert.Single(rows).LMeaningName);
+    }
+
+    [Fact]
     public void MeaningName_TitleOrDefinition_PrefersTheTitle()
     {
         LStateValue blank = LStateValue.LStateValueUnspecified;

@@ -6,10 +6,24 @@ The mention gates: how a text divides into Mention pieces, and how its chips are
 It also converts between code points and UTF-16 units for a driver's caret and selection.
 It stands on the atelier's ports, and `CAtelier` builds the one instance every driver shares.
 It holds no state of its own.
+Its click gate opens what a found word names through the atelier's navigation.
 
 ## `internal CMention(CAtelier atelier)`
 
 Only the atelier builds it, so each session has one.
+
+## `public event Action<long>? CMentionSenseChosen;`
+
+Raised with a stored Mention's sense once its entry has opened, so the driver brings that sense card into view.
+
+## `public IReadOnlyList<CTranslationTarget> CMentionResultOpen(CMentionResult result)`
+
+Decides what a click on a text opens next.
+A stored Mention opens its linked entry through the navigation's entry open, and a link to nothing opens nothing.
+Its sense is raised only when the open went through, so a declined leave spotlights nothing.
+A single matching entry opens at once.
+Several matching entries open nothing and come back as the candidates the driver offers in a menu.
+Every other answer is empty, so the driver's menu shows nothing.
 
 ## `public IReadOnlyList<CMentionLabel> CMentionResolve(`
 

@@ -11,48 +11,54 @@ namespace Llyn.Tests;
 public sealed class TCatalog
 {
     [Fact]
-    public void CatalogMeaningSort_NestedMeanings_ReadsDepthFirstByPosition()
+    public void CatalogMeaningRead_ReadyRows_MapsEachRowAndChoosesTheFallbackKey()
     {
-        LStateValue blank = LStateValue.LStateValueUnspecified;
+        List<string> keys = [];
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
             engine,
             new Dictionary<string, Func<object?[]?, object?>>
             {
-                ["LEngineMeaningRead"] = _ => new List<LMeaning>
+                ["LEngineMeaningRead"] = args =>
                 {
-                    TInterface.TMeaningCreate(3, 7, null, 2, TInterface.TStateValueCreate("second"), blank),
-                    TInterface.TMeaningCreate(1, 7, null, 1, TInterface.TStateValueCreate("first"), blank),
-                    TInterface.TMeaningCreate(4, 7, 1, 2, TInterface.TStateValueCreate("first-b"), blank),
-                    TInterface.TMeaningCreate(2, 7, 1, 1, TInterface.TStateValueCreate("first-a"), blank),
+                    keys.Add((string)args![1]!);
+                    return new List<(long LMeaningId, string LMeaningName, int LMeaningDepth)>
+                    {
+                        (1, "first", 0),
+                        (2, "first-a", 1),
+                        (3, "second", 0),
+                    };
                 },
             });
+        List<string> asked = [];
 
-        IReadOnlyList<CMeaning> rows = atelier.CAtelierCatalog.CCatalogMeaningSort(7);
+        IReadOnlyList<CMeaning>? rows =
+            atelier.CAtelierCatalog.CCatalogMeaningRead(7, TInterfaceConduct.TEnvoyCreate(false, asked));
 
         Assert.Equal(
-            [(1L, "first", 0), (2L, "first-a", 1), (4L, "first-b", 1), (3L, "second", 0)],
-            rows.Select(static row => (row.CMeaningId, row.CMeaningName, row.CMeaningDepth)).ToList());
+            [(1L, "first", 0), (2L, "first-a", 1), (3L, "second", 0)],
+            rows!.Select(static row => (row.CMeaningId, row.CMeaningName, row.CMeaningDepth)).ToList());
+        Assert.Equal(["Display.Unknown"], keys);
+        Assert.Empty(asked);
     }
 
     [Fact]
-    public void CatalogMeaningSort_BlankName_ReadsTheUnknownText()
+    public void CatalogMeaningRead_ReadFails_ShowsTheFailureAndAnswersNothing()
     {
-        LStateValue blank = LStateValue.LStateValueUnspecified;
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
             engine,
             new Dictionary<string, Func<object?[]?, object?>>
             {
-                ["LEngineMeaningRead"] = _ => new List<LMeaning>
-                {
-                    TInterface.TMeaningCreate(1, 7, null, 1, blank, blank),
-                },
+                ["LEngineMeaningRead"] = _ => throw new InvalidOperationException("gone"),
             });
+        List<string> asked = [];
 
-        IReadOnlyList<CMeaning> rows = atelier.CAtelierCatalog.CCatalogMeaningSort(7);
+        IReadOnlyList<CMeaning>? rows =
+            atelier.CAtelierCatalog.CCatalogMeaningRead(7, TInterfaceConduct.TEnvoyCreate(false, asked));
 
-        Assert.Equal(engine.TEngineTextRead("Display.Unknown"), Assert.Single(rows).CMeaningName);
+        Assert.Null(rows);
+        Assert.Equal(["Mention.FindFailed"], asked);
     }
 
     [Fact]

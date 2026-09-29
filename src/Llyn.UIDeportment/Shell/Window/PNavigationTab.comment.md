@@ -20,6 +20,7 @@ The navigation raises the change it made, so nothing is painted here.
 
 Reads the tabs and takes the atelier's navigation, whose changes this part paints.
 A landing only closes the mention menu, since the tab's area opens the record itself.
+A stored Mention's sense, raised by the mention gate, scrolls into view.
 It hooks the window's key and mouse previews to the voyage shortcuts.
 
 ## `private void PNavigationRefine(CNavigationState state)`
@@ -54,32 +55,27 @@ The key binding is the GUI's own, so it stays here.
 The two side buttons of a mouse step back and forward, as they do in a browser.
 Each button reaches its one voyage gate.
 
-## `internal void PWindowMentionHandle(PMention anchor, CMentionResult result)`
+## `internal void PWindowMentionObserve(PMention anchor, CMentionResult result)`
 
-What a click on a word of a shown sentence opens, decided once for every panel that draws one.
-Any menu already open is closed first, so a second click never stacks two.
-A word stored as standing for an Entry opens that Entry through the navigation's gate.
-The card it is narrowed to is scrolled into view.
-A word stored as standing for nothing opens nothing.
-An unlinked word with exactly one candidate Entry opens it.
-An unlinked word with several opens the menu under that word, and the reader picks.
+What a click on a word of a shown sentence found, handed whole to `CMentionResultOpen`.
+Every panel that draws a sentence takes this one path.
+The gate decides what opens, and the candidates it answers go to the menu under the clicked word.
 The word's place is read off the control that drew it, at the offset the engine settled on.
-An unlinked word with no candidate opens nothing.
+An empty answer only closes any menu already open, so a second click never stacks two.
 
-## `internal void PWindowSenseShow(FrameworkElement anchor, Rect place, long entryId, Action<long> chosen)`
+## `private void PMentionSenseRefine(long sense)`
 
-Opens the menu in Sense mode on the Meanings of one Entry.
-The window reads the Meanings, because the menu holds no engine.
-A read that fails is reported the way a failed word lookup is, and nothing opens.
+Answers `CMentionSenseChosen` by scrolling the stored Mention's sense card into view in the library's display.
+The navigation's entry open lands in the library, so that display is the one showing the entry.
+
+## `internal void PWindowSenseRefine(FrameworkElement anchor, Rect place, long entryId, Action<long> chosen)`
+
+Opens the menu in Sense mode on the Meanings `CCatalogMeaningRead` answers ready in reading order.
+A read that fails is reported by the read itself, and nothing opens.
 The linking gesture is the caller, and it passes what to do with the chosen sense.
 Both the card row and the corpus scribe call it.
 
-## `internal void PWindowProspectShow(FrameworkElement anchor, Rect place, string word, string language, Action<long> chosen)`
-
-Passes the corpus scribe's ask for the Entry picker through to the editor that owns it.
-The popup is declared once, in the editor, and the window is the only path between the two panels.
-
-## `private void PMentionLeaveHandle(object? sender, EventArgs e)`
+## `private void PMentionLeaveRefine(object? sender, EventArgs e)`
 
 The menu closes when the window loses activation.
 A popup that stays open over another window would answer keys meant for that window.

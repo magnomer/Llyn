@@ -58,7 +58,8 @@ public interface LEntryPort
 
     IReadOnlyList<LReflexDraft> LEngineReflexRead(LEntryDraft draft);
 
-    IReadOnlyList<LMeaning> LEngineMeaningRead(long ownerId, LOwner owner);
+    IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> LEngineMeaningRead(
+        long entryId, string key);
 
     IReadOnlyList<LTag> LEngineTagFind(string query, LCatalogOrder order);
 

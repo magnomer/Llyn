@@ -4,7 +4,8 @@
 
 Covers how the Meanings of an entry read back.
 Sub-senses saved under a parent read back with that parent and their own positions.
-The word menu walks them into reading order.
+The engine walks them into reading order for the word menu, each with its depth.
+A Meaning with no title or definition takes the worded fallback.
 
 ## Inline notes
 

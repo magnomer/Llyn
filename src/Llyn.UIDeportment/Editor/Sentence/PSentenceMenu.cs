@@ -227,7 +227,7 @@ public partial class PEditor
 
         long cardId = card.PCardId;
         long rowId = row.PSentenceRow;
-        _pEditorHost.PWindowSenseShow(
+        _pEditorHost.PWindowSenseRefine(
             box,
             PMentionSelection.PMentionSelectionPlace(box),
             mention.CMentionDraftEntry,

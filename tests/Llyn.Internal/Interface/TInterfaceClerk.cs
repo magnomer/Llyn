@@ -6,6 +6,10 @@ namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
+    internal static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> TMeaningClerkSort(
+        IReadOnlyList<LMeaning> meanings, string unknown) =>
+        LMeaningClerk.LMeaningClerkSort(meanings, unknown);
+
     internal static LRig TRigClerkCreate(LEntryVault entries) =>
         TRigFake.TRigFakeBuild(entries) with
         {

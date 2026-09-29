@@ -24,15 +24,15 @@ public partial class PWindow
 
     private ListBox PMentionList => (ListBox)_pWindowSurface.FindName(nameof(PMentionList));
 
-    internal void PMentionMenuShow(FrameworkElement anchor, Rect place, CMentionResult result)
+    internal void PMentionMenuShow(FrameworkElement anchor, Rect place, IReadOnlyList<CTranslationTarget> entries)
     {
-        ArgumentNullException.ThrowIfNull(result);
+        ArgumentNullException.ThrowIfNull(entries);
 
         PMentionMenuShow(
             anchor,
             place,
             "Mention.Title",
-            PMentionItem.PMentionItemCreate(result.CMentionResultEntry),
+            PMentionItem.PMentionItemCreate(entries),
             item => _cNavigation.CNavigationEntryOpen(item.PMentionItemEntry));
     }
 

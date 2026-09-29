@@ -14,9 +14,10 @@ It shows the rows it is given and reports the one picked.
 
 The popup, its title and its list are read through the loaded window's name scope.
 
-## `internal void PMentionMenuShow(FrameworkElement anchor, Rect place, CMentionResult result)`
+## `internal void PMentionMenuShow(FrameworkElement anchor, Rect place, IReadOnlyList<CTranslationTarget> entries)`
 
-Entry mode.
+Entry mode, on the candidates `CMentionResultOpen` answered.
+An empty list only closes the menu.
 A picked row opens its Entry through the navigation's gate.
 The menu is already hidden by the pick, and a landing hides it too.
 

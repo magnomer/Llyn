@@ -15,6 +15,34 @@ public sealed class CMention
         _cMentionAtelier = atelier;
     }
 
+    public event Action<long>? CMentionSenseChosen;
+
+    public IReadOnlyList<CTranslationTarget> CMentionResultOpen(CMentionResult result)
+    {
+        ArgumentNullException.ThrowIfNull(result);
+
+        CNavigation navigation = _cMentionAtelier.CAtelierNavigation;
+        if (result.CMentionResultStored is CMentionMark stored)
+        {
+            if (stored.CMentionMarkEntry != 0
+                && navigation.CNavigationEntryOpen(stored.CMentionMarkEntry)
+                && stored.CMentionMarkSense != 0)
+            {
+                CMentionSenseChosen?.Invoke(stored.CMentionMarkSense);
+            }
+
+            return [];
+        }
+
+        if (result.CMentionResultSingle)
+        {
+            navigation.CNavigationEntryOpen(result.CMentionResultFirst);
+            return [];
+        }
+
+        return result.CMentionResultMany ? result.CMentionResultEntry : [];
+    }
+
     public IReadOnlyList<CMentionLabel> CMentionResolve(
         string text, IReadOnlyList<CMentionDraft> mentions, string silent)
     {

@@ -336,7 +336,7 @@ public class PDisplay : UserControl
             e.PMentionArgumentLanguage,
             e.PMentionArgumentOffset,
             e.PMentionArgumentMention,
-            _pDisplayHost.PWindowMentionHandle);
+            _pDisplayHost.PWindowMentionObserve);
     }
 
     internal void PDisplayCardScroll(long id)

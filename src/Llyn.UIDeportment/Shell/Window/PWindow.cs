@@ -123,7 +123,7 @@ public partial class PWindow
         QLookItem.QLookItemAttach(PMentionList, PMentionRowApply);
         _pWindowSurface.PreviewKeyDown += PMentionKeyHandle;
         _pWindowSurface.PreviewKeyDown += PChronicleKeyObserve;
-        _pWindowSurface.Deactivated += PMentionLeaveHandle;
+        _pWindowSurface.Deactivated += PMentionLeaveRefine;
 
         _lFootprint = new LFootprint(PWindowPosture);
         PFootprintRestore();
