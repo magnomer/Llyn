@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
@@ -18,17 +20,17 @@ public sealed class CCardSpeech
 
     private LTenure? CCardSpeechTenure => _cCardSpeechDesk.CDeskFilling ? null : _cCardSpeechDesk.CDeskTenure;
 
-    public bool CCardSpeechSet(string typed)
+    public CCategory CCardSpeechSet(string typed)
     {
         ArgumentNullException.ThrowIfNull(typed);
 
         if (CCardSpeechTenure is not LTenure held)
         {
-            return false;
+            return new CCategory([], false, false, false);
         }
 
         _cCardSpeechTyped = typed;
-        return held.LTenureSpeechSet(typed);
+        return LCategoryRead(held.LTenureSpeechSet(typed));
     }
 
     public void CCardSpeechAdd(string name)
@@ -55,10 +57,21 @@ public sealed class CCardSpeech
     {
         if (_cCardSpeechDesk.CDeskTenure is not LTenure held)
         {
-            return new CMarker([], _cCardSpeechTyped);
+            return new CMarker([], _cCardSpeechTyped, new CCategory([], false, false, false));
         }
 
-        (var names, _cCardSpeechTyped) = held.LTenureSpeechRead(_cCardSpeechTyped);
-        return new CMarker(names, _cCardSpeechTyped);
+        (var names, _cCardSpeechTyped, LSpeechOffer found) = held.LTenureSpeechRead(_cCardSpeechTyped);
+        return new CMarker(names, _cCardSpeechTyped, LCategoryRead(found));
+    }
+
+    private static CCategory LCategoryRead(LSpeechOffer offer)
+    {
+        return new CCategory(
+            offer.LSpeechOfferRows
+                .Select(static row => new CCategoryRow(row.LSpeechRowName, row.LSpeechRowTaken))
+                .ToList(),
+            offer.LSpeechOfferDeclared,
+            offer.LSpeechOfferMatched,
+            offer.LSpeechOfferShown);
     }
 }

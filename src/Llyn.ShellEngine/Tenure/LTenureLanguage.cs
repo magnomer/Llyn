@@ -39,6 +39,31 @@ public sealed partial class LTenure
             || LTenureRead()?.LDraftContent.LEntryDraftReflected == true;
     }
 
+    public IReadOnlyList<LAnchorRow> LTenureAnchorScan(long reflex)
+    {
+        LDraft? held = LTenureRead();
+        if (held?.LDraftStored is not long stored)
+        {
+            return [];
+        }
+
+        try
+        {
+            return LDraftClerkReflex.LReflexFind(held.LDraftContent, reflex) is LReflexDraft row
+                ? _lEngine.LEngineReflex.LEngineAnchorScan(
+                    stored,
+                    row.LReflexDraftAnchors,
+                    held.LDraftContent.LEntryDraftLanguage,
+                    row.LReflexDraftLanguage,
+                    row.LReflexDraftAnatomy.LAnatomyToneIpa)
+                : [];
+        }
+        catch (Exception)
+        {
+            return [];
+        }
+    }
+
     public string LTenurePronunciationRead()
     {
         return LTenureRead()?.LDraftContent is LEntryDraft draft
@@ -128,7 +153,8 @@ public sealed partial class LTenure
         return ordered;
     }
 
-    public (IReadOnlyList<string> LSpeechNames, string LSpeechTyped) LTenureSpeechRead(string typed)
+    public (IReadOnlyList<string> LSpeechNames, string LSpeechTyped, LSpeechOffer LSpeechFound) LTenureSpeechRead(
+        string typed)
     {
         IReadOnlyList<LSpeechDraft> shown = LTenureRead()?.LDraftContent.LEntryDraftSpeeches ?? [];
         (IReadOnlyList<LSpeechDraft> held, string kept) =
@@ -138,14 +164,14 @@ public sealed partial class LTenure
             _lTenureSpeechPending = null;
         }
 
-        return (held.Select(static speech => speech.LSpeechDraftName).ToList(), kept);
+        return (held.Select(static speech => speech.LSpeechDraftName).ToList(), kept, LTenureSpeechFind(held, kept));
     }
 
-    public bool LTenureSpeechSet(string typed)
+    public LSpeechOffer LTenureSpeechSet(string typed)
     {
         IReadOnlyList<LSpeechDraft> held = LTenureChipRead();
         LTenureSpeechSend(held, typed, true);
-        return LSpeechClerk.LSpeechTypedCheck(typed);
+        return LTenureSpeechFind(held, typed);
     }
 
     public void LTenureSpeechAdd(string name)
@@ -189,6 +215,21 @@ public sealed partial class LTenure
         }
 
         LTenureRequestApply(request);
+    }
+
+    private LSpeechOffer LTenureSpeechFind(IReadOnlyList<LSpeechDraft> held, string typed)
+    {
+        IReadOnlyList<LSpeechValue> values;
+        try
+        {
+            values = _lEngine.LEngineVocabulary.LEngineSpeechRead(LTenureLanguageRead());
+        }
+        catch (Exception)
+        {
+            values = [];
+        }
+
+        return LSpeechClerk.LSpeechFind(values, held, typed);
     }
 
     private LSpeechValue? LTenureSpeechCreate(string language, string name)

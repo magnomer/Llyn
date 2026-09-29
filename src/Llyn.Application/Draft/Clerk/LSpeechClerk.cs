@@ -99,6 +99,26 @@ public static class LSpeechClerk
         return (LSpeechNormalize(shown), string.Empty);
     }
 
+    public static LSpeechOffer LSpeechFind(
+        IReadOnlyList<LSpeechValue> values, IReadOnlyList<LSpeechDraft> held, string? typed)
+    {
+        ArgumentNullException.ThrowIfNull(values);
+        ArgumentNullException.ThrowIfNull(held);
+
+        string part = (typed ?? string.Empty).Trim();
+        List<LSpeechRow> rows = [];
+        foreach (LSpeechValue value in values)
+        {
+            string name = value.LSpeechValueName;
+            if (name.Contains(part, StringComparison.OrdinalIgnoreCase))
+            {
+                rows.Add(new LSpeechRow(name, LSpeechHeldCheck(held, name)));
+            }
+        }
+
+        return new LSpeechOffer(rows, values.Count > 0, rows.Count > 0, LSpeechTypedCheck(part) && rows.Count > 0);
+    }
+
     private static bool LSpeechHeldCheck(IReadOnlyList<LSpeechDraft> held, string name)
     {
         foreach (LSpeechDraft speech in held)

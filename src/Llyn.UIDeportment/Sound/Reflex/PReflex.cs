@@ -40,7 +40,7 @@ public partial class PEditor
         PEditorSound.CommandBindings.Add(new CommandBinding(
             PReflexCommand.PReflexCommandMain, PReflexMainHandle));
         PEditorSound.CommandBindings.Add(new CommandBinding(
-            PReflexCommand.PReflexCommandAnchor, PReflexAnchorHandle));
+            PReflexCommand.PReflexCommandAnchor, PReflexAnchorObserve));
         PReflexRenewal.CommandBindings.Add(new CommandBinding(
             PReflexCommand.PReflexCommandRenewal, PReflexRebuildHandle));
         PReflexFold.Checked += PReflexFoldHandle;

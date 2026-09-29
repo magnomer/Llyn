@@ -32,6 +32,10 @@ Sends the held Example's chosen language at once, since it came from a click.
 
 Points the held Example at the picked Source, sent at once.
 
+## `public void LQuillAnchorSet(long reflex, long fanqie, bool anchored)`
+
+Ties or unties one reflex row and one fanqie row, sent at once.
+
 ## `public void LQuillGlossAdd(long card, long sentence, string language, int position)`
 
 Adds a Gloss in the given language at the given position, sent at once.

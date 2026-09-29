@@ -10,9 +10,12 @@ internal sealed class QEditor
         ArgumentNullException.ThrowIfNull(editor);
 
         QEditorArea = editor;
+        QEditorAnchor = CSoundingAnchor.CSoundingAnchorCreate(editor);
     }
 
     internal CEditor QEditorArea { get; }
+
+    internal CSoundingAnchor QEditorAnchor { get; }
 
     internal void QEditorIntroduce(PWindow host, PEditor surface)
     {
@@ -51,7 +54,6 @@ internal sealed class QEditor
         editor.CEditorDraftChanged += surface.PExampleFontRefine;
         editor.CEditorDraftChanged += surface.PGlyphFontRefine;
         editor.CEditorDraftChanged += surface.PSentenceFrameRefine;
-        editor.CEditorDraftChanged += surface.PCategoryLoad;
         editor.CEditorDraftChanged += surface.PMeaningRefine;
         editor.CEditorDraftChanged += surface.PCollocationRefine;
         editor.CEditorDraftChanged += surface.PEtymologyRefine;

@@ -47,10 +47,14 @@ internal sealed class QCaret : Adorner
     internal static bool QCaretKeyApply(
         string key, int caret, int length, int selection, Action<int> remove, Func<int, bool> move, Action place)
     {
+        return QCaretEdgeApply(key, caret, length, selection, remove)
+            || QCaretStepApply(key, length, selection, move, place);
+    }
+
+    internal static bool QCaretEdgeApply(string key, int caret, int length, int selection, Action<int> remove)
+    {
         ArgumentNullException.ThrowIfNull(key);
         ArgumentNullException.ThrowIfNull(remove);
-        ArgumentNullException.ThrowIfNull(move);
-        ArgumentNullException.ThrowIfNull(place);
 
         if (selection != 0)
         {
@@ -69,8 +73,17 @@ internal sealed class QCaret : Adorner
             return true;
         }
 
+        return false;
+    }
+
+    internal static bool QCaretStepApply(string key, int length, int selection, Func<int, bool> move, Action place)
+    {
+        ArgumentNullException.ThrowIfNull(key);
+        ArgumentNullException.ThrowIfNull(move);
+        ArgumentNullException.ThrowIfNull(place);
+
         int step = key == "Left" ? -1 : key == "Right" ? 1 : 0;
-        if (step == 0 || length > 0 || !move(step))
+        if (selection != 0 || step == 0 || length > 0 || !move(step))
         {
             return false;
         }

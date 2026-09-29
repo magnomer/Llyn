@@ -3,8 +3,9 @@
 ## `public partial class PEditor`
 
 The editor's anchor dropdown: one popup the panel owns, retargeted at the reflex row that asked for it.
-It lists the character's stored placements with a tick each, and a tick sends one request for that pair.
+It lists the character's stored placements with a tick each, and a tick hands that pair to one gate.
 A placement whose tone class the row's own tone may descend from ends with the estimate mark.
+Conduct holds the row the open popup edits, so the driver keeps no row between open and tick.
 
 ## `private const string PAnchorMenuStyle`
 
@@ -19,32 +20,35 @@ The accent brush the estimate mark is drawn in.
 The mark appended after the label of an estimated placement, a space and `≈`.
 It stands at the end so the label reads as stored and the estimate reads as a comment on it.
 
-## `private QReflexItem? _pAnchorRow`
+## `private void PAnchorAttach()`
 
-The reflex row the open popup edits, `null` while it is closed.
+Subscribes the anchor menu's close, which the markup named, and the anchor command's preview.
 
-## `internal void PReflexAnchorHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private void PAnchorShutRefine(object sender, ExecutedRoutedEventArgs e)`
 
-Opens the popup under the label that was pressed, filled for the row the command carries.
+Shuts an open popup before the anchor command reaches `PReflexAnchorObserve`, so it reopens under the new label.
+It only changes the look, so no gate is involved.
+Shutting it after the open gate could let the popup's close clear the row that gate just chose.
 
-## `private void PAnchorBuild(QReflexItem row)`
+## `internal void PReflexAnchorObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Fills the list with one tick row per stored placement, ticked where `row` is anchored.
-The engine marks each placement, reading the classes the row's tone may descend from under the entry language's tone rows.
-The empty notice shows when the character has no stored placement yet.
+Hands the id of the row the command carries to the open gate.
+Its Refine paints the answer under the pressed label.
 
-## `private TextBlock PAnchorLabelBuild(PAnchorItem item)`
+## `private void PAnchorRefine(CAnchor menu, UIElement anchor)`
+
+Fills the list with one tick row per offered placement, ticked where the row is anchored.
+Shows the empty notice when Conduct says so, then opens the popup under `anchor`.
+
+## `private TextBlock PAnchorLabelBuild(CAnchorRow item)`
 
 The label of one tick row, with the estimate mark in the accent colour after an estimated placement.
 
-## `private void PAnchorTickHandle(object sender, RoutedEventArgs e)`
+## `private void PAnchorTickObserve(object sender, RoutedEventArgs e)`
 
-Sends the tick to the engine as an anchor request, and the row comes back rebuilt with its label.
+Hands the ticked placement and its new state to the anchor gate.
+The row comes back from the draft change with its new label.
 
-## `private void PAnchorClosedHandle(object? sender, EventArgs e)`
+## `private void PAnchorClosedObserve(object? sender, EventArgs e)`
 
-Forgets the row when the popup closes.
-
-## `private void PAnchorAttach()`
-
-Subscribes the anchor menu's close, which the markup named.
+Tells Conduct the popup closed, so the row is no longer selected.

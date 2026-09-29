@@ -17,7 +17,6 @@ Conduct resolved its text and its mark, so no driver asks the pack about the row
 - `CReflexMain`: whether the reflex is the language's main one.
 - `CReflexRegion`: the region the reflex is heard in.
 - `CReflexAnchors`: the fanqie readings the reflex anchors to.
-- `CReflexTone`: the tone written in phonetic letters.
 - `CReflexMark`: whether the text is the respelling, and the slashes around it.
 - `CReflexFolded`: whether the entry's pack folds the row's language away.
 - `CReflexLead`: whether the row opens a run of one language, so it alone prints the language.

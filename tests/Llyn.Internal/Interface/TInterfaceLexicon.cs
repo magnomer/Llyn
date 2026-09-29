@@ -1,3 +1,4 @@
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.Tests;
@@ -132,6 +133,9 @@ internal static partial class TInterface
         string respelling = "",
         string region = "") =>
         new(language, kind, text, main, id, romanization, meaning, false, note, respelling, region);
+
+    internal static LReflexDraft? TReflexFind(LEntryDraft content, long id) =>
+        LDraftClerkReflex.LReflexFind(content, id);
 
     internal static IReadOnlyList<LSpeechDraft> TSpeechDraftCreate(IReadOnlyList<string>? speeches)
     {

@@ -14,7 +14,6 @@ public sealed record CReflex(
     bool CReflexMain,
     string CReflexRegion,
     IReadOnlyList<long> CReflexAnchors,
-    string CReflexTone,
     CRespellingMark CReflexMark,
     bool CReflexFolded,
     bool CReflexLead)

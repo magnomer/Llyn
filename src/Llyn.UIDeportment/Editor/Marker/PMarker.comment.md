@@ -43,19 +43,14 @@ The box is cleared after the gate either way, so a repeated name does not sit th
 ## `private void PMarkerTextObserve(object sender, TextChangedEventArgs e)`
 
 Hands the raw text to the gate, which keeps it pending in the draft.
-The gate answers whether the text names a part of speech, so the menu knows to open.
+The gate answers the category menu for the text, and the dropper paints it.
 
-## `private void PMarkerDropperRefine(bool offered)`
+## `private void PMarkerDropperRefine(CCategory category)`
 
-Typing narrows the menu and opens it on what is left.
+Typing narrows the menu and opens it when the engine says the menu shows.
 An empty box or nothing matching closes it, because a menu with nothing to offer is in the way.
-
-## `private bool PMarkerFind(string name)`
-
-Whether a chip already carries the name, so the menu marks it taken.
-It stays for `PCategoryUpdate`, whose own row moves the check down.
 
 ## `internal void PMarkerRefine(CEntryDraft _)`
 
 Paints the chips and the pending text Conduct answers for the held draft.
-The menu is rebuilt after, because what is marked may have changed.
+The menu the same read carries is painted after, because what is marked may have changed.

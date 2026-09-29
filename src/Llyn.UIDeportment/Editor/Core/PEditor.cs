@@ -52,7 +52,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         Resources.MergedDictionaries.Add(new PLanguageTemplate());
         _pMarkerTemplate = new PMarkerTemplate();
         Resources.MergedDictionaries.Add(_pMarkerTemplate);
-        _pCategoryTemplate = new PCategoryTemplate(this);
+        _pCategoryTemplate = new PCategoryTemplate();
         Resources.MergedDictionaries.Add(_pCategoryTemplate);
         _pNotationTemplate = new PNotationTemplate(this);
         Resources.MergedDictionaries.Add(_pNotationTemplate);

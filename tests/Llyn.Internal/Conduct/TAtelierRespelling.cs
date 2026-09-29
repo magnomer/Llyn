@@ -88,7 +88,6 @@ public sealed class TAtelierRespelling
         Assert.Equal([true, true], reflexes.Select(static reflex => reflex.CReflexLead));
         Assert.Equal(" Wu", reflexes[0].CReflexLanguage);
         Assert.Equal([7L], reflexes[0].CReflexAnchors);
-        Assert.Equal("55", reflexes[0].CReflexTone);
     }
 
     [Theory]
@@ -130,7 +129,7 @@ public sealed class TAtelierRespelling
     {
         return new CReflexDraft(
             id, language, string.Empty, text, respelling, string.Empty, string.Empty, string.Empty, false, string.Empty,
-            [7], "55");
+            [7]);
     }
 
     private static CAtelier TAtelierRespellingCreate(

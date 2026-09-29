@@ -13,7 +13,7 @@ An accent row carries the resolved form, its audio and its variety's keys.
 
 ## `private static CReflexDraft TAtelierReflexCreate(long id, string language, string text, string respelling)`
 
-Builds one draft reflex with one anchor and a tone, so a scan's copy of them shows.
+Builds one draft reflex with one anchor, so a scan's copy of it shows.
 
 ## `private static CAtelier TAtelierRespellingCreate(LEngine engine, (bool, string, string) mark, List<string> asked)`
 

@@ -52,9 +52,6 @@ public interface LDraftPort
 
     int LEngineOffsetRead(string text, int unit);
 
-    IReadOnlyList<LAnchorRow> LEngineAnchorScan(
-        long entryId, IReadOnlyList<long> anchors, string language, string reflex, string tone);
-
     bool LEngineAnchorCheck(long entryId, string headword);
 
     string LEngineAnchorFormat(long entryId, IReadOnlyList<long> anchors, string headword, string separator);

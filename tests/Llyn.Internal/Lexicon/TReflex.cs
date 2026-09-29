@@ -272,6 +272,20 @@ public sealed class TReflex
         Assert.Contains("<region>Shanghai</region>", written);
     }
 
+    [Fact]
+    public void ReflexFind_DraftRows_FindsOnlyTheRowTheIdNames()
+    {
+        LEntryDraft content = TReflexDraftCreate(
+            [
+                TInterface.TReflexDraftCreate("Korean", "", "롱", id: 4),
+                TInterface.TReflexDraftCreate("Japanese", "Go-on", "る", id: 9),
+            ]);
+
+        Assert.Equal("る", TInterface.TReflexFind(content, 9)?.LReflexDraftText);
+        Assert.Null(TInterface.TReflexFind(content, 5));
+        Assert.Throws<LRefusal>(() => TInterface.TReflexFind(content, 0));
+    }
+
     private static LEntryDraft TReflexDraftCreate(IReadOnlyList<LReflexDraft> reflexes)
     {
         return TInterface.TEntryDraftCreate(

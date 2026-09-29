@@ -15,15 +15,55 @@ public sealed class TCardSpeech
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TCardSpeechPrepare(engine);
 
-        bool offered = editor.CEditorSpeech.CCardSpeechSet(" verb");
+        CCategory offered = editor.CEditorSpeech.CCardSpeechSet(" verb");
         editor.CEditorDesk.CDeskPersist();
 
-        Assert.True(offered);
+        Assert.True(offered.CCategoryShown);
         Assert.Equal(["verb"], TSpeechNamesRead(editor));
         CMarker marker = editor.CEditorSpeech.CCardSpeechRead();
         Assert.Empty(marker.CMarkerSpeeches);
         Assert.Equal(" verb", marker.CMarkerTyped);
-        Assert.False(editor.CEditorSpeech.CCardSpeechSet("  "));
+        Assert.False(editor.CEditorSpeech.CCardSpeechSet("  ").CCategoryShown);
+    }
+
+    [Fact]
+    public void SpeechSet_TypedPart_OffersTheDraftLanguagesPartsMarkedWhenHeld()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TCardSpeechPrepare(engine);
+        editor.CEditorSpeech.CCardSpeechAdd("Noun");
+
+        CCategory held = editor.CEditorSpeech.CCardSpeechSet("NOUN");
+        CCategory unmatched = editor.CEditorSpeech.CCardSpeechSet("zzqq");
+
+        Assert.Contains(new CCategoryRow("Noun", true), held.CCategoryRows);
+        Assert.Contains(new CCategoryRow("Noun, proper", false), held.CCategoryRows);
+        Assert.DoesNotContain(held.CCategoryRows, static row => row.CCategoryRowName == "Verb");
+        Assert.Null(held.CCategoryHint);
+        Assert.Empty(unmatched.CCategoryRows);
+        Assert.False(unmatched.CCategoryShown);
+        Assert.Equal("Speech.Absent", unmatched.CCategoryHint);
+    }
+
+    [Fact]
+    public void SpeechRead_Draft_CarriesTheCategoryMenuForTheSettledText()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor empty = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TCardSpeechPrepare(engine);
+        editor.CEditorSpeech.CCardSpeechAdd("Verb");
+
+        CCategory shown = editor.CEditorSpeech.CCardSpeechRead().CMarkerCategory;
+        CCategory absent = empty.CEditorSpeech.CCardSpeechRead().CMarkerCategory;
+
+        Assert.Contains(new CCategoryRow("Verb", true), shown.CCategoryRows);
+        Assert.Contains(new CCategoryRow("Noun", false), shown.CCategoryRows);
+        Assert.False(shown.CCategoryShown);
+        Assert.Null(shown.CCategoryHint);
+        Assert.Empty(absent.CCategoryRows);
+        Assert.Equal("Speech.Empty", absent.CCategoryHint);
     }
 
     [Fact]

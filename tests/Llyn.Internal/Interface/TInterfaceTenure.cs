@@ -90,7 +90,7 @@ internal static partial class TInterface
         tenure.LTenureLanguageSet(language);
     }
 
-    internal static bool TTenureSpeechSet(this LTenure tenure, string typed) => tenure.LTenureSpeechSet(typed);
+    internal static LSpeechOffer TTenureSpeechSet(this LTenure tenure, string typed) => tenure.LTenureSpeechSet(typed);
 
     internal static void TTenureIpaSet(this LTenure tenure, string text)
     {

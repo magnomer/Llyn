@@ -42,6 +42,12 @@ public sealed class LQuill
         _lQuillTenure.LTenureRequestApply(new LRequestExampleReference(_lQuillTenure.LTenureId, reference));
     }
 
+    public void LQuillAnchorSet(long reflex, long fanqie, bool anchored)
+    {
+        _lQuillTenure.LTenureRequestApply(
+            new LRequestReflexAnchor(_lQuillTenure.LTenureId, reflex, fanqie, anchored));
+    }
+
     public void LQuillGlossAdd(long card, long sentence, string language, int position)
     {
         ArgumentNullException.ThrowIfNull(language);

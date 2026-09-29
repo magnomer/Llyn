@@ -74,7 +74,7 @@ public sealed class TReflexRow
     private static CReflex TReflexRowCreate(string language, string kind, bool folded)
     {
         return new CReflex(
-            1, language, kind, "ipa", string.Empty, string.Empty, string.Empty, false, string.Empty, [], string.Empty,
+            1, language, kind, "ipa", string.Empty, string.Empty, string.Empty, false, string.Empty, [],
             new CRespellingMark(false, string.Empty, string.Empty), folded, true);
     }
 }

@@ -69,7 +69,7 @@ public partial class PEditor
         PLinkAttach(card);
         PContextAttach(card);
         PRegisterAttach(card);
-        PLabelAttach(card);
+        PLabelIntroduce(card);
         return card;
     }
 

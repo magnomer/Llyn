@@ -8,6 +8,9 @@ A committed name becomes one chip and clears the pending text, and a blank name 
 An erased chip leaves while the pending text stays.
 A draft changed from elsewhere clears the pending text.
 An undone draft shows its own list, and the next add builds on it with no stale copy.
+Typing answers the draft language's parts that hold the text, each marked when held.
+A text matching none carries its own key.
+The read carries the same menu for the settled text, and a desk with no draft carries the empty-catalog key.
 
 ## `private static CEditor TCardSpeechPrepare(LEngine engine)`
 

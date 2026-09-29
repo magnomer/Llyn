@@ -29,6 +29,12 @@ The committed parts with the trimmed name appended, or null for a blank name.
 A name already held answers the list unchanged, so the caller still sends it once.
 `declare` answers the catalog value, and a refused declaration keeps the name as a custom part.
 
+## `public static LSpeechOffer LSpeechFind(`
+
+The catalog's parts whose name holds the trimmed typed text, each marked when the chips already hold it.
+A blank text matches every part.
+The offer shows only while the text is not blank and some part matches.
+
 ## `public static IReadOnlyList<LSpeechDraft> LSpeechRemove(IReadOnlyList<LSpeechDraft> held, string? name)`
 
 The committed parts without the one shown under this exact name.

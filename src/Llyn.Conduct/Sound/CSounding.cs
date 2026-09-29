@@ -97,18 +97,6 @@ public sealed class CSounding
             .ToList();
     }
 
-    public IReadOnlyList<CAnchorRow> CSoundingAnchorScan(IReadOnlyList<long> anchors, string reflex, string tone)
-    {
-        string language = LSoundingLanguage;
-        return LSoundingListRead(id => _cSoundingDraftPort.LEngineAnchorScan(id, anchors, language, reflex, tone))
-            .Select(static row => new CAnchorRow(
-                row.LAnchorRowFanqie.LFanqieRowId,
-                row.LAnchorRowFanqie.LFanqieRowSummary,
-                row.LAnchorRowHeld,
-                row.LAnchorRowEstimated))
-            .ToList();
-    }
-
     public void CSoundingFanqieResolve()
     {
         LSoundingMarkSend(_cSoundingPhonologyPort.LEngineFanqieRebuild, "Display.FanqieRebuildFailed");
@@ -321,7 +309,6 @@ public sealed class CSounding
             reflex.LReflexDraftNote,
             reflex.LReflexDraftMain,
             reflex.LReflexDraftRegion,
-            reflex.LReflexDraftAnchors,
-            reflex.LReflexDraftAnatomy.LAnatomyToneIpa);
+            reflex.LReflexDraftAnchors);
     }
 }

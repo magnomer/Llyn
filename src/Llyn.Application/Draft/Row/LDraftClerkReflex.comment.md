@@ -22,6 +22,11 @@ The region only comes from the fetch.
 An anchor request ties or unties the named row and one fanqie row.
 The row's other anchors stand as they were.
 
+## `public static LReflexDraft? LReflexFind(LEntryDraft content, long id)`
+
+The reflex row `id` names in the draft, or null.
+The list's own find matches the id, so an id of zero is refused as there.
+
 ## `private LEntryDraft LReflexAdd(LEntryDraft content, LRequestReflexAddition request)`
 
 A new reflex row for the language and kind sent and a minted id, at the place asked for.

@@ -19,7 +19,7 @@ An empty language choice leaves the chosen language as it was.
 ## `public void SpeechSet_Typed_WritesSpeeches()`
 
 Typed text lands trimmed as a pending part of speech once the deferred request is flushed.
-The answer says the text names a part of speech.
+In an English draft the answer opens the catalog offer, since the catalog names a noun.
 
 ## `public void IpaSet_Typed_WritesPrimaryIpa()`
 

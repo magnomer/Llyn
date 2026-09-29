@@ -11,11 +11,12 @@ It holds only the raw text the user is typing, which the read overlays on the dr
 
 The held tenure for an edit, or null while none is held or the desk fills its controls.
 
-## `public bool CCardSpeechSet(string typed)`
+## `public CCategory CCardSpeechSet(string typed)`
 
 The user typed into the part of speech field.
 The text is kept, and the tenure defers it as a pending part with the draft's chips.
-It answers whether the text names a part of speech, so the driver offers the catalog.
+It answers the category menu for the text, which also says whether the menu opens.
+While no tenure is held it answers an empty, closed menu.
 
 ## `public void CCardSpeechAdd(string name)`
 
@@ -30,3 +31,8 @@ The user erased a chip, and the typed text stays pending.
 
 The chips and the typed text ready to show, as the tenure settles them against the draft.
 A draft changed from elsewhere shows its own chips and clears the typed text.
+It carries the category menu for the settled text, so one read paints the whole field.
+
+## `private static CCategory LCategoryRead(LSpeechOffer offer)`
+
+A plain map of the engine's offer onto the menu, holding no rule.

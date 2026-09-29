@@ -66,7 +66,6 @@ public sealed class CRespelling
             reflex.CReflexDraftMain,
             reflex.CReflexDraftRegion,
             reflex.CReflexDraftAnchors,
-            reflex.CReflexDraftTone,
             mark,
             guise.LReflexGuiseFolded,
             lead);

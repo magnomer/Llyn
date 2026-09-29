@@ -50,8 +50,9 @@ public sealed class TTenureField
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTenure tenure = TTenureFieldStart(engine);
+        tenure.TTenureLanguageSet("English");
 
-        Assert.True(tenure.TTenureSpeechSet(" noun "));
+        Assert.True(tenure.TTenureSpeechSet(" noun ").LSpeechOfferShown);
         tenure.TTenurePersist();
 
         Assert.Equal(

@@ -41,10 +41,6 @@ The sentence frame hands it the engine's answer unread, so it names no engine re
 
 The transcription schemes a language offers.
 
-## `public IReadOnlyList<CSpeechValue> CCatalogSpeechRead(string language)`
-
-The parts of speech a language offers, each with its id and name.
-
 ## `public CGlyph? CCatalogGlyphRead(string language)`
 
 The glyph set a language writes in, or nothing when it has none.

@@ -84,6 +84,15 @@ public sealed class LDraftClerkReflex
         };
     }
 
+    public static LReflexDraft? LReflexFind(LEntryDraft content, long id)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+
+        int index = LDraftClerkList.LDraftListFind(
+            content.LEntryDraftReflexes, id, static row => row.LReflexDraftId);
+        return index < 0 ? null : content.LEntryDraftReflexes[index];
+    }
+
     private LEntryDraft LReflexAdd(LEntryDraft content, LRequestReflexAddition request)
     {
         LReflexDraft row = new(

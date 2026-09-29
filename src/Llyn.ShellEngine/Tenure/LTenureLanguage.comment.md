@@ -10,6 +10,12 @@ The schemes the draft's pack declares, each marked when a row other than `transc
 The mark is the clerk's one-scheme rule, so the dropdown greys out what a pick would refuse.
 An ended tenure has no language, so it answers no schemes.
 
+## `public IReadOnlyList<LAnchorRow> LTenureAnchorScan(long reflex)`
+
+The stored fanqie rows the reflex row `reflex` may anchor to, each marked when the row holds it.
+The row's tone is compared under the draft language's tone classes, and an estimate is marked.
+A draft never stored, an unknown row or a refused read answers empty, so the menu shows its notice.
+
 ## `public string LTenurePronunciationRead()`
 
 The primary reading as the field shows it, respelled when the draft's pack respells.
@@ -49,15 +55,16 @@ A refused read answers empty, so the card still draws.
 The part of speech the last typed text appended to the draft, or null when the text appended none.
 It is draft-edit state, so the committed chips are always read off the draft itself.
 
-## `public (IReadOnlyList<string> LSpeechNames, string LSpeechTyped) LTenureSpeechRead(string typed)`
+## `public (IReadOnlyList<string> LSpeechNames, string LSpeechTyped, LSpeechOffer LSpeechFound) LTenureSpeechRead(`
 
 The chips the draft holds and the typed text the caller heard, settled against the draft.
 A draft changed from elsewhere answers its own parts and clears the typed text.
+It also answers the catalog's offer for the settled text and chips.
 
-## `public bool LTenureSpeechSet(string typed)`
+## `public LSpeechOffer LTenureSpeechSet(string typed)`
 
 Defers the draft's chips with the typed text as a pending part.
-It answers whether the typed text names a part of speech at all.
+It answers the catalog's offer for the typed text, marked against the chips before the pending part.
 
 ## `public void LTenureSpeechAdd(string name)`
 
@@ -78,6 +85,11 @@ The end place is past the list, and the clerk's clamp puts it last.
 ## `private IReadOnlyList<LSpeechDraft> LTenureChipRead()`
 
 The draft's parts without the pending one, cleaned, so every edit starts from the draft.
+
+## `private LSpeechOffer LTenureSpeechFind(IReadOnlyList<LSpeechDraft> held, string typed)`
+
+Reads the draft language's catalog once and hands it to the clerk's find.
+A catalog that fails to read offers nothing, as an empty catalog does.
 
 ## `private LSpeechValue? LTenureSpeechCreate(string language, string name)`
 

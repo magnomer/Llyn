@@ -17,4 +17,3 @@ One reflex of an entry, as the reflex rows show it.
 - `CReflexDraftMain`: whether the reflex is the language's main one.
 - `CReflexDraftRegion`: the region the reflex is heard in.
 - `CReflexDraftAnchors`: the fanqie readings the reflex anchors to.
-- `CReflexDraftTone`: the tone written in phonetic letters.

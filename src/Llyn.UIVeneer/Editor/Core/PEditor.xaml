@@ -232,8 +232,7 @@
                                 VerticalOffset="-4">
                                 <Border MinWidth="190" MaxWidth="320" Margin="8" Style="{StaticResource Theme.Marker.Menu}">
                                     <StackPanel>
-                                        <TextBlock x:Name="PCategoryNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Speech.Empty}" Visibility="Collapsed" />
-                                        <TextBlock x:Name="PCategoryAbsent" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Speech.Absent}" Visibility="Collapsed" />
+                                        <TextBlock x:Name="PCategoryNotice" Style="{StaticResource Theme.Popup.Notice}" Visibility="Collapsed" />
                                         <ScrollViewer MaxHeight="252" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                                             <ItemsControl x:Name="PCategoryList" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Category.Row}" />
                                         </ScrollViewer>

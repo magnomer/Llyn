@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,8 +13,6 @@ public partial class PEditor
     private Popup PCategory => (Popup)FindName(nameof(PCategory));
 
     private TextBlock PCategoryNotice => (TextBlock)FindName(nameof(PCategoryNotice));
-
-    private TextBlock PCategoryAbsent => (TextBlock)FindName(nameof(PCategoryAbsent));
 
     private ItemsControl PCategoryList => (ItemsControl)FindName(nameof(PCategoryList));
 
@@ -47,68 +43,42 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Button>(container, "PCategoryChoice") is Button choice)
         {
-            choice.Click -= _pCategoryTemplate.PCategoryHandle;
-            choice.Click += _pCategoryTemplate.PCategoryHandle;
+            choice.Click -= PCategoryObserve;
+            choice.Click += PCategoryObserve;
         }
     }
 
     private readonly ObservableCollection<PCategoryItem> _pCategoryItem = [];
 
-    private readonly List<PCategoryItem> _pCategoryPreset = [];
-
-    internal void PCategoryLoad(CEntryDraft _)
+    private void PCategoryRefine(CCategory category)
     {
-        IReadOnlyList<CSpeechValue> values;
-        try
-        {
-            values = _pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogSpeechRead(
-                _qEditor.QEditorArea.CEditorLanguage);
-        }
-        catch (Exception)
-        {
-            values = [];
-        }
-
-        _pCategoryPreset.Clear();
-        foreach (CSpeechValue value in values)
-        {
-            _pCategoryPreset.Add(new PCategoryItem(value.CSpeechValueId, value.CSpeechValueName, false));
-        }
-
-        PCategoryUpdate();
-    }
-
-    private void PCategoryUpdate()
-    {
-        string typed = (PMarkerField.Text ?? string.Empty).Trim();
-
         _pCategoryItem.Clear();
-        foreach (PCategoryItem preset in _pCategoryPreset)
+        foreach (CCategoryRow row in category.CCategoryRows)
         {
-            string name = preset.PCategoryItemName;
-            if (typed.Length > 0 && name.IndexOf(typed, StringComparison.OrdinalIgnoreCase) < 0)
-            {
-                continue;
-            }
-
-            _pCategoryItem.Add(new PCategoryItem(preset.PCategoryItemValue, name, PMarkerFind(name)));
+            _pCategoryItem.Add(new PCategoryItem(row.CCategoryRowName, row.CCategoryRowTaken));
         }
 
-        bool declared = _pCategoryPreset.Count > 0;
-        PCategoryNotice.Visibility = declared ? Visibility.Collapsed : Visibility.Visible;
-        PCategoryAbsent.Visibility = declared && _pCategoryItem.Count == 0
-            ? Visibility.Visible
-            : Visibility.Collapsed;
-    }
-
-    internal void PCategoryHandle(object sender, RoutedEventArgs e)
-    {
-        if (sender is not FrameworkElement { DataContext: PCategoryItem item })
+        if (category.CCategoryHint is string hint)
         {
+            PCategoryNotice.SetResourceReference(TextBlock.TextProperty, hint);
+            PCategoryNotice.Visibility = Visibility.Visible;
             return;
         }
 
-        _qEditor.QEditorArea.CEditorSpeech.CCardSpeechAdd(item.PCategoryItemName);
+        PCategoryNotice.Visibility = Visibility.Collapsed;
+    }
+
+    private void PCategoryObserve(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { DataContext: PCategoryItem item })
+        {
+            _qEditor.QEditorArea.CEditorSpeech.CCardSpeechAdd(item.PCategoryItemName);
+            PCategoryPickRefine();
+        }
+    }
+
+    private void PCategoryPickRefine()
+    {
         PMarkerFieldRefine();
         PMarkerSwitch.IsChecked = false;
     }

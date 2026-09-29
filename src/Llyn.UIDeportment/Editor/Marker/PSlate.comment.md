@@ -28,16 +28,27 @@ Fills one offered tag row, where bindings and an event attribute stood, and subs
 
 ## `private void PSlateAttach()`
 
-Hands the slate list its rows and fill, and gives the dropdown its placement.
+Hands the slate list its rows and fill, gives the dropdown its placement, and clears its selection as it shuts.
 
 ## Inline notes
 
-### `private bool PSlateHandle(Key key)`
+### `private void PSlateKeyRefine(object sender, KeyEventArgs e)`
 
-The dropdown never takes focus, so the caret's key handler drives it.
-Nothing is selected while the list merely stands open, so enter still commits the typed tag.
-The user reaches the list with the arrows, and only then does enter take a row.
+The dropdown never takes focus, so the Tag entry's keys drive it while it stands open.
+Escape shuts it, and the arrows walk its rows, with no gate involved.
 Down from nothing selects the first row and up selects the last.
+
+### `private void PSlateCloseRefine(object? sender, EventArgs e)`
+
+A shut dropdown keeps no selected row, however it was shut.
+So Enter reaches a stored tag only while the list stands open.
+
+### `private void PSlateKeyObserve(object sender, KeyEventArgs e)`
+
+Enter on a selected row hands that stored tag to the card gate at the caret.
+The list then shuts and the entry empties.
+Nothing is selected while the list merely stands open, so Enter still commits the typed tag.
+The user reaches the list with the arrows, and only then does Enter take a row.
 
 ### `PSlate.PlacementTarget = PSlateFrameFind(box) ?? box ?? (UIElement)PContents;`
 

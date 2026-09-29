@@ -113,20 +113,6 @@ public sealed class TCatalog
     }
 
     [Fact]
-    public void CatalogSpeechRead_Values_ReadsIdAndName()
-    {
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
-            engine,
-            new Dictionary<string, Func<object?[]?, object?>>
-            {
-                ["LEngineSpeechRead"] = _ => new List<LSpeechValue> { new(5, "English", 1, "Noun", 1) },
-            });
-
-        Assert.Equal([new CSpeechValue(5, "Noun")], atelier.CAtelierCatalog.CCatalogSpeechRead("English"));
-    }
-
-    [Fact]
     public void CatalogMarkupFind_Matches_ReadsEntryIds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

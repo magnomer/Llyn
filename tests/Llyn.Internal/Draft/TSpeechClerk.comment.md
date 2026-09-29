@@ -9,6 +9,8 @@ A blank or held name declares nothing.
 An erased chip leaves alone.
 A draft that agrees keeps the pending text, and one changed elsewhere is cleaned and clears it.
 Only a typed text that appends a part is pending, and the chips leave the pending last part out.
+The catalog's parts are found by the trimmed text without case and marked when held.
+A blank text offers every part closed, and an empty catalog or a text matching none has its own verdict.
 
 ## `private static string TSpeechNameRead(LSpeechDraft speech)`
 

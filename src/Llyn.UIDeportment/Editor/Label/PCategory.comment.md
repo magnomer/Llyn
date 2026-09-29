@@ -3,60 +3,41 @@
 ## `public partial class PEditor`
 
 The parts of speech offered under the part-of-speech field, as a menu the editor opens.
-The presets start as what the chosen language pack lists, in the order it lists them.
-Picking one puts its name in the field.
+The rows are what the draft language's catalog lists, in its order.
+Picking one commits its name as a chip.
 
 The menu is an offer, not the field itself.
 A pack cannot have thought of everything a user will want to write down.
 So the field still takes anything typed.
-What is typed anew joins the menu, so the pack's list is a starting point rather than a ceiling.
+What is typed anew joins the catalog, so the pack's list is a starting point rather than a ceiling.
 
-The presets are rows read from the engine and held apart from the rows shown.
-The rows shown are what the field's text has narrowed the presets to, rebuilt on every change.
-That is what makes the field an editable dropdown rather than a box beside a list.
+The engine narrows the rows to the typed text and marks the taken ones.
+Conduct hands the menu ready, so the driver only paints it.
 
 ## `private readonly PCategoryTemplate _pCategoryTemplate`
 
-The category dictionary, held so its fill can subscribe the row's click.
-
-## `private void PCategoryApply(FrameworkElement container, object item, string? _)`
-
-Fills one category row: its name, its check icon shown only when taken, and its click.
+The category dictionary, merged into the editor's resources so its rows draw.
 
 ## `private void PCategoryAttach()`
 
 Hands the category list its rows and fill, and ties the marker switch to the category menu.
 The menu hangs under the marker field, where a binding named its target.
 
-## Inline notes
+## `private void PCategoryApply(FrameworkElement container, object item, string? _)`
 
-### `internal void PCategoryLoad(CEntryDraft _)`
+Fills one category row: its name, its check icon shown only when taken, and its click.
 
-Reads the presets the chosen language declares and makes them the menu's rows.
-It answers every draft the editor shows, because the parts of speech are the language's.
-A declaration made by a committed chip changes the draft too, so the menu offers it at once.
-An entry moved from English to Japanese is offered Japanese's presets from that moment.
+## `private void PCategoryRefine(CCategory category)`
 
-### `values = [];`
+Paints the menu Conduct handed over: its rows, and the notice when a hint key stands in their place.
+The key is Conduct's choice, so the notice only looks it up.
+The marker's own repaint and its typing hand the menu in, so it follows every draft and every keystroke.
 
-A vocabulary that cannot be read leaves the field editable and the menu empty.
-The presets are a convenience, and losing them is not a reason to refuse the typing.
+## `private void PCategoryObserve(object sender, RoutedEventArgs e)`
 
-### `private void PCategoryUpdate()`
+A row clicked in the menu hands its name to the speech gate.
+The gate declares the name, so the chip carries the catalog's id.
 
-The rows the menu shows, narrowed to the names the field's text appears in.
-An empty field narrows nothing, so the whole list is offered.
-A name already carried as a chip is marked rather than hidden.
-Hiding it would make the menu shorten as the user works, and a taken name is worth seeing.
+## `private void PCategoryPickRefine()`
 
-### `PCategoryAbsent.Visibility`
-
-Two different silences are worth telling apart.
-A language declaring no parts of speech is one, and typing that matches none is the other.
-The first is the pack's, the second is the user's, and each says so in its own words.
-
-### `internal void PCategoryHandle(object sender, RoutedEventArgs e)`
-
-A preset chosen from the menu, handed to the speech gate by its name.
-The gate declares the name, so the chip carries the preset's id.
-The field is cleared after, as a committed Enter clears it.
+Clears the field and closes the menu after a pick, as a committed Enter clears it.

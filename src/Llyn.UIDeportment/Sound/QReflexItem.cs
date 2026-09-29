@@ -45,8 +45,6 @@ public sealed class QReflexItem : INotifyPropertyChanged
 
     public bool QReflexItemFolded { get; private set; }
 
-    public string QReflexItemTone { get; private set; } = string.Empty;
-
     public IReadOnlyList<long> QReflexItemAnchors { get; private set; } = [];
 
     public string QReflexItemOpener
@@ -315,7 +313,6 @@ public sealed class QReflexItem : INotifyPropertyChanged
         QReflexItemRespelled = reflex.CReflexMark.CRespellingMarkShown;
         QReflexItemFolded = reflex.CReflexFolded;
         QReflexItemAnchors = reflex.CReflexAnchors;
-        QReflexItemTone = reflex.CReflexTone;
         QReflexItemOpener = reflex.CReflexMark.CRespellingMarkOpener;
         QReflexItemCloser = reflex.CReflexMark.CRespellingMarkCloser;
         QReflexItemMain = reflex.CReflexMain;

@@ -35,10 +35,6 @@ Each refused gate asks the envoy to show its own notice key and announces no cha
 
 The rank edit reaches the engine with the stored entry, the row and the rank.
 
-## `public void SoundingAnchorScan_StoredEntry_ComparesInTheDraftLanguage()`
-
-The anchor scan hands the engine the language of the draft on the desk, and shapes the rows it answers.
-
 ## `public void SoundingAnchorFormat_StoredEntry_JoinsWithTheReflexSeparator()`
 
 The anchor label reaches the engine with the reflex separator Conduct owns.

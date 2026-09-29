@@ -33,7 +33,6 @@ public sealed class TSounding
         Assert.Empty(sounding.CSoundingFanqieRead().CSoundingFanqieGroups);
         Assert.Empty(sounding.CSoundingScriptRead().CSoundingScriptGroups);
         Assert.Empty(paradigm.CLecternParadigmSlots);
-        Assert.Empty(sounding.CSoundingAnchorScan([], "a", string.Empty));
         Assert.Equal(string.Empty, sounding.CSoundingReadingRead("water"));
         Assert.Equal(new CFont(null, null, null), paradigm.CLecternParadigmFont);
         Assert.False(sounding.CSoundingAnchorCheck("water"));
@@ -143,30 +142,6 @@ public sealed class TSounding
         sounding.CSoundingFanqieSet(7, 2);
 
         Assert.Equal([editor.CEditorDesk.CDeskStoredRead(), 7L, 2], sent);
-    }
-
-    [Fact]
-    public void SoundingAnchorScan_StoredEntry_ComparesInTheDraftLanguage()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
-        List<object?> sent = [];
-        LFanqieRow row = TInterface.TFanqieRowCreate("水", "Guangyun", "式軌切", id: 7);
-        CSounding sounding = TSoundingCreate(editor, new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["LEngineAnchorScan"] = args =>
-            {
-                sent.Add(args![2]);
-                return TInterface.TAnchorRowScan([row], [7], []);
-            },
-        }, []);
-
-        CAnchorRow anchored = Assert.Single(sounding.CSoundingAnchorScan([7], "a", string.Empty));
-
-        Assert.Equal(["English"], sent);
-        Assert.Equal(7, anchored.CAnchorRowId);
-        Assert.True(anchored.CAnchorRowHeld);
     }
 
     [Fact]

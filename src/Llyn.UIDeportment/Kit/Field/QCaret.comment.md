@@ -57,4 +57,16 @@ Backspace at the start of the entry drops the chip before it.
 Delete at the end of the entry drops the chip after it.
 The arrow keys walk an empty entry past a chip, and the caller puts the caret back.
 So a chip is crossed the way a character is, in either direction.
+It runs the edge keys first and the arrow keys after.
+Callers that hear every chip key in one handler use it.
+
+## `internal static bool QCaretEdgeApply(string key, int caret, int length, int selection, Action<int> remove)`
+
+The edge keys alone: Backspace at the start and Delete at the end hand the step to `remove`.
+A caller that hears the erase keys on their own uses it, and a selection still leaves the key alone.
+
+## `internal static bool QCaretStepApply(string key, int length, int selection, Func<int, bool> move, Action place)`
+
+The arrow keys alone: an empty entry is walked past a chip, and `place` puts the caret back.
+A caller that hears the caret moves on their own uses it.
 The answer says whether the key was taken.

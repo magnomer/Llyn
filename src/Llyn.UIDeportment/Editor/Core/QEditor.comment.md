@@ -10,6 +10,10 @@ It follows `QLectern`, the display's driver over a Conduct area.
 
 The Conduct editor the panel's area built, through which the surface's Observes reach one gate each.
 
+## `internal CSoundingAnchor QEditorAnchor { get; }`
+
+The anchor menu over the same editor's desk, which holds the reflex row the open popup edits.
+
 ## `internal void QEditorIntroduce(PWindow host, PEditor surface)`
 
 Subscribes each of the editor's notices to one Refine of the surface.

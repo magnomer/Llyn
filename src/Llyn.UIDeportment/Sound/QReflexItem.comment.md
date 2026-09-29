@@ -40,11 +40,6 @@ So a Korean row stays plain while a Mandarin row is respelled.
 
 Whether the row belongs to a language the pack folds away.
 
-## `public string QReflexItemTone`
-
-The tone of the reading as the engine cut it, such as `55`, or empty.
-The anchor dropdown reads it to estimate which placements the reading descends from.
-
 ## `public IReadOnlyList<long> QReflexItemAnchors`
 
 The fanqie ids the row is tied to, as the engine's draft holds them.

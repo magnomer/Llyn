@@ -13,5 +13,4 @@ public sealed record CReflexDraft(
     string CReflexDraftNote,
     bool CReflexDraftMain,
     string CReflexDraftRegion,
-    IReadOnlyList<long> CReflexDraftAnchors,
-    string CReflexDraftTone);
+    IReadOnlyList<long> CReflexDraftAnchors);

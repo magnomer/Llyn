@@ -110,5 +110,37 @@ public sealed class TSpeechClerk
         Assert.Equal(["noun", "verb"], TInterface.TSpeechChipRead(shown, null).Select(TSpeechNameRead));
     }
 
+    [Fact]
+    public void SpeechFind_TypedPart_OffersTheMatchingPartsMarkedWhenHeld()
+    {
+        IReadOnlyList<LSpeechValue> values =
+        [
+            TInterface.TSpeechValueCreate(1, "Noun"),
+            TInterface.TSpeechValueCreate(2, "Verb"),
+            TInterface.TSpeechValueCreate(3, "Adverb"),
+        ];
+        IReadOnlyList<LSpeechDraft> held = [TInterface.TSpeechCreate(0, "verb")];
+
+        LSpeechOffer typed = TInterface.TSpeechFind(values, held, " VERB ");
+        LSpeechOffer blank = TInterface.TSpeechFind(values, held, "  ");
+        LSpeechOffer unmatched = TInterface.TSpeechFind(values, held, "zz");
+        LSpeechOffer undeclared = TInterface.TSpeechFind([], held, "noun");
+
+        Assert.Equal(
+            [("Verb", true), ("Adverb", false)],
+            typed.LSpeechOfferRows.Select(static row => (row.LSpeechRowName, row.LSpeechRowTaken)));
+        Assert.Equal(
+            (true, true, true), (typed.LSpeechOfferDeclared, typed.LSpeechOfferMatched, typed.LSpeechOfferShown));
+        Assert.Equal(["Noun", "Verb", "Adverb"], blank.LSpeechOfferRows.Select(static row => row.LSpeechRowName));
+        Assert.False(blank.LSpeechOfferShown);
+        Assert.Empty(unmatched.LSpeechOfferRows);
+        Assert.Equal(
+            (true, false, false),
+            (unmatched.LSpeechOfferDeclared, unmatched.LSpeechOfferMatched, unmatched.LSpeechOfferShown));
+        Assert.Equal(
+            (false, false, false),
+            (undeclared.LSpeechOfferDeclared, undeclared.LSpeechOfferMatched, undeclared.LSpeechOfferShown));
+    }
+
     private static string TSpeechNameRead(LSpeechDraft speech) => speech.LSpeechDraftName;
 }

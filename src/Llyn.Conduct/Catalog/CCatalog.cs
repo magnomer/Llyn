@@ -73,13 +73,6 @@ public sealed class CCatalog
         return _cCatalogAtelier.CAtelierPhonologyPort.LEngineSchemeRead(language);
     }
 
-    public IReadOnlyList<CSpeechValue> CCatalogSpeechRead(string language)
-    {
-        return _cCatalogAtelier.CAtelierPhonologyPort.LEngineSpeechRead(language)
-            .Select(static value => new CSpeechValue(value.LSpeechValueId, value.LSpeechValueName))
-            .ToList();
-    }
-
     public CGlyph? CCatalogGlyphRead(string language)
     {
         LGlyph? glyph = _cCatalogAtelier.CAtelierEntryPort.LEngineGlyphRead(language);

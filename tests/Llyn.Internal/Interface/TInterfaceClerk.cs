@@ -33,6 +33,10 @@ internal static partial class TInterface
     internal static string? TSpeechPendingRead(IReadOnlyList<LSpeechDraft> held, string? typed) =>
         LSpeechClerk.LSpeechPendingRead(held, typed);
 
+    internal static LSpeechOffer TSpeechFind(
+        IReadOnlyList<LSpeechValue> values, IReadOnlyList<LSpeechDraft> held, string? typed) =>
+        LSpeechClerk.LSpeechFind(values, held, typed);
+
     internal static LSpeechDraft TSpeechCreate(long value, string name) =>
         value > 0 ? LSpeechDraft.LSpeechDraftCreate(value, name) : LSpeechDraft.LSpeechDraftCreate(name);
 

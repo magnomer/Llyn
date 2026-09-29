@@ -1,4 +1,3 @@
-using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -96,28 +95,15 @@ public partial class PEditor
         PMarkerDropperRefine(_qEditor.QEditorArea.CEditorSpeech.CCardSpeechSet(PMarkerField.Text));
     }
 
-    private void PMarkerDropperRefine(bool offered)
+    private void PMarkerDropperRefine(CCategory category)
     {
-        PCategoryUpdate();
-        PMarkerSwitch.IsChecked = offered && _pCategoryItem.Count > 0;
+        PCategoryRefine(category);
+        PMarkerSwitch.IsChecked = category.CCategoryShown;
     }
 
     private void PMarkerFieldRefine()
     {
         PMarkerField.Text = string.Empty;
-    }
-
-    private bool PMarkerFind(string name)
-    {
-        foreach (PMarkerChip chip in _pMarkerChip)
-        {
-            if (string.Equals(chip.PMarkerChipName, name, StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     internal void PMarkerRefine(CEntryDraft _)
@@ -131,6 +117,6 @@ public partial class PEditor
 
         QField.QFieldTextShow(PMarkerField, marker.CMarkerTyped);
 
-        PCategoryUpdate();
+        PCategoryRefine(marker.CMarkerCategory);
     }
 }

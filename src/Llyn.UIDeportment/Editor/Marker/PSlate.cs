@@ -26,6 +26,7 @@ public partial class PEditor
         PSlateList.ItemsSource = _pSlateItem;
         QLookItem.QLookItemAttach(PSlateList, PSlateApply);
         PSlate.CustomPopupPlacementCallback = PSlatePlace;
+        PSlate.Closed += PSlateCloseRefine;
     }
 
     private void PSlateApply(FrameworkElement container, object item, string? _)
@@ -77,38 +78,58 @@ public partial class PEditor
         e.Handled = true;
     }
 
-    private bool PSlateHandle(Key key)
+    private void PSlateKeyRefine(object sender, KeyEventArgs e)
     {
-        if (key == Key.Escape)
+        if (!PSlate.IsOpen)
+        {
+            return;
+        }
+
+        if (e.Key == Key.Escape)
         {
             PSlateHide();
-            return true;
+            e.Handled = true;
+            return;
         }
 
-        if (key == Key.Down || key == Key.Up)
+        int count = _pSlateItem.Count;
+        if ((e.Key != Key.Down && e.Key != Key.Up) || count == 0)
         {
-            int count = _pSlateItem.Count;
-            if (count == 0)
-            {
-                return false;
-            }
-
-            int step = key == Key.Down ? 1 : count - 1;
-            int chosen = PSlateList.SelectedIndex < 0
-                ? (key == Key.Down ? count - 1 : 0)
-                : PSlateList.SelectedIndex;
-            PSlateList.SelectedIndex = (chosen + step) % count;
-            PSlateList.ScrollIntoView(PSlateList.SelectedItem);
-            return true;
+            return;
         }
 
-        if (key == Key.Enter && PSlateList.SelectedItem is PSlateItem item)
+        int step = e.Key == Key.Down ? 1 : count - 1;
+        int chosen = PSlateList.SelectedIndex < 0
+            ? (e.Key == Key.Down ? count - 1 : 0)
+            : PSlateList.SelectedIndex;
+        PSlateList.SelectedIndex = (chosen + step) % count;
+        PSlateList.ScrollIntoView(PSlateList.SelectedItem);
+        e.Handled = true;
+    }
+
+    private void PSlateCloseRefine(object? sender, EventArgs e)
+    {
+        PSlateList.SelectedIndex = -1;
+    }
+
+    private void PSlateKeyObserve(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Enter
+            || sender is not FrameworkElement { DataContext: PLabelCaret row }
+            || PCardLabelFind(row) is not PCard card)
         {
-            PSlateSelect(item);
-            return true;
+            return;
         }
 
-        return false;
+        if (PSlateList.SelectedItem is not PSlateItem item)
+        {
+            return;
+        }
+
+        _qEditor.QEditorArea.CEditorCard.CCardTagInsert(card.PCardId, item.PSlateItemId, card.PCardLabelPosition);
+        e.Handled = true;
+        PSlateHide();
+        card.PCardLabelClear();
     }
 
     private void PSlateSelect(PSlateItem item)

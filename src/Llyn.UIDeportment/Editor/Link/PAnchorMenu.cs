@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using Llyn.Application;
+using Llyn.Conduct;
 
 
 namespace Llyn.UIDeportment;
@@ -19,8 +18,6 @@ public partial class PEditor
 
     private const string PAnchorMenuMark = " ≈";
 
-    private QReflexItem? _pAnchorRow;
-
     private Popup PAnchor => (Popup)FindName(nameof(PAnchor));
 
     private TextBlock PAnchorEmpty => (TextBlock)FindName(nameof(PAnchorEmpty));
@@ -29,49 +26,54 @@ public partial class PEditor
 
     private void PAnchorAttach()
     {
-        PAnchor.Closed += PAnchorClosedHandle;
+        PAnchor.Closed += PAnchorClosedObserve;
+        CommandManager.AddPreviewExecutedHandler(PEditorSound, PAnchorShutRefine);
     }
 
-    internal void PReflexAnchorHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PAnchorShutRefine(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Command == PReflexCommand.PReflexCommandAnchor)
+        {
+            PAnchor.IsOpen = false;
+        }
+    }
+
+    internal void PReflexAnchorObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is not QReflexItem row || e.OriginalSource is not UIElement anchor)
         {
             return;
         }
 
-        PAnchor.IsOpen = false;
-        _pAnchorRow = row;
-        PAnchorBuild(row);
-        PAnchor.PlacementTarget = anchor;
-        PAnchor.IsOpen = true;
+        PAnchorRefine(_qEditor.QEditorAnchor.CSoundingAnchorOpen(row.QReflexItemId), anchor);
     }
 
-    private void PAnchorBuild(QReflexItem row)
+    private void PAnchorRefine(CAnchor menu, UIElement anchor)
     {
         PAnchorList.Children.Clear();
-        IReadOnlyList<PAnchorItem> items = PAnchorItem.PAnchorItemScan(
-            _qEditor.QEditorArea.CEditorSounding.CSoundingAnchorScan(
-                row.QReflexItemAnchors, row.QReflexItemLanguage, row.QReflexItemTone));
-        PAnchorEmpty.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-        foreach (PAnchorItem item in items)
+        PAnchorEmpty.Visibility = QLook.QLookVisibleRead(menu.CAnchorEmpty);
+        foreach (CAnchorRow item in menu.CAnchorRows)
         {
             CheckBox box = new()
             {
                 Style = (Style)PAnchorList.FindResource(PAnchorMenuStyle),
-                Tag = item.PAnchorItemId,
-                IsChecked = item.PAnchorItemAnchored,
+                Tag = item.CAnchorRowId,
+                IsChecked = item.CAnchorRowHeld,
                 Content = PAnchorLabelBuild(item),
             };
-            box.Click += PAnchorTickHandle;
+            box.Click += PAnchorTickObserve;
             PAnchorList.Children.Add(box);
         }
+
+        PAnchor.PlacementTarget = anchor;
+        PAnchor.IsOpen = true;
     }
 
-    private TextBlock PAnchorLabelBuild(PAnchorItem item)
+    private TextBlock PAnchorLabelBuild(CAnchorRow item)
     {
         TextBlock label = new() { VerticalAlignment = VerticalAlignment.Center };
-        label.Inlines.Add(new Run(item.PAnchorItemLabel));
-        if (item.PAnchorItemEstimated)
+        label.Inlines.Add(new Run(item.CAnchorRowSummary));
+        if (item.CAnchorRowEstimated)
         {
             label.Inlines.Add(new Run(PAnchorMenuMark)
             {
@@ -83,19 +85,18 @@ public partial class PEditor
         return label;
     }
 
-    private void PAnchorTickHandle(object sender, RoutedEventArgs e)
+    private void PAnchorTickObserve(object sender, RoutedEventArgs e)
     {
-        if (_pAnchorRow is not QReflexItem row || sender is not CheckBox { Tag: long fanqieId } box)
+        if (sender is not CheckBox { Tag: long fanqieId } box)
         {
             return;
         }
 
-        bool anchored = box.IsChecked == true;
-        PEditorRequestSend(new LRequestReflexAnchor(PEditorDraft, row.QReflexItemId, fanqieId, anchored));
+        _qEditor.QEditorAnchor.CSoundingAnchorSet(fanqieId, QLook.QLookCheckedRead(box.IsChecked));
     }
 
-    private void PAnchorClosedHandle(object? sender, EventArgs e)
+    private void PAnchorClosedObserve(object? sender, EventArgs e)
     {
-        _pAnchorRow = null;
+        _qEditor.QEditorAnchor.CSoundingAnchorClose();
     }
 }

@@ -91,8 +91,6 @@ public interface LPhonologyPort
 
     IReadOnlyList<string> LEngineSchemeRead(string language);
 
-    IReadOnlyList<LSpeechValue> LEngineSpeechRead(string language);
-
     IReadOnlyList<string> LEngineDependenceRead(string language);
 
     IReadOnlyList<string> LEngineParticleRead(string language);

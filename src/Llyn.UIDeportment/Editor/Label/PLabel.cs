@@ -16,9 +16,19 @@ public partial class PEditor
             {
                 entry.SetValue(QField.QFieldHintProperty, caret.PLabelCaretHint);
                 entry.Text = caret.PLabelCaretText;
-                entry.PreviewKeyDown -= PLabelCaretObserve;
-                entry.PreviewKeyDown += PLabelCaretObserve;
+                entry.PreviewKeyDown -= PSlateKeyRefine;
+                entry.PreviewKeyDown -= PSlateKeyObserve;
+                entry.PreviewKeyDown -= PLabelCommitObserve;
+                entry.PreviewKeyDown -= PLabelEraseObserve;
+                entry.PreviewKeyDown -= PLabelCaretRefine;
+                entry.PreviewKeyDown += PSlateKeyRefine;
+                entry.PreviewKeyDown += PSlateKeyObserve;
+                entry.PreviewKeyDown += PLabelCommitObserve;
+                entry.PreviewKeyDown += PLabelEraseObserve;
+                entry.PreviewKeyDown += PLabelCaretRefine;
+                entry.LostKeyboardFocus -= PLabelBlurRefine;
                 entry.LostKeyboardFocus -= PLabelCloseObserve;
+                entry.LostKeyboardFocus += PLabelBlurRefine;
                 entry.LostKeyboardFocus += PLabelCloseObserve;
             }
 
@@ -61,7 +71,7 @@ public partial class PEditor
         }
     }
 
-    internal void PLabelAttach(PCard card)
+    internal void PLabelIntroduce(PCard card)
     {
         card.PCardLabelNotice = text => PSlateShow(card, text);
     }
@@ -79,67 +89,74 @@ public partial class PEditor
     {
         if (sender is FrameworkElement { DataContext: PLabelChip chip } && PCardLabelFind(chip) is PCard card)
         {
-            PLabelEraseObserve(card, chip);
+            _qEditor.QEditorArea.CEditorCard.CCardTagRemove(card.PCardId, chip.PLabelChipId);
         }
     }
 
-    private void PLabelCaretObserve(object sender, KeyEventArgs e)
+    private void PLabelCommitObserve(object sender, KeyEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PLabelCaret row } box)
+        if (e.Key != Key.Enter
+            || sender is not FrameworkElement { DataContext: PLabelCaret row }
+            || PCardLabelFind(row) is not PCard card)
         {
             return;
         }
 
-        PCard? card = PCardLabelFind(row);
-        if (card is null)
+        _qEditor.QEditorArea.CEditorCard.CCardTagAdd(
+            card.PCardId, card.PCardLabelText, card.PCardLabelPosition, true);
+        e.Handled = true;
+        PSlateHide();
+        card.PCardLabelClear();
+    }
+
+    private void PLabelEraseObserve(object sender, KeyEventArgs e)
+    {
+        if (sender is not TextBox { DataContext: PLabelCaret row } box || PCardLabelFind(row) is not PCard card)
         {
             return;
         }
 
-        if (PSlate.IsOpen && PSlateHandle(e.Key))
+        e.Handled = QCaret.QCaretEdgeApply(
+            e.Key.ToString(),
+            box.CaretIndex,
+            box.Text.Length,
+            box.SelectionLength,
+            step =>
+            {
+                if (card.PCardLabelFind(step) is PLabelChip chip)
+                {
+                    _qEditor.QEditorArea.CEditorCard.CCardTagRemove(card.PCardId, chip.PLabelChipId);
+                }
+            });
+    }
+
+    private void PLabelCaretRefine(object sender, KeyEventArgs e)
+    {
+        if (sender is not TextBox { DataContext: PLabelCaret row } box || PCardLabelFind(row) is not PCard card)
         {
-            e.Handled = true;
             return;
         }
 
-        if (e.Key == Key.Enter)
-        {
-            PSlateHide();
-            PLabelCommitObserve(card);
-            e.Handled = true;
-            return;
-        }
-
-        e.Handled = PCaretKeyApply(
-            box,
-            e.Key,
-            step => PLabelEraseObserve(card, card.PCardLabelFind(step)),
+        e.Handled = QCaret.QCaretStepApply(
+            e.Key.ToString(),
+            box.Text.Length,
+            box.SelectionLength,
             card.PCardLabelMove,
             () => PEditorCaretApply(box, row, 0));
     }
 
-    private void PLabelCloseObserve(object sender, RoutedEventArgs e)
+    private void PLabelBlurRefine(object sender, RoutedEventArgs e)
     {
         PSlateHide();
+    }
 
+    private void PLabelCloseObserve(object sender, RoutedEventArgs e)
+    {
         if (sender is FrameworkElement { DataContext: PLabelCaret row } && PCardLabelFind(row) is PCard card)
         {
-            PLabelCommitObserve(card);
-        }
-    }
-
-    private void PLabelCommitObserve(PCard card)
-    {
-        _qEditor.QEditorArea.CEditorCard.CCardTagAdd(
-            card.PCardId, card.PCardLabelText, card.PCardLabelPosition, true);
-        card.PCardLabelClear();
-    }
-
-    private void PLabelEraseObserve(PCard card, PLabelChip? chip)
-    {
-        if (chip is not null)
-        {
-            _qEditor.QEditorArea.CEditorCard.CCardTagRemove(card.PCardId, chip.PLabelChipId);
+            _qEditor.QEditorArea.CEditorCard.CCardTagAdd(
+                card.PCardId, card.PCardLabelText, card.PCardLabelPosition, true);
+            card.PCardLabelClear();
         }
     }
 

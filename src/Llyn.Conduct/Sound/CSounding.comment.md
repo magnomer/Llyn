@@ -35,7 +35,7 @@ The entry the desk has stored, or null for a fresh draft.
 
 ## `private string LSoundingLanguage`
 
-The language of the draft on the desk, which picks the tones an anchor scan compares.
+The language of the draft on the desk, which picks the pack the blocks and the diwei open read.
 
 ## `public CSoundingFanqie CSoundingFanqieRead()`
 
@@ -63,11 +63,6 @@ The placements are joined by `CReflex.LReflexSeparator`, so both panes print the
 The schemes the dropdown of one transcription row offers, each marked when another row holds it.
 The mark is the engine's one-scheme rule, so a pick the engine would refuse is greyed out.
 No held draft answers no schemes.
-
-## `public IReadOnlyList<CAnchorRow> CSoundingAnchorScan(IReadOnlyList<long> anchors, string reflex, string tone)`
-
-The rows one reflex may anchor to, shaped for the anchor menu.
-The engine compares tones in the draft's language, which the desk supplies.
 
 ## `public void CSoundingFanqieResolve()`
 
