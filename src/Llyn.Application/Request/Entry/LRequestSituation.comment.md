@@ -3,7 +3,7 @@
 The situation requests.
 The four structural records name the card and the chip, and the three field records name only the situation.
 A situation is one row however many cards link it, so a field edit reaches every card holding that id.
-The situation panel sends one body record with the id of the draft's own situation.
+The situation panel sends each field record with the id of the draft's own situation.
 
 ## `public sealed record LRequestSituationAddition(`
 
@@ -38,11 +38,3 @@ Replaces the description of the situation, wherever the draft holds it.
 ## `public sealed record LRequestSituationKind(long LRequestDraftId, long LRequestSituationId, LStateValue LRequestValue)`
 
 Replaces the kind of the situation, wherever the draft holds it.
-
-## `public sealed record LRequestSituationBody`
-
-Carries the title, description and kind of one situation at once, as the form currently holds them.
-Each travels as written, with its mark, and the engine resolves the state.
-The engine keeps the held id, wherever the draft holds that situation.
-A form sends this instead of comparing its controls against the draft field by field.
-So the decision of what changed lives in the engine, and an unchanged body saves and announces nothing.

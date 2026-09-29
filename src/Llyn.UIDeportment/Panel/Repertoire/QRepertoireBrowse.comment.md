@@ -21,89 +21,83 @@ The panel keeps no copy of any of them and asks the Conduct for each where it ne
 It is null until the window hands one over, so the handlers do nothing before that.
 A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
-### `private IReadOnlyDictionary<long, int> _qAtlasCount = new Dictionary<long, int>();`
+## `private async void QRepertoireWorkspaceRefine()`
 
-How many places reference each Situation, read once per catalog fill rather than once per row.
-It also decides which delete the panel offers, so it is held rather than asked for again.
+Answers the Conduct's workspace change by reloading the flags, since they do not belong to the old folder's rows.
+The Conduct has already closed the shown Situation and dropped the old selection.
 
-## `private async void QRepertoireWorkspaceUpdate()`
-
-A workspace that moved reloads the flags first, since they do not belong to the old folder's rows.
-The panel is then emptied and listed again.
-
-### `private void QInquestHandle(object sender, TextChangedEventArgs e)`
+### `private void QInquestObserve(object sender, TextChangedEventArgs e)`
 
 Each keystroke hands the search text to the vista, whose announcement refills the catalog.
 
-### `private void QTierHandle(object sender, RoutedEventArgs e)`
+### `private void QTierObserve(object sender, RoutedEventArgs e)`
 
-A chosen ordering closes the dropdown and hands the ordering to the vista.
+A chosen ordering is handed to the vista.
 The vista saves it and announces it, and the announcement refills the catalog.
+The dropdown then closes through `QTierRefine`.
 
-### `internal async void QRepertoireVistaRestore()`
+### `private void QTierRefine()`
 
-The Conduct starts the tab's vistas from the window's posture, so no vista crosses the veneer.
-Takes the vistas the window started for this tab and puts the panel on them.
-The dropdown mark and the filter mark are drawn from the atlas first.
-The flags are loaded before any row is built, then the language menu is built from the loaded packs.
-Search text still standing in either box is handed to its vista, so a switched workspace keeps the search.
-The catalog is then listed.
+Unticks the ordering button so its dropdown closes.
 
-### `private void QRepertoireObserverAttach()`
+### `internal async void QRepertoireVistaRefine()`
 
-Attaches each subject the panel cares about once, so no handler sorts announcements by subject.
-A vista announcement refills the catalog, since order, filter or inquest moved.
-A stored Situation refills the catalog and its reference figures.
-A reflex fill or a flipped setting rewrites the epithet beside a headword, so each refills the catalog too.
-An entry announcement goes to the occurrence panel first, which may adopt a freshly stored Entry.
-The catalog follows, since the store may reference a Situation.
-The catalog's row notice re-lists the entry column, so the column is read once per announcement.
-The chosen entry's own announcement reaches the Conduct last, which redraws or drops it.
-The occurrence vista carries the entry search box, so its announcement refills the entry column alone.
-A fetched frequency, paradigm, script or fanqie row changes no situation or entry row, and is not attached.
+Answers the workspace opening, after the Conduct has started the fresh vistas and attached their observers.
+The ordering menu is ticked from the atlas and the filter mark is drawn.
+The flags are loaded before any row is built.
+The language menu is then built from the languages that load answers.
+The catalog is then listed once.
+The Conduct carried any search text held into the fresh vistas, so the boxes need no re-send.
 
-### `private void QMeshRestore()`
+### `internal async void QOccurrenceVistaRefine()`
+
+Answers the workspace opening for the entry column, which shows the same flags.
+It waits for the same load, then lists the column once.
+
+### `private void QMeshRefine()`
 
 Shows the filter mark while the vista hides any language.
 
-### `private void QMeshBuild()`
+### `private void QMeshListRefine(IReadOnlyList<string> languages)`
 
-Builds the language menu from the loaded packs, ticked as the vista's filter reads.
-The restore and the dropped inquest share it.
+Builds the language menu from the given languages, ticked as the vista's filter reads.
+The workspace opening and the dropped inquest share it.
 
-### `private void QInquestClear()`
+### `private void QInquestRefine()`
 
 Empties the inquest box and rebuilds the language menu after an arrival dropped both on the vista.
 The menu is read back from the vista's cleared filter, and the filter mark follows.
 
-### `private void QSortieHandle(object sender, TextChangedEventArgs e)`
+### `private void QSortieObserve(object sender, TextChangedEventArgs e)`
 
 Each keystroke hands the entry search text to the occurrence vista, whose announcement refills the entry column.
 
-### `private void QMeshHandle(object sender, RoutedEventArgs e)`
+### `private void QMeshObserve(object sender, RoutedEventArgs e)`
 
 The ticked languages are read off the menu of the clicked box and handed to the vista.
 The vista saves and announces them.
 The mark on the button is redrawn from the vista at once.
 
-## `private void QAtlasFind()`
+## `private void QAtlasRefine()`
 
-Refills the catalog with the rows the engine returns for the vista, already matched and already ordered.
-The panel hands over its vista and decides nothing about the ordering or the inquest.
-Before a vista is handed over nothing is asked.
-What a title, a description or a kind answers is decided below the shell.
-The rows arrive as `CCatalogSituation` shapes, the kind carrying its own unknown mark.
+Refills the catalog with the ready rows the Conduct reads, already matched and already ordered.
+The Conduct words the unknown and untitled texts, and reports its own read failure, answering no rows.
+The rows arrive as `CCatalogSituation` shapes, the kind and the count carrying their own text.
 The Conduct read drops a shown selection whose row no longer stands, and keeps one an open editor holds.
 Its clear announces fresh rows that list the same Situations, so the nested refill is harmless.
-Both tally chips are rewritten from the fresh counts, so a reference added elsewhere shows at once.
-The entry column follows through the atlas's row notice, so it is not refilled here.
+The tally chips and the entry column follow through the atlas's row notice, so neither is painted here.
 
-## `private void QAtlasHandle(object sender, RoutedEventArgs e)`
+## `private void QRepertoireTallyRefine()`
+
+Writes the chosen Situation's tally on both sides of the panel.
+So the reader and the writer see the same figure.
+The Conduct words the sentence through the engine, so a reference added elsewhere shows at the next row notice.
+## `private void QAtlasObserve(object sender, RoutedEventArgs e)`
 
 A clicked row asks the Conduct to select it, handing over the trail's record.
 The Conduct asks about unsaved work first, and records the station only when the move goes ahead.
 
-## `private void QAtlasApply(FrameworkElement container, object item, string? _)`
+## `private void QAtlasItemRefine(FrameworkElement container, object item, string? _)`
 
 Fills one atlas row from its item, the work its bindings did before.
 The row carries the `Chosen` cue on the chosen item and none otherwise, which the look sheet paints.
@@ -111,30 +105,30 @@ The click is subscribed once per row, removed first so a refill never doubles it
 It runs again on every change the item raises, so a chosen row moves without a refill.
 The kind is written as it is, and the look sheet collapses it while empty.
 
-## `private void QRepertoireBinHandle(object sender, RoutedEventArgs e)`
+## `private void QRepertoireBinObserve(object sender, RoutedEventArgs e)`
 
 Hands the delete to the Conduct, which acts only while a Situation and not an Entry is shown.
 A Situation something references is named to the user first, through the removal question the panel lent it.
 
-## `private void QRepertoireViewerHandle(object sender, RoutedEventArgs e)`
+## `private void QRepertoireViewerObserve(object sender, RoutedEventArgs e)`
 
 Swaps the editor for the reading, on whichever side the Conduct stands.
-Each segment has its own handler, so no control is read to decide which was pressed.
+Each segment has its own observer, so no control is read to decide which was pressed.
 
-## `private void QRepertoireScribeHandle(object sender, RoutedEventArgs e)`
+## `private void QRepertoireScribeObserve(object sender, RoutedEventArgs e)`
 
 Swaps the reading for the editor, on whichever side the Conduct stands.
 The Conduct asks before leaving an editor, so unsaved wording is never lost silently.
 
-## `internal void QRepertoireVoyageShow(bool past, bool future)`
+## `internal void QRepertoireVoyageRefine(bool past, bool future)`
 
 Lights the two trail buttons from the voyage state the navigation raises.
 The navigation owns the trail, so the panel only shows what it is told.
 
-## `private void QRepertoireRetreatHandle(object sender, RoutedEventArgs e)`
+## `private void QRepertoireRetreatObserve(object sender, RoutedEventArgs e)`
 
 Steps the navigation's trail back one station.
 
-## `private void QRepertoireAdvanceHandle(object sender, RoutedEventArgs e)`
+## `private void QRepertoireAdvanceObserve(object sender, RoutedEventArgs e)`
 
 Steps the navigation's trail forward one station.

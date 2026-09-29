@@ -75,7 +75,7 @@ public sealed class TCorpusVista
     }
 
     [Fact]
-    public void CorpusTallyRead_QuotingEntriesAdded_WordsEachForm()
+    public void AnthologyPanelTallyRead_QuotingEntriesAdded_WordsEachForm()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -83,12 +83,12 @@ public sealed class TCorpusVista
         LExample cat = TCorpus.TCorpusExampleSave(engine, "a cat sat");
         engine.TRequestQuoteApply(TCorpus.TCorpusEntrySave(engine).LEntryId, cat.LExampleId);
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        List<string> tallies = [corpus.CCorpusTallyRead()];
+        List<string> tallies = [corpus.CCorpusAnthology.CAnthologyPanel.CPanelTallyRead()];
 
         corpus.TCorpusExampleOpen(cat.LExampleId);
-        tallies.Add(corpus.CCorpusTallyRead());
+        tallies.Add(corpus.CCorpusAnthology.CAnthologyPanel.CPanelTallyRead());
         engine.TRequestQuoteApply(TCorpus.TCorpusEntrySave(engine).LEntryId, cat.LExampleId);
-        tallies.Add(corpus.CCorpusTallyRead());
+        tallies.Add(corpus.CCorpusAnthology.CAnthologyPanel.CPanelTallyRead());
 
         Assert.Equal(
             [

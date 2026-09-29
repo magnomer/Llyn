@@ -124,7 +124,10 @@ public sealed class TQuill
             TInterface.TSituationCreate(0, "Hearth", null, LStateValue.LStateValueUnknown));
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectSituation, stored.LSituationId);
 
-        tenure.TQuillCreate().TQuillSituationSet("Fire", string.Empty, string.Empty);
+        LQuillSituation quill = tenure.TQuillSituationCreate();
+        quill.TQuillTitleSet("Fire");
+        quill.TQuillDescriptionSet(string.Empty);
+        quill.TQuillKindSet(string.Empty);
 
         LSituation held = tenure.TTenureRead()!.LDraftSituation!;
         Assert.Equal("Fire", held.LSituationTitle.TStateValueShow());

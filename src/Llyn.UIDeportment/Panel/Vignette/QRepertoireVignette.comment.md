@@ -15,7 +15,7 @@ The value itself says whether it is unknown, as a card field does in the entry d
 ## `private void QVignetteShow(CSituationDraft situation)`
 
 Paints the read page of a Situation the engine announces.
-The tally counts the Situation the atlas has chosen.
+The tally chips are repainted with it, counting the Situation the atlas has chosen.
 
 ## `private void QVignetteClear()`
 
@@ -51,9 +51,3 @@ The surface is handed driver rows, so no shape crosses into it.
 ## `private List<PVideo> QVignetteVideoRead(IReadOnlyList<CVideoDraft> rows)`
 
 The video rows the page reads, a never-written location left out the same way.
-
-## `private string QRepertoireTallyRead(long? id)`
-
-How many places reference one Situation, read from the count the catalog fill already holds, worded as a sentence.
-None, one and many are three texts, because a number alone beside a title says nothing about what it counts.
-It is drawn on both sides of the panel, so the reader and the writer see the same figure.

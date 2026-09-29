@@ -36,6 +36,7 @@ A typed text and then a chosen language both land on the same Gloss.
 ## `public void SituationSet_UnknownKindLeftEmpty_KeepsKindUnknown()`
 
 A field left empty whose held value is unknown stays unknown, while the typed title lands.
+The scenario's three edits are sent one field at a time, as the form types them.
 
 ## `public void EtymologySet_TextTyped_WritesNarrative()`
 

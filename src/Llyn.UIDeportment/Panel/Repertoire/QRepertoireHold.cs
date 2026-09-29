@@ -12,13 +12,7 @@ internal sealed partial class QRepertoire
     {
         QScenarioDesk.CDeskFailed += _qRepertoireHost.PWindowFailureRefine;
         QScenarioDesk.CDeskRefused += _qRepertoireHost.PWindowEnvoy.CEnvoyFailureShow;
-        _cRepertoire.CRepertoireDraftChanged += QScenarioShow;
-    }
-
-    private void QScenarioChangeDefer()
-    {
-        QScenarioDesk.CDeskQuill?.LQuillSituationSet(
-            QScenarioTitle.Text, QScenarioDescription.Text, QScenarioKind.Text);
+        _cRepertoire.CRepertoireDraftChanged += QScenarioFieldsRefine;
     }
 
     public void QChronicleUndoObserve()
@@ -31,19 +25,19 @@ internal sealed partial class QRepertoire
         QChronicle.QChronicleCaretRefine(_cRepertoire.CRepertoireSession.CSessionRedo);
     }
 
-    public void QChronicleUpdate()
+    private void QRepertoireChronicleRefine()
     {
         (bool undo, bool redo) = _cRepertoire.CRepertoireSession.CSessionChronicleRead();
         QRepertoireBackward.IsEnabled = undo;
         QRepertoireForward.IsEnabled = redo;
     }
 
-    private void QRepertoireUndoHandle(object sender, RoutedEventArgs e)
+    private void QRepertoireUndoObserve(object sender, RoutedEventArgs e)
     {
         QChronicleUndoObserve();
     }
 
-    private void QRepertoireRedoHandle(object sender, RoutedEventArgs e)
+    private void QRepertoireRedoObserve(object sender, RoutedEventArgs e)
     {
         QChronicleRedoObserve();
     }

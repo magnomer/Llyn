@@ -34,10 +34,6 @@ The filled transcription rows a reading view lists, without the glyph row.
 
 The written reflex rows of the draft, which a reading view lists.
 
-## `IReadOnlyDictionary<long, int> LEngineUsageRead(LOwner owner);`
-
-How many places cite each record of one owner kind, keyed by record id.
-
 ## `IReadOnlyList<LCatalogAuthor> LEngineRollFind(LVista? vista);`
 
 The Authors of the authors panel's roll, headed by the uncredited row, and none while the vista is missing.

@@ -239,11 +239,9 @@ internal static partial class TInterface
     internal static LRequest TReflexAnchorCreate(long draftId, long reflexId, long fanqieId, bool anchored) =>
         new LRequestReflexAnchor(draftId, reflexId, fanqieId, anchored);
 
-    internal static LRequest TSituationBodyCreate(long draftId, long situationId, LSituation situation) =>
-        new LRequestSituationBody(
-            draftId,
-            situationId,
-            situation.LSituationTitle.TStateWrittenRead(),
-            situation.LSituationDescription.TStateWrittenRead(),
-            situation.LSituationKind.TStateWrittenRead());
+    internal static LRequest TSituationDescriptionCreate(long draftId, long situationId, LStateValue value) =>
+        new LRequestSituationDescription(draftId, situationId, value.TStateWrittenRead());
+
+    internal static LRequest TSituationKindCreate(long draftId, long situationId, LStateValue value) =>
+        new LRequestSituationKind(draftId, situationId, value.TStateWrittenRead());
 }

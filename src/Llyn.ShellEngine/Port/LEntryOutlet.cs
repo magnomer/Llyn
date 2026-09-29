@@ -149,11 +149,6 @@ public sealed class LEntryOutlet : LEntryPort
 
     public IReadOnlyList<LAuthorRow> LEngineCreditRead(LTenure? held) => LAuthorFacade.LEngineCreditRead(held);
 
-    public IReadOnlyDictionary<long, int> LEngineUsageRead(LOwner owner)
-    {
-        return _lEntryOutletEngine.LEngineEntry.LEngineUsageRead(owner);
-    }
-
     public string LEngineTallyRead(long? reference) => _lEntryOutletEngine.LEngineEntry.LEngineTallyRead(reference);
 
     public IReadOnlyList<string> LEngineNameResolve(IReadOnlyList<string> labels) =>

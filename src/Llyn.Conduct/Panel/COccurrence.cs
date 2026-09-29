@@ -44,11 +44,25 @@ public sealed class COccurrence
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(vista);
 
+        vista.LVistaQuerySet(_cOccurrenceVista?.LVistaQuery ?? string.Empty);
         _cOccurrenceRoll = roll;
         _cOccurrenceVista = vista;
         COccurrencePanel.CPanelVistaRestore(vista);
     }
 
+    internal void LOccurrenceObserverAttach(Action<Action> marshal, Action roll, Action chosen)
+    {
+        ArgumentNullException.ThrowIfNull(marshal);
+        ArgumentNullException.ThrowIfNull(roll);
+        ArgumentNullException.ThrowIfNull(chosen);
+
+        COccurrencePanel.CPanelObserverAttach(
+            CSubject.CSubjectEntry, bulletin => marshal(() => COccurrencePanel.CPanelEntrySelect(bulletin)));
+        COccurrencePanel.CPanelObserverAttach(CSubject.CSubjectEntry, _ => marshal(roll));
+        COccurrencePanel.CPanelChosenAttach(CSubject.CSubjectEntry, _ => marshal(chosen));
+        COccurrencePanel.CPanelObserverAttach(
+            CSubject.CSubjectVista, _ => marshal(COccurrencePanel.CPanelRowsResonate));
+    }
     public void COccurrenceQuerySet(string query)
     {
         ArgumentNullException.ThrowIfNull(query);

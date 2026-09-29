@@ -232,28 +232,4 @@ public sealed class LQuill
     {
         _lQuillTenure.LTenureRequestApply(new LRequestAuthorShift(_lQuillTenure.LTenureId, author, position));
     }
-
-    public void LQuillSituationSet(string title, string description, string kind)
-    {
-        ArgumentNullException.ThrowIfNull(title);
-        ArgumentNullException.ThrowIfNull(description);
-        ArgumentNullException.ThrowIfNull(kind);
-
-        LQuillSituationDefer(_lQuillTenure.LTenureRead()?.LDraftSituation, title, description, kind);
-    }
-
-    private void LQuillSituationDefer(LSituation? held, string title, string description, string kind)
-    {
-        _lQuillTenure.LTenureRequestDefer(new LRequestSituationBody(
-            _lQuillTenure.LTenureId,
-            0,
-            LQuillWrittenRead(title, held?.LSituationTitle),
-            LQuillWrittenRead(description, held?.LSituationDescription),
-            LQuillWrittenRead(kind, held?.LSituationKind)));
-    }
-
-    private static LStateWritten LQuillWrittenRead(string text, LStateValue? held)
-    {
-        return new LStateWritten(text, text.Length == 0 && (held?.LStateValueUncertain ?? false));
-    }
 }

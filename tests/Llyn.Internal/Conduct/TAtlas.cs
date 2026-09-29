@@ -18,7 +18,7 @@ public sealed class TAtlas
         TAtlasSituationSave(engine, "at home");
         CAtlas atlas = TAtlasPrepare(engine, atelier);
 
-        Assert.Empty(atlas.TAtlasRowsRead("?", "-"));
+        Assert.Empty(atlas.TAtlasRowsRead()!);
         Assert.Null(atlas.CAtlasChosen);
     }
 
@@ -34,9 +34,11 @@ public sealed class TAtlas
         CAtlas atlas = TAtlasPrepare(engine, atelier);
         atlas.TAtlasVistaRestore(engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName));
 
-        IReadOnlyList<CCatalogSituation> rows = atlas.TAtlasRowsRead("?", "-");
+        IReadOnlyList<CCatalogSituation> rows = atlas.TAtlasRowsRead()!;
 
-        Assert.Equal("-", rows.Single(row => row.CCatalogSituationId == blank.LSituationId).CCatalogSituationTitle);
+        Assert.Equal(
+            TInterface.TLocalizationTextRead("Situation.Untitled"),
+            rows.Single(row => row.CCatalogSituationId == blank.LSituationId).CCatalogSituationTitle);
         Assert.Equal(
             "at home", rows.Single(row => row.CCatalogSituationId == home.LSituationId).CCatalogSituationTitle);
     }
@@ -54,7 +56,7 @@ public sealed class TAtlas
 
         atlas.CAtlasQuerySet("court");
 
-        Assert.Equal(["in court"], atlas.TAtlasRowsRead("?", "-").Select(row => row.CCatalogSituationTitle));
+        Assert.Equal(["in court"], atlas.TAtlasRowsRead()!.Select(row => row.CCatalogSituationTitle));
     }
 
     [Fact]
@@ -88,7 +90,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasUsageRead_CitedSituation_CountsEveryCard()
+    public void AtlasPanelTallyRead_CitedSituationChosen_WordsItsTally()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -111,8 +113,21 @@ public sealed class TAtlas
                 1)],
             []));
         CAtlas atlas = TAtlasPrepare(engine, atelier);
+        List<string> tallies = [atlas.CAtlasPanel.CPanelTallyRead()];
+        LVista vista = engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName);
+        atlas.TAtlasVistaRestore(vista);
+        tallies.Add(atlas.CAtlasPanel.CPanelTallyRead());
 
-        Assert.Equal(1, atlas.CAtlasUsageRead()[home.LSituationId]);
+        vista.TVistaSelect(home.LSituationId);
+        tallies.Add(atlas.CAtlasPanel.CPanelTallyRead());
+
+        Assert.Equal(
+            [
+                string.Empty,
+                TInterface.TLocalizationTextRead("Situation.UsageNone"),
+                TInterface.TLocalizationTextRead("Situation.UsageOne"),
+            ],
+            tallies);
     }
 
     [Fact]
@@ -146,6 +161,49 @@ public sealed class TAtlas
         Assert.True(held.CSituationDraftKind.CStateValueUncertain);
         Assert.Empty(held.CSituationDraftImage);
         Assert.Empty(held.CSituationDraftVideo);
+    }
+
+    [Fact]
+    public void AtlasRowsRead_EngineFails_ShowsTheLoadFailureAndAnswersNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, asked);
+
+        Assert.Null(TInterfaceConduct.TAtlasFailRead(engine, envoy));
+        Assert.Equal(["Situation.LoadFailed"], asked);
+    }
+
+    [Fact]
+    public void AtlasPanelTallyRead_EngineRefuses_ShowsTheLoadFailureAndAnswersEmpty()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, asked);
+
+        CAtlas atlas = new(
+            atelier.CAtelierEntryPort,
+            atelier.CAtelierPortraitPort,
+            atelier.CAtelierSettingsPort,
+            TInterfaceConduct.TDeskCreate(engine, "Situation", envoy, "Repertoire", CSubject.CSubjectSituation),
+            static () => true,
+            envoy,
+            static _ => true);
+        atlas.TAtlasVistaRestore(engine.TEngineVistaStart("occurrence", LCatalogOrder.LCatalogOrderHeadword));
+
+        Assert.Equal(string.Empty, atlas.CAtlasPanel.CPanelTallyRead());
+        Assert.Equal(["Situation.LoadFailed"], asked);
+    }
+
+    [Fact]
+    public void AtlasOrderRead_Menu_OffersNameKindAndUsage()
+    {
+        Assert.Equal(
+            [CCatalogOrder.CCatalogOrderName, CCatalogOrder.CCatalogOrderKind, CCatalogOrder.CCatalogOrderUsage],
+            CAtlas.CAtlasOrderRead());
     }
 
     private static CAtlas TAtlasPrepare(LEngine engine, CAtelier atelier)

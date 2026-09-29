@@ -269,19 +269,19 @@ public sealed class TRequest
     }
 
     [Fact]
-    public void RequestApply_SituationBody_ChangesThePanelSituation()
+    public void RequestApply_SituationFields_ChangesThePanelSituation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LDraft started = engine.TEngineSituationStart("Situation", null);
         long id = started.LDraftSituation!.LSituationId;
-        LSituation sent = TInterface.TSituationCreate(
-            0,
-            TInterface.TStateValueCreate("around a hearth"),
-            TInterface.TStateValueCreate("a fireside"),
-            TInterface.TStateValueCreate("place"));
 
-        LDraft answered = engine.TEngineRequestApply(TInterface.TSituationBodyCreate(started.LDraftId, id, sent));
+        engine.TEngineRequestApply(TInterface.TSituationTitleCreate(
+            started.LDraftId, id, TInterface.TStateValueCreate("around a hearth")));
+        engine.TEngineRequestApply(TInterface.TSituationDescriptionCreate(
+            started.LDraftId, id, TInterface.TStateValueCreate("a fireside")));
+        LDraft answered = engine.TEngineRequestApply(TInterface.TSituationKindCreate(
+            started.LDraftId, id, TInterface.TStateValueCreate("place")));
 
         Assert.Equal(id, answered.LDraftSituation!.LSituationId);
         Assert.Equal("around a hearth", answered.LDraftSituation.LSituationTitle.TStateValueShow());

@@ -52,6 +52,7 @@ internal static class TAuditChainSetting
             "LEasel",
             "LQuillChip",
             "LQuillCard",
+            "LQuillSituation",
         ],
         ["Llyn.UIDeportment>Llyn.Conduct"] =
         [
@@ -109,6 +110,8 @@ internal static class TAuditChainSetting
             "CExampleDraft",
             "CGlossDraft",
             "CSituationDraft",
+            "CScenario",
+            "CScenarioLine",
             "CRegisterDraft",
             "CTagDraft",
             "CImageDraft",
@@ -362,7 +365,7 @@ internal static class TAuditChainSetting
     {
         ["cross:Llyn.UIDeportment>Llyn.Application"] = 39,
         ["cross:Llyn.UIDeportment>Llyn.Core"] = 80,
-        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 10,
+        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 9,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 1,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
         ["expose:Llyn.UIDeportment>Llyn.Core"] = 1,

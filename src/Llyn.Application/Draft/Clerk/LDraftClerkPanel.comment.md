@@ -18,12 +18,6 @@ Applies one change to the sentence the draft holds, and refuses a draft holding 
 
 Applies one change to the source the draft holds, and refuses a draft holding none.
 
-## `public static LSituation LSituationBodyApply(LSituation held, LRequestSituationBody sent)`
-
-Resolves the written title, description and kind of the sent situation.
-It lays them over the held one, keeping the held id.
-The situation panel and the chips both route here through `LSituationChange`.
-
 ## `public static bool LAuthorNameCheck([NotNullWhen(true)] string? text)`
 
 Whether a typed credit names an Author at all.

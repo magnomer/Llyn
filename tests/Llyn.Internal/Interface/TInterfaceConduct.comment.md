@@ -76,9 +76,13 @@ Binds the occurrence list to the situation vista and its own, as the repertoire'
 
 Binds the atlas to the situation vista through its internal helper, as the repertoire's restore does.
 
-## `internal static IReadOnlyList<CCatalogSituation> TAtlasRowsRead(this CAtlas atlas, string unknown, string untitled)`
+## `internal static IReadOnlyList<CCatalogSituation>? TAtlasRowsRead(this CAtlas atlas)`
 
 Reads the atlas rows through its internal helper, without the repertoire's stale-selection close.
+
+## `internal static IReadOnlyList<CCatalogSituation>? TAtlasFailRead(LEngine engine, CEnvoy envoy)`
+
+Reads the atlas rows over an entry port whose situation find throws, and answers what the read answers.
 
 ## `internal static CSituationDraft? TAtlasDraftRead(LSituation? situation)`
 

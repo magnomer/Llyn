@@ -263,13 +263,6 @@ A failed read is reported by the anthology and answers no rows, and then nothing
 When the excerpt shows a chosen Example the rows no longer list, both lists clear before the rows return.
 The clear announces fresh rows, which carry the same Examples, so a driver's nested refill is harmless.
 
-## `public string CCorpusTallyRead()`
-
-The tally chip's sentence for the chosen Example: how many places quote it.
-It is one ShellEngine call, `LVista.LVistaTallyRead` on the anthology vista, worded by Core's `LCatalogTallyFormat`.
-Before a vista arrives it reads empty.
-Every Example the corpus raises carries it, since the transcript edits the chosen Example or a fresh one.
-A fresh Example has no chosen row, so it reads as quoted nowhere.
 
 ## `public void CCorpusExampleDelete()`
 

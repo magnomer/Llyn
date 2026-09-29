@@ -71,7 +71,7 @@ The read reports its own failure, and it drops a shown selection whose row no lo
 
 ## `private void QCorpusTallyRefine()`
 
-Rewrites both tally chips from `CCorpusTallyRead` when the catalog's rows change.
+Rewrites both tally chips from `CPanelTallyRead` when the catalog's rows change.
 A quotation added elsewhere refills the catalog, so its count shows at once.
 Both chips show the chosen Example's count, since only one of them is in view.
 

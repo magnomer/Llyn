@@ -47,14 +47,3 @@ public sealed record LRequestSituationKind(long LRequestDraftId, long LRequestSi
 {
     public override string LRequestKey => nameof(LRequestSituationKind);
 }
-
-public sealed record LRequestSituationBody(
-    long LRequestDraftId,
-    long LRequestSituationId,
-    LStateWritten LRequestTitle,
-    LStateWritten LRequestDescription,
-    LStateWritten LRequestKind)
-    : LRequest(LRequestDraftId)
-{
-    public override string LRequestKey => nameof(LRequestSituationBody);
-}

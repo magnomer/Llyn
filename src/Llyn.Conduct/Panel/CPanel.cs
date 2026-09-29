@@ -77,6 +77,19 @@ public sealed class CPanel
 
     public CCatalogFilter CPanelFilter => CPanelFilterRead(LVista.LVistaFilterRead(_cPanelVista));
 
+    public string CPanelTallyRead()
+    {
+        try
+        {
+            return _cPanelVista?.LVistaTallyRead() ?? string.Empty;
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cPanelEnvoy, _cPanelSettingsPort, _cPanelLoadKey, exception);
+            return string.Empty;
+        }
+    }
+
     public void CPanelRowsResonate()
     {
         CPanelRowsChanged?.Invoke();

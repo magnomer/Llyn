@@ -122,7 +122,7 @@ public partial class PWindow
             },
             new QTab("Repertoire", PNavigationRepertoire, PRepertoire)
             {
-                QTabVoyage = _qRepertoire.QRepertoireVoyageShow
+                QTabVoyage = _qRepertoire.QRepertoireVoyageRefine
             },
             new QTab("Corpus", PNavigationCorpus, PCorpus)
             {

@@ -5,6 +5,7 @@
 Covers the corpus panel's example list end to end on a real workspace.
 Before a vista arrives the list reads nothing, and an unknown text is worded with the engine's word.
 A failing find shows `Example.LoadFailed` and answers nothing.
+A tally the engine refuses shows the same failure once and answers an empty chip.
 The ordering menu offers text, language, Source and usage.
 A typed query narrows the rows, no order keeps the ordering, and a hidden language marks the list filtered.
 The held transcript carries the ready line of the Source it cites, and none before it cites one.

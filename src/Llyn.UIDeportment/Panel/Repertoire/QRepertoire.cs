@@ -57,18 +57,18 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         QRepertoireViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
         QRepertoireScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
-        QInquest.TextChanged += QInquestHandle;
-        QSortie.TextChanged += QSortieHandle;
+        QInquest.TextChanged += QInquestObserve;
+        QSortie.TextChanged += QSortieObserve;
         QRepertoireFresh.Click += QRepertoireFreshHandle;
         QRepertoireStore.Click += QRepertoireStoreHandle;
-        QRepertoireEarlier.Click += QRepertoireRetreatHandle;
-        QRepertoireLater.Click += QRepertoireAdvanceHandle;
-        QRepertoireBackward.Click += QRepertoireUndoHandle;
-        QRepertoireForward.Click += QRepertoireRedoHandle;
-        QRepertoireViewer.Click += QRepertoireViewerHandle;
-        QRepertoireScribe.Click += QRepertoireScribeHandle;
-        QRepertoireBin.Click += QRepertoireBinHandle;
-        QScenarioAttach();
+        QRepertoireEarlier.Click += QRepertoireRetreatObserve;
+        QRepertoireLater.Click += QRepertoireAdvanceObserve;
+        QRepertoireBackward.Click += QRepertoireUndoObserve;
+        QRepertoireForward.Click += QRepertoireRedoObserve;
+        QRepertoireViewer.Click += QRepertoireViewerObserve;
+        QRepertoireScribe.Click += QRepertoireScribeObserve;
+        QRepertoireBin.Click += QRepertoireBinObserve;
+        QScenarioIntroduce();
         QScenarioPicture.Click += QImageAddHandle;
         QScenarioFilm.Click += QVideoAddHandle;
     }
@@ -209,11 +209,12 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
             _cRepertoire.CRepertoireEditor.CEditorDisplay, _cRepertoire.CRepertoireOccurrence.COccurrencePanel);
         QScenarioDeskIntroduce();
 
+        QChoice.QChoiceOrderBuild(QTierList, "Tier", QTierObserve, CAtlas.CAtlasOrderRead());
         QAtlas.ItemsSource = _qAtlasList;
         QOccurrence.ItemsSource = _qOccurrenceList;
         QScenarioImage.ItemsSource = _qScenarioImage;
         QScenarioVideo.ItemsSource = _qScenarioVideo;
-        QLookItem.QLookItemAttach(QAtlas, QAtlasApply);
+        QLookItem.QLookItemAttach(QAtlas, QAtlasItemRefine);
         QLookItem.QLookItemAttach(QOccurrence, QOccurrenceApply);
         QLookItem.QLookItemAttach(QScenarioImage, QImageApply);
         QLookItem.QLookItemAttach(QScenarioVideo, QVideoApply);
@@ -227,11 +228,13 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         CPanel atlas = _cRepertoire.CRepertoireAtlas.CAtlasPanel;
         CPanel occurrence = _cRepertoire.CRepertoireOccurrence.COccurrencePanel;
         _cRepertoire.CRepertoireChanged += QRepertoireModeRefine;
-        _cRepertoire.CRepertoireScenarioChanged += QScenarioApply;
+        _cRepertoire.CRepertoireScenarioChanged += QScenarioRefine;
         _cRepertoire.CRepertoireSituationChanged += QVignetteShow;
-        _cRepertoire.CRepertoireQueryCleared += QInquestClear;
+        _cRepertoire.CRepertoireQueryCleared += QInquestRefine;
+        _cRepertoire.CRepertoireWorkspaceChanged += QRepertoireWorkspaceRefine;
         atlas.CPanelChanged += QRepertoireModeRefine;
-        atlas.CPanelRowsChanged += QAtlasFind;
+        atlas.CPanelRowsChanged += QAtlasRefine;
+        atlas.CPanelRowsChanged += QRepertoireTallyRefine;
         atlas.CPanelCleared += QVignetteClear;
         occurrence.CPanelChanged += QRepertoireModeRefine;
         occurrence.CPanelRowsChanged += QOccurrenceFind;
@@ -258,7 +261,7 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         QRepertoireBin.IsEnabled = _cRepertoire.CRepertoireBinEnabled;
         QRepertoireStore.IsEnabled = _cRepertoire.CRepertoireStoreEnabled;
         QScenario.IsEnabled = _cRepertoire.CRepertoireDesk.CDeskRunning;
-        QChronicleUpdate();
+        QRepertoireChronicleRefine();
     }
 
     internal void QRepertoireExitRefine()

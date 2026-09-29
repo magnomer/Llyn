@@ -98,8 +98,6 @@ public interface LEntryPort
 
     IReadOnlyList<LAuthorRow> LEngineCreditRead(LTenure? held);
 
-    IReadOnlyDictionary<long, int> LEngineUsageRead(LOwner owner);
-
     string LEngineTallyRead(long? reference);
 
     IReadOnlyList<string> LEngineNameResolve(IReadOnlyList<string> labels);

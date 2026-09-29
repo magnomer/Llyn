@@ -121,20 +121,6 @@ Sends the removal of one credit.
 
 Sends one credit to a new place, which the draft clerk clamps to the list.
 
-## `public void LQuillSituationSet(string title, string description, string kind)`
-
-Defers the scenario's title, description and kind as one body.
-The held situation is read without a flush, so a pending keystroke keeps its delay.
-
-## `private void LQuillSituationDefer(LSituation? held, string title, string description, string kind)`
-
-Builds the body over the held situation, taken as a parameter so no engine answer sits in a local.
-
-## `private static LStateWritten LQuillWrittenRead(string text, LStateValue? held)`
-
-An empty field whose held value is unknown stays unknown.
-Any other text is written as it stands.
-
 ## `public void LQuillEtymologySet(string text)`
 
 Defers the held entry's typed etymology narrative.

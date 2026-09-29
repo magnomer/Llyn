@@ -26,6 +26,13 @@ No query means nothing references the Situation, and a query means nothing match
 
 Takes the situation vista as the roll the rows follow, and its own vista for the panel.
 It takes engine vistas, so only the repertoire's vista restore calls it.
+The query the former vista held is carried into the fresh one, so a switched workspace keeps the search.
+
+## `internal void LOccurrenceObserverAttach(Action<Action> marshal, Action roll, Action chosen)`
+
+Attaches the subjects that refill the entry column on the fresh vista, each answer run through the marshal.
+An entry notice selects a stored entry, refills the situation rows, and hands the chosen entry to the area.
+A vista notice raises the column's own rows.
 
 ## `public void COccurrenceQuerySet(string query)`
 

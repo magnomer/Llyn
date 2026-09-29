@@ -183,12 +183,10 @@ public sealed class TEngineTenure
         engine.TEngineDelaySet(0);
 
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectSituation, null);
-        LSituation sent = TInterface.TSituationCreate(
-            0,
-            TInterface.TStateValueCreate("around a hearth"),
-            TInterface.TStateValueCreate("a fireside"),
-            TInterface.TStateValueCreate("place"));
-        tenure.TTenureRequestDefer(TInterface.TSituationBodyCreate(tenure.LTenureId, 0, sent));
+        tenure.TTenureRequestDefer(TInterface.TSituationTitleCreate(
+            tenure.LTenureId,
+            tenure.TTenureRead()!.LDraftSituation!.LSituationId,
+            TInterface.TStateValueCreate("around a hearth")));
 
         long? stored = tenure.TTenureFinish(true);
 

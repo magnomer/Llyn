@@ -15,6 +15,8 @@ public sealed class CAtlas
 
     private readonly LSettingsPort _cAtlasSettingsPort;
 
+    private readonly CEnvoy _cAtlasEnvoy;
+
     private LVista? _cAtlasVista;
 
     internal CAtlas(
@@ -30,7 +32,9 @@ public sealed class CAtlas
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(desk);
+        ArgumentNullException.ThrowIfNull(envoy);
 
+        _cAtlasEnvoy = envoy;
         _cAtlasEntryPort = entries;
         _cAtlasPortraitPort = portraits;
         _cAtlasSettingsPort = settings;
@@ -52,8 +56,22 @@ public sealed class CAtlas
     {
         ArgumentNullException.ThrowIfNull(vista);
 
+        vista.LVistaQuerySet(_cAtlasVista?.LVistaQuery ?? string.Empty);
         _cAtlasVista = vista;
         CAtlasPanel.CPanelVistaRestore(vista);
+    }
+
+    internal void LAtlasObserverAttach(Action<Action> marshal, Action workspace)
+    {
+        ArgumentNullException.ThrowIfNull(marshal);
+        ArgumentNullException.ThrowIfNull(workspace);
+
+        Action<CBulletin> rows = _ => marshal(CAtlasPanel.CPanelRowsResonate);
+        CAtlasPanel.CPanelObserverAttach(CSubject.CSubjectVista, rows);
+        CAtlasPanel.CPanelObserverAttach(CSubject.CSubjectWorkspace, _ => marshal(workspace));
+        CAtlasPanel.CPanelObserverAttach(CSubject.CSubjectSituation, rows);
+        CAtlasPanel.CPanelObserverAttach(CSubject.CSubjectReflex, rows);
+        CAtlasPanel.CPanelObserverAttach(CSubject.CSubjectSettings, rows);
     }
 
     public void CAtlasQuerySet(string query)
@@ -68,6 +86,16 @@ public sealed class CAtlas
         _cAtlasVista?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
     }
 
+    public static IReadOnlyList<CCatalogOrder> CAtlasOrderRead()
+    {
+        return
+        [
+            CCatalogOrder.CCatalogOrderName,
+            CCatalogOrder.CCatalogOrderKind,
+            CCatalogOrder.CCatalogOrderUsage,
+        ];
+    }
+
     public void CAtlasFilterSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
@@ -75,16 +103,28 @@ public sealed class CAtlas
         _cAtlasVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
-    internal IReadOnlyList<CCatalogSituation> LAtlasRowsRead(string unknown, string untitled)
+    internal IReadOnlyList<CCatalogSituation>? LAtlasRowsRead()
     {
-        return _cAtlasVista is LVista vista
-            ? _cAtlasEntryPort.LEngineSituationFind(vista, unknown, untitled).Select(LAtlasRowRead).ToList()
-            : [];
-    }
+        if (_cAtlasVista is not LVista vista)
+        {
+            return [];
+        }
 
-    public IReadOnlyDictionary<long, int> CAtlasUsageRead()
-    {
-        return _cAtlasEntryPort.LEngineUsageRead(LOwner.LOwnerSituation);
+        try
+        {
+            return _cAtlasEntryPort
+                .LEngineSituationFind(
+                    vista,
+                    _cAtlasSettingsPort.LEngineTextRead("Display.Unknown"),
+                    _cAtlasSettingsPort.LEngineTextRead("Situation.Untitled"))
+                .Select(LAtlasRowRead)
+                .ToList();
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cAtlasEnvoy, _cAtlasSettingsPort, "Situation.LoadFailed", exception);
+            return null;
+        }
     }
 
     public IReadOnlyList<string> CAtlasLanguageRead()

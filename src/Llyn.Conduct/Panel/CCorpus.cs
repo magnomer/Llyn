@@ -50,14 +50,17 @@ public sealed class CCorpus
             static () => true,
             LCorpusStoredShow);
         CCorpusSession.CSessionHeld += () =>
-            CCorpusTranscriptChanged?.Invoke(LCorpusTranscriptRead() ?? CExample.LExampleBlankRead(CCorpusTallyRead()));
+            CCorpusTranscriptChanged?.Invoke(
+                LCorpusTranscriptRead()
+                ?? CExample.LExampleBlankRead(CCorpusAnthology.CAnthologyPanel.CPanelTallyRead()));
         CCorpusSession.CSessionChanged += () => CCorpusChanged?.Invoke();
         CCorpusSession.CSessionFailed +=
             (key, exception) => CLedger.LLedgerFailureShow(envoy, _cCorpusSettingsPort, key, exception);
         CCorpusAnthology.CAnthologyPanel.CPanelEdited += id => CCorpusSession.CSessionStart(id);
         CCorpusAnthology.CAnthologyPanel.CPanelCleared += CCorpusSession.CSessionCancel;
         CCorpusAnthology.CAnthologyPanel.CPanelDraftChanged +=
-            draft => LCorpusExampleUpdate(CCorpusAnthology.LAnthologyDraftRead(draft, CCorpusTallyRead()));
+            draft => LCorpusExampleUpdate(
+                CCorpusAnthology.LAnthologyDraftRead(draft, CCorpusAnthology.CAnthologyPanel.CPanelTallyRead()));
         CCorpusQuotation.CQuotationPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         CCorpusQuotation.CQuotationPanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         atelier.CAtelierNavigation.LNavigationTabAdd(
@@ -139,7 +142,8 @@ public sealed class CCorpus
     {
         try
         {
-            return CCorpusAnthology.LAnthologyDraftRead(CCorpusDesk.CDeskRead(), CCorpusTallyRead());
+            return CCorpusAnthology.LAnthologyDraftRead(
+                CCorpusDesk.CDeskRead(), CCorpusAnthology.CAnthologyPanel.CPanelTallyRead());
         }
         catch (Exception exception)
         {
@@ -433,11 +437,6 @@ public sealed class CCorpus
         }
 
         return rows;
-    }
-
-    public string CCorpusTallyRead()
-    {
-        return CCorpusAnthology.CAnthologyPanel.CPanelVista?.LVistaTallyRead() ?? string.Empty;
     }
 
     public void CCorpusExampleDelete()

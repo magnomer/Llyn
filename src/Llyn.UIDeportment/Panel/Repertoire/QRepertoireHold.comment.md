@@ -5,7 +5,7 @@
 When what the user typed into the situation editor reaches the draft the engine holds.
 The panel holds its controls, and the desk on its Conduct holds the tenure from start to commit or cancel.
 The panel keeps no draft id, halted flag, timer or pending map of its own, since the engine owns them.
-Every edit goes through one of the desk's gates, which build the request and defer or send it.
+Every edit goes through one of the Conduct's gates, whose engine member builds the request and defers or sends it.
 Typing is deferred through the tenure and written once the user stops, so a keystroke is not a write.
 A media row added or removed is sent at once, because there is no keystroke coming to end it.
 The tenure raises a bulletin when its state moves, and the Conduct settles the buttons from that.
@@ -16,13 +16,8 @@ The desk holding the Situation being edited, read off the Conduct each time.
 
 ## `private void QScenarioDeskIntroduce()`
 
-Wires the desk's failure and refusal to the window, and the Conduct's draft notice to `QScenarioShow`.
+Wires the desk's failure and refusal to the window, and the Conduct's draft notice to `QScenarioFieldsRefine`.
 The Conduct attaches the desk's observers itself at build, through the marshal the forge hands it.
-
-## `private void QScenarioChangeDefer()`
-
-Hands the three texts to the text gate, for every edit the three fields report.
-The engine decides what changed, and an unchanged body raises no bulletin, so nothing is redrawn under the caret.
 
 ## `public void QChronicleUndoObserve()`
 
@@ -35,16 +30,16 @@ The draft bulletin the engine raises brings the older fields back through the or
 Steps whichever draft is in front one snapshot forward again.
 The inverse of the undo above, through the same bulletin.
 
-## `public void QChronicleUpdate()`
+## `private void QRepertoireChronicleRefine()`
 
 Lights `QRepertoireBackward` and `QRepertoireForward` only when the draft in front has a step to walk.
 The Conduct reads the entry editor's chronicle while `PEditor` is in front, and the held Situation's otherwise.
 The panel is the pair's only writer, so the two editors never overwrite each other.
 
-## `private void QRepertoireUndoHandle(object sender, RoutedEventArgs e)`
+## `private void QRepertoireUndoObserve(object sender, RoutedEventArgs e)`
 
 The rail's undo, standing for whichever editor is in front, as the rail's save does.
 
-## `private void QRepertoireRedoHandle(object sender, RoutedEventArgs e)`
+## `private void QRepertoireRedoObserve(object sender, RoutedEventArgs e)`
 
 The rail's redo, the inverse of the one above.

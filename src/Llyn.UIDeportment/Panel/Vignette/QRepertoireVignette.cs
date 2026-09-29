@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Globalization;
 using System.Windows.Controls;
 using Llyn.Conduct;
 
@@ -21,7 +20,7 @@ internal sealed partial class QRepertoire
         QVignetteDescriptionShow(situation.CSituationDraftDescription);
         QVignetteMediaShow(
             QVignetteImageRead(situation.CSituationDraftImage), QVignetteVideoRead(situation.CSituationDraftVideo));
-        QVignetteTally.Text = QRepertoireTallyRead(_cRepertoire.CRepertoireAtlas.CAtlasChosen);
+        QRepertoireTallyRefine();
     }
 
     private void QVignetteClear()
@@ -87,20 +86,5 @@ internal sealed partial class QRepertoire
         }
 
         return videos;
-    }
-
-    private string QRepertoireTallyRead(long? id)
-    {
-        int count = id is long stored && _qAtlasCount.TryGetValue(stored, out int usage) ? usage : 0;
-
-        return count switch
-        {
-            0 => QLocalizationCatalog.QLocalizationTextRead("Situation.UsageNone"),
-            1 => QLocalizationCatalog.QLocalizationTextRead("Situation.UsageOne"),
-            _ => string.Concat(
-                count.ToString(CultureInfo.CurrentCulture),
-                " ",
-                QLocalizationCatalog.QLocalizationTextRead("Situation.UsageMany")),
-        };
     }
 }

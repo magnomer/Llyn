@@ -19,7 +19,7 @@ public sealed class TRepertoire
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        List<CSituationDraft?> held = [];
+        List<CScenario> held = [];
         repertoire.CRepertoireScenarioChanged += held.Add;
 
         repertoire.CRepertoireSituationCreate();
@@ -69,7 +69,7 @@ public sealed class TRepertoire
         Assert.True(repertoire.CRepertoireVignetteShown);
         Assert.True(repertoire.CRepertoireVignetteHeld);
         Assert.False(repertoire.CRepertoireScribeChecked);
-        Assert.Single(repertoire.CRepertoireRowsRead("?", "-"));
+        Assert.Single(repertoire.CRepertoireRowsRead());
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public sealed class TRepertoire
 
         Assert.Equal(1, recorded);
         Assert.Equal(["Leave"], asked);
-        Assert.Equal(2, repertoire.CRepertoireRowsRead("?", "-").Count);
+        Assert.Equal(2, repertoire.CRepertoireRowsRead().Count);
         Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);
     }
 
@@ -144,14 +144,14 @@ public sealed class TRepertoire
         TRepertoireSituationSave(engine, "in court");
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         repertoire.CRepertoireAtlas.CAtlasQuerySet("court");
-        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += () => repertoire.CRepertoireRowsRead("?", "-");
+        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += () => repertoire.CRepertoireRowsRead();
         int cleared = 0;
         repertoire.CRepertoireQueryCleared += () => cleared++;
 
         repertoire.TRepertoireSituationOpen(home.LSituationId);
 
         Assert.Equal(1, cleared);
-        Assert.Equal(2, repertoire.CRepertoireRowsRead("?", "-").Count);
+        Assert.Equal(2, repertoire.CRepertoireRowsRead().Count);
         Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);
         Assert.True(repertoire.CRepertoireVignetteHeld);
     }
@@ -215,7 +215,7 @@ public sealed class TRepertoire
 
         Assert.True(repertoire.TRepertoireLeaveConfirm());
         Assert.Equal(["Leave"], asked);
-        Assert.Single(repertoire.CRepertoireRowsRead("?", "-"));
+        Assert.Single(repertoire.CRepertoireRowsRead());
         Assert.True(repertoire.CRepertoireVignetteHeld);
     }
 
@@ -295,7 +295,7 @@ public sealed class TRepertoire
     }
 
     [Fact]
-    public void RepertoireSituationClose_ChosenSituation_ClearsBothLists()
+    public void RepertoireWorkspaceNotice_ChosenSituation_ClearsBothLists()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -304,7 +304,7 @@ public sealed class TRepertoire
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         repertoire.TRepertoireSituationOpen(home.LSituationId);
 
-        repertoire.CRepertoireSituationClose();
+        engine.TEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
 
         Assert.True(repertoire.CRepertoireVignetteBlank);
         Assert.False(repertoire.CRepertoireDisplayShown);
@@ -320,7 +320,7 @@ public sealed class TRepertoire
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         repertoire.CRepertoireSituationCreate();
 
-        repertoire.CRepertoireEntryResonate();
+        engine.TEngineBulletinRaise(LSubject.LSubjectEntry, 0);
 
         Assert.True(repertoire.CRepertoireScenarioShown);
         Assert.True(repertoire.CRepertoireDesk.CDeskHeld);
@@ -338,7 +338,7 @@ public sealed class TRepertoire
         repertoire.TRepertoireSituationOpen(home.LSituationId);
         repertoire.CRepertoireOccurrenceSelect(hearth.LEntryId);
 
-        repertoire.CRepertoireEntryResonate();
+        engine.TEngineBulletinRaise(LSubject.LSubjectEntry, 0);
 
         Assert.True(repertoire.CRepertoireDisplayShown);
         Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);
@@ -355,12 +355,12 @@ public sealed class TRepertoire
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         repertoire.TRepertoireSituationOpen(home.LSituationId);
 
-        Assert.Equal(2, repertoire.CRepertoireRowsRead("?", "-").Count);
+        Assert.Equal(2, repertoire.CRepertoireRowsRead().Count);
         Assert.True(repertoire.CRepertoireVignetteHeld);
 
         repertoire.CRepertoireAtlas.CAtlasQuerySet("court");
 
-        Assert.Single(repertoire.CRepertoireRowsRead("?", "-"));
+        Assert.Single(repertoire.CRepertoireRowsRead());
         Assert.True(repertoire.CRepertoireVignetteBlank);
         Assert.Null(repertoire.CRepertoireAtlas.CAtlasChosen);
     }
@@ -379,7 +379,7 @@ public sealed class TRepertoire
         repertoire.CRepertoireSituationDelete();
 
         Assert.Equal(["Situation.DeleteConfirm"], asked);
-        Assert.Empty(repertoire.CRepertoireRowsRead("?", "-"));
+        Assert.Empty(repertoire.CRepertoireRowsRead());
         Assert.True(repertoire.CRepertoireVignetteBlank);
     }
 
@@ -399,7 +399,7 @@ public sealed class TRepertoire
         repertoire.CRepertoireSituationDelete();
 
         Assert.Empty(asked);
-        Assert.Single(repertoire.CRepertoireRowsRead("?", "-"));
+        Assert.Single(repertoire.CRepertoireRowsRead());
         Assert.True(repertoire.CRepertoireDisplayShown);
     }
 

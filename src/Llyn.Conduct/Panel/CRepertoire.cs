@@ -14,6 +14,8 @@ public sealed class CRepertoire
 
     private readonly LSettingsPort _cRepertoireSettingsPort;
 
+    private readonly Action<Action> _cRepertoireMarshal;
+
     private CRepertoire(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -24,6 +26,7 @@ public sealed class CRepertoire
         _cRepertoireAtelier = atelier;
         _cRepertoireEnvoy = envoy;
         _cRepertoireSettingsPort = atelier.CAtelierSettingsPort;
+        _cRepertoireMarshal = marshal;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CRepertoireEditor = editor;
         CRepertoireDesk = new CDesk(
@@ -53,7 +56,9 @@ public sealed class CRepertoire
             editor.LEditorFinish,
             static () => true,
             LRepertoireStoredShow);
-        CRepertoireSession.CSessionHeld += () => CRepertoireScenarioChanged?.Invoke(LRepertoireScenarioRead());
+        CRepertoireSession.CSessionHeld += () =>
+            CRepertoireScenarioChanged?.Invoke(
+                new CScenario(LRepertoireScenarioRead() ?? CScenario.LScenarioBlankRead()));
         CRepertoireSession.CSessionChanged += () => CRepertoireChanged?.Invoke();
         CRepertoireSession.CSessionFailed +=
             (key, exception) => CLedger.LLedgerFailureShow(envoy, _cRepertoireSettingsPort, key, exception);
@@ -84,13 +89,15 @@ public sealed class CRepertoire
 
     public event Action? CRepertoireChanged;
 
-    public event Action<CSituationDraft?>? CRepertoireScenarioChanged;
+    public event Action<CScenario>? CRepertoireScenarioChanged;
 
-    public event Action<CSituationDraft>? CRepertoireDraftChanged;
+    public event Action<CScenario>? CRepertoireDraftChanged;
 
     public event Action<CSituationDraft>? CRepertoireSituationChanged;
 
     public event Action? CRepertoireQueryCleared;
+
+    public event Action? CRepertoireWorkspaceChanged;
 
     public CEditor CRepertoireEditor { get; }
 
@@ -134,6 +141,9 @@ public sealed class CRepertoire
 
     public bool CRepertoirePortraitAllowed => CRepertoireDisplayShown;
 
+    private LQuillSituation? LRepertoireQuill =>
+        !CRepertoireDesk.CDeskFilling && CRepertoireDesk.CDeskTenure is LTenure held ? new LQuillSituation(held) : null;
+
     private bool LRepertoireOccurrenceSide => CRepertoireOccurrence.COccurrencePanel.CPanelModeEnabled;
 
     private bool LRepertoireRowShown => CRepertoireVignetteShown && CRepertoireVignetteHeld;
@@ -158,8 +168,14 @@ public sealed class CRepertoire
     {
         if (LRepertoireScenarioRead() is CSituationDraft situation)
         {
-            CRepertoireDraftChanged?.Invoke(situation);
+            CRepertoireDraftChanged?.Invoke(new CScenario(situation));
         }
+    }
+
+    private void LRepertoireWorkspaceResonate()
+    {
+        LRepertoireSituationClose();
+        CRepertoireWorkspaceChanged?.Invoke();
     }
 
     private void LRepertoireClose()
@@ -297,10 +313,10 @@ public sealed class CRepertoire
             return;
         }
 
-        CRepertoireSituationClose();
+        LRepertoireSituationClose();
     }
 
-    public void CRepertoireSituationClose()
+    private void LRepertoireSituationClose()
     {
         CRepertoireOccurrence.COccurrencePanel.CPanelEntryClose();
         CRepertoireAtlas.CAtlasPanel.CPanelEntryClose();
@@ -348,7 +364,7 @@ public sealed class CRepertoire
         return shown ? CRepertoireSession.LSessionFinish(true) : CRepertoireSession.CSessionClose(true);
     }
 
-    public void CRepertoireEntryResonate()
+    private void LRepertoireEntryResonate()
     {
         if (!CRepertoireOccurrence.COccurrencePanel.CPanelBinEnabled)
         {
@@ -365,15 +381,43 @@ public sealed class CRepertoire
         LRepertoireSituationRestore(editing);
     }
 
-    public IReadOnlyList<CCatalogSituation> CRepertoireRowsRead(string unknown, string untitled)
+    public IReadOnlyList<CCatalogSituation> CRepertoireRowsRead()
     {
-        IReadOnlyList<CCatalogSituation> rows = CRepertoireAtlas.LAtlasRowsRead(unknown, untitled);
+        if (CRepertoireAtlas.LAtlasRowsRead() is not IReadOnlyList<CCatalogSituation> rows)
+        {
+            return [];
+        }
+
         if (LRepertoireRowShown && !rows.Any(static row => row.CCatalogSituationChosen))
         {
-            CRepertoireSituationClose();
+            LRepertoireSituationClose();
         }
 
         return rows;
+    }
+
+    public CScenarioLine CRepertoireTitleSet(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        LRepertoireQuill?.LQuillTitleSet(text);
+        return CScenario.LScenarioTitleRead(text, false);
+    }
+
+    public CScenarioLine CRepertoireKindSet(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        LRepertoireQuill?.LQuillKindSet(text);
+        return CScenario.LScenarioKindRead(text, false);
+    }
+
+    public CScenarioLine CRepertoireDescriptionSet(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        LRepertoireQuill?.LQuillDescriptionSet(text);
+        return CScenario.LScenarioDescriptionRead(text, false);
     }
 
     public void CRepertoireSituationDelete()
@@ -421,5 +465,8 @@ public sealed class CRepertoire
         CRepertoireAtlas.LAtlasVistaRestore(vista);
         CRepertoireOccurrence.LOccurrenceVistaRestore(vista, occurrence);
         CRepertoireEditor.LEditorVistaRestore(occurrence);
+        CRepertoireAtlas.LAtlasObserverAttach(_cRepertoireMarshal, LRepertoireWorkspaceResonate);
+        CRepertoireOccurrence.LOccurrenceObserverAttach(
+            _cRepertoireMarshal, CRepertoireAtlas.CAtlasPanel.CPanelRowsResonate, LRepertoireEntryResonate);
     }
 }

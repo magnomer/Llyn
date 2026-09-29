@@ -36,7 +36,9 @@ The engine's change notices drive the mode, and its row notices drive the two li
 Its scenario and situation notices paint the sheet.
 Its failures reach the window through the envoy, which the Conduct asks directly.
 A dropped inquest empties the inquest box and the language menu.
-The window fills the situation catalog when it restores the stored ordering.
+A workspace change reloads the flags.
+The ordering menu is built once from the Conduct's fixed list of orderings.
+The window fills the situation catalog and the entry column when the workspace opens.
 Every change after that arrives as an announcement.
 The panel is current whether or not its tab is in front.
 

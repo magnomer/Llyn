@@ -17,6 +17,7 @@ A stored Situation is shown again outside the scribe through `LRepertoireStoredS
 The occurrence panel opens the editor on the entry it edits, and a clear cancels the editor's desk.
 The atlas's row notices reach the occurrence panel, whose rows follow the chosen Situation.
 It registers `LRepertoireClose` with the workspace and attaches the scenario desk's observers through the marshal.
+It keeps the marshal, so each vista restore attaches the lists' observers on the fresh vistas.
 
 ## `public static CRepertoire CRepertoireCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
@@ -28,18 +29,23 @@ Building it is no user action, so it is no gate on the atelier.
 
 Raised when the desk or the entry editor changes state, so a driver repaints the mode.
 
-## `public event Action<CSituationDraft?>? CRepertoireScenarioChanged`
+## `public event Action<CScenario>? CRepertoireScenarioChanged`
 
-Raised with the Situation the desk holds after a start, or null after a cancel or a refused start.
+Raised with the scenario of the Situation the desk holds after a start.
+A cancel or a refused start raises the blank scenario, so the driver keeps no default of its own.
 
-## `public event Action<CSituationDraft>? CRepertoireDraftChanged`
+## `public event Action<CScenario>? CRepertoireDraftChanged`
 
-Raised with the held Situation after an edit to its draft, through the marshal the repertoire was built with.
+Raised with the held Situation's scenario after an edit, through the marshal the repertoire was built with.
 `CRepertoireScenarioChanged` fills the scenario anew, while this one only refreshes what the edit changed.
 
 ## `public event Action<CSituationDraft>? CRepertoireSituationChanged`
 
 Raised with the Situation a loaded atlas draft carries, so the vignette shows it.
+
+## `public event Action? CRepertoireWorkspaceChanged`
+
+Raised after a workspace notice closed the shown Situation, so a driver reloads what belongs to the workspace.
 
 ## `public event Action? CRepertoireQueryCleared`
 
@@ -71,6 +77,10 @@ The other mode flags follow the same two facts: which side is in front and wheth
 
 Print takes an entry on display or a chosen Situation on the vignette.
 Export, as `CRepertoirePortraitAllowed` says, takes only an entry on display.
+
+## `private LQuillSituation? LRepertoireQuill`
+
+The scenario's typed edits over the desk's live tenure, or null while no tenure runs or the desk fills.
 
 ## `private bool LRepertoireOccurrenceSide`
 
@@ -150,7 +160,11 @@ Closing the occurrence side falls back to the chosen Situation, and closing the 
 
 Shows the chosen Situation again in the given mode, or clears both lists when none is chosen.
 
-## `public void CRepertoireSituationClose()`
+## `private void LRepertoireWorkspaceResonate()`
+
+Answers the workspace notice by closing the shown Situation, then raises `CRepertoireWorkspaceChanged`.
+
+## `private void LRepertoireSituationClose()`
 
 Clears both lists, also when the workspace changes under the panel.
 
@@ -178,18 +192,32 @@ Asks the envoy only over unsaved changes.
 A store finishes the session, and a discard leaves without touching it.
 The finish shows the stored Situation only when `shown` holds.
 
-## `public void CRepertoireEntryResonate()`
+## `private void LRepertoireEntryResonate()`
 
 Answers the chosen entry's notice by refreshing the occurrence draft.
 It falls back to the chosen Situation once the occurrence side has closed.
 It does nothing without a chosen occurrence, so a whole-set bulletin never clears a scenario or a new entry.
 The mode is read before the refresh, so a vanished entry under edit reopens the scenario.
 
-## `public IReadOnlyList<CCatalogSituation> CRepertoireRowsRead(string unknown, string untitled)`
+## `public IReadOnlyList<CCatalogSituation> CRepertoireRowsRead()`
 
-Reads the situation list's rows, worded by the driver's two placeholders.
+Reads the situation list's rows, worded by the engine.
+A failed read is shown by the list and answers no rows, so nothing is cleared.
 When the vignette shows a chosen Situation the rows no longer list, both lists clear before the rows return.
 The clear announces fresh rows, which carry the same Situations, so a driver's nested refill is harmless.
+
+## `public CScenarioLine CRepertoireTitleSet(string text)`
+
+Hands the typed title to the scenario's own edit on the tenure, which defers it.
+It answers the typed line, whose hint is the untitled text, since typing ends an unknown mark.
+
+## `public CScenarioLine CRepertoireKindSet(string text)`
+
+Hands the typed kind on as the title gate does, and answers the kind's typed line.
+
+## `public CScenarioLine CRepertoireDescriptionSet(string text)`
+
+Hands the typed description on as the title gate does, and answers the description's typed line.
 
 ## `public void CRepertoireSituationDelete()`
 
@@ -215,3 +243,5 @@ Starts the `repertoire` vista over Situations by name and the `occurrence` vista
 The atlas takes the first, and the occurrence list takes both, since its rows follow the chosen Situation.
 The entry editor takes the occurrence vista, so an entry it stores lands in that list.
 The forge runs it at build, and the workspace change gate runs it again.
+The list owners then carry their held queries into the fresh vistas and attach their observers.
+The atlas hands the workspace answer in, and the occurrence list gets the roll and chosen-entry answers.

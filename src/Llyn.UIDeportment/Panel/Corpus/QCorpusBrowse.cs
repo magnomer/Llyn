@@ -95,7 +95,7 @@ internal sealed partial class QCorpus
 
     private void QCorpusTallyRefine()
     {
-        string tally = _cCorpus.CCorpusTallyRead();
+        string tally = _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelTallyRead();
         QExcerptTally.Text = tally;
         QTranscriptTally.Text = tally;
     }

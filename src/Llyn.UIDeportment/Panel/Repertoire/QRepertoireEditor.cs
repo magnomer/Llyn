@@ -5,90 +5,95 @@ namespace Llyn.UIDeportment;
 
 internal sealed partial class QRepertoire
 {
-    private void QScenarioAttach()
+    private void QScenarioIntroduce()
     {
-        QScenarioTitle.TextChanged += QScenarioTitleHandle;
-        QScenarioKind.TextChanged += QScenarioKindHandle;
-        QScenarioDescription.TextChanged += QScenarioDescriptionHandle;
+        QScenarioTitle.TextChanged += QScenarioTitleObserve;
+        QScenarioKind.TextChanged += QScenarioKindObserve;
+        QScenarioDescription.TextChanged += QScenarioDescriptionObserve;
     }
 
     private void QScenarioDetach()
     {
-        QScenarioTitle.TextChanged -= QScenarioTitleHandle;
-        QScenarioKind.TextChanged -= QScenarioKindHandle;
-        QScenarioDescription.TextChanged -= QScenarioDescriptionHandle;
+        QScenarioTitle.TextChanged -= QScenarioTitleObserve;
+        QScenarioKind.TextChanged -= QScenarioKindObserve;
+        QScenarioDescription.TextChanged -= QScenarioDescriptionObserve;
     }
 
-    private void QScenarioTitleHandle(object sender, TextChangedEventArgs e)
+    private void QScenarioTitleObserve(object sender, TextChangedEventArgs e)
     {
-        QScenarioTitle.SetValue(QField.QFieldHintProperty, QScenarioHintRead("Situation.Untitled", false));
-        QScenarioHintApply();
-        QScenarioChangeDefer();
+        QScenarioTitleRefine(_cRepertoire.CRepertoireTitleSet(QScenarioTitle.Text));
     }
 
-    private void QScenarioKindHandle(object sender, TextChangedEventArgs e)
+    private void QScenarioKindObserve(object sender, TextChangedEventArgs e)
     {
-        QScenarioKind.SetValue(QField.QFieldHintProperty, QScenarioHintRead("Situation.Kind", false));
-        QScenarioMeasureApply();
-        QScenarioChangeDefer();
+        QScenarioKindRefine(_cRepertoire.CRepertoireKindSet(QScenarioKind.Text));
     }
 
-    private void QScenarioDescriptionHandle(object sender, TextChangedEventArgs e)
+    private void QScenarioDescriptionObserve(object sender, TextChangedEventArgs e)
+    {
+        QScenarioDescriptionRefine(_cRepertoire.CRepertoireDescriptionSet(QScenarioDescription.Text));
+    }
+
+    private void QScenarioTitleRefine(CScenarioLine line)
+    {
+        QScenarioTitle.SetValue(
+            QField.QFieldHintProperty, QLocalizationCatalog.QLocalizationTextRead(line.CScenarioLineHint));
+        QScenarioHintRefine(line);
+    }
+
+    private void QScenarioKindRefine(CScenarioLine line)
+    {
+        QScenarioKind.SetValue(
+            QField.QFieldHintProperty, QLocalizationCatalog.QLocalizationTextRead(line.CScenarioLineHint));
+        QScenarioMeasureRefine(line);
+    }
+
+    private void QScenarioDescriptionRefine(CScenarioLine line)
     {
         QScenarioDescription.SetValue(
-            QField.QFieldHintProperty, QScenarioHintRead("Situation.DescriptionHint", false));
-        QScenarioChangeDefer();
+            QField.QFieldHintProperty, QLocalizationCatalog.QLocalizationTextRead(line.CScenarioLineHint));
     }
 
-    private static string QScenarioHintRead(string key, bool unknown)
+    private void QScenarioHintRefine(CScenarioLine title)
     {
-        return QLocalizationCatalog.QLocalizationTextRead(unknown ? "Display.Unknown" : key);
+        QScenarioHint.Text = QLocalizationCatalog.QLocalizationTextRead(title.CScenarioLineHint);
+        QScenarioHint.Visibility = QLook.QLookVisibleRead(title.CScenarioLineVacant);
+        QScenarioGhost.Text = title.CScenarioLineText;
     }
 
-    private void QScenarioHintApply()
+    private void QScenarioMeasureRefine(CScenarioLine kind)
     {
-        QScenarioHint.Text = (string)QScenarioTitle.GetValue(QField.QFieldHintProperty);
-        QScenarioHint.Visibility = QLook.QLookVisibleRead(string.IsNullOrEmpty(QScenarioTitle.Text));
-        QScenarioGhost.Text = QScenarioTitle.Text;
+        QScenarioMeasure.Text = kind.CScenarioLineWording is string key
+            ? QLocalizationCatalog.QLocalizationTextRead(key)
+            : kind.CScenarioLineText;
     }
 
-    private void QScenarioMeasureApply()
+    private void QScenarioRefine(CScenario scenario)
     {
-        QScenarioMeasureRefine(QScenarioKind.Text, (string)QScenarioKind.GetValue(QField.QFieldHintProperty));
+        QScenarioFieldsRefine(scenario);
+        QRepertoireTallyRefine();
     }
 
-    private void QScenarioMeasureRefine(string kind, string hint)
-    {
-        QScenarioMeasure.Text = string.IsNullOrEmpty(kind) ? hint : kind;
-    }
-
-    private void QScenarioApply(CSituationDraft? situation)
-    {
-        QScenarioShow(
-            situation ?? new CSituationDraft(
-                0, CStateValue.CStateValueEmpty, CStateValue.CStateValueEmpty, CStateValue.CStateValueEmpty, [], []));
-        QScenarioTally.Text = QRepertoireTallyRead(QScenarioDesk.CDeskStoredRead());
-    }
-
-    private void QScenarioShow(CSituationDraft situation)
+    private void QScenarioFieldsRefine(CScenario scenario)
     {
         QScenarioDetach();
 
-        QScenarioFieldShow(QScenarioTitle, "Situation.Untitled", situation.CSituationDraftTitle);
-        QScenarioFieldShow(QScenarioKind, "Situation.Kind", situation.CSituationDraftKind);
-        QScenarioFieldShow(QScenarioDescription, "Situation.DescriptionHint", situation.CSituationDraftDescription);
+        QScenarioFieldRefine(QScenarioTitle, scenario.CScenarioTitle);
+        QScenarioFieldRefine(QScenarioKind, scenario.CScenarioKind);
+        QScenarioFieldRefine(QScenarioDescription, scenario.CScenarioDescription);
 
-        QScenarioImageShow(situation.CSituationDraftImage);
-        QScenarioVideoShow(situation.CSituationDraftVideo);
-        QScenarioHintApply();
-        QScenarioMeasureApply();
+        QScenarioImageShow(scenario.CScenarioDraft.CSituationDraftImage);
+        QScenarioVideoShow(scenario.CScenarioDraft.CSituationDraftVideo);
+        QScenarioHintRefine(scenario.CScenarioTitle);
+        QScenarioMeasureRefine(scenario.CScenarioKind);
 
-        QScenarioAttach();
+        QScenarioIntroduce();
     }
 
-    private static void QScenarioFieldShow(TextBox field, string key, CStateValue value)
+    private static void QScenarioFieldRefine(TextBox field, CScenarioLine line)
     {
-        field.Text = value.CStateValueText;
-        field.SetValue(QField.QFieldHintProperty, QScenarioHintRead(key, value.CStateValueUncertain));
+        field.Text = line.CScenarioLineText;
+        field.SetValue(
+            QField.QFieldHintProperty, QLocalizationCatalog.QLocalizationTextRead(line.CScenarioLineHint));
     }
 }

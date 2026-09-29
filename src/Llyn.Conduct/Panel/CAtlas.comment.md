@@ -21,20 +21,29 @@ Only `CRepertoire` reads it, when an arrival lands on a hidden row.
 ## `internal void LAtlasVistaRestore(LVista vista)`
 
 Binds the list and its panel to the repertoire vista a workspace start or switch hands over.
+The query the former vista held is carried into the fresh one, so a switched workspace keeps the search.
+
+## `internal void LAtlasObserverAttach(Action<Action> marshal, Action workspace)`
+
+Attaches the subjects that refill the list on the fresh vista, each answer run through the marshal.
+A vista, Situation, reflex or settings notice raises the panel's rows.
+A workspace notice runs the answer the area hands in.
+
+## `public static IReadOnlyList<CCatalogOrder> CAtlasOrderRead()`
+
+The orderings the list offers, in menu order.
+A driver builds its ordering menu from it once.
 
 ## `public void CAtlasOrderSet(CCatalogOrder? order)`
 
 Hands a chosen ordering to the vista, which keeps its own when the sender is no order row.
 
-## `internal IReadOnlyList<CCatalogSituation> LAtlasRowsRead(string unknown, string untitled)`
+## `internal IReadOnlyList<CCatalogSituation>? LAtlasRowsRead()`
 
 The rows the vista lists, none before a vista arrives.
 Drivers read them through `CRepertoireRowsRead`, which closes a stale selection.
-The driver hands the words for an unknown or untitled situation, and the engine names each row with them.
-
-## `public IReadOnlyDictionary<long, int> CAtlasUsageRead()`
-
-How many places cite each Situation, keyed by id.
+The engine's own words name an unknown kind and an untitled situation.
+A failed read shows the load failure through the ledger and answers null.
 
 ## `public IReadOnlyList<string> CAtlasLanguageRead()`
 

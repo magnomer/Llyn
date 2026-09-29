@@ -30,10 +30,7 @@ The content with every blank row dropped and every unidentified row given an id,
 The switch over the kinds that reach past the entry content.
 The example and source panels edit their own field of the draft, and the credits edit its author list.
 The authors panel renames the one Author its draft holds.
-The body records lay every field of a panel over the held one, so the caller decides what changed.
 A situation field request may mean the panel's situation or a chip, so it is routed by id.
-A situation body on a draft holding a Situation lands on that Situation, whatever id it carries.
-So the panel need not read the draft back to learn the id before every keystroke.
 A media request on a draft holding a Situation lands on that Situation's lists before the switch runs.
 The card id such a request carries is ignored there, because a Situation draft holds no card.
 Everything else is a change to the entry content and falls through to the content switch.

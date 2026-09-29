@@ -228,8 +228,25 @@ internal static class TInterfaceConduct
 
     internal static void TAtlasVistaRestore(this CAtlas atlas, LVista vista) => atlas.LAtlasVistaRestore(vista);
 
-    internal static IReadOnlyList<CCatalogSituation> TAtlasRowsRead(
-        this CAtlas atlas, string unknown, string untitled) => atlas.LAtlasRowsRead(unknown, untitled);
+    internal static IReadOnlyList<CCatalogSituation>? TAtlasRowsRead(this CAtlas atlas) => atlas.LAtlasRowsRead();
+
+    internal static IReadOnlyList<CCatalogSituation>? TAtlasFailRead(LEngine engine, CEnvoy envoy)
+    {
+        LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineSituationFind"] = _ => throw new InvalidOperationException("no situations"),
+        });
+        CAtlas atlas = new(
+            entries,
+            new LPortraitOutlet(engine),
+            new LSettingsOutlet(engine),
+            TDeskCreate(engine, "Situation", envoy, "Repertoire", CSubject.CSubjectSituation),
+            static () => true,
+            envoy,
+            static _ => true);
+        atlas.LAtlasVistaRestore(engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName));
+        return atlas.LAtlasRowsRead();
+    }
 
     internal static CSituationDraft? TAtlasDraftRead(LSituation? situation) => CAtlas.LAtlasDraftRead(
         situation is null

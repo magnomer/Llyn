@@ -56,6 +56,23 @@ public sealed class TAnthology
     }
 
     [Fact]
+    public void AnthologyPanelTallyRead_EngineRefuses_ShowsTheLoadFailureAndAnswersEmpty()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, asked);
+
+        CDesk desk = TInterfaceConduct.TDeskCreate(engine, "Example", envoy, "Corpus", CSubject.CSubjectExample);
+        CAnthology anthology = TInterfaceConduct.TAnthologyCreate(atelier, desk, envoy);
+        anthology.TAnthologyVistaRestore(engine.TEngineVistaStart("occurrence", LCatalogOrder.LCatalogOrderHeadword));
+
+        Assert.Equal(string.Empty, anthology.CAnthologyPanel.CPanelTallyRead());
+        Assert.Equal(["Example.LoadFailed"], asked);
+    }
+
+    [Fact]
     public void AnthologyOrderRead_Menu_OffersTextLanguageSourceAndUsage()
     {
         Assert.Equal(

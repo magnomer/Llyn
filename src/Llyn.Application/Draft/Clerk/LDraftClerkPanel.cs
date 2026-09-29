@@ -36,19 +36,6 @@ public sealed class LDraftClerkPanel
         return draft with { LDraftReference = change(held) };
     }
 
-    public static LSituation LSituationBodyApply(LSituation held, LRequestSituationBody sent)
-    {
-        ArgumentNullException.ThrowIfNull(held);
-        ArgumentNullException.ThrowIfNull(sent);
-
-        return held with
-        {
-            LSituationTitle = LStateValue.LStateValueRead(sent.LRequestTitle),
-            LSituationDescription = LStateValue.LStateValueRead(sent.LRequestDescription),
-            LSituationKind = LStateValue.LStateValueRead(sent.LRequestKind),
-        };
-    }
-
     public static bool LAuthorNameCheck([NotNullWhen(true)] string? text)
     {
         return !string.IsNullOrWhiteSpace(text);

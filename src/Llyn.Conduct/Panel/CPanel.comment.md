@@ -51,6 +51,15 @@ The engine answers the ordering before a vista arrives.
 The vista's language filter as a driver ticks it in a menu.
 The engine answers the filter before a vista arrives.
 
+## `public string CPanelTallyRead()`
+
+The tally chip's sentence for the chosen row, how many places cite it.
+It is one ShellEngine call, `LVista.LVistaTallyRead`, worded by Core's `LCatalogTallyFormat`.
+Before a vista arrives it reads empty.
+A fresh draft has no chosen row, so it reads as cited nowhere.
+A failure shows the panel's load failure key, as its rows read does, and answers an empty chip.
+Only the situation and example lists call it, since only their vistas count a tally.
+
 ## `public void CPanelRowsResonate()`
 
 A notice changed the rows, so the panel tells its driver to re-read them.

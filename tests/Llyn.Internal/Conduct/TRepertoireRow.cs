@@ -20,10 +20,12 @@ public sealed class TRepertoireRow
         engine.TEngineSituationCreate(TInterface.TSituationCreate(0, "by the shore", null, null));
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
 
-        CCatalogSituation[] rows = [.. repertoire.CRepertoireRowsRead("?", "-")];
+        CCatalogSituation[] rows = [.. repertoire.CRepertoireRowsRead()];
+
+        string unknown = TInterface.TLocalizationTextRead("Display.Unknown");
 
         Assert.Equal(
-            [("at home", "?"), ("by the shore", string.Empty), ("in court", "formal")],
+            [("at home", unknown), ("by the shore", string.Empty), ("in court", "formal")],
             rows.Select(row => (row.CCatalogSituationTitle, row.CCatalogSituationKind)));
     }
 
@@ -38,7 +40,7 @@ public sealed class TRepertoireRow
         TRepertoire.TRepertoireEntrySave(engine, "hearth", home);
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
 
-        CCatalogSituation[] rows = [.. repertoire.CRepertoireRowsRead("?", "-")];
+        CCatalogSituation[] rows = [.. repertoire.CRepertoireRowsRead()];
 
         Assert.Equal(
             [("at home", "1"), ("by the shore", string.Empty)],

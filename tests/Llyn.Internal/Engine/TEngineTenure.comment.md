@@ -39,7 +39,7 @@ Finishing a changed entry tenure stores the entry, drops the draft and answers t
 ## `public void TenureFinish_Changed_CommitsSituation()`
 
 Finishing a changed situation tenure stores the situation the same way.
-The body names situation zero, which the engine lands on the Situation the draft holds.
+The title names the Situation the draft holds, as the scenario's own edit does.
 
 ## `public void TenureFinish_Changed_CommitsReference()`
 
