@@ -14,10 +14,6 @@ The card cannot ask, because the search belongs to the engine and the card holds
 So the entry's text is handed to the translation gate, which resolves each word and links it.
 The engine holds the links, and the card renders them by id from the targets the editor read.
 
-## `internal Action<string>? PCardLinkNotice { get; set; }`
-
-Where the entry's text goes as it is typed, so the editor can offer matching Entries.
-
 ## `internal int PCardLinkPosition`
 
 How many chips stand before the caret, which is the place a new link is asked for.
@@ -49,7 +45,8 @@ A chip that already has its flag is left alone.
 
 ## `internal void PCardLinkRefine(string rest)`
 
-Puts the translation gate's answer in the entry, then tells the editor what now stands there.
+Puts the text the translation gate keeps in the entry.
+The editor paints the dropdown the same answer carries.
 The editor's text observer hands every edit to the gate, which reads the comma.
 So a pasted comma ends a word as a typed one does.
 

@@ -66,7 +66,6 @@ public partial class PEditor
         };
 
         PSentenceAttach(card);
-        PLinkAttach(card);
         PContextAttach(card);
         PRegisterAttach(card);
         PLabelIntroduce(card);

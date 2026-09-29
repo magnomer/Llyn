@@ -103,6 +103,7 @@ The fill attached to `PNotationList` hands that forwarder to every reading butto
 The Translation dropdown is one popup for the whole editor rather than one per card.
 Only one caret is typed into at a time, so only one list of candidates is ever open.
 It hangs off the caret it was opened from, which is why the markup names no placement target.
+Its shutting drops the selection, so enter never takes a row the dropdown no longer shows.
 
 ### `PCandidate`
 

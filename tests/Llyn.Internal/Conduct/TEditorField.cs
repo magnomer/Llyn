@@ -38,8 +38,8 @@ public sealed class TEditorField
         long gato = engine.TEngineTranslationCreate("gato", "Spanish").LEntryId;
         CEditor editor = TEditorFieldPrepare(engine);
         long sheet = TEditorSheetAdd(editor);
-        editor.CEditorCard.CCardTranslationInsert(sheet, gato, 0);
-        editor.CEditorCard.CCardTranslationInsert(sheet, chat, 0);
+        editor.CEditorCard.CCardTranslationInsert(sheet, gato, "gato", "Spanish", 0);
+        editor.CEditorCard.CCardTranslationInsert(sheet, chat, "chat", "French", 0);
 
         IReadOnlyList<CTranslationTarget> targets = editor.CEditorField.CCardTranslationRead(sheet);
 

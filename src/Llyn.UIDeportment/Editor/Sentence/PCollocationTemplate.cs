@@ -20,11 +20,6 @@ public class PCollocationTemplate : ResourceDictionary
         _pCollocationHost.PCardHandle(sender, e);
     }
 
-    internal void PCardDragHandle(object sender, MouseButtonEventArgs e)
-    {
-        _pCollocationHost.PCardDragHandle(sender, e);
-    }
-
     internal void PImageAddHandle(object sender, RoutedEventArgs e)
     {
         _pCollocationHost.PImageAddHandle(sender, e);

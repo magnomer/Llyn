@@ -317,37 +317,6 @@ public sealed class TCard
     }
 
     [Fact]
-    public void TranslationAdd_TypedList_LinksResolvedWordsAndKeepsTheUnresolved()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        long chat = engine.TEngineTranslationCreate("chat", "French").LEntryId;
-        (CDesk desk, CCard card) = TCardPrepare(engine);
-        long sheet = TCardSheetAdd(desk);
-
-        string rest = card.CCardTranslationAdd(sheet, " chat, zzyzx, , ch", 0);
-
-        Assert.Equal("zzyzx, ch", rest);
-        Assert.Equal([chat], TCardTranslationRead(desk, sheet));
-        Assert.Equal("ch", card.CCardTranslationAdd(sheet, "ch", 1));
-    }
-
-    [Fact]
-    public void TranslationInsert_StoredEntry_LinksItOnce()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        long chat = engine.TEngineTranslationCreate("chat", "French").LEntryId;
-        (CDesk desk, CCard card) = TCardPrepare(engine);
-        long sheet = TCardSheetAdd(desk);
-
-        card.CCardTranslationInsert(sheet, chat, 0);
-        card.CCardTranslationAdd(sheet, "chat,", 1);
-
-        Assert.Equal([chat], TCardTranslationRead(desk, sheet));
-    }
-
-    [Fact]
     public void ReferenceFind_NoWord_ListsEveryStoredSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -369,43 +338,6 @@ public sealed class TCard
         (_, CCard card) = TCardPrepare(engine);
 
         Assert.Contains(card.CCardSituationFind(0, "Hear"), row => row.CCatalogSituationId == hearth.LSituationId);
-    }
-
-    [Fact]
-    public void TranslationResolve_StoredHeadword_AnswersItsEntry()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        long chat = engine.TEngineTranslationCreate("chat", "French").LEntryId;
-        (_, CCard card) = TCardPrepare(engine);
-
-        Assert.Equal(chat, card.CCardTranslationResolve("chat"));
-        Assert.Contains(card.CCardProspectFind("chat"), row => row.CVistaRowId == chat);
-    }
-
-    [Fact]
-    public void ProspectFind_PaddedWord_FindsTheEntryTheTrimmedWordFinds()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        long chat = engine.TEngineTranslationCreate("chat", "French").LEntryId;
-        (_, CCard card) = TCardPrepare(engine);
-
-        Assert.Equal(chat, Assert.Single(card.CCardProspectFind("  chat ")).CVistaRowId);
-    }
-
-    [Fact]
-    public void CourtDelete_StartedCourt_DropsTheLinkAndItsDraft()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        (CDesk desk, CCard card) = TCardPrepare(engine);
-
-        long target = card.CCardCourtStart(desk.CDeskId, "Input", "chien", "French");
-        card.CCardCourtDelete(desk.CDeskId, target);
-
-        Assert.Null(engine.TEngineCourtFind(desk.CDeskId, target));
-        Assert.Null(engine.TEngineDraftRead(target));
     }
 
     [Fact]
@@ -441,7 +373,7 @@ public sealed class TCard
         Assert.Equal("text", CCard.CCardOrderRead(null, none, none, text, "?"));
     }
 
-    private static (CDesk TCardDesk, CCard TCardCard) TCardPrepare(LEngine engine)
+    internal static (CDesk TCardDesk, CCard TCardCard) TCardPrepare(LEngine engine)
     {
         engine.TEngineDelaySet(0);
         CDesk desk = TInterfaceConduct.TDeskCreate(
@@ -455,7 +387,7 @@ public sealed class TCard
         return desk.TDeskRead()!.LDraftContent.LEntryDraftEtymology;
     }
 
-    private static long TCardSheetAdd(CDesk desk)
+    internal static long TCardSheetAdd(CDesk desk)
     {
         desk.TDeskDefer(TInterface.TRequestAdditionCreate(desk.CDeskId, LCardKind.LCardKindMeaning, 0, int.MaxValue));
         return desk.TDeskRead()!.LDraftContent.LEntryDraftMeanings[^1].LCardDraftId;
@@ -476,7 +408,7 @@ public sealed class TCard
         return TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet).LCardDraftRegister;
     }
 
-    private static IReadOnlyList<long> TCardTranslationRead(CDesk desk, long sheet)
+    internal static IReadOnlyList<long> TCardTranslationRead(CDesk desk, long sheet)
     {
         return TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet).LCardDraftTranslation;
     }

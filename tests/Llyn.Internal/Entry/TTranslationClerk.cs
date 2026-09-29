@@ -47,6 +47,15 @@ public sealed class TTranslationClerk
     }
 
     [Fact]
+    public void TranslationWordRead_PaddedOrBlankText_AnswersTheTrimmedWordOrNothing()
+    {
+        Assert.Equal("chat", TInterface.TTranslationWordRead("  chat "));
+        Assert.Equal("chat noir", TInterface.TTranslationWordRead("chat noir"));
+        Assert.Null(TInterface.TTranslationWordRead(" \t "));
+        Assert.Null(TInterface.TTranslationWordRead(string.Empty));
+    }
+
+    [Fact]
     public void TranslationClerkResolve_TwoEntriesShareHeadword_AnswersNothing()
     {
         TVaultFake entries = new();

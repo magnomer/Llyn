@@ -24,9 +24,15 @@ How tall the dragged card is.
 The order is decided from where the ghost is, not from where the pointer is.
 The ghost is this tall.
 
+### `private void PCardDragRefine(object sender, MouseButtonEventArgs e)`
+
+The press on a card's header, heard for both lists.
+It finds which list shows the card, where it was taken hold of, and takes the capture.
+
 ### `if (list is null || list.Count <= 1)`
 
-A list of one has nowhere else to put its card, so no drag begins on it.
+A list of one has nowhere else to put its card, so no drag ghost begins on it.
+This only decides whether the drag is shown, since a lone card's drag could never send a move.
 
 ### `host.CaptureMouse();`
 
@@ -40,8 +46,9 @@ A press is not a drag.
 Nothing is shown until the pointer has travelled far enough.
 Only then was the card meant to be moved rather than its header clicked.
 
-### `private void PCardDragCancel(object sender, MouseEventArgs e)`
+### `private void PCardDragReset(object sender, MouseEventArgs e)`
 
+Ends the drag, heard both when the button comes up and when capture is lost.
 Capture can be taken away without the button ever coming up, by another window or a menu.
 A ghost left painted over the list would outlive the drag it belongs to.
 

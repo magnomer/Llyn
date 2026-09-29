@@ -28,14 +28,14 @@ public partial class PEditor
     {
         PMeaningList.ItemsSource = _pMeaningList;
         QLookItem.QLookItemAttach(PMeaningList, PMeaningApply);
-        PMeaningList.LostMouseCapture += PCardDragCancel;
-        PMeaningList.MouseLeftButtonUp += PCardDragFinish;
+        PMeaningList.LostMouseCapture += PCardDragReset;
+        PMeaningList.MouseLeftButtonUp += PCardDragReset;
         PMeaningList.MouseMove += PCardDragUpdate;
         PMeaningAddition.Click += PMeaningHandle;
         PCollocationList.ItemsSource = _pCollocationList;
         QLookItem.QLookItemAttach(PCollocationList, PCollocationApply);
-        PCollocationList.LostMouseCapture += PCardDragCancel;
-        PCollocationList.MouseLeftButtonUp += PCardDragFinish;
+        PCollocationList.LostMouseCapture += PCardDragReset;
+        PCollocationList.MouseLeftButtonUp += PCardDragReset;
         PCollocationList.MouseMove += PCardDragUpdate;
         PCollocationAddition.Click += PCollocationHandle;
     }
@@ -51,8 +51,8 @@ public partial class PEditor
         PCardApply(container, card);
         if (QLook.QLookPartFind<Border>(container, "PCardHeader") is Border header)
         {
-            header.MouseLeftButtonDown -= PCardDragHandle;
-            header.MouseLeftButtonDown += PCardDragHandle;
+            header.MouseLeftButtonDown -= PCardDragRefine;
+            header.MouseLeftButtonDown += PCardDragRefine;
         }
 
         if (QLook.QLookPartFind<Border>(container, "PCardPosition") is Border position)
@@ -99,8 +99,8 @@ public partial class PEditor
         PCardApply(container, card);
         if (QLook.QLookPartFind<Border>(container, "PCardHeader") is Border header)
         {
-            header.MouseLeftButtonDown -= _pCollocationTemplate.PCardDragHandle;
-            header.MouseLeftButtonDown += _pCollocationTemplate.PCardDragHandle;
+            header.MouseLeftButtonDown -= PCardDragRefine;
+            header.MouseLeftButtonDown += PCardDragRefine;
         }
 
         if (QLook.QLookPartFind<Border>(container, "PCardPosition") is Border position)

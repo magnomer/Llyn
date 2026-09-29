@@ -93,10 +93,6 @@ The pack sound facts and waiting sections of the entry the editor's desk holds.
 
 Whether this editor is the input tab's, which alone shows the command rail.
 
-## `public string CEditorOrigin`
-
-The tab the editor serves, which a link court records as its origin.
-
 ## `private LTenure? CEditorTenure`
 
 The held tenure for a field edit, or null while none is held or the desk fills its controls.

@@ -44,6 +44,12 @@ Resolving asks for the headword itself, so `brea` never silently becomes `breakf
 Both sides are folded the way `LCatalog.LCatalogTextNormalize` folds.
 Several Entries sharing a headword are a question, so this answers nothing and the caller asks.
 
+## `public static string? LTranslationWordRead(string text)`
+
+The word a typed translation stands for: the text trimmed, or null when nothing is left.
+A blank word names no Entry, so it neither resolves nor offers prospects.
+Resolving and offering both read the word here, so the rule has one owner.
+
 ## `public LEntry LTranslationClerkCreate(string headword, string language)`
 
 Creates the bare Entry a typed word no Entry answers needs, and returns it.

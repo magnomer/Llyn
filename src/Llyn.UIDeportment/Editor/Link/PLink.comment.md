@@ -2,67 +2,75 @@
 
 ## `public partial class PEditor`
 
-The editor's half of the Translation field: chip removal, caret keys, focus routing and resolution.
+The Translation field's driver, torn apart by role as `docs-work/JobPrinciple.md` section 13 asks.
+Each Observe hears one event and ends in one card gate, and each Refine only changes the look.
+The entry's keys are heard by several handlers in order, and the first to handle a key ends its route.
+The trim, the blank check, the resolve and the search live below Conduct, not here.
 The templates that draw the field cannot reach the card the links belong to.
 An item's data context is the link or the entry, not the card.
 So each handler asks which card's collection holds the item, as the Tag field does.
 
-Resolution lives here rather than on the card because it is the editor that holds the engine.
-A card holds ids and knows nothing about how a word becomes one.
-
-## `internal void PLinkAttach(PCard card)`
-
-Gives a card the prospect notice its entry's text goes to as it is typed.
-
 ## `private void PLinkTextObserve(PLinkCaret caret, string text)`
 
 Hears each edit of a Translation caret and hands the raw text to the translation gate.
-The gate links each completed word that resolves and answers the words that stay.
-The card's `PCardLinkRefine` then shows that answer and offers prospects for it.
-Every card the editor builds is attached, whether it was loaded or added by hand.
+The gate links each completed word that resolves and answers the words that stay, with the dropdown for them.
+Every card the editor builds is heard, whether it was loaded or added by hand.
 
-## `private void PLinkProspectShow(PCard card, string text)`
+## `private void PLinkRefine(PCard card, CProspect prospect)`
 
-Offers the Entries a half-typed translation matches, as it is typed.
-Nothing is selected in the dropdown while it merely stands open, so enter still resolves the typed word.
-The user reaches the list with the arrows, and only then does enter take a row.
+Paints a translation gate's answer: the text the entry keeps, then the dropdown open or shut.
+The rows, the word and the chosen row come ready, so nothing is decided here.
 
-## `internal void PLinkDropHandle(object sender, RoutedEventArgs e)`
+## `private void PLinkDropObserve(object sender, RoutedEventArgs e)`
 
-Closes the link whose button was pressed.
+Hears the close button of a chip and hands that link to the erase gate.
 
-## `internal void PLinkCaretHandle(object sender, KeyEventArgs e)`
+## `private void PLinkCommitObserve(object sender, KeyEventArgs e)`
 
-An open dropdown is offered every key first, so it answers the arrows and enter before the field does.
-Enter resolves what is standing in the entry once no dropdown is open, with the dropdown offered.
-Escape closes an open dropdown and leaves the word alone.
-The chip keys go through `PCaretKeyApply`.
-Every other key is left to the text box.
+Enter hands the raw text standing in the entry to the resolve gate, asking to see the choices.
+It runs after the dropdown's handlers, so enter on a chosen row never reaches it.
+The gate answers the dropdown, with one whole-headword match chosen already, and the Refine paints it.
 
-## `internal void PLinkCloseHandle(object sender, RoutedEventArgs e)`
+## `private void PLinkEraseObserve(object sender, KeyEventArgs e)`
 
-Resolves what is standing in the entry when focus leaves the field.
-A word one Entry answers becomes a link, as it would on enter.
-Anything else is left in the entry rather than opening a dropdown the user has already walked away from.
+Backspace at the entry's start or Delete at its end hands the chip beside the caret to the erase gate.
+`QCaretEdgeApply` decides the edge, and the key is taken at the edge even with no chip there.
 
-## `internal void PLinkFocusHandle(object sender, MouseButtonEventArgs e)`
+## `private void PLinkCaretRefine(object sender, KeyEventArgs e)`
 
+A Refine, since the arrows only walk the empty entry past a chip and ask no gate.
+`QCaretStepApply` decides the step, and the caret is put back into the moved entry.
+
+## `private void PLinkBlurRefine(object sender, RoutedEventArgs e)`
+
+Shuts the dropdown when focus leaves the entry, since the user has walked away from it.
+It is subscribed before the close observer, so the dropdown shuts first.
+
+## `private void PLinkCloseObserve(object sender, RoutedEventArgs e)`
+
+Hands what is standing in the entry to the resolve gate when focus leaves the field.
+A word one Entry answers becomes a link, and the entry empties.
+Anything else is left in the entry rather than opening a dropdown the user has already left.
+
+## `private void PLinkFocusRefine(object sender, MouseButtonEventArgs e)`
+
+A Refine, since the click changes only where the caret stands and asks no gate.
 Puts the caret in the entry when the field's empty space is clicked.
 So the whole box behaves as the one input it looks like.
 
-## `internal void PLinkFlagUpdate()`
+## `internal void PLinkFlagRefine()`
 
 Redraws every card's chips once the workspace's flags have finished loading.
 
 ## `private readonly PLinkTemplate _pLinkTemplate`
 
-The Translation dictionary, held so its fill can subscribe the dictionary's forwarders.
+The Translation dictionary, held for its chip and entry templates.
 
 ## `private void PLinkApply(FrameworkElement container, object item, string? _)`
 
 Fills one item of a card's Translation field, where bindings and event attributes stood.
-An entry gets its hint, its text and its key and leaving handlers.
-A chip gets its wording, its close icon and its close handler.
+An entry gets its hint, its text, and its key and leaving handlers in the order they must run.
+A chip gets its wording, its close icon and its close observer.
 
 ## `private void PLinkFieldApply(ItemsControl list)`
 
@@ -71,43 +79,7 @@ The selector is set only while none is, since a new selector would rebuild every
 
 ## Inline notes
 
-### `private void PLinkRemove(PCard card, LLinkChip? chip)`
-
-Asks the engine to unlink the chip, then closes the court link behind it if there was one.
-The chip is gone from the draft before the court is touched.
-So nothing points at a target being torn down.
-
-### `private void PLinkCourtDelete(long id)`
-
-A chip naming a stored entry has no court row, and nothing happens.
-A chip naming a tentative one drops the row and the entry it was holding.
-No other draft can name that entry, because it was made for this chip.
-
-### `private bool PLinkResolve(PCard card, string text, bool offered)`
-
-While the user is still in the field, the word is always shown as a choice.
-Its language stands beside it.
-One Entry whose whole headword is the word is chosen already, so a single keystroke confirms it.
-A headword is the same in every language, and only the user knows which language they meant.
-That is what `offered` says.
-When the field is left, one whole-headword match is linked without asking, through the insert gate.
-A typed or pasted list goes to the translation gate instead, through `PLinkTextObserve`.
-Anything else is left standing.
-An unasked question leaves the word in the entry, where the user can still see it.
-A search the workspace refuses raises a notice, because a silent nothing reads as no match.
-The entry being edited is asked of the draft, so a form never offers itself as its own translation.
-
 ### `private TextBox? PLinkBoxFind(PCard card)`
 
 The dropdown hangs off the caret it was opened from.
 The caret has no name to bind to, so the focused box is asked whether it is that card's.
-
-### `private static void PLinkCaretApply(TextBox box, PLinkCaret row, int caret)`
-
-Moving the entry rebuilds its item, so the focused box is gone by the time the move lands.
-The caret is put back on the newly drawn entry once the field is laid out again.
-
-### `private static TextBox? PLinkCaretFind(DependencyObject root)`
-
-The entry is found by walking the drawn field, because it is one item of a templated collection.
-Its position moves as links are added.

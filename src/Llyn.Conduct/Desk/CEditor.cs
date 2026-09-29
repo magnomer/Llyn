@@ -83,8 +83,6 @@ public sealed class CEditor
 
     public bool CEditorOwned => _cEditorVista?.LVistaInput ?? false;
 
-    public string CEditorOrigin => _cEditorVista?.LVistaTab ?? string.Empty;
-
     public string CEditorLanguage => CEditorDesk.CDeskTenure?.LTenureLanguageRead() ?? string.Empty;
 
     public long? CEditorEntry => CEditorDesk.CDeskStoredRead();

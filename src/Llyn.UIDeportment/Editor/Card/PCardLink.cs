@@ -16,8 +16,6 @@ internal sealed partial class PCard
 
     public ObservableCollection<object> PCardLink { get; } = [];
 
-    internal Action<string>? PCardLinkNotice { get; set; }
-
     internal int PCardLinkPosition =>
         PCardRowResolve(PCardLink, _pCardLinkKey, PCardLink.IndexOf(_pCardLinkCaret));
 
@@ -108,8 +106,6 @@ internal sealed partial class PCard
             _pCardLinkCaret.PLinkCaretText = rest;
             PCardLinkUpdate();
         }
-
-        PCardLinkNotice?.Invoke(_pCardLinkCaret.PLinkCaretText);
     }
 
     private static string PCardHintRead()

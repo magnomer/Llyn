@@ -36,7 +36,7 @@ public partial class PEditor
             _pLanguageItem,
             await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad));
         PSpeakerFlagRefine();
-        PLinkFlagUpdate();
+        PLinkFlagRefine();
     }
 
     private void PSpeakerObserve(object sender, RoutedEventArgs e)

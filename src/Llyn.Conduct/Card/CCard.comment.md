@@ -3,7 +3,7 @@
 ## `public sealed class CCard`
 
 The gates of the editor's cards: what a card's fields ask while the user types into them.
-The translation field finds prospects, resolves a typed word and opens or drops a court link.
+The translation field finds prospects, resolves a typed word, and links or unlinks an Entry.
 The register, situation, tag and source fields find the stored rows a typed word matches.
 The translation, situation, register and tag fields add what the user typed and pick stored rows.
 The sentence menu reads the particles and dependences of a language.
@@ -18,16 +18,36 @@ Takes the editor's desk, so an etymology request lands on the held draft.
 A failed translation shows through `envoy`, with the ready notice `settings` reads.
 Only the editor builds one, so the constructor is internal.
 
-## `public string CCardTranslationAdd(long cardId, string text, int position)`
+## `public CProspect CCardTranslationAdd(long cardId, string text, int position)`
 
 The gate for the translation field's typed text, heard on every change.
 The quill links each completed word that resolves to one entry and answers what the field keeps.
-A word that resolves to nothing stays in the answer, which is the gate's verdict for the field.
-A failed resolve shows `Input.TranslationFailed` and keeps the text as typed.
+The same answer carries the dropdown of Entries the kept word matches, so the field paints both at once.
+A failed resolve shows `Input.TranslationFailed`, keeps the text as typed and offers nothing.
 
-## `public void CCardTranslationInsert(long cardId, long entryId, int position)`
+## `public CProspect CCardTranslationResolve(long cardId, string text, int position, bool offered)`
 
-The gate for an entry picked from the prospects, or a court target just started, linked to the card.
+The gate for the word standing in the translation entry, on enter or when focus leaves the field.
+`offered` is the raw fact that the user pressed enter, which asks to see the choices.
+Enter answers the dropdown, with one whole-headword match chosen already, so a single keystroke confirms it.
+Leaving links one whole-headword match without asking, and answers what the entry keeps.
+That choice between showing and linking is the interaction this gate holds.
+A failed search or link shows `Input.TranslationFailed` and leaves the word in the entry.
+
+## `public void CCardTranslationInsert(long cardId, long entryId, string headword, string language, int position)`
+
+The gate for a row picked from the dropdown, linked to the card.
+A stored Entry is linked at once, and a fresh row's word and language start a court first.
+A failed start shows `Input.TranslationFailed`.
+
+## `public void CCardTranslationRemove(long cardId, long entryId)`
+
+The gate for a link the user erases, by its close button or a key at the entry's edge.
+The quill drops the court behind a tentative link in the same call.
+
+## `private static CProspect LCardProspectRead(LTranslationOffer offer)`
+
+A plain map of the engine's offer, with no rule, and its rows through `CPanel.CPanelRowRead`.
 
 ## `public IReadOnlyList<CRegister> CCardRegisterFind(long cardId, string word, string language)`
 
@@ -125,11 +145,6 @@ Whether the selection lies inside a span of the held narrative.
 ## `private void CCardMentionSend(LMentionDraft? span, long entryId)`
 
 Sends one span request, or nothing when there is no span.
-
-## `public void CCardCourtDelete(long ownerId, long targetId)`
-
-Drops the court link between the held draft and a target, and the target's fresh draft with it.
-One user action is one gate, so the translation field no longer finds the link first.
 
 ## `public static string CCardOrderRead(CSentenceOrder? order, CStateValue particle, CStateValue dependence, CStateValue text, string mark)`
 

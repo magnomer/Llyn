@@ -75,38 +75,63 @@ public partial class PEditor
         e.Handled = true;
     }
 
-    private bool PProspectHandle(Key key)
+    private void PProspectKeyRefine(object sender, KeyEventArgs e)
     {
-        if (key == Key.Escape)
+        if (!PProspect.IsOpen)
+        {
+            return;
+        }
+
+        if (e.Key == Key.Escape)
         {
             PProspectHide();
-            return true;
+            e.Handled = true;
+            return;
         }
 
-        if (key == Key.Down || key == Key.Up)
+        int count = _pProspectItem.Count;
+        if ((e.Key != Key.Down && e.Key != Key.Up) || count == 0)
         {
-            int count = _pProspectItem.Count;
-            if (count == 0)
-            {
-                return false;
-            }
-
-            int step = key == Key.Down ? 1 : count - 1;
-            int chosen = PProspectList.SelectedIndex < 0
-                ? (key == Key.Down ? count - 1 : 0)
-                : PProspectList.SelectedIndex;
-            PProspectList.SelectedIndex = (chosen + step) % count;
-            PProspectList.ScrollIntoView(PProspectList.SelectedItem);
-            return true;
+            return;
         }
 
-        if (key == Key.Enter && PProspectList.SelectedItem is PProspectItem item)
+        int step = e.Key == Key.Down ? 1 : count - 1;
+        int chosen = PProspectList.SelectedIndex < 0
+            ? (e.Key == Key.Down ? count - 1 : 0)
+            : PProspectList.SelectedIndex;
+        PProspectList.SelectedIndex = (chosen + step) % count;
+        PProspectList.ScrollIntoView(PProspectList.SelectedItem);
+        e.Handled = true;
+    }
+
+    private void PProspectCloseRefine(object? sender, EventArgs e)
+    {
+        PProspectList.SelectedIndex = -1;
+    }
+
+    private void PProspectKeyObserve(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Enter
+            || sender is not FrameworkElement { DataContext: PLinkCaret row }
+            || PCardLinkFind(row) is not PCard card)
         {
-            PProspectSelect(item);
-            return true;
+            return;
         }
 
-        return false;
+        if (PProspectList.SelectedItem is not PProspectItem item)
+        {
+            return;
+        }
+
+        _qEditor.QEditorArea.CEditorCard.CCardTranslationInsert(
+            card.PCardId,
+            item.PProspectItemId,
+            item.PProspectItemHeadword,
+            item.PProspectItemLanguage,
+            card.PCardLinkPosition);
+        e.Handled = true;
+        PProspectHide();
+        card.PCardLinkClear();
     }
 
     internal void PProspectShow(FrameworkElement anchor, Rect place, string word, string language, Action<long> chosen)
@@ -179,38 +204,12 @@ public partial class PEditor
             return;
         }
 
-        if (!item.PProspectItemFresh)
-        {
-            _qEditor.QEditorArea.CEditorCard.CCardTranslationInsert(
-                card.PCardId, item.PProspectItemId, card.PCardLinkPosition);
-            card.PCardLinkClear();
-            PProspectHide();
-            return;
-        }
-
-        if (PEditorDraft == 0)
-        {
-            PProspectHide();
-            return;
-        }
-
-        long target;
-        try
-        {
-            target = _qEditor.QEditorArea.CEditorCard.CCardCourtStart(
-                PEditorDraft,
-                _qEditor.QEditorArea.CEditorOrigin,
-                item.PProspectItemHeadword,
-                item.PProspectItemLanguage);
-        }
-        catch (Exception exception)
-        {
-            PProspectHide();
-            _pEditorHost.PWindowFailureRefine(PLinkFailureKey, exception);
-            return;
-        }
-
-        _qEditor.QEditorArea.CEditorCard.CCardTranslationInsert(card.PCardId, target, card.PCardLinkPosition);
+        _qEditor.QEditorArea.CEditorCard.CCardTranslationInsert(
+            card.PCardId,
+            item.PProspectItemId,
+            item.PProspectItemHeadword,
+            item.PProspectItemLanguage,
+            card.PCardLinkPosition);
         card.PCardLinkClear();
         PProspectHide();
     }

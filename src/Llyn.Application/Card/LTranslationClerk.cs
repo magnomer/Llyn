@@ -82,10 +82,7 @@ public sealed class LTranslationClerk
 
     public LEntry? LTranslationClerkResolve(string word, long? entryId)
     {
-        ArgumentNullException.ThrowIfNull(word);
-
-        string written = word.Trim();
-        if (written.Length == 0)
+        if (LTranslationWordRead(word) is not string written)
         {
             return null;
         }
@@ -109,6 +106,14 @@ public sealed class LTranslationClerk
         }
 
         return single;
+    }
+
+    public static string? LTranslationWordRead(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        string written = text.Trim();
+        return written.Length == 0 ? null : written;
     }
 
     public LEntry LTranslationClerkCreate(string headword, string language)

@@ -203,7 +203,7 @@
     "System.Diagnostics.Stopwatch"
   ],
   "ceilings": {
-    "cross:Llyn.UIDeportment>Llyn.Application": 55,
+    "cross:Llyn.UIDeportment>Llyn.Application": 53,
     "cross:Llyn.UIDeportment>Llyn.Core": 91,
     "cross:Llyn.UIDeportment>Llyn.ShellEngine": 25,
     "expose:Llyn.UIDemeanor>Llyn.Core": 1,
@@ -351,6 +351,7 @@
       "CMarker",
       "CCategory",
       "CCategoryRow",
+      "CProspect",
       "CDesk",
       "CEditor",
       "CNavigation",

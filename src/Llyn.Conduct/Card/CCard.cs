@@ -38,48 +38,70 @@ public sealed class CCard
         return _cCardDraftPort.LEngineProspectFind(word).Select(CPanel.CPanelRowRead).ToList();
     }
 
-    public long? CCardTranslationResolve(string word)
+    public CProspect CCardTranslationAdd(long cardId, string text, int position)
     {
-        return _cCardDraftPort.LEngineTranslationResolve(word, _cCardDesk.CDeskStoredRead())?.LEntryId;
-    }
+        ArgumentNullException.ThrowIfNull(text);
 
-    public string CCardTranslationAdd(long cardId, string text, int position)
-    {
         try
         {
-            return _cCardDesk.CDeskChip?.LQuillTranslationAdd(cardId, text, position) ?? text;
+            return _cCardDesk.CDeskChip?.LQuillTranslationAdd(cardId, text, position) is LTranslationOffer offer
+                ? LCardProspectRead(offer)
+                : new CProspect(text, string.Empty, [], false, false);
         }
         catch (Exception exception)
         {
             CLedger.LLedgerFailureShow(_cCardEnvoy, _cCardSettingsPort, "Input.TranslationFailed", exception);
-            return text;
+            return new CProspect(text, string.Empty, [], false, false);
         }
     }
 
-    public void CCardTranslationInsert(long cardId, long entryId, int position)
+    public CProspect CCardTranslationResolve(long cardId, string text, int position, bool offered)
     {
-        _cCardDesk.CDeskChip?.LQuillTranslationInsert(cardId, entryId, position);
-    }
+        ArgumentNullException.ThrowIfNull(text);
 
-    public long CCardCourtStart(long ownerId, string origin, string headword, string language)
-    {
-        return _cCardDraftPort.LEngineCourtStart(ownerId, origin, headword, language).LCourtTargetId;
-    }
-
-    public void CCardCourtDelete(long ownerId, long targetId)
-    {
-        CCardCourtDelete(_cCardDraftPort.LEngineCourtFind(ownerId, targetId), targetId);
-    }
-
-    private void CCardCourtDelete(LCourt? link, long targetId)
-    {
-        if (link is null)
+        if (_cCardDesk.CDeskChip is not LQuillChip chip)
         {
-            return;
+            return new CProspect(text, string.Empty, [], false, false);
         }
 
-        _cCardDraftPort.LEngineCourtDelete(link.LCourtId);
-        _cCardDraftPort.LEngineDraftDelete(targetId);
+        try
+        {
+            return offered
+                ? LCardProspectRead(chip.LQuillTranslationFind(text))
+                : new CProspect(chip.LQuillTranslationResolve(cardId, text, position), string.Empty, [], false, false);
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cCardEnvoy, _cCardSettingsPort, "Input.TranslationFailed", exception);
+            return new CProspect(text, string.Empty, [], false, false);
+        }
+    }
+
+    public void CCardTranslationInsert(long cardId, long entryId, string headword, string language, int position)
+    {
+        try
+        {
+            _cCardDesk.CDeskChip?.LQuillTranslationStart(cardId, entryId, headword, language, position);
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cCardEnvoy, _cCardSettingsPort, "Input.TranslationFailed", exception);
+        }
+    }
+
+    public void CCardTranslationRemove(long cardId, long entryId)
+    {
+        _cCardDesk.CDeskChip?.LQuillTranslationRemove(cardId, entryId);
+    }
+
+    private static CProspect LCardProspectRead(LTranslationOffer offer)
+    {
+        return new CProspect(
+            offer.LTranslationOfferText,
+            offer.LTranslationOfferWord,
+            offer.LTranslationOfferRows.Select(CPanel.CPanelRowRead).ToList(),
+            offer.LTranslationOfferShown,
+            offer.LTranslationOfferChosen);
     }
 
     public IReadOnlyList<CRegister> CCardRegisterFind(long cardId, string word, string language)

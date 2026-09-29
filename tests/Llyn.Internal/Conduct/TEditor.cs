@@ -34,7 +34,7 @@ public sealed class TEditor
         Assert.Equal("water", editor.CEditorDraftRead()?.CEntryDraftHeadword);
         Assert.Equal("English", editor.CEditorDraftRead()?.CEntryDraftLanguage);
         Assert.False(editor.CEditorOwned);
-        Assert.Equal("library", editor.CEditorOrigin);
+        Assert.Equal("library", engine.TEngineDraftRead(editor.CEditorDesk.CDeskId)?.LDraftOrigin);
     }
 
     [Fact]

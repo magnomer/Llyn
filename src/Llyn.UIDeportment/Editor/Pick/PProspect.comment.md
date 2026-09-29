@@ -32,6 +32,24 @@ On pick the chosen Entry id is handed to the caller, and the dropdown closes.
 Takes the row the pointer chose out of the dropdown and links it.
 The row is a plain surface rather than a button, so the list beneath it keeps its own selection.
 
+## `private void PProspectKeyRefine(object sender, KeyEventArgs e)`
+
+A Refine, since escape and the arrows only change the open dropdown and ask no gate.
+The dropdown never takes focus, so the translation entry's keys drive it, heard first.
+Escape shuts it, and the arrows walk the selection and wrap at either end.
+A key it does not use falls through to the entry's later handlers.
+
+## `private void PProspectCloseRefine(object? sender, EventArgs e)`
+
+Drops the selection whenever the dropdown shuts, however it shut.
+A click elsewhere shuts it without `PProspectHide`, and a kept selection would let enter take a row no one sees.
+
+## `private void PProspectKeyObserve(object sender, KeyEventArgs e)`
+
+Enter on a selected row hands that row's Entry, word and language to the translation insert gate.
+It runs after the dropdown's Refine and before the entry's own enter, so a chosen row wins.
+The dropdown shuts and the entry empties after the gate.
+
 ## `private readonly PProspectTemplate _pProspectTemplate`
 
 The prospect dictionary, held so its fill can subscribe the dictionary's forwarders.
@@ -45,24 +63,16 @@ The epithet takes its leading space here, where a string format stood.
 
 ## Inline notes
 
-### `private bool PProspectHandle(Key key)`
-
-The dropdown never takes focus, so the caret's key handler drives it.
-The arrows walk the selection and wrap at either end, and enter takes what is selected.
-Reports whether the dropdown used the key, so an unused one falls through to the field.
-
 ### `private void PProspectSelect(PProspectItem item)`
 
 When a selection opened the dropdown, hands the row's Entry to the caller and closes.
-Otherwise links the chosen row and closes the dropdown, starting a tentative entry first on a create row.
+Otherwise hands the chosen row to the translation insert gate and closes the dropdown.
+The gate starts a tentative entry first on a create row, whose id is zero.
 No database row is written for it, so an edit thrown away leaves nothing behind.
 The tentative entry carries the typed word and the chosen language, ready to be stored.
 A court row ties it to this draft, and storing this draft stores it too.
-The entry and its row are asked for in one call.
-A stub half made is a draft nothing points at.
-The link is asked for under the target the row names, not under an id the form guessed.
 The chip then shows the court's word and language, since no Entry answers a draft id yet.
-A stub that cannot be started raises a notice rather than leaving the field looking unanswered.
+A stub that cannot be started raises a notice through the gate rather than leaving the field looking unanswered.
 
 ### `private void PProspectShow(PCard card, string word, IReadOnlyList<LEntry> found, bool chosen)`
 

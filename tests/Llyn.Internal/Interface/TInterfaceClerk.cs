@@ -287,6 +287,8 @@ internal static partial class TInterface
     internal static LEntry? TTranslationClerkResolve(this LTranslationClerk clerk, string word, long? entryId) =>
         clerk.LTranslationClerkResolve(word, entryId);
 
+    internal static string? TTranslationWordRead(string text) => LTranslationClerk.LTranslationWordRead(text);
+
     internal static LEntry TEntryClerkAdd(this LRig rig, LEntry entry) =>
         new LTranslationClerk(rig).LTranslationClerkCreate(entry.LEntryHeadword, entry.LEntryLanguage);
 

@@ -19,7 +19,7 @@ public partial class PEditor
 
     private double _pCardDragHeight;
 
-    internal void PCardDragHandle(object sender, MouseButtonEventArgs e)
+    private void PCardDragRefine(object sender, MouseButtonEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: PCard card })
         {
@@ -59,7 +59,7 @@ public partial class PEditor
 
         if (e.LeftButton is not MouseButtonState.Pressed)
         {
-            PCardDragReset();
+            PCardDragReset(sender, e);
             return;
         }
 
@@ -76,7 +76,7 @@ public partial class PEditor
 
             if (_pCardDragGhost is null)
             {
-                PCardDragReset();
+                PCardDragReset(sender, e);
                 return;
             }
         }
@@ -85,16 +85,6 @@ public partial class PEditor
 
         _pCardDragGhost.PCardGhostTop = top;
         PCardMove(top);
-    }
-
-    private void PCardDragFinish(object sender, MouseButtonEventArgs e)
-    {
-        PCardDragReset();
-    }
-
-    private void PCardDragCancel(object sender, MouseEventArgs e)
-    {
-        PCardDragReset();
     }
 
     private PCardGhost? PCardGhostBuild()
@@ -162,7 +152,7 @@ public partial class PEditor
         PCardMove(_pCardDragCard!, target);
     }
 
-    private void PCardDragReset()
+    private void PCardDragReset(object sender, MouseEventArgs e)
     {
         if (_pCardDragHost is null)
         {

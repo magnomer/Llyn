@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Threading;
-using Llyn.Application;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -22,10 +17,20 @@ public partial class PEditor
             {
                 entry.SetValue(QField.QFieldHintProperty, caret.PLinkCaretHint);
                 entry.Text = caret.PLinkCaretText;
-                entry.PreviewKeyDown -= _pLinkTemplate.PLinkCaretHandle;
-                entry.PreviewKeyDown += _pLinkTemplate.PLinkCaretHandle;
-                entry.LostKeyboardFocus -= _pLinkTemplate.PLinkCloseHandle;
-                entry.LostKeyboardFocus += _pLinkTemplate.PLinkCloseHandle;
+                entry.PreviewKeyDown -= PProspectKeyRefine;
+                entry.PreviewKeyDown -= PProspectKeyObserve;
+                entry.PreviewKeyDown -= PLinkCommitObserve;
+                entry.PreviewKeyDown -= PLinkEraseObserve;
+                entry.PreviewKeyDown -= PLinkCaretRefine;
+                entry.PreviewKeyDown += PProspectKeyRefine;
+                entry.PreviewKeyDown += PProspectKeyObserve;
+                entry.PreviewKeyDown += PLinkCommitObserve;
+                entry.PreviewKeyDown += PLinkEraseObserve;
+                entry.PreviewKeyDown += PLinkCaretRefine;
+                entry.LostKeyboardFocus -= PLinkBlurRefine;
+                entry.LostKeyboardFocus -= PLinkCloseObserve;
+                entry.LostKeyboardFocus += PLinkBlurRefine;
+                entry.LostKeyboardFocus += PLinkCloseObserve;
             }
 
             return;
@@ -53,8 +58,8 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Button>(container, "PLinkEraser") is Button eraser)
         {
-            eraser.Click -= _pLinkTemplate.PLinkDropHandle;
-            eraser.Click += _pLinkTemplate.PLinkDropHandle;
+            eraser.Click -= PLinkDropObserve;
+            eraser.Click += PLinkDropObserve;
             if (QLook.QLookPartFind<QIconImage>(eraser, "PLinkIcon") is QIconImage icon)
             {
                 icon.QIconSource = QIcon.QIconResolve("unlink", 12);
@@ -72,116 +77,113 @@ public partial class PEditor
         QLookItem.QLookItemAttach(list, PLinkApply);
         if (QLook.QLookPartFind<Border>(list, "PLinkFrame") is Border frame)
         {
-            frame.MouseLeftButtonDown -= _pLinkTemplate.PLinkFocusHandle;
-            frame.MouseLeftButtonDown += _pLinkTemplate.PLinkFocusHandle;
+            frame.MouseLeftButtonDown -= PLinkFocusRefine;
+            frame.MouseLeftButtonDown += PLinkFocusRefine;
         }
-    }
-
-    private const string PLinkFailureKey = "Input.TranslationFailed";
-
-    internal void PLinkAttach(PCard card)
-    {
-        card.PCardLinkNotice = text => PLinkProspectShow(card, text);
     }
 
     private void PLinkTextObserve(PLinkCaret caret, string text)
     {
         if (PCardLinkFind(caret) is PCard card)
         {
-            card.PCardLinkRefine(_qEditor.QEditorArea.CEditorCard.CCardTranslationAdd(
+            PLinkRefine(card, _qEditor.QEditorArea.CEditorCard.CCardTranslationAdd(
                 card.PCardId, text, card.PCardLinkPosition));
         }
     }
 
-    private void PLinkProspectShow(PCard card, string text)
+    private void PLinkRefine(PCard card, CProspect prospect)
     {
-        string word = (text ?? string.Empty).Trim();
-        if (word.Length == 0)
+        card.PCardLinkRefine(prospect.CProspectText);
+        if (prospect.CProspectShown)
         {
-            PProspectHide();
-            return;
-        }
-
-        IReadOnlyList<CVistaRow> found;
-        try
-        {
-            found = _qEditor.QEditorArea.CEditorCard.CCardProspectFind(word);
-        }
-        catch (Exception)
-        {
-            PProspectHide();
-            return;
-        }
-
-        PProspectShow(card, word, found, false);
-    }
-
-    internal void PLinkDropHandle(object sender, RoutedEventArgs e)
-    {
-        if (sender is FrameworkElement { DataContext: LLinkChip chip } && PCardLinkFind(chip) is PCard card)
-        {
-            PLinkRemove(card, chip);
-        }
-    }
-
-    internal void PLinkCaretHandle(object sender, KeyEventArgs e)
-    {
-        if (sender is not TextBox { DataContext: PLinkCaret row } box)
-        {
-            return;
-        }
-
-        PCard? card = PCardLinkFind(row);
-        if (card is null)
-        {
-            return;
-        }
-
-        if (PProspect.IsOpen && PProspectHandle(e.Key))
-        {
-            e.Handled = true;
-            return;
-        }
-
-        if (e.Key == Key.Enter)
-        {
-            PLinkResolve(card, row.PLinkCaretText, true);
-            e.Handled = true;
-            return;
-        }
-
-        e.Handled = PCaretKeyApply(
-            box,
-            e.Key,
-            step => PLinkRemove(card, card.PCardLinkFind(step)),
-            card.PCardLinkMove,
-            () => PLinkCaretApply(box, row, 0));
-    }
-
-    internal void PLinkCloseHandle(object sender, RoutedEventArgs e)
-    {
-        if (sender is not FrameworkElement { DataContext: PLinkCaret row })
-        {
+            PProspectShow(card, prospect.CProspectWord, prospect.CProspectRows, prospect.CProspectChosen);
             return;
         }
 
         PProspectHide();
+    }
 
-        PCard? card = PCardLinkFind(row);
-        if (card is not null && PLinkResolve(card, row.PLinkCaretText, false))
+    private void PLinkDropObserve(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { DataContext: LLinkChip chip } && PCardLinkFind(chip) is PCard card)
         {
-            card.PCardLinkClear();
+            _qEditor.QEditorArea.CEditorCard.CCardTranslationRemove(card.PCardId, chip.LLinkChipId);
         }
     }
 
-    internal void PLinkFocusHandle(object sender, MouseButtonEventArgs e)
+    private void PLinkCommitObserve(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Enter
+            || sender is not FrameworkElement { DataContext: PLinkCaret row }
+            || PCardLinkFind(row) is not PCard card)
+        {
+            return;
+        }
+
+        CProspect prospect = _qEditor.QEditorArea.CEditorCard.CCardTranslationResolve(
+            card.PCardId, row.PLinkCaretText, card.PCardLinkPosition, true);
+        e.Handled = true;
+        PLinkRefine(card, prospect);
+    }
+
+    private void PLinkEraseObserve(object sender, KeyEventArgs e)
+    {
+        if (sender is not TextBox { DataContext: PLinkCaret row } box || PCardLinkFind(row) is not PCard card)
+        {
+            return;
+        }
+
+        e.Handled = QCaret.QCaretEdgeApply(
+            e.Key.ToString(),
+            box.CaretIndex,
+            box.Text.Length,
+            box.SelectionLength,
+            step =>
+            {
+                if (card.PCardLinkFind(step) is LLinkChip chip)
+                {
+                    _qEditor.QEditorArea.CEditorCard.CCardTranslationRemove(card.PCardId, chip.LLinkChipId);
+                }
+            });
+    }
+
+    private void PLinkCaretRefine(object sender, KeyEventArgs e)
+    {
+        if (sender is not TextBox { DataContext: PLinkCaret row } box || PCardLinkFind(row) is not PCard card)
+        {
+            return;
+        }
+
+        e.Handled = QCaret.QCaretStepApply(
+            e.Key.ToString(),
+            box.Text.Length,
+            box.SelectionLength,
+            card.PCardLinkMove,
+            () => PEditorCaretApply(box, row, 0));
+    }
+
+    private void PLinkBlurRefine(object sender, RoutedEventArgs e)
+    {
+        PProspectHide();
+    }
+
+    private void PLinkCloseObserve(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { DataContext: PLinkCaret row } && PCardLinkFind(row) is PCard card)
+        {
+            PLinkRefine(card, _qEditor.QEditorArea.CEditorCard.CCardTranslationResolve(
+                card.PCardId, row.PLinkCaretText, card.PCardLinkPosition, false));
+        }
+    }
+
+    private void PLinkFocusRefine(object sender, MouseButtonEventArgs e)
     {
         if (sender is not DependencyObject surface)
         {
             return;
         }
 
-        TextBox? entry = PLinkCaretFind(surface);
+        TextBox? entry = PEditorCaretFind(surface);
         if (entry is null)
         {
             return;
@@ -192,7 +194,7 @@ public partial class PEditor
         e.Handled = true;
     }
 
-    internal void PLinkFlagUpdate()
+    internal void PLinkFlagRefine()
     {
         foreach (PCard card in _pMeaningList)
         {
@@ -205,130 +207,12 @@ public partial class PEditor
         }
     }
 
-    private void PLinkRemove(PCard card, LLinkChip? chip)
-    {
-        if (chip is null)
-        {
-            return;
-        }
-
-        PEditorRequestSend(new LRequestTranslationRemoval(PEditorDraft, card.PCardId, chip.LLinkChipId));
-        PLinkCourtDelete(chip.LLinkChipId);
-    }
-
-    private void PLinkCourtDelete(long id)
-    {
-        if (PEditorDraft == 0)
-        {
-            return;
-        }
-
-        try
-        {
-            _qEditor.QEditorArea.CEditorCard.CCardCourtDelete(PEditorDraft, id);
-        }
-        catch (Exception)
-        {
-        }
-    }
-
-    private bool PLinkResolve(PCard card, string text, bool offered)
-    {
-        string word = (text ?? string.Empty).Trim();
-        if (word.Length == 0)
-        {
-            return false;
-        }
-
-        long? single;
-        IReadOnlyList<CVistaRow> found;
-        try
-        {
-            single = _qEditor.QEditorArea.CEditorCard.CCardTranslationResolve(word);
-            found = single is null || offered ? _qEditor.QEditorArea.CEditorCard.CCardProspectFind(word) : [];
-        }
-        catch (Exception exception)
-        {
-            _pEditorHost.PWindowFailureRefine(PLinkFailureKey, exception);
-            return false;
-        }
-
-        if (single is not null && !offered)
-        {
-            PProspectHide();
-            _qEditor.QEditorArea.CEditorCard.CCardTranslationInsert(
-                card.PCardId, single.Value, card.PCardLinkPosition);
-            return true;
-        }
-
-        if (offered)
-        {
-            PProspectShow(card, word, found, single is not null);
-        }
-
-        return false;
-    }
-
     private TextBox? PLinkBoxFind(PCard card)
     {
         return Keyboard.FocusedElement is TextBox { DataContext: PLinkCaret row } box &&
             PCardLinkFind(row) == card
             ? box
             : null;
-    }
-
-    private static void PLinkCaretApply(TextBox box, PLinkCaret row, int caret)
-    {
-        ItemsControl? host = ItemsControl.ItemsControlFromItemContainer(box) ?? PLinkHostFind(box);
-        box.Dispatcher.BeginInvoke(
-            DispatcherPriority.Input,
-            () =>
-            {
-                TextBox? entry = host is null ? box : PLinkCaretFind(host) ?? box;
-                if (entry.DataContext != row)
-                {
-                    return;
-                }
-
-                entry.Focus();
-                entry.CaretIndex = caret > entry.Text.Length ? entry.Text.Length : caret;
-            });
-    }
-
-    private static ItemsControl? PLinkHostFind(DependencyObject start)
-    {
-        DependencyObject? step = start;
-        while (step is not null)
-        {
-            if (step is ItemsControl host)
-            {
-                return host;
-            }
-
-            step = VisualTreeHelper.GetParent(step);
-        }
-
-        return null;
-    }
-
-    private static TextBox? PLinkCaretFind(DependencyObject root)
-    {
-        for (int index = 0; index < VisualTreeHelper.GetChildrenCount(root); index++)
-        {
-            DependencyObject child = VisualTreeHelper.GetChild(root, index);
-            if (child is TextBox { DataContext: PLinkCaret } box)
-            {
-                return box;
-            }
-
-            TextBox? found = PLinkCaretFind(child);
-            if (found is not null)
-            {
-                return found;
-            }
-        }
-
-        return null;
     }
 
     private PCard? PCardLinkFind(object row)

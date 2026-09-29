@@ -8,15 +8,13 @@ A written value keeps the engine's verdict, and a draft splits its main pronunci
 The etymology gates write the narrative, the source links and the spans of the held draft.
 A typed title cites the Source the engine resolves it to.
 The lookups find the stored rows a typed word matches, leaving out the rows the card already holds.
-A padded word finds what the trimmed word finds, since the engine trims it.
 A typed tag lands trimmed and once, a picked tag keeps its stored id, and an erased tag leaves.
 A typed list adds its completed tags, situations and registers once each and answers the rest.
 A picked situation or register lands once under its stored id, and an erased situation leaves.
-A typed list of translations links each resolved word and keeps the unresolved beside the rest.
-A court opened and then dropped leaves neither the link nor its draft.
 The frame line follows the order, and an unknown value shows the mark.
+The translation gates are covered by `TCardTranslation`, over the same helpers.
 
-## `private static (CDesk TCardDesk, CCard TCardCard) TCardPrepare(LEngine engine)`
+## `internal static (CDesk TCardDesk, CCard TCardCard) TCardPrepare(LEngine engine)`
 
 Starts an entry desk by origin and subject with no delay, and builds its card gates.
 
@@ -24,7 +22,7 @@ Starts an entry desk by origin and subject with no delay, and builds its card ga
 
 The held draft's etymology.
 
-## `private static long TCardSheetAdd(CDesk desk)`
+## `internal static long TCardSheetAdd(CDesk desk)`
 
 Adds a meaning card to the held draft and answers its id.
 
@@ -40,7 +38,7 @@ The situations the held draft's card carries.
 
 The registers the held draft's card carries.
 
-## `private static IReadOnlyList<long> TCardTranslationRead(CDesk desk, long sheet)`
+## `internal static IReadOnlyList<long> TCardTranslationRead(CDesk desk, long sheet)`
 
 The entries the held draft's card links as translations.
 
