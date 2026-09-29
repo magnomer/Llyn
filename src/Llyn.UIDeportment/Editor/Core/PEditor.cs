@@ -46,12 +46,10 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         Resources.MergedDictionaries.Add(_pCandidateTemplate);
         _pSlateTemplate = new PSlateTemplate(this);
         Resources.MergedDictionaries.Add(_pSlateTemplate);
-        _pMeaningTemplate = new PMeaningTemplate(this);
-        Resources.MergedDictionaries.Add(_pMeaningTemplate);
+        Resources.MergedDictionaries.Add(new PMeaningTemplate());
         _pCollocationTemplate = new PCollocationTemplate(this);
         Resources.MergedDictionaries.Add(_pCollocationTemplate);
-        _pLanguageTemplate = new PLanguageTemplate(this);
-        Resources.MergedDictionaries.Add(_pLanguageTemplate);
+        Resources.MergedDictionaries.Add(new PLanguageTemplate());
         _pMarkerTemplate = new PMarkerTemplate();
         Resources.MergedDictionaries.Add(_pMarkerTemplate);
         _pCategoryTemplate = new PCategoryTemplate(this);
@@ -146,7 +144,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         _pEditorHost = host;
         _qEditor = driver;
         _qRegard.QRegardIntroduce(driver.QEditorArea);
-        _qCadence.QCadenceIntroduce(host, driver.QEditorArea);
+        _qCadence.QCadenceIntroduce(driver.QEditorArea);
         PVolumeAttach();
         driver.QEditorIntroduce(host, this);
     }
@@ -195,7 +193,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     internal void PReadingRefine()
     {
-        _qCadence.QCadenceReadingShow(PHeadword.Text);
+        _qCadence.QCadenceReadingRefine(PHeadword.Text);
     }
 
     internal void PPronunciationRefine(CEntryDraft _)
@@ -216,7 +214,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
     internal void PSpeakerRefine(CEntryDraft _)
     {
         PSpeakerName.Text = _qEditor.QEditorArea.CEditorLanguage;
-        PSpeakerFlagUpdate();
+        PSpeakerFlagRefine();
     }
 
     internal void PHeadwordFontRefine(CEntryDraft _)

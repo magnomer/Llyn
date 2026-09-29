@@ -11,13 +11,9 @@ The numbering that keeps each list reading 1, 2, 3 is the engine's.
 Each card carries the id the engine minted for it.
 That is how a request names one card rather than a place in a list.
 
-## `private readonly PMeaningTemplate _pMeaningTemplate`
-
-The meaning card dictionary, held so its fill can subscribe the card's forwarders.
-
 ## `private void PMeaningApply(FrameworkElement container, object item, string? changed)`
 
-Fills one meaning card and subscribes its drag, badge, removal and media forwarders.
+Fills one meaning card and subscribes its drag, badge, removal and media handlers.
 The changed property is passed on, so the card rewrites only that property's text.
 
 ## `private void PCollocationApply(FrameworkElement container, object item, string? changed)`

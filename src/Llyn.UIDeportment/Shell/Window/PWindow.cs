@@ -178,7 +178,7 @@ public partial class PWindow
 
         LEnsignImage.LEnsignIntroduce(PWindowAtelier);
 
-        PInput.PInputAttach(this);
+        PInput.PInputIntroduce(this);
         _qLibrary.QLibraryAttach(this);
         _qPhonology.QPhonologyAttach(this);
         _qXiesheng.QXieshengAttach(this);
@@ -322,7 +322,7 @@ public partial class PWindow
 
     private void PWindowExitRefine(object? sender, EventArgs e)
     {
-        PInput.PInputClose();
+        PInput.PEditor.PEditorClose();
         _qLibrary.QLibraryClose();
         _qPhonology.QPhonologyClose();
         _qXiesheng.QXieshengClose();

@@ -124,14 +124,3 @@ This read only reshapes the answer.
 It answers null when no entry is given, the entry has no frequency, or the read fails.
 An entry with no value asks the engine to fill it, and the fill announces itself when done.
 
-## `internal bool LDisplayFanqieCheck(long? id)`
-
-Forwards to the sound half, since the editor's timbre asks whether the rime-book rows are still being fetched.
-
-## `internal bool LDisplayScriptCheck(long? id)`
-
-Forwards to the sound half, since the editor's timbre asks whether the script images are still being fetched.
-
-## `internal bool LDisplayParadigmCheck(long? id)`
-
-Forwards to the sound half, since the editor's timbre asks whether the inflections are still being fetched.

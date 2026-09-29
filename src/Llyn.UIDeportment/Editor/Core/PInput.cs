@@ -16,13 +16,8 @@ public class PInput : UserControl
 
     internal PEditor PEditor => (PEditor)FindName(nameof(PEditor));
 
-    internal void PInputAttach(PWindow host)
+    internal void PInputIntroduce(PWindow host)
     {
         PEditor.PEditorIntroduce(host, new QEditor(host.PWindowForge.QForgeInputCreate(host.PWindowEnvoy)));
-    }
-
-    internal void PInputClose()
-    {
-        PEditor.PEditorClose();
     }
 }

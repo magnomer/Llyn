@@ -43,15 +43,15 @@ public partial class PEditor
         PStackCollocation.SetValue(QLook.QLookCueProperty, PStackIdle);
         PStackEtymology.SetValue(QLook.QLookCueProperty, PStackIdle);
         PStackNote.SetValue(QLook.QLookCueProperty, PStackIdle);
-        PStack.Loaded += PStackPillHandle;
-        PStackTabs.SizeChanged += PStackSizeHandle;
-        PStackMeaning.Click += PStackHandle;
-        PStackCollocation.Click += PStackHandle;
-        PStackEtymology.Click += PStackHandle;
-        PStackNote.Click += PStackHandle;
+        PStack.Loaded += PStackPillRefine;
+        PStackTabs.SizeChanged += PStackPillRefine;
+        PStackMeaning.Click += PStackRefine;
+        PStackCollocation.Click += PStackRefine;
+        PStackEtymology.Click += PStackRefine;
+        PStackNote.Click += PStackRefine;
     }
 
-    private void PStackHandle(object sender, RoutedEventArgs e)
+    private void PStackRefine(object sender, RoutedEventArgs e)
     {
         if (sender is not Button selectedButton)
         {
@@ -76,12 +76,7 @@ public partial class PEditor
         PStackPillPlace(true);
     }
 
-    private void PStackPillHandle(object sender, RoutedEventArgs e)
-    {
-        PStackPillPlace(false);
-    }
-
-    private void PStackSizeHandle(object sender, SizeChangedEventArgs e)
+    private void PStackPillRefine(object sender, RoutedEventArgs e)
     {
         PStackPillPlace(false);
     }

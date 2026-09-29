@@ -117,7 +117,8 @@ Builds the card gates over `desk` and real outlets on `engine`, as the editor do
 
 Builds the editor's sound sheet over a real desk and ports a test may fake.
 The fake ports let a test refuse an engine call and watch the envoy.
-The settings port is `TSettingsCreate`, so a refusal reaches the envoy with a notice.
+The settings port is `pack`, or else `TSettingsCreate`, so a refusal reaches the envoy with a notice.
+The waiting checks go through a display voice over the same phonology port.
 
 ## `internal static LSettingsPort TSettingsCreate()`
 
@@ -243,6 +244,10 @@ Attaches a rime-cell open to a navigation as the yunjing area does.
 ## `internal static void TNavigationStemAttach(this CNavigation navigation, Action<string, string?> open) =>`
 
 Attaches a series open to a navigation as the xiesheng area does.
+
+## `internal static bool TNavigationDiweiOpen(`
+
+Relays the rime-cell jump, which only the display and the editor's sounding ask in production.
 
 ## `internal static bool TNavigationStemOpen(this CNavigation navigation, string language, string? key) =>`
 

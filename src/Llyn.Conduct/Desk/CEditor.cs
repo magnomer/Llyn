@@ -29,7 +29,8 @@ public sealed class CEditor
         CEditorDisplay = new LDisplay(drafts, entries, phonology, settings, media, envoy);
         CEditorCard = new CCard(CEditorDesk, drafts, entries, settings, envoy);
         CEditorSentence = new CSentence(CEditorDesk, phonology);
-        CEditorSounding = new CSounding(CEditorDesk, phonology, drafts, settings, envoy);
+        CEditorSounding = new CSounding(
+            CEditorDesk, phonology, drafts, settings, CEditorDisplay.LDisplaySound, envoy);
         CEditorEsteem = new CEsteem(CEditorDesk, CEditorDisplay);
         CEditorTimbre = new CTimbre(CEditorDesk, phonology, CEditorDisplay);
         CEditorSpeech = new CCardSpeech(CEditorDesk);
@@ -50,6 +51,8 @@ public sealed class CEditor
             atelier.CAtelierMediaPort,
             envoy);
         editor.CEditorDisplay.LDisplayNavigationAttach(atelier.CAtelierNavigation);
+        editor.CEditorSounding.LSoundingDiweiChosen +=
+            (language, kind, key) => atelier.CAtelierNavigation.LNavigationDiweiOpen(language, kind, key);
         atelier.CAtelierWorkspace.CWorkspaceOpened += () => editor.CEditorEntryOpen(null);
         return editor;
     }

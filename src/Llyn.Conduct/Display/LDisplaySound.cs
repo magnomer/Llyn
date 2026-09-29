@@ -122,7 +122,7 @@ public sealed class LDisplaySound
         return LDisplayPendingRead(_lPhonologyPort.LEngineInflectionCheck, id);
     }
 
-    public bool LDisplayMorphologyRead()
+    internal bool LDisplayMorphologyRead()
     {
         try
         {

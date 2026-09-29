@@ -35,8 +35,6 @@ public sealed class CTimbre
 
     public bool CTimbreReflexShown => _cTimbreDesk.CDeskTenure?.LTenureReflexCheck() ?? false;
 
-    public bool CTimbreMorphology => _cTimbreDisplay.LDisplaySound.LDisplayMorphologyRead();
-
     public bool CTimbreTonal => _cTimbrePhonologyPort.LEngineTonalCheck(LTimbreLanguage);
 
     public bool CTimbreSpoken => !_cTimbrePhonologyPort.LEngineSilentCheck(LTimbreLanguage);
@@ -45,19 +43,7 @@ public sealed class CTimbre
         _cTimbrePhonologyPort.LEngineRespellingCheck(LTimbreLanguage)
         && _cTimbrePhonologyPort.LEnginePhonemicCheck(LTimbreLanguage);
 
-    public bool CTimbreFanqieRebuildable =>
-        LTimbreEntry is not null && _cTimbrePhonologyPort.LEngineBookCheck(LTimbreLanguage);
-
-    public bool CTimbreScriptRebuildable =>
-        LTimbreEntry is not null && _cTimbrePhonologyPort.LEngineStyleCheck(LTimbreLanguage);
-
-    public bool CTimbreFanqiePending => _cTimbreDisplay.LDisplayFanqieCheck(LTimbreEntry);
-
-    public bool CTimbreScriptPending => _cTimbreDisplay.LDisplayScriptCheck(LTimbreEntry);
-
     public bool CTimbreReflexPending => _cTimbreDisplay.LDisplaySound.LDisplayReflexCheck(LTimbreEntry);
-
-    public bool CTimbreParadigmPending => _cTimbreDisplay.LDisplayParadigmCheck(LTimbreEntry);
 
     public void CTimbreReflexStart()
     {

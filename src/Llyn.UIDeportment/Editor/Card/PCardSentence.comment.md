@@ -7,11 +7,11 @@ The engine holds the rows, and the card renders them by id and reports what the 
 A row belongs to the card it was written under and moves with it.
 This file holds that one responsibility and nothing else the card does.
 
-## `internal Action<PSentence, string>? PCardSentenceNotice { get; set; }`
+## `internal Action<PSentence, PGloss, string>? PCardSentenceNotice { get; set; }`
 
-Where a pick in any row goes, such as the language chosen for a Gloss.
-The editor sets it when it builds the card and turns the pick into a request.
-The card cannot send, because it holds no draft id.
+Where a language picked for a Gloss goes, with its sentence row and the raw language.
+The editor sets it when it builds the card and hands the pick to one gate.
+The card cannot send, because it holds no Conduct type.
 Typed text never comes this way, since a row holds no copy of what is typed.
 
 ## `internal void PCardSentenceApply(CSentenceOrder order)`
@@ -35,10 +35,7 @@ Where the row stands, which is what an addition beneath it is asked at.
 
 ### `private PSentence PCardSentenceCreate(CSentenceDraft draft, CSentenceOrder? order)`
 
-Builds one row from the engine's row and starts listening to it.
+Builds one row from the engine's row and points its Gloss notice at the card's.
 The frame's order is applied at birth, so a row never draws in the default order first.
 No order yet means no frame was read, and the row keeps its default columns.
 
-### `private void PCardSentenceChange(object? sender, PropertyChangedEventArgs arguments)`
-
-Forwards every property change with its name, and the editor decides which ones are requests.

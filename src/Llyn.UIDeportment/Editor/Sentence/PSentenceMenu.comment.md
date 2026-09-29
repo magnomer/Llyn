@@ -37,7 +37,7 @@ A row built between two frame reads takes it, so no card reads the engine for an
 
 ## `internal void PSentenceAttach(PCard card)`
 
-Points the card's row picks at this editor, so each becomes a request.
+Points the card's row picks at this editor, so each reaches its gate.
 
 ## `private void PSentenceAddObserve(object sender, RoutedEventArgs e)`
 
@@ -112,9 +112,10 @@ It writes the switch back into the row, where a two-way binding stood.
 
 ## Inline notes
 
-### `private void PSentenceChangeHandle(PCard card, PSentence row, string field)`
+### `private void PSentenceGlossObserve(PCard card, PSentence row, PGloss gloss, string language)`
 
-Turns a pick a row noticed into its request, which today is only the language of a Gloss row.
+Hands a language picked in a Gloss row to the sentence's language gate, with the row it stands in.
+The row paints the language only when the draft returns it.
 
 ### `private void PSentenceFieldObserve(PCard card, PSentence row, string field, TextBox box)`
 

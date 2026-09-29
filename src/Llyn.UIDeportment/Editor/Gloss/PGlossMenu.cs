@@ -1,21 +1,14 @@
-using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Shapes;
-using Llyn.Application;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
 public partial class PEditor
 {
-    private const string PWindowLanguage = "English";
-
-    private readonly PLanguageTemplate _pLanguageTemplate;
-
     private readonly ObservableCollection<PLanguageItem> _pLanguageItem = [];
 
     private ToggleButton PSpeaker => (ToggleButton)FindName(nameof(PSpeaker));
@@ -37,22 +30,27 @@ public partial class PEditor
         QChoice.QChoiceDropperAttach(PSpeaker, PLanguage, PSpeaker);
     }
 
-    internal async void PSpeakerLoad()
+    internal async void PLanguageRefine()
     {
-        await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowAtelier);
         PLanguageItem.PLanguageItemReset(
-            _pLanguageItem, _pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogLanguageRead());
-        PSpeakerFlagUpdate();
+            _pLanguageItem,
+            await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad));
+        PSpeakerFlagRefine();
         PLinkFlagUpdate();
     }
 
-    internal void PSpeakerHandle(object sender, RoutedEventArgs e)
+    private void PSpeakerObserve(object sender, RoutedEventArgs e)
     {
         _qEditor.QEditorArea.CEditorLanguageSet(PLanguageItem.PLanguageNameRead(sender));
+        PSpeakerChoiceRefine();
+    }
+
+    private void PSpeakerChoiceRefine()
+    {
         PSpeaker.IsChecked = false;
     }
 
-    private async void PSpeakerFlagUpdate()
+    private async void PSpeakerFlagRefine()
     {
         await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowAtelier);
         LEnsignImage.LEnsignFlagRefine(PSpeakerFlag, PSpeakerGlobe, _qEditor.QEditorArea.CEditorLanguage);
@@ -70,40 +68,26 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Button>(container, "PSpeakerChoice") is Button choice)
         {
-            choice.Click -= _pLanguageTemplate.PSpeakerHandle;
-            choice.Click += _pLanguageTemplate.PSpeakerHandle;
+            choice.Click -= PSpeakerObserve;
+            choice.Click += PSpeakerObserve;
         }
     }
 
-    internal void PGlossAddHandle(object sender, RoutedEventArgs e)
+    private void PGlossAddObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PSentence row } || PCardSentenceFind(row) is not PCard card)
+        if (sender is FrameworkElement { DataContext: PSentence row } && PCardSentenceFind(row) is PCard card)
         {
-            return;
+            _qEditor.QEditorArea.CEditorSentence.CSentenceGlossAdd(card.PCardId, row.PSentenceRow);
         }
-
-        PEditorRequestSend(new LRequestGlossAddition(
-            PEditorDraft, card.PCardId, row.PSentenceRow, PGlossLanguageRead(), row.PSentenceGloss.Count));
     }
 
-    internal void PGlossRemoveHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PGlossRemoveObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is not PGloss gloss
-            || e.Source is not FrameworkElement { DataContext: PSentence row }
-            || PCardSentenceFind(row) is not PCard card)
+        if (e.Parameter is PGloss gloss
+            && e.Source is FrameworkElement { DataContext: PSentence row }
+            && PCardSentenceFind(row) is PCard card)
         {
-            return;
-        }
-
-        PEditorRequestSend(new LRequestGlossRemoval(PEditorDraft, card.PCardId, row.PSentenceRow, gloss.PGlossId));
-    }
-
-    private void PGlossChangeHandle(PCard card, PSentence row, PGloss gloss, string field)
-    {
-        if (field == nameof(PGloss.PGlossLanguage))
-        {
-            PEditorRequestSend(new LRequestGlossLanguage(
-                PEditorDraft, card.PCardId, row.PSentenceRow, gloss.PGlossId, gloss.PGlossLanguage));
+            _qEditor.QEditorArea.CEditorSentence.CSentenceGlossRemove(card.PCardId, row.PSentenceRow, gloss.PGlossId);
         }
     }
 
@@ -141,18 +125,5 @@ public partial class PEditor
         }
 
         return null;
-    }
-
-    private string PGlossLanguageRead()
-    {
-        foreach (PLanguageItem item in _pLanguageItem)
-        {
-            if (string.Equals(item.PLanguageItemName, PWindowLanguage, StringComparison.Ordinal))
-            {
-                return item.PLanguageItemName;
-            }
-        }
-
-        return _pLanguageItem.Count > 0 ? _pLanguageItem[0].PLanguageItemName : string.Empty;
     }
 }

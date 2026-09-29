@@ -64,17 +64,20 @@ internal sealed class LLanguageFacade
         return languages.LLanguageFlagRead(language, cancellation);
     }
 
-    public async Task LEngineEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)
+    public async Task<IReadOnlyList<string>> LEngineEnsignLoad(
+        Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)
     {
         LEnsign ensign = LLanguageFacadeStaff.LEngineStaffEnsign;
-        string[] missing = ensign.LEnsignMissingRead(LEngineLanguageRead(), out int age);
+        IReadOnlyList<string> languages = LEngineLanguageRead();
+        string[] missing = ensign.LEnsignMissingRead(languages, out int age);
         if (missing.Length == 0)
         {
-            return;
+            return languages;
         }
 
         string?[] paths = await Task.WhenAll(missing.Select(LEngineEnsignRead)).ConfigureAwait(true);
         ensign.LEnsignPathAdd(age, missing, paths, store);
+        return languages;
     }
 
     public async Task LEngineEnsignLoad(

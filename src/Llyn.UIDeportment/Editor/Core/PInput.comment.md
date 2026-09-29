@@ -19,16 +19,12 @@ Loads the markup the Veneer holds as its content and takes over its name scope.
 The editor the markup places, found by name.
 It is internal because the navigation tab opens the prospect list on it.
 
-## `internal void PInputAttach(PWindow host)`
+## `internal void PInputIntroduce(PWindow host)`
 
 Puts the panel to work on the editor the panel factory builds, and opens the form empty.
 The factory builds it with the input vista already restored.
 A workspace move empties the form in Conduct, since the editor opens a fresh draft on `CWorkspaceOpened`.
 A different folder is a different database, so whatever was typed against the old one is begun again.
-
-## `internal void PInputClose()`
-
-Stops the panel: the editor is shut down.
 
 ## Inline notes
 

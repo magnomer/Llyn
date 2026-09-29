@@ -54,9 +54,10 @@ The gate for a citing place the user clicked, which opens the place it names.
 A click on no place hands null and opens nothing.
 A place that quotes an Example opens it in the corpus tab, and any other place opens its entry.
 
-## `public bool CNavigationDiweiOpen(string language, string kind, string key)`
+## `internal bool LNavigationDiweiOpen(string language, string kind, string key)`
 
 Opens a rime cell in the yunjing tab once every asked tab agrees to be left.
+Only the reading view's and the editor's sound areas ask it, so it is internal.
 The yunjing area opens the cell, and nothing opens before it attached its opener.
 The jump replaces what the tab shows, so the yunjing tab is asked first.
 

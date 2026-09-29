@@ -75,7 +75,7 @@ public partial class PEditor
 
     internal void PSentenceAttach(PCard card)
     {
-        card.PCardSentenceNotice = (row, field) => PSentenceChangeHandle(card, row, field);
+        card.PCardSentenceNotice = (row, gloss, language) => PSentenceGlossObserve(card, row, gloss, language);
     }
 
     private void PSentenceApply(FrameworkElement container, object item, string? _)
@@ -105,7 +105,7 @@ public partial class PEditor
                 _pSentenceTemplate.PSentenceUnlinkHandle,
                 _pSentenceTemplate.PSentenceUnlinkCheck));
             reach.CommandBindings.Add(new CommandBinding(
-                PGlossCommand.PGlossCommandRemoval, _pSentenceTemplate.PGlossRemoveHandle));
+                PGlossCommand.PGlossCommandRemoval, PGlossRemoveObserve));
         }
 
         if (QLook.QLookPartFind<ToggleButton>(container, "PSentenceOpening") is ToggleButton opening)
@@ -128,8 +128,8 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Button>(container, "PSentenceGlossChooser") is Button gloss)
         {
-            gloss.Click -= _pSentenceTemplate.PGlossAddHandle;
-            gloss.Click += _pSentenceTemplate.PGlossAddHandle;
+            gloss.Click -= PGlossAddObserve;
+            gloss.Click += PGlossAddObserve;
         }
 
         if (QLook.QLookPartFind<TextBox>(container, "PSentenceCitation") is TextBox citation)
@@ -320,12 +320,10 @@ public partial class PEditor
             box.Text, box.SelectionStart, box.SelectionLength, settled);
     }
 
-    private void PSentenceChangeHandle(PCard card, PSentence row, string field)
+    private void PSentenceGlossObserve(PCard card, PSentence row, PGloss gloss, string language)
     {
-        if (row.PSentenceGlossFind(field, out string name) is PGloss gloss)
-        {
-            PGlossChangeHandle(card, row, gloss, name);
-        }
+        _qEditor.QEditorArea.CEditorSentence.CSentenceLanguageSet(
+            card.PCardId, row.PSentenceRow, gloss.PGlossId, language);
     }
 
     private void PSentenceFieldObserve(PCard card, PSentence row, string field, TextBox box)

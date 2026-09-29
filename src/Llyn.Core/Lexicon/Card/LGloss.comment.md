@@ -16,6 +16,10 @@ The language may stand empty when the user has not chosen one yet.
 - `LGlossLanguage` — The language the rendering is written in, empty when none is chosen.
 - `LGlossText` — The rendering and what is known about it.
 
+## `public bool LGlossNamed`
+
+Whether a language is chosen, so a row knows to show the language rather than its hint.
+
 ## `public LGloss LGlossNormalize()`
 
 The same Gloss with an unreadable text dropped to unspecified.

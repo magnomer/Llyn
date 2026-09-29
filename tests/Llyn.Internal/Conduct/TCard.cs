@@ -384,6 +384,17 @@ public sealed class TCard
     }
 
     [Fact]
+    public void ProspectFind_PaddedWord_FindsTheEntryTheTrimmedWordFinds()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long chat = engine.TEngineTranslationCreate("chat", "French").LEntryId;
+        (_, CCard card) = TCardPrepare(engine);
+
+        Assert.Equal(chat, Assert.Single(card.CCardProspectFind("  chat ")).CVistaRowId);
+    }
+
+    [Fact]
     public void CourtDelete_StartedCourt_DropsTheLinkAndItsDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -112,7 +112,8 @@ public sealed class CCatalog
         return _cCatalogAtelier.CAtelierSettingsPort.LEngineGlossRead();
     }
 
-    public Task CCatalogEnsignLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)
+    public Task<IReadOnlyList<string>> CCatalogEnsignLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)
     {
         ArgumentNullException.ThrowIfNull(store);
 

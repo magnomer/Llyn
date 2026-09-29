@@ -57,29 +57,6 @@ public sealed class TTimbre
         Assert.Equal([string.Empty], asked);
     }
 
-    [Fact]
-    public void TimbreFanqieRebuildable_NoStoredEntry_ReadsFalse()
-    {
-        CTimbre timbre = TTimbrePrepare(new()
-        {
-            ["LEngineBookCheck"] = _ => true,
-            ["LEngineStyleCheck"] = _ => true,
-        });
-
-        Assert.False(timbre.CTimbreFanqieRebuildable);
-        Assert.False(timbre.CTimbreScriptRebuildable);
-    }
-
-    [Fact]
-    public void TimbreFanqiePending_NoStoredEntry_ReadsFalse()
-    {
-        CTimbre timbre = TTimbrePrepare(new());
-
-        Assert.False(timbre.CTimbreFanqiePending);
-        Assert.False(timbre.CTimbreScriptPending);
-        Assert.False(timbre.CTimbreParadigmPending);
-    }
-
     private static CTimbre TTimbrePrepare(Dictionary<string, Func<object?[]?, object?>> answers)
     {
         return TInterfaceConduct.TEditorCreate(

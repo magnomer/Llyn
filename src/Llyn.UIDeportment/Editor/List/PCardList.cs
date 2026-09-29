@@ -14,7 +14,6 @@ public partial class PEditor
     private readonly ObservableCollection<PCard> _pMeaningList = [];
     private readonly ObservableCollection<PCard> _pCollocationList = [];
 
-    private readonly PMeaningTemplate _pMeaningTemplate;
     private readonly PCollocationTemplate _pCollocationTemplate;
 
     private ItemsControl PMeaningList => (ItemsControl)FindName(nameof(PMeaningList));
@@ -52,40 +51,40 @@ public partial class PEditor
         PCardApply(container, card);
         if (QLook.QLookPartFind<Border>(container, "PCardHeader") is Border header)
         {
-            header.MouseLeftButtonDown -= _pMeaningTemplate.PCardDragHandle;
-            header.MouseLeftButtonDown += _pMeaningTemplate.PCardDragHandle;
+            header.MouseLeftButtonDown -= PCardDragHandle;
+            header.MouseLeftButtonDown += PCardDragHandle;
         }
 
         if (QLook.QLookPartFind<Border>(container, "PCardPosition") is Border position)
         {
-            position.MouseLeftButtonDown -= _pMeaningTemplate.PCardPositionHandle;
-            position.MouseLeftButtonDown += _pMeaningTemplate.PCardPositionHandle;
+            position.MouseLeftButtonDown -= PCardPositionHandle;
+            position.MouseLeftButtonDown += PCardPositionHandle;
         }
 
         if (QLook.QLookPartFind<TextBox>(container, "PCardPositionText") is TextBox ordinal)
         {
-            ordinal.KeyDown -= _pMeaningTemplate.PCardPositionAccept;
-            ordinal.KeyDown += _pMeaningTemplate.PCardPositionAccept;
-            ordinal.LostFocus -= _pMeaningTemplate.PCardPositionCommit;
-            ordinal.LostFocus += _pMeaningTemplate.PCardPositionCommit;
+            ordinal.KeyDown -= PCardPositionAccept;
+            ordinal.KeyDown += PCardPositionAccept;
+            ordinal.LostFocus -= PCardPositionCommit;
+            ordinal.LostFocus += PCardPositionCommit;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PCardEraser") is Button eraser)
         {
-            eraser.Click -= _pMeaningTemplate.PCardHandle;
-            eraser.Click += _pMeaningTemplate.PCardHandle;
+            eraser.Click -= PCardHandle;
+            eraser.Click += PCardHandle;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PCardImageChooser") is Button image)
         {
-            image.Click -= _pMeaningTemplate.PImageAddHandle;
-            image.Click += _pMeaningTemplate.PImageAddHandle;
+            image.Click -= PImageAddHandle;
+            image.Click += PImageAddHandle;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PCardVideoChooser") is Button video)
         {
-            video.Click -= _pMeaningTemplate.PVideoAddHandle;
-            video.Click += _pMeaningTemplate.PVideoAddHandle;
+            video.Click -= PVideoAddHandle;
+            video.Click += PVideoAddHandle;
         }
     }
 

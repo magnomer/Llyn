@@ -12,6 +12,8 @@ public sealed record LGlossDraft(
 
     public LStateValue LGlossDraftText { get; init; } = LGlossDraftText ?? LStateValue.LStateValueUnspecified;
 
+    public bool LGlossDraftNamed => LGlossDraftResolve().LGlossNamed;
+
     public static LGlossDraft LGlossDraftCreate(LGloss gloss)
     {
         ArgumentNullException.ThrowIfNull(gloss);

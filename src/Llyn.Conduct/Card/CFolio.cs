@@ -105,7 +105,10 @@ internal static class CFolio
     {
         return glosses
             .Select(static gloss => new CGlossDraft(
-                gloss.LGlossDraftId, gloss.LGlossDraftLanguage, CFolioStateRead(gloss.LGlossDraftText)))
+                gloss.LGlossDraftId,
+                gloss.LGlossDraftLanguage,
+                CFolioStateRead(gloss.LGlossDraftText),
+                gloss.LGlossDraftNamed))
             .ToList();
     }
 

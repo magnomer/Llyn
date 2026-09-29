@@ -24,3 +24,7 @@ A click glides, and a layout change places the pill outright, since nothing move
 
 Subscribes the tab strip's load, size and clicks, which the markup named.
 It first gives the meaning tab the selected cue and the others the idle cue, since the markup carries none.
+
+## `private void PStackPillRefine(object sender, RoutedEventArgs e)`
+
+Answers both the strip's load and its size change, since each only places the pill outright.

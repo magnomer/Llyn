@@ -8,16 +8,10 @@ The Gloss rows a card's sentence row shows under its sentence.
 
 The rows in the order the Example keeps them.
 
-## `internal static string PSentenceGlossFormat(PGloss gloss, string field)`
+## `internal Action<PGloss, string>? PSentenceGlossNotice { get; set; }`
 
-The field name of one Gloss edit, the property joined to the Gloss id.
-The sentence row raises it as its own property change, so the card forwards it like any other field.
-The row raises its property change under it, and the editor reads the Gloss and field back out of it.
-
-## `internal PGloss? PSentenceGlossFind(string field, out string name)`
-
-Splits a field name of that shape back into the Gloss it names and the property.
-Any other field gives null.
+Where a language picked in one of the rows goes, with the raw language.
+The card sets it when it builds the row, so the pick reaches the editor with its sentence.
 
 ## `private void PSentenceGlossShow(IReadOnlyList<CGlossDraft> drafts)`
 
@@ -25,8 +19,4 @@ Redraws the rows from the drafts, keeping the rows whose ids survive.
 
 ## `private PGloss PSentenceGlossCreate(CGlossDraft draft)`
 
-One row, subscribed so its edits reach the card.
-
-## `private void PSentenceGlossChange(object? sender, PropertyChangedEventArgs arguments)`
-
-Forwards a text or language edit of one row as a property change of the sentence row.
+One row, subscribed so its language pick reaches the card through the notice.

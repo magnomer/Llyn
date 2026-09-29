@@ -12,6 +12,8 @@ public sealed record LGloss(
 
     public LStateValue LGlossText { get; init; } = LGlossText ?? LStateValue.LStateValueUnspecified;
 
+    public bool LGlossNamed => LGlossLanguage.Length > 0;
+
     public LGloss LGlossNormalize()
     {
         return this with { LGlossText = LGlossText.LStateValueNormalize() };

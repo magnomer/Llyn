@@ -94,7 +94,7 @@ public sealed class CNavigation
             : CNavigationEntryOpen(usage.CUsageEntry);
     }
 
-    public bool CNavigationDiweiOpen(string language, string kind, string key)
+    internal bool LNavigationDiweiOpen(string language, string kind, string key)
     {
         ArgumentNullException.ThrowIfNull(language);
         ArgumentNullException.ThrowIfNull(kind);

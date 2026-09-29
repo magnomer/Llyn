@@ -54,13 +54,13 @@ internal sealed class QEditor
         editor.CEditorDraftChanged += surface.PCategoryLoad;
         editor.CEditorDraftChanged += surface.PMeaningRefine;
         editor.CEditorDraftChanged += surface.PCollocationRefine;
-        editor.CEditorDraftChanged += surface.PEtymologyShow;
+        editor.CEditorDraftChanged += surface.PEtymologyRefine;
         editor.CEditorDraftChanged += surface.PPlaybackRefine;
         editor.CEditorDraftChanged += surface.PReflexPrepare;
 
         CWorkspace workspace = host.PWindowAtelier.CAtelierWorkspace;
         workspace.CWorkspaceOpened += surface.PSentenceLoad;
-        workspace.CWorkspaceOpened += surface.PSpeakerLoad;
+        workspace.CWorkspaceOpened += surface.PLanguageRefine;
         workspace.CWorkspaceOpened += surface.PVolumeLoad;
 
         editor.CEditorObserverAttach(LObserver.LObserverCreate<Action>(static run => run()));

@@ -166,6 +166,12 @@ public sealed partial class LTenure
         LTenureSpeechSend(LSpeechClerk.LSpeechRemove(LTenureChipRead(), name), typed, false);
     }
 
+    public void LTenureGlossAdd(long card, long sentence)
+    {
+        LTenureRequestApply(new LRequestGlossAddition(
+            LTenureId, card, sentence, _lEngine.LEngineLanguage.LEngineGlossRead(), int.MaxValue));
+    }
+
     private IReadOnlyList<LSpeechDraft> LTenureChipRead()
     {
         IReadOnlyList<LSpeechDraft> shown = LTenureRead()?.LDraftContent.LEntryDraftSpeeches ?? [];

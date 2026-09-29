@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -10,7 +9,7 @@ internal sealed partial class PCard
 {
     public ObservableCollection<PSentence> PCardSentence { get; } = [];
 
-    internal Action<PSentence, string>? PCardSentenceNotice { get; set; }
+    internal Action<PSentence, PGloss, string>? PCardSentenceNotice { get; set; }
 
     internal void PCardSentenceApply(CSentenceOrder order)
     {
@@ -48,15 +47,7 @@ internal sealed partial class PCard
             row.PSentenceOrderApply(order);
         }
 
-        row.PropertyChanged += PCardSentenceChange;
+        row.PSentenceGlossNotice = (gloss, language) => PCardSentenceNotice?.Invoke(row, gloss, language);
         return row;
-    }
-
-    private void PCardSentenceChange(object? sender, PropertyChangedEventArgs arguments)
-    {
-        if (sender is PSentence row && arguments.PropertyName is string field)
-        {
-            PCardSentenceNotice?.Invoke(row, field);
-        }
     }
 }

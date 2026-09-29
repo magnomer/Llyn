@@ -180,6 +180,8 @@ internal static class TAuditChainSetting
             "CCard",
             "CFolio",
             "CSounding",
+            "CSoundingScript",
+            "CSoundingFanqie",
             "CPanel",
             "CAtlas",
             "COeuvre",
@@ -348,8 +350,8 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["cross:Llyn.UIDeportment>Llyn.Application"] = 61,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 92,
+        ["cross:Llyn.UIDeportment>Llyn.Application"] = 57,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 91,
         ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 25,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 1,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,

@@ -64,7 +64,8 @@ public sealed class LSettingsOutlet : LSettingsPort
     public LFont LEngineFontRead(string language, LFontRole role) =>
         _lSettingsOutletEngine.LEngineLanguage.LEngineFontRead(language, role);
 
-    public Task LEngineEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store) =>
+    public Task<IReadOnlyList<string>> LEngineEnsignLoad(
+        Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store) =>
         _lSettingsOutletEngine.LEngineLanguage.LEngineEnsignLoad(store);
 
     public Task LEngineEnsignLoad(

@@ -50,7 +50,7 @@ public sealed class LDisplay
         CDisplayArea.CDisplayRowChosen += (tab, id) => navigation.LNavigationRowOpen(tab, id);
         CDisplaySound.CDisplayRowChosen += (tab, id) => navigation.LNavigationRowOpen(tab, id);
         CDisplaySound.CDisplayDiweiChosen +=
-            (language, kind, key) => navigation.CNavigationDiweiOpen(language, kind, key);
+            (language, kind, key) => navigation.LNavigationDiweiOpen(language, kind, key);
         CDisplaySound.CDisplayStemChosen += (language, key) => navigation.LNavigationStemOpen(language, key);
     }
 
@@ -104,12 +104,6 @@ public sealed class LDisplay
         _lDisplayVista?.LVistaSelect(loaded is null ? null : id);
         CDisplayArea.LDisplayEntryOpen(loaded);
     }
-
-    internal bool LDisplayFanqieCheck(long? id) => LDisplaySound.LDisplayFanqieCheck(id);
-
-    internal bool LDisplayScriptCheck(long? id) => LDisplaySound.LDisplayScriptCheck(id);
-
-    internal bool LDisplayParadigmCheck(long? id) => LDisplaySound.LDisplayParadigmCheck(id);
 
     internal bool LDisplayFavoriteRead(long? entry)
     {

@@ -9,6 +9,10 @@ The fake answers every entry to any query, so the ordering and the exclusions ar
 
 The entry whose whole headword reads as the query leads, and the containing one follows.
 
+## `public void TranslationClerkFind_PaddedQuery_RanksAsTheTrimmedQuery()`
+
+The clerk ranks a padded query as its trimmed text, so no driver trims the typed word.
+
 ## `public void TranslationClerkFind_OwnEntry_IsLeftOut()`
 
 A card may not translate its own entry, so the search drops the id it is given.

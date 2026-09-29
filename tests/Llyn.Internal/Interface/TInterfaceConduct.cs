@@ -276,8 +276,21 @@ internal static class TInterfaceConduct
         desk, new LPhonologyOutlet(engine));
 
     internal static CSounding TSoundingCreate(
-        CDesk desk, LPhonologyPort phonology, LDraftPort drafts, CEnvoy envoy) =>
-        new(desk, phonology, drafts, TSettingsCreate(), envoy);
+        CDesk desk, LPhonologyPort phonology, LDraftPort drafts, CEnvoy envoy, LSettingsPort? pack = null)
+    {
+        LSettingsPort settings = pack ?? TSettingsCreate();
+        return new(
+            desk,
+            phonology,
+            drafts,
+            settings,
+            new LDisplaySound(
+                TEngineFake.TEngineStubCreate<LEntryPort>(),
+                phonology,
+                TEngineFake.TEngineStubCreate<LMediaPort>(),
+                settings),
+            envoy);
+    }
 
     internal static CStateValue TCardStateRead(LStateValue value) => CFolio.CFolioStateRead(value);
 
@@ -454,6 +467,10 @@ internal static class TInterfaceConduct
 
     internal static void TNavigationStemAttach(this CNavigation navigation, Action<string, string?> open) =>
         navigation.LNavigationStemAttach(open);
+
+    internal static bool TNavigationDiweiOpen(
+        this CNavigation navigation, string language, string kind, string key) =>
+        navigation.LNavigationDiweiOpen(language, kind, key);
 
     internal static bool TNavigationStemOpen(this CNavigation navigation, string language, string? key) =>
         navigation.LNavigationStemOpen(language, key);

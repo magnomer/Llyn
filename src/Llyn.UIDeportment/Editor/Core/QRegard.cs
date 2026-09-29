@@ -14,9 +14,9 @@ internal sealed class QRegard
     internal QRegard(PEditor editor)
     {
         _pEditor = editor;
-        QRegardFavorite.Click += QRegardFavoriteHandle;
-        QRegardGrasp.PGraspChanged += QRegardGraspHandle;
-        QRegardGrasp.PGraspHovered += QRegardHoverHandle;
+        QRegardFavorite.Click += QRegardFavoriteObserve;
+        QRegardGrasp.PGraspChanged += QRegardGraspObserve;
+        QRegardGrasp.PGraspHovered += QRegardHoverRefine;
     }
 
     private ToggleButton QRegardFavorite => QContract.QContractFind<ToggleButton>(_pEditor, "PEditorFavorite");
@@ -38,44 +38,44 @@ internal sealed class QRegard
     {
         _cEditor = editor;
         CEsteem esteem = editor.CEditorEsteem;
-        esteem.CEsteemFavoriteChanged += QRegardFavoriteUpdate;
-        esteem.CEsteemGraspChanged += QRegardGraspUpdate;
-        esteem.CEsteemFrequencyChanged += QRegardFrequencyUpdate;
-        editor.CEditorDesk.CDeskStarted += QRegardFavoriteUpdate;
-        editor.CEditorDesk.CDeskStarted += QRegardGraspUpdate;
-        editor.CEditorDesk.CDeskStarted += QRegardFrequencyUpdate;
+        esteem.CEsteemFavoriteChanged += QRegardFavoriteRefine;
+        esteem.CEsteemGraspChanged += QRegardGraspRefine;
+        esteem.CEsteemFrequencyChanged += QRegardFrequencyRefine;
+        editor.CEditorDesk.CDeskStarted += QRegardFavoriteRefine;
+        editor.CEditorDesk.CDeskStarted += QRegardGraspRefine;
+        editor.CEditorDesk.CDeskStarted += QRegardFrequencyRefine;
         QRegardGrasp.PGraspLimit = esteem.CEsteemGraspStep;
     }
 
-    private void QRegardFavoriteUpdate()
+    private void QRegardFavoriteRefine()
     {
         QRegardFavorite.IsEnabled = _cEditor.CEditorDesk.CDeskStored;
         QRegardFavorite.IsChecked = _cEditor.CEditorEsteem.CEsteemFavorite;
     }
 
-    private void QRegardFavoriteHandle(object sender, RoutedEventArgs e)
+    private void QRegardFavoriteObserve(object sender, RoutedEventArgs e)
     {
         _cEditor.CEditorEsteem.CEsteemFavoriteSet(QLook.QLookCheckedRead(QRegardFavorite.IsChecked));
     }
 
-    private void QRegardGraspUpdate()
+    private void QRegardGraspRefine()
     {
         QRegardGrasp.IsEnabled = _cEditor.CEditorDesk.CDeskStored;
         QRegardGrasp.PGraspStep = _cEditor.CEditorEsteem.CEsteemGrasp;
         QRegardGraspLabel.Text = _cEditor.CEditorEsteem.CEsteemGraspRead(QRegardGrasp.PGraspStep);
     }
 
-    private void QRegardHoverHandle(object sender, RoutedEventArgs e)
+    private void QRegardHoverRefine(object sender, RoutedEventArgs e)
     {
         QRegardGraspLabel.Text = _cEditor.CEditorEsteem.CEsteemGraspRead(QRegardGrasp.PGraspPointed);
     }
 
-    private void QRegardGraspHandle(object sender, RoutedEventArgs e)
+    private void QRegardGraspObserve(object sender, RoutedEventArgs e)
     {
         _cEditor.CEditorEsteem.CEsteemGraspSet(QRegardGrasp.PGraspStep);
     }
 
-    private void QRegardFrequencyUpdate()
+    private void QRegardFrequencyRefine()
     {
         QFrequencyLabel.QFrequencyChipRefine(
             QRegardFrequencySection,

@@ -64,9 +64,10 @@ The lexicon languages the workspace knows.
 
 The language a new translation starts in, as the engine resolves it from the settings and the loaded packs.
 
-## `public Task CCatalogEnsignLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
+## `public Task<IReadOnlyList<string>> CCatalogEnsignLoad(`
 
 Loads the cached flags, handing `store` each row as the Conduct shape.
+It answers the loaded languages, so a language menu fills from the load that flagged it.
 
 ## `public Task CCatalogEnsignLoad(`
 

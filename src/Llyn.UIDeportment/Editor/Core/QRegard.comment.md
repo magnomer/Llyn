@@ -15,7 +15,7 @@ Wires the strip's clicks once, right after the editor has taken over its markup'
 Subscribes the favourite, grasp and frequency notices, and sets how many grasp steps the mark draws.
 A tenure start reads every part of the strip again, one subscriber each, since a bulletin comes only on change.
 
-## `private void QRegardHoverHandle(object sender, RoutedEventArgs e)`
+## `private void QRegardHoverRefine(object sender, RoutedEventArgs e)`
 
 The label previews the step under the pointer, so a click never lands on an unread step.
 

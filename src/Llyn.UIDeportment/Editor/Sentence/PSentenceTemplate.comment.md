@@ -23,14 +23,6 @@ Citation keys use editor state to keep citation editing aligned with the current
 
 Leaving a citation field lets the editor commit or reconcile its draft value.
 
-## `internal void PGlossAddHandle(object sender, RoutedEventArgs e)`
-
-The editor adds a gloss because it owns the sentence example being edited.
-
-## `internal void PGlossRemoveHandle(object sender, ExecutedRoutedEventArgs e)`
-
-Gloss removal uses editor state to target the selected gloss in the active example.
-
 ## `internal void PSentenceLinkHandle(object sender, ExecutedRoutedEventArgs e)`
 
 The editor applies linking to the sentence selection and its owning card.

@@ -4,19 +4,28 @@
 
 The editor's sound panels read from the entry's timbre: the paradigm, the fanqie, the script, and the reading line.
 It finds its controls through `QContract.QContractFind` on the editor, keeping their `PEditor` markup names.
-Each panel takes its font from the window's deportment before its rows are set.
+Each panel paints one ready block its sounding read answers, font first, then its rows.
 
-## `internal void QCadenceIntroduce(PWindow host, CEditor editor)`
+## `internal void QCadenceIntroduce(CEditor editor)`
 
-Takes the window for fonts and the diwei notice, and the editor for every timbre read.
+Takes the editor for every sounding read and gate.
 Each panel answers a tenure start and its own change event from the editor, one subscriber each.
+The fanqie panel's diwei and representative notices are wired once, to their observers.
 
-## `private void QCadenceFanqieUpdate()`
+## `private void QCadenceScriptRefine()`
 
-Rewrites the fanqie panel and hands it its notices.
+Offers the refresh button only when the block says the rows may be fetched again.
+The button then calls `QCadenceScriptObserve`, and `QCadenceFanqieRefine` does the same for the rime books.
+
+## `private void QCadenceFanqieRefine()`
+
 The editor moves the reflex anchor and the reading line on the same change event.
 
-## `internal void QCadenceReadingShow(string headword)`
+## `private void QCadenceDiweiObserve(string kind, string key)`
+
+Hands the pressed rime cell to the sounding, which opens it in the draft's language.
+
+## `internal void QCadenceReadingRefine(string headword)`
 
 The representative reading of the headword, rewritten with each draft and each rime-book update.
 The headword box belongs to the editor, so its text arrives as a parameter.

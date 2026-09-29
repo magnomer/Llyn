@@ -14,15 +14,20 @@ Every gate announces the change, or asks the envoy to show the refusal under its
 
 Hears the tenure's fanqie subject and raises `CSoundingChanged` on the driver's thread.
 A fanqie changed elsewhere refreshes the editor as a fanqie set here does.
-## `internal CSounding(CDesk desk, LPhonologyPort phonology, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy)`
+## `internal CSounding(`
 
 Takes the editor's desk, the phonology port every sound read goes through, and the draft port the anchors ask.
 A refused load shows through `envoy`, with the ready notice `settings` reads.
+The waiting checks and the morphology verdict come from `voice`, the editor's display voice.
 Only the editor builds one, so the constructor is internal.
 
 ## `public event Action? CSoundingChanged;`
 
 A gate landed, so the boxes drawn from the sheet are read again.
+
+## `internal event Action<string, string, string>? LSoundingDiweiChosen;`
+
+A rime cell the user pressed, with the draft's language, which the editor hands to the navigation.
 
 ## `private long? LSoundingEntry`
 
@@ -32,9 +37,13 @@ The entry the desk has stored, or null for a fresh draft.
 
 The language of the draft on the desk, which picks the tones an anchor scan compares.
 
-## `public IReadOnlyList<CFanqieGroup> CSoundingFanqieRead()`
+## `public CSoundingFanqie CSoundingFanqieRead()`
 
-The entry's rime-book groups, fetched first when missing.
+The editor's whole rime-book block, as the reading view reads its own.
+The groups are fetched first when missing, and a refusal answers them empty.
+A rebuild is offered only for a stored entry whose pack has a rime book.
+A refused pack check offers none.
+The glyph font is the draft language's, as the editor's other glyph surfaces take it.
 
 ## `public string CSoundingReadingRead(string headword)`
 
@@ -69,21 +78,25 @@ The user asked to fetch the rime-book rows again.
 The user ranked one rime-book row among the entry's representative readings.
 Rank zero unmarks the row, and the last rank appends it after the rows already marked.
 
-## `public IReadOnlyList<CScriptGroup> CSoundingScriptRead()`
+## `public void CSoundingDiweiOpen(string kind, string key)`
 
-The entry's script rows, fetched first when missing.
+The user pressed a rime cell, which opens in the draft's language.
+
+## `public CSoundingScript CSoundingScriptRead()`
+
+The editor's whole script block, fetched first when missing.
+A rebuild is offered only for a stored entry whose pack has script styles.
 
 ## `public void CSoundingScriptResolve()`
 
 The user asked to drop the entry's script rows and fetch them again.
 
-## `public IReadOnlyList<CParadigmSlot> CSoundingParadigmRead()`
+## `public CLecternParadigm CSoundingParadigmRead()`
 
-The entry's paradigm rows, joined by the engine and shaped for the paradigm box.
-
-## `public string CSoundingLanguageRead()`
-
-The language the entry's paradigm is written in, which picks the paradigm box's font.
+The editor's whole paradigm block, in the reading view's own shape.
+The rows are joined by the engine, and the waiting check and the morphology verdict come from the voice.
+The headword font is that of the paradigm's own language, as the reading view picks it.
+Every block's font goes through the one font rule `CCatalog.LCatalogFontRead` holds.
 
 ## `private IReadOnlyList<LSoundingItem> LSoundingListRead<LSoundingItem>(`
 

@@ -86,7 +86,7 @@ The controls that follow the desk's state: whether the editor is live, and the s
 
 ## Inline notes
 
-### `Resources.MergedDictionaries.Add(_pMeaningTemplate);`
+### `Resources.MergedDictionaries.Add(new PMeaningTemplate());`
 
 Each card and menu row is a template in a dictionary of its own.
 So this control's markup stays its own layout.

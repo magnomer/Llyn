@@ -12,6 +12,10 @@ The id is negative for a row the database has not stored yet.
 - `LGlossDraftLanguage` — The language the rendering is written in, empty when none is chosen.
 - `LGlossDraftText` — The rendering and what is known about it.
 
+## `public bool LGlossDraftNamed`
+
+The draft row asks the gloss it resolves to, so the rule has one owner.
+
 ## `public static LGlossDraft LGlossDraftCreate(LGloss gloss)`
 
 The stored Gloss as a draft, id kept.

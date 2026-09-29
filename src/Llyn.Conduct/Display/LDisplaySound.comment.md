@@ -88,7 +88,7 @@ Whether the entry's script images are still being fetched, false for no entry or
 
 Whether the entry's inflections are still being fetched, false for no entry or a refusal.
 
-## `public bool LDisplayMorphologyRead()`
+## `internal bool LDisplayMorphologyRead()`
 
 The engine's morphology verdict, false when the settings cannot be read.
 

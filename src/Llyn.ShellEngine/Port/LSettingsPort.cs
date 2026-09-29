@@ -47,7 +47,8 @@ public interface LSettingsPort
 
     LFont LEngineFontRead(string language, LFontRole role);
 
-    Task LEngineEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store);
+    Task<IReadOnlyList<string>> LEngineEnsignLoad(
+        Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store);
 
     Task LEngineEnsignLoad(
         string language,

@@ -18,13 +18,21 @@ public sealed class CSounding
 
     private readonly LSettingsPort _cSoundingSettingsPort;
 
+    private readonly LDisplaySound _cSoundingVoice;
+
     internal CSounding(
-        CDesk desk, LPhonologyPort phonology, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy)
+        CDesk desk,
+        LPhonologyPort phonology,
+        LDraftPort drafts,
+        LSettingsPort settings,
+        LDisplaySound voice,
+        CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(voice);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _cSoundingDesk = desk;
@@ -32,9 +40,12 @@ public sealed class CSounding
         _cSoundingDraftPort = drafts;
         _cSoundingEnvoy = envoy;
         _cSoundingSettingsPort = settings;
+        _cSoundingVoice = voice;
     }
 
     public event Action? CSoundingChanged;
+
+    internal event Action<string, string, string>? LSoundingDiweiChosen;
 
     internal void LSoundingObserverAttach(Action<Action> marshal)
     {
@@ -46,9 +57,15 @@ public sealed class CSounding
 
     private string LSoundingLanguage => _cSoundingDesk.CDeskTenure?.LTenureLanguageRead() ?? string.Empty;
 
-    public IReadOnlyList<CFanqieGroup> CSoundingFanqieRead()
+    public CSoundingFanqie CSoundingFanqieRead()
     {
-        return CSoundingFanqieRead(LSoundingListRead(_cSoundingPhonologyPort.LEngineFanqieRead));
+        long? entry = LSoundingEntry;
+        return new CSoundingFanqie(
+            CSoundingFanqieRead(LSoundingListRead(_cSoundingPhonologyPort.LEngineFanqieRead)),
+            _cSoundingVoice.LDisplayFanqieCheck(entry),
+            entry is not null
+            && LSoundingAnswerRead(() => _cSoundingPhonologyPort.LEngineBookCheck(LSoundingLanguage), false),
+            CCatalog.LCatalogFontRead(_cSoundingSettingsPort, LSoundingLanguage, CFontRole.CFontRoleGlyph));
     }
 
     public string CSoundingReadingRead(string headword)
@@ -103,9 +120,20 @@ public sealed class CSounding
             id => _cSoundingPhonologyPort.LEngineFanqieSet(id, fanqieId, rank), "Display.FanqieRepresentativeFailed");
     }
 
-    public IReadOnlyList<CScriptGroup> CSoundingScriptRead()
+    public void CSoundingDiweiOpen(string kind, string key)
     {
-        return CSoundingScriptRead(LSoundingListRead(_cSoundingPhonologyPort.LEngineScriptRead));
+        LSoundingDiweiChosen?.Invoke(LSoundingLanguage, kind, key);
+    }
+
+    public CSoundingScript CSoundingScriptRead()
+    {
+        long? entry = LSoundingEntry;
+        return new CSoundingScript(
+            CSoundingScriptRead(LSoundingListRead(_cSoundingPhonologyPort.LEngineScriptRead)),
+            _cSoundingVoice.LDisplayScriptCheck(entry),
+            entry is not null
+            && LSoundingAnswerRead(() => _cSoundingPhonologyPort.LEngineStyleCheck(LSoundingLanguage), false),
+            CCatalog.LCatalogFontRead(_cSoundingSettingsPort, LSoundingLanguage, CFontRole.CFontRoleGlyph));
     }
 
     public void CSoundingScriptResolve()
@@ -113,16 +141,16 @@ public sealed class CSounding
         LSoundingMarkSend(_cSoundingPhonologyPort.LEngineScriptRebuild, "Display.ScriptRebuildFailed");
     }
 
-    public IReadOnlyList<CParadigmSlot> CSoundingParadigmRead()
+    public CLecternParadigm CSoundingParadigmRead()
     {
-        return CSoundingParadigmRead(LSoundingListRead(_cSoundingPhonologyPort.LEngineParadigmScan));
-    }
-
-    public string CSoundingLanguageRead()
-    {
-        return LSoundingEntry is long id
+        string language = LSoundingEntry is long id
             ? LSoundingAnswerRead(() => _cSoundingPhonologyPort.LEngineLanguageResolve(id), string.Empty)
             : string.Empty;
+        return new CLecternParadigm(
+            CSoundingParadigmRead(LSoundingListRead(_cSoundingPhonologyPort.LEngineParadigmScan)),
+            _cSoundingVoice.LDisplayParadigmCheck(LSoundingEntry),
+            _cSoundingVoice.LDisplayMorphologyRead(),
+            CCatalog.LCatalogFontRead(_cSoundingSettingsPort, language, CFontRole.CFontRoleHeadword));
     }
 
     private IReadOnlyList<LSoundingItem> LSoundingListRead<LSoundingItem>(

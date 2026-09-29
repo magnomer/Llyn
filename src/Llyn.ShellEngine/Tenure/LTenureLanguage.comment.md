@@ -69,6 +69,12 @@ A blank name sends nothing.
 
 Sends the chips without the named one, the pending typed text still included.
 
+## `public void LTenureGlossAdd(long card, long sentence)`
+
+Appends a Gloss to the sentence's list, in the settings' gloss language when it is loaded.
+The engine's gloss read owns that fallback, so no language name is written in code.
+The end place is past the list, and the clerk's clamp puts it last.
+
 ## `private IReadOnlyList<LSpeechDraft> LTenureChipRead()`
 
 The draft's parts without the pending one, cleaned, so every edit starts from the draft.

@@ -3,7 +3,7 @@
 ## `public sealed class CTimbre`
 
 The sound facts of the entry an editor holds, as the editor shows or offers them.
-The pack facts are read for the held draft's language, and the waiting sections from the editor's display.
+The pack facts are read for the held draft's language, and the waiting reflexes from the editor's display.
 The editor builds it over its desk, its phonology port and its display, so it keeps no copy.
 
 ## `public event Action? CTimbreParadigmChanged;`
@@ -22,10 +22,6 @@ The varieties the held draft's language offers, empty while no draft is held.
 ## `public bool CTimbreReflexShown`
 
 Whether the reflex block shows for the held draft.
-
-## `public bool CTimbreMorphology`
-
-Whether the paradigm box shows morphology, as the display reads the settings.
 
 ## `public bool CTimbreReflexPending`
 
@@ -51,14 +47,6 @@ Whether the held draft's pack is spoken, so the pronunciation and accent rows sh
 ## `public bool CTimbrePhonemic`
 
 Whether the reading field shows a phonemic respelling, which needs a respelling pack first.
-
-## `public bool CTimbreFanqieRebuildable`
-
-Whether the rime-book rows may be fetched again, which needs a stored entry and a pack with a rime book.
-
-## `public bool CTimbreScriptRebuildable`
-
-Whether the script rows may be fetched again, which needs a stored entry and a pack with script styles.
 
 ## `private string LTimbreLanguage`
 

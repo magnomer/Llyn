@@ -173,6 +173,6 @@ Closing runs while the window is still up and can be called off.
 Closed cannot.
 Unsaved text is caught in the first, and the panels are stopped in the second.
 
-### `PInput.PInputClose();`
+### `PInput.PEditor.PEditorClose();`
 
 Every panel is stopped before the engine goes.

@@ -15,6 +15,7 @@ internal sealed class PGloss : INotifyPropertyChanged
 {
     private readonly long _pGlossId;
     private string _pGlossLanguage;
+    private string? _pGlossHint;
     private ImageSource? _pGlossFlag;
     private CStateValue _pGlossText;
     private bool _pGlossLanguageVisible;
@@ -26,6 +27,7 @@ internal sealed class PGloss : INotifyPropertyChanged
         PGlossLanguageCatalog = catalog;
         _pGlossId = draft.CGlossDraftId;
         _pGlossLanguage = draft.CGlossDraftLanguage;
+        _pGlossHint = draft.CGlossDraftHint;
         _pGlossFlag = LEnsignImage.LEnsignFind(_pGlossLanguage);
         _pGlossText = draft.CGlossDraftText;
     }
@@ -34,27 +36,9 @@ internal sealed class PGloss : INotifyPropertyChanged
 
     public long PGlossId => _pGlossId;
 
-    public string PGlossLanguage
-    {
-        get => _pGlossLanguage;
-        set
-        {
-            if (value is null)
-            {
-                return;
-            }
+    public string PGlossLanguage => _pGlossLanguage;
 
-            PGlossLanguageVisible = false;
-            if (string.Equals(_pGlossLanguage, value, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _pGlossLanguage = value;
-            PGlossFlag = LEnsignImage.LEnsignFind(value);
-            PGlossRaise(nameof(PGlossLanguage));
-        }
-    }
+    public string? PGlossHint => _pGlossHint;
 
     public ImageSource? PGlossFlag
     {
@@ -108,6 +92,7 @@ internal sealed class PGloss : INotifyPropertyChanged
         if (!string.Equals(_pGlossLanguage, draft.CGlossDraftLanguage, StringComparison.Ordinal))
         {
             _pGlossLanguage = draft.CGlossDraftLanguage;
+            _pGlossHint = draft.CGlossDraftHint;
             PGlossFlag = LEnsignImage.LEnsignFind(_pGlossLanguage);
             PGlossRaise(nameof(PGlossLanguage));
         }
@@ -116,6 +101,8 @@ internal sealed class PGloss : INotifyPropertyChanged
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    internal event Action<PGloss, string>? PGlossPicked;
 
     internal static void PGlossRowApply(FrameworkElement container, object item, string? _)
     {
@@ -138,32 +125,34 @@ internal sealed class PGloss : INotifyPropertyChanged
 
         if (QLook.QLookPartFind<TextBlock>(container, "PGlossName") is TextBlock label)
         {
-            PGlossNameApply(label, gloss.PGlossLanguage);
+            PGlossNameApply(label, gloss);
         }
 
         ToggleButton? speaker = QLook.QLookPartFind<ToggleButton>(container, "PGlossSpeaker");
         if (speaker is not null)
         {
             speaker.IsChecked = gloss.PGlossLanguageVisible;
-            speaker.Click -= PGlossSpeakerHandle;
-            speaker.Click += PGlossSpeakerHandle;
+            speaker.Click -= PGlossSpeakerRefine;
+            speaker.Click += PGlossSpeakerRefine;
         }
 
         if (QLook.QLookPartFind<Popup>(container, "PGlossPopup") is Popup popup)
         {
             popup.PlacementTarget = speaker;
             popup.IsOpen = gloss.PGlossLanguageVisible;
-            popup.Closed -= PGlossPopupHandle;
-            popup.Closed += PGlossPopupHandle;
+            popup.Closed -= PGlossPopupRefine;
+            popup.Closed += PGlossPopupRefine;
         }
 
         if (QLook.QLookPartFind<ListBox>(container, "PGlossList") is ListBox list)
         {
-            list.SelectionChanged -= PGlossListHandle;
+            list.SelectionChanged -= PGlossPickRaise;
+            list.SelectionChanged -= PGlossListRefine;
             list.SelectedValuePath = nameof(PLanguageItem.PLanguageItemName);
             list.ItemsSource = gloss.PGlossLanguageCatalog;
             list.SelectedValue = gloss.PGlossLanguage;
-            list.SelectionChanged += PGlossListHandle;
+            list.SelectionChanged += PGlossPickRaise;
+            list.SelectionChanged += PGlossListRefine;
             QLookItem.QLookItemAttach(list, PLanguageItem.PLanguageItemApply);
         }
 
@@ -179,16 +168,16 @@ internal sealed class PGloss : INotifyPropertyChanged
         }
     }
 
-    private static void PGlossNameApply(TextBlock label, string language)
+    private static void PGlossNameApply(TextBlock label, PGloss gloss)
     {
-        if (language.Length == 0)
+        if (gloss.PGlossHint is string hint)
         {
-            label.SetResourceReference(TextBlock.TextProperty, "Example.Language");
+            label.SetResourceReference(TextBlock.TextProperty, hint);
             label.SetResourceReference(TextBlock.ForegroundProperty, "Theme.Muted");
             return;
         }
 
-        label.Text = language;
+        label.Text = gloss.PGlossLanguage;
         label.ClearValue(TextBlock.ForegroundProperty);
     }
 
@@ -212,7 +201,7 @@ internal sealed class PGloss : INotifyPropertyChanged
         }
     }
 
-    private static void PGlossSpeakerHandle(object sender, RoutedEventArgs e)
+    private static void PGlossSpeakerRefine(object sender, RoutedEventArgs e)
     {
         if (sender is ToggleButton { DataContext: PGloss gloss } speaker)
         {
@@ -220,7 +209,7 @@ internal sealed class PGloss : INotifyPropertyChanged
         }
     }
 
-    private static void PGlossPopupHandle(object? sender, EventArgs e)
+    private static void PGlossPopupRefine(object? sender, EventArgs e)
     {
         if (sender is Popup { DataContext: PGloss gloss })
         {
@@ -228,11 +217,19 @@ internal sealed class PGloss : INotifyPropertyChanged
         }
     }
 
-    private static void PGlossListHandle(object sender, SelectionChangedEventArgs e)
+    private static void PGlossPickRaise(object sender, SelectionChangedEventArgs e)
     {
         if (sender is ListBox { DataContext: PGloss gloss, SelectedValue: string language })
         {
-            gloss.PGlossLanguage = language;
+            gloss.PGlossPicked?.Invoke(gloss, language);
+        }
+    }
+
+    private static void PGlossListRefine(object sender, SelectionChangedEventArgs e)
+    {
+        if (sender is ListBox { DataContext: PGloss gloss } list)
+        {
+            list.Dispatcher.BeginInvoke(() => gloss.PGlossLanguageVisible = false);
         }
     }
 

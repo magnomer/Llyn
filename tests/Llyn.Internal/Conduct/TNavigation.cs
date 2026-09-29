@@ -285,7 +285,7 @@ public sealed class TNavigation
         List<string> cells = [];
         navigation.TNavigationDiweiAttach((language, kind, key) => cells.Add(language + " " + kind + " " + key));
 
-        bool opened = navigation.CNavigationDiweiOpen("Korean", "initial", "k");
+        bool opened = navigation.TNavigationDiweiOpen("Korean", "initial", "k");
 
         Assert.True(opened);
         Assert.Equal(["Yunjing"], asked);

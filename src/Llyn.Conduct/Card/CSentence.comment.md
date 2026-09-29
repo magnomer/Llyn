@@ -3,7 +3,7 @@
 ## `public sealed class CSentence`
 
 The sentence gates of the entry editor, one per user action on a card's sentence rows.
-Each gate holds the interaction only and calls one `LQuill` member on the held draft.
+Each gate holds the interaction only and calls one ShellEngine member on the held draft.
 The rules about the rows live in the Application clerk, so no gate trims, clamps or checks.
 A gate does nothing while the desk is filling a draft, since the quill reads null then.
 It is the reference example of the pipeline in `docs-work/JobPrinciple.md` section 13.
@@ -11,6 +11,10 @@ It is the reference example of the pipeline in `docs-work/JobPrinciple.md` secti
 ## `internal CSentence(CDesk desk, LPhonologyPort phonology)`
 
 Builds the gates over the editor's desk and the phonology port.
+
+## `private LTenure? CSentenceTenure`
+
+The held draft, or null while the desk fills one, as the quill reads then.
 
 ## `public event Action? CSentenceReferenceChanged;`
 
@@ -46,6 +50,19 @@ The gate for typing in a sentence's dependence field.
 ## `public void CSentenceGlossSet(long cardId, long sentenceId, long glossId, string text)`
 
 A gloss's typed text, deferred like the sentence text.
+
+## `public void CSentenceLanguageSet(long cardId, long sentenceId, long glossId, string language)`
+
+The gate for a language picked in a gloss's language menu, sent at once.
+
+## `public void CSentenceGlossAdd(long cardId, long sentenceId)`
+
+The gate for the gloss button on a sentence row.
+The engine picks the gloss language and puts the new gloss last.
+
+## `public void CSentenceGlossRemove(long cardId, long sentenceId, long glossId)`
+
+The gate for the cross on a gloss row.
 
 ## `public CSentenceFrame CSentenceFrameRead()`
 

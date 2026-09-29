@@ -21,6 +21,7 @@ The sheet asks the engine for the stored entry's groups and shapes every row.
 ## `public void SoundingFanqieRead_RefusedRead_AnswersEmpty()`
 
 A refused read answers empty, since a box that cannot fetch still has to draw.
+A refused pack check offers no rebuild.
 
 ## `public void SoundingFanqieResolve_StoredEntry_AnnouncesTheChange()`
 
@@ -54,7 +55,20 @@ A scheme is labelled under `Scheme.` plus its name, and a blank one keys `Scheme
 ## `public void SoundingParadigmRead_TwoSlotsOneForm_JoinsThemIntoOneRow()`
 
 The paradigm rows the engine joined keep their part, name, form and doubt.
-The paradigm language comes from the engine as well.
+The block also carries the waiting check, the morphology verdict and the font of the language the engine resolves.
+
+## `public void SoundingScriptRead_StoredEntry_AnswersTheWholeBlockInTheDraftLanguage()`
+
+The script and rime-book blocks carry the waiting checks and the rebuild offers.
+The pack checks and the glyph fonts are asked in the draft's language.
+
+## `public void SoundingFanqieRead_NoStoredEntry_OffersNoRebuildAndWaitsForNothing()`
+
+A desk with no stored entry offers no rebuild and waits for nothing, whatever the pack says.
+
+## `public void SoundingDiweiOpen_HeldDraft_OpensTheCellInTheDraftLanguage()`
+
+A pressed rime cell reaches the navigation's yunjing opener with the draft's language.
 
 ## `private static long TSoundingEntrySave(LEngine engine)`
 
@@ -68,3 +82,8 @@ An editor on the library tab, holding `entry` or a fresh draft.
 
 A sound sheet over the editor's desk with fake ports answering `answers`.
 Every notice the envoy is asked to show lands in `notices`.
+A test that reads fonts or morphology hands its own settings as `pack`.
+
+## `private static LSettingsPort TSoundingPackCreate(List<(string, LFontRole)> asked, bool morphology)`
+
+A settings port that answers one font, records each language and role asked, and answers `morphology`.

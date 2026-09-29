@@ -8,6 +8,7 @@ A written value keeps the engine's verdict, and a draft splits its main pronunci
 The etymology gates write the narrative, the source links and the spans of the held draft.
 A typed title cites the Source the engine resolves it to.
 The lookups find the stored rows a typed word matches, leaving out the rows the card already holds.
+A padded word finds what the trimmed word finds, since the engine trims it.
 A typed tag lands trimmed and once, a picked tag keeps its stored id, and an erased tag leaves.
 A typed list adds its completed tags, situations and registers once each and answers the rest.
 A picked situation or register lands once under its stored id, and an erased situation leaves.

@@ -182,7 +182,8 @@ public sealed class CAnthology
 
     private static CGlossDraft LAnthologyGlossRead(LGloss gloss)
     {
-        return new CGlossDraft(gloss.LGlossId, gloss.LGlossLanguage, CFolio.CFolioStateRead(gloss.LGlossText));
+        return new CGlossDraft(
+            gloss.LGlossId, gloss.LGlossLanguage, CFolio.CFolioStateRead(gloss.LGlossText), gloss.LGlossNamed);
     }
 
     private static CMentionDraft LAnthologyMentionRead(LMention mention)

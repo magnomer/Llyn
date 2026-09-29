@@ -28,12 +28,14 @@ public sealed class TSounding
         CEditor editor = TSoundingEditorPrepare(engine, null);
         CSounding sounding = editor.CEditorSounding;
 
-        Assert.Empty(sounding.CSoundingFanqieRead());
-        Assert.Empty(sounding.CSoundingScriptRead());
-        Assert.Empty(sounding.CSoundingParadigmRead());
+        CLecternParadigm paradigm = sounding.CSoundingParadigmRead();
+
+        Assert.Empty(sounding.CSoundingFanqieRead().CSoundingFanqieGroups);
+        Assert.Empty(sounding.CSoundingScriptRead().CSoundingScriptGroups);
+        Assert.Empty(paradigm.CLecternParadigmSlots);
         Assert.Empty(sounding.CSoundingAnchorScan([], "a", string.Empty));
         Assert.Equal(string.Empty, sounding.CSoundingReadingRead("water"));
-        Assert.Equal(string.Empty, sounding.CSoundingLanguageRead());
+        Assert.Equal(new CFont(null, null, null), paradigm.CLecternParadigmFont);
         Assert.False(sounding.CSoundingAnchorCheck("water"));
     }
 
@@ -56,7 +58,7 @@ public sealed class TSounding
             },
         }, []);
 
-        CFanqieGroup group = Assert.Single(sounding.CSoundingFanqieRead());
+        CFanqieGroup group = Assert.Single(sounding.CSoundingFanqieRead().CSoundingFanqieGroups);
 
         Assert.Equal(7, Assert.Single(group.CFanqieGroupRows).CFanqieRowId);
         Assert.Equal([editor.CEditorDesk.CDeskStoredRead()], asked);
@@ -70,8 +72,13 @@ public sealed class TSounding
         CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
         CSounding sounding = TSoundingCreate(editor, [], []);
 
-        Assert.Empty(sounding.CSoundingFanqieRead());
-        Assert.Empty(sounding.CSoundingScriptRead());
+        CSoundingFanqie fanqie = sounding.CSoundingFanqieRead();
+        CSoundingScript script = sounding.CSoundingScriptRead();
+
+        Assert.Empty(fanqie.CSoundingFanqieGroups);
+        Assert.Empty(script.CSoundingScriptGroups);
+        Assert.False(fanqie.CSoundingFanqieRebuildable);
+        Assert.False(script.CSoundingScriptRebuildable);
         Assert.Equal(string.Empty, sounding.CSoundingReadingRead("water"));
         Assert.False(sounding.CSoundingAnchorCheck("water"));
     }
@@ -231,19 +238,111 @@ public sealed class TSounding
             TInterface.TParadigmSlotCreate(noun, past, wolves, LState.LStateSpecified),
             TInterface.TParadigmSlotCreate(verb, past, null, LState.LStateUnknown),
         ]);
+        List<(string, LFontRole)> asked = [];
         CSounding sounding = TSoundingCreate(editor, new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineParadigmScan"] = _ => rows,
-            ["LEngineLanguageResolve"] = _ => "English",
-        }, []);
+            ["LEngineLanguageResolve"] = _ => "Latin",
+            ["LEngineInflectionCheck"] = _ => true,
+        }, [], TSoundingPackCreate(asked, true));
+
+        CLecternParadigm paradigm = sounding.CSoundingParadigmRead();
 
         Assert.Equal(
             [
                 new CParadigmSlot("noun", "plural, past", "wolves", false),
                 new CParadigmSlot("verb", "past", null, true),
             ],
-            sounding.CSoundingParadigmRead());
-        Assert.Equal("English", sounding.CSoundingLanguageRead());
+            paradigm.CLecternParadigmSlots);
+        Assert.True(paradigm.CLecternParadigmPending);
+        Assert.True(paradigm.CLecternParadigmMorphology);
+        Assert.Equal(new CFont("Noto Serif", 21, null), paradigm.CLecternParadigmFont);
+        Assert.Equal([("Latin", LFontRole.LFontRoleHeadword)], asked);
+    }
+
+    [Fact]
+    public void SoundingScriptRead_StoredEntry_AnswersTheWholeBlockInTheDraftLanguage()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
+        List<(string, LFontRole)> asked = [];
+        List<string> packs = [];
+        CSounding sounding = TSoundingCreate(editor, new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineScriptRead"] = _ => new List<LScriptGroup>(),
+            ["LEngineFanqieRead"] = _ => new List<LFanqieGroup>(),
+            ["LEngineScriptCheck"] = _ => true,
+            ["LEngineFanqieCheck"] = _ => false,
+            ["LEngineStyleCheck"] = args =>
+            {
+                packs.Add((string)args![0]!);
+                return true;
+            },
+            ["LEngineBookCheck"] = args =>
+            {
+                packs.Add((string)args![0]!);
+                return false;
+            },
+        }, [], TSoundingPackCreate(asked, false));
+
+        CSoundingScript script = sounding.CSoundingScriptRead();
+        CSoundingFanqie fanqie = sounding.CSoundingFanqieRead();
+
+        Assert.True(script.CSoundingScriptPending);
+        Assert.True(script.CSoundingScriptRebuildable);
+        Assert.False(fanqie.CSoundingFanqiePending);
+        Assert.False(fanqie.CSoundingFanqieRebuildable);
+        Assert.Equal(new CFont("Noto Serif", 21, null), script.CSoundingScriptFont);
+        Assert.Equal(["English", "English"], packs);
+        Assert.Equal([("English", LFontRole.LFontRoleGlyph), ("English", LFontRole.LFontRoleGlyph)], asked);
+    }
+
+    [Fact]
+    public void SoundingFanqieRead_NoStoredEntry_OffersNoRebuildAndWaitsForNothing()
+    {
+        CSounding sounding = TInterfaceConduct.TEditorCreate(
+                TEngineFake.TEngineStubCreate<LDraftPort>(),
+                TEngineFake.TEngineStubCreate<LEntryPort>(),
+                TEngineFake.TEngineCreate<LPhonologyPort>(new Dictionary<string, Func<object?[]?, object?>>
+                {
+                    ["LEngineBookCheck"] = _ => true,
+                    ["LEngineStyleCheck"] = _ => true,
+                    ["LEngineFanqieCheck"] = _ => true,
+                    ["LEngineScriptCheck"] = _ => true,
+                    ["LEngineInflectionCheck"] = _ => true,
+                }),
+                TEngineFake.TEngineStubCreate<LSettingsPort>(),
+                TEngineFake.TEngineStubCreate<LMediaPort>())
+            .CEditorSounding;
+
+        CSoundingFanqie fanqie = sounding.CSoundingFanqieRead();
+        CSoundingScript script = sounding.CSoundingScriptRead();
+
+        Assert.False(fanqie.CSoundingFanqieRebuildable);
+        Assert.False(script.CSoundingScriptRebuildable);
+        Assert.False(fanqie.CSoundingFanqiePending);
+        Assert.False(script.CSoundingScriptPending);
+        Assert.False(sounding.CSoundingParadigmRead().CLecternParadigmPending);
+    }
+
+    [Fact]
+    public void SoundingDiweiOpen_HeldDraft_OpensTheCellInTheDraftLanguage()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CEditor editor = CEditor.CEditorCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
+        editor.CEditorEntryOpen(TSoundingEntrySave(engine));
+        CNavigation navigation = atelier.CAtelierNavigation;
+        navigation.TNavigationTabAdd("Yunjing", static () => true, static () => 0, static _ => { }, static _ => { });
+        List<string> cells = [];
+        navigation.TNavigationDiweiAttach((language, kind, key) => cells.Add(language + " " + kind + " " + key));
+
+        editor.CEditorSounding.CSoundingDiweiOpen("initial", "sh");
+
+        Assert.Equal(["English initial sh"], cells);
     }
 
     private static long TSoundingEntrySave(LEngine engine)
@@ -261,12 +360,29 @@ public sealed class TSounding
     }
 
     private static CSounding TSoundingCreate(
-        CEditor editor, Dictionary<string, Func<object?[]?, object?>> answers, List<string> notices)
+        CEditor editor,
+        Dictionary<string, Func<object?[]?, object?>> answers,
+        List<string> notices,
+        LSettingsPort? pack = null)
     {
         return TInterfaceConduct.TSoundingCreate(
             editor.CEditorDesk,
             TEngineFake.TEngineCreate<LPhonologyPort>(answers),
             TEngineFake.TEngineCreate<LDraftPort>(answers),
-            TInterfaceConduct.TEnvoyCreate(false, notices));
+            TInterfaceConduct.TEnvoyCreate(false, notices),
+            pack);
+    }
+
+    private static LSettingsPort TSoundingPackCreate(List<(string, LFontRole)> asked, bool morphology)
+    {
+        return TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineFontRead"] = args =>
+            {
+                asked.Add(((string)args![0]!, (LFontRole)args[1]!));
+                return TInterfaceConduct.TFontCreate("Noto Serif", 21);
+            },
+            ["LEngineMorphologyCheck"] = _ => morphology,
+        });
     }
 }

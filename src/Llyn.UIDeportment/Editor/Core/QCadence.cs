@@ -8,8 +8,6 @@ internal sealed class QCadence
 {
     private readonly PEditor _pEditor;
 
-    private PWindow _pWindow = null!;
-
     private CEditor _cEditor = null!;
 
     internal QCadence(PEditor editor)
@@ -25,66 +23,71 @@ internal sealed class QCadence
 
     private PScript QCadenceScript => QContract.QContractFind<PScript>(_pEditor, "PEditorScript");
 
-    internal void QCadenceIntroduce(PWindow host, CEditor editor)
+    internal void QCadenceIntroduce(CEditor editor)
     {
-        _pWindow = host;
         _cEditor = editor;
-        editor.CEditorDesk.CDeskStarted += QCadenceParadigmUpdate;
-        editor.CEditorDesk.CDeskStarted += QCadenceScriptUpdate;
-        editor.CEditorDesk.CDeskStarted += QCadenceFanqieUpdate;
-        editor.CEditorTimbre.CTimbreParadigmChanged += QCadenceParadigmUpdate;
-        editor.CEditorTimbre.CTimbreScriptChanged += QCadenceScriptUpdate;
-        editor.CEditorSounding.CSoundingChanged += QCadenceFanqieUpdate;
+        editor.CEditorDesk.CDeskStarted += QCadenceParadigmRefine;
+        editor.CEditorDesk.CDeskStarted += QCadenceScriptRefine;
+        editor.CEditorDesk.CDeskStarted += QCadenceFanqieRefine;
+        editor.CEditorTimbre.CTimbreParadigmChanged += QCadenceParadigmRefine;
+        editor.CEditorTimbre.CTimbreScriptChanged += QCadenceScriptRefine;
+        editor.CEditorSounding.CSoundingChanged += QCadenceFanqieRefine;
+        QCadenceFanqie.PFanqieDiweiNotice = QCadenceDiweiObserve;
+        QCadenceFanqie.PFanqieRepresentativeNotice = QCadenceRepresentativeObserve;
     }
 
-    private void QCadenceParadigmUpdate()
+    private void QCadenceParadigmRefine()
     {
-        LFontFace.LFontRefine(
-            _pWindow.PWindowAtelier,
-            _cEditor.CEditorSounding.CSoundingLanguageRead(),
-            CFontRole.CFontRoleHeadword,
-            QCadenceParadigm);
+        CLecternParadigm paradigm = _cEditor.CEditorSounding.CSoundingParadigmRead();
+        LFontFace.LFontRefine(paradigm.CLecternParadigmFont, QCadenceParadigm);
         QCadenceParadigm.PParadigmItems = PParadigmItem.PParadigmItemScan(
-            _cEditor.CEditorSounding.CSoundingParadigmRead(),
-            _cEditor.CEditorTimbre.CTimbreParadigmPending,
-            _cEditor.CEditorTimbre.CTimbreMorphology,
+            paradigm.CLecternParadigmSlots,
+            paradigm.CLecternParadigmPending,
+            paradigm.CLecternParadigmMorphology,
             true);
     }
 
-    private void QCadenceScriptUpdate()
+    private void QCadenceScriptRefine()
     {
-        LFontFace.LFontRefine(
-            _pWindow.PWindowAtelier, _cEditor.CEditorLanguage, CFontRole.CFontRoleGlyph, QCadenceScript);
-        QCadenceScript.PScriptItems =
-            PScriptItem.PScriptItemScan(_cEditor.CEditorSounding.CSoundingScriptRead());
-        QCadenceScript.PScriptPending = _cEditor.CEditorTimbre.CTimbreScriptPending;
+        CSoundingScript script = _cEditor.CEditorSounding.CSoundingScriptRead();
+        LFontFace.LFontRefine(script.CSoundingScriptFont, QCadenceScript);
+        QCadenceScript.PScriptItems = PScriptItem.PScriptItemScan(script.CSoundingScriptGroups);
+        QCadenceScript.PScriptPending = script.CSoundingScriptPending;
         QCadenceScript.PScriptRenewal =
-            QLook.QLookFirstRead<Action?>(
-                _cEditor.CEditorTimbre.CTimbreScriptRebuildable,
-                _cEditor.CEditorSounding.CSoundingScriptResolve,
-                null);
+            QLook.QLookFirstRead<Action?>(script.CSoundingScriptRebuildable, QCadenceScriptObserve, null);
     }
 
-    private void QCadenceFanqieUpdate()
+    private void QCadenceScriptObserve()
     {
-        LFontFace.LFontRefine(
-            _pWindow.PWindowAtelier, _cEditor.CEditorLanguage, CFontRole.CFontRoleGlyph, QCadenceFanqie);
-        QCadenceFanqie.PFanqieItems =
-            PFanqieItem.PFanqieItemScan(_cEditor.CEditorSounding.CSoundingFanqieRead());
-        QCadenceFanqie.PFanqiePending = _cEditor.CEditorTimbre.CTimbreFanqiePending;
-        QCadenceFanqie.PFanqieRenewal =
-            QLook.QLookFirstRead<Action?>(
-                _cEditor.CEditorTimbre.CTimbreFanqieRebuildable,
-                _cEditor.CEditorSounding.CSoundingFanqieResolve,
-                null);
-        QCadenceFanqie.PFanqieDiweiNotice =
-            (kind, key) => _pWindow.PWindowAtelier.CAtelierNavigation.CNavigationDiweiOpen(
-                _cEditor.CEditorLanguage, kind, key);
-        QCadenceFanqie.PFanqieRepresentativeNotice =
-            (fanqieId, rank) => _cEditor.CEditorSounding.CSoundingFanqieSet(fanqieId, rank);
+        _cEditor.CEditorSounding.CSoundingScriptResolve();
     }
 
-    internal void QCadenceReadingShow(string headword)
+    private void QCadenceFanqieRefine()
+    {
+        CSoundingFanqie fanqie = _cEditor.CEditorSounding.CSoundingFanqieRead();
+        LFontFace.LFontRefine(fanqie.CSoundingFanqieFont, QCadenceFanqie);
+        QCadenceFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(fanqie.CSoundingFanqieGroups);
+        QCadenceFanqie.PFanqiePending = fanqie.CSoundingFanqiePending;
+        QCadenceFanqie.PFanqieRenewal =
+            QLook.QLookFirstRead<Action?>(fanqie.CSoundingFanqieRebuildable, QCadenceFanqieObserve, null);
+    }
+
+    private void QCadenceFanqieObserve()
+    {
+        _cEditor.CEditorSounding.CSoundingFanqieResolve();
+    }
+
+    private void QCadenceDiweiObserve(string kind, string key)
+    {
+        _cEditor.CEditorSounding.CSoundingDiweiOpen(kind, key);
+    }
+
+    private void QCadenceRepresentativeObserve(long fanqieId, int rank)
+    {
+        _cEditor.CEditorSounding.CSoundingFanqieSet(fanqieId, rank);
+    }
+
+    internal void QCadenceReadingRefine(string headword)
     {
         QCadenceReading.Text = _cEditor.CEditorSounding.CSoundingReadingRead(headword);
     }

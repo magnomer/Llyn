@@ -26,16 +26,6 @@ public class PSentenceTemplate : ResourceDictionary
         _pSentenceHost.PCitationLeaveHandle(sender, e);
     }
 
-    internal void PGlossAddHandle(object sender, RoutedEventArgs e)
-    {
-        _pSentenceHost.PGlossAddHandle(sender, e);
-    }
-
-    internal void PGlossRemoveHandle(object sender, ExecutedRoutedEventArgs e)
-    {
-        _pSentenceHost.PGlossRemoveHandle(sender, e);
-    }
-
     internal void PSentenceLinkHandle(object sender, ExecutedRoutedEventArgs e)
     {
         _pSentenceHost.PSentenceLinkHandle(sender, e);

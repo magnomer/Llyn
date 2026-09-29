@@ -19,6 +19,8 @@ public sealed class CSentence
         _cSentencePhonologyPort = phonology;
     }
 
+    private LTenure? CSentenceTenure => _cSentenceDesk.CDeskFilling ? null : _cSentenceDesk.CDeskTenure;
+
     public event Action? CSentenceReferenceChanged;
 
     internal void LSentenceObserverAttach(Action<Action> marshal)
@@ -55,6 +57,21 @@ public sealed class CSentence
     public void CSentenceGlossSet(long cardId, long sentenceId, long glossId, string text)
     {
         _cSentenceDesk.CDeskQuill?.LQuillGlossSet(cardId, sentenceId, glossId, null, text);
+    }
+
+    public void CSentenceLanguageSet(long cardId, long sentenceId, long glossId, string language)
+    {
+        _cSentenceDesk.CDeskQuill?.LQuillGlossSet(cardId, sentenceId, glossId, language, null);
+    }
+
+    public void CSentenceGlossAdd(long cardId, long sentenceId)
+    {
+        CSentenceTenure?.LTenureGlossAdd(cardId, sentenceId);
+    }
+
+    public void CSentenceGlossRemove(long cardId, long sentenceId, long glossId)
+    {
+        _cSentenceDesk.CDeskQuill?.LQuillGlossRemove(cardId, sentenceId, glossId);
     }
 
     public CSentenceFrame CSentenceFrameRead()

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Llyn.Application;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -230,6 +232,34 @@ public sealed class TCatalog
             "Korean", [CFontRole.CFontRoleExample, CFontRole.CFontRoleGloss]);
 
         Assert.Equal(["Example Serif", "Gloss Sans"], fonts.Select(font => font.CFontFamily));
+    }
+
+    [Fact]
+    public async Task CatalogEnsignLoad_FlagsLoaded_StoresTheRowsAndAnswersTheLanguages()
+    {
+        List<CEnsignRow> stored = [];
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
+            engine,
+            TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineEnsignLoad"] = args =>
+                {
+                    Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store =
+                        (Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action>)args![0]!;
+                    store([TInterface.TEnsignRowCreate("French", "C:/flags/fr.svg")], static (_, _) => { })();
+                    return Task.FromResult<IReadOnlyList<string>>(["English", "French"]);
+                },
+            }));
+
+        IReadOnlyList<string> languages = await atelier.CAtelierCatalog.CCatalogEnsignLoad((rows, _) =>
+        {
+            stored.AddRange(rows);
+            return static () => { };
+        });
+
+        Assert.Equal(["English", "French"], languages);
+        Assert.Equal([new CEnsignRow("French", "C:/flags/fr.svg")], stored);
     }
 
     [Fact]

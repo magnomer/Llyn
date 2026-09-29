@@ -74,13 +74,14 @@ Reports whether the pack declares the language silent, so the input panel knows 
 It reads the cached pack as `LEngineVarietyRead` does.
 A blank language has no pack and answers false, so an empty desk keeps its pronunciation rows.
 
-## `public async Task LEngineEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
+## `public async Task<IReadOnlyList<string>> LEngineEnsignLoad(`
 
 Fetches the flag of every language not yet asked of the cache, all at once, and records what came back.
 Hands the rows newly kept to `store`, so the shell draws only those and asks nothing about the rest.
 A fill that a workspace change outran records nothing and calls nothing.
 The cache is read once before the fetch and kept, since a workspace change builds a new one.
 Asking the staff again after the fetch would meet the new cache at a matching age.
+It answers the loaded languages it read, so a language menu fills from the same load.
 The fetch resumes on the caller's context, so the shell's seam runs on the shell's thread.
 
 ## `public async Task LEngineEnsignLoad(string language, IEnumerable<string> varieties, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`

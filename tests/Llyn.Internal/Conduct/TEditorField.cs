@@ -99,22 +99,72 @@ public sealed class TEditorField
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TEditorFieldPrepare(engine);
         long sheet = TEditorSheetAdd(editor);
-        long draft = editor.CEditorDesk.CDeskId;
-        editor.CEditorDesk.TDeskDefer(TInterface.TSentenceAdditionCreate(draft, sheet, 0));
-        long sentence = TEditorCardRead(editor, sheet).CCardDraftSentence[0].CSentenceDraftId;
-        editor.CEditorSentence.CSentenceTextSet(sheet, sentence, "the cat sat");
-        editor.CEditorDesk.CDeskPersist();
-        editor.CEditorDesk.TDeskDefer(TInterface.TGlossAdditionCreate(draft, sheet, sentence, "French", 0));
-        long gloss = TEditorCardRead(editor, sheet).CCardDraftSentence[0].CSentenceDraftExample!
-            .CExampleDraftGloss[0].CGlossDraftId;
+        long sentence = TEditorSentenceAdd(editor, sheet);
+        editor.CEditorDesk.TDeskDefer(
+            TInterface.TGlossAdditionCreate(editor.CEditorDesk.CDeskId, sheet, sentence, "French", 0));
+        long gloss = TEditorGlossRead(editor, sheet)[0].CGlossDraftId;
 
         editor.CEditorSentence.CSentenceGlossSet(sheet, sentence, gloss, "le chat");
         editor.CEditorDesk.CDeskPersist();
 
-        Assert.Equal(
-            "le chat",
-            TEditorCardRead(editor, sheet).CCardDraftSentence[0].CSentenceDraftExample!
-                .CExampleDraftGloss[0].CGlossDraftText.CStateValueShown);
+        Assert.Equal("le chat", TEditorGlossRead(editor, sheet)[0].CGlossDraftText.CStateValueShown);
+    }
+
+    [Fact]
+    public void GlossAdd_PressedRow_AppendsAGlossInTheGlossLanguage()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TEditorFieldPrepare(engine);
+        long sheet = TEditorSheetAdd(editor);
+        long sentence = TEditorSentenceAdd(editor, sheet);
+        editor.CEditorDesk.TDeskDefer(
+            TInterface.TGlossAdditionCreate(editor.CEditorDesk.CDeskId, sheet, sentence, "French", 0));
+
+        editor.CEditorSentence.CSentenceGlossAdd(sheet, sentence);
+
+        IReadOnlyList<CGlossDraft> glosses = TEditorGlossRead(editor, sheet);
+        Assert.Equal(["French", engine.TEngineGlossRead()], glosses.Select(static row => row.CGlossDraftLanguage));
+    }
+
+    [Fact]
+    public void GlossRead_BlankAndNamedLanguage_CarriesTheHintOnlyForTheBlankOne()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TEditorFieldPrepare(engine);
+        long sheet = TEditorSheetAdd(editor);
+        long sentence = TEditorSentenceAdd(editor, sheet);
+        long draft = editor.CEditorDesk.CDeskId;
+        editor.CEditorDesk.TDeskDefer(TInterface.TGlossAdditionCreate(draft, sheet, sentence, string.Empty, 0));
+        editor.CEditorDesk.TDeskDefer(TInterface.TGlossAdditionCreate(draft, sheet, sentence, "French", 1));
+
+        IReadOnlyList<CGlossDraft> glosses = TEditorGlossRead(editor, sheet);
+
+        Assert.False(glosses[0].CGlossDraftNamed);
+        Assert.Equal("Example.Language", glosses[0].CGlossDraftHint);
+        Assert.True(glosses[1].CGlossDraftNamed);
+        Assert.Null(glosses[1].CGlossDraftHint);
+    }
+
+    [Fact]
+    public void GlossRemoveAndLanguageSet_PickedGloss_DropsOneAndRetagsTheOther()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TEditorFieldPrepare(engine);
+        long sheet = TEditorSheetAdd(editor);
+        long sentence = TEditorSentenceAdd(editor, sheet);
+        editor.CEditorSentence.CSentenceGlossAdd(sheet, sentence);
+        editor.CEditorSentence.CSentenceGlossAdd(sheet, sentence);
+        IReadOnlyList<CGlossDraft> added = TEditorGlossRead(editor, sheet);
+
+        editor.CEditorSentence.CSentenceGlossRemove(sheet, sentence, added[0].CGlossDraftId);
+        editor.CEditorSentence.CSentenceLanguageSet(sheet, sentence, added[1].CGlossDraftId, "German");
+
+        CGlossDraft kept = Assert.Single(TEditorGlossRead(editor, sheet));
+        Assert.Equal(added[1].CGlossDraftId, kept.CGlossDraftId);
+        Assert.Equal("German", kept.CGlossDraftLanguage);
     }
 
     [Fact]
@@ -202,5 +252,19 @@ public sealed class TEditorField
     private static CCardDraft TEditorCardRead(CEditor editor, long sheet)
     {
         return editor.CEditorDraftRead()!.CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
+    }
+
+    private static long TEditorSentenceAdd(CEditor editor, long sheet)
+    {
+        editor.CEditorDesk.TDeskDefer(TInterface.TSentenceAdditionCreate(editor.CEditorDesk.CDeskId, sheet, 0));
+        long sentence = TEditorCardRead(editor, sheet).CCardDraftSentence[0].CSentenceDraftId;
+        editor.CEditorSentence.CSentenceTextSet(sheet, sentence, "the cat sat");
+        editor.CEditorDesk.CDeskPersist();
+        return sentence;
+    }
+
+    private static IReadOnlyList<CGlossDraft> TEditorGlossRead(CEditor editor, long sheet)
+    {
+        return TEditorCardRead(editor, sheet).CCardDraftSentence[0].CSentenceDraftExample!.CExampleDraftGloss;
     }
 }
