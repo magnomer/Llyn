@@ -23,10 +23,10 @@ internal sealed partial class QArticulation
         _qArticulationSurface = surface;
         QLook.QLookStyleAttach(surface.Resources);
 
-        QArticulationLane.SizeChanged += QArticulationLaneHandle;
+        QArticulationLane.SizeChanged += QArticulationLaneRefine;
 
         QVowelBuild();
-        QConsonantBuild();
+        QConsonantIntroduce();
     }
 
     private ScrollViewer QArticulationLane =>
@@ -42,13 +42,9 @@ internal sealed partial class QArticulation
 
     private Grid QConsonant => QContract.QContractFind<Grid>(_qArticulationSurface, "PConsonant");
 
-    private void QArticulationLaneHandle(object sender, SizeChangedEventArgs e)
+    private void QArticulationLaneRefine(object sender, SizeChangedEventArgs e)
     {
-        QArticulationPlace(e.NewSize.Width);
-    }
-
-    private void QArticulationPlace(double lane)
-    {
+        double lane = e.NewSize.Width;
         double vowel = QVowelChart.DesiredSize.Width;
         double consonant = QConsonantChart.DesiredSize.Width;
 
@@ -66,17 +62,17 @@ internal sealed partial class QArticulation
             : new Thickness(0, QArticulationGap, 0, 0);
     }
 
-    internal void QArticulationAttach(params TextBox[] fields)
+    internal void QArticulationIntroduce(params TextBox[] fields)
     {
         foreach (TextBox field in fields)
         {
             _qArticulationTarget.Add(field);
             _qArticulationField ??= field;
-            field.GotKeyboardFocus += QArticulationFocusHandle;
+            field.GotKeyboardFocus += QArticulationFocusRefine;
         }
     }
 
-    private void QArticulationFocusHandle(object sender, KeyboardFocusChangedEventArgs e)
+    private void QArticulationFocusRefine(object sender, KeyboardFocusChangedEventArgs e)
     {
         if (sender is TextBox field)
         {
@@ -84,18 +80,13 @@ internal sealed partial class QArticulation
         }
     }
 
-    private void QArticulationHandle(object sender, RoutedEventArgs e)
+    private void QArticulationGlyphRefine(object sender, RoutedEventArgs e)
     {
         if (sender is not Button { Content: string character })
         {
             return;
         }
 
-        QArticulationInsert(character);
-    }
-
-    private void QArticulationInsert(string character)
-    {
         TextBox? field = QArticulationTargetFind();
 
         if (field is null)
@@ -164,7 +155,7 @@ internal sealed partial class QArticulation
         table.Children.Add(side);
     }
 
-    private void QArticulationCellPlace(Grid table, string characters, int column, int row)
+    private void QArticulationCellPlace(Grid table, IReadOnlyList<string> characters, int column, int row)
     {
         StackPanel cell = new()
         {
@@ -172,14 +163,14 @@ internal sealed partial class QArticulation
             HorizontalAlignment = HorizontalAlignment.Center,
         };
 
-        foreach (string character in characters.Split(' ', System.StringSplitOptions.RemoveEmptyEntries))
+        foreach (string character in characters)
         {
             Button glyph = new()
             {
                 Content = character,
                 Style = (Style)QArticulationRack.FindResource("Articulation.Glyph")
             };
-            glyph.Click += QArticulationHandle;
+            glyph.Click += QArticulationGlyphRefine;
             cell.Children.Add(glyph);
         }
 

@@ -33,6 +33,7 @@ public sealed class TDraftFact
             ],
         };
 
+        Assert.Equal("RP", draft.LEntryDraftPronunciation?.LPronunciationDraftVariety);
         Assert.Equal(["GA", "AU"], draft.LEntryDraftAccents.Select(spoken => spoken.LPronunciationDraftVariety));
         Assert.True(draft.LEntryDraftAccents[0].LPronunciationDraftNotated);
         Assert.False(draft.LEntryDraftAccents[1].LPronunciationDraftNotated);

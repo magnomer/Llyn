@@ -76,6 +76,10 @@ Each chip carries the words it covers, the linked headword and the chosen sense.
 The chip line of one Example of the held draft, addressed by card and sentence.
 Card 0 and sentence 0 address the draft's own Example.
 
+## `IReadOnlyList<LMentionLabel> LEngineEtymologyResolve(LTenure held);`
+
+The chip line of the held draft's etymology.
+
 ## `IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(`
 
 The Meanings the sense menu offers for the linked Mention under a sentence field's selection.

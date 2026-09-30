@@ -71,11 +71,14 @@ internal sealed class LMentionFacade
         return LEngineSpanRead(text, start, length).LMentionDraftLength > 0;
     }
 
-    public IReadOnlyList<LMentionLabel> LEngineMentionResolve(string text, IReadOnlyList<LMentionDraft> mentions)
+    public IReadOnlyList<LMentionLabel> LEngineEtymologyResolve(LTenure held)
     {
+        ArgumentNullException.ThrowIfNull(held);
+
+        LDraft? draft = held.LTenureRead();
         lock (_lMentionFacadeGate)
         {
-            return LMentionFacadeStaff.LEngineStaffMention.LMentionClerkResolve(text, mentions);
+            return LMentionFacadeStaff.LEngineStaffMention.LMentionEtymologyResolve(draft);
         }
     }
 

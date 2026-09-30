@@ -12,8 +12,6 @@ public interface LMediaPort
 
     void LEngineLocationOpen(string target);
 
-    bool LEngineRecordingExist(string? file);
-
     int LEngineRecordingPlay(string? file, double volume);
 
     int LEngineRecordingPlay(LEntryDraft draft, double volume);

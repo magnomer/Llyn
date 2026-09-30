@@ -68,9 +68,6 @@ public sealed class LEntryOutlet : LEntryPort
         IReadOnlyList<LMention>? mentions) =>
         _lEntryOutletEngine.LEngineMention.LEngineMentionFind(text, language, shown, offset, mentions);
 
-    public IReadOnlyList<LMentionLabel> LEngineMentionResolve(string text, IReadOnlyList<LMentionDraft> mentions) =>
-        _lEntryOutletEngine.LEngineMention.LEngineMentionResolve(text, mentions);
-
     public LGlyph? LEngineGlyphRead(string language) => _lEntryOutletEngine.LEngineEntry.LEngineGlyphRead(language);
 
     public IReadOnlyList<LGlyphCell> LEngineGlyphDivide(LEntryDraft draft) =>

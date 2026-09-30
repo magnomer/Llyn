@@ -66,6 +66,11 @@ The mention line of one Example in a draft, addressed by card and sentence.
 Card 0 and sentence 0 address the draft's own Example.
 A missing draft or Example answers an empty line.
 
+## `public IReadOnlyList<LMentionLabel> LMentionEtymologyResolve(LDraft? draft)`
+
+The mention line of a draft's etymology.
+A missing draft answers an empty line.
+
 ## `private IReadOnlyList<LMentionLabel> LMentionClerkResolve(LExampleDraft? example)`
 
 The mention line of one Example draft, from its shown text and its Mentions.

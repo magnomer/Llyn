@@ -7,40 +7,42 @@ The primary pronunciation keeps its own field above them.
 Every pronunciation after it stands on its own row beneath, with its variety, its IPA and its controls.
 The controls are play when the row has audio, lookup, download and the plus and minus pair.
 That is the same set the primary row wears.
-A row edit becomes a request on that row's id.
-A plus becomes an addition request after it, and a minus a removal request.
+A row edit goes to the accent gate with that row's id.
+A plus or a minus goes to the add or remove gate with that row's id.
 Lookup and download open the editor's one menu under the row's own button.
 The rows are rendered as a diff on each draft bulletin, and what was waiting is written before the read.
 The primary field also wears a variety chip here, because the chip is drawn from the same draft row.
 
-## `private LRequest PAccentRequestCreate(QAccentItem row)`
+## `private void PAccentAddObserve(object sender, ExecutedRoutedEventArgs e)`
 
-A row's typed text becomes a respelling request while the row prints its respelling, and a reading request otherwise.
-The row prints the form the switch picks, so the text it holds belongs to that form.
+Hands the pressed row's id to the add gate, or zero for the primary when no row is carried.
 
-## `internal void PAccentAddHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private void PAccentRemoveObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Adds a blank pronunciation after the row carried as the command parameter, or after the primary when none is.
-
-## `internal void PAccentRemoveHandle(object sender, ExecutedRoutedEventArgs e)`
-
-Drops the row carried as the command parameter, or the primary when none is.
-Nothing is sent for a primary the draft does not hold.
+Hands the pressed row's id to the remove gate, or zero for the primary when no row is carried.
 The engine answers with a draft bulletin, and the render takes the row off the screen.
 
-## `internal async void PAccentNotationHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private async void PAccentNotationObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Opens the pronunciation menu under the row's own button, for that row.
 
-## `internal void PAccentClipHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private void PAccentClipRefine(object sender, ExecutedRoutedEventArgs e)`
 
-Opens the audio menu under the row's own button, then starts the recording search for that row.
-The popup is placed before the start, since shutting it cancels the search.
+Opens the audio menu under the row's own button.
+It is bound before the clip Observe, since shutting the popup cancels the search.
 
-## `internal void PAccentPlaybackHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private void PAccentClipObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Plays the row's recording on the editor's player.
-A file gone from disk is cleared off the row instead, so the button stops offering it.
+Starts the recording search for the pressed row and paints the roll it answers.
+
+## `private void PAccentPlaybackObserve(object sender, ExecutedRoutedEventArgs e)`
+
+Hands the pressed row's id to the play gate and its answer to the playback Refine.
+
+## `private void PAccentPlaybackRefine(Uri? address)`
+
+Plays the address on the editor's player.
+A null answer plays nothing, since the engine cleared the gone file and the draft bulletin repaints the row.
 
 ## `private UIElement PAccentAnchorRead(ExecutedRoutedEventArgs e)`
 
@@ -50,46 +52,46 @@ The button that raised the command, so the menu opens under it rather than under
 
 The shown row with one pronunciation id, or nothing when the draft no longer has it.
 
-## `private void PAccentChangeHandle(object? sender, PropertyChangedEventArgs e)`
+## `private void PAccentTextObserve(object? sender, PropertyChangedEventArgs e)`
 
-Defers a reading or respelling request when a row's text changes.
+Hands a row's id and changed text to the accent gate, which defers the write.
 The row model raises the change, not the text box, so a draft render writing the same text raises nothing.
-The fill guard holds during a render, so a render writing a different text raises no request either.
+The gate writes nothing while the desk fills, so a render writing a different text raises no request either.
 
-## `internal void PAccentShow(CEntryDraft draft)`
+## `internal void PAccentRefine(CEntryDraft _)`
 
-Renders every pronunciation after the primary as a row, keyed by the pronunciation id.
-Whether varieties show as flags is asked of the language pack once per render.
-Which form the rows print and which brackets they wear is read once per render too.
-A change of that state drops every row first, because a row fixes its brackets when it is built.
-The primary id is kept, so the primary row's own plus and minus reach the right pronunciation.
-The primary variety chip is refreshed in the same pass.
-Flags not yet in the ensign store are loaded afterwards and painted in when they arrive.
+Answers a draft bulletin by painting the editor's ready accent sheet, then loading the flags it needs.
 
-## `private QAccentItem PAccentUpdate(QAccentItem row, CPronunciationDraft spoken)`
+## `private void PAccentRefine(CTimbreAccent accent)`
 
-Brings a shown row up to the draft row with the same id.
-A changed variety rebuilds the row, because its label and flag are fixed at creation.
-A row with a text request waiting keeps its text, since the draft is about to become what it holds.
-The audio is always taken from the draft, because the row never edits it.
+Paints every pronunciation after the primary as a row, keyed by the pronunciation id.
+The primary variety is painted in the same pass.
 
-## `private void PAccentPrimaryShow()`
+## `private QAccentItem PAccentRowRefine(CAccent spoken, CTimbreAccent accent)`
 
-Draws the primary pronunciation's variety as a flag when one is known, and as a label otherwise.
-Nothing is drawn for a primary without a variety.
-The variety's label and flag keys come from `CSounding.CSoundingVarietyRead`.
+Builds the row for one ready accent and listens to its text.
 
-## `private async Task PAccentFlagLoad(string language, bool flagged)`
+## `private QAccentItem PAccentRowRefine(QAccentItem row, CAccent spoken, CTimbreAccent accent)`
 
-Loads the variety flags the rows need and paints them once they are in the store.
-A render for another language that started meanwhile wins, so a late load paints nothing.
-A load that fails leaves the labels standing.
+Brings a shown row up to the ready accent with the same id.
+A changed variety or mark rebuilds the row, because its label, flag and brackets are fixed at creation.
+The audio is always taken from the sheet, because the row never edits it.
 
-## `private void PAccentRowClear()`
+## `private void PAccentPrimaryRefine(CTimbreAccent accent)`
 
-Drops every row and stops listening to it, for a rebuild or a reset.
+Draws the primary variety as a flag when one is in the store, and as a label otherwise.
+
+## `private async void PAccentEnsignRefine()`
+
+Loads the variety flags through the editor's flag read and paints the answer once they are in the store.
+
+## `private void PAccentFlagRefine(CTimbreAccent? accent)`
+
+Paints the stored flags on every row and on the primary.
+A null answer paints nothing, since the load failed or another language took the editor meanwhile.
 
 ## `private void PAccentAttach()`
 
 Hands the accent list its rows and fill, and binds the five row commands on the sound panel.
 The bindings stand on that panel, as the markup had them, so a row command reaches this editor.
+The clip binding carries its Refine and then its Observe, one handler per role in that order.

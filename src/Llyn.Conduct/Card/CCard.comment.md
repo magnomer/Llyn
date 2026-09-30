@@ -153,6 +153,12 @@ A failure shows the create failure through the envoy and leaves the citation as 
 
 Defers the narrative like every typed field, so one keystroke is not one request.
 
+## `public IReadOnlyList<CMentionLabel> CCardEtymologyRead()`
+
+The chips of the held draft's etymology, ready to paint.
+An empty desk answers no chips.
+Like the old line read, it adds no failure notice of its own.
+
 ## `public void CCardEtymonAdd(long entryId)`
 
 Appends a source link at the end of the row.

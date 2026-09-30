@@ -6,14 +6,18 @@ The reading view's accent driver, standing between the veneer and the display's 
 It draws the primary pronunciation and the accent rows from the block Conduct answers ready.
 Flags come from `LEnsignImage`, and every rule of which flag or reading shows stays in Conduct and below.
 
+## `private DependencyProperty _qLecternAccentSyllables`
+
+The contour box's syllables property, handed in by the page so the driver copies each ready contour into it.
+
 ## `public QLecternAccent(CDisplaySound area)`
 
 Builds the half over the display's sound area, whose reads it paints from.
 
-## `public void QLecternAccentIntroduce(UIElement surface, ColumnDefinition lead, Image flag, TextBlock label, TextBlock opener, TextBlock pronunciation, TextBlock closer, ItemsControl accents, DependencyObject contour, DependencyProperty tonal)`
+## `public void QLecternAccentIntroduce(UIElement surface, ColumnDefinition lead, Image flag, TextBlock label, TextBlock opener, TextBlock pronunciation, TextBlock closer, ItemsControl accents, DependencyObject contour, DependencyProperty syllables)`
 
 Holds the pronunciation surface and its parts, and binds the accent list to its rows.
-`tonal` is the contour's own property, set as a value so no veneer type is named here.
+`syllables` is the contour's own property, set as a value so no veneer type is named here.
 The accent list is attached to `QAccentItem.QAccentItemRefine`, which fills each row.
 
 ## `public void QLecternAccentRefine()`

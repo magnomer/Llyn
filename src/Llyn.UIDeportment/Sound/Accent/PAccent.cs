@@ -1,13 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Llyn.Application;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -15,10 +11,6 @@ namespace Llyn.UIDeportment;
 public partial class PEditor
 {
     private readonly ObservableCollection<QAccentItem> _pAccentItem = [];
-    private string _pAccentLanguage = string.Empty;
-    private bool _pAccentFlagged;
-    private string _pAccentPrimary = string.Empty;
-    private CRespellingMark? _pAccentRespelling;
 
     private ItemsControl PAccent => (ItemsControl)FindName(nameof(PAccent));
 
@@ -32,38 +24,31 @@ public partial class PEditor
         QLookItem.QLookItemAttach(PAccent, QAccentItem.QAccentItemRefine);
         QField.QFieldCellAttach(PAccent);
         PAccentControl.PAccentControlAttach(PAccent);
+        CommandBinding clip = new(PAccentCommand.PAccentCommandClip);
+        clip.Executed += PAccentClipRefine;
+        clip.Executed += PAccentClipObserve;
         PEditorSound.CommandBindings.Add(new CommandBinding(
-            PAccentCommand.PAccentCommandAddition, PAccentAddHandle));
+            PAccentCommand.PAccentCommandAddition, PAccentAddObserve));
         PEditorSound.CommandBindings.Add(new CommandBinding(
-            PAccentCommand.PAccentCommandRemoval, PAccentRemoveHandle));
+            PAccentCommand.PAccentCommandRemoval, PAccentRemoveObserve));
         PEditorSound.CommandBindings.Add(new CommandBinding(
-            PAccentCommand.PAccentCommandNotation, PAccentNotationHandle));
+            PAccentCommand.PAccentCommandNotation, PAccentNotationObserve));
+        PEditorSound.CommandBindings.Add(clip);
         PEditorSound.CommandBindings.Add(new CommandBinding(
-            PAccentCommand.PAccentCommandClip, PAccentClipHandle));
-        PEditorSound.CommandBindings.Add(new CommandBinding(
-            PAccentCommand.PAccentCommandPlayback, PAccentPlaybackHandle));
+            PAccentCommand.PAccentCommandPlayback, PAccentPlaybackObserve));
     }
 
-    private LRequest PAccentRequestCreate(QAccentItem row)
+    private void PAccentAddObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        return row.QAccentItemRespelled
-            ? new LRequestPronunciationRespelling(PEditorDraft, row.QAccentItemId, row.QAccentItemText)
-            : new LRequestPronunciationIpa(PEditorDraft, row.QAccentItemId, row.QAccentItemText);
+        _qEditor.QEditorArea.CEditorTimbre.CTimbrePronunciationAdd((e.Parameter as QAccentItem)?.QAccentItemId ?? 0);
     }
 
-    internal void PAccentAddHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PAccentRemoveObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        int position = e.Parameter is QAccentItem row ? _pAccentItem.IndexOf(row) + 2 : 1;
-        PEditorRequestSend(new LRequestPronunciationAddition(PEditorDraft, string.Empty, position));
+        _qEditor.QEditorArea.CEditorTimbre.CTimbrePronunciationRemove((e.Parameter as QAccentItem)?.QAccentItemId ?? 0);
     }
 
-    internal void PAccentRemoveHandle(object sender, ExecutedRoutedEventArgs e)
-    {
-        PEditorRequestSend(
-            new LRequestPronunciationRemoval(PEditorDraft, (e.Parameter as QAccentItem)?.QAccentItemId ?? 0));
-    }
-
-    internal async void PAccentNotationHandle(object sender, ExecutedRoutedEventArgs e)
+    private async void PAccentNotationObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is QAccentItem row)
         {
@@ -71,30 +56,37 @@ public partial class PEditor
         }
     }
 
-    internal void PAccentClipHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PAccentClipRefine(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Parameter is QAccentItem)
+        {
+            PClipOpenRefine(PAccentAnchorRead(e));
+        }
+    }
+
+    private void PAccentClipObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is QAccentItem row)
         {
-            PClipOpenRefine(PAccentAnchorRead(e));
             PClipEnsignRefine(_qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandRecordingStart(row.QAccentItemId));
         }
     }
 
-    internal void PAccentPlaybackHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PAccentPlaybackObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is not QAccentItem row)
+        if (e.Parameter is QAccentItem row)
         {
-            return;
+            PAccentPlaybackRefine(_qEditor.QEditorArea.CEditorTimbre.CTimbreAudioStart(row.QAccentItemId));
         }
+    }
 
-        if (!_pEditorHost.PWindowAtelier.CAtelierRecordingExist(row.QAccentItemAudio))
+    private void PAccentPlaybackRefine(Uri? address)
+    {
+        if (address is not null)
         {
-            PEditorRequestSend(new LRequestPronunciationAudio(PEditorDraft, row.QAccentItemId, string.Empty, null));
-            return;
+            _pDownloaderPlayer.Open(address);
+            _pDownloaderPlayer.Play();
         }
-
-        _pDownloaderPlayer.Open(new Uri(row.QAccentItemAudio));
-        _pDownloaderPlayer.Play();
     }
 
     private UIElement PAccentAnchorRead(ExecutedRoutedEventArgs e)
@@ -115,7 +107,7 @@ public partial class PEditor
         return null;
     }
 
-    private void PAccentChangeHandle(object? sender, PropertyChangedEventArgs e)
+    private void PAccentTextObserve(object? sender, PropertyChangedEventArgs e)
     {
         if (sender is not QAccentItem row
             || !string.Equals(e.PropertyName, nameof(QAccentItem.QAccentItemText), StringComparison.Ordinal))
@@ -123,109 +115,79 @@ public partial class PEditor
             return;
         }
 
-        PEditorRequestDefer(PAccentRequestCreate(row));
+        _qEditor.QEditorArea.CEditorTimbre.CTimbreAccentSet(row.QAccentItemId, row.QAccentItemText);
     }
 
-    internal void PAccentShow(CEntryDraft draft)
+    internal void PAccentRefine(CEntryDraft _)
     {
-        string language = draft.CEntryDraftLanguage;
-        bool flagged = _qEditor.QEditorArea.CEditorTimbre.CTimbreFlagged;
-        _pAccentLanguage = language;
-        _pAccentFlagged = flagged;
-        _pAccentPrimary = draft.CEntryDraftPronunciation?.CPronunciationDraftVariety ?? string.Empty;
-        CRespellingMark respelling =
-            _pEditorHost.PWindowAtelier.CAtelierRespelling.CRespellingMarkRead(language);
-        if (respelling != _pAccentRespelling)
-        {
-            _pAccentRespelling = respelling;
-            PAccentRowClear();
-        }
+        PAccentRefine(_qEditor.QEditorArea.CEditorTimbre.CTimbreAccentRead());
+        PAccentEnsignRefine();
+    }
 
+    private void PAccentRefine(CTimbreAccent accent)
+    {
         PCard.PCardRowShow(
             _pAccentItem,
-            draft.CEntryDraftAccents,
+            accent.CTimbreAccentRows,
             static row => row.QAccentItemId,
-            static spoken => spoken.CPronunciationDraftId,
-            PAccentCreate,
-            PAccentUpdate);
+            static spoken => spoken.CAccentId,
+            spoken => PAccentRowRefine(spoken, accent),
+            (row, spoken) => PAccentRowRefine(row, spoken, accent));
 
-        PAccentPrimaryShow();
-        _ = PAccentFlagLoad(language, flagged);
+        PAccentPrimaryRefine(accent);
     }
 
-    private QAccentItem PAccentCreate(CPronunciationDraft spoken)
+    private QAccentItem PAccentRowRefine(CAccent spoken, CTimbreAccent accent)
     {
         QAccentItem row = QAccentItem.QAccentItemBuild(
-            CRespelling.CRespellingAccentRead(_pAccentRespelling!, _pAccentLanguage, spoken),
-            _pAccentFlagged,
-            _pAccentRespelling!);
-        row.PropertyChanged += PAccentChangeHandle;
+            spoken, accent.CTimbreAccentFlagged, accent.CTimbreAccentMark);
+        row.PropertyChanged += PAccentTextObserve;
         return row;
     }
 
-    private QAccentItem PAccentUpdate(QAccentItem row, CPronunciationDraft spoken)
+    private QAccentItem PAccentRowRefine(QAccentItem row, CAccent spoken, CTimbreAccent accent)
     {
-        if (!string.Equals(spoken.CPronunciationDraftVariety, row.QAccentItemVariety, StringComparison.Ordinal))
+        CRespellingMark mark = accent.CTimbreAccentMark;
+        if (!string.Equals(spoken.CAccentVariety.CVarietyName, row.QAccentItemVariety, StringComparison.Ordinal)
+            || row.QAccentItemRespelled != mark.CRespellingMarkShown
+            || !string.Equals(row.QAccentItemOpener, mark.CRespellingMarkOpener, StringComparison.Ordinal)
+            || !string.Equals(row.QAccentItemCloser, mark.CRespellingMarkCloser, StringComparison.Ordinal))
         {
-            row.PropertyChanged -= PAccentChangeHandle;
-            return PAccentCreate(spoken);
+            row.PropertyChanged -= PAccentTextObserve;
+            return PAccentRowRefine(spoken, accent);
         }
 
-        row.QAccentItemText = CRespelling.CRespellingResolve(_pAccentRespelling!, spoken);
-
-        row.QAccentItemAudio = spoken.CPronunciationDraftAudio;
+        row.QAccentItemText = spoken.CAccentText;
+        row.QAccentItemAudio = spoken.CAccentAudio;
         return row;
     }
 
-    private void PAccentPrimaryShow()
+    private void PAccentPrimaryRefine(CTimbreAccent accent)
     {
-        CVariety primary = CSounding.CSoundingVarietyRead(_pAccentLanguage, _pAccentPrimary);
-        PPronunciationFlag.Source = QAccentItem.QAccentEnsignRefine(primary, _pAccentFlagged);
+        PPronunciationFlag.Source =
+            QAccentItem.QAccentEnsignRefine(accent.CTimbreAccentPrimary, accent.CTimbreAccentFlagged);
         PPronunciationLabel.Text = PPronunciationFlag.Source is null
-            ? QAccentItem.QAccentLabelRefine(primary)
+            ? QAccentItem.QAccentLabelRefine(accent.CTimbreAccentPrimary)
             : string.Empty;
     }
 
-    private async Task PAccentFlagLoad(string language, bool flagged)
+    private async void PAccentEnsignRefine()
     {
-        if (!flagged)
-        {
-            return;
-        }
-
-        List<string> varieties = _pAccentItem.Select(static row => row.QAccentItemVariety).ToList();
-        varieties.Add(_pAccentPrimary);
-
-        try
-        {
-            await LEnsignImage.LEnsignVarietyLoad(
-                _pEditorHost.PWindowAtelier, language, varieties.Where(static variety => variety.Length > 0));
-        }
-        catch (Exception)
-        {
-            return;
-        }
-
-        if (!string.Equals(_pAccentLanguage, language, StringComparison.Ordinal) || !_pAccentFlagged)
-        {
-            return;
-        }
-
-        foreach (QAccentItem row in _pAccentItem)
-        {
-            row.QAccentFlagRefine(flagged);
-        }
-
-        PAccentPrimaryShow();
+        PAccentFlagRefine(await LEnsignImage.LEnsignLoad(_qEditor.QEditorArea.CEditorTimbre.CTimbreFlagRead));
     }
 
-    private void PAccentRowClear()
+    private void PAccentFlagRefine(CTimbreAccent? accent)
     {
-        foreach (QAccentItem row in _pAccentItem)
+        if (accent is null)
         {
-            row.PropertyChanged -= PAccentChangeHandle;
+            return;
         }
 
-        _pAccentItem.Clear();
+        foreach (QAccentItem row in _pAccentItem)
+        {
+            row.QAccentFlagRefine(accent.CTimbreAccentFlagged);
+        }
+
+        PAccentPrimaryRefine(accent);
     }
 }

@@ -32,11 +32,11 @@ public partial class PEditor
             .Select(static target => new PEtymon(
                 target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage))
             .ToList());
-        PEtymologyField.PEtymologyMentionShow(
-            _pEditorHost,
-            draft.CEntryDraftEtymology.CEtymologyDraftText,
-            draft.CEntryDraftEtymology.CEtymologyDraftMentions,
-            QLocalizationCatalog.QLocalizationTextRead("Mention.Silent"));
+    }
+
+    internal void PEtymologyMentionRefine(CEntryDraft _)
+    {
+        PEtymologyField.PEtymologyLine.PMentionLineRefine(_qEditor.QEditorArea.CEditorCard.CCardEtymologyRead());
     }
 
     private void PEtymologyWriteObserve(object sender, TextChangedEventArgs e)

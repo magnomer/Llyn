@@ -27,6 +27,7 @@ public sealed class TCardMention
         sentence.CSentenceSenseSet(sheet, row, TMentionText, 13, 6, sense);
 
         Assert.Equal(sense, Assert.Single(TMentionRead(desk, sheet)).LMentionDraftSense);
+        Assert.Equal("set alight", Assert.Single(sentence.CSentenceMentionRead()[row]).CMentionLabelSense);
     }
 
     [Fact]
@@ -78,6 +79,8 @@ public sealed class TCardMention
         Assert.Equal("kindle", labels[0].CMentionLabelName);
         Assert.Null(labels[0].CMentionLabelKey);
         Assert.Equal("logs", labels[1].CMentionLabelWord);
+        Assert.Empty(labels[1].CMentionLabelName);
+        Assert.Empty(labels[1].CMentionLabelSense);
         Assert.Equal("Mention.Silent", labels[1].CMentionLabelKey);
     }
 

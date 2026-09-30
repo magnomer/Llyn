@@ -71,7 +71,7 @@ The engine writes the document from stored rows.
 
 ## Inline notes
 
-### `_qArticulation.QArticulationAttach(QProbe, QPhonologyEditor.PPronunciationField);`
+### `_qArticulation.QArticulationIntroduce(QProbe, QPhonologyEditor.PPronunciationField);`
 
 The aid is given both fields a phonetic character is typed into.
 The search comes first, because a reader who opens the charts with nothing focused is looking a pronunciation up.

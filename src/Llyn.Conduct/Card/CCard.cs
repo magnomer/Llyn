@@ -259,6 +259,13 @@ public sealed class CCard
         _cCardDesk.CDeskQuill?.LQuillEtymologySet(text);
     }
 
+    public IReadOnlyList<CMentionLabel> CCardEtymologyRead()
+    {
+        return _cCardDesk.CDeskTenure is LTenure held
+            ? CMention.LMentionLabelRead(_cCardDraftPort.LEngineEtymologyResolve(held))
+            : [];
+    }
+
     public void CCardEtymonAdd(long entryId)
     {
         _cCardDesk.CDeskQuill?.LQuillEtymonAdd(entryId, int.MaxValue);

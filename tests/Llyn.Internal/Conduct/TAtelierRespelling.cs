@@ -18,7 +18,7 @@ public sealed class TAtelierRespelling
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TAtelierRespellingCreate(engine, (respelled, opener, closer), asked);
 
-        CRespellingMark mark = atelier.CAtelierRespelling.CRespellingMarkRead("en");
+        CRespellingMark mark = atelier.CAtelierRespelling.CRespellingMarkRead("en", false);
 
         Assert.Equal(new CRespellingMark(respelled, opener, closer), mark);
         Assert.Equal(["en"], asked);
@@ -100,29 +100,6 @@ public sealed class TAtelierRespelling
         CRespellingMark mark = new(shown, "[", "]");
 
         Assert.Equal(expected, CRespelling.CRespellingResolve(mark, "ipa", respelling));
-    }
-
-    [Fact]
-    public void RespellingResolve_Pronunciation_ReadsRespelling()
-    {
-        CRespellingMark mark = new(true, "[", "]");
-        CPronunciationDraft spoken = new(1, "ipa", "respelt", "US", string.Empty);
-
-        Assert.Equal("respelt", CRespelling.CRespellingResolve(mark, spoken));
-    }
-
-    [Fact]
-    public void RespellingAccentRead_Pronunciation_AnswersTheRowReadyToShow()
-    {
-        CRespellingMark mark = new(true, "[", "]");
-        CPronunciationDraft spoken = new(4, "ipa", "respelt", "Scottish", "clip.mp3");
-
-        CAccent accent = CRespelling.CRespellingAccentRead(mark, "English", spoken);
-
-        Assert.Equal(4, accent.CAccentId);
-        Assert.Equal("respelt", accent.CAccentText);
-        Assert.Equal("clip.mp3", accent.CAccentAudio);
-        Assert.Equal(CSounding.CSoundingVarietyRead("English", "Scottish"), accent.CAccentVariety);
     }
 
     private static CReflexDraft TAtelierReflexCreate(long id, string language, string text, string respelling)

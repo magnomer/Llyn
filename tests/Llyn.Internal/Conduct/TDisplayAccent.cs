@@ -25,7 +25,7 @@ public sealed class TDisplayAccent
         CLecternAccent accent = wing.CWingDisplay.CDisplaySound.CDisplayAccentRead();
 
         Assert.Equal(new CRespellingMark(false, "[", "]"), accent.CLecternAccentMark);
-        Assert.False(accent.CLecternAccentTonal);
+        Assert.Empty(accent.CLecternAccentContour);
         Assert.Equal("ˈwɔːtə", accent.CLecternAccentText);
         Assert.True(accent.CLecternAccentSpoken);
         Assert.Equal(CSounding.CSoundingVarietyRead("English", "British"), accent.CLecternAccentPrimary);
@@ -92,7 +92,9 @@ public sealed class TDisplayAccent
         Assert.Equal([pack.TLanguageFixtureName + "/British"], stored);
         Assert.NotNull(accent);
         Assert.True(accent.CLecternAccentFlagged);
-        Assert.True(accent.CLecternAccentTonal);
+        CContour syllable = Assert.Single(accent.CLecternAccentContour);
+        Assert.Equal("a˥", syllable.CContourText);
+        Assert.Equal([5], syllable.CContourLevels);
         Assert.Equal(
             CSounding.CSoundingVarietyRead(pack.TLanguageFixtureName, "British"), accent.CLecternAccentPrimary);
     }
@@ -132,7 +134,7 @@ public sealed class TDisplayAccent
         Assert.Null(accent);
     }
 
-    private static TLanguageFixture TDisplayPackCreate()
+    internal static TLanguageFixture TDisplayPackCreate()
     {
         TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
         string flag = Path.Combine(AppContext.BaseDirectory, "languages", pack.TLanguageFixtureName, "hill.svg");

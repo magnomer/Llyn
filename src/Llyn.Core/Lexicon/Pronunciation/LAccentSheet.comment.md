@@ -9,7 +9,7 @@ It carries the pack's verdicts beside the rows, so no caller asks the pack again
 
 - `LAccentSheetLanguage` — The entry's language, which keys each variety's flag.
 - `LAccentSheetFlagged` — True when the pack draws its varieties as flags.
-- `LAccentSheetTonal` — True when the pack writes tone contours.
+- `LAccentSheetContour` — The primary reading's tone contour syllables, empty when nothing is drawn.
 - `LAccentSheetRespelled` — True when the readings show their respelling.
 - `LAccentSheetOpener` — The bracket that opens a reading.
 - `LAccentSheetCloser` — The bracket that closes a reading.

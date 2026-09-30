@@ -8,7 +8,7 @@ The display reads it whenever an entry opens, so the driver only draws it.
 **Parameters**
 
 - `CLecternAccentMark`: the respelling switch and the brackets around every reading.
-- `CLecternAccentTonal`: whether the pack writes tone contours, which the contour shows.
+- `CLecternAccentContour`: the primary reading's contour syllables, empty when the contour hides.
 - `CLecternAccentText`: the primary reading as the switch shows it, empty when there is none.
 - `CLecternAccentSpoken`: whether the primary reading holds text, which shows its surface.
 - `CLecternAccentPrimary`: the primary pronunciation's variety, with its label and flag keys.

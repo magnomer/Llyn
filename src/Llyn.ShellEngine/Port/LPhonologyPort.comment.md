@@ -7,8 +7,25 @@ It covers the rime-book rows, the script images, the reflex readings and the inf
 Each of those has a check and a read, since the rows are fetched in the background.
 One start opens every fetch of an entry, and the reflexes keep a start of their own for the editor.
 It also answers the language facts a panel words its fields by.
-Those are tonal, silent, phonemic, respelled, the tone list, the schemes and the parts of speech.
+Those are silent, phonemic, respelled, the tone list, the schemes and the parts of speech.
 `LEngine` implements it today, and a phonology clerk takes it over when the parts are dismantled.
+
+## `const int LEngineContourFloor = LLanguageClerk.LLanguageContourFloor;`
+
+The lowest pitch level a tone contour draws, passed up from the rule that parses the levels.
+`LEngineContourCeiling` is the highest.
+
+## `const int LEngineContourCeiling = LLanguageClerk.LLanguageContourCeiling;`
+
+The highest pitch level a tone contour draws, passed up from the rule that parses the levels.
+
+## `IReadOnlyList<LContour> LEngineContourRead(string language, string ipa);`
+
+The tone contour syllables of `ipa` in `language`, empty when nothing is drawn.
+
+## `static LArticulation LEngineConsonantRead()`
+
+The IPA consonant chart, which needs no engine, so the input aid reads it before any workspace opens.
 
 ## `bool LEngineFanqieCheck(long entryId);`
 

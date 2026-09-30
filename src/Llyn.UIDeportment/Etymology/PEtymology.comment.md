@@ -42,16 +42,15 @@ The language a span is resolved against.
 
 The narrative box, which the editor reads a selection from.
 
+## `internal PMentionLine PEtymologyLine`
+
+The chip line under the narrative box, which the editor paints the etymology's ready chips on.
+
 ## `internal void PEtymologySourceShow(IReadOnlyList<PEtymon> etymons)`
 
 Draws the source link items the driver built from the links the engine already resolved.
 The field holds no Conduct record, so the display driver and the editor each hand it items.
 The typing entry always closes the row, collapsed on the read side, so the row has one shape.
-
-## `internal void PEtymologyMentionShow(`
-
-Draws the spans as chips under the narrative box.
-Only the editor calls it, and it hands the window and the text in, so nothing is guessed.
 
 ## `private void PEtymologyItemApply(FrameworkElement container, object item, string? _)`
 

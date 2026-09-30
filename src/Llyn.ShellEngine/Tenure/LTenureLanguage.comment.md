@@ -21,10 +21,44 @@ A draft never stored, an unknown row or a refused read answers empty, so the men
 The primary reading as the field shows it, respelled when the draft's pack respells.
 An ended tenure or a draft without a reading answers empty.
 
+## `public LAccentSheet? LTenureAccentRead()`
+
+The live draft's accent sheet with every row after the primary, notated or not.
+It is null while no draft is held.
+The language clerk resolves each row's printed form.
+
+## `public async Task<LAccentSheet?> LTenureAccentLoad(`
+
+Loads the flags the live draft's accent sheet draws into `store`, then answers a fresh sheet.
+A pack that labels varieties by name answers null at once and builds no sheet.
+Nothing loads while no draft is held, and the answer is null.
+A language changed meanwhile answers null, since its own bulletin asks again.
+The sheet is read again after the load, because each read of the draft is a new record.
+So nothing proves the sheet read before the load still current.
+
 ## `public void LTenurePronunciationSet(string text)`
 
 Defers the typed reading as a respelling or as a phonetic one, whichever the pack shows.
 The choice is the pack's, so every driver's field writes the same request.
+
+## `public void LTenureAccentSet(long accent, string text)`
+
+Defers the text typed on the accent row `accent` as a respelling or a phonetic reading.
+The pack's respelling rule picks the form, as for the primary field, so the row's printed form matches.
+
+## `public void LTenurePronunciationAdd(long pronunciation)`
+
+Adds a blank pronunciation after the row `pronunciation`, or after the primary for id zero.
+The reading clerk places it, so every driver adds at the same place.
+
+## `public void LTenurePronunciationRemove(long pronunciation)`
+
+Drops the row `pronunciation`, or the primary for id zero.
+
+## `public Uri? LTenureAudioResolve(long pronunciation)`
+
+The address of the row's recording, or null when the draft holds no such row.
+A file gone from disk also answers null and clears the row's audio, so its play button goes.
 
 ## `public void LTenureIpaSet(string text)`
 

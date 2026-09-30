@@ -31,7 +31,7 @@ An entry opened while the flags load wins, so the late load answers nothing to p
 
 With nothing open, nothing loads and nothing answers.
 
-## `private static TLanguageFixture TDisplayPackCreate()`
+## `internal static TLanguageFixture TDisplayPackCreate()`
 
 A tonal pack whose one variety draws a flag kept in a local file, so no flag is fetched.
 

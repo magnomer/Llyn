@@ -31,17 +31,11 @@ internal static class CFolio
             draft.LEntryDraftHeadword,
             draft.LEntryDraftLanguage,
             draft.LEntryDraftNote,
-            draft.LEntryDraftPronunciation is LPronunciationDraft spoken
-                ? CSounding.CSoundingPronunciationRead(spoken)
-                : null,
-            CSounding.CSoundingPronunciationRead(draft.LEntryDraftAccents),
             CFolioSheetRead(draft.LEntryDraftMeanings, targets, media, "Card.DefinitionHint"),
             CFolioSheetRead(draft.LEntryDraftCollocations, targets, media, "Card.MeaningHint"),
             CSounding.CSoundingTranscriptionRead(draft.LEntryDraftTranscriptions),
             CSounding.CSoundingReflexRead(draft.LEntryDraftReflexes),
-            new CEtymologyDraft(
-                draft.LEntryDraftEtymology.LEtymologyDraftText,
-                CFolioMentionRead(draft.LEntryDraftEtymology.LEtymologyDraftMentions)));
+            new CEtymologyDraft(draft.LEntryDraftEtymology.LEtymologyDraftText));
     }
 
     internal static CStateValue CFolioStateRead(LStateValue value)
@@ -120,11 +114,6 @@ internal static class CFolio
             .ToList();
     }
 
-    private static IReadOnlyList<CMentionDraft> CFolioMentionRead(IReadOnlyList<LMentionDraft> mentions)
-    {
-        return mentions.Select(CFolioMentionRead).ToList();
-    }
-
     internal static IReadOnlyList<CImageDraft> CFolioImageRead(IReadOnlyList<LImageDraft> images, LMediaPort media)
     {
         ArgumentNullException.ThrowIfNull(media);
@@ -158,15 +147,5 @@ internal static class CFolio
                     until);
             })
             .ToList();
-    }
-
-    internal static CMentionDraft CFolioMentionRead(LMentionDraft mention)
-    {
-        return new CMentionDraft(
-            mention.LMentionDraftId,
-            mention.LMentionDraftEntry,
-            mention.LMentionDraftOffset,
-            mention.LMentionDraftLength,
-            mention.LMentionDraftSense);
     }
 }

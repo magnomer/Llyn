@@ -240,7 +240,7 @@ internal sealed partial class QCorpus : QChronicleHost
         QTranscriptMentionLine.ItemsSource = _qTranscriptChip.PMentionLineChip;
         QTranscriptGlossLine.ItemsSource = _qTranscriptGloss;
         QExcerptGloss.ItemsSource = _qExcerptGloss;
-        QLookItem.QLookItemAttach(QTranscriptMentionLine, PMentionChip.PMentionChipApply);
+        QLookItem.QLookItemAttach(QTranscriptMentionLine, PMentionChip.PMentionChipRefine);
         QLookItem.QLookItemAttach(QTranscriptGlossLine, QTranscriptGlossApply);
         QLookItem.QLookItemAttach(QExcerptGloss, PGloss.PGlossRowApply);
         QChoice.QChoiceOrderBuild(QRankList, "Rank", QRankObserve, CAnthology.CAnthologyOrderRead());

@@ -13,6 +13,10 @@ public sealed class LLanguageClerk
     private readonly LTrailClerk _lLanguageClerkTrail;
     private IReadOnlyList<string>? _lLanguageClerkListed;
 
+    public const int LLanguageContourFloor = LContour.LContourFloor;
+
+    public const int LLanguageContourCeiling = LContour.LContourCeiling;
+
     public LLanguageClerk(LRig rig, LLanguageCache languages, LTrailClerk trail)
     {
         ArgumentNullException.ThrowIfNull(rig);
@@ -73,6 +77,18 @@ public sealed class LLanguageClerk
     {
         ArgumentNullException.ThrowIfNull(language);
         return language.Trim().Length > 0 && LLanguageClerkLoad(language).LLanguagePhonemic;
+    }
+
+    public IReadOnlyList<LContour> LLanguageContourRead(string language, string ipa)
+    {
+        ArgumentNullException.ThrowIfNull(language);
+        if (language.Trim().Length == 0 || !LLanguageClerkLoad(language).LLanguageTonal)
+        {
+            return [];
+        }
+
+        IReadOnlyList<LContour> syllables = LContour.LContourParse(ipa ?? string.Empty);
+        return LContour.LContourToneCheck(syllables) ? syllables : [];
     }
 
     public Task<string?> LLanguageFlagRead(string language, CancellationToken cancellation)

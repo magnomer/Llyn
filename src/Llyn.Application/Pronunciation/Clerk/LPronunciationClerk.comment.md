@@ -25,6 +25,10 @@ A new row is appended and then the whole list is placed in draft order.
 The order is rewritten only when a row moved or the count changed, so an untouched list writes nothing.
 A null `changes` records nothing, which is what a create wants.
 
+## `public static LArticulation LPronunciationConsonantRead()`
+
+The IPA consonant chart a pronunciation is typed from, handed up for every driver's input aid.
+
 ## `public static IReadOnlyList<LPronunciationDraft> LPronunciationClerkScan(IReadOnlyList<LPronunciationDraft> drafts)`
 
 The rows worth writing, their reading and respelling trimmed.

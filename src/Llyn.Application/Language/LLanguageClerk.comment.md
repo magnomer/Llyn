@@ -42,6 +42,21 @@ The glyph section is the one the draft's pack declares, and a blank language has
 
 Whether the pack of `language` is phonemic.
 
+## `public IReadOnlyList<LContour> LLanguageContourRead(string language, string ipa)`
+
+The tone contour syllables of `ipa`, or nothing when the contour would stay hidden.
+A blank or non-tonal language draws no contour, even over a reading with tone marks.
+A reading whose syllables carry no tone draws nothing either.
+
+## `public const int LLanguageContourFloor = LContour.LContourFloor;`
+
+The contour's lowest pitch level, handed up so no outer layer writes the scale again.
+`LLanguageContourCeiling` hands up the highest.
+
+## `public const int LLanguageContourCeiling = LContour.LContourCeiling;`
+
+The contour's highest pitch level, handed up so no outer layer writes the scale again.
+
 ## `public Task<string?> LLanguageFlagRead(string language, CancellationToken cancellation)`
 
 The flag image path of `language`, fetched when the code is remote.

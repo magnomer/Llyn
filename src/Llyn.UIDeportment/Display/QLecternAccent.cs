@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Conduct;
@@ -28,7 +29,7 @@ public sealed class QLecternAccent
 
     private DependencyObject _qLecternAccentContour = null!;
 
-    private DependencyProperty _qLecternAccentTonal = null!;
+    private DependencyProperty _qLecternAccentSyllables = null!;
 
     public QLecternAccent(CDisplaySound area)
     {
@@ -47,7 +48,7 @@ public sealed class QLecternAccent
         TextBlock closer,
         ItemsControl accents,
         DependencyObject contour,
-        DependencyProperty tonal)
+        DependencyProperty syllables)
     {
         ArgumentNullException.ThrowIfNull(surface);
         ArgumentNullException.ThrowIfNull(lead);
@@ -58,7 +59,7 @@ public sealed class QLecternAccent
         ArgumentNullException.ThrowIfNull(closer);
         ArgumentNullException.ThrowIfNull(accents);
         ArgumentNullException.ThrowIfNull(contour);
-        ArgumentNullException.ThrowIfNull(tonal);
+        ArgumentNullException.ThrowIfNull(syllables);
 
         _qLecternAccentSurface = surface;
         _qLecternAccentLead = lead;
@@ -68,7 +69,7 @@ public sealed class QLecternAccent
         _qLecternAccentPronunciation = pronunciation;
         _qLecternAccentCloser = closer;
         _qLecternAccentContour = contour;
-        _qLecternAccentTonal = tonal;
+        _qLecternAccentSyllables = syllables;
         accents.ItemsSource = _qLecternAccentRow;
         QLookItem.QLookItemAttach(accents, QAccentItem.QAccentItemRefine);
     }
@@ -96,7 +97,12 @@ public sealed class QLecternAccent
     {
         _qLecternAccentOpener.Text = accent.CLecternAccentMark.CRespellingMarkOpener;
         _qLecternAccentCloser.Text = accent.CLecternAccentMark.CRespellingMarkCloser;
-        _qLecternAccentContour.SetValue(_qLecternAccentTonal, accent.CLecternAccentTonal);
+        _qLecternAccentContour.SetValue(
+            _qLecternAccentSyllables,
+            accent.CLecternAccentContour
+                .Select(static syllable => new QContourItem(
+                    syllable.CContourText, syllable.CContourLevels, syllable.CContourToned))
+                .ToList());
         _qLecternAccentPronunciation.Text = accent.CLecternAccentText;
         _qLecternAccentSurface.Visibility = QLook.QLookVisibleRead(accent.CLecternAccentSpoken);
         _qLecternAccentLead.SharedSizeGroup = accent.CLecternAccentSpoken ? "PReadingLabel" : null;

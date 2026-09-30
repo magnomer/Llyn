@@ -11,7 +11,7 @@ public sealed class CDisplaySound
 {
     private static readonly CLecternAccent _cDisplayMute = new(
         new CRespellingMark(false, string.Empty, string.Empty),
-        false,
+        [],
         string.Empty,
         false,
         CSounding.CSoundingVarietyRead(string.Empty, string.Empty),
@@ -128,17 +128,11 @@ public sealed class CDisplaySound
         string language = sheet.LAccentSheetLanguage;
         return new CLecternAccent(
             new CRespellingMark(sheet.LAccentSheetRespelled, sheet.LAccentSheetOpener, sheet.LAccentSheetCloser),
-            sheet.LAccentSheetTonal,
+            CSounding.LSoundingContourRead(sheet.LAccentSheetContour),
             sheet.LAccentSheetPrimary.LAccentRowText,
             sheet.LAccentSheetSpoken,
             CSounding.CSoundingVarietyRead(language, sheet.LAccentSheetPrimary.LAccentRowVariety),
-            sheet.LAccentSheetRows
-                .Select(row => new CAccent(
-                    row.LAccentRowId,
-                    CSounding.CSoundingVarietyRead(language, row.LAccentRowVariety),
-                    row.LAccentRowText,
-                    row.LAccentRowAudio))
-                .ToList(),
+            sheet.LAccentSheetRows.Select(row => CSounding.LSoundingAccentRead(language, row)).ToList(),
             sheet.LAccentSheetFlagged);
     }
 

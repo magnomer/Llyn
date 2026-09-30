@@ -6,7 +6,7 @@ namespace Llyn.UIDeportment;
 internal sealed record PMentionChip(
     long PMentionChipId, string PMentionChipWord, string PMentionChipName, string PMentionChipSense)
 {
-    internal static void PMentionChipApply(FrameworkElement container, object item, string? _)
+    internal static void PMentionChipRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not PMentionChip chip)
         {

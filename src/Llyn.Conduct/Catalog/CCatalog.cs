@@ -129,6 +129,19 @@ public sealed class CCatalog
         return rows.Select(static row => new CMeaning(row.LMeaningId, row.LMeaningName, row.LMeaningDepth)).ToList();
     }
 
+    public static CArticulation CCatalogConsonantRead()
+    {
+        return LCatalogArticulationRead(LPhonologyPort.LEngineConsonantRead());
+    }
+
+    private static CArticulation LCatalogArticulationRead(LArticulation chart)
+    {
+        return new CArticulation(
+            chart.LArticulationHeaders.Select(static name => string.Concat("Articulation.", name)).ToList(),
+            chart.LArticulationSides.Select(static name => string.Concat("Articulation.", name)).ToList(),
+            chart.LArticulationCells);
+    }
+
     internal static IReadOnlyList<CEnsignRow> CCatalogEnsignRead(IReadOnlyList<LEnsignRow> rows)
     {
         return rows.Select(static row => new CEnsignRow(row.LEnsignRowKey, row.LEnsignRowPath)).ToList();

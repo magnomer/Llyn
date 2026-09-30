@@ -103,7 +103,7 @@ public sealed class TCard
     }
 
     [Fact]
-    public void CardEntryRead_ThreePronunciations_SplitsThePrimaryFromTheAccents()
+    public void CardEntryRead_NoReflexes_ReadsUnreflected()
     {
         LEntryDraft draft = TInterface.TEntryDraftCreate("colour", "English", "ˈkʌlə", "a note", [], []) with
         {
@@ -118,8 +118,6 @@ public sealed class TCard
         CEntryDraft shaped = TInterfaceConduct.TCardEntryRead(
             draft, new Dictionary<long, IReadOnlyList<LTranslationTarget>>());
 
-        Assert.Equal("RP", shaped.CEntryDraftPronunciation?.CPronunciationDraftVariety);
-        Assert.Equal(["GA", "AU"], shaped.CEntryDraftAccents.Select(spoken => spoken.CPronunciationDraftVariety));
         Assert.False(shaped.CEntryDraftReflected);
     }
 
@@ -201,6 +199,35 @@ public sealed class TCard
 
         Assert.Empty(TCardEtymologyRead(desk).LEtymologyDraftMentions);
         Assert.False(card.CCardMentionCheck("from cattus", 6, 2));
+    }
+
+    [Fact]
+    public void CardEtymologyRead_LinkedSpan_NamesTheWordAndTheHeadword()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long pattern = engine.TEngineTranslationCreate("pattern", "English").LEntryId;
+        (_, CCard card) = TCardPrepare(engine);
+        card.CCardEtymologySet("a pattern here");
+        card.CCardMentionSave("a pattern here", 2, 7, pattern);
+
+        IReadOnlyList<CMentionLabel> labels = card.CCardEtymologyRead();
+
+        CMentionLabel label = Assert.Single(labels);
+        Assert.Equal(new CMentionLabel(label.CMentionLabelId, "pattern", "pattern", string.Empty, true), label);
+        Assert.Null(label.CMentionLabelKey);
+    }
+
+    [Fact]
+    public void CardEtymologyRead_EmptyDesk_AnswersNoChips()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CDesk desk = TInterfaceConduct.TDeskCreate(
+            engine, "Input", TEnvoyFake.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
+        CCard card = TInterfaceConduct.TCardCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, []));
+
+        Assert.Empty(card.CCardEtymologyRead());
     }
 
     [Fact]

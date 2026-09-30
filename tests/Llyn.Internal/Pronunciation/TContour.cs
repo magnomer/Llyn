@@ -87,13 +87,14 @@ public sealed class TContour
     }
 
     [Fact]
-    public void EngineTonalCheck_TonalPack_ReportsTrue()
+    public void EngineContourRead_TonalPack_DrawsOnlyTheTonalLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        Assert.True(engine.TEngineTonalCheck("Mandarin"));
-        Assert.False(engine.TEngineTonalCheck("English"));
+        Assert.NotEmpty(engine.TEngineContourRead("Mandarin", "ma⁵⁵"));
+        Assert.Empty(engine.TEngineContourRead("English", "ma⁵⁵"));
+        Assert.Empty(engine.TEngineContourRead(string.Empty, "ma⁵⁵"));
     }
 
     [Fact]

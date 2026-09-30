@@ -57,7 +57,3 @@ It carries the engine's empty verdict, so a reading card folds a video nobody lo
 It carries the screen `media` resolves from the location, so a row plays without asking.
 The engine settles the address and the film id, and the map only pairs them.
 It carries the moments the engine reads from the span, so the screen parses no timestamp.
-
-## `internal static CMentionDraft CFolioMentionRead(LMentionDraft mention)`
-
-The one map for a single Mention, which the corpus also calls.

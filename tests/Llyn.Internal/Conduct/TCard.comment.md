@@ -4,8 +4,10 @@
 
 Covers the card gates over an entry desk on a real workspace, with no delay.
 An entry row copies every field and its chosen mark.
-A written value keeps the engine's verdict, and a draft splits its main pronunciation from the accents.
+A written value keeps the engine's verdict, and a draft without reflexes reads unreflected.
 The etymology gates write the narrative, the source links and the spans of the held draft.
+The etymology read names a linked span by its words and its headword.
+An empty desk reads no etymology chips.
 A typed title cites the Source the engine resolves it to.
 The lookups find the stored rows a typed word matches, leaving out the rows the card already holds.
 A typed tag lands trimmed and once, a picked tag keeps its stored id, and an erased tag leaves.

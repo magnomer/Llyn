@@ -44,7 +44,11 @@ internal sealed partial class QArticulation
 
             for (int column = 0; column < QVowelBackness.Length; column++)
             {
-                QArticulationCellPlace(QVowel, QVowelCharacter[row, column], column, row);
+                QArticulationCellPlace(
+                    QVowel,
+                    QVowelCharacter[row, column].Split(' ', System.StringSplitOptions.RemoveEmptyEntries),
+                    column,
+                    row);
             }
         }
     }

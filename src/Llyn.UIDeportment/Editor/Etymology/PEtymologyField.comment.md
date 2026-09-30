@@ -18,6 +18,11 @@ Hands the field the source links the engine resolved, since the draft holds ids 
 Each link becomes a chip item here, so the field holds no Conduct record.
 A link whose target could not be read is left out rather than drawn blank.
 
+### `internal void PEtymologyMentionRefine(CEntryDraft _)`
+
+Paints the spans as the ready chips `CCardEtymologyRead` answers, through the field's chip line.
+It answers the same draft bulletin, after the narrative and its sources.
+
 ### `private void PEtymologyWriteObserve(object sender, TextChangedEventArgs e)`
 
 The narrative is deferred like every other typed field, so one keystroke is not one request.

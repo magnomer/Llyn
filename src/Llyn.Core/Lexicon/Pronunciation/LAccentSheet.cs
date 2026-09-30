@@ -6,7 +6,7 @@ namespace Llyn.Core;
 public sealed record LAccentSheet(
     string LAccentSheetLanguage,
     bool LAccentSheetFlagged,
-    bool LAccentSheetTonal,
+    IReadOnlyList<LContour> LAccentSheetContour,
     bool LAccentSheetRespelled,
     string LAccentSheetOpener,
     string LAccentSheetCloser,

@@ -50,6 +50,12 @@ Its respelling is derived from that reading at once.
 An addition past the primary onto an empty list seeds a blank primary first.
 The primary is always row zero, so the shell never has to ask.
 
+## `public static int LPronunciationPositionRead(IReadOnlyList<LPronunciationDraft> spoken, long pronunciation)`
+
+The place a new pronunciation takes when added after the row `pronunciation`.
+Id zero names the primary, so the new row follows it.
+A row the list no longer holds also answers the place after the primary.
+
 ## `private static LEntryDraft LPronunciationChange(`
 
 Changes the pronunciation row named, and refuses when the draft holds none by that id.

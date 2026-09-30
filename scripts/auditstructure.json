@@ -203,8 +203,8 @@
     "System.Diagnostics.Stopwatch"
   ],
   "ceilings": {
-    "cross:Llyn.UIDeportment>Llyn.Application": 31,
-    "cross:Llyn.UIDeportment>Llyn.Core": 18,
+    "cross:Llyn.UIDeportment>Llyn.Application": 24,
+    "cross:Llyn.UIDeportment>Llyn.Core": 5,
     "cross:Llyn.UIDeportment>Llyn.ShellEngine": 0,
     "expose:Llyn.UIDemeanor>Llyn.Core": 1,
     "expose:Llyn.UIDemeanor>Llyn.ShellEngine": 1,
@@ -248,7 +248,6 @@
       "CSubject",
       "CBulletin",
       "CDraft",
-      "CMentionDraft",
       "CHarvestStep",
       "CLookupStep",
       "CRecording",
@@ -284,7 +283,6 @@
       "CTranslationTarget",
       "CColophon",
       "CEntryDraft",
-      "CPronunciationDraft",
       "CTranscriptionDraft",
       "CReflexDraft",
       "CEtymologyDraft",
@@ -430,6 +428,9 @@
       "CLecternParadigm",
       "CLecternPlayback",
       "CTimbrePlayback",
+      "CTimbreAccent",
+      "CContour",
+      "CArticulation",
       "CScreen"
     ],
     "Llyn.UIDemeanor>Llyn.Conduct": [
@@ -446,7 +447,6 @@
       "CSubject",
       "CBulletin",
       "CDraft",
-      "CMentionDraft",
       "CHarvestStep",
       "CLookupStep",
       "CRecording",
@@ -477,7 +477,6 @@
       "CTranslationTarget",
       "CColophon",
       "CEntryDraft",
-      "CPronunciationDraft",
       "CTranscriptionDraft",
       "CReflexDraft",
       "CEtymologyDraft",

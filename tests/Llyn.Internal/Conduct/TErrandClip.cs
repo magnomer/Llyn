@@ -270,9 +270,9 @@ public sealed class TErrandClip
         CClipReading done = changes[^1].CClipRollRows[0].CClipItemReading[0];
         Assert.Equal("Downloader.Saved", done.CClipReadingAction);
         Assert.False(done.CClipReadingReady);
-        CPronunciationDraft? spoken = editor.CEditorDraftRead()?.CEntryDraftPronunciation;
-        Assert.Equal("British", spoken?.CPronunciationDraftVariety);
-        Assert.NotEqual(string.Empty, spoken?.CPronunciationDraftAudio ?? string.Empty);
+        LPronunciationDraft? spoken = editor.CEditorDesk.TDeskRead()?.LDraftContent.LEntryDraftPronunciation;
+        Assert.Equal("British", spoken?.LPronunciationDraftVariety);
+        Assert.NotEqual(string.Empty, spoken?.LPronunciationDraftAudio ?? string.Empty);
         editor.TEditorFinish(false);
     }
 
@@ -299,7 +299,8 @@ public sealed class TErrandClip
         Assert.True(retry.CClipReadingReady);
         Assert.Equal(
             string.Empty,
-            editor.CEditorDraftRead()?.CEntryDraftPronunciation?.CPronunciationDraftAudio ?? string.Empty);
+            editor.CEditorDesk.TDeskRead()?.LDraftContent.LEntryDraftPronunciation?.LPronunciationDraftAudio
+            ?? string.Empty);
         editor.TEditorFinish(false);
     }
 

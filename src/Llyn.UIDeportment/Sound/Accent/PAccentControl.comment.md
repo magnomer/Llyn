@@ -20,16 +20,16 @@ The property is attached only in code, never from markup, so it needs no accesso
 
 Watches the list `host` for pointer moves and focus, so any row reached grows its handles.
 
-## `private static void PAccentHoverHandle(object sender, MouseEventArgs e)`
+## `private static void PAccentHoverRefine(object sender, MouseEventArgs e)`
 
 The pointer moved over the list, so the row under it is given its handles.
 
-## `private static void PAccentFocusHandle(object sender, KeyboardFocusChangedEventArgs e)`
+## `private static void PAccentFocusRefine(object sender, KeyboardFocusChangedEventArgs e)`
 
 Focus landed in the list, so the row holding it is given its handles.
 A cell editor entered by keyboard therefore shows the same handles a hovered row does.
 
-## `private static void PAccentControlShow(ItemsControl host, DependencyObject origin)`
+## `private static void PAccentControlRefine(ItemsControl host, DependencyObject origin)`
 
 Finds the row container holding `origin`, then its empty tagged slot, and loads the template into the slot.
 The row last served is remembered, and a move within it is answered without a walk.

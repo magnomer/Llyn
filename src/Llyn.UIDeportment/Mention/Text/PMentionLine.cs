@@ -9,15 +9,6 @@ internal sealed class PMentionLine
 {
     public ObservableCollection<PMentionChip> PMentionLineChip { get; } = [];
 
-    internal void PMentionLineShow(CAtelier atelier, string text, IReadOnlyList<CMentionDraft> mentions, string silent)
-    {
-        ArgumentNullException.ThrowIfNull(atelier);
-        ArgumentNullException.ThrowIfNull(text);
-        ArgumentNullException.ThrowIfNull(mentions);
-
-        PMentionLineRefine(atelier.CAtelierMention.CMentionResolve(text, mentions, silent));
-    }
-
     internal void PMentionLineRefine(IReadOnlyList<CMentionLabel> labels)
     {
         ArgumentNullException.ThrowIfNull(labels);

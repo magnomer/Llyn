@@ -56,7 +56,7 @@ public sealed class PEtymology : ContentControl
         _pEtymologyStrip.ItemsSource = _pEtymologyLine.PMentionLineChip;
         _pEtymologyStrip.SetResourceReference(StyleProperty, "Theme.Mention.Line");
         _pEtymologyStrip.SetResourceReference(ItemsControl.ItemTemplateProperty, "Theme.Mention.Chip");
-        QLookItem.QLookItemAttach(_pEtymologyStrip, PMentionChip.PMentionChipApply);
+        QLookItem.QLookItemAttach(_pEtymologyStrip, PMentionChip.PMentionChipRefine);
 
         _pEtymologyBody.Children.Add(_pEtymologyField);
         _pEtymologyBody.Children.Add(_pEtymologyProse);
@@ -87,6 +87,8 @@ public sealed class PEtymology : ContentControl
 
     internal TextBox PEtymologyBox => _pEtymologyWrite;
 
+    internal PMentionLine PEtymologyLine => _pEtymologyLine;
+
     internal void PEtymologySourceShow(IReadOnlyList<PEtymon> etymons)
     {
         ArgumentNullException.ThrowIfNull(etymons);
@@ -94,16 +96,6 @@ public sealed class PEtymology : ContentControl
         _pEtymologyField.ItemsSource = new List<PEtymon>(etymons) { _pEtymologyCaret };
         _pEtymologyField.Visibility = QLook.QLookVisibleRead(
             CDisplay.CDisplayEtymonCheck(PEtymologyEditable, etymons.Count));
-    }
-
-    internal void PEtymologyMentionShow(
-        PWindow host, string text, IReadOnlyList<CMentionDraft> mentions, string silent)
-    {
-        ArgumentNullException.ThrowIfNull(host);
-        ArgumentNullException.ThrowIfNull(mentions);
-        ArgumentNullException.ThrowIfNull(silent);
-
-        _pEtymologyLine.PMentionLineShow(host.PWindowAtelier, text, mentions, silent);
     }
 
     protected override AutomationPeer OnCreateAutomationPeer()

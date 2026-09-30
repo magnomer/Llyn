@@ -167,6 +167,14 @@ public sealed class LMentionClerk
         return LMentionClerkResolve(draft?.LDraftExampleRead(cardId, sentenceId));
     }
 
+    public IReadOnlyList<LMentionLabel> LMentionEtymologyResolve(LDraft? draft)
+    {
+        LEtymologyDraft? etymology = draft?.LDraftContent.LEntryDraftEtymology;
+        return etymology is null
+            ? []
+            : LMentionClerkResolve(etymology.LEtymologyDraftText, etymology.LEtymologyDraftMentions);
+    }
+
     private IReadOnlyList<LMentionLabel> LMentionClerkResolve(LExampleDraft? example)
     {
         return example is null

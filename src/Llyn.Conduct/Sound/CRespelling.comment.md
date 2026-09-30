@@ -10,16 +10,11 @@ It stands on the atelier's phonology port, and `CAtelier` builds the one instanc
 
 Only the atelier builds it, so each session has one.
 
-## `public CRespellingMark CRespellingMarkRead(string language)`
-
-The mark a pronunciation row prints under.
-The engine answers the switch and both brackets, so the bracket rule has one owner below.
-
 ## `public CRespellingMark CRespellingMarkRead(string language, bool schemed)`
 
 The mark a transcription candidate prints under.
 A schemed search prints the phonetic bare, whatever the switch shows.
-Otherwise it is the pronunciation mark.
+Otherwise the engine answers the switch and both brackets, so the bracket rule has one owner below.
 
 ## `public IReadOnlyList<CReflex> CRespellingReflexScan(string language, IReadOnlyList<CReflexDraft> reflexes)`
 
@@ -36,16 +31,7 @@ The editor and the reading view's sound area both read their rows here, so the r
 
 One reflex row under the mark its guise picks.
 A phonemic language stands between slashes whatever the switch shows, and any other reading stands bare.
-The text is resolved by `CRespellingResolve`, the one rule the accent rows share.
-
-## `public static CAccent CRespellingAccentRead(CRespellingMark mark, string language, CPronunciationDraft spoken)`
-
-One accent row of a draft in the language, ready to show under the mark.
-The text is already the form the mark picks, so no driver resolves a respelling for the row.
-
-## `public static string CRespellingResolve(CRespellingMark mark, CPronunciationDraft spoken)`
-
-The form of a draft pronunciation to print under the mark.
+The text is resolved by `CRespellingResolve`.
 
 ## `public static string CRespellingResolve(CRespellingMark mark, string phonetic, string? respelling)`
 

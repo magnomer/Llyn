@@ -250,32 +250,33 @@ public sealed class CSounding
             row.LParadigmRowFirst.LParadigmSlotUncertain);
     }
 
-    internal static IReadOnlyList<CPronunciationDraft> CSoundingPronunciationRead(
-        IReadOnlyList<LPronunciationDraft> spoken)
-    {
-        ArgumentNullException.ThrowIfNull(spoken);
-
-        return spoken.Select(CSoundingPronunciationRead).ToList();
-    }
-
-    internal static CPronunciationDraft CSoundingPronunciationRead(LPronunciationDraft spoken)
-    {
-        ArgumentNullException.ThrowIfNull(spoken);
-
-        return new CPronunciationDraft(
-            spoken.LPronunciationDraftId,
-            spoken.LPronunciationDraftIpa,
-            spoken.LPronunciationDraftRespelling,
-            spoken.LPronunciationDraftVariety,
-            spoken.LPronunciationDraftAudio);
-    }
-
     public static CVariety CSoundingVarietyRead(string language, string variety)
     {
         ArgumentNullException.ThrowIfNull(variety);
 
         return new CVariety(
             variety, string.Concat("Variety.", variety), LSettingsPort.LEngineEnsignFormat(language, variety));
+    }
+
+    internal static CAccent LSoundingAccentRead(string language, LAccentRow row)
+    {
+        ArgumentNullException.ThrowIfNull(row);
+
+        return new CAccent(
+            row.LAccentRowId,
+            CSoundingVarietyRead(language, row.LAccentRowVariety),
+            row.LAccentRowText,
+            row.LAccentRowAudio);
+    }
+
+    internal static IReadOnlyList<CContour> LSoundingContourRead(IReadOnlyList<LContour> syllables)
+    {
+        ArgumentNullException.ThrowIfNull(syllables);
+
+        return syllables
+            .Select(static syllable => new CContour(
+                syllable.LContourText, syllable.LContourLevels, syllable.LContourToned))
+            .ToList();
     }
 
     internal static IReadOnlyList<CTranscriptionDraft> CSoundingTranscriptionRead(

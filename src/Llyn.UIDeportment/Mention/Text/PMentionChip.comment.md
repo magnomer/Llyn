@@ -13,7 +13,7 @@ Editing is the gesture on the text.
 - `PMentionChipName`: the headword the word stands for, or the silent mark when it stands for nothing.
 - `PMentionChipSense`: the title of the Meaning it is narrowed to, or empty for the whole Entry.
 
-## `internal static void PMentionChipApply(FrameworkElement container, object item, string? _)`
+## `internal static void PMentionChipRefine(FrameworkElement container, object item, string? _)`
 
 Fills one chip of `Theme.Mention.Chip`: the word, the headword, the sense and the remove button.
 The button takes the unlink command with the chip as its parameter, and its cross icon.

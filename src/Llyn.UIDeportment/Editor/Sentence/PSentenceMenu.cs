@@ -106,7 +106,7 @@ public partial class PEditor
         if (QLook.QLookPartFind<ItemsControl>(container, "PSentenceMentionLine") is ItemsControl mention)
         {
             mention.ItemsSource = row.PSentenceChip.PMentionLineChip;
-            QLookItem.QLookItemAttach(mention, PMentionChip.PMentionChipApply);
+            QLookItem.QLookItemAttach(mention, PMentionChip.PMentionChipRefine);
         }
 
         if (QLook.QLookPartFind<ItemsControl>(container, "PSentenceGlossLine") is ItemsControl glosses)

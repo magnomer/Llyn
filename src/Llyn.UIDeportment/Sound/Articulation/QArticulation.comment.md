@@ -17,7 +17,7 @@ It subscribes the lane's size change, then builds both charts.
 
 Each named part is pulled from the page by its contract ID on every read.
 
-## `internal void QArticulationAttach(params TextBox[] fields)`
+## `internal void QArticulationIntroduce(params TextBox[] fields)`
 
 Names the pronunciation fields this aid may type into.
 The aid follows the keyboard between them and types into the one last focused.
@@ -36,12 +36,12 @@ The search field is registered first, so a character typed before anything is fo
 The field last focused may have been hidden since, which is what the editor closing does to the pronunciation field.
 A hidden field is skipped, and the first field still on screen takes the character instead.
 
-### `private void QArticulationInsert(string character)`
+### `private void QArticulationGlyphRefine(object sender, RoutedEventArgs e)`
 
 A selection is replaced rather than left in place, which is what typing the character would do.
 The caret is put after the inserted character, so a second character continues the transcription.
 
-### `private void QArticulationPlace(double lane)`
+### `private void QArticulationLaneRefine(object sender, SizeChangedEventArgs e)`
 
 The lane is asked for one row of charts.
 It takes a second only when the two do not fit across it.

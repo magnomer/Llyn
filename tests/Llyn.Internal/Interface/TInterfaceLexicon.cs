@@ -213,9 +213,6 @@ internal static partial class TInterface
     internal static int TMentionUnitRead(string text, int offset) =>
         LMentionSpan.LMentionUnitRead(text, offset);
 
-    internal static LMentionLabel TMentionLabelCreate(long id, string word, long entryId, string name, string sense) =>
-        new(id, word, entryId, name, sense);
-
     internal static LMentionDraft TMentionDraftCreate(long id, int start, int length, long entryId, long senseId = 0) =>
         new(id, start, length, entryId, senseId);
 

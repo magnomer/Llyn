@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -35,19 +35,13 @@ public sealed class PContour : FrameworkElement
 
     private const double PContourCornerRadius = 10;
 
-    private const double PContourPlotHeight = LContour.LContourSpan * PContourLevelGap;
+    private const double PContourPlotHeight = (CContour.CContourCeiling - CContour.CContourFloor) * PContourLevelGap;
 
-    public static readonly DependencyProperty PContourIpaProperty = DependencyProperty.Register(
-        nameof(PContourIpa),
-        typeof(string),
+    public static readonly DependencyProperty PContourSyllablesProperty = DependencyProperty.Register(
+        nameof(PContourSyllables),
+        typeof(IReadOnlyList<QContourItem>),
         typeof(PContour),
-        new FrameworkPropertyMetadata(string.Empty, PContourChangeHandle));
-
-    public static readonly DependencyProperty PContourTonalProperty = DependencyProperty.Register(
-        nameof(PContourTonal),
-        typeof(bool),
-        typeof(PContour),
-        new FrameworkPropertyMetadata(false, PContourChangeHandle));
+        new FrameworkPropertyMetadata(Array.Empty<QContourItem>(), PContourChangeRefine));
 
     public static readonly DependencyProperty PContourTopProperty = PContourBrushCreate(nameof(PContourTop));
 
@@ -75,8 +69,6 @@ public sealed class PContour : FrameworkElement
         typeof(PContour),
         new FrameworkPropertyMetadata(new FontFamily("Segoe UI"), FrameworkPropertyMetadataOptions.AffectsRender));
 
-    private IReadOnlyList<LContour> _pContourSyllables = [];
-
     public PContour()
     {
         IsHitTestVisible = false;
@@ -94,16 +86,10 @@ public sealed class PContour : FrameworkElement
         SetResourceReference(PContourFontProperty, "Theme.Phonetic");
     }
 
-    public string PContourIpa
+    public IReadOnlyList<QContourItem> PContourSyllables
     {
-        get => (string)GetValue(PContourIpaProperty);
-        set => SetValue(PContourIpaProperty, value);
-    }
-
-    public bool PContourTonal
-    {
-        get => (bool)GetValue(PContourTonalProperty);
-        set => SetValue(PContourTonalProperty, value);
+        get => (IReadOnlyList<QContourItem>)GetValue(PContourSyllablesProperty);
+        set => SetValue(PContourSyllablesProperty, value);
     }
 
     public Brush PContourTop
@@ -174,7 +160,7 @@ public sealed class PContour : FrameworkElement
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        int count = Math.Max(1, _pContourSyllables.Count);
+        int count = Math.Max(1, PContourSyllables.Count);
         double width = 2 * PContourPadding + PContourAxisWidth
             + count * PContourCellWidth + (count - 1) * PContourCellGap;
         double height = 2 * PContourPadding + PContourPlotHeight + PContourLabelGap + PContourLabelHeight;
@@ -184,16 +170,16 @@ public sealed class PContour : FrameworkElement
     protected override void OnRender(DrawingContext drawingContext)
     {
         base.OnRender(drawingContext);
-        if (_pContourSyllables.Count == 0)
+        if (PContourSyllables.Count == 0)
         {
             return;
         }
 
         PContourFrameDraw(drawingContext);
         PContourGuideDraw(drawingContext);
-        for (int index = 0; index < _pContourSyllables.Count; index++)
+        for (int index = 0; index < PContourSyllables.Count; index++)
         {
-            PContourCellDraw(drawingContext, _pContourSyllables[index], index);
+            PContourCellDraw(drawingContext, PContourSyllables[index], index);
         }
     }
 
@@ -206,19 +192,17 @@ public sealed class PContour : FrameworkElement
             new FrameworkPropertyMetadata(Brushes.Gray, FrameworkPropertyMetadataOptions.AffectsRender));
     }
 
-    private static void PContourChangeHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+    private static void PContourChangeRefine(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
         if (sender is PContour contour)
         {
-            contour.PContourUpdate();
+            contour.PContourRefine();
         }
     }
 
-    private void PContourUpdate()
+    private void PContourRefine()
     {
-        _pContourSyllables = PContourTonal ? LContour.LContourParse(PContourIpa ?? string.Empty) : [];
-        bool shown = LContour.LContourToneCheck(_pContourSyllables);
-        Visibility = shown ? Visibility.Visible : Visibility.Collapsed;
+        Visibility = PContourSyllables.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         InvalidateMeasure();
         InvalidateVisual();
     }
@@ -235,7 +219,7 @@ public sealed class PContour : FrameworkElement
         double left = PContourPadding + PContourAxisWidth;
         double right = RenderSize.Width - PContourPadding;
         Pen guide = new(PContourGuide, 1);
-        for (int level = LContour.LContourFloor; level <= LContour.LContourCeiling; level++)
+        for (int level = CContour.CContourFloor; level <= CContour.CContourCeiling; level++)
         {
             double y = Math.Round(PContourLevelResolve(level)) + 0.5;
             drawingContext.DrawLine(guide, new Point(left, y), new Point(right, y));
@@ -246,25 +230,25 @@ public sealed class PContour : FrameworkElement
         }
     }
 
-    private void PContourCellDraw(DrawingContext drawingContext, LContour syllable, int index)
+    private void PContourCellDraw(DrawingContext drawingContext, QContourItem syllable, int index)
     {
         double left = PContourPadding + PContourAxisWidth + index * (PContourCellWidth + PContourCellGap);
         double top = PContourPadding + PContourPlotHeight + PContourLabelGap;
 
-        FormattedText label = PContourTextBuild(syllable.LContourText, PContourLabelSize, PContourInk);
+        FormattedText label = PContourTextBuild(syllable.QContourItemText, PContourLabelSize, PContourInk);
         label.MaxTextWidth = PContourCellWidth;
         label.MaxLineCount = 1;
         label.Trimming = TextTrimming.CharacterEllipsis;
         label.TextAlignment = TextAlignment.Center;
         drawingContext.DrawText(label, new Point(left, top));
 
-        if (!syllable.LContourToned)
+        if (!syllable.QContourItemToned)
         {
             return;
         }
 
-        IReadOnlyList<Point> points = PContourPointResolve(syllable.LContourLevels, left);
-        Pen line = PContourLineBuild(syllable.LContourLevels, points);
+        IReadOnlyList<Point> points = PContourPointResolve(syllable.QContourItemLevels, left);
+        Pen line = PContourLineBuild(syllable.QContourItemLevels, points);
         for (int step = 1; step < points.Count; step++)
         {
             drawingContext.DrawLine(line, points[step - 1], points[step]);
@@ -273,7 +257,7 @@ public sealed class PContour : FrameworkElement
         Pen rim = new(PContourFrame, 1.5);
         for (int step = 0; step < points.Count; step++)
         {
-            int level = syllable.LContourLevels[Math.Min(step, syllable.LContourLevels.Count - 1)];
+            int level = syllable.QContourItemLevels[Math.Min(step, syllable.QContourItemLevels.Count - 1)];
             drawingContext.DrawEllipse(
                 PContourBrushRead(level), rim, points[step], PContourDotRadius, PContourDotRadius);
         }
@@ -347,7 +331,7 @@ public sealed class PContour : FrameworkElement
 
     private static double PContourLevelResolve(int level)
     {
-        return PContourPadding + (LContour.LContourCeiling - level) * PContourLevelGap;
+        return PContourPadding + (CContour.CContourCeiling - level) * PContourLevelGap;
     }
 
     private Brush PContourBrushRead(int level)

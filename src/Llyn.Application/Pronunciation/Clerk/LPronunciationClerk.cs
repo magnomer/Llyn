@@ -97,6 +97,11 @@ public sealed class LPronunciationClerk
         }
     }
 
+    public static LArticulation LPronunciationConsonantRead()
+    {
+        return LArticulation.LArticulationConsonantRead();
+    }
+
     public static IReadOnlyList<LPronunciationDraft> LPronunciationClerkScan(IReadOnlyList<LPronunciationDraft> drafts)
     {
         ArgumentNullException.ThrowIfNull(drafts);

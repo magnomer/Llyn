@@ -42,7 +42,7 @@ internal sealed class QEditor
         editor.CEditorDraftChanged += surface.PEditorDraftRefine;
         editor.CEditorDraftChanged += surface.PPronunciationRefine;
         editor.CEditorDraftChanged += surface.PTimbreRefine;
-        editor.CEditorDraftChanged += surface.PAccentShow;
+        editor.CEditorDraftChanged += surface.PAccentRefine;
         editor.CEditorDraftChanged += surface.PGlyphShow;
         editor.CEditorDraftChanged += surface.PTranscriptionShow;
         editor.CEditorDraftChanged += surface.PReflexShow;
@@ -56,6 +56,7 @@ internal sealed class QEditor
         editor.CEditorDraftChanged += surface.PCollocationRefine;
         editor.CEditorDraftChanged += surface.PSentenceMentionRefine;
         editor.CEditorDraftChanged += surface.PEtymologyRefine;
+        editor.CEditorDraftChanged += surface.PEtymologyMentionRefine;
         editor.CEditorDraftChanged += surface.PPlaybackRefine;
         editor.CEditorDraftChanged += surface.PReflexPrepare;
 

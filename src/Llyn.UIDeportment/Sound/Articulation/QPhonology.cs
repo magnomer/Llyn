@@ -164,7 +164,7 @@ internal sealed class QPhonology
 
         QPhonologyEditor.PEditorChronicleChanged += QPhonologyChronicleUpdate;
 
-        _qArticulation.QArticulationAttach(QProbe, QPhonologyEditor.PPronunciationField);
+        _qArticulation.QArticulationIntroduce(QProbe, QPhonologyEditor.PPronunciationField);
     }
 
     private void QPhonologyStoreUpdate()

@@ -120,10 +120,6 @@ The engine judges the singular count and the unit, and the atelier chooses their
 The amount is written with one decimal in megabytes and as a whole number in kilobytes.
 Only the workspace's status raise reads it.
 
-## `public bool CAtelierRecordingExist(string? file)`
-
-Whether the recording file `file` names exists in the workspace.
-
 ## `public void CAtelierLocationOpen(string target)`
 
 Opens `target` through the engine's shell usher, so the driver starts no process itself.

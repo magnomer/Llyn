@@ -55,9 +55,6 @@ public class PDisplay : UserControl
                 Source = PVolumeCatalog.PVolumeCatalogCurrent,
                 Mode = BindingMode.TwoWay,
             });
-        PDisplayContour.SetBinding(
-            PContour.PContourIpaProperty,
-            new Binding(nameof(TextBlock.Text)) { Source = PDisplayPronunciation });
 
         QLookItem.QLookItemAttach(PDisplaySpeech, PSpeechRefine);
         QLookItem.QLookItemAttach(PDisplayMeaning, PLeaf.PLeafCardRefine);
@@ -215,7 +212,7 @@ public class PDisplay : UserControl
             PDisplayPronunciationCloser,
             PDisplayAccent,
             PDisplayContour,
-            PContour.PContourTonalProperty);
+            PContour.PContourSyllablesProperty);
         lectern.QLecternSound.QLecternGlyphIntroduce(
             PDisplayTranscription,
             PDisplayGlyphSection,

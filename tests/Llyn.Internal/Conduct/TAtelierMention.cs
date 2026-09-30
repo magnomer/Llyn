@@ -14,7 +14,7 @@ public sealed class TAtelierMention
     public void MentionDivide_LinkedMention_ReturnsSpanPieces()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TAtelierMentionCreate(engine, []);
+        using CAtelier atelier = TAtelierMentionCreate(engine);
 
         IReadOnlyList<CMentionPiece> pieces =
             atelier.CAtelierMention.CMentionDivide("the cat sat", [new CMentionMark(1, 4, 3, 7, 0)]);
@@ -28,30 +28,10 @@ public sealed class TAtelierMention
     }
 
     [Fact]
-    public void MentionResolve_UnlinkedLabel_ReadsSilentName()
-    {
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TAtelierMentionCreate(
-            engine,
-            [
-                TInterface.TMentionLabelCreate(1, "cat", 7, "Cat", "animal"),
-                TInterface.TMentionLabelCreate(2, "Tom", 0, "Tom", string.Empty),
-            ]);
-
-        IReadOnlyList<CMentionLabel> labels = atelier.CAtelierMention.CMentionResolve(
-            "the cat Tom",
-            [new CMentionDraft(1, 4, 3, 7, 0), new CMentionDraft(2, 8, 3, 0, 0)],
-            "silent");
-
-        Assert.Equal(new CMentionLabel(1, "cat", "Cat", "animal", true), labels[0]);
-        Assert.Equal(new CMentionLabel(2, "Tom", "silent", string.Empty, false), labels[1]);
-    }
-
-    [Fact]
     public void MentionOffsetRead_UnitRead_RoundTrips()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TAtelierMentionCreate(engine, []);
+        using CAtelier atelier = TAtelierMentionCreate(engine);
         string text = "\U0001F600 cat";
 
         int unit = atelier.CAtelierMention.CMentionUnitRead(text, 2);
@@ -99,7 +79,7 @@ public sealed class TAtelierMention
     public void MentionResultOpen_StoredMention_OpensItsEntryAndRaisesItsSense(long sense, bool raised)
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TAtelierMentionCreate(engine, []);
+        using CAtelier atelier = TAtelierMentionCreate(engine);
         List<long> arrived = TMentionLibraryAdd(atelier, true);
         List<long> senses = [];
         atelier.CAtelierMention.CMentionSenseChosen += senses.Add;
@@ -121,7 +101,7 @@ public sealed class TAtelierMention
         long entry, bool leave)
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TAtelierMentionCreate(engine, []);
+        using CAtelier atelier = TAtelierMentionCreate(engine);
         List<long> arrived = TMentionLibraryAdd(atelier, leave);
         List<long> senses = [];
         atelier.CAtelierMention.CMentionSenseChosen += senses.Add;
@@ -140,7 +120,7 @@ public sealed class TAtelierMention
     public void MentionResultOpen_SingleCandidate_OpensItAtOnce()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TAtelierMentionCreate(engine, []);
+        using CAtelier atelier = TAtelierMentionCreate(engine);
         List<long> arrived = TMentionLibraryAdd(atelier, true);
 
         CMentionOffer offer = TInterfaceMention.TMentionResultOpen(
@@ -158,7 +138,7 @@ public sealed class TAtelierMention
     public void MentionResultOpen_ManyOrNoCandidates_OpensNothingAndOffersTheMany(int count)
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TAtelierMentionCreate(engine, []);
+        using CAtelier atelier = TAtelierMentionCreate(engine);
         List<long> arrived = TMentionLibraryAdd(atelier, true);
         List<CTranslationTarget> candidates = [.. Enumerable.Range(8, count).Select(id => TMentionTargetCreate(id))];
 
@@ -185,11 +165,10 @@ public sealed class TAtelierMention
         return new CTranslationTarget(id, "water", "English");
     }
 
-    private static CAtelier TAtelierMentionCreate(LEngine engine, IReadOnlyList<LMentionLabel> labels)
+    private static CAtelier TAtelierMentionCreate(LEngine engine)
     {
         return TInterfaceConduct.TAtelierCreate(engine, new Dictionary<string, Func<object?[]?, object?>>
         {
-            ["LEngineMentionResolve"] = _ => labels,
             ["LEngineMentionDivide"] = args =>
                 TInterface.TMentionSpanDivide((string)args![0]!, (IReadOnlyList<LMention>)args[1]!),
             ["LEngineSpanRead"] = args =>

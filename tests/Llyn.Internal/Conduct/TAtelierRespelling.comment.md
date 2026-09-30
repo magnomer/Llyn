@@ -9,7 +9,6 @@ A reflex stands between slashes whenever its language is phonemic, and bare othe
 A reflex row answers ready to show, its text resolved and its fold read in the same engine call.
 Each reflex row is marked as leading its run of one language.
 The respelling prints only while shown and filled.
-An accent row carries the resolved form, its audio and its variety's keys.
 
 ## `private static CReflexDraft TAtelierReflexCreate(long id, string language, string text, string respelling)`
 

@@ -151,6 +151,15 @@ internal sealed class LLanguageFacade
     {
         ArgumentNullException.ThrowIfNull(draft);
 
+        return LEngineAccentRead(
+            draft, draft.LEntryDraftAccents.Where(static spoken => spoken.LPronunciationDraftNotated));
+    }
+
+    public LAccentSheet LEngineAccentRead(LEntryDraft draft, IEnumerable<LPronunciationDraft> accents)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+        ArgumentNullException.ThrowIfNull(accents);
+
         string language = draft.LEntryDraftLanguage;
         (bool respelled, string opener, string closer) =
             _lLanguageFacadeEngine.LEngineSettings.LEngineMarkRead(language);
@@ -160,36 +169,47 @@ internal sealed class LLanguageFacade
             languages = LLanguageFacadeStaff.LEngineStaffLanguage;
         }
 
+        LAccentRow primary = languages.LLanguageAccentRead(draft.LEntryDraftPronunciation, respelled);
         return new LAccentSheet(
             language,
             LEngineFlaggedCheck(draft),
-            LEngineTonalCheck(language),
+            languages.LLanguageContourRead(language, primary.LAccentRowText),
             respelled,
             opener,
             closer,
-            languages.LLanguageAccentRead(draft.LEntryDraftPronunciation, respelled),
-            draft.LEntryDraftAccents
-                .Where(static spoken => spoken.LPronunciationDraftNotated)
-                .Select(spoken => languages.LLanguageAccentRead(spoken, respelled))
-                .ToList());
+            primary,
+            accents.Select(spoken => languages.LLanguageAccentRead(spoken, respelled)).ToList());
     }
 
     public async Task<LAccentSheet> LEngineAccentLoad(
         LEntryDraft draft, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)
     {
         LAccentSheet sheet = LEngineAccentRead(draft);
+        await LEngineEnsignLoad(sheet, store).ConfigureAwait(true);
+        return sheet;
+    }
+
+    public async Task LEngineEnsignLoad(
+        LAccentSheet sheet, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)
+    {
+        ArgumentNullException.ThrowIfNull(sheet);
+
         if (sheet.LAccentSheetFlagged)
         {
             await LEngineEnsignLoad(sheet.LAccentSheetLanguage, sheet.LAccentSheetVarieties, store)
                 .ConfigureAwait(true);
         }
-
-        return sheet;
     }
 
-    public bool LEngineTonalCheck(string language)
+    public IReadOnlyList<LContour> LEngineContourRead(string language, string ipa)
     {
-        return !string.IsNullOrWhiteSpace(language) && LEngineLanguageLoad(language).LLanguageTonal;
+        LLanguageClerk languages;
+        lock (_lLanguageFacadeGate)
+        {
+            languages = LLanguageFacadeStaff.LEngineStaffLanguage;
+        }
+
+        return languages.LLanguageContourRead(language, ipa);
     }
 
     public bool LEngineSilentCheck(string language)

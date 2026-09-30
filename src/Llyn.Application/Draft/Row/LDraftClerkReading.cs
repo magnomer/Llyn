@@ -168,6 +168,16 @@ public sealed class LDraftClerkReading
             held, list => LDraftClerkList.LDraftListAdd(list, spoken, request.LRequestPosition));
     }
 
+    public static int LPronunciationPositionRead(IReadOnlyList<LPronunciationDraft> spoken, long pronunciation)
+    {
+        ArgumentNullException.ThrowIfNull(spoken);
+
+        int index = pronunciation == 0
+            ? 0
+            : LDraftClerkList.LDraftListFind(spoken, pronunciation, static row => row.LPronunciationDraftId);
+        return Math.Max(index, 0) + 1;
+    }
+
     private static LEntryDraft LPronunciationChange(
         LEntryDraft content, long pronunciationId, Func<LPronunciationDraft, LPronunciationDraft> change)
     {

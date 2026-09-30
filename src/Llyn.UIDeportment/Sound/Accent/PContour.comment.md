@@ -11,14 +11,15 @@ A line between two levels fades from one colour to the other.
 The box hides itself while the language is not tonal or the reading carries no tone.
 The cells are sized so a contour is read at a glance, never as a glyph.
 
-## `public static readonly DependencyProperty PContourIpaProperty`
+## `public static readonly DependencyProperty PContourSyllablesProperty`
 
-The reading the box draws, parsed by `LContourParse` on every change.
+The syllables the box draws, copied by the view that hosts the box from Conduct's ready contour.
+Conduct answers none while the language is not tonal or the reading carries no tone.
 
-## `public static readonly DependencyProperty PContourTonalProperty`
+## `public IReadOnlyList<QContourItem> PContourSyllables`
 
-Whether the language declares tone, pushed by the view that hosts the box.
-A reading with tone marks in a non-tonal language is still not drawn.
+The syllables the box draws, copied by the driver from Conduct's contour records.
+An empty list hides the box.
 
 ## `public static readonly DependencyProperty PContourTopProperty`
 
@@ -55,10 +56,10 @@ The phonetic family the syllable text is set in, read from the theme.
 The box asks for its full width, one cell per syllable, and never shrinks to fit.
 A shrunken contour would read as a glyph, which is what the box exists to avoid.
 
-## `private void PContourUpdate()`
+## `private void PContourRefine()`
 
-Reparses the reading and shows or hides the box on the result.
-A non-tonal language parses to nothing, so the box stays hidden without a second check.
+Shows the box while it holds syllables, and hides it otherwise.
+It then asks for a new measure and a new drawing.
 
 ## `private Pen PContourLineBuild(IReadOnlyList<int> levels, IReadOnlyList<Point> points)`
 

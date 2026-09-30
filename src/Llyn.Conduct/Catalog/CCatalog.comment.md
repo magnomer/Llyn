@@ -71,6 +71,15 @@ Loads the flags of one language's `varieties` and hands the rows to `store` as C
 Maps the engine's Meaning rows to sense-menu rows by name, with no rule of its own.
 The shared sense read in `CMention` uses it.
 
+## `public static CArticulation CCatalogConsonantRead()`
+
+The IPA consonant chart of the input aid, ready to build.
+It needs no session, so a driver reads it while it builds the aid.
+
+## `private static CArticulation LCatalogArticulationRead(LArticulation chart)`
+
+Chooses the localization key of every header and side, and passes the symbols on unread.
+
 ## `internal static IReadOnlyList<CEnsignRow> CCatalogEnsignRead(IReadOnlyList<LEnsignRow> rows)`
 
 Maps the engine's flag rows into Conduct rows.

@@ -54,19 +54,29 @@ It reads the cached pack as `LEngineVarietyRead` does.
 ## `public LAccentSheet LEngineAccentRead(LEntryDraft draft)`
 
 The pronunciation block of `draft` as the reading view prints it.
-The pack's flag, tone and respelling verdicts come in one answer with the rows.
+The pack's flag and respelling verdicts and the primary's contour come in one answer with the rows.
 The language clerk resolves each row, so the reading rule has its one owner below.
 Only further pronunciations that carry a reading become rows.
+
+## `public LAccentSheet LEngineAccentRead(LEntryDraft draft, IEnumerable<LPronunciationDraft> accents)`
+
+The pronunciation block of `draft` with `accents` as its rows.
+The reading view hands the notated rows, and the editor hands every row.
+
+## `public async Task LEngineEnsignLoad(LAccentSheet sheet, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
+
+Loads the flags `sheet` draws into `store`.
+A pack that labels varieties by name loads nothing.
 
 ## `public async Task<LAccentSheet> LEngineAccentLoad(LEntryDraft draft, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
 
 Loads the flags the block of `draft` draws into `store`, then answers the block.
 A pack that labels varieties by name loads nothing.
 
-## `public bool LEngineTonalCheck(string language)`
+## `public IReadOnlyList<LContour> LEngineContourRead(string language, string ipa)`
 
-Reports whether the pack declares the language tonal, so the UI knows to draw a tone contour under a reading.
-It reads the cached pack as `LEngineVarietyRead` does.
+The tone contour syllables of `ipa` in `language`, ready to draw under a reading.
+The language clerk owns the rule, so the sheet and the editor share it.
 
 ## `public bool LEngineSilentCheck(string language)`
 

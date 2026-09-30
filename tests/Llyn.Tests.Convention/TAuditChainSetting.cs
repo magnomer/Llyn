@@ -69,7 +69,6 @@ internal static class TAuditChainSetting
             "CSubject",
             "CBulletin",
             "CDraft",
-            "CMentionDraft",
             "CHarvestStep",
             "CLookupStep",
             "CRecording",
@@ -105,7 +104,6 @@ internal static class TAuditChainSetting
             "CTranslationTarget",
             "CColophon",
             "CEntryDraft",
-            "CPronunciationDraft",
             "CTranscriptionDraft",
             "CReflexDraft",
             "CEtymologyDraft",
@@ -251,6 +249,9 @@ internal static class TAuditChainSetting
             "CLecternParadigm",
             "CLecternPlayback",
             "CTimbrePlayback",
+            "CTimbreAccent",
+            "CContour",
+            "CArticulation",
             "CScreen",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
@@ -268,7 +269,6 @@ internal static class TAuditChainSetting
             "CSubject",
             "CBulletin",
             "CDraft",
-            "CMentionDraft",
             "CHarvestStep",
             "CLookupStep",
             "CRecording",
@@ -299,7 +299,6 @@ internal static class TAuditChainSetting
             "CTranslationTarget",
             "CColophon",
             "CEntryDraft",
-            "CPronunciationDraft",
             "CTranscriptionDraft",
             "CReflexDraft",
             "CEtymologyDraft",
@@ -374,8 +373,8 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["cross:Llyn.UIDeportment>Llyn.Application"] = 31,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 18,
+        ["cross:Llyn.UIDeportment>Llyn.Application"] = 24,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 5,
         ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 0,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 1,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,

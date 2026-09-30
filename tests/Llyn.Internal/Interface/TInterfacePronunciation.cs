@@ -345,8 +345,8 @@ internal static partial class TInterface
     internal static bool TEngineFlaggedCheck(this LEngine engine, string language) =>
         engine.LEngineLanguage.LEngineFlaggedCheck(language);
 
-    internal static bool TEngineTonalCheck(this LEngine engine, string language) =>
-        engine.LEngineLanguage.LEngineTonalCheck(language);
+    internal static IReadOnlyList<LContour> TEngineContourRead(this LEngine engine, string language, string ipa) =>
+        engine.LEngineLanguage.LEngineContourRead(language, ipa);
 
     internal static IReadOnlyList<string> TEngineLanguageRead(this LEngine engine) =>
         engine.LEngineLanguage.LEngineLanguageRead();

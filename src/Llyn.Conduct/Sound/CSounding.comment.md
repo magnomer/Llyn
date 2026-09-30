@@ -127,19 +127,21 @@ The lectern calls it too, so no driver groups slots.
 
 Copies the row's part, its name, and the first slot's form and doubt.
 
-## `internal static IReadOnlyList<CPronunciationDraft> CSoundingPronunciationRead(`
-
-The pronunciations of a draft, shaped for the accent rows and the lectern.
-
-## `internal static CPronunciationDraft CSoundingPronunciationRead(LPronunciationDraft spoken)`
-
-One pronunciation, shaped for the accent rows and the respelling resolve.
-
 ## `public static CVariety CSoundingVarietyRead(string language, string variety)`
 
 A variety of the language, with the key of its label and the key of its flag.
 The label key is `Variety.` and the name, which a driver looks up and falls back to the name.
 The flag key comes from the engine, so the ensign's key format has one owner.
+
+## `internal static CAccent LSoundingAccentRead(string language, LAccentRow row)`
+
+Maps one engine accent row into the ready row, reading no rule.
+The editor's sheet and the reading view's block share it.
+
+## `internal static IReadOnlyList<CContour> LSoundingContourRead(IReadOnlyList<LContour> syllables)`
+
+Maps the engine's contour syllables into ready ones, reading no rule.
+The editor's contour and the reading view's block share it.
 
 ## `internal static IReadOnlyList<CTranscriptionDraft> CSoundingTranscriptionRead(`
 

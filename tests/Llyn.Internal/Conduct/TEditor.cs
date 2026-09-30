@@ -236,7 +236,8 @@ public sealed class TEditor
         editor.CEditorDesk.CDeskPersist();
 
         Assert.Equal("ˈwɒtə", editor.CEditorPronunciationRead());
-        Assert.Equal("ˈwɒtə", editor.CEditorDraftRead()?.CEntryDraftPronunciation?.CPronunciationDraftIpa);
+        Assert.Equal(
+            "ˈwɒtə", editor.CEditorDesk.TDeskRead()?.LDraftContent.LEntryDraftPronunciation?.LPronunciationDraftIpa);
     }
 
     [Fact]
@@ -250,7 +251,7 @@ public sealed class TEditor
 
         editor.CEditorVarietySet(true, 0, "British");
 
-        Assert.Equal("British", editor.CEditorDraftRead()?.CEntryDraftPronunciation?.CPronunciationDraftVariety);
+        Assert.Equal("British", editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentPrimary.CVarietyName);
     }
 
     [Fact]

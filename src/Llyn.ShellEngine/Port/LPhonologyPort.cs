@@ -8,6 +8,10 @@ namespace Llyn.ShellEngine;
 
 public interface LPhonologyPort
 {
+    const int LEngineContourFloor = LLanguageClerk.LLanguageContourFloor;
+
+    const int LEngineContourCeiling = LLanguageClerk.LLanguageContourCeiling;
+
     IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(LVista vista);
 
     bool LEngineFanqieCheck(long entryId);
@@ -76,7 +80,7 @@ public interface LPhonologyPort
 
     bool LEnginePhonemicCheck(string language);
 
-    bool LEngineTonalCheck(string language);
+    IReadOnlyList<LContour> LEngineContourRead(string language, string ipa);
 
     bool LEngineSilentCheck(string language);
 
@@ -98,4 +102,9 @@ public interface LPhonologyPort
     LSentenceOrder LEngineOrderRead(string language);
 
     void LEngineTallySave(bool respelled);
+
+    static LArticulation LEngineConsonantRead()
+    {
+        return LPronunciationClerk.LPronunciationConsonantRead();
+    }
 }

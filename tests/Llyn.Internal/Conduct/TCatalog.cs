@@ -13,6 +13,26 @@ namespace Llyn.Tests;
 public sealed class TCatalog
 {
     [Fact]
+    public void CatalogConsonantRead_PulmonicChart_KeysEveryHeaderAndSplitsEveryCell()
+    {
+        CArticulation chart = CCatalog.CCatalogConsonantRead();
+
+        Assert.Equal(11, chart.CArticulationHeaders.Count);
+        Assert.Equal("Articulation.Bilabial", chart.CArticulationHeaders[0]);
+        Assert.Equal("Articulation.Glottal", chart.CArticulationHeaders[^1]);
+        Assert.Equal(8, chart.CArticulationSides.Count);
+        Assert.Equal("Articulation.Plosive", chart.CArticulationSides[0]);
+        Assert.Equal("Articulation.LateralApproximant", chart.CArticulationSides[^1]);
+        Assert.Equal(8, chart.CArticulationCells.Count);
+        Assert.All(chart.CArticulationCells, row => Assert.Equal(11, row.Count));
+        Assert.Equal(["p", "b"], chart.CArticulationCells[0][0]);
+        Assert.Empty(chart.CArticulationCells[0][1]);
+        Assert.Equal(["ʔ"], chart.CArticulationCells[0][10]);
+        Assert.Equal(["h", "ɦ"], chart.CArticulationCells[4][10]);
+        Assert.Equal(["ʟ"], chart.CArticulationCells[7][7]);
+    }
+
+    [Fact]
     public void CatalogFontRead_LanguageAndRole_ReadsThePortFont()
     {
         List<(string, LFontRole)> asked = [];

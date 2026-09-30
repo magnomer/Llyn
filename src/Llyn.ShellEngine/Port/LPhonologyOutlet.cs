@@ -110,8 +110,8 @@ public sealed class LPhonologyOutlet : LPhonologyPort
     public bool LEnginePhonemicCheck(string language) =>
         _lPhonologyOutletEngine.LEngineSettings.LEnginePhonemicCheck(language);
 
-    public bool LEngineTonalCheck(string language) =>
-        _lPhonologyOutletEngine.LEngineLanguage.LEngineTonalCheck(language);
+    public IReadOnlyList<LContour> LEngineContourRead(string language, string ipa) =>
+        _lPhonologyOutletEngine.LEngineLanguage.LEngineContourRead(language, ipa);
 
     public bool LEngineSilentCheck(string language) =>
         _lPhonologyOutletEngine.LEngineLanguage.LEngineSilentCheck(language);

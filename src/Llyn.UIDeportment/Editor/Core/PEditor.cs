@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -211,7 +212,7 @@ public partial class PEditor : UserControl, QChronicleHost
         CTimbre timbre = _qEditor.QEditorArea.CEditorTimbre;
         PPronunciationOpener.Text = QLook.QLookFirstRead(timbre.CTimbrePhonemic, "/", "[");
         PPronunciationCloser.Text = QLook.QLookFirstRead(timbre.CTimbrePhonemic, "/", "]");
-        PContour.PContourTonal = timbre.CTimbreTonal;
+        PContourRefine();
         PPronunciation.Visibility = QLook.QLookVisibleRead(timbre.CTimbreSpoken);
         PAccent.Visibility = QLook.QLookVisibleRead(timbre.CTimbreSpoken);
     }
@@ -260,7 +261,20 @@ public partial class PEditor : UserControl, QChronicleHost
 
     private void PContourRefine(object sender, TextChangedEventArgs e)
     {
-        PContour.PContourIpa = PPronunciationField.Text;
+        PContourRefine();
+    }
+
+    private void PContourRefine()
+    {
+        PContourRefine(_qEditor.QEditorArea.CEditorTimbre.CTimbreContourRead(PPronunciationField.Text));
+    }
+
+    private void PContourRefine(IReadOnlyList<CContour> syllables)
+    {
+        PContour.PContourSyllables = syllables
+            .Select(static syllable => new QContourItem(
+                syllable.CContourText, syllable.CContourLevels, syllable.CContourToned))
+            .ToList();
     }
 
     private void PEditorPronunciationObserve(object sender, TextChangedEventArgs e)

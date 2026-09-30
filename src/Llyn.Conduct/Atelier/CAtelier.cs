@@ -145,11 +145,6 @@ public sealed class CAtelier : IDisposable
                 establishment.LEstablishmentLarge ? "0.0" : "0", CultureInfo.CurrentCulture));
     }
 
-    public bool CAtelierRecordingExist(string? file)
-    {
-        return CAtelierMediaPort.LEngineRecordingExist(file);
-    }
-
     public void CAtelierLocationOpen(string target)
     {
         CAtelierMediaPort.LEngineLocationOpen(target);

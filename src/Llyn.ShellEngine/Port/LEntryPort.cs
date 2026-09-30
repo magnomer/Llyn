@@ -44,8 +44,6 @@ public interface LEntryPort
     LMentionResult LEngineMentionFind(
         string text, string language, LEntryDraft? shown, int offset, IReadOnlyList<LMention>? mentions);
 
-    IReadOnlyList<LMentionLabel> LEngineMentionResolve(string text, IReadOnlyList<LMentionDraft> mentions);
-
     LGlyph? LEngineGlyphRead(string language);
 
     LGlyph? LEngineGlyphRead(LEntryDraft draft);

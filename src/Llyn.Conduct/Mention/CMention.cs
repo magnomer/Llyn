@@ -45,33 +45,6 @@ public sealed class CMention
         return new CMentionOffer(result.CMentionResultOffset, offered, "Mention.Title");
     }
 
-    public IReadOnlyList<CMentionLabel> CMentionResolve(
-        string text, IReadOnlyList<CMentionDraft> mentions, string silent)
-    {
-        ArgumentNullException.ThrowIfNull(mentions);
-
-        List<LMentionDraft> drafts = new(mentions.Count);
-        foreach (CMentionDraft mention in mentions)
-        {
-            drafts.Add(new LMentionDraft(
-                mention.CMentionDraftId,
-                mention.CMentionDraftOffset,
-                mention.CMentionDraftLength,
-                mention.CMentionDraftEntry,
-                mention.CMentionDraftSense));
-        }
-
-        IReadOnlyList<CMentionLabel> labels =
-            LMentionLabelRead(_cMentionAtelier.CAtelierEntryPort.LEngineMentionResolve(text, drafts));
-        List<CMentionLabel> named = new(labels.Count);
-        foreach (CMentionLabel label in labels)
-        {
-            named.Add(label.CMentionLabelKey is null ? label : label with { CMentionLabelName = silent });
-        }
-
-        return named;
-    }
-
     public IReadOnlyList<CMentionPiece> CMentionDivide(string text, IReadOnlyList<CMentionMark> mentions)
     {
         IReadOnlyList<LMentionPiece> pieces =
@@ -255,7 +228,7 @@ public sealed class CMention
         return read;
     }
 
-    private static IReadOnlyList<CMentionLabel> LMentionLabelRead(IReadOnlyList<LMentionLabel> labels)
+    internal static IReadOnlyList<CMentionLabel> LMentionLabelRead(IReadOnlyList<LMentionLabel> labels)
     {
         ArgumentNullException.ThrowIfNull(labels);
 

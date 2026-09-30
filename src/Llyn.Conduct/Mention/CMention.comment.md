@@ -26,12 +26,6 @@ Several matching entries open nothing and come back as the candidates the driver
 Every other answer offers nothing, so the driver's menu shows nothing.
 The offer carries the found word's start, where the menu stands, and the menu's title key `Mention.Title`.
 
-## `public IReadOnlyList<CMentionLabel> CMentionResolve(`
-
-The chips of a mention line, each named by its linked headword.
-An unlinked Mention takes `silent`, the label the driver looked up for a word standing for nothing.
-The etymology and the corpus transcript still read their lines here.
-
 ## `public IReadOnlyList<CMentionPiece> CMentionDivide(string text, IReadOnlyList<CMentionMark> mentions)`
 
 The whole text as pieces, so a driver draws every character and no gap splits into words.
@@ -93,7 +87,8 @@ The corpus excerpt and the lectern both hand the window this shape, so the lecte
 The chip lines of the draft's sentence rows, keyed by the row, as the sentence area answers them.
 It only maps, so the sentence area names no engine record.
 
-## `private static IReadOnlyList<CMentionLabel> LMentionLabelRead(IReadOnlyList<LMentionLabel> labels)`
+## `internal static IReadOnlyList<CMentionLabel> LMentionLabelRead(IReadOnlyList<LMentionLabel> labels)`
 
 Copies the engine's labels field for field, with no rule of its own.
 The label's own key names an unlinked chip, so no silent word is written here.
+The card's etymology read shares it.

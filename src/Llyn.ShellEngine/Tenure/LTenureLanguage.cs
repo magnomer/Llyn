@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -71,6 +72,32 @@ public sealed partial class LTenure
             : string.Empty;
     }
 
+    public LAccentSheet? LTenureAccentRead()
+    {
+        return LTenureRead()?.LDraftContent is LEntryDraft draft
+            ? _lEngine.LEngineLanguage.LEngineAccentRead(draft, draft.LEntryDraftAccents)
+            : null;
+    }
+
+    public async Task<LAccentSheet?> LTenureAccentLoad(
+        Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)
+    {
+        ArgumentNullException.ThrowIfNull(store);
+
+        if (LTenureRead()?.LDraftContent is not LEntryDraft draft
+            || !_lEngine.LEngineLanguage.LEngineFlaggedCheck(draft))
+        {
+            return null;
+        }
+
+        LAccentSheet sheet = _lEngine.LEngineLanguage.LEngineAccentRead(draft, draft.LEntryDraftAccents);
+        await _lEngine.LEngineLanguage.LEngineEnsignLoad(sheet, store).ConfigureAwait(true);
+        return LTenureAccentRead() is LAccentSheet fresh
+            && string.Equals(fresh.LAccentSheetLanguage, sheet.LAccentSheetLanguage, StringComparison.Ordinal)
+                ? fresh
+                : null;
+    }
+
     public void LTenurePronunciationSet(string text)
     {
         if (_lEngine.LEngineSettings.LEngineRespellingCheck(LTenureLanguageRead()))
@@ -80,6 +107,47 @@ public sealed partial class LTenure
         }
 
         LTenureIpaSet(text);
+    }
+
+    public void LTenureAccentSet(long accent, string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        LTenureRequestDefer(_lEngine.LEngineSettings.LEngineRespellingCheck(LTenureLanguageRead())
+            ? new LRequestPronunciationRespelling(LTenureId, accent, text)
+            : new LRequestPronunciationIpa(LTenureId, accent, text));
+    }
+
+    public void LTenurePronunciationAdd(long pronunciation)
+    {
+        IReadOnlyList<LPronunciationDraft> spoken = LTenureRead()?.LDraftContent.LEntryDraftPronunciations ?? [];
+        LTenureRequestApply(new LRequestPronunciationAddition(
+            LTenureId, string.Empty, LDraftClerkReading.LPronunciationPositionRead(spoken, pronunciation)));
+    }
+
+    public void LTenurePronunciationRemove(long pronunciation)
+    {
+        LTenureRequestApply(new LRequestPronunciationRemoval(LTenureId, pronunciation));
+    }
+
+    public Uri? LTenureAudioResolve(long pronunciation)
+    {
+        IReadOnlyList<LPronunciationDraft> spoken = LTenureRead()?.LDraftContent.LEntryDraftPronunciations ?? [];
+        int index = pronunciation == 0
+            ? -1
+            : LDraftClerkList.LDraftListFind(spoken, pronunciation, static row => row.LPronunciationDraftId);
+        if (index < 0)
+        {
+            return null;
+        }
+
+        Uri? address = _lEngine.LEnginePronunciation.LEngineAudioResolve(spoken[index].LPronunciationDraftAudio);
+        if (address is null)
+        {
+            LTenureRequestApply(new LRequestPronunciationAudio(LTenureId, pronunciation, string.Empty, null));
+        }
+
+        return address;
     }
 
     public void LTenureIpaSet(string text)

@@ -21,9 +21,6 @@ public sealed class LMediaOutlet : LMediaPort
 
     public void LEngineLocationOpen(string target) => _lMediaOutletEngine.LEngineWorkspace.LEngineLocationOpen(target);
 
-    public bool LEngineRecordingExist(string? file) =>
-        _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingExist(file);
-
     public int LEngineRecordingPlay(string? file, double volume) =>
         _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingPlay(file, volume);
 

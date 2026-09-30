@@ -9,8 +9,6 @@ public sealed record LContour(string LContourText, IReadOnlyList<int> LContourLe
 
     public const int LContourCeiling = 5;
 
-    public const int LContourSpan = LContourCeiling - LContourFloor;
-
     public bool LContourToned => LContourLevels.Count > 0;
 
 

@@ -59,6 +59,7 @@ The reading line follows the headword just written.
 ## `internal void PTimbreRefine(CEntryDraft _)`
 
 The writes that follow the language's sound facts: the brackets, the tone contour and the silent switch.
+The contour is read again here, since a new language may change it over the same text.
 
 ## `internal void PSpeakerRefine(CEntryDraft _)`
 
@@ -75,7 +76,16 @@ The meaning cards, each reading its own links as it is shown.
 
 ## `private void PContourRefine(object sender, TextChangedEventArgs e)`
 
-The contour draws the pronunciation as typed, beside the gate that hears the same text.
+The contour redraws as the pronunciation is typed, beside the gate that hears the same text.
+
+## `private void PContourRefine()`
+
+Reads the ready contour of the field's text.
+The typed text runs ahead of the draft, so the read takes the field's text.
+
+## `private void PContourRefine(IReadOnlyList<CContour> syllables)`
+
+Copies the ready syllables into the contour box's own items.
 
 ## `private void PEditorTextObserve(object sender, TextChangedEventArgs e)`
 

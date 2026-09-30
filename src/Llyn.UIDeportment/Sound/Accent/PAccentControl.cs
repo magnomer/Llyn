@@ -17,27 +17,27 @@ internal static class PAccentControl
     internal static void PAccentControlAttach(ItemsControl host)
     {
         ArgumentNullException.ThrowIfNull(host);
-        host.MouseMove += PAccentHoverHandle;
-        host.GotKeyboardFocus += PAccentFocusHandle;
+        host.MouseMove += PAccentHoverRefine;
+        host.GotKeyboardFocus += PAccentFocusRefine;
     }
 
-    private static void PAccentHoverHandle(object sender, MouseEventArgs e)
+    private static void PAccentHoverRefine(object sender, MouseEventArgs e)
     {
         if (sender is ItemsControl host && e.OriginalSource is DependencyObject origin)
         {
-            PAccentControlShow(host, origin);
+            PAccentControlRefine(host, origin);
         }
     }
 
-    private static void PAccentFocusHandle(object sender, KeyboardFocusChangedEventArgs e)
+    private static void PAccentFocusRefine(object sender, KeyboardFocusChangedEventArgs e)
     {
         if (sender is ItemsControl host && e.NewFocus is DependencyObject origin)
         {
-            PAccentControlShow(host, origin);
+            PAccentControlRefine(host, origin);
         }
     }
 
-    private static void PAccentControlShow(ItemsControl host, DependencyObject origin)
+    private static void PAccentControlRefine(ItemsControl host, DependencyObject origin)
     {
         if (host.ContainerFromElement(origin) is not DependencyObject row
             || ReferenceEquals(host.GetValue(PAccentRowProperty), row))

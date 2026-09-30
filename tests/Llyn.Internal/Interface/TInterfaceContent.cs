@@ -104,10 +104,6 @@ internal static partial class TInterface
     internal static LEntry TEngineGlyphResolve(this LEngine engine, string character, string language) =>
         engine.LEngineEntry.LEngineGlyphResolve(character, language);
 
-    internal static IReadOnlyList<LMentionLabel> TEngineMentionResolve(
-        this LEngine engine, string text, IReadOnlyList<LMentionDraft> mentions) =>
-        engine.LEngineMention.LEngineMentionResolve(text, mentions);
-
     internal static IReadOnlyList<LMeaning> TEngineMeaningRead(
         this LEngine engine,
         long ownerId,
