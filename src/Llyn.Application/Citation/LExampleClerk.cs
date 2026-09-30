@@ -112,6 +112,24 @@ public sealed class LExampleClerk
         return string.Equals(LStateValue.LStateValueRead(field).LStateValueShow(), shown, StringComparison.Ordinal);
     }
 
+    public static (string, string, string) LExampleLineRead(
+        LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)
+    {
+        ArgumentNullException.ThrowIfNull(sentence);
+        ArgumentNullException.ThrowIfNull(order);
+        ArgumentNullException.ThrowIfNull(citations);
+
+        LExampleDraft? example = sentence.LSentenceDraftExample;
+        string citation = example?.LExampleDraftReference.LStateAnchorShown is long source
+            && citations.TryGetValue(source, out string? line)
+                ? line
+                : string.Empty;
+        return (
+            LPortraitFrame.LPortraitFrameRead(sentence, order, mark),
+            LPortraitText.LPortraitTextRead(example?.LExampleDraftText, mark),
+            citation);
+    }
+
     public static LPortraitPage LExamplePageRead(
         LExample example, LReference? cited, int count, LPortraitLegend legend)
     {

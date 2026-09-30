@@ -52,7 +52,7 @@ A failure shows `Example.LoadFailed` and answers null, so the corpus clears noth
 
 ## `internal CMentionOffer? LAnthologyMentionFind(int offset)`
 
-Finds the word at `offset` fresh in the chosen Example and opens what `CMentionResultOpen` opens at once.
+Finds the word at `offset` fresh in the chosen Example and opens what `CMention.LMentionResultOpen` opens at once.
 The answer is what the menu offers under the found word.
 Null when no Example is chosen or the find fails, so the window shows nothing.
 A failure shows `Mention.FindFailed`, and the open sits inside the same catch.

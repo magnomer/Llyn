@@ -35,6 +35,8 @@ public sealed record LStateValue(
 
     public string? LStateValueShown => LStateValueShow() is { Length: > 0 } shown ? shown : null;
 
+    public string LStateValuePlain => LStateValueShow();
+
     public bool LStateValueUncertain => LStateValueState == LState.LStateUnknown;
 
     public bool LStateValueLegible => LStateValueState == LState.LStateSpecified || LStateValueUnreadable;

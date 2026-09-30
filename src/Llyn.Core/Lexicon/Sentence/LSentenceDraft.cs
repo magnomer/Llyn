@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Llyn.Core;
 
 public sealed record LSentenceDraft(
@@ -11,6 +13,12 @@ public sealed record LSentenceDraft(
 
     public LStateValue LSentenceDraftDependence { get; init; } =
         LSentenceDraftDependence ?? LStateValue.LStateValueUnspecified;
+
+    public string LSentenceDraftLanguage => LSentenceDraftExample?.LExampleDraftLanguage ?? string.Empty;
+
+    public IReadOnlyList<LGlossDraft> LSentenceDraftGloss => LSentenceDraftExample?.LExampleDraftGloss ?? [];
+
+    public IReadOnlyList<LMentionDraft> LSentenceDraftMention => LSentenceDraftExample?.LExampleDraftMention ?? [];
 
     public bool LSentenceDraftEmpty =>
         (LSentenceDraftExample is null

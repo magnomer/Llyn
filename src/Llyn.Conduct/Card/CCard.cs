@@ -295,26 +295,4 @@ public sealed class CCard
 
         _cCardDesk.CDeskQuill?.LQuillMentionSave(span.LMentionDraftOffset, span.LMentionDraftLength, entryId);
     }
-
-    public static string CCardOrderRead(
-        CSentenceOrder? order, CStateValue particle, CStateValue dependence, CStateValue text, string mark)
-    {
-        ArgumentNullException.ThrowIfNull(particle);
-        ArgumentNullException.ThrowIfNull(dependence);
-        ArgumentNullException.ThrowIfNull(text);
-        ArgumentNullException.ThrowIfNull(mark);
-
-        bool leading = (order?.CSentenceOrderParticle ?? 0) == 0;
-        string before = CCardLegibleRead(leading ? particle : dependence, mark);
-        string after = CCardLegibleRead(leading ? dependence : particle, mark);
-        string frame = before.Length == 0 || after.Length == 0 ? before + after : before + " " + after;
-        string head = frame.Length == 0 ? string.Empty : "(+" + frame + ")";
-        string written = CCardLegibleRead(text, mark);
-        return head.Length == 0 || written.Length == 0 ? head + written : head + " " + written;
-    }
-
-    private static string CCardLegibleRead(CStateValue state, string mark)
-    {
-        return state.CStateValueLegible ? state.CStateValueText : state.CStateValueUncertain ? mark : string.Empty;
-    }
 }

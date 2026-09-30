@@ -3,8 +3,16 @@
 ## `internal sealed class PMedia`
 
 The row maker a reading view hands down to the picture and film rows built inside its templates.
-A reading view lists a card's locations straight from the draft, so no code of its own builds the rows.
+A reading view lists a ready card's media rows, so no code of its own builds the loading rows.
 The rows still need the engine to turn a location into an address, and this carries it down for them.
+
+## `internal PImage PMediaImageCreate(CImageDraft draft)`
+
+The loading picture row for one ready picture row of a reading card.
+
+## `internal PVideo PMediaVideoCreate(CVideoDraft draft)`
+
+The loading film row for one ready film row of a reading card.
 
 ## `public static readonly DependencyProperty PMediaProperty`
 

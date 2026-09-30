@@ -16,14 +16,15 @@ Only the atelier builds it, so each session has one.
 
 Raised with a stored Mention's sense once its entry has opened, so the driver brings that sense card into view.
 
-## `public IReadOnlyList<CTranslationTarget> CMentionResultOpen(CMentionResult result)`
+## `internal CMentionOffer LMentionResultOpen(CMentionResult result)`
 
-Decides what a click on a text opens next.
+Decides what a click on a text opens next, for every find gate alike.
 A stored Mention opens its linked entry through the navigation's entry open, and a link to nothing opens nothing.
 Its sense is raised only when the open went through, so a declined leave spotlights nothing.
 A single matching entry opens at once.
 Several matching entries open nothing and come back as the candidates the driver offers in a menu.
-Every other answer is empty, so the driver's menu shows nothing.
+Every other answer offers nothing, so the driver's menu shows nothing.
+The offer carries the found word's start, where the menu stands.
 
 ## `public IReadOnlyList<CMentionLabel> CMentionResolve(`
 

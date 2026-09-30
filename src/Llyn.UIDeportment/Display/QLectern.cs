@@ -132,7 +132,6 @@ public sealed class QLectern
         QLecternArea.CDisplayOpened += QLecternSound.QLecternScriptRefine;
         QLecternArea.CDisplayOpened += QLecternSound.QLecternFanqieRefine;
         QLecternArea.CDisplayOpened += QLecternCard.QLecternCardRefine;
-        QLecternArea.CDisplayOpened += QLecternCard.QLecternLeafRefine;
         QLecternArea.CDisplayOpened += QLecternCard.QLecternIncomingRefine;
         QLecternArea.CDisplayOpened += QLecternCard.QLecternEtymologyRefine;
 

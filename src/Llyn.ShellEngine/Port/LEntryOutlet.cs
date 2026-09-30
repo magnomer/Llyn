@@ -51,8 +51,8 @@ public sealed class LEntryOutlet : LEntryPort
     public IReadOnlyList<LUsage> LEngineIncomingRead(long entryId) =>
         _lEntryOutletEngine.LEngineCard.LEngineIncomingRead(entryId);
 
-    public IReadOnlyList<LTranslationTarget> LEngineTargetRead(LEntryDraft draft) =>
-        _lEntryOutletEngine.LEngineCard.LEngineTargetRead(draft);
+    public IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(LEntryDraft shown) =>
+        _lEntryOutletEngine.LEngineCard.LEngineTranslationRead(shown);
 
     public (IReadOnlyList<LTranslationTarget>, bool) LEngineEtymologyRead(LEntryDraft draft) =>
         _lEntryOutletEngine.LEngineCard.LEngineEtymologyRead(draft);

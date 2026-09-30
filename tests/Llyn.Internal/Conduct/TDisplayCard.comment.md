@@ -5,13 +5,24 @@
 Covers the reading view's card reads and click gates on a real workspace.
 The wing opens the entry, so each case stands on its display's area.
 
-## `public void DisplayCardRead_ShownEntry_AnswersOrderLinksAndSections()`
+## `public void DisplayCardRead_ShownEntry_AnswersReadyCardsAndSections()`
 
-The converters get the language's sentence order and each linked entry named, and only the Meaning section shows.
+A Meaning card arrives ready, and only the Meaning section shows.
+An unknown title carries the unknown mark's key, and a never-written expression arrives muted.
+Its link arrives named, and its stored tag arrives worded and ready to open.
 
-## `public void DisplayCardRead_NothingShown_AnswersNoLinksAndNoSections()`
+## `public void DisplayCardRead_SentenceRow_AnswersTheReadyLine()`
 
-With nothing open, no link, byline or section is answered.
+A sentence row arrives with its frame, sentence and language ready.
+An unknown role reads the engine's unknown mark inside the frame's brackets.
+
+## `public void DisplayCardRead_NothingShown_AnswersNoCardsAndNoSections()`
+
+With nothing open, no card or section is answered.
+
+## `public void FolioImageRead_RowNobodyLocated_CarriesTheEmptyVerdict()`
+
+A picture or video row with no location carries the empty verdict, and a located one does not.
 
 ## `public void DisplayIncomingRead_NothingChosen_AnswersNone()`
 
@@ -38,16 +49,15 @@ A link chip raises its entry in the library tab.
 
 A record never saved, a link to no entry and an empty click open nothing.
 
-## `public void DisplayMentionFind_TextWithoutLanguage_ReadsItInTheShownLanguage()`
-
-A clicked word in a text naming no language is found among the shown entry's language.
-The same word read as French finds nothing, and no failure is shown.
-
 ## `public void DisplayCardFind_ShownCards_AnswersTheListAndThePlace()`
 
 Each card answers its list and place, and an unknown card or an empty view answers nothing.
 
-## `private static bool TDisplayChipOpen(CDisplay area, object? chip, long? link, List<string> opened)`
+## `private static CLeafChip TDisplayChipCreate(long id, CSubject subject, bool stored)`
+
+A ready chip of `subject` naming `id`, stored or not.
+
+## `private static bool TDisplayChipOpen(CDisplay area, CLeafChip? chip, long? link, List<string> opened)`
 
 Clicks `chip` while noting in `opened` each tab and record the chip raises for the navigation.
 

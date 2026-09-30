@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -11,8 +12,6 @@ namespace Llyn.UIDeportment;
 
 public sealed class QLecternCard
 {
-    private readonly LDisplay _qLecternCardDisplay;
-
     private readonly CDisplay _qLecternCardArea;
 
     private readonly ObservableCollection<QUsageItem> _qLecternCardUsage = [];
@@ -35,25 +34,16 @@ public sealed class QLecternCard
 
     private QCompass _qLecternCardCompass = null!;
 
-    private Action<IReadOnlyList<CTranslationTarget>> _qLecternCardTranslation = null!;
-
-    private Action<IReadOnlyDictionary<long, string>> _qLecternCardCitation = null!;
-
-    private Action<CSentenceOrder> _qLecternCardOrder = null!;
-
     private UIElement _qLecternCardReferral = null!;
 
-    private UIElement _qLecternCardEtymology = null!;
+    private PEtymology _qLecternCardEtymology = null!;
 
     private UIElement _qLecternCardOrigin = null!;
-
-    private Action<string, string, IReadOnlyList<CTranslationTarget>> _qLecternCardLineage = null!;
 
     public QLecternCard(LDisplay display)
     {
         ArgumentNullException.ThrowIfNull(display);
 
-        _qLecternCardDisplay = display;
         _qLecternCardArea = display.CDisplayArea;
     }
 
@@ -86,20 +76,6 @@ public sealed class QLecternCard
         _qLecternCardCompass = compass;
     }
 
-    public void QLecternLinkIntroduce(
-        Action<IReadOnlyList<CTranslationTarget>> translationSeam,
-        Action<IReadOnlyDictionary<long, string>> citationSeam,
-        Action<CSentenceOrder> orderSeam)
-    {
-        ArgumentNullException.ThrowIfNull(translationSeam);
-        ArgumentNullException.ThrowIfNull(citationSeam);
-        ArgumentNullException.ThrowIfNull(orderSeam);
-
-        _qLecternCardTranslation = translationSeam;
-        _qLecternCardCitation = citationSeam;
-        _qLecternCardOrder = orderSeam;
-    }
-
     public void QLecternIncomingIntroduce(ItemsControl incoming, UIElement section)
     {
         ArgumentNullException.ThrowIfNull(incoming);
@@ -109,18 +85,13 @@ public sealed class QLecternCard
         _qLecternCardReferral = section;
     }
 
-    public void QLecternEtymologyIntroduce(
-        UIElement etymology,
-        UIElement section,
-        Action<string, string, IReadOnlyList<CTranslationTarget>> etymologySeam)
+    internal void QLecternEtymologyIntroduce(PEtymology etymology, UIElement section)
     {
         ArgumentNullException.ThrowIfNull(etymology);
         ArgumentNullException.ThrowIfNull(section);
-        ArgumentNullException.ThrowIfNull(etymologySeam);
 
         _qLecternCardEtymology = etymology;
         _qLecternCardOrigin = section;
-        _qLecternCardLineage = etymologySeam;
     }
 
     internal void QLecternRouteIntroduce(PWindow host)
@@ -135,15 +106,6 @@ public sealed class QLecternCard
         QLecternCardRefine(_qLecternCardArea.CDisplayCardRead());
     }
 
-    public void QLecternLeafRefine()
-    {
-        _qLecternCardMeaning.ItemsSource = null;
-        _qLecternCardCollocation.ItemsSource = null;
-        _qLecternCardMeaning.ItemsSource = _qLecternCardDisplay.LDisplaySound.LDisplayShown!.LEntryDraftMeanings;
-        _qLecternCardCollocation.ItemsSource =
-            _qLecternCardDisplay.LDisplaySound.LDisplayShown!.LEntryDraftCollocations;
-    }
-
     public void QLecternIncomingRefine()
     {
         QLecternIncomingRefine(_qLecternCardArea.CDisplayIncomingRead());
@@ -156,8 +118,6 @@ public sealed class QLecternCard
 
     public void QLecternBlankRefine()
     {
-        _qLecternCardTranslation([]);
-        _qLecternCardCitation(new Dictionary<long, string>());
         _qLecternCardMeaning.ItemsSource = null;
         _qLecternCardCollocation.ItemsSource = null;
         _qLecternCardDefinition.Visibility = Visibility.Collapsed;
@@ -168,13 +128,21 @@ public sealed class QLecternCard
 
     private void QLecternCardRefine(CLecternCard card)
     {
-        _qLecternCardOrder(card.CLecternCardOrder);
         LFontFace.LFontExampleRefine(
             _qLecternCardResources, _qLecternCardAtelier, _qLecternCardArea.CDisplayShown.CLecternLanguage);
-        _qLecternCardCitation(card.CLecternCardCitations);
-        _qLecternCardTranslation(card.CLecternCardTargets);
+        QLecternLeafRefine(card);
         _qLecternCardDefinition.Visibility = QLook.QLookVisibleRead(card.CLecternCardDefined);
         _qLecternCardPhrase.Visibility = QLook.QLookVisibleRead(card.CLecternCardCollocated);
+    }
+
+    private void QLecternLeafRefine(CLecternCard card)
+    {
+        _qLecternCardMeaning.ItemsSource = null;
+        _qLecternCardCollocation.ItemsSource = null;
+        _qLecternCardMeaning.ItemsSource =
+            card.CLecternCardMeanings.Select(static leaf => new QLeafItem(leaf)).ToList();
+        _qLecternCardCollocation.ItemsSource =
+            card.CLecternCardCollocations.Select(static leaf => new QLeafItem(leaf)).ToList();
     }
 
     private void QLecternIncomingRefine(IReadOnlyList<CUsage> usages)
@@ -190,10 +158,12 @@ public sealed class QLecternCard
 
     private void QLecternEtymologyRefine(CLecternEtymology etymology)
     {
-        _qLecternCardLineage(
-            etymology.CLecternEtymologyLanguage,
-            etymology.CLecternEtymologyText,
-            etymology.CLecternEtymologyTargets);
+        _qLecternCardEtymology.PEtymologyLanguage = etymology.CLecternEtymologyLanguage;
+        _qLecternCardEtymology.PEtymologyText = etymology.CLecternEtymologyText;
+        _qLecternCardEtymology.PEtymologySourceShow(etymology.CLecternEtymologyTargets
+            .Select(static target => new PEtymon(
+                target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage))
+            .ToList());
         _qLecternCardEtymology.Visibility = QLook.QLookVisibleRead(etymology.CLecternEtymologyShown);
         _qLecternCardOrigin.Visibility = QLook.QLookVisibleRead(etymology.CLecternEtymologyDerived);
     }
@@ -203,7 +173,8 @@ public sealed class QLecternCard
         ArgumentNullException.ThrowIfNull(e);
 
         e.Handled = _qLecternCardArea.CDisplayChipOpen(
-            QSender.QSenderSourceRead<object>(e), QSender.QSenderSourceRead<LLinkChip>(e)?.LLinkChipId);
+            QSender.QSenderSourceRead<QLeafChip>(e)?.QLeafChipOrigin,
+            QSender.QSenderSourceRead<LLinkChip>(e)?.LLinkChipId);
     }
 
     public void QLecternIncomingObserve(RoutedEventArgs e)
@@ -217,26 +188,17 @@ public sealed class QLecternCard
         _qLecternCardArea.CDisplayChipOpen(null, parameter as long?);
     }
 
-    public void QLecternMentionObserve<QLecternAnchor>(
-        QLecternAnchor anchor,
-        string text,
-        string language,
-        int offset,
-        IReadOnlyList<CMentionMark>? mentions,
-        Action<QLecternAnchor, CMentionResult> show)
+    public void QLecternMentionObserve(PMentionArgument e)
     {
-        QLecternMentionRefine(anchor, _qLecternCardArea.CDisplayMentionFind(text, language, offset, mentions), show);
-    }
+        ArgumentNullException.ThrowIfNull(e);
 
-    private static void QLecternMentionRefine<QLecternAnchor>(
-        QLecternAnchor anchor, CMentionResult? result, Action<QLecternAnchor, CMentionResult> show)
-    {
-        ArgumentNullException.ThrowIfNull(show);
-
-        if (result is not null)
-        {
-            show(anchor, result);
-        }
+        _qLecternCardHost.PWindowMentionRefine(
+            e.PMentionArgumentOrigin,
+            _qLecternCardArea.CDisplayMentionFind(
+                e.PMentionArgumentText,
+                e.PMentionArgumentLanguage,
+                e.PMentionArgumentOffset,
+                e.PMentionArgumentMention));
     }
 
     public void QLecternSpotlightRefine(long id)

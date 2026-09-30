@@ -5,17 +5,21 @@ namespace Llyn.UIDeportment;
 
 public class PDisplayCompass : ResourceDictionary
 {
-    private readonly PDisplay _pCompassHost;
+    private QCompass _pCompassDriver = null!;
 
-    internal PDisplayCompass(PDisplay host)
+    internal PDisplayCompass()
     {
-        _pCompassHost = host;
         MergedDictionaries.Add((ResourceDictionary)System.Windows.Application.LoadComponent(
             new Uri("/Llyn.UIVeneer;component/Display/Compass/PDisplayCompass.xaml", UriKind.Relative)));
     }
 
+    internal void PCompassIntroduce(QCompass driver)
+    {
+        _pCompassDriver = driver;
+    }
+
     internal void PCompassRowRefine(object sender, RoutedEventArgs e)
     {
-        _pCompassHost.PCompassRowHandle(sender, e);
+        _pCompassDriver.QCompassRowRefine(sender);
     }
 }

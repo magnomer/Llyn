@@ -2,7 +2,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -31,14 +30,14 @@ internal sealed class PMedia
         return element.GetValue(PMediaProperty) as PMedia;
     }
 
-    internal PImage PMediaImageCreate(LImageDraft draft)
+    internal PImage PMediaImageCreate(CImageDraft draft)
     {
-        return new PImage(_pMediaAtelier, CFolio.CFolioImageRead([draft])[0]);
+        return new PImage(_pMediaAtelier, draft);
     }
 
-    internal PVideo PMediaVideoCreate(LVideoDraft draft)
+    internal PVideo PMediaVideoCreate(CVideoDraft draft)
     {
-        return new PVideo(_pMediaAtelier, CFolio.CFolioVideoRead([draft])[0]);
+        return new PVideo(_pMediaAtelier, draft);
     }
 
     internal static void PMediaRevealAttach(ItemsControl list)

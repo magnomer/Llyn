@@ -107,9 +107,16 @@ A link whose entry is gone is left out, so a chip is never drawn blank.
 The draft's named source links, and whether its etymology has anything to show.
 It shows with a narrative that holds words or with a link whose entry still stands.
 
-## `public IReadOnlyList<LTranslationTarget> LEngineTargetRead(LEntryDraft draft)`
+## `public IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(LEntryDraft draft)`
 
-The targets of the draft's link ids, so a card resolves its chips in one read.
+The link targets of every card of a stored entry, keyed by card id, in one read.
+A refused read answers every card empty, so the reading view still draws its cards.
+
+## `internal static IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationResolve(IReadOnlyList<LCardDraft> cards, IReadOnlyList<LTranslationTarget> read)`
+
+Pairs each card with the targets of its links, in the order the card lists them.
+A link the read did not find is left out, so a chip row never shows a blank.
+The editor's tenure and the reading view share it, so both keep one rule.
 
 ## `public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId, IReadOnlyList<long> ids)`
 

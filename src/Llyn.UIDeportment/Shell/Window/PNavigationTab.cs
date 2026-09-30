@@ -186,17 +186,6 @@ public partial class PWindow
         }
     }
 
-    internal void PWindowMentionObserve(PMention anchor, CMentionResult result)
-    {
-        ArgumentNullException.ThrowIfNull(anchor);
-        ArgumentNullException.ThrowIfNull(result);
-
-        PMentionMenuShow(
-            anchor,
-            anchor.PMentionPieceRead(result.CMentionResultOffset),
-            PWindowAtelier.CAtelierMention.CMentionResultOpen(result));
-    }
-
     internal void PWindowMentionRefine(PMention anchor, CMentionOffer? offer)
     {
         ArgumentNullException.ThrowIfNull(anchor);
@@ -211,7 +200,7 @@ public partial class PWindow
 
     private void PMentionSenseRefine(long sense)
     {
-        _qLibrary.QLibraryDisplay.PDisplayCardScroll(sense);
+        _qLibrary.QLibraryLectern.QLecternCard.QLecternSpotlightRefine(sense);
     }
 
     private void PMentionLeaveRefine(object? sender, EventArgs e)

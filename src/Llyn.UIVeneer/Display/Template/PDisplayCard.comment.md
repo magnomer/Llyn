@@ -6,7 +6,7 @@ The shared parts of a read-only card, and the dictionary that gathers the rest.
 They live apart from `PDisplay.xaml` because the card is its own shape, not part of the entry page around it.
 Every `Theme.` reference here is dynamic, since a loose dictionary is parsed before the theme is in reach.
 The header text styles stand here because both card shapes read them.
-Every value a card shows is set by [PLeaf](../../../Llyn.UIDeportment/Display/Template/PLeaf.comment.md), which finds each named part.
+Every value a card shows is painted by [PLeaf](../../../Llyn.UIDeportment/Display/Template/PLeaf.comment.md), which finds each named part.
 Each row of a card body is written in its own dictionary and merged back in.
 
 ## Inline notes

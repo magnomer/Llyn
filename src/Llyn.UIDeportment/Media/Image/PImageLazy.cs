@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -50,12 +50,12 @@ public sealed class PImageLazy : Decorator
 
     private void PImageLazyResolve()
     {
-        if (DataContext is not LImageDraft draft)
+        if (DataContext is not CImageDraft draft)
         {
             return;
         }
 
-        Visibility = QLook.QLookVisibleRead(!draft.LImageDraftEmpty);
+        Visibility = QLook.QLookVisibleRead(!draft.CImageDraftEmpty);
         if (PMedia.PMediaRead(this) is PMedia media)
         {
             DataContext = media.PMediaImageCreate(draft);

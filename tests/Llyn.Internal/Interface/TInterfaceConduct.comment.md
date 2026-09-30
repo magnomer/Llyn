@@ -141,9 +141,13 @@ The waiting checks go through a display voice over the same phonology port.
 A settings port that only reads failure notices, each as the unexpected key it is handed.
 A gate over fakes can then show its failure without a real engine behind the notice.
 
-## `internal static CSentenceOrder TCatalogOrderRead(LEngine engine, string language)`
+## `internal static IReadOnlyList<CImageDraft> TCardImageRead(IReadOnlyList<LImageDraft> images)`
 
-The word order a language's pack gives, mapped as the sentence frame maps it.
+Relays the internal image map, so a fact can hand it a row nobody located.
+
+## `internal static IReadOnlyList<CVideoDraft> TCardVideoRead(IReadOnlyList<LVideoDraft> videos)`
+
+Relays the internal video map, so a fact can hand it a row nobody located.
 
 ## `internal static CSentence TSentenceCreate(LEngine engine, CDesk desk)`
 

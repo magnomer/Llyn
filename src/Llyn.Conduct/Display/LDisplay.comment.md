@@ -13,9 +13,10 @@ A refused read or mark reaches the user through the envoy the panel handed over.
 
 The sound half, which holds the shown draft, the fold state and every phonology read.
 
-## `internal void LDisplayNavigationAttach(CNavigation navigation)`
+## `internal void LDisplayNavigationAttach(CNavigation navigation, CMention mention)`
 
 Hands every record, rime cell and series the display's gates raise to the atelier's navigation.
+Hands the area the atelier's mention area too, which opens what a clicked word found.
 The composition that owns the atelier calls it once, so a display built alone opens nothing.
 
 ## `public CDisplay CDisplayArea { get; }`

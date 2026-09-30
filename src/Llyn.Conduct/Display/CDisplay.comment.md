@@ -126,11 +126,12 @@ The shown draft the sound half holds, passed unread to the engine.
 
 ## `public CLecternCard CDisplayCardRead()`
 
-What the card templates read beside the shown entry's cards.
+The shown entry's cards, each ready to paint, with whether their sections show.
 The order, the bylines and the link names are three reads, each answering empty when refused.
 The page thus still draws, as the sentence frame's read does in the editor.
+The unknown mark is the engine's word, so a frame or a sentence embeds it ready.
 
-## `private CSentenceOrder LDisplayOrderRead(string language)`
+## `private LSentenceOrder LDisplayOrderRead(string language)`
 
 The sentence order of `language`, or the default order when the read is refused.
 
@@ -138,10 +139,6 @@ The sentence order of `language`, or the default order when the read is refused.
 
 The ready line of every Source the shown entry cites, or none when the read is refused.
 It is read on every open, so a Source edited elsewhere reads fresh.
-
-## `private IReadOnlyList<CTranslationTarget> LDisplayTargetRead(LEntryDraft shown)`
-
-The headwords the shown draft's cards and etymology link to, or none when the read is refused.
 
 ## `public IReadOnlyList<CUsage> CDisplayIncomingRead()`
 
@@ -157,19 +154,32 @@ The shown entry's etymology, with whether its field and its section show.
 The engine names the links and says whether a narrative or a link stands.
 A refused link read answers no links, and the field then shows by its narrative alone.
 
-## `public bool CDisplayChipOpen(object? chip, long? link)`
+## `public bool CDisplayChipOpen(CLeafChip? chip, long? link)`
 
 The gate for a chip clicked on a card or a source link clicked in the etymology.
-`chip` is what the clicked chip carries, and `link` the entry id a link chip names.
-The engine says which stored record the click names, and a record never saved names none.
-The record's kind then picks the tab that opens it, by name, and the chip is raised for the navigation.
+`chip` is the clicked situation, register or tag chip, and `link` the entry id a link chip names.
+A stored chip opens its record in the tab its kind picks, and a chip never saved opens nothing.
+The engine says which entry a link names, and an empty id names none.
 It answers whether a tab was asked, so the driver marks the click handled.
 
-## `public CMentionResult? CDisplayMentionFind(string text, string language, int offset, IReadOnlyList<CMentionMark>? mentions)`
+## `private static string LDisplayTabRead(CSubject subject)`
+
+The tab that opens a chip's record, picked by the chip's kind, by name.
+
+## `internal void LDisplayMentionAttach(CMention mention)`
+
+Holds the atelier's mention area, which opens what a clicked word found.
+The composition calls it through `LDisplayNavigationAttach`, so a display built alone finds nothing.
+
+## `public CMentionOffer? CDisplayMentionFind(string text, string language, int offset, IReadOnlyList<CMentionMark>? mentions)`
 
 The gate for a word clicked in a sentence of the reading view.
 The engine reads what stands at `offset`, in the shown entry's language when the text names none.
+`LMentionResultOpen` then opens a stored Mention or a sole entry at once, as the corpus does.
+The answer is the found word's start and the entries the menu offers, empty when one opened.
+The reading view asks no leave question of its own, since the navigation asks it on opening.
 A refused lookup shows `Mention.FindFailed` and answers null, so the click opens nothing.
+The open sits inside the same catch.
 
 ## `public (CCompassPart, int)? CDisplayCardFind(long id)`
 

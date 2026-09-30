@@ -162,9 +162,8 @@ public sealed class CAnthology
                 return null;
             }
 
-            CMentionResult result =
-                CMention.CMentionResultRead(_cAnthologyEntryPort.LEngineMentionFind(chosen, offset));
-            return new CMentionOffer(result.CMentionResultOffset, _cAnthologyMention.CMentionResultOpen(result));
+            return _cAnthologyMention.LMentionResultOpen(
+                CMention.CMentionResultRead(_cAnthologyEntryPort.LEngineMentionFind(chosen, offset)));
         }
         catch (Exception exception)
         {

@@ -56,7 +56,7 @@ public sealed class CEditor
             atelier.CAtelierSettingsPort,
             atelier.CAtelierMediaPort,
             envoy);
-        editor.CEditorDisplay.LDisplayNavigationAttach(atelier.CAtelierNavigation);
+        editor.CEditorDisplay.LDisplayNavigationAttach(atelier.CAtelierNavigation, atelier.CAtelierMention);
         editor.CEditorSounding.LSoundingDiweiChosen +=
             (language, kind, key) => atelier.CAtelierNavigation.LNavigationDiweiOpen(language, kind, key);
         atelier.CAtelierWorkspace.CWorkspaceOpened += () => editor.CEditorEntryOpen(null);

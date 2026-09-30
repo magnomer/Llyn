@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
-using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -26,7 +24,7 @@ internal sealed class PEtymon : DependencyObject
         PEtymonCaret = true;
     }
 
-    private PEtymon(long id, string headword, string language)
+    internal PEtymon(long id, string headword, string language)
     {
         PEtymonId = id;
         PEtymonHeadword = headword;
@@ -56,16 +54,4 @@ internal sealed class PEtymon : DependencyObject
         set => SetValue(PEtymonShownProperty, value);
     }
 
-    internal static IReadOnlyList<PEtymon> PEtymonBuild(IReadOnlyList<CTranslationTarget> targets, PEtymon caret)
-    {
-        List<PEtymon> items = [];
-        foreach (CTranslationTarget target in targets)
-        {
-            items.Add(new PEtymon(
-                target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage));
-        }
-
-        items.Add(caret);
-        return items;
-    }
 }

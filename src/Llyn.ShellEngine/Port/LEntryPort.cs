@@ -35,7 +35,7 @@ public interface LEntryPort
 
     IReadOnlyList<LUsage> LEngineIncomingRead(long entryId);
 
-    IReadOnlyList<LTranslationTarget> LEngineTargetRead(LEntryDraft draft);
+    IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(LEntryDraft shown);
 
     (IReadOnlyList<LTranslationTarget>, bool) LEngineEtymologyRead(LEntryDraft draft);
 
@@ -119,17 +119,15 @@ public interface LEntryPort
         return new LEtymologyDraft(text).LEtymologyDraftNarrated;
     }
 
-    static (LSubject, long)? LEngineChipRead(object? chip, long? link)
+    static long? LEngineLinkRead(long? link)
     {
-        return chip switch
-        {
-            LSituationDraft { LSituationDraftStored: true } situation
-                => (LSubject.LSubjectSituation, situation.LSituationDraftId),
-            LRegisterDraft { LRegisterDraftStored: true } register
-                => (LSubject.LSubjectRegister, register.LRegisterDraftId),
-            LTagDraft { LTagDraftStored: true } tag => (LSubject.LSubjectTag, tag.LTagDraftId),
-            _ => link is long id && id != 0 ? (LSubject.LSubjectEntry, id) : null,
-        };
+        return link is long id && id != 0 ? id : null;
+    }
+
+    static (string, string, string) LEngineLineRead(
+        LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)
+    {
+        return LExampleClerk.LExampleLineRead(sentence, order, mark, citations);
     }
 
     static (LOwner, int)? LEngineCardFind(LEntryDraft draft, long id)

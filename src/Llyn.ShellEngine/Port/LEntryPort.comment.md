@@ -98,12 +98,22 @@ It is static, since the menu is the same for every Source and needs no port.
 Whether an etymology narrative holds words, by the etymology draft's own rule.
 It is static, since the reading view asks it of text a control holds and no port is at hand.
 
-## `static (LSubject, long)? LEngineChipRead(object? chip, long? link)`
+## `static long? LEngineLinkRead(long? link)`
 
-The kind and id of the stored record a clicked chip names, or null when it names none.
-A situation, register or tag chip names its record once it is stored.
-A link names its entry, which only a stored id can be.
+The entry a clicked link names, or null when it names none.
+A link names its entry only through a stored id, so an empty id names nothing.
 It is static, since it reads only what the click hands over.
+
+## `static (string, string, string) LEngineLineRead(LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)`
+
+The frame, the sentence and the Source line a reading card shows for one sentence row.
+The clerk composes them, so the display and the portrait share one rule.
+It is static, since it reads only the row, the order and the lines the caller holds.
+
+## `IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(LEntryDraft shown);`
+
+The link targets of every meaning and collocation of the shown entry, keyed by card id.
+Every card of the entry has a key, so a reader never checks for a missing card.
 
 ## `static (LOwner, int)? LEngineCardFind(LEntryDraft draft, long id)`
 

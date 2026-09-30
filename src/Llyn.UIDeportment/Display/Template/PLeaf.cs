@@ -5,80 +5,63 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
-internal sealed class PLeaf
+internal static class PLeaf
 {
-    internal PLinkConverter PLeafLink { get; } = new();
-
-    internal QCitationConverter PLeafCitation { get; } = new();
-
-    internal PSentenceConverter PLeafFrame { get; } = new();
-
-    internal void PLeafCardApply(FrameworkElement container, object item, string? _)
+    internal static void PLeafCardRefine(FrameworkElement container, object item, string? _)
     {
-        if (item is not LCardDraft card)
+        if (item is not QLeafItem card)
         {
             return;
         }
 
-        QStateConverter state = new();
-        CultureInfo culture = CultureInfo.CurrentCulture;
-        string unknown = QLocalizationCatalog.QLocalizationTextRead("Display.Unknown");
-        string title = (string)state.Convert(
-            [CFolio.CFolioStateRead(card.LCardDraftTitle), unknown], typeof(string), string.Empty, culture);
         if (QLook.QLookPartFind<TextBlock>(container, "PCardRank") is TextBlock rank)
         {
-            rank.Text = card.LCardDraftPosition.ToString(culture);
+            rank.Text = card.QLeafItemRank;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PCardTitle") is TextBlock heading)
         {
-            heading.Text = title;
-            heading.Visibility = QLook.QLookVisibleRead(title.Length > 0);
+            heading.Text = card.QLeafItemTitle;
+            heading.Visibility = QLook.QLookVisibleRead(card.QLeafItemTitled);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PCardCaption") is TextBlock caption)
         {
-            caption.Visibility = QLook.QLookVisibleRead(title.Length == 0);
+            caption.Visibility = QLook.QLookVisibleRead(!card.QLeafItemTitled);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PCardCollocation") is TextBlock expression)
         {
-            string text = (string)state.Convert(
-                [CFolio.CFolioStateRead(card.LCardDraftExpression), unknown], typeof(string), string.Empty, culture);
-            expression.Text = text;
-            expression.Visibility = QLook.QLookVisibleRead(text.Length > 0);
+            expression.Text = card.QLeafItemExpression;
+            expression.Visibility = QLook.QLookVisibleRead(card.QLeafItemExpressed);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PCardMeaning") is TextBlock meaning)
         {
-            string text = (string)state.Convert(
-                [CFolio.CFolioStateRead(card.LCardDraftMeaning), unknown], typeof(string), string.Empty, culture);
-            meaning.Text = text;
-            meaning.Visibility = QLook.QLookVisibleRead(text.Length > 0);
+            meaning.Text = card.QLeafItemMeaning;
+            meaning.Visibility = QLook.QLookVisibleRead(card.QLeafItemDefined);
         }
 
         if (QLook.QLookPartFind<ContentControl>(container, "PCardContents") is ContentControl contents)
         {
             contents.Content = card;
-            PLeafBodyApply(contents, card, culture);
+            PLeafBodyRefine(contents, card);
         }
     }
 
-    private void PLeafBodyApply(FrameworkElement body, LCardDraft card, CultureInfo culture)
+    private static void PLeafBodyRefine(FrameworkElement body, QLeafItem card)
     {
-        PLeafListApply(body, "PCardSituation", card.LCardDraftSituation, PLeafSituationApply);
-        PLeafListApply(body, "PCardRegister", card.LCardDraftRegister, PLeafRegisterApply);
-        PLeafListApply(body, "PCardTag", card.LCardDraftTag, PLeafTagApply);
+        PLeafListRefine(body, "PCardSituation", card.QLeafItemSituation, PLeafSituationRefine);
+        PLeafListRefine(body, "PCardRegister", card.QLeafItemRegister, PLeafRegisterRefine);
+        PLeafListRefine(body, "PCardTag", card.QLeafItemTag, PLeafTagRefine);
         if (QLook.QLookPartFind<ItemsControl>(body, "PCardTranslation") is ItemsControl translation)
         {
-            translation.ItemsSource = (IEnumerable<LLinkChip>)PLeafLink.Convert(
-                card.LCardDraftTranslation, typeof(IEnumerable<LLinkChip>), string.Empty, culture);
-            translation.Visibility = QLook.QLookVisibleRead(card.LCardDraftTranslation.Count > 0);
-            if (card.LCardDraftSituation.Count == 0)
+            translation.ItemsSource = card.QLeafItemTranslation;
+            translation.Visibility = QLook.QLookVisibleRead(card.QLeafItemTranslation.Count > 0);
+            if (card.QLeafItemSituation.Count == 0)
             {
                 translation.SetResourceReference(FrameworkElement.MarginProperty, "Theme.Card.ChipMargin");
             }
@@ -87,34 +70,34 @@ internal sealed class PLeaf
                 translation.ClearValue(FrameworkElement.MarginProperty);
             }
 
-            QLookItem.QLookItemAttach(translation, PLeafLinkApply);
+            QLookItem.QLookItemAttach(translation, PLeafLinkRefine);
         }
 
         if (QLook.QLookPartFind<Border>(body, "PCardExample") is Border example)
         {
-            example.Visibility = QLook.QLookVisibleRead(card.LCardDraftSentence.Count > 0);
+            example.Visibility = QLook.QLookVisibleRead(card.QLeafItemSentence.Count > 0);
         }
 
         if (QLook.QLookPartFind<ItemsControl>(body, "PCardSentence") is ItemsControl sentences)
         {
-            sentences.ItemsSource = card.LCardDraftSentence;
-            QLookItem.QLookItemAttach(sentences, PLeafSentenceApply);
+            sentences.ItemsSource = card.QLeafItemSentence;
+            QLookItem.QLookItemAttach(sentences, PLeafSentenceRefine);
         }
 
         if (QLook.QLookPartFind<ItemsControl>(body, "PCardImage") is ItemsControl images)
         {
-            images.ItemsSource = card.LCardDraftImage;
+            images.ItemsSource = card.QLeafItemImage;
             QLookItem.QLookItemAttach(images, PImage.PImageLineApply);
         }
 
         if (QLook.QLookPartFind<ItemsControl>(body, "PCardVideo") is ItemsControl videos)
         {
-            videos.ItemsSource = card.LCardDraftVideo;
+            videos.ItemsSource = card.QLeafItemVideo;
             QLookItem.QLookItemAttach(videos, PVideo.PVideoLineApply);
         }
     }
 
-    private static void PLeafListApply<PLeafRow>(
+    private static void PLeafListRefine<PLeafRow>(
         FrameworkElement body,
         string name,
         IReadOnlyList<PLeafRow> rows,
@@ -130,27 +113,17 @@ internal sealed class PLeaf
         QLookItem.QLookItemAttach(list, fill);
     }
 
-    private void PLeafSentenceApply(FrameworkElement container, object item, string? _)
+    private static void PLeafSentenceRefine(FrameworkElement container, object item, string? _)
     {
-        if (item is not LSentenceDraft sentence)
+        if (item is not CLeafLine line)
         {
             return;
         }
 
-        CultureInfo culture = CultureInfo.CurrentCulture;
-        LExampleDraft? example = sentence.LSentenceDraftExample;
-        object[] parts =
-        [
-            CFolio.CFolioStateRead(sentence.LSentenceDraftParticle),
-            CFolio.CFolioStateRead(sentence.LSentenceDraftDependence),
-            CFolio.CFolioStateRead(
-                sentence.LSentenceDraftExample?.LExampleDraftText ?? LStateValue.LStateValueUnspecified),
-            QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
-        ];
         TextBlock? frame = QLook.QLookPartFind<TextBlock>(container, "PExampleFrame");
         if (frame is not null)
         {
-            frame.Text = (string)PLeafFrame.Convert(parts, typeof(string), "Head", culture);
+            frame.Text = line.CLeafLineHead;
         }
 
         if (QLook.QLookPartFind<PMention>(container, "PExampleText") is not PMention text)
@@ -158,9 +131,9 @@ internal sealed class PLeaf
             return;
         }
 
-        text.PMentionLanguage = example?.LExampleDraftLanguage ?? string.Empty;
-        text.PMentionMention = CMention.CMentionMarkRead(example?.LExampleDraftMention);
-        text.PMentionText = (string)PLeafFrame.Convert(parts, typeof(string), "Text", culture);
+        text.PMentionLanguage = line.CLeafLineLanguage;
+        text.PMentionMention = line.CLeafLineMention;
+        text.PMentionText = line.CLeafLineText;
         if (frame is not null)
         {
             MultiBinding margin = new() { Converter = new QFontConverter() };
@@ -173,11 +146,7 @@ internal sealed class PLeaf
 
         if (QLook.QLookPartFind<TextBlock>(container, "PExampleCitation") is TextBlock citation)
         {
-            citation.Text = (string)PLeafCitation.Convert(
-                example?.LExampleDraftReference.LStateAnchorShown ?? (object)string.Empty,
-                typeof(string),
-                string.Empty,
-                culture);
+            citation.Text = line.CLeafLineCitation;
             citation.SetBinding(
                 FrameworkElement.MarginProperty, new Binding(nameof(PMention.Margin)) { Source = text });
             citation.SetBinding(
@@ -189,41 +158,38 @@ internal sealed class PLeaf
         if (QLook.QLookPartFind<ItemsControl>(container, "PExampleGloss") is ItemsControl gloss)
         {
             gloss.ItemsSource = (IEnumerable<PGloss>)new PGlossConverter().Convert(
-                CFolio.CFolioGlossRead(sentence.LSentenceDraftExample?.LExampleDraftGloss ?? []),
-                typeof(IEnumerable<PGloss>),
-                string.Empty,
-                culture);
+                line.CLeafLineGloss, typeof(IEnumerable<PGloss>), string.Empty, CultureInfo.CurrentCulture);
             QLookItem.QLookItemAttach(gloss, PGloss.PGlossRowApply);
         }
     }
 
-    private static void PLeafSituationApply(FrameworkElement container, object item, string? _)
+    private static void PLeafSituationRefine(FrameworkElement container, object item, string? _)
     {
-        if (item is LSituationDraft situation
+        if (item is QLeafChip situation
             && QLook.QLookPartFind<TextBlock>(container, "PSituationTitle") is TextBlock title)
         {
-            title.Text = PLeafStateRead(situation.LSituationDraftTitle);
+            title.Text = situation.QLeafChipText;
         }
     }
 
-    private static void PLeafRegisterApply(FrameworkElement container, object item, string? _)
+    private static void PLeafRegisterRefine(FrameworkElement container, object item, string? _)
     {
-        if (item is LRegisterDraft register
+        if (item is QLeafChip register
             && QLook.QLookPartFind<TextBlock>(container, "PRegisterLabel") is TextBlock label)
         {
-            label.Text = PLeafStateRead(register.LRegisterDraftName);
+            label.Text = register.QLeafChipText;
         }
     }
 
-    private static void PLeafTagApply(FrameworkElement container, object item, string? _)
+    private static void PLeafTagRefine(FrameworkElement container, object item, string? _)
     {
-        if (item is LTagDraft tag && QLook.QLookPartFind<TextBlock>(container, "PTagLabel") is TextBlock label)
+        if (item is QLeafChip tag && QLook.QLookPartFind<TextBlock>(container, "PTagLabel") is TextBlock label)
         {
-            label.Text = tag.LTagDraftText;
+            label.Text = tag.QLeafChipText;
         }
     }
 
-    private static void PLeafLinkApply(FrameworkElement container, object item, string? _)
+    private static void PLeafLinkRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not LLinkChip chip)
         {
@@ -244,14 +210,5 @@ internal sealed class PLeaf
         {
             language.Text = chip.LLinkChipLanguage;
         }
-    }
-
-    private static string PLeafStateRead(LStateValue value)
-    {
-        return (string)new QStateConverter().Convert(
-            [CFolio.CFolioStateRead(value), QLocalizationCatalog.QLocalizationTextRead("Display.Unknown")],
-            typeof(string),
-            string.Empty,
-            CultureInfo.CurrentCulture);
     }
 }

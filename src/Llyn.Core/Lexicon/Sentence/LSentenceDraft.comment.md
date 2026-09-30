@@ -35,6 +35,19 @@ A save that kept the frame but issued a fresh id would rewrite a row nothing ask
 - `LSentenceDraftDependence` — The role the frame fills, and what is known about it.
 - `LSentenceDraftId` — The id of the stored row this one edits, empty until one is given.
 
+## `public string LSentenceDraftLanguage`
+
+The language the quoted sentence is written in, empty when the row quotes no Example.
+
+## `public IReadOnlyList<LGlossDraft> LSentenceDraftGloss`
+
+The quoted sentence's Glosses, none when the row quotes no Example.
+
+## `public IReadOnlyList<LMentionDraft> LSentenceDraftMention`
+
+The quoted sentence's Mentions, none when the row quotes no Example.
+A frame without a sentence has no words to link, so a reader never checks the Example itself.
+
 ## `public bool LSentenceDraftEmpty`
 
 True when the row names no Example and states no frame.

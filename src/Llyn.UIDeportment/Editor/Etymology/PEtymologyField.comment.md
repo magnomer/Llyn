@@ -15,6 +15,7 @@ Binds the field's commands and listens to the narrative box once, when the edito
 ### `internal void PEtymologyRefine(CEntryDraft draft)`
 
 Hands the field the source links the engine resolved, since the draft holds ids alone.
+Each link becomes a chip item here, so the field holds no Conduct record.
 A link whose target could not be read is left out rather than drawn blank.
 
 ### `private void PEtymologyWriteObserve(object sender, TextChangedEventArgs e)`

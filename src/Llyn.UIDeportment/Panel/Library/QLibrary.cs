@@ -18,6 +18,8 @@ internal sealed class QLibrary
 
     private QIndex _qIndex = null!;
 
+    internal QLectern QLibraryLectern { get; private set; } = null!;
+
     internal QLibrary(UserControl surface)
     {
         ArgumentNullException.ThrowIfNull(surface);
@@ -114,7 +116,7 @@ internal sealed class QLibrary
 
     private RadioButton QLibraryScribe => QContract.QContractFind<RadioButton>(_qLibrarySurface, "PLibraryScribe");
 
-    internal PDisplay QLibraryDisplay => QContract.QContractFind<PDisplay>(_qLibrarySurface, "PDisplay");
+    private PDisplay QLibraryDisplay => QContract.QContractFind<PDisplay>(_qLibrarySurface, "PDisplay");
 
     private PEditor QLibraryEditor => QContract.QContractFind<PEditor>(_qLibrarySurface, "PEditor");
 
@@ -128,6 +130,7 @@ internal sealed class QLibrary
         _cLibrary = host.PWindowForge.QForgeLibraryCreate(QLibraryShownCheck, host.PWindowEnvoy);
         CPanel panel = _cLibrary.CLibraryPanel;
         QLectern lectern = new(_cLibrary.CLibraryEditor.CEditorDisplay, panel);
+        QLibraryLectern = lectern;
         QChoice.QChoiceOrderBuild(QOrderList, "Order", QOrderObserve, CLibrary.CLibraryOrderRead());
         panel.CPanelChanged += QLibraryModeRefine;
         _cLibrary.CLibraryWorkspaceChanged += QLibraryWorkspaceRefine;

@@ -54,7 +54,7 @@ Takes the atelier, the unselected notice, the page and the swath's clear, then a
 The swath's clear is a seam, since the band a reader drags lies in the veneer.
 Opening or closing an entry drops the band first, since the text it spanned is gone.
 The header, the halves and the compass then redraw in subscription order.
-The card half fills its converters before its card lists, and both before the compass measures them.
+The card half paints its ready card lists before the compass measures them.
 The accent half draws its rows before it loads their flags, so the late flags land on drawn rows.
 The sound half draws its reflex rows before their fold and its fanqie block, which writes their anchors.
 A reflex notice redraws the rows through the resonate, then the fold, in that order on the page.

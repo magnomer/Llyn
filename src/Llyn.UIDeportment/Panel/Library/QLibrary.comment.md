@@ -16,7 +16,7 @@ It ties both droppers to their popups, sets every icon, and subscribes every cli
 ## `private Border QOrder`
 
 Each named part is pulled from the page by its contract ID on every read.
-`QLibraryDisplay` is internal, because the window scrolls the display to a sense.
+`QLibraryLectern` is internal, because the window scrolls the lectern's card to a sense.
 
 ## `internal void QLibraryIntroduce(PWindow host)`
 

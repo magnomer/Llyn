@@ -7,6 +7,11 @@ It is one item of the field's collection, so the chips and the entry wrap as one
 The word lives here rather than on the box, which is rebuilt whenever a chip is added.
 Its two values are dependency properties, so the drawn box follows them without a hand-raised change event.
 
+## `internal PEtymon(long id, string headword, string language)`
+
+A source chip for the linked entry `id`, drawn with its headword, its language and that language's flag.
+The drivers build one per resolved source link and hand the list to the field.
+
 ## `public string PEtymonText`
 
 The word standing in the entry, bound two ways to the box.

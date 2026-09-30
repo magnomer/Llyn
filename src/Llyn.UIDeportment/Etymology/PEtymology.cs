@@ -87,18 +87,11 @@ public sealed class PEtymology : ContentControl
 
     internal TextBox PEtymologyBox => _pEtymologyWrite;
 
-    internal void PEtymologyShow(string language, string text, IReadOnlyList<CTranslationTarget> etymons)
-    {
-        PEtymologyLanguage = language;
-        PEtymologyText = text;
-        PEtymologySourceShow(etymons);
-    }
-
-    internal void PEtymologySourceShow(IReadOnlyList<CTranslationTarget> etymons)
+    internal void PEtymologySourceShow(IReadOnlyList<PEtymon> etymons)
     {
         ArgumentNullException.ThrowIfNull(etymons);
 
-        _pEtymologyField.ItemsSource = PEtymon.PEtymonBuild(etymons, _pEtymologyCaret);
+        _pEtymologyField.ItemsSource = new List<PEtymon>(etymons) { _pEtymologyCaret };
         _pEtymologyField.Visibility = QLook.QLookVisibleRead(
             CDisplay.CDisplayEtymonCheck(PEtymologyEditable, etymons.Count));
     }

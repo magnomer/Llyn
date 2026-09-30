@@ -65,6 +65,11 @@ So no reader can lose the distinction by accident.
 The text to show for the value, which is nothing at all unless the value states one or is unreadable.
 A caller that must tell an unknown value from an empty one reads the state instead.
 
+## `public string LStateValuePlain`
+
+The same text as a property, empty when nothing legible is written.
+A reader above the engine maps it plainly, so no layer above keeps its own empty fallback.
+
 ## `public bool LStateValueEmpty`
 
 Whether nothing was ever recorded.

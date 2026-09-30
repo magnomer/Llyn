@@ -37,3 +37,7 @@ A test that must not fetch turns the setting off first.
 The drafts a leftover sweep leaves for the user.
 Each is saveable, held by no one here, and claimed by no other process.
 No shell reads them until a recovery dialog exists, so the tests read them through the claim clerk.
+
+## `internal static (string, string, string) TEngineLineRead(LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)`
+
+Relays the example line read: the frame, the sentence text and the Source line.

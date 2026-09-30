@@ -313,8 +313,11 @@ internal static class TInterfaceConduct
 
     internal static CStateValue TCardStateRead(LStateValue value) => CFolio.CFolioStateRead(value);
 
-    internal static CSentenceOrder TCatalogOrderRead(LEngine engine, string language) =>
-        CCatalog.CCatalogOrderRead(new LPhonologyOutlet(engine).LEngineOrderRead(language));
+    internal static IReadOnlyList<CImageDraft> TCardImageRead(IReadOnlyList<LImageDraft> images) =>
+        CFolio.CFolioImageRead(images);
+
+    internal static IReadOnlyList<CVideoDraft> TCardVideoRead(IReadOnlyList<LVideoDraft> videos) =>
+        CFolio.CFolioVideoRead(videos);
 
     internal static CEntryDraft TCardEntryRead(
         LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets) =>

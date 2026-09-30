@@ -104,10 +104,12 @@ public sealed class TAtelierMention
         List<long> senses = [];
         atelier.CAtelierMention.CMentionSenseChosen += senses.Add;
 
-        IReadOnlyList<CTranslationTarget> offered = atelier.CAtelierMention.CMentionResultOpen(
+        CMentionOffer offer = TInterfaceMention.TMentionResultOpen(
+            atelier,
             new CMentionResult(2, new CMentionMark(1, 2, 3, 40, sense), [TMentionTargetCreate(8)]));
 
-        Assert.Empty(offered);
+        Assert.Equal(2, offer.CMentionOfferOffset);
+        Assert.Empty(offer.CMentionOfferEntry);
         Assert.Equal([40L], arrived);
         Assert.Equal(raised ? [sense] : [], senses);
     }
@@ -124,10 +126,12 @@ public sealed class TAtelierMention
         List<long> senses = [];
         atelier.CAtelierMention.CMentionSenseChosen += senses.Add;
 
-        IReadOnlyList<CTranslationTarget> offered = atelier.CAtelierMention.CMentionResultOpen(
+        CMentionOffer offer = TInterfaceMention.TMentionResultOpen(
+            atelier,
             new CMentionResult(2, new CMentionMark(1, 2, 3, entry, 7), []));
 
-        Assert.Empty(offered);
+        Assert.Equal(2, offer.CMentionOfferOffset);
+        Assert.Empty(offer.CMentionOfferEntry);
         Assert.Empty(arrived);
         Assert.Empty(senses);
     }
@@ -139,10 +143,12 @@ public sealed class TAtelierMention
         using CAtelier atelier = TAtelierMentionCreate(engine, []);
         List<long> arrived = TMentionLibraryAdd(atelier, true);
 
-        IReadOnlyList<CTranslationTarget> offered = atelier.CAtelierMention.CMentionResultOpen(
+        CMentionOffer offer = TInterfaceMention.TMentionResultOpen(
+            atelier,
             new CMentionResult(2, null, [TMentionTargetCreate(8)]));
 
-        Assert.Empty(offered);
+        Assert.Equal(2, offer.CMentionOfferOffset);
+        Assert.Empty(offer.CMentionOfferEntry);
         Assert.Equal([8L], arrived);
     }
 
@@ -156,10 +162,12 @@ public sealed class TAtelierMention
         List<long> arrived = TMentionLibraryAdd(atelier, true);
         List<CTranslationTarget> candidates = [.. Enumerable.Range(8, count).Select(id => TMentionTargetCreate(id))];
 
-        IReadOnlyList<CTranslationTarget> offered = atelier.CAtelierMention.CMentionResultOpen(
+        CMentionOffer offer = TInterfaceMention.TMentionResultOpen(
+            atelier,
             new CMentionResult(2, null, candidates));
 
-        Assert.Equal(candidates, offered);
+        Assert.Equal(2, offer.CMentionOfferOffset);
+        Assert.Equal(candidates, offer.CMentionOfferEntry);
         Assert.Empty(arrived);
     }
 

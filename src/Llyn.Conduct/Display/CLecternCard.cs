@@ -3,8 +3,7 @@ using System.Collections.Generic;
 namespace Llyn.Conduct;
 
 public sealed record CLecternCard(
-    CSentenceOrder CLecternCardOrder,
-    IReadOnlyDictionary<long, string> CLecternCardCitations,
-    IReadOnlyList<CTranslationTarget> CLecternCardTargets,
+    IReadOnlyList<CLeaf> CLecternCardMeanings,
+    IReadOnlyList<CLeaf> CLecternCardCollocations,
     bool CLecternCardDefined,
     bool CLecternCardCollocated);

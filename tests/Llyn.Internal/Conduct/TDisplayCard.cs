@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -10,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TDisplayCard
 {
     [Fact]
-    public void DisplayCardRead_ShownEntry_AnswersOrderLinksAndSections()
+    public void DisplayCardRead_ShownEntry_AnswersReadyCardsAndSections()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -21,23 +22,71 @@ public sealed class TDisplayCard
             "English",
             string.Empty,
             string.Empty,
-            [TInterface.TCardCreate("a liquid", 1) with { LCardDraftTranslation = [eau.LEntryId] }],
+            [
+                TInterface.TCardCreate("a liquid", 1) with
+                {
+                    LCardDraftTitle = LStateValue.LStateValueUnknown,
+                    LCardDraftTranslation = [eau.LEntryId],
+                    LCardDraftTag = TInterface.TTagDraftCreate("literal"),
+                },
+            ],
             []));
         CWing wing = TDisplayWingPrepare(atelier, []);
         wing.CWingEntryOpen(water.LEntryId);
 
         CLecternCard card = wing.CWingDisplay.CDisplayArea.CDisplayCardRead();
 
-        Assert.Equal(TInterfaceConduct.TCatalogOrderRead(engine, "English"), card.CLecternCardOrder);
-        CTranslationTarget target = Assert.Single(card.CLecternCardTargets);
+        CLeaf leaf = Assert.Single(card.CLecternCardMeanings);
+        Assert.Equal(1, leaf.CLeafPosition);
+        Assert.Equal(new CStateWording(string.Empty, "Display.Unknown", false), leaf.CLeafTitle);
+        Assert.Equal(new CStateWording(string.Empty, null, true), leaf.CLeafExpression);
+        Assert.Equal(new CStateWording("a liquid", null, false), leaf.CLeafMeaning);
+        CTranslationTarget target = Assert.Single(leaf.CLeafTranslation);
         Assert.Equal((eau.LEntryId, "eau", "French"), (
             target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage));
+        CLeafChip tag = Assert.Single(leaf.CLeafTag);
+        Assert.Equal(new CStateWording("literal", null, false), tag.CLeafChipWording);
+        Assert.Equal((CSubject.CSubjectTag, true), (tag.CLeafChipSubject, tag.CLeafChipStored));
+        Assert.Empty(card.CLecternCardCollocations);
         Assert.True(card.CLecternCardDefined);
         Assert.False(card.CLecternCardCollocated);
     }
 
     [Fact]
-    public void DisplayCardRead_NothingShown_AnswersNoLinksAndNoSections()
+    public void DisplayCardRead_SentenceRow_AnswersTheReadyLine()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LSentenceDraft sentence = TInterface.TSentenceDraftCreate(
+            LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnknown) with
+        {
+            LSentenceDraftExample = TInterface.TExampleDraftCreate(
+                "the water runs", 0, LStateAnchor.LStateAnchorUnspecified, "English"),
+        };
+        LEntry water = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "water",
+            "English",
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardCreate("a liquid", 1) with { LCardDraftSentence = [sentence] }],
+            []));
+        CWing wing = TDisplayWingPrepare(atelier, []);
+        wing.CWingEntryOpen(water.LEntryId);
+
+        CLeaf leaf = Assert.Single(wing.CWingDisplay.CDisplayArea.CDisplayCardRead().CLecternCardMeanings);
+
+        CLeafLine line = Assert.Single(leaf.CLeafSentence);
+        Assert.Equal("(+" + TInterface.TLocalizationTextRead("Display.Unknown") + ")", line.CLeafLineHead);
+        Assert.Equal("the water runs", line.CLeafLineText);
+        Assert.Equal("English", line.CLeafLineLanguage);
+        Assert.Equal(string.Empty, line.CLeafLineCitation);
+        Assert.Empty(line.CLeafLineMention);
+        Assert.Empty(line.CLeafLineGloss);
+    }
+
+    [Fact]
+    public void DisplayCardRead_NothingShown_AnswersNoCardsAndNoSections()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -46,10 +95,22 @@ public sealed class TDisplayCard
 
         CLecternCard card = wing.CWingDisplay.CDisplayArea.CDisplayCardRead();
 
-        Assert.Empty(card.CLecternCardTargets);
-        Assert.Empty(card.CLecternCardCitations);
+        Assert.Empty(card.CLecternCardMeanings);
+        Assert.Empty(card.CLecternCardCollocations);
         Assert.False(card.CLecternCardDefined);
         Assert.False(card.CLecternCardCollocated);
+    }
+
+    [Fact]
+    public void FolioImageRead_RowNobodyLocated_CarriesTheEmptyVerdict()
+    {
+        IReadOnlyList<CImageDraft> images = TInterfaceConduct.TCardImageRead(
+            [TInterface.TImageDraftCreate(string.Empty, 3), TInterface.TImageDraftCreate("still.png", 4)]);
+        IReadOnlyList<CVideoDraft> videos = TInterfaceConduct.TCardVideoRead(
+            [TInterface.TVideoDraftCreate(string.Empty, id: 5), TInterface.TVideoDraftCreate("clip.mp4", "0:01", 6)]);
+
+        Assert.Equal([true, false], images.Select(static image => image.CImageDraftEmpty));
+        Assert.Equal([true, false], videos.Select(static video => video.CVideoDraftEmpty));
     }
 
     [Fact]
@@ -131,13 +192,10 @@ public sealed class TDisplayCard
         CDisplay area = TDisplayWingPrepare(atelier, []).CWingDisplay.CDisplayArea;
         List<string> opened = [];
 
-        bool situation = TDisplayChipOpen(
-            area, TInterface.TSituationDraftCreate("a market") with { LSituationDraftId = 7 }, null, opened);
-        bool register = TDisplayChipOpen(
-            area, TInterface.TRegisterDraftCreate("formal") with { LRegisterDraftId = 8 }, null, opened);
-        bool tag = TDisplayChipOpen(
-            area, TInterface.TTagDraftCreate("literal")[0] with { LTagDraftId = 9 }, null, opened);
-        bool link = TDisplayChipOpen(area, "a link chip", 12, opened);
+        bool situation = TDisplayChipOpen(area, TDisplayChipCreate(7, CSubject.CSubjectSituation, true), null, opened);
+        bool register = TDisplayChipOpen(area, TDisplayChipCreate(8, CSubject.CSubjectRegister, true), null, opened);
+        bool tag = TDisplayChipOpen(area, TDisplayChipCreate(9, CSubject.CSubjectTag, true), null, opened);
+        bool link = TDisplayChipOpen(area, null, 12, opened);
 
         Assert.Equal((true, true, true, true), (situation, register, tag, link));
         Assert.Equal(["Repertoire 7", "Tenor 8", "Taxonomy 9", "Library 12"], opened);
@@ -152,32 +210,12 @@ public sealed class TDisplayCard
         CDisplay area = TDisplayWingPrepare(atelier, []).CWingDisplay.CDisplayArea;
         List<string> opened = [];
 
-        bool situation = TDisplayChipOpen(area, TInterface.TSituationDraftCreate("a market"), null, opened);
+        bool situation = TDisplayChipOpen(area, TDisplayChipCreate(0, CSubject.CSubjectSituation, false), null, opened);
         bool link = TDisplayChipOpen(area, null, 0, opened);
         bool none = TDisplayChipOpen(area, null, null, opened);
 
         Assert.Equal((false, false, false), (situation, link, none));
         Assert.Empty(opened);
-    }
-
-    [Fact]
-    public void DisplayMentionFind_TextWithoutLanguage_ReadsItInTheShownLanguage()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        LEntry water = TDisplayEntrySave(engine, "water");
-        LEntry run = TDisplayEntrySave(engine, "run");
-        List<string> asked = [];
-        CWing wing = TDisplayWingPrepare(atelier, asked);
-        wing.CWingEntryOpen(run.LEntryId);
-
-        CMentionResult? found = wing.CWingDisplay.CDisplayArea.CDisplayMentionFind("water", string.Empty, 1, null);
-        CMentionResult? foreign = wing.CWingDisplay.CDisplayArea.CDisplayMentionFind("water", "French", 1, null);
-
-        Assert.Equal(water.LEntryId, found?.CMentionResultFirst);
-        Assert.Empty(foreign!.CMentionResultEntry);
-        Assert.Empty(asked);
     }
 
     [Fact]
@@ -207,7 +245,10 @@ public sealed class TDisplayCard
         Assert.Null(area.CDisplayCardFind(987654));
     }
 
-    private static bool TDisplayChipOpen(CDisplay area, object? chip, long? link, List<string> opened)
+    private static CLeafChip TDisplayChipCreate(long id, CSubject subject, bool stored) =>
+        new(id, new CStateWording("a chip", null, false), subject, stored);
+
+    private static bool TDisplayChipOpen(CDisplay area, CLeafChip? chip, long? link, List<string> opened)
     {
         Action<string, long> chosen = (tab, id) => opened.Add(tab + " " + id);
         area.CDisplayRowChosen += chosen;

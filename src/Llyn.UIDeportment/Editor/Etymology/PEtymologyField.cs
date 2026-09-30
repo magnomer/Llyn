@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Conduct;
@@ -27,7 +28,10 @@ public partial class PEditor
     {
         PEtymologyField.PEtymologyLanguage = draft.CEntryDraftLanguage;
         PEtymologyField.PEtymologyText = draft.CEntryDraftEtymology.CEtymologyDraftText;
-        PEtymologyField.PEtymologySourceShow(_qEditor.QEditorArea.CEditorEtymonRead());
+        PEtymologyField.PEtymologySourceShow(_qEditor.QEditorArea.CEditorEtymonRead()
+            .Select(static target => new PEtymon(
+                target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage))
+            .ToList());
         PEtymologyField.PEtymologyMentionShow(
             _pEditorHost,
             draft.CEntryDraftEtymology.CEtymologyDraftText,

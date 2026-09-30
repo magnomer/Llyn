@@ -7,11 +7,6 @@ namespace Llyn.Conduct;
 
 internal static class CFolio
 {
-    internal static CSentenceOrder CFolioOrderRead(LSentenceOrder order)
-    {
-        return new CSentenceOrder(order.LSentenceOrderParticle, order.LSentenceOrderDependence);
-    }
-
     internal static IReadOnlyList<CTranslationTarget> CFolioTargetRead(IReadOnlyList<LTranslationTarget> targets)
     {
         ArgumentNullException.ThrowIfNull(targets);
@@ -50,8 +45,7 @@ internal static class CFolio
 
     internal static CStateValue CFolioStateRead(LStateValue value)
     {
-        return new CStateValue(
-            value.LStateValueShown ?? string.Empty, value.LStateValueUncertain, value.LStateValueLegible);
+        return new CStateValue(value.LStateValuePlain, value.LStateValueUncertain, value.LStateValueLegible);
     }
 
     private static IReadOnlyList<CCardDraft> CFolioSheetRead(
@@ -123,7 +117,8 @@ internal static class CFolio
     internal static IReadOnlyList<CImageDraft> CFolioImageRead(IReadOnlyList<LImageDraft> images)
     {
         return images
-            .Select(static image => new CImageDraft(image.LImageDraftId, CFolioStateRead(image.LImageDraftLocation)))
+            .Select(static image => new CImageDraft(
+                image.LImageDraftId, CFolioStateRead(image.LImageDraftLocation), image.LImageDraftEmpty))
             .ToList();
     }
 
@@ -133,7 +128,8 @@ internal static class CFolio
             .Select(static video => new CVideoDraft(
                 video.LVideoDraftId,
                 CFolioStateRead(video.LVideoDraftLocation),
-                CFolioStateRead(video.LVideoDraftSpan)))
+                CFolioStateRead(video.LVideoDraftSpan),
+                video.LVideoDraftEmpty))
             .ToList();
     }
 

@@ -16,7 +16,7 @@ The popup, its title and its list are read through the loaded window's name scop
 
 ## `internal void PMentionMenuShow(FrameworkElement anchor, Rect place, IReadOnlyList<CTranslationTarget> entries)`
 
-Entry mode, on the candidates `CMentionResultOpen` answered.
+Entry mode, on the candidates a find gate's `CMentionOffer` carries.
 An empty list only closes the menu.
 A picked row opens its Entry through the navigation's gate.
 The menu is already hidden by the pick, and a landing hides it too.

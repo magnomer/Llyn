@@ -24,6 +24,15 @@ Finds the word at offset 3 of the chosen Example, with `chosen` on a real vista.
 The fake word find answers the word at offset 2 with the `found` Entries, and throws when `found` is null.
 The atelier's navigation opens what the find opens at once.
 
+## `internal static CMentionOffer TMentionResultOpen(CAtelier atelier, CMentionResult result) =>`
+
+Runs the shared open of a find answer over the atelier's mention area.
+
+## `internal static CMentionOffer? TDisplayMentionFind(LEngine engine, CAtelier atelier, CEnvoy envoy)`
+
+Finds a word through a display whose entry port's word find throws.
+The display is attached to the atelier's navigation and mention area, as the composition does.
+
 ## `internal static IReadOnlyList<CMentionLabel> TMentionFailRead(LEngine engine, CDesk desk, CEnvoy envoy)`
 
 Runs the shared chip line read over a draft port whose resolve throws.

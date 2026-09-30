@@ -177,16 +177,3 @@ Whether the selection lies inside a span of the held narrative.
 ## `private void CCardMentionSend(LMentionDraft? span, long entryId)`
 
 Sends one span request, or nothing when there is no span.
-
-## `public static string CCardOrderRead(CSentenceOrder? order, CStateValue particle, CStateValue dependence, CStateValue text, string mark)`
-
-Writes a sentence's frame head and its text as one line, in the language's order.
-No order means the default order, with the marker written first.
-The frame is dropped whole when neither field shows anything.
-A legible value shows its text, and a value marked unknown shows the given mark.
-Any other value shows nothing.
-A caller wanting only the head passes an empty text, and one wanting only the text passes empty frame values.
-
-## `private static string CCardLegibleRead(CStateValue state, string mark)`
-
-The legibility rule for one frame value, shared by the three parts of the line.

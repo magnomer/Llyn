@@ -21,6 +21,8 @@ public sealed class CDisplay
 
     private readonly LSettingsPort _cDisplaySettings;
 
+    private CMention? _cDisplayMention;
+
     internal CDisplay(
         LDisplay display, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, CEnvoy envoy)
     {
@@ -221,26 +223,30 @@ public sealed class CDisplay
     {
         if (LDisplayShown is not LEntryDraft shown)
         {
-            return new CLecternCard(LDisplayOrderRead(string.Empty), new Dictionary<long, string>(), [], false, false);
+            return new CLecternCard([], [], false, false);
         }
 
+        LSentenceOrder order = LDisplayOrderRead(shown.LEntryDraftLanguage);
+        IReadOnlyDictionary<long, string> citations = LDisplayCitationRead(shown);
+        IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets =
+            _cDisplayPort.LEngineTranslationRead(shown);
+        string mark = _cDisplaySettings.LEngineTextRead("Display.Unknown");
         return new CLecternCard(
-            LDisplayOrderRead(shown.LEntryDraftLanguage),
-            LDisplayCitationRead(shown),
-            LDisplayTargetRead(shown),
+            CLeaf.LLeafRead(shown.LEntryDraftMeanings, order, mark, citations, targets),
+            CLeaf.LLeafRead(shown.LEntryDraftCollocations, order, mark, citations, targets),
             shown.LEntryDraftDefined,
             shown.LEntryDraftCollocated);
     }
 
-    private CSentenceOrder LDisplayOrderRead(string language)
+    private LSentenceOrder LDisplayOrderRead(string language)
     {
         try
         {
-            return CFolio.CFolioOrderRead(_cDisplayPhonology.LEngineOrderRead(language));
+            return _cDisplayPhonology.LEngineOrderRead(language);
         }
         catch (Exception)
         {
-            return CFolio.CFolioOrderRead(LSentenceOrder.LSentenceOrderDefault);
+            return LSentenceOrder.LSentenceOrderDefault;
         }
     }
 
@@ -253,18 +259,6 @@ public sealed class CDisplay
         catch (Exception)
         {
             return new Dictionary<long, string>();
-        }
-    }
-
-    private IReadOnlyList<CTranslationTarget> LDisplayTargetRead(LEntryDraft shown)
-    {
-        try
-        {
-            return CFolio.CFolioTargetRead(_cDisplayPort.LEngineTargetRead(shown));
-        }
-        catch (Exception)
-        {
-            return [];
         }
     }
 
@@ -309,32 +303,53 @@ public sealed class CDisplay
             shown.LEntryDraftLanguage, text, CFolio.CFolioTargetRead(etymons), narrated, shown.LEntryDraftDerived);
     }
 
-    public bool CDisplayChipOpen(object? chip, long? link)
+    public bool CDisplayChipOpen(CLeafChip? chip, long? link)
     {
-        if (LEntryPort.LEngineChipRead(chip, link) is not (LSubject subject, long id))
+        if (chip is { CLeafChipStored: true })
+        {
+            CDisplayRowChosen?.Invoke(LDisplayTabRead(chip.CLeafChipSubject), chip.CLeafChipId);
+            return true;
+        }
+
+        if (LEntryPort.LEngineLinkRead(link) is not long id)
         {
             return false;
         }
 
-        string tab = subject switch
-        {
-            LSubject.LSubjectEntry => "Library",
-            LSubject.LSubjectSituation => "Repertoire",
-            LSubject.LSubjectRegister => "Tenor",
-            LSubject.LSubjectTag => "Taxonomy",
-            _ => throw new ArgumentOutOfRangeException(nameof(chip), subject, null),
-        };
-        CDisplayRowChosen?.Invoke(tab, id);
+        CDisplayRowChosen?.Invoke("Library", id);
         return true;
     }
 
-    public CMentionResult? CDisplayMentionFind(
+    private static string LDisplayTabRead(CSubject subject)
+    {
+        return subject switch
+        {
+            CSubject.CSubjectSituation => "Repertoire",
+            CSubject.CSubjectRegister => "Tenor",
+            CSubject.CSubjectTag => "Taxonomy",
+            _ => throw new ArgumentOutOfRangeException(nameof(subject), subject, null),
+        };
+    }
+
+    internal void LDisplayMentionAttach(CMention mention)
+    {
+        ArgumentNullException.ThrowIfNull(mention);
+
+        _cDisplayMention = mention;
+    }
+
+    public CMentionOffer? CDisplayMentionFind(
         string text, string language, int offset, IReadOnlyList<CMentionMark>? mentions)
     {
+        if (_cDisplayMention is not CMention mention)
+        {
+            return null;
+        }
+
         try
         {
-            return CMention.CMentionResultRead(_cDisplayPort.LEngineMentionFind(
-                text, language, LDisplayShown, offset, mentions is null ? null : CMention.CMentionRead(mentions)));
+            return mention.LMentionResultOpen(CMention.CMentionResultRead(_cDisplayPort.LEngineMentionFind(
+                text, language, LDisplayShown, offset, mentions is null ? null : CMention.CMentionRead(mentions))));
         }
         catch (Exception exception)
         {

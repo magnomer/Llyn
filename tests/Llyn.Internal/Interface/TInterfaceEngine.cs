@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using Llyn.Application;
 using Llyn.Core;
@@ -106,6 +107,10 @@ internal static partial class TInterface
     internal static string TEngineStampFormat(string? utc) => LEntryFacade.LEngineStampFormat(utc);
 
     internal static bool TEngineNarrativeCheck(string text) => LEntryPort.LEngineNarrativeCheck(text);
+
+    internal static (string, string, string) TEngineLineRead(
+        LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations) =>
+        LEntryPort.LEngineLineRead(sentence, order, mark, citations);
 
     internal static LEntry TEngineEntrySave(this LEngine engine, LEntryDraft draft) =>
         engine.TEngineEntryCommit(null, draft);

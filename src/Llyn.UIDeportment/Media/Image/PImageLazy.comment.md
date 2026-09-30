@@ -22,9 +22,9 @@ The row the decorator reports to, set by the fill to the element's own data.
 
 ## `private void PImageLazyResolve()`
 
-A reading view lists the draft's own picture rows, so a draft arriving as the element's data is wrapped here.
+A reading view lists a ready card's picture rows, so a row arriving as the element's data is wrapped here.
 The loading row becomes the element's data instead, so the line fill finds it as the editor's fill does.
-A draft naming no picture collapses the element, since there is nothing to show for it.
+A row the engine calls empty collapses the element, since there is nothing to show for it.
 
 ## `public PImageLazy()`
 

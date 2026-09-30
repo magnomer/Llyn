@@ -43,10 +43,11 @@ public sealed class LDisplay
 
     public LDisplaySound LDisplaySound { get; }
 
-    internal void LDisplayNavigationAttach(CNavigation navigation)
+    internal void LDisplayNavigationAttach(CNavigation navigation, CMention mention)
     {
         ArgumentNullException.ThrowIfNull(navigation);
 
+        CDisplayArea.LDisplayMentionAttach(mention);
         CDisplayArea.CDisplayRowChosen += (tab, id) => navigation.LNavigationRowOpen(tab, id);
         CDisplaySound.CDisplayRowChosen += (tab, id) => navigation.LNavigationRowOpen(tab, id);
         CDisplaySound.CDisplayDiweiChosen +=

@@ -13,10 +13,6 @@ public class PDisplay : UserControl
 {
     private readonly PDisplayCompass _pDisplayCompass;
 
-    private readonly PLeaf _pLeaf = new();
-
-    private PWindow _pDisplayHost = null!;
-
     private QLectern _qLectern = null!;
 
     public PDisplay()
@@ -25,32 +21,32 @@ public class PDisplay : UserControl
             new Uri("/Llyn.UIVeneer;component/Display/View/PDisplay.xaml", UriKind.Relative));
         Content = surface;
         NameScope.SetNameScope(this, NameScope.GetNameScope(surface));
-        _pDisplayCompass = new PDisplayCompass(this);
+        _pDisplayCompass = new PDisplayCompass();
         Resources.MergedDictionaries.Add(_pDisplayCompass);
         QLook.QLookStyleAttach(surface.Resources);
         QLook.QLookStyleAttach(_pDisplayCompass);
 
         PDisplaySwath.PSwathAttach(PDisplayContents);
-        AddHandler(PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(PDisplayMentionHandle));
+        AddHandler(PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(PDisplayMentionObserve));
 
         CommandBindings.Add(new CommandBinding(
-            PEtymologyCommand.PEtymologyCommandEntry, PDisplayEtymonHandle));
+            PEtymologyCommand.PEtymologyCommandEntry, PDisplayEtymonObserve));
         PDisplayAccent.CommandBindings.Add(new CommandBinding(
-            PAccentCommand.PAccentCommandPlayback, PDisplayPlaybackHandle));
+            PAccentCommand.PAccentCommandPlayback, PDisplayPlaybackObserve));
         PDisplayGlyph.CommandBindings.Add(new CommandBinding(
-            PGlyphCommand.PGlyphCommandEntry, PDisplayGlyphHandle));
+            PGlyphCommand.PGlyphCommandEntry, PDisplayGlyphObserve));
 
-        PDisplayFavorite.Click += PDisplayFavoriteHandle;
-        PDisplayGrasp.PGraspChanged += PDisplayGraspHandle;
-        PDisplayGrasp.PGraspHovered += PDisplayHoverHandle;
-        PDisplayReflexFold.Checked += PReflexFoldHandle;
-        PDisplayReflexFold.Unchecked += PReflexFoldHandle;
-        PPlaybackAction.Click += PPlaybackActionHandle;
+        PDisplayFavorite.Click += PDisplayFavoriteObserve;
+        PDisplayGrasp.PGraspChanged += PDisplayGraspObserve;
+        PDisplayGrasp.PGraspHovered += PDisplayHoverRefine;
+        PDisplayReflexFold.Checked += PReflexFoldObserve;
+        PDisplayReflexFold.Unchecked += PReflexFoldObserve;
+        PPlaybackAction.Click += PPlaybackActionObserve;
         PPlaybackAction.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("play", 24));
         PCompassIcon.QIconSource = QIcon.QIconResolve("compass", 24);
-        PDisplayMeaning.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PDisplayCardHandle));
-        PDisplayCollocation.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PDisplayCardHandle));
-        PDisplayIncoming.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PDisplayIncomingHandle));
+        PDisplayMeaning.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PDisplayCardObserve));
+        PDisplayCollocation.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PDisplayCardObserve));
+        PDisplayIncoming.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PDisplayIncomingObserve));
 
         PVolume.SetBinding(
             RangeBase.ValueProperty,
@@ -63,11 +59,11 @@ public class PDisplay : UserControl
             PContour.PContourIpaProperty,
             new Binding(nameof(TextBlock.Text)) { Source = PDisplayPronunciation });
 
-        QLookItem.QLookItemAttach(PDisplaySpeech, PSpeechApply);
-        QLookItem.QLookItemAttach(PDisplayMeaning, _pLeaf.PLeafCardApply);
-        QLookItem.QLookItemAttach(PDisplayCollocation, _pLeaf.PLeafCardApply);
-        QLookItem.QLookItemAttach(PDisplayIncoming, PUsageApply);
-        QLookItem.QLookItemAttach(PCompassList, PCompassApply);
+        QLookItem.QLookItemAttach(PDisplaySpeech, PSpeechRefine);
+        QLookItem.QLookItemAttach(PDisplayMeaning, PLeaf.PLeafCardRefine);
+        QLookItem.QLookItemAttach(PDisplayCollocation, PLeaf.PLeafCardRefine);
+        QLookItem.QLookItemAttach(PDisplayIncoming, PUsageRefine);
+        QLookItem.QLookItemAttach(PCompassList, PCompassRefine);
     }
 
     private TextBlock PDisplayEmpty => (TextBlock)FindName(nameof(PDisplayEmpty));
@@ -190,7 +186,6 @@ public class PDisplay : UserControl
 
     internal void PDisplayAttach(PWindow host, QLectern lectern)
     {
-        _pDisplayHost = host;
         _qLectern = lectern;
         lectern.QLecternIntroduce(host.PWindowAtelier, PDisplayEmpty, PDisplayContents, PDisplaySwath.PSwathClear);
         lectern.QLecternHeaderIntroduce(
@@ -236,6 +231,7 @@ public class PDisplay : UserControl
         lectern.QLecternSound.QLecternParadigmIntroduce(PDisplayParadigm, PDisplayParadigm.PParadigmShow);
         lectern.QLecternCompassIntroduce(
             this, PDisplayContents, PDisplayHeader, PCompass, PCompassSurface, PCompassSwitch, PCompassList);
+        _pDisplayCompass.PCompassIntroduce(lectern.QLecternCompass);
         lectern.QLecternCompass.QCompassSectionIntroduce(
             PDisplaySpeechSection,
             PDisplayFrequencySection,
@@ -254,13 +250,8 @@ public class PDisplay : UserControl
             PDisplayCollocationSection,
             PDisplayContents,
             lectern.QLecternCompass);
-        lectern.QLecternCard.QLecternLinkIntroduce(
-            _pLeaf.PLeafLink.PLinkConverterShow,
-            _pLeaf.PLeafCitation.QCitationConverterShow,
-            _pLeaf.PLeafFrame.PSentenceConverterApply);
         lectern.QLecternCard.QLecternIncomingIntroduce(PDisplayIncoming, PDisplayIncomingSection);
-        lectern.QLecternCard.QLecternEtymologyIntroduce(
-            PDisplayEtymology, PDisplayEtymologySection, PDisplayEtymology.PEtymologyShow);
+        lectern.QLecternCard.QLecternEtymologyIntroduce(PDisplayEtymology, PDisplayEtymologySection);
         lectern.QLecternCard.QLecternRouteIntroduce(host);
         PDisplayFanqie.PFanqieNoticeAttach(
             lectern.QLecternSound.QLecternDiweiObserve,
@@ -268,42 +259,37 @@ public class PDisplay : UserControl
             lectern.QLecternSoundArea.CDisplayFanqieSet);
     }
 
-    internal void PCompassRowHandle(object sender, RoutedEventArgs e)
-    {
-        _qLectern.QLecternCompass.QCompassRowRefine(sender);
-    }
-
-    private void PReflexFoldHandle(object sender, RoutedEventArgs e)
+    private void PReflexFoldObserve(object sender, RoutedEventArgs e)
     {
         _qLectern.QLecternSound.QLecternFoldObserve();
     }
 
-    private void PDisplayFavoriteHandle(object sender, RoutedEventArgs e)
+    private void PDisplayFavoriteObserve(object sender, RoutedEventArgs e)
     {
         _qLectern.QLecternFavoriteObserve();
     }
 
-    private void PDisplayGraspHandle(object sender, RoutedEventArgs e)
+    private void PDisplayGraspObserve(object sender, RoutedEventArgs e)
     {
         _qLectern.QLecternGraspObserve(PDisplayGrasp.PGraspStep);
     }
 
-    private void PDisplayHoverHandle(object sender, RoutedEventArgs e)
+    private void PDisplayHoverRefine(object sender, RoutedEventArgs e)
     {
         _qLectern.QLecternHoverRefine(PDisplayGrasp.PGraspPointed);
     }
 
-    private void PPlaybackActionHandle(object sender, RoutedEventArgs e)
+    private void PPlaybackActionObserve(object sender, RoutedEventArgs e)
     {
         _qLectern.QLecternPlayback.QLecternActionObserve();
     }
 
-    internal void PDisplayPlaybackHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PDisplayPlaybackObserve(object sender, ExecutedRoutedEventArgs e)
     {
         _qLectern.QLecternPlayback.QLecternPlaybackObserve(e.Parameter);
     }
 
-    private void PDisplayGlyphHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PDisplayGlyphObserve(object sender, ExecutedRoutedEventArgs e)
     {
         _qLectern.QLecternSound.QLecternGlyphObserve(e.Parameter);
     }
@@ -313,38 +299,27 @@ public class PDisplay : UserControl
         _qLectern.QLecternSoundArea.CDisplayPlaybackCancel();
     }
 
-    private void PDisplayCardHandle(object sender, RoutedEventArgs e)
+    private void PDisplayCardObserve(object sender, RoutedEventArgs e)
     {
         _qLectern.QLecternCard.QLecternChipObserve(e);
     }
 
-    private void PDisplayIncomingHandle(object sender, RoutedEventArgs e)
+    private void PDisplayIncomingObserve(object sender, RoutedEventArgs e)
     {
         _qLectern.QLecternCard.QLecternIncomingObserve(e);
     }
 
-    private void PDisplayEtymonHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PDisplayEtymonObserve(object sender, ExecutedRoutedEventArgs e)
     {
         _qLectern.QLecternCard.QLecternEtymonObserve(e.Parameter);
     }
 
-    private void PDisplayMentionHandle(object? sender, PMentionArgument e)
+    private void PDisplayMentionObserve(object? sender, PMentionArgument e)
     {
-        _qLectern.QLecternCard.QLecternMentionObserve(
-            e.PMentionArgumentOrigin,
-            e.PMentionArgumentText,
-            e.PMentionArgumentLanguage,
-            e.PMentionArgumentOffset,
-            e.PMentionArgumentMention,
-            _pDisplayHost.PWindowMentionObserve);
+        _qLectern.QLecternCard.QLecternMentionObserve(e);
     }
 
-    internal void PDisplayCardScroll(long id)
-    {
-        _qLectern.QLecternCard.QLecternSpotlightRefine(id);
-    }
-
-    private static void PSpeechApply(FrameworkElement container, object item, string? _)
+    private static void PSpeechRefine(FrameworkElement container, object item, string? _)
     {
         if (item is string speech && QLook.QLookPartFind<TextBlock>(container, "PSpeechName") is TextBlock name)
         {
@@ -352,7 +327,7 @@ public class PDisplay : UserControl
         }
     }
 
-    private static void PUsageApply(FrameworkElement container, object item, string? _)
+    private static void PUsageRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QUsageItem usage)
         {
@@ -395,7 +370,7 @@ public class PDisplay : UserControl
         }
     }
 
-    private void PCompassApply(FrameworkElement container, object item, string? _)
+    private void PCompassRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QCompassItem compass)
         {

@@ -55,24 +55,17 @@ The key binding is the GUI's own, so it stays here.
 The two side buttons of a mouse step back and forward, as they do in a browser.
 Each button reaches its one voyage gate.
 
-## `internal void PWindowMentionObserve(PMention anchor, CMentionResult result)`
-
-What a click on a word of a shown sentence found, handed whole to `CMentionResultOpen`.
-Every panel that draws a sentence takes this one path.
-The gate decides what opens, and the candidates it answers go to the menu under the clicked word.
-The word's place is read off the control that drew it, at the offset the engine settled on.
-An empty answer only closes any menu already open, so a second click never stacks two.
-The reading display still takes this path until its click becomes one gate.
-
 ## `internal void PWindowMentionRefine(PMention anchor, CMentionOffer? offer)`
 
 Shows the menu a word click's gate left, under the found word of `anchor`.
+Every panel that draws a sentence takes this one path, the reading display and the corpus excerpt alike.
+The word's place is read off the control that drew it, at the offset the engine settled on.
 The gate already asked, found and opened, so the window only paints the offer.
 A null offer shows nothing, and an empty one only closes any open menu.
 
 ## `private void PMentionSenseRefine(long sense)`
 
-Answers `CMentionSenseChosen` by scrolling the stored Mention's sense card into view in the library's display.
+Answers `CMentionSenseChosen` by asking the library lectern's card to scroll the sense card into view.
 The navigation's entry open lands in the library, so that display is the one showing the entry.
 
 ## `private void PMentionLeaveRefine(object? sender, EventArgs e)`

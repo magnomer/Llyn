@@ -1,6 +1,6 @@
 # CImageDraft.cs
 
-## `public sealed record CImageDraft(long CImageDraftId, CStateValue CImageDraftLocation)`
+## `public sealed record CImageDraft(long CImageDraftId, CStateValue CImageDraftLocation, bool CImageDraftEmpty)`
 
 One image of a card or a scenario, as its image row shows it.
 
@@ -8,3 +8,4 @@ One image of a card or a scenario, as its image row shows it.
 
 - `CImageDraftId`: the stored image, zero for a fresh one.
 - `CImageDraftLocation`: where the image lives.
+- `CImageDraftEmpty`: whether no location was ever recorded, so a reading card folds the image away.

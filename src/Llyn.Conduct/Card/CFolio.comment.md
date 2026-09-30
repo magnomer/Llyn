@@ -4,11 +4,6 @@
 
 The one map from an engine entry draft to the shape every driver shows.
 It is split from `CCard` by role, since the gates and the maps change for different reasons.
-The internal maps are still called by the deportment classes that later jobs dismantle.
-
-## `internal static CSentenceOrder CFolioOrderRead(LSentenceOrder order)`
-
-The one map from a language's sentence order to its shape, shared with the display.
 
 ## `internal static IReadOnlyList<CTranslationTarget> CFolioTargetRead(IReadOnlyList<LTranslationTarget> targets)`
 
@@ -23,8 +18,8 @@ The link targets come keyed by card from the tenure, so each card carries its li
 ## `internal static CStateValue CFolioStateRead(LStateValue value)`
 
 The one map from a written value to its shape.
-It carries the engine's shown text and verdicts, so no driver judges a state.
-The panels and the display that later jobs dismantle still call it.
+It carries the engine's plain text and verdicts, so no driver judges a state.
+The empty text for a value with nothing legible is the engine's own, so the map keeps no fallback.
 
 ## `private static IReadOnlyList<CCardDraft> CFolioSheetRead(`
 
@@ -39,15 +34,17 @@ The example of a sentence, or null when the sentence holds none.
 
 ## `internal static IReadOnlyList<CGlossDraft> CFolioGlossRead(IReadOnlyList<LGlossDraft> glosses)`
 
-The one map for glosses, shared with the display's leaf.
+The one map for glosses, shared with the reading view's sentence rows.
 
 ## `internal static IReadOnlyList<CImageDraft> CFolioImageRead(IReadOnlyList<LImageDraft> images)`
 
-The one map for images, shared with the repertoire and the media host.
+The one map for images, shared with the repertoire and the reading view's cards.
+It carries the engine's empty verdict, so a reading card folds an image nobody located.
 
 ## `internal static IReadOnlyList<CVideoDraft> CFolioVideoRead(IReadOnlyList<LVideoDraft> videos)`
 
-The one map for videos, shared with the repertoire and the media host.
+The one map for videos, shared with the repertoire and the reading view's cards.
+It carries the engine's empty verdict, so a reading card folds a video nobody located.
 
 ## `internal static CMentionDraft CFolioMentionRead(LMentionDraft mention)`
 

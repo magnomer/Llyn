@@ -42,14 +42,10 @@ The language a span is resolved against.
 
 The narrative box, which the editor reads a selection from.
 
-## `internal void PEtymologyShow(string language, string text, IReadOnlyList<CTranslationTarget> etymons)`
+## `internal void PEtymologySourceShow(IReadOnlyList<PEtymon> etymons)`
 
-Sets the language and the narrative, then draws the source links.
-The reading view's card deportment calls it as its seam.
-
-## `internal void PEtymologySourceShow(IReadOnlyList<CTranslationTarget> etymons)`
-
-Draws the source links the engine already resolved to a headword and a language.
+Draws the source link items the driver built from the links the engine already resolved.
+The field holds no Conduct record, so the display driver and the editor each hand it items.
 The typing entry always closes the row, collapsed on the read side, so the row has one shape.
 
 ## `internal void PEtymologyMentionShow(`

@@ -275,39 +275,6 @@ public sealed class TCard
         Assert.Contains(card.CCardReferenceRead(), row => row.CCatalogReferenceId == notes.LReferenceId);
     }
 
-    [Fact]
-    public void OrderRead_TrailingOrder_WritesTheRoleBeforeTheMarker()
-    {
-        CStateValue of = new("of", false, true);
-        CStateValue thing = new("Something", false, true);
-        CStateValue text = new("an example", false, true);
-
-        Assert.Equal("(+of Something) an example", CCard.CCardOrderRead(null, of, thing, text, "?"));
-        Assert.Equal(
-            "(+Something of) an example",
-            CCard.CCardOrderRead(new CSentenceOrder(1, 0), of, thing, text, "?"));
-        Assert.Equal(
-            "(+?)",
-            CCard.CCardOrderRead(
-                null,
-                new CStateValue(string.Empty, true, false),
-                CStateValue.CStateValueEmpty,
-                CStateValue.CStateValueEmpty,
-                "?"));
-    }
-
-    [Fact]
-    public void OrderRead_EmptyFields_DropsTheHeadOrTheSpace()
-    {
-        CStateValue to = new("to", false, true);
-        CStateValue text = new("text", false, true);
-        CStateValue none = CStateValue.CStateValueEmpty;
-
-        Assert.Equal("(+to)", CCard.CCardOrderRead(null, to, none, none, "?"));
-        Assert.Equal(string.Empty, CCard.CCardOrderRead(null, none, none, none, "?"));
-        Assert.Equal("text", CCard.CCardOrderRead(null, none, none, text, "?"));
-    }
-
     internal static (CDesk TCardDesk, CCard TCardCard) TCardPrepare(LEngine engine)
     {
         engine.TEngineDelaySet(0);

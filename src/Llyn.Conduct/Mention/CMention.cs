@@ -18,11 +18,12 @@ public sealed class CMention
 
     public event Action<long>? CMentionSenseChosen;
 
-    public IReadOnlyList<CTranslationTarget> CMentionResultOpen(CMentionResult result)
+    internal CMentionOffer LMentionResultOpen(CMentionResult result)
     {
         ArgumentNullException.ThrowIfNull(result);
 
         CNavigation navigation = _cMentionAtelier.CAtelierNavigation;
+        IReadOnlyList<CTranslationTarget> offered = [];
         if (result.CMentionResultStored is CMentionMark stored)
         {
             if (stored.CMentionMarkEntry != 0
@@ -31,17 +32,17 @@ public sealed class CMention
             {
                 CMentionSenseChosen?.Invoke(stored.CMentionMarkSense);
             }
-
-            return [];
         }
-
-        if (result.CMentionResultSingle)
+        else if (result.CMentionResultSingle)
         {
             navigation.CNavigationEntryOpen(result.CMentionResultFirst);
-            return [];
+        }
+        else if (result.CMentionResultMany)
+        {
+            offered = result.CMentionResultEntry;
         }
 
-        return result.CMentionResultMany ? result.CMentionResultEntry : [];
+        return new CMentionOffer(result.CMentionResultOffset, offered);
     }
 
     public IReadOnlyList<CMentionLabel> CMentionResolve(

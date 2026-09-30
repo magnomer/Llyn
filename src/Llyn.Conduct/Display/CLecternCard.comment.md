@@ -2,13 +2,11 @@
 
 ## `public sealed record CLecternCard(`
 
-What the card templates of the reading view read beside the cards, ready to show.
+The cards of the reading view, ready to paint, with whether their sections show.
 
 **Parameters**
 
-- `CLecternCardOrder`: the order a sentence's particle and dependence stand in.
-- `CLecternCardCitations`: the ready line of every Source the entry cites, keyed by its id.
-  A Source that names itself nowhere is already written as its id.
-- `CLecternCardTargets`: the entries the cards and the etymology link to, named.
+- `CLecternCardMeanings`: the entry's meaning cards, each ready as a leaf.
+- `CLecternCardCollocations`: the entry's collocation cards, each ready as a leaf.
 - `CLecternCardDefined`: whether the entry has a Meaning, which shows the Meaning section.
 - `CLecternCardCollocated`: whether the entry has a Collocation, which shows the Collocation section.

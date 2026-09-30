@@ -61,6 +61,26 @@ internal static class TInterfaceMention
         return anthology.LAnthologyMentionFind(3);
     }
 
+    internal static CMentionOffer TMentionResultOpen(CAtelier atelier, CMentionResult result) =>
+        atelier.CAtelierMention.LMentionResultOpen(result);
+
+    internal static CMentionOffer? TDisplayMentionFind(LEngine engine, CAtelier atelier, CEnvoy envoy)
+    {
+        LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineMentionFind"] = _ => throw new InvalidOperationException("no words"),
+        });
+        LDisplay display = new(
+            new LDraftOutlet(engine),
+            entries,
+            new LPhonologyOutlet(engine),
+            new LSettingsOutlet(engine),
+            TEngineFake.TEngineStubCreate<LMediaPort>(),
+            envoy);
+        display.LDisplayNavigationAttach(atelier.CAtelierNavigation, atelier.CAtelierMention);
+        return display.CDisplayArea.CDisplayMentionFind("water", string.Empty, 1, null);
+    }
+
     internal static IReadOnlyList<CMentionLabel> TMentionFailRead(LEngine engine, CDesk desk, CEnvoy envoy)
     {
         LDraftPort drafts = TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>

@@ -223,11 +223,44 @@ internal sealed class LCardFacade
         }
     }
 
-    public IReadOnlyList<LTranslationTarget> LEngineTargetRead(LEntryDraft draft)
+    public IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(LEntryDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
 
-        return LEngineTargetRead([.. draft.LEntryDraftTargets, .. draft.LEntryDraftSources]);
+        IReadOnlyList<LCardDraft> cards = [.. draft.LEntryDraftMeanings, .. draft.LEntryDraftCollocations];
+        List<long> ids = cards.SelectMany(static card => card.LCardDraftTranslation).Distinct().ToList();
+        IReadOnlyList<LTranslationTarget> read;
+        try
+        {
+            read = ids.Count == 0 ? [] : LEngineTargetRead(ids);
+        }
+        catch (Exception)
+        {
+            read = [];
+        }
+
+        return LEngineTranslationResolve(cards, read);
+    }
+
+    internal static IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationResolve(
+        IReadOnlyList<LCardDraft> cards, IReadOnlyList<LTranslationTarget> read)
+    {
+        Dictionary<long, LTranslationTarget> found = [];
+        foreach (LTranslationTarget target in read)
+        {
+            found[target.LTranslationTargetId] = target;
+        }
+
+        Dictionary<long, IReadOnlyList<LTranslationTarget>> targets = [];
+        foreach (LCardDraft card in cards)
+        {
+            targets[card.LCardDraftId] = card.LCardDraftTranslation
+                .Where(found.ContainsKey)
+                .Select(id => found[id])
+                .ToList();
+        }
+
+        return targets;
     }
 
     public IReadOnlyList<LTranslationTarget> LEngineEtymonRead(LEntryDraft draft)

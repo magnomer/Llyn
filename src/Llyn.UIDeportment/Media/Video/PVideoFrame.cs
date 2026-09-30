@@ -1,6 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -18,12 +18,12 @@ public sealed class PVideoFrame : Decorator
 
     private void PVideoFrameResolve()
     {
-        if (DataContext is not LVideoDraft draft)
+        if (DataContext is not CVideoDraft draft)
         {
             return;
         }
 
-        Visibility = QLook.QLookVisibleRead(!draft.LVideoDraftEmpty);
+        Visibility = QLook.QLookVisibleRead(!draft.CVideoDraftEmpty);
         if (PMedia.PMediaRead(this) is PMedia media)
         {
             DataContext = media.PMediaVideoCreate(draft);

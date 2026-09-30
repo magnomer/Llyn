@@ -60,6 +60,12 @@ The cited Source counts too, and so do the Mentions.
 Whether a field showing `field` already shows the text `shown`.
 A blank field reads as nothing recorded, as the engine would store it, so it matches an empty text.
 
+## `public static (string, string, string) LExampleLineRead(LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)`
+
+The frame, the sentence and the Source line a reading card shows for one sentence row.
+The frame and the sentence follow the same rules the portrait prints by, with `mark` for an unknown part.
+The Source line is the cited Source's ready line, empty when the row cites none or the line is missing.
+
 ## `public static LPortraitPage LExamplePageRead(LExample example, LReference? cited, int count, LPortraitLegend legend)`
 
 The sentence heads the page, its language is the chip, and its usage tally follows.

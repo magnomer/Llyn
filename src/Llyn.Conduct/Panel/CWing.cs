@@ -32,7 +32,7 @@ public sealed class CWing
             atelier.CAtelierSettingsPort,
             atelier.CAtelierMediaPort,
             envoy);
-        CWingDisplay.LDisplayNavigationAttach(atelier.CAtelierNavigation);
+        CWingDisplay.LDisplayNavigationAttach(atelier.CAtelierNavigation, atelier.CAtelierMention);
         LWingVistaRestore();
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LWingVistaRestore);
         atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LWingClose);

@@ -5,47 +5,34 @@
 The reading view's card driver, standing between the veneer and the display's area, [CDisplay](../../Llyn.Conduct/Display/CDisplay.comment.md).
 It draws the Meaning and Collocation cards, their links and bylines, the incoming rows and the etymology.
 It hears every chip, row, source link and word clicked on them and hands each to one gate.
-The veneer hands over its converters as seams, so no veneer type is named here.
 
 ## `public QLecternCard(LDisplay display)`
 
 Builds the half over the display, whose area answers every read and gate.
-The card lists still take the shown draft's cards, since the card templates draw engine cards until job66.
+The card lists take the ready cards the area answers, so no engine record reaches the veneer.
 
 ## `public void QLecternCardIntroduce(CAtelier atelier, ResourceDictionary resources, ItemsControl meaning, UIElement meaningSection, ItemsControl collocation, UIElement collocationSection, ScrollViewer contents, QCompass compass)`
 
 Holds the window for the pack's typography and the view's resources the example templates read.
 Holds the two card lists with their sections, the scroll viewer and the compass a scroll measures by.
 
-## `public void QLecternLinkIntroduce(Action<IReadOnlyList<CTranslationTarget>> translationSeam, Action<IReadOnlyDictionary<long, string>> citationSeam, Action<CSentenceOrder> orderSeam)`
-
-Holds the seams that fill the converters the card templates bind through.
-`translationSeam` names the linked headwords, `citationSeam` the bylines, `orderSeam` the sentence order.
-
 ## `public void QLecternIncomingIntroduce(ItemsControl incoming, UIElement section)`
 
 Binds the incoming list to its rows and holds the section that collapses when no entry links here.
 
-## `public void QLecternEtymologyIntroduce(UIElement etymology, UIElement section, Action<string, string, IReadOnlyList<CTranslationTarget>> etymologySeam)`
+## `internal void QLecternEtymologyIntroduce(PEtymology etymology, UIElement section)`
 
-Holds the etymology field, its section and the seam that hands the field its language, narrative and links.
+Holds the etymology field and its section, which this driver paints itself.
 
 ## `internal void QLecternRouteIntroduce(PWindow host)`
 
 Holds the window, whose navigation a clicked incoming row opens its record through.
+The window also paints the menu a clicked word's gate answers.
 
 ## `public void QLecternCardRefine()`
 
-Answers an entry opening by filling the converters from `CDisplayCardRead`.
-The converters are filled before the card lists are handed their items.
-A converter holding a dictionary says nothing when that dictionary changes.
+Answers an entry opening by painting the ready cards `CDisplayCardRead` answers.
 Example lines are drawn inside templates, so the pack's example typography goes into the view's resources.
-
-## `public void QLecternLeafRefine()`
-
-Answers an entry opening by handing the card lists the shown draft's cards again.
-The lists are emptied first, so the templates redraw with the converters just filled.
-The cards are engine records, which job66's card state replaces.
 
 ## `public void QLecternIncomingRefine()`
 
@@ -57,11 +44,17 @@ Answers an entry opening by drawing the etymology `CDisplayEtymologyRead` answer
 
 ## `public void QLecternBlankRefine()`
 
-Answers an entry closing: empties the converters, the card lists and the incoming rows, and collapses their sections.
+Answers an entry closing by emptying the card lists and the incoming rows and collapsing their sections.
 
 ## `private void QLecternCardRefine(CLecternCard card)`
 
-Fills the converters, the example typography and the two sections' visibility from `card`.
+Sets the example typography, the two card lists and the two sections' visibility from `card`.
+The typography is set first, so the example lines draw in the pack's faces.
+
+## `private void QLecternLeafRefine(CLecternCard card)`
+
+Hands the card lists the ready cards of `card`.
+The lists are emptied first, so every template redraws even when a list keeps its length.
 
 ## `private void QLecternIncomingRefine(IReadOnlyList<CUsage> usages)`
 
@@ -70,11 +63,12 @@ The section collapses when no entry links here, because an empty relationship do
 
 ## `private void QLecternEtymologyRefine(CLecternEtymology etymology)`
 
-Hands the field its language, narrative and links, and sets the field's and the section's visibility.
+Sets the field's language, narrative and source links from the ready `etymology`.
+Then it sets the field's and the section's visibility.
 
 ## `public void QLecternChipObserve(RoutedEventArgs e)`
 
-Hears a click on a card chip and hands `CDisplayChipOpen` what the chip carries.
+Hears a click on a card chip and hands `CDisplayChipOpen` the ready chip it carries.
 The chip is read off what was clicked, since a click leaving a template is re-sourced to its presenter.
 A link chip also hands the entry id it names.
 The click is marked handled only when a tab was asked to open.
@@ -87,14 +81,10 @@ Hears a click on an incoming row and hands its usage to the navigation's gate `C
 
 Hears a click on a source link and hands `CDisplayChipOpen` the entry id it carries.
 
-## `public void QLecternMentionObserve<QLecternAnchor>(`
+## `public void QLecternMentionObserve(PMentionArgument e)`
 
-Hears a clicked word and hands it to `CDisplayMentionFind`.
-The answer goes to `show` with `anchor`, and a failed lookup shows nothing.
-
-## `private static void QLecternMentionRefine<QLecternAnchor>(QLecternAnchor anchor, CMentionResult? result, Action<QLecternAnchor, CMentionResult> show)`
-
-Hands a found answer to `show`, and nothing when the lookup found no answer.
+Hears a clicked word and hands its raw text, language, offset and Mentions to the one gate `CDisplayMentionFind`.
+The gate finds, opens and reports, and its offer goes to the window's `PWindowMentionRefine` under the clicked control.
 
 ## `public void QLecternSpotlightRefine(long id)`
 

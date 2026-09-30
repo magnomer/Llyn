@@ -127,32 +127,17 @@ public sealed partial class LTenure
 
         IReadOnlyList<LCardDraft> cards = [.. draft.LEntryDraftMeanings, .. draft.LEntryDraftCollocations];
         List<long> ids = cards.SelectMany(static card => card.LCardDraftTranslation).Distinct().ToList();
-        Dictionary<long, LTranslationTarget> found = [];
+        IReadOnlyList<LTranslationTarget> read;
         try
         {
-            IReadOnlyList<LTranslationTarget> read = ids.Count == 0
-                ? []
-                : _lEngine.LEngineCard.LEngineTargetRead(LTenureId, ids);
-            foreach (LTranslationTarget target in read)
-            {
-                found[target.LTranslationTargetId] = target;
-            }
+            read = ids.Count == 0 ? [] : _lEngine.LEngineCard.LEngineTargetRead(LTenureId, ids);
         }
         catch (Exception)
         {
-            found.Clear();
+            read = [];
         }
 
-        Dictionary<long, IReadOnlyList<LTranslationTarget>> targets = [];
-        foreach (LCardDraft card in cards)
-        {
-            targets[card.LCardDraftId] = card.LCardDraftTranslation
-                .Where(found.ContainsKey)
-                .Select(id => found[id])
-                .ToList();
-        }
-
-        return targets;
+        return LCardFacade.LEngineTranslationResolve(cards, read);
     }
 
     public (IReadOnlyList<string> LSpeechNames, string LSpeechTyped, LSpeechOffer LSpeechFound) LTenureSpeechRead(
