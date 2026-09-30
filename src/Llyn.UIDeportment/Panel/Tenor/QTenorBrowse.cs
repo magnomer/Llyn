@@ -118,11 +118,7 @@ internal sealed partial class QTenor
         _qGamutList.Clear();
         foreach (CCatalogRegister row in read)
         {
-            _qGamutList.Add(new QGamutItem(
-                row.CCatalogRegisterStored.CRegisterId,
-                row.CCatalogRegisterStored.CRegisterName,
-                row.CCatalogRegisterUsage,
-                row.CCatalogRegisterChosen));
+            _qGamutList.Add(new QGamutItem(row));
         }
 
         QGamutEmpty.Visibility = _qGamutList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;

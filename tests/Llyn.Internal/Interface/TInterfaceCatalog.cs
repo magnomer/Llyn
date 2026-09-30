@@ -101,4 +101,7 @@ internal static partial class TInterface
 
     internal static LCatalogOrder TCatalogOrderParse(string? text, LCatalogOrder fallback) =>
         LCatalog.LCatalogOrderParse(text, fallback);
+
+    internal static LCatalogRegister TCatalogRegisterCreate(LRegister register, int usage) =>
+        LCatalogRegister.LCatalogRegisterCreate(register, usage);
 }

@@ -1,36 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Media;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
-internal sealed class QGamutItem : INotifyPropertyChanged
+internal sealed class QGamutItem
 {
-    private static readonly Dictionary<string, string> QGamutItemIcons = new(StringComparer.OrdinalIgnoreCase)
+    internal QGamutItem(CCatalogRegister row)
     {
-        ["archaic"] = "register/archaic",
-        ["epic"] = "register/epic",
-        ["formal"] = "register/formal",
-        ["impolite"] = "register/impolite",
-        ["informal"] = "register/informal",
-        ["poetic"] = "register/poetic",
-        ["polite"] = "register/polite",
-    };
-
-    private bool _qGamutItemChosen;
-
-    internal QGamutItem(long id, string name, int usage, bool chosen)
-    {
-        QGamutItemId = id;
-        QGamutItemName = name;
-        QGamutItemIcon = QIcon.QIconResolve(QGamutItemIcons.GetValueOrDefault(name.Trim(), "register"), 32);
-        QGamutItemUsage = usage;
-        _qGamutItemChosen = chosen;
+        QGamutItemId = row.CCatalogRegisterStored.CRegisterId;
+        QGamutItemName = row.CCatalogRegisterStored.CRegisterName;
+        QGamutItemIcon = QIcon.QIconResolve(row.CCatalogRegisterIcon, 32);
+        QGamutItemUsage = row.CCatalogRegisterUsage;
+        QGamutItemChosen = row.CCatalogRegisterChosen;
     }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     public long QGamutItemId { get; }
 
@@ -40,21 +23,7 @@ internal sealed class QGamutItem : INotifyPropertyChanged
 
     public int QGamutItemUsage { get; }
 
-    public bool QGamutItemChosen
-    {
-        get => _qGamutItemChosen;
-
-        set
-        {
-            if (_qGamutItemChosen == value)
-            {
-                return;
-            }
-
-            _qGamutItemChosen = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QGamutItemChosen)));
-        }
-    }
+    public bool QGamutItemChosen { get; }
 
     public string QGamutItemCount => QGamutItemUsage.ToString(CultureInfo.CurrentCulture);
 }

@@ -22,9 +22,9 @@ internal sealed partial class QTenor
         _qTenorSurface = surface;
 
         surface.CommandBindings.Add(
-            new CommandBinding(ApplicationCommands.Print, QTenorPressHandle, QTenorPressCheck));
+            new CommandBinding(ApplicationCommands.Print, QTenorPressObserve, QTenorPressRefine));
         surface.CommandBindings.Add(new CommandBinding(
-            PDisplayCommand.PDisplayCommandPortrait, QTenorPortraitHandle, QTenorPressCheck));
+            PDisplayCommand.PDisplayCommandPortrait, QTenorPortraitObserve, QTenorPressRefine));
         QTenorPortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
         QTenorPress.Command = ApplicationCommands.Print;
 
@@ -51,10 +51,10 @@ internal sealed partial class QTenor
         QQuest.TextChanged += QQuestHandle;
         QTenorFresh.Click += QTenorFreshHandle;
         QTenorStore.Click += QTenorStoreHandle;
-        QTenorEarlier.Click += QTenorRetreatHandle;
-        QTenorLater.Click += QTenorAdvanceHandle;
-        QTenorBackward.Click += QTenorUndoHandle;
-        QTenorForward.Click += QTenorRedoHandle;
+        QTenorEarlier.Click += QTenorRetreatObserve;
+        QTenorLater.Click += QTenorAdvanceObserve;
+        QTenorBackward.Click += QTenorUndoObserve;
+        QTenorForward.Click += QTenorRedoObserve;
         QTenorViewer.Click += QTenorScribeHandle;
         QTenorScribe.Click += QTenorScribeHandle;
         QTenorBin.Click += QTenorBinHandle;
@@ -129,14 +129,14 @@ internal sealed partial class QTenor
 
     private QIconImage QTenorBinIcon => QContract.QContractFind<QIconImage>(_qTenorSurface, "PTenorBinIcon");
 
-    internal void QTenorAttach(PWindow host)
+    internal void QTenorIntroduce(PWindow host)
     {
         _qTenorHost = host;
         _cTenor = host.PWindowForge.QForgeTenorCreate(QTenorShownCheck, host.PWindowEnvoy);
         _cTenor.CTenorRegisterOpened += QGamutRegisterRefine;
         CPanel panel = _cTenor.CTenorPanel;
         QLectern lectern = new(_cTenor.CTenorEditor.CEditorDisplay, panel);
-        panel.CPanelChanged += QTenorModeUpdate;
+        panel.CPanelChanged += QTenorModeRefine;
         panel.CPanelRowsChanged += QCohortFind;
 
         QGamut.ItemsSource = _qGamutList;
@@ -145,12 +145,12 @@ internal sealed partial class QTenor
         QLookItem.QLookItemAttach(QCohort, QCohortApply);
 
         QTenorDisplay.PDisplayAttach(host, lectern);
-        _cTenor.CTenorEditor.CEditorDesk.CDeskStateChanged += QTenorStoreUpdate;
+        _cTenor.CTenorEditor.CEditorDesk.CDeskStateChanged += QTenorStoreRefine;
         QTenorEditor.PEditorIntroduce(host, new QEditor(_cTenor.CTenorEditor));
-        QTenorEditor.PEditorChronicleChanged += QTenorChronicleUpdate;
+        QTenorEditor.PEditorChronicleChanged += QTenorChronicleRefine;
     }
 
-    private void QTenorStoreUpdate()
+    private void QTenorStoreRefine()
     {
         QTenorStore.IsEnabled = _cTenor.CTenorEditor.CEditorDesk.CDeskStorable;
     }
@@ -162,54 +162,53 @@ internal sealed partial class QTenor
         QGamutFind();
     }
 
-    internal void QTenorClose()
+    internal void QTenorExitRefine()
     {
-        QTenorEditor.PEditorClose();
-        QTenorDisplay.PDisplayClose();
+        QTenorEditor.PEditorPlayerRefine();
     }
 
-    private void QTenorPressCheck(object sender, CanExecuteRoutedEventArgs e)
+    private void QTenorPressRefine(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = _cTenor?.CTenorPanel.CPanelPressAllowed ?? false;
     }
 
-    private async void QTenorPressHandle(object sender, ExecutedRoutedEventArgs e)
+    private async void QTenorPressObserve(object sender, ExecutedRoutedEventArgs e)
     {
         await _cTenor.CTenorPortraitPrint();
     }
 
-    private async void QTenorPortraitHandle(object sender, ExecutedRoutedEventArgs e)
+    private async void QTenorPortraitObserve(object sender, ExecutedRoutedEventArgs e)
     {
         await _cTenor.CTenorPortraitExport();
     }
 
-    internal void QTenorVoyageShow(bool past, bool future)
+    internal void QTenorVoyageRefine(bool past, bool future)
     {
         QTenorEarlier.IsEnabled = past;
         QTenorLater.IsEnabled = future;
     }
 
-    private void QTenorRetreatHandle(object sender, RoutedEventArgs e)
+    private void QTenorRetreatObserve(object sender, RoutedEventArgs e)
     {
         _qTenorHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
-    private void QTenorAdvanceHandle(object sender, RoutedEventArgs e)
+    private void QTenorAdvanceObserve(object sender, RoutedEventArgs e)
     {
         _qTenorHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
-    private void QTenorUndoHandle(object sender, RoutedEventArgs e)
+    private void QTenorUndoObserve(object sender, RoutedEventArgs e)
     {
         QTenorEditor.QChronicleUndoObserve();
     }
 
-    private void QTenorRedoHandle(object sender, RoutedEventArgs e)
+    private void QTenorRedoObserve(object sender, RoutedEventArgs e)
     {
         QTenorEditor.QChronicleRedoObserve();
     }
 
-    private void QTenorChronicleUpdate()
+    private void QTenorChronicleRefine()
     {
         (bool undo, bool redo) = _cTenor.CTenorEditor.CEditorDesk.CDeskChronicleRead();
         QTenorBackward.IsEnabled = undo;
@@ -221,7 +220,7 @@ internal sealed partial class QTenor
         return _qTenorSurface.IsVisible;
     }
 
-    private void QTenorModeUpdate()
+    private void QTenorModeRefine()
     {
         CPanel panel = _cTenor.CTenorPanel;
         QTenorEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);

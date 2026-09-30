@@ -53,6 +53,7 @@ public sealed class CTenor
             LTenorRegisterOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CTenorPanel.LPanelChangeCheck, editor.LEditorFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CTenorVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LTenorClose);
     }
 
     public static CTenor CTenorCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
@@ -151,6 +152,7 @@ public sealed class CTenor
                 .Select(static row => new CCatalogRegister(
                     CCard.LCardRegisterRead(row.LCatalogRegisterStored),
                     row.LCatalogRegisterUsage,
+                    row.LCatalogRegisterIcon,
                     row.LCatalogRegisterChosen))
                 .ToList()
             : [];
@@ -226,5 +228,11 @@ public sealed class CTenor
             LTenorFileRead(),
             (file, medium) => _cTenorPortraitPort.LEnginePortraitExport(
                 _cTenorCohort, file, medium, CPortrait.LPortraitLabelRead(_cTenorSettingsPort)));
+    }
+
+    private void LTenorClose()
+    {
+        CTenorEditor.CEditorClose();
+        CTenorEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
     }
 }

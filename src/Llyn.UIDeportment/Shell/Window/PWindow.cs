@@ -182,7 +182,7 @@ public partial class PWindow
         _qXiesheng.QXieshengAttach(this);
         PYunjing.PYunjingAttach(this);
         _qTaxonomy.QTaxonomyIntroduce(this);
-        _qTenor.QTenorAttach(this);
+        _qTenor.QTenorIntroduce(this);
         _qRepertoire.QRepertoireIntroduce(this);
         _qCorpus.QCorpusIntroduce(this);
         _qReference.QReferenceIntroduce(this);
@@ -330,7 +330,7 @@ public partial class PWindow
         _qXiesheng.QXieshengClose();
         PYunjing.PYunjingClose();
         _qTaxonomy.QTaxonomyExitRefine();
-        _qTenor.QTenorClose();
+        _qTenor.QTenorExitRefine();
         _qRepertoire.QRepertoireExitRefine();
         _qCorpus.QCorpusExitRefine();
         _qReference.QReferenceExitRefine();

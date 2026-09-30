@@ -8,6 +8,32 @@ namespace Llyn.Tests;
 public sealed class TRegister
 {
     [Fact]
+    public void CatalogRegisterIcon_SpacedName_ReturnsItsOwnIcon()
+    {
+        LCatalogRegister row = TInterface.TCatalogRegisterCreate(TInterface.TRegisterCreate(1, " formal "), 0);
+
+        Assert.Equal("register/formal", row.LCatalogRegisterIcon);
+    }
+
+    [Fact]
+    public void CatalogRegisterIcon_UpperCaseName_ReturnsItsOwnIcon()
+    {
+        LCatalogRegister row = TInterface.TCatalogRegisterCreate(TInterface.TRegisterCreate(1, "EPIC"), 0);
+
+        Assert.Equal("register/epic", row.LCatalogRegisterIcon);
+    }
+
+    [Fact]
+    public void CatalogRegisterIcon_NameWithoutIcon_ReturnsPlainIcon()
+    {
+        LCatalogRegister row = TInterface.TCatalogRegisterCreate(TInterface.TRegisterCreate(1, "gruff"), 0);
+        LCatalogRegister blank = TInterface.TCatalogRegisterCreate(TInterface.TRegisterCreate(2, string.Empty), 0);
+
+        Assert.Equal("register", row.LCatalogRegisterIcon);
+        Assert.Equal("register", blank.LCatalogRegisterIcon);
+    }
+
+    [Fact]
     public void RegisterSave_CardCarryingPresetNames_StoresBuiltinRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

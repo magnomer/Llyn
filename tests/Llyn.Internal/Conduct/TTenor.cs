@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -44,6 +45,7 @@ public sealed class TTenor
             tenor.CTenorRowsRead(), row => row.CCatalogRegisterStored.CRegisterId == register);
         Assert.Equal(new CRegister(register, "formal"), row.CCatalogRegisterStored);
         Assert.Equal(0, row.CCatalogRegisterUsage);
+        Assert.Equal("register/formal", row.CCatalogRegisterIcon);
         Assert.True(row.CCatalogRegisterChosen);
         Assert.Equal(register, tenor.LTenorChosen);
         Assert.Equal(1, opened);
@@ -295,6 +297,31 @@ public sealed class TTenor
         tenor.TTenorRegisterOpen(first);
 
         Assert.Equal(["Register.Vacant 1"], seen);
+    }
+
+    [Fact]
+    public void AtelierClose_EntryHeldOnTheEditor_CancelsTheEditorDeskAndStopsPlayback()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        int stopped = 0;
+        LMediaPort media = TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineRecordingStop"] = _ =>
+            {
+                stopped++;
+                return null;
+            },
+        });
+        using CAtelier atelier = TInterfaceConduct.TAtelierMediaCreate(engine, media);
+        CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
+        tenor.CTenorEditor.CEditorEntryOpen(null);
+        Assert.True(tenor.CTenorEditor.CEditorDesk.CDeskHeld);
+
+        atelier.CAtelierClose();
+
+        Assert.False(tenor.CTenorEditor.CEditorDesk.CDeskHeld);
+        Assert.Equal(1, stopped);
     }
 
     private static CTenor TTenorPrepare(CAtelier atelier, CEnvoy envoy)

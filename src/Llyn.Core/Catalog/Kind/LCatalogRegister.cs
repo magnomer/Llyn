@@ -9,6 +9,21 @@ public sealed record LCatalogRegister(
     int LCatalogRegisterUsage,
     bool LCatalogRegisterChosen = false)
 {
+    private static readonly Dictionary<string, string> LCatalogRegisterIcons = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["archaic"] = "register/archaic",
+        ["epic"] = "register/epic",
+        ["formal"] = "register/formal",
+        ["impolite"] = "register/impolite",
+        ["informal"] = "register/informal",
+        ["poetic"] = "register/poetic",
+        ["polite"] = "register/polite",
+    };
+
+    public string LCatalogRegisterIcon => LCatalogRegisterIcons.GetValueOrDefault(
+        LCatalogRegisterStored.LRegisterName.LStateValueShow().Trim(),
+        "register");
+
     public static LCatalogRegister LCatalogRegisterCreate(LRegister register, int usage)
     {
         ArgumentNullException.ThrowIfNull(register);

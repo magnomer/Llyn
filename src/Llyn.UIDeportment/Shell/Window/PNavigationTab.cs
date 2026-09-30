@@ -118,7 +118,7 @@ public partial class PWindow
             },
             new QTab("Tenor", PNavigationTenor, PTenor)
             {
-                QTabVoyage = _qTenor.QTenorVoyageShow
+                QTabVoyage = _qTenor.QTenorVoyageRefine
             },
             new QTab("Repertoire", PNavigationRepertoire, PRepertoire)
             {

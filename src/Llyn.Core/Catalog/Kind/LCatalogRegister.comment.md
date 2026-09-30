@@ -10,6 +10,17 @@ The count travels with the row because the ordering reads it and the row shows i
 - `LCatalogRegisterStored` — The stored Register the row stands for.
 - `LCatalogRegisterUsage` — How many Meanings and Collocations are marked with it.
 
+## `private static readonly Dictionary<string, string> LCatalogRegisterIcons`
+
+The Register names that wear an icon of their own, keyed without regard to case.
+The icon follows the name alone, because a Register belongs to no language.
+
+## `public string LCatalogRegisterIcon`
+
+The icon key the row wears, ready for a driver to resolve.
+The name is read without its outer spaces.
+A name with no icon of its own wears the plain register icon.
+
 ## `public static LCatalogRegister LCatalogRegisterCreate(LRegister register, int usage)`
 
 Builds the row from the stored Register and the number of cards marked with it.

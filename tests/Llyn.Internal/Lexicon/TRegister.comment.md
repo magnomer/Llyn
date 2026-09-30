@@ -62,3 +62,15 @@ It is listed with no marks counted, so the panel can select it at once.
 ## `public void RegisterCreate_WordingAlreadyOnShelf_ReturnsTheStoredRow()`
 
 A wording the shelf already holds, whatever its case, answers the stored row rather than a second one.
+
+## `public void CatalogRegisterIcon_SpacedName_ReturnsItsOwnIcon()`
+
+A Register row wears the icon its name owns, read without the name's outer spaces.
+
+## `public void CatalogRegisterIcon_UpperCaseName_ReturnsItsOwnIcon()`
+
+The icon follows the name whatever its case, since the shelf folds case too.
+
+## `public void CatalogRegisterIcon_NameWithoutIcon_ReturnsPlainIcon()`
+
+A name with no icon of its own, or no name at all, wears the plain register icon.

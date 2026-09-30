@@ -105,3 +105,8 @@ The reader is asked for the printer through the panel's envoy, and a decline pri
 `CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
 The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.
+
+## `private void LTenorClose()`
+
+The tenor's part of the window's exit gate `CAtelier.CAtelierClose`, registered with the workspace at build.
+It closes the entry editor and cancels its display's playback.

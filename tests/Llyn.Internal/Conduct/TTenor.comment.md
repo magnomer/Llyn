@@ -16,6 +16,7 @@ A null order keeps the chosen one, the reverse order sorts, and the register vis
 An unmatched query lists no Register, and a hidden language marks the panel filtered until cleared.
 Print and export do nothing until an entry is shown, then export writes it under its headword.
 A row click records the station and toggles the Register, and an arrival chooses it and raises the opening.
+Closing the atelier cancels the editor's entry and stops the playback once.
 
 ## `private static CTenor TTenorPrepare(CAtelier atelier, CEnvoy envoy)`
 
