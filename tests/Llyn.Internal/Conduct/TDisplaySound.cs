@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -250,12 +252,11 @@ public sealed class TDisplaySound
         Assert.Empty(script.CLecternScriptGroups);
         Assert.False(script.CLecternScriptPending);
         Assert.Empty(paradigm.CLecternParadigmSlots);
-        Assert.False(paradigm.CLecternParadigmMorphology);
         Assert.Null(paradigm.CLecternParadigmFont.CFontFamily);
     }
 
     [Fact]
-    public void DisplayBlocksRead_EnglishEntry_AnswersNoRimeOrScriptAndTheMorphologySetting()
+    public void DisplayBlocksRead_EnglishEntry_AnswersNoRimeScriptOrParadigmRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -273,7 +274,60 @@ public sealed class TDisplaySound
         Assert.Empty(fanqie.CLecternFanqieAnchor.CLecternAnchorTexts);
         Assert.Empty(script.CLecternScriptGroups);
         Assert.False(script.CLecternScriptPending);
-        Assert.True(paradigm.CLecternParadigmMorphology);
+        Assert.Empty(paradigm.CLecternParadigmSlots);
+    }
+
+    [Fact]
+    public void DisplayParadigmRead_MorphologyOff_AnswersTheAbsentTipWithoutALookup()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            new HttpClient(new TSourceHandler(string.Empty, HttpStatusCode.ServiceUnavailable, gate.Task)));
+        engine.TEngineFrequencySave(false);
+        engine.TEngineMorphologySave(false);
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CWing wing = TDisplayWingPrepare(atelier, []);
+        long entry = TDisplayCatSave(engine).LEntryId;
+        wing.CWingEntryOpen(entry);
+
+        CLecternParadigm paradigm = wing.CWingDisplay.CDisplaySound.CDisplayParadigmRead();
+
+        Assert.False(engine.TEngineInflectionCheck(entry));
+        Assert.Equal(
+            [new CParadigmSlot(string.Empty, "plural", "…", "Paradigm.Absent")], paradigm.CLecternParadigmSlots);
+        gate.SetResult();
+    }
+
+    [Fact]
+    public async Task DisplayParadigmRead_LookupGatedThenLost_AnswersThePendingTipThenTheLostTip()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            new HttpClient(new TSourceHandler(string.Empty, HttpStatusCode.ServiceUnavailable, gate.Task)));
+        engine.TEngineFrequencySave(false);
+        engine.TEngineMorphologySave(true);
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CWing wing = TDisplayWingPrepare(atelier, []);
+        long entry = TDisplayCatSave(engine).LEntryId;
+        wing.CWingEntryOpen(entry);
+
+        CLecternParadigm pending = wing.CWingDisplay.CDisplaySound.CDisplayParadigmRead();
+        gate.SetResult();
+        DateTime deadline = DateTime.UtcNow + TimeSpan.FromSeconds(5);
+        while (engine.TEngineInflectionCheck(entry))
+        {
+            Assert.True(DateTime.UtcNow < deadline, "Waited for the inflection lookup to settle.");
+            await Task.Delay(20);
+        }
+
+        CLecternParadigm lost = wing.CWingDisplay.CDisplaySound.CDisplayParadigmRead();
+
+        Assert.Equal(
+            [new CParadigmSlot(string.Empty, "plural", "…", "Paradigm.Pending")], pending.CLecternParadigmSlots);
+        Assert.Equal(
+            [new CParadigmSlot(string.Empty, "plural", "…", "Paradigm.Lost")], lost.CLecternParadigmSlots);
     }
 
     [Fact]
@@ -365,6 +419,16 @@ public sealed class TDisplaySound
 
     private static LEntry TDisplayEnglishSave(LEngine engine) =>
         engine.TEngineEntrySave(TDisplayDraftCreate("water", "English", []));
+
+    private static LEntry TDisplayCatSave(LEngine engine) =>
+        engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "cat",
+            "English",
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardCreate("a thing", 1)],
+            [],
+            speeches: ["Noun, countable"]));
 
     private static LEntry TDisplayKoreanSave(LEngine engine) =>
         engine.TEngineEntrySave(TInterface.TEntryDraftCreate(

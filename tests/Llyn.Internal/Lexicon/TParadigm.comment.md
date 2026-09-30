@@ -30,8 +30,24 @@ The shipped Latin and Greek packs each declare a noun, verb and adjective paradi
 The noun asks for the genitive alone and excepts the proper noun, the verb for its principal parts.
 Every value a paradigm names is a morphology value the same pack declares.
 
+## `public void ParadigmClerkCheck_WrittenOrEmptyForm_AnswersTextOrAbsentWhateverIsPending()`
+
+A written form answers text and an empty one answers absent, whatever the pending and morphology verdicts say.
+
+## `public void ParadigmClerkCheck_NoFormUnknownSlot_AnswersUnknownBeforePendingOrLost()`
+
+An unknown slot without a form answers unknown before the pending and morphology verdicts are weighed.
+
+## `public void ParadigmClerkCheck_NoFormUnansweredSlot_AnswersPendingLostOrAbsent()`
+
+An unanswered slot answers pending while the fetch runs, then lost when morphology is on, else absent.
+
 ## Inline notes
 
 ### `private static LSpeechPack TParadigmPackLoad(string json)`
 
 Writes one vocabulary file under the application's language folder and removes it after the load.
+
+### `private static LParadigmStatus TParadigmStatusRead(LInflection? inflection, LState state, bool pending, bool enabled)`
+
+Builds a one-slot row and asks it for its status.

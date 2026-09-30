@@ -34,7 +34,6 @@ internal static class CFolio
             CFolioSheetRead(draft.LEntryDraftMeanings, targets, media, "Card.DefinitionHint"),
             CFolioSheetRead(draft.LEntryDraftCollocations, targets, media, "Card.MeaningHint"),
             CSounding.CSoundingTranscriptionRead(draft.LEntryDraftTranscriptions),
-            CSounding.CSoundingReflexRead(draft.LEntryDraftReflexes),
             new CEtymologyDraft(draft.LEntryDraftEtymology.LEtymologyDraftText));
     }
 

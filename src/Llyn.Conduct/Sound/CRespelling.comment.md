@@ -16,10 +16,6 @@ The mark a transcription candidate prints under.
 A schemed search prints the phonetic bare, whatever the switch shows.
 Otherwise the engine answers the switch and both brackets, so the bracket rule has one owner below.
 
-## `public IReadOnlyList<CReflex> CRespellingReflexScan(string language, IReadOnlyList<CReflexDraft> reflexes)`
-
-The editor's reflex rows of an entry in `language`, read through `LRespellingReflexScan`.
-
 ## `internal static IReadOnlyList<CReflex> LRespellingReflexScan(`
 
 The reflex rows of an entry in `language`, in order, each ready to show.

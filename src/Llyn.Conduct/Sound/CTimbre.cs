@@ -17,17 +17,22 @@ public sealed class CTimbre
 
     private readonly LMediaPort _cTimbreMediaPort;
 
-    internal CTimbre(CDesk desk, LPhonologyPort phonology, LDisplay display, LMediaPort media)
+    private readonly LDraftPort _cTimbreDraftPort;
+
+    internal CTimbre(CDesk desk, LPhonologyPort phonology, LDisplay display, LMediaPort media, LDraftPort drafts)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(display);
         ArgumentNullException.ThrowIfNull(media);
+        ArgumentNullException.ThrowIfNull(drafts);
 
         _cTimbreDesk = desk;
         _cTimbrePhonologyPort = phonology;
         _cTimbreDisplay = display;
         _cTimbreMediaPort = media;
+        _cTimbreDraftPort = drafts;
+        desk.CDeskDraftPrepared += LTimbreReflexStart;
     }
 
     public event Action? CTimbreParadigmChanged;
@@ -39,8 +44,6 @@ public sealed class CTimbre
     public bool CTimbreFlagged => _cTimbreDesk.CDeskTenure?.LTenureFlaggedCheck() ?? false;
 
     public IReadOnlyList<string> CTimbreVarietyNames => _cTimbreDesk.CDeskTenure?.LTenureVarietyNames ?? [];
-
-    public bool CTimbreReflexShown => _cTimbreDesk.CDeskTenure?.LTenureReflexCheck() ?? false;
 
     public bool CTimbreSpoken => !_cTimbrePhonologyPort.LEngineSilentCheck(LTimbreLanguage);
 
@@ -136,14 +139,98 @@ public sealed class CTimbre
             sheet.LAccentSheetFlagged);
     }
 
-    public void CTimbreReflexStart()
+    public CTimbreReflex CTimbreReflexRead()
     {
-        _cTimbreDisplay.LDisplaySound.LDisplayReflexStart(LTimbreEntry);
+        bool opened = _cTimbreDisplay.LDisplaySound.LDisplayFoldOpened;
+        if (_cTimbreDesk.CDeskTenure is not LTenure held || held.LTenureRead() is not { } draft)
+        {
+            return new CTimbreReflex(
+                false, [], new CLecternAnchor(false, new Dictionary<long, string>()), opened, false);
+        }
+
+        LEntryDraft content = draft.LDraftContent;
+        IReadOnlyList<CReflex> rows = CRespelling.LRespellingReflexScan(
+            _cTimbrePhonologyPort,
+            content.LEntryDraftLanguage,
+            CSounding.CSoundingReflexRead(content.LEntryDraftReflexes));
+        return new CTimbreReflex(
+            held.LTenureReflexCheck(),
+            rows,
+            CSounding.LSoundingAnchorRead(_cTimbreDraftPort, LTimbreEntry, content.LEntryDraftHeadword, rows),
+            opened,
+            CTimbreReflexPending);
+    }
+
+    private void LTimbreReflexStart(LDraft _)
+    {
+        try
+        {
+            _cTimbreDesk.CDeskTenure?.LTenureReflexStart();
+        }
+        catch (Exception)
+        {
+        }
     }
 
     public void CTimbreReflexRebuild()
     {
         _cTimbreDisplay.LDisplaySound.LDisplayReflexRebuild(LTimbreEntry);
+    }
+
+    public void CTimbreReflexAdd(long reflex)
+    {
+        LTimbreQuill?.LQuillReflexAdd(reflex);
+    }
+
+    public void CTimbreReflexRemove(long reflex)
+    {
+        LTimbreQuill?.LQuillReflexRemove(reflex);
+    }
+
+    public void CTimbreReflexToggle(long reflex)
+    {
+        LTimbreQuill?.LQuillReflexToggle(reflex);
+    }
+
+    public IReadOnlyList<CReflexHead> CTimbreReflexSet(long reflex, CReflexField field, string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        if (LTimbreQuill is not LQuillReflex quill)
+        {
+            return [];
+        }
+
+        switch (field)
+        {
+            case CReflexField.CReflexFieldLanguage:
+                return LTimbreLeadRead(quill.LQuillLanguageSet(reflex, text));
+            case CReflexField.CReflexFieldKind:
+                quill.LQuillKindSet(reflex, text);
+                return [];
+            case CReflexField.CReflexFieldText:
+                quill.LQuillTextSet(reflex, text);
+                return [];
+            case CReflexField.CReflexFieldRomanization:
+                quill.LQuillRomanizationSet(reflex, text);
+                return [];
+            case CReflexField.CReflexFieldMeaning:
+                quill.LQuillMeaningSet(reflex, text);
+                return [];
+            case CReflexField.CReflexFieldNote:
+                quill.LQuillNoteSet(reflex, text);
+                return [];
+            default:
+                throw new ArgumentOutOfRangeException(nameof(field), field, null);
+        }
+    }
+
+    private static IReadOnlyList<CReflexHead> LTimbreLeadRead(IReadOnlyList<LReflexDraft> typed)
+    {
+        IReadOnlyList<CReflexDraft> rows = CSounding.CSoundingReflexRead(typed);
+        IReadOnlyList<bool> leads =
+            CReflex.LReflexLeadRead(rows.Select(static row => row.CReflexDraftLanguage).ToList());
+        return rows.Select((row, index) => new CReflexHead(row.CReflexDraftId, leads[index])).ToList();
     }
 
     internal void LTimbreObserverAttach(Action<Action> marshal)
@@ -161,4 +248,7 @@ public sealed class CTimbre
     private long? LTimbreEntry => _cTimbreDesk.CDeskStoredRead();
 
     private LTenure? LTimbreTenure => _cTimbreDesk.CDeskFilling ? null : _cTimbreDesk.CDeskTenure;
+
+    private LQuillReflex? LTimbreQuill =>
+        LTimbreTenure is LTenure held ? new LQuillReflex(held, _cTimbrePhonologyPort) : null;
 }

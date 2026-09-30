@@ -54,8 +54,8 @@ internal sealed class QYunjing
         QYunjingViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
         QYunjingScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
-        QLookItem.QLookItemAttach(QShengmu, PYunjingItem.PYunjingItemApply);
-        QLookItem.QLookItemAttach(QYunmu, PYunjingItem.PYunjingItemApply);
+        QLookItem.QLookItemAttach(QShengmu, PYunjingItem.PYunjingItemRefine);
+        QLookItem.QLookItemAttach(QYunmu, PYunjingItem.PYunjingItemRefine);
         QLookItem.QLookItemAttach(QXiaoyun, PXiaoyunItem.PXiaoyunItemRefine);
         QShengmu.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QYunjingObserve));
         QYunmu.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QYunjingObserve));

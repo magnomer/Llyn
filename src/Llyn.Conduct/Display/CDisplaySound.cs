@@ -354,14 +354,14 @@ public sealed class CDisplaySound
     {
         if (LDisplayShown is null || LDisplayEntry is not long id)
         {
-            return new CLecternParadigm([], false, false, _cDisplayBare);
+            return new CLecternParadigm([], _cDisplayBare);
         }
 
         string language = LDisplayAnswerRead(() => _cDisplayPhonology.LEngineLanguageResolve(id), string.Empty);
+        IReadOnlyList<LParadigmRow> rows = _cDisplayVoice.LDisplayListRead(_cDisplayPhonology.LEngineParadigmScan);
+        bool pending = _cDisplayVoice.LDisplayParadigmCheck(id);
         return new CLecternParadigm(
-            CSounding.CSoundingParadigmRead(_cDisplayVoice.LDisplayListRead(_cDisplayPhonology.LEngineParadigmScan)),
-            _cDisplayVoice.LDisplayParadigmCheck(id),
-            _cDisplayVoice.LDisplayMorphologyRead(),
+            CSounding.CSoundingParadigmRead(rows, pending, _cDisplayVoice.LDisplayMorphologyRead(), false),
             CCatalog.LCatalogFontRead(_cDisplaySettings, language, CFontRole.CFontRoleHeadword));
     }
 
@@ -382,27 +382,8 @@ public sealed class CDisplaySound
 
     private CLecternAnchor LDisplayAnchorRead(IReadOnlyList<CReflex> rows)
     {
-        if (LDisplayEntry is not long id)
-        {
-            return _cDisplayUnanchored;
-        }
-
-        string headword = _cDisplayHeader.CDisplayShown.CLecternHeadword;
-        try
-        {
-            Dictionary<long, string> texts = [];
-            foreach (CReflex reflex in rows)
-            {
-                texts[reflex.CReflexId] = _cDisplayDraft.LEngineAnchorFormat(
-                    id, reflex.CReflexAnchors, headword, CReflex.LReflexSeparator);
-            }
-
-            return new CLecternAnchor(_cDisplayDraft.LEngineAnchorCheck(id, headword), texts);
-        }
-        catch (Exception)
-        {
-            return _cDisplayUnanchored;
-        }
+        return CSounding.LSoundingAnchorRead(
+            _cDisplayDraft, LDisplayEntry, _cDisplayHeader.CDisplayShown.CLecternHeadword, rows);
     }
 
     private CFont LDisplayFontRead(CFontRole role)

@@ -2,7 +2,8 @@
 
 ## `public sealed record CLecternAnchor(`
 
-How the reflex rows of the reading view anchor to the fanqie rows, ready to show.
+How reflex rows anchor to the fanqie rows, ready to show.
+The reading view and the editor's reflex block both carry it.
 
 **Parameters**
 

@@ -1,8 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
 using Llyn.Conduct;
-using Llyn.Core;
-using Llyn.ShellEngine;
 using Xunit;
 
 namespace Llyn.Tests;
@@ -27,40 +23,6 @@ public sealed class TReflexRow
         Assert.Equal([true, false, true, true], TInterfaceConduct.TReflexLeadRead(["Wu", "Wu", "Jin", "Wu"]));
         Assert.Equal([true, true], TInterfaceConduct.TReflexLeadRead(["Wu", "Wu "]));
         Assert.Empty(TInterfaceConduct.TReflexLeadRead([]));
-    }
-
-    [Fact]
-    public void EditorLeadRead_TypedLanguage_LeadsByTheOverlaidRows()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "水",
-            "Chinese",
-            string.Empty,
-            string.Empty,
-            [],
-            [],
-            reflexes:
-            [
-                TInterface.TReflexDraftCreate("Wu", string.Empty, "sy"),
-                TInterface.TReflexDraftCreate("Wu", string.Empty, "si"),
-                TInterface.TReflexDraftCreate("Jin", string.Empty, "sui"),
-            ]));
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
-        editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
-        Assert.Empty(editor.CEditorLeadRead(1, "Wu"));
-
-        editor.CEditorEntryOpen(entry.LEntryId);
-        IReadOnlyList<long> ids =
-            editor.CEditorDraftRead()!.CEntryDraftReflexes.Select(static row => row.CReflexDraftId).ToList();
-
-        Assert.Equal(
-            [new CReflexHead(ids[0], true), new CReflexHead(ids[1], false), new CReflexHead(ids[2], true)],
-            editor.CEditorLeadRead(ids[1], "Wu"));
-        Assert.Equal(
-            [new CReflexHead(ids[0], true), new CReflexHead(ids[1], true), new CReflexHead(ids[2], false)],
-            editor.CEditorLeadRead(ids[1], "Jin"));
     }
 
     [Fact]

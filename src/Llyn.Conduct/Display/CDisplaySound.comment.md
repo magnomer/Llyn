@@ -163,6 +163,7 @@ The shown entry's script block, ready to draw.
 
 The shown entry's paradigm block, ready to draw.
 Its font follows the paradigm's own language, which the engine resolves.
+The slots carry their status and tip key, so the driver reads neither verdict.
 The inflection fetch is started when the entry opens, never by this read.
 
 ## `private IReadOnlyList<CReflex> LDisplayReflexScan()`
@@ -172,8 +173,7 @@ The written reflex rows of the shown entry through the shared scan, none when th
 ## `private CLecternAnchor LDisplayAnchorRead(IReadOnlyList<CReflex> rows)`
 
 Whether the shown headword offers anchoring, and each row's anchor text.
-The engine's entry-based anchor rule answers both, the one the editor's rows use.
-A refusal answers no anchor.
+The shared anchor map `CSounding.LSoundingAnchorRead` answers both, the one the editor's block uses.
 
 ## `private CFont LDisplayFontRead(CFontRole role)`
 

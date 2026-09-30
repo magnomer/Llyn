@@ -42,7 +42,7 @@ Whether the row is hidden, true for a folded row while the fold is closed.
 
 Whether each row opens a run of one language, so the language prints once per run.
 The scan marks its rows by it.
-`CEditor.CEditorLeadRead` asks it again while a language is typed, since a row leads by position.
+`CTimbre.CTimbreReflexSet` asks it again while a language is typed, since a row leads by position.
 
 ## `private static string LReflexKeyRead(string name)`
 

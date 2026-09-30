@@ -2,9 +2,10 @@
 
 ## `public sealed class PParadigmItem`
 
-One row of the paradigm box: the part it belongs to, the form's name, and the form itself.
-The row carries flags rather than wording, so the dash and ellipsis live in the row template.
-A row is built once from one or more slots and never changes.
+One row of the paradigm box.
+It holds the part it belongs to, the form's name, and the text shown for the form.
+The row copies a ready slot, so the mark and the tip key were chosen below the driver.
+A row is built once from one slot and never changes.
 A new read hands the box new rows.
 Several slots sharing one stored form fold into one row naming every form, so `walked` is not listed twice.
 
@@ -19,36 +20,17 @@ The morphology value's name, such as `past` or `plural`, or several joined by a 
 
 ## `public string PParadigmItemText`
 
-The stored form, or empty while the slot stands unspecified or unknown.
+The stored form, or the mark that stands in for a missing one.
 
-## `public bool PParadigmItemUnknown`
+## `public string? PParadigmItemTip`
 
-True when a reached source could not name the form, so the template draws a dash.
+The localization key of the tooltip, or null when the row shows its form.
 
-## `public bool PParadigmItemPending`
+## `internal static PParadigmItem PParadigmItemCreate(CParadigmSlot slot)`
 
-True when the form is unspecified and a fetch is running, so the template says it is being looked up.
+Copies one ready slot into a row.
 
-## `public bool PParadigmItemLost`
+## `internal static IReadOnlyList<PParadigmItem> PParadigmItemScan(IReadOnlyList<CParadigmSlot> slots)`
 
-True when the form is unspecified, the lookup is on, no fetch is running, and no draft holds the entry.
-The template then says no source answered.
-An unspecified form with the lookup off keeps every flag false, and the template says the lookup is off.
-
-## `public bool PParadigmItemHeld`
-
-True when the form is unspecified, the lookup is on, no fetch is running, and a draft holds the entry.
-The engine declines to fetch while the entry is held.
-The template then says the form is looked up once the entry is saved.
-
-## `internal static PParadigmItem PParadigmItemCreate(CParadigmSlot slot, bool pending, bool enabled, bool held)`
-
-Maps one paradigm row to its text and flags.
-A row with an inflected form is filled, an unknown one is marked, and any other is open.
-`pending` says whether the engine is fetching for this entry.
-`enabled` says whether the morphology switch is on, and `held` whether a draft holds the entry.
-
-## `internal static IReadOnlyList<PParadigmItem> PParadigmItemScan(IReadOnlyList<CParadigmSlot> slots, bool pending, bool enabled, bool held)`
-
-Turns the shaped rows into the items one box draws.
-The engine already joined the slots, so the reading view and the editor draw alike.
+Turns the ready slots into the items one box draws.
+The lectern and the editor draw alike, since the read already chose each row's mark and tip.

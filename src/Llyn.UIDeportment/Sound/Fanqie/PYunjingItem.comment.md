@@ -19,7 +19,7 @@ Whether a held row is the same row as a fresh one, so the splice keeps it.
 
 Carries the chosen mark from the fresh row onto the kept one.
 
-## `internal static void PYunjingItemApply(FrameworkElement container, object item, string? _)`
+## `internal static void PYunjingItemRefine(FrameworkElement container, object item, string? _)`
 
 Fills one category row's key and count and marks the row while it is the chosen one.
 The onset and rime columns share the cell, so both attach this fill.

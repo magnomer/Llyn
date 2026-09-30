@@ -29,11 +29,6 @@ public sealed class CRespelling
         return new CRespellingMark(shown, opener, closer);
     }
 
-    public IReadOnlyList<CReflex> CRespellingReflexScan(string language, IReadOnlyList<CReflexDraft> reflexes)
-    {
-        return LRespellingReflexScan(_cRespellingAtelier.CAtelierPhonologyPort, language, reflexes);
-    }
-
     internal static IReadOnlyList<CReflex> LRespellingReflexScan(
         LPhonologyPort phonology, string language, IReadOnlyList<CReflexDraft> reflexes)
     {

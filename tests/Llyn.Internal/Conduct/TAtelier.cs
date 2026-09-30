@@ -410,7 +410,7 @@ public sealed class TAtelier
         Assert.Equal(["Leave"], asked);
         Assert.True(editor.CEditorDesk.CDeskHeld);
         Assert.False(editor.CEditorDesk.TDeskChangeCheck());
-        Assert.Equal(string.Empty, editor.CEditorDraftRead()?.CEntryDraftHeadword);
+        Assert.Equal(string.Empty, editor.TEditorDraftRead()?.CEntryDraftHeadword);
     }
 
     [Fact]

@@ -41,11 +41,7 @@ public sealed class QReflexItem : INotifyPropertyChanged
 
     public long QReflexItemId { get; }
 
-    public bool QReflexItemRespelled { get; private set; }
-
     public bool QReflexItemFolded { get; private set; }
-
-    public IReadOnlyList<long> QReflexItemAnchors { get; private set; } = [];
 
     public string QReflexItemOpener
     {
@@ -310,9 +306,7 @@ public sealed class QReflexItem : INotifyPropertyChanged
         _qReflexItemReflex = reflex;
         _qReflexItemTitle = reflex.CReflexLanguageKey;
         _qReflexItemRubric = reflex.CReflexKindKey;
-        QReflexItemRespelled = reflex.CReflexMark.CRespellingMarkShown;
         QReflexItemFolded = reflex.CReflexFolded;
-        QReflexItemAnchors = reflex.CReflexAnchors;
         QReflexItemOpener = reflex.CReflexMark.CRespellingMarkOpener;
         QReflexItemCloser = reflex.CReflexMark.CRespellingMarkCloser;
         QReflexItemMain = reflex.CReflexMain;
@@ -346,21 +340,6 @@ public sealed class QReflexItem : INotifyPropertyChanged
                 }
             }
         }
-    }
-
-    internal static void QReflexAnchorRefine(
-        IReadOnlyList<QReflexItem> rows, bool anchorable, Func<IReadOnlyList<long>, string> format)
-    {
-        ArgumentNullException.ThrowIfNull(rows);
-        ArgumentNullException.ThrowIfNull(format);
-
-        Dictionary<long, string> texts = [];
-        foreach (QReflexItem row in rows)
-        {
-            texts[row.QReflexItemId] = format(row.QReflexItemAnchors);
-        }
-
-        QReflexAnchorRefine(rows, anchorable, texts);
     }
 
     internal static void QReflexAnchorRefine(

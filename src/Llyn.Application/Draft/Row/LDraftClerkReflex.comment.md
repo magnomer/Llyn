@@ -27,6 +27,16 @@ The row's other anchors stand as they were.
 The reflex row `id` names in the draft, or null.
 The list's own find matches the id, so an id of zero is refused as there.
 
+## `public static LReflexDraft LReflexDefaultRead(LEntryDraft content, long reflex)`
+
+The language and kind a row added from row `reflex` starts with.
+It copies the pressed row's, and a zero or gone id starts blank.
+
+## `public static int LReflexPositionRead(LEntryDraft content, long reflex)`
+
+The place a row added from row `reflex` takes, right below it.
+A zero or gone id places it last.
+
 ## `private LEntryDraft LReflexAdd(LEntryDraft content, LRequestReflexAddition request)`
 
 A new reflex row for the language and kind sent and a minted id, at the place asked for.

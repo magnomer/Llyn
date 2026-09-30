@@ -23,8 +23,8 @@ public sealed class TEditor
 
         Assert.True(editor.CEditorDesk.CDeskHeld);
         Assert.Equal(entry.LEntryId, editor.CEditorDesk.CDeskStoredRead());
-        Assert.Equal("water", editor.CEditorDraftRead()?.CEntryDraftHeadword);
-        Assert.Equal("English", editor.CEditorDraftRead()?.CEntryDraftLanguage);
+        Assert.Equal("water", editor.TEditorDraftRead()?.CEntryDraftHeadword);
+        Assert.Equal("English", editor.TEditorDraftRead()?.CEntryDraftLanguage);
         Assert.False(editor.CEditorOwned);
         Assert.Equal("library", engine.TEngineDraftRead(editor.CEditorDesk.CDeskId)?.LDraftOrigin);
     }
@@ -42,7 +42,7 @@ public sealed class TEditor
 
         Assert.True(editor.CEditorDesk.CDeskHeld);
         Assert.Null(editor.CEditorDesk.CDeskStoredRead());
-        Assert.Equal(string.Empty, editor.CEditorDraftRead()?.CEntryDraftHeadword);
+        Assert.Equal(string.Empty, editor.TEditorDraftRead()?.CEntryDraftHeadword);
         Assert.True(editor.CEditorOwned);
     }
 
@@ -68,7 +68,7 @@ public sealed class TEditor
 
         editor.CEditorEntryOpen(null);
 
-        CEntryDraft? draft = editor.CEditorDraftRead();
+        CEntryDraft? draft = editor.TEditorDraftRead();
         Assert.NotNull(draft);
         Assert.Single(draft.CEntryDraftMeanings);
         Assert.Single(draft.CEntryDraftCollocations);
@@ -119,7 +119,7 @@ public sealed class TEditor
         editor.CEditorEntrySave();
 
         Assert.Equal(entry.LEntryId, editor.CEditorDesk.CDeskStoredRead());
-        Assert.Equal("waters", editor.CEditorDraftRead()?.CEntryDraftHeadword);
+        Assert.Equal("waters", editor.TEditorDraftRead()?.CEntryDraftHeadword);
         Assert.False(editor.CEditorDesk.CDeskStorable);
     }
 
@@ -173,7 +173,7 @@ public sealed class TEditor
         editor.CEditorEntryUndo();
 
         Assert.Equal(entry.LEntryId, editor.CEditorDesk.CDeskStoredRead());
-        Assert.Equal("water", editor.CEditorDraftRead()?.CEntryDraftHeadword);
+        Assert.Equal("water", editor.TEditorDraftRead()?.CEntryDraftHeadword);
     }
 
     [Fact]
@@ -187,7 +187,7 @@ public sealed class TEditor
         editor.CEditorHeadwordSet("salt");
         editor.CEditorDesk.CDeskPersist();
 
-        Assert.Equal("salt", editor.CEditorDraftRead()?.CEntryDraftHeadword);
+        Assert.Equal("salt", editor.TEditorDraftRead()?.CEntryDraftHeadword);
         Assert.True(editor.CEditorDesk.CDeskChanged);
         Assert.True(editor.CEditorDesk.CDeskStorable);
     }
@@ -203,9 +203,9 @@ public sealed class TEditor
         editor.CEditorNoteSet("a note\r\n\n");
         editor.CEditorDesk.CDeskPersist();
 
-        Assert.Equal("a note", editor.CEditorDraftRead()?.CEntryDraftNote);
-        Assert.True(CEditor.CEditorNoteCheck("a note\r\n\n", editor.CEditorDraftRead()!.CEntryDraftNote));
-        Assert.False(CEditor.CEditorNoteCheck("a note, longer", editor.CEditorDraftRead()!.CEntryDraftNote));
+        Assert.Equal("a note", editor.TEditorDraftRead()?.CEntryDraftNote);
+        Assert.True(CEditor.CEditorNoteCheck("a note\r\n\n", editor.TEditorDraftRead()!.CEntryDraftNote));
+        Assert.False(CEditor.CEditorNoteCheck("a note, longer", editor.TEditorDraftRead()!.CEntryDraftNote));
     }
 
     [Fact]
@@ -215,11 +215,11 @@ public sealed class TEditor
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TEditorPrepare(engine, "input");
         editor.CEditorEntryOpen(null);
-        string? before = editor.CEditorDraftRead()?.CEntryDraftLanguage;
+        string? before = editor.TEditorDraftRead()?.CEntryDraftLanguage;
 
         editor.CEditorLanguageSet(string.Empty);
 
-        Assert.Equal(before, editor.CEditorDraftRead()?.CEntryDraftLanguage);
+        Assert.Equal(before, editor.TEditorDraftRead()?.CEntryDraftLanguage);
         Assert.False(editor.CEditorDesk.CDeskStorable);
     }
 
@@ -312,7 +312,7 @@ public sealed class TEditor
         editor.CEditorDesk.CDeskPersist();
 
         Assert.True(filling);
-        Assert.Equal(string.Empty, editor.CEditorDraftRead()?.CEntryDraftHeadword);
+        Assert.Equal(string.Empty, editor.TEditorDraftRead()?.CEntryDraftHeadword);
     }
 
     [Fact]
@@ -328,7 +328,7 @@ public sealed class TEditor
         editor.CEditorDesk.TDeskMembershipStart(tag.LTagId);
 
         Assert.Contains(
-            editor.CEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftTag ?? [],
+            editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftTag ?? [],
             row => row.CTagDraftId == tag.LTagId);
         Assert.NotEqual(replaced, editor.CEditorDesk.CDeskId);
         Assert.Null(engine.TEngineDraftRead(replaced));
@@ -347,7 +347,7 @@ public sealed class TEditor
         editor.CEditorDesk.TDeskCohortStart(register.LRegisterId);
 
         Assert.Contains(
-            editor.CEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftRegister ?? [],
+            editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftRegister ?? [],
             row => row.CRegisterDraftId == register.LRegisterId);
         Assert.NotEqual(replaced, editor.CEditorDesk.CDeskId);
         Assert.Null(engine.TEngineDraftRead(replaced));
@@ -400,7 +400,7 @@ public sealed class TEditor
         editor.CEditorDesk.TDeskQuotationStart(example.LExampleId);
 
         CExampleDraft? cited =
-            editor.CEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;
+            editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;
         Assert.Equal("Water is wet.", cited?.CExampleDraftText.CStateValueText);
         Assert.NotEqual(replaced, editor.CEditorDesk.CDeskId);
         Assert.Null(engine.TEngineDraftRead(replaced));
@@ -418,7 +418,7 @@ public sealed class TEditor
         editor.CEditorDesk.TDeskFootnoteStart(book.LReferenceId);
 
         CExampleDraft? cited =
-            editor.CEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;
+            editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;
         Assert.Equal(book.LReferenceId, cited?.CExampleDraftReference);
     }
 

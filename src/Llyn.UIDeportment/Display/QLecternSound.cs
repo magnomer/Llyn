@@ -42,7 +42,7 @@ public sealed class QLecternSound
 
     private DependencyObject _qLecternSoundParadigm = null!;
 
-    private Action<IReadOnlyList<CParadigmSlot>, bool, bool> _qLecternSoundInflection = null!;
+    private Action<IReadOnlyList<CParadigmSlot>> _qLecternSoundInflection = null!;
 
     public QLecternSound(CDisplaySound area)
     {
@@ -111,7 +111,7 @@ public sealed class QLecternSound
     }
 
     public void QLecternParadigmIntroduce(
-        DependencyObject paradigm, Action<IReadOnlyList<CParadigmSlot>, bool, bool> paradigmSeam)
+        DependencyObject paradigm, Action<IReadOnlyList<CParadigmSlot>> paradigmSeam)
     {
         ArgumentNullException.ThrowIfNull(paradigm);
         ArgumentNullException.ThrowIfNull(paradigmSeam);
@@ -186,8 +186,7 @@ public sealed class QLecternSound
     {
         CLecternParadigm paradigm = _qLecternSoundArea.CDisplayParadigmRead();
         LFontFace.LFontRefine(paradigm.CLecternParadigmFont, _qLecternSoundParadigm);
-        _qLecternSoundInflection(
-            paradigm.CLecternParadigmSlots, paradigm.CLecternParadigmPending, paradigm.CLecternParadigmMorphology);
+        _qLecternSoundInflection(paradigm.CLecternParadigmSlots);
     }
 
     public void QLecternSilenceRefine()
@@ -200,7 +199,7 @@ public sealed class QLecternSound
         _qLecternSoundReflex.Clear();
         _qLecternSoundFold.Visibility = Visibility.Collapsed;
         _qLecternSoundLoading.Visibility = Visibility.Collapsed;
-        _qLecternSoundInflection([], false, false);
+        _qLecternSoundInflection([]);
         _qLecternSoundWriting([], false);
         _qLecternSoundRime([], false);
         _qLecternSoundReading.Text = string.Empty;

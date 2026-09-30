@@ -16,7 +16,7 @@ Hears the tenure's fanqie subject and raises `CSoundingChanged` on the driver's 
 A fanqie changed elsewhere refreshes the editor as a fanqie set here does.
 ## `internal CSounding(`
 
-Takes the editor's desk, the phonology port every sound read goes through, and the draft port the anchors ask.
+Takes the editor's desk and the phonology port every sound read goes through.
 A refused load shows through `envoy`, with the ready notice `settings` reads.
 The waiting checks and the morphology verdict come from `voice`, the editor's display voice.
 Only the editor builds one, so the constructor is internal.
@@ -48,15 +48,6 @@ The glyph font is the draft language's, as the editor's other glyph surfaces tak
 ## `public string CSoundingReadingRead(string headword)`
 
 The headword's representative reading, formed by the engine from the same groups the box draws.
-
-## `public bool CSoundingAnchorCheck(string headword)`
-
-Whether the entry's rime-book rows let a reflex anchor at all.
-
-## `public string CSoundingAnchorFormat(IReadOnlyList<long> anchors, string headword)`
-
-The anchors of one reflex written against the entry's rime-book rows.
-The placements are joined by `CReflex.LReflexSeparator`, so both panes print the same label.
 
 ## `public IReadOnlyList<CScheme> CSoundingSchemeRead(long transcription)`
 
@@ -91,6 +82,7 @@ The user asked to drop the entry's script rows and fetch them again.
 
 The editor's whole paradigm block, in the reading view's own shape.
 The rows are joined by the engine, and the waiting check and the morphology verdict come from the voice.
+Both verdicts stand in each slot's ready status, so the driver never reads them.
 The headword font is that of the paradigm's own language, as the reading view picks it.
 Every block's font goes through the one font rule `CCatalog.LCatalogFontRead` holds.
 
@@ -119,14 +111,17 @@ Copies every cell the fanqie line shows, derived cells included.
 
 The one map from the engine's script groups to their shape, shared with the lectern.
 
-## `internal static IReadOnlyList<CParadigmSlot> CSoundingParadigmRead(IReadOnlyList<LParadigmRow> rows)`
+## `internal static IReadOnlyList<CParadigmSlot> CSoundingParadigmRead(`
 
 Shapes each paradigm row the engine joined.
 The lectern calls it too, so no driver groups slots.
+The held flag is true for the editor, whose missing forms are held by the draft.
 
-## `private static CParadigmSlot LSoundingSlotRead(LParadigmRow row)`
+## `private static CParadigmSlot LSoundingSlotRead(LParadigmRow row, LParadigmStatus status, bool held)`
 
-Copies the row's part, its name, and the first slot's form and doubt.
+Maps the row's status plainly to the text shown and the key of its tip.
+The status rule is Core's, so this map holds only the wording and the held choice.
+A held draft answers the held key where the lectern answers the lost key.
 
 ## `public static CVariety CSoundingVarietyRead(string language, string variety)`
 
@@ -147,6 +142,13 @@ The editor's contour and the reading view's block share it.
 ## `internal static IReadOnlyList<CTranscriptionDraft> CSoundingTranscriptionRead(`
 
 The transcriptions of a draft, shaped for the transcription rows and the lectern.
+
+## `internal static CLecternAnchor LSoundingAnchorRead(`
+
+Whether the headword offers anchoring for `entry`, and the anchor text of each row, keyed by its id.
+The engine's entry-based anchor rule answers both, and the placements are joined by `CReflex.LReflexSeparator`.
+The reading view and the editor's reflex block both read their anchors here, so the map has one owner.
+No stored entry or a refusal answers no anchor.
 
 ## `internal static IReadOnlyList<CReflexDraft> CSoundingReflexRead(IReadOnlyList<LReflexDraft> reflexes)`
 

@@ -93,6 +93,23 @@ public sealed class LDraftClerkReflex
         return index < 0 ? null : content.LEntryDraftReflexes[index];
     }
 
+    public static LReflexDraft LReflexDefaultRead(LEntryDraft content, long reflex)
+    {
+        return reflex != 0 && LReflexFind(content, reflex) is LReflexDraft pressed
+            ? new LReflexDraft(pressed.LReflexDraftLanguage, pressed.LReflexDraftKind)
+            : new LReflexDraft(string.Empty);
+    }
+
+    public static int LReflexPositionRead(LEntryDraft content, long reflex)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+
+        int index = reflex == 0
+            ? -1
+            : LDraftClerkList.LDraftListFind(content.LEntryDraftReflexes, reflex, static row => row.LReflexDraftId);
+        return index < 0 ? content.LEntryDraftReflexes.Count : index + 1;
+    }
+
     private LEntryDraft LReflexAdd(LEntryDraft content, LRequestReflexAddition request)
     {
         LReflexDraft row = new(

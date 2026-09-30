@@ -186,6 +186,9 @@ internal static partial class TInterface
     internal static IReadOnlyList<LParadigmRow> TParadigmRowScan(IReadOnlyList<LParadigmSlot> slots) =>
         LParadigmRow.LParadigmRowScan(slots);
 
+    internal static LParadigmStatus TParadigmClerkCheck(LParadigmRow row, bool pending, bool enabled) =>
+        LParadigmClerk.LParadigmClerkCheck(row, pending, enabled);
+
     internal static LParadigmSlot TParadigmSlotCreate(
         LSpeechValue speech, LMorphology morphology, LInflection? inflection, LState state) =>
         new(speech, morphology, inflection, state, new LParadigm(speech.LSpeechValueId, []));

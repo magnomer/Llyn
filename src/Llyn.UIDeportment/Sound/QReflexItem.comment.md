@@ -29,22 +29,11 @@ The fold refine that follows every build decides whether it starts hidden.
 
 ## `public long QReflexItemId { get; }`
 
-The draft row's id, by which the panel's requests name it.
-
-## `public bool QReflexItemRespelled`
-
-Whether the text is the row's respelling, as the mark Conduct chose says.
-So a Korean row stays plain while a Mandarin row is respelled.
+The draft row's id, by which the panel's gates name it.
 
 ## `public bool QReflexItemFolded`
 
 Whether the row belongs to a language the pack folds away.
-
-## `public IReadOnlyList<long> QReflexItemAnchors`
-
-The fanqie ids the row is tied to, as the engine's draft holds them.
-A tick in the anchor menu reaches the engine, and the row takes the new ids in place.
-The label is not derived here, since the item never sees the fanqie rows.
 
 ## `public string QReflexItemOpener`
 
@@ -156,14 +145,8 @@ A missing translation prints the name as the pack spells it, and a blank name pr
 
 ## `internal static void QReflexLeadRefine(IReadOnlyList<QReflexItem> rows, IReadOnlyList<CReflexHead> heads)`
 
-Pairs each row with the answer `CEditor.CEditorLeadRead` gave for its id and copies its lead.
+Pairs each row with the answer `CTimbre.CTimbreReflexSet` gave for its id and copies its lead.
 The editor calls it while a language is typed, before the draft brings the marks back.
-
-## `internal static void QReflexAnchorRefine(`
-
-Formats each row's anchor label through `format`, then writes the labels through the form below.
-The caller's Conduct read decides both, so the fanqie rows never reach this item.
-The editor's reflex block paints through it, until job75.
 
 ## `internal static void QReflexAnchorRefine(IReadOnlyList<QReflexItem> rows, bool anchorable, IReadOnlyDictionary<long, string> texts)`
 

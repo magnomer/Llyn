@@ -7,81 +7,87 @@ The rows are the same rows the reading view prints, with bare fields where it pr
 The romanization, meaning and note each have a field after the reading.
 The region is only a hover on the language field.
 The folded languages hide under the same fold the view has, and the fold state is shared with it.
-Every change is a request to the engine, and the rows are rebuilt from the draft it answers with.
+Every change goes through a `CTimbre` gate, and the rows are rebuilt from the draft it answers with.
 
-The key a deferred request of one row and one field is held under.
+## `private void PReflexAddObserve(object sender, ExecutedRoutedEventArgs e)`
 
-## `internal void PReflexAddHandle(object sender, ExecutedRoutedEventArgs e)`
+Hands the row the plus was pressed on to `CTimbre.CTimbreReflexAdd`, or zero for the header's plus.
+The clerk places the new row and gives it the pressed row's language and kind.
 
-Adds a row after the one the plus was pressed on, in its language and kind.
-Without a row it adds a blank one at the end.
+## `private void PReflexRemoveObserve(object sender, ExecutedRoutedEventArgs e)`
 
-## `internal void PReflexRemoveHandle(object sender, ExecutedRoutedEventArgs e)`
+Hands the row the minus was pressed on to `CTimbre.CTimbreReflexRemove`.
 
-Drops the row the minus was pressed on.
+## `private void PReflexMainObserve(object sender, ExecutedRoutedEventArgs e)`
 
-## `internal void PReflexMainHandle(object sender, ExecutedRoutedEventArgs e)`
+Hands the row the star was pressed on to `CTimbre.CTimbreReflexToggle`, which flips its main mark.
 
-Flips the main mark of the row the star was pressed on.
+## `private void PReflexRebuildRefine(object sender, ExecutedRoutedEventArgs e)`
 
-## `internal void PReflexRebuildHandle(object sender, ExecutedRoutedEventArgs e)`
+Holds the table at its width and height before the fetch-again gate runs, bound first on the same command.
+So the button stays where it was pressed while the rows are fetched.
 
-Asks the engine to drop the entry's reflex rows and fetch them again.
-The button sits at the top right corner of the block.
-The table keeps its width and height for the fetch, so the button stays where it was pressed.
-A draft not yet stored as an entry has nothing to fetch for, so the press does nothing.
-A failed ask is ignored, and the rows stay as they are.
+## `private void PReflexRebuildObserve(object sender, ExecutedRoutedEventArgs e)`
 
-## `private void PReflexChangeHandle(object? sender, PropertyChangedEventArgs e)`
+Hands the fetch-again press to `CTimbre.CTimbreReflexRebuild`, then repaints the fetching line.
+The gate does nothing for a draft not yet stored, and the repaint then lets the table size go.
 
-A text change becomes a respelling request while the row prints its respelling and a reading request otherwise.
-Romanization, meaning and note changes become their matching requests.
-Defers a request for the field that changed, so typing is sent in one piece.
-A language change also remarks the leads at once, so the language prints on the right row while typing.
+## `private void PReflexChangeObserve(object? sender, PropertyChangedEventArgs e)`
 
-## `internal void PReflexShow(CEntryDraft draft)`
+Maps the cell that changed to its `CReflexField` and hands the row id and typed text to `CTimbre.CTimbreReflexSet`.
+Other property notices of the row send nothing.
+`QReflexItem.QReflexLeadRefine` marks the leads the gate answers.
+A typed language answers every row, so the language prints on the right row while typing.
 
-Rebuilds the rows from the draft, keeping a row that is still being typed into.
-The stack is shown when the language declares a rule or the draft carries a row, and hidden otherwise.
-The rows come ready from `CRespelling.CRespellingReflexScan`, each knowing its mark and its fold.
-The fold is applied last.
-The anchor labels are written from the fanqie rows the editor last read.
-The fetch-again button shows and hides with the block, where a binding followed its visibility.
+## `internal void PReflexRefine(CEntryDraft _)`
 
-## `internal void PReflexAnchorShow()`
+Answers the draft bulletin by painting the ready block `CTimbre.CTimbreReflexRead` answers.
+The bulletin's draft is not read, since the block comes whole from Conduct.
 
-Writes every row's anchor label from the fanqie rows held, under the headword as it now reads.
+## `private void PReflexRefine(CTimbreReflex reflex)`
 
-## `internal void PReflexPendingShow()`
+Rebuilds the rows from the ready block, keeping a row that is still being typed into.
+The stack and the fetch-again button show and hide together, by the block's shown verdict.
+The fold, the anchor labels and the fetching line are painted after the rows.
+
+## `internal void PReflexAnchorRefine()`
+
+Answers a desk start and a fanqie change by painting the anchor labels of a fresh block read.
+
+## `private void PReflexAnchorRefine(CLecternAnchor anchor)`
+
+Writes every row's ready anchor label and whether a row may be anchored at all.
+
+## `internal void PReflexPendingRefine()`
+
+Answers the reflex bulletin by painting the fetching line from `CTimbre.CTimbreReflexPending`.
+
+## `private void PReflexPendingRefine(bool pending)`
 
 Shows the fetching line and turns the fetch-again icon while the engine fills the entry.
 The icon turns while the button carries the `Pending` cue, through the rebuild style's rows.
-Both settle when the fill answers, which reaches here by the reflex bulletin.
 The held table size is let go once the fill is over, so the new rows size the table again.
-An unsaved entry has no fill and shows nothing.
 
-## `internal void PReflexFoldHandle(object sender, RoutedEventArgs e)`
+## `private void PReflexFoldObserve(object sender, RoutedEventArgs e)`
 
-Opens or closes the fold as the toggle under the rows was pressed, through the display's fold gate.
-The gate's change event also redraws every reading view over the same display.
+Hands the fold toggle's state to the display's fold gate `CDisplaySound.CDisplayReflexToggle`.
 
-## `internal void PReflexPrepare(CEntryDraft draft)`
+## `internal void PReflexFoldRefine()`
 
-Asks the engine to fill a stored entry that has no rows yet.
-The fill reaches the draft through the engine and lands here by bulletin.
-The fetching line is shown at once, since the ask starts the fill before it returns.
-An unsaved entry has no id and is not asked.
+Answers the display's fold change by hiding the folded rows and setting the toggle.
+The same change redraws every reading view over the same display.
 
-## `private QReflexItem PReflexCreate(CReflex reflex)`
+## `private QReflexItem PReflexRowRefine(CReflex reflex)`
 
 A row for a ready reflex, listened to for changes.
 
-## `private static QReflexItem PReflexUpdate(QReflexItem row, CReflex reflex)`
+## `private static QReflexItem PReflexStateRefine(QReflexItem row, CReflex reflex)`
 
-Brings a row up to the ready reflex in place, its mark, fold and anchors included.
+Brings a row up to the ready reflex in place, its mark and fold included.
 
 ## `private void PReflexAttach()`
 
 Hands the reflex list its rows and fill, and binds the row commands on the sound panel.
 The fetch-again command is bound on its own button, as the markup had it.
 The fold switch is subscribed both ways, since one handler reads its state.
+The fetch-again command runs its Refine before its Observe, in binding order.

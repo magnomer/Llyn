@@ -35,10 +35,6 @@ Each refused gate asks the envoy to show its own notice key and announces no cha
 
 The rank edit reaches the engine with the stored entry, the row, the held rank and the raise flag.
 
-## `public void SoundingAnchorFormat_StoredEntry_JoinsWithTheReflexSeparator()`
-
-The anchor label reaches the engine with the reflex separator Conduct owns.
-
 ## `public void SoundingSchemeRead_TwoRows_MarksTheSchemeTheOtherRowHolds()`
 
 The Yale row's dropdown marks Jyutping as taken, since the other row holds it.
@@ -48,10 +44,16 @@ Its own scheme stays free, so the row can keep it.
 
 A scheme is labelled under `Scheme.` plus its name, and a blank one keys `Scheme.` alone.
 
+## `public void SoundingParadigmRead_UnansweredSlot_AnswersTheTipOfItsPendingAndMorphologyVerdicts(`
+An unanswered slot answers the pending tip while the fetch runs, whatever the morphology setting says.
+After the fetch it answers the held tip when morphology is on, since the editor's draft holds the missing form.
+With morphology off it answers the absent tip.
+
 ## `public void SoundingParadigmRead_TwoSlotsOneForm_JoinsThemIntoOneRow()`
 
-The paradigm rows the engine joined keep their part, name, form and doubt.
-The block also carries the waiting check, the morphology verdict and the font of the language the engine resolves.
+The paradigm rows the engine joined keep their part, name and form.
+An unknown slot answers its mark and tip key.
+The block also carries the font of the language the engine resolves.
 
 ## `public void SoundingScriptRead_StoredEntry_AnswersTheWholeBlockInTheDraftLanguage()`
 

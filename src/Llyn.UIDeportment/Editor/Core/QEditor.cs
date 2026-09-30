@@ -25,7 +25,7 @@ internal sealed class QEditor
         CEditor editor = QEditorArea;
         CDesk desk = editor.CEditorDesk;
         desk.CDeskStarted += surface.PEditorStartRefine;
-        desk.CDeskStarted += surface.PReflexAnchorShow;
+        desk.CDeskStarted += surface.PReflexAnchorRefine;
         desk.CDeskStarted += surface.PReadingRefine;
         desk.CDeskFailed += host.PWindowFailureRefine;
         desk.CDeskStateChanged += surface.PEditorStateRefine;
@@ -34,9 +34,10 @@ internal sealed class QEditor
         desk.CDeskErrand.CErrandLookupStarted += surface.PNotationSourceHandle;
         desk.CDeskErrand.CErrandCandidateAdded += surface.PNotationCandidateHandle;
         desk.CDeskErrand.CErrandLookupFinished += surface.PNotationFinishHandle;
-        editor.CEditorSounding.CSoundingChanged += surface.PReflexAnchorShow;
+        editor.CEditorSounding.CSoundingChanged += surface.PReflexAnchorRefine;
         editor.CEditorSounding.CSoundingChanged += surface.PReadingRefine;
-        editor.CEditorTimbre.CTimbreReflexChanged += surface.PReflexPendingShow;
+        editor.CEditorTimbre.CTimbreReflexChanged += surface.PReflexPendingRefine;
+        editor.CEditorDisplay.CDisplaySound.CDisplayFoldChanged += surface.PReflexFoldRefine;
         editor.CEditorSentence.CSentenceReferenceChanged += surface.PSentenceCitationRefine;
 
         editor.CEditorDraftChanged += surface.PEditorDraftRefine;
@@ -45,7 +46,7 @@ internal sealed class QEditor
         editor.CEditorDraftChanged += surface.PAccentRefine;
         editor.CEditorDraftChanged += surface.PGlyphShow;
         editor.CEditorDraftChanged += surface.PTranscriptionShow;
-        editor.CEditorDraftChanged += surface.PReflexShow;
+        editor.CEditorDraftChanged += surface.PReflexRefine;
         editor.CEditorDraftChanged += surface.PMarkerRefine;
         editor.CEditorDraftChanged += surface.PSpeakerRefine;
         editor.CEditorDraftChanged += surface.PHeadwordFontRefine;
@@ -58,7 +59,6 @@ internal sealed class QEditor
         editor.CEditorDraftChanged += surface.PEtymologyRefine;
         editor.CEditorDraftChanged += surface.PEtymologyMentionRefine;
         editor.CEditorDraftChanged += surface.PPlaybackRefine;
-        editor.CEditorDraftChanged += surface.PReflexPrepare;
 
         CWorkspace workspace = host.PWindowAtelier.CAtelierWorkspace;
         workspace.CWorkspaceOpened += surface.PSentenceCitationRefine;

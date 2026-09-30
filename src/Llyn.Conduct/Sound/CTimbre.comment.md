@@ -4,7 +4,8 @@
 
 The sound facts of the entry an editor holds, as the editor shows or offers them.
 The pack facts are read for the held draft's language, and the waiting reflexes from the editor's display.
-The editor builds it over its desk, its phonology and media ports and its display, so it keeps no copy.
+The editor builds it over its desk, its display and its phonology, media and draft ports.
+So it keeps no copy.
 
 ## `public event Action? CTimbreParadigmChanged;`
 
@@ -18,10 +19,6 @@ Whether the held draft's language has a flag.
 ## `public IReadOnlyList<string> CTimbreVarietyNames`
 
 The varieties the held draft's language offers, empty while no draft is held.
-
-## `public bool CTimbreReflexShown`
-
-Whether the reflex block shows for the held draft.
 
 ## `public bool CTimbreReflexPending`
 
@@ -81,14 +78,51 @@ A load or read that fails answers null too, and the labels stand.
 
 Maps the engine's sheet into the Conduct record, reading no rule.
 
-## `public void CTimbreReflexStart()`
+## `public CTimbreReflex CTimbreReflexRead()`
 
-Starts the reflex lookup for the held entry, which the editor asks when a stored entry opens without reflexes.
-Nothing is started for a fresh draft, since a lookup needs a stored entry.
+The held draft's reflex block, ready to paint, as the reading view reads its own.
+Every row shows, the blank ones included, each resolved by the shared reflex scan.
+The anchor labels are read against the draft's headword through the shared anchor map.
+The fold comes from the editor's display, which shares it with every reading view.
+An empty desk answers no rows, no anchor and no fetching line.
+A refused scan reaches the draft bulletin's caller, as it did from the driver.
+
+## `private void LTimbreReflexStart(LDraft _)`
+
+Starts the reflex lookup whenever the desk prepares a draft, before the editor's bulletin repaints.
+So the first paint of a stored entry without reflexes already shows the fetching line.
+The tenure decides whether a lookup is due, and a refusal is swallowed as the driver swallowed it.
 
 ## `public void CTimbreReflexRebuild()`
 
 The user asked to look the held entry's reflexes up again.
+
+## `public void CTimbreReflexAdd(long reflex)`
+
+The user pressed the plus of reflex row `reflex`, or of the header when it is zero.
+The engine places the new row below the pressed one, in its language and kind.
+
+## `public void CTimbreReflexRemove(long reflex)`
+
+The user pressed the minus of reflex row `reflex`.
+
+## `public void CTimbreReflexToggle(long reflex)`
+
+The user pressed the star of reflex row `reflex`.
+The engine flips the main mark the draft holds, so a row it no longer holds sends nothing.
+
+## `public IReadOnlyList<CReflexHead> CTimbreReflexSet(long reflex, CReflexField field, string text)`
+
+The user typed `text` into the cell `field` of reflex row `reflex`.
+Each cell has its own engine member, and the engine defers every one.
+A typed language answers every row's lead, with the typed language standing in for the row's stored one.
+Other cells answer no lead, and so does a desk that fills its view.
+Only the edit in hand is overlaid, so another row's edit still deferred reads as stored.
+The lead compares the raw typed language, as the scan compares the stored one.
+
+## `private static IReadOnlyList<CReflexHead> LTimbreLeadRead(IReadOnlyList<LReflexDraft> typed)`
+
+Marks the rows the engine answered by the lead rule `CReflex.LReflexLeadRead`, the one the scan uses.
 
 ## `internal void LTimbreObserverAttach(Action<Action> marshal)`
 
@@ -114,3 +148,7 @@ The stored entry the held draft stands on, or null for a fresh draft or an empty
 
 The held draft's tenure for a write, or null while the desk fills its view.
 So a row the render writes raises no request.
+
+## `private LQuillReflex? LTimbreQuill`
+
+The reflex row edits over the writing tenure and the editor's phonology port, or null while the desk fills.

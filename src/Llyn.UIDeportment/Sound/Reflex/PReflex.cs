@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using Llyn.Application;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -34,194 +31,158 @@ public partial class PEditor
         QField.QFieldCellAttach(PReflex);
         PAccentControl.PAccentControlAttach(PReflex);
         PEditorSound.CommandBindings.Add(new CommandBinding(
-            PReflexCommand.PReflexCommandAddition, PReflexAddHandle));
+            PReflexCommand.PReflexCommandAddition, PReflexAddObserve));
         PEditorSound.CommandBindings.Add(new CommandBinding(
-            PReflexCommand.PReflexCommandRemoval, PReflexRemoveHandle));
+            PReflexCommand.PReflexCommandRemoval, PReflexRemoveObserve));
         PEditorSound.CommandBindings.Add(new CommandBinding(
-            PReflexCommand.PReflexCommandMain, PReflexMainHandle));
+            PReflexCommand.PReflexCommandMain, PReflexMainObserve));
         PEditorSound.CommandBindings.Add(new CommandBinding(
             PReflexCommand.PReflexCommandAnchor, PReflexAnchorObserve));
-        PReflexRenewal.CommandBindings.Add(new CommandBinding(
-            PReflexCommand.PReflexCommandRenewal, PReflexRebuildHandle));
-        PReflexFold.Checked += PReflexFoldHandle;
-        PReflexFold.Unchecked += PReflexFoldHandle;
+        CommandBinding renewal = new(PReflexCommand.PReflexCommandRenewal);
+        renewal.Executed += PReflexRebuildRefine;
+        renewal.Executed += PReflexRebuildObserve;
+        PReflexRenewal.CommandBindings.Add(renewal);
+        PReflexFold.Checked += PReflexFoldObserve;
+        PReflexFold.Unchecked += PReflexFoldObserve;
     }
 
-    internal void PReflexAddHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PReflexAddObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        QReflexItem? row = e.Parameter as QReflexItem;
-        int position = row is null ? _pReflexItem.Count : _pReflexItem.IndexOf(row) + 1;
-        PEditorRequestSend(new LRequestReflexAddition(
-            PEditorDraft, row?.QReflexItemLanguage ?? string.Empty, row?.QReflexItemKind ?? string.Empty, position));
+        _qEditor.QEditorArea.CEditorTimbre.CTimbreReflexAdd((e.Parameter as QReflexItem)?.QReflexItemId ?? 0);
     }
 
-    internal void PReflexRemoveHandle(object sender, ExecutedRoutedEventArgs e)
-    {
-        if (e.Parameter is QReflexItem row)
-        {
-            PEditorRequestSend(new LRequestReflexRemoval(PEditorDraft, row.QReflexItemId));
-        }
-    }
-
-    internal void PReflexMainHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PReflexRemoveObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is QReflexItem row)
         {
-            PEditorRequestSend(new LRequestReflexMain(PEditorDraft, row.QReflexItemId, !row.QReflexItemMain));
+            _qEditor.QEditorArea.CEditorTimbre.CTimbreReflexRemove(row.QReflexItemId);
         }
     }
 
-    internal void PReflexRebuildHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PReflexMainObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_qEditor.QEditorArea.CEditorEntry is null)
+        if (e.Parameter is QReflexItem row)
         {
-            return;
+            _qEditor.QEditorArea.CEditorTimbre.CTimbreReflexToggle(row.QReflexItemId);
         }
+    }
 
+    private void PReflexRebuildRefine(object sender, ExecutedRoutedEventArgs e)
+    {
         PReflexTable.MinWidth = PReflexTable.ActualWidth;
         PReflexTable.MinHeight = PReflexTable.ActualHeight;
-        try
-        {
-            _qEditor.QEditorArea.CEditorTimbre.CTimbreReflexRebuild();
-        }
-        catch (Exception)
-        {
-        }
-
-        PReflexPendingShow();
     }
 
-    private void PReflexChangeHandle(object? sender, PropertyChangedEventArgs e)
+    private void PReflexRebuildObserve(object sender, ExecutedRoutedEventArgs e)
+    {
+        _qEditor.QEditorArea.CEditorTimbre.CTimbreReflexRebuild();
+        PReflexPendingRefine();
+    }
+
+    private void PReflexChangeObserve(object? sender, PropertyChangedEventArgs e)
     {
         if (sender is not QReflexItem row)
         {
             return;
         }
 
-        string field = e.PropertyName ?? string.Empty;
-        LRequest? request = field switch
+        CTimbre timbre = _qEditor.QEditorArea.CEditorTimbre;
+        long id = row.QReflexItemId;
+        switch (e.PropertyName)
         {
-            nameof(QReflexItem.QReflexItemLanguage) =>
-                new LRequestReflexLanguage(PEditorDraft, row.QReflexItemId, row.QReflexItemLanguage),
-            nameof(QReflexItem.QReflexItemKind) =>
-                new LRequestReflexKind(PEditorDraft, row.QReflexItemId, row.QReflexItemKind),
-            nameof(QReflexItem.QReflexItemText) => row.QReflexItemRespelled
-                ? new LRequestReflexRespelling(PEditorDraft, row.QReflexItemId, row.QReflexItemText)
-                : new LRequestReflexText(PEditorDraft, row.QReflexItemId, row.QReflexItemText),
-            nameof(QReflexItem.QReflexItemRomanization) =>
-                new LRequestReflexRomanization(PEditorDraft, row.QReflexItemId, row.QReflexItemRomanization),
-            nameof(QReflexItem.QReflexItemMeaning) =>
-                new LRequestReflexMeaning(PEditorDraft, row.QReflexItemId, row.QReflexItemMeaning),
-            nameof(QReflexItem.QReflexItemNote) =>
-                new LRequestReflexNote(PEditorDraft, row.QReflexItemId, row.QReflexItemNote),
-            _ => null,
-        };
-
-        if (request is null)
-        {
-            return;
+            case nameof(QReflexItem.QReflexItemLanguage):
+                QReflexItem.QReflexLeadRefine(
+                    _pReflexItem,
+                    timbre.CTimbreReflexSet(id, CReflexField.CReflexFieldLanguage, row.QReflexItemLanguage));
+                break;
+            case nameof(QReflexItem.QReflexItemKind):
+                timbre.CTimbreReflexSet(id, CReflexField.CReflexFieldKind, row.QReflexItemKind);
+                break;
+            case nameof(QReflexItem.QReflexItemText):
+                timbre.CTimbreReflexSet(id, CReflexField.CReflexFieldText, row.QReflexItemText);
+                break;
+            case nameof(QReflexItem.QReflexItemRomanization):
+                timbre.CTimbreReflexSet(id, CReflexField.CReflexFieldRomanization, row.QReflexItemRomanization);
+                break;
+            case nameof(QReflexItem.QReflexItemMeaning):
+                timbre.CTimbreReflexSet(id, CReflexField.CReflexFieldMeaning, row.QReflexItemMeaning);
+                break;
+            case nameof(QReflexItem.QReflexItemNote):
+                timbre.CTimbreReflexSet(id, CReflexField.CReflexFieldNote, row.QReflexItemNote);
+                break;
         }
-
-        if (string.Equals(field, nameof(QReflexItem.QReflexItemLanguage), StringComparison.Ordinal))
-        {
-            QReflexItem.QReflexLeadRefine(
-                _pReflexItem, _qEditor.QEditorArea.CEditorLeadRead(row.QReflexItemId, row.QReflexItemLanguage));
-        }
-
-        PEditorRequestDefer(request);
     }
 
-    internal void PReflexShow(CEntryDraft draft)
+    internal void PReflexRefine(CEntryDraft _)
     {
-        string language = draft.CEntryDraftLanguage;
-        PReflexBlock.Visibility = QLook.QLookVisibleRead(_qEditor.QEditorArea.CEditorTimbre.CTimbreReflexShown);
-        PReflexRenewal.Visibility = PReflexBlock.Visibility;
+        PReflexRefine(_qEditor.QEditorArea.CEditorTimbre.CTimbreReflexRead());
+    }
 
+    private void PReflexRefine(CTimbreReflex reflex)
+    {
+        PReflexBlock.Visibility = QLook.QLookVisibleRead(reflex.CTimbreReflexShown);
+        PReflexRenewal.Visibility = PReflexBlock.Visibility;
         PCard.PCardRowShow(
             _pReflexItem,
-            _pEditorHost.PWindowAtelier.CAtelierRespelling.CRespellingReflexScan(language, draft.CEntryDraftReflexes),
+            reflex.CTimbreReflexRows,
             static row => row.QReflexItemId,
-            static reflex => reflex.CReflexId,
-            PReflexCreate,
-            PReflexUpdate);
-
-        QReflexItem.QReflexFoldRefine(
-            _pReflexItem, PReflexFold, _qEditor.QEditorArea.CEditorDisplay.LDisplaySound.LDisplayFoldOpened);
-        PReflexAnchorShow();
-        PReflexPendingShow();
+            static row => row.CReflexId,
+            PReflexRowRefine,
+            PReflexStateRefine);
+        QReflexItem.QReflexFoldRefine(_pReflexItem, PReflexFold, reflex.CTimbreReflexOpened);
+        PReflexAnchorRefine(reflex.CTimbreReflexAnchor);
+        PReflexPendingRefine(reflex.CTimbreReflexPending);
     }
 
-    internal void PReflexAnchorShow()
+    internal void PReflexAnchorRefine()
     {
-        string headword = PHeadword.Text;
-        QReflexItem.QReflexAnchorRefine(
-            _pReflexItem,
-            _qEditor.QEditorArea.CEditorSounding.CSoundingAnchorCheck(headword),
-            anchors => _qEditor.QEditorArea.CEditorSounding.CSoundingAnchorFormat(anchors, headword));
+        PReflexAnchorRefine(_qEditor.QEditorArea.CEditorTimbre.CTimbreReflexRead().CTimbreReflexAnchor);
     }
 
-    internal void PReflexPendingShow()
+    private void PReflexAnchorRefine(CLecternAnchor anchor)
     {
-        bool pending = false;
-        try
-        {
-            pending = _qEditor.QEditorArea.CEditorTimbre.CTimbreReflexPending;
-        }
-        catch (Exception)
-        {
-        }
+        QReflexItem.QReflexAnchorRefine(_pReflexItem, anchor.CLecternAnchorOffered, anchor.CLecternAnchorTexts);
+    }
 
+    internal void PReflexPendingRefine()
+    {
+        PReflexPendingRefine(_qEditor.QEditorArea.CEditorTimbre.CTimbreReflexPending);
+    }
+
+    private void PReflexPendingRefine(bool pending)
+    {
         if (!pending)
         {
             PReflexTable.MinWidth = 0;
             PReflexTable.MinHeight = 0;
         }
 
-        PReflexLoading.Visibility = pending ? Visibility.Visible : Visibility.Collapsed;
+        PReflexLoading.Visibility = QLook.QLookVisibleRead(pending);
         PReflexRenewal.SetValue(
             QLook.QLookCueProperty,
             QLook.QLookFirstRead(pending, QLookCue.QLookCuePending, QLookCue.QLookCueBase));
     }
 
-    internal void PReflexFoldHandle(object sender, RoutedEventArgs e)
+    private void PReflexFoldObserve(object sender, RoutedEventArgs e)
     {
         _qEditor.QEditorArea.CEditorDisplay.CDisplaySound.CDisplayReflexToggle(
             QLook.QLookCheckedRead(PReflexFold.IsChecked));
-        QReflexItem.QReflexFoldRefine(
-            _pReflexItem, PReflexFold, _qEditor.QEditorArea.CEditorDisplay.LDisplaySound.LDisplayFoldOpened);
     }
 
-    internal void PReflexPrepare(CEntryDraft draft)
+    internal void PReflexFoldRefine()
     {
-        if (draft.CEntryDraftReflected)
-        {
-            return;
-        }
-
-        if (_qEditor.QEditorArea.CEditorEntry is null)
-        {
-            return;
-        }
-
-        try
-        {
-            _qEditor.QEditorArea.CEditorTimbre.CTimbreReflexStart();
-        }
-        catch (Exception)
-        {
-        }
-
-        PReflexPendingShow();
+        QReflexItem.QReflexFoldRefine(
+            _pReflexItem, PReflexFold, _qEditor.QEditorArea.CEditorDisplay.CDisplaySound.CDisplayFoldOpened);
     }
 
-    private QReflexItem PReflexCreate(CReflex reflex)
+    private QReflexItem PReflexRowRefine(CReflex reflex)
     {
         QReflexItem row = new(reflex);
-        row.PropertyChanged += PReflexChangeHandle;
+        row.PropertyChanged += PReflexChangeObserve;
         return row;
     }
 
-    private static QReflexItem PReflexUpdate(QReflexItem row, CReflex reflex)
+    private static QReflexItem PReflexStateRefine(QReflexItem row, CReflex reflex)
     {
         row.QReflexStateRefine(reflex);
         return row;

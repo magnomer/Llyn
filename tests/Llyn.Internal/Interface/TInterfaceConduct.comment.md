@@ -162,6 +162,15 @@ Relays the internal video map, so a fact can hand it a row nobody located.
 Builds the sentence gates over `desk` with real phonology, draft and settings outlets on `engine`.
 Its envoy answers no to every question.
 
+## `internal static IReadOnlyList<CReflex> TRespellingReflexScan(`
+
+Relays the shared reflex scan, so a fact can hand it a fake phonology port and ready rows.
+
+## `internal static CTimbre TTimbreCreate(CEditor editor, LPhonologyPort phonology, LDraftPort drafts)`
+
+Builds the editor's sound facts over the desk and display of `editor`, with ports a test may fake.
+The fake draft port lets a test answer the anchor rule, and the fake phonology port the reflex guises.
+
 ## `internal static CStateValue TCardStateRead(LStateValue value)`
 
 Relays the internal written-value map.
@@ -169,6 +178,11 @@ Relays the internal written-value map.
 ## `internal static CEntryDraft TCardEntryRead(`
 
 Relays the entry draft map, so the facts pass engine drafts through the boundary.
+
+## `internal static CEntryDraft? TEditorDraftRead(this CEditor editor)`
+
+The held draft of `editor` as the draft bulletin maps it, or null without one.
+No driver reads the whole draft back, so tests inspect it through this relay.
 
 ## `internal static CSession TSessionCreate(CDesk desk, IReadOnlyList<Func<bool>> pending, Func<bool> readySeam, Action<long> storedSeam)`
 

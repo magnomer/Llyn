@@ -238,6 +238,30 @@ public sealed class LParadigmClerk
         return morphologies.LMorphologyCodeFind(language, feature.LFeatureSpeechId, feature.LFeatureCode, code);
     }
 
+    public static LParadigmStatus LParadigmClerkCheck(LParadigmRow row, bool pending, bool enabled)
+    {
+        ArgumentNullException.ThrowIfNull(row);
+
+        if (row.LParadigmRowFirst.LParadigmSlotInflection is LInflection inflection)
+        {
+            return inflection.LInflectionText.Length == 0
+                ? LParadigmStatus.LParadigmStatusAbsent
+                : LParadigmStatus.LParadigmStatusText;
+        }
+
+        if (row.LParadigmRowFirst.LParadigmSlotUncertain)
+        {
+            return LParadigmStatus.LParadigmStatusUnknown;
+        }
+
+        if (pending)
+        {
+            return LParadigmStatus.LParadigmStatusPending;
+        }
+
+        return enabled ? LParadigmStatus.LParadigmStatusLost : LParadigmStatus.LParadigmStatusAbsent;
+    }
+
     public static bool LParadigmClerkMatch(LParadigm paradigm, string headword, string form)
     {
         ArgumentNullException.ThrowIfNull(paradigm);

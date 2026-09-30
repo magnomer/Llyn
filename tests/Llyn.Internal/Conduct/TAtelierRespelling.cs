@@ -43,16 +43,14 @@ public sealed class TAtelierRespelling
     [InlineData(true, true, "/")]
     public void RespellingReflexScan_Modes_SlashesOnlyPhonemic(bool respelled, bool phonemic, string slash)
     {
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
-            engine,
+        LPhonologyPort phonology = TEngineFake.TEngineCreate<LPhonologyPort>(
             new Dictionary<string, Func<object?[]?, object?>>
             {
                 ["LEngineGuiseRead"] = _ => new[] { TInterface.TReflexGuiseCreate(respelled, phonemic, false) },
             });
 
         CReflex reflex = Assert.Single(
-            atelier.CAtelierRespelling.CRespellingReflexScan("Chinese", [TAtelierReflexCreate(1, "Wu", "ipa", "")]));
+            TInterfaceConduct.TRespellingReflexScan(phonology, "Chinese", [TAtelierReflexCreate(1, "Wu", "ipa", "")]));
 
         Assert.Equal(new CRespellingMark(respelled, slash, slash), reflex.CReflexMark);
     }
@@ -61,9 +59,7 @@ public sealed class TAtelierRespelling
     public void RespellingReflexScan_TwoRows_AnswersEachRowReadyToShow()
     {
         List<object?[]?> asked = [];
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
-            engine,
+        LPhonologyPort phonology = TEngineFake.TEngineCreate<LPhonologyPort>(
             new Dictionary<string, Func<object?[]?, object?>>
             {
                 ["LEngineGuiseRead"] = args =>
@@ -77,8 +73,10 @@ public sealed class TAtelierRespelling
                 },
             });
 
-        IReadOnlyList<CReflex> reflexes = atelier.CAtelierRespelling.CRespellingReflexScan(
-            "Chinese", [TAtelierReflexCreate(4, " Wu", "ipa", "respelt"), TAtelierReflexCreate(5, "Jin", "ipa", "")]);
+        IReadOnlyList<CReflex> reflexes = TInterfaceConduct.TRespellingReflexScan(
+            phonology,
+            "Chinese",
+            [TAtelierReflexCreate(4, " Wu", "ipa", "respelt"), TAtelierReflexCreate(5, "Jin", "ipa", "")]);
 
         Assert.Equal("Chinese", asked.Single()![0]);
         Assert.Equal([" Wu", "Jin"], (IReadOnlyList<string>)asked.Single()![1]!);

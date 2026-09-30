@@ -48,10 +48,6 @@ The video rows of the cards, built fresh over the desk.
 
 The held draft's language, or empty while no draft is held.
 
-## `public long? CEditorEntry`
-
-The stored entry the held draft stands on, or null for a fresh draft or an empty desk.
-
 ## `public void CEditorObserverAttach(Action<Action> marshal)`
 
 Hands every area of the editor the driver's marshal once.
@@ -129,19 +125,6 @@ A hidden tab then comes back showing what it stored.
 ## `private void CEditorStoredShow(long id)`
 
 Chooses what opens after a store: a blank draft for a fresh input draft, else the stored entry.
-
-## `public CEntryDraft? CEditorDraftRead()`
-
-The held draft's content as the tenure last read it, applying nothing first.
-Each card carries its link targets, which the tenure resolves for the same draft.
-Each picture row carries its address, resolved through the display's media port.
-
-## `public IReadOnlyList<CReflexHead> CEditorLeadRead(long reflex, string language)`
-
-Every reflex row's lead, while `language` is typed into row `reflex`.
-The held draft's rows are read in order, with the typed language standing in for the row's stored one.
-The lead rule is `CReflex.LReflexLeadRead`, the one the scan marks its rows by.
-Only the edit in hand is overlaid, so another row's edit still deferred reads as stored.
 
 ## `public string CEditorPronunciationRead()`
 

@@ -71,7 +71,7 @@ public sealed class TFootnote
         Assert.True(footnote.CFootnotePanel.CPanelEditing);
         Assert.False(footnote.CFootnotePanel.CPanelBinEnabled);
         CExampleDraft? cited = editor
-            .CEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;
+            .TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;
         Assert.Equal(book.LReferenceId, cited?.CExampleDraftReference);
     }
 
@@ -87,7 +87,7 @@ public sealed class TFootnote
 
         Assert.True(footnote.CFootnotePanel.CPanelEditing);
         Assert.All(
-            editor.CEditorDraftRead()!.CEntryDraftMeanings.SelectMany(meaning => meaning.CCardDraftSentence),
+            editor.TEditorDraftRead()!.CEntryDraftMeanings.SelectMany(meaning => meaning.CCardDraftSentence),
             sentence => Assert.Null(sentence.CSentenceDraftExample?.CExampleDraftReference));
     }
 

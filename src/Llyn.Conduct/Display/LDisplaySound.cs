@@ -40,7 +40,7 @@ public sealed class LDisplaySound
 
     internal long? LDisplayEntry => _lDisplaySoundEntry;
 
-    public bool LDisplayFoldOpened => _lDisplaySoundOpened;
+    internal bool LDisplayFoldOpened => _lDisplaySoundOpened;
 
     internal int LDisplayTicket { get; set; }
 
@@ -90,11 +90,6 @@ public sealed class LDisplaySound
     {
         LEntryDraft? source = _lDisplaySoundReflex ?? _lDisplaySoundDraft;
         return source is null ? [] : _lEntryPort.LEngineReflexRead(source);
-    }
-
-    internal void LDisplayReflexStart(long? id)
-    {
-        LDisplayMarkSend(_lPhonologyPort.LEngineReflexStart, id);
     }
 
     internal bool LDisplayReflexCheck(long? id)

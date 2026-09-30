@@ -73,7 +73,7 @@ internal sealed class PYunjingItem : INotifyPropertyChanged
         held.PYunjingItemChosen = fresh.PYunjingItemChosen;
     }
 
-    internal static void PYunjingItemApply(FrameworkElement container, object item, string? _)
+    internal static void PYunjingItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not PYunjingItem yunjing)
         {

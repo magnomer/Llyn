@@ -305,13 +305,12 @@ internal static class TInterfaceConduct
         TEnvoyFake.TEnvoyCreate(false, []));
 
     internal static CSounding TSoundingCreate(
-        CDesk desk, LPhonologyPort phonology, LDraftPort drafts, CEnvoy envoy, LSettingsPort? pack = null)
+        CDesk desk, LPhonologyPort phonology, CEnvoy envoy, LSettingsPort? pack = null)
     {
         LSettingsPort settings = pack ?? TSettingsCreate();
         return new(
             desk,
             phonology,
-            drafts,
             settings,
             new LDisplaySound(
                 TEngineFake.TEngineStubCreate<LEntryPort>(),
@@ -320,6 +319,13 @@ internal static class TInterfaceConduct
                 settings),
             envoy);
     }
+
+    internal static IReadOnlyList<CReflex> TRespellingReflexScan(
+        LPhonologyPort phonology, string language, IReadOnlyList<CReflexDraft> reflexes) =>
+        CRespelling.LRespellingReflexScan(phonology, language, reflexes);
+
+    internal static CTimbre TTimbreCreate(CEditor editor, LPhonologyPort phonology, LDraftPort drafts) =>
+        new(editor.CEditorDesk, phonology, editor.CEditorDisplay, TEngineFake.TEngineStubCreate<LMediaPort>(), drafts);
 
     internal static CStateValue TCardStateRead(LStateValue value) => CFolio.CFolioStateRead(value);
 
@@ -332,6 +338,14 @@ internal static class TInterfaceConduct
     internal static CEntryDraft TCardEntryRead(
         LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets) =>
         CFolio.CFolioEntryRead(draft, targets, TMediaCreate());
+
+    internal static CEntryDraft? TEditorDraftRead(this CEditor editor) =>
+        editor.CEditorDesk.CDeskTenure is LTenure held && held.LTenureRead() is { } draft
+            ? CFolio.CFolioEntryRead(
+                draft.LDraftContent,
+                held.LTenureTranslationRead(draft.LDraftContent),
+                editor.CEditorDisplay.LDisplayMediaPort)
+            : null;
 
     internal static void TDeskVistaRestore(this CDesk desk, LVista vista) => desk.CDeskVistaRestore(vista);
 

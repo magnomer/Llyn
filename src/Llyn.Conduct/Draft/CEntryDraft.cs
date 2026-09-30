@@ -9,8 +9,4 @@ public sealed record CEntryDraft(
     IReadOnlyList<CCardDraft> CEntryDraftMeanings,
     IReadOnlyList<CCardDraft> CEntryDraftCollocations,
     IReadOnlyList<CTranscriptionDraft> CEntryDraftTranscriptions,
-    IReadOnlyList<CReflexDraft> CEntryDraftReflexes,
-    CEtymologyDraft CEntryDraftEtymology)
-{
-    public bool CEntryDraftReflected => CEntryDraftReflexes.Count > 0;
-}
+    CEtymologyDraft CEntryDraftEtymology);

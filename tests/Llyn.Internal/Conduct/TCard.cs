@@ -103,25 +103,6 @@ public sealed class TCard
     }
 
     [Fact]
-    public void CardEntryRead_NoReflexes_ReadsUnreflected()
-    {
-        LEntryDraft draft = TInterface.TEntryDraftCreate("colour", "English", "ˈkʌlə", "a note", [], []) with
-        {
-            LEntryDraftPronunciations =
-            [
-                TInterface.TPronunciationDraftCreate("ˈkʌlə", "RP"),
-                TInterface.TPronunciationDraftCreate("ˈkʌlɚ", "GA"),
-                TInterface.TPronunciationDraftCreate(string.Empty, "AU"),
-            ],
-        };
-
-        CEntryDraft shaped = TInterfaceConduct.TCardEntryRead(
-            draft, new Dictionary<long, IReadOnlyList<LTranslationTarget>>());
-
-        Assert.False(shaped.CEntryDraftReflected);
-    }
-
-    [Fact]
     public void PanelRowRead_EngineRow_CopiesEveryFieldAndTheMark()
     {
         CVistaRow row = TInterfaceConduct.TPanelRowRead(TInterfaceConduct.TVistaRowCreate(4, "gloss", true));

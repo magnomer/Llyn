@@ -121,7 +121,7 @@ public sealed class TFavoriteRoster
         favorite.CFavoritePanel.CPanelScribeToggle(true);
 
         Assert.Equal(stone.LEntryId, favorite.CFavoriteEditor.CEditorDesk.CDeskStoredRead());
-        Assert.Equal("stone", favorite.CFavoriteEditor.CEditorDraftRead()?.CEntryDraftHeadword);
+        Assert.Equal("stone", favorite.CFavoriteEditor.TEditorDraftRead()?.CEntryDraftHeadword);
 
         favorite.CFavoritePanel.CPanelEntryClose();
 

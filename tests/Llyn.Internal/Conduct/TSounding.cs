@@ -35,7 +35,6 @@ public sealed class TSounding
         Assert.Empty(paradigm.CLecternParadigmSlots);
         Assert.Equal(string.Empty, sounding.CSoundingReadingRead("water"));
         Assert.Equal(new CFont(null, null, null), paradigm.CLecternParadigmFont);
-        Assert.False(sounding.CSoundingAnchorCheck("water"));
     }
 
     [Fact]
@@ -79,7 +78,6 @@ public sealed class TSounding
         Assert.False(fanqie.CSoundingFanqieRebuildable);
         Assert.False(script.CSoundingScriptRebuildable);
         Assert.Equal(string.Empty, sounding.CSoundingReadingRead("water"));
-        Assert.False(sounding.CSoundingAnchorCheck("water"));
     }
 
     [Fact]
@@ -145,26 +143,6 @@ public sealed class TSounding
     }
 
     [Fact]
-    public void SoundingAnchorFormat_StoredEntry_JoinsWithTheReflexSeparator()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
-        List<object?> sent = [];
-        CSounding sounding = TSoundingCreate(editor, new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["LEngineAnchorFormat"] = args =>
-            {
-                sent.Add(args![3]);
-                return "Guangyun";
-            },
-        }, []);
-
-        Assert.Equal("Guangyun", sounding.CSoundingAnchorFormat([7], "水"));
-        Assert.Equal([" · "], sent);
-    }
-
-    [Fact]
     public void SoundingSchemeRead_TwoRows_MarksTheSchemeTheOtherRowHolds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -182,7 +160,7 @@ public sealed class TSounding
                 TInterface.TTranscriptionDraftCreate("Yale", "hēung góng"),
             ]));
         CEditor editor = TSoundingEditorPrepare(engine, entry.LEntryId);
-        long yale = editor.CEditorDraftRead()!.CEntryDraftTranscriptions[1].CTranscriptionDraftId;
+        long yale = editor.TEditorDraftRead()!.CEntryDraftTranscriptions[1].CTranscriptionDraftId;
 
         Assert.Equal(
             [new CScheme("Jyutping", true), new CScheme("Yale", false)],
@@ -194,6 +172,33 @@ public sealed class TSounding
     {
         Assert.Equal("Scheme.Yale", CScheme.CSchemeKeyRead("Yale"));
         Assert.Equal("Scheme.", CScheme.CSchemeKeyRead(string.Empty));
+    }
+
+    [Theory]
+    [InlineData(true, true, "…", "Paradigm.Pending")]
+    [InlineData(true, false, "…", "Paradigm.Pending")]
+    [InlineData(false, true, "…", "Paradigm.Held")]
+    [InlineData(false, false, "…", "Paradigm.Absent")]
+    public void SoundingParadigmRead_UnansweredSlot_AnswersTheTipOfItsPendingAndMorphologyVerdicts(
+        bool pending, bool morphology, string text, string tip)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
+        LSpeechValue noun = TInterface.TSpeechValueCreate("English", 1, "noun", 0) with { LSpeechValueId = 1 };
+        LMorphology plural = TInterface.TMorphologyCreate(1, 1, "plural", 0);
+        IReadOnlyList<LParadigmRow> rows = TInterface.TParadigmRowScan(
+            [TInterface.TParadigmSlotCreate(noun, plural, null, LState.LStateUnspecified)]);
+        CSounding sounding = TSoundingCreate(editor, new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineParadigmScan"] = _ => rows,
+            ["LEngineLanguageResolve"] = _ => "Latin",
+            ["LEngineInflectionCheck"] = _ => pending,
+        }, [], TSoundingPackCreate([], morphology));
+
+        CLecternParadigm paradigm = sounding.CSoundingParadigmRead();
+
+        Assert.Equal([new CParadigmSlot(string.Empty, "plural", text, tip)], paradigm.CLecternParadigmSlots);
     }
 
     [Fact]
@@ -225,12 +230,10 @@ public sealed class TSounding
 
         Assert.Equal(
             [
-                new CParadigmSlot("noun", "plural, past", "wolves", false),
-                new CParadigmSlot("verb", "past", null, true),
+                new CParadigmSlot("noun", "plural, past", "wolves", null),
+                new CParadigmSlot("verb", "past", "—", "Paradigm.Unknown"),
             ],
             paradigm.CLecternParadigmSlots);
-        Assert.True(paradigm.CLecternParadigmPending);
-        Assert.True(paradigm.CLecternParadigmMorphology);
         Assert.Equal(new CFont("Noto Serif", 21, null), paradigm.CLecternParadigmFont);
         Assert.Equal([("Latin", LFontRole.LFontRoleHeadword)], asked);
     }
@@ -298,7 +301,7 @@ public sealed class TSounding
         Assert.False(script.CSoundingScriptRebuildable);
         Assert.False(fanqie.CSoundingFanqiePending);
         Assert.False(script.CSoundingScriptPending);
-        Assert.False(sounding.CSoundingParadigmRead().CLecternParadigmPending);
+        Assert.Empty(sounding.CSoundingParadigmRead().CLecternParadigmSlots);
     }
 
     [Fact]
@@ -365,7 +368,6 @@ public sealed class TSounding
         return TInterfaceConduct.TSoundingCreate(
             editor.CEditorDesk,
             TEngineFake.TEngineCreate<LPhonologyPort>(answers),
-            TEngineFake.TEngineCreate<LDraftPort>(answers),
             TEnvoyFake.TEnvoyCreate(false, notices),
             pack);
     }

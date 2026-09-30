@@ -38,8 +38,6 @@ public interface LPhonologyPort
 
     bool LEngineReflexCheck(long entryId);
 
-    void LEngineReflexStart(long entryId);
-
     void LEngineReflexRebuild(long entryId);
 
     IReadOnlyList<LReflexGuise> LEngineGuiseRead(string language, IReadOnlyList<string> reflexes);
@@ -111,6 +109,11 @@ public interface LPhonologyPort
     static LArticulation LEngineVowelRead()
     {
         return LPronunciationClerk.LPronunciationVowelRead();
+    }
+
+    static LParadigmStatus LEngineParadigmCheck(LParadigmRow row, bool pending, bool enabled)
+    {
+        return LParadigmClerk.LParadigmClerkCheck(row, pending, enabled);
     }
 
     static string? LEngineDiweiRead(bool initial, string key)

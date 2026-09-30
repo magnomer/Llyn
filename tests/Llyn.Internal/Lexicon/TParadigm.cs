@@ -145,4 +145,48 @@ public sealed class TParadigm
         Assert.True(rows[1].LParadigmRowFirst.LParadigmSlotUncertain);
         Assert.Empty(TInterface.TParadigmRowScan([]));
     }
+
+    [Fact]
+    public void ParadigmClerkCheck_WrittenOrEmptyForm_AnswersTextOrAbsentWhateverIsPending()
+    {
+        LInflection wolves = TInterface.TInflectionCreate(1, 0, "wolves", null, 1, [1]);
+        LInflection empty = TInterface.TInflectionCreate(1, 0, string.Empty, null, 1, [1]);
+
+        Assert.Equal(
+            LParadigmStatus.LParadigmStatusText, TParadigmStatusRead(wolves, LState.LStateSpecified, true, true));
+        Assert.Equal(
+            LParadigmStatus.LParadigmStatusAbsent, TParadigmStatusRead(empty, LState.LStateSpecified, true, true));
+    }
+
+    [Fact]
+    public void ParadigmClerkCheck_NoFormUnknownSlot_AnswersUnknownBeforePendingOrLost()
+    {
+        Assert.Equal(
+            LParadigmStatus.LParadigmStatusUnknown, TParadigmStatusRead(null, LState.LStateUnknown, true, true));
+        Assert.Equal(
+            LParadigmStatus.LParadigmStatusUnknown, TParadigmStatusRead(null, LState.LStateUnknown, false, false));
+    }
+
+    [Fact]
+    public void ParadigmClerkCheck_NoFormUnansweredSlot_AnswersPendingLostOrAbsent()
+    {
+        Assert.Equal(
+            LParadigmStatus.LParadigmStatusPending, TParadigmStatusRead(null, LState.LStateUnspecified, true, true));
+        Assert.Equal(
+            LParadigmStatus.LParadigmStatusPending, TParadigmStatusRead(null, LState.LStateUnspecified, true, false));
+        Assert.Equal(
+            LParadigmStatus.LParadigmStatusLost, TParadigmStatusRead(null, LState.LStateUnspecified, false, true));
+        Assert.Equal(
+            LParadigmStatus.LParadigmStatusAbsent, TParadigmStatusRead(null, LState.LStateUnspecified, false, false));
+    }
+
+    private static LParadigmStatus TParadigmStatusRead(
+        LInflection? inflection, LState state, bool pending, bool enabled)
+    {
+        LSpeechValue noun = TInterface.TSpeechValueCreate("English", 1, "noun", 0) with { LSpeechValueId = 1 };
+        LMorphology plural = TInterface.TMorphologyCreate(1, 1, "plural", 0);
+        LParadigmRow row = Assert.Single(TInterface.TParadigmRowScan(
+            [TInterface.TParadigmSlotCreate(noun, plural, inflection, state)]));
+        return TInterface.TParadigmClerkCheck(row, pending, enabled);
+    }
 }

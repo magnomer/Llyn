@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
@@ -29,10 +28,9 @@ public sealed class CEditor
         CEditorDisplay = new LDisplay(drafts, entries, phonology, settings, media, envoy);
         CEditorCard = new CCard(CEditorDesk, drafts, entries, settings, envoy);
         CEditorSentence = new CSentence(CEditorDesk, phonology, drafts, settings, envoy);
-        CEditorSounding = new CSounding(
-            CEditorDesk, phonology, drafts, settings, CEditorDisplay.LDisplaySound, envoy);
+        CEditorSounding = new CSounding(CEditorDesk, phonology, settings, CEditorDisplay.LDisplaySound, envoy);
         CEditorEsteem = new CEsteem(CEditorDesk, CEditorDisplay);
-        CEditorTimbre = new CTimbre(CEditorDesk, phonology, CEditorDisplay, media);
+        CEditorTimbre = new CTimbre(CEditorDesk, phonology, CEditorDisplay, media, drafts);
         CEditorSpeech = new CCardSpeech(CEditorDesk);
         CEditorDesk.CDeskFinished += CEditorStoredShow;
         CEditorDesk.CDeskDraftPrepared += draft =>
@@ -94,8 +92,6 @@ public sealed class CEditor
     public bool CEditorOwned => _cEditorVista?.LVistaInput ?? false;
 
     public string CEditorLanguage => CEditorDesk.CDeskTenure?.LTenureLanguageRead() ?? string.Empty;
-
-    public long? CEditorEntry => CEditorDesk.CDeskStoredRead();
 
     private LTenure? CEditorTenure => CEditorDesk.CDeskFilling ? null : CEditorDesk.CDeskTenure;
 
@@ -166,23 +162,6 @@ public sealed class CEditor
         }
 
         CEditorEntryOpen(id);
-    }
-
-    public CEntryDraft? CEditorDraftRead()
-    {
-        return CEditorDesk.CDeskTenure is LTenure held && held.LTenureRead() is { } draft
-            ? CFolio.CFolioEntryRead(
-                draft.LDraftContent, held.LTenureTranslationRead(draft.LDraftContent), CEditorDisplay.LDisplayMediaPort)
-            : null;
-    }
-
-    public IReadOnlyList<CReflexHead> CEditorLeadRead(long reflex, string language)
-    {
-        IReadOnlyList<CReflexDraft> rows = CEditorDraftRead()?.CEntryDraftReflexes ?? [];
-        IReadOnlyList<bool> leads = CReflex.LReflexLeadRead(rows
-            .Select(row => row.CReflexDraftId == reflex ? language : row.CReflexDraftLanguage)
-            .ToList());
-        return rows.Select((row, index) => new CReflexHead(row.CReflexDraftId, leads[index])).ToList();
     }
 
     public string CEditorPronunciationRead()

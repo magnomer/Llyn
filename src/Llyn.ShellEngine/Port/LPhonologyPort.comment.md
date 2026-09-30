@@ -31,6 +31,11 @@ The IPA consonant chart, which needs no engine, so the input aid reads it before
 
 The IPA vowel chart, which needs no engine, so the input aid reads it before any workspace opens.
 
+## `static LParadigmStatus LEngineParadigmCheck(LParadigmRow row, bool pending, bool enabled)`
+
+What stands in a paradigm row for its form.
+It needs no engine, so the readers ask the clerk's rule through the port.
+
 ## `static string? LEngineDiweiRead(bool initial, string key)`
 
 The kind of the cell a pressed fanqie key opens, or none for a blank key.

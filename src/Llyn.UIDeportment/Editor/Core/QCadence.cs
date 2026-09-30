@@ -40,11 +40,7 @@ internal sealed class QCadence
     {
         CLecternParadigm paradigm = _cEditor.CEditorSounding.CSoundingParadigmRead();
         LFontFace.LFontRefine(paradigm.CLecternParadigmFont, QCadenceParadigm);
-        QCadenceParadigm.PParadigmItems = PParadigmItem.PParadigmItemScan(
-            paradigm.CLecternParadigmSlots,
-            paradigm.CLecternParadigmPending,
-            paradigm.CLecternParadigmMorphology,
-            true);
+        QCadenceParadigm.PParadigmItems = PParadigmItem.PParadigmItemScan(paradigm.CLecternParadigmSlots);
     }
 
     private void QCadenceScriptRefine()

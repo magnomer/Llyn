@@ -31,7 +31,7 @@ Holds the fanqie box for its font, the reading line and the seam the box owns.
 
 Holds the script box for its font and the seam that draws its groups.
 
-## `public void QLecternParadigmIntroduce(DependencyObject paradigm, Action<IReadOnlyList<CParadigmSlot>, bool, bool> paradigmSeam)`
+## `public void QLecternParadigmIntroduce(DependencyObject paradigm, Action<IReadOnlyList<CParadigmSlot>> paradigmSeam)`
 
 Holds the paradigm box for its font and the seam that draws its slots.
 

@@ -203,7 +203,7 @@
     "System.Diagnostics.Stopwatch"
   ],
   "ceilings": {
-    "cross:Llyn.UIDeportment>Llyn.Application": 24,
+    "cross:Llyn.UIDeportment>Llyn.Application": 12,
     "cross:Llyn.UIDeportment>Llyn.Core": 1,
     "cross:Llyn.UIDeportment>Llyn.ShellEngine": 0,
     "expose:Llyn.UIDemeanor>Llyn.Core": 1,
@@ -232,7 +232,8 @@
       "LEasel",
       "LQuillChip",
       "LQuillCard",
-      "LQuillSituation"
+      "LQuillSituation",
+      "LQuillReflex"
     ],
     "Llyn.UIDeportment>Llyn.Conduct": [
       "LDisplay",
@@ -429,6 +430,8 @@
       "CLecternPlayback",
       "CTimbrePlayback",
       "CTimbreAccent",
+      "CTimbreReflex",
+      "CReflexField",
       "CContour",
       "CArticulation",
       "CScreen"

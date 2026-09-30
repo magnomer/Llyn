@@ -23,7 +23,7 @@ The lectern's card half still reads its cards here, until job66.
 
 The id of the shown entry, which every phonology read and fetch request is made for.
 
-## `public bool LDisplayFoldOpened => _lDisplaySoundOpened;`
+## `internal bool LDisplayFoldOpened => _lDisplaySoundOpened;`
 
 Whether the folded reflexes are shown, shared by the reading view and the editor.
 
@@ -63,10 +63,6 @@ A refused or empty load keeps the rows as they were, and a refusal raises `LDisp
 
 The written reflexes, as the engine filters them.
 A draft reloaded after a fill wins over the shown draft.
-
-## `internal void LDisplayReflexStart(long? id)`
-
-Asks the engine to fill the entry's reflex rows, for the editor's reflex block.
 
 ## `internal bool LDisplayReflexCheck(long? id)`
 

@@ -53,8 +53,6 @@ public sealed class LPhonologyOutlet : LPhonologyPort
 
     public bool LEngineReflexCheck(long entryId) => _lPhonologyOutletEngine.LEngineReflex.LEngineReflexCheck(entryId);
 
-    public void LEngineReflexStart(long entryId) => _lPhonologyOutletEngine.LEngineReflex.LEngineReflexStart(entryId);
-
     public void LEngineReflexRebuild(long entryId) =>
         _lPhonologyOutletEngine.LEngineReflex.LEngineReflexRebuild(entryId);
 

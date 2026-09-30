@@ -24,7 +24,7 @@ public sealed class TEditorField
         editor.CEditorField.CCardMeaningSet(sheet, "burning");
         editor.CEditorDesk.CDeskPersist();
 
-        CCardDraft card = editor.CEditorDraftRead()!.CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
+        CCardDraft card = editor.TEditorDraftRead()!.CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
         Assert.Equal("Heat", card.CCardDraftTitle.CStateWordingText);
         Assert.Equal("on fire", card.CCardDraftExpression.CStateWordingText);
         Assert.Equal("burning", card.CCardDraftMeaning.CStateWordingText);
@@ -74,7 +74,7 @@ public sealed class TEditorField
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TInterfaceConduct.TEditorCreate(engine);
 
-        Assert.Null(editor.CEditorDraftRead());
+        Assert.Null(editor.TEditorDraftRead());
     }
 
     [Fact]
@@ -201,7 +201,7 @@ public sealed class TEditorField
         Assert.False(editor.CEditorDesk.CDeskHeld);
         Assert.Null(await editor.CEditorDesk.CDeskErrand.CErrandPreviewStart(
             new CRecording("Tagged", "https://example.test/gb.mp3", 0, true, "British")));
-        Assert.Null(editor.CEditorEntry);
+        Assert.Null(editor.CEditorDesk.CDeskStoredRead());
         Assert.Equal(string.Empty, editor.CEditorLanguage);
     }
 
@@ -228,7 +228,7 @@ public sealed class TEditorField
         atelier.CAtelierOpen();
 
         Assert.True(editor.CEditorDesk.CDeskHeld);
-        Assert.Null(editor.CEditorEntry);
+        Assert.Null(editor.CEditorDesk.CDeskStoredRead());
     }
 
     [Fact]
@@ -266,12 +266,12 @@ public sealed class TEditorField
     {
         editor.CEditorDesk.TDeskDefer(TInterface.TRequestAdditionCreate(
             editor.CEditorDesk.CDeskId, LCardKind.LCardKindMeaning, 0, int.MaxValue));
-        return editor.CEditorDraftRead()!.CEntryDraftMeanings[^1].CCardDraftId;
+        return editor.TEditorDraftRead()!.CEntryDraftMeanings[^1].CCardDraftId;
     }
 
     internal static CCardDraft TEditorCardRead(CEditor editor, long sheet)
     {
-        return editor.CEditorDraftRead()!.CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
+        return editor.TEditorDraftRead()!.CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
     }
 
     private static long TEditorSentenceAdd(CEditor editor, long sheet)

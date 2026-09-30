@@ -225,7 +225,7 @@ public class PDisplay : UserControl
             PDisplayReading,
             PDisplayFanqie.PFanqieRefine);
         lectern.QLecternSound.QLecternScriptIntroduce(PDisplayScript, PDisplayScript.PScriptShow);
-        lectern.QLecternSound.QLecternParadigmIntroduce(PDisplayParadigm, PDisplayParadigm.PParadigmShow);
+        lectern.QLecternSound.QLecternParadigmIntroduce(PDisplayParadigm, PDisplayParadigm.PParadigmRefine);
         lectern.QLecternCompassIntroduce(
             this, PDisplayContents, PDisplayHeader, PCompass, PCompassSurface, PCompassSwitch, PCompassList);
         _pDisplayCompass.PCompassIntroduce(lectern.QLecternCompass);

@@ -53,6 +53,7 @@ internal static class TAuditChainSetting
             "LQuillChip",
             "LQuillCard",
             "LQuillSituation",
+            "LQuillReflex",
         ],
         ["Llyn.UIDeportment>Llyn.Conduct"] =
         [
@@ -250,6 +251,8 @@ internal static class TAuditChainSetting
             "CLecternPlayback",
             "CTimbrePlayback",
             "CTimbreAccent",
+            "CTimbreReflex",
+            "CReflexField",
             "CContour",
             "CArticulation",
             "CScreen",
@@ -373,7 +376,7 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["cross:Llyn.UIDeportment>Llyn.Application"] = 24,
+        ["cross:Llyn.UIDeportment>Llyn.Application"] = 12,
         ["cross:Llyn.UIDeportment>Llyn.Core"] = 1,
         ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 0,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 1,

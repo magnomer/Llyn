@@ -40,6 +40,14 @@ public sealed partial class LTenure
             || LTenureRead()?.LDraftContent.LEntryDraftReflected == true;
     }
 
+    public void LTenureReflexStart()
+    {
+        if (LTenureRead() is { LDraftStored: long stored } held && !held.LDraftContent.LEntryDraftReflected)
+        {
+            _lEngine.LEngineReflex.LEngineReflexStart(stored);
+        }
+    }
+
     public IReadOnlyList<LAnchorRow> LTenureAnchorScan(long reflex)
     {
         LDraft? held = LTenureRead();

@@ -10,6 +10,12 @@ The schemes the draft's pack declares, each marked when a row other than `transc
 The mark is the clerk's one-scheme rule, so the dropdown greys out what a pick would refuse.
 An ended tenure has no language, so it answers no schemes.
 
+## `public void LTenureReflexStart()`
+
+Starts the reflex lookup for the held draft's stored entry while the draft holds no reflex row.
+A draft never stored, or one already reflected, starts nothing.
+The reflex clerk refuses a second lookup for the same entry itself.
+
 ## `public IReadOnlyList<LAnchorRow> LTenureAnchorScan(long reflex)`
 
 The stored fanqie rows the reflex row `reflex` may anchor to, each marked when the row holds it.

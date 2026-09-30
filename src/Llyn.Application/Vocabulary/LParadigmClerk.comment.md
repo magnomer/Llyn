@@ -71,6 +71,13 @@ The pack says which feature and which part the code belongs to.
 The archive is asked for exactly that row.
 A code the pack does not declare answers `null`.
 
+## `public static LParadigmStatus LParadigmClerkCheck(LParadigmRow row, bool pending, bool enabled)`
+
+Answers what stands in the row for its form.
+A written form wins, and an empty one counts as absent.
+An unknown slot follows, then a pending fetch.
+A form still missing after that is lost when the morphology setting is on and absent when it is off.
+
 ## `public static bool LParadigmClerkMatch(LParadigm paradigm, string headword, string form)`
 
 Reports whether `form` is a regular inflection of `headword` under the paradigm's rules.

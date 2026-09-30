@@ -11,7 +11,7 @@ public sealed class PParadigm : ContentControl
         nameof(PParadigmItems),
         typeof(IReadOnlyList<PParadigmItem>),
         typeof(PParadigm),
-        new FrameworkPropertyMetadata(null, PParadigmItemsHandle));
+        new FrameworkPropertyMetadata(null, PParadigmItemsRefine));
 
     private readonly ItemsControl _pParadigmList = new();
 
@@ -24,7 +24,7 @@ public sealed class PParadigm : ContentControl
 
         Grid.SetIsSharedSizeScope(_pParadigmList, true);
         _pParadigmList.SetResourceReference(ItemsControl.ItemTemplateProperty, "Theme.Paradigm.Row");
-        QLookItem.QLookItemAttach(_pParadigmList, PParadigmItemApply);
+        QLookItem.QLookItemAttach(_pParadigmList, PParadigmItemRefine);
 
         Border box = new() { Child = _pParadigmList };
         box.SetResourceReference(StyleProperty, "Theme.Paradigm.Box");
@@ -37,12 +37,12 @@ public sealed class PParadigm : ContentControl
         set => SetValue(PParadigmItemsProperty, value);
     }
 
-    internal void PParadigmShow(IReadOnlyList<CParadigmSlot> slots, bool pending, bool enabled)
+    internal void PParadigmRefine(IReadOnlyList<CParadigmSlot> slots)
     {
-        SetCurrentValue(PParadigmItemsProperty, PParadigmItem.PParadigmItemScan(slots, pending, enabled, false));
+        SetCurrentValue(PParadigmItemsProperty, PParadigmItem.PParadigmItemScan(slots));
     }
 
-    private static void PParadigmItemApply(FrameworkElement container, object item, string? _)
+    private static void PParadigmItemRefine(FrameworkElement container, object item, string? _)
     {
         if (container is not ContentPresenter presenter || item is not PParadigmItem row)
         {
@@ -59,27 +59,19 @@ public sealed class PParadigm : ContentControl
 
         part.Text = row.PParadigmItemPart;
         name.Text = row.PParadigmItemName;
-
-        string? tip = row.PParadigmItemUnknown ? "Paradigm.Unknown"
-            : row.PParadigmItemHeld ? "Paradigm.Held"
-            : row.PParadigmItemLost ? "Paradigm.Lost"
-            : row.PParadigmItemPending ? "Paradigm.Pending"
-            : row.PParadigmItemText.Length == 0 ? "Paradigm.Absent"
-            : null;
-        if (tip is null)
+        text.Text = row.PParadigmItemText;
+        if (row.PParadigmItemTip is not string tip)
         {
-            text.Text = row.PParadigmItemText;
             text.ClearValue(TextBlock.ForegroundProperty);
             text.ClearValue(ToolTipProperty);
             return;
         }
 
-        text.Text = row.PParadigmItemUnknown ? "—" : "…";
         text.SetResourceReference(TextBlock.ForegroundProperty, "Theme.Muted");
         text.SetResourceReference(ToolTipProperty, tip);
     }
 
-    private static void PParadigmItemsHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+    private static void PParadigmItemsRefine(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
         PParadigm box = (PParadigm)sender;
         IReadOnlyList<PParadigmItem>? items = e.NewValue as IReadOnlyList<PParadigmItem>;
