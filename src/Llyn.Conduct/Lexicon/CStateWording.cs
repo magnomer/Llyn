@@ -1,14 +1,15 @@
 namespace Llyn.Conduct;
 
-public sealed record CStateWording(string CStateWordingText, string? CStateWordingKey)
+public sealed record CStateWording(string CStateWordingText, string? CStateWordingKey, bool CStateWordingMuted)
 {
-    internal static CStateWording LStateWordingRead(CStateValue value, string unset)
+    internal static CStateWording LStateWordingRead(CStateValue value, string? unset)
     {
         if (value.CStateValueUncertain)
         {
-            return new CStateWording(value.CStateValueText, "Display.Unknown");
+            return new CStateWording(value.CStateValueText, "Display.Unknown", false);
         }
 
-        return new CStateWording(value.CStateValueText, value.CStateValueShown is null ? unset : null);
+        bool muted = value.CStateValueShown is null;
+        return new CStateWording(value.CStateValueText, muted ? unset : null, muted);
     }
 }

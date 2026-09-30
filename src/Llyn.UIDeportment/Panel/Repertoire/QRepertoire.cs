@@ -59,8 +59,8 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
 
         QInquest.TextChanged += QInquestObserve;
         QSortie.TextChanged += QSortieObserve;
-        QRepertoireFresh.Click += QRepertoireFreshHandle;
-        QRepertoireStore.Click += QRepertoireStoreHandle;
+        QRepertoireFresh.Click += QRepertoireFreshObserve;
+        QRepertoireStore.Click += QRepertoireStoreObserve;
         QRepertoireEarlier.Click += QRepertoireRetreatObserve;
         QRepertoireLater.Click += QRepertoireAdvanceObserve;
         QRepertoireBackward.Click += QRepertoireUndoObserve;
@@ -69,8 +69,8 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         QRepertoireScribe.Click += QRepertoireScribeObserve;
         QRepertoireBin.Click += QRepertoireBinObserve;
         QScenarioIntroduce();
-        QScenarioPicture.Click += QImageAddHandle;
-        QScenarioFilm.Click += QVideoAddHandle;
+        QScenarioPicture.Click += QImageAddObserve;
+        QScenarioFilm.Click += QVideoAddObserve;
     }
 
     private Border QTier => QContract.QContractFind<Border>(_qRepertoireSurface, "PTier");
@@ -215,9 +215,9 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         QScenarioImage.ItemsSource = _qScenarioImage;
         QScenarioVideo.ItemsSource = _qScenarioVideo;
         QLookItem.QLookItemAttach(QAtlas, QAtlasItemRefine);
-        QLookItem.QLookItemAttach(QOccurrence, QOccurrenceApply);
-        QLookItem.QLookItemAttach(QScenarioImage, QImageApply);
-        QLookItem.QLookItemAttach(QScenarioVideo, QVideoApply);
+        QLookItem.QLookItemAttach(QOccurrence, QOccurrenceItemRefine);
+        QLookItem.QLookItemAttach(QScenarioImage, QImageItemRefine);
+        QLookItem.QLookItemAttach(QScenarioVideo, QVideoItemRefine);
         QLookItem.QLookItemAttach(QVignettePicture, PImage.PImageLineApply);
         QLookItem.QLookItemAttach(QVignetteVideo, PVideo.PVideoLineApply);
 
@@ -229,15 +229,15 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         CPanel occurrence = _cRepertoire.CRepertoireOccurrence.COccurrencePanel;
         _cRepertoire.CRepertoireChanged += QRepertoireModeRefine;
         _cRepertoire.CRepertoireScenarioChanged += QScenarioRefine;
-        _cRepertoire.CRepertoireSituationChanged += QVignetteShow;
+        _cRepertoire.CRepertoireSituationChanged += QVignetteRefine;
         _cRepertoire.CRepertoireQueryCleared += QInquestRefine;
         _cRepertoire.CRepertoireWorkspaceChanged += QRepertoireWorkspaceRefine;
         atlas.CPanelChanged += QRepertoireModeRefine;
         atlas.CPanelRowsChanged += QAtlasRefine;
         atlas.CPanelRowsChanged += QRepertoireTallyRefine;
-        atlas.CPanelCleared += QVignetteClear;
+        atlas.CPanelCleared += QVignetteClearRefine;
         occurrence.CPanelChanged += QRepertoireModeRefine;
-        occurrence.CPanelRowsChanged += QOccurrenceFind;
+        occurrence.CPanelRowsChanged += QOccurrenceRefine;
     }
 
     private bool QRepertoireShownCheck()

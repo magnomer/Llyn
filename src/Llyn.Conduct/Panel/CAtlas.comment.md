@@ -64,4 +64,11 @@ The kind and the count arrive worded, so no driver words either.
 
 Maps the Situation a draft carries to its shape, and a missing draft or Situation to null.
 It is a plain map with no rule, so it stays in Conduct, since ShellEngine cannot name a Conduct shape.
-`CRepertoire` hands it the desk's draft and every loaded atlas draft unread.
+`CRepertoire` hands it the desk's draft unread, and the scenario fills from it.
+
+## `internal static CSituation? LAtlasSituationRead(LDraft? draft)`
+
+Maps the Situation a loaded atlas draft carries to the vignette's ready page, and a missing one to null.
+It only chooses keys.
+The title words untitled while unwritten, and the kind and description word nothing.
+The engine answers which media rows are filled, so the map picks no row itself.

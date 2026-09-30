@@ -86,6 +86,22 @@ internal static class TInterfaceMention
             static () => true).CQuotationRowsRead();
     }
 
+    internal static IReadOnlyList<CVistaRow> TOccurrenceFailRead(LEngine engine, CEnvoy envoy)
+    {
+        LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineEntryFind"] = _ => throw new InvalidOperationException("no entries"),
+        });
+        return new COccurrence(
+            entries,
+            new LPortraitOutlet(engine),
+            new LSettingsOutlet(engine),
+            envoy,
+            static () => true,
+            static _ => true,
+            static () => true).COccurrenceRowsRead();
+    }
+
     internal static IReadOnlyList<CVistaRow> TFavoriteFailRead(LEngine engine, CEnvoy envoy)
     {
         CAtelier atelier = TInterfaceConduct.TAtelierCreate(

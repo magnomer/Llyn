@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -12,21 +11,10 @@ internal sealed partial class QRepertoire
 {
     private readonly ObservableCollection<QOccurrenceItem> _qOccurrenceList = [];
 
-    private void QOccurrenceFind()
+    private void QOccurrenceRefine()
     {
-        IReadOnlyList<CVistaRow> read;
-        try
-        {
-            read = _cRepertoire.CRepertoireOccurrence.COccurrenceRowsRead();
-        }
-        catch (Exception exception)
-        {
-            _qRepertoireHost.PWindowFailureRefine("Situation.LoadFailed", exception);
-            return;
-        }
-
         List<QOccurrenceItem> fresh = [];
-        foreach (CVistaRow entry in read)
+        foreach (CVistaRow entry in _cRepertoire.CRepertoireOccurrence.COccurrenceRowsRead())
         {
             fresh.Add(new QOccurrenceItem(entry, entry.CVistaRowChosen));
         }
@@ -39,12 +27,12 @@ internal sealed partial class QRepertoire
         QOccurrenceEmpty.Visibility = QLook.QLookVisibleRead(_qOccurrenceList.Count == 0);
     }
 
-    private void QOccurrenceHandle(object sender, RoutedEventArgs e)
+    private void QOccurrenceObserve(object sender, RoutedEventArgs e)
     {
         _cRepertoire.CRepertoireOccurrenceSelect(QSender.QSenderSourceRead<QOccurrenceItem>(e)?.QOccurrenceItemId);
     }
 
-    private void QOccurrenceApply(FrameworkElement container, object item, string? _)
+    private void QOccurrenceItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QOccurrenceItem occurrence)
         {
@@ -62,8 +50,8 @@ internal sealed partial class QRepertoire
                 row.ClearValue(QLook.QLookCueProperty);
             }
 
-            row.Click -= QOccurrenceHandle;
-            row.Click += QOccurrenceHandle;
+            row.Click -= QOccurrenceObserve;
+            row.Click += QOccurrenceObserve;
         }
 
         if (QLook.QLookPartFind<Image>(container, "POccurrenceFlag") is Image flag)
@@ -87,12 +75,12 @@ internal sealed partial class QRepertoire
         }
     }
 
-    private void QRepertoireStoreHandle(object sender, RoutedEventArgs e)
+    private void QRepertoireStoreObserve(object sender, RoutedEventArgs e)
     {
         _cRepertoire.CRepertoireSession.CSessionSave();
     }
 
-    private void QRepertoireFreshHandle(object sender, RoutedEventArgs e)
+    private void QRepertoireFreshObserve(object sender, RoutedEventArgs e)
     {
         _cRepertoire.CRepertoireSituationCreate();
     }

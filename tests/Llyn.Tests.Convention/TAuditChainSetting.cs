@@ -113,6 +113,7 @@ internal static class TAuditChainSetting
             "CSituationDraft",
             "CScenario",
             "CScenarioLine",
+            "CSituation",
             "CRegisterDraft",
             "CTagDraft",
             "CImageDraft",
@@ -370,7 +371,7 @@ internal static class TAuditChainSetting
     {
         ["cross:Llyn.UIDeportment>Llyn.Application"] = 39,
         ["cross:Llyn.UIDeportment>Llyn.Core"] = 80,
-        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 9,
+        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 0,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 1,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
         ["expose:Llyn.UIDeportment>Llyn.Core"] = 1,

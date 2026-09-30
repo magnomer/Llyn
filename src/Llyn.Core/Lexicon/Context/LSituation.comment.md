@@ -25,6 +25,16 @@ It says instead when the user marked the value as not known.
 - `LSituationImage` — The Images the Situation shows, as [LImageDraft](LImageDraft.comment.md) rows in the order the user keeps them.
 - `LSituationVideo` — The Videos the Situation shows, as [LVideoDraft](LVideoDraft.comment.md) rows in the order the user keeps them.
 
+## `public IReadOnlyList<LImageDraft> LSituationImageFilled`
+
+The Image rows whose location is filled, in the order the user keeps them.
+A row the user added but never gave a location is left out.
+So a reading page draws no blank picture.
+
+## `public IReadOnlyList<LVideoDraft> LSituationVideoFilled`
+
+The Video rows whose location is filled, a blank row left out the same way.
+
 ## `public bool Equals(LSituation? other)`
 
 Two Situations are equal when every field is equal and the Image and Video lists match row by row.

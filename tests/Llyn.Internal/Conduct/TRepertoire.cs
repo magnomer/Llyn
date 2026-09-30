@@ -122,7 +122,7 @@ public sealed class TRepertoire
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LSituation home = TRepertoireSituationSave(engine, "at home");
         CRepertoire repertoire = TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        List<CSituationDraft> shown = [];
+        List<CSituation> shown = [];
         repertoire.CRepertoireSituationChanged += shown.Add;
 
         repertoire.TRepertoireSituationOpen(home.LSituationId);
@@ -131,7 +131,7 @@ public sealed class TRepertoire
         Assert.True(repertoire.CRepertoireVignetteHeld);
         Assert.True(repertoire.CRepertoirePressAllowed);
         Assert.False(repertoire.CRepertoirePortraitAllowed);
-        Assert.Equal("at home", Assert.Single(shown).CSituationDraftTitle.CStateValueText);
+        Assert.Equal(new CStateWording("at home", null, false), Assert.Single(shown).CSituationTitle);
     }
 
     [Fact]

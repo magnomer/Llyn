@@ -65,7 +65,7 @@ public sealed class CRepertoire
         CRepertoireAtlas.CAtlasPanel.CPanelEdited += id => CRepertoireSession.CSessionStart(id);
         CRepertoireAtlas.CAtlasPanel.CPanelCleared += CRepertoireSession.CSessionCancel;
         CRepertoireAtlas.CAtlasPanel.CPanelDraftChanged +=
-            draft => LRepertoireVignetteShow(CAtlas.LAtlasDraftRead(draft));
+            draft => LRepertoireVignetteShow(CAtlas.LAtlasSituationRead(draft));
         CRepertoireOccurrence.COccurrencePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         CRepertoireOccurrence.COccurrencePanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         atelier.CAtelierNavigation.LNavigationTabAdd(
@@ -93,7 +93,7 @@ public sealed class CRepertoire
 
     public event Action<CScenario>? CRepertoireDraftChanged;
 
-    public event Action<CSituationDraft>? CRepertoireSituationChanged;
+    public event Action<CSituation>? CRepertoireSituationChanged;
 
     public event Action? CRepertoireQueryCleared;
 
@@ -108,6 +108,10 @@ public sealed class CRepertoire
     public CAtlas CRepertoireAtlas { get; }
 
     public COccurrence CRepertoireOccurrence { get; }
+
+    public CImage CRepertoireImage => new(CRepertoireDesk);
+
+    public CVideo CRepertoireVideo => new(CRepertoireDesk);
 
     public bool CRepertoireScenarioShown =>
         !LRepertoireOccurrenceSide && CRepertoireAtlas.CAtlasPanel.CPanelEditing;
@@ -184,7 +188,7 @@ public sealed class CRepertoire
         CRepertoireEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
     }
 
-    private void LRepertoireVignetteShow(CSituationDraft? situation)
+    private void LRepertoireVignetteShow(CSituation? situation)
     {
         if (situation is null)
         {

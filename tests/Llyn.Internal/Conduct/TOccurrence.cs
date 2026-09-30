@@ -26,6 +26,17 @@ public sealed class TOccurrence
     }
 
     [Fact]
+    public void OccurrenceRowsRead_EngineFails_ShowsTheLoadFailureAndAnswersNoRows()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+
+        Assert.Empty(TInterfaceMention.TOccurrenceFailRead(engine, TEnvoyFake.TEnvoyCreate(false, asked)));
+        Assert.Equal(["Situation.LoadFailed"], asked);
+    }
+
+    [Fact]
     public void OccurrenceQuerySet_UnmatchedText_EmptiesTheRowsAndWordsTheEmptyList()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

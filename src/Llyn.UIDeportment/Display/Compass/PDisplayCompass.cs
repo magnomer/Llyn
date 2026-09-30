@@ -14,7 +14,7 @@ public class PDisplayCompass : ResourceDictionary
             new Uri("/Llyn.UIVeneer;component/Display/Compass/PDisplayCompass.xaml", UriKind.Relative)));
     }
 
-    internal void PCompassRowHandle(object sender, RoutedEventArgs e)
+    internal void PCompassRowRefine(object sender, RoutedEventArgs e)
     {
         _pCompassHost.PCompassRowHandle(sender, e);
     }

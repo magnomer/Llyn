@@ -82,6 +82,15 @@ Reads the atlas rows over an entry port whose situation find throws, and answers
 Wraps the Situation in a bare draft and maps it through the atlas's internal helper.
 A null Situation reads as no draft at all.
 
+## `internal static CSituation? TAtlasSituationRead(LSituation? situation)`
+
+Wraps the Situation in a bare draft and maps it to the vignette's ready page through the atlas.
+
+## `private static LDraft? TAtlasDraftCreate(LSituation? situation)`
+
+The bare repertoire draft both atlas relays hand on.
+A null Situation reads as no draft at all.
+
 ## `internal static CAnthology TAnthologyCreate(CAtelier atelier, CDesk desk, CEnvoy envoy)`
 
 Builds the example list through its internal factory, always shown and always finishing.

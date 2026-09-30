@@ -16,7 +16,7 @@ internal sealed partial class QRepertoire
 
     private readonly PVideoTemplate _qVideoTemplate;
 
-    private void QScenarioImageShow(IReadOnlyList<CImageDraft> rows)
+    private void QScenarioImageRefine(IReadOnlyList<CImageDraft> rows)
     {
         PCard.PCardRowShow(
             _qScenarioImage,
@@ -31,7 +31,7 @@ internal sealed partial class QRepertoire
             });
     }
 
-    private void QScenarioVideoShow(IReadOnlyList<CVideoDraft> rows)
+    private void QScenarioVideoRefine(IReadOnlyList<CVideoDraft> rows)
     {
         PCard.PCardRowShow(
             _qScenarioVideo,
@@ -56,37 +56,37 @@ internal sealed partial class QRepertoire
         return new PVideo(_qRepertoireHost.PWindowAtelier, draft);
     }
 
-    private void QImageLocationHandle(object sender, TextChangedEventArgs e)
+    private void QImageLocationObserve(object sender, TextChangedEventArgs e)
     {
         if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: PImage row } box)
         {
-            QScenarioDesk.CDeskEasel?.LEaselImageSet(row.PImageId, box.Text, true);
+            _cRepertoire.CRepertoireImage.CImageLocationSet(row.PImageId, box.Text);
         }
     }
 
-    private void QVideoLocationHandle(object sender, TextChangedEventArgs e)
+    private void QVideoLocationObserve(object sender, TextChangedEventArgs e)
     {
         if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: PVideo row } box)
         {
-            QScenarioDesk.CDeskEasel?.LEaselVideoSet(row.PVideoId, box.Text, true);
+            _cRepertoire.CRepertoireVideo.CVideoLocationSet(row.PVideoId, box.Text);
         }
     }
 
-    private void QVideoSpanHandle(object sender, TextChangedEventArgs e)
+    private void QVideoSpanObserve(object sender, TextChangedEventArgs e)
     {
         if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: PVideo row } box)
         {
-            QScenarioDesk.CDeskEasel?.LEaselSpanSet(row.PVideoId, box.Text);
+            _cRepertoire.CRepertoireVideo.CVideoSpanSet(row.PVideoId, box.Text);
         }
     }
 
-    private void QImageApply(FrameworkElement container, object item, string? name)
+    private void QImageItemRefine(FrameworkElement container, object item, string? name)
     {
         if (QLook.QLookPartFind<TextBox>(container, "PImageLocation") is TextBox location)
         {
-            location.TextChanged -= QImageLocationHandle;
+            location.TextChanged -= QImageLocationObserve;
             PImage.PImageRowApply(container, item, name);
-            location.TextChanged += QImageLocationHandle;
+            location.TextChanged += QImageLocationObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PImageChooser") is Button open)
@@ -102,16 +102,16 @@ internal sealed partial class QRepertoire
         }
     }
 
-    private void QVideoApply(FrameworkElement container, object item, string? name)
+    private void QVideoItemRefine(FrameworkElement container, object item, string? name)
     {
         if (QLook.QLookPartFind<TextBox>(container, "PVideoLocation") is TextBox location
             && QLook.QLookPartFind<TextBox>(container, "PVideoTimestamp") is TextBox span)
         {
-            location.TextChanged -= QVideoLocationHandle;
-            span.TextChanged -= QVideoSpanHandle;
+            location.TextChanged -= QVideoLocationObserve;
+            span.TextChanged -= QVideoSpanObserve;
             PVideo.PVideoRowApply(container, item, name);
-            location.TextChanged += QVideoLocationHandle;
-            span.TextChanged += QVideoSpanHandle;
+            location.TextChanged += QVideoLocationObserve;
+            span.TextChanged += QVideoSpanObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PVideoChooser") is Button open)
@@ -127,21 +127,21 @@ internal sealed partial class QRepertoire
         }
     }
 
-    private void QImageAddHandle(object sender, RoutedEventArgs e)
+    private void QImageAddObserve(object sender, RoutedEventArgs e)
     {
-        QScenarioDesk.CDeskEasel?.LEaselImageAdd(0, _qScenarioImage.Count);
+        _cRepertoire.CRepertoireImage.CImageAdd(0);
     }
 
-    private void QVideoAddHandle(object sender, RoutedEventArgs e)
+    private void QVideoAddObserve(object sender, RoutedEventArgs e)
     {
-        QScenarioDesk.CDeskEasel?.LEaselVideoAdd(0, _qScenarioVideo.Count);
+        _cRepertoire.CRepertoireVideo.CVideoAdd(0);
     }
 
     public void PImageRemoveHandle(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PImage row })
         {
-            QScenarioDesk.CDeskEasel?.LEaselImageRemove(0, row.PImageId);
+            _cRepertoire.CRepertoireImage.CImageRemove(row.PImageId);
         }
     }
 
@@ -149,7 +149,7 @@ internal sealed partial class QRepertoire
     {
         if (sender is FrameworkElement { DataContext: PVideo row })
         {
-            QScenarioDesk.CDeskEasel?.LEaselVideoRemove(0, row.PVideoId);
+            _cRepertoire.CRepertoireVideo.CVideoRemove(row.PVideoId);
         }
     }
 
@@ -157,35 +157,15 @@ internal sealed partial class QRepertoire
     {
         if (sender is FrameworkElement { DataContext: PImage row } source)
         {
-            QScenarioImageOpen(row.PImageId, Window.GetWindow(source));
+            _cRepertoire.CRepertoireImage.CImageFileSet(row.PImageId, PImage.PImageOpen(Window.GetWindow(source)));
         }
-    }
-
-    private void QScenarioImageOpen(long image, Window owner)
-    {
-        if (PImage.PImageOpen(owner) is not string chosen)
-        {
-            return;
-        }
-
-        QScenarioDesk.CDeskEasel?.LEaselImageSet(image, chosen, false);
     }
 
     public void PVideoOpenHandle(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PVideo row } source)
         {
-            QScenarioVideoOpen(row.PVideoId, Window.GetWindow(source));
+            _cRepertoire.CRepertoireVideo.CVideoFileSet(row.PVideoId, PVideo.PVideoOpen(Window.GetWindow(source)));
         }
-    }
-
-    private void QScenarioVideoOpen(long video, Window owner)
-    {
-        if (PVideo.PVideoOpen(owner) is not string chosen)
-        {
-            return;
-        }
-
-        QScenarioDesk.CDeskEasel?.LEaselVideoSet(video, chosen, false);
     }
 }

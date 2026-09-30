@@ -10,6 +10,6 @@ The panel's handler is internal for this one caller, and hands the click to the 
 
 Merges the markup the Veneer holds, since the dictionary carries no class of its own there.
 
-## `internal void PCompassRowHandle(object sender, RoutedEventArgs e)`
+## `internal void PCompassRowRefine(object sender, RoutedEventArgs e)`
 
 The forwarder the display's row fill subscribes on each realized row.

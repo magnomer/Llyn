@@ -227,7 +227,13 @@ internal static class TInterfaceConduct
         return atlas.LAtlasRowsRead();
     }
 
-    internal static CSituationDraft? TAtlasDraftRead(LSituation? situation) => CAtlas.LAtlasDraftRead(
+    internal static CSituationDraft? TAtlasDraftRead(LSituation? situation) =>
+        CAtlas.LAtlasDraftRead(TAtlasDraftCreate(situation));
+
+    internal static CSituation? TAtlasSituationRead(LSituation? situation) =>
+        CAtlas.LAtlasSituationRead(TAtlasDraftCreate(situation));
+
+    private static LDraft? TAtlasDraftCreate(LSituation? situation) =>
         situation is null
             ? null
             : new LDraft(
@@ -236,7 +242,7 @@ internal static class TInterfaceConduct
                 0,
                 TInterface.TEntryDraftCreate(string.Empty, "English", string.Empty, string.Empty, [], []),
                 DateTimeOffset.UnixEpoch,
-                LDraftSituation: situation));
+                LDraftSituation: situation);
 
     internal static CAnthology TAnthologyCreate(CAtelier atelier, CDesk desk, CEnvoy envoy) =>
         CAnthology.LAnthologyCreate(atelier, desk, static () => true, envoy, static _ => true);

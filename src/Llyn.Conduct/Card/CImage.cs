@@ -17,4 +17,24 @@ public sealed class CImage
     {
         _cImageDesk.CDeskEasel?.LEaselImageSet(imageId, location, true);
     }
+
+    public void CImageAdd(long cardId)
+    {
+        _cImageDesk.CDeskEasel?.LEaselImageAdd(cardId);
+    }
+
+    public void CImageRemove(long imageId)
+    {
+        _cImageDesk.CDeskEasel?.LEaselImageRemove(imageId);
+    }
+
+    public void CImageFileSet(long imageId, string? file)
+    {
+        if (file is null)
+        {
+            return;
+        }
+
+        _cImageDesk.CDeskEasel?.LEaselImageSet(imageId, file, false);
+    }
 }

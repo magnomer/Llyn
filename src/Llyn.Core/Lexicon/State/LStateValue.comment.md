@@ -70,6 +70,11 @@ A caller that must tell an unknown value from an empty one reads the state inste
 Whether nothing was ever recorded.
 An unknown value is not empty by this reading: something is there, and only its text is beyond reach.
 
+## `public bool LStateValueFilled`
+
+Whether the value holds legible text or the user's mark that it is not known.
+Only a value nothing was ever recorded for, and which the store read cleanly, is not filled.
+
 ## `public LStateValue LStateValueNormalize()`
 
 This value when it is readable, and the unspecified value when it is not.

@@ -35,6 +35,17 @@ The stored image as a draft row, refused when no image carries the id.
 
 Relocates the image in every card holding it, and refuses when none does.
 
+## `public static int LImageEndRead(LDraft draft, long cardId)`
+
+The place after the last picture row, on the held Situation or on the card named.
+A card the draft lacks answers zero, and the addition then refuses it.
+
+## `public static long? LImageCardFind(LDraft draft, long imageId)`
+
+The card holding the picture row, found among the Meanings and then the Collocations.
+A Situation draft answers card zero, since its rows hang on the draft itself.
+A row no card holds answers null.
+
 ## `private IReadOnlyList<LVideoDraft>? LVideoApply(IReadOnlyList<LVideoDraft> videos, LRequest request)`
 
 The video list after one request, or null when the request is not a video one.
@@ -49,6 +60,14 @@ The same list edit applied to the video list of one card.
 ## `private LVideoDraft LVideoRead(long id)`
 
 The stored video as a draft row, refused when no video carries the id.
+
+## `public static int LVideoEndRead(LDraft draft, long cardId)`
+
+The place after the last video row, as the picture end is read.
+
+## `public static long? LVideoCardFind(LDraft draft, long videoId)`
+
+The card holding the video row, as the picture's card is found.
 
 ## `public static LEntryDraft LVideoChange(`
 

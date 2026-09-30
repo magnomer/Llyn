@@ -3,5 +3,5 @@
 ## `internal static partial class TInterface`
 
 The relays for an easel, built over a tenure.
-Every relay that takes a card names zero, as the situation draft does.
+An add relay passes the card the test names, and a situation test names zero.
 Each relay is transparent and carries no test logic of its own.

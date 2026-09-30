@@ -38,11 +38,11 @@ The gates that add, remove and move the held draft's cards, built fresh over the
 
 ## `public CImage CEditorImage`
 
-The typed image rows of the cards, built fresh over the desk.
+The image rows of the cards, built fresh over the desk.
 
 ## `public CVideo CEditorVideo`
 
-The typed video rows of the cards, built fresh over the desk.
+The video rows of the cards, built fresh over the desk.
 
 ## `public string CEditorLanguage`
 

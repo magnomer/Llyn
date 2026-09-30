@@ -251,7 +251,7 @@ public sealed class TEditorField
         Assert.True(shown > 0);
     }
 
-    private static CEditor TEditorFieldPrepare(LEngine engine)
+    internal static CEditor TEditorFieldPrepare(LEngine engine)
     {
         engine.TEngineDelaySet(0);
         CEditor editor = TInterfaceConduct.TEditorCreate(engine);
@@ -260,14 +260,14 @@ public sealed class TEditorField
         return editor;
     }
 
-    private static long TEditorSheetAdd(CEditor editor)
+    internal static long TEditorSheetAdd(CEditor editor)
     {
         editor.CEditorDesk.TDeskDefer(TInterface.TRequestAdditionCreate(
             editor.CEditorDesk.CDeskId, LCardKind.LCardKindMeaning, 0, int.MaxValue));
         return editor.CEditorDraftRead()!.CEntryDraftMeanings[^1].CCardDraftId;
     }
 
-    private static CCardDraft TEditorCardRead(CEditor editor, long sheet)
+    internal static CCardDraft TEditorCardRead(CEditor editor, long sheet)
     {
         return editor.CEditorDraftRead()!.CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
     }

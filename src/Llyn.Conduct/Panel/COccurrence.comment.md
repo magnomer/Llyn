@@ -42,6 +42,7 @@ Takes the text typed into the search field as the list's query.
 
 Reads the entries referencing the roll's chosen Situation, or every entry while none is chosen.
 The engine matches the query and drops the hidden languages, so the list decides nothing about matching.
+A failed read shows the `Situation.LoadFailed` notice once through the ledger and answers no rows.
 
 ## `internal string LOccurrenceFileRead()`
 

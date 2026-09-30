@@ -164,6 +164,85 @@ public sealed class TAtlas
     }
 
     [Fact]
+    public void AtlasSituationRead_NoSituation_ReturnsNone()
+    {
+        Assert.Null(TInterfaceConduct.TAtlasSituationRead(null));
+    }
+
+    [Fact]
+    public void AtlasSituationRead_WrittenFields_ShowsTheirTextWithNoKey()
+    {
+        LSituation situation = TInterface.TSituationCreate(
+            7, TInterface.TStateValueCreate("Hearth"), "By the fire", TInterface.TStateValueCreate("home"));
+
+        CSituation? shown = TInterfaceConduct.TAtlasSituationRead(situation);
+
+        Assert.NotNull(shown);
+        Assert.Equal(new CStateWording("Hearth", null, false), shown!.CSituationTitle);
+        Assert.Equal(new CStateWording("home", null, false), shown.CSituationKind);
+        Assert.Equal(new CStateWording("By the fire", null, false), shown.CSituationDescription);
+    }
+
+    [Fact]
+    public void AtlasSituationRead_UnknownFields_WordsEachWithTheUnknownMark()
+    {
+        LSituation situation = TInterface.TSituationCreate(
+            7, LStateValue.LStateValueUnknown, LStateValue.LStateValueUnknown, LStateValue.LStateValueUnknown);
+
+        CSituation shown = TInterfaceConduct.TAtlasSituationRead(situation)!;
+
+        Assert.Equal(new CStateWording(string.Empty, "Display.Unknown", false), shown.CSituationTitle);
+        Assert.Equal(new CStateWording(string.Empty, "Display.Unknown", false), shown.CSituationKind);
+        Assert.Equal(new CStateWording(string.Empty, "Display.Unknown", false), shown.CSituationDescription);
+    }
+
+    [Fact]
+    public void AtlasSituationRead_UnwrittenFields_MutesTheTitleAndWordsNoKindOrDescription()
+    {
+        LSituation situation = TInterface.TSituationCreate(7, null, null, null);
+
+        CSituation shown = TInterfaceConduct.TAtlasSituationRead(situation)!;
+
+        Assert.Equal(new CStateWording(string.Empty, "Situation.Untitled", true), shown.CSituationTitle);
+        Assert.Equal(new CStateWording(string.Empty, null, true), shown.CSituationKind);
+        Assert.Equal(new CStateWording(string.Empty, null, true), shown.CSituationDescription);
+    }
+
+    [Fact]
+    public void AtlasSituationRead_BlankMediaRows_CarriesOnlyTheFilledRowsInOrder()
+    {
+        LSituation situation = TInterface.TSituationCreate(7, "Hearth", null, null) with
+        {
+            LSituationImage =
+            [
+                TInterface.TImageDraftCreate("fire.png", 1),
+                TInterface.TImageDraftCreate(string.Empty, 2),
+                TInterface.TImageDraftCreate(string.Empty, 3) with
+                {
+                    LImageDraftLocation = LStateValue.LStateValueUnknown,
+                },
+                TInterface.TImageDraftCreate(string.Empty, 4) with
+                {
+                    LImageDraftLocation = TInterface.TStateUnreadableCreate("lost.png"),
+                },
+            ],
+            LSituationVideo =
+            [
+                TInterface.TVideoDraftCreate(string.Empty, string.Empty, 5),
+                TInterface.TVideoDraftCreate("fire.mp4", "00:10-00:40", 6),
+            ],
+        };
+
+        CSituation shown = TInterfaceConduct.TAtlasSituationRead(situation)!;
+
+        Assert.Equal([1L, 3L, 4L], shown.CSituationImage.Select(row => row.CImageDraftId));
+        Assert.True(shown.CSituationImage[1].CImageDraftLocation.CStateValueUncertain);
+        Assert.Equal("lost.png", shown.CSituationImage[2].CImageDraftLocation.CStateValueText);
+        Assert.Equal([6L], shown.CSituationVideo.Select(row => row.CVideoDraftId));
+        Assert.Equal("00:10-00:40", shown.CSituationVideo[0].CVideoDraftSpan.CStateValueText);
+    }
+
+    [Fact]
     public void AtlasRowsRead_EngineFails_ShowsTheLoadFailureAndAnswersNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

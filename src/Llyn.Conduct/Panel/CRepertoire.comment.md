@@ -39,9 +39,9 @@ A cancel or a refused start raises the blank scenario, so the driver keeps no de
 Raised with the held Situation's scenario after an edit, through the marshal the repertoire was built with.
 `CRepertoireScenarioChanged` fills the scenario anew, while this one only refreshes what the edit changed.
 
-## `public event Action<CSituationDraft>? CRepertoireSituationChanged`
+## `public event Action<CSituation>? CRepertoireSituationChanged`
 
-Raised with the Situation a loaded atlas draft carries, so the vignette shows it.
+Raised with the Situation a loaded atlas draft carries, ready for the vignette to paint.
 
 ## `public event Action? CRepertoireWorkspaceChanged`
 
@@ -59,6 +59,14 @@ The atelier the two vistas start through when the forge restores them.
 
 The occurrence list, whose panel asks the entry editor's desk whether the entry holds unsaved changes.
 It is built over the atelier's entry and portrait ports, so no driver holds either.
+
+## `public CImage CRepertoireImage`
+
+The scenario's picture gates, built fresh over the repertoire's desk as the editor builds its own.
+
+## `public CVideo CRepertoireVideo`
+
+The scenario's video gates, built fresh over the repertoire's desk.
 
 ## `public bool CRepertoireScenarioShown`
 
@@ -112,7 +120,7 @@ The repertoire's part of the window's exit gate `CAtelier.CAtelierClose`, regist
 It closes the entry editor and cancels its display's playback.
 It leaves the scenario desk alone, as the panel's close always did.
 
-## `private void LRepertoireVignetteShow(CSituationDraft? situation)`
+## `private void LRepertoireVignetteShow(CSituation? situation)`
 
 Announces the Situation a loaded draft carries and ignores drafts of other subjects.
 

@@ -413,8 +413,8 @@ public class PDisplay : UserControl
                 row.ClearValue(QLook.QLookCueProperty);
             }
 
-            row.Click -= _pDisplayCompass.PCompassRowHandle;
-            row.Click += _pDisplayCompass.PCompassRowHandle;
+            row.Click -= _pDisplayCompass.PCompassRowRefine;
+            row.Click += _pDisplayCompass.PCompassRowRefine;
         }
 
         if (QLook.QLookPartFind<Grid>(container, "PCompassIndent") is Grid indent)

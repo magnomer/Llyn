@@ -6,14 +6,14 @@ internal static partial class TInterface
 {
     internal static LEasel TEaselCreate(this LTenure tenure) => new(tenure);
 
-    internal static void TEaselImageAdd(this LEasel easel, int position)
+    internal static void TEaselImageAdd(this LEasel easel, long card)
     {
-        easel.LEaselImageAdd(0, position);
+        easel.LEaselImageAdd(card);
     }
 
     internal static void TEaselImageRemove(this LEasel easel, long image)
     {
-        easel.LEaselImageRemove(0, image);
+        easel.LEaselImageRemove(image);
     }
 
     internal static void TEaselImageSet(this LEasel easel, long image, string location, bool deferred)
@@ -21,14 +21,14 @@ internal static partial class TInterface
         easel.LEaselImageSet(image, location, deferred);
     }
 
-    internal static void TEaselVideoAdd(this LEasel easel, int position)
+    internal static void TEaselVideoAdd(this LEasel easel, long card)
     {
-        easel.LEaselVideoAdd(0, position);
+        easel.LEaselVideoAdd(card);
     }
 
     internal static void TEaselVideoRemove(this LEasel easel, long video)
     {
-        easel.LEaselVideoRemove(0, video);
+        easel.LEaselVideoRemove(video);
     }
 
     internal static void TEaselVideoSet(this LEasel easel, long video, string location, bool deferred)

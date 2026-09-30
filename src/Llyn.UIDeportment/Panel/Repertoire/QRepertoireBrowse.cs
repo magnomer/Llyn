@@ -44,7 +44,7 @@ internal sealed partial class QRepertoire
     internal async void QOccurrenceVistaRefine()
     {
         await LEnsignImage.LEnsignLoad(_qRepertoireHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
-        QOccurrenceFind();
+        QOccurrenceRefine();
     }
 
     private void QMeshRefine()

@@ -23,6 +23,12 @@ public sealed record LSituation(
 
     public IReadOnlyList<LVideoDraft> LSituationVideo { get; init; } = LSituationVideo ?? [];
 
+    public IReadOnlyList<LImageDraft> LSituationImageFilled =>
+        LSituationImage.Where(static row => row.LImageDraftLocation.LStateValueFilled).ToList();
+
+    public IReadOnlyList<LVideoDraft> LSituationVideoFilled =>
+        LSituationVideo.Where(static row => row.LVideoDraftLocation.LStateValueFilled).ToList();
+
     public bool Equals(LSituation? other)
     {
         return other is not null

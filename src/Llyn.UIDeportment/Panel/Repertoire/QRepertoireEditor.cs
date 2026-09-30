@@ -82,8 +82,8 @@ internal sealed partial class QRepertoire
         QScenarioFieldRefine(QScenarioKind, scenario.CScenarioKind);
         QScenarioFieldRefine(QScenarioDescription, scenario.CScenarioDescription);
 
-        QScenarioImageShow(scenario.CScenarioDraft.CSituationDraftImage);
-        QScenarioVideoShow(scenario.CScenarioDraft.CSituationDraftVideo);
+        QScenarioImageRefine(scenario.CScenarioDraft.CSituationDraftImage);
+        QScenarioVideoRefine(scenario.CScenarioDraft.CSituationDraftVideo);
         QScenarioHintRefine(scenario.CScenarioTitle);
         QScenarioMeasureRefine(scenario.CScenarioKind);
 

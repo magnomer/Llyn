@@ -165,4 +165,17 @@ public sealed class CAtlas
                 CFolio.CFolioVideoRead(situation.LSituationVideo))
             : null;
     }
+
+    internal static CSituation? LAtlasSituationRead(LDraft? draft)
+    {
+        return draft?.LDraftSituation is LSituation situation
+            ? new CSituation(
+                CStateWording.LStateWordingRead(
+                    CFolio.CFolioStateRead(situation.LSituationTitle), "Situation.Untitled"),
+                CStateWording.LStateWordingRead(CFolio.CFolioStateRead(situation.LSituationKind), null),
+                CStateWording.LStateWordingRead(CFolio.CFolioStateRead(situation.LSituationDescription), null),
+                CFolio.CFolioImageRead(situation.LSituationImageFilled),
+                CFolio.CFolioVideoRead(situation.LSituationVideoFilled))
+            : null;
+    }
 }

@@ -8,9 +8,13 @@ namespace Llyn.Conduct;
 
 public sealed class COccurrence
 {
+    private readonly CEnvoy _cOccurrenceEnvoy;
+
     private readonly LEntryPort _cOccurrenceEntryPort;
 
     private readonly LPortraitPort _cOccurrencePortraitPort;
+
+    private readonly LSettingsPort _cOccurrenceSettingsPort;
 
     private LVista? _cOccurrenceRoll;
 
@@ -29,7 +33,9 @@ public sealed class COccurrence
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
 
+        _cOccurrenceEnvoy = envoy;
         _cOccurrenceEntryPort = entries;
+        _cOccurrenceSettingsPort = settings;
         _cOccurrencePortraitPort = portraits;
         COccurrencePanel = new CPanel(envoy, settings, "List.LoadFailed", null, changeSeam, finishSeam, shownSeam);
     }
@@ -72,9 +78,17 @@ public sealed class COccurrence
 
     public IReadOnlyList<CVistaRow> COccurrenceRowsRead()
     {
-        return _cOccurrenceEntryPort.LEngineEntryFind(_cOccurrenceRoll, _cOccurrenceVista)
-            .Select(CPanel.CPanelRowRead)
-            .ToList();
+        try
+        {
+            return _cOccurrenceEntryPort.LEngineEntryFind(_cOccurrenceRoll, _cOccurrenceVista)
+                .Select(CPanel.CPanelRowRead)
+                .ToList();
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cOccurrenceEnvoy, _cOccurrenceSettingsPort, "Situation.LoadFailed", exception);
+            return [];
+        }
     }
 
     internal string LOccurrenceFileRead()

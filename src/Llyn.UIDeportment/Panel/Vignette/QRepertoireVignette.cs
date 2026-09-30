@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Controls;
 using Llyn.Conduct;
 
@@ -6,85 +7,54 @@ namespace Llyn.UIDeportment;
 
 internal sealed partial class QRepertoire
 {
-    private static string? QVignetteTextRead(CStateValue value)
+    private void QVignetteRefine(CSituation situation)
     {
-        return value.CStateValueUncertain
-            ? QLocalizationCatalog.QLocalizationTextRead("Display.Unknown")
-            : value.CStateValueShown;
-    }
-
-    private void QVignetteShow(CSituationDraft situation)
-    {
-        QVignetteTitleShow(situation.CSituationDraftTitle);
-        QVignetteKindShow(situation.CSituationDraftKind);
-        QVignetteDescriptionShow(situation.CSituationDraftDescription);
-        QVignetteMediaShow(
-            QVignetteImageRead(situation.CSituationDraftImage), QVignetteVideoRead(situation.CSituationDraftVideo));
+        QVignetteTitleRefine(situation.CSituationTitle);
+        QVignetteKindRefine(situation.CSituationKind);
+        QVignetteDescriptionRefine(situation.CSituationDescription);
+        QVignetteMediaRefine(
+            [.. situation.CSituationImage.Select(QScenarioImageCreate)],
+            [.. situation.CSituationVideo.Select(QScenarioVideoCreate)]);
         QRepertoireTallyRefine();
     }
 
-    private void QVignetteClear()
+    private void QVignetteClearRefine()
     {
-        QVignetteMediaShow(null, null);
+        QVignetteMediaRefine(null, null);
     }
 
-    private void QVignetteTitleShow(CStateValue value)
+    private void QVignetteTitleRefine(CStateWording title)
     {
-        string? text = QVignetteTextRead(value);
-
-        QVignetteTitle.Text = text ?? QLocalizationCatalog.QLocalizationTextRead("Situation.Untitled");
+        QVignetteTitle.Text = title.CStateWordingKey is string key
+            ? QLocalizationCatalog.QLocalizationTextRead(key)
+            : title.CStateWordingText;
         QVignetteTitle.SetResourceReference(
             TextBlock.ForegroundProperty,
-            text is null ? "Theme.Muted" : "Theme.Ink");
+            title.CStateWordingMuted ? "Theme.Muted" : "Theme.Ink");
     }
 
-    private void QVignetteKindShow(CStateValue value)
+    private void QVignetteKindRefine(CStateWording kind)
     {
-        string? text = QVignetteTextRead(value);
-
-        QVignetteKind.Text = text ?? string.Empty;
-        QVignetteChip.Visibility = QLook.QLookVisibleRead(text is not null);
+        QVignetteKind.Text = kind.CStateWordingKey is string key
+            ? QLocalizationCatalog.QLocalizationTextRead(key)
+            : kind.CStateWordingText;
+        QVignetteChip.Visibility = QLook.QLookVisibleRead(!kind.CStateWordingMuted);
     }
 
-    private void QVignetteDescriptionShow(CStateValue value)
+    private void QVignetteDescriptionRefine(CStateWording description)
     {
-        string? text = QVignetteTextRead(value);
-
-        LMarkdownFace.LMarkdownRefine(QVignetteDescription, text, _qRepertoireHost.PWindowAtelier);
-        QVignetteDescriptionSection.Visibility = QLook.QLookVisibleRead(text is not null);
+        LMarkdownFace.LMarkdownRefine(
+            QVignetteDescription,
+            description.CStateWordingKey is null
+                ? description.CStateWordingText
+                : QLocalizationCatalog.QLocalizationTextRead(description.CStateWordingKey),
+            _qRepertoireHost.PWindowAtelier);
+        QVignetteDescriptionSection.Visibility = QLook.QLookVisibleRead(!description.CStateWordingMuted);
     }
 
-    private void QVignetteMediaShow(IReadOnlyList<PImage>? pictures, IReadOnlyList<PVideo>? videos)
+    private void QVignetteMediaRefine(IReadOnlyList<PImage>? pictures, IReadOnlyList<PVideo>? videos)
     {
         QVignettePicture.ItemsSource = pictures;
         QVignetteVideo.ItemsSource = videos;
-    }
-
-    private List<PImage> QVignetteImageRead(IReadOnlyList<CImageDraft> rows)
-    {
-        List<PImage> pictures = [];
-        foreach (CImageDraft row in rows)
-        {
-            if (row.CImageDraftLocation.CStateValueUncertain || row.CImageDraftLocation.CStateValueLegible)
-            {
-                pictures.Add(QScenarioImageCreate(row));
-            }
-        }
-
-        return pictures;
-    }
-
-    private List<PVideo> QVignetteVideoRead(IReadOnlyList<CVideoDraft> rows)
-    {
-        List<PVideo> videos = [];
-        foreach (CVideoDraft row in rows)
-        {
-            if (row.CVideoDraftLocation.CStateValueUncertain || row.CVideoDraftLocation.CStateValueLegible)
-            {
-                videos.Add(QScenarioVideoCreate(row));
-            }
-        }
-
-        return videos;
     }
 }

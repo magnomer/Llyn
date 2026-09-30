@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -103,6 +104,30 @@ public sealed class LDraftClerkMedia
         });
     }
 
+    public static int LImageEndRead(LDraft draft, long cardId)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        return draft.LDraftSituation is LSituation held
+            ? held.LSituationImage.Count
+            : LDraftClerkCard.LCardFind(draft.LDraftContent, cardId)?.LCardDraftImage.Count ?? 0;
+    }
+
+    public static long? LImageCardFind(LDraft draft, long imageId)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        if (draft.LDraftSituation is not null)
+        {
+            return 0;
+        }
+
+        return draft.LDraftContent.LEntryDraftMeanings
+            .Concat(draft.LDraftContent.LEntryDraftCollocations)
+            .FirstOrDefault(card => card.LCardDraftImage.Any(row => row.LImageDraftId == imageId))
+            ?.LCardDraftId;
+    }
+
     private IReadOnlyList<LVideoDraft>? LVideoApply(IReadOnlyList<LVideoDraft> videos, LRequest request)
     {
         return request switch
@@ -157,6 +182,30 @@ public sealed class LDraftClerkMedia
             ?? throw new LRefusal(LRefusal.LRefusalItem);
 
         return new LVideoDraft(stored.LVideoLocation, stored.LVideoSpan, stored.LVideoId);
+    }
+
+    public static int LVideoEndRead(LDraft draft, long cardId)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        return draft.LDraftSituation is LSituation held
+            ? held.LSituationVideo.Count
+            : LDraftClerkCard.LCardFind(draft.LDraftContent, cardId)?.LCardDraftVideo.Count ?? 0;
+    }
+
+    public static long? LVideoCardFind(LDraft draft, long videoId)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        if (draft.LDraftSituation is not null)
+        {
+            return 0;
+        }
+
+        return draft.LDraftContent.LEntryDraftMeanings
+            .Concat(draft.LDraftContent.LEntryDraftCollocations)
+            .FirstOrDefault(card => card.LCardDraftVideo.Any(row => row.LVideoDraftId == videoId))
+            ?.LCardDraftId;
     }
 
     public static LEntryDraft LVideoChange(
