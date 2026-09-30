@@ -71,11 +71,12 @@ public partial class PEditor
         }
     }
 
-    internal async void PAccentClipHandle(object sender, ExecutedRoutedEventArgs e)
+    internal void PAccentClipHandle(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is QAccentItem row)
         {
-            await PClipOpen(PAccentAnchorRead(e), row.QAccentItemId);
+            PClipOpenRefine(PAccentAnchorRead(e));
+            PClipEnsignRefine(_qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandRecordingStart(row.QAccentItemId));
         }
     }
 

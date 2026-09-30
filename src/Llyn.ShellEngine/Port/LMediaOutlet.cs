@@ -1,6 +1,4 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -39,7 +37,4 @@ public sealed class LMediaOutlet : LMediaPort
         _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingStop(ticket);
 
     public void LEngineVolumeSet(double volume) => _lMediaOutletEngine.LEnginePronunciation.LEngineVolumeSet(volume);
-
-    public Task<string> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation) =>
-        _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingPrepare(recording, cancellation);
 }

@@ -216,9 +216,6 @@ public sealed class CEditor
 
     public void CEditorVarietySet(bool primary, long pronunciation, string variety)
     {
-        long target = primary
-            ? CEditorDraftRead()?.CEntryDraftPronunciation?.CPronunciationDraftId ?? 0
-            : pronunciation;
-        CEditorTenure?.LTenureVarietySet(target, variety);
+        CEditorTenure?.LTenureVarietySet(primary, pronunciation, variety);
     }
 }

@@ -239,3 +239,4 @@ Decides which bulletins refresh the desk, for every tenure it starts.
 A tenure bulletin updates the desk state, and a draft bulletin runs `drafted`.
 Both run through `marshal`, which the driver hands in to reach its own thread.
 The overload without `drafted` rereads and announces the draft through `CDeskDraftResonate`.
+The errand takes the same marshal for the steps of its recording search.

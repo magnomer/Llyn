@@ -1,7 +1,5 @@
 using System;
 using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 using Llyn.Application;
 using System.Collections.Generic;
 using Llyn.Core;
@@ -150,13 +148,6 @@ public sealed class CAtelier : IDisposable
     public bool CAtelierRecordingExist(string? file)
     {
         return CAtelierMediaPort.LEngineRecordingExist(file);
-    }
-
-    public Task<string> CAtelierRecordingPrepare(CRecording recording, CancellationToken cancellation)
-    {
-        ArgumentNullException.ThrowIfNull(recording);
-
-        return CAtelierMediaPort.LEngineRecordingPrepare(CErrand.CErrandRecordingRead(recording), cancellation);
     }
 
     public Uri? CAtelierLocationRead(string? location)

@@ -18,11 +18,6 @@ A fresh quotation start replaces the held draft with one already citing its Exam
 A fresh footnote start opens a draft already citing its Source in the first sentence.
 A fresh membership start replaces the held draft with one already carrying its Tag.
 A fresh cohort start replaces the held draft with one already carrying its Register.
-A recording search over the held draft streams the source, the recording and the end to the sink.
-
-## `private const string TEditorClipPack`
-
-A one-source pack whose recording source answers one British recording.
 
 ## `private static LEntry TEditorEntryPrepare(LEngine engine)`
 

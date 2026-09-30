@@ -16,7 +16,3 @@ It keeps every field of the engine's recording, since the clip plays and saves t
 ## `public bool CRecordingAddressed`
 
 Whether the recording carries an address, so the row offers to play it.
-
-## `public bool CRecordingRegional`
-
-Whether the recording names a variety, so the row shows its flag.

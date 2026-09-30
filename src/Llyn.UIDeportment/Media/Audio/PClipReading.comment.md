@@ -1,15 +1,15 @@
 # PClipReading.cs
 
-## `internal sealed class PClipReading : INotifyPropertyChanged`
+## `internal sealed class PClipReading`
 
 One recording a source returned, as one previewable and takeable entry on its source's row.
-It is built once from the recording, but its taking button reports its own download.
-So it notifies, where `PNotationReading` need not.
+It paints a ready `CClipReading` and raises no change.
+The menu builds its entries afresh from each clip state the errand raises.
+So a preview or a download keeps its look when another search step lands.
 
-## `public string PClipReadingVariety`
+## `internal PClipReading(CClipReading reading, string label, ImageSource? flag, string action)`
 
-The raw variety name the source tagged the recording with, empty when the source did not say.
-It is what taking the recording sends to the row, never the label the user sees.
+Takes the text and the flag the row already looked up, and copies the ready states as they are.
 
 ## `public string PClipReadingLabel`
 
@@ -45,8 +45,7 @@ The play button fills blue while it is, and clears when the sound ends or anothe
 Whether the last preview fetch of this recording failed.
 The play button fills with the warning colour while it is.
 So a host that refused is told apart from one that answered nothing.
-The next press on the same button clears it before fetching again.
 
 ## `internal CRecording PClipReadingModel`
 
-The recording this entry stands for, which is what preview fetches and taking saves.
+The recording this entry stands for, which the preview and the taking hand to their gates.

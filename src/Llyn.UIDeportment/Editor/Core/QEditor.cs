@@ -30,9 +30,7 @@ internal sealed class QEditor
         desk.CDeskFailed += host.PWindowFailureRefine;
         desk.CDeskStateChanged += surface.PEditorStateRefine;
         desk.CDeskRefused += host.PWindowEnvoy.CEnvoyFailureShow;
-        desk.CDeskErrand.CErrandHarvestStarted += surface.PClipSourceHandle;
-        desk.CDeskErrand.CErrandRecordingAdded += surface.PClipRecordingHandle;
-        desk.CDeskErrand.CErrandHarvestFinished += surface.PClipFinishHandle;
+        desk.CDeskErrand.CErrandClipChanged += surface.PClipRefine;
         desk.CDeskErrand.CErrandLookupStarted += surface.PNotationSourceHandle;
         desk.CDeskErrand.CErrandCandidateAdded += surface.PNotationCandidateHandle;
         desk.CDeskErrand.CErrandLookupFinished += surface.PNotationFinishHandle;

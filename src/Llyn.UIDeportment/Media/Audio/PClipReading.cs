@@ -1,111 +1,35 @@
-using System;
-using System.ComponentModel;
 using System.Windows.Media;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
-internal sealed class PClipReading : INotifyPropertyChanged
+internal sealed class PClipReading
 {
-    private readonly CRecording _cRecording;
-
-    private string _pClipReadingAction;
-    private bool _pClipReadingReady = true;
-    private bool _pClipReadingFetching;
-    private bool _pClipReadingPlaying;
-    private bool _pClipReadingRefused;
-
-    internal PClipReading(CRecording recording, string label, ImageSource? flag, string action)
+    internal PClipReading(CClipReading reading, string label, ImageSource? flag, string action)
     {
-        _cRecording = recording;
-        PClipReadingVariety = recording.CRecordingVariety;
+        PClipReadingModel = reading.CClipReadingRecording;
         PClipReadingLabel = label;
         PClipReadingFlag = flag;
-        _pClipReadingAction = action;
+        PClipReadingAction = action;
+        PClipReadingReady = reading.CClipReadingReady;
+        PClipReadingFetching = reading.CClipReadingFetching;
+        PClipReadingPlaying = reading.CClipReadingPlaying;
+        PClipReadingRefused = reading.CClipReadingRefused;
     }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    public string PClipReadingVariety { get; }
 
     public string PClipReadingLabel { get; }
 
     public ImageSource? PClipReadingFlag { get; }
 
-    public string PClipReadingAction
-    {
-        get => _pClipReadingAction;
-        set
-        {
-            if (string.Equals(_pClipReadingAction, value, StringComparison.Ordinal))
-            {
-                return;
-            }
+    public string PClipReadingAction { get; }
 
-            _pClipReadingAction = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PClipReadingAction)));
-        }
-    }
+    public bool PClipReadingReady { get; }
 
-    public bool PClipReadingReady
-    {
-        get => _pClipReadingReady;
-        set
-        {
-            if (_pClipReadingReady == value)
-            {
-                return;
-            }
+    public bool PClipReadingFetching { get; }
 
-            _pClipReadingReady = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PClipReadingReady)));
-        }
-    }
+    public bool PClipReadingPlaying { get; }
 
-    public bool PClipReadingFetching
-    {
-        get => _pClipReadingFetching;
-        set
-        {
-            if (_pClipReadingFetching == value)
-            {
-                return;
-            }
+    public bool PClipReadingRefused { get; }
 
-            _pClipReadingFetching = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PClipReadingFetching)));
-        }
-    }
-
-    public bool PClipReadingPlaying
-    {
-        get => _pClipReadingPlaying;
-        set
-        {
-            if (_pClipReadingPlaying == value)
-            {
-                return;
-            }
-
-            _pClipReadingPlaying = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PClipReadingPlaying)));
-        }
-    }
-
-    public bool PClipReadingRefused
-    {
-        get => _pClipReadingRefused;
-        set
-        {
-            if (_pClipReadingRefused == value)
-            {
-                return;
-            }
-
-            _pClipReadingRefused = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PClipReadingRefused)));
-        }
-    }
-
-    internal CRecording PClipReadingModel => _cRecording;
+    internal CRecording PClipReadingModel { get; }
 }

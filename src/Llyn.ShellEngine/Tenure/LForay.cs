@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Application;
@@ -80,7 +82,33 @@ public sealed class LForay
             ? new LRequestAudio(draft, path, recording.LRecordingSource)
             : new LRequestPronunciationAudio(draft, LForayTarget, path, recording.LRecordingSource);
         _lForayTenure.LTenureRequestApply(request);
+        _lForayTenure.LTenureVarietySet(LForayPrimary, LForayTarget, recording.LRecordingVariety);
         return true;
+    }
+
+    public Task<string> LForayRecordingPrepare(LRecording recording)
+    {
+        ArgumentNullException.ThrowIfNull(recording);
+
+        return _lEngine.LEnginePronunciation.LEngineRecordingPrepare(recording, CancellationToken.None);
+    }
+
+    public Task LForayEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)
+    {
+        ArgumentNullException.ThrowIfNull(store);
+
+        return LForayFlagged
+            ? _lEngine.LEngineLanguage.LEngineEnsignLoad(
+                LForayLanguage,
+                _lEngine.LEngineLanguage.LEngineVarietyRead(LForayLanguage)
+                    .Select(static variety => variety.LVarietyName),
+                store)
+            : Task.CompletedTask;
+    }
+
+    internal static string LForayWordRead(LDraft? draft)
+    {
+        return draft?.LDraftContent.LEntryDraftHeadword.Trim() ?? string.Empty;
     }
 
     internal void LForayStart(Func<CancellationToken, Task> search, Action finish)
@@ -117,9 +145,9 @@ public sealed class LForay
     private bool LForayDraftCheck()
     {
         _lForayTenure.LTenurePersist();
-        LEntryDraft? content = _lForayTenure.LTenureRead()?.LDraftContent;
-        return content is not null
-            && string.Equals(content.LEntryDraftHeadword.Trim(), LForayWord, StringComparison.Ordinal)
-            && string.Equals(content.LEntryDraftLanguage, LForayLanguage, StringComparison.Ordinal);
+        LDraft? held = _lForayTenure.LTenureRead();
+        return held is not null
+            && string.Equals(LForayWordRead(held), LForayWord, StringComparison.Ordinal)
+            && string.Equals(held.LDraftContent.LEntryDraftLanguage, LForayLanguage, StringComparison.Ordinal);
     }
 }

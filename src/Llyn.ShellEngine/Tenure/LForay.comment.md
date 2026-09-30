@@ -10,7 +10,7 @@ The search is not awaited by the caller, because the listener hears its end.
 
 ## `private readonly LEngine _lEngine;`
 
-The engine the search runs on and the download is asked of.
+The engine the search runs on and the download and the preview fetch are asked of.
 
 ## `private readonly LTenure _lForayTenure;`
 
@@ -35,7 +35,7 @@ The pronunciation or transcription row the menu was opened from, zero naming the
 
 ## `public string LForayWord { get; }`
 
-The headword the search was asked for, as the form held it when the menu opened.
+The draft's trimmed headword when the search started.
 
 ## `public string LForayLanguage { get; }`
 
@@ -60,7 +60,24 @@ Downloads the taken recording into the workspace and attaches it to the target r
 False when the draft's headword or language no longer matches what was searched for, before or after the download.
 A file fetched for a word the form has left stays in the workspace but is attached to nothing.
 The primary row takes an audio request and a further row a pronunciation audio request, both applied at once.
+The row is then tagged with the recording's variety, as taking a reading tags it.
+An untagged recording sends no variety, and the row keeps whatever it had.
 Waiting keystrokes are written before each check, so a headword still in the quiet counts as typed.
+
+## `public Task<string> LForayRecordingPrepare(LRecording recording)`
+
+Fetches a listed recording into the workspace cache for a preview and answers the local path.
+It attaches nothing, and the search's cancellation does not stop it.
+
+## `public Task LForayEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
+
+Loads the flags of every variety the search's language declares, handing each row to `store`.
+A language that shows no flags loads nothing.
+
+## `internal static string LForayWordRead(LDraft? draft)`
+
+The word a draft is searched for, its headword trimmed, or empty for no draft.
+The start and the pick's check share it, so both read the same word.
 
 ## `internal void LForayStart(Func<CancellationToken, Task> search, Action finish)`
 

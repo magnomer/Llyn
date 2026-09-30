@@ -1,3 +1,4 @@
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using Llyn.Core;
@@ -30,7 +31,7 @@ public sealed class TForay
         tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "tomato"));
         TListenerStub listener = TPronunciationHelper.TListenerCreate();
 
-        LForay foray = tenure.TTenureRecordingStart("tomato", 0, listener.TListenerStubHandle);
+        LForay foray = tenure.TTenureRecordingStart(0, listener.TListenerStubHandle)!;
         foray.TForayCancel();
         gate.SetResult();
         await Task.Delay(200);
@@ -54,8 +55,7 @@ public sealed class TForay
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
         tenure.TTenureRequestApply(TInterface.TRequestLanguageCreate(tenure.LTenureId, "English"));
         tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "tomato"));
-        LForay foray = tenure.TTenureRecordingStart(
-            "tomato", 0, TPronunciationHelper.TListenerCreate().TListenerStubHandle);
+        LForay foray = tenure.TTenureRecordingStart(0, TPronunciationHelper.TListenerCreate().TListenerStubHandle)!;
         LRecording recording = TInterface.TRecordingCreate(
             "Oxford", "https://example.test/tomato.mp3", 0, true, "British");
 
@@ -76,8 +76,7 @@ public sealed class TForay
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
         tenure.TTenureRequestApply(TInterface.TRequestLanguageCreate(tenure.LTenureId, "English"));
         tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "tomato"));
-        LForay foray = tenure.TTenureRecordingStart(
-            "tomato", 0, TPronunciationHelper.TListenerCreate().TListenerStubHandle);
+        LForay foray = tenure.TTenureRecordingStart(0, TPronunciationHelper.TListenerCreate().TListenerStubHandle)!;
         LRecording recording = TInterface.TRecordingCreate(
             "Oxford", "https://example.test/tomato.mp3", 0, true, "British");
 
@@ -86,6 +85,28 @@ public sealed class TForay
         LEntryDraft? content = tenure.TTenureRead()?.LDraftContent;
         Assert.NotEqual(string.Empty, content?.LEntryDraftAudio);
         Assert.Equal("Oxford", content?.LEntryDraftPronunciation?.LPronunciationDraftSource);
+        Assert.Equal("British", content?.LEntryDraftPronunciation?.LPronunciationDraftVariety);
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
+    public async Task ForayRecordingPrepare_RemoteAddress_AnswersTheCachedFile()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate("audio", HttpStatusCode.OK));
+        engine.TEngineDelaySet(0);
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
+        tenure.TTenureRequestApply(TInterface.TRequestLanguageCreate(tenure.LTenureId, "English"));
+        tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "tomato"));
+        LForay foray = tenure.TTenureRecordingStart(0, TPronunciationHelper.TListenerCreate().TListenerStubHandle)!;
+        LRecording recording = TInterface.TRecordingCreate(
+            "Oxford", "https://example.test/tomato.mp3", 0, true, "British");
+
+        string path = await foray.TForayRecordingPrepare(recording);
+
+        Assert.Equal("audio", await File.ReadAllTextAsync(path));
+        Assert.Equal(string.Empty, tenure.TTenureRead()?.LDraftContent.LEntryDraftAudio);
         tenure.TTenureCancel();
     }
 
@@ -100,8 +121,9 @@ public sealed class TForay
         engine.TEngineDelaySet(0);
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
         tenure.TTenureRequestApply(TInterface.TRequestLanguageCreate(tenure.LTenureId, pack.TLanguageFixtureName));
+        tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "tomato"));
         TListenerStub listener = TPronunciationHelper.TListenerCreate();
-        LForay foray = tenure.TTenureRecordingStart("tomato", 0, listener.TListenerStubHandle);
+        LForay foray = tenure.TTenureRecordingStart(0, listener.TListenerStubHandle)!;
 
         tenure.TTenureCancel();
         gate.SetResult();
@@ -109,5 +131,70 @@ public sealed class TForay
         Assert.Equal(0, listener.TListenerStubFinished);
         Assert.False(await foray.TForayRecordingSave(
             TInterface.TRecordingCreate("Tagged", "https://example.test/gb.mp3", 0, true, "British")));
+    }
+
+    [Fact]
+    public void RecordingStart_HeadwordPadded_SearchesTheTrimmedWord()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TForayPack);
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        TaskCompletionSource gate = new();
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate("uk=https://example.test/gb.mp3", gate.Task));
+        engine.TEngineDelaySet(0);
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
+        tenure.TTenureRequestApply(TInterface.TRequestLanguageCreate(tenure.LTenureId, pack.TLanguageFixtureName));
+        tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "  tomato  "));
+
+        LForay? foray = tenure.TTenureRecordingStart(0, TPronunciationHelper.TListenerCreate().TListenerStubHandle);
+
+        Assert.Equal("tomato", foray?.LForayWord);
+        foray?.TForayCancel();
+        gate.SetResult();
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
+    public void RecordingStart_BlankHeadword_StartsNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
+        tenure.TTenureRequestApply(TInterface.TRequestLanguageCreate(tenure.LTenureId, "English"));
+        tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "   "));
+        TListenerStub listener = TPronunciationHelper.TListenerCreate();
+
+        Assert.Null(tenure.TTenureRecordingStart(0, listener.TListenerStubHandle));
+        Assert.Empty(listener.TListenerStubSources);
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
+    public async Task ForayEnsignLoad_UnflaggedPack_StoresNothing()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TForayPack);
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        TaskCompletionSource gate = new();
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate("uk=https://example.test/gb.mp3", gate.Task));
+        engine.TEngineDelaySet(0);
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
+        tenure.TTenureRequestApply(TInterface.TRequestLanguageCreate(tenure.LTenureId, pack.TLanguageFixtureName));
+        tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "tomato"));
+        LForay foray = tenure.TTenureRecordingStart(0, TPronunciationHelper.TListenerCreate().TListenerStubHandle)!;
+        int stored = 0;
+
+        await foray.TForayEnsignLoad((_, _) =>
+        {
+            stored++;
+            return static () => { };
+        });
+
+        Assert.False(foray.LForayFlagged);
+        Assert.Equal(0, stored);
+        foray.TForayCancel();
+        gate.SetResult();
+        tenure.TTenureCancel();
     }
 }

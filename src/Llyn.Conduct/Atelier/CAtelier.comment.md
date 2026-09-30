@@ -124,10 +124,6 @@ Only the workspace's status raise reads it.
 
 Whether the recording file `file` names exists in the workspace.
 
-## `public Task<string> CAtelierRecordingPrepare(CRecording recording, CancellationToken cancellation)`
-
-Downloads a remote recording into the workspace and answers the local path it was saved to.
-
 ## `public Uri? CAtelierLocationRead(string? location)`
 
 The resolved address of a media location, or nothing when it is a file that does not exist.

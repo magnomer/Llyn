@@ -53,7 +53,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         Resources.MergedDictionaries.Add(_pCategoryTemplate);
         _pNotationTemplate = new PNotationTemplate(this);
         Resources.MergedDictionaries.Add(_pNotationTemplate);
-        _pClipTemplate = new PClipTemplate(this);
+        _pClipTemplate = new PClipTemplate();
         Resources.MergedDictionaries.Add(_pClipTemplate);
         QLook.QLookStyleAttach(_pClipTemplate);
         QLook.QLookStyleAttach(surface.Resources);
@@ -99,8 +99,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         PPlaybackAction.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("play", 24));
         PEtymologyAttach();
         AddHandler(LostFocusEvent, new RoutedEventHandler(PEditorFocusObserve));
-        _pDownloaderPlayer.MediaEnded += PClipEndHandle;
-        _pDownloaderPlayer.MediaFailed += PClipEndHandle;
+        _pDownloaderPlayer.MediaEnded += PClipEndObserve;
+        _pDownloaderPlayer.MediaFailed += PClipEndObserve;
     }
 
     private TextBlock PHeadwordGhost => (TextBlock)FindName(nameof(PHeadwordGhost));

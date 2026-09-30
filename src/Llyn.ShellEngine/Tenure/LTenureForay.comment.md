@@ -14,9 +14,12 @@ The recording search in flight, or null before the first one.
 
 The pronunciation or transcription lookup in flight, or null before the first one.
 
-## `public LForay LTenureRecordingStart(string word, long target, Action<LHarvestStep> sink)`
+## `public LForay? LTenureRecordingStart(long target, Action<LHarvestStep> sink)`
 
-Starts a recording search for `word` on the row `target`, streaming each step to `sink`, and answers the foray.
+Starts a recording search for the draft's headword on the row `target`, streaming each step to `sink`.
+It answers the foray, or none for a blank headword.
+Waiting keystrokes are written first, so the headword read is the one the form shows.
+The word is trimmed by `LForay.LForayWordRead`, the same rule the pick checks against.
 The shell hands a delegate and implements no listener, and the engine streams every step to it.
 A relay over the sink is built here only to give the foray its end step when the search faults.
 The language is the draft's at this moment, and the foray keeps it for the pick to check against.

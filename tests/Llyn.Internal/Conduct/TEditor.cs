@@ -11,14 +11,6 @@ namespace Llyn.Tests;
 
 public sealed class TEditor
 {
-    private const string TEditorClipPack =
-        """
-        { "varieties": { "list": [ { "name": "British" } ] },
-          "audio": [
-            { "name": "Tagged", "attempts": [ { "urls": ["https://example.test/{word}"],
-                "strategy": "regex", "match": "uk=(\\S+)", "group": 1 } ] } ] }
-        """;
-
     [Fact]
     public void EntryOpen_StoredEntry_HoldsItOnTheDesk()
     {
@@ -427,43 +419,6 @@ public sealed class TEditor
         CExampleDraft? cited =
             editor.CEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;
         Assert.Equal(book.LReferenceId, cited?.CExampleDraftReference);
-    }
-
-    [Fact]
-    public async Task RecordingStart_HeldDraft_DeliversEveryStepToTheSink()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEditorClipPack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate("uk=https://example.test/gb.mp3", Task.CompletedTask));
-        engine.TEngineDelaySet(0);
-        CEditor editor = TEditorPrepare(engine, "input");
-        editor.CEditorEntryOpen(null);
-        editor.CEditorLanguageSet(pack.TLanguageFixtureName);
-        editor.CEditorHeadwordSet("tomato");
-        List<CHarvestStep> steps = [];
-        TaskCompletionSource finished = new(TaskCreationOptions.RunContinuationsAsynchronously);
-
-        editor.CEditorDesk.CDeskErrand.CErrandRecordingStart("tomato", 0, step =>
-        {
-            lock (steps)
-            {
-                steps.Add(step);
-            }
-
-            if (step.CHarvestStepEnded)
-            {
-                finished.TrySetResult();
-            }
-        });
-        await finished.Task.WaitAsync(TimeSpan.FromSeconds(5));
-
-        Assert.Equal(
-            [(false, false), (true, false), (false, true)],
-            steps.Select(step => (step.CHarvestStepRecording is not null, step.CHarvestStepEnded)));
-        Assert.Equal("Tagged", steps[0].CHarvestStepSource);
-        Assert.Equal("https://example.test/gb.mp3", steps[1].CHarvestStepRecording?.CRecordingAddress);
-        editor.TEditorFinish(false);
     }
 
     private static LEntry TEditorEntryPrepare(LEngine engine)

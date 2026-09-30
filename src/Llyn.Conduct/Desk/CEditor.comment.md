@@ -163,5 +163,4 @@ The tenure owns the trim behind it.
 ## `public void CEditorVarietySet(bool primary, long pronunciation, string variety)`
 
 Names the variety of the reading a menu filled, after the reading itself was written.
-A menu opened on the primary reading targets whatever primary the draft now holds.
-Any other menu targets the accent row it was opened on.
+The tenure resolves which row that is, so the gate only hands on what the menu was opened for.

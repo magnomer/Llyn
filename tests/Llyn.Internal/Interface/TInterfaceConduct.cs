@@ -335,6 +335,9 @@ internal static class TInterfaceConduct
 
     internal static CCandidate? TErrandCandidateRead(LCandidate? candidate) => CErrand.CErrandCandidateRead(candidate);
 
+    internal static void TErrandHarvestResonate(this CErrand errand, CHarvestStep step) =>
+        errand.LErrandHarvestResonate(step);
+
     internal static CSession TSessionCreate(
         CDesk desk, IReadOnlyList<Func<bool>> pending, Func<bool> readySeam, Action<long> storedSeam) =>
         new(

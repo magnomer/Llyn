@@ -8,6 +8,4 @@ public sealed record CRecording(
     string CRecordingVariety)
 {
     public bool CRecordingAddressed => !string.IsNullOrEmpty(CRecordingAddress);
-
-    public bool CRecordingRegional => CRecordingVariety.Length > 0;
 }

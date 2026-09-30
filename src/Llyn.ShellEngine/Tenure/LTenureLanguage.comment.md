@@ -34,9 +34,12 @@ Defers the typed phonetic reading of the primary pronunciation.
 
 Defers the typed respelling of the primary pronunciation.
 
-## `public void LTenureVarietySet(long pronunciation, string variety)`
+## `public void LTenureVarietySet(bool primary, long pronunciation, string variety)`
 
 Names the variety a stored reading was heard in, at once.
+The primary mark targets whatever primary the draft now holds, read after its reading was written.
+The engine mints the primary row late, so the id is read here rather than when the menu opened.
+Any other call targets the row it names.
 A missing reading or a blank variety changes nothing.
 
 ## `public IReadOnlyList<LTranslationTarget> LTenureEtymonRead()`

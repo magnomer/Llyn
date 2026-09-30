@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -13,6 +14,10 @@ public sealed class CErrand
 
     private LForay? _cErrandTranscription;
 
+    private readonly CClip _cErrandClip = new();
+
+    private Action<Action> _cErrandMarshal = static run => run();
+
     internal CErrand(CDesk desk)
     {
         ArgumentNullException.ThrowIfNull(desk);
@@ -20,27 +25,13 @@ public sealed class CErrand
         _cErrandDesk = desk;
     }
 
-    public event Action<string, int>? CErrandHarvestStarted;
-
-    public event Action<CRecording>? CErrandRecordingAdded;
-
-    public event Action? CErrandHarvestFinished;
+    public event Action<CClipRoll>? CErrandClipChanged;
 
     public event Action<string, int>? CErrandLookupStarted;
 
     public event Action<CCandidate>? CErrandCandidateAdded;
 
     public event Action? CErrandLookupFinished;
-
-    public bool CErrandRecordingHeld => _cErrandRecording is not null;
-
-    public string CErrandRecordingLanguage => _cErrandRecording?.LForayLanguage ?? string.Empty;
-
-    public bool CErrandRecordingFlagged => _cErrandRecording?.LForayFlagged ?? false;
-
-    public bool CErrandRecordingPrimary => _cErrandRecording?.LForayPrimary ?? false;
-
-    public long CErrandRecordingTarget => _cErrandRecording?.LForayTarget ?? 0;
 
     public bool CErrandTranscriptionHeld => _cErrandTranscription is not null;
 
@@ -56,20 +47,49 @@ public sealed class CErrand
 
     public bool CErrandTranscriptionSchemed => _cErrandTranscription?.LForaySchemed ?? false;
 
-    public bool CErrandRecordingStart(string word, long target, Action<CHarvestStep> sink)
+    public CClipRoll CErrandRecordingStart(long target)
     {
-        ArgumentNullException.ThrowIfNull(sink);
-
-        CErrandForayStop(_cErrandRecording);
-        _cErrandRecording = CErrandRecordingRun(_cErrandDesk.CDeskTenure, word, target, CErrandHarvestSend);
-        return _cErrandRecording is not null;
-
-        void CErrandHarvestSend(LHarvestStep step)
+        CErrandCancel();
+        _cErrandClip.LClipStart();
+        try
         {
-            sink(new CHarvestStep(
-                step.LHarvestStepSource, step.LHarvestStepOrder,
-                CErrandRecordingRead(step.LHarvestStepRecording), step.LHarvestStepEnded));
+            _cErrandRecording = LErrandRecordingRun(_cErrandDesk.CDeskTenure, target, LErrandHarvestSend);
+            if (_cErrandRecording is null)
+            {
+                _cErrandClip.LClipFinish();
+            }
         }
+        catch (Exception)
+        {
+            _cErrandClip.LClipFinish();
+        }
+
+        return _cErrandClip.LClipRead();
+
+        void LErrandHarvestSend(LHarvestStep step)
+        {
+            CHarvestStep sent = new(
+                step.LHarvestStepSource, step.LHarvestStepOrder,
+                CErrandRecordingRead(step.LHarvestStepRecording), step.LHarvestStepEnded);
+            _cErrandMarshal(() => LErrandHarvestResonate(sent));
+        }
+    }
+
+    public async Task<CClipRoll> CErrandEnsignLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)
+    {
+        ArgumentNullException.ThrowIfNull(store);
+
+        try
+        {
+            await LErrandEnsignRun(_cErrandRecording, store);
+        }
+        catch (Exception)
+        {
+            return _cErrandClip.LClipRead();
+        }
+
+        return _cErrandClip.LClipRead();
     }
 
     public bool CErrandTranscriptionStart(string word, long target, string scheme, Action<CLookupStep> sink)
@@ -89,23 +109,33 @@ public sealed class CErrand
         }
     }
 
-    public void CErrandHarvestResonate(CHarvestStep step)
+    internal void LErrandObserverAttach(Action<Action> marshal)
+    {
+        ArgumentNullException.ThrowIfNull(marshal);
+
+        _cErrandMarshal = marshal;
+    }
+
+    internal void LErrandHarvestResonate(CHarvestStep step)
     {
         ArgumentNullException.ThrowIfNull(step);
 
         if (step.CHarvestStepRecording is CRecording recording)
         {
-            CErrandRecordingAdded?.Invoke(recording);
+            _cErrandClip.LClipRecordingAdd(recording, _cErrandRecording, _cErrandDesk.CDeskTenure);
+            CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
             return;
         }
 
         if (step.CHarvestStepEnded)
         {
-            CErrandHarvestFinished?.Invoke();
+            _cErrandClip.LClipFinish();
+            CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
             return;
         }
 
-        CErrandHarvestStarted?.Invoke(step.CHarvestStepSource, step.CHarvestStepOrder);
+        _cErrandClip.LClipPlace(step.CHarvestStepSource, step.CHarvestStepOrder);
+        CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
     }
 
     public void CErrandLookupResonate(CLookupStep step)
@@ -127,24 +157,88 @@ public sealed class CErrand
         CErrandLookupStarted?.Invoke(step.CLookupStepSource, step.CLookupStepOrder);
     }
 
-    public Task<bool> CErrandRecordingSave(CRecording recording)
+    public async Task<Uri?> CErrandPreviewStart(CRecording recording)
     {
         ArgumentNullException.ThrowIfNull(recording);
 
-        return _cErrandRecording?.LForayRecordingSave(CErrandRecordingRead(recording)) ?? Task.FromResult(false);
+        if (_cErrandRecording is not LForay foray)
+        {
+            return null;
+        }
+
+        _cErrandClip.LClipPreviewStart(recording);
+        CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
+        try
+        {
+            Uri address = new(await foray.LForayRecordingPrepare(CErrandRecordingRead(recording)));
+            if (!_cErrandClip.LClipPreviewPlay(recording))
+            {
+                return null;
+            }
+
+            CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
+            return address;
+        }
+        catch (Exception)
+        {
+            _cErrandClip.LClipRefusedSet(recording);
+            CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
+            return null;
+        }
+    }
+
+    public void CErrandPreviewFinish()
+    {
+        if (_cErrandClip.LClipPreviewFinish())
+        {
+            CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
+        }
+    }
+
+    public async Task<bool> CErrandRecordingSave(CRecording recording)
+    {
+        ArgumentNullException.ThrowIfNull(recording);
+
+        if (_cErrandRecording is not LForay foray || !_cErrandClip.LClipSaveStart(recording))
+        {
+            return false;
+        }
+
+        CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
+        try
+        {
+            bool attached = await foray.LForayRecordingSave(CErrandRecordingRead(recording));
+            _cErrandClip.LClipSaveFinish(recording, true);
+            CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
+            return attached;
+        }
+        catch (Exception)
+        {
+            _cErrandClip.LClipSaveFinish(recording, false);
+            CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
+            return false;
+        }
     }
 
     public void CErrandCancel()
     {
+        _cErrandClip.LClipPreviewFinish();
         CErrandForayStop(_cErrandRecording);
         _cErrandRecording = null;
         CErrandForayStop(_cErrandTranscription);
         _cErrandTranscription = null;
     }
 
-    private static LForay? CErrandRecordingRun(LTenure? tenure, string word, long target, Action<LHarvestStep> sink)
+    private static LForay? LErrandRecordingRun(LTenure? tenure, long target, Action<LHarvestStep> sink)
     {
-        return tenure?.LTenureRecordingStart(word, target, sink);
+        return tenure?.LTenureRecordingStart(target, sink);
+    }
+
+    private static Task LErrandEnsignRun(
+        LForay? foray, Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)
+    {
+        return foray?.LForayEnsignLoad((rows, delete) => store(CCatalog.CCatalogEnsignRead(rows), delete))
+            ?? Task.CompletedTask;
     }
 
     private static LForay? CErrandTranscriptionRun(

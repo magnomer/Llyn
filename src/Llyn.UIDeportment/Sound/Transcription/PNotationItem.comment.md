@@ -18,7 +18,7 @@ The one line a row without a reading says: searching, no entry, or failed to ret
 
 ## `public bool PNotationItemReady`
 
-Whether the row carries a reading the user can take now, which is what `PClipItemReady` means on an audio row.
+Whether the row carries a reading the user can take now, which is what `CClipItemReady` means on an audio row.
 It is what the template switches the readings and the notice on.
 
 ## `internal void PNotationItemShow(CCandidate candidate, PNotationReading? reading, string missing, string broken)`

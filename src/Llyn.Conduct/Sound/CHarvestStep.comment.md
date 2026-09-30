@@ -2,7 +2,7 @@
 
 ## `public sealed record CHarvestStep(`
 
-One step of a recording search, as the clip receives it on the driver's thread.
+One step of a recording search, as the errand hands it to the driver's thread.
 It carries no kind, since a found recording or the end flag already tells the step apart.
 
 **Parameters**

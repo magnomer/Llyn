@@ -92,16 +92,19 @@ public sealed partial class LTenure
         LTenureRequestDefer(new LRequestRespelling(LTenureId, text));
     }
 
-    public void LTenureVarietySet(long pronunciation, string variety)
+    public void LTenureVarietySet(bool primary, long pronunciation, string variety)
     {
         ArgumentNullException.ThrowIfNull(variety);
 
-        if (pronunciation == 0 || variety.Length == 0)
+        long target = primary
+            ? LTenureRead()?.LDraftContent.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0
+            : pronunciation;
+        if (target == 0 || variety.Length == 0)
         {
             return;
         }
 
-        LTenureRequestApply(new LRequestPronunciationVariety(LTenureId, pronunciation, variety));
+        LTenureRequestApply(new LRequestPronunciationVariety(LTenureId, target, variety));
     }
 
     public IReadOnlyList<LTranslationTarget> LTenureEtymonRead()

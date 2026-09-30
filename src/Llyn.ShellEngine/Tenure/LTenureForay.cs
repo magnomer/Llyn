@@ -10,10 +10,16 @@ public sealed partial class LTenure
 
     private LForay? _lTenureTranscriptionForay;
 
-    public LForay LTenureRecordingStart(string word, long target, Action<LHarvestStep> sink)
+    public LForay? LTenureRecordingStart(long target, Action<LHarvestStep> sink)
     {
-        ArgumentNullException.ThrowIfNull(word);
         ArgumentNullException.ThrowIfNull(sink);
+
+        LTenurePersist();
+        string word = LForay.LForayWordRead(LTenureRead());
+        if (word.Length == 0)
+        {
+            return null;
+        }
 
         LListenerRelay listener = new(sink);
         string language = LTenureLanguageRead();

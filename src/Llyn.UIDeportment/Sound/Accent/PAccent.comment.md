@@ -32,9 +32,10 @@ The engine answers with a draft bulletin, and the render takes the row off the s
 
 Opens the pronunciation menu under the row's own button, for that row.
 
-## `internal async void PAccentClipHandle(object sender, ExecutedRoutedEventArgs e)`
+## `internal void PAccentClipHandle(object sender, ExecutedRoutedEventArgs e)`
 
-Opens the audio menu under the row's own button, for that row.
+Opens the audio menu under the row's own button, then starts the recording search for that row.
+The popup is placed before the start, since shutting it cancels the search.
 
 ## `internal void PAccentPlaybackHandle(object sender, ExecutedRoutedEventArgs e)`
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -187,18 +188,19 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void EditorClose_HeldDraftAndSearch_LetsBothGo()
+    public async Task EditorClose_HeldDraftAndSearch_LetsBothGo()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TEditorFieldPrepare(engine);
         editor.CEditorHeadwordSet("water");
-        editor.CEditorDesk.CDeskErrand.CErrandRecordingStart("water", 0, static _ => { });
+        editor.CEditorDesk.CDeskErrand.CErrandRecordingStart(0);
 
         editor.CEditorClose();
 
         Assert.False(editor.CEditorDesk.CDeskHeld);
-        Assert.False(editor.CEditorDesk.CDeskErrand.CErrandRecordingHeld);
+        Assert.Null(await editor.CEditorDesk.CDeskErrand.CErrandPreviewStart(
+            new CRecording("Tagged", "https://example.test/gb.mp3", 0, true, "British")));
         Assert.Null(editor.CEditorEntry);
         Assert.Equal(string.Empty, editor.CEditorLanguage);
     }

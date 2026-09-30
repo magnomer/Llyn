@@ -6,145 +6,55 @@ Audio download as the editor shows it.
 Every pronunciation row carries its own download button, and the menu opens under the one pressed.
 The menu is one popup the editor owns, retargeted at the row that asked for it.
 Opening it starts a search for recordings of the headword, the same search from whichever row.
-The search is a foray the tenure starts, and the menu keeps only that handle.
-The word, language, target row and flag mode are read off the foray, never copied.
+The search and the menu's state live on the desk's errand, and the menu keeps neither.
 Recordings stream in from the engine and fill the list, one per variety a source returned.
 The engine already narrowed them to the variety of the row that opened the menu.
-Each recording can be previewed.
-Taking one has the foray download and attach it to that row, then tags the row with its variety.
+Each recording can be previewed, and taking one has the errand download, attach and tag it.
 The form refills from the draft bulletin that attach raises.
-The engine streams each step of the search to a delegate the menu hands it.
-The menu hands the clip deportment's own step handler, wrapped so every arrival lands on the dispatcher.
-The deportment splits a step into its source, recording and end notices, and the menu writes a control on each.
-So the menu implements no contract and decides nothing about a step.
+The errand marshals every step onto the editor's thread and raises the clip state once per step.
+A preview or a taking raises it too, as each of its stages lands.
+The menu repaints the ready clip state each raise carries.
+So the menu decides nothing about a step, a preview or a download.
 
 ## `private void PClipAttach()`
 
-Hands the audio list its rows and fill, and wires the download button and the menu's close.
+Hands the audio list its fill, and wires the download button and the menu's close.
+The button's open is heard before its start, since placing the popup shuts it and cancels the search.
 The download icon is set here, where the markup held an icon lookup.
 
-## Inline notes
+## `private void PDownloaderRefine(object sender, RoutedEventArgs e)`
 
-### `if (_qEditor.QEditorArea.CEditorTimbre.CTimbreFlagged)`
+Places the menu under the editor's own download button.
 
-In flag mode every declared variety's flag is resolved before the search starts.
-A recording's flag is then ready the moment the recording lands.
-A menu closed while the flags loaded starts no search.
+## `private void PDownloaderObserve(object sender, RoutedEventArgs e)`
 
-### `_qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandRecordingStart(`
-
-The tenure starts the search and the menu listens through the wrapped delegate.
-The delegate hands each step back to the errand on the menu's thread, which raises one event per step.
-The tenure passes the draft it holds, so the engine can hand back what that draft already found.
-The search is over when the listener is told it is, never when the start returns.
-The engine reports the end with a finish step.
-
-### `catch (Exception)`
-
-A discovery that could not be started reports no end of its own.
-So the menu is taken out of its searching state here.
-It is not left running under a search that never began.
-
-### `private async Task PClipOpen(UIElement anchor, long target)`
-
-Opens the menu under the button of one row and starts the search for that row.
+Starts the search for the primary row once the menu stands.
 A target of zero is the primary row, which the engine may not have minted yet.
+
+## `private void PClipClosedObserve(object? sender, EventArgs e)`
+
+A closed menu ends the errand's searches and forgets the marked preview.
+Nothing is repainted, since the next opening paints the fresh state its start answers.
+
+## `private void PClipOpenRefine(UIElement anchor)`
+
+Opens the menu under the button of one row.
 The popup is shut first, so a press on another row's button moves it instead of leaving it put.
 
-### `private void PClipCancel()`
+## `private async void PClipEnsignRefine(CClipRoll roll)`
 
-Ends the search in flight and drops the handle, so a stale arrival finds no foray to read.
+Paints the state the start answered, then paints it again once the variety flags loaded.
+The flags load while the search runs, so a recording that landed first gains its flag here.
 
-### `private PClipItem PClipPlace(string source, int order)`
+## `internal void PClipRefine(CClipRoll roll)`
 
-Finds the row one source owns, creating it at its declared position when it has none yet.
-Rows stand where the language pack put the source, not where the network put it.
-Every source is asked at once, so a fast one would otherwise head a list the user did not order.
-A new row opens saying it is searching, so every declared source is visible before any of them answers.
-
-### `private PClipReading PClipReadingCreate(CRecording recording)`
-
-Builds the previewable, takeable entry for one recording that carries an address.
-Its label and flag are resolved as a pronunciation row resolves its own, under the draft's language of the moment.
-An untagged recording gets neither, so the row shows its two buttons alone.
-
-### `private void PClipUpdate()`
-
-What the menu shows, from the two things it knows.
-Those are whether the search is still running, and what has arrived so far.
-They are independent, because a source that has already answered does not end the search.
-That is why the running line follows the search alone.
-Reading it off "nothing found yet" instead is what left it running under a menu that was plainly finished.
-
-### `if (recordings)`
-
-The notice is the one line the menu says while it has no rows to show.
-It says what it is doing, or that there was nothing to find.
-With rows on screen it says nothing, since a row reports its own download itself.
-
-### `string path = await _pEditorHost.PWindowAtelier.CAtelierRecordingPrepare(`
-
-Streaming the remote, token-bearing URL through the media stack is unreliable.
-Fetch it to a local temp file first, then play that.
-
-### `internal async void PClipSelectorHandle(object sender, RoutedEventArgs e)`
-
-Preview is best-effort.
-A failed fetch leaves the menu untouched, only the button's fill changing.
-The button fills orange while the recording is fetched and blue once it sounds.
-It fills with the warning colour when the fetch failed.
-The warning stays until the same button is pressed again, so a refusal is not mistaken for silence.
-Only one preview is marked at a time, so starting another clears the last.
-A fetch that finishes after another preview took over does not play.
-
-### `private void PClipPreviewClear()`
-
-Returns the marked preview's button to plain and forgets it.
-It is called when a sound ends or fails, when another preview starts, and when the menu closes.
-
-### `private void PClipEndHandle(object? sender, EventArgs e)`
-
-The player's end and failure both clear the mark, since either way nothing sounds any more.
-
-### `reading.PClipReadingAction = QLocalizationCatalog.QLocalizationTextRead("Downloader.Saving");`
-
-The download is reported on the recording that was taken, not on the status card.
-That card belongs to the search.
-A recording still arriving would overwrite whatever was written there.
-
-### `if (!attached)`
-
-The draft moved on while the bytes came down, and the foray attached nothing.
-The file stays in the workspace.
-But it is audio of a word the form no longer holds.
-
-### `_qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandRecordingPrimary,`
-
-The foray attached the recording to the row it was opened for, and the draft bulletin refills the form.
-The primary row's id is read back after the audio is attached, since the engine mints that row late.
-
-### `_qEditor.QEditorArea.CEditorVarietySet(`
-
-Taking a recording tags its row with the variety, exactly as taking a reading does.
-An untagged recording sends nothing, and the row keeps whatever it had.
-
-### `PClip.IsOpen = false;`
-
-Taking a recording closes the menu, the way taking a pronunciation candidate does.
-
-### `reading.PClipReadingAction = QLocalizationCatalog.QLocalizationTextRead("Downloader.Retry");`
-
-A failed download leaves the row offering another try.
-
-### `internal void PClipRecordingHandle(CRecording recording)`
-
-Handled the same way as lookup, each answer resolved into the row its source owns.
-A source may answer once per variety, and each answer with an address becomes one more recording on the row.
-A source that was reached and had nothing reads differently from one that was never reached.
+What the menu shows, from the ready clip state.
+The running line follows the search alone, since a source that answered does not end it.
+The notice shows only while no row stands, since a row reports its own download itself.
 
 ## `private readonly PClipTemplate _pClipTemplate`
 
-The recording menu dictionary whose forwarders the reading fill subscribes.
+The recording menu dictionary the editor merges.
 
 ## `private void PClipRowApply(FrameworkElement container, object item, string? _)`
 
@@ -156,3 +66,27 @@ It attaches the reading fill to the row's own recording list.
 Fills one recording, its flag or name, its play button and its taking button.
 The play button carries the preview state as its cue, playing before fetching before refused.
 The column joins the shared size group of its place in the row.
+Both buttons are unsubscribed first, since a recycled container would otherwise hear twice.
+
+## `private async void PClipPreviewObserve(object sender, RoutedEventArgs e)`
+
+Hands the pressed recording to the preview gate, and its answer to the player.
+
+## `private void PClipPreviewRefine(Uri? address)`
+
+Plays the local file the preview gate fetched.
+No address means the fetch failed or another preview took over, so nothing sounds.
+
+## `private void PClipEndObserve(object? sender, EventArgs e)`
+
+The player's end and failure both finish the preview, since either way nothing sounds any more.
+The player is shared, so an end with no preview marked changes nothing.
+
+## `private async void PClipSelectorObserve(object sender, RoutedEventArgs e)`
+
+Hands the taken recording to the save gate, and its verdict to the menu.
+
+## `private void PClipCloseRefine(bool attached)`
+
+Taking a recording closes the menu, the way taking a pronunciation candidate does.
+A recording the draft had moved away from leaves the menu open.

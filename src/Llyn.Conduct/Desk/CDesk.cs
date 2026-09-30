@@ -111,6 +111,7 @@ public sealed class CDesk
 
         CDeskVigil.LVigilDraftAttach(CSubject.CSubjectTenure, _ => marshal(CDeskStateResonate));
         CDeskVigil.LVigilDraftAttach(CSubject.CSubjectDraft, _ => marshal(drafted));
+        CDeskErrand.LErrandObserverAttach(marshal);
     }
 
     internal void CDeskVistaRestore(LVista vista)
