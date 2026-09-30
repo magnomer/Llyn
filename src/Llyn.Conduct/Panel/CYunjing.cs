@@ -19,6 +19,8 @@ public sealed class CYunjing
 
     private readonly LSettingsPort _cYunjingSettingsPort;
 
+    private readonly Action<Action> _cYunjingMarshal;
+
     private LVista? _cYunjingShengmu;
 
     private LVista? _cYunjingYunmu;
@@ -33,17 +35,19 @@ public sealed class CYunjing
 
     private int _cYunjingXiaoyunCount;
 
-    private CYunjing(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    private CYunjing(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(shownSeam);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(marshal);
 
         _cYunjingAtelier = atelier;
         _cYunjingPort = atelier.CAtelierPhonologyPort;
         _cYunjingPortraitPort = atelier.CAtelierPortraitPort;
         _cYunjingEnvoy = envoy;
         _cYunjingSettingsPort = atelier.CAtelierSettingsPort;
+        _cYunjingMarshal = marshal;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CYunjingEditor = editor;
         CYunjingPanel = new CPanel(
@@ -65,16 +69,20 @@ public sealed class CYunjing
             () => LYunjingAllowed);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CYunjingPanel.LPanelChangeCheck, editor.LEditorFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CYunjingVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LYunjingClose);
         atelier.CAtelierNavigation.LNavigationDiweiAttach(LYunjingDiweiOpen);
         CYunjingPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }
 
-    public static CYunjing CYunjingCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    public static CYunjing CYunjingCreate(
+        CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
-        return new CYunjing(atelier, shownSeam, envoy);
+        return new CYunjing(atelier, shownSeam, envoy, marshal);
     }
 
     public event Action? CYunjingChanged;
+
+    public event Action? CYunjingWorkspaceChanged;
 
     public CEditor CYunjingEditor { get; }
 
@@ -123,21 +131,41 @@ public sealed class CYunjing
         LVista yunmu = _cYunjingAtelier.CAtelierVistaStart("yunmu", null, CCatalogOrder.CCatalogOrderName);
         LVista xiaoyun = _cYunjingAtelier.CAtelierVistaStart(
             "xiaoyun", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
+        shengmu.LVistaQuerySet(_cYunjingShengmu?.LVistaQuery ?? string.Empty);
+        yunmu.LVistaQuerySet(_cYunjingYunmu?.LVistaQuery ?? string.Empty);
+        xiaoyun.LVistaQuerySet(_cYunjingXiaoyun?.LVistaQuery ?? string.Empty);
         _cYunjingShengmu = shengmu;
         _cYunjingYunmu = yunmu;
         _cYunjingXiaoyun = xiaoyun;
         CYunjingPanel.CPanelVistaRestore(xiaoyun);
         CYunjingEditor.LEditorVistaRestore(xiaoyun);
+        LYunjingObserverAttach(shengmu, yunmu);
     }
 
-    public void CYunjingShengmuAttach(CSubject subject, Action<CBulletin> observer)
+    private void LYunjingObserverAttach(LVista shengmu, LVista yunmu)
     {
-        LYunjingObserverAttach(_cYunjingShengmu, subject, observer);
+        CPanel panel = CYunjingPanel;
+        Action<CBulletin> rows = _ => _cYunjingMarshal(LYunjingRowsResonate);
+        LYunjingColumnAttach(shengmu, CSubject.CSubjectVista, rows);
+        LYunjingColumnAttach(yunmu, CSubject.CSubjectVista, rows);
+        LYunjingColumnAttach(shengmu, CSubject.CSubjectWorkspace, _ => _cYunjingMarshal(LYunjingWorkspaceResonate));
+        LYunjingColumnAttach(shengmu, CSubject.CSubjectFanqie, rows);
+        LYunjingColumnAttach(shengmu, CSubject.CSubjectSettings, rows);
+        LYunjingColumnAttach(shengmu, CSubject.CSubjectReflex, rows);
+        panel.CPanelObserverAttach(CSubject.CSubjectVista, _ => _cYunjingMarshal(panel.CPanelRowsResonate));
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectEntry, bulletin => _cYunjingMarshal(() => LYunjingEntryResonate(bulletin)));
+        panel.CPanelChosenAttach(CSubject.CSubjectEntry, _ => _cYunjingMarshal(panel.CPanelDraftResonate));
     }
 
-    public void CYunjingYunmuAttach(CSubject subject, Action<CBulletin> observer)
+    public static IReadOnlyList<CCatalogOrder> CYunjingOrderRead()
     {
-        LYunjingObserverAttach(_cYunjingYunmu, subject, observer);
+        return
+        [
+            CCatalogOrder.CCatalogOrderName,
+            CCatalogOrder.CCatalogOrderReverse,
+            CCatalogOrder.CCatalogOrderUsage,
+        ];
     }
 
     public IReadOnlyList<CDiwei> CYunjingShengmuRead()
@@ -210,24 +238,31 @@ public sealed class CYunjing
         _cYunjingYunmu?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
     }
 
-    public void CYunjingDiweiCancel()
+    private void LYunjingWorkspaceResonate()
     {
         _cYunjingShengmu?.LVistaSelect(null);
         _cYunjingYunmu?.LVistaSelect(null);
         CYunjingPanel.CPanelEntryClose();
         CYunjingChanged?.Invoke();
+        CYunjingWorkspaceChanged?.Invoke();
     }
 
-    public void CYunjingRowsResonate()
+    private void LYunjingRowsResonate()
     {
         CYunjingChanged?.Invoke();
         CYunjingPanel.CPanelRowsResonate();
     }
 
-    public void CYunjingEntryResonate(CBulletin bulletin)
+    private void LYunjingEntryResonate(CBulletin bulletin)
     {
         CYunjingChanged?.Invoke();
         CYunjingPanel.CPanelEntryResonate(bulletin);
+    }
+
+    private void LYunjingClose()
+    {
+        CYunjingEditor.CEditorClose();
+        CYunjingEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
     }
 
     public void CYunjingDiweiSelect(long? id, bool? final)
@@ -361,11 +396,11 @@ public sealed class CYunjing
             section.LDiweiSectionRespelled);
     }
 
-    private static void LYunjingObserverAttach(LVista? vista, CSubject subject, Action<CBulletin> observer)
+    private static void LYunjingColumnAttach(LVista column, CSubject subject, Action<CBulletin> observer)
     {
         ArgumentNullException.ThrowIfNull(observer);
 
-        vista?.LVistaObserverAttach(
+        column.LVistaObserverAttach(
             CPanel.CPanelSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
     }
 }

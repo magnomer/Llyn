@@ -44,6 +44,8 @@ Fills the filter menu with the languages the flag load answered, each ticked by 
 ## `private async void QPhonologyWorkspaceRefine()`
 
 Answers `CPhonologyWorkspaceChanged` by drawing the flags of the new workspace's languages.
+Once the flags are in, it repaints the inventory, whose rows carry a flag.
+A failed load throws before the repaint, as the old load before the entry close did.
 
 ## `private bool QPhonologyShownCheck()`
 

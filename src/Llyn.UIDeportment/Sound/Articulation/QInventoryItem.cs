@@ -62,7 +62,8 @@ internal sealed class QInventoryItem : INotifyPropertyChanged
             && string.Equals(held.QInventoryItemEpithet, fresh.QInventoryItemEpithet, StringComparison.Ordinal)
             && string.Equals(held.QInventoryItemName, fresh.QInventoryItemName, StringComparison.Ordinal)
             && string.Equals(held.QInventoryItemLanguage, fresh.QInventoryItemLanguage, StringComparison.Ordinal)
-            && string.Equals(held.QInventoryItemSound, fresh.QInventoryItemSound, StringComparison.Ordinal);
+            && string.Equals(held.QInventoryItemSound, fresh.QInventoryItemSound, StringComparison.Ordinal)
+            && ReferenceEquals(held.QInventoryItemFlag, fresh.QInventoryItemFlag);
     }
 
     internal static void QInventoryItemSync(QInventoryItem held, QInventoryItem fresh)

@@ -18,6 +18,7 @@ A plain copy loop over the entries at the chosen cell.
 ## `internal static bool PXiaoyunItemMatch(PXiaoyunItem held, PXiaoyunItem fresh)`
 
 Whether the two rows show the same values, the chosen mark left aside.
+The flag counts too, so a flag loaded after the rows were built refills the list.
 `LSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
 
 ## `internal static void PXiaoyunItemSync(PXiaoyunItem held, PXiaoyunItem fresh)`

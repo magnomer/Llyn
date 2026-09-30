@@ -110,7 +110,7 @@ public partial class PWindow
             },
             new QTab("Yunjing", PNavigationYunjing, PYunjing)
             {
-                QTabVoyage = PYunjing.PYunjingVoyageShow
+                QTabVoyage = _qYunjing.QYunjingVoyageRefine
             },
             new QTab("Taxonomy", PNavigationTaxonomy, PTaxonomy)
             {

@@ -35,6 +35,8 @@ public partial class PWindow
 
     private readonly QXiesheng _qXiesheng;
 
+    private readonly QYunjing _qYunjing;
+
     private readonly QFavorite _qFavorite;
 
     private readonly QDuplex _qDuplex;
@@ -66,6 +68,7 @@ public partial class PWindow
         _qLibrary = new QLibrary(PLibrary);
         _qPhonology = new QPhonology(PPhonology);
         _qXiesheng = new QXiesheng(PXiesheng);
+        _qYunjing = new QYunjing(PYunjing);
         _qFavorite = new QFavorite(PFavorite);
         _qDuplex = new QDuplex(PDuplex);
         _qGuild = new QGuild(PGuild);
@@ -111,7 +114,7 @@ public partial class PWindow
 
     private UserControl PXiesheng => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PXiesheng));
 
-    private PYunjing PYunjing => (PYunjing)_pWindowSurface.FindName(nameof(PYunjing));
+    private UserControl PYunjing => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PYunjing));
 
     private UserControl PTaxonomy => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PTaxonomy));
 
@@ -180,7 +183,7 @@ public partial class PWindow
         _qLibrary.QLibraryIntroduce(this);
         _qPhonology.QPhonologyIntroduce(this);
         _qXiesheng.QXieshengAttach(this);
-        PYunjing.PYunjingAttach(this);
+        _qYunjing.QYunjingIntroduce(this);
         _qTaxonomy.QTaxonomyIntroduce(this);
         _qTenor.QTenorIntroduce(this);
         _qRepertoire.QRepertoireIntroduce(this);
@@ -208,7 +211,10 @@ public partial class PWindow
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qGuild.QOeuvreRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qGuild.QTallyRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qXiesheng.QXieshengVistaRestore;
-        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += PYunjing.PYunjingVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qYunjing.QYunjingVistaRefine;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qYunjing.QShengmuRefine;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qYunjing.QYunmuRefine;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qYunjing.QYunjingDiweiRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _pLayout.PLayoutResetRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _pLayout.PLayoutRefine;
 
@@ -245,7 +251,7 @@ public partial class PWindow
         _pLayout.PLayoutAttach((Grid)PLibrary.Content, "library");
         _pLayout.PLayoutAttach((Grid)PPhonology.Content, "phonology");
         _pLayout.PLayoutAttach((Grid)PXiesheng.Content, "xiesheng");
-        _pLayout.PLayoutAttach((Grid)((UserControl)PYunjing.Content).Content, "yunjing");
+        _pLayout.PLayoutAttach((Grid)PYunjing.Content, "yunjing");
         _pLayout.PLayoutAttach((Grid)PTaxonomy.Content, "taxonomy");
         _pLayout.PLayoutAttach((Grid)PTenor.Content, "tenor");
         _pLayout.PLayoutAttach((Grid)PRepertoire.Content, "repertoire");
@@ -328,7 +334,7 @@ public partial class PWindow
         _qLibrary.QLibraryExitRefine();
         _qPhonology.QPhonologyExitRefine();
         _qXiesheng.QXieshengClose();
-        PYunjing.PYunjingClose();
+        _qYunjing.QYunjingExitRefine();
         _qTaxonomy.QTaxonomyExitRefine();
         _qTenor.QTenorExitRefine();
         _qRepertoire.QRepertoireExitRefine();

@@ -12,9 +12,9 @@ namespace Llyn.Tests;
 
 public sealed class TYunjing
 {
-    private const string TYunjingPack = """{ "language": "Fixture" }""";
+    internal const string TYunjingPack = """{ "language": "Fixture" }""";
 
-    private const string TYunjingBook = "Classical Chinese";
+    internal const string TYunjingBook = "Classical Chinese";
 
     [Fact]
     public void YunjingShengmuRead_NothingPlaced_ListsNothingUnderTheBareKeys()
@@ -294,30 +294,6 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingDiweiCancel_CellShown_UnchoosesBothColumns()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        string language = pack.TLanguageFixtureName;
-        TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
-        CYunjing yunjing = TYunjingPrepare(atelier);
-        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
-        yunjing.CYunjingDiweiSelect(Assert.Single(yunjing.CYunjingYunmuRead()).CDiweiId, true);
-        int changed = 0;
-        yunjing.CYunjingChanged += () => changed++;
-
-        yunjing.CYunjingDiweiCancel();
-
-        Assert.Equal(1, changed);
-        Assert.False(yunjing.CYunjingDiweiShown);
-        Assert.DoesNotContain(yunjing.CYunjingShengmuRead(), static row => row.CDiweiChosen);
-        Assert.DoesNotContain(yunjing.CYunjingYunmuRead(), static row => row.CDiweiChosen);
-        Assert.Empty(yunjing.CYunjingXiaoyunRead());
-    }
-
-    [Fact]
     public void YunjingShengmuSet_NullAfterAnOrder_KeepsTheChosenOne()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -390,60 +366,15 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingShengmuAttach_EachColumnChanged_TellsOnlyThatColumnsObserver()
+    public void YunjingOrderRead_Menu_OffersTheThreeOrderings()
     {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CYunjing yunjing = TYunjingPrepare(atelier);
-        int shengmu = 0;
-        int yunmu = 0;
-        yunjing.CYunjingShengmuAttach(CSubject.CSubjectVista, _ => shengmu++);
-        yunjing.CYunjingYunmuAttach(CSubject.CSubjectVista, _ => yunmu++);
-
-        yunjing.CYunjingShengmuFind("來");
-
-        Assert.Equal((1, 0), (shengmu, yunmu));
-
-        yunjing.CYunjingYunmuSet(CCatalogOrder.CCatalogOrderReverse);
-
-        Assert.Equal((1, 1), (shengmu, yunmu));
-    }
-
-    [Fact]
-    public void YunjingRowsResonate_Notice_RaisesTheColumnsAndTheEntryList()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CYunjing yunjing = TYunjingPrepare(atelier);
-        int changed = 0;
-        int rows = 0;
-        yunjing.CYunjingChanged += () => changed++;
-        yunjing.CYunjingPanel.CPanelRowsChanged += () => rows++;
-
-        yunjing.CYunjingRowsResonate();
-
-        Assert.Equal((1, 1), (changed, rows));
-    }
-
-    [Fact]
-    public void YunjingEntryResonate_StoredBulletin_RaisesTheColumnsAndRelistsTheEntries()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CYunjing yunjing = TYunjingPrepare(atelier);
-        int changed = 0;
-        int rows = 0;
-        int panel = 0;
-        yunjing.CYunjingChanged += () => changed++;
-        yunjing.CYunjingPanel.CPanelRowsChanged += () => rows++;
-        yunjing.CYunjingPanel.CPanelChanged += () => panel++;
-
-        yunjing.CYunjingEntryResonate(new CBulletin(yunjing.CYunjingPanel.TPanelChosenRead(), true));
-
-        Assert.Equal((1, 1, 1), (changed, rows, panel));
+        Assert.Equal(
+            [
+                CCatalogOrder.CCatalogOrderName,
+                CCatalogOrder.CCatalogOrderReverse,
+                CCatalogOrder.CCatalogOrderUsage,
+            ],
+            CYunjing.CYunjingOrderRead());
     }
 
     [Fact]
@@ -458,14 +389,14 @@ public sealed class TYunjing
         Assert.Same(Task.CompletedTask, yunjing.CYunjingPortraitPrint());
     }
 
-    private static CYunjing TYunjingPrepare(CAtelier atelier)
+    internal static CYunjing TYunjingPrepare(CAtelier atelier)
     {
         return TYunjingPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
     }
 
     private static CYunjing TYunjingPrepare(CAtelier atelier, CEnvoy envoy)
     {
-        CYunjing yunjing = CYunjing.CYunjingCreate(atelier, static () => true, envoy);
+        CYunjing yunjing = CYunjing.CYunjingCreate(atelier, static () => true, envoy, static run => run());
         yunjing.CYunjingVistaRestore();
         return yunjing;
     }

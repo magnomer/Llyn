@@ -100,7 +100,8 @@ public sealed class QForge
 
     public CYunjing QForgeYunjingCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        CYunjing yunjing = CYunjing.CYunjingCreate(_qForgeAtelier, shownSeam, envoy);
+        CYunjing yunjing = CYunjing.CYunjingCreate(
+            _qForgeAtelier, shownSeam, envoy, LObserver.LObserverCreate<Action>(static run => run()));
         yunjing.CYunjingVistaRestore();
         return yunjing;
     }

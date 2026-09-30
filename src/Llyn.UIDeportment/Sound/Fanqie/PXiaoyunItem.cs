@@ -51,7 +51,8 @@ internal sealed class PXiaoyunItem : INotifyPropertyChanged
         return held.PXiaoyunItemId == fresh.PXiaoyunItemId
             && string.Equals(held.PXiaoyunItemHeadword, fresh.PXiaoyunItemHeadword, StringComparison.Ordinal)
             && string.Equals(held.PXiaoyunItemEpithet, fresh.PXiaoyunItemEpithet, StringComparison.Ordinal)
-            && string.Equals(held.PXiaoyunItemName, fresh.PXiaoyunItemName, StringComparison.Ordinal);
+            && string.Equals(held.PXiaoyunItemName, fresh.PXiaoyunItemName, StringComparison.Ordinal)
+            && ReferenceEquals(held.PXiaoyunItemFlag, fresh.PXiaoyunItemFlag);
     }
 
     internal static void PXiaoyunItemSync(PXiaoyunItem held, PXiaoyunItem fresh)

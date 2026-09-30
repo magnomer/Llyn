@@ -194,6 +194,7 @@ internal sealed class QPhonology
     private async void QPhonologyWorkspaceRefine()
     {
         await LEnsignImage.LEnsignLoad(_qPhonologyHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
+        QInventoryRefine();
     }
 
     private bool QPhonologyShownCheck()

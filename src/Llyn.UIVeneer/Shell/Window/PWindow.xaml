@@ -184,7 +184,7 @@
                     <veneer:PLibrary x:Name="PLibrary" Visibility="Collapsed" />
                     <veneer:PPhonology x:Name="PPhonology" Visibility="Collapsed" />
                     <veneer:PXiesheng x:Name="PXiesheng" Visibility="Collapsed" />
-                    <local:PYunjing x:Name="PYunjing" Visibility="Collapsed" />
+                    <veneer:PYunjing x:Name="PYunjing" Visibility="Collapsed" />
                     <veneer:PTaxonomy x:Name="PTaxonomy" Visibility="Collapsed" />
                     <veneer:PTenor x:Name="PTenor" Visibility="Collapsed" />
                     <veneer:PRepertoire x:Name="PRepertoire" Visibility="Collapsed" />

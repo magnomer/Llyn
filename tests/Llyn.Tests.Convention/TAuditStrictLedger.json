@@ -27,7 +27,6 @@
     "src/Llyn.UIDeportment/Mention/Menu/PMentionMenuTemplate.cs": 1,
     "src/Llyn.UIDeportment/Panel/Settings/PSettings.cs": 1,
     "src/Llyn.UIDeportment/Shell/Screen/PScreen.cs": 1,
-    "src/Llyn.UIDeportment/Sound/Fanqie/PYunjing.cs": 1,
     "src/Llyn.UIDeportment/Sound/Transcription/PNotationTemplate.cs": 1
   },
   "Reach": {},
@@ -94,7 +93,6 @@
     "src/Llyn.UIDeportment/Shell/Screen/PScreenPaper.cs": 1,
     "src/Llyn.UIDeportment/Sound/Accent/PAccent.cs": 1,
     "src/Llyn.UIDeportment/Sound/Fanqie/PFanqie.cs": 1,
-    "src/Llyn.UIDeportment/Sound/Fanqie/PYunjing.cs": 1,
     "src/Llyn.UIDeportment/Sound/Reflex/PParadigm.cs": 1,
     "src/Llyn.UIDeportment/Sound/Reflex/PReflex.cs": 1,
     "src/Llyn.UIDeportment/Sound/Reflex/PReflexList.cs": 1,

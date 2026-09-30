@@ -7,21 +7,29 @@ It holds the initial and rime columns' vistas, the entry list's vista and panel,
 It remembers which column was clicked last, since that column's cell is the one the page reads.
 It restores its vistas itself, so no driver holds a port or a vista.
 
-## `private CYunjing(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `private CYunjing(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Takes the atelier's ports and builds the panel's own entry editor.
 The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
 A cleared panel empties the editor, and an edited row opens in it.
+It registers its vista restore and its close with the workspace.
 
-## `public static CYunjing CYunjingCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `public static CYunjing CYunjingCreate(`
 
 Builds the panel over the atelier, so the driver hands it no port.
 Building it is no user action, so it is no gate on the atelier.
 `shownSeam` answers whether the tab is in front, which only the surface knows until `CNavigation` owns it.
+`marshal` carries every engine notice onto the driver's thread, so the driver holds no observer.
 
 ## `public event Action? CYunjingChanged`
 
 Raised whenever a column, the page, the tally or the mode changed and the driver must copy again.
+Each column, the page and the mode answer it with their own read.
+
+## `public event Action? CYunjingWorkspaceChanged;`
+
+The workspace changed under the panel, after both columns and the chosen entry were let go.
+The driver answers it by drawing the flags of the languages again.
 
 ## `public event Action? CYunjingDiweiOpened;`
 
@@ -97,6 +105,10 @@ The key a chosen cell with no entry prints, narrowed or not.
 
 True while the column clicked last points at a cell.
 
+## `private readonly Action<Action> _cYunjingMarshal`
+
+The medium's marshal the observers run each answer through, since only the medium knows its thread.
+
 ## `private LVista? LYunjingSide`
 
 The vista of the column clicked last, whose cell the page and the entry list follow.
@@ -105,15 +117,22 @@ The vista of the column clicked last, whose cell the page and the entry list fol
 
 Starts the three vistas off the window posture, the two columns and the entry list.
 The columns are ordered by name and the list by headword until the user picks another order.
-The list's vista then goes to the panel and the editor.
+The search text of each vista before it carries into its fresh one, so a workspace switch keeps it.
+The list's vista then goes to the panel and the editor, and every observer attaches to the fresh vistas.
 
-## `public void CYunjingShengmuAttach(CSubject subject, Action<CBulletin> observer)`
+## `private void LYunjingObserverAttach(LVista shengmu, LVista yunmu)`
 
-Attaches an observer of that subject to the initial column.
+Attaches the panel's answers to the fresh vistas, each carried through the marshal.
+A Vista notice on either column raises the columns and the rows again.
+A Fanqie, Settings or Reflex notice on the initial column does the same.
+A Workspace notice on the initial column goes to `LYunjingWorkspaceResonate`.
+The list's own Vista notice raises its rows, and an Entry notice goes to `LYunjingEntryResonate`.
+A notice on the chosen entry reads its draft again.
 
-## `public void CYunjingYunmuAttach(CSubject subject, Action<CBulletin> observer)`
+## `public static IReadOnlyList<CCatalogOrder> CYunjingOrderRead()`
 
-Attaches an observer of that subject to the rime column.
+The orders both column menus offer, in the order they list them.
+It needs no session, so the driver builds the menus once.
 
 ## `public IReadOnlyList<CDiwei> CYunjingShengmuRead()`
 
@@ -155,17 +174,24 @@ The vista keeps the one it has when none is named.
 Lists the rime column in that ordering.
 The vista keeps the one it has when none is named.
 
-## `public void CYunjingDiweiCancel()`
+## `private void LYunjingWorkspaceResonate()`
 
 Unchooses both columns and clears the panel, as a workspace changes.
+It then tells the driver through `CYunjingWorkspaceChanged`.
 
-## `public void CYunjingRowsResonate()`
+## `private void LYunjingRowsResonate()`
 
 Answers a column notice by raising the change and refreshing the panel's own rows.
 
-## `public void CYunjingEntryResonate(CBulletin bulletin)`
+## `private void LYunjingEntryResonate(CBulletin bulletin)`
 
 Answers an entry notice by raising the change and handing the notice to the panel.
+
+## `private void LYunjingClose()`
+
+The panel's part of the atelier's close.
+The editor lets its draft go, then the display stops its playback.
+`CAtelierClose` runs it through the closure the constructor registers.
 
 ## `public void CYunjingDiweiSelect(long? id, bool? final)`
 
@@ -218,7 +244,7 @@ The engine picks that language and answers nothing while no pack carries rime bo
 
 Copies one page section with its lines and tallies, holding no rule.
 
-## `private static void LYunjingObserverAttach(LVista? vista, CSubject subject, Action<CBulletin> observer)`
+## `private static void LYunjingColumnAttach(LVista column, CSubject subject, Action<CBulletin> observer)`
 
 Attaches the observer to one column.
 The subject and bulletin maps are the panel's and the atelier's, so the driver names neither engine type.
