@@ -63,6 +63,13 @@ public sealed class LLanguageClerk
                 spoken.LPronunciationDraftAudio);
     }
 
+    public static string LLanguageCandidateRead(string? phonetic, string? respelling, bool respelled)
+    {
+        LPronunciationDraft spoken = new(
+            phonetic ?? string.Empty, LPronunciationDraftRespelling: respelling ?? string.Empty);
+        return spoken.LPronunciationDraftRead(respelled);
+    }
+
     public IReadOnlyList<LTranscriptionDraft> LLanguageTranscriptionRead(LEntryDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);

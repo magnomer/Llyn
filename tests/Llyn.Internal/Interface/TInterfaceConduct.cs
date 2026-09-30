@@ -324,6 +324,9 @@ internal static class TInterfaceConduct
         LPhonologyPort phonology, string language, IReadOnlyList<CReflexDraft> reflexes) =>
         CRespelling.LRespellingReflexScan(phonology, language, reflexes);
 
+    internal static string TRespellingResolve(CRespellingMark mark, string phonetic, string? respelling) =>
+        CRespelling.LRespellingResolve(mark, phonetic, respelling);
+
     internal static CTimbre TTimbreCreate(CEditor editor, LPhonologyPort phonology, LDraftPort drafts) =>
         new(editor.CEditorDesk, phonology, editor.CEditorDisplay, TEngineFake.TEngineStubCreate<LMediaPort>(), drafts);
 
@@ -354,6 +357,11 @@ internal static class TInterfaceConduct
 
     internal static LDraft? TDeskRead(this CDesk desk) => desk.CDeskRead();
 
+    internal static LDraft? TDeskHeldRead(this CDesk desk) => desk.CDeskTenure?.LTenureRead();
+
+    internal static void TDeskVarietySet(this CDesk desk, bool primary, long pronunciation, string variety) =>
+        desk.CDeskTenure?.LTenureVarietySet(primary, pronunciation, variety);
+
     internal static CRecording? TErrandRecordingRead(LRecording? recording) => CErrand.CErrandRecordingRead(recording);
 
     internal static LRecording TErrandRecordingRead(CRecording recording) => CErrand.CErrandRecordingRead(recording);
@@ -362,6 +370,12 @@ internal static class TInterfaceConduct
 
     internal static void TErrandHarvestResonate(this CErrand errand, CHarvestStep step) =>
         errand.LErrandHarvestResonate(step);
+
+    internal static void TErrandLookupResonate(this CErrand errand, CLookupStep step, LForay foray) =>
+        errand.LErrandLookupResonate(step, foray);
+
+    internal static LForay? TDeskForayStart(this CDesk desk, string scheme) =>
+        desk.CDeskTenure?.LTenureTranscriptionStart(0, scheme, static (_, _) => { });
 
     internal static CSession TSessionCreate(
         CDesk desk, IReadOnlyList<Func<bool>> pending, Func<bool> readySeam, Action<long> storedSeam) =>

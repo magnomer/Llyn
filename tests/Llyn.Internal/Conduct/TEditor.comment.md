@@ -10,7 +10,7 @@ A save reopens what it stored, but a fresh input draft reopens blank.
 An unchanged save stores nothing, and a finish without storing lets the tenure go.
 An undo drops the typing by reopening the stored entry.
 Field gates write the headword, the trimmed note and the reading, and an empty language changes nothing.
-A variety lands on the primary reading the draft holds, and a blank one or a missing row changes nothing.
+The tenure's variety set tags the draft's primary reading, and a blank one or missing row changes nothing.
 The reads answer empty on an empty desk, and an added etymon reads back by headword.
 A field edit made while the desk fills its controls is dropped.
 A fresh occurrence start opens a draft already linked to its Situation, and a blank one without.

@@ -36,15 +36,22 @@ public sealed partial class LTenure
         return foray;
     }
 
-    public LForay LTenureTranscriptionStart(string word, long target, string scheme, Action<LLookupStep> sink)
+    public LForay? LTenureTranscriptionStart(long target, string scheme, Action<LForay, LLookupStep> sink)
     {
-        ArgumentNullException.ThrowIfNull(word);
         ArgumentNullException.ThrowIfNull(scheme);
         ArgumentNullException.ThrowIfNull(sink);
 
-        LReceiverRelay receiver = new(sink);
+        LTenurePersist();
+        string word = LForay.LForayWordRead(LTenureRead());
+        if (word.Length == 0)
+        {
+            return null;
+        }
+
         string language = LTenureLanguageRead();
         LForay foray = new(_lEngine, this, word, language, target, scheme);
+        Action<LLookupStep> relay = step => sink(foray, step);
+        LReceiverRelay receiver = new(relay);
         lock (_lTenureGate)
         {
             _lTenureTranscriptionForay?.LForayCancel();
@@ -53,9 +60,9 @@ public sealed partial class LTenure
 
         foray.LForayStart(
             token => scheme.Length == 0
-                ? _lEngine.LEnginePronunciation.LEnginePronunciationFind(LTenureId, word, language, sink, token)
+                ? _lEngine.LEnginePronunciation.LEnginePronunciationFind(LTenureId, word, language, relay, token)
                 : _lEngine.LEnginePronunciation.LEngineTranscriptionFind(
-                    LTenureId, word, language, scheme, sink, token),
+                    LTenureId, word, language, scheme, relay, token),
             receiver.LReceiverLookupFinish);
         return foray;
     }

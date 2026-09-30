@@ -24,12 +24,15 @@ The shell hands a delegate and implements no listener, and the engine streams ev
 A relay over the sink is built here only to give the foray its end step when the search faults.
 The language is the draft's at this moment, and the foray keeps it for the pick to check against.
 
-## `public LForay LTenureTranscriptionStart(string word, long target, string scheme, Action<LLookupStep> sink)`
+## `public LForay? LTenureTranscriptionStart(long target, string scheme, Action<LForay, LLookupStep> sink)`
 
-Starts a lookup for `word` on the row `target`, streaming each step to `sink`, and answers the foray.
+Starts a lookup for the draft's headword on the row `target`, streaming each step to `sink`.
+It answers the foray, or none for a blank headword.
+Waiting keystrokes are written first, and `LForay.LForayWordRead` trims the word, as for recordings.
 The shell hands a delegate and implements no receiver, and a relay here gives the foray its end step.
 A named scheme runs that scheme's transcription sources, and an empty one runs the IPA lookup.
 The one menu opens both, so the one start serves both.
+Each step reaches `sink` with its own foray, so a step landing before the start returns still reads its mark.
 
 ## `private void LTenureForayStop()`
 

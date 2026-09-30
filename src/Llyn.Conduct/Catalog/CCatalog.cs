@@ -104,17 +104,6 @@ public sealed class CCatalog
             (rows, delete) => store(CCatalogEnsignRead(rows), delete));
     }
 
-    public Task CCatalogEnsignLoad(
-        string language,
-        IEnumerable<string> varieties,
-        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)
-    {
-        ArgumentNullException.ThrowIfNull(store);
-
-        return _cCatalogAtelier.CAtelierSettingsPort.LEngineEnsignLoad(
-            language, varieties, (rows, delete) => store(CCatalogEnsignRead(rows), delete));
-    }
-
     internal static IReadOnlyList<CMeaning> LCatalogMeaningRead(
         IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> rows)
     {

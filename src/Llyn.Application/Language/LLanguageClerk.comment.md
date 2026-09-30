@@ -33,6 +33,12 @@ One pronunciation as the reading view prints it, its reading resolved by the dra
 `respelled` is the pack's answer for the switch, so the caller asks it once for every row.
 No pronunciation answers a blank row.
 
+## `public static string LLanguageCandidateRead(string? phonetic, string? respelling, bool respelled)`
+
+The text a found reading shows, by the same rule a stored pronunciation uses.
+A shown respelling wins, and a blank one falls back to the phonetic text.
+A missing text reads as blank.
+
 ## `public IReadOnlyList<LTranscriptionDraft> LLanguageTranscriptionRead(LEntryDraft draft)`
 
 The filled transcription rows a reading view lists, by Core's `LGlyphOtherRead`.

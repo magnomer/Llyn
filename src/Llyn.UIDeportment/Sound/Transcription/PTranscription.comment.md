@@ -46,18 +46,18 @@ The engine answers with a draft bulletin, and the render takes the row off the s
 Dropping the last row leaves the language without one.
 The next render then asks for a fresh row in the first scheme.
 
-## `internal async void PTranscriptionNotationHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private void PTranscriptionNotationRefine(object sender, ExecutedRoutedEventArgs e)`
 
-Opens the lookup menu under the row's own button, for that row and in that row's scheme.
+Opens the lookup menu under the row's own button.
+It is subscribed before `PTranscriptionNotationObserve`, so the old search closes first.
+
+## `private void PTranscriptionNotationObserve(object sender, ExecutedRoutedEventArgs e)`
+
+Asks the errand for a search on the pressed row in that row's scheme, then paints the start.
 
 ## `private string? PTranscriptionSchemeFind()`
 
 The first declared scheme no shown row carries, or nothing when all are taken.
-
-## `private QTranscriptionItem? PTranscriptionFind(long id)`
-
-The shown row with one transcription id, or nothing when the draft no longer has it.
-The glyph row is searched too, because the lookup menu fills it through the same path.
 
 ## `internal void PTranscriptionShow(CEntryDraft draft)`
 

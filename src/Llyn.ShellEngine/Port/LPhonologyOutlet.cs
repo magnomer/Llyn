@@ -117,9 +117,6 @@ public sealed class LPhonologyOutlet : LPhonologyPort
     public bool LEngineRespellingCheck(string language) =>
         _lPhonologyOutletEngine.LEngineSettings.LEngineRespellingCheck(language);
 
-    public (bool, string, string) LEngineMarkRead(string language) =>
-        _lPhonologyOutletEngine.LEngineSettings.LEngineMarkRead(language);
-
     public LAccentSheet LEngineAccentRead(LEntryDraft draft) =>
         _lPhonologyOutletEngine.LEngineLanguage.LEngineAccentRead(draft);
 

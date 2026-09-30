@@ -2,7 +2,7 @@
 
 ## `public sealed class TTenureLanguage`
 
-Language checks and variety lookup use the tenure's held draft.
+Language checks use the tenure's held draft.
 After cancellation, the tenure returns empty defaults.
 Checking an independently empty draft also remains false.
 The scheme read marks a scheme another row holds, and an ended tenure reads no schemes.

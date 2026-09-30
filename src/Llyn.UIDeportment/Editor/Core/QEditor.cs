@@ -31,9 +31,7 @@ internal sealed class QEditor
         desk.CDeskStateChanged += surface.PEditorStateRefine;
         desk.CDeskRefused += host.PWindowEnvoy.CEnvoyFailureShow;
         desk.CDeskErrand.CErrandClipChanged += surface.PClipRefine;
-        desk.CDeskErrand.CErrandLookupStarted += surface.PNotationSourceHandle;
-        desk.CDeskErrand.CErrandCandidateAdded += surface.PNotationCandidateHandle;
-        desk.CDeskErrand.CErrandLookupFinished += surface.PNotationFinishHandle;
+        desk.CDeskErrand.CErrandNotationChanged += surface.PNotationRefine;
         editor.CEditorSounding.CSoundingChanged += surface.PReflexAnchorRefine;
         editor.CEditorSounding.CSoundingChanged += surface.PReadingRefine;
         editor.CEditorTimbre.CTimbreReflexChanged += surface.PReflexPendingRefine;

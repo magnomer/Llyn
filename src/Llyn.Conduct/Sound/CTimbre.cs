@@ -41,10 +41,6 @@ public sealed class CTimbre
 
     public event Action? CTimbreReflexChanged;
 
-    public bool CTimbreFlagged => _cTimbreDesk.CDeskTenure?.LTenureFlaggedCheck() ?? false;
-
-    public IReadOnlyList<string> CTimbreVarietyNames => _cTimbreDesk.CDeskTenure?.LTenureVarietyNames ?? [];
-
     public bool CTimbreSpoken => !_cTimbrePhonologyPort.LEngineSilentCheck(LTimbreLanguage);
 
     public bool CTimbrePhonemic =>

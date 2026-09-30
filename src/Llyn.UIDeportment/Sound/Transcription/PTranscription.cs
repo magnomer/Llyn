@@ -26,8 +26,10 @@ public partial class PEditor
             PTranscriptionCommand.PTranscriptionCommandAddition, PTranscriptionAddHandle, PTranscriptionAddCheck));
         PEditorSound.CommandBindings.Add(new CommandBinding(
             PTranscriptionCommand.PTranscriptionCommandRemoval, PTranscriptionRemoveHandle));
-        PEditorSound.CommandBindings.Add(new CommandBinding(
-            PTranscriptionCommand.PTranscriptionCommandNotation, PTranscriptionNotationHandle));
+        CommandBinding notation = new(PTranscriptionCommand.PTranscriptionCommandNotation);
+        notation.Executed += PTranscriptionNotationRefine;
+        notation.Executed += PTranscriptionNotationObserve;
+        PEditorSound.CommandBindings.Add(notation);
     }
 
     private void PTranscriptionApply(FrameworkElement container, object item, string? name)
@@ -107,14 +109,21 @@ public partial class PEditor
         }
     }
 
-    internal async void PTranscriptionNotationHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PTranscriptionNotationRefine(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Parameter is QTranscriptionItem)
+        {
+            PNotationOpenRefine(e.OriginalSource as UIElement ?? PTranscription);
+        }
+    }
+
+    private void PTranscriptionNotationObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is QTranscriptionItem row)
         {
-            await PNotationOpen(
-                e.OriginalSource as UIElement ?? PTranscription,
-                row.QTranscriptionItemId,
-                row.QTranscriptionItemScheme);
+            PNotationStartRefine(
+                _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandTranscriptionStart(
+                    row.QTranscriptionItemId, row.QTranscriptionItemScheme));
         }
     }
 
@@ -126,27 +135,6 @@ public partial class PEditor
                 row => !string.Equals(row.QTranscriptionItemScheme, scheme, StringComparison.Ordinal)))
             {
                 return scheme;
-            }
-        }
-
-        return null;
-    }
-
-    private QTranscriptionItem? PTranscriptionFind(long id)
-    {
-        foreach (QTranscriptionItem row in _pTranscriptionItem)
-        {
-            if (row.QTranscriptionItemId == id)
-            {
-                return row;
-            }
-        }
-
-        foreach (QTranscriptionItem row in _pGlyphItem)
-        {
-            if (row.QTranscriptionItemId == id)
-            {
-                return row;
             }
         }
 

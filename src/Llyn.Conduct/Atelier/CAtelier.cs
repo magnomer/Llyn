@@ -43,8 +43,6 @@ public sealed class CAtelier : IDisposable
 
     public CMarkdown CAtelierMarkdown => new(this);
 
-    public CRespelling CAtelierRespelling => new(this);
-
     public CNavigation CAtelierNavigation { get; }
 
     public CCatalog CAtelierCatalog => new(this);

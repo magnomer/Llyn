@@ -84,8 +84,6 @@ public interface LPhonologyPort
 
     bool LEngineRespellingCheck(string language);
 
-    (bool, string, string) LEngineMarkRead(string language);
-
     LAccentSheet LEngineAccentRead(LEntryDraft draft);
 
     Task<LAccentSheet> LEngineAccentLoad(

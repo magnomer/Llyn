@@ -88,21 +88,6 @@ public static class LEnsignImage
         }
     }
 
-    public static async Task LEnsignVarietyLoad(CAtelier atelier, string language, IEnumerable<string> varieties)
-    {
-        ArgumentNullException.ThrowIfNull(atelier);
-
-        await LEnsignGate.WaitAsync().ConfigureAwait(true);
-        try
-        {
-            await atelier.CAtelierCatalog.CCatalogEnsignLoad(language, varieties, LEnsignStoreAdd);
-        }
-        finally
-        {
-            LEnsignGate.Release();
-        }
-    }
-
     private static Action LEnsignStoreAdd(IReadOnlyList<CEnsignRow> rows, Action<string, Exception> delete)
     {
         List<KeyValuePair<string, ImageSource?>> resolved = new(rows.Count);

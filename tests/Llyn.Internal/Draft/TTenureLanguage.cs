@@ -16,12 +16,10 @@ public sealed class TTenureLanguage
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("water", "English", "", "", [], []));
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, entry.LEntryId);
         Assert.Equal(engine.TEngineFlaggedCheck("English"), tenure.TTenureFlaggedCheck());
-        Assert.Equal(engine.TEngineVarietyRead("English"), tenure.TTenureVarietyRead());
         Assert.Equal(tenure.TTenureFlaggedCheck(), engine.TEngineFlaggedCheck(tenure.TTenureRead()!.LDraftContent));
 
         tenure.TTenureCancel();
         Assert.False(tenure.TTenureFlaggedCheck());
-        Assert.Empty(tenure.TTenureVarietyRead());
         Assert.False(engine.TEngineFlaggedCheck(TInterface.TEntryDraftCreate("", "", "", "", [], [])));
     }
 

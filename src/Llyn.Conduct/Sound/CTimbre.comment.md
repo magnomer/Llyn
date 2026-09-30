@@ -12,14 +12,6 @@ So it keeps no copy.
 The held entry's paradigm changed, raised on the driver's thread.
 `CTimbreScriptChanged` and `CTimbreReflexChanged` do the same for the script groups and the reflexes.
 
-## `public bool CTimbreFlagged`
-
-Whether the held draft's language has a flag.
-
-## `public IReadOnlyList<string> CTimbreVarietyNames`
-
-The varieties the held draft's language offers, empty while no draft is held.
-
 ## `public bool CTimbreReflexPending`
 
 Whether the held entry's reflex lookup is still running, so the reflex block shows its loading line.

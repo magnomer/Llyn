@@ -61,10 +61,6 @@ The entry of a character shown on one rime cell, in the cell's language, made fi
 
 The entry of a character in one phonetic series, in the series' language, made first when none exists.
 
-## `(bool, string, string) LEngineMarkRead(string language);`
-
-Whether readings of `language` show their respelling, and the two brackets around a reading.
-
 ## `LAccentSheet LEngineAccentRead(LEntryDraft draft);`
 
 The pronunciation block of `draft`, ready for the reading view.

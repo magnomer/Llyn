@@ -49,6 +49,11 @@ The transcription scheme searched, or empty for a pronunciation or recording sea
 
 Whether the language shows its varieties as flags, read once at the start.
 
+## `public bool LForayCancelled`
+
+Whether the search was cancelled, so a step it streamed earlier no longer belongs to the current search.
+A replaced or stopped search is always cancelled, so a live one is always the current one.
+
 ## `public void LForayCancel()`
 
 Ends the search so nothing further streams in.
@@ -73,6 +78,17 @@ It attaches nothing, and the search's cancellation does not stop it.
 
 Loads the flags of every variety the search's language declares, handing each row to `store`.
 A language that shows no flags loads nothing.
+A schemed lookup loads nothing either, since a transcription carries no variety to flag.
+
+## `public (bool, string, string) LForayMarkRead()`
+
+The respelling switch and the brackets a found reading shows in, as the settings answer them for the search's language.
+A schemed search shows its readings bare, since a scheme is never respelled.
+
+## `public string LForayReadingRead(string? phonetic, string? respelling)`
+
+The text one found reading shows, by the Application rule a stored pronunciation uses.
+The switch is the one `LForayMarkRead` answers, so the text and its brackets always agree.
 
 ## `internal static string LForayWordRead(LDraft? draft)`
 

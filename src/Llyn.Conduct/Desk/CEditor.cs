@@ -195,9 +195,4 @@ public sealed class CEditor
     {
         CEditorTenure?.LTenureLanguageSet(language);
     }
-
-    public void CEditorVarietySet(bool primary, long pronunciation, string variety)
-    {
-        CEditorTenure?.LTenureVarietySet(primary, pronunciation, variety);
-    }
 }

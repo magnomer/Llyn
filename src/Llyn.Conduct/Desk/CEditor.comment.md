@@ -143,8 +143,3 @@ Hands the typed reading to the tenure, which writes it the way the pack shows it
 The ready verdict the note field reads before it paints.
 It answers whether the typed text already holds the note, so the field keeps a line break just typed.
 The tenure owns the trim behind it.
-
-## `public void CEditorVarietySet(bool primary, long pronunciation, string variety)`
-
-Names the variety of the reading a menu filled, after the reading itself was written.
-The tenure resolves which row that is, so the gate only hands on what the menu was opened for.

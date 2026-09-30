@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -80,6 +81,47 @@ public sealed class LQuill
 
         _lQuillTenure.LTenureRequestDefer(
             new LRequestTranscriptionText(_lQuillTenure.LTenureId, transcription, text));
+    }
+
+    public void LQuillReadingSet(LForay foray, string phonetic, string variety)
+    {
+        ArgumentNullException.ThrowIfNull(foray);
+        ArgumentNullException.ThrowIfNull(phonetic);
+        ArgumentNullException.ThrowIfNull(variety);
+
+        LEntryDraft? content = _lQuillTenure.LTenureRead()?.LDraftContent;
+        long target = foray.LForayTarget;
+        if (foray.LForaySchemed)
+        {
+            if (LQuillRowCheck(content?.LEntryDraftTranscriptions, target, static row => row.LTranscriptionDraftId))
+            {
+                _lQuillTenure.LTenureRequestApply(
+                    new LRequestTranscriptionText(_lQuillTenure.LTenureId, target, phonetic));
+            }
+
+            return;
+        }
+
+        if (foray.LForayPrimary)
+        {
+            _lQuillTenure.LTenureRequestApply(new LRequestIpa(_lQuillTenure.LTenureId, phonetic));
+        }
+        else if (LQuillRowCheck(content?.LEntryDraftPronunciations, target, static row => row.LPronunciationDraftId))
+        {
+            _lQuillTenure.LTenureRequestApply(
+                new LRequestPronunciationIpa(_lQuillTenure.LTenureId, target, phonetic));
+        }
+        else
+        {
+            return;
+        }
+
+        _lQuillTenure.LTenureVarietySet(foray.LForayPrimary, target, variety);
+    }
+
+    private static bool LQuillRowCheck<LQuillRow>(IReadOnlyList<LQuillRow>? rows, long id, Func<LQuillRow, long> key)
+    {
+        return rows is not null && id != 0 && LDraftClerkList.LDraftListFind(rows, id, key) >= 0;
     }
 
     public void LQuillEtymologySet(string text)

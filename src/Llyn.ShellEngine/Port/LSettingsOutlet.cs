@@ -75,12 +75,6 @@ public sealed class LSettingsOutlet : LSettingsPort
         Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store) =>
         _lSettingsOutletEngine.LEngineLanguage.LEngineEnsignLoad(store);
 
-    public Task LEngineEnsignLoad(
-        string language,
-        IEnumerable<string> varieties,
-        Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store) =>
-        _lSettingsOutletEngine.LEngineLanguage.LEngineEnsignLoad(language, varieties, store);
-
 
     public LEstablishment LEngineEstablishmentRead() => _lSettingsOutletEngine.LEngineEntry.LEngineEstablishmentRead();
 

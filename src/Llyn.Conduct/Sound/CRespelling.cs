@@ -6,29 +6,8 @@ using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
 
-public sealed class CRespelling
+public static class CRespelling
 {
-    private readonly CAtelier _cRespellingAtelier;
-
-    internal CRespelling(CAtelier atelier)
-    {
-        ArgumentNullException.ThrowIfNull(atelier);
-
-        _cRespellingAtelier = atelier;
-    }
-
-    public CRespellingMark CRespellingMarkRead(string language, bool schemed)
-    {
-        if (schemed)
-        {
-            return new CRespellingMark(false, string.Empty, string.Empty);
-        }
-
-        (bool shown, string opener, string closer) =
-            _cRespellingAtelier.CAtelierPhonologyPort.LEngineMarkRead(language);
-        return new CRespellingMark(shown, opener, closer);
-    }
-
     internal static IReadOnlyList<CReflex> LRespellingReflexScan(
         LPhonologyPort phonology, string language, IReadOnlyList<CReflexDraft> reflexes)
     {
@@ -49,7 +28,7 @@ public sealed class CRespelling
             reflex.CReflexDraftId,
             reflex.CReflexDraftLanguage,
             reflex.CReflexDraftKind,
-            CRespellingResolve(mark, reflex.CReflexDraftText, reflex.CReflexDraftRespelling),
+            LRespellingResolve(mark, reflex.CReflexDraftText, reflex.CReflexDraftRespelling),
             reflex.CReflexDraftRomanization,
             reflex.CReflexDraftMeaning,
             reflex.CReflexDraftNote,
@@ -61,7 +40,7 @@ public sealed class CRespelling
             lead);
     }
 
-    public static string CRespellingResolve(CRespellingMark mark, string phonetic, string? respelling)
+    internal static string LRespellingResolve(CRespellingMark mark, string phonetic, string? respelling)
     {
         ArgumentNullException.ThrowIfNull(mark);
 

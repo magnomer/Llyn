@@ -171,6 +171,44 @@ public sealed class TForay
     }
 
     [Fact]
+    public void TranscriptionStart_HeadwordPadded_SearchesTheTrimmedWord()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TForayPack);
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        TaskCompletionSource gate = new();
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate("uk=https://example.test/gb.mp3", gate.Task));
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
+        tenure.TTenureRequestApply(TInterface.TRequestLanguageCreate(tenure.LTenureId, pack.TLanguageFixtureName));
+        tenure.TTenureRequestDefer(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "  tomato  "));
+
+        LForay? foray = tenure.TTenureTranscriptionStart(4, "Yale", static _ => { });
+
+        Assert.Equal(
+            ("tomato", pack.TLanguageFixtureName, 4L, "Yale"),
+            (foray?.LForayWord, foray?.LForayLanguage, foray?.LForayTarget, foray?.LForayScheme));
+        foray?.TForayCancel();
+        gate.SetResult();
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
+    public void TranscriptionStart_BlankHeadword_StartsNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
+        tenure.TTenureRequestApply(TInterface.TRequestLanguageCreate(tenure.LTenureId, "English"));
+        tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "   "));
+        int steps = 0;
+
+        Assert.Null(tenure.TTenureTranscriptionStart(0, string.Empty, _ => steps++));
+        Assert.Equal(0, steps);
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
     public async Task ForayEnsignLoad_UnflaggedPack_StoresNothing()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TForayPack);

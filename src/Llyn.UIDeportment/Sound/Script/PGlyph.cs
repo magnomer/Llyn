@@ -16,16 +16,27 @@ public partial class PEditor
     {
         PGlyph.ItemsSource = _pGlyphItem;
         QLookItem.QLookItemAttach(PGlyph, PGlyphItemRefine);
-        PEditorSound.CommandBindings.Add(new CommandBinding(
-            PGlyphCommand.PGlyphCommandNotation, PGlyphNotationObserve));
+        CommandBinding notation = new(PGlyphCommand.PGlyphCommandNotation);
+        notation.Executed += PGlyphNotationRefine;
+        notation.Executed += PGlyphNotationObserve;
+        PEditorSound.CommandBindings.Add(notation);
     }
 
-    internal async void PGlyphNotationObserve(object sender, ExecutedRoutedEventArgs e)
+    private void PGlyphNotationRefine(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Parameter is QTranscriptionItem)
+        {
+            PNotationOpenRefine(e.OriginalSource as UIElement ?? PGlyph);
+        }
+    }
+
+    private void PGlyphNotationObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is QTranscriptionItem row)
         {
-            await PNotationOpen(
-                e.OriginalSource as UIElement ?? PGlyph, row.QTranscriptionItemId, row.QTranscriptionItemScheme);
+            PNotationStartRefine(
+                _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandTranscriptionStart(
+                    row.QTranscriptionItemId, row.QTranscriptionItemScheme));
         }
     }
 

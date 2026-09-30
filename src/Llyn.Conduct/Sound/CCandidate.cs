@@ -9,4 +9,6 @@ public sealed record CCandidate(
     string? CCandidateRespelling)
 {
     public bool CCandidateRegional => CCandidateVariety.Length > 0;
+
+    public bool CCandidateNotated => !string.IsNullOrEmpty(CCandidatePhonetic);
 }

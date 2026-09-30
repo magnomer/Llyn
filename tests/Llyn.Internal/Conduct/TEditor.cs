@@ -241,7 +241,7 @@ public sealed class TEditor
     }
 
     [Fact]
-    public void VarietySet_PrimaryReading_TagsWhateverPrimaryTheDraftHolds()
+    public void TenureVarietySet_PrimaryReading_TagsWhateverPrimaryTheDraftHolds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -249,13 +249,13 @@ public sealed class TEditor
         CEditor editor = TEditorPrepare(engine, "library");
         editor.CEditorEntryOpen(entry.LEntryId);
 
-        editor.CEditorVarietySet(true, 0, "British");
+        editor.CEditorDesk.TDeskVarietySet(true, 0, "British");
 
         Assert.Equal("British", editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentPrimary.CVarietyName);
     }
 
     [Fact]
-    public void VarietySet_BlankVarietyOrMissingRow_ChangesNothing()
+    public void TenureVarietySet_BlankVarietyOrMissingRow_ChangesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -263,8 +263,8 @@ public sealed class TEditor
         CEditor editor = TEditorPrepare(engine, "library");
         editor.CEditorEntryOpen(entry.LEntryId);
 
-        editor.CEditorVarietySet(true, 0, string.Empty);
-        editor.CEditorVarietySet(false, 0, "British");
+        editor.CEditorDesk.TDeskVarietySet(true, 0, string.Empty);
+        editor.CEditorDesk.TDeskVarietySet(false, 0, "British");
 
         Assert.False(editor.CEditorDesk.CDeskChanged);
     }

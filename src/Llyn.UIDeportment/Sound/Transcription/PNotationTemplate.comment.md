@@ -15,5 +15,5 @@ The dictionary merges the markup its Veneer URI loads.
 
 ## `internal void PNotationSelectorHandle(object sender, RoutedEventArgs e)`
 
-The editor opens notation selection because it owns transcription updates.
+Forwards a pressed reading to `PEditor.PNotationSelectorObserve`.
 The reading fill subscribes it on each realized reading button.

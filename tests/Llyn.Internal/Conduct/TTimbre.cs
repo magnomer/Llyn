@@ -201,7 +201,7 @@ public sealed class TTimbre
         long draft = editor.CEditorDesk.CDeskId;
         editor.CEditorDesk.TDeskDefer(TInterface.TRequestLanguageCreate(draft, "English"));
         editor.CEditorDesk.TDeskDefer(TInterface.TRequestIpaCreate(draft, "ˈwɔːtə"));
-        editor.CEditorVarietySet(true, 0, "British");
+        editor.CEditorDesk.TDeskVarietySet(true, 0, "British");
         editor.CEditorDesk.TDeskDefer(TInterface.TPronunciationAdditionCreate(draft, "ˈwɑːtɚ", 1));
         editor.CEditorDesk.TDeskDefer(TInterface.TPronunciationAdditionCreate(draft, string.Empty, 2));
         long spoken = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
@@ -402,7 +402,7 @@ public sealed class TTimbre
         long draft = editor.CEditorDesk.CDeskId;
         editor.CEditorDesk.TDeskDefer(TInterface.TRequestLanguageCreate(draft, language));
         editor.CEditorDesk.TDeskDefer(TInterface.TRequestIpaCreate(draft, "a˥"));
-        editor.CEditorVarietySet(true, 0, "British");
+        editor.CEditorDesk.TDeskVarietySet(true, 0, "British");
         return editor;
     }
 

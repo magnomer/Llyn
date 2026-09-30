@@ -22,9 +22,14 @@ Hands the pressed row's id to the add gate, or zero for the primary when no row 
 Hands the pressed row's id to the remove gate, or zero for the primary when no row is carried.
 The engine answers with a draft bulletin, and the render takes the row off the screen.
 
-## `private async void PAccentNotationObserve(object sender, ExecutedRoutedEventArgs e)`
+## `private void PAccentNotationRefine(object sender, ExecutedRoutedEventArgs e)`
 
-Opens the pronunciation menu under the row's own button, for that row.
+Opens the pronunciation menu under the row's own button.
+It is subscribed before `PAccentNotationObserve`, so the old search closes first.
+
+## `private void PAccentNotationObserve(object sender, ExecutedRoutedEventArgs e)`
+
+Asks the errand for a pronunciation search on the pressed row, then paints the start.
 
 ## `private void PAccentClipRefine(object sender, ExecutedRoutedEventArgs e)`
 
@@ -47,10 +52,6 @@ A null answer plays nothing, since the engine cleared the gone file and the draf
 ## `private UIElement PAccentAnchorRead(ExecutedRoutedEventArgs e)`
 
 The button that raised the command, so the menu opens under it rather than under the list.
-
-## `private QAccentItem? PAccentFind(long id)`
-
-The shown row with one pronunciation id, or nothing when the draft no longer has it.
 
 ## `private void PAccentTextObserve(object? sender, PropertyChangedEventArgs e)`
 

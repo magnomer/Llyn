@@ -126,6 +126,19 @@ Sends one credit to a new place, which the draft clerk clamps to the list.
 Defers the text typed into the transcription row `transcription`, the glyph row among them.
 Every driver of a transcription text writes through it, so the request has one builder.
 
+## `public void LQuillReadingSet(LForay foray, string phonetic, string variety)`
+
+Writes a reading the user took from the lookup `foray` into the row it was opened for.
+A pick is one deliberate act, so each write applies at once rather than waiting like typing.
+A schemed lookup writes the transcription row's text and names no variety.
+Otherwise the primary pronunciation or the accent row takes the IPA, then the variety through `LTenureVarietySet`.
+A row removed while the menu was open is skipped, since the clerk refuses an unknown row.
+
+## `private static bool LQuillRowCheck<LQuillRow>(IReadOnlyList<LQuillRow>? rows, long id, Func<LQuillRow, long> key)`
+
+Whether the draft still lists the row `id`, through the clerk's own `LDraftListFind`.
+No draft or no row id lists nothing.
+
 ## `public void LQuillEtymologySet(string text)`
 
 Defers the held entry's typed etymology narrative.

@@ -16,6 +16,8 @@ public sealed class CErrand
 
     private readonly CClip _cErrandClip = new();
 
+    private readonly CNotation _cErrandNotation = new();
+
     private Action<Action> _cErrandMarshal = static run => run();
 
     internal CErrand(CDesk desk)
@@ -27,25 +29,7 @@ public sealed class CErrand
 
     public event Action<CClipRoll>? CErrandClipChanged;
 
-    public event Action<string, int>? CErrandLookupStarted;
-
-    public event Action<CCandidate>? CErrandCandidateAdded;
-
-    public event Action? CErrandLookupFinished;
-
-    public bool CErrandTranscriptionHeld => _cErrandTranscription is not null;
-
-    public string CErrandTranscriptionLanguage => _cErrandTranscription?.LForayLanguage ?? string.Empty;
-
-    public bool CErrandTranscriptionFlagged => _cErrandTranscription?.LForayFlagged ?? false;
-
-    public bool CErrandTranscriptionPrimary => _cErrandTranscription?.LForayPrimary ?? false;
-
-    public long CErrandTranscriptionTarget => _cErrandTranscription?.LForayTarget ?? 0;
-
-    public string CErrandTranscriptionScheme => _cErrandTranscription?.LForayScheme ?? string.Empty;
-
-    public bool CErrandTranscriptionSchemed => _cErrandTranscription?.LForaySchemed ?? false;
+    public event Action<CNotationRoll>? CErrandNotationChanged;
 
     public CClipRoll CErrandRecordingStart(long target)
     {
@@ -92,20 +76,58 @@ public sealed class CErrand
         return _cErrandClip.LClipRead();
     }
 
-    public bool CErrandTranscriptionStart(string word, long target, string scheme, Action<CLookupStep> sink)
+    public CNotationRoll CErrandTranscriptionStart(long target, string scheme)
     {
-        ArgumentNullException.ThrowIfNull(sink);
+        ArgumentNullException.ThrowIfNull(scheme);
 
-        CErrandForayStop(_cErrandTranscription);
-        _cErrandTranscription = CErrandTranscriptionRun(
-            _cErrandDesk.CDeskTenure, word, target, scheme, CErrandLookupSend);
-        return _cErrandTranscription is not null;
-
-        void CErrandLookupSend(LLookupStep step)
+        CErrandCancel();
+        _cErrandNotation.LNotationStart(scheme.Length > 0);
+        try
         {
-            sink(new CLookupStep(
+            _cErrandTranscription = LErrandTranscriptionRun(
+                _cErrandDesk.CDeskTenure, target, scheme, LErrandLookupSend);
+            if (_cErrandTranscription is null)
+            {
+                _cErrandNotation.LNotationFinish();
+            }
+        }
+        catch (Exception)
+        {
+            _cErrandNotation.LNotationFinish();
+        }
+
+        return _cErrandNotation.LNotationRead();
+
+        void LErrandLookupSend(LForay foray, LLookupStep step)
+        {
+            CLookupStep sent = new(
                 step.LLookupStepSource, step.LLookupStepOrder,
-                CErrandCandidateRead(step.LLookupStepCandidate), step.LLookupStepEnded));
+                CErrandCandidateRead(step.LLookupStepCandidate), step.LLookupStepEnded);
+            _cErrandMarshal(() => LErrandLookupResonate(sent, foray));
+        }
+    }
+
+    public async Task<CNotationRoll> CErrandFlagLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)
+    {
+        ArgumentNullException.ThrowIfNull(store);
+
+        try
+        {
+            await LErrandEnsignRun(_cErrandTranscription, store);
+        }
+        catch (Exception)
+        {
+        }
+
+        return _cErrandNotation.LNotationRead();
+    }
+
+    public void CErrandReadingSet(string phonetic, string variety)
+    {
+        if (_cErrandTranscription is LForay foray)
+        {
+            _cErrandDesk.CDeskQuill?.LQuillReadingSet(foray, phonetic, variety);
         }
     }
 
@@ -138,23 +160,30 @@ public sealed class CErrand
         CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
     }
 
-    public void CErrandLookupResonate(CLookupStep step)
+    internal void LErrandLookupResonate(CLookupStep step, LForay foray)
     {
         ArgumentNullException.ThrowIfNull(step);
+        ArgumentNullException.ThrowIfNull(foray);
+
+        if (foray.LForayCancelled)
+        {
+            return;
+        }
 
         if (step.CLookupStepCandidate is CCandidate candidate)
         {
-            CErrandCandidateAdded?.Invoke(candidate);
-            return;
+            _cErrandNotation.LNotationCandidateAdd(candidate, foray);
         }
-
-        if (step.CLookupStepEnded)
+        else if (step.CLookupStepEnded)
         {
-            CErrandLookupFinished?.Invoke();
-            return;
+            _cErrandNotation.LNotationFinish();
+        }
+        else
+        {
+            _cErrandNotation.LNotationPlace(step.CLookupStepSource, step.CLookupStepOrder);
         }
 
-        CErrandLookupStarted?.Invoke(step.CLookupStepSource, step.CLookupStepOrder);
+        CErrandNotationChanged?.Invoke(_cErrandNotation.LNotationRead());
     }
 
     public async Task<Uri?> CErrandPreviewStart(CRecording recording)
@@ -241,10 +270,10 @@ public sealed class CErrand
             ?? Task.CompletedTask;
     }
 
-    private static LForay? CErrandTranscriptionRun(
-        LTenure? tenure, string word, long target, string scheme, Action<LLookupStep> sink)
+    private static LForay? LErrandTranscriptionRun(
+        LTenure? tenure, long target, string scheme, Action<LForay, LLookupStep> sink)
     {
-        return tenure?.LTenureTranscriptionStart(word, target, scheme, sink);
+        return tenure?.LTenureTranscriptionStart(target, scheme, sink);
     }
 
     private static void CErrandForayStop(LForay? foray)

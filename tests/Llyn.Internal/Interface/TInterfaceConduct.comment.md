@@ -166,6 +166,10 @@ Its envoy answers no to every question.
 
 Relays the shared reflex scan, so a fact can hand it a fake phonology port and ready rows.
 
+## `internal static string TRespellingResolve(CRespellingMark mark, string phonetic, string? respelling)`
+
+Relays the respelling rule, so a fact can read which form a mark shows.
+
 ## `internal static CTimbre TTimbreCreate(CEditor editor, LPhonologyPort phonology, LDraftPort drafts)`
 
 Builds the editor's sound facts over the desk and display of `editor`, with ports a test may fake.

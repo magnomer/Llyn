@@ -8,6 +8,6 @@ A pick after the headword moved attaches nothing, and one over an unchanged draf
 That pick also writes the recording's variety onto the row it filled.
 A preview fetch answers the cached file and attaches nothing.
 A cancelled tenure takes its foray down with it.
-A start searches the trimmed headword, and a blank one starts nothing.
+A recording or reading start searches the trimmed headword, and a blank one starts nothing.
 A pack that shows no flags loads none.
 The gated client holds every source open until the test releases it.

@@ -17,15 +17,6 @@ public sealed partial class LTenure
         return language.Length > 0 && _lEngine.LEngineLanguage.LEngineFlaggedCheck(language);
     }
 
-    public IReadOnlyList<LVariety> LTenureVarietyRead()
-    {
-        string language = LTenureLanguageRead();
-        return language.Length == 0 ? [] : _lEngine.LEngineLanguage.LEngineVarietyRead(language);
-    }
-
-    public IReadOnlyList<string> LTenureVarietyNames =>
-        LTenureVarietyRead().Select(static variety => variety.LVarietyName).ToList();
-
     public IReadOnlyList<LSchemeRow> LTenureSchemeRead(long transcription)
     {
         IReadOnlyList<LTranscriptionDraft> rows = LTenureRead()?.LDraftContent.LEntryDraftTranscriptions ?? [];

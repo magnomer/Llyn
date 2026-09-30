@@ -43,6 +43,17 @@ public sealed class LForay
 
     public bool LForayPrimary => LForayTarget == 0;
 
+    public bool LForayCancelled
+    {
+        get
+        {
+            lock (_lForayCancellation)
+            {
+                return _lForayCancelled;
+            }
+        }
+    }
+
     public void LForayCancel()
     {
         lock (_lForayCancellation)
@@ -97,13 +108,26 @@ public sealed class LForay
     {
         ArgumentNullException.ThrowIfNull(store);
 
-        return LForayFlagged
+        return LForayFlagged && !LForaySchemed
             ? _lEngine.LEngineLanguage.LEngineEnsignLoad(
                 LForayLanguage,
                 _lEngine.LEngineLanguage.LEngineVarietyRead(LForayLanguage)
                     .Select(static variety => variety.LVarietyName),
                 store)
             : Task.CompletedTask;
+    }
+
+    public (bool, string, string) LForayMarkRead()
+    {
+        return LForaySchemed
+            ? (false, string.Empty, string.Empty)
+            : _lEngine.LEngineSettings.LEngineMarkRead(LForayLanguage);
+    }
+
+    public string LForayReadingRead(string? phonetic, string? respelling)
+    {
+        (bool respelled, _, _) = LForayMarkRead();
+        return LLanguageClerk.LLanguageCandidateRead(phonetic, respelling, respelled);
     }
 
     internal static string LForayWordRead(LDraft? draft)

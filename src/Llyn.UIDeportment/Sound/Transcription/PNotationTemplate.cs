@@ -16,6 +16,6 @@ public class PNotationTemplate : ResourceDictionary
 
     internal void PNotationSelectorHandle(object sender, RoutedEventArgs e)
     {
-        _pNotationHost.PNotationSelectorHandle(sender, e);
+        _pNotationHost.PNotationSelectorObserve(sender, e);
     }
 }

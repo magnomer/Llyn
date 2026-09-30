@@ -9,9 +9,9 @@ internal static partial class TInterface
     internal static LForay? TTenureRecordingStart(this LTenure tenure, long target, Action<LHarvestStep> sink) =>
         tenure.LTenureRecordingStart(target, sink);
 
-    internal static LForay TTenureTranscriptionStart(
-        this LTenure tenure, string word, long target, string scheme, Action<LLookupStep> sink) =>
-        tenure.LTenureTranscriptionStart(word, target, scheme, sink);
+    internal static LForay? TTenureTranscriptionStart(
+        this LTenure tenure, long target, string scheme, Action<LLookupStep> sink) =>
+        tenure.LTenureTranscriptionStart(target, scheme, (_, step) => sink(step));
 
     internal static void TForayCancel(this LForay foray)
     {

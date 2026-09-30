@@ -76,7 +76,9 @@ internal static class TAuditChainSetting
             "CClipRoll",
             "CClipItem",
             "CClipReading",
-            "CCandidate",
+            "CNotationRoll",
+            "CNotationItem",
+            "CNotationReading",
             "CFanqieGroup",
             "CFanqieRow",
             "CScriptGroup",
@@ -375,7 +377,7 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["cross:Llyn.UIDeportment>Llyn.Application"] = 10,
+        ["cross:Llyn.UIDeportment>Llyn.Application"] = 6,
         ["cross:Llyn.UIDeportment>Llyn.Core"] = 0,
         ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 0,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 1,

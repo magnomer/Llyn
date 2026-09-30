@@ -10,33 +10,6 @@ namespace Llyn.Tests;
 public sealed class TAtelierRespelling
 {
     [Theory]
-    [InlineData(false, "[", "]")]
-    [InlineData(true, "/", "/")]
-    public void RespellingMarkRead_EngineMark_CopiesTheSwitchAndBrackets(bool respelled, string opener, string closer)
-    {
-        List<string> asked = [];
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TAtelierRespellingCreate(engine, (respelled, opener, closer), asked);
-
-        CRespellingMark mark = atelier.CAtelierRespelling.CRespellingMarkRead("en", false);
-
-        Assert.Equal(new CRespellingMark(respelled, opener, closer), mark);
-        Assert.Equal(["en"], asked);
-    }
-
-    [Fact]
-    public void RespellingMarkRead_Schemed_ReadsBare()
-    {
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TAtelierRespellingCreate(engine, (true, "/", "/"), []);
-
-        CRespellingMark mark = atelier.CAtelierRespelling.CRespellingMarkRead("en", true);
-
-        Assert.Equal(new CRespellingMark(false, string.Empty, string.Empty), mark);
-        Assert.Equal("ipa", CRespelling.CRespellingResolve(mark, "ipa", "respelt"));
-    }
-
-    [Theory]
     [InlineData(false, false, "")]
     [InlineData(true, false, "")]
     [InlineData(false, true, "/")]
@@ -97,7 +70,7 @@ public sealed class TAtelierRespelling
     {
         CRespellingMark mark = new(shown, "[", "]");
 
-        Assert.Equal(expected, CRespelling.CRespellingResolve(mark, "ipa", respelling));
+        Assert.Equal(expected, TInterfaceConduct.TRespellingResolve(mark, "ipa", respelling));
     }
 
     private static CReflexDraft TAtelierReflexCreate(long id, string language, string text, string respelling)
@@ -105,18 +78,5 @@ public sealed class TAtelierRespelling
         return new CReflexDraft(
             id, language, string.Empty, text, respelling, string.Empty, string.Empty, string.Empty, false, string.Empty,
             [7]);
-    }
-
-    private static CAtelier TAtelierRespellingCreate(
-        LEngine engine, (bool, string, string) mark, List<string> asked)
-    {
-        return TInterfaceConduct.TAtelierCreate(engine, new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["LEngineMarkRead"] = args =>
-            {
-                asked.Add((string)args![0]!);
-                return mark;
-            },
-        });
     }
 }

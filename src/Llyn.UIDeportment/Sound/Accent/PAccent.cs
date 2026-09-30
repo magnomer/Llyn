@@ -31,8 +31,10 @@ public partial class PEditor
             PAccentCommand.PAccentCommandAddition, PAccentAddObserve));
         PEditorSound.CommandBindings.Add(new CommandBinding(
             PAccentCommand.PAccentCommandRemoval, PAccentRemoveObserve));
-        PEditorSound.CommandBindings.Add(new CommandBinding(
-            PAccentCommand.PAccentCommandNotation, PAccentNotationObserve));
+        CommandBinding notation = new(PAccentCommand.PAccentCommandNotation);
+        notation.Executed += PAccentNotationRefine;
+        notation.Executed += PAccentNotationObserve;
+        PEditorSound.CommandBindings.Add(notation);
         PEditorSound.CommandBindings.Add(clip);
         PEditorSound.CommandBindings.Add(new CommandBinding(
             PAccentCommand.PAccentCommandPlayback, PAccentPlaybackObserve));
@@ -48,11 +50,20 @@ public partial class PEditor
         _qEditor.QEditorArea.CEditorTimbre.CTimbrePronunciationRemove((e.Parameter as QAccentItem)?.QAccentItemId ?? 0);
     }
 
-    private async void PAccentNotationObserve(object sender, ExecutedRoutedEventArgs e)
+    private void PAccentNotationRefine(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Parameter is QAccentItem)
+        {
+            PNotationOpenRefine(PAccentAnchorRead(e));
+        }
+    }
+
+    private void PAccentNotationObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is QAccentItem row)
         {
-            await PNotationOpen(PAccentAnchorRead(e), row.QAccentItemId);
+            PNotationStartRefine(_qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandTranscriptionStart(
+                row.QAccentItemId, string.Empty));
         }
     }
 
@@ -92,19 +103,6 @@ public partial class PEditor
     private UIElement PAccentAnchorRead(ExecutedRoutedEventArgs e)
     {
         return e.OriginalSource as UIElement ?? PAccent;
-    }
-
-    private QAccentItem? PAccentFind(long id)
-    {
-        foreach (QAccentItem row in _pAccentItem)
-        {
-            if (row.QAccentItemId == id)
-            {
-                return row;
-            }
-        }
-
-        return null;
     }
 
     private void PAccentTextObserve(object? sender, PropertyChangedEventArgs e)

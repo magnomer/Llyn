@@ -23,11 +23,6 @@ The mention gates, built once over this atelier's ports.
 The markdown gate over this atelier's entry port.
 It holds no state, so each read builds a fresh one and the atelier keeps no slot for it.
 
-## `public CRespelling CAtelierRespelling => new(this);`
-
-The respelling gates over this atelier's phonology port.
-They hold no state, so each read builds a fresh one and the atelier keeps no slot for them.
-
 ## `public CNavigation CAtelierNavigation { get; }`
 
 The session's one navigation, built once over this atelier.

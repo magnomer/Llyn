@@ -5,6 +5,7 @@
 The recording and reading searches one desk runs over its held tenure.
 The desk builds it over itself, so no driver ever holds a foray.
 It also keeps the clip popup's state, which the recording search fills.
+The notation popup's state, which the reading search fills, sits beside it.
 
 ## `private LForay? _cErrandRecording;`
 
@@ -15,9 +16,13 @@ The recording search running over the held tenure.
 
 The clip popup's session state, which the recording search fills and each start clears.
 
+## `private readonly CNotation _cErrandNotation = new();`
+
+The notation popup's session state, which the reading search fills and each reading start clears.
+
 ## `private Action<Action> _cErrandMarshal = static run => run();`
 
-Hands each recording step to the driver's thread before the clip state changes.
+Hands each recording or reading step to the driver's thread before any state changes or event rises.
 It runs the step at once until the desk attaches the driver's marshal.
 
 ## `internal CErrand(CDesk desk)`
@@ -31,17 +36,11 @@ A starting source, a found recording and the search's end each raise it once.
 So do the stages of a preview and of a taking, since each changes a recording's look.
 The popup repaints from it and needs to tell no cause apart.
 
-## `public event Action<string, int>? CErrandLookupStarted;`
+## `public event Action<CNotationRoll>? CErrandNotationChanged;`
 
-Raised when a reading source starts searching.
-`CErrandCandidateAdded` follows a found reading, and `CErrandLookupFinished` the end of the search.
-The notation menu repaints from these events.
-
-## `public bool CErrandTranscriptionHeld`
-
-Whether a reading search runs.
-The reads below answer its language, flag mode, primary mark, target row and scheme.
-Each answers false, zero or empty while none runs.
+Raised with the ready notation state whenever the reading search changes it.
+A starting source, a found reading and the search's end each raise it once.
+The popup repaints from it and needs to tell no cause apart.
 
 ## `public CClipRoll CErrandRecordingStart(long target)`
 
@@ -58,12 +57,28 @@ Loads the flags of the running search's varieties, then answers the clip state t
 The foray loads nothing when its language shows no flags.
 A failed load leaves the flags out and the search running.
 
-## `public bool CErrandTranscriptionStart(string word, long target, string scheme, Action<CLookupStep> sink)`
+## `public CNotationRoll CErrandTranscriptionStart(long target, string scheme)`
 
-Starts a reading search over the held tenure and reports whether one started.
-Nothing starts while no tenure is held.
-The previous reading search is cancelled first.
-Each engine step reaches the sink as a Conduct copy.
+The user asks for readings of the headword for one row, in IPA or in the row's scheme.
+It stops both searches first, as the clip popup's start does, and answers the popup's state to paint.
+The tenure reads the draft's headword itself and starts nothing for a blank one.
+The popup is marked searching before the start, since a step may land during it.
+A start that answers nothing or fails leaves the popup finished with its empty notice.
+A schemed start picks the transcription notice, and a plain one the reading notice.
+Each engine step reaches `LErrandLookupResonate` through the marshal, with the foray it came from.
+
+## `public async Task<CNotationRoll> CErrandFlagLoad(`
+
+Loads the flags of the running reading search's varieties, after the start.
+The foray loads nothing for a schemed search or a language that shows no flags.
+It then answers the notation state, so readings that landed before the flags repaint with them.
+A failed load leaves the flags out and still answers the state.
+
+## `public void CErrandReadingSet(string phonetic, string variety)`
+
+The user takes one listed reading into the row the search was opened for.
+It does nothing while no reading search runs or the desk fills.
+The quill routes the reading by the search's target and writes it at once.
 
 ## `internal void LErrandObserverAttach(Action<Action> marshal)`
 
@@ -74,10 +89,13 @@ Takes the marshal the desk received from its driver.
 Answers one step of the recording search on the driver's thread.
 A found recording, the end, or a starting source each changes the clip state and raises it.
 
-## `public void CErrandLookupResonate(CLookupStep step)`
+## `internal void LErrandLookupResonate(CLookupStep step, LForay foray)`
 
-Answers one step of the reading search, which the driver hands over on its own thread.
-A found reading, the end, or a starting source each raises its own event.
+Answers one step of the reading search on the driver's thread.
+A found reading, the end, or a starting source each changes the notation state and raises it.
+The step's own foray answers the reading's mark and text, even before the start has returned it.
+A step whose foray was cancelled belongs to a replaced search, so it changes nothing and raises nothing.
+The foray's own mark decides it, since a step may land before the start has returned the current foray.
 
 ## `public async Task<Uri?> CErrandPreviewStart(CRecording recording)`
 
@@ -114,7 +132,7 @@ The clip and notation popups never stay open together, so stopping both stops on
 
 Starts the search over the tenure handed in, or nothing when none is held.
 The tenure and the forays arrive as parameters, so no field decides the start.
-`LErrandEnsignRun`, `CErrandTranscriptionRun` and `CErrandForayStop` take their handles the same way.
+`LErrandEnsignRun`, `LErrandTranscriptionRun` and `CErrandForayStop` take their handles the same way.
 
 ## `internal static CRecording? CErrandRecordingRead(LRecording? recording)`
 

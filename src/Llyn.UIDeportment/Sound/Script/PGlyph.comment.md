@@ -7,9 +7,14 @@ The form is stored as a transcription row in the pack's glyph scheme, so the row
 It is rendered apart from the transcription rows, beneath them, with no scheme dropdown and no plus or minus.
 Its typed text goes to the one transcription text gate, `CTimbre.CTimbreTranscriptionSet`.
 
-## `internal async void PGlyphNotationObserve(object sender, ExecutedRoutedEventArgs e)`
+## `private void PGlyphNotationRefine(object sender, ExecutedRoutedEventArgs e)`
 
-Opens the lookup menu under the row, searching in the row's own scheme, which is the glyph scheme.
+Opens the lookup menu under the glyph row.
+It is subscribed before `PGlyphNotationObserve`, so the old search closes first.
+
+## `private void PGlyphNotationObserve(object sender, ExecutedRoutedEventArgs e)`
+
+Asks the errand for a search on the row in its own scheme, which is the glyph scheme.
 The engine finds that scheme's sources in the pack's glyph section.
 
 ## `private void PGlyphItemRefine(FrameworkElement container, object item, string? _)`

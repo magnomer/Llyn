@@ -41,12 +41,6 @@ Runs a Conduct flag load that picks its own flags, handing it this store, and an
 The reading view's pronunciation block loads through it, so Conduct names the varieties and the driver none.
 It shares the gate with the other fills, so one fill runs at a time.
 
-## `public static async Task LEnsignVarietyLoad(CAtelier atelier, string language, IEnumerable<string> varieties)`
-
-The same fill for the named varieties of `language`, each drawn under `language/variety`.
-The pronunciation and recording menus await this before a search, passing the editor's language and varieties.
-It shares the gate with the language flags, so one fill runs at a time whichever kind it is.
-
 ## `private static Action LEnsignStoreAdd(IReadOnlyList<CEnsignRow> rows, Action<string, Exception> delete)`
 
 Draws every row the engine kept and answers the commit that stores them.

@@ -58,7 +58,11 @@ public sealed class TErrand
         Assert.Equal("Downloader.Empty", roll.CClipRollNotice);
         Assert.Null(await desk.CDeskErrand.CErrandPreviewStart(
             new CRecording("Tagged", "https://example.test/gb.mp3", 0, true, "British")));
-        Assert.False(desk.CDeskErrand.CErrandTranscriptionStart("happy", 0, "ipa", static _ => { }));
+        CNotationRoll notation = desk.CDeskErrand.CErrandTranscriptionStart(0, "ipa");
+        Assert.Empty(notation.CNotationRollRows);
+        Assert.True(notation.CNotationRollEmpty);
+        Assert.False(notation.CNotationRollSearching);
+        Assert.Equal("Transcription.Empty", notation.CNotationRollNotice);
         desk.CDeskErrand.CErrandCancel();
     }
 
@@ -154,26 +158,6 @@ public sealed class TErrand
     }
 
     [Fact]
-    public void ErrandLookupResonate_ThreeSteps_RaisesOneEventEach()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CErrand errand = TInterfaceConduct.TDeskCreate(engine, "Input", TEnvoyFake.TEnvoyCreate(false, []))
-            .CDeskErrand;
-        List<string> notices = [];
-        errand.CErrandLookupStarted += (source, order) => notices.Add($"source {source} {order}");
-        errand.CErrandCandidateAdded += candidate => notices.Add($"candidate {candidate.CCandidatePhonetic}");
-        errand.CErrandLookupFinished += () => notices.Add("end");
-        CCandidate candidate = new("Wiktionary", "ˈhæpi", 1, true, "American", null);
-
-        errand.CErrandLookupResonate(new CLookupStep("Wiktionary", 1, null, false));
-        errand.CErrandLookupResonate(new CLookupStep("Wiktionary", 1, candidate, false));
-        errand.CErrandLookupResonate(new CLookupStep(string.Empty, 0, null, true));
-
-        Assert.Equal(["source Wiktionary 1", "candidate ˈhæpi", "end"], notices);
-    }
-
-    [Fact]
     public async Task ErrandRecordingSave_NoSearchRunning_AttachesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -185,13 +169,6 @@ public sealed class TErrand
             new CRecording("Tagged", "https://example.test/gb.mp3", 0, true, "British")));
         Assert.Null(await errand.CErrandPreviewStart(
             new CRecording("Tagged", "https://example.test/gb.mp3", 0, true, "British")));
-        Assert.False(errand.CErrandTranscriptionHeld);
-        Assert.Equal(string.Empty, errand.CErrandTranscriptionLanguage);
-        Assert.False(errand.CErrandTranscriptionFlagged);
-        Assert.False(errand.CErrandTranscriptionPrimary);
-        Assert.Equal(0, errand.CErrandTranscriptionTarget);
-        Assert.Equal(string.Empty, errand.CErrandTranscriptionScheme);
-        Assert.False(errand.CErrandTranscriptionSchemed);
     }
 
     private static CErrand TErrandCreate(LEngine engine) =>

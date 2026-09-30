@@ -16,3 +16,7 @@ One reading a search found, as the notation popup lists it.
 ## `public bool CCandidateRegional`
 
 Whether the reading names a variety, so the row shows its flag.
+
+## `public bool CCandidateNotated`
+
+Whether the source gave a reading, so the row lists it instead of a notice.

@@ -1,86 +1,42 @@
-using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
-internal sealed class PNotationItem : INotifyPropertyChanged
+internal sealed class PNotationItem
 {
-    private string _pNotationItemNotice;
-    private bool _pNotationItemReady;
-
-    internal PNotationItem(string sourceLabel, int order, string notice)
+    internal PNotationItem(CNotationItem row)
     {
-        PNotationItemSource = sourceLabel;
-        PNotationItemOrder = order;
-        _pNotationItemNotice = notice;
-    }
+        List<PNotationReading> readings = new(row.CNotationItemReading.Count);
+        foreach (CNotationReading reading in row.CNotationItemReading)
+        {
+            readings.Add(new PNotationReading(
+                reading.CNotationReadingVariety.CVarietyName,
+                QAccentItem.QAccentLabelRefine(reading.CNotationReadingVariety),
+                QAccentItem.QAccentEnsignRefine(reading.CNotationReadingVariety, reading.CNotationReadingFlagged),
+                reading.CNotationReadingPhonetic,
+                reading.CNotationReadingText,
+                reading.CNotationReadingMark.CRespellingMarkOpener,
+                reading.CNotationReadingMark.CRespellingMarkCloser));
+        }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
+        PNotationItemSource = row.CNotationItemSource;
+        PNotationItemReading = readings;
+        PNotationItemNotice = QLocalizationCatalog.QLocalizationTextRead(row.CNotationItemNotice);
+        PNotationItemReady = row.CNotationItemReady;
+    }
 
     public string PNotationItemSource { get; }
 
-    internal int PNotationItemOrder { get; }
+    public IReadOnlyList<PNotationReading> PNotationItemReading { get; }
 
-    public ObservableCollection<PNotationReading> PNotationItemReading { get; } = [];
+    public string PNotationItemNotice { get; }
 
-    public string PNotationItemNotice
-    {
-        get => _pNotationItemNotice;
-        private set => PNotationItemChange(ref _pNotationItemNotice, value, nameof(PNotationItemNotice));
-    }
+    public bool PNotationItemReady { get; }
 
-    public bool PNotationItemReady
-    {
-        get => _pNotationItemReady;
-        private set => PNotationItemChange(ref _pNotationItemReady, value, nameof(PNotationItemReady));
-    }
-
-    internal void PNotationItemShow(CCandidate candidate, PNotationReading? reading, string missing, string broken)
-    {
-        if (reading is not null)
-        {
-            PNotationItemReading.Add(reading);
-            PNotationItemNotice = string.Empty;
-            PNotationItemReady = true;
-            return;
-        }
-
-        if (PNotationItemReading.Count > 0)
-        {
-            return;
-        }
-
-        PNotationItemNotice = candidate.CCandidateReached ? missing : broken;
-        PNotationItemReady = false;
-    }
-
-    private void PNotationItemChange(ref string held, string value, string name)
-    {
-        if (string.Equals(held, value, StringComparison.Ordinal))
-        {
-            return;
-        }
-
-        held = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
-
-    private void PNotationItemChange(ref bool held, bool value, string name)
-    {
-        if (held == value)
-        {
-            return;
-        }
-
-        held = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
-
-    internal static void PNotationItemApply(FrameworkElement container, object item, RoutedEventHandler select)
+    internal static void PNotationItemRefine(FrameworkElement container, object item, RoutedEventHandler select)
     {
         if (item is not PNotationItem notation)
         {

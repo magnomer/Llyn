@@ -54,11 +54,6 @@ public interface LSettingsPort
     Task<IReadOnlyList<string>> LEngineEnsignLoad(
         Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store);
 
-    Task LEngineEnsignLoad(
-        string language,
-        IEnumerable<string> varieties,
-        Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store);
-
     LEstablishment LEngineEstablishmentRead();
 
     IReadOnlyList<string> LEngineLanguageRead();

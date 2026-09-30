@@ -72,7 +72,7 @@ public sealed class TTimbreEnsign
         CEditor editor = TEditorField.TEditorFieldPrepare(engine);
         editor.CEditorDesk.TDeskDefer(
             TInterface.TRequestLanguageCreate(editor.CEditorDesk.CDeskId, pack.TLanguageFixtureName));
-        Assert.False(editor.CEditorTimbre.CTimbreFlagged);
+        Assert.False(engine.TEngineFlaggedCheck(pack.TLanguageFixtureName));
         List<string> stored = [];
 
         CTimbreAccent? accent = await editor.CEditorTimbre.CTimbreFlagRead((rows, _) =>
