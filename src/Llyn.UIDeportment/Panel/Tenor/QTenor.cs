@@ -47,17 +47,17 @@ internal sealed partial class QTenor
         QTenorViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
         QTenorScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
-        QSounding.TextChanged += QSoundingHandle;
-        QQuest.TextChanged += QQuestHandle;
-        QTenorFresh.Click += QTenorFreshHandle;
-        QTenorStore.Click += QTenorStoreHandle;
+        QSounding.TextChanged += QSoundingObserve;
+        QQuest.TextChanged += QQuestObserve;
+        QTenorFresh.Click += QTenorFreshObserve;
+        QTenorStore.Click += QTenorStoreObserve;
         QTenorEarlier.Click += QTenorRetreatObserve;
         QTenorLater.Click += QTenorAdvanceObserve;
         QTenorBackward.Click += QTenorUndoObserve;
         QTenorForward.Click += QTenorRedoObserve;
-        QTenorViewer.Click += QTenorScribeHandle;
-        QTenorScribe.Click += QTenorScribeHandle;
-        QTenorBin.Click += QTenorBinHandle;
+        QTenorViewer.Click += QTenorViewerObserve;
+        QTenorScribe.Click += QTenorScribeObserve;
+        QTenorBin.Click += QTenorBinObserve;
     }
 
     private Border QDegree => QContract.QContractFind<Border>(_qTenorSurface, "PDegree");
@@ -134,15 +134,17 @@ internal sealed partial class QTenor
         _qTenorHost = host;
         _cTenor = host.PWindowForge.QForgeTenorCreate(QTenorShownCheck, host.PWindowEnvoy);
         _cTenor.CTenorRegisterOpened += QGamutRegisterRefine;
-        CPanel panel = _cTenor.CTenorPanel;
+        _cTenor.CTenorRowsChanged += QGamutRefine;
+        _cTenor.CTenorWorkspaceChanged += QTenorWorkspaceRefine;
+        CPanel panel = _cTenor.CTenorCohort.CCohortPanel;
         QLectern lectern = new(_cTenor.CTenorEditor.CEditorDisplay, panel);
         panel.CPanelChanged += QTenorModeRefine;
-        panel.CPanelRowsChanged += QCohortFind;
+        panel.CPanelRowsChanged += QCohortRefine;
 
         QGamut.ItemsSource = _qGamutList;
         QCohort.ItemsSource = _qCohortList;
-        QLookItem.QLookItemAttach(QGamut, QGamutApply);
-        QLookItem.QLookItemAttach(QCohort, QCohortApply);
+        QLookItem.QLookItemAttach(QGamut, QGamutItemRefine);
+        QLookItem.QLookItemAttach(QCohort, QCohortItemRefine);
 
         QTenorDisplay.PDisplayAttach(host, lectern);
         _cTenor.CTenorEditor.CEditorDesk.CDeskStateChanged += QTenorStoreRefine;
@@ -155,13 +157,6 @@ internal sealed partial class QTenor
         QTenorStore.IsEnabled = _cTenor.CTenorEditor.CEditorDesk.CDeskStorable;
     }
 
-    internal void QTenorReset()
-    {
-        _cTenor.CTenorPanel.CPanelEntryClose();
-        QGamutReset();
-        QGamutFind();
-    }
-
     internal void QTenorExitRefine()
     {
         QTenorEditor.PEditorPlayerRefine();
@@ -169,17 +164,17 @@ internal sealed partial class QTenor
 
     private void QTenorPressRefine(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _cTenor?.CTenorPanel.CPanelPressAllowed ?? false;
+        e.CanExecute = _cTenor?.CTenorCohort.CCohortPanel.CPanelPressAllowed ?? false;
     }
 
     private async void QTenorPressObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        await _cTenor.CTenorPortraitPrint();
+        await _cTenor.CTenorCohort.CCohortPortraitPrint();
     }
 
     private async void QTenorPortraitObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        await _cTenor.CTenorPortraitExport();
+        await _cTenor.CTenorCohort.CCohortPortraitExport();
     }
 
     internal void QTenorVoyageRefine(bool past, bool future)
@@ -222,7 +217,7 @@ internal sealed partial class QTenor
 
     private void QTenorModeRefine()
     {
-        CPanel panel = _cTenor.CTenorPanel;
+        CPanel panel = _cTenor.CTenorCohort.CCohortPanel;
         QTenorEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
         QTenorDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
         QTenorViewer.IsChecked = QLook.QLookCheckedRead(panel.CPanelViewerChecked);

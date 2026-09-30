@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -9,139 +8,91 @@ namespace Llyn.UIDeportment;
 
 internal sealed partial class QTenor
 {
-    private const string QTenorFailure = "Register.LoadFailed";
-
     private readonly ObservableCollection<QGamutItem> _qGamutList = [];
 
     private readonly ObservableCollection<QCohortItem> _qCohortList = [];
 
-    private async void QTenorWorkspaceUpdate()
+    private async void QTenorWorkspaceRefine()
     {
-        await LEnsignImage.LEnsignLoad(_qTenorHost.PWindowAtelier);
-        QTenorReset();
+        await LEnsignImage.LEnsignLoad(_qTenorHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
     }
 
-    private void QTenorRegisterUpdate()
-    {
-        QGamutFind();
-        _cTenor.CTenorPanel.CPanelDraftResonate();
-    }
-
-    private void QSoundingHandle(object sender, TextChangedEventArgs e)
+    private void QSoundingObserve(object sender, TextChangedEventArgs e)
     {
         _cTenor.CTenorQuerySet(QSounding.Text ?? string.Empty);
     }
 
-    private void QQuestHandle(object sender, TextChangedEventArgs e)
+    private void QQuestObserve(object sender, TextChangedEventArgs e)
     {
-        _cTenor.CTenorCohortFind(QQuest.Text);
+        _cTenor.CTenorCohort.CCohortQuerySet(QQuest.Text);
     }
 
-    private void QDegreeHandle(object sender, RoutedEventArgs e)
+    private void QDegreeObserve(object sender, RoutedEventArgs e)
+    {
+        _cTenor.CTenorOrderSet(QChoice.QChoiceOrderRead(sender));
+        QDegreeDropperRefine();
+    }
+
+    private void QDegreeDropperRefine()
     {
         QDegreeDropper.IsChecked = false;
-        _cTenor.CTenorOrderSet(QChoice.QChoiceOrderRead(sender));
     }
 
-    private void QGrilleHandle(object sender, RoutedEventArgs e)
+    private void QGrilleObserve(object sender, RoutedEventArgs e)
     {
         _cTenor.CTenorFilterSet(QChoice.QChoiceFilterRead(sender));
-        QGrilleRestore();
+        QGrilleRefine();
     }
 
-    internal async void QTenorVistaRestore()
+    internal async void QTenorVistaRefine()
     {
-        UserControl surface = _qTenorSurface;
-        _cTenor.CTenorObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, QGamutFind));
-        _cTenor.CTenorObserverAttach(
-            CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(surface, QTenorWorkspaceUpdate));
-        _cTenor.CTenorObserverAttach(
-            CSubject.CSubjectRegister, LObserver.LObserverCreate<CBulletin>(surface, QTenorRegisterUpdate));
-        _cTenor.CTenorObserverAttach(
-            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, QGamutFind));
-        _cTenor.CTenorObserverAttach(
-            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, QGamutFind));
-        CPanel panel = _cTenor.CTenorPanel;
-        panel.CPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryResonate));
-        panel.CPanelObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, QCohortFind));
-        panel.CPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
-        _cTenor.CTenorObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, QGamutFind));
         QChoice.QChoiceOrderBuild(
             QDegreeList,
             "Degree",
-            QDegreeHandle,
+            QDegreeObserve,
             [
                 CCatalogOrder.CCatalogOrderName,
                 CCatalogOrder.CCatalogOrderReverse,
                 CCatalogOrder.CCatalogOrderUsage,
             ]);
         QChoice.QChoiceOrderApply(QDegreeDropdown, _cTenor.CTenorOrder);
-        QGrilleRestore();
-
-        await LEnsignImage.LEnsignLoad(_qTenorHost.PWindowAtelier);
-
-        QChoice.QChoiceFilterBuild(
-            QGrilleList, _cTenor.CTenorLanguageRead(), _cTenor.CTenorFilter, QGrilleHandle);
-        _cTenor.CTenorQuerySet(QSounding.Text ?? string.Empty);
-        _cTenor.CTenorCohortFind(QQuest.Text);
-        QGamutFind();
+        QGrilleRefine();
+        IReadOnlyList<string> languages =
+            await LEnsignImage.LEnsignLoad(_qTenorHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
+        QGrilleListRefine(languages);
+        QGamutRefine();
     }
 
-    private void QGrilleRestore()
+    private void QGrilleListRefine(IReadOnlyList<string> languages)
+    {
+        QChoice.QChoiceFilterBuild(QGrilleList, languages, _cTenor.CTenorFilter, QGrilleObserve);
+    }
+
+    private void QGrilleRefine()
     {
         QGrilleMark.Visibility = _cTenor.CTenorFiltered ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void QGamutReset()
+    private void QGamutRefine()
     {
-        _cTenor.CTenorRegisterSelect(null);
-    }
-
-    private void QGamutFind()
-    {
-        IReadOnlyList<CCatalogRegister> read;
-        try
-        {
-            read = _cTenor.CTenorRowsRead();
-        }
-        catch (Exception exception)
-        {
-            _qTenorHost.PWindowFailureRefine(QTenorFailure, exception);
-            return;
-        }
-
         _qGamutList.Clear();
-        foreach (CCatalogRegister row in read)
+        foreach (CCatalogRegister row in _cTenor.CTenorRowsRead())
         {
             _qGamutList.Add(new QGamutItem(row));
         }
 
         QGamutEmpty.Visibility = _qGamutList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-        QCohortFind();
     }
 
-    private void QGamutHandle(object sender, RoutedEventArgs e)
+    private void QGamutObserve(object sender, RoutedEventArgs e)
     {
-        QGamutRowSelect((sender as FrameworkElement)?.DataContext as QGamutItem);
-    }
-
-    private void QGamutRowSelect(QGamutItem? item)
-    {
-        if (item is null)
+        if ((sender as FrameworkElement)?.DataContext is QGamutItem item)
         {
-            return;
+            _cTenor.CTenorRegisterToggle(item.QGamutItemId);
         }
-
-        _cTenor.CTenorRegisterToggle(item.QGamutItemId);
-        QGamutFind();
     }
 
-    private void QGamutApply(FrameworkElement container, object item, string? _)
+    private void QGamutItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QGamutItem gamut)
         {
@@ -159,8 +110,8 @@ internal sealed partial class QTenor
                 row.ClearValue(QLook.QLookCueProperty);
             }
 
-            row.Click -= QGamutHandle;
-            row.Click += QGamutHandle;
+            row.Click -= QGamutObserve;
+            row.Click += QGamutObserve;
         }
 
         if (QLook.QLookPartFind<QIconImage>(container, "PGamutIcon") is QIconImage icon)
@@ -183,52 +134,30 @@ internal sealed partial class QTenor
     {
         QSounding.Text = string.Empty;
         QQuest.Text = string.Empty;
-        QGamutFind();
     }
 
-    private void QTenorFreshHandle(object sender, RoutedEventArgs e)
+    private void QTenorFreshObserve(object sender, RoutedEventArgs e)
     {
-        if (!QTenorLeaveConfirm())
-        {
-            return;
-        }
-
-        if (_cTenor.CTenorCoinageAllowed)
-        {
-            QGamutCoinageShow(sender);
-            return;
-        }
-
         _cTenor.CTenorEntryCreate();
     }
 
-    private void QGamutCoinageShow(object origin)
+    private void QTenorViewerObserve(object sender, RoutedEventArgs e)
     {
-        if (QSCoinage.QSCoinageShow(Window.GetWindow((DependencyObject)origin), "Coinage.Register") is not string name)
-        {
-            return;
-        }
-
-        _cTenor.CTenorRegisterCreate(name);
+        _cTenor.CTenorCohort.CCohortPanel.CPanelScribeToggle(false);
     }
 
-    private void QTenorScribeHandle(object sender, RoutedEventArgs e)
+    private void QTenorScribeObserve(object sender, RoutedEventArgs e)
     {
-        _cTenor.CTenorPanel.CPanelScribeToggle(ReferenceEquals(sender, QTenorScribe));
+        _cTenor.CTenorCohort.CCohortPanel.CPanelScribeToggle(true);
     }
 
-    internal bool QTenorLeaveConfirm()
-    {
-        return _cTenor.CTenorPanel.CPanelLeaveConfirm();
-    }
-
-    private void QTenorStoreHandle(object sender, RoutedEventArgs e)
+    private void QTenorStoreObserve(object sender, RoutedEventArgs e)
     {
         _cTenor.CTenorEditor.CEditorEntrySave();
     }
 
-    private void QTenorBinHandle(object sender, RoutedEventArgs e)
+    private void QTenorBinObserve(object sender, RoutedEventArgs e)
     {
-        _cTenor.CTenorPanel.CPanelEntryDelete();
+        _cTenor.CTenorCohort.CCohortPanel.CPanelEntryDelete();
     }
 }

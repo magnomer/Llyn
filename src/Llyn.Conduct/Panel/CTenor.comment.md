@@ -2,109 +2,136 @@
 
 ## `public sealed class CTenor`
 
-The tenor panel's session: the Register list, the entries carrying the chosen Register, and the entry editor.
+The tenor panel's session: the Register list, the entry editor, and the entry list it hands to `CCohort`.
 The register vista and the cohort vista hold the panel's state, and the drivers only follow.
 Every gate holds only the interaction and reaches the engine through a vista, the panel or the editor's desk.
 It restores both vistas itself, so no driver holds a port or a vista.
 
-## `private CTenor(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `private CTenor(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
-Builds the entry editor and the cohort panel over the atelier's ports.
-The panel asks the editor's desk before it leaves an entry, and it finishes through the editor.
+Builds the entry editor and the entry list over the atelier's ports.
+The entry list's panel asks the editor's desk before it leaves an entry, and it finishes through the editor.
 A cleared panel cancels the editor's draft, and an edited row opens the editor on it.
 So the first draft a fresh member shows already carries the Register.
+It registers its close with the workspace beside its draft finish and its vista restore.
 
-## `public static CTenor CTenorCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `public static CTenor CTenorCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
-Builds the tenor panel over the atelier and the panel's own entry editor.
+Builds the tenor over the atelier and the panel's own entry editor.
 Building it is no user action, so it is no gate on the atelier.
 `shownSeam` answers whether the tab is in front, which only the surface knows until `CNavigation` owns it.
+`marshal` carries every engine notice onto the driver's thread, and the forge hands it once.
 
 ## `public CEditor CTenorEditor { get; }`
 
 The entry editor on the cohort side, which the driver wraps for its editor page.
 
-## `public CPanel CTenorPanel { get; }`
+## `public CCohort CTenorCohort { get; }`
 
-The shared panel state over the cohort vista: the chosen entry, the scribe mode, the bin and the leave guard.
+The entry list beside the Register list, with its own panel, search and rows read.
 
 ## `public event Action? CTenorRegisterOpened;`
 
-Raised when an arrival or a coinage opens a Register, so the driver shows both searches empty and lists again.
+Raised when an arrival or a coinage opens a Register, so the driver shows both searches empty.
+The rows event follows it, so the lists are read after the fields are emptied.
+
+## `public event Action? CTenorRowsChanged;`
+
+Raised when the Register rows may have moved, so the driver reads the Register list again.
+The entry rows follow from that read, so the Register list is always read first.
+
+## `public event Action? CTenorWorkspaceChanged;`
+
+Raised last when the workspace moved, after the entry is closed, the Register let go and the rows raised.
+The driver loads the new workspace's flags on it.
 
 ## `public void CTenorRegisterToggle(long id)`
 
 A click on a row: records the station it leaves, then toggles the Register.
+It raises the rows, since choosing a Register announces nothing in the engine.
 
 ## `internal void LTenorRegisterOpen(long id)`
 
 The navigation's arrival: chooses the Register and empties both searches, then raises `CTenorRegisterOpened`.
 Emptying the searches is the arrival's own, so no driver has to echo it back through the query gates.
+It raises the rows last, since the Register may be new to the list.
 
 ## `internal long? LTenorChosen`
 
 The Register the register vista has chosen, or null while none is, which the voyage records.
 
-## `public bool CTenorCoinageAllowed`
+## `private bool LTenorCoinageAllowed`
 
 Whether New should name a new Register rather than start an entry.
 That holds while no Register is chosen and no entry is shown.
-Both drivers ask this one question, so neither decides it on its own.
-
-## `public string CTenorEmptyKey`
-
-The localization key for the empty entry list.
-The engine says whether the cohort search holds text, so a search reads as unmatched and no search as vacant.
+Only the fresh gate reads it, after the leave question settled the shown entry.
 
 ## `public void CTenorVistaRestore()`
 
 Starts the register vista and the cohort vista for this tab.
-The cohort vista then goes to the panel and the editor.
+Each fresh vista takes the query its forerunner held, so a switched workspace keeps both searches.
+The register vista is the entry list's roll, and the cohort vista goes to the entry list and the editor.
+The observers are attached to the fresh vistas last.
 
-## `public void CTenorObserverAttach(CSubject subject, Action<CBulletin> observer)`
+## `private void LTenorObserverAttach()`
 
-Attaches a driver's observer to the register vista for one subject.
-Each engine notice reaches the observer through the atelier's one bulletin map.
+The tenor's subject plan, attached to each fresh pair of vistas.
+Every notice runs through the marshal, so each answer lands on the driver's thread.
+A vista, reflex, settings or entry notice on the register vista raises the rows.
+A reflex fill or a flipped setting rewrites the epithet beside a headword.
+A workspace notice and a Register notice each have their own answer.
+The entry list attaches its own observers in between, in the order the driver once used.
+A draft edit or a fetched frequency, paradigm, script or fanqie row changes no listed row, and is not attached.
+
+## `private void LTenorSubjectAttach(CSubject subject, Action resonate)`
+
+Attaches one answer to the register vista for one subject, through the marshal.
+
+## `private void LTenorRowsResonate()`
+
+Raises the Register rows, whose read then raises the entry rows.
+
+## `private void LTenorWorkspaceResonate()`
+
+Puts the panel back on the workspace open now.
+It closes the entry, lets go of the Register, raises the rows, then raises `CTenorWorkspaceChanged`.
+A different workspace has its own Registers, so the Register this panel stood on may not exist there.
+
+## `private void LTenorRegisterResonate()`
+
+A Register notice carries a Register id, not an entry id, so it never selects a row.
+It raises the rows, then rereads the shown entry, whose chips may carry the renamed Register.
 
 ## `public void CTenorOrderSet(CCatalogOrder? order)`
 
 Orders the Register list as the user chose.
 A null order keeps the current one, which the vista decides.
 
-## `public void CTenorCohortFind(string query)`
-
-Narrows the entries of the chosen Register by the text typed in the cohort search.
-
 ## `public IReadOnlyList<CCatalogRegister> CTenorRowsRead()`
 
-The Register rows the engine lists, usage count and chosen mark included.
-Each Register maps through the card's one Register map.
+The Register rows the engine lists, chosen mark included, mapped through the card's one Register map.
 It answers nothing before the vistas are restored.
+The engine drops a chosen Register the rows no longer hold, so the entries fall back to every entry.
+A failed read shows `Register.LoadFailed` through the envoy and answers no rows.
+A read that succeeds raises the entry rows, since the entries hang on the chosen Register.
+A failed read raises nothing more, so the user sees one notice, as before.
 
-## `public IReadOnlyList<CVistaRow> CTenorCohortRead()`
-
-The entries under the chosen Register, or every entry while none is chosen, as the engine narrows them.
-
-## `public void CTenorRegisterCreate(string name)`
+## `private void LTenorRegisterCreate(string name)`
 
 Makes the Register from the raw wording and opens it as an arrival does.
+The clerk below trims the wording and refuses a blank one.
 The panel is cleared first, so an unsaved fresh entry the leave check already settled does not linger.
 A refused Register is shown through `CEnvoy` as `Register.CreateFailed`, and nothing opens.
 
 ## `public void CTenorEntryCreate()`
 
-Opens a fresh entry in the editor, in edit mode.
+The New button: the one gate for a fresh Register or a fresh entry.
+It asks the leave question first, and a user who stays gets nothing new.
+While a Register may be coined, it asks the wording through `CEnvoy` under `Coinage.Register` and makes the Register.
+A retreat from that question makes nothing.
+Otherwise it opens a fresh entry in the editor, in edit mode.
 The chosen Register goes down with the start, so the engine puts it on the first card in one call.
 With no Register chosen the fresh entry starts blank.
-
-## `public Task CTenorPortraitPrint()`
-
-Prints the shown entry, and does nothing while none is shown outside edit mode.
-`CTenorPortraitExport` exports it under the same condition.
-The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
-`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
-The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
-`CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.
 
 ## `private void LTenorClose()`
 

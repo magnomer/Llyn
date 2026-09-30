@@ -84,7 +84,8 @@ public sealed class QForge
 
     public CTenor QForgeTenorCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        CTenor tenor = CTenor.CTenorCreate(_qForgeAtelier, shownSeam, envoy);
+        CTenor tenor = CTenor.CTenorCreate(
+            _qForgeAtelier, shownSeam, envoy, LObserver.LObserverCreate<Action>(static run => run()));
         tenor.CTenorVistaRestore();
         return tenor;
     }

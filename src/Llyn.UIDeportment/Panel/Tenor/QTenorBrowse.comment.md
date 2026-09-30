@@ -22,96 +22,93 @@ It is the whole workspace, which is what the panel shows first.
 The vista is null until the window hands one over, so the handlers do nothing before that.
 A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
-### `private async void QTenorWorkspaceUpdate()`
+### `private async void QTenorWorkspaceRefine()`
 
-A workspace that moved empties the panel and reloads its flags before any row is built.
+Answers the area's workspace event, which has already emptied the panel and raised the rows.
+It loads the flags of the workspace that moved.
 
-### `private void QTenorRegisterUpdate()`
-
-A register announcement carries a register id, not an entry id, so it never selects a row.
-It rebuilds the catalog and re-reads the shown entry, whose chips may carry the renamed register.
-Passing it on as an entry would make a fresh entry being written adopt the register's id.
-
-### `private void QSoundingHandle(object sender, TextChangedEventArgs e)`
+### `private void QSoundingObserve(object sender, TextChangedEventArgs e)`
 
 Each keystroke hands the search text to the vista, whose announcement rebuilds the catalog.
 
-### `private void QDegreeHandle(object sender, RoutedEventArgs e)`
+### `private void QQuestObserve(object sender, TextChangedEventArgs e)`
 
-A chosen ordering closes the dropdown and hands the ordering to the vista.
+Each keystroke hands the entry search text to the cohort's query gate.
+
+### `private void QDegreeObserve(object sender, RoutedEventArgs e)`
+
+A chosen ordering goes raw to the order gate, then the dropdown is closed.
 The vista saves it and announces it, and the announcement rebuilds the catalog.
 
-### `private void QGrilleHandle(object sender, RoutedEventArgs e)`
+### `private void QDegreeDropperRefine()`
+
+Closes the ordering dropdown once a choice is made.
+
+### `private void QGrilleObserve(object sender, RoutedEventArgs e)`
 
 The ticked languages are read off the menu and handed to the vista, which saves and announces them.
 The mark on the button is redrawn from the vista at once.
 
-### `internal async void QTenorVistaRestore()`
+### `internal async void QTenorVistaRefine()`
 
-Conduct starts the tab's vistas from the window's posture, so no vista crosses the cut.
-Takes the vista the window started for this tab and puts the panel on it.
-The panel answers the engine through the vistas rather than its own visibility.
-So a Register written in the input panel is in the catalog at once, with no tab switch needed.
-Each subject the panel cares about is attached once, so no handler sorts announcements by subject.
-A vista announcement rebuilds the catalog, since order, filter or query moved.
-The entry list is rebuilt with it, so a moved filter reaches it the same way.
-A reflex fill or a flipped setting rewrites the epithet beside a headword, so each rebuilds too.
-An entry announcement goes to the cohort vista, whose chosen row is the entry it may name.
-A draft edit or a fetched frequency, paradigm, script or fanqie row changes no listed row, and is not attached.
-The dropdown mark and the filter mark are drawn from it first.
-The flags are loaded before any row is built, then the language menu is built from the loaded packs.
-Search text still standing in the box is handed to the vista, so a switched workspace keeps the search.
-The catalog is then listed from the vista.
-The cohort vista is kept for the entry column and handed to the display, which reads its chosen entry.
-The cohort vista carries the entry search box, so its announcement refills the entry column alone.
+Answers the workspace opening, after `CTenor` has restored its vistas and attached its observers.
+The ordering menu, the dropdown mark and the filter mark are drawn from the vista first.
+The flags are loaded before any row is built.
+The language menu is then built from the languages that load answers.
+The catalog is then listed once, so a row keeps the flag it was built with.
+Its read raises the entry rows, so the entry list is painted after the flags too.
 
-### `private void QGrilleRestore()`
+### `private void QGrilleListRefine(IReadOnlyList<string> languages)`
+
+Builds the language menu from the loaded packs, each box ticked unless the vista hides its language.
+
+### `private void QGrilleRefine()`
 
 Shows the filter mark while the vista hides any language.
 
-### `private void QGamutReset()`
+### `private void QTenorFreshObserve(object sender, RoutedEventArgs e)`
 
-Lets go of the chosen Register, so a switched workspace opens on every Entry.
+New makes whatever the emptier panel would list, and the one fresh gate decides which.
+The gate asks the leave question and any wording through the envoy, so the view asks nothing.
 
-### `private void QTenorFreshHandle(object sender, RoutedEventArgs e)`
+### `private void QTenorViewerObserve(object sender, RoutedEventArgs e)`
 
-New makes whatever the emptier panel would list.
-With no register chosen and no entry shown, it names a new register.
-With a register chosen, or an entry shown, it starts a new entry.
-Conduct makes that choice, so the view only follows its verdict.
+The viewer button hands false to the panel's scribe toggle, with no test of who sent it.
 
-### `private void QGamutCoinageShow(object origin)`
+### `private void QTenorScribeObserve(object sender, RoutedEventArgs e)`
 
-Asks for the wording of a new register, over the window that holds the clicked button.
-A dismissed dialog changes nothing.
-The wording goes raw to the create gate, which makes the Register, opens it and reports a refusal.
+The scribe button hands true to the panel's scribe toggle, and each button subscribes its own.
 
-### `private void QGamutFind()`
+### `private void QTenorStoreObserve(object sender, RoutedEventArgs e)`
 
-The engine returns the Registers answering the vista, already counted and in its ordering.
+The store button calls the editor's save gate.
+
+### `private void QTenorBinObserve(object sender, RoutedEventArgs e)`
+
+The bin button calls the panel's delete gate.
+
+### `private void QGamutRefine()`
+
+Answers the area's rows event and lists the Registers the area reads, already counted and in the vista's ordering.
 The rows the language packs name and the rows the user wrote arrive as one shelf.
 The chosen Register is re-marked as the catalog is rebuilt, so the selection survives a re-sort.
-A chosen Register the rows no longer hold is dropped through the vista, and the list is built unmarked.
-The panel then falls back to every Entry.
-Before a vista is handed over nothing is asked.
+A failed read has already been shown by the area, which then answers no rows.
+A read that succeeds makes the area raise the entry rows, so the entry list follows.
 
 ### `private void QGamutRegisterRefine()`
 
 Answers the area's opening event after a chip's arrival or a coinage.
 The area has already emptied both queries, so the fields only show it.
 The fields' own handlers still hear the change, and their gates find the queries already empty.
-The catalog is rebuilt, since the Register may be new to the list.
+The area raises the rows right after, so the catalog is rebuilt without the view asking.
 
-### `private void QGamutHandle(object sender, RoutedEventArgs e)`
+### `private void QGamutObserve(object sender, RoutedEventArgs e)`
 
-A clicked row hands its item to the helper, which ignores a click that carries none.
-
-### `CTenorRegisterToggle(item.QGamutItemId);`
-
-The gate records the station and toggles, so clicking the chosen Register lets go of it.
+A clicked row hands its Register id to the toggle gate, and a click that carries no item is ignored.
+The gate records the station, toggles and raises the rows, so clicking the chosen Register lets go of it.
 That is how the panel is put back on the whole workspace without a separate control saying so.
 
-## `private void QGamutApply(FrameworkElement container, object item, string? _)`
+## `private void QGamutItemRefine(FrameworkElement container, object item, string? _)`
 
 Fills one register row from its item, the work its bindings did before.
 The row carries the `Chosen` cue on the chosen item and none otherwise, which the look sheet paints.

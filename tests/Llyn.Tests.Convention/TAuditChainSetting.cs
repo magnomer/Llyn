@@ -210,6 +210,7 @@ internal static class TAuditChainSetting
             "CCorpus",
             "CQuotation",
             "CMembership",
+            "CCohort",
             "CFavorite",
             "CFootnote",
             "CGuild",

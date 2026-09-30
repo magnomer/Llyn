@@ -389,6 +389,7 @@
       "CCorpus",
       "CQuotation",
       "CMembership",
+      "CCohort",
       "CFavorite",
       "CFootnote",
       "CGuild",

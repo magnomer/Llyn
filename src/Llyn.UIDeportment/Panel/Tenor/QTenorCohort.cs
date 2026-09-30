@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,21 +8,10 @@ namespace Llyn.UIDeportment;
 
 internal sealed partial class QTenor
 {
-    private void QCohortFind()
+    private void QCohortRefine()
     {
-        IReadOnlyList<CVistaRow> read;
-        try
-        {
-            read = _cTenor.CTenorCohortRead();
-        }
-        catch (Exception exception)
-        {
-            _qTenorHost.PWindowFailureRefine(QTenorFailure, exception);
-            return;
-        }
-
         List<QCohortItem> fresh = [];
-        foreach (CVistaRow entry in read)
+        foreach (CVistaRow entry in _cTenor.CTenorCohort.CCohortRowsRead())
         {
             fresh.Add(new QCohortItem(
                 entry.CVistaRowId,
@@ -39,31 +27,17 @@ internal sealed partial class QTenor
         LSplice.LSpliceApply(
             _qCohortList, fresh, QCohortItem.QCohortItemMatch, QCohortItem.QCohortItemSync);
 
-        QCohortEmpty.SetResourceReference(TextBlock.TextProperty, _cTenor.CTenorEmptyKey);
+        QCohortEmpty.SetResourceReference(TextBlock.TextProperty, _cTenor.CTenorCohort.CCohortEmptyKey);
         QCohortEmpty.Visibility = _qCohortList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void QCohortHandle(object sender, RoutedEventArgs e)
+    private void QCohortObserve(object sender, RoutedEventArgs e)
     {
-        QCohortRowShow((sender as FrameworkElement)?.DataContext as QCohortItem);
+        _cTenor.CTenorCohort.CCohortPanel.CPanelRowSelect(
+            ((sender as FrameworkElement)?.DataContext as QCohortItem)?.QCohortItemId);
     }
 
-    private void QCohortRowShow(QCohortItem? item)
-    {
-        if (item is null)
-        {
-            return;
-        }
-
-        if (!QTenorLeaveConfirm())
-        {
-            return;
-        }
-
-        _cTenor.CTenorPanel.CPanelRowOpen(item.QCohortItemId);
-    }
-
-    private void QCohortApply(FrameworkElement container, object item, string? _)
+    private void QCohortItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QCohortItem cohort)
         {
@@ -81,8 +55,8 @@ internal sealed partial class QTenor
                 row.ClearValue(QLook.QLookCueProperty);
             }
 
-            row.Click -= QCohortHandle;
-            row.Click += QCohortHandle;
+            row.Click -= QCohortObserve;
+            row.Click += QCohortObserve;
         }
 
         if (QLook.QLookPartFind<Image>(container, "PCohortFlag") is Image flag)

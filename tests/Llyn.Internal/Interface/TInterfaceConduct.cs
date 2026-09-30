@@ -367,7 +367,7 @@ internal static class TInterfaceConduct
 
     internal static string TMembershipFileRead(this CMembership membership) => membership.LMembershipFileRead();
 
-    internal static string TTenorFileRead(this CTenor tenor) => tenor.LTenorFileRead();
+    internal static string TCohortFileRead(this CCohort cohort) => cohort.LCohortFileRead();
 
     internal static string TXieshengFileRead(this CXiesheng xiesheng) => xiesheng.LXieshengFileRead();
 

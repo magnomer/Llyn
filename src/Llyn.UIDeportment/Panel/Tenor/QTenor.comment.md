@@ -23,10 +23,7 @@ Puts the panel to work through the Conduct tenor panel, which the forge builds w
 The view wraps that editor for its editor page.
 The lectern follows the panel, whose loads and clears reach the display's area, never the veneer.
 Both catalogs get their row fills here, where their sources are set.
-
-## `internal void QTenorReset()`
-
-Empties the panel and rebuilds the catalog, for a workspace that has just moved.
+The area's rows, opening and workspace events are subscribed here, each to its own Refine.
 
 ## `internal void QTenorExitRefine()`
 
