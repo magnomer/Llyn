@@ -56,7 +56,8 @@ internal sealed class QKindredItem : INotifyPropertyChanged
             && string.Equals(held.QKindredItemHeadword, fresh.QKindredItemHeadword, StringComparison.Ordinal)
             && string.Equals(held.QKindredItemEpithet, fresh.QKindredItemEpithet, StringComparison.Ordinal)
             && string.Equals(held.QKindredItemName, fresh.QKindredItemName, StringComparison.Ordinal)
-            && string.Equals(held.QKindredItemLanguage, fresh.QKindredItemLanguage, StringComparison.Ordinal);
+            && string.Equals(held.QKindredItemLanguage, fresh.QKindredItemLanguage, StringComparison.Ordinal)
+            && ReferenceEquals(held.QKindredItemFlag, fresh.QKindredItemFlag);
     }
 
     internal static void QKindredItemSync(QKindredItem held, QKindredItem fresh)

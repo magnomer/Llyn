@@ -19,6 +19,8 @@ public sealed class CXiesheng
 
     private readonly CEnvoy _cXieshengEnvoy;
 
+    private readonly Action<Action> _cXieshengMarshal;
+
     private LVista? _cXieshengGrove;
 
     private LVista? _cXieshengKindred;
@@ -27,17 +29,19 @@ public sealed class CXiesheng
 
     private int _cXieshengKindredCount;
 
-    private CXiesheng(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    private CXiesheng(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(shownSeam);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(marshal);
 
         _cXieshengAtelier = atelier;
         _cXieshengPort = atelier.CAtelierPhonologyPort;
         _cXieshengPortraitPort = atelier.CAtelierPortraitPort;
         _cXieshengSettingsPort = atelier.CAtelierSettingsPort;
         _cXieshengEnvoy = envoy;
+        _cXieshengMarshal = marshal;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CXieshengEditor = editor;
         CXieshengPanel = new CPanel(
@@ -59,16 +63,20 @@ public sealed class CXiesheng
             () => LXieshengAllowed);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CXieshengPanel.LPanelChangeCheck, editor.LEditorFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CXieshengVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LXieshengClose);
         atelier.CAtelierNavigation.LNavigationStemAttach(LXieshengStemOpen);
         CXieshengPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }
 
-    public static CXiesheng CXieshengCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    public static CXiesheng CXieshengCreate(
+        CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
-        return new CXiesheng(atelier, shownSeam, envoy);
+        return new CXiesheng(atelier, shownSeam, envoy, marshal);
     }
 
     public event Action? CXieshengChanged;
+
+    public event Action? CXieshengWorkspaceChanged;
 
     public CEditor CXieshengEditor { get; }
 
@@ -105,18 +113,37 @@ public sealed class CXiesheng
         LVista grove = _cXieshengAtelier.CAtelierVistaStart("grove", null, CCatalogOrder.CCatalogOrderName);
         LVista kindred = _cXieshengAtelier.CAtelierVistaStart(
             "kindred", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
+        grove.LVistaQuerySet(_cXieshengGrove?.LVistaQuery ?? string.Empty);
+        kindred.LVistaQuerySet(_cXieshengKindred?.LVistaQuery ?? string.Empty);
         _cXieshengGrove = grove;
         _cXieshengKindred = kindred;
         CXieshengPanel.CPanelVistaRestore(kindred);
         CXieshengEditor.LEditorVistaRestore(kindred);
+        LXieshengObserverAttach(grove);
     }
 
-    public void CXieshengObserverAttach(CSubject subject, Action<CBulletin> observer)
+    private void LXieshengObserverAttach(LVista grove)
     {
-        ArgumentNullException.ThrowIfNull(observer);
+        CPanel panel = CXieshengPanel;
+        Action<CBulletin> rows = _ => _cXieshengMarshal(LXieshengRowsResonate);
+        LXieshengGroveAttach(grove, CSubject.CSubjectVista, rows);
+        LXieshengGroveAttach(grove, CSubject.CSubjectWorkspace, _ => _cXieshengMarshal(LXieshengWorkspaceResonate));
+        LXieshengGroveAttach(grove, CSubject.CSubjectFanqie, rows);
+        LXieshengGroveAttach(grove, CSubject.CSubjectSettings, rows);
+        panel.CPanelObserverAttach(CSubject.CSubjectVista, _ => _cXieshengMarshal(panel.CPanelRowsResonate));
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectEntry, bulletin => _cXieshengMarshal(() => LXieshengEntryResonate(bulletin)));
+        panel.CPanelChosenAttach(CSubject.CSubjectEntry, _ => _cXieshengMarshal(panel.CPanelDraftResonate));
+    }
 
-        _cXieshengGrove?.LVistaObserverAttach(
-            CPanel.CPanelSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
+    public static IReadOnlyList<CCatalogOrder> CXieshengOrderRead()
+    {
+        return
+        [
+            CCatalogOrder.CCatalogOrderName,
+            CCatalogOrder.CCatalogOrderReverse,
+            CCatalogOrder.CCatalogOrderUsage,
+        ];
     }
 
     public IReadOnlyList<CStem> CXieshengGroveRead()
@@ -171,23 +198,30 @@ public sealed class CXiesheng
         _cXieshengGrove?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
     }
 
-    public void CXieshengStemCancel()
+    private void LXieshengWorkspaceResonate()
     {
         _cXieshengGrove?.LVistaSelect(null);
         CXieshengPanel.CPanelEntryClose();
         CXieshengChanged?.Invoke();
+        CXieshengWorkspaceChanged?.Invoke();
     }
 
-    public void CXieshengRowsResonate()
+    private void LXieshengRowsResonate()
     {
         CXieshengChanged?.Invoke();
         CXieshengPanel.CPanelRowsResonate();
     }
 
-    public void CXieshengEntryResonate(CBulletin bulletin)
+    private void LXieshengEntryResonate(CBulletin bulletin)
     {
         CXieshengChanged?.Invoke();
         CXieshengPanel.CPanelEntryResonate(bulletin);
+    }
+
+    private void LXieshengClose()
+    {
+        CXieshengEditor.CEditorClose();
+        CXieshengEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
     }
 
     public void CXieshengStemSelect(long? id)
@@ -267,5 +301,13 @@ public sealed class CXiesheng
             LXieshengFileRead(),
             (file, medium) => _cXieshengPortraitPort.LEnginePortraitExport(
                 _cXieshengKindred, file, medium, CPortrait.LPortraitLabelRead(_cXieshengSettingsPort)));
+    }
+
+    private static void LXieshengGroveAttach(LVista grove, CSubject subject, Action<CBulletin> observer)
+    {
+        ArgumentNullException.ThrowIfNull(observer);
+
+        grove.LVistaObserverAttach(
+            CPanel.CPanelSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
     }
 }

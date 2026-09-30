@@ -25,6 +25,7 @@ Copies a list of entry rows into rows the list can show.
 ## `internal static bool QKindredItemMatch(QKindredItem held, QKindredItem fresh)`
 
 True while the held row already carries everything the fresh one says.
+The flag counts too, so a flag loaded after the rows were built refills the list.
 
 ## `internal static void QKindredItemSync(QKindredItem held, QKindredItem fresh)`
 

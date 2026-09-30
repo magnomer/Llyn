@@ -49,7 +49,7 @@
     "src/Llyn.UIDeportment/Display/Template/PLeaf.cs": 6,
     "src/Llyn.UIDeportment/Display/Template/QLeafChip.cs": 3,
     "src/Llyn.UIDeportment/Display/Template/QLeafItem.cs": 17,
-    "src/Llyn.UIDeportment/Display/View/PDisplay.cs": 2,
+    "src/Llyn.UIDeportment/Display/View/PDisplay.cs": 1,
     "src/Llyn.UIDeportment/Editor/Card/PCard.cs": 4,
     "src/Llyn.UIDeportment/Editor/Card/PCardContext.cs": 2,
     "src/Llyn.UIDeportment/Editor/Card/PCardImage.cs": 1,
@@ -196,7 +196,7 @@
     "src/Llyn.UIDeportment/Sound/Shengfu/QGroveItem.cs": 4,
     "src/Llyn.UIDeportment/Sound/Shengfu/QKindredItem.cs": 6,
     "src/Llyn.UIDeportment/Sound/Shengfu/QStem.cs": 7,
-    "src/Llyn.UIDeportment/Sound/Shengfu/QXiesheng.cs": 44,
+    "src/Llyn.UIDeportment/Sound/Shengfu/QXiesheng.cs": 39,
     "src/Llyn.UIDeportment/Sound/Transcription/PNotation.cs": 29,
     "src/Llyn.UIDeportment/Sound/Transcription/PNotationItem.cs": 1,
     "src/Llyn.UIDeportment/Sound/Transcription/PTranscription.cs": 13

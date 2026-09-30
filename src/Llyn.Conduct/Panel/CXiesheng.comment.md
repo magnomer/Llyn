@@ -7,21 +7,28 @@ It holds the series column's vista, the entry list's vista and panel, and the en
 It is the yunjing session with one column instead of two, since a series names a cell by itself.
 It restores its vistas itself, so no driver holds a port or a vista.
 
-## `private CXiesheng(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `private CXiesheng(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Takes the atelier's ports and builds the panel's own entry editor.
 The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
 A cleared panel empties the editor, and an edited row opens in it.
+It registers its vista restore and its close with the workspace.
 
-## `public static CXiesheng CXieshengCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `public static CXiesheng CXieshengCreate(`
 
 Builds the panel over the atelier, so the driver hands it no port.
 Building it is no user action, so it is no gate on the atelier.
 `shownSeam` answers whether the tab is in front, which only the surface knows until `CNavigation` owns it.
+`marshal` carries every engine notice onto the driver's thread, so the driver holds no observer.
 
 ## `public event Action? CXieshengChanged`
 
 Raised whenever a column, the page or the mode changed and the driver must copy again.
+
+## `public event Action? CXieshengWorkspaceChanged;`
+
+The workspace changed under the panel, after the series and the chosen entry were let go.
+The driver answers it by drawing the flags of the languages again.
 
 ## `public event Action? CXieshengStemOpened;`
 
@@ -73,6 +80,10 @@ The localization key the empty entry list prints, telling no series chosen from 
 
 The ordering the series column is listed in, defaulted by the engine while no vista stands.
 
+## `private readonly Action<Action> _cXieshengMarshal`
+
+The medium's marshal the observers run each answer through, since only the medium knows its thread.
+
 ## `private string LXieshengVacantKey`
 
 The key a chosen series with no entry prints, narrowed or not.
@@ -85,12 +96,21 @@ True while the column points at a series.
 
 Starts the two vistas off the window posture, the column and the entry list.
 The column is ordered by name and the list by headword until the user picks another order.
-The list's vista then goes to the panel and the editor.
+The search text of each vista before it carries into its fresh one, so a workspace switch keeps it.
+The list's vista then goes to the panel and the editor, and every observer attaches to the fresh vistas.
 
-## `public void CXieshengObserverAttach(CSubject subject, Action<CBulletin> observer)`
+## `private void LXieshengObserverAttach(LVista grove)`
 
-Attaches an observer of that subject to the series column.
-The subject and bulletin maps are the panel's and the atelier's, so the driver names neither engine type.
+Attaches the panel's answers to the fresh vistas, each carried through the marshal.
+A Vista, Fanqie or Settings notice on the column raises the column and the rows again.
+A Workspace notice on the column goes to `LXieshengWorkspaceResonate`.
+The list's own Vista notice raises its rows, and an Entry notice goes to `LXieshengEntryResonate`.
+A notice on the chosen entry reads its draft again.
+
+## `public static IReadOnlyList<CCatalogOrder> CXieshengOrderRead()`
+
+The orders the column menu offers, in the order it lists them.
+It needs no session, so the driver builds the menu once.
 
 ## `public IReadOnlyList<CStem> CXieshengGroveRead()`
 
@@ -119,17 +139,24 @@ Narrows the entry list to that query.
 Lists the series column in that ordering.
 The vista keeps the one it has when none is named.
 
-## `public void CXieshengStemCancel()`
+## `private void LXieshengWorkspaceResonate()`
 
 Unchooses the series and clears the panel, as a workspace changes.
+It then tells the driver through `CXieshengWorkspaceChanged`.
 
-## `public void CXieshengRowsResonate()`
+## `private void LXieshengRowsResonate()`
 
 Answers a column notice by raising the change and refreshing the panel's own rows.
 
-## `public void CXieshengEntryResonate(CBulletin bulletin)`
+## `private void LXieshengEntryResonate(CBulletin bulletin)`
 
 Answers an entry notice by raising the change and handing the notice to the panel.
+
+## `private void LXieshengClose()`
+
+The panel's part of the atelier's close.
+The editor lets its draft go, then the display stops its playback.
+`CAtelierClose` runs it through the closure the constructor registers.
 
 ## `public void CXieshengStemSelect(long? id)`
 
@@ -165,3 +192,8 @@ The reader is asked for the printer through the panel's envoy, and a decline pri
 Exports the entry the reader holds as a portrait file.
 The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.
+
+## `private static void LXieshengGroveAttach(LVista grove, CSubject subject, Action<CBulletin> observer)`
+
+Attaches the observer to the series column.
+The subject and bulletin maps are the panel's and the atelier's, so the driver names neither engine type.

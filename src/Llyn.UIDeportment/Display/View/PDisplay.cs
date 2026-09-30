@@ -290,11 +290,6 @@ public class PDisplay : UserControl
         _qLectern.QLecternSound.QLecternGlyphObserve(e.Parameter);
     }
 
-    internal void PDisplayClose()
-    {
-        _qLectern.QLecternSoundArea.CDisplayPlaybackCancel();
-    }
-
     private void PDisplayCardObserve(object sender, RoutedEventArgs e)
     {
         _qLectern.QLecternCard.QLecternChipObserve(e);

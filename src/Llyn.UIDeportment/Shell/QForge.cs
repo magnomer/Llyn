@@ -93,7 +93,8 @@ public sealed class QForge
 
     public CXiesheng QForgeXieshengCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        CXiesheng xiesheng = CXiesheng.CXieshengCreate(_qForgeAtelier, shownSeam, envoy);
+        CXiesheng xiesheng = CXiesheng.CXieshengCreate(
+            _qForgeAtelier, shownSeam, envoy, LObserver.LObserverCreate<Action>(static run => run()));
         xiesheng.CXieshengVistaRestore();
         return xiesheng;
     }

@@ -12,7 +12,7 @@ namespace Llyn.Tests;
 
 public sealed class TXiesheng
 {
-    private const string TXieshengPack =
+    internal const string TXieshengPack =
         """
         { "fanqie": [
             { "name": "Broad", "source": "Wiki", "url": "https://example.test/wiki/{word}?raw",
@@ -130,7 +130,7 @@ public sealed class TXiesheng
     }
 
     [Fact]
-    public async Task XieshengStemSelect_ChosenTwiceThenCancelled_TogglesAndClears()
+    public async Task XieshengStemSelect_ChosenTwiceThenWorkspaceChanged_TogglesAndClears()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -151,7 +151,7 @@ public sealed class TXiesheng
         Assert.True(xiesheng.CXieshengStemShown);
 
         xiesheng.CXieshengStemSelect(stem);
-        xiesheng.CXieshengStemCancel();
+        engine.TEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
 
         Assert.False(xiesheng.CXieshengStemShown);
         Assert.Empty(xiesheng.CXieshengKindredRead());
@@ -292,19 +292,19 @@ public sealed class TXiesheng
         Assert.Null(xiesheng.CXieshengEditor.CEditorDesk.CDeskStoredRead());
     }
 
-    private static CXiesheng TXieshengPrepare(CAtelier atelier)
+    internal static CXiesheng TXieshengPrepare(CAtelier atelier)
     {
         return TXieshengPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
     }
 
     private static CXiesheng TXieshengPrepare(CAtelier atelier, CEnvoy envoy)
     {
-        CXiesheng xiesheng = CXiesheng.CXieshengCreate(atelier, static () => true, envoy);
+        CXiesheng xiesheng = CXiesheng.CXieshengCreate(atelier, static () => true, envoy, static run => run());
         xiesheng.CXieshengVistaRestore();
         return xiesheng;
     }
 
-    private static LEngine TXieshengEngineStart(TWorkspace workspace)
+    internal static LEngine TXieshengEngineStart(TWorkspace workspace)
     {
         Dictionary<string, string> pages = new()
         {
@@ -314,7 +314,7 @@ public sealed class TXiesheng
         return workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(pages));
     }
 
-    private static async Task<LEntry> TXieshengStemSave(LEngine engine, string language)
+    internal static async Task<LEntry> TXieshengStemSave(LEngine engine, string language)
     {
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "龍",

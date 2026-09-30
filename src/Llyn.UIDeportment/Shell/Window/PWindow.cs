@@ -182,7 +182,7 @@ public partial class PWindow
         PInput.PInputIntroduce(this);
         _qLibrary.QLibraryIntroduce(this);
         _qPhonology.QPhonologyIntroduce(this);
-        _qXiesheng.QXieshengAttach(this);
+        _qXiesheng.QXieshengIntroduce(this);
         _qYunjing.QYunjingIntroduce(this);
         _qTaxonomy.QTaxonomyIntroduce(this);
         _qTenor.QTenorIntroduce(this);
@@ -210,7 +210,9 @@ public partial class PWindow
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qGuild.QGuildVistaRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qGuild.QOeuvreRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qGuild.QTallyRefine;
-        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qXiesheng.QXieshengVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qXiesheng.QXieshengVistaRefine;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qXiesheng.QGroveRefine;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qXiesheng.QXieshengStemRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qYunjing.QYunjingVistaRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qYunjing.QShengmuRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qYunjing.QYunmuRefine;
@@ -333,7 +335,7 @@ public partial class PWindow
         PInput.PEditor.PEditorClose();
         _qLibrary.QLibraryExitRefine();
         _qPhonology.QPhonologyExitRefine();
-        _qXiesheng.QXieshengClose();
+        _qXiesheng.QXieshengExitRefine();
         _qYunjing.QYunjingExitRefine();
         _qTaxonomy.QTaxonomyExitRefine();
         _qTenor.QTenorExitRefine();

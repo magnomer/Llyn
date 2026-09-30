@@ -19,24 +19,31 @@ Row clicks are taken on each list, and every button and search field is subscrib
 
 Each named part of the page is pulled through `QContract.QContractFind`.
 
-## `internal void QXieshengAttach(PWindow host)`
+## `internal void QXieshengIntroduce(PWindow host)`
 
 Builds the Conduct session, wraps its editor, and subscribes the notices.
 The lectern is built here to follow the panel, so the session names no driver type.
+It builds the ordering menu of the series column once, from the orders the session offers.
+The column, the series page and the mode each answer the session's change with their own Refine.
 It then attaches the reader, the series page and the editor.
 
-## `private void QXieshengStoreUpdate()`
+## `private void QXieshengStoreRefine()`
 
 Enables the save button while the editor holds something storable.
 
-## `internal void QXieshengVistaRestore()`
+## `internal void QXieshengVistaRefine()`
 
-Attaches the observers, and builds the ordering menu of the series column.
-The series column and the entry list observe through Conduct subjects, so the driver names no engine type.
+Answers the workspace's opening once the session restored its vistas and attached its observers.
+It marks the column's ordering and paints the mode and the entry list.
+The column and the series page answer the same opening with their own Refines.
 
-## `private async void QXieshengWorkspaceUpdate()`
+## `private async void QXieshengWorkspaceRefine()`
 
-Reloads the flags and resets the panel, as the workspace changes under it.
+Answers the area's workspace change by drawing the flags of the languages again.
+The area has already let the series and the chosen entry go.
+Once the flags are in, it repaints the entry list, whose rows carry a flag.
+So rows built while the load ran, after a series was chosen, gain their flags.
+A failed load throws before the repaint, as the old load before the reset did.
 
 ## `private void QLodestarRefine()`
 
@@ -44,104 +51,109 @@ Answers the area's opening of a series a chip names by emptying the column's que
 The area has already emptied the query, so the field only shows it.
 The field's own handler still hears the change, and its gate finds the query already empty.
 
-## `internal void QXieshengClose()`
+## `internal void QXieshengExitRefine()`
 
-Closes the editor and the reader, as the window exits.
+Releases the editor's recording player as the window exits.
+The session's close already let the draft go and stopped the playback.
 
 ## `private bool QXieshengShownCheck()`
 
 True while the panel is the visible tab.
 
-## `private void QXieshengColumnUpdate()`
+## `internal void QGroveRefine()`
 
-Copies the series column, its empty line, the series page and the mode again.
+Copies the series column and its empty line again.
 
-## `private void QKindredUpdate()`
+## `private void QKindredRefine()`
 
 Copies the entry list and its empty line again.
 
-## `private void QStemUpdate()`
+## `internal void QXieshengStemRefine()`
 
 Hands the page of the chosen series to the series page driver.
+It also answers the panel's clearing, while the lectern empties the reader itself.
 
-## `private void QXieshengModeUpdate()`
+## `private void QXieshengModeRefine()`
 
 Shows the reader, the page or the editor, and enables the mode and bin buttons.
 
-## `private void QXieshengClearUpdate()`
-
-Writes the page again, as the panel is cleared.
-The lectern empties the reader itself.
-
-## `private void QLodestarHandle(object sender, TextChangedEventArgs e)`
+## `private void QLodestarObserve(object sender, TextChangedEventArgs e)`
 
 Narrows the series column as the field is typed into.
 
-## `private void QSextantHandle(object sender, TextChangedEventArgs e)`
+## `private void QSextantObserve(object sender, TextChangedEventArgs e)`
 
 Narrows the entry list as the field is typed into.
 
-## `private void QRungHandle(object sender, RoutedEventArgs e)`
+## `private void QRungObserve(object sender, RoutedEventArgs e)`
 
-Closes the dropper and lists the series column in the ordering picked.
+Lists the series column in the ordering picked, then closes the dropper.
 
-## `private void QGroveHandle(object sender, RoutedEventArgs e)`
+## `private void QRungRefine()`
+
+Closes the dropper once an ordering is picked.
+
+## `private void QGroveObserve(object sender, RoutedEventArgs e)`
 
 Chooses the series of the pressed row.
 
-## `private void QKindredHandle(object sender, RoutedEventArgs e)`
+## `private void QKindredObserve(object sender, RoutedEventArgs e)`
 
 Hands the pressed row to the panel's row gate, which records the voyage station and opens it.
 
-## `private void QXieshengFreshHandle(object sender, RoutedEventArgs e)`
+## `private void QXieshengFreshObserve(object sender, RoutedEventArgs e)`
 
 Starts a fresh entry in the editor.
 
-## `private void QXieshengScribeHandle(object sender, RoutedEventArgs e)`
+## `private void QXieshengViewerObserve(object sender, RoutedEventArgs e)`
 
-Switches between reading and editing.
+Switches to reading.
 
-## `private void QXieshengStoreHandle(object sender, RoutedEventArgs e)`
+## `private void QXieshengScribeObserve(object sender, RoutedEventArgs e)`
+
+Switches to editing.
+
+## `private void QXieshengStoreObserve(object sender, RoutedEventArgs e)`
 
 Saves what the editor holds.
 
-## `private void QXieshengBinHandle(object sender, RoutedEventArgs e)`
+## `private void QXieshengBinObserve(object sender, RoutedEventArgs e)`
 
 Deletes the entry the panel holds.
 
-## `private void QXieshengPressCheck(object sender, CanExecuteRoutedEventArgs e)`
+## `private void QXieshengPressRefine(object sender, CanExecuteRoutedEventArgs e)`
 
 Allows printing and exporting only while an entry is read.
 It answers no before the panel is attached, since the commands are bound at construction.
 
-## `private async void QXieshengPressHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private async void QXieshengPressObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the read entry on the printer the gate asks for.
 
-## `private async void QXieshengPortraitHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private async void QXieshengPortraitObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Exports the read entry as a portrait file.
 
-## `internal void QXieshengVoyageShow(bool past, bool future)`
+## `internal void QXieshengVoyageRefine(bool past, bool future)`
 
 Enables the back and forward buttons of the rail.
 
-## `private void QXieshengRetreatHandle(object sender, RoutedEventArgs e)`
+## `private void QXieshengRetreatObserve(object sender, RoutedEventArgs e)`
 
 Sails one station back.
 
-## `private void QXieshengAdvanceHandle(object sender, RoutedEventArgs e)`
+## `private void QXieshengAdvanceObserve(object sender, RoutedEventArgs e)`
 
 Sails one station forward.
 
-## `private void QXieshengUndoHandle(object sender, RoutedEventArgs e)`
+## `private void QXieshengUndoObserve(object sender, RoutedEventArgs e)`
 
 Undoes one editor change.
 
-## `private void QXieshengRedoHandle(object sender, RoutedEventArgs e)`
+## `private void QXieshengRedoObserve(object sender, RoutedEventArgs e)`
 
 Redoes one editor change.
 
-## `private void QXieshengChronicleUpdate()`
+## `private void QXieshengChronicleRefine()`
 
 Enables the undo and redo buttons as the editor's chronicle changes.

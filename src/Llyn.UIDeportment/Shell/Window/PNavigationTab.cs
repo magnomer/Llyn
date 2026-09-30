@@ -106,7 +106,7 @@ public partial class PWindow
             },
             new QTab("Xiesheng", PNavigationXiesheng, PXiesheng)
             {
-                QTabVoyage = _qXiesheng.QXieshengVoyageShow
+                QTabVoyage = _qXiesheng.QXieshengVoyageRefine
             },
             new QTab("Yunjing", PNavigationYunjing, PYunjing)
             {

@@ -85,10 +85,6 @@ Hands the accent row to the lectern, which plays its recording through the engin
 
 Hands the pressed chip to the lectern, which opens the character's entry.
 
-## `internal void PDisplayClose()`
-
-Calls the sound area's gate that stops this view's own play, since the view is going away.
-
 ## Inline notes
 
 ### `private void PDisplayCardObserve(object sender, RoutedEventArgs e)`
