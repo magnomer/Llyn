@@ -75,6 +75,16 @@ Plays the draft's own recording, the audio of its first pronunciation, as the fi
 Whether the draft's own recording exists, and whether the view has anything to play at all.
 The second holds for the own recording or for any accent row that is notated and carries audio.
 
+## `public (string?, bool) LEngineAudioRead(LEntryDraft draft)`
+
+The draft's own recording while its file exists, else null, and whether the editor has anything to play.
+The second holds for the own recording or for any accent row that carries audio.
+The editor shows every accent row, so unlike the reading view it counts rows without a notation too.
+
+## `public Uri? LEngineAudioResolve(string? file)`
+
+The address the editor's player opens for a stored recording, or null when the file does not exist.
+
 ## `public void LEngineRecordingStop(int ticket)`
 
 Stops the playing recording while `ticket` names it.

@@ -57,7 +57,7 @@ public partial class PEditor
         card.PCardRegisterShow(draft.CCardDraftRegister);
         card.PCardLinkShow(draft.CCardDraftTranslation);
         card.PCardLabelShow(draft.CCardDraftTag);
-        card.PCardImageShow(draft.CCardDraftImage, _pEditorHost.PWindowAtelier);
+        card.PCardImageShow(draft.CCardDraftImage);
         card.PCardVideoShow(draft.CCardDraftVideo, _pEditorHost.PWindowAtelier);
         card.PCardPosition = draft.CCardDraftPosition;
     }

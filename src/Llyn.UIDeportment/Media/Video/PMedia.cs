@@ -32,7 +32,7 @@ internal sealed class PMedia
 
     internal PImage PMediaImageCreate(CImageDraft draft)
     {
-        return new PImage(_pMediaAtelier, draft);
+        return new PImage(draft);
     }
 
     internal PVideo PMediaVideoCreate(CVideoDraft draft)

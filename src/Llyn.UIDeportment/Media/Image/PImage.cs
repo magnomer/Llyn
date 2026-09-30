@@ -10,21 +10,19 @@ namespace Llyn.UIDeportment;
 
 internal sealed class PImage : INotifyPropertyChanged, PImagePending
 {
-    private readonly CAtelier _pImageAtelier;
-
     private CStateWording _pImageLocation;
+    private Uri? _pImageAddress;
     private bool _pImageSeen;
     private ImageSource? _pImagePreview;
     private long _pImageRow;
 
-    internal PImage(CAtelier atelier, CImageDraft written)
+    internal PImage(CImageDraft written)
     {
-        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(written);
 
-        _pImageAtelier = atelier;
         _pImageRow = written.CImageDraftId;
         _pImageLocation = written.CImageDraftWording;
+        _pImageAddress = written.CImageDraftAddress;
     }
 
     public CStateWording PImageLocation
@@ -39,7 +37,6 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
 
             _pImageLocation = value;
             PImageRaise(nameof(PImageLocation));
-            PImagePreviewUpdate();
         }
     }
 
@@ -68,7 +65,7 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
         }
 
         _pImageSeen = true;
-        PImagePreviewUpdate();
+        PImagePreviewRefine();
     }
 
     internal void PImageShow(CImageDraft written)
@@ -77,6 +74,13 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
 
         _pImageRow = written.CImageDraftId;
         PImageLocation = written.CImageDraftWording;
+        if (Equals(_pImageAddress, written.CImageDraftAddress))
+        {
+            return;
+        }
+
+        _pImageAddress = written.CImageDraftAddress;
+        PImagePreviewRefine();
     }
 
     internal static string? PImageOpen(Window owner)
@@ -91,7 +95,7 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
         return dialog.ShowDialog(owner) == true ? dialog.FileName : null;
     }
 
-    internal static void PImageRowApply(FrameworkElement container, object item, string? _)
+    internal static void PImageItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not PImage row)
         {
@@ -143,15 +147,14 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
         row.PropertyChanged += (_, _) => preview.Source = row.PImagePreview;
     }
 
-    private void PImagePreviewUpdate()
+    private void PImagePreviewRefine()
     {
         if (!_pImageSeen)
         {
             return;
         }
 
-        Uri? address = _pImageAtelier.CAtelierLocationRead(_pImageLocation.CStateWordingText);
-        if (address is null)
+        if (_pImageAddress is not Uri address)
         {
             PImagePreview = null;
             return;

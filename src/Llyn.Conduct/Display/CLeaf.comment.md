@@ -26,3 +26,4 @@ Maps the shown entry's cards of one list to their ready form.
 The order, the unknown mark, the Source lines and the link targets are read once for the entry.
 Each card's links are its own entry of the target map, which the engine keys by every card.
 The rules stay below, so this map only pairs and chooses no key but the unknown mark's.
+Each picture row carries the address `media` resolves, so the page loads it without asking.

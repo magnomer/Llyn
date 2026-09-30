@@ -33,6 +33,12 @@ public sealed class LMediaOutlet : LMediaPort
     public (bool, bool) LEnginePlaybackRead(LEntryDraft draft) =>
         _lMediaOutletEngine.LEnginePronunciation.LEnginePlaybackRead(draft);
 
+    public (string?, bool) LEngineAudioRead(LEntryDraft draft) =>
+        _lMediaOutletEngine.LEnginePronunciation.LEngineAudioRead(draft);
+
+    public Uri? LEngineAudioResolve(string? file) =>
+        _lMediaOutletEngine.LEnginePronunciation.LEngineAudioResolve(file);
+
     public void LEngineRecordingStop(int ticket) =>
         _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingStop(ticket);
 

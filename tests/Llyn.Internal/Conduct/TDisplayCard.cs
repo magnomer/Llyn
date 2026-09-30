@@ -106,12 +106,34 @@ public sealed class TDisplayCard
     public void FolioImageRead_RowNobodyLocated_CarriesTheEmptyVerdict()
     {
         IReadOnlyList<CImageDraft> images = TInterfaceConduct.TCardImageRead(
-            [TInterface.TImageDraftCreate(string.Empty, 3), TInterface.TImageDraftCreate("still.png", 4)]);
+            [TInterface.TImageDraftCreate(string.Empty, 3), TInterface.TImageDraftCreate("still.png", 4)],
+            TInterfaceConduct.TMediaCreate());
         IReadOnlyList<CVideoDraft> videos = TInterfaceConduct.TCardVideoRead(
             [TInterface.TVideoDraftCreate(string.Empty, id: 5), TInterface.TVideoDraftCreate("clip.mp4", "0:01", 6)]);
 
         Assert.Equal([true, false], images.Select(static image => image.CImageDraftEmpty));
         Assert.Equal([true, false], videos.Select(static video => video.CVideoDraftEmpty));
+    }
+
+    [Fact]
+    public void FolioImageRead_LocatedRow_CarriesTheAddressTheEngineResolved()
+    {
+        Uri still = new("https://example.org/still.png");
+        List<string?> asked = [];
+        LMediaPort media = TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineLocationRead"] = args =>
+            {
+                asked.Add((string?)args![0]);
+                return (string?)args[0] == "still.png" ? still : null;
+            },
+        });
+
+        IReadOnlyList<CImageDraft> images = TInterfaceConduct.TCardImageRead(
+            [TInterface.TImageDraftCreate(string.Empty, 3), TInterface.TImageDraftCreate("still.png", 4)], media);
+
+        Assert.Equal([string.Empty, "still.png"], asked);
+        Assert.Equal([null, still], images.Select(static image => image.CImageDraftAddress));
     }
 
     [Fact]

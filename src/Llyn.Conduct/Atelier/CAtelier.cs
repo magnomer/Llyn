@@ -150,11 +150,6 @@ public sealed class CAtelier : IDisposable
         return CAtelierMediaPort.LEngineRecordingExist(file);
     }
 
-    public Uri? CAtelierLocationRead(string? location)
-    {
-        return CAtelierMediaPort.LEngineLocationRead(location);
-    }
-
     public CScreen? CAtelierScreenRead(string? location)
     {
         return CAtelierMediaPort.LEngineScreenRead(location) is (Uri address, var film)

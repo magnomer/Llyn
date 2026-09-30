@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Llyn.Conduct;
 using Llyn.ShellEngine;
@@ -194,6 +196,38 @@ public sealed class TEaselDesk
 
         CImageDraft row = TEditorField.TEditorCardRead(editor, sheet).CCardDraftImage[0];
         Assert.Equal("cat.png", row.CImageDraftLocation.CStateValueShown);
+    }
+
+    [Fact]
+    public void ImageFileSet_FileThatExists_CarriesItsAddress()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        long sheet = TEditorField.TEditorSheetAdd(editor);
+        editor.CEditorImage.CImageAdd(sheet);
+        long image = TEditorField.TEditorCardRead(editor, sheet).CCardDraftImage[0].CImageDraftId;
+        string file = Path.Combine(workspace.TWorkspaceFolder, "cat.png");
+        File.WriteAllBytes(file, [0]);
+
+        editor.CEditorImage.CImageFileSet(image, file);
+
+        Assert.Equal(new Uri(file), TEditorField.TEditorCardRead(editor, sheet).CCardDraftImage[0].CImageDraftAddress);
+    }
+
+    [Fact]
+    public void ImageFileSet_FileThatIsMissing_CarriesNoAddress()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        long sheet = TEditorField.TEditorSheetAdd(editor);
+        editor.CEditorImage.CImageAdd(sheet);
+        long image = TEditorField.TEditorCardRead(editor, sheet).CCardDraftImage[0].CImageDraftId;
+
+        editor.CEditorImage.CImageFileSet(image, Path.Combine(workspace.TWorkspaceFolder, "gone.png"));
+
+        Assert.Null(TEditorField.TEditorCardRead(editor, sheet).CCardDraftImage[0].CImageDraftAddress);
     }
 
     [Fact]

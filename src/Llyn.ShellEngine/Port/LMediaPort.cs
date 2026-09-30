@@ -19,6 +19,10 @@ public interface LMediaPort
 
     (bool, bool) LEnginePlaybackRead(LEntryDraft draft);
 
+    (string?, bool) LEngineAudioRead(LEntryDraft draft);
+
+    Uri? LEngineAudioResolve(string? file);
+
     void LEngineRecordingStop(int ticket);
 
     void LEngineVolumeSet(double volume);

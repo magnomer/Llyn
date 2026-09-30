@@ -249,6 +249,7 @@ internal static class TAuditChainSetting
             "CLecternScript",
             "CLecternParadigm",
             "CLecternPlayback",
+            "CTimbrePlayback",
             "CScreen",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
@@ -372,8 +373,8 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["cross:Llyn.UIDeportment>Llyn.Application"] = 39,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 26,
+        ["cross:Llyn.UIDeportment>Llyn.Application"] = 35,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 23,
         ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 0,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 1,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,

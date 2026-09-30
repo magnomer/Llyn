@@ -250,6 +250,20 @@ internal sealed class LPronunciationFacade
             spoken.LPronunciationDraftNotated && spoken.LPronunciationDraftAudio.Length > 0));
     }
 
+    public (string?, bool) LEngineAudioRead(LEntryDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        string? audio = LEngineRecordingExist(draft.LEntryDraftAudio) ? draft.LEntryDraftAudio : null;
+        return (audio, audio is not null || draft.LEntryDraftAccents.Any(static spoken =>
+            spoken.LPronunciationDraftAudio.Length > 0));
+    }
+
+    public Uri? LEngineAudioResolve(string? file)
+    {
+        return file is not null && LEngineRecordingExist(file) ? new Uri(file) : null;
+    }
+
     public void LEngineRecordingStop(int ticket)
     {
         LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkStop(ticket);

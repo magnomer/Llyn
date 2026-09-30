@@ -4,7 +4,7 @@ namespace Llyn.UIDeportment;
 
 internal interface PImageHost
 {
-    void PImageOpenHandle(object sender, RoutedEventArgs e);
+    void PImageOpenObserve(object sender, RoutedEventArgs e);
 
-    void PImageRemoveHandle(object sender, RoutedEventArgs e);
+    void PImageRemoveObserve(object sender, RoutedEventArgs e);
 }

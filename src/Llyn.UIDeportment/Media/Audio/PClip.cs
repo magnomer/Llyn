@@ -96,7 +96,7 @@ public partial class PEditor
 
     private void PClipReadingApply(FrameworkElement container, object item, string? _)
     {
-        if (item is not PClipReading reading)
+        if (item is not QClipReading reading)
         {
             return;
         }
@@ -109,25 +109,25 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Image>(container, "PClipReadingFlag") is Image flag)
         {
-            flag.Source = reading.PClipReadingFlag;
-            flag.ToolTip = reading.PClipReadingLabel;
-            flag.Visibility = QLook.QLookVisibleRead(reading.PClipReadingFlag is not null);
+            flag.Source = reading.QClipReadingFlag;
+            flag.ToolTip = reading.QClipReadingLabel;
+            flag.Visibility = QLook.QLookVisibleRead(reading.QClipReadingFlag is not null);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PClipReadingLabel") is TextBlock label)
         {
-            label.Text = reading.PClipReadingLabel;
+            label.Text = reading.QClipReadingLabel;
             label.Visibility = QLook.QLookVisibleRead(
-                reading.PClipReadingFlag is null && reading.PClipReadingLabel.Length > 0);
+                reading.QClipReadingFlag is null && reading.QClipReadingLabel.Length > 0);
         }
 
         if (QLook.QLookPartFind<Button>(container, "PClipPreview") is Button preview)
         {
             preview.SetValue(
                 QLook.QLookCueProperty,
-                reading.PClipReadingPlaying ? QLookCue.QLookCuePlaying
-                : reading.PClipReadingFetching ? QLookCue.QLookCueFetching
-                : reading.PClipReadingRefused ? QLookCue.QLookCueRefused
+                reading.QClipReadingPlaying ? QLookCue.QLookCuePlaying
+                : reading.QClipReadingFetching ? QLookCue.QLookCueFetching
+                : reading.QClipReadingRefused ? QLookCue.QLookCueRefused
                 : QLookCue.QLookCueBase);
             preview.Click -= PClipPreviewObserve;
             preview.Click += PClipPreviewObserve;
@@ -140,8 +140,8 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Button>(container, "PClipSelector") is Button selector)
         {
-            selector.Content = reading.PClipReadingAction;
-            selector.IsEnabled = reading.PClipReadingReady;
+            selector.Content = reading.QClipReadingAction;
+            selector.IsEnabled = reading.QClipReadingReady;
             selector.Click -= PClipSelectorObserve;
             selector.Click += PClipSelectorObserve;
         }
@@ -149,10 +149,10 @@ public partial class PEditor
 
     private async void PClipPreviewObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PClipReading reading })
+        if (sender is FrameworkElement { DataContext: QClipReading reading })
         {
             PClipPreviewRefine(
-                await _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandPreviewStart(reading.PClipReadingModel));
+                await _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandPreviewStart(reading.QClipReadingModel));
         }
     }
 
@@ -174,10 +174,10 @@ public partial class PEditor
 
     private async void PClipSelectorObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PClipReading reading })
+        if (sender is FrameworkElement { DataContext: QClipReading reading })
         {
             PClipCloseRefine(
-                await _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandRecordingSave(reading.PClipReadingModel));
+                await _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandRecordingSave(reading.QClipReadingModel));
         }
     }
 

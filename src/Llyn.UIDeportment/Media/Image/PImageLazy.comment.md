@@ -20,12 +20,6 @@ How far outside the viewport, in device-independent pixels, an element still cou
 
 The row the decorator reports to, set by the fill to the element's own data.
 
-## `private void PImageLazyResolve()`
-
-A reading view lists a ready card's picture rows, so a row arriving as the element's data is wrapped here.
-The loading row becomes the element's data instead, so the line fill finds it as the editor's fill does.
-A row the engine calls empty collapses the element, since there is nothing to show for it.
-
 ## `public PImageLazy()`
 
 Checks when the element enters the tree and stops watching when it leaves.
@@ -35,28 +29,41 @@ Checks again when the element is shown or hidden.
 
 The row that will load its picture once told.
 
-## `private static void PImageRowHandle(DependencyObject holder, DependencyPropertyChangedEventArgs e)`
+## `private static void PImageRowRefine(DependencyObject holder, DependencyPropertyChangedEventArgs e)`
 
 A row bound after the element was already in the tree is checked at once.
 
-## `private void PImageOpenHandle(object sender, RoutedEventArgs e)`
+## `private void PImageContextRefine(object sender, DependencyPropertyChangedEventArgs e)`
+
+A reading view lists a ready card's picture rows, so a row arriving as the element's data is refined here.
+Any other data is left alone.
+
+## `private void PImageEmptyRefine(CImageDraft draft)`
+
+A row Conduct calls empty collapses the element, since there is nothing to show for it.
+
+## `private void PImagePendingRefine(CImageDraft draft)`
+
+The loading row becomes the element's data instead, so the line fill finds it as the editor's fill does.
+
+## `private void PImageLoadRefine(object sender, RoutedEventArgs e)`
 
 The first check, made once layout has placed the element.
 
-## `private void PImageDropHandle(object sender, RoutedEventArgs e)`
+## `private void PImageDropRefine(object sender, RoutedEventArgs e)`
 
 An element leaving the tree lets go of the scroll regions it watched.
 A row already loaded keeps its picture, so a return to the tree draws it at once.
 
-## `private void PImageVisibleHandle(object sender, DependencyPropertyChangedEventArgs e)`
+## `private void PImageVisibleRefine(object sender, DependencyPropertyChangedEventArgs e)`
 
 A folded section unfolding is the other way an element comes into view, so it is checked like a scroll.
 
-## `private void PImageScrollHandle(object sender, ScrollChangedEventArgs e)`
+## `private void PImageScrollRefine(object sender, ScrollChangedEventArgs e)`
 
 Every scroll and every change of extent above the element is a chance it came into view.
 
-## `private void PImageSizeHandle(object sender, SizeChangedEventArgs e)`
+## `private void PImageSizeRefine(object sender, SizeChangedEventArgs e)`
 
 A scroll region growing taller shows more, so it is checked like a scroll.
 

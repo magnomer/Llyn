@@ -73,10 +73,6 @@ The glyph typography goes into the glyph list's resources, so the field takes it
 The meaning cards, each reading its own links as it is shown.
 `PCollocationRefine` does the same for the collocation cards.
 
-## `internal void PPlaybackRefine(CEntryDraft draft)`
-
-The recording, then the playback tray, which also counts the accent rows' audio.
-
 ## `private void PContourRefine(object sender, TextChangedEventArgs e)`
 
 The contour draws the pronunciation as typed, beside the gate that hears the same text.

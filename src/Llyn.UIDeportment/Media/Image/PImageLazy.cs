@@ -15,7 +15,7 @@ public sealed class PImageLazy : Decorator
         nameof(PImageLazyRow),
         typeof(PImagePending),
         typeof(PImageLazy),
-        new PropertyMetadata(null, PImageRowHandle));
+        new PropertyMetadata(null, PImageRowRefine));
 
     private readonly List<ScrollViewer> _pImageLazyViewers = [];
 
@@ -23,10 +23,10 @@ public sealed class PImageLazy : Decorator
 
     public PImageLazy()
     {
-        Loaded += PImageOpenHandle;
-        Unloaded += PImageDropHandle;
-        IsVisibleChanged += PImageVisibleHandle;
-        DataContextChanged += PImageContextHandle;
+        Loaded += PImageLoadRefine;
+        Unloaded += PImageDropRefine;
+        IsVisibleChanged += PImageVisibleRefine;
+        DataContextChanged += PImageContextRefine;
     }
 
     public PImagePending? PImageLazyRow
@@ -35,7 +35,7 @@ public sealed class PImageLazy : Decorator
         set => SetValue(PImageRowProperty, value);
     }
 
-    private static void PImageRowHandle(DependencyObject holder, DependencyPropertyChangedEventArgs e)
+    private static void PImageRowRefine(DependencyObject holder, DependencyPropertyChangedEventArgs e)
     {
         if (holder is PImageLazy element && element.IsLoaded)
         {
@@ -43,36 +43,41 @@ public sealed class PImageLazy : Decorator
         }
     }
 
-    private void PImageContextHandle(object sender, DependencyPropertyChangedEventArgs e)
-    {
-        PImageLazyResolve();
-    }
-
-    private void PImageLazyResolve()
+    private void PImageContextRefine(object sender, DependencyPropertyChangedEventArgs e)
     {
         if (DataContext is not CImageDraft draft)
         {
             return;
         }
 
+        PImageEmptyRefine(draft);
+        PImagePendingRefine(draft);
+    }
+
+    private void PImageEmptyRefine(CImageDraft draft)
+    {
         Visibility = QLook.QLookVisibleRead(!draft.CImageDraftEmpty);
+    }
+
+    private void PImagePendingRefine(CImageDraft draft)
+    {
         if (PMedia.PMediaRead(this) is PMedia media)
         {
             DataContext = media.PMediaImageCreate(draft);
         }
     }
 
-    private void PImageOpenHandle(object sender, RoutedEventArgs e)
+    private void PImageLoadRefine(object sender, RoutedEventArgs e)
     {
         PImageLazyCheck();
     }
 
-    private void PImageDropHandle(object sender, RoutedEventArgs e)
+    private void PImageDropRefine(object sender, RoutedEventArgs e)
     {
         PImageLazyDetach();
     }
 
-    private void PImageVisibleHandle(object sender, DependencyPropertyChangedEventArgs e)
+    private void PImageVisibleRefine(object sender, DependencyPropertyChangedEventArgs e)
     {
         if (IsLoaded)
         {
@@ -80,12 +85,12 @@ public sealed class PImageLazy : Decorator
         }
     }
 
-    private void PImageScrollHandle(object sender, ScrollChangedEventArgs e)
+    private void PImageScrollRefine(object sender, ScrollChangedEventArgs e)
     {
         PImageLazyCheck();
     }
 
-    private void PImageSizeHandle(object sender, SizeChangedEventArgs e)
+    private void PImageSizeRefine(object sender, SizeChangedEventArgs e)
     {
         PImageLazyCheck();
     }
@@ -170,8 +175,8 @@ public sealed class PImageLazy : Decorator
         _pImageLazyWatched = true;
         foreach (ScrollViewer viewer in PImageViewerScan())
         {
-            viewer.ScrollChanged += PImageScrollHandle;
-            viewer.SizeChanged += PImageSizeHandle;
+            viewer.ScrollChanged += PImageScrollRefine;
+            viewer.SizeChanged += PImageSizeRefine;
             _pImageLazyViewers.Add(viewer);
         }
     }
@@ -186,8 +191,8 @@ public sealed class PImageLazy : Decorator
         _pImageLazyWatched = false;
         foreach (ScrollViewer viewer in _pImageLazyViewers)
         {
-            viewer.ScrollChanged -= PImageScrollHandle;
-            viewer.SizeChanged -= PImageSizeHandle;
+            viewer.ScrollChanged -= PImageScrollRefine;
+            viewer.SizeChanged -= PImageSizeRefine;
         }
 
         _pImageLazyViewers.Clear();

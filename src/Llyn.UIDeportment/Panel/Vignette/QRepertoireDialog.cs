@@ -48,7 +48,7 @@ internal sealed partial class QRepertoire
 
     private PImage QScenarioImageCreate(CImageDraft draft)
     {
-        return new PImage(_qRepertoireHost.PWindowAtelier, draft);
+        return new PImage(draft);
     }
 
     private PVideo QScenarioVideoCreate(CVideoDraft draft)
@@ -85,7 +85,7 @@ internal sealed partial class QRepertoire
         if (QLook.QLookPartFind<TextBox>(container, "PImageLocation") is TextBox location)
         {
             location.TextChanged -= QImageLocationObserve;
-            PImage.PImageRowApply(container, item, name);
+            PImage.PImageItemRefine(container, item, name);
             location.TextChanged += QImageLocationObserve;
         }
 
@@ -137,7 +137,7 @@ internal sealed partial class QRepertoire
         _cRepertoire.CRepertoireVideo.CVideoAdd(0);
     }
 
-    public void PImageRemoveHandle(object sender, RoutedEventArgs e)
+    public void PImageRemoveObserve(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PImage row })
         {
@@ -153,7 +153,7 @@ internal sealed partial class QRepertoire
         }
     }
 
-    public void PImageOpenHandle(object sender, RoutedEventArgs e)
+    public void PImageOpenObserve(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PImage row } source)
         {

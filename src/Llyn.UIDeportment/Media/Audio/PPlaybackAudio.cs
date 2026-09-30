@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -15,40 +14,64 @@ public partial class PEditor
 {
     private readonly MediaPlayer _pDownloaderPlayer = new();
 
-    private string? _pRecording;
-
     private Button PPlaybackAction => (Button)FindName(nameof(PPlaybackAction));
 
     private Border PPlayback => (Border)FindName(nameof(PPlayback));
 
     private Slider PVolume => (Slider)FindName(nameof(PVolume));
 
-    private void PPlaybackActionHandle(object sender, RoutedEventArgs e)
+    internal void PPlaybackRefine(CEntryDraft _)
     {
-        if (_pRecording is null
-            || !_pEditorHost.PWindowAtelier.CAtelierRecordingExist(_pRecording))
+        PPlaybackAudioRefine(_qEditor.QEditorArea.CEditorTimbre.CTimbrePlaybackRead());
+    }
+
+    private void PPlaybackActionObserve(object sender, RoutedEventArgs e)
+    {
+        PPlaybackActionRefine(_qEditor.QEditorArea.CEditorTimbre.CTimbrePlaybackStart(
+            (sender as FrameworkElement)?.Tag as string));
+    }
+
+    private void PPlaybackActionRefine(Uri? address)
+    {
+        if (address is null)
         {
-            PRecordingClear();
+            PPlaybackAudioRefine(_qEditor.QEditorArea.CEditorTimbre.CTimbrePlaybackRead());
             return;
         }
 
-        _pDownloaderPlayer.Open(new Uri(_pRecording));
+        _pDownloaderPlayer.Open(address);
         _pDownloaderPlayer.Play();
     }
 
-    private void PVolumeHandle(object sender, RoutedPropertyChangedEventArgs<double> e)
+    private void PPlaybackAudioRefine(CTimbrePlayback playback)
+    {
+        if (!Equals(PPlaybackAction.Tag, playback.CTimbrePlaybackAudio))
+        {
+            _pDownloaderPlayer.Stop();
+            PPlaybackAction.Tag = playback.CTimbrePlaybackAudio;
+            PPlaybackAction.Visibility = QLook.QLookVisibleRead(playback.CTimbrePlaybackAudio is not null);
+        }
+
+        PPlayback.Visibility = QLook.QLookVisibleRead(playback.CTimbrePlaybackAudible);
+    }
+
+    private void PVolumePlayerRefine(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         _pDownloaderPlayer.Volume = e.NewValue;
-        _pEditorHost.PWindowAtelier.CAtelierVolumeSet(e.NewValue, false);
         PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = e.NewValue;
     }
 
-    private void PVolumeLevelHandle(object? sender, PropertyChangedEventArgs e)
+    private void PVolumeObserve(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        _pEditorHost.PWindowAtelier.CAtelierVolumeSet(e.NewValue, false);
+    }
+
+    private void PVolumeLevelRefine(object? sender, PropertyChangedEventArgs e)
     {
         PVolume.Value = PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel;
     }
 
-    private void PVolumeSave(object sender, RoutedEventArgs e)
+    private void PVolumeSaveObserve(object sender, RoutedEventArgs e)
     {
         _pEditorHost.PWindowAtelier.CAtelierVolumeSet(PVolume.Value, true);
     }
@@ -56,54 +79,17 @@ public partial class PEditor
     internal void PVolumeAttach()
     {
         PVolume.Value = PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel;
-        PVolume.ValueChanged += PVolumeHandle;
-        PVolumeCatalog.PVolumeCatalogCurrent.PropertyChanged += PVolumeLevelHandle;
-        PVolume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(PVolumeSave));
-        PVolume.AddHandler(MouseUpEvent, new MouseButtonEventHandler(PVolumeSave), true);
-        PVolume.AddHandler(KeyUpEvent, new KeyEventHandler(PVolumeSave), true);
+        PVolume.ValueChanged += PVolumePlayerRefine;
+        PVolume.ValueChanged += PVolumeObserve;
+        PVolumeCatalog.PVolumeCatalogCurrent.PropertyChanged += PVolumeLevelRefine;
+        PVolume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(PVolumeSaveObserve));
+        PVolume.AddHandler(MouseUpEvent, new MouseButtonEventHandler(PVolumeSaveObserve), true);
+        PVolume.AddHandler(KeyUpEvent, new KeyEventHandler(PVolumeSaveObserve), true);
     }
 
-    internal void PVolumeLoad()
+    internal void PVolumeRefine()
     {
         PVolume.Value = _pEditorHost.PWindowAtelier.CAtelierVolumeRead();
         _pDownloaderPlayer.Volume = PVolume.Value;
-    }
-
-    private void PEditorRecordingShow(CEntryDraft draft)
-    {
-        if (string.Equals(_pRecording ?? string.Empty, draft.CEntryDraftAudio, StringComparison.Ordinal))
-        {
-            return;
-        }
-
-        PRecordingShow(draft.CEntryDraftAudio);
-    }
-
-    private void PRecordingShow(string audio)
-    {
-        if (!_pEditorHost.PWindowAtelier.CAtelierRecordingExist(audio))
-        {
-            PRecordingClear();
-            return;
-        }
-
-        PRecordingClear();
-        _pRecording = audio;
-        PPlaybackAction.Visibility = Visibility.Visible;
-    }
-
-    private void PRecordingClear()
-    {
-        _pRecording = null;
-        _pDownloaderPlayer.Stop();
-        PPlaybackAction.Visibility = Visibility.Collapsed;
-        PPlaybackTrayShow();
-    }
-
-    private void PPlaybackTrayShow()
-    {
-        bool audible = _pRecording is not null
-            || _pAccentItem.Any(static row => row.QAccentItemAudio.Length > 0);
-        PPlayback.Visibility = audible ? Visibility.Visible : Visibility.Collapsed;
     }
 }

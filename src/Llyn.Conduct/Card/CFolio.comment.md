@@ -14,6 +14,7 @@ The one map from link targets to their shape, shared with the editor and the lec
 Shapes the held entry for the editor view.
 The first pronunciation is the primary one, and the rest are its accents.
 The link targets come keyed by card from the tenure, so each card carries its links ready.
+The image addresses come through `media`, so each picture row carries its address ready.
 
 ## `internal static CStateValue CFolioStateRead(LStateValue value)`
 
@@ -42,10 +43,12 @@ The example of a sentence, or null when the sentence holds none.
 
 The one map for glosses, shared with the reading view's sentence rows.
 
-## `internal static IReadOnlyList<CImageDraft> CFolioImageRead(IReadOnlyList<LImageDraft> images)`
+## `internal static IReadOnlyList<CImageDraft> CFolioImageRead(IReadOnlyList<LImageDraft> images, LMediaPort media)`
 
 The one map for images, shared with the repertoire and the reading view's cards.
 It carries the engine's empty verdict, so a reading card folds an image nobody located.
+It carries the address `media` resolves from the location, so a row loads its preview without asking.
+The engine settles what may be reached, and the map only hands it the plain text.
 
 ## `internal static IReadOnlyList<CVideoDraft> CFolioVideoRead(IReadOnlyList<LVideoDraft> videos)`
 

@@ -18,3 +18,11 @@ So the video row parses no address and makes no second request.
 ## `(bool, bool) LEnginePlaybackRead(LEntryDraft draft);`
 
 Whether the draft's own recording exists, and whether a reading view has anything to play.
+
+## `(string?, bool) LEngineAudioRead(LEntryDraft draft);`
+
+The draft's own recording while its file exists, and whether the editor's playback tray shows.
+
+## `Uri? LEngineAudioResolve(string? file);`
+
+The playable address of a stored recording, or null when its file is gone.

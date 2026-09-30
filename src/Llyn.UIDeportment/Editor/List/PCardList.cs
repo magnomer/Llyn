@@ -74,8 +74,8 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Button>(container, "PCardImageChooser") is Button image)
         {
-            image.Click -= PImageAddHandle;
-            image.Click += PImageAddHandle;
+            image.Click -= PImageAddObserve;
+            image.Click += PImageAddObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PCardVideoChooser") is Button video)
@@ -124,8 +124,8 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Button>(container, "PCardImageChooser") is Button image)
         {
-            image.Click -= PImageAddHandle;
-            image.Click += PImageAddHandle;
+            image.Click -= PImageAddObserve;
+            image.Click += PImageAddObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PCardVideoChooser") is Button video)

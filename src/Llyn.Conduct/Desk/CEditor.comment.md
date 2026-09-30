@@ -134,6 +134,7 @@ Chooses what opens after a store: a blank draft for a fresh input draft, else th
 
 The held draft's content as the tenure last read it, applying nothing first.
 Each card carries its link targets, which the tenure resolves for the same draft.
+Each picture row carries its address, resolved through the display's media port.
 
 ## `public IReadOnlyList<CReflexHead> CEditorLeadRead(long reflex, string language)`
 

@@ -16,11 +16,11 @@ public class PImageTemplate : ResourceDictionary
 
     internal void PImageOpenHandle(object sender, RoutedEventArgs e)
     {
-        _pImageHost.PImageOpenHandle(sender, e);
+        _pImageHost.PImageOpenObserve(sender, e);
     }
 
     internal void PImageRemoveHandle(object sender, RoutedEventArgs e)
     {
-        _pImageHost.PImageRemoveHandle(sender, e);
+        _pImageHost.PImageRemoveObserve(sender, e);
     }
 }

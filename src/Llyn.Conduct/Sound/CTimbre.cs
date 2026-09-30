@@ -12,15 +12,19 @@ public sealed class CTimbre
 
     private readonly LDisplay _cTimbreDisplay;
 
-    internal CTimbre(CDesk desk, LPhonologyPort phonology, LDisplay display)
+    private readonly LMediaPort _cTimbreMediaPort;
+
+    internal CTimbre(CDesk desk, LPhonologyPort phonology, LDisplay display, LMediaPort media)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(display);
+        ArgumentNullException.ThrowIfNull(media);
 
         _cTimbreDesk = desk;
         _cTimbrePhonologyPort = phonology;
         _cTimbreDisplay = display;
+        _cTimbreMediaPort = media;
     }
 
     public event Action? CTimbreParadigmChanged;
@@ -44,6 +48,22 @@ public sealed class CTimbre
         && _cTimbrePhonologyPort.LEnginePhonemicCheck(LTimbreLanguage);
 
     public bool CTimbreReflexPending => _cTimbreDisplay.LDisplaySound.LDisplayReflexCheck(LTimbreEntry);
+
+    public CTimbrePlayback CTimbrePlaybackRead()
+    {
+        if (_cTimbreDesk.CDeskTenure?.LTenureRead() is not { } held)
+        {
+            return new CTimbrePlayback(null, false);
+        }
+
+        (string? audio, bool audible) = _cTimbreMediaPort.LEngineAudioRead(held.LDraftContent);
+        return new CTimbrePlayback(audio, audible);
+    }
+
+    public Uri? CTimbrePlaybackStart(string? audio)
+    {
+        return _cTimbreMediaPort.LEngineAudioResolve(audio);
+    }
 
     public void CTimbreReflexStart()
     {

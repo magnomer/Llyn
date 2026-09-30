@@ -1,7 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Application;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -9,35 +7,33 @@ public partial class PEditor
 {
     private readonly PImageTemplate _pImageTemplate;
 
-    internal void PImageAddHandle(object sender, RoutedEventArgs e)
+    internal void PImageAddObserve(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PCard card })
         {
-            PEditorRequestSend(new LRequestImageAddition(
-                PEditorDraft, card.PCardId, LStateWritten.LStateWrittenEmpty, card.PCardImage.Count));
+            _qEditor.QEditorArea.CEditorImage.CImageAdd(card.PCardId);
         }
     }
 
-    public void PImageRemoveHandle(object sender, RoutedEventArgs e)
+    public void PImageRemoveObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PImage row } && PCardImageFind(row) is PCard card)
+        if (sender is FrameworkElement { DataContext: PImage row })
         {
-            PEditorRequestSend(new LRequestImageRemoval(PEditorDraft, card.PCardId, row.PImageId));
+            _qEditor.QEditorArea.CEditorImage.CImageRemove(row.PImageId);
         }
     }
 
-    public void PImageOpenHandle(object sender, RoutedEventArgs e)
+    public void PImageOpenObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PImage row }
-            && PImage.PImageOpen(_pEditorHost.PWindowSurface) is string chosen)
+        if (sender is FrameworkElement { DataContext: PImage row } source)
         {
-            PEditorRequestSend(new LRequestImageLocation(PEditorDraft, row.PImageId, new LStateWritten(chosen)));
+            _qEditor.QEditorArea.CEditorImage.CImageFileSet(row.PImageId, PImage.PImageOpen(Window.GetWindow(source)));
         }
     }
 
     internal void PImageApply(FrameworkElement container, object item, string? name)
     {
-        PImage.PImageRowApply(container, item, name);
+        PImage.PImageItemRefine(container, item, name);
         if (QLook.QLookPartFind<Button>(container, "PImageChooser") is Button open)
         {
             open.Click -= _pImageTemplate.PImageOpenHandle;
@@ -49,26 +45,5 @@ public partial class PEditor
             remove.Click -= _pImageTemplate.PImageRemoveHandle;
             remove.Click += _pImageTemplate.PImageRemoveHandle;
         }
-    }
-
-    private PCard? PCardImageFind(PImage row)
-    {
-        foreach (PCard card in _pMeaningList)
-        {
-            if (card.PCardImage.Contains(row))
-            {
-                return card;
-            }
-        }
-
-        foreach (PCard card in _pCollocationList)
-        {
-            if (card.PCardImage.Contains(row))
-            {
-                return card;
-            }
-        }
-
-        return null;
     }
 }

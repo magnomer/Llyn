@@ -231,9 +231,10 @@ public sealed class CDisplay
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets =
             _cDisplayPort.LEngineTranslationRead(shown);
         string mark = _cDisplaySettings.LEngineTextRead("Display.Unknown");
+        LMediaPort media = _cDisplayRule.LDisplayMediaPort;
         return new CLecternCard(
-            CLeaf.LLeafRead(shown.LEntryDraftMeanings, order, mark, citations, targets),
-            CLeaf.LLeafRead(shown.LEntryDraftCollocations, order, mark, citations, targets),
+            CLeaf.LLeafRead(shown.LEntryDraftMeanings, order, mark, citations, targets, media),
+            CLeaf.LLeafRead(shown.LEntryDraftCollocations, order, mark, citations, targets, media),
             shown.LEntryDraftDefined,
             shown.LEntryDraftCollocated);
     }

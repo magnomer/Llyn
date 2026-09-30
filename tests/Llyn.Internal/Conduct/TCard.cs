@@ -90,10 +90,10 @@ public sealed class TCard
             new CGlossDraft(1, "French", CStateValue.CStateValueEmpty, true).CGlossDraftWording);
         Assert.Equal(
             new CStateWording(string.Empty, "Display.Unknown", false, "Display.Unknown"),
-            new CImageDraft(2, unknown, false).CImageDraftWording);
+            new CImageDraft(2, unknown, false, null).CImageDraftWording);
         Assert.Equal(
             new CStateWording(string.Empty, null, true, "Card.LocationHint"),
-            new CImageDraft(2, CStateValue.CStateValueEmpty, true).CImageDraftWording);
+            new CImageDraft(2, CStateValue.CStateValueEmpty, true, null).CImageDraftWording);
         Assert.Equal(
             new CStateWording(string.Empty, "Display.Unknown", false, "Display.Unknown"),
             new CSituationDraft(4, unknown, written, written, [], []).CSituationDraftWording);

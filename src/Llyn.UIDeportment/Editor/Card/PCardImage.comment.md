@@ -8,10 +8,10 @@ A picture is an addition the user asks for through the card's Extra row.
 So an empty card shows no picture field, and one whose last picture is dropped goes back to none.
 The engine holds the rows, blank ones included, and the card renders them by id.
 
-## `internal void PCardImageShow(IReadOnlyList<CImageDraft> rows, CAtelier atelier)`
+## `internal void PCardImageShow(IReadOnlyList<CImageDraft> rows)`
 
 Makes the rows show the engine's Images, matched by id.
 A row already reading what the engine holds is left alone.
-A new row is built with the atelier the editor hands in, so the card itself holds no Conduct type.
+A new row is built from its ready state alone, since the address arrives resolved.
 The row holds the engine's values and nothing typed, so nothing on it is listened to.
 What is typed into its fields leaves through the editor's own handler.

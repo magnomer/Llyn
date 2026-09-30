@@ -6,7 +6,7 @@ One source row of the audio menu, painted from the errand's ready `CClipItem`.
 It only turns the row's keys into text and its readings into previewable entries.
 It raises no change, since the menu builds its rows afresh from each clip state.
 
-## `public IReadOnlyList<PClipReading> QClipItemReading`
+## `public IReadOnlyList<QClipReading> QClipItemReading`
 
 The row's recordings as entries, each label and flag looked up from the ready variety keys.
 The label is the localized variety name, and a blank variety shows none.

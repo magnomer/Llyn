@@ -62,7 +62,7 @@ internal sealed class QEditor
         CWorkspace workspace = host.PWindowAtelier.CAtelierWorkspace;
         workspace.CWorkspaceOpened += surface.PSentenceCitationRefine;
         workspace.CWorkspaceOpened += surface.PLanguageRefine;
-        workspace.CWorkspaceOpened += surface.PVolumeLoad;
+        workspace.CWorkspaceOpened += surface.PVolumeRefine;
 
         editor.CEditorObserverAttach(LObserver.LObserverCreate<Action>(static run => run()));
     }

@@ -75,6 +75,7 @@ internal static class TInterfaceConduct
         TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineRecordingStop"] = _ => null,
+            ["LEngineLocationRead"] = _ => null,
         }),
         new LPortraitOutlet(engine));
 
@@ -150,6 +151,12 @@ internal static class TInterfaceConduct
             TEngineFake.TEngineStubCreate<LMediaPort>());
 
     internal static LMediaPort TMediaCreate(LEngine engine) => new LMediaOutlet(engine);
+
+    internal static LMediaPort TMediaCreate() =>
+        TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineLocationRead"] = _ => null,
+        });
 
     internal static CEditor TEditorCreate(
         LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media) =>
@@ -228,10 +235,10 @@ internal static class TInterfaceConduct
     }
 
     internal static CSituationDraft? TAtlasDraftRead(LSituation? situation) =>
-        CAtlas.LAtlasDraftRead(TAtlasDraftCreate(situation));
+        CAtlas.LAtlasDraftRead(TAtlasDraftCreate(situation), TMediaCreate());
 
     internal static CSituation? TAtlasSituationRead(LSituation? situation) =>
-        CAtlas.LAtlasSituationRead(TAtlasDraftCreate(situation));
+        CAtlas.LAtlasSituationRead(TAtlasDraftCreate(situation), TMediaCreate());
 
     private static LDraft? TAtlasDraftCreate(LSituation? situation) =>
         situation is null
@@ -313,15 +320,15 @@ internal static class TInterfaceConduct
 
     internal static CStateValue TCardStateRead(LStateValue value) => CFolio.CFolioStateRead(value);
 
-    internal static IReadOnlyList<CImageDraft> TCardImageRead(IReadOnlyList<LImageDraft> images) =>
-        CFolio.CFolioImageRead(images);
+    internal static IReadOnlyList<CImageDraft> TCardImageRead(IReadOnlyList<LImageDraft> images, LMediaPort media) =>
+        CFolio.CFolioImageRead(images, media);
 
     internal static IReadOnlyList<CVideoDraft> TCardVideoRead(IReadOnlyList<LVideoDraft> videos) =>
         CFolio.CFolioVideoRead(videos);
 
     internal static CEntryDraft TCardEntryRead(
         LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets) =>
-        CFolio.CFolioEntryRead(draft, targets);
+        CFolio.CFolioEntryRead(draft, targets, TMediaCreate());
 
     internal static void TDeskVistaRestore(this CDesk desk, LVista vista) => desk.CDeskVistaRestore(vista);
 

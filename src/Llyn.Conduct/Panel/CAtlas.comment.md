@@ -60,13 +60,13 @@ The one map for a found situation, shared by the Proffer dropdown and the atlas.
 The title is the name the engine gave the row, so the atlas keeps its unknown and untitled words.
 The kind and the count arrive worded, so no driver words either.
 
-## `internal static CSituationDraft? LAtlasDraftRead(LDraft? draft)`
+## `internal static CSituationDraft? LAtlasDraftRead(LDraft? draft, LMediaPort media)`
 
 Maps the Situation a draft carries to its shape, and a missing draft or Situation to null.
 It is a plain map with no rule, so it stays in Conduct, since ShellEngine cannot name a Conduct shape.
 `CRepertoire` hands it the desk's draft unread, and the scenario fills from it.
 
-## `internal static CSituation? LAtlasSituationRead(LDraft? draft)`
+## `internal static CSituation? LAtlasSituationRead(LDraft? draft, LMediaPort media)`
 
 Maps the Situation a loaded atlas draft carries to the vignette's ready page, and a missing one to null.
 It only chooses keys.

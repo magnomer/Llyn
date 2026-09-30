@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
 
@@ -23,7 +24,8 @@ public sealed record CLeaf(
         LSentenceOrder order,
         string mark,
         IReadOnlyDictionary<long, string> citations,
-        IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets)
+        IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
+        LMediaPort media)
     {
         ArgumentNullException.ThrowIfNull(cards);
         ArgumentNullException.ThrowIfNull(targets);
@@ -41,7 +43,7 @@ public sealed record CLeaf(
                 card.LCardDraftSentence
                     .Select(sentence => CLeafLine.LLeafLineRead(sentence, order, mark, citations))
                     .ToList(),
-                CFolio.CFolioImageRead(card.LCardDraftImage),
+                CFolio.CFolioImageRead(card.LCardDraftImage, media),
                 CFolio.CFolioVideoRead(card.LCardDraftVideo)))
             .ToList();
     }

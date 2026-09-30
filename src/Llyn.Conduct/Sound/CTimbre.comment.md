@@ -4,7 +4,7 @@
 
 The sound facts of the entry an editor holds, as the editor shows or offers them.
 The pack facts are read for the held draft's language, and the waiting reflexes from the editor's display.
-The editor builds it over its desk, its phonology port and its display, so it keeps no copy.
+The editor builds it over its desk, its phonology and media ports and its display, so it keeps no copy.
 
 ## `public event Action? CTimbreParadigmChanged;`
 
@@ -26,6 +26,16 @@ Whether the reflex block shows for the held draft.
 ## `public bool CTimbreReflexPending`
 
 Whether the held entry's reflex lookup is still running, so the reflex block shows its loading line.
+
+## `public CTimbrePlayback CTimbrePlaybackRead()`
+
+The held draft's own recording while its file exists, and whether the playback tray shows.
+An empty desk has nothing to play and asks the engine nothing.
+
+## `public Uri? CTimbrePlaybackStart(string? audio)`
+
+The user pressed play on the recording `audio`, and the gate answers the address the driver's player opens.
+A file gone since the button was painted answers null, and the driver repaints from a fresh read.
 
 ## `public void CTimbreReflexStart()`
 

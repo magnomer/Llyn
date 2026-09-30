@@ -32,15 +32,17 @@ public sealed class CEditor
         CEditorSounding = new CSounding(
             CEditorDesk, phonology, drafts, settings, CEditorDisplay.LDisplaySound, envoy);
         CEditorEsteem = new CEsteem(CEditorDesk, CEditorDisplay);
-        CEditorTimbre = new CTimbre(CEditorDesk, phonology, CEditorDisplay);
+        CEditorTimbre = new CTimbre(CEditorDesk, phonology, CEditorDisplay, media);
         CEditorSpeech = new CCardSpeech(CEditorDesk);
         CEditorDesk.CDeskFinished += CEditorStoredShow;
         CEditorDesk.CDeskDraftPrepared += draft =>
         {
             if (CEditorDesk.CDeskTenure is LTenure held)
             {
-                CEditorDraftChanged?.Invoke(
-                    CFolio.CFolioEntryRead(draft.LDraftContent, held.LTenureTranslationRead(draft.LDraftContent)));
+                CEditorDraftChanged?.Invoke(CFolio.CFolioEntryRead(
+                    draft.LDraftContent,
+                    held.LTenureTranslationRead(draft.LDraftContent),
+                    CEditorDisplay.LDisplayMediaPort));
             }
         };
     }
@@ -169,7 +171,8 @@ public sealed class CEditor
     public CEntryDraft? CEditorDraftRead()
     {
         return CEditorDesk.CDeskTenure is LTenure held && held.LTenureRead() is { } draft
-            ? CFolio.CFolioEntryRead(draft.LDraftContent, held.LTenureTranslationRead(draft.LDraftContent))
+            ? CFolio.CFolioEntryRead(
+                draft.LDraftContent, held.LTenureTranslationRead(draft.LDraftContent), CEditorDisplay.LDisplayMediaPort)
             : null;
     }
 

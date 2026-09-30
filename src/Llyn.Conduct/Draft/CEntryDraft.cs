@@ -6,7 +6,6 @@ public sealed record CEntryDraft(
     string CEntryDraftHeadword,
     string CEntryDraftLanguage,
     string CEntryDraftNote,
-    string CEntryDraftAudio,
     CPronunciationDraft? CEntryDraftPronunciation,
     IReadOnlyList<CPronunciationDraft> CEntryDraftAccents,
     IReadOnlyList<CCardDraft> CEntryDraftMeanings,

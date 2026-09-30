@@ -153,7 +153,7 @@ public sealed class CAtlas
             row.LCatalogSituationChosen);
     }
 
-    internal static CSituationDraft? LAtlasDraftRead(LDraft? draft)
+    internal static CSituationDraft? LAtlasDraftRead(LDraft? draft, LMediaPort media)
     {
         return draft?.LDraftSituation is LSituation situation
             ? new CSituationDraft(
@@ -161,12 +161,12 @@ public sealed class CAtlas
                 CFolio.CFolioStateRead(situation.LSituationTitle),
                 CFolio.CFolioStateRead(situation.LSituationKind),
                 CFolio.CFolioStateRead(situation.LSituationDescription),
-                CFolio.CFolioImageRead(situation.LSituationImage),
+                CFolio.CFolioImageRead(situation.LSituationImage, media),
                 CFolio.CFolioVideoRead(situation.LSituationVideo))
             : null;
     }
 
-    internal static CSituation? LAtlasSituationRead(LDraft? draft)
+    internal static CSituation? LAtlasSituationRead(LDraft? draft, LMediaPort media)
     {
         return draft?.LDraftSituation is LSituation situation
             ? new CSituation(
@@ -174,7 +174,7 @@ public sealed class CAtlas
                     CFolio.CFolioStateRead(situation.LSituationTitle), "Situation.Untitled"),
                 CStateWording.LStateWordingRead(CFolio.CFolioStateRead(situation.LSituationKind), null),
                 CStateWording.LStateWordingRead(CFolio.CFolioStateRead(situation.LSituationDescription), null),
-                CFolio.CFolioImageRead(situation.LSituationImageFilled),
+                CFolio.CFolioImageRead(situation.LSituationImageFilled, media),
                 CFolio.CFolioVideoRead(situation.LSituationVideoFilled))
             : null;
     }

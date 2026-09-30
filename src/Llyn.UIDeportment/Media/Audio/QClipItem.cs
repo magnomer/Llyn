@@ -8,10 +8,10 @@ internal sealed class QClipItem
 {
     private QClipItem(CClipItem row)
     {
-        List<PClipReading> readings = new(row.CClipItemReading.Count);
+        List<QClipReading> readings = new(row.CClipItemReading.Count);
         foreach (CClipReading reading in row.CClipItemReading)
         {
-            readings.Add(new PClipReading(
+            readings.Add(new QClipReading(
                 reading,
                 QAccentItem.QAccentLabelRefine(reading.CClipReadingVariety),
                 QAccentItem.QAccentEnsignRefine(reading.CClipReadingVariety, reading.CClipReadingFlagged),
@@ -26,7 +26,7 @@ internal sealed class QClipItem
 
     public string QClipItemSource { get; }
 
-    public IReadOnlyList<PClipReading> QClipItemReading { get; }
+    public IReadOnlyList<QClipReading> QClipItemReading { get; }
 
     public string QClipItemNotice { get; }
 

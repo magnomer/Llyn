@@ -5,20 +5,22 @@
 What the Image rows of a card ask the editor for.
 That is a row opened, a row dropped, and a file chosen from this machine.
 The rows sit in a template, so their events arrive here rather than at the card.
-The card the row belongs to is found by asking which card holds it.
+Each click hands one raw value to one image gate, and the engine finds the card a row belongs to.
 
-## `internal void PImageAddHandle(object sender, RoutedEventArgs e)`
+## `internal void PImageAddObserve(object sender, RoutedEventArgs e)`
 
-Opens a picture row on the card the Extra row belongs to.
+Hands the id of the card the Extra row belongs to to the add gate, which appends the row.
 
-## `public void PImageRemoveHandle(object sender, RoutedEventArgs e)`
+## `public void PImageRemoveObserve(object sender, RoutedEventArgs e)`
 
-Drops the row from the card that holds it.
+Hands the id of the clicked row to the remove gate.
 Public because it answers `PImageHost`, the seam the row template reaches the editor through.
 
-## `public void PImageOpenHandle(object sender, RoutedEventArgs e)`
+## `public void PImageOpenObserve(object sender, RoutedEventArgs e)`
 
-Chooses a picture file through the row's own chooser and sends its path as the row's location at once.
+Asks for a picture file, owned by the window of the clicked button.
+The chosen path goes raw to the file gate, which sends it as the row's location at once.
+A cancelled dialog hands null, and the gate does nothing.
 A typed location goes the same way through the editor's field handler, only deferred.
 Browsing is a convenience for the local case only.
 The field takes a web address just as well.

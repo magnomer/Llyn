@@ -95,7 +95,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         PEditorDiscard.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
         PEditorStore.Click += PEditorStoreObserve;
         PEditorStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
-        PPlaybackAction.Click += PPlaybackActionHandle;
+        PPlaybackAction.Click += PPlaybackActionObserve;
         PPlaybackAction.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("play", 24));
         PEtymologyAttach();
         AddHandler(LostFocusEvent, new RoutedEventHandler(PEditorFocusObserve));
@@ -253,12 +253,6 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
     internal void PCollocationRefine(CEntryDraft draft)
     {
         PCardRefine(_pCollocationList, "Collocation", draft.CEntryDraftCollocations);
-    }
-
-    internal void PPlaybackRefine(CEntryDraft draft)
-    {
-        PEditorRecordingShow(draft);
-        PPlaybackTrayShow();
     }
 
     private void PEditorHeadwordObserve(object sender, TextChangedEventArgs e)

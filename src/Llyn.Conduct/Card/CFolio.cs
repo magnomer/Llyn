@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
 
@@ -20,22 +21,22 @@ internal static class CFolio
     }
 
     internal static CEntryDraft CFolioEntryRead(
-        LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets)
+        LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets, LMediaPort media)
     {
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentNullException.ThrowIfNull(targets);
+        ArgumentNullException.ThrowIfNull(media);
 
         return new CEntryDraft(
             draft.LEntryDraftHeadword,
             draft.LEntryDraftLanguage,
             draft.LEntryDraftNote,
-            draft.LEntryDraftAudio,
             draft.LEntryDraftPronunciation is LPronunciationDraft spoken
                 ? CSounding.CSoundingPronunciationRead(spoken)
                 : null,
             CSounding.CSoundingPronunciationRead(draft.LEntryDraftAccents),
-            CFolioSheetRead(draft.LEntryDraftMeanings, targets, "Card.DefinitionHint"),
-            CFolioSheetRead(draft.LEntryDraftCollocations, targets, "Card.MeaningHint"),
+            CFolioSheetRead(draft.LEntryDraftMeanings, targets, media, "Card.DefinitionHint"),
+            CFolioSheetRead(draft.LEntryDraftCollocations, targets, media, "Card.MeaningHint"),
             CSounding.CSoundingTranscriptionRead(draft.LEntryDraftTranscriptions),
             CSounding.CSoundingReflexRead(draft.LEntryDraftReflexes),
             new CEtymologyDraft(
@@ -51,6 +52,7 @@ internal static class CFolio
     private static IReadOnlyList<CCardDraft> CFolioSheetRead(
         IReadOnlyList<LCardDraft> cards,
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
+        LMediaPort media,
         string meaning)
     {
         return cards
@@ -78,7 +80,7 @@ internal static class CFolio
                     .ToList(),
                 CFolioTargetRead(targets[card.LCardDraftId]),
                 card.LCardDraftTag.Select(static row => new CTagDraft(row.LTagDraftId, row.LTagDraftText)).ToList(),
-                CFolioImageRead(card.LCardDraftImage),
+                CFolioImageRead(card.LCardDraftImage, media),
                 CFolioVideoRead(card.LCardDraftVideo)))
             .ToList();
     }
@@ -123,11 +125,16 @@ internal static class CFolio
         return mentions.Select(CFolioMentionRead).ToList();
     }
 
-    internal static IReadOnlyList<CImageDraft> CFolioImageRead(IReadOnlyList<LImageDraft> images)
+    internal static IReadOnlyList<CImageDraft> CFolioImageRead(IReadOnlyList<LImageDraft> images, LMediaPort media)
     {
+        ArgumentNullException.ThrowIfNull(media);
+
         return images
-            .Select(static image => new CImageDraft(
-                image.LImageDraftId, CFolioStateRead(image.LImageDraftLocation), image.LImageDraftEmpty))
+            .Select(image => new CImageDraft(
+                image.LImageDraftId,
+                CFolioStateRead(image.LImageDraftLocation),
+                image.LImageDraftEmpty,
+                media.LEngineLocationRead(image.LImageDraftLocation.LStateValuePlain)))
             .ToList();
     }
 

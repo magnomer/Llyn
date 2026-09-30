@@ -49,17 +49,17 @@ Hands the add button's press to the add gate, which appends the row below.
 
 Hands the add button's press to the video add gate.
 
-## `public void PImageRemoveHandle(object sender, RoutedEventArgs e)`
+## `public void PImageRemoveObserve(object sender, RoutedEventArgs e)`
 
 Hands the id of the row the click came from to the remove gate.
-It keeps the name `PImageHost` gives it.
+It takes the name `PImageHost` gives it.
 
 ## `public void PVideoRemoveHandle(object sender, RoutedEventArgs e)`
 
 Hands the id of the row the click came from to the video remove gate.
 It keeps the name `PVideoHost` gives it.
 
-## `public void PImageOpenHandle(object sender, RoutedEventArgs e)`
+## `public void PImageOpenObserve(object sender, RoutedEventArgs e)`
 
 Asks for a picture file, owned by the window of the clicked button.
 The chosen path goes raw to the file gate, which sends it at once.

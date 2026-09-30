@@ -33,6 +33,7 @@ public sealed class LDisplay
         _lEntryPort = entries;
         _lDisplayEnvoy = envoy;
         _lDisplaySettings = settings;
+        LDisplayMediaPort = media;
         LDisplaySound = new LDisplaySound(entries, phonology, media, settings);
         LDisplaySound.LDisplaySoundFailed +=
             (key, exception) => CLedger.LLedgerFailureShow(envoy, settings, key, exception);
@@ -42,6 +43,8 @@ public sealed class LDisplay
     }
 
     public LDisplaySound LDisplaySound { get; }
+
+    internal LMediaPort LDisplayMediaPort { get; }
 
     internal void LDisplayNavigationAttach(CNavigation navigation, CMention mention)
     {

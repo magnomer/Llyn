@@ -14,6 +14,7 @@ Builds an engine font for a fake settings port to answer, so a test never constr
 ## `internal static CAtelier TAtelierCreate(LEngine engine) => new(`
 
 Builds the atelier over real outlets on `engine`, with a stub player that only accepts a stop.
+The stub resolves every media location to no address, so a scenario's picture rows still read.
 A workspace engine is needed, since disposing sweeps drafts through the real draft outlet.
 Disposing also runs each area's registered close, and the corpus's close stops its display's playback.
 
@@ -141,9 +142,15 @@ The waiting checks go through a display voice over the same phonology port.
 A settings port that only reads failure notices, each as the unexpected key it is handed.
 A gate over fakes can then show its failure without a real engine behind the notice.
 
-## `internal static IReadOnlyList<CImageDraft> TCardImageRead(IReadOnlyList<LImageDraft> images)`
+## `internal static IReadOnlyList<CImageDraft> TCardImageRead(IReadOnlyList<LImageDraft> images, LMediaPort media)`
 
 Relays the internal image map, so a fact can hand it a row nobody located.
+A fact hands its own `media`, so it can watch what the map asks and what the address becomes.
+
+## `internal static LMediaPort TMediaCreate()`
+
+A media port that only resolves locations, each to no address.
+The map relays hand it to the image map, so a fact without an engine still reads its rows.
 
 ## `internal static IReadOnlyList<CVideoDraft> TCardVideoRead(IReadOnlyList<LVideoDraft> videos)`
 

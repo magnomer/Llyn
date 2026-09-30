@@ -13,6 +13,11 @@ A refused read or mark reaches the user through the envoy the panel handed over.
 
 The sound half, which holds the shown draft, the fold state and every phonology read.
 
+## `internal LMediaPort LDisplayMediaPort { get; }`
+
+The port a card's picture addresses are resolved through.
+The lectern's cards and the editor's draft read it, so both carry the same ready address.
+
 ## `internal void LDisplayNavigationAttach(CNavigation navigation, CMention mention)`
 
 Hands every record, rime cell and series the display's gates raise to the atelier's navigation.
