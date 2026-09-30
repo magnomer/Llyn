@@ -12,14 +12,18 @@ internal sealed class QShelfItem : INotifyPropertyChanged
 {
     private bool _qShelfItemChosen;
 
-    internal QShelfItem(CCatalogReference row, string unknown, string unset, bool chosen)
+    internal QShelfItem(CCatalogReference row, bool chosen)
     {
         _qShelfItemChosen = chosen;
 
         QShelfItemId = row.CCatalogReferenceId;
         QShelfItemName = row.CCatalogReferenceName;
-        QShelfItemAuthor = QShelfValueRead(row.CCatalogReferenceCredit, unknown) ?? unset;
-        QShelfItemYear = QShelfValueRead(row.CCatalogReferenceYear, unknown) ?? unset;
+        QShelfItemAuthor = row.CCatalogReferenceCredit.CStateWordingKey is string author
+            ? QLocalizationCatalog.QLocalizationTextRead(author)
+            : row.CCatalogReferenceCredit.CStateWordingText;
+        QShelfItemYear = row.CCatalogReferenceYear.CStateWordingKey is string year
+            ? QLocalizationCatalog.QLocalizationTextRead(year)
+            : row.CCatalogReferenceYear.CStateWordingText;
         QShelfItemCount = row.CCatalogReferenceUsage.ToString(CultureInfo.CurrentCulture);
     }
 
@@ -37,21 +41,13 @@ internal sealed class QShelfItem : INotifyPropertyChanged
     {
         ArgumentNullException.ThrowIfNull(rows);
 
-        string unknown = QLocalizationCatalog.QLocalizationTextRead("Display.Unknown");
-        string unset = QLocalizationCatalog.QLocalizationTextRead("Source.Unset");
-
         List<QShelfItem> built = new(rows.Count);
         foreach (CCatalogReference row in rows)
         {
-            built.Add(new QShelfItem(row, unknown, unset, row.CCatalogReferenceChosen));
+            built.Add(new QShelfItem(row, row.CCatalogReferenceChosen));
         }
 
         return built;
-    }
-
-    private static string? QShelfValueRead(CStateValue value, string unknown)
-    {
-        return value.CStateValueUncertain ? unknown : value.CStateValueShown;
     }
 
     internal static bool QShelfItemMatch(QShelfItem held, QShelfItem fresh)
@@ -68,7 +64,7 @@ internal sealed class QShelfItem : INotifyPropertyChanged
         held.QShelfItemChosen = fresh.QShelfItemChosen;
     }
 
-    internal static void QShelfItemApply(FrameworkElement container, object item, string? _)
+    internal static void QShelfItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QShelfItem row)
         {

@@ -73,6 +73,7 @@ The lectern's usage rows build through it too, so both lists word a place alike.
 ## `internal static IReadOnlyList<CCatalogReference> COeuvreReferenceRead(IReadOnlyList<LCatalogReference> rows)`
 
 The one map for reference rows, shared with the card, the anthology and the shelf.
+The authors and the year arrive worded, and an unset one reads `Source.Unset` in both lists that show them.
 
 ## `private static CStateValue LOeuvreCreditRead(string? credit, bool uncertain)`
 

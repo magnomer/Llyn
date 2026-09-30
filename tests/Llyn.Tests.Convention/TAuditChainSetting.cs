@@ -95,6 +95,7 @@ internal static class TAuditChainSetting
             "CTally",
             "CTallyMark",
             "CStateValue",
+            "CStateWording",
             "CRegister",
             "CTag",
             "CSentenceOrder",

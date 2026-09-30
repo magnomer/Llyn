@@ -18,7 +18,7 @@ It ties both droppers to their popups, sets every icon, and subscribes every cli
 
 Each named part is pulled from the page by its contract ID on every read.
 
-## `internal void QTaxonomyAttach(PWindow host)`
+## `internal void QTaxonomyIntroduce(PWindow host)`
 
 Puts the panel to work through the Conduct taxonomy, which the forge builds with its own editor.
 The view wraps that editor for its editor page.
@@ -34,23 +34,24 @@ No tag is chosen, nothing is selected, the editor is closed, and the tag catalog
 A different workspace has its own tags.
 So the tag this panel stood on may not exist in the one now open.
 
-## `internal void QTaxonomyClose()`
+## `internal void QTaxonomyExitRefine()`
 
-Stops the panel: the editor is shut down and the reader releases its playback.
+Releases the editor's player, so none outlives the window.
+It calls no gate: the window's exit gate `CAtelierClose` closes the editor and stops its playback in Conduct.
 
-## `private void QTaxonomyPressCheck(object sender, CanExecuteRoutedEventArgs e)`
+## `private void QTaxonomyPressRefine(object sender, CanExecuteRoutedEventArgs e)`
 
 Whether the print button is live: exactly when an entry is read in the display.
 An editor on screen prints nothing, because what is printed is what is read.
 The button follows this answer on its own, so no panel state has to switch it.
 
-## `private async void QTaxonomyPressHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private async void QTaxonomyPressObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the entry being read, as the engine portrays it.
 The panel names only the id it is showing, and the engine builds the page from stored rows.
 Nothing is read back from the screen.
 
-## `private async void QTaxonomyPortraitHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private async void QTaxonomyPortraitObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Exports the entry being read, as the engine portrays it.
 The gate asks for the file and the format through the envoy.
@@ -65,33 +66,33 @@ The window this panel sits in.
 It is who reports a read that failed.
 It also asks the question put before unsaved work would be lost.
 
-## `internal void QTaxonomyVoyageShow(bool past, bool future)`
+## `internal void QTaxonomyVoyageRefine(bool past, bool future)`
 
 Lights the two trail buttons from the voyage state the navigation raises.
 The navigation owns the trail, so the panel only shows what it is told.
 
-## `private void QTaxonomyRetreatHandle(object sender, RoutedEventArgs e)`
+## `private void QTaxonomyRetreatObserve(object sender, RoutedEventArgs e)`
 
 Steps the navigation's trail back one station.
 
-## `private void QTaxonomyAdvanceHandle(object sender, RoutedEventArgs e)`
+## `private void QTaxonomyAdvanceObserve(object sender, RoutedEventArgs e)`
 
 Steps the navigation's trail forward one station.
 
-## `private void QTaxonomyUndoHandle(object sender, RoutedEventArgs e)`
+## `private void QTaxonomyUndoObserve(object sender, RoutedEventArgs e)`
 
 Walks the chronicle of the editor back one step.
 
-## `private void QTaxonomyRedoHandle(object sender, RoutedEventArgs e)`
+## `private void QTaxonomyRedoObserve(object sender, RoutedEventArgs e)`
 
 Walks the chronicle of the editor forward one step.
 
-## `private void QTaxonomyChronicleUpdate()`
+## `private void QTaxonomyChronicleRefine()`
 
 Lights the two chronicle buttons only while the editor has a step to walk.
 It runs whenever the editor reports its state again.
 
-## `private void QTaxonomyModeUpdate()`
+## `private void QTaxonomyModeRefine()`
 
 Paints the mode from the shared panel state.
 No control's visibility stands in for the mode any more.

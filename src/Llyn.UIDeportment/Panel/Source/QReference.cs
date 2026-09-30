@@ -70,7 +70,7 @@ internal sealed class QReference
         QShelf.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QShelfObserve));
         QFootnote.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QFootnoteObserve));
 
-        QLookItem.QLookItemAttach(QShelf, QShelfItem.QShelfItemApply);
+        QLookItem.QLookItemAttach(QShelf, QShelfItem.QShelfItemRefine);
         QLookItem.QLookItemAttach(QFootnote, QFootnoteItem.QFootnoteItemRefine);
     }
 

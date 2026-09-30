@@ -4,7 +4,7 @@ public sealed record CCatalogReference(
     long CCatalogReferenceId,
     string CCatalogReferenceName,
     string CCatalogReferenceByline,
-    CStateValue CCatalogReferenceCredit,
-    CStateValue CCatalogReferenceYear,
+    CStateWording CCatalogReferenceCredit,
+    CStateWording CCatalogReferenceYear,
     int CCatalogReferenceUsage,
     bool CCatalogReferenceChosen);

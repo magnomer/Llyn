@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -293,6 +294,31 @@ public sealed class TTaxonomy
         taxonomy.TTaxonomyTagOpen(first);
 
         Assert.Equal(["Tag.Vacant 1"], seen);
+    }
+
+    [Fact]
+    public void AtelierClose_EntryHeldOnTheEditor_CancelsTheEditorDeskAndStopsPlayback()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        int stopped = 0;
+        LMediaPort media = TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineRecordingStop"] = _ =>
+            {
+                stopped++;
+                return null;
+            },
+        });
+        using CAtelier atelier = TInterfaceConduct.TAtelierMediaCreate(engine, media);
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        taxonomy.CTaxonomyEditor.CEditorEntryOpen(null);
+        Assert.True(taxonomy.CTaxonomyEditor.CEditorDesk.CDeskHeld);
+
+        atelier.CAtelierClose();
+
+        Assert.False(taxonomy.CTaxonomyEditor.CEditorDesk.CDeskHeld);
+        Assert.Equal(1, stopped);
     }
 
     private static CTaxonomy TTaxonomyPrepare(CAtelier atelier, CEnvoy envoy)

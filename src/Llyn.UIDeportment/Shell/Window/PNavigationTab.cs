@@ -114,7 +114,7 @@ public partial class PWindow
             },
             new QTab("Taxonomy", PNavigationTaxonomy, PTaxonomy)
             {
-                QTabVoyage = _qTaxonomy.QTaxonomyVoyageShow
+                QTabVoyage = _qTaxonomy.QTaxonomyVoyageRefine
             },
             new QTab("Tenor", PNavigationTenor, PTenor)
             {

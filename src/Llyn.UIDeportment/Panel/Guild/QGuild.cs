@@ -71,7 +71,7 @@ internal sealed class QGuild
         QOeuvre.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QOeuvreObserve));
 
         QLookItem.QLookItemAttach(QRoll, QRollItem.QRollItemApply);
-        QLookItem.QLookItemAttach(QOeuvre, QShelfItem.QShelfItemApply);
+        QLookItem.QLookItemAttach(QOeuvre, QShelfItem.QShelfItemRefine);
     }
 
     private Border QEchelon => QContract.QContractFind<Border>(_qGuildSurface, "PEchelon");

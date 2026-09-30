@@ -274,6 +274,7 @@
       "CTally",
       "CTallyMark",
       "CStateValue",
+      "CStateWording",
       "CRegister",
       "CTag",
       "CSentenceOrder",

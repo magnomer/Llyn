@@ -9,17 +9,17 @@ A Source is shown by the first field it actually states, then by its id if it na
 It is never offered as a blank row the reader could not tell from the next one.
 `Untitled` is a stated title and shows as one, and `Anonymous` is a credited Author.
 
-## `internal QShelfItem(CCatalogReference row, string unknown, string unset, bool chosen)`
+## `internal QShelfItem(CCatalogReference row, bool chosen)`
 
-Builds the row from the catalog row the engine returned.
-The name, the credits and the citation count arrive with it, so nothing is derived or read again here.
-The two texts are handed in rather than read here.
-A row is built while the list is being filled.
+Builds the row from the ready catalog row Conduct returned.
+The name, the credits, the year and the citation count arrive with it.
+The chosen mark is handed in, because the setter writes the same field from a plain value.
+The authors and the year show their text, or the localized wording of the key Conduct chose.
+Only the lookup of that key and the count's format happen here.
 
 ## `internal static IReadOnlyList<QShelfItem> QShelfItemBuild(IReadOnlyList<CCatalogReference> rows)`
 
-One item per engine row, in the order the engine returned them.
-The two placeholder texts are localized once for the whole list.
+One item per Conduct row, in the order Conduct returned them.
 A plain copy loop, so the panel that asks for it carries no loop of its own.
 
 ## `public string QShelfItemCount { get; }`
@@ -43,7 +43,7 @@ Whether the two rows show the same values, the chosen mark left aside.
 
 Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.
 
-## `internal static void QShelfItemApply(FrameworkElement container, object item, string? _)`
+## `internal static void QShelfItemRefine(FrameworkElement container, object item, string? _)`
 
 Fills one shelf row's named parts and marks the row while it is the chosen one.
 The sources panel and the authors panel both attach it, and each takes the clicks on its own list.

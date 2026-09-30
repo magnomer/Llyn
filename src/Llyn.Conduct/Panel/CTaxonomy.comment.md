@@ -13,6 +13,7 @@ Builds the entry editor and the membership panel over the atelier's ports.
 The panel asks the editor's desk before it leaves an entry, and it finishes through the editor.
 A cleared panel cancels the editor's draft, and an edited row opens the editor on it.
 So the first draft a fresh member shows already carries the Tag.
+It registers its close with the workspace beside its draft finish and its vista restore.
 
 ## `public static CTaxonomy CTaxonomyCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
 
@@ -95,6 +96,11 @@ A refused Tag is shown through `CEnvoy` as `Tag.CreateFailed`, and nothing opens
 Opens a fresh entry in the editor, in edit mode.
 The chosen Tag goes down with the start, so the engine puts it on the first card in one call.
 With no Tag chosen the fresh entry starts blank.
+
+## `private void LTaxonomyClose()`
+
+The taxonomy's part of the window's exit gate `CAtelier.CAtelierClose`, registered with the workspace at build.
+It closes the entry editor and cancels its display's playback.
 
 ## `public Task CTaxonomyPortraitPrint()`
 

@@ -177,10 +177,13 @@ public sealed class COeuvre
                 row.LCatalogReferenceStored.LReferenceId,
                 row.LCatalogReferenceName,
                 row.LCatalogReferenceByline,
-                LOeuvreCreditRead(
-                    row.LCatalogReferenceWriter,
-                    row.LCatalogReferenceStored.LReferenceAuthorState.LStateMarkUncertain),
-                CFolio.CFolioStateRead(row.LCatalogReferenceStored.LReferenceYear),
+                CStateWording.LStateWordingRead(
+                    LOeuvreCreditRead(
+                        row.LCatalogReferenceWriter,
+                        row.LCatalogReferenceStored.LReferenceAuthorState.LStateMarkUncertain),
+                    "Source.Unset"),
+                CStateWording.LStateWordingRead(
+                    CFolio.CFolioStateRead(row.LCatalogReferenceStored.LReferenceYear), "Source.Unset"),
                 row.LCatalogReferenceUsage,
                 row.LCatalogReferenceChosen))
             .ToList();

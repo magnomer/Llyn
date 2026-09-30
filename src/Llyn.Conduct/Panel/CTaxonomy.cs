@@ -49,6 +49,7 @@ public sealed class CTaxonomy
             LTaxonomyTagOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CTaxonomyPanel.LPanelChangeCheck, editor.LEditorFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CTaxonomyVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LTaxonomyClose);
     }
 
     public static CTaxonomy CTaxonomyCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
@@ -186,6 +187,12 @@ public sealed class CTaxonomy
         long? chosen = LTaxonomyChosen;
         CTaxonomyPanel.CPanelFreshOpen();
         CTaxonomyEditor.CEditorDesk.LDeskMembershipStart(chosen);
+    }
+
+    private void LTaxonomyClose()
+    {
+        CTaxonomyEditor.CEditorClose();
+        CTaxonomyEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
     }
 
     internal string LTaxonomyFileRead()

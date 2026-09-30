@@ -22,9 +22,9 @@ internal sealed partial class QTaxonomy
         _qTaxonomySurface = surface;
 
         surface.CommandBindings.Add(
-            new CommandBinding(ApplicationCommands.Print, QTaxonomyPressHandle, QTaxonomyPressCheck));
+            new CommandBinding(ApplicationCommands.Print, QTaxonomyPressObserve, QTaxonomyPressRefine));
         surface.CommandBindings.Add(new CommandBinding(
-            PDisplayCommand.PDisplayCommandPortrait, QTaxonomyPortraitHandle, QTaxonomyPressCheck));
+            PDisplayCommand.PDisplayCommandPortrait, QTaxonomyPortraitObserve, QTaxonomyPressRefine));
         QTaxonomyPortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
         QTaxonomyPress.Command = ApplicationCommands.Print;
 
@@ -51,10 +51,10 @@ internal sealed partial class QTaxonomy
         QScout.TextChanged += QScoutHandle;
         QTaxonomyFresh.Click += QTaxonomyFreshHandle;
         QTaxonomyStore.Click += QTaxonomyStoreHandle;
-        QTaxonomyEarlier.Click += QTaxonomyRetreatHandle;
-        QTaxonomyLater.Click += QTaxonomyAdvanceHandle;
-        QTaxonomyBackward.Click += QTaxonomyUndoHandle;
-        QTaxonomyForward.Click += QTaxonomyRedoHandle;
+        QTaxonomyEarlier.Click += QTaxonomyRetreatObserve;
+        QTaxonomyLater.Click += QTaxonomyAdvanceObserve;
+        QTaxonomyBackward.Click += QTaxonomyUndoObserve;
+        QTaxonomyForward.Click += QTaxonomyRedoObserve;
         QTaxonomyViewer.Click += QTaxonomyScribeHandle;
         QTaxonomyScribe.Click += QTaxonomyScribeHandle;
         QTaxonomyBin.Click += QTaxonomyBinHandle;
@@ -129,14 +129,14 @@ internal sealed partial class QTaxonomy
 
     private QIconImage QTaxonomyBinIcon => QContract.QContractFind<QIconImage>(_qTaxonomySurface, "PTaxonomyBinIcon");
 
-    internal void QTaxonomyAttach(PWindow host)
+    internal void QTaxonomyIntroduce(PWindow host)
     {
         _qTaxonomyHost = host;
         _cTaxonomy = host.PWindowForge.QForgeTaxonomyCreate(QTaxonomyShownCheck, host.PWindowEnvoy);
         _cTaxonomy.CTaxonomyTagOpened += QDirectoryTagRefine;
         CPanel panel = _cTaxonomy.CTaxonomyPanel;
         QLectern lectern = new(_cTaxonomy.CTaxonomyEditor.CEditorDisplay, panel);
-        panel.CPanelChanged += QTaxonomyModeUpdate;
+        panel.CPanelChanged += QTaxonomyModeRefine;
         panel.CPanelRowsChanged += QMembershipFind;
 
         QDirectory.ItemsSource = _qDirectoryList;
@@ -145,12 +145,12 @@ internal sealed partial class QTaxonomy
         QLookItem.QLookItemAttach(QMembership, QMembershipApply);
 
         QTaxonomyDisplay.PDisplayAttach(host, lectern);
-        _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskStateChanged += QTaxonomyStoreUpdate;
+        _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskStateChanged += QTaxonomyStoreRefine;
         QTaxonomyEditor.PEditorIntroduce(host, new QEditor(_cTaxonomy.CTaxonomyEditor));
-        QTaxonomyEditor.PEditorChronicleChanged += QTaxonomyChronicleUpdate;
+        QTaxonomyEditor.PEditorChronicleChanged += QTaxonomyChronicleRefine;
     }
 
-    private void QTaxonomyStoreUpdate()
+    private void QTaxonomyStoreRefine()
     {
         QTaxonomyStore.IsEnabled = _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskStorable;
     }
@@ -162,54 +162,53 @@ internal sealed partial class QTaxonomy
         QDirectoryFind();
     }
 
-    internal void QTaxonomyClose()
+    internal void QTaxonomyExitRefine()
     {
-        QTaxonomyEditor.PEditorClose();
-        QTaxonomyDisplay.PDisplayClose();
+        QTaxonomyEditor.PEditorPlayerRefine();
     }
 
-    private void QTaxonomyPressCheck(object sender, CanExecuteRoutedEventArgs e)
+    private void QTaxonomyPressRefine(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = _cTaxonomy?.CTaxonomyPanel.CPanelPressAllowed ?? false;
     }
 
-    private async void QTaxonomyPressHandle(object sender, ExecutedRoutedEventArgs e)
+    private async void QTaxonomyPressObserve(object sender, ExecutedRoutedEventArgs e)
     {
         await _cTaxonomy.CTaxonomyPortraitPrint();
     }
 
-    private async void QTaxonomyPortraitHandle(object sender, ExecutedRoutedEventArgs e)
+    private async void QTaxonomyPortraitObserve(object sender, ExecutedRoutedEventArgs e)
     {
         await _cTaxonomy.CTaxonomyPortraitExport();
     }
 
-    internal void QTaxonomyVoyageShow(bool past, bool future)
+    internal void QTaxonomyVoyageRefine(bool past, bool future)
     {
         QTaxonomyEarlier.IsEnabled = past;
         QTaxonomyLater.IsEnabled = future;
     }
 
-    private void QTaxonomyRetreatHandle(object sender, RoutedEventArgs e)
+    private void QTaxonomyRetreatObserve(object sender, RoutedEventArgs e)
     {
         _qTaxonomyHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
-    private void QTaxonomyAdvanceHandle(object sender, RoutedEventArgs e)
+    private void QTaxonomyAdvanceObserve(object sender, RoutedEventArgs e)
     {
         _qTaxonomyHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
-    private void QTaxonomyUndoHandle(object sender, RoutedEventArgs e)
+    private void QTaxonomyUndoObserve(object sender, RoutedEventArgs e)
     {
         QTaxonomyEditor.QChronicleUndoObserve();
     }
 
-    private void QTaxonomyRedoHandle(object sender, RoutedEventArgs e)
+    private void QTaxonomyRedoObserve(object sender, RoutedEventArgs e)
     {
         QTaxonomyEditor.QChronicleRedoObserve();
     }
 
-    private void QTaxonomyChronicleUpdate()
+    private void QTaxonomyChronicleRefine()
     {
         (bool undo, bool redo) = _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskChronicleRead();
         QTaxonomyBackward.IsEnabled = undo;
@@ -221,7 +220,7 @@ internal sealed partial class QTaxonomy
         return _qTaxonomySurface.IsVisible;
     }
 
-    private void QTaxonomyModeUpdate()
+    private void QTaxonomyModeRefine()
     {
         CPanel panel = _cTaxonomy.CTaxonomyPanel;
         QTaxonomyEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
