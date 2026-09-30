@@ -11,6 +11,9 @@ public sealed record LCatalogPronunciation(
     string LCatalogPronunciationEpithet = "",
     bool LCatalogPronunciationChosen = false)
 {
+    public string LCatalogPronunciationText =>
+        LCatalogPronunciationSound.Length == 0 ? "[ ]" : '[' + LCatalogPronunciationSound + ']';
+
     public static LCatalogPronunciation LCatalogPronunciationCreate(LEntry entry, string? sound)
     {
         ArgumentNullException.ThrowIfNull(entry);

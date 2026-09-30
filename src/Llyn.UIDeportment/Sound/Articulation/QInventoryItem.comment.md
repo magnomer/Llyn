@@ -6,8 +6,8 @@ Presentation item for one entry row in the `PInventory` list.
 It is built from the Conduct `CCatalogPronunciation` only, so it names no engine type.
 Carries the pronunciation and the headword the row shows, and the entry id the row loads through.
 The id is identity and never displayed.
-The pronunciation is kept raw as well as bracketed, because the ordering reads the raw one.
-An entry with no pronunciation yet still reads as a bracket pair, so the row stays a row.
+The pronunciation arrives bracketed from Conduct, and the raw one is kept because the ordering reads it.
+Conduct words an entry with no pronunciation yet as a bracket pair, so the row stays a row.
 The language stands at the far end of the row, behind its flag, as it does in the other catalogs.
 The flag is resolved once for the language and handed to the row, not read from disk by the row.
 
@@ -44,7 +44,7 @@ Whether the two rows show the same values, the chosen mark left aside.
 
 Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.
 
-## `internal static void QInventoryItemApply(FrameworkElement container, object item, string? _)`
+## `internal static void QInventoryItemRefine(FrameworkElement container, object item, string? _)`
 
 Fills one inventory row's named parts and marks the row while it is the chosen one.
 The epithet leads with an en space, which the markup's format string once added.

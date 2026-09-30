@@ -14,6 +14,11 @@ An entry with nothing stored carries an empty sound, which is what the pending o
 - `LCatalogPronunciationEpithet` — The entry's epithet, empty where none shows or until the vista find fills it.
 - `LCatalogPronunciationChosen` — True on the row of the entry the vista stands on, false until the vista find fills it.
 
+## `public string LCatalogPronunciationText`
+
+The sound in square brackets, the way a phonetic transcription is written.
+An empty sound answers an empty pair of brackets, so a pending row still shows a slot.
+
 ## `public static LCatalogPronunciation LCatalogPronunciationCreate(LEntry entry, string? sound)`
 
 Builds the row from the entry and whatever pronunciation is stored against it.

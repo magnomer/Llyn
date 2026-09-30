@@ -27,6 +27,10 @@ The tone contour syllables of `ipa` in `language`, empty when nothing is drawn.
 
 The IPA consonant chart, which needs no engine, so the input aid reads it before any workspace opens.
 
+## `static LArticulation LEngineVowelRead()`
+
+The IPA vowel chart, which needs no engine, so the input aid reads it before any workspace opens.
+
 ## `bool LEngineFanqieCheck(long entryId);`
 
 Whether the entry's rime-book rows are still being fetched.

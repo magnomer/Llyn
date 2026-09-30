@@ -22,7 +22,7 @@ internal sealed class QInventoryItem : INotifyPropertyChanged
         QInventoryItemEpithet = row.CCatalogPronunciationEntry.CVistaRowEpithet;
         QInventoryItemLanguage = row.CCatalogPronunciationEntry.CVistaRowLanguage;
         QInventoryItemSound = row.CCatalogPronunciationSound;
-        QInventoryItemPronunciation = QInventoryItemSound.Length == 0 ? "[ ]" : $"[{QInventoryItemSound}]";
+        QInventoryItemPronunciation = row.CCatalogPronunciationText;
         QInventoryItemFlag = LEnsignImage.LEnsignFind(QInventoryItemLanguage);
     }
 
@@ -88,7 +88,7 @@ internal sealed class QInventoryItem : INotifyPropertyChanged
         }
     }
 
-    internal static void QInventoryItemApply(FrameworkElement container, object item, string? _)
+    internal static void QInventoryItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QInventoryItem inventory)
         {

@@ -83,6 +83,32 @@ public sealed class TCatalogPronunciation
         Assert.Equal("ˈwɔːtə", row.LCatalogPronunciationSound);
     }
 
+    [Fact]
+    public void PronunciationText_StoredSound_IsBracketed()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        TCatalogPronunciationSave(engine, "water", "ˈwɔːtə");
+
+        LCatalogPronunciation row = Assert.Single(
+            engine.TEnginePronunciationFind("water", LCatalogOrder.LCatalogOrderHeadword));
+
+        Assert.Equal("[ˈwɔːtə]", row.LCatalogPronunciationText);
+    }
+
+    [Fact]
+    public void PronunciationText_NoSound_IsAnEmptyPairOfBrackets()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        TCatalogPronunciationSave(engine, "water", null);
+
+        LCatalogPronunciation row = Assert.Single(
+            engine.TEnginePronunciationFind("water", LCatalogOrder.LCatalogOrderHeadword));
+
+        Assert.Equal("[ ]", row.LCatalogPronunciationText);
+    }
+
     private static void TCatalogPronunciationSave(LEngine engine, string headword, string? sound)
     {
         engine.TEngineEntrySave(TInterface.TEntryDraftCreate(

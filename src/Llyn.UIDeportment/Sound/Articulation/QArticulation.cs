@@ -25,7 +25,7 @@ internal sealed partial class QArticulation
 
         QArticulationLane.SizeChanged += QArticulationLaneRefine;
 
-        QVowelBuild();
+        QVowelIntroduce();
         QConsonantIntroduce();
     }
 

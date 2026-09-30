@@ -178,7 +178,7 @@ public partial class PWindow
 
         PInput.PInputIntroduce(this);
         _qLibrary.QLibraryIntroduce(this);
-        _qPhonology.QPhonologyAttach(this);
+        _qPhonology.QPhonologyIntroduce(this);
         _qXiesheng.QXieshengAttach(this);
         PYunjing.PYunjingAttach(this);
         _qTaxonomy.QTaxonomyIntroduce(this);
@@ -194,7 +194,7 @@ public partial class PWindow
         PNavigationIntroduce();
 
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qLibrary.QLibraryVistaRefine;
-        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qPhonology.QPhonologyVistaRestore;
+        PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qPhonology.QPhonologyVistaRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qFavorite.QFavoriteVistaRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qTaxonomy.QTaxonomyVistaRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qTenor.QTenorVistaRefine;
@@ -326,7 +326,7 @@ public partial class PWindow
     {
         PInput.PEditor.PEditorClose();
         _qLibrary.QLibraryExitRefine();
-        _qPhonology.QPhonologyClose();
+        _qPhonology.QPhonologyExitRefine();
         _qXiesheng.QXieshengClose();
         PYunjing.PYunjingClose();
         _qTaxonomy.QTaxonomyExitRefine();

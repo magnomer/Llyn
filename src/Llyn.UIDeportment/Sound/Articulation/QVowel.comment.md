@@ -5,14 +5,8 @@
 The vowel chart of the articulation aid.
 Rows are tongue height and columns are tongue backness, as the IPA chart arranges them.
 A cell holds the unrounded vowel and then the rounded one.
+The chart itself is Conduct's ready `CArticulation`, so the aid only lays it out.
 
-## `private void QVowelBuild()`
+## `private void QVowelIntroduce()`
 
-Splits each written cell into its symbols, since the shared cell builder takes them ready.
-
-## Inline notes
-
-### `private static readonly string[,] QVowelCharacter`
-
-An empty cell is a position the IPA leaves empty or gives no ordinary symbol.
-It is kept as a cell so that the rows and columns stay aligned with their headers.
+Builds the chart's controls once, from the chart `CCatalogVowelRead` answers.

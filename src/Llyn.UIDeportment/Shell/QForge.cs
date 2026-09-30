@@ -53,7 +53,8 @@ public sealed class QForge
 
     public CPhonology QForgePhonologyCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        CPhonology phonology = CPhonology.CPhonologyCreate(_qForgeAtelier, shownSeam, envoy);
+        CPhonology phonology = CPhonology.CPhonologyCreate(
+            _qForgeAtelier, shownSeam, envoy, LObserver.LObserverCreate<Action>(static run => run()));
         phonology.CPhonologyVistaRestore();
         return phonology;
     }

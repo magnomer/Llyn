@@ -76,6 +76,11 @@ The shared sense read in `CMention` uses it.
 The IPA consonant chart of the input aid, ready to build.
 It needs no session, so a driver reads it while it builds the aid.
 
+## `public static CArticulation CCatalogVowelRead()`
+
+The IPA vowel chart of the input aid, ready to build.
+It needs no session, so a driver reads it while it builds the aid.
+
 ## `private static CArticulation LCatalogArticulationRead(LArticulation chart)`
 
 Chooses the localization key of every header and side, and passes the symbols on unread.

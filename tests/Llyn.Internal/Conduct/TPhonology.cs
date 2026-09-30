@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ public sealed class TPhonology
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TPhonologyEntrySave(engine, "water", "ˈwɔːtə");
         CPhonology phonology = CPhonology.CPhonologyCreate(
-            atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []));
+            atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
 
         Assert.Empty(phonology.CPhonologyRowsRead());
         Assert.True(phonology.CPhonologyEmpty);
@@ -89,7 +90,7 @@ public sealed class TPhonology
 
         Assert.Equal(
             new CCatalogPronunciation(
-                new CVistaRow(water.LEntryId, "water", "English", string.Empty, "water", false), "ˈwɔːtə"),
+                new CVistaRow(water.LEntryId, "water", "English", string.Empty, "water", false), "ˈwɔːtə", "[ˈwɔːtə]"),
             row);
     }
 
@@ -172,6 +173,140 @@ public sealed class TPhonology
         Assert.Null(phonology.CPhonologyEditor.CEditorDesk.CDeskStoredRead());
     }
 
+    [Fact]
+    public void PhonologyVistaRestore_QueryHeld_CarriesItIntoTheFreshVista()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        TPhonologyEntrySave(engine, "water", "ˈwɔːtə");
+        TPhonologyEntrySave(engine, "fire", "faɪə");
+        CPhonology phonology = TPhonologyPrepare(atelier);
+        phonology.CPhonologyQuerySet("wat");
+
+        phonology.CPhonologyVistaRestore();
+
+        Assert.Equal(
+            ["water"],
+            phonology.CPhonologyRowsRead().Select(row => row.CCatalogPronunciationEntry.CVistaRowHeadword));
+    }
+
+    [Fact]
+    public void PhonologyVistaRestore_ReflexNoticeAfterASecondRestore_RaisesTheRowsOnceThroughTheMarshal()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        int marshalled = 0;
+        CPhonology phonology = CPhonology.CPhonologyCreate(
+            atelier,
+            static () => true,
+            TEnvoyFake.TEnvoyCreate(false, []),
+            run =>
+            {
+                marshalled++;
+                run();
+            });
+        phonology.CPhonologyVistaRestore();
+        phonology.CPhonologyVistaRestore();
+        int rows = 0;
+        phonology.CPhonologyPanel.CPanelRowsChanged += () => rows++;
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectReflex, 0);
+
+        Assert.Equal(1, rows);
+        Assert.Equal(1, marshalled);
+    }
+
+    [Fact]
+    public void PhonologyVistaRestore_SettingsNotice_RaisesTheRows()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CPhonology phonology = TPhonologyPrepare(atelier);
+        int rows = 0;
+        phonology.CPhonologyPanel.CPanelRowsChanged += () => rows++;
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+
+        Assert.Equal(1, rows);
+    }
+
+    [Fact]
+    public void PhonologyFilterSet_HiddenLanguage_RaisesTheRowsSoTheMarkRepaints()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CPhonology phonology = TPhonologyPrepare(atelier);
+        List<bool> filtered = [];
+        phonology.CPhonologyPanel.CPanelRowsChanged += () => filtered.Add(phonology.CPhonologyFiltered);
+
+        phonology.CPhonologyFilterSet(new CCatalogFilter(["English"]));
+
+        Assert.Equal([true], filtered);
+    }
+
+    [Fact]
+    public void PhonologyVistaRestore_WorkspaceNotice_ClosesTheChosenEntryAndTellsTheDriver()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry water = TPhonologyEntrySave(engine, "water", "ˈwɔːtə");
+        CPhonology phonology = TPhonologyPrepare(atelier);
+        phonology.CPhonologyPanel.CPanelRowOpen(water.LEntryId);
+        Assert.True(phonology.CPhonologyPanel.CPanelBinEnabled);
+        int told = 0;
+        phonology.CPhonologyWorkspaceChanged += () => told++;
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
+
+        Assert.False(phonology.CPhonologyPanel.CPanelBinEnabled);
+        Assert.Equal(1, told);
+    }
+
+    [Fact]
+    public void PhonologyOrderRead_Menu_OffersTheFourOrderings()
+    {
+        Assert.Equal(
+            [
+                CCatalogOrder.CCatalogOrderHeadword,
+                CCatalogOrder.CCatalogOrderReverse,
+                CCatalogOrder.CCatalogOrderSound,
+                CCatalogOrder.CCatalogOrderPending,
+            ],
+            CPhonology.CPhonologyOrderRead());
+    }
+
+    [Fact]
+    public void PhonologyClose_ExitGate_ClosesTheEditorAndStopsTheRecording()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        int stopped = 0;
+        LMediaPort media = TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineRecordingStop"] = _ =>
+            {
+                stopped++;
+                return null;
+            },
+        });
+        using CAtelier atelier = TInterfaceConduct.TAtelierMediaCreate(engine, media);
+        LEntry water = TPhonologyEntrySave(engine, "water", "ˈwɔːtə");
+        CPhonology phonology = TPhonologyPrepare(atelier);
+        phonology.CPhonologyPanel.CPanelRowOpen(water.LEntryId);
+        phonology.CPhonologyPanel.CPanelScribeToggle(true);
+        Assert.True(phonology.CPhonologyEditor.CEditorDesk.CDeskHeld);
+
+        atelier.CAtelierClose();
+
+        Assert.False(phonology.CPhonologyEditor.CEditorDesk.CDeskHeld);
+        Assert.Equal(1, stopped);
+    }
+
     private static CPhonology TPhonologyPrepare(CAtelier atelier)
     {
         return TPhonologyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
@@ -179,7 +314,7 @@ public sealed class TPhonology
 
     private static CPhonology TPhonologyPrepare(CAtelier atelier, CEnvoy envoy)
     {
-        CPhonology phonology = CPhonology.CPhonologyCreate(atelier, static () => true, envoy);
+        CPhonology phonology = CPhonology.CPhonologyCreate(atelier, static () => true, envoy, static run => run());
         phonology.CPhonologyVistaRestore();
         return phonology;
     }

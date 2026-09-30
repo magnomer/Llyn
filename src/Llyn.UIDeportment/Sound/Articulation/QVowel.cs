@@ -1,54 +1,26 @@
+using Llyn.Conduct;
+
 namespace Llyn.UIDeportment;
 
 internal sealed partial class QArticulation
 {
-    private static readonly string[] QVowelBackness =
-    [
-        "Articulation.Front", "Articulation.Central", "Articulation.Back"
-    ];
-
-    private static readonly string[] QVowelHeight =
-    [
-        "Articulation.Close",
-        "Articulation.NearClose",
-        "Articulation.CloseMid",
-        "Articulation.Mid",
-        "Articulation.OpenMid",
-        "Articulation.NearOpen",
-        "Articulation.Open"
-    ];
-
-    private static readonly string[,] QVowelCharacter =
+    private void QVowelIntroduce()
     {
-        { "i y", "ɨ ʉ", "ɯ u" },
-        { "ɪ ʏ", "", "ʊ" },
-        { "e ø", "ɘ ɵ", "ɤ o" },
-        { "", "ə", "" },
-        { "ɛ œ", "ɜ ɞ", "ʌ ɔ" },
-        { "æ", "ɐ", "" },
-        { "a ɶ", "ä", "ɑ ɒ" }
-    };
+        CArticulation chart = CCatalog.CCatalogVowelRead();
+        QArticulationTableBuild(QVowel, chart.CArticulationHeaders.Count, chart.CArticulationSides.Count);
 
-    private void QVowelBuild()
-    {
-        QArticulationTableBuild(QVowel, QVowelBackness.Length, QVowelHeight.Length);
-
-        for (int column = 0; column < QVowelBackness.Length; column++)
+        for (int column = 0; column < chart.CArticulationHeaders.Count; column++)
         {
-            QArticulationHeaderPlace(QVowel, QVowelBackness[column], column);
+            QArticulationHeaderPlace(QVowel, chart.CArticulationHeaders[column], column);
         }
 
-        for (int row = 0; row < QVowelHeight.Length; row++)
+        for (int row = 0; row < chart.CArticulationSides.Count; row++)
         {
-            QArticulationSidePlace(QVowel, QVowelHeight[row], row);
+            QArticulationSidePlace(QVowel, chart.CArticulationSides[row], row);
 
-            for (int column = 0; column < QVowelBackness.Length; column++)
+            for (int column = 0; column < chart.CArticulationCells[row].Count; column++)
             {
-                QArticulationCellPlace(
-                    QVowel,
-                    QVowelCharacter[row, column].Split(' ', System.StringSplitOptions.RemoveEmptyEntries),
-                    column,
-                    row);
+                QArticulationCellPlace(QVowel, chart.CArticulationCells[row][column], column, row);
             }
         }
     }

@@ -7,3 +7,4 @@ It covers headword order and its reverse, which this panel shares with the libra
 It covers the sound ordering, which puts an entry with nothing stored last.
 It covers the pending ordering, which puts that same entry first.
 It covers the row carrying its sound, because the panel shows one and orders by it.
+It covers the bracketed text, which is an empty pair of brackets where nothing is stored.

@@ -33,6 +33,25 @@ public sealed class TCatalog
     }
 
     [Fact]
+    public void CatalogVowelRead_TrapezoidChart_KeysEveryHeaderAndSplitsEveryCell()
+    {
+        CArticulation chart = CCatalog.CCatalogVowelRead();
+
+        Assert.Equal(["Articulation.Front", "Articulation.Central", "Articulation.Back"], chart.CArticulationHeaders);
+        Assert.Equal(7, chart.CArticulationSides.Count);
+        Assert.Equal("Articulation.Close", chart.CArticulationSides[0]);
+        Assert.Equal("Articulation.NearClose", chart.CArticulationSides[1]);
+        Assert.Equal("Articulation.Open", chart.CArticulationSides[^1]);
+        Assert.Equal(7, chart.CArticulationCells.Count);
+        Assert.All(chart.CArticulationCells, row => Assert.Equal(3, row.Count));
+        Assert.Equal(["i", "y"], chart.CArticulationCells[0][0]);
+        Assert.Equal(["ɯ", "u"], chart.CArticulationCells[0][2]);
+        Assert.Empty(chart.CArticulationCells[1][1]);
+        Assert.Equal(["ə"], chart.CArticulationCells[3][1]);
+        Assert.Equal(["ɑ", "ɒ"], chart.CArticulationCells[6][2]);
+    }
+
+    [Fact]
     public void CatalogFontRead_LanguageAndRole_ReadsThePortFont()
     {
         List<(string, LFontRole)> asked = [];

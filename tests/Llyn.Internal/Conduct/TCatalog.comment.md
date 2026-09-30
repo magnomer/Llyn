@@ -4,6 +4,7 @@
 
 Covers the catalog gates over the fake rig, fake ports, or a workspace engine where entries must be stored.
 The consonant chart keys every header and side, and splits each cell into its symbols.
+The vowel chart does the same over its own three columns and seven rows.
 The meaning read maps the engine's ready rows, chooses the fallback key, and reports a failed read.
 A failed read hands the envoy the ready notice, so the driver asks Conduct nothing more.
 Anchor lists match exactly as the engine decides, and differing lists do not match.

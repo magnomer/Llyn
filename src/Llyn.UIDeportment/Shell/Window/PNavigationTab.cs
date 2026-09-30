@@ -102,7 +102,7 @@ public partial class PWindow
             },
             new QTab("Phonology", PNavigationPhonology, PPhonology)
             {
-                QTabVoyage = _qPhonology.QPhonologyVoyageShow
+                QTabVoyage = _qPhonology.QPhonologyVoyageRefine
             },
             new QTab("Xiesheng", PNavigationXiesheng, PXiesheng)
             {

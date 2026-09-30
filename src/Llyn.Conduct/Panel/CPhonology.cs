@@ -18,21 +18,25 @@ public sealed class CPhonology
 
     private readonly CEnvoy _cPhonologyEnvoy;
 
+    private readonly Action<Action> _cPhonologyMarshal;
+
     private LVista? _cPhonologyVista;
 
     private int _cPhonologyCount;
 
-    private CPhonology(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    private CPhonology(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(shownSeam);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(marshal);
 
         _cPhonologyAtelier = atelier;
         _cPhonologyPort = atelier.CAtelierPhonologyPort;
         _cPhonologyPortraitPort = atelier.CAtelierPortraitPort;
         _cPhonologySettingsPort = atelier.CAtelierSettingsPort;
         _cPhonologyEnvoy = envoy;
+        _cPhonologyMarshal = marshal;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CPhonologyEditor = editor;
         CPhonologyPanel = new CPanel(
@@ -53,13 +57,17 @@ public sealed class CPhonology
             id => CPhonologyPanel.CPanelRowOpen(id));
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CPhonologyPanel.LPanelChangeCheck, editor.LEditorFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CPhonologyVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LPhonologyClose);
         CPhonologyPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }
 
-    public static CPhonology CPhonologyCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    public static CPhonology CPhonologyCreate(
+        CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
-        return new CPhonology(atelier, shownSeam, envoy);
+        return new CPhonology(atelier, shownSeam, envoy, marshal);
     }
+
+    public event Action? CPhonologyWorkspaceChanged;
 
     public CEditor CPhonologyEditor { get; }
 
@@ -73,9 +81,47 @@ public sealed class CPhonology
     {
         LVista vista = _cPhonologyAtelier.CAtelierVistaStart(
             "phonology", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
+        vista.LVistaQuerySet(_cPhonologyVista?.LVistaQuery ?? string.Empty);
         _cPhonologyVista = vista;
         CPhonologyPanel.CPanelVistaRestore(vista);
         CPhonologyEditor.LEditorVistaRestore(vista);
+        LPhonologyObserverAttach();
+    }
+
+    private void LPhonologyObserverAttach()
+    {
+        CPanel panel = CPhonologyPanel;
+        Action<CBulletin> rows = _ => _cPhonologyMarshal(panel.CPanelRowsResonate);
+        panel.CPanelObserverAttach(CSubject.CSubjectVista, rows);
+        panel.CPanelObserverAttach(CSubject.CSubjectWorkspace, _ => _cPhonologyMarshal(LPhonologyWorkspaceResonate));
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectEntry, bulletin => _cPhonologyMarshal(() => panel.CPanelEntryResonate(bulletin)));
+        panel.CPanelObserverAttach(CSubject.CSubjectReflex, rows);
+        panel.CPanelObserverAttach(CSubject.CSubjectSettings, rows);
+        panel.CPanelChosenAttach(CSubject.CSubjectEntry, _ => _cPhonologyMarshal(panel.CPanelDraftResonate));
+    }
+
+    private void LPhonologyWorkspaceResonate()
+    {
+        CPhonologyPanel.CPanelEntryClose();
+        CPhonologyWorkspaceChanged?.Invoke();
+    }
+
+    private void LPhonologyClose()
+    {
+        CPhonologyEditor.CEditorClose();
+        CPhonologyEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
+    }
+
+    public static IReadOnlyList<CCatalogOrder> CPhonologyOrderRead()
+    {
+        return
+        [
+            CCatalogOrder.CCatalogOrderHeadword,
+            CCatalogOrder.CCatalogOrderReverse,
+            CCatalogOrder.CCatalogOrderSound,
+            CCatalogOrder.CCatalogOrderPending,
+        ];
     }
 
     public IReadOnlyList<CCatalogPronunciation> CPhonologyRowsRead()
@@ -90,7 +136,8 @@ public sealed class CPhonology
                         row.LCatalogPronunciationEpithet,
                         row.LCatalogPronunciationName,
                         row.LCatalogPronunciationChosen),
-                    row.LCatalogPronunciationSound))
+                    row.LCatalogPronunciationSound,
+                    row.LCatalogPronunciationText))
                 .ToList()
             : [];
         _cPhonologyCount = rows.Count;

@@ -107,4 +107,9 @@ public interface LPhonologyPort
     {
         return LPronunciationClerk.LPronunciationConsonantRead();
     }
+
+    static LArticulation LEngineVowelRead()
+    {
+        return LPronunciationClerk.LPronunciationVowelRead();
+    }
 }

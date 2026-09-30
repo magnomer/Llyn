@@ -134,6 +134,11 @@ public sealed class CCatalog
         return LCatalogArticulationRead(LPhonologyPort.LEngineConsonantRead());
     }
 
+    public static CArticulation CCatalogVowelRead()
+    {
+        return LCatalogArticulationRead(LPhonologyPort.LEngineVowelRead());
+    }
+
     private static CArticulation LCatalogArticulationRead(LArticulation chart)
     {
         return new CArticulation(

@@ -47,9 +47,41 @@ public sealed record LArticulation(
         { "", "", "", "l", "", "ɭ", "ʎ", "ʟ", "", "", "" }
     };
 
+    private static readonly string[] LArticulationBackness =
+    [
+        "Front", "Central", "Back"
+    ];
+
+    private static readonly string[] LArticulationHeight =
+    [
+        "Close",
+        "NearClose",
+        "CloseMid",
+        "Mid",
+        "OpenMid",
+        "NearOpen",
+        "Open"
+    ];
+
+    private static readonly string[,] LArticulationVowel =
+    {
+        { "i y", "ɨ ʉ", "ɯ u" },
+        { "ɪ ʏ", "", "ʊ" },
+        { "e ø", "ɘ ɵ", "ɤ o" },
+        { "", "ə", "" },
+        { "ɛ œ", "ɜ ɞ", "ʌ ɔ" },
+        { "æ", "ɐ", "" },
+        { "a ɶ", "ä", "ɑ ɒ" }
+    };
+
     public static LArticulation LArticulationConsonantRead()
     {
         return LArticulationRead(LArticulationLocation, LArticulationManner, LArticulationConsonant);
+    }
+
+    public static LArticulation LArticulationVowelRead()
+    {
+        return LArticulationRead(LArticulationBackness, LArticulationHeight, LArticulationVowel);
     }
 
     private static LArticulation LArticulationRead(string[] headers, string[] sides, string[,] cells)

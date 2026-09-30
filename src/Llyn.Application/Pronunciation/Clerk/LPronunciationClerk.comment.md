@@ -29,6 +29,10 @@ A null `changes` records nothing, which is what a create wants.
 
 The IPA consonant chart a pronunciation is typed from, handed up for every driver's input aid.
 
+## `public static LArticulation LPronunciationVowelRead()`
+
+The IPA vowel chart a pronunciation is typed from, handed up for every driver's input aid.
+
 ## `public static IReadOnlyList<LPronunciationDraft> LPronunciationClerkScan(IReadOnlyList<LPronunciationDraft> drafts)`
 
 The rows worth writing, their reading and respelling trimmed.

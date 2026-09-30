@@ -7,17 +7,24 @@ It finds the rows, and takes the query, order and language filter.
 Its panel loads, edits and deletes the chosen entry, and its own editor edits it.
 It restores its vista itself, so no driver holds a port or a vista.
 
-## `private CPhonology(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `private CPhonology(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Takes the atelier's ports and builds the panel's own entry editor.
 The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
 A cleared panel empties the editor, and an edited row opens in it.
+It registers its vista restore and its close with `CWorkspace`, as every area does.
 
-## `public static CPhonology CPhonologyCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `public static CPhonology CPhonologyCreate(`
 
 Builds the panel over the atelier, so the driver hands it no port.
 Building it is no user action, so it is no gate on the atelier.
 `shownSeam` answers whether the tab is in front, which only the surface knows until `CNavigation` owns it.
+`marshal` carries every engine notice onto the driver's thread, so the driver holds no observer.
+
+## `public event Action? CPhonologyWorkspaceChanged;`
+
+The workspace changed under the panel, after the panel let its chosen entry go.
+The driver answers it by drawing the flags of the languages again.
 
 ## `public CEditor CPhonologyEditor { get; }`
 
@@ -35,7 +42,30 @@ Whether the language filter hides any language, as the vista answers it.
 ## `public void CPhonologyVistaRestore()`
 
 Starts the phonology vista, ordered by headword until the user picks another order.
-The vista then goes to the panel and the editor.
+The search text of the vista before it carries into the fresh one, so a workspace switch keeps it.
+The vista then goes to the panel and the editor, and the panel's observers attach to it.
+
+## `private void LPhonologyObserverAttach()`
+
+Attaches the panel's answers to the fresh vista, each carried through the marshal.
+A Vista, Reflex or Settings notice raises the rows again.
+An Entry notice goes to the panel, and a notice on the chosen entry reads its draft again.
+A Workspace notice goes to `LPhonologyWorkspaceResonate`.
+
+## `private void LPhonologyWorkspaceResonate()`
+
+Lets the chosen entry go, then tells the driver through `CPhonologyWorkspaceChanged`.
+
+## `private void LPhonologyClose()`
+
+The panel's part of the atelier's close.
+The editor lets its draft go, then the display stops its playback.
+`CAtelierClose` runs it through the closure the constructor registers.
+
+## `public static IReadOnlyList<CCatalogOrder> CPhonologyOrderRead()`
+
+The orders the sequence menu offers, in the order it lists them.
+It needs no session, so the driver builds the menu once.
 
 ## `public IReadOnlyList<CCatalogPronunciation> CPhonologyRowsRead()`
 

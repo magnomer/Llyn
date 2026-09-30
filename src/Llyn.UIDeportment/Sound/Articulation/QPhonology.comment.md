@@ -20,50 +20,62 @@ Row clicks are taken on the inventory, and every button and search field is subs
 
 Each named part is pulled from the page by its contract ID on every read.
 
-## `internal void QPhonologyAttach(PWindow host)`
+## `internal void QPhonologyIntroduce(PWindow host)`
 
 Puts the panel to work through the Conduct phonology panel, which the forge builds with its own editor.
 The view wraps that editor for its editor page.
 The lectern follows the panel, whose loads and clears reach the display's area, never the veneer.
+The sequence menu is built once from the orders Conduct offers.
+The inventory and the filter mark both repaint whenever the panel raises its rows.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.
 
-## `internal async void QPhonologyVistaRestore()`
+## `internal async void QPhonologyVistaRefine()`
 
-The Conduct panel starts the tab's vista itself, so no vista crosses the veneer.
-Attaches the observers that carry each announcement onto the dispatcher.
+Answers the workspace opening, after the Conduct panel restored its vista and attached its own observers.
+It marks the chosen order and the filter, then awaits the flags.
 The flags are loaded before the first rows are built, because a row reads its flag at construction.
+The filter menu lists the languages the flag load answers.
+
+## `private void QLensListRefine(IReadOnlyList<string> languages)`
+
+Fills the filter menu with the languages the flag load answered, each ticked by the panel's filter.
+
+## `private async void QPhonologyWorkspaceRefine()`
+
+Answers `CPhonologyWorkspaceChanged` by drawing the flags of the new workspace's languages.
 
 ## `private bool QPhonologyShownCheck()`
 
 The shown seam: whether this tab is the one in front, which only the page knows.
 
-## `internal void QPhonologyClose()`
+## `internal void QPhonologyExitRefine()`
 
-Stops the panel: the editor is shut down and the shared display releases its playback.
+Releases the editor's recording player when the window closes.
+The editor and the playback stop in Conduct, through the close the panel registered with the workspace.
 
-## `private void QInventoryUpdate()`
+## `private void QInventoryRefine()`
 
 Refills the inventory from the rows the deportment reads, spliced so the list keeps its scroll position.
 
-## `private void QPhonologyModeUpdate()`
+## `private void QPhonologyModeRefine()`
 
 Writes the mode and the enablement the deportment holds into the eight controls that show them.
 The trail pair shows while reading and the chronicle pair while writing.
 
-## `private void QPhonologyPressCheck(object sender, CanExecuteRoutedEventArgs e)`
+## `private void QPhonologyPressRefine(object sender, CanExecuteRoutedEventArgs e)`
 
 Whether the print button is live: exactly when an entry is read in the display.
 The deportment answers, so no control state is read.
 The binding can be asked before the deportment is built, and then answers false.
 
-## `private async void QPhonologyPressHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private async void QPhonologyPressObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the entry being read, as the engine portrays it.
 The gate asks for the ticket through the envoy and names the vista.
 Nothing is read back from the screen.
 
-## `private async void QPhonologyPortraitHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private async void QPhonologyPortraitObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Exports the entry being read, as the engine portrays it.
 The gate asks for the file and the format through the envoy.
@@ -78,33 +90,54 @@ The search comes first, because a reader who opens the charts with nothing focus
 The editor's field takes over as soon as the reader focuses it.
 It is named once here rather than looked up whenever a character is chosen.
 
-## `internal void QPhonologyVoyageShow(bool past, bool future)`
+## `internal void QPhonologyVoyageRefine(bool past, bool future)`
 
 Lights the two trail buttons from the voyage state the navigation raises.
 The navigation owns the trail, so the panel only shows what it is told.
 
-## `private void QPhonologyRetreatHandle(object sender, RoutedEventArgs e)`
+## `private void QPhonologyRetreatObserve(object sender, RoutedEventArgs e)`
 
 Steps the navigation's trail back one station.
 
-## `private void QPhonologyAdvanceHandle(object sender, RoutedEventArgs e)`
+## `private void QPhonologyAdvanceObserve(object sender, RoutedEventArgs e)`
 
 Steps the navigation's trail forward one station.
 
-## `private void QPhonologyUndoHandle(object sender, RoutedEventArgs e)`
+## `private void QPhonologyUndoObserve(object sender, RoutedEventArgs e)`
 
 Walks the chronicle of the editor back one step.
 
-## `private void QPhonologyRedoHandle(object sender, RoutedEventArgs e)`
+## `private void QPhonologyRedoObserve(object sender, RoutedEventArgs e)`
 
 Walks the chronicle of the editor forward one step.
 
-## `private void QPhonologyChronicleUpdate()`
+## `private void QPhonologyChronicleRefine()`
 
 Lights the two chronicle buttons only while the editor has a step to walk.
 It runs whenever the editor reports its state again.
 
-## `private void QArticulationFoldHandle(object sender, RoutedEventArgs e)`
+## `private void QPhonologyViewerObserve(object sender, RoutedEventArgs e)`
+
+Hands the reading mode to the scribe gate, so the viewer button needs no comparison with its sender.
+
+## `private void QPhonologyScribeObserve(object sender, RoutedEventArgs e)`
+
+Hands the writing mode to the scribe gate.
+
+## `private void QSequenceObserve(object sender, RoutedEventArgs e)`
+
+Hands the order row the reader picked to the order gate, then folds the menu away.
+
+## `private void QSequenceRefine()`
+
+Folds the sequence menu away.
+
+## `private void QLensObserve(object sender, RoutedEventArgs e)`
+
+Hands the filter the reader ticked to the filter gate.
+The mark repaints when the panel raises its rows after the change.
+
+## `private void QArticulationFoldRefine(object sender, RoutedEventArgs e)`
 
 Shows the aid and its seam while the fold toggle is checked, and hides both otherwise.
 The toggle is the only state, so the handler reads it and keeps nothing.
