@@ -19,7 +19,8 @@ Each named part is pulled from the page by its contract ID on every read.
 
 ## `internal void QFavoriteIntroduce(PWindow host)`
 
-Puts the panel to work through its Conduct `CFavorite`, which the forge builds over the atelier.
+Puts the panel to work through its Conduct `CFavorite`, which it builds over the atelier.
+Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 The editor view and the lectern wrap the entry editor that `CFavorite` owns.
 The lectern follows the panel, whose loads and clears reach the display's area, never the veneer.
 It builds the ordering menu once, from the orderings `CFavorite` offers.

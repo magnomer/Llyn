@@ -51,8 +51,9 @@ public sealed class CTaxonomy
             panel.LPanelScribeRestore,
             LTaxonomyTagOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(panel.LPanelChangeCheck, editor.LEditorFinish);
-        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CTaxonomyVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LTaxonomyVistaRestore);
         atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LTaxonomyClose);
+        LTaxonomyVistaRestore();
     }
 
     public static CTaxonomy CTaxonomyCreate(
@@ -79,7 +80,7 @@ public sealed class CTaxonomy
 
     public CCatalogFilter CTaxonomyFilter => CPanel.CPanelFilterRead(LVista.LVistaFilterRead(_cTaxonomyVista));
 
-    public void CTaxonomyVistaRestore()
+    internal void LTaxonomyVistaRestore()
     {
         LVista vista = _cTaxonomyAtelier.CAtelierVistaStart(
             "taxonomy", CSubject.CSubjectTag, CCatalogOrder.CCatalogOrderName);

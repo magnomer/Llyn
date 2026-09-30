@@ -19,6 +19,7 @@ The anthology's row notices reach the quotation panel, whose rows follow the cho
 It registers its close with the workspace, so the window's exit gate stops the entry editor.
 It wires the transcript desk's notices through `marshal`, which only the medium knows.
 A draft notice raises `CCorpusDraftChanged` with the Example read afresh, so no driver wires the desk.
+It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CCorpus CCorpusCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
@@ -59,7 +60,7 @@ Every engine notice the corpus answers runs through it, since only the medium kn
 
 ## `private readonly CAtelier _cCorpusAtelier`
 
-The atelier the two vistas start through when the forge restores them.
+The atelier the two vistas start through on every restore.
 
 ## `public CQuotation CCorpusQuotation { get; }`
 
@@ -283,7 +284,7 @@ Exports the entry on display, and does nothing otherwise.
 The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.
 
-## `public void CCorpusVistaRestore()`
+## `internal void LCorpusVistaRestore()`
 
 Starts the `corpus` vista over Examples by text and the `quotation` vista over entries by headword.
 The anthology takes the first, and the quotation list takes both, since its rows follow the chosen Example.
@@ -292,7 +293,7 @@ Each list carries its held query into its fresh vista, so a switched workspace k
 Each list then attaches its observers on its fresh vista through `_cCorpusMarshal`.
 The anthology hands a workspace notice to `LCorpusWorkspaceResonate`.
 The quotation list refreshes the example rows on an entry notice and hands its chosen entry to `LCorpusEntryResonate`.
-The forge runs it at build, and the workspace change gate runs it again.
+The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
 It paints nothing, since the drivers paint the first rows once their flags are loaded.
 
 ## `private void LCorpusWorkspaceResonate()`

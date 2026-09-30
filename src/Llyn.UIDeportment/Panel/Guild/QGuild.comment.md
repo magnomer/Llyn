@@ -19,7 +19,8 @@ Each part of the page is pulled by its contract ID through `QContract.QContractF
 
 ## `internal void QGuildIntroduce(PWindow host)`
 
-Takes the panel's Conduct from the forge with the window's envoy, subscribes its notices, and wires the two lists.
+Builds the panel's Conduct with the window's envoy, subscribes its notices, and wires the two lists.
+Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 It hands the panel to the vita and the autograph drivers, which answer their own notices.
 The panel itself attaches its autograph desk's bulletins and its vista observers.
 The order menu is built here once, from the orderings Conduct offers.

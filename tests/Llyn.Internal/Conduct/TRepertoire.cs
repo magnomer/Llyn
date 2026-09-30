@@ -444,7 +444,6 @@ public sealed class TRepertoire
     internal static CRepertoire TRepertoirePrepare(CAtelier atelier, CEnvoy envoy)
     {
         CRepertoire repertoire = CRepertoire.CRepertoireCreate(atelier, static () => true, envoy, static run => run());
-        repertoire.CRepertoireVistaRestore();
         return repertoire;
     }
 

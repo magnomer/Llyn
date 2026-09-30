@@ -51,8 +51,9 @@ public sealed class CTenor
             panel.LPanelScribeRestore,
             LTenorRegisterOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(panel.LPanelChangeCheck, editor.LEditorFinish);
-        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CTenorVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LTenorVistaRestore);
         atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LTenorClose);
+        LTenorVistaRestore();
     }
 
     public static CTenor CTenorCreate(
@@ -79,7 +80,7 @@ public sealed class CTenor
 
     public CCatalogFilter CTenorFilter => CPanel.CPanelFilterRead(LVista.LVistaFilterRead(_cTenorVista));
 
-    public void CTenorVistaRestore()
+    internal void LTenorVistaRestore()
     {
         LVista vista = _cTenorAtelier.CAtelierVistaStart(
             "tenor", CSubject.CSubjectRegister, CCatalogOrder.CCatalogOrderName);

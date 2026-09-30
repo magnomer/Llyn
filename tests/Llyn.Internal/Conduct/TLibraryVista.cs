@@ -21,7 +21,7 @@ public sealed class TLibraryVista
         CLibrary library = TLibrary.TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         library.CLibraryQuerySet("riv");
 
-        library.CLibraryVistaRestore();
+        library.TLibraryVistaRestore();
 
         Assert.Equal(["river"], library.CLibraryRowsRead().Select(row => row.CVistaRowHeadword));
     }
@@ -42,8 +42,32 @@ public sealed class TLibraryVista
                 marshalled++;
                 run();
             });
-        library.CLibraryVistaRestore();
-        library.CLibraryVistaRestore();
+        library.TLibraryVistaRestore();
+        int rows = 0;
+        library.CLibraryPanel.CPanelRowsChanged += () => rows++;
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectReflex, 0);
+
+        Assert.Equal(1, rows);
+        Assert.Equal(1, marshalled);
+    }
+
+    [Fact]
+    public void LibraryCreate_ReflexNoticeWithoutARestore_RaisesTheRowsOnceThroughTheMarshal()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        int marshalled = 0;
+        CLibrary library = CLibrary.CLibraryCreate(
+            atelier,
+            static () => true,
+            TEnvoyFake.TEnvoyCreate(false, []),
+            run =>
+            {
+                marshalled++;
+                run();
+            });
         int rows = 0;
         library.CLibraryPanel.CPanelRowsChanged += () => rows++;
 

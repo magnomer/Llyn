@@ -132,7 +132,11 @@ internal sealed partial class QTaxonomy
     internal void QTaxonomyIntroduce(PWindow host)
     {
         _qTaxonomyHost = host;
-        _cTaxonomy = host.PWindowForge.QForgeTaxonomyCreate(QTaxonomyShownCheck, host.PWindowEnvoy);
+        _cTaxonomy = CTaxonomy.CTaxonomyCreate(
+            host.PWindowAtelier,
+            QTaxonomyShownCheck,
+            host.PWindowEnvoy,
+            LObserver.LObserverCreate<Action>(static run => run()));
         _cTaxonomy.CTaxonomyTagOpened += QDirectoryTagRefine;
         _cTaxonomy.CTaxonomyRowsChanged += QDirectoryRefine;
         _cTaxonomy.CTaxonomyWorkspaceChanged += QTaxonomyWorkspaceRefine;

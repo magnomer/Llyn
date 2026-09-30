@@ -153,7 +153,11 @@ internal sealed class QReference
     internal void QReferenceIntroduce(PWindow host)
     {
         _qReferenceHost = host;
-        _cShelf = host.PWindowForge.QForgeShelfCreate(QReferenceShownCheck, host.PWindowEnvoy);
+        _cShelf = CShelf.CShelfCreate(
+            host.PWindowAtelier,
+            QReferenceShownCheck,
+            host.PWindowEnvoy,
+            LObserver.LObserverCreate<Action>(static run => run()));
         CPanel footnote = _cShelf.CShelfFootnote.CFootnotePanel;
         QLectern lectern = new(_cShelf.CShelfEditor.CEditorDisplay, footnote);
         _cShelf.CShelfChanged += QReferenceModeRefine;

@@ -21,7 +21,7 @@ A held stored Example carries its tally and text placeholder, and a cancel raise
 
 ## `internal static CCorpus TCorpusPrepare(CAtelier atelier, CEnvoy envoy)`
 
-Builds the corpus over the atelier with its own editor, and restores both vistas as the forge does.
+Builds the corpus over the atelier with its own editor, and the corpus restores both vistas itself.
 Its seam answers that the tab is in front, and its marshal runs each desk notice at once.
 `TQuotation` builds its corpus the same way.
 

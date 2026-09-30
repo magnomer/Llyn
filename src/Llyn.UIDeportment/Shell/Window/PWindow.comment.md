@@ -16,7 +16,7 @@ No engine and no posture is constructed or named here.
 Opening the workspace can fail.
 A failure in a window constructor has nowhere to be shown.
 The host builds the engine and the root, and hands the root over.
-The window keeps the root, and builds the panel factory and the GUI-only posture over it.
+The window keeps the root, and builds the GUI-only posture over it.
 The window disposes its posture and closes the root when it closes, and the bootstrap disposes the engine on exit.
 The envoy is built over the loaded window and this class, so that window owns every question.
 It paints the chrome, places the stored geometry, introduces every part, then makes its one gate call, `CAtelierOpen`.
@@ -82,10 +82,6 @@ Each tab button's icon is resolved here.
 Conduct's root, reached by every panel for its gates.
 A panel asks it for a font, a flag, a respelling switch, a setting or a media address.
 The static veneer helpers take it, so no panel needs an engine to call them.
-
-## `internal QForge PWindowForge { get; }`
-
-The factory every panel builds its deportment through.
 
 ## `internal QPosture PWindowPosture { get; }`
 

@@ -66,8 +66,9 @@ public sealed class CShelf
             CShelfPanel.LPanelScribeRestore,
             LShelfReferenceOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(LShelfChangeRead, LShelfDraftFinish);
-        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CShelfVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LShelfVistaRestore);
         atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LShelfClose);
+        LShelfVistaRestore();
     }
 
     public static CShelf CShelfCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
@@ -125,7 +126,7 @@ public sealed class CShelf
     private bool LShelfRowChosen =>
         CShelfPanel.CPanelBinEnabled || CShelfFootnote.CFootnotePanel.CPanelBinEnabled;
 
-    public void CShelfVistaRestore()
+    internal void LShelfVistaRestore()
     {
         LVista vista = _cShelfAtelier.CAtelierVistaStart(
             "reference", CSubject.CSubjectReference, CCatalogOrder.CCatalogOrderName);

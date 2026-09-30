@@ -13,7 +13,7 @@ namespace Llyn.Tests;
 public sealed class TLibrary
 {
     [Fact]
-    public void LibraryRowsRead_NoVista_ReadsNothing()
+    public void LibraryRowsRead_FreshArea_ListsTheStoredEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -22,7 +22,7 @@ public sealed class TLibrary
         CLibrary library = CLibrary.CLibraryCreate(
             atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
 
-        Assert.Empty(library.CLibraryRowsRead());
+        Assert.Single(library.CLibraryRowsRead());
         Assert.False(library.CLibraryFiltered);
         Assert.Equal("entry", library.TLibraryFileRead());
     }
@@ -379,7 +379,6 @@ public sealed class TLibrary
     internal static CLibrary TLibraryPrepare(CAtelier atelier, CEnvoy envoy)
     {
         CLibrary library = CLibrary.CLibraryCreate(atelier, static () => true, envoy, static run => run());
-        library.CLibraryVistaRestore();
         return library;
     }
 

@@ -46,7 +46,6 @@ public sealed class TShelfImprint
                 marshalled++;
                 run();
             });
-        shelf.CShelfVistaRestore();
         shelf.CShelfReferenceCreate();
         CImprint imprint = shelf.CShelfImprint;
         imprint.CImprintTitleSet("Book");

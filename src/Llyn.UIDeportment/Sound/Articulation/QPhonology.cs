@@ -150,7 +150,11 @@ internal sealed class QPhonology
     internal void QPhonologyIntroduce(PWindow host)
     {
         _qPhonologyHost = host;
-        _cPhonology = host.PWindowForge.QForgePhonologyCreate(QPhonologyShownCheck, host.PWindowEnvoy);
+        _cPhonology = CPhonology.CPhonologyCreate(
+            host.PWindowAtelier,
+            QPhonologyShownCheck,
+            host.PWindowEnvoy,
+            LObserver.LObserverCreate<Action>(static run => run()));
         CPanel panel = _cPhonology.CPhonologyPanel;
         QLectern lectern = new(_cPhonology.CPhonologyEditor.CEditorDisplay, panel);
         QChoice.QChoiceOrderBuild(QSequenceList, "Sequence", QSequenceObserve, CPhonology.CPhonologyOrderRead());

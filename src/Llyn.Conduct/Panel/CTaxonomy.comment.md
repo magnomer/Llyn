@@ -14,13 +14,14 @@ The entry list's panel asks the editor's desk before it leaves an entry, and it 
 A cleared panel cancels the editor's draft, and an edited row opens the editor on it.
 So the first draft a fresh member shows already carries the Tag.
 It registers its close with the workspace beside its draft finish and its vista restore.
+It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CTaxonomy CTaxonomyCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the taxonomy over the atelier and the panel's own entry editor.
 Building it is no user action, so it is no gate on the atelier.
 `shownSeam` answers whether the tab is in front, which only the surface knows until `CNavigation` owns it.
-`marshal` carries every engine notice onto the driver's thread, and the forge hands it once.
+`marshal` carries every engine notice onto the driver's thread, and the driver hands it once.
 
 ## `public CEditor CTaxonomyEditor { get; }`
 
@@ -66,12 +67,13 @@ Whether New should name a new Tag rather than start an entry.
 That holds while no Tag is chosen and no entry is shown.
 Only the fresh gate reads it, after the leave question settled the shown entry.
 
-## `public void CTaxonomyVistaRestore()`
+## `internal void LTaxonomyVistaRestore()`
 
 Starts the tag vista and the membership vista for this tab.
 Each fresh vista takes the query its forerunner held, so a switched workspace keeps both searches.
 The tag vista is the entry list's roll, and the membership vista goes to the entry list and the editor.
 The observers are attached to the fresh vistas last.
+The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
 
 ## `private void LTaxonomyObserverAttach()`
 

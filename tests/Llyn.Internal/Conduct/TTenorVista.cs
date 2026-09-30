@@ -22,7 +22,7 @@ public sealed class TTenorVista
         tenor.CTenorQuerySet("mot");
         tenor.CTenorCohort.CCohortQuerySet("zzz");
 
-        tenor.CTenorVistaRestore();
+        tenor.TTenorVistaRestore();
 
         Assert.Equal(["motion"], tenor.CTenorRowsRead().Select(row => row.CCatalogRegisterStored.CRegisterName));
         Assert.Equal("Register.Unmatched", tenor.CTenorCohort.CCohortEmptyKey);
@@ -44,8 +44,31 @@ public sealed class TTenorVista
                 marshalled++;
                 run();
             });
-        tenor.CTenorVistaRestore();
-        tenor.CTenorVistaRestore();
+        tenor.TTenorVistaRestore();
+        List<string> seen = TTenorWatchPrepare(tenor);
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+
+        Assert.Equal(["register", "entry"], seen);
+        Assert.Equal(1, marshalled);
+    }
+
+    [Fact]
+    public void TenorCreate_SettingsNoticeWithoutARestore_RaisesTheRegisterRowsThenTheEntryRowsOnce()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        int marshalled = 0;
+        CTenor tenor = CTenor.CTenorCreate(
+            atelier,
+            static () => true,
+            TEnvoyFake.TEnvoyCreate(false, []),
+            run =>
+            {
+                marshalled++;
+                run();
+            });
         List<string> seen = TTenorWatchPrepare(tenor);
 
         engine.TEngineBulletinRaise(LSubject.LSubjectSettings, 0);

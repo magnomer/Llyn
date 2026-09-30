@@ -133,7 +133,11 @@ internal sealed class QXiesheng
     internal void QXieshengIntroduce(PWindow host)
     {
         _qXieshengHost = host;
-        _cXiesheng = host.PWindowForge.QForgeXieshengCreate(QXieshengShownCheck, host.PWindowEnvoy);
+        _cXiesheng = CXiesheng.CXieshengCreate(
+            host.PWindowAtelier,
+            QXieshengShownCheck,
+            host.PWindowEnvoy,
+            LObserver.LObserverCreate<Action>(static run => run()));
         CPanel panel = _cXiesheng.CXieshengPanel;
         QLectern lectern = new(_cXiesheng.CXieshengEditor.CEditorDisplay, panel);
         QChoice.QChoiceOrderBuild(QRungList, "Rung", QRungObserve, CXiesheng.CXieshengOrderRead());

@@ -19,7 +19,8 @@ Each named part is pulled from the page by its contract ID on every read.
 
 ## `internal void QTenorIntroduce(PWindow host)`
 
-Puts the panel to work through the Conduct tenor panel, which the forge builds with its own editor.
+Puts the panel to work through the Conduct tenor panel it builds, which builds its own editor.
+Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 The view wraps that editor for its editor page.
 The lectern follows the panel, whose loads and clears reach the display's area, never the veneer.
 Both catalogs get their row fills here, where their sources are set.

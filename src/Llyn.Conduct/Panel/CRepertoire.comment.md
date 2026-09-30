@@ -18,6 +18,7 @@ The occurrence panel opens the editor on the entry it edits, and a clear cancels
 The atlas's row notices reach the occurrence panel, whose rows follow the chosen Situation.
 It registers `LRepertoireClose` with the workspace and attaches the scenario desk's observers through the marshal.
 It keeps the marshal, so each vista restore attaches the lists' observers on the fresh vistas.
+It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CRepertoire CRepertoireCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
@@ -53,7 +54,7 @@ Raised once an arrival drops the query and the language filter, so a driver empt
 
 ## `private readonly CAtelier _cRepertoireAtelier`
 
-The atelier the two vistas start through when the forge restores them.
+The atelier the two vistas start through on every restore.
 
 ## `public COccurrence CRepertoireOccurrence { get; }`
 
@@ -245,11 +246,11 @@ Exports the entry on display, and does nothing otherwise.
 The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.
 
-## `public void CRepertoireVistaRestore()`
+## `internal void LRepertoireVistaRestore()`
 
 Starts the `repertoire` vista over Situations by name and the `occurrence` vista over entries by headword.
 The atlas takes the first, and the occurrence list takes both, since its rows follow the chosen Situation.
 The entry editor takes the occurrence vista, so an entry it stores lands in that list.
-The forge runs it at build, and the workspace change gate runs it again.
+The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
 The list owners then carry their held queries into the fresh vistas and attach their observers.
 The atlas hands the workspace answer in, and the occurrence list gets the roll and chosen-entry answers.

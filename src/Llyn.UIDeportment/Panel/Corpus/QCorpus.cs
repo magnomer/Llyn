@@ -229,7 +229,11 @@ internal sealed partial class QCorpus : QChronicleHost
     internal void QCorpusIntroduce(PWindow host)
     {
         _qCorpusHost = host;
-        _cCorpus = host.PWindowForge.QForgeCorpusCreate(QCorpusShownCheck, host.PWindowEnvoy);
+        _cCorpus = CCorpus.CCorpusCreate(
+            host.PWindowAtelier,
+            QCorpusShownCheck,
+            host.PWindowEnvoy,
+            LObserver.LObserverCreate<Action>(static run => run()));
         QLectern lectern = new(_cCorpus.CCorpusEditor.CEditorDisplay, _cCorpus.CCorpusQuotation.CQuotationPanel);
         _qCorpusDesk = _cCorpus.CCorpusDesk;
         QTranscriptDeskIntroduce();

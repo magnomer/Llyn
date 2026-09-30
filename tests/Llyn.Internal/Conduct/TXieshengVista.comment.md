@@ -8,5 +8,6 @@ A Fanqie or Settings notice raises the column and the entry list.
 An Entry notice also raises the panel.
 A second restore carries the held queries into the fresh vistas.
 After a second restore a Fanqie notice raises the column once, through the marshal.
+A create alone restores once, so the same notice after only a create raises once too.
 The menu offers the three orderings.
 The atelier's close lets the editor's draft go and stops the recording.

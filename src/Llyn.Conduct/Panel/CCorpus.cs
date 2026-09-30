@@ -70,9 +70,10 @@ public sealed class CCorpus
             CCorpusAnthology.CAnthologyPanel.LPanelScribeRestore,
             LCorpusExampleOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CCorpusSession.LSessionChangeCheck, CCorpusSession.LSessionFinish);
-        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CCorpusVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LCorpusVistaRestore);
         atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LCorpusClose);
         CCorpusDesk.CDeskObserverAttach(marshal, LCorpusDraftResonate);
+        LCorpusVistaRestore();
     }
 
     public static CCorpus CCorpusCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
@@ -474,7 +475,7 @@ public sealed class CCorpus
         return CCorpusQuotation.LQuotationPortraitExport(_cCorpusEnvoy, _cCorpusSettingsPort);
     }
 
-    public void CCorpusVistaRestore()
+    internal void LCorpusVistaRestore()
     {
         LVista vista = _cCorpusAtelier.CAtelierVistaStart(
             "corpus", CSubject.CSubjectExample, CCatalogOrder.CCatalogOrderText);

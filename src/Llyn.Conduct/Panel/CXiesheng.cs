@@ -62,10 +62,11 @@ public sealed class CXiesheng
             id => CXieshengPanel.CPanelRowOpen(id),
             () => LXieshengAllowed);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CXieshengPanel.LPanelChangeCheck, editor.LEditorFinish);
-        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CXieshengVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LXieshengVistaRestore);
         atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LXieshengClose);
         atelier.CAtelierNavigation.LNavigationStemAttach(LXieshengStemOpen);
         CXieshengPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
+        LXieshengVistaRestore();
     }
 
     public static CXiesheng CXieshengCreate(
@@ -108,7 +109,7 @@ public sealed class CXiesheng
 
     private bool LXieshengStemChosen => _cXieshengGrove?.LVistaChosen is not null;
 
-    public void CXieshengVistaRestore()
+    internal void LXieshengVistaRestore()
     {
         LVista grove = _cXieshengAtelier.CAtelierVistaStart("grove", null, CCatalogOrder.CCatalogOrderName);
         LVista kindred = _cXieshengAtelier.CAtelierVistaStart(

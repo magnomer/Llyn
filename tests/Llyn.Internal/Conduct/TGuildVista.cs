@@ -19,7 +19,7 @@ public sealed class TGuildVista
         CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         guild.CGuildQuerySet("Bo");
 
-        guild.CGuildVistaRestore();
+        guild.TGuildVistaRestore();
 
         Assert.Equal(["Bob"], guild.CGuildRollRead().CGuildRollRows.Select(row => row.CCatalogAuthorName));
     }
@@ -35,7 +35,7 @@ public sealed class TGuildVista
         CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         guild.CGuildOeuvre.COeuvreQuerySet("gram");
 
-        guild.CGuildVistaRestore();
+        guild.TGuildVistaRestore();
 
         Assert.Equal(["Grammar"], guild.CGuildOeuvre.COeuvreRowsRead().Select(row => row.CCatalogReferenceName));
     }
@@ -56,8 +56,33 @@ public sealed class TGuildVista
                 marshalled++;
                 run();
             });
-        guild.CGuildVistaRestore();
-        guild.CGuildVistaRestore();
+        guild.TGuildVistaRestore();
+        int rows = 0;
+        guild.CGuildPanel.CPanelRowsChanged += () => rows++;
+        marshalled = 0;
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectAuthor, 0);
+
+        Assert.Equal(1, rows);
+        Assert.Equal(1, marshalled);
+    }
+
+    [Fact]
+    public void GuildCreate_AuthorNoticeWithoutARestore_RaisesTheRollOnceThroughTheMarshal()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        int marshalled = 0;
+        CGuild guild = CGuild.CGuildCreate(
+            atelier,
+            static () => true,
+            TEnvoyFake.TEnvoyCreate(false, []),
+            run =>
+            {
+                marshalled++;
+                run();
+            });
         int rows = 0;
         guild.CGuildPanel.CPanelRowsChanged += () => rows++;
         marshalled = 0;
@@ -84,7 +109,6 @@ public sealed class TGuildVista
                 marshalled++;
                 run();
             });
-        guild.CGuildVistaRestore();
         int rows = 0;
         guild.CGuildOeuvre.COeuvrePanel.CPanelRowsChanged += () => rows++;
         marshalled = 0;

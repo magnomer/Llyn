@@ -132,7 +132,11 @@ internal sealed partial class QTenor
     internal void QTenorIntroduce(PWindow host)
     {
         _qTenorHost = host;
-        _cTenor = host.PWindowForge.QForgeTenorCreate(QTenorShownCheck, host.PWindowEnvoy);
+        _cTenor = CTenor.CTenorCreate(
+            host.PWindowAtelier,
+            QTenorShownCheck,
+            host.PWindowEnvoy,
+            LObserver.LObserverCreate<Action>(static run => run()));
         _cTenor.CTenorRegisterOpened += QGamutRegisterRefine;
         _cTenor.CTenorRowsChanged += QGamutRefine;
         _cTenor.CTenorWorkspaceChanged += QTenorWorkspaceRefine;

@@ -120,7 +120,11 @@ internal sealed partial class QFavorite
     internal void QFavoriteIntroduce(PWindow host)
     {
         _qFavoriteHost = host;
-        _cFavorite = host.PWindowForge.QForgeFavoriteCreate(QFavoriteShownCheck, host.PWindowEnvoy);
+        _cFavorite = CFavorite.CFavoriteCreate(
+            host.PWindowAtelier,
+            QFavoriteShownCheck,
+            host.PWindowEnvoy,
+            LObserver.LObserverCreate<Action>(static run => run()));
         CPanel panel = _cFavorite.CFavoritePanel;
         QLectern lectern = new(_cFavorite.CFavoriteEditor.CEditorDisplay, panel);
         QChoice.QChoiceOrderBuild(QSeriesList, "Series", QSeriesObserve, CFavorite.CFavoriteOrderRead());

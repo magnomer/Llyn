@@ -22,7 +22,7 @@ public sealed class TTaxonomyVista
         taxonomy.CTaxonomyQuerySet("mot");
         taxonomy.CTaxonomyMembership.CMembershipQuerySet("zzz");
 
-        taxonomy.CTaxonomyVistaRestore();
+        taxonomy.TTaxonomyVistaRestore();
 
         Assert.Equal(["motion"], taxonomy.CTaxonomyRowsRead().Select(row => row.CCatalogTagStored.CTagText));
         Assert.Equal("Tag.Unmatched", taxonomy.CTaxonomyMembership.CMembershipEmptyKey);
@@ -44,8 +44,31 @@ public sealed class TTaxonomyVista
                 marshalled++;
                 run();
             });
-        taxonomy.CTaxonomyVistaRestore();
-        taxonomy.CTaxonomyVistaRestore();
+        taxonomy.TTaxonomyVistaRestore();
+        List<string> seen = TTaxonomyWatchPrepare(taxonomy);
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+
+        Assert.Equal(["tag", "entry"], seen);
+        Assert.Equal(1, marshalled);
+    }
+
+    [Fact]
+    public void TaxonomyCreate_SettingsNoticeWithoutARestore_RaisesTheTagRowsThenTheEntryRowsOnce()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        int marshalled = 0;
+        CTaxonomy taxonomy = CTaxonomy.CTaxonomyCreate(
+            atelier,
+            static () => true,
+            TEnvoyFake.TEnvoyCreate(false, []),
+            run =>
+            {
+                marshalled++;
+                run();
+            });
         List<string> seen = TTaxonomyWatchPrepare(taxonomy);
 
         engine.TEngineBulletinRaise(LSubject.LSubjectSettings, 0);

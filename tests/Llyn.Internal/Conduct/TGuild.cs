@@ -479,7 +479,6 @@ public sealed class TGuild
     internal static CGuild TGuildPrepare(CAtelier atelier, CEnvoy envoy)
     {
         CGuild guild = CGuild.CGuildCreate(atelier, static () => true, envoy, static run => run());
-        guild.CGuildVistaRestore();
         return guild;
     }
 }

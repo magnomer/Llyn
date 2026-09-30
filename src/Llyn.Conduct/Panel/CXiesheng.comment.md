@@ -13,6 +13,7 @@ Takes the atelier's ports and builds the panel's own entry editor.
 The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
 A cleared panel empties the editor, and an edited row opens in it.
 It registers its vista restore and its close with the workspace.
+It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CXiesheng CXieshengCreate(`
 
@@ -92,12 +93,13 @@ The key a chosen series with no entry prints, narrowed or not.
 
 True while the column points at a series.
 
-## `public void CXieshengVistaRestore()`
+## `internal void LXieshengVistaRestore()`
 
 Starts the two vistas off the window posture, the column and the entry list.
 The column is ordered by name and the list by headword until the user picks another order.
 The search text of each vista before it carries into its fresh one, so a workspace switch keeps it.
 The list's vista then goes to the panel and the editor, and every observer attaches to the fresh vistas.
+The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
 
 ## `private void LXieshengObserverAttach(LVista grove)`
 

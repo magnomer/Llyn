@@ -25,7 +25,7 @@ The draft's own Situation id comes from the scenario read.
 
 ## `internal static CRepertoire TRepertoirePrepare(CAtelier atelier, CEnvoy envoy)`
 
-Builds the repertoire over the atelier with its own editor, and restores both vistas as the forge does.
+Builds the repertoire over the atelier with its own editor, and it restores both vistas itself.
 Its seam answers that the tab is in front, and its marshal runs each notice at once.
 
 ## `internal static LSituation TRepertoireSituationSave(LEngine engine, string title)`

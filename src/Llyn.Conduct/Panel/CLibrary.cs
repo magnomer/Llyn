@@ -54,9 +54,10 @@ public sealed class CLibrary
             CLibraryPanel.LPanelScribeRestore,
             id => CLibraryPanel.CPanelRowOpen(id));
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CLibraryPanel.LPanelChangeCheck, editor.LEditorFinish);
-        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CLibraryVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LLibraryVistaRestore);
         atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LLibraryClose);
         CLibraryPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
+        LLibraryVistaRestore();
     }
 
     public static CLibrary CLibraryCreate(
@@ -75,7 +76,7 @@ public sealed class CLibrary
 
     public bool CLibraryEmpty => _cLibraryCount == 0;
 
-    public void CLibraryVistaRestore()
+    internal void LLibraryVistaRestore()
     {
         LVista vista = _cLibraryAtelier.CAtelierVistaStart(
             "library", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);

@@ -430,7 +430,6 @@ public sealed class TCorpus
                 marshalled++;
                 run();
             });
-        corpus.CCorpusVistaRestore();
         corpus.TCorpusExampleOpen(cat.LExampleId);
         corpus.CCorpusScribeToggle(true);
         List<CExample> drafted = [];
@@ -474,7 +473,6 @@ public sealed class TCorpus
     internal static CCorpus TCorpusPrepare(CAtelier atelier, CEnvoy envoy)
     {
         CCorpus corpus = CCorpus.CCorpusCreate(atelier, static () => true, envoy, static run => run());
-        corpus.CCorpusVistaRestore();
         return corpus;
     }
 

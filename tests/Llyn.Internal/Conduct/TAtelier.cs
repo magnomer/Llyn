@@ -227,7 +227,6 @@ public sealed class TAtelier
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CLibrary library = CLibrary.CLibraryCreate(
             atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
-        library.CLibraryVistaRestore();
         LVista? held = library.CLibraryPanel.TPanelVistaRead();
         LVista? restored = null;
         atelier.CAtelierWorkspace.CWorkspaceOpened += () => restored = library.CLibraryPanel.TPanelVistaRead();

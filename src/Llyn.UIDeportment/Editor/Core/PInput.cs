@@ -18,6 +18,6 @@ public class PInput : UserControl
 
     internal void PInputIntroduce(PWindow host)
     {
-        PEditor.PEditorIntroduce(host, new QEditor(host.PWindowForge.QForgeInputCreate(host.PWindowEnvoy)));
+        PEditor.PEditorIntroduce(host, new QEditor(host.PWindowAtelier.CAtelierInputCreate(host.PWindowEnvoy)));
     }
 }

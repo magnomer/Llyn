@@ -22,7 +22,8 @@ Each named part is pulled from the page by its contract ID on every read.
 
 ## `internal void QPhonologyIntroduce(PWindow host)`
 
-Puts the panel to work through the Conduct phonology panel, which the forge builds with its own editor.
+Puts the panel to work through the Conduct phonology panel it builds, which builds its own editor.
+Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 The view wraps that editor for its editor page.
 The lectern follows the panel, whose loads and clears reach the display's area, never the veneer.
 The sequence menu is built once from the orders Conduct offers.

@@ -24,7 +24,7 @@ An export writes only an entry on display.
 
 ## `internal static CShelf TShelfPrepare(CAtelier atelier, CEnvoy envoy)`
 
-Builds the shelf over the atelier with its own editor, and restores both vistas as the forge does.
+Builds the shelf over the atelier with its own editor, and the shelf restores both vistas itself.
 Its seam answers that the tab is in front, and its marshal runs each notice at once.
 `TShelfImprint` shares it.
 

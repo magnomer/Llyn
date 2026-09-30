@@ -202,7 +202,11 @@ internal sealed partial class QRepertoire : QChronicleHost
     internal void QRepertoireIntroduce(PWindow host)
     {
         _qRepertoireHost = host;
-        _cRepertoire = host.PWindowForge.QForgeRepertoireCreate(QRepertoireShownCheck, host.PWindowEnvoy);
+        _cRepertoire = CRepertoire.CRepertoireCreate(
+            host.PWindowAtelier,
+            QRepertoireShownCheck,
+            host.PWindowEnvoy,
+            LObserver.LObserverCreate<Action>(static run => run()));
         QLectern lectern = new(
             _cRepertoire.CRepertoireEditor.CEditorDisplay, _cRepertoire.CRepertoireOccurrence.COccurrencePanel);
         QScenarioDeskIntroduce();

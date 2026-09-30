@@ -26,7 +26,6 @@ public sealed class TRepertoireHold
                 marshalled++;
                 run();
             });
-        repertoire.CRepertoireVistaRestore();
         repertoire.CRepertoireSituationCreate();
         List<CScenario> drafted = [];
         repertoire.CRepertoireDraftChanged += drafted.Add;

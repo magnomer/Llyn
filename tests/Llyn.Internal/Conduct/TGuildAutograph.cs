@@ -79,7 +79,6 @@ public sealed class TGuildAutograph
                 marshalled++;
                 run();
             });
-        guild.CGuildVistaRestore();
         guild.CGuildAuthorCreate();
         guild.CGuildNameSet("Ada");
         guild.CGuildAutograph.CDeskPersist();

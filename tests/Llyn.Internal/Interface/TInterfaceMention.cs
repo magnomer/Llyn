@@ -131,7 +131,6 @@ internal static class TInterfaceMention
                 ["LEngineFavoriteFind"] = _ => throw new InvalidOperationException("no favorites"),
             });
         CFavorite favorite = CFavorite.CFavoriteCreate(atelier, static () => true, envoy, static run => run());
-        favorite.CFavoriteVistaRestore();
         return favorite.CFavoriteRowsRead();
     }
 

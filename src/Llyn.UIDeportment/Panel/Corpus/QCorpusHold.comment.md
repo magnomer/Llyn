@@ -18,7 +18,7 @@ The desk holding the Example being edited, which the corpus Conduct handed over 
 Subscribes the desk's notices once, and a failure and a refused hold both go straight to the window.
 The corpus raises `CCorpusDraftChanged` with the held Example on each draft bulletin.
 `QTranscriptDraftRefine` answers it and redraws the controls where they differ.
-The forge built the corpus with its marshaller, so the driver hands no marshaller and no reread here.
+The introduce built the corpus with its marshal, so the driver hands no marshal and no reread here.
 
 ## `public void QChronicleUndoObserve()`
 

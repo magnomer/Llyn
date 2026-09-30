@@ -13,7 +13,7 @@ namespace Llyn.Tests;
 public sealed class TTenor
 {
     [Fact]
-    public void TenorRowsRead_NoVistaRestored_AnswersNothing()
+    public void TenorRowsRead_FreshArea_ListsTheStoredRegisters()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -22,7 +22,7 @@ public sealed class TTenor
             atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
         engine.TEngineRegisterCreate("formal");
 
-        Assert.Empty(tenor.CTenorRowsRead());
+        Assert.Single(tenor.CTenorRowsRead());
         Assert.Null(tenor.LTenorChosen);
         Assert.False(tenor.CTenorFiltered);
     }
@@ -452,7 +452,6 @@ public sealed class TTenor
     internal static CTenor TTenorPrepare(CAtelier atelier, CEnvoy envoy)
     {
         CTenor tenor = CTenor.CTenorCreate(atelier, static () => true, envoy, static run => run());
-        tenor.CTenorVistaRestore();
         return tenor;
     }
 }

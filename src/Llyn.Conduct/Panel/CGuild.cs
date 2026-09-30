@@ -54,9 +54,10 @@ public sealed class CGuild
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Guild", LGuildLeaveConfirm, CGuildPanel.LPanelChosenRead, LGuildScribeRestore, LGuildAuthorOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CGuildSession.LSessionChangeCheck, CGuildSession.LSessionFinish);
-        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CGuildVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LGuildVistaRestore);
         CGuildAutograph.CDeskStarted += () => CGuildUnionCleared?.Invoke();
         CGuildAutograph.CDeskObserverAttach(marshal);
+        LGuildVistaRestore();
     }
 
     public static CGuild CGuildCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
@@ -113,7 +114,7 @@ public sealed class CGuild
 
     private bool LGuildRowShown => CGuildPanel.CPanelBinEnabled && !CGuildPanel.CPanelEditing;
 
-    public void CGuildVistaRestore()
+    internal void LGuildVistaRestore()
     {
         LVista vista = _cGuildAtelier.CAtelierVistaStart(
             "guild", CSubject.CSubjectAuthor, CCatalogOrder.CCatalogOrderName);

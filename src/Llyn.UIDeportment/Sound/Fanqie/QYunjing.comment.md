@@ -22,6 +22,7 @@ Each named part of the page is pulled through `QContract` under the page's own `
 ## `internal void QYunjingIntroduce(PWindow host)`
 
 Builds the Conduct session, wraps its editor, and subscribes the notices.
+Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 The lectern is built here to follow the panel, so the session names no driver type.
 Both order menus are built once from `CYunjingOrderRead`, since the offered orders need no session.
 Each column, the page and the mode answer the area's change with their own read.

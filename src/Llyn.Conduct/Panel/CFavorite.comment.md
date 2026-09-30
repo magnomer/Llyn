@@ -14,12 +14,13 @@ It keeps the marshal, so every engine notice it answers runs on the driver's thr
 It registers its vista restore and its close with the workspace.
 The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
 A cleared panel empties the editor, and an edited row opens in it.
+It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CFavorite CFavoriteCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the panel over the atelier, so the driver hands it no port.
 Building it is no user action, so it is no gate on the atelier.
-The forge hands the marshal that runs an answer on the UI thread.
+The driver hands the marshal that runs an answer on the UI thread.
 
 ## `public event Action? CFavoriteWorkspaceChanged`
 
@@ -35,12 +36,13 @@ The driver wraps it for the editor view and the lectern.
 
 Whether the language filter hides any language, as the vista answers it.
 
-## `public void CFavoriteVistaRestore()`
+## `internal void LFavoriteVistaRestore()`
 
 Starts the favorite vista through the atelier, headword order before any order is saved.
 The panel and the editor both take it, on a workspace start or switch.
 The query the former vista held is carried into the fresh one, so the search box stays true.
 Then it attaches the area's observers on the fresh vista only.
+The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
 
 ## `private void LFavoriteObserverAttach()`
 

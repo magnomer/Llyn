@@ -52,7 +52,6 @@ public partial class PWindow
         ArgumentNullException.ThrowIfNull(atelier);
 
         PWindowAtelier = atelier;
-        PWindowForge = new QForge(atelier);
         PWindowPosture = new QPosture(atelier.CAtelierPathRead);
         _pLayout = new PLayout(PWindowPosture);
 
@@ -85,8 +84,6 @@ public partial class PWindow
     internal Window PWindowSurface => _pWindowSurface;
 
     internal CAtelier PWindowAtelier { get; }
-
-    internal QForge PWindowForge { get; }
 
     internal QPosture PWindowPosture { get; }
 

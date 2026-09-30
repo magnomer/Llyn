@@ -300,7 +300,6 @@ public sealed class TXiesheng
     private static CXiesheng TXieshengPrepare(CAtelier atelier, CEnvoy envoy)
     {
         CXiesheng xiesheng = CXiesheng.CXieshengCreate(atelier, static () => true, envoy, static run => run());
-        xiesheng.CXieshengVistaRestore();
         return xiesheng;
     }
 

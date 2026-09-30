@@ -22,7 +22,8 @@ Each named part of the page is found through `QContract.QContractFind` under its
 
 ## `internal void QReferenceIntroduce(PWindow host)`
 
-Puts the driver to work on the panel factory, which builds the Conduct shelf with its own editor.
+Puts the driver to work on the Conduct shelf it builds, and the shelf builds its own editor.
+Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 It hands the shelf only the shown seam, and subscribes to the notices of both lists.
 The Source rows notice also repaints the imprint's tally, since a stored entry may have moved its count.
 The grade menu is built here once, from the orders `CShelf.CShelfOrderRead` offers.

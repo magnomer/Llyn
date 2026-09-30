@@ -443,7 +443,6 @@ public sealed class TShelf
     internal static CShelf TShelfPrepare(CAtelier atelier, CEnvoy envoy)
     {
         CShelf shelf = CShelf.CShelfCreate(atelier, static () => true, envoy, static run => run());
-        shelf.CShelfVistaRestore();
         return shelf;
     }
 

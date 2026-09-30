@@ -37,7 +37,8 @@ Each named part of the page is pulled through `QContract.QContractFind` by its c
 
 ## `internal void QCorpusIntroduce(PWindow host)`
 
-Takes the corpus Conduct from the forge, which built it with its editor and its desk's marshaller.
+Builds the corpus Conduct with the window's envoy, and the corpus builds its editor and its desk.
+Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 It subscribes the desk's failure, refusal and draft notices through `QTranscriptDeskIntroduce`.
 The lectern follows the quotation panel, whose loads and clears reach the display's area, never the veneer.
 Binds the panel to the window it asks for confirmations and panel switches through.

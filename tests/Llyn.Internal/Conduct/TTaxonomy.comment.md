@@ -3,7 +3,7 @@
 ## `public sealed class TTaxonomy`
 
 Covers the taxonomy panel's gates end to end on a real workspace.
-Before the vistas are restored the rows are empty and nothing is chosen or filtered.
+A fresh area already stands on its vistas, so it lists the stored Tag with nothing chosen or filtered.
 New asks the wording while nothing is chosen or shown, and the Tag opens as an arrival does.
 The padded wording is listed trimmed and chosen, since the clerk below trims it.
 A blank wording shows the refusal through the envoy, and a retreat makes nothing.
@@ -24,7 +24,7 @@ Closing the atelier cancels the editor's held entry and stops the display's play
 
 ## `internal static CTaxonomy TTaxonomyPrepare(CAtelier atelier, CEnvoy envoy)`
 
-Builds the taxonomy and restores both of its vistas, as the window does for the tab.
+Builds the taxonomy, which restores both of its vistas itself, as the window does for the tab.
 
 ## `private static LEntry TTaxonomyEntrySave(LEngine engine)`
 

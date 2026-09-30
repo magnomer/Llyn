@@ -101,7 +101,7 @@ public sealed class TXieshengVista
         xiesheng.CXieshengGroveFind("zzz");
         xiesheng.CXieshengKindredFind("zzz");
 
-        xiesheng.CXieshengVistaRestore();
+        xiesheng.TXieshengVistaRestore();
 
         Assert.Empty(xiesheng.CXieshengGroveRead());
         Assert.Equal("Xiesheng.GroveUnmatched", xiesheng.CXieshengGroveKey);
@@ -126,8 +126,32 @@ public sealed class TXieshengVista
                 marshalled++;
                 run();
             });
-        xiesheng.CXieshengVistaRestore();
-        xiesheng.CXieshengVistaRestore();
+        xiesheng.TXieshengVistaRestore();
+        int changed = 0;
+        xiesheng.CXieshengChanged += () => changed++;
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectFanqie, 0);
+
+        Assert.Equal(1, changed);
+        Assert.Equal(1, marshalled);
+    }
+
+    [Fact]
+    public void XieshengCreate_FanqieNoticeWithoutARestore_RaisesTheGroveOnceThroughTheMarshal()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        int marshalled = 0;
+        CXiesheng xiesheng = CXiesheng.CXieshengCreate(
+            atelier,
+            static () => true,
+            TEnvoyFake.TEnvoyCreate(false, []),
+            run =>
+            {
+                marshalled++;
+                run();
+            });
         int changed = 0;
         xiesheng.CXieshengChanged += () => changed++;
 

@@ -139,7 +139,11 @@ internal sealed class QGuild
     internal void QGuildIntroduce(PWindow host)
     {
         _qGuildHost = host;
-        _cGuild = host.PWindowForge.QForgeGuildCreate(QGuildShownCheck, host.PWindowEnvoy);
+        _cGuild = CGuild.CGuildCreate(
+            host.PWindowAtelier,
+            QGuildShownCheck,
+            host.PWindowEnvoy,
+            LObserver.LObserverCreate<Action>(static run => run()));
         _cGuild.CGuildChanged += QGuildModeUpdate;
         _cGuild.CGuildPanel.CPanelChanged += QGuildModeUpdate;
         _cGuild.CGuildPanel.CPanelRowsChanged += QRollRefine;

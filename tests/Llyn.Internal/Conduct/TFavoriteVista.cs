@@ -21,7 +21,7 @@ public sealed class TFavoriteVista
         CFavorite favorite = TFavoriteRoster.TFavoriteRosterPrepare(atelier);
         favorite.CFavoriteQuerySet("riv");
 
-        favorite.CFavoriteVistaRestore();
+        favorite.TFavoriteVistaRestore();
 
         Assert.Equal(["river"], favorite.CFavoriteRowsRead().Select(row => row.CVistaRowHeadword));
     }
@@ -43,8 +43,33 @@ public sealed class TFavoriteVista
                 marshalled++;
                 run();
             });
-        favorite.CFavoriteVistaRestore();
-        favorite.CFavoriteVistaRestore();
+        favorite.TFavoriteVistaRestore();
+        int rows = 0;
+        favorite.CFavoritePanel.CPanelRowsChanged += () => rows++;
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectFavorite, stone.LEntryId);
+
+        Assert.Equal(1, rows);
+        Assert.Equal(1, marshalled);
+    }
+
+    [Fact]
+    public void FavoriteCreate_FavoriteNoticeWithoutARestore_RaisesTheRowsOnceThroughTheMarshal()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry stone = TFavoriteRoster.TFavoriteSave(engine, "stone", "English");
+        int marshalled = 0;
+        CFavorite favorite = CFavorite.CFavoriteCreate(
+            atelier,
+            static () => true,
+            TEnvoyFake.TEnvoyCreate(false, []),
+            run =>
+            {
+                marshalled++;
+                run();
+            });
         int rows = 0;
         favorite.CFavoritePanel.CPanelRowsChanged += () => rows++;
 

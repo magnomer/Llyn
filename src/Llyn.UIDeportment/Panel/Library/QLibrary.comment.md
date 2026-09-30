@@ -20,7 +20,8 @@ Each named part is pulled from the page by its contract ID on every read.
 
 ## `internal void QLibraryIntroduce(PWindow host)`
 
-Puts the panel to work through its Conduct `CLibrary`, which the forge builds over the atelier.
+Puts the panel to work through its Conduct `CLibrary`, which it builds over the atelier.
+Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 The Conduct builds its own entry editor, which this panel wraps for the editor view and the lectern.
 The lectern follows the panel, and the panel's notices reach its own controls.
 It builds the ordering menu once, from the orderings `CLibrary` offers.

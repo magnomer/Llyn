@@ -49,9 +49,10 @@ public sealed class CFavorite
             CFavoritePanel.LPanelScribeRestore,
             id => CFavoritePanel.CPanelRowOpen(id));
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CFavoritePanel.LPanelChangeCheck, editor.LEditorFinish);
-        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CFavoriteVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LFavoriteVistaRestore);
         atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LFavoriteClose);
         CFavoritePanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
+        LFavoriteVistaRestore();
     }
 
     public static CFavorite CFavoriteCreate(
@@ -68,7 +69,7 @@ public sealed class CFavorite
 
     public bool CFavoriteFiltered => _cFavoriteVista?.LVistaFiltered ?? false;
 
-    public void CFavoriteVistaRestore()
+    internal void LFavoriteVistaRestore()
     {
         LVista vista = _cFavoriteAtelier.CAtelierVistaStart(
             "favorite", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);

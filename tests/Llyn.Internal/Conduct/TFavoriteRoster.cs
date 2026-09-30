@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TFavoriteRoster
 {
     [Fact]
-    public void FavoriteRowsRead_NoVista_ReadsNothing()
+    public void FavoriteRowsRead_FreshArea_ListsTheStoredFavorites()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -19,7 +19,7 @@ public sealed class TFavoriteRoster
         CFavorite favorite = CFavorite.CFavoriteCreate(
             atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
 
-        Assert.Empty(favorite.CFavoriteRowsRead());
+        Assert.Single(favorite.CFavoriteRowsRead());
         Assert.False(favorite.CFavoriteFiltered);
         Assert.Equal("entry", favorite.TFavoriteFileRead());
     }
@@ -132,7 +132,6 @@ public sealed class TFavoriteRoster
     {
         CFavorite favorite = CFavorite.CFavoriteCreate(
             atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
-        favorite.CFavoriteVistaRestore();
         return favorite;
     }
 

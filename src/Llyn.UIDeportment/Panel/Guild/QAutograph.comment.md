@@ -18,7 +18,7 @@ Each part of the page is pulled by its contract ID through `QContract.QContractF
 ## `internal void QAutographIntroduce(CGuild guild)`
 
 Takes the panel the guild driver built and answers its union clear and its autograph's draft notice.
-`CGuild` attaches the desk's own bulletins at build, with the marshal the forge hands it.
+`CGuild` attaches the desk's own bulletins at build, with the marshal `QGuild` hands it.
 
 ## `internal void QAutographTallyShow(CVita vita)`
 

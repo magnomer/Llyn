@@ -3,7 +3,7 @@
 ## `public sealed class TLibrary`
 
 Covers the library panel's Conduct end to end on a real workspace.
-Its rows, query, order and filter follow the vista, and nothing is read before a vista arrives.
+Its rows, query, order and filter follow the vista, which a fresh area already stands on.
 The empty verdict follows the last rows read.
 A chosen row is marked and reported as the station, and a deleted one reports zero again.
 The markup import asks for the file first, and a cancelled pick asks nothing more.

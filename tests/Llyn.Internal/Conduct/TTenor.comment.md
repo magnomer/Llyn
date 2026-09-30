@@ -3,7 +3,7 @@
 ## `public sealed class TTenor`
 
 Covers the tenor panel's gates end to end on a real workspace.
-Before the vistas are restored the rows are empty and nothing is chosen or filtered.
+A fresh area already stands on its vistas, so it lists the stored Register with nothing chosen or filtered.
 New asks the wording under the Register key.
 A padded wording opens the trimmed Register as an arrival does, chosen with no usage.
 A blank wording shows the refusal through the envoy and opens nothing, and a retreat makes nothing.
@@ -25,7 +25,7 @@ Closing the atelier cancels the editor's entry and stops the playback once.
 
 ## `internal static CTenor TTenorPrepare(CAtelier atelier, CEnvoy envoy)`
 
-Builds the tenor panel and restores both of its vistas, as the window does for the tab.
+Builds the tenor panel, which restores both of its vistas itself, as the window does for the tab.
 
 ## `private static LEntry TTenorEntrySave(LEngine engine)`
 

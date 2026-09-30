@@ -13,7 +13,7 @@ namespace Llyn.Tests;
 public sealed class TPhonology
 {
     [Fact]
-    public void PhonologyRowsRead_NoVistaRestored_AnswersNothing()
+    public void PhonologyRowsRead_FreshArea_ListsTheStoredEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -22,8 +22,8 @@ public sealed class TPhonology
         CPhonology phonology = CPhonology.CPhonologyCreate(
             atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
 
-        Assert.Empty(phonology.CPhonologyRowsRead());
-        Assert.True(phonology.CPhonologyEmpty);
+        Assert.Single(phonology.CPhonologyRowsRead());
+        Assert.False(phonology.CPhonologyEmpty);
         Assert.False(phonology.CPhonologyFiltered);
     }
 
@@ -184,7 +184,7 @@ public sealed class TPhonology
         CPhonology phonology = TPhonologyPrepare(atelier);
         phonology.CPhonologyQuerySet("wat");
 
-        phonology.CPhonologyVistaRestore();
+        phonology.TPhonologyVistaRestore();
 
         Assert.Equal(
             ["water"],
@@ -207,8 +207,32 @@ public sealed class TPhonology
                 marshalled++;
                 run();
             });
-        phonology.CPhonologyVistaRestore();
-        phonology.CPhonologyVistaRestore();
+        phonology.TPhonologyVistaRestore();
+        int rows = 0;
+        phonology.CPhonologyPanel.CPanelRowsChanged += () => rows++;
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectReflex, 0);
+
+        Assert.Equal(1, rows);
+        Assert.Equal(1, marshalled);
+    }
+
+    [Fact]
+    public void PhonologyCreate_ReflexNoticeWithoutARestore_RaisesTheRowsOnceThroughTheMarshal()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        int marshalled = 0;
+        CPhonology phonology = CPhonology.CPhonologyCreate(
+            atelier,
+            static () => true,
+            TEnvoyFake.TEnvoyCreate(false, []),
+            run =>
+            {
+                marshalled++;
+                run();
+            });
         int rows = 0;
         phonology.CPhonologyPanel.CPanelRowsChanged += () => rows++;
 
@@ -315,7 +339,6 @@ public sealed class TPhonology
     private static CPhonology TPhonologyPrepare(CAtelier atelier, CEnvoy envoy)
     {
         CPhonology phonology = CPhonology.CPhonologyCreate(atelier, static () => true, envoy, static run => run());
-        phonology.CPhonologyVistaRestore();
         return phonology;
     }
 

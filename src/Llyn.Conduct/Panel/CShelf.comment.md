@@ -20,6 +20,7 @@ The Source panel's row notices reach the entry list, whose rows follow the chose
 The source editor hears its desk notices through `marshal`.
 The shelf keeps `marshal` for the observers it attaches at each vista restore.
 The shelf's close joins the workspace's closures, so it runs when the atelier closes.
+It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CShelf CShelfCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
@@ -72,12 +73,13 @@ True while the Source vista hides some language, so a driver marks its filter.
 
 The entry list holds a row or edits, so the entry side is in front.
 
-## `public void CShelfVistaRestore()`
+## `internal void LShelfVistaRestore()`
 
 Starts the Source vista and the entry vista through the atelier and hands them to the panels and desks.
 The entry list follows the Source vista as its parent, and the entry editor stands on the entry vista.
 The former Source vista's query is carried into the fresh one, so the driver never re-sends its text.
 Then the shelf attaches its own observers, and the entry list attaches its own with the shelf's answers handed in.
+The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
 
 ## `private void LShelfObserverAttach()`
 

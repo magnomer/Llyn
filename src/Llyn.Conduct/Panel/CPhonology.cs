@@ -56,9 +56,10 @@ public sealed class CPhonology
             CPhonologyPanel.LPanelScribeRestore,
             id => CPhonologyPanel.CPanelRowOpen(id));
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CPhonologyPanel.LPanelChangeCheck, editor.LEditorFinish);
-        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CPhonologyVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LPhonologyVistaRestore);
         atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LPhonologyClose);
         CPhonologyPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
+        LPhonologyVistaRestore();
     }
 
     public static CPhonology CPhonologyCreate(
@@ -77,7 +78,7 @@ public sealed class CPhonology
 
     public bool CPhonologyFiltered => _cPhonologyVista?.LVistaFiltered ?? false;
 
-    public void CPhonologyVistaRestore()
+    internal void LPhonologyVistaRestore()
     {
         LVista vista = _cPhonologyAtelier.CAtelierVistaStart(
             "phonology", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);

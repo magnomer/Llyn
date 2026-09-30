@@ -17,11 +17,12 @@ It keeps the marshal, which runs each engine notice's answer on the medium's own
 The panel's rows notice refreshes the oeuvre, since the oeuvre follows the chosen Author.
 A cleared panel drops the held draft, and an edited row starts one.
 A started tenure clears the union offer, raised as `CGuildUnionCleared`.
-The autograph desk's tenure and draft bulletins are attached last, each run through the marshal.
+The autograph desk's tenure and draft bulletins are then attached, each run through the marshal.
+It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CGuild CGuildCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
-Builds the panel over the atelier's ports, as the forge does for every Conduct panel.
+Builds the panel over the atelier's ports, as every Conduct panel is built.
 `shownSeam` answers whether the tab is in front.
 `marshal` runs each desk bulletin's answer on the medium's own thread.
 
@@ -64,13 +65,13 @@ The source side is in front exactly when the oeuvre has a chosen row.
 
 A stored row is chosen and read, not written, so a roll that drops it closes the panel.
 
-## `public void CGuildVistaRestore()`
+## `internal void LGuildVistaRestore()`
 
 Starts the roll and oeuvre vistas through the atelier and binds the panel, the oeuvre and the desk to them.
 The roll's held query carries into the fresh vista, as the oeuvre carries its own.
 So the driver never replays it.
 It then attaches the observers, so a workspace change rebinds them to the fresh vistas.
-The workspace change gate runs it again through `CWorkspace`.
+The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
 
 ## `private void LGuildObserverAttach()`
 

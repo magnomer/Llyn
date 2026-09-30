@@ -68,10 +68,11 @@ public sealed class CYunjing
             id => CYunjingPanel.CPanelRowOpen(id),
             () => LYunjingAllowed);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CYunjingPanel.LPanelChangeCheck, editor.LEditorFinish);
-        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CYunjingVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LYunjingVistaRestore);
         atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LYunjingClose);
         atelier.CAtelierNavigation.LNavigationDiweiAttach(LYunjingDiweiOpen);
         CYunjingPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
+        LYunjingVistaRestore();
     }
 
     public static CYunjing CYunjingCreate(
@@ -125,7 +126,7 @@ public sealed class CYunjing
 
     private LVista? LYunjingSide => _cYunjingFinal ? _cYunjingYunmu : _cYunjingShengmu;
 
-    public void CYunjingVistaRestore()
+    internal void LYunjingVistaRestore()
     {
         LVista shengmu = _cYunjingAtelier.CAtelierVistaStart("yunjing", null, CCatalogOrder.CCatalogOrderName);
         LVista yunmu = _cYunjingAtelier.CAtelierVistaStart("yunmu", null, CCatalogOrder.CCatalogOrderName);

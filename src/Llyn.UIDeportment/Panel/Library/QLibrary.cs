@@ -127,7 +127,11 @@ internal sealed class QLibrary
     internal void QLibraryIntroduce(PWindow host)
     {
         _qLibraryHost = host;
-        _cLibrary = host.PWindowForge.QForgeLibraryCreate(QLibraryShownCheck, host.PWindowEnvoy);
+        _cLibrary = CLibrary.CLibraryCreate(
+            host.PWindowAtelier,
+            QLibraryShownCheck,
+            host.PWindowEnvoy,
+            LObserver.LObserverCreate<Action>(static run => run()));
         CPanel panel = _cLibrary.CLibraryPanel;
         QLectern lectern = new(_cLibrary.CLibraryEditor.CEditorDisplay, panel);
         QLibraryLectern = lectern;

@@ -13,7 +13,7 @@ namespace Llyn.Tests;
 public sealed class TTaxonomy
 {
     [Fact]
-    public void TaxonomyRowsRead_NoVistaRestored_AnswersNothing()
+    public void TaxonomyRowsRead_FreshArea_ListsTheStoredTags()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -22,7 +22,7 @@ public sealed class TTaxonomy
             atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
         engine.TEngineTagCreate("motion");
 
-        Assert.Empty(taxonomy.CTaxonomyRowsRead());
+        Assert.Single(taxonomy.CTaxonomyRowsRead());
         Assert.Null(taxonomy.LTaxonomyChosen);
         Assert.False(taxonomy.CTaxonomyFiltered);
     }
@@ -451,7 +451,6 @@ public sealed class TTaxonomy
     internal static CTaxonomy TTaxonomyPrepare(CAtelier atelier, CEnvoy envoy)
     {
         CTaxonomy taxonomy = CTaxonomy.CTaxonomyCreate(atelier, static () => true, envoy, static run => run());
-        taxonomy.CTaxonomyVistaRestore();
         return taxonomy;
     }
 }

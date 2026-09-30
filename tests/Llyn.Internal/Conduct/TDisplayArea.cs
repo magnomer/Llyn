@@ -98,7 +98,7 @@ public sealed class TDisplayArea
             atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
         CDisplay area = library.CLibraryEditor.CEditorDisplay.CDisplayArea;
         area.CDisplayPanelAttach(library.CLibraryPanel);
-        library.CLibraryVistaRestore();
+        library.TLibraryVistaRestore();
         int opened = 0;
         int closed = 0;
         area.CDisplayOpened += () => opened++;

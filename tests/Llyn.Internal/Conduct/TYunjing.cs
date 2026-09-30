@@ -397,7 +397,6 @@ public sealed class TYunjing
     private static CYunjing TYunjingPrepare(CAtelier atelier, CEnvoy envoy)
     {
         CYunjing yunjing = CYunjing.CYunjingCreate(atelier, static () => true, envoy, static run => run());
-        yunjing.CYunjingVistaRestore();
         return yunjing;
     }
 }

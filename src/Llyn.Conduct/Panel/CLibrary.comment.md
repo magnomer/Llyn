@@ -13,6 +13,7 @@ Takes the atelier's ports and the marshal, and builds the panel's own entry edit
 It registers its vista restore and its close with the workspace.
 The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
 A cleared panel empties the editor, and an edited row opens in it.
+It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CLibrary CLibraryCreate(`
 
@@ -38,12 +39,13 @@ Whether the language filter hides any language, as the vista answers it.
 Whether the last rows read found nothing, which the list shows as its empty notice.
 The library always answers a request, so an empty list is always shown as empty.
 
-## `public void CLibraryVistaRestore()`
+## `internal void LLibraryVistaRestore()`
 
 Starts the library vista through the atelier, headword order before any order is saved.
 The held query is carried into the fresh vista, so a switch keeps the search.
 The panel and the editor both take it, on a workspace start or switch.
 Then it attaches the observers for the vista, workspace, entry, reflex and settings notices through the marshal.
+The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
 
 ## `private void LLibraryObserverAttach()`
 

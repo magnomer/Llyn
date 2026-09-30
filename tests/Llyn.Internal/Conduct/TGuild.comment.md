@@ -21,6 +21,6 @@ An Author click records the station it leaves before the Author opens.
 
 ## `internal static CGuild TGuildPrepare(CAtelier atelier, CEnvoy envoy)`
 
-Builds the panel over the atelier and restores both vistas as the forge does.
+Builds the panel over the atelier, and the panel restores both vistas itself.
 Its seam answers that the tab is in front, and its marshal runs each answer at once.
 `TGuildMode` and `TGuildAutograph` build their panels through it too.

@@ -21,7 +21,7 @@ public sealed class TRepertoireVista
         repertoire.CRepertoireAtlas.CAtlasQuerySet("court");
         repertoire.CRepertoireOccurrence.COccurrenceQuerySet("zzz");
 
-        repertoire.CRepertoireVistaRestore();
+        repertoire.TRepertoireVistaRestore();
 
         Assert.Equal(["in court"], repertoire.CRepertoireRowsRead().Select(row => row.CCatalogSituationTitle));
         Assert.Equal("Situation.Unmatched", repertoire.CRepertoireOccurrence.COccurrenceEmptyKey);
@@ -44,8 +44,36 @@ public sealed class TRepertoireVista
                 marshalled++;
                 run();
             });
-        repertoire.CRepertoireVistaRestore();
-        repertoire.CRepertoireVistaRestore();
+        repertoire.TRepertoireVistaRestore();
+        int atlas = 0;
+        int occurrence = 0;
+        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += () => atlas++;
+        repertoire.CRepertoireOccurrence.COccurrencePanel.CPanelRowsChanged += () => occurrence++;
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectSituation, home.LSituationId);
+
+        Assert.Equal(1, atlas);
+        Assert.Equal(1, occurrence);
+        Assert.Equal(1, marshalled);
+    }
+
+    [Fact]
+    public void RepertoireCreate_SituationNoticeWithoutARestore_RaisesEachListOnceThroughTheMarshal()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LSituation home = TRepertoire.TRepertoireSituationSave(engine, "at home");
+        int marshalled = 0;
+        CRepertoire repertoire = CRepertoire.CRepertoireCreate(
+            atelier,
+            static () => true,
+            TEnvoyFake.TEnvoyCreate(false, []),
+            run =>
+            {
+                marshalled++;
+                run();
+            });
         int atlas = 0;
         int occurrence = 0;
         repertoire.CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += () => atlas++;
@@ -111,7 +139,6 @@ public sealed class TRepertoireVista
                 marshalled++;
                 run();
             });
-        repertoire.CRepertoireVistaRestore();
         int atlas = 0;
         repertoire.CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += () => atlas++;
 

@@ -153,7 +153,11 @@ internal sealed class QYunjing
     internal void QYunjingIntroduce(PWindow host)
     {
         _qYunjingHost = host;
-        _cYunjing = host.PWindowForge.QForgeYunjingCreate(QYunjingShownCheck, host.PWindowEnvoy);
+        _cYunjing = CYunjing.CYunjingCreate(
+            host.PWindowAtelier,
+            QYunjingShownCheck,
+            host.PWindowEnvoy,
+            LObserver.LObserverCreate<Action>(static run => run()));
         CPanel panel = _cYunjing.CYunjingPanel;
         QLectern lectern = new(_cYunjing.CYunjingEditor.CEditorDisplay, panel);
         QChoice.QChoiceOrderBuild(QLadderList, "Ladder", QLadderObserve, CYunjing.CYunjingOrderRead());

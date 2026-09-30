@@ -13,6 +13,7 @@ Takes the atelier's ports and builds the panel's own entry editor.
 The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
 A cleared panel empties the editor, and an edited row opens in it.
 It registers its vista restore and its close with `CWorkspace`, as every area does.
+It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CPhonology CPhonologyCreate(`
 
@@ -39,11 +40,12 @@ Whether the last rows read found nothing, so the empty notice is a verdict and n
 
 Whether the language filter hides any language, as the vista answers it.
 
-## `public void CPhonologyVistaRestore()`
+## `internal void LPhonologyVistaRestore()`
 
 Starts the phonology vista, ordered by headword until the user picks another order.
 The search text of the vista before it carries into the fresh one, so a workspace switch keeps it.
 The vista then goes to the panel and the editor, and the panel's observers attach to it.
+The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
 
 ## `private void LPhonologyObserverAttach()`
 

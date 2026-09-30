@@ -21,7 +21,7 @@ public sealed class TCorpusVista
         corpus.CCorpusAnthology.CAnthologyQuerySet("dog");
         corpus.CCorpusQuotation.CQuotationQuerySet("zzz");
 
-        corpus.CCorpusVistaRestore();
+        corpus.TCorpusVistaRestore();
 
         Assert.Equal(["a dog ran"], corpus.CCorpusRowsRead().Select(row => row.CCatalogExampleText));
         Assert.Equal("Example.Unmatched", corpus.CCorpusQuotation.CQuotationEmptyKey);
@@ -44,8 +44,36 @@ public sealed class TCorpusVista
                 marshalled++;
                 run();
             });
-        corpus.CCorpusVistaRestore();
-        corpus.CCorpusVistaRestore();
+        corpus.TCorpusVistaRestore();
+        int anthology = 0;
+        int quotation = 0;
+        corpus.CCorpusAnthology.CAnthologyPanel.CPanelRowsChanged += () => anthology++;
+        corpus.CCorpusQuotation.CQuotationPanel.CPanelRowsChanged += () => quotation++;
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectExample, cat.LExampleId);
+
+        Assert.Equal(1, anthology);
+        Assert.Equal(1, quotation);
+        Assert.Equal(1, marshalled);
+    }
+
+    [Fact]
+    public void CorpusCreate_ExampleNoticeWithoutARestore_RaisesEachListOnceThroughTheMarshal()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LExample cat = TCorpus.TCorpusExampleSave(engine, "a cat sat");
+        int marshalled = 0;
+        CCorpus corpus = CCorpus.CCorpusCreate(
+            atelier,
+            static () => true,
+            TEnvoyFake.TEnvoyCreate(false, []),
+            run =>
+            {
+                marshalled++;
+                run();
+            });
         int anthology = 0;
         int quotation = 0;
         corpus.CCorpusAnthology.CAnthologyPanel.CPanelRowsChanged += () => anthology++;

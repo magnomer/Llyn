@@ -76,9 +76,10 @@ public sealed class CRepertoire
             LRepertoireSituationOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(
             CRepertoireSession.LSessionChangeCheck, CRepertoireSession.LSessionFinish);
-        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CRepertoireVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LRepertoireVistaRestore);
         atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LRepertoireClose);
         CRepertoireDesk.CDeskObserverAttach(marshal, LRepertoireDraftResonate);
+        LRepertoireVistaRestore();
     }
 
     public static CRepertoire CRepertoireCreate(
@@ -460,7 +461,7 @@ public sealed class CRepertoire
         return CRepertoireOccurrence.LOccurrencePortraitExport(_cRepertoireEnvoy, _cRepertoireSettingsPort);
     }
 
-    public void CRepertoireVistaRestore()
+    internal void LRepertoireVistaRestore()
     {
         LVista vista = _cRepertoireAtelier.CAtelierVistaStart(
             "repertoire", CSubject.CSubjectSituation, CCatalogOrder.CCatalogOrderName);

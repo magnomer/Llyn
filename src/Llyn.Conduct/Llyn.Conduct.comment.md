@@ -23,12 +23,6 @@ The Windows behaviour tests build `CAtelier` for the deportments they drive.
 The host, built as `Llyn`, builds `CAtelier` over the ports it makes.
 The constructor naming those ports stays internal, so no driver can build one.
 
-## `<InternalsVisibleTo Include="Llyn.UIDeportment" />`
-
-Deportment reads the transitional port handles and starts vistas on `CAtelier`.
-Those members name engine types, so they stay internal and out of the Conduct surface.
-job14-30 deletes them, and this line with them.
-
 ## `<ProjectReference Include="..\Llyn.ShellEngine\Llyn.ShellEngine.csproj" />`
 
 Conduct reads the engine through the `L*Port` slices alone.

@@ -131,7 +131,7 @@ public sealed class TYunjingVista
         yunjing.CYunjingYunmuFind("zzz");
         yunjing.CYunjingXiaoyunFind("zzz");
 
-        yunjing.CYunjingVistaRestore();
+        yunjing.TYunjingVistaRestore();
 
         Assert.Empty(yunjing.CYunjingShengmuRead());
         Assert.Equal("Yunjing.ShengmuUnmatched", yunjing.CYunjingShengmuKey);
@@ -157,8 +157,32 @@ public sealed class TYunjingVista
                 marshalled++;
                 run();
             });
-        yunjing.CYunjingVistaRestore();
-        yunjing.CYunjingVistaRestore();
+        yunjing.TYunjingVistaRestore();
+        int changed = 0;
+        yunjing.CYunjingChanged += () => changed++;
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectFanqie, 0);
+
+        Assert.Equal(1, changed);
+        Assert.Equal(1, marshalled);
+    }
+
+    [Fact]
+    public void YunjingCreate_FanqieNoticeWithoutARestore_RaisesTheColumnsOnceThroughTheMarshal()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        int marshalled = 0;
+        CYunjing yunjing = CYunjing.CYunjingCreate(
+            atelier,
+            static () => true,
+            TEnvoyFake.TEnvoyCreate(false, []),
+            run =>
+            {
+                marshalled++;
+                run();
+            });
         int changed = 0;
         yunjing.CYunjingChanged += () => changed++;
 

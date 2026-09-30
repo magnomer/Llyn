@@ -21,7 +21,7 @@ public sealed class TShelfVista
         shelf.CShelfQuerySet("Tom");
         shelf.CShelfFootnote.CFootnoteQuerySet("zzz");
 
-        shelf.CShelfVistaRestore();
+        shelf.TShelfVistaRestore();
 
         Assert.Equal(["Tome"], shelf.CShelfRollRead().CShelfRollRows.Select(row => row.CCatalogReferenceName));
         Assert.Equal("Source.Unmatched", shelf.CShelfFootnote.CFootnoteEmptyKey);
@@ -36,8 +36,29 @@ public sealed class TShelfVista
         LReference book = engine.TEngineCitationCreate("Book");
         int marshalled = 0;
         CShelf shelf = TShelfMarshalCreate(atelier, () => marshalled++);
-        shelf.CShelfVistaRestore();
-        shelf.CShelfVistaRestore();
+        shelf.TShelfVistaRestore();
+        marshalled = 0;
+        int rows = 0;
+        int footnotes = 0;
+        shelf.CShelfPanel.CPanelRowsChanged += () => rows++;
+        shelf.CShelfFootnote.CFootnotePanel.CPanelRowsChanged += () => footnotes++;
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectReference, book.LReferenceId);
+
+        Assert.Equal(1, rows);
+        Assert.Equal(1, footnotes);
+        Assert.Equal(1, marshalled);
+    }
+
+    [Fact]
+    public void ShelfCreate_ReferenceNoticeWithoutARestore_RaisesTheShelfOnceThroughTheMarshal()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LReference book = engine.TEngineCitationCreate("Book");
+        int marshalled = 0;
+        CShelf shelf = TShelfMarshalCreate(atelier, () => marshalled++);
         marshalled = 0;
         int rows = 0;
         int footnotes = 0;
@@ -76,7 +97,6 @@ public sealed class TShelfVista
         LEntry hearth = TShelfEntrySave(engine, "hearth");
         int marshalled = 0;
         CShelf shelf = TShelfMarshalCreate(atelier, () => marshalled++);
-        shelf.CShelfVistaRestore();
         int footnotes = 0;
         shelf.CShelfFootnote.CFootnotePanel.CPanelRowsChanged += () => footnotes++;
         marshalled = 0;
@@ -95,7 +115,6 @@ public sealed class TShelfVista
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         int marshalled = 0;
         CShelf shelf = TShelfMarshalCreate(atelier, () => marshalled++);
-        shelf.CShelfVistaRestore();
         int rows = 0;
         shelf.CShelfPanel.CPanelRowsChanged += () => rows++;
 
@@ -114,7 +133,6 @@ public sealed class TShelfVista
         LReference book = engine.TEngineCitationCreate("Book");
         int marshalled = 0;
         CShelf shelf = TShelfMarshalCreate(atelier, () => marshalled++);
-        shelf.CShelfVistaRestore();
         shelf.CShelfReferenceSelect(book.LReferenceId);
         Assert.True(shelf.CShelfBinEnabled);
         marshalled = 0;
