@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using Llyn.Application;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -50,7 +49,7 @@ public partial class PEditor : UserControl, QChronicleHost
         Resources.MergedDictionaries.Add(_pMarkerTemplate);
         _pCategoryTemplate = new PCategoryTemplate();
         Resources.MergedDictionaries.Add(_pCategoryTemplate);
-        _pNotationTemplate = new PNotationTemplate(this);
+        _pNotationTemplate = new PNotationTemplate();
         Resources.MergedDictionaries.Add(_pNotationTemplate);
         _pClipTemplate = new PClipTemplate();
         Resources.MergedDictionaries.Add(_pClipTemplate);
@@ -134,8 +133,6 @@ public partial class PEditor : UserControl, QChronicleHost
 
     private TextBox PNoteContents => (TextBox)FindName(nameof(PNoteContents));
 
-    private long PEditorDraft => _qEditor.QEditorArea.CEditorDesk.CDeskId;
-
     internal void PEditorIntroduce(PWindow host, QEditor driver)
     {
         _pEditorHost = host;
@@ -167,11 +164,6 @@ public partial class PEditor : UserControl, QChronicleHost
     public void QChronicleRedoObserve()
     {
         QChronicle.QChronicleCaretRefine(_qEditor.QEditorArea.CEditorDesk.CDeskRedo);
-    }
-
-    private void PEditorRequestSend(LRequest request)
-    {
-        _qEditor.QEditorArea.CEditorDesk.CDeskSend(request);
     }
 
     internal void PEditorStartRefine()

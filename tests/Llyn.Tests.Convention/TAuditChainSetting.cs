@@ -254,6 +254,9 @@ internal static class TAuditChainSetting
             "CTimbreAccent",
             "CTimbreReflex",
             "CTimbreGlyph",
+            "CTranscription",
+            "CTranscriptionSheet",
+            "CTranscriptionRow",
             "CReflexField",
             "CContour",
             "CArticulation",
@@ -377,7 +380,7 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["cross:Llyn.UIDeportment>Llyn.Application"] = 6,
+        ["cross:Llyn.UIDeportment>Llyn.Application"] = 0,
         ["cross:Llyn.UIDeportment>Llyn.Core"] = 0,
         ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 0,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 1,

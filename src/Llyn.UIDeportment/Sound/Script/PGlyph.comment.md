@@ -5,7 +5,7 @@
 The glyph row of the input panel: the traditional form of a Han-script headword, typed or looked up.
 The form is stored as a transcription row in the pack's glyph scheme, so the row is a transcription item.
 It is rendered apart from the transcription rows, beneath them, with no scheme dropdown and no plus or minus.
-Its typed text goes to the one transcription text gate, `CTimbre.CTimbreTranscriptionSet`.
+Its typed text goes to the one transcription text gate, `CTranscription.CTranscriptionSet`.
 
 ## `private void PGlyphNotationRefine(object sender, ExecutedRoutedEventArgs e)`
 

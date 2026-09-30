@@ -4,11 +4,12 @@ Answers about the held draft that need an engine lookup beyond the draft itself.
 Language-dependent flag and variety queries read the held draft instead of an editable control.
 An ended tenure or empty language answers false for flags and an empty variety list.
 
-## `public IReadOnlyList<LSchemeRow> LTenureSchemeRead(long transcription)`
+## `public LTranscriptionSheet? LTenureTranscriptionRead()`
 
-The schemes the draft's pack declares, each marked when a row other than `transcription` holds it.
-The mark is the clerk's one-scheme rule, so the dropdown greys out what a pick would refuse.
-An ended tenure has no language, so it answers no schemes.
+The held draft's transcription rows outside the glyph scheme, each with the schemes its pack declares.
+The engine answers the pack's schemes and the glyph split, and the clerk builds the sheet from them.
+So each mark and the free scheme follow the clerk's one-scheme rule.
+An ended tenure holds no draft, so it answers nothing.
 
 ## `public LGlyphBlock? LTenureGlyphRead()`
 

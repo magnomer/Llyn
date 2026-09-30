@@ -186,10 +186,6 @@ Announces the change of state, after raising the refusal if the tenure just halt
 
 Applies the deferred requests now, as a field is left, unless the controls are being filled.
 
-## `internal void CDeskSend(LRequest request)`
-
-Hands a request to the tenure to apply at once, unless the controls are being filled.
-
 ## `internal bool LDeskChangeCheck()`
 
 Whether the held draft differs from what is stored, after the deferred requests have been applied.

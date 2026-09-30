@@ -79,6 +79,8 @@ public sealed class CEditor
 
     public CTimbre CEditorTimbre { get; }
 
+    public CTranscription CEditorTranscription => new(CEditorDesk);
+
     public CCardSpeech CEditorSpeech { get; }
 
     public CCardField CEditorField => new(CEditorDesk);

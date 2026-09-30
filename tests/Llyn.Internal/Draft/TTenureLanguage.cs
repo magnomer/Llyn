@@ -24,7 +24,7 @@ public sealed class TTenureLanguage
     }
 
     [Fact]
-    public void TenureSchemeRead_TwoRows_MarksTheSchemeTheOtherRowHolds()
+    public void TenureTranscriptionRead_TwoRows_MarksTheSchemeTheOtherRowHolds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -43,11 +43,16 @@ public sealed class TTenureLanguage
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, entry.LEntryId);
         long jyutping = tenure.TTenureRead()!.LDraftContent.LEntryDraftTranscriptions[0].LTranscriptionDraftId;
 
-        IReadOnlyList<LSchemeRow> rows = tenure.TTenureSchemeRead(jyutping);
+        LTranscriptionSheet sheet = tenure.TTenureTranscriptionRead()!;
+        LTranscriptionRow held = sheet.LTranscriptionSheetRows[0];
+        IReadOnlyList<LSchemeRow> rows = held.LTranscriptionRowSchemes;
 
+        Assert.Equal(jyutping, held.LTranscriptionRowDraft.LTranscriptionDraftId);
         Assert.Equal(["Jyutping", "Yale"], rows.Select(static row => row.LSchemeRowName));
         Assert.Equal([false, true], rows.Select(static row => row.LSchemeRowTaken));
+        Assert.True(sheet.LTranscriptionSheetShown);
+        Assert.False(sheet.LTranscriptionSheetFree);
         tenure.TTenureCancel();
-        Assert.Empty(tenure.TTenureSchemeRead(jyutping));
+        Assert.Null(tenure.TTenureTranscriptionRead());
     }
 }

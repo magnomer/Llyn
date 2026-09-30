@@ -49,12 +49,6 @@ The glyph font is the draft language's, as the editor's other glyph surfaces tak
 
 The headword's representative reading, formed by the engine from the same groups the box draws.
 
-## `public IReadOnlyList<CScheme> CSoundingSchemeRead(long transcription)`
-
-The schemes the dropdown of one transcription row offers, each marked when another row holds it.
-The mark is the engine's one-scheme rule, so a pick the engine would refuse is greyed out.
-No held draft answers no schemes.
-
 ## `public void CSoundingFanqieResolve()`
 
 The user asked to fetch the rime-book rows again.

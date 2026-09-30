@@ -68,11 +68,6 @@ public sealed class CCatalog
         return new CSentenceOrder(order.LSentenceOrderParticle, order.LSentenceOrderDependence);
     }
 
-    public IReadOnlyList<string> CCatalogSchemeRead(string language)
-    {
-        return _cCatalogAtelier.CAtelierPhonologyPort.LEngineSchemeRead(language);
-    }
-
     internal static long? LCatalogGlyphOpen(CEnvoy envoy, LSettingsPort settings, Func<long> resolve)
     {
         ArgumentNullException.ThrowIfNull(envoy);

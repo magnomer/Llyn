@@ -83,6 +83,32 @@ public sealed class LQuill
             new LRequestTranscriptionText(_lQuillTenure.LTenureId, transcription, text));
     }
 
+    public void LQuillSchemeSet(long transcription, string scheme)
+    {
+        ArgumentNullException.ThrowIfNull(scheme);
+
+        _lQuillTenure.LTenureRequestApply(
+            new LRequestTranscriptionScheme(_lQuillTenure.LTenureId, transcription, scheme));
+    }
+
+    public void LQuillTranscriptionAdd(long transcription)
+    {
+        if (_lQuillTenure.LTenureTranscriptionRead()?.LTranscriptionSheetScheme is not string scheme)
+        {
+            return;
+        }
+
+        IReadOnlyList<LTranscriptionDraft> spelled =
+            _lQuillTenure.LTenureRead()?.LDraftContent.LEntryDraftTranscriptions ?? [];
+        _lQuillTenure.LTenureRequestApply(new LRequestTranscriptionAddition(
+            _lQuillTenure.LTenureId, scheme, LDraftClerkReading.LTranscriptionPositionRead(spelled, transcription)));
+    }
+
+    public void LQuillTranscriptionRemove(long transcription)
+    {
+        _lQuillTenure.LTenureRequestApply(new LRequestTranscriptionRemoval(_lQuillTenure.LTenureId, transcription));
+    }
+
     public void LQuillReadingSet(LForay foray, string phonetic, string variety)
     {
         ArgumentNullException.ThrowIfNull(foray);

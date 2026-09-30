@@ -41,7 +41,7 @@ Each kept choice takes the taken mark of the scheme at its place, since both fol
 ## `internal static void QTranscriptionItemRefine(FrameworkElement container, object item, string? _)`
 
 Fills the parts both views share: the scheme name, the text and the unseen measure twin.
-The editor's field and scheme dropdown are filled by `PEditor.PTranscriptionApply`, which calls this first.
+The editor's field and scheme dropdown are filled by `PEditor.PTranscriptionRefine`, which calls this first.
 
 ## `private static void QTranscriptionMeasureRefine(TextBlock measure, string text)`
 

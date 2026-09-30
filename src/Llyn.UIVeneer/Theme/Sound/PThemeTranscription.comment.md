@@ -21,7 +21,7 @@ The scheme dropdown of an editor row, standing where the reading view draws the 
 Closed, it reads as the chip does, with a small chevron after the name and the accent on hover.
 Open, it lists every scheme the pack declares.
 The toggle, popup, name ink and chevron are `QLook` rows.
-`PEditor.PTranscriptionApply` fills its items and value, and writes a pick back to the row.
+`PEditor.PTranscriptionRefine` fills its items and value, and writes a pick back to the row.
 The fill also sets the label and scheme paths, so the style holds no member path.
 
 ## `<Style x:Key="Theme.Transcription.Addition" TargetType="Button">`
@@ -36,7 +36,7 @@ The minus that drops a row, with the transcription removal command as a `QLook` 
 ## `<DataTemplate x:Key="Theme.Transcription.Row">`
 
 A row as the editor draws it: scheme dropdown, field, lookup, and the plus and minus pair.
-`PEditor.PTranscriptionApply` fills the named parts and writes typing back to the row.
+`PEditor.PTranscriptionRefine` fills the named parts and writes typing back to the row.
 
 ## `<DataTemplate x:Key="Theme.Transcription.Display">`
 

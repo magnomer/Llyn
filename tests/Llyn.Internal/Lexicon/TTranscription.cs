@@ -260,6 +260,38 @@ public sealed class TTranscription
     }
 
     [Fact]
+    public void TranscriptionSheetRead_GlyphRowHoldsAScheme_OffersItNotAsFree()
+    {
+        LTranscriptionDraft glyph = TInterface.TTranscriptionDraftCreate("Hanja", "漢字", 1);
+        LTranscriptionDraft roman = TInterface.TTranscriptionDraftCreate("Romanization", "hanja", 2);
+
+        LTranscriptionSheet sheet =
+            TInterface.TTranscriptionSheetRead(["Romanization", "Hanja"], [glyph, roman], [roman]);
+
+        Assert.Null(sheet.LTranscriptionSheetScheme);
+        Assert.False(sheet.LTranscriptionSheetFree);
+        Assert.Equal(
+            [("Romanization", false), ("Hanja", true)],
+            Assert.Single(sheet.LTranscriptionSheetRows).LTranscriptionRowSchemes.Select(
+                static scheme => (scheme.LSchemeRowName, scheme.LSchemeRowTaken)));
+    }
+
+    [Fact]
+    public void TranscriptionPositionRead_GlyphRowBeforePressedRow_AnswersTheSlotAfterIt()
+    {
+        IReadOnlyList<LTranscriptionDraft> rows =
+        [
+            TInterface.TTranscriptionDraftCreate("Hanja", "漢字", 1),
+            TInterface.TTranscriptionDraftCreate("Romanization", "hanja", 2),
+            TInterface.TTranscriptionDraftCreate("Yale", "hanca", 3),
+        ];
+
+        Assert.Equal(2, TInterface.TTranscriptionPositionRead(rows, 2));
+        Assert.Equal(3, TInterface.TTranscriptionPositionRead(rows, 0));
+        Assert.Equal(3, TInterface.TTranscriptionPositionRead(rows, 9));
+    }
+
+    [Fact]
     public void SchemeRead_LanguagePack_ListsDeclaredSchemesOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

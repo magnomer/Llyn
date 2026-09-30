@@ -1,0 +1,10 @@
+# LTranscriptionRow.cs
+
+## `public sealed record LTranscriptionRow(`
+
+One transcription row outside the glyph scheme, with the schemes its dropdown offers.
+
+**Parameters**
+
+- `LTranscriptionRowDraft` — The row as the draft holds it.
+- `LTranscriptionRowSchemes` — Every scheme of the pack, each marked when another row holds it.

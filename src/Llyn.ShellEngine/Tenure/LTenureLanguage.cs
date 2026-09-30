@@ -17,12 +17,14 @@ public sealed partial class LTenure
         return language.Length > 0 && _lEngine.LEngineLanguage.LEngineFlaggedCheck(language);
     }
 
-    public IReadOnlyList<LSchemeRow> LTenureSchemeRead(long transcription)
+    public LTranscriptionSheet? LTenureTranscriptionRead()
     {
-        IReadOnlyList<LTranscriptionDraft> rows = LTenureRead()?.LDraftContent.LEntryDraftTranscriptions ?? [];
-        return _lEngine.LEnginePronunciation.LEngineSchemeRead(LTenureLanguageRead())
-            .Select(scheme => new LSchemeRow(scheme, LDraftClerkReading.LSchemeTakenCheck(rows, scheme, transcription)))
-            .ToList();
+        return LTenureRead()?.LDraftContent is LEntryDraft content
+            ? LDraftClerkReading.LTranscriptionSheetRead(
+                _lEngine.LEnginePronunciation.LEngineSchemeRead(content.LEntryDraftLanguage),
+                content.LEntryDraftTranscriptions,
+                _lEngine.LEngineLanguage.LEngineGlyphRead(content).LGlyphBlockOther)
+            : null;
     }
 
     public LGlyphBlock? LTenureGlyphRead()

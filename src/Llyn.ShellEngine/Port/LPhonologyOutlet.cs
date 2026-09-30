@@ -124,9 +124,6 @@ public sealed class LPhonologyOutlet : LPhonologyPort
         LEntryDraft draft, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store) =>
         _lPhonologyOutletEngine.LEngineLanguage.LEngineAccentLoad(draft, store);
 
-    public IReadOnlyList<string> LEngineSchemeRead(string language) =>
-        _lPhonologyOutletEngine.LEnginePronunciation.LEngineSchemeRead(language);
-
     public IReadOnlyList<string> LEngineDependenceRead(string language) =>
         _lPhonologyOutletEngine.LEngineVocabulary.LEngineDependenceRead(language);
 

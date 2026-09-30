@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -240,6 +241,48 @@ public sealed class LDraftClerkReading
         }
 
         return false;
+    }
+
+    public static LTranscriptionSheet LTranscriptionSheetRead(
+        IReadOnlyList<string> schemes,
+        IReadOnlyList<LTranscriptionDraft> drafts,
+        IReadOnlyList<LTranscriptionDraft> other)
+    {
+        ArgumentNullException.ThrowIfNull(schemes);
+        ArgumentNullException.ThrowIfNull(drafts);
+        ArgumentNullException.ThrowIfNull(other);
+
+        return new LTranscriptionSheet(
+            schemes.Count > 0,
+            LSchemeFreeRead(schemes, drafts),
+            other.Select(row => new LTranscriptionRow(
+                    row,
+                    schemes.Select(scheme => new LSchemeRow(
+                        scheme, LSchemeTakenCheck(drafts, scheme, row.LTranscriptionDraftId))).ToList()))
+                .ToList());
+    }
+
+    private static string? LSchemeFreeRead(IReadOnlyList<string> schemes, IReadOnlyList<LTranscriptionDraft> drafts)
+    {
+        foreach (string scheme in schemes)
+        {
+            if (!LSchemeTakenCheck(drafts, scheme, 0))
+            {
+                return scheme;
+            }
+        }
+
+        return null;
+    }
+
+    public static int LTranscriptionPositionRead(IReadOnlyList<LTranscriptionDraft> spelled, long transcription)
+    {
+        ArgumentNullException.ThrowIfNull(spelled);
+
+        int index = transcription == 0
+            ? -1
+            : LDraftClerkList.LDraftListFind(spelled, transcription, static row => row.LTranscriptionDraftId);
+        return index < 0 ? spelled.Count : index + 1;
     }
 
     private static LEntryDraft LTranscriptionChange(

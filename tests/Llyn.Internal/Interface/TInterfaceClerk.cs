@@ -143,6 +143,15 @@ internal static partial class TInterface
     internal static bool TSchemeTakenCheck(IReadOnlyList<LTranscriptionDraft> drafts, string scheme, long ownId) =>
         LDraftClerkReading.LSchemeTakenCheck(drafts, scheme, ownId);
 
+    internal static LTranscriptionSheet TTranscriptionSheetRead(
+        IReadOnlyList<string> schemes,
+        IReadOnlyList<LTranscriptionDraft> drafts,
+        IReadOnlyList<LTranscriptionDraft> other) =>
+        LDraftClerkReading.LTranscriptionSheetRead(schemes, drafts, other);
+
+    internal static int TTranscriptionPositionRead(IReadOnlyList<LTranscriptionDraft> spelled, long transcription) =>
+        LDraftClerkReading.LTranscriptionPositionRead(spelled, transcription);
+
     internal static LDraftClerk TDraftClerkCreate(LRig rig) =>
         new(rig, new LIdentity(rig.LRigWorkspaces), new LLanguageCache(rig.LRigLanguages));
 

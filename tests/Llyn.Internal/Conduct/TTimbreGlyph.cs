@@ -24,8 +24,9 @@ public sealed class TTimbreGlyph
         Assert.Equal(("Hanja", "漢字"), (row.CTranscriptionDraftScheme, row.CTranscriptionDraftText));
         Assert.Equal(
             [("Revised Romanization", "hanja"), ("Yale", string.Empty)],
-            glyph.CTimbreGlyphOther.Select(
-                static other => (other.CTranscriptionDraftScheme, other.CTranscriptionDraftText)));
+            editor.CEditorTranscription.CTranscriptionRead().CTranscriptionSheetRows.Select(
+                static other => (other.CTranscriptionRowDraft.CTranscriptionDraftScheme,
+                    other.CTranscriptionRowDraft.CTranscriptionDraftText)));
     }
 
     [Fact]
@@ -41,34 +42,36 @@ public sealed class TTimbreGlyph
         Assert.False(blank.CTimbreGlyphShown);
         Assert.False(blank.CTimbreGlyphSourced);
         Assert.Empty(blank.CTimbreGlyphRows);
-        Assert.Empty(blank.CTimbreGlyphOther);
         Assert.False(glyph.CTimbreGlyphShown);
         Assert.Empty(glyph.CTimbreGlyphRows);
         Assert.Equal(
             ["Revised Romanization", "Hanja", "Yale"],
-            glyph.CTimbreGlyphOther.Select(static row => row.CTranscriptionDraftScheme));
+            editor.CEditorTranscription.CTranscriptionRead().CTranscriptionSheetRows.Select(
+                static row => row.CTranscriptionRowDraft.CTranscriptionDraftScheme));
     }
 
     [Fact]
-    public void TimbreTranscriptionSet_GlyphRow_WritesTheTypedText()
+    public void TranscriptionSet_GlyphRow_WritesTheTypedText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TTimbreGlyphPrepare(engine, TTimbreGlyphSave(engine, "Korean"));
         long glyph = Assert.Single(editor.CEditorTimbre.CTimbreGlyphRead().CTimbreGlyphRows).CTranscriptionDraftId;
 
-        editor.CEditorTimbre.CTimbreTranscriptionSet(glyph, "韓字");
+        editor.CEditorTranscription.CTranscriptionSet(glyph, "韓字");
         editor.CEditorDesk.CDeskPersist();
 
         CTimbreGlyph written = editor.CEditorTimbre.CTimbreGlyphRead();
         Assert.Equal("韓字", Assert.Single(written.CTimbreGlyphRows).CTranscriptionDraftText);
         Assert.Equal(
-            ["hanja", string.Empty], written.CTimbreGlyphOther.Select(static row => row.CTranscriptionDraftText));
+            ["hanja", string.Empty],
+            editor.CEditorTranscription.CTranscriptionRead().CTranscriptionSheetRows.Select(
+                static row => row.CTranscriptionRowDraft.CTranscriptionDraftText));
         Assert.True(editor.CEditorDesk.TDeskChangeCheck());
     }
 
     [Fact]
-    public void TimbreTranscriptionSet_FillingDesk_WritesNothing()
+    public void TranscriptionSet_FillingDesk_WritesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -81,7 +84,7 @@ public sealed class TTimbreGlyph
             filling = editor.CEditorDesk.CDeskFilling;
             foreach (CTranscriptionDraft row in editor.CEditorTimbre.CTimbreGlyphRead().CTimbreGlyphRows)
             {
-                editor.CEditorTimbre.CTimbreTranscriptionSet(row.CTranscriptionDraftId, "韓字");
+                editor.CEditorTranscription.CTranscriptionSet(row.CTranscriptionDraftId, "韓字");
             }
         };
 

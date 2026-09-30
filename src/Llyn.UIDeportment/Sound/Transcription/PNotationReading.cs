@@ -33,7 +33,7 @@ internal sealed class PNotationReading
 
     public string PNotationReadingCloser { get; }
 
-    internal static void PNotationReadingApply(FrameworkElement container, object item, RoutedEventHandler select)
+    internal static void PNotationReadingRefine(FrameworkElement container, object item, RoutedEventHandler select)
     {
         if (item is not PNotationReading reading)
         {

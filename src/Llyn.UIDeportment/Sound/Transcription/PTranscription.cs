@@ -1,38 +1,33 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Llyn.Application;
 using Llyn.Conduct;
-
 
 namespace Llyn.UIDeportment;
 
 public partial class PEditor
 {
     private readonly ObservableCollection<QTranscriptionItem> _pTranscriptionItem = [];
-    private IReadOnlyList<string> _pTranscriptionSchemes = [];
+    private bool _pTranscriptionFree;
 
     private ItemsControl PTranscription => (ItemsControl)FindName(nameof(PTranscription));
 
     private void PTranscriptionAttach()
     {
         PTranscription.ItemsSource = _pTranscriptionItem;
-        QLookItem.QLookItemAttach(PTranscription, PTranscriptionApply);
+        QLookItem.QLookItemAttach(PTranscription, PTranscriptionRefine);
         PEditorSound.CommandBindings.Add(new CommandBinding(
-            PTranscriptionCommand.PTranscriptionCommandAddition, PTranscriptionAddHandle, PTranscriptionAddCheck));
+            PTranscriptionCommand.PTranscriptionCommandAddition, PTranscriptionAddObserve, PTranscriptionAddRefine));
         PEditorSound.CommandBindings.Add(new CommandBinding(
-            PTranscriptionCommand.PTranscriptionCommandRemoval, PTranscriptionRemoveHandle));
+            PTranscriptionCommand.PTranscriptionCommandRemoval, PTranscriptionRemoveObserve));
         CommandBinding notation = new(PTranscriptionCommand.PTranscriptionCommandNotation);
         notation.Executed += PTranscriptionNotationRefine;
         notation.Executed += PTranscriptionNotationObserve;
         PEditorSound.CommandBindings.Add(notation);
     }
 
-    private void PTranscriptionApply(FrameworkElement container, object item, string? name)
+    private void PTranscriptionRefine(FrameworkElement container, object item, string? name)
     {
         QTranscriptionItem.QTranscriptionItemRefine(container, item, name);
         if (item is not QTranscriptionItem row)
@@ -53,12 +48,12 @@ public partial class PEditor
             return;
         }
 
-        scheme.SelectionChanged -= PTranscriptionSchemeHandle;
+        scheme.SelectionChanged -= PTranscriptionSchemeObserve;
         scheme.DisplayMemberPath = nameof(QTranscriptionChoice.QTranscriptionChoiceLabel);
         scheme.SelectedValuePath = nameof(QTranscriptionChoice.QTranscriptionChoiceScheme);
         scheme.ItemsSource = row.QTranscriptionItemChoice;
         scheme.SelectedValue = row.QTranscriptionItemScheme;
-        scheme.SelectionChanged += PTranscriptionSchemeHandle;
+        scheme.SelectionChanged += PTranscriptionSchemeObserve;
         QLookItem.QLookItemAttach(scheme, QTranscriptionChoice.QTranscriptionChoiceRefine);
         if (QLook.QLookPartFind<TextBlock>(scheme, "PSchemeName") is TextBlock label)
         {
@@ -70,42 +65,34 @@ public partial class PEditor
     {
         if (sender is TextBox { DataContext: QTranscriptionItem row } field)
         {
-            _qEditor.QEditorArea.CEditorTimbre.CTimbreTranscriptionSet(row.QTranscriptionItemId, field.Text);
+            _qEditor.QEditorArea.CEditorTranscription.CTranscriptionSet(row.QTranscriptionItemId, field.Text);
         }
     }
 
-    private void PTranscriptionSchemeHandle(object sender, SelectionChangedEventArgs e)
+    private void PTranscriptionSchemeObserve(object sender, SelectionChangedEventArgs e)
     {
         if (sender is ComboBox { DataContext: QTranscriptionItem row, SelectedValue: string scheme })
         {
-            PEditorRequestSend(new LRequestTranscriptionScheme(PEditorDraft, row.QTranscriptionItemId, scheme));
+            _qEditor.QEditorArea.CEditorTranscription.CTranscriptionSchemeSet(row.QTranscriptionItemId, scheme);
         }
     }
 
-    internal void PTranscriptionAddHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PTranscriptionAddObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        string? scheme = PTranscriptionSchemeFind();
-        if (scheme is null)
-        {
-            return;
-        }
-
-        int position = e.Parameter is QTranscriptionItem row
-            ? _pTranscriptionItem.IndexOf(row) + 1
-            : _pTranscriptionItem.Count;
-        PEditorRequestSend(new LRequestTranscriptionAddition(PEditorDraft, scheme, position));
+        _qEditor.QEditorArea.CEditorTranscription.CTranscriptionAdd(
+            e.Parameter is QTranscriptionItem row ? row.QTranscriptionItemId : 0);
     }
 
-    internal void PTranscriptionAddCheck(object sender, CanExecuteRoutedEventArgs e)
+    private void PTranscriptionAddRefine(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = PTranscriptionSchemeFind() is not null;
+        e.CanExecute = _pTranscriptionFree;
     }
 
-    internal void PTranscriptionRemoveHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PTranscriptionRemoveObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is QTranscriptionItem row)
         {
-            PEditorRequestSend(new LRequestTranscriptionRemoval(PEditorDraft, row.QTranscriptionItemId));
+            _qEditor.QEditorArea.CEditorTranscription.CTranscriptionRemove(row.QTranscriptionItemId);
         }
     }
 
@@ -127,42 +114,34 @@ public partial class PEditor
         }
     }
 
-    private string? PTranscriptionSchemeFind()
+    internal void PTranscriptionSheetRefine(CEntryDraft _)
     {
-        foreach (string scheme in _pTranscriptionSchemes)
-        {
-            if (_pTranscriptionItem.All(
-                row => !string.Equals(row.QTranscriptionItemScheme, scheme, StringComparison.Ordinal)))
-            {
-                return scheme;
-            }
-        }
-
-        return null;
-    }
-
-    internal void PTranscriptionShow(CEntryDraft draft)
-    {
-        _pTranscriptionSchemes =
-            _pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogSchemeRead(draft.CEntryDraftLanguage);
-        PTranscription.Visibility = _pTranscriptionSchemes.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+        CTranscriptionSheet sheet = _qEditor.QEditorArea.CEditorTranscription.CTranscriptionRead();
+        PTranscription.Visibility = sheet.CTranscriptionSheetShown ? Visibility.Visible : Visibility.Collapsed;
+        _pTranscriptionFree = sheet.CTranscriptionSheetFree;
+        CommandManager.InvalidateRequerySuggested();
 
         PCard.PCardRowShow(
             _pTranscriptionItem,
-            _qEditor.QEditorArea.CEditorTimbre.CTimbreGlyphRead().CTimbreGlyphOther,
+            sheet.CTranscriptionSheetRows,
             static row => row.QTranscriptionItemId,
-            static spelled => spelled.CTranscriptionDraftId,
-            QTranscriptionItem.QTranscriptionRowRefine,
-            PTranscriptionUpdate);
+            static line => line.CTranscriptionRowDraft.CTranscriptionDraftId,
+            static line => QTranscriptionItem.QTranscriptionRowRefine(line.CTranscriptionRowDraft),
+            (row, line) => PTranscriptionStateRefine(row, line.CTranscriptionRowDraft));
 
-        foreach (QTranscriptionItem row in _pTranscriptionItem)
+        foreach (CTranscriptionRow line in sheet.CTranscriptionSheetRows)
         {
-            row.QTranscriptionSchemeRefine(
-                _qEditor.QEditorArea.CEditorSounding.CSoundingSchemeRead(row.QTranscriptionItemId));
+            foreach (QTranscriptionItem row in _pTranscriptionItem)
+            {
+                if (row.QTranscriptionItemId == line.CTranscriptionRowDraft.CTranscriptionDraftId)
+                {
+                    row.QTranscriptionSchemeRefine(line.CTranscriptionRowSchemes);
+                }
+            }
         }
     }
 
-    private QTranscriptionItem PTranscriptionUpdate(QTranscriptionItem row, CTranscriptionDraft spelled)
+    private QTranscriptionItem PTranscriptionStateRefine(QTranscriptionItem row, CTranscriptionDraft spelled)
     {
         row.QTranscriptionItemKey = spelled.CTranscriptionDraftKey;
         row.QTranscriptionItemScheme = spelled.CTranscriptionDraftScheme;

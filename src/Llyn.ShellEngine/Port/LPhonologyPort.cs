@@ -89,8 +89,6 @@ public interface LPhonologyPort
     Task<LAccentSheet> LEngineAccentLoad(
         LEntryDraft draft, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store);
 
-    IReadOnlyList<string> LEngineSchemeRead(string language);
-
     IReadOnlyList<string> LEngineDependenceRead(string language);
 
     IReadOnlyList<string> LEngineParticleRead(string language);

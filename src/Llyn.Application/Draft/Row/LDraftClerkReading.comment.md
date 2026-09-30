@@ -80,6 +80,23 @@ A blank scheme passes, because a row still being named collides with nothing.
 Whether a row other than `ownId` already holds `scheme`, the one owner of the one-scheme rule.
 The refusal above asks it, and the editor's scheme dropdown asks it to grey out a held scheme.
 
+## `public static LTranscriptionSheet LTranscriptionSheetRead(`
+
+The editor's transcription block, built from the pack's `schemes` and the draft's rows.
+It lists the `other` rows, which lie outside the glyph scheme.
+Each other row carries every scheme, marked by the one-scheme rule for that row.
+The block shows while the pack declares any scheme.
+
+## `private static string? LSchemeFreeRead(IReadOnlyList<string> schemes, IReadOnlyList<LTranscriptionDraft> drafts)`
+
+The first of `schemes` no row holds, or null when every scheme is held.
+It asks the one-scheme rule, so a new row never takes a scheme the addition would refuse.
+
+## `public static int LTranscriptionPositionRead(IReadOnlyList<LTranscriptionDraft> spelled, long transcription)`
+
+A new row goes after the row `transcription`.
+For id zero or a row gone, it goes at the end.
+
 ## `private static LEntryDraft LTranscriptionChange(`
 
 Changes the transcription row named, and refuses when the draft holds none by that id.

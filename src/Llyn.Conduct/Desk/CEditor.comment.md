@@ -90,6 +90,11 @@ The favourite, grasp and frequency of the stored entry the editor's desk holds.
 
 The pack sound facts and waiting sections of the entry the editor's desk holds.
 
+## `public CTranscription CEditorTranscription`
+
+The transcription rows of the entry the editor's desk holds, with their gates.
+It holds nothing but the desk, so each read builds a fresh one over it.
+
 ## `public bool CEditorOwned`
 
 Whether this editor is the input tab's, which alone shows the command rail.

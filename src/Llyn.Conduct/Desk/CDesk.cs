@@ -1,5 +1,4 @@
 using System;
-using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -294,18 +293,6 @@ public sealed class CDesk
         }
 
         _cDeskTenure?.LTenurePersist();
-    }
-
-    internal void CDeskSend(LRequest request)
-    {
-        ArgumentNullException.ThrowIfNull(request);
-
-        if (CDeskFilling)
-        {
-            return;
-        }
-
-        _cDeskTenure?.LTenureRequestApply(request);
     }
 
     internal bool LDeskChangeCheck()

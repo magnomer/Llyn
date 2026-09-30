@@ -5,5 +5,4 @@ namespace Llyn.Conduct;
 public sealed record CTimbreGlyph(
     bool CTimbreGlyphShown,
     bool CTimbreGlyphSourced,
-    IReadOnlyList<CTranscriptionDraft> CTimbreGlyphRows,
-    IReadOnlyList<CTranscriptionDraft> CTimbreGlyphOther);
+    IReadOnlyList<CTranscriptionDraft> CTimbreGlyphRows);

@@ -70,13 +70,6 @@ public sealed class CSounding
             : string.Empty;
     }
 
-    public IReadOnlyList<CScheme> CSoundingSchemeRead(long transcription)
-    {
-        return (_cSoundingDesk.CDeskTenure?.LTenureSchemeRead(transcription) ?? [])
-            .Select(static row => new CScheme(row.LSchemeRowName, row.LSchemeRowTaken))
-            .ToList();
-    }
-
     public void CSoundingFanqieResolve()
     {
         LSoundingMarkSend(_cSoundingPhonologyPort.LEngineFanqieRebuild, "Display.FanqieRebuildFailed");

@@ -38,7 +38,7 @@ The bracket drawn before the text, blank for a transcription, a slash for a phon
 
 The bracket drawn after the text, chosen the same way.
 
-## `internal static void PNotationReadingApply(FrameworkElement container, object item, RoutedEventHandler select)`
+## `internal static void PNotationReadingRefine(FrameworkElement container, object item, RoutedEventHandler select)`
 
 Fills one reading button and subscribes the selection handler on it.
 A flagged reading shows the flag with the name as tooltip, and hides the name.

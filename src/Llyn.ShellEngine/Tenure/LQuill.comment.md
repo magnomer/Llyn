@@ -126,6 +126,22 @@ Sends one credit to a new place, which the draft clerk clamps to the list.
 Defers the text typed into the transcription row `transcription`, the glyph row among them.
 Every driver of a transcription text writes through it, so the request has one builder.
 
+## `public void LQuillSchemeSet(long transcription, string scheme)`
+
+Switches the transcription row `transcription` to the scheme the user picked.
+A pick is one deliberate act, so it applies at once.
+The clerk refuses a scheme another row holds.
+
+## `public void LQuillTranscriptionAdd(long transcription)`
+
+Adds a blank row after the row `transcription`, or at the end for id zero or a row gone.
+The new row takes the first scheme no row holds, as the tenure's sheet answers it.
+Nothing is added while every scheme is held.
+
+## `public void LQuillTranscriptionRemove(long transcription)`
+
+Removes the transcription row `transcription` at once.
+
 ## `public void LQuillReadingSet(LForay foray, string phonetic, string variety)`
 
 Writes a reading the user took from the lookup `foray` into the row it was opened for.

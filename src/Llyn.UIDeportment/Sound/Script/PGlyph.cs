@@ -86,7 +86,7 @@ public partial class PEditor
     {
         if (sender is TextBox { DataContext: QTranscriptionItem row } field)
         {
-            _qEditor.QEditorArea.CEditorTimbre.CTimbreTranscriptionSet(row.QTranscriptionItemId, field.Text);
+            _qEditor.QEditorArea.CEditorTranscription.CTranscriptionSet(row.QTranscriptionItemId, field.Text);
         }
     }
 
@@ -102,7 +102,7 @@ public partial class PEditor
             static row => row.QTranscriptionItemId,
             static spelled => spelled.CTranscriptionDraftId,
             QTranscriptionItem.QTranscriptionRowRefine,
-            PTranscriptionUpdate);
+            PTranscriptionStateRefine);
         QLookItem.QLookItemApply(PGlyph);
     }
 }

@@ -35,11 +35,6 @@ Each refused gate asks the envoy to show its own notice key and announces no cha
 
 The rank edit reaches the engine with the stored entry, the row, the held rank and the raise flag.
 
-## `public void SoundingSchemeRead_TwoRows_MarksTheSchemeTheOtherRowHolds()`
-
-The Yale row's dropdown marks Jyutping as taken, since the other row holds it.
-Its own scheme stays free, so the row can keep it.
-
 ## `public void SchemeKeyRead_SchemeOrBlank_PrefixesTheSchemeKey()`
 
 A scheme is labelled under `Scheme.` plus its name, and a blank one keys `Scheme.` alone.

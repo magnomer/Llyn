@@ -57,7 +57,7 @@ internal sealed class PNotationItem
             }
 
             QLookItem.QLookItemAttach(
-                list, (reading, row, _) => PNotationReading.PNotationReadingApply(reading, row, select));
+                list, (reading, row, _) => PNotationReading.PNotationReadingRefine(reading, row, select));
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PNotationNote") is TextBlock note)

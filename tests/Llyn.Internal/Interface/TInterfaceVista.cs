@@ -108,8 +108,8 @@ internal static partial class TInterface
 
     internal static bool TTenureFlaggedCheck(this LTenure tenure) => tenure.LTenureFlaggedCheck();
 
-    internal static IReadOnlyList<LSchemeRow> TTenureSchemeRead(this LTenure tenure, long transcription) =>
-        tenure.LTenureSchemeRead(transcription);
+    internal static LTranscriptionSheet? TTenureTranscriptionRead(this LTenure tenure) =>
+        tenure.LTenureTranscriptionRead();
 
     internal static bool TEngineFlaggedCheck(this LEngine engine, LEntryDraft draft) =>
         engine.LEngineLanguage.LEngineFlaggedCheck(draft);

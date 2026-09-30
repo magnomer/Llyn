@@ -37,10 +37,6 @@ A surface showing two roles together, such as an example and its gloss, asks onc
 Maps the engine's order into the Conduct shape, holding no rule.
 The sentence frame hands it the engine's answer unread, so it names no engine record.
 
-## `public IReadOnlyList<string> CCatalogSchemeRead(string language)`
-
-The transcription schemes a language offers.
-
 ## `internal static long? LCatalogGlyphOpen(CEnvoy envoy, LSettingsPort settings, Func<long> resolve)`
 
 The one failure owner of every glyph chip that opens a character's entry.

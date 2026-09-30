@@ -143,31 +143,6 @@ public sealed class TSounding
     }
 
     [Fact]
-    public void SoundingSchemeRead_TwoRows_MarksTheSchemeTheOtherRowHolds()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "香港",
-            "Cantonese",
-            string.Empty,
-            string.Empty,
-            [],
-            [],
-            transcriptions:
-            [
-                TInterface.TTranscriptionDraftCreate("Jyutping", "hoeng1 gong2"),
-                TInterface.TTranscriptionDraftCreate("Yale", "hēung góng"),
-            ]));
-        CEditor editor = TSoundingEditorPrepare(engine, entry.LEntryId);
-        long yale = editor.CEditorTimbre.CTimbreGlyphRead().CTimbreGlyphOther[1].CTranscriptionDraftId;
-
-        Assert.Equal(
-            [new CScheme("Jyutping", true), new CScheme("Yale", false)],
-            editor.CEditorSounding.CSoundingSchemeRead(yale));
-    }
-
-    [Fact]
     public void SchemeKeyRead_SchemeOrBlank_PrefixesTheSchemeKey()
     {
         Assert.Equal("Scheme.Yale", CScheme.CSchemeKeyRead("Yale"));

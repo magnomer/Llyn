@@ -25,7 +25,7 @@ public partial class PEditor
         QLookItem.QLookItemAttach(
             PNotationList,
             (container, item, _) => PNotationItem.PNotationItemRefine(
-                container, item, _pNotationTemplate.PNotationSelectorHandle));
+                container, item, PNotationSelectorObserve));
         PNotation.Closed += PNotationClosedObserve;
         PPhonetician.Click += PPhoneticianRefine;
         PPhonetician.Click += PPhoneticianObserve;
