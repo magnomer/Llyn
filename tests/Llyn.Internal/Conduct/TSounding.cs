@@ -307,7 +307,7 @@ public sealed class TSounding
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CEditor editor = CEditor.CEditorCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CEditor editor = CEditor.CEditorCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(TSoundingEntrySave(engine));
         CNavigation navigation = atelier.CAtelierNavigation;
@@ -344,7 +344,7 @@ public sealed class TSounding
             editor.CEditorDesk,
             TEngineFake.TEngineCreate<LPhonologyPort>(answers),
             TEngineFake.TEngineCreate<LDraftPort>(answers),
-            TInterfaceConduct.TEnvoyCreate(false, notices),
+            TEnvoyFake.TEnvoyCreate(false, notices),
             pack);
     }
 

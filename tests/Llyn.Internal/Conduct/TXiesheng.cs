@@ -231,7 +231,7 @@ public sealed class TXiesheng
         LEntry entry = await TXieshengStemSave(engine, language);
         string path = Path.Combine(workspace.TWorkspaceFolder, "dragon.md");
         CXiesheng xiesheng = TXieshengPrepare(
-            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
+            atelier, TEnvoyFake.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
 
         await xiesheng.CXieshengPortraitExport();
 
@@ -271,7 +271,7 @@ public sealed class TXiesheng
 
     private static CXiesheng TXieshengPrepare(CAtelier atelier)
     {
-        return TXieshengPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        return TXieshengPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
     }
 
     private static CXiesheng TXieshengPrepare(CAtelier atelier, CEnvoy envoy)

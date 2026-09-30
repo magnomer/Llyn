@@ -167,7 +167,7 @@ public sealed class TSession
         atelier.CAtelierWorkspace.TWorkspaceDraftAdd(static () => false, store => { closed.Add(store); return true; });
         atelier.CAtelierWorkspace.TWorkspaceDraftAdd(static () => false, store => { closed.Add(store); return true; });
 
-        bool quit = atelier.CAtelierQuitConfirm(TInterfaceConduct.TEnvoyCreate(true, asked));
+        bool quit = atelier.CAtelierQuitConfirm(TEnvoyFake.TEnvoyCreate(true, asked));
 
         Assert.True(quit);
         Assert.Empty(asked);
@@ -185,7 +185,7 @@ public sealed class TSession
         atelier.CAtelierWorkspace.TWorkspaceDraftAdd(static () => false, store => { closed.Add(store); return true; });
         atelier.CAtelierWorkspace.TWorkspaceDraftAdd(static () => true, store => { closed.Add(store); return false; });
 
-        bool quit = atelier.CAtelierQuitConfirm(TInterfaceConduct.TEnvoyCreate(true, asked));
+        bool quit = atelier.CAtelierQuitConfirm(TEnvoyFake.TEnvoyCreate(true, asked));
 
         Assert.False(quit);
         Assert.Equal(["Leave"], asked);
@@ -201,7 +201,7 @@ public sealed class TSession
 
         atelier.CAtelierWorkspace.TWorkspaceDraftAdd(static () => true, store => { closed.Add(store); return true; });
 
-        bool quit = atelier.CAtelierQuitConfirm(TInterfaceConduct.TEnvoyCreate(null, []));
+        bool quit = atelier.CAtelierQuitConfirm(TEnvoyFake.TEnvoyCreate(null, []));
 
         Assert.False(quit);
         Assert.Empty(closed);
@@ -209,7 +209,7 @@ public sealed class TSession
 
     private static CDesk TSessionDeskPrepare(LEngine engine)
     {
-        CDesk desk = TInterfaceConduct.TDeskCreate(engine, "Guild", TInterfaceConduct.TEnvoyCreate(false, []));
+        CDesk desk = TInterfaceConduct.TDeskCreate(engine, "Guild", TEnvoyFake.TEnvoyCreate(false, []));
         desk.TDeskVistaRestore(engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderName));
         return desk;
     }

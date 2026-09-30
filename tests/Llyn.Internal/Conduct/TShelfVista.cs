@@ -17,7 +17,7 @@ public sealed class TShelfVista
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         engine.TEngineCitationCreate("Book");
         engine.TEngineCitationCreate("Tome");
-        CShelf shelf = TShelf.TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         shelf.CShelfQuerySet("Tom");
         shelf.CShelfFootnote.CFootnoteQuerySet("zzz");
 
@@ -58,7 +58,7 @@ public sealed class TShelfVista
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry hearth = TShelfEntrySave(engine, "hearth");
-        CShelf shelf = TShelf.TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         int rows = 0;
         shelf.CShelfPanel.CPanelRowsChanged += () => rows++;
 
@@ -142,7 +142,7 @@ public sealed class TShelfVista
             });
         using CAtelier atelier = TInterfaceConduct.TAtelierMediaCreate(engine, media);
         LEntry hearth = TShelfEntrySave(engine, "hearth");
-        CShelf shelf = TShelf.TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         shelf.CShelfEntrySelect(hearth.LEntryId);
         shelf.CShelfScribeToggle(true);
         Assert.True(shelf.CShelfEditor.CEditorDesk.CDeskHeld);
@@ -158,7 +158,7 @@ public sealed class TShelfVista
         return CShelf.CShelfCreate(
             atelier,
             static () => true,
-            TInterfaceConduct.TEnvoyCreate(false, []),
+            TEnvoyFake.TEnvoyCreate(false, []),
             run =>
             {
                 counted();

@@ -19,7 +19,7 @@ public sealed class TPhonology
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TPhonologyEntrySave(engine, "water", "ˈwɔːtə");
         CPhonology phonology = CPhonology.CPhonologyCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []));
+            atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []));
 
         Assert.Empty(phonology.CPhonologyRowsRead());
         Assert.True(phonology.CPhonologyEmpty);
@@ -140,7 +140,7 @@ public sealed class TPhonology
         LEntry water = TPhonologyEntrySave(engine, "water", "ˈwɔːtə");
         string path = Path.Combine(workspace.TWorkspaceFolder, "water.md");
         CPhonology phonology = TPhonologyPrepare(
-            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
+            atelier, TEnvoyFake.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
 
         await phonology.CPhonologyPortraitExport();
 
@@ -174,7 +174,7 @@ public sealed class TPhonology
 
     private static CPhonology TPhonologyPrepare(CAtelier atelier)
     {
-        return TPhonologyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        return TPhonologyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
     }
 
     private static CPhonology TPhonologyPrepare(CAtelier atelier, CEnvoy envoy)

@@ -151,7 +151,7 @@ public sealed class TPortrait
         List<(string, LPortraitMedium)> exported = [];
 
         await TInterfaceConduct.TPortraitFileExport(
-            TInterfaceConduct.TEnvoyFileCreate(null, CPortraitMedium.CPortraitMediumPdf, asked),
+            TEnvoyFake.TEnvoyFileCreate(null, CPortraitMedium.CPortraitMediumPdf, asked),
             "water",
             (path, medium) =>
             {
@@ -159,7 +159,7 @@ public sealed class TPortrait
                 return Task.CompletedTask;
             });
         await TInterfaceConduct.TPortraitFileExport(
-            TInterfaceConduct.TEnvoyFileCreate("water.pdf", CPortraitMedium.CPortraitMediumPdf, asked),
+            TEnvoyFake.TEnvoyFileCreate("water.pdf", CPortraitMedium.CPortraitMediumPdf, asked),
             "water",
             (path, medium) =>
             {
@@ -167,7 +167,7 @@ public sealed class TPortrait
                 return Task.CompletedTask;
             });
         await TInterfaceConduct.TPortraitFileExport(
-            TInterfaceConduct.TEnvoyFileCreate("water.md", CPortraitMedium.CPortraitMediumMarkdown, asked),
+            TEnvoyFake.TEnvoyFileCreate("water.md", CPortraitMedium.CPortraitMediumMarkdown, asked),
             "water",
             static (_, _) => throw new InvalidOperationException("The disk is full."));
 
@@ -184,22 +184,22 @@ public sealed class TPortrait
             "Office", null, null, false, 1, true, CPressSide.CPressSideDefault, CPressInk.CPressInkDefault);
 
         await TInterfaceConduct.TPortraitTicketPrint(
-            TInterfaceConduct.TEnvoyTicketCreate(() => null, asked), chosen =>
+            TEnvoyFake.TEnvoyTicketCreate(() => null, asked), chosen =>
         {
             printed.Add(chosen.LPressTicketPrinter);
             return Task.CompletedTask;
         });
         await TInterfaceConduct.TPortraitTicketPrint(
-            TInterfaceConduct.TEnvoyTicketCreate(() => ticket, asked), chosen =>
+            TEnvoyFake.TEnvoyTicketCreate(() => ticket, asked), chosen =>
         {
             printed.Add(chosen.LPressTicketPrinter);
             return Task.CompletedTask;
         });
         await TInterfaceConduct.TPortraitTicketPrint(
-            TInterfaceConduct.TEnvoyTicketCreate(() => ticket, asked),
+            TEnvoyFake.TEnvoyTicketCreate(() => ticket, asked),
             static _ => throw new InvalidOperationException("The printer is gone."));
         await TInterfaceConduct.TPortraitTicketPrint(
-            TInterfaceConduct.TEnvoyTicketCreate(
+            TEnvoyFake.TEnvoyTicketCreate(
                 static () => throw new InvalidOperationException("The spooler is down."), asked),
             chosen =>
             {

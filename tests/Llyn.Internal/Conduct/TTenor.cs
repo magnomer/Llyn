@@ -18,7 +18,7 @@ public sealed class TTenor
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CTenor tenor = CTenor.CTenorCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []));
+            atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []));
         engine.TEngineRegisterCreate("formal");
 
         Assert.Empty(tenor.CTenorRowsRead());
@@ -33,7 +33,7 @@ public sealed class TTenor
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+        CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
         int opened = 0;
         tenor.CTenorRegisterOpened += () => opened++;
 
@@ -57,7 +57,7 @@ public sealed class TTenor
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+        CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
         int opened = 0;
         tenor.CTenorRegisterOpened += () => opened++;
 
@@ -74,7 +74,7 @@ public sealed class TTenor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LRegister register = engine.TEngineRegisterCreate("formal");
 
         Assert.True(tenor.CTenorCoinageAllowed);
@@ -90,7 +90,7 @@ public sealed class TTenor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         tenor.CTenorCohortFind(" ");
 
@@ -108,7 +108,7 @@ public sealed class TTenor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LRegister register = engine.TEngineRegisterCreate("formal");
         tenor.CTenorRegisterSelect(register.LRegisterId);
         List<CEntryDraft> shown = [];
@@ -133,7 +133,7 @@ public sealed class TTenor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         List<CEntryDraft> shown = [];
         tenor.CTenorEditor.CEditorDraftChanged += shown.Add;
 
@@ -150,7 +150,7 @@ public sealed class TTenor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         tenor.CTenorEntryCreate();
         long held = tenor.CTenorEditor.CEditorDesk.CDeskId;
 
@@ -166,7 +166,7 @@ public sealed class TTenor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         engine.TEngineRegisterCreate("alpha");
         engine.TEngineRegisterCreate("beta");
         int told = 0;
@@ -192,7 +192,7 @@ public sealed class TTenor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         engine.TEngineRegisterCreate("formal");
 
         tenor.CTenorQuerySet("zzz");
@@ -206,7 +206,7 @@ public sealed class TTenor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         tenor.CTenorFilterSet(new CCatalogFilter(["Latin"]));
 
@@ -227,7 +227,7 @@ public sealed class TTenor
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         string path = Path.Combine(workspace.TWorkspaceFolder, "hearth.md");
         CTenor tenor = TTenorPrepare(
-            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
+            atelier, TEnvoyFake.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
         LEntry hearth = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "hearth", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a meaning", 1)], []));
 
@@ -249,7 +249,7 @@ public sealed class TTenor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         long first = engine.TEngineRegisterCreate("formal").LRegisterId;
         atelier.CAtelierNavigation.CNavigationTabSelect("Tenor");
         tenor.CTenorRegisterSelect(first);
@@ -268,7 +268,7 @@ public sealed class TTenor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         long first = engine.TEngineRegisterCreate("formal").LRegisterId;
         int opened = 0;
         tenor.CTenorRegisterOpened += () => opened++;
@@ -285,7 +285,7 @@ public sealed class TTenor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         long first = engine.TEngineRegisterCreate("formal").LRegisterId;
         tenor.CTenorQuerySet("zzz");
         tenor.CTenorCohortFind("zzz");

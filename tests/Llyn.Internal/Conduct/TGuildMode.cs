@@ -16,7 +16,7 @@ public sealed class TGuildMode
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CGuild guild = TGuild.TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+        CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         guild.CGuildAuthorSelect(ada.LAuthorId);
 
@@ -33,7 +33,7 @@ public sealed class TGuildMode
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CGuild guild = TGuild.TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         LAuthor bob = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Bob"));
         guild.CGuildAuthorSelect(ada.LAuthorId);
@@ -54,7 +54,7 @@ public sealed class TGuildMode
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CGuild guild = TGuild.TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         engine.TEngineCitationCreate("Orphan");
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         guild.CGuildAuthorSelect(ada.LAuthorId);
@@ -74,7 +74,7 @@ public sealed class TGuildMode
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CGuild guild = TGuild.TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(true, asked));
+        CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(true, asked));
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         guild.CGuildAuthorCreate();
         guild.CGuildAutograph.TDeskDefer(TInterface.TAuthorNameCreate(guild.CGuildAutograph.CDeskId, "Bob"));
@@ -95,7 +95,7 @@ public sealed class TGuildMode
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CGuild guild = TGuild.TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+        CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         guild.CGuildAuthorSelect(ada.LAuthorId);
 
@@ -112,7 +112,7 @@ public sealed class TGuildMode
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CGuild guild = TGuild.TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
@@ -132,7 +132,7 @@ public sealed class TGuildMode
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CGuild guild = TGuild.TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         guild.CGuildAuthorSelect(ada.LAuthorId);
         guild.CGuildScribeToggle(true);
@@ -153,7 +153,7 @@ public sealed class TGuildMode
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CGuild guild = TGuild.TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(true, asked));
+        CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(true, asked));
         LReference book = engine.TEngineCitationCreate("Book");
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);

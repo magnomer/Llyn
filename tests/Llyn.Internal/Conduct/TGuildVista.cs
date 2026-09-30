@@ -16,7 +16,7 @@ public sealed class TGuildVista
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Bob"));
-        CGuild guild = TGuild.TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         guild.CGuildQuerySet("Bo");
 
         guild.CGuildVistaRestore();
@@ -32,7 +32,7 @@ public sealed class TGuildVista
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         engine.TEngineCitationCreate("Grammar");
         engine.TEngineCitationCreate("Atlas");
-        CGuild guild = TGuild.TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         guild.CGuildOeuvre.COeuvreQuerySet("gram");
 
         guild.CGuildVistaRestore();
@@ -50,7 +50,7 @@ public sealed class TGuildVista
         CGuild guild = CGuild.CGuildCreate(
             atelier,
             static () => true,
-            TInterfaceConduct.TEnvoyCreate(false, []),
+            TEnvoyFake.TEnvoyCreate(false, []),
             run =>
             {
                 marshalled++;
@@ -78,7 +78,7 @@ public sealed class TGuildVista
         CGuild guild = CGuild.CGuildCreate(
             atelier,
             static () => true,
-            TInterfaceConduct.TEnvoyCreate(false, []),
+            TEnvoyFake.TEnvoyCreate(false, []),
             run =>
             {
                 marshalled++;

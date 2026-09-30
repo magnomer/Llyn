@@ -127,31 +127,6 @@ internal static class TInterfaceConduct
             new LPortraitOutlet(engine));
     }
 
-    internal static CEnvoy TEnvoyCreate(bool? answer, List<string> asked) =>
-        TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["CEnvoyConfirm"] = args =>
-            {
-                asked.Add((string)args![0]!);
-                return answer ?? false;
-            },
-            ["CEnvoyFailureShow"] = args =>
-            {
-                asked.Add((string)args![0]!);
-                return null;
-            },
-            ["CEnvoyLeaveConfirm"] = _ =>
-            {
-                asked.Add("Leave");
-                return answer;
-            },
-            ["CEnvoyUnionConfirm"] = args =>
-            {
-                asked.Add(string.Join(">", args!));
-                return answer ?? false;
-            },
-        });
-
     internal static CDesk TDeskCreate(LEngine engine, string scope, CEnvoy envoy) =>
         new(new LDraftOutlet(engine), scope, envoy);
 
@@ -164,7 +139,7 @@ internal static class TInterfaceConduct
         new LPhonologyOutlet(engine),
         new LSettingsOutlet(engine),
         new LMediaOutlet(engine),
-        TEnvoyCreate(false, []));
+        TEnvoyFake.TEnvoyCreate(false, []));
 
     internal static CEditor TEditorCreate(LEngine engine, LPhonologyPort phonology) =>
         TEditorCreate(
@@ -178,7 +153,7 @@ internal static class TInterfaceConduct
 
     internal static CEditor TEditorCreate(
         LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media) =>
-        new(drafts, entries, phonology, settings, media, TEnvoyCreate(false, []));
+        new(drafts, entries, phonology, settings, media, TEnvoyFake.TEnvoyCreate(false, []));
     internal static void TEditorVistaRestore(this CEditor editor, LVista vista) => editor.LEditorVistaRestore(vista);
 
     internal static CVistaRow TPanelRowRead(LVistaRow row) => CPanel.CPanelRowRead(row);
@@ -206,7 +181,11 @@ internal static class TInterfaceConduct
     internal static LSubject TPanelSubjectRead(CSubject subject) => CPanel.CPanelSubjectRead(subject);
 
     internal static COeuvre TOeuvreCreate(LEngine engine) =>
-        new(new LEntryOutlet(engine), new LSettingsOutlet(engine), TEnvoyCreate(true, []), static () => true);
+        new(
+            new LEntryOutlet(engine),
+            new LSettingsOutlet(engine),
+            TEnvoyFake.TEnvoyCreate(true, []),
+            static () => true);
 
     internal static void TOeuvreVistaRestore(this COeuvre oeuvre, LVista roll, LVista vista) =>
         oeuvre.LOeuvreVistaRestore(roll, vista);
@@ -218,7 +197,7 @@ internal static class TInterfaceConduct
         new LEntryOutlet(engine),
         new LPortraitOutlet(engine),
         new LSettingsOutlet(engine),
-        TEnvoyCreate(false, []),
+        TEnvoyFake.TEnvoyCreate(false, []),
         static () => false,
         static _ => true,
         static () => true);
@@ -303,7 +282,11 @@ internal static class TInterfaceConduct
     internal static CCardList TCardListCreate(CDesk desk) => new(desk);
 
     internal static CSentence TSentenceCreate(LEngine engine, CDesk desk) => new(
-        desk, new LPhonologyOutlet(engine), new LDraftOutlet(engine), TSettingsCreate(), TEnvoyCreate(false, []));
+        desk,
+        new LPhonologyOutlet(engine),
+        new LDraftOutlet(engine),
+        TSettingsCreate(),
+        TEnvoyFake.TEnvoyCreate(false, []));
 
     internal static CSounding TSoundingCreate(
         CDesk desk, LPhonologyPort phonology, LDraftPort drafts, CEnvoy envoy, LSettingsPort? pack = null)
@@ -382,7 +365,7 @@ internal static class TInterfaceConduct
 
     internal static string TPhonologyFileRead(this CPhonology phonology) => phonology.LPhonologyFileRead();
 
-    internal static string TTaxonomyFileRead(this CTaxonomy taxonomy) => taxonomy.LTaxonomyFileRead();
+    internal static string TMembershipFileRead(this CMembership membership) => membership.LMembershipFileRead();
 
     internal static string TTenorFileRead(this CTenor tenor) => tenor.LTenorFileRead();
 
@@ -395,36 +378,6 @@ internal static class TInterfaceConduct
     internal static string TOccurrenceFileRead(this COccurrence occurrence) => occurrence.LOccurrenceFileRead();
 
     internal static string TFootnoteFileRead(this CFootnote footnote) => footnote.LFootnoteFileRead();
-
-    internal static CEnvoy TEnvoyFileCreate(string? path, CPortraitMedium medium, List<string> asked) =>
-        TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["CEnvoyFileRead"] = args =>
-            {
-                asked.Add("File:" + (string)args![0]!);
-                return (path, medium);
-            },
-            ["CEnvoyFailureShow"] = args =>
-            {
-                asked.Add((string)args![0]!);
-                return null;
-            },
-        });
-
-    internal static CEnvoy TEnvoyTicketCreate(Func<CPressTicket?> answer, List<string> asked) =>
-        TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["CEnvoyTicketRead"] = _ =>
-            {
-                asked.Add("Ticket");
-                return answer();
-            },
-            ["CEnvoyFailureShow"] = args =>
-            {
-                asked.Add((string)args![0]!);
-                return null;
-            },
-        });
 
     internal static long TPanelChosenRead(this CPanel panel) => panel.LPanelChosenRead();
 

@@ -70,7 +70,7 @@ public sealed class TDesk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CDesk desk = TInterfaceConduct.TDeskCreate(engine, "Guild", TInterfaceConduct.TEnvoyCreate(false, []));
+        CDesk desk = TInterfaceConduct.TDeskCreate(engine, "Guild", TEnvoyFake.TEnvoyCreate(false, []));
 
         desk.CDeskStart(null);
 
@@ -85,7 +85,7 @@ public sealed class TDesk
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDesk desk = TInterfaceConduct.TDeskCreate(
-            engine, "Guild", TInterfaceConduct.TEnvoyCreate(false, []), "Guild", CSubject.CSubjectAuthor);
+            engine, "Guild", TEnvoyFake.TEnvoyCreate(false, []), "Guild", CSubject.CSubjectAuthor);
         int started = 0;
         desk.CDeskStarted += () => started++;
 
@@ -172,7 +172,7 @@ public sealed class TDesk
 
     private static CDesk TDeskPrepare(LEngine engine)
     {
-        CDesk desk = TInterfaceConduct.TDeskCreate(engine, "Guild", TInterfaceConduct.TEnvoyCreate(false, []));
+        CDesk desk = TInterfaceConduct.TDeskCreate(engine, "Guild", TEnvoyFake.TEnvoyCreate(false, []));
         desk.TDeskVistaRestore(engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderName));
         return desk;
     }

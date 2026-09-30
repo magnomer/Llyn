@@ -17,7 +17,7 @@ public sealed class TQuotation
         LExample dog = TCorpus.TCorpusExampleSave(engine, "a dog ran");
         LEntry water = TCorpus.TCorpusEntrySave(engine);
         engine.TRequestQuoteApply(water.LEntryId, cat.LExampleId);
-        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.TCorpusExampleOpen(dog.LExampleId);
 
         Assert.Empty(corpus.CCorpusQuotation.CQuotationRowsRead());
@@ -34,7 +34,7 @@ public sealed class TQuotation
         using LEngine engine = workspace.TWorkspaceEngineStart();
         List<string> asked = [];
 
-        Assert.Empty(TInterfaceMention.TQuotationFailRead(engine, TInterfaceConduct.TEnvoyCreate(false, asked)));
+        Assert.Empty(TInterfaceMention.TQuotationFailRead(engine, TEnvoyFake.TEnvoyCreate(false, asked)));
         Assert.Equal(["Example.LoadFailed"], asked);
     }
 
@@ -45,7 +45,7 @@ public sealed class TQuotation
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry water = TCorpus.TCorpusEntrySave(engine);
-        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         Assert.Equal(water.LEntryId, Assert.Single(corpus.CCorpusQuotation.CQuotationRowsRead()).CVistaRowId);
     }
@@ -59,7 +59,7 @@ public sealed class TQuotation
         LExample cat = TCorpus.TCorpusExampleSave(engine, "a cat sat");
         LEntry water = TCorpus.TCorpusEntrySave(engine);
         engine.TRequestQuoteApply(water.LEntryId, cat.LExampleId);
-        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.TCorpusExampleOpen(cat.LExampleId);
 
         Assert.Equal("Example.Vacant", corpus.CCorpusQuotation.CQuotationEmptyKey);
@@ -83,7 +83,7 @@ public sealed class TQuotation
         LExample cat = TCorpus.TCorpusExampleSave(engine, "a cat sat");
         LEntry water = TCorpus.TCorpusEntrySave(engine);
         engine.TRequestQuoteApply(water.LEntryId, cat.LExampleId);
-        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.TCorpusExampleOpen(cat.LExampleId);
 
         Assert.Equal("entry", corpus.CCorpusQuotation.TQuotationFileRead());

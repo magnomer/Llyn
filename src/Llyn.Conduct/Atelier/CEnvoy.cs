@@ -28,4 +28,6 @@ public interface CEnvoy
     CPressTicket? CEnvoyTicketRead();
 
     string? CEnvoyWorkspaceRead(string workspace);
+
+    string? CEnvoyCoinageRead(string key);
 }

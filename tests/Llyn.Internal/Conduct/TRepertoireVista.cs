@@ -17,7 +17,7 @@ public sealed class TRepertoireVista
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TRepertoire.TRepertoireSituationSave(engine, "at home");
         TRepertoire.TRepertoireSituationSave(engine, "in court");
-        CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         repertoire.CRepertoireAtlas.CAtlasQuerySet("court");
         repertoire.CRepertoireOccurrence.COccurrenceQuerySet("zzz");
 
@@ -38,7 +38,7 @@ public sealed class TRepertoireVista
         CRepertoire repertoire = CRepertoire.CRepertoireCreate(
             atelier,
             static () => true,
-            TInterfaceConduct.TEnvoyCreate(false, []),
+            TEnvoyFake.TEnvoyCreate(false, []),
             run =>
             {
                 marshalled++;
@@ -66,7 +66,7 @@ public sealed class TRepertoireVista
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LSituation home = TRepertoire.TRepertoireSituationSave(engine, "at home");
         LEntry hearth = TRepertoire.TRepertoireEntrySave(engine, "hearth", home);
-        CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         int atlas = 0;
         repertoire.CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += () => atlas++;
 
@@ -82,7 +82,7 @@ public sealed class TRepertoireVista
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LSituation home = TRepertoire.TRepertoireSituationSave(engine, "at home");
-        CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         repertoire.TRepertoireSituationOpen(home.LSituationId);
         Assert.True(repertoire.CRepertoireVignetteHeld);
         int told = 0;
@@ -105,7 +105,7 @@ public sealed class TRepertoireVista
         CRepertoire repertoire = CRepertoire.CRepertoireCreate(
             atelier,
             static () => true,
-            TInterfaceConduct.TEnvoyCreate(false, []),
+            TEnvoyFake.TEnvoyCreate(false, []),
             run =>
             {
                 marshalled++;

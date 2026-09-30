@@ -20,7 +20,7 @@ public sealed class TLibrary
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TLibraryEntrySave(engine, "stone", "English");
         CLibrary library = CLibrary.CLibraryCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []), static run => run());
+            atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
 
         Assert.Empty(library.CLibraryRowsRead());
         Assert.False(library.CLibraryFiltered);
@@ -35,7 +35,7 @@ public sealed class TLibrary
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TLibraryEntrySave(engine, "stone", "English");
         TLibraryEntrySave(engine, "river", "English");
-        CLibrary library = TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CLibrary library = TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         Assert.Equal(2, library.CLibraryRowsRead().Count);
 
@@ -51,7 +51,7 @@ public sealed class TLibrary
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TLibraryEntrySave(engine, "stone", "English");
-        CLibrary library = TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CLibrary library = TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         library.CLibraryRowsRead();
         bool listed = library.CLibraryEmpty;
 
@@ -68,7 +68,7 @@ public sealed class TLibrary
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CLibrary library = TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CLibrary library = TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         library.CLibraryOrderSet(CCatalogOrder.CCatalogOrderReverse);
         library.CLibraryOrderSet(null);
@@ -84,7 +84,7 @@ public sealed class TLibrary
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TLibraryEntrySave(engine, "stone", "English");
         TLibraryEntrySave(engine, "maison", "French");
-        CLibrary library = TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CLibrary library = TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         library.CLibraryFilterSet(new CCatalogFilter(["English"]));
 
@@ -100,7 +100,7 @@ public sealed class TLibrary
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry water = TLibraryEntrySave(engine, "water", "English");
-        CLibrary library = TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(true, []));
+        CLibrary library = TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(true, []));
 
         Assert.Equal(0, library.CLibraryPanel.TPanelChosenRead());
 
@@ -125,7 +125,7 @@ public sealed class TLibrary
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry stone = TLibraryEntrySave(engine, "stone", "English");
-        CLibrary library = TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CLibrary library = TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         library.CLibraryPanel.CPanelRowOpen(stone.LEntryId);
         library.CLibraryPanel.CPanelScribeToggle(true);
@@ -145,7 +145,7 @@ public sealed class TLibrary
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry stone = TLibraryEntrySave(engine, "stone", "English");
         List<string> asked = [];
-        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(true, asked);
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(true, asked);
         CLibrary library = TLibraryPrepare(atelier, envoy);
         library.CLibraryPanel.CPanelRowOpen(stone.LEntryId);
         library.CLibraryPanel.CPanelScribeToggle(true);
@@ -168,7 +168,7 @@ public sealed class TLibrary
         LEntry water = TLibraryEntrySave(engine, "water", "English");
         string path = Path.Combine(workspace.TWorkspaceFolder, "water.md");
         CLibrary library = TLibraryPrepare(
-            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
+            atelier, TEnvoyFake.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
 
         await library.CLibraryPortraitExport();
 
@@ -189,7 +189,7 @@ public sealed class TLibrary
         LEntry water = TLibraryEntrySave(engine, "water", "English");
         List<string> asked = [];
         CLibrary cancelled = TLibraryPrepare(
-            atelier, TInterfaceConduct.TEnvoyFileCreate(null, CPortraitMedium.CPortraitMediumMarkdown, asked));
+            atelier, TEnvoyFake.TEnvoyFileCreate(null, CPortraitMedium.CPortraitMediumMarkdown, asked));
         cancelled.CLibraryPanel.CPanelRowSelect(water.LEntryId);
 
         await cancelled.CLibraryPortraitExport();
@@ -198,7 +198,7 @@ public sealed class TLibrary
 
         CLibrary unwritable = TLibraryPrepare(
             atelier,
-            TInterfaceConduct.TEnvoyFileCreate(
+            TEnvoyFake.TEnvoyFileCreate(
                 workspace.TWorkspaceFolder, CPortraitMedium.CPortraitMediumMarkdown, asked));
         unwritable.CLibraryPanel.CPanelRowSelect(water.LEntryId);
         await unwritable.CLibraryPortraitExport();
@@ -342,7 +342,7 @@ public sealed class TLibrary
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry water = TLibraryEntrySave(engine, "water", "English");
         List<string> asked = [];
-        CLibrary library = TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+        CLibrary library = TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
         int landed = 0;
         atelier.CAtelierNavigation.CNavigationArrived += () => landed++;
 
@@ -362,7 +362,7 @@ public sealed class TLibrary
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry water = TLibraryEntrySave(engine, "water", "English");
         LEntry fire = TLibraryEntrySave(engine, "fire", "English");
-        CLibrary library = TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CLibrary library = TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         atelier.CAtelierNavigation.CNavigationTabSelect("Library");
         library.CLibraryPanel.CPanelRowSelect(water.LEntryId);
         List<CNavigationState> states = [];

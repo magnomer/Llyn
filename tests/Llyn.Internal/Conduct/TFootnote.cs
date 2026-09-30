@@ -94,7 +94,7 @@ public sealed class TFootnote
     private static (CFootnote, LVista, CEditor) TFootnotePrepare(
         LEngine engine, CAtelier atelier)
     {
-        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, []);
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, []);
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CFootnote footnote = new(
             atelier.CAtelierEntryPort,

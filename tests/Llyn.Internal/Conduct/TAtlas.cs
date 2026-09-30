@@ -169,7 +169,7 @@ public sealed class TAtlas
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         List<string> asked = [];
-        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, asked);
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
 
         Assert.Null(TInterfaceConduct.TAtlasFailRead(engine, envoy));
         Assert.Equal(["Situation.LoadFailed"], asked);
@@ -182,7 +182,7 @@ public sealed class TAtlas
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, asked);
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
 
         CAtlas atlas = new(
             atelier.CAtelierEntryPort,
@@ -208,7 +208,7 @@ public sealed class TAtlas
 
     private static CAtlas TAtlasPrepare(LEngine engine, CAtelier atelier)
     {
-        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, []);
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, []);
         CDesk desk = TInterfaceConduct.TDeskCreate(
             engine, "Situation", envoy, "Repertoire", CSubject.CSubjectSituation);
         return new CAtlas(

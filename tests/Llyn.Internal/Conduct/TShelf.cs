@@ -17,7 +17,7 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
         CColophon? shown = null;
         shelf.CShelfColophonChanged += colophon => shown = colophon;
@@ -46,7 +46,7 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
         shelf.CShelfReferenceSelect(book.LReferenceId);
         List<CEntryDraft> shown = [];
@@ -68,7 +68,7 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         shelf.CShelfReferenceCreate();
 
@@ -85,7 +85,7 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
         LEntry water = TShelfEntrySave(engine, "water");
         shelf.CShelfReferenceSelect(book.LReferenceId);
@@ -115,7 +115,7 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(true, []));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(true, []));
         LReference book = engine.TEngineCitationCreate("Book");
         LEntry water = TShelfEntrySave(engine, "water");
         shelf.CShelfReferenceSelect(book.LReferenceId);
@@ -139,7 +139,7 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         engine.TEngineCitationCreate("Beta");
         engine.TEngineCitationCreate("Alpha");
         int listed = shelf.CShelfRollRead().CShelfRollRows.Count;
@@ -177,7 +177,7 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
         shelf.CShelfReferenceSelect(book.LReferenceId);
 
@@ -194,7 +194,7 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         shelf.CShelfFilterSet(new CCatalogFilter(["Latin"]));
 
@@ -213,7 +213,7 @@ public sealed class TShelf
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(null, asked));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
         LReference book = engine.TEngineCitationCreate("Book");
         shelf.CShelfReferenceCreate();
         shelf.CShelfImprint.CImprintTitleSet("Tome");
@@ -236,7 +236,7 @@ public sealed class TShelf
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(true, asked));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(true, asked));
         shelf.CShelfReferenceCreate();
         shelf.CShelfImprint.CImprintTitleSet("Tome");
 
@@ -256,7 +256,7 @@ public sealed class TShelf
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
 
         Assert.True(shelf.TShelfLeaveConfirm());
         Assert.Empty(asked);
@@ -268,7 +268,7 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         shelf.CShelfReferenceCreate();
         shelf.CShelfImprint.CImprintTitleSet("Tome");
 
@@ -296,7 +296,7 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         shelf.CShelfReferenceCreate();
         shelf.CShelfImprint.CImprintTitleSet("Tome");
 
@@ -313,7 +313,7 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
         shelf.CShelfReferenceSelect(book.LReferenceId);
         shelf.CShelfReferenceCreate();
@@ -333,7 +333,7 @@ public sealed class TShelf
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(null, asked));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
         LEntry water = TShelfEntrySave(engine, "water");
         shelf.CShelfReferenceCreate();
         shelf.CShelfImprint.CImprintTitleSet("Tome");
@@ -352,7 +352,7 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
         shelf.CShelfReferenceSelect(book.LReferenceId);
 
@@ -375,7 +375,7 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
         shelf.CShelfReferenceSelect(book.LReferenceId);
         List<CColophon> shown = [];
@@ -393,7 +393,7 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
         shelf.TShelfReferenceOpen(book.LReferenceId);
 
@@ -412,7 +412,7 @@ public sealed class TShelf
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         string path = Path.Combine(workspace.TWorkspaceFolder, "hearth.md");
         CShelf shelf = TShelfPrepare(
-            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
+            atelier, TEnvoyFake.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
         LEntry hearth = TShelfEntrySave(engine, "hearth");
 
         await shelf.CShelfPortraitExport();
@@ -432,7 +432,7 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         Task printed = shelf.CShelfPortraitPrint();
 

@@ -17,7 +17,7 @@ public sealed class TWing
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry water = TWingWaterSave(engine);
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true);
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         int loaded = 0;
         wing.CWingLoaded += () => loaded++;
 
@@ -37,7 +37,7 @@ public sealed class TWing
         LEntry target = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("eau", "French", "", "", [], []));
         LCardDraft card = TInterface.TCardCreate("liquid", 1) with { LCardDraftTranslation = [target.LEntryId] };
         LEntry water = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("water", "English", "", "", [card], []));
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true);
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
 
         wing.CWingEntryOpen(target.LEntryId);
 
@@ -55,7 +55,7 @@ public sealed class TWing
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry water = TWingWaterSave(engine);
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), false);
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), false);
 
         wing.CWingEntryOpen(water.LEntryId);
 
@@ -69,9 +69,9 @@ public sealed class TWing
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry water = TWingWaterSave(engine);
-        CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true).CWingEntryOpen(water.LEntryId);
-        CWing left = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true);
-        CWing right = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), false);
+        CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true).CWingEntryOpen(water.LEntryId);
+        CWing left = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
+        CWing right = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), false);
         int loaded = 0;
         int blank = 0;
         left.CWingLoaded += () => loaded++;
@@ -94,7 +94,7 @@ public sealed class TWing
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry water = TWingWaterSave(engine);
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true);
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         wing.CWingEntryOpen(water.LEntryId);
         List<string> heard = [];
         wing.CWingDisplay.CDisplayArea.CDisplayClosed += () => heard.Add("Closed");
@@ -111,7 +111,7 @@ public sealed class TWing
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true);
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         int loaded = 0;
         wing.CWingLoaded += () => loaded++;
 
@@ -127,7 +127,7 @@ public sealed class TWing
         using TWorkspace second = TWorkspace.TWorkspacePrepare();
         using LEngine engine = new(first.TWorkspaceRigCreate(), _ => second.TWorkspaceRigCreate(), _ => { });
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true);
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         wing.CWingQuerySet("water");
         bool held = wing.CWingQueried;
 
@@ -152,7 +152,7 @@ public sealed class TWing
             },
         });
         using CAtelier atelier = TInterfaceConduct.TAtelierMediaCreate(engine, media);
-        CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true);
+        CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
 
         atelier.CAtelierClose();
 
@@ -170,7 +170,7 @@ public sealed class TWing
         };
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, answers);
         List<string> asked = [];
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, asked), true);
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, asked), true);
         int loaded = 0;
         wing.CWingLoaded += () => loaded++;
 
@@ -187,7 +187,7 @@ public sealed class TWing
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TWingWaterSave(engine);
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true);
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
 
         Assert.Empty(wing.CWingRowsRead());
         Assert.False(wing.CWingQueried);
@@ -201,7 +201,7 @@ public sealed class TWing
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TWingWaterSave(engine);
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true);
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         int changed = 0;
         wing.CWingChanged += _ => changed++;
 
@@ -218,7 +218,7 @@ public sealed class TWing
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true);
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         wing.CWingOrderSet(CCatalogOrder.CCatalogOrderLanguage);
 
         wing.CWingOrderSet(null);
@@ -232,7 +232,7 @@ public sealed class TWing
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true);
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
 
         wing.CWingFilterSet(new CCatalogFilter(["English"]));
 
@@ -343,7 +343,7 @@ public sealed class TWing
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TWingWaterSave(engine);
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true);
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         wing.CWingRowsRead();
         bool unasked = wing.CWingEmpty;
 
@@ -360,7 +360,7 @@ public sealed class TWing
 
     private static CWing TWingQueryPrepare(CAtelier atelier, string query)
     {
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true);
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         wing.CWingQuerySet(query);
         wing.CWingRowsRead();
         return wing;

@@ -86,7 +86,7 @@ public sealed class TCardMention
         List<string> asked = [];
         (CDesk desk, _, _, _) = TMentionPrepare(engine);
         CSentence failing = TInterfaceMention.TSentenceFailCreate(
-            engine, desk, TInterfaceConduct.TEnvoyCreate(false, asked));
+            engine, desk, TEnvoyFake.TEnvoyCreate(false, asked));
 
         IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> lines = failing.CSentenceMentionRead();
 
@@ -99,7 +99,7 @@ public sealed class TCardMention
     {
         engine.TEngineDelaySet(0);
         CDesk desk = TInterfaceConduct.TDeskCreate(
-            engine, "Input", TInterfaceConduct.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
+            engine, "Input", TEnvoyFake.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
         desk.CDeskStart(null);
         CSentence sentence = TInterfaceConduct.TSentenceCreate(engine, desk);
         desk.TDeskDefer(TInterface.TRequestAdditionCreate(desk.CDeskId, LCardKind.LCardKindMeaning, 0, int.MaxValue));

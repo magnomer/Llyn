@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -13,133 +12,87 @@ internal sealed partial class QTaxonomy
 
     private readonly ObservableCollection<QMembershipItem> _qMembershipList = [];
 
-    private async void QTaxonomyWorkspaceUpdate()
+    private async void QTaxonomyWorkspaceRefine()
     {
-        await LEnsignImage.LEnsignLoad(_qTaxonomyHost.PWindowAtelier);
-        QTaxonomyReset();
+        await LEnsignImage.LEnsignLoad(_qTaxonomyHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
     }
 
-    private void QTaxonomyTagUpdate()
-    {
-        QDirectoryFind();
-        _cTaxonomy.CTaxonomyPanel.CPanelDraftResonate();
-    }
-
-    private void QExplorationHandle(object sender, TextChangedEventArgs e)
+    private void QExplorationObserve(object sender, TextChangedEventArgs e)
     {
         _cTaxonomy.CTaxonomyQuerySet(QExploration.Text ?? string.Empty);
     }
 
-    private void QScoutHandle(object sender, TextChangedEventArgs e)
+    private void QScoutObserve(object sender, TextChangedEventArgs e)
     {
-        _cTaxonomy.CTaxonomyMembershipFind(QScout.Text);
+        _cTaxonomy.CTaxonomyMembership.CMembershipQuerySet(QScout.Text);
     }
 
-    private void QFunnelHandle(object sender, RoutedEventArgs e)
+    private void QFunnelObserve(object sender, RoutedEventArgs e)
+    {
+        _cTaxonomy.CTaxonomyOrderSet(QChoice.QChoiceOrderRead(sender));
+        QFunnelDropperRefine();
+    }
+
+    private void QFunnelDropperRefine()
     {
         QFunnelDropper.IsChecked = false;
-        _cTaxonomy.CTaxonomyOrderSet(QChoice.QChoiceOrderRead(sender));
     }
 
-    private void QLatticeHandle(object sender, RoutedEventArgs e)
+    private void QLatticeObserve(object sender, RoutedEventArgs e)
     {
         _cTaxonomy.CTaxonomyFilterSet(QChoice.QChoiceFilterRead(sender));
-        QLatticeRestore();
+        QLatticeRefine();
     }
 
-    internal async void QTaxonomyVistaRestore()
+    internal async void QTaxonomyVistaRefine()
     {
-        UserControl surface = _qTaxonomySurface;
-        _cTaxonomy.CTaxonomyObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, QDirectoryFind));
-        _cTaxonomy.CTaxonomyObserverAttach(
-            CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(surface, QTaxonomyWorkspaceUpdate));
-        _cTaxonomy.CTaxonomyObserverAttach(
-            CSubject.CSubjectTag, LObserver.LObserverCreate<CBulletin>(surface, QTaxonomyTagUpdate));
-        _cTaxonomy.CTaxonomyObserverAttach(
-            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, QDirectoryFind));
-        _cTaxonomy.CTaxonomyObserverAttach(
-            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, QDirectoryFind));
-        CPanel panel = _cTaxonomy.CTaxonomyPanel;
-        panel.CPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryResonate));
-        panel.CPanelObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, QMembershipFind));
-        panel.CPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
-        _cTaxonomy.CTaxonomyObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, QDirectoryFind));
         QChoice.QChoiceOrderBuild(
             QFunnelList,
             "Funnel",
-            QFunnelHandle,
+            QFunnelObserve,
             [
                 CCatalogOrder.CCatalogOrderName,
                 CCatalogOrder.CCatalogOrderReverse,
             ]);
         QChoice.QChoiceOrderApply(QFunnelDropdown, _cTaxonomy.CTaxonomyOrder);
-        QLatticeRestore();
-
-        await LEnsignImage.LEnsignLoad(_qTaxonomyHost.PWindowAtelier);
-
-        QChoice.QChoiceFilterBuild(
-            QLatticeList, _cTaxonomy.CTaxonomyLanguageRead(), _cTaxonomy.CTaxonomyFilter, QLatticeHandle);
-        _cTaxonomy.CTaxonomyQuerySet(QExploration.Text ?? string.Empty);
-        _cTaxonomy.CTaxonomyMembershipFind(QScout.Text);
-        QDirectoryFind();
+        QLatticeRefine();
+        IReadOnlyList<string> languages =
+            await LEnsignImage.LEnsignLoad(_qTaxonomyHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
+        QLatticeListRefine(languages);
+        QDirectoryRefine();
     }
 
-    private void QLatticeRestore()
+    private void QLatticeListRefine(IReadOnlyList<string> languages)
+    {
+        QChoice.QChoiceFilterBuild(QLatticeList, languages, _cTaxonomy.CTaxonomyFilter, QLatticeObserve);
+    }
+
+    private void QLatticeRefine()
     {
         QLatticeMark.Visibility = _cTaxonomy.CTaxonomyFiltered ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void QDirectoryReset()
+    private void QDirectoryRefine()
     {
-        _cTaxonomy.CTaxonomyTagSelect(null);
-    }
-
-    private void QDirectoryFind()
-    {
-        IReadOnlyList<CCatalogTag> read;
-        try
-        {
-            read = _cTaxonomy.CTaxonomyRowsRead();
-        }
-        catch (Exception exception)
-        {
-            _qTaxonomyHost.PWindowFailureRefine("Tag.LoadFailed", exception);
-            return;
-        }
-
         _qDirectoryList.Clear();
-        foreach (CCatalogTag row in read)
+        foreach (CCatalogTag row in _cTaxonomy.CTaxonomyRowsRead())
         {
             _qDirectoryList.Add(new QDirectoryItem(
                 row.CCatalogTagStored.CTagId, row.CCatalogTagStored.CTagText, row.CCatalogTagChosen));
         }
 
         QDirectoryEmpty.Visibility = _qDirectoryList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-        QMembershipFind();
     }
 
-    private void QDirectoryHandle(object sender, RoutedEventArgs e)
+    private void QDirectoryObserve(object sender, RoutedEventArgs e)
     {
-        QDirectoryRowSelect((sender as FrameworkElement)?.DataContext as QDirectoryItem);
-    }
-
-    private void QDirectoryRowSelect(QDirectoryItem? item)
-    {
-        if (item is null)
+        if ((sender as FrameworkElement)?.DataContext is QDirectoryItem item)
         {
-            return;
+            _cTaxonomy.CTaxonomyTagToggle(item.QDirectoryItemId);
         }
-
-        _cTaxonomy.CTaxonomyTagToggle(item.QDirectoryItemId);
-        QDirectoryFind();
     }
 
-    private void QDirectoryApply(FrameworkElement container, object item, string? _)
+    private void QDirectoryItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QDirectoryItem directory)
         {
@@ -157,8 +110,8 @@ internal sealed partial class QTaxonomy
                 row.ClearValue(QLook.QLookCueProperty);
             }
 
-            row.Click -= QDirectoryHandle;
-            row.Click += QDirectoryHandle;
+            row.Click -= QDirectoryObserve;
+            row.Click += QDirectoryObserve;
         }
 
         if (QLook.QLookPartFind<QIconImage>(container, "PDirectoryIcon") is QIconImage icon)
@@ -176,52 +129,30 @@ internal sealed partial class QTaxonomy
     {
         QExploration.Text = string.Empty;
         QScout.Text = string.Empty;
-        QDirectoryFind();
     }
 
-    private void QTaxonomyFreshHandle(object sender, RoutedEventArgs e)
+    private void QTaxonomyFreshObserve(object sender, RoutedEventArgs e)
     {
-        if (!QTaxonomyLeaveConfirm())
-        {
-            return;
-        }
-
-        if (_cTaxonomy.CTaxonomyCoinageAllowed)
-        {
-            QDirectoryCoinageShow(sender);
-            return;
-        }
-
         _cTaxonomy.CTaxonomyEntryCreate();
     }
 
-    private void QDirectoryCoinageShow(object origin)
+    private void QTaxonomyViewerObserve(object sender, RoutedEventArgs e)
     {
-        if (QSCoinage.QSCoinageShow(Window.GetWindow((DependencyObject)origin), "Coinage.Tag") is not string text)
-        {
-            return;
-        }
-
-        _cTaxonomy.CTaxonomyTagCreate(text);
+        _cTaxonomy.CTaxonomyMembership.CMembershipPanel.CPanelScribeToggle(false);
     }
 
-    private void QTaxonomyScribeHandle(object sender, RoutedEventArgs e)
+    private void QTaxonomyScribeObserve(object sender, RoutedEventArgs e)
     {
-        _cTaxonomy.CTaxonomyPanel.CPanelScribeToggle(ReferenceEquals(sender, QTaxonomyScribe));
+        _cTaxonomy.CTaxonomyMembership.CMembershipPanel.CPanelScribeToggle(true);
     }
 
-    internal bool QTaxonomyLeaveConfirm()
-    {
-        return _cTaxonomy.CTaxonomyPanel.CPanelLeaveConfirm();
-    }
-
-    private void QTaxonomyStoreHandle(object sender, RoutedEventArgs e)
+    private void QTaxonomyStoreObserve(object sender, RoutedEventArgs e)
     {
         _cTaxonomy.CTaxonomyEditor.CEditorEntrySave();
     }
 
-    private void QTaxonomyBinHandle(object sender, RoutedEventArgs e)
+    private void QTaxonomyBinObserve(object sender, RoutedEventArgs e)
     {
-        _cTaxonomy.CTaxonomyPanel.CPanelEntryDelete();
+        _cTaxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEntryDelete();
     }
 }

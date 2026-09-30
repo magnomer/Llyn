@@ -93,9 +93,9 @@ public sealed class TCardReference
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineDelaySet(0);
         List<string> asked = [];
-        CDesk desk = TInterfaceCitation.TDeskFailCreate(engine, TInterfaceConduct.TEnvoyCreate(false, []));
+        CDesk desk = TInterfaceCitation.TDeskFailCreate(engine, TEnvoyFake.TEnvoyCreate(false, []));
         desk.CDeskStart(null);
-        CCard card = TInterfaceConduct.TCardCreate(engine, desk, TInterfaceConduct.TEnvoyCreate(false, asked));
+        CCard card = TInterfaceConduct.TCardCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, asked));
         (long sheet, long sentence) = TCard.TCardSentenceAdd(desk);
 
         card.CCardCitationSet(sheet, sentence, "Field notes");
@@ -114,8 +114,8 @@ public sealed class TCardReference
         engine.TEngineDelaySet(0);
         List<string> asked = [];
         CDesk desk = TInterfaceConduct.TDeskCreate(
-            engine, "Input", TInterfaceConduct.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
-        CCard card = TInterfaceCitation.TCardFailCreate(engine, desk, TInterfaceConduct.TEnvoyCreate(false, asked));
+            engine, "Input", TEnvoyFake.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
+        CCard card = TInterfaceCitation.TCardFailCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, asked));
 
         IReadOnlyList<CCatalogReference> read = card.CCardReferenceRead();
 

@@ -21,7 +21,7 @@ public sealed class TCorpusPortrait
         engine.TRequestQuoteApply(water.LEntryId, cat.LExampleId);
         string path = Path.Combine(workspace.TWorkspaceFolder, "water.md");
         CCorpus corpus = TCorpus.TCorpusPrepare(
-            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
+            atelier, TEnvoyFake.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
         corpus.TCorpusExampleOpen(cat.LExampleId);
 
         await corpus.CCorpusPortraitExport();
@@ -40,7 +40,7 @@ public sealed class TCorpusPortrait
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         Task printed = corpus.CCorpusPortraitPrint();
 

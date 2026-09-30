@@ -123,7 +123,7 @@ public sealed class TAtelier
         List<string> asked = [];
 
         string shown = atelier.CAtelierWorkspace.CWorkspaceChange(
-            "fake-broken", TInterfaceConduct.TEnvoyCreate(true, asked));
+            "fake-broken", TEnvoyFake.TEnvoyCreate(true, asked));
 
         Assert.Equal("fake", shown);
         Assert.Equal(["Workspace.OpenFailed"], asked);
@@ -147,7 +147,7 @@ public sealed class TAtelier
         List<string> opened = [];
         atelier.CAtelierWorkspace.CWorkspaceOpened += () => opened.Add("Opened");
 
-        atelier.CAtelierWorkspace.CWorkspaceChange(chosen, TInterfaceConduct.TEnvoyCreate(true, asked));
+        atelier.CAtelierWorkspace.CWorkspaceChange(chosen, TEnvoyFake.TEnvoyCreate(true, asked));
 
         Assert.Equal("fake", atelier.CAtelierPathRead());
         Assert.Empty(pointed);
@@ -169,7 +169,7 @@ public sealed class TAtelier
         List<string> asked = [];
 
         string shown = atelier.CAtelierWorkspace.CWorkspaceChange(
-            "fake-next", TInterfaceConduct.TEnvoyCreate(null, asked));
+            "fake-next", TEnvoyFake.TEnvoyCreate(null, asked));
 
         Assert.Equal("fake", shown);
         Assert.Equal("fake", atelier.CAtelierPathRead());
@@ -190,7 +190,7 @@ public sealed class TAtelier
         List<string> asked = [];
 
         atelier.CAtelierWorkspace.CWorkspaceChange(
-            second.TWorkspaceFolder, TInterfaceConduct.TEnvoyCreate(true, asked));
+            second.TWorkspaceFolder, TEnvoyFake.TEnvoyCreate(true, asked));
 
         Assert.Equal(["Leave"], asked);
         Assert.Equal([true], closed);
@@ -226,7 +226,7 @@ public sealed class TAtelier
         using LEngine engine = new(first.TWorkspaceRigCreate(), _ => second.TWorkspaceRigCreate(), _ => { });
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CLibrary library = CLibrary.CLibraryCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []), static run => run());
+            atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
         library.CLibraryVistaRestore();
         LVista? held = library.CLibraryPanel.TPanelVistaRead();
         LVista? restored = null;
@@ -438,7 +438,7 @@ public sealed class TAtelier
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
         List<bool> closed = [];
-        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, asked);
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
         CEditor editor = atelier.CAtelierInputCreate(envoy);
         editor.CEditorEntryOpen(null);
         editor.CEditorHeadwordSet("water");

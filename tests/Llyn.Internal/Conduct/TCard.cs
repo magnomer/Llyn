@@ -312,9 +312,9 @@ public sealed class TCard
     {
         engine.TEngineDelaySet(0);
         CDesk desk = TInterfaceConduct.TDeskCreate(
-            engine, "Input", TInterfaceConduct.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
+            engine, "Input", TEnvoyFake.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
         desk.CDeskStart(null);
-        return (desk, TInterfaceConduct.TCardCreate(engine, desk, TInterfaceConduct.TEnvoyCreate(false, [])));
+        return (desk, TInterfaceConduct.TCardCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, [])));
     }
 
     private static LEtymologyDraft TCardEtymologyRead(CDesk desk)

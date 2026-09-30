@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,21 +8,10 @@ namespace Llyn.UIDeportment;
 
 internal sealed partial class QTaxonomy
 {
-    private void QMembershipFind()
+    private void QMembershipRefine()
     {
-        IReadOnlyList<CVistaRow> read;
-        try
-        {
-            read = _cTaxonomy.CTaxonomyMembershipRead();
-        }
-        catch (Exception exception)
-        {
-            _qTaxonomyHost.PWindowFailureRefine("Tag.LoadFailed", exception);
-            return;
-        }
-
         List<QMembershipItem> fresh = [];
-        foreach (CVistaRow entry in read)
+        foreach (CVistaRow entry in _cTaxonomy.CTaxonomyMembership.CMembershipRowsRead())
         {
             fresh.Add(new QMembershipItem(
                 entry.CVistaRowId,
@@ -39,31 +27,18 @@ internal sealed partial class QTaxonomy
         LSplice.LSpliceApply(
             _qMembershipList, fresh, QMembershipItem.QMembershipItemMatch, QMembershipItem.QMembershipItemSync);
 
-        QMembershipEmpty.SetResourceReference(TextBlock.TextProperty, _cTaxonomy.CTaxonomyEmptyKey);
+        QMembershipEmpty.SetResourceReference(
+            TextBlock.TextProperty, _cTaxonomy.CTaxonomyMembership.CMembershipEmptyKey);
         QMembershipEmpty.Visibility = _qMembershipList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void QMembershipHandle(object sender, RoutedEventArgs e)
+    private void QMembershipObserve(object sender, RoutedEventArgs e)
     {
-        QMembershipRowShow((sender as FrameworkElement)?.DataContext as QMembershipItem);
+        _cTaxonomy.CTaxonomyMembership.CMembershipPanel.CPanelRowSelect(
+            ((sender as FrameworkElement)?.DataContext as QMembershipItem)?.QMembershipItemId);
     }
 
-    private void QMembershipRowShow(QMembershipItem? item)
-    {
-        if (item is null)
-        {
-            return;
-        }
-
-        if (!QTaxonomyLeaveConfirm())
-        {
-            return;
-        }
-
-        _cTaxonomy.CTaxonomyPanel.CPanelRowOpen(item.QMembershipItemId);
-    }
-
-    private void QMembershipApply(FrameworkElement container, object item, string? _)
+    private void QMembershipItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QMembershipItem membership)
         {
@@ -81,8 +56,8 @@ internal sealed partial class QTaxonomy
                 row.ClearValue(QLook.QLookCueProperty);
             }
 
-            row.Click -= QMembershipHandle;
-            row.Click += QMembershipHandle;
+            row.Click -= QMembershipObserve;
+            row.Click += QMembershipObserve;
         }
 
         if (QLook.QLookPartFind<Image>(container, "PMembershipFlag") is Image flag)

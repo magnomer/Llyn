@@ -17,7 +17,7 @@ public sealed class TFavoriteRoster
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TFavoriteSave(engine, "stone", "English");
         CFavorite favorite = CFavorite.CFavoriteCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []), static run => run());
+            atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
 
         Assert.Empty(favorite.CFavoriteRowsRead());
         Assert.False(favorite.CFavoriteFiltered);
@@ -131,7 +131,7 @@ public sealed class TFavoriteRoster
     internal static CFavorite TFavoriteRosterPrepare(CAtelier atelier)
     {
         CFavorite favorite = CFavorite.CFavoriteCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []), static run => run());
+            atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
         favorite.CFavoriteVistaRestore();
         return favorite;
     }

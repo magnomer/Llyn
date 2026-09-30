@@ -24,15 +24,9 @@ Puts the panel to work through the Conduct taxonomy, which the forge builds with
 The view wraps that editor for its editor page.
 The lectern follows the panel, whose loads and clears reach the display's area, never the veneer.
 It binds its lists, attaches their row fills, and reads nothing yet.
+The Tag list answers the area's rows event, and the entry list its own panel's.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.
-
-## `internal void QTaxonomyReset()`
-
-Puts the panel back on the workspace open now.
-No tag is chosen, nothing is selected, the editor is closed, and the tag catalog is re-read.
-A different workspace has its own tags.
-So the tag this panel stood on may not exist in the one now open.
 
 ## `internal void QTaxonomyExitRefine()`
 

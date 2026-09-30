@@ -37,7 +37,7 @@ public sealed class TFavoriteVista
         CFavorite favorite = CFavorite.CFavoriteCreate(
             atelier,
             static () => true,
-            TInterfaceConduct.TEnvoyCreate(false, []),
+            TEnvoyFake.TEnvoyCreate(false, []),
             run =>
             {
                 marshalled++;
@@ -95,7 +95,7 @@ public sealed class TFavoriteVista
         using LEngine engine = workspace.TWorkspaceEngineStart();
         List<string> asked = [];
 
-        Assert.Empty(TInterfaceMention.TFavoriteFailRead(engine, TInterfaceConduct.TEnvoyCreate(false, asked)));
+        Assert.Empty(TInterfaceMention.TFavoriteFailRead(engine, TEnvoyFake.TEnvoyCreate(false, asked)));
         Assert.Equal(["Favorite.LoadFailed"], asked);
     }
 

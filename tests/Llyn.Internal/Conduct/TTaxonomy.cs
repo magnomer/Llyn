@@ -19,7 +19,7 @@ public sealed class TTaxonomy
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CTaxonomy taxonomy = CTaxonomy.CTaxonomyCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []));
+            atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
         engine.TEngineTagCreate("motion");
 
         Assert.Empty(taxonomy.CTaxonomyRowsRead());
@@ -28,59 +28,116 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void TaxonomyTagCreate_Name_OpensTheNewTagChosenInTheRows()
+    public void TaxonomyEntryCreate_PaddedWordingNothingChosen_AsksTheWordingAndOpensTheTrimmedTagChosen()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCoinageCreate("  motion ", null, asked));
         int opened = 0;
         taxonomy.CTaxonomyTagOpened += () => opened++;
 
-        taxonomy.CTaxonomyTagCreate("motion");
+        taxonomy.CTaxonomyEntryCreate();
 
         long tag = Assert.NotNull(taxonomy.LTaxonomyChosen);
         CCatalogTag row = Assert.Single(taxonomy.CTaxonomyRowsRead(), row => row.CCatalogTagStored.CTagId == tag);
         Assert.Equal(new CTag(tag, "motion"), row.CCatalogTagStored);
         Assert.True(row.CCatalogTagChosen);
-        Assert.Equal(tag, taxonomy.LTaxonomyChosen);
         Assert.Equal(1, opened);
-        Assert.Empty(asked);
+        Assert.Equal(["Coinage:Coinage.Tag"], asked);
+        Assert.False(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
     }
 
     [Fact]
-    public void TaxonomyTagCreate_BlankName_ShowsTheFailureAndOpensNothing()
+    public void TaxonomyEntryCreate_BlankWording_ShowsTheFailureAndOpensNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCoinageCreate(" ", null, asked));
         int opened = 0;
         taxonomy.CTaxonomyTagOpened += () => opened++;
 
-        taxonomy.CTaxonomyTagCreate(" ");
+        taxonomy.CTaxonomyEntryCreate();
 
-        Assert.Equal(["Tag.CreateFailed"], asked);
+        Assert.Equal(["Coinage:Coinage.Tag", "Tag.CreateFailed"], asked);
         Assert.Equal(0, opened);
         Assert.Null(taxonomy.LTaxonomyChosen);
     }
 
     [Fact]
-    public void TaxonomyCoinageAllowed_NothingChosenNorShown_NamesATagUntilOneIsChosen()
+    public void TaxonomyEntryCreate_RetreatedWording_MakesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        LTag tag = engine.TEngineTagCreate("motion");
+        List<string> asked = [];
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCoinageCreate(null, null, asked));
+        int opened = 0;
+        taxonomy.CTaxonomyTagOpened += () => opened++;
 
-        Assert.True(taxonomy.CTaxonomyCoinageAllowed);
+        taxonomy.CTaxonomyEntryCreate();
 
-        taxonomy.CTaxonomyTagSelect(tag.LTagId);
+        Assert.Equal(["Coinage:Coinage.Tag"], asked);
+        Assert.Equal(0, opened);
+        Assert.Null(taxonomy.LTaxonomyChosen);
+        Assert.Empty(taxonomy.CTaxonomyRowsRead());
+        Assert.False(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
+    }
 
-        Assert.False(taxonomy.CTaxonomyCoinageAllowed);
+    [Fact]
+    public void TaxonomyEntryCreate_ChangedFreshEntryStayed_AsksOnlyTheLeaveQuestion()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCoinageCreate("motion", null, asked));
+        TTaxonomyChangePrepare(engine, taxonomy);
+
+        taxonomy.CTaxonomyEntryCreate();
+
+        Assert.Equal(["Leave"], asked);
+        Assert.Null(taxonomy.LTaxonomyChosen);
+        Assert.True(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
+        Assert.True(taxonomy.CTaxonomyEditor.CEditorDesk.CDeskChanged);
+    }
+
+    [Fact]
+    public void TaxonomyEntryCreate_ChangedFreshEntryDiscarded_AsksTheLeaveThenTheWording()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCoinageCreate("motion", false, asked));
+        TTaxonomyChangePrepare(engine, taxonomy);
+
+        taxonomy.CTaxonomyEntryCreate();
+
+        Assert.Equal(["Leave", "Coinage:Coinage.Tag"], asked);
+        Assert.NotNull(taxonomy.LTaxonomyChosen);
+        Assert.False(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
+    }
+
+    [Fact]
+    public void TaxonomyEntryCreate_TagChosen_StartsAnEntryWithoutAskingTheWording()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCoinageCreate("motion", null, asked));
+        LTag tag = engine.TEngineTagCreate("botany");
+        taxonomy.CTaxonomyTagToggle(tag.LTagId);
+
+        taxonomy.CTaxonomyEntryCreate();
+
+        Assert.Empty(asked);
+        Assert.Equal(tag.LTagId, taxonomy.LTaxonomyChosen);
+        Assert.True(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
     }
 
     [Fact]
@@ -89,16 +146,16 @@ public sealed class TTaxonomy
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
-        taxonomy.CTaxonomyMembershipFind(" ");
+        taxonomy.CTaxonomyMembership.CMembershipQuerySet(" ");
 
-        Assert.Equal("Tag.Vacant", taxonomy.CTaxonomyEmptyKey);
+        Assert.Equal("Tag.Vacant", taxonomy.CTaxonomyMembership.CMembershipEmptyKey);
 
-        taxonomy.CTaxonomyMembershipFind("aqua");
+        taxonomy.CTaxonomyMembership.CMembershipQuerySet("aqua");
 
-        Assert.Equal("Tag.Unmatched", taxonomy.CTaxonomyEmptyKey);
-        Assert.Empty(taxonomy.CTaxonomyMembershipRead());
+        Assert.Equal("Tag.Unmatched", taxonomy.CTaxonomyMembership.CMembershipEmptyKey);
+        Assert.Empty(taxonomy.CTaxonomyMembership.CMembershipRowsRead());
     }
 
     [Fact]
@@ -107,31 +164,33 @@ public sealed class TTaxonomy
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LTag tag = engine.TEngineTagCreate("botany");
-        taxonomy.CTaxonomyTagSelect(tag.LTagId);
+        taxonomy.CTaxonomyTagToggle(tag.LTagId);
         List<CEntryDraft> shown = [];
         taxonomy.CTaxonomyEditor.CEditorDraftChanged += shown.Add;
 
         taxonomy.CTaxonomyEntryCreate();
 
         Assert.Contains(shown[0].CEntryDraftMeanings[0].CCardDraftTag, row => row.CTagDraftId == tag.LTagId);
-        Assert.True(taxonomy.CTaxonomyPanel.CPanelEditing);
-        Assert.False(taxonomy.CTaxonomyPanel.CPanelBinEnabled);
+        Assert.True(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
+        Assert.False(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelBinEnabled);
 
         taxonomy.CTaxonomyEditor.CEditorHeadwordSet("fern");
         taxonomy.CTaxonomyEditor.CEditorEntrySave();
 
-        Assert.Equal(["fern"], taxonomy.CTaxonomyMembershipRead().Select(row => row.CVistaRowHeadword));
+        Assert.Equal(["fern"], taxonomy.CTaxonomyMembership.CMembershipRowsRead().Select(row => row.CVistaRowHeadword));
     }
 
     [Fact]
-    public void TaxonomyEntryCreate_NoTagChosen_OpensABlankEntry()
+    public void TaxonomyEntryCreate_EntryShownNoTagChosen_OpensABlankEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
+        LEntry hearth = TTaxonomyEntrySave(engine);
+        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelRowOpen(hearth.LEntryId);
         List<CEntryDraft> shown = [];
         taxonomy.CTaxonomyEditor.CEditorDraftChanged += shown.Add;
 
@@ -139,7 +198,7 @@ public sealed class TTaxonomy
 
         Assert.Empty(shown[0].CEntryDraftMeanings[0].CCardDraftTag);
         Assert.False(taxonomy.CTaxonomyEditor.CEditorDesk.CDeskChanged);
-        Assert.True(taxonomy.CTaxonomyPanel.CPanelEditing);
+        Assert.True(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
     }
 
     [Fact]
@@ -148,27 +207,28 @@ public sealed class TTaxonomy
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
+        taxonomy.CTaxonomyTagToggle(engine.TEngineTagCreate("botany").LTagId);
         taxonomy.CTaxonomyEntryCreate();
         long held = taxonomy.CTaxonomyEditor.CEditorDesk.CDeskId;
 
-        taxonomy.CTaxonomyPanel.CPanelEntryClose();
+        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEntryClose();
 
         Assert.Null(engine.TEngineDraftRead(held));
-        Assert.False(taxonomy.CTaxonomyPanel.CPanelEditing);
+        Assert.False(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
     }
 
     [Fact]
-    public void TaxonomyOrderSet_ReverseThenNull_KeepsTheChosenOrderAndTellsTheObserver()
+    public void TaxonomyOrderSet_ReverseThenNull_KeepsTheChosenOrderAndRaisesTheRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         engine.TEngineTagCreate("alpha");
         engine.TEngineTagCreate("beta");
         int told = 0;
-        taxonomy.CTaxonomyObserverAttach(CSubject.CSubjectVista, _ => told++);
+        taxonomy.CTaxonomyRowsChanged += () => told++;
 
         Assert.Equal(CCatalogOrder.CCatalogOrderName, taxonomy.CTaxonomyOrder);
 
@@ -190,7 +250,7 @@ public sealed class TTaxonomy
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         engine.TEngineTagCreate("motion");
 
         taxonomy.CTaxonomyQuerySet("zzz");
@@ -204,7 +264,7 @@ public sealed class TTaxonomy
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         taxonomy.CTaxonomyFilterSet(new CCatalogFilter(["Latin"]));
 
@@ -214,7 +274,6 @@ public sealed class TTaxonomy
         taxonomy.CTaxonomyFilterSet(new CCatalogFilter([]));
 
         Assert.False(taxonomy.CTaxonomyFiltered);
-        Assert.NotNull(taxonomy.CTaxonomyLanguageRead());
     }
 
     [Fact]
@@ -225,20 +284,64 @@ public sealed class TTaxonomy
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         string path = Path.Combine(workspace.TWorkspaceFolder, "hearth.md");
         CTaxonomy taxonomy = TTaxonomyPrepare(
-            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
-        LEntry hearth = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "hearth", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a meaning", 1)], []));
+            atelier, TEnvoyFake.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
+        LEntry hearth = TTaxonomyEntrySave(engine);
 
-        await taxonomy.CTaxonomyPortraitExport();
+        await taxonomy.CTaxonomyMembership.CMembershipPortraitExport();
 
         Assert.False(File.Exists(path));
-        Assert.Same(Task.CompletedTask, taxonomy.CTaxonomyPortraitPrint());
+        Assert.Same(Task.CompletedTask, taxonomy.CTaxonomyMembership.CMembershipPortraitPrint());
 
-        taxonomy.CTaxonomyPanel.CPanelRowOpen(hearth.LEntryId);
-        await taxonomy.CTaxonomyPortraitExport();
+        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelRowOpen(hearth.LEntryId);
+        await taxonomy.CTaxonomyMembership.CMembershipPortraitExport();
 
-        Assert.Equal("hearth", taxonomy.TTaxonomyFileRead());
+        Assert.Equal("hearth", taxonomy.CTaxonomyMembership.TMembershipFileRead());
         Assert.Contains("hearth", File.ReadAllText(path), System.StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MembershipRowSelect_EntryRow_OpensItWithoutAStation()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
+        LEntry hearth = TTaxonomyEntrySave(engine);
+        atelier.CAtelierNavigation.CNavigationTabSelect("Taxonomy");
+        List<CNavigationState> states = [];
+        atelier.CAtelierNavigation.CNavigationChanged += states.Add;
+        CPanel panel = taxonomy.CTaxonomyMembership.CMembershipPanel;
+
+        panel.CPanelRowSelect(null);
+
+        Assert.False(panel.CPanelBinEnabled);
+
+        panel.CPanelRowSelect(hearth.LEntryId);
+
+        Assert.True(panel.CPanelBinEnabled);
+        Assert.Equal(hearth.LEntryId, panel.TPanelChosenRead());
+        Assert.Empty(states);
+        Assert.Empty(asked);
+    }
+
+    [Fact]
+    public void MembershipRowSelect_ChangedFreshEntryStayed_OpensNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCoinageCreate(null, null, asked));
+        LEntry hearth = TTaxonomyEntrySave(engine);
+        TTaxonomyChangePrepare(engine, taxonomy);
+        CPanel panel = taxonomy.CTaxonomyMembership.CMembershipPanel;
+
+        panel.CPanelRowSelect(hearth.LEntryId);
+
+        Assert.Equal(["Leave"], asked);
+        Assert.False(panel.CPanelBinEnabled);
+        Assert.True(panel.CPanelEditing);
     }
 
     [Fact]
@@ -247,34 +350,43 @@ public sealed class TTaxonomy
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         long first = engine.TEngineTagCreate("motion").LTagId;
         atelier.CAtelierNavigation.CNavigationTabSelect("Taxonomy");
-        taxonomy.CTaxonomyTagSelect(first);
+        taxonomy.TTaxonomyTagOpen(first);
         List<CNavigationState> states = [];
         atelier.CAtelierNavigation.CNavigationChanged += states.Add;
+        List<string> seen = [];
+        taxonomy.CTaxonomyRowsChanged += () =>
+        {
+            seen.Add("tag");
+            taxonomy.CTaxonomyRowsRead();
+        };
+        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelRowsChanged += () => seen.Add("entry");
 
         taxonomy.CTaxonomyTagToggle(first);
 
         Assert.Null(taxonomy.LTaxonomyChosen);
         Assert.Equal(new CVoyageState(true, false), Assert.Single(states).CNavigationStateVoyage);
+        Assert.Equal(["tag", "entry"], seen);
     }
 
     [Fact]
-    public void TaxonomyTagOpen_Arrival_ChoosesTheTagAndRaisesTheOpening()
+    public void TaxonomyTagOpen_Arrival_ChoosesTheTagAndRaisesTheOpeningThenTheRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         long first = engine.TEngineTagCreate("motion").LTagId;
-        int opened = 0;
-        taxonomy.CTaxonomyTagOpened += () => opened++;
+        List<string> seen = [];
+        taxonomy.CTaxonomyTagOpened += () => seen.Add("opened");
+        taxonomy.CTaxonomyRowsChanged += () => seen.Add("rows");
 
         taxonomy.TTaxonomyTagOpen(first);
 
         Assert.Equal(first, taxonomy.LTaxonomyChosen);
-        Assert.Equal(1, opened);
+        Assert.Equal(["opened", "rows"], seen);
     }
 
     [Fact]
@@ -283,13 +395,13 @@ public sealed class TTaxonomy
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         long first = engine.TEngineTagCreate("motion").LTagId;
         taxonomy.CTaxonomyQuerySet("zzz");
-        taxonomy.CTaxonomyMembershipFind("zzz");
+        taxonomy.CTaxonomyMembership.CMembershipQuerySet("zzz");
         List<string> seen = [];
         taxonomy.CTaxonomyTagOpened += () =>
-            seen.Add(taxonomy.CTaxonomyEmptyKey + " " + taxonomy.CTaxonomyRowsRead().Count);
+            seen.Add(taxonomy.CTaxonomyMembership.CMembershipEmptyKey + " " + taxonomy.CTaxonomyRowsRead().Count);
 
         taxonomy.TTaxonomyTagOpen(first);
 
@@ -311,7 +423,7 @@ public sealed class TTaxonomy
             },
         });
         using CAtelier atelier = TInterfaceConduct.TAtelierMediaCreate(engine, media);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         taxonomy.CTaxonomyEditor.CEditorEntryOpen(null);
         Assert.True(taxonomy.CTaxonomyEditor.CEditorDesk.CDeskHeld);
 
@@ -321,9 +433,24 @@ public sealed class TTaxonomy
         Assert.Equal(1, stopped);
     }
 
-    private static CTaxonomy TTaxonomyPrepare(CAtelier atelier, CEnvoy envoy)
+    private static LEntry TTaxonomyEntrySave(LEngine engine)
     {
-        CTaxonomy taxonomy = CTaxonomy.CTaxonomyCreate(atelier, static () => true, envoy);
+        return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "hearth", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a meaning", 1)], []));
+    }
+
+    private static void TTaxonomyChangePrepare(LEngine engine, CTaxonomy taxonomy)
+    {
+        long tag = engine.TEngineTagCreate("botany").LTagId;
+        taxonomy.CTaxonomyTagToggle(tag);
+        taxonomy.CTaxonomyEntryCreate();
+        taxonomy.CTaxonomyEditor.CEditorHeadwordSet("fern");
+        taxonomy.CTaxonomyTagToggle(tag);
+    }
+
+    internal static CTaxonomy TTaxonomyPrepare(CAtelier atelier, CEnvoy envoy)
+    {
+        CTaxonomy taxonomy = CTaxonomy.CTaxonomyCreate(atelier, static () => true, envoy, static run => run());
         taxonomy.CTaxonomyVistaRestore();
         return taxonomy;
     }

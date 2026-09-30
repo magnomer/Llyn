@@ -67,3 +67,9 @@ The gate asks it inside its failure policy, so a dialog that fails is reported a
 Asks which folder the session moves onto, starting from `workspace`, the folder in use.
 It answers null when the user declines, and the gate then moves nothing.
 The gate asks it inside its failure policy, so a dialog that fails is reported as `Workspace.OpenFailed`.
+
+## `string? CEnvoyCoinageRead(string key);`
+
+Asks the wording of a new record, saying the message `key` names.
+It answers the wording as typed, or null when the user retreats, and the gate then creates nothing.
+The clerk behind the gate trims the wording, so the driver hands it back untouched.

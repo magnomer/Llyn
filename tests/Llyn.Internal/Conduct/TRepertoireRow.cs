@@ -18,7 +18,7 @@ public sealed class TRepertoireRow
         engine.TEngineSituationCreate(
             TInterface.TSituationCreate(0, "at home", null, LStateValue.LStateValueUnknown));
         engine.TEngineSituationCreate(TInterface.TSituationCreate(0, "by the shore", null, null));
-        CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         CCatalogSituation[] rows = [.. repertoire.CRepertoireRowsRead()];
 
@@ -38,7 +38,7 @@ public sealed class TRepertoireRow
         LSituation home = TRepertoire.TRepertoireSituationSave(engine, "at home");
         TRepertoire.TRepertoireSituationSave(engine, "by the shore");
         TRepertoire.TRepertoireEntrySave(engine, "hearth", home);
-        CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         CCatalogSituation[] rows = [.. repertoire.CRepertoireRowsRead()];
 

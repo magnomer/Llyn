@@ -19,7 +19,7 @@ public sealed class TCorpusMention
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         (long entry, long sense) = TCardMention.TMentionEntryCreate(engine);
-        CCorpus corpus = TMentionPrepare(engine, atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TMentionPrepare(engine, atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.CCorpusMentionAdd(TMentionText, 13, 6, entry);
 
         Assert.True(corpus.CCorpusSenseCheck(TMentionText, 13, 6));
@@ -35,7 +35,7 @@ public sealed class TCorpusMention
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CCorpus corpus = TMentionPrepare(engine, atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TMentionPrepare(engine, atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         corpus.CCorpusMentionAdd(TMentionText, 13, 6, 0);
 
@@ -52,7 +52,7 @@ public sealed class TCorpusMention
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         (long entry, _) = TCardMention.TMentionEntryCreate(engine);
-        CCorpus corpus = TMentionPrepare(engine, atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TMentionPrepare(engine, atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.CCorpusMentionAdd(TMentionText, 13, 6, entry);
         corpus.CCorpusMentionAdd(TMentionText, 29, 4, 0);
 
@@ -70,7 +70,7 @@ public sealed class TCorpusMention
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         (long entry, _) = TCardMention.TMentionEntryCreate(engine);
-        CCorpus corpus = TMentionPrepare(engine, atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TMentionPrepare(engine, atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.CCorpusMentionAdd(TMentionText, 13, 6, entry);
         corpus.CCorpusMentionAdd(TMentionText, 29, 4, 0);
 
@@ -90,7 +90,7 @@ public sealed class TCorpusMention
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         corpus.CCorpusMentionAdd(TMentionText, 13, 6, 0);
 
@@ -107,10 +107,10 @@ public sealed class TCorpusMention
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CCorpus corpus = TMentionPrepare(engine, atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+        CCorpus corpus = TMentionPrepare(engine, atelier, TEnvoyFake.TEnvoyCreate(false, asked));
 
         IReadOnlyList<CMentionLabel> labels = TInterfaceMention.TMentionFailRead(
-            engine, corpus.CCorpusDesk, TInterfaceConduct.TEnvoyCreate(false, asked));
+            engine, corpus.CCorpusDesk, TEnvoyFake.TEnvoyCreate(false, asked));
 
         Assert.Empty(labels);
         Assert.Equal(["Mention.FindFailed"], asked);
@@ -123,12 +123,12 @@ public sealed class TCorpusMention
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CCorpus corpus = TMentionPrepare(engine, atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+        CCorpus corpus = TMentionPrepare(engine, atelier, TEnvoyFake.TEnvoyCreate(false, asked));
 
         IReadOnlyList<CMeaning>? meanings = TInterfaceMention.TMeaningRead(
             engine,
             corpus.CCorpusDesk,
-            TInterfaceConduct.TEnvoyCreate(false, asked),
+            TEnvoyFake.TEnvoyCreate(false, asked),
             _ => throw new InvalidOperationException("no meanings"));
 
         Assert.Null(meanings);
@@ -144,7 +144,7 @@ public sealed class TCorpusMention
         long english = engine.TEngineTranslationCreate("cat", "English").LEntryId;
         engine.TEngineTranslationCreate("cat", "French");
         LExample cat = TCorpus.TCorpusExampleSave(engine, "a cat sat");
-        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.TCorpusExampleOpen(cat.LExampleId);
         corpus.CCorpusScribeToggle(true);
 
@@ -168,7 +168,7 @@ public sealed class TCorpusMention
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         (long entry, _) = TCardMention.TMentionEntryCreate(engine);
-        CCorpus corpus = TMentionPrepare(engine, atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TMentionPrepare(engine, atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         corpus.CCorpusMentionAdd(TMentionText, 13, 6, entry);
 
@@ -186,12 +186,12 @@ public sealed class TCorpusMention
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
         List<string> keys = [];
-        CCorpus corpus = TMentionPrepare(engine, atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+        CCorpus corpus = TMentionPrepare(engine, atelier, TEnvoyFake.TEnvoyCreate(false, asked));
 
         IReadOnlyList<CMeaning>? meanings = TInterfaceMention.TMeaningRead(
             engine,
             corpus.CCorpusDesk,
-            TInterfaceConduct.TEnvoyCreate(false, asked),
+            TEnvoyFake.TEnvoyCreate(false, asked),
             args =>
             {
                 keys.Add((string)args![6]!);
@@ -216,7 +216,7 @@ public sealed class TCorpusMention
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CCorpus corpus = TMentionPrepare(engine, atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TMentionPrepare(engine, atelier, TEnvoyFake.TEnvoyCreate(false, []));
         List<(string, CLedgerNotice)> handed = [];
         CEnvoy envoy = TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
         {
@@ -242,7 +242,7 @@ public sealed class TCorpusMention
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
 
         Assert.Null(corpus.CCorpusMentionFind(2));
         Assert.Empty(asked);
@@ -255,7 +255,7 @@ public sealed class TCorpusMention
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(null, asked));
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
         corpus.CCorpusExampleCreate();
         corpus.CCorpusDesk.TDeskDefer(
             TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterface.TStateValueCreate("a dog")));
@@ -275,7 +275,7 @@ public sealed class TCorpusMention
         List<string> asked = [];
 
         CMentionOffer? offer = TInterfaceMention.TAnthologyMentionFind(
-            engine, atelier, TInterfaceConduct.TEnvoyCreate(false, asked), cat.LExampleId, null);
+            engine, atelier, TEnvoyFake.TEnvoyCreate(false, asked), cat.LExampleId, null);
 
         Assert.Null(offer);
         Assert.Equal(["Mention.FindFailed"], asked);
@@ -291,7 +291,7 @@ public sealed class TCorpusMention
         List<long> arrived = TMentionLibraryAdd(atelier);
 
         CMentionOffer? offer = TInterfaceMention.TAnthologyMentionFind(
-            engine, atelier, TInterfaceConduct.TEnvoyCreate(false, []), cat.LExampleId, [8]);
+            engine, atelier, TEnvoyFake.TEnvoyCreate(false, []), cat.LExampleId, [8]);
 
         Assert.NotNull(offer);
         Assert.Equal(2, offer!.CMentionOfferOffset);
@@ -309,7 +309,7 @@ public sealed class TCorpusMention
         List<long> arrived = TMentionLibraryAdd(atelier);
 
         CMentionOffer? offer = TInterfaceMention.TAnthologyMentionFind(
-            engine, atelier, TInterfaceConduct.TEnvoyCreate(false, []), cat.LExampleId, [8, 9]);
+            engine, atelier, TEnvoyFake.TEnvoyCreate(false, []), cat.LExampleId, [8, 9]);
 
         Assert.NotNull(offer);
         Assert.Equal(2, offer!.CMentionOfferOffset);

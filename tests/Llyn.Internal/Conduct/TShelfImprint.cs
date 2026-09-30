@@ -14,7 +14,7 @@ public sealed class TShelfImprint
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelf.TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Adam"));
         shelf.CShelfReferenceCreate();
         CByline byline = shelf.CShelfImprint.CImprintByline;
@@ -40,7 +40,7 @@ public sealed class TShelfImprint
         CShelf shelf = CShelf.CShelfCreate(
             atelier,
             static () => true,
-            TInterfaceConduct.TEnvoyCreate(false, []),
+            TEnvoyFake.TEnvoyCreate(false, []),
             run =>
             {
                 marshalled++;

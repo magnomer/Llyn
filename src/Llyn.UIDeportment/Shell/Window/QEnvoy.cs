@@ -185,4 +185,9 @@ internal sealed class QEnvoy : CEnvoy
 
         return dialog.ShowDialog(_qEnvoySurface) == true ? dialog.FolderName : null;
     }
+
+    public string? CEnvoyCoinageRead(string key)
+    {
+        return QSCoinage.QSCoinageShow(_qEnvoySurface, key);
+    }
 }

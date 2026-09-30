@@ -47,7 +47,7 @@ public sealed class TErrand
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CDesk desk = TInterfaceConduct.TDeskCreate(engine, "Input", TInterfaceConduct.TEnvoyCreate(false, []));
+        CDesk desk = TInterfaceConduct.TDeskCreate(engine, "Input", TEnvoyFake.TEnvoyCreate(false, []));
 
         Assert.False(desk.CDeskErrand.CErrandRecordingStart("happy", 0, static _ => { }));
         Assert.False(desk.CDeskErrand.CErrandTranscriptionStart("happy", 0, "ipa", static _ => { }));
@@ -59,7 +59,7 @@ public sealed class TErrand
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CErrand errand = TInterfaceConduct.TDeskCreate(engine, "Input", TInterfaceConduct.TEnvoyCreate(false, []))
+        CErrand errand = TInterfaceConduct.TDeskCreate(engine, "Input", TEnvoyFake.TEnvoyCreate(false, []))
             .CDeskErrand;
         List<string> notices = [];
         errand.CErrandHarvestStarted += (source, order) => notices.Add($"source {source} {order}");
@@ -79,7 +79,7 @@ public sealed class TErrand
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CErrand errand = TInterfaceConduct.TDeskCreate(engine, "Input", TInterfaceConduct.TEnvoyCreate(false, []))
+        CErrand errand = TInterfaceConduct.TDeskCreate(engine, "Input", TEnvoyFake.TEnvoyCreate(false, []))
             .CDeskErrand;
         List<string> notices = [];
         errand.CErrandLookupStarted += (source, order) => notices.Add($"source {source} {order}");
@@ -99,7 +99,7 @@ public sealed class TErrand
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CErrand errand = TInterfaceConduct.TDeskCreate(engine, "Input", TInterfaceConduct.TEnvoyCreate(false, []))
+        CErrand errand = TInterfaceConduct.TDeskCreate(engine, "Input", TEnvoyFake.TEnvoyCreate(false, []))
             .CDeskErrand;
 
         Assert.False(await errand.CErrandRecordingSave(

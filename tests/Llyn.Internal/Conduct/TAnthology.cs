@@ -49,7 +49,7 @@ public sealed class TAnthology
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, asked);
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
 
         Assert.Null(TInterfaceMention.TAnthologyFailRead(engine, atelier, envoy));
         Assert.Equal(["Example.LoadFailed"], asked);
@@ -62,7 +62,7 @@ public sealed class TAnthology
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, asked);
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
 
         CDesk desk = TInterfaceConduct.TDeskCreate(engine, "Example", envoy, "Corpus", CSubject.CSubjectExample);
         CAnthology anthology = TInterfaceConduct.TAnthologyCreate(atelier, desk, envoy);
@@ -172,7 +172,7 @@ public sealed class TAnthology
         engine.TEngineDelaySet(0);
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
-        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, asked);
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
         CDesk desk = TInterfaceCitation.TDeskFailCreate(engine, envoy, "Example", "Corpus", CSubject.CSubjectExample);
         desk.CDeskStart(null);
         CAnthology anthology = TInterfaceConduct.TAnthologyCreate(atelier, desk, envoy);
@@ -418,7 +418,7 @@ public sealed class TAnthology
 
     private static CAnthology TAnthologyPrepare(LEngine engine, CAtelier atelier, out CDesk desk)
     {
-        CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, []);
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, []);
         desk = TInterfaceConduct.TDeskCreate(engine, "Example", envoy, "Corpus", CSubject.CSubjectExample);
         return TInterfaceConduct.TAnthologyCreate(atelier, desk, envoy);
     }

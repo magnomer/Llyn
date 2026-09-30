@@ -64,7 +64,7 @@ Every panel area moves to the veneer by the same steps, first proven on taxonomy
 - Part files and `P…Item` models are renamed with the class.
   Its maps are internal statics on its Conduct owner, as in `CAtlas`.
   A map shared by every panel sits on `CPanel` in Conduct.
-- A choice the view made over controller answers becomes a Conduct verdict, such as `CTaxonomyCoinageAllowed`.
+- A choice the view made over controller answers becomes a Conduct verdict, such as `CPanelPressAllowed`.
 - A controller that names WPF types splits in two, as `LLibrary` did.
   Its WPF half joins the driver, and its engine half stays a sealed controller.
   A driver never holds a vista, since only handles escape the Truth audit.

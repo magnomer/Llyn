@@ -95,7 +95,7 @@ public sealed class TDisplayArea
         using CAtelier atelier = TDisplayAtelierCreate(engine);
         LEntry river = TDisplayEntrySave(engine, "river");
         CLibrary library = CLibrary.CLibraryCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []), static run => run());
+            atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
         CDisplay area = library.CLibraryEditor.CEditorDisplay.CDisplayArea;
         area.CDisplayPanelAttach(library.CLibraryPanel);
         library.CLibraryVistaRestore();
@@ -307,7 +307,7 @@ public sealed class TDisplayArea
 
     private static CWing TDisplayWingPrepare(CAtelier atelier)
     {
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true);
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         return wing;
     }
 

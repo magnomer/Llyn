@@ -14,7 +14,7 @@ public sealed class TShelfRoll
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelf.TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LReference book = TShelfRollPrepare(engine);
         shelf.CShelfReferenceSelect(book.LReferenceId);
 
@@ -33,7 +33,7 @@ public sealed class TShelfRoll
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelf.TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LReference book = TShelfRollPrepare(engine);
         shelf.CShelfReferenceSelect(book.LReferenceId);
         shelf.CShelfQuerySet("zzz");
@@ -52,7 +52,7 @@ public sealed class TShelfRoll
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelf.TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         TShelfWordingPrepare(engine, "Lost", LStateValue.LStateValueUnknown, LStateMark.LStateMarkUnknown);
         TShelfWordingPrepare(engine, "Blank", LStateValue.LStateValueUnspecified, LStateMark.LStateMarkUnspecified);
 
@@ -72,7 +72,7 @@ public sealed class TShelfRoll
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelf.TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LReference book = TShelfWordingPrepare(
             engine, "Book", TInterface.TStateValueCreate("1999"), LStateMark.LStateMarkUnknown);
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));

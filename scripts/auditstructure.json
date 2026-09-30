@@ -388,6 +388,7 @@
       "CPortrait",
       "CCorpus",
       "CQuotation",
+      "CMembership",
       "CFavorite",
       "CFootnote",
       "CGuild",

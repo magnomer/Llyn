@@ -75,3 +75,9 @@ A dialog that raises, as with the spooler down, is reported by the gate as `Prin
 Opens the folder dialog on `workspace`, the folder in use, and answers the folder chosen.
 A cancelled dialog answers null, which the gate reads as nothing to move.
 The dialog's title stays here, since only a windowed chooser has one.
+
+## `public string? CEnvoyCoinageRead(string key)`
+
+Puts up the coinage dialog over the main window, saying the message `key` names.
+It answers the wording as typed, or null when the user retreats.
+The mint button stays dark on a blank wording, so a blank one never comes back.

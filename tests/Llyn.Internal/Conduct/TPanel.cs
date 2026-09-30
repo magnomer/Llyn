@@ -294,7 +294,7 @@ public sealed class TPanel
         engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
         List<string> asked = [];
         CPanel panel = TInterfaceConduct.TPanelCreate(
-            TInterfaceConduct.TEnvoyCreate(false, asked), "Guild", static () => false, static _ => true);
+            TEnvoyFake.TEnvoyCreate(false, asked), "Guild", static () => false, static _ => true);
         LVista vista = engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderName);
         panel.TPanelVistaRestore(vista);
         vista.TVistaSelect(ada.LAuthorId);
@@ -337,7 +337,7 @@ public sealed class TPanel
     public void PanelScribeRestore_EditingWithoutRow_StaysViewer()
     {
         CPanel panel = TInterfaceConduct.TPanelCreate(
-            TInterfaceConduct.TEnvoyCreate(true, []), "Scribe", static () => false, static _ => true);
+            TEnvoyFake.TEnvoyCreate(true, []), "Scribe", static () => false, static _ => true);
 
         panel.TPanelScribeRestore(true);
 
@@ -351,7 +351,7 @@ public sealed class TPanel
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CPanel panel = TInterfaceConduct.TPanelCreate(
-            TInterfaceConduct.TEnvoyCreate(true, []), "Scribe", static () => false, static _ => true);
+            TEnvoyFake.TEnvoyCreate(true, []), "Scribe", static () => false, static _ => true);
         LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
         vista.TVistaEditingSet(true);
 
@@ -408,7 +408,7 @@ public sealed class TPanel
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "water", "English", "w", string.Empty, [TInterface.TCardCreate("a liquid", 1)], []));
         CPanel panel = TInterfaceConduct.TPanelCreate(
-            TInterfaceConduct.TEnvoyCreate(answer, asked),
+            TEnvoyFake.TEnvoyCreate(answer, asked),
             scope,
             change,
             store =>

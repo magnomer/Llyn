@@ -15,7 +15,7 @@ public sealed class TGuildAutograph
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CGuild guild = TGuild.TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         guild.CGuildAuthorCreate();
 
         guild.CGuildNameSet("Ada");
@@ -35,7 +35,7 @@ public sealed class TGuildAutograph
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CGuild guild = TGuild.TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
         guild.CGuildNameSet("Ada");
 
@@ -49,7 +49,7 @@ public sealed class TGuildAutograph
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CGuild guild = TGuild.TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         int cleared = 0;
         guild.CGuildUnionCleared += () => cleared++;
@@ -73,7 +73,7 @@ public sealed class TGuildAutograph
         CGuild guild = CGuild.CGuildCreate(
             atelier,
             static () => true,
-            TInterfaceConduct.TEnvoyCreate(false, []),
+            TEnvoyFake.TEnvoyCreate(false, []),
             run =>
             {
                 marshalled++;

@@ -47,17 +47,17 @@ internal sealed partial class QTaxonomy
         QTaxonomyViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
         QTaxonomyScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
-        QExploration.TextChanged += QExplorationHandle;
-        QScout.TextChanged += QScoutHandle;
-        QTaxonomyFresh.Click += QTaxonomyFreshHandle;
-        QTaxonomyStore.Click += QTaxonomyStoreHandle;
+        QExploration.TextChanged += QExplorationObserve;
+        QScout.TextChanged += QScoutObserve;
+        QTaxonomyFresh.Click += QTaxonomyFreshObserve;
+        QTaxonomyStore.Click += QTaxonomyStoreObserve;
         QTaxonomyEarlier.Click += QTaxonomyRetreatObserve;
         QTaxonomyLater.Click += QTaxonomyAdvanceObserve;
         QTaxonomyBackward.Click += QTaxonomyUndoObserve;
         QTaxonomyForward.Click += QTaxonomyRedoObserve;
-        QTaxonomyViewer.Click += QTaxonomyScribeHandle;
-        QTaxonomyScribe.Click += QTaxonomyScribeHandle;
-        QTaxonomyBin.Click += QTaxonomyBinHandle;
+        QTaxonomyViewer.Click += QTaxonomyViewerObserve;
+        QTaxonomyScribe.Click += QTaxonomyScribeObserve;
+        QTaxonomyBin.Click += QTaxonomyBinObserve;
     }
 
     private Border QFunnel => QContract.QContractFind<Border>(_qTaxonomySurface, "PFunnel");
@@ -134,15 +134,17 @@ internal sealed partial class QTaxonomy
         _qTaxonomyHost = host;
         _cTaxonomy = host.PWindowForge.QForgeTaxonomyCreate(QTaxonomyShownCheck, host.PWindowEnvoy);
         _cTaxonomy.CTaxonomyTagOpened += QDirectoryTagRefine;
-        CPanel panel = _cTaxonomy.CTaxonomyPanel;
+        _cTaxonomy.CTaxonomyRowsChanged += QDirectoryRefine;
+        _cTaxonomy.CTaxonomyWorkspaceChanged += QTaxonomyWorkspaceRefine;
+        CPanel panel = _cTaxonomy.CTaxonomyMembership.CMembershipPanel;
         QLectern lectern = new(_cTaxonomy.CTaxonomyEditor.CEditorDisplay, panel);
         panel.CPanelChanged += QTaxonomyModeRefine;
-        panel.CPanelRowsChanged += QMembershipFind;
+        panel.CPanelRowsChanged += QMembershipRefine;
 
         QDirectory.ItemsSource = _qDirectoryList;
         QMembership.ItemsSource = _qMembershipList;
-        QLookItem.QLookItemAttach(QDirectory, QDirectoryApply);
-        QLookItem.QLookItemAttach(QMembership, QMembershipApply);
+        QLookItem.QLookItemAttach(QDirectory, QDirectoryItemRefine);
+        QLookItem.QLookItemAttach(QMembership, QMembershipItemRefine);
 
         QTaxonomyDisplay.PDisplayAttach(host, lectern);
         _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskStateChanged += QTaxonomyStoreRefine;
@@ -155,13 +157,6 @@ internal sealed partial class QTaxonomy
         QTaxonomyStore.IsEnabled = _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskStorable;
     }
 
-    internal void QTaxonomyReset()
-    {
-        _cTaxonomy.CTaxonomyPanel.CPanelEntryClose();
-        QDirectoryReset();
-        QDirectoryFind();
-    }
-
     internal void QTaxonomyExitRefine()
     {
         QTaxonomyEditor.PEditorPlayerRefine();
@@ -169,17 +164,17 @@ internal sealed partial class QTaxonomy
 
     private void QTaxonomyPressRefine(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _cTaxonomy?.CTaxonomyPanel.CPanelPressAllowed ?? false;
+        e.CanExecute = _cTaxonomy?.CTaxonomyMembership.CMembershipPanel.CPanelPressAllowed ?? false;
     }
 
     private async void QTaxonomyPressObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        await _cTaxonomy.CTaxonomyPortraitPrint();
+        await _cTaxonomy.CTaxonomyMembership.CMembershipPortraitPrint();
     }
 
     private async void QTaxonomyPortraitObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        await _cTaxonomy.CTaxonomyPortraitExport();
+        await _cTaxonomy.CTaxonomyMembership.CMembershipPortraitExport();
     }
 
     internal void QTaxonomyVoyageRefine(bool past, bool future)
@@ -222,7 +217,7 @@ internal sealed partial class QTaxonomy
 
     private void QTaxonomyModeRefine()
     {
-        CPanel panel = _cTaxonomy.CTaxonomyPanel;
+        CPanel panel = _cTaxonomy.CTaxonomyMembership.CMembershipPanel;
         QTaxonomyEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
         QTaxonomyDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
         QTaxonomyViewer.IsChecked = QLook.QLookCheckedRead(panel.CPanelViewerChecked);

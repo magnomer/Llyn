@@ -76,7 +76,8 @@ public sealed class QForge
 
     public CTaxonomy QForgeTaxonomyCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        CTaxonomy taxonomy = CTaxonomy.CTaxonomyCreate(_qForgeAtelier, shownSeam, envoy);
+        CTaxonomy taxonomy = CTaxonomy.CTaxonomyCreate(
+            _qForgeAtelier, shownSeam, envoy, LObserver.LObserverCreate<Action>(static run => run()));
         taxonomy.CTaxonomyVistaRestore();
         return taxonomy;
     }

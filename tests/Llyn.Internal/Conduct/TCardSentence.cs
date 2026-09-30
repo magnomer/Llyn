@@ -91,7 +91,7 @@ public sealed class TCardSentence
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineDelaySet(0);
         CDesk desk = TInterfaceConduct.TDeskCreate(
-            engine, "Input", TInterfaceConduct.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
+            engine, "Input", TEnvoyFake.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
         CSentence sentence = TInterfaceConduct.TSentenceCreate(engine, desk);
 
         sentence.CSentenceAdd(1, 0);
@@ -123,7 +123,7 @@ public sealed class TCardSentence
     {
         engine.TEngineDelaySet(0);
         CDesk desk = TInterfaceConduct.TDeskCreate(
-            engine, "Input", TInterfaceConduct.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
+            engine, "Input", TEnvoyFake.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
         desk.CDeskStart(null);
         return (desk, TInterfaceConduct.TSentenceCreate(engine, desk));
     }

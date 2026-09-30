@@ -326,7 +326,7 @@ public sealed class TYunjing
         TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
         string path = Path.Combine(workspace.TWorkspaceFolder, "rotten.md");
         CYunjing yunjing = TYunjingPrepare(
-            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
+            atelier, TEnvoyFake.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
 
         await yunjing.CYunjingPortraitExport();
 
@@ -438,7 +438,7 @@ public sealed class TYunjing
 
     private static CYunjing TYunjingPrepare(CAtelier atelier)
     {
-        return TYunjingPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        return TYunjingPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
     }
 
     private static CYunjing TYunjingPrepare(CAtelier atelier, CEnvoy envoy)

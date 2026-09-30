@@ -18,7 +18,7 @@ public sealed class TLibraryVista
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TLibrary.TLibraryEntrySave(engine, "stone", "English");
         TLibrary.TLibraryEntrySave(engine, "river", "English");
-        CLibrary library = TLibrary.TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CLibrary library = TLibrary.TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         library.CLibraryQuerySet("riv");
 
         library.CLibraryVistaRestore();
@@ -36,7 +36,7 @@ public sealed class TLibraryVista
         CLibrary library = CLibrary.CLibraryCreate(
             atelier,
             static () => true,
-            TInterfaceConduct.TEnvoyCreate(false, []),
+            TEnvoyFake.TEnvoyCreate(false, []),
             run =>
             {
                 marshalled++;
@@ -60,7 +60,7 @@ public sealed class TLibraryVista
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry stone = TLibrary.TLibraryEntrySave(engine, "stone", "English");
-        CLibrary library = TLibrary.TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CLibrary library = TLibrary.TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         library.CLibraryPanel.CPanelRowOpen(stone.LEntryId);
         Assert.True(library.CLibraryPanel.CPanelBinEnabled);
         int told = 0;
@@ -78,7 +78,7 @@ public sealed class TLibraryVista
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CLibrary library = TLibrary.TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CLibrary library = TLibrary.TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         int rows = 0;
         library.CLibraryPanel.CPanelRowsChanged += () => rows++;
 
@@ -116,7 +116,7 @@ public sealed class TLibraryVista
         });
         using CAtelier atelier = TInterfaceConduct.TAtelierMediaCreate(engine, media);
         LEntry stone = TLibrary.TLibraryEntrySave(engine, "stone", "English");
-        CLibrary library = TLibrary.TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CLibrary library = TLibrary.TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         library.CLibraryPanel.CPanelRowOpen(stone.LEntryId);
         library.CLibraryPanel.CPanelScribeToggle(true);
         Assert.True(library.CLibraryEditor.CEditorDesk.CDeskHeld);

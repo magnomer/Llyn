@@ -17,7 +17,7 @@ public sealed class TCorpusVista
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TCorpus.TCorpusExampleSave(engine, "a cat sat");
         TCorpus.TCorpusExampleSave(engine, "a dog ran");
-        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.CCorpusAnthology.CAnthologyQuerySet("dog");
         corpus.CCorpusQuotation.CQuotationQuerySet("zzz");
 
@@ -38,7 +38,7 @@ public sealed class TCorpusVista
         CCorpus corpus = CCorpus.CCorpusCreate(
             atelier,
             static () => true,
-            TInterfaceConduct.TEnvoyCreate(false, []),
+            TEnvoyFake.TEnvoyCreate(false, []),
             run =>
             {
                 marshalled++;
@@ -65,7 +65,7 @@ public sealed class TCorpusVista
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry water = TCorpus.TCorpusEntrySave(engine);
-        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         int anthology = 0;
         corpus.CCorpusAnthology.CAnthologyPanel.CPanelRowsChanged += () => anthology++;
 
@@ -82,7 +82,7 @@ public sealed class TCorpusVista
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LExample cat = TCorpus.TCorpusExampleSave(engine, "a cat sat");
         engine.TRequestQuoteApply(TCorpus.TCorpusEntrySave(engine).LEntryId, cat.LExampleId);
-        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         List<string> tallies = [corpus.CCorpusAnthology.CAnthologyPanel.CPanelTallyRead()];
 
         corpus.TCorpusExampleOpen(cat.LExampleId);

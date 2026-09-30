@@ -2,98 +2,134 @@
 
 ## `public sealed class CTaxonomy`
 
-The taxonomy panel's session: the Tag list, the entries carrying the chosen Tag, and the entry editor.
+The taxonomy panel's session: the Tag list, the entry editor, and the entry list it hands to `CMembership`.
 The tag vista and the membership vista hold the panel's state, and the drivers only follow.
 Every gate holds only the interaction and reaches the engine through a vista, the panel or the editor's desk.
 It restores both vistas itself, so no driver holds a port or a vista.
 
-## `private CTaxonomy(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `private CTaxonomy(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
-Builds the entry editor and the membership panel over the atelier's ports.
-The panel asks the editor's desk before it leaves an entry, and it finishes through the editor.
+Builds the entry editor and the entry list over the atelier's ports.
+The entry list's panel asks the editor's desk before it leaves an entry, and it finishes through the editor.
 A cleared panel cancels the editor's draft, and an edited row opens the editor on it.
 So the first draft a fresh member shows already carries the Tag.
 It registers its close with the workspace beside its draft finish and its vista restore.
 
-## `public static CTaxonomy CTaxonomyCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `public static CTaxonomy CTaxonomyCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the taxonomy over the atelier and the panel's own entry editor.
 Building it is no user action, so it is no gate on the atelier.
 `shownSeam` answers whether the tab is in front, which only the surface knows until `CNavigation` owns it.
+`marshal` carries every engine notice onto the driver's thread, and the forge hands it once.
 
 ## `public CEditor CTaxonomyEditor { get; }`
 
 The entry editor on the membership side, which the driver wraps for its editor page.
 
-## `public CPanel CTaxonomyPanel { get; }`
+## `public CMembership CTaxonomyMembership { get; }`
 
-The shared panel state over the membership vista: the chosen entry, the scribe mode, the bin and the leave guard.
+The entry list beside the Tag list, with its own panel, search and rows read.
 
 ## `public event Action? CTaxonomyTagOpened;`
 
-Raised when an arrival or a coinage opens a Tag, so the driver shows both searches empty and lists again.
+Raised when an arrival or a coinage opens a Tag, so the driver shows both searches empty.
+The rows event follows it, so the lists are read after the fields are emptied.
+
+## `public event Action? CTaxonomyRowsChanged;`
+
+Raised when the Tag rows may have moved, so the driver reads the Tag list again.
+The entry rows follow from that read, so the Tag list is always read first.
+
+## `public event Action? CTaxonomyWorkspaceChanged;`
+
+Raised last when the workspace moved, after the entry is closed, the Tag let go and the rows raised.
+The driver loads the new workspace's flags on it.
 
 ## `public void CTaxonomyTagToggle(long id)`
 
 A click on a row: records the station it leaves, then toggles the Tag.
+It raises the rows, since choosing a Tag announces nothing in the engine.
 
 ## `internal void LTaxonomyTagOpen(long id)`
 
 The navigation's arrival: chooses the Tag and empties both searches, then raises `CTaxonomyTagOpened`.
 Emptying the searches is the arrival's own, so no driver has to echo it back through the query gates.
+It raises the rows last, since the Tag may be new to the list.
 
 ## `internal long? LTaxonomyChosen`
 
 The Tag the tag vista has chosen, or null while none is, which the voyage records.
 
-## `public bool CTaxonomyCoinageAllowed`
+## `private bool LTaxonomyCoinageAllowed`
 
 Whether New should name a new Tag rather than start an entry.
 That holds while no Tag is chosen and no entry is shown.
-Both drivers ask this one question, so neither decides it on its own.
-
-## `public string CTaxonomyEmptyKey`
-
-The localization key for the empty entry list.
-The engine says whether the membership search holds text, so a search reads as unmatched and no search as vacant.
+Only the fresh gate reads it, after the leave question settled the shown entry.
 
 ## `public void CTaxonomyVistaRestore()`
 
 Starts the tag vista and the membership vista for this tab.
-The membership vista then goes to the panel and the editor.
+Each fresh vista takes the query its forerunner held, so a switched workspace keeps both searches.
+The tag vista is the entry list's roll, and the membership vista goes to the entry list and the editor.
+The observers are attached to the fresh vistas last.
 
-## `public void CTaxonomyObserverAttach(CSubject subject, Action<CBulletin> observer)`
+## `private void LTaxonomyObserverAttach()`
 
-Attaches a driver's observer to the tag vista for one subject.
-Each engine notice reaches the observer through the atelier's one bulletin map.
+The taxonomy's subject plan, attached to each fresh pair of vistas.
+Every notice runs through the marshal, so each answer lands on the driver's thread.
+A vista, reflex, settings or entry notice on the tag vista raises the rows.
+A reflex fill or a flipped setting rewrites the epithet beside a headword.
+A workspace notice and a Tag notice each have their own answer.
+The entry list attaches its own observers in between, in the order the driver once used.
+A draft edit or a fetched frequency, paradigm, script or fanqie row changes no listed row, and is not attached.
+
+## `private void LTaxonomySubjectAttach(CSubject subject, Action resonate)`
+
+Attaches one answer to the tag vista for one subject, through the marshal.
+
+## `private void LTaxonomyRowsResonate()`
+
+Raises the Tag rows, whose read then raises the entry rows.
+
+## `private void LTaxonomyWorkspaceResonate()`
+
+Puts the panel back on the workspace open now.
+It closes the entry, lets go of the Tag, raises the rows, then raises `CTaxonomyWorkspaceChanged`.
+A different workspace has its own Tags, so the Tag this panel stood on may not exist there.
+
+## `private void LTaxonomyTagResonate()`
+
+A Tag notice carries a Tag id, not an entry id, so it never selects a row.
+It raises the rows, then rereads the shown entry, whose chips may carry the renamed Tag.
 
 ## `public void CTaxonomyOrderSet(CCatalogOrder? order)`
 
 Orders the Tag list as the user chose.
 A null order keeps the current one, which the vista decides.
 
-## `public void CTaxonomyMembershipFind(string query)`
-
-Narrows the entries of the chosen Tag by the text typed in the membership search.
-
 ## `public IReadOnlyList<CCatalogTag> CTaxonomyRowsRead()`
 
 The Tag rows the engine lists, chosen mark included, mapped through the card's one Tag map.
 It answers nothing before the vistas are restored.
+The engine drops a chosen Tag the rows no longer hold, so the entries fall back to every entry.
+A failed read shows `Tag.LoadFailed` through the envoy and answers no rows.
+A read that succeeds raises the entry rows, since the entries hang on the chosen Tag.
+A failed read raises nothing more, so the user sees one notice, as before.
 
-## `public IReadOnlyList<CVistaRow> CTaxonomyMembershipRead()`
-
-The entries under the chosen Tag, or every entry while none is chosen, as the engine narrows them.
-
-## `public void CTaxonomyTagCreate(string name)`
+## `private void LTaxonomyTagCreate(string name)`
 
 Makes the Tag from the raw wording and opens it as an arrival does.
+The clerk below trims the wording and refuses a blank one.
 The panel is cleared first, so an unsaved fresh entry the leave check already settled does not linger.
 A refused Tag is shown through `CEnvoy` as `Tag.CreateFailed`, and nothing opens.
 
 ## `public void CTaxonomyEntryCreate()`
 
-Opens a fresh entry in the editor, in edit mode.
+The New button: the one gate for a fresh Tag or a fresh entry.
+It asks the leave question first, and a user who stays gets nothing new.
+While a Tag may be coined, it asks the wording through `CEnvoy` under `Coinage.Tag` and makes the Tag.
+A retreat from that question makes nothing.
+Otherwise it opens a fresh entry in the editor, in edit mode.
 The chosen Tag goes down with the start, so the engine puts it on the first card in one call.
 With no Tag chosen the fresh entry starts blank.
 
@@ -101,12 +137,3 @@ With no Tag chosen the fresh entry starts blank.
 
 The taxonomy's part of the window's exit gate `CAtelier.CAtelierClose`, registered with the workspace at build.
 It closes the entry editor and cancels its display's playback.
-
-## `public Task CTaxonomyPortraitPrint()`
-
-Prints the shown entry, and does nothing while none is shown outside edit mode.
-`CTaxonomyPortraitExport` exports it under the same condition.
-The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
-`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
-The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
-`CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.

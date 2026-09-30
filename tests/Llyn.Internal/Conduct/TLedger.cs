@@ -97,7 +97,7 @@ public sealed class TLedger
                 },
             }));
 
-        atelier.CAtelierLedger.CLedgerFolderOpen(TInterfaceConduct.TEnvoyCreate(false, asked));
+        atelier.CAtelierLedger.CLedgerFolderOpen(TEnvoyFake.TEnvoyCreate(false, asked));
 
         Assert.Equal(1, opened);
         Assert.Empty(asked);
@@ -115,7 +115,7 @@ public sealed class TLedger
                 ["LEngineFolderOpen"] = _ => throw new IOException("moved away"),
             }));
 
-        atelier.CAtelierLedger.CLedgerFolderOpen(TInterfaceConduct.TEnvoyCreate(false, asked));
+        atelier.CAtelierLedger.CLedgerFolderOpen(TEnvoyFake.TEnvoyCreate(false, asked));
 
         Assert.Equal(["Settings.FolderFailed"], asked);
     }
