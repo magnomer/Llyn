@@ -31,7 +31,7 @@ public sealed class QAccentItem : INotifyPropertyChanged
         QAccentItemVariety = variety;
         _qAccentItemName = name;
         _qAccentItemEnsign = ensign;
-        _qAccentItemFlag = flagged ? LEnsignImage.LEnsignFind(ensign) : null;
+        _qAccentItemFlag = flagged ? QEnsignImage.QEnsignRead(ensign) : null;
         _qAccentItemText = text;
         _qAccentItemAudio = audio;
         QAccentItemRespelled = respelling.CRespellingMarkShown;
@@ -183,11 +183,11 @@ public sealed class QAccentItem : INotifyPropertyChanged
     {
         ArgumentNullException.ThrowIfNull(variety);
 
-        return flagged ? LEnsignImage.LEnsignFind(variety.CVarietyEnsign) : null;
+        return flagged ? QEnsignImage.QEnsignRead(variety.CVarietyEnsign) : null;
     }
 
     internal void QAccentFlagRefine(bool flagged)
     {
-        QAccentItemFlag = flagged ? LEnsignImage.LEnsignFind(_qAccentItemEnsign) : null;
+        QAccentItemFlag = flagged ? QEnsignImage.QEnsignRead(_qAccentItemEnsign) : null;
     }
 }

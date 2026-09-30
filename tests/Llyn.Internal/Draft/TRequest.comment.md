@@ -67,6 +67,6 @@ Writes one byte of audio under the workspace, so a saved entry resolves it back 
 
 ## Inline notes
 
-### `private sealed class TRequestObserver : LObserver`
+### `private sealed class TRequestObserver : QObserver`
 
 Collects every bulletin raised, so a test can count them and read what they name.

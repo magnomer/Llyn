@@ -86,6 +86,6 @@ internal sealed class QTallyMark
     {
         ArgumentNullException.ThrowIfNull(marks);
 
-        return LSplice.LSpliceBuild(marks, static mark => new QTallyMark(mark));
+        return QSplice.QSpliceBuild(marks, static mark => new QTallyMark(mark));
     }
 }

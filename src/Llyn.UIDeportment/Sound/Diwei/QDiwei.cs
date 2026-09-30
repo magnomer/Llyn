@@ -41,13 +41,13 @@ internal sealed class QDiwei
 
     internal void QDiweiRefine(CDiweiPage page, string kind)
     {
-        LFontFace.LFontRefine(page.CDiweiPageFont, QDiweiHeadword);
-        LFontFace.LFontRefine(page.CDiweiPageGlyph, QDiweiList);
-        LFontFace.LFontPlace(QDiweiHeadword);
+        QFontFace.QFontRefine(page.CDiweiPageFont, QDiweiHeadword);
+        QFontFace.QFontRefine(page.CDiweiPageGlyph, QDiweiList);
+        QFontFace.QFontBaselineRefine(QDiweiHeadword);
         QDiweiHeadword.Text = page.CDiweiPageKey;
         QDiweiKind.SetResourceReference(TextBlock.TextProperty, kind);
         QDiweiLanguage.Text = page.CDiweiPageLanguage;
-        QDiweiFlag.Source = LEnsignImage.LEnsignFind(page.CDiweiPageLanguage);
+        QDiweiFlag.Source = QEnsignImage.QEnsignRead(page.CDiweiPageLanguage);
         QDiweiList.ItemsSource = QDiweiItem.QDiweiItemBuild(page.CDiweiPageSections);
         QDiweiEmpty.Visibility = QLook.QLookVisibleRead(page.CDiweiPageEmpty);
     }

@@ -39,6 +39,10 @@ The dropdown lists the shared entry orderings, and the filter mark is drawn from
 The field is emptied, since the fresh vista holds no query.
 Conduct restores the entry itself, so this paint calls no gate.
 
+## `private void QWingSieveBuild(IReadOnlyList<string> languages)`
+
+Builds the language sieve from the languages the flag load answered, as the library's `QSieveBuild` does.
+
 ## `private void QWingIndexRefine()`
 
 Lists the matches from the vista, already filtered, sorted, numbered and marked by the engine.

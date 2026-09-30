@@ -9,6 +9,22 @@ namespace Llyn.Tests;
 public sealed class TFootnote
 {
     [Fact]
+    public async Task FootnoteRowsLoad_NoSourceChosen_AnswersEveryEntryAfterTheFill()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry water = TFootnoteEntrySave(engine, "water");
+        (CFootnote footnote, _, _) = TFootnotePrepare(engine, atelier);
+
+        CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
+            await footnote.CFootnoteRowsLoad(static (_, _) => static () => { });
+
+        Assert.Equal(water.LEntryId, Assert.Single(sheet.CEnsignSheetRows).CVistaRowId);
+        Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), sheet.CEnsignSheetLanguages);
+    }
+
+    [Fact]
     public void FootnoteRowsRead_NoSourceChosen_ListsEveryEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

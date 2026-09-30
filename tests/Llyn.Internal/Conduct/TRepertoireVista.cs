@@ -10,6 +10,22 @@ namespace Llyn.Tests;
 public sealed class TRepertoireVista
 {
     [Fact]
+    public async Task RepertoireRowsLoad_StoredSituation_AnswersTheRowsAndTheLanguagesAfterTheFill()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        TRepertoire.TRepertoireSituationSave(engine, "at home");
+        CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
+
+        CEnsignSheet<IReadOnlyList<CCatalogSituation>> sheet =
+            await repertoire.CRepertoireRowsLoad(static (_, _) => static () => { });
+
+        Assert.Equal(["at home"], sheet.CEnsignSheetRows.Select(static row => row.CCatalogSituationTitle));
+        Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), sheet.CEnsignSheetLanguages);
+    }
+
+    [Fact]
     public void RepertoireVistaRestore_QueriesHeld_CarriesThemIntoTheFreshVistas()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

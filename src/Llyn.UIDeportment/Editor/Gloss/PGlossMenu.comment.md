@@ -55,3 +55,8 @@ Unchecks the pill, so its menu closes once a language is picked.
 ## `private async void PSpeakerFlagRefine()`
 
 Waits for the flag images, then paints the pill's flag for the draft's language.
+
+## `private void PSpeakerEnsignRefine()`
+
+Paints the speaker's flag, or its globe, from the drawings already in the store.
+The language menu calls it after its own load, so it asks for no second fill.

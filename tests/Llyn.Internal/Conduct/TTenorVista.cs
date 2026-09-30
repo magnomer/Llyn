@@ -11,6 +11,22 @@ namespace Llyn.Tests;
 public sealed class TTenorVista
 {
     [Fact]
+    public async Task TenorRowsLoad_StoredRegister_AnswersTheRowsAndTheLanguagesAfterTheFill()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        engine.TEngineRegisterCreate("motion");
+        CTenor tenor = TTenor.TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
+
+        CEnsignSheet<IReadOnlyList<CCatalogRegister>> sheet =
+            await tenor.CTenorRowsLoad(static (_, _) => static () => { });
+
+        Assert.Equal(["motion"], sheet.CEnsignSheetRows.Select(static row => row.CCatalogRegisterStored.CRegisterName));
+        Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), sheet.CEnsignSheetLanguages);
+    }
+
+    [Fact]
     public void TenorVistaRestore_QueriesHeld_CarriesBothIntoTheFreshVistas()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

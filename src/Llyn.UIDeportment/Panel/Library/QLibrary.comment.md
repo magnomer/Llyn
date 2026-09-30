@@ -40,6 +40,11 @@ The list is medium, so it moved here from the controller when the controller was
 Reads the rows and hands them to the list with the library's empty verdict.
 Conduct counts the rows, so the empty notice needs no count kept here.
 
+## `private void QLibraryIndexRefine(IReadOnlyList<CVistaRow> rows)`
+
+Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
+The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
+
 ## `private void QLibrarySieveRefine()`
 
 Shows the mark on the sieve button while the vista hides any language.
@@ -51,6 +56,7 @@ It paints the order and the filter mark, then waits for the flags.
 The flags are loaded before the first rows are built, because a row reads its flag at construction.
 It builds the filter menu from the languages the load answers, then reads the rows once.
 The observers that carry each announcement live in `CLibrary`, so this driver holds none.
+Its one request is `CLibraryRowsLoad`, which runs the flag fill and then answers the rows it paints.
 
 ## `private void QSieveBuild(IReadOnlyList<string> languages)`
 

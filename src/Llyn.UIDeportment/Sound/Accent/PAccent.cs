@@ -119,7 +119,6 @@ public partial class PEditor
     internal void PAccentRefine(CEntryDraft _)
     {
         PAccentRefine(_qEditor.QEditorArea.CEditorTimbre.CTimbreAccentRead());
-        PAccentEnsignRefine();
     }
 
     private void PAccentRefine(CTimbreAccent accent)
@@ -169,9 +168,9 @@ public partial class PEditor
             : string.Empty;
     }
 
-    private async void PAccentEnsignRefine()
+    internal async void PAccentEnsignRefine(CEntryDraft _)
     {
-        PAccentFlagRefine(await LEnsignImage.LEnsignLoad(_qEditor.QEditorArea.CEditorTimbre.CTimbreFlagRead));
+        PAccentFlagRefine(await _qEditor.QEditorArea.CEditorTimbre.CTimbreFlagRead(QEnsignImage.QEnsignDraw));
     }
 
     private void PAccentFlagRefine(CTimbreAccent? accent)

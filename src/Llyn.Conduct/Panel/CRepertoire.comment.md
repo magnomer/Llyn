@@ -215,6 +215,11 @@ A failed read is shown by the list and answers no rows, so nothing is cleared.
 When the vignette shows a chosen Situation the rows no longer list, both lists clear before the rows return.
 The clear announces fresh rows, which carry the same Situations, so a driver's nested refill is harmless.
 
+## `public Task<CEnsignSheet<IReadOnlyList<CCatalogSituation>>> CRepertoireRowsLoad(`
+
+Runs the flag fill into the driver's `store`, then answers `CRepertoireRowsRead` beside the loaded languages.
+The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+
 ## `public CScenarioLine CRepertoireTitleSet(string text)`
 
 Hands the typed title to the scenario's own edit on the tenure, which defers it.

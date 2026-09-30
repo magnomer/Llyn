@@ -17,7 +17,7 @@ internal sealed class QOccurrenceItem : INotifyPropertyChanged
         QOccurrenceItemEpithet = row.CVistaRowEpithet;
         QOccurrenceItemName = row.CVistaRowName;
         QOccurrenceItemLanguage = row.CVistaRowLanguage;
-        QOccurrenceItemFlag = LEnsignImage.LEnsignFind(row.CVistaRowLanguage);
+        QOccurrenceItemFlag = QEnsignImage.QEnsignRead(row.CVistaRowLanguage);
     }
 
     public long QOccurrenceItemId { get; }

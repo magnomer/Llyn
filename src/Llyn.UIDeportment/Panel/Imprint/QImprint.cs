@@ -137,7 +137,7 @@ internal sealed class QImprint : QChronicleHost
 
     private void QAuthorRefine()
     {
-        LSplice.LSpliceApply(
+        QSplice.QSpliceRefine(
             _qAuthorList,
             QAuthorItem.QAuthorItemBuild(_cImprint.CImprintCreditRead()),
             QAuthorItem.QAuthorItemMatch,

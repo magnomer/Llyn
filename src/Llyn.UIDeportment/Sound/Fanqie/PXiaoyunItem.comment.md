@@ -19,11 +19,11 @@ A plain copy loop over the entries at the chosen cell.
 
 Whether the two rows show the same values, the chosen mark left aside.
 The flag counts too, so a flag loaded after the rows were built refills the list.
-`LSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
+`QSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
 
 ## `internal static void PXiaoyunItemSync(PXiaoyunItem held, PXiaoyunItem fresh)`
 
-Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.
+Copies the chosen mark of the fresh row onto the held row that `QSplice` kept.
 
 ## `internal static void PXiaoyunItemRefine(FrameworkElement container, object item, string? _)`
 

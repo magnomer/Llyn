@@ -354,7 +354,7 @@ public sealed class TSounding
             ["LEngineFontRead"] = args =>
             {
                 asked.Add(((string)args![0]!, (LFontRole)args[1]!));
-                return TInterfaceConduct.TFontCreate("Noto Serif", 21);
+                return TInterfaceFont.TFontCreate("Noto Serif", 21);
             },
             ["LEngineMorphologyCheck"] = _ => morphology,
         });

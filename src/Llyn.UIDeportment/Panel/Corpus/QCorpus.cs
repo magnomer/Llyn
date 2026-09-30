@@ -233,7 +233,7 @@ internal sealed partial class QCorpus : QChronicleHost
             host.PWindowAtelier,
             QCorpusShownCheck,
             host.PWindowEnvoy,
-            LObserver.LObserverCreate<Action>(static run => run()));
+            QObserver.QObserverCreate<Action>(static run => run()));
         QLectern lectern = new(_cCorpus.CCorpusEditor.CEditorDisplay, _cCorpus.CCorpusQuotation.CQuotationPanel);
         _qCorpusDesk = _cCorpus.CCorpusDesk;
         QTranscriptDeskIntroduce();
@@ -318,6 +318,6 @@ internal sealed partial class QCorpus : QChronicleHost
 
     private async void QCorpusPortraitObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        await _cCorpus.CCorpusPortraitExport();
+        await _cCorpus.CCorpusQuotation.CQuotationPortraitExport();
     }
 }

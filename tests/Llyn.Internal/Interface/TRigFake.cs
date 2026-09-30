@@ -14,7 +14,13 @@ internal static class TRigFake
 
     internal static LRig TRigFakeBuild(LEntryVault entries) => TRigFakeBuild(entries, "fake");
 
-    internal static LRig TRigFakeBuild(LEntryVault entries, string workspace)
+    internal static LRig TRigFakeBuild(LEntryVault entries, string workspace) =>
+        TRigFakeBuild(entries, workspace, new TRigFakeLanguages(), TRigStubCreate<LUsher>());
+
+    internal static LRig TRigFakeBuild(LLanguageVault languages, LUsher usher) =>
+        TRigFakeBuild(new TVaultFake(), "fake", languages, usher);
+
+    private static LRig TRigFakeBuild(LEntryVault entries, string workspace, LLanguageVault languages, LUsher usher)
     {
         return new LRig(
             new TRigFakeVault(),
@@ -65,12 +71,12 @@ internal static class TRigFake
             TRigStubCreate<LReflexSource>(),
             TRigStubCreate<LScriptSource>(),
             TRigStubCreate<LRecordingVault>(),
-            new TRigFakeLanguages(),
+            languages,
             TRigStubCreate<LLocalizationVault>(),
             TRigStubCreate<LMarkupVault>(),
             TRigStubCreate<LPortraitVault>(),
             new TPress(),
-            TRigStubCreate<LUsher>(),
+            usher,
             new TPhonographFake(),
             new LTrailSystem(),
             new TClockFake(),

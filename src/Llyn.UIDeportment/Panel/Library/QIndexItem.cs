@@ -44,9 +44,9 @@ internal sealed class QIndexItem : INotifyPropertyChanged
     {
         ArgumentNullException.ThrowIfNull(rows);
 
-        return LSplice.LSpliceBuild(
+        return QSplice.QSpliceBuild(
             rows,
-            row => new QIndexItem(row, LEnsignImage.LEnsignFind(row.CVistaRowLanguage), row.CVistaRowChosen));
+            row => new QIndexItem(row, QEnsignImage.QEnsignRead(row.CVistaRowLanguage), row.CVistaRowChosen));
     }
 
     internal static bool QIndexItemMatch(QIndexItem held, QIndexItem fresh)

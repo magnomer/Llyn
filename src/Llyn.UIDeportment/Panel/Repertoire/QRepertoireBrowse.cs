@@ -12,7 +12,7 @@ internal sealed partial class QRepertoire
 
     private async void QRepertoireWorkspaceRefine()
     {
-        await LEnsignImage.LEnsignLoad(_qRepertoireHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
+        await _qRepertoireHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
     }
 
     private void QInquestObserve(object sender, TextChangedEventArgs e)
@@ -35,16 +35,17 @@ internal sealed partial class QRepertoire
     {
         QChoice.QChoiceOrderApply(QTierDropdown, _cRepertoire.CRepertoireAtlas.CAtlasPanel.CPanelOrder);
         QMeshRefine();
-        IReadOnlyList<string> languages =
-            await LEnsignImage.LEnsignLoad(_qRepertoireHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
-        QMeshListRefine(languages);
-        QAtlasRefine();
+        CEnsignSheet<IReadOnlyList<CCatalogSituation>> sheet =
+            await _cRepertoire.CRepertoireRowsLoad(QEnsignImage.QEnsignDraw);
+        QMeshListRefine(sheet.CEnsignSheetLanguages);
+        QAtlasRefine(sheet.CEnsignSheetRows);
     }
 
     internal async void QOccurrenceVistaRefine()
     {
-        await LEnsignImage.LEnsignLoad(_qRepertoireHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
-        QOccurrenceRefine();
+        CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
+            await _cRepertoire.CRepertoireOccurrence.COccurrenceRowsLoad(QEnsignImage.QEnsignDraw);
+        QOccurrenceRefine(sheet.CEnsignSheetRows);
     }
 
     private void QMeshRefine()
@@ -78,13 +79,18 @@ internal sealed partial class QRepertoire
 
     private void QAtlasRefine()
     {
+        QAtlasRefine(_cRepertoire.CRepertoireRowsRead());
+    }
+
+    private void QAtlasRefine(IReadOnlyList<CCatalogSituation> rows)
+    {
         List<QAtlasItem> fresh = [];
-        foreach (CCatalogSituation row in _cRepertoire.CRepertoireRowsRead())
+        foreach (CCatalogSituation row in rows)
         {
             fresh.Add(new QAtlasItem(row, row.CCatalogSituationChosen));
         }
 
-        LSplice.LSpliceApply(_qAtlasList, fresh, QAtlasItem.QAtlasItemMatch, QAtlasItem.QAtlasItemSync);
+        QSplice.QSpliceRefine(_qAtlasList, fresh, QAtlasItem.QAtlasItemMatch, QAtlasItem.QAtlasItemSync);
 
         QAtlasEmpty.Visibility = QLook.QLookVisibleRead(_qAtlasList.Count == 0);
     }

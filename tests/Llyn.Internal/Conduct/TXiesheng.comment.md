@@ -4,6 +4,7 @@
 
 Covers the xiesheng panel's gates end to end on a real workspace.
 The series are fetched from fake pages, so nothing here reaches the web.
+Its flag-fill load answers the same rows once the fill has run.
 
 The bundled series pack shows the tab, and with nothing fetched the panel lists nothing under the bare keys.
 Opening a fetched series by key lists it chosen with its count, and shows its page and entry.

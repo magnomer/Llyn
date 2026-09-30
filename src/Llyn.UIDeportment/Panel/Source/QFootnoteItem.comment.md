@@ -23,11 +23,11 @@ A plain copy loop, so the panel that asks for it carries no loop of its own.
 ## `internal static bool QFootnoteItemMatch(QFootnoteItem held, QFootnoteItem fresh)`
 
 Whether the two rows show the same values, the chosen mark left aside.
-`LSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
+`QSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
 
 ## `internal static void QFootnoteItemSync(QFootnoteItem held, QFootnoteItem fresh)`
 
-Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.
+Copies the chosen mark of the fresh row onto the held row that `QSplice` kept.
 
 ## `internal static void QFootnoteItemRefine(FrameworkElement container, object item, string? _)`
 

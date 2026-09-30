@@ -37,6 +37,7 @@ The flags are loaded before any row is built.
 The language menu is then built from the languages that load answers.
 The roster is then listed once, so a row keeps the flag it was built with.
 The search text stands in the box already, since the restore carried it into the fresh vista.
+Its one request is `CFavoriteRowsLoad`, which runs the flag fill and then answers the rows it paints.
 
 ## `private void QStrainerBuild(IReadOnlyList<string> languages)`
 
@@ -54,6 +55,11 @@ A failed read is shown to the user by `CFavorite`.
 Ordering by the mark reads when the mark was made, never when the entry was written.
 The empty line is shown only while no row stands.
 Rows arrive as shapes, numbered and with their epithets, so the panel only copies them.
+
+## `private void QRosterRefine(IReadOnlyList<CVistaRow> rows)`
+
+Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
+The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
 
 ## `private void QRosterObserve(object sender, RoutedEventArgs e)`
 

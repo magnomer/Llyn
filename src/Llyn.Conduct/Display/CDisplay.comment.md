@@ -71,6 +71,7 @@ The view's deportment names the panel, since a view may follow a panel or none.
 
 Opens a draft in the view, or closes the view for a missing draft.
 A vista choosing nothing closes the view too, since the draft then stands on no entry.
+The note arrives parsed, so the driver draws its blocks and never parses.
 The stamp is read from the stored entry, and a refused read hides it.
 
 ## `public void CDisplayEntryClose()`

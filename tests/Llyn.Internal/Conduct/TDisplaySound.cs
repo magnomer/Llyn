@@ -33,6 +33,23 @@ public sealed class TDisplaySound
     }
 
     [Fact]
+    public void DisplayFontRead_ShownEntryOrNothingShown_ReadsThePackFontOfTheShownLanguage()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CWing wing = TDisplayWingPrepare(atelier, []);
+        CFont blank = wing.CWingDisplay.CDisplaySound.CDisplayFontRead(CFontRole.CFontRoleHeadword);
+        wing.CWingEntryOpen(TDisplayEnglishSave(engine).LEntryId);
+
+        CDisplaySound sound = wing.CWingDisplay.CDisplaySound;
+
+        Assert.Equal(new CFont(null, null, null), blank);
+        Assert.Equal(new CFont("Segoe UI", 40, null), sound.CDisplayFontRead(CFontRole.CFontRoleHeadword));
+        Assert.Equal(new CFont("Georgia, Segoe UI", 15, "italic"), sound.CDisplayFontRead(CFontRole.CFontRoleGloss));
+    }
+
+    [Fact]
     public void DisplayGlyphRead_LanguageWithoutGlyphOrNothingShown_AnswersTheHiddenRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

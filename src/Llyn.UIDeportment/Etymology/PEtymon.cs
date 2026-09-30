@@ -29,7 +29,7 @@ internal sealed class PEtymon : DependencyObject
         PEtymonId = id;
         PEtymonHeadword = headword;
         PEtymonLanguage = language;
-        PEtymonFlag = LEnsignImage.LEnsignFind(language);
+        PEtymonFlag = QEnsignImage.QEnsignRead(language);
     }
 
     public long PEtymonId { get; }

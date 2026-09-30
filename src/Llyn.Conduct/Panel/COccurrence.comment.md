@@ -44,6 +44,11 @@ Reads the entries referencing the roll's chosen Situation, or every entry while 
 The engine matches the query and drops the hidden languages, so the list decides nothing about matching.
 A failed read shows the `Situation.LoadFailed` notice once through the ledger and answers no rows.
 
+## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> COccurrenceRowsLoad(`
+
+Runs the flag fill into the driver's `store`, then answers `COccurrenceRowsRead` beside the loaded languages.
+The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+
 ## `internal string LOccurrenceFileRead()`
 
 The file name an export of the entry on display is offered under.

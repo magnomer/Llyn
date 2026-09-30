@@ -1,0 +1,10 @@
+# TInterfaceEnsign.cs
+
+## `internal static class TInterfaceEnsign`
+
+The relay for the shared flag-fill ordering rule, so a test drives it over a fake settings port.
+The relay is transparent and carries no test logic of its own.
+
+## `internal static Task<CEnsignSheet<TEnsignKind>> TCatalogEnsignLoad<TEnsignKind>(`
+
+Relays `CCatalog.LCatalogEnsignLoad` with the port, the store and the read a test hands in.

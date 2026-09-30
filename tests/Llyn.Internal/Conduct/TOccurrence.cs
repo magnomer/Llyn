@@ -9,6 +9,24 @@ namespace Llyn.Tests;
 public sealed class TOccurrence
 {
     [Fact]
+    public async Task OccurrenceRowsLoad_ChosenSituation_AnswersTheReferencingEntriesAfterTheFill()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LSituation home = TOccurrenceSituationSave(engine, "at home");
+        TOccurrenceEntrySave(engine, "hearth", home);
+        (COccurrence occurrence, _, _) = TOccurrencePrepare(engine);
+
+        CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
+            await occurrence.COccurrenceRowsLoad(static (_, _) => static () => { });
+
+        Assert.Equal(
+            occurrence.COccurrenceRowsRead().Select(static row => row.CVistaRowHeadword),
+            sheet.CEnsignSheetRows.Select(static row => row.CVistaRowHeadword));
+        Assert.Contains("hearth", sheet.CEnsignSheetRows.Select(static row => row.CVistaRowHeadword));
+    }
+
+    [Fact]
     public void OccurrenceRowsRead_ChosenSituation_ListsTheReferencingEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -11,7 +11,7 @@ internal sealed partial class QRepertoire
     {
         QVignetteTitleRefine(situation.CSituationTitle);
         QVignetteKindRefine(situation.CSituationKind);
-        QVignetteDescriptionRefine(situation.CSituationDescription);
+        QVignetteDescriptionRefine(situation);
         QVignetteMediaRefine(
             [.. situation.CSituationImage.Select(QScenarioImageCreate)],
             [.. situation.CSituationVideo.Select(QScenarioVideoCreate)]);
@@ -41,15 +41,20 @@ internal sealed partial class QRepertoire
         QVignetteChip.Visibility = QLook.QLookVisibleRead(!kind.CStateWordingMuted);
     }
 
-    private void QVignetteDescriptionRefine(CStateWording description)
+    private void QVignetteDescriptionRefine(CSituation situation)
     {
-        LMarkdownFace.LMarkdownRefine(
-            QVignetteDescription,
-            description.CStateWordingKey is null
-                ? description.CStateWordingText
-                : QLocalizationCatalog.QLocalizationTextRead(description.CStateWordingKey),
-            _qRepertoireHost.PWindowAtelier);
-        QVignetteDescriptionSection.Visibility = QLook.QLookVisibleRead(!description.CStateWordingMuted);
+        if (situation.CSituationDescription.CStateWordingKey is string key)
+        {
+            QMarkdownFace.QMarkdownRefine(QVignetteDescription, QLocalizationCatalog.QLocalizationTextRead(key));
+        }
+        else
+        {
+            QMarkdownFace.QMarkdownRefine(
+                QVignetteDescription, situation.CSituationMarkdown, _qRepertoireHost.PWindowAtelier);
+        }
+
+        QVignetteDescriptionSection.Visibility =
+            QLook.QLookVisibleRead(!situation.CSituationDescription.CStateWordingMuted);
     }
 
     private void QVignetteMediaRefine(IReadOnlyList<PImage>? pictures, IReadOnlyList<PVideo>? videos)

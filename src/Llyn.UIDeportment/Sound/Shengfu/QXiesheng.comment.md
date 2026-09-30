@@ -45,6 +45,7 @@ The area has already let the series and the chosen entry go.
 Once the flags are in, it repaints the entry list, whose rows carry a flag.
 So rows built while the load ran, after a series was chosen, gain their flags.
 A failed load throws before the repaint, as the old load before the reset did.
+Its one request is `CXieshengKindredLoad`, which runs the flag fill and then answers the rows it paints.
 
 ## `private void QLodestarRefine()`
 
@@ -68,6 +69,11 @@ Copies the series column and its empty line again.
 ## `private void QKindredRefine()`
 
 Copies the entry list and its empty line again.
+
+## `private void QKindredRefine(IReadOnlyList<CVistaRow> rows)`
+
+Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
+The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
 
 ## `internal void QXieshengStemRefine()`
 

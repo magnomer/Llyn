@@ -28,13 +28,13 @@ The catalog carries it and not only the display.
 
 Whether this row is the one the panel stands on, which the row template paints an accent edge for.
 It is the only value of the row that changes after the row is built.
-The catalog row carries it, and `LSplice` moves the mark in place, so the list keeps its scroll position.
+The catalog row carries it, and `QSplice` moves the mark in place, so the list keeps its scroll position.
 
 ## `internal static bool QAtlasItemMatch(QAtlasItem held, QAtlasItem fresh)`
 
 Whether the two rows show the same values, the chosen mark left aside.
-`LSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
+`QSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
 
 ## `internal static void QAtlasItemSync(QAtlasItem held, QAtlasItem fresh)`
 
-Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.
+Copies the chosen mark of the fresh row onto the held row that `QSplice` kept.

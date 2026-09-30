@@ -81,7 +81,7 @@ public sealed class QLecternAccent
 
     public async void QLecternEnsignRefine()
     {
-        QLecternFlagRefine(await LEnsignImage.LEnsignLoad(_qLecternAccentArea.CDisplayEnsignLoad));
+        QLecternFlagRefine(await _qLecternAccentArea.CDisplayEnsignLoad(QEnsignImage.QEnsignDraw));
     }
 
     public void QLecternMuteRefine()

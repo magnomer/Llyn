@@ -11,3 +11,4 @@ A settings notice raises the rows through the marshal.
 A failing favorite find shows `Favorite.LoadFailed` and answers no rows.
 The menu offers five orderings.
 The window's exit gate closes the editor and stops the recording.
+Its flag-fill load answers the same rows once the fill has run.

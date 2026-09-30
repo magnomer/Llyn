@@ -201,7 +201,7 @@ internal static class QChoice
         row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
         Grid badge = new() { Width = 19, Height = 14, VerticalAlignment = VerticalAlignment.Center };
-        ImageSource? flag = LEnsignImage.LEnsignFind(language);
+        ImageSource? flag = QEnsignImage.QEnsignRead(language);
         if (flag is not null)
         {
             badge.Children.Add(new Image { Stretch = Stretch.Uniform, Source = flag });

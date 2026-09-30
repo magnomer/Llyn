@@ -23,7 +23,7 @@ internal sealed class QUsageItem
         QUsageItemTitle = usage.CUsageTitleKey is string key
             ? QLocalizationCatalog.QLocalizationTextRead(key)
             : usage.CUsageTitle.CStateValueText;
-        QUsageItemFlag = LEnsignImage.LEnsignFind(QUsageItemLanguage);
+        QUsageItemFlag = QEnsignImage.QEnsignRead(QUsageItemLanguage);
     }
 
     internal CUsage QUsageItemUsage { get; }

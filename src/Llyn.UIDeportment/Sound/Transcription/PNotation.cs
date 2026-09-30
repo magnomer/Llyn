@@ -74,12 +74,13 @@ public partial class PEditor
     private async void PNotationStartRefine(CNotationRoll roll)
     {
         PNotationRefine(roll);
-        PNotationRefine(await LEnsignImage.LEnsignLoad(_qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandFlagLoad));
+        PNotationRefine(
+            await _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandFlagLoad(QEnsignImage.QEnsignDraw));
     }
 
     internal void PNotationRefine(CNotationRoll roll)
     {
-        PNotationList.ItemsSource = LSplice.LSpliceBuild(roll.CNotationRollRows, static row => new PNotationItem(row));
+        PNotationList.ItemsSource = QSplice.QSpliceBuild(roll.CNotationRollRows, static row => new PNotationItem(row));
         PNotationList.Visibility = QLook.QLookVisibleRead(!roll.CNotationRollEmpty);
         PNotationProgress.Visibility = QLook.QLookVisibleRead(roll.CNotationRollSearching);
         PNotationNotice.Text = QLocalizationCatalog.QLocalizationTextRead(roll.CNotationRollNotice);

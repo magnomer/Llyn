@@ -16,7 +16,7 @@ internal sealed class QAnthologyItem : INotifyPropertyChanged
         QAnthologyItemText = row.CCatalogExampleText;
         QAnthologyItemName = row.CCatalogExampleName;
         QAnthologyItemLanguage = row.CCatalogExampleLanguage;
-        QAnthologyItemFlag = LEnsignImage.LEnsignFind(row.CCatalogExampleLanguage);
+        QAnthologyItemFlag = QEnsignImage.QEnsignRead(row.CCatalogExampleLanguage);
         QAnthologyItemCount = row.CCatalogExampleCount;
     }
 

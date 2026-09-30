@@ -9,6 +9,7 @@ The contour read draws only a tonal pack's toned reading, and its scale runs fro
 The playback read and the play gate run over a held draft, a real engine and real workspace files.
 The accent sheet carries every row in the printed form the respelling switch picks.
 An empty desk answers the mute sheet.
+The font read answers the held draft's pack typography role by role, and an empty desk the blank font.
 The flag read is covered by `TTimbreEnsign`, and the reflex block by `TTimbreReflex`.
 
 ## `internal static CEditor TTimbreFlaggedPrepare(LEngine engine, string language)`

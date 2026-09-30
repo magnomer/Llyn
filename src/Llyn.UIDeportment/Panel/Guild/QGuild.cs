@@ -143,7 +143,7 @@ internal sealed class QGuild
             host.PWindowAtelier,
             QGuildShownCheck,
             host.PWindowEnvoy,
-            LObserver.LObserverCreate<Action>(static run => run()));
+            QObserver.QObserverCreate<Action>(static run => run()));
         _cGuild.CGuildChanged += QGuildModeUpdate;
         _cGuild.CGuildPanel.CPanelChanged += QGuildModeUpdate;
         _cGuild.CGuildPanel.CPanelRowsChanged += QRollRefine;
@@ -188,7 +188,7 @@ internal sealed class QGuild
     private void QRollRefine()
     {
         CGuildRoll roll = _cGuild.CGuildRollRead();
-        LSplice.LSpliceApply(
+        QSplice.QSpliceRefine(
             _qRollList,
             QRollItem.QRollItemBuild(roll.CGuildRollRows),
             QRollItem.QRollItemMatch,
@@ -200,7 +200,7 @@ internal sealed class QGuild
 
     internal void QOeuvreRefine()
     {
-        LSplice.LSpliceApply(
+        QSplice.QSpliceRefine(
             _qOeuvreList,
             QShelfItem.QShelfItemBuild(_cGuild.CGuildOeuvre.COeuvreRowsRead()),
             QShelfItem.QShelfItemMatch,

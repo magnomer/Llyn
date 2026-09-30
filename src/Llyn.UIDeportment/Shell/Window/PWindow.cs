@@ -15,7 +15,7 @@ public partial class PWindow
 
     private readonly PLayout _pLayout;
 
-    private readonly LFootprint _lFootprint;
+    private readonly QFootprint _qFootprint;
 
     private readonly QEstablishment _qEstablishment;
 
@@ -72,7 +72,7 @@ public partial class PWindow
         _qDuplex = new QDuplex(PDuplex);
         _qGuild = new QGuild(PGuild);
         _pMentionMenuTemplate = new PMentionMenuTemplate(this);
-        _lFootprint = new LFootprint(PWindowPosture);
+        _qFootprint = new QFootprint(PWindowPosture);
 
         PWindowIconRefine();
         PFootprintRefine();
@@ -174,7 +174,7 @@ public partial class PWindow
         _pWindowSurface.Closed += PWindowExitRefine;
         _pWindowSurface.Closed += PWindowExitObserve;
 
-        LEnsignImage.LEnsignIntroduce(PWindowAtelier);
+        QEnsignImage.QEnsignIntroduce(PWindowAtelier);
 
         PInput.PInputIntroduce(this);
         _qLibrary.QLibraryIntroduce(this);
@@ -271,14 +271,14 @@ public partial class PWindow
 
         if (confirmed)
         {
-            _lFootprint.LFootprintDefer(PFootprintRead(), _pWindowSurface.WindowState == WindowState.Minimized, true);
+            _qFootprint.QFootprintDefer(PFootprintRead(), _pWindowSurface.WindowState == WindowState.Minimized, true);
         }
     }
 
     private void PFootprintRefine()
     {
         Window window = _pWindowSurface;
-        if (_lFootprint.LFootprintRead(
+        if (_qFootprint.QFootprintRead(
                 SystemParameters.VirtualScreenLeft,
                 SystemParameters.VirtualScreenTop,
                 SystemParameters.VirtualScreenWidth,
@@ -288,7 +288,7 @@ public partial class PWindow
         {
             Rect area = SystemParameters.WorkArea;
             (window.Width, window.Height) =
-                _lFootprint.LFootprintSizeRead(area.Width, area.Height, window.MinWidth, window.MinHeight);
+                _qFootprint.QFootprintSizeRead(area.Width, area.Height, window.MinWidth, window.MinHeight);
             return;
         }
 
@@ -313,7 +313,7 @@ public partial class PWindow
 
     private void PFootprintSave()
     {
-        _lFootprint.LFootprintDefer(PFootprintRead(), _pWindowSurface.WindowState == WindowState.Minimized, false);
+        _qFootprint.QFootprintDefer(PFootprintRead(), _pWindowSurface.WindowState == WindowState.Minimized, false);
     }
 
     private LCapsuleWindow PFootprintRead()

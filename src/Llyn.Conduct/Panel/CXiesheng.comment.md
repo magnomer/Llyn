@@ -123,6 +123,11 @@ The engine picks the language and answers nothing while no pack carries series.
 
 The entry list of the chosen series, copied through the shared row map and counted for the empty verdict.
 
+## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CXieshengKindredLoad(`
+
+Runs the flag fill into the driver's `store`, then answers `CXieshengKindredRead` beside the loaded languages.
+The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+
 ## `public CStemPage CXieshengStemRead()`
 
 The page of the chosen series, or the blank page while the reader shows an entry.

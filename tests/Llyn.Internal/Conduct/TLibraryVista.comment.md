@@ -10,3 +10,4 @@ A workspace notice closes the chosen entry and tells the driver once.
 A settings notice raises the rows through the marshal.
 The menu offers four orderings.
 The window's exit gate closes the editor and stops the recording.
+Its flag-fill load answers the same rows once the fill has run.

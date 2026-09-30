@@ -16,6 +16,14 @@ The typography the pack declares for one role: the headword, an example line, a 
 The glyph role falls back to the example typography, so a chip stays serif when the section names no font.
 A pack that declares none for the role answers a blank font, and the theme's own typography stands.
 
+## `private readonly SemaphoreSlim _lLanguageFacadeEnsign = new(1, 1);`
+
+One flag fill runs at a time, around its missing read, its fetch and its record.
+Several panels ask on the same announcement, and each fill is a set of downloads.
+Without the gate each would read the same flags as missing and fetch them again.
+Both fills share it, so a variety fill and a language fill never overlap either.
+It is awaited, never held by a plain wait, so a fill awaiting the shell can always finish.
+
 ## `public LLanguageFacade(LEngine engine)`
 
 Stores the engine and its gate, which the facade uses for its language-pack operations.
@@ -93,10 +101,12 @@ The cache is read once before the fetch and kept, since a workspace change build
 Asking the staff again after the fetch would meet the new cache at a matching age.
 It answers the loaded languages it read, so a language menu fills from the same load.
 The fetch resumes on the caller's context, so the shell's seam runs on the shell's thread.
+It waits its turn at `_lLanguageFacadeEnsign`, so a second fill reads the cache after the first recorded.
 
 ## `public async Task LEngineEnsignLoad(string language, IEnumerable<string> varieties, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
 
 The same fill for the named varieties of one language, keyed `language/variety`.
+It waits at the same gate as the language fill.
 
 ## `private async Task<string?> LEngineEnsignRead(string language)`
 

@@ -88,7 +88,7 @@ internal sealed class QWing
 
         _cWing.CWingLoaded += QWingIndexRefine;
         _cWing.CWingRowsChanged += QWingIndexRefine;
-        _cWing.CWingChanged += LObserver.LObserverCreate<CBulletin>(_qWingSurface, QWingIndexRefine);
+        _cWing.CWingChanged += QObserver.QObserverCreate<CBulletin>(_qWingSurface, QWingIndexRefine);
         host.PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += QWingRefine;
 
         QWingDisplay.PDisplayAttach(host, _qWingLectern);
@@ -98,14 +98,19 @@ internal sealed class QWing
     {
         _qIndex.QIndexClearRefine();
         IReadOnlyList<string> languages =
-            await LEnsignImage.LEnsignLoad(_qWingHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
+            await _qWingHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
 
         QChoice.QChoiceOrderBuild(QWingOrderList, "Order", QWingOrderObserve, CLibrary.CLibraryOrderRead());
         QChoice.QChoiceOrderApply(QWingOrderDropdown, _cWing.CWingOrder);
         QWingSieveRefine();
-        QChoice.QChoiceFilterBuild(QWingSieveList, languages, _cWing.CWingFilter, QWingSieveObserve);
+        QWingSieveBuild(languages);
 
         QWingQuery.Text = string.Empty;
+    }
+
+    private void QWingSieveBuild(IReadOnlyList<string> languages)
+    {
+        QChoice.QChoiceFilterBuild(QWingSieveList, languages, _cWing.CWingFilter, QWingSieveObserve);
     }
 
     private void QWingIndexRefine()

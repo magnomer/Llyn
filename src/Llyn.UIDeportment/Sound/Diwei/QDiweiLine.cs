@@ -56,6 +56,6 @@ internal sealed class QDiweiLine
     {
         ArgumentNullException.ThrowIfNull(lines);
 
-        return LSplice.LSpliceBuild(lines, static line => new QDiweiLine(line));
+        return QSplice.QSpliceBuild(lines, static line => new QDiweiLine(line));
     }
 }

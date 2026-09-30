@@ -16,8 +16,8 @@ The epithet is the reading the pack names, empty when the setting is off or the 
 ## `internal static bool QCohortItemMatch(QCohortItem held, QCohortItem fresh)`
 
 Whether the two rows show the same values, the chosen mark left aside.
-`LSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
+`QSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
 
 ## `internal static void QCohortItemSync(QCohortItem held, QCohortItem fresh)`
 
-Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.
+Copies the chosen mark of the fresh row onto the held row that `QSplice` kept.

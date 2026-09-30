@@ -16,6 +16,7 @@ A Settings notice and a filter change each raise the rows, so the filter mark re
 A Workspace notice lets the chosen entry go and tells the driver once.
 The sequence menu offers four orders.
 The atelier's close lets the editor's draft go and stops the recording.
+Its flag-fill load answers the same rows once the fill has run.
 
 ## `private static CPhonology TPhonologyPrepare(CAtelier atelier)`
 

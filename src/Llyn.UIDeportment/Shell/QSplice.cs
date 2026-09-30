@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 
 namespace Llyn.UIDeportment;
 
-public static class LSplice
+public static class QSplice
 {
-    public static void LSpliceApply<LSpliceRow>(
+    public static void QSpliceRefine<LSpliceRow>(
         ObservableCollection<LSpliceRow> held,
         IReadOnlyList<LSpliceRow> fresh,
         Func<LSpliceRow, LSpliceRow, bool> match,
@@ -17,7 +17,7 @@ public static class LSplice
         ArgumentNullException.ThrowIfNull(match);
         ArgumentNullException.ThrowIfNull(mark);
 
-        if (LSpliceMatchCheck(held, fresh, match))
+        if (QSpliceMatchCheck(held, fresh, match))
         {
             for (int index = 0; index < held.Count; index++)
             {
@@ -34,7 +34,7 @@ public static class LSplice
         }
     }
 
-    public static IReadOnlyList<LSpliceItem> LSpliceBuild<LSpliceRow, LSpliceItem>(
+    public static IReadOnlyList<LSpliceItem> QSpliceBuild<LSpliceRow, LSpliceItem>(
         IReadOnlyList<LSpliceRow> rows, Func<LSpliceRow, LSpliceItem> make)
     {
         ArgumentNullException.ThrowIfNull(rows);
@@ -49,7 +49,7 @@ public static class LSplice
         return built;
     }
 
-    private static bool LSpliceMatchCheck<LSpliceRow>(
+    private static bool QSpliceMatchCheck<LSpliceRow>(
         ObservableCollection<LSpliceRow> held,
         IReadOnlyList<LSpliceRow> fresh,
         Func<LSpliceRow, LSpliceRow, bool> match)

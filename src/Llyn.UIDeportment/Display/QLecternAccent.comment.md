@@ -4,7 +4,7 @@
 
 The reading view's accent driver, standing between the veneer and the display's sound area, [CDisplaySound](../../Llyn.Conduct/Display/CDisplaySound.comment.md).
 It draws the primary pronunciation and the accent rows from the block Conduct answers ready.
-Flags come from `LEnsignImage`, and every rule of which flag or reading shows stays in Conduct and below.
+Flags come from `QEnsignImage`, and every rule of which flag or reading shows stays in Conduct and below.
 
 ## `private DependencyProperty _qLecternAccentSyllables`
 

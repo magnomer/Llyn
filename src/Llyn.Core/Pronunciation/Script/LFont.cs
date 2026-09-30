@@ -5,5 +5,12 @@ public sealed record LFont(
     double LFontSize,
     string? LFontStyle = null)
 {
+    public string? LFontStyle { get; init; } = LFontStyle?.ToLowerInvariant() switch
+    {
+        "italic" => "italic",
+        "oblique" => "oblique",
+        _ => null,
+    };
+
     public double? LFontSized => LFontSize > 0 ? LFontSize : null;
 }

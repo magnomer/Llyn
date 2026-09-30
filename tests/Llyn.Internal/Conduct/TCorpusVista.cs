@@ -10,6 +10,22 @@ namespace Llyn.Tests;
 public sealed class TCorpusVista
 {
     [Fact]
+    public async Task CorpusRowsLoad_StoredExample_AnswersTheRowsAndTheLanguagesAfterTheFill()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        TCorpus.TCorpusExampleSave(engine, "a cat sat");
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
+
+        CEnsignSheet<IReadOnlyList<CCatalogExample>> sheet =
+            await corpus.CCorpusRowsLoad(static (_, _) => static () => { });
+
+        Assert.Equal(["a cat sat"], sheet.CEnsignSheetRows.Select(static row => row.CCatalogExampleText));
+        Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), sheet.CEnsignSheetLanguages);
+    }
+
+    [Fact]
     public void CorpusVistaRestore_QueriesHeld_CarriesThemIntoTheFreshVistas()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -21,7 +21,7 @@ internal sealed class QFootnoteItem : INotifyPropertyChanged
         QFootnoteItemEpithet = row.CVistaRowEpithet;
         QFootnoteItemName = row.CVistaRowName;
         QFootnoteItemLanguage = row.CVistaRowLanguage;
-        QFootnoteItemFlag = LEnsignImage.LEnsignFind(row.CVistaRowLanguage);
+        QFootnoteItemFlag = QEnsignImage.QEnsignRead(row.CVistaRowLanguage);
     }
 
     public long QFootnoteItemId { get; }

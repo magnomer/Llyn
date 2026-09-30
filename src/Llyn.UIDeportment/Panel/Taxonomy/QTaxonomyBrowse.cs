@@ -14,7 +14,7 @@ internal sealed partial class QTaxonomy
 
     private async void QTaxonomyWorkspaceRefine()
     {
-        await LEnsignImage.LEnsignLoad(_qTaxonomyHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
+        await _qTaxonomyHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
     }
 
     private void QExplorationObserve(object sender, TextChangedEventArgs e)
@@ -56,10 +56,10 @@ internal sealed partial class QTaxonomy
             ]);
         QChoice.QChoiceOrderApply(QFunnelDropdown, _cTaxonomy.CTaxonomyOrder);
         QLatticeRefine();
-        IReadOnlyList<string> languages =
-            await LEnsignImage.LEnsignLoad(_qTaxonomyHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
-        QLatticeListRefine(languages);
-        QDirectoryRefine();
+        CEnsignSheet<IReadOnlyList<CCatalogTag>> sheet =
+            await _cTaxonomy.CTaxonomyRowsLoad(QEnsignImage.QEnsignDraw);
+        QLatticeListRefine(sheet.CEnsignSheetLanguages);
+        QDirectoryRefine(sheet.CEnsignSheetRows);
     }
 
     private void QLatticeListRefine(IReadOnlyList<string> languages)
@@ -74,8 +74,13 @@ internal sealed partial class QTaxonomy
 
     private void QDirectoryRefine()
     {
+        QDirectoryRefine(_cTaxonomy.CTaxonomyRowsRead());
+    }
+
+    private void QDirectoryRefine(IReadOnlyList<CCatalogTag> rows)
+    {
         _qDirectoryList.Clear();
-        foreach (CCatalogTag row in _cTaxonomy.CTaxonomyRowsRead())
+        foreach (CCatalogTag row in rows)
         {
             _qDirectoryList.Add(new QDirectoryItem(
                 row.CCatalogTagStored.CTagId, row.CCatalogTagStored.CTagText, row.CCatalogTagChosen));

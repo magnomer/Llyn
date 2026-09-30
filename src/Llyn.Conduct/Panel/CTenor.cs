@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 using Llyn.ShellEngine;
 
@@ -190,6 +191,10 @@ public sealed class CTenor
         CTenorCohort.CCohortPanel.CPanelRowsResonate();
         return rows;
     }
+
+    public Task<CEnsignSheet<IReadOnlyList<CCatalogRegister>>> CTenorRowsLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
+        CCatalog.LCatalogEnsignLoad(_cTenorSettingsPort, store, CTenorRowsRead);
 
     private bool LTenorCoinageAllowed =>
         LTenorChosen is null && !CTenorCohort.CCohortPanel.CPanelBinEnabled;

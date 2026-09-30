@@ -145,6 +145,10 @@ public sealed class CPhonology
         return rows;
     }
 
+    public Task<CEnsignSheet<IReadOnlyList<CCatalogPronunciation>>> CPhonologyRowsLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
+        CCatalog.LCatalogEnsignLoad(_cPhonologySettingsPort, store, CPhonologyRowsRead);
+
     public void CPhonologyQuerySet(string query)
     {
         ArgumentNullException.ThrowIfNull(query);

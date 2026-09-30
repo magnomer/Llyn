@@ -34,7 +34,7 @@ internal sealed class QEstablishment
     internal void QEstablishmentAttach(PWindow host)
     {
         Action<CEstablishment> heard =
-            LObserver.LObserverCreate<CEstablishment>(host.PWindowSurface, QEstablishmentRefine);
+            QObserver.QObserverCreate<CEstablishment>(host.PWindowSurface, QEstablishmentRefine);
         host.PWindowAtelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged += heard;
         _qEstablishmentRelease = () => host.PWindowAtelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged -= heard;
     }

@@ -37,6 +37,7 @@ Answers the workspace opening, after the Conduct panel restored its vista and at
 It marks the chosen order and the filter, then awaits the flags.
 The flags are loaded before the first rows are built, because a row reads its flag at construction.
 The filter menu lists the languages the flag load answers.
+Its one request is `CPhonologyRowsLoad`, which runs the flag fill and then answers the rows it paints.
 
 ## `private void QLensListRefine(IReadOnlyList<string> languages)`
 
@@ -47,6 +48,7 @@ Fills the filter menu with the languages the flag load answered, each ticked by 
 Answers `CPhonologyWorkspaceChanged` by drawing the flags of the new workspace's languages.
 Once the flags are in, it repaints the inventory, whose rows carry a flag.
 A failed load throws before the repaint, as the old load before the entry close did.
+Its one request is `CPhonologyRowsLoad`, which runs the flag fill and then answers the rows it paints.
 
 ## `private bool QPhonologyShownCheck()`
 
@@ -60,6 +62,11 @@ The editor and the playback stop in Conduct, through the close the panel registe
 ## `private void QInventoryRefine()`
 
 Refills the inventory from the rows the deportment reads, spliced so the list keeps its scroll position.
+
+## `private void QInventoryRefine(IReadOnlyList<CCatalogPronunciation> rows)`
+
+Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
+The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
 
 ## `private void QPhonologyModeRefine()`
 

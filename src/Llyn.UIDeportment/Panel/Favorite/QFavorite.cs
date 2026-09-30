@@ -124,7 +124,7 @@ internal sealed partial class QFavorite
             host.PWindowAtelier,
             QFavoriteShownCheck,
             host.PWindowEnvoy,
-            LObserver.LObserverCreate<Action>(static run => run()));
+            QObserver.QObserverCreate<Action>(static run => run()));
         CPanel panel = _cFavorite.CFavoritePanel;
         QLectern lectern = new(_cFavorite.CFavoriteEditor.CEditorDisplay, panel);
         QChoice.QChoiceOrderBuild(QSeriesList, "Series", QSeriesObserve, CFavorite.CFavoriteOrderRead());

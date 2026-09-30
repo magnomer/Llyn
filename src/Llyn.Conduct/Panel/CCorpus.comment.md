@@ -72,7 +72,7 @@ It is built over the atelier's entry and portrait ports, so no driver holds eith
 True while the example side is in front and in edit mode, so the transcript shows.
 The other mode flags follow the same two facts: which side is in front and whether it edits.
 `CCorpusExcerptShown` holds for the example side outside edit mode.
-`CCorpusDisplayShown` holds for the quotation side outside edit mode.
+`CCorpusDisplayShown` holds for the quotation side outside edit mode, as `CQuotationShown` says.
 `CCorpusEditorShown` holds while the quotation list is in edit mode.
 `CCorpusScribeChecked` holds while either editor shows, and `CCorpusViewerChecked` holds otherwise.
 `CCorpusModeEnabled` holds on the quotation side, and on the example side follows its panel.
@@ -265,6 +265,11 @@ When the excerpt shows a chosen Example the rows no longer list, both lists clea
 The clear announces fresh rows, which carry the same Examples, so a driver's nested refill is harmless.
 
 
+## `public Task<CEnsignSheet<IReadOnlyList<CCatalogExample>>> CCorpusRowsLoad(`
+
+Runs the flag fill into the driver's `store`, then answers `CCorpusRowsRead` beside the loaded languages.
+The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+
 ## `public void CCorpusExampleDelete()`
 
 Deletes the chosen Example through the anthology panel, which asks the envoy first.
@@ -277,12 +282,6 @@ Prints the entry on display, else the chosen Example on the excerpt, else nothin
 The entry prints with the label, and the Example list with the Example realm's legend.
 The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
 `CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
-
-## `public Task CCorpusPortraitExport()`
-
-Exports the entry on display, and does nothing otherwise.
-The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
-`CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.
 
 ## `internal void LCorpusVistaRestore()`
 

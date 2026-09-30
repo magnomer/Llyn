@@ -191,24 +191,24 @@ internal static class PLeaf
 
     private static void PLeafLinkRefine(FrameworkElement container, object item, string? _)
     {
-        if (item is not LLinkChip chip)
+        if (item is not QLinkChip chip)
         {
             return;
         }
 
         if (QLook.QLookPartFind<Image>(container, "PLinkFlag") is Image flag)
         {
-            flag.Source = chip.LLinkChipFlag;
+            flag.Source = chip.QLinkChipFlag;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PLinkHeadword") is TextBlock headword)
         {
-            headword.Text = chip.LLinkChipHeadword;
+            headword.Text = chip.QLinkChipTarget.CTranslationTargetHeadword;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PLinkLanguage") is TextBlock language)
         {
-            language.Text = chip.LLinkChipLanguage;
+            language.Text = chip.QLinkChipTarget.CTranslationTargetLanguage;
         }
     }
 }

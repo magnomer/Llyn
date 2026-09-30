@@ -17,4 +17,6 @@ The editor and the reading view are given the same record, so they never drift a
   The theme's own size then stands.
 - `LFontStyle` — The slant the pack declares for the role, `italic` or `oblique`.
   It is `null` when the pack declares none, and the text stands upright.
+  The record lowers the pack's word, so `Italic` arrives as `italic`.
+  Any other word arrives `null`, so every surface maps only the two slants.
   English glosses are set in italic, as a translation under a sentence is by convention.

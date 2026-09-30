@@ -6,6 +6,11 @@ Covers the reading view's sound area, its reads and gates alike, on a real works
 The wing opens the entry, so each case stands on its display's sound area.
 A fake port stands in where a case must see what the gate hands the engine.
 
+## `public void DisplayFontRead_ShownEntryOrNothingShown_ReadsThePackFontOfTheShownLanguage()`
+
+The font read answers the shown entry's pack typography for each role.
+Nothing shown answers the blank font, so the view keeps its theme.
+
 ## `public void DisplayGlyphRead_HanjaRow_AnswersTheRowReadyToShow()`
 
 A Korean entry with a Hanja row answers the scheme's key and name.

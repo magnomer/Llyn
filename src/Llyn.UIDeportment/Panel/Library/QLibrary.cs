@@ -131,7 +131,7 @@ internal sealed class QLibrary
             host.PWindowAtelier,
             QLibraryShownCheck,
             host.PWindowEnvoy,
-            LObserver.LObserverCreate<Action>(static run => run()));
+            QObserver.QObserverCreate<Action>(static run => run()));
         CPanel panel = _cLibrary.CLibraryPanel;
         QLectern lectern = new(_cLibrary.CLibraryEditor.CEditorDisplay, panel);
         QLibraryLectern = lectern;
@@ -160,7 +160,12 @@ internal sealed class QLibrary
 
     private void QLibraryIndexRefine()
     {
-        _qIndex.QIndexRefine(_cLibrary.CLibraryRowsRead(), _cLibrary.CLibraryEmpty);
+        QLibraryIndexRefine(_cLibrary.CLibraryRowsRead());
+    }
+
+    private void QLibraryIndexRefine(IReadOnlyList<CVistaRow> rows)
+    {
+        _qIndex.QIndexRefine(rows, _cLibrary.CLibraryEmpty);
     }
 
     private void QLibrarySieveRefine()
@@ -177,10 +182,10 @@ internal sealed class QLibrary
     {
         QChoice.QChoiceOrderApply(QOrderDropdown, _cLibrary.CLibraryPanel.CPanelOrder);
         QLibrarySieveRefine();
-        IReadOnlyList<string> languages =
-            await LEnsignImage.LEnsignLoad(_qLibraryHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
-        QSieveBuild(languages);
-        QLibraryIndexRefine();
+        CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
+            await _cLibrary.CLibraryRowsLoad(QEnsignImage.QEnsignDraw);
+        QSieveBuild(sheet.CEnsignSheetLanguages);
+        QLibraryIndexRefine(sheet.CEnsignSheetRows);
     }
 
     private void QSieveBuild(IReadOnlyList<string> languages)
@@ -190,7 +195,7 @@ internal sealed class QLibrary
 
     private async void QLibraryWorkspaceRefine()
     {
-        await LEnsignImage.LEnsignLoad(_qLibraryHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
+        await _qLibraryHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
     }
 
     private bool QLibraryShownCheck()

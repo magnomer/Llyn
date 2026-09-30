@@ -28,6 +28,11 @@ The right-hand side shows one or the other and never both.
 An Entry row swaps the Situation reading for the entry display in place, and a Situation row swaps it back.
 The chosen Situation keeps its mark meanwhile, because it still narrows the middle column.
 
+## `private void QOccurrenceRefine(IReadOnlyList<CVistaRow> rows)`
+
+Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
+The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
+
 ## `private void QOccurrenceObserve(object sender, RoutedEventArgs e)`
 
 A clicked row asks the Conduct to show that Entry.

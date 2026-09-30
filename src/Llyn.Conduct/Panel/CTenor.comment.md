@@ -118,6 +118,11 @@ A failed read shows `Register.LoadFailed` through the envoy and answers no rows.
 A read that succeeds raises the entry rows, since the entries hang on the chosen Register.
 A failed read raises nothing more, so the user sees one notice, as before.
 
+## `public Task<CEnsignSheet<IReadOnlyList<CCatalogRegister>>> CTenorRowsLoad(`
+
+Runs the flag fill into the driver's `store`, then answers `CTenorRowsRead` beside the loaded languages.
+The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+
 ## `private void LTenorRegisterCreate(string name)`
 
 Makes the Register from the raw wording and opens it as an arrival does.

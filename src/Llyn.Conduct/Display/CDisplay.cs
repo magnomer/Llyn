@@ -9,7 +9,7 @@ namespace Llyn.Conduct;
 public sealed class CDisplay
 {
     private static readonly CLectern _cDisplayBlank = new(
-        string.Empty, string.Empty, [], false, string.Empty, false, string.Empty, string.Empty, false);
+        string.Empty, string.Empty, [], false, [], false, string.Empty, string.Empty, false);
 
     private readonly LDisplay _cDisplayRule;
 
@@ -132,7 +132,7 @@ public sealed class CDisplay
             draft.LEntryDraftLanguage,
             draft.LEntryDraftNames,
             draft.LEntryDraftMarked,
-            draft.LEntryDraftNote,
+            CMarkdown.LMarkdownParse(_cDisplayPort, draft.LEntryDraftNote),
             draft.LEntryDraftNoted,
             stamp.Item2,
             stamp.Item3,

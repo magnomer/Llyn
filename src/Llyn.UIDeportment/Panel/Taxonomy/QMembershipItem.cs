@@ -15,7 +15,7 @@ internal sealed class QMembershipItem : INotifyPropertyChanged
         QMembershipItemHeadword = headword;
         QMembershipItemEpithet = epithet ?? string.Empty;
         QMembershipItemLanguage = language;
-        QMembershipItemFlag = LEnsignImage.LEnsignFind(language);
+        QMembershipItemFlag = QEnsignImage.QEnsignRead(language);
     }
 
     public long QMembershipItemId { get; }

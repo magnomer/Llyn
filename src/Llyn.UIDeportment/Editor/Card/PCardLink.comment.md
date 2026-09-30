@@ -22,9 +22,9 @@ How many chips stand before the caret, which is the place a new link is asked fo
 
 Makes the chips show the engine's links, matched by id.
 Each target carries the headword and language its id stands for, read once for the whole card.
-A chip whose word or language changed is replaced, since a chip is immutable.
+A chip whose ready target no longer equals the new one is replaced, since a chip is immutable.
 
-## `internal LLinkChip? PCardLinkFind(int step)`
+## `internal QLinkChip? PCardLinkFind(int step)`
 
 The chip standing one step from the entry, before it or after it, or null.
 

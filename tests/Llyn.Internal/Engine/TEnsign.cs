@@ -141,6 +141,43 @@ public sealed class TEnsign
         Assert.Equal(["English"], ensign.TEnsignMissingRead(["English"], out _));
     }
 
+    [Fact]
+    public async Task EnsignLoad_OverlappingFills_FetchesAndStoresEachFlagOnce()
+    {
+        TUsherFake usher = new();
+        usher.TUsherPresent.Add("C:/flags/gb.svg");
+        TLanguageFake languages = new();
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild(languages, usher));
+
+        Task<IReadOnlyList<LEnsignRow>> first = engine.TEngineEnsignLoad("English", ["Scottish"]);
+        Task<IReadOnlyList<LEnsignRow>> second = engine.TEngineEnsignLoad("English", ["Scottish"]);
+        languages.TLanguageFakeFetch.SetResult("C:/flags/gb.svg");
+
+        Assert.Equal([TInterface.TEnsignRowCreate("English/Scottish", "C:/flags/gb.svg")], await first);
+        Assert.Empty(await second);
+        Assert.Equal(1, languages.TLanguageFakeAsked);
+    }
+
+    private sealed class TLanguageFake : LLanguageVault
+    {
+        internal TaskCompletionSource<string?> TLanguageFakeFetch { get; } = new();
+
+        internal int TLanguageFakeAsked { get; private set; }
+
+        public IReadOnlyList<string> LLanguageScan() => [];
+
+        public LLanguage LLanguageRead(string language) =>
+            TInterface.TLanguageCreate([TInterface.TVarietyCreate("Scottish", "gb-sct")]);
+
+        public bool LLanguageNameValidate(string? language) => true;
+
+        public Task<string?> LLanguageFlagRead(string code, CancellationToken cancellation)
+        {
+            TLanguageFakeAsked++;
+            return TLanguageFakeFetch.Task;
+        }
+    }
+
     private sealed class TUsherFake : LUsher
     {
         internal HashSet<string> TUsherPresent { get; } = new(StringComparer.Ordinal);

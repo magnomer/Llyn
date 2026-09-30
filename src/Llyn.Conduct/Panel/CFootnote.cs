@@ -12,6 +12,8 @@ public sealed class CFootnote
 
     private readonly LPortraitPort _cFootnotePortraitPort;
 
+    private readonly LSettingsPort _cFootnoteSettingsPort;
+
     private readonly CEditor _cFootnoteEditor;
 
     private LVista? _cFootnoteParent;
@@ -34,6 +36,7 @@ public sealed class CFootnote
 
         _cFootnoteEntryPort = entries;
         _cFootnotePortraitPort = portraits;
+        _cFootnoteSettingsPort = settings;
         _cFootnoteEditor = editor;
         CFootnotePanel = new CPanel(
             envoy,
@@ -86,6 +89,10 @@ public sealed class CFootnote
             .Select(CPanel.CPanelRowRead)
             .ToList();
     }
+
+    public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CFootnoteRowsLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
+        CCatalog.LCatalogEnsignLoad(_cFootnoteSettingsPort, store, CFootnoteRowsRead);
 
     internal string LFootnoteFileRead()
     {

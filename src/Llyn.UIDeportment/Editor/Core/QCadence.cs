@@ -39,14 +39,14 @@ internal sealed class QCadence
     private void QCadenceParadigmRefine()
     {
         CLecternParadigm paradigm = _cEditor.CEditorSounding.CSoundingParadigmRead();
-        LFontFace.LFontRefine(paradigm.CLecternParadigmFont, QCadenceParadigm);
+        QFontFace.QFontRefine(paradigm.CLecternParadigmFont, QCadenceParadigm);
         QCadenceParadigm.PParadigmItems = PParadigmItem.PParadigmItemScan(paradigm.CLecternParadigmSlots);
     }
 
     private void QCadenceScriptRefine()
     {
         CSoundingScript script = _cEditor.CEditorSounding.CSoundingScriptRead();
-        LFontFace.LFontRefine(script.CSoundingScriptFont, QCadenceScript);
+        QFontFace.QFontRefine(script.CSoundingScriptFont, QCadenceScript);
         QCadenceScript.PScriptItems = PScriptItem.PScriptItemScan(script.CSoundingScriptGroups);
         QCadenceScript.PScriptPending = script.CSoundingScriptPending;
         QCadenceScript.PScriptRenewal =
@@ -61,7 +61,7 @@ internal sealed class QCadence
     private void QCadenceFanqieRefine()
     {
         CSoundingFanqie fanqie = _cEditor.CEditorSounding.CSoundingFanqieRead();
-        LFontFace.LFontRefine(fanqie.CSoundingFanqieFont, QCadenceFanqie);
+        QFontFace.QFontRefine(fanqie.CSoundingFanqieFont, QCadenceFanqie);
         QCadenceFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(fanqie.CSoundingFanqieGroups);
         QCadenceFanqie.PFanqiePending = fanqie.CSoundingFanqiePending;
         QCadenceFanqie.PFanqieRenewal =

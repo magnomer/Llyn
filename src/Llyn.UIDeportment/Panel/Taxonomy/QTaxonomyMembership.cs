@@ -24,7 +24,7 @@ internal sealed partial class QTaxonomy
             });
         }
 
-        LSplice.LSpliceApply(
+        QSplice.QSpliceRefine(
             _qMembershipList, fresh, QMembershipItem.QMembershipItemMatch, QMembershipItem.QMembershipItemSync);
 
         QMembershipEmpty.SetResourceReference(

@@ -184,6 +184,19 @@ public sealed class TAtlas
     }
 
     [Fact]
+    public void AtlasSituationRead_MarkdownDescription_ArrivesAsParsedBlocks()
+    {
+        LSituation situation = TInterface.TSituationCreate(7, "Hearth", "By the **fire**\n\n- warm", null);
+
+        CSituation shown = TInterfaceConduct.TAtlasSituationRead(situation)!;
+
+        Assert.Equal(2, shown.CSituationMarkdown.Count);
+        Assert.True(shown.CSituationMarkdown[0].CMarkdownBlockSpan[1].CMarkdownSpanBold);
+        Assert.Equal("fire", shown.CSituationMarkdown[0].CMarkdownBlockSpan[1].CMarkdownSpanText);
+        Assert.True(shown.CSituationMarkdown[1].CMarkdownBlockListed);
+    }
+
+    [Fact]
     public void AtlasSituationRead_UnknownFields_WordsEachWithTheUnknownMark()
     {
         LSituation situation = TInterface.TSituationCreate(

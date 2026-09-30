@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -157,7 +158,7 @@ internal sealed class QYunjing
             host.PWindowAtelier,
             QYunjingShownCheck,
             host.PWindowEnvoy,
-            LObserver.LObserverCreate<Action>(static run => run()));
+            QObserver.QObserverCreate<Action>(static run => run()));
         CPanel panel = _cYunjing.CYunjingPanel;
         QLectern lectern = new(_cYunjing.CYunjingEditor.CEditorDisplay, panel);
         QChoice.QChoiceOrderBuild(QLadderList, "Ladder", QLadderObserve, CYunjing.CYunjingOrderRead());
@@ -205,8 +206,7 @@ internal sealed class QYunjing
 
     private async void QYunjingWorkspaceRefine()
     {
-        await LEnsignImage.LEnsignLoad(_qYunjingHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
-        QXiaoyunRefine();
+        QXiaoyunRefine((await _cYunjing.CYunjingXiaoyunLoad(QEnsignImage.QEnsignDraw)).CEnsignSheetRows);
     }
 
     private void QYunjingQueryRefine()
@@ -227,7 +227,7 @@ internal sealed class QYunjing
 
     internal void QShengmuRefine()
     {
-        LSplice.LSpliceApply(
+        QSplice.QSpliceRefine(
             _qShengmuList,
             PYunjingItem.PYunjingItemBuild(_cYunjing.CYunjingShengmuRead()),
             PYunjingItem.PYunjingItemMatch,
@@ -238,7 +238,7 @@ internal sealed class QYunjing
 
     internal void QYunmuRefine()
     {
-        LSplice.LSpliceApply(
+        QSplice.QSpliceRefine(
             _qYunmuList,
             PYunjingItem.PYunjingItemBuild(_cYunjing.CYunjingYunmuRead()),
             PYunjingItem.PYunjingItemMatch,
@@ -249,9 +249,14 @@ internal sealed class QYunjing
 
     private void QXiaoyunRefine()
     {
-        LSplice.LSpliceApply(
+        QXiaoyunRefine(_cYunjing.CYunjingXiaoyunRead());
+    }
+
+    private void QXiaoyunRefine(IReadOnlyList<CVistaRow> rows)
+    {
+        QSplice.QSpliceRefine(
             _qXiaoyunList,
-            PXiaoyunItem.PXiaoyunItemBuild(_cYunjing.CYunjingXiaoyunRead()),
+            PXiaoyunItem.PXiaoyunItemBuild(rows),
             PXiaoyunItem.PXiaoyunItemMatch,
             PXiaoyunItem.PXiaoyunItemSync);
         QXiaoyunEmpty.SetResourceReference(TextBlock.TextProperty, _cYunjing.CYunjingXiaoyunKey);

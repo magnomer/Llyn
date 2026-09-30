@@ -34,7 +34,7 @@ internal sealed class QGroveItem : INotifyPropertyChanged
     {
         ArgumentNullException.ThrowIfNull(rows);
 
-        return LSplice.LSpliceBuild(rows, row => new QGroveItem(row, row.CStemChosen));
+        return QSplice.QSpliceBuild(rows, row => new QGroveItem(row, row.CStemChosen));
     }
 
     internal static bool QGroveItemMatch(QGroveItem held, QGroveItem fresh)

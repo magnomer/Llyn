@@ -174,6 +174,10 @@ public sealed class CShelf
         return new CShelfRoll(rows, rows.Count == 0, CShelfPanel.CPanelTallyRead());
     }
 
+    public Task<CEnsignSheet<CShelfRoll>> CShelfRollLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
+        CCatalog.LCatalogEnsignLoad(_cShelfSettingsPort, store, CShelfRollRead);
+
     public void CShelfQuerySet(string query)
     {
         ArgumentNullException.ThrowIfNull(query);

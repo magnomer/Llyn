@@ -55,7 +55,7 @@ internal sealed partial class QCorpus
     private void QSpeakerShow(string language)
     {
         QSpeakerName.Text = language;
-        QSpeakerFlag.Source = LEnsignImage.LEnsignFind(language);
+        QSpeakerFlag.Source = QEnsignImage.QEnsignRead(language);
     }
 
     private void QTranscriptTextObserve(object sender, TextChangedEventArgs e)

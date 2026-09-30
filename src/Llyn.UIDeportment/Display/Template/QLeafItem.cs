@@ -27,10 +27,7 @@ internal sealed class QLeafItem
         QLeafItemSituation = card.CLeafSituation.Select(static chip => new QLeafChip(chip)).ToList();
         QLeafItemRegister = card.CLeafRegister.Select(static chip => new QLeafChip(chip)).ToList();
         QLeafItemTag = card.CLeafTag.Select(static chip => new QLeafChip(chip)).ToList();
-        QLeafItemTranslation = card.CLeafTranslation
-            .Select(static target => new LLinkChip(
-                target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage))
-            .ToList();
+        QLeafItemTranslation = card.CLeafTranslation.Select(static target => new QLinkChip(target)).ToList();
         QLeafItemSentence = card.CLeafSentence;
     }
 
@@ -54,7 +51,7 @@ internal sealed class QLeafItem
 
     internal IReadOnlyList<QLeafChip> QLeafItemTag { get; }
 
-    internal IReadOnlyList<LLinkChip> QLeafItemTranslation { get; }
+    internal IReadOnlyList<QLinkChip> QLeafItemTranslation { get; }
 
     internal IReadOnlyList<CLeafLine> QLeafItemSentence { get; }
 

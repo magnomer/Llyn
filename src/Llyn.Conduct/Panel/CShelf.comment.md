@@ -99,6 +99,11 @@ A shown Source the rows no longer choose is closed, so a stale selection never s
 The tally is read after that close, through the panel's own tally read and its failure report.
 So the tally never counts a Source the panel just left.
 
+## `public Task<CEnsignSheet<CShelfRoll>> CShelfRollLoad(`
+
+Runs the flag fill into the driver's `store`, then answers `CShelfRollRead` beside the loaded languages.
+The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+
 ## `public void CShelfOrderSet(CCatalogOrder? order)`
 
 Takes the chosen order, and the vista keeps its own order when none is chosen.

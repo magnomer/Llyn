@@ -64,8 +64,6 @@ internal static class TInterfaceConduct
     internal static CMentionResult TMentionResultRead(int offset, LMention? stored) =>
         CMention.CMentionResultRead(new LMentionResult(offset, stored, []));
 
-    internal static LFont TFontCreate(string family, double size) => new(family, size);
-
     internal static CAtelier TAtelierCreate(LEngine engine) => new(
         new LPosture(engine),
         new LDraftOutlet(engine),
@@ -241,7 +239,8 @@ internal static class TInterfaceConduct
         CAtlas.LAtlasDraftRead(TAtlasDraftCreate(situation), TMediaCreate());
 
     internal static CSituation? TAtlasSituationRead(LSituation? situation) =>
-        CAtlas.LAtlasSituationRead(TAtlasDraftCreate(situation), TMediaCreate());
+        CAtlas.LAtlasSituationRead(
+            TAtlasDraftCreate(situation), TMediaCreate(), TInterfaceMarkdown.TMarkdownPortCreate());
 
     private static LDraft? TAtlasDraftCreate(LSituation? situation) =>
         situation is null
@@ -328,7 +327,13 @@ internal static class TInterfaceConduct
         CRespelling.LRespellingResolve(mark, phonetic, respelling);
 
     internal static CTimbre TTimbreCreate(CEditor editor, LPhonologyPort phonology, LDraftPort drafts) =>
-        new(editor.CEditorDesk, phonology, editor.CEditorDisplay, TEngineFake.TEngineStubCreate<LMediaPort>(), drafts);
+        new(
+            editor.CEditorDesk,
+            phonology,
+            editor.CEditorDisplay,
+            TEngineFake.TEngineStubCreate<LMediaPort>(),
+            drafts,
+            TEngineFake.TEngineStubCreate<LSettingsPort>());
 
     internal static CStateValue TCardStateRead(LStateValue value) => CFolio.CFolioStateRead(value);
 

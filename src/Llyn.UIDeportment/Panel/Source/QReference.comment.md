@@ -37,11 +37,13 @@ Answers the workspace opening, after the shelf has restored its vistas and attac
 It ticks the grade menu and paints the filter mark.
 The flags are loaded before the first rows are built, because an entry row reads its flag at construction.
 The filter menu is built from the languages that load answers, and the Source rows are painted last.
+Its one request is `CShelfRollLoad`, which runs the flag fill and then answers the rows it paints.
 
 ## `internal async void QFootnoteVistaRefine()`
 
 Answers the workspace opening for the entry list, which has its own first paint.
 It awaits the same flag load, then paints the entry rows.
+Its one request is `CFootnoteRowsLoad`, which runs the flag fill and then answers the rows it paints.
 
 ## `internal void QReferenceExitRefine()`
 
@@ -53,10 +55,20 @@ The imprint's kind menu closes with them.
 Paints the rows, the empty notice and the colophon tally from one shelf answer.
 The rows are spliced, so the list keeps its scroll position.
 
+## `private void QShelfRefine(CShelfRoll roll)`
+
+Paints `roll` the area answered ready, so the paint itself asks Conduct nothing.
+The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
+
 ## `private void QFootnoteRefine()`
 
 Refills the entry list, and shows the empty text while no row stands.
 `CFootnote` chooses the text's key by whether the list is being searched.
+
+## `private void QFootnoteRefine(IReadOnlyList<CVistaRow> rows)`
+
+Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
+The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
 
 ## `private void QReferenceModeRefine()`
 

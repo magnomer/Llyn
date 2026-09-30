@@ -41,8 +41,6 @@ public sealed class CAtelier : IDisposable
 
     public CMention CAtelierMention { get; }
 
-    public CMarkdown CAtelierMarkdown => new(this);
-
     public CNavigation CAtelierNavigation { get; }
 
     public CCatalog CAtelierCatalog => new(this);

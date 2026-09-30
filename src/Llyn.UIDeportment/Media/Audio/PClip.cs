@@ -56,7 +56,7 @@ public partial class PEditor
     private async void PClipEnsignRefine(CClipRoll roll)
     {
         PClipRefine(roll);
-        PClipRefine(await LEnsignImage.LEnsignLoad(_qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandEnsignLoad));
+        PClipRefine(await _qEditor.QEditorArea.CEditorDesk.CDeskErrand.CErrandEnsignLoad(QEnsignImage.QEnsignDraw));
     }
 
     internal void PClipRefine(CClipRoll roll)

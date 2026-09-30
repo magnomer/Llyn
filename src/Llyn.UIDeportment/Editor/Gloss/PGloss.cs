@@ -27,7 +27,7 @@ internal sealed class PGloss : INotifyPropertyChanged
         _pGlossId = draft.CGlossDraftId;
         _pGlossLanguage = draft.CGlossDraftLanguage;
         _pGlossHint = draft.CGlossDraftHint;
-        _pGlossFlag = LEnsignImage.LEnsignFind(_pGlossLanguage);
+        _pGlossFlag = QEnsignImage.QEnsignRead(_pGlossLanguage);
         _pGlossText = draft.CGlossDraftWording;
     }
 
@@ -92,7 +92,7 @@ internal sealed class PGloss : INotifyPropertyChanged
         {
             _pGlossLanguage = draft.CGlossDraftLanguage;
             _pGlossHint = draft.CGlossDraftHint;
-            PGlossFlag = LEnsignImage.LEnsignFind(_pGlossLanguage);
+            PGlossFlag = QEnsignImage.QEnsignRead(_pGlossLanguage);
             PGlossRaise(nameof(PGlossLanguage));
         }
 

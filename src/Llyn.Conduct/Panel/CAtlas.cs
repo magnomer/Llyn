@@ -166,16 +166,20 @@ public sealed class CAtlas
             : null;
     }
 
-    internal static CSituation? LAtlasSituationRead(LDraft? draft, LMediaPort media)
+    internal static CSituation? LAtlasSituationRead(LDraft? draft, LMediaPort media, LEntryPort entries)
     {
-        return draft?.LDraftSituation is LSituation situation
-            ? new CSituation(
-                CStateWording.LStateWordingRead(
-                    CFolio.CFolioStateRead(situation.LSituationTitle), "Situation.Untitled"),
-                CStateWording.LStateWordingRead(CFolio.CFolioStateRead(situation.LSituationKind), null),
-                CStateWording.LStateWordingRead(CFolio.CFolioStateRead(situation.LSituationDescription), null),
-                CFolio.CFolioImageRead(situation.LSituationImageFilled, media),
-                CFolio.CFolioVideoRead(situation.LSituationVideoFilled, media))
-            : null;
+        if (draft?.LDraftSituation is not LSituation situation)
+        {
+            return null;
+        }
+
+        CStateValue description = CFolio.CFolioStateRead(situation.LSituationDescription);
+        return new CSituation(
+            CStateWording.LStateWordingRead(CFolio.CFolioStateRead(situation.LSituationTitle), "Situation.Untitled"),
+            CStateWording.LStateWordingRead(CFolio.CFolioStateRead(situation.LSituationKind), null),
+            CStateWording.LStateWordingRead(description, null),
+            CMarkdown.LMarkdownParse(entries, description.CStateValueText),
+            CFolio.CFolioImageRead(situation.LSituationImageFilled, media),
+            CFolio.CFolioVideoRead(situation.LSituationVideoFilled, media));
     }
 }

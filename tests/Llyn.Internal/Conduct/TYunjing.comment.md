@@ -5,6 +5,7 @@
 Covers the yunjing panel's gates end to end on a real workspace.
 The cells are placed straight into the store, so nothing here reaches the web.
 `TYunjingVista` covers the vista restore, its observers and the close.
+Its flag-fill load answers the same rows once the fill has run.
 
 The bundled rime-book pack shows the tab, and with nothing placed the panel lists nothing under the bare keys.
 With no cell chosen, the columns list the first language declaring a book, here the bundled one.

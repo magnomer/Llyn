@@ -11,6 +11,22 @@ namespace Llyn.Tests;
 public sealed class TLibraryVista
 {
     [Fact]
+    public async Task LibraryRowsLoad_StoredEntry_AnswersTheRowsAndTheLanguagesAfterTheFill()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        TLibrary.TLibraryEntrySave(engine, "stone", "English");
+        CLibrary library = TLibrary.TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
+
+        CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
+            await library.CLibraryRowsLoad(static (_, _) => static () => { });
+
+        Assert.Equal(["stone"], sheet.CEnsignSheetRows.Select(static row => row.CVistaRowHeadword));
+        Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), sheet.CEnsignSheetLanguages);
+    }
+
+    [Fact]
     public void LibraryVistaRestore_QueryHeld_CarriesItIntoTheFreshVista()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

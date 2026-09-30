@@ -34,12 +34,14 @@ The dropdown mark and the filter mark are drawn from the anthology first.
 The flags are loaded before any row is built, since a row keeps the flag it was built with.
 The same read answers the languages for the filter menu and the speaker menu.
 The catalog is then read and painted, which is the panel's first paint in the workspace.
+Its one request is `CCorpusRowsLoad`, which runs the flag fill and then answers the rows it paints.
 
 ## `internal async void QQuotationVistaRefine()`
 
 Answers `CWorkspaceOpened` with the middle column's first paint in the workspace.
 A row keeps the flag it was built with, so the flags are loaded before the rows are read.
 The catalog's restore paints the catalog, so each list reads only its own rows.
+Its one request is `CQuotationRowsLoad`, which runs the flag fill and then answers the rows it paints.
 
 ## `private void QGauzeRefine()`
 
@@ -68,6 +70,11 @@ The mark on the button is then redrawn from the vista.
 Refills the catalog with the ready rows `CCorpusRowsRead` answers, already matched, ordered and worded.
 The driver hands over nothing and decides nothing about the ordering, the query or the wording.
 The read reports its own failure, and it drops a shown selection whose row no longer stands.
+
+## `private void QAnthologyRefine(IReadOnlyList<CCatalogExample> rows)`
+
+Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
+The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
 
 ## `private void QCorpusTallyRefine()`
 

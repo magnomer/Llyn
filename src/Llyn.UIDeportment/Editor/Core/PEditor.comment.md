@@ -65,6 +65,11 @@ The contour is read again here, since a new language may change it over the same
 
 The draft's language name and its flag.
 
+## `internal void PGlossFontRefine(CEntryDraft _)`
+
+The gloss typography goes into the card resources, beside the example typography `PExampleFontRefine` puts there.
+Each reads its own font from the timbre, so each Refine asks Conduct once.
+
 ## `internal void PGlyphFontRefine(CEntryDraft _)`
 
 The glyph typography goes into the glyph list's resources, so the field takes it and the scheme label does not.

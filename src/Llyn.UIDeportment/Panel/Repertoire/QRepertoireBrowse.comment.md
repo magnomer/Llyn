@@ -48,11 +48,13 @@ The flags are loaded before any row is built.
 The language menu is then built from the languages that load answers.
 The catalog is then listed once.
 The Conduct carried any search text held into the fresh vistas, so the boxes need no re-send.
+Its one request is `CRepertoireRowsLoad`, which runs the flag fill and then answers the rows it paints.
 
 ### `internal async void QOccurrenceVistaRefine()`
 
 Answers the workspace opening for the entry column, which shows the same flags.
 It waits for the same load, then lists the column once.
+Its one request is `COccurrenceRowsLoad`, which runs the flag fill and then answers the rows it paints.
 
 ### `private void QMeshRefine()`
 
@@ -86,6 +88,11 @@ The rows arrive as `CCatalogSituation` shapes, the kind and the count carrying t
 The Conduct read drops a shown selection whose row no longer stands, and keeps one an open editor holds.
 Its clear announces fresh rows that list the same Situations, so the nested refill is harmless.
 The tally chips and the entry column follow through the atlas's row notice, so neither is painted here.
+
+## `private void QAtlasRefine(IReadOnlyList<CCatalogSituation> rows)`
+
+Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
+The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
 
 ## `private void QRepertoireTallyRefine()`
 

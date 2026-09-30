@@ -12,7 +12,7 @@ public partial class PWindow
 
     private void PCaptionMaximizeRefine(object sender, RoutedEventArgs e)
     {
-        LCaption.LCaptionMaximizeToggle(_pWindowSurface);
+        QCaption.QCaptionMaximizeRefine(_pWindowSurface);
     }
 
     private void PCaptionExitRefine(object sender, RoutedEventArgs e)
@@ -22,6 +22,6 @@ public partial class PWindow
 
     private void PRoofRefine(object sender, MouseButtonEventArgs e)
     {
-        LCaption.LCaptionDragRefine(_pWindowSurface, PRoof, e);
+        QCaption.QCaptionDragRefine(_pWindowSurface, PRoof, e);
     }
 }

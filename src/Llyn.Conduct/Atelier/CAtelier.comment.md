@@ -18,11 +18,6 @@ It is internal, so no driver can build a root of its own.
 
 The mention gates, built once over this atelier's ports.
 
-## `public CMarkdown CAtelierMarkdown => new(this);`
-
-The markdown gate over this atelier's entry port.
-It holds no state, so each read builds a fresh one and the atelier keeps no slot for it.
-
 ## `public CNavigation CAtelierNavigation { get; }`
 
 The session's one navigation, built once over this atelier.

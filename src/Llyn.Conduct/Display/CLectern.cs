@@ -7,7 +7,7 @@ public sealed record CLectern(
     string CLecternLanguage,
     IReadOnlyList<string> CLecternSpeeches,
     bool CLecternMarked,
-    string CLecternNote,
+    IReadOnlyList<CMarkdownBlock> CLecternNote,
     bool CLecternNoted,
     string CLecternAdded,
     string CLecternUpdated,

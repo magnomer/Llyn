@@ -90,7 +90,7 @@ public partial class PSettings : UserControl
         QLookItem.QLookItemAttach(PLedger, PLedgerItemRefine);
         PSettingsPosture.QPostureLinkedChanged += PLedgerMetaRefine;
         PSettingsAtelier.CAtelierLedger.CLedgerChanged +=
-            LObserver.LObserverCreate<CLedgerState>(this, PSettingsRefine);
+            QObserver.QObserverCreate<CLedgerState>(this, PSettingsRefine);
         PDialRefine("Workspace");
     }
 

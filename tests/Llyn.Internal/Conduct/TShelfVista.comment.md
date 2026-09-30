@@ -10,3 +10,4 @@ An entry notice refills the Source rows, so their tallies follow, and the entry 
 A workspace notice closes the chosen Source through the marshal.
 A settings notice refills the Source rows through the marshal.
 Closing the atelier cancels the entry editor's desk and stops playback.
+Its flag-fill load answers the same rows once the fill has run.

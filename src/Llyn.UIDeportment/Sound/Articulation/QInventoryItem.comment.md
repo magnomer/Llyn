@@ -15,7 +15,7 @@ The flag is resolved once for the language and handed to the row, not read from 
 
 Whether this row is the one the panel stands on, which the row template paints an accent edge for.
 It is the only value of the row that changes after the row is built.
-The catalog row carries it, and `LSplice` moves the mark in place, so the list keeps its scroll position.
+The catalog row carries it, and `QSplice` moves the mark in place, so the list keeps its scroll position.
 
 ## `public string QInventoryItemName`
 
@@ -39,11 +39,11 @@ A plain copy loop, so the panel that asks for it carries no loop of its own.
 
 Whether the two rows show the same values, the chosen mark left aside.
 The flag counts too, so a flag loaded after the rows were built refills the list.
-`LSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
+`QSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
 
 ## `internal static void QInventoryItemSync(QInventoryItem held, QInventoryItem fresh)`
 
-Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.
+Copies the chosen mark of the fresh row onto the held row that `QSplice` kept.
 
 ## `internal static void QInventoryItemRefine(FrameworkElement container, object item, string? _)`
 

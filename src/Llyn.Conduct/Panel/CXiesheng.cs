@@ -167,6 +167,10 @@ public sealed class CXiesheng
         return rows;
     }
 
+    public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CXieshengKindredLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
+        CCatalog.LCatalogEnsignLoad(_cXieshengSettingsPort, store, CXieshengKindredRead);
+
     public CStemPage CXieshengStemRead()
     {
         LStemPage page = _cXieshengPort.LEngineStemResolve(

@@ -131,6 +131,8 @@ public sealed class QLectern
         QLecternArea.CDisplayOpened += QLecternSound.QLecternParadigmRefine;
         QLecternArea.CDisplayOpened += QLecternSound.QLecternScriptRefine;
         QLecternArea.CDisplayOpened += QLecternSound.QLecternFanqieRefine;
+        QLecternArea.CDisplayOpened += QLecternCard.QLecternExampleRefine;
+        QLecternArea.CDisplayOpened += QLecternCard.QLecternGlossRefine;
         QLecternArea.CDisplayOpened += QLecternCard.QLecternCardRefine;
         QLecternArea.CDisplayOpened += QLecternCard.QLecternIncomingRefine;
         QLecternArea.CDisplayOpened += QLecternCard.QLecternEtymologyRefine;
@@ -142,24 +144,24 @@ public sealed class QLectern
         QLecternArea.CDisplayClosed += QLecternSound.QLecternSilenceRefine;
         QLecternArea.CDisplayClosed += QLecternCard.QLecternBlankRefine;
 
-        QLecternArea.CDisplayFavoriteChanged += LObserver.LObserverCreate<CBulletin>(contents, QLecternFavoriteRefine);
-        QLecternArea.CDisplayGraspChanged += LObserver.LObserverCreate<CBulletin>(contents, QLecternGraspRefine);
+        QLecternArea.CDisplayFavoriteChanged += QObserver.QObserverCreate<CBulletin>(contents, QLecternFavoriteRefine);
+        QLecternArea.CDisplayGraspChanged += QObserver.QObserverCreate<CBulletin>(contents, QLecternGraspRefine);
         QLecternArea.CDisplayFrequencyChanged +=
-            LObserver.LObserverCreate<CBulletin>(contents, QLecternFrequencyRefine);
+            QObserver.QObserverCreate<CBulletin>(contents, QLecternFrequencyRefine);
         QLecternArea.CDisplayParadigmChanged +=
-            LObserver.LObserverCreate<CBulletin>(contents, QLecternSound.QLecternParadigmRefine);
+            QObserver.QObserverCreate<CBulletin>(contents, QLecternSound.QLecternParadigmRefine);
         QLecternArea.CDisplayReflexChanged +=
-            LObserver.LObserverCreate<CBulletin>(contents, QLecternSound.QLecternRenewalRefine);
+            QObserver.QObserverCreate<CBulletin>(contents, QLecternSound.QLecternRenewalRefine);
         QLecternArea.CDisplayReflexChanged +=
-            LObserver.LObserverCreate<CBulletin>(contents, QLecternSound.QLecternFoldRefine);
+            QObserver.QObserverCreate<CBulletin>(contents, QLecternSound.QLecternFoldRefine);
         QLecternArea.CDisplayScriptChanged +=
-            LObserver.LObserverCreate<CBulletin>(contents, QLecternSound.QLecternScriptRefine);
+            QObserver.QObserverCreate<CBulletin>(contents, QLecternSound.QLecternScriptRefine);
         QLecternArea.CDisplayFanqieChanged +=
-            LObserver.LObserverCreate<CBulletin>(contents, QLecternSound.QLecternFanqieRefine);
+            QObserver.QObserverCreate<CBulletin>(contents, QLecternSound.QLecternFanqieRefine);
         QLecternArea.CDisplayEntryChanged +=
-            LObserver.LObserverCreate<CBulletin>(contents, QLecternArea.CDisplayEntryResonate);
+            QObserver.QObserverCreate<CBulletin>(contents, QLecternArea.CDisplayEntryResonate);
         QLecternArea.CDisplayWorkspaceChanged +=
-            LObserver.LObserverCreate<CBulletin>(contents, QLecternArea.CDisplayWorkspaceResonate);
+            QObserver.QObserverCreate<CBulletin>(contents, QLecternArea.CDisplayWorkspaceResonate);
     }
 
     public void QLecternHeaderIntroduce(
@@ -269,26 +271,22 @@ public sealed class QLectern
 
     private void QLecternFontRefine()
     {
-        LFontFace.LFontRefine(
-            _qLecternAtelier,
-            QLecternArea.CDisplayShown.CLecternLanguage,
-            CFontRole.CFontRoleHeadword,
-            _qLecternHeadword);
-        LFontFace.LFontPlace(_qLecternHeadword);
+        QFontFace.QFontRefine(QLecternSoundArea.CDisplayFontRead(CFontRole.CFontRoleHeadword), _qLecternHeadword);
+        QFontFace.QFontBaselineRefine(_qLecternHeadword);
     }
 
     private async void QLecternFlagRefine()
     {
-        LEnsignImage.LEnsignFlagRefine(_qLecternFlag, _qLecternGlobe, string.Empty);
+        QEnsignImage.QEnsignFlagRefine(_qLecternFlag, _qLecternGlobe, string.Empty);
 
-        await LEnsignImage.LEnsignLoad(_qLecternAtelier);
+        await _qLecternAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
 
-        LEnsignImage.LEnsignFlagRefine(_qLecternFlag, _qLecternGlobe, _qLecternLanguage.Text);
+        QEnsignImage.QEnsignFlagRefine(_qLecternFlag, _qLecternGlobe, _qLecternLanguage.Text);
     }
 
     private void QLecternNoteRefine()
     {
-        LMarkdownFace.LMarkdownRefine(_qLecternNote, QLecternArea.CDisplayShown.CLecternNote, _qLecternAtelier);
+        QMarkdownFace.QMarkdownRefine(_qLecternNote, QLecternArea.CDisplayShown.CLecternNote, _qLecternAtelier);
     }
 
     private void QLecternFavoriteRefine()
@@ -328,7 +326,7 @@ public sealed class QLectern
         _qLecternGrasp.SetValue(_qLecternStep, 0);
         _qLecternGraspLabel.Text = string.Empty;
         _qLecternLanguage.Text = string.Empty;
-        LEnsignImage.LEnsignFlagRefine(_qLecternFlag, _qLecternGlobe, string.Empty);
+        QEnsignImage.QEnsignFlagRefine(_qLecternFlag, _qLecternGlobe, string.Empty);
         _qLecternSpeech.ItemsSource = null;
         _qLecternSpeechSection.Visibility = Visibility.Collapsed;
         QFrequencyLabel.QFrequencyChipRefine(

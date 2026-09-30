@@ -13,7 +13,7 @@ A row is built while its list is being filled, and reading a file there would st
 
 Whether this row is the one the panel stands on, which the row template paints an accent edge for.
 It is the only value of the row that changes after the row is built.
-The row shape carries it, and `LSplice` moves the mark in place, so the list keeps its scroll position.
+The row shape carries it, and `QSplice` moves the mark in place, so the list keeps its scroll position.
 
 ## `public string QIndexItemName { get; }`
 
@@ -28,16 +28,16 @@ It is empty when the setting is off or the entry keeps none.
 ## `internal static IReadOnlyList<QIndexItem> QIndexItemBuild(IReadOnlyList<CVistaRow> rows)`
 
 One item per row shape, in the order the engine returned them.
-Each flag comes from `LEnsignImage`, which has drawn it before the rows are asked.
+Each flag comes from `QEnsignImage`, which has drawn it before the rows are asked.
 
 ## `internal static bool QIndexItemMatch(QIndexItem held, QIndexItem fresh)`
 
 Whether the two rows show the same values, the chosen mark left aside.
-`LSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
+`QSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
 
 ## `internal static void QIndexItemSync(QIndexItem held, QIndexItem fresh)`
 
-Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.
+Copies the chosen mark of the fresh row onto the held row that `QSplice` kept.
 It raises the change only when the mark moved, so untouched rows repaint nothing.
 
 ## `internal static void QIndexItemRefine(FrameworkElement container, object item, string? _)`

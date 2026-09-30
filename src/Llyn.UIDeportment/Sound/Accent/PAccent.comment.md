@@ -61,7 +61,7 @@ The gate writes nothing while the desk fills, so a render writing a different te
 
 ## `internal void PAccentRefine(CEntryDraft _)`
 
-Answers a draft bulletin by painting the editor's ready accent sheet, then loading the flags it needs.
+Answers a draft bulletin by painting the editor's ready accent sheet.
 
 ## `private void PAccentRefine(CTimbreAccent accent)`
 
@@ -82,9 +82,11 @@ The audio is always taken from the sheet, because the row never edits it.
 
 Draws the primary variety as a flag when one is in the store, and as a label otherwise.
 
-## `private async void PAccentEnsignRefine()`
+## `internal async void PAccentEnsignRefine(CEntryDraft _)`
 
-Loads the variety flags through the editor's flag read and paints the answer once they are in the store.
+Answers the same bulletin after the sheet, loading the variety flags through the editor's flag read.
+It paints the answer once they are in the store.
+It is its own subscriber, so each Refine asks Conduct once.
 
 ## `private void PAccentFlagRefine(CTimbreAccent? accent)`
 

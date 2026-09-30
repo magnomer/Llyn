@@ -219,7 +219,7 @@ public sealed class CDisplaySound
             glyph.LGlyphName,
             cells.Select(static cell => new CGlyphCell(
                 cell.LGlyphCellText, cell.LGlyphCellLanguage, cell.LGlyphCellLinked)).ToList(),
-            LDisplayFontRead(CFontRole.CFontRoleGlyph));
+            CDisplayFontRead(CFontRole.CFontRoleGlyph));
     }
 
     public bool CDisplayGlyphOpen(string character, string language)
@@ -294,7 +294,7 @@ public sealed class CDisplaySound
             _cDisplayVoice.LDisplayFanqieCheck(id),
             LDisplayAnswerRead(() => _cDisplayPhonology.LEngineReadingRead(id, headword), string.Empty),
             LDisplayAnchorRead(LDisplayReflexScan()),
-            LDisplayFontRead(CFontRole.CFontRoleGlyph));
+            CDisplayFontRead(CFontRole.CFontRoleGlyph));
     }
 
     public void CDisplayFanqieSet(long fanqieId, int rank, bool raise)
@@ -347,7 +347,7 @@ public sealed class CDisplaySound
         return new CLecternScript(
             CSounding.CSoundingScriptRead(_cDisplayVoice.LDisplayListRead(_cDisplayPhonology.LEngineScriptDivide)),
             _cDisplayVoice.LDisplayScriptCheck(id),
-            LDisplayFontRead(CFontRole.CFontRoleGlyph));
+            CDisplayFontRead(CFontRole.CFontRoleGlyph));
     }
 
     public CLecternParadigm CDisplayParadigmRead()
@@ -386,7 +386,7 @@ public sealed class CDisplaySound
             _cDisplayDraft, LDisplayEntry, _cDisplayHeader.CDisplayShown.CLecternHeadword, rows);
     }
 
-    private CFont LDisplayFontRead(CFontRole role)
+    public CFont CDisplayFontRead(CFontRole role)
     {
         return CCatalog.LCatalogFontRead(_cDisplaySettings, _cDisplayHeader.CDisplayShown.CLecternLanguage, role);
     }

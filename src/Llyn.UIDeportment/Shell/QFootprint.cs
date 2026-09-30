@@ -4,26 +4,26 @@ using Llyn.UIDeportment.Capsule;
 
 namespace Llyn.UIDeportment;
 
-public sealed class LFootprint
+public sealed class QFootprint
 {
-    private const double LFootprintShare = 0.8;
+    private const double QFootprintShare = 0.8;
 
-    private const int LFootprintDelay = 700;
+    private const int QFootprintDelay = 700;
 
-    private readonly QPosture _lFootprintPosture;
+    private readonly QPosture _qFootprintPosture;
 
-    public LFootprint(QPosture posture)
+    public QFootprint(QPosture posture)
     {
         ArgumentNullException.ThrowIfNull(posture);
 
-        _lFootprintPosture = posture;
+        _qFootprintPosture = posture;
     }
 
-    public LCapsuleWindow? LFootprintRead(
+    public LCapsuleWindow? QFootprintRead(
         double left, double top, double width, double height, double minWidth, double minHeight)
     {
-        return LFootprintPlace(
-            _lFootprintPosture.QPostureRead().LCapsuleContentWindow,
+        return QFootprintPlace(
+            _qFootprintPosture.QPostureRead().LCapsuleContentWindow,
             left,
             top,
             width,
@@ -32,15 +32,15 @@ public sealed class LFootprint
             minHeight);
     }
 
-    public (double LFootprintWidth, double LFootprintHeight) LFootprintSizeRead(
+    public (double QFootprintWidth, double QFootprintHeight) QFootprintSizeRead(
         double width, double height, double minWidth, double minHeight)
     {
         return (
-            Math.Clamp(width * LFootprintShare, minWidth, Math.Max(minWidth, width)),
-            Math.Clamp(height * LFootprintShare, minHeight, Math.Max(minHeight, height)));
+            Math.Clamp(width * QFootprintShare, minWidth, Math.Max(minWidth, width)),
+            Math.Clamp(height * QFootprintShare, minHeight, Math.Max(minHeight, height)));
     }
 
-    private static LCapsuleWindow? LFootprintPlace(
+    private static LCapsuleWindow? QFootprintPlace(
         LCapsuleWindow? state, double left, double top, double width, double height, double minWidth, double minHeight)
     {
         if (state is null)
@@ -48,7 +48,7 @@ public sealed class LFootprint
             return null;
         }
 
-        return LFootprintClamp(
+        return QFootprintClamp(
             state,
             left,
             top,
@@ -58,7 +58,7 @@ public sealed class LFootprint
             Math.Clamp(state.LCapsuleWindowHeight, minHeight, Math.Max(minHeight, height)));
     }
 
-    private static LCapsuleWindow LFootprintClamp(
+    private static LCapsuleWindow QFootprintClamp(
         LCapsuleWindow state,
         double left,
         double top,
@@ -75,7 +75,7 @@ public sealed class LFootprint
             state.LCapsuleWindowMaximized);
     }
 
-    public void LFootprintDefer(LCapsuleWindow state, bool minimized, bool closing)
+    public void QFootprintDefer(LCapsuleWindow state, bool minimized, bool closing)
     {
         ArgumentNullException.ThrowIfNull(state);
 
@@ -84,6 +84,6 @@ public sealed class LFootprint
             return;
         }
 
-        _lFootprintPosture.QPostureWindowDefer(state, minimized, closing ? 0 : LFootprintDelay);
+        _qFootprintPosture.QPostureWindowDefer(state, minimized, closing ? 0 : QFootprintDelay);
     }
 }

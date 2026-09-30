@@ -1,36 +1,28 @@
 using System;
 using System.Collections.Generic;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
 
-public sealed class CMarkdown
+internal static class CMarkdown
 {
-    private readonly CAtelier _cMarkdownAtelier;
-
-    internal CMarkdown(CAtelier atelier)
+    internal static IReadOnlyList<CMarkdownBlock> LMarkdownParse(LEntryPort entries, string? text)
     {
-        ArgumentNullException.ThrowIfNull(atelier);
+        ArgumentNullException.ThrowIfNull(entries);
 
-        _cMarkdownAtelier = atelier;
-    }
-
-    public IReadOnlyList<CMarkdownBlock> CMarkdownParse(string? text)
-    {
-        IReadOnlyList<LMarkdownBlock> blocks = _cMarkdownAtelier.CAtelierEntryPort.LEngineMarkdownParse(text);
+        IReadOnlyList<LMarkdownBlock> blocks = entries.LEngineMarkdownParse(text);
         List<CMarkdownBlock> read = new(blocks.Count);
         foreach (LMarkdownBlock block in blocks)
         {
-            read.Add(CMarkdownRead(block));
+            read.Add(LMarkdownRead(block));
         }
 
         return read;
     }
 
-    internal static CMarkdownBlock CMarkdownRead(LMarkdownBlock block)
+    private static CMarkdownBlock LMarkdownRead(LMarkdownBlock block)
     {
-        ArgumentNullException.ThrowIfNull(block);
-
         List<CMarkdownSpan> spans = new(block.LMarkdownBlockSpan.Count);
         foreach (LMarkdownSpan span in block.LMarkdownBlockSpan)
         {

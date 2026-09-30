@@ -91,6 +91,10 @@ public sealed class COccurrence
         }
     }
 
+    public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> COccurrenceRowsLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
+        CCatalog.LCatalogEnsignLoad(_cOccurrenceSettingsPort, store, COccurrenceRowsRead);
+
     internal string LOccurrenceFileRead()
     {
         return LVista.LVistaFileRead(_cOccurrenceVista);

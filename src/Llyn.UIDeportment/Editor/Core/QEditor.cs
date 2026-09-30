@@ -42,6 +42,7 @@ internal sealed class QEditor
         editor.CEditorDraftChanged += surface.PPronunciationRefine;
         editor.CEditorDraftChanged += surface.PTimbreRefine;
         editor.CEditorDraftChanged += surface.PAccentRefine;
+        editor.CEditorDraftChanged += surface.PAccentEnsignRefine;
         editor.CEditorDraftChanged += surface.PGlyphRefine;
         editor.CEditorDraftChanged += surface.PTranscriptionSheetRefine;
         editor.CEditorDraftChanged += surface.PReflexRefine;
@@ -49,6 +50,7 @@ internal sealed class QEditor
         editor.CEditorDraftChanged += surface.PSpeakerRefine;
         editor.CEditorDraftChanged += surface.PHeadwordFontRefine;
         editor.CEditorDraftChanged += surface.PExampleFontRefine;
+        editor.CEditorDraftChanged += surface.PGlossFontRefine;
         editor.CEditorDraftChanged += surface.PGlyphFontRefine;
         editor.CEditorDraftChanged += surface.PSentenceFrameRefine;
         editor.CEditorDraftChanged += surface.PMeaningRefine;
@@ -63,6 +65,6 @@ internal sealed class QEditor
         workspace.CWorkspaceOpened += surface.PLanguageRefine;
         workspace.CWorkspaceOpened += surface.PVolumeRefine;
 
-        editor.CEditorObserverAttach(LObserver.LObserverCreate<Action>(static run => run()));
+        editor.CEditorObserverAttach(QObserver.QObserverCreate<Action>(static run => run()));
     }
 }

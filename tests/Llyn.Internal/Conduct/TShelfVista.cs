@@ -10,6 +10,24 @@ namespace Llyn.Tests;
 public sealed class TShelfVista
 {
     [Fact]
+    public async Task ShelfRollLoad_StoredSource_AnswersTheRollAndTheLanguagesAfterTheFill()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        engine.TEngineCitationCreate("Book");
+        CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
+
+        CEnsignSheet<CShelfRoll> sheet = await shelf.CShelfRollLoad(static (_, _) => static () => { });
+
+        Assert.Equal(
+            shelf.CShelfRollRead().CShelfRollRows.Select(static row => row.CCatalogReferenceName),
+            sheet.CEnsignSheetRows.CShelfRollRows.Select(static row => row.CCatalogReferenceName));
+        Assert.Contains("Book", sheet.CEnsignSheetRows.CShelfRollRows.Select(static row => row.CCatalogReferenceName));
+        Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), sheet.CEnsignSheetLanguages);
+    }
+
+    [Fact]
     public void ShelfVistaRestore_QueriesHeld_CarriesThemIntoTheFreshVistas()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

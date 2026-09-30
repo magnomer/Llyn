@@ -19,11 +19,6 @@ public sealed class CCatalog
         _cCatalogAtelier = atelier;
     }
 
-    public CFont CCatalogFontRead(string language, CFontRole role)
-    {
-        return LCatalogFontRead(_cCatalogAtelier.CAtelierSettingsPort, language, role);
-    }
-
     internal static CFont LCatalogFontRead(LSettingsPort settings, string language, CFontRole role)
     {
         ArgumentNullException.ThrowIfNull(settings);
@@ -54,13 +49,6 @@ public sealed class CCatalog
             CFontRole.CFontRoleGlyph => LFontRole.LFontRoleGlyph,
             _ => throw new ArgumentOutOfRangeException(nameof(role), role, null),
         };
-    }
-
-    public IReadOnlyList<CFont> CCatalogFontRead(string language, IReadOnlyList<CFontRole> roles)
-    {
-        ArgumentNullException.ThrowIfNull(roles);
-
-        return roles.Select(role => CCatalogFontRead(language, role)).ToList();
     }
 
     internal static CSentenceOrder CCatalogOrderRead(LSentenceOrder order)
@@ -97,6 +85,29 @@ public sealed class CCatalog
 
         return _cCatalogAtelier.CAtelierSettingsPort.LEngineEnsignLoad(
             (rows, delete) => store(CCatalogEnsignRead(rows), delete));
+    }
+
+    internal static async Task<CEnsignSheet<LCatalogKind>> LCatalogEnsignLoad<LCatalogKind>(
+        LSettingsPort settings,
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store,
+        Func<LCatalogKind> read)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(store);
+        ArgumentNullException.ThrowIfNull(read);
+
+        IReadOnlyList<string> languages;
+        try
+        {
+            languages = await settings.LEngineEnsignLoad((rows, delete) => store(CCatalogEnsignRead(rows), delete))
+                .ConfigureAwait(true);
+        }
+        catch (Exception)
+        {
+            languages = settings.LEngineLanguageRead();
+        }
+
+        return new CEnsignSheet<LCatalogKind>(languages, read());
     }
 
     internal static IReadOnlyList<CMeaning> LCatalogMeaningRead(

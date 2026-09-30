@@ -14,6 +14,11 @@ A failed read is reported by the list, which answers no rows.
 An empty result is shown rather than hidden.
 Its wording key is `CQuotationEmptyKey`, chosen by whether the list holds a query.
 
+## `private void QQuotationRefine(IReadOnlyList<CVistaRow> rows)`
+
+Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
+The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
+
 ## `private void QQuotationObserve(object sender, RoutedEventArgs e)`
 
 A clicked Entry row asks the gate `CCorpusQuotationSelect` to show it without leaving the tab.

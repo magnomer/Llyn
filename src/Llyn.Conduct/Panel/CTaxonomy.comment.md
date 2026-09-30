@@ -118,6 +118,11 @@ A failed read shows `Tag.LoadFailed` through the envoy and answers no rows.
 A read that succeeds raises the entry rows, since the entries hang on the chosen Tag.
 A failed read raises nothing more, so the user sees one notice, as before.
 
+## `public Task<CEnsignSheet<IReadOnlyList<CCatalogTag>>> CTaxonomyRowsLoad(`
+
+Runs the flag fill into the driver's `store`, then answers `CTaxonomyRowsRead` beside the loaded languages.
+The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+
 ## `private void LTaxonomyTagCreate(string name)`
 
 Makes the Tag from the raw wording and opens it as an arrival does.

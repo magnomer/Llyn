@@ -81,6 +81,6 @@ internal sealed class QDiweiItem
     {
         ArgumentNullException.ThrowIfNull(sections);
 
-        return LSplice.LSpliceBuild(sections, static section => new QDiweiItem(section));
+        return QSplice.QSpliceBuild(sections, static section => new QDiweiItem(section));
     }
 }

@@ -76,6 +76,11 @@ The rows the engine returns for the vista, none before a vista arrives.
 They come already filtered, sorted, numbered and marked, so the list decides nothing about them.
 The count is kept for `CLibraryEmpty`, so the empty notice follows the rows shown.
 
+## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CLibraryRowsLoad(`
+
+Runs the flag fill into the driver's `store`, then answers `CLibraryRowsRead` beside the loaded languages.
+The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+
 ## `internal string LLibraryFileRead()`
 
 The file name an export of the chosen entry is offered under.

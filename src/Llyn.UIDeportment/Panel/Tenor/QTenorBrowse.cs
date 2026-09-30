@@ -14,7 +14,7 @@ internal sealed partial class QTenor
 
     private async void QTenorWorkspaceRefine()
     {
-        await LEnsignImage.LEnsignLoad(_qTenorHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
+        await _qTenorHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
     }
 
     private void QSoundingObserve(object sender, TextChangedEventArgs e)
@@ -57,10 +57,10 @@ internal sealed partial class QTenor
             ]);
         QChoice.QChoiceOrderApply(QDegreeDropdown, _cTenor.CTenorOrder);
         QGrilleRefine();
-        IReadOnlyList<string> languages =
-            await LEnsignImage.LEnsignLoad(_qTenorHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
-        QGrilleListRefine(languages);
-        QGamutRefine();
+        CEnsignSheet<IReadOnlyList<CCatalogRegister>> sheet =
+            await _cTenor.CTenorRowsLoad(QEnsignImage.QEnsignDraw);
+        QGrilleListRefine(sheet.CEnsignSheetLanguages);
+        QGamutRefine(sheet.CEnsignSheetRows);
     }
 
     private void QGrilleListRefine(IReadOnlyList<string> languages)
@@ -75,8 +75,13 @@ internal sealed partial class QTenor
 
     private void QGamutRefine()
     {
+        QGamutRefine(_cTenor.CTenorRowsRead());
+    }
+
+    private void QGamutRefine(IReadOnlyList<CCatalogRegister> rows)
+    {
         _qGamutList.Clear();
-        foreach (CCatalogRegister row in _cTenor.CTenorRowsRead())
+        foreach (CCatalogRegister row in rows)
         {
             _qGamutList.Add(new QGamutItem(row));
         }

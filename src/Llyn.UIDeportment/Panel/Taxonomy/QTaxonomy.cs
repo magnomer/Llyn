@@ -136,7 +136,7 @@ internal sealed partial class QTaxonomy
             host.PWindowAtelier,
             QTaxonomyShownCheck,
             host.PWindowEnvoy,
-            LObserver.LObserverCreate<Action>(static run => run()));
+            QObserver.QObserverCreate<Action>(static run => run()));
         _cTaxonomy.CTaxonomyTagOpened += QDirectoryTagRefine;
         _cTaxonomy.CTaxonomyRowsChanged += QDirectoryRefine;
         _cTaxonomy.CTaxonomyWorkspaceChanged += QTaxonomyWorkspaceRefine;

@@ -195,6 +195,10 @@ public sealed class CYunjing
         return rows;
     }
 
+    public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CYunjingXiaoyunLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
+        CCatalog.LCatalogEnsignLoad(_cYunjingSettingsPort, store, CYunjingXiaoyunRead);
+
     public CDiweiPage CYunjingDiweiRead()
     {
         LDiweiPage page = _cYunjingPort.LEngineDiweiResolve(

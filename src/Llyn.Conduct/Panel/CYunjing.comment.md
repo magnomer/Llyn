@@ -148,6 +148,11 @@ The rime column as the driver copies it, counted for the empty verdict.
 
 The entry list under the chosen cells, copied through the shared row map and counted for the empty verdict.
 
+## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CYunjingXiaoyunLoad(`
+
+Runs the flag fill into the driver's `store`, then answers `CYunjingXiaoyunRead` beside the loaded languages.
+The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+
 ## `public CDiweiPage CYunjingDiweiRead()`
 
 The page of the chosen cell, or the blank page while the reader shows an entry.

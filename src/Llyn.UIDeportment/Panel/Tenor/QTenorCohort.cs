@@ -24,7 +24,7 @@ internal sealed partial class QTenor
             });
         }
 
-        LSplice.LSpliceApply(
+        QSplice.QSpliceRefine(
             _qCohortList, fresh, QCohortItem.QCohortItemMatch, QCohortItem.QCohortItemSync);
 
         QCohortEmpty.SetResourceReference(TextBlock.TextProperty, _cTenor.CTenorCohort.CCohortEmptyKey);

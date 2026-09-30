@@ -13,7 +13,7 @@ internal sealed partial class QFavorite
 
     private async void QFavoriteWorkspaceRefine()
     {
-        await LEnsignImage.LEnsignLoad(_qFavoriteHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
+        await _qFavoriteHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
     }
 
     private void QRecallObserve(object sender, TextChangedEventArgs e)
@@ -42,10 +42,10 @@ internal sealed partial class QFavorite
     {
         QChoice.QChoiceOrderApply(QSeriesDropdown, _cFavorite.CFavoritePanel.CPanelOrder);
         QStrainerRefine();
-        IReadOnlyList<string> languages =
-            await LEnsignImage.LEnsignLoad(_qFavoriteHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
-        QStrainerBuild(languages);
-        QRosterRefine();
+        CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
+            await _cFavorite.CFavoriteRowsLoad(QEnsignImage.QEnsignDraw);
+        QStrainerBuild(sheet.CEnsignSheetLanguages);
+        QRosterRefine(sheet.CEnsignSheetRows);
     }
 
     private void QStrainerBuild(IReadOnlyList<string> languages)
@@ -61,8 +61,13 @@ internal sealed partial class QFavorite
 
     private void QRosterRefine()
     {
+        QRosterRefine(_cFavorite.CFavoriteRowsRead());
+    }
+
+    private void QRosterRefine(IReadOnlyList<CVistaRow> rows)
+    {
         List<QRosterItem> fresh = [];
-        foreach (CVistaRow row in _cFavorite.CFavoriteRowsRead())
+        foreach (CVistaRow row in rows)
         {
             fresh.Add(new QRosterItem(
                 row.CVistaRowId,
@@ -73,7 +78,7 @@ internal sealed partial class QFavorite
                 row.CVistaRowChosen));
         }
 
-        LSplice.LSpliceApply(
+        QSplice.QSpliceRefine(
             _qRosterList, fresh, QRosterItem.QRosterItemMatch, QRosterItem.QRosterItemSync);
 
         QRosterEmpty.Visibility = QLook.QLookVisibleRead(_qRosterList.Count == 0);

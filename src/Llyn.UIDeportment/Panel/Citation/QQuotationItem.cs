@@ -17,7 +17,7 @@ internal sealed class QQuotationItem : INotifyPropertyChanged
         QQuotationItemEpithet = row.CVistaRowEpithet;
         QQuotationItemName = row.CVistaRowName;
         QQuotationItemLanguage = row.CVistaRowLanguage;
-        QQuotationItemFlag = LEnsignImage.LEnsignFind(row.CVistaRowLanguage);
+        QQuotationItemFlag = QEnsignImage.QEnsignRead(row.CVistaRowLanguage);
     }
 
     public long QQuotationItemId { get; }

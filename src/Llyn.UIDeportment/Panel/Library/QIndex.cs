@@ -39,7 +39,7 @@ internal sealed class QIndex
     {
         ArgumentNullException.ThrowIfNull(rows);
 
-        LSplice.LSpliceApply(
+        QSplice.QSpliceRefine(
             _qIndexList,
             QIndexItem.QIndexItemBuild(rows),
             QIndexItem.QIndexItemMatch,

@@ -55,19 +55,16 @@ public sealed class TCatalog
     public void CatalogFontRead_LanguageAndRole_ReadsThePortFont()
     {
         List<(string, LFontRole)> asked = [];
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
-            engine,
-            TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
+        LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
+        {
+            ["LEngineFontRead"] = args =>
             {
-                ["LEngineFontRead"] = args =>
-                {
-                    asked.Add(((string)args![0]!, (LFontRole)args[1]!));
-                    return TInterfaceConduct.TFontCreate("Noto Serif", 21);
-                },
-            }));
+                asked.Add(((string)args![0]!, (LFontRole)args[1]!));
+                return TInterfaceFont.TFontCreate("Noto Serif", 21);
+            },
+        });
 
-        CFont font = atelier.CAtelierCatalog.CCatalogFontRead("Korean", CFontRole.CFontRoleGlyph);
+        CFont font = TInterfaceFont.TCatalogFontRead(settings, "Korean", CFontRole.CFontRoleGlyph);
 
         Assert.Equal(new CFont("Noto Serif", 21, null), font);
         Assert.Equal([("Korean", LFontRole.LFontRoleGlyph)], asked);
@@ -76,15 +73,12 @@ public sealed class TCatalog
     [Fact]
     public void CatalogFontRead_UnsizedFont_CarriesNoSize()
     {
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
-            engine,
-            TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
-            {
-                ["LEngineFontRead"] = _ => TInterfaceConduct.TFontCreate("Noto Serif", 0),
-            }));
+        LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
+        {
+            ["LEngineFontRead"] = _ => TInterfaceFont.TFontCreate("Noto Serif", 0),
+        });
 
-        CFont font = atelier.CAtelierCatalog.CCatalogFontRead("Korean", CFontRole.CFontRoleHeadword);
+        CFont font = TInterfaceFont.TCatalogFontRead(settings, "Korean", CFontRole.CFontRoleHeadword);
 
         Assert.Equal("Noto Serif", font.CFontFamily);
         Assert.Null(font.CFontSize);
@@ -94,19 +88,16 @@ public sealed class TCatalog
     public void CatalogFontRead_BlankLanguage_AnswersNothingSetWithoutAsking()
     {
         List<string> asked = [];
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
-            engine,
-            TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
+        LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
+        {
+            ["LEngineFontRead"] = args =>
             {
-                ["LEngineFontRead"] = args =>
-                {
-                    asked.Add((string)args![0]!);
-                    return TInterfaceConduct.TFontCreate("Noto Serif", 21);
-                },
-            }));
+                asked.Add((string)args![0]!);
+                return TInterfaceFont.TFontCreate("Noto Serif", 21);
+            },
+        });
 
-        CFont font = atelier.CAtelierCatalog.CCatalogFontRead(" ", CFontRole.CFontRoleHeadword);
+        CFont font = TInterfaceFont.TCatalogFontRead(settings, " ", CFontRole.CFontRoleHeadword);
 
         Assert.Equal(new CFont(null, null, null), font);
         Assert.Empty(asked);
@@ -115,36 +106,86 @@ public sealed class TCatalog
     [Fact]
     public void CatalogFontRead_RefusedRead_AnswersNothingSet()
     {
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
-            engine,
-            TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
-            {
-                ["LEngineFontRead"] = _ => throw new InvalidOperationException("no pack"),
-            }));
+        LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
+        {
+            ["LEngineFontRead"] = _ => throw new InvalidOperationException("no pack"),
+        });
 
-        CFont font = atelier.CAtelierCatalog.CCatalogFontRead("Korean", CFontRole.CFontRoleExample);
+        CFont font = TInterfaceFont.TCatalogFontRead(settings, "Korean", CFontRole.CFontRoleExample);
 
         Assert.Equal(new CFont(null, null, null), font);
     }
 
     [Fact]
-    public void CatalogFontRead_TwoRoles_AnswersEachInTheGivenOrder()
+    public void CatalogFontRead_SlantInAnyCaseOrUnknown_ArrivesLowerCaseOrBlank()
     {
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
-            engine,
-            TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
+        LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
+        {
+            ["LEngineFontRead"] = args => (LFontRole)args![1]! switch
             {
-                ["LEngineFontRead"] = args => (LFontRole)args![1]! == LFontRole.LFontRoleGloss
-                    ? TInterfaceConduct.TFontCreate("Gloss Sans", 12)
-                    : TInterfaceConduct.TFontCreate("Example Serif", 18),
-            }));
+                LFontRole.LFontRoleGloss => TInterfaceFont.TFontCreate("Gloss Sans", 12, "Italic"),
+                LFontRole.LFontRoleExample => TInterfaceFont.TFontCreate("Example Serif", 18, "OBLIQUE"),
+                _ => TInterfaceFont.TFontCreate("Head Sans", 40, "slanted"),
+            },
+        });
 
-        IReadOnlyList<CFont> fonts = atelier.CAtelierCatalog.CCatalogFontRead(
-            "Korean", [CFontRole.CFontRoleExample, CFontRole.CFontRoleGloss]);
+        Assert.Equal(
+            ["italic", "oblique", null],
+            new[] { CFontRole.CFontRoleGloss, CFontRole.CFontRoleExample, CFontRole.CFontRoleHeadword }
+                .Select(role => TInterfaceFont.TCatalogFontRead(settings, "Korean", role).CFontStyle));
+    }
 
-        Assert.Equal(["Example Serif", "Gloss Sans"], fonts.Select(font => font.CFontFamily));
+    [Fact]
+    public async Task CatalogEnsignLoad_PendingFill_ReadsTheRowsOnlyAfterTheFill()
+    {
+        TaskCompletionSource<IReadOnlyList<string>> fill = new();
+        List<CEnsignRow> stored = [];
+        int read = 0;
+        LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
+        {
+            ["LEngineEnsignLoad"] = args =>
+            {
+                Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store =
+                    (Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action>)args![0]!;
+                store([TInterface.TEnsignRowCreate("French", "C:/flags/fr.svg")], static (_, _) => { })();
+                return fill.Task;
+            },
+        });
+
+        Task<CEnsignSheet<int>> sheet = TInterfaceEnsign.TCatalogEnsignLoad(
+            settings,
+            (rows, _) =>
+            {
+                stored.AddRange(rows);
+                return static () => { };
+            },
+            () => ++read);
+        int before = read;
+        fill.SetResult(["English", "French"]);
+        CEnsignSheet<int> answered = await sheet;
+
+        Assert.Equal(0, before);
+        Assert.Equal(1, read);
+        Assert.Equal(["English", "French"], answered.CEnsignSheetLanguages);
+        Assert.Equal(1, answered.CEnsignSheetRows);
+        Assert.Equal([new CEnsignRow("French", "C:/flags/fr.svg")], stored);
+    }
+
+    [Fact]
+    public async Task CatalogEnsignLoad_FailedFill_AnswersTheLanguagesAndStillTheRows()
+    {
+        LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
+        {
+            ["LEngineEnsignLoad"] = _ =>
+                Task.FromException<IReadOnlyList<string>>(new InvalidOperationException("offline")),
+            ["LEngineLanguageRead"] = _ => (IReadOnlyList<string>)["Mandarin", "Welsh"],
+        });
+
+        CEnsignSheet<string> answered = await TInterfaceEnsign.TCatalogEnsignLoad(
+            settings, static (_, _) => static () => { }, static () => "rows");
+
+        Assert.Equal(["Mandarin", "Welsh"], answered.CEnsignSheetLanguages);
+        Assert.Equal("rows", answered.CEnsignSheetRows);
     }
 
     [Fact]

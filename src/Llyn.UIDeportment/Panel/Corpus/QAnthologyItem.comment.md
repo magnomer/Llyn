@@ -28,7 +28,7 @@ The item only copies it.
 
 Whether this row is the one the panel stands on, which the row template paints an accent edge for.
 It is the only value of the row that changes after the row is built.
-The engine row carries it, and `LSplice` moves the mark in place, so the list keeps its scroll position.
+The engine row carries it, and `QSplice` moves the mark in place, so the list keeps its scroll position.
 
 ## `public string QAnthologyItemName { get; }`
 
@@ -39,8 +39,8 @@ The engine numbers it on the row it returns, because a repeat is only visible ac
 ## `internal static bool QAnthologyItemMatch(QAnthologyItem held, QAnthologyItem fresh)`
 
 Whether the two rows show the same values, the chosen mark left aside.
-`LSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
+`QSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
 
 ## `internal static void QAnthologyItemSync(QAnthologyItem held, QAnthologyItem fresh)`
 
-Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.
+Copies the chosen mark of the fresh row onto the held row that `QSplice` kept.

@@ -7,3 +7,4 @@ Its rows are the entries quoting the chosen Example, and every entry while none 
 An unmatched query empties the rows, and the empty list then reads as unmatched rather than vacant.
 A blank query reads as vacant again.
 The export file name is the headword on display, and `entry` while nothing is on display.
+Its flag-fill load answers the same rows once the fill has run.

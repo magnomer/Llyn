@@ -12,3 +12,4 @@ A failing Register find shows `Register.LoadFailed` once and raises no entry row
 A settings notice with both finds failing still shows `Register.LoadFailed` only once.
 A failing entry find alone shows `Register.LoadFailed` and answers no rows.
 The rows event is answered in these tests as the driver answers it, by reading the Register list.
+Its flag-fill load answers the same rows once the fill has run.

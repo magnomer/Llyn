@@ -20,7 +20,7 @@ internal sealed class QKindredItem : INotifyPropertyChanged
         QKindredItemName = row.CVistaRowName;
         QKindredItemEpithet = row.CVistaRowEpithet;
         QKindredItemLanguage = row.CVistaRowLanguage;
-        QKindredItemFlag = LEnsignImage.LEnsignFind(row.CVistaRowLanguage);
+        QKindredItemFlag = QEnsignImage.QEnsignRead(row.CVistaRowLanguage);
         QKindredItemChosen = chosen;
     }
 
@@ -44,7 +44,7 @@ internal sealed class QKindredItem : INotifyPropertyChanged
     {
         ArgumentNullException.ThrowIfNull(rows);
 
-        return LSplice.LSpliceBuild(rows, row => new QKindredItem(row, row.CVistaRowChosen));
+        return QSplice.QSpliceBuild(rows, row => new QKindredItem(row, row.CVistaRowChosen));
     }
 
     internal static bool QKindredItemMatch(QKindredItem held, QKindredItem fresh)

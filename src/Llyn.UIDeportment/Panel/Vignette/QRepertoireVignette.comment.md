@@ -26,10 +26,11 @@ A never-written title arrives muted, and paints in the muted colour, because the
 Draws the kind in its chip, or hides the chip while no kind was ever written.
 An entry with no speech draws no speech chip, and the kind follows that.
 
-## `private void QVignetteDescriptionRefine(CStateWording description)`
+## `private void QVignetteDescriptionRefine(CSituation situation)`
 
-Renders the description from Markdown into its card, or hides the section while none was ever written.
-The entry note is rendered the same way, and the same renderer keeps the two alike.
+Draws the description's ready Markdown blocks into its card, or hides the section while none was ever written.
+A description worded by a key shows the key's text as one plain paragraph instead.
+The entry note is drawn the same way, and the same painter keeps the two alike.
 
 ## `private void QVignetteMediaRefine(IReadOnlyList<PImage>? pictures, IReadOnlyList<PVideo>? videos)`
 

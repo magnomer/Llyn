@@ -1,19 +1,15 @@
 # CMarkdown.cs
 
-## `public sealed class CMarkdown`
+## `internal static class CMarkdown`
 
-The markdown gate: a note's text as blocks and spans a driver draws without parsing.
-It stands on the atelier's entry port, and `CAtelier` builds the one instance every driver shares.
+The one map from a text the engine parses to the blocks and spans a driver draws.
+Each area parses the text it already holds, so a driver receives ready blocks and never parses.
 
-## `internal CMarkdown(CAtelier atelier)`
-
-Only the atelier builds it, so each session has one.
-
-## `public IReadOnlyList<CMarkdownBlock> CMarkdownParse(string? text)`
+## `internal static IReadOnlyList<CMarkdownBlock> LMarkdownParse(LEntryPort entries, string? text)`
 
 The engine's blocks for the text, in order, each mapped once.
+The display calls it for the shown note, and the atlas for the vignette's description.
 
-## `internal static CMarkdownBlock CMarkdownRead(LMarkdownBlock block)`
+## `private static CMarkdownBlock LMarkdownRead(LMarkdownBlock block)`
 
 Carries one engine block and its spans with every verdict unchanged.
-It stays internal, since it names engine types.

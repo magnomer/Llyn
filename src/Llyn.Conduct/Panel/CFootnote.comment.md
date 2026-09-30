@@ -42,6 +42,11 @@ Takes the text typed into the rummage field as the list's query.
 
 Reads the entries citing the parent's chosen Source, mapped as the quotation list maps its own.
 
+## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CFootnoteRowsLoad(`
+
+Runs the flag fill into the driver's `store`, then answers `CFootnoteRowsRead` beside the loaded languages.
+The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+
 ## `internal string LFootnoteFileRead()`
 
 The file name an export of the chosen entry offers, read from the list's own vista.

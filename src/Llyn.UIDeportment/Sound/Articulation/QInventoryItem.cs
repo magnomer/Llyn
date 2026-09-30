@@ -23,7 +23,7 @@ internal sealed class QInventoryItem : INotifyPropertyChanged
         QInventoryItemLanguage = row.CCatalogPronunciationEntry.CVistaRowLanguage;
         QInventoryItemSound = row.CCatalogPronunciationSound;
         QInventoryItemPronunciation = row.CCatalogPronunciationText;
-        QInventoryItemFlag = LEnsignImage.LEnsignFind(QInventoryItemLanguage);
+        QInventoryItemFlag = QEnsignImage.QEnsignRead(QInventoryItemLanguage);
     }
 
     public long QInventoryItemId { get; }

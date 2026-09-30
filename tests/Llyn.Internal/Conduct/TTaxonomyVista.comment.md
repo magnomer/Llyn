@@ -12,3 +12,4 @@ A failing Tag find shows `Tag.LoadFailed` once and raises no entry rows.
 A settings notice with both finds failing still shows `Tag.LoadFailed` only once.
 A failing entry find alone shows `Tag.LoadFailed` and answers no rows.
 The rows event is answered in these tests as the driver answers it, by reading the Tag list.
+Its flag-fill load answers the same rows once the fill has run.

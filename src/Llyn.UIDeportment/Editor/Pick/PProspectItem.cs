@@ -12,7 +12,7 @@ internal sealed class PProspectItem
         PProspectItemName = name ?? headword;
         PProspectItemEpithet = epithet ?? string.Empty;
         PProspectItemLanguage = language;
-        PProspectItemFlag = LEnsignImage.LEnsignFind(language);
+        PProspectItemFlag = QEnsignImage.QEnsignRead(language);
         PProspectItemFresh = fresh;
     }
 

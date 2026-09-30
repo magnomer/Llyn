@@ -109,7 +109,7 @@ public sealed class CCorpus
 
     public bool CCorpusExcerptShown => !LCorpusQuotationSide && !CCorpusAnthology.CAnthologyPanel.CPanelEditing;
 
-    public bool CCorpusDisplayShown => LCorpusQuotationSide && !CCorpusQuotation.CQuotationPanel.CPanelEditing;
+    public bool CCorpusDisplayShown => CCorpusQuotation.CQuotationShown;
 
     public bool CCorpusEditorShown => CCorpusQuotation.CQuotationPanel.CPanelEditing;
 
@@ -440,6 +440,10 @@ public sealed class CCorpus
         return rows;
     }
 
+    public Task<CEnsignSheet<IReadOnlyList<CCatalogExample>>> CCorpusRowsLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
+        CCatalog.LCatalogEnsignLoad(_cCorpusSettingsPort, store, CCorpusRowsRead);
+
     public void CCorpusExampleDelete()
     {
         if (LCorpusQuotationSide)
@@ -463,16 +467,6 @@ public sealed class CCorpus
         }
 
         return Task.CompletedTask;
-    }
-
-    public Task CCorpusPortraitExport()
-    {
-        if (!CCorpusPortraitAllowed)
-        {
-            return Task.CompletedTask;
-        }
-
-        return CCorpusQuotation.LQuotationPortraitExport(_cCorpusEnvoy, _cCorpusSettingsPort);
     }
 
     internal void LCorpusVistaRestore()

@@ -16,6 +16,10 @@ The change seam is the entry editor's desk, and the finish seam is the corpus se
 
 The panel that holds the chosen entry and the edit mode of the quotation side.
 
+## `public bool CQuotationShown`
+
+Whether the quotation side is on and its entry shows outside edit mode, which gates the export.
+
 ## `public string CQuotationEmptyKey`
 
 The wording key of the empty list, chosen by whether the vista holds a query.
@@ -45,6 +49,11 @@ Reads the entries quoting the roll's chosen Example, or every entry while none i
 A failed read shows `Example.LoadFailed` through the envoy and answers no rows.
 The engine matches the query and drops the hidden languages, so the list decides nothing about matching.
 
+## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CQuotationRowsLoad(`
+
+Runs the flag fill into the driver's `store`, then answers `CQuotationRowsRead` beside the loaded languages.
+The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+
 ## `internal string LQuotationFileRead()`
 
 The file name an export of the entry on display is offered under.
@@ -54,6 +63,9 @@ The file name an export of the entry on display is offered under.
 Prints the chosen entry through `CPortrait`, worded through `settings`, with failures shown through `envoy`.
 No driver calls it, since `CCorpusPortraitPrint` chooses which side prints.
 
-## `internal Task LQuotationPortraitExport(CEnvoy envoy, LSettingsPort settings)`
+## `public Task CQuotationPortraitExport()`
 
-Exports the chosen entry to `path` in the chosen format.
+Exports the entry on display, and does nothing otherwise.
+The export belongs to the quotation list, since only its shown entry exports.
+The reader is asked for the file and format through the envoy, and a decline exports nothing.
+`CPortrait` words the page through the engine and shows `Export.Failed` through the envoy.

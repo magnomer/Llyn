@@ -14,6 +14,7 @@ The draft map answers none for no Situation, and a stored one carries every fiel
 The vignette map words a written field by its text and an unknown one by the unknown mark.
 An unwritten title words untitled, and an unwritten kind or description words nothing.
 It mutes only an unwritten field, and carries only media rows whose location is filled.
+Its description arrives parsed, so a bold span and a list item are ready blocks.
 These map tests moved here from the Windows suite once the list sank into Conduct.
 
 ## `private static CAtlas TAtlasPrepare(LEngine engine, CAtelier atelier)`

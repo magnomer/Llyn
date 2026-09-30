@@ -175,9 +175,10 @@ The written reflex rows of the shown entry through the shared scan, none when th
 Whether the shown headword offers anchoring, and each row's anchor text.
 The shared anchor map `CSounding.LSoundingAnchorRead` answers both, the one the editor's block uses.
 
-## `private CFont LDisplayFontRead(CFontRole role)`
+## `public CFont CDisplayFontRead(CFontRole role)`
 
 The font of `role` in the shown language, through the catalog's one font rule.
+The reading view paints its headword and its example cards from it, so no driver hands a language back.
 
 ## `private static LDisplayAnswer LDisplayAnswerRead<LDisplayAnswer>(Func<LDisplayAnswer> read, LDisplayAnswer fallback)`
 

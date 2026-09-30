@@ -151,6 +151,10 @@ public sealed class CLibrary
         return rows;
     }
 
+    public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CLibraryRowsLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
+        CCatalog.LCatalogEnsignLoad(_cLibrarySettingsPort, store, CLibraryRowsRead);
+
     internal string LLibraryFileRead()
     {
         return LVista.LVistaFileRead(_cLibraryVista);

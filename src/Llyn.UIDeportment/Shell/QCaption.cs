@@ -4,9 +4,9 @@ using System.Windows.Input;
 
 namespace Llyn.UIDeportment;
 
-public static class LCaption
+public static class QCaption
 {
-    public static void LCaptionMaximizeToggle(Window window)
+    public static void QCaptionMaximizeRefine(Window window)
     {
         if (window.WindowState == WindowState.Maximized)
         {
@@ -18,23 +18,23 @@ public static class LCaption
         }
     }
 
-    public static void LCaptionDragRefine(Window window, FrameworkElement roof, MouseButtonEventArgs e)
+    public static void QCaptionDragRefine(Window window, FrameworkElement roof, MouseButtonEventArgs e)
     {
         if (e.ClickCount == 2)
         {
-            LCaptionMaximizeToggle(window);
+            QCaptionMaximizeRefine(window);
             return;
         }
 
         if (window.WindowState == WindowState.Maximized)
         {
-            LCaptionPointerRestore(window, roof, e);
+            QCaptionPointerRefine(window, roof, e);
         }
 
         window.DragMove();
     }
 
-    private static void LCaptionPointerRestore(Window window, FrameworkElement roof, MouseButtonEventArgs e)
+    private static void QCaptionPointerRefine(Window window, FrameworkElement roof, MouseButtonEventArgs e)
     {
         Point pointerInWindow = e.GetPosition(window);
         Point pointerOnScreen = window.PointToScreen(pointerInWindow);

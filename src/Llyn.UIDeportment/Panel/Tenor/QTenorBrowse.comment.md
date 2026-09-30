@@ -57,6 +57,7 @@ The flags are loaded before any row is built.
 The language menu is then built from the languages that load answers.
 The catalog is then listed once, so a row keeps the flag it was built with.
 Its read raises the entry rows, so the entry list is painted after the flags too.
+Its one request is `CTenorRowsLoad`, which runs the flag fill and then answers the rows it paints.
 
 ### `private void QGrilleListRefine(IReadOnlyList<string> languages)`
 
@@ -94,6 +95,11 @@ The rows the language packs name and the rows the user wrote arrive as one shelf
 The chosen Register is re-marked as the catalog is rebuilt, so the selection survives a re-sort.
 A failed read has already been shown by the area, which then answers no rows.
 A read that succeeds makes the area raise the entry rows, so the entry list follows.
+
+### `private void QGamutRefine(IReadOnlyList<CCatalogRegister> rows)`
+
+Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
+The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
 
 ### `private void QGamutRegisterRefine()`
 

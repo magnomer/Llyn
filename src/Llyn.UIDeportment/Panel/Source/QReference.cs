@@ -157,7 +157,7 @@ internal sealed class QReference
             host.PWindowAtelier,
             QReferenceShownCheck,
             host.PWindowEnvoy,
-            LObserver.LObserverCreate<Action>(static run => run()));
+            QObserver.QObserverCreate<Action>(static run => run()));
         CPanel footnote = _cShelf.CShelfFootnote.CFootnotePanel;
         QLectern lectern = new(_cShelf.CShelfEditor.CEditorDisplay, footnote);
         _cShelf.CShelfChanged += QReferenceModeRefine;
@@ -189,16 +189,16 @@ internal sealed class QReference
     {
         QChoice.QChoiceOrderApply(QGradeDropdown, _cShelf.CShelfPanel.CPanelOrder);
         QTrellisRefine();
-        IReadOnlyList<string> languages =
-            await LEnsignImage.LEnsignLoad(_qReferenceHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
-        QTrellisListRefine(languages);
-        QShelfRefine();
+        CEnsignSheet<CShelfRoll> sheet =
+            await _cShelf.CShelfRollLoad(QEnsignImage.QEnsignDraw);
+        QTrellisListRefine(sheet.CEnsignSheetLanguages);
+        QShelfRefine(sheet.CEnsignSheetRows);
     }
 
     internal async void QFootnoteVistaRefine()
     {
-        await LEnsignImage.LEnsignLoad(_qReferenceHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
-        QFootnoteRefine();
+        QFootnoteRefine(
+            (await _cShelf.CShelfFootnote.CFootnoteRowsLoad(QEnsignImage.QEnsignDraw)).CEnsignSheetRows);
     }
 
     internal void QReferenceExitRefine()
@@ -216,8 +216,12 @@ internal sealed class QReference
 
     private void QShelfRefine()
     {
-        CShelfRoll roll = _cShelf.CShelfRollRead();
-        LSplice.LSpliceApply(
+        QShelfRefine(_cShelf.CShelfRollRead());
+    }
+
+    private void QShelfRefine(CShelfRoll roll)
+    {
+        QSplice.QSpliceRefine(
             _qShelfList,
             QShelfItem.QShelfItemBuild(roll.CShelfRollRows),
             QShelfItem.QShelfItemMatch,
@@ -228,9 +232,14 @@ internal sealed class QReference
 
     private void QFootnoteRefine()
     {
-        LSplice.LSpliceApply(
+        QFootnoteRefine(_cShelf.CShelfFootnote.CFootnoteRowsRead());
+    }
+
+    private void QFootnoteRefine(IReadOnlyList<CVistaRow> rows)
+    {
+        QSplice.QSpliceRefine(
             _qFootnoteList,
-            QFootnoteItem.QFootnoteItemBuild(_cShelf.CShelfFootnote.CFootnoteRowsRead()),
+            QFootnoteItem.QFootnoteItemBuild(rows),
             QFootnoteItem.QFootnoteItemMatch,
             QFootnoteItem.QFootnoteItemSync);
         QFootnoteEmpty.SetResourceReference(TextBlock.TextProperty, _cShelf.CShelfFootnote.CFootnoteEmptyKey);

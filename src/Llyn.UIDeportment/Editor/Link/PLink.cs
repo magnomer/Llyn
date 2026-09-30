@@ -36,24 +36,24 @@ public partial class PEditor
             return;
         }
 
-        if (item is not LLinkChip chip)
+        if (item is not QLinkChip chip)
         {
             return;
         }
 
         if (QLook.QLookPartFind<Image>(container, "PLinkFlag") is Image flag)
         {
-            flag.Source = chip.LLinkChipFlag;
+            flag.Source = chip.QLinkChipFlag;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PLinkHeadword") is TextBlock headword)
         {
-            headword.Text = chip.LLinkChipHeadword;
+            headword.Text = chip.QLinkChipTarget.CTranslationTargetHeadword;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PLinkLanguage") is TextBlock language)
         {
-            language.Text = chip.LLinkChipLanguage;
+            language.Text = chip.QLinkChipTarget.CTranslationTargetLanguage;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PLinkEraser") is Button eraser)
@@ -105,9 +105,10 @@ public partial class PEditor
 
     private void PLinkDropObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: LLinkChip chip } && PCardLinkFind(chip) is PCard card)
+        if (sender is FrameworkElement { DataContext: QLinkChip chip } && PCardLinkFind(chip) is PCard card)
         {
-            _qEditor.QEditorArea.CEditorCard.CCardTranslationRemove(card.PCardId, chip.LLinkChipId);
+            _qEditor.QEditorArea.CEditorCard.CCardTranslationRemove(
+                card.PCardId, chip.QLinkChipTarget.CTranslationTargetId);
         }
     }
 
@@ -140,9 +141,10 @@ public partial class PEditor
             box.SelectionLength,
             step =>
             {
-                if (card.PCardLinkFind(step) is LLinkChip chip)
+                if (card.PCardLinkFind(step) is QLinkChip chip)
                 {
-                    _qEditor.QEditorArea.CEditorCard.CCardTranslationRemove(card.PCardId, chip.LLinkChipId);
+                    _qEditor.QEditorArea.CEditorCard.CCardTranslationRemove(
+                        card.PCardId, chip.QLinkChipTarget.CTranslationTargetId);
                 }
             });
     }

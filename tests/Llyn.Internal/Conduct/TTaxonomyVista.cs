@@ -11,6 +11,22 @@ namespace Llyn.Tests;
 public sealed class TTaxonomyVista
 {
     [Fact]
+    public async Task TaxonomyRowsLoad_StoredTag_AnswersTheRowsAndTheLanguagesAfterTheFill()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        engine.TEngineTagCreate("motion");
+        CTaxonomy taxonomy = TTaxonomy.TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
+
+        CEnsignSheet<IReadOnlyList<CCatalogTag>> sheet =
+            await taxonomy.CTaxonomyRowsLoad(static (_, _) => static () => { });
+
+        Assert.Equal(["motion"], sheet.CEnsignSheetRows.Select(static row => row.CCatalogTagStored.CTagText));
+        Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), sheet.CEnsignSheetLanguages);
+    }
+
+    [Fact]
     public void TaxonomyVistaRestore_QueriesHeld_CarriesBothIntoTheFreshVistas()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

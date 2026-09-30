@@ -30,7 +30,7 @@ public sealed class CEditor
         CEditorSentence = new CSentence(CEditorDesk, phonology, drafts, settings, envoy);
         CEditorSounding = new CSounding(CEditorDesk, phonology, settings, CEditorDisplay.LDisplaySound, envoy);
         CEditorEsteem = new CEsteem(CEditorDesk, CEditorDisplay);
-        CEditorTimbre = new CTimbre(CEditorDesk, phonology, CEditorDisplay, media, drafts);
+        CEditorTimbre = new CTimbre(CEditorDesk, phonology, CEditorDisplay, media, drafts, settings);
         CEditorSpeech = new CCardSpeech(CEditorDesk);
         CEditorDesk.CDeskFinished += CEditorStoredShow;
         CEditorDesk.CDeskDraftPrepared += draft =>

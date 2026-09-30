@@ -27,7 +27,7 @@ internal sealed record PMentionItem(
                 0,
                 target.CTranslationTargetHeadword,
                 target.CTranslationTargetLanguage,
-                LEnsignImage.LEnsignFind(target.CTranslationTargetLanguage),
+                QEnsignImage.QEnsignRead(target.CTranslationTargetLanguage),
                 0));
         }
 

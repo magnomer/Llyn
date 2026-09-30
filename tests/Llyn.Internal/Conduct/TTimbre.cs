@@ -382,6 +382,26 @@ public sealed class TTimbre
         Assert.Null(TTimbrePrepare([]).CTimbreAudioStart(1));
     }
 
+    [Fact]
+    public void TimbreFontRead_HeldDraft_AnswersThePackFontOfEachRole()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CTimbre timbre = TTimbreAccentPrepare(engine).CEditorTimbre;
+
+        Assert.Equal(new CFont("Segoe UI", 40, null), timbre.CTimbreFontRead(CFontRole.CFontRoleHeadword));
+        Assert.Equal(new CFont("Georgia, Segoe UI", 15, null), timbre.CTimbreFontRead(CFontRole.CFontRoleExample));
+        Assert.Equal(new CFont("Georgia, Segoe UI", 15, "italic"), timbre.CTimbreFontRead(CFontRole.CFontRoleGloss));
+    }
+
+    [Fact]
+    public void TimbreFontRead_EmptyDesk_AnswersNothingSet()
+    {
+        CTimbre timbre = TTimbrePrepare([]);
+
+        Assert.Equal(new CFont(null, null, null), timbre.CTimbreFontRead(CFontRole.CFontRoleGlyph));
+    }
+
     private static CEditor TTimbreAccentPrepare(LEngine engine, params string[] accents)
     {
         CEditor editor = TEditorField.TEditorFieldPrepare(engine);

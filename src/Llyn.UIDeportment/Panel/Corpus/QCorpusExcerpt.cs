@@ -10,7 +10,7 @@ internal sealed partial class QCorpus
     {
         QExcerptSentenceRefine(example);
         QExcerptLanguage.Text = example.CExampleLanguage;
-        QExcerptFlag.Source = LEnsignImage.LEnsignFind(example.CExampleLanguage);
+        QExcerptFlag.Source = QEnsignImage.QEnsignRead(example.CExampleLanguage);
         QExcerptGlossShow(example.CExampleGloss);
         QExcerptCitationRefine(example);
         QExcerptTally.Text = example.CExampleTally;

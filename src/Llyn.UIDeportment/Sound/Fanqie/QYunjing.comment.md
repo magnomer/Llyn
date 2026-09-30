@@ -47,6 +47,7 @@ The area has already let both columns and the chosen entry go.
 Once the flags are in, it repaints the entry list, the only list whose rows carry a flag.
 So rows built while the load ran, after a cell was chosen, gain their flags.
 A failed load throws before the repaint, as the old load before the reset did.
+Its one request is `CYunjingXiaoyunLoad`, which runs the flag fill and then answers the rows it paints.
 
 ## `private void QYunjingQueryRefine()`
 
@@ -74,6 +75,11 @@ Lists the rime column afresh with the empty text the session names.
 ## `private void QXiaoyunRefine()`
 
 Lists the entries at the chosen cell afresh with the empty text the session names.
+
+## `private void QXiaoyunRefine(IReadOnlyList<CVistaRow> rows)`
+
+Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
+The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
 
 ## `internal void QYunjingDiweiRefine()`
 

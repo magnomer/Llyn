@@ -8,6 +8,25 @@ namespace Llyn.Tests;
 public sealed class TQuotation
 {
     [Fact]
+    public async Task QuotationRowsLoad_ChosenExample_AnswersTheQuotingEntriesAfterTheFill()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LExample cat = TCorpus.TCorpusExampleSave(engine, "a cat sat");
+        LEntry water = TCorpus.TCorpusEntrySave(engine);
+        engine.TRequestQuoteApply(water.LEntryId, cat.LExampleId);
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
+        corpus.TCorpusExampleOpen(cat.LExampleId);
+
+        CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
+            await corpus.CCorpusQuotation.CQuotationRowsLoad(static (_, _) => static () => { });
+
+        Assert.Equal([water.LEntryId], sheet.CEnsignSheetRows.Select(static row => row.CVistaRowId));
+        Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), sheet.CEnsignSheetLanguages);
+    }
+
+    [Fact]
     public void QuotationRowsRead_ChosenExample_ListsTheQuotingEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

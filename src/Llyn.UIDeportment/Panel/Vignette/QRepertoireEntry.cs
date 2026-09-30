@@ -13,13 +13,18 @@ internal sealed partial class QRepertoire
 
     private void QOccurrenceRefine()
     {
+        QOccurrenceRefine(_cRepertoire.CRepertoireOccurrence.COccurrenceRowsRead());
+    }
+
+    private void QOccurrenceRefine(IReadOnlyList<CVistaRow> rows)
+    {
         List<QOccurrenceItem> fresh = [];
-        foreach (CVistaRow entry in _cRepertoire.CRepertoireOccurrence.COccurrenceRowsRead())
+        foreach (CVistaRow entry in rows)
         {
             fresh.Add(new QOccurrenceItem(entry, entry.CVistaRowChosen));
         }
 
-        LSplice.LSpliceApply(
+        QSplice.QSpliceRefine(
             _qOccurrenceList, fresh, QOccurrenceItem.QOccurrenceItemMatch, QOccurrenceItem.QOccurrenceItemSync);
 
         QOccurrenceEmpty.SetResourceReference(

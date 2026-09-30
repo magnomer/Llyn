@@ -12,13 +12,9 @@ It holds no state of its own.
 
 Only the atelier builds it, over its own ports.
 
-## `public CFont CCatalogFontRead(string language, CFontRole role)`
-
-The font a language shows `role` in, read through `LCatalogFontRead`.
-
 ## `internal static CFont LCatalogFontRead(LSettingsPort settings, string language, CFontRole role)`
 
-The one font rule, shared by the catalog and the reading view's sound area.
+The one font rule, shared by every area that reads a pack's typography in its own language.
 An unsized font carries no size.
 A blank language or a refused read answers the font with nothing set, so the surface keeps its theme.
 
@@ -27,10 +23,12 @@ A blank language or a refused read answers the font with nothing set, so the sur
 The engine role of the same name, switched name by name.
 An unknown role throws, so a role added on one side alone fails loudly.
 
-## `public IReadOnlyList<CFont> CCatalogFontRead(string language, IReadOnlyList<CFontRole> roles)`
+## `internal static async Task<CEnsignSheet<LCatalogKind>> LCatalogEnsignLoad<LCatalogKind>(`
 
-The fonts of several roles in one read, in the order the roles are given.
-A surface showing two roles together, such as an example and its gloss, asks once.
+The one ordering rule for an area's rows that show flags: the flag fill first, then the area's read.
+The fill runs into the driver's store, so each row painted afterwards finds its flag drawn.
+A failed fill is silent: the languages are read without flags, and the rows are still answered.
+Every area's `…Load` member reaches it, so no driver orders the two engine calls itself.
 
 ## `internal static CSentenceOrder CCatalogOrderRead(LSentenceOrder order)`
 
@@ -53,10 +51,6 @@ The lexicon languages the workspace knows.
 
 Loads the cached flags, handing `store` each row as the Conduct shape.
 It answers the loaded languages, so a language menu fills from the load that flagged it.
-
-## `public Task CCatalogEnsignLoad(`
-
-Loads the flags of one language's `varieties` and hands the rows to `store` as Conduct rows.
 
 ## `internal static IReadOnlyList<CMeaning> LCatalogMeaningRead(`
 

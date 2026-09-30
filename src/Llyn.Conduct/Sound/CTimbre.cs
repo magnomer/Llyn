@@ -19,19 +19,29 @@ public sealed class CTimbre
 
     private readonly LDraftPort _cTimbreDraftPort;
 
-    internal CTimbre(CDesk desk, LPhonologyPort phonology, LDisplay display, LMediaPort media, LDraftPort drafts)
+    private readonly LSettingsPort _cTimbreSettingsPort;
+
+    internal CTimbre(
+        CDesk desk,
+        LPhonologyPort phonology,
+        LDisplay display,
+        LMediaPort media,
+        LDraftPort drafts,
+        LSettingsPort settings)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(display);
         ArgumentNullException.ThrowIfNull(media);
         ArgumentNullException.ThrowIfNull(drafts);
+        ArgumentNullException.ThrowIfNull(settings);
 
         _cTimbreDesk = desk;
         _cTimbrePhonologyPort = phonology;
         _cTimbreDisplay = display;
         _cTimbreMediaPort = media;
         _cTimbreDraftPort = drafts;
+        _cTimbreSettingsPort = settings;
         desk.CDeskDraftPrepared += LTimbreReflexStart;
     }
 
@@ -133,6 +143,11 @@ public sealed class CTimbre
             CSounding.CSoundingVarietyRead(language, sheet.LAccentSheetPrimary.LAccentRowVariety),
             sheet.LAccentSheetRows.Select(row => CSounding.LSoundingAccentRead(language, row)).ToList(),
             sheet.LAccentSheetFlagged);
+    }
+
+    public CFont CTimbreFontRead(CFontRole role)
+    {
+        return CCatalog.LCatalogFontRead(_cTimbreSettingsPort, LTimbreLanguage, role);
     }
 
     public CTimbreGlyph CTimbreGlyphRead()

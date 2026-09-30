@@ -49,6 +49,6 @@ internal sealed class QTally
     {
         ArgumentNullException.ThrowIfNull(tallies);
 
-        return LSplice.LSpliceBuild(tallies, static tally => new QTally(tally));
+        return QSplice.QSpliceBuild(tallies, static tally => new QTally(tally));
     }
 }

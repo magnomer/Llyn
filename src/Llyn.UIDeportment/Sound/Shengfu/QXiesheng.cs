@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -137,7 +138,7 @@ internal sealed class QXiesheng
             host.PWindowAtelier,
             QXieshengShownCheck,
             host.PWindowEnvoy,
-            LObserver.LObserverCreate<Action>(static run => run()));
+            QObserver.QObserverCreate<Action>(static run => run()));
         CPanel panel = _cXiesheng.CXieshengPanel;
         QLectern lectern = new(_cXiesheng.CXieshengEditor.CEditorDisplay, panel);
         QChoice.QChoiceOrderBuild(QRungList, "Rung", QRungObserve, CXiesheng.CXieshengOrderRead());
@@ -176,8 +177,7 @@ internal sealed class QXiesheng
 
     private async void QXieshengWorkspaceRefine()
     {
-        await LEnsignImage.LEnsignLoad(_qXieshengHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
-        QKindredRefine();
+        QKindredRefine((await _cXiesheng.CXieshengKindredLoad(QEnsignImage.QEnsignDraw)).CEnsignSheetRows);
     }
 
     private void QLodestarRefine()
@@ -197,7 +197,7 @@ internal sealed class QXiesheng
 
     internal void QGroveRefine()
     {
-        LSplice.LSpliceApply(
+        QSplice.QSpliceRefine(
             _qGroveList,
             QGroveItem.QGroveItemBuild(_cXiesheng.CXieshengGroveRead()),
             QGroveItem.QGroveItemMatch,
@@ -208,9 +208,14 @@ internal sealed class QXiesheng
 
     private void QKindredRefine()
     {
-        LSplice.LSpliceApply(
+        QKindredRefine(_cXiesheng.CXieshengKindredRead());
+    }
+
+    private void QKindredRefine(IReadOnlyList<CVistaRow> rows)
+    {
+        QSplice.QSpliceRefine(
             _qKindredList,
-            QKindredItem.QKindredItemBuild(_cXiesheng.CXieshengKindredRead()),
+            QKindredItem.QKindredItemBuild(rows),
             QKindredItem.QKindredItemMatch,
             QKindredItem.QKindredItemSync);
         QKindredEmpty.SetResourceReference(TextBlock.TextProperty, _cXiesheng.CXieshengKindredKey);

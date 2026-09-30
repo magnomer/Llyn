@@ -8,6 +8,7 @@ The wing opens and chooses entries, so most cases stand on its display.
 ## `public void DisplayEntryOpen_WingLoadsAnEntry_OpensItsHeader()`
 
 A loaded entry opens once, with its headword, language, speech names, note and worded stamp ready to draw.
+The note arrives parsed, so its italic span is already a block's span.
 
 ## `public void DisplayEntryOpen_GoneEntry_ClosesTheView()`
 

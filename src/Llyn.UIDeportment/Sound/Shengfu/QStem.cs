@@ -36,12 +36,12 @@ internal sealed class QStem
 
     internal void QStemRefine(CStemPage page)
     {
-        LFontFace.LFontRefine(page.CStemPageFont, QStemHeadword);
-        LFontFace.LFontRefine(page.CStemPageGlyph, QStemList);
-        LFontFace.LFontPlace(QStemHeadword);
+        QFontFace.QFontRefine(page.CStemPageFont, QStemHeadword);
+        QFontFace.QFontRefine(page.CStemPageGlyph, QStemList);
+        QFontFace.QFontBaselineRefine(QStemHeadword);
         QStemHeadword.Text = page.CStemPageKey;
         QStemLanguage.Text = page.CStemPageLanguage;
-        QStemFlag.Source = LEnsignImage.LEnsignFind(page.CStemPageLanguage);
+        QStemFlag.Source = QEnsignImage.QEnsignRead(page.CStemPageLanguage);
         QStemList.ItemsSource = page.CStemPageCharacters;
         QStemEmpty.Visibility = QLook.QLookVisibleRead(page.CStemPageEmpty);
     }

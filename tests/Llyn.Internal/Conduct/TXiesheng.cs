@@ -40,6 +40,25 @@ public sealed class TXiesheng
     private static readonly TimeSpan TXieshengPatience = TimeSpan.FromSeconds(5);
 
     [Fact]
+    public async Task XieshengKindredLoad_FetchedSeries_AnswersItsEntryAfterTheFill()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = TXieshengEngineStart(workspace);
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        string language = pack.TLanguageFixtureName;
+        LEntry entry = await TXieshengStemSave(engine, language);
+        CXiesheng xiesheng = TXieshengPrepare(atelier);
+        xiesheng.TXieshengStemOpen(language, "龍");
+
+        CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
+            await xiesheng.CXieshengKindredLoad(static (_, _) => static () => { });
+
+        Assert.Equal(entry.LEntryId, Assert.Single(sheet.CEnsignSheetRows).CVistaRowId);
+        Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), sheet.CEnsignSheetLanguages);
+    }
+
+    [Fact]
     public void XieshengGroveRead_NothingFetched_ListsNothingUnderTheBareKeys()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -105,9 +124,11 @@ public sealed class TXiesheng
         Assert.Equal(new CFont(null, null, null), blank.CStemPageFont);
         Assert.Equal(new CFont(null, null, null), blank.CStemPageGlyph);
         Assert.Equal(
-            atelier.CAtelierCatalog.CCatalogFontRead(language, CFontRole.CFontRoleHeadword), page.CStemPageFont);
+            TInterfaceFont.TCatalogFontRead(atelier.CAtelierSettingsPort, language, CFontRole.CFontRoleHeadword),
+            page.CStemPageFont);
         Assert.Equal(
-            atelier.CAtelierCatalog.CCatalogFontRead(language, CFontRole.CFontRoleGlyph), page.CStemPageGlyph);
+            TInterfaceFont.TCatalogFontRead(atelier.CAtelierSettingsPort, language, CFontRole.CFontRoleGlyph),
+            page.CStemPageGlyph);
     }
 
     [Fact]

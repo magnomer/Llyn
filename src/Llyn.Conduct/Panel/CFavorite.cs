@@ -164,6 +164,10 @@ public sealed class CFavorite
         }
     }
 
+    public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CFavoriteRowsLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
+        CCatalog.LCatalogEnsignLoad(_cFavoriteSettingsPort, store, CFavoriteRowsRead);
+
     internal string LFavoriteFileRead()
     {
         return LVista.LVistaFileRead(_cFavoriteVista);

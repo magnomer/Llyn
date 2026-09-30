@@ -17,6 +17,25 @@ public sealed class TYunjing
     internal const string TYunjingBook = "Classical Chinese";
 
     [Fact]
+    public async Task YunjingXiaoyunLoad_FixtureCell_AnswersTheCellEntriesAfterTheFill()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        string language = pack.TLanguageFixtureName;
+        TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
+        CYunjing yunjing = TYunjingPrepare(atelier);
+        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
+
+        CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
+            await yunjing.CYunjingXiaoyunLoad(static (_, _) => static () => { });
+
+        Assert.Equal(["爛"], sheet.CEnsignSheetRows.Select(static row => row.CVistaRowHeadword));
+        Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), sheet.CEnsignSheetLanguages);
+    }
+
+    [Fact]
     public void YunjingShengmuRead_NothingPlaced_ListsNothingUnderTheBareKeys()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

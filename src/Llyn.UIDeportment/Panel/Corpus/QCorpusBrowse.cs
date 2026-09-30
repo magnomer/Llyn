@@ -14,7 +14,8 @@ internal sealed partial class QCorpus
 
     private async void QCorpusWorkspaceRefine()
     {
-        QSpeakerRefine(await LEnsignImage.LEnsignLoad(_qCorpusHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad));
+        QSpeakerRefine(
+            await _qCorpusHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw));
     }
 
     private void QQueryObserve(object sender, TextChangedEventArgs e)
@@ -37,17 +38,17 @@ internal sealed partial class QCorpus
     {
         QChoice.QChoiceOrderApply(QRankDropdown, _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelOrder);
         QGauzeRefine();
-        IReadOnlyList<string> languages =
-            await LEnsignImage.LEnsignLoad(_qCorpusHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
-        QGauzeBuild(languages);
-        QSpeakerRefine(languages);
-        QAnthologyRefine();
+        CEnsignSheet<IReadOnlyList<CCatalogExample>> sheet =
+            await _cCorpus.CCorpusRowsLoad(QEnsignImage.QEnsignDraw);
+        QGauzeBuild(sheet.CEnsignSheetLanguages);
+        QSpeakerRefine(sheet.CEnsignSheetLanguages);
+        QAnthologyRefine(sheet.CEnsignSheetRows);
     }
 
     internal async void QQuotationVistaRefine()
     {
-        await LEnsignImage.LEnsignLoad(_qCorpusHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
-        QQuotationRefine();
+        QQuotationRefine(
+            (await _cCorpus.CCorpusQuotation.CQuotationRowsLoad(QEnsignImage.QEnsignDraw)).CEnsignSheetRows);
     }
 
     private void QGauzeRefine()
@@ -81,13 +82,18 @@ internal sealed partial class QCorpus
 
     private void QAnthologyRefine()
     {
+        QAnthologyRefine(_cCorpus.CCorpusRowsRead());
+    }
+
+    private void QAnthologyRefine(IReadOnlyList<CCatalogExample> rows)
+    {
         List<QAnthologyItem> fresh = [];
-        foreach (CCatalogExample row in _cCorpus.CCorpusRowsRead())
+        foreach (CCatalogExample row in rows)
         {
             fresh.Add(new QAnthologyItem(row, row.CCatalogExampleChosen));
         }
 
-        LSplice.LSpliceApply(
+        QSplice.QSpliceRefine(
             _qAnthologyList, fresh, QAnthologyItem.QAnthologyItemMatch, QAnthologyItem.QAnthologyItemSync);
 
         QAnthologyEmpty.Visibility = QLook.QLookVisibleRead(_qAnthologyList.Count == 0);

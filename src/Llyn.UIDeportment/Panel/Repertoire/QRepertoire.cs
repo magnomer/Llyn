@@ -206,7 +206,7 @@ internal sealed partial class QRepertoire : QChronicleHost
             host.PWindowAtelier,
             QRepertoireShownCheck,
             host.PWindowEnvoy,
-            LObserver.LObserverCreate<Action>(static run => run()));
+            QObserver.QObserverCreate<Action>(static run => run()));
         QLectern lectern = new(
             _cRepertoire.CRepertoireEditor.CEditorDisplay, _cRepertoire.CRepertoireOccurrence.COccurrencePanel);
         QScenarioDeskIntroduce();

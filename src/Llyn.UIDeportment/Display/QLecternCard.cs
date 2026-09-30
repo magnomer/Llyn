@@ -14,11 +14,11 @@ public sealed class QLecternCard
 {
     private readonly CDisplay _qLecternCardArea;
 
+    private readonly CDisplaySound _qLecternCardSound;
+
     private readonly ObservableCollection<QUsageItem> _qLecternCardUsage = [];
 
     private PWindow _qLecternCardHost = null!;
-
-    private CAtelier _qLecternCardAtelier = null!;
 
     private ResourceDictionary _qLecternCardResources = null!;
 
@@ -45,10 +45,10 @@ public sealed class QLecternCard
         ArgumentNullException.ThrowIfNull(display);
 
         _qLecternCardArea = display.CDisplayArea;
+        _qLecternCardSound = display.CDisplaySound;
     }
 
     public void QLecternCardIntroduce(
-        CAtelier atelier,
         ResourceDictionary resources,
         ItemsControl meaning,
         UIElement meaningSection,
@@ -57,7 +57,6 @@ public sealed class QLecternCard
         ScrollViewer contents,
         QCompass compass)
     {
-        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(resources);
         ArgumentNullException.ThrowIfNull(meaning);
         ArgumentNullException.ThrowIfNull(meaningSection);
@@ -66,7 +65,6 @@ public sealed class QLecternCard
         ArgumentNullException.ThrowIfNull(contents);
         ArgumentNullException.ThrowIfNull(compass);
 
-        _qLecternCardAtelier = atelier;
         _qLecternCardResources = resources;
         _qLecternCardMeaning = meaning;
         _qLecternCardDefinition = meaningSection;
@@ -126,10 +124,20 @@ public sealed class QLecternCard
         _qLecternCardReferral.Visibility = Visibility.Collapsed;
     }
 
+    public void QLecternExampleRefine()
+    {
+        QFontFace.QFontExampleRefine(
+            _qLecternCardResources, _qLecternCardSound.CDisplayFontRead(CFontRole.CFontRoleExample));
+    }
+
+    public void QLecternGlossRefine()
+    {
+        QFontFace.QFontGlossRefine(
+            _qLecternCardResources, _qLecternCardSound.CDisplayFontRead(CFontRole.CFontRoleGloss));
+    }
+
     private void QLecternCardRefine(CLecternCard card)
     {
-        LFontFace.LFontExampleRefine(
-            _qLecternCardResources, _qLecternCardAtelier, _qLecternCardArea.CDisplayShown.CLecternLanguage);
         QLecternLeafRefine(card);
         _qLecternCardDefinition.Visibility = QLook.QLookVisibleRead(card.CLecternCardDefined);
         _qLecternCardPhrase.Visibility = QLook.QLookVisibleRead(card.CLecternCardCollocated);
@@ -174,7 +182,7 @@ public sealed class QLecternCard
 
         e.Handled = _qLecternCardArea.CDisplayChipOpen(
             QSender.QSenderSourceRead<QLeafChip>(e)?.QLeafChipOrigin,
-            QSender.QSenderSourceRead<LLinkChip>(e)?.LLinkChipId);
+            QSender.QSenderSourceRead<QLinkChip>(e)?.QLinkChipTarget.CTranslationTargetId);
     }
 
     public void QLecternIncomingObserve(RoutedEventArgs e)

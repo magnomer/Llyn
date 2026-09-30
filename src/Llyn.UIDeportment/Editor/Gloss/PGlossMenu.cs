@@ -34,8 +34,8 @@ public partial class PEditor
     {
         PLanguageItem.PLanguageItemReset(
             _pLanguageItem,
-            await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad));
-        PSpeakerFlagRefine();
+            await _pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw));
+        PSpeakerEnsignRefine();
         PLinkFlagRefine();
     }
 
@@ -52,8 +52,13 @@ public partial class PEditor
 
     private async void PSpeakerFlagRefine()
     {
-        await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowAtelier);
-        LEnsignImage.LEnsignFlagRefine(PSpeakerFlag, PSpeakerGlobe, _qEditor.QEditorArea.CEditorLanguage);
+        await _pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
+        PSpeakerEnsignRefine();
+    }
+
+    private void PSpeakerEnsignRefine()
+    {
+        QEnsignImage.QEnsignFlagRefine(PSpeakerFlag, PSpeakerGlobe, _qEditor.QEditorArea.CEditorLanguage);
     }
 
     private void PSpeakerApply(FrameworkElement container, object item, string? change)

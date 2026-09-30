@@ -11,6 +11,22 @@ namespace Llyn.Tests;
 public sealed class TFavoriteVista
 {
     [Fact]
+    public async Task FavoriteRowsLoad_MarkedEntry_AnswersTheRowsAndTheLanguagesAfterTheFill()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        TFavoriteRoster.TFavoriteSave(engine, "stone", "English");
+        CFavorite favorite = TFavoriteRoster.TFavoriteRosterPrepare(atelier);
+
+        CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
+            await favorite.CFavoriteRowsLoad(static (_, _) => static () => { });
+
+        Assert.Equal(["stone"], sheet.CEnsignSheetRows.Select(static row => row.CVistaRowHeadword));
+        Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), sheet.CEnsignSheetLanguages);
+    }
+
+    [Fact]
     public void FavoriteVistaRestore_QueryHeld_CarriesItIntoTheFreshVista()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

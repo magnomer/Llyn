@@ -23,11 +23,11 @@ Whether the row is the chosen one, raised so the row restyles itself.
 ## `internal static bool QRollItemMatch(QRollItem held, QRollItem fresh)`
 
 Whether the two rows show the same values, the chosen mark left aside.
-`LSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
+`QSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
 
 ## `internal static void QRollItemSync(QRollItem held, QRollItem fresh)`
 
-Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.
+Copies the chosen mark of the fresh row onto the held row that `QSplice` kept.
 
 ## `internal static void QRollItemApply(FrameworkElement container, object item, string? _)`
 

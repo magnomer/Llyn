@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TCorpusPortrait
 {
     [Fact]
-    public async Task CorpusPortraitExport_QuotationOnDisplay_WritesTheEntry()
+    public async Task QuotationPortraitExport_EntryOnDisplay_WritesTheEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -24,12 +24,12 @@ public sealed class TCorpusPortrait
             atelier, TEnvoyFake.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
         corpus.TCorpusExampleOpen(cat.LExampleId);
 
-        await corpus.CCorpusPortraitExport();
+        await corpus.CCorpusQuotation.CQuotationPortraitExport();
 
         Assert.False(File.Exists(path));
 
         corpus.CCorpusQuotationSelect(water.LEntryId);
-        await corpus.CCorpusPortraitExport();
+        await corpus.CCorpusQuotation.CQuotationPortraitExport();
 
         Assert.Contains("water", File.ReadAllText(path), StringComparison.Ordinal);
     }

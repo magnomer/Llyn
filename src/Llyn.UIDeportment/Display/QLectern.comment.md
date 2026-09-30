@@ -58,7 +58,7 @@ The card half paints its ready card lists before the compass measures them.
 The accent half draws its rows before it loads their flags, so the late flags land on drawn rows.
 The sound half draws its reflex rows before their fold and its fanqie block, which writes their anchors.
 A reflex notice redraws the rows through the resonate, then the fold, in that order on the page.
-The engine's notices arrive on its own thread, so each is marshalled onto `contents` through `LObserver`.
+The engine's notices arrive on its own thread, so each is marshalled onto `contents` through `QObserver`.
 The draft reload and the workspace swap go straight back to the area's resonates.
 A lectern no view attached to answers nothing, since panels announce drafts in tests with no veneer.
 
@@ -70,7 +70,7 @@ The limit is set here once, from the engine's last grasp step.
 
 ## `public void QLecternNoteIntroduce(UIElement section, Panel note)`
 
-The note is Markdown, drawn as blocks by `LMarkdownFace` inside the note card.
+The note is Markdown, drawn as blocks by `QMarkdownFace` inside the note card.
 
 ## `public void QLecternFavoriteObserve()`
 
@@ -97,7 +97,7 @@ The headword takes the pack's font, so the two views never differ in family or s
 
 ## `private async void QLecternFlagRefine()`
 
-The flag comes from `LEnsignImage`, which every tab holding a display reads too.
+The flag comes from `QEnsignImage`, which every tab holding a display reads too.
 The first call may await a fetch, so a later entry may be shown before it arrives.
 The flag is then drawn for the language the pill shows now, not the one opened.
 The globe stands in until then, and wherever no flag is known.

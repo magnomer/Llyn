@@ -17,7 +17,7 @@ internal sealed class QRosterItem : INotifyPropertyChanged
         QRosterItemName = name;
         QRosterItemEpithet = epithet;
         QRosterItemLanguage = language;
-        QRosterItemFlag = LEnsignImage.LEnsignFind(language);
+        QRosterItemFlag = QEnsignImage.QEnsignRead(language);
     }
 
     public long QRosterItemId { get; }

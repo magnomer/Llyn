@@ -15,7 +15,7 @@ internal sealed class QCohortItem : INotifyPropertyChanged
         QCohortItemHeadword = headword;
         QCohortItemEpithet = epithet ?? string.Empty;
         QCohortItemLanguage = language;
-        QCohortItemFlag = LEnsignImage.LEnsignFind(language);
+        QCohortItemFlag = QEnsignImage.QEnsignRead(language);
     }
 
     public long QCohortItemId { get; }

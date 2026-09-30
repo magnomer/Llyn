@@ -136,7 +136,7 @@ internal sealed partial class QTenor
             host.PWindowAtelier,
             QTenorShownCheck,
             host.PWindowEnvoy,
-            LObserver.LObserverCreate<Action>(static run => run()));
+            QObserver.QObserverCreate<Action>(static run => run()));
         _cTenor.CTenorRegisterOpened += QGamutRegisterRefine;
         _cTenor.CTenorRowsChanged += QGamutRefine;
         _cTenor.CTenorWorkspaceChanged += QTenorWorkspaceRefine;

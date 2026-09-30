@@ -13,7 +13,7 @@ The Entry id is the way from this row to the panel holding that Entry.
 Builds the row from one citing place in its shape.
 The owner and the unknown mark are looked up under the keys Conduct chose.
 A title that is not uncertain shows its own text, which is empty when nothing names the side.
-The row finds its own flag once for the language through `LEnsignImage`.
+The row finds its own flag once for the language through `QEnsignImage`.
 
 ## `internal static IReadOnlyList<QUsageItem> QUsageItemBuild(IReadOnlyList<CUsage> usages)`
 

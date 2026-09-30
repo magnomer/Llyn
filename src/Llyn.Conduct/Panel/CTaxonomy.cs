@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 using Llyn.ShellEngine;
 
@@ -187,6 +188,10 @@ public sealed class CTaxonomy
         CTaxonomyMembership.CMembershipPanel.CPanelRowsResonate();
         return rows;
     }
+
+    public Task<CEnsignSheet<IReadOnlyList<CCatalogTag>>> CTaxonomyRowsLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
+        CCatalog.LCatalogEnsignLoad(_cTaxonomySettingsPort, store, CTaxonomyRowsRead);
 
     private bool LTaxonomyCoinageAllowed =>
         LTaxonomyChosen is null && !CTaxonomyMembership.CMembershipPanel.CPanelBinEnabled;

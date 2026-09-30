@@ -12,7 +12,7 @@ internal sealed partial class PCard
     private readonly PLinkCaret _pCardLinkCaret = new();
 
     private static readonly Func<object, long?> _pCardLinkKey =
-        row => row is LLinkChip chip ? chip.LLinkChipId : null;
+        row => row is QLinkChip chip ? chip.QLinkChipTarget.CTranslationTargetId : null;
 
     public ObservableCollection<object> PCardLink { get; } = [];
 
@@ -29,17 +29,14 @@ internal sealed partial class PCard
             _pCardLinkKey,
             static target => target.CTranslationTargetId,
             PCardLinkCreate,
-            static (row, target) =>
-                row is LLinkChip chip
-                && string.Equals(chip.LLinkChipHeadword, target.CTranslationTargetHeadword, StringComparison.Ordinal)
-                && string.Equals(chip.LLinkChipLanguage, target.CTranslationTargetLanguage, StringComparison.Ordinal)
-                    ? row
-                    : PCardLinkCreate(target));
+            static (row, target) => row is QLinkChip chip && chip.QLinkChipTarget == target
+                ? row
+                : PCardLinkCreate(target));
 
         PCardLinkUpdate();
     }
 
-    internal LLinkChip? PCardLinkFind(int step)
+    internal QLinkChip? PCardLinkFind(int step)
     {
         int index = PCardLink.IndexOf(_pCardLinkCaret);
         int target = index + step;
@@ -48,7 +45,7 @@ internal sealed partial class PCard
             return null;
         }
 
-        return PCardLink[target] as LLinkChip;
+        return PCardLink[target] as QLinkChip;
     }
 
     internal bool PCardLinkMove(int step)
@@ -74,23 +71,19 @@ internal sealed partial class PCard
     {
         for (int index = 0; index < PCardLink.Count; index++)
         {
-            if (PCardLink[index] is not LLinkChip chip ||
-                chip.LLinkChipFlag is not null)
+            if (PCardLink[index] is not QLinkChip chip ||
+                chip.QLinkChipFlag is not null)
             {
                 continue;
             }
 
-            PCardLink[index] = new LLinkChip(
-                chip.LLinkChipId,
-                chip.LLinkChipHeadword,
-                chip.LLinkChipLanguage);
+            PCardLink[index] = new QLinkChip(chip.QLinkChipTarget);
         }
     }
 
     private static object PCardLinkCreate(CTranslationTarget target)
     {
-        return new LLinkChip(
-            target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage);
+        return new QLinkChip(target);
     }
 
     private void PCardLinkStart()

@@ -239,7 +239,6 @@ public class PDisplay : UserControl
             PDisplayIncomingSection,
             PDisplayNoteSection);
         lectern.QLecternCard.QLecternCardIntroduce(
-            host.PWindowAtelier,
             Resources,
             PDisplayMeaning,
             PDisplayMeaningSection,

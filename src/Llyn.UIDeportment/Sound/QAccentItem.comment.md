@@ -73,7 +73,7 @@ The primary reading, the recorder and the transcription menu label a variety thi
 
 ## `internal static ImageSource? QAccentEnsignRefine(CVariety variety, bool flagged)`
 
-Looks a variety's flag up in `LEnsignImage` under the key Conduct handed, only in flag mode.
+Looks a variety's flag up in `QEnsignImage` under the key Conduct handed, only in flag mode.
 The store may not hold it yet, and null then says so.
 
 ## `internal void QAccentFlagRefine(bool flagged)`

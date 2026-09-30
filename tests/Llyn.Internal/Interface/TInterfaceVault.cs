@@ -30,6 +30,9 @@ internal static partial class TInterface
     internal static long TIdentityCreate(this LIdentity identity) =>
         identity.LIdentityCreate();
 
+    internal static LLanguage TLanguageCreate(IReadOnlyList<LVariety> varieties) =>
+        new(null, new LFont(null, 0), new LFont(null, 0), [], [], LLanguageVarieties: varieties);
+
     internal static IReadOnlyList<string> TLanguageScan(this LLanguageVault languageVault) =>
         languageVault.LLanguageScan();
 

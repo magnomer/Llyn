@@ -12,6 +12,7 @@ internal sealed class LLanguageFacade
 {
     private readonly LEngine _lLanguageFacadeEngine;
     private readonly object _lLanguageFacadeGate;
+    private readonly SemaphoreSlim _lLanguageFacadeEnsign = new(1, 1);
 
     public LLanguageFacade(LEngine engine)
     {
@@ -67,17 +68,25 @@ internal sealed class LLanguageFacade
     public async Task<IReadOnlyList<string>> LEngineEnsignLoad(
         Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)
     {
-        LEnsign ensign = LLanguageFacadeStaff.LEngineStaffEnsign;
-        IReadOnlyList<string> languages = LEngineLanguageRead();
-        string[] missing = ensign.LEnsignMissingRead(languages, out int age);
-        if (missing.Length == 0)
+        await _lLanguageFacadeEnsign.WaitAsync().ConfigureAwait(true);
+        try
         {
+            LEnsign ensign = LLanguageFacadeStaff.LEngineStaffEnsign;
+            IReadOnlyList<string> languages = LEngineLanguageRead();
+            string[] missing = ensign.LEnsignMissingRead(languages, out int age);
+            if (missing.Length == 0)
+            {
+                return languages;
+            }
+
+            string?[] paths = await Task.WhenAll(missing.Select(LEngineEnsignRead)).ConfigureAwait(true);
+            ensign.LEnsignPathAdd(age, missing, paths, store);
             return languages;
         }
-
-        string?[] paths = await Task.WhenAll(missing.Select(LEngineEnsignRead)).ConfigureAwait(true);
-        ensign.LEnsignPathAdd(age, missing, paths, store);
-        return languages;
+        finally
+        {
+            _lLanguageFacadeEnsign.Release();
+        }
     }
 
     public async Task LEngineEnsignLoad(
@@ -94,17 +103,25 @@ internal sealed class LLanguageFacade
             keyed[LEnsign.LEnsignKeyFormat(language, variety)] = variety;
         }
 
-        LEnsign ensign = LLanguageFacadeStaff.LEngineStaffEnsign;
-        string[] missing = ensign.LEnsignMissingRead(keyed.Keys, out int age);
-        if (missing.Length == 0)
+        await _lLanguageFacadeEnsign.WaitAsync().ConfigureAwait(true);
+        try
         {
-            return;
-        }
+            LEnsign ensign = LLanguageFacadeStaff.LEngineStaffEnsign;
+            string[] missing = ensign.LEnsignMissingRead(keyed.Keys, out int age);
+            if (missing.Length == 0)
+            {
+                return;
+            }
 
-        string?[] paths = await Task
-            .WhenAll(missing.Select(key => LEngineEnsignResolve(language, keyed[key])))
-            .ConfigureAwait(true);
-        ensign.LEnsignPathAdd(age, missing, paths, store);
+            string?[] paths = await Task
+                .WhenAll(missing.Select(key => LEngineEnsignResolve(language, keyed[key])))
+                .ConfigureAwait(true);
+            ensign.LEnsignPathAdd(age, missing, paths, store);
+        }
+        finally
+        {
+            _lLanguageFacadeEnsign.Release();
+        }
     }
 
     private async Task<string?> LEngineEnsignRead(string language)

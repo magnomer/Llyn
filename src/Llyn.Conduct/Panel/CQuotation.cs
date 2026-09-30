@@ -42,6 +42,8 @@ public sealed class CQuotation
 
     public CPanel CQuotationPanel { get; }
 
+    public bool CQuotationShown => CQuotationPanel.CPanelModeEnabled && !CQuotationPanel.CPanelEditing;
+
     public string CQuotationEmptyKey =>
         _cQuotationVista?.LVistaQueried ?? false ? "Example.Unmatched" : "Example.Vacant";
 
@@ -92,6 +94,10 @@ public sealed class CQuotation
         }
     }
 
+    public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CQuotationRowsLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
+        CCatalog.LCatalogEnsignLoad(_cQuotationSettingsPort, store, CQuotationRowsRead);
+
     internal string LQuotationFileRead()
     {
         return LVista.LVistaFileRead(_cQuotationVista);
@@ -106,13 +112,18 @@ public sealed class CQuotation
                 _cQuotationVista, CPortrait.LPortraitLabelRead(settings), chosen));
     }
 
-    internal Task LQuotationPortraitExport(CEnvoy envoy, LSettingsPort settings)
+    public Task CQuotationPortraitExport()
     {
+        if (!CQuotationShown)
+        {
+            return Task.CompletedTask;
+        }
+
         return CPortrait.LPortraitFileExport(
-            envoy,
-            settings,
+            _cQuotationEnvoy,
+            _cQuotationSettingsPort,
             LQuotationFileRead(),
             (file, medium) => _cQuotationPortraitPort.LEnginePortraitExport(
-                _cQuotationVista, file, medium, CPortrait.LPortraitLabelRead(settings)));
+                _cQuotationVista, file, medium, CPortrait.LPortraitLabelRead(_cQuotationSettingsPort)));
     }
 }

@@ -76,6 +76,11 @@ Each maps plainly to its shape: the entry as a `CVistaRow` and the sound beside 
 The engine fills every epithet, so the map copies it as it stands.
 It answers nothing before the vista is restored.
 
+## `public Task<CEnsignSheet<IReadOnlyList<CCatalogPronunciation>>> CPhonologyRowsLoad(`
+
+Runs the flag fill into the driver's `store`, then answers `CPhonologyRowsRead` beside the loaded languages.
+The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+
 ## `public void CPhonologyOrderSet(CCatalogOrder? order)`
 
 Orders the rows as the user chose.

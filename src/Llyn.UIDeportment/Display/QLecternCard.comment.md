@@ -11,9 +11,10 @@ It hears every chip, row, source link and word clicked on them and hands each to
 Builds the half over the display, whose area answers every read and gate.
 The card lists take the ready cards the area answers, so no engine record reaches the veneer.
 
-## `public void QLecternCardIntroduce(CAtelier atelier, ResourceDictionary resources, ItemsControl meaning, UIElement meaningSection, ItemsControl collocation, UIElement collocationSection, ScrollViewer contents, QCompass compass)`
+## `public void QLecternCardIntroduce(ResourceDictionary resources, ItemsControl meaning, UIElement meaningSection, ItemsControl collocation, UIElement collocationSection, ScrollViewer contents, QCompass compass)`
 
-Holds the window for the pack's typography and the view's resources the example templates read.
+Holds the view's resources the example templates read.
+The pack's typography comes from the display's sound area, which reads the shown language itself.
 Holds the two card lists with their sections, the scroll viewer and the compass a scroll measures by.
 
 ## `public void QLecternIncomingIntroduce(ItemsControl incoming, UIElement section)`
@@ -32,7 +33,16 @@ The window also paints the menu a clicked word's gate answers.
 ## `public void QLecternCardRefine()`
 
 Answers an entry opening by painting the ready cards `CDisplayCardRead` answers.
-Example lines are drawn inside templates, so the pack's example typography goes into the view's resources.
+
+## `public void QLecternExampleRefine()`
+
+Answers an entry opening by putting the shown language's example typography into the view's resources.
+Example lines are drawn inside templates, so the typography reaches them through resources.
+It is subscribed before the cards, so the example lines draw in the pack's faces.
+
+## `public void QLecternGlossRefine()`
+
+Answers an entry opening the same way for the gloss typography under the example lines.
 
 ## `public void QLecternIncomingRefine()`
 
@@ -48,8 +58,7 @@ Answers an entry closing by emptying the card lists and the incoming rows and co
 
 ## `private void QLecternCardRefine(CLecternCard card)`
 
-Sets the example typography, the two card lists and the two sections' visibility from `card`.
-The typography is set first, so the example lines draw in the pack's faces.
+Sets the two card lists and the two sections' visibility from `card`.
 
 ## `private void QLecternLeafRefine(CLecternCard card)`
 
@@ -70,7 +79,7 @@ Then it sets the field's and the section's visibility.
 
 Hears a click on a card chip and hands `CDisplayChipOpen` the ready chip it carries.
 The chip is read off what was clicked, since a click leaving a template is re-sourced to its presenter.
-A link chip also hands the entry id it names.
+A link chip also hands the id of the ready target it paints.
 The click is marked handled only when a tab was asked to open.
 
 ## `public void QLecternIncomingObserve(RoutedEventArgs e)`

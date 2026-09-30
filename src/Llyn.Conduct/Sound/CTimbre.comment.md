@@ -4,7 +4,7 @@
 
 The sound facts of the entry an editor holds, as the editor shows or offers them.
 The pack facts are read for the held draft's language, and the waiting reflexes from the editor's display.
-The editor builds it over its desk, its display and its phonology, media and draft ports.
+The editor builds it over its desk, its display and its phonology, media, draft and settings ports.
 So it keeps no copy.
 
 ## `public event Action? CTimbreParadigmChanged;`
@@ -69,6 +69,13 @@ A load or read that fails answers null too, and the labels stand.
 ## `private static CTimbreAccent LTimbreAccentRead(LAccentSheet sheet)`
 
 Maps the engine's sheet into the Conduct record, reading no rule.
+
+## `public CFont CTimbreFontRead(CFontRole role)`
+
+The typography the held draft's pack declares for `role`, through the catalog's one font rule.
+The editor paints its headword field, its example cards and its glyph row from it.
+So no driver hands the editor's language back to the catalog.
+A fresh draft reads its pack the same way, and an empty desk answers the blank font.
 
 ## `public CTimbreGlyph CTimbreGlyphRead()`
 

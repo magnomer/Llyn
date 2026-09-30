@@ -7,10 +7,6 @@ It is a class of its own rather than a part of `TInterface`.
 Each relay reaches a static rule or builds a conduct over outlets, so none builds a WPF object.
 Each relay is transparent and carries no test logic of its own.
 
-## `internal static LFont TFontCreate(string family, double size) => new(family, size);`
-
-Builds an engine font for a fake settings port to answer, so a test never constructs a Core record.
-
 ## `internal static CAtelier TAtelierCreate(LEngine engine) => new(`
 
 Builds the atelier over real outlets on `engine`, with a stub player that only accepts a stop.
@@ -86,6 +82,7 @@ A null Situation reads as no draft at all.
 ## `internal static CSituation? TAtlasSituationRead(LSituation? situation)`
 
 Wraps the Situation in a bare draft and maps it to the vignette's ready page through the atlas.
+The entry port runs the real parser, so the description's blocks are real.
 
 ## `private static LDraft? TAtlasDraftCreate(LSituation? situation)`
 
@@ -174,6 +171,7 @@ Relays the respelling rule, so a fact can read which form a mark shows.
 
 Builds the editor's sound facts over the desk and display of `editor`, with ports a test may fake.
 The fake draft port lets a test answer the anchor rule, and the fake phonology port the reflex guises.
+Its settings port is a stub, since no case built here reads a font.
 
 ## `internal static CStateValue TCardStateRead(LStateValue value)`
 

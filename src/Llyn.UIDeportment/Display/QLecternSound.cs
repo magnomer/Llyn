@@ -133,7 +133,7 @@ public sealed class QLecternSound
         _qLecternSoundHeading.Text = glyph.CLecternGlyphShown
             ? QTranscriptionItem.QTranscriptionLabelRefine(glyph.CLecternGlyphKey, glyph.CLecternGlyphName)
             : string.Empty;
-        LFontFace.LFontGlyphRefine(_qLecternSoundStrip.Resources, glyph.CLecternGlyphFont);
+        QFontFace.QFontGlyphRefine(_qLecternSoundStrip.Resources, glyph.CLecternGlyphFont);
         _qLecternSoundSection.Visibility = QLook.QLookVisibleRead(glyph.CLecternGlyphShown);
         _qLecternSoundGutter.SharedSizeGroup = glyph.CLecternGlyphShown ? "PReadingLabel" : null;
     }
@@ -170,7 +170,7 @@ public sealed class QLecternSound
             _qLecternSoundReflex,
             fanqie.CLecternFanqieAnchor.CLecternAnchorOffered,
             fanqie.CLecternFanqieAnchor.CLecternAnchorTexts);
-        LFontFace.LFontRefine(fanqie.CLecternFanqieFont, _qLecternSoundFanqie);
+        QFontFace.QFontRefine(fanqie.CLecternFanqieFont, _qLecternSoundFanqie);
         _qLecternSoundRime(fanqie.CLecternFanqieGroups, fanqie.CLecternFanqiePending);
         _qLecternSoundReading.Text = fanqie.CLecternFanqieReading;
     }
@@ -178,14 +178,14 @@ public sealed class QLecternSound
     public void QLecternScriptRefine()
     {
         CLecternScript script = _qLecternSoundArea.CDisplayScriptRead();
-        LFontFace.LFontRefine(script.CLecternScriptFont, _qLecternSoundScript);
+        QFontFace.QFontRefine(script.CLecternScriptFont, _qLecternSoundScript);
         _qLecternSoundWriting(script.CLecternScriptGroups, script.CLecternScriptPending);
     }
 
     public void QLecternParadigmRefine()
     {
         CLecternParadigm paradigm = _qLecternSoundArea.CDisplayParadigmRead();
-        LFontFace.LFontRefine(paradigm.CLecternParadigmFont, _qLecternSoundParadigm);
+        QFontFace.QFontRefine(paradigm.CLecternParadigmFont, _qLecternSoundParadigm);
         _qLecternSoundInflection(paradigm.CLecternParadigmSlots);
     }
 

@@ -154,7 +154,7 @@ internal sealed class QPhonology
             host.PWindowAtelier,
             QPhonologyShownCheck,
             host.PWindowEnvoy,
-            LObserver.LObserverCreate<Action>(static run => run()));
+            QObserver.QObserverCreate<Action>(static run => run()));
         CPanel panel = _cPhonology.CPhonologyPanel;
         QLectern lectern = new(_cPhonology.CPhonologyEditor.CEditorDisplay, panel);
         QChoice.QChoiceOrderBuild(QSequenceList, "Sequence", QSequenceObserve, CPhonology.CPhonologyOrderRead());
@@ -184,10 +184,10 @@ internal sealed class QPhonology
     {
         QChoice.QChoiceOrderApply(QSequenceDropdown, _cPhonology.CPhonologyPanel.CPanelOrder);
         QLensRefine();
-        IReadOnlyList<string> languages =
-            await LEnsignImage.LEnsignLoad(_qPhonologyHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
-        QLensListRefine(languages);
-        QInventoryRefine();
+        CEnsignSheet<IReadOnlyList<CCatalogPronunciation>> sheet =
+            await _cPhonology.CPhonologyRowsLoad(QEnsignImage.QEnsignDraw);
+        QLensListRefine(sheet.CEnsignSheetLanguages);
+        QInventoryRefine(sheet.CEnsignSheetRows);
     }
 
     private void QLensListRefine(IReadOnlyList<string> languages)
@@ -197,8 +197,7 @@ internal sealed class QPhonology
 
     private async void QPhonologyWorkspaceRefine()
     {
-        await LEnsignImage.LEnsignLoad(_qPhonologyHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad);
-        QInventoryRefine();
+        QInventoryRefine((await _cPhonology.CPhonologyRowsLoad(QEnsignImage.QEnsignDraw)).CEnsignSheetRows);
     }
 
     private bool QPhonologyShownCheck()
@@ -213,9 +212,14 @@ internal sealed class QPhonology
 
     private void QInventoryRefine()
     {
-        LSplice.LSpliceApply(
+        QInventoryRefine(_cPhonology.CPhonologyRowsRead());
+    }
+
+    private void QInventoryRefine(IReadOnlyList<CCatalogPronunciation> rows)
+    {
+        QSplice.QSpliceRefine(
             _qInventoryList,
-            QInventoryItem.QInventoryItemBuild(_cPhonology.CPhonologyRowsRead()),
+            QInventoryItem.QInventoryItemBuild(rows),
             QInventoryItem.QInventoryItemMatch,
             QInventoryItem.QInventoryItemSync);
         QInventoryEmpty.Visibility = QLook.QLookVisibleRead(_cPhonology.CPhonologyEmpty);

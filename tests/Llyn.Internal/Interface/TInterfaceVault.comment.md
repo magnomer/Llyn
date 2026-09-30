@@ -19,6 +19,10 @@ The draft archive over the workspace `root`, handed out as the port the engine h
 
 The language loader over the packs the test build copies beside it, handed out as the port.
 
+## `internal static LLanguage TLanguageCreate(IReadOnlyList<LVariety> varieties) =>`
+
+A pack with no flag and blank fonts that declares `varieties`, for a fake language port to answer.
+
 ## `internal static LSettingsVault TSettingsVaultCreate(string root)`
 
 The settings loader over the workspace `root`, handed out as the port.

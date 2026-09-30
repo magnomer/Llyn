@@ -23,7 +23,7 @@ internal sealed class PLanguageItem
         rows.Clear();
         foreach (string language in languages)
         {
-            rows.Add(new PLanguageItem(language, LEnsignImage.LEnsignFind(language)));
+            rows.Add(new PLanguageItem(language, QEnsignImage.QEnsignRead(language)));
         }
     }
 

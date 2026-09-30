@@ -212,23 +212,27 @@ public partial class PEditor : UserControl, QChronicleHost
 
     internal void PHeadwordFontRefine(CEntryDraft _)
     {
-        LFontFace.LFontRefine(
-            _pEditorHost.PWindowAtelier,
-            _qEditor.QEditorArea.CEditorLanguage,
-            CFontRole.CFontRoleHeadword,
-            PHeadword,
-            PHeadwordGhost);
-        LFontFace.LFontPlace(PHeadword, PHeadwordGhost);
+        QFontFace.QFontRefine(
+            _qEditor.QEditorArea.CEditorTimbre.CTimbreFontRead(CFontRole.CFontRoleHeadword), PHeadword, PHeadwordGhost);
+        QFontFace.QFontBaselineRefine(PHeadword, PHeadwordGhost);
     }
 
     internal void PExampleFontRefine(CEntryDraft _)
     {
-        LFontFace.LFontExampleRefine(Resources, _pEditorHost.PWindowAtelier, _qEditor.QEditorArea.CEditorLanguage);
+        QFontFace.QFontExampleRefine(
+            Resources, _qEditor.QEditorArea.CEditorTimbre.CTimbreFontRead(CFontRole.CFontRoleExample));
+    }
+
+    internal void PGlossFontRefine(CEntryDraft _)
+    {
+        QFontFace.QFontGlossRefine(
+            Resources, _qEditor.QEditorArea.CEditorTimbre.CTimbreFontRead(CFontRole.CFontRoleGloss));
     }
 
     internal void PGlyphFontRefine(CEntryDraft _)
     {
-        LFontFace.LFontGlyphRefine(PGlyph.Resources, _pEditorHost.PWindowAtelier, _qEditor.QEditorArea.CEditorLanguage);
+        QFontFace.QFontGlyphRefine(
+            PGlyph.Resources, _qEditor.QEditorArea.CEditorTimbre.CTimbreFontRead(CFontRole.CFontRoleGlyph));
     }
 
     internal void PMeaningRefine(CEntryDraft draft)

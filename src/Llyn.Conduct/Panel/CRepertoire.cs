@@ -65,7 +65,8 @@ public sealed class CRepertoire
         CRepertoireAtlas.CAtlasPanel.CPanelEdited += id => CRepertoireSession.CSessionStart(id);
         CRepertoireAtlas.CAtlasPanel.CPanelCleared += CRepertoireSession.CSessionCancel;
         CRepertoireAtlas.CAtlasPanel.CPanelDraftChanged +=
-            draft => LRepertoireVignetteShow(CAtlas.LAtlasSituationRead(draft, atelier.CAtelierMediaPort));
+            draft => LRepertoireVignetteShow(
+                CAtlas.LAtlasSituationRead(draft, atelier.CAtelierMediaPort, atelier.CAtelierEntryPort));
         CRepertoireOccurrence.COccurrencePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         CRepertoireOccurrence.COccurrencePanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         atelier.CAtelierNavigation.LNavigationTabAdd(
@@ -400,6 +401,10 @@ public sealed class CRepertoire
 
         return rows;
     }
+
+    public Task<CEnsignSheet<IReadOnlyList<CCatalogSituation>>> CRepertoireRowsLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
+        CCatalog.LCatalogEnsignLoad(_cRepertoireSettingsPort, store, CRepertoireRowsRead);
 
     public CScenarioLine CRepertoireTitleSet(string text)
     {

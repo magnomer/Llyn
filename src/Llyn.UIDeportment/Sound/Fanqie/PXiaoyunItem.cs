@@ -20,7 +20,7 @@ internal sealed class PXiaoyunItem : INotifyPropertyChanged
         PXiaoyunItemHeadword = row.CVistaRowHeadword;
         PXiaoyunItemName = row.CVistaRowName;
         PXiaoyunItemEpithet = row.CVistaRowEpithet;
-        PXiaoyunItemFlag = LEnsignImage.LEnsignFind(row.CVistaRowLanguage);
+        PXiaoyunItemFlag = QEnsignImage.QEnsignRead(row.CVistaRowLanguage);
     }
 
     public long PXiaoyunItemId { get; }

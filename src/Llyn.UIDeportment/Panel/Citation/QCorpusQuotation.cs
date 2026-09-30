@@ -13,13 +13,18 @@ internal sealed partial class QCorpus
 
     private void QQuotationRefine()
     {
+        QQuotationRefine(_cCorpus.CCorpusQuotation.CQuotationRowsRead());
+    }
+
+    private void QQuotationRefine(IReadOnlyList<CVistaRow> rows)
+    {
         List<QQuotationItem> fresh = [];
-        foreach (CVistaRow entry in _cCorpus.CCorpusQuotation.CQuotationRowsRead())
+        foreach (CVistaRow entry in rows)
         {
             fresh.Add(new QQuotationItem(entry, entry.CVistaRowChosen));
         }
 
-        LSplice.LSpliceApply(
+        QSplice.QSpliceRefine(
             _qQuotationList, fresh, QQuotationItem.QQuotationItemMatch, QQuotationItem.QQuotationItemSync);
 
         QQuotationEmpty.SetResourceReference(TextBlock.TextProperty, _cCorpus.CCorpusQuotation.CQuotationEmptyKey);

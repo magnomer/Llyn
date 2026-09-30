@@ -13,6 +13,23 @@ namespace Llyn.Tests;
 public sealed class TPhonology
 {
     [Fact]
+    public async Task PhonologyRowsLoad_StoredEntry_AnswersTheRowsAndTheLanguagesAfterTheFill()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        TPhonologyEntrySave(engine, "water", "ˈwɔːtə");
+        CPhonology phonology = CPhonology.CPhonologyCreate(
+            atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
+
+        CEnsignSheet<IReadOnlyList<CCatalogPronunciation>> sheet =
+            await phonology.CPhonologyRowsLoad(static (_, _) => static () => { });
+
+        Assert.Single(sheet.CEnsignSheetRows);
+        Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), sheet.CEnsignSheetLanguages);
+    }
+
+    [Fact]
     public void PhonologyRowsRead_FreshArea_ListsTheStoredEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

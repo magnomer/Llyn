@@ -11,7 +11,7 @@ A test reaching storage it did not seat therefore fails loudly.
 
 Binds an engine to `rig`, whose workspace change builds a fresh fake rig and records no pointer.
 
-## `internal static LRig TRigFakeBuild(LEntryVault entries, string workspace)`
+## `internal static LRig TRigFakeBuild(LEntryVault entries, string workspace) =>`
 
 The rig over `entries` as its entry port, standing on the root named `workspace`.
 The root is a bare label, since no fake here touches disk.
@@ -19,6 +19,15 @@ Two rigs built with two labels let a test prove a rig apply moved the engine.
 The trail is the real system adapter, since path rules touch no disk, and the clock is a `TClockFake`.
 The press is a `TPress`, which records what it is handed and touches no printer.
 The process id is one, so a claim from another process is any claim not naming one.
+
+## `internal static LRig TRigFakeBuild(LLanguageVault languages, LUsher usher) =>`
+
+The fake rig over the language packs and the usher a test hands in, on the bare `fake` root.
+A flag fill then runs through the real engine, while the case decides every fetch and file.
+
+## `private static LRig TRigFakeBuild(LEntryVault entries, string workspace, LLanguageVault languages, LUsher usher)`
+
+The one rig build both forms reach, so each fake stays in one place.
 
 ## `private sealed class TRigFakeAudit : LAuditVault`
 
