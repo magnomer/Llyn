@@ -25,6 +25,6 @@ True while the held row already carries the id, key and count of the fresh one.
 
 Carries the chosen mark of the fresh row onto the held one and raises its notice.
 
-## `internal static void QGroveItemApply(FrameworkElement container, object item, string? _)`
+## `internal static void QGroveItemRefine(FrameworkElement container, object item, string? _)`
 
 Fills the key and count of one series row and marks the row while it is the chosen one.

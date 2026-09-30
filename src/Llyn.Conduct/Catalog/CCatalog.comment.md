@@ -41,10 +41,6 @@ The sentence frame hands it the engine's answer unread, so it names no engine re
 
 The transcription schemes a language offers.
 
-## `public CGlyph? CCatalogGlyphRead(string language)`
-
-The glyph set a language writes in, or nothing when it has none.
-
 ## `internal static long? LCatalogGlyphOpen(CEnvoy envoy, LSettingsPort settings, Func<long> resolve)`
 
 The one failure owner of every glyph chip that opens a character's entry.

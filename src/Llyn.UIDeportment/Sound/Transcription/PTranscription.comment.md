@@ -7,7 +7,7 @@ They stand beneath the pronunciation rows, one row per scheme, and only for a la
 A row shows its scheme as a dropdown, then the field, then its lookup button and the plus and minus.
 The dropdown offers every scheme the pack declares, a scheme another row holds greyed out.
 It wears no brackets and no audio, because a transcription is a spelling rather than a sound.
-A row edit becomes a text request on that row's id, and a scheme picked becomes a scheme request.
+A row edit goes to the transcription text gate, and a scheme picked becomes a scheme request.
 A plus becomes an addition request after it, and a minus a removal request.
 Lookup opens the editor's one menu under the row's own button, searching in the row's scheme.
 The rows are rendered as a diff on each draft bulletin, so a row being typed into is left alone.
@@ -18,9 +18,10 @@ Fills an editor row: the shared parts through `QTranscriptionItem.QTranscription
 The dropdown lists the row's schemes, selects its own, and greys out the taken ones.
 It shows each choice by its label and selects by its scheme, paths set here rather than in the style.
 
-## `private static void PTranscriptionFieldHandle(object sender, TextChangedEventArgs e)`
+## `private void PTranscriptionFieldObserve(object sender, TextChangedEventArgs e)`
 
-Hands what is typed to the row, which the editor listens to.
+Hands the row's id and the raw typed text to the transcription text gate, `CTimbre.CTimbreTranscriptionSet`.
+The row keeps the draft's text until the draft returns with the typed one.
 
 ## `private static void PTranscriptionSchemeHandle(object sender, SelectionChangedEventArgs e)`
 
@@ -58,13 +59,6 @@ The first declared scheme no shown row carries, or nothing when all are taken.
 The shown row with one transcription id, or nothing when the draft no longer has it.
 The glyph row is searched too, because the lookup menu fills it through the same path.
 
-## `private void PTranscriptionChangeHandle(object? sender, PropertyChangedEventArgs e)`
-
-Sends a scheme request at once when a row's scheme changes, and defers a text request when its text changes.
-A scheme change is sent at once because it is one pick, not a keystroke stream.
-The row model raises the change, not the text box, so a draft render writing the same text raises nothing.
-The fill guard holds during a render, so a render writing a different text raises no request either.
-
 ## `internal void PTranscriptionShow(CEntryDraft draft)`
 
 Renders every transcription as a row, keyed by the transcription id.
@@ -72,16 +66,7 @@ The declared schemes are asked of the language pack once per render.
 Every row's dropdown then takes `CSounding.CSoundingSchemeRead`, which marks what other rows hold.
 The list is shown only while there is one.
 A stored row in a scheme the pack no longer declares is still shown, because it is the entry's data.
-A row in the glyph scheme is left out, because the glyph row shows it beneath.
-
-## `private IReadOnlyList<CTranscriptionDraft> PTranscriptionScan(CEntryDraft draft)`
-
-The draft's transcription rows without the glyph row of the language shown.
-
-## `private static IReadOnlyList<LTranscriptionDraft> PTranscriptionScan(LEntryDraft draft, LGlyph? glyph)`
-
-The draft's transcription rows without the row in `glyph`'s scheme.
-The glyph form is stored as a transcription row, so this is where the two are told apart.
+The rows come from `CTimbre.CTimbreGlyphRead`, which leaves out the glyph row the glyph block shows beneath.
 
 ## `private QTranscriptionItem PTranscriptionUpdate(QTranscriptionItem row, CTranscriptionDraft spelled)`
 

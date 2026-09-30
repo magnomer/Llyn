@@ -53,8 +53,8 @@ internal sealed class QXiesheng
         QXieshengViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
         QXieshengScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
-        QLookItem.QLookItemAttach(QGrove, QGroveItem.QGroveItemApply);
-        QLookItem.QLookItemAttach(QKindred, QKindredItem.QKindredItemApply);
+        QLookItem.QLookItemAttach(QGrove, QGroveItem.QGroveItemRefine);
+        QLookItem.QLookItemAttach(QKindred, QKindredItem.QKindredItemRefine);
         QGrove.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QGroveHandle));
         QKindred.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QKindredHandle));
 
@@ -147,7 +147,7 @@ internal sealed class QXiesheng
         QKindred.ItemsSource = _qKindredList;
 
         QXieshengDisplay.PDisplayAttach(host, lectern);
-        _qStem.QStemAttach(host.PWindowAtelier, _cXiesheng);
+        _qStem.QStemIntroduce(_cXiesheng);
 
         QXieshengEditor.PEditorIntroduce(host, new QEditor(_cXiesheng.CXieshengEditor));
 
@@ -241,7 +241,7 @@ internal sealed class QXiesheng
 
     private void QStemUpdate()
     {
-        _qStem.QStemShow(_cXiesheng.CXieshengStemRead());
+        _qStem.QStemRefine(_cXiesheng.CXieshengStemRead());
     }
 
     private void QXieshengModeUpdate()

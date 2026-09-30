@@ -115,9 +115,8 @@
       "src/Llyn.UIDeportment/Editor/List/PCardDrag.cs": 1,
       "src/Llyn.UIDeportment/Etymology/PEtymology.cs": 3,
       "src/Llyn.UIDeportment/Mention/Text/PMention.cs": 2,
-      "src/Llyn.UIDeportment/Sound/Script/PGlyph.cs": 1,
       "src/Llyn.UIDeportment/Sound/Transcription/PNotation.cs": 4,
-      "src/Llyn.UIDeportment/Sound/Transcription/PTranscription.cs": 4
+      "src/Llyn.UIDeportment/Sound/Transcription/PTranscription.cs": 3
     },
     "Feed": {
       "src/Llyn.UIDeportment/Display/Template/PLeaf.cs": 4,
@@ -128,7 +127,6 @@
     "Fork": {
       "src/Llyn.UIDeportment/Etymology/PEtymology.cs": 2,
       "src/Llyn.UIDeportment/Sound/QReflexItem.cs": 1,
-      "src/Llyn.UIDeportment/Sound/Script/PGlyph.cs": 1,
       "src/Llyn.UIDeportment/Sound/Transcription/PNotationItem.cs": 1
     },
     "Guard": {
@@ -139,10 +137,8 @@
       "src/Llyn.UIDeportment/Sound/Fanqie/PFanqie.cs": 1,
       "src/Llyn.UIDeportment/Sound/QAccentItem.cs": 3,
       "src/Llyn.UIDeportment/Sound/QReflexItem.cs": 10,
-      "src/Llyn.UIDeportment/Sound/QTranscriptionItem.cs": 2,
       "src/Llyn.UIDeportment/Sound/Script/PScript.cs": 1,
-      "src/Llyn.UIDeportment/Sound/Transcription/PNotation.cs": 5,
-      "src/Llyn.UIDeportment/Sound/Transcription/PTranscription.cs": 1
+      "src/Llyn.UIDeportment/Sound/Transcription/PNotation.cs": 5
     },
     "Mirror": {},
     "Mutation": {
@@ -175,7 +171,7 @@
       "src/Llyn.UIDeportment/Editor/Card/PCardSentence.cs": 1,
       "src/Llyn.UIDeportment/Editor/Card/PCardVideo.cs": 1,
       "src/Llyn.UIDeportment/Editor/Context/PContextMenu.cs": 3,
-      "src/Llyn.UIDeportment/Editor/Core/PEditor.cs": 32,
+      "src/Llyn.UIDeportment/Editor/Core/PEditor.cs": 31,
       "src/Llyn.UIDeportment/Editor/Core/PEditorCard.cs": 21,
       "src/Llyn.UIDeportment/Editor/Core/QCadence.cs": 21,
       "src/Llyn.UIDeportment/Editor/Core/QEditor.cs": 11,
@@ -306,16 +302,16 @@
       "src/Llyn.UIDeportment/Sound/QTranscriptionItem.cs": 7,
       "src/Llyn.UIDeportment/Sound/Reflex/PParadigmItem.cs": 4,
       "src/Llyn.UIDeportment/Sound/Reflex/PReflex.cs": 20,
-      "src/Llyn.UIDeportment/Sound/Script/PGlyph.cs": 8,
+      "src/Llyn.UIDeportment/Sound/Script/PGlyph.cs": 7,
       "src/Llyn.UIDeportment/Sound/Script/PScriptImage.cs": 3,
       "src/Llyn.UIDeportment/Sound/Script/PScriptItem.cs": 4,
       "src/Llyn.UIDeportment/Sound/Shengfu/QGroveItem.cs": 4,
       "src/Llyn.UIDeportment/Sound/Shengfu/QKindredItem.cs": 6,
-      "src/Llyn.UIDeportment/Sound/Shengfu/QStem.cs": 5,
+      "src/Llyn.UIDeportment/Sound/Shengfu/QStem.cs": 7,
       "src/Llyn.UIDeportment/Sound/Shengfu/QXiesheng.cs": 44,
       "src/Llyn.UIDeportment/Sound/Transcription/PNotation.cs": 29,
       "src/Llyn.UIDeportment/Sound/Transcription/PNotationItem.cs": 1,
-      "src/Llyn.UIDeportment/Sound/Transcription/PTranscription.cs": 10
+      "src/Llyn.UIDeportment/Sound/Transcription/PTranscription.cs": 13
     },
     "Shape": {
       "src/Llyn.UIDeportment/Sound/Transcription/PNotation.cs": 2
@@ -334,8 +330,7 @@
       "src/Llyn.UIDeportment/Sound/Accent/PContour.cs": 4,
       "src/Llyn.UIDeportment/Sound/Fanqie/PFanqie.cs": 3,
       "src/Llyn.UIDeportment/Sound/Script/PScript.cs": 3,
-      "src/Llyn.UIDeportment/Sound/Transcription/PNotation.cs": 3,
-      "src/Llyn.UIDeportment/Sound/Transcription/PTranscription.cs": 3
+      "src/Llyn.UIDeportment/Sound/Transcription/PNotation.cs": 3
     },
     "Treat": {}
   }

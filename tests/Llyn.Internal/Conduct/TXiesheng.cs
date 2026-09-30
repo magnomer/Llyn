@@ -88,6 +88,29 @@ public sealed class TXiesheng
     }
 
     [Fact]
+    public async Task XieshengStemRead_ShownSeries_CarriesTheFontsOfTheSeriesLanguage()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = TXieshengEngineStart(workspace);
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        string language = pack.TLanguageFixtureName;
+        await TXieshengStemSave(engine, language);
+        CXiesheng xiesheng = TXieshengPrepare(atelier);
+        CStemPage blank = xiesheng.CXieshengStemRead();
+        xiesheng.TXieshengStemOpen(language, "龍");
+
+        CStemPage page = xiesheng.CXieshengStemRead();
+
+        Assert.Equal(new CFont(null, null, null), blank.CStemPageFont);
+        Assert.Equal(new CFont(null, null, null), blank.CStemPageGlyph);
+        Assert.Equal(
+            atelier.CAtelierCatalog.CCatalogFontRead(language, CFontRole.CFontRoleHeadword), page.CStemPageFont);
+        Assert.Equal(
+            atelier.CAtelierCatalog.CCatalogFontRead(language, CFontRole.CFontRoleGlyph), page.CStemPageGlyph);
+    }
+
+    [Fact]
     public async Task XieshengStemOpen_BlankOrUnknownKey_ChoosesNothing()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);

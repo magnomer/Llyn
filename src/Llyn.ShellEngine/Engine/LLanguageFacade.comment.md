@@ -132,6 +132,11 @@ Starts the fetch of every character that has no images.
 The filled transcription rows a reading view lists, without the glyph row, through the language clerk.
 The gate is taken only to read the clerk field, which a rig apply replaces.
 
+## `public LGlyphBlock LEngineGlyphRead(LEntryDraft draft)`
+
+The draft's transcription rows split by its glyph section, as an editor lists them, through the language clerk.
+The gate is taken only to read the clerk field, as for the transcription rows.
+
 ## `public void LEngineSoundStart(long entryId)`
 
 Starts every background fetch a reading view of the entry shows, in one fixed order.

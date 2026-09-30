@@ -73,12 +73,6 @@ public sealed class CCatalog
         return _cCatalogAtelier.CAtelierPhonologyPort.LEngineSchemeRead(language);
     }
 
-    public CGlyph? CCatalogGlyphRead(string language)
-    {
-        LGlyph? glyph = _cCatalogAtelier.CAtelierEntryPort.LEngineGlyphRead(language);
-        return glyph is null ? null : new CGlyph(glyph.LGlyphName, glyph.LGlyphSourced);
-    }
-
     internal static long? LCatalogGlyphOpen(CEnvoy envoy, LSettingsPort settings, Func<long> resolve)
     {
         ArgumentNullException.ThrowIfNull(envoy);

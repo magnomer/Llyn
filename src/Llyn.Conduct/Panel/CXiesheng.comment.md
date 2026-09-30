@@ -104,6 +104,7 @@ The entry list of the chosen series, copied through the shared row map and count
 ## `public CStemPage CXieshengStemRead()`
 
 The page of the chosen series, or the blank page while the reader shows an entry.
+It carries the headword and glyph fonts of the series language, as `CYunjingDiweiRead` does.
 
 ## `public void CXieshengGroveFind(string query)`
 

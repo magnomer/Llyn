@@ -74,6 +74,14 @@ public sealed class LQuill
             new LRequestMentionRemoval(_lQuillTenure.LTenureId, card, sentence, mention));
     }
 
+    public void LQuillTranscriptionSet(long transcription, string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillTenure.LTenureRequestDefer(
+            new LRequestTranscriptionText(_lQuillTenure.LTenureId, transcription, text));
+    }
+
     public void LQuillEtymologySet(string text)
     {
         ArgumentNullException.ThrowIfNull(text);

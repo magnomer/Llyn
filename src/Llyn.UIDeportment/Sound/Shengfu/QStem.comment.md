@@ -14,15 +14,16 @@ Takes the veneer page as its surface and binds the entry command the character c
 
 Each named part of the page is pulled through `QContract.QContractFind`.
 
-## `internal void QStemAttach(CAtelier atelier, CXiesheng xiesheng)`
+## `internal void QStemIntroduce(CXiesheng xiesheng)`
 
-Keeps the atelier the fonts of a language are read from, and the panel session a chip asks.
+Keeps the panel session a chip asks.
 
-## `internal void QStemShow(CStemPage page)`
+## `internal void QStemRefine(CStemPage page)`
 
-Writes one page onto the controls: its key, its language, its flag and its characters.
+Writes one page onto the controls: its fonts, its key, its language, its flag and its characters.
+The headword and glyph fonts arrive ready on the page, as the diwei page carries its own.
 The blank page leaves the headword empty and shows the empty line.
 
-## `private void QStemEntryHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private void QStemEntryObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Hands the character of the pressed chip to the panel gate, which asks the shell for its entry.

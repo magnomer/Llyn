@@ -296,18 +296,6 @@ public sealed class CDesk
         _cDeskTenure?.LTenurePersist();
     }
 
-    internal void CDeskDefer(LRequest request)
-    {
-        ArgumentNullException.ThrowIfNull(request);
-
-        if (CDeskFilling)
-        {
-            return;
-        }
-
-        _cDeskTenure?.LTenureRequestDefer(request);
-    }
-
     internal void CDeskSend(LRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);

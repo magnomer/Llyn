@@ -67,10 +67,19 @@ public sealed class LLanguageClerk
     {
         ArgumentNullException.ThrowIfNull(draft);
 
-        LGlyph? glyph = draft.LEntryDraftLanguage.Trim().Length > 0
-            ? LLanguageClerkLoad(draft.LEntryDraftLanguage).LLanguageGlyph
-            : null;
-        return LGlyph.LGlyphOtherRead(glyph, draft.LEntryDraftTranscriptions);
+        return LGlyph.LGlyphOtherRead(LLanguageGlyphLoad(draft.LEntryDraftLanguage), draft.LEntryDraftTranscriptions);
+    }
+
+    public LGlyphBlock LLanguageGlyphRead(LEntryDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        return LGlyph.LGlyphBlockRead(LLanguageGlyphLoad(draft.LEntryDraftLanguage), draft.LEntryDraftTranscriptions);
+    }
+
+    private LGlyph? LLanguageGlyphLoad(string language)
+    {
+        return language.Trim().Length > 0 ? LLanguageClerkLoad(language).LLanguageGlyph : null;
     }
 
     public bool LLanguagePhonemicCheck(string language)

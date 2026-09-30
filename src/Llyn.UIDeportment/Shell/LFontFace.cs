@@ -45,22 +45,6 @@ public static class LFontFace
         }
     }
 
-    public static void LFontRefine(
-        CAtelier atelier,
-        string language,
-        IReadOnlyList<CFontRole> roles,
-        IReadOnlyList<DependencyObject> surfaces)
-    {
-        ArgumentNullException.ThrowIfNull(atelier);
-        ArgumentNullException.ThrowIfNull(surfaces);
-
-        IReadOnlyList<CFont> fonts = atelier.CAtelierCatalog.CCatalogFontRead(language, roles);
-        for (int index = 0; index < surfaces.Count; index++)
-        {
-            LFontSurfaceRefine(surfaces[index], fonts[index]);
-        }
-    }
-
     private static void LFontSurfaceRefine(DependencyObject surface, CFont font)
     {
         LFontSet(

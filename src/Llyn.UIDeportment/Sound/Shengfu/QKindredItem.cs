@@ -68,7 +68,7 @@ internal sealed class QKindredItem : INotifyPropertyChanged
         held.PropertyChanged?.Invoke(held, QKindredItemMark);
     }
 
-    internal static void QKindredItemApply(FrameworkElement container, object item, string? _)
+    internal static void QKindredItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QKindredItem kindred)
         {

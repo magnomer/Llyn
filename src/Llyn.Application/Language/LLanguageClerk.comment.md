@@ -38,6 +38,15 @@ No pronunciation answers a blank row.
 The filled transcription rows a reading view lists, by Core's `LGlyphOtherRead`.
 The glyph section is the one the draft's pack declares, and a blank language has none.
 
+## `public LGlyphBlock LLanguageGlyphRead(LEntryDraft draft)`
+
+The draft's transcription rows split by its pack's glyph section, by Core's `LGlyphBlockRead`.
+An editor lists both sides, blank rows included.
+
+## `private LGlyph? LLanguageGlyphLoad(string language)`
+
+The glyph section the pack of `language` declares, or none for a blank language.
+
 ## `public bool LLanguagePhonemicCheck(string language)`
 
 Whether the pack of `language` is phonemic.

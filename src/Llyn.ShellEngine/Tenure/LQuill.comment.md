@@ -121,6 +121,11 @@ Sends the removal of one credit.
 
 Sends one credit to a new place, which the draft clerk clamps to the list.
 
+## `public void LQuillTranscriptionSet(long transcription, string text)`
+
+Defers the text typed into the transcription row `transcription`, the glyph row among them.
+Every driver of a transcription text writes through it, so the request has one builder.
+
 ## `public void LQuillEtymologySet(string text)`
 
 Defers the held entry's typed etymology narrative.

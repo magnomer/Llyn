@@ -58,7 +58,7 @@ The surface peer, so thirty glyph pictures and their captions are not reported o
 ## `public PScript()`
 
 Builds the box from the theme's script styles, unfocusable, collapsed until it has something to show.
-Its list is attached to `PScriptItem.PScriptItemApply`, which fills each row and its pictures.
+Its list is attached to `PScriptItem.PScriptItemRefine`, which fills each row and its pictures.
 It also listens to the localization catalog, because the age under a picture is the box's own text to redraw.
 There are two boxes for the program's life, one per view, so the listening is never unhooked.
 
@@ -79,23 +79,19 @@ Whether the box starts closed under its head.
 What the regenerate button runs, or `null` in a reading view, where the button is not shown.
 It is a property of the box, so handing one over redraws the head as the rows do.
 
-## `private static void PScriptStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
-
-Redraws the box when any of its four properties change.
-
-## `private void PScriptLanguageHandle(object? sender, PropertyChangedEventArgs e)`
+## `private void PScriptLanguageRefine(object? sender, PropertyChangedEventArgs e)`
 
 Tells every picture on show that its age reads differently, once the catalog has taken a new language.
 Nothing is read from the engine and nothing is fetched, because only the printed words change.
 
-## `private void PScriptStateApply()`
+## `private void PScriptStateRefine()`
 
 Feeds the list and shows the loading line while pending.
 The regenerate button stands wherever one was handed over, and it carries the `Pending` cue while a fetch runs.
 The head shows only when folded, and the body only when open.
 The box is visible when it has rows, a fetch runs, or a rebuild was handed over, and collapsed otherwise.
 
-## `internal void PScriptShow(IReadOnlyList<CScriptGroup> groups, bool pending)`
+## `internal void PScriptRefine(IReadOnlyList<CScriptGroup> groups, bool pending)`
 
 The seam the lectern's sound draws through, mapping the groups to rows and setting whether a fetch runs.
 It only sets values, so the box redraws itself as for any other change.

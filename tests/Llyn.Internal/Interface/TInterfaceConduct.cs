@@ -349,7 +349,8 @@ internal static class TInterfaceConduct
 
     internal static void TDeskVistaRestore(this CDesk desk, LVista vista) => desk.CDeskVistaRestore(vista);
 
-    internal static void TDeskDefer(this CDesk desk, LRequest request) => desk.CDeskDefer(request);
+    internal static void TDeskDefer(this CDesk desk, LRequest request) =>
+        desk.CDeskTenure?.LTenureRequestDefer(request);
 
     internal static LDraft? TDeskRead(this CDesk desk) => desk.CDeskRead();
 

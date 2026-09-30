@@ -33,7 +33,6 @@ internal static class CFolio
             draft.LEntryDraftNote,
             CFolioSheetRead(draft.LEntryDraftMeanings, targets, media, "Card.DefinitionHint"),
             CFolioSheetRead(draft.LEntryDraftCollocations, targets, media, "Card.MeaningHint"),
-            CSounding.CSoundingTranscriptionRead(draft.LEntryDraftTranscriptions),
             new CEtymologyDraft(draft.LEntryDraftEtymology.LEtymologyDraftText));
     }
 

@@ -9,8 +9,6 @@ internal sealed class QStem
 {
     private readonly UserControl _qStemSurface;
 
-    private CAtelier _qStemAtelier = null!;
-
     private CXiesheng _cXiesheng = null!;
 
     internal QStem(UserControl surface)
@@ -18,7 +16,7 @@ internal sealed class QStem
         ArgumentNullException.ThrowIfNull(surface);
 
         _qStemSurface = surface;
-        surface.CommandBindings.Add(new CommandBinding(QStemCommand.QStemCommandEntry, QStemEntryHandle));
+        surface.CommandBindings.Add(new CommandBinding(QStemCommand.QStemCommandEntry, QStemEntryObserve));
     }
 
     private TextBlock QStemHeadword => QContract.QContractFind<TextBlock>(_qStemSurface, "PStemHeadword");
@@ -31,19 +29,15 @@ internal sealed class QStem
 
     private ItemsControl QStemList => QContract.QContractFind<ItemsControl>(_qStemSurface, "PStemList");
 
-    internal void QStemAttach(CAtelier atelier, CXiesheng xiesheng)
+    internal void QStemIntroduce(CXiesheng xiesheng)
     {
-        _qStemAtelier = atelier;
         _cXiesheng = xiesheng;
     }
 
-    internal void QStemShow(CStemPage page)
+    internal void QStemRefine(CStemPage page)
     {
-        LFontFace.LFontRefine(
-            _qStemAtelier,
-            page.CStemPageLanguage,
-            [CFontRole.CFontRoleHeadword, CFontRole.CFontRoleGlyph],
-            [QStemHeadword, QStemList]);
+        LFontFace.LFontRefine(page.CStemPageFont, QStemHeadword);
+        LFontFace.LFontRefine(page.CStemPageGlyph, QStemList);
         LFontFace.LFontPlace(QStemHeadword);
         QStemHeadword.Text = page.CStemPageKey;
         QStemLanguage.Text = page.CStemPageLanguage;
@@ -52,7 +46,7 @@ internal sealed class QStem
         QStemEmpty.Visibility = QLook.QLookVisibleRead(page.CStemPageEmpty);
     }
 
-    private void QStemEntryHandle(object sender, ExecutedRoutedEventArgs e)
+    private void QStemEntryObserve(object sender, ExecutedRoutedEventArgs e)
     {
         _cXiesheng.CXieshengGlyphSelect(QSender.QSenderTextRead(e));
     }

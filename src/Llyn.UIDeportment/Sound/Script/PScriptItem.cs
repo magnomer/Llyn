@@ -24,7 +24,7 @@ internal sealed class PScriptItem
 
     public IReadOnlyList<PScriptImage> PScriptItemImages { get; }
 
-    internal static void PScriptItemApply(FrameworkElement container, object item, string? _)
+    internal static void PScriptItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not PScriptItem row)
         {
@@ -49,7 +49,7 @@ internal sealed class PScriptItem
         if (QLook.QLookPartFind<ItemsControl>(container, "PScriptPictures") is ItemsControl pictures)
         {
             pictures.ItemsSource = row.PScriptItemImages;
-            QLookItem.QLookItemAttach(pictures, PScriptImage.PScriptImageApply);
+            QLookItem.QLookItemAttach(pictures, PScriptImage.PScriptImageRefine);
         }
     }
 

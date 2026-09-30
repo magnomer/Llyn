@@ -7,6 +7,7 @@ The series are fetched from fake pages, so nothing here reaches the web.
 
 The bundled series pack shows the tab, and with nothing fetched the panel lists nothing under the bare keys.
 Opening a fetched series by key lists it chosen with its count, and shows its page and entry.
+The page carries the headword and glyph fonts of the series language, and the blank page carries none.
 A blank or unknown key opens nothing.
 An arrival empties the series search before the driver hears of it.
 Choosing the chosen series unchooses it, choosing it again brings it back, and cancelling clears it.

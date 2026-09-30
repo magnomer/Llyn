@@ -59,7 +59,7 @@ internal sealed class PScriptImage : INotifyPropertyChanged, PImagePending
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    internal static void PScriptImageApply(FrameworkElement container, object item, string? _)
+    internal static void PScriptImageRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not PScriptImage image)
         {
@@ -105,7 +105,7 @@ internal sealed class PScriptImage : INotifyPropertyChanged, PImagePending
             image.CScriptImageData, image.CScriptImageCaption, image.CScriptImageEpoch, width);
     }
 
-    internal void PScriptImageUpdate()
+    internal void PScriptImageRaise()
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PScriptImageEpoch)));
     }

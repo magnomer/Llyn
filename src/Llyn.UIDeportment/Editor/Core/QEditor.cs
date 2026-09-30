@@ -44,7 +44,7 @@ internal sealed class QEditor
         editor.CEditorDraftChanged += surface.PPronunciationRefine;
         editor.CEditorDraftChanged += surface.PTimbreRefine;
         editor.CEditorDraftChanged += surface.PAccentRefine;
-        editor.CEditorDraftChanged += surface.PGlyphShow;
+        editor.CEditorDraftChanged += surface.PGlyphRefine;
         editor.CEditorDraftChanged += surface.PTranscriptionShow;
         editor.CEditorDraftChanged += surface.PReflexRefine;
         editor.CEditorDraftChanged += surface.PMarkerRefine;

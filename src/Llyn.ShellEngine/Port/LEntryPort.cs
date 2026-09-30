@@ -44,8 +44,6 @@ public interface LEntryPort
     LMentionResult LEngineMentionFind(
         string text, string language, LEntryDraft? shown, int offset, IReadOnlyList<LMention>? mentions);
 
-    LGlyph? LEngineGlyphRead(string language);
-
     LGlyph? LEngineGlyphRead(LEntryDraft draft);
 
     IReadOnlyList<LGlyphCell> LEngineGlyphDivide(LEntryDraft draft);

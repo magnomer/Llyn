@@ -15,25 +15,25 @@ public sealed class PScript : ContentControl
         nameof(PScriptItems),
         typeof(IReadOnlyList<PScriptItem>),
         typeof(PScript),
-        new FrameworkPropertyMetadata(null, PScriptStateHandle));
+        new FrameworkPropertyMetadata(null, static (sender, _) => ((PScript)sender).PScriptStateRefine()));
 
     public static readonly DependencyProperty PScriptPendingProperty = DependencyProperty.Register(
         nameof(PScriptPending),
         typeof(bool),
         typeof(PScript),
-        new FrameworkPropertyMetadata(false, PScriptStateHandle));
+        new FrameworkPropertyMetadata(false, static (sender, _) => ((PScript)sender).PScriptStateRefine()));
 
     public static readonly DependencyProperty PScriptFoldedProperty = DependencyProperty.Register(
         nameof(PScriptFolded),
         typeof(bool),
         typeof(PScript),
-        new FrameworkPropertyMetadata(false, PScriptStateHandle));
+        new FrameworkPropertyMetadata(false, static (sender, _) => ((PScript)sender).PScriptStateRefine()));
 
     public static readonly DependencyProperty PScriptRenewalProperty = DependencyProperty.Register(
         nameof(PScriptRenewal),
         typeof(Action),
         typeof(PScript),
-        new FrameworkPropertyMetadata(null, PScriptStateHandle));
+        new FrameworkPropertyMetadata(null, static (sender, _) => ((PScript)sender).PScriptStateRefine()));
 
     private readonly Grid _pScriptHead = new();
     private readonly ToggleButton _pScriptSwitch = new();
@@ -59,8 +59,8 @@ public sealed class PScript : ContentControl
         QIconImage chevron = new() { Width = 12, Height = 12, QIconSource = QIcon.QIconResolve("expand", 12) };
         _pScriptSwitch.Content = chevron;
         _pScriptSwitch.SetResourceReference(StyleProperty, "Theme.Marker.Switch");
-        _pScriptSwitch.Checked += (_, _) => PScriptStateApply();
-        _pScriptSwitch.Unchecked += (_, _) => PScriptStateApply();
+        _pScriptSwitch.Checked += (_, _) => PScriptStateRefine();
+        _pScriptSwitch.Unchecked += (_, _) => PScriptStateRefine();
         _pScriptRefresh.SetResourceReference(StyleProperty, "Theme.Sound.Rebuild");
         _pScriptRefresh.Click += (_, _) => PScriptRenewal?.Invoke();
         _pScriptHead.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -74,7 +74,7 @@ public sealed class PScript : ContentControl
 
         Grid.SetIsSharedSizeScope(_pScriptList, true);
         _pScriptList.SetResourceReference(ItemsControl.ItemTemplateProperty, "Theme.Script.Row");
-        QLookItem.QLookItemAttach(_pScriptList, PScriptItem.PScriptItemApply);
+        QLookItem.QLookItemAttach(_pScriptList, PScriptItem.PScriptItemRefine);
         _pScriptLoading.SetResourceReference(StyleProperty, "Theme.Script.Loading");
         _pScriptLoading.SetResourceReference(TextBlock.TextProperty, "Display.ScriptLoading");
         _pScriptBody.Children.Add(_pScriptList);
@@ -86,8 +86,8 @@ public sealed class PScript : ContentControl
         Border box = new() { Child = stack };
         box.SetResourceReference(StyleProperty, "Theme.Script.Box");
         Content = box;
-        QLocalizationCatalog.QLocalizationCatalogCurrent.PropertyChanged += PScriptLanguageHandle;
-        PScriptStateApply();
+        QLocalizationCatalog.QLocalizationCatalogCurrent.PropertyChanged += PScriptLanguageRefine;
+        PScriptStateRefine();
     }
 
     internal IReadOnlyList<PScriptItem>? PScriptItems
@@ -114,18 +114,13 @@ public sealed class PScript : ContentControl
         set => SetValue(PScriptRenewalProperty, value);
     }
 
-    internal void PScriptShow(IReadOnlyList<CScriptGroup> groups, bool pending)
+    internal void PScriptRefine(IReadOnlyList<CScriptGroup> groups, bool pending)
     {
         SetCurrentValue(PScriptItemsProperty, PScriptItem.PScriptItemScan(groups));
         SetCurrentValue(PScriptPendingProperty, pending);
     }
 
-    private static void PScriptStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-    {
-        ((PScript)sender).PScriptStateApply();
-    }
-
-    private void PScriptLanguageHandle(object? sender, PropertyChangedEventArgs e)
+    private void PScriptLanguageRefine(object? sender, PropertyChangedEventArgs e)
     {
         if (PScriptItems is not IReadOnlyList<PScriptItem> items)
         {
@@ -136,12 +131,12 @@ public sealed class PScript : ContentControl
         {
             foreach (PScriptImage picture in item.PScriptItemImages)
             {
-                picture.PScriptImageUpdate();
+                picture.PScriptImageRaise();
             }
         }
     }
 
-    private void PScriptStateApply()
+    private void PScriptStateRefine()
     {
         IReadOnlyList<PScriptItem>? items = PScriptItems;
         bool filled = items is not null && items.Count > 0;

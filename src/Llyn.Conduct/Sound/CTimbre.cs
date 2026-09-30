@@ -139,6 +139,24 @@ public sealed class CTimbre
             sheet.LAccentSheetFlagged);
     }
 
+    public CTimbreGlyph CTimbreGlyphRead()
+    {
+        return _cTimbreDesk.CDeskTenure?.LTenureGlyphRead() is LGlyphBlock block
+            ? new CTimbreGlyph(
+                block.LGlyphBlockShown,
+                block.LGlyphBlockSourced,
+                CSounding.CSoundingTranscriptionRead(block.LGlyphBlockRows),
+                CSounding.CSoundingTranscriptionRead(block.LGlyphBlockOther))
+            : new CTimbreGlyph(false, false, [], []);
+    }
+
+    public void CTimbreTranscriptionSet(long transcription, string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _cTimbreDesk.CDeskQuill?.LQuillTranscriptionSet(transcription, text);
+    }
+
     public CTimbreReflex CTimbreReflexRead()
     {
         bool opened = _cTimbreDisplay.LDisplaySound.LDisplayFoldOpened;

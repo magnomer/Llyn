@@ -7,7 +7,9 @@ The blank page carries empty text and no character.
 
 **Parameters**
 
-- `CStemPageLanguage`: the language of the series, which picks its font and flag.
+- `CStemPageLanguage`: the language of the series, which picks its fonts and flag.
 - `CStemPageKey`: the series key, printed as the headword.
 - `CStemPageCharacters`: the member characters, already ordered by the engine.
 - `CStemPageEmpty`: whether the series holds no character, as the engine judges it.
+- `CStemPageFont`: the headword font of the series language, ready to paint on the key.
+- `CStemPageGlyph`: the glyph font of the series language, ready to paint on the character list.

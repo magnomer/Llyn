@@ -61,7 +61,7 @@ public partial class PEditor : UserControl, QChronicleHost
         PNotationAttach();
         PAccentAttach();
         PTranscriptionAttach();
-        PGlyphAttach();
+        PGlyphIntroduce();
         PReflexAttach();
         PAnchorAttach();
         PClipAttach();
@@ -167,11 +167,6 @@ public partial class PEditor : UserControl, QChronicleHost
     public void QChronicleRedoObserve()
     {
         QChronicle.QChronicleCaretRefine(_qEditor.QEditorArea.CEditorDesk.CDeskRedo);
-    }
-
-    private void PEditorRequestDefer(LRequest request)
-    {
-        _qEditor.QEditorArea.CEditorDesk.CDeskDefer(request);
     }
 
     private void PEditorRequestSend(LRequest request)

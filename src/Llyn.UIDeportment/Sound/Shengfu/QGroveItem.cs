@@ -56,7 +56,7 @@ internal sealed class QGroveItem : INotifyPropertyChanged
         held.PropertyChanged?.Invoke(held, QGroveItemMark);
     }
 
-    internal static void QGroveItemApply(FrameworkElement container, object item, string? _)
+    internal static void QGroveItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QGroveItem grove)
         {

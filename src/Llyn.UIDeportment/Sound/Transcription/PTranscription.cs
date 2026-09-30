@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -42,9 +41,9 @@ public partial class PEditor
         if (QLook.QLookPartFind<TextBox>(container, "PTranscriptionField") is TextBox field)
         {
             field.SetResourceReference(QField.QFieldHintProperty, "Input.Transcription");
-            field.TextChanged -= PTranscriptionFieldHandle;
+            field.TextChanged -= PTranscriptionFieldObserve;
             QField.QFieldTextShow(field, row.QTranscriptionItemText);
-            field.TextChanged += PTranscriptionFieldHandle;
+            field.TextChanged += PTranscriptionFieldObserve;
         }
 
         if (QLook.QLookPartFind<ComboBox>(container, "PTranscriptionScheme") is not ComboBox scheme)
@@ -65,11 +64,11 @@ public partial class PEditor
         }
     }
 
-    private static void PTranscriptionFieldHandle(object sender, TextChangedEventArgs e)
+    private void PTranscriptionFieldObserve(object sender, TextChangedEventArgs e)
     {
         if (sender is TextBox { DataContext: QTranscriptionItem row } field)
         {
-            row.QTranscriptionItemText = field.Text;
+            _qEditor.QEditorArea.CEditorTimbre.CTimbreTranscriptionSet(row.QTranscriptionItemId, field.Text);
         }
     }
 
@@ -154,22 +153,6 @@ public partial class PEditor
         return null;
     }
 
-    private void PTranscriptionChangeHandle(object? sender, PropertyChangedEventArgs e)
-    {
-        if (sender is not QTranscriptionItem row)
-        {
-            return;
-        }
-
-        if (!string.Equals(e.PropertyName, nameof(QTranscriptionItem.QTranscriptionItemText), StringComparison.Ordinal))
-        {
-            return;
-        }
-
-        PEditorRequestDefer(
-            new LRequestTranscriptionText(PEditorDraft, row.QTranscriptionItemId, row.QTranscriptionItemText));
-    }
-
     internal void PTranscriptionShow(CEntryDraft draft)
     {
         _pTranscriptionSchemes =
@@ -178,10 +161,10 @@ public partial class PEditor
 
         PCard.PCardRowShow(
             _pTranscriptionItem,
-            PTranscriptionScan(draft),
+            _qEditor.QEditorArea.CEditorTimbre.CTimbreGlyphRead().CTimbreGlyphOther,
             static row => row.QTranscriptionItemId,
             static spelled => spelled.CTranscriptionDraftId,
-            PTranscriptionCreate,
+            QTranscriptionItem.QTranscriptionRowRefine,
             PTranscriptionUpdate);
 
         foreach (QTranscriptionItem row in _pTranscriptionItem)
@@ -189,27 +172,6 @@ public partial class PEditor
             row.QTranscriptionSchemeRefine(
                 _qEditor.QEditorArea.CEditorSounding.CSoundingSchemeRead(row.QTranscriptionItemId));
         }
-    }
-
-    private IReadOnlyList<CTranscriptionDraft> PTranscriptionScan(CEntryDraft draft)
-    {
-        List<CTranscriptionDraft> rows = [];
-        foreach (CTranscriptionDraft spelled in draft.CEntryDraftTranscriptions)
-        {
-            if (!PGlyphSchemeCheck(spelled.CTranscriptionDraftScheme))
-            {
-                rows.Add(spelled);
-            }
-        }
-
-        return rows;
-    }
-
-    private QTranscriptionItem PTranscriptionCreate(CTranscriptionDraft spelled)
-    {
-        QTranscriptionItem row = QTranscriptionItem.QTranscriptionRowRefine(spelled);
-        row.PropertyChanged += PTranscriptionChangeHandle;
-        return row;
     }
 
     private QTranscriptionItem PTranscriptionUpdate(QTranscriptionItem row, CTranscriptionDraft spelled)

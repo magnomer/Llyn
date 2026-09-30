@@ -64,6 +64,17 @@ public sealed record LGlyph(
             .ToList();
     }
 
+    public static LGlyphBlock LGlyphBlockRead(LGlyph? glyph, IReadOnlyList<LTranscriptionDraft> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        return new LGlyphBlock(
+            glyph is not null,
+            glyph?.LGlyphSourced ?? false,
+            rows.Where(spelled => glyph?.LGlyphSchemeCheck(spelled.LTranscriptionDraftScheme) == true).ToList(),
+            rows.Where(spelled => glyph?.LGlyphSchemeCheck(spelled.LTranscriptionDraftScheme) != true).ToList());
+    }
+
     public bool LGlyphSchemeCheck(string scheme)
     {
         return string.Equals(LGlyphName, scheme, StringComparison.Ordinal);

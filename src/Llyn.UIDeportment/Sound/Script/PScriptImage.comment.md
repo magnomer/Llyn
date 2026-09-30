@@ -47,7 +47,7 @@ The width that keeps the picture's aspect at the drawn height.
 
 The drawn height, handed to the template so the measure lives in one place.
 
-## `internal static void PScriptImageApply(FrameworkElement container, object item, string? _)`
+## `internal static void PScriptImageRefine(FrameworkElement container, object item, string? _)`
 
 Fills a picture of `Theme.Script.Picture`: the lazy loader's row, the shape, the age and the caption.
 The shape takes the picture as its mask, so the glyph is drawn in the ink colour.
@@ -57,7 +57,7 @@ It runs again when the picture decodes, since the row raises its source then.
 
 Reads the size from the stored bytes, or returns null when they are not a picture the framework can read.
 
-## `internal void PScriptImageUpdate()`
+## `internal void PScriptImageRaise()`
 
 Tells the row its age reads differently now, which the box calls for every picture after a language change.
 The picture itself is untouched, so only the one line is redrawn.

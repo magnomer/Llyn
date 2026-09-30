@@ -16,11 +16,6 @@ Every caller names the role, from a headword to whole controls such as the fanqi
 
 Puts a font Conduct already read onto every surface, so a block handed its font asks nothing more.
 
-### `public static void LFontRefine(`
-
-The several-role form reads every role at once and puts role by role onto surface by surface.
-A page showing a headword and its glyph list asks the atelier once.
-
 ### `private static void LFontSurfaceRefine(DependencyObject surface, CFont font)`
 
 Puts one font's family and size onto one surface, clearing any part the pack leaves out.

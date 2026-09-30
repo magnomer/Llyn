@@ -263,6 +263,17 @@ internal sealed class LLanguageFacade
         return languages.LLanguageTranscriptionRead(draft);
     }
 
+    public LGlyphBlock LEngineGlyphRead(LEntryDraft draft)
+    {
+        LLanguageClerk languages;
+        lock (_lLanguageFacadeGate)
+        {
+            languages = LLanguageFacadeStaff.LEngineStaffLanguage;
+        }
+
+        return languages.LLanguageGlyphRead(draft);
+    }
+
     public void LEngineSoundStart(long entryId)
     {
         _lLanguageFacadeEngine.LEngineReflex.LEngineReflexStart(entryId);

@@ -23,10 +23,10 @@ The gloss the source printed for the style, drawn under the pictures, or empty s
 
 The decoded pictures of the row, in stored order.
 
-## `internal static void PScriptItemApply(FrameworkElement container, object item, string? _)`
+## `internal static void PScriptItemRefine(FrameworkElement container, object item, string? _)`
 
 Fills a row of `Theme.Script.Row`: character, style chip, gloss and pictures.
-The picture list is attached to `PScriptImage.PScriptImageApply`.
+The picture list is attached to `PScriptImage.PScriptImageRefine`.
 
 ## `internal static IReadOnlyList<PScriptItem> PScriptItemScan(IReadOnlyList<CScriptGroup> groups)`
 

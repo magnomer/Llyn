@@ -78,6 +78,18 @@ A load or read that fails answers null too, and the labels stand.
 
 Maps the engine's sheet into the Conduct record, reading no rule.
 
+## `public CTimbreGlyph CTimbreGlyphRead()`
+
+The held draft's glyph block, ready to paint, with the transcription rows split by the glyph scheme.
+The editor reads it on every draft repaint, since a language change moves the split.
+An empty desk answers the hidden block with no rows.
+
+## `public void CTimbreTranscriptionSet(long transcription, string text)`
+
+The user typed `text` into the transcription row `transcription`, the glyph row among them.
+The engine defers it, and a filling desk writes nothing.
+It sits here beside the accent text, since a transcription is a sound fact of the held entry.
+
 ## `public CTimbreReflex CTimbreReflexRead()`
 
 The held draft's reflex block, ready to paint, as the reading view reads its own.

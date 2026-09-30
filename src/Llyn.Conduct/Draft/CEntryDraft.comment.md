@@ -12,5 +12,4 @@ It mirrors only what the editor's parts read, so the full draft stays between co
 - `CEntryDraftNote`: the note.
 - `CEntryDraftMeanings`: the meaning cards.
 - `CEntryDraftCollocations`: the collocation cards.
-- `CEntryDraftTranscriptions`: the transcriptions.
 - `CEntryDraftEtymology`: the etymology.

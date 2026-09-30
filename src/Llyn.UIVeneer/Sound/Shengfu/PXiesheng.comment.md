@@ -13,12 +13,12 @@ The search bar of the series column, with the ordering dropper beside the field.
 ## `<ItemsControl x:Name="PGrove"`
 
 The series of the language, each with the count of entries it reaches.
-Its parts are named, and `QGroveItem.QGroveItemApply` fills them and marks the chosen row.
+Its parts are named, and `QGroveItem.QGroveItemRefine` fills them and marks the chosen row.
 
 ## `<ItemsControl x:Name="PKindred"`
 
 The entries of the chosen series, each with its language flag and epithet.
-Its parts are named, and `QKindredItem.QKindredItemApply` fills them and marks the chosen row.
+Its parts are named, and `QKindredItem.QKindredItemRefine` fills them and marks the chosen row.
 
 ## `<veneer:PStem x:Name="PXieshengStem"`
 

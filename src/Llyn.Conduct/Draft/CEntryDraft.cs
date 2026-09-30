@@ -8,5 +8,4 @@ public sealed record CEntryDraft(
     string CEntryDraftNote,
     IReadOnlyList<CCardDraft> CEntryDraftMeanings,
     IReadOnlyList<CCardDraft> CEntryDraftCollocations,
-    IReadOnlyList<CTranscriptionDraft> CEntryDraftTranscriptions,
     CEtymologyDraft CEntryDraftEtymology);

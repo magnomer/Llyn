@@ -53,7 +53,7 @@ Its vertical margin is the field's, so the chips sit on the field's line.
 
 The editor row: the scheme label in the shared label column, the field with its twin, and the lookup button.
 No plus or minus, because a language has one glyph row at most.
-`PEditor.PGlyphApply` fills the named parts, the scheme label included, and writes the typed text back to the row.
+`PEditor.PGlyphItemRefine` fills the named parts, the scheme label included, and hooks the typed text to its gate.
 
 ## `<DataTemplate x:Key="Theme.Glyph.Display">`
 

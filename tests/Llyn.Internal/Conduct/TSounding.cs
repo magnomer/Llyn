@@ -160,7 +160,7 @@ public sealed class TSounding
                 TInterface.TTranscriptionDraftCreate("Yale", "hēung góng"),
             ]));
         CEditor editor = TSoundingEditorPrepare(engine, entry.LEntryId);
-        long yale = editor.TEditorDraftRead()!.CEntryDraftTranscriptions[1].CTranscriptionDraftId;
+        long yale = editor.CEditorTimbre.CTimbreGlyphRead().CTimbreGlyphOther[1].CTranscriptionDraftId;
 
         Assert.Equal(
             [new CScheme("Jyutping", true), new CScheme("Yale", false)],

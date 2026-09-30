@@ -34,6 +34,13 @@ public sealed partial class LTenure
             .ToList();
     }
 
+    public LGlyphBlock? LTenureGlyphRead()
+    {
+        return LTenureRead()?.LDraftContent is LEntryDraft content
+            ? _lEngine.LEngineLanguage.LEngineGlyphRead(content)
+            : null;
+    }
+
     public bool LTenureReflexCheck()
     {
         return _lEngine.LEngineReflex.LEngineReflexRead(LTenureLanguageRead()).Count > 0

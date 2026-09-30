@@ -30,7 +30,7 @@ True while the held row already carries everything the fresh one says.
 
 Carries the chosen mark of the fresh row onto the held one and raises its notice.
 
-## `internal static void QKindredItemApply(FrameworkElement container, object item, string? _)`
+## `internal static void QKindredItemRefine(FrameworkElement container, object item, string? _)`
 
 Fills the flag, name and epithet of one entry row and marks the row while it is the chosen one.
 The epithet leads with an en space, which the markup's format string once added.

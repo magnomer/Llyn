@@ -38,6 +38,11 @@ The filled rows a reading view lists as transcriptions, in draft order.
 A row under the glyph section's scheme is left out, since the glyph row shows it.
 Without a section, every filled row stays.
 
+## `public static LGlyphBlock LGlyphBlockRead(LGlyph? glyph, IReadOnlyList<LTranscriptionDraft> rows)`
+
+Splits `rows` into those under the section's scheme and all others, blank rows kept.
+Without a section, every row is another row and the block reads hidden.
+
 ## `public bool LGlyphSchemeCheck(string scheme)`
 
 Whether `scheme` is this section's own name, so a transcription under it is the glyph row.

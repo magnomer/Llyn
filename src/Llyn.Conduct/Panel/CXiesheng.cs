@@ -144,7 +144,12 @@ public sealed class CXiesheng
         LStemPage page = _cXieshengPort.LEngineStemResolve(
             CXieshengStemShown ? _cXieshengGrove?.LVistaChosen : null);
         return new CStemPage(
-            page.LStemPageLanguage, page.LStemPageKey, page.LStemPageCharacters, page.LStemPageEmpty);
+            page.LStemPageLanguage,
+            page.LStemPageKey,
+            page.LStemPageCharacters,
+            page.LStemPageEmpty,
+            CCatalog.LCatalogFontRead(_cXieshengSettingsPort, page.LStemPageLanguage, CFontRole.CFontRoleHeadword),
+            CCatalog.LCatalogFontRead(_cXieshengSettingsPort, page.LStemPageLanguage, CFontRole.CFontRoleGlyph));
     }
 
     public void CXieshengGroveFind(string query)
