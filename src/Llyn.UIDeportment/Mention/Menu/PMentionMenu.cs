@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -24,33 +23,33 @@ public partial class PWindow
 
     private ListBox PMentionList => (ListBox)_pWindowSurface.FindName(nameof(PMentionList));
 
-    internal void PMentionMenuShow(FrameworkElement anchor, Rect place, IReadOnlyList<CTranslationTarget> entries)
+    internal void PMentionOfferRefine(FrameworkElement anchor, Rect place, CMentionOffer offer)
     {
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(offer);
 
-        PMentionMenuShow(
+        PMentionMenuRefine(
             anchor,
             place,
-            "Mention.Title",
-            PMentionItem.PMentionItemCreate(entries),
+            offer.CMentionOfferKey,
+            PMentionItem.PMentionItemCreate(offer.CMentionOfferEntry),
             item => _cNavigation.CNavigationEntryOpen(item.PMentionItemEntry));
     }
 
-    internal void PMentionMenuShow(
-        FrameworkElement anchor, Rect place, IReadOnlyList<CMeaning> meanings, Action<FrameworkElement, long> chosen)
+    internal void PMentionMeaningRefine(
+        FrameworkElement anchor, Rect place, CMentionSense sense, Action<FrameworkElement, long> chosen)
     {
-        ArgumentNullException.ThrowIfNull(meanings);
+        ArgumentNullException.ThrowIfNull(sense);
         ArgumentNullException.ThrowIfNull(chosen);
 
-        PMentionMenuShow(
+        PMentionMenuRefine(
             anchor,
             place,
-            "Mention.Sense",
-            PMentionItem.PMentionItemCreate(meanings, QLocalizationCatalog.QLocalizationTextRead("Mention.Whole")),
+            sense.CMentionSenseKey,
+            PMentionItem.PMentionItemCreate(sense.CMentionSenseRow),
             item => chosen(anchor, item.PMentionItemSense));
     }
 
-    private void PMentionRowApply(FrameworkElement container, object item, string? _)
+    private void PMentionRowRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not PMentionItem mention)
         {
@@ -60,8 +59,8 @@ public partial class PWindow
         if (QLook.QLookPartFind<Grid>(container, "PMentionRow") is Grid row)
         {
             row.Margin = mention.PMentionItemIndent;
-            row.MouseLeftButtonUp -= _pMentionMenuTemplate.PMentionMenuHandle;
-            row.MouseLeftButtonUp += _pMentionMenuTemplate.PMentionMenuHandle;
+            row.MouseLeftButtonUp -= _pMentionMenuTemplate.PMentionMenuObserve;
+            row.MouseLeftButtonUp += _pMentionMenuTemplate.PMentionMenuObserve;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PMentionName") is TextBlock name)
@@ -85,7 +84,7 @@ public partial class PWindow
         }
     }
 
-    internal void PMentionMenuHandle(object sender, MouseButtonEventArgs e)
+    internal void PMentionMenuObserve(object sender, MouseButtonEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: PMentionItem item })
         {
@@ -105,7 +104,7 @@ public partial class PWindow
         _pMentionChosen = null;
     }
 
-    private void PMentionMenuShow(
+    private void PMentionMenuRefine(
         FrameworkElement anchor,
         Rect place,
         string key,
@@ -134,15 +133,15 @@ public partial class PWindow
         PMentionList.SelectedIndex = 0;
     }
 
-    private void PMentionKeyHandle(object sender, KeyEventArgs e)
+    private void PMentionKeyObserve(object sender, KeyEventArgs e)
     {
-        if (PMentionMenu.IsOpen && PMentionMenuHandle(e.Key))
+        if (PMentionMenu.IsOpen && PMentionStepRefine(e.Key))
         {
             e.Handled = true;
         }
     }
 
-    private bool PMentionMenuHandle(Key key)
+    private bool PMentionStepRefine(Key key)
     {
         if (key == Key.Escape)
         {

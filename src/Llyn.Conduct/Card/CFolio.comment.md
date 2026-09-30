@@ -50,10 +50,13 @@ It carries the engine's empty verdict, so a reading card folds an image nobody l
 It carries the address `media` resolves from the location, so a row loads its preview without asking.
 The engine settles what may be reached, and the map only hands it the plain text.
 
-## `internal static IReadOnlyList<CVideoDraft> CFolioVideoRead(IReadOnlyList<LVideoDraft> videos)`
+## `internal static IReadOnlyList<CVideoDraft> CFolioVideoRead(IReadOnlyList<LVideoDraft> videos, LMediaPort media)`
 
 The one map for videos, shared with the repertoire and the reading view's cards.
 It carries the engine's empty verdict, so a reading card folds a video nobody located.
+It carries the screen `media` resolves from the location, so a row plays without asking.
+The engine settles the address and the film id, and the map only pairs them.
+It carries the moments the engine reads from the span, so the screen parses no timestamp.
 
 ## `internal static CMentionDraft CFolioMentionRead(LMentionDraft mention)`
 

@@ -9,7 +9,7 @@ using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
-public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHost
+public partial class PEditor : UserControl, QChronicleHost
 {
     private PWindow _pEditorHost = null!;
 
@@ -31,10 +31,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         Resources.MergedDictionaries.Add(_pContextTemplate);
         _pRegisterTemplate = new PRegisterTemplate();
         Resources.MergedDictionaries.Add(_pRegisterTemplate);
-        _pImageTemplate = new PImageTemplate(this);
-        Resources.MergedDictionaries.Add(_pImageTemplate);
-        _pVideoTemplate = new PVideoTemplate(this);
-        Resources.MergedDictionaries.Add(_pVideoTemplate);
+        Resources.MergedDictionaries.Add(new PImageTemplate());
+        Resources.MergedDictionaries.Add(new PVideoTemplate());
         _pLabelTemplate = new PLabelTemplate();
         Resources.MergedDictionaries.Add(_pLabelTemplate);
         _pLinkTemplate = new PLinkTemplate();

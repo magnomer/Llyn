@@ -162,7 +162,7 @@ public sealed class CAtlas
                 CFolio.CFolioStateRead(situation.LSituationKind),
                 CFolio.CFolioStateRead(situation.LSituationDescription),
                 CFolio.CFolioImageRead(situation.LSituationImage, media),
-                CFolio.CFolioVideoRead(situation.LSituationVideo))
+                CFolio.CFolioVideoRead(situation.LSituationVideo, media))
             : null;
     }
 
@@ -175,7 +175,7 @@ public sealed class CAtlas
                 CStateWording.LStateWordingRead(CFolio.CFolioStateRead(situation.LSituationKind), null),
                 CStateWording.LStateWordingRead(CFolio.CFolioStateRead(situation.LSituationDescription), null),
                 CFolio.CFolioImageRead(situation.LSituationImageFilled, media),
-                CFolio.CFolioVideoRead(situation.LSituationVideoFilled))
+                CFolio.CFolioVideoRead(situation.LSituationVideoFilled, media))
             : null;
     }
 }

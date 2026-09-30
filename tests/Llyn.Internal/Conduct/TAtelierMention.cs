@@ -168,6 +168,7 @@ public sealed class TAtelierMention
 
         Assert.Equal(2, offer.CMentionOfferOffset);
         Assert.Equal(candidates, offer.CMentionOfferEntry);
+        Assert.Equal("Mention.Title", offer.CMentionOfferKey);
         Assert.Empty(arrived);
     }
 

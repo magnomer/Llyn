@@ -17,7 +17,7 @@ internal static class TAuditObjectSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditObjectCeiling = new Dictionary<string, int>
     {
         ["Monolith"] = 3,
-        ["Hub"] = 9,
+        ["Hub"] = 8,
         ["Large"] = 42,
     };
 

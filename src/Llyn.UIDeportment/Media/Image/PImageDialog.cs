@@ -5,8 +5,6 @@ namespace Llyn.UIDeportment;
 
 public partial class PEditor
 {
-    private readonly PImageTemplate _pImageTemplate;
-
     internal void PImageAddObserve(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PCard card })
@@ -15,7 +13,7 @@ public partial class PEditor
         }
     }
 
-    public void PImageRemoveObserve(object sender, RoutedEventArgs e)
+    private void PImageRemoveObserve(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PImage row })
         {
@@ -23,7 +21,7 @@ public partial class PEditor
         }
     }
 
-    public void PImageOpenObserve(object sender, RoutedEventArgs e)
+    private void PImageOpenObserve(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PImage row } source)
         {
@@ -36,14 +34,14 @@ public partial class PEditor
         PImage.PImageItemRefine(container, item, name);
         if (QLook.QLookPartFind<Button>(container, "PImageChooser") is Button open)
         {
-            open.Click -= _pImageTemplate.PImageOpenHandle;
-            open.Click += _pImageTemplate.PImageOpenHandle;
+            open.Click -= PImageOpenObserve;
+            open.Click += PImageOpenObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PImageEraser") is Button remove)
         {
-            remove.Click -= _pImageTemplate.PImageRemoveHandle;
-            remove.Click += _pImageTemplate.PImageRemoveHandle;
+            remove.Click -= PImageRemoveObserve;
+            remove.Click += PImageRemoveObserve;
         }
     }
 }

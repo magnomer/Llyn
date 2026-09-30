@@ -44,7 +44,7 @@ public sealed record CLeaf(
                     .Select(sentence => CLeafLine.LLeafLineRead(sentence, order, mark, citations))
                     .ToList(),
                 CFolio.CFolioImageRead(card.LCardDraftImage, media),
-                CFolio.CFolioVideoRead(card.LCardDraftVideo)))
+                CFolio.CFolioVideoRead(card.LCardDraftVideo, media)))
             .ToList();
     }
 }

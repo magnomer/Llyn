@@ -1,14 +1,13 @@
 # QRepertoire.cs
 
-## `internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHost`
+## `internal sealed partial class QRepertoire : QChronicleHost`
 
 The Repertoire panel's driver: the view of the shared stock of usage contexts itself.
 A Situation is independent data owned by nothing, so this panel is not a view of one Entry's contexts.
 It holds the surface, the host and the repertoire Conduct the browsing side calls, and nothing else.
 The browsing behavior lives in `QRepertoireBrowse.cs` and the editing in `QRepertoireEditor.cs`, one file per responsibility.
 The held draft the editor writes into lives in `QRepertoireHold.cs`, apart from the controls it reads.
-It merges the card's picture and video row templates, answering their clicks as `PImageHost` and `PVideoHost`.
-Those answers live in `QRepertoireDialog.cs`.
+It merges the card's picture and video row templates, and `QRepertoireDialog.cs` answers their clicks.
 It answers the window's undo and redo keys as `QChronicleHost`, attached to its surface since the surface is no driver.
 
 ## `internal QRepertoire(UserControl surface)`

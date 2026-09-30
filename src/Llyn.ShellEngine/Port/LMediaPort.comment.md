@@ -15,6 +15,11 @@ The sweep drops recordings no draft or entry names any more.
 The resolved address of a video location and its hosted film id, in one read.
 So the video row parses no address and makes no second request.
 
+## `static (TimeSpan, TimeSpan?) LEngineSpanRead(LVideoDraft video)`
+
+The moments a video row plays from and until, so the video row parses no timestamp.
+It is static, since it reads only the row the caller holds.
+
 ## `(bool, bool) LEnginePlaybackRead(LEntryDraft draft);`
 
 Whether the draft's own recording exists, and whether a reading view has anything to play.

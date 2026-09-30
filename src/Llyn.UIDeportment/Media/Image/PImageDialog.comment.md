@@ -11,12 +11,11 @@ Each click hands one raw value to one image gate, and the engine finds the card 
 
 Hands the id of the card the Extra row belongs to to the add gate, which appends the row.
 
-## `public void PImageRemoveObserve(object sender, RoutedEventArgs e)`
+## `private void PImageRemoveObserve(object sender, RoutedEventArgs e)`
 
 Hands the id of the clicked row to the remove gate.
-Public because it answers `PImageHost`, the seam the row template reaches the editor through.
 
-## `public void PImageOpenObserve(object sender, RoutedEventArgs e)`
+## `private void PImageOpenObserve(object sender, RoutedEventArgs e)`
 
 Asks for a picture file, owned by the window of the clicked button.
 The chosen path goes raw to the file gate, which sends it as the row's location at once.
@@ -26,11 +25,7 @@ Browsing is a convenience for the local case only.
 The field takes a web address just as well.
 The path chosen here is written as it stands rather than copied anywhere.
 
-## `private readonly PImageTemplate _pImageTemplate`
-
-The picture row dictionary this editor merged, whose forwarders its row fill subscribes.
-
 ## `internal void PImageApply(FrameworkElement container, object item, string? name)`
 
 The editor's picture row fill, reached from the card templates' list forwarders.
-It draws the row through the shared fill and subscribes the browse and remove forwarders.
+It draws the row through the shared fill and subscribes the browse and remove observers.

@@ -193,6 +193,13 @@ public sealed class LDraftClerkMedia
             : LDraftClerkCard.LCardFind(draft.LDraftContent, cardId)?.LCardDraftVideo.Count ?? 0;
     }
 
+    public static (TimeSpan, TimeSpan?) LVideoSpanRead(LVideoDraft video)
+    {
+        ArgumentNullException.ThrowIfNull(video);
+
+        return LVideo.LVideoSpanRead(video.LVideoDraftSpan.LStateValuePlain);
+    }
+
     public static long? LVideoCardFind(LDraft draft, long videoId)
     {
         ArgumentNullException.ThrowIfNull(draft);

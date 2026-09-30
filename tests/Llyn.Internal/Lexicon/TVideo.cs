@@ -26,4 +26,22 @@ public sealed class TVideo
     {
         Assert.Null(TInterface.TVideoFilmRead(new Uri(address)));
     }
+
+    [Theory]
+    [InlineData("00:10-00:40", 10, 40)]
+    [InlineData(" 1:02:03 - 1:02:09 ", 3723, 3729)]
+    [InlineData("0:05", 5, null)]
+    [InlineData("0:05 - soon", 5, null)]
+    [InlineData("later - 0:40", 0, 40)]
+    [InlineData("5 - 0:40", 0, 40)]
+    [InlineData("0:05:07:09", 0, null)]
+    [InlineData("-0:05", 5, null)]
+    [InlineData("", 0, null)]
+    public void VideoSpanRead_WrittenSpan_AnswersItsMomentsOrTheWholeFilm(string span, int from, int? until)
+    {
+        (TimeSpan start, TimeSpan? end) = TInterface.TVideoSpanRead(span);
+
+        Assert.Equal(TimeSpan.FromSeconds(from), start);
+        Assert.Equal(until is int seconds ? TimeSpan.FromSeconds(seconds) : null, end);
+    }
 }

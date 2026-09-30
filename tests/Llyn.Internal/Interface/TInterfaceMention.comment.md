@@ -45,8 +45,8 @@ Runs the occurrence rows read over an entry port whose find throws.
 
 Runs the favorites rows read over an entry port whose favorite find throws, on a real vista.
 
-## `internal static IReadOnlyList<CMeaning>? TMeaningRead(LEngine engine, CDesk desk, CEnvoy envoy, Func<object?[]?, object?> sense)`
+## `internal static CMentionSense? TMentionSenseRead(LEngine engine, CDesk desk, CEnvoy envoy, Func<object?[]?, object?> sense)`
 
-Runs the shared Meaning read on a desk with a live draft.
+Runs the shared sense menu read on a desk with a live draft.
 The draft port's sense read answers through `sense`.
 A test hands rows to check the map and the key, or a throw to check the failure policy.

@@ -15,8 +15,8 @@ public class PMentionMenuTemplate : ResourceDictionary
             new Uri("/Llyn.UIVeneer;component/Mention/Menu/PMentionMenuTemplate.xaml", UriKind.Relative)));
     }
 
-    internal void PMentionMenuHandle(object sender, MouseButtonEventArgs e)
+    internal void PMentionMenuObserve(object sender, MouseButtonEventArgs e)
     {
-        _pMentionHost.PMentionMenuHandle(sender, e);
+        _pMentionHost.PMentionMenuObserve(sender, e);
     }
 }

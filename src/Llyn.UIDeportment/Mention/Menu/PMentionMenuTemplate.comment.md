@@ -13,6 +13,6 @@ The window that owns the popup and the choice it reports.
 
 Merges the markup the Veneer holds, since the dictionary carries no class of its own there.
 
-## `internal void PMentionMenuHandle(object sender, MouseButtonEventArgs e)`
+## `internal void PMentionMenuObserve(object sender, MouseButtonEventArgs e)`
 
 The forwarder the window's row fill subscribes on each realized row.

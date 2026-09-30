@@ -203,7 +203,7 @@ public class PDisplay : UserControl
             PDisplayFrequencySection, PDisplayFrequencyChip, PDisplayFrequency, PDisplayFrequencyBand);
         lectern.QLecternSpeechIntroduce(PDisplaySpeechSection, PDisplaySpeech);
         lectern.QLecternNoteIntroduce(PDisplayNoteSection, PDisplayNote);
-        PMedia.PMediaAttach(this, host.PWindowAtelier);
+        PMedia.PMediaAttach(this);
         lectern.QLecternPlayback.QLecternPlaybackIntroduce(host.PWindowAtelier, PPlaybackAction, PPlayback, PVolume);
         lectern.QLecternAccent.QLecternAccentIntroduce(
             PDisplayPronunciationSurface,

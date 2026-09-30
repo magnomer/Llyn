@@ -5,22 +5,9 @@ namespace Llyn.UIDeportment;
 
 public class PImageTemplate : ResourceDictionary
 {
-    private readonly PImageHost _pImageHost;
-
-    internal PImageTemplate(PImageHost host)
+    internal PImageTemplate()
     {
-        _pImageHost = host;
         MergedDictionaries.Add((ResourceDictionary)System.Windows.Application.LoadComponent(
             new Uri("/Llyn.UIVeneer;component/Media/Image/PImageTemplate.xaml", UriKind.Relative)));
-    }
-
-    internal void PImageOpenHandle(object sender, RoutedEventArgs e)
-    {
-        _pImageHost.PImageOpenObserve(sender, e);
-    }
-
-    internal void PImageRemoveHandle(object sender, RoutedEventArgs e)
-    {
-        _pImageHost.PImageRemoveObserve(sender, e);
     }
 }

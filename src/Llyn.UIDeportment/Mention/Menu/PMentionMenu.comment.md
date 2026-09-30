@@ -14,21 +14,21 @@ It shows the rows it is given and reports the one picked.
 
 The popup, its title and its list are read through the loaded window's name scope.
 
-## `internal void PMentionMenuShow(FrameworkElement anchor, Rect place, IReadOnlyList<CTranslationTarget> entries)`
+## `internal void PMentionOfferRefine(FrameworkElement anchor, Rect place, CMentionOffer offer)`
 
-Entry mode, on the candidates a find gate's `CMentionOffer` carries.
+Entry mode, on the candidates and the title key a find gate's `CMentionOffer` carries.
 An empty list only closes the menu.
 A picked row opens its Entry through the navigation's gate.
 The menu is already hidden by the pick, and a landing hides it too.
 
-## `internal void PMentionMenuShow(FrameworkElement anchor, Rect place, IReadOnlyList<CMeaning> meanings, Action<FrameworkElement, long> chosen)`
+## `internal void PMentionMeaningRefine(FrameworkElement anchor, Rect place, CMentionSense sense, Action<FrameworkElement, long> chosen)`
 
 Sense mode.
-The caller hands the Meanings a Conduct read answered, so the menu stays free of the engine.
+The caller hands the ready sense menu a Conduct read answered, its title key and its rows.
 A picked row calls `chosen` with the anchor and its sense id, and zero means the whole Entry.
 The card row and the corpus scribe call it directly, each with its own area's ready read.
 
-## `internal void PMentionMenuHandle(object sender, MouseButtonEventArgs e)`
+## `internal void PMentionMenuObserve(object sender, MouseButtonEventArgs e)`
 
 Takes the row the pointer released on and picks it.
 The row is a plain surface rather than a button, so the list beneath it keeps its own selection.
@@ -38,7 +38,7 @@ The row is a plain surface rather than a button, so the list beneath it keeps it
 Closes the menu and forgets what it offered and whom it would tell.
 It is safe to call when the menu is already closed, which is how every navigation calls it.
 
-## `private void PMentionMenuShow(FrameworkElement anchor, Rect place, string key, IReadOnlyList<PMentionItem> rows, Action<PMentionItem> chosen)`
+## `private void PMentionMenuRefine(FrameworkElement anchor, Rect place, string key, IReadOnlyList<PMentionItem> rows, Action<PMentionItem> chosen)`
 
 The one path both modes go through.
 The popup hangs under the anchor, moved right to the clicked word and up to the line it sits on.
@@ -47,12 +47,12 @@ The header is bound to a localization key rather than a string, so a language ch
 The first row starts selected, so Enter alone picks the likeliest answer.
 An empty list opens nothing.
 
-## `private void PMentionKeyHandle(object sender, KeyEventArgs e)`
+## `private void PMentionKeyObserve(object sender, KeyEventArgs e)`
 
 Hooked into the window's preview key event, so the keys reach the menu wherever focus sits.
 The rows are not focusable, and the menu takes no focus of its own.
 
-## `private bool PMentionMenuHandle(Key key)`
+## `private bool PMentionStepRefine(Key key)`
 
 Up and Down cycle through the rows, Enter picks the selected one and Escape closes.
 Every other key passes through, so a shortcut still works while the menu is open.
@@ -67,7 +67,7 @@ A callback that opens another panel does not then close a menu that has already 
 
 The word menu dictionary whose forwarder the row fill subscribes.
 
-## `private void PMentionRowApply(FrameworkElement container, object item, string? _)`
+## `private void PMentionRowRefine(FrameworkElement container, object item, string? _)`
 
 Fills one menu row, indents it by its depth and subscribes its click.
 The flag and language fold away when the row carries no language.

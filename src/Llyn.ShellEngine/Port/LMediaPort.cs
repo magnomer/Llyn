@@ -1,4 +1,5 @@
 using System;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -26,4 +27,9 @@ public interface LMediaPort
     void LEngineRecordingStop(int ticket);
 
     void LEngineVolumeSet(double volume);
+
+    static (TimeSpan, TimeSpan?) LEngineSpanRead(LVideoDraft video)
+    {
+        return LDraftClerkMedia.LVideoSpanRead(video);
+    }
 }

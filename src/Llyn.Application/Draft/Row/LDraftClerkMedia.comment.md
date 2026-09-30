@@ -65,6 +65,10 @@ The stored video as a draft row, refused when no video carries the id.
 
 The place after the last video row, as the picture end is read.
 
+## `public static (TimeSpan, TimeSpan?) LVideoSpanRead(LVideoDraft video)`
+
+The moments a video row plays from and until, read from its span text by the video's own rule.
+
 ## `public static long? LVideoCardFind(LDraft draft, long videoId)`
 
 The card holding the video row, as the picture's card is found.

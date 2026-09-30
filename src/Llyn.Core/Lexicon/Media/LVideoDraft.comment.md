@@ -9,7 +9,7 @@ So the two travel together from the form to the store rather than the location t
 
 The span is text and not a pair of moments.
 Half-typed text is what a form actually holds, and refusing to carry it would lose what was typed.
-Reading it as moments is the player's work, done where a span that says nothing simply plays the whole film.
+`LVideo.LVideoSpanRead` reads it as moments, where a span that says nothing plays the whole film.
 
 **Parameters**
 

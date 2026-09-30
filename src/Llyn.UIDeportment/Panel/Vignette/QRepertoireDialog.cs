@@ -12,10 +12,6 @@ internal sealed partial class QRepertoire
 
     private readonly ObservableCollection<PVideo> _qScenarioVideo = [];
 
-    private readonly PImageTemplate _qImageTemplate;
-
-    private readonly PVideoTemplate _qVideoTemplate;
-
     private void QScenarioImageRefine(IReadOnlyList<CImageDraft> rows)
     {
         PCard.PCardRowShow(
@@ -53,7 +49,7 @@ internal sealed partial class QRepertoire
 
     private PVideo QScenarioVideoCreate(CVideoDraft draft)
     {
-        return new PVideo(_qRepertoireHost.PWindowAtelier, draft);
+        return new PVideo(draft);
     }
 
     private void QImageLocationObserve(object sender, TextChangedEventArgs e)
@@ -91,14 +87,14 @@ internal sealed partial class QRepertoire
 
         if (QLook.QLookPartFind<Button>(container, "PImageChooser") is Button open)
         {
-            open.Click -= _qImageTemplate.PImageOpenHandle;
-            open.Click += _qImageTemplate.PImageOpenHandle;
+            open.Click -= QImageOpenObserve;
+            open.Click += QImageOpenObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PImageEraser") is Button remove)
         {
-            remove.Click -= _qImageTemplate.PImageRemoveHandle;
-            remove.Click += _qImageTemplate.PImageRemoveHandle;
+            remove.Click -= QImageRemoveObserve;
+            remove.Click += QImageRemoveObserve;
         }
     }
 
@@ -109,21 +105,21 @@ internal sealed partial class QRepertoire
         {
             location.TextChanged -= QVideoLocationObserve;
             span.TextChanged -= QVideoSpanObserve;
-            PVideo.PVideoRowApply(container, item, name);
+            PVideo.PVideoItemRefine(container, item, name);
             location.TextChanged += QVideoLocationObserve;
             span.TextChanged += QVideoSpanObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PVideoChooser") is Button open)
         {
-            open.Click -= _qVideoTemplate.PVideoOpenHandle;
-            open.Click += _qVideoTemplate.PVideoOpenHandle;
+            open.Click -= QVideoOpenObserve;
+            open.Click += QVideoOpenObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PVideoEraser") is Button remove)
         {
-            remove.Click -= _qVideoTemplate.PVideoRemoveHandle;
-            remove.Click += _qVideoTemplate.PVideoRemoveHandle;
+            remove.Click -= QVideoRemoveObserve;
+            remove.Click += QVideoRemoveObserve;
         }
     }
 
@@ -137,7 +133,7 @@ internal sealed partial class QRepertoire
         _cRepertoire.CRepertoireVideo.CVideoAdd(0);
     }
 
-    public void PImageRemoveObserve(object sender, RoutedEventArgs e)
+    private void QImageRemoveObserve(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PImage row })
         {
@@ -145,7 +141,7 @@ internal sealed partial class QRepertoire
         }
     }
 
-    public void PVideoRemoveHandle(object sender, RoutedEventArgs e)
+    private void QVideoRemoveObserve(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PVideo row })
         {
@@ -153,7 +149,7 @@ internal sealed partial class QRepertoire
         }
     }
 
-    public void PImageOpenObserve(object sender, RoutedEventArgs e)
+    private void QImageOpenObserve(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PImage row } source)
         {
@@ -161,7 +157,7 @@ internal sealed partial class QRepertoire
         }
     }
 
-    public void PVideoOpenHandle(object sender, RoutedEventArgs e)
+    private void QVideoOpenObserve(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PVideo row } source)
         {

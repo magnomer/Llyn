@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace Llyn.Core;
 
@@ -53,6 +54,38 @@ public sealed record LVideo(
         }
 
         return null;
+    }
+
+    public static (TimeSpan, TimeSpan?) LVideoSpanRead(string span)
+    {
+        ArgumentNullException.ThrowIfNull(span);
+
+        string[] parts = span.Split('-', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        TimeSpan from = parts.Length > 0 && LVideoMomentParse(parts[0]) is TimeSpan start ? start : TimeSpan.Zero;
+        TimeSpan? until = parts.Length > 1 ? LVideoMomentParse(parts[1]) : null;
+        return (from, until);
+    }
+
+    private static TimeSpan? LVideoMomentParse(string moment)
+    {
+        string[] fields = moment.Split(':', StringSplitOptions.TrimEntries);
+        if (fields.Length is < 2 or > 3)
+        {
+            return null;
+        }
+
+        TimeSpan parsed = TimeSpan.Zero;
+        foreach (string field in fields)
+        {
+            if (!int.TryParse(field, NumberStyles.None, CultureInfo.InvariantCulture, out int value))
+            {
+                return null;
+            }
+
+            parsed = (parsed * 60) + TimeSpan.FromSeconds(value);
+        }
+
+        return parsed;
     }
 
     private static string? LVideoFilmCheck(string film)

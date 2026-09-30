@@ -23,7 +23,10 @@ public sealed class TCorpusMention
         corpus.CCorpusMentionAdd(TMentionText, 13, 6, entry);
 
         Assert.True(corpus.CCorpusSenseCheck(TMentionText, 13, 6));
-        Assert.Equal(sense, Assert.Single(corpus.CCorpusSenseRead(TMentionText, 13, 6)!).CMeaningId);
+        CMentionSense menu = corpus.CCorpusSenseRead(TMentionText, 13, 6)!;
+        Assert.Equal("Mention.Sense", menu.CMentionSenseKey);
+        Assert.Equal(new CMeaning(0, TInterface.TLocalizationTextRead("Mention.Whole"), 0), menu.CMentionSenseRow[0]);
+        Assert.Equal([0L, sense], menu.CMentionSenseRow.Select(static meaning => meaning.CMeaningId));
         corpus.CCorpusSenseSet(TMentionText, 13, 6, sense);
 
         Assert.Equal(sense, Assert.Single(TMentionRead(corpus)).LMentionSenseId);
@@ -117,7 +120,7 @@ public sealed class TCorpusMention
     }
 
     [Fact]
-    public void MeaningRead_EngineFails_ShowsTheFindFailureAndAnswersNothing()
+    public void MentionSenseRead_EngineFails_ShowsTheFindFailureAndAnswersNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -125,13 +128,13 @@ public sealed class TCorpusMention
         List<string> asked = [];
         CCorpus corpus = TMentionPrepare(engine, atelier, TEnvoyFake.TEnvoyCreate(false, asked));
 
-        IReadOnlyList<CMeaning>? meanings = TInterfaceMention.TMeaningRead(
+        CMentionSense? menu = TInterfaceMention.TMentionSenseRead(
             engine,
             corpus.CCorpusDesk,
             TEnvoyFake.TEnvoyCreate(false, asked),
             _ => throw new InvalidOperationException("no meanings"));
 
-        Assert.Null(meanings);
+        Assert.Null(menu);
         Assert.Equal(["Mention.FindFailed"], asked);
     }
 
@@ -179,7 +182,7 @@ public sealed class TCorpusMention
     }
 
     [Fact]
-    public void MeaningRead_ReadyRows_MapsEachRowAndAsksWithTheUnknownKey()
+    public void MentionSenseRead_ReadyRows_LeadsWithTheWholeEntryAndMapsEachRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -188,7 +191,7 @@ public sealed class TCorpusMention
         List<string> keys = [];
         CCorpus corpus = TMentionPrepare(engine, atelier, TEnvoyFake.TEnvoyCreate(false, asked));
 
-        IReadOnlyList<CMeaning>? meanings = TInterfaceMention.TMeaningRead(
+        CMentionSense? menu = TInterfaceMention.TMentionSenseRead(
             engine,
             corpus.CCorpusDesk,
             TEnvoyFake.TEnvoyCreate(false, asked),
@@ -203,15 +206,21 @@ public sealed class TCorpusMention
                 };
             });
 
+        Assert.Equal("Mention.Sense", menu!.CMentionSenseKey);
         Assert.Equal(
-            [(1L, "first", 0), (2L, "first-a", 1), (3L, "second", 0)],
-            meanings!.Select(static row => (row.CMeaningId, row.CMeaningName, row.CMeaningDepth)).ToList());
+            [
+                (0L, TInterface.TLocalizationTextRead("Mention.Whole"), 0),
+                (1L, "first", 0),
+                (2L, "first-a", 1),
+                (3L, "second", 0),
+            ],
+            menu.CMentionSenseRow.Select(static row => (row.CMeaningId, row.CMeaningName, row.CMeaningDepth)).ToList());
         Assert.Equal(["Display.Unknown"], keys);
         Assert.Empty(asked);
     }
 
     [Fact]
-    public void MeaningRead_EngineFails_HandsTheEnvoyTheReadyNotice()
+    public void MentionSenseRead_EngineFails_HandsTheEnvoyTheReadyNotice()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -227,7 +236,7 @@ public sealed class TCorpusMention
             },
         });
 
-        TInterfaceMention.TMeaningRead(
+        TInterfaceMention.TMentionSenseRead(
             engine, corpus.CCorpusDesk, envoy, _ => throw new InvalidOperationException("no meanings"));
 
         (string key, CLedgerNotice notice) = Assert.Single(handed);

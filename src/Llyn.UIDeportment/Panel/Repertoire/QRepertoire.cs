@@ -8,7 +8,7 @@ using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
-internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHost
+internal sealed partial class QRepertoire : QChronicleHost
 {
     private readonly UserControl _qRepertoireSurface;
 
@@ -24,10 +24,8 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         QLook.QLookStyleAttach(surface.Resources);
         QChronicle.QChronicleIntroduce(surface, this);
 
-        _qImageTemplate = new PImageTemplate(this);
-        surface.Resources.MergedDictionaries.Add(_qImageTemplate);
-        _qVideoTemplate = new PVideoTemplate(this);
-        surface.Resources.MergedDictionaries.Add(_qVideoTemplate);
+        surface.Resources.MergedDictionaries.Add(new PImageTemplate());
+        surface.Resources.MergedDictionaries.Add(new PVideoTemplate());
 
         surface.CommandBindings.Add(new CommandBinding(
             ApplicationCommands.Print, QRepertoirePressObserve, QRepertoirePressRefine));
@@ -221,7 +219,7 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         QLookItem.QLookItemAttach(QVignettePicture, PImage.PImageLineApply);
         QLookItem.QLookItemAttach(QVignetteVideo, PVideo.PVideoLineApply);
 
-        PMedia.PMediaAttach(_qRepertoireSurface, host.PWindowAtelier);
+        PMedia.PMediaAttach(_qRepertoireSurface);
         QRepertoireDisplay.PDisplayAttach(host, lectern);
         QRepertoireEditor.PEditorIntroduce(host, new QEditor(_cRepertoire.CRepertoireEditor));
 

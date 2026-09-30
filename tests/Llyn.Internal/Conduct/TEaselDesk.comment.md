@@ -7,7 +7,7 @@ A pressed add appends a blank row after the rows held, and the driver hands no c
 A removed row leaves its own list, and the owning card is found below Conduct.
 A chosen file lands at once, even under a long delay.
 A cancelled file dialog hands null, and the row stays blank.
-A chosen file that exists carries its ready address, and a missing one carries none.
+A chosen file that exists carries its ready address or screen, and a missing one carries none.
 
 ## `private const int TEaselDeskHold = 600000;`
 

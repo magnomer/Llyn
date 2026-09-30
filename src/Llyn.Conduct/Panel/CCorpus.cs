@@ -231,9 +231,9 @@ public sealed class CCorpus
         return CCorpusDesk.CDeskTenure?.LTenureSenseCheck(0, 0, text, start, length) is true;
     }
 
-    public IReadOnlyList<CMeaning>? CCorpusSenseRead(string text, int start, int length)
+    public CMentionSense? CCorpusSenseRead(string text, int start, int length)
     {
-        return CMention.LMentionMeaningRead(
+        return CMention.LMentionSenseRead(
             _cCorpusAtelier.CAtelierDraftPort,
             CCorpusDesk,
             0,

@@ -49,34 +49,24 @@ Hands the add button's press to the add gate, which appends the row below.
 
 Hands the add button's press to the video add gate.
 
-## `public void PImageRemoveObserve(object sender, RoutedEventArgs e)`
+## `private void QImageRemoveObserve(object sender, RoutedEventArgs e)`
 
 Hands the id of the row the click came from to the remove gate.
-It takes the name `PImageHost` gives it.
 
-## `public void PVideoRemoveHandle(object sender, RoutedEventArgs e)`
+## `private void QVideoRemoveObserve(object sender, RoutedEventArgs e)`
 
 Hands the id of the row the click came from to the video remove gate.
-It keeps the name `PVideoHost` gives it.
 
-## `public void PImageOpenObserve(object sender, RoutedEventArgs e)`
+## `private void QImageOpenObserve(object sender, RoutedEventArgs e)`
 
 Asks for a picture file, owned by the window of the clicked button.
 The chosen path goes raw to the file gate, which sends it at once.
 A cancelled dialog hands nothing.
 
-## `public void PVideoOpenHandle(object sender, RoutedEventArgs e)`
+## `private void QVideoOpenObserve(object sender, RoutedEventArgs e)`
 
 Asks for a video file and hands the chosen path to the video file gate.
 A cancelled dialog hands nothing.
-
-## `private readonly PImageTemplate _qImageTemplate`
-
-The picture row dictionary the situation editor merged, whose forwarders its row fill subscribes.
-
-## `private readonly PVideoTemplate _qVideoTemplate`
-
-The video row dictionary the situation editor merged, whose forwarders its row fill subscribes.
 
 ## `private void QImageItemRefine(FrameworkElement container, object item, string? name)`
 

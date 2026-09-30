@@ -42,7 +42,7 @@ public sealed class CMention
             offered = result.CMentionResultEntry;
         }
 
-        return new CMentionOffer(result.CMentionResultOffset, offered);
+        return new CMentionOffer(result.CMentionResultOffset, offered, "Mention.Title");
     }
 
     public IReadOnlyList<CMentionLabel> CMentionResolve(
@@ -107,7 +107,7 @@ public sealed class CMention
         }
     }
 
-    internal static IReadOnlyList<CMeaning>? LMentionMeaningRead(
+    internal static CMentionSense? LMentionSenseRead(
         LDraftPort drafts, CDesk desk, long cardId, long sentenceId, string text, int start, int length,
         CEnvoy envoy, LSettingsPort settings)
     {
@@ -122,7 +122,12 @@ public sealed class CMention
         try
         {
             return drafts.LEngineSenseRead(held, cardId, sentenceId, text, start, length, "Display.Unknown") is { } rows
-                ? CCatalog.LCatalogMeaningRead(rows)
+                ? new CMentionSense(
+                    "Mention.Sense",
+                    [
+                        new CMeaning(0, settings.LEngineTextRead("Mention.Whole"), 0),
+                        .. CCatalog.LCatalogMeaningRead(rows),
+                    ])
                 : null;
         }
         catch (Exception exception)

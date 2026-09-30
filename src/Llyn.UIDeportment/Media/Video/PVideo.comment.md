@@ -7,7 +7,7 @@ The row carries where the video plays from and the span of it worth watching.
 It also carries the address the screen beside it plays.
 Both the location and the span are kept with the card.
 Both are what the card says about the video.
-The address is not kept, and is read off the location whenever the location changes.
+The address is not kept, and arrives ready on the draft the row shows.
 
 A location standing empty is not one thing.
 It may never have been written, or it may have been written and be unknown now.
@@ -16,14 +16,12 @@ The row holds the engine's values and nothing typed, so what is typed leaves thr
 
 The timestamp is written the way it is read, as `00:30 - 04:20`.
 It says which part of the video the preview plays.
-A timestamp that cannot be read is not an error the user is stopped by.
-The row falls back to playing from the start.
-Half-typed text is a moment in the middle of typing.
+The draft carries its moments ready, read by the engine, so the row parses nothing.
 
-## `internal PVideo(CAtelier atelier, CVideoDraft written)`
+## `internal PVideo(CVideoDraft written)`
 
 The row for a stored Video, holding the location and the span as the store knows them.
-The window resolves each location to the address the screen plays.
+It also holds the screen and the moments the draft carries ready, so the row asks nobody to resolve them.
 
 ## `internal long PVideoId`
 
@@ -39,21 +37,19 @@ It lives on the row for the reason the picture chooser lives on its row.
 Redraws the row from the engine's row, location and span apart, only where the field says something else.
 A field already reading what the engine holds is left alone.
 The id is always taken.
+The screen and the moments are taken from the draft, and a row already showing them is left alone.
 
 ## `public CStateValue PVideoLocation`
 
 The location as the draft holds it, set only from the draft.
-A changed location reads what the screen plays again, in one atelier read.
 
 ## `public CStateValue PVideoTimestamp`
 
 The span as the draft holds it, set only from the draft.
-Nothing before the dash means from the start.
-Nothing after the dash means to the end.
 
 ## `public TimeSpan PVideoFrom`
 
-Where the preview starts, read off the timestamp, and the start of the video when the timestamp says nothing.
+Where the preview starts, as the draft carries it.
 
 ## `public TimeSpan? PVideoUntil`
 
@@ -70,7 +66,7 @@ A row begins stopped, in both modes.
 Opening a card is not asking to hear it.
 A card carrying several videos would otherwise all speak at once.
 
-## `internal static void PVideoRowApply(FrameworkElement container, object item, string? changed)`
+## `internal static void PVideoItemRefine(FrameworkElement container, object item, string? changed)`
 
 The shared fill of a written video row, used by the entry and situation editors alike.
 It hides the frame while nothing plays and sets the screen from the row.

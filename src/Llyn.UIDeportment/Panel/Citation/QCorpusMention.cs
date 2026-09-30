@@ -30,12 +30,12 @@ internal sealed partial class QCorpus
     {
         if (_cCorpus.CCorpusSenseRead(
                 QTranscriptText.Text, QTranscriptText.SelectionStart, QTranscriptText.SelectionLength)
-            is IReadOnlyList<CMeaning> meanings)
+            is CMentionSense sense)
         {
-            _qCorpusHost.PMentionMenuShow(
+            _qCorpusHost.PMentionMeaningRefine(
                 QTranscriptText,
                 PMentionSelection.PMentionSelectionPlace(QTranscriptText),
-                meanings,
+                sense,
                 QTranscriptSenseObserve);
         }
     }

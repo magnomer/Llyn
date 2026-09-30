@@ -33,18 +33,18 @@ public sealed partial class PSwath : FrameworkElement
         IsHitTestVisible = false;
         Focusable = true;
         FocusVisualStyle = null;
-        CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, PSwathCopyHandle, PSwathCopyCheck));
-        CommandBindings.Add(new CommandBinding(ApplicationCommands.SelectAll, PSwathAllHandle));
+        CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, PSwathCopyRefine, PSwathCopyCheck));
+        CommandBindings.Add(new CommandBinding(ApplicationCommands.SelectAll, PSwathAllRefine));
     }
 
     internal void PSwathAttach(ScrollViewer viewer)
     {
         _pSwathViewer = viewer;
-        viewer.PreviewMouseLeftButtonDown += PSwathPressHandle;
-        viewer.PreviewMouseMove += PSwathMoveHandle;
-        viewer.PreviewMouseLeftButtonUp += PSwathReleaseHandle;
-        viewer.LostMouseCapture += PSwathLostHandle;
-        viewer.AddHandler(QueryCursorEvent, new QueryCursorEventHandler(PSwathCursorHandle));
+        viewer.PreviewMouseLeftButtonDown += PSwathPressRefine;
+        viewer.PreviewMouseMove += PSwathMoveRefine;
+        viewer.PreviewMouseLeftButtonUp += PSwathReleaseRefine;
+        viewer.LostMouseCapture += PSwathLostRefine;
+        viewer.AddHandler(QueryCursorEvent, new QueryCursorEventHandler(PSwathCursorRefine));
     }
 
     internal void PSwathClear()
@@ -62,7 +62,7 @@ public sealed partial class PSwath : FrameworkElement
         e.CanExecute = _pSwathHead is not null;
     }
 
-    private void PSwathCopyHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PSwathCopyRefine(object sender, ExecutedRoutedEventArgs e)
     {
         string text = PSwathTextRead();
         if (text.Length > 0)
@@ -71,7 +71,7 @@ public sealed partial class PSwath : FrameworkElement
         }
     }
 
-    private void PSwathAllHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PSwathAllRefine(object sender, ExecutedRoutedEventArgs e)
     {
         _pSwathList.Clear();
         PSwathScan(_pSwathViewer);

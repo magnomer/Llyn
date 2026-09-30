@@ -99,9 +99,9 @@ It reads the held draft even while the desk fills, as the find did.
 
 Whether the selection lies inside a Mention that links an Entry, the ready verdict of the choose command.
 
-## `public IReadOnlyList<CMeaning>? CSentenceSenseRead(long cardId, long sentenceId, string text, int start, int length)`
+## `public CMentionSense? CSentenceSenseRead(long cardId, long sentenceId, string text, int start, int length)`
 
-The Meanings the sense menu offers, ready in reading order, for the linked Mention under the selection.
+The sense menu, ready to show, for the linked Mention under the selection.
 It answers null when no linked Mention lies there, so no menu opens.
 The shared read in `CMention` chooses the fallback key `Display.Unknown`, which the engine words.
 A failed read shows `Mention.FindFailed` and answers null.

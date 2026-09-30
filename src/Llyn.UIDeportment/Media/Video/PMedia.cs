@@ -13,16 +13,13 @@ internal sealed class PMedia
         typeof(PMedia),
         new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
 
-    private readonly CAtelier _pMediaAtelier;
-
-    private PMedia(CAtelier atelier)
+    private PMedia()
     {
-        _pMediaAtelier = atelier;
     }
 
-    internal static void PMediaAttach(DependencyObject root, CAtelier atelier)
+    internal static void PMediaAttach(DependencyObject root)
     {
-        root.SetValue(PMediaProperty, new PMedia(atelier));
+        root.SetValue(PMediaProperty, new PMedia());
     }
 
     internal static PMedia? PMediaRead(DependencyObject element)
@@ -37,26 +34,26 @@ internal sealed class PMedia
 
     internal PVideo PMediaVideoCreate(CVideoDraft draft)
     {
-        return new PVideo(_pMediaAtelier, draft);
+        return new PVideo(draft);
     }
 
     internal static void PMediaRevealAttach(ItemsControl list)
     {
-        list.MouseEnter -= PMediaRevealHandle;
-        list.MouseEnter += PMediaRevealHandle;
-        list.MouseLeave -= PMediaRevealHandle;
-        list.MouseLeave += PMediaRevealHandle;
-        list.IsKeyboardFocusWithinChanged -= PMediaRevealHandle;
-        list.IsKeyboardFocusWithinChanged += PMediaRevealHandle;
+        list.MouseEnter -= PMediaRevealRefine;
+        list.MouseEnter += PMediaRevealRefine;
+        list.MouseLeave -= PMediaRevealRefine;
+        list.MouseLeave += PMediaRevealRefine;
+        list.IsKeyboardFocusWithinChanged -= PMediaRevealRefine;
+        list.IsKeyboardFocusWithinChanged += PMediaRevealRefine;
         PMediaRevealApply(list);
     }
 
-    private static void PMediaRevealHandle(object sender, MouseEventArgs e)
+    private static void PMediaRevealRefine(object sender, MouseEventArgs e)
     {
         PMediaRevealApply((ItemsControl)sender);
     }
 
-    private static void PMediaRevealHandle(object sender, DependencyPropertyChangedEventArgs e)
+    private static void PMediaRevealRefine(object sender, DependencyPropertyChangedEventArgs e)
     {
         PMediaRevealApply((ItemsControl)sender);
     }

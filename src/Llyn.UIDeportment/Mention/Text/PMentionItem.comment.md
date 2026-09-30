@@ -18,11 +18,9 @@ The template binds this, because a margin is the one thing markup cannot compute
 
 The Entry-mode rows, one per candidate, in the order the engine returned them.
 
-## `internal static IReadOnlyList<PMentionItem> PMentionItemCreate(IReadOnlyList<CMeaning> senses, string whole)`
+## `internal static IReadOnlyList<PMentionItem> PMentionItemCreate(IReadOnlyList<CMeaning> senses)`
 
-The Sense-mode rows, led by one row for the whole Entry.
-The senses arrive named and ordered by a Conduct Meaning read, so the record only wraps them.
+The Sense-mode rows, one per row of the ready sense menu.
+Conduct names and orders them, the whole-Entry row first, so the record only wraps them.
 A Sense-mode pick reads only the sense, so these rows carry no Entry.
-The word for the whole Entry is handed in.
-The record has no window to read a key from.
 

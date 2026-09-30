@@ -164,8 +164,8 @@ public partial class PWindow
         _pWindowSurface.Resources.MergedDictionaries.Add(_pMentionMenuTemplate);
         QLook.QLookStyleAttach(_pMentionMenuTemplate);
         PMentionList.ItemsSource = _pMentionItem;
-        QLookItem.QLookItemAttach(PMentionList, PMentionRowApply);
-        _pWindowSurface.PreviewKeyDown += PMentionKeyHandle;
+        QLookItem.QLookItemAttach(PMentionList, PMentionRowRefine);
+        _pWindowSurface.PreviewKeyDown += PMentionKeyObserve;
         _pWindowSurface.PreviewKeyDown += PChronicleKeyObserve;
         _pWindowSurface.Deactivated += PMentionLeaveRefine;
 

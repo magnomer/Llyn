@@ -333,23 +333,6 @@ public sealed class TAtelier
     }
 
     [Fact]
-    public void AtelierScreenRead_HostedOrOtherLocation_AnswersAddressAndEngineFilmId()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TInterfaceConduct.TMediaCreate(engine));
-
-        Assert.Equal(
-            new CScreen(new Uri("https://youtu.be/dQw4w9WgXcQ"), "dQw4w9WgXcQ"),
-            atelier.CAtelierScreenRead(" https://youtu.be/dQw4w9WgXcQ "));
-        Assert.Equal(
-            new CScreen(new Uri("https://example.com/reel.mp4"), null),
-            atelier.CAtelierScreenRead("https://example.com/reel.mp4"));
-        Assert.Null(atelier.CAtelierScreenRead("media/dQw4w9WgXcQ.mp4"));
-        Assert.Null(atelier.CAtelierScreenRead(null));
-    }
-
-    [Fact]
     public void AtelierOpen_Opened_RaisesTheViewsBeforeTheirState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

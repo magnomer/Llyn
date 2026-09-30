@@ -20,7 +20,10 @@ public sealed class TCardMention
         sentence.CSentenceMentionAdd(sheet, row, TMentionText, 13, 6, entry);
 
         Assert.True(sentence.CSentenceSenseCheck(sheet, row, TMentionText, 13, 6));
-        Assert.Equal(sense, Assert.Single(sentence.CSentenceSenseRead(sheet, row, TMentionText, 13, 6)!).CMeaningId);
+        CMentionSense menu = sentence.CSentenceSenseRead(sheet, row, TMentionText, 13, 6)!;
+        Assert.Equal("Mention.Sense", menu.CMentionSenseKey);
+        Assert.Equal(new CMeaning(0, "Mention.Whole", 0), menu.CMentionSenseRow[0]);
+        Assert.Equal([0L, sense], menu.CMentionSenseRow.Select(static meaning => meaning.CMeaningId));
         sentence.CSentenceSenseSet(sheet, row, TMentionText, 13, 6, sense);
 
         Assert.Equal(sense, Assert.Single(TMentionRead(desk, sheet)).LMentionDraftSense);

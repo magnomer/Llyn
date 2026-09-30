@@ -122,10 +122,10 @@ public sealed class CSentence
         return _cSentenceDesk.CDeskTenure?.LTenureSenseCheck(cardId, sentenceId, text, start, length) is true;
     }
 
-    public IReadOnlyList<CMeaning>? CSentenceSenseRead(
+    public CMentionSense? CSentenceSenseRead(
         long cardId, long sentenceId, string text, int start, int length)
     {
-        return CMention.LMentionMeaningRead(
+        return CMention.LMentionSenseRead(
             _cSentenceDraftPort,
             _cSentenceDesk,
             cardId,

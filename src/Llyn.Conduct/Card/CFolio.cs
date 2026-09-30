@@ -81,7 +81,7 @@ internal static class CFolio
                 CFolioTargetRead(targets[card.LCardDraftId]),
                 card.LCardDraftTag.Select(static row => new CTagDraft(row.LTagDraftId, row.LTagDraftText)).ToList(),
                 CFolioImageRead(card.LCardDraftImage, media),
-                CFolioVideoRead(card.LCardDraftVideo)))
+                CFolioVideoRead(card.LCardDraftVideo, media)))
             .ToList();
     }
 
@@ -138,14 +138,25 @@ internal static class CFolio
             .ToList();
     }
 
-    internal static IReadOnlyList<CVideoDraft> CFolioVideoRead(IReadOnlyList<LVideoDraft> videos)
+    internal static IReadOnlyList<CVideoDraft> CFolioVideoRead(IReadOnlyList<LVideoDraft> videos, LMediaPort media)
     {
+        ArgumentNullException.ThrowIfNull(media);
+
         return videos
-            .Select(static video => new CVideoDraft(
-                video.LVideoDraftId,
-                CFolioStateRead(video.LVideoDraftLocation),
-                CFolioStateRead(video.LVideoDraftSpan),
-                video.LVideoDraftEmpty))
+            .Select(video =>
+            {
+                (TimeSpan from, TimeSpan? until) = LMediaPort.LEngineSpanRead(video);
+                return new CVideoDraft(
+                    video.LVideoDraftId,
+                    CFolioStateRead(video.LVideoDraftLocation),
+                    CFolioStateRead(video.LVideoDraftSpan),
+                    video.LVideoDraftEmpty,
+                    media.LEngineScreenRead(video.LVideoDraftLocation.LStateValuePlain) is (Uri address, var film)
+                        ? new CScreen(address, film)
+                        : null,
+                    from,
+                    until);
+            })
             .ToList();
     }
 

@@ -231,6 +231,39 @@ public sealed class TEaselDesk
     }
 
     [Fact]
+    public void VideoFileSet_FileThatExists_CarriesItsScreen()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        long sheet = TEditorField.TEditorSheetAdd(editor);
+        editor.CEditorVideo.CVideoAdd(sheet);
+        long video = TEditorField.TEditorCardRead(editor, sheet).CCardDraftVideo[0].CVideoDraftId;
+        string file = Path.Combine(workspace.TWorkspaceFolder, "cat.mp4");
+        File.WriteAllBytes(file, [0]);
+
+        editor.CEditorVideo.CVideoFileSet(video, file);
+
+        CScreen? screen = TEditorField.TEditorCardRead(editor, sheet).CCardDraftVideo[0].CVideoDraftScreen;
+        Assert.Equal(new CScreen(new Uri(file), null), screen);
+    }
+
+    [Fact]
+    public void VideoFileSet_FileThatIsMissing_CarriesNoScreen()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        long sheet = TEditorField.TEditorSheetAdd(editor);
+        editor.CEditorVideo.CVideoAdd(sheet);
+        long video = TEditorField.TEditorCardRead(editor, sheet).CCardDraftVideo[0].CVideoDraftId;
+
+        editor.CEditorVideo.CVideoFileSet(video, Path.Combine(workspace.TWorkspaceFolder, "gone.mp4"));
+
+        Assert.Null(TEditorField.TEditorCardRead(editor, sheet).CCardDraftVideo[0].CVideoDraftScreen);
+    }
+
+    [Fact]
     public void VideoAdd_SecondCard_AppendsTheRowToThatCardOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

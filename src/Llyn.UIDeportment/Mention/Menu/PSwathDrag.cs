@@ -12,7 +12,7 @@ public sealed partial class PSwath
 {
     private const double PSwathScrollStep = 24;
 
-    private void PSwathPressHandle(object sender, MouseButtonEventArgs e)
+    private void PSwathPressRefine(object sender, MouseButtonEventArgs e)
     {
         PSwathClear();
         if (e.ClickCount != 1 || PSwathControlCheck(e.OriginalSource as DependencyObject))
@@ -23,7 +23,7 @@ public sealed partial class PSwath
         _pSwathPress = e.GetPosition(this);
     }
 
-    private void PSwathMoveHandle(object sender, MouseEventArgs e)
+    private void PSwathMoveRefine(object sender, MouseEventArgs e)
     {
         if (_pSwathPress is not Point press || e.LeftButton != MouseButtonState.Pressed)
         {
@@ -56,7 +56,7 @@ public sealed partial class PSwath
         PSwathAdjust(point);
     }
 
-    private void PSwathReleaseHandle(object sender, MouseButtonEventArgs e)
+    private void PSwathReleaseRefine(object sender, MouseButtonEventArgs e)
     {
         _pSwathPress = null;
         if (_pSwathViewer.IsMouseCaptured)
@@ -65,12 +65,12 @@ public sealed partial class PSwath
         }
     }
 
-    private void PSwathLostHandle(object sender, MouseEventArgs e)
+    private void PSwathLostRefine(object sender, MouseEventArgs e)
     {
         _pSwathPress = null;
     }
 
-    private void PSwathCursorHandle(object sender, QueryCursorEventArgs e)
+    private void PSwathCursorRefine(object sender, QueryCursorEventArgs e)
     {
         bool dragging = _pSwathAnchor is not null && _pSwathPress is not null;
         if (dragging || PSwathTextCheck(e.OriginalSource as DependencyObject))

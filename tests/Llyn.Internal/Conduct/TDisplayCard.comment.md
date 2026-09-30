@@ -24,6 +24,17 @@ With nothing open, no card or section is answered.
 
 A picture or video row with no location carries the empty verdict, and a located one does not.
 
+## `public void FolioVideoRead_LocatedRow_CarriesTheScreenTheEngineResolved()`
+
+A video row carries the screen the port answers for its plain location, and none where the port answers none.
+The map hands the port the plain text and settles nothing itself.
+
+## `public void FolioVideoRead_HostedOrOtherLocation_CarriesAddressAndEngineFilmId()`
+
+Over the real media outlet, a hosted location carries its film id, and a trimmed one still resolves.
+A plain web file carries no film id, and a workspace path that reaches no file carries no screen.
+A blank location carries no screen.
+
 ## `public void DisplayIncomingRead_NothingChosen_AnswersNone()`
 
 With no entry chosen, no usage is listed.

@@ -169,10 +169,10 @@ public partial class PEditor
 
         if (_qEditor.QEditorArea.CEditorSentence.CSentenceSenseRead(
                 card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength)
-            is IReadOnlyList<CMeaning> meanings)
+            is CMentionSense sense)
         {
-            _pEditorHost.PMentionMenuShow(
-                box, PMentionSelection.PMentionSelectionPlace(box), meanings, PSentenceSenseObserve);
+            _pEditorHost.PMentionMeaningRefine(
+                box, PMentionSelection.PMentionSelectionPlace(box), sense, PSentenceSenseObserve);
         }
     }
 

@@ -36,6 +36,18 @@ The film id inside a hosted video address, or `null` when the address is not one
 Every shape the host hands out is read, since a user pastes whichever one they were given.
 The video screen and the portrait sheet both ask here, so one rule names a film.
 
+## `public static (TimeSpan, TimeSpan?) LVideoSpanRead(string span)`
+
+The moments a written span plays from and until.
+The span is split at its dash, and each side is read as `mm:ss` or `hh:mm:ss`.
+A start that reads as no moment plays from the beginning.
+An end that is missing or unreadable plays to the film's end.
+Half-typed text never fails, so a form can hold it while the screen still plays.
+
+## `private static TimeSpan? LVideoMomentParse(string moment)`
+
+One moment of two or three colon fields, each a plain count, or null for anything else.
+
 ## `private static string? LVideoFilmCheck(string film)`
 
 An id is eleven ASCII letters, digits, dashes and underscores, and anything else is refused.

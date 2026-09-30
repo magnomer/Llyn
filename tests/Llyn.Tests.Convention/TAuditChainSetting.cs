@@ -148,6 +148,7 @@ internal static class TAuditChainSetting
             "CMarkupOmission",
             "CExample",
             "CMentionOffer",
+            "CMentionSense",
             "CMention",
             "CMarkdown",
             "CRespelling",
@@ -373,8 +374,8 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["cross:Llyn.UIDeportment>Llyn.Application"] = 35,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 23,
+        ["cross:Llyn.UIDeportment>Llyn.Application"] = 31,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 18,
         ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 0,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 1,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,

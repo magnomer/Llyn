@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -35,9 +34,9 @@ internal sealed record PMentionItem(
         return rows;
     }
 
-    internal static IReadOnlyList<PMentionItem> PMentionItemCreate(IReadOnlyList<CMeaning> senses, string whole)
+    internal static IReadOnlyList<PMentionItem> PMentionItemCreate(IReadOnlyList<CMeaning> senses)
     {
-        List<PMentionItem> rows = [new PMentionItem(0, 0, whole, string.Empty, null, 0)];
+        List<PMentionItem> rows = [];
         foreach (CMeaning sense in senses)
         {
             rows.Add(new PMentionItem(

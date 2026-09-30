@@ -195,7 +195,7 @@ public partial class PWindow
             return;
         }
 
-        PMentionMenuShow(anchor, anchor.PMentionPieceRead(offer.CMentionOfferOffset), offer.CMentionOfferEntry);
+        PMentionOfferRefine(anchor, anchor.PMentionPieceRead(offer.CMentionOfferOffset), offer);
     }
 
     private void PMentionSenseRefine(long sense)

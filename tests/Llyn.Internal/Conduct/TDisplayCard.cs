@@ -109,7 +109,8 @@ public sealed class TDisplayCard
             [TInterface.TImageDraftCreate(string.Empty, 3), TInterface.TImageDraftCreate("still.png", 4)],
             TInterfaceConduct.TMediaCreate());
         IReadOnlyList<CVideoDraft> videos = TInterfaceConduct.TCardVideoRead(
-            [TInterface.TVideoDraftCreate(string.Empty, id: 5), TInterface.TVideoDraftCreate("clip.mp4", "0:01", 6)]);
+            [TInterface.TVideoDraftCreate(string.Empty, id: 5), TInterface.TVideoDraftCreate("clip.mp4", "0:01", 6)],
+            TInterfaceConduct.TMediaCreate());
 
         Assert.Equal([true, false], images.Select(static image => image.CImageDraftEmpty));
         Assert.Equal([true, false], videos.Select(static video => video.CVideoDraftEmpty));
@@ -134,6 +135,61 @@ public sealed class TDisplayCard
 
         Assert.Equal([string.Empty, "still.png"], asked);
         Assert.Equal([null, still], images.Select(static image => image.CImageDraftAddress));
+    }
+
+    [Fact]
+    public void FolioVideoRead_LocatedRow_CarriesTheScreenTheEngineResolved()
+    {
+        CScreen reel = new(new Uri("https://example.org/reel.mp4"), null);
+        List<string?> asked = [];
+        LMediaPort media = TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineScreenRead"] = args =>
+            {
+                asked.Add((string?)args![0]);
+                return (string?)args[0] == "reel.mp4" ? (reel.CScreenAddress, reel.CScreenFilm) : null;
+            },
+        });
+
+        IReadOnlyList<CVideoDraft> videos = TInterfaceConduct.TCardVideoRead(
+            [TInterface.TVideoDraftCreate(string.Empty, id: 5), TInterface.TVideoDraftCreate("reel.mp4", "0:01", 6)],
+            media);
+
+        Assert.Equal([string.Empty, "reel.mp4"], asked);
+        Assert.Equal([null, reel], videos.Select(static video => video.CVideoDraftScreen));
+    }
+
+    [Fact]
+    public void FolioVideoRead_WrittenSpan_CarriesTheMomentsTheEngineRead()
+    {
+        IReadOnlyList<CVideoDraft> videos = TInterfaceConduct.TCardVideoRead(
+            [TInterface.TVideoDraftCreate("reel.mp4", "0:10 - 0:40"), TInterface.TVideoDraftCreate("reel.mp4")],
+            TInterfaceConduct.TMediaCreate());
+
+        Assert.Equal(
+            [(TimeSpan.FromSeconds(10), (TimeSpan?)TimeSpan.FromSeconds(40)), (TimeSpan.Zero, null)],
+            videos.Select(static video => (video.CVideoDraftFrom, video.CVideoDraftUntil)));
+    }
+
+    [Fact]
+    public void FolioVideoRead_HostedOrOtherLocation_CarriesAddressAndEngineFilmId()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        IReadOnlyList<CVideoDraft> videos = TInterfaceConduct.TCardVideoRead(
+            [
+                TInterface.TVideoDraftCreate(" https://youtu.be/dQw4w9WgXcQ "),
+                TInterface.TVideoDraftCreate("https://example.com/reel.mp4"),
+                TInterface.TVideoDraftCreate("media/dQw4w9WgXcQ.mp4"),
+                TInterface.TVideoDraftCreate(string.Empty),
+            ],
+            TInterfaceConduct.TMediaCreate(engine));
+
+        Assert.Equal(new CScreen(new Uri("https://youtu.be/dQw4w9WgXcQ"), "dQw4w9WgXcQ"), videos[0].CVideoDraftScreen);
+        Assert.Equal(new CScreen(new Uri("https://example.com/reel.mp4"), null), videos[1].CVideoDraftScreen);
+        Assert.Null(videos[2].CVideoDraftScreen);
+        Assert.Null(videos[3].CVideoDraftScreen);
     }
 
     [Fact]

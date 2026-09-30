@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -10,8 +9,6 @@ namespace Llyn.UIDeportment;
 
 internal sealed class PVideo : INotifyPropertyChanged
 {
-    private readonly CAtelier _pVideoAtelier;
-
     private CStateValue _pVideoLocation = CStateValue.CStateValueEmpty;
     private CStateValue _pVideoTimestamp = CStateValue.CStateValueEmpty;
     private CScreen? _pVideoPreview;
@@ -20,16 +17,17 @@ internal sealed class PVideo : INotifyPropertyChanged
     private bool _pVideoPlaying;
     private long _pVideoRow;
 
-    internal PVideo(CAtelier atelier, CVideoDraft written)
+    internal PVideo(CVideoDraft written)
     {
-        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(written);
 
-        _pVideoAtelier = atelier;
         _pVideoRow = written.CVideoDraftId;
 
         PVideoLocation = written.CVideoDraftLocation;
         PVideoTimestamp = written.CVideoDraftSpan;
+        PVideoPreview = written.CVideoDraftScreen;
+        PVideoFrom = written.CVideoDraftFrom;
+        PVideoUntil = written.CVideoDraftUntil;
     }
 
     public CStateValue PVideoLocation
@@ -44,7 +42,6 @@ internal sealed class PVideo : INotifyPropertyChanged
 
             _pVideoLocation = value;
             PVideoRaise(nameof(PVideoLocation));
-            PVideoPreview = _pVideoAtelier.CAtelierScreenRead(value.CStateValueText);
         }
     }
 
@@ -60,7 +57,6 @@ internal sealed class PVideo : INotifyPropertyChanged
 
             _pVideoTimestamp = value;
             PVideoRaise(nameof(PVideoTimestamp));
-            PVideoTimestampApply(value.CStateValueText);
         }
     }
 
@@ -145,9 +141,12 @@ internal sealed class PVideo : INotifyPropertyChanged
         _pVideoRow = written.CVideoDraftId;
         PVideoLocation = written.CVideoDraftLocation;
         PVideoTimestamp = written.CVideoDraftSpan;
+        PVideoPreview = written.CVideoDraftScreen;
+        PVideoFrom = written.CVideoDraftFrom;
+        PVideoUntil = written.CVideoDraftUntil;
     }
 
-    internal static void PVideoRowApply(FrameworkElement container, object item, string? changed)
+    internal static void PVideoItemRefine(FrameworkElement container, object item, string? changed)
     {
         if (item is not PVideo row)
         {
@@ -209,35 +208,6 @@ internal sealed class PVideo : INotifyPropertyChanged
         screen.SetBinding(
             PScreen.PScreenVolumeProperty,
             new Binding(nameof(PVolumeCatalog.PVolumeCatalogLevel)) { Source = PVolumeCatalog.PVolumeCatalogCurrent });
-    }
-
-    private void PVideoTimestampApply(string timestamp)
-    {
-        string[] parts = timestamp.Split('-', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        PVideoFrom = parts.Length > 0 && PVideoMomentParse(parts[0]) is TimeSpan from ? from : TimeSpan.Zero;
-        PVideoUntil = parts.Length > 1 ? PVideoMomentParse(parts[1]) : null;
-    }
-
-    private static TimeSpan? PVideoMomentParse(string moment)
-    {
-        string[] fields = moment.Split(':', StringSplitOptions.TrimEntries);
-        if (fields.Length is < 2 or > 3)
-        {
-            return null;
-        }
-
-        TimeSpan parsed = TimeSpan.Zero;
-        foreach (string field in fields)
-        {
-            if (!int.TryParse(field, NumberStyles.None, CultureInfo.InvariantCulture, out int value))
-            {
-                return null;
-            }
-
-            parsed = (parsed * 60) + TimeSpan.FromSeconds(value);
-        }
-
-        return parsed;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -76,6 +76,7 @@ internal static class TInterfaceConduct
         {
             ["LEngineRecordingStop"] = _ => null,
             ["LEngineLocationRead"] = _ => null,
+            ["LEngineScreenRead"] = _ => null,
         }),
         new LPortraitOutlet(engine));
 
@@ -156,6 +157,7 @@ internal static class TInterfaceConduct
         TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineLocationRead"] = _ => null,
+            ["LEngineScreenRead"] = _ => null,
         });
 
     internal static CEditor TEditorCreate(
@@ -173,6 +175,7 @@ internal static class TInterfaceConduct
         TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineFailureRead"] = args => ((string)args![1]!, (string?)null, (string?)null),
+            ["LEngineTextRead"] = args => (string)args![0]!,
         });
 
     internal static void TPanelVistaRestore(this CPanel panel, LVista vista) => panel.CPanelVistaRestore(vista);
@@ -323,8 +326,8 @@ internal static class TInterfaceConduct
     internal static IReadOnlyList<CImageDraft> TCardImageRead(IReadOnlyList<LImageDraft> images, LMediaPort media) =>
         CFolio.CFolioImageRead(images, media);
 
-    internal static IReadOnlyList<CVideoDraft> TCardVideoRead(IReadOnlyList<LVideoDraft> videos) =>
-        CFolio.CFolioVideoRead(videos);
+    internal static IReadOnlyList<CVideoDraft> TCardVideoRead(IReadOnlyList<LVideoDraft> videos, LMediaPort media) =>
+        CFolio.CFolioVideoRead(videos, media);
 
     internal static CEntryDraft TCardEntryRead(
         LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets) =>

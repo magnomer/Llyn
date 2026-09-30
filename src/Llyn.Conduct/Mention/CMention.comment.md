@@ -24,7 +24,7 @@ Its sense is raised only when the open went through, so a declined leave spotlig
 A single matching entry opens at once.
 Several matching entries open nothing and come back as the candidates the driver offers in a menu.
 Every other answer offers nothing, so the driver's menu shows nothing.
-The offer carries the found word's start, where the menu stands.
+The offer carries the found word's start, where the menu stands, and the menu's title key `Mention.Title`.
 
 ## `public IReadOnlyList<CMentionLabel> CMentionResolve(`
 
@@ -44,9 +44,11 @@ Each area passes its own desk, so no driver chooses which draft is searched.
 A desk without a live draft offers nothing.
 A failed search shows `Mention.FindFailed` and offers nothing, so no picker opens.
 
-## `internal static IReadOnlyList<CMeaning>? LMentionMeaningRead(`
+## `internal static CMentionSense? LMentionSenseRead(`
 
-The Meanings the sense menu offers for a selection, shared by the editor and the corpus transcript.
+The sense menu for a selection, shared by the editor and the corpus transcript.
+It is titled by the key `Mention.Sense`.
+Its first row picks the whole Entry, worded by `Mention.Whole`, and the Meanings follow.
 Each area passes its own desk, so no driver chooses which draft is read.
 A selection inside no linked Mention, or a desk without a live draft, answers nothing.
 A failed read shows `Mention.FindFailed` and answers nothing, so no menu opens.

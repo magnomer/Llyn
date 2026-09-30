@@ -14,19 +14,19 @@ public sealed class PMention : TextBlock
         "PMentionHost",
         typeof(PWindow),
         typeof(PMention),
-        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits, PMentionChangeHandle));
+        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits, PMentionChangeRefine));
 
     public static readonly DependencyProperty PMentionTextProperty = DependencyProperty.Register(
         nameof(PMentionText),
         typeof(string),
         typeof(PMention),
-        new FrameworkPropertyMetadata(string.Empty, PMentionChangeHandle));
+        new FrameworkPropertyMetadata(string.Empty, PMentionChangeRefine));
 
     public static readonly DependencyProperty PMentionMentionProperty = DependencyProperty.Register(
         nameof(PMentionMention),
         typeof(IReadOnlyList<CMentionMark>),
         typeof(PMention),
-        new FrameworkPropertyMetadata(null, PMentionChangeHandle));
+        new FrameworkPropertyMetadata(null, PMentionChangeRefine));
 
     public static readonly DependencyProperty PMentionLanguageProperty = DependencyProperty.Register(
         nameof(PMentionLanguage),
@@ -136,7 +136,7 @@ public sealed class PMention : TextBlock
         return new Rect(0, ActualHeight, 0, 0);
     }
 
-    private static void PMentionChangeHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+    private static void PMentionChangeRefine(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
         if (sender is PMention mention)
         {

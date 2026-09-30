@@ -135,14 +135,14 @@ internal static class TInterfaceMention
         return favorite.CFavoriteRowsRead();
     }
 
-    internal static IReadOnlyList<CMeaning>? TMeaningRead(
+    internal static CMentionSense? TMentionSenseRead(
         LEngine engine, CDesk desk, CEnvoy envoy, Func<object?[]?, object?> sense)
     {
         LDraftPort drafts = TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineSenseRead"] = sense,
         });
-        return CMention.LMentionMeaningRead(
+        return CMention.LMentionSenseRead(
             drafts, desk, 0, 0, "she knelt", 0, 3, envoy, new LSettingsOutlet(engine));
     }
 }

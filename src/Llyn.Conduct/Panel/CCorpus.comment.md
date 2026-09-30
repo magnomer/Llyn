@@ -149,9 +149,9 @@ It answers from the raw selection and never persists.
 Whether a Mention linked to an Entry lies under the field's selection, so the sense command may run.
 It answers from the raw selection and never persists.
 
-## `public IReadOnlyList<CMeaning>? CCorpusSenseRead(string text, int start, int length)`
+## `public CMentionSense? CCorpusSenseRead(string text, int start, int length)`
 
-The Meanings the sense menu offers for the Entry the selection's Mention links to, ready in reading order.
+The sense menu, ready to show, for the Entry the selection's Mention links to.
 It answers null when no linked Mention lies there, so no menu opens.
 A failed read shows `Mention.FindFailed`, through the shared read in `CMention`.
 

@@ -80,8 +80,8 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Button>(container, "PCardVideoChooser") is Button video)
         {
-            video.Click -= PVideoAddHandle;
-            video.Click += PVideoAddHandle;
+            video.Click -= PVideoAddObserve;
+            video.Click += PVideoAddObserve;
         }
     }
 
@@ -130,8 +130,8 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Button>(container, "PCardVideoChooser") is Button video)
         {
-            video.Click -= PVideoAddHandle;
-            video.Click += PVideoAddHandle;
+            video.Click -= PVideoAddObserve;
+            video.Click += PVideoAddObserve;
         }
     }
 

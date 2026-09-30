@@ -124,11 +124,6 @@ Only the workspace's status raise reads it.
 
 Whether the recording file `file` names exists in the workspace.
 
-## `public CScreen? CAtelierScreenRead(string? location)`
-
-What a video screen plays from a location, or nothing when the location resolves to nothing.
-The engine resolves the address and reads the film id in one call, and the atelier only maps the pair.
-
 ## `public void CAtelierLocationOpen(string target)`
 
 Opens `target` through the engine's shell usher, so the driver starts no process itself.

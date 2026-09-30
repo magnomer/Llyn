@@ -4,7 +4,8 @@
 
 The row maker a reading view hands down to the picture and film rows built inside its templates.
 A reading view lists a ready card's media rows, so no code of its own builds the loading rows.
-The rows still need the engine to turn a location into an address, and this carries it down for them.
+The ready rows already carry their address or screen, so this holds no engine.
+It only marks a view that builds them.
 
 ## `internal PImage PMediaImageCreate(CImageDraft draft)`
 
@@ -18,20 +19,20 @@ The loading film row for one ready film row of a reading card.
 
 Attached and inherited, so one write on the view's root reaches every template under it.
 
-## `internal static void PMediaAttach(DependencyObject root, CAtelier atelier)`
+## `internal static void PMediaAttach(DependencyObject root)`
 
-Puts one maker on the view's root, made over the engine the view was attached to.
+Puts one maker on the view's root.
 
 ## `internal static void PMediaRevealAttach(ItemsControl list)`
 
 Makes a media list reveal its row handles while the pointer or the focus is inside it.
 Attaching twice is harmless, since each handler is removed before it is added.
 
-## `private static void PMediaRevealHandle(object sender, MouseEventArgs e)`
+## `private static void PMediaRevealRefine(object sender, MouseEventArgs e)`
 
 Answers the pointer entering or leaving the list.
 
-## `private static void PMediaRevealHandle(object sender, DependencyPropertyChangedEventArgs e)`
+## `private static void PMediaRevealRefine(object sender, DependencyPropertyChangedEventArgs e)`
 
 Answers the focus entering or leaving the list.
 
