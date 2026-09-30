@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -16,25 +15,25 @@ public sealed class PFanqie : ContentControl
         nameof(PFanqieItems),
         typeof(IReadOnlyList<PFanqieItem>),
         typeof(PFanqie),
-        new FrameworkPropertyMetadata(null, PFanqieStateHandle));
+        new FrameworkPropertyMetadata(null, static (sender, _) => ((PFanqie)sender).PFanqieStateRefine()));
 
     public static readonly DependencyProperty PFanqiePendingProperty = DependencyProperty.Register(
         nameof(PFanqiePending),
         typeof(bool),
         typeof(PFanqie),
-        new FrameworkPropertyMetadata(false, PFanqieStateHandle));
+        new FrameworkPropertyMetadata(false, static (sender, _) => ((PFanqie)sender).PFanqieStateRefine()));
 
     public static readonly DependencyProperty PFanqieFoldedProperty = DependencyProperty.Register(
         nameof(PFanqieFolded),
         typeof(bool),
         typeof(PFanqie),
-        new FrameworkPropertyMetadata(false, PFanqieStateHandle));
+        new FrameworkPropertyMetadata(false, static (sender, _) => ((PFanqie)sender).PFanqieStateRefine()));
 
     public static readonly DependencyProperty PFanqieRenewalProperty = DependencyProperty.Register(
         nameof(PFanqieRenewal),
         typeof(Action),
         typeof(PFanqie),
-        new FrameworkPropertyMetadata(null, PFanqieStateHandle));
+        new FrameworkPropertyMetadata(null, static (sender, _) => ((PFanqie)sender).PFanqieStateRefine()));
 
     private readonly Grid _pFanqieHead = new();
     private readonly ToggleButton _pFanqieSwitch = new();
@@ -60,8 +59,8 @@ public sealed class PFanqie : ContentControl
         QIconImage chevron = new() { Width = 12, Height = 12, QIconSource = QIcon.QIconResolve("expand", 12) };
         _pFanqieSwitch.Content = chevron;
         _pFanqieSwitch.SetResourceReference(StyleProperty, "Theme.Marker.Switch");
-        _pFanqieSwitch.Checked += (_, _) => PFanqieStateApply();
-        _pFanqieSwitch.Unchecked += (_, _) => PFanqieStateApply();
+        _pFanqieSwitch.Checked += (_, _) => PFanqieStateRefine();
+        _pFanqieSwitch.Unchecked += (_, _) => PFanqieStateRefine();
         _pFanqieRefresh.SetResourceReference(StyleProperty, "Theme.Sound.Rebuild");
         _pFanqieRefresh.Click += (_, _) => PFanqieRenewal?.Invoke();
         _pFanqieHead.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -75,15 +74,15 @@ public sealed class PFanqie : ContentControl
 
         Grid.SetIsSharedSizeScope(_pFanqieList, true);
         _pFanqieList.CommandBindings.Add(
-            new CommandBinding(PFanqieCommand.PFanqieCommandInitial, PFanqieDiweiHandle));
+            new CommandBinding(PFanqieCommand.PFanqieCommandInitial, PFanqieDiweiObserve));
         _pFanqieList.CommandBindings.Add(
-            new CommandBinding(PFanqieCommand.PFanqieCommandRime, PFanqieDiweiHandle));
+            new CommandBinding(PFanqieCommand.PFanqieCommandRime, PFanqieDiweiObserve));
         _pFanqieList.CommandBindings.Add(
-            new CommandBinding(PFanqieCommand.PFanqieCommandStem, PFanqieStemHandle));
+            new CommandBinding(PFanqieCommand.PFanqieCommandStem, PFanqieStemObserve));
         _pFanqieList.CommandBindings.Add(
-            new CommandBinding(PFanqieCommand.PFanqieCommandRepresentative, PFanqieRepresentativeHandle));
+            new CommandBinding(PFanqieCommand.PFanqieCommandRepresentative, PFanqieRepresentativeObserve));
         _pFanqieList.SetResourceReference(ItemsControl.ItemTemplateProperty, "Theme.Fanqie.Row");
-        QLookItem.QLookItemAttach(_pFanqieList, PFanqieItem.PFanqieItemApply);
+        QLookItem.QLookItemAttach(_pFanqieList, PFanqieItem.PFanqieItemRefine);
         _pFanqieLoading.SetResourceReference(StyleProperty, "Theme.Fanqie.Loading");
         _pFanqieLoading.SetResourceReference(TextBlock.TextProperty, "Display.FanqieLoading");
         _pFanqieBody.Children.Add(_pFanqieList);
@@ -95,7 +94,7 @@ public sealed class PFanqie : ContentControl
         Border box = new() { Child = stack };
         box.SetResourceReference(StyleProperty, "Theme.Fanqie.Box");
         Content = box;
-        PFanqieStateApply();
+        PFanqieStateRefine();
     }
 
     internal IReadOnlyList<PFanqieItem>? PFanqieItems
@@ -122,27 +121,19 @@ public sealed class PFanqie : ContentControl
         set => SetValue(PFanqieRenewalProperty, value);
     }
 
-    internal Action<string, string>? PFanqieDiweiNotice { get; set; }
+    internal event Action<bool, string>? PFanqieDiweiNotice;
 
-    internal Action<string?>? PFanqieStemNotice { get; set; }
+    internal event Action<string?>? PFanqieStemNotice;
 
-    internal Action<long, int>? PFanqieRepresentativeNotice { get; set; }
+    internal event Action<long, int, bool>? PFanqieRepresentativeNotice;
 
-    internal void PFanqieShow(IReadOnlyList<CFanqieGroup> groups, bool pending)
+    internal void PFanqieRefine(IReadOnlyList<CFanqieGroup> groups, bool pending)
     {
         SetCurrentValue(PFanqieItemsProperty, PFanqieItem.PFanqieItemScan(groups));
         SetCurrentValue(PFanqiePendingProperty, pending);
     }
 
-    internal void PFanqieNoticeAttach(
-        Action<string, string> diwei, Action<string?> stem, Action<long, int> representative)
-    {
-        PFanqieDiweiNotice = diwei;
-        PFanqieStemNotice = stem;
-        PFanqieRepresentativeNotice = representative;
-    }
-
-    private void PFanqieDiweiHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PFanqieDiweiObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is not PFanqieLine line)
         {
@@ -150,30 +141,26 @@ public sealed class PFanqie : ContentControl
         }
 
         bool initial = e.Command == PFanqieCommand.PFanqieCommandInitial;
-        string key = initial ? line.PFanqieLineInitial : line.PFanqieLineYunmu;
-        if (key.Length > 0)
-        {
-            PFanqieDiweiNotice?.Invoke(initial ? LDiwei.LDiweiInitial : LDiwei.LDiweiRime, key);
-        }
+        PFanqieDiweiNotice?.Invoke(initial, initial ? line.PFanqieLineInitial : line.PFanqieLineYunmu);
     }
 
-    private void PFanqieStemHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PFanqieStemObserve(object sender, ExecutedRoutedEventArgs e)
     {
         PFanqieStemNotice?.Invoke(QSender.QSenderTextRead(e));
     }
 
-    private void PFanqieRepresentativeHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PFanqieRepresentativeObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        QSender.QSenderParameterRead<PFanqieLine>(e)?.PFanqieLineApply(
-            Keyboard.Modifiers.HasFlag(ModifierKeys.Control), PFanqieRepresentativeNotice);
+        if (QSender.QSenderParameterRead<PFanqieLine>(e) is not PFanqieLine line)
+        {
+            return;
+        }
+
+        PFanqieRepresentativeNotice?.Invoke(
+            line.PFanqieLineId, line.PFanqieLineRank, Keyboard.Modifiers.HasFlag(ModifierKeys.Control));
     }
 
-    private static void PFanqieStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-    {
-        ((PFanqie)sender).PFanqieStateApply();
-    }
-
-    private void PFanqieStateApply()
+    private void PFanqieStateRefine()
     {
         IReadOnlyList<PFanqieItem>? items = PFanqieItems;
         bool filled = items is not null && items.Count > 0;

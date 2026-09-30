@@ -21,16 +21,16 @@ How many characters bear the mark, as the small number after it.
 
 The characters that bear the mark, listed in its dropdown.
 
-## `internal static void QTallyMarkApply(FrameworkElement container, object item, string? _)`
+## `internal static void QTallyMarkRefine(FrameworkElement container, object item, string? _)`
 
 Fills a mark chip: the toggle's text and count, and the dropdown's characters.
 The toggle opens the dropdown, and a dropdown closed from outside clears the toggle.
 
-## `private static void QTallyDropHandle(object sender, RoutedEventArgs e)`
+## `private static void QTallyDropRefine(object sender, RoutedEventArgs e)`
 
 Opens or closes the dropdown beside the toggle as the toggle is checked or cleared.
 
-## `private static void QTallyCloseHandle(object? sender, EventArgs e)`
+## `private static void QTallyCloseRefine(object? sender, EventArgs e)`
 
 Clears the toggle when its dropdown closes on its own, such as on a click outside.
 

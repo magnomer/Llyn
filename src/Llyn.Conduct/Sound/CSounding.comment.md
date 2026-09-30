@@ -68,14 +68,15 @@ No held draft answers no schemes.
 
 The user asked to fetch the rime-book rows again.
 
-## `public void CSoundingFanqieSet(long fanqieId, int rank)`
+## `public void CSoundingFanqieSet(long fanqieId, int rank, bool raise)`
 
-The user ranked one rime-book row among the entry's representative readings.
-Rank zero unmarks the row, and the last rank appends it after the rows already marked.
+The user pressed the rank of one rime-book row among the entry's representative readings.
+It hands the held rank and the raise flag down, and the fanqie clerk resolves the new rank.
 
-## `public void CSoundingDiweiOpen(string kind, string key)`
+## `public void CSoundingDiweiOpen(bool initial, string key)`
 
 The user pressed a rime cell, which opens in the draft's language.
+The engine names the cell kind from the initial flag, and a blank key opens nothing.
 
 ## `public CSoundingScript CSoundingScriptRead()`
 

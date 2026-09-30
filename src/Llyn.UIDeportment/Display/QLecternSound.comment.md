@@ -81,7 +81,7 @@ The reflex rows, the fold, the loading line and the reading empty, and the seams
 
 Hears the fold toggle and hands its state to the fold gate.
 
-## `public void QLecternDiweiObserve(string kind, string key)`
+## `public void QLecternDiweiObserve(bool initial, string key)`
 
 Hears a rime-cell click in the fanqie box and hands it to the gate, which asks the navigation.
 

@@ -32,8 +32,8 @@ internal sealed class QCadence
         editor.CEditorTimbre.CTimbreParadigmChanged += QCadenceParadigmRefine;
         editor.CEditorTimbre.CTimbreScriptChanged += QCadenceScriptRefine;
         editor.CEditorSounding.CSoundingChanged += QCadenceFanqieRefine;
-        QCadenceFanqie.PFanqieDiweiNotice = QCadenceDiweiObserve;
-        QCadenceFanqie.PFanqieRepresentativeNotice = QCadenceRepresentativeObserve;
+        QCadenceFanqie.PFanqieDiweiNotice += QCadenceDiweiObserve;
+        QCadenceFanqie.PFanqieRepresentativeNotice += QCadenceRepresentativeObserve;
     }
 
     private void QCadenceParadigmRefine()
@@ -77,14 +77,14 @@ internal sealed class QCadence
         _cEditor.CEditorSounding.CSoundingFanqieResolve();
     }
 
-    private void QCadenceDiweiObserve(string kind, string key)
+    private void QCadenceDiweiObserve(bool initial, string key)
     {
-        _cEditor.CEditorSounding.CSoundingDiweiOpen(kind, key);
+        _cEditor.CEditorSounding.CSoundingDiweiOpen(initial, key);
     }
 
-    private void QCadenceRepresentativeObserve(long fanqieId, int rank)
+    private void QCadenceRepresentativeObserve(long fanqieId, int rank, bool raise)
     {
-        _cEditor.CEditorSounding.CSoundingFanqieSet(fanqieId, rank);
+        _cEditor.CEditorSounding.CSoundingFanqieSet(fanqieId, rank, raise);
     }
 
     internal void QCadenceReadingRefine(string headword)

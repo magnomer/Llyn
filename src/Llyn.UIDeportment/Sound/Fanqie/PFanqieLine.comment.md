@@ -72,22 +72,22 @@ The 反切 the source printed, such as 五乎, or empty.
 
 The placement text as fetched, shown alone when the row carries no parts, and empty otherwise.
 
-## `internal static void PFanqieRowApply(FrameworkElement container, object item, string? _)`
+## `internal static void PFanqieRowRefine(FrameworkElement container, object item, string? _)`
 
 Fills a line of `Theme.Fanqie.Line` from the line's values.
 The representative star carries the `Marked` or `Faded` cue, and its content is the order.
 An initial or rime link with no text folds away through its empty state.
 A rounded medial is drawn in the warning colour and semibold.
 
-## `private static void PFanqieWordApply(FrameworkElement container, string name, string word)`
+## `private static void PFanqieWordRefine(FrameworkElement container, string name, string word)`
 
 Sets the text of one initial or rime link.
 
-## `private static void PFanqieTextApply(FrameworkElement container, string name, string text)`
+## `private static void PFanqieTextRefine(FrameworkElement container, string name, string text)`
 
 Sets one named text of a line.
 
-## `internal static PFanqieLine PFanqieLineCreate(CFanqieRow row)`
+## `internal PFanqieLine(CFanqieRow row)`
 
 Copies the columns from a stored row the engine already formatted.
 No hypothesis runs here, so drawing an entry derives nothing.

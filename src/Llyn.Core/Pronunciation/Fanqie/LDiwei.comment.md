@@ -26,6 +26,11 @@ The kind of a category made from a placement's rime, division and 開合, such a
 
 The kind of a category made from the tone class the hypothesis gives a placement, such as `6`.
 
+## `public static string LDiweiKindRead(bool final)`
+
+The kind a final flag names: the rime kind when set, the initial kind otherwise.
+`LDiweiFinal` reads the same pairing back from a row.
+
 ## `private const string LDiweiRounded = "W";`
 
 The mark ending a rime key of a 合口 placement, so 開 and 合 name two rows.

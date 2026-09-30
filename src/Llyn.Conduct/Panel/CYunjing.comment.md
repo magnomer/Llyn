@@ -131,6 +131,7 @@ The entry list under the chosen cells, copied through the shared row map and cou
 
 The page of the chosen cell, or the blank page while the reader shows an entry.
 The engine picks the tally set, so the map only copies.
+The headword and glyph fonts of the cell language come ready, and a blank language answers no font.
 
 ## `public void CYunjingShengmuFind(string query)`
 

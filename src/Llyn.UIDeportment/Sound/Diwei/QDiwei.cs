@@ -9,8 +9,6 @@ internal sealed class QDiwei
 {
     private readonly UserControl _qDiweiSurface;
 
-    private CAtelier _qDiweiAtelier = null!;
-
     private CYunjing _cYunjing = null!;
 
     internal QDiwei(UserControl surface)
@@ -18,10 +16,10 @@ internal sealed class QDiwei
         ArgumentNullException.ThrowIfNull(surface);
 
         _qDiweiSurface = surface;
-        surface.CommandBindings.Add(new CommandBinding(QDiweiCommand.QDiweiCommandEntry, QDiweiEntryHandle));
-        surface.CommandBindings.Add(new CommandBinding(QDiweiCommand.QDiweiCommandSwitch, QDiweiSwitchHandle));
+        surface.CommandBindings.Add(new CommandBinding(QDiweiCommand.QDiweiCommandEntry, QDiweiEntryObserve));
+        surface.CommandBindings.Add(new CommandBinding(QDiweiCommand.QDiweiCommandSwitch, QDiweiSwitchObserve));
 
-        QLookItem.QLookItemAttach(QDiweiList, QDiweiItem.QDiweiItemApply);
+        QLookItem.QLookItemAttach(QDiweiList, QDiweiItem.QDiweiItemRefine);
     }
 
     private TextBlock QDiweiHeadword => QContract.QContractFind<TextBlock>(_qDiweiSurface, "PDiweiHeadword");
@@ -36,19 +34,15 @@ internal sealed class QDiwei
 
     private ItemsControl QDiweiList => QContract.QContractFind<ItemsControl>(_qDiweiSurface, "PDiweiList");
 
-    internal void QDiweiAttach(CAtelier atelier, CYunjing yunjing)
+    internal void QDiweiIntroduce(CYunjing yunjing)
     {
-        _qDiweiAtelier = atelier;
         _cYunjing = yunjing;
     }
 
-    internal void QDiweiShow(CDiweiPage page, string kind)
+    internal void QDiweiRefine(CDiweiPage page, string kind)
     {
-        LFontFace.LFontRefine(
-            _qDiweiAtelier,
-            page.CDiweiPageLanguage,
-            [CFontRole.CFontRoleHeadword, CFontRole.CFontRoleGlyph],
-            [QDiweiHeadword, QDiweiList]);
+        LFontFace.LFontRefine(page.CDiweiPageFont, QDiweiHeadword);
+        LFontFace.LFontRefine(page.CDiweiPageGlyph, QDiweiList);
         LFontFace.LFontPlace(QDiweiHeadword);
         QDiweiHeadword.Text = page.CDiweiPageKey;
         QDiweiKind.SetResourceReference(TextBlock.TextProperty, kind);
@@ -58,12 +52,12 @@ internal sealed class QDiwei
         QDiweiEmpty.Visibility = QLook.QLookVisibleRead(page.CDiweiPageEmpty);
     }
 
-    private void QDiweiSwitchHandle(object sender, ExecutedRoutedEventArgs e)
+    private void QDiweiSwitchObserve(object sender, ExecutedRoutedEventArgs e)
     {
         _cYunjing.CYunjingTallyToggle(QSender.QSenderFlagRead(e));
     }
 
-    private void QDiweiEntryHandle(object sender, ExecutedRoutedEventArgs e)
+    private void QDiweiEntryObserve(object sender, ExecutedRoutedEventArgs e)
     {
         _cYunjing.CYunjingGlyphSelect(QSender.QSenderTextRead(e));
     }

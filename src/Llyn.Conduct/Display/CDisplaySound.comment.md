@@ -138,15 +138,17 @@ The editor's reflex block and the reading view share the one fold.
 The shown entry's rime-book block, ready to draw, with its reading, anchors and font.
 The anchors are read again, since new fanqie rows can change which reflex rows anchor.
 
-## `public void CDisplayFanqieSet(long fanqieId, int rank)`
+## `public void CDisplayFanqieSet(long fanqieId, int rank, bool raise)`
 
-The gate for a representative pick: it makes a fanqie row the shown entry's representative at `rank`.
+The gate for a representative pick: it hands the held `rank` and the raise flag for the shown entry.
+The fanqie clerk resolves the new rank, as behind the editor's gate.
 A refusal shows `Display.FanqieRepresentativeFailed`, as the editor's gate does.
 
-## `public bool CDisplayDiweiOpen(string kind, string key)`
+## `public bool CDisplayDiweiOpen(bool initial, string key)`
 
 The gate for a rime-cell click: it raises the cell in the shown entry's language for the navigation.
-Nothing shown opens nothing.
+The engine names the cell kind from the initial flag.
+Nothing shown, or a blank key, opens nothing.
 
 ## `public bool CDisplayStemOpen(string? key)`
 

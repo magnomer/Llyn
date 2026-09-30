@@ -24,7 +24,7 @@ public interface LPhonologyPort
 
     void LEngineFanqieRebuild(long entryId);
 
-    void LEngineFanqieSet(long entryId, long fanqieId, int rank);
+    void LEngineFanqieSet(long entryId, long fanqieId, int rank, bool raise);
 
     bool LEngineScriptCheck(long entryId);
 
@@ -111,5 +111,10 @@ public interface LPhonologyPort
     static LArticulation LEngineVowelRead()
     {
         return LPronunciationClerk.LPronunciationVowelRead();
+    }
+
+    static string? LEngineDiweiRead(bool initial, string key)
+    {
+        return LDiweiClerk.LDiweiKindRead(!initial, key);
     }
 }

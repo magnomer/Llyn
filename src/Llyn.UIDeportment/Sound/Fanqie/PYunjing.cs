@@ -55,7 +55,7 @@ public class PYunjing : UserControl
 
         QLookItem.QLookItemAttach(PShengmu, PYunjingItem.PYunjingItemApply);
         QLookItem.QLookItemAttach(PYunmu, PYunjingItem.PYunjingItemApply);
-        QLookItem.QLookItemAttach(PXiaoyun, PXiaoyunItem.PXiaoyunItemApply);
+        QLookItem.QLookItemAttach(PXiaoyun, PXiaoyunItem.PXiaoyunItemRefine);
         PShengmu.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PYunjingHandle));
         PYunmu.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PYunjingHandle));
         PXiaoyun.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PXiaoyunHandle));
@@ -166,7 +166,7 @@ public class PYunjing : UserControl
         PXiaoyun.ItemsSource = _pXiaoyunList;
 
         PDisplay.PDisplayAttach(host, lectern);
-        _qDiwei.QDiweiAttach(host.PWindowAtelier, _cYunjing);
+        _qDiwei.QDiweiIntroduce(_cYunjing);
 
         PEditor.PEditorIntroduce(host, new QEditor(_cYunjing.CYunjingEditor));
 
@@ -285,7 +285,7 @@ public class PYunjing : UserControl
 
     private void PDiweiUpdate()
     {
-        _qDiwei.QDiweiShow(_cYunjing.CYunjingDiweiRead(), _cYunjing.CYunjingDiweiKey);
+        _qDiwei.QDiweiRefine(_cYunjing.CYunjingDiweiRead(), _cYunjing.CYunjingDiweiKey);
     }
 
     private void PYunjingModeUpdate()

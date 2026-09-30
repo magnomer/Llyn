@@ -31,6 +31,11 @@ The IPA consonant chart, which needs no engine, so the input aid reads it before
 
 The IPA vowel chart, which needs no engine, so the input aid reads it before any workspace opens.
 
+## `static string? LEngineDiweiRead(bool initial, string key)`
+
+The kind of the cell a pressed fanqie key opens, or none for a blank key.
+It needs no engine, so both reading views' gates ask it before the navigation opens.
+
 ## `bool LEngineFanqieCheck(long entryId);`
 
 Whether the entry's rime-book rows are still being fetched.

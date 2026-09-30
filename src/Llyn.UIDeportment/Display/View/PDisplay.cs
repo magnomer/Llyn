@@ -223,7 +223,7 @@ public class PDisplay : UserControl
         lectern.QLecternSound.QLecternFanqieIntroduce(
             PDisplayFanqie,
             PDisplayReading,
-            PDisplayFanqie.PFanqieShow);
+            PDisplayFanqie.PFanqieRefine);
         lectern.QLecternSound.QLecternScriptIntroduce(PDisplayScript, PDisplayScript.PScriptShow);
         lectern.QLecternSound.QLecternParadigmIntroduce(PDisplayParadigm, PDisplayParadigm.PParadigmShow);
         lectern.QLecternCompassIntroduce(
@@ -250,10 +250,9 @@ public class PDisplay : UserControl
         lectern.QLecternCard.QLecternIncomingIntroduce(PDisplayIncoming, PDisplayIncomingSection);
         lectern.QLecternCard.QLecternEtymologyIntroduce(PDisplayEtymology, PDisplayEtymologySection);
         lectern.QLecternCard.QLecternRouteIntroduce(host);
-        PDisplayFanqie.PFanqieNoticeAttach(
-            lectern.QLecternSound.QLecternDiweiObserve,
-            lectern.QLecternSound.QLecternStemObserve,
-            lectern.QLecternSoundArea.CDisplayFanqieSet);
+        PDisplayFanqie.PFanqieDiweiNotice += lectern.QLecternSound.QLecternDiweiObserve;
+        PDisplayFanqie.PFanqieStemNotice += lectern.QLecternSound.QLecternStemObserve;
+        PDisplayFanqie.PFanqieRepresentativeNotice += lectern.QLecternSoundArea.CDisplayFanqieSet;
     }
 
     private void PReflexFoldObserve(object sender, RoutedEventArgs e)

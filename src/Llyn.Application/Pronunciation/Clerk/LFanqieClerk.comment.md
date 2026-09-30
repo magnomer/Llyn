@@ -39,6 +39,12 @@ Starts a fetch for every character of the entry that has no rows yet.
 
 Forgets the misses of the entry's characters and fetches them again.
 
+## `public void LFanqieClerkSet(long entryId, long fanqieId, int rank, bool raise)`
+
+Stores the rank a press gives a row that held `rank`, resolved by `LFanqieRow.LFanqieRankResolve`.
+A plain press marks an unmarked row last and unmarks a marked one.
+A raising press moves a marked row one place up, and the first row wraps to last.
+
 ## `public bool LFanqieClerkCheck(long entryId)`
 
 Whether a fetch is pending for any character of the entry.

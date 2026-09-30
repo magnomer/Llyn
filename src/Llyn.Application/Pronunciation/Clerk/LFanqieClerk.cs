@@ -187,11 +187,11 @@ public sealed class LFanqieClerk
         }
     }
 
-    public void LFanqieClerkSet(long entryId, long fanqieId, int rank)
+    public void LFanqieClerkSet(long entryId, long fanqieId, int rank, bool raise)
     {
         lock (_lFanqieClerkGate)
         {
-            _lFanqieClerkFanqie.LFanqieRepresentativeSet(fanqieId, rank);
+            _lFanqieClerkFanqie.LFanqieRepresentativeSet(fanqieId, LFanqieRow.LFanqieRankResolve(rank, raise));
         }
 
         _lFanqieClerkBulletin(LSubject.LSubjectFanqie, entryId);

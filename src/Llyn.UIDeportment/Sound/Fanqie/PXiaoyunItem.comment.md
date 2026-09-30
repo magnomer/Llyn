@@ -24,7 +24,7 @@ Whether the two rows show the same values, the chosen mark left aside.
 
 Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.
 
-## `internal static void PXiaoyunItemApply(FrameworkElement container, object item, string? _)`
+## `internal static void PXiaoyunItemRefine(FrameworkElement container, object item, string? _)`
 
 Fills one entry row's flag, name and epithet and marks the row while it is the chosen one.
 The epithet leads with an en space, which the markup's format string once added.

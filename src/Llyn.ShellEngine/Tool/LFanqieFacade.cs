@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -79,9 +80,9 @@ internal sealed class LFanqieFacade
         LFanqieFacadeStaff.LEngineStaffShengfu.LShengfuClerkRebuild(entryId);
     }
 
-    public void LEngineFanqieSet(long entryId, long fanqieId, int rank)
+    public void LEngineFanqieSet(long entryId, long fanqieId, int rank, bool raise)
     {
-        LFanqieFacadeStaff.LEngineStaffFanqie.LFanqieClerkSet(entryId, fanqieId, rank);
+        LFanqieFacadeStaff.LEngineStaffFanqie.LFanqieClerkSet(entryId, fanqieId, rank, raise);
     }
 
     public bool LEngineFanqieCheck(long entryId)
@@ -158,7 +159,7 @@ internal sealed class LFanqieFacade
         }
 
         string language = LEngineLanguageRead(chosen);
-        string kind = final ? LDiwei.LDiweiRime : LDiwei.LDiweiInitial;
+        string kind = LDiweiClerk.LDiweiKindRead(final);
         string wanted = vista.LVistaQuery.Trim();
         IEnumerable<LDiwei> kept = LEngineDiweiRead(language, kind).Where(row =>
             wanted.Length == 0 || row.LDiweiKey.Contains(wanted, StringComparison.OrdinalIgnoreCase));

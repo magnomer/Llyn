@@ -174,7 +174,9 @@ public sealed class CYunjing
             page.LDiweiPageLanguage,
             page.LDiweiPageKey,
             page.LDiweiPageSections.Select(LYunjingSectionRead).ToList(),
-            page.LDiweiPageEmpty);
+            page.LDiweiPageEmpty,
+            CCatalog.LCatalogFontRead(_cYunjingSettingsPort, page.LDiweiPageLanguage, CFontRole.CFontRoleHeadword),
+            CCatalog.LCatalogFontRead(_cYunjingSettingsPort, page.LDiweiPageLanguage, CFontRole.CFontRoleGlyph));
     }
 
     public void CYunjingShengmuFind(string query)

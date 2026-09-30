@@ -33,7 +33,7 @@ Each refused gate asks the envoy to show its own notice key and announces no cha
 
 ## `public void SoundingFanqieSet_StoredEntry_SendsTheRank()`
 
-The rank edit reaches the engine with the stored entry, the row and the rank.
+The rank edit reaches the engine with the stored entry, the row, the held rank and the raise flag.
 
 ## `public void SoundingAnchorFormat_StoredEntry_JoinsWithTheReflexSeparator()`
 
@@ -64,7 +64,16 @@ A desk with no stored entry offers no rebuild and waits for nothing, whatever th
 
 ## `public void SoundingDiweiOpen_HeldDraft_OpensTheCellInTheDraftLanguage()`
 
-A pressed rime cell reaches the navigation's yunjing opener with the draft's language.
+A pressed initial or rime key reaches the navigation's yunjing opener with the draft's language.
+The engine names the kind from the initial flag.
+
+## `public void SoundingDiweiOpen_EmptyKey_OpensNothing()`
+
+A blank key of either kind never reaches the navigation.
+
+## `private static CEditor TSoundingDiweiPrepare(LEngine engine, CAtelier atelier, List<string> cells)`
+
+An editor holding a stored English entry, beside a yunjing tab whose opener records each cell in `cells`.
 
 ## `private static long TSoundingEntrySave(LEngine engine)`
 

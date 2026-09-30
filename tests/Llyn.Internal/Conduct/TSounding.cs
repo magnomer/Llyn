@@ -114,7 +114,7 @@ public sealed class TSounding
         sounding.CSoundingChanged += () => changes++;
 
         sounding.CSoundingFanqieResolve();
-        sounding.CSoundingFanqieSet(7, 1);
+        sounding.CSoundingFanqieSet(7, 1, false);
         sounding.CSoundingScriptResolve();
 
         Assert.Equal(0, changes);
@@ -139,9 +139,9 @@ public sealed class TSounding
             },
         }, []);
 
-        sounding.CSoundingFanqieSet(7, 2);
+        sounding.CSoundingFanqieSet(7, 2, true);
 
-        Assert.Equal([editor.CEditorDesk.CDeskStoredRead(), 7L, 2], sent);
+        Assert.Equal([editor.CEditorDesk.CDeskStoredRead(), 7L, 2, true], sent);
     }
 
     [Fact]
@@ -307,17 +307,39 @@ public sealed class TSounding
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> cells = [];
+        CEditor editor = TSoundingDiweiPrepare(engine, atelier, cells);
+
+        editor.CEditorSounding.CSoundingDiweiOpen(true, "sh");
+        editor.CEditorSounding.CSoundingDiweiOpen(false, "寒 I");
+
+        Assert.Equal(["English initial sh", "English rime 寒 I"], cells);
+    }
+
+    [Fact]
+    public void SoundingDiweiOpen_EmptyKey_OpensNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> cells = [];
+        CEditor editor = TSoundingDiweiPrepare(engine, atelier, cells);
+
+        editor.CEditorSounding.CSoundingDiweiOpen(true, string.Empty);
+        editor.CEditorSounding.CSoundingDiweiOpen(false, string.Empty);
+
+        Assert.Empty(cells);
+    }
+
+    private static CEditor TSoundingDiweiPrepare(LEngine engine, CAtelier atelier, List<string> cells)
+    {
         CEditor editor = CEditor.CEditorCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(TSoundingEntrySave(engine));
         CNavigation navigation = atelier.CAtelierNavigation;
         navigation.TNavigationTabAdd("Yunjing", static () => true, static () => 0, static _ => { }, static _ => { });
-        List<string> cells = [];
         navigation.TNavigationDiweiAttach((language, kind, key) => cells.Add(language + " " + kind + " " + key));
-
-        editor.CEditorSounding.CSoundingDiweiOpen("initial", "sh");
-
-        Assert.Equal(["English initial sh"], cells);
+        return editor;
     }
 
     private static long TSoundingEntrySave(LEngine engine)

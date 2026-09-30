@@ -211,9 +211,9 @@ public sealed class QLecternSound
         _qLecternSoundArea.CDisplayReflexToggle(QLook.QLookCheckedRead(_qLecternSoundFold.IsChecked));
     }
 
-    public void QLecternDiweiObserve(string kind, string key)
+    public void QLecternDiweiObserve(bool initial, string key)
     {
-        _qLecternSoundArea.CDisplayDiweiOpen(kind, key);
+        _qLecternSoundArea.CDisplayDiweiOpen(initial, key);
     }
 
     public void QLecternStemObserve(string? key)

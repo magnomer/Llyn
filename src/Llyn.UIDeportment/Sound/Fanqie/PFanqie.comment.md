@@ -59,7 +59,7 @@ The rebuild button and the category buttons stay reachable through it.
 ## `public PFanqie()`
 
 Builds the box from the theme's fanqie styles, unfocusable, collapsed until it has something to show.
-Its list is attached to `PFanqieItem.PFanqieItemApply`, which fills each block and its lines.
+Its list is attached to `PFanqieItem.PFanqieItemRefine`, which fills each block and its lines.
 
 ## `internal IReadOnlyList<PFanqieItem>? PFanqieItems`
 
@@ -74,37 +74,47 @@ Whether a fetch runs for the entry shown.
 What the regenerate button runs, or `null` in a reading view, where the button is not shown.
 It is a property of the box, so handing one over redraws the head as the blocks do.
 
-## `internal Action<string, string>? PFanqieDiweiNotice { get; set; }`
+## `internal event Action<bool, string>? PFanqieDiweiNotice;`
 
-What a click on an initial or a rime runs, handed the category kind and key.
-It is `null` when no view listens.
+What a click on an initial or a rime runs, handed the initial flag and the raw key.
+Each view subscribes its own diwei gate's observer.
 
-## `private void PFanqieDiweiHandle(object sender, ExecutedRoutedEventArgs e)`
+## `internal event Action<string?>? PFanqieStemNotice;`
 
-Answers the initial and rime commands of a line with the category the clicked part names.
-The rime key is the rime without its 重紐 letter, as the diwei store keys it.
-An empty part is ignored.
+What a click on a stem runs, handed the raw stem text.
+Each view subscribes its own stem gate.
+
+## `internal event Action<long, int, bool>? PFanqieRepresentativeNotice;`
+
+What a click on a representative rank runs, handed the row id, the held rank and the Ctrl flag.
+The fanqie clerk below the gate resolves the new rank.
+
+## `private void PFanqieDiweiObserve(object sender, ExecutedRoutedEventArgs e)`
+
+Hears the initial and rime commands of a line and hands the pressed part's raw key on.
+The engine names the kind and ignores a blank key.
+
+## `private void PFanqieStemObserve(object sender, ExecutedRoutedEventArgs e)`
+
+Hears the stem command of a block and hands the raw stem text on.
+
+## `private void PFanqieRepresentativeObserve(object sender, ExecutedRoutedEventArgs e)`
+
+Hears the representative command of a line and hands its id, its held rank and the Ctrl state on.
 
 ## `public bool PFanqieFolded`
 
 Whether the box starts closed under its head.
 
-## `private static void PFanqieStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
+## `private void PFanqieStateRefine()`
 
-Redraws the box when any of its four properties change.
-
-## `private void PFanqieStateApply()`
-
+Redraws the box when any of its four properties change or its switch flips.
 Feeds the list and shows the loading line while pending.
 The regenerate button stands wherever one was handed over, and it carries the `Pending` cue while a fetch runs.
 The head shows only when folded, and the body only when open.
 The box itself is visible when it has blocks or a fetch runs, and collapsed otherwise.
 
-## `internal void PFanqieShow(IReadOnlyList<CFanqieGroup> groups, bool pending)`
+## `internal void PFanqieRefine(IReadOnlyList<CFanqieGroup> groups, bool pending)`
 
 The seam the lectern's sound draws through, mapping the groups to blocks and setting whether a fetch runs.
 It only sets values, so the box redraws itself as for any other change.
-
-## `internal void PFanqieNoticeAttach(Action<string, string> diwei, Action<string?> stem, Action<long, int> representative)`
-
-Hands over what a click on a category, a stem or a representative runs, all at once.

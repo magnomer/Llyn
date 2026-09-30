@@ -21,7 +21,7 @@ internal sealed class QTally
 
     public IReadOnlyList<QTallyMark> QTallyMarks { get; }
 
-    internal static void QTallyApply(FrameworkElement container, object item, string? _)
+    internal static void QTallyItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QTally tally)
         {
@@ -41,7 +41,7 @@ internal sealed class QTally
         if (QLook.QLookPartFind<ItemsControl>(container, "PTallyMarks") is ItemsControl marks)
         {
             marks.ItemsSource = tally.QTallyMarks;
-            QLookItem.QLookItemAttach(marks, QTallyMark.QTallyMarkApply);
+            QLookItem.QLookItemAttach(marks, QTallyMark.QTallyMarkRefine);
         }
     }
 

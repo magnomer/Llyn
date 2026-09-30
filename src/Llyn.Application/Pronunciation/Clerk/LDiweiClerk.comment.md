@@ -21,6 +21,15 @@ One diwei by id, or null for no id.
 
 The diwei of one kind with the given key.
 
+## `public static string LDiweiKindRead(bool final)`
+
+The diwei kind a final flag names, handed up from Core for the engine's cell lists.
+
+## `public static string? LDiweiKindRead(bool final, string key)`
+
+The kind of the cell a pressed key opens, or none when the key is blank.
+A fanqie row without a parsed initial or rime carries a blank key, and pressing it opens nothing.
+
 ## `public IReadOnlyList<LFanqieRow> LDiweiFanqieRead(LDiwei diwei)`
 
 The fanqie rows filed under the diwei.

@@ -29,11 +29,11 @@ Empty on every block but the character's first, so the chips are drawn once.
 
 The character's placements in that book from that source, one line each, in answer order.
 
-## `internal static void PFanqieItemApply(FrameworkElement container, object item, string? _)`
+## `internal static void PFanqieItemRefine(FrameworkElement container, object item, string? _)`
 
 Fills a block of `Theme.Fanqie.Row`: the stem line, character, book chip, source and lines.
 The stem line shows only while the block has stems, and the book chip keeps its room when blank.
-The line list is attached to `PFanqieLine.PFanqieRowApply`.
+The line list is attached to `PFanqieLine.PFanqieRowRefine`.
 
 ## `internal static IReadOnlyList<PFanqieItem> PFanqieItemScan(IReadOnlyList<CFanqieGroup> groups)`
 

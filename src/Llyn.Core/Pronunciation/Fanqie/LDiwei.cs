@@ -39,6 +39,11 @@ public sealed record LDiwei(
 
     public const string LDiweiTone = "tone";
 
+    public static string LDiweiKindRead(bool final)
+    {
+        return final ? LDiweiRime : LDiweiInitial;
+    }
+
     private const string LDiweiRounded = "W";
 
     private static readonly string[] LDiweiDivisions = ["一", "二", "三", "四"];

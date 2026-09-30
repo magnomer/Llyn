@@ -21,9 +21,13 @@ The button then calls `QCadenceScriptObserve`, and `QCadenceFanqieRefine` does t
 
 The editor moves the reflex anchor and the reading line on the same change event.
 
-## `private void QCadenceDiweiObserve(string kind, string key)`
+## `private void QCadenceDiweiObserve(bool initial, string key)`
 
-Hands the pressed rime cell to the sounding, which opens it in the draft's language.
+Hands the pressed rime cell's initial flag and key to the sounding, which opens it in the draft's language.
+
+## `private void QCadenceRepresentativeObserve(long fanqieId, int rank, bool raise)`
+
+Hands the pressed row's id, its held rank and the raise flag to the sounding, which stores the new rank.
 
 ## `internal void QCadenceReadingRefine(string headword)`
 

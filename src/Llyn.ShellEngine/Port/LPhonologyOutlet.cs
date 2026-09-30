@@ -33,8 +33,8 @@ public sealed class LPhonologyOutlet : LPhonologyPort
     public void LEngineFanqieRebuild(long entryId) =>
         _lPhonologyOutletEngine.LEngineFanqie.LEngineFanqieRebuild(entryId);
 
-    public void LEngineFanqieSet(long entryId, long fanqieId, int rank) =>
-        _lPhonologyOutletEngine.LEngineFanqie.LEngineFanqieSet(entryId, fanqieId, rank);
+    public void LEngineFanqieSet(long entryId, long fanqieId, int rank, bool raise) =>
+        _lPhonologyOutletEngine.LEngineFanqie.LEngineFanqieSet(entryId, fanqieId, rank, raise);
 
     public bool LEngineScriptCheck(long entryId) =>
         _lPhonologyOutletEngine.LEngineLanguage.LEngineScriptCheck(entryId);

@@ -13,6 +13,7 @@ An arrival empties both column searches before the driver hears of it.
 Choosing the chosen rime again hides the page, and a click without an id or a side does nothing.
 The page of an initial cell groups its lines by division, with the characters sorted and the switch flags copied.
 The section label is localized from a shared catalog, so `TDiwei` checks it with a localizer handed in.
+The page carries the headword and glyph fonts of its language, and the blank page carries none.
 Under the bundled book language, a Korean reading under the cell reaches the page as one tally.
 The tally switch is saved once, and a switch without a side changes nothing.
 A glyph opens in the library tab only while a cell page shows, in the language of that page.

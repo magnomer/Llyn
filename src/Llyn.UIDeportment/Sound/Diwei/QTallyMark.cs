@@ -23,7 +23,7 @@ internal sealed class QTallyMark
 
     public IReadOnlyList<string> QTallyMarkCharacters { get; }
 
-    internal static void QTallyMarkApply(FrameworkElement container, object item, string? _)
+    internal static void QTallyMarkRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QTallyMark mark
             || QLook.QLookPartFind<ToggleButton>(container, "PTallyDropper") is not ToggleButton dropper)
@@ -41,15 +41,15 @@ internal sealed class QTallyMark
             count.Text = mark.QTallyMarkCount;
         }
 
-        dropper.Checked -= QTallyDropHandle;
-        dropper.Checked += QTallyDropHandle;
-        dropper.Unchecked -= QTallyDropHandle;
-        dropper.Unchecked += QTallyDropHandle;
+        dropper.Checked -= QTallyDropRefine;
+        dropper.Checked += QTallyDropRefine;
+        dropper.Unchecked -= QTallyDropRefine;
+        dropper.Unchecked += QTallyDropRefine;
         if (QLook.QLookPartFind<Popup>(container, "PTallyPopup") is Popup popup)
         {
             popup.PlacementTarget = dropper;
-            popup.Closed -= QTallyCloseHandle;
-            popup.Closed += QTallyCloseHandle;
+            popup.Closed -= QTallyCloseRefine;
+            popup.Closed += QTallyCloseRefine;
         }
 
         if (QLook.QLookPartFind<ItemsControl>(container, "PTallyCharacters") is ItemsControl characters)
@@ -58,7 +58,7 @@ internal sealed class QTallyMark
         }
     }
 
-    private static void QTallyDropHandle(object sender, RoutedEventArgs e)
+    private static void QTallyDropRefine(object sender, RoutedEventArgs e)
     {
         if (sender is not ToggleButton { Parent: Panel host } dropper)
         {
@@ -74,7 +74,7 @@ internal sealed class QTallyMark
         }
     }
 
-    private static void QTallyCloseHandle(object? sender, EventArgs e)
+    private static void QTallyCloseRefine(object? sender, EventArgs e)
     {
         if (sender is Popup { PlacementTarget: ToggleButton dropper })
         {

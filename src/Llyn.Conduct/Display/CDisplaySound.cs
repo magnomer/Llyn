@@ -297,7 +297,7 @@ public sealed class CDisplaySound
             LDisplayFontRead(CFontRole.CFontRoleGlyph));
     }
 
-    public void CDisplayFanqieSet(long fanqieId, int rank)
+    public void CDisplayFanqieSet(long fanqieId, int rank, bool raise)
     {
         if (LDisplayEntry is not long id)
         {
@@ -306,7 +306,7 @@ public sealed class CDisplaySound
 
         try
         {
-            _cDisplayPhonology.LEngineFanqieSet(id, fanqieId, rank);
+            _cDisplayPhonology.LEngineFanqieSet(id, fanqieId, rank, raise);
         }
         catch (Exception exception)
         {
@@ -315,9 +315,9 @@ public sealed class CDisplaySound
         }
     }
 
-    public bool CDisplayDiweiOpen(string kind, string key)
+    public bool CDisplayDiweiOpen(bool initial, string key)
     {
-        if (LDisplayShown is null)
+        if (LDisplayShown is null || LPhonologyPort.LEngineDiweiRead(initial, key) is not string kind)
         {
             return false;
         }

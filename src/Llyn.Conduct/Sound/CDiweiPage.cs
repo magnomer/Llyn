@@ -6,4 +6,6 @@ public sealed record CDiweiPage(
     string CDiweiPageLanguage,
     string CDiweiPageKey,
     IReadOnlyList<CDiweiSection> CDiweiPageSections,
-    bool CDiweiPageEmpty);
+    bool CDiweiPageEmpty,
+    CFont CDiweiPageFont,
+    CFont CDiweiPageGlyph);

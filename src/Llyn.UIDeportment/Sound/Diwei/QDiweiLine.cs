@@ -24,7 +24,7 @@ internal sealed class QDiweiLine
 
     public IReadOnlyList<string> QDiweiLineCharacters { get; }
 
-    internal static void QDiweiLineApply(FrameworkElement container, object item, string? _)
+    internal static void QDiweiLineRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QDiweiLine line)
         {

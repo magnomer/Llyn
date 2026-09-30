@@ -1,14 +1,12 @@
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
 public sealed class PFanqieLine
 {
-    private PFanqieLine(CFanqieRow row)
+    internal PFanqieLine(CFanqieRow row)
     {
         PFanqieLineId = row.CFanqieRowId;
         PFanqieLineRank = row.CFanqieRowRepresentative;
@@ -63,14 +61,7 @@ public sealed class PFanqieLine
 
     public string PFanqieLineText { get; }
 
-    internal static PFanqieLine PFanqieLineCreate(CFanqieRow row)
-    {
-        ArgumentNullException.ThrowIfNull(row);
-
-        return new PFanqieLine(row);
-    }
-
-    internal static void PFanqieRowApply(FrameworkElement container, object item, string? _)
+    internal static void PFanqieRowRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not PFanqieLine line)
         {
@@ -87,16 +78,16 @@ public sealed class PFanqieLine
                 : QLookCue.QLookCueFaded);
         }
 
-        PFanqieWordApply(container, "PFanqieInitial", line.PFanqieLineInitial);
-        PFanqieWordApply(container, "PFanqieRime", line.PFanqieLineYunmu);
-        PFanqieTextApply(container, "PFanqieReading", line.PFanqieLineReading);
-        PFanqieTextApply(container, "PFanqieLabel", line.PFanqieLineLabel);
-        PFanqieTextApply(container, "PFanqieHeading", line.PFanqieLineHeading);
-        PFanqieTextApply(container, "PFanqieKnot", line.PFanqieLineKnot);
-        PFanqieTextApply(container, "PFanqieDivision", line.PFanqieLineDivision);
-        PFanqieTextApply(container, "PFanqieTone", line.PFanqieLineTone);
-        PFanqieTextApply(container, "PFanqieSpelling", line.PFanqieLineSpelling);
-        PFanqieTextApply(container, "PFanqieText", line.PFanqieLineText);
+        PFanqieWordRefine(container, "PFanqieInitial", line.PFanqieLineInitial);
+        PFanqieWordRefine(container, "PFanqieRime", line.PFanqieLineYunmu);
+        PFanqieTextRefine(container, "PFanqieReading", line.PFanqieLineReading);
+        PFanqieTextRefine(container, "PFanqieLabel", line.PFanqieLineLabel);
+        PFanqieTextRefine(container, "PFanqieHeading", line.PFanqieLineHeading);
+        PFanqieTextRefine(container, "PFanqieKnot", line.PFanqieLineKnot);
+        PFanqieTextRefine(container, "PFanqieDivision", line.PFanqieLineDivision);
+        PFanqieTextRefine(container, "PFanqieTone", line.PFanqieLineTone);
+        PFanqieTextRefine(container, "PFanqieSpelling", line.PFanqieLineSpelling);
+        PFanqieTextRefine(container, "PFanqieText", line.PFanqieLineText);
         if (QLook.QLookPartFind<Border>(container, "PFanqieMedial") is Border medial)
         {
             medial.Visibility = QLook.QLookVisibleRead(line.PFanqieLineMedial.Length > 0);
@@ -119,7 +110,7 @@ public sealed class PFanqieLine
         text.ClearValue(TextBlock.FontWeightProperty);
     }
 
-    private static void PFanqieWordApply(FrameworkElement container, string name, string word)
+    private static void PFanqieWordRefine(FrameworkElement container, string name, string word)
     {
         if (QLook.QLookPartFind<Button>(container, name) is Button link)
         {
@@ -127,16 +118,11 @@ public sealed class PFanqieLine
         }
     }
 
-    private static void PFanqieTextApply(FrameworkElement container, string name, string text)
+    private static void PFanqieTextRefine(FrameworkElement container, string name, string text)
     {
         if (QLook.QLookPartFind<TextBlock>(container, name) is TextBlock block)
         {
             block.Text = text;
         }
-    }
-
-    internal void PFanqieLineApply(bool raise, Action<long, int>? notice)
-    {
-        notice?.Invoke(PFanqieLineId, LFanqieRow.LFanqieRankResolve(PFanqieLineRank, raise));
     }
 }

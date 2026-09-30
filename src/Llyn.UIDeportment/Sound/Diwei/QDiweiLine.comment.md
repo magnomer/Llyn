@@ -4,7 +4,7 @@
 
 One row of a section as the template binds it, copied from the Conduct line.
 
-## `internal static void QDiweiLineApply(FrameworkElement container, object item, string? _)`
+## `internal static void QDiweiLineRefine(FrameworkElement container, object item, string? _)`
 
 Fills a placement line: reading, label, the rounded mark and the character chips.
 The chips take their text and command parameter from their own item through `QLook` rows.

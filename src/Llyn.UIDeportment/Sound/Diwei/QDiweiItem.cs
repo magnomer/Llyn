@@ -27,7 +27,7 @@ internal sealed class QDiweiItem
 
     public bool QDiweiItemRespelled { get; }
 
-    internal static void QDiweiItemApply(FrameworkElement container, object item, string? _)
+    internal static void QDiweiItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QDiweiItem section)
         {
@@ -44,13 +44,13 @@ internal sealed class QDiweiItem
             choice.Visibility = QLook.QLookVisibleRead(section.QDiweiItemSwitched);
         }
 
-        QDiweiChoiceApply(
+        QDiweiChoiceRefine(
             container,
             "PDiweiSpoken",
             section.QDiweiItemRespelled
                 ? QContract.QContractSheetFind<Style>("Theme.Diwei.Ipa")
                 : QContract.QContractSheetFind<Style>("Theme.Diwei.IpaChosen"));
-        QDiweiChoiceApply(
+        QDiweiChoiceRefine(
             container,
             "PDiweiSpelled",
             section.QDiweiItemRespelled
@@ -59,17 +59,17 @@ internal sealed class QDiweiItem
         if (QLook.QLookPartFind<ItemsControl>(container, "PDiweiTally") is ItemsControl tally)
         {
             tally.ItemsSource = section.QDiweiItemTallies;
-            QLookItem.QLookItemAttach(tally, QTally.QTallyApply);
+            QLookItem.QLookItemAttach(tally, QTally.QTallyItemRefine);
         }
 
         if (QLook.QLookPartFind<ItemsControl>(container, "PDiweiLines") is ItemsControl lines)
         {
             lines.ItemsSource = section.QDiweiItemLines;
-            QLookItem.QLookItemAttach(lines, QDiweiLine.QDiweiLineApply);
+            QLookItem.QLookItemAttach(lines, QDiweiLine.QDiweiLineRefine);
         }
     }
 
-    private static void QDiweiChoiceApply(FrameworkElement container, string name, Style sheet)
+    private static void QDiweiChoiceRefine(FrameworkElement container, string name, Style sheet)
     {
         if (QLook.QLookPartFind<Button>(container, name) is Button choice)
         {

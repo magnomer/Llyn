@@ -102,15 +102,19 @@ public sealed class CSounding
         LSoundingMarkSend(_cSoundingPhonologyPort.LEngineFanqieRebuild, "Display.FanqieRebuildFailed");
     }
 
-    public void CSoundingFanqieSet(long fanqieId, int rank)
+    public void CSoundingFanqieSet(long fanqieId, int rank, bool raise)
     {
         LSoundingMarkSend(
-            id => _cSoundingPhonologyPort.LEngineFanqieSet(id, fanqieId, rank), "Display.FanqieRepresentativeFailed");
+            id => _cSoundingPhonologyPort.LEngineFanqieSet(id, fanqieId, rank, raise),
+            "Display.FanqieRepresentativeFailed");
     }
 
-    public void CSoundingDiweiOpen(string kind, string key)
+    public void CSoundingDiweiOpen(bool initial, string key)
     {
-        LSoundingDiweiChosen?.Invoke(LSoundingLanguage, kind, key);
+        if (LPhonologyPort.LEngineDiweiRead(initial, key) is string kind)
+        {
+            LSoundingDiweiChosen?.Invoke(LSoundingLanguage, kind, key);
+        }
     }
 
     public CSoundingScript CSoundingScriptRead()

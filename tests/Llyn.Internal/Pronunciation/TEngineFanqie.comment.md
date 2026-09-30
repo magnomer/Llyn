@@ -18,10 +18,14 @@ It stores the rows and raises the fanqie bulletin.
 A character every book was busy for still raises the bulletin and is asked again on the next start.
 A character every book answered for yet none placed is asked once per session and stores nothing.
 A language whose pack lists no book reads empty and asks nothing.
+A rank press stores the rank the clerk resolves from the held rank and the raise flag.
+A press on an unmarked row appends it, and a raising press moves a marked row up.
+A plain press on a marked row unmarks it.
 
 ## Inline notes
 
 `TFanqieFetchRead` saves an entry, starts its fetch, waits for it to settle and reads what it stored.
 `TFanqieSettle` waits until no fetch runs for the entry, since a bulletin is raised per character.
 `TFanqieCountCheck` waits for the stub to see the given number of requests.
+`TFanqieRankRead` reads the stored rank of each row in the given id order.
 `TFanqiePartRead` and `TFanqieRowRead` flatten a row for one-line assertions.

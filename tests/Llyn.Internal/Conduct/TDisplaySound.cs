@@ -287,16 +287,38 @@ public sealed class TDisplaySound
         List<string> opened = [];
         area.CDisplayDiweiChosen += (language, kind, key) => opened.Add(language + kind + key);
         area.CDisplayStemChosen += (language, key) => opened.Add(language + (key ?? "-"));
-        bool early = area.CDisplayDiweiOpen("initial", "k");
+        bool early = area.CDisplayDiweiOpen(true, "k");
         wing.CWingEntryOpen(TDisplayKoreanSave(engine).LEntryId);
 
-        bool diwei = area.CDisplayDiweiOpen("initial", "k");
+        bool diwei = area.CDisplayDiweiOpen(true, "k");
+        bool rime = area.CDisplayDiweiOpen(false, "寒 I");
         bool stem = area.CDisplayStemOpen(null);
 
         Assert.False(early);
         Assert.True(diwei);
+        Assert.True(rime);
         Assert.True(stem);
-        Assert.Equal(["Koreaninitialk", "Korean-"], opened);
+        Assert.Equal(["Koreaninitialk", "Koreanrime寒 I", "Korean-"], opened);
+    }
+
+    [Fact]
+    public void DisplayDiweiOpen_EmptyKey_OpensNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CWing wing = TDisplayWingPrepare(atelier, []);
+        CDisplaySound area = wing.CWingDisplay.CDisplaySound;
+        List<string> opened = [];
+        area.CDisplayDiweiChosen += (language, kind, key) => opened.Add(language + kind + key);
+        wing.CWingEntryOpen(TDisplayKoreanSave(engine).LEntryId);
+
+        bool initial = area.CDisplayDiweiOpen(true, string.Empty);
+        bool rime = area.CDisplayDiweiOpen(false, string.Empty);
+
+        Assert.False(initial);
+        Assert.False(rime);
+        Assert.Empty(opened);
     }
 
     [Fact]
@@ -316,12 +338,12 @@ public sealed class TDisplaySound
                     return null;
                 },
             }));
-        editor.CEditorDisplay.CDisplaySound.CDisplayFanqieSet(3, 1);
+        editor.CEditorDisplay.CDisplaySound.CDisplayFanqieSet(3, 1, false);
         editor.CEditorDisplay.LDisplaySound.TDisplaySoundShow(7, TDisplayDraftCreate("國", "Korean", []));
 
-        editor.CEditorDisplay.CDisplaySound.CDisplayFanqieSet(3, 2);
+        editor.CEditorDisplay.CDisplaySound.CDisplayFanqieSet(3, 2, true);
 
-        Assert.Equal(["7,3,2"], set);
+        Assert.Equal(["7,3,2,True"], set);
     }
 
     private static CWing TDisplayWingPrepare(CAtelier atelier, List<string> asked)

@@ -77,7 +77,7 @@ internal sealed class PXiaoyunItem : INotifyPropertyChanged
         }
     }
 
-    internal static void PXiaoyunItemApply(FrameworkElement container, object item, string? _)
+    internal static void PXiaoyunItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not PXiaoyunItem xiaoyun)
         {

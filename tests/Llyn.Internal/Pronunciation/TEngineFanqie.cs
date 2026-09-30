@@ -152,6 +152,34 @@ public sealed class TEngineFanqie
     }
 
     [Fact]
+    public async Task FanqieSet_HeldRank_StoresTheResolvedRank()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineWikiPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        Dictionary<string, string> pages = new()
+        {
+            ["https://example.test/broad"] = TEngineFanqieBroad,
+            ["https://example.test/wiki/%E5%90%B3?raw"] = TEngineFanqieWiki,
+        };
+        using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(pages));
+        LEntry entry = engine.TEngineEntrySave(TFanqieDraftCreate("吳", pack.TLanguageFixtureName));
+        engine.TEngineFanqieStart(entry.LEntryId);
+        await TFanqieSettle(engine, entry.LEntryId);
+        IReadOnlyList<long> ids = engine.TEngineFanqieRead(entry.LEntryId).Select(row => row.LFanqieRowId).ToList();
+
+        engine.TEngineFanqieSet(entry.LEntryId, ids[0], 0, false);
+        engine.TEngineFanqieSet(entry.LEntryId, ids[1], 0, true);
+        List<int> appended = TFanqieRankRead(engine, entry.LEntryId, ids);
+        engine.TEngineFanqieSet(entry.LEntryId, ids[1], 2, true);
+        List<int> raised = TFanqieRankRead(engine, entry.LEntryId, ids);
+        engine.TEngineFanqieSet(entry.LEntryId, ids[0], 2, false);
+
+        Assert.Equal([1, 2, 0], appended);
+        Assert.Equal([2, 1, 0], raised);
+        Assert.Equal([0, 1, 0], TFanqieRankRead(engine, entry.LEntryId, ids));
+    }
+
+    [Fact]
     public async Task FanqieStart_GroupedCell_StoresEachGroupWithItsParts()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFanqiePack);
@@ -306,6 +334,12 @@ public sealed class TEngineFanqie
         engine.TEngineFanqieStart(entry.LEntryId);
         await TFanqieSettle(engine, entry.LEntryId);
         return engine.TEngineFanqieRead(entry.LEntryId);
+    }
+
+    private static List<int> TFanqieRankRead(LEngine engine, long entryId, IReadOnlyList<long> ids)
+    {
+        IReadOnlyList<LFanqieRow> rows = engine.TEngineFanqieRead(entryId);
+        return ids.Select(id => rows.Single(row => row.LFanqieRowId == id).LFanqieRowRepresentative).ToList();
     }
 
     private static async Task TFanqieSettle(LEngine engine, long entryId)

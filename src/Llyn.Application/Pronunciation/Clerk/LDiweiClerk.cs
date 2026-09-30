@@ -37,6 +37,18 @@ public sealed class LDiweiClerk
         return _lDiweiClerkDiwei.LDiweiFind(language, kind, key);
     }
 
+    public static string LDiweiKindRead(bool final)
+    {
+        return LDiwei.LDiweiKindRead(final);
+    }
+
+    public static string? LDiweiKindRead(bool final, string key)
+    {
+        ArgumentNullException.ThrowIfNull(key);
+
+        return key.Length == 0 ? null : LDiwei.LDiweiKindRead(final);
+    }
+
     public IReadOnlyList<LFanqieRow> LDiweiFanqieRead(LDiwei diwei)
     {
         ArgumentNullException.ThrowIfNull(diwei);

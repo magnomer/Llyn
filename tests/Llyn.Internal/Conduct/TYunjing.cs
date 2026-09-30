@@ -158,6 +158,28 @@ public sealed class TYunjing
     }
 
     [Fact]
+    public void YunjingDiweiRead_BookCell_CarriesTheFontsOfTheCellLanguage()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, TYunjingBook, "爛", "來");
+        CYunjing yunjing = TYunjingPrepare(atelier);
+        CDiweiPage blank = yunjing.CYunjingDiweiRead();
+        yunjing.TYunjingDiweiOpen(TYunjingBook, LDiwei.LDiweiInitial, "來");
+
+        CDiweiPage page = yunjing.CYunjingDiweiRead();
+
+        Assert.Equal(new CFont(null, null, null), blank.CDiweiPageFont);
+        Assert.Equal(new CFont(null, null, null), blank.CDiweiPageGlyph);
+        const string family = "Microsoft JhengHei UI, Microsoft YaHei UI, Malgun Gothic";
+        Assert.Equal(family, page.CDiweiPageFont.CFontFamily);
+        Assert.Equal<double?>(40, page.CDiweiPageFont.CFontSize);
+        Assert.Equal(family, page.CDiweiPageGlyph.CFontFamily);
+        Assert.Equal<double?>(16, page.CDiweiPageGlyph.CFontSize);
+    }
+
+    [Fact]
     public void YunjingDiweiRead_ReflexUnderTheCell_CopiesTheTallyOfTheShownSet()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

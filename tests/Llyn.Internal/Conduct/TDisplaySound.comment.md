@@ -61,7 +61,12 @@ An English entry has no rime-book or script rows, and its paradigm block follows
 ## `public void DisplayDiweiAndStemOpen_ShownEntry_RaiseTheShownLanguage()`
 
 Each click is raised in the shown entry's language, and nothing open raises nothing.
+The engine names the cell kind from the initial flag.
+
+## `public void DisplayDiweiOpen_EmptyKey_OpensNothing()`
+
+A blank key of either kind raises nothing and answers false.
 
 ## `public void DisplayFanqieSet_ShownEntry_SetsTheRankForTheShownEntry()`
 
-The gate sets the rank for the shown entry, and nothing open sets nothing.
+The gate hands the held rank and the raise flag for the shown entry, and nothing open sets nothing.

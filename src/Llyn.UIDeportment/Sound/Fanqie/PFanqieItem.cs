@@ -32,7 +32,7 @@ internal sealed class PFanqieItem
 
     public IReadOnlyList<PFanqieLine> PFanqieItemLines { get; }
 
-    internal static void PFanqieItemApply(FrameworkElement container, object item, string? _)
+    internal static void PFanqieItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not PFanqieItem row)
         {
@@ -72,7 +72,7 @@ internal sealed class PFanqieItem
         if (QLook.QLookPartFind<ItemsControl>(container, "PFanqieLines") is ItemsControl lines)
         {
             lines.ItemsSource = row.PFanqieItemLines;
-            QLookItem.QLookItemAttach(lines, PFanqieLine.PFanqieRowApply);
+            QLookItem.QLookItemAttach(lines, PFanqieLine.PFanqieRowRefine);
         }
     }
 
@@ -86,7 +86,7 @@ internal sealed class PFanqieItem
             List<PFanqieLine> lines = new(group.CFanqieGroupRows.Count);
             foreach (CFanqieRow row in group.CFanqieGroupRows)
             {
-                lines.Add(PFanqieLine.PFanqieLineCreate(row));
+                lines.Add(new PFanqieLine(row));
             }
 
             items.Add(new PFanqieItem(
