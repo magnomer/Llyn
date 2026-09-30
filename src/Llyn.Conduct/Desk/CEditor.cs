@@ -207,6 +207,8 @@ public sealed class CEditor
         CEditorTenure?.LTenureNoteSet(text);
     }
 
+    public static bool CEditorNoteCheck(string text, string note) => LTenure.LTenureNoteCheck(text, note);
+
     public void CEditorLanguageSet(string language)
     {
         CEditorTenure?.LTenureLanguageSet(language);

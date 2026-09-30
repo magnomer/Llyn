@@ -178,9 +178,9 @@ public sealed class TAtlas
         CSituation? shown = TInterfaceConduct.TAtlasSituationRead(situation);
 
         Assert.NotNull(shown);
-        Assert.Equal(new CStateWording("Hearth", null, false), shown!.CSituationTitle);
-        Assert.Equal(new CStateWording("home", null, false), shown.CSituationKind);
-        Assert.Equal(new CStateWording("By the fire", null, false), shown.CSituationDescription);
+        Assert.Equal(new CStateWording("Hearth", null, false, null), shown!.CSituationTitle);
+        Assert.Equal(new CStateWording("home", null, false, null), shown.CSituationKind);
+        Assert.Equal(new CStateWording("By the fire", null, false, null), shown.CSituationDescription);
     }
 
     [Fact]
@@ -191,9 +191,12 @@ public sealed class TAtlas
 
         CSituation shown = TInterfaceConduct.TAtlasSituationRead(situation)!;
 
-        Assert.Equal(new CStateWording(string.Empty, "Display.Unknown", false), shown.CSituationTitle);
-        Assert.Equal(new CStateWording(string.Empty, "Display.Unknown", false), shown.CSituationKind);
-        Assert.Equal(new CStateWording(string.Empty, "Display.Unknown", false), shown.CSituationDescription);
+        Assert.Equal(
+            new CStateWording(string.Empty, "Display.Unknown", false, "Display.Unknown"), shown.CSituationTitle);
+        Assert.Equal(
+            new CStateWording(string.Empty, "Display.Unknown", false, "Display.Unknown"), shown.CSituationKind);
+        Assert.Equal(
+            new CStateWording(string.Empty, "Display.Unknown", false, "Display.Unknown"), shown.CSituationDescription);
     }
 
     [Fact]
@@ -203,9 +206,9 @@ public sealed class TAtlas
 
         CSituation shown = TInterfaceConduct.TAtlasSituationRead(situation)!;
 
-        Assert.Equal(new CStateWording(string.Empty, "Situation.Untitled", true), shown.CSituationTitle);
-        Assert.Equal(new CStateWording(string.Empty, null, true), shown.CSituationKind);
-        Assert.Equal(new CStateWording(string.Empty, null, true), shown.CSituationDescription);
+        Assert.Equal(new CStateWording(string.Empty, "Situation.Untitled", true, null), shown.CSituationTitle);
+        Assert.Equal(new CStateWording(string.Empty, null, true, null), shown.CSituationKind);
+        Assert.Equal(new CStateWording(string.Empty, null, true, null), shown.CSituationDescription);
     }
 
     [Fact]

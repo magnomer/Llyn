@@ -244,8 +244,8 @@ internal sealed class QPhonology
         CPanel panel = _cPhonology.CPhonologyPanel;
         QPhonologyEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
         QPhonologyDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
-        QPhonologyViewer.IsChecked = QLook.QLookCheckedRead(panel.CPanelViewerChecked);
-        QPhonologyScribe.IsChecked = QLook.QLookCheckedRead(panel.CPanelScribeChecked);
+        QPhonologyViewer.IsChecked = panel.CPanelViewerChecked;
+        QPhonologyScribe.IsChecked = panel.CPanelScribeChecked;
         QPhonologyVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
         QPhonologyChronicle.Visibility = QLook.QLookVisibleRead(panel.CPanelScribeChecked);
         QPhonologyMode.IsEnabled = panel.CPanelModeEnabled;

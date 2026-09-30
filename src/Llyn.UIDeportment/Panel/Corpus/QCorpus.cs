@@ -277,8 +277,8 @@ internal sealed partial class QCorpus : QChronicleHost
         QCorpusEditor.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusEditorShown);
         QExcerptBody.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusExcerptHeld);
         QExcerptUnselected.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusExcerptBlank);
-        QCorpusViewer.IsChecked = QLook.QLookCheckedRead(_cCorpus.CCorpusViewerChecked);
-        QCorpusScribe.IsChecked = QLook.QLookCheckedRead(_cCorpus.CCorpusScribeChecked);
+        QCorpusViewer.IsChecked = _cCorpus.CCorpusViewerChecked;
+        QCorpusScribe.IsChecked = _cCorpus.CCorpusScribeChecked;
         QCorpusVoyage.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusViewerChecked);
         QCorpusChronicle.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusScribeChecked);
         QCorpusMode.IsEnabled = _cCorpus.CCorpusModeEnabled;

@@ -10,11 +10,11 @@ public sealed class QIconImage : Image
         nameof(QIconSource),
         typeof(ImageSource),
         typeof(QIconImage),
-        new FrameworkPropertyMetadata(null, QIconSourceHandle));
+        new FrameworkPropertyMetadata(null, QIconSourceRefine));
 
     public QIconImage()
     {
-        IsEnabledChanged += QIconEnabledHandle;
+        IsEnabledChanged += QIconEnabledRefine;
     }
 
     public ImageSource? QIconSource
@@ -23,12 +23,12 @@ public sealed class QIconImage : Image
         set => SetValue(QIconSourceProperty, value);
     }
 
-    private void QIconEnabledHandle(object sender, DependencyPropertyChangedEventArgs e)
+    private void QIconEnabledRefine(object sender, DependencyPropertyChangedEventArgs e)
     {
         QIconImageApply();
     }
 
-    private static void QIconSourceHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+    private static void QIconSourceRefine(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
         ((QIconImage)sender).QIconImageApply();
     }

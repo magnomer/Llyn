@@ -40,15 +40,8 @@ internal sealed class QCaret : Adorner
         EventManager.RegisterClassHandler(
             typeof(TextBox),
             Keyboard.GotKeyboardFocusEvent,
-            new KeyboardFocusChangedEventHandler(QCaretFieldHandle),
+            new KeyboardFocusChangedEventHandler(QCaretFieldRefine),
             true);
-    }
-
-    internal static bool QCaretKeyApply(
-        string key, int caret, int length, int selection, Action<int> remove, Func<int, bool> move, Action place)
-    {
-        return QCaretEdgeApply(key, caret, length, selection, remove)
-            || QCaretStepApply(key, length, selection, move, place);
     }
 
     internal static bool QCaretEdgeApply(string key, int caret, int length, int selection, Action<int> remove)
@@ -100,14 +93,14 @@ internal sealed class QCaret : Adorner
         Focusable = false;
         field.CaretBrush = Brushes.Transparent;
 
-        field.TextChanged += QCaretTextHandle;
-        field.SelectionChanged += QCaretTypeHandle;
-        field.LayoutUpdated += QCaretLayoutHandle;
-        field.LostKeyboardFocus += QCaretBlurHandle;
-        field.Unloaded += QCaretUnloadHandle;
+        field.TextChanged += QCaretTextRefine;
+        field.SelectionChanged += QCaretTypeRefine;
+        field.LayoutUpdated += QCaretLayoutRefine;
+        field.LostKeyboardFocus += QCaretBlurRefine;
+        field.Unloaded += QCaretUnloadRefine;
     }
 
-    private static void QCaretFieldHandle(object sender, KeyboardFocusChangedEventArgs e)
+    private static void QCaretFieldRefine(object sender, KeyboardFocusChangedEventArgs e)
     {
         if (sender is not TextBox field || field.GetValue(QCaretHeldProperty) is QCaret)
         {
@@ -126,33 +119,33 @@ internal sealed class QCaret : Adorner
         caret.QCaretUpdate(false);
     }
 
-    private void QCaretTextHandle(object sender, TextChangedEventArgs e)
+    private void QCaretTextRefine(object sender, TextChangedEventArgs e)
     {
         QCaretUpdate(true);
     }
 
-    private void QCaretTypeHandle(object sender, RoutedEventArgs e)
+    private void QCaretTypeRefine(object sender, RoutedEventArgs e)
     {
         QCaretUpdate(true);
     }
 
-    private void QCaretLayoutHandle(object? sender, EventArgs e)
+    private void QCaretLayoutRefine(object? sender, EventArgs e)
     {
         QCaretUpdate(false);
     }
 
-    private void QCaretBlurHandle(object sender, RoutedEventArgs e)
+    private void QCaretBlurRefine(object sender, RoutedEventArgs e)
     {
         QCaretUpdate(false);
     }
 
-    private void QCaretUnloadHandle(object sender, RoutedEventArgs e)
+    private void QCaretUnloadRefine(object sender, RoutedEventArgs e)
     {
-        _qCaretField.TextChanged -= QCaretTextHandle;
-        _qCaretField.SelectionChanged -= QCaretTypeHandle;
-        _qCaretField.LayoutUpdated -= QCaretLayoutHandle;
-        _qCaretField.LostKeyboardFocus -= QCaretBlurHandle;
-        _qCaretField.Unloaded -= QCaretUnloadHandle;
+        _qCaretField.TextChanged -= QCaretTextRefine;
+        _qCaretField.SelectionChanged -= QCaretTypeRefine;
+        _qCaretField.LayoutUpdated -= QCaretLayoutRefine;
+        _qCaretField.LostKeyboardFocus -= QCaretBlurRefine;
+        _qCaretField.Unloaded -= QCaretUnloadRefine;
 
         _qCaretField.ClearValue(QCaretHeldProperty);
         _qCaretField.CaretBrush = null;

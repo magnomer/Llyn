@@ -1,7 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -12,10 +11,10 @@ namespace Llyn.UIDeportment;
 
 internal sealed partial class PSentence : INotifyPropertyChanged
 {
-    private CStateValue _pSentenceText;
+    private CStateWording _pSentenceText;
     private long? _pSentenceCitation;
-    private CStateValue _pSentenceParticle;
-    private CStateValue _pSentenceDependence;
+    private CStateWording _pSentenceParticle;
+    private CStateWording _pSentenceDependence;
     private int _pSentenceParticleColumn;
     private int _pSentenceDependenceColumn = 2;
     private bool _pSentenceFrameVisible;
@@ -37,7 +36,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         PSentenceDependenceCatalog = dependences;
         PSentenceLanguageCatalog = languages;
         _pSentenceRow = draft.CSentenceDraftId;
-        _pSentenceText = example?.CExampleDraftText ?? CStateValue.CStateValueEmpty;
+        _pSentenceText = draft.CSentenceDraftText;
         PSentenceCitation = example?.CExampleDraftReference;
         _pSentenceParticle = draft.CSentenceDraftParticle;
         _pSentenceDependence = draft.CSentenceDraftDependence;
@@ -54,7 +53,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
 
     internal long PSentenceRow => _pSentenceRow;
 
-    public CStateValue PSentenceText
+    public CStateWording PSentenceText
     {
         get => _pSentenceText;
         private set
@@ -84,7 +83,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         }
     }
 
-    public CStateValue PSentenceParticle
+    public CStateWording PSentenceParticle
     {
         get => _pSentenceParticle;
         private set
@@ -100,7 +99,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         }
     }
 
-    public CStateValue PSentenceDependence
+    public CStateWording PSentenceDependence
     {
         get => _pSentenceDependence;
         private set
@@ -127,10 +126,10 @@ internal sealed partial class PSentence : INotifyPropertyChanged
     }
 
     public bool PSentenceFrameWritten =>
-        PSentenceFrameCheck(_pSentenceParticle) || PSentenceFrameCheck(_pSentenceDependence);
+        !_pSentenceParticle.CStateWordingMuted || !_pSentenceDependence.CStateWordingMuted;
 
     public string PSentenceFrameGap =>
-        PSentenceFrameCheck(_pSentenceParticle) && PSentenceFrameCheck(_pSentenceDependence) ? " " : string.Empty;
+        !_pSentenceParticle.CStateWordingMuted && !_pSentenceDependence.CStateWordingMuted ? " " : string.Empty;
 
     public int PSentenceParticleColumn
     {
@@ -178,7 +177,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
 
         _pSentenceRow = draft.CSentenceDraftId;
         PSentenceGlossShow(example?.CExampleDraftGloss ?? []);
-        PSentenceText = example?.CExampleDraftText ?? CStateValue.CStateValueEmpty;
+        PSentenceText = draft.CSentenceDraftText;
         PSentenceCitation = example?.CExampleDraftReference;
         PSentenceParticle = draft.CSentenceDraftParticle;
         PSentenceDependence = draft.CSentenceDraftDependence;
@@ -215,13 +214,12 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         }
 
         PSentenceChoiceApply(
-            container, "PSentenceParticle", row.PSentenceParticle, row.PSentenceParticleCatalog, "Card.ParticleHint");
+            container, "PSentenceParticle", row.PSentenceParticle, row.PSentenceParticleCatalog);
         PSentenceChoiceApply(
             container,
             "PSentenceDependence",
             row.PSentenceDependence,
-            row.PSentenceDependenceCatalog,
-            "Card.DependenceHint");
+            row.PSentenceDependenceCatalog);
         if (QLook.QLookPartFind<Grid>(container, "PSentenceParticleField") is Grid particle)
         {
             Grid.SetColumn(particle, row.PSentenceParticleColumn);
@@ -232,20 +230,10 @@ internal sealed partial class PSentence : INotifyPropertyChanged
             Grid.SetColumn(dependence, row.PSentenceDependenceColumn);
         }
 
-        QStateConverter state = new();
-        CultureInfo culture = CultureInfo.CurrentCulture;
         if (QLook.QLookPartFind<TextBox>(container, "PSentenceText") is TextBox text)
         {
-            text.Text = (string)state.Convert(row.PSentenceText, typeof(string), string.Empty, culture);
-            text.SetValue(QField.QFieldHintProperty, state.Convert(
-                [
-                    row.PSentenceText,
-                    QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
-                    QLocalizationCatalog.QLocalizationTextRead("Card.ExampleHint"),
-                ],
-                typeof(string),
-                string.Empty,
-                culture));
+            text.Text = row.PSentenceText.CStateWordingText;
+            QStateConverter.QStateHintRefine(text, QField.QFieldHintProperty, row.PSentenceText);
             PSentenceLayoutApply(container, text);
         }
 
@@ -271,25 +259,14 @@ internal sealed partial class PSentence : INotifyPropertyChanged
     }
 
     private static void PSentenceChoiceApply(
-        FrameworkElement container, string name, CStateValue value, ObservableCollection<string> catalog, string hint)
+        FrameworkElement container, string name, CStateWording value, ObservableCollection<string> catalog)
     {
-        QStateConverter state = new();
-        CultureInfo culture = CultureInfo.CurrentCulture;
-        string shown = (string)state.Convert(value, typeof(string), string.Empty, culture);
-        object tag = state.Convert(
-            [
-                value,
-                QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
-                QLocalizationCatalog.QLocalizationTextRead(hint),
-            ],
-            typeof(string),
-            string.Empty,
-            culture);
+        string shown = value.CStateWordingText;
         if (QLook.QLookPartFind<ComboBox>(container, name) is ComboBox choice)
         {
             choice.ItemsSource = catalog;
             choice.Text = shown;
-            choice.SetValue(QField.QFieldHintProperty, tag);
+            QStateConverter.QStateHintRefine(choice, QField.QFieldHintProperty, value);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, name + "Ghost") is TextBlock ghost)
@@ -299,7 +276,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
 
         if (QLook.QLookPartFind<TextBlock>(container, name + "Hint") is TextBlock prompt)
         {
-            prompt.Text = (string)tag;
+            QStateConverter.QStateHintRefine(prompt, TextBlock.TextProperty, value);
             prompt.Visibility = QLook.QLookVisibleRead(shown.Length == 0);
         }
     }
@@ -360,11 +337,6 @@ internal sealed partial class PSentence : INotifyPropertyChanged
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
-
-    private static bool PSentenceFrameCheck(CStateValue value)
-    {
-        return value.CStateValueUncertain || value.CStateValueShown is not null;
-    }
 
     private void PSentenceFrameRaise()
     {

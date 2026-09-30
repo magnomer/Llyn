@@ -41,7 +41,7 @@ internal sealed class QImprint : QChronicleHost
 
         QAuthorCredit.ItemsSource = _qAuthorList;
         QByline.CustomPopupPlacementCallback = QField.QFieldPopupPlace;
-        QChoice.QChoiceMenuBuild(QImprintKindList, QImprintKindObserve, CImprint.CImprintKindRead());
+        QChoice.QChoiceMenuRefine(QImprintKindList, QImprintKindObserve, CImprint.CImprintKindRead());
 
         QLookItem.QLookItemAttach(QAuthorCredit, (container, item, change) =>
         {

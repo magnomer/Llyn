@@ -162,8 +162,17 @@ public sealed partial class LTenure
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        LTenureRequestDefer(new LRequestNote(LTenureId, text.TrimEnd('\r', '\n')));
+        LTenureRequestDefer(new LRequestNote(LTenureId, LTenureNoteResolve(text)));
     }
+
+    public static bool LTenureNoteCheck(string text, string note)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        return string.Equals(LTenureNoteResolve(text), note, StringComparison.Ordinal);
+    }
+
+    private static string LTenureNoteResolve(string text) => text.TrimEnd('\r', '\n');
 
     public void LTenureLanguageSet(string language)
     {

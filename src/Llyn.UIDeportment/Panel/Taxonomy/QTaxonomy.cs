@@ -220,8 +220,8 @@ internal sealed partial class QTaxonomy
         CPanel panel = _cTaxonomy.CTaxonomyMembership.CMembershipPanel;
         QTaxonomyEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
         QTaxonomyDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
-        QTaxonomyViewer.IsChecked = QLook.QLookCheckedRead(panel.CPanelViewerChecked);
-        QTaxonomyScribe.IsChecked = QLook.QLookCheckedRead(panel.CPanelScribeChecked);
+        QTaxonomyViewer.IsChecked = panel.CPanelViewerChecked;
+        QTaxonomyScribe.IsChecked = panel.CPanelScribeChecked;
         QTaxonomyVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
         QTaxonomyChronicle.Visibility = QLook.QLookVisibleRead(panel.CPanelScribeChecked);
         QTaxonomyMode.IsEnabled = panel.CPanelModeEnabled;

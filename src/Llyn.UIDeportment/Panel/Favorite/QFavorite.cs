@@ -205,8 +205,8 @@ internal sealed partial class QFavorite
         CPanel panel = _cFavorite.CFavoritePanel;
         QFavoriteEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
         QFavoriteDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
-        QFavoriteViewer.IsChecked = QLook.QLookCheckedRead(panel.CPanelViewerChecked);
-        QFavoriteScribe.IsChecked = QLook.QLookCheckedRead(panel.CPanelScribeChecked);
+        QFavoriteViewer.IsChecked = panel.CPanelViewerChecked;
+        QFavoriteScribe.IsChecked = panel.CPanelScribeChecked;
         QFavoriteVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
         QFavoriteChronicle.Visibility = QLook.QLookVisibleRead(panel.CPanelScribeChecked);
         QFavoriteMode.IsEnabled = panel.CPanelModeEnabled;

@@ -220,8 +220,8 @@ internal sealed partial class QTenor
         CPanel panel = _cTenor.CTenorCohort.CCohortPanel;
         QTenorEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
         QTenorDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
-        QTenorViewer.IsChecked = QLook.QLookCheckedRead(panel.CPanelViewerChecked);
-        QTenorScribe.IsChecked = QLook.QLookCheckedRead(panel.CPanelScribeChecked);
+        QTenorViewer.IsChecked = panel.CPanelViewerChecked;
+        QTenorScribe.IsChecked = panel.CPanelScribeChecked;
         QTenorVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
         QTenorChronicle.Visibility = QLook.QLookVisibleRead(panel.CPanelScribeChecked);
         QTenorMode.IsEnabled = panel.CPanelModeEnabled;

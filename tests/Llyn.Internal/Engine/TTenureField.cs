@@ -32,6 +32,15 @@ public sealed class TTenureField
     }
 
     [Fact]
+    public void NoteCheck_TrailingBreaks_MatchTrimmedNote()
+    {
+        Assert.True(TInterface.TTenureNoteCheck("warm\r\n\n", "warm"));
+        Assert.True(TInterface.TTenureNoteCheck("warm", "warm"));
+        Assert.False(TInterface.TTenureNoteCheck("warm \n", "warm"));
+        Assert.False(TInterface.TTenureNoteCheck("\nwarm", "warm"));
+    }
+
+    [Fact]
     public void LanguageSet_Empty_KeepsLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

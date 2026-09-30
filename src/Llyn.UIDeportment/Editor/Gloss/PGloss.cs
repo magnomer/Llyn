@@ -1,7 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -17,7 +16,7 @@ internal sealed class PGloss : INotifyPropertyChanged
     private string _pGlossLanguage;
     private string? _pGlossHint;
     private ImageSource? _pGlossFlag;
-    private CStateValue _pGlossText;
+    private CStateWording _pGlossText;
     private bool _pGlossLanguageVisible;
 
     internal PGloss(ObservableCollection<PLanguageItem> catalog, CGlossDraft draft)
@@ -29,7 +28,7 @@ internal sealed class PGloss : INotifyPropertyChanged
         _pGlossLanguage = draft.CGlossDraftLanguage;
         _pGlossHint = draft.CGlossDraftHint;
         _pGlossFlag = LEnsignImage.LEnsignFind(_pGlossLanguage);
-        _pGlossText = draft.CGlossDraftText;
+        _pGlossText = draft.CGlossDraftWording;
     }
 
     public ObservableCollection<PLanguageItem> PGlossLanguageCatalog { get; }
@@ -55,7 +54,7 @@ internal sealed class PGloss : INotifyPropertyChanged
         }
     }
 
-    public CStateValue PGlossText
+    public CStateWording PGlossText
     {
         get => _pGlossText;
         private set
@@ -97,7 +96,7 @@ internal sealed class PGloss : INotifyPropertyChanged
             PGlossRaise(nameof(PGlossLanguage));
         }
 
-        PGlossText = draft.CGlossDraftText;
+        PGlossText = draft.CGlossDraftWording;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -181,23 +180,17 @@ internal sealed class PGloss : INotifyPropertyChanged
         label.ClearValue(TextBlock.ForegroundProperty);
     }
 
-    private static void PGlossTextApply(FrameworkElement container, CStateValue text)
+    private static void PGlossTextApply(FrameworkElement container, CStateWording text)
     {
-        QStateConverter state = new();
-        CultureInfo culture = CultureInfo.CurrentCulture;
-        string unknown = QLocalizationCatalog.QLocalizationTextRead("Display.Unknown");
         if (QLook.QLookPartFind<TextBox>(container, "PGlossText") is TextBox field)
         {
-            string hint = QLocalizationCatalog.QLocalizationTextRead("Example.Translation");
-            field.SetValue(TextBox.TextProperty, state.Convert(text, typeof(string), string.Empty, culture));
-            field.SetValue(
-                QField.QFieldHintProperty, state.Convert([text, unknown, hint], typeof(string), string.Empty, culture));
+            field.SetValue(TextBox.TextProperty, text.CStateWordingText);
+            QStateConverter.QStateHintRefine(field, QField.QFieldHintProperty, text);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PGlossText") is TextBlock line)
         {
-            line.SetValue(
-                TextBlock.TextProperty, state.Convert([text, unknown], typeof(string), string.Empty, culture));
+            QStateConverter.QStateTextRefine(line, TextBlock.TextProperty, text);
         }
     }
 

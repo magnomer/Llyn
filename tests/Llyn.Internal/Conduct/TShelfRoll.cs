@@ -81,8 +81,8 @@ public sealed class TShelfRoll
         CCatalogReference row = shelf.CShelfRollRead().CShelfRollRows
             .Single(shown => shown.CCatalogReferenceName == "Book");
 
-        Assert.Equal(new CStateWording("Ada", null, false), row.CCatalogReferenceCredit);
-        Assert.Equal(new CStateWording("1999", null, false), row.CCatalogReferenceYear);
+        Assert.Equal(new CStateWording("Ada", null, false, null), row.CCatalogReferenceCredit);
+        Assert.Equal(new CStateWording("1999", null, false, null), row.CCatalogReferenceYear);
     }
 
     private static LReference TShelfWordingPrepare(LEngine engine, string title, LStateValue year, LStateMark authors)

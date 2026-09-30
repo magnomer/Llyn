@@ -8,9 +8,9 @@ One meaning or collocation of an entry, as the editor's card shows it.
 
 - `CCardDraftId`: the stored card, zero for a fresh one.
 - `CCardDraftPosition`: the card's place in its list.
-- `CCardDraftTitle`: the card's title.
-- `CCardDraftExpression`: the collocation's expression.
-- `CCardDraftMeaning`: the card's definition.
+- `CCardDraftTitle`: the card's title, worded, whose field shows no hint.
+- `CCardDraftExpression`: the collocation's expression, worded with the expression hint.
+- `CCardDraftMeaning`: the card's definition, worded with the hint its sheet names.
 - `CCardDraftSentence`: the card's sentences.
 - `CCardDraftSituation`: the card's situations.
 - `CCardDraftRegister`: the card's registers.

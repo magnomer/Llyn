@@ -5,7 +5,7 @@ namespace Llyn.UIDeportment;
 
 internal sealed class PRegister
 {
-    internal PRegister(CStateValue text, long id)
+    internal PRegister(CStateWording text, long id)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -15,5 +15,5 @@ internal sealed class PRegister
 
     public long PRegisterId { get; }
 
-    public CStateValue PRegisterText { get; }
+    public CStateWording PRegisterText { get; }
 }

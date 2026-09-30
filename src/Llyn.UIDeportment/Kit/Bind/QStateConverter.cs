@@ -1,46 +1,32 @@
 using System;
-using System.Globalization;
-using System.Linq;
-using System.Windows.Data;
+using System.Windows;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
-public sealed class QStateConverter : IMultiValueConverter, IValueConverter
+internal static class QStateConverter
 {
-    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    internal static void QStateTextRefine(DependencyObject target, DependencyProperty property, CStateWording wording)
     {
-        ArgumentNullException.ThrowIfNull(values);
+        ArgumentNullException.ThrowIfNull(target);
+        ArgumentNullException.ThrowIfNull(wording);
 
-        string mark = values.Length > 1 && values[1] is string marked ? marked : string.Empty;
-        bool placeholder = values.Length > 2;
-        string hint = placeholder && values[2] is string hinted ? hinted : string.Empty;
-
-        return values.FirstOrDefault() is CStateValue state ? QStateFormat(state, mark, hint, placeholder) : hint;
+        target.SetValue(
+            property,
+            wording.CStateWordingKey is string key
+                ? QLocalizationCatalog.QLocalizationTextRead(key)
+                : wording.CStateWordingText);
     }
 
-    private static string QStateFormat(CStateValue state, string mark, string hint, bool placeholder)
+    internal static void QStateHintRefine(DependencyObject target, DependencyProperty property, CStateWording wording)
     {
-        if (state.CStateValueLegible)
-        {
-            return placeholder ? hint : state.CStateValueText;
-        }
+        ArgumentNullException.ThrowIfNull(target);
+        ArgumentNullException.ThrowIfNull(wording);
 
-        return state.CStateValueUncertain ? mark : hint;
-    }
-
-    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-    {
-        throw new NotSupportedException();
-    }
-
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        return value is CStateValue state ? state.CStateValueText : string.Empty;
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        throw new NotSupportedException();
+        target.SetValue(
+            property,
+            wording.CStateWordingHint is string hint
+                ? QLocalizationCatalog.QLocalizationTextRead(hint)
+                : string.Empty);
     }
 }

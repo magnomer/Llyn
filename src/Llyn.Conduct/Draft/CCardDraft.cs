@@ -5,9 +5,9 @@ namespace Llyn.Conduct;
 public sealed record CCardDraft(
     long CCardDraftId,
     int CCardDraftPosition,
-    CStateValue CCardDraftTitle,
-    CStateValue CCardDraftExpression,
-    CStateValue CCardDraftMeaning,
+    CStateWording CCardDraftTitle,
+    CStateWording CCardDraftExpression,
+    CStateWording CCardDraftMeaning,
     IReadOnlyList<CSentenceDraft> CCardDraftSentence,
     IReadOnlyList<CSituationDraft> CCardDraftSituation,
     IReadOnlyList<CRegisterDraft> CCardDraftRegister,

@@ -239,8 +239,8 @@ internal sealed class QReference
         QReferenceDisplay.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfDisplayShown);
         QReferenceImprint.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfImprintShown);
         QReferenceColophon.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfColophonShown);
-        QReferenceViewer.IsChecked = QLook.QLookCheckedRead(_cShelf.CShelfViewerChecked);
-        QReferenceScribe.IsChecked = QLook.QLookCheckedRead(_cShelf.CShelfScribeChecked);
+        QReferenceViewer.IsChecked = _cShelf.CShelfViewerChecked;
+        QReferenceScribe.IsChecked = _cShelf.CShelfScribeChecked;
         QReferenceVoyage.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfViewerChecked);
         QReferenceChronicle.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfScribeChecked);
         QReferenceMode.IsEnabled = _cShelf.CShelfModeEnabled;

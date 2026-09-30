@@ -354,8 +354,8 @@ public sealed class TAnthology
     public void AnthologyTextCheck_BlankField_MatchesAnEmptyText()
     {
         Assert.True(CAnthology.CAnthologyTextCheck("  ", CStateValue.CStateValueEmpty));
-        Assert.True(CAnthology.CAnthologyTextCheck("a cat", new CStateValue("a cat", false, true)));
-        Assert.False(CAnthology.CAnthologyTextCheck("a cat ", new CStateValue("a cat", false, true)));
+        Assert.True(CAnthology.CAnthologyTextCheck("a cat", new CStateValue("a cat", false)));
+        Assert.False(CAnthology.CAnthologyTextCheck("a cat ", new CStateValue("a cat", false)));
     }
 
     [Fact]

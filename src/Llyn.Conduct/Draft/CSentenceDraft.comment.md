@@ -8,5 +8,6 @@ One sentence of a card, as the sentence row shows it.
 
 - `CSentenceDraftId`: the stored sentence, zero for a fresh one.
 - `CSentenceDraftExample`: the example, or null when the sentence holds none yet.
-- `CSentenceDraftParticle`: the particle framing the example.
-- `CSentenceDraftDependence`: the dependence framing the example.
+- `CSentenceDraftText`: the example's text, worded with the example hint, and empty while no example is held.
+- `CSentenceDraftParticle`: the particle framing the example, worded with its hint.
+- `CSentenceDraftDependence`: the dependence framing the example, worded with its hint.

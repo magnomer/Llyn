@@ -189,7 +189,11 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
     internal void PEditorDraftRefine(CEntryDraft draft)
     {
         QField.QFieldTextShow(PHeadword, draft.CEntryDraftHeadword);
-        QField.QFieldNoteShow(PNoteContents, draft.CEntryDraftNote);
+        if (!CEditor.CEditorNoteCheck(PNoteContents.Text, draft.CEntryDraftNote))
+        {
+            QField.QFieldTextShow(PNoteContents, draft.CEntryDraftNote);
+        }
+
         PEditorCommand.Visibility = QLook.QLookVisibleRead(_qEditor.QEditorArea.CEditorOwned);
         PReadingRefine();
     }

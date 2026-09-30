@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -13,7 +12,7 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
 {
     private readonly CAtelier _pImageAtelier;
 
-    private CStateValue _pImageLocation;
+    private CStateWording _pImageLocation;
     private bool _pImageSeen;
     private ImageSource? _pImagePreview;
     private long _pImageRow;
@@ -25,10 +24,10 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
 
         _pImageAtelier = atelier;
         _pImageRow = written.CImageDraftId;
-        _pImageLocation = written.CImageDraftLocation;
+        _pImageLocation = written.CImageDraftWording;
     }
 
-    public CStateValue PImageLocation
+    public CStateWording PImageLocation
     {
         get => _pImageLocation;
         private set
@@ -77,7 +76,7 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
         ArgumentNullException.ThrowIfNull(written);
 
         _pImageRow = written.CImageDraftId;
-        PImageLocation = written.CImageDraftLocation;
+        PImageLocation = written.CImageDraftWording;
     }
 
     internal static string? PImageOpen(Window owner)
@@ -116,18 +115,8 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
 
         if (QLook.QLookPartFind<TextBox>(container, "PImageLocation") is TextBox location)
         {
-            QStateConverter state = new();
-            CultureInfo culture = CultureInfo.CurrentCulture;
-            location.Text = (string)state.Convert(row.PImageLocation, typeof(string), string.Empty, culture);
-            location.SetValue(QField.QFieldHintProperty, state.Convert(
-                [
-                    row.PImageLocation,
-                    QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
-                    QLocalizationCatalog.QLocalizationTextRead("Card.LocationHint"),
-                ],
-                typeof(string),
-                string.Empty,
-                culture));
+            location.Text = row.PImageLocation.CStateWordingText;
+            QStateConverter.QStateHintRefine(location, QField.QFieldHintProperty, row.PImageLocation);
         }
 
         if (QLook.QLookPartFind<QIconImage>(container, "PImageRemoveIcon") is QIconImage icon)
@@ -161,7 +150,7 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
             return;
         }
 
-        Uri? address = _pImageAtelier.CAtelierLocationRead(_pImageLocation.CStateValueText);
+        Uri? address = _pImageAtelier.CAtelierLocationRead(_pImageLocation.CStateWordingText);
         if (address is null)
         {
             PImagePreview = null;

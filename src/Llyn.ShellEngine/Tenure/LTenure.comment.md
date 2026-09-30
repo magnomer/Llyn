@@ -127,6 +127,15 @@ Defers the typed headword.
 
 Defers the note without the trailing line breaks a text box carries.
 
+## `public static bool LTenureNoteCheck(string text, string note)`
+
+Answers whether a typed text already holds the note, by the same trim the set applies.
+A driver asks it before painting, so a line break just typed is not overwritten.
+
+## `private static string LTenureNoteResolve(string text)`
+
+The one owner of the note's trim, read by the set and by the check.
+
 ## `public void LTenureLanguageSet(string language)`
 
 Sends the chosen language at once.

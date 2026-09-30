@@ -217,8 +217,8 @@ internal sealed class QGuild
         QContract.QContractFind<UserControl>(_qGuildSurface, "PVita").Visibility =
             QLook.QLookVisibleRead(_cGuild.CGuildVitaShown);
         QGuildColophon.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildColophonShown);
-        QGuildViewer.IsChecked = QLook.QLookCheckedRead(_cGuild.CGuildViewerChecked);
-        QGuildScribe.IsChecked = QLook.QLookCheckedRead(_cGuild.CGuildScribeChecked);
+        QGuildViewer.IsChecked = _cGuild.CGuildViewerChecked;
+        QGuildScribe.IsChecked = _cGuild.CGuildScribeChecked;
         QGuildVoyage.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildViewerChecked);
         QGuildChronicle.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildScribeChecked);
         QGuildMode.IsEnabled = _cGuild.CGuildModeEnabled;
@@ -229,7 +229,8 @@ internal sealed class QGuild
 
     private void QLouverBuild()
     {
-        QChoice.QChoiceKindBuild(QLouverList, _cGuild.CGuildPanel.CPanelFilter, QLouverObserve);
+        QChoice.QChoiceKindRefine(
+            QLouverList, _cGuild.CGuildPanel.CPanelFilter, QLouverObserve, CImprint.CImprintKindRead());
     }
 
     private void QLouverRefine()

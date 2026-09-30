@@ -97,21 +97,6 @@ internal static class QField
         box.Text = text;
     }
 
-    internal static void QFieldNoteShow(TextBox box, string note)
-    {
-        if (string.Equals(QFieldNoteRead(box), note, StringComparison.Ordinal))
-        {
-            return;
-        }
-
-        box.Text = note;
-    }
-
-    internal static string QFieldNoteRead(TextBox box)
-    {
-        return box.Text.TrimEnd('\r', '\n');
-    }
-
     internal static string QFieldPathRead(TextBox box)
     {
         ArgumentNullException.ThrowIfNull(box);
@@ -291,10 +276,10 @@ internal static class QField
     internal static void QFieldCellAttach(UIElement host)
     {
         ArgumentNullException.ThrowIfNull(host);
-        host.PreviewMouseLeftButtonDown += QFieldPressHandle;
+        host.PreviewMouseLeftButtonDown += QFieldPressRefine;
     }
 
-    private static void QFieldPressHandle(object sender, MouseButtonEventArgs e)
+    private static void QFieldPressRefine(object sender, MouseButtonEventArgs e)
     {
         if (sender is not UIElement host || e.OriginalSource is not DependencyObject origin)
         {
@@ -370,11 +355,11 @@ internal static class QField
             box.SetResourceReference(QFieldHintProperty, hint);
         }
 
-        box.LostKeyboardFocus += QFieldBlurHandle;
+        box.LostKeyboardFocus += QFieldBlurRefine;
         return box;
     }
 
-    private static void QFieldBlurHandle(object sender, KeyboardFocusChangedEventArgs e)
+    private static void QFieldBlurRefine(object sender, KeyboardFocusChangedEventArgs e)
     {
         if (sender is TextBox box && box.Parent is Grid cell)
         {
@@ -384,7 +369,7 @@ internal static class QField
 
     private static void QFieldCellDetach(TextBox box, Grid cell)
     {
-        box.LostKeyboardFocus -= QFieldBlurHandle;
+        box.LostKeyboardFocus -= QFieldBlurRefine;
         cell.Children.Remove(box);
         BindingOperations.ClearBinding(box, TextBox.TextProperty);
         foreach (UIElement child in cell.Children)

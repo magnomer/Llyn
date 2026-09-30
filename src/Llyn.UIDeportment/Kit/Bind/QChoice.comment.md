@@ -44,12 +44,13 @@ Every row reports its click to `handler`, which is the panel's own filter handle
 The rows are built here so six panels share one row shape and one reading of a stored filter.
 `QChoiceFilterRead` reads the ticked rows back, so the deportment owns the filter a click stands for.
 
-## `internal static void QChoiceKindBuild(Panel list, CCatalogFilter filter, RoutedEventHandler handler)`
+## `internal static void QChoiceKindRefine(Panel list, CCatalogFilter filter, RoutedEventHandler handler, IReadOnlyList<CReferenceKind> kinds)`
 
-Builds one ticked box per Source kind, its stored word as the tag and its localized name as the content.
-The kind's word is read twice rather than held, so no local carries it into the filter match.
+Builds one ticked box per kind in `kinds`, its stored word the tag and its localized name the content.
+The guild hands in `CImprint.CImprintKindRead`, the one kind read the imprint's menu uses too.
+A box is ticked unless `filter` hides its kind.
 
-## `internal static void QChoiceMenuBuild(Panel list, RoutedEventHandler handler, IReadOnlyList<CReferenceKind> kinds)`
+## `internal static void QChoiceMenuRefine(Panel list, RoutedEventHandler handler, IReadOnlyList<CReferenceKind> kinds)`
 
 Builds one option row per kind in `kinds` for the imprint's kind chip, in the order given.
 The imprint hands in `CImprint.CImprintKindRead`, so the order and the words come ready.
@@ -59,15 +60,11 @@ The stored word is the tag and the localized name the content, as the kind filte
 
 Marks the kind row whose tag is `tag` and unmarks every other, so the chip menu shows the held kind.
 
-## `internal static CCatalogFilter QChoiceFilterRead(Panel list)`
-
-The filter the rows of `list` now stand for: every unticked language is hidden.
-The panel maps a filter hiding nothing to the engine's shared empty filter.
-
 ## `internal static CCatalogFilter QChoiceFilterRead(object sender)`
 
-The filter a clicked box stands for, read from the list that holds the box.
-A view that pulls its parts through a surface field reads the click instead, so no field feeds the request.
+The filter the rows beside a clicked box now stand for: every unticked row is hidden.
+The list is read from the clicked box, so no surface field feeds the gate.
+The panel maps a filter hiding nothing to the engine's shared empty filter.
 
 ## `internal static CCatalogOrder? QChoiceOrderRead(object sender)`
 

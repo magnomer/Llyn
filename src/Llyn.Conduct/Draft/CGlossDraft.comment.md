@@ -15,3 +15,8 @@ One gloss of an example, as its gloss row shows it.
 
 The key a row shows in place of a language while none is chosen, or null once one is.
 Conduct chooses the key, so the row only looks it up.
+
+## `public CStateWording CGlossDraftWording`
+
+The gloss's text, worded for its field and its reading line.
+The field's hint is the translation hint, and the line shows the unknown mark in place of an unknown text.

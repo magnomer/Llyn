@@ -7,7 +7,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -102,28 +101,30 @@ internal static class QChoice
         }
     }
 
-    internal static void QChoiceKindBuild(Panel list, CCatalogFilter filter, RoutedEventHandler handler)
+    internal static void QChoiceKindRefine(
+        Panel list, CCatalogFilter filter, RoutedEventHandler handler, IReadOnlyList<CReferenceKind> kinds)
     {
         ArgumentNullException.ThrowIfNull(list);
         ArgumentNullException.ThrowIfNull(filter);
         ArgumentNullException.ThrowIfNull(handler);
+        ArgumentNullException.ThrowIfNull(kinds);
 
         list.Children.Clear();
-        foreach (LReferenceKind kind in Enum.GetValues<LReferenceKind>())
+        foreach (CReferenceKind kind in kinds)
         {
             CheckBox box = new()
             {
                 Style = (Style)list.FindResource("Theme.Choice.Filter"),
-                Tag = LReference.LReferenceKindFormat(kind),
-                IsChecked = filter.CCatalogFilterMatch(LReference.LReferenceKindFormat(kind)),
+                Tag = kind.CReferenceKindTag,
+                IsChecked = filter.CCatalogFilterMatch(kind.CReferenceKindTag),
             };
-            box.SetResourceReference(ContentControl.ContentProperty, LReference.LReferenceKindResolve(kind));
+            box.SetResourceReference(ContentControl.ContentProperty, kind.CReferenceKindKey);
             box.Click += handler;
             list.Children.Add(box);
         }
     }
 
-    internal static void QChoiceMenuBuild(Panel list, RoutedEventHandler handler, IReadOnlyList<CReferenceKind> kinds)
+    internal static void QChoiceMenuRefine(Panel list, RoutedEventHandler handler, IReadOnlyList<CReferenceKind> kinds)
     {
         ArgumentNullException.ThrowIfNull(list);
         ArgumentNullException.ThrowIfNull(handler);
@@ -134,7 +135,7 @@ internal static class QChoice
         {
             RadioButton choice = new()
             {
-                GroupName = nameof(QChoiceMenuBuild),
+                GroupName = nameof(QChoiceMenuRefine),
                 Tag = kind.CReferenceKindTag,
             };
             choice.SetResourceReference(FrameworkElement.StyleProperty, "Theme.Choice.Order");
@@ -157,12 +158,12 @@ internal static class QChoice
         }
     }
 
-    internal static CCatalogFilter QChoiceFilterRead(Panel list)
+    internal static CCatalogFilter QChoiceFilterRead(object sender)
     {
-        ArgumentNullException.ThrowIfNull(list);
+        ArgumentNullException.ThrowIfNull(sender);
 
         List<string> hidden = [];
-        foreach (object child in list.Children)
+        foreach (object child in ((Panel)((FrameworkElement)sender).Parent).Children)
         {
             if (child is CheckBox { IsChecked: not true, Tag: string language })
             {
@@ -171,11 +172,6 @@ internal static class QChoice
         }
 
         return new CCatalogFilter(hidden);
-    }
-
-    internal static CCatalogFilter QChoiceFilterRead(object sender)
-    {
-        return QChoiceFilterRead((Panel)((FrameworkElement)sender).Parent);
     }
 
     internal static CCatalogOrder? QChoiceOrderRead(object sender)

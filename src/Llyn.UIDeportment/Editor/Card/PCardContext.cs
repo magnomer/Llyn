@@ -31,7 +31,7 @@ internal sealed partial class PCard
             PCardContextCreate,
             static (row, draft) =>
                 row is PContext chip
-                    ? draft.CSituationDraftTitle == chip.PContextText ? row : PCardContextCreate(draft)
+                    ? draft.CSituationDraftWording == chip.PContextText ? row : PCardContextCreate(draft)
                     : PCardContextCreate(draft));
 
         PCardContextUpdate();
@@ -70,7 +70,7 @@ internal sealed partial class PCard
 
     private static object PCardContextCreate(CSituationDraft draft)
     {
-        return new PContext(draft.CSituationDraftTitle, draft.CSituationDraftId);
+        return new PContext(draft.CSituationDraftWording, draft.CSituationDraftId);
     }
 
     private void PCardContextStart()

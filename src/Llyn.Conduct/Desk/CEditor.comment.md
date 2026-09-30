@@ -154,6 +154,12 @@ The etymons of the held entry, as the etymology field lists them.
 
 Hands the typed reading to the tenure, which writes it the way the pack shows it.
 
+## `public static bool CEditorNoteCheck(string text, string note)`
+
+The ready verdict the note field reads before it paints.
+It answers whether the typed text already holds the note, so the field keeps a line break just typed.
+The tenure owns the trim behind it.
+
 ## `public void CEditorVarietySet(bool primary, long pronunciation, string variety)`
 
 Names the variety of the reading a menu filled, after the reading itself was written.

@@ -19,18 +19,24 @@ internal sealed partial class PCard : INotifyPropertyChanged
     private int _pCardPosition;
     private string _pCardPositionText;
     private bool _pCardPositionActive;
-    private CStateValue _pTitle = CStateValue.CStateValueEmpty;
-    private CStateValue _pCardDefinition = CStateValue.CStateValueEmpty;
-    private CStateValue _pCardExpression = CStateValue.CStateValueEmpty;
+    private CStateWording _pTitle;
+    private CStateWording _pCardDefinition;
+    private CStateWording _pCardExpression;
 
     internal PCard(
         string prefix,
         ObservableCollection<QCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences,
-        ObservableCollection<PLanguageItem> languages)
+        ObservableCollection<PLanguageItem> languages,
+        CCardDraft draft)
     {
+        ArgumentNullException.ThrowIfNull(draft);
+
         _pCardPrefix = prefix;
+        _pTitle = draft.CCardDraftTitle;
+        _pCardDefinition = draft.CCardDraftMeaning;
+        _pCardExpression = draft.CCardDraftExpression;
         _pCardPositionText = _pCardPosition.ToString(CultureInfo.InvariantCulture);
         _pCardCitation = catalog;
         _pCardParticle = particles;
@@ -99,13 +105,13 @@ internal sealed partial class PCard : INotifyPropertyChanged
 
     public string PCardTitle => $"{_pCardPrefix} {_pCardPosition}";
 
-    public CStateValue PTitle => _pTitle;
+    public CStateWording PTitle => _pTitle;
 
-    public CStateValue PCardDefinition => _pCardDefinition;
+    public CStateWording PCardDefinition => _pCardDefinition;
 
-    public CStateValue PCardExpression => _pCardExpression;
+    public CStateWording PCardExpression => _pCardExpression;
 
-    internal void PCardTitleShow(CStateValue value)
+    internal void PCardTitleShow(CStateWording value)
     {
         ArgumentNullException.ThrowIfNull(value);
 
@@ -118,7 +124,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
         PCardRaise(nameof(PTitle));
     }
 
-    internal void PCardDefinitionShow(CStateValue value)
+    internal void PCardDefinitionShow(CStateWording value)
     {
         ArgumentNullException.ThrowIfNull(value);
 
@@ -131,7 +137,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
         PCardRaise(nameof(PCardDefinition));
     }
 
-    internal void PCardExpressionShow(CStateValue value)
+    internal void PCardExpressionShow(CStateWording value)
     {
         ArgumentNullException.ThrowIfNull(value);
 
@@ -144,13 +150,10 @@ internal sealed partial class PCard : INotifyPropertyChanged
         PCardRaise(nameof(PCardExpression));
     }
 
-    internal static void PCardRowApply(FrameworkElement container, PCard card, string hint, string? changed)
+    internal static void PCardRowApply(FrameworkElement container, PCard card, string? changed)
     {
         ArgumentNullException.ThrowIfNull(card);
 
-        QStateConverter state = new();
-        CultureInfo culture = CultureInfo.CurrentCulture;
-        string unknown = QLocalizationCatalog.QLocalizationTextRead("Display.Unknown");
         if (QLook.QLookPartFind<Border>(container, "PCardPosition") is Border position)
         {
             if (card.PCardPositionActive)
@@ -186,40 +189,30 @@ internal sealed partial class PCard : INotifyPropertyChanged
         {
             if (changed is null or nameof(PTitle))
             {
-                title.Text = (string)state.Convert(card.PTitle, typeof(string), string.Empty, culture);
+                title.Text = card.PTitle.CStateWordingText;
             }
 
-            title.SetValue(
-                QField.QFieldHintProperty,
-                state.Convert([card.PTitle, card.PCardTitle], typeof(string), string.Empty, culture));
+            QStateConverter.QStateHintRefine(title, QField.QFieldHintProperty, card.PTitle);
         }
 
         if (QLook.QLookPartFind<TextBox>(container, "PCardExpression") is TextBox expression)
         {
             if (changed is null or nameof(PCardExpression))
             {
-                expression.Text = (string)state.Convert(card.PCardExpression, typeof(string), string.Empty, culture);
+                expression.Text = card.PCardExpression.CStateWordingText;
             }
 
-            expression.SetValue(QField.QFieldHintProperty, state.Convert(
-                [card.PCardExpression, unknown, QLocalizationCatalog.QLocalizationTextRead("Card.ExpressionHint")],
-                typeof(string),
-                string.Empty,
-                culture));
+            QStateConverter.QStateHintRefine(expression, QField.QFieldHintProperty, card.PCardExpression);
         }
 
         if (QLook.QLookPartFind<TextBox>(container, "PCardDefinition") is TextBox definition)
         {
             if (changed is null or nameof(PCardDefinition))
             {
-                definition.Text = (string)state.Convert(card.PCardDefinition, typeof(string), string.Empty, culture);
+                definition.Text = card.PCardDefinition.CStateWordingText;
             }
 
-            definition.SetValue(QField.QFieldHintProperty, state.Convert(
-                [card.PCardDefinition, unknown, QLocalizationCatalog.QLocalizationTextRead(hint)],
-                typeof(string),
-                string.Empty,
-                culture));
+            QStateConverter.QStateHintRefine(definition, QField.QFieldHintProperty, card.PCardDefinition);
         }
 
         if (QLook.QLookPartFind<QIconImage>(container, "PCardIcon") is QIconImage icon)

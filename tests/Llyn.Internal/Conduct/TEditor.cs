@@ -212,6 +212,8 @@ public sealed class TEditor
         editor.CEditorDesk.CDeskPersist();
 
         Assert.Equal("a note", editor.CEditorDraftRead()?.CEntryDraftNote);
+        Assert.True(CEditor.CEditorNoteCheck("a note\r\n\n", editor.CEditorDraftRead()!.CEntryDraftNote));
+        Assert.False(CEditor.CEditorNoteCheck("a note, longer", editor.CEditorDraftRead()!.CEntryDraftNote));
     }
 
     [Fact]

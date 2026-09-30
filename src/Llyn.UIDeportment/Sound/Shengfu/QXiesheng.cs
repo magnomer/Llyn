@@ -249,8 +249,8 @@ internal sealed class QXiesheng
         QXieshengEditor.Visibility = QLook.QLookVisibleRead(_cXiesheng.CXieshengEditorShown);
         QXieshengDisplay.Visibility = QLook.QLookVisibleRead(_cXiesheng.CXieshengDisplayShown);
         QXieshengStem.Visibility = QLook.QLookVisibleRead(_cXiesheng.CXieshengStemShown);
-        QXieshengViewer.IsChecked = QLook.QLookCheckedRead(_cXiesheng.CXieshengPanel.CPanelViewerChecked);
-        QXieshengScribe.IsChecked = QLook.QLookCheckedRead(_cXiesheng.CXieshengPanel.CPanelScribeChecked);
+        QXieshengViewer.IsChecked = _cXiesheng.CXieshengPanel.CPanelViewerChecked;
+        QXieshengScribe.IsChecked = _cXiesheng.CXieshengPanel.CPanelScribeChecked;
         QXieshengVoyage.Visibility = QLook.QLookVisibleRead(_cXiesheng.CXieshengPanel.CPanelViewerChecked);
         QXieshengChronicle.Visibility = QLook.QLookVisibleRead(_cXiesheng.CXieshengPanel.CPanelScribeChecked);
         QXieshengMode.IsEnabled = _cXiesheng.CXieshengPanel.CPanelModeEnabled;

@@ -38,14 +38,15 @@ public sealed class TDisplayCard
 
         CLeaf leaf = Assert.Single(card.CLecternCardMeanings);
         Assert.Equal(1, leaf.CLeafPosition);
-        Assert.Equal(new CStateWording(string.Empty, "Display.Unknown", false), leaf.CLeafTitle);
-        Assert.Equal(new CStateWording(string.Empty, null, true), leaf.CLeafExpression);
-        Assert.Equal(new CStateWording("a liquid", null, false), leaf.CLeafMeaning);
+        Assert.Equal(
+            new CStateWording(string.Empty, "Display.Unknown", false, "Display.Unknown"), leaf.CLeafTitle);
+        Assert.Equal(new CStateWording(string.Empty, null, true, null), leaf.CLeafExpression);
+        Assert.Equal(new CStateWording("a liquid", null, false, null), leaf.CLeafMeaning);
         CTranslationTarget target = Assert.Single(leaf.CLeafTranslation);
         Assert.Equal((eau.LEntryId, "eau", "French"), (
             target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage));
         CLeafChip tag = Assert.Single(leaf.CLeafTag);
-        Assert.Equal(new CStateWording("literal", null, false), tag.CLeafChipWording);
+        Assert.Equal(new CStateWording("literal", null, false, null), tag.CLeafChipWording);
         Assert.Equal((CSubject.CSubjectTag, true), (tag.CLeafChipSubject, tag.CLeafChipStored));
         Assert.Empty(card.CLecternCardCollocations);
         Assert.True(card.CLecternCardDefined);
@@ -246,7 +247,7 @@ public sealed class TDisplayCard
     }
 
     private static CLeafChip TDisplayChipCreate(long id, CSubject subject, bool stored) =>
-        new(id, new CStateWording("a chip", null, false), subject, stored);
+        new(id, new CStateWording("a chip", null, false, null), subject, stored);
 
     private static bool TDisplayChipOpen(CDisplay area, CLeafChip? chip, long? link, List<string> opened)
     {

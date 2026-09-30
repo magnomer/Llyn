@@ -1,6 +1,6 @@
 # CStateValue.cs
 
-## `public sealed record CStateValue(string CStateValueText, bool CStateValueUncertain, bool CStateValueLegible)`
+## `public sealed record CStateValue(string CStateValueText, bool CStateValueUncertain)`
 
 A written value, as a driver shows it with its state.
 It carries the engine's verdicts, so a driver never judges the state itself.
@@ -9,7 +9,6 @@ It carries the engine's verdicts, so a driver never judges the state itself.
 
 - `CStateValueText`: the text to show, empty when nothing legible is written.
 - `CStateValueUncertain`: whether the value is marked unknown.
-- `CStateValueLegible`: whether the value shows its text rather than a hint.
 
 ## `public static CStateValue CStateValueEmpty`
 

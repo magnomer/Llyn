@@ -58,7 +58,7 @@ Nothing ships one, so the list is empty until a user writes and saves one.
 Puts the marker and the role in the places the language pack states.
 The row states no order of its own, so it holds only what it was told.
 
-## `public CStateValue PSentenceText`
+## `public CStateWording PSentenceText`
 
 The sentence as the draft holds it, set only from the draft.
 The same holds for the marker and the role.
@@ -117,13 +117,11 @@ Whether the frame stands on what the row holds rather than on the card being ask
 The card's switch stands down while it does, because a frame already written cannot be opened or closed by asking.
 It gives its room back rather than keeping it.
 The handles beside it are not read across a gap that holds nothing.
+A frame field says something unless Conduct words it muted.
+It then holds text or the unknown mark.
 
 ## `public string PSentenceFrameGap`
 
 The separator drawn between the marker and the role inside the frame.
 It is one space when both are written and nothing otherwise.
 The writing view spaces the frame exactly as the reading view does.
-
-## `private static bool PSentenceFrameCheck(CStateValue value)`
-
-Whether a frame field says anything: text, or the unknown mark.

@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -43,11 +42,7 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<TextBlock>(container, "PRegisterName") is TextBlock name)
         {
-            name.Text = (string)new QStateConverter().Convert(
-                [chip.PRegisterText, QLocalizationCatalog.QLocalizationTextRead("Display.Unknown")],
-                typeof(string),
-                string.Empty,
-                CultureInfo.CurrentCulture);
+            QStateConverter.QStateTextRefine(name, TextBlock.TextProperty, chip.PRegisterText);
         }
 
         if (QLook.QLookPartFind<Button>(container, "PRegisterEraser") is Button eraser)

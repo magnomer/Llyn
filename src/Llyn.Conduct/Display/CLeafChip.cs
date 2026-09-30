@@ -30,7 +30,7 @@ public sealed record CLeafChip(
     {
         return new CLeafChip(
             tag.LTagDraftId,
-            new CStateWording(tag.LTagDraftText, null, false),
+            new CStateWording(tag.LTagDraftText, null, false, null),
             CSubject.CSubjectTag,
             tag.LTagDraftStored);
     }

@@ -51,6 +51,8 @@ A tenure started, so the card lists start empty.
 ## `internal void PEditorDraftRefine(CEntryDraft draft)`
 
 Writes the headword and the note through the guarded writes, so a box being typed into keeps its caret.
+The note is written only while the ready verdict `CEditorNoteCheck` says the box does not hold it yet.
+So a line break just typed at the end of the note survives the draft's echo.
 The command rail shows only for the editor that owns its entries, which is the input tab's.
 The reading line follows the headword just written.
 

@@ -27,6 +27,12 @@ Shapes the meaning or collocation cards with everything the card parts read.
 A card's situation link carries no media, so its picture and video lists stay empty.
 A card's links are its own entry of the tenure's target map, mapped by the one target map.
 The tenure answers an entry for every card, so a missing one is a fault and throws.
+The title, expression and meaning arrive worded, and `meaning` names the meaning field's hint for the sheet.
+
+## `private static CSentenceDraft CFolioSentenceRead(LSentenceDraft sentence)`
+
+Shapes one sentence row with its example and its worded text, marker and role.
+A row holding no example yet words the empty text, so its field shows the example hint.
 
 ## `private static CExampleDraft? CFolioExampleRead(LExampleDraft? example)`
 

@@ -1,7 +1,5 @@
-using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Llyn.Conduct;
@@ -63,9 +61,4 @@ public partial class PEditor
 
         return null;
     }
-
-    internal static bool PCaretKeyApply(
-        TextBox box, Key key, Action<int> remove, Func<int, bool> move, Action place) =>
-        QCaret.QCaretKeyApply(
-            key.ToString(), box.CaretIndex, box.Text.Length, box.SelectionLength, remove, move, place);
 }

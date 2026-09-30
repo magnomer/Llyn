@@ -1,14 +1,13 @@
 # PCard.cs
 
-## `internal static void PCardRowApply(FrameworkElement container, PCard card, string hint, string? changed)`
+## `internal static void PCardRowApply(FrameworkElement container, PCard card, string? changed)`
 
 Writes a card's own parts from the card, where bindings and data triggers stood.
 The badge takes the accent ring and opens for typing while the position is open.
-The title, expression and meaning go through the state converter as their bindings did.
+The title, expression and meaning show their ready text and the placeholder Conduct chose.
 Each field's text is rewritten only on a full fill or when its own property changed.
 So a change to one property leaves the caret in another field alone.
 The placeholders and the badge's look follow every change.
-The hint names the meaning field's placeholder, which differs between the two card kinds.
 The three icons are set here, since an icon is drawn by code.
 
 ## Inline notes
@@ -43,13 +42,14 @@ The number is read-only otherwise, so a click on it drags the card as the header
 Closes the badge and puts the stored number back into it.
 A number typed and then abandoned leaves nothing behind.
 
-### `public LStateValue PTitle => _pTitle;`
+### `public CStateWording PTitle => _pTitle;`
 
 The title, definition and expression are the engine's values, shown as they stand.
 A field the user types into binds the value one way and reports the typing to the editor itself.
 So the card holds no copy of what was typed and never resolves a state.
+Each arrives worded by Conduct, which also names the meaning field's hint for the card's kind.
 
-### `internal void PCardTitleShow(LStateValue value)`
+### `internal void PCardTitleShow(CStateWording value)`
 
 Takes the draft's value and redraws the field only when the value differs.
 A field already reading what the engine holds is left alone, so the caret survives its own echo.

@@ -72,7 +72,7 @@ Hands the press to `QGraspStar.QGraspPressRefine` and marks the click handled.
 
 Hands the key to `QGraspStar.QGraspKeyRefine`.
 
-## `private static void PGraspLimitHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
+## `private static void PGraspLimitRefine(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
 
 A new limit clamps the step already held.
 So a limit set after the step never leaves it out of range.

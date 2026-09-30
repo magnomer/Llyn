@@ -13,8 +13,93 @@ public sealed class TCard
     public void CardStateRead_UnknownValue_CarriesTheUncertainVerdict()
     {
         Assert.Equal(
-            new CStateValue(string.Empty, true, false),
+            new CStateValue(string.Empty, true),
             TInterfaceConduct.TCardStateRead(LStateValue.LStateValueUnknown));
+    }
+
+    [Fact]
+    public void CardEntryRead_UnknownBlankAndWrittenFields_WordsEachFieldWithItsSheetHint()
+    {
+        LEntryDraft draft = TInterface.TEntryDraftCreate(
+            "water",
+            "English",
+            string.Empty,
+            string.Empty,
+            [
+                TInterface.TCardCreate("a liquid", 1) with
+                {
+                    LCardDraftTitle = LStateValue.LStateValueUnknown,
+                    LCardDraftRegister = [TInterface.TRegisterDraftCreate(LStateValue.LStateValueUnknown, 3)],
+                },
+            ],
+            [TInterface.TCardCreate(string.Empty, 1)]);
+
+        CEntryDraft shaped = TInterfaceConduct.TCardEntryRead(
+            draft, new Dictionary<long, IReadOnlyList<LTranslationTarget>> { [0] = [] });
+
+        CCardDraft meaning = Assert.Single(shaped.CEntryDraftMeanings);
+        Assert.Equal(
+            new CStateWording(string.Empty, "Display.Unknown", false, "Display.Unknown"), meaning.CCardDraftTitle);
+        Assert.Equal(new CStateWording(string.Empty, null, true, "Card.ExpressionHint"), meaning.CCardDraftExpression);
+        Assert.Equal(new CStateWording("a liquid", null, false, "Card.DefinitionHint"), meaning.CCardDraftMeaning);
+        Assert.Equal(
+            new CStateWording(string.Empty, "Display.Unknown", false, "Display.Unknown"),
+            Assert.Single(meaning.CCardDraftRegister).CRegisterDraftName);
+        CCardDraft collocation = Assert.Single(shaped.CEntryDraftCollocations);
+        Assert.Equal(new CStateWording(string.Empty, null, true, null), collocation.CCardDraftTitle);
+        Assert.Equal(new CStateWording(string.Empty, null, true, "Card.MeaningHint"), collocation.CCardDraftMeaning);
+    }
+
+    [Fact]
+    public void CardEntryRead_SentenceWithoutExample_WordsTextParticleAndDependence()
+    {
+        LCardDraft card = TInterface.TCardCreate("a liquid", 1) with
+        {
+            LCardDraftSentence =
+            [
+                TInterface.TSentenceDraftCreate(LStateValue.LStateValueUnknown, null),
+                TInterface.TSentenceDraftCreate("the cat sat"),
+            ],
+        };
+        LEntryDraft draft = TInterface.TEntryDraftCreate("water", "English", string.Empty, string.Empty, [card], []);
+
+        CEntryDraft shaped = TInterfaceConduct.TCardEntryRead(
+            draft, new Dictionary<long, IReadOnlyList<LTranslationTarget>> { [0] = [] });
+
+        IReadOnlyList<CSentenceDraft> rows = Assert.Single(shaped.CEntryDraftMeanings).CCardDraftSentence;
+        Assert.Equal(new CStateWording(string.Empty, null, true, "Card.ExampleHint"), rows[0].CSentenceDraftText);
+        Assert.Equal(
+            new CStateWording(string.Empty, "Display.Unknown", false, "Display.Unknown"),
+            rows[0].CSentenceDraftParticle);
+        Assert.Equal(
+            new CStateWording(string.Empty, null, true, "Card.DependenceHint"), rows[0].CSentenceDraftDependence);
+        Assert.Equal(new CStateWording("the cat sat", null, false, "Card.ExampleHint"), rows[1].CSentenceDraftText);
+    }
+
+    [Fact]
+    public void DraftWording_GlossImageAndSituation_WordsEachValueForItsRow()
+    {
+        CStateValue unknown = new(string.Empty, true);
+        CStateValue written = new("le chat", false);
+
+        Assert.Equal(
+            new CStateWording("le chat", null, false, "Example.Translation"),
+            new CGlossDraft(1, "French", written, true).CGlossDraftWording);
+        Assert.Equal(
+            new CStateWording(string.Empty, null, true, "Example.Translation"),
+            new CGlossDraft(1, "French", CStateValue.CStateValueEmpty, true).CGlossDraftWording);
+        Assert.Equal(
+            new CStateWording(string.Empty, "Display.Unknown", false, "Display.Unknown"),
+            new CImageDraft(2, unknown, false).CImageDraftWording);
+        Assert.Equal(
+            new CStateWording(string.Empty, null, true, "Card.LocationHint"),
+            new CImageDraft(2, CStateValue.CStateValueEmpty, true).CImageDraftWording);
+        Assert.Equal(
+            new CStateWording(string.Empty, "Display.Unknown", false, "Display.Unknown"),
+            new CSituationDraft(4, unknown, written, written, [], []).CSituationDraftWording);
+        Assert.Equal(
+            new CStateWording("le chat", null, false, null),
+            new CSituationDraft(4, written, unknown, unknown, [], []).CSituationDraftWording);
     }
 
     [Fact]

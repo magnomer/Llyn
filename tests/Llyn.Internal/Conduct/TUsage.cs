@@ -19,8 +19,8 @@ public sealed class TUsage
     {
         Assert.Equal(
             "Display.Unknown",
-            TUsageCreate(false, false, new CStateValue(string.Empty, true, false)).CUsageTitleKey);
-        Assert.Null(TUsageCreate(false, false, new CStateValue("sense", false, true)).CUsageTitleKey);
+            TUsageCreate(false, false, new CStateValue(string.Empty, true)).CUsageTitleKey);
+        Assert.Null(TUsageCreate(false, false, new CStateValue("sense", false)).CUsageTitleKey);
     }
 
     private static CUsage TUsageCreate(bool quoted, bool collocated, CStateValue title)

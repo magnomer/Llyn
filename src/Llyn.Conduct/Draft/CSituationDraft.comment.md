@@ -13,3 +13,7 @@ A card's link carries no media, so its picture and video lists stay empty.
 - `CSituationDraftDescription`: the situation's description.
 - `CSituationDraftImage`: the pictures in their order.
 - `CSituationDraftVideo`: the videos in their order.
+
+## `public CStateWording CSituationDraftWording`
+
+The situation's title, worded as a card's context chip shows it.

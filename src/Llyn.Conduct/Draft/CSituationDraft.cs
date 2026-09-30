@@ -8,4 +8,7 @@ public sealed record CSituationDraft(
     CStateValue CSituationDraftKind,
     CStateValue CSituationDraftDescription,
     IReadOnlyList<CImageDraft> CSituationDraftImage,
-    IReadOnlyList<CVideoDraft> CSituationDraftVideo);
+    IReadOnlyList<CVideoDraft> CSituationDraftVideo)
+{
+    public CStateWording CSituationDraftWording => CStateWording.LStateWordingRead(CSituationDraftTitle, null);
+}

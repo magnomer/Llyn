@@ -2,8 +2,10 @@
 
 ## `public partial class PEditor`
 
-The Situation field's handlers.
-The templates that draw the field cannot reach the card the Situations belong to.
+The Situation field's driver, torn apart by role as `docs-work/JobPrinciple.md` section 13 asks.
+Each Observe hears one event and ends in one card gate, and each Refine only changes the look.
+The entry's keys are heard by several handlers in order, and the first to handle a key ends its route.
+The dropdown's key handlers come first, so an open dropdown hears a key before the entry does.
 An item's data context is the Situation or the entry, not the card.
 So each handler finds the owning card by asking which card's collection holds the item.
 
@@ -15,18 +17,33 @@ The editor's `PProfferSituationRefine` then paints that answer and the dropdown 
 
 ## `private void PContextChipObserve(object sender, RoutedEventArgs e)`
 
-Hears the close button of a Situation chip and erases that chip.
+Hears the close button of a Situation chip and hands that Situation to the remove gate.
 
-## `private void PContextCaretObserve(object sender, KeyEventArgs e)`
+## `private void PContextCommitObserve(object sender, KeyEventArgs e)`
 
-The dropdown's key handlers are subscribed before it, so a key the open dropdown takes never reaches here.
-Enter commits what is standing in the entry.
-The chip keys go through `PCaretKeyApply`, whose erase is the situation remove gate.
-Every other key is left to the text box.
+Enter hands the text standing in the entry to the situation gate, settled, then empties the entry.
+It runs after the dropdown's handlers, so Enter on a chosen stored Situation never reaches it.
+The wording goes to the engine as written, and the engine decides which Situation it names.
+A wording already stored is attached under its own id there, so the workspace does not fill with twins.
+
+## `private void PContextEraseObserve(object sender, KeyEventArgs e)`
+
+Backspace at the entry's start or Delete at its end hands the chip beside the caret to the remove gate.
+`QCaretEdgeApply` decides the edge, and the key is taken at the edge even with no chip there.
+
+## `private void PContextCaretRefine(object sender, KeyEventArgs e)`
+
+A Refine, since the arrows only walk the empty entry past a chip and ask no gate.
+`QCaretStepApply` decides the step, and the caret is put back into the moved entry.
+
+## `private void PContextBlurRefine(object sender, RoutedEventArgs e)`
+
+Shuts the dropdown when focus leaves the entry.
+It is subscribed before the close observer, so the dropdown shuts first.
 
 ## `private void PContextCloseObserve(object sender, RoutedEventArgs e)`
 
-Commits what is standing in the entry when focus leaves the field.
+Commits what is standing in the entry when focus leaves the field, then empties it.
 So a Situation typed and abandoned is kept rather than silently dropped.
 Choosing a row empties the entry first, so the click that chose it commits nothing twice.
 
@@ -37,8 +54,8 @@ The Situation dictionary, held for the two item templates its selector hands out
 ## `private void PContextApply(FrameworkElement container, object item, string? _)`
 
 Fills one item of a card's Situation field, where bindings and event attributes stood.
-An entry gets its hint, its text and its key and leaving observers.
-The dropdown's key Refine and key Observe come before the caret's, so the open dropdown hears a key first.
+An entry gets its hint, its text and its key and leaving handlers.
+The dropdown's key Refine and key Observe come first, then the commit, erase and caret handlers.
 A chip gets its wording, its close icon and its close observer.
 
 ## `private void PContextFieldApply(ItemsControl list)`
@@ -50,16 +67,3 @@ The selector is set only while none is, since a new selector would rebuild every
 
 Puts the caret in the entry when the field's empty space is clicked.
 So the whole box behaves as the one input it looks like, not only its trailing text.
-
-## Inline notes
-
-### `private void PContextCommitObserve(PCard card)`
-
-Hides the dropdown, hands the entry's text to the situation gate settled, then empties the entry.
-The wording goes to the engine as written, and the engine decides which Situation it names.
-A wording already stored is attached under its own id there, so the workspace does not fill with twins.
-The panel holds no matching rule of its own, so every client of the engine gets the same answer.
-
-### `private void PContextEraseObserve(PCard card, PContext? chip)`
-
-Hands the chip's Situation to the remove gate, when there is a chip to erase.

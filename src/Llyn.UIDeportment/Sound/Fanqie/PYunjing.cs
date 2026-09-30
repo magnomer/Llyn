@@ -293,8 +293,8 @@ public class PYunjing : UserControl
         PEditor.Visibility = QLook.QLookVisibleRead(_cYunjing.CYunjingEditorShown);
         PDisplay.Visibility = QLook.QLookVisibleRead(_cYunjing.CYunjingDisplayShown);
         PYunjingDiwei.Visibility = QLook.QLookVisibleRead(_cYunjing.CYunjingDiweiShown);
-        PYunjingViewer.IsChecked = QLook.QLookCheckedRead(_cYunjing.CYunjingPanel.CPanelViewerChecked);
-        PYunjingScribe.IsChecked = QLook.QLookCheckedRead(_cYunjing.CYunjingPanel.CPanelScribeChecked);
+        PYunjingViewer.IsChecked = _cYunjing.CYunjingPanel.CPanelViewerChecked;
+        PYunjingScribe.IsChecked = _cYunjing.CYunjingPanel.CPanelScribeChecked;
         PYunjingVoyage.Visibility = QLook.QLookVisibleRead(_cYunjing.CYunjingPanel.CPanelViewerChecked);
         PYunjingChronicle.Visibility = QLook.QLookVisibleRead(_cYunjing.CYunjingPanel.CPanelScribeChecked);
         PYunjingMode.IsEnabled = _cYunjing.CYunjingPanel.CPanelModeEnabled;

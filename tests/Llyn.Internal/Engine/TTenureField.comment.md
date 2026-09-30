@@ -12,6 +12,11 @@ A typed headword lands and marks the draft changed.
 
 A typed note lands without its trailing line breaks.
 
+## `public void NoteCheck_TrailingBreaks_MatchTrimmedNote()`
+
+A typed text holds the note when only trailing line breaks differ.
+A space or a leading break still makes it another note.
+
 ## `public void LanguageSet_Empty_KeepsLanguage()`
 
 An empty language choice leaves the chosen language as it was.

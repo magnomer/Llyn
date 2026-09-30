@@ -90,6 +90,8 @@ internal static partial class TInterface
         tenure.LTenureNoteSet(text);
     }
 
+    internal static bool TTenureNoteCheck(string text, string note) => LTenure.LTenureNoteCheck(text, note);
+
     internal static void TTenureLanguageSet(this LTenure tenure, string language)
     {
         tenure.LTenureLanguageSet(language);

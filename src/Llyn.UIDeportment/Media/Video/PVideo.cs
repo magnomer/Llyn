@@ -164,20 +164,17 @@ internal sealed class PVideo : INotifyPropertyChanged
             PVideoScreenApply(screen, row);
         }
 
-        QStateConverter state = new();
         if (changed is null or nameof(PVideoLocation)
             && QLook.QLookPartFind<TextBox>(container, "PVideoLocation") is TextBox location)
         {
-            location.Text = (string)state.Convert(
-                row.PVideoLocation, typeof(string), string.Empty, CultureInfo.CurrentCulture);
+            location.Text = row.PVideoLocation.CStateValueText;
             location.SetResourceReference(QField.QFieldHintProperty, "Card.LocationHint");
         }
 
         if (changed is null or nameof(PVideoTimestamp)
             && QLook.QLookPartFind<TextBox>(container, "PVideoTimestamp") is TextBox timestamp)
         {
-            timestamp.Text = (string)state.Convert(
-                row.PVideoTimestamp, typeof(string), string.Empty, CultureInfo.CurrentCulture);
+            timestamp.Text = row.PVideoTimestamp.CStateValueText;
             timestamp.SetResourceReference(QField.QFieldHintProperty, "Card.TimestampHint");
         }
 

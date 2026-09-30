@@ -42,7 +42,7 @@ The element drawing the row has come into view, so the preview is loaded now.
 The first call loads and marks the row seen, and later edits to the location reload at once.
 A second call does nothing, since a seen row already keeps its preview current.
 
-## `public CStateValue PImageLocation`
+## `public CStateWording PImageLocation`
 
 The location as the draft holds it, set only from the draft.
 A changed location reloads the preview of a row already seen.

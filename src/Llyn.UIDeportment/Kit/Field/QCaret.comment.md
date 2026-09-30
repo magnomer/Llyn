@@ -26,7 +26,7 @@ A field is adorned the first time it takes keyboard focus, so a field never open
 A field outside any adorner layer is left with no caret of ours.
 It keeps the framework caret, because nothing was made transparent yet.
 
-### `private void QCaretLayoutHandle(object? sender, EventArgs e)`
+### `private void QCaretLayoutRefine(object? sender, EventArgs e)`
 
 Scrolling, resizing, and font changes all move the caret without changing the text.
 Layout is the one signal that catches every such move.
@@ -48,25 +48,18 @@ Each keystroke restarts the cycle, so the blink resumes only once typing stops.
 
 The accent is read at each draw, so a theme change is picked up without rebuilding the caret.
 
-## `internal static bool QCaretKeyApply(string key, int caret, int length, int selection, Action<int> remove, Func<int, bool> move, Action place)`
-
-The keys every chip caret answers the same way, decided in one place.
-The key arrives as its WPF name, such as `Back` or `Left`.
-A selection leaves every key to the text box, so ordinary editing is untouched.
-Backspace at the start of the entry drops the chip before it.
-Delete at the end of the entry drops the chip after it.
-The arrow keys walk an empty entry past a chip, and the caller puts the caret back.
-So a chip is crossed the way a character is, in either direction.
-It runs the edge keys first and the arrow keys after.
-Callers that hear every chip key in one handler use it.
-
 ## `internal static bool QCaretEdgeApply(string key, int caret, int length, int selection, Action<int> remove)`
 
-The edge keys alone: Backspace at the start and Delete at the end hand the step to `remove`.
-A caller that hears the erase keys on their own uses it, and a selection still leaves the key alone.
+The erase keys every chip caret answers the same way, decided in one place.
+The key arrives as its WPF name, such as `Back` or `Delete`.
+A selection leaves every key to the text box, so ordinary editing is untouched.
+Backspace at the start of the entry hands the step before it to `remove`.
+Delete at the end of the entry hands the step after it to `remove`.
+Each chip entry's erase Observe calls it and ends in its remove gate.
 
 ## `internal static bool QCaretStepApply(string key, int length, int selection, Func<int, bool> move, Action place)`
 
 The arrow keys alone: an empty entry is walked past a chip, and `place` puts the caret back.
-A caller that hears the caret moves on their own uses it.
+So a chip is crossed the way a character is, in either direction.
+Each chip entry's caret Refine calls it after the erase Observe, which ignores the arrows.
 The answer says whether the key was taken.

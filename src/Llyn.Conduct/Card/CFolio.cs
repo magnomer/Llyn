@@ -34,8 +34,8 @@ internal static class CFolio
                 ? CSounding.CSoundingPronunciationRead(spoken)
                 : null,
             CSounding.CSoundingPronunciationRead(draft.LEntryDraftAccents),
-            CFolioSheetRead(draft.LEntryDraftMeanings, targets),
-            CFolioSheetRead(draft.LEntryDraftCollocations, targets),
+            CFolioSheetRead(draft.LEntryDraftMeanings, targets, "Card.DefinitionHint"),
+            CFolioSheetRead(draft.LEntryDraftCollocations, targets, "Card.MeaningHint"),
             CSounding.CSoundingTranscriptionRead(draft.LEntryDraftTranscriptions),
             CSounding.CSoundingReflexRead(draft.LEntryDraftReflexes),
             new CEtymologyDraft(
@@ -45,19 +45,22 @@ internal static class CFolio
 
     internal static CStateValue CFolioStateRead(LStateValue value)
     {
-        return new CStateValue(value.LStateValuePlain, value.LStateValueUncertain, value.LStateValueLegible);
+        return new CStateValue(value.LStateValuePlain, value.LStateValueUncertain);
     }
 
     private static IReadOnlyList<CCardDraft> CFolioSheetRead(
-        IReadOnlyList<LCardDraft> cards, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets)
+        IReadOnlyList<LCardDraft> cards,
+        IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
+        string meaning)
     {
         return cards
             .Select(card => new CCardDraft(
                 card.LCardDraftId,
                 card.LCardDraftPosition,
-                CFolioStateRead(card.LCardDraftTitle),
-                CFolioStateRead(card.LCardDraftExpression),
-                CFolioStateRead(card.LCardDraftMeaning),
+                CStateWording.LStateWordingRead(CFolioStateRead(card.LCardDraftTitle), null),
+                CStateWording.LStateWordingRead(
+                    CFolioStateRead(card.LCardDraftExpression), null, "Card.ExpressionHint"),
+                CStateWording.LStateWordingRead(CFolioStateRead(card.LCardDraftMeaning), null, meaning),
                 card.LCardDraftSentence.Select(CFolioSentenceRead).ToList(),
                 card.LCardDraftSituation
                     .Select(static row => new CSituationDraft(
@@ -70,7 +73,8 @@ internal static class CFolio
                     .ToList(),
                 card.LCardDraftRegister
                     .Select(static row => new CRegisterDraft(
-                        row.LRegisterDraftId, CFolioStateRead(row.LRegisterDraftName)))
+                        row.LRegisterDraftId,
+                        CStateWording.LStateWordingRead(CFolioStateRead(row.LRegisterDraftName), null)))
                     .ToList(),
                 CFolioTargetRead(targets[card.LCardDraftId]),
                 card.LCardDraftTag.Select(static row => new CTagDraft(row.LTagDraftId, row.LTagDraftText)).ToList(),
@@ -81,11 +85,16 @@ internal static class CFolio
 
     private static CSentenceDraft CFolioSentenceRead(LSentenceDraft sentence)
     {
+        CExampleDraft? example = CFolioExampleRead(sentence.LSentenceDraftExample);
         return new CSentenceDraft(
             sentence.LSentenceDraftId,
-            CFolioExampleRead(sentence.LSentenceDraftExample),
-            CFolioStateRead(sentence.LSentenceDraftParticle),
-            CFolioStateRead(sentence.LSentenceDraftDependence));
+            example,
+            CStateWording.LStateWordingRead(
+                example?.CExampleDraftText ?? CStateValue.CStateValueEmpty, null, "Card.ExampleHint"),
+            CStateWording.LStateWordingRead(
+                CFolioStateRead(sentence.LSentenceDraftParticle), null, "Card.ParticleHint"),
+            CStateWording.LStateWordingRead(
+                CFolioStateRead(sentence.LSentenceDraftDependence), null, "Card.DependenceHint"));
     }
 
     private static CExampleDraft? CFolioExampleRead(LExampleDraft? example)

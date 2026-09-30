@@ -44,14 +44,6 @@ An unchanged text is no change to the property.
 So WPF leaves the caret of a box being typed into alone.
 The draft echoes each deferred request back, so that write must stay a no-op.
 
-## `internal static void QFieldNoteShow(TextBox box, string note)`
-
-The same guarded write for the note box, compared without the trailing line breaks the box may hold.
-
-## `internal static string QFieldNoteRead(TextBox box)`
-
-The note box's text without its trailing line breaks, which the engine never stores.
-
 ## `internal static string QFieldPathRead(TextBox box)`
 
 The property name a templated field writes, read from the field's own name.
@@ -136,7 +128,7 @@ The row fill is the one place it is written.
 
 Watches the list `host` for presses, so every cell beneath it grows its editor on demand.
 
-## `private static void QFieldPressHandle(object sender, MouseButtonEventArgs e)`
+## `private static void QFieldPressRefine(object sender, MouseButtonEventArgs e)`
 
 Finds the ordered cell under the press and puts an editor into it, unless one already stands there.
 The press then goes no further, since the box is given focus and the caret at the pressed glyph.
@@ -157,7 +149,7 @@ A text change raised while joining would otherwise reach the editor as an edit t
 The placeholder resource becomes its hint.
 It listens for its own loss of keyboard focus, which is when it leaves.
 
-## `private static void QFieldBlurHandle(object sender, KeyboardFocusChangedEventArgs e)`
+## `private static void QFieldBlurRefine(object sender, KeyboardFocusChangedEventArgs e)`
 
 Focus has moved on, so the editor leaves its cell.
 

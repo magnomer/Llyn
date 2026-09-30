@@ -42,7 +42,7 @@ public partial class PEditor
             return;
         }
 
-        PCard.PCardRowApply(container, card, "Card.DefinitionHint", changed);
+        PCard.PCardRowApply(container, card, changed);
         PCardApply(container, card);
         if (QLook.QLookPartFind<Border>(container, "PCardHeader") is Border header)
         {
@@ -92,7 +92,7 @@ public partial class PEditor
             return;
         }
 
-        PCard.PCardRowApply(container, card, "Card.MeaningHint", changed);
+        PCard.PCardRowApply(container, card, changed);
         PCardApply(container, card);
         if (QLook.QLookPartFind<Border>(container, "PCardHeader") is Border header)
         {

@@ -5,7 +5,7 @@ namespace Llyn.UIDeportment;
 
 internal sealed class PContext
 {
-    internal PContext(CStateValue text, long id)
+    internal PContext(CStateWording text, long id)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -15,5 +15,5 @@ internal sealed class PContext
 
     public long PContextId { get; }
 
-    public CStateValue PContextText { get; }
+    public CStateWording PContextText { get; }
 }

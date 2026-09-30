@@ -34,7 +34,7 @@ The key Conduct chose for the label while no language is chosen, or null.
 
 The flag of the chosen language, or null when none is chosen.
 
-## `public CStateValue PGlossText`
+## `public CStateWording PGlossText`
 
 The rendering as the draft holds it, set only from the draft.
 
@@ -65,10 +65,10 @@ The cross takes the row as its parameter and its icon.
 
 The language name, or the muted hint Conduct chose while none is chosen.
 
-## `private static void PGlossTextApply(FrameworkElement container, CStateValue text)`
+## `private static void PGlossTextApply(FrameworkElement container, CStateWording text)`
 
-Reads the text and its placeholder through the state converter's logic, as the bindings did.
-The unknown mark and the hint are read once per fill, so they do not follow a later language switch.
+Shows the field's ready text and placeholder, or the line's text or unknown mark.
+The keys are read once per fill, so they do not follow a later language switch.
 
 ## `private static void PGlossSpeakerRefine(object sender, RoutedEventArgs e)`
 

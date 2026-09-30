@@ -253,8 +253,8 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         QRepertoireEditor.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireEditorShown);
         QVignetteBody.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireVignetteHeld);
         QVignetteUnselected.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireVignetteBlank);
-        QRepertoireViewer.IsChecked = QLook.QLookCheckedRead(_cRepertoire.CRepertoireViewerChecked);
-        QRepertoireScribe.IsChecked = QLook.QLookCheckedRead(_cRepertoire.CRepertoireScribeChecked);
+        QRepertoireViewer.IsChecked = _cRepertoire.CRepertoireViewerChecked;
+        QRepertoireScribe.IsChecked = _cRepertoire.CRepertoireScribeChecked;
         QRepertoireVoyage.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireViewerChecked);
         QRepertoireChronicle.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireScribeChecked);
         QRepertoireMode.IsEnabled = _cRepertoire.CRepertoireModeEnabled;

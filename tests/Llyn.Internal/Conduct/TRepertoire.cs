@@ -131,7 +131,7 @@ public sealed class TRepertoire
         Assert.True(repertoire.CRepertoireVignetteHeld);
         Assert.True(repertoire.CRepertoirePressAllowed);
         Assert.False(repertoire.CRepertoirePortraitAllowed);
-        Assert.Equal(new CStateWording("at home", null, false), Assert.Single(shown).CSituationTitle);
+        Assert.Equal(new CStateWording("at home", null, false, null), Assert.Single(shown).CSituationTitle);
     }
 
     [Fact]

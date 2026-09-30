@@ -1,33 +1,18 @@
 # QStateConverter.cs
 
-## `public sealed class QStateConverter`
+## `internal static class QStateConverter`
 
-Shows a stored value for reading, and names an unknown one for writing.
-A field showing nothing is one of two things.
-Nothing was ever recorded, or the user marked it as not known.
-This is what tells a reader which.
-The first shows nothing at all, or the hint a field invites with.
-The second shows the mark the interface language gives for it.
-It reads the value's own verdicts, legible and uncertain, so it never judges a state itself.
-A panel that must know whether a value is unknown asks the value's own verdict instead.
+Paints a written value from the ready wording Conduct hands over.
+Conduct chose between the text, the unknown mark and the field's hint, so nothing is judged here.
+It only looks up the key it was given and puts the result on one property.
 
-## `public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)`
+## `internal static void QStateTextRefine(DependencyObject target, DependencyProperty property, CStateWording wording)`
 
-Every caller passes the stored value first and the unknown mark second.
-A reader passes those two alone, and a stored value shows its own text.
-It shows the mark when the value is not known, and nothing when nothing was recorded.
-An input field adds the hint it invites the user with third, and then the result is its placeholder.
-A placeholder reads the mark for an unknown value and the hint for any other.
+Shows the value as a reader sees it.
+The key's text stands in for the value while Conduct names a key, and the value's own text shows otherwise.
+
+## `internal static void QStateHintRefine(DependencyObject target, DependencyProperty property, CStateWording wording)`
+
+Shows the placeholder an empty field invites with.
+It is the unknown mark or the field's hint that Conduct named, and nothing when Conduct named neither.
 The field's own text covers the placeholder while a value stands, so the value is never drawn twice.
-The mark and the hint both arrive as bindings, so a language change reaches text that has already been drawn.
-
-## `private static string QStateFormat(CStateValue state, string mark, string hint, bool placeholder)`
-
-A legible value shows its text, or the hint when a placeholder is asked for.
-An unknown value shows the mark, and an empty one the hint.
-
-## `public object Convert(object value, Type targetType, object parameter, CultureInfo culture)`
-
-The text of a stored value alone, for a field the user types into.
-An unknown value types as nothing, and the mark beside it says why.
-Nothing comes back the other way, because what is typed leaves as a request and never as a state.

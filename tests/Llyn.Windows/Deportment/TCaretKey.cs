@@ -6,25 +6,24 @@ namespace Llyn.Tests;
 public sealed class TCaretKey
 {
     [Fact]
-    public void CaretKeyApply_BackAtStart_RemovesChipBefore()
+    public void CaretEdgeApply_BackAtStart_RemovesChipBefore()
     {
         List<int> removed = [];
 
-        bool taken = TInterfaceDeportment.TCaretKeyApply(
-            "Back", 0, 3, 0, removed.Add, static _ => true, static () => { });
+        bool taken = TInterfaceDeportment.TCaretEdgeApply("Back", 0, 3, 0, removed.Add);
 
         Assert.True(taken);
         Assert.Equal([-1], removed);
     }
 
     [Fact]
-    public void CaretKeyApply_RightOnEmptyEntry_MovesAndPlaces()
+    public void CaretStepApply_RightOnEmptyEntry_MovesAndPlaces()
     {
         List<int> moved = [];
         int placed = 0;
 
-        bool taken = TInterfaceDeportment.TCaretKeyApply(
-            "Right", 0, 0, 0, static _ => { }, step => { moved.Add(step); return true; }, () => placed++);
+        bool taken = TInterfaceDeportment.TCaretStepApply(
+            "Right", 0, 0, step => { moved.Add(step); return true; }, () => placed++);
 
         Assert.True(taken);
         Assert.Equal([1], moved);
@@ -32,10 +31,9 @@ public sealed class TCaretKey
     }
 
     [Fact]
-    public void CaretKeyApply_Selection_LeavesKeyToTextBox()
+    public void CaretEdgeApply_Selection_LeavesKeyToTextBox()
     {
-        bool taken = TInterfaceDeportment.TCaretKeyApply(
-            "Back", 0, 3, 2, static _ => Assert.Fail("removed"), static _ => true, static () => { });
+        bool taken = TInterfaceDeportment.TCaretEdgeApply("Back", 0, 3, 2, static _ => Assert.Fail("removed"));
 
         Assert.False(taken);
     }

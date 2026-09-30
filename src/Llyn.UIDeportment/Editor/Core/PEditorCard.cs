@@ -16,7 +16,8 @@ public partial class PEditor
             PCard? card = PCardFind(cards, draft.CCardDraftId);
             if (card is null)
             {
-                card = new PCard(prefix, _pEditorCitation, _pEditorParticle, _pEditorDependence, _pLanguageItem)
+                card = new PCard(
+                    prefix, _pEditorCitation, _pEditorParticle, _pEditorDependence, _pLanguageItem, draft)
                 {
                     PCardId = draft.CCardDraftId,
                 };

@@ -24,9 +24,9 @@ public sealed class TEditorField
         editor.CEditorDesk.CDeskPersist();
 
         CCardDraft card = editor.CEditorDraftRead()!.CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
-        Assert.Equal("Heat", card.CCardDraftTitle.CStateValueShown);
-        Assert.Equal("on fire", card.CCardDraftExpression.CStateValueShown);
-        Assert.Equal("burning", card.CCardDraftMeaning.CStateValueShown);
+        Assert.Equal("Heat", card.CCardDraftTitle.CStateWordingText);
+        Assert.Equal("on fire", card.CCardDraftExpression.CStateWordingText);
+        Assert.Equal("burning", card.CCardDraftMeaning.CStateWordingText);
     }
 
     [Fact]

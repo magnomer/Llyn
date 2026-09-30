@@ -191,6 +191,6 @@ public sealed class COeuvre
 
     private static CStateValue LOeuvreCreditRead(string? credit, bool uncertain)
     {
-        return credit is null ? new CStateValue(string.Empty, uncertain, false) : new CStateValue(credit, false, true);
+        return credit is null ? new CStateValue(string.Empty, uncertain) : new CStateValue(credit, false);
     }
 }

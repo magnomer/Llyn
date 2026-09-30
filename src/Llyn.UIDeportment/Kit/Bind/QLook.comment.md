@@ -59,7 +59,7 @@ The attach at startup reads only the application resources, so a view merging lo
 Finds a named part in a control's template, else in the item template of the first presenter below it.
 The template is applied first, so a fill reaches its parts before the first layout.
 
-## `private static void QLookStateHandle(object? sender, EventArgs e)`
+## `private static void QLookStateRefine(object? sender, EventArgs e)`
 
 The one handler every state change reaches.
 It gathers the rows of every style in the control's chain, base first, else of the control's type name.
@@ -92,10 +92,6 @@ A theme merged inside another theme holds its own copy of each style, so one loo
 ## `internal static Visibility QLookVisibleRead(bool shown)`
 
 Visible when shown, else collapsed so the control takes no room.
-
-## `internal static bool? QLookCheckedRead(bool chosen)`
-
-The three-state value a toggle's `IsChecked` takes, never indeterminate.
 
 ## `internal static QLookChoice QLookFirstRead<QLookChoice>(bool first, QLookChoice chosen, QLookChoice other)`
 

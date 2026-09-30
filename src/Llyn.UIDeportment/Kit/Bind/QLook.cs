@@ -27,13 +27,13 @@ internal static class QLook
         "QLookCue",
         typeof(QLookCue),
         typeof(QLook),
-        new FrameworkPropertyMetadata(QLookCue.QLookCueBase, (sender, _) => QLookStateHandle(sender, EventArgs.Empty)));
+        new FrameworkPropertyMetadata(QLookCue.QLookCueBase, (sender, _) => QLookStateRefine(sender, EventArgs.Empty)));
 
     internal static readonly DependencyProperty QLookIconProperty = DependencyProperty.RegisterAttached(
         "QLookIcon",
         typeof(ImageSource),
         typeof(QLook),
-        new FrameworkPropertyMetadata(null, (sender, _) => QLookStateHandle(sender, EventArgs.Empty)));
+        new FrameworkPropertyMetadata(null, (sender, _) => QLookStateRefine(sender, EventArgs.Empty)));
 
     private static readonly Dictionary<Style, string> QLookStyle = [];
 
@@ -45,11 +45,6 @@ internal static class QLook
     internal static Visibility QLookVisibleRead(bool shown)
     {
         return shown ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    internal static bool? QLookCheckedRead(bool chosen)
-    {
-        return chosen;
     }
 
     internal static bool QLookCheckedRead(bool? shown)
@@ -93,29 +88,29 @@ internal static class QLook
             QLookSheet.QLookSheetState.Select(row => row.QLookSetterStyle).ToHashSet());
 
         MouseButtonEventHandler press = (sender, _) => Dispatcher.CurrentDispatcher.BeginInvoke(
-            DispatcherPriority.Input, () => QLookStateHandle(sender, EventArgs.Empty));
+            DispatcherPriority.Input, () => QLookStateRefine(sender, EventArgs.Empty));
         KeyboardFocusChangedEventHandler focus = (sender, _) => Dispatcher.CurrentDispatcher.BeginInvoke(
-            DispatcherPriority.Input, () => QLookStateHandle(sender, EventArgs.Empty));
+            DispatcherPriority.Input, () => QLookStateRefine(sender, EventArgs.Empty));
         MouseEventHandler release = (sender, _) => Dispatcher.CurrentDispatcher.BeginInvoke(
-            DispatcherPriority.Input, () => QLookStateHandle(sender, EventArgs.Empty));
+            DispatcherPriority.Input, () => QLookStateRefine(sender, EventArgs.Empty));
 
         EventManager.RegisterClassHandler(
-            typeof(FrameworkElement), FrameworkElement.LoadedEvent, new RoutedEventHandler(QLookStateHandle), true);
+            typeof(FrameworkElement), FrameworkElement.LoadedEvent, new RoutedEventHandler(QLookStateRefine), true);
         EventManager.RegisterClassHandler(
             typeof(FrameworkElement), FrameworkElement.UnloadedEvent, new RoutedEventHandler(QLookStateDetach), true);
         EventManager.RegisterClassHandler(
-            typeof(FrameworkElement), UIElement.MouseEnterEvent, new MouseEventHandler(QLookStateHandle), true);
+            typeof(FrameworkElement), UIElement.MouseEnterEvent, new MouseEventHandler(QLookStateRefine), true);
         EventManager.RegisterClassHandler(
-            typeof(FrameworkElement), UIElement.MouseLeaveEvent, new MouseEventHandler(QLookStateHandle), true);
+            typeof(FrameworkElement), UIElement.MouseLeaveEvent, new MouseEventHandler(QLookStateRefine), true);
         EventManager.RegisterClassHandler(typeof(ButtonBase), UIElement.MouseDownEvent, press, true);
         EventManager.RegisterClassHandler(typeof(ButtonBase), UIElement.MouseUpEvent, press, true);
         EventManager.RegisterClassHandler(typeof(ButtonBase), UIElement.LostMouseCaptureEvent, release, true);
         EventManager.RegisterClassHandler(typeof(FrameworkElement), Keyboard.GotKeyboardFocusEvent, focus, true);
         EventManager.RegisterClassHandler(typeof(FrameworkElement), Keyboard.LostKeyboardFocusEvent, focus, true);
         EventManager.RegisterClassHandler(
-            typeof(ToggleButton), ToggleButton.CheckedEvent, new RoutedEventHandler(QLookStateHandle), true);
+            typeof(ToggleButton), ToggleButton.CheckedEvent, new RoutedEventHandler(QLookStateRefine), true);
         EventManager.RegisterClassHandler(
-            typeof(ToggleButton), ToggleButton.UncheckedEvent, new RoutedEventHandler(QLookStateHandle), true);
+            typeof(ToggleButton), ToggleButton.UncheckedEvent, new RoutedEventHandler(QLookStateRefine), true);
     }
 
     internal static void QLookStyleAttach(ResourceDictionary dictionary)
@@ -155,7 +150,7 @@ internal static class QLook
         return null;
     }
 
-    private static void QLookStateHandle(object? sender, EventArgs e)
+    private static void QLookStateRefine(object? sender, EventArgs e)
     {
         if (sender is not FrameworkElement element)
         {
@@ -187,7 +182,7 @@ internal static class QLook
         if (!QLookHeld.TryGetValue(element, out _))
         {
             QLookHeld.Add(element, []);
-            element.IsEnabledChanged += (target, _) => QLookStateHandle(target, EventArgs.Empty);
+            element.IsEnabledChanged += (target, _) => QLookStateRefine(target, EventArgs.Empty);
         }
 
         if (element.IsLoaded && !QLookTrack.TryGetValue(element, out _))
@@ -206,7 +201,7 @@ internal static class QLook
                 if (watched.OwnerType.IsInstanceOfType(element)
                     && DependencyPropertyDescriptor.FromProperty(watched, element.GetType()) is { } descriptor)
                 {
-                    descriptor.AddValueChanged(element, QLookStateHandle);
+                    descriptor.AddValueChanged(element, QLookStateRefine);
                     tracked.Add(descriptor);
                 }
             }
@@ -293,7 +288,7 @@ internal static class QLook
 
         foreach (DependencyPropertyDescriptor descriptor in tracked)
         {
-            descriptor.RemoveValueChanged(element, QLookStateHandle);
+            descriptor.RemoveValueChanged(element, QLookStateRefine);
         }
 
         QLookTrack.Remove(element);

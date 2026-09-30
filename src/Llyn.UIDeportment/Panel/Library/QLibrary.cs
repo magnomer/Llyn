@@ -204,8 +204,8 @@ internal sealed class QLibrary
         CPanel panel = _cLibrary.CLibraryPanel;
         QLibraryEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
         QLibraryDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
-        QLibraryViewer.IsChecked = QLook.QLookCheckedRead(panel.CPanelViewerChecked);
-        QLibraryScribe.IsChecked = QLook.QLookCheckedRead(panel.CPanelScribeChecked);
+        QLibraryViewer.IsChecked = panel.CPanelViewerChecked;
+        QLibraryScribe.IsChecked = panel.CPanelScribeChecked;
         QLibraryVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
         QLibraryChronicle.Visibility = QLook.QLookVisibleRead(panel.CPanelScribeChecked);
         QLibraryMode.IsEnabled = panel.CPanelModeEnabled;
