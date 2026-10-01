@@ -263,7 +263,8 @@ The audits and convention tests measure the lag as falling ceilings.
 - The driver rules of the UI audit cover Demeanor as they cover Deportment.
 - Both drivers call Conduct only through gates.
 - The structure audit counts every type a UI layer names from below the cut, data included.
-- The chain audit counts every Conduct surface signature that names a type below Conduct.
+- The Border family's Leaking kind reads each type on Conduct's offer list.
+- It counts every public signature there that names a type below Conduct.
 
 ## Where logic goes
 

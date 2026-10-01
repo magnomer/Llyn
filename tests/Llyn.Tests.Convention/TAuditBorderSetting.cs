@@ -1,31 +1,32 @@
 namespace Convention.Tests;
 
-internal static class TAuditChainSetting
+internal static class TAuditBorderSetting
 {
-    public const int TAuditGeneration = 16;
-    public const string TAuditChainHost = "Llyn.Host";
+    public const int TAuditGeneration = 17;
+    public const string TAuditBorderHost = "Llyn.Host";
 
-    public static readonly IReadOnlyDictionary<string, string[]> TAuditChainReach = new Dictionary<string, string[]>
-    {
-        ["Llyn.Core"] = [],
-        ["Llyn.Application"] = ["Llyn.Core"],
-        ["Llyn.ShellEngine"] = ["Llyn.Application"],
-        ["Llyn.Conduct"] = ["Llyn.ShellEngine"],
-        ["Llyn.UIDeportment"] = ["Llyn.Conduct"],
-        ["Llyn.UIVeneer"] = ["Llyn.UIDeportment"],
-        ["Llyn.UIDemeanor"] = ["Llyn.Conduct"],
-        ["Llyn.UITerminal"] = ["Llyn.UIDemeanor"],
-        ["Llyn.Infrastructure"] = ["Llyn.Core"],
-        ["Llyn.Core.Windows"] = ["Llyn.Core"],
-        ["Llyn.UIDeportment.Capsule"] = [],
-    };
+    public static readonly IReadOnlyDictionary<string, string[]> TAuditBorderNeighbour =
+        new Dictionary<string, string[]>
+        {
+            ["Llyn.Core"] = [],
+            ["Llyn.Application"] = ["Llyn.Core"],
+            ["Llyn.ShellEngine"] = ["Llyn.Application"],
+            ["Llyn.Conduct"] = ["Llyn.ShellEngine"],
+            ["Llyn.UIDeportment"] = ["Llyn.Conduct"],
+            ["Llyn.UIVeneer"] = ["Llyn.UIDeportment"],
+            ["Llyn.UIDemeanor"] = ["Llyn.Conduct"],
+            ["Llyn.UITerminal"] = ["Llyn.UIDemeanor"],
+            ["Llyn.Infrastructure"] = ["Llyn.Core"],
+            ["Llyn.Core.Windows"] = ["Llyn.Core"],
+            ["Llyn.UIDeportment.Capsule"] = [],
+        };
 
-    public static readonly IReadOnlyDictionary<string, string> TAuditChainCapsule = new Dictionary<string, string>
+    public static readonly IReadOnlyDictionary<string, string> TAuditBorderCapsule = new Dictionary<string, string>
     {
         ["Llyn.UIDeportment"] = "Llyn.UIDeportment.Capsule",
     };
 
-    public static readonly string[] TAuditChainCut =
+    public static readonly string[] TAuditBorderCut =
     [
         "Llyn.UIVeneer",
         "Llyn.UIDeportment",
@@ -34,7 +35,7 @@ internal static class TAuditChainSetting
         "Llyn.UITerminal",
     ];
 
-    public static readonly IReadOnlyDictionary<string, string[]> TAuditChainSurface = new Dictionary<string, string[]>
+    public static readonly IReadOnlyDictionary<string, string[]> TAuditBorderOffer = new Dictionary<string, string[]>
     {
         ["Llyn.Conduct>Llyn.ShellEngine"] =
         [
@@ -357,41 +358,27 @@ internal static class TAuditChainSetting
         ],
     };
 
-    public static readonly IReadOnlyDictionary<string, string[]> TAuditSealPrefix = new Dictionary<string, string[]>
+    public static readonly IReadOnlyDictionary<string, string[]> TAuditUnsealingPrefix =
+        new Dictionary<string, string[]>
+        {
+            ["Llyn.UIDeportment"] = ["L"],
+        };
+
+    public static readonly IReadOnlyDictionary<string, int> TAuditBorderCeiling = new Dictionary<string, int>
     {
-        ["Llyn.UIDeportment"] = ["L"],
+        ["Leaking:Llyn.UIDemeanor>Llyn.Core"] = 1,
+        ["Leaking:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
+        ["Leaking:Llyn.UIDeportment>Llyn.Core"] = 1,
+        ["Leaking:Llyn.UIDeportment>Llyn.ShellEngine"] = 1,
+        ["Leapfrogging:Llyn.Conduct>Llyn.Core"] = 0,
+        ["Leapfrogging:Llyn.ShellEngine>Llyn.Core"] = 15,
+        ["Undercutting:Llyn.UIDeportment>Llyn.Application"] = 0,
+        ["Undercutting:Llyn.UIDeportment>Llyn.Core"] = 0,
+        ["Undercutting:Llyn.UIDeportment>Llyn.ShellEngine"] = 0,
+        ["Unsealing:Llyn.UIDeportment>Llyn.Application"] = 0,
+        ["Unsealing:Llyn.UIDeportment>Llyn.Core"] = 0,
+        ["Unsealing:Llyn.UIDeportment>Llyn.ShellEngine"] = 0,
     };
 
-    public static readonly IReadOnlyDictionary<string, int> TAuditChainFloor = new Dictionary<string, int>
-    {
-        ["Llyn.Application"] = 91,
-    };
-
-    public static readonly IReadOnlyDictionary<string, string[]> TAuditChainStray = new Dictionary<string, string[]>
-    {
-        ["Llyn.Core"] = [@"^LRequest"],
-    };
-
-    public static readonly IReadOnlyDictionary<string, string[]> TAuditChainBanned = new Dictionary<string, string[]>
-    {
-        ["src/Llyn.ShellEngine"] = ["LVaultSessionStart"],
-    };
-
-    public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
-    {
-        ["cross:Llyn.UIDeportment>Llyn.Application"] = 0,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 0,
-        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 0,
-        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 1,
-        ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
-        ["expose:Llyn.UIDeportment>Llyn.Core"] = 1,
-        ["expose:Llyn.UIDeportment>Llyn.ShellEngine"] = 1,
-        ["reach:Llyn.Conduct>Llyn.Core"] = 0,
-        ["reach:Llyn.ShellEngine>Llyn.Core"] = 15,
-        ["seal:Llyn.UIDeportment>Llyn.Application"] = 0,
-        ["seal:Llyn.UIDeportment>Llyn.Core"] = 0,
-        ["seal:Llyn.UIDeportment>Llyn.ShellEngine"] = 0,
-    };
-
-    public static readonly string[] TAuditChainWaiver = [];
+    public static readonly string[] TAuditBorderExempt = [];
 }

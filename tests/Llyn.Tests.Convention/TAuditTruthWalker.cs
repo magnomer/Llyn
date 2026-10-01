@@ -28,11 +28,11 @@ internal static partial class TAuditTruthWalker
             Dictionary<INamedTypeSymbol, List<TypeDeclarationSyntax>> parts = TAuditPartRead(sourcePaths);
             foreach (SyntaxNode root in TAuditRoots)
             {
-                TAuditMutationScan(root, violations);
-                TAuditShapeScan(root, violations);
+                TAuditTamperingScan(root, violations);
+                TAuditMisfiringScan(root, violations);
             }
 
-            TAuditParityScan(violations);
+            TAuditMismatchingScan(violations);
             foreach (List<TypeDeclarationSyntax> type in parts.Values)
             {
                 TAuditBaseCheck(type, violations);
@@ -218,18 +218,18 @@ internal static partial class TAuditTruthWalker
                 field.TFieldPath,
                 field.TFieldLine,
                 field.TFieldName,
-                "Mirror",
+                "Duplicating",
                 $"holds a {field.TFieldType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}"));
         }
         else if (field.TFieldName.EndsWith(TAuditTruthSetting.TAuditStateSuffix, StringComparison.Ordinal))
         {
             violations.Add(new TViolation(
-                field.TFieldPath, field.TFieldLine, field.TFieldName, "Mirror", "names a state the engine owns"));
+                field.TFieldPath, field.TFieldLine, field.TFieldName, "Duplicating", "names a state the engine owns"));
         }
         else if (field.TFieldType.SpecialType == SpecialType.System_Object)
         {
             violations.Add(new TViolation(
-                field.TFieldPath, field.TFieldLine, field.TFieldName, "Mirror", "holds an untyped value"));
+                field.TFieldPath, field.TFieldLine, field.TFieldName, "Duplicating", "holds an untyped value"));
         }
 
         HashSet<MemberDeclarationSyntax> scopes = [];
@@ -284,7 +284,7 @@ internal static partial class TAuditTruthWalker
                         reference.SyntaxTree.FilePath,
                         TAuditLineRead(reference),
                         field.TFieldName,
-                        "Mirror",
+                        "Duplicating",
                         "caches a request"));
                 }
 
@@ -319,7 +319,7 @@ internal static partial class TAuditTruthWalker
                 plainWrite.SyntaxTree.FilePath,
                 TAuditLineRead(plainWrite),
                 field.TFieldName,
-                "Fork",
+                "Contesting",
                 $"written by the engine at {where} and by the shell here"));
         }
     }

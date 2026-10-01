@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditNameSetting
 {
-    public const int TAuditGeneration = 16;
+    public const int TAuditGeneration = 17;
     public const string TAuditProject = "Llyn";
     public const string TAuditTestPrefix = "T";
     public const string TAuditComponentPattern = "[A-Z]+(?=[A-Z][a-z]|[0-9]|$)|[A-Z]?[a-z]+|[0-9]+";
@@ -37,7 +37,7 @@ internal static class TAuditNameSetting
         "t",
     ];
 
-    public static readonly Dictionary<string, string[]> TAuditPrefixRings = new(StringComparer.Ordinal)
+    public static readonly Dictionary<string, string[]> TAuditPrefixTurfs = new(StringComparer.Ordinal)
     {
         ["src/Llyn.Application"] = ["L", "LS"],
         ["src/Llyn.Conduct"] = ["C", "CS"],

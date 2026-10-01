@@ -3,7 +3,7 @@
 ## `internal static class TAuditBinder`
 
 One Roslyn compilation of every tracked source under `src`, shared by every audit that binds.
-The chain, the frame and the shell walks read the same trees, so the bind is paid once.
+The border, the purity and the shell walks read the same trees, so the bind is paid once.
 The shell's generated markup classes join the compilation, so an `x:Name` field binds like any other.
 `TAuditReference` supplies the references and the generated code.
 The compilation must hold no error, so an unbound name can never drop out of a walk unseen.

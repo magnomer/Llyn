@@ -58,7 +58,7 @@ public sealed class TAuditName
     }
 
     [Fact]
-    public void AuditName_Types_PrefixMatchesRing()
+    public void AuditName_Types_PrefixMatchesTurf()
     {
         string repoRoot = TAuditSource.TAuditRootRead();
         TAuditScope scope = new(
@@ -68,34 +68,34 @@ public sealed class TAuditName
             TAuditNameSetting.TAuditExcludedSuffixes,
             TAuditNameSetting.TAuditExcludedPrefixes,
             TAuditNameSetting.TAuditSelfExcluded);
-        List<string> hits = TAuditRingRead(repoRoot, TAuditSource.TAuditFileRead(repoRoot, scope));
+        List<string> hits = TAuditTurfRead(repoRoot, TAuditSource.TAuditFileRead(repoRoot, scope));
         string listed = string.Join('\n', hits.Select(hit => $"  {hit}"));
 
         Assert.True(hits.Count <= TAuditNameSetting.TAuditPrefixCeiling, TAuditConvention.TAuditReportFormat(
             "AUDITNAMES",
-            $"{hits.Count} type(s) carry a prefix outside their ring, above the ceiling "
+            $"{hits.Count} type(s) carry a prefix outside their turf, above the ceiling "
             + $"{TAuditNameSetting.TAuditPrefixCeiling}:\n{listed}"));
         Assert.True(hits.Count >= TAuditNameSetting.TAuditPrefixCeiling, TAuditConvention.TAuditReportFormat(
             "AUDITNAMES",
-            $"{hits.Count} type(s) carry a prefix outside their ring, so the ceiling "
+            $"{hits.Count} type(s) carry a prefix outside their turf, so the ceiling "
             + $"{TAuditNameSetting.TAuditPrefixCeiling} is stale and must be lowered."));
     }
 
-    private static List<string> TAuditRingRead(string repoRoot, IReadOnlyList<string> sources)
+    private static List<string> TAuditTurfRead(string repoRoot, IReadOnlyList<string> sources)
     {
         CSharpParseOptions options = new(LanguageVersion.Preview, DocumentationMode.None, SourceCodeKind.Regular);
         List<(string TAuditPath, int TAuditLine, string TAuditType, string TAuditText)> hits = [];
         foreach (string path in sources.Where(path => path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)))
         {
             string relative = Path.GetRelativePath(repoRoot, path).Replace('\\', '/');
-            string? ring = TAuditNameSetting.TAuditPrefixRings.Keys
+            string? turf = TAuditNameSetting.TAuditPrefixTurfs.Keys
                 .FirstOrDefault(key => relative.StartsWith(key + "/", StringComparison.OrdinalIgnoreCase));
-            if (ring is null)
+            if (turf is null)
             {
                 continue;
             }
 
-            string[] allowed = TAuditNameSetting.TAuditPrefixRings[ring];
+            string[] allowed = TAuditNameSetting.TAuditPrefixTurfs[turf];
             SyntaxNode root = CSharpSyntaxTree.ParseText(File.ReadAllText(path), options, path).GetRoot();
             foreach (SyntaxNode node in root.DescendantNodes())
             {
@@ -114,7 +114,7 @@ public sealed class TAuditName
 
                 int line = identifier.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
                 hits.Add((relative, line, name,
-                    $"{relative}:{line} [{kind}] {name} - prefix `{prefix}` is outside the ring of {ring} "
+                    $"{relative}:{line} [{kind}] {name} - prefix `{prefix}` is outside the turf of {turf} "
                     + $"({string.Join(", ", allowed.Select(item => $"`{item}`"))})"));
             }
         }

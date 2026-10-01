@@ -1,20 +1,10 @@
 {
-  "Argument": {
-    "src/Llyn.UIDeportment/Editor/List/PCardDrag.cs": 1,
-    "src/Llyn.UIDeportment/Etymology/PEtymology.cs": 3,
-    "src/Llyn.UIDeportment/Mention/Text/PMention.cs": 2
-  },
-  "Feed": {
-    "src/Llyn.UIDeportment/Display/Template/PLeaf.cs": 4,
-    "src/Llyn.UIDeportment/Editor/Etymology/PEtymologyField.cs": 1,
-    "src/Llyn.UIDeportment/Mention/Text/PMention.cs": 1,
-    "src/Llyn.UIDeportment/Panel/Corpus/QCorpusExcerpt.cs": 1
-  },
-  "Fork": {
+  "Contesting": {
     "src/Llyn.UIDeportment/Etymology/PEtymology.cs": 2,
     "src/Llyn.UIDeportment/Sound/QReflexItem.cs": 1
   },
-  "Guard": {
+  "Duplicating": {},
+  "Gatekeeping": {
     "src/Llyn.UIDeportment/Editor/List/PCardDrag.cs": 8,
     "src/Llyn.UIDeportment/Mention/Text/PMention.cs": 3,
     "src/Llyn.UIDeportment/Shell/QMarkdownFace.cs": 6,
@@ -24,16 +14,23 @@
     "src/Llyn.UIDeportment/Sound/QReflexItem.cs": 10,
     "src/Llyn.UIDeportment/Sound/Script/PScript.cs": 1
   },
-  "Mirror": {},
-  "Mutation": {
-    "src/Llyn.UIDeportment/Editor/Card/PCardContext.cs": 1,
-    "src/Llyn.UIDeportment/Editor/Card/PCardLabel.cs": 1,
-    "src/Llyn.UIDeportment/Editor/Card/PCardLink.cs": 2,
-    "src/Llyn.UIDeportment/Editor/Card/PCardRegister.cs": 1,
-    "src/Llyn.UIDeportment/Editor/Core/PEditorCard.cs": 2,
-    "src/Llyn.UIDeportment/Mention/Text/PMentionLine.cs": 2
+  "Laundering": {
+    "src/Llyn.UIDeportment/Editor/Core/PEditorCaret.cs": 2,
+    "src/Llyn.UIDeportment/Editor/Marker/PSlate.cs": 4,
+    "src/Llyn.UIDeportment/Editor/Pick/PProffer.cs": 4,
+    "src/Llyn.UIDeportment/Editor/Pick/PProspect.cs": 4,
+    "src/Llyn.UIDeportment/Editor/Sentence/PSentenceCitation.cs": 1,
+    "src/Llyn.UIDeportment/Mention/Menu/PMentionMenu.cs": 5,
+    "src/Llyn.UIDeportment/Mention/Text/PMention.cs": 2,
+    "src/Llyn.UIDeportment/Panel/Settings/PSettingsEpithet.cs": 1,
+    "src/Llyn.UIDeportment/Shell/Screen/PScreen.cs": 1,
+    "src/Llyn.UIDeportment/Sound/Accent/PAccent.cs": 1,
+    "src/Llyn.UIDeportment/Sound/Accent/PContour.cs": 4,
+    "src/Llyn.UIDeportment/Sound/Fanqie/PFanqie.cs": 3,
+    "src/Llyn.UIDeportment/Sound/Script/PScript.cs": 3
   },
-  "Parity": {
+  "Misfiring": {},
+  "Mismatching": {
     "src/Llyn.Conduct/Atelier/CEnvoy.cs": 1,
     "src/Llyn.UIDeportment/Display/QCompass.cs": 6,
     "src/Llyn.UIDeportment/Display/QLectern.cs": 27,
@@ -197,21 +194,24 @@
     "src/Llyn.UIDeportment/Sound/Transcription/PNotationItem.cs": 12,
     "src/Llyn.UIDeportment/Sound/Transcription/PTranscription.cs": 18
   },
-  "Shape": {},
-  "Taint": {
-    "src/Llyn.UIDeportment/Editor/Core/PEditorCaret.cs": 2,
-    "src/Llyn.UIDeportment/Editor/Marker/PSlate.cs": 4,
-    "src/Llyn.UIDeportment/Editor/Pick/PProffer.cs": 4,
-    "src/Llyn.UIDeportment/Editor/Pick/PProspect.cs": 4,
-    "src/Llyn.UIDeportment/Editor/Sentence/PSentenceCitation.cs": 1,
-    "src/Llyn.UIDeportment/Mention/Menu/PMentionMenu.cs": 5,
-    "src/Llyn.UIDeportment/Mention/Text/PMention.cs": 2,
-    "src/Llyn.UIDeportment/Panel/Settings/PSettingsEpithet.cs": 1,
-    "src/Llyn.UIDeportment/Shell/Screen/PScreen.cs": 1,
-    "src/Llyn.UIDeportment/Sound/Accent/PAccent.cs": 1,
-    "src/Llyn.UIDeportment/Sound/Accent/PContour.cs": 4,
-    "src/Llyn.UIDeportment/Sound/Fanqie/PFanqie.cs": 3,
-    "src/Llyn.UIDeportment/Sound/Script/PScript.cs": 3
+  "Moonlighting": {},
+  "Replaying": {
+    "src/Llyn.UIDeportment/Editor/List/PCardDrag.cs": 1,
+    "src/Llyn.UIDeportment/Etymology/PEtymology.cs": 3,
+    "src/Llyn.UIDeportment/Mention/Text/PMention.cs": 2
   },
-  "Treat": {}
+  "Spoonfeeding": {
+    "src/Llyn.UIDeportment/Display/Template/PLeaf.cs": 4,
+    "src/Llyn.UIDeportment/Editor/Etymology/PEtymologyField.cs": 1,
+    "src/Llyn.UIDeportment/Mention/Text/PMention.cs": 1,
+    "src/Llyn.UIDeportment/Panel/Corpus/QCorpusExcerpt.cs": 1
+  },
+  "Tampering": {
+    "src/Llyn.UIDeportment/Editor/Card/PCardContext.cs": 1,
+    "src/Llyn.UIDeportment/Editor/Card/PCardLabel.cs": 1,
+    "src/Llyn.UIDeportment/Editor/Card/PCardLink.cs": 2,
+    "src/Llyn.UIDeportment/Editor/Card/PCardRegister.cs": 1,
+    "src/Llyn.UIDeportment/Editor/Core/PEditorCard.cs": 2,
+    "src/Llyn.UIDeportment/Mention/Text/PMentionLine.cs": 2
+  }
 }

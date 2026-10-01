@@ -41,7 +41,7 @@ internal static partial class TAuditTruthWalker
                 last.SyntaxTree.FilePath,
                 TAuditLineRead(last),
                 field.TFieldName,
-                "Guard",
+                "Gatekeeping",
                 $"toggled around a request{through}"));
         }
     }
@@ -98,7 +98,7 @@ internal static partial class TAuditTruthWalker
                     part.SyntaxTree.FilePath,
                     TAuditLineRead(baseType),
                     part.Identifier.ValueText,
-                    "Mirror",
+                    "Duplicating",
                     $"derives from {symbol.Name}"));
             }
         }

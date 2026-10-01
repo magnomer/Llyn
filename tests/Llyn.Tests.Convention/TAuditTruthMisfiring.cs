@@ -6,7 +6,7 @@ namespace Convention.Tests;
 
 internal static partial class TAuditTruthWalker
 {
-    private static void TAuditShapeScan(SyntaxNode root, List<TViolation> violations)
+    private static void TAuditMisfiringScan(SyntaxNode root, List<TViolation> violations)
     {
         HashSet<string> seen = new(StringComparer.Ordinal);
         foreach (SyntaxNode node in root.DescendantNodes())
@@ -14,43 +14,45 @@ internal static partial class TAuditTruthWalker
             (string TViolationKind, string TViolationName, string TViolationReason)? hit = node switch
             {
                 IfStatementSyntax branch when TAuditControlRead(branch.Condition) is string control
-                                              && TAuditGuardCheck(branch)
-                    => ("Shape", control, "control decides a request in an if"),
+                                              && TAuditGatekeepingCheck(branch)
+                    => ("Misfiring", control, "control decides a request in an if"),
                 ConditionalExpressionSyntax choice when TAuditControlRead(choice.Condition) is string control
                                                         && (TAuditRequestCheck(choice.WhenTrue)
                                                             || TAuditRequestCheck(choice.WhenFalse))
-                    => ("Shape", control, "control decides a request in a ternary"),
+                    => ("Misfiring", control, "control decides a request in a ternary"),
                 IfStatementSyntax branch when TAuditDialogRead(branch.Condition) is string dialog
-                                              && TAuditGuardCheck(branch)
-                    => ("Guard", dialog, "a dialog answer decides a request"),
-                IfStatementSyntax branch when TAuditAskedCheck(branch.Condition) && TAuditGuardCheck(branch)
-                    => ("Guard", TAuditExcerptRead(branch.Condition), "an engine answer decides a request in an if"),
+                                              && TAuditGatekeepingCheck(branch)
+                    => ("Gatekeeping", dialog, "a dialog answer decides a request"),
+                IfStatementSyntax branch when TAuditAskedCheck(branch.Condition) && TAuditGatekeepingCheck(branch)
+                    => ("Gatekeeping", TAuditExcerptRead(branch.Condition),
+                        "an engine answer decides a request in an if"),
                 ConditionalExpressionSyntax choice when TAuditAskedCheck(choice.Condition)
                                                         && !TAuditPresenceCheck(choice.Condition)
                                                         && (TAuditRequestCheck(choice.WhenTrue)
                                                             || TAuditRequestCheck(choice.WhenFalse))
-                    => ("Guard", TAuditExcerptRead(choice.Condition),
+                    => ("Gatekeeping", TAuditExcerptRead(choice.Condition),
                         "an engine answer decides a request in a ternary"),
                 SwitchStatementSyntax select when TAuditAskedCheck(select.Expression) && TAuditRequestCheck(select)
-                    => ("Guard", TAuditExcerptRead(select.Expression),
+                    => ("Gatekeeping", TAuditExcerptRead(select.Expression),
                         "an engine answer decides a request in a switch"),
                 AssignmentExpressionSyntax
                     {
                         RawKind: (int)SyntaxKind.AddAssignmentExpression,
                         Left: MemberAccessExpressionSyntax clock
                     } wired when TAuditClockCheck(clock.Expression) && TAuditDriveCheck(wired.Right)
-                    => ("Shape", clock.Expression.ToString(), "a clock drives a request"),
+                    => ("Misfiring", clock.Expression.ToString(), "a clock drives a request"),
                 BaseObjectCreationExpressionSyntax { ArgumentList: { } arguments } creation
                     when TAuditClockCheck(creation) && arguments.Arguments.Any(argument =>
                         TAuditDriveCheck(argument.Expression))
-                    => ("Shape", TAuditExcerptRead(creation), "a clock built with a callback drives a request"),
+                    => ("Misfiring", TAuditExcerptRead(creation), "a clock built with a callback drives a request"),
                 StatementSyntax loop when loop is WhileStatementSyntax or DoStatementSyntax or ForStatementSyntax
                                           && TAuditDelayCheck(loop) && TAuditDriveCheck(loop)
-                    => ("Shape", TAuditExcerptRead(loop), "a delay loop drives a request"),
+                    => ("Misfiring", TAuditExcerptRead(loop), "a delay loop drives a request"),
                 MethodDeclarationSyntax handler when TAuditDeafRead(handler) is string bulletin
-                    => ("Shape", handler.Identifier.ValueText, $"handles the bulletin '{bulletin}' without reading it"),
+                    => ("Misfiring", handler.Identifier.ValueText,
+                        $"handles the bulletin '{bulletin}' without reading it"),
                 LambdaExpressionSyntax deaf when TAuditLambdaCheck(deaf)
-                    => ("Shape", TAuditTruthSetting.TAuditBulletinType, "handles a bulletin without reading it"),
+                    => ("Misfiring", TAuditTruthSetting.TAuditBulletinType, "handles a bulletin without reading it"),
                 _ => null
             };
             if (hit is null)

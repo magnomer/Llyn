@@ -1,25 +1,28 @@
 <#
 .SYNOPSIS
-Audit the ring chain of the source and the project edges, and report every step past a neighbour.
+Audit the rings of the source and the project edges, and report every step past a neighbour.
 
 .DESCRIPTION
 Reads the ring table from auditstructure.json, binds the tracked source with the shared binder of
-auditbinder.cs, and classifies every symbol one ring names from another ring. A ring may reach the
-one ring inside it that the table names for it; a data type of any inner ring may be carried across
-any depth; nothing outward is ever named. A using of a deeper ring counts as data, and a method call
-on a deeper record counts as behaviour. A pure ring names only the framework namespaces its frame
-lists and never touches an ambient member such as the clock, the environment or the file system.
-The project files under the source folder are held to the ring table edge by edge, no project hides
-a reference from the table, and the cut projects that still compile transitively stay at a ceiling.
+auditbinder.cs, and sorts every symbol one ring names from another ring into a kind of four families.
+Border: a ring may name the behaviour of the one neighbour the table names for it (Commuting); a data
+type of any inner ring may be carried across any depth (Ferrying); behaviour past the neighbour is
+Leapfrogging and any outward name is Trespassing. A using of a deeper ring counts as data, and a
+method call on a deeper record counts as behaviour. Purity: a pure ring names only the framework
+namespaces its frame lists (Foraging) and never touches an eavesdropping member such as the clock,
+the environment or the file system (Eavesdropping). Census: each ring holds its floor of files, its
+own types and no smuggled word. Charter: the project files under the source folder hold the ring
+table edge by edge (Rerouting), no project hides a reference from the table (Backdooring), and the
+cut projects that still compile transitively stay at a ceiling (Piggybacking).
 
 The reports are written to the configured report folder as AuditStructure-{version}.md and
 AuditStructureViolated-{version}.md. Git and the .NET SDK are required, and the solution must be
 built, since the shared binder reads the generated code and the host build output and refuses to
 bind a tree with a compile error. No project source is modified.
 
-The script reads no convention test file and no test report. The convention tests TAuditChain,
-TAuditFrame and TAuditRing audit the same ground truth from their own settings, so either one
-still tells the truth when the other is broken.
+The script reads no convention test file and no test report. The convention tests TAuditBorder,
+TAuditCensus, TAuditPurity and TAuditCharter audit the same ground truth from their own settings,
+so either side still tells the truth when the other is broken.
 
 .PARAMETER Root
 Project root to audit. Defaults to the directory containing this script's parent.
@@ -42,7 +45,7 @@ auditstructure -Root C:\path\to\project -Open
 Audit a specific checkout and open the violation report.
 #>
 #requires -Version 5.1
-# AUDITSTRUCTURE GENERATION 16 - auditstructure.ps1.
+# AUDITSTRUCTURE GENERATION 17 - auditstructure.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -50,35 +53,39 @@ Audit a specific checkout and open the violation report.
 # added, removed, or changed in what it reports is a new generation; wording, plumbing, and refactoring
 # leave it alone. Every audit script shares one generation number with the convention-test settings,
 # and each refuses a configuration written at another generation.
-# Generation 10 binds the source with Roslyn and holds every ring to one reach: a ring names the
-# behaviour of the single ring the table lets it reach, carries the data of any inner ring, and
-# names nothing outward. A pure ring names only the framework namespaces its frame lists and never
-# touches an ambient member.
-# A reach is a call, a construction, an implementation, a field or a base. A carry is a record, an
-# enum, a struct or a delegate named in a signature or passed through. The distinction is the
-# kind of the type named, read from the binder, not the position of the name in the line.
+# Generation 10 binds the source with Roslyn and holds every ring to one neighbour: a ring names the
+# behaviour of the single neighbour the table gives it (Commuting), carries the data of any inner
+# ring (Ferrying), and names nothing outward (Trespassing). A pure ring names only the framework
+# namespaces its frame lists (Foraging) and never touches an eavesdropping member (Eavesdropping).
+# Behaviour past the neighbour (Leapfrogging) is a call, a construction, an implementation, a field
+# or a base. Ferried data is a record, an enum, a struct or a delegate named in a signature or
+# passed through. The distinction is the kind of the type named, read from the binder, not the
+# position of the name in the line.
 # A configuration is total: a missing key is an error, never a default, and an unknown key is an
 # error rather than a silent no-op. A ceiling is the hit count a held pair may hold; a count above
-# fails, a ceiling above the count is stale and fails too, so a ceiling only walks down. A check
+# fails, a ceiling above the count is stale and fails too, so a ceiling only walks down. A kind
 # without a ceiling fails on its first hit. An exemption row is 'path:Name' or 'folder/*:Name' and
-# clears a chain or frame hit alone; a row that matched nothing is stale and fails the run.
+# clears a Border or Purity hit alone; a row that matched nothing is stale and fails the run.
 # Generation 11: nothing the structure audit reports changes; the number rises with the truth audit,
 # which checks that a deportment field reaches no request, keeps one writer, holds no logic and
 # treats no engine data.
-# Generation 12: the audit reports what the convention tests TAuditChain, TAuditFrame and TAuditRing
-# report. It binds through the shared binder of auditbinder.cs with no compile error, counts a
-# ceiling in hits, counts a using of a deeper ring and a method call on a deeper record as a reach,
-# walks using static names, and adds the expose, surface, stray, banned, floor, table, hidden and
-# transitive checks.
+# Generation 12: the audit reports what the convention tests TAuditBorder, TAuditCensus,
+# TAuditPurity and TAuditCharter report. It binds through the shared binder of auditbinder.cs with
+# no compile error, counts a ceiling in hits, counts a using of a deeper ring and a method call on a
+# deeper record as Leapfrogging, walks using static names, and adds the Leaking, Poaching,
+# Squatting, Smuggling, Hollowing, Rerouting, Backdooring and Piggybacking kinds.
 # Generation 13: nothing this audit reports changes; the number rises with the UI audit, which
 # counts every surface markup line that hooks logic into the markup and every surface member
 # that is not a constructor.
 # Generation 14: nothing this audit reports changes; the number rises with the UI audit, which
 # also counts command parameters, member paths and literal tags in surface markup as hooks.
 # Generation 15: nothing this audit reports changes; the number rises with the name audit, which
-# counts prefix rings, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
-# Generation 16: the seal check counts every public member of a sealed-prefix type in a UI ring that
-# names a type from below its neighbour. Each seal row names a ring and the type prefixes it seals.
+# counts prefix turfs, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
+# Generation 16: the Unsealing kind counts every public member of a sealed-prefix type in a UI ring
+# that names a type from below its neighbour. Each unsealingPrefixes row names a ring and the type
+# prefixes it seals.
+# Generation 17: findings take one vocabulary of -ing kinds and plain measure names, and the
+# configuration keys follow. What the audit counts is unchanged.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -105,7 +112,7 @@ NAME
     auditstructure.ps1
 
 SYNOPSIS
-    Audit the ring chain of the source and the project edges, and report every
+    Audit the rings of the source and the project edges, and report every
     step past a neighbour.
 
 SYNTAX
@@ -125,36 +132,44 @@ OPTIONS
     -Help, -?
         Display this help and exit without running the audit.
 
-CHECKS
-    Held by a ceiling, one per pair check:Ring>Target, counted in hits:
-        outward, reach, cross, expose, seal, frame, ambient
-    Held by the transitive ceiling, counted in cut projects:
-        transitive
-    Never allowed, failing on the first hit:
-        surface, stray, banned, floor, table, hidden
-    Reported only:
-        carry, neighbour
-    The frame and ambient checks read the pure rings alone. A configuration
-    that lets a ring reach more than one ring, or whose cut differs from its
-    shell folders, is refused before the audit runs. A ring may also name
-    one capsule: a leaf ring that reaches nothing and that no other ring names.
+KINDS
+    Border (counterpart TAuditBorder):
+        Trespassing, Leapfrogging, Undercutting, Leaking, Unsealing
+            held by a ceiling, one per pair Kind:Ring>Target, counted in hits
+        Poaching            never allowed, failing on the first hit
+        Commuting, Ferrying reported only
+    Census (counterpart TAuditCensus):
+        Squatting, Smuggling, Hollowing
+            never allowed, failing on the first hit
+    Purity (counterpart TAuditPurity):
+        Foraging, Eavesdropping
+            held by a ceiling, one per pair Kind:Ring>Target, counted in hits
+    Charter (counterpart TAuditCharter):
+        Rerouting, Backdooring
+            never allowed, failing on the first hit
+        Piggybacking        held by the single ceiling Piggybacking, counted
+                            in cut projects
+    The Purity kinds read the pure rings alone. A configuration that gives a
+    ring more than one neighbour, or whose cut differs from its shell
+    folders, is refused before the audit runs. A ring may also name one
+    capsule: a leaf ring with no neighbour that no other ring names.
 
 CONFIGURATION
     auditstructure.json beside this script. A ring's folder is the source
     folder followed by the ring name. An exemption row is 'path:Name' or
-    'folder/*:Name', matched ordinally, in exempt.chain or exempt.frame.
+    'folder/*:Name', matched ordinally, in exempt.border or exempt.purity.
     The script reads no convention test file and no test report.
 
 OUTPUT
     The console follows scripts\report.md: scope, result, findings by
-    check, pairs, then one list per gate above zero.
+    kind, pairs, then one list per gate above zero.
     <report folder>\AuditStructure-{version}.md
     <report folder>\AuditStructureViolated-{version}.md
 
 EXIT STATUS
     0   Every counter is 0.
     1   A counter is above 0: a pair above or below its ceiling, a stale
-        exemption, or a hit of a check that allows none.
+        exemption, or a hit of a kind that allows none.
 
 EXAMPLES
     auditstructure
@@ -169,7 +184,7 @@ EXAMPLES
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$script:AuditGeneration = 16
+$script:AuditGeneration = 17
 $script:ConfigDocument = 'auditstructure.json'
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
 $script:PathSeparators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
@@ -339,75 +354,82 @@ $script:AuditSchema = [ordered]@{
     'source'           = 'string'
     'rings'            = 'ring[]'
     'host.name'        = 'string'
-    'host.reach'       = 'string[]'
+    'host.references'  = 'string[]'
     'shells'           = 'string[]'
     'imports'          = 'string[]'
-    'ambient'          = 'string[]'
-    'surface'          = 'map[]'
-    'seal'             = 'map[]'
-    'stray'            = 'map[]'
-    'banned'           = 'map[]'
-    'floor'            = 'map[int]'
+    'eavesdroppingMembers' = 'string[]'
+    'offers'           = 'map[]'
+    'unsealingPrefixes' = 'map[]'
+    'squattingPatterns' = 'map[]'
+    'smugglingWords'   = 'map[]'
+    'hollowingFloors'  = 'map[int]'
     'ceilings'         = 'map[int]'
-    'transitive'       = 'count'
-    'exempt.chain'     = 'string[]'
-    'exempt.frame'     = 'string[]'
+    'exempt.border'    = 'string[]'
+    'exempt.purity'    = 'string[]'
     'report.directory' = 'string'
     'report.versionFile' = 'string'
 }
 
 $script:RingSchema = [ordered]@{
     'name'  = 'string'
-    'reach' = 'string[]'
+    'neighbour' = 'string[]'
     'capsule' = 'string[]'
     'frame' = 'string[]'
     'pure'  = 'bool'
     'cut'   = 'bool'
 }
 
-# A held check counts its hits per pair against a ceiling. A hard check allows no hit at all.
-# A reported check never gates. The transitive check counts cut projects against its own ceiling.
-$script:HeldChecks = @('outward', 'reach', 'cross', 'expose', 'seal', 'frame', 'ambient')
-$script:HardChecks = @('surface', 'stray', 'banned', 'floor', 'table', 'hidden')
-$script:ChainChecks = @('neighbour', 'carry', 'outward', 'reach', 'cross', 'expose', 'seal', 'surface')
-$script:FrameChecks = @('frame', 'ambient')
+# Every kind belongs to one family, the family its counterpart convention test is named after.
+# Border: what one ring names from another. Census: what each ring holds. Purity: what a pure ring
+# names from the framework. Charter: what the project files reference.
+$script:BorderChecks = @('Trespassing', 'Leapfrogging', 'Undercutting', 'Leaking', 'Unsealing', 'Poaching', 'Commuting', 'Ferrying')
+$script:CensusChecks = @('Squatting', 'Smuggling', 'Hollowing')
+$script:PurityChecks = @('Foraging', 'Eavesdropping')
+$script:CharterChecks = @('Rerouting', 'Backdooring', 'Piggybacking')
 
-# The order is the order the checks are reported in, heaviest first.
-$script:CheckOrder = @('outward', 'reach', 'cross', 'expose', 'seal', 'frame', 'ambient', 'transitive',
-    'surface', 'stray', 'banned', 'floor', 'table', 'hidden', 'carry', 'neighbour')
+# A held kind counts its hits per pair against a ceiling. A hard kind allows no hit at all.
+# A reported kind never gates. Piggybacking counts cut projects against its own single ceiling.
+$script:HeldChecks = @('Trespassing', 'Leapfrogging', 'Undercutting', 'Leaking', 'Unsealing', 'Foraging', 'Eavesdropping')
+$script:HardChecks = @('Poaching', 'Squatting', 'Smuggling', 'Hollowing', 'Rerouting', 'Backdooring')
+$script:SingleCheck = 'Piggybacking'
+
+# The order is the order the kinds are reported in, heaviest first.
+$script:CheckOrder = @('Trespassing', 'Leapfrogging', 'Undercutting', 'Leaking', 'Unsealing', 'Foraging', 'Eavesdropping',
+    'Piggybacking', 'Poaching', 'Squatting', 'Smuggling', 'Hollowing', 'Rerouting', 'Backdooring', 'Ferrying', 'Commuting')
 
 $script:CheckTitles = @{
-    'outward'    = 'Outer ring named from an inner ring'
-    'reach'      = 'Behaviour reached past the neighbour ring'
-    'cross'      = 'Name from below the cut inside a UI ring'
-    'expose'     = 'Surface signature naming a type from below its neighbour'
-    'seal'       = 'Sealed member naming a type from below its neighbour'
-    'frame'      = 'Framework namespace outside the frame of a pure ring'
-    'ambient'    = 'Ambient member touched from a pure ring'
-    'transitive' = 'Cut project compiling against rings past its neighbour'
-    'surface'    = 'Neighbour name outside the surface the ring may reach'
-    'stray'      = 'Type declared in a ring that may not hold it'
-    'banned'     = 'Banned word inside a folder'
-    'floor'      = 'Ring holding fewer source files than its floor'
-    'table'      = 'Project edge differing from the ring table'
-    'hidden'     = 'Reference or source link bypassing the ring table'
-    'carry'      = 'Data carried from a deeper ring'
-    'neighbour'  = 'Neighbour ring reached'
+    'Trespassing'   = 'Outer ring named from an inner ring'
+    'Leapfrogging'  = 'Behaviour reached past the neighbour ring'
+    'Undercutting'  = 'Name from below the cut inside a UI ring'
+    'Leaking'       = 'Offered signature naming a type from below its neighbour'
+    'Unsealing'     = 'Sealed member naming a type from below its neighbour'
+    'Foraging'      = 'Framework namespace outside the frame of a pure ring'
+    'Eavesdropping' = 'Eavesdropping member touched from a pure ring'
+    'Piggybacking'  = 'Cut project compiling against rings past its neighbour'
+    'Poaching'      = 'Neighbour name outside the offers the ring may name'
+    'Squatting'     = 'Type declared in a ring that may not hold it'
+    'Smuggling'     = 'Listed word inside a folder'
+    'Hollowing'     = 'Ring holding fewer source files than its floor'
+    'Rerouting'     = 'Project edge differing from the ring table'
+    'Backdooring'   = 'Reference or source link bypassing the ring table'
+    'Ferrying'      = 'Data carried from a deeper ring'
+    'Commuting'     = 'Neighbour ring named'
 }
 
-$script:HardLabels = [ordered]@{
-    'surface' = 'Outside surface'
-    'stray'   = 'Stray types'
-    'banned'  = 'Banned words'
-    'floor'   = 'Thin rings'
-    'table'   = 'Table drift'
-    'hidden'  = 'Hidden references'
+function Get-CheckFamily {
+    param([string]$Check)
+
+    if ($script:BorderChecks -ccontains $Check) { return 'Border' }
+    if ($script:CensusChecks -ccontains $Check) { return 'Census' }
+    if ($script:PurityChecks -ccontains $Check) { return 'Purity' }
+    if ($script:CharterChecks -ccontains $Check) { return 'Charter' }
+    throw "Unknown kind: $Check"
 }
 
 function Get-CheckGate {
     param([string]$Check)
 
-    if ($script:HeldChecks -ccontains $Check -or $Check -ceq 'transitive') { return 'held by ceiling' }
+    if ($script:HeldChecks -ccontains $Check -or $Check -ceq $script:SingleCheck) { return 'held by ceiling' }
     if ($script:HardChecks -ccontains $Check) { return 'none allowed' }
     return 'reported only'
 }
@@ -593,9 +615,9 @@ function Read-AuditConfig {
         }
 
         foreach ($ring in $ringsNode.Value) {
-            $reach = @($ring.reach)
-            if ($reach.Count -gt 1) {
-                [void]$problems.Add("ring '$($ring.name)' reaches $($reach -join ', '), more than one ring")
+            $neighbour = @($ring.neighbour)
+            if ($neighbour.Count -gt 1) {
+                [void]$problems.Add("ring '$($ring.name)' names $($neighbour -join ', ') as neighbour, more than one ring")
             }
 
             $capsule = @($ring.capsule)
@@ -608,8 +630,8 @@ function Read-AuditConfig {
                 if ($owned.Count -eq 0) {
                     [void]$problems.Add("ring '$($ring.name)' names an undeclared capsule '$target'")
                 }
-                elseif (@($owned[0].reach).Count -gt 0 -or @($owned[0].capsule).Count -gt 0) {
-                    [void]$problems.Add("capsule '$target' reaches a ring, so it is no capsule")
+                elseif (@($owned[0].neighbour).Count -gt 0 -or @($owned[0].capsule).Count -gt 0) {
+                    [void]$problems.Add("capsule '$target' names a neighbour, so it is no capsule")
                 }
 
                 $holders = @($ringsNode.Value | Where-Object { @($_.capsule) -ccontains $target })
@@ -618,13 +640,13 @@ function Read-AuditConfig {
                 }
             }
 
-            foreach ($target in $reach) {
+            foreach ($target in $neighbour) {
                 if (-not ($names -ccontains $target)) {
-                    [void]$problems.Add("ring '$($ring.name)' reaches an undeclared ring '$target'")
+                    [void]$problems.Add("ring '$($ring.name)' names an undeclared ring '$target' as neighbour")
                 }
 
                 if ($target -ceq $ring.name) {
-                    [void]$problems.Add("ring '$($ring.name)' reaches itself")
+                    [void]$problems.Add("ring '$($ring.name)' names itself as neighbour")
                 }
             }
 
@@ -633,15 +655,15 @@ function Read-AuditConfig {
             }
 
             if (-not $ring.pure -and @($ring.frame).Count -gt 0) {
-                [void]$problems.Add("ring '$($ring.name)' is not pure, so no frame check reads its frame; leave it empty")
+                [void]$problems.Add("ring '$($ring.name)' is not pure, so no Foraging check reads its frame; leave it empty")
             }
         }
 
-        $sealNode = Get-AuditNode -Document $config -Key 'seal'
-        if ($sealNode.Found -and (Test-AuditValue -Kind 'map[]' -Value $sealNode.Value)) {
-            foreach ($property in $sealNode.Value.PSObject.Properties) {
+        $unsealingNode = Get-AuditNode -Document $config -Key 'unsealingPrefixes'
+        if ($unsealingNode.Found -and (Test-AuditValue -Kind 'map[]' -Value $unsealingNode.Value)) {
+            foreach ($property in $unsealingNode.Value.PSObject.Properties) {
                 if (-not ($names -ccontains $property.Name)) {
-                    [void]$problems.Add("seal row '$($property.Name)' names an undeclared ring")
+                    [void]$problems.Add("unsealingPrefixes row '$($property.Name)' names an undeclared ring")
                 }
             }
         }
@@ -668,13 +690,13 @@ function Read-AuditConfig {
     if ($ceilingsNode.Found -and (Test-AuditValue -Kind 'map[int]' -Value $ceilingsNode.Value)) {
         $held = $script:HeldChecks -join '|'
         foreach ($property in $ceilingsNode.Value.PSObject.Properties) {
-            if ($property.Name -cnotmatch "^($held):[^>]+>.+$") {
-                [void]$problems.Add("ceiling '$($property.Name)' must be written as check:Ring>Target for a held check ($($script:HeldChecks -join ', '))")
+            if ($property.Name -cnotmatch "^($held):[^>]+>.+$" -and $property.Name -cne $script:SingleCheck) {
+                [void]$problems.Add("ceiling '$($property.Name)' must be written as Kind:Ring>Target for a held kind ($($script:HeldChecks -join ', ')) or as $script:SingleCheck")
             }
         }
     }
 
-    foreach ($list in @('chain', 'frame')) {
+    foreach ($list in @('border', 'purity')) {
         $exemptNode = Get-AuditNode -Document $config -Key "exempt.$list"
         if ($exemptNode.Found -and (Test-StringArray -Value $exemptNode.Value)) {
             foreach ($row in $exemptNode.Value) {
@@ -787,21 +809,21 @@ List<Ring> rings = config.GetProperty("rings").EnumerateArray()
     .Select(ring => new Ring(
         ring.GetProperty("name").GetString()!,
         source + ring.GetProperty("name").GetString()! + "/",
-        Strings(ring.GetProperty("reach")),
+        Strings(ring.GetProperty("neighbour")),
         Strings(ring.GetProperty("capsule")),
         Strings(ring.GetProperty("frame")),
         ring.GetProperty("pure").GetBoolean(),
         ring.GetProperty("cut").GetBoolean()))
     .ToList();
 string hostName = config.GetProperty("host").GetProperty("name").GetString()!;
-string[] hostReach = Strings(config.GetProperty("host").GetProperty("reach"));
+string[] hostReferences = Strings(config.GetProperty("host").GetProperty("references"));
 string[] imports = Strings(config.GetProperty("imports"));
-string[] ambient = Strings(config.GetProperty("ambient"));
-Dictionary<string, string[]> surfaces = Map(config.GetProperty("surface"));
-Dictionary<string, string[]> seals = Map(config.GetProperty("seal"));
-Dictionary<string, string[]> strays = Map(config.GetProperty("stray"));
-Dictionary<string, string[]> banned = Map(config.GetProperty("banned"));
-Dictionary<string, int> floors = config.GetProperty("floor").EnumerateObject()
+string[] eavesdropping = Strings(config.GetProperty("eavesdroppingMembers"));
+Dictionary<string, string[]> offers = Map(config.GetProperty("offers"));
+Dictionary<string, string[]> unsealing = Map(config.GetProperty("unsealingPrefixes"));
+Dictionary<string, string[]> squatting = Map(config.GetProperty("squattingPatterns"));
+Dictionary<string, string[]> smuggling = Map(config.GetProperty("smugglingWords"));
+Dictionary<string, int> floors = config.GetProperty("hollowingFloors").EnumerateObject()
     .ToDictionary(item => item.Name, item => item.Value.GetInt32(), StringComparer.Ordinal);
 string[] itemNames = ["ProjectReference", "Reference", "Compile"];
 
@@ -809,7 +831,7 @@ Dictionary<string, HashSet<string>> inner = new(StringComparer.Ordinal);
 foreach (Ring ring in rings)
 {
     HashSet<string> seen = new(StringComparer.Ordinal);
-    Queue<string> pending = new(ring.Reach);
+    Queue<string> pending = new(ring.Neighbour);
     while (pending.Count > 0)
     {
         string name = pending.Dequeue();
@@ -818,7 +840,7 @@ foreach (Ring ring in rings)
             continue;
         }
 
-        foreach (string deeper in rings.FirstOrDefault(candidate => candidate.Name == name)?.Reach ?? [])
+        foreach (string deeper in rings.FirstOrDefault(candidate => candidate.Name == name)?.Neighbour ?? [])
         {
             pending.Enqueue(deeper);
         }
@@ -881,7 +903,7 @@ Parallel.ForEach(binder.LAuditTrees, tree =>
     Ring? ring = RingOf(relative);
     List<Finding> findings = [];
 
-    foreach ((string folder, string[] words) in banned)
+    foreach ((string folder, string[] words) in smuggling)
     {
         if (!relative.StartsWith(folder.Trim('/') + "/", StringComparison.OrdinalIgnoreCase))
         {
@@ -894,7 +916,7 @@ Parallel.ForEach(binder.LAuditTrees, tree =>
             string text = lines[index].ToString();
             foreach (string word in words.Where(word => text.Contains(word, StringComparison.Ordinal)))
             {
-                findings.Add(new Finding(relative, index + 1, ring?.Name ?? "", "banned", folder, word, text.Trim()));
+                findings.Add(new Finding(relative, index + 1, ring?.Name ?? "", "Smuggling", folder, word, text.Trim()));
             }
         }
     }
@@ -917,18 +939,18 @@ Parallel.ForEach(binder.LAuditTrees, tree =>
         }
     }
 
-    void Chain(int line, Ring target, string name, bool data)
+    void Border(int line, Ring target, string name, bool data)
     {
         if (target.Name == ring.Name)
         {
             return;
         }
 
-        string check = ring.Reach.Contains(target.Name) || ring.Capsule.Contains(target.Name) ? "neighbour"
-            : !inner[ring.Name].Contains(target.Name) ? "outward"
-            : ring.Cut && !target.Cut ? "cross"
-            : data ? "carry"
-            : "reach";
+        string check = ring.Neighbour.Contains(target.Name) || ring.Capsule.Contains(target.Name) ? "Commuting"
+            : !inner[ring.Name].Contains(target.Name) ? "Trespassing"
+            : ring.Cut && !target.Cut ? "Undercutting"
+            : data ? "Ferrying"
+            : "Leapfrogging";
         Add(line, check, target.Name, name);
     }
 
@@ -941,16 +963,16 @@ Parallel.ForEach(binder.LAuditTrees, tree =>
             string space = directive.Name.ToString();
             if (!space.StartsWith(project + ".", StringComparison.Ordinal) && !ring.Frame.Contains(space))
             {
-                Add(line, "frame", space, space);
+                Add(line, "Foraging", space, space);
             }
         }
 
         if (directive.NamespaceOrType is { } named
             && model.GetSymbolInfo(named).Symbol is INamespaceSymbol spaceSymbol
             && SpaceRing(spaceSymbol.ToDisplayString()) is { } target
-            && !ring.Reach.Contains(target.Name) && !ring.Capsule.Contains(target.Name))
+            && !ring.Neighbour.Contains(target.Name) && !ring.Capsule.Contains(target.Name))
         {
-            Chain(line, target, "using " + spaceSymbol.ToDisplayString(), true);
+            Border(line, target, "using " + spaceSymbol.ToDisplayString(), true);
         }
     }
 
@@ -982,7 +1004,7 @@ Parallel.ForEach(binder.LAuditTrees, tree =>
             string space = NamespaceOf(type.ContainingNamespace);
             if (space.Length > 0 && !ring.Frame.Contains(space))
             {
-                Add(line, "frame", space, space);
+                Add(line, "Foraging", space, space);
             }
 
             string full = space.Length > 0 ? space + "." + type.Name : type.Name;
@@ -991,11 +1013,11 @@ Parallel.ForEach(binder.LAuditTrees, tree =>
                 full += "." + symbol.Name;
             }
 
-            string? pattern = ambient.FirstOrDefault(
+            string? pattern = eavesdropping.FirstOrDefault(
                 candidate => full == candidate || full.StartsWith(candidate + ".", StringComparison.Ordinal));
             if (pattern is not null)
             {
-                Add(line, "ambient", pattern, pattern);
+                Add(line, "Eavesdropping", pattern, pattern);
             }
 
             continue;
@@ -1008,16 +1030,16 @@ Parallel.ForEach(binder.LAuditTrees, tree =>
         }
 
         bool behaviour = symbol is IMethodSymbol { MethodKind: MethodKind.Ordinary or MethodKind.ReducedExtension };
-        Chain(line, targetRing, type.Name, IsData(type) && !behaviour);
+        Border(line, targetRing, type.Name, IsData(type) && !behaviour);
     }
 
     foreach (BaseTypeDeclarationSyntax declaration in rootNode.DescendantNodes().OfType<BaseTypeDeclarationSyntax>())
     {
         string declared = declaration.Identifier.Text;
         int line = declaration.Identifier.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
-        foreach (string pattern in strays.GetValueOrDefault(ring.Name, []).Where(pattern => Regex.IsMatch(declared, pattern)))
+        foreach (string pattern in squatting.GetValueOrDefault(ring.Name, []).Where(pattern => Regex.IsMatch(declared, pattern)))
         {
-            findings.Add(new Finding(relative, line, ring.Name, "stray", pattern, declared, LineText(tree, line)));
+            findings.Add(new Finding(relative, line, ring.Name, "Squatting", pattern, declared, LineText(tree, line)));
         }
     }
 
@@ -1026,8 +1048,8 @@ Parallel.ForEach(binder.LAuditTrees, tree =>
 
 List<Finding> all = bags.SelectMany(bag => bag).ToList();
 
-HashSet<string> exposed = new(StringComparer.Ordinal);
-foreach ((string pair, string[] surface) in surfaces)
+HashSet<string> leaked = new(StringComparer.Ordinal);
+foreach ((string pair, string[] offer) in offers)
 {
     string ringName = pair[..pair.IndexOf('>')];
     string neighbour = pair[(pair.IndexOf('>') + 1)..];
@@ -1036,7 +1058,7 @@ foreach ((string pair, string[] surface) in surfaces)
         continue;
     }
 
-    IEnumerable<ISymbol> members = surface
+    IEnumerable<ISymbol> members = offer
         .SelectMany(name => compilation.GetSymbolsWithName(name, SymbolFilter.Type))
         .OfType<INamedTypeSymbol>()
         .Where(type => SourceRing(type)?.Name == neighbour)
@@ -1055,9 +1077,9 @@ foreach ((string pair, string[] surface) in surfaces)
         foreach (INamedTypeSymbol type in SignatureOf(member))
         {
             if (SourceRing(type) is { } target && inner[neighbour].Contains(target.Name)
-                && exposed.Add($"{relative}|{line}|{ringName}|{target.Name}|{type.Name}"))
+                && leaked.Add($"{relative}|{line}|{ringName}|{target.Name}|{type.Name}"))
             {
-                all.Add(new Finding(relative, line, ringName, "expose", target.Name, type.Name,
+                all.Add(new Finding(relative, line, ringName, "Leaking", target.Name, type.Name,
                     LineText(location.SourceTree, line)));
             }
         }
@@ -1065,9 +1087,9 @@ foreach ((string pair, string[] surface) in surfaces)
 }
 
 HashSet<string> sealedHits = new(StringComparer.Ordinal);
-foreach ((string ringName, string[] prefixes) in seals)
+foreach ((string ringName, string[] prefixes) in unsealing)
 {
-    if (rings.FirstOrDefault(candidate => candidate.Name == ringName) is not { Reach: [string neighbour] })
+    if (rings.FirstOrDefault(candidate => candidate.Name == ringName) is not { Neighbour: [string neighbour] })
     {
         continue;
     }
@@ -1095,19 +1117,19 @@ foreach ((string ringName, string[] prefixes) in seals)
             if (SourceRing(type) is { } target && inner[neighbour].Contains(target.Name)
                 && sealedHits.Add($"{relative}|{line}|{ringName}|{target.Name}|{type.Name}"))
             {
-                all.Add(new Finding(relative, line, ringName, "seal", target.Name, type.Name,
+                all.Add(new Finding(relative, line, ringName, "Unsealing", target.Name, type.Name,
                     LineText(location.SourceTree, line)));
             }
         }
     }
 }
 
-foreach (Finding finding in all.Where(finding => finding.Check == "neighbour").ToList())
+foreach (Finding finding in all.Where(finding => finding.Check == "Commuting").ToList())
 {
-    if (surfaces.TryGetValue($"{finding.Ring}>{finding.Target}", out string[]? surface)
-        && !surface.Contains(finding.Name, StringComparer.Ordinal))
+    if (offers.TryGetValue($"{finding.Ring}>{finding.Target}", out string[]? offer)
+        && !offer.Contains(finding.Name, StringComparer.Ordinal))
     {
-        all.Add(finding with { Check = "surface" });
+        all.Add(finding with { Check = "Poaching" });
     }
 }
 
@@ -1121,7 +1143,7 @@ foreach ((string ringName, int floor) in floors)
     int count = files.GetValueOrDefault(ringName);
     if (count < floor)
     {
-        all.Add(new Finding(source + ringName, 0, ringName, "floor", ringName, $"{count} source file(s), floor {floor}", ""));
+        all.Add(new Finding(source + ringName, 0, ringName, "Hollowing", ringName, $"{count} source file(s), floor {floor}", ""));
     }
 }
 
@@ -1129,8 +1151,8 @@ List<string> projectFiles = LAuditBinder.LAuditFileRead(projectRoot, [source + "
 Dictionary<string, string> projectOf = projectFiles
     .ToDictionary(path => Path.GetFileNameWithoutExtension(path), path => path, StringComparer.Ordinal);
 Dictionary<string, string[]> edges = rings.ToDictionary(
-    ring => ring.Name, ring => ring.Reach.Concat(ring.Capsule).ToArray(), StringComparer.Ordinal);
-edges[hostName] = hostReach;
+    ring => ring.Name, ring => ring.Neighbour.Concat(ring.Capsule).ToArray(), StringComparer.Ordinal);
+edges[hostName] = hostReferences;
 foreach (string name in projectOf.Keys.Union(edges.Keys, StringComparer.Ordinal).Order(StringComparer.Ordinal))
 {
     string? projectFile = projectOf.GetValueOrDefault(name);
@@ -1139,12 +1161,12 @@ foreach (string name in projectOf.Keys.Union(edges.Keys, StringComparer.Ordinal)
     string where = projectFile is null ? source + name : binder.LAuditRelativeRead(projectFile);
     foreach (string edge in actual.Except(expected, StringComparer.Ordinal))
     {
-        all.Add(new Finding(where, 0, name, "table", edge, $"{name} -> {edge} is referenced but not in the ring table", ""));
+        all.Add(new Finding(where, 0, name, "Rerouting", edge, $"{name} -> {edge} is referenced but not in the ring table", ""));
     }
 
     foreach (string edge in expected.Except(actual, StringComparer.Ordinal))
     {
-        all.Add(new Finding(where, 0, name, "table", edge, $"{name} -> {edge} is in the ring table but not referenced", ""));
+        all.Add(new Finding(where, 0, name, "Rerouting", edge, $"{name} -> {edge} is in the ring table but not referenced", ""));
     }
 }
 
@@ -1163,7 +1185,7 @@ foreach (string projectFile in projectFiles)
         bool binary = item.Name.LocalName == "Reference" && item.Elements().Any(child => child.Name.LocalName == "HintPath");
         if (linked || binary)
         {
-            all.Add(new Finding(owner, 0, name, "hidden", item.Name.LocalName, $"{item.Name.LocalName} {include}", ""));
+            all.Add(new Finding(owner, 0, name, "Backdooring", item.Name.LocalName, $"{item.Name.LocalName} {include}", ""));
         }
     }
 
@@ -1172,7 +1194,7 @@ foreach (string projectFile in projectFiles)
         .Any(node => node.Value.Trim().Equals("true", StringComparison.OrdinalIgnoreCase));
     if (rings.Any(ring => ring.Cut && ring.Name == name) && !closed)
     {
-        all.Add(new Finding(owner, 0, name, "transitive", name, $"{name} compiles against rings past its neighbour", ""));
+        all.Add(new Finding(owner, 0, name, "Piggybacking", name, $"{name} compiles against rings past its neighbour", ""));
     }
 }
 
@@ -1181,7 +1203,7 @@ foreach (string import in LAuditBinder.LAuditFileRead(projectRoot, imports.Selec
     string owner = binder.LAuditRelativeRead(import);
     all.AddRange(XDocument.Load(import).Descendants()
         .Where(item => itemNames.Contains(item.Name.LocalName, StringComparer.Ordinal))
-        .Select(item => new Finding(owner, 0, "", "hidden", item.Name.LocalName, item.Name.LocalName, "")));
+        .Select(item => new Finding(owner, 0, "", "Backdooring", item.Name.LocalName, item.Name.LocalName, "")));
 }
 
 all = all
@@ -1256,7 +1278,7 @@ static string[] Strings(JsonElement element) => element.EnumerateArray().Select(
 static Dictionary<string, string[]> Map(JsonElement element) => element.EnumerateObject()
     .ToDictionary(item => item.Name, item => Strings(item.Value), StringComparer.Ordinal);
 
-sealed record Ring(string Name, string Path, string[] Reach, string[] Capsule, string[] Frame, bool Pure, bool Cut);
+sealed record Ring(string Name, string Path, string[] Neighbour, string[] Capsule, string[] Frame, bool Pure, bool Cut);
 
 sealed record Finding(string Path, int Line, string Ring, string Check, string Target, string Name, string Text);
 
@@ -1421,8 +1443,8 @@ function Format-FindingLine {
 
     $location = Format-Location -Finding $Finding
     switch -CaseSensitive ($Finding.Check) {
-        'surface' { return "$location $($Finding.Name) outside $($Finding.Ring)>$($Finding.Target)" }
-        'stray' { return "$location $($Finding.Name) ~ $($Finding.Target)" }
+        'Poaching' { return "$location $($Finding.Name) outside $($Finding.Ring)>$($Finding.Target)" }
+        'Squatting' { return "$location $($Finding.Name) ~ $($Finding.Target)" }
         default { return "$location $($Finding.Name)" }
     }
 }
@@ -1456,10 +1478,10 @@ foreach ($finding in @($result.Findings | ForEach-Object { $_ })) {
     })
 }
 
-# An exemption clears a chain hit from the chain list or a frame hit from the frame list, the first
-# matching row winning. A project, folder or declaration finding is never exempt.
+# An exemption clears a Border hit from the border list or a Purity hit from the purity list, the
+# first matching row winning. A Census or Charter finding is never exempt.
 $exemptRows = New-Object 'System.Collections.Generic.List[object]'
-foreach ($list in @('chain', 'frame')) {
+foreach ($list in @('border', 'purity')) {
     foreach ($row in @($config.exempt.$list)) {
         [void]$exemptRows.Add([pscustomobject]@{ List = $list; Row = [string]$row; Used = 0 })
     }
@@ -1467,8 +1489,8 @@ foreach ($list in @('chain', 'frame')) {
 
 if ($exemptRows.Count -gt 0) {
     foreach ($finding in $findings) {
-        $list = if ($script:ChainChecks -ccontains $finding.Check) { 'chain' }
-            elseif ($script:FrameChecks -ccontains $finding.Check) { 'frame' }
+        $list = if ($script:BorderChecks -ccontains $finding.Check) { 'border' }
+            elseif ($script:PurityChecks -ccontains $finding.Check) { 'purity' }
             else { '' }
         if ($list.Length -eq 0) {
             continue
@@ -1499,15 +1521,15 @@ foreach ($finding in $findings) {
 
     [void]$live.Add($finding)
     if (-not $counts.ContainsKey($finding.Check)) {
-        throw "The structure binder reported an unknown check: $($finding.Check)"
+        throw "The structure binder reported an unknown kind: $($finding.Check)"
     }
 
     $counts[$finding.Check]++
 }
 
-# A pair is one held check from one ring to one target. Its count is the number of distinct hits,
-# one per file, line, check, target and name, as in the convention tests. A pair is held to the
-# ceiling written for it, an unwritten ceiling being zero. The transitive pair counts cut projects.
+# A pair is one held kind from one ring to one target. Its count is the number of distinct hits,
+# one per file, line, kind, target and name, as in the convention tests. A pair is held to the
+# ceiling written for it, an unwritten ceiling being zero. The Piggybacking pair counts cut projects.
 $pairOf = New-Object 'System.Collections.Generic.Dictionary[string,object]' ([System.StringComparer]::Ordinal)
 function Get-AuditPair {
     param([string]$Key, [string]$Check, [string]$Ring, [string]$Target)
@@ -1531,8 +1553,8 @@ foreach ($finding in $live) {
     if ($script:HeldChecks -ccontains $finding.Check) {
         $pair = Get-AuditPair -Key "$($finding.Check):$($finding.Ring)>$($finding.Target)" -Check $finding.Check -Ring $finding.Ring -Target $finding.Target
     }
-    elseif ($finding.Check -ceq 'transitive') {
-        $pair = Get-AuditPair -Key 'transitive' -Check 'transitive' -Ring '' -Target ''
+    elseif ($finding.Check -ceq $script:SingleCheck) {
+        $pair = Get-AuditPair -Key $script:SingleCheck -Check $script:SingleCheck -Ring '' -Target ''
     }
     else {
         continue
@@ -1543,14 +1565,18 @@ foreach ($finding in $live) {
 }
 
 foreach ($property in $config.ceilings.PSObject.Properties) {
+    if ($property.Name -ceq $script:SingleCheck) {
+        if ([int]$property.Value -gt 0) {
+            $pair = Get-AuditPair -Key $script:SingleCheck -Check $script:SingleCheck -Ring '' -Target ''
+            $pair.Ceiling = [int]$property.Value
+        }
+
+        continue
+    }
+
     $parts = $property.Name -split '[:>]', 3
     $pair = Get-AuditPair -Key $property.Name -Check $parts[0] -Ring $parts[1] -Target $parts[2]
     $pair.Ceiling = [int]$property.Value
-}
-
-if ([int]$config.transitive -gt 0) {
-    $pair = Get-AuditPair -Key 'transitive' -Check 'transitive' -Ring '' -Target ''
-    $pair.Ceiling = [int]$config.transitive
 }
 
 $pairs = @($pairOf.Values | Sort-Object -Property @{ Expression = { [array]::IndexOf($script:CheckOrder, $_.Check) } }, @{ Expression = { Get-OrdinalKey $_.Ring } }, @{ Expression = { Get-OrdinalKey $_.Target } })
@@ -1569,7 +1595,7 @@ foreach ($finding in $live) {
     }
 }
 
-# The violations are the hits of every pair above its ceiling and every hit of a check that allows none.
+# The violations are the hits of every pair above its ceiling and every hit of a kind that allows none.
 $violations = New-Object 'System.Collections.Generic.List[object]'
 foreach ($pair in $overCeiling) {
     foreach ($hit in $pair.Hits) {
@@ -1600,8 +1626,8 @@ $counters = [ordered]@{
     'Stale ceilings'   = $staleCeiling.Count
     'Stale exemptions' = $staleExempt.Count
 }
-foreach ($check in $script:HardLabels.Keys) {
-    $counters[$script:HardLabels[$check]] = $hardOf[$check].Count
+foreach ($check in $script:HardChecks) {
+    $counters[$check] = $hardOf[$check].Count
 }
 
 $reportFolder = Join-AuditPath -ProjectRoot $projectRoot -Relative $config.report.directory
@@ -1626,31 +1652,31 @@ foreach ($label in $counters.Keys) {
 }
 [void]$report.Add('')
 [void]$report.Add('The audit binds the source and reads the kind of every type one ring names from another. A')
-[void]$report.Add('ring reaches the one ring the table names for it and carries the data of any ring inside it;')
-[void]$report.Add('a class or an interface named from deeper than the neighbour is a reach, and a name from an')
-[void]$report.Add('outer ring is never right. A pure ring names only the framework namespaces its frame lists')
-[void]$report.Add('and never touches an ambient member. The project files hold the ring table edge by edge.')
+[void]$report.Add('ring names the one neighbour the table gives it and carries the data of any ring inside it;')
+[void]$report.Add('a class or an interface named from deeper than the neighbour is Leapfrogging, and a name from')
+[void]$report.Add('an outer ring is Trespassing. A pure ring names only the framework namespaces its frame lists')
+[void]$report.Add('and never touches an eavesdropping member. The project files hold the ring table edge by edge.')
 [void]$report.Add('')
 [void]$report.Add('## Rings')
 [void]$report.Add('')
-[void]$report.Add('| Ring | Folder | Reaches | Pure | Cut |')
+[void]$report.Add('| Ring | Folder | Neighbour | Pure | Cut |')
 [void]$report.Add('|---|---|---|---|---|')
 foreach ($ring in $config.rings) {
-    $reaches = if (@($ring.reach).Count -eq 0) { 'nothing' } else { (@($ring.reach) | ForEach-Object { "``$_``" }) -join ', ' }
-    [void]$report.Add("| ``$($ring.name)`` | ``$source$($ring.name)`` | $reaches | $(if ($ring.pure) { 'yes' } else { 'no' }) | $(if ($ring.cut) { 'yes' } else { 'no' }) |")
+    $neighbours = if (@($ring.neighbour).Count -eq 0) { 'nothing' } else { (@($ring.neighbour) | ForEach-Object { "``$_``" }) -join ', ' }
+    [void]$report.Add("| ``$($ring.name)`` | ``$source$($ring.name)`` | $neighbours | $(if ($ring.pure) { 'yes' } else { 'no' }) | $(if ($ring.cut) { 'yes' } else { 'no' }) |")
 }
-$hostReaches = (@($config.host.reach) | ForEach-Object { "``$_``" }) -join ', '
-[void]$report.Add("| ``$($config.host.name)`` (host) | ``$source$($config.host.name)`` | $hostReaches | no | no |")
+$hostReferences = (@($config.host.references) | ForEach-Object { "``$_``" }) -join ', '
+[void]$report.Add("| ``$($config.host.name)`` (host) | ``$source$($config.host.name)`` | $hostReferences | no | no |")
 
 [void]$report.Add('')
-[void]$report.Add('## Checks')
+[void]$report.Add('## Kinds')
 [void]$report.Add('')
-[void]$report.Add('| Check | Meaning | Gate | Hits |')
-[void]$report.Add('|---|---|---|---|')
+[void]$report.Add('| Kind | Family | Meaning | Gate | Hits |')
+[void]$report.Add('|---|---|---|---|---|')
 foreach ($check in $script:CheckOrder) {
-    [void]$report.Add("| ``$check`` | $($script:CheckTitles[$check]) | $(Get-CheckGate -Check $check) | $($counts[$check]) |")
+    [void]$report.Add("| ``$check`` | $(Get-CheckFamily -Check $check) | $($script:CheckTitles[$check]) | $(Get-CheckGate -Check $check) | $($counts[$check]) |")
 }
-[void]$report.Add("| Total | | | $countTotal |")
+[void]$report.Add("| Total | | | | $countTotal |")
 
 [void]$report.Add('')
 [void]$report.Add('## Pairs')
@@ -1676,7 +1702,7 @@ if ($gated.Count -eq 0) {
     [void]$report.Add('No name stepped past its ring.')
 }
 else {
-    [void]$report.Add('| Name | Target | Hits | Files | Heaviest check |')
+    [void]$report.Add('| Name | Target | Hits | Files | Heaviest kind |')
     [void]$report.Add('|---|---|---|---|---|')
     $nameOf = New-Object 'System.Collections.Generic.Dictionary[string,object]' ([System.StringComparer]::Ordinal)
     foreach ($finding in $gated) {
@@ -1755,9 +1781,9 @@ foreach ($label in $counters.Keys) {
 [void]$violationReport.Add('')
 [void]$violationReport.Add('Every violation below is a move until the user says otherwise. A ring that reaches past its')
 [void]$violationReport.Add('neighbour makes the ring between them optional: the engine that calls a vault is a second')
-[void]$violationReport.Add('use-case layer, the view that names the engine is a second presenter. Resolve a reach by')
-[void]$violationReport.Add('handing the work to the neighbour ring, a frame by moving the framework call behind a port,')
-[void]$violationReport.Add('and an ambient touch by taking the clock or the file through a port. Never resolve one by')
+[void]$violationReport.Add('use-case layer, the view that names the engine is a second presenter. Resolve Leapfrogging')
+[void]$violationReport.Add('by handing the work to the neighbour ring, Foraging by moving the framework call behind a')
+[void]$violationReport.Add('port, and Eavesdropping by taking the clock or the file through a port. Never resolve one by')
 [void]$violationReport.Add('turning a class into a record so it reads as data.')
 [void]$violationReport.Add('')
 [void]$violationReport.Add('**Only the user grants an exemption** by adding a row to the `exempt` block of the audit')
@@ -1787,7 +1813,7 @@ function Add-FindingTable {
         return
     }
 
-    [void]$Lines.Add('| Location | Check | Ring | Target | Name | Source |')
+    [void]$Lines.Add('| Location | Kind | Ring | Target | Name | Source |')
     [void]$Lines.Add('|---|---|---|---|---|---|')
     foreach ($finding in $Items) {
         [void]$Lines.Add("| ``$(Format-Location -Finding $finding)`` | ``$($finding.Check)`` | ``$($finding.Ring)`` | ``$($finding.Target)`` | ``$(Format-ReportCell -Value $finding.Name)`` | ``$(Format-ReportCell -Value $finding.Text)`` |")
@@ -1833,22 +1859,22 @@ $meanings = @{
     'Above ceiling'     = 'ring pairs with more hits than their ceiling'
     'Stale ceilings'    = 'ring pairs with fewer hits than their ceiling'
     'Stale exemptions'  = 'exemption rows that cleared no finding'
-    'Outside surface'   = 'names reached outside a pair''s listed surface'
-    'Stray types'       = 'types matching a home pattern found elsewhere'
-    'Banned words'      = 'banned names found in their folder'
-    'Thin rings'        = 'projects below their floor'
-    'Table drift'       = 'ring table rows that disagree with the projects'
-    'Hidden references' = 'references the table does not declare'
+    'Poaching'          = 'names reached outside a pair''s listed offers'
+    'Squatting'         = 'types matching a home pattern found elsewhere'
+    'Smuggling'         = 'listed words found in their folder'
+    'Hollowing'         = 'projects below their floor'
+    'Rerouting'         = 'ring table rows that disagree with the projects'
+    'Backdooring'       = 'references the table does not declare'
 }
 $gateRows = @(foreach ($label in $counters.Keys) {
     [pscustomobject]@{ Gate = $label; Count = [int]$counters[$label]; Meaning = $meanings[$label]; Section = $label }
 })
 Write-AuditResult -Rows $gateRows
 
-Write-AuditSection -Title 'Findings by check'
-$checkRows = @($script:CheckOrder | ForEach-Object { , @($_, (Get-CheckGate -Check $_), $counts[$_].ToString('N0')) })
-$checkRows += , @('Total', '', $countTotal.ToString('N0'))
-Write-AuditTable -Header @('Check', 'Gate', 'Hits') -Rows $checkRows
+Write-AuditSection -Title 'Findings by kind'
+$checkRows = @($script:CheckOrder | ForEach-Object { , @($_, (Get-CheckFamily -Check $_), (Get-CheckGate -Check $_), $counts[$_].ToString('N0')) })
+$checkRows += , @('Total', '', '', $countTotal.ToString('N0'))
+Write-AuditTable -Header @('Kind', 'Family', 'Gate', 'Hits') -Rows $checkRows
 
 if ($pairs.Count -gt 0) {
     Write-AuditSection -Title "Pairs ($($pairs.Count.ToString('N0')))"
@@ -1865,8 +1891,8 @@ Write-AuditItems -Title 'Above ceiling' -Lines ([string[]]@($overCeiling | ForEa
 Write-AuditItems -Title 'Hits above ceiling' -Lines ([string[]]@($overCeiling | ForEach-Object { $_.Hits } | ForEach-Object { Format-FindingLine -Finding $_ }))
 Write-AuditItems -Title 'Stale ceilings' -Lines ([string[]]@($staleCeiling | ForEach-Object { "$($_.Key): $($_.Hits.Count.ToString('N0')) hit(s), ceiling $($_.Ceiling.ToString('N0'))" }))
 Write-AuditItems -Title 'Stale exemptions' -Lines ([string[]]@($staleExempt | ForEach-Object { "exempt.$($_.List) $($_.Row)" }))
-foreach ($check in $script:HardLabels.Keys) {
-    Write-AuditItems -Title $script:HardLabels[$check] -Lines ([string[]]@($hardOf[$check] | ForEach-Object { Format-FindingLine -Finding $_ }))
+foreach ($check in $script:HardChecks) {
+    Write-AuditItems -Title $check -Lines ([string[]]@($hardOf[$check] | ForEach-Object { Format-FindingLine -Finding $_ }))
 }
 
 Write-AuditLine ''

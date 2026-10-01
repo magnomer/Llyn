@@ -7,7 +7,7 @@ A Conduct type's member is an answer too, since a gate's verdict may not decide 
 
 ## `private static void TAuditToggleCheck(`
 
-A field written before and again after a request in one member is a guard the shell runs itself.
+A field written before and again after a request in one member is gatekeeping the shell runs itself.
 Each write must sit in a block that also holds the request, so both run around it.
 Writes in branches the request never passes through do not toggle.
 Only the write after the request is read past a `catch` or `finally`.

@@ -6,7 +6,7 @@ Follows each driver field to where its value goes, by symbol.
 A settable property and a positional record parameter are followed the same way.
 Logic is what `TAuditBinder` says lies below the cut, Conduct's gates and the engine alike.
 A request is a call into logic or into a driver relay of one.
-A field holding a Conduct type is a handle, while a field holding an engine type is a mirror.
+A field holding a Conduct type is a handle, while a field holding an engine type is duplicating.
 Partial classes are joined by their type symbol.
 The field, local and sequence scans read nested types and field initializers with their outer class.
 
@@ -31,11 +31,11 @@ A positional parameter carries both its parameter symbol and the property it gen
 
 ## `public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> sourcePaths)`
 
-Scans every driver file for mutation, feed and shape, checks parity across the drivers, then checks every type.
+Scans every driver file for tampering, spoonfeeding and misfiring, checks mismatching across the drivers, then checks every type.
 
 ## `public static IReadOnlySet<ISymbol> TAuditReaderRead(IReadOnlyList<string> sourcePaths)`
 
-The driver members that read logic or request, for the taint scan.
+The driver members that read logic or request, for the laundering scan.
 
 ## `private static Dictionary<INamedTypeSymbol, List<TypeDeclarationSyntax>> TAuditPartRead(`
 
@@ -48,7 +48,7 @@ A `readonly` or `const` field is a fixture only while nothing writes into it and
 A `static` field is shared and its writes are read in every file.
 A field initialised to `null!` is audited like any other, since its type says what it holds.
 A field typed as a handle grips a gate rather than holding a value, and is skipped.
-A getter property that reads the field is followed as the field, so a guard cannot hide behind it.
+A getter property that reads the field is followed as the field, so gatekeeping cannot hide behind it.
 
 ## `private static bool TAuditFillCheck(HashSet<ISymbol> symbols, IReadOnlyList<TypeDeclarationSyntax> type)`
 
@@ -68,13 +68,13 @@ True when the identifier resolves to one of the symbols.
 
 ## `private static void TAuditFieldCheck(`
 
-A field whose type is from below Conduct is a mirror before any reference is read.
-A field typed `object` is a mirror too, since an untyped slot hides what it holds.
-A field whose name ends in `State` is a mirror too, since only the engine resolves a state.
-A `??=` whose right side requests caches the answer and is a mirror.
+A field whose type is from below Conduct is duplicating before any reference is read.
+A field typed `object` is duplicating too, since an untyped slot hides what it holds.
+A field whose name ends in `State` is duplicating too, since only the engine resolves a state.
+A `??=` whose right side requests caches the answer and is duplicating.
 Visits every reference to the field, outside its class only when the field is shared.
 A write is sorted by its writer.
-A field with an engine writer and a shell writer is a fork.
+A field with an engine writer and a shell writer is contesting.
 The hit names the engine write by file when that write lies in another file.
 A read is checked once per member scope.
 

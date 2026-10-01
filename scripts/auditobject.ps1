@@ -1,37 +1,80 @@
 <#
 .SYNOPSIS
-Finds the giant object hiding behind split files: merges every partial type and measures how
-tightly its parts are woven together.
+Grades every type on a ladder of creature verdicts: merges every partial type and measures
+its size, its coupling to other codebase types, the state it rebinds and how tightly its parts
+are glued.
 
 .DESCRIPTION
 A type split over several partial files can look tidy on disk while the compiler still sees one
-object. This audit parses the source with Roslyn, merges the parts of every type, and reports:
+object. This audit parses the source with Roslyn, merges the parts of every type, and measures:
 
-  - Parts, lines, members and state slots of the merged type. A part is one declaration of
-    the type, so one file may hold several parts.
-  - Member references that cross from one part into another (cross references).
-  - Weave: the share of parts the largest component of the member graph spans, members being
-    linked by "reads, writes or calls". Free is the same share once hub state is removed.
+  - Parts, Lines and Members of the merged type: its declarations, the lines they span and the
+    members they declare. A part is one declaration of the type, so one file may hold several.
+    Lines sums the declaration spans, so the lines of a nested type count toward it. Members
+    leaves nested types out, since each is merged as its own type. A partial method or property
+    counts once, on the part that implements it.
+  - Mutable: the slots the type can rebind after construction. These are the fields neither const
+    nor readonly, static ones included, and the backed properties with a non-init setter. A
+    readonly field of any type, an event, and a get-only or init-only property are not Mutable.
+    Known limit: a captured primary-constructor parameter is neither Mutable nor a hub slot,
+    though the compiler stores it, since it declares no member of the type.
+  - Outgoing: the distinct codebase types the type names, its fan-out. Incoming: the distinct
+    codebase types that name it, its fan-in. Both count types, not members or references. A
+    codebase type is any class, struct, interface, record, enum or delegate in a walked file.
+    Every name counts, so a get-only, init-only or event declaration still adds its type. Names
+    inside a nested type belong to it, and a type never uses itself or a type nested in or
+    around it.
+  - Crossings: member links that cross from one part into another. Density: Crossings per member.
+  - Glued: the share of parts the widest component of the member graph spans, members being
+    linked by "reads, writes or calls". Fused is the same share once hub state is removed.
+  - Shared: the hub slots of the type.
 
-A verdict per type, the same rules the convention test TAuditObject applies:
-  single    one part, within the size thresholds
-  large     one part, at thresholds.lines, thresholds.members or thresholds.state
-  split     several parts, not a monolith
-  monolith  at least thresholds.parts parts and thresholds.span lines, and either the largest
-            component spans thresholds.weave of the parts once hub state is removed or the
-            type carries thresholds.density cross references per member
-A hub is a state slot reached from thresholds.hub or more parts. While enforced is true, the
-monolith, hub and large counts must stay within their ceilings, and every split type within the
-parts its row in parts names, an unnamed type holding one. A ceiling above its count is stale and
-always fails.
+The helper reads the bound sources in three passes. The first registers every part and member,
+so a reference bound later finds its target whatever file declares it. The second turns every
+simple name in a member body that binds to another member of the same type into an edge from
+the enclosing member, never to itself. The third binds every simple name under a type
+declaration, nested types excluded, to the codebase types it stands for, which Outgoing and
+Incoming count.
+
+Every flag is measured on the merged type, whatever its part count, so a partial split escapes
+none. Each flag below is hit when its condition holds with every comparison at the limit or
+above. A type keeps every flag it hits. Its verdict is the worst of them, in this order, else
+Colony or Hermit:
+  Hydra      parts and lines at thresholds.hydra, and fused or density at thresholds.hydra
+  Kraken     a Serpent or Centipede that is also an Octopus or Spider, with no threshold of its own
+  Spider     outgoing and incoming at thresholds.spider
+  Chameleon  mutable at thresholds.chameleon
+  Octopus    outgoing at thresholds.octopus
+  Centipede  members at thresholds.centipede
+  Serpent    lines at thresholds.serpent
+  Colony     several parts, no flag
+  Hermit     one part, no flag
+Kraken joins the size axis (Serpent or Centipede) and the coupling axis (Octopus or Spider).
+Mutable stays its own axis, so a Chameleon condition never makes a Kraken.
+A hub is a state slot reached from thresholds.hub.parts or more parts, its declaring part
+included. It is a finding on the slot, outside the ladder, never a flag or a verdict. A type whose
+only finding is a hub stays a Colony, and the verdict table shows each type's hub count. While
+enforced is true, the count of every flag and of hubs must stay within its ceiling, and every type
+declared in several parts within the part count its row in parts names, an unnamed type holding one.
+A ceiling above its count is stale and always fails.
+
+The convention test TAuditObject is the counterpart of this script, and neither reads the other.
+On the same tree both report the same results, while presentation is each side's own. The only
+allowed difference in results is a config fault. This script throws on any missing key in
+auditobject.json, a missing ceiling key included, and refuses a configuration at another
+generation. The test reads a missing ceiling key as 0, so that flag's fact fails once the flag
+has a hit. A missing limit key throws on both sides.
 
 Binding goes through the shared binder of auditbinder.cs and auditbinder.json: the tracked
 sources, the generated code and the host build output, with no compile error allowed. The
 solution must be built first. The scope line counts the listed source files the binder walked.
 The helper targets helper.framework, the framework of the convention tests, and is compiled
-once per text and SDK into the temp folder. The console lists the split types, every monolith,
-hub and large type; a Markdown report with every hit is written to
-{report.directory}\{prefix}{version}.md, in the same form as the report of the convention test.
+once per text and SDK into the temp folder. The console shows the result, the hits by flag, the
+types by verdict, the types declared in several parts, every flagged type with its flags and hubs,
+and every hit list. The split, flagged and hit lists are cut at console.top, while the Markdown
+report written to {report.directory}\{prefix}{version}.md holds every row.
+Console and report number every term by one list: (1) Hydra to (7) Serpent on the ladder,
+(8) Hub and (9) Colony. Hermit, the clean state, carries no number.
 
 Everything project-specific lives in auditobject.json next to this script. No project source
 is modified. Git and the .NET SDK are required.
@@ -43,7 +86,7 @@ Project root to audit. Defaults to the directory containing this script's parent
 Overrides report.directory for this run. Relative paths resolve against the project root.
 
 .PARAMETER Top
-Overrides console.top: how many split types the console table shows.
+Overrides console.top: how many rows the split, flagged and hit lists show on the console.
 
 .PARAMETER Open
 Open the report after the audit finishes.
@@ -60,10 +103,10 @@ Audit the current checkout.
 
 .EXAMPLE
 auditobject -ReportDirectory D:\temp\audit -Top 10 -Open
-Write the report elsewhere, show ten rows, open the report.
+Write the report elsewhere, show ten rows per list, open the report.
 #>
 #requires -Version 5.1
-# AUDITOBJECT GENERATION 16 - auditobject.ps1.
+# AUDITOBJECT GENERATION 17 - auditobject.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -84,9 +127,11 @@ Write the report elsewhere, show ten rows, open the report.
 # Generation 14: nothing this audit reports changes; the number rises with the UI audit, which
 # also counts command parameters, member paths and literal tags in surface markup as hooks.
 # Generation 15: nothing this audit reports changes; the number rises with the name audit, which
-# counts prefix rings, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
+# counts prefix turfs, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
 # Generation 16: nothing this audit reports changes; the number rises with the structure audit, whose
-# seal check counts engine types on the public members of sealed Deportment types.
+# Unsealing kind counts engine types on the public members of sealed Deportment types.
+# Generation 17: findings take one vocabulary of -ing kinds and plain measure names, and the
+# configuration keys follow. What the audit counts is unchanged.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -108,7 +153,7 @@ NAME
     auditobject.ps1
 
 SYNOPSIS
-    Merge partial types and grade how tightly their parts are woven together.
+    Merge partial types and grade every type on a ladder of creature verdicts.
 
 SYNTAX
     auditobject [-Root <path>] [-ReportDirectory <path>] [-Top <n>] [-Open] [-NoPause] [-Help]
@@ -116,16 +161,18 @@ SYNTAX
 OPTIONS
     -Root <path>             Project root. Defaults to the parent of the scripts folder.
     -ReportDirectory <path>  Overrides report.directory for this run.
-    -Top <n>                 Overrides console.top.
+    -Top <n>                 Overrides console.top, the rows each console list shows.
     -Open                    Open the report when done.
     -NoPause                 No console paging.
     -Help                    Show this help.
 
 VERDICTS
-    single, large, split, monolith. See the script header for definitions.
+    (1) Hydra, (2) Kraken, (3) Spider, (4) Chameleon, (5) Octopus, (6) Centipede, (7) Serpent,
+    (9) Colony, Hermit, worst first. A hub, numbered (8), is a finding per state slot, never a
+    verdict. See the script header for definitions.
 
 COUNTERS
-    Above ceiling   monolith, hub, large or part counts above their ceiling while enforced is true.
+    Above ceiling   flag, hub or part counts above their ceiling while enforced is true.
     Stale ceilings  ceilings above their count, enforced or not.
 '@ | Write-Host
     exit 0
@@ -133,7 +180,7 @@ COUNTERS
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$script:AuditGeneration = 16
+$script:AuditGeneration = 17
 
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
@@ -231,9 +278,12 @@ function Read-AuditConfig {
         'generation', 'project', 'enforced', 'helper.framework',
         'sources.roots', 'sources.extensions', 'sources.excludeSegments',
         'sources.excludeSuffixes', 'sources.excludePrefixes',
-        'thresholds.parts', 'thresholds.span', 'thresholds.hub', 'thresholds.weave', 'thresholds.density',
-        'thresholds.lines', 'thresholds.members', 'thresholds.state',
-        'ceiling.monolith', 'ceiling.hub', 'ceiling.large', 'parts',
+        'thresholds.hydra.parts', 'thresholds.hydra.lines', 'thresholds.hydra.fused', 'thresholds.hydra.density',
+        'thresholds.kraken', 'thresholds.spider.outgoing', 'thresholds.spider.incoming',
+        'thresholds.chameleon.mutable', 'thresholds.octopus.outgoing', 'thresholds.centipede.members',
+        'thresholds.serpent.lines', 'thresholds.hub.parts',
+        'ceiling.hydra', 'ceiling.kraken', 'ceiling.spider', 'ceiling.chameleon',
+        'ceiling.octopus', 'ceiling.centipede', 'ceiling.serpent', 'ceiling.hub', 'parts',
         'console.top',
         'report.directory', 'report.versionFile', 'report.versionKey', 'report.prefix'
     )
@@ -241,7 +291,7 @@ function Read-AuditConfig {
     foreach ($key in $required) {
         $node = $config
         foreach ($segment in $key.Split('.')) {
-            if ($null -eq $node -or -not ($node.PSObject.Properties.Name -contains $segment)) {
+            if ($null -eq $node -or -not (@($node.PSObject.Properties | ForEach-Object { $_.Name }) -contains $segment)) {
                 throw "The audit configuration has no key '$key': $ConfigPath"
             }
             $node = $node.$segment
@@ -389,25 +439,28 @@ string binderPath = args[6];
 
 JsonElement config = JsonDocument.Parse(File.ReadAllText(configPath)).RootElement;
 JsonElement thresholds = config.GetProperty("thresholds");
+JsonElement hydra = thresholds.GetProperty("hydra");
 Limits limits = new(
-    thresholds.GetProperty("parts").GetInt32(),
-    thresholds.GetProperty("span").GetInt32(),
-    thresholds.GetProperty("hub").GetInt32(),
-    thresholds.GetProperty("weave").GetDouble(),
-    thresholds.GetProperty("density").GetDouble(),
-    thresholds.GetProperty("lines").GetInt32(),
-    thresholds.GetProperty("members").GetInt32(),
-    thresholds.GetProperty("state").GetInt32());
+    hydra.GetProperty("parts").GetInt32(),
+    hydra.GetProperty("lines").GetInt32(),
+    hydra.GetProperty("fused").GetDouble(),
+    hydra.GetProperty("density").GetDouble(),
+    thresholds.GetProperty("spider").GetProperty("outgoing").GetInt32(),
+    thresholds.GetProperty("spider").GetProperty("incoming").GetInt32(),
+    thresholds.GetProperty("chameleon").GetProperty("mutable").GetInt32(),
+    thresholds.GetProperty("octopus").GetProperty("outgoing").GetInt32(),
+    thresholds.GetProperty("centipede").GetProperty("members").GetInt32(),
+    thresholds.GetProperty("serpent").GetProperty("lines").GetInt32(),
+    thresholds.GetProperty("hub").GetProperty("parts").GetInt32());
 int generation = config.GetProperty("generation").GetInt32();
 bool enforced = config.GetProperty("enforced").GetBoolean();
 JsonElement ceiling = config.GetProperty("ceiling");
-Dictionary<string, int> ceilings = new(StringComparer.Ordinal)
-{
-    ["Monolith"] = ceiling.GetProperty("monolith").GetInt32(),
-    ["Hub"] = ceiling.GetProperty("hub").GetInt32(),
-    ["Large"] = ceiling.GetProperty("large").GetInt32(),
-};
-Dictionary<string, int> partCeilings = config.GetProperty("parts").EnumerateObject()
+string[] ladder = ["Hydra", "Kraken", "Spider", "Chameleon", "Octopus", "Centipede", "Serpent"];
+string[] verdicts = [.. ladder, "Colony", "Hermit"];
+string[] terms = [.. ladder, "Hub", "Colony"];
+Dictionary<string, int> ceilings = ladder.Append("Hub")
+    .ToDictionary(kind => kind, kind => ceiling.GetProperty(kind.ToLowerInvariant()).GetInt32(), StringComparer.Ordinal);
+Dictionary<string, int> partsCeilings = config.GetProperty("parts").EnumerateObject()
     .ToDictionary(item => item.Name, item => item.Value.GetInt32(), StringComparer.Ordinal);
 
 HashSet<string> chosen = File.ReadAllLines(manifestPath)
@@ -425,12 +478,9 @@ if (trees.Count == 0)
 
 Dictionary<INamedTypeSymbol, TypeRecord> types = new(SymbolEqualityComparer.Default);
 
-// Pass 1: register every part and every member so a reference bound in pass 2 can find its
-// target regardless of which file declares it.
 foreach (SyntaxTree tree in trees)
 {
     SemanticModel model = compilation.GetSemanticModel(tree, true);
-    string relative = binder.LAuditRelativeRead(tree.FilePath);
     foreach (TypeDeclarationSyntax declaration in tree.GetRoot().DescendantNodes().OfType<TypeDeclarationSyntax>())
     {
         if (model.GetDeclaredSymbol(declaration) is not INamedTypeSymbol typeSymbol)
@@ -445,7 +495,7 @@ foreach (SyntaxTree tree in trees)
         }
 
         FileLinePositionSpan span = declaration.GetLocation().GetLineSpan();
-        PartRecord part = new(relative, span.EndLinePosition.Line - span.StartLinePosition.Line + 1);
+        PartRecord part = new(span.EndLinePosition.Line - span.StartLinePosition.Line + 1);
         type.Parts.Add(part);
 
         foreach (MemberDeclarationSyntax member in declaration.Members)
@@ -455,21 +505,19 @@ foreach (SyntaxTree tree in trees)
                 continue;
             }
 
-            foreach ((ISymbol symbol, bool state) in DeclaredMembers(model, member))
+            foreach ((ISymbol symbol, bool state, bool mutable) in DeclaredMembers(model, member))
             {
                 if (type.Members.ContainsKey(symbol))
                 {
                     continue;
                 }
 
-                type.Members.Add(symbol, new MemberRecord(type.Members.Count, symbol, part, state));
+                type.Members.Add(symbol, new MemberRecord(type.Members.Count, symbol, part, state, mutable));
             }
         }
     }
 }
 
-// Pass 2: every simple name inside a member body that binds to a member of the same type is an
-// edge from the enclosing member to the target. Self references are not edges.
 foreach (SyntaxTree tree in trees)
 {
     SemanticModel model = compilation.GetSemanticModel(tree, true);
@@ -531,38 +579,98 @@ foreach (SyntaxTree tree in trees)
     }
 }
 
+HashSet<INamedTypeSymbol> codebase = new(SymbolEqualityComparer.Default);
+foreach (SyntaxTree tree in trees)
+{
+    SemanticModel model = compilation.GetSemanticModel(tree, true);
+    foreach (SyntaxNode node in tree.GetRoot().DescendantNodes().Where(node => node is BaseTypeDeclarationSyntax or DelegateDeclarationSyntax))
+    {
+        if (model.GetDeclaredSymbol(node) is INamedTypeSymbol declared)
+        {
+            codebase.Add(declared);
+        }
+    }
+}
+
+Dictionary<INamedTypeSymbol, HashSet<INamedTypeSymbol>> uses = new(SymbolEqualityComparer.Default);
+foreach (SyntaxTree tree in trees)
+{
+    SemanticModel model = compilation.GetSemanticModel(tree, true);
+    foreach (SyntaxNode declaration in tree.GetRoot().DescendantNodes().Where(node => node is BaseTypeDeclarationSyntax or DelegateDeclarationSyntax))
+    {
+        if (model.GetDeclaredSymbol(declaration) is not INamedTypeSymbol user)
+        {
+            continue;
+        }
+
+        if (!uses.TryGetValue(user, out HashSet<INamedTypeSymbol>? used))
+        {
+            used = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
+            uses.Add(user, used);
+        }
+
+        IEnumerable<SimpleNameSyntax> names = declaration
+            .DescendantNodes(node => node == declaration || node is not (BaseTypeDeclarationSyntax or DelegateDeclarationSyntax))
+            .OfType<SimpleNameSyntax>();
+        foreach (SimpleNameSyntax name in names)
+        {
+            SymbolInfo info = model.GetSymbolInfo(name);
+            used.UnionWith(TypesOf(info.Symbol ?? info.CandidateSymbols.FirstOrDefault()).Where(target =>
+                codebase.Contains(target)
+                && !SymbolEqualityComparer.Default.Equals(target, user)
+                && !Nested(user, target)));
+        }
+    }
+}
+
+Dictionary<INamedTypeSymbol, int> incoming = new(SymbolEqualityComparer.Default);
+foreach (INamedTypeSymbol used in uses.Values.SelectMany(used => used))
+{
+    incoming[used] = incoming.GetValueOrDefault(used) + 1;
+}
+
 List<TypeSummary> summaries = types.Values
     .Where(type => type.Members.Count > 0)
-    .Select(type => Summarize(type, limits))
+    .Select(type => Summarize(
+        type,
+        limits,
+        uses.GetValueOrDefault(type.Symbol)?.Count ?? 0,
+        incoming.GetValueOrDefault(type.Symbol)))
     .OrderByDescending(summary => summary.Lines)
     .ThenBy(summary => summary.Name, StringComparer.Ordinal)
     .ToList();
 
 List<TypeSummary> split = summaries.Where(summary => summary.Parts > 1).ToList();
-Dictionary<string, List<string>> hits = new(StringComparer.Ordinal)
+Dictionary<string, List<string>> hits = new(StringComparer.Ordinal);
+foreach (string flag in ladder)
 {
-    ["Monolith"] = summaries
-        .Where(summary => summary.Monolith)
-        .Select(summary => $"{summary.Name}: {summary.Parts} parts, {summary.Lines} lines, {summary.Cross} cross references, "
-            + $"weave {summary.Free:0.00} without hubs, density {summary.Density:0.00}")
-        .ToList(),
-    ["Hub"] = summaries
-        .SelectMany(summary => summary.Hubs.Select(hub => $"{summary.Name}: {hub}"))
-        .ToList(),
-    ["Large"] = summaries
-        .Where(summary => summary.Large)
-        .Select(summary => $"{summary.Name}: {summary.Lines} lines, {summary.Members} members, {summary.State} state slots")
-        .ToList(),
-};
+    hits[flag] = summaries
+        .Where(summary => summary.Flags.Contains(flag))
+        .Select(summary => $"{summary.Name}: " + flag switch
+        {
+            "Hydra" => $"parts {summary.Parts}, lines {summary.Lines}, fused {summary.Fused:0.00}, density {summary.Density:0.00}",
+            "Kraken" => $"lines {summary.Lines}, members {summary.Members}, outgoing {summary.Outgoing}, incoming {summary.Incoming}",
+            "Spider" => $"outgoing {summary.Outgoing}, incoming {summary.Incoming}",
+            "Chameleon" => $"mutable {summary.Mutable}",
+            "Octopus" => $"outgoing {summary.Outgoing}",
+            "Centipede" => $"members {summary.Members}",
+            _ => $"lines {summary.Lines}",
+        })
+        .ToList();
+}
+
+hits["Hub"] = summaries
+    .SelectMany(summary => summary.Hubs.Select(hub => $"{summary.Name}: {hub}"))
+    .ToList();
 Dictionary<string, int> partCounts = split.ToDictionary(summary => summary.Name, summary => summary.Parts, StringComparer.Ordinal);
 List<string> partsOver = partCounts
-    .Where(pair => pair.Value > partCeilings.GetValueOrDefault(pair.Key, 1))
-    .Select(pair => $"{pair.Key}: {pair.Value} part(s), ceiling {partCeilings.GetValueOrDefault(pair.Key, 1)}")
+    .Where(pair => pair.Value > partsCeilings.GetValueOrDefault(pair.Key, 1))
+    .Select(pair => $"{pair.Key}: parts {pair.Value}, ceiling {partsCeilings.GetValueOrDefault(pair.Key, 1)}")
     .ToList();
 List<string> above = enforced
     ? ceilings
         .Where(pair => hits[pair.Key].Count > pair.Value)
-        .Select(pair => $"{pair.Key}: {hits[pair.Key].Count} hit(s), ceiling {pair.Value}")
+        .Select(pair => $"{Numbered(pair.Key)}: {hits[pair.Key].Count} hit(s), ceiling {pair.Value}")
         .Concat(partsOver)
         .ToList()
     : [];
@@ -573,45 +681,61 @@ foreach (string kind in ceilings.Keys)
 }
 
 List<string> stale = ceilings
-    .Concat(partCeilings)
+    .Concat(partsCeilings)
     .Where(pair => counts.GetValueOrDefault(pair.Key, 1) < pair.Value)
-    .Select(pair => $"{pair.Key}: {counts.GetValueOrDefault(pair.Key, 1)} hit(s), ceiling {pair.Value}")
+    .Select(pair => $"{Numbered(pair.Key)}: {counts.GetValueOrDefault(pair.Key, 1)} hit(s), ceiling {pair.Value}")
+    .ToList();
+List<TypeSummary> shown = summaries
+    .Where(summary => summary.Verdict != "Hermit" || summary.Hubs.Count > 0)
+    .OrderBy(summary => Array.IndexOf(verdicts, summary.Verdict))
+    .ThenBy(summary => summary.Name, StringComparer.Ordinal)
     .ToList();
 
 Console.WriteLine($"Scanned: {trees.Count:N0} source files, ceilings {(enforced ? "enforced" : "not enforced")}");
 WriteResult(
 [
-    ("Above ceiling", above.Count, "kinds or split types above their enforced ceiling"),
+    ("Above ceiling", above.Count, "flags or types above their enforced ceiling"),
     ("Stale ceilings", stale.Count, "ceilings set above their current hits"),
 ]);
 
-WriteHeading("Hits by kind");
+WriteHeading("Hits by flag");
 List<string[]> kindRows = ceilings
-    .Select(pair => new[] { pair.Key, hits[pair.Key].Count.ToString("N0"), pair.Value.ToString("N0") })
+    .Select(pair => new[] { Numbered(pair.Key), hits[pair.Key].Count.ToString("N0"), pair.Value.ToString("N0") })
     .ToList();
-WriteTable(TextTable(["Kind", "Hits", "Ceiling"], kindRows));
+WriteTable(TextTable(["Flag", "Hits", "Ceiling"], kindRows));
 
 WriteHeading("Types by verdict");
-List<string[]> verdictRows =
-[
-    ["Monolith", split.Count(summary => summary.Monolith).ToString("N0")],
-    ["Split", split.Count(summary => !summary.Monolith).ToString("N0")],
-    ["Large", summaries.Count(summary => summary.Large).ToString("N0")],
-    ["Single", summaries.Count(summary => summary.Parts == 1 && !summary.Large).ToString("N0")],
-    ["Total", summaries.Count.ToString("N0")],
-];
+List<string[]> verdictRows = verdicts
+    .Select(verdict => new[] { Numbered(verdict), summaries.Count(summary => summary.Verdict == verdict).ToString("N0") })
+    .Append(["Total", summaries.Count.ToString("N0")])
+    .ToList();
 WriteTable(TextTable(["Verdict", "Types"], verdictRows));
 
-string[] header = ["Type", "Parts", "Lines", "Members", "State", "Hubs", "Cross", "Weave", "Free", "Density", "Monolith"];
+string[] header =
+[
+    "Type", "Parts", "Lines", "Members", "Mutable", "Outgoing", "Incoming", "Shared", "Crossings", "Glued", "Fused", "Density", "Verdict",
+];
+string[] verdictHeader = ["Type", "Verdict", "Flags", "Hubs", "Parts", "Lines", "Members", "Mutable", "Outgoing", "Incoming"];
 if (split.Count > 0)
 {
-    string splitHeading = $"Types split into several parts ({split.Count:N0})";
+    string splitHeading = $"Types declared in several parts ({split.Count:N0})";
     WriteHeading(splitHeading);
     WriteTable(TextTable(header, split.Take(top).Select(Row).ToList()));
 
     if (split.Count > top)
     {
         Console.WriteLine($"... and {split.Count - top:N0} more in the report.");
+    }
+}
+
+if (shown.Count > 0)
+{
+    WriteHeading($"Flagged types and hubs ({shown.Count:N0})");
+    WriteTable(TextTable(verdictHeader, shown.Take(top).Select(VerdictRow).ToList()));
+
+    if (shown.Count > top)
+    {
+        Console.WriteLine($"... and {shown.Count - top:N0} more in the report.");
     }
 }
 
@@ -622,7 +746,7 @@ List<(string Title, List<string> Rows)> sections = ceilings.Keys
     .ToList();
 foreach ((string title, List<string> rows) in sections.Where(section => section.Rows.Count > 0))
 {
-    string heading = $"{title} ({rows.Count:N0})";
+    string heading = terms.Contains(title) ? $"{Numbered(title)}: {rows.Count:N0}" : $"{title} ({rows.Count:N0})";
     WriteHeading(heading);
     rows.Take(top).ToList().ForEach(Console.WriteLine);
     if (rows.Count > top)
@@ -640,29 +764,48 @@ List<string> lines =
     string.Empty,
     $"- Generation: {generation}",
     $"- Enforced: {enforced}",
-    $"- Types: {summaries.Count}, split into several parts: {split.Count}",
+    $"- Types: {summaries.Count}, declared in several parts: {split.Count}",
+    "- Verdicts: " + string.Join(", ", verdicts.Select(verdict => $"{Numbered(verdict)} {summaries.Count(summary => summary.Verdict == verdict)}")),
 ];
-lines.AddRange(ceilings.Select(pair => $"- {pair.Key}: {hits[pair.Key].Count}, ceiling {pair.Value}"));
+lines.AddRange(ceilings.Select(pair => $"- {Numbered(pair.Key)}: {hits[pair.Key].Count}, ceiling {pair.Value}"));
 lines.Add($"- Above ceiling: {above.Count}");
 lines.Add($"- Stale ceilings: {stale.Count}");
 lines.Add(string.Empty);
-lines.Add($"A monolith has at least {limits.Parts} parts and {limits.Span} lines, and either its largest member component "
-    + $"still spans {limits.Weave:0.00} of the parts once hub state is removed or it carries {limits.Density:0.00} cross references per "
-    + $"member. A hub is a state slot reached from {limits.Hub} or more parts. A large type has one part and at least "
-    + $"{limits.Lines} lines, {limits.Members} members or {limits.State} state slots. "
-    + "A part is one declaration of the type, so one file may hold several parts.");
+lines.Add($"A Hydra has Parts {limits.HydraParts} and Lines {limits.HydraLines}, "
+    + $"and Fused {limits.HydraFused:0.00} or Density {limits.HydraDensity:0.00}. "
+    + "A Kraken is a Serpent or Centipede that is also an Octopus or Spider. "
+    + $"A Spider has Outgoing {limits.SpiderOutgoing} and Incoming {limits.SpiderIncoming}. "
+    + $"A Chameleon has Mutable {limits.ChameleonMutable}. "
+    + $"An Octopus has Outgoing {limits.OctopusOutgoing}. "
+    + $"A Centipede has Members {limits.CentipedeMembers}. "
+    + $"A Serpent has Lines {limits.SerpentLines}. "
+    + "Every value is reached at the limit or above, on the merged type. "
+    + "A type's verdict is its worst flag, else Colony for several parts and Hermit for one. "
+    + $"A hub is a state slot reached from {limits.HubParts} or more parts. "
+    + "It is a finding on the slot, never a verdict, so the verdict table shows the hub count beside it.");
+lines.Add(string.Empty);
+lines.Add("## Verdicts");
+lines.Add(string.Empty);
+lines.Add("| " + string.Join(" | ", verdictHeader) + " |");
+lines.Add("|---|---|---|---:|---:|---:|---:|---:|---:|---:|");
+lines.AddRange(shown.Select(summary => $"| `{summary.Name}` | {Numbered(summary.Verdict)} "
+    + $"| {FlagText(summary)} "
+    + $"| {summary.Hubs.Count} | {summary.Parts} | {summary.Lines} | {summary.Members} | {summary.Mutable} "
+    + $"| {summary.Outgoing} | {summary.Incoming} |"));
+lines.Add(string.Empty);
+lines.Add($"Every other type ({summaries.Count - shown.Count}) is a Hermit: one part, no flag and no hub.");
 lines.Add(string.Empty);
 lines.Add("## Split types");
 lines.Add(string.Empty);
 lines.Add("| " + string.Join(" | ", header) + " |");
-lines.Add("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|");
-lines.AddRange(split.Select(summary => $"| `{summary.Name}` | {summary.Parts} | {summary.Lines} | {summary.Members} | {summary.State} "
-    + $"| {summary.Hubs.Count} | {summary.Cross} | {summary.Weave:0.00} | {summary.Free:0.00} | {summary.Density:0.00} "
-    + $"| {(summary.Monolith ? "yes" : "no")} |"));
+lines.Add("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|");
+lines.AddRange(split.Select(summary => $"| `{summary.Name}` | {summary.Parts} | {summary.Lines} | {summary.Members} | {summary.Mutable} "
+    + $"| {summary.Outgoing} | {summary.Incoming} | {summary.Hubs.Count} | {summary.Crossings} | {summary.Glued:0.00} "
+    + $"| {summary.Fused:0.00} | {summary.Density:0.00} | {Numbered(summary.Verdict)} |"));
 foreach ((string title, List<string> rows) in sections)
 {
     lines.Add(string.Empty);
-    lines.Add($"## {title}");
+    lines.Add($"## {Numbered(title)}");
     if (rows.Count > 0)
     {
         lines.Add(string.Empty);
@@ -679,7 +822,7 @@ if (!string.IsNullOrWhiteSpace(reportFolder))
 File.WriteAllText(reportPath, string.Join("\n", lines) + "\n", new UTF8Encoding(false));
 return above.Count + stale.Count > 0 ? 3 : 0;
 
-static IEnumerable<(ISymbol Symbol, bool State)> DeclaredMembers(SemanticModel model, MemberDeclarationSyntax member)
+static IEnumerable<(ISymbol Symbol, bool State, bool Mutable)> DeclaredMembers(SemanticModel model, MemberDeclarationSyntax member)
 {
     switch (member)
     {
@@ -688,7 +831,7 @@ static IEnumerable<(ISymbol Symbol, bool State)> DeclaredMembers(SemanticModel m
             {
                 if (model.GetDeclaredSymbol(variable) is IFieldSymbol fieldSymbol)
                 {
-                    yield return (fieldSymbol, !fieldSymbol.IsConst);
+                    yield return (fieldSymbol, !fieldSymbol.IsConst, !fieldSymbol.IsConst && !fieldSymbol.IsReadOnly);
                 }
             }
             break;
@@ -697,32 +840,69 @@ static IEnumerable<(ISymbol Symbol, bool State)> DeclaredMembers(SemanticModel m
             {
                 if (model.GetDeclaredSymbol(variable) is IEventSymbol eventSymbol)
                 {
-                    yield return (eventSymbol, true);
+                    yield return (eventSymbol, true, false);
                 }
             }
             break;
         case PropertyDeclarationSyntax property:
-            if (model.GetDeclaredSymbol(property) is ISymbol propertySymbol)
+            if (model.GetDeclaredSymbol(property) is IPropertySymbol { PartialImplementationPart: null } propertySymbol)
             {
                 bool auto = property.ExpressionBody is null
                     && property.AccessorList is not null
                     && property.AccessorList.Accessors.All(accessor => accessor.Body is null && accessor.ExpressionBody is null);
-                yield return (propertySymbol, auto);
+                bool backed = propertySymbol.ContainingType.GetMembers().OfType<IFieldSymbol>()
+                    .Any(backing => SymbolEqualityComparer.Default.Equals(backing.AssociatedSymbol, propertySymbol));
+                bool settable = propertySymbol.SetMethod is { IsInitOnly: false };
+                yield return (propertySymbol.PartialDefinitionPart ?? propertySymbol, auto, backed && settable);
             }
             break;
         default:
-            if (model.GetDeclaredSymbol(member) is ISymbol symbol)
+            if (model.GetDeclaredSymbol(member) is ISymbol symbol and not IMethodSymbol { PartialImplementationPart: not null })
             {
-                yield return (symbol, false);
+                yield return (symbol is IMethodSymbol { PartialDefinitionPart: { } definition } ? definition : symbol, false, false);
             }
             break;
     }
 }
 
-static TypeSummary Summarize(TypeRecord type, Limits limits)
+static IEnumerable<INamedTypeSymbol> TypesOf(ISymbol? symbol) => symbol switch
+{
+    null => [],
+    IAliasSymbol alias => TypesOf(alias.Target),
+    IArrayTypeSymbol array => TypesOf(array.ElementType),
+    IPointerTypeSymbol pointer => TypesOf(pointer.PointedAtType),
+    INamedTypeSymbol named => (named.IsAnonymousType ? [] : new[] { named.OriginalDefinition })
+        .Concat(named.TypeArguments.SelectMany(TypesOf)),
+    ITypeSymbol or INamespaceSymbol or ILocalSymbol or IParameterSymbol => [],
+    IRangeVariableSymbol or IDiscardSymbol or ILabelSymbol or IPreprocessingSymbol => [],
+    _ => symbol.ContainingType is null ? [] : [symbol.ContainingType.OriginalDefinition],
+};
+
+static bool Nested(INamedTypeSymbol first, INamedTypeSymbol second)
+{
+    for (INamedTypeSymbol? outer = first.ContainingType; outer is not null; outer = outer.ContainingType)
+    {
+        if (SymbolEqualityComparer.Default.Equals(outer.OriginalDefinition, second))
+        {
+            return true;
+        }
+    }
+
+    for (INamedTypeSymbol? outer = second.ContainingType; outer is not null; outer = outer.ContainingType)
+    {
+        if (SymbolEqualityComparer.Default.Equals(outer.OriginalDefinition, first))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+static TypeSummary Summarize(TypeRecord type, Limits limits, int outgoing, int incoming)
 {
     MemberRecord[] members = type.Members.Values.ToArray();
-    int cross = members.Sum(member => member.Uses.Count(target => !ReferenceEquals(member.Part, target.Part)));
+    int crossings = members.Sum(member => member.Uses.Count(target => !ReferenceEquals(member.Part, target.Part)));
 
     HashSet<MemberRecord> hubs = [];
     List<string> hubNames = [];
@@ -730,7 +910,7 @@ static TypeSummary Summarize(TypeRecord type, Limits limits)
     {
         HashSet<PartRecord> touching = [member.Part];
         touching.UnionWith(member.UsedBy.Select(user => user.Part));
-        if (touching.Count >= limits.Hub)
+        if (touching.Count >= limits.HubParts)
         {
             hubs.Add(member);
             hubNames.Add($"`{member.Symbol.Name}` reaches {touching.Count} parts");
@@ -738,33 +918,72 @@ static TypeSummary Summarize(TypeRecord type, Limits limits)
     }
 
     int lines = type.Parts.Sum(part => part.Lines);
-    int partCount = type.Parts.Count;
-    double weave = Weave(members, partCount, []);
-    double free = Weave(members, partCount, hubs);
-    double density = members.Length == 0 ? 0 : cross / (double)members.Length;
-    int state = members.Count(member => member.IsState);
-    bool monolith = partCount >= limits.Parts
-        && lines >= limits.Span
-        && (free >= limits.Weave || density >= limits.Density);
-    bool large = partCount == 1
-        && (lines >= limits.Lines || members.Length >= limits.Members || state >= limits.State);
+    int parts = type.Parts.Count;
+    double glued = Glued(members, parts, []);
+    double fused = Glued(members, parts, hubs);
+    double density = members.Length == 0 ? 0 : crossings / (double)members.Length;
+    int memberCount = members.Length;
+    int mutable = members.Count(member => member.IsMutable);
+    bool serpent = lines >= limits.SerpentLines;
+    bool centipede = memberCount >= limits.CentipedeMembers;
+    bool octopus = outgoing >= limits.OctopusOutgoing;
+    bool spider = outgoing >= limits.SpiderOutgoing && incoming >= limits.SpiderIncoming;
+    List<string> flags = [];
+    if (parts >= limits.HydraParts
+        && lines >= limits.HydraLines
+        && (fused >= limits.HydraFused || density >= limits.HydraDensity))
+    {
+        flags.Add("Hydra");
+    }
+
+    if ((serpent || centipede) && (octopus || spider))
+    {
+        flags.Add("Kraken");
+    }
+
+    if (spider)
+    {
+        flags.Add("Spider");
+    }
+
+    if (mutable >= limits.ChameleonMutable)
+    {
+        flags.Add("Chameleon");
+    }
+
+    if (octopus)
+    {
+        flags.Add("Octopus");
+    }
+
+    if (centipede)
+    {
+        flags.Add("Centipede");
+    }
+
+    if (serpent)
+    {
+        flags.Add("Serpent");
+    }
 
     return new TypeSummary(
         type.Symbol.ToDisplayString(),
-        partCount,
+        parts,
         lines,
-        members.Length,
-        state,
+        memberCount,
+        mutable,
+        outgoing,
+        incoming,
         hubNames,
-        cross,
-        weave,
-        free,
+        crossings,
+        glued,
+        fused,
         density,
-        monolith,
-        large);
+        flags,
+        flags.Count > 0 ? flags[0] : parts > 1 ? "Colony" : "Hermit");
 }
 
-static double Weave(MemberRecord[] members, int partCount, HashSet<MemberRecord> excluded)
+static double Glued(MemberRecord[] members, int partCount, HashSet<MemberRecord> excluded)
 {
     if (partCount == 0 || members.Length == 0)
     {
@@ -799,19 +1018,39 @@ static double Weave(MemberRecord[] members, int partCount, HashSet<MemberRecord>
     return widest / (double)partCount;
 }
 
-static string[] Row(TypeSummary summary) =>
+string Numbered(string term) => terms.Contains(term) ? $"({Array.IndexOf(terms, term) + 1}) {term}" : term;
+
+string FlagText(TypeSummary summary) => summary.Flags.Count > 0 ? string.Join(", ", summary.Flags.Select(Numbered)) : "none";
+
+string[] Row(TypeSummary summary) =>
 [
     summary.Name,
     summary.Parts.ToString("N0"),
     summary.Lines.ToString("N0"),
     summary.Members.ToString("N0"),
-    summary.State.ToString("N0"),
+    summary.Mutable.ToString("N0"),
+    summary.Outgoing.ToString("N0"),
+    summary.Incoming.ToString("N0"),
     summary.Hubs.Count.ToString("N0"),
-    summary.Cross.ToString("N0"),
-    summary.Weave.ToString("0.00"),
-    summary.Free.ToString("0.00"),
+    summary.Crossings.ToString("N0"),
+    summary.Glued.ToString("0.00"),
+    summary.Fused.ToString("0.00"),
     summary.Density.ToString("0.00"),
-    summary.Monolith ? "yes" : "no",
+    Numbered(summary.Verdict),
+];
+
+string[] VerdictRow(TypeSummary summary) =>
+[
+    summary.Name,
+    Numbered(summary.Verdict),
+    FlagText(summary),
+    summary.Hubs.Count.ToString("N0"),
+    summary.Parts.ToString("N0"),
+    summary.Lines.ToString("N0"),
+    summary.Members.ToString("N0"),
+    summary.Mutable.ToString("N0"),
+    summary.Outgoing.ToString("N0"),
+    summary.Incoming.ToString("N0"),
 ];
 
 static void WriteHeading(string title)
@@ -869,18 +1108,18 @@ internal sealed class TypeRecord(INamedTypeSymbol symbol)
     public Dictionary<ISymbol, MemberRecord> Members { get; } = new(SymbolEqualityComparer.Default);
 }
 
-internal sealed class PartRecord(string path, int lines)
+internal sealed class PartRecord(int lines)
 {
-    public string Path { get; } = path;
     public int Lines { get; } = lines;
 }
 
-internal sealed class MemberRecord(int index, ISymbol symbol, PartRecord part, bool isState)
+internal sealed class MemberRecord(int index, ISymbol symbol, PartRecord part, bool isState, bool isMutable)
 {
     public int Index { get; } = index;
     public ISymbol Symbol { get; } = symbol;
     public PartRecord Part { get; } = part;
     public bool IsState { get; } = isState;
+    public bool IsMutable { get; } = isMutable;
     public HashSet<MemberRecord> Uses { get; } = [];
     public HashSet<MemberRecord> UsedBy { get; } = [];
 }
@@ -890,16 +1129,29 @@ internal sealed record TypeSummary(
     int Parts,
     int Lines,
     int Members,
-    int State,
+    int Mutable,
+    int Outgoing,
+    int Incoming,
     List<string> Hubs,
-    int Cross,
-    double Weave,
-    double Free,
+    int Crossings,
+    double Glued,
+    double Fused,
     double Density,
-    bool Monolith,
-    bool Large);
+    List<string> Flags,
+    string Verdict);
 
-internal sealed record Limits(int Parts, int Span, int Hub, double Weave, double Density, int Lines, int Members, int State);
+internal sealed record Limits(
+    int HydraParts,
+    int HydraLines,
+    double HydraFused,
+    double HydraDensity,
+    int SpiderOutgoing,
+    int SpiderIncoming,
+    int ChameleonMutable,
+    int OctopusOutgoing,
+    int CentipedeMembers,
+    int SerpentLines,
+    int HubParts);
 '@
 
 function Get-HelperBinary {

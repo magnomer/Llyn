@@ -1,9 +1,8 @@
 {
-  "Call": {},
-  "Contract": {},
-  "Depth": {},
-  "Hook": {},
-  "Pack": {
+  "Branching": {},
+  "Dangling": {},
+  "Freelancing": {},
+  "Hardwiring": {
     "src/Llyn.UIDeportment/Display/Compass/PDisplayCompass.cs": 1,
     "src/Llyn.UIDeportment/Display/View/PDisplay.cs": 1,
     "src/Llyn.UIDeportment/Editor/Context/PContextTemplate.cs": 1,
@@ -29,8 +28,8 @@
     "src/Llyn.UIDeportment/Shell/Screen/PScreen.cs": 1,
     "src/Llyn.UIDeportment/Sound/Transcription/PNotationTemplate.cs": 1
   },
-  "Reach": {},
-  "Scaffold": {
+  "Hoarding": {},
+  "Masquerading": {
     "src/Llyn.UIDeportment/Display/Compass/PDisplayCompass.cs": 1,
     "src/Llyn.UIDeportment/Display/View/PDisplay.cs": 1,
     "src/Llyn.UIDeportment/Editor/Context/PContextMenu.cs": 1,
@@ -102,10 +101,11 @@
     "src/Llyn.UIDeportment/Sound/Transcription/PNotationTemplate.cs": 1,
     "src/Llyn.UIDeportment/Sound/Transcription/PTranscription.cs": 1
   },
-  "Shell": {},
-  "Storage": {},
-  "Trigger": {},
-  "Wiring": {
+  "Meddling": {},
+  "Overreaching": {},
+  "Overworking": {
     "src/Llyn.Host/LHost.cs": 4
-  }
+  },
+  "Prying": {},
+  "Tethering": {}
 }

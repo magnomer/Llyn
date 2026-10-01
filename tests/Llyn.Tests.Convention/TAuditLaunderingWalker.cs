@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Convention.Tests;
 
-internal static class TAuditTaintWalker
+internal static class TAuditLaunderingWalker
 {
     private const string TAuditLogicColour = "logic value";
 
@@ -53,7 +53,7 @@ internal static class TAuditTaintWalker
                          && !TAuditStrictWalker.TAuditNullCheck(binary.Right)
                     => (binary, $"in {binary.OperatorToken.ValueText}"),
                 InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax access } query
-                    when TAuditTruthSetting.TAuditTreatVerbs.Contains(
+                    when TAuditTruthSetting.TAuditMoonlightingVerbs.Contains(
                         access.Name.Identifier.ValueText, StringComparer.Ordinal)
                     => (query, $"queried by {access.Name.Identifier.ValueText}"),
                 IfStatementSyntax branch when TAuditConditionCheck(branch.Condition)
@@ -79,7 +79,7 @@ internal static class TAuditTaintWalker
             if (seen.Add($"{line}:{reason}"))
             {
                 string excerpt = node.ToString().Split('\n')[0].Trim();
-                violations.Add(new TViolation(node.SyntaxTree.FilePath, line, excerpt, "Taint", reason));
+                violations.Add(new TViolation(node.SyntaxTree.FilePath, line, excerpt, "Laundering", reason));
             }
         }
     }

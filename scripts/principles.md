@@ -50,7 +50,7 @@ Every allowed difference in results is written in the script header or the test 
 | `auditfake.ps1` | `TAuditFake` |
 | `auditobject.ps1` | `TAuditObject` |
 | `auditplatform.ps1` | `TAuditPlatform` |
-| `auditstructure.ps1` | `TAuditChain`, `TAuditFrame`, `TAuditRing` |
+| `auditstructure.ps1` | `TAuditBorder`, `TAuditCensus`, `TAuditPurity`, `TAuditCharter` |
 | `auditui.ps1` | `TAuditStrict`, `TAuditTruth`, `TAuditBoundary` |
 | `auditencoding.ps1` | `TAuditEncoding` |
 | `auditdraft.ps1` | `TAuditDraft` |

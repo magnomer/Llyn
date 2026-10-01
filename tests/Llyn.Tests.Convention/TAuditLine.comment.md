@@ -35,7 +35,7 @@ This holds even when the line rules are not enforced.
 ## `private const string TAuditLengthAdvice`
 
 Why a long file must not be split mechanically or given a partial part.
-Both leave one big object behind several files, which the object audit then reports.
+Both leave one big object across files, a Serpent to the object audit, or a Hydra once it spreads.
 
 ## `private const string TAuditWidthAdvice`
 

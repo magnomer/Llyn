@@ -46,7 +46,7 @@ A `DependencyProperty` or `RoutedEvent` static counts, since the surface allows 
 
 A mutable static field in a driver type, state shared past any one gate.
 
-## `public void AuditStrict_SurfaceMembers_CallOnly()`
+## `public void AuditStrict_SurfaceMembers_HoldNoMeddling()`
 
 A surface line that is not a plain call: a branch, a loop, an operator, an assignment or a declaration.
 A LINQ query is a breach too, since a filter decides what is drawn.
@@ -55,7 +55,7 @@ Every line inside a breaching statement counts, so logic added inside one moves 
 ## `public void AuditStrict_SurfaceSources_NameOnlyDriver()`
 
 A surface line naming a type from below the driver, Conduct's included.
-It overlaps the chain audit's `cross` count, which counts the same names per ring pair.
+It overlaps the border audit's `Undercutting` count, which counts the same names per ring pair.
 
 ## `public void AuditStrict_SurfaceMarkup_NameOnlyDriver()`
 
@@ -66,47 +66,47 @@ A markup line that maps a namespace below the driver, reads a constant from ther
 A markup trigger or visual state, or a binding slot that converts, formats, selects or validates.
 Each is a branch or a computation standing in the surface.
 
-## `public void AuditStrict_SurfaceMarkup_HookNever()`
+## `public void AuditStrict_SurfaceMarkup_HoldNoTethering()`
 
 A markup line through which logic reaches the markup: a binding, a command, an input binding or a code reach.
 A code reach is `x:Static` or a markup extension whose prefix maps a code namespace.
-A command parameter or target, a display member path or a selected value path is a hook too.
+A command parameter or target, a display member path or a selected value path is tethering too.
 So is a literal `Tag`, since code reads it as a value to branch on.
 Each counts as an attribute or as the property a `Setter` names.
-A converter or a template or style selector declared in the markup is a hook too.
-Each line counts once, however many hooks it holds.
+A converter or a template or style selector declared in the markup is tethering too.
+Each line counts once, however many markers it holds.
 `{StaticResource}`, `{DynamicResource}` and `{x:Type}` stay allowed.
 
-## `public void AuditStrict_SurfaceTypes_ShellOnly()`
+## `public void AuditStrict_SurfaceTypes_HoldNoFreelancing()`
 
 A surface member that is not a constructor: a method, property, event, indexer or operator.
 The shell only constructs, so every handler or helper belongs in Deportment.
 An event attribute in markup therefore shows as the missing handler it needs.
 Generated code is left out, as for every surface fact.
 
-## `public void AuditStrict_SurfaceNames_HoldNoGlyph()`
+## `public void AuditStrict_SurfaceNames_HoldNoHomoglyph()`
 
 A surface identifier holding a character outside ASCII.
 A look-alike glyph would let a name pass every prefix rule while reading as another.
 
-## `public void AuditStrict_HostSources_WireOnly()`
+## `public void AuditStrict_HostSources_HoldNoOverworking()`
 
 A Host line that does more than construct and wire: a branch, a choice, an operator or an early return.
 Host holds no behaviour, so each such line belongs in the layer that owns the decision.
 
-## `public void AuditStrict_DriverSource_PackNever()`
+## `public void AuditStrict_DriverSource_HoldNoHardwiring()`
 
 A driver line holding a pack URI or naming the Veneer assembly.
 Deportment pulls every part by contract ID and never names the Veneer.
 The line counts once, under the first marker it holds.
 
-## `public void AuditStrict_DriverTypes_ScaffoldNever()`
+## `public void AuditStrict_DriverTypes_HoldNoMasquerading()`
 
 A driver type deriving from a scaffold type, such as a window, a page or a resource dictionary.
 The Veneer holds the scaffold, so a driver type deriving from one is scaffold standing in the wrong layer.
 Each partial part counts in its own file.
 
-## `public void AuditStrict_SurfaceMarkup_ContractHeld()`
+## `public void AuditStrict_SurfaceMarkup_HoldNoDangling()`
 
 A contract ID passed to `QContract` that no `x:Name` or `x:Key` in the surface markup declares.
 An ID that is not a constant counts too, since no markup can be checked against it.

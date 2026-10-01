@@ -4,7 +4,7 @@ namespace Convention.Tests;
 
 public sealed class TAuditConvention
 {
-    public const int TAuditGeneration = 16;
+    public const int TAuditGeneration = 17;
 
     public static string TAuditReportFormat(string audit, string report)
     {
@@ -23,10 +23,11 @@ public sealed class TAuditConvention
             (nameof(TAuditDraftSetting), TAuditDraftSetting.TAuditGeneration),
             (nameof(TAuditTruthSetting), TAuditTruthSetting.TAuditGeneration),
             (nameof(TAuditStrictSetting), TAuditStrictSetting.TAuditGeneration),
-            (nameof(TAuditRingSetting), TAuditRingSetting.TAuditGeneration),
+            (nameof(TAuditCharterSetting), TAuditCharterSetting.TAuditGeneration),
             (nameof(TAuditObjectSetting), TAuditObjectSetting.TAuditGeneration),
-            (nameof(TAuditChainSetting), TAuditChainSetting.TAuditGeneration),
-            (nameof(TAuditFrameSetting), TAuditFrameSetting.TAuditGeneration),
+            (nameof(TAuditBorderSetting), TAuditBorderSetting.TAuditGeneration),
+            (nameof(TAuditCensusSetting), TAuditCensusSetting.TAuditGeneration),
+            (nameof(TAuditPuritySetting), TAuditPuritySetting.TAuditGeneration),
             (nameof(TAuditBoundarySetting), TAuditBoundarySetting.TAuditGeneration),
             (nameof(TAuditEncodingSetting), TAuditEncodingSetting.TAuditGeneration),
             (nameof(TAuditFakeSetting), TAuditFakeSetting.TAuditGeneration),

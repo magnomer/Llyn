@@ -14,33 +14,33 @@ internal static class TAuditContractWalker
         IReadOnlySet<string> ids = TAuditIdRead(markupPaths);
         foreach (string path in driverPaths)
         {
-            TAuditPackScan(path, violations);
+            TAuditHardwiringScan(path, violations);
         }
 
         foreach (SyntaxNode root in TAuditBinder.TAuditWalkRead(driverPaths))
         {
-            TAuditScaffoldScan(root, violations);
-            TAuditContractScan(root, ids, violations);
+            TAuditMasqueradingScan(root, violations);
+            TAuditDanglingScan(root, ids, violations);
         }
 
         return violations;
     }
 
-    private static void TAuditPackScan(string path, List<TViolation> violations)
+    private static void TAuditHardwiringScan(string path, List<TViolation> violations)
     {
         string[] lines = File.ReadAllLines(path);
         for (int index = 0; index < lines.Length; index++)
         {
-            string? marker = TAuditStrictSetting.TAuditPackMarkers
+            string? marker = TAuditStrictSetting.TAuditHardwiringMarkers
                 .FirstOrDefault(item => lines[index].Contains(item, StringComparison.Ordinal));
             if (marker is not null)
             {
-                violations.Add(new TViolation(path, index + 1, marker, "Pack", "driver line names the surface"));
+                violations.Add(new TViolation(path, index + 1, marker, "Hardwiring", "driver line names the surface"));
             }
         }
     }
 
-    private static void TAuditScaffoldScan(SyntaxNode root, List<TViolation> violations)
+    private static void TAuditMasqueradingScan(SyntaxNode root, List<TViolation> violations)
     {
         foreach (TypeDeclarationSyntax type in root.DescendantNodes().OfType<TypeDeclarationSyntax>())
         {
@@ -52,13 +52,13 @@ internal static class TAuditContractWalker
             for (INamedTypeSymbol? shape = symbol.BaseType; shape is not null; shape = shape.BaseType)
             {
                 string name = shape.OriginalDefinition.ToDisplayString();
-                if (TAuditStrictSetting.TAuditScaffoldTypes.Contains(name, StringComparer.Ordinal))
+                if (TAuditStrictSetting.TAuditMasqueradingTypes.Contains(name, StringComparer.Ordinal))
                 {
                     violations.Add(new TViolation(
                         type.SyntaxTree.FilePath,
                         type.Identifier.GetLocation().GetLineSpan().StartLinePosition.Line + 1,
                         type.Identifier.ValueText,
-                        "Scaffold",
+                        "Masquerading",
                         $"driver type derives from {name}"));
                     break;
                 }
@@ -66,7 +66,7 @@ internal static class TAuditContractWalker
         }
     }
 
-    private static void TAuditContractScan(SyntaxNode root, IReadOnlySet<string> ids, List<TViolation> violations)
+    private static void TAuditDanglingScan(SyntaxNode root, IReadOnlySet<string> ids, List<TViolation> violations)
     {
         SemanticModel model = TAuditBinder.TAuditModelRead(root);
         foreach (InvocationExpressionSyntax call in root.DescendantNodes().OfType<InvocationExpressionSyntax>())
@@ -89,13 +89,13 @@ internal static class TAuditContractWalker
                 if (constant is not { HasValue: true, Value: string id })
                 {
                     violations.Add(new TViolation(
-                        call.SyntaxTree.FilePath, line, argument.Expression.ToString(), "Contract",
+                        call.SyntaxTree.FilePath, line, argument.Expression.ToString(), "Dangling",
                         "contract ID is not a constant"));
                 }
                 else if (!ids.Contains(id))
                 {
                     violations.Add(new TViolation(
-                        call.SyntaxTree.FilePath, line, id, "Contract",
+                        call.SyntaxTree.FilePath, line, id, "Dangling",
                         "contract ID has no element or resource in the surface"));
                 }
             }

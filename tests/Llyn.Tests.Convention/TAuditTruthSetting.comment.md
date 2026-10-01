@@ -93,7 +93,7 @@ Each is written as the full name of its declaring type and member.
 ## `public static readonly string[] TAuditDialogTypes`
 
 The types whose answer confirms a request.
-A confirm belongs in the gate behind a port, so a dialog answer deciding a request is a guard.
+A confirm belongs in the gate behind a port, so a dialog answer deciding a request is gatekeeping.
 
 ## `public static readonly string[] TAuditDelayMembers`
 
@@ -108,10 +108,10 @@ The members of a GUI control that carry what the user typed or chose.
 Driver types a driver field may hold as a handle rather than as a value.
 A handle is called on and passed on, so the field is skipped before any rule reads it.
 A Conduct type is a handle by rule and is never listed.
-A type from below Conduct is never a handle, so holding one is a mirror hit counted in the ledger.
+A type from below Conduct is never a handle, so holding one is a duplicating hit counted in the ledger.
 The list is empty now that the veneer helpers take Conduct's atelier, which is a handle by rule.
 A type is matched as the binder shows it, with any nullable mark dropped.
 
-## `public static readonly string[] TAuditTreatVerbs`
+## `public static readonly string[] TAuditMoonlightingVerbs`
 
-Query methods that, applied to a value from below Conduct, are data treatment.
+Query methods that, applied to a value from below Conduct, are moonlighting.

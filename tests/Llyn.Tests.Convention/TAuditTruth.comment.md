@@ -39,9 +39,9 @@ Keeps the runner's output so a passing fact can still print its count.
 
 A driver value that reaches a request, as an argument or as the condition around one.
 A request is a call to a Conduct gate, to the engine or to a driver relay of either.
-The guards count every condition: `if`, `?:`, `switch`, loops, `when` clauses, `?.`, `&&`, `||` and `??`.
-A guard read through a getter property counts as a read of the field it returns.
-An engine answer or a dialog answer deciding a request is a guard too, since the gate owns that decision.
+Gatekeeping counts every condition: `if`, `?:`, `switch`, loops, `when` clauses, `?.`, `&&`, `||` and `??`.
+Gatekeeping through a getter property counts as a read of the field it returns.
+An engine answer or a dialog answer deciding a request is gatekeeping too, since the gate owns that decision.
 
 ## `public void AuditTruth_DriverFields_KeepOneWriter()`
 
@@ -59,17 +59,17 @@ A Conduct type is held freely, and a Conduct port is implemented freely.
 
 A driver line that assigns a logic member, reorders a collection or overrides a built request.
 
-## `public void AuditTruth_DriverShape_DrivesNoRequest()`
+## `public void AuditTruth_DriverRequests_HoldNoMisfiring()`
 
 A control or console input deciding a request, a clock driving one, or an observer that never reads its bulletin.
 Also a member sending a second request, since one user action is one gate.
 
-## `public void AuditTruth_DriverSources_TreatNoData()`
+## `public void AuditTruth_DriverSources_HoldNoMoonlighting()`
 
 A driver line that compares, computes or queries over a value from below Conduct.
-Reshaping a Conduct verdict is the driver's work and is not treatment.
+Reshaping a Conduct verdict is the driver's work and is not moonlighting.
 
-## `public void AuditTruth_DriverNames_HoldNoGlyph()`
+## `public void AuditTruth_DriverNames_HoldNoHomoglyph()`
 
 A driver identifier holding a character outside ASCII.
 A look-alike glyph would let a name pass every prefix rule while reading as another.
@@ -78,12 +78,12 @@ A look-alike glyph would let a name pass every prefix rule while reading as anot
 
 A driver line that computes over a carried engine value, or over the input of a control or the console.
 
-## `public void AuditTruth_DriverSources_FeedNoDeeperType()`
+## `public void AuditTruth_DriverSources_HoldNoSpoonfeeding()`
 
 A driver line handing its surface a type from below the cut, Conduct's included.
-A surface binding reads the members of what it is fed, so the feed is where the cut is crossed.
+A surface binding reads the members of what it is fed, so spoonfeeding is where the cut is crossed.
 
-## `public void AuditTruth_DriverGates_MatchAcrossMedia()`
+## `public void AuditTruth_DriverGates_HoldNoMismatching()`
 
 A Conduct member one driver reaches and the other never does.
 Also a Conduct port a driver does not implement.
@@ -114,5 +114,5 @@ The report opens with the counts, then the fields by hit count, then every hit b
 
 ## `private static (IReadOnlyList<TViolation> TAuditHits, IReadOnlyList<string> TAuditSources) TAuditTruthRead()`
 
-Enumerates every driver source with Git and runs the driver, treat and taint walkers once.
+Enumerates every driver source with Git and runs the driver, moonlighting and laundering walkers once.
 Paths are made repo-relative.

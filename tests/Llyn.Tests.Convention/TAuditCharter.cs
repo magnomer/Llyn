@@ -3,20 +3,20 @@ using Xunit;
 
 namespace Convention.Tests;
 
-public sealed class TAuditRing
+public sealed class TAuditCharter
 {
-    private const string TAuditRingAudit = "AUDITRING";
+    private const string TAuditCharterAudit = "AUDITCHARTER";
 
-    private const string TAuditRingSource = "src/";
+    private const string TAuditCharterSource = "src/";
 
-    private const string TAuditTransitiveKind = "Transitive";
+    private const string TAuditPiggybackingKind = "Piggybacking";
 
     private static readonly string[] TAuditImportNames = ["Directory.Build.props", "Directory.Build.targets"];
 
     private static readonly string[] TAuditItemNames = ["ProjectReference", "Reference", "Compile"];
 
     [Fact]
-    public void AuditRing_Projects_ReferenceInward()
+    public void AuditCharter_Projects_HoldNoRerouting()
     {
         Dictionary<string, string[]> found = TAuditProjectRead()
             .ToDictionary(
@@ -24,30 +24,59 @@ public sealed class TAuditRing
 
         List<string> drift = [];
         IEnumerable<string> projects = found.Keys
-            .Union(TAuditRingSetting.TAuditRingEdges.Keys, StringComparer.Ordinal)
+            .Union(TAuditCharterSetting.TAuditCharterEdges.Keys, StringComparer.Ordinal)
             .Order(StringComparer.Ordinal);
         foreach (string project in projects)
         {
             string[] actual = found.GetValueOrDefault(project, []);
-            string[] expected = TAuditRingSetting.TAuditRingEdges.GetValueOrDefault(project, []);
+            string[] expected = TAuditCharterSetting.TAuditCharterEdges.GetValueOrDefault(project, []);
             foreach (string edge in actual.Except(expected, StringComparer.Ordinal))
             {
-                drift.Add($"  {project} -> {edge} is referenced but not in the ring table");
+                drift.Add($"  {project} -> {edge} is referenced but not in the charter");
             }
 
             foreach (string edge in expected.Except(actual, StringComparer.Ordinal))
             {
-                drift.Add($"  {project} -> {edge} is in the ring table but not referenced");
+                drift.Add($"  {project} -> {edge} is in the charter but not referenced");
             }
         }
 
         Assert.True(drift.Count == 0, TAuditConvention.TAuditReportFormat(
-            TAuditRingAudit,
-            $"{drift.Count} project edge(s) differ from the ring table:\n{string.Join('\n', drift)}"));
+            TAuditCharterAudit,
+            $"{drift.Count} Rerouting project edge(s) differ from the charter:\n{string.Join('\n', drift)}"));
     }
 
     [Fact]
-    public void AuditRing_Projects_HideNoReference()
+    public void AuditCharter_Neighbours_MatchProjects()
+    {
+        List<string> drift = [];
+        foreach ((string ring, string[] edges) in TAuditCharterSetting.TAuditCharterEdges.Where(pair =>
+                     pair.Key != TAuditBorderSetting.TAuditBorderHost))
+        {
+            string[] neighbour = TAuditBorderSetting.TAuditBorderNeighbour.GetValueOrDefault(ring) ?? ["(absent)"];
+            if (TAuditBorderSetting.TAuditBorderCapsule.GetValueOrDefault(ring) is string capsule)
+            {
+                neighbour = [.. neighbour, capsule];
+            }
+
+            if (!neighbour.Order(StringComparer.Ordinal).SequenceEqual(edges.Order(StringComparer.Ordinal)))
+            {
+                drift.Add($"  {ring} names [{string.Join(", ", neighbour)}] "
+                          + $"but references [{string.Join(", ", edges)}]");
+            }
+        }
+
+        drift.AddRange(TAuditBorderSetting.TAuditBorderNeighbour.Keys
+            .Where(ring => !TAuditCharterSetting.TAuditCharterEdges.ContainsKey(ring))
+            .Select(ring => $"  {ring} is walked but is no project in the charter"));
+        Assert.True(drift.Count == 0, TAuditConvention.TAuditReportFormat(
+            TAuditCharterAudit,
+            $"{drift.Count} ring(s) walk a neighbour that differs from their project references:\n"
+            + string.Join('\n', drift)));
+    }
+
+    [Fact]
+    public void AuditCharter_Projects_HoldNoBackdooring()
     {
         string repoRoot = TAuditSource.TAuditRootRead();
         List<string> hidden = [];
@@ -81,35 +110,36 @@ public sealed class TAuditRing
         }
 
         Assert.True(hidden.Count == 0, TAuditConvention.TAuditReportFormat(
-            TAuditRingAudit,
-            $"{hidden.Count} reference(s) or source link(s) bypass the ring table:\n{string.Join('\n', hidden)}"));
+            TAuditCharterAudit,
+            $"{hidden.Count} Backdooring reference(s) or source link(s) bypass the charter:\n"
+            + string.Join('\n', hidden)));
     }
 
     [Fact]
-    public void AuditRing_CutProjects_CompileAgainstNeighbour()
+    public void AuditCharter_CutProjects_HoldNoPiggybacking()
     {
         List<string> open = TAuditOpenRead();
-        int ceiling = TAuditRingSetting.TAuditRingCeiling.GetValueOrDefault(TAuditTransitiveKind);
+        int ceiling = TAuditCharterSetting.TAuditCharterCeiling.GetValueOrDefault(TAuditPiggybackingKind);
         Assert.True(open.Count <= ceiling, TAuditConvention.TAuditReportFormat(
-            TAuditRingAudit,
-            $"{open.Count} cut project(s) compile against rings past their neighbour, ceiling {ceiling}:\n"
+            TAuditCharterAudit,
+            $"{open.Count} {TAuditPiggybackingKind} cut project(s) compile past their neighbour, ceiling {ceiling}:\n"
             + string.Join('\n', open)));
     }
 
     [Fact]
-    public void AuditRing_Ceiling_MatchesHits()
+    public void AuditCharter_Ceiling_MatchesHits()
     {
         int count = TAuditOpenRead().Count;
-        int ceiling = TAuditRingSetting.TAuditRingCeiling.GetValueOrDefault(TAuditTransitiveKind);
+        int ceiling = TAuditCharterSetting.TAuditCharterCeiling.GetValueOrDefault(TAuditPiggybackingKind);
         Assert.True(count >= ceiling, TAuditConvention.TAuditReportFormat(
-            TAuditRingAudit,
-            $"The {TAuditTransitiveKind} ceiling {ceiling} sits above the count {count} and must be lowered."));
+            TAuditCharterAudit,
+            $"The {TAuditPiggybackingKind} ceiling {ceiling} sits above the count {count} and must be lowered."));
     }
 
     private static List<string> TAuditOpenRead()
     {
         return TAuditProjectRead()
-            .Where(project => TAuditChainSetting.TAuditChainCut.Contains(
+            .Where(project => TAuditBorderSetting.TAuditBorderCut.Contains(
                 Path.GetFileNameWithoutExtension(project), StringComparer.Ordinal))
             .Where(project => !XDocument.Load(project).Descendants()
                 .Where(node => node.Name.LocalName == "DisableTransitiveProjectReferences")
@@ -120,7 +150,7 @@ public sealed class TAuditRing
 
     private static IReadOnlyList<string> TAuditProjectRead()
     {
-        TAuditScope scope = new([], [TAuditRingSource + "*.csproj"], [], [], [], []);
+        TAuditScope scope = new([], [TAuditCharterSource + "*.csproj"], [], [], [], []);
         return TAuditSource.TAuditFileRead(TAuditSource.TAuditRootRead(), scope);
     }
 

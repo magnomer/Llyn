@@ -1,19 +1,19 @@
-# TAuditTruthShape.cs
+# TAuditTruthMisfiring.cs
 
 ## `internal static partial class TAuditTruthWalker`
 
-The shape half of the truth walker: what the driver's medium may not decide.
-A control's state, console input, a clock and a deaf handler are shape.
+The misfiring half of the truth walker: what the driver's medium may not decide.
+A control's state, console input, a clock and a deaf handler count as misfiring.
 None of them is a user act or an engine fact.
-It also holds the guard rules for answers a driver branches on.
+It also holds the gatekeeping rules for answers a driver branches on.
 
-## `private static void TAuditShapeScan(SyntaxNode root, List<TViolation> violations)`
+## `private static void TAuditMisfiringScan(SyntaxNode root, List<TViolation> violations)`
 
-Walks every node of a file for the shapes and reports each once per line, kind and name.
+Walks every node of a file for misfiring and reports each once per line, kind and name.
 An `if` or ternary whose condition reads a control or console input and whose branch requests lets the medium decide.
-An `if` deciding a request on a dialog answer is a guard.
+An `if` deciding a request on a dialog answer is gatekeeping.
 The gate asks the user through a port instead.
-An `if`, ternary or switch deciding a request on an engine answer is a guard.
+An `if`, ternary or switch deciding a request on an engine answer is gatekeeping.
 The gate owns that decision.
 A clock drives a request through an event, a callback it is built with or a loop that waits.
 A method or lambda taking the bulletin type it never reads shows from driver state on a signal it ignored.

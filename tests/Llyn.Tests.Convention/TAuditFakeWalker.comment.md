@@ -97,7 +97,7 @@ The type and member name of the test that holds the reference, or its file name.
 Marks live every member a root reads, then every member a live member reads, until nothing changes.
 A root is a markup word, a serialized member, a class markup constructs, or a read from untracked code.
 A markup word keeps a member of any type alive, since markup cannot be bound by type.
-The strict audit counts a markup name below the driver as a reach, so such a binding is still held.
+The strict audit counts a markup name below the driver as overreaching, so such a binding is still held.
 
 ## `private static TViolation TAuditRowCreate(TAuditFakeMember member, Dictionary<string, TAuditFakeMember> members)`
 

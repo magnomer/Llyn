@@ -16,7 +16,7 @@ internal static partial class TAuditTruthWalker
         if (reference.Parent is ConditionalAccessExpressionSyntax { Expression: var target } access
             && target == reference)
         {
-            return TAuditRequestCheck(access.WhenNotNull) ? ("Guard", "decides a request through ?.") : null;
+            return TAuditRequestCheck(access.WhenNotNull) ? ("Gatekeeping", "decides a request through ?.") : null;
         }
 
         foreach (SyntaxNode ancestor in reference.Ancestors())
@@ -27,56 +27,56 @@ internal static partial class TAuditTruthWalker
                     return null;
                 case ArgumentSyntax { Parent.Parent: ExpressionSyntax call } argument
                     when TAuditCallRead(call) is { } callee && TAuditHotCheck(callee, argument):
-                    return ("Argument", $"passed to {callee.Name}");
+                    return ("Replaying", $"passed to {callee.Name}");
                 case InitializerExpressionSyntax { Parent: WithExpressionSyntax }:
-                    return ("Argument", "written into a record copy");
+                    return ("Replaying", "written into a record copy");
                 case InitializerExpressionSyntax { Parent: BaseObjectCreationExpressionSyntax creation }
                     when TAuditCallRead(creation) is { } built:
-                    return ("Argument", $"written into new {built.ContainingType?.Name ?? built.Name}");
+                    return ("Replaying", $"written into new {built.ContainingType?.Name ?? built.Name}");
                 case IfStatementSyntax branch
-                    when branch.Condition.Span.Contains(reference.Span) && TAuditGuardCheck(branch):
-                    return ("Guard", "decides a request in an if");
+                    when branch.Condition.Span.Contains(reference.Span) && TAuditGatekeepingCheck(branch):
+                    return ("Gatekeeping", "decides a request in an if");
                 case ConditionalExpressionSyntax choice
                     when choice.Condition.Span.Contains(reference.Span)
                          && !TAuditPresenceCheck(choice.Condition)
                          && (TAuditRequestCheck(choice.WhenTrue) || TAuditRequestCheck(choice.WhenFalse)):
-                    return ("Guard", "decides a request in a ternary");
+                    return ("Gatekeeping", "decides a request in a ternary");
                 case SwitchStatementSyntax select
                     when select.Expression.Span.Contains(reference.Span) && TAuditRequestCheck(select):
-                    return ("Guard", "decides a request in a switch");
+                    return ("Gatekeeping", "decides a request in a switch");
                 case SwitchExpressionSyntax arms
                     when arms.GoverningExpression.Span.Contains(reference.Span) && TAuditRequestCheck(arms):
-                    return ("Guard", "decides a request in a switch expression");
+                    return ("Gatekeeping", "decides a request in a switch expression");
                 case WhileStatementSyntax loop
                     when loop.Condition.Span.Contains(reference.Span) && TAuditRequestCheck(loop.Statement):
-                    return ("Guard", "decides a request in a while");
+                    return ("Gatekeeping", "decides a request in a while");
                 case DoStatementSyntax loop
                     when loop.Condition.Span.Contains(reference.Span) && TAuditRequestCheck(loop.Statement):
-                    return ("Guard", "decides a request in a do");
+                    return ("Gatekeeping", "decides a request in a do");
                 case ForStatementSyntax { Condition: { } condition } loop
                     when condition.Span.Contains(reference.Span) && TAuditRequestCheck(loop.Statement):
-                    return ("Guard", "decides a request in a for");
+                    return ("Gatekeeping", "decides a request in a for");
                 case WhenClauseSyntax { Parent: { } label } clause
                     when TAuditRequestCheck(label.Parent is SwitchSectionSyntax section ? section : label)
                          && clause.Condition.Span.Contains(reference.Span):
-                    return ("Guard", "decides a request in a when clause");
+                    return ("Gatekeeping", "decides a request in a when clause");
                 case CatchFilterClauseSyntax filter
                     when filter.Parent is CatchClauseSyntax { Block: var handler } && TAuditRequestCheck(handler):
-                    return ("Guard", "decides a request in a catch filter");
+                    return ("Gatekeeping", "decides a request in a catch filter");
                 case BinaryExpressionSyntax gate
                     when (gate.IsKind(SyntaxKind.LogicalAndExpression)
                           || gate.IsKind(SyntaxKind.LogicalOrExpression)
                           || gate.IsKind(SyntaxKind.CoalesceExpression))
                          && gate.Left.Span.Contains(reference.Span)
                          && TAuditRequestCheck(gate.Right):
-                    return ("Guard", $"decides a request through {gate.OperatorToken.ValueText}");
+                    return ("Gatekeeping", $"decides a request through {gate.OperatorToken.ValueText}");
             }
         }
 
         return null;
     }
 
-    private static bool TAuditGuardCheck(IfStatementSyntax branch)
+    private static bool TAuditGatekeepingCheck(IfStatementSyntax branch)
     {
         if (TAuditPresenceCheck(branch.Condition))
         {

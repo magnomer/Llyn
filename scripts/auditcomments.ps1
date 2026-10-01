@@ -25,7 +25,7 @@ An unreadable file is reported once, under Unreadable files, and never as a miss
 
 auditcomments.json shape:
   {
-    "generation": 16,
+    "generation": 17,
     "project": "Llyn",
     "sources": {
       "roots": ["languages", "localization", "src", "tests", "themes"],
@@ -97,7 +97,7 @@ auditcomments -Segments 2
 auditcomments -SourceRoots .\src -MaxWords 25
 #>
 #requires -Version 5.1
-# AUDITCOMMENTS GENERATION 16 - auditcomments.ps1.
+# AUDITCOMMENTS GENERATION 17 - auditcomments.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -117,9 +117,11 @@ auditcomments -SourceRoots .\src -MaxWords 25
 # Generation 14: nothing this audit reports changes; the number rises with the UI audit, which
 # also counts command parameters, member paths and literal tags in surface markup as hooks.
 # Generation 15: nothing this audit reports changes; the number rises with the name audit, which
-# counts prefix rings, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
+# counts prefix turfs, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
 # Generation 16: nothing this audit reports changes; the number rises with the structure audit, whose
-# seal check counts engine types on the public members of sealed Deportment types.
+# Unsealing kind counts engine types on the public members of sealed Deportment types.
+# Generation 17: nothing this audit reports changes; the number rises with the vocabulary revision
+# of the UI, object, structure and name audits.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -219,7 +221,7 @@ $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 16
+$script:AuditGeneration = 17
 
 # Console paging. A page is one window of rows; the audit stops at each page boundary and waits
 # for a key so the reader can inspect the output before it scrolls away. Any key shows the next

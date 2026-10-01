@@ -8,8 +8,8 @@ Partial types are joined by symbol, and one surface part makes the whole type a 
 
 ## `public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> sourcePaths, out List<string> veneers)`
 
-Groups every type of the UI sources, then scans storage, calls, depth and members per surface type.
-Every surface file is also scanned for glyphs, enums and delegates.
+Groups every type of the UI sources, then scans hoarding, meddling, prying and freelancing per surface type.
+Every surface file is also scanned for homoglyphs, enums and delegates.
 Outside the surfaces only a mutable static field is a hit.
 The surface type names come back for the report.
 
@@ -20,25 +20,25 @@ True when the node lives under a surface root.
 ## `private static void TAuditPlainScan(SyntaxNode root, List<TViolation> violations)`
 
 Reads the enum and delegate declarations of a surface file, which no type scan reaches.
-A name they carry from below the driver is a depth hit.
+A name they carry from below the driver is a prying hit.
 An enum value that is not a literal is a computation.
 
-## `private static void TAuditStorageScan(TypeDeclarationSyntax part, bool veneer, List<TViolation> violations)`
+## `private static void TAuditHoardingScan(TypeDeclarationSyntax part, bool veneer, List<TViolation> violations)`
 
-Every field, event field, auto-property and primary constructor parameter of a surface type is storage.
+Every field, event field, auto-property and primary constructor parameter of a surface type is hoarding.
 A `readonly` or a wired `null!` field counts too, and a constant does not.
-In a driver type, every mutable static field is a static hit.
+In a driver type, every mutable static field is a sharing hit.
 
-## `private static void TAuditShellScan(TypeDeclarationSyntax part, List<TViolation> violations)`
+## `private static void TAuditFreelancingScan(TypeDeclarationSyntax part, List<TViolation> violations)`
 
-One Shell hit per method, operator, property, event or indexer the surface part declares.
+One freelancing hit per method, operator, property, event or indexer the surface part declares.
 A constructor is the one member the shell keeps.
 
 ## `private static bool TAuditAutoCheck(PropertyDeclarationSyntax property)`
 
 True for a property whose accessors have no body, which stores a value.
 
-## `private static void TAuditCallScan(`
+## `private static void TAuditMeddlingScan(`
 
 One hit per line of a surface member that is not a plain call.
 Every statement nested in a breach is a breach of its own line, so a long branch counts in full.
@@ -78,12 +78,12 @@ An operator, an assignment, a `new`, a cast, an `await` or a `?.` is a breach.
 
 ## `private static void TAuditEngineScan(SyntaxNode part, string owner, List<TViolation> violations)`
 
-One depth hit per line of a surface declaration naming a type from below the driver.
+One prying hit per line of a surface declaration naming a type from below the driver.
 Nested types are left to their own scan.
 
-## `public static void TAuditGlyphScan(SyntaxNode root, List<TViolation> violations)`
+## `public static void TAuditHomoglyphScan(SyntaxNode root, List<TViolation> violations)`
 
-One hit per identifier holding a character outside ASCII, under the glyph kind.
+One hit per identifier holding a character outside ASCII, under the homoglyph kind.
 The surface walk and the driver walk each count it under their own audit.
 
 ## `public static ExpressionSyntax TAuditCoreRead(ExpressionSyntax condition)`

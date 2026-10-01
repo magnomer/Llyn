@@ -1,10 +1,10 @@
 namespace Convention.Tests;
 
-internal static class TAuditRingSetting
+internal static class TAuditCharterSetting
 {
-    public const int TAuditGeneration = 16;
+    public const int TAuditGeneration = 17;
 
-    public static readonly IReadOnlyDictionary<string, string[]> TAuditRingEdges = new Dictionary<string, string[]>
+    public static readonly IReadOnlyDictionary<string, string[]> TAuditCharterEdges = new Dictionary<string, string[]>
     {
         ["Llyn.Core"] = [],
         ["Llyn.Application"] = ["Llyn.Core"],
@@ -24,8 +24,8 @@ internal static class TAuditRingSetting
         ["Llyn.UIVeneer"] = ["Llyn.UIDeportment"],
     };
 
-    public static readonly IReadOnlyDictionary<string, int> TAuditRingCeiling = new Dictionary<string, int>
+    public static readonly IReadOnlyDictionary<string, int> TAuditCharterCeiling = new Dictionary<string, int>
     {
-        ["Transitive"] = 4,
+        ["Piggybacking"] = 4,
     };
 }

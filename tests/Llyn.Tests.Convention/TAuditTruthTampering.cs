@@ -6,9 +6,9 @@ namespace Convention.Tests;
 
 internal static partial class TAuditTruthWalker
 {
-    private static void TAuditMutationScan(SyntaxNode root, List<TViolation> violations)
+    private static void TAuditTamperingScan(SyntaxNode root, List<TViolation> violations)
     {
-        TAuditFeedScan(root, violations);
+        TAuditSpoonfeedingScan(root, violations);
         foreach (AssignmentExpressionSyntax assignment in root.DescendantNodes().OfType<AssignmentExpressionSyntax>())
         {
             if (!assignment.IsKind(SyntaxKind.SimpleAssignmentExpression))
@@ -27,7 +27,7 @@ internal static partial class TAuditTruthWalker
                     root.SyntaxTree.FilePath,
                     TAuditLineRead(assignment),
                     slot.Expression.ToString(),
-                    "Mutation",
+                    "Tampering",
                     "reorders a collection with a swap"));
                 continue;
             }
@@ -40,7 +40,7 @@ internal static partial class TAuditTruthWalker
                     root.SyntaxTree.FilePath,
                     TAuditLineRead(assignment),
                     field.Identifier.ValueText,
-                    "Mutation",
+                    "Tampering",
                     "overrides a logic member in a record copy"));
                 continue;
             }
@@ -53,7 +53,7 @@ internal static partial class TAuditTruthWalker
                     root.SyntaxTree.FilePath,
                     TAuditLineRead(assignment),
                     rows.ToString(),
-                    "Mutation",
+                    "Tampering",
                     "overwrites a slot of a row store"));
                 continue;
             }
@@ -69,7 +69,7 @@ internal static partial class TAuditTruthWalker
                 root.SyntaxTree.FilePath,
                 TAuditLineRead(assignment),
                 target.ToString(),
-                "Mutation",
+                "Tampering",
                 "assigns a logic member from the shell"));
         }
 
@@ -87,12 +87,12 @@ internal static partial class TAuditTruthWalker
                 root.SyntaxTree.FilePath,
                 TAuditLineRead(call),
                 access.Expression.ToString(),
-                "Mutation",
+                "Tampering",
                 $"reorders a collection with {access.Name.Identifier.ValueText}"));
         }
     }
 
-    private static void TAuditFeedScan(SyntaxNode root, List<TViolation> violations)
+    private static void TAuditSpoonfeedingScan(SyntaxNode root, List<TViolation> violations)
     {
         HashSet<string> seen = new(StringComparer.Ordinal);
         foreach (SyntaxNode node in root.DescendantNodes())
@@ -131,7 +131,11 @@ internal static partial class TAuditTruthWalker
                 if (seen.Add($"{line}:{shown}"))
                 {
                     violations.Add(new TViolation(
-                        root.SyntaxTree.FilePath, line, value.ToString(), "Feed", $"hands the surface a {shown}"));
+                        root.SyntaxTree.FilePath,
+                        line,
+                        value.ToString(),
+                        "Spoonfeeding",
+                        $"hands the surface a {shown}"));
                 }
             }
         }
@@ -159,7 +163,7 @@ internal static partial class TAuditTruthWalker
         return false;
     }
 
-    private static void TAuditParityScan(List<TViolation> violations)
+    private static void TAuditMismatchingScan(List<TViolation> violations)
     {
         IReadOnlyList<string> drivers = TAuditBinder.TAuditRootRead(TAuditTruthSetting.TAuditTruthInclude);
         Dictionary<ISymbol, Dictionary<string, List<SyntaxNode>>> calls = new(SymbolEqualityComparer.Default);
@@ -208,7 +212,7 @@ internal static partial class TAuditTruthWalker
                     site.SyntaxTree.FilePath,
                     TAuditLineRead(site),
                     TAuditBinder.TAuditLabelRead(member),
-                    "Parity",
+                    "Mismatching",
                     $"reaches a Conduct member that {missing} never reaches"));
             }
         }
@@ -226,7 +230,7 @@ internal static partial class TAuditTruthWalker
                     place.SourceTree!.FilePath,
                     place.GetLineSpan().StartLinePosition.Line + 1,
                     port.Name,
-                    "Parity",
+                    "Mismatching",
                     $"is a Conduct port no type in {driver} implements"));
             }
         }

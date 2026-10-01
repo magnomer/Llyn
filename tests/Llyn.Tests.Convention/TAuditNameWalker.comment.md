@@ -45,7 +45,7 @@ It fails a type, delegate or event name that ends in a verb, as the script does.
 Generations 13 and 14 change nothing the name audit reports.
 The number rises with the UI audit, whose hook rule gains slots and a literal rule.
 
-Generation 15 adds the ring count in `TAuditName`, which this walker leaves alone.
+Generation 15 adds the turf count in `TAuditName`, which this walker leaves alone.
 The UI audit gains the pack, scaffold and contract kinds in the same generation.
 
 ## `public static List<TSpecimen> TAuditSpecimenRead(IEnumerable<string> sourcePaths)`

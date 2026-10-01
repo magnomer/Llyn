@@ -1,12 +1,12 @@
 {
-  "generation": 16,
+  "generation": 17,
   "project": "Llyn",
   "framework": "net10.0",
   "source": "src/",
   "rings": [
     {
       "name": "Llyn.Core",
-      "reach": [],
+      "neighbour": [],
       "capsule": [],
       "frame": [
         "System",
@@ -25,7 +25,7 @@
     },
     {
       "name": "Llyn.Application",
-      "reach": [
+      "neighbour": [
         "Llyn.Core"
       ],
       "capsule": [],
@@ -46,7 +46,7 @@
     },
     {
       "name": "Llyn.ShellEngine",
-      "reach": [
+      "neighbour": [
         "Llyn.Application"
       ],
       "capsule": [],
@@ -68,7 +68,7 @@
     },
     {
       "name": "Llyn.Conduct",
-      "reach": [
+      "neighbour": [
         "Llyn.ShellEngine"
       ],
       "capsule": [],
@@ -90,7 +90,7 @@
     },
     {
       "name": "Llyn.UIDeportment",
-      "reach": [
+      "neighbour": [
         "Llyn.Conduct"
       ],
       "capsule": [
@@ -102,7 +102,7 @@
     },
     {
       "name": "Llyn.UIVeneer",
-      "reach": [
+      "neighbour": [
         "Llyn.UIDeportment"
       ],
       "capsule": [],
@@ -112,7 +112,7 @@
     },
     {
       "name": "Llyn.UIDemeanor",
-      "reach": [
+      "neighbour": [
         "Llyn.Conduct"
       ],
       "capsule": [],
@@ -122,7 +122,7 @@
     },
     {
       "name": "Llyn.UITerminal",
-      "reach": [
+      "neighbour": [
         "Llyn.UIDemeanor"
       ],
       "capsule": [],
@@ -132,7 +132,7 @@
     },
     {
       "name": "Llyn.Infrastructure",
-      "reach": [
+      "neighbour": [
         "Llyn.Core"
       ],
       "capsule": [],
@@ -142,7 +142,7 @@
     },
     {
       "name": "Llyn.UIDeportment.Capsule",
-      "reach": [],
+      "neighbour": [],
       "capsule": [],
       "frame": [],
       "pure": false,
@@ -150,7 +150,7 @@
     },
     {
       "name": "Llyn.Core.Windows",
-      "reach": [
+      "neighbour": [
         "Llyn.Core"
       ],
       "capsule": [],
@@ -161,7 +161,7 @@
   ],
   "host": {
     "name": "Llyn.Host",
-    "reach": [
+    "references": [
       "Llyn.Core",
       "Llyn.Application",
       "Llyn.Infrastructure",
@@ -185,8 +185,7 @@
     "Directory.Build.props",
     "Directory.Build.targets"
   ],
-  "transitive": 4,
-  "ambient": [
+  "eavesdroppingMembers": [
     "System.DateTime.Now",
     "System.DateTime.UtcNow",
     "System.DateTime.Today",
@@ -203,20 +202,21 @@
     "System.Diagnostics.Stopwatch"
   ],
   "ceilings": {
-    "cross:Llyn.UIDeportment>Llyn.Application": 0,
-    "cross:Llyn.UIDeportment>Llyn.Core": 0,
-    "cross:Llyn.UIDeportment>Llyn.ShellEngine": 0,
-    "expose:Llyn.UIDemeanor>Llyn.Core": 1,
-    "expose:Llyn.UIDemeanor>Llyn.ShellEngine": 1,
-    "expose:Llyn.UIDeportment>Llyn.Core": 1,
-    "expose:Llyn.UIDeportment>Llyn.ShellEngine": 1,
-    "reach:Llyn.Conduct>Llyn.Core": 0,
-    "reach:Llyn.ShellEngine>Llyn.Core": 15,
-    "seal:Llyn.UIDeportment>Llyn.Application": 0,
-    "seal:Llyn.UIDeportment>Llyn.Core": 0,
-    "seal:Llyn.UIDeportment>Llyn.ShellEngine": 0
+    "Leaking:Llyn.UIDemeanor>Llyn.Core": 1,
+    "Leaking:Llyn.UIDemeanor>Llyn.ShellEngine": 1,
+    "Leaking:Llyn.UIDeportment>Llyn.Core": 1,
+    "Leaking:Llyn.UIDeportment>Llyn.ShellEngine": 1,
+    "Leapfrogging:Llyn.Conduct>Llyn.Core": 0,
+    "Leapfrogging:Llyn.ShellEngine>Llyn.Core": 15,
+    "Piggybacking": 4,
+    "Undercutting:Llyn.UIDeportment>Llyn.Application": 0,
+    "Undercutting:Llyn.UIDeportment>Llyn.Core": 0,
+    "Undercutting:Llyn.UIDeportment>Llyn.ShellEngine": 0,
+    "Unsealing:Llyn.UIDeportment>Llyn.Application": 0,
+    "Unsealing:Llyn.UIDeportment>Llyn.Core": 0,
+    "Unsealing:Llyn.UIDeportment>Llyn.ShellEngine": 0
   },
-  "surface": {
+  "offers": {
     "Llyn.Conduct>Llyn.ShellEngine": [
       "LDraftPort",
       "LEntryPort",
@@ -534,27 +534,27 @@
       "CReference"
     ]
   },
-  "seal": {
+  "unsealingPrefixes": {
     "Llyn.UIDeportment": [
       "L"
     ]
   },
-  "floor": {
+  "hollowingFloors": {
     "Llyn.Application": 91
   },
-  "stray": {
+  "squattingPatterns": {
     "Llyn.Core": [
       "^LRequest"
     ]
   },
-  "banned": {
+  "smugglingWords": {
     "src/Llyn.ShellEngine": [
       "LVaultSessionStart"
     ]
   },
   "exempt": {
-    "chain": [],
-    "frame": []
+    "border": [],
+    "purity": []
   },
   "report": {
     "directory": "docs-work/audit",

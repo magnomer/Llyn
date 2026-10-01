@@ -4,21 +4,21 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Convention.Tests;
 
-internal static class TAuditTreatWalker
+internal static class TAuditMoonlightingWalker
 {
     public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> sourcePaths)
     {
         List<TViolation> violations = [];
         foreach (SyntaxNode root in TAuditBinder.TAuditWalkRead(sourcePaths).Where(TAuditBinder.TAuditWalkCheck))
         {
-            TAuditStrictWalker.TAuditGlyphScan(root, violations);
-            TAuditTreatScan(root, violations);
+            TAuditStrictWalker.TAuditHomoglyphScan(root, violations);
+            TAuditMoonlightingScan(root, violations);
         }
 
         return violations;
     }
 
-    private static void TAuditTreatScan(SyntaxNode root, List<TViolation> violations)
+    private static void TAuditMoonlightingScan(SyntaxNode root, List<TViolation> violations)
     {
         HashSet<string> seen = new(StringComparer.Ordinal);
         foreach (SyntaxNode node in root.DescendantNodes())
@@ -36,7 +36,7 @@ internal static class TAuditTreatWalker
                              || TAuditStrictWalker.TAuditDataCheck(binary.Right))
                     => $"logic value in {binary.OperatorToken.ValueText}",
                 InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax access } query
-                    when TAuditTruthSetting.TAuditTreatVerbs.Contains(
+                    when TAuditTruthSetting.TAuditMoonlightingVerbs.Contains(
                              access.Name.Identifier.ValueText, StringComparer.Ordinal)
                          && (TAuditStrictWalker.TAuditDataCheck(access.Expression)
                              || query.ArgumentList.Arguments.Any(argument =>
@@ -68,7 +68,7 @@ internal static class TAuditTreatWalker
             if (seen.Add($"{line}:{reason}"))
             {
                 string excerpt = node.ToString().Split('\n')[0].Trim();
-                violations.Add(new TViolation(root.SyntaxTree.FilePath, line, excerpt, "Treat", reason));
+                violations.Add(new TViolation(root.SyntaxTree.FilePath, line, excerpt, "Moonlighting", reason));
             }
         }
     }

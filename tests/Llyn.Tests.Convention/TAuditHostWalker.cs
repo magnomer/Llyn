@@ -48,7 +48,7 @@ internal static class TAuditHostWalker
                         line,
                         owner is null ? Path.GetFileNameWithoutExtension(root.SyntaxTree.FilePath)
                             : TAuditStrictWalker.TAuditMemberRead(owner),
-                        "Wiring",
+                        "Overworking",
                         $"{breach.Kind()} where only construction and wiring may stand"));
                 }
             }

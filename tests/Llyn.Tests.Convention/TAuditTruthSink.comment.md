@@ -9,19 +9,19 @@ The sink half of the truth walker: where a driver value may not go.
 Walks up from the reference to the member and names the first sink met.
 A reference that is only the receiver of a member access is not a sink.
 The owner of that member audits its own field.
-The target of `?.` whose tail requests is a guard, since its presence decides the request.
+The target of `?.` whose tail requests is gatekeeping, since its presence decides the request.
 An argument of a logic call, a record copy or a logic construction is an argument sink.
-The condition of an if, ternary or switch whose branch requests is a guard sink.
+The condition of an if, ternary or switch whose branch requests is a gatekeeping sink.
 So is the condition of a while, do or for loop whose body requests.
 So is a `when` clause on a switch arm or a catch that requests.
 So is the left side of `&&`, `||` or `??` whose right side requests.
-A condition that only tests for null or for a type is not a guard sink.
+A condition that only tests for null or for a type is not a gatekeeping sink.
 
-## `private static bool TAuditGuardCheck(IfStatementSyntax branch)`
+## `private static bool TAuditGatekeepingCheck(IfStatementSyntax branch)`
 
 True when a branch requests, or when the branch jumps out and the member requests from its condition on.
-A request before the branch runs whatever the branch decides, so it is not guarded.
-A condition that only tests presence decides nothing the engine holds and is never a guard.
+A request before the branch runs whatever the branch decides, so it is not gatekeeping.
+A condition that only tests presence decides nothing the engine holds and is never gatekeeping.
 
 ## `private static bool TAuditPresenceCheck(ExpressionSyntax condition)`
 

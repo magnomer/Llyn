@@ -30,7 +30,7 @@ internal static class TAuditStrictWalker
 
             if (TAuditVeneerCheck(root))
             {
-                TAuditGlyphScan(root, violations);
+                TAuditHomoglyphScan(root, violations);
                 TAuditPlainScan(root, violations);
             }
         }
@@ -46,12 +46,12 @@ internal static class TAuditStrictWalker
 
             foreach (TypeDeclarationSyntax part in type)
             {
-                TAuditStorageScan(part, veneer, violations);
+                TAuditHoardingScan(part, veneer, violations);
                 if (veneer)
                 {
-                    TAuditCallScan(part.Identifier.ValueText, part.Members, violations);
+                    TAuditMeddlingScan(part.Identifier.ValueText, part.Members, violations);
                     TAuditEngineScan(part, part.Identifier.ValueText, violations);
-                    TAuditShellScan(part, violations);
+                    TAuditFreelancingScan(part, violations);
                 }
             }
         }
@@ -80,7 +80,7 @@ internal static class TAuditStrictWalker
                         member.SyntaxTree.FilePath,
                         TAuditLineRead(member),
                         $"{owner}.{member.Identifier.ValueText}",
-                        "Call",
+                        "Meddling",
                         $"{value.Kind()} where only a call may stand"));
                 }
             }
@@ -92,7 +92,7 @@ internal static class TAuditStrictWalker
         }
     }
 
-    private static void TAuditStorageScan(TypeDeclarationSyntax part, bool veneer, List<TViolation> violations)
+    private static void TAuditHoardingScan(TypeDeclarationSyntax part, bool veneer, List<TViolation> violations)
     {
         string owner = part.Identifier.ValueText;
         foreach (BaseFieldDeclarationSyntax field in part.Members.OfType<BaseFieldDeclarationSyntax>())
@@ -114,7 +114,7 @@ internal static class TAuditStrictWalker
                     field.SyntaxTree.FilePath,
                     TAuditLineRead(variable),
                     $"{owner}.{variable.Identifier.ValueText}",
-                    veneer ? "Storage" : "Static",
+                    veneer ? "Hoarding" : "Sharing",
                     reason));
             }
         }
@@ -131,7 +131,7 @@ internal static class TAuditStrictWalker
                 property.SyntaxTree.FilePath,
                 TAuditLineRead(property),
                 $"{owner}.{property.Identifier.ValueText}",
-                "Storage",
+                "Hoarding",
                 "auto-property in a surface type"));
         }
 
@@ -141,12 +141,12 @@ internal static class TAuditStrictWalker
                 parameter.SyntaxTree.FilePath,
                 TAuditLineRead(parameter),
                 $"{owner}.{parameter.Identifier.ValueText}",
-                "Storage",
+                "Hoarding",
                 "primary constructor parameter in a surface type"));
         }
     }
 
-    private static void TAuditShellScan(TypeDeclarationSyntax part, List<TViolation> violations)
+    private static void TAuditFreelancingScan(TypeDeclarationSyntax part, List<TViolation> violations)
     {
         string owner = part.Identifier.ValueText;
         foreach (MemberDeclarationSyntax member in part.Members.Where(member =>
@@ -157,7 +157,7 @@ internal static class TAuditStrictWalker
                 member.SyntaxTree.FilePath,
                 TAuditLineRead(member),
                 $"{owner}.{TAuditMemberRead(member)}",
-                "Shell",
+                "Freelancing",
                 $"{member.Kind()} where only a constructor may stand"));
         }
     }
@@ -169,7 +169,7 @@ internal static class TAuditStrictWalker
                && accessors.Accessors.All(accessor => accessor.Body is null && accessor.ExpressionBody is null);
     }
 
-    private static void TAuditCallScan(
+    private static void TAuditMeddlingScan(
         string owner, IEnumerable<MemberDeclarationSyntax> members, List<TViolation> violations)
     {
         foreach (MemberDeclarationSyntax member in members)
@@ -190,7 +190,7 @@ internal static class TAuditStrictWalker
                         member.SyntaxTree.FilePath,
                         line,
                         $"{owner}.{TAuditMemberRead(member)}",
-                        "Call",
+                        "Meddling",
                         $"{breach.Kind()} where only a call may stand"));
                 }
             }
@@ -357,12 +357,12 @@ internal static class TAuditStrictWalker
                 part.SyntaxTree.FilePath,
                 line,
                 $"{owner}.{label}",
-                "Depth",
+                "Prying",
                 $"names {name.Identifier.ValueText} from below the driver"));
         }
     }
 
-    public static void TAuditGlyphScan(SyntaxNode root, List<TViolation> violations)
+    public static void TAuditHomoglyphScan(SyntaxNode root, List<TViolation> violations)
     {
         foreach (SyntaxToken token in root.DescendantTokens())
         {
@@ -375,7 +375,7 @@ internal static class TAuditStrictWalker
                 root.SyntaxTree.FilePath,
                 TAuditLineRead(token.Parent ?? root),
                 token.ValueText,
-                "Glyph",
+                "Homoglyph",
                 "identifier carries a non-ASCII glyph"));
         }
     }

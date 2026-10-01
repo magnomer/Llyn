@@ -46,22 +46,22 @@ So a deeper binding cannot pass by coincidence.
 ## `public const string TAuditVeneerNamespace = "Llyn.UIVeneer";`
 
 The namespace of the surface types.
-An `x:Class` in the surface markup naming a type outside it is a hook.
+An `x:Class` in the surface markup naming a type outside it is tethering.
 
 ## `public const string TAuditContractType = "QContract";`
 
 The name of Deportment's only door to the scaffold.
 Every string argument of a call on it is a contract ID.
 
-## `public static readonly string[] TAuditPackMarkers`
+## `public static readonly string[] TAuditHardwiringMarkers`
 
 A driver line holding one of these texts names the Veneer.
 They match as plain text, string literals included, since a pack URI is a literal.
 
-## `public static readonly string[] TAuditScaffoldTypes`
+## `public static readonly string[] TAuditMasqueradingTypes`
 
 The WPF types the scaffold derives from.
-A driver type with one of them among its base types is scaffold.
+A driver type with one of them among its base types is masquerading.
 
 ## `public static readonly string[] TAuditContractIds`
 
@@ -92,41 +92,41 @@ The patterns name the types, so the console's `TextReader` and `TextWriter` pass
 The driver files exempt from the disk scan by name.
 Empty: no driver file names the file system.
 
-## `public static readonly string[] TAuditReachNamespaces`
+## `public static readonly string[] TAuditOverreachingNamespaces`
 
 The namespaces below the driver that a markup file may not map, since a mapping lets a binding reach them.
 
-## `public static readonly string[] TAuditTriggerElements`
+## `public static readonly string[] TAuditBranchingElements`
 
 The markup elements that branch on a condition or switch between visual states.
 
-## `public static readonly string[] TAuditTriggerSlots`
+## `public static readonly string[] TAuditBranchingSlots`
 
 The binding slots that convert, format, fall back, select a template or validate.
 Each is a computation in the markup, whether set as an attribute, inside an extension or as a property element.
 
-## `public static readonly string[] TAuditHookElements`
+## `public static readonly string[] TAuditTetheringElements`
 
 The markup elements that bind a value, a command or an input to logic.
 
-## `public static readonly string[] TAuditHookSlots`
+## `public static readonly string[] TAuditTetheringSlots`
 
-The attributes that hook logic, whether set as an attribute, as a property element or through a `Setter`.
+The attributes that tether logic, whether set as an attribute, as a property element or through a `Setter`.
 The command slots, `DisplayMemberPath` and `SelectedValuePath` all name what code reads.
 
-## `public static readonly string[] TAuditHookLiterals`
+## `public static readonly string[] TAuditTetheringLiterals`
 
-The attributes that hook only when set to a plain literal, directly or through a `Setter`.
+The attributes that tether only when set to a plain literal, directly or through a `Setter`.
 `Tag` is one, since code branches on a literal tag.
 A value opening a markup extension is left to the extension rules.
-The script reads the same list from `hookLiterals` in `auditui.json`.
+The script reads the same list from `tetheringLiterals` in `auditui.json`.
 
-## `public static readonly string[] TAuditHookExtensions`
+## `public static readonly string[] TAuditTetheringExtensions`
 
 The markup extensions that bind to logic or read a code member.
-A markup extension whose prefix maps a code namespace is a hook without being listed.
+A markup extension whose prefix maps a code namespace is tethering without being listed.
 
-## `public static readonly string[] TAuditHookTypes`
+## `public static readonly string[] TAuditTetheringTypes`
 
 The converter and selector types a markup element may not be.
 An element is one when its type or a base type is listed or implements a listed interface.

@@ -15,11 +15,11 @@ TAuditBoundary. It never reads, runs or depends on the test project: the rules l
 and the ceilings in auditui.ledger.json. The tests and this script audit the same ground truth, so
 each tells the truth when the other is broken.
 
-  Strict    the surfaces and the host: Storage, Static, Call, Depth, Reach, Trigger, Glyph, Wiring,
-            Hook, Shell, the drivers' Pack, Scaffold and Contract, plus driver disk lines, surface
-            catalog lines and their exemptions.
-  Truth     the drivers: Argument, Guard, Fork, Mirror, Mutation, Shape, Treat, Glyph, Taint, Feed,
-            Parity.
+  Strict    the surfaces and the host: Hoarding, Sharing, Meddling, Prying, Overreaching, Branching,
+            Homoglyph, Overworking, Tethering, Freelancing, the drivers' Hardwiring, Masquerading and
+            Dangling, plus driver disk lines, surface catalog lines and their exemptions.
+  Truth     the drivers: Replaying, Gatekeeping, Contesting, Duplicating, Tampering, Misfiring,
+            Moonlighting, Homoglyph, Laundering, Spoonfeeding, Mismatching.
   Boundary  the guards that keep the walkers sound: state builds and compares, hidden code,
             reflection, skipped sources, logic panels, hold timers and stale list rows.
 
@@ -60,7 +60,7 @@ auditui -Open
 auditui -Configuration Release
 #>
 #requires -Version 5.1
-# AUDITUI GENERATION 16 - auditui.ps1.
+# AUDITUI GENERATION 17 - auditui.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -81,7 +81,9 @@ auditui -Configuration Release
 # a driver type deriving from a scaffold type, and a contract ID the surface markup never names.
 # An x:Class in surface markup is a hook unless it names a surface type.
 # Generation 16: nothing this audit reports changes; the number rises with the structure audit, whose
-# seal check counts engine types on the public members of sealed Deportment types.
+# Unsealing kind counts engine types on the public members of sealed Deportment types.
+# Generation 17: findings take one vocabulary of -ing kinds and plain measure names, and the
+# configuration keys follow. What the audit counts is unchanged.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -184,7 +186,7 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 16
+$script:AuditGeneration = 17
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
 
@@ -444,8 +446,10 @@ internal sealed record LAuditKindRow(
 internal sealed class LAuditStrictRun
 {
     public static readonly string[] LAuditKinds =
-        ["Storage", "Static", "Call", "Depth", "Reach", "Trigger", "Glyph", "Wiring", "Hook", "Shell", "Pack",
-            "Scaffold", "Contract"];
+        [
+            "Hoarding", "Sharing", "Meddling", "Prying", "Overreaching", "Branching", "Homoglyph",
+            "Overworking", "Tethering", "Freelancing", "Hardwiring", "Masquerading", "Dangling",
+        ];
 
     private static readonly Regex LAuditLiteralPattern = new(
         @"@?""(?:[^""\\]|\\.)*""|//.*$",
@@ -540,9 +544,13 @@ internal sealed class LAuditStrictRun
 internal sealed class LAuditTruthRun
 {
     public static readonly string[] LAuditKinds =
-        ["Argument", "Guard", "Fork", "Mirror", "Mutation", "Shape", "Treat", "Glyph", "Taint", "Feed", "Parity"];
+        [
+            "Replaying", "Gatekeeping", "Contesting", "Duplicating", "Tampering", "Misfiring", "Moonlighting",
+            "Homoglyph", "Laundering", "Spoonfeeding", "Mismatching",
+        ];
 
-    public static readonly string[] LAuditLineKinds = ["Mutation", "Treat", "Glyph", "Taint", "Feed", "Parity"];
+    public static readonly string[] LAuditLineKinds =
+        ["Tampering", "Moonlighting", "Homoglyph", "Laundering", "Spoonfeeding", "Mismatching"];
 
     public required IReadOnlyList<LViolation> LAuditHits { get; init; }
 
@@ -559,8 +567,8 @@ internal sealed class LAuditTruthRun
 
         IReadOnlySet<ISymbol> readers = LAuditTruthWalker.LAuditReaderRead(sources);
         List<LViolation> hits = LAuditTruthWalker.LAuditRun(sources)
-            .Concat(LAuditTreatWalker.LAuditRun(sources))
-            .Concat(LAuditTaintWalker.LAuditRun(sources, readers))
+            .Concat(LAuditMoonlightingWalker.LAuditRun(sources))
+            .Concat(LAuditLaunderingWalker.LAuditRun(sources, readers))
             .Select(hit => hit with
             {
                 LViolationPath = Path.GetRelativePath(repoRoot, hit.LViolationPath).Replace('\\', '/')
@@ -854,13 +862,13 @@ internal static class LAuditReport
             text.Append("```\n");
         }
 
-        text.Append("\n## Surface types by member\n\n| Class | Storage | Call | Depth |\n|---|---|---|---|\n");
+        text.Append("\n## Surface types by member\n\n| Class | Hoarding | Meddling | Prying |\n|---|---|---|---|\n");
         foreach (string veneer in strict.LAuditVeneers)
         {
-            int storage = LAuditClassRead(strict.LAuditHits, veneer, "Storage");
-            int call = LAuditClassRead(strict.LAuditHits, veneer, "Call");
-            int depth = LAuditClassRead(strict.LAuditHits, veneer, "Depth");
-            text.Append($"| {veneer} | {storage} | {call} | {depth} |\n");
+            int hoarding = LAuditClassRead(strict.LAuditHits, veneer, "Hoarding");
+            int meddling = LAuditClassRead(strict.LAuditHits, veneer, "Meddling");
+            int prying = LAuditClassRead(strict.LAuditHits, veneer, "Prying");
+            text.Append($"| {veneer} | {hoarding} | {meddling} | {prying} |\n");
         }
 
         text.Append("\n## Driver fields by hit count\n\n| Field | Hits |\n|---|---|\n");
@@ -904,8 +912,8 @@ internal static class LAuditReport
 }
 '@
 
-# The walkers: the binder queries, the settings and the strict, host, reach, truth, treat and
-# taint walkers, each one rule for rule the counterpart of its convention-test counterpart.
+# The walkers: the binder queries, the settings and the strict, host, reach, truth, moonlighting
+# and laundering walkers, each one rule for rule the counterpart of its convention-test counterpart.
 $script:HelperWalker = @'
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -1229,15 +1237,16 @@ internal static class LAuditSettingRead
         ["strict"] =
         [
             "enforced", "reachInclude", "veneerInclude", "deportmentInclude", "hostInclude", "deportmentNamespace",
-            "queryTypes", "catalogPatterns", "catalogExempt", "diskPatterns", "diskExempt", "reachNamespaces",
-            "triggerElements", "triggerSlots", "hookElements", "hookSlots", "hookExtensions", "hookTypes",
-            "hookLiterals", "veneerNamespace", "contractType", "packMarkers", "scaffoldTypes", "contractIds"
+            "queryTypes", "catalogPatterns", "catalogExempt", "diskPatterns", "diskExempt",
+            "overreachingNamespaces", "branchingElements", "branchingSlots", "tetheringElements", "tetheringSlots",
+            "tetheringExtensions", "tetheringTypes", "tetheringLiterals", "veneerNamespace", "contractType",
+            "hardwiringMarkers", "masqueradingTypes", "contractIds"
         ],
         ["truth"] =
         [
             "enforced", "stateSuffix", "bulletinType", "conductRoot", "shellInclude", "truthInclude", "controlBases",
             "orderVerbs", "fillVerbs", "requestPrefix", "sendRoots", "clockTypes", "consoleInput", "dialogTypes",
-            "delayMembers", "inputMembers", "truthHandles", "treatVerbs"
+            "delayMembers", "inputMembers", "truthHandles", "moonlightingVerbs"
         ],
         ["boundary"] =
         [
@@ -1288,18 +1297,18 @@ internal static class LAuditSettingRead
         LAuditStrictSetting.LAuditCatalogExempt = LAuditListRead(strict, "catalogExempt");
         LAuditStrictSetting.LAuditDiskPatterns = LAuditListRead(strict, "diskPatterns");
         LAuditStrictSetting.LAuditDiskExempt = LAuditListRead(strict, "diskExempt");
-        LAuditStrictSetting.LAuditReachNamespaces = LAuditListRead(strict, "reachNamespaces");
-        LAuditStrictSetting.LAuditTriggerElements = LAuditListRead(strict, "triggerElements");
-        LAuditStrictSetting.LAuditTriggerSlots = LAuditListRead(strict, "triggerSlots");
-        LAuditStrictSetting.LAuditHookElements = LAuditListRead(strict, "hookElements");
-        LAuditStrictSetting.LAuditHookSlots = LAuditListRead(strict, "hookSlots");
-        LAuditStrictSetting.LAuditHookExtensions = LAuditListRead(strict, "hookExtensions");
-        LAuditStrictSetting.LAuditHookTypes = LAuditListRead(strict, "hookTypes");
-        LAuditStrictSetting.LAuditHookLiterals = LAuditListRead(strict, "hookLiterals");
+        LAuditStrictSetting.LAuditOverreachingNamespaces = LAuditListRead(strict, "overreachingNamespaces");
+        LAuditStrictSetting.LAuditBranchingElements = LAuditListRead(strict, "branchingElements");
+        LAuditStrictSetting.LAuditBranchingSlots = LAuditListRead(strict, "branchingSlots");
+        LAuditStrictSetting.LAuditTetheringElements = LAuditListRead(strict, "tetheringElements");
+        LAuditStrictSetting.LAuditTetheringSlots = LAuditListRead(strict, "tetheringSlots");
+        LAuditStrictSetting.LAuditTetheringExtensions = LAuditListRead(strict, "tetheringExtensions");
+        LAuditStrictSetting.LAuditTetheringTypes = LAuditListRead(strict, "tetheringTypes");
+        LAuditStrictSetting.LAuditTetheringLiterals = LAuditListRead(strict, "tetheringLiterals");
         LAuditStrictSetting.LAuditVeneerNamespace = strict.GetProperty("veneerNamespace").GetString()!;
         LAuditStrictSetting.LAuditContractType = strict.GetProperty("contractType").GetString()!;
-        LAuditStrictSetting.LAuditPackMarkers = LAuditListRead(strict, "packMarkers");
-        LAuditStrictSetting.LAuditScaffoldTypes = LAuditListRead(strict, "scaffoldTypes");
+        LAuditStrictSetting.LAuditHardwiringMarkers = LAuditListRead(strict, "hardwiringMarkers");
+        LAuditStrictSetting.LAuditMasqueradingTypes = LAuditListRead(strict, "masqueradingTypes");
         LAuditStrictSetting.LAuditContractIds = LAuditListRead(strict, "contractIds");
 
         JsonElement truth = config.GetProperty("truth");
@@ -1320,7 +1329,7 @@ internal static class LAuditSettingRead
         LAuditTruthSetting.LAuditDelayMembers = LAuditListRead(truth, "delayMembers");
         LAuditTruthSetting.LAuditInputMembers = LAuditListRead(truth, "inputMembers");
         LAuditTruthSetting.LAuditTruthHandles = LAuditListRead(truth, "truthHandles");
-        LAuditTruthSetting.LAuditTreatVerbs = LAuditListRead(truth, "treatVerbs");
+        LAuditTruthSetting.LAuditMoonlightingVerbs = LAuditListRead(truth, "moonlightingVerbs");
 
         JsonElement boundary = config.GetProperty("boundary");
         LAuditBoundarySetting.LAuditBoundaryForbidden = LAuditListRead(boundary, "forbidden");
@@ -1353,18 +1362,18 @@ internal static class LAuditStrictSetting
     public static string[] LAuditCatalogExempt = [];
     public static string[] LAuditDiskPatterns = [];
     public static string[] LAuditDiskExempt = [];
-    public static string[] LAuditReachNamespaces = [];
-    public static string[] LAuditTriggerElements = [];
-    public static string[] LAuditTriggerSlots = [];
-    public static string[] LAuditHookElements = [];
-    public static string[] LAuditHookSlots = [];
-    public static string[] LAuditHookExtensions = [];
-    public static string[] LAuditHookTypes = [];
-    public static string[] LAuditHookLiterals = [];
+    public static string[] LAuditOverreachingNamespaces = [];
+    public static string[] LAuditBranchingElements = [];
+    public static string[] LAuditBranchingSlots = [];
+    public static string[] LAuditTetheringElements = [];
+    public static string[] LAuditTetheringSlots = [];
+    public static string[] LAuditTetheringExtensions = [];
+    public static string[] LAuditTetheringTypes = [];
+    public static string[] LAuditTetheringLiterals = [];
     public static string LAuditVeneerNamespace = "";
     public static string LAuditContractType = "";
-    public static string[] LAuditPackMarkers = [];
-    public static string[] LAuditScaffoldTypes = [];
+    public static string[] LAuditHardwiringMarkers = [];
+    public static string[] LAuditMasqueradingTypes = [];
     public static string[] LAuditContractIds = [];
 }
 
@@ -1377,33 +1386,33 @@ internal static class LAuditContractWalker
         IReadOnlySet<string> ids = LAuditIdRead(markupPaths);
         foreach (string path in driverPaths)
         {
-            LAuditPackScan(path, violations);
+            LAuditHardwiringScan(path, violations);
         }
 
         foreach (SyntaxNode root in LAuditBind.LAuditWalkRead(driverPaths))
         {
-            LAuditScaffoldScan(root, violations);
-            LAuditContractScan(root, ids, violations);
+            LAuditMasqueradingScan(root, violations);
+            LAuditDanglingScan(root, ids, violations);
         }
 
         return violations;
     }
 
-    private static void LAuditPackScan(string path, List<LViolation> violations)
+    private static void LAuditHardwiringScan(string path, List<LViolation> violations)
     {
         string[] lines = File.ReadAllLines(path);
         for (int index = 0; index < lines.Length; index++)
         {
-            string? marker = LAuditStrictSetting.LAuditPackMarkers
+            string? marker = LAuditStrictSetting.LAuditHardwiringMarkers
                 .FirstOrDefault(item => lines[index].Contains(item, StringComparison.Ordinal));
             if (marker is not null)
             {
-                violations.Add(new LViolation(path, index + 1, marker, "Pack", "driver line names the surface"));
+                violations.Add(new LViolation(path, index + 1, marker, "Hardwiring", "driver line names the surface"));
             }
         }
     }
 
-    private static void LAuditScaffoldScan(SyntaxNode root, List<LViolation> violations)
+    private static void LAuditMasqueradingScan(SyntaxNode root, List<LViolation> violations)
     {
         foreach (TypeDeclarationSyntax type in root.DescendantNodes().OfType<TypeDeclarationSyntax>())
         {
@@ -1415,13 +1424,13 @@ internal static class LAuditContractWalker
             for (INamedTypeSymbol? shape = symbol.BaseType; shape is not null; shape = shape.BaseType)
             {
                 string name = shape.OriginalDefinition.ToDisplayString();
-                if (LAuditStrictSetting.LAuditScaffoldTypes.Contains(name, StringComparer.Ordinal))
+                if (LAuditStrictSetting.LAuditMasqueradingTypes.Contains(name, StringComparer.Ordinal))
                 {
                     violations.Add(new LViolation(
                         type.SyntaxTree.FilePath,
                         type.Identifier.GetLocation().GetLineSpan().StartLinePosition.Line + 1,
                         type.Identifier.ValueText,
-                        "Scaffold",
+                        "Masquerading",
                         $"driver type derives from {name}"));
                     break;
                 }
@@ -1429,7 +1438,7 @@ internal static class LAuditContractWalker
         }
     }
 
-    private static void LAuditContractScan(SyntaxNode root, IReadOnlySet<string> ids, List<LViolation> violations)
+    private static void LAuditDanglingScan(SyntaxNode root, IReadOnlySet<string> ids, List<LViolation> violations)
     {
         SemanticModel model = LAuditBind.LAuditModelRead(root);
         foreach (InvocationExpressionSyntax call in root.DescendantNodes().OfType<InvocationExpressionSyntax>())
@@ -1452,13 +1461,13 @@ internal static class LAuditContractWalker
                 if (constant is not { HasValue: true, Value: string id })
                 {
                     violations.Add(new LViolation(
-                        call.SyntaxTree.FilePath, line, argument.Expression.ToString(), "Contract",
+                        call.SyntaxTree.FilePath, line, argument.Expression.ToString(), "Dangling",
                         "contract ID is not a constant"));
                 }
                 else if (!ids.Contains(id))
                 {
                     violations.Add(new LViolation(
-                        call.SyntaxTree.FilePath, line, id, "Contract",
+                        call.SyntaxTree.FilePath, line, id, "Dangling",
                         "contract ID has no element or resource in the surface"));
                 }
             }
@@ -1510,7 +1519,7 @@ internal static class LAuditTruthSetting
     public static string[] LAuditDelayMembers = [];
     public static string[] LAuditInputMembers = [];
     public static string[] LAuditTruthHandles = [];
-    public static string[] LAuditTreatVerbs = [];
+    public static string[] LAuditMoonlightingVerbs = [];
 }
 
 internal static class LAuditBoundarySetting
@@ -1571,7 +1580,7 @@ internal static class LAuditStrictWalker
 
             if (LAuditVeneerCheck(root))
             {
-                LAuditGlyphScan(root, violations);
+                LAuditHomoglyphScan(root, violations);
                 LAuditPlainScan(root, violations);
             }
         }
@@ -1587,12 +1596,12 @@ internal static class LAuditStrictWalker
 
             foreach (TypeDeclarationSyntax part in type)
             {
-                LAuditStorageScan(part, veneer, violations);
+                LAuditHoardingScan(part, veneer, violations);
                 if (veneer)
                 {
-                    LAuditCallScan(part.Identifier.ValueText, part.Members, violations);
+                    LAuditMeddlingScan(part.Identifier.ValueText, part.Members, violations);
                     LAuditEngineScan(part, part.Identifier.ValueText, violations);
-                    LAuditShellScan(part, violations);
+                    LAuditFreelancingScan(part, violations);
                 }
             }
         }
@@ -1621,7 +1630,7 @@ internal static class LAuditStrictWalker
                         member.SyntaxTree.FilePath,
                         LAuditLineRead(member),
                         $"{owner}.{member.Identifier.ValueText}",
-                        "Call",
+                        "Meddling",
                         $"{value.Kind()} where only a call may stand"));
                 }
             }
@@ -1633,7 +1642,7 @@ internal static class LAuditStrictWalker
         }
     }
 
-    private static void LAuditStorageScan(TypeDeclarationSyntax part, bool veneer, List<LViolation> violations)
+    private static void LAuditHoardingScan(TypeDeclarationSyntax part, bool veneer, List<LViolation> violations)
     {
         string owner = part.Identifier.ValueText;
         foreach (BaseFieldDeclarationSyntax field in part.Members.OfType<BaseFieldDeclarationSyntax>())
@@ -1655,7 +1664,7 @@ internal static class LAuditStrictWalker
                     field.SyntaxTree.FilePath,
                     LAuditLineRead(variable),
                     $"{owner}.{variable.Identifier.ValueText}",
-                    veneer ? "Storage" : "Static",
+                    veneer ? "Hoarding" : "Sharing",
                     reason));
             }
         }
@@ -1672,7 +1681,7 @@ internal static class LAuditStrictWalker
                 property.SyntaxTree.FilePath,
                 LAuditLineRead(property),
                 $"{owner}.{property.Identifier.ValueText}",
-                "Storage",
+                "Hoarding",
                 "auto-property in a surface type"));
         }
 
@@ -1682,12 +1691,12 @@ internal static class LAuditStrictWalker
                 parameter.SyntaxTree.FilePath,
                 LAuditLineRead(parameter),
                 $"{owner}.{parameter.Identifier.ValueText}",
-                "Storage",
+                "Hoarding",
                 "primary constructor parameter in a surface type"));
         }
     }
 
-    private static void LAuditShellScan(TypeDeclarationSyntax part, List<LViolation> violations)
+    private static void LAuditFreelancingScan(TypeDeclarationSyntax part, List<LViolation> violations)
     {
         string owner = part.Identifier.ValueText;
         foreach (MemberDeclarationSyntax member in part.Members.Where(member =>
@@ -1698,7 +1707,7 @@ internal static class LAuditStrictWalker
                 member.SyntaxTree.FilePath,
                 LAuditLineRead(member),
                 $"{owner}.{LAuditMemberRead(member)}",
-                "Shell",
+                "Freelancing",
                 $"{member.Kind()} where only a constructor may stand"));
         }
     }
@@ -1710,7 +1719,7 @@ internal static class LAuditStrictWalker
                && accessors.Accessors.All(accessor => accessor.Body is null && accessor.ExpressionBody is null);
     }
 
-    private static void LAuditCallScan(
+    private static void LAuditMeddlingScan(
         string owner, IEnumerable<MemberDeclarationSyntax> members, List<LViolation> violations)
     {
         foreach (MemberDeclarationSyntax member in members)
@@ -1731,7 +1740,7 @@ internal static class LAuditStrictWalker
                         member.SyntaxTree.FilePath,
                         line,
                         $"{owner}.{LAuditMemberRead(member)}",
-                        "Call",
+                        "Meddling",
                         $"{breach.Kind()} where only a call may stand"));
                 }
             }
@@ -1898,12 +1907,12 @@ internal static class LAuditStrictWalker
                 part.SyntaxTree.FilePath,
                 line,
                 $"{owner}.{label}",
-                "Depth",
+                "Prying",
                 $"names {name.Identifier.ValueText} from below the driver"));
         }
     }
 
-    public static void LAuditGlyphScan(SyntaxNode root, List<LViolation> violations)
+    public static void LAuditHomoglyphScan(SyntaxNode root, List<LViolation> violations)
     {
         foreach (SyntaxToken token in root.DescendantTokens())
         {
@@ -1916,7 +1925,7 @@ internal static class LAuditStrictWalker
                 root.SyntaxTree.FilePath,
                 LAuditLineRead(token.Parent ?? root),
                 token.ValueText,
-                "Glyph",
+                "Homoglyph",
                 "identifier carries a non-ASCII glyph"));
         }
     }
@@ -2044,7 +2053,7 @@ internal static class LAuditHostWalker
                         line,
                         owner is null ? Path.GetFileNameWithoutExtension(root.SyntaxTree.FilePath)
                             : LAuditStrictWalker.LAuditMemberRead(owner),
-                        "Wiring",
+                        "Overworking",
                         $"{breach.Kind()} where only construction and wiring may stand"));
                 }
             }
@@ -2155,9 +2164,9 @@ internal static class LAuditReachWalker
         @"x:Static\s+(?:[A-Za-z0-9_]+:)?(L[A-Z][A-Za-z0-9_]*)", RegexOptions.Compiled);
 
     private static readonly Regex LAuditSlotPattern = new(
-        $@"\b({string.Join('|', LAuditStrictSetting.LAuditTriggerSlots)})\s*=", RegexOptions.Compiled);
+        $@"\b({string.Join('|', LAuditStrictSetting.LAuditBranchingSlots)})\s*=", RegexOptions.Compiled);
 
-    private static readonly Regex LAuditHookPattern = new(
+    private static readonly Regex LAuditTetheringPattern = new(
         @"\{\s*(?:([A-Za-z_][\w.]*):)?([A-Za-z_][\w.]*)", RegexOptions.Compiled);
 
     public static IReadOnlyList<LViolation> LAuditRun(IEnumerable<string> markupPaths)
@@ -2174,7 +2183,8 @@ internal static class LAuditReachWalker
             }
             catch (XmlException failure)
             {
-                violations.Add(new LViolation(path, failure.LineNumber, "markup", "Reach", "does not parse as XML"));
+                violations.Add(new LViolation(
+                    path, failure.LineNumber, "markup", "Overreaching", "does not parse as XML"));
                 continue;
             }
 
@@ -2182,78 +2192,79 @@ internal static class LAuditReachWalker
             foreach (XElement element in document.Descendants())
             {
                 LAuditElementScan(path, element, deportment, violations);
-                LAuditHookScan(element, spaces, hooks);
+                LAuditTetheringScan(element, spaces, hooks);
             }
 
             violations.AddRange(hooks.Select(hook => new LViolation(
-                path, hook.Key, hook.Value[0], "Hook", $"line hooks logic into markup: {string.Join(", ", hook.Value)}")));
+                path, hook.Key, hook.Value[0], "Tethering", $"line hooks logic into markup: {string.Join(", ", hook.Value)}")));
         }
 
         return violations;
     }
 
-    private static void LAuditHookScan(
+    private static void LAuditTetheringScan(
         XElement element, Dictionary<string, List<string>> spaces, SortedDictionary<int, List<string>> hooks)
     {
         string name = element.Name.LocalName;
         int line = ((IXmlLineInfo)element).LineNumber;
         string property = name[(name.LastIndexOf('.') + 1)..];
-        if (LAuditStrictSetting.LAuditHookElements.Contains(name, StringComparer.Ordinal)
+        if (LAuditStrictSetting.LAuditTetheringElements.Contains(name, StringComparer.Ordinal)
             || (name.Contains('.', StringComparison.Ordinal)
-                && LAuditStrictSetting.LAuditHookSlots.Contains(property, StringComparer.Ordinal))
-            || LAuditHookCheck(element, spaces))
+                && LAuditStrictSetting.LAuditTetheringSlots.Contains(property, StringComparer.Ordinal))
+            || LAuditTetheringCheck(element, spaces))
         {
-            LAuditHookAdd(hooks, line, name);
+            LAuditTetheringAdd(hooks, line, name);
         }
 
         foreach (XAttribute attribute in element.Attributes().Where(attribute => !attribute.IsNamespaceDeclaration))
         {
             line = ((IXmlLineInfo)attribute).LineNumber;
-            if (LAuditStrictSetting.LAuditHookSlots.Contains(attribute.Name.LocalName, StringComparer.Ordinal))
+            if (LAuditStrictSetting.LAuditTetheringSlots.Contains(attribute.Name.LocalName, StringComparer.Ordinal))
             {
-                LAuditHookAdd(hooks, line, attribute.Name.LocalName);
+                LAuditTetheringAdd(hooks, line, attribute.Name.LocalName);
             }
 
             string shell = LAuditStrictSetting.LAuditVeneerNamespace + ".";
             if (attribute.Name.LocalName == "Class" && !attribute.Value.StartsWith(shell, StringComparison.Ordinal))
             {
-                LAuditHookAdd(hooks, line, "x:Class");
+                LAuditTetheringAdd(hooks, line, "x:Class");
             }
 
             string slot = (element.Attribute("Property")?.Value ?? string.Empty).Trim('(', ')');
             slot = slot[(slot.LastIndexOf('.') + 1)..];
             if (attribute.Name.LocalName == "Property"
-                && LAuditStrictSetting.LAuditHookSlots.Contains(slot, StringComparer.Ordinal))
+                && LAuditStrictSetting.LAuditTetheringSlots.Contains(slot, StringComparer.Ordinal))
             {
-                LAuditHookAdd(hooks, line, slot);
+                LAuditTetheringAdd(hooks, line, slot);
             }
 
             bool literal = !attribute.Value.StartsWith('{');
             if (literal
-                && (LAuditStrictSetting.LAuditHookLiterals.Contains(attribute.Name.LocalName, StringComparer.Ordinal)
+                && (LAuditStrictSetting.LAuditTetheringLiterals.Contains(
+                        attribute.Name.LocalName, StringComparer.Ordinal)
                     || (attribute.Name.LocalName == "Value"
-                        && LAuditStrictSetting.LAuditHookLiterals.Contains(slot, StringComparer.Ordinal))))
+                        && LAuditStrictSetting.LAuditTetheringLiterals.Contains(slot, StringComparer.Ordinal))))
             {
-                LAuditHookAdd(hooks, line, attribute.Name.LocalName == "Value" ? slot : attribute.Name.LocalName);
+                LAuditTetheringAdd(hooks, line, attribute.Name.LocalName == "Value" ? slot : attribute.Name.LocalName);
             }
 
-            foreach (Match match in LAuditHookPattern.Matches(attribute.Value))
+            foreach (Match match in LAuditTetheringPattern.Matches(attribute.Value))
             {
                 string prefix = match.Groups[1].Value;
                 string extension = prefix.Length == 0 ? match.Groups[2].Value : $"{prefix}:{match.Groups[2].Value}";
                 string space = prefix.Length == 0
                     ? string.Empty
                     : element.GetNamespaceOfPrefix(prefix)?.NamespaceName ?? string.Empty;
-                if (LAuditStrictSetting.LAuditHookExtensions.Contains(extension, StringComparer.Ordinal)
+                if (LAuditStrictSetting.LAuditTetheringExtensions.Contains(extension, StringComparer.Ordinal)
                     || space.StartsWith("clr-namespace:", StringComparison.Ordinal))
                 {
-                    LAuditHookAdd(hooks, line, extension);
+                    LAuditTetheringAdd(hooks, line, extension);
                 }
             }
         }
     }
 
-    private static void LAuditHookAdd(SortedDictionary<int, List<string>> hooks, int line, string marker)
+    private static void LAuditTetheringAdd(SortedDictionary<int, List<string>> hooks, int line, string marker)
     {
         if (!hooks.TryGetValue(line, out List<string>? markers))
         {
@@ -2264,7 +2275,7 @@ internal static class LAuditReachWalker
         markers.Add(marker);
     }
 
-    private static bool LAuditHookCheck(XElement element, Dictionary<string, List<string>> spaces)
+    private static bool LAuditTetheringCheck(XElement element, Dictionary<string, List<string>> spaces)
     {
         const string prefix = "clr-namespace:";
         string name = element.Name.LocalName;
@@ -2284,7 +2295,8 @@ internal static class LAuditReachWalker
                  type = type.BaseType)
             {
                 if (type.Interfaces.Append(type).Any(shape =>
-                        LAuditStrictSetting.LAuditHookTypes.Contains(shape.ToDisplayString(), StringComparer.Ordinal)))
+                        LAuditStrictSetting.LAuditTetheringTypes.Contains(
+                            shape.ToDisplayString(), StringComparer.Ordinal)))
                 {
                     return true;
                 }
@@ -2329,7 +2341,7 @@ internal static class LAuditReachWalker
         IReadOnlySet<string> deportment,
         List<LViolation> violations)
     {
-        LAuditTriggerScan(path, element, violations);
+        LAuditBranchingScan(path, element, violations);
         foreach (XAttribute attribute in element.Attributes())
         {
             int line = ((IXmlLineInfo)attribute).LineNumber;
@@ -2353,35 +2365,35 @@ internal static class LAuditReachWalker
         }
     }
 
-    private static void LAuditTriggerScan(string path, XElement element, List<LViolation> violations)
+    private static void LAuditBranchingScan(string path, XElement element, List<LViolation> violations)
     {
         string name = element.Name.LocalName;
         string property = name[(name.LastIndexOf('.') + 1)..];
-        if (LAuditStrictSetting.LAuditTriggerElements.Contains(name, StringComparer.Ordinal))
+        if (LAuditStrictSetting.LAuditBranchingElements.Contains(name, StringComparer.Ordinal))
         {
             violations.Add(new LViolation(
-                path, ((IXmlLineInfo)element).LineNumber, name, "Trigger", "markup branches on a condition"));
+                path, ((IXmlLineInfo)element).LineNumber, name, "Branching", "markup branches on a condition"));
         }
         else if (name.Contains('.', StringComparison.Ordinal)
-                 && LAuditStrictSetting.LAuditTriggerSlots.Contains(property, StringComparer.Ordinal))
+                 && LAuditStrictSetting.LAuditBranchingSlots.Contains(property, StringComparer.Ordinal))
         {
             violations.Add(new LViolation(
-                path, ((IXmlLineInfo)element).LineNumber, name, "Trigger", $"property element {property} computes"));
+                path, ((IXmlLineInfo)element).LineNumber, name, "Branching", $"property element {property} computes"));
         }
 
         foreach (XAttribute attribute in element.Attributes().Where(attribute => !attribute.IsNamespaceDeclaration))
         {
             int line = ((IXmlLineInfo)attribute).LineNumber;
             string slot = attribute.Name.LocalName;
-            if (LAuditStrictSetting.LAuditTriggerSlots.Contains(slot, StringComparer.Ordinal))
+            if (LAuditStrictSetting.LAuditBranchingSlots.Contains(slot, StringComparer.Ordinal))
             {
-                violations.Add(new LViolation(path, line, slot, "Trigger", $"binding {slot} computes in markup"));
+                violations.Add(new LViolation(path, line, slot, "Branching", $"binding {slot} computes in markup"));
             }
 
             foreach (Match match in LAuditSlotPattern.Matches(attribute.Value))
             {
                 string found = match.Groups[1].Value;
-                violations.Add(new LViolation(path, line, found, "Trigger", $"binding {found} computes in markup"));
+                violations.Add(new LViolation(path, line, found, "Branching", $"binding {found} computes in markup"));
             }
         }
     }
@@ -2395,11 +2407,11 @@ internal static class LAuditReachWalker
         }
 
         string mapped = value[prefix.Length..].Split(';')[0];
-        if (LAuditStrictSetting.LAuditReachNamespaces.Any(space =>
+        if (LAuditStrictSetting.LAuditOverreachingNamespaces.Any(space =>
                 mapped.Equals(space, StringComparison.Ordinal)
                 || mapped.StartsWith(space + ".", StringComparison.Ordinal)))
         {
-            violations.Add(new LViolation(path, line, mapped, "Reach", "maps a logic namespace"));
+            violations.Add(new LViolation(path, line, mapped, "Overreaching", "maps a logic namespace"));
         }
     }
 
@@ -2418,7 +2430,7 @@ internal static class LAuditReachWalker
             named.Add(name);
             if (!deportment.Contains(name))
             {
-                violations.Add(new LViolation(path, line, name, "Reach", "reads a logic constant"));
+                violations.Add(new LViolation(path, line, name, "Overreaching", "reads a logic constant"));
             }
         }
 
@@ -2427,7 +2439,7 @@ internal static class LAuditReachWalker
             string name = match.Groups[1].Value;
             if (named.Add(name) && !deportment.Contains(name))
             {
-                violations.Add(new LViolation(path, line, name, "Reach", $"names logic in {slot}"));
+                violations.Add(new LViolation(path, line, name, "Overreaching", $"names logic in {slot}"));
             }
         }
     }
@@ -2457,11 +2469,11 @@ internal static partial class LAuditTruthWalker
             Dictionary<INamedTypeSymbol, List<TypeDeclarationSyntax>> parts = LAuditPartRead(sourcePaths);
             foreach (SyntaxNode root in LAuditRoots)
             {
-                LAuditMutationScan(root, violations);
-                LAuditShapeScan(root, violations);
+                LAuditTamperingScan(root, violations);
+                LAuditMisfiringScan(root, violations);
             }
 
-            LAuditParityScan(violations);
+            LAuditMismatchingScan(violations);
             foreach (List<TypeDeclarationSyntax> type in parts.Values)
             {
                 LAuditBaseCheck(type, violations);
@@ -2647,18 +2659,18 @@ internal static partial class LAuditTruthWalker
                 field.TFieldPath,
                 field.TFieldLine,
                 field.TFieldName,
-                "Mirror",
+                "Duplicating",
                 $"holds a {field.TFieldType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}"));
         }
         else if (field.TFieldName.EndsWith(LAuditTruthSetting.LAuditStateSuffix, StringComparison.Ordinal))
         {
             violations.Add(new LViolation(
-                field.TFieldPath, field.TFieldLine, field.TFieldName, "Mirror", "names a state the engine owns"));
+                field.TFieldPath, field.TFieldLine, field.TFieldName, "Duplicating", "names a state the engine owns"));
         }
         else if (field.TFieldType.SpecialType == SpecialType.System_Object)
         {
             violations.Add(new LViolation(
-                field.TFieldPath, field.TFieldLine, field.TFieldName, "Mirror", "holds an untyped value"));
+                field.TFieldPath, field.TFieldLine, field.TFieldName, "Duplicating", "holds an untyped value"));
         }
 
         HashSet<MemberDeclarationSyntax> scopes = [];
@@ -2713,7 +2725,7 @@ internal static partial class LAuditTruthWalker
                         reference.SyntaxTree.FilePath,
                         LAuditLineRead(reference),
                         field.TFieldName,
-                        "Mirror",
+                        "Duplicating",
                         "caches a request"));
                 }
 
@@ -2748,7 +2760,7 @@ internal static partial class LAuditTruthWalker
                 plainWrite.SyntaxTree.FilePath,
                 LAuditLineRead(plainWrite),
                 field.TFieldName,
-                "Fork",
+                "Contesting",
                 $"written by the engine at {where} and by the shell here"));
         }
     }
@@ -2948,7 +2960,7 @@ internal static partial class LAuditTruthWalker
                 last.SyntaxTree.FilePath,
                 LAuditLineRead(last),
                 field.TFieldName,
-                "Guard",
+                "Gatekeeping",
                 $"toggled around a request{through}"));
         }
     }
@@ -3005,7 +3017,7 @@ internal static partial class LAuditTruthWalker
                     part.SyntaxTree.FilePath,
                     LAuditLineRead(baseType),
                     part.Identifier.ValueText,
-                    "Mirror",
+                    "Duplicating",
                     $"derives from {symbol.Name}"));
             }
         }
@@ -3166,9 +3178,9 @@ internal static partial class LAuditTruthWalker
 
 internal static partial class LAuditTruthWalker
 {
-    private static void LAuditMutationScan(SyntaxNode root, List<LViolation> violations)
+    private static void LAuditTamperingScan(SyntaxNode root, List<LViolation> violations)
     {
-        LAuditFeedScan(root, violations);
+        LAuditSpoonfeedingScan(root, violations);
         foreach (AssignmentExpressionSyntax assignment in root.DescendantNodes().OfType<AssignmentExpressionSyntax>())
         {
             if (!assignment.IsKind(SyntaxKind.SimpleAssignmentExpression))
@@ -3187,7 +3199,7 @@ internal static partial class LAuditTruthWalker
                     root.SyntaxTree.FilePath,
                     LAuditLineRead(assignment),
                     slot.Expression.ToString(),
-                    "Mutation",
+                    "Tampering",
                     "reorders a collection with a swap"));
                 continue;
             }
@@ -3200,7 +3212,7 @@ internal static partial class LAuditTruthWalker
                     root.SyntaxTree.FilePath,
                     LAuditLineRead(assignment),
                     field.Identifier.ValueText,
-                    "Mutation",
+                    "Tampering",
                     "overrides a logic member in a record copy"));
                 continue;
             }
@@ -3213,7 +3225,7 @@ internal static partial class LAuditTruthWalker
                     root.SyntaxTree.FilePath,
                     LAuditLineRead(assignment),
                     rows.ToString(),
-                    "Mutation",
+                    "Tampering",
                     "overwrites a slot of a row store"));
                 continue;
             }
@@ -3229,7 +3241,7 @@ internal static partial class LAuditTruthWalker
                 root.SyntaxTree.FilePath,
                 LAuditLineRead(assignment),
                 target.ToString(),
-                "Mutation",
+                "Tampering",
                 "assigns a logic member from the shell"));
         }
 
@@ -3247,12 +3259,12 @@ internal static partial class LAuditTruthWalker
                 root.SyntaxTree.FilePath,
                 LAuditLineRead(call),
                 access.Expression.ToString(),
-                "Mutation",
+                "Tampering",
                 $"reorders a collection with {access.Name.Identifier.ValueText}"));
         }
     }
 
-    private static void LAuditFeedScan(SyntaxNode root, List<LViolation> violations)
+    private static void LAuditSpoonfeedingScan(SyntaxNode root, List<LViolation> violations)
     {
         HashSet<string> seen = new(StringComparer.Ordinal);
         foreach (SyntaxNode node in root.DescendantNodes())
@@ -3291,7 +3303,11 @@ internal static partial class LAuditTruthWalker
                 if (seen.Add($"{line}:{shown}"))
                 {
                     violations.Add(new LViolation(
-                        root.SyntaxTree.FilePath, line, value.ToString(), "Feed", $"hands the surface a {shown}"));
+                        root.SyntaxTree.FilePath,
+                        line,
+                        value.ToString(),
+                        "Spoonfeeding",
+                        $"hands the surface a {shown}"));
                 }
             }
         }
@@ -3319,7 +3335,7 @@ internal static partial class LAuditTruthWalker
         return false;
     }
 
-    private static void LAuditParityScan(List<LViolation> violations)
+    private static void LAuditMismatchingScan(List<LViolation> violations)
     {
         IReadOnlyList<string> drivers = LAuditBind.LAuditRootRead(LAuditTruthSetting.LAuditTruthInclude);
         Dictionary<ISymbol, Dictionary<string, List<SyntaxNode>>> calls = new(SymbolEqualityComparer.Default);
@@ -3368,7 +3384,7 @@ internal static partial class LAuditTruthWalker
                     site.SyntaxTree.FilePath,
                     LAuditLineRead(site),
                     LAuditBind.LAuditLabelRead(member),
-                    "Parity",
+                    "Mismatching",
                     $"reaches a Conduct member that {missing} never reaches"));
             }
         }
@@ -3386,7 +3402,7 @@ internal static partial class LAuditTruthWalker
                     place.SourceTree!.FilePath,
                     place.GetLineSpan().StartLinePosition.Line + 1,
                     port.Name,
-                    "Parity",
+                    "Mismatching",
                     $"is a Conduct port no type in {driver} implements"));
             }
         }
@@ -3694,7 +3710,7 @@ internal static partial class LAuditTruthWalker
                         scope.SyntaxTree.FilePath,
                         LAuditLineRead(sends[later]),
                         LAuditMemberRead(scope),
-                        "Shape",
+                        "Misfiring",
                         $"sends a second request after line {LAuditLineRead(sends[earlier])}"));
                     later = sends.Count;
                     break;
@@ -3744,7 +3760,7 @@ internal static partial class LAuditTruthWalker
 
 internal static partial class LAuditTruthWalker
 {
-    private static void LAuditShapeScan(SyntaxNode root, List<LViolation> violations)
+    private static void LAuditMisfiringScan(SyntaxNode root, List<LViolation> violations)
     {
         HashSet<string> seen = new(StringComparer.Ordinal);
         foreach (SyntaxNode node in root.DescendantNodes())
@@ -3752,43 +3768,45 @@ internal static partial class LAuditTruthWalker
             (string LViolationKind, string LViolationName, string LViolationReason)? hit = node switch
             {
                 IfStatementSyntax branch when LAuditControlRead(branch.Condition) is string control
-                                              && LAuditGuardCheck(branch)
-                    => ("Shape", control, "control decides a request in an if"),
+                                              && LAuditGatekeepingCheck(branch)
+                    => ("Misfiring", control, "control decides a request in an if"),
                 ConditionalExpressionSyntax choice when LAuditControlRead(choice.Condition) is string control
                                                         && (LAuditRequestCheck(choice.WhenTrue)
                                                             || LAuditRequestCheck(choice.WhenFalse))
-                    => ("Shape", control, "control decides a request in a ternary"),
+                    => ("Misfiring", control, "control decides a request in a ternary"),
                 IfStatementSyntax branch when LAuditDialogRead(branch.Condition) is string dialog
-                                              && LAuditGuardCheck(branch)
-                    => ("Guard", dialog, "a dialog answer decides a request"),
-                IfStatementSyntax branch when LAuditAskedCheck(branch.Condition) && LAuditGuardCheck(branch)
-                    => ("Guard", LAuditExcerptRead(branch.Condition), "an engine answer decides a request in an if"),
+                                              && LAuditGatekeepingCheck(branch)
+                    => ("Gatekeeping", dialog, "a dialog answer decides a request"),
+                IfStatementSyntax branch when LAuditAskedCheck(branch.Condition) && LAuditGatekeepingCheck(branch)
+                    => ("Gatekeeping", LAuditExcerptRead(branch.Condition),
+                        "an engine answer decides a request in an if"),
                 ConditionalExpressionSyntax choice when LAuditAskedCheck(choice.Condition)
                                                         && !LAuditPresenceCheck(choice.Condition)
                                                         && (LAuditRequestCheck(choice.WhenTrue)
                                                             || LAuditRequestCheck(choice.WhenFalse))
-                    => ("Guard", LAuditExcerptRead(choice.Condition),
+                    => ("Gatekeeping", LAuditExcerptRead(choice.Condition),
                         "an engine answer decides a request in a ternary"),
                 SwitchStatementSyntax select when LAuditAskedCheck(select.Expression) && LAuditRequestCheck(select)
-                    => ("Guard", LAuditExcerptRead(select.Expression),
+                    => ("Gatekeeping", LAuditExcerptRead(select.Expression),
                         "an engine answer decides a request in a switch"),
                 AssignmentExpressionSyntax
                     {
                         RawKind: (int)SyntaxKind.AddAssignmentExpression,
                         Left: MemberAccessExpressionSyntax clock
                     } wired when LAuditClockCheck(clock.Expression) && LAuditDriveCheck(wired.Right)
-                    => ("Shape", clock.Expression.ToString(), "a clock drives a request"),
+                    => ("Misfiring", clock.Expression.ToString(), "a clock drives a request"),
                 BaseObjectCreationExpressionSyntax { ArgumentList: { } arguments } creation
                     when LAuditClockCheck(creation) && arguments.Arguments.Any(argument =>
                         LAuditDriveCheck(argument.Expression))
-                    => ("Shape", LAuditExcerptRead(creation), "a clock built with a callback drives a request"),
+                    => ("Misfiring", LAuditExcerptRead(creation), "a clock built with a callback drives a request"),
                 StatementSyntax loop when loop is WhileStatementSyntax or DoStatementSyntax or ForStatementSyntax
                                           && LAuditDelayCheck(loop) && LAuditDriveCheck(loop)
-                    => ("Shape", LAuditExcerptRead(loop), "a delay loop drives a request"),
+                    => ("Misfiring", LAuditExcerptRead(loop), "a delay loop drives a request"),
                 MethodDeclarationSyntax handler when LAuditDeafRead(handler) is string bulletin
-                    => ("Shape", handler.Identifier.ValueText, $"handles the bulletin '{bulletin}' without reading it"),
+                    => ("Misfiring", handler.Identifier.ValueText,
+                        $"handles the bulletin '{bulletin}' without reading it"),
                 LambdaExpressionSyntax deaf when LAuditLambdaCheck(deaf)
-                    => ("Shape", LAuditTruthSetting.LAuditBulletinType, "handles a bulletin without reading it"),
+                    => ("Misfiring", LAuditTruthSetting.LAuditBulletinType, "handles a bulletin without reading it"),
                 _ => null
             };
             if (hit is null)
@@ -3935,7 +3953,7 @@ internal static partial class LAuditTruthWalker
         if (reference.Parent is ConditionalAccessExpressionSyntax { Expression: var target } access
             && target == reference)
         {
-            return LAuditRequestCheck(access.WhenNotNull) ? ("Guard", "decides a request through ?.") : null;
+            return LAuditRequestCheck(access.WhenNotNull) ? ("Gatekeeping", "decides a request through ?.") : null;
         }
 
         foreach (SyntaxNode ancestor in reference.Ancestors())
@@ -3946,56 +3964,56 @@ internal static partial class LAuditTruthWalker
                     return null;
                 case ArgumentSyntax { Parent.Parent: ExpressionSyntax call } argument
                     when LAuditCallRead(call) is { } callee && LAuditHotCheck(callee, argument):
-                    return ("Argument", $"passed to {callee.Name}");
+                    return ("Replaying", $"passed to {callee.Name}");
                 case InitializerExpressionSyntax { Parent: WithExpressionSyntax }:
-                    return ("Argument", "written into a record copy");
+                    return ("Replaying", "written into a record copy");
                 case InitializerExpressionSyntax { Parent: BaseObjectCreationExpressionSyntax creation }
                     when LAuditCallRead(creation) is { } built:
-                    return ("Argument", $"written into new {built.ContainingType?.Name ?? built.Name}");
+                    return ("Replaying", $"written into new {built.ContainingType?.Name ?? built.Name}");
                 case IfStatementSyntax branch
-                    when branch.Condition.Span.Contains(reference.Span) && LAuditGuardCheck(branch):
-                    return ("Guard", "decides a request in an if");
+                    when branch.Condition.Span.Contains(reference.Span) && LAuditGatekeepingCheck(branch):
+                    return ("Gatekeeping", "decides a request in an if");
                 case ConditionalExpressionSyntax choice
                     when choice.Condition.Span.Contains(reference.Span)
                          && !LAuditPresenceCheck(choice.Condition)
                          && (LAuditRequestCheck(choice.WhenTrue) || LAuditRequestCheck(choice.WhenFalse)):
-                    return ("Guard", "decides a request in a ternary");
+                    return ("Gatekeeping", "decides a request in a ternary");
                 case SwitchStatementSyntax select
                     when select.Expression.Span.Contains(reference.Span) && LAuditRequestCheck(select):
-                    return ("Guard", "decides a request in a switch");
+                    return ("Gatekeeping", "decides a request in a switch");
                 case SwitchExpressionSyntax arms
                     when arms.GoverningExpression.Span.Contains(reference.Span) && LAuditRequestCheck(arms):
-                    return ("Guard", "decides a request in a switch expression");
+                    return ("Gatekeeping", "decides a request in a switch expression");
                 case WhileStatementSyntax loop
                     when loop.Condition.Span.Contains(reference.Span) && LAuditRequestCheck(loop.Statement):
-                    return ("Guard", "decides a request in a while");
+                    return ("Gatekeeping", "decides a request in a while");
                 case DoStatementSyntax loop
                     when loop.Condition.Span.Contains(reference.Span) && LAuditRequestCheck(loop.Statement):
-                    return ("Guard", "decides a request in a do");
+                    return ("Gatekeeping", "decides a request in a do");
                 case ForStatementSyntax { Condition: { } condition } loop
                     when condition.Span.Contains(reference.Span) && LAuditRequestCheck(loop.Statement):
-                    return ("Guard", "decides a request in a for");
+                    return ("Gatekeeping", "decides a request in a for");
                 case WhenClauseSyntax { Parent: { } label } clause
                     when LAuditRequestCheck(label.Parent is SwitchSectionSyntax section ? section : label)
                          && clause.Condition.Span.Contains(reference.Span):
-                    return ("Guard", "decides a request in a when clause");
+                    return ("Gatekeeping", "decides a request in a when clause");
                 case CatchFilterClauseSyntax filter
                     when filter.Parent is CatchClauseSyntax { Block: var handler } && LAuditRequestCheck(handler):
-                    return ("Guard", "decides a request in a catch filter");
+                    return ("Gatekeeping", "decides a request in a catch filter");
                 case BinaryExpressionSyntax gate
                     when (gate.IsKind(SyntaxKind.LogicalAndExpression)
                           || gate.IsKind(SyntaxKind.LogicalOrExpression)
                           || gate.IsKind(SyntaxKind.CoalesceExpression))
                          && gate.Left.Span.Contains(reference.Span)
                          && LAuditRequestCheck(gate.Right):
-                    return ("Guard", $"decides a request through {gate.OperatorToken.ValueText}");
+                    return ("Gatekeeping", $"decides a request through {gate.OperatorToken.ValueText}");
             }
         }
 
         return null;
     }
 
-    private static bool LAuditGuardCheck(IfStatementSyntax branch)
+    private static bool LAuditGatekeepingCheck(IfStatementSyntax branch)
     {
         if (LAuditPresenceCheck(branch.Condition))
         {
@@ -4092,7 +4110,7 @@ internal static partial class LAuditTruthWalker
     }
 }
 
-internal static class LAuditTaintWalker
+internal static class LAuditLaunderingWalker
 {
     private const string LAuditLogicColour = "logic value";
 
@@ -4141,7 +4159,7 @@ internal static class LAuditTaintWalker
                          && !LAuditStrictWalker.LAuditNullCheck(binary.Right)
                     => (binary, $"in {binary.OperatorToken.ValueText}"),
                 InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax access } query
-                    when LAuditTruthSetting.LAuditTreatVerbs.Contains(
+                    when LAuditTruthSetting.LAuditMoonlightingVerbs.Contains(
                         access.Name.Identifier.ValueText, StringComparer.Ordinal)
                     => (query, $"queried by {access.Name.Identifier.ValueText}"),
                 IfStatementSyntax branch when LAuditConditionCheck(branch.Condition)
@@ -4167,7 +4185,7 @@ internal static class LAuditTaintWalker
             if (seen.Add($"{line}:{reason}"))
             {
                 string excerpt = node.ToString().Split('\n')[0].Trim();
-                violations.Add(new LViolation(node.SyntaxTree.FilePath, line, excerpt, "Taint", reason));
+                violations.Add(new LViolation(node.SyntaxTree.FilePath, line, excerpt, "Laundering", reason));
             }
         }
     }
@@ -4296,21 +4314,21 @@ internal static class LAuditTaintWalker
     }
 }
 
-internal static class LAuditTreatWalker
+internal static class LAuditMoonlightingWalker
 {
     public static IReadOnlyList<LViolation> LAuditRun(IReadOnlyList<string> sourcePaths)
     {
         List<LViolation> violations = [];
         foreach (SyntaxNode root in LAuditBind.LAuditWalkRead(sourcePaths).Where(LAuditBind.LAuditWalkCheck))
         {
-            LAuditStrictWalker.LAuditGlyphScan(root, violations);
-            LAuditTreatScan(root, violations);
+            LAuditStrictWalker.LAuditHomoglyphScan(root, violations);
+            LAuditMoonlightingScan(root, violations);
         }
 
         return violations;
     }
 
-    private static void LAuditTreatScan(SyntaxNode root, List<LViolation> violations)
+    private static void LAuditMoonlightingScan(SyntaxNode root, List<LViolation> violations)
     {
         HashSet<string> seen = new(StringComparer.Ordinal);
         foreach (SyntaxNode node in root.DescendantNodes())
@@ -4328,7 +4346,7 @@ internal static class LAuditTreatWalker
                              || LAuditStrictWalker.LAuditDataCheck(binary.Right))
                     => $"logic value in {binary.OperatorToken.ValueText}",
                 InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax access } query
-                    when LAuditTruthSetting.LAuditTreatVerbs.Contains(
+                    when LAuditTruthSetting.LAuditMoonlightingVerbs.Contains(
                              access.Name.Identifier.ValueText, StringComparer.Ordinal)
                          && (LAuditStrictWalker.LAuditDataCheck(access.Expression)
                              || query.ArgumentList.Arguments.Any(argument =>
@@ -4360,7 +4378,7 @@ internal static class LAuditTreatWalker
             if (seen.Add($"{line}:{reason}"))
             {
                 string excerpt = node.ToString().Split('\n')[0].Trim();
-                violations.Add(new LViolation(root.SyntaxTree.FilePath, line, excerpt, "Treat", reason));
+                violations.Add(new LViolation(root.SyntaxTree.FilePath, line, excerpt, "Moonlighting", reason));
             }
         }
     }

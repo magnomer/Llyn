@@ -1,9 +1,9 @@
-# TAuditTaintWalker.cs
+# TAuditLaunderingWalker.cs
 
-## `internal static class TAuditTaintWalker`
+## `internal static class TAuditLaunderingWalker`
 
 Follows an engine value into a local or a driver member and reports the line that computes over it.
-The treat rule sees only a line that names logic, so a value copied into a local escaped it.
+The moonlighting rule sees only a line that names logic, so a value copied into a local escaped it.
 A control's input and the console's input are followed the same way, since a driver passes them raw.
 
 ## `private const string TAuditLogicColour = "logic value";`
@@ -25,7 +25,7 @@ Compiles every file and scans each walked member on its own, since a taint lives
 ## `private static void TAuditMemberScan(MemberDeclarationSyntax member, List<TViolation> violations)`
 
 Reads the member's taints, then looks at every operator, query verb and condition for one.
-A line that already names logic is the treat rule's and is skipped here.
+A line that already names logic is the moonlighting rule's and is skipped here.
 A hit is reported once per line and reason, with the first line of the node as its name.
 
 ## `private static Dictionary<ISymbol, string> TAuditTaintRead(MemberDeclarationSyntax member)`

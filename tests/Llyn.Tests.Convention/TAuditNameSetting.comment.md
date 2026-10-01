@@ -10,7 +10,7 @@ They do read the untracked sources Git lists, since an unstaged file is still so
 
 ## `public const int TAuditPrefixCeiling`
 
-The number of types whose prefix lies outside their ring.
+The number of types whose prefix lies outside their turf.
 It only falls, and the script holds the same number as `naming.prefixCeiling`.
 
 ## `public static readonly string[] TAuditPrefixes`
@@ -19,7 +19,7 @@ Every prefix, longest first, so `PS` is read before `P`.
 `P` marks a surface, `Q` a driver, `C` Conduct, `L` every other project and `T` a test.
 An `S` after the first letter marks a subwindow, and a lowercase form marks a private field.
 
-## `public static readonly Dictionary<string, string[]> TAuditPrefixRings`
+## `public static readonly Dictionary<string, string[]> TAuditPrefixTurfs`
 
 Each project folder with the prefixes its types may carry.
-The script holds the same map as `naming.prefixRings`.
+The script holds the same map as `naming.prefixTurfs`.

@@ -1,5 +1,5 @@
 {
-  "generation": 16,
+  "generation": 17,
   "project": "Llyn",
   "enforced": true,
   "helper": {
@@ -34,19 +34,24 @@
     ]
   },
   "thresholds": {
-    "parts": 5,
-    "span": 1000,
-    "hub": 5,
-    "weave": 0.75,
-    "density": 0.5,
-    "lines": 500,
-    "members": 40,
-    "state": 12
+    "hydra": { "parts": 5, "lines": 1000, "fused": 0.75, "density": 0.5 },
+    "kraken": {},
+    "spider": { "outgoing": 25, "incoming": 25 },
+    "chameleon": { "mutable": 7 },
+    "octopus": { "outgoing": 40 },
+    "centipede": { "members": 40 },
+    "serpent": { "lines": 500 },
+    "hub": { "parts": 5 }
   },
   "ceiling": {
-    "monolith": 3,
-    "hub": 8,
-    "large": 42
+    "hydra": 3,
+    "kraken": 9,
+    "spider": 6,
+    "chameleon": 12,
+    "octopus": 15,
+    "centipede": 40,
+    "serpent": 10,
+    "hub": 8
   },
   "parts": {
     "Llyn.Infrastructure.LEntryArchive": 2,

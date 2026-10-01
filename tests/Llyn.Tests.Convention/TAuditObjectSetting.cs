@@ -2,26 +2,62 @@ namespace Convention.Tests;
 
 internal static class TAuditObjectSetting
 {
-    public const int TAuditGeneration = 16;
+    public const int TAuditGeneration = 17;
     public const bool TAuditObjectEnforced = true;
     public const string TAuditObjectReport = "temp/audit/Object-{0}.md";
-    public const int TAuditPartLimit = 5;
-    public const int TAuditSpanLimit = 1000;
-    public const int TAuditHubReach = 5;
-    public const double TAuditWeaveLimit = 0.75;
-    public const double TAuditDensityLimit = 0.5;
-    public const int TAuditLargeLines = 500;
-    public const int TAuditLargeMembers = 40;
-    public const int TAuditLargeState = 12;
+
+    public static readonly IReadOnlyDictionary<string, double> TAuditHydraLimit = new Dictionary<string, double>
+    {
+        ["Parts"] = 5,
+        ["Lines"] = 1000,
+        ["Fused"] = 0.75,
+        ["Density"] = 0.5,
+    };
+
+    public static readonly IReadOnlyDictionary<string, int> TAuditSpiderLimit = new Dictionary<string, int>
+    {
+        ["Outgoing"] = 25,
+        ["Incoming"] = 25,
+    };
+
+    public static readonly IReadOnlyDictionary<string, int> TAuditChameleonLimit = new Dictionary<string, int>
+    {
+        ["Mutable"] = 7,
+    };
+
+    public static readonly IReadOnlyDictionary<string, int> TAuditOctopusLimit = new Dictionary<string, int>
+    {
+        ["Outgoing"] = 40,
+    };
+
+    public static readonly IReadOnlyDictionary<string, int> TAuditCentipedeLimit = new Dictionary<string, int>
+    {
+        ["Members"] = 40,
+    };
+
+    public static readonly IReadOnlyDictionary<string, int> TAuditSerpentLimit = new Dictionary<string, int>
+    {
+        ["Lines"] = 500,
+    };
+
+    public static readonly IReadOnlyDictionary<string, int> TAuditHubLimit = new Dictionary<string, int>
+    {
+        ["Parts"] = 5,
+    };
 
     public static readonly IReadOnlyDictionary<string, int> TAuditObjectCeiling = new Dictionary<string, int>
     {
-        ["Monolith"] = 3,
+        ["Hydra"] = 3,
+        ["Kraken"] = 9,
+        ["Spider"] = 6,
+        ["Chameleon"] = 12,
+        ["Octopus"] = 15,
+        ["Centipede"] = 40,
+        ["Serpent"] = 10,
         ["Hub"] = 8,
-        ["Large"] = 42,
     };
 
-    public static readonly IReadOnlyDictionary<string, int> TAuditPartCeiling = new Dictionary<string, int>
+    public static readonly IReadOnlyDictionary<string, int> TAuditPartsCeiling = new Dictionary<string, int>
     {
         ["Llyn.Infrastructure.LEntryArchive"] = 2,
         ["Llyn.Infrastructure.LLanguageLoader"] = 10,

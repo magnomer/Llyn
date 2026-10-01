@@ -91,7 +91,7 @@ internal static partial class TAuditTruthWalker
                         scope.SyntaxTree.FilePath,
                         TAuditLineRead(sends[later]),
                         TAuditMemberRead(scope),
-                        "Shape",
+                        "Misfiring",
                         $"sends a second request after line {TAuditLineRead(sends[earlier])}"));
                     later = sends.Count;
                     break;

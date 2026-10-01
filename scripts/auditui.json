@@ -1,5 +1,5 @@
 {
-  "generation": 16,
+  "generation": 17,
   "project": "Llyn",
   "helper": {
     "framework": "net10.0"
@@ -51,7 +51,7 @@
       "\\bSystem\\.IO\\.(File|Directory|Path|Drive|FileSystem)"
     ],
     "diskExempt": [],
-    "reachNamespaces": [
+    "overreachingNamespaces": [
       "Llyn.Core",
       "Llyn.Application",
       "Llyn.ShellEngine",
@@ -59,7 +59,7 @@
       "Llyn.Infrastructure",
       "Llyn.Core.Windows"
     ],
-    "triggerElements": [
+    "branchingElements": [
       "DataTrigger",
       "EventTrigger",
       "MultiDataTrigger",
@@ -70,7 +70,7 @@
       "VisualStateManager.VisualStateGroups",
       "VisualTransition"
     ],
-    "triggerSlots": [
+    "branchingSlots": [
       "CellTemplateSelector",
       "ContentStringFormat",
       "ContentTemplateSelector",
@@ -90,7 +90,7 @@
       "ValidatesOnNotifyDataErrors",
       "ValidationRules"
     ],
-    "hookElements": [
+    "tetheringElements": [
       "Binding",
       "CommandBinding",
       "InputBinding",
@@ -101,7 +101,7 @@
       "PriorityBinding",
       "RelativeSource"
     ],
-    "hookSlots": [
+    "tetheringSlots": [
       "Command",
       "CommandParameter",
       "CommandTarget",
@@ -109,30 +109,30 @@
       "RelativeSource",
       "SelectedValuePath"
     ],
-    "hookExtensions": [
+    "tetheringExtensions": [
       "Binding",
       "MultiBinding",
       "RelativeSource",
       "TemplateBinding",
       "x:Static"
     ],
-    "hookTypes": [
+    "tetheringTypes": [
       "System.Windows.Controls.DataTemplateSelector",
       "System.Windows.Controls.StyleSelector",
       "System.Windows.Data.IMultiValueConverter",
       "System.Windows.Data.IValueConverter"
     ],
-    "hookLiterals": [
+    "tetheringLiterals": [
       "Tag"
     ],
     "veneerNamespace": "Llyn.UIVeneer",
     "contractType": "QContract",
-    "packMarkers": [
+    "hardwiringMarkers": [
       "pack://",
       ";component/",
       "Llyn.UIVeneer"
     ],
-    "scaffoldTypes": [
+    "masqueradingTypes": [
       "System.Windows.Application",
       "System.Windows.Controls.ContentControl",
       "System.Windows.Controls.ItemsControl",
@@ -224,7 +224,7 @@
       "Value"
     ],
     "truthHandles": [],
-    "treatVerbs": [
+    "moonlightingVerbs": [
       "Aggregate",
       "All",
       "Any",

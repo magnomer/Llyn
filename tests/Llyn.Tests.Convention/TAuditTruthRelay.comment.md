@@ -53,4 +53,4 @@ Also true for a listed handle, shown minimally and with any nullable mark droppe
 
 The field and every getter-only property of its class that reads it without requesting.
 A getter reading such a property is followed too, to a fixed point.
-A guard read through one of them is a guard on the field itself.
+Gatekeeping through one of them is gatekeeping on the field itself.
