@@ -6,6 +6,7 @@ Writes a card's own parts from the card, where bindings and data triggers stood.
 The badge takes the accent ring and opens for typing while the position is open.
 The title, expression and meaning show their ready text and the placeholder Conduct chose.
 Each field's text is rewritten only on a full fill or when its own property changed.
+The badge's text is rewritten when the position moves or the badge opens or shuts.
 So a change to one property leaves the caret in another field alone.
 The placeholders and the badge's look follow every change.
 The three icons are set here, since an icon is drawn by code.
@@ -28,9 +29,9 @@ Changing it retitles the card, because the header reads the prefix and this numb
 
 ### `public string PCardPositionText`
 
-The number as the badge shows it, and as a writer types over it.
-It follows the position on every renumber, so the badge never lags the card.
-Typing changes this alone, because a half-typed number is not an order.
+The number as the badge shows it, read from the position alone.
+Typed text never enters it, because a half-typed number is not an order.
+The box keeps that text until the badge shuts or the card is renumbered.
 
 ### `public bool PCardPositionActive`
 
@@ -39,8 +40,8 @@ The number is read-only otherwise, so a click on it drags the card as the header
 
 ### `internal void PCardPositionHide()`
 
-Closes the badge and puts the stored number back into it.
-A number typed and then abandoned leaves nothing behind.
+Closes the badge, and the row fill puts the stored number back into the box.
+So a number typed and then abandoned or refused leaves nothing behind.
 
 ### `public CStateWording PTitle => _pTitle;`
 

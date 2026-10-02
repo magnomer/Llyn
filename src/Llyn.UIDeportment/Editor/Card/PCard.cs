@@ -17,7 +17,6 @@ internal sealed partial class PCard : INotifyPropertyChanged
     private readonly ObservableCollection<string> _pCardDependence;
     private readonly ObservableCollection<PLanguageItem> _pCardLanguage;
     private int _pCardPosition;
-    private string _pCardPositionText;
     private bool _pCardPositionActive;
     private CStateWording _pTitle;
     private CStateWording _pCardDefinition;
@@ -37,7 +36,6 @@ internal sealed partial class PCard : INotifyPropertyChanged
         _pTitle = draft.CCardDraftTitle;
         _pCardDefinition = draft.CCardDraftMeaning;
         _pCardExpression = draft.CCardDraftExpression;
-        _pCardPositionText = _pCardPosition.ToString(CultureInfo.InvariantCulture);
         _pCardCitation = catalog;
         _pCardParticle = particles;
         _pCardDependence = dependences;
@@ -61,26 +59,12 @@ internal sealed partial class PCard : INotifyPropertyChanged
             }
 
             _pCardPosition = value;
-            PCardPositionText = value.ToString(CultureInfo.InvariantCulture);
             PCardRaise(nameof(PCardPosition));
             PCardRaise(nameof(PCardTitle));
         }
     }
 
-    public string PCardPositionText
-    {
-        get => _pCardPositionText;
-        set
-        {
-            if (string.Equals(_pCardPositionText, value, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _pCardPositionText = value;
-            PCardRaise(nameof(PCardPositionText));
-        }
-    }
+    public string PCardPositionText => _pCardPosition.ToString(CultureInfo.InvariantCulture);
 
     public bool PCardPositionActive
     {
@@ -100,7 +84,6 @@ internal sealed partial class PCard : INotifyPropertyChanged
     internal void PCardPositionHide()
     {
         PCardPositionActive = false;
-        PCardPositionText = _pCardPosition.ToString(CultureInfo.InvariantCulture);
     }
 
     public string PCardTitle => $"{_pCardPrefix} {_pCardPosition}";
@@ -168,7 +151,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
 
         if (QLook.QLookPartFind<TextBox>(container, "PCardPositionText") is TextBox ordinal)
         {
-            if (changed is null or nameof(PCardPositionText))
+            if (changed is null or nameof(PCardPosition) or nameof(PCardPositionActive))
             {
                 ordinal.Text = card.PCardPositionText;
             }

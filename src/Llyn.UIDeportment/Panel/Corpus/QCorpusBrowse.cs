@@ -15,7 +15,7 @@ internal sealed partial class QCorpus
     private async void QCorpusWorkspaceRefine()
     {
         QSpeakerRefine(
-            await _qCorpusHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw));
+            await _qCorpusHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw));
     }
 
     private void QQueryObserve(object sender, TextChangedEventArgs e)
@@ -65,7 +65,7 @@ internal sealed partial class QCorpus
     private void QQueryClear()
     {
         QQuery.Clear();
-        QGauzeBuild(_qCorpusHost.PWindowAtelier.CAtelierCatalog.CCatalogLanguageRead());
+        QGauzeBuild(_qCorpusHost.QWindowAtelier.CAtelierCatalog.CCatalogLanguageRead());
         QGauzeRefine();
     }
 
@@ -182,11 +182,11 @@ internal sealed partial class QCorpus
 
     private void QCorpusRetreatObserve(object sender, RoutedEventArgs e)
     {
-        _qCorpusHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
+        _qCorpusHost.QWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QCorpusAdvanceObserve(object sender, RoutedEventArgs e)
     {
-        _qCorpusHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
+        _qCorpusHost.QWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 }

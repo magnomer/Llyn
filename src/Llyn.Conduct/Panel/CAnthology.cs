@@ -289,7 +289,7 @@ public sealed class CAnthology
                 citation,
                 tally,
                 example.LExampleGloss.Select(LAnthologyGlossRead).ToList(),
-                CMention.CMentionRead(example.LExampleExcerpt));
+                CMention.CMentionDivide(example.LExampleText.LStateValuePlain, example.LExampleExcerpt));
     }
 
     private static CCatalogExample LAnthologyRowRead(LCatalogExample row)

@@ -1,42 +1,11 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
-internal sealed class PMedia
+internal static class PMedia
 {
-    public static readonly DependencyProperty PMediaProperty = DependencyProperty.RegisterAttached(
-        "PMedia",
-        typeof(PMedia),
-        typeof(PMedia),
-        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
-
-    private PMedia()
-    {
-    }
-
-    internal static void PMediaAttach(DependencyObject root)
-    {
-        root.SetValue(PMediaProperty, new PMedia());
-    }
-
-    internal static PMedia? PMediaRead(DependencyObject element)
-    {
-        return element.GetValue(PMediaProperty) as PMedia;
-    }
-
-    internal PImage PMediaImageCreate(CImageDraft draft)
-    {
-        return new PImage(draft);
-    }
-
-    internal PVideo PMediaVideoCreate(CVideoDraft draft)
-    {
-        return new PVideo(draft);
-    }
-
     internal static void PMediaRevealAttach(ItemsControl list)
     {
         list.MouseEnter -= PMediaRevealRefine;

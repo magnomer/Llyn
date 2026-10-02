@@ -9,13 +9,10 @@ The driver keeps no draft id, halted flag or timer of its own, since the engine 
 Every change goes through a gate on `CAnthology` or `CCorpus`.
 Typing is deferred, and a pick or a row is sent at once.
 
-## `private CDesk QTranscriptDesk => _qCorpusDesk;`
-
-The desk holding the Example being edited, which the corpus Conduct handed over at introduce.
-
 ## `private void QTranscriptDeskIntroduce()`
 
-Subscribes the desk's notices once, and a failure and a refused hold both go straight to the window.
+Subscribes the Conduct's draft notice once.
+The desk shows its own failures and refused holds.
 The corpus raises `CCorpusDraftChanged` with the held Example on each draft bulletin.
 `QTranscriptDraftRefine` answers it and redraws the controls where they differ.
 The introduce built the corpus with its marshal, so the driver hands no marshal and no reread here.

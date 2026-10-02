@@ -76,7 +76,7 @@ public sealed class TTimbreGlyph
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long entry = TTimbreGlyphSave(engine, "Korean");
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         bool filling = false;
         editor.CEditorDesk.CDeskDraftChanged += _ =>
@@ -98,7 +98,7 @@ public sealed class TTimbreGlyph
 
     private static CEditor TTimbreGlyphPrepare(LEngine engine, long entry)
     {
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(entry);
         return editor;

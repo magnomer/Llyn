@@ -181,11 +181,6 @@ Relays the internal written-value map.
 
 Relays the entry draft map, so the facts pass engine drafts through the boundary.
 
-## `internal static CEntryDraft? TEditorDraftRead(this CEditor editor)`
-
-The held draft of `editor` as the draft bulletin maps it, or null without one.
-No driver reads the whole draft back, so tests inspect it through this relay.
-
 ## `internal static CSession TSessionCreate(CDesk desk, IReadOnlyList<Func<bool>> pending, Func<bool> readySeam, Action<long> storedSeam)`
 
 Builds a session over `desk` alone, starting it by vista as the guild does.

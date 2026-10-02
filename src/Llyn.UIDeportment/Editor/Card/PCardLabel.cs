@@ -11,18 +11,21 @@ internal sealed partial class PCard
 
     private readonly PLabelCaret _pCardLabelCaret = new();
 
-    private static readonly Func<object, long?> _pCardLabelKey =
-        row => row is PLabelChip chip ? chip.PLabelChipId : null;
+    private static readonly Func<PLabelChip, long?> _pCardLabelKey =
+        static chip => chip.PLabelChipId;
 
-    public ObservableCollection<object> PCardLabel { get; } = [];
+    public ObservableCollection<PLabelChip> PCardLabel { get; } = [];
 
     internal string PCardLabelText => _pCardLabelCaret.PLabelCaretText;
 
+    internal PLabelCaret PCardLabelCaret => _pCardLabelCaret;
+
     internal int PCardLabelPosition =>
-        PCardRowResolve(PCardLabel, _pCardLabelKey, PCardLabel.IndexOf(_pCardLabelCaret));
+        PCardCaretFind(PCardLabel, _pCardLabelCaret.PLabelCaretAnchor);
 
     internal void PCardLabelShow(IReadOnlyList<CTagDraft> drafts)
     {
+        List<PLabelChip> trail = PCardCaretRead(PCardLabel, _pCardLabelCaret.PLabelCaretAnchor);
         PCardRowShow(
             PCardLabel,
             drafts,
@@ -30,36 +33,34 @@ internal sealed partial class PCard
             static draft => draft.CTagDraftId,
             PCardLabelCreate,
             static (row, draft) =>
-                row is PLabelChip chip
-                && string.Equals(chip.PLabelChipName, draft.CTagDraftText, StringComparison.Ordinal)
+                string.Equals(row.PLabelChipName, draft.CTagDraftText, StringComparison.Ordinal)
                     ? row
                     : PCardLabelCreate(draft));
+        _pCardLabelCaret.PLabelCaretAnchor = PCardCaretResolve(PCardLabel, trail);
 
         PCardLabelUpdate();
     }
 
     internal PLabelChip? PCardLabelFind(int step)
     {
-        int index = PCardLabel.IndexOf(_pCardLabelCaret);
-        int target = index + step;
-        if (index < 0 || target < 0 || target >= PCardLabel.Count)
+        int target = PCardLabelPosition + (step < 0 ? step : step - 1);
+        if (target < 0 || target >= PCardLabel.Count)
         {
             return null;
         }
 
-        return PCardLabel[target] as PLabelChip;
+        return PCardLabel[target];
     }
 
     internal bool PCardLabelMove(int step)
     {
-        int index = PCardLabel.IndexOf(_pCardLabelCaret);
-        int target = index + step;
-        if (index < 0 || target < 0 || target >= PCardLabel.Count)
+        int target = PCardLabelPosition + step;
+        if (target < 0 || target > PCardLabel.Count)
         {
             return false;
         }
 
-        PCardLabel.Move(index, target);
+        _pCardLabelCaret.PLabelCaretAnchor = target < PCardLabel.Count ? PCardLabel[target] : null;
         return true;
     }
 
@@ -69,14 +70,13 @@ internal sealed partial class PCard
         PCardLabelUpdate();
     }
 
-    private static object PCardLabelCreate(CTagDraft draft)
+    private static PLabelChip PCardLabelCreate(CTagDraft draft)
     {
         return new PLabelChip(draft.CTagDraftId, draft.CTagDraftText);
     }
 
     private void PCardLabelStart()
     {
-        PCardLabel.Add(_pCardLabelCaret);
         PCardLabelUpdate();
     }
 
@@ -91,6 +91,6 @@ internal sealed partial class PCard
 
     private void PCardLabelUpdate()
     {
-        _pCardLabelCaret.PLabelCaretHint = PCardLabel.Count > 1 ? string.Empty : PCardLabelHint;
+        _pCardLabelCaret.PLabelCaretHint = PCardLabel.Count > 0 ? string.Empty : PCardLabelHint;
     }
 }

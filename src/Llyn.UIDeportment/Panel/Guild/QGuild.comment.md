@@ -17,7 +17,7 @@ It subscribes every click, both search fields and both list clicks, and attaches
 
 Each part of the page is pulled by its contract ID through `QContract.QContractFind`.
 
-## `internal void QGuildIntroduce(PWindow host)`
+## `internal void QGuildIntroduce(QWindow host)`
 
 Builds the panel's Conduct with the window's envoy, subscribes its notices, and wires the two lists.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.

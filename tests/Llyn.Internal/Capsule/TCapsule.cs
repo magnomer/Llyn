@@ -43,4 +43,31 @@ public sealed class TCapsule
         Assert.True(state.LCapsuleContentLinked);
         Assert.Empty(state.LCapsuleContentColumn ?? []);
     }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void CapsuleRead_BlankRoot_ReadsDefaults(string? root)
+    {
+        LCapsuleContent state = TInterfaceCapsule.TCapsuleRead(root);
+
+        Assert.Null(state.LCapsuleContentWindow);
+        Assert.True(state.LCapsuleContentLinked);
+        Assert.Empty(state.LCapsuleContentColumn ?? []);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void CapsuleSave_BlankRoot_WritesNothing(string? root)
+    {
+        LCapsuleContent state = TInterfaceCapsule.TCapsuleContentCreate(null, false);
+
+        TInterfaceCapsule.TCapsuleSave(root, state);
+
+        Assert.False(File.Exists("capsule.json"));
+        Assert.False(File.Exists(Path.Combine(root ?? string.Empty, "capsule.json")));
+    }
 }

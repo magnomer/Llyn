@@ -1,5 +1,5 @@
 {
-  "generation": 17,
+  "generation": 18,
   "project": "Llyn",
   "helper": {
     "framework": "net10.0"
@@ -149,10 +149,12 @@
     "stateSuffix": "State",
     "bulletinType": "LBulletin",
     "conductRoot": "src/Llyn.Conduct",
+    "capsuleInclude": [
+      "src/Llyn.UIDeportment.Capsule/*.cs"
+    ],
     "shellInclude": [
       "src/Llyn.UIVeneer/*.cs",
       "src/Llyn.UIDeportment/*.cs",
-      "src/Llyn.UIDeportment.Capsule/*.cs",
       "src/Llyn.UITerminal/*.cs",
       "src/Llyn.UIDemeanor/*.cs"
     ],
@@ -222,6 +224,11 @@
       "SelectedValue",
       "Text",
       "Value"
+    ],
+    "focusMembers": [
+      "IsFocused",
+      "IsKeyboardFocused",
+      "IsKeyboardFocusWithin"
     ],
     "truthHandles": [],
     "moonlightingVerbs": [
@@ -298,13 +305,12 @@
       "^\\s*extern\\s+alias\\b"
     ],
     "loader": [
-      "PHeadquarter.cs"
+      "QHeadquarter.cs"
     ],
     "reflection": "\\bSystem\\.Reflection\\b",
     "timer": "\\bCancellationTokenSource\\b",
     "hold": [
-      "Hold\\.cs$",
-      "^PEditor"
+      "Hold\\.cs$"
     ],
     "panel": "\\b(class|struct|record)\\s+PS?[A-Z]",
     "tracked": [

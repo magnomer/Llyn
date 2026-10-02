@@ -90,6 +90,10 @@ The favourite, grasp and frequency of the stored entry the editor's desk holds.
 
 The pack sound facts and waiting sections of the entry the editor's desk holds.
 
+## `public CPlayback CEditorPlayback { get; }`
+
+The recordings of the entry the editor's desk holds, which its play buttons and tray open.
+
 ## `public CTranscription CEditorTranscription`
 
 The transcription rows of the entry the editor's desk holds, with their gates.

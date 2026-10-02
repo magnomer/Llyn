@@ -229,7 +229,7 @@ public sealed class TErrandNotation
             [TInterface.TCardCreate("a rise", 1)],
             [],
             transcriptions: [TInterface.TTranscriptionDraftCreate("Yale", string.Empty)])).LEntryId;
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(entry);
         CErrand errand = editor.CEditorDesk.CDeskErrand;
@@ -415,7 +415,7 @@ public sealed class TErrandNotation
 
     private static CEditor TErrandNotationPrepare(LEngine engine, string language, string headword)
     {
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(null);
         editor.CEditorLanguageSet(language);

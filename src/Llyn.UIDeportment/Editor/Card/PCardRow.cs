@@ -70,17 +70,48 @@ internal sealed partial class PCard
         return -1;
     }
 
-    internal static int PCardRowResolve<PCardItem>(IReadOnlyList<PCardItem> rows, Func<PCardItem, long?> key, int limit)
+    private static int PCardCaretFind<PCardItem>(IReadOnlyList<PCardItem> rows, PCardItem? anchor)
+        where PCardItem : class
     {
-        int count = 0;
-        for (int index = 0; index < limit && index < rows.Count; index++)
+        for (int index = 0; index < rows.Count; index++)
         {
-            if (key(rows[index]) is not null)
+            if (ReferenceEquals(rows[index], anchor))
             {
-                count++;
+                return index;
             }
         }
 
-        return count;
+        return rows.Count;
+    }
+
+    private static List<PCardItem> PCardCaretRead<PCardItem>(IReadOnlyList<PCardItem> rows, PCardItem? anchor)
+        where PCardItem : class
+    {
+        List<PCardItem> trail = [];
+        for (int index = PCardCaretFind(rows, anchor); index < rows.Count; index++)
+        {
+            trail.Add(rows[index]);
+        }
+
+        return trail;
+    }
+
+    private static PCardItem? PCardCaretResolve<PCardItem>(
+        IReadOnlyList<PCardItem> rows,
+        IReadOnlyList<PCardItem> trail)
+        where PCardItem : class
+    {
+        foreach (PCardItem chip in trail)
+        {
+            for (int index = 0; index < rows.Count; index++)
+            {
+                if (ReferenceEquals(rows[index], chip))
+                {
+                    return chip;
+                }
+            }
+        }
+
+        return null;
     }
 }

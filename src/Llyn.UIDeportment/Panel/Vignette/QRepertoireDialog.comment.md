@@ -3,8 +3,9 @@
 ## `internal sealed partial class QRepertoire`
 
 What the picture and video rows of the situation editor hear and paint.
-That is a row opened, a row dropped, a file chosen, and a location or span written.
-Each heard action hands its raw value to one gate of `CRepertoireImage` or `CRepertoireVideo`.
+The same `QImage` and `QVideo` drivers as the card editor's hear a row's browse and remove buttons.
+Here they hold the repertoire's image and video gates instead of the editor's.
+This part hears a location or span written and the add buttons outside any row.
 A Situation has no card, so each add names card zero, and the draft routes it.
 The panel keeps no count and no map of which row is still waiting.
 
@@ -17,29 +18,20 @@ What was waiting is written before the read, so a redraw never lands over a newe
 
 Redraws the video rows the same way, location and span apart.
 
-## `private PImage QScenarioImageCreate(CImageDraft draft)`
+## `private QImageItem QScenarioImageCreate(CImageDraft draft)`
 
 A picture row holding the engine's location, and nothing typed.
 The vignette builds its read rows here too.
 
-## `private PVideo QScenarioVideoCreate(CVideoDraft draft)`
+## `private QVideoItem QScenarioVideoCreate(CVideoDraft draft)`
 
 A video row holding the engine's location and span, and nothing typed.
 The vignette builds its read rows here too.
 
 ## `private void QImageLocationObserve(object sender, TextChangedEventArgs e)`
 
-Hands a location typed into a picture row to the location gate.
+Hands a location typed into a picture row to the picture driver's location observer.
 Only a field the keyboard is in has been typed into.
-
-## `private void QVideoLocationObserve(object sender, TextChangedEventArgs e)`
-
-Hands a location typed into a video row to the location gate.
-
-## `private void QVideoSpanObserve(object sender, TextChangedEventArgs e)`
-
-Hands a span typed into a video row to the span gate.
-The span has its own handler, so no field name decides which gate hears it.
 
 ## `private void QImageAddObserve(object sender, RoutedEventArgs e)`
 
@@ -49,34 +41,16 @@ Hands the add button's press to the add gate, which appends the row below.
 
 Hands the add button's press to the video add gate.
 
-## `private void QImageRemoveObserve(object sender, RoutedEventArgs e)`
-
-Hands the id of the row the click came from to the remove gate.
-
-## `private void QVideoRemoveObserve(object sender, RoutedEventArgs e)`
-
-Hands the id of the row the click came from to the video remove gate.
-
-## `private void QImageOpenObserve(object sender, RoutedEventArgs e)`
-
-Asks for a picture file, owned by the window of the clicked button.
-The chosen path goes raw to the file gate, which sends it at once.
-A cancelled dialog hands nothing.
-
-## `private void QVideoOpenObserve(object sender, RoutedEventArgs e)`
-
-Asks for a video file and hands the chosen path to the video file gate.
-A cancelled dialog hands nothing.
-
 ## `private void QImageItemRefine(FrameworkElement container, object item, string? name)`
 
 The situation editor's picture row fill.
-It draws the row through the shared fill with the location's text change unsubscribed.
+It draws the row through the picture driver's fill with the location's text change unsubscribed.
 So a redraw from the draft never reaches the gate as typing.
-It also subscribes the browse and remove handlers.
+The driver's fill subscribes the browse and remove observers.
 
 ## `private void QVideoItemRefine(FrameworkElement container, object item, string? name)`
 
 The situation editor's video row fill.
-It draws the row with the location's and the span's text changes unsubscribed, as the picture fill does.
-It also subscribes the browse and remove handlers.
+It unhooks the video driver's location and span observers, then draws the row through the driver's fill.
+The driver's fill hooks them again after drawing, so a redraw from the draft never reaches the gate as typing.
+The driver's fill also subscribes the browse and remove observers.

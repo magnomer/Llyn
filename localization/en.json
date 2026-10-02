@@ -357,6 +357,7 @@
     "Display.Rebuild": "Regenerate",
     "Display.FanqieRebuildFailed": "The rime books could not be fetched again.",
     "Display.ScriptRebuildFailed": "The character forms could not be fetched again.",
+    "Display.ScriptFailed": "A character form could not be shown.",
     "Display.FanqieRepresentativeFailed": "The representative mark could not be saved.",
     "Display.NameFailed": "The section names could not be read.",
     "Display.IncomingFailed": "The entries that use this word could not be read.",

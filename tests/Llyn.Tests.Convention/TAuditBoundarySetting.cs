@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditBoundarySetting
 {
-    public const int TAuditGeneration = 17;
+    public const int TAuditGeneration = 18;
 
     public static readonly string[] TAuditBoundaryForbidden =
     [
@@ -40,7 +40,7 @@ internal static class TAuditBoundarySetting
 
     public static readonly string[] TAuditBoundaryLoader =
     [
-        "PHeadquarter.cs",
+        "QHeadquarter.cs",
     ];
 
     public const string TAuditBoundaryReflection = @"\bSystem\.Reflection\b";
@@ -50,7 +50,6 @@ internal static class TAuditBoundarySetting
     public static readonly string[] TAuditBoundaryHold =
     [
         @"Hold\.cs$",
-        @"^PEditor",
     ];
 
     public const string TAuditBoundaryPanel = @"\b(class|struct|record)\s+PS?[A-Z]";

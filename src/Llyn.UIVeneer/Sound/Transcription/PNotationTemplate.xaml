@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <DataTemplate x:Key="Theme.Notation.Reading">
-        <Grid x:Name="PNotationReadingCell" Margin="0,3,6,3">
+        <Grid x:Name="QNotationReadingCell" Margin="0,3,6,3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
@@ -13,10 +13,10 @@
                 VerticalAlignment="Center"
                 Style="{DynamicResource Theme.Popup.RowReading}">
                 <StackPanel Orientation="Horizontal">
-                    <Image x:Name="PNotationReadingFlag" Width="19" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Stretch="Uniform" />
-                    <TextBlock x:Name="PNotationReadingLabel" Margin="0,0,6,0" VerticalAlignment="Center" FontSize="11" Visibility="Collapsed" />
+                    <Image x:Name="QNotationReadingFlag" Width="19" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Stretch="Uniform" />
+                    <TextBlock x:Name="QNotationReadingLabel" Margin="0,0,6,0" VerticalAlignment="Center" FontSize="11" Visibility="Collapsed" />
                     <TextBlock
-                        x:Name="PNotationReadingPhonetic"
+                        x:Name="QNotationReadingPhonetic"
                         VerticalAlignment="Center"
                         FontFamily="{DynamicResource Theme.Phonetic}"
                         FontSize="14"
@@ -35,7 +35,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock x:Name="PNotationSource" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" TextTrimming="CharacterEllipsis" />
                 <ItemsControl
-                    x:Name="PNotationReadingList"
+                    x:Name="QNotationReadingList"
                     Grid.Column="1"
                     AlternationCount="8"
                     Margin="4,0,10,0"

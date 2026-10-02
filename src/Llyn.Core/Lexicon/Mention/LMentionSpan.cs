@@ -87,16 +87,16 @@ public static class LMentionSpan
 
             if (start > cursor)
             {
-                pieces.Add(new LMentionPiece(cursor, start - cursor, null, LMentionTextRead(text, cursor, start)));
+                pieces.Add(new LMentionPiece(cursor, null, LMentionTextRead(text, cursor, start)));
             }
 
-            pieces.Add(new LMentionPiece(start, end - start, mention, LMentionTextRead(text, start, end)));
+            pieces.Add(new LMentionPiece(start, mention, LMentionTextRead(text, start, end)));
             cursor = end;
         }
 
         if (cursor < count)
         {
-            pieces.Add(new LMentionPiece(cursor, count - cursor, null, LMentionTextRead(text, cursor, count)));
+            pieces.Add(new LMentionPiece(cursor, null, LMentionTextRead(text, cursor, count)));
         }
 
         return pieces;

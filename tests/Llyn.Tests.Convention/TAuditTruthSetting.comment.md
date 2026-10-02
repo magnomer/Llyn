@@ -43,10 +43,16 @@ A driver may hold, implement and reshape them, since Conduct's types stop at the
 
 The ledger holding the ceiling of every kind in every driver file.
 
+## `public static readonly string[] TAuditCapsuleInclude`
+
+The `git ls-files` patterns of the Capsule project, which stores Deportment's own state.
+A call into it answers a shell value, so Contesting does not search its arguments.
+Every reader of `TAuditShellInclude` joins this list to it, so each path is written once.
+
 ## `public static readonly string[] TAuditShellInclude`
 
 The `git ls-files` patterns of every UI source, both surfaces and both drivers.
-A type declared under one of these is UI.
+A type declared under one of these, or under `TAuditCapsuleInclude`, is UI.
 A type declared in Conduct is a gate type, and a type declared under any other source is engine.
 
 ## `public static readonly string[] TAuditTruthInclude`
@@ -102,6 +108,11 @@ The waits that turn a loop into a clock.
 ## `public static readonly string[] TAuditInputMembers`
 
 The members of a GUI control that carry what the user typed or chose.
+
+## `public static readonly string[] TAuditFocusMembers`
+
+The members of a GUI control that tell whether the user is at it.
+A guard on one of them only asks whose event it is, so the misfiring scan exempts it.
 
 ## `public static readonly string[] TAuditTruthHandles`
 

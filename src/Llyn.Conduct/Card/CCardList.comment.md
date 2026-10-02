@@ -29,6 +29,8 @@ A card alone in its list is kept by the clerk's rule, so the view sends every pr
 ## `public void CCardMove(long cardId, int place)`
 
 The move gate for a drag, which hands the place its geometry found.
+The card clerk judges the place, so a stale card or an unchanged place sends nothing.
+The view hands every place it finds and keeps no rule of its own.
 
 ## `public void CCardMove(long cardId, string ordinal)`
 

@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -87,13 +85,13 @@ internal static class PLeaf
         if (QLook.QLookPartFind<ItemsControl>(body, "PCardImage") is ItemsControl images)
         {
             images.ItemsSource = card.QLeafItemImage;
-            QLookItem.QLookItemAttach(images, PImage.PImageLineApply);
+            QLookItem.QLookItemAttach(images, QImageItem.QImageItemApply);
         }
 
         if (QLook.QLookPartFind<ItemsControl>(body, "PCardVideo") is ItemsControl videos)
         {
             videos.ItemsSource = card.QLeafItemVideo;
-            QLookItem.QLookItemAttach(videos, PVideo.PVideoLineApply);
+            QLookItem.QLookItemAttach(videos, QVideoItem.QVideoItemApply);
         }
     }
 
@@ -115,7 +113,7 @@ internal static class PLeaf
 
     private static void PLeafSentenceRefine(FrameworkElement container, object item, string? _)
     {
-        if (item is not CLeafLine line)
+        if (item is not QLeafLine line)
         {
             return;
         }
@@ -123,7 +121,7 @@ internal static class PLeaf
         TextBlock? frame = QLook.QLookPartFind<TextBlock>(container, "PExampleFrame");
         if (frame is not null)
         {
-            frame.Text = line.CLeafLineHead;
+            frame.Text = line.QLeafLineHead;
         }
 
         if (QLook.QLookPartFind<PMention>(container, "PExampleText") is not PMention text)
@@ -131,9 +129,8 @@ internal static class PLeaf
             return;
         }
 
-        text.PMentionLanguage = line.CLeafLineLanguage;
-        text.PMentionMention = line.CLeafLineMention;
-        text.PMentionText = line.CLeafLineText;
+        text.PMentionSentence = line.QLeafLineSentence;
+        text.PMentionPiece = line.QLeafLinePiece;
         if (frame is not null)
         {
             MultiBinding margin = new() { Converter = new QFontConverter() };
@@ -146,7 +143,7 @@ internal static class PLeaf
 
         if (QLook.QLookPartFind<TextBlock>(container, "PExampleCitation") is TextBlock citation)
         {
-            citation.Text = line.CLeafLineCitation;
+            citation.Text = line.QLeafLineCitation;
             citation.SetBinding(
                 FrameworkElement.MarginProperty, new Binding(nameof(PMention.Margin)) { Source = text });
             citation.SetBinding(
@@ -157,8 +154,7 @@ internal static class PLeaf
 
         if (QLook.QLookPartFind<ItemsControl>(container, "PExampleGloss") is ItemsControl gloss)
         {
-            gloss.ItemsSource = (IEnumerable<PGloss>)new PGlossConverter().Convert(
-                line.CLeafLineGloss, typeof(IEnumerable<PGloss>), string.Empty, CultureInfo.CurrentCulture);
+            gloss.ItemsSource = line.QLeafLineGloss;
             QLookItem.QLookItemAttach(gloss, PGloss.PGlossRowApply);
         }
     }

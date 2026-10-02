@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -54,7 +55,10 @@ public interface LDraftPort
 
     LEntry? LEngineTranslationResolve(string word, long? entryId);
 
-    IReadOnlyList<LMentionPiece> LEngineMentionDivide(string text, IReadOnlyList<LMention> mentions);
+    static IReadOnlyList<LMentionPiece> LEngineMentionDivide(string text, IReadOnlyList<LMention> mentions)
+    {
+        return LMentionClerk.LMentionClerkDivide(text, mentions);
+    }
 
     int LEngineUnitRead(string text, int offset);
 

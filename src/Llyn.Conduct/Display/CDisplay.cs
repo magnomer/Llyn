@@ -209,16 +209,6 @@ public sealed class CDisplay
         return _cDisplayRule.LDisplayFrequencyRead(LDisplayChosen, lookup("Frequency.Once"));
     }
 
-    public static bool CDisplayNarrativeCheck(bool editable, string text)
-    {
-        return !editable && LEntryPort.LEngineNarrativeCheck(text);
-    }
-
-    public static bool CDisplayEtymonCheck(bool editable, int count)
-    {
-        return editable || count > 0;
-    }
-
     public CLecternCard CDisplayCardRead()
     {
         if (LDisplayShown is not LEntryDraft shown)
@@ -285,23 +275,17 @@ public sealed class CDisplay
     {
         if (LDisplayShown is not LEntryDraft shown)
         {
-            return new CLecternEtymology(string.Empty, string.Empty, [], false, false);
+            return new CLecternEtymology(string.Empty, [], false, false, false, false);
         }
 
-        string text = shown.LEntryDraftEtymology.LEtymologyDraftText;
-        IReadOnlyList<LTranslationTarget> etymons;
-        bool narrated;
-        try
-        {
-            (etymons, narrated) = _cDisplayPort.LEngineEtymologyRead(shown);
-        }
-        catch (Exception)
-        {
-            (etymons, narrated) = ([], LEntryPort.LEngineNarrativeCheck(text));
-        }
-
+        LEtymologyResult etymology = _cDisplayPort.LEngineEtymologyRead(shown);
         return new CLecternEtymology(
-            shown.LEntryDraftLanguage, text, CFolio.CFolioTargetRead(etymons), narrated, shown.LEntryDraftDerived);
+            shown.LEntryDraftEtymology.LEtymologyDraftText,
+            CFolio.CFolioTargetRead(etymology.LEtymologyResultTargets),
+            etymology.LEtymologyResultFilled,
+            etymology.LEtymologyResultNarrated,
+            etymology.LEtymologyResultLinked,
+            shown.LEntryDraftDerived);
     }
 
     public bool CDisplayChipOpen(CLeafChip? chip, long? link)
@@ -339,18 +323,26 @@ public sealed class CDisplay
         _cDisplayMention = mention;
     }
 
-    public CMentionOffer? CDisplayMentionFind(
-        string text, string language, int offset, IReadOnlyList<CMentionMark>? mentions)
+    public CMentionOffer? CDisplayMentionFind(long sentence, int offset)
     {
-        if (_cDisplayMention is not CMention mention)
+        return LDisplayMentionOpen(shown => _cDisplayPort.LEngineMentionFind(shown, sentence, offset));
+    }
+
+    public CMentionOffer? CDisplayEtymologyFind(int offset)
+    {
+        return LDisplayMentionOpen(shown => _cDisplayPort.LEngineEtymologyFind(shown, offset));
+    }
+
+    private CMentionOffer? LDisplayMentionOpen(Func<LEntryDraft, LMentionResult> find)
+    {
+        if (_cDisplayMention is not CMention mention || LDisplayShown is not LEntryDraft shown)
         {
             return null;
         }
 
         try
         {
-            return mention.LMentionResultOpen(CMention.CMentionResultRead(_cDisplayPort.LEngineMentionFind(
-                text, language, LDisplayShown, offset, mentions is null ? null : CMention.CMentionRead(mentions))));
+            return mention.LMentionResultOpen(CMention.CMentionResultRead(find(shown)));
         }
         catch (Exception exception)
         {

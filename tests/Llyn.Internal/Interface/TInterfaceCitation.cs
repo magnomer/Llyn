@@ -22,7 +22,7 @@ internal static class TInterfaceCitation
             ["LEngineObserverDetach"] = _ => null,
             ["LEngineCitationResolve"] = _ => throw new InvalidOperationException("no sources"),
         });
-        return new CDesk(drafts, scope, envoy, origin, subject);
+        return new CDesk(drafts, new LSettingsOutlet(engine), scope, envoy, origin, subject);
     }
 
     internal static CExample? TAnthologyDraftRead(this CAnthology anthology, LDraft? draft) =>

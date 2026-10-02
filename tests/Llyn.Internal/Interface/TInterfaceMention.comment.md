@@ -28,10 +28,11 @@ The atelier's navigation opens what the find opens at once.
 
 Runs the shared open of a find answer over the atelier's mention area.
 
-## `internal static CMentionOffer? TDisplayMentionFind(LEngine engine, CAtelier atelier, CEnvoy envoy)`
+## `internal static CMentionOffer? TDisplayMentionFind(LEngine engine, CAtelier atelier, CEnvoy envoy, long shown)`
 
 Finds a word through a display whose entry port's word find throws.
 The display is attached to the atelier's navigation and mention area, as the composition does.
+It shows the stored entry `shown`, since a display showing nothing answers before it asks the engine.
 
 ## `internal static IReadOnlyList<CMentionLabel> TMentionFailRead(LEngine engine, CDesk desk, CEnvoy envoy)`
 

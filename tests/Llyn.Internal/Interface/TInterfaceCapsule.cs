@@ -4,9 +4,9 @@ namespace Llyn.Tests;
 
 internal static class TInterfaceCapsule
 {
-    internal static LCapsuleContent TCapsuleRead(string root) => new LCapsule().LCapsuleRead(root);
+    internal static LCapsuleContent TCapsuleRead(string? root) => new LCapsule().LCapsuleRead(root);
 
-    internal static void TCapsuleSave(string root, LCapsuleContent state)
+    internal static void TCapsuleSave(string? root, LCapsuleContent state)
     {
         new LCapsule().LCapsuleSave(root, state);
     }

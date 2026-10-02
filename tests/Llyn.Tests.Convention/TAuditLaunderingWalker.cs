@@ -10,23 +10,31 @@ internal static class TAuditLaunderingWalker
 
     private const string TAuditTextColour = "control input";
 
-    private static IReadOnlySet<ISymbol> TAuditReaderNames = new HashSet<ISymbol>(SymbolEqualityComparer.Default);
+    private static readonly AsyncLocal<IReadOnlySet<ISymbol>?> TAuditReaderNames = new();
 
     public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> sourcePaths, IReadOnlySet<ISymbol> readers)
     {
-        TAuditReaderNames = readers;
+        TAuditReaderNames.Value = readers;
         List<TViolation> violations = [];
-        foreach (SyntaxNode root in TAuditBinder.TAuditWalkRead(sourcePaths).Where(TAuditBinder.TAuditWalkCheck))
+        try
         {
-            foreach (MemberDeclarationSyntax member in root.DescendantNodes().OfType<MemberDeclarationSyntax>())
+            foreach (SyntaxNode root in TAuditBinder.TAuditWalkRead(sourcePaths).Where(TAuditBinder.TAuditWalkCheck))
             {
-                if (member is BaseTypeDeclarationSyntax or FieldDeclarationSyntax or BaseNamespaceDeclarationSyntax)
+                foreach (MemberDeclarationSyntax member in root.DescendantNodes().OfType<MemberDeclarationSyntax>())
                 {
-                    continue;
-                }
+                    if (member is BaseTypeDeclarationSyntax or FieldDeclarationSyntax
+                        or BaseNamespaceDeclarationSyntax)
+                    {
+                        continue;
+                    }
 
-                TAuditMemberScan(member, violations);
+                    TAuditMemberScan(member, violations);
+                }
             }
+        }
+        finally
+        {
+            TAuditReaderNames.Value = null;
         }
 
         return violations;
@@ -51,6 +59,12 @@ internal static class TAuditLaunderingWalker
                          && !binary.IsKind(SyntaxKind.LogicalOrExpression)
                          && !TAuditStrictWalker.TAuditNullCheck(binary.Left)
                          && !TAuditStrictWalker.TAuditNullCheck(binary.Right)
+                         && !((binary.IsKind(SyntaxKind.EqualsExpression)
+                               || binary.IsKind(SyntaxKind.NotEqualsExpression))
+                              && (binary.Left.Kind()
+                                      is SyntaxKind.TrueLiteralExpression or SyntaxKind.FalseLiteralExpression
+                                  || binary.Right.Kind()
+                                      is SyntaxKind.TrueLiteralExpression or SyntaxKind.FalseLiteralExpression))
                     => (binary, $"in {binary.OperatorToken.ValueText}"),
                 InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax access } query
                     when TAuditTruthSetting.TAuditMoonlightingVerbs.Contains(
@@ -143,7 +157,12 @@ internal static class TAuditLaunderingWalker
     private static (string TViolationName, string TViolationColour)? TAuditTaintFind(
         SyntaxNode node, Dictionary<ISymbol, string> tainted)
     {
-        foreach (SyntaxNode child in node.DescendantNodesAndSelf())
+        foreach (SyntaxNode child in node.DescendantNodesAndSelf(parent =>
+                     parent is not InvocationExpressionSyntax
+                     {
+                         Expression: IdentifierNameSyntax { Identifier.ValueText: "nameof" }
+                     } named
+                     || TAuditBinder.TAuditSymbolRead(named) is not null))
         {
             switch (child)
             {
@@ -155,7 +174,16 @@ internal static class TAuditLaunderingWalker
                     when TAuditBinder.TAuditEngineCheck(child):
                     return (child.ToString(), TAuditLogicColour);
                 case IdentifierNameSyntax name
-                    when TAuditBinder.TAuditSymbolRead(name) is { } symbol && TAuditReaderNames.Contains(symbol):
+                    when TAuditBinder.TAuditSymbolRead(name) is
+                         {
+                             IsStatic: true,
+                             Kind: SymbolKind.Field or SymbolKind.Property,
+                             ContainingType: { TypeKind: not TypeKind.Enum } owner
+                         }
+                         && TAuditBinder.TAuditConductCheck(owner):
+                    return (name.Identifier.ValueText, TAuditLogicColour);
+                case IdentifierNameSyntax name
+                    when TAuditBinder.TAuditSymbolRead(name) is { } symbol && TAuditReaderNames.Value!.Contains(symbol):
                     return (name.Identifier.ValueText, TAuditLogicColour);
                 case InvocationExpressionSyntax input
                     when TAuditBinder.TAuditMemberCheck(
@@ -174,20 +202,23 @@ internal static class TAuditLaunderingWalker
 
     private static bool TAuditConditionCheck(ExpressionSyntax condition)
     {
-        if (condition is IsPatternExpressionSyntax { Pattern: var pattern }
-            && TAuditStrictWalker.TAuditPatternCheck(pattern))
-        {
-            return false;
-        }
-
-        if (condition is BinaryExpressionSyntax binary
-            && (binary.IsKind(SyntaxKind.EqualsExpression) || binary.IsKind(SyntaxKind.NotEqualsExpression))
-            && (TAuditStrictWalker.TAuditNullCheck(binary.Left) || TAuditStrictWalker.TAuditNullCheck(binary.Right)))
-        {
-            return false;
-        }
-
-        return !TAuditVerdictCheck(condition);
+        bool presence = condition
+            .DescendantNodesAndSelf(parent => parent is BinaryExpressionSyntax chain
+                                              && (chain.IsKind(SyntaxKind.LogicalAndExpression)
+                                                  || chain.IsKind(SyntaxKind.LogicalOrExpression)))
+            .OfType<ExpressionSyntax>()
+            .Where(operand => !operand.IsKind(SyntaxKind.LogicalAndExpression)
+                              && !operand.IsKind(SyntaxKind.LogicalOrExpression))
+            .All(operand => operand switch
+            {
+                IsPatternExpressionSyntax { Pattern: var pattern } => TAuditStrictWalker.TAuditPatternCheck(pattern),
+                BinaryExpressionSyntax binary
+                    when binary.IsKind(SyntaxKind.EqualsExpression) || binary.IsKind(SyntaxKind.NotEqualsExpression)
+                    => TAuditStrictWalker.TAuditNullCheck(binary.Left)
+                       || TAuditStrictWalker.TAuditNullCheck(binary.Right),
+                _ => false
+            });
+        return !presence && !TAuditVerdictCheck(condition);
     }
 
     private static bool TAuditVerdictCheck(ExpressionSyntax condition)
@@ -199,7 +230,7 @@ internal static class TAuditLaunderingWalker
             return false;
         }
 
-        return TAuditBinder.TAuditLogicCheck(symbol) || TAuditReaderNames.Contains(symbol);
+        return TAuditBinder.TAuditLogicCheck(symbol) || TAuditReaderNames.Value!.Contains(symbol);
     }
 
     private static int TAuditLineRead(SyntaxNode node)

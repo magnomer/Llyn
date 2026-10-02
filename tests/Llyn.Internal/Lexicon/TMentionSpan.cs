@@ -53,7 +53,7 @@ public sealed class TMentionSpan
             [TInterface.TMentionCreate(2, 12, 4, 7), TInterface.TMentionCreate(1, 3, 4, 5)]);
 
         Assert.Equal([0, 3, 7, 12, 16], pieces.Select(piece => piece.LMentionPieceOffset));
-        Assert.Equal([3, 4, 5, 4, 1], pieces.Select(piece => piece.LMentionPieceLength));
+        Assert.Equal(["he ", "said", " the ", "word", "."], pieces.Select(piece => piece.LMentionPieceText));
         Assert.Equal([0L, 1L, 0L, 2L, 0L], pieces.Select(piece => piece.LMentionPieceStored?.LMentionId ?? 0));
     }
 
@@ -65,8 +65,7 @@ public sealed class TMentionSpan
             [TInterface.TMentionCreate(1, 0, 2, 5), TInterface.TMentionCreate(2, 12, 4, 7)]);
 
         Assert.Equal([0, 2, 12], pieces.Select(piece => piece.LMentionPieceOffset));
-        Assert.Equal([2, 10, 4], pieces.Select(piece => piece.LMentionPieceLength));
-        Assert.Equal(16, pieces.Sum(piece => piece.LMentionPieceLength));
+        Assert.Equal(["he", " said the ", "word"], pieces.Select(piece => piece.LMentionPieceText));
     }
 
     [Fact]
@@ -77,7 +76,6 @@ public sealed class TMentionSpan
             [TInterface.TMentionCreate(1, 7, 3, 5)]);
 
         Assert.Equal([0, 7], pieces.Select(piece => piece.LMentionPieceOffset));
-        Assert.Equal([7, 3], pieces.Select(piece => piece.LMentionPieceLength));
         Assert.Equal(["go 𝒜bc ", "now"], pieces.Select(piece => piece.LMentionPieceText));
         Assert.Equal(1, pieces[1].LMentionPieceStored!.LMentionId);
     }
@@ -87,7 +85,7 @@ public sealed class TMentionSpan
     {
         LMentionPiece piece = Assert.Single(TInterface.TMentionSpanDivide("he said", []));
 
-        Assert.Equal((0, 7), (piece.LMentionPieceOffset, piece.LMentionPieceLength));
+        Assert.Equal((0, "he said"), (piece.LMentionPieceOffset, piece.LMentionPieceText));
         Assert.Null(piece.LMentionPieceStored);
         Assert.Empty(TInterface.TMentionSpanDivide(string.Empty, []));
     }

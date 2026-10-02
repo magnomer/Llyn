@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Llyn.Core;
 
@@ -33,6 +34,34 @@ public sealed class LMentionClerk
 
         return LMentionClerkFind(
             stored.LExampleText.LStateValueShow(), stored.LExampleLanguage, offset, stored.LExampleMention);
+    }
+
+    public LMentionResult LMentionClerkFind(LEntryDraft shown, long sentence, int offset)
+    {
+        ArgumentNullException.ThrowIfNull(shown);
+
+        LSentenceDraft? row = shown.LEntryDraftMeanings
+            .Concat(shown.LEntryDraftCollocations)
+            .SelectMany(static card => card.LCardDraftSentence)
+            .FirstOrDefault(row => row.LSentenceDraftId == sentence);
+        if (row?.LSentenceDraftExample is not LExampleDraft example)
+        {
+            return new LMentionResult(offset, null, []);
+        }
+
+        return LMentionClerkFind(
+            example.LExampleDraftText.LStateValueShow(),
+            row.LSentenceDraftLanguage.Length > 0 ? row.LSentenceDraftLanguage : shown.LEntryDraftLanguage,
+            offset,
+            LDraftClerkMention.LMentionRead(row.LSentenceDraftMention));
+    }
+
+    public LMentionResult LMentionEtymologyFind(LEntryDraft shown, int offset)
+    {
+        ArgumentNullException.ThrowIfNull(shown);
+
+        return LMentionClerkFind(
+            shown.LEntryDraftEtymology.LEtymologyDraftText, shown.LEntryDraftLanguage, offset, []);
     }
 
     public LMentionResult LMentionClerkFind(

@@ -10,10 +10,10 @@ Every member the loaded draft carries is drawn.
 A field the card left empty collapses rather than leaving a blank line.
 The incoming rows and the stamps take their shapes from [PDisplayUsage.xaml](../Template/PDisplayUsage.comment.md).
 The contents column takes its row from [PDisplayCompass.xaml](../Compass/PDisplayCompass.comment.md).
-That dictionary is merged from code, because the row answers a click.
+The merge is declared here, so the list reads the row template dynamically.
 The root and the header resize the contents through the compass, so neither names a handler here.
 No element here names a handler, a command or a binding.
-The Deportment class of the same name loads this markup and wires each named part.
+`QDisplay` pulls each named part by contract ID and wires it.
 
 ## `<StackPanel x:Name="PDisplayIncomingSection" Margin="0,28,0,0">`
 
@@ -67,18 +67,19 @@ The chip collapses when the entry carries no pronunciation.
 ## `<local:PContour x:Name="PDisplayContour" Style="{StaticResource Theme.Contour.Box}" />`
 
 The tone contour of the primary pronunciation, drawn beneath its chip when the entry's language is tonal.
-The Deportment class hands it the original IPA and the tonal flag, whichever form the chip prints.
+`QDisplay` hands it the original IPA and the tonal flag, whichever form the chip prints.
 It hides itself when there is no tone to draw.
 
 ## `<ItemsControl x:Name="PDisplayAccent" ItemTemplate="{StaticResource Theme.Accent.Display}" />`
 
 The further pronunciations of the entry, one row each beneath the primary, drawn by the shared accent template.
-The Deportment class binds the playback command on it, so a row's play button reaches this view's player.
+`QDisplay` binds the playback command on it, so a row's play button reaches this view's player.
 
-## `<local:PReflexList x:Name="PDisplayReflex" ItemTemplate="{StaticResource Theme.Reflex.Display}" />`
+## `<ItemsControl x:Name="PDisplayReflex" ItemTemplate="{StaticResource Theme.Reflex.Display}" />`
 
 The reflexes of the entry, one row each at the head of the reading stack under the headword.
 The rows are drawn by the shared reflex template.
+The list sits in a `QReflexFrame`, which reports only its fields and buttons to accessibility.
 `PDisplayReflexLoading` under them is the fetching line, shown only while the engine fills the entry.
 It is empty for every entry whose language declares no reflex rule and carries none.
 `PDisplayReflexTable` holds the rows, the fetching line and the fold toggle in a stack no wider than the rows.
@@ -118,20 +119,20 @@ The chip holds the rung name and a row of four stars, filled to the rung.
 The chip carries the tooltip, so hovering anywhere on it names the source and the raw figure.
 The section collapses until the engine has a value for the entry.
 
-## `<local:PParadigm x:Name="PDisplayParadigm" Margin="0,14,0,0" />`
+## `<local:QParadigm x:Name="PDisplayParadigm" Margin="0,14,0,0" />`
 
 The inflected forms of the headword, one row each, boxed above the first meaning.
 It is read-only here, because the engine fetches the forms and the editor edits them as inflection rows.
 The box collapses by itself while the headword has no form to show.
 
-## `<local:PScript x:Name="PDisplayScript" Margin="0,28,0,0" />`
+## `<local:QScript x:Name="PDisplayScript" Margin="0,28,0,0" />`
 
 The character styles of the headword, one row per character and style, boxed after the note.
 It is read-only, because the engine fetches the pictures and the user never places them.
 The same control sits folded in the editor, so both show one thing.
 It shows the loading line while a fetch runs and collapses when nothing is stored and nothing runs.
 
-## `<local:PFanqie x:Name="PDisplayFanqie" Margin="0,14,0,0" />`
+## `<local:QFanqie x:Name="PDisplayFanqie" Margin="0,14,0,0" />`
 
 The rime-book placements of the headword, one block per character, book and source, boxed under the paradigm box.
 It is read-only like the script box, because the engine fetches the rows and the user never writes them.

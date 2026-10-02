@@ -22,6 +22,14 @@ A frame with one part keeps no stray space, and a row with no frame has no brack
 
 A cited Source answers its ready line, and a missing line or no citation answers nothing.
 
+## `public void EngineLineRead_LinkedMention_DividesTheSentenceAroundIt()`
+
+The sentence arrives in pieces around its Mentions, the draft's span resolved to stored shape.
+
 ## `private static (string, string) TEngineHeadRead(LSentenceDraft sentence, LSentenceOrder order, IReadOnlyDictionary<long, string> citations)`
 
 The frame and the sentence of one row, read with `?` as the unknown mark.
+
+## `private static string TExampleLineFormat(IReadOnlyList<LMentionPiece> pieces)`
+
+The whole sentence a line's pieces spell, so the text assertions stay whole.

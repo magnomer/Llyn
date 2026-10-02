@@ -60,7 +60,7 @@ auditui -Open
 auditui -Configuration Release
 #>
 #requires -Version 5.1
-# AUDITUI GENERATION 17 - auditui.ps1.
+# AUDITUI GENERATION 18 - auditui.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -84,6 +84,11 @@ auditui -Configuration Release
 # Unsealing kind counts engine types on the public members of sealed Deportment types.
 # Generation 17: findings take one vocabulary of -ing kinds and plain measure names, and the
 # configuration keys follow. What the audit counts is unchanged.
+# Generation 18: the truth audit stops five false findings. A literal bool comparison, a name inside
+# nameof and a chain of presence tests decide nothing, a break or continue leaves only its loop,
+# and a receiver behind ! is still only a receiver.
+# It also sees a field passed by ref, a delegate stored from a parameter, an interface event, a static
+# Conduct value in driver arithmetic, and a surface loaded through a built URI.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -186,7 +191,7 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 17
+$script:AuditGeneration = 18
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
 
@@ -345,7 +350,8 @@ string outputPath = args[4];
 string reportPath = args[5];
 string version = args[6];
 
-LAuditSettingRead.LAuditLoad(JsonDocument.Parse(File.ReadAllText(configPath)).RootElement);
+JsonElement config = JsonDocument.Parse(File.ReadAllText(configPath)).RootElement;
+LAuditSettingRead.LAuditLoad(config);
 LAuditScopeSetting.LAuditLoad(JsonDocument.Parse(File.ReadAllText(binderPath)).RootElement);
 LAuditBind.LAuditBindSet(LAuditBinder.LAuditBinderRead(projectRoot, binderPath));
 LAuditLedger.LAuditLoad(ledgerPath);
@@ -381,7 +387,7 @@ counters.Add(new LAuditCounter("Truth stale ceilings", LAuditLedger.LAuditStaleR
 counters.Add(new LAuditCounter("Truth unwalked files", LAuditBind.LAuditCoverRead(truth.LAuditSources)));
 counters.AddRange(LAuditBoundaryRun.LAuditRead(projectRoot));
 
-LAuditReport.LAuditSave(reportPath, version, strict, truth, counters, kinds);
+LAuditReport.LAuditSave(reportPath, version, config.GetProperty("generation").GetInt32(), strict, truth, counters, kinds);
 
 using (FileStream stream = File.Create(outputPath))
 using (Utf8JsonWriter writer = new(stream))
@@ -811,6 +817,7 @@ internal static class LAuditReport
     public static void LAuditSave(
         string path,
         string version,
+        int generation,
         LAuditStrictRun strict,
         LAuditTruthRun truth,
         IReadOnlyList<LAuditCounter> counters,
@@ -818,7 +825,7 @@ internal static class LAuditReport
     {
         StringBuilder text = new();
         text.Append($"# UI audit {version}\n\n");
-        text.Append($"- Generation: 13\n");
+        text.Append($"- Generation: {generation}\n");
         text.Append($"- Strict enforced: {LAuditStrictSetting.LAuditStrictEnforced}\n");
         text.Append($"- Truth enforced: {LAuditTruthSetting.LAuditTruthEnforced}\n");
         text.Append($"- Surface types: {strict.LAuditVeneers.Count}\n");
@@ -915,6 +922,7 @@ internal static class LAuditReport
 # The walkers: the binder queries, the settings and the strict, host, reach, truth, moonlighting
 # and laundering walkers, each one rule for rule the counterpart of its convention-test counterpart.
 $script:HelperWalker = @'
+using System.Collections.Immutable;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -922,6 +930,7 @@ using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Operations;
 
 internal static class LAuditBind
 {
@@ -1244,9 +1253,9 @@ internal static class LAuditSettingRead
         ],
         ["truth"] =
         [
-            "enforced", "stateSuffix", "bulletinType", "conductRoot", "shellInclude", "truthInclude", "controlBases",
-            "orderVerbs", "fillVerbs", "requestPrefix", "sendRoots", "clockTypes", "consoleInput", "dialogTypes",
-            "delayMembers", "inputMembers", "truthHandles", "moonlightingVerbs"
+            "enforced", "stateSuffix", "bulletinType", "conductRoot", "capsuleInclude", "shellInclude", "truthInclude",
+            "controlBases", "orderVerbs", "fillVerbs", "requestPrefix", "sendRoots", "clockTypes", "consoleInput",
+            "dialogTypes", "delayMembers", "inputMembers", "focusMembers", "truthHandles", "moonlightingVerbs"
         ],
         ["boundary"] =
         [
@@ -1316,7 +1325,9 @@ internal static class LAuditSettingRead
         LAuditTruthSetting.LAuditStateSuffix = truth.GetProperty("stateSuffix").GetString()!;
         LAuditTruthSetting.LAuditBulletinType = truth.GetProperty("bulletinType").GetString()!;
         LAuditTruthSetting.LAuditConductRoot = truth.GetProperty("conductRoot").GetString()!;
-        LAuditTruthSetting.LAuditShellInclude = LAuditListRead(truth, "shellInclude");
+        LAuditTruthSetting.LAuditCapsuleInclude = LAuditListRead(truth, "capsuleInclude");
+        LAuditTruthSetting.LAuditShellInclude =
+            [.. LAuditListRead(truth, "shellInclude"), .. LAuditTruthSetting.LAuditCapsuleInclude];
         LAuditTruthSetting.LAuditTruthInclude = LAuditListRead(truth, "truthInclude");
         LAuditTruthSetting.LAuditControlBases = LAuditListRead(truth, "controlBases");
         LAuditTruthSetting.LAuditOrderVerbs = LAuditListRead(truth, "orderVerbs");
@@ -1328,6 +1339,7 @@ internal static class LAuditSettingRead
         LAuditTruthSetting.LAuditDialogTypes = LAuditListRead(truth, "dialogTypes");
         LAuditTruthSetting.LAuditDelayMembers = LAuditListRead(truth, "delayMembers");
         LAuditTruthSetting.LAuditInputMembers = LAuditListRead(truth, "inputMembers");
+        LAuditTruthSetting.LAuditFocusMembers = LAuditListRead(truth, "focusMembers");
         LAuditTruthSetting.LAuditTruthHandles = LAuditListRead(truth, "truthHandles");
         LAuditTruthSetting.LAuditMoonlightingVerbs = LAuditListRead(truth, "moonlightingVerbs");
 
@@ -1391,11 +1403,44 @@ internal static class LAuditContractWalker
 
         foreach (SyntaxNode root in LAuditBind.LAuditWalkRead(driverPaths))
         {
+            LAuditLoadScan(root, violations);
             LAuditMasqueradingScan(root, violations);
             LAuditDanglingScan(root, ids, violations);
         }
 
         return violations;
+    }
+
+    private static void LAuditLoadScan(SyntaxNode root, List<LViolation> violations)
+    {
+        SemanticModel model = LAuditBind.LAuditModelRead(root);
+        foreach (InvocationExpressionSyntax call in root.DescendantNodes().OfType<InvocationExpressionSyntax>())
+        {
+            if (model.GetSymbolInfo(call).Symbol is not IMethodSymbol { Name: "LoadComponent" } method
+                || method.ContainingType?.ToDisplayString() != "System.Windows.Application")
+            {
+                continue;
+            }
+
+            foreach (ArgumentSyntax argument in call.ArgumentList.Arguments)
+            {
+                if (model.GetTypeInfo(argument.Expression).Type?.ToDisplayString() != "System.Uri"
+                    || argument.Expression is BaseObjectCreationExpressionSyntax
+                    {
+                        ArgumentList.Arguments: [{ Expression: LiteralExpressionSyntax { Token.Value: string } }, ..]
+                    })
+                {
+                    continue;
+                }
+
+                violations.Add(new LViolation(
+                    call.SyntaxTree.FilePath,
+                    argument.GetLocation().GetLineSpan().StartLinePosition.Line + 1,
+                    argument.Expression.ToString(),
+                    "Hardwiring",
+                    "driver loads the surface through a built URI"));
+            }
+        }
     }
 
     private static void LAuditHardwiringScan(string path, List<LViolation> violations)
@@ -1445,6 +1490,13 @@ internal static class LAuditContractWalker
         {
             if (model.GetSymbolInfo(call).Symbol is not IMethodSymbol method
                 || method.ContainingType?.Name != LAuditStrictSetting.LAuditContractType)
+            {
+                continue;
+            }
+
+            TypeDeclarationSyntax? enclosing = call.FirstAncestorOrSelf<TypeDeclarationSyntax>();
+            if (enclosing is not null
+                && SymbolEqualityComparer.Default.Equals(model.GetDeclaredSymbol(enclosing), method.ContainingType))
             {
                 continue;
             }
@@ -1506,6 +1558,7 @@ internal static class LAuditTruthSetting
     public static string LAuditStateSuffix = "";
     public static string LAuditBulletinType = "";
     public static string LAuditConductRoot = "";
+    public static string[] LAuditCapsuleInclude = [];
     public static string[] LAuditShellInclude = [];
     public static string[] LAuditTruthInclude = [];
     public static string[] LAuditControlBases = [];
@@ -1518,6 +1571,7 @@ internal static class LAuditTruthSetting
     public static string[] LAuditDialogTypes = [];
     public static string[] LAuditDelayMembers = [];
     public static string[] LAuditInputMembers = [];
+    public static string[] LAuditFocusMembers = [];
     public static string[] LAuditTruthHandles = [];
     public static string[] LAuditMoonlightingVerbs = [];
 }
@@ -2525,7 +2579,7 @@ internal static partial class LAuditTruthWalker
 
         LAuditIndex = new Dictionary<ISymbol, List<IdentifierNameSyntax>>(SymbolEqualityComparer.Default);
         foreach (IdentifierNameSyntax identifier in LAuditRoots.SelectMany(root =>
-                     root.DescendantNodes().OfType<IdentifierNameSyntax>()))
+                     root.DescendantNodes(node => !LAuditNameofCheck(node)).OfType<IdentifierNameSyntax>()))
         {
             if (LAuditBind.LAuditSymbolRead(identifier) is not { } symbol)
             {
@@ -2677,7 +2731,8 @@ internal static partial class LAuditTruthWalker
         HashSet<MemberDeclarationSyntax> toggles = [];
         HashSet<ISymbol> writers = LAuditWriterRead(field, type);
         SyntaxNode? engineWrite = null;
-        SyntaxNode? plainWrite = null;
+        List<SyntaxNode> plainWrites = [];
+        List<(SyntaxNode, ExpressionSyntax?)> written = [];
 
         foreach (IdentifierNameSyntax identifier in LAuditUseRead(writers))
         {
@@ -2694,7 +2749,8 @@ internal static partial class LAuditTruthWalker
                      .OrderBy(identifier => identifier.SyntaxTree.FilePath, StringComparer.Ordinal)
                      .ThenBy(identifier => identifier.SpanStart))
         {
-            bool inside = LAuditInsideCheck(identifier, type);
+            bool inside = LAuditInsideCheck(identifier, type)
+                          || LAuditBind.LAuditSymbolRead(identifier) is IParameterSymbol { RefKind: not RefKind.None };
             if (!inside && !field.TFieldShared)
             {
                 continue;
@@ -2730,14 +2786,23 @@ internal static partial class LAuditTruthWalker
                 }
 
                 bool emptied = value is null && reference.Parent is MemberAccessExpressionSyntax;
-                switch (emptied ? "clear" : LAuditWriterResolve(value))
+                foreach (ExpressionSyntax? given in
+                         LAuditOriginWalker.LAuditHelperRead(identifier, reference) ?? [value])
                 {
-                    case "engine":
+                    string verdict = emptied ? "clear" : LAuditOriginWalker.LAuditWriterResolve(given);
+                    if (verdict == "engine")
+                    {
                         engineWrite ??= reference;
-                        break;
-                    case "plain":
-                        plainWrite ??= reference;
-                        break;
+                    }
+                    else if (verdict == "plain")
+                    {
+                        plainWrites.Add(reference);
+                    }
+
+                    if (verdict != "clear")
+                    {
+                        written.Add((reference, given));
+                    }
                 }
 
                 continue;
@@ -2751,17 +2816,26 @@ internal static partial class LAuditTruthWalker
             LAuditScopeCheck(field, scope, violations);
         }
 
-        if (engineWrite is not null && plainWrite is not null)
+        if (engineWrite is not null && plainWrites.Count > 0
+            && LAuditLookupWalker.LAuditLookupRead(written) is { } looked)
+        {
+            (engineWrite, plainWrites) = looked;
+        }
+
+        if (engineWrite is not null && plainWrites.FirstOrDefault() is { } plainWrite)
         {
             string where = engineWrite.SyntaxTree == plainWrite.SyntaxTree
                 ? $"line {LAuditLineRead(engineWrite)}"
                 : $"{Path.GetFileName(engineWrite.SyntaxTree.FilePath)}:{LAuditLineRead(engineWrite)}";
+            string others = string.Join(", ", plainWrites.Skip(1).Select(write =>
+                $"{Path.GetFileName(write.SyntaxTree.FilePath)}:{LAuditLineRead(write)}"));
+            string also = others.Length > 0 ? $", also at {others}" : string.Empty;
             violations.Add(new LViolation(
                 plainWrite.SyntaxTree.FilePath,
                 LAuditLineRead(plainWrite),
                 field.TFieldName,
                 "Contesting",
-                $"written by the engine at {where} and by the shell here"));
+                $"written by the engine at {where} and by the shell here{also}"));
         }
     }
 
@@ -2770,7 +2844,8 @@ internal static partial class LAuditTruthWalker
     {
         HashSet<ISymbol> tainted = LAuditTaintRead(field, scope);
         HashSet<string> seen = new(StringComparer.Ordinal);
-        foreach (IdentifierNameSyntax identifier in scope.DescendantNodes().OfType<IdentifierNameSyntax>())
+        foreach (IdentifierNameSyntax identifier in scope.DescendantNodes(node => !LAuditNameofCheck(node))
+                     .OfType<IdentifierNameSyntax>())
         {
             bool direct = LAuditFieldCheck(identifier, field.TFieldSymbols);
             if (!direct && !LAuditFieldCheck(identifier, tainted))
@@ -2790,9 +2865,12 @@ internal static partial class LAuditTruthWalker
                 continue;
             }
 
-            string reason = direct
+            string? via = LAuditBind.LAuditSymbolRead(identifier) is IParameterSymbol { RefKind: not RefKind.None }
+                ? "ref"
+                : direct ? null : "local";
+            string reason = via is null
                 ? sink.Value.LViolationReason
-                : $"{sink.Value.LViolationReason} through local '{identifier.Identifier.ValueText}'";
+                : $"{sink.Value.LViolationReason} through {via} '{identifier.Identifier.ValueText}'";
             int line = LAuditLineRead(reference);
             if (seen.Add($"{line}:{sink.Value.LViolationKind}"))
             {
@@ -2840,35 +2918,6 @@ internal static partial class LAuditTruthWalker
         }
     }
 
-    private static string LAuditWriterResolve(ExpressionSyntax? value)
-    {
-        if (value is null)
-        {
-            return "plain";
-        }
-
-        if (value.IsKind(SyntaxKind.NullLiteralExpression)
-            || value.IsKind(SyntaxKind.DefaultLiteralExpression)
-            || value is DefaultExpressionSyntax)
-        {
-            return "clear";
-        }
-
-        bool asked = value.DescendantNodesAndSelf().Any(node => node switch
-        {
-            MemberAccessExpressionSyntax or MemberBindingExpressionSyntax
-                => LAuditBind.LAuditLogicCheck(LAuditBind.LAuditSymbolRead(node)),
-            InvocationExpressionSyntax call
-                => LAuditCallRead(call) is not null
-                   || (LAuditBind.LAuditSymbolRead(call) is { } callee && LAuditReaderNames.Contains(callee)),
-            BaseObjectCreationExpressionSyntax creation => LAuditCallRead(creation) is not null,
-            IdentifierNameSyntax name => LAuditBind.LAuditSymbolRead(name) is ILocalSymbol or IParameterSymbol
-                                         && LAuditBind.LAuditLogicCheck(name),
-            _ => false
-        });
-        return asked ? "engine" : "plain";
-    }
-
     private static SyntaxNode LAuditReferenceRead(IdentifierNameSyntax identifier)
     {
         return identifier.Parent is MemberAccessExpressionSyntax
@@ -2880,7 +2929,7 @@ internal static partial class LAuditTruthWalker
             : identifier;
     }
 
-    private static bool LAuditWriteCheck(SyntaxNode reference, out ExpressionSyntax? value)
+    internal static bool LAuditWriteCheck(SyntaxNode reference, out ExpressionSyntax? value)
     {
         value = null;
         switch (reference.Parent)
@@ -2913,7 +2962,7 @@ internal static partial class LAuditTruthWalker
 
     private static bool LAuditNameCheck(SyntaxNode node, HashSet<ISymbol> symbols)
     {
-        return node.DescendantNodesAndSelf().OfType<IdentifierNameSyntax>()
+        return node.DescendantNodesAndSelf(parent => !LAuditNameofCheck(parent)).OfType<IdentifierNameSyntax>()
             .Any(identifier => LAuditFieldCheck(identifier, symbols));
     }
 
@@ -3044,7 +3093,8 @@ internal static partial class LAuditTruthWalker
             string member = LAuditMemberRead(scope);
 
             HashSet<string> seen = new(StringComparer.Ordinal);
-            foreach (IdentifierNameSyntax identifier in scope.DescendantNodes().OfType<IdentifierNameSyntax>())
+            foreach (IdentifierNameSyntax identifier in scope.DescendantNodes(node => !LAuditNameofCheck(node))
+                         .OfType<IdentifierNameSyntax>())
             {
                 if (!LAuditFieldCheck(identifier, answered) || LAuditWriteCheck(identifier, out _))
                 {
@@ -3165,7 +3215,7 @@ internal static partial class LAuditTruthWalker
 
     private static bool LAuditAnswerCheck(ExpressionSyntax value)
     {
-        return value.DescendantNodesAndSelf().Any(node => node switch
+        return value.DescendantNodesAndSelf(node => !LAuditNameofCheck(node)).Any(node => node switch
         {
             InvocationExpressionSyntax or BaseObjectCreationExpressionSyntax
                 => LAuditCallRead((ExpressionSyntax)node) is not null,
@@ -3447,7 +3497,7 @@ internal static partial class LAuditTruthWalker
 {
     private static HashSet<ISymbol> LAuditRelayNames = new(SymbolEqualityComparer.Default);
 
-    private static HashSet<ISymbol> LAuditReaderNames = new(SymbolEqualityComparer.Default);
+    internal static HashSet<ISymbol> LAuditReaderNames = new(SymbolEqualityComparer.Default);
 
     private static Dictionary<ISymbol, HashSet<int>> LAuditHotNames = new(SymbolEqualityComparer.Default);
 
@@ -3469,11 +3519,17 @@ internal static partial class LAuditTruthWalker
             .Where(pair => pair.Item1 is not null)
             .Select(pair => (pair.Item1!, pair.member))
             .ToList();
-        List<AssignmentExpressionSyntax> wiring = type
-            .SelectMany(part => part.DescendantNodes().OfType<AssignmentExpressionSyntax>())
+        List<SyntaxNode> roots = LAuditBind.LAuditTrees.Select(tree => tree.GetRoot()).ToList();
+        List<AssignmentExpressionSyntax> wiring = roots
+            .SelectMany(root => root.DescendantNodes().OfType<AssignmentExpressionSyntax>())
             .Where(assignment => assignment.IsKind(SyntaxKind.SimpleAssignmentExpression)
                                  || assignment.IsKind(SyntaxKind.AddAssignmentExpression))
             .ToList();
+        List<VariableDeclaratorSyntax> locals = roots
+            .SelectMany(root => root.DescendantNodes().OfType<VariableDeclaratorSyntax>())
+            .Where(declarator => declarator.Initializer is not null)
+            .ToList();
+        Dictionary<ISymbol, List<ExpressionSyntax>> seams = LAuditSeamRead(roots);
         bool grown = true;
         while (grown)
         {
@@ -3504,6 +3560,17 @@ internal static partial class LAuditTruthWalker
                 }
             }
 
+            foreach (VariableDeclaratorSyntax local in locals)
+            {
+                if (LAuditBind.LAuditSymbolRead(local) is ILocalSymbol { Type.TypeKind: TypeKind.Delegate } held
+                    && !LAuditRelayNames.Contains(held)
+                    && LAuditSeamCheck(local.Initializer!.Value, seams, new(SymbolEqualityComparer.Default)))
+                {
+                    LAuditRelayNames.Add(held);
+                    grown = true;
+                }
+            }
+
             foreach (AssignmentExpressionSyntax assignment in wiring)
             {
                 if (LAuditBind.LAuditSymbolRead(assignment.Left) is { } held
@@ -3512,11 +3579,13 @@ internal static partial class LAuditTruthWalker
                         IFieldSymbol field => field.Type,
                         IEventSymbol happening => happening.Type,
                         IPropertySymbol property => property.Type,
+                        ILocalSymbol local => local.Type,
                         _ => null
                     } is { TypeKind: TypeKind.Delegate }
-                    && LAuditBind.LAuditShellCheck(held.ContainingType)
+                    && (LAuditBind.LAuditShellCheck(held.ContainingType)
+                        || held is IEventSymbol { ContainingType.TypeKind: TypeKind.Interface })
                     && !LAuditRelayNames.Contains(held)
-                    && LAuditDelegateCheck(assignment.Right))
+                    && LAuditSeamCheck(assignment.Right, seams, new(SymbolEqualityComparer.Default)))
                 {
                     LAuditRelayNames.Add(held);
                     grown = true;
@@ -3525,13 +3594,60 @@ internal static partial class LAuditTruthWalker
         }
     }
 
+    private static Dictionary<ISymbol, List<ExpressionSyntax>> LAuditSeamRead(IReadOnlyList<SyntaxNode> roots)
+    {
+        Dictionary<ISymbol, List<ExpressionSyntax>> seams = new(SymbolEqualityComparer.Default);
+        foreach (ArgumentSyntax argument in roots.SelectMany(root => root.DescendantNodes().OfType<ArgumentSyntax>()))
+        {
+            if (LAuditParameterRead(argument) is not { Type.TypeKind: TypeKind.Delegate } parameter)
+            {
+                continue;
+            }
+
+            if (!seams.TryGetValue(parameter, out List<ExpressionSyntax>? passed))
+            {
+                passed = [];
+                seams[parameter] = passed;
+            }
+
+            passed.Add(argument.Expression);
+        }
+
+        return seams;
+    }
+
+    private static bool LAuditSeamCheck(
+        ExpressionSyntax value, IReadOnlyDictionary<ISymbol, List<ExpressionSyntax>> seams, HashSet<ISymbol> seen)
+    {
+        return LAuditDelegateCheck(value)
+               || (LAuditBind.LAuditSymbolRead(value) is IParameterSymbol parameter
+                   && seen.Add(parameter)
+                   && seams.TryGetValue(parameter, out List<ExpressionSyntax>? passed)
+                   && passed.Any(argument => LAuditSeamCheck(argument, seams, seen)));
+    }
+
+    private static IParameterSymbol? LAuditParameterRead(ArgumentSyntax argument)
+    {
+        if (argument.Parent is not BaseArgumentListSyntax { Parent: { } call } list
+            || call is not (ExpressionSyntax or ConstructorInitializerSyntax or PrimaryConstructorBaseTypeSyntax)
+            || LAuditBind.LAuditSymbolRead(call) is not IMethodSymbol callee)
+        {
+            return null;
+        }
+
+        return argument.NameColon is { Name.Identifier.ValueText: var name }
+            ? callee.Parameters.FirstOrDefault(parameter => parameter.Name == name)
+            : callee.Parameters.ElementAtOrDefault(list.Arguments.IndexOf(argument));
+    }
+
     private static bool LAuditDelegateCheck(ExpressionSyntax value)
     {
         return LAuditRequestCheck(value)
                || value.DescendantNodesAndSelf().OfType<IdentifierNameSyntax>().Any(name =>
                    name.Parent is not InvocationExpressionSyntax
-                   && LAuditBind.LAuditSymbolRead(name) is IMethodSymbol method
-                   && (LAuditRelayNames.Contains(method) || LAuditBind.LAuditLogicCheck(method)));
+                   && LAuditBind.LAuditSymbolRead(name) is { } symbol
+                   && (LAuditRelayNames.Contains(symbol)
+                       || (symbol is IMethodSymbol method && LAuditBind.LAuditLogicCheck(method))));
     }
 
     private static bool LAuditHotRead(ISymbol symbol, SyntaxNode method, ParameterListSyntax list)
@@ -3574,7 +3690,7 @@ internal static partial class LAuditTruthWalker
 
     private static bool LAuditReadCheck(SyntaxNode member)
     {
-        return member.DescendantNodes().Any(node => node switch
+        return member.DescendantNodes(node => !LAuditNameofCheck(node)).Any(node => node switch
         {
             MemberAccessExpressionSyntax or MemberBindingExpressionSyntax
                 => LAuditBind.LAuditLogicCheck(LAuditBind.LAuditSymbolRead(node)),
@@ -3613,6 +3729,17 @@ internal static partial class LAuditTruthWalker
                     && LAuditNameCheck(property, symbols))
                 {
                     symbols.Add(alias);
+                    grown = true;
+                }
+            }
+
+            foreach (ArgumentSyntax argument in LAuditUseRead(symbols.ToList())
+                         .Select(identifier => identifier.Parent)
+                         .OfType<ArgumentSyntax>()
+                         .Where(argument => !argument.RefKindKeyword.IsKind(SyntaxKind.None)))
+            {
+                if (LAuditParameterRead(argument) is { } parameter && symbols.Add(parameter))
+                {
                     grown = true;
                 }
             }
@@ -3754,12 +3881,17 @@ internal static partial class LAuditTruthWalker
     private static bool LAuditJumpCheck(IfStatementSyntax branch)
     {
         return branch.Else is null && branch.Statement.DescendantNodesAndSelf().Any(node =>
-            node is ReturnStatementSyntax or ThrowStatementSyntax or ContinueStatementSyntax or BreakStatementSyntax);
+            node is ReturnStatementSyntax or ThrowStatementSyntax or BreakStatementSyntax
+                or ContinueStatementSyntax
+            && node.Ancestors().TakeWhile(above => above != branch).All(above => above is BlockSyntax));
     }
 }
 
 internal static partial class LAuditTruthWalker
 {
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<SyntaxNode, HashSet<ISymbol>>
+        LAuditCarriedNames = new();
+
     private static void LAuditMisfiringScan(SyntaxNode root, List<LViolation> violations)
     {
         HashSet<string> seen = new(StringComparer.Ordinal);
@@ -3768,12 +3900,29 @@ internal static partial class LAuditTruthWalker
             (string LViolationKind, string LViolationName, string LViolationReason)? hit = node switch
             {
                 IfStatementSyntax branch when LAuditControlRead(branch.Condition) is string control
+                                              && !(LAuditStrictWalker.LAuditCoreRead(branch.Condition)
+                                                       is IsPatternExpressionSyntax { Pattern: var shape }
+                                                   && LAuditPairCheck(shape))
+                                              && !LAuditHearingCheck(branch)
                                               && LAuditGatekeepingCheck(branch)
                     => ("Misfiring", control, "control decides a request in an if"),
                 ConditionalExpressionSyntax choice when LAuditControlRead(choice.Condition) is string control
+                                                        && !LAuditPresenceCheck(choice.Condition)
+                                                        && !(LAuditStrictWalker.LAuditCoreRead(choice.Condition)
+                                                                 is IsPatternExpressionSyntax { Pattern: var shape }
+                                                             && LAuditPairCheck(shape))
                                                         && (LAuditRequestCheck(choice.WhenTrue)
                                                             || LAuditRequestCheck(choice.WhenFalse))
                     => ("Misfiring", control, "control decides a request in a ternary"),
+                SwitchSectionSyntax { Parent: SwitchStatementSyntax select } section
+                    when section.Labels.Select(label => LAuditCaseRead(select.Expression, label))
+                             .FirstOrDefault(read => read is not null) is string control
+                         && select.Sections.Any(LAuditRequestCheck)
+                    => ("Misfiring", control, "control decides a request in a switch case"),
+                SwitchExpressionArmSyntax { Parent: SwitchExpressionSyntax select } arm
+                    when LAuditCaseRead(select.GoverningExpression, arm) is string control
+                         && select.Arms.Any(other => LAuditRequestCheck(other.Expression))
+                    => ("Misfiring", control, "control decides a request in a switch arm"),
                 IfStatementSyntax branch when LAuditDialogRead(branch.Condition) is string dialog
                                               && LAuditGatekeepingCheck(branch)
                     => ("Gatekeeping", dialog, "a dialog answer decides a request"),
@@ -3834,13 +3983,22 @@ internal static partial class LAuditTruthWalker
 
     private static bool LAuditAskedCheck(ExpressionSyntax condition)
     {
-        return LAuditAnswerCheck(condition) || condition.DescendantNodesAndSelf().Any(node =>
-            node is IdentifierNameSyntax or MemberAccessExpressionSyntax or InvocationExpressionSyntax
-            && LAuditBind.LAuditSymbolRead(node) is { } symbol
-            && LAuditReaderNames.Contains(symbol));
+        return LAuditAnswerCheck(condition)
+               || condition.DescendantNodesAndSelf(node => !LAuditNameofCheck(node)).Any(node =>
+                   node is IdentifierNameSyntax or MemberAccessExpressionSyntax or InvocationExpressionSyntax
+                   && LAuditBind.LAuditSymbolRead(node) is { } symbol
+                   && LAuditReaderNames.Contains(symbol));
     }
 
     private static string? LAuditControlRead(ExpressionSyntax condition)
+    {
+        SyntaxNode? scope = condition.FirstAncestorOrSelf<MemberDeclarationSyntax>();
+        return LAuditControlRead(condition, scope is null
+            ? new HashSet<ISymbol>(SymbolEqualityComparer.Default)
+            : LAuditCarriedNames.GetValue(scope, LAuditCarriedRead));
+    }
+
+    private static string? LAuditControlRead(ExpressionSyntax condition, HashSet<ISymbol> carried)
     {
         foreach (SyntaxNode node in condition.DescendantNodesAndSelf())
         {
@@ -3851,13 +4009,186 @@ internal static partial class LAuditTruthWalker
                 return access.Expression.ToString();
             }
 
+            if (node is IdentifierNameSyntax name
+                && carried.Count > 0
+                && LAuditBind.LAuditSymbolRead(name) is { } symbol
+                && carried.Contains(symbol))
+            {
+                return name.Identifier.ValueText;
+            }
+
             if (node is InvocationExpressionSyntax call && LAuditConsoleCheck(call))
             {
                 return call.Expression.ToString();
             }
         }
 
-        return null;
+        return condition.DescendantNodesAndSelf().OfType<IsPatternExpressionSyntax>()
+            .FirstOrDefault(test => test.Pattern.DescendantNodesAndSelf().Any(LAuditShapeCheck))
+            ?.Expression.ToString();
+    }
+
+    private static HashSet<ISymbol> LAuditCarriedRead(SyntaxNode scope)
+    {
+        HashSet<ISymbol> carried = new(SymbolEqualityComparer.Default);
+        foreach (SyntaxNode node in scope.DescendantNodes())
+        {
+            switch (node)
+            {
+                case VariableDeclaratorSyntax { Initializer.Value: var value } declarator
+                    when LAuditControlRead(value, carried) is not null:
+                    LAuditSymbolAdd(declarator, carried);
+                    break;
+                case AssignmentExpressionSyntax { Left: IdentifierNameSyntax target } assignment
+                    when LAuditBind.LAuditSymbolRead(target) is ILocalSymbol or IParameterSymbol
+                         && LAuditControlRead(assignment.Right, carried) is not null:
+                    LAuditSymbolAdd(target, carried);
+                    break;
+                case ArgumentSyntax
+                    {
+                        Parent: ArgumentListSyntax { Parent: InvocationExpressionSyntax call } list
+                    } argument
+                    when LAuditBind.LAuditSymbolRead(call) is IMethodSymbol
+                             { MethodKind: MethodKind.LocalFunction } local
+                         && LAuditControlRead(argument.Expression, carried) is not null:
+                    int index = argument.NameColon is { Name.Identifier.ValueText: var label }
+                        ? local.Parameters.FirstOrDefault(parameter => parameter.Name == label)?.Ordinal ?? -1
+                        : list.Arguments.IndexOf(argument);
+                    if (index >= 0 && index < local.Parameters.Length)
+                    {
+                        carried.Add(local.Parameters[index]);
+                    }
+
+                    break;
+            }
+        }
+
+        return carried;
+    }
+
+    private static bool LAuditShapeCheck(SyntaxNode node)
+    {
+        return node is RecursivePatternSyntax { Type: { } type, PropertyPatternClause: { } clause }
+               && LAuditBind.LAuditControlCheck(LAuditBind.LAuditTypeRead(type))
+               && !clause.Subpatterns.All(part => LAuditPairCheck(part.Pattern));
+    }
+
+    private static bool LAuditHearingCheck(IfStatementSyntax branch)
+    {
+        if (branch.Else is not null)
+        {
+            return false;
+        }
+
+        if (branch.Statement is ReturnStatementSyntax { Expression: null }
+            or BlockSyntax { Statements: [ReturnStatementSyntax { Expression: null }] })
+        {
+            ExpressionSyntax condition = branch.Condition;
+            while (condition is ParenthesizedExpressionSyntax wrapped)
+            {
+                condition = wrapped.Expression;
+            }
+
+            return condition is PrefixUnaryExpressionSyntax
+                       { RawKind: (int)SyntaxKind.LogicalNotExpression } negated
+                   && LAuditFocusCheck(negated.Operand);
+        }
+
+        MemberDeclarationSyntax? member = branch.FirstAncestorOrSelf<MemberDeclarationSyntax>();
+        bool later = member is not null && member.DescendantNodes()
+            .Where(node => node.SpanStart >= branch.Span.End)
+            .Any(node => node is InvocationExpressionSyntax or BaseObjectCreationExpressionSyntax
+                         && LAuditCallRead((ExpressionSyntax)node) is not null);
+        return !later && LAuditFocusCheck(branch.Condition);
+    }
+
+    private static bool LAuditFocusCheck(ExpressionSyntax condition)
+    {
+        ExpressionSyntax core = condition;
+        while (core is ParenthesizedExpressionSyntax wrapped)
+        {
+            core = wrapped.Expression;
+        }
+
+        return core switch
+        {
+            BinaryExpressionSyntax chain when chain.IsKind(SyntaxKind.LogicalAndExpression)
+                => LAuditFocusCheck(chain.Left) && LAuditFocusCheck(chain.Right),
+            _ when LAuditControlRead(core) is null => true,
+            MemberAccessExpressionSyntax access
+                => LAuditTruthSetting.LAuditFocusMembers.Contains(
+                       access.Name.Identifier.ValueText, StringComparer.Ordinal)
+                   && LAuditControlRead(access.Expression) is null,
+            IsPatternExpressionSyntax
+                {
+                    Pattern: RecursivePatternSyntax
+                    {
+                        Type: { } type, PositionalPatternClause: null, PropertyPatternClause: { } clause
+                    }
+                } test
+                => LAuditControlRead(test.Expression) is null
+                   && LAuditBind.LAuditControlCheck(LAuditBind.LAuditTypeRead(type))
+                   && clause.Subpatterns.All(part =>
+                       LAuditPairCheck(part.Pattern)
+                       || (part.NameColon is { Name.Identifier.ValueText: var name }
+                           && LAuditTruthSetting.LAuditFocusMembers.Contains(name, StringComparer.Ordinal)
+                           && part.Pattern is ConstantPatternSyntax
+                           {
+                               Expression.RawKind: (int)SyntaxKind.TrueLiteralExpression
+                           })),
+            _ => false
+        };
+    }
+
+    private static string? LAuditCaseRead(ExpressionSyntax governing, SyntaxNode label)
+    {
+        bool decided = label switch
+        {
+            CaseSwitchLabelSyntax constant => !LAuditStrictWalker.LAuditNullCheck(constant.Value),
+            CasePatternSwitchLabelSyntax shape => !LAuditPairCheck(shape.Pattern),
+            SwitchExpressionArmSyntax arm => arm.Pattern is not DiscardPatternSyntax && !LAuditPairCheck(arm.Pattern),
+            _ => false
+        };
+        WhenClauseSyntax? guard = label switch
+        {
+            CasePatternSwitchLabelSyntax shape => shape.WhenClause,
+            SwitchExpressionArmSyntax arm => arm.WhenClause,
+            _ => null
+        };
+        if (guard is not null
+            && LAuditControlRead(guard.Condition) is string control
+            && !LAuditPresenceCheck(guard.Condition)
+            && !(LAuditStrictWalker.LAuditCoreRead(guard.Condition) is IsPatternExpressionSyntax { Pattern: var test }
+                 && LAuditPairCheck(test)))
+        {
+            return control;
+        }
+
+        PatternSyntax? pattern = label switch
+        {
+            CasePatternSwitchLabelSyntax shape => shape.Pattern,
+            SwitchExpressionArmSyntax arm => arm.Pattern,
+            _ => null
+        };
+        return !decided
+            ? null
+            : LAuditControlRead(governing)
+              ?? (pattern?.DescendantNodesAndSelf().Any(LAuditShapeCheck) == true ? governing.ToString() : null);
+    }
+
+    private static bool LAuditPairCheck(PatternSyntax pattern)
+    {
+        return LAuditStrictWalker.LAuditPatternCheck(pattern) || pattern switch
+        {
+            ConstantPatternSyntax { Expression: var named } => LAuditBind.LAuditSymbolRead(named) is ITypeSymbol,
+            ParenthesizedPatternSyntax { Pattern: var inner } => LAuditPairCheck(inner),
+            UnaryPatternSyntax { Pattern: var negated } => LAuditPairCheck(negated),
+            BinaryPatternSyntax { Left: var left, Right: var right }
+                => LAuditPairCheck(left) && LAuditPairCheck(right),
+            RecursivePatternSyntax { PositionalPatternClause: null, PropertyPatternClause: { } clause }
+                => clause.Subpatterns.All(part => LAuditPairCheck(part.Pattern)),
+            _ => false
+        };
     }
 
     private static bool LAuditConsoleCheck(InvocationExpressionSyntax call)
@@ -3945,7 +4276,14 @@ internal static partial class LAuditTruthWalker
 {
     private static (string LViolationKind, string LViolationReason)? LAuditSinkRead(SyntaxNode reference)
     {
-        if (reference.Parent is MemberAccessExpressionSyntax { Expression: var owner } && owner == reference)
+        SyntaxNode receiver = reference;
+        while (receiver.Parent is ParenthesizedExpressionSyntax
+               or PostfixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.SuppressNullableWarningExpression })
+        {
+            receiver = receiver.Parent;
+        }
+
+        if (receiver.Parent is MemberAccessExpressionSyntax { Expression: var owner } && owner == receiver)
         {
             return null;
         }
@@ -4026,14 +4364,26 @@ internal static partial class LAuditTruthWalker
             return true;
         }
 
-        bool jump = branch.Statement.DescendantNodesAndSelf().Any(node =>
-            node is ReturnStatementSyntax or ThrowStatementSyntax or ContinueStatementSyntax or BreakStatementSyntax);
-        MemberDeclarationSyntax? scope = branch.FirstAncestorOrSelf<MemberDeclarationSyntax>();
-        return jump && scope is not null && scope.DescendantNodes()
-            .Where(node => node.SpanStart >= branch.SpanStart)
-            .Any(node => node is ExpressionSyntax call
-                         && (call is InvocationExpressionSyntax || call is BaseObjectCreationExpressionSyntax)
-                         && LAuditCallRead(call) is not null);
+        MemberDeclarationSyntax? member = branch.FirstAncestorOrSelf<MemberDeclarationSyntax>();
+        return branch.Statement.DescendantNodesAndSelf()
+            .Select(node => node switch
+            {
+                ReturnStatementSyntax or ThrowStatementSyntax => member,
+                ContinueStatementSyntax => node.Ancestors().FirstOrDefault(loop =>
+                    loop is CommonForEachStatementSyntax or ForStatementSyntax or WhileStatementSyntax
+                        or DoStatementSyntax),
+                BreakStatementSyntax => node.Ancestors().FirstOrDefault(loop =>
+                    loop is CommonForEachStatementSyntax or ForStatementSyntax or WhileStatementSyntax
+                        or DoStatementSyntax or SwitchSectionSyntax),
+                _ => null
+            })
+            .OfType<SyntaxNode>()
+            .Distinct()
+            .Any(scope => scope.DescendantNodes()
+                .Where(node => node.SpanStart >= branch.SpanStart)
+                .Any(node => node is ExpressionSyntax call
+                             && (call is InvocationExpressionSyntax || call is BaseObjectCreationExpressionSyntax)
+                             && LAuditCallRead(call) is not null));
     }
 
     private static bool LAuditPresenceCheck(ExpressionSyntax condition)
@@ -4041,6 +4391,9 @@ internal static partial class LAuditTruthWalker
         ExpressionSyntax core = LAuditStrictWalker.LAuditCoreRead(condition);
         return core switch
         {
+            BinaryExpressionSyntax chain
+                when chain.IsKind(SyntaxKind.LogicalAndExpression) || chain.IsKind(SyntaxKind.LogicalOrExpression)
+                => LAuditPresenceCheck(chain.Left) && LAuditPresenceCheck(chain.Right),
             IsPatternExpressionSyntax { Pattern: var pattern } => LAuditStrictWalker.LAuditPatternCheck(pattern),
             BinaryExpressionSyntax binary
                 when binary.IsKind(SyntaxKind.EqualsExpression) || binary.IsKind(SyntaxKind.NotEqualsExpression)
@@ -4075,7 +4428,7 @@ internal static partial class LAuditTruthWalker
         return LAuditHotNames.TryGetValue(callee, out HashSet<int>? hot) && hot.Contains(index);
     }
 
-    private static ISymbol? LAuditCallRead(ExpressionSyntax call)
+    internal static ISymbol? LAuditCallRead(ExpressionSyntax call)
     {
         if (call is not (InvocationExpressionSyntax or BaseObjectCreationExpressionSyntax)
             || LAuditBind.LAuditSymbolRead(call) is not { } callee)
@@ -4088,7 +4441,20 @@ internal static partial class LAuditTruthWalker
             return callee;
         }
 
-        return LAuditDelegateRead(call) is { } held && LAuditRelayNames.Contains(held) ? held : null;
+        return LAuditDelegateRead(call) is { } held && (LAuditRelayNames.Contains(held) || LAuditInterfaceCheck(held))
+            ? held
+            : null;
+    }
+
+    private static bool LAuditInterfaceCheck(ISymbol held)
+    {
+        return held is IEventSymbol { ContainingType: { } owner } happening
+               && owner.AllInterfaces
+                   .SelectMany(face => face.GetMembers(happening.Name).OfType<IEventSymbol>())
+                   .Any(member => LAuditRelayNames.Contains(member.OriginalDefinition)
+                                  && SymbolEqualityComparer.Default.Equals(
+                                      owner.FindImplementationForInterfaceMember(member)?.OriginalDefinition,
+                                      happening));
     }
 
     private static ISymbol? LAuditDelegateRead(ExpressionSyntax call)
@@ -4107,6 +4473,579 @@ internal static partial class LAuditTruthWalker
             _ => null
         };
         return target is null ? null : LAuditBind.LAuditSymbolRead(target);
+    }
+
+    internal static bool LAuditNameofCheck(SyntaxNode node)
+    {
+        return node is InvocationExpressionSyntax
+               {
+                   Expression: IdentifierNameSyntax { Identifier.ValueText: "nameof" }
+               } named
+               && LAuditBind.LAuditSymbolRead(named) is null;
+    }
+}
+
+internal static class LAuditOriginWalker
+{
+    private static readonly Dictionary<ISymbol, bool> LAuditOriginNames = new(SymbolEqualityComparer.Default);
+
+    private static Dictionary<string, List<SyntaxNode>> LAuditSiteNames = new(StringComparer.Ordinal);
+
+    private static Compilation? LAuditOriginCompilation;
+
+    internal static string LAuditWriterResolve(ExpressionSyntax? value)
+    {
+        if (!ReferenceEquals(LAuditOriginCompilation, LAuditBind.LAuditCompilation))
+        {
+            LAuditOriginCompilation = LAuditBind.LAuditCompilation;
+            LAuditOriginNames.Clear();
+            IReadOnlyList<string> shell = LAuditBind.LAuditRootRead(LAuditTruthSetting.LAuditShellInclude);
+            LAuditSiteNames = LAuditBind.LAuditTrees
+                .Where(tree => shell.Any(folder => LAuditBind.LAuditRelativeRead(tree.FilePath)
+                    .StartsWith(folder + "/", StringComparison.OrdinalIgnoreCase)))
+                .SelectMany(tree => tree.GetRoot().DescendantNodes()
+                    .Where(node => node is IdentifierNameSyntax or ImplicitObjectCreationExpressionSyntax
+                    or ConstructorInitializerSyntax))
+                .GroupBy(node => node is IdentifierNameSyntax name ? name.Identifier.ValueText : "new",
+                    StringComparer.Ordinal)
+                .ToDictionary(group => group.Key, group => group.ToList(), StringComparer.Ordinal);
+        }
+
+        return LAuditWriterResolve(value, new HashSet<ISymbol>(SymbolEqualityComparer.Default));
+    }
+
+    private static string LAuditWriterResolve(ExpressionSyntax? value, HashSet<ISymbol> visiting)
+    {
+        if (value is null)
+        {
+            return "plain";
+        }
+
+        if (LAuditBlankCheck(value))
+        {
+            return "clear";
+        }
+
+        bool asked = value.DescendantNodesAndSelf(node => !LAuditTruthWalker.LAuditNameofCheck(node)
+                                                          && !LAuditCapsuleCheck(node)).Any(node =>
+            node switch
+            {
+                MemberAccessExpressionSyntax or MemberBindingExpressionSyntax
+                    => LAuditBind.LAuditLogicCheck(LAuditBind.LAuditSymbolRead(node)),
+                InvocationExpressionSyntax call
+                    => LAuditTruthWalker.LAuditCallRead(call) is not null
+                       || (LAuditBind.LAuditSymbolRead(call) is { } callee
+                           && LAuditTruthWalker.LAuditReaderNames.Contains(callee)),
+                BaseObjectCreationExpressionSyntax creation => LAuditTruthWalker.LAuditCallRead(creation) is not null,
+                IdentifierNameSyntax name => LAuditBind.LAuditSymbolRead(name) switch
+                {
+                    ILocalSymbol or IParameterSymbol when LAuditBind.LAuditLogicCheck(name) => true,
+                    { } held => LAuditOriginCheck(held, visiting),
+                    _ => false
+                },
+                _ => false
+            });
+        return asked ? "engine" : "plain";
+    }
+
+    private static bool LAuditOriginCheck(ISymbol held, HashSet<ISymbol> visiting)
+    {
+        bool top = visiting.Count == 0;
+        if (top && LAuditOriginNames.TryGetValue(held, out bool known))
+        {
+            return known;
+        }
+
+        if (!visiting.Add(held))
+        {
+            return false;
+        }
+
+        bool engine = false;
+        foreach (ExpressionSyntax? write in LAuditOriginRead(held) ?? [])
+        {
+            if (write is IdentifierNameSyntax or MemberAccessExpressionSyntax
+                && LAuditBind.LAuditSymbolRead(write) is { } copied && visiting.Contains(copied))
+            {
+                continue;
+            }
+
+            string verdict = LAuditWriterResolve(write, visiting);
+            if (verdict == "clear")
+            {
+                continue;
+            }
+
+            engine = verdict == "engine";
+            if (!engine)
+            {
+                break;
+            }
+        }
+
+        visiting.Remove(held);
+        if (top)
+        {
+            LAuditOriginNames[held] = engine;
+        }
+
+        return engine;
+    }
+
+    internal static List<ExpressionSyntax?>? LAuditOriginRead(ISymbol held)
+    {
+        ISymbol owner = held is IParameterSymbol
+        {
+            ContainingSymbol: IMethodSymbol
+            {
+                MethodKind: MethodKind.PropertySet, AssociatedSymbol: IPropertySymbol property
+            }
+        }
+            ? property
+            : held;
+        if (owner is not (IFieldSymbol or IPropertySymbol { IsIndexer: false } or ILocalSymbol
+                or IParameterSymbol { ContainingSymbol: IMethodSymbol { MethodKind: MethodKind.Constructor } }
+                or IParameterSymbol
+                {
+                    RefKind: RefKind.None, ContainingSymbol: IMethodSymbol { MethodKind: MethodKind.Ordinary }
+                })
+            || owner.DeclaringSyntaxReferences.IsEmpty
+            || !LAuditBind.LAuditShellCheck(owner.ContainingType))
+        {
+            return null;
+        }
+
+        if (owner is IFieldSymbol or IPropertySymbol
+            && owner.DeclaredAccessibility != Accessibility.Private
+            && owner.ContainingType.AllInterfaces.Any(face =>
+                face.ToDisplayString() == "System.Windows.Markup.IComponentConnector"))
+        {
+            return [null];
+        }
+
+        SyntaxNode declaration = owner.DeclaringSyntaxReferences[0].GetSyntax();
+        List<ExpressionSyntax?> writes = [];
+        if (ReferenceEquals(owner, held))
+        {
+            switch (owner)
+            {
+                case IFieldSymbol { Type.Name: "DependencyProperty" or "DependencyPropertyKey" }:
+                    return LAuditPropertyRead(owner, declaration);
+                case IPropertySymbol when declaration is PropertyDeclarationSyntax body
+                                          && LAuditGetterRead(body) is { } getter:
+                    return getter;
+                case IPropertySymbol positional when declaration is ParameterSyntax:
+                    writes.AddRange(LAuditArgumentRead(
+                        positional.ContainingType.InstanceConstructors.FirstOrDefault(constructor =>
+                            constructor.DeclaringSyntaxReferences.Any(source =>
+                                source.GetSyntax() is TypeDeclarationSyntax)),
+                        positional.Name));
+                    break;
+                case IParameterSymbol { ContainingSymbol: IMethodSymbol method } parameter:
+                    writes.AddRange(LAuditArgumentRead(method, parameter.Name));
+                    break;
+                case ILocalSymbol:
+                    writes.AddRange(LAuditLocalRead(declaration));
+                    break;
+                default:
+                    if (declaration is VariableDeclaratorSyntax { Initializer.Value: { } start })
+                    {
+                        writes.Add(start);
+                    }
+                    else if (declaration is PropertyDeclarationSyntax { Initializer.Value: { } first })
+                    {
+                        writes.Add(first);
+                    }
+
+                    break;
+            }
+        }
+
+        foreach (IdentifierNameSyntax identifier in LAuditSiteRead(owner))
+        {
+            SyntaxNode reference = identifier.Parent is MemberAccessExpressionSyntax access && access.Name == identifier
+                ? access
+                : identifier;
+            if (LAuditTruthWalker.LAuditWriteCheck(reference, out ExpressionSyntax? value)
+                && (value is not null || reference.Parent is not MemberAccessExpressionSyntax))
+            {
+                writes.AddRange(LAuditHelperRead(identifier, reference) ?? [value]);
+            }
+        }
+
+        return writes;
+    }
+
+    internal static List<ExpressionSyntax?>? LAuditHelperRead(IdentifierNameSyntax identifier, SyntaxNode reference)
+    {
+        if (LAuditBind.LAuditSymbolRead(identifier) is IParameterSymbol
+            {
+                RefKind: RefKind.Ref, ContainingSymbol: IMethodSymbol inner
+            } held
+            && reference.Parent is AssignmentExpressionSyntax
+            && LAuditHelperScan(inner, held) is not null)
+        {
+            return [];
+        }
+
+        if (reference.Parent is not ArgumentSyntax
+            {
+                Parent: ArgumentListSyntax { Parent: InvocationExpressionSyntax call }
+            } argument
+            || !argument.RefKindKeyword.IsKind(SyntaxKind.RefKeyword)
+            || LAuditBind.LAuditModelRead(call).GetOperation(call) is not IInvocationOperation invoked)
+        {
+            return null;
+        }
+
+        IParameterSymbol? target = invoked.Arguments.FirstOrDefault(given => given.Syntax == argument)?.Parameter;
+        List<IParameterSymbol>? sources = target is null
+            ? null
+            : LAuditHelperScan(invoked.TargetMethod.OriginalDefinition, target.OriginalDefinition);
+        return sources?.Select(source => (invoked.Arguments.FirstOrDefault(given =>
+                    SymbolEqualityComparer.Default.Equals(given.Parameter?.OriginalDefinition, source))
+                ?.Syntax as ArgumentSyntax)?.Expression)
+            .ToList() ?? [null];
+    }
+
+    private static List<IParameterSymbol>? LAuditHelperScan(IMethodSymbol method, IParameterSymbol held)
+    {
+        List<IParameterSymbol> sources = [];
+        foreach (IdentifierNameSyntax use in method.DeclaringSyntaxReferences
+                     .SelectMany(source => source.GetSyntax().DescendantNodes().OfType<IdentifierNameSyntax>()))
+        {
+            if (!SymbolEqualityComparer.Default.Equals(LAuditBind.LAuditSymbolRead(use), held)
+                || !LAuditTruthWalker.LAuditWriteCheck(use, out _))
+            {
+                continue;
+            }
+
+            if (use.Parent is not AssignmentExpressionSyntax
+                {
+                    RawKind: (int)SyntaxKind.SimpleAssignmentExpression
+                } set
+                || set.Left != use
+                || LAuditBind.LAuditSymbolRead(set.Right) is not IParameterSymbol { RefKind: RefKind.None } given
+                || !SymbolEqualityComparer.Default.Equals(given.ContainingSymbol, method))
+            {
+                return null;
+            }
+
+            sources.Add(given);
+        }
+
+        return sources.Count > 0 ? sources : null;
+    }
+
+    private static IEnumerable<IdentifierNameSyntax> LAuditSiteRead(ISymbol held)
+    {
+        return (LAuditSiteNames.GetValueOrDefault(held.Name) ?? [])
+            .OfType<IdentifierNameSyntax>()
+            .Where(identifier => !identifier.Ancestors().Any(LAuditTruthWalker.LAuditNameofCheck)
+                                 && SymbolEqualityComparer.Default.Equals(
+                                     LAuditBind.LAuditSymbolRead(identifier), held));
+    }
+
+    private static List<ExpressionSyntax?> LAuditPropertyRead(ISymbol held, SyntaxNode declaration)
+    {
+        List<ExpressionSyntax?> writes = [];
+        foreach (BaseObjectCreationExpressionSyntax creation in declaration.DescendantNodes()
+                     .OfType<BaseObjectCreationExpressionSyntax>())
+        {
+            if (LAuditBind.LAuditModelRead(creation).GetOperation(creation) is IObjectCreationOperation built
+                && built.Arguments.FirstOrDefault(argument => argument.Parameter?.Name == "defaultValue")
+                    ?.Value.Syntax is ExpressionSyntax fallback
+                && !LAuditNeutralCheck(fallback))
+            {
+                writes.Add(fallback);
+            }
+        }
+
+        foreach (IdentifierNameSyntax identifier in LAuditSiteRead(held))
+        {
+            if (identifier.Parent is not ArgumentSyntax
+                {
+                    Parent: ArgumentListSyntax { Parent: InvocationExpressionSyntax call } list
+                } argument)
+            {
+                continue;
+            }
+
+            switch ((LAuditBind.LAuditSymbolRead(call) as IMethodSymbol)?.Name)
+            {
+                case "SetValue" or "SetCurrentValue" when list.Arguments.Count == 2 && list.Arguments[0] == argument:
+                    writes.Add(list.Arguments[1].Expression);
+                    break;
+                case "GetValue" or "ReadLocalValue" or "ClearValue" or "GetValueSource" or "InvalidateProperty"
+                    or "CoerceValue":
+                    break;
+                default:
+                    writes.Add(null);
+                    break;
+            }
+        }
+
+        return writes;
+    }
+
+    private static List<ExpressionSyntax?>? LAuditGetterRead(PropertyDeclarationSyntax property)
+    {
+        if (property.ExpressionBody is { } body)
+        {
+            return [body.Expression];
+        }
+
+        AccessorDeclarationSyntax? getter = property.AccessorList?.Accessors
+            .FirstOrDefault(accessor => accessor.IsKind(SyntaxKind.GetAccessorDeclaration));
+        if (getter?.ExpressionBody is { } arrow)
+        {
+            return [arrow.Expression];
+        }
+
+        return getter?.Body?.DescendantNodes(node => node is not (AnonymousFunctionExpressionSyntax
+                or LocalFunctionStatementSyntax))
+            .OfType<ReturnStatementSyntax>()
+            .Select(exit => exit.Expression)
+            .ToList();
+    }
+
+    private static List<ExpressionSyntax?> LAuditArgumentRead(IMethodSymbol? method, string name)
+    {
+        List<ExpressionSyntax?> writes = [];
+        List<SyntaxNode?> sites;
+        if (method is { MethodKind: MethodKind.Ordinary })
+        {
+            sites = (LAuditSiteNames.GetValueOrDefault(method.Name) ?? [])
+                .OfType<IdentifierNameSyntax>()
+                .Where(identifier => !identifier.Ancestors().Any(LAuditTruthWalker.LAuditNameofCheck)
+                                     && LAuditBind.LAuditSymbolRead(identifier) is IMethodSymbol called
+                                     && SymbolEqualityComparer.Default.Equals(
+                                         (called.ReducedFrom ?? called).OriginalDefinition, method))
+                .Select(identifier => identifier.Parent is MemberBindingExpressionSyntax binding
+                    ? binding
+                    : identifier.Parent is MemberAccessExpressionSyntax access && access.Name == identifier
+                        ? access
+                        : (ExpressionSyntax)identifier)
+                .Select(callee => callee.Parent is InvocationExpressionSyntax call && call.Expression == callee
+                    ? call
+                    : null)
+                .ToList<SyntaxNode?>();
+            if (sites.Count == 0 || sites.Contains(null) || method.IsOverride || method.IsVirtual
+                || method.IsAbstract || method.IsGenericMethod
+                || method.ContainingType.AllInterfaces.SelectMany(face => face.GetMembers()).Any(member =>
+                    SymbolEqualityComparer.Default.Equals(
+                        method.ContainingType.FindImplementationForInterfaceMember(member), method)))
+            {
+                return [null];
+            }
+        }
+        else
+        {
+            sites = (LAuditSiteNames.GetValueOrDefault(method?.ContainingType.Name ?? "") ?? [])
+                .Select(node => node.Parent is QualifiedNameSyntax qualified ? qualified.Parent : node.Parent)
+                .Concat(LAuditSiteNames.GetValueOrDefault("new") ?? [])
+                .Where(site => site is not null
+                               && SymbolEqualityComparer.Default.Equals(LAuditBind.LAuditSymbolRead(site), method))
+                .ToList();
+        }
+
+        foreach (SyntaxNode site in sites.OfType<SyntaxNode>())
+        {
+            ImmutableArray<IArgumentOperation>? built = LAuditBind.LAuditModelRead(site).GetOperation(site) switch
+            {
+                IObjectCreationOperation creation => creation.Arguments,
+                IInvocationOperation chained => chained.Arguments,
+                _ => null
+            };
+            if (built is null)
+            {
+                writes.Add(null);
+                continue;
+            }
+
+            foreach (IArgumentOperation argument in built.Value.Where(argument => argument.Parameter?.Name == name))
+            {
+                ExpressionSyntax? given = argument.ArgumentKind == ArgumentKind.DefaultValue
+                    ? (argument.Parameter?.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as ParameterSyntax)
+                    ?.Default?.Value
+                    : argument.Value.Syntax as ExpressionSyntax;
+                if (given is null || !LAuditNeutralCheck(given))
+                {
+                    writes.Add(given);
+                }
+            }
+        }
+
+        return writes;
+    }
+
+    private static List<ExpressionSyntax?> LAuditLocalRead(SyntaxNode declaration)
+    {
+        if (declaration is VariableDeclaratorSyntax variable)
+        {
+            return variable.Initializer is { } start ? [start.Value] : [];
+        }
+
+        if (declaration is ForEachStatementSyntax loop)
+        {
+            return [loop.Expression];
+        }
+
+        if (declaration is not SingleVariableDesignationSyntax || declaration.Parent is DeclarationExpressionSyntax)
+        {
+            return [null];
+        }
+
+        return
+        [
+            declaration.Ancestors().Select(node => node switch
+            {
+                IsPatternExpressionSyntax test => test.Expression,
+                SwitchStatementSyntax choice => choice.Expression,
+                SwitchExpressionSyntax arms => arms.GoverningExpression,
+                ForEachVariableStatementSyntax pair => pair.Expression,
+                _ => null
+            }).FirstOrDefault(tested => tested is not null)
+        ];
+    }
+
+    private static bool LAuditNeutralCheck(ExpressionSyntax value)
+    {
+        if (LAuditBlankCheck(value))
+        {
+            return true;
+        }
+
+        Optional<object?> constant = LAuditBind.LAuditModelRead(value).GetConstantValue(value);
+        return constant.HasValue && constant.Value switch
+        {
+            false => true,
+            bool or string or char => false,
+            IConvertible number => number.ToDouble(System.Globalization.CultureInfo.InvariantCulture) == 0,
+            _ => false
+        };
+    }
+
+    private static bool LAuditBlankCheck(ExpressionSyntax value)
+    {
+        if (value.IsKind(SyntaxKind.NullLiteralExpression)
+            || value.IsKind(SyntaxKind.DefaultLiteralExpression)
+            || value is DefaultExpressionSyntax
+            || LAuditBind.LAuditSymbolRead(value) is IFieldSymbol
+            {
+                Name: "Empty", ContainingType.SpecialType: SpecialType.System_String
+            })
+        {
+            return true;
+        }
+
+        Optional<object?> constant = LAuditBind.LAuditModelRead(value).GetConstantValue(value);
+        return constant.HasValue && constant.Value is null or "";
+    }
+
+    private static bool LAuditCapsuleCheck(SyntaxNode node)
+    {
+        string? source = node is InvocationExpressionSyntax
+                         && LAuditBind.LAuditSymbolRead(node) is IMethodSymbol { ContainingType: { } owner }
+            ? LAuditBind.LAuditSourceRead(owner.OriginalDefinition)
+            : null;
+        return source is not null && LAuditBind.LAuditRootRead(LAuditTruthSetting.LAuditCapsuleInclude)
+            .Any(folder => source.StartsWith(folder + "/", StringComparison.OrdinalIgnoreCase));
+    }
+}
+
+internal static class LAuditLookupWalker
+{
+    internal static (SyntaxNode?, List<SyntaxNode>)? LAuditLookupRead(
+        IReadOnlyList<(SyntaxNode, ExpressionSyntax?)> writes)
+    {
+        ISymbol? shared = null;
+        SyntaxNode? engine = null;
+        List<SyntaxNode> plain = [];
+        foreach ((SyntaxNode reference, ExpressionSyntax? value) in writes)
+        {
+            List<ExpressionSyntax> calls = [];
+            if (!LAuditCallScan(value, calls, new HashSet<ISymbol>(SymbolEqualityComparer.Default)))
+            {
+                return null;
+            }
+
+            foreach (ExpressionSyntax call in calls)
+            {
+                shared ??= LAuditBind.LAuditSymbolRead(call);
+                if (!SymbolEqualityComparer.Default.Equals(shared, LAuditBind.LAuditSymbolRead(call)))
+                {
+                    return null;
+                }
+            }
+
+            List<string> inputs = calls.Select(LAuditInputResolve).ToList();
+            if (inputs.Contains("engine"))
+            {
+                engine ??= reference;
+            }
+            else if (inputs.Contains("plain"))
+            {
+                plain.Add(reference);
+            }
+        }
+
+        return (engine, plain);
+    }
+
+    private static bool LAuditCallScan(ExpressionSyntax? value, List<ExpressionSyntax> calls, HashSet<ISymbol> visiting)
+    {
+        while (value is ParenthesizedExpressionSyntax or CastExpressionSyntax
+               or PostfixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.SuppressNullableWarningExpression })
+        {
+            value = value switch
+            {
+                ParenthesizedExpressionSyntax group => group.Expression,
+                CastExpressionSyntax cast => cast.Expression,
+                PostfixUnaryExpressionSyntax forgiven => forgiven.Operand,
+                _ => value
+            };
+        }
+
+        if (value is InvocationExpressionSyntax or BaseObjectCreationExpressionSyntax
+            && LAuditBind.LAuditSymbolRead(value) is IMethodSymbol callee
+            && LAuditBind.LAuditShellCheck(callee.ContainingType)
+            && LAuditTruthWalker.LAuditCallRead(value) is null)
+        {
+            calls.Add(value);
+            return true;
+        }
+
+        return value is IdentifierNameSyntax or MemberAccessExpressionSyntax
+               && LAuditBind.LAuditSymbolRead(value) is { } held
+               && visiting.Add(held)
+               && LAuditOriginWalker.LAuditOriginRead(held) is { Count: > 0 } writes
+               && writes.Where(write => LAuditOriginWalker.LAuditWriterResolve(write) != "clear")
+                   .All(write => LAuditCallScan(write, calls, visiting));
+    }
+
+    private static string LAuditInputResolve(ExpressionSyntax call)
+    {
+        IEnumerable<ExpressionSyntax> inputs = call switch
+        {
+            InvocationExpressionSyntax invocation => invocation.ArgumentList.Arguments
+                .Select(argument => argument.Expression)
+                .Concat(invocation.Expression is MemberAccessExpressionSyntax access
+                        && LAuditBind.LAuditSymbolRead(call) is { IsStatic: false }
+                    ? [access.Expression]
+                    : []),
+            BaseObjectCreationExpressionSyntax creation => (creation.ArgumentList?.Arguments
+                    .Select(argument => argument.Expression) ?? [])
+                .Concat(creation.Initializer?.Expressions.Select(entry =>
+                    entry is AssignmentExpressionSyntax set ? set.Right : entry) ?? []),
+            _ => []
+        };
+        SemanticModel model = LAuditBind.LAuditModelRead(call);
+        List<string> verdicts = inputs
+            .Where(input => !model.GetConstantValue(input).HasValue)
+            .Select(LAuditOriginWalker.LAuditWriterResolve)
+            .ToList();
+        return verdicts.Contains("engine") ? "engine" : verdicts.Contains("plain") ? "plain" : "key";
     }
 }
 
@@ -4157,6 +5096,12 @@ internal static class LAuditLaunderingWalker
                          && !binary.IsKind(SyntaxKind.LogicalOrExpression)
                          && !LAuditStrictWalker.LAuditNullCheck(binary.Left)
                          && !LAuditStrictWalker.LAuditNullCheck(binary.Right)
+                         && !((binary.IsKind(SyntaxKind.EqualsExpression)
+                               || binary.IsKind(SyntaxKind.NotEqualsExpression))
+                              && (binary.Left.Kind()
+                                      is SyntaxKind.TrueLiteralExpression or SyntaxKind.FalseLiteralExpression
+                                  || binary.Right.Kind()
+                                      is SyntaxKind.TrueLiteralExpression or SyntaxKind.FalseLiteralExpression))
                     => (binary, $"in {binary.OperatorToken.ValueText}"),
                 InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax access } query
                     when LAuditTruthSetting.LAuditMoonlightingVerbs.Contains(
@@ -4249,7 +5194,12 @@ internal static class LAuditLaunderingWalker
     private static (string LViolationName, string LViolationColour)? LAuditTaintFind(
         SyntaxNode node, Dictionary<ISymbol, string> tainted)
     {
-        foreach (SyntaxNode child in node.DescendantNodesAndSelf())
+        foreach (SyntaxNode child in node.DescendantNodesAndSelf(parent =>
+                     parent is not InvocationExpressionSyntax
+                     {
+                         Expression: IdentifierNameSyntax { Identifier.ValueText: "nameof" }
+                     } named
+                     || LAuditBind.LAuditSymbolRead(named) is not null))
         {
             switch (child)
             {
@@ -4260,6 +5210,15 @@ internal static class LAuditLaunderingWalker
                 case IdentifierNameSyntax or MemberBindingExpressionSyntax
                     when LAuditBind.LAuditEngineCheck(child):
                     return (child.ToString(), LAuditLogicColour);
+                case IdentifierNameSyntax name
+                    when LAuditBind.LAuditSymbolRead(name) is
+                         {
+                             IsStatic: true,
+                             Kind: SymbolKind.Field or SymbolKind.Property,
+                             ContainingType: { TypeKind: not TypeKind.Enum } owner
+                         }
+                         && LAuditBind.LAuditConductCheck(owner):
+                    return (name.Identifier.ValueText, LAuditLogicColour);
                 case IdentifierNameSyntax name
                     when LAuditBind.LAuditSymbolRead(name) is { } symbol && LAuditReaderNames.Contains(symbol):
                     return (name.Identifier.ValueText, LAuditLogicColour);
@@ -4280,20 +5239,23 @@ internal static class LAuditLaunderingWalker
 
     private static bool LAuditConditionCheck(ExpressionSyntax condition)
     {
-        if (condition is IsPatternExpressionSyntax { Pattern: var pattern }
-            && LAuditStrictWalker.LAuditPatternCheck(pattern))
-        {
-            return false;
-        }
-
-        if (condition is BinaryExpressionSyntax binary
-            && (binary.IsKind(SyntaxKind.EqualsExpression) || binary.IsKind(SyntaxKind.NotEqualsExpression))
-            && (LAuditStrictWalker.LAuditNullCheck(binary.Left) || LAuditStrictWalker.LAuditNullCheck(binary.Right)))
-        {
-            return false;
-        }
-
-        return !LAuditVerdictCheck(condition);
+        bool presence = condition
+            .DescendantNodesAndSelf(parent => parent is BinaryExpressionSyntax chain
+                                              && (chain.IsKind(SyntaxKind.LogicalAndExpression)
+                                                  || chain.IsKind(SyntaxKind.LogicalOrExpression)))
+            .OfType<ExpressionSyntax>()
+            .Where(operand => !operand.IsKind(SyntaxKind.LogicalAndExpression)
+                              && !operand.IsKind(SyntaxKind.LogicalOrExpression))
+            .All(operand => operand switch
+            {
+                IsPatternExpressionSyntax { Pattern: var pattern } => LAuditStrictWalker.LAuditPatternCheck(pattern),
+                BinaryExpressionSyntax binary
+                    when binary.IsKind(SyntaxKind.EqualsExpression) || binary.IsKind(SyntaxKind.NotEqualsExpression)
+                    => LAuditStrictWalker.LAuditNullCheck(binary.Left)
+                       || LAuditStrictWalker.LAuditNullCheck(binary.Right),
+                _ => false
+            });
+        return !presence && !LAuditVerdictCheck(condition);
     }
 
     private static bool LAuditVerdictCheck(ExpressionSyntax condition)

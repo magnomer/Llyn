@@ -25,11 +25,13 @@ Sets one chip row's items, folds it when empty and attaches its chip fill.
 
 ## `private static void PLeafSentenceRefine(FrameworkElement container, object item, string? _)`
 
-Paints one example line: the frame, the sentence, the byline and the Glosses, each ready.
+Paints one example line from its [QLeafLine](QLeafLine.comment.md): the frame, the sentence, the byline and the Glosses.
+The sentence draws the runs Conduct divided.
+It keeps only its sentence row id, which the click hands back to the find gate.
 The sentence's top margin drops it to the frame's baseline, computed by `QFontConverter`.
 The margin is bound to both fonts, so a font the theme changes later moves the baseline too.
 The byline binds the sentence's margin, family and size, so both keep one baseline live.
-The Glosses reuse the editor's Gloss row fill, since their parts carry the same names.
+The Glosses arrive as the editor's rows and reuse its Gloss row fill, since their parts carry the same names.
 
 ## `private static void PLeafSituationRefine(FrameworkElement container, object item, string? _)`
 

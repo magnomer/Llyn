@@ -30,7 +30,12 @@ public sealed class CRepertoire
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CRepertoireEditor = editor;
         CRepertoireDesk = new CDesk(
-            atelier.CAtelierDraftPort, "Situation", envoy, "Repertoire", CSubject.CSubjectSituation);
+            atelier.CAtelierDraftPort,
+            atelier.CAtelierSettingsPort,
+            "Situation",
+            envoy,
+            "Repertoire",
+            CSubject.CSubjectSituation);
         CRepertoireAtlas = new CAtlas(
             atelier.CAtelierEntryPort,
             atelier.CAtelierPortraitPort,

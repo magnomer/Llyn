@@ -20,6 +20,8 @@ public sealed record LSentenceDraft(
 
     public IReadOnlyList<LMentionDraft> LSentenceDraftMention => LSentenceDraftExample?.LExampleDraftMention ?? [];
 
+    public bool LSentenceDraftCited => LSentenceDraftExample?.LExampleDraftReference.LStateAnchorLinked ?? false;
+
     public bool LSentenceDraftEmpty =>
         (LSentenceDraftExample is null
             || (LSentenceDraftExample.LExampleDraftText.LStateValueEmpty

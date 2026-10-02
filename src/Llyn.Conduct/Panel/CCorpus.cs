@@ -29,7 +29,13 @@ public sealed class CCorpus
         _cCorpusMarshal = marshal;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CCorpusEditor = editor;
-        CCorpusDesk = new CDesk(atelier.CAtelierDraftPort, "Example", envoy, "Corpus", CSubject.CSubjectExample);
+        CCorpusDesk = new CDesk(
+            atelier.CAtelierDraftPort,
+            atelier.CAtelierSettingsPort,
+            "Example",
+            envoy,
+            "Corpus",
+            CSubject.CSubjectExample);
         CCorpusAnthology = CAnthology.LAnthologyCreate(
             atelier, CCorpusDesk, shownSeam, envoy, store => CCorpusSession!.LSessionFinish(store));
         CCorpusQuotation = new CQuotation(

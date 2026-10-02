@@ -3,8 +3,8 @@
 ## `UserControl`
 
 The shared editor as markup alone.
-The Deportment class of the same name loads it and drives every part.
-Every icon, click, command and popup link is set by that class, so the markup holds no hook.
+Its `x:Class` shell only builds it, and the Deportment driver `QEditor` drives every part.
+Every icon, click, command and popup link is set by that driver, so the markup holds no hook.
 
 ## `<Grid UseLayoutRounding="False">`
 
@@ -14,6 +14,7 @@ Keep Auto row sizes unrounded and round each section's contents like PDisplay.
 
 The form's shape stays here and the rules its parts are drawn by stand beside it.
 Fields, the card the lists end with, and the dropdown shells are each a dictionary of their own.
+So are the sentence, picture, video, translation, meaning, collocation and language templates.
 A reader of this file sees where things sit, not how each of them is painted.
 
 ## `<Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">`
@@ -58,12 +59,12 @@ So both reach the editor that owns the draft and the menus.
 Pronunciation and volume tray carry the theme's shared styles, so switching mode moves neither of them.
 The rows start at the headword's own margin, because an indent here read as a different position.
 
-## `<local:PScript x:Name="PEditorScript" Margin="0,14,0,0" PScriptFolded="True" />`
+## `<local:QScript x:Name="PEditorScript" Margin="0,14,0,0" QScriptFolded="True" />`
 
 The character styles of the entry, the same box the reading view shows, folded under its head here.
 The editor never writes them, so they sit closed as reference until the switch opens them.
 
-## `<local:PFanqie x:Name="PEditorFanqie" Margin="0,14,0,0" PFanqieFolded="True" />`
+## `<local:QFanqie x:Name="PEditorFanqie" Margin="0,14,0,0" QFanqieFolded="True" />`
 
 The rime-book placements of the entry, the same box the reading view shows, folded under its head here.
 
@@ -94,9 +95,10 @@ It stays collapsed until a draft in a language with reflex rules or reflex rows 
 `PAnchor` is the anchor dropdown, one popup for every row, targeted at the label that opened it.
 `PAnchorList` holds its tick rows and `PAnchorEmpty` the notice shown when the character has no placement.
 
-## `<local:PReflexList x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />`
+## `<ItemsControl x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />`
 
 The reflexes, one editable row each, drawn by the shared reflex template.
+It sits in a `QReflexFrame`, which reports only its fields and buttons to accessibility.
 
 ## `<ItemsControl x:Name="PAccent" ItemTemplate="{StaticResource Theme.Accent.Row}" />`
 

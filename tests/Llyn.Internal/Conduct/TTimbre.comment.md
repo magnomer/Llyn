@@ -5,12 +5,19 @@
 Covers the sound facts an editor reads for its held draft, over a fake phonology port.
 A phonemic respelling needs a respelling pack first, and a silent pack is not spoken.
 An empty desk asks the pack for no language.
-The contour read draws only a tonal pack's toned reading, and its scale runs from one to five.
-The playback read and the play gate run over a held draft, a real engine and real workspace files.
+The contour read draws only a tonal pack's toned reading, and its scale runs from five down to one.
 The accent sheet carries every row in the printed form the respelling switch picks.
 An empty desk answers the mute sheet.
+A typed accent answers the text the row now holds, and an empty desk takes nothing and answers none.
+A desk filling its view takes nothing and answers the text its sheet holds for the row.
 The font read answers the held draft's pack typography role by role, and an empty desk the blank font.
 The flag read is covered by `TTimbreEnsign`, and the reflex block by `TTimbreReflex`.
+The playback reads are covered by `TPlayback`.
+
+## `internal static CEditor TTimbreAccentPrepare(LEngine engine, params string[] accents)`
+
+An English editor holding a draft with a primary reading and one accent row per text in `accents`.
+`TPlayback` builds its accent rows here too.
 
 ## `internal static CEditor TTimbreFlaggedPrepare(LEngine engine, string language)`
 
@@ -21,7 +28,3 @@ An editor holding a draft in `language` whose primary reading carries the Britis
 
 Builds an editor over stub ports and a phonology port answering `answers`, and hands back its sound facts.
 `TTimbreEnsign` builds its empty desk here too.
-
-## `private static string TTimbreFileSave(TWorkspace workspace, string name)`
-
-Writes a one-byte recording under the workspace's audio folder and hands back its path.

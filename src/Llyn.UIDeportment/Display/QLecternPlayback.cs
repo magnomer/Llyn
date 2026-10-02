@@ -1,7 +1,6 @@
 using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -9,8 +8,6 @@ namespace Llyn.UIDeportment;
 public sealed class QLecternPlayback
 {
     private readonly CDisplaySound _qLecternPlaybackArea;
-
-    private CAtelier _qLecternPlaybackAtelier = null!;
 
     private UIElement _qLecternPlaybackAction = null!;
 
@@ -25,23 +22,15 @@ public sealed class QLecternPlayback
         _qLecternPlaybackArea = area;
     }
 
-    public void QLecternPlaybackIntroduce(CAtelier atelier, UIElement action, UIElement tray, RangeBase volume)
+    public void QLecternPlaybackIntroduce(UIElement action, UIElement tray, RangeBase volume)
     {
-        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(tray);
         ArgumentNullException.ThrowIfNull(volume);
 
-        _qLecternPlaybackAtelier = atelier;
         _qLecternPlaybackAction = action;
         _qLecternPlaybackTray = tray;
         _qLecternPlaybackVolume = volume;
-
-        volume.ValueChanged += QLecternVolumeObserve;
-        volume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(QLecternSettleObserve));
-        volume.AddHandler(UIElement.MouseUpEvent, new MouseButtonEventHandler(QLecternSettleObserve), true);
-        volume.AddHandler(UIElement.KeyUpEvent, new KeyEventHandler(QLecternSettleObserve), true);
-        QLecternVolumeRefine();
     }
 
     public void QLecternPlaybackRefine()
@@ -49,11 +38,6 @@ public sealed class QLecternPlayback
         CLecternPlayback playback = _qLecternPlaybackArea.CDisplayPlaybackRead();
         _qLecternPlaybackAction.Visibility = QLook.QLookVisibleRead(playback.CLecternPlaybackRecorded);
         _qLecternPlaybackTray.Visibility = QLook.QLookVisibleRead(playback.CLecternPlaybackAudible);
-    }
-
-    public void QLecternVolumeRefine()
-    {
-        _qLecternPlaybackVolume.Value = _qLecternPlaybackAtelier.CAtelierVolumeRead();
     }
 
     public void QLecternTrayRefine()
@@ -73,15 +57,5 @@ public sealed class QLecternPlayback
     public void QLecternActionObserve()
     {
         _qLecternPlaybackArea.CDisplayPlaybackStart(_qLecternPlaybackVolume.Value);
-    }
-
-    private void QLecternVolumeObserve(object sender, RoutedPropertyChangedEventArgs<double> e)
-    {
-        _qLecternPlaybackAtelier.CAtelierVolumeSet(e.NewValue, false);
-    }
-
-    private void QLecternSettleObserve(object sender, RoutedEventArgs e)
-    {
-        _qLecternPlaybackAtelier.CAtelierVolumeSet(_qLecternPlaybackVolume.Value, true);
     }
 }

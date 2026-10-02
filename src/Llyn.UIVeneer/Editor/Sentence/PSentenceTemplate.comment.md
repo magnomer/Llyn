@@ -7,7 +7,7 @@ That is the two frame fields, then the sentence field.
 It is also the citation field at the sentence's right end, and the buttons that open and drop rows.
 Each field's hint reads the unknown mark when the row holds something it cannot read back.
 So an empty-looking field says which kind of empty it is.
-The Deportment class of the same name loads this markup, and the editor's fill writes every part.
+The editor's markup merges this dictionary, and the editor's fill writes every part.
 What is typed leaves through the editor's text handler, so the row holds no copy of it.
 
 The two frame fields sit in the first two columns.

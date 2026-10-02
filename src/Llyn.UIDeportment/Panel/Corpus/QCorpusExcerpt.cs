@@ -18,11 +18,9 @@ internal sealed partial class QCorpus
 
     private void QExcerptSentenceRefine(CExample example)
     {
-        QExcerptText.PMentionText = example.CExampleWording is string key
-            ? QLocalizationCatalog.QLocalizationTextRead(key)
-            : example.CExampleText.CStateValueText;
-        QExcerptText.PMentionLanguage = example.CExampleLanguage;
-        QExcerptText.PMentionMention = example.CExampleExcerpt;
+        QExcerptText.PMentionPiece = example.CExampleWording is string key
+            ? QMentionPiece.QMentionPieceCreate(QLocalizationCatalog.QLocalizationTextRead(key))
+            : QMentionPiece.QMentionPieceCreate(example.CExamplePiece);
         QExcerptText.SetResourceReference(
             TextBlock.ForegroundProperty,
             example.CExampleMuted ? "Theme.Muted" : "Theme.Ink");
@@ -36,6 +34,6 @@ internal sealed partial class QCorpus
 
     private void QExcerptMentionObserve(object? sender, PMentionArgument e)
     {
-        _qCorpusHost.PWindowMentionRefine(QExcerptText, _cCorpus.CCorpusMentionFind(e.PMentionArgumentOffset));
+        _qCorpusHost.QWindowMentionRefine(QExcerptText, _cCorpus.CCorpusMentionFind(e.PMentionArgumentOffset));
     }
 }

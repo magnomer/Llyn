@@ -45,7 +45,7 @@ auditstructure -Root C:\path\to\project -Open
 Audit a specific checkout and open the violation report.
 #>
 #requires -Version 5.1
-# AUDITSTRUCTURE GENERATION 17 - auditstructure.ps1.
+# AUDITSTRUCTURE GENERATION 18 - auditstructure.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -86,6 +86,8 @@ Audit a specific checkout and open the violation report.
 # prefixes it seals.
 # Generation 17: findings take one vocabulary of -ing kinds and plain measure names, and the
 # configuration keys follow. What the audit counts is unchanged.
+# Generation 18: nothing this audit reports changes; the number rises with the UI audit, whose
+# truth detector stops five false findings.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -184,7 +186,7 @@ EXAMPLES
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$script:AuditGeneration = 17
+$script:AuditGeneration = 18
 $script:ConfigDocument = 'auditstructure.json'
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
 $script:PathSeparators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)

@@ -21,11 +21,11 @@ Holds the two card lists with their sections, the scroll viewer and the compass 
 
 Binds the incoming list to its rows and holds the section that collapses when no entry links here.
 
-## `internal void QLecternEtymologyIntroduce(PEtymology etymology, UIElement section)`
+## `internal void QLecternEtymologyIntroduce(QEtymology etymology, UIElement section)`
 
 Holds the etymology field and its section, which this driver paints itself.
 
-## `internal void QLecternRouteIntroduce(PWindow host)`
+## `internal void QLecternRouteIntroduce(QWindow host)`
 
 Holds the window, whose navigation a clicked incoming row opens its record through.
 The window also paints the menu a clicked word's gate answers.
@@ -72,7 +72,8 @@ The section collapses when no entry links here, because an empty relationship do
 
 ## `private void QLecternEtymologyRefine(CLecternEtymology etymology)`
 
-Sets the field's language, narrative and source links from the ready `etymology`.
+Sets the field's narrative and source links from the ready `etymology`.
+It hands the field the ready verdicts for its read narrative and its row of links.
 Then it sets the field's and the section's visibility.
 
 ## `public void QLecternChipObserve(RoutedEventArgs e)`
@@ -92,8 +93,14 @@ Hears a click on a source link and hands `CDisplayChipOpen` the entry id it carr
 
 ## `public void QLecternMentionObserve(PMentionArgument e)`
 
-Hears a clicked word and hands its raw text, language, offset and Mentions to the one gate `CDisplayMentionFind`.
-The gate finds, opens and reports, and its offer goes to the window's `PWindowMentionRefine` under the clicked control.
+Hears a word clicked in an example line and hands its sentence row and offset to `CDisplayMentionFind`.
+The gate reads the text itself, finds, opens and reports.
+Its offer goes to the window's `QWindowMentionRefine` under the clicked control.
+
+## `public void QLecternEtymologyObserve(PMentionArgument e)`
+
+Hears a word clicked in the etymology prose and hands its offset to `CDisplayEtymologyFind`.
+The offer goes to the window's `QWindowMentionRefine` under the prose.
 
 ## `public void QLecternSpotlightRefine(long id)`
 

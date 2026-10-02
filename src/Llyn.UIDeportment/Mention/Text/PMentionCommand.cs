@@ -15,4 +15,7 @@ public static class PMentionCommand
 
     public static RoutedCommand PMentionCommandUnlink { get; } =
         new(nameof(PMentionCommandUnlink), typeof(PMentionCommand));
+
+    public static RoutedCommand PMentionCommandPick { get; } =
+        new(nameof(PMentionCommandPick), typeof(PMentionCommand));
 }

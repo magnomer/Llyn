@@ -10,13 +10,10 @@ Typing is deferred through the tenure and written once the user stops, so a keys
 A media row added or removed is sent at once, because there is no keystroke coming to end it.
 The tenure raises a bulletin when its state moves, and the Conduct settles the buttons from that.
 
-## `private CDesk QScenarioDesk => _cRepertoire.CRepertoireDesk;`
-
-The desk holding the Situation being edited, read off the Conduct each time.
-
 ## `private void QScenarioDeskIntroduce()`
 
-Wires the desk's failure and refusal to the window, and the Conduct's draft notice to `QScenarioFieldsRefine`.
+Wires the Conduct's draft notice to `QScenarioFieldsRefine`.
+The desk shows its own failures and refused holds.
 The Conduct attaches the desk's observers itself at build, through the marshal `QRepertoire` hands it.
 
 ## `public void QChronicleUndoObserve()`

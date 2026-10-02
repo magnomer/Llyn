@@ -133,7 +133,7 @@ internal sealed partial class QCorpus
         QTranscriptGlossLine.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, () =>
         {
             if (QTranscriptGlossLine.ItemContainerGenerator.ContainerFromIndex(0) is DependencyObject container
-                && PEditor.PEditorCaretFind(container) is TextBox box)
+                && QField.QFieldCaretFind(container) is TextBox box)
             {
                 box.Focus();
             }

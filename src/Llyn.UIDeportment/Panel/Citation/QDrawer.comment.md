@@ -3,7 +3,8 @@
 ## `internal sealed class QDrawer`
 
 The citation drawer under the corpus transcript's citation field.
-It holds the offered rows and the row the arrow keys stand on, apart from the driver.
+It holds the offered rows apart from the driver.
+The row the arrow keys stand on is the list's own selection.
 The pick reads the list's selected row, as the card row's dropdown does.
 
 ## `internal QDrawer(Popup popup, Border sheet, ListBox view, MouseButtonEventHandler press)`
@@ -27,13 +28,10 @@ Shuts the drawer, drops the chosen row and empties the list.
 
 ## `internal void QDrawerMove(bool down)`
 
-Steps the chosen row one down or up, wrapping at either end.
+Asks the lantern gate for the row one down or up, which wraps at either end.
 The first step down from no choice lands on the first row, and the first step up on the last.
-
-## `private void QDrawerChosenSet(int chosen)`
-
-Keeps the chosen index and shows it as the list's selection.
-The drawer owns the index, so no step is computed over the control's own selection.
+An empty list gets no row from the gate, so nothing moves.
+The gate reads the list's selection and row count, and the drawer shows its answer.
 
 ## `private static CustomPopupPlacement[] QDrawerPlace(Size popup, Size target, Point offset)`
 

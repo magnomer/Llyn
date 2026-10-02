@@ -325,7 +325,7 @@ public sealed class TErrandClip
 
     private static CEditor TErrandClipPrepare(LEngine engine)
     {
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
         return editor;
     }

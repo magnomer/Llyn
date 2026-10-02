@@ -24,7 +24,12 @@ internal static class TAuditBinder
 
     private static readonly Lazy<CSharpCompilation> TAuditBinderCompilation = new(TAuditCompilationRead);
 
-    private static readonly Lazy<IReadOnlyList<SyntaxTree>> TAuditTracked = new(TAuditTrackedRead);
+    private static readonly Lazy<IReadOnlyList<SyntaxTree>> TAuditTracked =
+        new(() => TAuditTrackedRead(TAuditBinderCompilation.Value));
+
+    private static readonly AsyncLocal<CSharpCompilation?> TAuditAssayCompilation = new();
+
+    private static readonly AsyncLocal<IReadOnlyDictionary<string, string>?> TAuditAssayMarkup = new();
 
     private static readonly Dictionary<SyntaxTree, SemanticModel> TAuditModels = [];
 
@@ -32,9 +37,43 @@ internal static class TAuditBinder
 
     public static string TAuditRoot { get; } = TAuditSource.TAuditRootRead();
 
-    public static IReadOnlyList<SyntaxTree> TAuditTrees => TAuditTracked.Value;
+    public static IReadOnlyList<SyntaxTree> TAuditTrees => TAuditAssayCompilation.Value is { } assay
+        ? TAuditTrackedRead(assay)
+        : TAuditTracked.Value;
 
-    public static CSharpCompilation TAuditCompilation => TAuditBinderCompilation.Value;
+    public static CSharpCompilation TAuditCompilation =>
+        TAuditAssayCompilation.Value ?? TAuditBinderCompilation.Value;
+
+    public static TAuditAssayResult TAuditAssayRun<TAuditAssayResult>(
+        IReadOnlyDictionary<string, string> sources, Func<TAuditAssayResult> walk)
+    {
+        ILookup<bool, KeyValuePair<string, string>> parts = sources.ToLookup(source =>
+            string.Equals(Path.GetExtension(source.Key), ".xaml", StringComparison.OrdinalIgnoreCase));
+        List<SyntaxTree> trees = parts[false]
+            .Select(source => CSharpSyntaxTree.ParseText(
+                source.Value, TAuditSyntaxOptions, Path.GetFullPath(Path.Combine(TAuditRoot, source.Key))))
+            .ToList();
+        TAuditAssayCompilation.Value = TAuditCompilationCreate(trees, OutputKind.DynamicallyLinkedLibrary);
+        TAuditAssayMarkup.Value = parts[true].ToDictionary(
+            source => Path.GetFullPath(Path.Combine(TAuditRoot, source.Key)), source => source.Value,
+            StringComparer.OrdinalIgnoreCase);
+        try
+        {
+            return walk();
+        }
+        finally
+        {
+            TAuditAssayCompilation.Value = null;
+            TAuditAssayMarkup.Value = null;
+        }
+    }
+
+    public static string TAuditMarkupRead(string path)
+    {
+        return TAuditAssayMarkup.Value is { } markups
+            ? markups[Path.GetFullPath(path)]
+            : File.ReadAllText(path);
+    }
 
     public static SemanticModel TAuditModelRead(SyntaxTree tree)
     {
@@ -42,7 +81,7 @@ internal static class TAuditBinder
         {
             if (!TAuditModels.TryGetValue(tree, out SemanticModel? model))
             {
-                model = TAuditBinderCompilation.Value.GetSemanticModel(tree, true);
+                model = TAuditCompilation.GetSemanticModel(tree, true);
                 TAuditModels[tree] = model;
             }
 
@@ -287,7 +326,7 @@ internal static class TAuditBinder
     public static IReadOnlySet<string> TAuditDeportmentRead()
     {
         HashSet<string> names = new(StringComparer.Ordinal);
-        INamespaceSymbol? space = TAuditBinderCompilation.Value.Assembly.GlobalNamespace;
+        INamespaceSymbol? space = TAuditCompilation.Assembly.GlobalNamespace;
         foreach (string part in TAuditStrictSetting.TAuditDeportmentNamespace.Split('.'))
         {
             space = space?.GetNamespaceMembers()
@@ -300,7 +339,7 @@ internal static class TAuditBinder
             names.UnionWith(type.GetMembers().Select(member => member.Name));
         }
 
-        Stack<INamespaceOrTypeSymbol> pending = new([TAuditBinderCompilation.Value.Assembly.GlobalNamespace]);
+        Stack<INamespaceOrTypeSymbol> pending = new([TAuditCompilation.Assembly.GlobalNamespace]);
         while (pending.TryPop(out INamespaceOrTypeSymbol? current))
         {
             foreach (INamespaceOrTypeSymbol child in current.GetMembers().OfType<INamespaceOrTypeSymbol>())
@@ -326,7 +365,7 @@ internal static class TAuditBinder
             return null;
         }
 
-        if (TAuditRootRead(TAuditTruthSetting.TAuditShellInclude)
+        if (TAuditRootRead([.. TAuditTruthSetting.TAuditShellInclude, .. TAuditTruthSetting.TAuditCapsuleInclude])
             .Any(folder => source.StartsWith(folder + "/", StringComparison.OrdinalIgnoreCase)))
         {
             return TAuditShellSide;
@@ -350,10 +389,10 @@ internal static class TAuditBinder
         return symbol?.OriginalDefinition;
     }
 
-    private static IReadOnlyList<SyntaxTree> TAuditTrackedRead()
+    private static IReadOnlyList<SyntaxTree> TAuditTrackedRead(CSharpCompilation compilation)
     {
         string prefix = Path.Combine(TAuditRoot, TAuditBinderSource.TrimEnd('/')) + Path.DirectorySeparatorChar;
-        return TAuditBinderCompilation.Value.SyntaxTrees
+        return compilation.SyntaxTrees
             .Where(tree => !TAuditRelativeRead(tree.FilePath).Split('/').Contains("obj", StringComparer.Ordinal))
             .Where(tree => Path.GetFullPath(tree.FilePath).StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
             .ToList();
@@ -378,12 +417,17 @@ internal static class TAuditBinder
             .AsOrdered()
             .Select(path => CSharpSyntaxTree.ParseText(File.ReadAllText(path), TAuditSyntaxOptions, path))
             .ToList();
+        return TAuditCompilationCreate(trees, OutputKind.ConsoleApplication);
+    }
+
+    private static CSharpCompilation TAuditCompilationCreate(IReadOnlyList<SyntaxTree> trees, OutputKind kind)
+    {
         CSharpCompilation compilation = CSharpCompilation.Create(
             "AuditBinder",
             trees,
             TAuditReference.TAuditReferenceRead(),
             new CSharpCompilationOptions(
-                OutputKind.ConsoleApplication,
+                kind,
                 allowUnsafe: true,
                 nullableContextOptions: NullableContextOptions.Enable));
         List<string> errors = compilation.GetDiagnostics()

@@ -64,7 +64,7 @@ internal static class TInterfaceMention
     internal static CMentionOffer TMentionResultOpen(CAtelier atelier, CMentionResult result) =>
         atelier.CAtelierMention.LMentionResultOpen(result);
 
-    internal static CMentionOffer? TDisplayMentionFind(LEngine engine, CAtelier atelier, CEnvoy envoy)
+    internal static CMentionOffer? TDisplayMentionFind(LEngine engine, CAtelier atelier, CEnvoy envoy, long shown)
     {
         LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
         {
@@ -78,7 +78,8 @@ internal static class TInterfaceMention
             TEngineFake.TEngineStubCreate<LMediaPort>(),
             envoy);
         display.LDisplayNavigationAttach(atelier.CAtelierNavigation, atelier.CAtelierMention);
-        return display.CDisplayArea.CDisplayMentionFind("water", string.Empty, 1, null);
+        display.LDisplaySound.LDisplaySoundShow(shown, engine.TEngineEntryLoad(shown)!);
+        return display.CDisplayArea.CDisplayMentionFind(1, 1);
     }
 
     internal static IReadOnlyList<CMentionLabel> TMentionFailRead(LEngine engine, CDesk desk, CEnvoy envoy)

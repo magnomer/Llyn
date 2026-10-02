@@ -9,7 +9,7 @@ public sealed record CExample(
     string CExampleCitation,
     string CExampleTally,
     IReadOnlyList<CGlossDraft> CExampleGloss,
-    IReadOnlyList<CMentionMark> CExampleExcerpt)
+    IReadOnlyList<CMentionPiece> CExamplePiece)
 {
     public string CExampleTextHint => LExampleHintRead(CExampleText.CStateValueUncertain);
 

@@ -39,7 +39,12 @@ public sealed class LQuillCard
 
     public void LQuillCardMove(long card, int place)
     {
-        _lQuillCardTenure.LTenureRequestApply(new LRequestCardShift(_lQuillCardTenure.LTenureId, card, 0, place));
+        if (_lQuillCardTenure.LTenureRead() is LDraft held
+            && LDraftClerkCard.LCardShiftRead(held.LDraftContent, card, place) is int target)
+        {
+            _lQuillCardTenure.LTenureRequestApply(
+                new LRequestCardShift(_lQuillCardTenure.LTenureId, card, 0, target));
+        }
     }
 
     public void LQuillCardMove(long card, string ordinal)

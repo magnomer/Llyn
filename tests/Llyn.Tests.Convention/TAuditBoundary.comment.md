@@ -38,7 +38,7 @@ A panel declared in another project would sit outside every shell audit.
 
 ## `public void AuditBoundary_HoldSources_KeepNoTimer()`
 
-Scans every file whose name ends in `Hold.cs` or starts with `PEditor` for a timer of its own.
+Scans every file whose name ends in `Hold.cs` for a timer of its own.
 The tenure waits out the typing, so a second wait in the panel would write twice or out of order.
 
 ## `public void AuditBoundary_Exempt_MatchesSource()`

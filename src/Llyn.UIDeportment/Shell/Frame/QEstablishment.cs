@@ -31,12 +31,12 @@ internal sealed class QEstablishment
     private TextBlock QEstablishmentSize =>
         QContract.QContractFind<TextBlock>(_qEstablishmentSurface, "PEstablishmentSize");
 
-    internal void QEstablishmentAttach(PWindow host)
+    internal void QEstablishmentAttach(QWindow host)
     {
         Action<CEstablishment> heard =
-            QObserver.QObserverCreate<CEstablishment>(host.PWindowSurface, QEstablishmentRefine);
-        host.PWindowAtelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged += heard;
-        _qEstablishmentRelease = () => host.PWindowAtelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged -= heard;
+            QObserver.QObserverCreate<CEstablishment>(host.QWindowSurface, QEstablishmentRefine);
+        host.QWindowAtelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged += heard;
+        _qEstablishmentRelease = () => host.QWindowAtelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged -= heard;
     }
 
     internal void QEstablishmentClose()

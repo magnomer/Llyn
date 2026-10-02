@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Llyn.Conduct;
 using Llyn.Core;
@@ -144,11 +145,10 @@ public sealed class TDesk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CDesk desk = TDeskPrepare(engine);
-        desk.CDeskStart(null);
         List<string> refused = [];
+        CDesk desk = TDeskPrepare(engine, refused);
+        desk.CDeskStart(null);
         int changed = 0;
-        desk.CDeskRefused += refused.Add;
         desk.CDeskStateChanged += () => changed++;
 
         desk.CDeskStateResonate();
@@ -170,9 +170,33 @@ public sealed class TDesk
         Assert.Empty(stored);
     }
 
-    private static CDesk TDeskPrepare(LEngine engine)
+    [Fact]
+    public void Start_RefusedTenure_ShowsTheLoadFailureOnce()
     {
-        CDesk desk = TInterfaceConduct.TDeskCreate(engine, "Guild", TEnvoyFake.TEnvoyCreate(false, []));
+        List<string> asked = [];
+        LDraftPort drafts = TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineTenureStart"] = _ => throw new InvalidOperationException("refused"),
+        });
+        CDesk desk = new(
+            drafts,
+            TInterfaceConduct.TSettingsCreate(),
+            "Example",
+            TEnvoyFake.TEnvoyCreate(false, asked),
+            "Corpus",
+            CSubject.CSubjectExample);
+
+        desk.CDeskStart(null);
+
+        Assert.Equal(["Example.LoadFailed"], asked);
+        Assert.False(desk.CDeskHeld);
+    }
+
+    private static CDesk TDeskPrepare(LEngine engine) => TDeskPrepare(engine, []);
+
+    private static CDesk TDeskPrepare(LEngine engine, List<string> asked)
+    {
+        CDesk desk = TInterfaceConduct.TDeskCreate(engine, "Guild", TEnvoyFake.TEnvoyCreate(false, asked));
         desk.TDeskVistaRestore(engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderName));
         return desk;
     }

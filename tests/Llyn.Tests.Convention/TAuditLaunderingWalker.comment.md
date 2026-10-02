@@ -14,18 +14,23 @@ The colour a taint carries when it came from logic.
 
 The colour a taint carries when it came from an input member of a control or a console read.
 
-## `private static IReadOnlySet<ISymbol> TAuditReaderNames`
+## `private static readonly AsyncLocal<IReadOnlySet<ISymbol>?> TAuditReaderNames`
 
 The shell members that read logic or request, read by the truth walker.
+It is local to the run's own flow, like the assay compilation in `TAuditBinder`.
+So an assay walking beside the tracked walk never swaps the tracked readers for its own.
+Outside a run it is null.
 
 ## `public static IReadOnlyList<TViolation> TAuditRun(`
 
 Compiles every file and scans each walked member on its own, since a taint lives inside one member.
+The readers are cleared when the walk returns, even on a failure.
 
 ## `private static void TAuditMemberScan(MemberDeclarationSyntax member, List<TViolation> violations)`
 
 Reads the member's taints, then looks at every operator, query verb and condition for one.
 A line that already names logic is the moonlighting rule's and is skipped here.
+A comparison with a `true` or `false` literal only coerces a value, so it is no operator sink.
 A hit is reported once per line and reason, with the first line of the node as its name.
 
 ## `private static Dictionary<ISymbol, string> TAuditTaintRead(MemberDeclarationSyntax member)`
@@ -47,10 +52,14 @@ The colour an expression carries, or null when it is clean.
 
 The first tainted name inside a node and its colour.
 A tainted local, an engine symbol, a reader member, a control input member and a console read each count.
+A static Conduct field or property is a logic value too, as a driver method returning it is.
+An enum member is not, since comparing to one only dispatches on a verdict.
+A name inside `nameof` reads no value and is skipped.
 
 ## `private static bool TAuditConditionCheck(ExpressionSyntax condition)`
 
 False for a null check, a type test and a bare verdict, which decide nothing about a value.
+An `&&` or `||` chain counts as presence only when every operand is a null check or type test.
 
 ## `private static bool TAuditVerdictCheck(ExpressionSyntax condition)`
 

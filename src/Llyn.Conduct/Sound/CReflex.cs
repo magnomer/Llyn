@@ -29,6 +29,20 @@ public sealed record CReflex(
         return CReflexFolded && !opened;
     }
 
+    internal string LReflexFieldRead(CReflexField field)
+    {
+        return field switch
+        {
+            CReflexField.CReflexFieldLanguage => CReflexLanguage,
+            CReflexField.CReflexFieldKind => CReflexKind,
+            CReflexField.CReflexFieldText => CReflexText,
+            CReflexField.CReflexFieldRomanization => CReflexRomanization,
+            CReflexField.CReflexFieldMeaning => CReflexMeaning,
+            CReflexField.CReflexFieldNote => CReflexNote,
+            _ => throw new ArgumentOutOfRangeException(nameof(field), field, null),
+        };
+    }
+
     internal static IReadOnlyList<bool> LReflexLeadRead(IReadOnlyList<string> languages)
     {
         ArgumentNullException.ThrowIfNull(languages);

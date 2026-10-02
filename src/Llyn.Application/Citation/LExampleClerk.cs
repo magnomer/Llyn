@@ -112,7 +112,7 @@ public sealed class LExampleClerk
         return string.Equals(LStateValue.LStateValueRead(field).LStateValueShow(), shown, StringComparison.Ordinal);
     }
 
-    public static (string, string, string) LExampleLineRead(
+    public static (string, IReadOnlyList<LMentionPiece>, string) LExampleLineRead(
         LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)
     {
         ArgumentNullException.ThrowIfNull(sentence);
@@ -126,7 +126,9 @@ public sealed class LExampleClerk
                 : string.Empty;
         return (
             LPortraitFrame.LPortraitFrameRead(sentence, order, mark),
-            LPortraitText.LPortraitTextRead(example?.LExampleDraftText, mark),
+            LMentionClerk.LMentionClerkDivide(
+                LPortraitText.LPortraitTextRead(example?.LExampleDraftText, mark),
+                LDraftClerkMention.LMentionRead(sentence.LSentenceDraftMention)),
             citation);
     }
 

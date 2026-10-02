@@ -1,0 +1,24 @@
+# QLedgerItem.cs
+
+## `internal sealed class QLedgerItem`
+
+Presentation item for one setting group row in `PLedger`.
+Carries the group title the row shows and the child name the card is found by.
+The child name is identity and never displayed.
+The title is read from the localization when the ledger is built and again when the language changes.
+
+## `public string QLedgerItemTitle`
+
+The localized name of the group, shown as the row's heading.
+It notifies, so a language change rewrites the row in place rather than rebuilding the catalog.
+
+## `public string QLedgerItemMeta`
+
+The one-line summary of the values the group holds, shown under the title.
+It changes whenever a control of the group is changed, so it notifies.
+The ledger writes it instead of refilling the list, so the catalog keeps its rows in place.
+
+## `public bool QLedgerItemChosen`
+
+Whether this row is the group shown on the right, which the row template paints an accent edge for.
+The panel sets it on every row when a card is shown, so exactly one row carries it.

@@ -11,7 +11,11 @@ internal sealed partial class QFavorite
 {
     private readonly UserControl _qFavoriteSurface;
 
-    private PWindow _qFavoriteHost = null!;
+    private readonly QEditor _qFavoriteEditor;
+
+    private readonly QDisplay _qFavoriteDisplay;
+
+    private QWindow _qFavoriteHost = null!;
 
     private CFavorite _cFavorite = null!;
 
@@ -20,6 +24,8 @@ internal sealed partial class QFavorite
         ArgumentNullException.ThrowIfNull(surface);
 
         _qFavoriteSurface = surface;
+        _qFavoriteEditor = new QEditor(QContract.QContractFind<FrameworkElement>(surface, "PEditor"));
+        _qFavoriteDisplay = new QDisplay(QContract.QContractFind<FrameworkElement>(surface, "PDisplay"));
 
         surface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QFavoritePressObserve, QFavoritePressCheck));
@@ -109,21 +115,17 @@ internal sealed partial class QFavorite
 
     private RadioButton QFavoriteScribe => QContract.QContractFind<RadioButton>(_qFavoriteSurface, "PFavoriteScribe");
 
-    private PDisplay QFavoriteDisplay => QContract.QContractFind<PDisplay>(_qFavoriteSurface, "PDisplay");
-
-    private PEditor QFavoriteEditor => QContract.QContractFind<PEditor>(_qFavoriteSurface, "PEditor");
-
     private Button QFavoriteBin => QContract.QContractFind<Button>(_qFavoriteSurface, "PFavoriteBin");
 
     private QIconImage QFavoriteBinIcon => QContract.QContractFind<QIconImage>(_qFavoriteSurface, "PFavoriteBinIcon");
 
-    internal void QFavoriteIntroduce(PWindow host)
+    internal void QFavoriteIntroduce(QWindow host)
     {
         _qFavoriteHost = host;
         _cFavorite = CFavorite.CFavoriteCreate(
-            host.PWindowAtelier,
+            host.QWindowAtelier,
             QFavoriteShownCheck,
-            host.PWindowEnvoy,
+            host.QWindowEnvoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         CPanel panel = _cFavorite.CFavoritePanel;
         QLectern lectern = new(_cFavorite.CFavoriteEditor.CEditorDisplay, panel);
@@ -135,10 +137,10 @@ internal sealed partial class QFavorite
         QRoster.ItemsSource = _qRosterList;
         QLookItem.QLookItemAttach(QRoster, QRosterApply);
 
-        QFavoriteDisplay.PDisplayAttach(host, lectern);
+        _qFavoriteDisplay.QDisplayIntroduce(host, lectern);
         _cFavorite.CFavoriteEditor.CEditorDesk.CDeskStateChanged += QFavoriteStoreUpdate;
-        QFavoriteEditor.PEditorIntroduce(host, new QEditor(_cFavorite.CFavoriteEditor));
-        QFavoriteEditor.PEditorChronicleChanged += QFavoriteChronicleUpdate;
+        _qFavoriteEditor.QEditorIntroduce(host, _cFavorite.CFavoriteEditor);
+        _qFavoriteEditor.QEditorChronicleChanged += QFavoriteChronicleUpdate;
     }
 
     private void QFavoriteStoreUpdate()
@@ -148,7 +150,7 @@ internal sealed partial class QFavorite
 
     internal void QFavoriteExitRefine()
     {
-        QFavoriteEditor.PEditorPlayerRefine();
+        _qFavoriteEditor.QEditorPlayerRefine();
     }
 
     private void QFavoritePressCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -174,22 +176,22 @@ internal sealed partial class QFavorite
 
     private void QFavoriteRetreatObserve(object sender, RoutedEventArgs e)
     {
-        _qFavoriteHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
+        _qFavoriteHost.QWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QFavoriteAdvanceObserve(object sender, RoutedEventArgs e)
     {
-        _qFavoriteHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
+        _qFavoriteHost.QWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void QFavoriteUndoObserve(object sender, RoutedEventArgs e)
     {
-        QFavoriteEditor.QChronicleUndoObserve();
+        _qFavoriteEditor.QChronicleUndoObserve();
     }
 
     private void QFavoriteRedoObserve(object sender, RoutedEventArgs e)
     {
-        QFavoriteEditor.QChronicleRedoObserve();
+        _qFavoriteEditor.QChronicleRedoObserve();
     }
 
     private void QFavoriteChronicleUpdate()
@@ -207,8 +209,8 @@ internal sealed partial class QFavorite
     private void QFavoriteModeUpdate()
     {
         CPanel panel = _cFavorite.CFavoritePanel;
-        QFavoriteEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
-        QFavoriteDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
+        _qFavoriteEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(panel.CPanelEditing));
+        _qFavoriteDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(panel.CPanelViewerChecked));
         QFavoriteViewer.IsChecked = panel.CPanelViewerChecked;
         QFavoriteScribe.IsChecked = panel.CPanelScribeChecked;
         QFavoriteVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);

@@ -1,4 +1,5 @@
 <UserControl
+    x:Class="Llyn.UIVeneer.PDisplay"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment">
@@ -8,6 +9,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Display/Template/PDisplayCard.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Display/Template/PDisplayUsage.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Display/Compass/PDisplayCompass.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -66,7 +68,9 @@
                     </Grid>
                     <StackPanel Margin="12,12,0,0" Grid.IsSharedSizeScope="True">
                         <StackPanel x:Name="PDisplayReflexTable" HorizontalAlignment="Left">
-                            <local:PReflexList x:Name="PDisplayReflex" ItemTemplate="{StaticResource Theme.Reflex.Display}" />
+                            <local:QReflexFrame>
+                                <ItemsControl x:Name="PDisplayReflex" ItemTemplate="{StaticResource Theme.Reflex.Display}" />
+                            </local:QReflexFrame>
                             <TextBlock x:Name="PDisplayReflexLoading" Style="{StaticResource Theme.Reflex.Loading}" Visibility="Collapsed" />
                             <ToggleButton
                                 x:Name="PDisplayReflexFold"
@@ -158,9 +162,9 @@
                         </Border>
                     </StackPanel>
 
-                    <local:PParadigm x:Name="PDisplayParadigm" Margin="0,14,0,0" />
+                    <local:QParadigm x:Name="PDisplayParadigm" Margin="0,14,0,0" />
 
-                    <local:PFanqie x:Name="PDisplayFanqie" Margin="0,14,0,0" />
+                    <local:QFanqie x:Name="PDisplayFanqie" Margin="0,14,0,0" />
 
                     <StackPanel x:Name="PDisplayMeaningSection" Margin="0,39,0,0">
                         <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.MeaningPlural}" />
@@ -219,7 +223,7 @@
 
                     <StackPanel x:Name="PDisplayEtymologySection" Margin="0,28,0,0">
                         <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Etymology}" />
-                        <local:PEtymology x:Name="PDisplayEtymology" Style="{StaticResource Theme.Etymology.Read}" />
+                        <local:QEtymology x:Name="PDisplayEtymology" />
                     </StackPanel>
 
                     <StackPanel x:Name="PDisplayNoteSection" Margin="0,28,0,0">
@@ -229,7 +233,7 @@
                         </Border>
                     </StackPanel>
 
-                    <local:PScript x:Name="PDisplayScript" Margin="0,28,0,0" />
+                    <local:QScript x:Name="PDisplayScript" Margin="0,28,0,0" />
 
                     <StackPanel x:Name="PDisplayStampSection" Margin="2,36,2,24">
                         <Border Height="1" Margin="0,0,0,14" Background="{StaticResource Theme.Line}" SnapsToDevicePixels="True" />

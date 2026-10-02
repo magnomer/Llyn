@@ -10,6 +10,8 @@ While `TAuditTruthEnforced` is false every fact passes and reports as a warning.
 Enforced, a kind fails in any file whose count stands above its ledger ceiling.
 The ledger keys each ceiling by file, so each medium's lag is its own.
 A new file starts at zero.
+`TAssayTruth` and its siblings `TAssaySink`, `TAssayRelay`, `TAssayMisfiring` and `TAssayContesting` assay the walker on hand-written sources.
+Assays check the walker, not the tree, so they gate no tree result and no ledger ceiling.
 
 ## `private const string TAuditTruthAudit = "AUDITTRUTH";`
 

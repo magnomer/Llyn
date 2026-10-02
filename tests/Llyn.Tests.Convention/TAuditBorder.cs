@@ -63,7 +63,8 @@ public sealed class TAuditBorder
     [Fact]
     public void AuditBorder_Cut_MatchesShellRoots()
     {
-        string[] shells = TAuditBinder.TAuditRootRead(TAuditTruthSetting.TAuditShellInclude)
+        string[] shells = TAuditBinder.TAuditRootRead(
+                [.. TAuditTruthSetting.TAuditShellInclude, .. TAuditTruthSetting.TAuditCapsuleInclude])
             .Select(root => root[(root.LastIndexOf('/') + 1)..])
             .Order(StringComparer.Ordinal)
             .ToArray();

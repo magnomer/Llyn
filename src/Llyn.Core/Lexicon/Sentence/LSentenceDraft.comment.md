@@ -60,3 +60,8 @@ Such an empty row records nothing and is never committed.
 
 The same row and its example with every unreadable value dropped to unspecified.
 Called only after the user agreed to lose what the store could not read.
+
+## `public bool LSentenceDraftCited`
+
+True when the quoted Example cites a stored Source.
+A row without an Example cites nothing.

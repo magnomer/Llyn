@@ -277,10 +277,17 @@ internal sealed class LCardFacade
         return [.. etymons.Where(found.ContainsKey).Select(id => found[id])];
     }
 
-    public (IReadOnlyList<LTranslationTarget>, bool) LEngineEtymologyRead(LEntryDraft draft)
+    public LEtymologyResult LEngineEtymologyRead(LEntryDraft draft)
     {
-        IReadOnlyList<LTranslationTarget> etymons = LEngineEtymonRead(draft);
-        return (etymons, draft.LEntryDraftEtymology.LEtymologyDraftNarrated || etymons.Count > 0);
+        bool narrated = draft.LEntryDraftEtymology.LEtymologyDraftNarrated;
+        try
+        {
+            return new LEtymologyResult(LEngineEtymonRead(draft), narrated);
+        }
+        catch (Exception)
+        {
+            return new LEtymologyResult([], narrated);
+        }
     }
 
     public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId, IReadOnlyList<long> ids)

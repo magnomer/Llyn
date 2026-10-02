@@ -12,7 +12,11 @@ internal sealed class QLibrary
 {
     private readonly UserControl _qLibrarySurface;
 
-    private PWindow _qLibraryHost = null!;
+    private readonly QEditor _qLibraryEditor;
+
+    private readonly QDisplay _qLibraryDisplay;
+
+    private QWindow _qLibraryHost = null!;
 
     private CLibrary _cLibrary = null!;
 
@@ -25,6 +29,8 @@ internal sealed class QLibrary
         ArgumentNullException.ThrowIfNull(surface);
 
         _qLibrarySurface = surface;
+        _qLibraryEditor = new QEditor(QContract.QContractFind<FrameworkElement>(surface, "PEditor"));
+        _qLibraryDisplay = new QDisplay(QContract.QContractFind<FrameworkElement>(surface, "PDisplay"));
 
         surface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QLibraryPressObserve, QLibraryPressRefine));
@@ -116,21 +122,17 @@ internal sealed class QLibrary
 
     private RadioButton QLibraryScribe => QContract.QContractFind<RadioButton>(_qLibrarySurface, "PLibraryScribe");
 
-    private PDisplay QLibraryDisplay => QContract.QContractFind<PDisplay>(_qLibrarySurface, "PDisplay");
-
-    private PEditor QLibraryEditor => QContract.QContractFind<PEditor>(_qLibrarySurface, "PEditor");
-
     private Button QLibraryBin => QContract.QContractFind<Button>(_qLibrarySurface, "PLibraryBin");
 
     private QIconImage QLibraryBinIcon => QContract.QContractFind<QIconImage>(_qLibrarySurface, "PLibraryBinIcon");
 
-    internal void QLibraryIntroduce(PWindow host)
+    internal void QLibraryIntroduce(QWindow host)
     {
         _qLibraryHost = host;
         _cLibrary = CLibrary.CLibraryCreate(
-            host.PWindowAtelier,
+            host.QWindowAtelier,
             QLibraryShownCheck,
-            host.PWindowEnvoy,
+            host.QWindowEnvoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         CPanel panel = _cLibrary.CLibraryPanel;
         QLectern lectern = new(_cLibrary.CLibraryEditor.CEditorDisplay, panel);
@@ -144,11 +146,11 @@ internal sealed class QLibrary
             QContract.QContractFind<ItemsControl>(_qLibrarySurface, "PIndex"),
             QContract.QContractFind<FrameworkElement>(_qLibrarySurface, "PIndexEmpty"));
 
-        QLibraryDisplay.PDisplayAttach(host, lectern);
+        _qLibraryDisplay.QDisplayIntroduce(host, lectern);
 
-        QLibraryEditor.PEditorIntroduce(host, new QEditor(_cLibrary.CLibraryEditor));
+        _qLibraryEditor.QEditorIntroduce(host, _cLibrary.CLibraryEditor);
 
-        QLibraryEditor.PEditorChronicleChanged += QLibraryChronicleRefine;
+        _qLibraryEditor.QEditorChronicleChanged += QLibraryChronicleRefine;
     }
 
     private void QLibraryIndexIntroduce(ItemsControl view, FrameworkElement empty)
@@ -195,7 +197,7 @@ internal sealed class QLibrary
 
     private async void QLibraryWorkspaceRefine()
     {
-        await _qLibraryHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
+        await _qLibraryHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
     }
 
     private bool QLibraryShownCheck()
@@ -205,14 +207,14 @@ internal sealed class QLibrary
 
     internal void QLibraryExitRefine()
     {
-        QLibraryEditor.PEditorPlayerRefine();
+        _qLibraryEditor.QEditorPlayerRefine();
     }
 
     private void QLibraryModeRefine()
     {
         CPanel panel = _cLibrary.CLibraryPanel;
-        QLibraryEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
-        QLibraryDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
+        _qLibraryEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(panel.CPanelEditing));
+        _qLibraryDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(panel.CPanelViewerChecked));
         QLibraryViewer.IsChecked = panel.CPanelViewerChecked;
         QLibraryScribe.IsChecked = panel.CPanelScribeChecked;
         QLibraryVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
@@ -313,22 +315,22 @@ internal sealed class QLibrary
 
     private void QLibraryRetreatObserve(object sender, RoutedEventArgs e)
     {
-        _qLibraryHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
+        _qLibraryHost.QWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QLibraryAdvanceObserve(object sender, RoutedEventArgs e)
     {
-        _qLibraryHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
+        _qLibraryHost.QWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void QLibraryUndoObserve(object sender, RoutedEventArgs e)
     {
-        QLibraryEditor.QChronicleUndoObserve();
+        _qLibraryEditor.QChronicleUndoObserve();
     }
 
     private void QLibraryRedoObserve(object sender, RoutedEventArgs e)
     {
-        QLibraryEditor.QChronicleRedoObserve();
+        _qLibraryEditor.QChronicleRedoObserve();
     }
 
     private void QLibraryChronicleRefine()

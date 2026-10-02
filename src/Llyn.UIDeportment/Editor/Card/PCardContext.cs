@@ -11,18 +11,21 @@ internal sealed partial class PCard
 
     private readonly PContextCaret _pCardContextCaret = new();
 
-    private static readonly Func<object, long?> _pCardContextKey =
-        row => row is PContext chip ? chip.PContextId : null;
+    private static readonly Func<PContext, long?> _pCardContextKey =
+        static chip => chip.PContextId;
 
-    public ObservableCollection<object> PCardContext { get; } = [];
+    public ObservableCollection<PContext> PCardContext { get; } = [];
 
     internal string PCardContextText => _pCardContextCaret.PContextCaretText;
 
+    internal PContextCaret PCardContextCaret => _pCardContextCaret;
+
     internal int PCardContextPosition =>
-        PCardRowResolve(PCardContext, _pCardContextKey, PCardContext.IndexOf(_pCardContextCaret));
+        PCardCaretFind(PCardContext, _pCardContextCaret.PContextCaretAnchor);
 
     internal void PCardContextShow(IReadOnlyList<CSituationDraft> drafts)
     {
+        List<PContext> trail = PCardCaretRead(PCardContext, _pCardContextCaret.PContextCaretAnchor);
         PCardRowShow(
             PCardContext,
             drafts,
@@ -30,35 +33,32 @@ internal sealed partial class PCard
             static draft => draft.CSituationDraftId,
             PCardContextCreate,
             static (row, draft) =>
-                row is PContext chip
-                    ? draft.CSituationDraftWording == chip.PContextText ? row : PCardContextCreate(draft)
-                    : PCardContextCreate(draft));
+                draft.CSituationDraftWording == row.PContextText ? row : PCardContextCreate(draft));
+        _pCardContextCaret.PContextCaretAnchor = PCardCaretResolve(PCardContext, trail);
 
         PCardContextUpdate();
     }
 
     internal PContext? PCardContextFind(int step)
     {
-        int index = PCardContext.IndexOf(_pCardContextCaret);
-        int target = index + step;
-        if (index < 0 || target < 0 || target >= PCardContext.Count)
+        int target = PCardContextPosition + (step < 0 ? step : step - 1);
+        if (target < 0 || target >= PCardContext.Count)
         {
             return null;
         }
 
-        return PCardContext[target] as PContext;
+        return PCardContext[target];
     }
 
     internal bool PCardContextMove(int step)
     {
-        int index = PCardContext.IndexOf(_pCardContextCaret);
-        int target = index + step;
-        if (index < 0 || target < 0 || target >= PCardContext.Count)
+        int target = PCardContextPosition + step;
+        if (target < 0 || target > PCardContext.Count)
         {
             return false;
         }
 
-        PCardContext.Move(index, target);
+        _pCardContextCaret.PContextCaretAnchor = target < PCardContext.Count ? PCardContext[target] : null;
         return true;
     }
 
@@ -68,14 +68,13 @@ internal sealed partial class PCard
         PCardContextUpdate();
     }
 
-    private static object PCardContextCreate(CSituationDraft draft)
+    private static PContext PCardContextCreate(CSituationDraft draft)
     {
         return new PContext(draft.CSituationDraftWording, draft.CSituationDraftId);
     }
 
     private void PCardContextStart()
     {
-        PCardContext.Add(_pCardContextCaret);
         PCardContextUpdate();
     }
 
@@ -90,8 +89,8 @@ internal sealed partial class PCard
 
     private void PCardContextUpdate()
     {
-        _pCardContextCaret.PContextCaretHint = PCardContext.Count > 1
+        _pCardContextCaret.PContextCaretHint = PCardContext.Count > 0
             ? string.Empty
-            : QLocalizationCatalog.QLocalizationCatalogCurrent[PCardContextHint];
+            : QLocalizationCatalog.QLocalizationTextRead(PCardContextHint);
     }
 }

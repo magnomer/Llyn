@@ -7,6 +7,8 @@ A new meaning or collocation lands last in its own list.
 A card is dropped from a list of two, and a list of one keeps its card.
 A typed number moves a card to that place, clamped to the list, and an unreadable one moves nothing.
 A dragged place moves a card there as it stands.
+A card the draft lacks keeps the order rather than being refused.
+A dragged place is a move only when it lies in the list and differs from the card's own.
 The clerk rules behind the gates are read on the held draft through their relays.
 
 ## `private static (CDesk TCardListDesk, CCardList TCardListCard) TCardListPrepare(LEngine engine, int count)`

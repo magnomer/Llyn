@@ -119,7 +119,7 @@ public sealed class TSoundingAnchor
 
     private static CEditor TSoundingAnchorPrepare(LEngine engine, long? entry)
     {
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(entry);
         return editor;

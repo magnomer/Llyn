@@ -11,53 +11,53 @@ internal sealed partial class PCard
 
     private readonly PLinkCaret _pCardLinkCaret = new();
 
-    private static readonly Func<object, long?> _pCardLinkKey =
-        row => row is QLinkChip chip ? chip.QLinkChipTarget.CTranslationTargetId : null;
+    private static readonly Func<QLinkChip, long?> _pCardLinkKey =
+        static chip => chip.QLinkChipTarget.CTranslationTargetId;
 
-    public ObservableCollection<object> PCardLink { get; } = [];
+    public ObservableCollection<QLinkChip> PCardLink { get; } = [];
+
+    internal PLinkCaret PCardLinkCaret => _pCardLinkCaret;
 
     internal int PCardLinkPosition =>
-        PCardRowResolve(PCardLink, _pCardLinkKey, PCardLink.IndexOf(_pCardLinkCaret));
+        PCardCaretFind(PCardLink, _pCardLinkCaret.PLinkCaretAnchor);
 
     internal void PCardLinkShow(IReadOnlyList<CTranslationTarget> targets)
     {
         ArgumentNullException.ThrowIfNull(targets);
 
+        List<QLinkChip> trail = PCardCaretRead(PCardLink, _pCardLinkCaret.PLinkCaretAnchor);
         PCardRowShow(
             PCardLink,
             targets,
             _pCardLinkKey,
             static target => target.CTranslationTargetId,
             PCardLinkCreate,
-            static (row, target) => row is QLinkChip chip && chip.QLinkChipTarget == target
-                ? row
-                : PCardLinkCreate(target));
+            static (row, target) => row.QLinkChipTarget == target ? row : PCardLinkCreate(target));
+        _pCardLinkCaret.PLinkCaretAnchor = PCardCaretResolve(PCardLink, trail);
 
         PCardLinkUpdate();
     }
 
     internal QLinkChip? PCardLinkFind(int step)
     {
-        int index = PCardLink.IndexOf(_pCardLinkCaret);
-        int target = index + step;
-        if (index < 0 || target < 0 || target >= PCardLink.Count)
+        int target = PCardLinkPosition + (step < 0 ? step : step - 1);
+        if (target < 0 || target >= PCardLink.Count)
         {
             return null;
         }
 
-        return PCardLink[target] as QLinkChip;
+        return PCardLink[target];
     }
 
     internal bool PCardLinkMove(int step)
     {
-        int index = PCardLink.IndexOf(_pCardLinkCaret);
-        int target = index + step;
-        if (index < 0 || target < 0 || target >= PCardLink.Count)
+        int target = PCardLinkPosition + step;
+        if (target < 0 || target > PCardLink.Count)
         {
             return false;
         }
 
-        PCardLink.Move(index, target);
+        _pCardLinkCaret.PLinkCaretAnchor = target < PCardLink.Count ? PCardLink[target] : null;
         return true;
     }
 
@@ -69,26 +69,22 @@ internal sealed partial class PCard
 
     internal void PCardFlagUpdate()
     {
-        for (int index = 0; index < PCardLink.Count; index++)
+        foreach (object row in PCardLink)
         {
-            if (PCardLink[index] is not QLinkChip chip ||
-                chip.QLinkChipFlag is not null)
+            if (row is QLinkChip chip)
             {
-                continue;
+                chip.QLinkChipRefine();
             }
-
-            PCardLink[index] = new QLinkChip(chip.QLinkChipTarget);
         }
     }
 
-    private static object PCardLinkCreate(CTranslationTarget target)
+    private static QLinkChip PCardLinkCreate(CTranslationTarget target)
     {
         return new QLinkChip(target);
     }
 
     private void PCardLinkStart()
     {
-        PCardLink.Add(_pCardLinkCaret);
         PCardLinkUpdate();
     }
 
@@ -110,6 +106,6 @@ internal sealed partial class PCard
     private void PCardLinkUpdate()
     {
         _pCardLinkCaret.PLinkCaretHint =
-            PCardLink.Count > 1 ? string.Empty : PCardHintRead();
+            PCardLink.Count > 0 ? string.Empty : PCardHintRead();
     }
 }

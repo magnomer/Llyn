@@ -16,7 +16,29 @@ public sealed class QBootstrap
         QLook.QLookStateAttach();
     }
 
-    public bool QBootstrapThemeApply(
+    public void QBootstrapIntroduce<QBootstrapEngine>(
+        Func<Func<string, string>> colorSeam,
+        Func<IReadOnlyDictionary<string, string>> catalogSeam,
+        Func<string> workspaceSeam,
+        Func<string, QBootstrapEngine> buildSeam,
+        Func<Exception, bool> busySeam,
+        Action<QBootstrapEngine> runSeam)
+        where QBootstrapEngine : class
+    {
+        ArgumentNullException.ThrowIfNull(runSeam);
+
+        if (!QBootstrapThemeApply(colorSeam, catalogSeam))
+        {
+            return;
+        }
+
+        if (QBootstrapBuild(workspaceSeam, buildSeam, busySeam) is QBootstrapEngine engine)
+        {
+            runSeam(engine);
+        }
+    }
+
+    private static bool QBootstrapThemeApply(
         Func<Func<string, string>> colorSeam, Func<IReadOnlyDictionary<string, string>> catalogSeam)
     {
         try
@@ -41,7 +63,7 @@ public sealed class QBootstrap
         }
     }
 
-    public QBootstrapEngine? QBootstrapBuild<QBootstrapEngine>(
+    private static QBootstrapEngine? QBootstrapBuild<QBootstrapEngine>(
         Func<string> workspaceSeam, Func<string, QBootstrapEngine> buildSeam, Func<Exception, bool> busySeam)
         where QBootstrapEngine : class
     {
@@ -112,11 +134,11 @@ public sealed class QBootstrap
         TaskScheduler.UnobservedTaskException += QBootstrapStrayObserve;
     }
 
-    public void QBootstrapWindowShow(PWindow window)
+    public void QBootstrapWindowShow(QWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
 
-        window.PWindowSurface.Show();
+        window.QWindowSurface.Show();
     }
 
     private void QBootstrapFaultObserve(object sender, DispatcherUnhandledExceptionEventArgs e)

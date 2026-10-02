@@ -19,7 +19,7 @@ Row clicks are taken on each list, and every button and search field is subscrib
 
 Each named part of the page is pulled through `QContract` under the page's own `x:Name`.
 
-## `internal void QYunjingIntroduce(PWindow host)`
+## `internal void QYunjingIntroduce(QWindow host)`
 
 Builds the Conduct session, wraps its editor, and subscribes the notices.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.

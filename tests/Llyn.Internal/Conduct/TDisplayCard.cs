@@ -79,10 +79,10 @@ public sealed class TDisplayCard
 
         CLeafLine line = Assert.Single(leaf.CLeafSentence);
         Assert.Equal("(+" + TInterface.TLocalizationTextRead("Display.Unknown") + ")", line.CLeafLineHead);
-        Assert.Equal("the water runs", line.CLeafLineText);
-        Assert.Equal("English", line.CLeafLineLanguage);
+        Assert.Equal(
+            "the water runs", string.Concat(line.CLeafLinePiece.Select(static piece => piece.CMentionPieceText)));
+        Assert.True(line.CLeafLineSentence > 0);
         Assert.Equal(string.Empty, line.CLeafLineCitation);
-        Assert.Empty(line.CLeafLineMention);
         Assert.Empty(line.CLeafLineGloss);
     }
 
@@ -219,10 +219,33 @@ public sealed class TDisplayCard
 
         CLecternEtymology etymology = wing.CWingDisplay.CDisplayArea.CDisplayEtymologyRead();
 
-        Assert.Equal("English", etymology.CLecternEtymologyLanguage);
         Assert.Equal(rinnan.LEntryId, Assert.Single(etymology.CLecternEtymologyTargets).CTranslationTargetId);
         Assert.True(etymology.CLecternEtymologyShown);
+        Assert.True(etymology.CLecternEtymologyLinked);
+        Assert.False(etymology.CLecternEtymologyNarrated);
         Assert.True(etymology.CLecternEtymologyDerived);
+    }
+
+    [Fact]
+    public void DisplayEtymologyRead_TwoSourceLinks_ShowsTheRowOfLinks()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry rinnan = TDisplayEntrySave(engine, "rinnan");
+        LEntry rennen = TDisplayEntrySave(engine, "rennen");
+        LEntry run = TDisplayEntrySave(engine, "run");
+        LDraft held = engine.TEngineDraftStart("Input", run.LEntryId);
+        engine.TEngineRequestApply(TInterface.TEtymonAdditionCreate(held.LDraftId, rinnan.LEntryId, 0));
+        engine.TEngineRequestApply(TInterface.TEtymonAdditionCreate(held.LDraftId, rennen.LEntryId, 1));
+        engine.TEngineDraftCommit(held.LDraftId);
+        CWing wing = TDisplayWingPrepare(atelier, []);
+        wing.CWingEntryOpen(run.LEntryId);
+
+        CLecternEtymology etymology = wing.CWingDisplay.CDisplayArea.CDisplayEtymologyRead();
+
+        Assert.Equal(2, etymology.CLecternEtymologyTargets.Count);
+        Assert.True(etymology.CLecternEtymologyLinked);
     }
 
     [Fact]
@@ -243,7 +266,29 @@ public sealed class TDisplayCard
         Assert.Equal("From rinnan.", etymology.CLecternEtymologyText);
         Assert.Empty(etymology.CLecternEtymologyTargets);
         Assert.True(etymology.CLecternEtymologyShown);
+        Assert.True(etymology.CLecternEtymologyNarrated);
+        Assert.False(etymology.CLecternEtymologyLinked);
         Assert.True(etymology.CLecternEtymologyDerived);
+    }
+
+    [Theory]
+    [InlineData("  a tale  ", true)]
+    [InlineData(" \n ", false)]
+    public void DisplayEtymologyRead_NarrativeText_ShowsTheReadFaceOnlyWithWords(string text, bool expected)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry run = TDisplayEntrySave(engine, "run");
+        LDraft held = engine.TEngineDraftStart("Input", run.LEntryId);
+        engine.TEngineRequestApply(TInterface.TEtymologyTextCreate(held.LDraftId, text));
+        engine.TEngineDraftCommit(held.LDraftId);
+        CWing wing = TDisplayWingPrepare(atelier, []);
+        wing.CWingEntryOpen(run.LEntryId);
+
+        CLecternEtymology etymology = wing.CWingDisplay.CDisplayArea.CDisplayEtymologyRead();
+
+        Assert.Equal(expected, etymology.CLecternEtymologyNarrated);
     }
 
     [Fact]
@@ -259,6 +304,8 @@ public sealed class TDisplayCard
         CLecternEtymology etymology = wing.CWingDisplay.CDisplayArea.CDisplayEtymologyRead();
 
         Assert.False(etymology.CLecternEtymologyShown);
+        Assert.False(etymology.CLecternEtymologyNarrated);
+        Assert.False(etymology.CLecternEtymologyLinked);
         Assert.False(etymology.CLecternEtymologyDerived);
     }
 

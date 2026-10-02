@@ -31,7 +31,7 @@ The search field and the kind filter over the middle column, shaped as the sourc
 `PLouverDropper` opens the menu of source kinds, and `PLouverMark` shows while any is hidden.
 The kinds are drawn in code, because their words come from the sources panel's own keys.
 
-## `<local:PRail Grid.Row="0" Grid.Column="2" ...>`
+## `<local:QRail Grid.Row="0" Grid.Column="2" ...>`
 
 The action row of the panel.
 `PGuildFresh` opens the edit area on an Author nothing credits yet.

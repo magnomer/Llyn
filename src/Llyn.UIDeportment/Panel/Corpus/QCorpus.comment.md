@@ -35,11 +35,11 @@ It attaches the row fills of the catalog, the quotations and the speaker list.
 
 Each named part of the page is pulled through `QContract.QContractFind` by its contract ID.
 
-## `internal void QCorpusIntroduce(PWindow host)`
+## `internal void QCorpusIntroduce(QWindow host)`
 
 Builds the corpus Conduct with the window's envoy, and the corpus builds its editor and its desk.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
-It subscribes the desk's failure, refusal and draft notices through `QTranscriptDeskIntroduce`.
+It subscribes the draft notice through `QTranscriptDeskIntroduce`, and the desk shows its own failures.
 The lectern follows the quotation panel, whose loads and clears reach the display's area, never the veneer.
 Binds the panel to the window it asks for confirmations and panel switches through.
 It binds its lists and subscribes to the engine, and reads nothing yet.

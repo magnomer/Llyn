@@ -8,10 +8,10 @@
     </Style>
 
     <DataTemplate x:Key="Display.Card.PictureLine">
-        <local:PImageLazy x:Name="PImageHold">
+        <local:QImageLazy x:Name="PImageHold">
             <Border Style="{DynamicResource Theme.Card.Preview}">
                 <Image x:Name="PImagePreview" Stretch="Uniform" StretchDirection="DownOnly" />
             </Border>
-        </local:PImageLazy>
+        </local:QImageLazy>
     </DataTemplate>
 </ResourceDictionary>

@@ -35,7 +35,7 @@ public sealed class CGuild
         _cGuildPortraitPort = atelier.CAtelierPortraitPort;
         _cGuildSettingsPort = atelier.CAtelierSettingsPort;
         _cGuildMarshal = marshal;
-        CGuildAutograph = new CDesk(atelier.CAtelierDraftPort, "Guild", envoy);
+        CGuildAutograph = new CDesk(atelier.CAtelierDraftPort, atelier.CAtelierSettingsPort, "Guild", envoy);
         CGuildPanel = new CPanel(
             envoy,
             _cGuildSettingsPort,

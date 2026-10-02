@@ -204,21 +204,29 @@ public static class LDraftClerkCard
         ArgumentNullException.ThrowIfNull(content);
         ArgumentNullException.ThrowIfNull(ordinal);
 
-        IReadOnlyList<LCardDraft> cards = content.LEntryDraftMeanings;
-        int current = LCardPlaceRead(cards, id);
-        if (current < 0)
-        {
-            cards = content.LEntryDraftCollocations;
-            current = LCardPlaceRead(cards, id);
-        }
-
-        if (current < 0 || !int.TryParse(ordinal, NumberStyles.Integer, CultureInfo.InvariantCulture, out int wanted))
+        if (!int.TryParse(ordinal, NumberStyles.Integer, CultureInfo.InvariantCulture, out int wanted))
         {
             return null;
         }
 
-        int target = Math.Clamp(wanted, 1, cards.Count) - 1;
-        return target == current ? null : target;
+        int count = Math.Max(LCardListRead(content, id).Count, 1);
+        return LCardShiftRead(content, id, Math.Clamp(wanted, 1, count) - 1);
+    }
+
+    public static int? LCardShiftRead(LEntryDraft content, long id, int place)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+
+        IReadOnlyList<LCardDraft> cards = LCardListRead(content, id);
+        int current = LCardPlaceRead(cards, id);
+        return current < 0 || place < 0 || place >= cards.Count || place == current ? null : place;
+    }
+
+    private static IReadOnlyList<LCardDraft> LCardListRead(LEntryDraft content, long id)
+    {
+        return LCardPlaceRead(content.LEntryDraftMeanings, id) < 0
+            ? content.LEntryDraftCollocations
+            : content.LEntryDraftMeanings;
     }
 
     private static int LCardPlaceRead(IReadOnlyList<LCardDraft> cards, long id)

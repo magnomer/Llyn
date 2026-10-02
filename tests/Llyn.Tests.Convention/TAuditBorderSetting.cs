@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditBorderSetting
 {
-    public const int TAuditGeneration = 17;
+    public const int TAuditGeneration = 18;
     public const string TAuditBorderHost = "Llyn.Host";
 
     public static readonly IReadOnlyDictionary<string, string[]> TAuditBorderNeighbour =
@@ -158,6 +158,8 @@ internal static class TAuditBorderSetting
             "CAccent",
             "CReflex",
             "CReflexHead",
+            "CReflexTyped",
+            "CAccentTyped",
             "CScheme",
             "CCatalogExample",
             "CCatalogAuthor",
@@ -210,6 +212,7 @@ internal static class TAuditBorderSetting
             "CAnthology",
             "CEsteem",
             "CTimbre",
+            "CPlayback",
             "CPortrait",
             "CCorpus",
             "CQuotation",
@@ -221,6 +224,7 @@ internal static class TAuditBorderSetting
             "CGuildRoll",
             "CImprint",
             "CByline",
+            "CLantern",
             "CLibrary",
             "COccurrence",
             "CRepertoire",

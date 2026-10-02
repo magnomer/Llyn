@@ -31,9 +31,15 @@ Creating it makes it `Application.Current`, which is how the deportment reaches 
 ## `QBootstrap bootstrap = new();`
 
 `QBootstrap` applies resources, raises every dialog of the start, and shows the window.
-It pulls the application from `Application.Current`, so the host hands it nothing.
+It pulls the application from `Application.Current`, so the host hands it no application.
 
-## `() => LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault));`
+## `bootstrap.QBootstrapIntroduce(`
+
+The host hands over the theme, the engine factory and the rest of the run as seams.
+`QBootstrap` decides whether the start continues, so the host holds no branch.
+A theme or an engine that fails leaves the rest unrun, and the exit code stays 1.
+
+## `() => LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault),`
 
 The default catalog is applied before any engine exists, so the host opens it through the port itself.
 That load lists the embedded languages first, since it refuses a language the build does not embed.
@@ -54,7 +60,12 @@ A folder that fails to open leaves the old rig standing.
 Records the chosen folder, which the engine calls only after the new rig stands.
 A folder that fails to open is therefore never pointed at.
 
-## `bootstrap.QBootstrapWindowShow(new PWindow(new CAtelier(`
+## `engine =>`
+
+The rest of the run, which `QBootstrap` calls only with an engine that was built.
+It wires the engine into the window, runs it, and disposes the engine at its end.
+
+## `bootstrap.QBootstrapWindowShow(new QWindow(new CAtelier(`
 
 The host builds Conduct's root and hands it to the deportment's window, so `QBootstrap` builds nothing.
 The root takes the posture and one outlet per port, all over the one engine.
@@ -63,4 +74,8 @@ The deportment receives the root and never sees the engine itself.
 ## `code = application.Run();`
 
 The window disposes its own deportment and posture when it closes.
-The host then disposes the engine the window ran over, and then the client.
+The host then disposes the engine the window ran over.
+
+## `client.Dispose();`
+
+The client is disposed in this one place at the end, whether or not the start went through.

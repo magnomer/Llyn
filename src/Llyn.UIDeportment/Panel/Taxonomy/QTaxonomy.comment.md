@@ -18,7 +18,7 @@ It ties both droppers to their popups, sets every icon, and subscribes every cli
 
 Each named part is pulled from the page by its contract ID on every read.
 
-## `internal void QTaxonomyIntroduce(PWindow host)`
+## `internal void QTaxonomyIntroduce(QWindow host)`
 
 Puts the panel to work through the Conduct taxonomy it builds, which builds its own editor.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
@@ -55,7 +55,7 @@ Nothing is read back from the screen.
 
 ## Inline notes
 
-### `private PWindow _qTaxonomyHost = null!;`
+### `private QWindow _qTaxonomyHost = null!;`
 
 The window this panel sits in.
 It is who reports a read that failed.

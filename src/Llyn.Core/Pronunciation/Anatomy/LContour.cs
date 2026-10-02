@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Llyn.Core;
@@ -8,6 +9,9 @@ public sealed record LContour(string LContourText, IReadOnlyList<int> LContourLe
     public const int LContourFloor = 1;
 
     public const int LContourCeiling = 5;
+
+    public static IReadOnlyList<int> LContourScale { get; } =
+        Enumerable.Range(LContourFloor, LContourCeiling - LContourFloor + 1).Reverse().ToArray();
 
     public bool LContourToned => LContourLevels.Count > 0;
 

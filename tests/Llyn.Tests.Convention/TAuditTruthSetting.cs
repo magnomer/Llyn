@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditTruthSetting
 {
-    public const int TAuditGeneration = 17;
+    public const int TAuditGeneration = 18;
     public const bool TAuditTruthEnforced = true;
     public const string TAuditTruthReport = "temp/audit/Custody-{0}.md";
     public const string TAuditStateSuffix = "State";
@@ -12,11 +12,15 @@ internal static class TAuditTruthSetting
     public const string TAuditConductRoot = "src/Llyn.Conduct";
     public const string TAuditLedgerFile = "TAuditTruthLedger";
 
+    public static readonly string[] TAuditCapsuleInclude =
+    [
+        "src/Llyn.UIDeportment.Capsule/*.cs",
+    ];
+
     public static readonly string[] TAuditShellInclude =
     [
         "src/Llyn.UIVeneer/*.cs",
         "src/Llyn.UIDeportment/*.cs",
-        "src/Llyn.UIDeportment.Capsule/*.cs",
         "src/Llyn.UITerminal/*.cs",
         "src/Llyn.UIDemeanor/*.cs",
     ];
@@ -113,6 +117,13 @@ internal static class TAuditTruthSetting
         "SelectedValue",
         "Text",
         "Value",
+    ];
+
+    public static readonly string[] TAuditFocusMembers =
+    [
+        "IsFocused",
+        "IsKeyboardFocused",
+        "IsKeyboardFocusWithin",
     ];
 
     public static readonly string[] TAuditTruthHandles = [];

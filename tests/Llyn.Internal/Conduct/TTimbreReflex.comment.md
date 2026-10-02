@@ -55,6 +55,8 @@ Each press flips the held row's main mark.
 ## `public void TimbreReflexSet_TypedLanguage_WritesItAndLeadsByTheOverlaidRows()`
 
 A typed language is written and the leads answer the rows with the typed language standing in.
+The answer names the typed language as the text the cell now holds.
+A desk holding no entry takes nothing and answers an empty cell.
 
 ## `public void TimbreReflexSet_TextOfARespelledRow_WritesTheRespelling()`
 
@@ -67,6 +69,12 @@ Text typed into a plain row is written as its phonetic text.
 ## `public void TimbreReflexSet_OtherCells_WriteEachAndAnswerNoLeads()`
 
 Kind, romanization, meaning and note are each written, and none answers a lead.
+Each answer names its own cell and the typed text.
+
+## `public void TimbreReflexSet_WhileTheDeskFills_TakesNothingAndAnswersTheHeldText()`
+
+An edit sent while the desk fills its view is refused.
+The answer then names the text the held block shows, so the driver's cell drops the refused text.
 
 ## Inline notes
 

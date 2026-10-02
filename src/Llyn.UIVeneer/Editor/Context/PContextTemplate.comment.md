@@ -3,12 +3,13 @@
 ## `ResourceDictionary`
 
 The Situation field of a card being written, as markup alone.
-The Deportment class of the same name loads this markup and forwards its events to the editor.
+The editor's markup merges this dictionary, and the editor's fill subscribes its own methods on each part.
 The editor's card fill picks the chip or the entry for each item and fills the named parts.
 
 ## `Theme.Context.Field`
 
 The Situation field: a wrapping run of boxed Situations with the open entry after them.
+The run is laid out by `QBerth`, which seats the entry before the chip the caret is anchored to.
 The height is not fixed.
 The run wraps and the field grows with it.
 So a card that carries many Situations shows all of them instead of hiding them behind a scroll.
@@ -30,7 +31,7 @@ The close icon is set by the fill, since an icon is drawn by code.
 
 ## `Theme.Context.Entry`
 
-The caret at the end of the run.
+The caret, seated among the chips by the field's panel rather than held as one of them.
 It shares the ordinary input style, so its placeholder behaves as every other field's does.
 It carries no border of its own, because the field around it is the border.
 Its keys are read before the box reads them.

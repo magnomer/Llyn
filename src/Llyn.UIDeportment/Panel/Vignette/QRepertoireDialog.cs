@@ -8,21 +8,25 @@ namespace Llyn.UIDeportment;
 
 internal sealed partial class QRepertoire
 {
-    private readonly ObservableCollection<PImage> _qScenarioImage = [];
+    private readonly ObservableCollection<QImageItem> _qScenarioImage = [];
 
-    private readonly ObservableCollection<PVideo> _qScenarioVideo = [];
+    private readonly ObservableCollection<QVideoItem> _qScenarioVideo = [];
+
+    private readonly QImage _qImage = new();
+
+    private readonly QVideo _qVideo = new();
 
     private void QScenarioImageRefine(IReadOnlyList<CImageDraft> rows)
     {
         PCard.PCardRowShow(
             _qScenarioImage,
             rows,
-            static row => row.PImageId,
+            static row => row.QImageItemId,
             static draft => draft.CImageDraftId,
             QScenarioImageCreate,
             (row, draft) =>
             {
-                row.PImageShow(draft);
+                row.QImageItemShow(draft);
                 return row;
             });
     }
@@ -32,47 +36,31 @@ internal sealed partial class QRepertoire
         PCard.PCardRowShow(
             _qScenarioVideo,
             rows,
-            static row => row.PVideoId,
+            static row => row.QVideoItemId,
             static draft => draft.CVideoDraftId,
             QScenarioVideoCreate,
             (row, draft) =>
             {
-                row.PVideoShow(draft);
+                row.QVideoItemShow(draft);
                 return row;
             });
     }
 
-    private PImage QScenarioImageCreate(CImageDraft draft)
+    private QImageItem QScenarioImageCreate(CImageDraft draft)
     {
-        return new PImage(draft);
+        return new QImageItem(draft);
     }
 
-    private PVideo QScenarioVideoCreate(CVideoDraft draft)
+    private QVideoItem QScenarioVideoCreate(CVideoDraft draft)
     {
-        return new PVideo(draft);
+        return new QVideoItem(draft);
     }
 
     private void QImageLocationObserve(object sender, TextChangedEventArgs e)
     {
-        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: PImage row } box)
+        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: QImageItem row } box)
         {
-            _cRepertoire.CRepertoireImage.CImageLocationSet(row.PImageId, box.Text);
-        }
-    }
-
-    private void QVideoLocationObserve(object sender, TextChangedEventArgs e)
-    {
-        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: PVideo row } box)
-        {
-            _cRepertoire.CRepertoireVideo.CVideoLocationSet(row.PVideoId, box.Text);
-        }
-    }
-
-    private void QVideoSpanObserve(object sender, TextChangedEventArgs e)
-    {
-        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: PVideo row } box)
-        {
-            _cRepertoire.CRepertoireVideo.CVideoSpanSet(row.PVideoId, box.Text);
+            _qImage.QImageFieldObserve(row, box.Text);
         }
     }
 
@@ -81,20 +69,8 @@ internal sealed partial class QRepertoire
         if (QLook.QLookPartFind<TextBox>(container, "PImageLocation") is TextBox location)
         {
             location.TextChanged -= QImageLocationObserve;
-            PImage.PImageItemRefine(container, item, name);
+            _qImage.QImageApply(container, item, name);
             location.TextChanged += QImageLocationObserve;
-        }
-
-        if (QLook.QLookPartFind<Button>(container, "PImageChooser") is Button open)
-        {
-            open.Click -= QImageOpenObserve;
-            open.Click += QImageOpenObserve;
-        }
-
-        if (QLook.QLookPartFind<Button>(container, "PImageEraser") is Button remove)
-        {
-            remove.Click -= QImageRemoveObserve;
-            remove.Click += QImageRemoveObserve;
         }
     }
 
@@ -103,23 +79,9 @@ internal sealed partial class QRepertoire
         if (QLook.QLookPartFind<TextBox>(container, "PVideoLocation") is TextBox location
             && QLook.QLookPartFind<TextBox>(container, "PVideoTimestamp") is TextBox span)
         {
-            location.TextChanged -= QVideoLocationObserve;
-            span.TextChanged -= QVideoSpanObserve;
-            PVideo.PVideoItemRefine(container, item, name);
-            location.TextChanged += QVideoLocationObserve;
-            span.TextChanged += QVideoSpanObserve;
-        }
-
-        if (QLook.QLookPartFind<Button>(container, "PVideoChooser") is Button open)
-        {
-            open.Click -= QVideoOpenObserve;
-            open.Click += QVideoOpenObserve;
-        }
-
-        if (QLook.QLookPartFind<Button>(container, "PVideoEraser") is Button remove)
-        {
-            remove.Click -= QVideoRemoveObserve;
-            remove.Click += QVideoRemoveObserve;
+            location.TextChanged -= _qVideo.QVideoLocationObserve;
+            span.TextChanged -= _qVideo.QVideoSpanObserve;
+            _qVideo.QVideoApply(container, item, name);
         }
     }
 
@@ -131,37 +93,5 @@ internal sealed partial class QRepertoire
     private void QVideoAddObserve(object sender, RoutedEventArgs e)
     {
         _cRepertoire.CRepertoireVideo.CVideoAdd(0);
-    }
-
-    private void QImageRemoveObserve(object sender, RoutedEventArgs e)
-    {
-        if (sender is FrameworkElement { DataContext: PImage row })
-        {
-            _cRepertoire.CRepertoireImage.CImageRemove(row.PImageId);
-        }
-    }
-
-    private void QVideoRemoveObserve(object sender, RoutedEventArgs e)
-    {
-        if (sender is FrameworkElement { DataContext: PVideo row })
-        {
-            _cRepertoire.CRepertoireVideo.CVideoRemove(row.PVideoId);
-        }
-    }
-
-    private void QImageOpenObserve(object sender, RoutedEventArgs e)
-    {
-        if (sender is FrameworkElement { DataContext: PImage row } source)
-        {
-            _cRepertoire.CRepertoireImage.CImageFileSet(row.PImageId, PImage.PImageOpen(Window.GetWindow(source)));
-        }
-    }
-
-    private void QVideoOpenObserve(object sender, RoutedEventArgs e)
-    {
-        if (sender is FrameworkElement { DataContext: PVideo row } source)
-        {
-            _cRepertoire.CRepertoireVideo.CVideoFileSet(row.PVideoId, PVideo.PVideoOpen(Window.GetWindow(source)));
-        }
     }
 }

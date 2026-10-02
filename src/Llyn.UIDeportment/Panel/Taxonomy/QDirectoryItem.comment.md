@@ -5,17 +5,10 @@
 Presentation item for one tag row in `QDirectory`.
 Carries the id of the stored Tag, the text the row shows and whether that row is the chosen one.
 The id is what the membership list is looked up by, and the text is only what is shown.
-The chosen flag is read by the row template, which tints the tag the membership list currently stands on.
-The chosen flag alone is settable and announces its change, so a new choice re-marks the rows in place.
+The chosen flag is read when the row is painted, which tints the tag the membership list currently stands on.
 
-## `private bool _qDirectoryItemChosen;`
+## `public bool QDirectoryItemChosen { get; }`
 
-Whether this row is the chosen one.
-
-## `public event PropertyChangedEventHandler? PropertyChanged;`
-
-Raised when the chosen flag moves, so the row template re-tints.
-
-## `public bool QDirectoryItemChosen`
-
-Whether this row is the chosen one, settable so the directory re-marks rows without rebuilding them.
+Whether this row is the chosen one, as Conduct's row said.
+A pick goes to the gate, and the directory is rebuilt from the rows it answers.
+So the item never changes after it is built and announces nothing.

@@ -59,3 +59,4 @@ The member's own name, for the hit.
 ## `private static bool TAuditAnswerCheck(ExpressionSyntax value)`
 
 True when the initialiser requests logic, calls a relay, or reads a logic member.
+A name inside `nameof` reads nothing and does not count.

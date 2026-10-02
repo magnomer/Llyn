@@ -106,9 +106,8 @@ internal static partial class TInterface
 
     internal static string TEngineStampFormat(string? utc) => LEntryFacade.LEngineStampFormat(utc);
 
-    internal static bool TEngineNarrativeCheck(string text) => LEntryPort.LEngineNarrativeCheck(text);
 
-    internal static (string, string, string) TEngineLineRead(
+    internal static (string, IReadOnlyList<LMentionPiece>, string) TEngineLineRead(
         LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations) =>
         LEntryPort.LEngineLineRead(sentence, order, mark, citations);
 
@@ -157,7 +156,7 @@ internal static partial class TInterface
         string language,
         int offset,
         IReadOnlyList<LMention> mentions) =>
-        engine.LEngineMention.LEngineMentionFind(text, language, offset, mentions);
+        engine.LEngineStaffHeld.LEngineStaffMention.LMentionClerkFind(text, language, offset, mentions);
 
     internal static void TEngineMarkupExport(this LEngine engine, IReadOnlyList<long> ids, string path)
     {

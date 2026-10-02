@@ -15,8 +15,6 @@ public sealed class CTimbre
 
     private readonly LDisplay _cTimbreDisplay;
 
-    private readonly LMediaPort _cTimbreMediaPort;
-
     private readonly LDraftPort _cTimbreDraftPort;
 
     private readonly LSettingsPort _cTimbreSettingsPort;
@@ -25,21 +23,18 @@ public sealed class CTimbre
         CDesk desk,
         LPhonologyPort phonology,
         LDisplay display,
-        LMediaPort media,
         LDraftPort drafts,
         LSettingsPort settings)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(display);
-        ArgumentNullException.ThrowIfNull(media);
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(settings);
 
         _cTimbreDesk = desk;
         _cTimbrePhonologyPort = phonology;
         _cTimbreDisplay = display;
-        _cTimbreMediaPort = media;
         _cTimbreDraftPort = drafts;
         _cTimbreSettingsPort = settings;
         desk.CDeskDraftPrepared += LTimbreReflexStart;
@@ -64,30 +59,24 @@ public sealed class CTimbre
         return CSounding.LSoundingContourRead(_cTimbrePhonologyPort.LEngineContourRead(LTimbreLanguage, ipa));
     }
 
-    public CTimbrePlayback CTimbrePlaybackRead()
+    public CAccentTyped CTimbreAccentSet(long accent, string text)
     {
-        if (_cTimbreDesk.CDeskTenure?.LTenureRead() is not { } held)
+        ArgumentNullException.ThrowIfNull(text);
+
+        if (LTimbreTenure is not LTenure held)
         {
-            return new CTimbrePlayback(null, false);
+            return new CAccentTyped(LTimbreAccentFind(accent));
         }
 
-        (string? audio, bool audible) = _cTimbreMediaPort.LEngineAudioRead(held.LDraftContent);
-        return new CTimbrePlayback(audio, audible);
+        held.LTenureAccentSet(accent, text);
+        return new CAccentTyped(text);
     }
 
-    public Uri? CTimbrePlaybackStart(string? audio)
+    private string LTimbreAccentFind(long accent)
     {
-        return _cTimbreMediaPort.LEngineAudioResolve(audio);
-    }
-
-    public Uri? CTimbreAudioStart(long accent)
-    {
-        return LTimbreTenure?.LTenureAudioResolve(accent);
-    }
-
-    public void CTimbreAccentSet(long accent, string text)
-    {
-        LTimbreTenure?.LTenureAccentSet(accent, text);
+        return CTimbreAccentRead().CTimbreAccentRows.FirstOrDefault(row => row.CAccentId == accent) is CAccent row
+            ? row.CAccentText
+            : string.Empty;
     }
 
     public void CTimbrePronunciationAdd(long accent)
@@ -213,37 +202,46 @@ public sealed class CTimbre
         LTimbreQuill?.LQuillReflexToggle(reflex);
     }
 
-    public IReadOnlyList<CReflexHead> CTimbreReflexSet(long reflex, CReflexField field, string text)
+    public CReflexTyped CTimbreReflexSet(long reflex, CReflexField field, string text)
     {
         ArgumentNullException.ThrowIfNull(text);
 
         if (LTimbreQuill is not LQuillReflex quill)
         {
-            return [];
+            return new CReflexTyped(field, LTimbreReflexFind(reflex, field), []);
         }
 
         switch (field)
         {
             case CReflexField.CReflexFieldLanguage:
-                return LTimbreLeadRead(quill.LQuillLanguageSet(reflex, text));
+                return new CReflexTyped(field, text, LTimbreLeadRead(quill.LQuillLanguageSet(reflex, text)));
             case CReflexField.CReflexFieldKind:
                 quill.LQuillKindSet(reflex, text);
-                return [];
+                break;
             case CReflexField.CReflexFieldText:
                 quill.LQuillTextSet(reflex, text);
-                return [];
+                break;
             case CReflexField.CReflexFieldRomanization:
                 quill.LQuillRomanizationSet(reflex, text);
-                return [];
+                break;
             case CReflexField.CReflexFieldMeaning:
                 quill.LQuillMeaningSet(reflex, text);
-                return [];
+                break;
             case CReflexField.CReflexFieldNote:
                 quill.LQuillNoteSet(reflex, text);
-                return [];
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(field), field, null);
         }
+
+        return new CReflexTyped(field, text, []);
+    }
+
+    private string LTimbreReflexFind(long reflex, CReflexField field)
+    {
+        return CTimbreReflexRead().CTimbreReflexRows.FirstOrDefault(row => row.CReflexId == reflex) is CReflex row
+            ? row.LReflexFieldRead(field)
+            : string.Empty;
     }
 
     private static IReadOnlyList<CReflexHead> LTimbreLeadRead(IReadOnlyList<LReflexDraft> typed)

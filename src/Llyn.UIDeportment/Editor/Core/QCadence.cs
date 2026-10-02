@@ -1,4 +1,4 @@
-using System;
+using System.Windows;
 using System.Windows.Controls;
 using Llyn.Conduct;
 
@@ -6,22 +6,22 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QCadence
 {
-    private readonly PEditor _pEditor;
+    private readonly FrameworkElement _qCadenceSurface;
 
     private CEditor _cEditor = null!;
 
-    internal QCadence(PEditor editor)
+    internal QCadence(FrameworkElement surface)
     {
-        _pEditor = editor;
+        _qCadenceSurface = surface;
     }
 
-    private TextBlock QCadenceReading => QContract.QContractFind<TextBlock>(_pEditor, "PEditorReading");
+    private TextBlock QCadenceReading => QContract.QContractFind<TextBlock>(_qCadenceSurface, "PEditorReading");
 
-    private PParadigm QCadenceParadigm => QContract.QContractFind<PParadigm>(_pEditor, "PEditorParadigm");
+    private QParadigm QCadenceParadigm => QContract.QContractFind<QParadigm>(_qCadenceSurface, "PEditorParadigm");
 
-    private PFanqie QCadenceFanqie => QContract.QContractFind<PFanqie>(_pEditor, "PEditorFanqie");
+    private QFanqie QCadenceFanqie => QContract.QContractFind<QFanqie>(_qCadenceSurface, "PEditorFanqie");
 
-    private PScript QCadenceScript => QContract.QContractFind<PScript>(_pEditor, "PEditorScript");
+    private QScript QCadenceScript => QContract.QContractFind<QScript>(_qCadenceSurface, "PEditorScript");
 
     internal void QCadenceIntroduce(CEditor editor)
     {
@@ -32,25 +32,27 @@ internal sealed class QCadence
         editor.CEditorTimbre.CTimbreParadigmChanged += QCadenceParadigmRefine;
         editor.CEditorTimbre.CTimbreScriptChanged += QCadenceScriptRefine;
         editor.CEditorSounding.CSoundingChanged += QCadenceFanqieRefine;
-        QCadenceFanqie.PFanqieDiweiNotice += QCadenceDiweiObserve;
-        QCadenceFanqie.PFanqieRepresentativeNotice += QCadenceRepresentativeObserve;
+        QCadenceScript.QScriptRenewalNotice += QCadenceScriptObserve;
+        QCadenceFanqie.QFanqieRenewalNotice += QCadenceFanqieObserve;
+        QCadenceFanqie.QFanqieDiweiNotice += QCadenceDiweiObserve;
+        QCadenceFanqie.QFanqieRepresentativeNotice += QCadenceRepresentativeObserve;
     }
 
     private void QCadenceParadigmRefine()
     {
         CLecternParadigm paradigm = _cEditor.CEditorSounding.CSoundingParadigmRead();
         QFontFace.QFontRefine(paradigm.CLecternParadigmFont, QCadenceParadigm);
-        QCadenceParadigm.PParadigmItems = PParadigmItem.PParadigmItemScan(paradigm.CLecternParadigmSlots);
+        QCadenceParadigm.QParadigmItems = QParadigmItem.QParadigmItemScan(paradigm.CLecternParadigmSlots);
     }
 
     private void QCadenceScriptRefine()
     {
         CSoundingScript script = _cEditor.CEditorSounding.CSoundingScriptRead();
         QFontFace.QFontRefine(script.CSoundingScriptFont, QCadenceScript);
-        QCadenceScript.PScriptItems = PScriptItem.PScriptItemScan(script.CSoundingScriptGroups);
-        QCadenceScript.PScriptPending = script.CSoundingScriptPending;
-        QCadenceScript.PScriptRenewal =
-            QLook.QLookFirstRead<Action?>(script.CSoundingScriptRebuildable, QCadenceScriptObserve, null);
+        QCadenceScript.QScriptItems = QScriptItem.QScriptItemScan(
+            script.CSoundingScriptGroups, QCadenceScript.QScriptFailureRefine);
+        QCadenceScript.QScriptPending = script.CSoundingScriptPending;
+        QCadenceScript.QScriptRenewable = script.CSoundingScriptRebuildable;
     }
 
     private void QCadenceScriptObserve()
@@ -62,10 +64,9 @@ internal sealed class QCadence
     {
         CSoundingFanqie fanqie = _cEditor.CEditorSounding.CSoundingFanqieRead();
         QFontFace.QFontRefine(fanqie.CSoundingFanqieFont, QCadenceFanqie);
-        QCadenceFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(fanqie.CSoundingFanqieGroups);
-        QCadenceFanqie.PFanqiePending = fanqie.CSoundingFanqiePending;
-        QCadenceFanqie.PFanqieRenewal =
-            QLook.QLookFirstRead<Action?>(fanqie.CSoundingFanqieRebuildable, QCadenceFanqieObserve, null);
+        QCadenceFanqie.QFanqieItems = QFanqieItem.QFanqieItemScan(fanqie.CSoundingFanqieGroups);
+        QCadenceFanqie.QFanqiePending = fanqie.CSoundingFanqiePending;
+        QCadenceFanqie.QFanqieRenewable = fanqie.CSoundingFanqieRebuildable;
     }
 
     private void QCadenceFanqieObserve()

@@ -22,7 +22,7 @@ internal sealed class QGuild
 
     private readonly QColophon _qColophon;
 
-    private PWindow _qGuildHost = null!;
+    private QWindow _qGuildHost = null!;
 
     private CGuild _cGuild = null!;
 
@@ -136,13 +136,13 @@ internal sealed class QGuild
 
     private QIconImage QGuildBinIcon => QContract.QContractFind<QIconImage>(_qGuildSurface, "PGuildBinIcon");
 
-    internal void QGuildIntroduce(PWindow host)
+    internal void QGuildIntroduce(QWindow host)
     {
         _qGuildHost = host;
         _cGuild = CGuild.CGuildCreate(
-            host.PWindowAtelier,
+            host.QWindowAtelier,
             QGuildShownCheck,
-            host.PWindowEnvoy,
+            host.QWindowEnvoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         _cGuild.CGuildChanged += QGuildModeUpdate;
         _cGuild.CGuildPanel.CPanelChanged += QGuildModeUpdate;
@@ -154,7 +154,6 @@ internal sealed class QGuild
         _cGuild.CGuildOeuvre.COeuvreColophonChanged += _qColophon.QColophonRefine;
         _qVita.QVitaAttach(host, _cGuild);
         _qAutograph.QAutographIntroduce(_cGuild);
-        _cGuild.CGuildAutograph.CDeskFailed += host.PWindowFailureRefine;
         _cGuild.CGuildAutograph.CDeskStateChanged += QGuildChronicleUpdate;
 
         QChoice.QChoiceOrderBuild(QEchelonList, "Echelon", QEchelonObserve, CGuild.CGuildOrderRead());
@@ -322,12 +321,12 @@ internal sealed class QGuild
 
     private void QGuildRetreatObserve(object sender, RoutedEventArgs e)
     {
-        _qGuildHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
+        _qGuildHost.QWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QGuildAdvanceObserve(object sender, RoutedEventArgs e)
     {
-        _qGuildHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
+        _qGuildHost.QWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void QGuildUndoObserve(object sender, RoutedEventArgs e)

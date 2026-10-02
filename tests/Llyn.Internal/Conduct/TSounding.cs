@@ -254,7 +254,7 @@ public sealed class TSounding
     [Fact]
     public void SoundingFanqieRead_NoStoredEntry_OffersNoRebuildAndWaitsForNothing()
     {
-        CSounding sounding = TInterfaceConduct.TEditorCreate(
+        CSounding sounding = TInterfaceEditor.TEditorCreate(
                 TEngineFake.TEngineStubCreate<LDraftPort>(),
                 TEngineFake.TEngineStubCreate<LEntryPort>(),
                 TEngineFake.TEngineCreate<LPhonologyPort>(new Dictionary<string, Func<object?[]?, object?>>
@@ -328,7 +328,7 @@ public sealed class TSounding
 
     private static CEditor TSoundingEditorPrepare(LEngine engine, long? entry)
     {
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(entry);
         return editor;

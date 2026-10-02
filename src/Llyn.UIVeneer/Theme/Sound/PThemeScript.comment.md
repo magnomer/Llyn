@@ -56,10 +56,10 @@ It is the only content of the box while nothing is stored yet.
 One picture with its age and caption beneath, spaced from the next.
 The two lines sit in a panel of their own.
 The gap under the picture then stands whichever line is shown.
-`PScriptImage.PScriptImageRefine` fills its named parts and hands the lazy loader its row.
+`QScriptImage.QScriptImageRefine` fills its named parts and hands the lazy loader its row.
 
 ## `<DataTemplate x:Key="Theme.Script.Row">`
 
 One row: the character column, the style chip, and the pictures wrapping in the rest with the gloss below.
 The first two columns share their widths across rows, so the chips line up.
-`PScriptItem.PScriptItemRefine` fills its named parts and attaches the picture fill.
+`QScriptItem.QScriptItemRefine` fills its named parts and attaches the picture fill.

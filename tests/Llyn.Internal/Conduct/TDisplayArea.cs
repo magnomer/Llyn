@@ -282,24 +282,6 @@ public sealed class TDisplayArea
         Assert.Equal(["Frequency.Once"], keys);
     }
 
-    [Theory]
-    [InlineData(false, "  a tale  ", true)]
-    [InlineData(false, " \n ", false)]
-    [InlineData(true, "a tale", false)]
-    public void DisplayNarrativeCheck_ReadSide_ShowsOnlyWords(bool editable, string text, bool expected)
-    {
-        Assert.Equal(expected, CDisplay.CDisplayNarrativeCheck(editable, text));
-    }
-
-    [Theory]
-    [InlineData(true, 0, true)]
-    [InlineData(false, 0, false)]
-    [InlineData(false, 2, true)]
-    public void DisplayEtymonCheck_ReadSide_ShowsOnlyLinks(bool editable, int count, bool expected)
-    {
-        Assert.Equal(expected, CDisplay.CDisplayEtymonCheck(editable, count));
-    }
-
     private static CAtelier TDisplayAtelierCreate(LEngine engine) =>
         TInterfaceConduct.TAtelierCreate(
             engine,

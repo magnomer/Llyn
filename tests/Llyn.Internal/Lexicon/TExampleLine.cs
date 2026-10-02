@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 using Xunit;
 
@@ -12,12 +13,12 @@ public sealed class TExampleLine
         LSentenceDraft sentence = TInterface.TSentenceDraftCreate(
             "an example", 0, LStateAnchor.LStateAnchorUnspecified, "of", "Something");
 
-        (string head, string text, _) = TInterface.TEngineLineRead(
+        (string head, IReadOnlyList<LMentionPiece> pieces, _) = TInterface.TEngineLineRead(
             sentence, TInterface.TSentenceOrderCreate(0, 1), "?", new Dictionary<long, string>());
         (string trailing, _, _) = TInterface.TEngineLineRead(
             sentence, TInterface.TSentenceOrderCreate(1, 0), "?", new Dictionary<long, string>());
 
-        Assert.Equal(("(+of Something)", "an example"), (head, text));
+        Assert.Equal(("(+of Something)", "an example"), (head, TExampleLineFormat(pieces)));
         Assert.Equal("(+Something of)", trailing);
     }
 
@@ -27,10 +28,10 @@ public sealed class TExampleLine
         LSentenceDraft sentence = TInterface.TSentenceDraftCreate(
             LStateValue.LStateValueUnknown, LStateValue.LStateValueUnspecified);
 
-        (string head, string text, string citation) = TInterface.TEngineLineRead(
+        (string head, IReadOnlyList<LMentionPiece> pieces, string citation) = TInterface.TEngineLineRead(
             sentence, TInterface.TSentenceOrderCreate(0, 1), "?", new Dictionary<long, string>());
 
-        Assert.Equal(("(+?)", string.Empty, string.Empty), (head, text, citation));
+        Assert.Equal(("(+?)", string.Empty, string.Empty), (head, TExampleLineFormat(pieces), citation));
     }
 
     [Fact]
@@ -62,10 +63,37 @@ public sealed class TExampleLine
         Assert.Equal(string.Empty, TInterface.TEngineLineRead(plain, order, "?", citations).Item3);
     }
 
+    [Fact]
+    public void EngineLineRead_LinkedMention_DividesTheSentenceAroundIt()
+    {
+        LSentenceDraft sentence = TInterface.TSentenceDraftCreate("the cat sat");
+        sentence = sentence with
+        {
+            LSentenceDraftExample = sentence.LSentenceDraftExample! with
+            {
+                LExampleDraftMention = [TInterface.TMentionDraftCreate(1, 4, 3, 7)],
+            },
+        };
+
+        (_, IReadOnlyList<LMentionPiece> pieces, _) = TInterface.TEngineLineRead(
+            sentence, TInterface.TSentenceOrderCreate(0, 1), "?", new Dictionary<long, string>());
+
+        Assert.Equal(["the ", "cat", " sat"], pieces.Select(static piece => piece.LMentionPieceText));
+        Assert.Equal(4, pieces[1].LMentionPieceOffset);
+        Assert.Equal(7, pieces[1].LMentionPieceStored?.LMentionEntryId);
+        Assert.Null(pieces[0].LMentionPieceStored);
+    }
+
     private static (string, string) TEngineHeadRead(
         LSentenceDraft sentence, LSentenceOrder order, IReadOnlyDictionary<long, string> citations)
     {
-        (string head, string text, _) = TInterface.TEngineLineRead(sentence, order, "?", citations);
-        return (head, text);
+        (string head, IReadOnlyList<LMentionPiece> pieces, _) =
+            TInterface.TEngineLineRead(sentence, order, "?", citations);
+        return (head, TExampleLineFormat(pieces));
+    }
+
+    private static string TExampleLineFormat(IReadOnlyList<LMentionPiece> pieces)
+    {
+        return string.Concat(pieces.Select(static piece => piece.LMentionPieceText));
     }
 }

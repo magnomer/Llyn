@@ -17,11 +17,15 @@ internal sealed class QReference
 
     private readonly UserControl _qReferenceSurface;
 
+    private readonly QEditor _qReferenceEditor;
+
+    private readonly QDisplay _qReferenceDisplay;
+
     private readonly QImprint _qImprint;
 
     private readonly QColophon _qColophon;
 
-    private PWindow _qReferenceHost = null!;
+    private QWindow _qReferenceHost = null!;
 
     private CShelf _cShelf = null!;
 
@@ -30,6 +34,8 @@ internal sealed class QReference
         ArgumentNullException.ThrowIfNull(surface);
 
         _qReferenceSurface = surface;
+        _qReferenceEditor = new QEditor(QContract.QContractFind<FrameworkElement>(surface, "PEditor"));
+        _qReferenceDisplay = new QDisplay(QContract.QContractFind<FrameworkElement>(surface, "PDisplay"));
         _qImprint = new QImprint(QReferenceImprint);
         _qColophon = new QColophon(QReferenceColophon);
 
@@ -137,10 +143,6 @@ internal sealed class QReference
 
     private TextBlock QFootnoteEmpty => QContract.QContractFind<TextBlock>(_qReferenceSurface, "PFootnoteEmpty");
 
-    private PDisplay QReferenceDisplay => QContract.QContractFind<PDisplay>(_qReferenceSurface, "PDisplay");
-
-    private PEditor QReferenceEditor => QContract.QContractFind<PEditor>(_qReferenceSurface, "PEditor");
-
     private UserControl QReferenceColophon => QContract.QContractFind<UserControl>(_qReferenceSurface, "PColophon");
 
     private UserControl QReferenceImprint => QContract.QContractFind<UserControl>(_qReferenceSurface, "PImprint");
@@ -150,13 +152,13 @@ internal sealed class QReference
     private QIconImage QReferenceBinIcon =>
         QContract.QContractFind<QIconImage>(_qReferenceSurface, "PReferenceBinIcon");
 
-    internal void QReferenceIntroduce(PWindow host)
+    internal void QReferenceIntroduce(QWindow host)
     {
         _qReferenceHost = host;
         _cShelf = CShelf.CShelfCreate(
-            host.PWindowAtelier,
+            host.QWindowAtelier,
             QReferenceShownCheck,
-            host.PWindowEnvoy,
+            host.QWindowEnvoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         CPanel footnote = _cShelf.CShelfFootnote.CFootnotePanel;
         QLectern lectern = new(_cShelf.CShelfEditor.CEditorDisplay, footnote);
@@ -174,9 +176,9 @@ internal sealed class QReference
         QShelf.ItemsSource = _qShelfList;
         QFootnote.ItemsSource = _qFootnoteList;
 
-        _qImprint.QImprintIntroduce(host, _cShelf.CShelfImprint);
-        QReferenceDisplay.PDisplayAttach(host, lectern);
-        QReferenceEditor.PEditorIntroduce(host, new QEditor(_cShelf.CShelfEditor));
+        _qImprint.QImprintIntroduce(_cShelf.CShelfImprint);
+        _qReferenceDisplay.QDisplayIntroduce(host, lectern);
+        _qReferenceEditor.QEditorIntroduce(host, _cShelf.CShelfEditor);
 
         _qReferenceSurface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QReferencePressObserve, QReferencePressRefine));
@@ -204,7 +206,7 @@ internal sealed class QReference
     internal void QReferenceExitRefine()
     {
         _qImprint.QImprintCloseRefine();
-        QReferenceEditor.PEditorPlayerRefine();
+        _qReferenceEditor.QEditorPlayerRefine();
         QGradeDropdown.IsOpen = false;
         QTrellisDropdown.IsOpen = false;
     }
@@ -248,8 +250,8 @@ internal sealed class QReference
 
     private void QReferenceModeRefine()
     {
-        QReferenceEditor.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfEditorShown);
-        QReferenceDisplay.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfDisplayShown);
+        _qReferenceEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(_cShelf.CShelfEditorShown));
+        _qReferenceDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(_cShelf.CShelfDisplayShown));
         QReferenceImprint.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfImprintShown);
         QReferenceColophon.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfColophonShown);
         QReferenceViewer.IsChecked = _cShelf.CShelfViewerChecked;
@@ -277,12 +279,12 @@ internal sealed class QReference
 
     private void QReferenceRetreatObserve(object sender, RoutedEventArgs e)
     {
-        _qReferenceHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
+        _qReferenceHost.QWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QReferenceAdvanceObserve(object sender, RoutedEventArgs e)
     {
-        _qReferenceHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
+        _qReferenceHost.QWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void QTrellisRefine()

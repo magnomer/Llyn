@@ -54,19 +54,17 @@ public sealed class LEntryOutlet : LEntryPort
     public IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(LEntryDraft shown) =>
         _lEntryOutletEngine.LEngineCard.LEngineTranslationRead(shown);
 
-    public (IReadOnlyList<LTranslationTarget>, bool) LEngineEtymologyRead(LEntryDraft draft) =>
+    public LEtymologyResult LEngineEtymologyRead(LEntryDraft draft) =>
         _lEntryOutletEngine.LEngineCard.LEngineEtymologyRead(draft);
 
     public LMentionResult LEngineMentionFind(long exampleId, int offset) =>
         _lEntryOutletEngine.LEngineMention.LEngineMentionFind(exampleId, offset);
 
-    public LMentionResult LEngineMentionFind(
-        string text,
-        string language,
-        LEntryDraft? shown,
-        int offset,
-        IReadOnlyList<LMention>? mentions) =>
-        _lEntryOutletEngine.LEngineMention.LEngineMentionFind(text, language, shown, offset, mentions);
+    public LMentionResult LEngineMentionFind(LEntryDraft shown, long sentence, int offset) =>
+        _lEntryOutletEngine.LEngineMention.LEngineMentionFind(shown, sentence, offset);
+
+    public LMentionResult LEngineEtymologyFind(LEntryDraft shown, int offset) =>
+        _lEntryOutletEngine.LEngineMention.LEngineEtymologyFind(shown, offset);
 
     public IReadOnlyList<LGlyphCell> LEngineGlyphDivide(LEntryDraft draft) =>
         _lEntryOutletEngine.LEngineEntry.LEngineGlyphRead(draft.LEntryDraftLanguage)?.LGlyphDivide(draft) ?? [];

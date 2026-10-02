@@ -29,7 +29,6 @@ internal static class CFolio
 
         return new CEntryDraft(
             draft.LEntryDraftHeadword,
-            draft.LEntryDraftLanguage,
             draft.LEntryDraftNote,
             CFolioSheetRead(draft.LEntryDraftMeanings, targets, media, "Card.DefinitionHint"),
             CFolioSheetRead(draft.LEntryDraftCollocations, targets, media, "Card.MeaningHint"),
@@ -83,6 +82,7 @@ internal static class CFolio
         return new CSentenceDraft(
             sentence.LSentenceDraftId,
             example,
+            sentence.LSentenceDraftCited,
             CStateWording.LStateWordingRead(
                 example?.CExampleDraftText ?? CStateValue.CStateValueEmpty, null, "Card.ExampleHint"),
             CStateWording.LStateWordingRead(

@@ -357,6 +357,7 @@
     "Display.Rebuild": "다시 생성",
     "Display.FanqieRebuildFailed": "운서를 다시 가져올 수 없습니다.",
     "Display.ScriptRebuildFailed": "자형을 다시 가져올 수 없습니다.",
+    "Display.ScriptFailed": "자형을 표시할 수 없습니다.",
     "Display.FanqieRepresentativeFailed": "대표 표시를 저장할 수 없습니다.",
     "Display.NameFailed": "섹션 이름을 읽을 수 없습니다.",
     "Display.IncomingFailed": "이 단어를 쓰는 항목을 읽을 수 없습니다.",

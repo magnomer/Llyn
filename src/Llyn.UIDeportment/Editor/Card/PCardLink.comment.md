@@ -3,7 +3,8 @@
 ## `internal sealed partial class PCard`
 
 The Translations a card shows, held as the items of one field the way the Tags are.
-The collection is a run of link chips with one open entry among them, which is the caret.
+The collection holds only the chips, and the open entry beside them is the caret.
+The caret is anchored to the chip it stands before, so moving it never reorders the chips.
 
 A link holds only the id of the Entry it points at.
 The headword, the language and the flag beside it are drawn from that Entry, not stored.
@@ -14,15 +15,22 @@ The card cannot ask, because the search belongs to the engine and the card holds
 So the entry's text is handed to the translation gate, which resolves each word and links it.
 The engine holds the links, and the card renders them by id from the targets the editor read.
 
+## `internal PLinkCaret PCardLinkCaret`
+
+The caret the field's entry paints, which the editor finds a focused entry's card by.
+
 ## `internal int PCardLinkPosition`
 
-How many chips stand before the caret, which is the place a new link is asked for.
+How many chips stand before the caret's anchor, which is the place a new link is asked for.
+A caret with no anchor, or one whose chip is gone, stands at the end.
 
 ## `internal void PCardLinkShow(IReadOnlyList<CTranslationTarget> targets)`
 
 Makes the chips show the engine's links, matched by id.
 Each target carries the headword and language its id stands for, read once for the whole card.
-A chip whose ready target no longer equals the new one is replaced, since a chip is immutable.
+A chip whose ready target no longer equals the new one is replaced, since its target is fixed.
+The caret stays before the first chip that followed it and still stands.
+A chip the engine adds at the caret therefore lands before it.
 
 ## `internal QLinkChip? PCardLinkFind(int step)`
 
@@ -30,7 +38,8 @@ The chip standing one step from the entry, before it or after it, or null.
 
 ## `internal bool PCardLinkMove(int step)`
 
-Steps the entry one place along the field and reports whether there was anywhere left to go.
+Steps the entry one place along the field by anchoring it to another chip.
+Reports whether there was anywhere left to go.
 
 ## `internal void PCardLinkClear()`
 
@@ -39,9 +48,9 @@ The empty text reaches the gate as any edit does, and an empty text adds nothing
 
 ## `internal void PCardFlagUpdate()`
 
-Redraws the chips whose flag was missing when they were built.
+Asks each chip to read its flag again in place.
 Flags are loaded after the window opens, so an early chip can be drawn without one.
-A chip that already has its flag is left alone.
+A chip keeps its slot, since only its image reloads.
 
 ## `internal void PCardLinkRefine(string rest)`
 

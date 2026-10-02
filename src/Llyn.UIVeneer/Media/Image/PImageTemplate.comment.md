@@ -3,8 +3,7 @@
 ## `ResourceDictionary`
 
 The picture row of a card being written, as markup alone.
-The Deportment class of the same name loads this markup and forwards the two clicks to its host.
-The entry editor and the situation editor both merge it, and each fills the named parts.
+The entry editor's and the situation editor's markup both merge it, and each fills the named parts.
 
 ## `<Style x:Key="Theme.Image.Preview" TargetType="Border">`
 

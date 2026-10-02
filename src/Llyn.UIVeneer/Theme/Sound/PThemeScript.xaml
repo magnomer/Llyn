@@ -92,9 +92,9 @@
 
     <DataTemplate x:Key="Theme.Script.Picture">
         <StackPanel Margin="0,0,14,8" VerticalAlignment="Top">
-            <local:PImageLazy x:Name="PScriptLazy">
+            <local:QImageLazy x:Name="PScriptLazy">
                 <Rectangle x:Name="PScriptShape" Style="{StaticResource Theme.Script.Shape}" />
-            </local:PImageLazy>
+            </local:QImageLazy>
             <StackPanel Margin="0,4,0,0">
                 <TextBlock x:Name="PScriptEpoch" Style="{StaticResource Theme.Script.Epoch}" />
                 <TextBlock x:Name="PScriptCaption" Style="{StaticResource Theme.Script.Caption}" />

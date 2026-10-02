@@ -40,9 +40,9 @@
         </Grid.ColumnDefinitions>
 
         <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" />
-        <local:PSeam Grid.Row="1" Grid.Column="1" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
-        <local:PSeam Grid.Row="1" Grid.Column="2" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
-        <local:PSeam Grid.Row="1" Grid.Column="3" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+        <local:QSeam Grid.Row="1" Grid.Column="1" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+        <local:QSeam Grid.Row="1" Grid.Column="2" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+        <local:QSeam Grid.Row="1" Grid.Column="3" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
 
         <Border
             x:Name="PLadder"
@@ -181,7 +181,7 @@
                 Text="{DynamicResource Yunjing.XiaoyunEmpty}" />
         </Grid>
 
-        <local:PRail Grid.Row="0" Grid.Column="3" Margin="0,0,0,18">
+        <local:QRail Grid.Row="0" Grid.Column="3" Margin="0,0,0,18">
             <Border Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
                     <Button
@@ -247,15 +247,15 @@
                         Style="{StaticResource Theme.Command.Mode}" />
                 </StackPanel>
             </Border>
-        </local:PRail>
+        </local:QRail>
 
         <Border Grid.Row="1" Grid.Column="3" Margin="0,14,0,0" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
             <Grid>
-                <local:PDisplay x:Name="PDisplay" />
+                <veneer:PDisplay x:Name="PDisplay" />
 
                 <veneer:PDiwei x:Name="PYunjingDiwei" Visibility="Collapsed" />
 
-                <local:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />
+                <veneer:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />
 
                 <Button
                     x:Name="PYunjingBin"

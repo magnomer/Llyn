@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditObjectSetting
 {
-    public const int TAuditGeneration = 17;
+    public const int TAuditGeneration = 18;
     public const bool TAuditObjectEnforced = true;
     public const string TAuditObjectReport = "temp/audit/Object-{0}.md";
 
@@ -47,14 +47,14 @@ internal static class TAuditObjectSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditObjectCeiling = new Dictionary<string, int>
     {
-        ["Hydra"] = 3,
-        ["Kraken"] = 9,
+        ["Hydra"] = 2,
+        ["Kraken"] = 8,
         ["Spider"] = 6,
-        ["Chameleon"] = 12,
-        ["Octopus"] = 15,
-        ["Centipede"] = 40,
-        ["Serpent"] = 10,
-        ["Hub"] = 8,
+        ["Chameleon"] = 11,
+        ["Octopus"] = 14,
+        ["Centipede"] = 37,
+        ["Serpent"] = 8,
+        ["Hub"] = 3,
     };
 
     public static readonly IReadOnlyDictionary<string, int> TAuditPartsCeiling = new Dictionary<string, int>
@@ -65,12 +65,9 @@ internal static class TAuditObjectSetting
         ["Llyn.ShellEngine.LTenure"] = 4,
         ["Llyn.UIDeportment.QArticulation"] = 3,
         ["Llyn.UIDeportment.PCard"] = 9,
-        ["Llyn.UIDeportment.PEditor"] = 29,
-        ["Llyn.UIDeportment.PScreen"] = 4,
         ["Llyn.UIDeportment.PSentence"] = 3,
-        ["Llyn.UIDeportment.PSettings"] = 10,
         ["Llyn.UIDeportment.PSwath"] = 2,
-        ["Llyn.UIDeportment.PWindow"] = 7,
+        ["Llyn.UIDeportment.QWindow"] = 7,
         ["Llyn.UIDeportment.QCorpus"] = 9,
         ["Llyn.UIDeportment.QFavorite"] = 2,
         ["Llyn.UIDeportment.QRepertoire"] = 7,

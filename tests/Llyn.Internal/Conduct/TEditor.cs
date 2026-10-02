@@ -24,7 +24,8 @@ public sealed class TEditor
         Assert.True(editor.CEditorDesk.CDeskHeld);
         Assert.Equal(entry.LEntryId, editor.CEditorDesk.CDeskStoredRead());
         Assert.Equal("water", editor.TEditorDraftRead()?.CEntryDraftHeadword);
-        Assert.Equal("English", editor.TEditorDraftRead()?.CEntryDraftLanguage);
+        Assert.Equal(
+            "English", engine.TEngineDraftRead(editor.CEditorDesk.CDeskId)?.LDraftContent.LEntryDraftLanguage);
         Assert.False(editor.CEditorOwned);
         Assert.Equal("library", engine.TEngineDraftRead(editor.CEditorDesk.CDeskId)?.LDraftOrigin);
     }
@@ -215,11 +216,12 @@ public sealed class TEditor
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TEditorPrepare(engine, "input");
         editor.CEditorEntryOpen(null);
-        string? before = editor.TEditorDraftRead()?.CEntryDraftLanguage;
+        string? before = engine.TEngineDraftRead(editor.CEditorDesk.CDeskId)?.LDraftContent.LEntryDraftLanguage;
 
         editor.CEditorLanguageSet(string.Empty);
 
-        Assert.Equal(before, editor.TEditorDraftRead()?.CEntryDraftLanguage);
+        Assert.Equal(
+            before, engine.TEngineDraftRead(editor.CEditorDesk.CDeskId)?.LDraftContent.LEntryDraftLanguage);
         Assert.False(editor.CEditorDesk.CDeskStorable);
     }
 
@@ -430,7 +432,7 @@ public sealed class TEditor
 
     private static CEditor TEditorPrepare(LEngine engine, string tab)
     {
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart(tab, LCatalogOrder.LCatalogOrderHeadword));
         return editor;
     }

@@ -1,4 +1,5 @@
 <UserControl
+    x:Class="Llyn.UIVeneer.PEditor"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment">
@@ -9,6 +10,23 @@
                 <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Core/PEditorField.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Core/PEditorCard.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Core/PEditorPopup.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Sentence/PSentenceTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Media/Image/PImageTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Media/Video/PVideoTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Pick/PProspectTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Gloss/PMeaningTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Sentence/PCollocationTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Gloss/PLanguageTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Context/PContextTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Register/PRegisterTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Label/PLabelTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Link/PLinkTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Label/PCategoryTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Pick/PProfferTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Marker/PSlateTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Marker/PMarkerTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Sound/Transcription/PNotationTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Media/Audio/PClipTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -132,7 +150,9 @@
                     UseLayoutRounding="True">
                     <Grid x:Name="PReflexBlock" Visibility="Collapsed">
                         <StackPanel x:Name="PReflexTable">
-                            <local:PReflexList x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />
+                            <local:QReflexFrame>
+                                <ItemsControl x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />
+                            </local:QReflexFrame>
                             <TextBlock x:Name="PReflexLoading" Style="{StaticResource Theme.Reflex.Loading}" Visibility="Collapsed" />
                             <ToggleButton x:Name="PReflexFold" Style="{StaticResource Theme.Reflex.Fold}" Visibility="Collapsed" />
                         </StackPanel>
@@ -251,11 +271,11 @@
                         </Border>
                     </StackPanel>
 
-                    <local:PParadigm x:Name="PEditorParadigm" Margin="0,14,0,0" />
+                    <local:QParadigm x:Name="PEditorParadigm" Margin="0,14,0,0" />
 
-                    <local:PFanqie x:Name="PEditorFanqie" Margin="0,14,0,0" PFanqieFolded="True" />
+                    <local:QFanqie x:Name="PEditorFanqie" Margin="0,14,0,0" QFanqieFolded="True" />
 
-                    <local:PScript x:Name="PEditorScript" Margin="0,14,0,0" PScriptFolded="True" />
+                    <local:QScript x:Name="PEditorScript" Margin="0,14,0,0" QScriptFolded="True" />
                 </StackPanel>
 
                 <Button x:Name="PReflexRenewal" Grid.Row="1" Style="{StaticResource Theme.Reflex.Rebuild}" Visibility="Collapsed" />
@@ -298,7 +318,7 @@
                             <Button x:Name="PCollocationAddition" Content="{DynamicResource Input.CollocationAdd}" Style="{StaticResource Editor.Card.Add}" />
                         </StackPanel>
 
-                        <local:PEtymology x:Name="PEtymologyField" MinHeight="360" Style="{StaticResource Theme.Etymology.Card}" PEtymologyEditable="True" Visibility="Collapsed" />
+                        <local:QEtymology x:Name="PEtymologyField" MinHeight="360" Visibility="Collapsed" />
 
                         <Border x:Name="PNote" MinHeight="360" Style="{StaticResource Theme.Input.Card}" Visibility="Collapsed">
                             <Grid>

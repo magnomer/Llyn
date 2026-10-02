@@ -143,6 +143,7 @@ A failed read shows `Reference.LoadFailed` and shows no line, as the old Source 
 
 Maps a stored Example, its ready citation line and its tally to its shape, and null to null.
 The excerpt links only the Mentions the Example lets a reading link, while the transcript keeps them all.
+The plain text is divided at those Mentions here, so the excerpt draws ready pieces.
 
 ## `private static CCatalogExample LAnthologyRowRead(LCatalogExample row)`
 

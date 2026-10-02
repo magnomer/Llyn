@@ -13,8 +13,13 @@ internal sealed class PGlossConverter : IValueConverter
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
+        return PGlossConverterCreate(value as IEnumerable<CGlossDraft>);
+    }
+
+    internal static IReadOnlyList<PGloss> PGlossConverterCreate(IEnumerable<CGlossDraft>? rows)
+    {
         List<PGloss> shown = [];
-        if (value is not IEnumerable<CGlossDraft> rows)
+        if (rows is null)
         {
             return shown;
         }

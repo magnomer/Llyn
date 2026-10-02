@@ -13,7 +13,7 @@ internal sealed partial class QFavorite
 
     private async void QFavoriteWorkspaceRefine()
     {
-        await _qFavoriteHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
+        await _qFavoriteHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
     }
 
     private void QRecallObserve(object sender, TextChangedEventArgs e)

@@ -43,4 +43,9 @@ The child of the shared ancestor that holds the node.
 
 ## `private static bool TAuditJumpCheck(IfStatementSyntax branch)`
 
-True for an `if` without `else` whose body returns, throws, continues or breaks.
+True for an `if` without `else` whose body always leaves by `return`, `throw`, `break` or `continue`.
+Only then can a send inside the body and a send after the `if` never both run.
+A jump counts only when plain blocks alone lie between it and the `if`.
+A jump under a nested `if`, loop, switch, `try`, `using`, lambda or local function may not run.
+So a `break` or `continue` that counts always targets a loop or switch enclosing the `if`.
+A `throw` expression such as `x ?? throw` is not a jump statement and does not count.

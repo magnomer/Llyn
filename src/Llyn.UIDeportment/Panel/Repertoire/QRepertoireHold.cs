@@ -6,12 +6,8 @@ namespace Llyn.UIDeportment;
 
 internal sealed partial class QRepertoire
 {
-    private CDesk QScenarioDesk => _cRepertoire.CRepertoireDesk;
-
     private void QScenarioDeskIntroduce()
     {
-        QScenarioDesk.CDeskFailed += _qRepertoireHost.PWindowFailureRefine;
-        QScenarioDesk.CDeskRefused += _qRepertoireHost.PWindowEnvoy.CEnvoyFailureShow;
         _cRepertoire.CRepertoireDraftChanged += QScenarioFieldsRefine;
     }
 

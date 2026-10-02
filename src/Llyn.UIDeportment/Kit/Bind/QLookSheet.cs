@@ -25,7 +25,7 @@ internal static class QLookSheet
         new("Theme.Navigation.Tab", QLookCue.QLookCueBase, "PSurfaceStack",
             FrameworkElement.MarginProperty, Control.PaddingProperty),
         new("Theme.Navigation.Tab", QLookCue.QLookCueBase, "PSurfaceIcon",
-            QIconImage.QIconSourceProperty, PTab.PTabIconProperty),
+            QIconImage.QIconSourceProperty, QLook.QLookIconProperty),
         new("Theme.Navigation.Tab", QLookCue.QLookCueBase, "PSurfaceLabel",
             TextBlock.FontSizeProperty, Control.FontSizeProperty),
         new("Theme.Navigation.Tab", QLookCue.QLookCueBase, "PSurfaceLabel",
@@ -350,10 +350,10 @@ internal static class QLookSheet
         new("Theme.Marker.Switch", QLookCue.QLookCueChecked, null, UIElement.OpacityProperty, 1.0),
 
         new("Theme.Glyph.Phonetician", QLookCue.QLookCueBase, null,
-            ButtonBase.CommandProperty, PGlyphCommand.PGlyphCommandNotation),
+            ButtonBase.CommandProperty, QGlyphCommand.QGlyphCommandNotation),
 
         new("Theme.Glyph.Chip", QLookCue.QLookCueBase, null,
-            ButtonBase.CommandProperty, PGlyphCommand.PGlyphCommandEntry),
+            ButtonBase.CommandProperty, QGlyphCommand.QGlyphCommandEntry),
         new("Theme.Glyph.Chip", QLookCue.QLookCueHover, "PGlyphCharacter",
             TextBlock.ForegroundProperty, "Theme.Accent"),
         new("Theme.Glyph.Chip", QLookCue.QLookCueHover, "PGlyphCharacter",

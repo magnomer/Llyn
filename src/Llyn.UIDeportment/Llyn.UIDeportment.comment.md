@@ -3,7 +3,7 @@
 ## `<TargetFramework>net10.0-windows10.0.17763.0</TargetFramework>`
 
 Deportment drives the veneer's controls, so it builds for Windows.
-It hosts the WebView2 player of `PScreen`, so it takes the Windows version WebView2 needs.
+It hosts the WebView2 player of `QScreenBrowser`, so it takes the Windows version WebView2 needs.
 
 ## `<UseWPF>true</UseWPF>`
 
@@ -29,7 +29,7 @@ Only Deportment names it, so no layer below the cut sees GUI-only state.
 
 ## `<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4191.47" />`
 
-`PScreen` builds its WebView2 player in code, so the package stays in Deportment by the first test of the purge.
+`QScreenBrowser` builds its WebView2 player in code, so the package stays in Deportment by the first test of the purge.
 The veneer holds only the empty slot the player is put into.
 
 ## `<PackageReference Include="SharpVectors.Wpf" Version="1.8.4.2" />`

@@ -37,7 +37,8 @@ public sealed class CShelf
         _cShelfMarshal = marshal;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CShelfEditor = editor;
-        CShelfImprint = new CImprint(atelier.CAtelierDraftPort, atelier.CAtelierEntryPort, envoy, marshal);
+        CShelfImprint = new CImprint(
+            atelier.CAtelierDraftPort, atelier.CAtelierEntryPort, atelier.CAtelierSettingsPort, envoy, marshal);
         CShelfPanel = new CPanel(
             envoy,
             _cShelfSettingsPort,

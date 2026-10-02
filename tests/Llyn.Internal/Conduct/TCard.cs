@@ -77,6 +77,30 @@ public sealed class TCard
     }
 
     [Fact]
+    public void DraftWording_CitedAndUncitedRows_MarksOnlyTheCitedRowCited()
+    {
+        LCardDraft card = TInterface.TCardCreate("a liquid", 1) with
+        {
+            LCardDraftSentence =
+            [
+                TInterface.TSentenceDraftCreate(
+                    TInterface.TStateValueCreate("Smith 1990"), 0, TInterface.TStateAnchorCreate(7)),
+                TInterface.TSentenceDraftCreate("the cat sat"),
+                TInterface.TSentenceDraftCreate(null, null),
+            ],
+        };
+        LEntryDraft draft = TInterface.TEntryDraftCreate("water", "English", string.Empty, string.Empty, [card], []);
+
+        CEntryDraft shaped = TInterfaceConduct.TCardEntryRead(
+            draft, new Dictionary<long, IReadOnlyList<LTranslationTarget>> { [0] = [] });
+
+        IReadOnlyList<CSentenceDraft> rows = Assert.Single(shaped.CEntryDraftMeanings).CCardDraftSentence;
+        Assert.True(rows[0].CSentenceDraftCited);
+        Assert.False(rows[1].CSentenceDraftCited);
+        Assert.False(rows[2].CSentenceDraftCited);
+    }
+
+    [Fact]
     public void DraftWording_GlossImageAndSituation_WordsEachValueForItsRow()
     {
         CStateValue unknown = new(string.Empty, true);

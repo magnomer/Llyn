@@ -8,7 +8,7 @@ The credit rows are the engine's, and the only credit state kept here is where t
 Every request is built by the desk's quill, so the editor names no request.
 `CShelf` builds it over the atelier's ports.
 
-## `internal CImprint(LDraftPort drafts, LEntryPort entries, CEnvoy envoy, Action<Action> marshal)`
+## `internal CImprint(LDraftPort drafts, LEntryPort entries, LSettingsPort settings, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the desk under the `Source` scope, and the byline over the same draft port.
 The desk's prepared draft is announced as the reference notice.

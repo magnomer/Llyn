@@ -5,7 +5,7 @@
 The GUI's answer to Conduct's user-question port.
 It puts up a message box over the main window, worded from the key Conduct chose.
 
-## `internal QEnvoy(Window surface, PWindow host)`
+## `internal QEnvoy(Window surface, QWindow host)`
 
 Takes the loaded window that owns every box, and the host the customs window is placed over.
 

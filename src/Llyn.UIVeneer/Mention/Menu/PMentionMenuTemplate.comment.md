@@ -3,7 +3,7 @@
 ## `ResourceDictionary`
 
 The list, row chrome and row template of the word menu, as markup alone.
-The Deportment class of the same name loads this markup and forwards the row click to the window.
+The window markup merges it by its source, so no Deportment class loads it.
 It restates the editor's popup list and row, since the editor's dictionary is merged only under the editor.
 
 ## `<Style x:Key="Theme.Mention.List" TargetType="ListBox">`

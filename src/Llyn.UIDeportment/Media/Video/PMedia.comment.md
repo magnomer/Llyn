@@ -1,27 +1,8 @@
 # PMedia.cs
 
-## `internal sealed class PMedia`
+## `internal static class PMedia`
 
-The row maker a reading view hands down to the picture and film rows built inside its templates.
-A reading view lists a ready card's media rows, so no code of its own builds the loading rows.
-The ready rows already carry their address or screen, so this holds no engine.
-It only marks a view that builds them.
-
-## `internal PImage PMediaImageCreate(CImageDraft draft)`
-
-The loading picture row for one ready picture row of a reading card.
-
-## `internal PVideo PMediaVideoCreate(CVideoDraft draft)`
-
-The loading film row for one ready film row of a reading card.
-
-## `public static readonly DependencyProperty PMediaProperty`
-
-Attached and inherited, so one write on the view's root reaches every template under it.
-
-## `internal static void PMediaAttach(DependencyObject root)`
-
-Puts one maker on the view's root.
+The reveal of a media list's row handles, shared by the editor and the reading view.
 
 ## `internal static void PMediaRevealAttach(ItemsControl list)`
 

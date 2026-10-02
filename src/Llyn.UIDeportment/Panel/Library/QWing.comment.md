@@ -20,7 +20,7 @@ It attaches the index row fill and watches the list's visibility for the tray.
 
 Each named part is pulled from the place by its contract ID on every read.
 
-## `internal void QWingIntroduce(PWindow host, bool left)`
+## `internal void QWingIntroduce(QWindow host, bool left)`
 
 Puts the side to work on the host, building Conduct's side over the host's atelier and envoy.
 `left` tells Conduct which place this is, so the side picks its own tab and saved entry.

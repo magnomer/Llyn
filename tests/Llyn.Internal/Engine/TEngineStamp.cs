@@ -36,14 +36,4 @@ public sealed class TEngineStamp
         Assert.Empty(TInterface.TEngineStampFormat("not a moment"));
         Assert.Empty(TInterface.TEngineStampFormat(null));
     }
-
-    [Theory]
-    [InlineData("a tale", true)]
-    [InlineData("  a tale  ", true)]
-    [InlineData(" \t\n ", false)]
-    [InlineData("", false)]
-    public void EngineNarrativeCheck_Text_HoldsWordsOnlyWhenNotBlank(string text, bool expected)
-    {
-        Assert.Equal(expected, TInterface.TEngineNarrativeCheck(text));
-    }
 }

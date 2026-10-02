@@ -26,7 +26,7 @@ Git is the only external tool required.
 
 auditlines.json shape:
   {
-    "generation": 17,
+    "generation": 18,
     "project": "Llyn",
     "enforced": true,
     "ceilings": { "Length": 0, "Width": 0 },
@@ -105,7 +105,7 @@ auditlines -Extensions .cs, .xaml
 auditlines -SourceRoots .\src, .\tests
 #>
 #requires -Version 5.1
-# AUDITLINES GENERATION 17 - auditlines.ps1.
+# AUDITLINES GENERATION 18 - auditlines.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -130,6 +130,8 @@ auditlines -SourceRoots .\src, .\tests
 # Unsealing kind counts engine types on the public members of sealed Deportment types.
 # Generation 17: nothing this audit reports changes; the number rises with the vocabulary revision
 # of the UI, object, structure and name audits.
+# Generation 18: nothing this audit reports changes; the number rises with the UI audit, whose
+# truth detector stops five false findings.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -248,7 +250,7 @@ $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 17
+$script:AuditGeneration = 18
 $script:ItemLimit = 40
 
 # Console paging. A page is one window of rows; the audit stops at each page boundary and waits

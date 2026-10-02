@@ -38,6 +38,11 @@ The language catalog is handed in for the Gloss pickers, shared with every other
 
 The id of the row itself, which every request about the row names.
 
+## `internal bool PSentenceCited { get; private set; }`
+
+Whether the row cites a Source, as Conduct's sentence record states it.
+The list driver reads it to keep a cited row's citation box shown while the list is idle.
+
 ## `public ObservableCollection<QCitationItem> PSentenceCitationCatalog { get; }`
 
 The Sources the whole form offers, shared by every row.

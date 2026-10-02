@@ -22,7 +22,7 @@ A change runs the state handler at once.
 
 ## `internal static readonly DependencyProperty QLookIconProperty`
 
-The icon a command or helper button shows in its icon part.
+The icon a command, helper or navigation tab button shows in its icon part.
 A button without one reads the `Bare` cue, so its icon part folds away.
 A change runs the state handler at once.
 
@@ -69,7 +69,7 @@ Every event sets the winning row again, which is harmless, so no row identity is
 A part missing from the template is looked up among the logical children, such as a menu's items.
 Failing that, it is looked up in the item template of the first presenter, such as a button's icon.
 A part and property with no active row is restored by that slot's value kind.
-Enable, text, content, chosen, highlight, drag, source and dropdown changes are watched per element.
+Enable, text, content, highlight, drag, source and dropdown changes are watched per element.
 A cue or icon change reaches the handler through its own property's change callback.
 No routed event reports them.
 The property watches are added only while the element is loaded, so its unload can take them off.

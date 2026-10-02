@@ -7,6 +7,7 @@ internal sealed class PLabelCaret : INotifyPropertyChanged
 {
     private string _pLabelCaretText = string.Empty;
     private string _pLabelCaretHint = string.Empty;
+    private PLabelChip? _pLabelCaretAnchor;
 
     public string PLabelCaretText
     {
@@ -37,6 +38,21 @@ internal sealed class PLabelCaret : INotifyPropertyChanged
 
             _pLabelCaretHint = shown;
             PLabelCaretRaise(nameof(PLabelCaretHint));
+        }
+    }
+
+    public PLabelChip? PLabelCaretAnchor
+    {
+        get => _pLabelCaretAnchor;
+        set
+        {
+            if (ReferenceEquals(_pLabelCaretAnchor, value))
+            {
+                return;
+            }
+
+            _pLabelCaretAnchor = value;
+            PLabelCaretRaise(nameof(PLabelCaretAnchor));
         }
     }
 

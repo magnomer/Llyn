@@ -92,7 +92,7 @@ public sealed partial class PSwath : FrameworkElement
             return;
         }
 
-        if (node is TextBlock or Image or Rectangle or PScreen or PContour)
+        if (node is TextBlock or Image or Rectangle or PContour || QScreen.QScreenFind(node) is not null)
         {
             FrameworkElement item = (FrameworkElement)node;
             if (item.ActualWidth > 0 && item.ActualHeight > 0)

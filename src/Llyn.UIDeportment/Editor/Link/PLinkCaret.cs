@@ -7,6 +7,7 @@ internal sealed class PLinkCaret : INotifyPropertyChanged
 {
     private string _pLinkCaretText = string.Empty;
     private string _pLinkCaretHint = string.Empty;
+    private QLinkChip? _pLinkCaretAnchor;
 
     public string PLinkCaretText
     {
@@ -37,6 +38,21 @@ internal sealed class PLinkCaret : INotifyPropertyChanged
 
             _pLinkCaretHint = shown;
             PLinkCaretRaise(nameof(PLinkCaretHint));
+        }
+    }
+
+    public QLinkChip? PLinkCaretAnchor
+    {
+        get => _pLinkCaretAnchor;
+        set
+        {
+            if (ReferenceEquals(_pLinkCaretAnchor, value))
+            {
+                return;
+            }
+
+            _pLinkCaretAnchor = value;
+            PLinkCaretRaise(nameof(PLinkCaretAnchor));
         }
     }
 

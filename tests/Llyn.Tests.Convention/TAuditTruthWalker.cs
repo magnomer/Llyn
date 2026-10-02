@@ -84,7 +84,7 @@ internal static partial class TAuditTruthWalker
 
         TAuditIndex = new Dictionary<ISymbol, List<IdentifierNameSyntax>>(SymbolEqualityComparer.Default);
         foreach (IdentifierNameSyntax identifier in TAuditRoots.SelectMany(root =>
-                     root.DescendantNodes().OfType<IdentifierNameSyntax>()))
+                     root.DescendantNodes(node => !TAuditNameofCheck(node)).OfType<IdentifierNameSyntax>()))
         {
             if (TAuditBinder.TAuditSymbolRead(identifier) is not { } symbol)
             {
@@ -236,7 +236,8 @@ internal static partial class TAuditTruthWalker
         HashSet<MemberDeclarationSyntax> toggles = [];
         HashSet<ISymbol> writers = TAuditWriterRead(field, type);
         SyntaxNode? engineWrite = null;
-        SyntaxNode? plainWrite = null;
+        List<SyntaxNode> plainWrites = [];
+        List<(SyntaxNode, ExpressionSyntax?)> written = [];
 
         foreach (IdentifierNameSyntax identifier in TAuditUseRead(writers))
         {
@@ -253,7 +254,8 @@ internal static partial class TAuditTruthWalker
                      .OrderBy(identifier => identifier.SyntaxTree.FilePath, StringComparer.Ordinal)
                      .ThenBy(identifier => identifier.SpanStart))
         {
-            bool inside = TAuditInsideCheck(identifier, type);
+            bool inside = TAuditInsideCheck(identifier, type)
+                || TAuditBinder.TAuditSymbolRead(identifier) is IParameterSymbol { RefKind: not RefKind.None };
             if (!inside && !field.TFieldShared)
             {
                 continue;
@@ -289,14 +291,23 @@ internal static partial class TAuditTruthWalker
                 }
 
                 bool emptied = value is null && reference.Parent is MemberAccessExpressionSyntax;
-                switch (emptied ? "clear" : TAuditWriterResolve(value))
+                foreach (ExpressionSyntax? given in
+                         TAuditOriginWalker.TAuditHelperRead(identifier, reference) ?? [value])
                 {
-                    case "engine":
+                    string verdict = emptied ? "clear" : TAuditOriginWalker.TAuditWriterResolve(given);
+                    if (verdict == "engine")
+                    {
                         engineWrite ??= reference;
-                        break;
-                    case "plain":
-                        plainWrite ??= reference;
-                        break;
+                    }
+                    else if (verdict == "plain")
+                    {
+                        plainWrites.Add(reference);
+                    }
+
+                    if (verdict != "clear")
+                    {
+                        written.Add((reference, given));
+                    }
                 }
 
                 continue;
@@ -310,17 +321,26 @@ internal static partial class TAuditTruthWalker
             TAuditScopeCheck(field, scope, violations);
         }
 
-        if (engineWrite is not null && plainWrite is not null)
+        if (engineWrite is not null && plainWrites.Count > 0
+            && TAuditLookupWalker.TAuditLookupRead(written) is { } looked)
+        {
+            (engineWrite, plainWrites) = looked;
+        }
+
+        if (engineWrite is not null && plainWrites.FirstOrDefault() is { } plainWrite)
         {
             string where = engineWrite.SyntaxTree == plainWrite.SyntaxTree
                 ? $"line {TAuditLineRead(engineWrite)}"
                 : $"{Path.GetFileName(engineWrite.SyntaxTree.FilePath)}:{TAuditLineRead(engineWrite)}";
+            string others = string.Join(", ", plainWrites.Skip(1).Select(write =>
+                $"{Path.GetFileName(write.SyntaxTree.FilePath)}:{TAuditLineRead(write)}"));
+            string also = others.Length > 0 ? $", also at {others}" : string.Empty;
             violations.Add(new TViolation(
                 plainWrite.SyntaxTree.FilePath,
                 TAuditLineRead(plainWrite),
                 field.TFieldName,
                 "Contesting",
-                $"written by the engine at {where} and by the shell here"));
+                $"written by the engine at {where} and by the shell here{also}"));
         }
     }
 
@@ -329,7 +349,8 @@ internal static partial class TAuditTruthWalker
     {
         HashSet<ISymbol> tainted = TAuditTaintRead(field, scope);
         HashSet<string> seen = new(StringComparer.Ordinal);
-        foreach (IdentifierNameSyntax identifier in scope.DescendantNodes().OfType<IdentifierNameSyntax>())
+        foreach (IdentifierNameSyntax identifier in scope.DescendantNodes(node => !TAuditNameofCheck(node))
+                     .OfType<IdentifierNameSyntax>())
         {
             bool direct = TAuditFieldCheck(identifier, field.TFieldSymbols);
             if (!direct && !TAuditFieldCheck(identifier, tainted))
@@ -349,9 +370,12 @@ internal static partial class TAuditTruthWalker
                 continue;
             }
 
-            string reason = direct
+            string? via = TAuditBinder.TAuditSymbolRead(identifier) is IParameterSymbol { RefKind: not RefKind.None }
+                ? "ref"
+                : direct ? null : "local";
+            string reason = via is null
                 ? sink.Value.TViolationReason
-                : $"{sink.Value.TViolationReason} through local '{identifier.Identifier.ValueText}'";
+                : $"{sink.Value.TViolationReason} through {via} '{identifier.Identifier.ValueText}'";
             int line = TAuditLineRead(reference);
             if (seen.Add($"{line}:{sink.Value.TViolationKind}"))
             {
@@ -399,35 +423,6 @@ internal static partial class TAuditTruthWalker
         }
     }
 
-    private static string TAuditWriterResolve(ExpressionSyntax? value)
-    {
-        if (value is null)
-        {
-            return "plain";
-        }
-
-        if (value.IsKind(SyntaxKind.NullLiteralExpression)
-            || value.IsKind(SyntaxKind.DefaultLiteralExpression)
-            || value is DefaultExpressionSyntax)
-        {
-            return "clear";
-        }
-
-        bool asked = value.DescendantNodesAndSelf().Any(node => node switch
-        {
-            MemberAccessExpressionSyntax or MemberBindingExpressionSyntax
-                => TAuditBinder.TAuditLogicCheck(TAuditBinder.TAuditSymbolRead(node)),
-            InvocationExpressionSyntax call
-                => TAuditCallRead(call) is not null
-                   || (TAuditBinder.TAuditSymbolRead(call) is { } callee && TAuditReaderNames.Contains(callee)),
-            BaseObjectCreationExpressionSyntax creation => TAuditCallRead(creation) is not null,
-            IdentifierNameSyntax name => TAuditBinder.TAuditSymbolRead(name) is ILocalSymbol or IParameterSymbol
-                                         && TAuditBinder.TAuditLogicCheck(name),
-            _ => false
-        });
-        return asked ? "engine" : "plain";
-    }
-
     private static SyntaxNode TAuditReferenceRead(IdentifierNameSyntax identifier)
     {
         return identifier.Parent is MemberAccessExpressionSyntax
@@ -439,7 +434,7 @@ internal static partial class TAuditTruthWalker
             : identifier;
     }
 
-    private static bool TAuditWriteCheck(SyntaxNode reference, out ExpressionSyntax? value)
+    internal static bool TAuditWriteCheck(SyntaxNode reference, out ExpressionSyntax? value)
     {
         value = null;
         switch (reference.Parent)
@@ -472,7 +467,7 @@ internal static partial class TAuditTruthWalker
 
     private static bool TAuditNameCheck(SyntaxNode node, HashSet<ISymbol> symbols)
     {
-        return node.DescendantNodesAndSelf().OfType<IdentifierNameSyntax>()
+        return node.DescendantNodesAndSelf(parent => !TAuditNameofCheck(parent)).OfType<IdentifierNameSyntax>()
             .Any(identifier => TAuditFieldCheck(identifier, symbols));
     }
 

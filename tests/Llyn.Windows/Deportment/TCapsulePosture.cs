@@ -64,6 +64,24 @@ public sealed class TCapsulePosture
     }
 
     [Fact]
+    public void PostureRootRefine_OtherFolder_ReadsThatFolderAndWritesThere()
+    {
+        using TWorkspace first = TWorkspace.TWorkspaceCreate();
+        using TWorkspace second = TWorkspace.TWorkspaceCreate();
+        using QPosture posture = TInterfaceDeportment.TPostureCreate(first.TWorkspaceFolder);
+        posture.QPostureLayoutSave([TInterfaceCapsule.TCapsuleColumnCreate("library", 400, null)]);
+
+        posture.QPostureRootRefine(second.TWorkspaceFolder);
+        posture.QPostureLayoutSave([TInterfaceCapsule.TCapsuleColumnCreate("corpus", 390, null)]);
+
+        Assert.Null(posture.QPostureColumnRead("library"));
+        Assert.Equal(390, posture.QPostureColumnRead("corpus")?.LCapsuleColumnLeft);
+        using QPosture reopened = TInterfaceDeportment.TPostureCreate(first.TWorkspaceFolder);
+        Assert.Equal(400, reopened.QPostureColumnRead("library")?.LCapsuleColumnLeft);
+        Assert.Null(reopened.QPostureColumnRead("corpus"));
+    }
+
+    [Fact]
     public void PostureWindowDefer_AtOnceAndMinimized_KeepsOnlyTheShownWindow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

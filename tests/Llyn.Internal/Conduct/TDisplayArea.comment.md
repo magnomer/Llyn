@@ -58,14 +58,6 @@ With no entry chosen the gate stores nothing and words nothing.
 
 Conduct chooses the one-off key for the driver's lookup, and an unranked entry shows no chip.
 
-## `public void DisplayNarrativeCheck_ReadSide_ShowsOnlyWords(bool editable, string text, bool expected)`
-
-The read face shows only text with words in it, and never while editing.
-
-## `public void DisplayEtymonCheck_ReadSide_ShowsOnlyLinks(bool editable, int count, bool expected)`
-
-The link row always shows while editing, else only with a link.
-
 ## `private static CWing TDisplayWingPrepare(CAtelier atelier)`
 
 A wing on a fresh vista, standing on no entry.

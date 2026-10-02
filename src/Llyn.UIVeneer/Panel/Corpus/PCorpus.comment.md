@@ -28,7 +28,7 @@ The orderings the catalog may be listed in, one radio row each, carrying its cho
 Ordering by recency is not offered, because the `example` row carries no creation or modification time.
 An Example whose text is unwritten still has a place in every ordering, ordered by its mark rather than dropped.
 
-## `<local:PRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">`
+## `<local:QRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">`
 
 The action row of the panel.
 `PCorpusFresh` opens the editor on an Example nothing quotes yet.
@@ -56,13 +56,13 @@ The translation is not shown here either.
 It is text of the sentence itself and says nothing about where the sentence is used.
 The row parts are named, and the panel fills them and marks the chosen row.
 
-## `<local:PDisplay x:Name="PDisplay" Visibility="Collapsed" />`
+## `<veneer:PDisplay x:Name="PDisplay" Visibility="Collapsed" />`
 
 The entry display the library and tenor panels share, drawn in the same cell as the Example reading.
 It shows an Entry or an Example, never both, so it stays collapsed until an Entry row is chosen.
 The mode toggle swaps it for `PEditor`, so an Entry is read and written here as in the tenor panel.
 
-## `<local:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />`
+## `<veneer:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />`
 
 The entry editor the library and tenor panels share, drawn in the same cell as the display.
 It stands in front only while an Entry is shown and the toggle is on the editing side.

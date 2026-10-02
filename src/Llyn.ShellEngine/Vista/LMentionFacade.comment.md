@@ -13,19 +13,13 @@ Stores the engine and its gate.
 
 The clerk's find over a stored Example, under the gate.
 
-## `public LMentionResult LEngineMentionFind(string text, string language, int offset, IReadOnlyList<LMention> mentions)`
+## `public LMentionResult LEngineMentionFind(LEntryDraft shown, long sentence, int offset)`
 
-The clerk's find over the text a draft-backed form shows, under the gate.
+The clerk's find over one sentence row of the entry the reading view shows, under the gate.
 
-## `public LMentionResult LEngineMentionFind(string text, string language, LEntryDraft? shown, int offset, IReadOnlyList<LMention>? mentions)`
+## `public LMentionResult LEngineEtymologyFind(LEntryDraft shown, int offset)`
 
-The find over a word clicked in the reading view.
-A text that names no language is read in the language of the `shown` entry.
-A text without Mentions is read as holding none.
-
-## `public IReadOnlyList<LMentionPiece> LEngineMentionDivide(string text, IReadOnlyList<LMention> mentions)`
-
-The pieces a sentence falls into around its Mentions.
+The clerk's find over the etymology prose of the entry the reading view shows, under the gate.
 
 ## `public LMentionDraft LEngineSpanRead(string text, int start, int length)`
 

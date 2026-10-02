@@ -233,7 +233,8 @@ public sealed class TAuditStrict
         IReadOnlyList<string> TAuditSources) TAuditStrictRead()
     {
         string repoRoot = TAuditSource.TAuditRootRead();
-        IReadOnlyList<string> sources = TAuditScopeRead(repoRoot, TAuditTruthSetting.TAuditShellInclude);
+        IReadOnlyList<string> sources = TAuditScopeRead(
+            repoRoot, [.. TAuditTruthSetting.TAuditShellInclude, .. TAuditTruthSetting.TAuditCapsuleInclude]);
         IReadOnlyList<string> hosts = TAuditScopeRead(repoRoot, TAuditStrictSetting.TAuditHostInclude);
         IReadOnlyList<string> markups = TAuditScopeRead(repoRoot, TAuditStrictSetting.TAuditReachInclude);
         IReadOnlyList<string> drivers = TAuditScopeRead(repoRoot, TAuditStrictSetting.TAuditDeportmentInclude);

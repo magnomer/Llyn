@@ -72,7 +72,7 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
 
         Assert.Null(editor.TEditorDraftRead());
     }
@@ -256,7 +256,7 @@ public sealed class TEditorField
     internal static CEditor TEditorFieldPrepare(LEngine engine)
     {
         engine.TEngineDelaySet(0);
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(null);
         return editor;

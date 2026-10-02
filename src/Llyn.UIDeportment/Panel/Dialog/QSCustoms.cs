@@ -23,10 +23,10 @@ internal sealed class QSCustoms
     private readonly Window _qsCustomsSurface;
     private readonly CSCustoms _csCustoms;
 
-    private QSCustoms(PWindow host, CSCustoms customs)
+    private QSCustoms(QWindow host, CSCustoms customs)
     {
         _qsCustomsSurface = QContract.QContractSheetFind<Window>("PSCustoms");
-        _qsCustomsSurface.Owner = host.PWindowSurface;
+        _qsCustomsSurface.Owner = host.QWindowSurface;
         _csCustoms = customs;
         QSCustomsList.ItemsSource = new ObservableCollection<QSCustomsItem>(customs.CSCustomsEntry.Select(
             static (entry, index) => new QSCustomsItem(
@@ -46,7 +46,7 @@ internal sealed class QSCustoms
 
     private Button QSCustomsQuit => QContract.QContractFind<Button>(_qsCustomsSurface, "PSCustomsQuit");
 
-    internal static bool QSCustomsConsult(PWindow host, CSCustoms customs)
+    internal static bool QSCustomsConsult(QWindow host, CSCustoms customs)
     {
         ArgumentNullException.ThrowIfNull(host);
         ArgumentNullException.ThrowIfNull(customs);
@@ -54,13 +54,13 @@ internal sealed class QSCustoms
         return new QSCustoms(host, customs)._qsCustomsSurface.ShowDialog() == true;
     }
 
-    internal static void QSCustomsOmissionConsult(PWindow host, IReadOnlyList<CMarkupOmission> omissions)
+    internal static void QSCustomsOmissionConsult(QWindow host, IReadOnlyList<CMarkupOmission> omissions)
     {
         ArgumentNullException.ThrowIfNull(host);
         ArgumentNullException.ThrowIfNull(omissions);
 
         Window surface = QContract.QContractSheetFind<Window>("PSCustoms");
-        surface.Owner = host.PWindowSurface;
+        surface.Owner = host.QWindowSurface;
         ItemsControl omission = QContract.QContractFind<ItemsControl>(surface, "PSCustomsOmission");
         QLookItem.QLookItemAttach(omission, QSCustomsOmissionApply);
         omission.ItemsSource = omissions

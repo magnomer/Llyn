@@ -3,8 +3,8 @@
 ## `internal sealed partial class PCard`
 
 The Situations a card shows, held as the items of one field rather than as a stack of rows.
-The collection is a run of Situation chips with one open entry among them.
-That entry is the caret the user types into, and it moves between chips as a caret does.
+The collection holds only the chips, and the open entry beside them is the caret the user types into.
+The caret is anchored to the chip it stands before, so moving it never reorders the chips.
 So the field can be drawn as boxed Situations with a cursor after them, the way Tags are.
 A Situation can hold spaces and punctuation without a separator being guessed at inside it.
 Only a comma ends a Situation.
@@ -18,15 +18,21 @@ The engine's clerk skips a wording the card already shows, so what the field sho
 
 What is standing in the entry.
 
+## `internal PContextCaret PCardContextCaret`
+
+The caret the field's entry paints, which the editor finds a focused entry's card by.
+
 ## `internal int PCardContextPosition`
 
-How many chips stand before the caret, which is the place a new chip is asked for.
+How many chips stand before the caret's anchor, which is the place a new chip is asked for.
+A caret with no anchor, or one whose chip is gone, stands at the end.
 
 ## `internal void PCardContextShow(IReadOnlyList<CSituationDraft> drafts)`
 
 Makes the chips show the engine's Situations, matched by id.
 A chip whose title changed is replaced, since a chip is immutable.
-The caret stays where it was.
+The caret stays before the first chip that followed it and still stands.
+A chip the engine adds at the caret therefore lands before it.
 
 ## `internal PContext? PCardContextFind(int step)`
 
@@ -35,7 +41,7 @@ That is what a backspace at the start, or a delete at the end, reaches for.
 
 ## `internal bool PCardContextMove(int step)`
 
-Steps the entry one place along the field, past the Situation on that side.
+Steps the entry one place along the field by anchoring it to another chip, past the Situation on that side.
 A Situation is passed over as a single character would be.
 Reports whether there was anywhere left to go.
 

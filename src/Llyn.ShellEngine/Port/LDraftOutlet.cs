@@ -86,9 +86,6 @@ public sealed class LDraftOutlet : LDraftPort
     public LEntry? LEngineTranslationResolve(string word, long? entryId) =>
         _lDraftOutletEngine.LEngineCard.LEngineTranslationResolve(word, entryId);
 
-    public IReadOnlyList<LMentionPiece> LEngineMentionDivide(string text, IReadOnlyList<LMention> mentions) =>
-        _lDraftOutletEngine.LEngineMention.LEngineMentionDivide(text, mentions);
-
     public int LEngineUnitRead(string text, int offset) =>
         _lDraftOutletEngine.LEngineMention.LEngineUnitRead(text, offset);
 

@@ -141,7 +141,7 @@ public sealed class TDisplaySound
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         LEntry kindle = engine.TEngineEntrySave(
             TDisplayDraftCreate("kindle", "English", [TInterface.TReflexDraftCreate("Korean", string.Empty, "a")]));
         editor.CEditorDisplay.LDisplaySound.TDisplaySoundShow(
@@ -159,7 +159,7 @@ public sealed class TDisplaySound
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         CDisplaySound area = editor.CEditorDisplay.CDisplaySound;
         int changed = 0;
         area.CDisplayFoldChanged += () => changed++;
@@ -398,7 +398,7 @@ public sealed class TDisplaySound
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         List<string> set = [];
-        CEditor editor = TInterfaceConduct.TEditorCreate(
+        CEditor editor = TInterfaceEditor.TEditorCreate(
             engine,
             TEngineFake.TEngineCreate<LPhonologyPort>(new Dictionary<string, Func<object?[]?, object?>>
             {

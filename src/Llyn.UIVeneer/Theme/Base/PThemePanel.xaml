@@ -53,13 +53,13 @@
         <Setter Property="SnapsToDevicePixels" Value="True" />
     </Style>
 
-    <Style x:Key="Theme.Panel.SeamColumn" TargetType="local:PSeam">
+    <Style x:Key="Theme.Panel.SeamColumn" TargetType="local:QSeam">
         <Setter Property="Width" Value="12" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="Panel.ZIndex" Value="1" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:PSeam">
+                <ControlTemplate TargetType="local:QSeam">
                     <Grid Background="Transparent">
                         <Rectangle Width="1" HorizontalAlignment="Center" Fill="{StaticResource Theme.Line}" SnapsToDevicePixels="True" />
                     </Grid>

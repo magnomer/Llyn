@@ -29,8 +29,8 @@
         </Grid.ColumnDefinitions>
 
         <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" />
-        <local:PSeam Grid.Row="1" Grid.Column="1" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
-        <local:PSeam Grid.Row="1" Grid.Column="2" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+        <local:QSeam Grid.Row="1" Grid.Column="1" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+        <local:QSeam Grid.Row="1" Grid.Column="2" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
 
         <Border
             x:Name="PEchelon"
@@ -122,7 +122,7 @@
             </Grid>
         </Border>
 
-        <local:PRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">
+        <local:QRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">
             <Border Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
                     <Button
@@ -184,7 +184,7 @@
                         Style="{StaticResource Theme.Command.Mode}" />
                 </StackPanel>
             </Border>
-        </local:PRail>
+        </local:QRail>
 
         <Grid Grid.Row="1" Grid.Column="0" Style="{StaticResource Theme.Catalog.Frame}">
             <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">

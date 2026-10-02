@@ -1,7 +1,7 @@
 # PCategoryTemplate.xaml
 
 The category row of the editor's speech menu, as markup alone.
-The Deportment class of the same name loads it and forwards the row's click to the editor.
+The editor's markup merges this dictionary, and the editor's fill subscribes the row's click.
 
 ## `Theme.Category.Row`
 

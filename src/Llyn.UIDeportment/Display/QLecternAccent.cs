@@ -48,7 +48,8 @@ public sealed class QLecternAccent
         TextBlock closer,
         ItemsControl accents,
         DependencyObject contour,
-        DependencyProperty syllables)
+        DependencyProperty syllables,
+        DependencyProperty scale)
     {
         ArgumentNullException.ThrowIfNull(surface);
         ArgumentNullException.ThrowIfNull(lead);
@@ -60,6 +61,7 @@ public sealed class QLecternAccent
         ArgumentNullException.ThrowIfNull(accents);
         ArgumentNullException.ThrowIfNull(contour);
         ArgumentNullException.ThrowIfNull(syllables);
+        ArgumentNullException.ThrowIfNull(scale);
 
         _qLecternAccentSurface = surface;
         _qLecternAccentLead = lead;
@@ -70,6 +72,7 @@ public sealed class QLecternAccent
         _qLecternAccentCloser = closer;
         _qLecternAccentContour = contour;
         _qLecternAccentSyllables = syllables;
+        contour.SetValue(scale, CContour.CContourScale);
         accents.ItemsSource = _qLecternAccentRow;
         QLookItem.QLookItemAttach(accents, QAccentItem.QAccentItemRefine);
     }

@@ -10,6 +10,7 @@ Draws the visible keyboard focus indicator for navigation controls.
 ## `Theme.Navigation.Tab`
 
 Styles workspace tabs and marks the chosen tab with the accent treatment.
+It targets a plain `Button`, so the tab is a styled button and carries no state of its own.
 
 ## `Theme.Navigation.Voyage`
 

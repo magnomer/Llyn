@@ -18,7 +18,7 @@ public sealed class QLecternCard
 
     private readonly ObservableCollection<QUsageItem> _qLecternCardUsage = [];
 
-    private PWindow _qLecternCardHost = null!;
+    private QWindow _qLecternCardHost = null!;
 
     private ResourceDictionary _qLecternCardResources = null!;
 
@@ -36,7 +36,7 @@ public sealed class QLecternCard
 
     private UIElement _qLecternCardReferral = null!;
 
-    private PEtymology _qLecternCardEtymology = null!;
+    private QEtymology _qLecternCardEtymology = null!;
 
     private UIElement _qLecternCardOrigin = null!;
 
@@ -83,7 +83,7 @@ public sealed class QLecternCard
         _qLecternCardReferral = section;
     }
 
-    internal void QLecternEtymologyIntroduce(PEtymology etymology, UIElement section)
+    internal void QLecternEtymologyIntroduce(QEtymology etymology, UIElement section)
     {
         ArgumentNullException.ThrowIfNull(etymology);
         ArgumentNullException.ThrowIfNull(section);
@@ -92,7 +92,7 @@ public sealed class QLecternCard
         _qLecternCardOrigin = section;
     }
 
-    internal void QLecternRouteIntroduce(PWindow host)
+    internal void QLecternRouteIntroduce(QWindow host)
     {
         ArgumentNullException.ThrowIfNull(host);
 
@@ -166,12 +166,14 @@ public sealed class QLecternCard
 
     private void QLecternEtymologyRefine(CLecternEtymology etymology)
     {
-        _qLecternCardEtymology.PEtymologyLanguage = etymology.CLecternEtymologyLanguage;
-        _qLecternCardEtymology.PEtymologyText = etymology.CLecternEtymologyText;
-        _qLecternCardEtymology.PEtymologySourceShow(etymology.CLecternEtymologyTargets
-            .Select(static target => new PEtymon(
-                target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage))
-            .ToList());
+        _qLecternCardEtymology.QEtymologyText = etymology.CLecternEtymologyText;
+        _qLecternCardEtymology.QEtymologyNarrated = etymology.CLecternEtymologyNarrated;
+        _qLecternCardEtymology.QEtymologySourceShow(
+            etymology.CLecternEtymologyTargets
+                .Select(static target => new PEtymon(
+                    target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage))
+                .ToList(),
+            etymology.CLecternEtymologyLinked);
         _qLecternCardEtymology.Visibility = QLook.QLookVisibleRead(etymology.CLecternEtymologyShown);
         _qLecternCardOrigin.Visibility = QLook.QLookVisibleRead(etymology.CLecternEtymologyDerived);
     }
@@ -187,7 +189,7 @@ public sealed class QLecternCard
 
     public void QLecternIncomingObserve(RoutedEventArgs e)
     {
-        _qLecternCardHost.PWindowAtelier.CAtelierNavigation.CNavigationUsageOpen(
+        _qLecternCardHost.QWindowAtelier.CAtelierNavigation.CNavigationUsageOpen(
             QSender.QSenderSourceRead<QUsageItem>(e)?.QUsageItemUsage);
     }
 
@@ -200,13 +202,17 @@ public sealed class QLecternCard
     {
         ArgumentNullException.ThrowIfNull(e);
 
-        _qLecternCardHost.PWindowMentionRefine(
+        _qLecternCardHost.QWindowMentionRefine(
             e.PMentionArgumentOrigin,
-            _qLecternCardArea.CDisplayMentionFind(
-                e.PMentionArgumentText,
-                e.PMentionArgumentLanguage,
-                e.PMentionArgumentOffset,
-                e.PMentionArgumentMention));
+            _qLecternCardArea.CDisplayMentionFind(e.PMentionArgumentSentence, e.PMentionArgumentOffset));
+    }
+
+    public void QLecternEtymologyObserve(PMentionArgument e)
+    {
+        ArgumentNullException.ThrowIfNull(e);
+
+        _qLecternCardHost.QWindowMentionRefine(
+            e.PMentionArgumentOrigin, _qLecternCardArea.CDisplayEtymologyFind(e.PMentionArgumentOffset));
     }
 
     public void QLecternSpotlightRefine(long id)

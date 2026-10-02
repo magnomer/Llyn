@@ -2,7 +2,8 @@
 
 The static frame one film plays in: a black stage above a play switch.
 The markup carries no hook.
-`PScreen` in Deportment loads it, subscribes every event and places each player inside the stage.
+`QScreen` in Deportment pulls each part by name, subscribes every event and places each player inside the stage.
+Each video template places it as `veneer:PScreen`, and `QScreen` drives each realized instance.
 
 ## `<Border x:Name="PScreenStage"`
 

@@ -107,6 +107,19 @@ public sealed class TCardList
     }
 
     [Fact]
+    public void CardMove_CardTheDraftLacks_KeepsTheOrder()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        (CDesk desk, CCardList card) = TCardListPrepare(engine, 3);
+        IReadOnlyList<long> held = TCardMeaningRead(desk);
+
+        card.CCardMove(held.Max() + 1, 0);
+
+        Assert.Equal(held, TCardMeaningRead(desk));
+    }
+
+    [Fact]
     public void CardMove_UnreadableOrdinal_KeepsTheOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -134,6 +147,23 @@ public sealed class TCardList
         Assert.Null(TInterface.TCardOrdinalRead(content, held[1], "2"));
         Assert.Null(TInterface.TCardOrdinalRead(content, held[1], "2nd"));
         Assert.Null(TInterface.TCardOrdinalRead(content, 0, "1"));
+    }
+
+    [Fact]
+    public void CardShiftRead_DraggedPlaces_AnswersOnlyARealMove()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        (CDesk desk, _) = TCardListPrepare(engine, 3);
+        LEntryDraft content = desk.TDeskRead()!.LDraftContent;
+        IReadOnlyList<long> held = TCardMeaningRead(desk);
+
+        Assert.Equal(2, TInterface.TCardShiftRead(content, held[0], 2));
+        Assert.Equal(0, TInterface.TCardShiftRead(content, held[2], 0));
+        Assert.Null(TInterface.TCardShiftRead(content, held[1], 1));
+        Assert.Null(TInterface.TCardShiftRead(content, held[0], -1));
+        Assert.Null(TInterface.TCardShiftRead(content, held[0], 3));
+        Assert.Null(TInterface.TCardShiftRead(content, held.Max() + 1, 0));
     }
 
     [Fact]

@@ -4,7 +4,7 @@
 
 The sound facts of the entry an editor holds, as the editor shows or offers them.
 The pack facts are read for the held draft's language, and the waiting reflexes from the editor's display.
-The editor builds it over its desk, its display and its phonology, media, draft and settings ports.
+The editor builds it over its desk, its display and its phonology, draft and settings ports.
 So it keeps no copy.
 
 ## `public event Action? CTimbreParadigmChanged;`
@@ -22,26 +22,17 @@ The tone contour of `ipa` as typed, in the held draft's language.
 It is empty when the language is not tonal or the reading carries no tone, which hides the contour.
 The editor reads it on every keystroke, since the typed text runs ahead of the draft.
 
-## `public CTimbrePlayback CTimbrePlaybackRead()`
-
-The held draft's own recording while its file exists, and whether the playback tray shows.
-An empty desk has nothing to play and asks the engine nothing.
-
-## `public Uri? CTimbrePlaybackStart(string? audio)`
-
-The user pressed play on the recording `audio`, and the gate answers the address the driver's player opens.
-A file gone since the button was painted answers null, and the driver repaints from a fresh read.
-
-## `public Uri? CTimbreAudioStart(long accent)`
-
-The user pressed play on the accent row `accent`, and the gate answers the address the driver's player opens.
-A file gone from disk answers null, and the engine clears it off the row.
-The draft bulletin then repaints the row without its play button.
-
-## `public void CTimbreAccentSet(long accent, string text)`
+## `public CAccentTyped CTimbreAccentSet(long accent, string text)`
 
 The user typed `text` on the accent row `accent`.
 The engine defers it and picks the respelled or phonetic form by the pack.
+The answer names the text the row now holds, which the driver writes in place of its own copy.
+A taken edit answers the typed text, since the deferred draft has not caught up yet.
+A desk that holds no tenure takes no edit, and answers the text its sheet holds for the row.
+
+## `private string LTimbreAccentFind(long accent)`
+
+The text the held sheet shows on one accent row, or nothing for a row it lacks.
 
 ## `public void CTimbrePronunciationAdd(long accent)`
 
@@ -116,14 +107,21 @@ The user pressed the minus of reflex row `reflex`.
 The user pressed the star of reflex row `reflex`.
 The engine flips the main mark the draft holds, so a row it no longer holds sends nothing.
 
-## `public IReadOnlyList<CReflexHead> CTimbreReflexSet(long reflex, CReflexField field, string text)`
+## `public CReflexTyped CTimbreReflexSet(long reflex, CReflexField field, string text)`
 
 The user typed `text` into the cell `field` of reflex row `reflex`.
 Each cell has its own engine member, and the engine defers every one.
+The answer names the text the cell now holds, which the driver writes in place of its own copy.
+A taken edit answers the typed text, since the deferred draft has not caught up yet.
+A desk that fills its view takes no edit, and answers the text its block holds for the cell.
 A typed language answers every row's lead, with the typed language standing in for the row's stored one.
-Other cells answer no lead, and so does a desk that fills its view.
+Other cells answer no lead, and neither does an edit not taken.
 Only the edit in hand is overlaid, so another row's edit still deferred reads as stored.
 The lead compares the raw typed language, as the scan compares the stored one.
+
+## `private string LTimbreReflexFind(long reflex, CReflexField field)`
+
+The text the held block shows in one cell of one row, or nothing for a row it lacks.
 
 ## `private static IReadOnlyList<CReflexHead> LTimbreLeadRead(IReadOnlyList<LReflexDraft> typed)`
 

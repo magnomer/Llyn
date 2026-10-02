@@ -8,7 +8,14 @@ internal static partial class TAuditTruthWalker
 {
     private static (string TViolationKind, string TViolationReason)? TAuditSinkRead(SyntaxNode reference)
     {
-        if (reference.Parent is MemberAccessExpressionSyntax { Expression: var owner } && owner == reference)
+        SyntaxNode receiver = reference;
+        while (receiver.Parent is ParenthesizedExpressionSyntax
+               or PostfixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.SuppressNullableWarningExpression })
+        {
+            receiver = receiver.Parent;
+        }
+
+        if (receiver.Parent is MemberAccessExpressionSyntax { Expression: var owner } && owner == receiver)
         {
             return null;
         }
@@ -89,14 +96,26 @@ internal static partial class TAuditTruthWalker
             return true;
         }
 
-        bool jump = branch.Statement.DescendantNodesAndSelf().Any(node =>
-            node is ReturnStatementSyntax or ThrowStatementSyntax or ContinueStatementSyntax or BreakStatementSyntax);
-        MemberDeclarationSyntax? scope = branch.FirstAncestorOrSelf<MemberDeclarationSyntax>();
-        return jump && scope is not null && scope.DescendantNodes()
-            .Where(node => node.SpanStart >= branch.SpanStart)
-            .Any(node => node is ExpressionSyntax call
-                         && (call is InvocationExpressionSyntax || call is BaseObjectCreationExpressionSyntax)
-                         && TAuditCallRead(call) is not null);
+        MemberDeclarationSyntax? member = branch.FirstAncestorOrSelf<MemberDeclarationSyntax>();
+        return branch.Statement.DescendantNodesAndSelf()
+            .Select(node => node switch
+            {
+                ReturnStatementSyntax or ThrowStatementSyntax => member,
+                ContinueStatementSyntax => node.Ancestors().FirstOrDefault(loop =>
+                    loop is CommonForEachStatementSyntax or ForStatementSyntax or WhileStatementSyntax
+                        or DoStatementSyntax),
+                BreakStatementSyntax => node.Ancestors().FirstOrDefault(loop =>
+                    loop is CommonForEachStatementSyntax or ForStatementSyntax or WhileStatementSyntax
+                        or DoStatementSyntax or SwitchSectionSyntax),
+                _ => null
+            })
+            .OfType<SyntaxNode>()
+            .Distinct()
+            .Any(scope => scope.DescendantNodes()
+                .Where(node => node.SpanStart >= branch.SpanStart)
+                .Any(node => node is ExpressionSyntax call
+                             && (call is InvocationExpressionSyntax || call is BaseObjectCreationExpressionSyntax)
+                             && TAuditCallRead(call) is not null));
     }
 
     private static bool TAuditPresenceCheck(ExpressionSyntax condition)
@@ -104,6 +123,9 @@ internal static partial class TAuditTruthWalker
         ExpressionSyntax core = TAuditStrictWalker.TAuditCoreRead(condition);
         return core switch
         {
+            BinaryExpressionSyntax chain
+                when chain.IsKind(SyntaxKind.LogicalAndExpression) || chain.IsKind(SyntaxKind.LogicalOrExpression)
+                => TAuditPresenceCheck(chain.Left) && TAuditPresenceCheck(chain.Right),
             IsPatternExpressionSyntax { Pattern: var pattern } => TAuditStrictWalker.TAuditPatternCheck(pattern),
             BinaryExpressionSyntax binary
                 when binary.IsKind(SyntaxKind.EqualsExpression) || binary.IsKind(SyntaxKind.NotEqualsExpression)
@@ -138,7 +160,7 @@ internal static partial class TAuditTruthWalker
         return TAuditHotNames.TryGetValue(callee, out HashSet<int>? hot) && hot.Contains(index);
     }
 
-    private static ISymbol? TAuditCallRead(ExpressionSyntax call)
+    internal static ISymbol? TAuditCallRead(ExpressionSyntax call)
     {
         if (call is not (InvocationExpressionSyntax or BaseObjectCreationExpressionSyntax)
             || TAuditBinder.TAuditSymbolRead(call) is not { } callee)
@@ -151,7 +173,20 @@ internal static partial class TAuditTruthWalker
             return callee;
         }
 
-        return TAuditDelegateRead(call) is { } held && TAuditRelayNames.Contains(held) ? held : null;
+        return TAuditDelegateRead(call) is { } held && (TAuditRelayNames.Contains(held) || TAuditInterfaceCheck(held))
+            ? held
+            : null;
+    }
+
+    private static bool TAuditInterfaceCheck(ISymbol held)
+    {
+        return held is IEventSymbol { ContainingType: { } owner } happening
+               && owner.AllInterfaces
+                   .SelectMany(face => face.GetMembers(happening.Name).OfType<IEventSymbol>())
+                   .Any(member => TAuditRelayNames.Contains(member.OriginalDefinition)
+                                  && SymbolEqualityComparer.Default.Equals(
+                                      owner.FindImplementationForInterfaceMember(member)?.OriginalDefinition,
+                                      happening));
     }
 
     private static ISymbol? TAuditDelegateRead(ExpressionSyntax call)
@@ -170,5 +205,14 @@ internal static partial class TAuditTruthWalker
             _ => null
         };
         return target is null ? null : TAuditBinder.TAuditSymbolRead(target);
+    }
+
+    internal static bool TAuditNameofCheck(SyntaxNode node)
+    {
+        return node is InvocationExpressionSyntax
+               {
+                   Expression: IdentifierNameSyntax { Identifier.ValueText: "nameof" }
+               } named
+               && TAuditBinder.TAuditSymbolRead(named) is null;
     }
 }

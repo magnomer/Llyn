@@ -1,7 +1,7 @@
 # PCollocationTemplate.xaml
 
 The editable collocation card, as markup alone.
-The Deportment class of the same name loads it and forwards the card's events to the editor.
+The editor's markup merges it, and the editor's fill subscribes the card's events.
 
 ## `Theme.Collocation.Card`
 

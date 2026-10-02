@@ -8,7 +8,6 @@ It mirrors only what the editor's parts read, so the full draft stays between co
 **Parameters**
 
 - `CEntryDraftHeadword`: the headword.
-- `CEntryDraftLanguage`: the entry's language.
 - `CEntryDraftNote`: the note.
 - `CEntryDraftMeanings`: the meaning cards.
 - `CEntryDraftCollocations`: the collocation cards.

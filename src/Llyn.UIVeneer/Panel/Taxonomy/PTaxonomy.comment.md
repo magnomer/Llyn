@@ -41,7 +41,7 @@ The search field and the language filter over the entry column.
 `PScout` narrows the entries under the chosen tag by typed text.
 `PLatticeDropper` opens the menu of loaded languages, and `PLatticeMark` shows while any is hidden.
 
-## `<local:PRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">`
+## `<local:QRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">`
 
 The same entry actions the library panel offers, over the same reader.
 New, save, the trail and chronicle pairs, export, print and the mode toggle are all wired by the panel.

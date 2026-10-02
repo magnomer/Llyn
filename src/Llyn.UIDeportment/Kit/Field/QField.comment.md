@@ -44,13 +44,6 @@ An unchanged text is no change to the property.
 So WPF leaves the caret of a box being typed into alone.
 The draft echoes each deferred request back, so that write must stay a no-op.
 
-## `internal static string QFieldPathRead(TextBox box)`
-
-The property name a templated field writes, read from the field's own name.
-A card learns from it which field changed.
-A combo box's inner editor reads the combo's name instead.
-The returned templates carry no binding, so each writing field is named after its property.
-
 ## `internal static void QFieldFocusDefer(ItemsControl host, object? item)`
 
 Puts the caret at the end of the field inside the row for `item`, once the row's container exists.
@@ -164,3 +157,24 @@ The block's visibility is cleared rather than set, so a style that hides an empt
 The nearest ordered grid above the pressed element, or null when the press was outside every cell.
 The walk stops at the host, so an order on the host's own ancestors is never taken for a cell.
 A text run is not a visual, so the walk climbs the logical tree until it reaches one.
+
+## `internal static void QFieldCaretApply(TextBox box, object row, int caret)`
+
+The chip fields share one way of reaching the entry they are typed into.
+The Tag field and the Situation field are both a run of chips with one open entry among them.
+Neither entry can be bound by name, because it is one item of a templated collection.
+So both find it by walking the drawn field, and both put the caret back the same way.
+Moving the entry rebuilds its item, so the focused box is gone by the time the move lands.
+The caret is put back on the newly drawn entry once the field is laid out again.
+A caret past the end of the text lands at the end, since the text box clamps it itself.
+Without it a step across a chip would drop the user out of the field.
+
+## `internal static ItemsControl? QFieldHostFind(DependencyObject start)`
+
+The field the moved entry will be redrawn in, found from the box being left behind.
+
+## `internal static TextBox? QFieldCaretFind(DependencyObject root)`
+
+The entry is the one text box a chip field holds.
+A committed chip carries a button and a label, never a field.
+So the first text box found under the field is the caret the user types into.

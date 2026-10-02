@@ -31,7 +31,7 @@ The search field and the language filter over the entry column.
 `PQuest` narrows the entries marked with the chosen Register by typed text.
 `PGrilleDropper` opens the menu of loaded languages, and `PGrilleMark` shows while any is hidden.
 
-## `<local:PRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">`
+## `<local:QRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">`
 
 The entry actions over the reader, and the reader and editor toggle.
 Export and print stand here as on every panel that reads an entry.

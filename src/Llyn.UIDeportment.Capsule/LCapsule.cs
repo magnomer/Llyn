@@ -13,9 +13,12 @@ public sealed class LCapsule
         WriteIndented = true,
     };
 
-    public LCapsuleContent LCapsuleRead(string root)
+    public LCapsuleContent LCapsuleRead(string? root)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+        if (string.IsNullOrWhiteSpace(root))
+        {
+            return new LCapsuleContent();
+        }
 
         string path = Path.Combine(root, LCapsuleName);
         try
@@ -42,10 +45,13 @@ public sealed class LCapsule
         }
     }
 
-    public void LCapsuleSave(string root, LCapsuleContent state)
+    public void LCapsuleSave(string? root, LCapsuleContent state)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentNullException.ThrowIfNull(state);
+        if (string.IsNullOrWhiteSpace(root))
+        {
+            return;
+        }
 
         string path = Path.Combine(root, LCapsuleName);
         string pending = path + ".tmp";

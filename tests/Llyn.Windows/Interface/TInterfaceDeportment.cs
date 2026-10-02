@@ -21,7 +21,12 @@ internal static class TInterfaceDeportment
     internal static (bool CDeskBackward, bool CDeskForward) TDeskChronicleRead(this CDesk desk) =>
         desk.CDeskChronicleRead();
 
-    internal static QPosture TPostureCreate(string root) => new(() => root);
+    internal static QPosture TPostureCreate(string root)
+    {
+        QPosture posture = new();
+        posture.QPostureRootRefine(root);
+        return posture;
+    }
 
     internal static IReadOnlyList<QIndexItem> TIndexItemBuild(IReadOnlyList<CVistaRow> rows) =>
         QIndexItem.QIndexItemBuild(rows);
@@ -48,6 +53,73 @@ internal static class TInterfaceDeportment
 
     internal static void TLecternFoldObserve(this QLectern lectern) => lectern.QLecternSound.QLecternFoldObserve();
 
+    internal static void TEtymologySourceShow(this QEtymology etymology, bool linked) =>
+        etymology.QEtymologySourceShow([], linked);
+
+    internal static (Visibility, Visibility) TEtymologyFaceRead(this QEtymology etymology)
+    {
+        UIElementCollection faces = ((Panel)((Panel)((Border)etymology.Child).Child).Children[1]).Children;
+        return (faces[0].Visibility, faces[1].Visibility);
+    }
+
     internal static void TReflexFoldRefine(IReadOnlyList<QReflexItem> rows, ToggleButton fold, bool opened) =>
         QReflexItem.QReflexFoldRefine(rows, fold, opened);
+
+    internal static object TCardCreate()
+    {
+        CStateWording blank = new(string.Empty, null, false, null);
+        return new PCard(
+            string.Empty,
+            [],
+            [],
+            [],
+            [],
+            new CCardDraft(0, 0, blank, blank, blank, [], [], [], [], [], [], []));
+    }
+
+    internal static void TCardLabelShow(object card, IReadOnlyList<CTagDraft> drafts) =>
+        ((PCard)card).PCardLabelShow(drafts);
+
+    internal static bool TCardLabelMove(object card, int step) => ((PCard)card).PCardLabelMove(step);
+
+    internal static long? TCardLabelFind(object card, int step) => ((PCard)card).PCardLabelFind(step)?.PLabelChipId;
+
+    internal static (List<long>, int) TCardLabelRead(object card)
+    {
+        PCard held = (PCard)card;
+        List<long> ids = [];
+        foreach (object row in held.PCardLabel)
+        {
+            ids.Add(((PLabelChip)row).PLabelChipId);
+        }
+
+        return (ids, held.PCardLabelPosition);
+    }
+
+    internal static TextBox TCardPositionAttach(object card)
+    {
+        FrameworkElementFactory face = new(typeof(TextBox)) { Name = "PCardPositionText" };
+        ItemsControl list = new()
+        {
+            Template = new ControlTemplate(typeof(ItemsControl))
+            {
+                VisualTree = new FrameworkElementFactory(typeof(ItemsPresenter)),
+            },
+            ItemTemplate = new DataTemplate { VisualTree = face },
+            ItemsSource = new[] { card },
+        };
+        list.Measure(new Size(400, 400));
+        list.Arrange(new Rect(0, 0, 400, 400));
+        list.UpdateLayout();
+        QLookItem.QLookItemAttach(
+            list, (container, item, changed) => PCard.PCardRowApply(container, (PCard)item, changed));
+        FrameworkElement row = (FrameworkElement)list.ItemContainerGenerator.ContainerFromIndex(0);
+        return QLook.QLookPartFind<TextBox>(row, "PCardPositionText")!;
+    }
+
+    internal static void TCardPositionShow(object card) => ((PCard)card).PCardPositionActive = true;
+
+    internal static void TCardPositionHide(object card) => ((PCard)card).PCardPositionHide();
+
+    internal static void TCardPositionSet(object card, int position) => ((PCard)card).PCardPosition = position;
 }

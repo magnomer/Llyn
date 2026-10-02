@@ -32,7 +32,7 @@ The result list, hidden until a query is typed and hidden again on a pick, an Es
 Its rows are buttons that take focus, so a lost focus bubbles here as it does from the field.
 Each row takes `Theme.Catalog.Row`, and its named parts are filled as the library index fills them.
 
-## `<local:PDisplay x:Name="PWingDisplay" />`
+## `<veneer:PDisplay x:Name="PWingDisplay" />`
 
 The read-only entry view is shared, so it is a control rather than markup written here.
 Both sides read an Entry the same way the library panel does.

@@ -6,7 +6,7 @@ The editor's esteem strip: the favourite mark, the grasp steps and their label, 
 It finds its controls through `QContract.QContractFind` on the editor, keeping their `PEditor` markup names.
 It holds no draft state, and every write reads the editor deportment's esteem.
 
-## `internal QRegard(PEditor editor)`
+## `internal QRegard(FrameworkElement surface)`
 
 Wires the strip's clicks once, right after the editor has taken over its markup's name scope.
 
@@ -19,7 +19,7 @@ A tenure start reads every part of the strip again, one subscriber each, since a
 
 The label previews the step under the pointer, so a click never lands on an unread step.
 
-## `private Border QRegardFrequencyChip => QContract.QContractFind<Border>(_pEditor, "PEditorFrequencyChip");`
+## `private Border QRegardFrequencyChip => QContract.QContractFind<Border>(_qRegardSurface, "PEditorFrequencyChip");`
 
 The frequency chip sits under the part-of-speech chips, drawn as the reading view draws it.
 It is read only here as there, since a frequency is fetched rather than typed.

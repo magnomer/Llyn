@@ -32,7 +32,7 @@ Draws the description's ready Markdown blocks into its card, or hides the sectio
 A description worded by a key shows the key's text as one plain paragraph instead.
 The entry note is drawn the same way, and the same painter keeps the two alike.
 
-## `private void QVignetteMediaRefine(IReadOnlyList<PImage>? pictures, IReadOnlyList<PVideo>? videos)`
+## `private void QVignetteMediaRefine(IReadOnlyList<QImageItem>? pictures, IReadOnlyList<QVideoItem>? videos)`
 
 Hands the read rows to the two media lists, which draw them through the card's own line templates.
 Each list hides itself through the look sheet while it holds nothing, so the page carries no empty media block.

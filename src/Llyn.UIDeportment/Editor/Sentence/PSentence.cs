@@ -38,6 +38,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         _pSentenceRow = draft.CSentenceDraftId;
         _pSentenceText = draft.CSentenceDraftText;
         PSentenceCitation = example?.CExampleDraftReference;
+        PSentenceCited = draft.CSentenceDraftCited;
         _pSentenceParticle = draft.CSentenceDraftParticle;
         _pSentenceDependence = draft.CSentenceDraftDependence;
         PSentenceGlossShow(example?.CExampleDraftGloss ?? []);
@@ -52,6 +53,8 @@ internal sealed partial class PSentence : INotifyPropertyChanged
     public ObservableCollection<string> PSentenceDependenceCatalog { get; }
 
     internal long PSentenceRow => _pSentenceRow;
+
+    internal bool PSentenceCited { get; private set; }
 
     public CStateWording PSentenceText
     {
@@ -179,6 +182,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         PSentenceGlossShow(example?.CExampleDraftGloss ?? []);
         PSentenceText = draft.CSentenceDraftText;
         PSentenceCitation = example?.CExampleDraftReference;
+        PSentenceCited = draft.CSentenceDraftCited;
         PSentenceParticle = draft.CSentenceDraftParticle;
         PSentenceDependence = draft.CSentenceDraftDependence;
     }

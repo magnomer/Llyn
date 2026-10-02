@@ -27,8 +27,20 @@ Each command is a `QLook` row on the named item.
 
 ## `Theme.Etymology.Read`
 
-The card the reading view draws, its heading standing above it.
+The card frame the reading view draws, its heading standing above it.
 
 ## `Theme.Etymology.Card`
 
-The card the editor draws, its heading inside the head strip as the note card has it.
+The card frame the editor draws, its heading inside the head strip as the note card has it.
+
+## `Theme.Etymology.Head`
+
+The head strip of the editor card, bordered below and rounded on top.
+
+## `Theme.Etymology.Title`
+
+The heading inside the head strip.
+
+## `Theme.Etymology.Body`
+
+The inset the editor card gives its body below the head strip.

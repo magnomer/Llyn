@@ -39,6 +39,8 @@ public sealed class QReflexItem : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    internal event Action<QReflexItem, CReflexField, string>? QReflexItemTyped;
+
     public long QReflexItemId { get; }
 
     public bool QReflexItemFolded { get; private set; }
@@ -55,65 +57,34 @@ public sealed class QReflexItem : INotifyPropertyChanged
         private set => QReflexValueRefine(ref _qReflexItemCloser, value, nameof(QReflexItemCloser));
     }
 
-    public string QReflexItemLanguage
-    {
-        get => _qReflexItemLanguage;
-        set
-        {
-            if (QReflexValueRefine(ref _qReflexItemLanguage, value, nameof(QReflexItemLanguage)))
-            {
-                QReflexChangeRefine(nameof(QReflexItemHead));
-                QReflexChangeRefine(nameof(QReflexItemLabel));
-            }
-        }
-    }
-
     public string QReflexItemKind
     {
         get => _qReflexItemKind;
-        set
-        {
-            if (QReflexValueRefine(ref _qReflexItemKind, value, nameof(QReflexItemKind)))
-            {
-                QReflexChangeRefine(nameof(QReflexItemTag));
-            }
-        }
+        set => QReflexItemTyped?.Invoke(this, CReflexField.CReflexFieldKind, value);
     }
 
     public string QReflexItemText
     {
         get => _qReflexItemText;
-        set => QReflexValueRefine(ref _qReflexItemText, value, nameof(QReflexItemText));
+        set => QReflexItemTyped?.Invoke(this, CReflexField.CReflexFieldText, value);
     }
 
     public string QReflexItemRomanization
     {
         get => _qReflexItemRomanization;
-        set => QReflexValueRefine(ref _qReflexItemRomanization, value, nameof(QReflexItemRomanization));
+        set => QReflexItemTyped?.Invoke(this, CReflexField.CReflexFieldRomanization, value);
     }
 
     public string QReflexItemMeaning
     {
         get => _qReflexItemMeaning;
-        set => QReflexValueRefine(ref _qReflexItemMeaning, value, nameof(QReflexItemMeaning));
+        set => QReflexItemTyped?.Invoke(this, CReflexField.CReflexFieldMeaning, value);
     }
 
     public string QReflexItemNote
     {
         get => _qReflexItemNote;
-        set => QReflexValueRefine(ref _qReflexItemNote, value, nameof(QReflexItemNote));
-    }
-
-    public string QReflexItemRegion
-    {
-        get => _qReflexItemRegion;
-        set
-        {
-            if (QReflexValueRefine(ref _qReflexItemRegion, value, nameof(QReflexItemRegion)))
-            {
-                QReflexChangeRefine(nameof(QReflexItemArea));
-            }
-        }
+        set => QReflexItemTyped?.Invoke(this, CReflexField.CReflexFieldNote, value);
     }
 
     public bool QReflexItemMain
@@ -188,7 +159,7 @@ public sealed class QReflexItem : INotifyPropertyChanged
     public string QReflexItemHead
     {
         get => _qReflexItemLead ? _qReflexItemLanguage : string.Empty;
-        set => QReflexItemLanguage = value;
+        set => QReflexItemTyped?.Invoke(this, CReflexField.CReflexFieldLanguage, value);
     }
 
     public string QReflexItemLabel =>
@@ -310,14 +281,44 @@ public sealed class QReflexItem : INotifyPropertyChanged
         QReflexItemOpener = reflex.CReflexMark.CRespellingMarkOpener;
         QReflexItemCloser = reflex.CReflexMark.CRespellingMarkCloser;
         QReflexItemMain = reflex.CReflexMain;
-        QReflexItemLanguage = reflex.CReflexLanguage;
-        QReflexItemKind = reflex.CReflexKind;
-        QReflexItemText = reflex.CReflexText;
-        QReflexItemRomanization = reflex.CReflexRomanization;
-        QReflexItemMeaning = reflex.CReflexMeaning;
-        QReflexItemNote = reflex.CReflexNote;
-        QReflexItemRegion = reflex.CReflexRegion;
+        QReflexValueRefine(
+            ref _qReflexItemLanguage, reflex.CReflexLanguage, nameof(QReflexItemHead), nameof(QReflexItemLabel));
+        QReflexValueRefine(ref _qReflexItemKind, reflex.CReflexKind, nameof(QReflexItemKind), nameof(QReflexItemTag));
+        QReflexValueRefine(ref _qReflexItemText, reflex.CReflexText, nameof(QReflexItemText));
+        QReflexValueRefine(
+            ref _qReflexItemRomanization, reflex.CReflexRomanization, nameof(QReflexItemRomanization));
+        QReflexValueRefine(ref _qReflexItemMeaning, reflex.CReflexMeaning, nameof(QReflexItemMeaning));
+        QReflexValueRefine(ref _qReflexItemNote, reflex.CReflexNote, nameof(QReflexItemNote));
+        QReflexValueRefine(ref _qReflexItemRegion, reflex.CReflexRegion, nameof(QReflexItemArea));
         QReflexItemLead = reflex.CReflexLead;
+    }
+
+    internal void QReflexTypeRefine(CReflexTyped typed)
+    {
+        ArgumentNullException.ThrowIfNull(typed);
+
+        string text = typed.CReflexTypedText;
+        switch (typed.CReflexTypedField)
+        {
+            case CReflexField.CReflexFieldLanguage:
+                QReflexValueRefine(ref _qReflexItemLanguage, text, nameof(QReflexItemHead), nameof(QReflexItemLabel));
+                break;
+            case CReflexField.CReflexFieldKind:
+                QReflexValueRefine(ref _qReflexItemKind, text, nameof(QReflexItemKind), nameof(QReflexItemTag));
+                break;
+            case CReflexField.CReflexFieldText:
+                QReflexValueRefine(ref _qReflexItemText, text, nameof(QReflexItemText));
+                break;
+            case CReflexField.CReflexFieldRomanization:
+                QReflexValueRefine(ref _qReflexItemRomanization, text, nameof(QReflexItemRomanization));
+                break;
+            case CReflexField.CReflexFieldMeaning:
+                QReflexValueRefine(ref _qReflexItemMeaning, text, nameof(QReflexItemMeaning));
+                break;
+            case CReflexField.CReflexFieldNote:
+                QReflexValueRefine(ref _qReflexItemNote, text, nameof(QReflexItemNote));
+                break;
+        }
     }
 
     private static string QReflexLabelRefine(string key, string name)
@@ -371,17 +372,18 @@ public sealed class QReflexItem : INotifyPropertyChanged
         fold.Visibility = any ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private bool QReflexValueRefine(ref string field, string? value, string name)
+    private void QReflexValueRefine(ref string field, string value, params string[] names)
     {
-        string text = value ?? string.Empty;
-        if (string.Equals(field, text, StringComparison.Ordinal))
+        if (string.Equals(field, value, StringComparison.Ordinal))
         {
-            return false;
+            return;
         }
 
-        field = text;
-        QReflexChangeRefine(name);
-        return true;
+        field = value;
+        foreach (string name in names)
+        {
+            QReflexChangeRefine(name);
+        }
     }
 
     private void QReflexChangeRefine(string name)

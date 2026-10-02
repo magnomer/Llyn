@@ -219,6 +219,8 @@ internal static partial class TInterface
     internal static LMention TMentionDraftResolve(LMentionDraft draft) =>
         draft.LMentionDraftResolve();
 
+    internal static LEtymologyDraft TEtymologyDraftCreate(string text) => new(text);
+
     internal static LExampleDraft TExampleDraftCreate(
         LStateValue text,
         long id,

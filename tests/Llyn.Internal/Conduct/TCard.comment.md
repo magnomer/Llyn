@@ -17,6 +17,7 @@ A typed list adds its completed tags and situations once each and answers the re
 A picked situation lands once under its stored id, and an erased situation leaves.
 The frame line follows the order, and an unknown value shows the mark.
 A card's fields, sentence rows, glosses, images and situations arrive worded, each field with the hint its sheet names.
+A sentence row arrives cited only when its example cites a stored Source.
 The translation gates are covered by `TCardTranslation`, and the register gates by `TCardRegister`, over the same helpers.
 
 ## `internal static (CDesk TCardDesk, CCard TCardCard) TCardPrepare(LEngine engine)`

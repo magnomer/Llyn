@@ -6,7 +6,7 @@ Four columns, narrow to wide: the onset categories, the rime categories, the ent
 The panel is a rime table read as a question: pick an onset and a rime, see that cell's entries.
 It is the tenor panel's shape with one more catalog, so the toolbars, the reader and the editor read alike.
 
-## `<local:PSeam ...>`
+## `<local:QSeam ...>`
 
 Three seams, one before each column after the first, so every column can be dragged.
 Only the first two widths persist, as the layout store keeps a left and a middle width.
@@ -34,7 +34,7 @@ The size is this panel's alone, and the entry column keeps the catalog size.
 One category row: its key and the count of entries under it, shared by the onset and rime columns.
 Its parts are named, and `PYunjingItem.PYunjingItemRefine` fills them and marks the chosen row.
 
-## `<local:PRail Grid.Row="0" Grid.Column="3" Margin="0,0,0,18">`
+## `<local:QRail Grid.Row="0" Grid.Column="3" Margin="0,0,0,18">`
 
 The command rail over the reader: new, save, export and print, then the view and edit switch.
 One slot sits between save and export, and it holds whichever pair the mode asks for.

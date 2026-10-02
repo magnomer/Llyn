@@ -11,18 +11,21 @@ internal sealed partial class PCard
 
     private readonly PRegisterCaret _pCardRegisterCaret = new();
 
-    private static readonly Func<object, long?> _pCardRegisterKey =
-        row => row is PRegister chip ? chip.PRegisterId : null;
+    private static readonly Func<PRegister, long?> _pCardRegisterKey =
+        static chip => chip.PRegisterId;
 
-    public ObservableCollection<object> PCardRegister { get; } = [];
+    public ObservableCollection<PRegister> PCardRegister { get; } = [];
 
     internal string PCardRegisterText => _pCardRegisterCaret.PRegisterCaretText;
 
+    internal PRegisterCaret PCardRegisterCaret => _pCardRegisterCaret;
+
     internal int PCardRegisterPosition =>
-        PCardRowResolve(PCardRegister, _pCardRegisterKey, PCardRegister.IndexOf(_pCardRegisterCaret));
+        PCardCaretFind(PCardRegister, _pCardRegisterCaret.PRegisterCaretAnchor);
 
     internal void PCardRegisterShow(IReadOnlyList<CRegisterDraft> drafts)
     {
+        List<PRegister> trail = PCardCaretRead(PCardRegister, _pCardRegisterCaret.PRegisterCaretAnchor);
         PCardRowShow(
             PCardRegister,
             drafts,
@@ -30,35 +33,32 @@ internal sealed partial class PCard
             static draft => draft.CRegisterDraftId,
             PCardRegisterCreate,
             static (row, draft) =>
-                row is PRegister chip
-                    ? draft.CRegisterDraftName == chip.PRegisterText ? row : PCardRegisterCreate(draft)
-                    : PCardRegisterCreate(draft));
+                draft.CRegisterDraftName == row.PRegisterText ? row : PCardRegisterCreate(draft));
+        _pCardRegisterCaret.PRegisterCaretAnchor = PCardCaretResolve(PCardRegister, trail);
 
         PCardRegisterUpdate();
     }
 
     internal PRegister? PCardRegisterFind(int step)
     {
-        int index = PCardRegister.IndexOf(_pCardRegisterCaret);
-        int target = index + step;
-        if (index < 0 || target < 0 || target >= PCardRegister.Count)
+        int target = PCardRegisterPosition + (step < 0 ? step : step - 1);
+        if (target < 0 || target >= PCardRegister.Count)
         {
             return null;
         }
 
-        return PCardRegister[target] as PRegister;
+        return PCardRegister[target];
     }
 
     internal bool PCardRegisterMove(int step)
     {
-        int index = PCardRegister.IndexOf(_pCardRegisterCaret);
-        int target = index + step;
-        if (index < 0 || target < 0 || target >= PCardRegister.Count)
+        int target = PCardRegisterPosition + step;
+        if (target < 0 || target > PCardRegister.Count)
         {
             return false;
         }
 
-        PCardRegister.Move(index, target);
+        _pCardRegisterCaret.PRegisterCaretAnchor = target < PCardRegister.Count ? PCardRegister[target] : null;
         return true;
     }
 
@@ -68,14 +68,13 @@ internal sealed partial class PCard
         PCardRegisterUpdate();
     }
 
-    private static object PCardRegisterCreate(CRegisterDraft draft)
+    private static PRegister PCardRegisterCreate(CRegisterDraft draft)
     {
         return new PRegister(draft.CRegisterDraftName, draft.CRegisterDraftId);
     }
 
     private void PCardRegisterStart()
     {
-        PCardRegister.Add(_pCardRegisterCaret);
         PCardRegisterUpdate();
     }
 
@@ -90,8 +89,8 @@ internal sealed partial class PCard
 
     private void PCardRegisterUpdate()
     {
-        _pCardRegisterCaret.PRegisterCaretHint = PCardRegister.Count > 1
+        _pCardRegisterCaret.PRegisterCaretHint = PCardRegister.Count > 0
             ? string.Empty
-            : QLocalizationCatalog.QLocalizationCatalogCurrent[PCardRegisterHint];
+            : QLocalizationCatalog.QLocalizationTextRead(PCardRegisterHint);
     }
 }

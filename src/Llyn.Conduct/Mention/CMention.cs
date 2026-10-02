@@ -45,16 +45,18 @@ public sealed class CMention
         return new CMentionOffer(result.CMentionResultOffset, offered, "Mention.Title");
     }
 
-    public IReadOnlyList<CMentionPiece> CMentionDivide(string text, IReadOnlyList<CMentionMark> mentions)
+    internal static IReadOnlyList<CMentionPiece> CMentionDivide(string text, IReadOnlyList<LMention> mentions)
     {
-        IReadOnlyList<LMentionPiece> pieces =
-            _cMentionAtelier.CAtelierDraftPort.LEngineMentionDivide(text, CMentionRead(mentions));
+        return LMentionPieceRead(LDraftPort.LEngineMentionDivide(text, mentions));
+    }
+
+    internal static IReadOnlyList<CMentionPiece> LMentionPieceRead(IReadOnlyList<LMentionPiece> pieces)
+    {
         List<CMentionPiece> read = new(pieces.Count);
         foreach (LMentionPiece piece in pieces)
         {
             read.Add(new CMentionPiece(
                 piece.LMentionPieceOffset,
-                piece.LMentionPieceEnd,
                 piece.LMentionPieceText,
                 piece.LMentionPieceStored?.LMentionLinked));
         }
@@ -132,9 +134,13 @@ public sealed class CMention
         }
     }
 
-    public int CMentionUnitRead(string text, int offset)
+    public int? CMentionUnitRead(string text, int start, int offset)
     {
-        return _cMentionAtelier.CAtelierDraftPort.LEngineUnitRead(text, offset);
+        LDraftPort drafts = _cMentionAtelier.CAtelierDraftPort;
+        int inside = offset - start;
+        return inside >= 0 && inside < drafts.LEngineOffsetRead(text, text.Length)
+            ? drafts.LEngineUnitRead(text, inside)
+            : null;
     }
 
     public int CMentionOffsetRead(string text, int unit)
@@ -147,27 +153,6 @@ public sealed class CMention
         return _cMentionAtelier.CAtelierDraftPort.LEngineSpanCheck(text, start, length);
     }
 
-    internal static IReadOnlyList<CMentionMark> CMentionMarkRead(IReadOnlyList<LMentionDraft>? drafts)
-    {
-        if (drafts is null)
-        {
-            return [];
-        }
-
-        List<CMentionMark> read = new(drafts.Count);
-        foreach (LMentionDraft draft in drafts)
-        {
-            read.Add(new CMentionMark(
-                draft.LMentionDraftId,
-                draft.LMentionDraftOffset,
-                draft.LMentionDraftLength,
-                draft.LMentionDraftEntry,
-                draft.LMentionDraftSense));
-        }
-
-        return read;
-    }
-
     internal static IReadOnlyList<CMentionMark> CMentionRead(IReadOnlyList<LMention> mentions)
     {
         ArgumentNullException.ThrowIfNull(mentions);
@@ -175,12 +160,7 @@ public sealed class CMention
         List<CMentionMark> read = new(mentions.Count);
         foreach (LMention mention in mentions)
         {
-            read.Add(new CMentionMark(
-                mention.LMentionId,
-                mention.LMentionOffset,
-                mention.LMentionLength,
-                mention.LMentionEntryId,
-                mention.LMentionSenseId));
+            read.Add(new CMentionMark(mention.LMentionEntryId, mention.LMentionSenseId));
         }
 
         return read;
@@ -194,24 +174,6 @@ public sealed class CMention
             result.LMentionResultOffset,
             result.LMentionResultStored is LMention stored ? CMentionRead([stored])[0] : null,
             CFolio.CFolioTargetRead(result.LMentionResultEntry));
-    }
-
-    internal static IReadOnlyList<LMention> CMentionRead(IReadOnlyList<CMentionMark> mentions)
-    {
-        ArgumentNullException.ThrowIfNull(mentions);
-
-        List<LMention> read = new(mentions.Count);
-        foreach (CMentionMark mention in mentions)
-        {
-            read.Add(new LMention(
-                mention.CMentionMarkId,
-                mention.CMentionMarkOffset,
-                mention.CMentionMarkLength,
-                mention.CMentionMarkEntry,
-                mention.CMentionMarkSense));
-        }
-
-        return read;
     }
 
     internal static IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> LMentionLineRead(

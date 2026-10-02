@@ -3,9 +3,9 @@
 ## `UserControl`
 
 The input panel as markup alone.
-The Deportment class of the same name loads it and drives the editor inside.
+The window places it, and the Deportment driver `QInput` drives the editor inside.
 
-## `<local:PEditor x:Name="PEditor" Padding="34,20,34,38" />`
+## `<veneer:PEditor x:Name="PEditor" Padding="34,20,34,38" />`
 
 The lexical editing structure is the shared editor.
 So this panel is that editor standing on no entry, a form that creates one.

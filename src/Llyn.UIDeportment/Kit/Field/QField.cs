@@ -73,7 +73,7 @@ internal static class QField
             () =>
             {
                 if (host.ItemContainerGenerator.ContainerFromItem(item) is DependencyObject container
-                    && PEditor.PEditorCaretFind(container) is TextBox box)
+                    && QFieldCaretFind(container) is TextBox box)
                 {
                     box.Focus();
                     box.CaretIndex = box.Text.Length;
@@ -95,13 +95,6 @@ internal static class QField
     internal static void QFieldTextShow(TextBox box, string text)
     {
         box.Text = text;
-    }
-
-    internal static string QFieldPathRead(TextBox box)
-    {
-        ArgumentNullException.ThrowIfNull(box);
-
-        return box.TemplatedParent is ComboBox choice ? choice.Name : box.Name;
     }
 
     internal static void QFieldPlaceholderShow(TextBlock block, bool placeholder)
@@ -394,6 +387,60 @@ internal static class QField
             node = node is Visual or System.Windows.Media.Media3D.Visual3D
                 ? VisualTreeHelper.GetParent(node)
                 : LogicalTreeHelper.GetParent(node);
+        }
+
+        return null;
+    }
+
+    internal static void QFieldCaretApply(TextBox box, object row, int caret)
+    {
+        ItemsControl? host = ItemsControl.ItemsControlFromItemContainer(box) ?? QFieldHostFind(box);
+        box.Dispatcher.BeginInvoke(
+            DispatcherPriority.Input,
+            () =>
+            {
+                TextBox? entry = host is null ? box : QFieldCaretFind(host) ?? box;
+                if (entry.DataContext != row)
+                {
+                    return;
+                }
+
+                entry.Focus();
+                entry.CaretIndex = caret;
+            });
+    }
+
+    internal static ItemsControl? QFieldHostFind(DependencyObject start)
+    {
+        DependencyObject? step = start;
+        while (step is not null)
+        {
+            if (step is ItemsControl host)
+            {
+                return host;
+            }
+
+            step = VisualTreeHelper.GetParent(step);
+        }
+
+        return null;
+    }
+
+    internal static TextBox? QFieldCaretFind(DependencyObject root)
+    {
+        for (int index = 0; index < VisualTreeHelper.GetChildrenCount(root); index++)
+        {
+            DependencyObject child = VisualTreeHelper.GetChild(root, index);
+            if (child is TextBox box)
+            {
+                return box;
+            }
+
+            TextBox? found = QFieldCaretFind(child);
+            if (found is not null)
+            {
+                return found;
+            }
         }
 
         return null;

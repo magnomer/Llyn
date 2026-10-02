@@ -17,7 +17,7 @@ internal sealed class QDuplex
         _qRightWing = new QWing(QContract.QContractFind<UserControl>(surface, "PRightWing"));
     }
 
-    internal void QDuplexIntroduce(PWindow host)
+    internal void QDuplexIntroduce(QWindow host)
     {
         _qLeftWing.QWingIntroduce(host, true);
         _qRightWing.QWingIntroduce(host, false);

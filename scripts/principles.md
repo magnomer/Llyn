@@ -57,6 +57,7 @@ Every allowed difference in results is written in the script header or the test 
 
 `TAuditRatchet` and `TAuditConvention` check the test settings themselves, so they have no counterpart.
 `auditnewnames.ps1` checks names before any code exists, so it has no counterpart.
+`TAssay*` tests check the walkers on hand-written sources, not the tree, so they have no counterpart.
 
 ## Changing a rule
 

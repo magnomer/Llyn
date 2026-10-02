@@ -16,9 +16,13 @@ internal sealed class QPhonology
 
     private readonly UserControl _qPhonologySurface;
 
+    private readonly QEditor _qPhonologyEditor;
+
+    private readonly QDisplay _qPhonologyDisplay;
+
     private readonly QArticulation _qArticulation;
 
-    private PWindow _qPhonologyHost = null!;
+    private QWindow _qPhonologyHost = null!;
 
     private CPhonology _cPhonology = null!;
 
@@ -27,6 +31,8 @@ internal sealed class QPhonology
         ArgumentNullException.ThrowIfNull(surface);
 
         _qPhonologySurface = surface;
+        _qPhonologyEditor = new QEditor(QContract.QContractFind<FrameworkElement>(surface, "PEditor"));
+        _qPhonologyDisplay = new QDisplay(QContract.QContractFind<FrameworkElement>(surface, "PDisplay"));
         _qArticulation = new QArticulation(QPhonologyArticulation);
 
         surface.CommandBindings.Add(
@@ -138,22 +144,18 @@ internal sealed class QPhonology
 
     private TextBlock QInventoryEmpty => QContract.QContractFind<TextBlock>(_qPhonologySurface, "PInventoryEmpty");
 
-    private PDisplay QPhonologyDisplay => QContract.QContractFind<PDisplay>(_qPhonologySurface, "PDisplay");
-
-    private PEditor QPhonologyEditor => QContract.QContractFind<PEditor>(_qPhonologySurface, "PEditor");
-
     private Button QPhonologyBin => QContract.QContractFind<Button>(_qPhonologySurface, "PPhonologyBin");
 
     private QIconImage QPhonologyBinIcon =>
         QContract.QContractFind<QIconImage>(_qPhonologySurface, "PPhonologyBinIcon");
 
-    internal void QPhonologyIntroduce(PWindow host)
+    internal void QPhonologyIntroduce(QWindow host)
     {
         _qPhonologyHost = host;
         _cPhonology = CPhonology.CPhonologyCreate(
-            host.PWindowAtelier,
+            host.QWindowAtelier,
             QPhonologyShownCheck,
-            host.PWindowEnvoy,
+            host.QWindowEnvoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         CPanel panel = _cPhonology.CPhonologyPanel;
         QLectern lectern = new(_cPhonology.CPhonologyEditor.CEditorDisplay, panel);
@@ -166,13 +168,16 @@ internal sealed class QPhonology
 
         QInventory.ItemsSource = _qInventoryList;
 
-        QPhonologyDisplay.PDisplayAttach(host, lectern);
+        _qPhonologyDisplay.QDisplayIntroduce(host, lectern);
 
-        QPhonologyEditor.PEditorIntroduce(host, new QEditor(_cPhonology.CPhonologyEditor));
+        _qPhonologyEditor.QEditorIntroduce(host, _cPhonology.CPhonologyEditor);
 
-        QPhonologyEditor.PEditorChronicleChanged += QPhonologyChronicleRefine;
+        _qPhonologyEditor.QEditorChronicleChanged += QPhonologyChronicleRefine;
 
-        _qArticulation.QArticulationIntroduce(QProbe, QPhonologyEditor.PPronunciationField);
+        _qArticulation.QArticulationIntroduce(
+            QProbe,
+            QContract.QContractFind<TextBox>(
+                QContract.QContractFind<FrameworkElement>(_qPhonologySurface, "PEditor"), "PPronunciationField"));
     }
 
     private void QPhonologyStoreRefine()
@@ -207,7 +212,7 @@ internal sealed class QPhonology
 
     internal void QPhonologyExitRefine()
     {
-        QPhonologyEditor.PEditorPlayerRefine();
+        _qPhonologyEditor.QEditorPlayerRefine();
     }
 
     private void QInventoryRefine()
@@ -228,8 +233,8 @@ internal sealed class QPhonology
     private void QPhonologyModeRefine()
     {
         CPanel panel = _cPhonology.CPhonologyPanel;
-        QPhonologyEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
-        QPhonologyDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
+        _qPhonologyEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(panel.CPanelEditing));
+        _qPhonologyDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(panel.CPanelViewerChecked));
         QPhonologyViewer.IsChecked = panel.CPanelViewerChecked;
         QPhonologyScribe.IsChecked = panel.CPanelScribeChecked;
         QPhonologyVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
@@ -325,22 +330,22 @@ internal sealed class QPhonology
 
     private void QPhonologyRetreatObserve(object sender, RoutedEventArgs e)
     {
-        _qPhonologyHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
+        _qPhonologyHost.QWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QPhonologyAdvanceObserve(object sender, RoutedEventArgs e)
     {
-        _qPhonologyHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
+        _qPhonologyHost.QWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void QPhonologyUndoObserve(object sender, RoutedEventArgs e)
     {
-        QPhonologyEditor.QChronicleUndoObserve();
+        _qPhonologyEditor.QChronicleUndoObserve();
     }
 
     private void QPhonologyRedoObserve(object sender, RoutedEventArgs e)
     {
-        QPhonologyEditor.QChronicleRedoObserve();
+        _qPhonologyEditor.QChronicleRedoObserve();
     }
 
     private void QPhonologyChronicleRefine()

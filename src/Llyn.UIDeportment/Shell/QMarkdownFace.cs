@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -12,6 +13,7 @@ namespace Llyn.UIDeportment;
 public static class QMarkdownFace
 {
     private static readonly FontFamily QMarkdownMono = new("Consolas");
+    private static readonly ConditionalWeakTable<Panel, CAtelier> QMarkdownAtelier = new();
 
     public static void QMarkdownRefine(Panel target, IReadOnlyList<CMarkdownBlock> blocks, CAtelier atelier)
     {
@@ -19,11 +21,14 @@ public static class QMarkdownFace
         ArgumentNullException.ThrowIfNull(blocks);
         ArgumentNullException.ThrowIfNull(atelier);
 
+        QMarkdownAtelier.AddOrUpdate(target, atelier);
+        target.RemoveHandler(Hyperlink.RequestNavigateEvent, new RequestNavigateEventHandler(QMarkdownLinkObserve));
+        target.AddHandler(Hyperlink.RequestNavigateEvent, new RequestNavigateEventHandler(QMarkdownLinkObserve));
         target.Children.Clear();
         int place = 0;
         foreach (CMarkdownBlock block in blocks)
         {
-            FrameworkElement element = QMarkdownBlockBuild(block, atelier);
+            FrameworkElement element = QMarkdownBlockBuild(block);
             element.Margin = new Thickness(0, place == 0 ? 0 : QMarkdownGapRead(block), 0, 0);
             target.Children.Add(element);
             place++;
@@ -40,21 +45,21 @@ public static class QMarkdownFace
         target.Children.Add(plain);
     }
 
-    private static FrameworkElement QMarkdownBlockBuild(CMarkdownBlock block, CAtelier atelier)
+    private static FrameworkElement QMarkdownBlockBuild(CMarkdownBlock block)
     {
         if (block.CMarkdownBlockHeaded)
         {
-            return QMarkdownHeadingBuild(block, atelier);
+            return QMarkdownHeadingBuild(block);
         }
 
         if (block.CMarkdownBlockListed)
         {
-            return QMarkdownItemBuild(block, atelier);
+            return QMarkdownItemBuild(block);
         }
 
         if (block.CMarkdownBlockQuoted)
         {
-            return QMarkdownQuoteBuild(block, atelier);
+            return QMarkdownQuoteBuild(block);
         }
 
         if (block.CMarkdownBlockFenced)
@@ -67,7 +72,7 @@ public static class QMarkdownFace
             return QMarkdownRuleBuild();
         }
 
-        return QMarkdownTextBuild(block.CMarkdownBlockSpan, 14, atelier);
+        return QMarkdownTextBuild(block.CMarkdownBlockSpan, 14);
     }
 
     private static double QMarkdownGapRead(CMarkdownBlock block)
@@ -96,18 +101,18 @@ public static class QMarkdownFace
     }
 
     private static TextBlock QMarkdownTextBuild(
-        IReadOnlyList<CMarkdownSpan> spans, double size, CAtelier atelier)
+        IReadOnlyList<CMarkdownSpan> spans, double size)
     {
         TextBlock text = QMarkdownPlainBuild(size);
         foreach (CMarkdownSpan span in spans)
         {
-            text.Inlines.Add(QMarkdownSpanBuild(span, atelier));
+            text.Inlines.Add(QMarkdownSpanBuild(span));
         }
 
         return text;
     }
 
-    private static Inline QMarkdownSpanBuild(CMarkdownSpan span, CAtelier atelier)
+    private static Inline QMarkdownSpanBuild(CMarkdownSpan span)
     {
         Run run = new Run(span.CMarkdownSpanText);
 
@@ -138,24 +143,26 @@ public static class QMarkdownFace
             NavigateUri = target,
             Foreground = QMarkdownBrushRead("Theme.Accent"),
         };
-        link.RequestNavigate += (_, e) => QMarkdownLinkObserve(e, atelier);
         return link;
     }
 
-    private static void QMarkdownLinkObserve(RequestNavigateEventArgs e, CAtelier atelier)
+    private static void QMarkdownLinkObserve(object sender, RequestNavigateEventArgs e)
     {
-        atelier.CAtelierLocationOpen(e.Uri.AbsoluteUri);
-        e.Handled = true;
+        if (sender is Panel target && QMarkdownAtelier.TryGetValue(target, out CAtelier? atelier))
+        {
+            atelier.CAtelierLocationOpen(e.Uri.AbsoluteUri);
+            e.Handled = true;
+        }
     }
 
-    private static TextBlock QMarkdownHeadingBuild(CMarkdownBlock block, CAtelier atelier)
+    private static TextBlock QMarkdownHeadingBuild(CMarkdownBlock block)
     {
-        TextBlock text = QMarkdownTextBuild(block.CMarkdownBlockSpan, 15, atelier);
+        TextBlock text = QMarkdownTextBuild(block.CMarkdownBlockSpan, 15);
         text.FontWeight = FontWeights.SemiBold;
         return text;
     }
 
-    private static Grid QMarkdownItemBuild(CMarkdownBlock block, CAtelier atelier)
+    private static Grid QMarkdownItemBuild(CMarkdownBlock block)
     {
         Grid row = new Grid { Margin = new Thickness(QMarkdownIndentRead(block.CMarkdownBlockLevel), 0, 0, 0) };
         row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(22) });
@@ -168,7 +175,7 @@ public static class QMarkdownFace
             LineHeight = 21,
             Foreground = QMarkdownBrushRead("Theme.Muted"),
         };
-        TextBlock body = QMarkdownTextBuild(block.CMarkdownBlockSpan, 14, atelier);
+        TextBlock body = QMarkdownTextBuild(block.CMarkdownBlockSpan, 14);
         Grid.SetColumn(body, 1);
 
         row.Children.Add(lead);
@@ -176,9 +183,9 @@ public static class QMarkdownFace
         return row;
     }
 
-    private static Border QMarkdownQuoteBuild(CMarkdownBlock block, CAtelier atelier)
+    private static Border QMarkdownQuoteBuild(CMarkdownBlock block)
     {
-        TextBlock text = QMarkdownTextBuild(block.CMarkdownBlockSpan, 14, atelier);
+        TextBlock text = QMarkdownTextBuild(block.CMarkdownBlockSpan, 14);
         text.Foreground = QMarkdownBrushRead("Theme.Muted");
 
         return new Border

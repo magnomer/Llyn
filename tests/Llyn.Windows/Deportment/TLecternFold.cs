@@ -16,7 +16,7 @@ public sealed class TLecternFold
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         QLectern lectern = TInterfaceDeportment.TLecternCreate(editor);
         bool? shown = null;
         Exception? failure = null;

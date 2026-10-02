@@ -11,8 +11,6 @@ public sealed class QPosture : IDisposable
 {
     private readonly LCapsule _qPostureCapsule = new();
 
-    private readonly Func<string> _qPostureRoot;
-
     private readonly object _qPostureGate = new();
 
     private string? _qPostureFolder;
@@ -25,18 +23,28 @@ public sealed class QPosture : IDisposable
 
     public event Action? QPostureLinkedChanged;
 
-    internal QPosture(Func<string> root)
+    public void QPostureRootRefine(string root)
     {
         ArgumentNullException.ThrowIfNull(root);
 
-        _qPostureRoot = root;
+        lock (_qPostureGate)
+        {
+            if (string.Equals(root, _qPostureFolder, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            QPostureWindowCancel();
+            _qPostureFolder = root;
+            _qPostureContent = _qPostureCapsule.LCapsuleRead(root);
+        }
     }
 
     public LCapsuleContent QPostureRead()
     {
         lock (_qPostureGate)
         {
-            return QPostureCurrentRead();
+            return _qPostureContent;
         }
     }
 
@@ -59,7 +67,6 @@ public sealed class QPosture : IDisposable
 
         lock (_qPostureGate)
         {
-            QPostureCurrentRead();
             QPostureWindowCancel();
             if (minimized)
             {
@@ -82,7 +89,7 @@ public sealed class QPosture : IDisposable
     {
         lock (_qPostureGate)
         {
-            LCapsuleContent content = QPostureCurrentRead();
+            LCapsuleContent content = _qPostureContent;
             if (content.LCapsuleContentLinked == linked)
             {
                 return false;
@@ -101,7 +108,7 @@ public sealed class QPosture : IDisposable
 
         lock (_qPostureGate)
         {
-            LCapsuleContent content = QPostureCurrentRead();
+            LCapsuleContent content = _qPostureContent;
             List<LCapsuleColumn> given = [.. layout];
             List<LCapsuleColumn> next = [];
             bool moved = false;
@@ -139,7 +146,7 @@ public sealed class QPosture : IDisposable
     {
         lock (_qPostureGate)
         {
-            LCapsuleContent content = QPostureCurrentRead();
+            LCapsuleContent content = _qPostureContent;
             List<LCapsuleColumn> list = [];
             foreach (LCapsuleColumn column in content.LCapsuleContentColumn ?? [])
             {
@@ -157,20 +164,6 @@ public sealed class QPosture : IDisposable
         {
             QPostureWindowCancel();
         }
-    }
-
-    private LCapsuleContent QPostureCurrentRead()
-    {
-        string root = _qPostureRoot();
-        if (string.Equals(root, _qPostureFolder, StringComparison.Ordinal))
-        {
-            return _qPostureContent;
-        }
-
-        QPostureWindowCancel();
-        _qPostureFolder = root;
-        _qPostureContent = string.IsNullOrWhiteSpace(root) ? new() : _qPostureCapsule.LCapsuleRead(root);
-        return _qPostureContent;
     }
 
     private async Task QPostureWindowRun(CancellationTokenSource pending, LCapsuleWindow window, int delay)
@@ -218,11 +211,6 @@ public sealed class QPosture : IDisposable
         }
 
         _qPostureContent = content;
-        if (string.IsNullOrWhiteSpace(_qPostureFolder))
-        {
-            return;
-        }
-
         try
         {
             _qPostureCapsule.LCapsuleSave(_qPostureFolder, content);

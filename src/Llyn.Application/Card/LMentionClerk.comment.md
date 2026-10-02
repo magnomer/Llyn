@@ -21,9 +21,23 @@ Reads the four ports out of `rig` and keeps the cache that says whether a langua
 Reads the stored Example and asks the text form below with its language and its Mentions.
 An id naming no Example is refused.
 
+## `public LMentionResult LMentionClerkFind(LEntryDraft shown, long sentence, int offset)`
+
+The find over a word clicked in one example line of the reading view.
+The line names only its sentence row, so the text, language and Mentions are read here from `shown`.
+The row's Example text is the text the line shows whenever the line shows words.
+An Example that names no language is read in the language of the `shown` entry.
+A row that is gone or quotes no Example answers the bare offset with no word.
+
+## `public LMentionResult LMentionEtymologyFind(LEntryDraft shown, int offset)`
+
+The find over a word clicked in the etymology prose of the reading view.
+The prose is the `shown` entry's etymology text, read in that entry's language.
+The prose draws no Mentions, so the find reads it as holding none.
+
 ## `public LMentionResult LMentionClerkFind(string text, string language, int offset, IReadOnlyList<LMention> mentions)`
 
-The answer for `offset` in `text`, which is what a draft-backed form calls with the text it shows.
+The answer for `offset` in `text`, which the stored, row and etymology finds all ask.
 A Mention in `mentions` covering the offset wins.
 The form navigates on it, or does nothing for a word standing for nothing.
 Otherwise the word is resolved.

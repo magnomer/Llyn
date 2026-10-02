@@ -51,6 +51,12 @@ Sizes the measure twin by the text, or by the placeholder while the row is blank
 
 Builds the row for one draft transcription, its scheme key included.
 
+## `internal static QTranscriptionItem QTranscriptionStateRefine(QTranscriptionItem row, CTranscriptionDraft spelled)`
+
+Brings a shown row up to the draft row with the same id.
+A changed scheme is written onto the row, which relabels itself.
+A row with a text request waiting keeps its text, since the draft is about to become what it holds.
+
 ## `internal static string QTranscriptionLabelRefine(string key, string scheme)`
 
 A scheme's label, looked up under the key Conduct chose.

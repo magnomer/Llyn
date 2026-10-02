@@ -17,6 +17,10 @@ Relays the typed-list parse, so a test reads the rule where it is owned.
 
 Relays the card clerk's reading of a typed place, so its clamp is tested over a held draft.
 
+## `internal static int? TCardShiftRead(LEntryDraft content, long id, int place)`
+
+Relays the card clerk's judgement of a dragged place, so its unchanged and stray places are tested.
+
 ## `internal static LRig TRigClerkCreate(LEntryVault entries)`
 
 A fake rig over `entries` with in-memory workspace, revision, tombstone, pronunciation, transcription and reflex stores.

@@ -8,7 +8,7 @@ internal static partial class TAuditTruthWalker
 {
     private static HashSet<ISymbol> TAuditRelayNames = new(SymbolEqualityComparer.Default);
 
-    private static HashSet<ISymbol> TAuditReaderNames = new(SymbolEqualityComparer.Default);
+    internal static HashSet<ISymbol> TAuditReaderNames = new(SymbolEqualityComparer.Default);
 
     private static Dictionary<ISymbol, HashSet<int>> TAuditHotNames = new(SymbolEqualityComparer.Default);
 
@@ -30,11 +30,17 @@ internal static partial class TAuditTruthWalker
             .Where(pair => pair.Item1 is not null)
             .Select(pair => (pair.Item1!, pair.member))
             .ToList();
-        List<AssignmentExpressionSyntax> wiring = type
-            .SelectMany(part => part.DescendantNodes().OfType<AssignmentExpressionSyntax>())
+        List<SyntaxNode> roots = TAuditBinder.TAuditTrees.Select(tree => tree.GetRoot()).ToList();
+        List<AssignmentExpressionSyntax> wiring = roots
+            .SelectMany(root => root.DescendantNodes().OfType<AssignmentExpressionSyntax>())
             .Where(assignment => assignment.IsKind(SyntaxKind.SimpleAssignmentExpression)
                                  || assignment.IsKind(SyntaxKind.AddAssignmentExpression))
             .ToList();
+        List<VariableDeclaratorSyntax> locals = roots
+            .SelectMany(root => root.DescendantNodes().OfType<VariableDeclaratorSyntax>())
+            .Where(declarator => declarator.Initializer is not null)
+            .ToList();
+        Dictionary<ISymbol, List<ExpressionSyntax>> seams = TAuditSeamRead(roots);
         bool grown = true;
         while (grown)
         {
@@ -65,6 +71,17 @@ internal static partial class TAuditTruthWalker
                 }
             }
 
+            foreach (VariableDeclaratorSyntax local in locals)
+            {
+                if (TAuditBinder.TAuditSymbolRead(local) is ILocalSymbol { Type.TypeKind: TypeKind.Delegate } held
+                    && !TAuditRelayNames.Contains(held)
+                    && TAuditSeamCheck(local.Initializer!.Value, seams, new(SymbolEqualityComparer.Default)))
+                {
+                    TAuditRelayNames.Add(held);
+                    grown = true;
+                }
+            }
+
             foreach (AssignmentExpressionSyntax assignment in wiring)
             {
                 if (TAuditBinder.TAuditSymbolRead(assignment.Left) is { } held
@@ -73,11 +90,13 @@ internal static partial class TAuditTruthWalker
                         IFieldSymbol field => field.Type,
                         IEventSymbol happening => happening.Type,
                         IPropertySymbol property => property.Type,
+                        ILocalSymbol local => local.Type,
                         _ => null
                     } is { TypeKind: TypeKind.Delegate }
-                    && TAuditBinder.TAuditShellCheck(held.ContainingType)
+                    && (TAuditBinder.TAuditShellCheck(held.ContainingType)
+                        || held is IEventSymbol { ContainingType.TypeKind: TypeKind.Interface })
                     && !TAuditRelayNames.Contains(held)
-                    && TAuditDelegateCheck(assignment.Right))
+                    && TAuditSeamCheck(assignment.Right, seams, new(SymbolEqualityComparer.Default)))
                 {
                     TAuditRelayNames.Add(held);
                     grown = true;
@@ -86,13 +105,60 @@ internal static partial class TAuditTruthWalker
         }
     }
 
+    private static Dictionary<ISymbol, List<ExpressionSyntax>> TAuditSeamRead(IReadOnlyList<SyntaxNode> roots)
+    {
+        Dictionary<ISymbol, List<ExpressionSyntax>> seams = new(SymbolEqualityComparer.Default);
+        foreach (ArgumentSyntax argument in roots.SelectMany(root => root.DescendantNodes().OfType<ArgumentSyntax>()))
+        {
+            if (TAuditParameterRead(argument) is not { Type.TypeKind: TypeKind.Delegate } parameter)
+            {
+                continue;
+            }
+
+            if (!seams.TryGetValue(parameter, out List<ExpressionSyntax>? passed))
+            {
+                passed = [];
+                seams[parameter] = passed;
+            }
+
+            passed.Add(argument.Expression);
+        }
+
+        return seams;
+    }
+
+    private static bool TAuditSeamCheck(
+        ExpressionSyntax value, IReadOnlyDictionary<ISymbol, List<ExpressionSyntax>> seams, HashSet<ISymbol> seen)
+    {
+        return TAuditDelegateCheck(value)
+               || (TAuditBinder.TAuditSymbolRead(value) is IParameterSymbol parameter
+                   && seen.Add(parameter)
+                   && seams.TryGetValue(parameter, out List<ExpressionSyntax>? passed)
+                   && passed.Any(argument => TAuditSeamCheck(argument, seams, seen)));
+    }
+
+    private static IParameterSymbol? TAuditParameterRead(ArgumentSyntax argument)
+    {
+        if (argument.Parent is not BaseArgumentListSyntax { Parent: { } call } list
+            || call is not (ExpressionSyntax or ConstructorInitializerSyntax or PrimaryConstructorBaseTypeSyntax)
+            || TAuditBinder.TAuditSymbolRead(call) is not IMethodSymbol callee)
+        {
+            return null;
+        }
+
+        return argument.NameColon is { Name.Identifier.ValueText: var name }
+            ? callee.Parameters.FirstOrDefault(parameter => parameter.Name == name)
+            : callee.Parameters.ElementAtOrDefault(list.Arguments.IndexOf(argument));
+    }
+
     private static bool TAuditDelegateCheck(ExpressionSyntax value)
     {
         return TAuditRequestCheck(value)
                || value.DescendantNodesAndSelf().OfType<IdentifierNameSyntax>().Any(name =>
                    name.Parent is not InvocationExpressionSyntax
-                   && TAuditBinder.TAuditSymbolRead(name) is IMethodSymbol method
-                   && (TAuditRelayNames.Contains(method) || TAuditBinder.TAuditLogicCheck(method)));
+                   && TAuditBinder.TAuditSymbolRead(name) is { } symbol
+                   && (TAuditRelayNames.Contains(symbol)
+                       || (symbol is IMethodSymbol method && TAuditBinder.TAuditLogicCheck(method))));
     }
 
     private static bool TAuditHotRead(ISymbol symbol, SyntaxNode method, ParameterListSyntax list)
@@ -135,7 +201,7 @@ internal static partial class TAuditTruthWalker
 
     private static bool TAuditReadCheck(SyntaxNode member)
     {
-        return member.DescendantNodes().Any(node => node switch
+        return member.DescendantNodes(node => !TAuditNameofCheck(node)).Any(node => node switch
         {
             MemberAccessExpressionSyntax or MemberBindingExpressionSyntax
                 => TAuditBinder.TAuditLogicCheck(TAuditBinder.TAuditSymbolRead(node)),
@@ -174,6 +240,17 @@ internal static partial class TAuditTruthWalker
                     && TAuditNameCheck(property, symbols))
                 {
                     symbols.Add(alias);
+                    grown = true;
+                }
+            }
+
+            foreach (ArgumentSyntax argument in TAuditUseRead(symbols.ToList())
+                         .Select(identifier => identifier.Parent)
+                         .OfType<ArgumentSyntax>()
+                         .Where(argument => !argument.RefKindKeyword.IsKind(SyntaxKind.None)))
+            {
+                if (TAuditParameterRead(argument) is { } parameter && symbols.Add(parameter))
+                {
                     grown = true;
                 }
             }

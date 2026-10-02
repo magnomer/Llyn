@@ -13,9 +13,9 @@ internal sealed class QEnvoy : CEnvoy
 {
     private readonly Window _qEnvoySurface;
 
-    private readonly PWindow _qEnvoyHost;
+    private readonly QWindow _qEnvoyHost;
 
-    internal QEnvoy(Window surface, PWindow host)
+    internal QEnvoy(Window surface, QWindow host)
     {
         ArgumentNullException.ThrowIfNull(surface);
         ArgumentNullException.ThrowIfNull(host);

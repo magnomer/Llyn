@@ -19,10 +19,17 @@ The flag key is kept, so a later flag lookup needs no language.
 The variety's localized name, blank while a flag stands for it.
 Blank is what collapses the label, so a row never shows both.
 
+## `internal event Action<QAccentItem, string>? QAccentItemTyped`
+
+The edit channel: the reading field's write, with the text typed.
+Writing `QAccentItemText` raises it and changes nothing on the row.
+The panel hands it to the gate and writes the answer back through `QAccentTypeRefine`.
+A reading-view row has no listener, so nothing happens there.
+
 ## `public ImageSource? QAccentItemFlag`
 
 The variety's flag, or null while none is known.
-Setting it also announces the label, since the label yields to it.
+Looking it up again also announces the label, since the label yields to it.
 
 ## `public bool QAccentItemRespelled { get; }`
 
@@ -40,13 +47,14 @@ The bracket drawn after the text, fixed for the same reason.
 
 ## `public string QAccentItemText`
 
-The reading as typed or as the draft holds it, in the form the switch picks.
-It announces only a real change, so a render writing the same text stays silent.
+The reading the row holds, in the form the switch picks.
+Writing it only raises `QAccentItemTyped`, and the row changes when the gate's answer comes back.
 
 ## `public string QAccentItemAudio`
 
 The workspace file the row plays, blank while it has none.
 Blank is what collapses the play button.
+Only the draft's accent writes it, through `QAccentStateRefine`.
 
 ## `public bool QAccentItemPlayable`
 
@@ -79,3 +87,17 @@ The store may not hold it yet, and null then says so.
 ## `internal void QAccentFlagRefine(bool flagged)`
 
 Looks the flag up again under the kept key after the store has been filled.
+
+## `internal void QAccentStateRefine(CAccent spoken)`
+
+Brings the row's text and audio up to the ready accent and announces only a real change.
+It never raises `QAccentItemTyped`, so a draft render is never taken for an edit.
+
+## `internal void QAccentTypeRefine(CAccentTyped typed)`
+
+Writes the text the gate answered into the row and announces it.
+
+## `private void QAccentValueRefine<QAccentValue>(ref QAccentValue field, QAccentValue value, params string[] names)`
+
+Stores a changed value and announces each name, and stays silent when the value is unchanged.
+Text compares ordinally, and a flag image by reference, since WPF seals image equality to reference.

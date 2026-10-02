@@ -13,7 +13,7 @@ The window is the veneer's `PSCustoms` page, pulled fresh by contract ID and hel
 Maps each named mode row of the dropdown to the gate's mode.
 The surface is handed no mode value, so the pick is read back by the row's contract ID.
 
-## `private QSCustoms(PWindow host, CSCustoms customs)`
+## `private QSCustoms(QWindow host, CSCustoms customs)`
 
 Pulls the window over the host, lists the gate's entries and subscribes Accept and Cancel.
 Each row carries its entry's ready target ids, so the window finds nothing itself.
@@ -23,12 +23,12 @@ Accept starts lit only when the gate finds every row ready.
 
 Each named part is pulled from the window by its contract ID.
 
-## `internal static bool QSCustomsConsult(PWindow host, CSCustoms customs)`
+## `internal static bool QSCustomsConsult(QWindow host, CSCustoms customs)`
 
 Shows the declaration and answers whether the user accepted it.
 The declared rows stay in the gate, so Conduct reads them back itself.
 
-## `internal static void QSCustomsOmissionConsult(PWindow host, IReadOnlyList<CMarkupOmission> omissions)`
+## `internal static void QSCustomsOmissionConsult(QWindow host, IReadOnlyList<CMarkupOmission> omissions)`
 
 Shows the omissions the import reported on the window's second face.
 Each omission arrives as ready line and text, and Conduct asks only when one exists.

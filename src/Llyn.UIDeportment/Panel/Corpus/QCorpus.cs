@@ -11,19 +11,23 @@ internal sealed partial class QCorpus : QChronicleHost
 {
     private readonly UserControl _qCorpusSurface;
 
+    private readonly QEditor _qCorpusEditor;
+
+    private readonly QDisplay _qCorpusDisplay;
+
     private readonly QDrawer _qDrawer;
 
-    private PWindow _qCorpusHost = null!;
+    private QWindow _qCorpusHost = null!;
 
     private CCorpus _cCorpus = null!;
-
-    private CDesk _qCorpusDesk = null!;
 
     internal QCorpus(UserControl surface)
     {
         ArgumentNullException.ThrowIfNull(surface);
 
         _qCorpusSurface = surface;
+        _qCorpusEditor = new QEditor(QContract.QContractFind<FrameworkElement>(surface, "PEditor"));
+        _qCorpusDisplay = new QDisplay(QContract.QContractFind<FrameworkElement>(surface, "PDisplay"));
         QLook.QLookStyleAttach(surface.Resources);
         QChronicle.QChronicleIntroduce(surface, this);
         _qDrawer = new QDrawer(QCitationDrawer, QCitationSheet, QCitationList, QCitationPressObserve);
@@ -43,6 +47,8 @@ internal sealed partial class QCorpus : QChronicleHost
             PMentionCommand.PMentionCommandSilence, QTranscriptSilenceObserve, QTranscriptSpanRefine));
         QTranscript.CommandBindings.Add(new CommandBinding(
             PMentionCommand.PMentionCommandUnlink, QTranscriptUnlinkObserve, QTranscriptUnlinkRefine));
+        QTranscript.CommandBindings.Add(new CommandBinding(
+            PMentionCommand.PMentionCommandPick, QTranscriptPickObserve));
 
         QChoice.QChoiceDropperAttach(QRankDropper, QRankDropdown, QRank);
         QChoice.QChoiceDropperAttach(QGauzeDropper, QGauzeDropdown, QGauzeDropper);
@@ -152,10 +158,6 @@ internal sealed partial class QCorpus : QChronicleHost
 
     private TextBlock QQuotationEmpty => QContract.QContractFind<TextBlock>(_qCorpusSurface, "PQuotationEmpty");
 
-    private PDisplay QCorpusDisplay => QContract.QContractFind<PDisplay>(_qCorpusSurface, "PDisplay");
-
-    private PEditor QCorpusEditor => QContract.QContractFind<PEditor>(_qCorpusSurface, "PEditor");
-
     private Grid QExcerpt => QContract.QContractFind<Grid>(_qCorpusSurface, "PExcerpt");
 
     private StackPanel QExcerptBody => QContract.QContractFind<StackPanel>(_qCorpusSurface, "PExcerptBody");
@@ -226,16 +228,15 @@ internal sealed partial class QCorpus : QChronicleHost
 
     private QIconImage QCorpusBinIcon => QContract.QContractFind<QIconImage>(_qCorpusSurface, "PCorpusBinIcon");
 
-    internal void QCorpusIntroduce(PWindow host)
+    internal void QCorpusIntroduce(QWindow host)
     {
         _qCorpusHost = host;
         _cCorpus = CCorpus.CCorpusCreate(
-            host.PWindowAtelier,
+            host.QWindowAtelier,
             QCorpusShownCheck,
-            host.PWindowEnvoy,
+            host.QWindowEnvoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         QLectern lectern = new(_cCorpus.CCorpusEditor.CEditorDisplay, _cCorpus.CCorpusQuotation.CQuotationPanel);
-        _qCorpusDesk = _cCorpus.CCorpusDesk;
         QTranscriptDeskIntroduce();
 
         QAnthology.ItemsSource = _qAnthologyList;
@@ -249,10 +250,9 @@ internal sealed partial class QCorpus : QChronicleHost
         QLookItem.QLookItemAttach(QExcerptGloss, PGloss.PGlossRowApply);
         QChoice.QChoiceOrderBuild(QRankList, "Rank", QRankObserve, CAnthology.CAnthologyOrderRead());
 
-        QCorpusDisplay.PDisplayAttach(host, lectern);
-        QCorpusEditor.PEditorIntroduce(host, new QEditor(_cCorpus.CCorpusEditor));
-        QCorpusEditor.PProspectPicked += QTranscriptPickObserve;
-        _cCorpus.CCorpusMentionOffered += QCorpusEditor.PProspectOpenRefine;
+        _qCorpusDisplay.QDisplayIntroduce(host, lectern);
+        _qCorpusEditor.QEditorIntroduce(host, _cCorpus.CCorpusEditor);
+        _cCorpus.CCorpusMentionOffered += _qCorpusEditor.QEditorProspect.QProspectOpenRefine;
 
         CPanel anthology = _cCorpus.CCorpusAnthology.CAnthologyPanel;
         CPanel quotation = _cCorpus.CCorpusQuotation.CQuotationPanel;
@@ -277,8 +277,8 @@ internal sealed partial class QCorpus : QChronicleHost
     {
         QTranscript.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusTranscriptShown);
         QExcerpt.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusExcerptShown);
-        QCorpusDisplay.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusDisplayShown);
-        QCorpusEditor.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusEditorShown);
+        _qCorpusDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(_cCorpus.CCorpusDisplayShown));
+        _qCorpusEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(_cCorpus.CCorpusEditorShown));
         QExcerptBody.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusExcerptHeld);
         QExcerptUnselected.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusExcerptBlank);
         QCorpusViewer.IsChecked = _cCorpus.CCorpusViewerChecked;
@@ -294,7 +294,7 @@ internal sealed partial class QCorpus : QChronicleHost
 
     internal void QCorpusExitRefine()
     {
-        QCorpusEditor.PEditorPlayerRefine();
+        _qCorpusEditor.QEditorPlayerRefine();
         _qDrawer.QDrawerHide();
         QLanguage.IsOpen = false;
         QRankDropdown.IsOpen = false;

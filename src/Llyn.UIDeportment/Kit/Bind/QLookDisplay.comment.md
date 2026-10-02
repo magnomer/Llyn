@@ -13,4 +13,4 @@ A frame, byline, usage detail or contents number with empty text folds away thro
 A picture or video list with no items folds away through `Empty` too.
 The `Base` rows copy the control's padding, background and border onto the template's surface, as template bindings did.
 The contents row reads the `Chosen` cue, which the display's row fill sets for the current section.
-These styles live in view dictionaries, which `PDisplay` and `QRepertoire` each register themselves.
+These styles live in view dictionaries, which `QDisplay` and `QRepertoire` each register themselves.

@@ -28,7 +28,9 @@ internal sealed class QLeafItem
         QLeafItemRegister = card.CLeafRegister.Select(static chip => new QLeafChip(chip)).ToList();
         QLeafItemTag = card.CLeafTag.Select(static chip => new QLeafChip(chip)).ToList();
         QLeafItemTranslation = card.CLeafTranslation.Select(static target => new QLinkChip(target)).ToList();
-        QLeafItemSentence = card.CLeafSentence;
+        QLeafItemSentence = QLeafLine.QLeafLineCreate(card.CLeafSentence);
+        QLeafItemImage = QLeafImage.QLeafImageCreate(card.CLeafImage);
+        QLeafItemVideo = QLeafVideo.QLeafVideoCreate(card.CLeafVideo);
     }
 
     internal string QLeafItemRank => _qLeafItemCard.CLeafPosition.ToString(CultureInfo.CurrentCulture);
@@ -53,9 +55,9 @@ internal sealed class QLeafItem
 
     internal IReadOnlyList<QLinkChip> QLeafItemTranslation { get; }
 
-    internal IReadOnlyList<CLeafLine> QLeafItemSentence { get; }
+    internal IReadOnlyList<QLeafLine> QLeafItemSentence { get; }
 
-    internal IReadOnlyList<CImageDraft> QLeafItemImage => _qLeafItemCard.CLeafImage;
+    internal IReadOnlyList<QLeafImage> QLeafItemImage { get; }
 
-    internal IReadOnlyList<CVideoDraft> QLeafItemVideo => _qLeafItemCard.CLeafVideo;
+    internal IReadOnlyList<QLeafVideo> QLeafItemVideo { get; }
 }

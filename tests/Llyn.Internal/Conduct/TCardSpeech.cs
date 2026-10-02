@@ -51,7 +51,7 @@ public sealed class TCardSpeech
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor empty = TInterfaceConduct.TEditorCreate(engine);
+        CEditor empty = TInterfaceEditor.TEditorCreate(engine);
         CEditor editor = TCardSpeechPrepare(engine);
         editor.CEditorSpeech.CCardSpeechAdd("Verb");
 
@@ -150,7 +150,7 @@ public sealed class TCardSpeech
     private static CEditor TCardSpeechPrepare(LEngine engine)
     {
         engine.TEngineDelaySet(0);
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(null);
         editor.CEditorLanguageSet("English");

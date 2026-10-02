@@ -135,6 +135,8 @@ internal static partial class TAuditTruthWalker
     private static bool TAuditJumpCheck(IfStatementSyntax branch)
     {
         return branch.Else is null && branch.Statement.DescendantNodesAndSelf().Any(node =>
-            node is ReturnStatementSyntax or ThrowStatementSyntax or ContinueStatementSyntax or BreakStatementSyntax);
+            node is ReturnStatementSyntax or ThrowStatementSyntax or BreakStatementSyntax
+                or ContinueStatementSyntax
+            && node.Ancestors().TakeWhile(above => above != branch).All(above => above is BlockSyntax));
     }
 }

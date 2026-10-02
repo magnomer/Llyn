@@ -98,7 +98,7 @@ The line fill sets its cue to `Marked`, or `Faded` for a marked secondary line, 
 One placement across the shared columns: representative, reading, initial, rime, heading, 重紐, 開合, division, tone, 反切.
 The initial and the rime are links into the rime table, the rime heading sitting in the next column.
 The columns share their widths across every block of the box, so the parts line up under each other.
-`PFanqieLine.PFanqieRowRefine` fills its named parts.
+`QFanqieLine.QFanqieLineRefine` fills its named parts.
 
 ## `<Style x:Key="Theme.Fanqie.Head" TargetType="TextBlock">`
 
@@ -139,4 +139,4 @@ It is drawn at the headword size, since it names the whole character rather than
 One block: the series line above, then the character column, the book chip, the lines and the origin chip.
 The columns share their widths across the box, the series line included.
 The series chips stand over the reading column, clearing the star column the lines carry.
-`PFanqieItem.PFanqieItemRefine` fills its named parts and attaches the line fill.
+`QFanqieItem.QFanqieItemRefine` fills its named parts and attaches the line fill.

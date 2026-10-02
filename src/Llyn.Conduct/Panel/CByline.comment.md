@@ -30,8 +30,7 @@ Each name arrives split around the word, so the driver only paints it.
 
 ## `public bool CBylineMove(int? position, long? id, int step)`
 
-Down or Up in a credit field lights the next or former row, wrapping at either end.
-Up from no lit row starts from the first.
+Down or Up in a credit field lights the next or former row through `CLanternMove`.
 It takes the key only while rows are offered.
 
 ## `public void CBylineSelect(long? id, int? position, long? held)`

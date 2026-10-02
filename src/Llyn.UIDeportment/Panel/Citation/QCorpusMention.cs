@@ -17,13 +17,16 @@ internal sealed partial class QCorpus
             return;
         }
 
-        QCorpusEditor.PProspectPlaceRefine(box, PMentionSelection.PMentionSelectionPlace(box));
+        _qCorpusEditor.QEditorProspect.QProspectPlaceRefine(box, PMentionSelection.PMentionSelectionPlace(box));
         _cCorpus.CCorpusMentionOpen(box.SelectedText);
     }
 
-    private void QTranscriptPickObserve(TextBox box, long entryId)
+    private void QTranscriptPickObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        _cCorpus.CCorpusMentionAdd(box.Text, box.SelectionStart, box.SelectionLength, entryId);
+        if (e.Source is TextBox box)
+        {
+            _cCorpus.CCorpusMentionAdd(box.Text, box.SelectionStart, box.SelectionLength, (long)e.Parameter);
+        }
     }
 
     private void QTranscriptMeaningRefine(object sender, ExecutedRoutedEventArgs e)
@@ -32,7 +35,7 @@ internal sealed partial class QCorpus
                 QTranscriptText.Text, QTranscriptText.SelectionStart, QTranscriptText.SelectionLength)
             is CMentionSense sense)
         {
-            _qCorpusHost.PMentionMeaningRefine(
+            _qCorpusHost.QMentionMeaningRefine(
                 QTranscriptText,
                 PMentionSelection.PMentionSelectionPlace(QTranscriptText),
                 sense,
@@ -76,7 +79,7 @@ internal sealed partial class QCorpus
     private void QTranscriptSpanRefine(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = e.Source is TextBox box
-            && _qCorpusHost.PWindowAtelier.CAtelierMention.CMentionSpanCheck(
+            && _qCorpusHost.QWindowAtelier.CAtelierMention.CMentionSpanCheck(
                 box.Text, box.SelectionStart, box.SelectionLength);
     }
 
@@ -97,6 +100,6 @@ internal sealed partial class QCorpus
 
     private void QTranscriptMentionRefine()
     {
-        _qTranscriptChip.PMentionLineRefine(_cCorpus.CCorpusMentionRead());
+        _qTranscriptChip.PMentionLineRefine(QMentionChip.QMentionChipCreate(_cCorpus.CCorpusMentionRead()));
     }
 }

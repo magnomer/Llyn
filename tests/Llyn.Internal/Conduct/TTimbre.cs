@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Llyn.Conduct;
 using Llyn.ShellEngine;
@@ -104,91 +103,9 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void ContourScale_ChaoLevels_RunsFromOneToFive()
+    public void ContourScale_ChaoLevels_RunsFromFiveDownToOne()
     {
-        Assert.Equal(1, CContour.CContourFloor);
-        Assert.Equal(5, CContour.CContourCeiling);
-    }
-
-    [Fact]
-    public void TimbrePlaybackRead_EmptyDesk_ReadsNoAudio()
-    {
-        CTimbre timbre = TTimbrePrepare([]);
-
-        CTimbrePlayback playback = timbre.CTimbrePlaybackRead();
-
-        Assert.Null(playback.CTimbrePlaybackAudio);
-        Assert.False(playback.CTimbrePlaybackAudible);
-    }
-
-    [Fact]
-    public void TimbrePlaybackRead_StoredAudio_ReadsItsFile()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
-        string file = TTimbreFileSave(workspace, "kindle.mp3");
-        editor.CEditorDesk.TDeskDefer(TInterface.TRequestAudioCreate(editor.CEditorDesk.CDeskId, file, "Forvo"));
-
-        CTimbrePlayback playback = editor.CEditorTimbre.CTimbrePlaybackRead();
-
-        Assert.Equal(file, playback.CTimbrePlaybackAudio);
-        Assert.True(playback.CTimbrePlaybackAudible);
-    }
-
-    [Fact]
-    public void TimbrePlaybackRead_MissingFile_ReadsNoAudio()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
-        string file = Path.Combine(workspace.TWorkspaceFolder, "audio", "gone.mp3");
-        editor.CEditorDesk.TDeskDefer(TInterface.TRequestAudioCreate(editor.CEditorDesk.CDeskId, file, "Forvo"));
-
-        CTimbrePlayback playback = editor.CEditorTimbre.CTimbrePlaybackRead();
-
-        Assert.Null(playback.CTimbrePlaybackAudio);
-        Assert.False(playback.CTimbrePlaybackAudible);
-    }
-
-    [Fact]
-    public void TimbrePlaybackRead_AccentAudioOnly_ReadsAudible()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
-        long draft = editor.CEditorDesk.CDeskId;
-        editor.CEditorDesk.TDeskDefer(TInterface.TPronunciationAdditionCreate(draft, string.Empty, 1));
-        long accent = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
-        editor.CEditorDesk.TDeskDefer(TInterface.TPronunciationAudioCreate(draft, accent, "row.mp3", "Forvo"));
-
-        CTimbrePlayback playback = editor.CEditorTimbre.CTimbrePlaybackRead();
-
-        Assert.Null(playback.CTimbrePlaybackAudio);
-        Assert.True(playback.CTimbrePlaybackAudible);
-    }
-
-    [Fact]
-    public void TimbrePlaybackStart_StoredFile_AnswersItsAddress()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
-        string file = TTimbreFileSave(workspace, "ember.mp3");
-
-        Assert.Equal(new Uri(file), editor.CEditorTimbre.CTimbrePlaybackStart(file));
-    }
-
-    [Fact]
-    public void TimbrePlaybackStart_MissingFile_AnswersNothing()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
-        string file = Path.Combine(workspace.TWorkspaceFolder, "audio", "gone.mp3");
-
-        Assert.Null(editor.CEditorTimbre.CTimbrePlaybackStart(file));
-        Assert.Null(editor.CEditorTimbre.CTimbrePlaybackStart(null));
+        Assert.Equal(new[] { 5, 4, 3, 2, 1 }, CContour.CContourScale);
     }
 
     [Fact]
@@ -264,8 +181,9 @@ public sealed class TTimbre
         CEditor editor = TTimbreAccentPrepare(engine, "ˈwɑːtɚ");
         long spoken = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
 
-        editor.CEditorTimbre.CTimbreAccentSet(spoken, "WAH-ter");
+        CAccentTyped typed = editor.CEditorTimbre.CTimbreAccentSet(spoken, "WAH-ter");
 
+        Assert.Equal("WAH-ter", typed.CAccentTypedText);
         Assert.Equal("WAH-ter", Assert.Single(editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
         engine.TEngineRespellingSave(false);
         Assert.Equal("ˈwɑːtɚ", Assert.Single(editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
@@ -280,9 +198,35 @@ public sealed class TTimbre
         CEditor editor = TTimbreAccentPrepare(engine, "ˈwɑːtɚ");
         long spoken = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
 
-        editor.CEditorTimbre.CTimbreAccentSet(spoken, "ˈwɔːtə");
+        CAccentTyped typed = editor.CEditorTimbre.CTimbreAccentSet(spoken, "ˈwɔːtə");
 
+        Assert.Equal("ˈwɔːtə", typed.CAccentTypedText);
         Assert.Equal("ˈwɔːtə", Assert.Single(editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
+    }
+
+    [Fact]
+    public void TimbreAccentSet_EmptyDesk_TakesNothingAndAnswersTheEmptyText()
+    {
+        CTimbre timbre = TTimbrePrepare([]);
+
+        Assert.Equal(string.Empty, timbre.CTimbreAccentSet(1, "ˈwɔːtə").CAccentTypedText);
+    }
+
+    [Fact]
+    public void TimbreAccentSet_WhileFilling_TakesNothingAndAnswersTheHeldText()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TTimbreAccentPrepare(engine, "a");
+        long spoken = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
+        string? answered = null;
+        editor.CEditorDesk.CDeskDraftChanged += _ =>
+            answered = editor.CEditorTimbre.CTimbreAccentSet(spoken, "b").CAccentTypedText;
+
+        editor.CEditorDesk.CDeskDraftResonate();
+
+        Assert.Equal("a", answered);
+        Assert.Equal("a", Assert.Single(editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
     }
 
     [Fact]
@@ -341,48 +285,6 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbreAudioStart_StoredFile_AnswersItsAddressAndKeepsIt()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbreAccentPrepare(engine, "a");
-        long spoken = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
-        string file = TTimbreFileSave(workspace, "row.mp3");
-        editor.CEditorDesk.TDeskDefer(
-            TInterface.TPronunciationAudioCreate(editor.CEditorDesk.CDeskId, spoken, file, "Forvo"));
-
-        Assert.Equal(new Uri(file), editor.CEditorTimbre.CTimbreAudioStart(spoken));
-        Assert.Equal(file, Assert.Single(editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentAudio);
-    }
-
-    [Fact]
-    public void TimbreAudioStart_MissingFile_AnswersNothingAndClearsTheRowAudio()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbreAccentPrepare(engine, "a");
-        long spoken = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
-        string file = Path.Combine(workspace.TWorkspaceFolder, "audio", "gone.mp3");
-        editor.CEditorDesk.TDeskDefer(
-            TInterface.TPronunciationAudioCreate(editor.CEditorDesk.CDeskId, spoken, file, "Forvo"));
-
-        Assert.Null(editor.CEditorTimbre.CTimbreAudioStart(spoken));
-        Assert.Empty(Assert.Single(editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentAudio);
-    }
-
-    [Fact]
-    public void TimbreAudioStart_GoneRowOrEmptyDesk_AnswersNothing()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbreAccentPrepare(engine, "a");
-
-        Assert.Null(editor.CEditorTimbre.CTimbreAudioStart(long.MaxValue));
-        Assert.Null(editor.CEditorTimbre.CTimbreAudioStart(0));
-        Assert.Null(TTimbrePrepare([]).CTimbreAudioStart(1));
-    }
-
-    [Fact]
     public void TimbreFontRead_HeldDraft_AnswersThePackFontOfEachRole()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -402,7 +304,7 @@ public sealed class TTimbre
         Assert.Equal(new CFont(null, null, null), timbre.CTimbreFontRead(CFontRole.CFontRoleGlyph));
     }
 
-    private static CEditor TTimbreAccentPrepare(LEngine engine, params string[] accents)
+    internal static CEditor TTimbreAccentPrepare(LEngine engine, params string[] accents)
     {
         CEditor editor = TEditorField.TEditorFieldPrepare(engine);
         long draft = editor.CEditorDesk.CDeskId;
@@ -426,18 +328,9 @@ public sealed class TTimbre
         return editor;
     }
 
-    private static string TTimbreFileSave(TWorkspace workspace, string name)
-    {
-        string folder = Path.Combine(workspace.TWorkspaceFolder, "audio", "english");
-        Directory.CreateDirectory(folder);
-        string file = Path.Combine(folder, name);
-        File.WriteAllBytes(file, [0]);
-        return file;
-    }
-
     internal static CTimbre TTimbrePrepare(Dictionary<string, Func<object?[]?, object?>> answers)
     {
-        return TInterfaceConduct.TEditorCreate(
+        return TInterfaceEditor.TEditorCreate(
                 TEngineFake.TEngineStubCreate<LDraftPort>(),
                 TEngineFake.TEngineStubCreate<LEntryPort>(),
                 TEngineFake.TEngineCreate<LPhonologyPort>(answers),

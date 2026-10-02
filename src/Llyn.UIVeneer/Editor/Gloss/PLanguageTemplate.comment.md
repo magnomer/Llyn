@@ -1,7 +1,7 @@
 # PLanguageTemplate.xaml
 
 The language selector row of the editor, as markup alone.
-The Deportment class of the same name loads it, and the editor's fill fills the named parts.
+The editor's markup merges it, and the editor's fill fills the named parts.
 
 ## `Theme.Language.Row`
 

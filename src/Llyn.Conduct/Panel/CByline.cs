@@ -69,8 +69,7 @@ public sealed class CByline
             return false;
         }
 
-        int chosen = _cBylineIndex < 0 && step < 0 ? 0 : _cBylineIndex;
-        _cBylineIndex = ((chosen + step) % _cBylineCount + _cBylineCount) % _cBylineCount;
+        _cBylineIndex = CLantern.CLanternMove(_cBylineIndex, _cBylineCount, step) ?? -1;
         CBylineChanged?.Invoke();
         return true;
     }

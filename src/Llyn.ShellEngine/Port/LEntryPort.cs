@@ -37,12 +37,13 @@ public interface LEntryPort
 
     IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(LEntryDraft shown);
 
-    (IReadOnlyList<LTranslationTarget>, bool) LEngineEtymologyRead(LEntryDraft draft);
+    LEtymologyResult LEngineEtymologyRead(LEntryDraft draft);
 
     LMentionResult LEngineMentionFind(long exampleId, int offset);
 
-    LMentionResult LEngineMentionFind(
-        string text, string language, LEntryDraft? shown, int offset, IReadOnlyList<LMention>? mentions);
+    LMentionResult LEngineMentionFind(LEntryDraft shown, long sentence, int offset);
+
+    LMentionResult LEngineEtymologyFind(LEntryDraft shown, int offset);
 
     LGlyph? LEngineGlyphRead(LEntryDraft draft);
 
@@ -110,17 +111,12 @@ public interface LEntryPort
         return LReferenceClerk.LReferenceMenuRead();
     }
 
-    static bool LEngineNarrativeCheck(string text)
-    {
-        return new LEtymologyDraft(text).LEtymologyDraftNarrated;
-    }
-
     static long? LEngineLinkRead(long? link)
     {
         return link is long id && id != 0 ? id : null;
     }
 
-    static (string, string, string) LEngineLineRead(
+    static (string, IReadOnlyList<LMentionPiece>, string) LEngineLineRead(
         LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)
     {
         return LExampleClerk.LExampleLineRead(sentence, order, mark, citations);

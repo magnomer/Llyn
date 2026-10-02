@@ -106,7 +106,7 @@ public sealed class TEsteem
 
     private static CEditor TEsteemEditorPrepare(LEngine engine, string tab)
     {
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart(tab, LCatalogOrder.LCatalogOrderHeadword));
         return editor;
     }

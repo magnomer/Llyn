@@ -22,6 +22,11 @@ The lowest Chao level.
 
 The highest Chao level.
 
+## `public static IReadOnlyList<int> LContourScale { get; }`
+
+Every Chao level from the highest down to the lowest, the rungs a contour is drawn on.
+It is built from the floor and the ceiling, so the scale has one owner.
+
 ## `public static IReadOnlyList<LContour> LContourParse(string ipa)`
 
 Splits a reading into syllables and reads the tone of each.

@@ -63,14 +63,9 @@ The tone contour syllables of `ipa`, or nothing when the contour would stay hidd
 A blank or non-tonal language draws no contour, even over a reading with tone marks.
 A reading whose syllables carry no tone draws nothing either.
 
-## `public const int LLanguageContourFloor = LContour.LContourFloor;`
+## `public static IReadOnlyList<int> LLanguageContourScale`
 
-The contour's lowest pitch level, handed up so no outer layer writes the scale again.
-`LLanguageContourCeiling` hands up the highest.
-
-## `public const int LLanguageContourCeiling = LContour.LContourCeiling;`
-
-The contour's highest pitch level, handed up so no outer layer writes the scale again.
+The contour's pitch levels from the highest down, handed up so no outer layer writes the scale again.
 
 ## `public Task<string?> LLanguageFlagRead(string language, CancellationToken cancellation)`
 

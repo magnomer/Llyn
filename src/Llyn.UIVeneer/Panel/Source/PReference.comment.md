@@ -34,7 +34,7 @@ There is no ordering by kind of material, because no Source-type discriminator i
 Ordering by recency is not offered, because the `source` row carries no creation or modification time.
 A field standing Unspecified or Unknown still has a place in every ordering, ordered by its state.
 
-## `<local:PRail Grid.Row="0" Grid.Column="2" ...>`
+## `<local:QRail Grid.Row="0" Grid.Column="2" ...>`
 
 The action row of the panel.
 `PReferenceFresh` opens the edit area on a Source nothing cites yet.
@@ -56,13 +56,13 @@ The row itself is drawn by a template the merged dictionary holds.
 The panel fills each row's named parts and takes each row's click.
 `PShelfEmpty` covers both an empty workspace and a search that matches nothing.
 
-## `<local:PDisplay x:Name="PDisplay" Visibility="Collapsed" />`
+## `<veneer:PDisplay x:Name="PDisplay" Visibility="Collapsed" />`
 
 The entry display the library and tenor panels share, drawn in the same cell as the Source reading.
 It shows an Entry or a Source, never both, so it stays collapsed until an Entry row is chosen.
 The mode toggle swaps it for `PEditor`, so an Entry is read and written here as in the tenor panel.
 
-## `<local:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />`
+## `<veneer:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />`
 
 The entry editor the library and tenor panels share, drawn in the same cell as the display.
 It stands in front only while an Entry is shown and the toggle is on the editing side.

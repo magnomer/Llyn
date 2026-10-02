@@ -121,7 +121,6 @@ public sealed class QLectern
         QLecternArea.CDisplayOpened += QLecternGraspRefine;
         QLecternArea.CDisplayOpened += QLecternFrequencyRefine;
         QLecternArea.CDisplayOpened += QLecternPlayback.QLecternPlaybackRefine;
-        QLecternArea.CDisplayOpened += QLecternPlayback.QLecternVolumeRefine;
         QLecternArea.CDisplayOpened += QLecternAccent.QLecternAccentRefine;
         QLecternArea.CDisplayOpened += QLecternAccent.QLecternEnsignRefine;
         QLecternArea.CDisplayOpened += QLecternSound.QLecternGlyphRefine;

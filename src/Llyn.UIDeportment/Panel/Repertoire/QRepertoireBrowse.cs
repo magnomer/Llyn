@@ -12,7 +12,7 @@ internal sealed partial class QRepertoire
 
     private async void QRepertoireWorkspaceRefine()
     {
-        await _qRepertoireHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
+        await _qRepertoireHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
     }
 
     private void QInquestObserve(object sender, TextChangedEventArgs e)
@@ -173,11 +173,11 @@ internal sealed partial class QRepertoire
 
     private void QRepertoireRetreatObserve(object sender, RoutedEventArgs e)
     {
-        _qRepertoireHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
+        _qRepertoireHost.QWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QRepertoireAdvanceObserve(object sender, RoutedEventArgs e)
     {
-        _qRepertoireHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
+        _qRepertoireHost.QWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 }

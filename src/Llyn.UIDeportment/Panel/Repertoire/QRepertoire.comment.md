@@ -7,7 +7,7 @@ A Situation is independent data owned by nothing, so this panel is not a view of
 It holds the surface, the host and the repertoire Conduct the browsing side calls, and nothing else.
 The browsing behavior lives in `QRepertoireBrowse.cs` and the editing in `QRepertoireEditor.cs`, one file per responsibility.
 The held draft the editor writes into lives in `QRepertoireHold.cs`, apart from the controls it reads.
-It merges the card's picture and video row templates, and `QRepertoireDialog.cs` answers their clicks.
+`QRepertoireDialog.cs` answers the picture and video row clicks.
 It answers the window's undo and redo keys as `QChronicleHost`, attached to its surface since the surface is no driver.
 
 ## `internal QRepertoire(UserControl surface)`
@@ -15,22 +15,22 @@ It answers the window's undo and redo keys as `QChronicleHost`, attached to its 
 Takes the veneer's page as its surface, which the window pulls by contract ID.
 The page's local styles are handed to the look sheet, which otherwise knows only the application's.
 The driver attaches itself to the page as the host of the undo and redo keys.
-It merges the card row templates, adds the print and export command bindings and points the two buttons at them.
+It adds the print and export command bindings and points the two buttons at them.
 It ties both droppers to their popups, sets every icon, and subscribes every click and text field.
 
 ## `private Border QTier`
 
 Each named part of the page is pulled through `QContract.QContractFind` by its contract ID.
 
-## `internal void QRepertoireIntroduce(PWindow host)`
+## `internal void QRepertoireIntroduce(QWindow host)`
 
 Builds the repertoire Conduct, which builds its editor, and wires the desk's notices.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 The lectern follows the occurrence panel, whose loads and clears reach the display's area, never the veneer.
 Binds the panel to the window it asks for confirmations and panel switches through.
-The media host is attached to the surface, so the rows inside it find the atelier.
 It binds its lists, the editor's media rows among them, and subscribes to the engine, and reads nothing yet.
 The atlas and occurrence lists get their row fills through `QLookItemAttach`.
+The picture and video drivers are handed the repertoire's own image and video gates.
 It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
 The engine's change notices drive the mode, and its row notices drive the two lists.
 Its scenario and situation notices paint the sheet.

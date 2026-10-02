@@ -7,6 +7,7 @@ It starts, reads, finishes and cancels the held draft, and defers the field requ
 The tenure is started over the panel's vista, whose tab and subject name the draft's origin and kind.
 The vigil attaches the driver's observers when the tenure starts.
 The only question it asks is whether an unreadable draft may be swept, through `CEnvoy`.
+It shows its own load, save and hold failures through the same envoy, so no driver can lose one.
 
 ## `private bool _cDeskFilling;`
 
@@ -23,7 +24,7 @@ A start clears it.
 A tenure was started, announced so the owner can refresh what it shows.
 The observers a driver registered are already on the new tenure when this fires.
 
-## `internal CDesk(LDraftPort drafts, string scope, CEnvoy envoy)`
+## `internal CDesk(LDraftPort drafts, LSettingsPort settings, string scope, CEnvoy envoy)`
 
 Only the controllers that own a desk build one, so the port never reaches a driver.
 
@@ -46,10 +47,9 @@ The tenure came, went, or changed, so the store and chronicle buttons are read a
 The draft was stored under this id, raised after the tenure has been let go.
 Only the finish without a stored action raises it.
 
-## `public event Action<string>? CDeskRefused;`
+## `private readonly LSettingsPort _cDeskSettings;`
 
-The held tenure stopped taking requests.
-It carries the scope's `HoldFailed` key, and it fires once per halt.
+The settings port the ledger reads a failure's notice through.
 
 ## `private LQuill? _cDeskQuill;`
 
@@ -152,7 +152,7 @@ The same fresh start for the taxonomy, already carrying the Tag on the first car
 
 The same fresh start for the tenor panel, already carrying the Register on the first card.
 
-## `internal CDesk(LDraftPort drafts, string scope, CEnvoy envoy, string origin, CSubject subject)`
+## `internal CDesk(LDraftPort drafts, LSettingsPort settings, string scope, CEnvoy envoy, string origin, CSubject subject)`
 
 Builds a desk that starts under its own origin and subject, so no owner decides the start.
 
@@ -180,7 +180,8 @@ Announces the draft with the filling flag raised, so the controls' echo is ignor
 
 ## `public void CDeskStateResonate()`
 
-Announces the change of state, after raising the refusal if the tenure just halted.
+Announces the change of state, after showing the scope's `HoldFailed` notice if the tenure just halted.
+The notice shows once per halt.
 
 ## `public void CDeskPersist()`
 
@@ -194,7 +195,7 @@ The tenure writes and answers in one call, and an empty desk answers false.
 ## `public bool CDeskFinish(bool store)`
 
 Ends the tenure, storing the draft or dropping it as asked, and reports whether it ended.
-A refused store is announced under the scope's save key and keeps the tenure, so the user can read why.
+A refused store is shown under the scope's save key and keeps the tenure, so the user can read why.
 The desk chooses the unreadable-drop key, and the tenure asks through `CEnvoy` before it sweeps.
 
 ## `public bool CDeskFinish(bool store, Action<long> stored)`
@@ -222,7 +223,7 @@ The key is chosen here, so no driver decides what is asked.
 
 ## `internal string CDeskScope`
 
-The scope that prefixes every failure key the desk raises.
+The scope that prefixes every failure key the desk shows.
 A session over the desk names its failed undo under the same scope.
 
 ## `public void CDeskObserverAttach(Action<Action> marshal, Action drafted)`

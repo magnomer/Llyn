@@ -11,7 +11,11 @@ internal sealed partial class QTenor
 {
     private readonly UserControl _qTenorSurface;
 
-    private PWindow _qTenorHost = null!;
+    private readonly QEditor _qTenorEditor;
+
+    private readonly QDisplay _qTenorDisplay;
+
+    private QWindow _qTenorHost = null!;
 
     private CTenor _cTenor = null!;
 
@@ -20,6 +24,8 @@ internal sealed partial class QTenor
         ArgumentNullException.ThrowIfNull(surface);
 
         _qTenorSurface = surface;
+        _qTenorEditor = new QEditor(QContract.QContractFind<FrameworkElement>(surface, "PEditor"));
+        _qTenorDisplay = new QDisplay(QContract.QContractFind<FrameworkElement>(surface, "PDisplay"));
 
         surface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QTenorPressObserve, QTenorPressRefine));
@@ -121,21 +127,17 @@ internal sealed partial class QTenor
 
     private RadioButton QTenorScribe => QContract.QContractFind<RadioButton>(_qTenorSurface, "PTenorScribe");
 
-    private PDisplay QTenorDisplay => QContract.QContractFind<PDisplay>(_qTenorSurface, "PDisplay");
-
-    private PEditor QTenorEditor => QContract.QContractFind<PEditor>(_qTenorSurface, "PEditor");
-
     private Button QTenorBin => QContract.QContractFind<Button>(_qTenorSurface, "PTenorBin");
 
     private QIconImage QTenorBinIcon => QContract.QContractFind<QIconImage>(_qTenorSurface, "PTenorBinIcon");
 
-    internal void QTenorIntroduce(PWindow host)
+    internal void QTenorIntroduce(QWindow host)
     {
         _qTenorHost = host;
         _cTenor = CTenor.CTenorCreate(
-            host.PWindowAtelier,
+            host.QWindowAtelier,
             QTenorShownCheck,
-            host.PWindowEnvoy,
+            host.QWindowEnvoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         _cTenor.CTenorRegisterOpened += QGamutRegisterRefine;
         _cTenor.CTenorRowsChanged += QGamutRefine;
@@ -150,10 +152,10 @@ internal sealed partial class QTenor
         QLookItem.QLookItemAttach(QGamut, QGamutItemRefine);
         QLookItem.QLookItemAttach(QCohort, QCohortItemRefine);
 
-        QTenorDisplay.PDisplayAttach(host, lectern);
+        _qTenorDisplay.QDisplayIntroduce(host, lectern);
         _cTenor.CTenorEditor.CEditorDesk.CDeskStateChanged += QTenorStoreRefine;
-        QTenorEditor.PEditorIntroduce(host, new QEditor(_cTenor.CTenorEditor));
-        QTenorEditor.PEditorChronicleChanged += QTenorChronicleRefine;
+        _qTenorEditor.QEditorIntroduce(host, _cTenor.CTenorEditor);
+        _qTenorEditor.QEditorChronicleChanged += QTenorChronicleRefine;
     }
 
     private void QTenorStoreRefine()
@@ -163,7 +165,7 @@ internal sealed partial class QTenor
 
     internal void QTenorExitRefine()
     {
-        QTenorEditor.PEditorPlayerRefine();
+        _qTenorEditor.QEditorPlayerRefine();
     }
 
     private void QTenorPressRefine(object sender, CanExecuteRoutedEventArgs e)
@@ -189,22 +191,22 @@ internal sealed partial class QTenor
 
     private void QTenorRetreatObserve(object sender, RoutedEventArgs e)
     {
-        _qTenorHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
+        _qTenorHost.QWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QTenorAdvanceObserve(object sender, RoutedEventArgs e)
     {
-        _qTenorHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
+        _qTenorHost.QWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void QTenorUndoObserve(object sender, RoutedEventArgs e)
     {
-        QTenorEditor.QChronicleUndoObserve();
+        _qTenorEditor.QChronicleUndoObserve();
     }
 
     private void QTenorRedoObserve(object sender, RoutedEventArgs e)
     {
-        QTenorEditor.QChronicleRedoObserve();
+        _qTenorEditor.QChronicleRedoObserve();
     }
 
     private void QTenorChronicleRefine()
@@ -222,8 +224,8 @@ internal sealed partial class QTenor
     private void QTenorModeRefine()
     {
         CPanel panel = _cTenor.CTenorCohort.CCohortPanel;
-        QTenorEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
-        QTenorDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
+        _qTenorEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(panel.CPanelEditing));
+        _qTenorDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(panel.CPanelViewerChecked));
         QTenorViewer.IsChecked = panel.CPanelViewerChecked;
         QTenorScribe.IsChecked = panel.CPanelScribeChecked;
         QTenorVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);

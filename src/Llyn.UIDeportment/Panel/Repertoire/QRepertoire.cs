@@ -12,7 +12,11 @@ internal sealed partial class QRepertoire : QChronicleHost
 {
     private readonly UserControl _qRepertoireSurface;
 
-    private PWindow _qRepertoireHost = null!;
+    private readonly QEditor _qRepertoireEditor;
+
+    private readonly QDisplay _qRepertoireDisplay;
+
+    private QWindow _qRepertoireHost = null!;
 
     private CRepertoire _cRepertoire = null!;
 
@@ -21,11 +25,10 @@ internal sealed partial class QRepertoire : QChronicleHost
         ArgumentNullException.ThrowIfNull(surface);
 
         _qRepertoireSurface = surface;
+        _qRepertoireEditor = new QEditor(QContract.QContractFind<FrameworkElement>(surface, "PEditor"));
+        _qRepertoireDisplay = new QDisplay(QContract.QContractFind<FrameworkElement>(surface, "PDisplay"));
         QLook.QLookStyleAttach(surface.Resources);
         QChronicle.QChronicleIntroduce(surface, this);
-
-        surface.Resources.MergedDictionaries.Add(new PImageTemplate());
-        surface.Resources.MergedDictionaries.Add(new PVideoTemplate());
 
         surface.CommandBindings.Add(new CommandBinding(
             ApplicationCommands.Print, QRepertoirePressObserve, QRepertoirePressRefine));
@@ -133,10 +136,6 @@ internal sealed partial class QRepertoire : QChronicleHost
 
     private TextBlock QOccurrenceEmpty => QContract.QContractFind<TextBlock>(_qRepertoireSurface, "POccurrenceEmpty");
 
-    private PDisplay QRepertoireDisplay => QContract.QContractFind<PDisplay>(_qRepertoireSurface, "PDisplay");
-
-    private PEditor QRepertoireEditor => QContract.QContractFind<PEditor>(_qRepertoireSurface, "PEditor");
-
     private Grid QVignette => QContract.QContractFind<Grid>(_qRepertoireSurface, "PVignette");
 
     private StackPanel QVignetteBody => QContract.QContractFind<StackPanel>(_qRepertoireSurface, "PVignetteBody");
@@ -199,17 +198,19 @@ internal sealed partial class QRepertoire : QChronicleHost
     private QIconImage QRepertoireBinIcon =>
         QContract.QContractFind<QIconImage>(_qRepertoireSurface, "PRepertoireBinIcon");
 
-    internal void QRepertoireIntroduce(PWindow host)
+    internal void QRepertoireIntroduce(QWindow host)
     {
         _qRepertoireHost = host;
         _cRepertoire = CRepertoire.CRepertoireCreate(
-            host.PWindowAtelier,
+            host.QWindowAtelier,
             QRepertoireShownCheck,
-            host.PWindowEnvoy,
+            host.QWindowEnvoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         QLectern lectern = new(
             _cRepertoire.CRepertoireEditor.CEditorDisplay, _cRepertoire.CRepertoireOccurrence.COccurrencePanel);
         QScenarioDeskIntroduce();
+        _qImage.QImageIntroduce(_cRepertoire.CRepertoireImage);
+        _qVideo.QVideoIntroduce(_cRepertoire.CRepertoireVideo);
 
         QChoice.QChoiceOrderBuild(QTierList, "Tier", QTierObserve, CAtlas.CAtlasOrderRead());
         QAtlas.ItemsSource = _qAtlasList;
@@ -220,12 +221,11 @@ internal sealed partial class QRepertoire : QChronicleHost
         QLookItem.QLookItemAttach(QOccurrence, QOccurrenceItemRefine);
         QLookItem.QLookItemAttach(QScenarioImage, QImageItemRefine);
         QLookItem.QLookItemAttach(QScenarioVideo, QVideoItemRefine);
-        QLookItem.QLookItemAttach(QVignettePicture, PImage.PImageLineApply);
-        QLookItem.QLookItemAttach(QVignetteVideo, PVideo.PVideoLineApply);
+        QLookItem.QLookItemAttach(QVignettePicture, QImageItem.QImageItemApply);
+        QLookItem.QLookItemAttach(QVignetteVideo, QVideoItem.QVideoItemApply);
 
-        PMedia.PMediaAttach(_qRepertoireSurface);
-        QRepertoireDisplay.PDisplayAttach(host, lectern);
-        QRepertoireEditor.PEditorIntroduce(host, new QEditor(_cRepertoire.CRepertoireEditor));
+        _qRepertoireDisplay.QDisplayIntroduce(host, lectern);
+        _qRepertoireEditor.QEditorIntroduce(host, _cRepertoire.CRepertoireEditor);
 
         CPanel atlas = _cRepertoire.CRepertoireAtlas.CAtlasPanel;
         CPanel occurrence = _cRepertoire.CRepertoireOccurrence.COccurrencePanel;
@@ -251,8 +251,8 @@ internal sealed partial class QRepertoire : QChronicleHost
     {
         QScenario.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireScenarioShown);
         QVignette.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireVignetteShown);
-        QRepertoireDisplay.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireDisplayShown);
-        QRepertoireEditor.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireEditorShown);
+        _qRepertoireDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(_cRepertoire.CRepertoireDisplayShown));
+        _qRepertoireEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(_cRepertoire.CRepertoireEditorShown));
         QVignetteBody.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireVignetteHeld);
         QVignetteUnselected.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireVignetteBlank);
         QRepertoireViewer.IsChecked = _cRepertoire.CRepertoireViewerChecked;
@@ -268,7 +268,7 @@ internal sealed partial class QRepertoire : QChronicleHost
 
     internal void QRepertoireExitRefine()
     {
-        QRepertoireEditor.PEditorPlayerRefine();
+        _qRepertoireEditor.QEditorPlayerRefine();
         QTierDropdown.IsOpen = false;
         QMeshDropdown.IsOpen = false;
     }

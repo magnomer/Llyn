@@ -17,9 +17,13 @@ internal sealed class QXiesheng
 
     private readonly UserControl _qXieshengSurface;
 
+    private readonly QEditor _qXieshengEditor;
+
+    private readonly QDisplay _qXieshengDisplay;
+
     private readonly QStem _qStem;
 
-    private PWindow _qXieshengHost = null!;
+    private QWindow _qXieshengHost = null!;
 
     private CXiesheng _cXiesheng = null!;
 
@@ -28,6 +32,8 @@ internal sealed class QXiesheng
         ArgumentNullException.ThrowIfNull(surface);
 
         _qXieshengSurface = surface;
+        _qXieshengEditor = new QEditor(QContract.QContractFind<FrameworkElement>(surface, "PEditor"));
+        _qXieshengDisplay = new QDisplay(QContract.QContractFind<FrameworkElement>(surface, "PDisplay"));
         _qStem = new QStem(QXieshengStem);
 
         surface.CommandBindings.Add(
@@ -121,23 +127,19 @@ internal sealed class QXiesheng
 
     private RadioButton QXieshengScribe => QContract.QContractFind<RadioButton>(_qXieshengSurface, "PXieshengScribe");
 
-    private PDisplay QXieshengDisplay => QContract.QContractFind<PDisplay>(_qXieshengSurface, "PDisplay");
-
     private UserControl QXieshengStem => QContract.QContractFind<UserControl>(_qXieshengSurface, "PXieshengStem");
-
-    private PEditor QXieshengEditor => QContract.QContractFind<PEditor>(_qXieshengSurface, "PEditor");
 
     private Button QXieshengBin => QContract.QContractFind<Button>(_qXieshengSurface, "PXieshengBin");
 
     private QIconImage QXieshengBinIcon => QContract.QContractFind<QIconImage>(_qXieshengSurface, "PXieshengBinIcon");
 
-    internal void QXieshengIntroduce(PWindow host)
+    internal void QXieshengIntroduce(QWindow host)
     {
         _qXieshengHost = host;
         _cXiesheng = CXiesheng.CXieshengCreate(
-            host.PWindowAtelier,
+            host.QWindowAtelier,
             QXieshengShownCheck,
-            host.PWindowEnvoy,
+            host.QWindowEnvoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         CPanel panel = _cXiesheng.CXieshengPanel;
         QLectern lectern = new(_cXiesheng.CXieshengEditor.CEditorDisplay, panel);
@@ -155,12 +157,12 @@ internal sealed class QXiesheng
         QGrove.ItemsSource = _qGroveList;
         QKindred.ItemsSource = _qKindredList;
 
-        QXieshengDisplay.PDisplayAttach(host, lectern);
+        _qXieshengDisplay.QDisplayIntroduce(host, lectern);
         _qStem.QStemIntroduce(_cXiesheng);
 
-        QXieshengEditor.PEditorIntroduce(host, new QEditor(_cXiesheng.CXieshengEditor));
+        _qXieshengEditor.QEditorIntroduce(host, _cXiesheng.CXieshengEditor);
 
-        QXieshengEditor.PEditorChronicleChanged += QXieshengChronicleRefine;
+        _qXieshengEditor.QEditorChronicleChanged += QXieshengChronicleRefine;
     }
 
     private void QXieshengStoreRefine()
@@ -187,7 +189,7 @@ internal sealed class QXiesheng
 
     internal void QXieshengExitRefine()
     {
-        QXieshengEditor.PEditorPlayerRefine();
+        _qXieshengEditor.QEditorPlayerRefine();
     }
 
     private bool QXieshengShownCheck()
@@ -229,8 +231,8 @@ internal sealed class QXiesheng
 
     private void QXieshengModeRefine()
     {
-        QXieshengEditor.Visibility = QLook.QLookVisibleRead(_cXiesheng.CXieshengEditorShown);
-        QXieshengDisplay.Visibility = QLook.QLookVisibleRead(_cXiesheng.CXieshengDisplayShown);
+        _qXieshengEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(_cXiesheng.CXieshengEditorShown));
+        _qXieshengDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(_cXiesheng.CXieshengDisplayShown));
         QXieshengStem.Visibility = QLook.QLookVisibleRead(_cXiesheng.CXieshengStemShown);
         QXieshengViewer.IsChecked = _cXiesheng.CXieshengPanel.CPanelViewerChecked;
         QXieshengScribe.IsChecked = _cXiesheng.CXieshengPanel.CPanelScribeChecked;
@@ -319,22 +321,22 @@ internal sealed class QXiesheng
 
     private void QXieshengRetreatObserve(object sender, RoutedEventArgs e)
     {
-        _qXieshengHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
+        _qXieshengHost.QWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QXieshengAdvanceObserve(object sender, RoutedEventArgs e)
     {
-        _qXieshengHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
+        _qXieshengHost.QWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void QXieshengUndoObserve(object sender, RoutedEventArgs e)
     {
-        QXieshengEditor.QChronicleUndoObserve();
+        _qXieshengEditor.QChronicleUndoObserve();
     }
 
     private void QXieshengRedoObserve(object sender, RoutedEventArgs e)
     {
-        QXieshengEditor.QChronicleRedoObserve();
+        _qXieshengEditor.QChronicleRedoObserve();
     }
 
     private void QXieshengChronicleRefine()

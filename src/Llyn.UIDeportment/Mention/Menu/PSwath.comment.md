@@ -26,6 +26,7 @@ The block list is dropped with it, since the page it described is about to chang
 Every visible text block, picture, video, glyph shape and tone contour under the viewer is an item.
 Buttons are entered, since chip text is part of the page even though a press on it stays a click.
 A video is one item, so the controls inside it are not walked.
+A video is known as a surface that `QScreen` drives, since Deportment never names the Veneer's screen type.
 A collapsed section is skipped whole.
 
 ### `private PSwathSeam? PSwathFind(Point point)`

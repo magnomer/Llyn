@@ -44,7 +44,7 @@
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal" />
+                    <local:QBerth />
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>

@@ -20,7 +20,7 @@ It subscribes every click, both search fields and both list clicks, and attaches
 
 Each named part of the page is found through `QContract.QContractFind` under its markup name.
 
-## `internal void QReferenceIntroduce(PWindow host)`
+## `internal void QReferenceIntroduce(QWindow host)`
 
 Puts the driver to work on the Conduct shelf it builds, and the shelf builds its own editor.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.

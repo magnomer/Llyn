@@ -16,8 +16,9 @@ The tally chip paints the ready `CExampleTally`, the chosen Example's count.
 Writes the sentence at the head of the page, as a situation's title stands at the head of its page.
 It looks up `CExampleWording` when Conduct chose a word, and shows the text itself otherwise.
 `CExampleMuted` picks the muted colour, because the head of the page cannot be empty.
-Its Mentions reach the mention text as they are stored.
-The controller's map leaves them out unless the text reads soundly, so the excerpt takes them as they come.
+The text itself draws the pieces Conduct divided at its Mentions.
+A worded key draws as one plain piece made by `QMentionPieceCreate`, since the pieces belong to the text it replaces.
+The click asks the corpus gate by offset alone, so the mention text holds no Mentions here.
 
 ## `private void QExcerptCitationRefine(CExample example)`
 

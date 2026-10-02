@@ -38,6 +38,11 @@ The localization key the row's kind is labelled under.
 
 Whether the row is hidden, true for a folded row while the fold is closed.
 
+## `internal string LReflexFieldRead(CReflexField field)`
+
+The text the row shows in the cell `field`.
+`CTimbre.CTimbreReflexSet` answers it for an edit it did not take.
+
 ## `internal static IReadOnlyList<bool> LReflexLeadRead(IReadOnlyList<string> languages)`
 
 Whether each row opens a run of one language, so the language prints once per run.

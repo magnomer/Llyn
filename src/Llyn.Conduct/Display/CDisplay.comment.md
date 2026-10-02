@@ -112,15 +112,6 @@ A press on the standing step comes back cleared, since the display's one rule ow
 The chosen entry's frequency chip, or null when none stands.
 Conduct chooses the key of the one-off wording, and the driver's lookup turns it into text.
 
-## `public static bool CDisplayNarrativeCheck(bool editable, string text)`
-
-Whether the read face of the narrative stands: only on the read side, and only with words in it.
-Whether text holds words is the engine's rule, so no trim happens here.
-
-## `public static bool CDisplayEtymonCheck(bool editable, int count)`
-
-Whether the row of source links shows: always while editable, else only with a link.
-
 ## `private LEntryDraft? LDisplayShown`
 
 The shown draft the sound half holds, passed unread to the engine.
@@ -151,9 +142,10 @@ Each usage maps through `COeuvre.COeuvreUsageRead`, the one map the vita's citat
 
 ## `public CLecternEtymology CDisplayEtymologyRead()`
 
-The shown entry's etymology, with whether its field and its section show.
-The engine names the links and says whether a narrative or a link stands.
-A refused link read answers no links, and the field then shows by its narrative alone.
+The shown entry's etymology, with whether its field, its read narrative, its links and its section show.
+The engine answers one record that names the links and says whether a narrative or a link stands.
+Whether the narrative holds words is the etymology draft's rule, so no trim happens here.
+A refused link read answers no links in the engine, and the field then shows by its narrative alone.
 
 ## `public bool CDisplayChipOpen(CLeafChip? chip, long? link)`
 
@@ -172,10 +164,22 @@ The tab that opens a chip's record, picked by the chip's kind, by name.
 Holds the atelier's mention area, which opens what a clicked word found.
 The composition calls it through `LDisplayNavigationAttach`, so a display built alone finds nothing.
 
-## `public CMentionOffer? CDisplayMentionFind(string text, string language, int offset, IReadOnlyList<CMentionMark>? mentions)`
+## `public CMentionOffer? CDisplayMentionFind(long sentence, int offset)`
 
-The gate for a word clicked in a sentence of the reading view.
-The engine reads what stands at `offset`, in the shown entry's language when the text names none.
+The gate for a word clicked in an example line of the reading view.
+The driver names only the line's sentence row and the offset clicked.
+The engine reads the row's text, language and Mentions from the shown entry itself.
+So no sentence text or Mention travels up through the driver and back.
+
+## `public CMentionOffer? CDisplayEtymologyFind(int offset)`
+
+The gate for a word clicked in the etymology prose of the reading view.
+The engine reads the prose and its language from the shown entry, so the driver sends only the offset.
+
+## `private CMentionOffer? LDisplayMentionOpen(Func<LEntryDraft, LMentionResult> find)`
+
+The open shared by both find gates, given the engine find over the shown entry.
+It answers null when no mention area is held or nothing is shown.
 `LMentionResultOpen` then opens a stored Mention or a sole entry at once, as the corpus does.
 The answer is the found word's start and the entries the menu offers, empty when one opened.
 The reading view asks no leave question of its own, since the navigation asks it on opening.

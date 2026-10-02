@@ -50,14 +50,14 @@ internal sealed partial class QRepertoire
         else
         {
             QMarkdownFace.QMarkdownRefine(
-                QVignetteDescription, situation.CSituationMarkdown, _qRepertoireHost.PWindowAtelier);
+                QVignetteDescription, situation.CSituationMarkdown, _qRepertoireHost.QWindowAtelier);
         }
 
         QVignetteDescriptionSection.Visibility =
             QLook.QLookVisibleRead(!situation.CSituationDescription.CStateWordingMuted);
     }
 
-    private void QVignetteMediaRefine(IReadOnlyList<PImage>? pictures, IReadOnlyList<PVideo>? videos)
+    private void QVignetteMediaRefine(IReadOnlyList<QImageItem>? pictures, IReadOnlyList<QVideoItem>? videos)
     {
         QVignettePicture.ItemsSource = pictures;
         QVignetteVideo.ItemsSource = videos;

@@ -14,7 +14,7 @@ internal sealed partial class QTenor
 
     private async void QTenorWorkspaceRefine()
     {
-        await _qTenorHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
+        await _qTenorHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
     }
 
     private void QSoundingObserve(object sender, TextChangedEventArgs e)

@@ -6,19 +6,19 @@ namespace Llyn.UIDeportment;
 
 internal sealed partial class PCard
 {
-    public ObservableCollection<PVideo> PCardVideo { get; } = [];
+    public ObservableCollection<QVideoItem> PCardVideo { get; } = [];
 
     internal void PCardVideoShow(IReadOnlyList<CVideoDraft> rows)
     {
         PCardRowShow(
             PCardVideo,
             rows,
-            static row => row.PVideoId,
+            static row => row.QVideoItemId,
             static draft => draft.CVideoDraftId,
-            static draft => new PVideo(draft),
+            static draft => new QVideoItem(draft),
             (row, draft) =>
             {
-                row.PVideoShow(draft);
+                row.QVideoItemShow(draft);
                 return row;
             });
     }

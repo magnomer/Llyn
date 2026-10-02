@@ -222,8 +222,11 @@ public sealed class TTimbreReflex
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long entry = TTimbreReflexSave(engine);
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
-        Assert.Empty(editor.CEditorTimbre.CTimbreReflexSet(1, CReflexField.CReflexFieldLanguage, "Wu"));
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        CReflexTyped refused = editor.CEditorTimbre.CTimbreReflexSet(1, CReflexField.CReflexFieldLanguage, "Wu");
+        Assert.Equal(CReflexField.CReflexFieldLanguage, refused.CReflexTypedField);
+        Assert.Equal(string.Empty, refused.CReflexTypedText);
+        Assert.Empty(refused.CReflexTypedHeads);
 
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(entry);
@@ -231,10 +234,12 @@ public sealed class TTimbreReflex
 
         Assert.Equal(
             [new CReflexHead(ids[0], true), new CReflexHead(ids[1], false), new CReflexHead(ids[2], true)],
-            editor.CEditorTimbre.CTimbreReflexSet(ids[1], CReflexField.CReflexFieldLanguage, "Wu"));
+            editor.CEditorTimbre.CTimbreReflexSet(ids[1], CReflexField.CReflexFieldLanguage, "Wu").CReflexTypedHeads);
+        CReflexTyped typed = editor.CEditorTimbre.CTimbreReflexSet(ids[1], CReflexField.CReflexFieldLanguage, "Jin");
         Assert.Equal(
             [new CReflexHead(ids[0], true), new CReflexHead(ids[1], true), new CReflexHead(ids[2], false)],
-            editor.CEditorTimbre.CTimbreReflexSet(ids[1], CReflexField.CReflexFieldLanguage, "Jin"));
+            typed.CReflexTypedHeads);
+        Assert.Equal("Jin", typed.CReflexTypedText);
         Assert.Equal(["Wu", "Jin", "Jin"], TTimbreReflexRead(editor).Select(static row => row.CReflexLanguage));
     }
 
@@ -248,7 +253,7 @@ public sealed class TTimbreReflex
         CTimbre respelled = TInterfaceConduct.TTimbreCreate(
             editor, TTimbreGuisePrepare(true), TEngineFake.TEngineStubCreate<LDraftPort>());
 
-        Assert.Empty(respelled.CTimbreReflexSet(first, CReflexField.CReflexFieldText, "sü"));
+        Assert.Empty(respelled.CTimbreReflexSet(first, CReflexField.CReflexFieldText, "sü").CReflexTypedHeads);
 
         editor.CEditorDesk.CDeskPersist();
         Assert.Equal("sü", respelled.CTimbreReflexRead().CTimbreReflexRows[0].CReflexText);
@@ -265,7 +270,7 @@ public sealed class TTimbreReflex
         CTimbre plain = TInterfaceConduct.TTimbreCreate(
             editor, TTimbreGuisePrepare(), TEngineFake.TEngineStubCreate<LDraftPort>());
 
-        Assert.Empty(plain.CTimbreReflexSet(first, CReflexField.CReflexFieldText, "sɿ"));
+        Assert.Empty(plain.CTimbreReflexSet(first, CReflexField.CReflexFieldText, "sɿ").CReflexTypedHeads);
 
         Assert.Equal("sɿ", TTimbreReflexRead(editor)[0].CReflexText);
     }
@@ -279,15 +284,52 @@ public sealed class TTimbreReflex
         long first = TTimbreReflexRead(editor)[0].CReflexId;
         CTimbre timbre = editor.CEditorTimbre;
 
-        Assert.Empty(timbre.CTimbreReflexSet(first, CReflexField.CReflexFieldKind, "Kan-on"));
-        Assert.Empty(timbre.CTimbreReflexSet(first, CReflexField.CReflexFieldRomanization, "si"));
-        Assert.Empty(timbre.CTimbreReflexSet(first, CReflexField.CReflexFieldMeaning, "water"));
-        Assert.Empty(timbre.CTimbreReflexSet(first, CReflexField.CReflexFieldNote, "literary"));
+        IReadOnlyList<CReflexTyped> typed =
+        [
+            timbre.CTimbreReflexSet(first, CReflexField.CReflexFieldKind, "Kan-on"),
+            timbre.CTimbreReflexSet(first, CReflexField.CReflexFieldRomanization, "si"),
+            timbre.CTimbreReflexSet(first, CReflexField.CReflexFieldMeaning, "water"),
+            timbre.CTimbreReflexSet(first, CReflexField.CReflexFieldNote, "literary"),
+        ];
+
+        Assert.All(typed, static answer => Assert.Empty(answer.CReflexTypedHeads));
+        Assert.Equal(
+            ["Kan-on", "si", "water", "literary"], typed.Select(static answer => answer.CReflexTypedText));
+        Assert.Equal(
+            [
+                CReflexField.CReflexFieldKind,
+                CReflexField.CReflexFieldRomanization,
+                CReflexField.CReflexFieldMeaning,
+                CReflexField.CReflexFieldNote,
+            ],
+            typed.Select(static answer => answer.CReflexTypedField));
 
         CReflex row = TTimbreReflexRead(editor)[0];
         Assert.Equal(
             ["Kan-on", "si", "water", "literary"],
             new[] { row.CReflexKind, row.CReflexRomanization, row.CReflexMeaning, row.CReflexNote });
+    }
+
+    [Fact]
+    public void TimbreReflexSet_WhileTheDeskFills_TakesNothingAndAnswersTheHeldText()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TTimbreReflexPrepare(engine, TTimbreReflexSave(engine));
+        long first = TTimbreReflexRead(editor)[0].CReflexId;
+        CTimbre timbre = TInterfaceConduct.TTimbreCreate(
+            editor, TTimbreGuisePrepare(), TEngineFake.TEngineStubCreate<LDraftPort>());
+        List<CReflexTyped> typed = [];
+        editor.CEditorDesk.CDeskDraftChanged += _ =>
+            typed.Add(timbre.CTimbreReflexSet(first, CReflexField.CReflexFieldText, "zz"));
+
+        editor.CEditorDesk.CDeskDraftResonate();
+
+        CReflexTyped answer = Assert.Single(typed);
+        Assert.Equal(CReflexField.CReflexFieldText, answer.CReflexTypedField);
+        Assert.Equal("sy", answer.CReflexTypedText);
+        Assert.Empty(answer.CReflexTypedHeads);
+        Assert.Equal("sy", TTimbreReflexRead(editor)[0].CReflexText);
     }
 
     private static long TTimbreReflexSave(LEngine engine)
@@ -314,7 +356,7 @@ public sealed class TTimbreReflex
 
     private static CEditor TTimbreReflexPrepare(LEngine engine, long? entry)
     {
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(entry);
         return editor;

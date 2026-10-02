@@ -129,6 +129,14 @@ public sealed class QTranscriptionItem : INotifyPropertyChanged
         };
     }
 
+    internal static QTranscriptionItem QTranscriptionStateRefine(QTranscriptionItem row, CTranscriptionDraft spelled)
+    {
+        row.QTranscriptionItemKey = spelled.CTranscriptionDraftKey;
+        row.QTranscriptionItemScheme = spelled.CTranscriptionDraftScheme;
+        row.QTranscriptionItemText = spelled.CTranscriptionDraftText;
+        return row;
+    }
+
     internal static string QTranscriptionLabelRefine(string key, string scheme)
     {
         return QLocalizationCatalog.QLocalizationTextFind(key) ?? scheme;

@@ -1,23 +1,77 @@
 # QEditor.cs
 
-## `internal sealed class QEditor`
+## `internal sealed class QEditor : QChronicleHost`
 
-The editor's driver half: it owns the Conduct editor a panel built and wires it to the `PEditor` surface.
-Conduct's types stop here, so the surface keeps its controls, its Observes and its Refines.
-It follows `QLectern`, the display's driver over a Conduct area.
+The driver of the shared editable entry view, over the Veneer `PEditor` every editing panel places.
+It holds the plain scope the panel pulled by contract ID, so no Deportment control stands between.
+It builds the card half `QEditorCard`, the sound half `QEditorSound`, the typefaces `QEditorFont` and the tab strip `QStack`.
+The esteem strip lives in `QRegard`, the part-of-speech chips and field in `QMarker` and its menu in `QCategory`.
+It keeps the headword, the note, the command rail and the chronicle, and routes the editor's notices.
+It follows `QDisplay`, the display's driver over its Veneer scope.
 
-## `internal CEditor QEditorArea { get; }`
+One editor serves every panel that edits an entry.
+The input panel's editor stands on no entry and never puts it on one.
+A browse-style panel's editor is opened on the entry its panel edits.
+Which is which is a fact of the deportment, read off the vista the tab restored.
 
-The Conduct editor the panel's area built, through which the surface's Observes reach one gate each.
+## `internal QEditor(FrameworkElement surface)`
 
-## `internal CSoundingAnchor QEditorAnchor { get; }`
+Holds the scope and wires every Veneer part, as the editor control once did when its markup loaded.
+The markup's dictionaries are scanned for look rows, so the popup rows light without triggers.
+The scope is registered as a chronicle host, so undo and redo inside the editor walk its own desk.
+The header's clicks and icons are wired here, where the markup once named them.
+The headword's measuring twin follows its field's text and hint, where a style binding and trigger stood.
 
-The anchor menu over the same editor's desk, which holds the reflex row the open popup edits.
+## `internal QProspect QEditorProspect`
 
-## `internal void QEditorIntroduce(PWindow host, PEditor surface)`
+The Translation and mention dropdown, which the corpus opens over its transcript.
 
-Subscribes each of the editor's notices to one Refine of the surface.
+## `internal event Action? QEditorChronicleChanged;`
+
+Says the chronicle may now stand differently, so a host panel can light its own buttons.
+An embedded editor hides its own rail, and the panel around it carries undo and redo.
+
+## `internal void QEditorIntroduce(QWindow host, CEditor editor)`
+
+Takes the Conduct editor the panel's area built, and hands it to every part in turn.
+It then subscribes each of the editor's notices to one Refine of a part.
 Every subscriber makes at most one Conduct read, so a notice fans out here and never inside a member.
 The draft's writes follow the order the draft once showed in, so the sentence frame precedes the cards.
-The citation list, the language menu and the volume answer each opened workspace.
+The sentence frame and mention chips stay here, since their order against the card Refines matters.
 The editor's own subjects arrive as area events through the one marshal handed to `CEditorObserverAttach`.
+
+## `internal void QEditorVisibleRefine(Visibility visible)`
+
+Shows or collapses the editor the panel places, by the panel's ready verdict.
+
+## `internal void QEditorExitRefine()`
+
+Stops the editor through its one close gate, then releases playback through `QEditorPlayerRefine`.
+
+## `internal void QEditorPlayerRefine()`
+
+Releases the sound half's recording player.
+A panel whose editor the window's exit gate stops in Conduct calls it alone.
+
+## `private void QEditorDraftRefine(CEntryDraft draft)`
+
+Writes the headword and the note through the guarded writes, so a box being typed into keeps its caret.
+The note is written only while the ready verdict `CEditorNoteCheck` says the box does not hold it yet.
+So a line break just typed at the end of the note survives the draft's echo.
+The command rail shows only for the editor that owns its entries, which is the input tab's.
+The reading line follows the headword just written.
+
+## `private void QEditorStateRefine()`
+
+The controls that follow the desk's state: whether the editor is live, and the store, reset and chronicle buttons.
+
+## Inline notes
+
+### `surface.AddHandler(UIElement.LostFocusEvent, new RoutedEventHandler(QEditorFocusObserve));`
+
+Focus leaving any box is caught as the event bubbles, so unsent typing goes before the focus does.
+
+### `new QStack(surface);`
+
+The tab strip wires itself in its constructor and needs nothing after, so the editor keeps no handle to it.
+Its own subscriptions on the strip's controls keep it alive.

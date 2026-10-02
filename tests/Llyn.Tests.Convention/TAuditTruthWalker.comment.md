@@ -23,6 +23,7 @@ The walked roots, so a write to a shared field from another class is still seen.
 
 Every identifier of the walked roots, grouped by the symbol it resolves to.
 A field's references are looked up here rather than found by scanning every file again.
+A name inside `nameof` reads nothing, so it is left out of the index.
 
 ## `private sealed record TAuditTruthField(`
 
@@ -73,15 +74,22 @@ A field typed `object` is duplicating too, since an untyped slot hides what it h
 A field whose name ends in `State` is duplicating too, since only the engine resolves a state.
 A `??=` whose right side requests caches the answer and is duplicating.
 Visits every reference to the field, outside its class only when the field is shared.
-A write is sorted by its writer.
+A use of a ref parameter the field was passed to counts as inside, wherever its method lies.
+A write is sorted by `TAuditOriginWalker.TAuditWriterResolve`.
+A `ref` write into a plain helper is sorted by the argument the helper assigns.
+When both kinds of writer exist, `TAuditLookupWalker.TAuditLookupRead` may sort them again by lookup input.
 A field with an engine writer and a shell writer is contesting.
 The hit names the engine write by file when that write lies in another file.
+The hit lands on the first shell write and lists every other shell write after it.
+So a second shell writer can never hide behind the first.
 A read is checked once per member scope.
 
 ## `private static void TAuditScopeCheck(`
 
 Checks the field and the locals it taints inside one member for a sink.
 A hit is reported once per line and kind.
+A name inside `nameof` is skipped.
+A hit through a ref parameter names that parameter, as a hit through a local names the local.
 
 ## `private static HashSet<ISymbol> TAuditTaintRead(TAuditTruthField field, MemberDeclarationSyntax scope)`
 
@@ -92,17 +100,11 @@ One hop only, so a local built from a tainted local is not followed.
 
 Adds the symbol a declaration or name resolves to, when it resolves.
 
-## `private static string TAuditWriterResolve(ExpressionSyntax? value)`
-
-`clear` for null or default, else `engine` or `plain`.
-`engine` when the value reads a logic member, calls logic or a reader, or names a logic-typed parameter or local.
-A compound assignment, increment or out argument has no value and is plain.
-
 ## `private static SyntaxNode TAuditReferenceRead(IdentifierNameSyntax identifier)`
 
 The reference node: the access when the identifier is a member of `this` or a named owner, else itself.
 
-## `private static bool TAuditWriteCheck(SyntaxNode reference, out ExpressionSyntax? value)`
+## `internal static bool TAuditWriteCheck(SyntaxNode reference, out ExpressionSyntax? value)`
 
 True when the reference is assigned, incremented or passed by out or ref.
 Also true when a slot of it is assigned or a fill verb is called on it.
@@ -112,6 +114,7 @@ A fill without an argument empties the field and is sorted as a clear, not a wri
 ## `private static bool TAuditNameCheck(SyntaxNode node, HashSet<ISymbol> symbols)`
 
 True when the node contains an identifier resolving to one of the symbols.
+A name inside `nameof` does not count.
 
 ## `private static int TAuditLineRead(SyntaxNode node)`
 

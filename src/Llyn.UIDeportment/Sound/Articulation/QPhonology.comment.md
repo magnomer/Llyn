@@ -20,7 +20,7 @@ Row clicks are taken on the inventory, and every button and search field is subs
 
 Each named part is pulled from the page by its contract ID on every read.
 
-## `internal void QPhonologyIntroduce(PWindow host)`
+## `internal void QPhonologyIntroduce(QWindow host)`
 
 Puts the panel to work through the Conduct phonology panel it builds, which builds its own editor.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
@@ -93,11 +93,12 @@ The engine writes the document from stored rows.
 
 ## Inline notes
 
-### `_qArticulation.QArticulationIntroduce(QProbe, QPhonologyEditor.PPronunciationField);`
+### `_qArticulation.QArticulationIntroduce(`
 
 The aid is given both fields a phonetic character is typed into.
 The search comes first, because a reader who opens the charts with nothing focused is looking a pronunciation up.
 The editor's field takes over as soon as the reader focuses it.
+The editor's field is pulled from the editor's Veneer by its contract ID `PPronunciationField`.
 It is named once here rather than looked up whenever a character is chosen.
 
 ## `internal void QPhonologyVoyageRefine(bool past, bool future)`

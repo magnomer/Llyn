@@ -20,6 +20,14 @@
         <shell:WindowChrome CaptionHeight="0" CornerRadius="0" GlassFrameThickness="0" ResizeBorderThickness="6" />
     </shell:WindowChrome.WindowChrome>
 
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Mention/Menu/PMentionMenuTemplate.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
     <Border BorderBrush="{StaticResource Theme.Line}" BorderThickness="1">
         <Grid>
             <Grid.RowDefinitions>
@@ -111,55 +119,54 @@
                         </Grid.RowDefinitions>
 
                         <StackPanel Margin="0,8,0,0">
-                            <local:PTab
+                            <Button
                                 x:Name="PNavigationInput"
                                 Content="{DynamicResource Navigation.Input}"
-                                PTabChosen="True"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
-                            <local:PTab
+                            <Button
                                 x:Name="PNavigationLibrary"
                                 Content="{DynamicResource Navigation.Library}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
-                            <local:PTab
+                            <Button
                                 x:Name="PNavigationFavorite"
                                 Content="{DynamicResource Navigation.Favorite}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <Rectangle Style="{StaticResource Theme.Navigation.Gap}" />
-                            <local:PTab
+                            <Button
                                 x:Name="PNavigationPhonology"
                                 Content="{DynamicResource Navigation.Phonology}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
-                            <local:PTab
+                            <Button
                                 x:Name="PNavigationRepertoire"
                                 Content="{DynamicResource Navigation.Repertoire}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
-                            <local:PTab
+                            <Button
                                 x:Name="PNavigationTenor"
                                 Content="{DynamicResource Navigation.Tenor}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
-                            <local:PTab
+                            <Button
                                 x:Name="PNavigationTaxonomy"
                                 Content="{DynamicResource Navigation.Taxonomy}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <Rectangle Style="{StaticResource Theme.Navigation.Gap}" />
-                            <local:PTab
+                            <Button
                                 x:Name="PNavigationCorpus"
                                 Content="{DynamicResource Navigation.Corpus}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
-                            <local:PTab
+                            <Button
                                 x:Name="PNavigationSource"
                                 Content="{DynamicResource Navigation.Source}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
-                            <local:PTab
+                            <Button
                                 x:Name="PNavigationGuild"
                                 Content="{DynamicResource Navigation.Guild}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <Rectangle Style="{StaticResource Theme.Navigation.Gap}" />
-                            <local:PTab
+                            <Button
                                 x:Name="PNavigationXiesheng"
                                 Content="{DynamicResource Navigation.Xiesheng}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
-                            <local:PTab
+                            <Button
                                 x:Name="PNavigationYunjing"
                                 Content="{DynamicResource Navigation.Yunjing}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
@@ -167,11 +174,11 @@
 
                         <StackPanel Grid.Row="1" Margin="0,0,0,14">
                             <Rectangle Style="{StaticResource Theme.Navigation.Divider}" />
-                            <local:PTab
+                            <Button
                                 x:Name="PNavigationDuplex"
                                 Content="{DynamicResource Navigation.DualPanel}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
-                            <local:PTab
+                            <Button
                                 x:Name="PNavigationSettings"
                                 Content="{DynamicResource Navigation.Settings}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
@@ -180,7 +187,7 @@
                 </Border>
 
                 <Grid x:Name="PPanel" Grid.Column="1" Background="{StaticResource Theme.Surface}">
-                    <local:PInput x:Name="PInput" />
+                    <veneer:PInput x:Name="PInput" />
                     <veneer:PLibrary x:Name="PLibrary" Visibility="Collapsed" />
                     <veneer:PPhonology x:Name="PPhonology" Visibility="Collapsed" />
                     <veneer:PXiesheng x:Name="PXiesheng" Visibility="Collapsed" />
@@ -193,7 +200,7 @@
                     <veneer:PGuild x:Name="PGuild" Visibility="Collapsed" />
                     <veneer:PFavorite x:Name="PFavorite" Visibility="Collapsed" />
                     <veneer:PDuplex x:Name="PDuplex" Visibility="Collapsed" />
-                    <local:PSettings x:Name="PSettings" Visibility="Collapsed" />
+                    <veneer:PSettings x:Name="PSettings" Visibility="Collapsed" />
                 </Grid>
             </Grid>
 

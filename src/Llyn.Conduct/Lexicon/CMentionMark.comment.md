@@ -2,13 +2,10 @@
 
 ## `public sealed record CMentionMark(`
 
-One stored Mention of a text, as a mention text holds it.
-Drivers feed their controls this record directly, with no copy of their own.
+The link of the stored Mention a click found, which the mention area opens.
+It keeps only the entry and the sense, since the engine already settled the span.
 
 **Parameters**
 
-- `CMentionMarkId`: the Mention's own id within its text.
-- `CMentionMarkOffset`: where the Mention starts in the text.
-- `CMentionMarkLength`: how many characters the Mention spans.
 - `CMentionMarkEntry`: the entry the Mention links to, zero when unlinked.
 - `CMentionMarkSense`: the sense the Mention links to, zero when none.

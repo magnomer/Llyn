@@ -26,7 +26,9 @@ Drops one card, sent at once, unless the clerk finds it alone in its list.
 ## `public void LQuillCardMove(long card, int place)`
 
 Shifts one card to a place in its own list, sent at once.
-The clerk clamps the place, so a dragged index needs no check here.
+The card clerk answers whether that place is a move at all.
+A card the draft lacks, a place outside its list, or the place it holds sends nothing.
+So a drag hands every place its geometry finds, and only a real move becomes a request.
 
 ## `public void LQuillCardMove(long card, string ordinal)`
 

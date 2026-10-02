@@ -21,7 +21,7 @@ It pins the interface font for the same reason the part does.
 
 The form, inked and in the headword font the box inherits from `QFontRefine`.
 The size is fixed here, so the headword's own size does not carry into the rows.
-The template carries no bindings, so `PParadigm` writes each row's text and marks.
+The template carries no bindings, so `QParadigm` writes each row's text and marks.
 An empty form draws an ellipsis and says the lookup is off.
 A pending form draws the same ellipsis and says the form is being looked up.
 An unknown form draws a dash and says no source listed it.

@@ -42,8 +42,18 @@ The removal request itself stays free to empty a list, as a replay or an import 
 The place a typed number names for a card in its own list, counting from one.
 A number above the count lands the card last, and one below one lands it first.
 That is what a writer means by "9 of 3", rather than a refusal.
-Text that is no number, a card in neither list, or the place it holds already answers null.
+Text that is no number answers null.
+The clamped place is then judged by `LCardShiftRead`, as a dragged place is.
+
+## `public static int? LCardShiftRead(LEntryDraft content, long id, int place)`
+
+The place a card moves to in its own list, counting from zero, or null when nothing moves.
+A card in neither list, a place outside its list, or the place it holds already answers null.
 So a list of one never moves, and the caller sends nothing.
+
+## `private static IReadOnlyList<LCardDraft> LCardListRead(LEntryDraft content, long id)`
+
+The list that holds the card: the meanings when they carry it, and the collocations otherwise.
 
 ## `private static int LCardPlaceRead(IReadOnlyList<LCardDraft> cards, long id)`
 

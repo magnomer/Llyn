@@ -6,7 +6,7 @@ The start of the program as the user sees it.
 It applies the resources and holds every dialog a start can raise and the fault handlers.
 The veneer's application is running already, and this class reaches it through `Application.Current` alone.
 The host builds the engine and hands each step here as a seam, so this class names no engine type.
-A failed step shows its dialog and answers false or null, and the host decides how the run ends.
+A failed step shows its dialog, and the rest of the run is then never called.
 So nothing here calls `Shutdown` while the program is starting.
 
 ## `private Func<Exception, string?> _qBootstrapAudit = _ => null;`
@@ -18,14 +18,21 @@ It stays silent until the host attaches the engine's audit, since no fault handl
 
 Attaches the visual-state handlers once, before any window loads.
 
-## `public bool QBootstrapThemeApply(`
+## `public void QBootstrapIntroduce<QBootstrapEngine>(`
+
+Receives the start the host constructed and runs it step by step.
+It applies the theme, builds the engine, and hands the engine to the rest of the run.
+A theme that fails stops before the build, and an engine that fails stops before the rest.
+The host thus only constructs and wires, and the decision to continue lives here.
+
+## `private static bool QBootstrapThemeApply(`
 
 Applies the default catalog, the theme colors, and the shared control resources in one step.
 It answers whether the program can show anything at all.
 The catalog is what would have translated the failure message, so that one message stays inline in English.
 It is the documented emergency fallback, shown only when the interface text is unavailable.
 
-## `public QBootstrapEngine? QBootstrapBuild<QBootstrapEngine>(`
+## `private static QBootstrapEngine? QBootstrapBuild<QBootstrapEngine>(`
 
 Reads the workspace folder and builds the engine over it, answering null when either step fails.
 An unwritable folder must reach the user as a message naming the folder, not as a crash inside a constructor.
@@ -59,7 +66,7 @@ The message names the file that was kept, so the user can see nothing was thrown
 Hooks the dispatcher and the task scheduler once the engine exists to record what they catch.
 A fault before this point is a failed start, which its own dialog already reports.
 
-## `public void QBootstrapWindowShow(PWindow window)`
+## `public void QBootstrapWindowShow(QWindow window)`
 
 Shows the main window the host built over the deportment, never over the engine itself.
 

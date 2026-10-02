@@ -6,12 +6,8 @@ namespace Llyn.UIDeportment;
 
 internal sealed partial class QCorpus
 {
-    private CDesk QTranscriptDesk => _qCorpusDesk;
-
     private void QTranscriptDeskIntroduce()
     {
-        QTranscriptDesk.CDeskFailed += _qCorpusHost.PWindowFailureRefine;
-        QTranscriptDesk.CDeskRefused += _qCorpusHost.PWindowEnvoy.CEnvoyFailureShow;
         _cCorpus.CCorpusDraftChanged += QTranscriptDraftRefine;
     }
 

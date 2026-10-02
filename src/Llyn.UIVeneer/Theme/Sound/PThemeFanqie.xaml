@@ -293,7 +293,7 @@
                 <Border x:Name="PFanqieChip" Grid.Column="1" Style="{StaticResource Theme.Fanqie.Chip}">
                     <TextBlock x:Name="PFanqieBook" Style="{StaticResource Theme.Fanqie.Book}" />
                 </Border>
-                <ItemsControl x:Name="PFanqieLines" Grid.Column="2" Margin="0,2,0,6" ItemTemplate="{StaticResource Theme.Fanqie.Line}" />
+                <ItemsControl x:Name="QFanqieLines" Grid.Column="2" Margin="0,2,0,6" ItemTemplate="{StaticResource Theme.Fanqie.Line}" />
                 <Border Grid.Column="3" Style="{StaticResource Theme.Fanqie.Origin}">
                     <TextBlock x:Name="PFanqieSource" Style="{StaticResource Theme.Fanqie.Source}" />
                 </Border>

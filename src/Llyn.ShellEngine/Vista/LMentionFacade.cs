@@ -27,28 +27,20 @@ internal sealed class LMentionFacade
         }
     }
 
-    public LMentionResult LEngineMentionFind(
-        string text, string language, int offset, IReadOnlyList<LMention> mentions)
+    public LMentionResult LEngineMentionFind(LEntryDraft shown, long sentence, int offset)
     {
         lock (_lMentionFacadeGate)
         {
-            return LMentionFacadeStaff.LEngineStaffMention.LMentionClerkFind(text, language, offset, mentions);
+            return LMentionFacadeStaff.LEngineStaffMention.LMentionClerkFind(shown, sentence, offset);
         }
     }
 
-    public LMentionResult LEngineMentionFind(
-        string text, string language, LEntryDraft? shown, int offset, IReadOnlyList<LMention>? mentions)
+    public LMentionResult LEngineEtymologyFind(LEntryDraft shown, int offset)
     {
-        return LEngineMentionFind(
-            text,
-            language.Length > 0 ? language : shown?.LEntryDraftLanguage ?? string.Empty,
-            offset,
-            mentions ?? []);
-    }
-
-    public IReadOnlyList<LMentionPiece> LEngineMentionDivide(string text, IReadOnlyList<LMention> mentions)
-    {
-        return LMentionClerk.LMentionClerkDivide(text, mentions);
+        lock (_lMentionFacadeGate)
+        {
+            return LMentionFacadeStaff.LEngineStaffMention.LMentionEtymologyFind(shown, offset);
+        }
     }
 
     public int LEngineUnitRead(string text, int offset)

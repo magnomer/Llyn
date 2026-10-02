@@ -5,6 +5,7 @@
 Covers the mention gates over fake ports that answer with the real span rules.
 A linked Mention divides the text into three pieces, and only the linked one is marked.
 A selection and a caret convert between code points and UTF-16 units both ways.
+A piece answers the unit of an offset counted from its own start, and nothing for an offset outside it.
 A draft's Mentions resolve into stored marks, and no draft list reads none.
 A click result carries the stored Mention's entry and sense, and a click on nothing stored carries no mark.
 A click on a stored Mention opens its entry, and its sense is raised only after the open went through.

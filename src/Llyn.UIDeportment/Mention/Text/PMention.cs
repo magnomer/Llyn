@@ -12,27 +12,21 @@ public sealed class PMention : TextBlock
 {
     public static readonly DependencyProperty PMentionHostProperty = DependencyProperty.RegisterAttached(
         "PMentionHost",
-        typeof(PWindow),
+        typeof(QWindow),
         typeof(PMention),
-        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits, PMentionChangeRefine));
+        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
 
-    public static readonly DependencyProperty PMentionTextProperty = DependencyProperty.Register(
-        nameof(PMentionText),
-        typeof(string),
+    public static readonly DependencyProperty PMentionSentenceProperty = DependencyProperty.Register(
+        nameof(PMentionSentence),
+        typeof(long),
         typeof(PMention),
-        new FrameworkPropertyMetadata(string.Empty, PMentionChangeRefine));
+        new FrameworkPropertyMetadata(0L));
 
-    public static readonly DependencyProperty PMentionMentionProperty = DependencyProperty.Register(
-        nameof(PMentionMention),
-        typeof(IReadOnlyList<CMentionMark>),
+    public static readonly DependencyProperty PMentionPieceProperty = DependencyProperty.Register(
+        nameof(PMentionPiece),
+        typeof(IReadOnlyList<QMentionPiece>),
         typeof(PMention),
         new FrameworkPropertyMetadata(null, PMentionChangeRefine));
-
-    public static readonly DependencyProperty PMentionLanguageProperty = DependencyProperty.Register(
-        nameof(PMentionLanguage),
-        typeof(string),
-        typeof(PMention),
-        new FrameworkPropertyMetadata(string.Empty));
 
     public static readonly RoutedEvent PMentionClickEvent = EventManager.RegisterRoutedEvent(
         nameof(PMentionClick),
@@ -55,22 +49,16 @@ public sealed class PMention : TextBlock
         remove => RemoveHandler(PMentionClickEvent, value);
     }
 
-    public string PMentionText
+    public long PMentionSentence
     {
-        get => (string?)GetValue(PMentionTextProperty) ?? string.Empty;
-        set => SetValue(PMentionTextProperty, value);
+        get => (long)GetValue(PMentionSentenceProperty);
+        set => SetValue(PMentionSentenceProperty, value);
     }
 
-    public IReadOnlyList<CMentionMark>? PMentionMention
+    internal IReadOnlyList<QMentionPiece>? PMentionPiece
     {
-        get => (IReadOnlyList<CMentionMark>?)GetValue(PMentionMentionProperty);
-        set => SetValue(PMentionMentionProperty, value);
-    }
-
-    public string PMentionLanguage
-    {
-        get => (string?)GetValue(PMentionLanguageProperty) ?? string.Empty;
-        set => SetValue(PMentionLanguageProperty, value);
+        get => (IReadOnlyList<QMentionPiece>?)GetValue(PMentionPieceProperty);
+        set => SetValue(PMentionPieceProperty, value);
     }
 
     protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -87,10 +75,11 @@ public sealed class PMention : TextBlock
         _pMentionPress = null;
 
         Point release = e.GetPosition(this);
+        int? clicked = PMentionOffsetRead(release);
         if (press is null
             || Math.Abs(release.X - press.Value.X) > SystemParameters.MinimumHorizontalDragDistance
             || Math.Abs(release.Y - press.Value.Y) > SystemParameters.MinimumVerticalDragDistance
-            || PMentionOffsetRead(release) is not int offset)
+            || clicked is not int offset)
         {
             return;
         }
@@ -101,7 +90,7 @@ public sealed class PMention : TextBlock
 
     internal Rect PMentionPieceRead(int offset)
     {
-        if (PMentionHost is not PWindow host)
+        if (PMentionHost is not QWindow host)
         {
             return new Rect(0, ActualHeight, 0, 0);
         }
@@ -113,18 +102,17 @@ public sealed class PMention : TextBlock
                 continue;
             }
 
-            if (run.Tag is not CMentionPiece piece)
+            if (run.Tag is not QMentionPiece piece)
             {
                 continue;
             }
 
-            if (offset < piece.CMentionPieceOffset || offset >= piece.CMentionPieceEnd)
+            if (host.QWindowAtelier.CAtelierMention.CMentionUnitRead(
+                    run.Text, piece.QMentionPieceOffset, offset) is not int unit)
             {
                 continue;
             }
 
-            int unit = host.PWindowAtelier.CAtelierMention.CMentionUnitRead(
-                run.Text, offset - piece.CMentionPieceOffset);
             TextPointer pointer = run.ContentStart.GetPositionAtOffset(unit) ?? run.ContentStart;
             Rect found = pointer.GetCharacterRect(LogicalDirection.Forward);
             if (!found.IsEmpty)
@@ -144,24 +132,16 @@ public sealed class PMention : TextBlock
         }
     }
 
-    private PWindow? PMentionHost => (PWindow?)GetValue(PMentionHostProperty);
+    private QWindow? PMentionHost => (QWindow?)GetValue(PMentionHostProperty);
 
     private void PMentionShow()
     {
-        string text = PMentionText;
         Inlines.Clear();
-        if (PMentionHost is not PWindow host)
+        foreach (QMentionPiece piece in PMentionPiece ?? [])
         {
-            Inlines.Add(new Run(text));
-            return;
-        }
+            Run run = new(piece.QMentionPieceText) { Tag = piece };
 
-        foreach (CMentionPiece piece in host.PWindowAtelier.CAtelierMention.CMentionDivide(
-                     text, PMentionMention ?? []))
-        {
-            Run run = new(piece.CMentionPieceText) { Tag = piece };
-
-            PMentionStyleApply(run, piece.CMentionPieceLinked);
+            PMentionStyleApply(run, piece.QMentionPieceLinked);
 
             Inlines.Add(run);
         }
@@ -184,19 +164,19 @@ public sealed class PMention : TextBlock
             return null;
         }
 
-        if (run.Tag is not CMentionPiece piece)
+        if (run.Tag is not QMentionPiece piece)
         {
             return null;
         }
 
-        if (PMentionHost is not PWindow host)
+        if (PMentionHost is not QWindow host)
         {
             return null;
         }
 
         int unit = run.ContentStart.GetOffsetToPosition(pointer);
         return PMentionOffsetRead(
-            piece.CMentionPieceOffset, host.PWindowAtelier.CAtelierMention.CMentionOffsetRead(run.Text, unit));
+            piece.QMentionPieceOffset, host.QWindowAtelier.CAtelierMention.CMentionOffsetRead(run.Text, unit));
     }
 
     private static void PMentionStyleApply(Run run, bool? linked)

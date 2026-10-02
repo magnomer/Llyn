@@ -10,12 +10,13 @@ Each panel paints one ready block its sounding read answers, font first, then it
 
 Takes the editor for every sounding read and gate.
 Each panel answers a tenure start and its own change event from the editor, one subscriber each.
-The fanqie panel's diwei and representative notices are wired once, to their observers.
+Both panels' renewal notices and the fanqie panel's diwei and representative notices are wired once, to their observers.
 
 ## `private void QCadenceScriptRefine()`
 
-Offers the refresh button only when the block says the rows may be fetched again.
-The button then calls `QCadenceScriptObserve`, and `QCadenceFanqieRefine` does the same for the rime books.
+Scans the rows with the panel's `QScriptFailureRefine`, so a picture that fails to decode reaches the failure notice.
+It also hands the block's verdict on whether the rows may be fetched again.
+The panel shows its refresh button from that flag, and `QCadenceFanqieRefine` does the same for the rime books.
 
 ## `private void QCadenceFanqieRefine()`
 

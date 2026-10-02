@@ -10,14 +10,9 @@ It also answers the language facts a panel words its fields by.
 Those are silent, phonemic, respelled, the tone list, the schemes and the parts of speech.
 `LEngine` implements it today, and a phonology clerk takes it over when the parts are dismantled.
 
-## `const int LEngineContourFloor = LLanguageClerk.LLanguageContourFloor;`
+## `static IReadOnlyList<int> LEngineContourScale`
 
-The lowest pitch level a tone contour draws, passed up from the rule that parses the levels.
-`LEngineContourCeiling` is the highest.
-
-## `const int LEngineContourCeiling = LLanguageClerk.LLanguageContourCeiling;`
-
-The highest pitch level a tone contour draws, passed up from the rule that parses the levels.
+The pitch levels a tone contour draws, highest first, passed up from the rule that parses the levels.
 
 ## `IReadOnlyList<LContour> LEngineContourRead(string language, string ipa);`
 

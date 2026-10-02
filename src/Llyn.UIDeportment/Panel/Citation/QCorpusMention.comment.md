@@ -12,9 +12,9 @@ Places the Entry picker over the field's selection, then calls the corpus's open
 The picker belongs to an editor, so the corpus's own editor shows it.
 The command runs only when the selection spans anything, so no empty look happens here.
 
-## `private void QTranscriptPickObserve(TextBox box, long entryId)`
+## `private void QTranscriptPickObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Hears the corpus editor's `PProspectPicked` and links the transcript's selection to the chosen Entry.
+Hears the mention pick command run on the transcript and links its selection to the chosen Entry.
 The box's text and selection are handed raw, and the span is read below Conduct.
 
 ## `private void QTranscriptMeaningRefine(object sender, ExecutedRoutedEventArgs e)`
@@ -52,3 +52,4 @@ Whether a chip was asked from, or a Mention stands under the selection, as the c
 ## `private void QTranscriptMentionRefine()`
 
 Paints the chip line from the corpus's ready read, so a draft that holds no Mention shows an empty line.
+The read's labels become chips through `QMentionChipCreate` first.

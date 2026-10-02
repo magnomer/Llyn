@@ -125,7 +125,8 @@ internal static partial class TAuditTruthWalker
             string member = TAuditMemberRead(scope);
 
             HashSet<string> seen = new(StringComparer.Ordinal);
-            foreach (IdentifierNameSyntax identifier in scope.DescendantNodes().OfType<IdentifierNameSyntax>())
+            foreach (IdentifierNameSyntax identifier in scope.DescendantNodes(node => !TAuditNameofCheck(node))
+                         .OfType<IdentifierNameSyntax>())
             {
                 if (!TAuditFieldCheck(identifier, answered) || TAuditWriteCheck(identifier, out _))
                 {
@@ -246,7 +247,7 @@ internal static partial class TAuditTruthWalker
 
     private static bool TAuditAnswerCheck(ExpressionSyntax value)
     {
-        return value.DescendantNodesAndSelf().Any(node => node switch
+        return value.DescendantNodesAndSelf(node => !TAuditNameofCheck(node)).Any(node => node switch
         {
             InvocationExpressionSyntax or BaseObjectCreationExpressionSyntax
                 => TAuditCallRead((ExpressionSyntax)node) is not null,

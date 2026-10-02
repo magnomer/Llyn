@@ -128,26 +128,10 @@ internal static class TInterfaceConduct
     }
 
     internal static CDesk TDeskCreate(LEngine engine, string scope, CEnvoy envoy) =>
-        new(new LDraftOutlet(engine), scope, envoy);
+        new(new LDraftOutlet(engine), new LSettingsOutlet(engine), scope, envoy);
 
     internal static CDesk TDeskCreate(LEngine engine, string scope, CEnvoy envoy, string origin, CSubject subject) =>
-        new(new LDraftOutlet(engine), scope, envoy, origin, subject);
-
-    internal static CEditor TEditorCreate(LEngine engine) => new(
-        new LDraftOutlet(engine),
-        new LEntryOutlet(engine),
-        new LPhonologyOutlet(engine),
-        new LSettingsOutlet(engine),
-        new LMediaOutlet(engine),
-        TEnvoyFake.TEnvoyCreate(false, []));
-
-    internal static CEditor TEditorCreate(LEngine engine, LPhonologyPort phonology) =>
-        TEditorCreate(
-            new LDraftOutlet(engine),
-            new LEntryOutlet(engine),
-            phonology,
-            new LSettingsOutlet(engine),
-            TEngineFake.TEngineStubCreate<LMediaPort>());
+        new(new LDraftOutlet(engine), new LSettingsOutlet(engine), scope, envoy, origin, subject);
 
     internal static LMediaPort TMediaCreate(LEngine engine) => new LMediaOutlet(engine);
 
@@ -157,11 +141,6 @@ internal static class TInterfaceConduct
             ["LEngineLocationRead"] = _ => null,
             ["LEngineScreenRead"] = _ => null,
         });
-
-    internal static CEditor TEditorCreate(
-        LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media) =>
-        new(drafts, entries, phonology, settings, media, TEnvoyFake.TEnvoyCreate(false, []));
-    internal static void TEditorVistaRestore(this CEditor editor, LVista vista) => editor.LEditorVistaRestore(vista);
 
     internal static CVistaRow TPanelRowRead(LVistaRow row) => CPanel.CPanelRowRead(row);
 
@@ -331,7 +310,6 @@ internal static class TInterfaceConduct
             editor.CEditorDesk,
             phonology,
             editor.CEditorDisplay,
-            TEngineFake.TEngineStubCreate<LMediaPort>(),
             drafts,
             TEngineFake.TEngineStubCreate<LSettingsPort>());
 
@@ -346,14 +324,6 @@ internal static class TInterfaceConduct
     internal static CEntryDraft TCardEntryRead(
         LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets) =>
         CFolio.CFolioEntryRead(draft, targets, TMediaCreate());
-
-    internal static CEntryDraft? TEditorDraftRead(this CEditor editor) =>
-        editor.CEditorDesk.CDeskTenure is LTenure held && held.LTenureRead() is { } draft
-            ? CFolio.CFolioEntryRead(
-                draft.LDraftContent,
-                held.LTenureTranslationRead(draft.LDraftContent),
-                editor.CEditorDisplay.LDisplayMediaPort)
-            : null;
 
     internal static void TDeskVistaRestore(this CDesk desk, LVista vista) => desk.CDeskVistaRestore(vista);
 
@@ -468,8 +438,6 @@ internal static class TInterfaceConduct
     internal static bool TShelfChangeRead(this CShelf shelf) => shelf.LShelfChangeRead();
 
     internal static bool TShelfDraftFinish(this CShelf shelf, bool store) => shelf.LShelfDraftFinish(store);
-
-    internal static bool TEditorFinish(this CEditor editor, bool store) => editor.LEditorFinish(store);
 
     internal static bool TDeskChangeCheck(this CDesk desk) => desk.LDeskChangeCheck();
 

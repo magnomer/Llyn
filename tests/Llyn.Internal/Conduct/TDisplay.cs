@@ -56,7 +56,7 @@ public sealed class TDisplay
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
 
         Assert.Null(editor.CEditorDisplay.TDisplayFrequencyRead(null, "once in {0} words"));
     }
@@ -67,7 +67,7 @@ public sealed class TDisplay
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long id = TExemplar.TExemplarSave(engine, TDisplayDraftCreate([]))[0];
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
 
         Assert.Null(editor.CEditorDisplay.TDisplayFrequencyRead(id, "once in {0} words"));
     }
@@ -77,7 +77,7 @@ public sealed class TDisplay
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         LEntryDraft draft = TInterface.TEntryDraftCreate(
             "kindle",
             "English",
@@ -118,7 +118,7 @@ public sealed class TDisplay
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
 
         IReadOnlyList<CCompassRow> rows = editor.CEditorDisplay.CDisplayCompassRead(
             [CCompassPart.CCompassPartMeaning, CCompassPart.CCompassPartIncoming, CCompassPart.CCompassPartNote],

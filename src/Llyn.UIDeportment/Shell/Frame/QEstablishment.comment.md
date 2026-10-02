@@ -20,7 +20,7 @@ The observer stays inside this delegate, so no field holds an engine announcemen
 
 Each named part is pulled from the bar by its contract ID on every read.
 
-## `internal void QEstablishmentAttach(PWindow host)`
+## `internal void QEstablishmentAttach(QWindow host)`
 
 Subscribes the bar to `CWorkspaceEstablishmentChanged`, which the workspace raises on every open and every bulletin.
 So a change made anywhere reaches the bar without any panel telling it.

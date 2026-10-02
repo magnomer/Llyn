@@ -17,7 +17,7 @@ It ties both droppers to their popups, sets every icon, and subscribes every cli
 
 Each named part is pulled from the page by its contract ID on every read.
 
-## `internal void QFavoriteIntroduce(PWindow host)`
+## `internal void QFavoriteIntroduce(QWindow host)`
 
 Puts the panel to work through its Conduct `CFavorite`, which it builds over the atelier.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.

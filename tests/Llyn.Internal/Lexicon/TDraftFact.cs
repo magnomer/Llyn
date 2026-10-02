@@ -106,7 +106,7 @@ public sealed class TDraftFact
             "the grey wolf", [TInterface.TMentionCreate(1, 4, 4, 5, 2), TInterface.TMentionCreate(2, 9, 4, 0)]);
 
         Assert.Equal([0, 4, 8, 9], pieces.Select(piece => piece.LMentionPieceOffset));
-        Assert.Equal([4, 8, 9, 13], pieces.Select(piece => piece.LMentionPieceEnd));
+        Assert.Equal(["the ", "grey", " ", "wolf"], pieces.Select(piece => piece.LMentionPieceText));
         Assert.Equal(
             [false, true, false, false],
             pieces.Select(piece => piece.LMentionPieceStored is { LMentionLinked: true }));
@@ -132,5 +132,15 @@ public sealed class TDraftFact
         Assert.False(single.CMentionResultMany);
         Assert.True(many.CMentionResultMany);
         Assert.Equal(0, many.CMentionResultFirst);
+    }
+
+    [Theory]
+    [InlineData("a tale", true)]
+    [InlineData("  a tale  ", true)]
+    [InlineData(" \t\n ", false)]
+    [InlineData("", false)]
+    public void EtymologyDraftNarrated_Text_HoldsWordsOnlyWhenNotBlank(string text, bool expected)
+    {
+        Assert.Equal(expected, TInterface.TEtymologyDraftCreate(text).LEtymologyDraftNarrated);
     }
 }

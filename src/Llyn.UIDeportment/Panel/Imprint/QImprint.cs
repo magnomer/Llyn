@@ -84,7 +84,7 @@ internal sealed class QImprint : QChronicleHost
 
     private TextBox QImprintNote => QContract.QContractFind<TextBox>(_qImprintSurface, "PImprintNote");
 
-    internal void QImprintIntroduce(PWindow host, CImprint imprint)
+    internal void QImprintIntroduce(CImprint imprint)
     {
         _cImprint = imprint;
         _cImprint.CImprintChanged += QAuthorRefine;
@@ -92,7 +92,6 @@ internal sealed class QImprint : QChronicleHost
         _cImprint.CImprintReverted += QAuthorRestoreRefine;
         _cImprint.CImprintByline.CBylineChanged += QBylineRefine;
         _cImprint.CImprintReferenceChanged += QImprintDraftRefine;
-        _cImprint.CImprintDesk.CDeskFailed += host.PWindowFailureRefine;
     }
 
     internal void QImprintClearRefine()

@@ -365,7 +365,7 @@ public sealed class TAnthology
     }
 
     [Fact]
-    public void AnthologyExampleRead_SoundText_LinksExcerpt()
+    public void AnthologyExampleRead_SoundText_DividesExcerptAtItsMentions()
     {
         LExample example = TInterface.TExampleCreate(
                 5, "English", TInterface.TStateValueCreate("a cat"), null, TInterface.TStateAnchorRead(9))
@@ -382,7 +382,8 @@ public sealed class TAnthology
         Assert.Null(held.CExampleWording);
         Assert.False(held.CExampleMuted);
         Assert.Equal("2 quotes", held.CExampleTally);
-        Assert.Equal([40L], held.CExampleExcerpt.Select(mention => mention.CMentionMarkEntry));
+        Assert.Equal(["a ", "cat"], held.CExamplePiece.Select(piece => piece.CMentionPieceText));
+        Assert.Equal([null, true], held.CExamplePiece.Select(piece => piece.CMentionPieceLinked));
     }
 
     [Fact]
@@ -400,7 +401,7 @@ public sealed class TAnthology
         Assert.Equal("Display.Unknown", held.CExampleWording);
         Assert.False(held.CExampleMuted);
         Assert.Null(held.CExampleSource);
-        Assert.Empty(held.CExampleExcerpt);
+        Assert.Empty(held.CExamplePiece);
     }
 
     [Fact]

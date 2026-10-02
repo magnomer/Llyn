@@ -2,6 +2,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Convention.Tests;
 
@@ -12,13 +13,15 @@ internal static class TAuditContractWalker
     {
         List<TViolation> violations = [];
         IReadOnlySet<string> ids = TAuditIdRead(markupPaths);
-        foreach (string path in driverPaths)
+        IReadOnlyList<SyntaxNode> roots = TAuditBinder.TAuditWalkRead(driverPaths);
+        foreach (SyntaxNode root in roots)
         {
-            TAuditHardwiringScan(path, violations);
+            TAuditHardwiringScan(root, violations);
         }
 
-        foreach (SyntaxNode root in TAuditBinder.TAuditWalkRead(driverPaths))
+        foreach (SyntaxNode root in roots)
         {
+            TAuditLoadScan(root, violations);
             TAuditMasqueradingScan(root, violations);
             TAuditDanglingScan(root, ids, violations);
         }
@@ -26,13 +29,47 @@ internal static class TAuditContractWalker
         return violations;
     }
 
-    private static void TAuditHardwiringScan(string path, List<TViolation> violations)
+    private static void TAuditLoadScan(SyntaxNode root, List<TViolation> violations)
     {
-        string[] lines = File.ReadAllLines(path);
-        for (int index = 0; index < lines.Length; index++)
+        SemanticModel model = TAuditBinder.TAuditModelRead(root);
+        foreach (InvocationExpressionSyntax call in root.DescendantNodes().OfType<InvocationExpressionSyntax>())
         {
+            if (model.GetSymbolInfo(call).Symbol is not IMethodSymbol { Name: "LoadComponent" } method
+                || method.ContainingType?.ToDisplayString() != "System.Windows.Application")
+            {
+                continue;
+            }
+
+            foreach (ArgumentSyntax argument in call.ArgumentList.Arguments)
+            {
+                if (model.GetTypeInfo(argument.Expression).Type?.ToDisplayString() != "System.Uri"
+                    || argument.Expression is BaseObjectCreationExpressionSyntax
+                    {
+                        ArgumentList.Arguments: [{ Expression: LiteralExpressionSyntax { Token.Value: string } }, ..]
+                    })
+                {
+                    continue;
+                }
+
+                violations.Add(new TViolation(
+                    call.SyntaxTree.FilePath,
+                    argument.GetLocation().GetLineSpan().StartLinePosition.Line + 1,
+                    argument.Expression.ToString(),
+                    "Hardwiring",
+                    "driver loads the surface through a built URI"));
+            }
+        }
+    }
+
+    private static void TAuditHardwiringScan(SyntaxNode root, List<TViolation> violations)
+    {
+        string path = root.SyntaxTree.FilePath;
+        TextLineCollection lines = root.SyntaxTree.GetText().Lines;
+        for (int index = 0; index < lines.Count; index++)
+        {
+            string line = lines[index].ToString();
             string? marker = TAuditStrictSetting.TAuditHardwiringMarkers
-                .FirstOrDefault(item => lines[index].Contains(item, StringComparison.Ordinal));
+                .FirstOrDefault(item => line.Contains(item, StringComparison.Ordinal));
             if (marker is not null)
             {
                 violations.Add(new TViolation(path, index + 1, marker, "Hardwiring", "driver line names the surface"));
@@ -77,6 +114,13 @@ internal static class TAuditContractWalker
                 continue;
             }
 
+            TypeDeclarationSyntax? enclosing = call.FirstAncestorOrSelf<TypeDeclarationSyntax>();
+            if (enclosing is not null
+                && SymbolEqualityComparer.Default.Equals(model.GetDeclaredSymbol(enclosing), method.ContainingType))
+            {
+                continue;
+            }
+
             foreach (ArgumentSyntax argument in call.ArgumentList.Arguments)
             {
                 if (model.GetTypeInfo(argument.Expression).ConvertedType?.SpecialType != SpecialType.System_String)
@@ -110,7 +154,7 @@ internal static class TAuditContractWalker
             XDocument document;
             try
             {
-                document = XDocument.Load(path);
+                document = XDocument.Parse(TAuditBinder.TAuditMarkupRead(path));
             }
             catch (XmlException)
             {

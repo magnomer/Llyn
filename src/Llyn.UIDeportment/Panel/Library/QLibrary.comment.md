@@ -18,7 +18,7 @@ It ties both droppers to their popups, sets every icon, and subscribes every cli
 Each named part is pulled from the page by its contract ID on every read.
 `QLibraryLectern` is internal, because the window scrolls the lectern's card to a sense.
 
-## `internal void QLibraryIntroduce(PWindow host)`
+## `internal void QLibraryIntroduce(QWindow host)`
 
 Puts the panel to work through its Conduct `CLibrary`, which it builds over the atelier.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
@@ -154,7 +154,7 @@ The engine writes the document from stored rows.
 
 ## Inline notes
 
-### `QLibraryEditor.PEditorIntroduce(host, new QEditor(_cLibrary.CLibraryEditor));`
+### `_qLibraryEditor.QEditorIntroduce(host, _cLibrary.CLibraryEditor);`
 
 The editor opens on no entry, and this panel puts it on one when the reader asks to write.
 The editor deportment was made for this panel, so its held work is told apart from the input panel's.

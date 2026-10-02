@@ -6,20 +6,23 @@ The GUI-only state of the main window: its geometry, the panel widths and whethe
 A console has none of it, so it lives in Deportment and never reaches Conduct.
 It keeps the state through Deportment's Capsule, in a file under the workspace root.
 It holds one state record and swaps it whole on every change.
-It reloads whenever the workspace root it reads has moved, so no engine notice is needed.
+It is handed the workspace root as a plain path and holds no Conduct handle.
 
 ## `public event Action? QPostureCleared;`
 
-Raised once the stored widths are dropped, so `PLayout` puts the grids back at their markup widths.
+Raised once the stored widths are dropped, so `QLayout` puts the grids back at their markup widths.
 
 ## `public event Action? QPostureLinkedChanged;`
 
 Raised once the linked switch has flipped.
 The summary row and the tabs on screen follow in the same call.
 
-## `internal QPosture(Func<string> root)`
+## `public void QPostureRootRefine(string root)`
 
-Keeps the reader of the current workspace root, and loads nothing until first asked.
+Loads the state stored under `root`, unless it is the root already held.
+A move cancels a waiting write meant for the old root.
+A session with no workspace folder starts from the default state, which the Capsule answers.
+Until the first call the posture holds the default state and writes nothing.
 
 ## `public LCapsuleContent QPostureRead()`
 
@@ -56,12 +59,6 @@ It then raises `QPostureCleared`, so the layout on screen follows in the same ca
 
 Cancels any write still waiting.
 
-## `private LCapsuleContent QPostureCurrentRead()`
-
-The state of the current root, read again whenever the root has moved.
-A move cancels a waiting write meant for the old root.
-A session with no workspace folder starts from the default state.
-
 ## `private async Task QPostureWindowRun(CancellationTokenSource pending, LCapsuleWindow window, int delay)`
 
 Waits out the delay, then writes unless a later call replaced or cancelled the wait.
@@ -74,4 +71,5 @@ Cancels and releases the waiting write, if there is one.
 
 Holds `content` and writes it, unless it equals the content already held.
 A folder that cannot be written, or no folder at all, keeps the state in memory only.
+The Capsule itself skips a save with no folder.
 Losing a window's size is no reason to interrupt the user.

@@ -21,8 +21,6 @@ internal sealed class QDrawer
 
     private readonly ListBox _qDrawerView;
 
-    private int _qDrawerChosen = -1;
-
     internal QDrawer(Popup popup, Border sheet, ListBox view, MouseButtonEventHandler press)
     {
         ArgumentNullException.ThrowIfNull(popup);
@@ -61,33 +59,26 @@ internal sealed class QDrawer
         _qDrawerPopup.PlacementTarget = anchor;
         _qDrawerSheet.MinWidth = anchor.ActualWidth;
         _qDrawerPopup.IsOpen = true;
-        QDrawerChosenSet(-1);
+        _qDrawerView.SelectedIndex = -1;
     }
 
     internal void QDrawerHide()
     {
         _qDrawerPopup.IsOpen = false;
-        QDrawerChosenSet(-1);
+        _qDrawerView.SelectedIndex = -1;
         _qDrawerList.Clear();
     }
 
     internal void QDrawerMove(bool down)
     {
-        int count = _qDrawerList.Count;
-        if (count == 0)
+        int? lit = CLantern.CLanternMove(_qDrawerView.SelectedIndex, _qDrawerView.Items.Count, down ? 1 : -1);
+        if (lit is not int chosen)
         {
             return;
         }
 
-        int chosen = _qDrawerChosen < 0 ? (down ? count - 1 : 0) : _qDrawerChosen;
-        QDrawerChosenSet((chosen + (down ? 1 : count - 1)) % count);
-        _qDrawerView.ScrollIntoView(_qDrawerList[_qDrawerChosen]);
-    }
-
-    private void QDrawerChosenSet(int chosen)
-    {
-        _qDrawerChosen = chosen;
         _qDrawerView.SelectedIndex = chosen;
+        _qDrawerView.ScrollIntoView(_qDrawerView.SelectedItem);
     }
 
     private static CustomPopupPlacement[] QDrawerPlace(Size popup, Size target, Point offset)

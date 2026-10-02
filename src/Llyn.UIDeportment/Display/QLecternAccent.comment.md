@@ -14,10 +14,11 @@ The contour box's syllables property, handed in by the page so the driver copies
 
 Builds the half over the display's sound area, whose reads it paints from.
 
-## `public void QLecternAccentIntroduce(UIElement surface, ColumnDefinition lead, Image flag, TextBlock label, TextBlock opener, TextBlock pronunciation, TextBlock closer, ItemsControl accents, DependencyObject contour, DependencyProperty syllables)`
+## `public void QLecternAccentIntroduce(UIElement surface, ColumnDefinition lead, Image flag, TextBlock label, TextBlock opener, TextBlock pronunciation, TextBlock closer, ItemsControl accents, DependencyObject contour, DependencyProperty syllables, DependencyProperty scale)`
 
 Holds the pronunciation surface and its parts, and binds the accent list to its rows.
 `syllables` is the contour's own property, set as a value so no veneer type is named here.
+`scale` is the contour's scale property, set once here from Conduct's ready scale.
 The accent list is attached to `QAccentItem.QAccentItemRefine`, which fills each row.
 
 ## `public void QLecternAccentRefine()`

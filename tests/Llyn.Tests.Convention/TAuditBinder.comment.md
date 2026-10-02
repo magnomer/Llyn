@@ -41,6 +41,18 @@ The compilation, built on first use and kept for the run.
 
 The trees of the tracked sources alone, without the generated files, in path order.
 
+## `private static readonly AsyncLocal<CSharpCompilation?> TAuditAssayCompilation`
+
+The handed source set an assay binds in place of the tracked tree.
+It is local to the assay's own flow, so a tracked walk running beside it never sees it.
+Outside an assay it is null and the tracked compilation stands.
+
+## `private static readonly AsyncLocal<IReadOnlyDictionary<string, string>?> TAuditAssayMarkup`
+
+The handed markup texts an assay hands, keyed by full path.
+It is local to the assay's own flow, like `TAuditAssayCompilation`.
+Outside an assay it is null and markup is read from disk.
+
 ## `private static readonly Dictionary<SyntaxTree, SemanticModel> TAuditModels`
 
 One semantic model per tree, built on first read and kept, since every walker reads it.
@@ -56,10 +68,26 @@ The Git working tree the sources are read from.
 ## `public static IReadOnlyList<SyntaxTree> TAuditTrees`
 
 Every parsed tracked source, in path order.
+Inside an assay, the handed sources instead.
 
 ## `public static CSharpCompilation TAuditCompilation`
 
 The whole compilation, generated markup classes included, for a walk that must see every reader.
+Inside an assay, the handed compilation instead.
+
+## `public static TAuditAssayResult TAuditAssayRun<TAuditAssayResult>(`
+
+Runs a walk over a handed source set instead of the tracked tree.
+Each key is a repo-relative virtual path.
+So the side of a type follows its folder, as for a real file.
+The walker runs unchanged, and only the trees and the compilation it binds against change.
+A key ending in `.xaml` is markup, kept as text for `TAuditMarkupRead`, and never parsed as C#.
+The handed compilation and markup are cleared when the walk returns, even on a failure.
+
+## `public static string TAuditMarkupRead(string path)`
+
+The text of a markup file, handed by the running assay or read from disk otherwise.
+During an assay only handed markup is read, so a missing key fails instead of reaching the disk.
 
 ## `public static SemanticModel TAuditModelRead(SyntaxTree tree)`
 
@@ -200,13 +228,18 @@ A type from metadata sits on no side.
 
 The declared symbol of a declaration node, else the bound symbol, else the first candidate.
 
-## `private static IReadOnlyList<SyntaxTree> TAuditTrackedRead()`
+## `private static IReadOnlyList<SyntaxTree> TAuditTrackedRead(CSharpCompilation compilation)`
 
-The compilation's trees whose file sits under `src` and not under an `obj` folder.
+The given compilation's trees whose file sits under `src` and not under an `obj` folder.
 
 ## `private static CSharpCompilation TAuditCompilationRead()`
 
-Enumerates the sources with Git, adds the generated markup classes, parses and binds them.
+Enumerates the sources with Git, adds the generated markup classes and parses them.
 An empty enumeration fails rather than passing vacuously.
 The sources compile as one program, since Host carries the entry point.
+
+## `private static CSharpCompilation TAuditCompilationCreate(IReadOnlyList<SyntaxTree> trees, OutputKind kind)`
+
+Binds a source set against the shared references, for the tracked tree and an assay alike.
 Any compile error fails, since a stale or missing build would otherwise weaken every walk silently.
+An assay compiles as a library, since its sources carry no entry point.

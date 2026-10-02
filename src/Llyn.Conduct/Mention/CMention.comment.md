@@ -26,10 +26,16 @@ Several matching entries open nothing and come back as the candidates the driver
 Every other answer offers nothing, so the driver's menu shows nothing.
 The offer carries the found word's start, where the menu stands, and the menu's title key `Mention.Title`.
 
-## `public IReadOnlyList<CMentionPiece> CMentionDivide(string text, IReadOnlyList<CMentionMark> mentions)`
+## `internal static IReadOnlyList<CMentionPiece> CMentionDivide(string text, IReadOnlyList<LMention> mentions)`
 
 The whole text as pieces, so a driver draws every character and no gap splits into words.
 A linked piece answers true, a silent piece false, and a gap nothing.
+The reading card and the corpus excerpt divide their text while they map it, so a driver receives ready pieces.
+
+## `internal static IReadOnlyList<CMentionPiece> LMentionPieceRead(IReadOnlyList<LMentionPiece> pieces)`
+
+Maps the engine's pieces field for field.
+The corpus excerpt maps the pieces it divides, and the reading card maps the pieces its line read answers.
 
 ## `internal static CProspect LMentionProspectRead(CDesk desk, string word, CEnvoy envoy, LSettingsPort settings)`
 
@@ -53,9 +59,11 @@ The chip line of one Example of a desk's draft, ready to paint, keyed by card an
 A desk without a live draft, or an Example with no Mentions, answers no chips.
 A failed read shows `Mention.FindFailed` and answers no chips.
 
-## `public int CMentionUnitRead(string text, int offset)`
+## `public int? CMentionUnitRead(string text, int start, int offset)`
 
-The UTF-16 unit a code-point offset starts at, for placing a caret or a popup.
+The UTF-16 unit inside one piece where a code-point offset starts, for placing a popup.
+The piece begins at the code-point `start` of the whole text.
+An offset outside the piece answers null, so the driver asks each piece in turn.
 
 ## `public int CMentionOffsetRead(string text, int unit)`
 
@@ -66,16 +74,10 @@ The code-point offset a UTF-16 unit falls in, for turning a click into a Mention
 Whether a field's selection spans any code point, so a link command may run.
 A driver asks this rather than measuring the span it read itself.
 
-## `internal static IReadOnlyList<CMentionMark> CMentionMarkRead(IReadOnlyList<LMentionDraft>? drafts)`
-
-The Mentions a draft Example carries, copied field for field as they would be stored.
-No draft list answers no Mentions.
-
 ## `internal static IReadOnlyList<CMentionMark> CMentionRead(IReadOnlyList<LMention> mentions)`
 
-The stored Mentions of a text as a driver holds them.
-The overload taking the marks maps them back for the engine's piece and find calls.
-Both stay internal, since they name engine types.
+The links of stored Mentions, for the found Mention a click result carries.
+It stays internal, since it names engine types.
 
 ## `internal static CMentionResult CMentionResultRead(LMentionResult result)`
 

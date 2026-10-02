@@ -7,32 +7,33 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QRegard
 {
-    private readonly PEditor _pEditor;
+    private readonly FrameworkElement _qRegardSurface;
 
     private CEditor _cEditor = null!;
 
-    internal QRegard(PEditor editor)
+    internal QRegard(FrameworkElement surface)
     {
-        _pEditor = editor;
+        _qRegardSurface = surface;
         QRegardFavorite.Click += QRegardFavoriteObserve;
         QRegardGrasp.PGraspChanged += QRegardGraspObserve;
         QRegardGrasp.PGraspHovered += QRegardHoverRefine;
     }
 
-    private ToggleButton QRegardFavorite => QContract.QContractFind<ToggleButton>(_pEditor, "PEditorFavorite");
+    private ToggleButton QRegardFavorite => QContract.QContractFind<ToggleButton>(_qRegardSurface, "PEditorFavorite");
 
-    private PGrasp QRegardGrasp => QContract.QContractFind<PGrasp>(_pEditor, "PEditorGrasp");
+    private PGrasp QRegardGrasp => QContract.QContractFind<PGrasp>(_qRegardSurface, "PEditorGrasp");
 
-    private TextBlock QRegardGraspLabel => QContract.QContractFind<TextBlock>(_pEditor, "PEditorGraspLabel");
+    private TextBlock QRegardGraspLabel => QContract.QContractFind<TextBlock>(_qRegardSurface, "PEditorGraspLabel");
 
     private StackPanel QRegardFrequencySection =>
-        QContract.QContractFind<StackPanel>(_pEditor, "PEditorFrequencySection");
+        QContract.QContractFind<StackPanel>(_qRegardSurface, "PEditorFrequencySection");
 
-    private Border QRegardFrequencyChip => QContract.QContractFind<Border>(_pEditor, "PEditorFrequencyChip");
+    private Border QRegardFrequencyChip => QContract.QContractFind<Border>(_qRegardSurface, "PEditorFrequencyChip");
 
-    private TextBlock QRegardFrequency => QContract.QContractFind<TextBlock>(_pEditor, "PEditorFrequency");
+    private TextBlock QRegardFrequency => QContract.QContractFind<TextBlock>(_qRegardSurface, "PEditorFrequency");
 
-    private TextBlock QRegardFrequencyBand => QContract.QContractFind<TextBlock>(_pEditor, "PEditorFrequencyBand");
+    private TextBlock QRegardFrequencyBand =>
+        QContract.QContractFind<TextBlock>(_qRegardSurface, "PEditorFrequencyBand");
 
     internal void QRegardIntroduce(CEditor editor)
     {

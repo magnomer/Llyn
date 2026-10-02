@@ -80,6 +80,11 @@ Card 0 and sentence 0 address the draft's own Example.
 
 The chip line of the held draft's etymology.
 
+## `static IReadOnlyList<LMentionPiece> LEngineMentionDivide(string text, IReadOnlyList<LMention> mentions)`
+
+The pieces a sentence falls into around its Mentions.
+It is static, since Conduct divides a row's text while it maps the row and no port is at hand.
+
 ## `IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(`
 
 The Meanings the sense menu offers for the linked Mention under a sentence field's selection.

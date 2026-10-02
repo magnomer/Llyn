@@ -49,6 +49,9 @@ internal static partial class TInterface
     internal static int? TCardOrdinalRead(LEntryDraft content, long id, string ordinal) =>
         LDraftClerkCard.LCardOrdinalRead(content, id, ordinal);
 
+    internal static int? TCardShiftRead(LEntryDraft content, long id, int place) =>
+        LDraftClerkCard.LCardShiftRead(content, id, place);
+
     internal static LSpeechDraft TSpeechCreate(long value, string name) =>
         value > 0 ? LSpeechDraft.LSpeechDraftCreate(value, name) : LSpeechDraft.LSpeechDraftCreate(name);
 

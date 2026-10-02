@@ -23,7 +23,7 @@ The entry catalog, one `Theme.Catalog.Row` per Entry.
 Its row parts are named, and the shared index fill paints them and marks the chosen row.
 The command row names its buttons, pairs and icons, and the panel sets each from code.
 
-## `<local:PDisplay x:Name="PDisplay" />`
+## `<veneer:PDisplay x:Name="PDisplay" />`
 
 The read-only entry view is shared, so it is a control rather than markup written here.
 The phonology panel and the taxonomy panel show an entry the same way.

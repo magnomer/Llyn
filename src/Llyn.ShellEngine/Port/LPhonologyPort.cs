@@ -8,9 +8,7 @@ namespace Llyn.ShellEngine;
 
 public interface LPhonologyPort
 {
-    const int LEngineContourFloor = LLanguageClerk.LLanguageContourFloor;
-
-    const int LEngineContourCeiling = LLanguageClerk.LLanguageContourCeiling;
+    static IReadOnlyList<int> LEngineContourScale => LLanguageClerk.LLanguageContourScale;
 
     IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(LVista vista);
 

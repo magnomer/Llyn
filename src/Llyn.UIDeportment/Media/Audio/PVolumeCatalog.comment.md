@@ -10,8 +10,8 @@ The two cannot be wired to each other directly.
 They are wired to this instead, which is a value and not a control.
 
 The level is a mirror, not the truth.
-The truth is the workspace's audio level in the posture, which every slider sets as it moves.
-Each audio slider binds both ways to this, so a move in one tray moves every other.
+The truth is the workspace's audio level in the posture, which the volume owner sets as it moves.
+The volume owner paints this on every tray, so a move in one tray moves every other.
 
 ## Inline notes
 
@@ -19,4 +19,5 @@ Each audio slider binds both ways to this, so a move in one tray moves every oth
 
 Held between silence and full, because that is the range every player here takes.
 A value outside it is pulled to the nearest end rather than refused.
-An audio slider's binding is the only thing that sets it.
+Only the volume owner sets it, from a moved grip or from the level a workspace opens with.
+A set to the level it already holds raises no notice.

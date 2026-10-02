@@ -14,9 +14,11 @@ internal sealed class QWing
 {
     private readonly UserControl _qWingSurface;
 
+    private readonly QDisplay _qWingDisplay;
+
     private readonly QIndex _qIndex;
 
-    private PWindow _qWingHost = null!;
+    private QWindow _qWingHost = null!;
 
     private CWing _cWing = null!;
 
@@ -27,6 +29,7 @@ internal sealed class QWing
         ArgumentNullException.ThrowIfNull(surface);
 
         _qWingSurface = surface;
+        _qWingDisplay = new QDisplay(QContract.QContractFind<FrameworkElement>(surface, "PWingDisplay"));
         _qIndex = new QIndex(QWingIndex, QWingEmpty);
 
         QWingQuery.SetResourceReference(QField.QFieldHintProperty, "Duplex.Search");
@@ -78,27 +81,25 @@ internal sealed class QWing
 
     private TextBlock QWingEmpty => QContract.QContractFind<TextBlock>(_qWingSurface, "PWingEmpty");
 
-    private PDisplay QWingDisplay => QContract.QContractFind<PDisplay>(_qWingSurface, "PWingDisplay");
-
-    internal void QWingIntroduce(PWindow host, bool left)
+    internal void QWingIntroduce(QWindow host, bool left)
     {
         _qWingHost = host;
-        _cWing = CWing.CWingCreate(host.PWindowAtelier, host.PWindowEnvoy, left);
+        _cWing = CWing.CWingCreate(host.QWindowAtelier, host.QWindowEnvoy, left);
         _qWingLectern = new QLectern(_cWing.CWingDisplay);
 
         _cWing.CWingLoaded += QWingIndexRefine;
         _cWing.CWingRowsChanged += QWingIndexRefine;
         _cWing.CWingChanged += QObserver.QObserverCreate<CBulletin>(_qWingSurface, QWingIndexRefine);
-        host.PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += QWingRefine;
+        host.QWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += QWingRefine;
 
-        QWingDisplay.PDisplayAttach(host, _qWingLectern);
+        _qWingDisplay.QDisplayIntroduce(host, _qWingLectern);
     }
 
     private async void QWingRefine()
     {
         _qIndex.QIndexClearRefine();
         IReadOnlyList<string> languages =
-            await _qWingHost.PWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
+            await _qWingHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
 
         QChoice.QChoiceOrderBuild(QWingOrderList, "Order", QWingOrderObserve, CLibrary.CLibraryOrderRead());
         QChoice.QChoiceOrderApply(QWingOrderDropdown, _cWing.CWingOrder);

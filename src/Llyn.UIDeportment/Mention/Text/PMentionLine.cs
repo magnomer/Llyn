@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -9,21 +8,9 @@ internal sealed class PMentionLine
 {
     public ObservableCollection<PMentionChip> PMentionLineChip { get; } = [];
 
-    internal void PMentionLineRefine(IReadOnlyList<CMentionLabel> labels)
+    internal void PMentionLineRefine(IReadOnlyList<PMentionChip> wanted)
     {
-        ArgumentNullException.ThrowIfNull(labels);
-
-        List<PMentionChip> wanted = new(labels.Count);
-        foreach (CMentionLabel label in labels)
-        {
-            wanted.Add(new PMentionChip(
-                label.CMentionLabelId,
-                label.CMentionLabelWord,
-                label.CMentionLabelKey is string key
-                    ? QLocalizationCatalog.QLocalizationTextRead(key)
-                    : label.CMentionLabelName,
-                label.CMentionLabelSense));
-        }
+        ArgumentNullException.ThrowIfNull(wanted);
 
         for (int index = 0; index < wanted.Count; index++)
         {

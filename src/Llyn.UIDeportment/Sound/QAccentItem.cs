@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -41,27 +42,15 @@ public sealed class QAccentItem : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    internal event Action<QAccentItem, string>? QAccentItemTyped;
+
     public long QAccentItemId { get; }
 
     public string QAccentItemVariety { get; }
 
     public string QAccentItemLabel => _qAccentItemFlag is null ? _qAccentItemName : string.Empty;
 
-    public ImageSource? QAccentItemFlag
-    {
-        get => _qAccentItemFlag;
-        private set
-        {
-            if (ReferenceEquals(_qAccentItemFlag, value))
-            {
-                return;
-            }
-
-            _qAccentItemFlag = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QAccentItemFlag)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QAccentItemLabel)));
-        }
-    }
+    public ImageSource? QAccentItemFlag => _qAccentItemFlag;
 
     public bool QAccentItemRespelled { get; }
 
@@ -72,34 +61,10 @@ public sealed class QAccentItem : INotifyPropertyChanged
     public string QAccentItemText
     {
         get => _qAccentItemText;
-        set
-        {
-            string text = value ?? string.Empty;
-            if (string.Equals(_qAccentItemText, text, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _qAccentItemText = text;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QAccentItemText)));
-        }
+        set => QAccentItemTyped?.Invoke(this, value);
     }
 
-    public string QAccentItemAudio
-    {
-        get => _qAccentItemAudio;
-        set
-        {
-            string path = value ?? string.Empty;
-            if (string.Equals(_qAccentItemAudio, path, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _qAccentItemAudio = path;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QAccentItemAudio)));
-        }
-    }
+    public string QAccentItemAudio => _qAccentItemAudio;
 
     public bool QAccentItemPlayable => _qAccentItemAudio.Length > 0;
 
@@ -188,6 +153,42 @@ public sealed class QAccentItem : INotifyPropertyChanged
 
     internal void QAccentFlagRefine(bool flagged)
     {
-        QAccentItemFlag = flagged ? QEnsignImage.QEnsignRead(_qAccentItemEnsign) : null;
+        QAccentValueRefine(
+            ref _qAccentItemFlag,
+            flagged ? QEnsignImage.QEnsignRead(_qAccentItemEnsign) : null,
+            nameof(QAccentItemFlag),
+            nameof(QAccentItemLabel));
+    }
+
+    internal void QAccentStateRefine(CAccent spoken)
+    {
+        ArgumentNullException.ThrowIfNull(spoken);
+
+        QAccentValueRefine(ref _qAccentItemText, spoken.CAccentText, nameof(QAccentItemText));
+        QAccentValueRefine(ref _qAccentItemAudio, spoken.CAccentAudio, nameof(QAccentItemAudio));
+    }
+
+    internal void QAccentTypeRefine(CAccentTyped typed)
+    {
+        ArgumentNullException.ThrowIfNull(typed);
+
+        QAccentValueRefine(ref _qAccentItemText, typed.CAccentTypedText, nameof(QAccentItemText));
+    }
+
+    private void QAccentValueRefine<QAccentValue>(
+        ref QAccentValue field,
+        QAccentValue value,
+        params string[] names)
+    {
+        if (EqualityComparer<QAccentValue>.Default.Equals(field, value))
+        {
+            return;
+        }
+
+        field = value;
+        foreach (string name in names)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
     }
 }

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -35,13 +35,17 @@ public sealed class PContour : FrameworkElement
 
     private const double PContourCornerRadius = 10;
 
-    private const double PContourPlotHeight = (CContour.CContourCeiling - CContour.CContourFloor) * PContourLevelGap;
-
     public static readonly DependencyProperty PContourSyllablesProperty = DependencyProperty.Register(
         nameof(PContourSyllables),
         typeof(IReadOnlyList<QContourItem>),
         typeof(PContour),
         new FrameworkPropertyMetadata(Array.Empty<QContourItem>(), PContourChangeRefine));
+
+    public static readonly DependencyProperty PContourScaleProperty = DependencyProperty.Register(
+        nameof(PContourScale),
+        typeof(IReadOnlyList<int>),
+        typeof(PContour),
+        new FrameworkPropertyMetadata(Array.Empty<int>(), PContourChangeRefine));
 
     public static readonly DependencyProperty PContourTopProperty = PContourBrushCreate(nameof(PContourTop));
 
@@ -90,6 +94,12 @@ public sealed class PContour : FrameworkElement
     {
         get => (IReadOnlyList<QContourItem>)GetValue(PContourSyllablesProperty);
         set => SetValue(PContourSyllablesProperty, value);
+    }
+
+    public IReadOnlyList<int> PContourScale
+    {
+        get => (IReadOnlyList<int>)GetValue(PContourScaleProperty);
+        set => SetValue(PContourScaleProperty, value);
     }
 
     public Brush PContourTop
@@ -158,6 +168,8 @@ public sealed class PContour : FrameworkElement
         set => SetValue(PContourFontProperty, value);
     }
 
+    private double PContourPlotHeight => Math.Max(0, PContourScale.Count - 1) * PContourLevelGap;
+
     protected override Size MeasureOverride(Size availableSize)
     {
         int count = Math.Max(1, PContourSyllables.Count);
@@ -170,7 +182,7 @@ public sealed class PContour : FrameworkElement
     protected override void OnRender(DrawingContext drawingContext)
     {
         base.OnRender(drawingContext);
-        if (PContourSyllables.Count == 0)
+        if (PContourSyllables.Count == 0 || PContourScale.Count == 0)
         {
             return;
         }
@@ -219,7 +231,7 @@ public sealed class PContour : FrameworkElement
         double left = PContourPadding + PContourAxisWidth;
         double right = RenderSize.Width - PContourPadding;
         Pen guide = new(PContourGuide, 1);
-        for (int level = CContour.CContourFloor; level <= CContour.CContourCeiling; level++)
+        foreach (int level in PContourScale)
         {
             double y = Math.Round(PContourLevelResolve(level)) + 0.5;
             drawingContext.DrawLine(guide, new Point(left, y), new Point(right, y));
@@ -329,19 +341,24 @@ public sealed class PContour : FrameworkElement
             VisualTreeHelper.GetDpi(this).PixelsPerDip);
     }
 
-    private static double PContourLevelResolve(int level)
+    private double PContourLevelResolve(int level)
     {
-        return PContourPadding + (CContour.CContourCeiling - level) * PContourLevelGap;
+        return PContourPadding + PContourDepthRead(level) * PContourLevelGap;
+    }
+
+    private int PContourDepthRead(int level)
+    {
+        return PContourScale.TakeWhile(step => step != level).Count();
     }
 
     private Brush PContourBrushRead(int level)
     {
-        return level switch
+        return PContourDepthRead(level) switch
         {
-            5 => PContourTop,
-            4 => PContourHigh,
-            3 => PContourMid,
-            2 => PContourLow,
+            0 => PContourTop,
+            1 => PContourHigh,
+            2 => PContourMid,
+            3 => PContourLow,
             _ => PContourBottom,
         };
     }

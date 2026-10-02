@@ -13,8 +13,8 @@ A row the user is typing in is therefore the same object after the bulletin as b
 Makes `rows` show `drafts`, matching each draft to the row carrying its id.
 A row carrying an id the drafts no longer name is removed first.
 Then each draft in turn is found and offered `update`, or built with `create` and placed.
-A row `key` answers null for, such as the caret, is not the engine's and is stepped over.
-A new row lands right after the previous draft's row, so it sits before the caret the user typed into.
+A row `key` answers null for is not the engine's and is stepped over.
+A new row lands right after the previous draft's row.
 A row found out of order is moved back to its place.
 `update` may answer a fresh object, and the collection slot is replaced when it does.
 So an immutable chip is redrawn by replacement and a mutable row is edited in place.
@@ -23,7 +23,17 @@ So an immutable chip is redrawn by replacement and a mutable row is edited in pl
 
 The place of the row carrying `id`, or minus one.
 
-## `internal static int PCardRowResolve<PCardItem>(IReadOnlyList<PCardItem> rows, Func<PCardItem, long?> key, int limit)`
+## `private static int PCardCaretFind<PCardItem>(IReadOnlyList<PCardItem> rows, PCardItem? anchor)`
 
-How many of the engine's rows stand before `limit`.
+The place of the chip a caret is anchored to, or the end when no chip carries it.
 That is the position a chip committed at the caret asks the engine for.
+
+## `private static List<PCardItem> PCardCaretRead<PCardItem>(IReadOnlyList<PCardItem> rows, PCardItem? anchor)`
+
+The anchor and every chip after it, read before the rows change.
+
+## `private static PCardItem? PCardCaretResolve<PCardItem>(`
+
+The first chip of the trail that still stands, which becomes the caret's anchor.
+Null when none stands, so the caret goes to the end.
+The anchor is a chip object, not an id, so no value is derived from the engine's ids.

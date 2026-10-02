@@ -26,7 +26,7 @@ record include, the types, the waivers and the sides - lives in auditdraft.json.
 
 auditdraft.json shape:
   {
-    "generation": 17,
+    "generation": 18,
     "project": "Llyn",
     "records": {
       "include": ["src/Llyn.Core/Lexicon/*.cs"],
@@ -52,7 +52,7 @@ auditdraft
 Audit the current checkout.
 #>
 #requires -Version 5.1
-# AUDITDRAFT GENERATION 17 - auditdraft.ps1.
+# AUDITDRAFT GENERATION 18 - auditdraft.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -72,6 +72,8 @@ Audit the current checkout.
 # Unsealing kind counts engine types on the public members of sealed Deportment types.
 # Generation 17: nothing this audit reports changes; the number rises with the vocabulary revision
 # of the UI, object, structure and name audits.
+# Generation 18: nothing this audit reports changes; the number rises with the UI audit, whose
+# truth detector stops five false findings.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -135,7 +137,7 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 17
+$script:AuditGeneration = 18
 $script:TargetFramework = 'net10.0'
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 

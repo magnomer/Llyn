@@ -24,13 +24,14 @@ public sealed class CEditor
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(media);
 
-        CEditorDesk = new CDesk(drafts, "Input", envoy);
+        CEditorDesk = new CDesk(drafts, settings, "Input", envoy);
         CEditorDisplay = new LDisplay(drafts, entries, phonology, settings, media, envoy);
         CEditorCard = new CCard(CEditorDesk, drafts, entries, settings, envoy);
         CEditorSentence = new CSentence(CEditorDesk, phonology, drafts, settings, envoy);
         CEditorSounding = new CSounding(CEditorDesk, phonology, settings, CEditorDisplay.LDisplaySound, envoy);
         CEditorEsteem = new CEsteem(CEditorDesk, CEditorDisplay);
-        CEditorTimbre = new CTimbre(CEditorDesk, phonology, CEditorDisplay, media, drafts, settings);
+        CEditorTimbre = new CTimbre(CEditorDesk, phonology, CEditorDisplay, drafts, settings);
+        CEditorPlayback = new CPlayback(CEditorDesk, media);
         CEditorSpeech = new CCardSpeech(CEditorDesk);
         CEditorDesk.CDeskFinished += CEditorStoredShow;
         CEditorDesk.CDeskDraftPrepared += draft =>
@@ -78,6 +79,8 @@ public sealed class CEditor
     public CEsteem CEditorEsteem { get; }
 
     public CTimbre CEditorTimbre { get; }
+
+    public CPlayback CEditorPlayback { get; }
 
     public CTranscription CEditorTranscription => new(CEditorDesk);
 

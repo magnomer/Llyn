@@ -19,43 +19,38 @@ Thread thread = new(() =>
     PBootstrap application = new();
     QBootstrap bootstrap = new();
 
-    bool themed = bootstrap.QBootstrapThemeApply(
+    bootstrap.QBootstrapIntroduce(
         () => LThemeLoader.LThemeLoaderLoad().LThemeColorRead,
-        () => LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault));
-    LEngine? engine = themed
-        ? bootstrap.QBootstrapBuild(
-            LWorkspaceRoot.LWorkspaceRootRead,
-            workspace => new LEngine(
-                LRigFactory.LRigFactoryBuild(workspace, client, usher, press, phonograph),
-                path => LRigFactory.LRigFactoryBuild(path, client, usher, press, phonograph),
-                LWorkspaceRoot.LWorkspaceRootChange),
-            LDoctor.LDoctorBusyCheck)
-        : null;
-    if (engine is null)
-    {
-        client.Dispose();
-        return;
-    }
+        () => LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault),
+        LWorkspaceRoot.LWorkspaceRootRead,
+        workspace => new LEngine(
+            LRigFactory.LRigFactoryBuild(workspace, client, usher, press, phonograph),
+            path => LRigFactory.LRigFactoryBuild(path, client, usher, press, phonograph),
+            LWorkspaceRoot.LWorkspaceRootChange),
+        LDoctor.LDoctorBusyCheck,
+        engine =>
+        {
+            bootstrap.QBootstrapFaultIntroduce(engine.LEngineAuditRecord);
+            LSettingsOutlet settings = new(engine);
+            bootstrap.QBootstrapCatalogApply(
+                () => LLocalization.LLocalizationDefaultCheck(settings.LEngineSettingsRead().LSettingsLocalization),
+                () => settings.LEngineLocalizationLoad(
+                    LLocalization.LLocalizationNormalize(settings.LEngineSettingsRead().LSettingsLocalization)));
+            LDoctorRescue rescue = engine.LEngineRescueRead();
+            bootstrap.QBootstrapRescueConsult(
+                rescue.LDoctorRescueDone, rescue.LDoctorRescueBackup, rescue.LDoctorRescueReason);
 
-    bootstrap.QBootstrapFaultIntroduce(engine.LEngineAuditRecord);
-    LSettingsOutlet settings = new(engine);
-    bootstrap.QBootstrapCatalogApply(
-        () => LLocalization.LLocalizationDefaultCheck(settings.LEngineSettingsRead().LSettingsLocalization),
-        () => settings.LEngineLocalizationLoad(
-            LLocalization.LLocalizationNormalize(settings.LEngineSettingsRead().LSettingsLocalization)));
-    LDoctorRescue rescue = engine.LEngineRescueRead();
-    bootstrap.QBootstrapRescueConsult(rescue.LDoctorRescueDone, rescue.LDoctorRescueBackup, rescue.LDoctorRescueReason);
-
-    bootstrap.QBootstrapWindowShow(new PWindow(new CAtelier(
-        new LPosture(engine),
-        new LDraftOutlet(engine),
-        new LEntryOutlet(engine),
-        settings,
-        new LPhonologyOutlet(engine),
-        new LMediaOutlet(engine),
-        new LPortraitOutlet(engine))));
-    code = application.Run();
-    engine.Dispose();
+            bootstrap.QBootstrapWindowShow(new QWindow(new CAtelier(
+                new LPosture(engine),
+                new LDraftOutlet(engine),
+                new LEntryOutlet(engine),
+                settings,
+                new LPhonologyOutlet(engine),
+                new LMediaOutlet(engine),
+                new LPortraitOutlet(engine))));
+            code = application.Run();
+            engine.Dispose();
+        });
     client.Dispose();
 });
 thread.SetApartmentState(ApartmentState.STA);

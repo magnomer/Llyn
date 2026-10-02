@@ -39,13 +39,13 @@ The catalog of every Situation the workspace holds.
 A row reads its title over its kind, with the number of places referencing it at the far end.
 That number is shown here and not only in the display, because it decides which delete the panel offers.
 
-## `<local:PDisplay x:Name="PDisplay" Visibility="Collapsed" />`
+## `<veneer:PDisplay x:Name="PDisplay" Visibility="Collapsed" />`
 
 The entry display the library and tenor panels share, drawn in the same cell as the Situation reading.
 It shows an Entry or a Situation, never both, so it stays collapsed until an Entry row is chosen.
 The mode toggle swaps it for `PEditor`, so an Entry is read and written here as in the tenor panel.
 
-## `<local:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />`
+## `<veneer:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />`
 
 The entry editor the library and tenor panels share, drawn in the same cell as the display.
 It stands in front only while an Entry is shown and the toggle is on the editing side.
@@ -74,9 +74,9 @@ Either list hides itself while the Situation has none of that kind, as a card's 
 ## `<ResourceDictionary.MergedDictionaries>`
 
 The card display's picture and video dictionaries, merged so the reading side draws media with the card's own templates.
+The picture and video row templates of the editing side are merged here too.
 The panel's own shapes follow, the reading side in [PRepertoireVignette.xaml](PRepertoireVignette.comment.md) and the editing side in [PRepertoireScenario.xaml](PRepertoireScenario.comment.md).
-The editing side's row templates are merged from code instead, because they carry handlers this panel answers.
-All four dictionaries come from the Veneer.
+All six dictionaries come from the Veneer.
 
 ## `<ItemsControl x:Name="POccurrence">`
 

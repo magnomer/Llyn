@@ -12,7 +12,7 @@ One stored Example, as the corpus transcript and excerpt read it.
 - `CExampleCitation`: the line the cited reference is shown under, ready from the engine, empty when none.
 - `CExampleTally`: the tally chip's sentence for the chosen Example, worded by the engine.
 - `CExampleGloss`: the translations of the example, in order.
-- `CExampleExcerpt`: the Mentions the excerpt links, empty unless the text reads soundly.
+- `CExamplePiece`: the text divided at the Mentions the excerpt links, plain unless the text reads soundly.
 
 ## `public string CExampleTextHint`
 

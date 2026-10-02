@@ -19,10 +19,9 @@ The credit fill subscribes the row's four handles and is followed by the handle 
 The byline fill subscribes this driver's press handler on each row.
 The byline popup places itself under its field through the shared field helper.
 
-## `internal void QImprintIntroduce(PWindow host, CImprint imprint)`
+## `internal void QImprintIntroduce(CImprint imprint)`
 
-Takes the source editor the shelf composed and listens to its notices, its byline and its desk.
-A desk failure goes straight to the window's failure dialog.
+Takes the source editor the shelf composed and listens to its notices and its byline.
 It calls no gate, so the panel's introduce hands the engine one request only.
 
 ## `internal void QImprintCloseRefine()`

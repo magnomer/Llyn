@@ -17,7 +17,7 @@ It ties both droppers to their popups, sets every icon, and subscribes every cli
 
 Each named part is pulled from the page by its contract ID on every read.
 
-## `internal void QTenorIntroduce(PWindow host)`
+## `internal void QTenorIntroduce(QWindow host)`
 
 Puts the panel to work through the Conduct tenor panel it builds, which builds its own editor.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.

@@ -12,6 +12,8 @@ public sealed class CDesk
 
     private readonly CEnvoy _cDeskEnvoy;
 
+    private readonly LSettingsPort _cDeskSettings;
+
     private readonly string? _cDeskOrigin;
 
     private readonly CSubject _cDeskSubject;
@@ -30,21 +32,24 @@ public sealed class CDesk
 
     private bool _cDeskHalted;
 
-    internal CDesk(LDraftPort drafts, string scope, CEnvoy envoy)
+    internal CDesk(LDraftPort drafts, LSettingsPort settings, string scope, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(drafts);
+        ArgumentNullException.ThrowIfNull(settings);
         ArgumentException.ThrowIfNullOrWhiteSpace(scope);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _cDeskPort = drafts;
+        _cDeskSettings = settings;
         _cDeskScope = scope;
         _cDeskEnvoy = envoy;
         CDeskErrand = new CErrand(this);
         CDeskVigil = new LVigil(this);
     }
 
-    internal CDesk(LDraftPort drafts, string scope, CEnvoy envoy, string origin, CSubject subject)
-        : this(drafts, scope, envoy)
+    internal CDesk(
+        LDraftPort drafts, LSettingsPort settings, string scope, CEnvoy envoy, string origin, CSubject subject)
+        : this(drafts, settings, scope, envoy)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(origin);
 
@@ -61,10 +66,6 @@ public sealed class CDesk
     public event Action? CDeskStateChanged;
 
     public event Action<long>? CDeskFinished;
-
-    public event Action<string, Exception>? CDeskFailed;
-
-    public event Action<string>? CDeskRefused;
 
     internal LQuill? CDeskQuill => CDeskFilling ? null : _cDeskQuill;
 
@@ -196,7 +197,7 @@ public sealed class CDesk
         catch (Exception exception)
         {
             CDeskCancel();
-            CDeskFailed?.Invoke(_cDeskScope + ".LoadFailed", exception);
+            CLedger.LLedgerFailureShow(_cDeskEnvoy, _cDeskSettings, _cDeskScope + ".LoadFailed", exception);
             return;
         }
 
@@ -240,7 +241,7 @@ public sealed class CDesk
         }
         catch (Exception exception)
         {
-            CDeskFailed?.Invoke(_cDeskScope + ".LoadFailed", exception);
+            CLedger.LLedgerFailureShow(_cDeskEnvoy, _cDeskSettings, _cDeskScope + ".LoadFailed", exception);
         }
     }
 
@@ -278,7 +279,7 @@ public sealed class CDesk
     {
         if (CDeskStalling)
         {
-            CDeskRefused?.Invoke(_cDeskScope + ".HoldFailed");
+            _cDeskEnvoy.CEnvoyFailureShow(_cDeskScope + ".HoldFailed");
         }
 
         _cDeskHalted = CDeskHalted;
@@ -344,7 +345,7 @@ public sealed class CDesk
         }
         catch (Exception exception)
         {
-            CDeskFailed?.Invoke(_cDeskScope + ".SaveFailed", exception);
+            CLedger.LLedgerFailureShow(_cDeskEnvoy, _cDeskSettings, _cDeskScope + ".SaveFailed", exception);
             return false;
         }
 

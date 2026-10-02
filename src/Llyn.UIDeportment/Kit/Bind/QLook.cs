@@ -191,10 +191,10 @@ internal static class QLook
             DependencyProperty[] watches =
             [
                 TextBlock.TextProperty, ContentControl.ContentProperty,
-                PTab.PTabChosenProperty, ComboBox.TextProperty,
-                ComboBoxItem.IsHighlightedProperty, Thumb.IsDraggingProperty,
-                ItemsControl.HasItemsProperty, ListBoxItem.IsSelectedProperty,
-                Image.SourceProperty, ComboBox.IsDropDownOpenProperty,
+                ComboBox.TextProperty, ComboBoxItem.IsHighlightedProperty,
+                Thumb.IsDraggingProperty, ItemsControl.HasItemsProperty,
+                ListBoxItem.IsSelectedProperty, Image.SourceProperty,
+                ComboBox.IsDropDownOpenProperty,
             ];
             foreach (DependencyProperty watched in watches)
             {
@@ -228,7 +228,6 @@ internal static class QLook
         active |= QLookCueRead(element is Thumb { IsDragging: true }, QLookCue.QLookCueDrag);
         active |= QLookCueRead(element.GetValue(QLookIconProperty) is null, QLookCue.QLookCueBare);
         active |= QLookCueRead(element is ContentControl { Content: null }, QLookCue.QLookCueMute);
-        active |= QLookCueRead(element is PTab { PTabChosen: true }, QLookCue.QLookCueChosen);
 
         Dictionary<(string?, DependencyProperty), QLookSetter?> winners = [];
         foreach (QLookSetter row in rows)

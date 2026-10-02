@@ -13,9 +13,7 @@ public sealed class LLanguageClerk
     private readonly LTrailClerk _lLanguageClerkTrail;
     private IReadOnlyList<string>? _lLanguageClerkListed;
 
-    public const int LLanguageContourFloor = LContour.LContourFloor;
-
-    public const int LLanguageContourCeiling = LContour.LContourCeiling;
+    public static IReadOnlyList<int> LLanguageContourScale => LContour.LContourScale;
 
     public LLanguageClerk(LRig rig, LLanguageCache languages, LTrailClerk trail)
     {

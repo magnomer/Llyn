@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -13,25 +12,22 @@ public sealed class PVideoFrame : Decorator
 
     private void PVideoContextRefine(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (DataContext is not CVideoDraft draft)
+        if (DataContext is not QLeafVideo video)
         {
             return;
         }
 
-        PVideoEmptyRefine(draft);
-        PVideoRowRefine(draft);
+        PVideoEmptyRefine(video);
+        PVideoRowRefine(video);
     }
 
-    private void PVideoEmptyRefine(CVideoDraft draft)
+    private void PVideoEmptyRefine(QLeafVideo video)
     {
-        Visibility = QLook.QLookVisibleRead(!draft.CVideoDraftEmpty);
+        Visibility = QLook.QLookVisibleRead(!video.QLeafVideoEmpty);
     }
 
-    private void PVideoRowRefine(CVideoDraft draft)
+    private void PVideoRowRefine(QLeafVideo video)
     {
-        if (PMedia.PMediaRead(this) is PMedia media)
-        {
-            DataContext = media.PMediaVideoCreate(draft);
-        }
+        DataContext = video.QLeafVideoRow;
     }
 }

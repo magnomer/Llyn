@@ -7,4 +7,5 @@ Saved widths read back through a posture reopened on the same folder.
 A reset drops every width and keeps each tab.
 Unlinking reports a change once.
 Unlinking twice raises the linked notice once, because only a change raises it.
+A posture moved to another root reads and writes that root, and the first root keeps its own state.
 A window stored at once reaches the file, and a minimized window stores nothing.
