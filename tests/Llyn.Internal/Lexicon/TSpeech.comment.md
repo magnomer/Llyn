@@ -1,4 +1,5 @@
 # TSpeech.cs
+Hash: `93755d685de70a31`
 
 ## `public sealed class TSpeech`
 
@@ -13,36 +14,37 @@ An unnamed part of speech stays out of the names a reader reads, though the entr
 
 ## Inline notes
 
-### `Assert.Equal("Noun", engine.LEngineSpeechRead("English", "noun"));`
+### `Assert.Equal("Noun", engine.TEngineSpeechRead("English", noun.LSpeechValueId)?.LSpeechValueName);`
 
 The tables are no longer empty on a fresh workspace.
 What a language declares on disk is what the workspace holds.
 So an entry can carry a part of speech from the first save.
 
-### `Assert.Equal("Verb, transitive", engine.LEngineSpeechRead("English", "verb_transitive"));`
+### `Assert.NotNull(engine.TSpeechValueFind("English", "Verb, transitive"));`
 
 The presets go finer than the bare word classes, and a subtype is a value of its own.
 
-### `Assert.Equal(0, engine.LEngineMorphologyRead("English", "noun", "number", "singular")?.LMorphologyPosition);`
+### `"SELECT value.name FROM morphology_value value " +`
 
 Order is the order the pack lists the values in, and it is stored, not inferred.
 
-### `Assert.Equal("Classifier", engine.LEngineSpeechRead("Vietnamese", "classifier"));`
+### `Assert.NotNull(engine.TSpeechValueFind("Vietnamese", "Classifier"));`
 
 A language declaring no morphology is an ordinary language, not a broken pack.
 
-### `using LEngine reopened = new(workspace.TWorkspaceFolder);`
+### `using LEngine reopened = workspace.TWorkspaceEngineStart();`
 
 A second engine over the same workspace writes the packs again.
 So the pack's wording is what the workspace ends up holding.
 
 ### `LSpeech speech = Assert.Single(`
 
-Stored as the id, never as the word: renaming the preset renames it on this entry too.
+Stored as the id, never as the word.
+So renaming the preset renames it on this entry too.
 
-### `Assert.Equal("Verb, transitive", engine.LEngineEntryLoad(entry.LEntryId)?.LEntryDraftSpeech);`
+### `Assert.Single(TInterface.TSpeechNameRead(engine.TEngineEntryLoad(entry.LEntryId)!)));`
 
-And the field gets its own text back, resolved through the language's vocabulary.
+The entry reads back the preset's name, resolved through the language's vocabulary.
 
 ### `LSpeech speech = Assert.Single(`
 

@@ -1,4 +1,5 @@
 # LHarvest.cs
+Hash: `11a863f6bb57b66f`
 
 ## `public sealed class LHarvest`
 
@@ -38,6 +39,6 @@ A source left with nothing gets one addressless recording under its position, re
 So the menu still names that source rather than leaving its row silently absent.
 The recordings are walked in source position runs, which is how the harvest returns them.
 
-## `private static Task<LAnswer> LHarvestAnswerRead(LSource source, string word, CancellationToken cancellation)`
+## `private static async Task<LAnswer> LHarvestAnswerRead(LSource source, string word, CancellationToken cancellation)`
 
 The recording counterpart of `LLookupAnswerRead`.

@@ -1,4 +1,5 @@
 # CExampleDraft.cs
+Hash: `7ea7fee42a2f919c`
 
 ## `public sealed record CExampleDraft(`
 

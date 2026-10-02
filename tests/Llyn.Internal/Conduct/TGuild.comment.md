@@ -1,4 +1,5 @@
 # TGuild.cs
+Hash: `8c3136ef14265726`
 
 ## `public sealed class TGuild`
 

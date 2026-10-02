@@ -1,4 +1,5 @@
 # CMentionLabel.cs
+Hash: `f76e9d4f43ab824e`
 
 ## `public sealed record CMentionLabel(`
 

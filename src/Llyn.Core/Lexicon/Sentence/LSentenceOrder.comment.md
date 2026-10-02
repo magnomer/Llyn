@@ -1,4 +1,5 @@
 # LSentenceOrder.cs
+Hash: `d1834db7de7938f4`
 
 ## `public sealed record LSentenceOrder(`
 

@@ -1,4 +1,5 @@
 # CTimbreReflex.cs
+Hash: `e4f94ce4e8a030d8`
 
 ## `public sealed record CTimbreReflex(`
 

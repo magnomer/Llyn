@@ -1,4 +1,5 @@
 # LFanqieShape.cs
+Hash: `2a63beeb2864d0cb`
 
 ## `internal sealed class LFanqieShape`
 

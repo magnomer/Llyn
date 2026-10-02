@@ -1,4 +1,5 @@
 # LScriptVault.cs
+Hash: `8da6632d5f0af93e`
 
 ## `public interface LScriptVault`
 

@@ -1,4 +1,5 @@
 # QEtymologyEditor.cs
+Hash: `1775b92054faa4b0`
 
 ## `internal sealed class QEtymologyEditor`
 

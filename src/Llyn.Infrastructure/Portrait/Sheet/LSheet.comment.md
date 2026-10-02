@@ -1,4 +1,5 @@
 # LSheet.cs
+Hash: `e9048f6c5abe14e8`
 
 ## `public static class LSheet`
 
@@ -11,7 +12,8 @@ The PDF is this page printed, so anything fixed here is fixed in both.
 
 The style sheet is inlined, and pictures are embedded, so the file stands alone once moved.
 The title and crest come first, then the sections in the order the likeness carries them.
-Nothing is decided here: an absent section was already left out by whoever built the likeness.
+Nothing is decided here.
+An absent section was already left out by whoever built the likeness.
 
 ## `public static string LSheetNormalize(string? text)`
 

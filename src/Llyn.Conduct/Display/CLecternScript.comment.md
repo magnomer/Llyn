@@ -1,4 +1,5 @@
 # CLecternScript.cs
+Hash: `b793b552979ff773`
 
 ## `public sealed record CLecternScript(`
 

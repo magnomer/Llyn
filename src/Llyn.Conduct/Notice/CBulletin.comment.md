@@ -1,4 +1,5 @@
 # CBulletin.cs
+Hash: `d122721226e47bd9`
 
 ## `public sealed record CBulletin(long CBulletinId, bool CBulletinStored);`
 

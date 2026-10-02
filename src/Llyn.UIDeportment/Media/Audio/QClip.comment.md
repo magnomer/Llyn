@@ -1,4 +1,5 @@
 # QClip.cs
+Hash: `6bbb878733fec290`
 
 ## `internal sealed class QClip`
 
@@ -55,7 +56,7 @@ The input editor's accent rows call it, so no Conduct roll crosses to the surfac
 Paints the state the start answered, then paints it again once the variety flags loaded.
 The flags load while the search runs, so a recording that landed first gains its flag here.
 
-## `internal void QClipRefine(CClipRoll roll)`
+## `private void QClipRefine(CClipRoll roll)`
 
 What the menu shows, from the ready clip state.
 The running line follows the search alone, since a source that answered does not end it.

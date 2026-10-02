@@ -1,4 +1,5 @@
 # LSchemaQuotation.cs
+Hash: `6e6e272cb61c61fa`
 
 ## `public static class LSchemaQuotation`
 
@@ -17,7 +18,7 @@ A draft holds it while editing.
 So one Example may be first under a Meaning and third under a Collocation.
 The unique index per referrer keeps those orderings free of duplicates.
 sense_example and collocation_example carry data of their own, so each row carries its own opaque id.
-A row holds the frame its owner reads the Example under, a marker and a role.
+A row holds the frame its owner reads the Example under, a particle and a dependence.
 Each carries what is known about it.
 The frame lives on the association and never on the Example.
 So two owners citing one Example keep their own frame.
@@ -29,7 +30,8 @@ The example_ref foreign keys deliberately have no cascade.
 So an Example survives every detach.
 The store refuses to delete one while any reference still points at it.
 
-example_translation is one Gloss: the sentence rendered as text in one language.
+example_translation is one Gloss.
+It is the sentence rendered as text in one language.
 A row holds the language it is written in and the text with its state.
 It also holds the position it takes among the Example's Glosses.
 The row lives on the Example and goes with it by ON DELETE CASCADE.
@@ -45,7 +47,7 @@ The row lives on the Example and never on the card that quotes it.
 So every card citing one sentence reads the same words the same way.
 A NULL entry_ref is the explicit mark that the word stands for nothing.
 The CHECK refuses a Meaning without its Entry.
-Two of its foreign keys cascade although they are references, as sense_translation does.
+Two of its foreign keys act although they are references, as sense_translation does.
 A Mention without its Entry says nothing, so it goes with the Entry.
 A Mention whose Meaning went still says the Entry, so it degrades to the Entry by ON DELETE SET NULL.
 The unique index refuses two words starting at one place.
@@ -56,5 +58,3 @@ example.reference_ref points at the independent Reference that LSchemaReference 
 Its foreign key could only be declared once that source table existed.
 SQLite refuses to prepare any statement writing to a child table whose parent is missing.
 That holds even for NULL keys, which is why the reference tables are created first.
-A database created before this version keeps the column without the constraint.
-CREATE TABLE IF NOT EXISTS leaves the existing table as it stands.

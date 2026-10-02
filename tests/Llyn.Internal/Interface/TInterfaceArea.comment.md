@@ -1,4 +1,5 @@
 # TInterfaceArea.cs
+Hash: `bf5825a6e7d0f03b`
 
 ## `internal static class TInterfaceArea`
 

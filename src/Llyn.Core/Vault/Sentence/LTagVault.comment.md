@@ -1,4 +1,5 @@
 # LTagVault.cs
+Hash: `270ffc4836960341`
 
 ## `public interface LTagVault`
 

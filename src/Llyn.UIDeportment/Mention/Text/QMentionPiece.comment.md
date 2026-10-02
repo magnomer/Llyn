@@ -1,4 +1,5 @@
 # QMentionPiece.cs
+Hash: `faf46b3fe50d5e46`
 
 ## `internal sealed record QMentionPiece(string QMentionPieceText, int QMentionPieceOffset, bool? QMentionPieceLinked)`
 

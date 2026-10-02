@@ -1,4 +1,5 @@
 # PClipTemplate.xaml
+Hash: `f3bde425b7427902`
 
 ## `ResourceDictionary`
 

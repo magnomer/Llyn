@@ -1,4 +1,5 @@
 # CDesk.cs
+Hash: `344d421b0d6f6005`
 
 ## `public sealed class CDesk`
 
@@ -87,6 +88,15 @@ The recording and reading searches over this desk's tenure, built over the desk 
 
 The observers this desk puts on every tenure it starts, built over the desk itself.
 
+## `public bool CDeskFilling`
+
+Whether the desk is writing the draft into the controls right now.
+The areas that reach the tenure directly withhold it while this holds, so a fill's echo writes nothing back.
+
+## `public long CDeskId`
+
+The held draft's id, not the stored record's, or zero while nothing is held.
+
 ## `public bool CDeskStored`
 
 Whether the held draft stands on a stored record rather than a fresh one.
@@ -129,6 +139,8 @@ A desk built with an origin and a subject starts under them instead.
 Its subject reaches the engine through the panel's map by name, never by cast.
 The repertoire and corpus desks start this way, since their vistas list the records rather than the tab.
 A refused start is announced under the scope's load key and leaves the desk empty.
+Each start announces the change of state once, so listeners refresh the editor only once.
+A start that starts nothing still announces when it dropped a held tenure.
 
 ## `internal void LDeskOccurrenceStart(long? situation)`
 
@@ -206,6 +218,12 @@ So a caller decides per finish what follows a store, without holding a flag.
 ## `public void CDeskCancel()`
 
 Lets the held tenure go without storing, announcing the change of state.
+It announces nothing when no tenure was held.
+
+## `private bool LDeskTenureClear()`
+
+Lets the held tenure go without announcing, and reports whether one was dropped.
+Every start clears through it, so the start announces the change of state once.
 
 ## `public (bool CDeskBackward, bool CDeskForward) CDeskChronicleRead()`
 

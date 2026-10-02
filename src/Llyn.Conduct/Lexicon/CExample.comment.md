@@ -1,4 +1,5 @@
 # CExample.cs
+Hash: `432033e6ca4b834f`
 
 ## `public sealed record CExample(`
 

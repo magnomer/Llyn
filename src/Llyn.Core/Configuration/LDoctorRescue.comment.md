@@ -1,4 +1,5 @@
 # LDoctorRescue.cs
+Hash: `e975d172db3ce09b`
 
 ## `public sealed record LDoctorRescue(`
 

@@ -1,4 +1,5 @@
 # QFootnoteItem.cs
+Hash: `4a667633a340bc4f`
 
 ## `internal sealed class QFootnoteItem`
 
@@ -33,3 +34,8 @@ Copies the chosen mark of the fresh row onto the held row that `QSplice` kept.
 
 Fills one entry row with its flag, name, epithet and language, and marks the chosen row.
 The epithet is led by an en space, as the other catalog rows set it apart.
+
+## `public bool QFootnoteItemChosen`
+
+Whether this row is the one the panel stands on, which the row fill marks for an accent edge.
+The engine row carries it, and `QSplice` moves the mark in place, so the list keeps its scroll position.

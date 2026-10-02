@@ -1,4 +1,5 @@
 # TAuditObjectRow.cs
+Hash: `24db2a72e938da7f`
 
 ## `internal sealed record TAuditObjectRow`
 

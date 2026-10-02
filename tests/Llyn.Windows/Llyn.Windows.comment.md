@@ -1,4 +1,5 @@
 # Llyn.Windows.csproj
+Hash: `9e86789e07eb1511`
 
 Builds the behaviour tests that compile only on Windows.
 

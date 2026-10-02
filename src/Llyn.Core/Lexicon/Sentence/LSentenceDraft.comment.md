@@ -1,4 +1,5 @@
 # LSentenceDraft.cs
+Hash: `506a1ef90d2ee42f`
 
 ## `public sealed record LSentenceDraft(`
 

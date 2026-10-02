@@ -1,4 +1,5 @@
 # CCatalogAuthor.cs
+Hash: `b46f14e4512ea3a0`
 
 ## `public sealed record CCatalogAuthor(`
 

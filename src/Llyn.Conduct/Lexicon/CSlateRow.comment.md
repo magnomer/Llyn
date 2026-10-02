@@ -1,4 +1,5 @@
 # CSlateRow.cs
+Hash: `0dcf8ab6e637b755`
 
 ## `public sealed record CSlateRow(`
 

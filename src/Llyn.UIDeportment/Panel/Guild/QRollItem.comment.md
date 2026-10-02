@@ -1,4 +1,5 @@
 # QRollItem.cs
+Hash: `b72a22e2827dcdfc`
 
 ## `internal sealed class QRollItem`
 

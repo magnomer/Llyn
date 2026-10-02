@@ -1,4 +1,5 @@
 # LMorphologyVault.cs
+Hash: `461d0762aab7fa0b`
 
 ## `public interface LMorphologyVault`
 

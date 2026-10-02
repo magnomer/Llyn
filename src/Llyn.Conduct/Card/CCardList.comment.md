@@ -1,4 +1,5 @@
 # CCardList.cs
+Hash: `3994cad19350a223`
 
 ## `public sealed class CCardList`
 

@@ -1,4 +1,5 @@
 # QTranscriptionCommand.cs
+Hash: `3d3b1bce6453b585`
 
 ## `public static class QTranscriptionCommand`
 

@@ -1,4 +1,5 @@
 # LIdentity.cs
+Hash: `5e1bafe1d4235f90`
 
 ## `public sealed class LIdentity`
 

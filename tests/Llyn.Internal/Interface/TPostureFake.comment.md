@@ -1,4 +1,5 @@
 # TPostureFake.cs
+Hash: `85c13ab0bfe0439a`
 
 ## `internal sealed class TPostureFake : LPostureVault`
 

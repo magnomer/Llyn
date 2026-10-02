@@ -1,4 +1,5 @@
 # TReflexFixture.cs
+Hash: `346812854c69832d`
 
 ## `internal static class TReflexFixture`
 
@@ -12,7 +13,8 @@ Waits until the engine reports no fetch running for the entry, or fails after th
 
 ## `internal static (string, string, string, string, bool) TReflexRowRead(LReflexDraft row)`
 
-Reads a found or stored row down to its language, kind, text, note and mark, so a test compares tuples.
+Reads a found or stored row down to its language, kind, text, romanization and main mark.
+A test then compares tuples.
 
 ## `internal static async Task<IReadOnlyList<LReflexDraft>> TReflexFetchRead(`
 

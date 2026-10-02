@@ -1,4 +1,5 @@
 # QLeafChip.cs
+Hash: `afe238a03dea2f47`
 
 ## `internal sealed class QLeafChip`
 

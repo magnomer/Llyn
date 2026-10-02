@@ -1,4 +1,5 @@
 # QFontFace.cs
+Hash: `d0c5aa32ce7d09bf`
 
 ## `public static class QFontFace`
 

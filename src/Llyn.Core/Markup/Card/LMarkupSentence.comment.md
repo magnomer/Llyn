@@ -1,4 +1,5 @@
 # LMarkupSentence.cs
+Hash: `1c9a356c34ff560d`
 
 ## `public sealed record LMarkupSentence(`
 

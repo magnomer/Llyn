@@ -1,4 +1,5 @@
 # LRequestCard.cs
+Hash: `70e8b9f250467143`
 
 The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The card requests.
@@ -21,14 +22,14 @@ Drops one card, wherever it nests.
 Moves one card to `LRequestPosition` under `LRequestParentId`, zero for the top of its own list.
 A card keeps its kind, so a collocation never lands under a meaning.
 
-## `public sealed record LRequestCardTitle(long LRequestDraftId, long LRequestCardId, LStateValue LRequestValue)`
+## `public sealed record LRequestCardTitle(long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue)`
 
 Replaces the card's Title.
 
-## `public sealed record LRequestCardExpression(long LRequestDraftId, long LRequestCardId, LStateValue LRequestValue)`
+## `public sealed record LRequestCardExpression(long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue)`
 
 Replaces the card's Expression.
 
-## `public sealed record LRequestCardMeaning(long LRequestDraftId, long LRequestCardId, LStateValue LRequestValue)`
+## `public sealed record LRequestCardMeaning(long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue)`
 
 Replaces the card's Meaning, which the meaning template shows as its Definition.

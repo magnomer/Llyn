@@ -1,4 +1,5 @@
 # TEngineVista.cs
+Hash: `d010156e50cf8bc2`
 
 ## `public sealed class TEngineVista`
 
@@ -80,7 +81,8 @@ A phonology row with no epithet carries an empty one, so the Conduct map needs n
 
 ## `public void VistaOrderSet_SameOrder_RaisesNothing()`
 
-Setting any of the four to what it already is raises no bulletin, so a repeated click re-lists nothing.
+Setting the order, the query or the chosen row to what it already is raises no bulletin.
+A repeated click therefore re-lists nothing.
 
 ## `private static LEntry TVistaEntryCreate(LEngine engine, string headword, string language)`
 
@@ -114,4 +116,4 @@ An Author reaches the Sources that credit it, and nothing while no row is chosen
 
 ## `public void VistaUsageRead_ChosenEntry_CountsNothing()`
 
-A deleted entry drops no reference elsewhere, so its count is zero.
+A chosen entry is referenced by no other record, so its count is zero.

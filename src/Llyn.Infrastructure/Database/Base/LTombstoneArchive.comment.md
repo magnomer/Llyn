@@ -1,4 +1,5 @@
 # LTombstoneArchive.cs
+Hash: `d55ca427e93e2789`
 
 ## `public sealed class LTombstoneArchive : LTombstoneVault`
 
@@ -11,7 +12,8 @@ The revision it is filed under is a real reference and must already exist.
 
 One deleted Entry leaves exactly one tombstone, because `entry_ref` is the primary key.
 So recording the same Entry twice is a conflict rather than a second row.
-This store never deletes lexical data — `LEntryArchive.LEntryDelete` does that, and the caller records the tombstone afterwards.
+This store never deletes lexical data.
+`LEntryArchive.LEntryDelete` does that, and the caller records the tombstone afterwards.
 
 ## `public LTombstoneArchive(LDatabase database)`
 

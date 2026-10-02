@@ -1,4 +1,5 @@
 # LGlyphCell.cs
+Hash: `a600c36e569d2001`
 
 ## `public sealed record LGlyphCell(string LGlyphCellText, string LGlyphCellLanguage)`
 

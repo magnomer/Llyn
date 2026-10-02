@@ -1,4 +1,5 @@
 # Llyn.UIDemeanor.csproj
+Hash: `e29deea2e14477bd`
 
 Demeanor drives the console surface, as Deportment drives the veneer.
 It holds no source yet.

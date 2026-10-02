@@ -1,4 +1,5 @@
 # TAuditTruthLocal.cs
+Hash: `633bee879d0ec056`
 
 ## `internal static partial class TAuditTruthWalker`
 
@@ -46,7 +47,8 @@ A hit is reported once per line, local and kind, and named by member and local.
 ## `private static HashSet<ISymbol> TAuditAnsweredRead(MemberDeclarationSyntax scope)`
 
 The locals a member fills from an engine answer, by whatever syntax.
-An initialiser, an assignment, a deconstruction, a loop variable, a pattern, an `out` and a lambda parameter all count.
+An initialiser, an assignment, a deconstruction, a loop variable and a pattern all count.
+So do an `out` argument and a lambda parameter of a request.
 
 ## `private static void TAuditDesignationAdd(SyntaxNode node, HashSet<ISymbol> answered)`
 

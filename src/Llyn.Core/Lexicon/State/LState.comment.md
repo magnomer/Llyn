@@ -1,4 +1,5 @@
 # LState.cs
+Hash: `459365b435331ed3`
 
 ## `public enum LState`
 

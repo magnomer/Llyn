@@ -1,4 +1,5 @@
 # Llyn.Infrastructure.csproj
+Hash: `b1994be0ee60132b`
 
 ## `<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.13" />`
 

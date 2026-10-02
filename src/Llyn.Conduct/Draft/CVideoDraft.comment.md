@@ -1,4 +1,5 @@
 # CVideoDraft.cs
+Hash: `c294d414325388ac`
 
 ## `public sealed record CVideoDraft(`
 

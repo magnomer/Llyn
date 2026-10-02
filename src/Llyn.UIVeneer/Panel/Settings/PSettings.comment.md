@@ -1,4 +1,5 @@
 # PSettings.xaml
+Hash: `7ff2b5b41c42cce6`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -13,7 +14,7 @@ Six groups need no ordering, and the text alone decides which rows stay.
 
 ## `<ItemsControl x:Name="PLedger">`
 
-The catalog of setting groups, one row each, the title over a summary of the values the group holds.
+The catalog of setting groups, one row each, the title beside a summary of the values the group holds.
 Choosing a row swaps the page on the right and nothing else.
 A row uses `Theme.Catalog.Row`, the same accent edge the other catalogs paint, so the tab reads as one of them.
 
@@ -55,7 +56,7 @@ The switch keeps the check box's handler and its checked reading, only the drawi
 
 ## `<ToggleButton x:Name="PSettingsEpithet" ...>`
 
-The switch of the listing page: whether every list prints an entry's epithet after its headword.
+The switch of the listing page decides whether every list prints an entry's epithet after its headword.
 The epithet is the reading the language pack names, so a Han character lists as `弄 [희롱할 롱]`.
 
 ## `<ToggleButton x:Name="PFrequency" ...>`
@@ -64,8 +65,19 @@ Whether an entry's frequency is fetched from the pack's web source.
 It stands above the inflection switch in the same card, since both govern what a lookup fetches.
 A pack that declares no frequency source fetches nothing either way, so the switch costs nothing there.
 
+## `<ToggleButton x:Name="PMorphology" ...>`
+
+Whether a lookup fetches the headword's inflected forms from the web.
+It stands under the frequency switch, since both govern what a lookup fetches.
+A click saves the choice to the ledger at once, with no apply step.
+
+## `<ToggleButton x:Name="PLayoutLinked" ...>`
+
+Whether every tab keeps the same panel widths.
+Turning it on copies the last dragged tab's widths to every other tab and saves them.
+
 ## Hooks
 
 The markup carries no hook.
-The Deportment class `PSettings` sets icons, clicks, text and key handlers, the language items and the row fills.
+The Deportment class `QSettings` sets icons, clicks, text and key handlers, the language items and the row fills.
 It also names the language box's value path, since that path is read by reflection.

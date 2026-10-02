@@ -1,4 +1,5 @@
 # LSchemaFrequency.cs
+Hash: `c9e709dafa8682f3`
 
 ## `public static class LSchemaFrequency`
 

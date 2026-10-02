@@ -1,4 +1,5 @@
 # TAssayCarrier.cs
+Hash: `44fe74f05ccf40bc`
 
 ## `public sealed class TAssayCarrier`
 

@@ -1,4 +1,5 @@
 # CFootnote.cs
+Hash: `c6d419cc0341e7af`
 
 ## `public sealed class CFootnote`
 
@@ -63,4 +64,4 @@ Prints the chosen entry through `CPortrait`, worded through `settings`, with fai
 
 ## `internal Task LFootnotePortraitExport(CEnvoy envoy, LSettingsPort settings)`
 
-Exports the chosen entry to the path through `CPortrait`, worded through `settings`.
+Exports the chosen entry to a file through `CPortrait`, worded through `settings`.

@@ -1,4 +1,5 @@
 # LPortraitFile.cs
+Hash: `b08f1ec1eb883c8d`
 
 ## `public sealed class LPortraitFile : LPortraitVault`
 

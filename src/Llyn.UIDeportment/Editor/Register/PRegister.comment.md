@@ -1,4 +1,5 @@
 # PRegister.cs
+Hash: `78f4581e696a5ffe`
 
 ## `internal sealed class PRegister`
 

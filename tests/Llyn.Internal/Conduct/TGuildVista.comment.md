@@ -1,4 +1,5 @@
 # TGuildVista.cs
+Hash: `cea949f8c0f6ecb5`
 
 ## `public sealed class TGuildVista`
 

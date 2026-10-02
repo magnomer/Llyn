@@ -1,4 +1,5 @@
 # LMentionFacade.cs
+Hash: `d4c352210a3b3aba`
 
 ## `internal sealed class LMentionFacade`
 

@@ -1,4 +1,5 @@
 # CMentionOffer.cs
+Hash: `b658890473c714d6`
 
 ## `public sealed record CMentionOffer(`
 

@@ -1,8 +1,9 @@
 # LMarkupCargo.cs
+Hash: `814d8aeee9c7370b`
 
 ## `public sealed record LMarkupCargo(`
 
-What one read of a markup file holds: the parsed entries and what the read skipped.
+What one read of a markup file holds, the parsed entries and what the read skipped.
 The shell shows the entries, asks how each enters, and hands the same cargo back to the import.
 The file is read once, so what the user saw is what is imported.
 A file swapped on disk between the two steps changes nothing.

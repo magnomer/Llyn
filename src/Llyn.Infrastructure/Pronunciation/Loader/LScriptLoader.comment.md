@@ -1,8 +1,10 @@
 # LScriptLoader.cs
+Hash: `9059c851cfb800eb`
 
 ## `internal static class LScriptLoader`
 
-The script side of the pack loader: the character styles a Han language pack lists.
+The script side of the pack loader.
+It reads the character styles a Han language pack lists.
 Each row becomes an [LScriptStyle](../../../Llyn.Core/Pronunciation/Script/LScriptStyle.comment.md), in written order.
 `LLanguageLoader` calls it.
 

@@ -1,4 +1,5 @@
 # CTally.cs
+Hash: `656e717bb7b8c142`
 
 ## `public sealed record CTally(string CTallyLanguage, string CTallyKind, IReadOnlyList<CTallyMark> CTallyMarks);`
 

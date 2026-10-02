@@ -1,4 +1,5 @@
 # CCategory.cs
+Hash: `5a81b26b3cc96c5d`
 
 ## `public sealed record CCategory(`
 

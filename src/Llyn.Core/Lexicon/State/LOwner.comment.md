@@ -1,4 +1,5 @@
 # LOwner.cs
+Hash: `0903a6d1268d4a0f`
 
 ## `public enum LOwner`
 

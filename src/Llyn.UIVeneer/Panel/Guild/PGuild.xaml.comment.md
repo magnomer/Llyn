@@ -1,4 +1,5 @@
 # PGuild.xaml.cs
+Hash: `45cccae55b8a3f38`
 
 ## `public partial class PGuild : UserControl`
 

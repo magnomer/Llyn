@@ -1,4 +1,5 @@
 # QLookItem.cs
+Hash: `c1d693947da785ce`
 
 ## `internal static class QLookItem`
 

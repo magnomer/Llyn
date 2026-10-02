@@ -1,4 +1,5 @@
 # LMarkupFile.cs
+Hash: `7e52d86bc0c08ac2`
 
 ## `public sealed class LMarkupFile : LMarkupVault`
 

@@ -1,4 +1,5 @@
 # PThemeNavigation.xaml
+Hash: `117b631efd938fd7`
 
 Shared focus, tab, voyage, divider, and spacing resources for navigation.
 Hover, press, chosen and disabled looks are switched by `QLook` in the deportment.

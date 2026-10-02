@@ -169,7 +169,7 @@ public partial class QWindow
         QNavigationDuplex.Click += QNavigationObserve;
         QNavigationSettings.Click += QNavigationObserve;
 
-        QLook.QLookStyleAttach(_qWindowSurface.Resources);
+        QLook.QLookStyleAttach(_qWindowSurface);
         QMentionList.ItemsSource = _qMentionItem;
         QLookItem.QLookItemAttach(QMentionList, QMentionRowRefine);
         QMentionMenu.Closed += (_, _) => QMentionMenuHide();

@@ -1,4 +1,5 @@
 # LTallyRow.cs
+Hash: `c92108897254182f`
 
 ## `public sealed record LTallyRow(`
 

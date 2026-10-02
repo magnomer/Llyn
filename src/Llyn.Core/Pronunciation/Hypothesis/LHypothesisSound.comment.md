@@ -1,8 +1,10 @@
 # LHypothesisSound.cs
+Hash: `46d96739a8bb4e71`
 
 ## `public sealed record LHypothesisSound(string LHypothesisSoundText, string LHypothesisSoundClass);`
 
-What the hypothesis gives for one placement: the reconstructed syllable and its tone class.
+What the hypothesis gives for one placement.
+It is the reconstructed syllable and its tone class.
 
 **Parameters**
 

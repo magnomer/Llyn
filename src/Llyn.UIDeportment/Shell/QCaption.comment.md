@@ -1,9 +1,15 @@
 # QCaption.cs
+Hash: `9401469e81e85eb8`
 
 ## `public static class QCaption`
 
 The decisions behind the caption the program draws for itself.
 The veneer's caption and roof handlers hand every press here.
+
+## `public static void QCaptionMaximizeRefine(Window window)`
+
+Toggles between maximized and restored rather than only maximizing.
+The caption's maximize button and a double press on the roof share this one switch.
 
 ## `public static void QCaptionDragRefine(Window window, FrameworkElement roof, MouseButtonEventArgs e)`
 

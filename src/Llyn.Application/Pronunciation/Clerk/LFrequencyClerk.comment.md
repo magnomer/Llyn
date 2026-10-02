@@ -1,4 +1,5 @@
 # LFrequencyClerk.cs
+Hash: `40b23ae8c79565ea`
 
 ## `public sealed class LFrequencyClerk`
 

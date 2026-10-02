@@ -1,4 +1,5 @@
 # TRepertoireVista.cs
+Hash: `1b8247dc72f1f293`
 
 ## `public sealed class TRepertoireVista`
 

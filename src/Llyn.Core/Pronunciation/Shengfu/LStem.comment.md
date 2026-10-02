@@ -1,4 +1,5 @@
 # LStem.cs
+Hash: `fa332aee1ac2af1d`
 
 ## `public sealed record LStem(`
 

@@ -1,4 +1,5 @@
 # CParadigmSlot.cs
+Hash: `6f25972be133e4b1`
 
 ## `public sealed record CParadigmSlot(`
 

@@ -1,4 +1,5 @@
 # CSCustomsRow.cs
+Hash: `423a98142d4c7c7a`
 
 ## `public sealed record CSCustomsRow(`
 

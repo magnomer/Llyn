@@ -1,4 +1,5 @@
 # TEngineShengfu.cs
+Hash: `5b7e03807333c2b9`
 
 ## `public sealed class TEngineShengfu`
 
@@ -12,7 +13,7 @@ The series rides on the character's block, which is where the box prints it.
 
 ## `public async Task ShengfuStart_TwoSeriesRows_JoinsThemInAnswerOrder()`
 
-A character listed under two series is printed with both, joined by the rule's separator.
+A character listed under two series keeps both stems, in the order the answer gave them.
 
 ## `public async Task ShengfuStart_PackWithoutSeries_LeavesEveryBlockWithout()`
 

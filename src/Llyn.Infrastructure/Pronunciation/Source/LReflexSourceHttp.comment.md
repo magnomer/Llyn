@@ -1,11 +1,13 @@
 # LReflexSourceHttp.cs
+Hash: `3b8b64348be12e9f`
 
 ## `public sealed class LReflexSourceHttp : LReflexSource`
 
 The adapter behind the `LReflexSource` port, bound to the shared `HttpClient` the rig builds it over.
 Asks one rule's site for one character and reads the readings it answers with.
 The page is matched by the rule's pattern, one reading per match, and each match becomes one draft row.
-Nothing here knows the site: the address, the form, the pattern and the format come from the pack.
+Nothing here knows the site.
+The address, the form, the pattern and the format come from the pack.
 
 ## `public LReflexSourceHttp(HttpClient client)`
 
@@ -34,15 +36,16 @@ A single bracket is literal, so `[{text}]` prints the reading in brackets.
 
 ## `private static readonly TimeSpan LReflexSourcePatience = TimeSpan.FromSeconds(2);`
 
-How long one pack regex may run over one page before the page counts as unreadable.
+How long one pack regex may run over one page before the page yields no rows.
 
 ## `public async Task<(IReadOnlyList<LReflexDraft> LReflexFound, bool LReflexReached)> LReflexSourceFind(`
 
 Fetches the page for `character` and reads its rows.
 The second value says whether the site was reached and read.
-A page never fetched, a busy answer and an unreadable page are not reached.
+A page never fetched and a busy answer are not reached.
 So the character is asked again later.
 A page reached but matching nothing is reached, and the miss is remembered for the session.
+A pack regex that times out also answers reached with no rows.
 
 ## `public static IReadOnlyList<LReflexDraft> LReflexSourceScan(LReflexRule rule, string character, string body)`
 

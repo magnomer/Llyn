@@ -1,4 +1,5 @@
 # QFellowItem.cs
+Hash: `d431d220e165147a`
 
 ## `internal sealed class QFellowItem`
 

@@ -1,4 +1,5 @@
 # TPanel.cs
+Hash: `b08ea641ef975ae3`
 
 ## `public sealed class TPanel`
 

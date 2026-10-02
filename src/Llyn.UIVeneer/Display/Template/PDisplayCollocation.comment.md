@@ -1,4 +1,5 @@
 # PDisplayCollocation.xaml
+Hash: `5b8285852105c648`
 
 ## `ResourceDictionary`
 
@@ -7,6 +8,11 @@ Its body opens with the expression and then the meaning, where a meaning card ca
 Everything else it shares with the meaning card, down to the reserved gutter.
 
 ## Inline notes
+
+### `<DataTemplate x:Key="Display.Collocation.Card">`
+
+The header row is fixed at the height the writing card's header takes.
+So the body starts at the same depth in both modes.
 
 ### `<Border Style="{StaticResource Theme.Card.Position}">`
 

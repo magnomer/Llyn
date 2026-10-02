@@ -1,4 +1,5 @@
 # CMarkupTarget.cs
+Hash: `48ad98607e66bf96`
 
 ## `public sealed record CMarkupTarget(long CMarkupTargetId, int CMarkupTargetMeaning, int CMarkupTargetCollocation)`
 

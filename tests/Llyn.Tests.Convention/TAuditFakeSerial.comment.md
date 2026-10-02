@@ -1,4 +1,5 @@
 # TAuditFakeSerial.cs
+Hash: `fa987d553d8eff14`
 
 ## `internal static class TAuditFakeSerial`
 

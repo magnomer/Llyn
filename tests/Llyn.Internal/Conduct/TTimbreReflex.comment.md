@@ -1,4 +1,5 @@
 # TTimbreReflex.cs
+Hash: `c4e2ecaefd58876c`
 
 ## `public sealed class TTimbreReflex`
 
@@ -14,7 +15,7 @@ A typed text goes to the respelling when the row's language respells, and to the
 ## `public void TimbreReflexRead_StoredEntry_AnswersEveryRowWithItsAnchorAndTheFold()`
 
 A stored entry answers every row with its anchor label, and the fold the display shares.
-The anchor check and the format are asked once for the whole block.
+The anchor check is asked once for the whole block and the format once per row.
 
 ## `public void TimbreReflexRead_EmptyDesk_AnswersNoRowsAndNoAnchor()`
 

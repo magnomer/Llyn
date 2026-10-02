@@ -35,6 +35,14 @@ internal static class QLook
         typeof(QLook),
         new FrameworkPropertyMetadata(null, (sender, _) => QLookStateRefine(sender, EventArgs.Empty)));
 
+    private static readonly DependencyProperty QLookReachProperty = DependencyProperty.RegisterAttached(
+        "QLookReach",
+        typeof(bool),
+        typeof(QLook),
+        new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits, QLookReachRefine));
+
+    private static readonly RoutedEventHandler QLookBroadcast = (_, _) => { };
+
     private static readonly Dictionary<Style, string> QLookStyle = [];
 
     private static readonly ConditionalWeakTable<FrameworkElement, Dictionary<DependencyProperty, object>> QLookHeld =
@@ -55,6 +63,11 @@ internal static class QLook
     internal static QLookChoice QLookFirstRead<QLookChoice>(bool first, QLookChoice chosen, QLookChoice other)
     {
         return first ? chosen : other;
+    }
+
+    internal static string QLookEpithetRead(string epithet)
+    {
+        return "\u2002" + epithet;
     }
 
     internal static void QLookPromptApply(TextBlock block, string text, string hint, string? ink)
@@ -113,11 +126,12 @@ internal static class QLook
             typeof(ToggleButton), ToggleButton.UncheckedEvent, new RoutedEventHandler(QLookStateRefine), true);
     }
 
-    internal static void QLookStyleAttach(ResourceDictionary dictionary)
+    internal static void QLookStyleAttach(FrameworkElement surface)
     {
-        ArgumentNullException.ThrowIfNull(dictionary);
+        ArgumentNullException.ThrowIfNull(surface);
 
-        QLookStyleScan(dictionary, QLookSheet.QLookSheetState.Select(row => row.QLookSetterStyle).ToHashSet());
+        QLookStyleScan(surface.Resources, QLookSheet.QLookSheetState.Select(row => row.QLookSetterStyle).ToHashSet());
+        surface.SetValue(QLookReachProperty, true);
     }
 
     internal static QLookPart? QLookPartFind<QLookPart>(FrameworkElement container, string name)
@@ -291,6 +305,23 @@ internal static class QLook
         }
 
         QLookTrack.Remove(element);
+    }
+
+    private static void QLookReachRefine(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+    {
+        if (sender is not FrameworkElement element || e.NewValue is not true)
+        {
+            return;
+        }
+
+        element.Loaded -= QLookBroadcast;
+        element.Loaded += QLookBroadcast;
+        element.Unloaded -= QLookBroadcast;
+        element.Unloaded += QLookBroadcast;
+        if (element.IsLoaded)
+        {
+            QLookStateRefine(element, EventArgs.Empty);
+        }
     }
 
     private static void QLookStyleScan(ResourceDictionary dictionary, HashSet<string> keys)

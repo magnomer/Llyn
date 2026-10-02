@@ -1,4 +1,5 @@
 # QDiweiLine.cs
+Hash: `7990e2e8bc6f25a4`
 
 ## `internal sealed class QDiweiLine`
 

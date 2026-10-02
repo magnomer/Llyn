@@ -1,4 +1,5 @@
 # CStemPage.cs
+Hash: `6d750d35babf8c4d`
 
 ## `public sealed record CStemPage(`
 

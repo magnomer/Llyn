@@ -1,4 +1,5 @@
 # LVista.cs
+Hash: `4b0f6ef9ce048792`
 
 ## `public sealed class LVista`
 
@@ -40,7 +41,7 @@ The observers reached for every bulletin of their subject, in the order they wer
 
 The observers reached only when the bulletin names the chosen row or no row at all.
 
-## `internal LVista(LEngine engine, long id, string tab, LCatalogOrder order, LCatalogFilter filter, bool blank, bool editing)`
+## `internal LVista(LEngine engine, long id, string tab, LSubject? subject, LCatalogOrder order, LCatalogFilter filter, bool blank, bool editing)`
 
 Made by the engine alone, with the order and filter already read from the tab's layout.
 
@@ -154,10 +155,9 @@ Whether the filter or the query narrows the rows, so a panel asks one question i
 
 ## `public static string LVistaFileRead(LVista? vista)`
 
-The file name an export of the vista's entry is offered under: the headword with barred characters replaced.
+The file name an export of the vista's entry is offered under is the headword with barred characters replaced.
 The trail port of the vista's engine says which characters are barred, so the vista reads no file rule itself.
 A vista that holds nothing, or fails to load, is offered as `entry`.
-A cleared selection or missing record returns null.
 
 ## `public static LCatalogOrder LVistaOrderRead(LVista? vista)`
 

@@ -1,4 +1,5 @@
 # LQuillCard.cs
+Hash: `b1f8e09d4554e704`
 
 ## `public sealed class LQuillCard`
 

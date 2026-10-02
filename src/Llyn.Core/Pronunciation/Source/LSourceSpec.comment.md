@@ -1,4 +1,5 @@
 # LSourceSpec.cs
+Hash: `df31fffb637e5565`
 
 ## `public sealed record LSourceSpec(`
 

@@ -1,4 +1,5 @@
 # LGlyphBlock.cs
+Hash: `3efd800ff721c845`
 
 ## `public sealed record LGlyphBlock(`
 

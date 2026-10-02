@@ -1,4 +1,5 @@
 # TAssayHearing.cs
+Hash: `7ca66e7cd6ca4cc3`
 
 ## `public sealed class TAssayHearing`
 
@@ -24,7 +25,7 @@ An early `return` when the box has focus drops the user's own event, so it decid
 
 ## `public void AuditTruth_FocusGuard_AllowsRequest()`
 
-The repertoire's pattern form: focus tested `true` beside a type test, with the request inside.
+The repertoire's pattern form tests focus `true` beside a type test, with the request inside.
 
 ## `public void AuditTruth_UnfocusedGuard_ReportsMisfiring()`
 

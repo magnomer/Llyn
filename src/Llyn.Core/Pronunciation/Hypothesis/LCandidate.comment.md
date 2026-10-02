@@ -1,4 +1,5 @@
 # LCandidate.cs
+Hash: `839e308b66a8f73c`
 
 ## `public sealed record LCandidate(`
 

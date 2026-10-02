@@ -1,4 +1,5 @@
 # LRegisterVault.cs
+Hash: `48def68f298b92d3`
 
 ## `public interface LRegisterVault`
 

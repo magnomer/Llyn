@@ -1,4 +1,5 @@
 # LPortraitMedia.cs
+Hash: `b31070add1850cfd`
 
 ## `public sealed record LPortraitMedia`
 
@@ -24,4 +25,4 @@ The media type is read off the leading bytes, and anything not PNG or GIF is cal
 ## `public static IReadOnlyList<LPortraitMedia> LPortraitMediaCreate(IReadOnlyList<LVideoDraft> videos, string mark)`
 
 Turns video drafts into moving plates, each carrying its played span.
-The same skip applies: a video with no location is not a plate.
+The same skip applies, so a video with no location is not a plate.

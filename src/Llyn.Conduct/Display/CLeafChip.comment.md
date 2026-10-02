@@ -1,4 +1,5 @@
 # CLeafChip.cs
+Hash: `d604e4f1c5b56d4f`
 
 ## `public sealed record CLeafChip(`
 

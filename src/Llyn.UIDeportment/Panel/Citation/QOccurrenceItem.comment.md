@@ -1,6 +1,7 @@
 # QOccurrenceItem.cs
+Hash: `08fe00f01d95dc44`
 
-## `internal sealed class QOccurrenceItem`
+## `internal sealed class QOccurrenceItem : INotifyPropertyChanged`
 
 One Entry as a row of the repertoire panel's entry list.
 It mirrors the taxonomy panel's row, because every middle column answers the same shape of question.

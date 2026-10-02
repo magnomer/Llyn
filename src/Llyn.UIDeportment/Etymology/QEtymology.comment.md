@@ -1,4 +1,5 @@
 # QEtymology.cs
+Hash: `13e023d1cd7d49bc`
 
 ## `public sealed class QEtymology : Decorator`
 
@@ -64,7 +65,8 @@ The typing entry always closes the row, collapsed on the read side, so the row h
 
 ## `private void QEtymologyItemApply(FrameworkElement container, object item, string? _)`
 
-Fills one item of `Theme.Etymology.Item`: the chip for a source word, or the entry for the caret.
+Fills one item of `Theme.Etymology.Item`.
+The item is the chip for a source word, or the entry for the caret.
 The chip takes the flag, the headword, its language, and the entry and removal commands.
 The removal button shows only while the field is editable.
 The entry takes the typed text both ways and the addition command on Return.

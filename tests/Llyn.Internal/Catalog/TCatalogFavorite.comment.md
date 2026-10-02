@@ -1,4 +1,5 @@
 # TCatalogFavorite.cs
+Hash: `757c363551df8f70`
 
 ## `public sealed class TCatalogFavorite`
 

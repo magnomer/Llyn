@@ -1,4 +1,5 @@
 # LFanqieVault.cs
+Hash: `176f3b4d17dea2a9`
 
 ## `public interface LFanqieVault`
 

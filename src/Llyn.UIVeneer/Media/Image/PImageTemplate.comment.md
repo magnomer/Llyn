@@ -1,4 +1,5 @@
 # PImageTemplate.xaml
+Hash: `d821aeb850b70174`
 
 ## `ResourceDictionary`
 

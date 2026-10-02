@@ -1,4 +1,5 @@
 # TInterfaceDeportment.cs
+Hash: `0b40aa8d08c43fa9`
 
 ## `[assembly: CollectionBehavior(DisableTestParallelization = true)]`
 
@@ -12,8 +13,8 @@ The relays for the deportment classes a browse panel holds.
 It is a class of its own rather than a part of `TInterface`.
 The relay layer grows by owner and not by partial.
 Each relay is transparent and carries no test logic of its own.
-The window relays build their deportments over fake ports, with no engine behind them.
-The entry row relays read a flag store no test fills, so no WPF object is made.
+The posture relay builds its deportment over a real workspace folder.
+The index item and caret key relays reach internal statics and make no WPF object.
 The lectern fold relays hand a WPF toggle through, so their caller runs them on an STA thread.
 The etymology relays reach the field's internal show and read its two faces by their place in the body.
 The card position attach hangs one card in a bare list with only the number box in its row.

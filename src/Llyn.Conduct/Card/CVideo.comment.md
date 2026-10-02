@@ -1,4 +1,5 @@
 # CVideo.cs
+Hash: `4b59c9ab118f2816`
 
 ## `public sealed class CVideo`
 

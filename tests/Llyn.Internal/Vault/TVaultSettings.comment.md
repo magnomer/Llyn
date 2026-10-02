@@ -1,4 +1,5 @@
 # TVaultSettings.cs
+Hash: `aa86e6407e423e71`
 
 ## `public sealed class TVaultSettings`
 

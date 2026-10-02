@@ -1,4 +1,5 @@
 # LPortraitRole.cs
+Hash: `74be846e0ee13a4d`
 
 ## `public enum LPortraitRole`
 

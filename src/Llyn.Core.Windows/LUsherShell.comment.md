@@ -1,4 +1,5 @@
 # LUsherShell.cs
+Hash: `02ab055fa7b0f437`
 
 ## `public sealed class LUsherShell : LUsher`
 

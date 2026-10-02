@@ -1,8 +1,9 @@
 # QRepertoire.cs
+Hash: `f145a14ec587ce1f`
 
 ## `internal sealed partial class QRepertoire : QChronicleHost`
 
-The Repertoire panel's driver: the view of the shared stock of usage contexts itself.
+The Repertoire panel's driver, the view of the shared stock of usage contexts itself.
 A Situation is independent data owned by nothing, so this panel is not a view of one Entry's contexts.
 It holds the surface, the host and the repertoire Conduct the browsing side calls, and nothing else.
 The browsing behavior lives in `QRepertoireBrowse.cs` and the editing in `QRepertoireEditor.cs`, one file per responsibility.
@@ -21,6 +22,14 @@ It ties both droppers to their popups, sets every icon, and subscribes every cli
 ## `private Border QTier`
 
 Each named part of the page is pulled through `QContract.QContractFind` by its contract ID.
+
+## `private CRepertoire _cRepertoire = null!;`
+
+The repertoire Conduct, holding the atlas, the occurrence list, the desk, the session and the panel's mode.
+The atlas's vista carries the order, the inquest, and the languages hidden from the entry column.
+The panel keeps no copy of any of them and asks the Conduct for each where it needs it.
+It is null until `QRepertoireIntroduce` builds it, so only the print and portrait gates guard against that.
+A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
 ## `internal void QRepertoireIntroduce(QWindow host)`
 
@@ -48,7 +57,8 @@ Whether the panel is on screen, so the engine knows when a notice needs painting
 
 ## `private void QRepertoireModeRefine()`
 
-Paints the mode the engine decides: which page shows, which toggle is checked, which button is live.
+Paints the mode the engine decides.
+It shows the page, checks the toggle and lights the buttons the mode names.
 The scenario is live only while its desk runs.
 It folds the trail pair and the chronicle pair by the same mode as the toggle.
 It ends by refreshing the rail's undo and redo.
@@ -60,7 +70,7 @@ Releases the editor's recording player and closes the popups the panel owns, so 
 
 ## `private void QRepertoirePressRefine(object sender, CanExecuteRoutedEventArgs e)`
 
-Whether the print button is live: an entry is read, or a situation is read.
+Whether the print button is live, which holds while an entry or a situation is read.
 It answers no before attach, because the command binding exists from the constructor on.
 An editor on screen prints nothing, because what is printed is what is read.
 The button follows this answer on its own, so no panel state has to switch it.
@@ -74,7 +84,7 @@ Nothing is read back from the screen.
 
 ## `private void QRepertoirePortraitRefine(object sender, CanExecuteRoutedEventArgs e)`
 
-Whether the export button is live: exactly when an entry is read in the display.
+Whether the export button is live, exactly when an entry is read in the display.
 It answers no before attach, as the print check does.
 Print may also act on the other page this panel reads, but export acts on entries alone.
 The button follows this answer on its own, so no panel state has to switch it.

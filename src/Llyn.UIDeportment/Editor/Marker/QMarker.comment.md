@@ -1,4 +1,5 @@
 # QMarker.cs
+Hash: `8754ece389bc0785`
 
 ## `internal sealed class QMarker`
 
@@ -24,7 +25,7 @@ Holds the Conduct handle and the category driver, and subscribes the marker Refi
 
 ## `private void QMarkerApply(FrameworkElement container, object item, string? _)`
 
-Fills one marker chip: its name, its close icon and its close click.
+Fills one marker chip with its name, its close icon and its close click.
 
 ## `private void QMarkerEraseObserve(object sender, RoutedEventArgs e)`
 
@@ -49,6 +50,11 @@ The gate answers the category menu for the text, and the dropper paints it.
 
 Typing narrows the menu and opens it when the engine says the menu shows.
 An empty box or nothing matching closes it, because a menu with nothing to offer is in the way.
+
+## `internal void QMarkerFieldRefine()`
+
+Empties the box after a commit.
+The category menu calls it too, so a picked name leaves no typed text behind.
 
 ## `private void QMarkerRefine(CEntryDraft _)`
 

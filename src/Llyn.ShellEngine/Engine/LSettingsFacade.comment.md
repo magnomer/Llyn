@@ -1,4 +1,5 @@
 # LSettingsFacade.cs
+Hash: `0d7b40bb3eb9ef18`
 
 ## `internal sealed class LSettingsFacade`
 
@@ -71,7 +72,7 @@ A settings bulletin is raised when the switch changed, so every open reading re-
 
 ## `internal bool LEngineRespellingCheck(string language)`
 
-Whether respellings show for `language`: the setting is on and the pack declares respelling groups.
+Whether respellings show for `language`, when the setting is on and the pack declares respelling groups.
 
 ## `internal string LEnginePronunciationRead(LEntryDraft draft)`
 

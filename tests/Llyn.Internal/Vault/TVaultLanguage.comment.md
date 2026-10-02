@@ -1,4 +1,5 @@
 # TVaultLanguage.cs
+Hash: `268d6ea7d313337f`
 
 ## `public sealed class TVaultLanguage`
 

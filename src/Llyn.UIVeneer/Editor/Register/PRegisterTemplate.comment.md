@@ -1,4 +1,5 @@
 # PRegisterTemplate.xaml
+Hash: `8242d2e5bb8a410b`
 
 ## `ResourceDictionary`
 

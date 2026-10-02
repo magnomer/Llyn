@@ -1,4 +1,5 @@
 # CReferenceKind.cs
+Hash: `499ece224dfddca4`
 
 ## `public sealed record CReferenceKind(string CReferenceKindTag, string CReferenceKindKey)`
 

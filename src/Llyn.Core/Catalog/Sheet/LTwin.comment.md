@@ -1,4 +1,5 @@
 # LTwin.cs
+Hash: `5474b88d2ea10ff7`
 
 ## `public static class LTwin`
 

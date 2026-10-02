@@ -1,8 +1,10 @@
 # QScriptImage.cs
+Hash: `375698adcb7ee82c`
 
 ## `internal sealed class QScriptImage : INotifyPropertyChanged, QImagePending`
 
-One glyph picture as the script box draws it: the bitmap once seen, its caption, and its drawn width.
+One glyph picture as the script box draws it.
+It holds the bitmap once seen, its caption, and its drawn width.
 The stored picture is the large original, and the row draws it at a fixed small height.
 The bytes are held undecoded until the element drawing them reports itself in view.
 Only the size is read at once, from the picture's header.
@@ -49,7 +51,7 @@ The drawn height, handed to the template so the measure lives in one place.
 
 ## `internal static void QScriptImageRefine(FrameworkElement container, object item, string? _)`
 
-Fills a picture of `Theme.Script.Picture`: the lazy loader's row, the shape, the age and the caption.
+Fills a picture of `Theme.Script.Picture`, which holds the lazy loader's row, the shape, the age and the caption.
 The shape takes the picture as its mask, so the glyph is drawn in the ink colour.
 It runs again when the picture decodes, since the row raises its source then.
 

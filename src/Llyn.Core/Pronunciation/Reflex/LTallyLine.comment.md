@@ -1,8 +1,10 @@
 # LTallyLine.cs
+Hash: `62b7fa9f0651a0d2`
 
 ## `public sealed record LTallyLine(`
 
-One line of a tally, a language and a kind: the parts its readings take, in IPA and in respelling.
+One line of a tally, a language and a kind.
+It holds the parts its readings take, in IPA and in respelling.
 A language sorting its readings by kind, as Japanese by Go-on and Kan-on, gets one line per kind.
 Both sets are always carried, so the view's switch only picks which is printed.
 
@@ -15,11 +17,12 @@ Both sets are always carried, so the view's switch only picks which is printed.
 
 ## `public IReadOnlyList<LTallyMark> LTallyLineRead(bool respelled)`
 
-The marks of one set: the respelling marks when asked for, else the IPA marks.
+The marks of one set, the respelling marks when asked for, else the IPA marks.
 
 ## `public static IReadOnlyList<LTallyLine> LTallyLineScan(`
 
-The lines of one division: the reflex parts of every character gathered per language and kind, both sets apart.
+The lines of one division.
+The reflex parts of every character are gathered per language and kind, both sets apart.
 `kind` picks the part, onset for an initial and vowel with coda for a rime, off each row's stored anatomy.
 A character absent from `readings` adds nothing, and an empty part or blank language records nothing.
 Languages sort by their place in `ranking`, unranked ones after by name, then kinds as the rows first name them.

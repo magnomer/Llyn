@@ -1,4 +1,5 @@
 # TCatalogReference.cs
+Hash: `3f1d5d6fad9f4e25`
 
 ## `public sealed class TCatalogReference`
 
@@ -12,6 +13,7 @@ It covers the query, over the four texts of the Source, its year and its credite
 It covers the byline, `Author (Year)`.
 It covers a query typed as a byline, which finds the work of that author in that year.
 It covers minting a Source from a typed citation line, titled with that line alone.
-It covers resolving a typed citation line to the Source it names, before any Source is minted.
+It covers resolving a typed citation line to the Source it names, minting one only for an unknown line.
+A blank line resolves to nothing and changes no Source.
 The Source already cited keeps a byline other works share, and a credited title finds its own Source.
 Every workspace starts with the Source titled Unknown, so each listing carries it among the rows the test made.

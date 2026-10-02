@@ -1,4 +1,5 @@
 # LSituationRow.cs
+Hash: `d6494e9dc89cf02b`
 
 ## `public sealed record LSituationRow(`
 

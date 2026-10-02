@@ -1,4 +1,5 @@
 # COeuvre.cs
+Hash: `7843882abffd22dd`
 
 ## `public sealed class COeuvre`
 
@@ -14,6 +15,10 @@ Builds the oeuvre over the entry port, with its panel asking through `envoy`.
 The panel reads a failure's ready notice through `settings`.
 The panel never edits, so it holds no changes and stores nothing on leaving.
 
+## `public event Action<CColophon>? COeuvreColophonChanged;`
+
+The colophon of each Source the panel loads, so the source side redraws it.
+
 ## `public CPanel COeuvrePanel { get; }`
 
 The panel over the oeuvre vista, whose loaded Source raises the colophon.
@@ -21,6 +26,10 @@ The panel over the oeuvre vista, whose loaded Source raises the colophon.
 ## `private void LOeuvreColophonUpdate(LDraft draft)`
 
 Answers the panel's loaded draft with the colophon sheet it shapes.
+
+## `public bool COeuvreEmpty`
+
+Whether the last rows read listed none, so it moves only when `COeuvreRowsRead` runs.
 
 ## `public string COeuvreEmptyKey`
 
@@ -34,7 +43,8 @@ A workspace switch hands fresh vistas, and the comb query carries over, so the d
 
 ## `internal void LOeuvreObserverAttach(Action<Action> marshal)`
 
-Attaches the oeuvre list's own observer plan: a Vista notice raises the oeuvre rows, run through `marshal`.
+Attaches the oeuvre list's own observer plan.
+A Vista notice raises the oeuvre rows, run through `marshal`.
 The guild attaches it after the vistas restore, so the observer stands on the fresh oeuvre vista.
 
 ## `public IReadOnlyList<CCatalogReference> COeuvreRowsRead()`

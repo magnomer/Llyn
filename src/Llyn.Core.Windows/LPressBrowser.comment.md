@@ -1,6 +1,7 @@
 # LPressBrowser.cs
+Hash: `75f741f8e83d522f`
 
-## `public sealed class LPressBrowser`
+## `public sealed class LPressBrowser : LPress`
 
 Prints a rendered page, to PDF or to paper, through the browser engine the program already ships.
 Printing the same HTML the export writes is what keeps the PDF, the paper and the page identical.
@@ -13,7 +14,8 @@ The browser ignores that rule once it is handed margins, so the two must be kept
 
 ## `private static readonly string LPressBrowserFolder`
 
-The temporary home of everything the press touches: the pages it prints and the browser's own profile.
+The temporary home of everything the press touches.
+It holds the pages the press prints and the browser's own profile.
 Both sit under one folder so nothing of the press is scattered across the temp directory.
 
 ## `private static Task<CoreWebView2Environment>? _lPressSetting`

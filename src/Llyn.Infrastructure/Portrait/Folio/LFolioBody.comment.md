@@ -1,4 +1,5 @@
 # LFolioBody.cs
+Hash: `f6b99d3695b0cd1d`
 
 ## `public static class LFolioBody`
 

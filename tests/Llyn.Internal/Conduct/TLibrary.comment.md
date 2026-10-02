@@ -1,4 +1,5 @@
 # TLibrary.cs
+Hash: `e0eec34477e460cd`
 
 ## `public sealed class TLibrary`
 
@@ -13,6 +14,9 @@ A merge row appends to its target, so the declared mode reaches the engine uncha
 A declined question stores nothing, and a malformed file shows the import failure.
 An entry jump through the navigation opens the entry in the area, asking nothing.
 A row click on the tab records the station it leaves, and an empty click records nothing.
+A quit while editing asks once and stores the entry.
+The portrait export writes only a chosen entry, asks for the file, and shows the failure when the write fails.
+A new order of none keeps the order.
 
 ## `private static CEnvoy TLibraryEnvoyCreate(`
 

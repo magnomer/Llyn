@@ -1,8 +1,9 @@
 # LReferenceArchive.cs
+Hash: `0254751270747212`
 
-## `public sealed class LReferenceArchive`
+## `public sealed class LReferenceArchive : LReferenceVault`
 
-Persists bibliographic References — independent data no Entry, Example, or Author owns.
+Persists bibliographic References, which are independent data no Entry, Example, or Author owns.
 A Reference is created once with an opaque id and is then cited one way.
 An Example cites at most one through its `example.reference_ref` column.
 An Entry reaches a Reference only through the Examples its cards quote, and holds no citation of its own.
@@ -29,9 +30,7 @@ Binds the store to the workspace `database` it opens sessions through.
 
 ## `public LReference LReferenceCreate(LReference reference)`
 
-Inserts `reference` and returns the stored Reference with its id filled in.
-A Reference carrying no id is given a fresh opaque one.
-A Reference already carrying one keeps it, because a held source is named before the record it becomes exists.
+Inserts `reference` with a fresh opaque id and returns the stored Reference with that id filled in.
 Each field is written as its state plus, for a specified field alone, its value.
 The new Reference is cited by nothing and credits no Author until one is attached.
 
@@ -81,8 +80,8 @@ reference_author cascades from reference, so the author links go with the row an
 
 ### `private void LReferenceLinkAttach(`
 
-The two citation tables differ only in their name and their two columns.
-So both attach and both detach share one implementation.
+The attach and detach share one implementation parameterised by table and columns.
+So another association table can reuse them unchanged.
 Every identifier here is a store-owned literal chosen by the methods above, never caller input.
 Every value still travels as a parameter.
 

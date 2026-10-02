@@ -1,4 +1,5 @@
 # QAutograph.cs
+Hash: `348b02db6e1169c1`
 
 ## `internal sealed class QAutograph`
 

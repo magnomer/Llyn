@@ -1,4 +1,5 @@
 # CRespellingMark.cs
+Hash: `0e039bb6dba672d3`
 
 ## `public sealed record CRespellingMark(`
 

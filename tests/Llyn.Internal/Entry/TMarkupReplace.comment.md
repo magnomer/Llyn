@@ -1,4 +1,5 @@
 # TMarkupReplace.cs
+Hash: `bdc9d818203c0e6f`
 
 ## `public sealed class TMarkupReplace`
 

@@ -1,4 +1,5 @@
 # LMentionDraft.cs
+Hash: `02129a16e4839db0`
 
 ## `public sealed record LMentionDraft(`
 

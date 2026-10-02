@@ -1,4 +1,5 @@
 # CMarkupEntry.cs
+Hash: `67623e63568aa0d1`
 
 ## `public sealed record CMarkupEntry(`
 

@@ -1,8 +1,10 @@
 # QTenorCohort.cs
+Hash: `3caf7111cfb0941c`
 
 ## `internal sealed partial class QTenor`
 
-The entry list of the tenor panel: the Entries carrying the chosen Register, and the one the reader stands on.
+The entry list of the tenor panel.
+It shows the Entries carrying the chosen Register, and the one the reader stands on.
 Choosing a row loads it back from the workspace into the reader, or the editor when that side is open.
 
 ## `private void QCohortObserve(object sender, RoutedEventArgs e)`

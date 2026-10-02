@@ -1,4 +1,5 @@
 # PMentionChip.cs
+Hash: `8721e4210f843ff2`
 
 ## `internal sealed record PMentionChip(`
 
@@ -15,6 +16,6 @@ Editing is the gesture on the text.
 
 ## `internal static void PMentionChipRefine(FrameworkElement container, object item, string? _)`
 
-Fills one chip of `Theme.Mention.Chip`: the word, the headword, the sense and the remove button.
+Fills one chip of `Theme.Mention.Chip` with the word, the headword, the sense and the remove button.
 The button takes the unlink command with the chip as its parameter, and its cross icon.
 Every chip line attaches it through `QLookItem.QLookItemAttach`.

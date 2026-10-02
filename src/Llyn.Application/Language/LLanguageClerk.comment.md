@@ -1,4 +1,5 @@
 # LLanguageClerk.cs
+Hash: `38eb6aa09f42e759`
 
 ## `public sealed class LLanguageClerk`
 

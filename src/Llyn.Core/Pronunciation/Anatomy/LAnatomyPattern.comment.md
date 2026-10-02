@@ -1,8 +1,10 @@
 # LAnatomyPattern.cs
+Hash: `09972e57107f7c73`
 
 ## `public sealed record LAnatomyPattern(`
 
-One way of cutting a reading into its parts: the rewrites that prepare it and the regex that cuts it.
+One way of cutting a reading into its parts.
+The rewrites prepare the reading and the regex cuts it.
 The regex names its parts with the groups `onset`, `vowel`, `coda` and `tone`, any of which it may omit.
 An omitted group reads as empty, so a toneless language simply declares no `tone` group.
 

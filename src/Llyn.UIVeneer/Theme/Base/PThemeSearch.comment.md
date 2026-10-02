@@ -1,4 +1,5 @@
 # PThemeSearch.xaml
+Hash: `fb9e04cba9a51ef9`
 
 ## `<Style x:Key="Theme.Search.Bar" TargetType="Border">`
 

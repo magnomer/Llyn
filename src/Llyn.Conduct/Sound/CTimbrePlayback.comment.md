@@ -1,4 +1,5 @@
 # CTimbrePlayback.cs
+Hash: `2aea6bb0d1a8aaf4`
 
 ## `public sealed record CTimbrePlayback(string? CTimbrePlaybackAudio, bool CTimbrePlaybackAudible);`
 

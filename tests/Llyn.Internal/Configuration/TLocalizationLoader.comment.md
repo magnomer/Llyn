@@ -1,8 +1,10 @@
 # TLocalizationLoader.cs
+Hash: `aef25aefe3308c74`
 
 ## `public sealed class TLocalizationLoader`
 
-The embedded catalog files: a shipped language reads as raw pairs, and one the build lacks is refused.
+The embedded catalog files.
+A shipped language reads as raw pairs, and one the build lacks is refused.
 
 ## `public void LocalizationLoaderRead_EveryCatalog_MatchesDefaultKeys()`
 

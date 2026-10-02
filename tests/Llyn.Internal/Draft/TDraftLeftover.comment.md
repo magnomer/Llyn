@@ -1,4 +1,5 @@
 # TDraftLeftover.cs
+Hash: `9e4e68a23d143a0c`
 
 ## `public sealed class TDraftLeftover`
 

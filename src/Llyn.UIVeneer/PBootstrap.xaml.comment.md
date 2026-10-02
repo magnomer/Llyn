@@ -1,4 +1,5 @@
 # PBootstrap.xaml.cs
+Hash: `383f02603bb13df7`
 
 ## `public partial class PBootstrap : System.Windows.Application`
 

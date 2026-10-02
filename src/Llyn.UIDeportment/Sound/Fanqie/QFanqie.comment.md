@@ -1,4 +1,5 @@
 # QFanqie.cs
+Hash: `63fbb34b0d9e05cd`
 
 ## `public sealed class QFanqie : Decorator`
 
@@ -28,7 +29,8 @@ That shows the regenerate button and keeps the box up while nothing is stored.
 
 ## `private readonly Grid _qFanqieHead = new();`
 
-The head row: the box's name on the left, then the regenerate button and the switch, present only when folded.
+The head row holds the box's name on the left, then the regenerate button and the switch.
+It shows only when the box is folded.
 
 ## `private readonly Button _qFanqieRefresh = new();`
 
@@ -59,7 +61,7 @@ The rebuild button and the category buttons stay reachable through it.
 
 ## `public QFanqie()`
 
-Builds the box from the theme's fanqie styles, unfocusable, collapsed until it has something to show.
+Builds the box from the theme's fanqie styles, collapsed until it has something to show.
 Its list is attached to `QFanqieItem.QFanqieItemRefine`, which fills each block and its lines.
 
 ## `internal IReadOnlyList<QFanqieItem>? QFanqieItems`

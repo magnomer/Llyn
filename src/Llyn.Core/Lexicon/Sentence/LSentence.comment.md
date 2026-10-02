@@ -1,4 +1,5 @@
 # LSentence.cs
+Hash: `d36b8b375f438d75`
 
 ## `public sealed record LSentence(`
 

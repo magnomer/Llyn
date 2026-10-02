@@ -1,4 +1,5 @@
 # TRespellingDraft.cs
+Hash: `c65270f8f475e005`
 
 ## `public sealed class TRespellingDraft`
 
@@ -13,7 +14,7 @@ The check answers true only while the switch is on and the pack declares groups.
 The phonemic flag is the pack's alone.
 A reading stands between slashes only when respelled under a phonemic pack, and in square brackets otherwise.
 Flipping the switch raises a settings bulletin so open readings redraw.
-A reflex row's text derives a respelling through the row's own language, slashed for a phonemic pack.
+A reflex row's text derives a bare respelling through the row's own language, never wrapped in slashes.
 A reflex respelling written by hand stands until the text or the language changes.
 Rows saved without a respelling, pronunciation and reflex alike, have one derived and stored on the way in.
 A load reads the stored form back and derives nothing.

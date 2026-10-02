@@ -1,8 +1,10 @@
 # QEditorFont.cs
+Hash: `e89ab12291d54996`
 
 ## `internal sealed class QEditorFont`
 
-The editor's typefaces: every font the language's timbre names for the editor is written here.
+The editor's typefaces.
+Every font the language's timbre names for the editor is written here.
 The headword and its measuring twin, the example and gloss typography, and the glyph row each take their own role.
 Sound keeps only sound, so `QEditorSound` and `QGlyph` read no font.
 

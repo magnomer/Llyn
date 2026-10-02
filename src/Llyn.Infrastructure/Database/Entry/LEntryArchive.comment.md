@@ -1,10 +1,12 @@
 # LEntryArchive.cs
+Hash: `6681be4d144571f0`
 
 ## `public sealed partial class LEntryArchive : LEntryVault`
 
 It is the adapter of `LEntryVault`, the port the engine holds.
 
-Persists entries and their two owned child structures — written forms and parts of speech — in the workspace database.
+Persists entries and their two owned child structures in the workspace database.
+The structures are written forms and parts of speech.
 An entry's id and timestamps are assigned here on creation.
 Its forms and POS are written as ordered child rows.
 So reordering rewrites `position` only and never touches the entry id.

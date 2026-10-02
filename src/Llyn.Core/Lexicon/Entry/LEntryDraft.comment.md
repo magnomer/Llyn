@@ -1,4 +1,5 @@
 # LEntryDraft.cs
+Hash: `a1f6130de5a43fb3`
 
 ## `public sealed record LEntryDraft(`
 
@@ -37,6 +38,12 @@ A part stored with no name is left out, since only its stored value would show.
 
 Whether the entry says anything about its origin, by prose or by link.
 
+## `public IReadOnlyList<long> LEntryDraftTargets`
+
+Every Entry the top-level Meaning and Collocation cards are translated by, each once, in first-seen order.
+Child cards are not walked, unlike `LEntryDraftCitations`.
+It is derived, so the draft archive never writes it.
+
 ## `public IReadOnlyList<long> LEntryDraftSources`
 
 Every entry the etymology names, its source links and the spans of its narrative alike.
@@ -59,6 +66,11 @@ The primary reading's IPA alone, for the surfaces that show only that.
 ## `public string LEntryDraftAudio`
 
 The primary reading's recording path alone, for the surfaces that play only that.
+
+## `public IReadOnlyList<LPronunciationDraft> LEntryDraftAccents`
+
+Every pronunciation after the primary one, in list order, empty when the entry has one or none.
+The accent sheet and the recording checks read these beside the primary reading.
 
 ## `public LEntryDraft LEntryDraftNormalize()`
 

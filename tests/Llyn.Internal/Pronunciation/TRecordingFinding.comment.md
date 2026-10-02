@@ -1,4 +1,5 @@
 # TRecordingFinding.cs
+Hash: `365b70e5aa73e843`
 
 ## `public sealed class TRecordingFinding`
 

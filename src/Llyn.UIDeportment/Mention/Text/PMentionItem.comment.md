@@ -1,10 +1,11 @@
 # PMentionItem.cs
+Hash: `00c0ce1f79d4f665`
 
-## `internal sealed record PMentionItem`
+## `internal sealed record PMentionItem(`
 
 One row of the menu that opens at a clicked word.
 It carries display strings and ids only, so the menu never reads the engine.
-In Entry mode a row stands for one candidate Entry: its headword, its language and the flag of that language.
+In Entry mode a row stands for one candidate Entry, with its headword, its language and that language's flag.
 In Sense mode a row stands for one Meaning of one Entry.
 It stands for the whole Entry when its sense is zero.
 The flag comes from `QEnsignImage`, so the rows read as every other headword list does.
@@ -23,4 +24,3 @@ The Entry-mode rows, one per candidate, in the order the engine returned them.
 The Sense-mode rows, one per row of the ready sense menu.
 Conduct names and orders them, the whole-Entry row first, so the record only wraps them.
 A Sense-mode pick reads only the sense, so these rows carry no Entry.
-

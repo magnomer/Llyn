@@ -1,4 +1,5 @@
 # LEntryVault.cs
+Hash: `a97ec6796520c3c9`
 
 ## `public interface LEntryVault`
 

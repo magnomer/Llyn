@@ -1,8 +1,10 @@
 # LSituationArchiveMedia.cs
+Hash: `49153e78caf79de9`
 
 ## `public sealed partial class LSituationArchive`
 
-The media side of the Situation store: the Image and Video links a Situation shows.
+The media side of the Situation store.
+It holds the Image and Video links a Situation shows.
 A single read fills one Situation through the Image and Video stores.
 A list read fills every Situation in two grouped queries instead.
 The delete drops a Situation's own links before its row goes.

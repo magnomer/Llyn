@@ -1,6 +1,7 @@
 # PGlossConverter.cs
+Hash: `c162fd15de6b5804`
 
-## `internal sealed class PGlossConverter`
+## `internal sealed class PGlossConverter : IValueConverter`
 
 Turns the Conduct Glosses a read-only card carries into rows it can show.
 A card stores each Gloss as its language and text alone, and the display needs the flag beside it.

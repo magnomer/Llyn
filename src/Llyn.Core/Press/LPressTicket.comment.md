@@ -1,4 +1,5 @@
 # LPressTicket.cs
+Hash: `3e52067ec996cdf6`
 
 ## `public sealed record LPressTicket`
 

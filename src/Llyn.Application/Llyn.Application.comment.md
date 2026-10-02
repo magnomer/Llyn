@@ -1,4 +1,5 @@
 # Llyn.Application.csproj
+Hash: `c22bd896bdb517db`
 
 Builds application workflows over the Core model.
 

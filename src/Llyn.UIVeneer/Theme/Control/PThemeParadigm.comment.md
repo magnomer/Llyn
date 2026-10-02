@@ -1,4 +1,5 @@
 # PThemeParadigm.xaml
+Hash: `82e28a6350ce0db9`
 
 ## `<Style x:Key="Theme.Paradigm.Box" TargetType="Border">`
 
@@ -22,10 +23,8 @@ It pins the interface font for the same reason the part does.
 The form, inked and in the headword font the box inherits from `QFontRefine`.
 The size is fixed here, so the headword's own size does not carry into the rows.
 The template carries no bindings, so `QParadigm` writes each row's text and marks.
-An empty form draws an ellipsis and says the lookup is off.
-A pending form draws the same ellipsis and says the form is being looked up.
-An unknown form draws a dash and says no source listed it.
-The unknown mark wins over the empty one.
+A form that is not text draws a placeholder mark in the muted ink.
+Its tooltip names the lookup state the mark stands for.
 
 ## `<DataTemplate x:Key="Theme.Paradigm.Row">`
 

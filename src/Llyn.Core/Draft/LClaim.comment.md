@@ -1,4 +1,5 @@
 # LClaim.cs
+Hash: `4bf25b6887736f62`
 
 ## `public sealed record LClaim(`
 

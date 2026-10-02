@@ -1,8 +1,9 @@
 # QDuplex.cs
+Hash: `b69f32dbfe879a8e`
 
 ## `internal sealed class QDuplex`
 
-Drives the duplex panel: it builds its two wings and puts them to work.
+Drives the duplex panel by building its two wings and putting them to work.
 Searching, picking, reading and restoring live in the wing, so this file only introduces both.
 The panel itself is the veneer's `PDuplex` page, which the window places.
 

@@ -1,4 +1,5 @@
 # LSchemaEtymology.cs
+Hash: `8a11e48f9823be89`
 
 ## `public static class LSchemaEtymology`
 

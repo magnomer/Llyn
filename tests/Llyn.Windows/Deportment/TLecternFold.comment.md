@@ -1,4 +1,5 @@
 # TLecternFold.cs
+Hash: `eb875323ffad58ff`
 
 ## `public sealed class TLecternFold`
 

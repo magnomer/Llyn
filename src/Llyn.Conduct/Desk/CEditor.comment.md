@@ -1,8 +1,9 @@
 # CEditor.cs
+Hash: `ed33e239ce4894c0`
 
 ## `public sealed class CEditor`
 
-The entry editor's session: the desk it sits at and every entry-level gate and read.
+The entry editor's session holds the desk it sits at and every entry-level gate and read.
 It opens an entry or a fresh draft, stores, drops typing, and hands each field edit to the tenure.
 The atelier builds it over its ports, so no driver holds a port for the editor.
 Every driver edits an entry through the same gates.
@@ -15,6 +16,10 @@ The vista of the tab the editor serves, which says whether it is the input tab's
 
 Whether the draft being stored stood on no entry, written just before each finish.
 A fresh store on the input tab reopens a blank draft, while every other store reopens what was stored.
+
+## `internal CEditor(`
+
+Every editor's desk takes the `Input` scope, so its failure notices use the input wording on any tab.
 
 ## `public static CEditor CEditorCreate(CAtelier atelier, CEnvoy envoy)`
 
@@ -56,7 +61,8 @@ A settings change reads the held draft again, since the draft's shown form depen
 
 ## `public void CEditorClose()`
 
-The editor closes with its view: the held draft is let go, then every running search.
+The editor closes with its view.
+The held draft is let go, then every running search.
 Closing is one user action, and the order of the cancels is the editor's.
 
 ## `public event Action<CEntryDraft>? CEditorDraftChanged;`
@@ -127,13 +133,15 @@ Stores the held draft when it changed, and reopens what was stored once the desk
 
 ## `internal bool LEditorFinish(bool store)`
 
-The quit's and the leave's finish: stores or drops the held draft and reports whether the tenure ended.
+The quit's and the leave's finish.
+It stores or drops the held draft and reports whether the tenure ended.
 A stored draft is reopened the way a save reopens it.
 A hidden tab then comes back showing what it stored.
 
 ## `private void CEditorStoredShow(long id)`
 
-Chooses what opens after a store: a blank draft for a fresh input draft, else the stored entry.
+Chooses what opens after a store.
+A fresh input draft opens a blank draft, and any other store opens the stored entry.
 
 ## `public string CEditorPronunciationRead()`
 

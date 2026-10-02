@@ -1,4 +1,5 @@
 # LMention.cs
+Hash: `1d50d63feeca5f28`
 
 ## `public sealed record LMention(`
 

@@ -1,4 +1,5 @@
 # LPortraitSection.cs
+Hash: `668650e744d94679`
 
 ## `public sealed record LPortraitSection`
 

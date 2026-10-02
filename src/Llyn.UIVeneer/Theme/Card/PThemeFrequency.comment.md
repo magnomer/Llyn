@@ -1,4 +1,5 @@
 # PThemeFrequency.xaml
+Hash: `8eb759c9eefdc88d`
 
 ## `<Style x:Key="Theme.Frequency.Chip" TargetType="Border">`
 

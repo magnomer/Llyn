@@ -1,4 +1,5 @@
 # QContourItem.cs
+Hash: `47e2efc87ac9d7bf`
 
 ## `public sealed record QContourItem(`
 

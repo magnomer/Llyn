@@ -1,4 +1,5 @@
 # QCompass.cs
+Hash: `cce9c0645585757c`
 
 ## `public sealed class QCompass`
 
@@ -31,7 +32,7 @@ How far above a target the view stops, so a heading never sits flush with the to
 
 ## `public void QCompassSectionIntroduce(`
 
-The eight sections the rows can name, handed over once the veneer has built them.
+The six sections the rows can name, handed over once the veneer has built them.
 Each section is paired with the part Conduct knows it by, in page order.
 The two card lists are kept apart, so a card row finds its container by its part.
 

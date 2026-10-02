@@ -40,7 +40,7 @@ internal sealed partial class QTenor
         QDegreeIcon.QIconSource = QIcon.QIconResolve("sort", 24);
         QGrilleIcon.QIconSource = QIcon.QIconResolve("filter", 24);
         QTenorBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
-        QSounding.SetResourceReference(QField.QFieldHintProperty, "Tag.Search");
+        QSounding.SetResourceReference(QField.QFieldHintProperty, "Register.Search");
         QQuest.SetResourceReference(QField.QFieldHintProperty, "Quest.Search");
         QTenorFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
         QTenorStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));

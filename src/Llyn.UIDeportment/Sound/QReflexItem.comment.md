@@ -1,4 +1,5 @@
 # QReflexItem.cs
+Hash: `2e7ecf4dbee0ce8e`
 
 ## `public sealed class QReflexItem : INotifyPropertyChanged`
 
@@ -100,7 +101,7 @@ A multi-character headword and a character without stored placements show none.
 
 ## `public string QReflexItemHead`
 
-The language the field of the row shows: the language on a lead row, nothing beneath it.
+The field of the row shows the language on a lead row and nothing beneath it.
 Writing it sends the language through `QReflexItemTyped`, so typing into a blank field starts a new group.
 
 ## `public string QReflexItemLabel`
@@ -126,7 +127,7 @@ A row in common use draws its reading and slashes in the accent colour.
 The editor's reading cell names the accent field style for such a row, so its box opens accented.
 The fill also gives each side cell its `QFieldCell` order and tags the slot with `Theme.Reflex.Control`.
 Those order strings live here, so the Veneer markup carries none.
-The anchor button shows only for an anchorable row, its prompt standing in while no anchor is set.
+The anchor button shows only for an anchorable row and holds the anchor label.
 
 ## `private static void QReflexTextRefine(FrameworkElement container, string name, string text, bool main)`
 

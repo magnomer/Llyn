@@ -1,4 +1,5 @@
 # QBerth.cs
+Hash: `67c4719e362531eb`
 
 ## `public sealed class QBerth : Panel`
 

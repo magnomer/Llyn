@@ -1,4 +1,5 @@
 # CMembership.cs
+Hash: `7e2732781a89791c`
 
 ## `public sealed class CMembership`
 
@@ -46,5 +47,9 @@ Prints the shown entry, and does nothing while none is shown outside edit mode.
 `CMembershipPortraitExport` exports it under the same condition.
 The reader is asked for the printer through the envoy, and a decline prints nothing.
 `CPortrait` words the page through the engine and shows `Print.Failed` through the envoy.
+
+## `public Task CMembershipPortraitExport()`
+
+The file is offered under the entry's headword, as `LVista.LVistaFileRead` words it.
 The reader is asked for the file and format through the envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the envoy.

@@ -1,4 +1,5 @@
 # QLecternSound.cs
+Hash: `4425103e4bd23758`
 
 ## `public sealed class QLecternSound`
 

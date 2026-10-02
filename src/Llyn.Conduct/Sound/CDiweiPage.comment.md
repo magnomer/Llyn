@@ -1,4 +1,5 @@
 # CDiweiPage.cs
+Hash: `91d969e915b886d8`
 
 ## `public sealed record CDiweiPage(`
 

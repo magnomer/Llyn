@@ -1,4 +1,5 @@
 # CSentenceDraft.cs
+Hash: `705f990e2d9ef2f8`
 
 ## `public sealed record CSentenceDraft(`
 

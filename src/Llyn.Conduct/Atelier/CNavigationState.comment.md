@@ -1,4 +1,5 @@
 # CNavigationState.cs
+Hash: `1c11754f58b51511`
 
 ## `public sealed record CNavigationState(`
 

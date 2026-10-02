@@ -1,4 +1,5 @@
 # PThemeAccent.xaml
+Hash: `9c0e30ae29c4e71f`
 
 The look of a further pronunciation row, shared by the editor and the reading view.
 The pronunciation styles are merged, so a row reads exactly as the primary pronunciation does.

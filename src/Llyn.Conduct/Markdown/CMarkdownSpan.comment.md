@@ -1,4 +1,5 @@
 # CMarkdownSpan.cs
+Hash: `f846037c45e5a4e2`
 
 ## `public sealed record CMarkdownSpan(`
 

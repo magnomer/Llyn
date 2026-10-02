@@ -1,10 +1,11 @@
 # LGlossArchive.cs
+Hash: `71ec037cb2ae9ae1`
 
-## `public sealed class LGlossArchive`
+## `public sealed class LGlossArchive : LGlossVault`
 
 Persists Glosses, the renderings of an Example's sentence in other languages.
 A Gloss is the Example's own row, so it is read and written by Example.
-`LExampleArchive` and `LSentenceArchive` call the static readers here to fill every Example they return.
+`LExampleArchive` calls the static reader and saver here for every Example it returns or writes.
 The rows sit in the `example_translation` table, named after the Translation the schema speaks of.
 
 ## `public LGlossArchive(LDatabase database)`

@@ -1,4 +1,5 @@
 # LEtymologyDraft.cs
+Hash: `f56817dc554fb15c`
 
 ## `public sealed record LEtymologyDraft(`
 

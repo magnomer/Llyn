@@ -1,4 +1,5 @@
 # CDiweiLine.cs
+Hash: `0b229f53dcd37ff6`
 
 ## `public sealed record CDiweiLine(`
 

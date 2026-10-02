@@ -1,8 +1,10 @@
 # LDiwei.cs
+Hash: `d505cd93a1c138a3`
 
 ## `public sealed record LDiwei(`
 
-One 音韻地位 category of a language: an initial, a rime or a tone class that placements point to.
+One 音韻地位 category of a language.
+It is an initial, a rime or a tone class that placements point to.
 It is a shared node, like a Tag, but derived from stored fanqie rows rather than typed by the user.
 Every character whose placement carries the part links to the same row, so a category can be browsed.
 
@@ -13,6 +15,7 @@ Every character whose placement carries the part links to the same row, so a cat
 - `LDiweiKind` — Which part: `initial`, `rime` or `tone`.
 - `LDiweiKey` — The part as the category names it: 來, `寒W I` or the class `6`.
 - `LDiweiCount` — How many entries of the language carry a character placed in this category.
+- `LDiweiChosen` — Whether the open view has this category selected, set when the rows are listed.
 
 ## `public const string LDiweiInitial = "initial";`
 
@@ -28,7 +31,8 @@ The kind of a category made from the tone class the hypothesis gives a placement
 
 ## `public static string LDiweiKindRead(bool final)`
 
-The kind a final flag names: the rime kind when set, the initial kind otherwise.
+The kind a final flag names.
+It is the rime kind when set and the initial kind otherwise.
 `LDiweiFinal` reads the same pairing back from a row.
 
 ## `private const string LDiweiRounded = "W";`
@@ -50,11 +54,13 @@ The letter tells the two halves of a 重紐 pair apart, and `X` marks a row outs
 
 ## `public static string LDiweiRimeNormalize(string rime)`
 
-The rime as a category keys it: the trailing 重紐 letter dropped, so 寒A and 寒 name one row.
+The rime as a category keys it, with the trailing 重紐 letter dropped.
+So 寒A and 寒 name one row.
 
 ## `public static string LDiweiRimeFormat(string rime, string division, bool rounded)`
 
-The key of a rime category: rime without 重紐 letter, `W` when 合口, then division as Roman numeral.
+The key of a rime category.
+It is the rime without its 重紐 letter, `W` when 合口, then the division as a Roman numeral.
 So 模 一 開 keys `模 I` and 寒 一 合 keys `寒W I`.
 The 合口 mark rides on the rime itself, since it names the rime rather than the division.
 Every division and 開合 gets its own row.

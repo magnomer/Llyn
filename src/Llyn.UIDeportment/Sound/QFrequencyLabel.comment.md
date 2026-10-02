@@ -1,4 +1,5 @@
 # QFrequencyLabel.cs
+Hash: `8784d33ed0c70320`
 
 ## `internal static class QFrequencyLabel`
 
@@ -16,12 +17,12 @@ A four-pointed star, so the row cannot be mistaken for the five-pointed grasp st
 
 ## `internal static void QFrequencyChipRefine(`
 
-Fills one whole frequency section from its shape: the chip's name, star row and source tooltip.
+Fills one whole frequency section with the chip's name, star row and source tooltip.
 A null frequency collapses the section, so both surfaces hide it the same way.
 
 ## `private static void QFrequencyLabelRefine(TextBlock name, TextBlock band, CFrequency frequency)`
 
-Words and colours one chip: the rung name in the rung's brush, then the star row.
+Words and colours one chip with the rung name in the rung's brush, then the star row.
 The name looks up the key Conduct chose, so the chip speaks the user's language while the engine keeps English.
 The rung's brush is the theme's resource under the rank's name.
 The earned stars take the rung's brush and the spare ones the faint empty brush.

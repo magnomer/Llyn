@@ -1,4 +1,5 @@
 # TCatalogAuthor.cs
+Hash: `f34169f556a4b692`
 
 ## `public sealed class TCatalogAuthor`
 

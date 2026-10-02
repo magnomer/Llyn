@@ -1,4 +1,5 @@
 # TInterfaceMention.cs
+Hash: `63b9fa74206ec9ba`
 
 ## `internal static class TInterfaceMention`
 

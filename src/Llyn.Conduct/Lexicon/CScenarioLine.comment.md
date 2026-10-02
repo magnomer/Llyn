@@ -1,4 +1,5 @@
 # CScenarioLine.cs
+Hash: `e72ee0d291086452`
 
 ## `public sealed record CScenarioLine(string CScenarioLineText, string CScenarioLineHint)`
 

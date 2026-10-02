@@ -1,4 +1,5 @@
 # LTrove.cs
+Hash: `3ee760245e6b7943`
 
 ## `internal sealed class LTrove`
 
@@ -8,13 +9,13 @@ So two editors open at once keep their own answers, and neither reads the other'
 An entry lives exactly as long as its draft does, and the engine drops it when that draft closes.
 It is memory only, because a finding is worth reusing while a window stands and worth nothing after.
 
-## `internal IReadOnlyList<LCandidate>? LTroveCandidateRead(string session, string word, string language)`
+## `internal IReadOnlyList<LCandidate>? LTroveCandidateRead(long session, string word, string language)`
 
 Returns what this draft already found, or null when there is nothing to reuse.
 Null is also the answer once the headword or the language has changed under the draft.
 A kept answer belongs to the word it was found for, so a changed word must be searched again.
 
-## `internal void LTroveCandidateSave(string session, string word, string language, IReadOnlyList<LCandidate> found)`
+## `internal void LTroveCandidateSave(long session, string word, string language, IReadOnlyList<LCandidate> found)`
 
 Keeps `found` as this draft's answer, replacing whatever it held before.
 One draft holds one answer, so editing a headword repeatedly cannot pile entries up.
@@ -45,7 +46,7 @@ A draft with two schemes keeps two answers, because each was found by that schem
 
 The transcription counterpart of `LTroveCandidateSave`, kept under the scheme it was found for.
 
-## `internal void LTroveClear(string session)`
+## `internal void LTroveClear(long session)`
 
 Drops what one draft held, called where a draft is committed, cancelled or deleted.
 

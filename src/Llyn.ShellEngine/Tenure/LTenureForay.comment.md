@@ -1,4 +1,5 @@
 # LTenureForay.cs
+Hash: `00b7428a48ccaa63`
 
 ## `public sealed partial class LTenure`
 

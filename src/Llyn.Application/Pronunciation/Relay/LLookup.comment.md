@@ -1,4 +1,5 @@
 # LLookup.cs
+Hash: `399854d365cbfc97`
 
 ## `public sealed class LLookup : LSeeker`
 
@@ -14,7 +15,8 @@ The fan-out comes first so a cleanup group scoped to one variety sees the variet
 Cleanup is mandatory and knows no switch, so every candidate leaving here carries cleaned text.
 The returned set therefore holds cleaned text too, and a cache built on it never needs a second fetch.
 The user's optional respelling is not applied here, because the cache must stay free of it.
-A literal lookup skips the normalization and the cleanup both, keeping each reading as the source wrote it.
+A literal lookup skips the normalization and the cleanup both.
+It keeps each reading as the source wrote it, apart from trimming.
 That is the transcription path, where a scheme such as Pinyin keeps its spaces and knows no IPA cleanup.
 A source that had nothing or was never reached still produces one candidate with no phonetic.
 So the menu can name a broken source rather than leaving its row silently absent.
@@ -28,7 +30,12 @@ Collecting it here costs nothing, since every candidate already passes through t
 The sources are supplied ready-built and language-agnostic (see `LSource`).
 This orchestrator knows nothing about any particular source or language.
 
-## `private static Task<LAnswer> LLookupAnswerRead(LSource source, string word, CancellationToken cancellation)`
+## `public async Task<IReadOnlyList<LCandidate>> LSeekerStart(`
+
+A cancelled lookup withholds `LReceiverLookupFinish`, since the menu it would close is already gone.
+Every other ending reports it, a source failure included.
+
+## `private static async Task<LAnswer> LLookupAnswerRead(LSource source, string word, CancellationToken cancellation)`
 
 Runs one source under its own deadline and never lets it throw at the caller.
 Only the caller's own cancellation escapes, because that ends the lookup rather than one source.

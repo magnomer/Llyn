@@ -1,4 +1,5 @@
 # LCatalog.cs
+Hash: `d1fe2f8dab2a49ea`
 
 ## `public static class LCatalog`
 
@@ -41,7 +42,8 @@ Stray spaces and empty names are dropped, so a hand-edited row still reads.
 
 ## `public static string LCatalogTextNormalize(string? text)`
 
-One text in the form two wordings are compared in: edge spaces gone and case lowered the invariant way.
+One text in the form two wordings are compared in.
+That form has edge spaces gone and case lowered the invariant way.
 It is the same fold the database's `lfold` helper applies.
 A match made in memory therefore agrees with one made in a query.
 Every place that asks whether two typed wordings name one row folds both sides with this.
@@ -53,7 +55,6 @@ A picker draws the middle piece in weight, so a reader sees why the row is offer
 The comparison reports how long the match ran.
 A match under a culture's rules is not always as long as the word that found it.
 A text the word does not stand in reads whole as its lead.
-So no row is lost to a wildcard search.
 
 ## `public static string LCatalogUsageFormat(int usage)`
 

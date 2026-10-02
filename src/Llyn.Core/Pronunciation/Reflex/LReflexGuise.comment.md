@@ -1,4 +1,5 @@
 # LReflexGuise.cs
+Hash: `a7a87102b6259f02`
 
 ## `public sealed record LReflexGuise(bool LReflexGuiseRespelled, bool LReflexGuisePhonemic, bool LReflexGuiseFolded);`
 

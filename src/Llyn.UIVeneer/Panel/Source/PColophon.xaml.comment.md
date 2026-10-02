@@ -1,4 +1,5 @@
 # PColophon.xaml.cs
+Hash: `7067a963243840b8`
 
 ## `public partial class PColophon : UserControl`
 

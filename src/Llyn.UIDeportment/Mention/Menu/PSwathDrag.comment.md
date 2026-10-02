@@ -1,9 +1,10 @@
 # PSwathDrag.cs
+Hash: `bc392a2d5ffebabe`
 
 ## `public sealed partial class PSwath`
 
-The drag that draws the band: the press, the move that opens it, the release and the cursor.
-A press on a button, link, star row, slider or scroll bar is left to that control.
+The drag that draws the band covers the press, the move that opens it, the release and the cursor.
+A press on a button, link, text box, star row, slider or scroll bar is left to that control.
 A drag past the viewer's top or bottom scrolls it a step at a time, so the band grows off-screen.
 
 ### `private void PSwathMoveRefine(object sender, MouseEventArgs e)`

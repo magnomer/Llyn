@@ -1,4 +1,5 @@
 # QEditor.cs
+Hash: `b05886fd9c03de1b`
 
 ## `internal sealed class QEditor : QChronicleHost`
 
@@ -52,6 +53,15 @@ Stops the editor through its one close gate, then releases playback through `QEd
 
 Releases the sound half's recording player.
 A panel whose editor the window's exit gate stops in Conduct calls it alone.
+
+## `public void QChronicleUndoObserve()`
+
+Steps the entry draft one snapshot back, through the desk.
+The step runs inside `QChronicle.QChronicleCaretRefine`, so the caret stays at the end of the focused box.
+
+## `public void QChronicleRedoObserve()`
+
+Steps the entry draft one snapshot forward again, in the same wrap.
 
 ## `private void QEditorDraftRefine(CEntryDraft draft)`
 

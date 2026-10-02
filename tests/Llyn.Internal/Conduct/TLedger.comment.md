@@ -1,4 +1,5 @@
 # TLedger.cs
+Hash: `74e394f351378156`
 
 ## `public sealed class TLedger`
 
@@ -12,6 +13,7 @@ The Web summary counts out of two, and the Layout summary is left to the driver.
 A saved epithet shows the view again with Listing on, and a detached view is shown nothing more.
 The fake port's normalised language and online count reach the state unchanged.
 A shipped language reads its native name, and the epithet saves reach the port.
+A wrapped refusal answers its reason alone, and a bare fault answers the unexpected key with its audit file.
 
 ## `private static List<CLedgerState> TLedgerShowRead(CAtelier atelier)`
 

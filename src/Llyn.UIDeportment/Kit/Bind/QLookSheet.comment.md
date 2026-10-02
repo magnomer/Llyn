@@ -1,4 +1,5 @@
 # QLookSheet.cs
+Hash: `8dea5193a456f1e3`
 
 ## `internal static class QLookSheet`
 

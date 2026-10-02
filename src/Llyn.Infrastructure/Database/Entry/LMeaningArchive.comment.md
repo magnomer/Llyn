@@ -1,6 +1,7 @@
 # LMeaningArchive.cs
+Hash: `61a2b84772780047`
 
-## `public sealed class LMeaningArchive`
+## `public sealed class LMeaningArchive : LMeaningVault`
 
 Persists the Meaning tree an entry owns.
 Each meaning is a stable-id node assigned an opaque id here on creation.
@@ -45,7 +46,7 @@ Where a Meaning sits among its siblings is changed by `LMeaningOrderSet`.
 That method has to renumber the whole group.
 Throws when no meaning carries that id.
 
-## `public void LMeaningParentUpdate(long id, string? parentId)`
+## `public void LMeaningParentUpdate(long id, long? parentId)`
 
 Moves a Meaning under another Meaning of the same entry, or out to the entry's roots.
 The row goes to the end of the group it joins, and the group it left is renumbered behind it.
@@ -76,7 +77,7 @@ Only the links go.
 The named meaning and every meaning beneath it, walked with a recursive term over sense_parent.
 The cycle check starts from this set.
 
-### `private static (string? Entry, string? Parent) LMeaningHolderRead(SqliteConnection connection, long id)`
+### `private static (long? LMeaningEntry, long? LMeaningParent) LMeaningHolderRead(SqliteConnection connection, long id)`
 
 The entry a meaning belongs to and the parent it hangs from.
 Those are the two values that name its sibling group.
@@ -88,7 +89,7 @@ A Meaning may not be moved under a Meaning that already sits inside it.
 The subtree query answers whether the proposed parent is one of the row's own descendants.
 Such a move would cut the branch off the entry and leave a ring the tree walk never ends on.
 
-### `private static IReadOnlyList<string> LMeaningSiblingRead(`
+### `private static IReadOnlyList<long> LMeaningSiblingRead(`
 
 The ids of one sibling group in order.
 Root meanings have no parent id to key on.

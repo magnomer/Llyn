@@ -1,4 +1,5 @@
 # QChoice.cs
+Hash: `2b16bf82f0cd5080`
 
 ## `internal static class QChoice`
 
@@ -62,7 +63,8 @@ Marks the kind row whose tag is `tag` and unmarks every other, so the chip menu 
 
 ## `internal static CCatalogFilter QChoiceFilterRead(object sender)`
 
-The filter the rows beside a clicked box now stand for: every unticked row is hidden.
+The filter the rows beside a clicked box now stand for.
+Every unticked row is hidden.
 The list is read from the clicked box, so no surface field feeds the gate.
 The panel maps a filter hiding nothing to the engine's shared empty filter.
 

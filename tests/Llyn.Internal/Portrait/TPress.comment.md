@@ -1,4 +1,5 @@
 # TPress.cs
+Hash: `f57114456e16a48f`
 
 ## `internal sealed class TPress : LPress`
 

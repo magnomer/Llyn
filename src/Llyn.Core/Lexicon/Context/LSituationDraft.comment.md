@@ -1,4 +1,5 @@
 # LSituationDraft.cs
+Hash: `c7ccc92d37a07b35`
 
 ## `public sealed record LSituationDraft(`
 

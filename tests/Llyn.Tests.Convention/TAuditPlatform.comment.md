@@ -1,4 +1,5 @@
 # TAuditPlatform.cs
+Hash: `b784de5a31bda494`
 
 ## `public sealed class TAuditPlatform`
 
@@ -68,6 +69,7 @@ Two project files that share one name stop the audit, since no table row could t
 A hit carries the project as its ring and the kind's subject as its target.
 An unmapped project is reported once and never checked further.
 The host may reference every project, so its edges are never read.
+A twin may also reference the capsule project the capsule table names for it.
 A portable half is also read for suppressions of the platform rule.
 The analyzer hit names the first failing file by path, ordered without case and then exactly.
 A property and a package are reported once each, however often the file names them.
@@ -89,7 +91,7 @@ Every way a portable half silences the platform rule.
 
 ## `private static IEnumerable<TAuditHit> TAuditDomainRead(`
 
-Every top-level type of a twin that implements no interface and derives from no type of its portable half.
+Every top-level type of a twin with no interface or base type declared in its portable half.
 A twin only maps a port call to a Windows API and back.
 So a type serving no port holds domain logic.
 The UI column is left to the driver and surface audits.

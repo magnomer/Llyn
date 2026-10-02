@@ -1,4 +1,5 @@
 # CCompassPart.cs
+Hash: `8ca6c8843e2b6a56`
 
 ## `public enum CCompassPart`
 

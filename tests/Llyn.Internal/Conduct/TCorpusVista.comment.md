@@ -1,4 +1,5 @@
 # TCorpusVista.cs
+Hash: `5cd618677ee76abc`
 
 ## `public sealed class TCorpusVista`
 

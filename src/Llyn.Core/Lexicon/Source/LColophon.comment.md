@@ -1,4 +1,5 @@
 # LColophon.cs
+Hash: `3907302f9a77bfca`
 
 ## `public sealed record LColophon(`
 
@@ -7,7 +8,8 @@ The page writes each value into one control and branches on nothing.
 A field's text is its value, the unknown mark when it is recorded unknown, or empty when never written.
 A faint field is dressed as the placeholder the edit side shows, so the two sides read alike.
 A shown field has a heading to stand over, so a blank line never stands for two facts.
-The title alone is never empty: a Source without one reads as untitled.
+The title alone is never empty.
+A Source without one reads as untitled.
 
 ## `public static LColophon LColophonCreate(`
 

@@ -1,4 +1,5 @@
 # TVoyage.cs
+Hash: `e2a0037bd030e947`
 
 ## `public sealed class TVoyage`
 

@@ -1,4 +1,5 @@
 # TCatalogFilter.cs
+Hash: `d3f1b60b77c6957d`
 
 ## `public sealed class TCatalogFilter`
 

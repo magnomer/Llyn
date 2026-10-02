@@ -1,4 +1,5 @@
 # PThemeGlyph.xaml
+Hash: `340069918a46ca84`
 
 The look of the glyph row in the editor and of the character chips in the reading view.
 The transcription styles are merged, so the editor row reads as a transcription row without its dropdown.
@@ -41,7 +42,8 @@ It reads the glyph face and size from the resources and carries the field's medi
 So a chip and the field's character render alike.
 No margin between chips, because the field runs its characters together and the row must match it.
 Its parameter is the character item, and the display resolves the entry when the command fires.
-A chip whose item carries no language is inert: no hand cursor, no tooltip, no hit test.
+A chip whose item carries no language is inert.
+It shows no hand cursor and no tooltip, and takes no hit test.
 The command and the hover are `QLook` rows, and the display fills the character and the parameter.
 
 ## `<Style x:Key="Theme.Glyph.Line" TargetType="ItemsControl">`
@@ -51,11 +53,12 @@ Its vertical margin is the field's, so the chips sit on the field's line.
 
 ## `<DataTemplate x:Key="Theme.Glyph.Row">`
 
-The editor row: the scheme label in the shared label column, the field with its twin, and the lookup button.
+The editor row holds the scheme label in the shared label column.
+The field with its twin and the lookup button follow it.
 No plus or minus, because a language has one glyph row at most.
-`PEditor.PGlyphItemRefine` fills the named parts, the scheme label included, and hooks the typed text to its gate.
+`QGlyph.QGlyphItemRefine` fills the named parts, the scheme label included, and observes the typed text.
 
 ## `<DataTemplate x:Key="Theme.Glyph.Display">`
 
 One chip of the reading view.
-The display fills the named chip through `QLookItemAttach`.
+The display fills the named chip through `QLookItemAttach` and `QGlyphItem.QGlyphItemRefine`.

@@ -1,4 +1,5 @@
 # TMarkupOutcome.cs
+Hash: `3ad813ad243474aa`
 
 ## `internal sealed record TMarkupOutcome(`
 

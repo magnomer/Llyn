@@ -1,4 +1,5 @@
 # TTenor.cs
+Hash: `800a1012a47fc22c`
 
 ## `public sealed class TTenor`
 

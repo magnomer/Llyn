@@ -1,8 +1,10 @@
 # TMarkdownNote.cs
+Hash: `14407d8ac4c9c600`
 
 ## `public sealed class TMarkdownNote`
 
-Covers the note dialect: what the reader makes of note text and what the engine stores.
+Covers the note dialect.
+That is what the reader makes of note text and what the engine stores.
 
 ## `public void MarkdownNormalize_WindowsLineEndsAndEdgeBlanks_YieldsCanonical()`
 

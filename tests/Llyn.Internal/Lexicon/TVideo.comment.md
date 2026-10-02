@@ -1,8 +1,11 @@
 # TVideo.cs
+Hash: `2884e3c748bec951`
 
 ## `public sealed class TVideo`
 
-Covers Core's one rule that names the hosted film inside a video address.
+Covers Core's rule that names the hosted film inside a video address.
+It also covers the rule that reads a written span into a start and an optional end.
+A span that cannot be read answers the whole film.
 
 ## `public void VideoFilmRead_HostedShape_AnswersTheFilmId(string address)`
 

@@ -1,4 +1,5 @@
 # QGroveItem.cs
+Hash: `823d0ceea72ab80c`
 
 ## `internal sealed class QGroveItem : INotifyPropertyChanged`
 

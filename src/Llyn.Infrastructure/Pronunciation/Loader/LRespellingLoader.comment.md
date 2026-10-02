@@ -1,8 +1,10 @@
 # LRespellingLoader.cs
+Hash: `962f1ea399dc8d38`
 
 ## `internal static class LRespellingLoader`
 
-The rewrite side of the pack loader: `cleanup`, `respelling`, `spelling` and the `rewrite` arrays of a row.
+The rewrite side of the pack loader.
+It reads `cleanup`, `respelling`, `spelling` and the `rewrite` arrays of a row.
 The two rewrite blocks, the spelling list and a row's rewrite array share one rule reader.
 `LLanguageLoader` calls it for the rewrite blocks and the spelling list.
 `LAnatomyLoader` and `LHypothesisLoader` call its rule reader.
@@ -27,7 +29,7 @@ The default key of a row's rewrite array.
 ## `public static IReadOnlyList<LRespelling> LRespellingPackScan(JsonElement root, string key, bool scoped)`
 
 One reader serves both rewrite blocks, `cleanup` for the always-on groups and `respelling` for the switched ones.
-The two blocks carry the same shape, a list of groups each with a name, optional varieties, and rules.
+The two blocks carry the same shape, a list of groups each with optional varieties and rules.
 A missing block reads as an empty list.
 `scoped` says the pack declares varieties, and then a group without a non-empty `varieties` list is dropped.
 It is dropped the same way a broken regex is, so nothing shared can load for English.
@@ -40,7 +42,7 @@ A group's `rules` rows are two-string arrays, and a row of any other shape is sk
 That unscoped form survives only in a pack without varieties, as the scan above enforces.
 A group with no valid rule is dropped.
 A group whose regex fails to compile is dropped too, so one typo never blanks the pack.
-The record constructor throws on the bad pattern, and this reader catches it per group.
+The record constructor throws on the bad pattern, and the rule scan catches it and voids that group's list.
 
 ## `public static IReadOnlyList<LRespellingRule> LRespellingSpellingScan(JsonElement root)`
 

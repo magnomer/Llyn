@@ -1,4 +1,5 @@
 # QLookDisplay.cs
+Hash: `17249a7d68d91dee`
 
 ## `internal static class QLookDisplay`
 

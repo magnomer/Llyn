@@ -1,4 +1,5 @@
 # TAuditStrictLedger.json
+Hash: `b964a1e8c46e04b7`
 
 The surface audit's ceilings, by kind and then by repo-relative file.
 The surface kinds, the driver sharing and the host overworking all live in this one ledger.

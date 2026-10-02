@@ -1,4 +1,5 @@
 # TAuditRegistry.cs
+Hash: `d12ddd61a5aa9a28`
 
 ## `internal sealed class TAuditRegistry`
 
@@ -15,5 +16,6 @@ The same word stays a violation everywhere else.
 
 Builds the sets from the registry arrays of TAuditNameRegistry.cs, the one generated file in this project.
 That file holds names only, never a setting.
-Regenerate it before the tests: a stale registry audits against stale names.
+Regenerate it before the tests.
+A stale registry audits against stale names.
 File names in an exemption compare case-insensitively, since the file system does.

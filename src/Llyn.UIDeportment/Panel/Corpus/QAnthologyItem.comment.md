@@ -1,6 +1,7 @@
 # QAnthologyItem.cs
+Hash: `b1316675b6391a64`
 
-## `internal sealed class QAnthologyItem`
+## `internal sealed class QAnthologyItem : INotifyPropertyChanged`
 
 Presentation item for one Example row in `PAnthology`.
 Carries the sentence, its language and flag, and the usage count.

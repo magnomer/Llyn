@@ -1,4 +1,5 @@
 # LSchemaEntry.cs
+Hash: `a575b789019f6268`
 
 ## `public static class LSchemaEntry`
 

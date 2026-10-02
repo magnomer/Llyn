@@ -1,4 +1,5 @@
 # LCitationClerk.cs
+Hash: `50d34367a8065fc2`
 
 ## `public sealed class LCitationClerk`
 
@@ -44,7 +45,8 @@ A draft whose Author has since gone is measured against that same empty name.
 
 ## `public LDraft LEntryStart(string origin, long? entryId, string language)`
 
-Starts an entry draft: a blank one in `language`, or the entry loaded with its recordings resolved.
+Starts an entry draft.
+It is a blank one in `language`, or the entry loaded with its recordings resolved.
 An entry that no longer stands is refused.
 
 ## `public bool LCitationDraftCheck(LDraft draft)`

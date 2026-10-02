@@ -1,4 +1,5 @@
 # PThemeTranscription.xaml
+Hash: `22f46c2e3d7960ea`
 
 The look of a transcription row, shared by the editor and the reading view.
 The pronunciation and accent styles are merged, so a row reads as a further pronunciation row does.

@@ -1,4 +1,5 @@
 # TInterfaceFont.cs
+Hash: `f990fccee092c08f`
 
 ## `internal static class TInterfaceFont`
 

@@ -1,4 +1,5 @@
 # LCardKind.cs
+Hash: `a3b69b9ff90b4039`
 
 ## `public enum LCardKind`
 

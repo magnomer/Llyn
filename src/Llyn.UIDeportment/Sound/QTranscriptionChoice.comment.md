@@ -1,4 +1,5 @@
 # QTranscriptionChoice.cs
+Hash: `eac30c5878435b53`
 
 ## `public sealed class QTranscriptionChoice : INotifyPropertyChanged`
 

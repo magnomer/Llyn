@@ -1,4 +1,5 @@
 # QGlyphCommand.cs
+Hash: `2e10a0ac5a3b2af2`
 
 ## `public static class QGlyphCommand`
 

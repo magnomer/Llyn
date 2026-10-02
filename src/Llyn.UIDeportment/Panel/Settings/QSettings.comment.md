@@ -1,8 +1,10 @@
 # QSettings.cs
+Hash: `bff490fcbf15fafb`
 
 ## `internal sealed class QSettings`
 
-The settings panel's driver: the group catalog, the chosen group's page, and the stored choices it opens on.
+The settings panel's driver.
+It owns the group catalog, the chosen group's page, and the stored choices it opens on.
 Each choice is driven by its own driver in `Panel/Choice`, which hears and paints that choice's controls.
 What each choice costs, such as a catalog swap or a whole different workspace, lives in those drivers.
 
@@ -58,7 +60,8 @@ The width button was clicked, so the posture drops the stored panel widths.
 
 ## `private void QSettingsLedgerRefine(CLedgerState state)`
 
-Paints the catalog from one ledger state: every page's row, the narrowing the state carries, and the Layout summary.
+Paints the catalog from one ledger state.
+That covers every page's row, the narrowing the state carries, and the Layout summary.
 The narrowing rides on the state, so a settings change keeps a narrowed catalog narrowed.
 
 ## `private void QSettingsPageRefine(CLedgerPage page)`

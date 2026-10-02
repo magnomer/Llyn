@@ -1,4 +1,5 @@
 # CGrasp.cs
+Hash: `726f35d01c119673`
 
 ## `public sealed record CGrasp(int CGraspStep, string CGraspLabel);`
 

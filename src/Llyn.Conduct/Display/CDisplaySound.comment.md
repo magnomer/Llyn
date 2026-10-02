@@ -1,4 +1,5 @@
 # CDisplaySound.cs
+Hash: `82b49068cb2be02a`
 
 ## `public sealed class CDisplaySound`
 
@@ -6,7 +7,8 @@ The reading view's sound area: the gates and reads of the pronunciation, playbac
 It is split from [CDisplay](CDisplay.comment.md) by role, since the header and card half keeps its own area.
 The display builds one over the sound half and the header area.
 So every driver over that display hears the same events.
-It holds no state of its own: the shown draft, the fold and the latest play stay in [LDisplaySound](LDisplaySound.comment.md).
+It holds no state of its own.
+The shown draft, the fold and the latest play stay in [LDisplaySound](LDisplaySound.comment.md).
 The shown language and headword come from the header's C record, so no engine record is read for them.
 Every read answers the empty block while nothing is shown, so a late notice paints what a close painted.
 
@@ -83,12 +85,14 @@ A refused read shows `Sound.LoadFailed` and hides both.
 
 ## `public void CDisplayPlaybackStart(double volume)`
 
-The gate for the play button: it plays the shown draft's own recording at the level the driver's slider shows.
+The gate for the play button.
+It plays the shown draft's own recording at the level the driver's slider shows.
 The engine picks the file from the draft, so Conduct reads no field of it.
 
 ## `public void CDisplayPlaybackStart(string? audio, double volume)`
 
-The gate for an accent row's play command: it plays that row's recording at the slider's level.
+The gate for an accent row's play command.
+It plays that row's recording at the slider's level.
 
 ## `private void LDisplayPlaybackStart(Func<int> play)`
 
@@ -97,7 +101,8 @@ A refused play shows `Sound.PlayFailed` and keeps the old ticket.
 
 ## `public void CDisplayPlaybackCancel()`
 
-The gate for a view going away: it stops this view's own play.
+The gate for a view going away.
+It stops this view's own play.
 A sound another view started plays on.
 
 ## `public CLecternGlyph CDisplayGlyphRead()`
@@ -109,7 +114,8 @@ A refused read also shows `Sound.LoadFailed`.
 
 ## `public bool CDisplayGlyphOpen(string character, string language)`
 
-The gate for a glyph cell: it opens the entry the character stands for in its language.
+The gate for a glyph cell.
+It opens the entry the character stands for in its language.
 The engine finds or makes that entry, and it is raised for the navigation to open in the library tab.
 A refused resolve shows `Glyph.OpenFailed` through the catalog's one failure owner and opens nothing.
 
@@ -125,12 +131,14 @@ The rows come from the one reflex scan the editor shares, `CRespelling.LRespelli
 
 ## `public CLecternReflex CDisplayReflexResonate()`
 
-Answers the reflex notice the driver hands over: it reloads the stored rows, then reads the block again.
+Answers the reflex notice the driver hands over.
+It reloads the stored rows, then reads the block again.
 The reload only reaches the reflexes, so the header and the other blocks keep the draft on screen.
 
 ## `public void CDisplayReflexToggle(bool opened)`
 
-The gate for the fold toggle: it sets whether folded reflexes show and raises `CDisplayFoldChanged`.
+The gate for the fold toggle.
+It sets whether folded reflexes show and raises `CDisplayFoldChanged`.
 The editor's reflex block and the reading view share the one fold.
 
 ## `public CLecternFanqie CDisplayFanqieRead()`
@@ -140,19 +148,22 @@ The anchors are read again, since new fanqie rows can change which reflex rows a
 
 ## `public void CDisplayFanqieSet(long fanqieId, int rank, bool raise)`
 
-The gate for a representative pick: it hands the held `rank` and the raise flag for the shown entry.
+The gate for a representative pick.
+It hands the held `rank` and the raise flag for the shown entry.
 The fanqie clerk resolves the new rank, as behind the editor's gate.
 A refusal shows `Display.FanqieRepresentativeFailed`, as the editor's gate does.
 
 ## `public bool CDisplayDiweiOpen(bool initial, string key)`
 
-The gate for a rime-cell click: it raises the cell in the shown entry's language for the navigation.
+The gate for a rime-cell click.
+It raises the cell in the shown entry's language for the navigation.
 The engine names the cell kind from the initial flag.
 Nothing shown, or a blank key, opens nothing.
 
 ## `public bool CDisplayStemOpen(string? key)`
 
-The gate for a phonetic-series click: it raises the series in the shown entry's language for the navigation.
+The gate for a phonetic-series click.
+It raises the series in the shown entry's language for the navigation.
 Nothing shown opens nothing.
 
 ## `public CLecternScript CDisplayScriptRead()`

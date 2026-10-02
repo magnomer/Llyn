@@ -1,4 +1,5 @@
 # LRequestAuthor.cs
+Hash: `7ac4d468b465a9f4`
 
 The author requests of the sources panel.
 The credits of a source are an ordered list held on the draft, so they take the four structural nouns.
@@ -10,6 +11,7 @@ Credits a new author with the typed name at `LRequestPosition`.
 The engine mints the id, and commit creates the row before attaching it.
 `LRequestFormerId` names the credit the typed field stood for, which the new one replaces, or zero for a blank field.
 A name that resolves to the former Author itself changes nothing.
+A name matching a known author reuses that author instead of minting one.
 
 ## `public sealed record LRequestAuthorPick(`
 

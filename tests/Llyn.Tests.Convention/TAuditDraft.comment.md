@@ -1,4 +1,5 @@
 # TAuditDraft.cs
+Hash: `e6f6eccf94f50e5c`
 
 ## `public sealed class TAuditDraft`
 
@@ -25,7 +26,7 @@ Every listed type must be a record under the include, and every shared waiver mu
 
 ## `private static void TAuditDraftCheck(string side, IReadOnlyList<string> include, IReadOnlyList<string> waiver)`
 
-A project that declares no draft record has nothing to hold, so the check returns at once.
+A setting that lists no draft type has nothing to hold, so the check returns at once.
 Reads the records, joins the side's sources, and looks every property up.
 A shared waiver is skipped outright.
 A side waiver that the side names anyway is stale, as is one naming no property.

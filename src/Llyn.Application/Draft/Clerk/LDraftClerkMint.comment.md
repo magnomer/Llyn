@@ -1,4 +1,5 @@
 # LDraftClerkMint.cs
+Hash: `d7a979c75a1bf87e`
 
 ## `public sealed class LDraftClerkMint`
 
@@ -20,8 +21,7 @@ Blank unidentified reflex rows dropped and the rest given ids.
 
 ## `public LEtymologyDraft LEtymologyNormalize(LEtymologyDraft etymology)`
 
-Spans naming no Entry dropped and the rest given ids.
-The links carry no id of their own, so nothing is minted for them.
+Mentions with no link dropped and the rest given ids.
 
 ## `private long LIdentityCreate()`
 

@@ -1,4 +1,5 @@
 # LCatalogEntry.cs
+Hash: `f4333b58449b3711`
 
 ## `public static class LCatalogEntry`
 

@@ -1,4 +1,5 @@
 # TAuditPair.cs
+Hash: `cdbe97589a6f74fb`
 
 ## `internal static class TAuditPair`
 

@@ -1,4 +1,5 @@
 # LQuill.cs
+Hash: `1d3ba21ec077b47b`
 
 ## `public sealed class LQuill`
 

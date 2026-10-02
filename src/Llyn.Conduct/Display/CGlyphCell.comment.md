@@ -1,4 +1,5 @@
 # CGlyphCell.cs
+Hash: `2f4dded0bc252b1c`
 
 ## `public sealed record CGlyphCell(`
 

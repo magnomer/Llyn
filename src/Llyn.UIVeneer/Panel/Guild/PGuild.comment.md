@@ -1,4 +1,5 @@
 # PGuild.xaml
+Hash: `c58dab4c06c111ef`
 
 ## `<UserControl.Resources>`
 
@@ -54,7 +55,7 @@ The panel fills each row's named parts and takes each row's click.
 
 ## `<ItemsControl x:Name="POeuvre" ...>`
 
-The middle column: every Source crediting the chosen Author, one row per Source.
+The middle column lists every Source crediting the chosen Author, one row per Source.
 While no Author is chosen, every Source is listed, as the sources panel lists every Entry under no Source.
 The row is the sources panel's own shelf card, so a Source reads alike wherever it is browsed.
 Choosing a row shows that Source in the colophon, in place of the Author reading, without leaving the tab.

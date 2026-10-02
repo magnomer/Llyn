@@ -1,4 +1,5 @@
 # PWindow.xaml
+Hash: `da36d6922532663a`
 
 The application window layout, including navigation, content panels, and mention menu.
 The markup carries no hook.
@@ -23,7 +24,7 @@ Places the navigation rail beside the active workspace panel.
 
 ## `PNavigation`
 
-Groups workspace pages by entries, classification, sources, and reference tools.
+Groups workspace pages by entries, classification, sources, and the Xiesheng and Yunjing tools.
 
 Each tab is a plain `Button` in the tab style, and none is marked chosen in markup.
 

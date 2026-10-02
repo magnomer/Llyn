@@ -1,4 +1,5 @@
 # CWing.cs
+Hash: `353a07de7d1583a7`
 
 ## `public sealed class CWing`
 
@@ -56,7 +57,8 @@ Whether the vista holds a query, so the side shows the list and its empty notice
 
 ## `public bool CWingEmpty`
 
-Whether the side shows its empty notice: a query is held and the last rows read found nothing.
+Whether the side shows its empty notice.
+A query is held and the last rows read found nothing.
 A list not yet asked stays blank, so an unqueried side is never empty.
 
 ## `public CCatalogOrder CWingOrder`
@@ -74,6 +76,11 @@ It forgets the rows last read, so the keys move nothing until the new rows are r
 The display reads the same vista, and the side hears its announcements through `CWingChanged`.
 The workspace runs it on every change, so the side follows the new workspace.
 The fresh vista starts with nothing typed and nothing chosen, so neither needs setting.
+
+## `public void CWingQuerySet(string query)`
+
+Hands the search text to the vista, which announces only a changed text.
+A workspace change starts a fresh vista with nothing typed, so the query is not carried over.
 
 ## `public void CWingOrderSet(CCatalogOrder? order)`
 

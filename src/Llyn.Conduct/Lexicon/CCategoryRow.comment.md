@@ -1,4 +1,5 @@
 # CCategoryRow.cs
+Hash: `b8ed65076bb7a62e`
 
 ## `public sealed record CCategoryRow(string CCategoryRowName, bool CCategoryRowTaken);`
 

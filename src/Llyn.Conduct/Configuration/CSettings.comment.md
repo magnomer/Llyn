@@ -1,4 +1,5 @@
 # CSettings.cs
+Hash: `b97186d232bb2636`
 
 ## `public sealed record CSettings(`
 

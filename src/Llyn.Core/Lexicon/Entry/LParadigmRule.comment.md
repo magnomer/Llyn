@@ -1,4 +1,5 @@
 # LParadigmRule.cs
+Hash: `450b4407b51eabf4`
 
 ## `public sealed record LParadigmRule(string LParadigmRulePattern, string LParadigmRuleReplacement)`
 

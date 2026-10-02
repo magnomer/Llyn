@@ -1,4 +1,5 @@
 # LPack.cs
+Hash: `e0f7e8d6f46f7003`
 
 ## `internal static class LPack`
 
@@ -29,6 +30,7 @@ A missing key or any other value reads as false.
 
 ## `public static IReadOnlyList<string> LPackTextScan(JsonElement row, string key)`
 
-The value under `key` as a list: one name for a string, every string for an array.
+The value under `key` as a list.
+A string gives one name and an array gives every string in it.
 Each name is trimmed, and blanks and non-strings are dropped.
 The anatomy and tone rows pass `language` to read the names a row serves.

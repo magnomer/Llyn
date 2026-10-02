@@ -1,8 +1,10 @@
 # LMarkupClerkUnion.cs
+Hash: `15b4deac80a81459`
 
 ## `public static class LMarkupClerkUnion`
 
-The merge mode of an import: the parsed draft folded into the stored one without repeating a row.
+The merge mode of an import.
+The parsed draft is folded into the stored one without repeating a row.
 Rows are matched on normalized text, so a retyped row with the same words is one row.
 
 ## `public static LEntryDraft LMarkupUnionRead(LEntryDraft loaded, LEntryDraft parsed)`

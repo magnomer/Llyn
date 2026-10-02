@@ -1,4 +1,5 @@
 # CLecternFanqie.cs
+Hash: `2e9b18a944919b86`
 
 ## `public sealed record CLecternFanqie(`
 

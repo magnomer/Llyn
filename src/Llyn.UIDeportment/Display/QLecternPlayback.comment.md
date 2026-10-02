@@ -1,4 +1,5 @@
 # QLecternPlayback.cs
+Hash: `f90d612b0d6aff5b`
 
 ## `public sealed class QLecternPlayback`
 

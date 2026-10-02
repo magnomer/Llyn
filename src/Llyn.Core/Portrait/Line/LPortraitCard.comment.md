@@ -1,4 +1,5 @@
 # LPortraitCard.cs
+Hash: `5b968f6f0db90d3b`
 
 ## `public static class LPortraitCard`
 

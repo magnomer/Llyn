@@ -1,4 +1,5 @@
 # LDraftClerkSentence.cs
+Hash: `e8d6a8a561714ed1`
 
 ## `public sealed class LDraftClerkSentence`
 

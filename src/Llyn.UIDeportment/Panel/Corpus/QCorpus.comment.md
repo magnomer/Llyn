@@ -1,10 +1,11 @@
 # QCorpus.cs
+Hash: `4d8a68c279d2bc32`
 
 ## `internal sealed partial class QCorpus : QChronicleHost`
 
-The Corpus panel's driver: the view of the shared stock of sentences itself.
+The Corpus panel's driver is the view of the shared stock of sentences itself.
 An Example is independent data owned by nothing, so this panel is not a view of one Entry's sentences.
-It holds the surface, the host, the drawer and the corpus Conduct the browsing side calls, and nothing else.
+It holds the surface, the editor, the display, the drawer, the host and the corpus Conduct.
 The browsing behavior lives in `QCorpusBrowse.cs` and the editing in `QCorpusEditor.cs`, one file per responsibility.
 The held draft the editor writes into lives in `QCorpusHold.cs`, apart from the controls it reads.
 The linking gesture over the transcript lives in `QCorpusMention.cs`.
@@ -27,7 +28,7 @@ It is built over the drawer's parts here, with the press on a row answered by th
 Takes the veneer's page as its surface, which the window pulls by contract ID.
 The page merges the excerpt and transcript dictionaries itself, so their local styles reach the look sheet here.
 The driver attaches itself to the page as the host of the undo and redo keys.
-It adds the print, export and four Mention command bindings, and points the two buttons at their commands.
+It adds the print, export and five Mention command bindings, and points the two buttons at their commands.
 It ties the three droppers to their popups, sets every icon, and subscribes every click and field event.
 It attaches the row fills of the catalog, the quotations and the speaker list.
 
@@ -46,7 +47,7 @@ It binds its lists and subscribes to the engine, and reads nothing yet.
 The chip line and the two Gloss lists are attached to their fills, since their templates carry no bindings.
 The transcript Gloss list takes the driver's own fill, which wires the row's handlers around the shared fill.
 It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
-It hears the editor's mention pick for the transcript, since that field is the corpus's, not the editor's.
+The transcript hears the mention pick through its own command binding, since that field is the corpus's, not the editor's.
 The corpus's mention offer is wired to the editor's picker Refine, so no record is handed across.
 It builds the ordering menu once, from the orderings `CAnthology.CAnthologyOrderRead` offers.
 The engine's change notices drive the mode, and its row notices drive the two lists and the tally chips.
@@ -63,7 +64,8 @@ Whether the page is on screen, so the engine knows when a notice needs painting.
 
 ## `private void QCorpusModeUpdate()`
 
-Paints the mode the engine decides: which page shows, which toggle is checked, which button is live.
+Paints the mode the engine decides.
+It sets which page shows, which toggle is checked and which button is live.
 The transcript is live only while its desk runs.
 It ends by refreshing the rail's undo and redo.
 
@@ -71,11 +73,12 @@ It ends by refreshing the rail's undo and redo.
 
 Releases the editor's player and closes the popups the panel owns, the citation drawer among them.
 So none outlives the window.
-It calls no gate: the window's exit gate `CAtelierClose` stops the editor and its playback in Conduct.
+It calls no gate.
+The window's exit gate `CAtelierClose` stops the editor and its playback in Conduct.
 
 ## `private void QCorpusPressCheck(object sender, CanExecuteRoutedEventArgs e)`
 
-Whether the print button is live: an entry is read, or an example is read.
+Whether the print button is live, which holds while an entry or an example is read.
 An editor on screen prints nothing, because what is printed is what is read.
 
 ## `private async void QCorpusPressObserve(object sender, ExecutedRoutedEventArgs e)`
@@ -86,11 +89,11 @@ The engine builds the page from stored rows.
 
 ## `private void QCorpusPortraitCheck(object sender, CanExecuteRoutedEventArgs e)`
 
-Whether the export button is live: exactly when an entry is read in the display.
+Whether the export button is live, exactly when an entry is read in the display.
 Print may also act on the other page this panel reads, but export acts on entries alone.
 
 ## `private async void QCorpusPortraitObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Hears the export command and calls the one gate `CCorpusPortraitExport`, which exports the entry being read.
+Hears the export command and calls the one gate `CQuotationPortraitExport`, which exports the entry being read.
 The gate asks for the file and the format through the envoy.
 The engine writes the document from stored rows.

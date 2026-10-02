@@ -1,4 +1,5 @@
 # TAuditOriginWalker.cs
+Hash: `adf804a2e39b3931`
 
 ## `internal static class TAuditOriginWalker`
 
@@ -95,7 +96,7 @@ An ordinary method's sites are the invocations of that method in the shell sourc
 Its callers are unseen, as one null, when any caller may be hidden.
 That holds when the method is used as a method group or has no seen call.
 It holds when the method is generic, `override`, `virtual`, `abstract` or implements an interface member.
-A default argument counts only when it is not neutral.
+A neutral argument writes nothing, whether given or defaulted.
 A site whose arguments cannot be read is unseen.
 
 ## `private static List<ExpressionSyntax?> TAuditLocalRead(SyntaxNode declaration)`

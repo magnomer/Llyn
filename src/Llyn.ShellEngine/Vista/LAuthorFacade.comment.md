@@ -1,4 +1,5 @@
 # LAuthorFacade.cs
+Hash: `39a9c5f2bcb8e1e7`
 
 ## `internal sealed class LAuthorFacade`
 
@@ -102,7 +103,7 @@ Reads the Authors credited on the Reference identified by `ownerId`, in that Ref
 
 ## `internal void LEngineAuthorDelete(long id, bool detach)`
 
-The same delete, with `detach` dropping every credit first.
+Deletes the Author and announces it, with `detach` dropping every credit first.
 
 ## `internal LDraft LEngineAuthorStart(string origin, long? authorId)`
 

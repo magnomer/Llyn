@@ -1,4 +1,5 @@
 # TTrove.cs
+Hash: `da961e344f046bf0`
 
 ## `public sealed class TTrove`
 

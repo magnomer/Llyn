@@ -1,4 +1,5 @@
 # LLocalizationLoader.cs
+Hash: `c26518d6f35865af`
 
 ## `public sealed class LLocalizationLoader : LLocalizationVault`
 

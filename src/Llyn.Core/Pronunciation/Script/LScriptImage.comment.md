@@ -1,4 +1,5 @@
 # LScriptImage.cs
+Hash: `fb34205a35977f84`
 
 ## `public sealed record LScriptImage(`
 
@@ -19,3 +20,13 @@ The bytes are the original the source drew, and the view scales them down itself
 - `LScriptImageEpoch` — The stored code of the chronology cut from the caption, or empty for none.
   The code is stored once and read back, so the age is never matched again and never fetched again.
   The view turns it into the reader's language, so changing that language changes what is printed.
+
+## `public static IReadOnlyList<string> LScriptCharacterScan(IReadOnlyList<LScriptImage> images)`
+
+The distinct characters the pictures draw, in first-seen order.
+The grouping follows that order, so the blocks stand as the headword spells them.
+
+## `public static IReadOnlyList<LScriptImage>? LScriptImageScan(`
+
+The pictures of `character` in `style`, or null when there are none.
+Null rather than empty lets the grouper skip a missing block in one pattern test.

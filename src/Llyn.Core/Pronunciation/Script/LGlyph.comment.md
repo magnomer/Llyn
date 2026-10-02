@@ -1,4 +1,5 @@
 # LGlyph.cs
+Hash: `cbaf5699e185e0e3`
 
 ## `public sealed record LGlyph(`
 
@@ -23,6 +24,11 @@ The engine holds no list of Han languages of its own.
 The distinct Han characters of a text, in first-seen order, each as its own string.
 Runes are walked rather than chars, because ideographs beyond the basic plane take two chars.
 Kana, Latin letters, punctuation and repeats are dropped.
+
+## `public static bool LGlyphSingleCheck(string text)`
+
+Whether the text holds exactly one distinct Han character.
+Other runes and repeats are ignored, so a lone rune passes only when it is Han.
 
 ## `public static bool LGlyphRowCheck(LGlyph? glyph, IReadOnlyList<LTranscriptionDraft> rows)`
 
@@ -61,4 +67,4 @@ The engine asks it when a transcription lookup names a scheme no transcription e
 ## `private static bool LGlyphHanCheck(int value)`
 
 Whether one code point sits in a Han block.
-The blocks are the unified ideographs, extension A, the compatibility ideographs, extensions B to H, and the compatibility supplement.
+The blocks are the unified ideographs, extension A, the compatibility ideographs, extensions B to G, and the compatibility supplement.

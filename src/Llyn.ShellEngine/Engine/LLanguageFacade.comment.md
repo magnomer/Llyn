@@ -1,4 +1,5 @@
 # LLanguageFacade.cs
+Hash: `0c76ffe5a5eedb0d`
 
 ## `internal sealed class LLanguageFacade`
 

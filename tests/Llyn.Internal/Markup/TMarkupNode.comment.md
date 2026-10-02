@@ -1,4 +1,5 @@
 # TMarkupNode.cs
+Hash: `77beb2a7bb71e7e2`
 
 ## `public sealed class TMarkupNode`
 

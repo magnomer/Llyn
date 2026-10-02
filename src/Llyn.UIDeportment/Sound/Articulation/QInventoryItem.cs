@@ -125,7 +125,7 @@ internal sealed class QInventoryItem : INotifyPropertyChanged
 
         if (QLook.QLookPartFind<Run>(container, "PInventoryEpithet") is Run epithet)
         {
-            epithet.Text = " " + inventory.QInventoryItemEpithet;
+            epithet.Text = QLook.QLookEpithetRead(inventory.QInventoryItemEpithet);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PInventoryLanguage") is TextBlock language)

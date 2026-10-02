@@ -1,4 +1,5 @@
 # TAtlas.cs
+Hash: `c5fa08cde8af3914`
 
 ## `public sealed class TAtlas`
 

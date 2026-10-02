@@ -1,4 +1,5 @@
 # LEpoch.cs
+Hash: `df9425872b3db824`
 
 ## `public sealed record LEpoch(`
 

@@ -1,4 +1,5 @@
 # PDisplayExample.xaml
+Hash: `19b2788a0c241a48`
 
 ## `ResourceDictionary`
 
@@ -32,7 +33,7 @@ The fallback for a pack that declares none is written once, with the rest of a c
 
 ### `<DataTemplate x:Key="Display.Card.ExampleGloss">`
 
-One Gloss under the sentence: the flag of its language and the text.
+One Gloss under the sentence, drawn as the flag of its language and the text.
 The unknown mark stands in when the text is not known.
 It takes the family, size and slant the entry's language pack declares for a Gloss.
 It uses the muted colour, as the writing side sets the same row.

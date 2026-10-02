@@ -1,4 +1,5 @@
 # CSCustomsMode.cs
+Hash: `5d62f1204ec0e8a4`
 
 ## `public enum CSCustomsMode`
 

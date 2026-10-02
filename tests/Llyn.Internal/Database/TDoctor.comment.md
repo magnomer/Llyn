@@ -1,4 +1,5 @@
 # TDoctor.cs
+Hash: `24949bade3a5f5ab`
 
 ## `public sealed class TDoctor`
 
@@ -18,5 +19,6 @@ The second would erase the first copy, which this recovery promises never to do.
 
 A file that cannot be opened at all, here a folder standing in its place, is not the doctor's case.
 The fault passes through and nothing is set aside, since the file was never shown to be broken.
-The classification cases spell out the line: corrupt and not-a-database rescue, busy, full and read errors do not.
+The classification cases spell out the line.
+Corrupt and not-a-database rescue, busy, full and read errors do not.
 A busy or locked file is reported as such, so the launch can tell the user which program to close.

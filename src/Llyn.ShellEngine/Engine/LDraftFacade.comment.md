@@ -1,4 +1,5 @@
 # LDraftFacade.cs
+Hash: `e88d79573a58bc3e`
 
 ## `internal sealed class LDraftFacade`
 
@@ -11,7 +12,7 @@ The dirty check of an entry draft stays here too.
 Only the engine loads an entry with its audio resolved.
 These are primitives, and `LTenure` in `LTenure.cs` is the session object that sequences them for a panel.
 The sentence, situation, source and author starts and commits live beside their kind's reads.
-Every edit in between is a request, applied in `LEngineRequest.cs` for all kinds alike.
+Every edit in between is a request, applied in `LRequestFacade.cs` for all kinds alike.
 
 ## `public LDraftFacade(LEngine engine)`
 
@@ -79,7 +80,7 @@ Every entry the round wrote gets its bulletin and its inflection fetch outside t
 
 ## `internal void LEngineDraftCancel(long id)`
 
-Discards held work: the court first, the file second.
+Discards held work, the court first and the file second.
 It also drops what this draft's lookups and audio searches found, because closing is what frees a trove.
 A draft bulletin carrying id zero follows, as after a delete, so the status bar recounts the held set.
 A stale id is only released, because its file belongs to the workspace the engine has left.
@@ -90,6 +91,8 @@ Releasing it is how the stale set shrinks as the old tenures close.
 Cancels every unheld draft that says nothing its origin does not.
 A draft with no entry is cancelled when it is blank.
 One with an entry is cancelled when the citation clerk finds it equal to the entry.
+It announces nothing, so it moves the engine revision itself.
+A swept draft can settle a court into a held draft, so no tenure may keep its state across it.
 
 ## `internal void LEngineDraftValidate(long id)`
 

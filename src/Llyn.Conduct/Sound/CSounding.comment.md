@@ -1,19 +1,21 @@
 # CSounding.cs
+Hash: `a3928ea29b5fcfcc`
 
 ## `public sealed class CSounding`
 
-The sound sheet of the entry the editor holds: its rime-book groups, its script rows and its paradigm slots.
+The sound sheet of the entry the editor holds.
+It covers the entry's rime-book groups, its script rows and its paradigm slots.
 It also holds the maps from an entry's sound rows to the shapes the drivers show.
 Every read and gate works on the entry the desk has stored, so no driver passes an entry.
 A fresh draft has no stored entry, so every read answers empty and every gate does nothing.
 Every read swallows a refusal and answers empty, since a box that cannot fetch still has to draw.
 Every gate announces the change, or asks the envoy to show the refusal under its own notice key.
 
-
 ## `internal void LSoundingObserverAttach(Action<Action> marshal)`
 
 Hears the tenure's fanqie subject and raises `CSoundingChanged` on the driver's thread.
 A fanqie changed elsewhere refreshes the editor as a fanqie set here does.
+
 ## `internal CSounding(`
 
 Takes the editor's desk and the phonology port every sound read goes through.

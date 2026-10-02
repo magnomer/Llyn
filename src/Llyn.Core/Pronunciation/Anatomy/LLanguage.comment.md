@@ -1,8 +1,10 @@
 # LLanguage.cs
+Hash: `3ed927fc82fc9782`
 
 ## `public sealed record LLanguage(`
 
-A loaded language pack: the language's name, the two source lists declared for it, and its transcription schemes.
+A loaded language pack.
+It holds the two source lists declared for the language and its transcription schemes.
 Loaded from `languages/<Lang>/source.json`.
 The engine holds no language-specific facts of its own.
 Everything language-specific arrives through this record.
@@ -68,9 +70,9 @@ Everything language-specific arrives through this record.
   The reading view shows one row per style above the first meaning, and the order here is the row order.
   A pack that lists none carries an empty list, and no script box is shown.
 - `LLanguageFanqieBooks` — The rime books the pack lists under `fanqie`, each an [LFanqieBook](../Fanqie/LFanqieBook.comment.md) record, in written order.
-- `LLanguageShengfu` — The phonetic-series source the pack declares under `shengfu`, or null when it declares none.
   The reading view shows one block per book under the script box, and the order here is the block order.
   A pack that lists none carries an empty list, and no fanqie box is shown.
+- `LLanguageShengfu` — The phonetic-series rule the pack declares under `shengfu`, or null when it declares none.
 - `LLanguageHypothesis` — The reconstruction the pack names under `hypothesis`, held as an [LHypothesis](../Hypothesis/LHypothesis.comment.md) record.
   The fanqie box then prints each placement's reading before the placement.
   A pack that declares none carries `null`, and the box prints the placement alone.

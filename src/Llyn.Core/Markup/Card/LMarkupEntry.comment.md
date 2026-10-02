@@ -1,4 +1,5 @@
 # LMarkupEntry.cs
+Hash: `e1b4805e09e19620`
 
 ## `public sealed record LMarkupEntry(`
 
@@ -23,6 +24,11 @@ Two entries are equal when every row is equal in order, so a round trip can be c
 - `LMarkupEntryLine` — The line the entry opened on in its file, zero for an entry built in memory.
 - `LMarkupEntryEtymology` — The narrative etymology, nothing when the entry has none.
 - `LMarkupEntryEtymon` — The direct source links in file order, empty when the entry has none.
+
+## `public string LMarkupEntryName { get; init; }`
+
+The headword as the import list names the entry, until the clerk tells twin headwords apart.
+It is display text, so equality leaves it out.
 
 ## `public bool Equals(LMarkupEntry? other)`
 

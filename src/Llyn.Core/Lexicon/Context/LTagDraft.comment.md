@@ -1,4 +1,5 @@
 # LTagDraft.cs
+Hash: `a16e895a057c5664`
 
 ## `public sealed record LTagDraft(`
 

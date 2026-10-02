@@ -1,4 +1,5 @@
 # PThemeChoice.xaml
+Hash: `3c653ed17f1fe607`
 
 ## `<Style x:Key="Theme.Choice.Row" TargetType="Button">`
 
@@ -14,6 +15,12 @@ They are Theme.Popup.RowSurface.
 The rows sit on the panel's own ground, so they carry a card of their own.
 The hover row in `QLook` still repaints it.
 
+## `<Style x:Key="Theme.Choice.Order" TargetType="RadioButton">`
+
+One ordering in a sort dropdown.
+`QChoice` builds these radio buttons in code, so no markup names the style.
+The tick stays collapsed until `QLook` shows it on the checked one.
+
 ## `<Style x:Key="Theme.Choice.Filter" TargetType="CheckBox">`
 
 One language row of a filter dropdown, drawn like an ordering row with a box in place of the tick.
@@ -27,6 +34,11 @@ They offer what the language has saved and are framed only under the pointer.
 The frame is drawn outward, so a field being pointed at or written in never moves the sentence beside it.
 The frame is closed onto the text it rings, clearing it by a hairline and no more.
 A marker and a role are parted by one space, so a frame drawn outward crosses the word beside it.
+
+## `<Style x:Key="Theme.Choice.Switch" TargetType="ToggleButton">`
+
+The on-off switch of the settings pages.
+It carries no trigger, so `QLook` rows colour the track and slide the knob when checked.
 
 ## `<Thickness x:Key="Theme.Choice.Switch.KnobInset">0,0,3,0</Thickness>`
 

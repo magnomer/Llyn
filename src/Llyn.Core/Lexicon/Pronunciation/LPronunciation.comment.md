@@ -1,4 +1,5 @@
 # LPronunciation.cs
+Hash: `210bd223f3940858`
 
 ## `public sealed record LPronunciation(`
 

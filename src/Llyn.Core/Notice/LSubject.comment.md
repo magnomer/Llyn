@@ -1,4 +1,5 @@
 # LSubject.cs
+Hash: `e11d43e23df21dd1`
 
 ## `public enum LSubject`
 
@@ -32,6 +33,11 @@ An Author was stored, changed, deleted, attached, or detached.
 ## `LSubjectTag,`
 
 A Tag was written onto a card, renamed, or deleted.
+
+## `LSubjectRegister,`
+
+A Register was created.
+The id is the new Register's.
 
 ## `LSubjectFavorite,`
 
@@ -87,7 +93,7 @@ The id is zero, because no record changed and every surface showing a reading re
 
 ## `LSubjectTenure,`
 
-The state of one held draft moved: it changed, can undo or redo, or halted.
+The state of one held draft moved when it changed, could undo or redo, or halted.
 The id is the draft the tenure holds, so the one panel holding it settles its buttons.
 
 ## `LSubjectVista,`

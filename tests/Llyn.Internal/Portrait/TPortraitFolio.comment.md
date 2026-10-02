@@ -1,4 +1,5 @@
 # TPortraitFolio.cs
+Hash: `2c6c7f447350de3f`
 
 ## `public sealed class TPortraitFolio`
 

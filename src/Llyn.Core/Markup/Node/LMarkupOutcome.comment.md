@@ -1,4 +1,5 @@
 # LMarkupOutcome.cs
+Hash: `71fcd432309ccb52`
 
 ## `public sealed record LMarkupOutcome(`
 

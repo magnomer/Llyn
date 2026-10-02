@@ -1,30 +1,36 @@
 # TEngineFrequency.cs
+Hash: `809864258bdb9ebb`
 
 ## `public sealed class TEngineFrequency`
 
-Covers the engine's frequency fill over a fixture pack with two sources and three bands.
-The fill takes the first non-empty answer in written order, whichever source answers first.
-A band is the first pack row the raw satisfies, by limit or by pattern, and null when none does.
+Covers the engine's frequency fill over a fixture pack with three sources.
+Every source is asked, and each one that answers stores a row, in written order.
+A source that stays silent leaves no row while the others still store theirs.
+A numeric raw is graded by interval from the source's `once` estimate, ahead of its band patterns.
+A raw that is not a number is graded by the first band pattern it matches.
+It is graded null when none does.
+A source with a unit stamps it on numeric rows only.
+A source without a `once` estimate leaves the interval null.
 A blank language resolves no band at all.
-A stored value reads back with its band resolved from the pack at read time, not from the store.
+A stored band is regraded from the raw at read time and written back when it differs.
+A row stored with no band, as a migrated one is, is resolved and stored on its first read.
 With the setting off, a start writes nothing and raises no bulletin.
-A headword change clears the stored value at once and refetches under the new headword.
+A headword change clears the stored rows at once and refetches under the new headword.
 A fill whose entry was deleted while its answer was pending writes nothing and raises nothing.
-An entry with a blank language reads null, starts no fill, and throws nothing.
-A stored value on such an entry still reads back, only with its band left null.
+An entry with a blank language reads empty, starts no fill, and throws nothing.
+A stored row on such an entry still reads back, only with its band and interval left null.
 A language change while a fill is pending drops the old answer instead of storing it under the new language.
-A word every source reached yet none knew is asked once per session, however often it is displayed.
-A word no source could be reached for is asked again on the next display.
-Every source is asked, even after an earlier one has answered.
+A word every source reached yet none knew is asked once per session, however often it is read.
+A word no source could be reached for is asked again on the next read.
 A fill is observed as the user sees it.
 The entry is saved, the bulletin lands, and the store is read.
 
 ## Inline notes
 
-### `public async Task EntryUpdate_HeadwordChanged_ClearsStoredValueThenRefetches()`
+### `public async Task EntryUpdate_HeadwordChanged_ClearsStoredRowsThenRefetches()`
 
 The client holds its answer behind a gate, so the cleared store is observable before the refetch lands.
-Releasing the gate lets the fill finish, and the bulletin marks the moment the new value is stored.
+Releasing the gate lets the fill finish, and the bulletin marks the moment the new row is stored.
 
 ### `public async Task EntryUpdate_LanguageChangedMidFlight_DropsOldAnswer()`
 

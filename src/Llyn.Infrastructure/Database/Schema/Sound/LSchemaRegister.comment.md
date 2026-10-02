@@ -1,4 +1,5 @@
 # LSchemaRegister.cs
+Hash: `09b151ad6ef63828`
 
 ## `public static class LSchemaRegister`
 

@@ -1,4 +1,5 @@
 # TMarkupCargo.cs
+Hash: `c8ae8ae8f1f2dd66`
 
 ## `public sealed class TMarkupCargo`
 

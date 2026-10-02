@@ -1,4 +1,5 @@
 # LDraftClerkReading.cs
+Hash: `5ebb0dcc2c810c99`
 
 ## `public sealed class LDraftClerkReading`
 

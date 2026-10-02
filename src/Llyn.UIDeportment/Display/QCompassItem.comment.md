@@ -1,4 +1,5 @@
 # QCompassItem.cs
+Hash: `71cf1b2bfd6b5752`
 
 ## `public sealed class QCompassItem`
 

@@ -1,8 +1,9 @@
 # QFieldGhost.cs
+Hash: `77453066f2eefc7f`
 
 ## `internal sealed class QFieldGhost : IMultiValueConverter`
 
-The text a measuring ghost shows: the field's own text, else its hint.
+The text a measuring ghost shows, which is the field's own text, else its hint.
 A ghost sizes its field, so an empty field still takes the width of its hint.
 The choice sits in a converter, so the driver never branches on what the user typed.
 

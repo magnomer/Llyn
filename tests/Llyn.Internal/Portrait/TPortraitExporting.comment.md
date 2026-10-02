@@ -1,4 +1,5 @@
 # TPortraitExporting.cs
+Hash: `4e839351e312c4df`
 
 ## `public sealed class TPortraitExporting`
 
@@ -8,7 +9,7 @@ So a new node field the reader fills turns every format red until its writer car
 
 ## Inline notes
 
-### `private static void TPortraitExportMatch(LEngine engine, long id, string written)`
+### `private static void TPortraitExportMatch(LEngine engine, long id, string written, System.Func<string?, string> normalize)`
 
 One page string is named outright, so an empty tree cannot pass by having nothing to check.
 
@@ -18,7 +19,8 @@ The package is opened as a zip and only the main document part is read.
 
 ### `public void PortraitRead_Exemplar_CarriesEveryText()`
 
-The other direction: every typed string must reach the page tree, unless `TExemplarHidden` names it.
+The other direction.
+Every typed string must reach the page tree, unless `TExemplarHidden` names it.
 A hidden string that shows anyway is stale, so the list never outlives the reader.
 
 ### `public void PortraitExport_Exemplar_ChildCardNested()`

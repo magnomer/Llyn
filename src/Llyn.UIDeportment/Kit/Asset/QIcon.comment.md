@@ -1,4 +1,5 @@
 # QIcon.cs
+Hash: `c0795d7d784c7473`
 
 ## `public static class QIcon`
 

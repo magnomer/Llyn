@@ -1,10 +1,11 @@
 # LWorkspaceArchive.cs
+Hash: `db96d41dce3ac6be`
 
 ## `public sealed class LWorkspaceArchive : LWorkspaceVault`
 
 It is the adapter of `LWorkspaceVault`, the port the engine holds.
 
-Persists the workspace row — the operational state of the session, not lexical data.
+Persists the workspace row, the operational state of the session and not lexical data.
 There is one such row per database, carried under id 1.
 So opening the workspace never has to search for it.
 `LWorkspaceStateRead` creates the row on first use and returns it.
@@ -22,7 +23,8 @@ They live in the settings file instead.
 
 The pane columns and the revision column are references the schema clears rather than defends.
 Deleting an Entry sets the pane that showed it back to empty instead of blocking the delete.
-So this store holds no lexical guard of its own — losing the whole row would lose no dictionary content.
+So this store holds no lexical guard of its own.
+Losing the whole row would lose no dictionary content.
 
 ## `private const long LWorkspaceArchiveRow = 1;`
 

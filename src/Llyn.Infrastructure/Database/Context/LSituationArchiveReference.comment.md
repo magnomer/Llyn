@@ -1,8 +1,10 @@
 # LSituationArchiveReference.cs
+Hash: `67b76f00bc728689`
 
 ## `public sealed partial class LSituationArchive`
 
-The reference side of the Situation store: how Meanings and Collocations point at a Situation.
+The reference side of the Situation store.
+It holds how Meanings and Collocations point at a Situation.
 Attaching and detaching write association rows and renumber that referrer's set through `LDatabaseOrder`.
 The referrer read lists the Situations one Meaning or Collocation holds, in its order.
 The link delete clears every reference to one Situation from one table.

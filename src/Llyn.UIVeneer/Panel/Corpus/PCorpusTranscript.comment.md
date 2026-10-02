@@ -1,16 +1,33 @@
 # PCorpusTranscript.xaml
+Hash: `0971b525a138f847`
 
 ## `ResourceDictionary`
 
-The editing side of the Corpus panel: the transcript fields, the Gloss row and the pickers under it.
+The editing side of the Corpus panel holds the transcript fields, the Gloss row and the pickers under it.
 The page merges it as it merges the excerpt, so it is loose and has no class of its own.
 No event is named here, so the corpus driver subscribes its own handlers on each realized part.
 The language choice and the citation row stand here because both open from the transcript.
+
+## `<Style x:Key="Theme.Transcript.Sentence" TargetType="TextBox" ...>`
+
+The transcript field at the size and weight the excerpt page prints the sentence in.
+So the sentence does not move when the page turns from reading to writing.
+
+## `<Style x:Key="Theme.Transcript.Speaker" TargetType="ToggleButton" ...>`
+
+The toggle takes the height, margin and padding of the speech chip under the excerpt's language chip.
+So the language stands in the same box when read and when chosen.
 
 ## `<Style x:Key="Theme.Transcript.Row" TargetType="Border">`
 
 The Gloss row and the seed share this surface, transparent so the pointer finds it.
 The look sheet reveals `PTranscriptShelf` while the row is under the pointer or holds focus.
+
+## `<Style x:Key="Theme.Transcript.Control" TargetType="StackPanel">`
+
+The Gloss row's buttons start invisible and take no pointer.
+The look sheet raises both on `Theme.Transcript.Row` while the row is hovered or focused.
+A hidden button that still took clicks would drop a Gloss the reader never saw.
 
 ## `<Style x:Key="Theme.Transcript.Addition" TargetType="Button" BasedOn="{StaticResource Theme.Card.Handle}">`
 

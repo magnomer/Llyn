@@ -1,4 +1,5 @@
 # LEtymologyResult.cs
+Hash: `ca0d5ab7dc7d79d7`
 
 ## `public sealed record LEtymologyResult(`
 

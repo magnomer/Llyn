@@ -1,4 +1,5 @@
 # PContextCaret.cs
+Hash: `647f5a7e8bce3245`
 
 ## `internal sealed class PContextCaret`
 
@@ -17,6 +18,6 @@ A card already carrying a Situation has nothing left to prompt for.
 ## `public PContext? PContextCaretAnchor`
 
 The chip the caret stands right before, or null when the caret stands at the end.
-Only a caret step writes it, so the chips' order is never touched.
+Only a caret step or a redraw writes it, so the chips' order is never touched.
 A chip the engine adds at the caret lands before the anchor, so the caret stays after it.
-When the anchor chip leaves the field, the caret falls back to the end.
+When the anchor chip leaves, the caret moves before the next chip that stands, else to the end.

@@ -1,4 +1,5 @@
 # LImprint.cs
+Hash: `d4089ba314089697`
 
 ## `public sealed record LImprint(`
 
@@ -7,16 +8,16 @@ The fields write each value into one control and branch on nothing.
 
 **Parameters**
 
-- `LImprintTitle`: the title as written, or empty when never written.
-- `LImprintTitleHint`: the resource key of the title field's hint.
-- `LImprintYear`: the year as written, or empty when never written.
-- `LImprintYearHint`: the resource key of the year field's hint.
-- `LImprintUrl`: the address as written, or empty when never written.
-- `LImprintUrlHint`: the resource key of the address field's hint.
-- `LImprintNote`: the note as written, or empty when never written.
-- `LImprintNoteHint`: the resource key of the note field's hint.
-- `LImprintKindKey`: the resource key of the kind's name.
-- `LImprintKindTag`: the kind's tag, which marks its entry in the kind menu.
+- `LImprintTitle` — The title as written, or empty when never written.
+- `LImprintTitleHint` — The resource key of the title field's hint.
+- `LImprintYear` — The year as written, or empty when never written.
+- `LImprintYearHint` — The resource key of the year field's hint.
+- `LImprintUrl` — The address as written, or empty when never written.
+- `LImprintUrlHint` — The resource key of the address field's hint.
+- `LImprintNote` — The note as written, or empty when never written.
+- `LImprintNoteHint` — The resource key of the note field's hint.
+- `LImprintKindKey` — The resource key of the kind's name.
+- `LImprintKindTag` — The kind's tag, which marks its entry in the kind menu.
 
 ## `public static LImprint LImprintCreate(LReference reference)`
 

@@ -1,4 +1,5 @@
 # LMarkupInflection.cs
+Hash: `801a88cc6598dcb6`
 
 ## `public sealed record LMarkupInflection(`
 

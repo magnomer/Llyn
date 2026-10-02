@@ -1,4 +1,5 @@
 # LDoctor.cs
+Hash: `eca39bc31edc8c46`
 
 ## `public sealed class LDoctor : LDoctorVault`
 

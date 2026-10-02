@@ -1,4 +1,5 @@
 # QVeilPeer.cs
+Hash: `8a1908a13cbe1c41`
 
 ## `internal sealed class QVeilPeer : FrameworkElementAutomationPeer`
 

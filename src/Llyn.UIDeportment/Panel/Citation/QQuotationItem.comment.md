@@ -1,6 +1,7 @@
 # QQuotationItem.cs
+Hash: `90d64fd4af9f9ef3`
 
-## `internal sealed class QQuotationItem`
+## `internal sealed class QQuotationItem : INotifyPropertyChanged`
 
 One Entry as a row of the corpus panel's entry list.
 It mirrors the taxonomy panel's row, because every middle column answers the same shape of question.

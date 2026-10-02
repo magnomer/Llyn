@@ -1,4 +1,5 @@
 # LSheetSection.cs
+Hash: `62f554a9877910a0`
 
 ## `public static class LSheetSection`
 
@@ -7,12 +8,15 @@ The role of the node decides its dress, so a situation, a register and a tag kee
 
 ## `public static void LSheetSectionAppend(StringBuilder sheet, LPortraitSection section)`
 
-Dispatches on the role: card, phrase, scene, tone, label, bridge, quote, else band.
+Dispatch follows the role.
+Card and kind, phrase, scene, tone, label, bridge, quote and usage each have a form.
+Any other role is a band.
 A bridge draws nothing of its own, since the shared body already draws links.
 
 ## `private static void LSheetBandAppend(StringBuilder sheet, LPortraitSection section)`
 
-One headed band: its chips as a speech row, then its lines, then the shared body.
+One headed band.
+Its chips come as a speech row, then its lines, then the shared body.
 A band of usage rows wraps them in one rows block, so the row style stacks them.
 
 ## `private static void LSheetUsageAppend(StringBuilder sheet, LPortraitSection section)`
@@ -33,7 +37,8 @@ Each line as a phrase paragraph, then the shared body.
 
 ## `private static void LSheetQuoteAppend(StringBuilder sheet, LPortraitSection section)`
 
-A bulleted row whose first line is the quote: its label as the frame, its text as what was said.
+A bulleted row whose first line is the quote.
+Its label is the frame and its text is what was said.
 The further lines follow as tagged lines, the chips as labels, then the shared body.
 The enclosing quotes block is opened by the parent, so neighbouring quotes share one.
 

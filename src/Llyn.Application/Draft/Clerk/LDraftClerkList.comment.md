@@ -1,4 +1,5 @@
 # LDraftClerkList.cs
+Hash: `aa0f8b2734e80cb2`
 
 ## `public static class LDraftClerkList`
 
@@ -55,7 +56,7 @@ Offers every card, nested ones included, one change and keeps the ones that took
 A shared row is edited this way, since the same id may sit in any number of cards.
 No card taking the change means the draft holds no such row, and that is refused.
 
-## `public static IReadOnlyList<LDraftItem> LDraftListNormalize<LDraftItem>(IReadOnlyList<LDraftItem> items, Func<LDraftItem, bool> blank, Func<LDraftItem, LDraftItem> name)`
+## `public static IReadOnlyList<LDraftItem> LDraftListNormalize<LDraftItem>(`
 
 Drops every item `blank` marks and passes the rest through `name`, which issues an id to a new one.
 The list comes back untouched when nothing was dropped or renamed, so a save can tell by reference.

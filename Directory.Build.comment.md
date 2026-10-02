@@ -1,4 +1,5 @@
 # Directory.Build.props
+Hash: `8e311ca932ba355d`
 
 Imported by every project in the repository, so its properties reach each assembly.
 
@@ -6,7 +7,7 @@ Imported by every project in the repository, so its properties reach each assemb
 
 `version.json` is the single source of the version.
 `current-version` is read at compile time and stamped into every assembly's version metadata.
-Runtime code reads the version back through reflection on the entry assembly.
+Runtime code reads the version back through reflection on the executing assembly.
 A missing or unreadable file stamps `0.0.0` instead of failing the build.
 
 ## `AllowedReferenceRelatedFileExtensions`

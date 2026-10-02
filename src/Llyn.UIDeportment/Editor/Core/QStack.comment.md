@@ -1,4 +1,5 @@
 # QStack.cs
+Hash: `012671148ee4a618`
 
 ## `internal sealed class QStack`
 

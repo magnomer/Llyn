@@ -1,4 +1,5 @@
 # QFontConverter.cs
+Hash: `6cc60d44961149aa`
 
 ## `internal sealed class QFontConverter`
 

@@ -1,8 +1,9 @@
 # LEngine.cs
+Hash: `0eb01914f5a71958`
 
 ## `public sealed class LEngine : IDisposable`
 
-The shell engine: the single boundary the UI shell talks to.
+The shell engine is the single boundary the UI shell talks to.
 The UI sends a request here.
 It hands a delegate over `LLookupStep` for pronunciation or over `LHarvestStep` for audio.
 It subscribes a delegate over `LBulletin` to learn that stored data changed.
@@ -21,7 +22,7 @@ The entry points that return a `Task` hold the gate briefly and run the fetch ou
 A lock held across an await would stall the shell for a whole network call.
 The clerks that fetch in the background are handed the same gate object.
 So a fetch that lands writes under the lock every other vault call holds.
-A held draft is driven by an `LTenure`, made in `LEngineTenure.cs`, so no panel sequences the draft calls itself.
+A held draft is driven by an `LTenure`, made in `LTenureFacade.cs`, so no panel sequences the draft calls itself.
 
 The engine holds no vault of its own.
 Every port arrives in one `LRig` and is handed to the staff `LEngineStaffBuild` builds over it.
@@ -86,6 +87,12 @@ Callers read and update it under `LEngineGate`.
 
 Draft ids claimed in a former workspace, kept so a surviving tenure cannot write into the new one.
 
+## `internal long LEngineRevision`
+
+A count that moves on every announced change, so a tenure knows when its kept state went stale.
+Callers read and move it under `LEngineGate`.
+A facade that writes without announcing moves it by hand, so no kept state outlives the write.
+
 ## `public void LEngineObserverAttach(Action<LBulletin> observer)`
 
 Subscribes `observer` to future announcements.
@@ -98,6 +105,7 @@ Stops announcing to `observer`, so a closed surface is never called again.
 ## `internal void LEngineBulletinRaise(LSubject subject, long id)`
 
 Announces one stored change to every subscriber.
+The revision moves first, even with nobody listening, because a tenure reads it whether or not it subscribed.
 The list is copied under the gate, then callbacks run outside it, so a subscriber can detach without disturbing iteration.
 Announcements happen when a stored record is finished, so an import announces once after all its records are written.
 
@@ -160,7 +168,7 @@ The move is then announced, so every surface holding a stored record learns that
 
 ## `private void LEngineFetchClear()`
 
-Cancels every pending fetch of the five fetching clerks, on a rig apply and on dispose.
+Cancels every pending fetch of the six fetching clerks, on a rig apply and on dispose.
 
 ## `internal static ArgumentOutOfRangeException LEngineOwnerRaise(LOwner owner)`
 

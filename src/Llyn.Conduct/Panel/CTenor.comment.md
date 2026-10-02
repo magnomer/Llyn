@@ -1,4 +1,5 @@
 # CTenor.cs
+Hash: `990176a210eb7486`
 
 ## `public sealed class CTenor`
 
@@ -104,10 +105,20 @@ A different workspace has its own Registers, so the Register this panel stood on
 A Register notice carries a Register id, not an entry id, so it never selects a row.
 It raises the rows, then rereads the shown entry, whose chips may carry the renamed Register.
 
+## `public void CTenorQuerySet(string query)`
+
+Hands the search text to the register vista, which announces only a changed text.
+A workspace change carries it into the fresh vista, so the driver never re-sends it.
+
 ## `public void CTenorOrderSet(CCatalogOrder? order)`
 
 Orders the Register list as the user chose.
 A null order keeps the current one, which the vista decides.
+
+## `public void CTenorFilterSet(CCatalogFilter filter)`
+
+Hands the hidden languages to the register vista, and the posture stores them under the tab.
+The vista announces only a changed filter.
 
 ## `public IReadOnlyList<CCatalogRegister> CTenorRowsRead()`
 

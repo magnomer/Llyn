@@ -1,4 +1,5 @@
 # PThemeLanguage.xaml
+Hash: `65e4d1c6ffa6c7d2`
 
 ## `<Thickness x:Key="Theme.Language.Inset">`
 
@@ -31,4 +32,4 @@ The heart and the stars after the pill then stand still when the mode switches.
 
 The editor's language pill, drawn as the reading view's pill is drawn.
 It stays a toggle, because a language is chosen here and only reported there.
-The border is transparent until pointed at or opened, which is the only hint of the menu it holds.
+The border matches the fill until the pill is pointed at or opened, then turns accent.

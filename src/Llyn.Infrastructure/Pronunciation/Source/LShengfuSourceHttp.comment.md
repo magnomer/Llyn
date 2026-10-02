@@ -1,9 +1,11 @@
 # LShengfuSourceHttp.cs
+Hash: `bd329c4fb0f3db41`
 
 ## `public sealed class LShengfuSourceHttp : LShengfuSource`
 
 The adapter that reads a character's phonetic series off the web under a pack rule.
-It carries no language knowledge: the address and the regex both come from the rule.
+It carries no language knowledge.
+The address and the regex both come from the rule.
 
 ## `public LShengfuSourceHttp(HttpClient client)`
 
@@ -13,7 +15,7 @@ Takes the one client the rig shares, so every fetch keeps the same agent and tim
 
 Fetches the page of the character and reads the series out of it.
 A missing page counts as answered with nothing, so the character is not fetched again.
-A refused or unreachable page counts as unanswered, so a later display retries it.
+A refused, busy or unreachable page counts as unanswered, so a later display retries it.
 
 ## `public static LShengfu? LShengfuSourceScan(LShengfuRule rule, string character, string body)`
 

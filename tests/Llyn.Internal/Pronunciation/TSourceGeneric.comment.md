@@ -1,4 +1,5 @@
 # TSourceGeneric.cs
+Hash: `4183281730e8596d`
 
 ## `public sealed class TSourceGeneric`
 
@@ -14,6 +15,7 @@ Spelling rules on a spec recast the headword before the token fills, so a macron
 A flat attempt marked every is one untagged reading yielding every match, and the first phonetic is the answer's value.
 A `{word}` token in a pattern is the headword, escaped so a regex character in it matches literally.
 A link reading answers the fetched address itself, with `{headword}` filled as typed before any spelling rule.
+A decoded attempt matches characters the page writes as entities, which a plain attempt misses.
 A missed guard is a blank answer and a server failure is a lost one.
 A page that only points at another headword is followed there, and the reading comes from the page pointed at.
 A page with its own readings that also points elsewhere keeps its own and adds the pointed page's.

@@ -1,8 +1,9 @@
 # PContext.cs
+Hash: `90e338f58d6b0c27`
 
 ## `internal sealed class PContext`
 
-One committed Situation inside a card's Situation field — the boxed wording the user sees.
+One committed Situation inside a card's Situation field, the boxed wording the user sees.
 It carries the id the Situation is stored under, so a card keeps naming the same Situation across saves.
 A Situation whose wording should change is closed and written again rather than edited in place.
 
@@ -14,7 +15,7 @@ So nothing unknown is quietly turned into nothing at all.
 
 The chip for a stored Situation.
 It holds the wording as the store knows it, under the id that names it.
-An id the store never gave it stays empty, so loading a card does not read as editing one.
+The id is fixed at construction, so a chip never changes which Situation it names.
 
 ## `public CStateWording PContextText { get; }`
 

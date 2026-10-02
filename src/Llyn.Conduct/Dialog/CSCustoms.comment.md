@@ -1,4 +1,5 @@
 # CSCustoms.cs
+Hash: `0de368aca71b171d`
 
 ## `public sealed class CSCustoms`
 

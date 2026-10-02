@@ -1,13 +1,19 @@
 # PCorpusExcerpt.xaml
+Hash: `4767f2cc016f085c`
 
 ## `ResourceDictionary`
 
-The reading side of the Corpus panel: the anthology meta and the excerpt page the rows open.
+The reading side of the Corpus panel holds the anthology meta and the excerpt page the rows open.
 The panel keeps its layout and merges these shapes from here, as it merges the editor popups.
 Nothing here answers an event, so the dictionary is loose and needs no class of its own.
 The anthology and quotation rows take `Theme.Catalog.Row` directly, and the panel marks the chosen one.
 `Theme.Excerpt.Flag` hides an empty flag through its `Empty` row in the look sheet.
 `Theme.Display.Value` is the face the read Gloss takes, and the theme reaches it by a dynamic reference.
+
+## `<Style x:Key="Theme.Excerpt.Heading" TargetType="TextBlock">`
+
+A section heading at the height, margin and size of the entry display's section headings.
+So the excerpt page reads as one more page of the same reader.
 
 ## `<Style x:Key="Theme.Excerpt.Chip" TargetType="Border">`
 

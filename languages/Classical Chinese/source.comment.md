@@ -1,4 +1,5 @@
 # source.json
+Hash: `da3248242db9b1e6`
 
 ## pack
 
@@ -158,9 +159,10 @@ A historical spelling equal to the current one repeats kind and text and so fold
 ## `reflex[4]` to `reflex[9]` Gan, Hakka, Jin, Southern Min, Wu and Xiang
 
 The six dialect rules are folded away under the rows above and share one shape.
-Each anchors on the block whose head names its region: Nanchang, Sixian, Taiyuan, Xiamen, Shanghai and Changsha.
+Each anchors on the block whose head names its region.
+The region is Nanchang, Sixian, Taiyuan, Xiamen, Shanghai or Changsha in turn.
 The region is matched as link text, since a link address may carry another place's name.
-Each reads the romanization line the pack names: Wiktionary, Pha̍k-fa-sṳ, Wiktionary, Pe̍h-ōe-jī, Wugniu and Wiktionary.
+Each reads the romanization line the pack names, which is Wiktionary, Pha̍k-fa-sṳ, Wiktionary, Pe̍h-ōe-jī, Wugniu or Wiktionary in turn.
 A scheme spelled with combining marks is matched loosely, so a change of encoding does not lose it.
 Each then reads the Sinological IPA line of its block.
 Southern Min and Wu list one IPA line per place.
@@ -183,7 +185,6 @@ The gloss of each reading is read from the box under the block.
 `vernacular (“difficult”)` becomes the note `vernacular` and the meaning `difficult`.
 Every dialect rule keeps every block, so a character with several pronunciation sections lists each section's reading.
 The first row of each is marked in common use, unless a main group already marked one.
-
 
 ## `frequency[0]` 四庫全書
 

@@ -1,4 +1,5 @@
 # QAccent.cs
+Hash: `db1cfbcc08d2ec4a`
 
 ## `internal sealed class QAccent`
 

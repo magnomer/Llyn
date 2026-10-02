@@ -1,4 +1,5 @@
 # PContextTemplate.xaml
+Hash: `6753f2cc61e8fe66`
 
 ## `ResourceDictionary`
 
@@ -8,7 +9,7 @@ The editor's card fill picks the chip or the entry for each item and fills the n
 
 ## `Theme.Context.Field`
 
-The Situation field: a wrapping run of boxed Situations with the open entry after them.
+The Situation field is a wrapping run of boxed Situations with the open entry after them.
 The run is laid out by `QBerth`, which seats the entry before the chip the caret is anchored to.
 The height is not fixed.
 The run wraps and the field grows with it.
@@ -22,7 +23,7 @@ A click on empty space inside it reaches the caret through the handler the card 
 
 ## `Theme.Context.Chip`
 
-One committed Situation: its wording and the button that closes it.
+One committed Situation, holding its wording and the button that closes it.
 The wording reads the unknown mark when the store could not read it back.
 So a chip showing nothing else says which kind of empty it is.
 The chip carries its own cursor, so the field text cursor stops at its edge.

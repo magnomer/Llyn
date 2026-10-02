@@ -1,4 +1,5 @@
 # LPronunciationAudio.cs
+Hash: `6c2538bc7d21c103`
 
 ## `public sealed record LPronunciationAudio(`
 

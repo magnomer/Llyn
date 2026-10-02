@@ -1,4 +1,5 @@
 # LEtymologyArchive.cs
+Hash: `5022616c2cc1b090`
 
 ## `public sealed class LEtymologyArchive : LEtymologyVault`
 

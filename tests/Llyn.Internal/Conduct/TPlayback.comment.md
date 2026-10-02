@@ -1,4 +1,5 @@
 # TPlayback.cs
+Hash: `3feccdf0ceb2ea3f`
 
 ## `public sealed class TPlayback`
 
@@ -7,7 +8,6 @@ The read answers the draft's own recording while its file exists, and whether an
 A play press answers the file's address, and a file gone answers nothing.
 A gone accent file is also cleared off its row.
 An empty desk reads no audio and plays nothing.
-A sound the driver's player refused shows the play failure through the editor's envoy once.
 
 ## `private static string TPlaybackFileSave(TWorkspace workspace, string name)`
 

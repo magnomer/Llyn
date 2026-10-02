@@ -1,4 +1,5 @@
 # LReferenceKind.cs
+Hash: `152a58f71b7908e1`
 
 ## `public enum LReferenceKind`
 

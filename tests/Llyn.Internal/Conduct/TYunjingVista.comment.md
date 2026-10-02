@@ -1,4 +1,5 @@
 # TYunjingVista.cs
+Hash: `249a13ca731f7338`
 
 ## `public sealed class TYunjingVista`
 

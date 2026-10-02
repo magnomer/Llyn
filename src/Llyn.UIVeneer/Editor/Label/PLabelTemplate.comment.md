@@ -1,4 +1,5 @@
 # PLabelTemplate.xaml
+Hash: `5d27ba0fa4b2105f`
 
 ## `ResourceDictionary`
 

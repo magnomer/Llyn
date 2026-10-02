@@ -1,4 +1,5 @@
 # LSituationOffer.cs
+Hash: `d82e5cd8b08662eb`
 
 ## `public sealed record LSituationOffer(`
 

@@ -1,4 +1,5 @@
 # CProfferRow.cs
+Hash: `87a509fbfbd29b73`
 
 ## `public sealed record CProfferRow(`
 

@@ -1,11 +1,12 @@
 # LRequestExample.cs
+Hash: `e9de61e4d141ceb2`
 
 The requests of the example panel.
 There is one per field of the sentence a draft holds on its own.
 They name only the draft, because a draft holds one such sentence.
 A sentence inside a card is edited through the sentence requests instead.
 
-## `public sealed record LRequestExampleText(long LRequestDraftId, LStateValue LRequestValue)`
+## `public sealed record LRequestExampleText(long LRequestDraftId, LStateWritten LRequestValue)`
 
 Replaces the text.
 

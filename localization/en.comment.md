@@ -1,4 +1,5 @@
 # en.json
+Hash: `76a6866a814ae906`
 
 The English interface catalog, and the language every launch starts from.
 It is embedded into `Llyn.Infrastructure` and never read from disk.
@@ -11,7 +12,7 @@ The file opens with flat `terms.*` pairs and closes with one `texts` object.
 ## `terms.*`
 
 A term is one reusable word, such as the product name, cited by many texts.
-Each term is also published under its capitalized key, so markup can bind a bare term.
+Each term is published under its capitalized key, such as `Terms.Product`, so markup can bind a bare term.
 
 ## `texts`
 

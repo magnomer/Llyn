@@ -1,4 +1,5 @@
 # QTally.cs
+Hash: `2e711a7ede1b5e58`
 
 ## `internal sealed class QTally`
 

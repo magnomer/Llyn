@@ -1,9 +1,12 @@
 # TFrequency.cs
+Hash: `d655cadc447eaebc`
 
 ## `public sealed class TFrequency`
 
-Covers the stored form of one frequency value, `<source>|<raw>`, and its parse.
-A formatted value parses back to the same source and raw, split on the first bar only.
-A raw that carries a bar of its own survives the round trip whole.
-A stored text without a bar parses as an empty source and the whole text as raw.
-The band is never stored, so parse always leaves it null for the engine to resolve.
+Covers how a source spec turns a raw figure into a once interval and a band.
+The interval is the number of words in which the word appears once, rounded to two figures.
+A spec with a total divides the total by the raw count, and a per-million total divides the million.
+A spec with a factor and a power raises the power to the raw class and scales it.
+A spec with only a factor multiplies the raw rank by the factor.
+The band grades the interval by decade into core, everyday, advanced and rare.
+A spec with no figures, or a zero count, yields no interval and no band.

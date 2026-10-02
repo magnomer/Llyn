@@ -1,4 +1,5 @@
 # LRequestEtymology.cs
+Hash: `8740750532aed341`
 
 ## `public sealed record LRequestEtymologyText(`
 

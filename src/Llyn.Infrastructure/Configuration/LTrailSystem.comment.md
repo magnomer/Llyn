@@ -1,4 +1,5 @@
 # LTrailSystem.cs
+Hash: `a49f73c86c86cf44`
 
 ## `public sealed class LTrailSystem : LTrail`
 

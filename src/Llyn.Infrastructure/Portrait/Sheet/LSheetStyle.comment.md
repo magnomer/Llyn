@@ -1,4 +1,5 @@
 # LSheetStyle.cs
+Hash: `9daac2b581a919bd`
 
 ## `public static class LSheetStyle`
 

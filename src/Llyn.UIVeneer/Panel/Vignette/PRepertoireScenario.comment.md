@@ -1,8 +1,10 @@
 # PRepertoireScenario.xaml
+Hash: `6ed95f4d4dd74d0b`
 
 ## `ResourceDictionary`
 
-The editing side of the Repertoire panel: the bare fields a Situation is written into.
+The editing side of the Repertoire panel.
+It holds the bare fields a Situation is written into.
 The measure style is based on the vignette's kind, so the dictionary merges the vignette shapes itself.
 A loose dictionary resolves a static reference only in itself, in what it merges, and in the application resources.
 The panel merges the vignette shapes too, so the reading side does not depend on the editing side being loaded.

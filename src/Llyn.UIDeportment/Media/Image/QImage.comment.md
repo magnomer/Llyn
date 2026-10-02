@@ -1,4 +1,5 @@
 # QImage.cs
+Hash: `9de6b54bb350ecb0`
 
 ## `internal sealed class QImage`
 

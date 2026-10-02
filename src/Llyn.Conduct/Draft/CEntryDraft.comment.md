@@ -1,4 +1,5 @@
 # CEntryDraft.cs
+Hash: `6517490298000267`
 
 ## `public sealed record CEntryDraft(`
 

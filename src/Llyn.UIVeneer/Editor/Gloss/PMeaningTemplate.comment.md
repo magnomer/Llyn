@@ -1,4 +1,5 @@
 # PMeaningTemplate.xaml
+Hash: `405f866900b6b242`
 
 The editable meaning card, as markup alone.
 The editor's markup merges it, and the editor's fill subscribes the card's events.

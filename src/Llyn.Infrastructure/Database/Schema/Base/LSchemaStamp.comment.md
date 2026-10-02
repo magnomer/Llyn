@@ -1,4 +1,5 @@
 # LSchemaStamp.cs
+Hash: `53e8d23fe6a0faee`
 
 ## `public static class LSchemaStamp`
 
@@ -10,7 +11,8 @@ Marking it again would store the same fact twice.
 
 ## `private static readonly string[] LSchemaStampTable`
 
-The tables whose rows stand alone: Entry and the shared pool every card points at.
+The tables whose rows stand alone.
+They are Entry and the shared pool every card points at.
 
 ## `public static void LSchemaStampCreate(SqliteConnection connection)`
 

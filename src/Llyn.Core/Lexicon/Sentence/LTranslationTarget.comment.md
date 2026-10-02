@@ -1,4 +1,5 @@
 # LTranslationTarget.cs
+Hash: `4f49dca1ad725101`
 
 ## `public sealed record LTranslationTarget(`
 

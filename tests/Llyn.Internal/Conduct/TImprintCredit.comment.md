@@ -1,4 +1,5 @@
 # TImprintCredit.cs
+Hash: `b3564f47fa47bcb7`
 
 ## `public sealed class TImprintCredit`
 

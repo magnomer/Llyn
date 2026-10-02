@@ -1,4 +1,5 @@
 # LDisplaySound.cs
+Hash: `ed1164adf6378a21`
 
 ## `public sealed class LDisplaySound`
 

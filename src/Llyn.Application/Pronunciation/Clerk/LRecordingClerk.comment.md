@@ -1,4 +1,5 @@
 # LRecordingClerk.cs
+Hash: `d807d00e09ed2354`
 
 ## `public sealed class LRecordingClerk`
 

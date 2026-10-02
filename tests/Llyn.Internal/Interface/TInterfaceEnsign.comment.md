@@ -1,4 +1,5 @@
 # TInterfaceEnsign.cs
+Hash: `e7d5890625efa881`
 
 ## `internal static class TInterfaceEnsign`
 

@@ -1,4 +1,5 @@
 # CLecternAnchor.cs
+Hash: `654f4dc6482c4df1`
 
 ## `public sealed record CLecternAnchor(`
 

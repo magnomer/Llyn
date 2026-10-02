@@ -1,4 +1,5 @@
 # LMarkupReader.cs
+Hash: `407c799a3e32b27f`
 
 ## `internal static class LMarkupReader`
 
@@ -69,5 +70,5 @@ Reads one `transcription` element as a scheme and its text.
 
 ## `private static LReflexDraft LMarkupReflexParse(LMarkupNode element, List<LMarkupOmission> omissions)`
 
-Reads one `reflex` element as a language, kind, text, romanization, meaning, note and region.
+Reads one `reflex` element as a language, kind, text, respelling, romanization, meaning, note and region.
 An empty `owned` element marks a user-entered meaning and an empty `main` element marks the common reading.

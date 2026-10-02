@@ -1,4 +1,5 @@
 # TQuill.cs
+Hash: `38fd9298c21bdfef`
 
 ## `public sealed class TQuill`
 
@@ -68,4 +69,5 @@ Stores an English Example with the given text and starts a tenure on it with no 
 
 ## `private static LEntry TQuillEntrySave(LEngine engine)`
 
-Stores an English Entry with one sense, for a Mention to link to.
+Stores an English Entry with one sense.
+No fact calls it.

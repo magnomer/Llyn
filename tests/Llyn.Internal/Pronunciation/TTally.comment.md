@@ -1,4 +1,5 @@
 # TTally.cs
+Hash: `2b55be3132e412cb`
 
 ## `public sealed class TTally`
 
@@ -10,3 +11,4 @@ A character with two Mandarin readings counts once under each onset they take, a
 Languages follow the Classical Chinese pack's reflex order and marks sort by count.
 A character nobody anchored is not listed, and a division of such characters is not listed either.
 A rime's page counts vowel and coda joined, and Japanese Go-on and Kan-on stand on separate lines.
+A rime page sections its tallies by the articulatory place of the initial, so each section counts its own characters.

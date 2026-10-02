@@ -1,4 +1,5 @@
 # LArticulation.cs
+Hash: `37b8467d3b4304c6`
 
 ## `public sealed record LArticulation(`
 
@@ -30,6 +31,12 @@ The manner-of-articulation row names of the consonant chart, in chart order.
 
 An empty cell is a position judged impossible or one the IPA gives no symbol for.
 It is kept as a cell so that the rows and columns stay aligned with their headers.
+
+## `public static LArticulation LArticulationVowelRead()`
+
+The vowel chart.
+Rows are height and columns are backness.
+A paired cell holds the unrounded vowel and then the rounded one.
 
 ## `private static LArticulation LArticulationRead(string[] headers, string[] sides, string[,] cells)`
 

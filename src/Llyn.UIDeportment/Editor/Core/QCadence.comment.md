@@ -1,4 +1,5 @@
 # QCadence.cs
+Hash: `0f99f62297098ca3`
 
 ## `internal sealed class QCadence`
 
@@ -20,7 +21,7 @@ The panel shows its refresh button from that flag, and `QCadenceFanqieRefine` do
 
 ## `private void QCadenceFanqieRefine()`
 
-The editor moves the reflex anchor and the reading line on the same change event.
+It paints the rime-book font, the rows, the pending flag and the renewable flag from one ready block.
 
 ## `private void QCadenceDiweiObserve(bool initial, string key)`
 

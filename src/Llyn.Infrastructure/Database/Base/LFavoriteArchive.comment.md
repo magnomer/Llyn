@@ -1,6 +1,7 @@
 # LFavoriteArchive.cs
+Hash: `95bc9c08d21cd802`
 
-## `public sealed class LFavoriteArchive`
+## `public sealed class LFavoriteArchive : LFavoriteVault`
 
 Reads and writes the favorite marks of the workspace.
 A mark is one row keyed by the entry it stands on, so an entry is marked at most once.

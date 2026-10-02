@@ -1,4 +1,5 @@
 # TInterfaceClerk.cs
+Hash: `3a43bf0312eaf7bf`
 
 ## `internal static partial class TInterface`
 
@@ -23,7 +24,7 @@ Relays the card clerk's judgement of a dragged place, so its unchanged and stray
 
 ## `internal static LRig TRigClerkCreate(LEntryVault entries)`
 
-A fake rig over `entries` with in-memory workspace, revision, tombstone, pronunciation, transcription and reflex stores.
+A fake rig over `entries` with in-memory workspace, revision, tombstone, pronunciation, transcription, reflex and etymology stores.
 That is enough for an entry clerk save to run without SQLite.
 
 ## `internal static LRig TRigClaimCreate()`
@@ -76,13 +77,13 @@ The page the situation clerk composes for one Situation.
 
 ## `internal static LDraftClerk TDraftClerkCreate(LRig rig)`
 
-The draft clerk over `rig`, with its issuer and its pack cache built over the same rig.
+The draft clerk over `rig`, with its issuer and its language cache built over the same rig.
 
 ## `internal static LRequest TRequestStrayCreate(long draftId)`
 
 A request of a kind no switch knows, so a test can prove the default arm throws.
 
-## `private sealed record TRequestStray(long LRequestDraftId) : LRequest(LRequestDraftId);`
+## `private sealed record TRequestStray(long LRequestDraftId) : LRequest(LRequestDraftId)`
 
 The one request kind the production code never declares.
 

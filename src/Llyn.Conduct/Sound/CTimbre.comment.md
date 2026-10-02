@@ -1,4 +1,5 @@
 # CTimbre.cs
+Hash: `31c935ee5ff49eeb`
 
 ## `public sealed class CTimbre`
 
@@ -28,7 +29,8 @@ The user typed `text` on the accent row `accent`.
 The engine defers it and picks the respelled or phonetic form by the pack.
 The answer names the text the row now holds, which the driver writes in place of its own copy.
 A taken edit answers the typed text, since the deferred draft has not caught up yet.
-A desk that holds no tenure takes no edit, and answers the text its sheet holds for the row.
+A desk that holds no tenure or fills its view takes no edit.
+It then answers the text its sheet holds for the row.
 
 ## `private string LTimbreAccentFind(long accent)`
 

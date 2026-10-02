@@ -1,4 +1,5 @@
 # QPlayback.cs
+Hash: `3b5c70bc15629ecc`
 
 ## `internal sealed class QPlayback`
 
@@ -35,7 +36,8 @@ The button and the tray are then painted again from a fresh read, which lets the
 ## `private void QPlaybackAudioRefine(CTimbrePlayback playback)`
 
 Paints the play button and the volume tray from the editor's ready playback.
-The button's tag is its paint memory: the recording it offers, handed back when it is pressed.
+The button's tag is its paint memory.
+It holds the recording the button offers, handed back when it is pressed.
 A recording other than the painted one stops the player and repaints the button.
 An unchanged recording is left alone, so an edit elsewhere in the form never cuts a playing sound short.
 The comparison is against what the button painted, never against the draft, so it decides no data.

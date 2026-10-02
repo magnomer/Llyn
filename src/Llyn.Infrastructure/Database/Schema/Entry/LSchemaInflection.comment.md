@@ -1,4 +1,5 @@
 # LSchemaInflection.cs
+Hash: `8b2328fb63cfcfa0`
 
 ## `public static class LSchemaInflection`
 

@@ -1,4 +1,5 @@
 # CLectern.cs
+Hash: `c195052498d45f03`
 
 ## `public sealed record CLectern(`
 

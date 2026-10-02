@@ -1,4 +1,5 @@
 # PContour.cs
+Hash: `d66cf91e6edcbf88`
 
 ## `public sealed class PContour : FrameworkElement`
 
@@ -15,6 +16,12 @@ The cells are sized so a contour is read at a glance, never as a glyph.
 
 The syllables the box draws, copied by the view that hosts the box from Conduct's ready contour.
 Conduct answers none while the language is not tonal or the reading carries no tone.
+
+## `public PContour()`
+
+The box starts collapsed, so it takes no room before any syllable arrives.
+It never takes the pointer, so a press lands on what lies beneath it.
+Every brush and the font are theme references, so a theme change repaints the box.
 
 ## `public IReadOnlyList<QContourItem> PContourSyllables`
 
@@ -65,6 +72,11 @@ The phonetic family the syllable text is set in, read from the theme.
 
 The box asks for its full width, one cell per syllable, and never shrinks to fit.
 A shrunken contour would read as a glyph, which is what the box exists to avoid.
+
+## `protected override void OnRender(DrawingContext drawingContext)`
+
+Draws nothing until both the syllables and the scale are present.
+The frame goes first and the guides next, so every pitch line sits on top of them.
 
 ## `private double PContourPlotHeight`
 

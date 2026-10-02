@@ -1,4 +1,5 @@
 # LWorkspaceVault.cs
+Hash: `2ac91c2f4f03f313`
 
 ## `public interface LWorkspaceVault`
 

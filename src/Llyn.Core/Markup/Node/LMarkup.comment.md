@@ -1,4 +1,5 @@
 # LMarkup.cs
+Hash: `7f641e53934f3732`
 
 ## `public static class LMarkup`
 

@@ -1,4 +1,5 @@
 # LStateColumn.cs
+Hash: `346a55dfd3d09118`
 
 ## `public static class LStateColumn`
 
@@ -32,6 +33,12 @@ Carries a whole value into `command`.
 Refuses an unreadable value, since a diagnosis is never a value to store.
 The state goes into `$<field>State` and the text into `$<field>`.
 The text is `NULL` for every value that states none.
+
+## `public static void LStateColumnApply(SqliteCommand command, string field, LStateAnchor anchor)`
+
+Carries an anchor into `command`, its Reference id standing where a value keeps its text.
+Refuses an unreadable anchor for the same reason a value is refused.
+The id is `NULL` for every anchor that points nowhere, as the schema's `CHECK` demands.
 
 ## `public static void LStateColumnApply(SqliteCommand command, string field, LStateMark mark)`
 

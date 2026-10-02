@@ -1,4 +1,5 @@
 # QVideo.cs
+Hash: `3b47796569c6d4c5`
 
 ## `internal sealed class QVideo`
 

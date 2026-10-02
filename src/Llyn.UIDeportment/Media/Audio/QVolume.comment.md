@@ -1,4 +1,5 @@
 # QVolume.cs
+Hash: `68712cce92dbc4ed`
 
 ## `internal sealed class QVolume`
 

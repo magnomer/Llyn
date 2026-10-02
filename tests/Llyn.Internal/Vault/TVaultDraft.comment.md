@@ -1,4 +1,5 @@
 # TVaultDraft.cs
+Hash: `5188669d10075914`
 
 ## `public sealed class TVaultDraft`
 

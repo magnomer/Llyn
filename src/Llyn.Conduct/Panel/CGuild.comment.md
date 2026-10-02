@@ -1,4 +1,5 @@
 # CGuild.cs
+Hash: `2d7ea12cda1ecc59`
 
 ## `public sealed class CGuild`
 
@@ -48,10 +49,19 @@ Whether the vita has an Author to show: one stored and not being written.
 The mode toggle is live on the author side while a stored Author is chosen or a draft is open.
 The orphan row is chosen with nothing to read or write, so it leaves the toggle dead.
 
+## `public bool CGuildBinEnabled`
+
+The delete button is live on the author side only while a stored Author is chosen.
+The orphan row and a fresh draft hold no stored Author, so both leave it dead.
+
 ## `public bool CGuildStoreEnabled`
 
 The store button is live while the autograph holds a changed draft the engine would store.
 The tenure's `LTenureReadyCheck` answers whether it would.
+
+## `public bool CGuildPressAllowed`
+
+Print is live only on the source side, since an Author has no page to print.
 
 ## `public bool CGuildUnionShown`
 
@@ -171,7 +181,8 @@ The reader is asked for the printer through the panel's envoy, and a decline pri
 
 ## `public void CGuildNameSet(string name)`
 
-A keystroke in the name field: the raw name goes to the autograph's quill, which defers it.
+A keystroke in the name field.
+The raw name goes to the autograph's quill, which defers it.
 Nothing is written while no tenure is held or while the desk fills its own fields.
 
 ## `public IReadOnlyList<CCatalogAuthor> CGuildUnionRead(string typed)`

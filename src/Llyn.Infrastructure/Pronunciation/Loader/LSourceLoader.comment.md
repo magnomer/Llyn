@@ -1,8 +1,10 @@
 # LSourceLoader.cs
+Hash: `79ce8c8c05a6e8fc`
 
 ## `internal static class LSourceLoader`
 
-The source side of the pack loader: how one declared source is read out of the JSON.
+The source side of the pack loader.
+It reads one declared source out of the JSON.
 A source is a name and a list of attempts.
 Each attempt is a set of URLs and the readings to extract from the page.
 The same shape serves the `pronunciation`, `audio`, `frequency` and per-scheme `sources` lists.

@@ -1,4 +1,5 @@
 # CGuildRoll.cs
+Hash: `e9e0b1b258b3eab4`
 
 ## `public sealed record CGuildRoll(`
 

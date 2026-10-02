@@ -1,4 +1,5 @@
 # QRegard.cs
+Hash: `527f877405e74e29`
 
 ## `internal sealed class QRegard`
 

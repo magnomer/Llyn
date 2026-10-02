@@ -1,4 +1,5 @@
 # LSchemaStem.cs
+Hash: `d2f6c201670400ac`
 
 ## `public static class LSchemaStem`
 

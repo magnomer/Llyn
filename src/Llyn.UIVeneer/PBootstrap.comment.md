@@ -1,4 +1,5 @@
 # PBootstrap.xaml
+Hash: `4a398625bee8ddca`
 
 The application the host creates and runs, with the resources every window shares.
 The deportment reaches it through `Application.Current` and never names it.

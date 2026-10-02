@@ -1,4 +1,5 @@
 # LTombstoneVault.cs
+Hash: `c3f460d349ff9054`
 
 ## `public interface LTombstoneVault`
 

@@ -1,4 +1,5 @@
 # TInterfaceDraft.cs
+Hash: `ee8202f28fbc2717`
 
 ## `internal static partial class TInterface`
 

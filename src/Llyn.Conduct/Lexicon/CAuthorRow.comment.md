@@ -1,4 +1,5 @@
 # CAuthorRow.cs
+Hash: `80965ba6672f0a42`
 
 ## `public sealed record CAuthorRow(`
 

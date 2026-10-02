@@ -1,4 +1,5 @@
 # LPronunciationDraft.cs
+Hash: `183f22249d504061`
 
 ## `public sealed record LPronunciationDraft(`
 
@@ -17,13 +18,21 @@ The variety label is kept even when the reading is blank, so a row being filled 
 - `LPronunciationDraftSource` — Label of the source the recording came from, when there is one.
 - `LPronunciationDraftId` — Id of the stored pronunciation row, empty when none stands yet.
 - `LPronunciationDraftVariety` — Label telling this pronunciation from the entry's others, empty when unneeded.
+- `LPronunciationDraftSeeded` — True when the engine made the row itself to hold a first edit on an entry with none.
+  A seeded row still empty at save is dropped, while a row the user added is kept.
 - `LPronunciationDraftRespelling` — The reading recast through the pack's respelling groups, empty when the pack has none.
   It is stored beside the original so the respelling switch only picks which of the two is shown.
   The engine derives it whenever the reading or its variety changes, and the user may overwrite it by hand.
 
+## `public bool LPronunciationDraftNotated`
+
+Whether the draft carries an IPA reading.
+A respelling or a recording alone does not count, unlike `LPronunciationDraftEmpty`.
+
 ## `public string LPronunciationDraftRead(bool respelled)`
 
-The reading as the field shows it: the respelling when the switch is on and one exists, else the original.
+The reading as the field shows it.
+It is the respelling when the switch is on and one exists, else the original.
 
 ## `public bool LPronunciationDraftEmpty`
 

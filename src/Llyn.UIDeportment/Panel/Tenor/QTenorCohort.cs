@@ -71,7 +71,7 @@ internal sealed partial class QTenor
 
         if (QLook.QLookPartFind<Run>(container, "PCohortEpithet") is Run epithet)
         {
-            epithet.Text = " " + cohort.QCohortItemEpithet;
+            epithet.Text = QLook.QLookEpithetRead(cohort.QCohortItemEpithet);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PCohortLanguage") is TextBlock language)

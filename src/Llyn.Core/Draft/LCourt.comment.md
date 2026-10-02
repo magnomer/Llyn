@@ -1,4 +1,5 @@
 # LCourt.cs
+Hash: `9660b9f2ce0f287e`
 
 ## `public sealed record LCourt(`
 

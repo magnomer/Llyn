@@ -1,4 +1,5 @@
 # LRequestSentence.cs
+Hash: `4b45d9994fc5773f`
 
 The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The sentence requests, one per structural change and one per field of a sentence row.

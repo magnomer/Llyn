@@ -1,12 +1,12 @@
 # PSentence.cs
+Hash: `685f7673bf2c4933`
 
-## `internal sealed partial class PSentence`
+## `internal sealed partial class PSentence : INotifyPropertyChanged`
 
 One Example row on a card.
-The row carries the id of the Example it edits, and the id of the row itself.
-So a sentence the user rewrites stays the same Example.
-Both ids are the engine's, read from the draft, and the row never mints one.
-A row that has never been written shows an empty Example id until the engine names one.
+The row carries the id of the row itself.
+So a sentence the user rewrites stays the same row.
+The id is the engine's, read from the draft, and the row never mints one.
 
 A row standing empty is not one thing.
 The sentence may never have been written.
@@ -31,7 +31,7 @@ The field is a plain box until something is written in it.
 
 The row for one of the engine's rows, blank or filled.
 It holds the sentence, the Source it cites, the frame, and the Gloss rows as the draft holds them.
-All of it stands under the ids that name it.
+All of it stands under the id that names the row.
 The language catalog is handed in for the Gloss pickers, shared with every other row.
 
 ## `internal long PSentenceRow`
@@ -58,6 +58,12 @@ Nothing ships one, so the list is empty until a user writes and saves one.
 The roles already saved for the language, shared by every row.
 Nothing ships one, so the list is empty until a user writes and saves one.
 
+## `public int PSentenceParticleColumn`
+
+The grid column of the marker field, twice the slot the language pack states.
+The gap between the two fields stands in column 1, so the fields take columns 0 and 2.
+`PSentenceDependenceColumn` does the same for the role.
+
 ## `internal void PSentenceOrderApply(CSentenceOrder order)`
 
 Puts the marker and the role in the places the language pack states.
@@ -76,8 +82,7 @@ The field shows its byline through a lookup made when the field is drawn, so the
 ## `internal void PSentenceShow(CSentenceDraft draft)`
 
 Redraws the row from the engine's row, field by field, only where the value changed.
-The Mentions are always taken, since the row only shows them and never types into them.
-The ids are always taken, because the engine is the only minter.
+The row id is always taken, because the engine is the only minter.
 A field already reading what the engine holds is left alone, so the caret survives its own echo.
 
 ## `internal void PSentenceCitationShow()`
@@ -101,7 +106,8 @@ The three icons are set here, since an icon is drawn by code.
 
 ## `private static void PSentenceChoiceApply(`
 
-Fills one frame field: the dropdown's offers, text and hint, the ghost copy and the hint shown when empty.
+Fills one frame field.
+It sets the dropdown's offers, text and hint, the ghost copy and the hint shown when empty.
 
 ## `private static void PSentenceLayoutApply(FrameworkElement container, TextBox text)`
 
@@ -114,7 +120,7 @@ A row already bound is left alone, so a refill binds nothing twice.
 
 Whether the row shows its frame at all.
 A row that carries a marker or a role always shows one, because the reading view draws it.
-A row carrying neither shows none, for the same reason, and the card is asked for one instead.
+A row carrying neither shows one only when the card has been asked for it.
 
 ## `public bool PSentenceFrameWritten`
 

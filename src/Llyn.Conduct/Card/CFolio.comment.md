@@ -1,4 +1,5 @@
 # CFolio.cs
+Hash: `2b92c8562ab71068`
 
 ## `internal static class CFolio`
 
@@ -12,7 +13,6 @@ The one map from link targets to their shape, shared with the editor and the lec
 ## `internal static CEntryDraft CFolioEntryRead(`
 
 Shapes the held entry for the editor view.
-The first pronunciation is the primary one, and the rest are its accents.
 The link targets come keyed by card from the tenure, so each card carries its links ready.
 The image addresses come through `media`, so each picture row carries its address ready.
 

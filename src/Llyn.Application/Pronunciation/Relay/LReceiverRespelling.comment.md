@@ -1,4 +1,5 @@
 # LReceiverRespelling.cs
+Hash: `41bef12d66b6083c`
 
 ## `public sealed class LReceiverRespelling : LReceiver`
 

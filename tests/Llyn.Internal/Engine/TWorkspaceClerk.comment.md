@@ -1,4 +1,5 @@
 # TWorkspaceClerk.cs
+Hash: `752d3517bdaeda00`
 
 ## `public sealed class TWorkspaceClerk`
 

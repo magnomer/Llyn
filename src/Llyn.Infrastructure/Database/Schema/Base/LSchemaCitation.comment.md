@@ -1,12 +1,19 @@
 # LSchemaCitation.cs
+Hash: `8f67c1c2b7d5273d`
 
 ## `public static class LSchemaCitation`
 
-The one Reference every workspace starts with: the Source titled Unknown.
+The one Reference every workspace starts with.
+It is the Source titled Unknown.
 An Example whose source is not known cites this row like any other Source.
 So the example table needs no unknown wording of its own, and the citation exchanges like any Reference.
 The row is ordinary data.
 The user may delete it, and typing its title in a citation field makes it again.
+
+## `public const string LSchemaCitationTitle = "Unknown";`
+
+Migration finds an existing Unknown Source by this exact title.
+So changing it would make migration add a second row beside a workspace's first.
 
 ## `public static long LSchemaCitationCreate(SqliteConnection connection, string schema)`
 

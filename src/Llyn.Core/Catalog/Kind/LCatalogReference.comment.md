@@ -1,4 +1,5 @@
 # LCatalogReference.cs
+Hash: `3ccbba9305c376ca`
 
 ## `public sealed record LCatalogReference(`
 
@@ -35,7 +36,7 @@ That is not the same as being credited.
 
 ## `public bool LCatalogReferenceMatch(string query)`
 
-Whether one Source answers the query, over its four texts, its year and its credited names.
+Whether one Source answers the query, over its title, year, note and address, and its credited names.
 The query is broken into terms at blanks, commas and parentheses, and every term must hit some field.
 So a citation typed as it is shown, `Darwin (1859)`, finds the work of that author in that year.
 Only a field standing specified carries text, so an unknown field matches nothing.

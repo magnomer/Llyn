@@ -1,4 +1,5 @@
 # QAccentCommand.cs
+Hash: `a63197563f21dece`
 
 ## `public static class QAccentCommand`
 

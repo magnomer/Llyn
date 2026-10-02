@@ -1,4 +1,5 @@
 # CFanqieRow.cs
+Hash: `fb5891e650e64f48`
 
 ## `public sealed record CFanqieRow(`
 

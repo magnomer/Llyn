@@ -1,4 +1,5 @@
 # LAccentRow.cs
+Hash: `f807d8eedeac364a`
 
 ## `public sealed record LAccentRow(`
 

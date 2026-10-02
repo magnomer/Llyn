@@ -1,4 +1,5 @@
 # LWorkspaceFacade.cs
+Hash: `d49c7a558c5f681e`
 
 ## `internal sealed class LWorkspaceFacade`
 
@@ -10,12 +11,12 @@ Stores the engine and its gate.
 
 ## `public LWorkspaceState LEngineWorkspaceStart()`
 
-The order of opening a workspace: the draft sweep, the recording sweep, then the state row.
+The order of opening a workspace is the draft sweep, the recording sweep, then the state row.
 Each sweep takes its own facade's lock, so this member holds none.
 
 ## `public LWorkspaceState LEngineWorkspaceChange(string chosen)`
 
-The order of a workspace switch: the move onto `chosen`, then the same open a start runs.
+The order of a workspace switch is the move onto `chosen`, then the same open a start runs.
 So the new workspace is swept before any view restores on it.
 
 ## `public LWorkspaceState LEngineStateRead()`

@@ -1,4 +1,5 @@
 # TAuditObjectMember.cs
+Hash: `a16c1d47d7995c6c`
 
 ## `internal sealed class TAuditObjectMember(int index, ISymbol symbol, TAuditObjectPart part, bool state, bool mutable)`
 

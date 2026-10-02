@@ -1,4 +1,5 @@
 # TInterfaceBoundary.cs
+Hash: `fc470a043b5e06c6`
 
 ## `public sealed class TInterfaceBoundary`
 

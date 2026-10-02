@@ -1,4 +1,5 @@
 # TEntryClerk.cs
+Hash: `0df26bf92ed21602`
 
 ## `public sealed class TEntryClerk`
 

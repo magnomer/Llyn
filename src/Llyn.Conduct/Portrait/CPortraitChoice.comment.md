@@ -1,4 +1,5 @@
 # CPortraitChoice.cs
+Hash: `57fa08f2f47e2c37`
 
 ## `public sealed record CPortraitChoice(`
 

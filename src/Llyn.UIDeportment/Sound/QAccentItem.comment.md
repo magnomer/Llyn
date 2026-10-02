@@ -1,4 +1,5 @@
 # QAccentItem.cs
+Hash: `9174d3507fb27841`
 
 ## `public sealed class QAccentItem : INotifyPropertyChanged`
 
@@ -14,6 +15,11 @@ It stays public, since the reading cell binds its text by name.
 Builds the row from plain values, under the mark the row prints between.
 The flag key is kept, so a later flag lookup needs no language.
 
+## `public string QAccentItemVariety { get; }`
+
+The variety's stored name, never its localized label.
+`QAccent` matches a spoken accent back to its row by it.
+
 ## `public string QAccentItemLabel`
 
 The variety's localized name, blank while a flag stands for it.
@@ -21,7 +27,7 @@ Blank is what collapses the label, so a row never shows both.
 
 ## `internal event Action<QAccentItem, string>? QAccentItemTyped`
 
-The edit channel: the reading field's write, with the text typed.
+The edit channel carries the reading field's write, with the text typed.
 Writing `QAccentItemText` raises it and changes nothing on the row.
 The panel hands it to the gate and writes the answer back through `QAccentTypeRefine`.
 A reading-view row has no listener, so nothing happens there.
@@ -62,7 +68,7 @@ Whether the row holds audio, so its play button shows.
 
 ## `internal static void QAccentItemRefine(FrameworkElement container, object item, string? _)`
 
-Fills a row of `Theme.Accent.Row` or `Theme.Accent.Display`: flag, variety name, brackets, text and play button.
+Fills a row of `Theme.Accent.Row` or `Theme.Accent.Display` with flag, variety name, brackets, text and play button.
 The editor row's text shows the placeholder in the muted colour while the row is blank.
 It also gives the editor row's reading cell its `QFieldCell` order and tags its slot with `Theme.Accent.Slot`.
 Those order strings live here, so the Veneer markup carries none.
@@ -76,7 +82,6 @@ The text is already the form `respelling` picks, so no driver resolves it.
 ## `internal static string QAccentLabelRefine(CVariety variety)`
 
 A variety's label is the text under the key Conduct chose, and its raw name when no text exists.
-An unnamed variety has no text under its key, so its label is empty.
 The primary reading, the recorder and the transcription menu label a variety this way too.
 
 ## `internal static ImageSource? QAccentEnsignRefine(CVariety variety, bool flagged)`

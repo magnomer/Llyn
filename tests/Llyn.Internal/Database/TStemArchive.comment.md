@@ -1,4 +1,5 @@
 # TStemArchive.cs
+Hash: `cfcd6b206bb16f70`
 
 ## `public sealed class TStemArchive`
 

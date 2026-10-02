@@ -1,4 +1,5 @@
 # LEnvelope.cs
+Hash: `90ac78a15d520460`
 
 ## `internal static class LEnvelope`
 

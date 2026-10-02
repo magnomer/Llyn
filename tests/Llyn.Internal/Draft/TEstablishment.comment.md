@@ -1,4 +1,5 @@
 # TEstablishment.cs
+Hash: `61c4c31a75757036`
 
 ## `public sealed class TEstablishment`
 

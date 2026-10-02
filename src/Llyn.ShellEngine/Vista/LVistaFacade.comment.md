@@ -1,4 +1,5 @@
 # LVistaFacade.cs
+Hash: `ccfdfb0a9bb3a18f`
 
 ## `internal sealed class LVistaFacade`
 
@@ -33,13 +34,13 @@ Starts a vista for `tab` on the order, filter and mode the caller hands it.
 The shell's posture resolves those from what it stored, so the engine holds no view state of its own.
 `subject` names the stored kind the tab lists, so the engine holds no table of panel names.
 `blank` makes an empty query list nothing, which only the duplex wings ask for.
+The vista is attached as an observer before it is returned, so it carries bulletins to the panel.
+The vista started earlier for the same tab is detached first, so a switched workspace leaves no ghost.
 
 ## `public LVista? LEngineVistaRead(long id)`
 
 The vista a bulletin names, or nothing once a restart replaced it.
 The posture asks after each vista bulletin, so it stores the order and filter the vista now holds.
-The vista is attached as an observer before it is returned, so it carries bulletins to the panel.
-The vista started earlier for the same tab is detached first, so a switched workspace leaves no ghost.
 
 ## `public IReadOnlyList<LVistaRow> LEngineEntryFind(LVista vista)`
 
@@ -47,6 +48,13 @@ The entry rows the vista lists, ready to show.
 The query, order and filter are the vista's, applied by the three-argument find.
 A blank vista with nothing typed answers no rows before the lock is taken.
 The rows are built by the shared builder under one lock.
+
+## `public IReadOnlyList<LVistaRow> LEngineEntryFind(LVista? parent, LVista? child)`
+
+The entries the record chosen in a catalog vista reaches, listed in the child vista beside it.
+The parent's language filter applies, since a catalog's filter hides languages from its chosen record's entries.
+The child's query narrows the rows, and the child's chosen row is marked.
+A missing vista, or a parent subject that reaches no entries, answers no rows.
 
 ## `internal IReadOnlyList<LVistaRow> LEngineVistaBuild(IReadOnlyList<LEntry> entries, long? chosen)`
 

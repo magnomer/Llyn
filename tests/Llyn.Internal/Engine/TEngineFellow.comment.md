@@ -1,4 +1,5 @@
 # TEngineFellow.cs
+Hash: `22ee2d8867f6d2cf`
 
 ## `public sealed class TEngineFellow`
 
@@ -16,7 +17,6 @@ The worded shared count follows the count the clerk raised on a copy, so it read
 ## `public void FellowFind_SortsBySharedThenName()`
 
 The higher shared count leads, and equal counts sort by name.
-An Author credited on no shared Source is not listed at all.
 
 ## `public void UnionRead_NoDraftAndMissingKept_ReadsBothEmpty()`
 

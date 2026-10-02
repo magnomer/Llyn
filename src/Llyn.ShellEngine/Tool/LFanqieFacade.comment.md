@@ -1,4 +1,5 @@
 # LFanqieFacade.cs
+Hash: `3e7245329d0f39d9`
 
 ## `internal sealed class LFanqieFacade`
 

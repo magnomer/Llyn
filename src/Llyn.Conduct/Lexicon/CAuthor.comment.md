@@ -1,6 +1,7 @@
 # CAuthor.cs
+Hash: `5f9d35007ec20787`
 
-## `public sealed record CAuthor(long CAuthorId, string CAuthorLead, string CAuthorMark, string CAuthorTail)`
+## `public sealed record CAuthor(long CAuthorId, string CAuthorLead, string CAuthorMark, string CAuthorTail);`
 
 One author the byline dropdown offers for a typed credit, its name already split around the typed word.
 

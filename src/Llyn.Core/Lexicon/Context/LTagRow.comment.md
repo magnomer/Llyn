@@ -1,4 +1,5 @@
 # LTagRow.cs
+Hash: `9102f844e4387a6d`
 
 ## `public sealed record LTagRow(`
 

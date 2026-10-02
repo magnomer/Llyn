@@ -1,4 +1,5 @@
 # CCardSpeech.cs
+Hash: `8928e1c415977bae`
 
 ## `public sealed class CCardSpeech`
 

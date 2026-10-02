@@ -1,4 +1,5 @@
 # CCorpus.cs
+Hash: `8e73c53d58ec3cde`
 
 ## `public sealed class CCorpus`
 
@@ -27,29 +28,29 @@ Builds the corpus over the atelier, with the panel's own entry editor.
 Building it is no user action, so it is no gate on the atelier.
 `shownSeam` answers whether the tab is in front, which only the surface knows until `CNavigation` owns it.
 
-## `public event Action? CCorpusChanged`
+## `public event Action? CCorpusChanged;`
 
 Raised when the desk or the entry editor changes state, so a driver repaints the mode.
 
-## `public event Action<CExample>? CCorpusTranscriptChanged`
+## `public event Action<CExample>? CCorpusTranscriptChanged;`
 
 Raised with the Example the desk holds after a start.
 After a cancel, a refused start or a failed read it carries the blank Example, never null.
 
-## `public event Action<CExample>? CCorpusDraftChanged`
+## `public event Action<CExample>? CCorpusDraftChanged;`
 
 Raised with the held Example after an edit to its draft, through the marshal the corpus was built with.
 `CCorpusTranscriptChanged` fills the transcript anew, while this one only refreshes what the edit changed.
 
-## `public event Action<CExample>? CCorpusExampleChanged`
+## `public event Action<CExample>? CCorpusExampleChanged;`
 
 Raised with the Example a loaded anthology draft carries, so the excerpt shows it.
 
-## `public event Action? CCorpusQueryCleared`
+## `public event Action? CCorpusQueryCleared;`
 
 Raised once an arrival drops the query and the language filter, so a driver empties both controls.
 
-## `public event Action? CCorpusWorkspaceChanged`
+## `public event Action? CCorpusWorkspaceChanged;`
 
 Raised after a workspace notice closed the shown Example, so a driver reloads what belongs to the folder.
 
@@ -264,7 +265,6 @@ A failed read is reported by the anthology and answers no rows, and then nothing
 When the excerpt shows a chosen Example the rows no longer list, both lists clear before the rows return.
 The clear announces fresh rows, which carry the same Examples, so a driver's nested refill is harmless.
 
-
 ## `public Task<CEnsignSheet<IReadOnlyList<CCatalogExample>>> CCorpusRowsLoad(`
 
 Runs the flag fill into the driver's `store`, then answers `CCorpusRowsRead` beside the loaded languages.
@@ -297,5 +297,5 @@ It paints nothing, since the drivers paint the first rows once their flags are l
 
 ## `private void LCorpusWorkspaceResonate()`
 
-Answers the workspace notice: it clears both lists, which cancels the transcript desk.
+Answers the workspace notice by clearing both lists, which cancels the transcript desk.
 It then raises `CCorpusWorkspaceChanged`.

@@ -1,4 +1,5 @@
 # LMentionClerk.cs
+Hash: `6c3f6dd7bed66a7b`
 
 ## `public sealed class LMentionClerk`
 

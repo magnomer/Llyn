@@ -1,8 +1,9 @@
 # TDraft.cs
+Hash: `8490b5283bb57a47`
 
 ## `public sealed class TDraft`
 
-Covers what the engine does with a held draft: committing, moving cards, and checking for change.
+Covers what the engine does with a held draft: committing and checking for change.
 The court beneath the drafts folder is exercised through those calls, never on its own.
 
 ## `public void DraftCommit_HeldDraft_StoresEntryAndDeletesFile()`

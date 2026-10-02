@@ -1,4 +1,5 @@
 # QMeaning.cs
+Hash: `ec7e14491ab73053`
 
 ## `internal sealed class QMeaning`
 

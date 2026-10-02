@@ -1,4 +1,5 @@
 # TStateValue.cs
+Hash: `f7358dccbc2fdd45`
 
 ## `public sealed class TStateValue`
 

@@ -1,4 +1,5 @@
 # TCatalogPronunciation.cs
+Hash: `6ed56f9cde7e8f3a`
 
 ## `public sealed class TCatalogPronunciation`
 

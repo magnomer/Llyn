@@ -1,4 +1,5 @@
 # LPortraitLabel.cs
+Hash: `ff1d69f4325c99ff`
 
 ## `public sealed record LPortraitLabel`
 

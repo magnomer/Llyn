@@ -1,4 +1,5 @@
 # LShengfuArchive.cs
+Hash: `02f2401ab220ff22`
 
 ## `public sealed class LShengfuArchive : LShengfuVault`
 

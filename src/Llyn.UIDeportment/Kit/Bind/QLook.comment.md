@@ -1,4 +1,5 @@
 # QLook.cs
+Hash: `7c2087d5ae5abddb`
 
 ## `internal static class QLook`
 
@@ -9,7 +10,7 @@ The item template fills live in [QLookItem](QLookItem.comment.md).
 
 ## `internal sealed record QLookSetter(`
 
-One dismantled trigger setter: the style it came from, its cues, its template part, property and value.
+One dismantled trigger setter, holding its style, cues, template part, property and value.
 A null part means the control itself.
 A row holds only while every cue it names holds, as a multi-trigger did.
 The value is a typed `QLookValue`, which sets itself and steps back itself.
@@ -25,6 +26,20 @@ A change runs the state handler at once.
 The icon a command, helper or navigation tab button shows in its icon part.
 A button without one reads the `Bare` cue, so its icon part folds away.
 A change runs the state handler at once.
+
+## `private static readonly DependencyProperty QLookReachProperty`
+
+Set on each attached view and inherited by every element inside it, including later rows and popups.
+WPF raises load and unload only on elements that carry a handler of their own.
+Class handlers do not count, so the state handler alone never reaches a bare element.
+An element missed there keeps its unstyled look until the pointer first passes over it.
+The inheritance reaches each element as it joins the view, before its load is raised.
+
+## `private static readonly RoutedEventHandler QLookBroadcast = (_, _) => { };`
+
+The empty load and unload handler a reached element carries.
+It does no work itself.
+It only makes WPF raise both events on the element, so the class handlers run.
 
 ## `private static readonly Dictionary<Style, string> QLookStyle = [];`
 
@@ -49,10 +64,11 @@ Press and focus are read after the input settles, since the control updates its 
 The value-change descriptors hooked on each loaded element, so its unload can remove them.
 A descriptor's watch holds the element strongly, so an unremoved watch would keep it forever.
 
-## `internal static void QLookStyleAttach(ResourceDictionary dictionary)`
+## `internal static void QLookStyleAttach(FrameworkElement surface)`
 
 Registers the look sheet's styles found in one view's own dictionary.
 The attach at startup reads only the application resources, so a view merging local styles hands them in here.
+It also marks the view for the reach, so the state handler sees every element of it load.
 
 ## `internal static QLookPart? QLookPartFind<QLookPart>(FrameworkElement container, string name)`
 
@@ -69,7 +85,7 @@ Every event sets the winning row again, which is harmless, so no row identity is
 A part missing from the template is looked up among the logical children, such as a menu's items.
 Failing that, it is looked up in the item template of the first presenter, such as a button's icon.
 A part and property with no active row is restored by that slot's value kind.
-Enable, text, content, highlight, drag, source and dropdown changes are watched per element.
+Enable, text, content, highlight, drag, items, selection, source and dropdown changes are watched per element.
 A cue or icon change reaches the handler through its own property's change callback.
 No routed event reports them.
 The property watches are added only while the element is loaded, so its unload can take them off.
@@ -84,6 +100,12 @@ A highlighted combo item is `Highlight`, and a dragged thumb is `Drag`.
 Removes an unloaded element's value-change watches, so the descriptors stop holding it.
 A later load adds them again.
 
+## `private static void QLookReachRefine(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
+
+Gives an element joining a reached view the empty load and unload handler, once.
+An element already loaded is refined at once, since its load has passed.
+An element leaving the view keeps the handler, which costs nothing.
+
 ## `private static void QLookStyleScan(ResourceDictionary dictionary, HashSet<string> keys)`
 
 Walks a dictionary and every dictionary it merges, mapping each style found under a row key.
@@ -96,6 +118,12 @@ Visible when shown, else collapsed so the control takes no room.
 ## `internal static QLookChoice QLookFirstRead<QLookChoice>(bool first, QLookChoice chosen, QLookChoice other)`
 
 One of two values by a verdict, so a tab with two edit areas picks the active one without branching.
+
+## `internal static string QLookEpithetRead(string epithet)`
+
+The text of a row's epithet run, led by an en space that parts it from the headword.
+Every entry row reads its epithet here, so all lists keep one gap.
+A plain space looks narrower in source and once drifted between lists unseen.
 
 ## `internal static void QLookPromptApply(TextBlock block, string text, string hint, string? ink)`
 

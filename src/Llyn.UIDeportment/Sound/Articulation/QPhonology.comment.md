@@ -1,8 +1,9 @@
 # QPhonology.cs
+Hash: `3087fb812da33e33`
 
 ## `internal sealed class QPhonology`
 
-Drives the phonology panel: what it is made of, and what it forwards.
+Drives the phonology panel and forwards what the user asks of it.
 Every branch it once carried lives in Conduct's `CPhonology` and the `CPanel` it holds.
 The search, the ordering, the inventory, the read-only display and the editor are all wired here.
 The panel itself is the veneer's `QPhonology` page, which the window places.
@@ -52,7 +53,8 @@ Its one request is `CPhonologyRowsLoad`, which runs the flag fill and then answe
 
 ## `private bool QPhonologyShownCheck()`
 
-The shown seam: whether this tab is the one in front, which only the page knows.
+The shown seam.
+It answers whether this tab is the one in front, which only the page knows.
 
 ## `internal void QPhonologyExitRefine()`
 
@@ -75,7 +77,8 @@ The trail pair shows while reading and the chronicle pair while writing.
 
 ## `private void QPhonologyPressRefine(object sender, CanExecuteRoutedEventArgs e)`
 
-Whether the print button is live: exactly when an entry is read in the display.
+Whether the print button is live.
+It is live exactly when an entry is read in the display.
 The deportment answers, so no control state is read.
 The binding can be asked before the deportment is built, and then answers false.
 

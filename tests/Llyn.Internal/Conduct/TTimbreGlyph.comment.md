@@ -1,4 +1,5 @@
 # TTimbreGlyph.cs
+Hash: `e35119dfe12666e8`
 
 ## `public sealed class TTimbreGlyph`
 

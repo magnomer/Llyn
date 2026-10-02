@@ -1,4 +1,5 @@
 # QRepertoireDialog.cs
+Hash: `ce09b29c4e4998d7`
 
 ## `internal sealed partial class QRepertoire`
 
@@ -12,7 +13,6 @@ The panel keeps no count and no map of which row is still waiting.
 ## `private void QScenarioImageRefine(IReadOnlyList<CImageDraft> rows)`
 
 Redraws the picture rows from the held Situation, adding, dropping, and moving rows to match.
-What was waiting is written before the read, so a redraw never lands over a newer keystroke.
 
 ## `private void QScenarioVideoRefine(IReadOnlyList<CVideoDraft> rows)`
 

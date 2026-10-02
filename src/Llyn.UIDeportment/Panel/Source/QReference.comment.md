@@ -1,8 +1,10 @@
 # QReference.cs
+Hash: `c71a9d9f1a116161`
 
 ## `internal sealed class QReference`
 
-The driver of the Source panel: what it is made of, and what it forwards.
+The driver of the Source panel.
+It names what the panel is made of and what it forwards.
 A Source is independent data owned by nothing, so this panel is not a view of one citation of it.
 The visible label is Source and the internal base is Reference, because Source already names a pronunciation source.
 Every branch it once carried lives in the Conduct shelf `CShelf` and the two `CPanel` it holds.
@@ -28,7 +30,7 @@ It hands the shelf only the shown seam, and subscribes to the notices of both li
 The Source rows notice also repaints the imprint's tally, since a stored entry may have moved its count.
 The grade menu is built here once, from the orders `CShelf.CShelfOrderRead` offers.
 The lectern follows the entry list's panel, as the other panel drivers build it.
-The editor's chronicle notice and the imprint desk's state notice refresh the rail's undo and redo.
+The shelf's change notice and both panels' notices repaint the rail, undo and redo included.
 The print and portrait command bindings are added last, so no can-execute query meets a shelf not yet built.
 
 ## `internal async void QReferenceVistaRefine()`

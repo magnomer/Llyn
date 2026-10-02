@@ -1,6 +1,7 @@
 # LReflexArchive.cs
+Hash: `2a0a0f41e781f344`
 
-## `public sealed class LReflexArchive`
+## `public sealed class LReflexArchive : LReflexVault`
 
 Persists the ordered reflexes an entry owns, one row per reading.
 A reflex's id is assigned here on insertion and survives every later save.
@@ -37,7 +38,8 @@ The fanqie ids one reflex row is anchored to, ascending.
 
 ## `private static void LReflexAnchorSave(SqliteConnection connection, LReflex row)`
 
-Rewrites the anchors of one stored row: every old pair is dropped and each id of the row is written.
+Rewrites the anchors of one stored row.
+Every old pair is dropped and each id of the row is written.
 An id no fanqie row carries is skipped, so a stale draft never breaks the save.
 
 ## `private static LAnatomy LReflexAnatomyRead(SqliteDataReader reader)`

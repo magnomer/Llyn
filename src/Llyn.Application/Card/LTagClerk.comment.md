@@ -1,9 +1,9 @@
 # LTagClerk.cs
+Hash: `0a749139408fec83`
 
 ## `public sealed class LTagClerk`
 
-The clerk over the Tags a card carries and the two operations that reach across every card at once.
-Those are renaming a Tag and deleting it.
+The clerk over the Tags a card carries and the catalog they are drawn from.
 It runs over the tag vault of one rig and holds no gate, no observer and no bulletin.
 The engine calls it under its own gate and raises the tag bulletin afterwards.
 

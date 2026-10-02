@@ -1,4 +1,5 @@
 # QLocalization.cs
+Hash: `10e7803b573f882f`
 
 ## `internal sealed class QLocalization`
 

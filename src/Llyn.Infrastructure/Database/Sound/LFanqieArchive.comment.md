@@ -1,6 +1,7 @@
 # LFanqieArchive.cs
+Hash: `3c92e1d4ec68c1d6`
 
-## `public sealed class LFanqieArchive`
+## `public sealed class LFanqieArchive : LFanqieVault`
 
 Stores and reads the rime-book placements of a character, per language.
 A character's rows are written as one set and read back in the order they were first written.

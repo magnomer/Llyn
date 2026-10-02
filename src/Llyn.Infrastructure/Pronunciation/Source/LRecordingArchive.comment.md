@@ -1,8 +1,10 @@
 # LRecordingArchive.cs
+Hash: `b537e7281ab6637c`
 
 ## `public sealed class LRecordingArchive : LRecordingVault`
 
-The adapter behind the recording port: downloads remote recordings into the workspace and returns their local paths.
+The adapter behind the recording port.
+It downloads remote recordings into the workspace and returns their local paths.
 A chosen recording's bytes are saved under a per-language folder.
 A previewed recording's bytes are cached under the workspace's temp folder.
 The root and the client are fixed at construction, so the rig builds a fresh one per workspace.
@@ -29,7 +31,8 @@ A file that will not delete is left for the next sweep.
 Fetches the bytes of one recording, the one read both saving and previewing go through.
 A host answering 429 is asked again after a pause, up to three tries in all.
 The pause is the host's Retry-After when it is longer than five seconds and five seconds otherwise.
-Wikimedia's audio host answers 429 to a handful of quick fetches and names one second, which retries proved too short.
+Wikimedia's audio host answers 429 to a handful of quick fetches.
+It names one second, which retries proved too short.
 Any other failing status raises, so the caller sees a refused fetch rather than an empty file.
 
 ## `private static string LRecordingStemRead(string word, string variety, string address)`

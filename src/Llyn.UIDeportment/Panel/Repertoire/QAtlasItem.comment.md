@@ -1,6 +1,7 @@
 # QAtlasItem.cs
+Hash: `593d5537a55622fd`
 
-## `internal sealed class QAtlasItem`
+## `internal sealed class QAtlasItem : INotifyPropertyChanged`
 
 Presentation item for one Situation row in `QAtlas`.
 Carries the title, the kind, and the usage count the row shows, and the Situation id the row loads through.

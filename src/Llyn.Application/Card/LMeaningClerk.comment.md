@@ -1,4 +1,5 @@
 # LMeaningClerk.cs
+Hash: `ec9fd4b845ade16a`
 
 ## `public sealed class LMeaningClerk`
 
@@ -43,7 +44,8 @@ The draft is walked whole before anything is deleted, so a card nested three dee
 Deleting a parent takes its children with it, because the store cascades on `sense_parent`.
 So a child of a dropped parent is marked gone even when the draft still names it.
 That card is then written as a new row rather than onto a row that no longer exists.
-The stored rows arrive parents first, so a parent is always marked before its children are read.
+The store orders rows by parent id with roots last.
+So the pass can read a child before its parent is marked.
 
 ## `private void LMeaningClerkApply(long entryId, long? parentId, IReadOnlyList<LCardDraft> cards, string language, List<LRevisionDelta> changes, IReadOnlyDictionary<long, LMeaning> stored, ISet<long> gone, ISet<long> applied, Dictionary<long, long> identity)`
 

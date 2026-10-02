@@ -1,4 +1,5 @@
 # LClaimVault.cs
+Hash: `1575023eda2b4c52`
 
 ## `public interface LClaimVault`
 
@@ -19,7 +20,8 @@ Stores `claim` under its draft id, replacing whatever was there.
 ## `LClaim? LClaimRead(long draftId);`
 
 The claim held on `draftId`, or `null` when none is readable.
-No claim and an unknown claim are the same answer: nobody can be shown to hold the draft.
+No claim and an unknown claim are the same answer.
+Nobody can be shown to hold the draft.
 
 ## `IReadOnlyList<LClaim> LClaimScan();`
 

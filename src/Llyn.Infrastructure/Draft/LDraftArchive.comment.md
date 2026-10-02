@@ -1,4 +1,5 @@
 # LDraftArchive.cs
+Hash: `5b44786c96625059`
 
 ## `public sealed class LDraftArchive : LDraftVault`
 
@@ -74,7 +75,8 @@ It also sets aside every draft file of another version and returns the ids they 
 The engine drops the claim and the court rows of each returned id, which only it can reach.
 A file that does not read as a draft at all is of no version and goes the same way.
 Such a file is set aside and not returned, since nothing else can name it.
-Nothing is deleted: a set-aside file moves under `drafts/broken`, where the listing never looks.
+No draft is deleted.
+A set-aside file moves under `drafts/broken`, where the listing never looks.
 A draft written by another build is still the user's work, and an upgrade must not wipe it.
 A file that cannot be read this round is left where it is.
 A passing lock is not a broken draft.

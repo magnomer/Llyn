@@ -1,4 +1,5 @@
 # QPosture.cs
+Hash: `4d99f1798d335115`
 
 ## `public sealed class QPosture : IDisposable`
 

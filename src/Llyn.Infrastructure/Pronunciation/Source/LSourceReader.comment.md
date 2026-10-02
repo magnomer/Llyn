@@ -1,4 +1,5 @@
 # LSourceReader.cs
+Hash: `0d0f672d3ac08039`
 
 ## `internal static class LSourceReader`
 
@@ -7,10 +8,10 @@ Tries each candidate URL in turn and, per URL, retries transient failures (timeo
 Non-transient responses (403, 404) fall through to the next URL rather than being retried.
 It returns an `LAnswer`.
 A caller can tell a page that answered with nothing from a host that never answered.
-A 404 is an answer: the site is up and has no such word.
+A 404 is an answer, since the site is up and has no such word.
 An exhausted 5xx or timeout is not, and that is what a menu reports as a failure to retrieve.
 
-## `public static Task<(LAnswer, string?)> LSourceReaderRead(HttpClient client, IReadOnlyList<string> urls, IReadOnlyDictionary<string, string>? headers, CancellationToken cancellation)`
+## `public static async Task<(LAnswer, string?)> LSourceReaderRead(HttpClient client, IReadOnlyList<string> urls, IReadOnlyDictionary<string, string>? headers, CancellationToken cancellation)`
 
 The first URL with a body wins, and comes back beside the answer so the caller knows which one.
 When none has one, the answer is blank if any URL answered at all, and lost otherwise.
@@ -25,7 +26,8 @@ Skip validation so they are sent verbatim.
 
 ### `catch (OperationCanceledException)`
 
-A per-request timeout (HttpClient.Timeout), not a user cancellation: retry.
+A per-request timeout (HttpClient.Timeout), not a user cancellation.
+Retry.
 
 ### `return status == HttpStatusCode.RequestTimeout`
 

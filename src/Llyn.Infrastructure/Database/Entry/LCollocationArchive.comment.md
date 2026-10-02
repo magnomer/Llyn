@@ -1,4 +1,5 @@
 # LCollocationArchive.cs
+Hash: `f42403c47deadb69`
 
 ## `public sealed class LCollocationArchive`
 
@@ -47,10 +48,10 @@ The collocations left under the same entry are renumbered so their positions sta
 
 ## Inline notes
 
-### `private static string? LCollocationHolderRead(SqliteConnection connection, long id)`
+### `private static long? LCollocationHolderRead(SqliteConnection connection, long id)`
 
 The entry a collocation belongs to, or null when no collocation carries the id.
 
-### `private static IReadOnlyList<string> LCollocationSiblingRead(SqliteConnection connection, long? entryId)`
+### `private static IReadOnlyList<long> LCollocationSiblingRead(SqliteConnection connection, long? entryId)`
 
 The collocations of one entry, in card order.

@@ -1,4 +1,5 @@
 # LExampleClerk.cs
+Hash: `73ace4a8abc1824a`
 
 ## `public sealed class LExampleClerk`
 

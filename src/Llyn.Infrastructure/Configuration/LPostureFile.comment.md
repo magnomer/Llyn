@@ -1,4 +1,5 @@
 # LPostureFile.cs
+Hash: `ac5bf5c7f5c371e1`
 
 ## `public sealed class LPostureFile : LPostureVault`
 

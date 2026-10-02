@@ -1,4 +1,5 @@
 # QIconImage.cs
+Hash: `e66b7e69f1938b90`
 
 ## `public sealed class QIconImage : Image`
 

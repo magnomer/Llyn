@@ -1,4 +1,5 @@
 # PPhonology.xaml
+Hash: `2d7e9266376af1ec`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -8,7 +9,8 @@ It is bled past the panel margin so it meets the navigation's own edge.
 The second row seam stands only while the articulation aid is unfolded.
 A folded aid leaves no row for it to close.
 The column seam sits in the middle of the gutter and reaches the foot of the window.
-Neither seam encloses anything, which is the whole rule: a line marks a division, a box would claim an object.
+Neither seam encloses anything.
+That is the whole rule, since a line marks a division and a box would claim an object.
 
 ## `<Border x:Name="PSequence" ... Style="{StaticResource Theme.Search.Bar}">`
 
@@ -50,12 +52,12 @@ Neither column owns it.
 ## `<ItemsControl x:Name="PInventory">`
 
 A row reads as the pronunciation first and the word after it.
+That is the order this panel browses in.
 The catalog keeps 6 device-independent pixels between each row and either panel seam.
 The left inset offsets the panel's wider command margin.
 The right inset is the reserved 6-pixel scroll lane.
 Its compact scrollbar stays inside the catalog, and rows retain their width when the list starts scrolling.
 The row's own padding and vertical spacing remain separate from these outer gutters.
-That is the order this panel browses in.
 The word is quieter than the pronunciation, because the pronunciation is what is being looked for.
 
 ## Catalog spacing

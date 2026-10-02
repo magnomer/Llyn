@@ -1,4 +1,5 @@
 # CMeaning.cs
+Hash: `f2b826b40505da82`
 
 ## `public sealed record CMeaning(long CMeaningId, string CMeaningName, int CMeaningDepth);`
 

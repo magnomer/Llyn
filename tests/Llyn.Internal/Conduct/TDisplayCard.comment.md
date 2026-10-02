@@ -1,4 +1,5 @@
 # TDisplayCard.cs
+Hash: `6c8ea6768f04c0d9`
 
 ## `public sealed class TDisplayCard`
 

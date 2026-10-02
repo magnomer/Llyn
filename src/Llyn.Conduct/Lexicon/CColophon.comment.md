@@ -1,4 +1,5 @@
 # CColophon.cs
+Hash: `50235a38c806148e`
 
 ## `public sealed record CColophon(`
 

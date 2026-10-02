@@ -192,6 +192,61 @@ public sealed class TDesk
         Assert.False(desk.CDeskHeld);
     }
 
+    [Fact]
+    public void Start_OverAHeldTenure_AnnouncesTheChangeOfStateOnce()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CDesk desk = TDeskPrepare(engine);
+        desk.CDeskStart(null);
+        int changed = 0;
+        desk.CDeskStateChanged += () => changed++;
+
+        desk.CDeskStart(null);
+
+        Assert.True(desk.CDeskHeld);
+        Assert.Equal(1, changed);
+    }
+
+    [Fact]
+    public void Start_RefusedTenure_AnnouncesTheChangeOfStateOnce()
+    {
+        LDraftPort drafts = TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineTenureStart"] = _ => throw new InvalidOperationException("refused"),
+        });
+        CDesk desk = new(
+            drafts,
+            TInterfaceConduct.TSettingsCreate(),
+            "Example",
+            TEnvoyFake.TEnvoyCreate(false, []),
+            "Corpus",
+            CSubject.CSubjectExample);
+        int changed = 0;
+        desk.CDeskStateChanged += () => changed++;
+
+        desk.CDeskStart(null);
+
+        Assert.False(desk.CDeskHeld);
+        Assert.Equal(1, changed);
+    }
+
+    [Fact]
+    public void Cancel_HeldTenure_AnnouncesTheChangeOfStateOnce()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CDesk desk = TDeskPrepare(engine);
+        desk.CDeskStart(null);
+        int changed = 0;
+        desk.CDeskStateChanged += () => changed++;
+
+        desk.CDeskCancel();
+
+        Assert.False(desk.CDeskHeld);
+        Assert.Equal(1, changed);
+    }
+
     private static CDesk TDeskPrepare(LEngine engine) => TDeskPrepare(engine, []);
 
     private static CDesk TDeskPrepare(LEngine engine, List<string> asked)

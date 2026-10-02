@@ -1,4 +1,5 @@
 # QLookValue.cs
+Hash: `e4dda57669786dd7`
 
 ## `internal abstract record QLookValue`
 
@@ -7,6 +8,12 @@ A row names a resource key, a control property to copy, an animation, or a fixed
 Each kind knows how to set itself and how to step back, so `QLook` holds no switch over them.
 The implicit conversions let a row be written with the bare value, as the trigger setter was.
 A fixed value keeps its own type, so no row holds an untyped value.
+
+## `internal abstract void QLookValueApply(`
+
+Sets the row's value on `target`, which is the styled control or one of its template parts.
+`element` is always the styled control, so a relay reads its source property there.
+`QLook` saves the target's local value before the first apply, so a kind may overwrite freely.
 
 ## `internal virtual void QLookValueClear(FrameworkElement target, DependencyProperty property, object saved)`
 

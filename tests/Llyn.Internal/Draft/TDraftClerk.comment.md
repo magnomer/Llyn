@@ -1,4 +1,5 @@
 # TDraftClerk.cs
+Hash: `028348535eae602c`
 
 ## `public sealed class TDraftClerk`
 

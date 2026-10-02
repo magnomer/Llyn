@@ -1,4 +1,5 @@
 # PCardSentence.cs
+Hash: `5a3ad9d1b4db84ca`
 
 ## `internal sealed partial class PCard`
 
@@ -11,7 +12,7 @@ This file holds that one responsibility and nothing else the card does.
 
 Where a language picked for a Gloss goes, with the card, its sentence row and the raw language.
 The editor subscribes when it builds the card and hands the pick to one gate.
-The card cannot send, because it holds no Conduct type.
+The card cannot send, because it holds no engine.
 Typed text never comes this way, since a row holds no copy of what is typed.
 
 ## `internal void PCardSentenceApply(CSentenceOrder order)`

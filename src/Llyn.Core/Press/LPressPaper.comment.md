@@ -1,4 +1,5 @@
 # LPressPaper.cs
+Hash: `dc84ca17f0ef21bd`
 
 ## `public sealed record LPressPaper`
 

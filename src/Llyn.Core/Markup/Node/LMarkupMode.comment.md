@@ -1,4 +1,5 @@
 # LMarkupMode.cs
+Hash: `5d039e8db33a0bac`
 
 ## `public enum LMarkupMode`
 

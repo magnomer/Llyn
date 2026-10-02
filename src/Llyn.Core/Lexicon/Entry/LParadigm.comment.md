@@ -1,4 +1,5 @@
 # LParadigm.cs
+Hash: `0c6613f3fd9044a1`
 
 ## `public static string LParadigmLanguageRead(IReadOnlyList<LParadigmSlot> slots)`
 

@@ -1,6 +1,7 @@
 # LTranscriptionArchive.cs
+Hash: `a9085d9ec3611895`
 
-## `public sealed class LTranscriptionArchive`
+## `public sealed class LTranscriptionArchive : LTranscriptionVault`
 
 Persists the ordered transcriptions an entry owns, one row per scheme.
 A transcription's id is assigned here on insertion and survives every later save.

@@ -1,4 +1,5 @@
 # TBerthSeat.cs
+Hash: `75eb74163de8d120`
 
 ## `public sealed class TBerthSeat`
 

@@ -1,4 +1,5 @@
 # LEtymon.cs
+Hash: `8ca04787d3309bda`
 
 ## `public sealed record LEtymon(`
 

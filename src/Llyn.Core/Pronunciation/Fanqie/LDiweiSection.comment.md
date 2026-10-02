@@ -1,13 +1,16 @@
 # LDiweiSection.cs
+Hash: `3b18b2d1b876aaaa`
 
 ## `public sealed record LDiweiSection(`
 
-One heading of a Diwei page: a division on an initial page, a place of articulation on a rime page.
+One heading of a Diwei page.
+It is a division on an initial page and a place of articulation on a rime page.
 It carries its label already formatted, the tally rows of the shown set, and its sorted lines.
 The switch flags say whether a respelling exists for the language and which set the page shows.
 A section is data once built, so the shells carry it without a projection.
 
 **Parameters**
+
 - `LDiweiSectionLabel`: the localized heading, or the raw heading when no text is found.
 - `LDiweiSectionLines`: the lines in print order.
 - `LDiweiSectionTallies`: the tally rows under this heading, each holding its marks in the shown set.
@@ -38,8 +41,10 @@ The tally lines under one heading that carry marks in the shown set, each holdin
 
 ## `private static string LDiweiLabelFormat(string division, Func<string, string?> localize)`
 
-The heading of a division: the localized pattern over the numeral and its roman form, or the blank label.
+The heading of a division.
+It is the localized pattern over the numeral and its roman form, or the blank label.
 
 ## `private static string LDiweiPlaceFormat(string place, Func<string, string?> localize)`
 
-The heading of a place of articulation: its localized name, or the unplaced label.
+The heading of a place of articulation.
+It is its localized name, or the unplaced label.

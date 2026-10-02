@@ -1,8 +1,10 @@
 # TIdentity.cs
+Hash: `797c32c79a4dc1a7`
 
 ## `public sealed class TIdentity`
 
-Covers the identity rule for drafts: every item is positive or negative, and only the engine mints.
+Covers the identity rule for drafts.
+Every item is positive or negative, and only the engine mints.
 
 ## `public void RequestApply_TwoNewSentencesSharingText_MintsTwoIdsAndCommitStoresTwoRows()`
 
@@ -18,7 +20,7 @@ The commit reuses that row and mints nothing, so the map has no pair for it.
 ## `public void DraftCommit_EveryNegativeIdHeld_AppearsInTheOutcomeMap()`
 
 Every negative id the saved draft held is a key of the map, and every value is a stored row.
-The stored entry, loaded back, carries those same rows under those same ids.
+The stored entry, loaded back, carries the card, Situation, Register and sentence rows under those ids.
 
 ## `public void DraftCommit_LinkedRowGone_Refuses()`
 

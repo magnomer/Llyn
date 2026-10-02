@@ -1,10 +1,11 @@
 # LFeature.cs
+Hash: `6987fd240d92b64c`
 
 ## `public sealed record LFeature(`
 
 One grammatical feature a part of speech takes (for example `number` on a noun).
 It owns the `LMorphology` rows that name its values.
-Inside a loaded `LSpeechPack` the parent link holds the parent's code, because the row id is unknown until import.
+Inside a loaded `LSpeechPack`, `LFeatureSpeechId` holds the part's code, because the row id is unknown until import.
 
 **Parameters**
 

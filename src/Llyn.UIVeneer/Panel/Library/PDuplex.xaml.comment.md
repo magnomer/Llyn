@@ -1,4 +1,5 @@
 # PDuplex.xaml.cs
+Hash: `015ae5f24112fadb`
 
 ## `public partial class PDuplex : UserControl`
 

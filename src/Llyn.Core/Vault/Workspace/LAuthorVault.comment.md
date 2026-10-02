@@ -1,4 +1,5 @@
 # LAuthorVault.cs
+Hash: `58991b28a7c9254c`
 
 ## `public interface LAuthorVault`
 
@@ -21,7 +22,8 @@ Reads the Author identified by `id`, or `null` when none exists.
 ## `IReadOnlyList<LAuthor> LAuthorReferenceRead(long referenceId);`
 
 Reads the Authors a Reference credits, in the order that Reference gives them.
-Another Reference crediting the same Authors may order them differently — the order lives on the association row.
+Another Reference crediting the same Authors may order them differently.
+The order lives on the association row.
 
 ## `IReadOnlyList<LAuthor> LAuthorAllRead();`
 

@@ -1,4 +1,5 @@
 # TClaimClerk.cs
+Hash: `79fcef1e200d2842`
 
 ## `public sealed class TClaimClerk`
 

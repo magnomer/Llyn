@@ -1,9 +1,10 @@
 # QSCustoms.cs
+Hash: `ac7464330851ec94`
 
 ## `internal sealed class QSCustoms`
 
-The customs window's showing: the rows it declares and the omission face.
-It implements two `CEnvoy` questions, so it only shows what Conduct handed it and returns the answer.
+The customs window's showing holds the rows it declares and the omission face.
+Its two static entry points answer `CEnvoy` questions, so it only shows what Conduct handed it.
 Each row's mode and target live in the `CSCustoms` gate Conduct hands over.
 The window calls no other gate and reads nothing else from Conduct.
 The window is the veneer's `PSCustoms` page, pulled fresh by contract ID and held in `_qsCustomsSurface`.
@@ -42,7 +43,8 @@ It runs again for every row after any change, so a new mode or loss shows at onc
 
 ## `private void QSCustomsRowRefine(FrameworkElement container, QSCustomsItem row, CSCustomsRow state)`
 
-Fills one declaration row: number, headword, language, both dropdowns and the loss text.
+Fills one declaration row.
+It sets the number, headword, language, both dropdowns and the loss text.
 The loss looks up the wording key the gate chose and fills it with the ready card counts.
 A row with no loss key shows no loss.
 

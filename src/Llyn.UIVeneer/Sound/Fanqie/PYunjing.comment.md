@@ -1,9 +1,11 @@
 # PYunjing.xaml
+Hash: `589aa3a7964813d1`
 
 ## `<Grid Margin="34,20,34,38">`
 
 Four columns, narrow to wide: the onset categories, the rime categories, the entries at their cell, then the reader.
-The panel is a rime table read as a question: pick an onset and a rime, see that cell's entries.
+The panel is a rime table read as a question.
+Pick an onset and a rime, see that cell's entries.
 It is the tenor panel's shape with one more catalog, so the toolbars, the reader and the editor read alike.
 
 ## `<local:QSeam ...>`
@@ -26,7 +28,7 @@ No language filter stands beside it, since the panel reads one language.
 
 ## `<Style x:Key="Theme.Yunjing.Key" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Title}">`
 
-The category key at 1.8 times the catalog title size, since one Han character reads better large.
+The category key at 26 points, since one Han character reads better large.
 The size is this panel's alone, and the entry column keeps the catalog size.
 
 ## `<DataTemplate x:Key="Theme.Yunjing.Cell">`

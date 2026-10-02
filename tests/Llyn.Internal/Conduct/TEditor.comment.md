@@ -1,4 +1,5 @@
 # TEditor.cs
+Hash: `3f5b74d5b2950b8c`
 
 ## `public sealed class TEditor`
 

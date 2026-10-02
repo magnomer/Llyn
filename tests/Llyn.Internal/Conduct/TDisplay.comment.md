@@ -1,4 +1,5 @@
 # TDisplay.cs
+Hash: `baab45553967b5fd`
 
 ## `public sealed class TDisplay`
 
@@ -23,11 +24,11 @@ A fresh draft has no entry, so no frequency chip shows.
 
 ## `public void DisplayFrequencyRead_EntryWithoutFrequency_ReturnsNone()`
 
-A stored entry no source has ranked shows no chip, and the read asks the engine to fetch one.
+A stored entry no source has ranked shows no chip.
 
 ## `public void DisplayCompassRead_ShownCards_NamesEachPartAndCardAndNumbersTwins()`
 
-The lookup echoes each key, so every wording key Conduct chose shows in the names.
+The lookup echoes each key but the collocation one, so every other wording key Conduct chose shows in the names.
 A titled card keeps its title, an untitled one its kind, and an uncertain one the unknown mark.
 The collocation kind is looked up to the meaning wording, so the engine numbers the two twins.
 Each card carries its number, its depth and its place in its section's list.

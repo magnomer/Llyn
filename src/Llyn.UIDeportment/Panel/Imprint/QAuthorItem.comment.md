@@ -1,4 +1,5 @@
 # QAuthorItem.cs
+Hash: `417db759f68d9c5a`
 
 ## `internal sealed class QAuthorItem`
 
@@ -24,6 +25,10 @@ The name the field is filled with, raised on change so a rename elsewhere reache
 
 Whether a row above this one exists, so the move control is offered only where it can act.
 
+## `public bool QAuthorItemLater`
+
+Whether a row below this one exists, so the move control is offered only where it can act.
+
 ## `internal static IReadOnlyList<QAuthorItem> QAuthorItemBuild(IReadOnlyList<CAuthorRow> rows)`
 
 One item per credit row the source editor answered, the blank row already placed among them.
@@ -32,6 +37,12 @@ One item per credit row the source editor answered, the blank row already placed
 
 Two rows are the same row when they credit the same Author at the same place, blank or not.
 The name is not part of it, so a rename is synced rather than rebuilt.
+
+## `internal static void QAuthorItemSync(QAuthorItem held, QAuthorItem fresh)`
+
+Copies the name and both order flags of the fresh row onto the held row that `QSplice` kept.
+The id and place are left, since `QAuthorItemMatch` already found them equal.
+Each setter raises only on a change, so an untouched row repaints nothing.
 
 ## `internal static QAuthorItem? QAuthorItemFind(IEnumerable<QAuthorItem> rows)`
 

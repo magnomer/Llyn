@@ -1,4 +1,5 @@
 # LCardDraft.cs
+Hash: `43ce7f51490543d4`
 
 ## `public sealed record LCardDraft(`
 
@@ -13,12 +14,12 @@ A draft is what the shell hands the engine before anything is persisted.
 It carries the typed text exactly as it stands on screen.
 It also carries the id of the row it was loaded from when it came from one.
 There is no state, and no database concern beyond saying which stored card it is.
-Empty fields stay empty strings rather than `null`, because "nothing was typed" is what the form means.
+Empty fields stay unspecified rather than `null`, because "nothing was typed" is what the form means.
 The card carries the number it is shown by, so no view has to count the list itself.
 The save still ignores it and rewrites every position from the order of the list.
 The load fills it from the stored position, which is the same order read back.
 
-Sentence, Situation, Register, Translation, Tag and Image are ordered sets, because the store models them as many-per-card.
+Sentence, Situation, Register, Translation, Tag, Image and Video are ordered sets, because the store models them as many-per-card.
 A card may reference any number of each.
 The order of the list is the order they are stored in and read back.
 A field the form leaves empty is an empty list, never a list holding an empty string.
@@ -76,9 +77,6 @@ A comparison that means "the same card" walks the lists itself.
   A Collocation carrying children is refused rather than saved with them dropped.
   A child keeps its place among its siblings and never among the entry's top cards.
   No card template offers a control for it, so the form carries it through untouched.
-  It is the definition's language and never the entry's.
-  A Collocation records no such language, so it leaves this empty.
-  These are not the card's Tags, which are their own list.
 - `LCardDraftId` — Id of the stored row this card was loaded from.
   It is empty for a card that has never been stored.
   It is the one member that is not typed text, and it exists only for the update.
@@ -87,6 +85,15 @@ A comparison that means "the same card" walks the lists itself.
   That would move one card's text onto another card's row.
   A card carrying no id is a new card and is created.
   The form builds its cards without one, so nothing in the shell carries it until it chooses to.
+
+## `public IReadOnlyList<LCardDraft> LCardDraftChild { get; init; }`
+
+A null handed in becomes the empty list, so a reader walks it without a check.
+
+## `public LStateValue LCardDraftTitle { get; init; }`
+
+A null handed in becomes unspecified, so no reader checks for null.
+`LCardDraftExpression` and `LCardDraftMeaning` do the same.
 
 ## Inline notes
 
@@ -102,3 +109,12 @@ The engine restated the list by hand once, and fell three fields behind the reco
 
 The same card, its rows, and its children with every unreadable value dropped to unspecified.
 Called only after the user agreed to lose what the store could not read.
+
+## `public bool LCardDraftExemplified`
+
+True once the card holds any sentence row, even an empty one.
+A card without one gets a blank row when its draft is prepared.
+
+## `public int LCardDraftTally`
+
+Counts this card and every card nested under it, at any depth.

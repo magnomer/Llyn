@@ -1,4 +1,5 @@
 # LPhonograph.cs
+Hash: `493ee502280877e8`
 
 ## `public interface LPhonograph`
 

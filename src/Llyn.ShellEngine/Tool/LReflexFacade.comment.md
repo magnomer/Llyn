@@ -1,4 +1,5 @@
 # LReflexFacade.cs
+Hash: `e9b3a83e0eb1d0fd`
 
 ## `internal sealed class LReflexFacade`
 

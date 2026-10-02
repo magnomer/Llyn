@@ -1,8 +1,10 @@
 # LMentionPiece.cs
+Hash: `b7af21890c30f382`
 
 ## `public sealed record LMentionPiece(`
 
-One stretch of a sentence as it is drawn: a Mention or the gap between two.
+One stretch of a sentence as it is drawn.
+It is a Mention or the gap between two.
 The pieces of one sentence cover its text end to end, and none of them is empty.
 The control that draws the sentence keeps one text run per piece.
 So a click lands on a run that already knows where it stands.

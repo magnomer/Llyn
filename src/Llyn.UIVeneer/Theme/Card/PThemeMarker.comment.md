@@ -1,4 +1,11 @@
 # PThemeMarker.xaml
+Hash: `8704e71610005034`
+
+## `<Style x:Key="Theme.Marker.Surface" TargetType="Border">`
+
+The editor's part-of-speech chip, at the height, margin and radius of `Theme.Speech.Chip`.
+So a part of speech keeps its box between reading and writing.
+Its edge is painted in its fill, so the accent edge on hover widens nothing.
 
 ## `<Style x:Key="Theme.Marker.Field" TargetType="Border">`
 

@@ -1,4 +1,5 @@
 # CCatalogOrder.cs
+Hash: `28b1ad168467f1c9`
 
 ## `public enum CCatalogOrder`
 

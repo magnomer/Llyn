@@ -1,4 +1,5 @@
 # CStem.cs
+Hash: `8700686d99f90703`
 
 ## `public sealed record CStem(long CStemId, string CStemKey, int CStemCount, bool CStemChosen);`
 

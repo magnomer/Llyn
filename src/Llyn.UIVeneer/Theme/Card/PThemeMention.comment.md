@@ -1,4 +1,5 @@
 # PThemeMention.xaml
+Hash: `29c5f6b673dfd8e0`
 
 ## `<Style x:Key="Theme.Mention.Linked" TargetType="Run">`
 
@@ -35,7 +36,8 @@ A `QLook` row hides it while empty, which is when the Mention stands for the who
 
 ## `<DataTemplate x:Key="Theme.Mention.Chip">`
 
-One Mention: the word, an arrow, the headword it stands for, and the Meaning when narrowed.
+One Mention.
+It shows the word, an arrow, the headword it stands for, and the Meaning when narrowed.
 A word standing for nothing shows the silent mark in place of a headword.
 The remove button asks the unlink command with the chip as its parameter.
 Deportment fills the named parts, the command and the icon through `QLookItemAttach`.

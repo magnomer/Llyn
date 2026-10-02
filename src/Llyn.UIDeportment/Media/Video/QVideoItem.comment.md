@@ -1,6 +1,7 @@
 # QVideoItem.cs
+Hash: `a44283b39533c067`
 
-## `internal sealed class QVideoItem`
+## `internal sealed class QVideoItem : INotifyPropertyChanged`
 
 One Video row on a card.
 The row carries where the video plays from and the span of it worth watching.
@@ -47,6 +48,11 @@ The location as the draft holds it, set only from the draft.
 
 The span as the draft holds it, set only from the draft.
 
+## `public CScreen? QVideoItemPreview`
+
+The screen the draft carries, or `null` while the video has none.
+A `null` screen hides the frame, so no empty player stands on the card.
+
 ## `public TimeSpan QVideoItemFrom`
 
 Where the preview starts, as the draft carries it.
@@ -69,7 +75,7 @@ A card carrying several videos would otherwise all speak at once.
 ## `internal static void QVideoItemRefine(FrameworkElement container, object item, string? changed)`
 
 The shared fill of a written video row, used by the entry and situation editors alike.
-It hides the frame while nothing plays and sets the screen from the row.
+It hides the frame while the row has no screen and sets the screen from the row.
 Each field's text is rewritten only on a full fill or when its own property changed.
 So a change to the other property leaves a field being typed in alone.
 It also attaches the list's reveal, so the remove handle shows while the list is hovered or focused.

@@ -1,4 +1,5 @@
 # LRequestSituation.cs
+Hash: `7a9f784ced047010`
 
 The situation requests.
 The four structural records name the card and the chip, and the three field records name only the situation.
@@ -26,7 +27,7 @@ The row itself stays in the store.
 
 Moves one situation chip to `LRequestPosition` inside its card.
 
-## `public sealed record LRequestSituationTitle(long LRequestDraftId, long LRequestSituationId, LStateValue LRequestValue)`
+## `public sealed record LRequestSituationTitle(long LRequestDraftId, long LRequestSituationId, LStateWritten LRequestValue)`
 
 Replaces the title of the situation, wherever the draft holds it.
 A title left empty drops the chip from every card at the next normalize.
@@ -35,6 +36,6 @@ A title left empty drops the chip from every card at the next normalize.
 
 Replaces the description of the situation, wherever the draft holds it.
 
-## `public sealed record LRequestSituationKind(long LRequestDraftId, long LRequestSituationId, LStateValue LRequestValue)`
+## `public sealed record LRequestSituationKind(long LRequestDraftId, long LRequestSituationId, LStateWritten LRequestValue)`
 
 Replaces the kind of the situation, wherever the draft holds it.

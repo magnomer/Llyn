@@ -1,4 +1,5 @@
 # TVocabulary.cs
+Hash: `f26f7132ee275202`
 
 ## `public sealed class TVocabulary`
 

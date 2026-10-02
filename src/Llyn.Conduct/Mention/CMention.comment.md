@@ -1,4 +1,5 @@
 # CMention.cs
+Hash: `2ebc8a076c0fae0c`
 
 ## `public sealed class CMention`
 

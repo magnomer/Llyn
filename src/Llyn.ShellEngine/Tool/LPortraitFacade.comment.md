@@ -1,8 +1,9 @@
 # LPortraitFacade.cs
+Hash: `c5cda5c8b3478b27`
 
 ## `internal sealed class LPortraitFacade`
 
-The engine's facade for portrait: the entry page and the kind pages, their export and their print.
+The engine's facade for portrait, covering the entry page and the kind pages, their export and their print.
 The entry page is composed by the portrait clerk, the kind pages by the example, reference and situation clerks.
 
 ## `public LPortraitFacade(LEngine engine)`
@@ -18,6 +19,7 @@ The page of one entry, composed by the portrait clerk under the gate.
 The likeness of one example, source or situation, composed by the clerk of the realm `owner` names.
 Each realm is read under the engine's lock, so screen and page show one thing.
 A missing row is an error, because a caller asked to portray one that no longer stands.
+
 ## `internal Task LEnginePortraitExport(long entryId, string path, LPortraitMedium format, LPortraitLabel label)`
 
 Markup is written through the markup clerk under the gate.

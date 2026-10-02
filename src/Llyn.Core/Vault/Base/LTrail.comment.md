@@ -1,4 +1,5 @@
 # LTrail.cs
+Hash: `fc4a23c952f61d61`
 
 ## `public interface LTrail`
 

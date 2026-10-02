@@ -1,4 +1,5 @@
 # LFolioNote.cs
+Hash: `a0a3e168b71cc3fa`
 
 ## `public static class LFolioNote`
 

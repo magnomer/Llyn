@@ -1,8 +1,10 @@
 # PSlateTemplate.xaml
+Hash: `d51a395a909b399b`
 
 ## `Theme.Slate.Row`
 
-One offered tag: its text alone, because a tag carries no count of its own.
+One offered tag, shown as its text alone.
+A tag carries no count of its own.
 The row is a plain surface rather than a button, so the list beneath it keeps its own selection.
 The Deportment class of the same name loads this markup, and the editor's fill writes the runs.
 

@@ -1,4 +1,5 @@
 # CMarker.cs
+Hash: `fb49f03fb9bbcace`
 
 ## `public sealed record CMarker(IReadOnlyList<string> CMarkerSpeeches, string CMarkerTyped, CCategory CMarkerCategory);`
 

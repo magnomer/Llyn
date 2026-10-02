@@ -1,4 +1,5 @@
 # PSwath.cs
+Hash: `b4e91222e5f31d62`
 
 ## `public sealed partial class PSwath : FrameworkElement`
 
@@ -11,6 +12,11 @@ Copying today takes only the text, and a richer export will read the same band l
 It lies over the page inside the scroll viewer, so its highlight scrolls and clips with the text.
 It never takes a hit, so every click still lands on the text and buttons under it.
 The drag that draws the band lives in `PSwathDrag.cs`.
+
+### `public PSwath()`
+
+It takes focus though it takes no hit, so Copy and Select All reach it from the keyboard.
+Copy is offered only while a band is drawn.
 
 ### `internal void PSwathAttach(ScrollViewer viewer)`
 

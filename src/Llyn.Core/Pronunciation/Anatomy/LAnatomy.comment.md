@@ -1,4 +1,5 @@
 # LAnatomy.cs
+Hash: `dcae18a4dc62383d`
 
 ## `public sealed record LAnatomy(`
 
@@ -29,7 +30,8 @@ True when every one of the eight parts is empty.
 
 ## `public string LAnatomyIpaRead(string kind)`
 
-The IPA part a Diwei kind tallies: onset for an initial, vowel and coda joined for a rime, else empty.
+The IPA part a Diwei kind tallies.
+An initial takes the onset, a rime takes vowel and coda joined, and any other kind is empty.
 
 ## `public string LAnatomyRespellingRead(string kind)`
 

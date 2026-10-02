@@ -1,4 +1,5 @@
 # LSettingsVault.cs
+Hash: `ba91401d0d4265e4`
 
 ## `public interface LSettingsVault`
 

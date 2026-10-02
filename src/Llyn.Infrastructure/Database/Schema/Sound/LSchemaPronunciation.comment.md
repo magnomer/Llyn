@@ -1,4 +1,5 @@
 # LSchemaPronunciation.cs
+Hash: `13f11cf6092ef27a`
 
 ## `public static class LSchemaPronunciation`
 

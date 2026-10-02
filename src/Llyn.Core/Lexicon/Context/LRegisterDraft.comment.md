@@ -1,4 +1,5 @@
 # LRegisterDraft.cs
+Hash: `e261fb66771499c2`
 
 ## `public sealed record LRegisterDraft(`
 

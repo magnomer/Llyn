@@ -1,4 +1,5 @@
 # LLanguageCache.cs
+Hash: `d16ef3eec7823894`
 
 ## `public sealed class LLanguageCache`
 

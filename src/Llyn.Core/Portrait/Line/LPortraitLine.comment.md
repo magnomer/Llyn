@@ -1,8 +1,9 @@
 # LPortraitLine.cs
+Hash: `b47739206ec6efc2`
 
 ## `public sealed record LPortraitLine`
 
-One line of a page section: an optional label and the text beside it.
+One line of a page section with an optional label and the text beside it.
 A gloss is a line whose label is its language.
 
 **Parameters**

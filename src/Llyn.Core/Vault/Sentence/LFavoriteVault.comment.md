@@ -1,4 +1,5 @@
 # LFavoriteVault.cs
+Hash: `4c5d23ba49bbe0be`
 
 ## `public interface LFavoriteVault`
 

@@ -1,4 +1,5 @@
 # TEngineInflectionFetch.cs
+Hash: `5760faf721478c9d`
 
 ## `public sealed class TEngineInflectionFetch`
 
@@ -6,7 +7,7 @@ Covers the engine's inflection fetch over the shipped English pack against a stu
 The stub body is shaped as the Wiktionary REST HTML the pack's morphology source reads.
 A body naming both verb forms leaves both slots specified and raises the inflection bulletin once.
 A body naming only the past leaves the past participle unknown rather than unspecified.
-A source that cannot be reached leaves both slots unspecified and raises nothing.
+A source that cannot be reached leaves both slots unspecified and is asked only once.
 With the setting off, a start asks nothing and writes nothing.
 A headword change while a fetch is pending discards the forms instead of storing them under the new headword.
 A hand set of the inflections forgets the unknown mark, so the slot reads unspecified again.
@@ -37,4 +38,4 @@ The first client leaves the handler alive on dispose, since the reopened engine 
 ### `private static async Task TInflectionCountCheck(TSourceHandler handler, int count)`
 
 Polls the handler until it has seen `count` requests or the patience runs out.
-The short delay that follows in the caller lets the fetch settle after its request.
+The caller then reads the settled state.

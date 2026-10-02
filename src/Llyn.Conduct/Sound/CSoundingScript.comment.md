@@ -1,4 +1,5 @@
 # CSoundingScript.cs
+Hash: `1433c6b014e79b07`
 
 ## `public sealed record CSoundingScript(`
 

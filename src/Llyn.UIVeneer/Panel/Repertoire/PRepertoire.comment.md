@@ -1,12 +1,15 @@
 # PRepertoire.xaml
+Hash: `511a9c06766aef15`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
 The seams that part the situation catalog, the entries referencing the chosen situation, and the situation itself.
 The row seam runs under the ordering bar and the command row.
 It is bled past the panel margin so it meets the navigation's own edge.
-The column seam sits in the middle of the gutter and reaches the foot of the window.
-Neither seam encloses anything, which is the whole rule: a line marks a division, a box would claim an object.
+The two column seams sit in the middle of the gutters and reach the foot of the window.
+Neither seam encloses anything.
+That is the whole rule.
+A line marks a division, and a box would claim an object.
 
 ## `<Border x:Name="PTier" ... Style="{StaticResource Theme.Search.Bar}">`
 
@@ -19,14 +22,14 @@ The search field and the language filter over the middle column, copied from the
 `PSortie` narrows the entries referencing the chosen Situation by typed text.
 `PMeshDropper` opens the menu of loaded languages, and `PMeshMark` shows while any is hidden.
 
-## `<StackPanel Grid.Row="0" Grid.Column="1" ...>`
+## `<local:QRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">`
 
 The action row of the panel.
 `PRepertoireFresh` opens the editor on a Situation nothing references yet.
 This panel is the only place such a Situation can arise.
 Elsewhere one is written from the card that carries it.
 `PRepertoireStore` saves whichever editor is in front, the Entry in `PEditor` or the Situation in `PScenario`.
-It is shown only while one of them is, as the library panel shows its save beside its new.
+It is enabled only while one of them is, as the library panel enables its save beside its new.
 One slot sits between save and export, and it holds whichever pair the mode asks for.
 Reading shows `PRepertoireEarlier` and `PRepertoireLater`, which walk the window's trail of records.
 Writing shows `PRepertoireBackward` and `PRepertoireForward`, which walk the chronicle of the editor in front.
@@ -36,7 +39,7 @@ Each carries no label, only the arrow and a tooltip, and is lit only while a ste
 ## `<ItemsControl x:Name="PAtlas">`
 
 The catalog of every Situation the workspace holds.
-A row reads its title over its kind, with the number of places referencing it at the far end.
+A row reads its title beside its kind, with the number of places referencing it at the far end.
 That number is shown here and not only in the display, because it decides which delete the panel offers.
 
 ## `<veneer:PDisplay x:Name="PDisplay" Visibility="Collapsed" />`
@@ -61,7 +64,8 @@ That row is where an Entry shows its parts of speech, so a classification stands
 The description is a heading over a paragraph.
 It is rendered from Markdown as the entry note is but without the note's box.
 A box claims an object the reader can act on, and a description is only read.
-No field is labeled, because the entry display labels nothing: position and dress say what a value is.
+No field is labeled, because the entry display labels nothing.
+Position and dress say what a value is.
 A field that holds nothing follows the entry display's rule rather than a rule of its own.
 An unknown value reads the unknown mark where the value would stand.
 A never-written kind or description is not drawn at all, as an entry with no note draws no note.
@@ -75,17 +79,18 @@ Either list hides itself while the Situation has none of that kind, as a card's 
 
 The card display's picture and video dictionaries, merged so the reading side draws media with the card's own templates.
 The picture and video row templates of the editing side are merged here too.
-The panel's own shapes follow, the reading side in [PRepertoireVignette.xaml](PRepertoireVignette.comment.md) and the editing side in [PRepertoireScenario.xaml](PRepertoireScenario.comment.md).
+The panel's own shapes follow, the reading side in [PRepertoireVignette.xaml](../Vignette/PRepertoireVignette.comment.md) and the editing side in [PRepertoireScenario.xaml](../Vignette/PRepertoireScenario.comment.md).
 All six dictionaries come from the Veneer.
 
 ## `<ItemsControl x:Name="POccurrence">`
 
-The middle column: every Entry whose cards reference the selected Situation, one row per Entry.
+The middle column lists every Entry whose cards reference the selected Situation, one row per Entry.
 An Entry referencing it from several cards is still one row.
 While no Situation is chosen, every Entry is listed, as the tenor panel lists every Entry under no register.
 A row reads the flag, the headword and the language, as a cohort row does.
 Choosing a row shows that Entry in `PDisplay`, in place of the Situation reading, without leaving the tab.
-The list is read-only: a reference is added or dropped on the card holding it, never here.
+The list is read-only.
+A reference is added or dropped on the card holding it, never here.
 
 ## `<Grid x:Name="PScenario" ... Visibility="Collapsed">`
 

@@ -1,4 +1,5 @@
 # QContext.cs
+Hash: `0dd28f82951e5578`
 
 ## `internal sealed class QContext`
 
@@ -56,8 +57,6 @@ Commits what is standing in the entry when focus leaves the field, then empties 
 So a Situation typed and abandoned is kept rather than silently dropped.
 Choosing a row empties the entry first, so the click that chose it commits nothing twice.
 
-The Situation dictionary, held for the two item templates its selector hands out.
-
 ## `internal void QContextApply(FrameworkElement container, object item, string? _)`
 
 Fills one item of a card's Situation field, where bindings and event attributes stood.
@@ -74,3 +73,9 @@ The selector is set only while none is, since a new selector would rebuild every
 
 Puts the caret in the entry when the field's empty space is clicked.
 So the whole box behaves as the one input it looks like, not only its trailing text.
+
+## `internal PCard? QContextCardFind(object row)`
+
+The card whose Situation field holds this chip or caret, or `null` when no shown card does.
+A field item's data context is the chip or caret, not the card, so every gate first asks this.
+The dropdown asks it too, since a pick on a Situation caret lands on that card.

@@ -1,4 +1,5 @@
 # TImprint.cs
+Hash: `e9b82e378eb00997`
 
 ## `public sealed class TImprint`
 

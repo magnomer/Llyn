@@ -94,7 +94,7 @@ internal sealed class QFootnoteItem : INotifyPropertyChanged
 
         if (QLook.QLookPartFind<Run>(container, "PFootnoteEpithet") is Run epithet)
         {
-            epithet.Text = " " + footnote.QFootnoteItemEpithet;
+            epithet.Text = QLook.QLookEpithetRead(footnote.QFootnoteItemEpithet);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PFootnoteLanguage") is TextBlock language)

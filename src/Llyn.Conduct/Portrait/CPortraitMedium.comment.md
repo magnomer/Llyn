@@ -1,4 +1,5 @@
 # CPortraitMedium.cs
+Hash: `3871271851799896`
 
 ## `public enum CPortraitMedium`
 

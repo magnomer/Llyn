@@ -1,4 +1,5 @@
 # PRegisterCaret.cs
+Hash: `2eaae56d0dbeb802`
 
 ## `internal sealed class PRegisterCaret`
 

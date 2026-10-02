@@ -1,4 +1,5 @@
 # QReflex.cs
+Hash: `6f0ee9c29bd0b34b`
 
 ## `internal sealed class QReflex`
 

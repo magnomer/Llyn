@@ -1,4 +1,5 @@
 # CReflexDraft.cs
+Hash: `020b9e48d15278bf`
 
 ## `public sealed record CReflexDraft(`
 

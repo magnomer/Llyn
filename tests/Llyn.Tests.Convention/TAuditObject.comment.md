@@ -1,4 +1,5 @@
 # TAuditObject.cs
+Hash: `be82ffc8a21e284a`
 
 ## `public sealed class TAuditObject`
 

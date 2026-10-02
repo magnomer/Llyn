@@ -1,4 +1,5 @@
 # QCorpusBrowse.cs
+Hash: `8f83881952bc4cb6`
 
 ## `internal sealed partial class QCorpus`
 
@@ -6,7 +7,8 @@ Browsing behavior of the Corpus panel.
 `QAnthology` lists every Example the workspace holds, including one nothing quotes.
 A chosen row is read back and shown, and the middle column narrows to the entries quoting it.
 `QCorpusScribe` swaps the reading for the editor.
-The panel answers two questions rather than one: what this sentence is, and where it is quoted.
+The panel answers two questions rather than one.
+They are what this sentence is, and where it is quoted.
 
 ## `private async void QCorpusWorkspaceRefine()`
 

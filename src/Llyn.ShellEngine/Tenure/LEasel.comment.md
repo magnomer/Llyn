@@ -1,4 +1,5 @@
 # LEasel.cs
+Hash: `d253cf368264ecad`
 
 ## `public sealed class LEasel`
 

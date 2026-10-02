@@ -1,4 +1,5 @@
 # TVaultFakeTombstone.cs
+Hash: `00e6cc058522a937`
 
 ## `internal sealed class TVaultFakeTombstone : LTombstoneVault`
 

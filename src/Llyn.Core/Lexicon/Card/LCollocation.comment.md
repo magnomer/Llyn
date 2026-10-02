@@ -1,4 +1,5 @@
 # LCollocation.cs
+Hash: `7410a18b42121456`
 
 ## `public sealed record LCollocation(`
 
@@ -6,7 +7,7 @@ One Collocation owned by an entry, a stable-id node mirroring the Meaning constr
 It carries an `LCollocationExpression`, the phrase itself.
 Beside it stands the `LCollocationMeaning` that explains it, the definition analogue of a Meaning.
 The card has a field for each, so a collocation keeps both, beside the `LCollocationTitle` the card is headed with.
-`LCollocationId` is the identity — an opaque, program-generated stable id — and is the base the job08/job09 associations target.
+`LCollocationId` is the identity, an opaque and program-generated stable id.
 Reordering collocation cards rewrites `LCollocationPosition` only.
 The id never changes.
 
@@ -20,3 +21,8 @@ The id never changes.
   It is unknown when the user marked it as not known.
 - `LCollocationExpression` — The collocation expression text, and what is known about it.
 - `LCollocationMeaning` — What the expression means, and what is known about it.
+
+## `public LStateValue LCollocationTitle { get; init; }`
+
+A null handed in becomes unspecified, so no reader checks for null.
+`LCollocationExpression` and `LCollocationMeaning` do the same.

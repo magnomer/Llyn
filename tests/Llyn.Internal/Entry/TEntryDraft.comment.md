@@ -1,4 +1,5 @@
 # TEntryDraft.cs
+Hash: `f4e3555797bca45c`
 
 ## `public sealed class TEntryDraft`
 
@@ -32,7 +33,7 @@ Only a Meaning nests, and the format cannot write a nested Collocation either.
 ## `public void EntryDraft_CardFields_SurviveSave()`
 
 The fields the card draft used to collapse or drop make the trip whole.
-Those are a Situation's three fields, a Register's language, a card's Translations, and a video's span.
+Those are a Situation's three fields, a Register's name, a card's Translations, and a video's span.
 No control on the card shows most of them, so the trip is the only thing keeping them.
 
 ## `public void EntryDraft_UntouchedEntry_WritesNoChange()`

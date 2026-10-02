@@ -1,8 +1,10 @@
 # QAnchor.cs
+Hash: `942ece4b06597d3d`
 
 ## `internal sealed class QAnchor`
 
-The editor's anchor dropdown: one popup the panel owns, retargeted at the reflex row that asked for it.
+The editor's anchor dropdown is one popup the panel owns.
+It is retargeted at the reflex row that asked for it.
 It lists the character's stored placements with a tick each, and a tick hands that pair to one gate.
 A placement whose tone class the row's own tone may descend from ends with the estimate mark.
 Conduct holds the row the open popup edits, so the driver keeps no row between open and tick.

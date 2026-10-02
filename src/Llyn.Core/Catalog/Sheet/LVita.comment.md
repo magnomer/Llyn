@@ -1,4 +1,5 @@
 # LVita.cs
+Hash: `287c01caa33e411b`
 
 ## `public sealed record LVita(`
 

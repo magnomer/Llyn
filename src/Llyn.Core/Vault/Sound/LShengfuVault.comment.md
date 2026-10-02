@@ -1,4 +1,5 @@
 # LShengfuVault.cs
+Hash: `31d0f74800cc8916`
 
 ## `public interface LShengfuVault`
 

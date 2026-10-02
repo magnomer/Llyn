@@ -1,4 +1,5 @@
 # CClip.cs
+Hash: `7155f0365f5b121d`
 
 ## `internal sealed class CClip`
 
@@ -15,6 +16,11 @@ The recording whose preview is marked, fetching or playing, or none.
 
 Empties the rows, forgets the marked preview and marks the search running.
 `LClipFinish` marks it ended.
+
+## `internal void LClipFinish()`
+
+Marks the search ended and keeps the rows, so the popup still lists what was found.
+The errand calls it when the search ends, never starts, or throws at its start.
 
 ## `internal CClipRoll LClipRead()`
 

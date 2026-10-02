@@ -1,4 +1,5 @@
 # CPhonology.cs
+Hash: `710f85b92b243c06`
 
 ## `public sealed class CPhonology`
 
@@ -92,5 +93,9 @@ Prints the chosen entry as the engine portrays it.
 The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
 `CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
 `CPhonologyPortraitExport` exports it to a file the same way.
+
+## `public Task CPhonologyPortraitExport()`
+
+The file is offered under the entry's headword, as `LVista.LVistaFileRead` words it.
 The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.

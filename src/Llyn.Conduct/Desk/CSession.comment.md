@@ -1,4 +1,5 @@
 # CSession.cs
+Hash: `2eb3f5ce9dd4bd80`
 
 ## `public sealed class CSession`
 
@@ -15,15 +16,15 @@ The finish seam runs the editor's own finish while it shows.
 A start opens the desk, which knows its own origin and subject or its vista.
 The ready seam may refuse a store, and the stored seam shows what a store kept.
 
-## `public event Action? CSessionHeld`
+## `public event Action? CSessionHeld;`
 
 Raised after a start or a cancel, so the owner announces what the desk now holds.
 
-## `public event Action? CSessionChanged`
+## `public event Action? CSessionChanged;`
 
 Raised when the desk or the editor changes state.
 
-## `public event Action<string, Exception>? CSessionFailed`
+## `public event Action<string, Exception>? CSessionFailed;`
 
 Raised with the desk scope's `HoldFailed` key and the exception when an undo or redo of the desk throws.
 

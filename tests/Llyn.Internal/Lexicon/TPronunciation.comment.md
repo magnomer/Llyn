@@ -1,4 +1,5 @@
 # TPronunciation.cs
+Hash: `dd68d3d094c39615`
 
 ## `public sealed class TPronunciation`
 

@@ -1,4 +1,5 @@
 # CClipReading.cs
+Hash: `5d6edc4fa39063e8`
 
 ## `public sealed record CClipReading(`
 

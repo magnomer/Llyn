@@ -1,8 +1,9 @@
 # PDisplayUsage.xaml
+Hash: `2aef77ba042119d7`
 
 ## `ResourceDictionary`
 
-The shapes of the page around the card: the incoming rows above it and the stamps beneath it.
+The shapes of the page around the card, which are the incoming rows above it and the stamps beneath it.
 Nothing here answers an event, so the dictionary is loose and merged beside the card shapes.
 The hover, press and empty states are rows of `QLookDisplay`, not triggers.
 

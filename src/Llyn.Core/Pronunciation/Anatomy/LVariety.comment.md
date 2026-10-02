@@ -1,4 +1,5 @@
 # LVariety.cs
+Hash: `5db7d2bc4073274d`
 
 ## `public sealed record LVariety(string LVarietyName, string? LVarietyFlag)`
 

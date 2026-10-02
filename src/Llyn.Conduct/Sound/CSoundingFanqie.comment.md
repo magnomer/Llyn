@@ -1,4 +1,5 @@
 # CSoundingFanqie.cs
+Hash: `93987be7b770776b`
 
 ## `public sealed record CSoundingFanqie(`
 

@@ -1,4 +1,5 @@
 # QLayout.cs
+Hash: `cc7862a7034f266b`
 
 ## `public sealed class QLayout`
 
@@ -71,7 +72,7 @@ The most recent drag is forgotten, so a later link copies from the first registe
 
 ## `private Grid? QLayoutSourceRead(Grid? dragged)`
 
-The grid the others follow: the dragged one, else the most recently dragged, else the first registered.
+The grid the others follow is the dragged one, else the most recently dragged, else the first registered.
 Linking the panels mid-session sets every other tab to that grid.
 Unlinking calls nothing, because tabs simply stop following from then on.
 

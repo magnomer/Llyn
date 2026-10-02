@@ -1,4 +1,5 @@
 # LFolioBond.cs
+Hash: `464c860803671ef2`
 
 ## `public static class LFolioBond`
 

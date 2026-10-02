@@ -1,8 +1,9 @@
 # LTenureLanguage.cs
+Hash: `4af2f0defe4f631a`
 
 Answers about the held draft that need an engine lookup beyond the draft itself.
-Language-dependent flag and variety queries read the held draft instead of an editable control.
-An ended tenure or empty language answers false for flags and an empty variety list.
+Language-dependent flag queries read the held draft instead of an editable control.
+An ended tenure or empty language answers false for flags.
 
 ## `public LTranscriptionSheet? LTenureTranscriptionRead()`
 
@@ -15,6 +16,12 @@ An ended tenure holds no draft, so it answers nothing.
 
 The held draft's transcription rows split by its pack's glyph section, as the editor lists them.
 An ended tenure holds no draft, so it answers nothing.
+
+## `public bool LTenureReflexCheck()`
+
+Whether the held draft shows its reflex box.
+A draft already holding reflex rows shows them even when its pack lists no reflex rules.
+So stored rows never vanish when a pack drops its rules.
 
 ## `public void LTenureReflexStart()`
 

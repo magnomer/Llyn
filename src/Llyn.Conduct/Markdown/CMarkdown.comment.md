@@ -1,4 +1,5 @@
 # CMarkdown.cs
+Hash: `f3439a3602cb81a0`
 
 ## `internal static class CMarkdown`
 

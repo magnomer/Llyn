@@ -1,4 +1,5 @@
 # LFellow.cs
+Hash: `3a26e85092f16979`
 
 ## `public sealed record LFellow(`
 

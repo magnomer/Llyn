@@ -1,4 +1,5 @@
 # QUsageItem.cs
+Hash: `5897844cdd079ebf`
 
 ## `internal sealed class QUsageItem`
 
@@ -21,5 +22,5 @@ A plain copy loop over the citing places, one row each.
 
 ## `internal static void QUsageItemRefine(FrameworkElement container, object item, string? _)`
 
-Fills one citing place with its flag, name, epithet, title and kind.
+Fills one citing place with its flag, name, epithet, title and owner.
 The epithet is led by an en space, as the other catalog rows set it apart.

@@ -1,4 +1,5 @@
 # LLacunaVault.cs
+Hash: `5fe3e59626ecb349`
 
 ## `public interface LLacunaVault`
 

@@ -1,4 +1,5 @@
 # LEntryClerk.cs
+Hash: `66b67f5451c3d7b3`
 
 ## `public sealed class LEntryClerk`
 
@@ -10,15 +11,12 @@ The delete is the shape every spanning operation here follows.
 That shape is several stores, one session, one decision.
 The commit of a draft into an entry is here too.
 It is composed out of the clerks for each part of an entry.
-The transcriptions and the reflexes are still reconciled by the engine after the clerk returns.
-Their sync reads the source factory, which no clerk holds until plan 16 gives it a clerk.
-The engine holds the outer session across both halves, so a commit is still whole or nothing.
 
 ## `public LEntryClerk(LRig rig, LCardClerk cards, LMeaningClerk meanings, LVocabularyClerk vocabulary, LInflectionClerk inflections, LParadigmClerk paradigms, LPronunciationClerk pronunciations, LTranscriptionClerk transcriptions, LReflexClerk reflexes, LRecordingClerk recordings, LFrequencyClerk frequencies)`
 
 Reads the ports the lifecycle touches out of `rig` and takes the frequency clerk for clearing a renamed entry.
-The ports are the root, the entries, the notes, the revisions, the tombstones and the workspace row.
-The eight clerks handed in write the parts of an entry a commit spans.
+The ports are the root, the entries, the etymologies, the notes, the revisions, the tombstones and the workspace row.
+The nine part clerks handed in write the parts of an entry a commit spans.
 The recording clerk resolves the recording paths of a loaded draft.
 
 ## `public LEntry? LEntryClerkRead(long id)`
@@ -39,7 +37,7 @@ So an accented headword is found typed in either case.
 
 ## `public IReadOnlyList<LEntry> LEntryHeadwordFind(string headword, string language)`
 
-The stored entries with the headword in the language, both trimmed, for the markup import and its find.
+The stored entries with the headword in the language, both trimmed.
 
 ## `public IReadOnlyList<LEntry> LEntryClerkFind(string query, LCatalogOrder order)`
 
@@ -176,8 +174,7 @@ The meaning clerk reconciles the tree and the card clerk the flat list.
 Every part is compared before it is written.
 That is the forms, the parts of speech, the inflections, the note, the pronunciations, the transcriptions and the reflexes.
 A field that did not change writes no row and records no revision change.
-The lacuna rows go, because a hand edit is a reason to ask the web again.
-The regular flags are judged last, since the judgement reads the headword, the parts and the forms.
+The etymology is written after the rest, and the paradigms are refreshed last.
 
 ## `public LRevision LRevisionRecord(IReadOnlyList<LRevisionDelta> changes)`
 

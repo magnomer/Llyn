@@ -1,4 +1,5 @@
 # CVariety.cs
+Hash: `ee5d46761a6ec6a8`
 
 ## `public sealed record CVariety(string CVarietyName, string CVarietyKey, string CVarietyEnsign)`
 

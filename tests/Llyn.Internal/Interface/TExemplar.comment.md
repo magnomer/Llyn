@@ -1,4 +1,5 @@
 # TExemplar.cs
+Hash: `828ae3ee389c88c2`
 
 ## `internal static class TExemplar`
 
@@ -14,7 +15,7 @@ Then builds the draft that points at them by id.
 Speeches and inflections take their ids from the English pack, since markup names them and import resolves them there.
 A third speech is typed by hand, so a custom speech travels too.
 The mention names the sense of its target, so the sense path is written and resolved.
-No string is a prefix of another, so a contains check on one cannot pass on another.
+Apart from the headword, no string is a prefix of another.
 The noun plural is irregular on purpose, so the paradigm section shows it.
 Regular stays false, since the engine owns it.
 

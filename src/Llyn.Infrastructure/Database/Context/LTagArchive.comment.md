@@ -1,4 +1,5 @@
 # LTagArchive.cs
+Hash: `6a2a80d347c380a7`
 
 ## `public sealed class LTagArchive`
 
@@ -58,7 +59,7 @@ That is the Tag list itself.
 
 ## Inline notes
 
-### `private void LTagReferrerSave(string table, string column, long referrerId, IReadOnlyList<LTag> tags)`
+### `private IReadOnlyList<long> LTagReferrerSave(string table, string column, long referrerId, IReadOnlyList<LTag> tags)`
 
 The two association tables differ only in their name and their card column, so the write is one implementation.
 Both identifiers are store-owned literals chosen by the methods above, never caller input.

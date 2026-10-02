@@ -1,4 +1,5 @@
 # CVita.cs
+Hash: `955cf08101155649`
 
 ## `public sealed record CVita(`
 

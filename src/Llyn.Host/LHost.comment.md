@@ -1,4 +1,5 @@
 # LHost.cs
+Hash: `6a7ec48195029fca`
 
 ## `int code = 1;`
 
@@ -60,10 +61,27 @@ A folder that fails to open leaves the old rig standing.
 Records the chosen folder, which the engine calls only after the new rig stands.
 A folder that fails to open is therefore never pointed at.
 
+## `LDoctor.LDoctorBusyCheck,`
+
+The deportment may not name Infrastructure, so the host hands the doctor's busy check over as a seam.
+
 ## `engine =>`
 
 The rest of the run, which `QBootstrap` calls only with an engine that was built.
 It wires the engine into the window, runs it, and disposes the engine at its end.
+
+## `bootstrap.QBootstrapFaultIntroduce(engine.LEngineAuditRecord);`
+
+The first step once the engine exists, so a fault in any later step is recorded.
+
+## `LSettingsOutlet settings = new(engine);`
+
+Built before the window, because the catalog step reads the stored language through it.
+The atelier then takes this same outlet.
+
+## `bootstrap.QBootstrapCatalogApply(`
+
+It runs before the rescue consult, so the rescue notice speaks the stored language.
 
 ## `bootstrap.QBootstrapWindowShow(new QWindow(new CAtelier(`
 

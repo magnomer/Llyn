@@ -1,4 +1,5 @@
 # LSituationVault.cs
+Hash: `f9705b191a4d7d75`
 
 ## `public interface LSituationVault`
 
@@ -41,7 +42,8 @@ Throws when no Situation carries that id.
 
 ## `int LSituationReferenceRead(long id);`
 
-Counts the references that still point at the Situation identified by `id` — the number `LSituationDelete` refuses a delete over.
+Counts the references that still point at the Situation identified by `id`.
+It is the number `LSituationDelete` refuses a delete over.
 A caller that has just detached one reference reads this.
 It learns whether the row it detached from was the last one.
 No store of its own has to know which association tables exist.

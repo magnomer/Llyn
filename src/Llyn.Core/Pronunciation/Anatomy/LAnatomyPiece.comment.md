@@ -1,4 +1,5 @@
 # LAnatomyPiece.cs
+Hash: `3014588afd3f4a9e`
 
 ## `public sealed record LAnatomyPiece(`
 

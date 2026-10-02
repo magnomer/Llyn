@@ -1,6 +1,7 @@
 # QImageItem.cs
+Hash: `9c1a26bf24f875c1`
 
-## `internal sealed class QImageItem`
+## `internal sealed class QImageItem : INotifyPropertyChanged, QImagePending`
 
 One Image row on a card.
 The row carries where the picture is read from, and the preview drawn from it.
@@ -24,9 +25,6 @@ So does a file that is not a picture.
 The location the user wrote is still standing.
 The row says what was meant, not what could be reached.
 
-
-An empty row nothing has been written in, which is what the card's Extra row opens.
-
 ## `internal QImageItem(CImageDraft written)`
 
 The row for a stored Image, holding the location as the store knows it and the row it stands for.
@@ -46,6 +44,11 @@ A second call does nothing, since a seen row already keeps its preview current.
 ## `public CStateWording QImageItemLocation`
 
 The location as the draft holds it, set only from the draft.
+
+## `public ImageSource? QImageItemPreview`
+
+Null before the row is seen and when nothing decodes, so a null says only that nothing is drawn.
+A local file is read whole when decoded, so the preview never holds the file open.
 
 ## `internal void QImageItemShow(CImageDraft written)`
 

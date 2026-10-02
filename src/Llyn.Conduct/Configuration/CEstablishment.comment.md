@@ -1,4 +1,5 @@
 # CEstablishment.cs
+Hash: `faa9ed337890ca0b`
 
 ## `public sealed record CEstablishment(`
 

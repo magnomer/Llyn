@@ -1,4 +1,5 @@
 # CSentenceOrder.cs
+Hash: `a89b2b5fbf1744ba`
 
 ## `public sealed record CSentenceOrder(int CSentenceOrderParticle, int CSentenceOrderDependence)`
 

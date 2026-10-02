@@ -1,4 +1,5 @@
 # TInterfaceEngine.cs
+Hash: `0bc870f0befd6865`
 
 ## `internal static partial class TInterface`
 
@@ -28,7 +29,7 @@ A new entry is the match its headword did not have before the import.
 ## `private static LEntry TEngineEntryCommit(this LEngine engine, long? id, LEntryDraft draft)`
 
 Writes a whole draft the way the editor does.
-The draft is started, its content minted, and then committed.
+The draft is started, its content normalized and saved, and then committed.
 The commit starts the fetches a real save starts.
 A test that must not fetch turns the setting off first.
 
@@ -38,6 +39,6 @@ The drafts a leftover sweep leaves for the user.
 Each is saveable, held by no one here, and claimed by no other process.
 No shell reads them until a recovery dialog exists, so the tests read them through the claim clerk.
 
-## `internal static (string, string, string) TEngineLineRead(LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)`
+## `internal static (string, IReadOnlyList<LMentionPiece>, string) TEngineLineRead(LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)`
 
-Relays the example line read: the frame, the sentence text and the Source line.
+Relays the example line read: the frame, the sentence pieces and the Source line.

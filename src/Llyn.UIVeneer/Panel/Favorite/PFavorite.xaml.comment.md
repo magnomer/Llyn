@@ -1,4 +1,5 @@
 # PFavorite.xaml.cs
+Hash: `c88847559fcf383d`
 
 ## `public partial class PFavorite : UserControl`
 

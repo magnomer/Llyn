@@ -1,4 +1,5 @@
 # LFontRole.cs
+Hash: `1b0ccdc1ec7a4613`
 
 ## `public enum LFontRole`
 

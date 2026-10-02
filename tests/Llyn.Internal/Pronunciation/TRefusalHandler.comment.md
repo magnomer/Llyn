@@ -1,4 +1,5 @@
 # TRefusalHandler.cs
+Hash: `650e47d07ed9c632`
 
 ## `internal sealed class TRefusalHandler`
 

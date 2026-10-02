@@ -1,4 +1,5 @@
 # LPosture.cs
+Hash: `a03a28c3de1f63bc`
 
 ## `public sealed class LPosture : IDisposable`
 
@@ -6,7 +7,7 @@ How the session stands in every medium: each tab's listing, the open tab, the sp
 Window geometry and panel widths are GUI-only, so the GUI driver's Capsule keeps them instead.
 It is owned by Conduct's atelier, since none of it belongs to one tab.
 It stands beside the engine in the shell ring, not inside it, so no engine part carries view posture.
-It persists through the posture port the engine hands out, so it never learns where the workspace is.
+It persists through the engine's settings part, so it never learns where the workspace is.
 It listens to the engine as an observer.
 A vista bulletin stores the order and filter that vista now holds.
 A workspace bulletin reloads the posture of the workspace moved onto.

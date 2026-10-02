@@ -18,7 +18,7 @@ Any hit names the file, line, and the rule it breaks.
 ## `public void AuditComment_Sources_CarryNoRemark()`
 
 Scans every audited source and listed root-level file for the comment markers its extension declares.
-String and character literals are blanked first, so a `//` inside a URL does not count.
+In `.cs` files, string and character literals are blanked first, so a `//` inside a URL does not count.
 Every line of an unclosed block comment counts until the line holding its closer.
 Files named in the exempt list are skipped, root-level files too, since the generated registry carries a header.
 Every extension with markers is scanned, whether or not it pairs with a comment file.
@@ -35,7 +35,8 @@ A comment file left behind by a deleted or renamed source is otherwise never not
 
 ## `private static IEnumerable<string> TAuditOwnerRead(string repoRoot)`
 
-Every source that needs a comment file: the paired sources under the roots and the listed root-level files.
+Every source that needs a comment file.
+That is the paired sources under the roots and the listed root-level files.
 
 ## `public void AuditComment_Headings_NameMembers()`
 
@@ -102,7 +103,8 @@ An empty scope fails rather than passing vacuously.
 
 ## `private static string? TAuditMemberRead(string span)`
 
-The identifier a heading names: the last one before a parameter list, an initializer or a body.
+The identifier a heading names.
+It is the last one before a parameter list, an initializer, a body or a base list.
 Type arguments are dropped first.
 
 ## `private static string TAuditCommentRead(string path)`
@@ -139,17 +141,19 @@ The `#` marks that open a heading.
 
 ## `private static readonly Regex TAuditHashPattern`
 
-The whole hash line: `Hash:`, one space, then 16 lowercase hex digits in a code span.
+The whole hash line.
+It is `Hash:`, one space, then 16 lowercase hex digits in a code span.
 
 ## `private static string TAuditLineCheck(string line)`
 
 Returns the rule problems one line breaks, joined by a comma, or an empty string.
 A leading list marker is dropped before the words are counted.
 Code spans are dropped before the forbidden characters and sentence marks are looked for.
-A sentence mark followed by any letter starts a new sentence, unless it closes an abbreviation.
+A sentence mark followed by a space and a letter starts a new sentence, unless it closes an abbreviation.
 
 ## `private static string[] TAuditSourceRead(string path, bool code)`
 
-Blanks every string literal over the whole file before splitting into lines.
+For code, blanks every string and character literal over the whole file before splitting into lines.
+Other files split into lines unchanged.
 An ordinary string or character literal never crosses a line break.
 A verbatim or raw literal spanning lines keeps its line count, so a hit still reports the right line.

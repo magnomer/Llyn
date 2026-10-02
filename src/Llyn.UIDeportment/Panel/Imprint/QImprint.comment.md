@@ -1,4 +1,5 @@
 # QImprint.cs
+Hash: `9b39117b6be646e7`
 
 ## `internal sealed class QImprint : QChronicleHost`
 
@@ -32,6 +33,12 @@ The byline's close is the shelf's, run with the atelier's closures.
 ## `internal void QImprintClearRefine()`
 
 Writes the editor's empty Source, so every field blanks and restores its placeholder.
+
+## `internal void QImprintTallyRefine()`
+
+Writes how many places cite the stored Source, as the editor answers it.
+The Source panel also runs it whenever the shelf rows change.
+A citation made elsewhere moves the count without a new draft.
 
 ## `private void QImprintDraftRefine(CReference reference)`
 

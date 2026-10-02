@@ -1,4 +1,5 @@
 # TAnchor.cs
+Hash: `41bf798c9a878228`
 
 ## `public sealed class TAnchor`
 

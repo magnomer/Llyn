@@ -1,4 +1,5 @@
 # TRecordingClerk.cs
+Hash: `6bf91274f8f0bcc2`
 
 ## `public sealed class TRecordingClerk`
 
@@ -30,7 +31,7 @@ A volume below zero sets silence.
 
 ## `public void RecordingClerkStop_TicketOfAnEarlierPlay_LeavesTheLaterPlayRunning()`
 
-Two views share one phonograph.
+Two plays on one clerk share one phonograph.
 The ticket of an earlier play stops nothing, and the latest play's ticket stops it.
 
 ## `private static string TRecordingFileSave(TWorkspace workspace, string name)`

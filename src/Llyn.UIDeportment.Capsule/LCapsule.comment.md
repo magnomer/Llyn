@@ -1,4 +1,5 @@
 # LCapsule.cs
+Hash: `4ee2424a2987f7df`
 
 ## `public sealed class LCapsule`
 

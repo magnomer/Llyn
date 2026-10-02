@@ -1,4 +1,5 @@
 # TMarkupSample.cs
+Hash: `12e7ebfb6ea226c1`
 
 ## `internal static class TMarkupSample`
 

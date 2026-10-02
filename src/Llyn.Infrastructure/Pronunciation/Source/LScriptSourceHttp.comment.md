@@ -1,4 +1,5 @@
 # LScriptSourceHttp.cs
+Hash: `b95fcc959e135a70`
 
 ## `public sealed class LScriptSourceHttp : LScriptSource`
 
@@ -57,7 +58,7 @@ The first group of the gloss pattern, cleaned, or empty when the style declares 
 
 ## `private static string LScriptGroupRead(Match match, int group)`
 
-The named group's text, or empty when the group number is zero or beyond the match.
+The numbered group's text, or empty when the group number is zero or beyond the match.
 
 ## `private static string LScriptAddressResolve(LScriptStyle style, string address)`
 

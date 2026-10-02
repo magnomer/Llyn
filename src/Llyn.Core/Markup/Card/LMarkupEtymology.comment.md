@@ -1,4 +1,5 @@
 # LMarkupEtymology.cs
+Hash: `c81d407310e96677`
 
 ## `public sealed record LMarkupEtymology(`
 

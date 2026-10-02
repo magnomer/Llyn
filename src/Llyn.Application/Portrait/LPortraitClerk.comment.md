@@ -1,4 +1,5 @@
 # LPortraitClerk.cs
+Hash: `c45e1099365b439c`
 
 ## `public sealed class LPortraitClerk`
 

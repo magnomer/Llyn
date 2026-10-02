@@ -1,13 +1,15 @@
 # LMarkupClerk.cs
+Hash: `fe3c9e1c24e27c08`
 
 ## `public sealed class LMarkupClerk`
 
-An entry translated to and from markup: the cargo read, the per-entry load and the export.
+An entry is translated to and from markup here.
+The clerk holds the cargo read, the per-entry load and the export.
 The import lives in `LMarkupClerkIntake`, since it composes the entry clerk and its own resolvers.
 
 ## `public LMarkupClerk(LRig rig)`
 
-Reads the six ports the translation reads through out of `rig`, the same instances the engine holds.
+Reads the nine ports the translation reads through out of `rig`, the same instances the engine holds.
 It opens no database of its own, so a test can hand it in-memory ports.
 
 ## `public LMarkupCargo LMarkupClerkRead(string path)`
@@ -26,7 +28,7 @@ Loads the entry draft for `id` and translates every id-bearing field into names.
 Null means no entry has that id.
 Draft ids and positions are dropped, because list order carries the positions.
 Grasp, frequency, favorite and timestamps are never read.
-Forms and syllables pass whole, since they hold no id worth hiding.
+Forms pass whole, since they hold no id worth hiding.
 A reflex also drops its anatomy and anchors, since the receiving engine derives the one and owns the other.
 
 ## `private LMarkupEtymology? LMarkupEtymologyCreate(LEtymologyDraft etymology)`

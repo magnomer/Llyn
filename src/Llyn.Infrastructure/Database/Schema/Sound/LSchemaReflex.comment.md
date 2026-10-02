@@ -1,8 +1,9 @@
 # LSchemaReflex.cs
+Hash: `a8f17fdac3c368fb`
 
 ## `public static class LSchemaReflex`
 
-The reflex table: the readings of an entry in the languages that borrowed its characters.
+The reflex table holds the readings of an entry in the languages that borrowed its characters.
 
 ## `public static void LSchemaReflexCreate(SqliteConnection connection)`
 

@@ -1,4 +1,5 @@
 # LOutcomeClerk.cs
+Hash: `1844015f999d9a62`
 
 ## `public sealed class LOutcomeClerk`
 
@@ -6,7 +7,7 @@ The commit round of an entry draft, producing the outcome the tenure reports.
 It composes the claim, court and entry clerks, which is why it is not a part of any of them.
 The single entry save and update the engine offers live here too, since the round is made of them.
 
-## `public LOutcomeClerk(LRig rig, LLanguageCache languages, LDraftClerk drafts, LClaimClerk claims, LCourtClerk courts, LEntryClerk entries, LLacunaClerk lacunae, LFrequencyClerk frequencies)`
+## `public LOutcomeClerk(`
 
 Reads the vault out of `rig` and keeps the clerks the round writes through.
 
@@ -27,7 +28,7 @@ The court is applied once the round settled.
 Then the queued draft and court writes run and the held drafts finish.
 `raised` receives every entry the round wrote, for the bulletins.
 
-## `private LOutcome LOutcomeClerkCommit(long id, bool held, Dictionary<long, LDraft> loaded, Dictionary<long, LOutcome> settled, List<LCourt> deferred, List<long> finished, List<Action> written)`
+## `private LOutcome LOutcomeClerkCommit(`
 
 One frame of the round.
 A linked draft already loaded but not settled is deferred to the court.

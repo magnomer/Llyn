@@ -1,4 +1,5 @@
 # LPortraitLink.cs
+Hash: `07fa6ad3d1cae6d7`
 
 ## `public sealed record LPortraitLink`
 
@@ -18,4 +19,4 @@ One collected list lets the engine read all targets in a single query.
 
 ## `private static void LPortraitLinkAdd(List<long> ids, long id)`
 
-Adds an id once, and never a zero, which marks an unset link.
+Adds an id once, and never zero or less, which marks an unset link.

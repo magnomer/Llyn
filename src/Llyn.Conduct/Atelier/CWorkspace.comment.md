@@ -1,4 +1,5 @@
 # CWorkspace.cs
+Hash: `cd89549d0bc2d0c9`
 
 ## `public sealed class CWorkspace`
 

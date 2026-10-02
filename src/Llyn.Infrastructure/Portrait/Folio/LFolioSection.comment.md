@@ -1,4 +1,5 @@
 # LFolioSection.cs
+Hash: `9508ff8072a7a5d5`
 
 ## `public static class LFolioSection`
 
@@ -7,7 +8,8 @@ The role of the node decides its style, so a situation, a register and a tag eac
 
 ## `public static void LFolioSectionAppend(StringBuilder body, LPortraitSection section, List<LPortraitAsset> plates, LTheme theme)`
 
-Dispatches on the role: card, phrase, scene, tone, label, bridge, quote, else band.
+Dispatches on the role.
+A kind joins the card, a usage has its own rows, and any other role is a band.
 A bridge draws nothing of its own, since the shared body already draws links.
 
 ## `private static void LFolioBandAppend(StringBuilder body, LPortraitSection section, List<LPortraitAsset> plates, LTheme theme)`
@@ -17,7 +19,8 @@ The chips take the sound style because the only band chips are parts of speech a
 
 ## `private static void LFolioCardAppend(StringBuilder body, LPortraitSection section, List<LPortraitAsset> plates, LTheme theme)`
 
-A one-column table: a shaded header row with the number and heading, then one cell for everything else.
+A one-column table.
+A shaded header row holds the number and heading, then one cell holds everything else.
 The header is muted when the heading is only the card's kind.
 A phrase standing first among the children is drawn before the sense lines, as the panel shows the expression.
 Each line is a sense paragraph led by its bold label when it has one.
@@ -31,7 +34,8 @@ The further lines follow as indented detail rows, the chips as one label line, t
 
 ## `private static void LFolioUsageAppend(StringBuilder body, LPortraitSection section)`
 
-One entry that links here as two rows: the arrow and headword, then the card title, kind and language.
+One row per link carries the arrow and headword.
+One detail row follows with the line texts, their labels and the link languages.
 
 ## `private static void LFolioBodyAppend(StringBuilder body, LPortraitSection section, List<LPortraitAsset> plates, LTheme theme, int start = 0)`
 

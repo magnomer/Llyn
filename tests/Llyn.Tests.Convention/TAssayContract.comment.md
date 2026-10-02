@@ -1,10 +1,11 @@
 # TAssayContract.cs
+Hash: `6d42d21454d111ed`
 
 ## `public sealed class TAssayContract`
 
-Assays of the dangling, hardwiring and load scans, run through `TAuditContractWalker.TAuditRun`, the contract walker's real entry.
+Assays of the dangling and hardwiring scans, run through `TAuditContractWalker.TAuditRun`, the contract walker's real entry.
 The source sits at `TAssayTruth.TAssayDriverPath` and is handed through the binder seam, so no file is written.
-Each source holds its own `QContract` stand-in, so a call inside, nested in or outside it can be assayed.
+Each dangling source holds its own `QContract` stand-in, so a call inside, nested in or outside it can be assayed.
 Most assays hand no markup, so no ID is declared and every constant ID outside `QContract` is a hit.
 The `UndeclaredId` pair hands one markup text under a virtual path through the same seam.
 A failing assay exposes a walker bug, never a source to fix.

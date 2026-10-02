@@ -1,9 +1,10 @@
 # LMarkdownBlock.cs
+Hash: `e7255d50d2b302f8`
 
 ## `public sealed record LMarkdownBlock(`
 
 One block of a parsed note, in reading order.
-Blocks are flat: a nested list is a run of items whose level grows.
+Blocks are flat, so a nested list is a run of items whose level grows.
 
 **Parameters**
 

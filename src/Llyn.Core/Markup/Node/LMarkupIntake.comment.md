@@ -1,8 +1,9 @@
 # LMarkupIntake.cs
+Hash: `9128577e5f2320fc`
 
 ## `public sealed record LMarkupIntake(`
 
-The reader's choice for one parsed entry: how it enters the workspace.
+The reader's choice for one parsed entry, meaning how it enters the workspace.
 The import window builds one per entry and the engine imports under them.
 
 **Parameters**

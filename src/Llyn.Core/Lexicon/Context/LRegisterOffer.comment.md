@@ -1,4 +1,5 @@
 # LRegisterOffer.cs
+Hash: `02633798ed7727e1`
 
 ## `public sealed record LRegisterOffer(`
 

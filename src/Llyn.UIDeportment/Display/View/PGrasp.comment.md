@@ -1,4 +1,5 @@
 # PGrasp.cs
+Hash: `ecb0dbe378778dfc`
 
 ## `public sealed class PGrasp : FrameworkElement`
 
@@ -20,19 +21,23 @@ So no surface can set a value the store would refuse.
 
 ## `public static readonly DependencyProperty PGraspFillProperty`
 
-The brush a committed star is filled with, read from the theme.
+A themed brush for a committed star, set from the theme resource.
+The draw paints star images with opacity, so nothing reads it yet.
 
 ## `public static readonly DependencyProperty PGraspEmptyProperty`
 
-The brush every star's outline is drawn with, read from the theme.
+A themed brush for every star's outline, set from the theme resource.
+The draw paints star images with opacity, so nothing reads it yet.
 
 ## `public static readonly DependencyProperty PGraspUnratedProperty`
 
-The brush every star's outline is drawn with while no step stands and nothing hovers, read from the theme.
+A themed brush for the outlines while no step stands, set from the theme resource.
+The draw paints star images with opacity, so nothing reads it yet.
 
 ## `public static readonly DependencyProperty PGraspPreviewProperty`
 
-The brush the hover preview is filled with, read from the theme.
+A themed brush for the hover preview, set from the theme resource.
+The draw paints star images with opacity, so nothing reads it yet.
 
 ## `public static readonly RoutedEvent PGraspChangedEvent`
 

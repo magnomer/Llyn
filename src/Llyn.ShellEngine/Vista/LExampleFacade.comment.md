@@ -1,4 +1,5 @@
 # LExampleFacade.cs
+Hash: `fa87745acf0cde18`
 
 ## `internal sealed class LExampleFacade`
 

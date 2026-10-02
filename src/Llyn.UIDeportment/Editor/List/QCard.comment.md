@@ -1,4 +1,5 @@
 # QCard.cs
+Hash: `6a3ac06dd8c49a96`
 
 ## `internal sealed class QCard`
 

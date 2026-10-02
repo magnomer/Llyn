@@ -1,4 +1,5 @@
 # LSourceGeneric.cs
+Hash: `44c2f25ca2150c9d`
 
 ## `public sealed class LSourceGeneric : LSource`
 
@@ -25,7 +26,8 @@ Only a source whose every attempt failed to fetch is reported as never reached.
 Merges readings across attempts, keeping every value the first attempt to answer for a variety gave.
 A later attempt adds nothing to a variety an earlier one filled, so a fallback never doubles a reading.
 An untagged reading counts as a variety of its own, so a flat attempt still answers once.
-The loop stops once every variety the spec declares is filled, so a later attempt is not fetched for nothing.
+The loop stops once every variety the spec declares is filled.
+So a later attempt is not fetched for nothing.
 Readings come back in the order they were first seen, which keeps the pack's declared order on the menu.
 The headword an attempt followed to carries over, so later attempts ask for the page it landed on.
 
@@ -77,7 +79,8 @@ A pattern without the token is returned as it is.
 
 ## `private static string? LSourceValueRead(LSourceReading reading, string body)`
 
-The first value a reading yields, which is what the follow reading wants: one headword to go to.
+The first value a reading yields, which is what the follow reading wants.
+That is one headword to go to.
 
 ## `private static IReadOnlyList<string> LSourceValueScan(LSourceReading reading, string body)`
 

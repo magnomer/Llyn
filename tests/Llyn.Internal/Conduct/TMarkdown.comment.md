@@ -1,4 +1,5 @@
 # TMarkdown.cs
+Hash: `299d86e17a73ffc2`
 
 ## `public sealed class TMarkdown`
 

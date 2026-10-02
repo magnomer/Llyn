@@ -1,4 +1,5 @@
 # PEtymologyCommand.cs
+Hash: `14fe494d4bf70f5c`
 
 ## `public static class PEtymologyCommand`
 

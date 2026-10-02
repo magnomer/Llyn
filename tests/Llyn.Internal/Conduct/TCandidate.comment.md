@@ -1,4 +1,5 @@
 # TCandidate.cs
+Hash: `ea5097af3de7a77c`
 
 ## `public sealed class TCandidate`
 

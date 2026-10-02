@@ -1,4 +1,5 @@
 # TTaxonomy.cs
+Hash: `e14390b443d706d0`
 
 ## `public sealed class TTaxonomy`
 

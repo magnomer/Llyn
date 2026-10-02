@@ -1,8 +1,10 @@
 # LReflexLoader.cs
+Hash: `c4b3ccbde2a4690f`
 
 ## `internal static class LReflexLoader`
 
-The reflex side of the pack loader: the `reflex` list naming one fetch rule per borrowing language.
+The reflex side of the pack loader.
+It reads the `reflex` list naming one fetch rule per borrowing language.
 `LLanguageLoader` calls it.
 
 ## `private const string LReflexKey = "reflex";`

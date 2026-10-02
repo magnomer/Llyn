@@ -1,4 +1,5 @@
 # auditdraft.ps1
+Hash: `23177e24d5b89689`
 
 Checks that every draft record property is named on every side that carries a draft.
 It is the standalone counterpart of `TAuditDraft` and reports the same hits.

@@ -1,4 +1,5 @@
 # QDisplay.cs
+Hash: `b28b8fb00443c7d9`
 
 ## `internal sealed class QDisplay`
 
@@ -35,11 +36,11 @@ It then hands every part to the lectern.
 
 ## `private void QDisplayLecternAttach(QWindow host, QLectern lectern)`
 
-The notice, the page, the header, the stamp, frequency, speech and note controls go to the lectern.
+The window's atelier, the notice and the page go to the lectern.
+The header, stamp, frequency, speech and note controls follow.
 The swath's clear and the star row's two properties are its seams.
 The play button, the volume tray and the slider are handed to the lectern's playback, which drives them.
 The pronunciation surface, the accent and transcription lists and the glyph row are handed over too.
-The window goes to the lectern's sound, whose glyph, category and stem gates open through its openers.
 The reflex, fanqie, script and paradigm controls go to the lectern's sound with their show members as seams.
 The fanqie's category and stem notices go to the sound's observers, so a click reaches the shown entry's language.
 Its representative notice goes straight to the sound area's gate, since the notice already carries raw values.
@@ -54,7 +55,7 @@ Writes one part of speech into its chip.
 
 ## `private static void QDisplayUsageRefine(FrameworkElement container, object item, string? _)`
 
-Fills one incoming row: its icon, source headword, epithet, sentence, badge, flag and language.
+Fills one incoming row: its icon, headword, epithet, title, owner, flag and language.
 The epithet keeps the en space its string format put before it.
 
 ## `private void QDisplayCompassRefine(FrameworkElement container, object item, string? _)`

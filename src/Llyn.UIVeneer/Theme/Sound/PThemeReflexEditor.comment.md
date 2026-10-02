@@ -1,4 +1,5 @@
 # PThemeReflexEditor.xaml
+Hash: `8ba4f280917aff74`
 
 The editor's side of a reflex row: the bare fields, the hover controls, the rebuild button and the row template.
 It merges the shared row styles, so a field stands where the reading view prints its text.

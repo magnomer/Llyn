@@ -1,4 +1,5 @@
 # LSourceReading.cs
+Hash: `471d3bde8bc22fd4`
 
 ## `public sealed record LSourceReading(`
 

@@ -1,4 +1,5 @@
 # LRequestGloss.cs
+Hash: `5ff67c89dcfaff57`
 
 The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The Gloss requests, one per gesture a shown sentence offers on its renderings.

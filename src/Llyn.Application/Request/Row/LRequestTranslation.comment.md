@@ -1,4 +1,5 @@
 # LRequestTranslation.cs
+Hash: `48562c54fd98ef49`
 
 The translation requests.
 A translation links only to an existing entry or to a draft the court opened, so there is no addition.

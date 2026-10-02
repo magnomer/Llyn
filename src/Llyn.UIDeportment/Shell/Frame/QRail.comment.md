@@ -1,4 +1,5 @@
 # QRail.cs
+Hash: `a99800e66fa9103c`
 
 ## `public sealed class QRail : Panel`
 
@@ -6,6 +7,10 @@ The command strip across the top of a panel, holding the groups of buttons that 
 The leading group stands at the left and every later group is pushed to the right edge.
 A window narrow enough to make those two meet drops the later groups onto lines of their own.
 The panel therefore never lets one group be drawn over another, whatever the window is doing.
+
+## `protected override Size MeasureOverride(Size available)`
+
+Decides whether the strip folds and keeps that answer for the arrange pass.
 
 ### `child.Measure(room)`
 
@@ -27,6 +32,11 @@ The header row is sized from that answer, so folding pushes the panel below it d
 
 A collapsed group takes no line of its own and adds no gap.
 It is still measured, because a group hidden now may be shown before the next layout pass.
+
+## `protected override Size ArrangeOverride(Size room)`
+
+Lays the groups out by the fold the last measure decided, never deciding it again.
+It takes the whole room it is given, so the right edge is the panel's own edge.
 
 ### `edge -= size.Width;`
 

@@ -1,8 +1,9 @@
 # TEngineStamp.cs
+Hash: `b0c187aec5a7b435`
 
 ## `public sealed class TEngineStamp`
 
-Covers the reading view's facts the engine words for Conduct: the stamp times and the narrative check.
+Covers the reading view's stamp times, which the engine words for Conduct.
 
 ## `public void EngineStampRead_StoredEntry_WordsBothTimes()`
 

@@ -1,4 +1,5 @@
 # LPortraitAsset.cs
+Hash: `6688c4e30b9c59e7`
 
 ## `public sealed record LPortraitAsset`
 
@@ -14,7 +15,7 @@ One picture read off disk or out of a data address, ready to embed.
 
 The bytes as an address a page can carry without a second file.
 
-## `public static LPortraitAssetLoad(string location)`
+## `public static LPortraitAsset? LPortraitAssetLoad(string location)`
 
 Only a local file is read, because an export makes no network request.
 A remote picture is left to the page, which may still fetch it when opened.

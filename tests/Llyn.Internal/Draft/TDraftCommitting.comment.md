@@ -1,4 +1,5 @@
 # TDraftCommitting.cs
+Hash: `383ca05afa447ff9`
 
 ## `public sealed class TDraftCommitting`
 

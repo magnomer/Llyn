@@ -1,9 +1,10 @@
 # QWindow.cs
+Hash: `096c17de590d5eaf`
 
 ## `public partial class QWindow`
 
 The window itself: what happens when it opens and when it closes.
-The window is the veneer's `QWindow` page, pulled by contract ID and held in `_qWindowSurface`.
+The window is the veneer's `PWindow` sheet, pulled by contract ID and held in `_qWindowSurface`.
 The class is no window itself, so every window call goes through that field.
 Each panel is a control with its own markup and its own behaviour.
 This file only puts them to work on the workspace the engine opened.
@@ -28,32 +29,32 @@ Drives the status bar, pulled from the window under the contract ID `PEstablishm
 
 ## `private readonly QInput _qInput;`
 
-Drives the input panel, pulled from the window under the contract ID `QInputSurface`.
+Drives the input panel, pulled from the window under the contract ID `PInput`.
 It is built here beside the other drivers and wired only when the window introduces it.
 
 ## `private readonly QTaxonomy _qTaxonomy;`
 
-Drives the taxonomy panel, pulled from the window under the contract ID `QTaxonomySurface`.
+Drives the taxonomy panel, pulled from the window under the contract ID `PTaxonomy`.
 
 ## `private readonly QTenor _qTenor;`
 
-Drives the tenor panel, pulled from the window under the contract ID `QTenorSurface`.
+Drives the tenor panel, pulled from the window under the contract ID `PTenor`.
 
 ## `private readonly QLibrary _qLibrary;`
 
-Drives the library panel, pulled from the window under the contract ID `QLibrarySurface`.
+Drives the library panel, pulled from the window under the contract ID `PLibrary`.
 
 ## `private readonly QFavorite _qFavorite;`
 
-Drives the favorites panel, pulled from the window under the contract ID `QFavoriteSurface`.
+Drives the favorites panel, pulled from the window under the contract ID `PFavorite`.
 
 ## `private readonly QDuplex _qDuplex;`
 
-Drives the duplex panel, pulled from the window under the contract ID `QDuplexSurface`.
+Drives the duplex panel, pulled from the window under the contract ID `PDuplex`.
 
 ## `private readonly QSettings _qSettings;`
 
-Drives the settings panel, pulled from the window under the contract ID `QSettingsSurface`.
+Drives the settings panel, pulled from the window under the contract ID `PSettings`.
 
 ## `internal Window QWindowSurface => _qWindowSurface;`
 
@@ -74,11 +75,12 @@ Wires the window: every subscription, every panel's attach and every answer to a
 The window sets itself as the mention attached property, so every mention block below inherits its host.
 The loaded window carries the class in its `Tag`, so a control inside can find its host.
 The roof, logo, menu lines, caption buttons and tab buttons are subscribed here after the load.
-The flag store is subscribed first, so it empties before any panel reloads on an open.
+The posture hears the workspace opening first, so its root is set before any panel reloads.
 Every panel is attached next, and the status bar after them, so it paints the drafts the panels opened.
 The navigation is heard after every panel attaches, so every panel has registered its tab.
 Each panel's restore answers `CWorkspaceOpened`, and each duplex wing subscribes its own.
-The widths answer `CWorkspaceOpened` too: the reset, then the stored widths of the workspace opened.
+The widths answer `CWorkspaceOpened` too.
+They reset first, then apply the stored widths of the workspace opened.
 So the open is one gate call, and Conduct decides what shows and in which order.
 The widths are registered last, and the open applies them before any tab is shown.
 
@@ -104,6 +106,11 @@ It holds no Conduct handle, since GUI-only state never reaches Conduct.
 The one owner of the shared volume, which every editor and reading view attaches its slider to.
 Each editor attaches its player too.
 It alone hears the workspace opening and the shared level, so each change reaches Conduct once.
+
+## `internal QWindowScreen QWindowScreen { get; } = new();`
+
+The holder of the one browser environment every Screen shares.
+The window owns it because the runtime allows a single environment per process.
 
 ## `private void QWindowLayoutAttach()`
 
@@ -165,7 +172,7 @@ The rail holds four groups parted by transparent gaps, not lines.
 The first group is entries: make one, browse all, browse curated.
 The second is the classification axes: sound, situation, register, tag.
 The third is attestation: example, source, author.
-The fourth is the rime table, the one tool with a page of its own.
+The fourth is the two rime tools, Xiesheng and Yunjing, each with a page of its own.
 Dual panel sits with Settings below the divider because it is a mode, not a page.
 
 The rail's buttons and panels are held here, and Conduct's `CNavigation` decides which one shows.
@@ -177,7 +184,7 @@ The navigation also keeps the voyage trail the tabs walk.
 
 Geometry is applied after the opening has handed the posture its path, while the window is still unshown.
 
-### `QLook.QLookStyleAttach(_qWindowSurface.Resources);`
+### `QLook.QLookStyleAttach(_qWindowSurface);`
 
 The word menu's dictionary is merged by the window markup itself.
 The look sheet scans the window's resources, merged dictionaries included, for the row chrome.

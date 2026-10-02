@@ -1,4 +1,5 @@
 # LFolioStyle.cs
+Hash: `8bda335bbda1784a`
 
 ## `public static class LFolioStyle`
 

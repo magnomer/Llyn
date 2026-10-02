@@ -1,4 +1,5 @@
 # LDrill.cs
+Hash: `adec4890ce1e91a4`
 
 ## `internal abstract class LDrill`
 
@@ -18,5 +19,6 @@ It is the root of the drill's call tree in the report.
 
 ## `public void LDrillRun(int repeat)`
 
-The measured region: it runs `repeat` cycles back to back.
+The measured region.
+It runs `repeat` cycles back to back.
 It is never inlined, because the profiler finds the measured region by this frame.

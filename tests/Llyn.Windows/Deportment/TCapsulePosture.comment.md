@@ -1,4 +1,5 @@
 # TCapsulePosture.cs
+Hash: `56b6ed906b2a3514`
 
 ## `public sealed class TCapsulePosture`
 

@@ -1,4 +1,5 @@
 # LInflectionArchive.cs
+Hash: `2751885466558c60`
 
 ## `public sealed class LInflectionArchive`
 

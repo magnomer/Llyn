@@ -1,4 +1,5 @@
 # PThemeFavorite.xaml
+Hash: `09326dc14eb43c83`
 
 ## `<sys:Double x:Key="Theme.Favorite.Size">`
 
@@ -11,7 +12,7 @@ The editor and the reading view both draw it from this style.
 It is as tall as the heart, so the stars and the words center against one height in both.
 Left to size itself, the row would be the heart's height in one view and the stars' in the other.
 
-## `<Style x:Key="Theme.Favorite.Icon" TargetType="Path">`
+## `<Style x:Key="Theme.Favorite.Icon" TargetType="local:QIconImage">`
 
 The heart the favourite toggle carries, hollow until the entry is kept.
 A heart, not a star, because the stars beside it belong to the grasp row.

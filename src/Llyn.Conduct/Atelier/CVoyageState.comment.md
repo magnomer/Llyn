@@ -1,4 +1,5 @@
 # CVoyageState.cs
+Hash: `83f08d7bc43a5cdf`
 
 ## `public sealed record CVoyageState(bool CVoyageStatePast, bool CVoyageStateFuture);`
 

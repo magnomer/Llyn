@@ -1,6 +1,7 @@
 # CScriptImage.cs
+Hash: `d6f90cf40000ca68`
 
-## `public sealed record CScriptImage(byte[] CScriptImageData, string CScriptImageCaption, string CScriptImageEpoch)`
+## `public sealed record CScriptImage(byte[] CScriptImageData, string CScriptImageCaption, string CScriptImageEpoch);`
 
 One historical form of a character, as the script panel draws it.
 

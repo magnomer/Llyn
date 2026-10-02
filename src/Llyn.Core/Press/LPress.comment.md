@@ -1,4 +1,5 @@
 # LPress.cs
+Hash: `33bc56be1b25d709`
 
 ## `public interface LPress`
 

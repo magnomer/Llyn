@@ -1,4 +1,5 @@
 # LSpeechDraft.cs
+Hash: `5f6927ecbc78a962`
 
 ## `public sealed record LSpeechDraft(`
 

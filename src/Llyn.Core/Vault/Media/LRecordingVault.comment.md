@@ -1,4 +1,5 @@
 # LRecordingVault.cs
+Hash: `39b6741017af9521`
 
 ## `public interface LRecordingVault`
 

@@ -1,4 +1,5 @@
 # LEstablishment.cs
+Hash: `9bf61dd8ca2a9225`
 
 ## `public sealed record LEstablishment(`
 
@@ -11,6 +12,10 @@ The bar never counts drafts or rows itself, because the engine alone holds both.
 - `LEstablishmentUnsaved` — How many held drafts of this engine differ from the record each was started from.
 - `LEstablishmentEntry` — How many entries the workspace database stores.
 - `LEstablishmentSize` — The size of the workspace database file in bytes, the main file alone.
+
+## `public bool LEstablishmentSingle`
+
+Picks the singular wording of the entry count, which only a count of one takes.
 
 ## `public bool LEstablishmentLarge => LEstablishmentSize >= LEstablishmentMegabyte;`
 

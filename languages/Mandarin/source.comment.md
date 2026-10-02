@@ -1,4 +1,5 @@
 # source.json
+Hash: `b7bb053a7d1601fb`
 
 ## pack
 
@@ -7,7 +8,8 @@ Every URL and extraction rule is data, so an edit here needs no recompile.
 The `pronunciation` and `audio` lists are independent and each is shown in the order written here.
 The pronunciation sources publish IPA, while Pinyin and Zhuyin are the transcription schemes above.
 No morphology sources are listed, because Mandarin words do not inflect.
-Every source is read from an ordinary article page rather than a machine API.
+Wiktionary readings come from ordinary article pages, except the wikitext lookups of Pinyin and Traditional.
+The audio sources use the dictionary and Commons APIs.
 The article hosts impose no request ceiling, while the REST endpoints reject bursts with 429.
 The reader would report such a rejection as an unreachable source.
 A simplified-form page only points at its traditional form.

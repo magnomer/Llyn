@@ -1,4 +1,5 @@
 # QInventoryItem.cs
+Hash: `b8b53b7c558b9fbe`
 
 ## `internal sealed class QInventoryItem`
 
@@ -6,7 +7,7 @@ Presentation item for one entry row in the `PInventory` list.
 It is built from the Conduct `CCatalogPronunciation` only, so it names no engine type.
 Carries the pronunciation and the headword the row shows, and the entry id the row loads through.
 The id is identity and never displayed.
-The pronunciation arrives bracketed from Conduct, and the raw one is kept because the ordering reads it.
+The pronunciation arrives bracketed from Conduct and is shown as it is.
 Conduct words an entry with no pronunciation yet as a bracket pair, so the row stays a row.
 The language stands at the far end of the row, behind its flag, as it does in the other catalogs.
 The flag is resolved once for the language and handed to the row, not read from disk by the row.
@@ -17,7 +18,7 @@ Whether this row is the one the panel stands on, which the row template paints a
 It is the only value of the row that changes after the row is built.
 The catalog row carries it, and `QSplice` moves the mark in place, so the list keeps its scroll position.
 
-## `public string QInventoryItemName`
+## `public string QInventoryItemName { get; }`
 
 The headword as the row shows it, numbered `(1)`, `(2)` while another row carries the same headword.
 The engine numbers it on the row it returns, because a repeat is only visible across rows.

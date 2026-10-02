@@ -1,4 +1,5 @@
 # LTombstone.cs
+Hash: `4fc6cedac3c38688`
 
 ## `public sealed record LTombstone(`
 

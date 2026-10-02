@@ -1,4 +1,5 @@
 # LSentenceLoader.cs
+Hash: `1821d5b08d619e05`
 
 ## `public static class LSentenceLoader`
 

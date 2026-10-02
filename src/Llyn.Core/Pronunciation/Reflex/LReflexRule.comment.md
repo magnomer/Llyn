@@ -1,4 +1,5 @@
 # LReflexRule.cs
+Hash: `fc8e93cfc84b13ae`
 
 ## `public sealed record LReflexRule(`
 

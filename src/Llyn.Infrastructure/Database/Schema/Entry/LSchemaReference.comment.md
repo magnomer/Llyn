@@ -1,4 +1,5 @@
 # LSchemaReference.cs
+Hash: `479eaa8f5a7ece2f`
 
 ## `public static class LSchemaReference`
 

@@ -1,4 +1,5 @@
 # source.json
+Hash: `92c4f46f73bc0543`
 
 ## pack
 
@@ -15,7 +16,7 @@ The varieties are the two readings Wiktionary prints for every Latin entry.
 One is the reconstructed Classical reading and the other the modern Italianate Ecclesiastical one.
 They are labelled by name, since no flag stands for a period.
 No respelling is declared, because the Classical reading is already written in plain IPA.
-No morphology sources are listed, because no `vocabulary.json` declares the paradigms yet.
+No morphology sources are listed.
 
 ## `pronunciation[0]` Wiktionary
 

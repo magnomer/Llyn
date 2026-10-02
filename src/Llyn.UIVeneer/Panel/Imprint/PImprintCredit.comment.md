@@ -1,4 +1,5 @@
 # PImprintCredit.xaml
+Hash: `b2e9c56fbf1a24ec`
 
 ## `ResourceDictionary`
 

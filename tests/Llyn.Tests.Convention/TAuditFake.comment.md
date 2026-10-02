@@ -1,10 +1,11 @@
 # TAuditFake.cs
+Hash: `281e16070eef28b9`
 
 ## `public sealed class TAuditFake`
 
 Finds the members nothing live reads, which make the code look fuller than it works.
 A member read only by tests is the most suspicious, since a green test then proves nothing the app does.
-While `TAuditFakeEnforced` is false every fact passes and reports as a warning.
+While `TAuditFakeEnforced` is false every kind fact passes and reports as a warning.
 Enforced, a kind fails when it counts above its ceiling.
 
 ## `private static readonly Lazy<IReadOnlyList<TViolation>> TAuditFakeRows = new(TAuditFakeRead);`

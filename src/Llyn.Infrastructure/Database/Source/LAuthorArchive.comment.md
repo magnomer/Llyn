@@ -1,8 +1,9 @@
 # LAuthorArchive.cs
+Hash: `b72aa8e2a451dbf6`
 
-## `public sealed class LAuthorArchive`
+## `public sealed class LAuthorArchive : LAuthorVault`
 
-Persists Authors — independent data no Reference owns.
+Persists Authors, which are independent data no Reference owns.
 An Author is created once with an opaque id.
 It is then *referenced* by any number of References through `reference_author`.
 That row carries the position the Author takes on that Reference alone.
@@ -32,7 +33,8 @@ Reads the Author identified by `id`, or `null` when none exists.
 ## `public IReadOnlyList<LAuthor> LAuthorReferenceRead(long referenceId)`
 
 Reads the Authors a Reference credits, in the order that Reference gives them.
-Another Reference crediting the same Authors may order them differently — the order lives on the association row.
+Another Reference crediting the same Authors may order them differently.
+The order lives on the association row.
 
 ## `public IReadOnlyList<LAuthor> LAuthorAllRead()`
 
@@ -43,7 +45,7 @@ The Sources panel offers them for crediting, so it asks for the whole shelf at o
 
 The Sources crediting the Author, answered through `LAuthorUsage` so the port has one adapter.
 
-## `public IReadOnlyDictionary<string, IReadOnlyList<LAuthor>> LAuthorReferenceRead()`
+## `public IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> LAuthorReferenceRead()`
 
 Reads the credits of every Reference at once, each in that Reference's own order.
 A catalog showing credits on every row would otherwise run one query per row.

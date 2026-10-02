@@ -1,4 +1,5 @@
 # TAssayContesting.cs
+Hash: `f27620f1dc478eae`
 
 ## `public sealed class TAssayContesting`
 

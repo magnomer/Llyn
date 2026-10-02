@@ -1,8 +1,10 @@
 # TAuditCharter.cs
+Hash: `9640ab92d9a80db5`
 
 ## `public sealed class TAuditCharter`
 
-Keeps the project edges as written: every `ProjectReference` under `src` matches the charter.
+Keeps the project edges as written.
+Every `ProjectReference` under `src` matches the charter.
 What a source may name across an edge is the border's concern, not this one.
 The project files are read as XML, so attribute order and quoting cannot hide an edge.
 The same edges are audited by `auditstructure.ps1` from its own configuration, and neither reads the other.
@@ -34,7 +36,8 @@ An edge added or dropped without an edit to the charter is `Rerouting` and fails
 
 ## `public void AuditCharter_Neighbours_MatchProjects()`
 
-Every ring's neighbour equals its project references, and every walked ring is a project.
+Every ring's neighbour plus its capsule equals its project references, and every walked ring is a project.
+The host ring is skipped, since it references every project.
 A ring dropped from the border's neighbour table would stop being walked, so the table is tied to the projects.
 
 ## `public void AuditCharter_Projects_HoldNoBackdooring()`

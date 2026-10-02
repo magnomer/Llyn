@@ -1,4 +1,5 @@
 # TAuditBinder.cs
+Hash: `57ddd49c5ba1241a`
 
 ## `internal static class TAuditBinder`
 
@@ -7,7 +8,8 @@ The border, the purity and the shell walks read the same trees, so the bind is p
 The shell's generated markup classes join the compilation, so an `x:Name` field binds like any other.
 `TAuditReference` supplies the references and the generated code.
 The compilation must hold no error, so an unbound name can never drop out of a walk unseen.
-Nothing here names a project: the folders, the exclusions and the project name come from the settings.
+Nothing here names a project.
+The folders, the exclusions and the project name come from the settings.
 
 ## `private const string TAuditBinderSource = "src/";`
 
@@ -187,7 +189,7 @@ True when the type, its element or any type argument is declared in a UI source,
 
 ## `public static bool TAuditSurfaceCheck(ITypeSymbol? type)`
 
-True when the type is declared under a surface root.
+True when the type is declared under a veneer root.
 
 ## `private static bool TAuditDepthCheck(ISymbol? symbol, string[] sides)`
 

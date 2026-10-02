@@ -1,4 +1,5 @@
 # CVistaRow.cs
+Hash: `7137dc910c76071b`
 
 ## `public sealed record CVistaRow(`
 

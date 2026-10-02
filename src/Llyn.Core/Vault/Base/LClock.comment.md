@@ -1,4 +1,5 @@
 # LClock.cs
+Hash: `5f0fed2034f6b048`
 
 ## `public interface LClock`
 

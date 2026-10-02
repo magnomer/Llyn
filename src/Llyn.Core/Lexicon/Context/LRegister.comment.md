@@ -1,8 +1,9 @@
 # LRegister.cs
+Hash: `a8e0ff8840957442`
 
 ## `public sealed record LRegister(`
 
-One Register — the formality or politeness level a Meaning or Collocation is marked with.
+One Register is the formality or politeness level a Meaning or Collocation is marked with.
 It is independent data owned by nothing, the way a Situation is.
 Any number of Meanings and Collocations *reference* it instead of containing it.
 The order a Register appears in lives on each reference rather than here.

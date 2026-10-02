@@ -1,4 +1,5 @@
 # LSpeech.cs
+Hash: `829653767021fd60`
 
 ## `public sealed record LSpeech(`
 

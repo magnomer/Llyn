@@ -1,4 +1,5 @@
 # LCourtArchive.cs
+Hash: `53d5d3156cd48a56`
 
 ## `public sealed class LCourtArchive : LCourtVault`
 
@@ -10,6 +11,12 @@ A link to an entry that already exists is never written here, because an ordinar
 Nothing here reaches SQLite and nothing here edits a draft file.
 Two copies of the program may run against one workspace.
 Every operation touches a single named file and holds nothing open.
+
+## `public const int LCourtArchiveVersion = 1;`
+
+Stamped on every saved link.
+A link of any other version reads as nothing, and the sweep deletes it.
+So raising it abandons every tentative link a workspace holds.
 
 ## `public LCourtArchive(string root)`
 

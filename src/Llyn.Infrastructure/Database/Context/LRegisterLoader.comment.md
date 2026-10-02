@@ -1,4 +1,5 @@
 # LRegisterLoader.cs
+Hash: `cfb5e727228227d0`
 
 ## `public static class LRegisterLoader`
 

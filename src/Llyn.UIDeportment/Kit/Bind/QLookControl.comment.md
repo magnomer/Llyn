@@ -1,4 +1,5 @@
 # QLookControl.cs
+Hash: `f8e1fe06320adcd7`
 
 ## `internal static class QLookControl`
 

@@ -1,12 +1,15 @@
 # LRig.cs
+Hash: `b958a91e698f5736`
 
 ## `public sealed record LRig(`
 
-The bundle of ports the engine is built over: one record, one constructor argument.
+The bundle of ports the engine is built over.
+It is one record and one constructor argument.
 The composition root assembles it through `LRigFactory` in Infrastructure, and a test assembles it from fakes.
 The engine copies each port into a field of its own and never learns which adapter stands behind it.
 A workspace change hands the engine a whole new rig, so every port swaps at once.
-There is no identity port: the engine builds `LIdentity` over `LRigWorkspaces` itself, since it is a use case.
+There is no identity port.
+The engine builds `LIdentity` over `LRigWorkspaces` itself, since it is a use case.
 `LEnsign` is likewise built engine-side over `LRigUsher`, since it is a cache and not an adapter.
 `LRigPress` is the printing surface, handed in by the root beside the usher since both are media.
 `LRigPhonograph` is the player, handed in by the root beside them for the same reason.
@@ -15,4 +18,5 @@ The fetch ports follow the port's whole name, since `LRigFanqie` already names t
 `LRigTrail` and `LRigClock` are the two ambient facts the engine may not read itself, the path rules and the time.
 `LRigProcess` is the id of the process the rig was built in.
 A claim on a draft is compared against it.
-`LRigWorkspace` is the root every root-bound adapter above was built over, kept so the engine can say where it stands.
+`LRigWorkspace` is the root every root-bound adapter above was built over.
+It is kept so the engine can say where it stands.

@@ -1,4 +1,5 @@
 # QLookSound.cs
+Hash: `feeb51addafd4602`
 
 ## `internal static class QLookSound`
 

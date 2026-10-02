@@ -1,8 +1,10 @@
 # PRepertoireVignette.xaml
+Hash: `06aff15316124fc1`
 
 ## `ResourceDictionary`
 
-The reading side of the Repertoire panel: the atlas rows, the vignette page and the occurrence rows under it.
+The reading side of the Repertoire panel.
+It holds the atlas rows, the vignette page and the occurrence rows under it.
 The panel merges it, as the Corpus panel merges its excerpt shapes.
 Nothing here answers an event, so the dictionary is loose.
 The rows use `Theme.Catalog.Row` directly, and the panel's row fills mark the chosen one.
@@ -11,6 +13,11 @@ The rows use `Theme.Catalog.Row` directly, and the panel's row fills mark the ch
 
 The kind at the end of an atlas row, dressed as catalog meta.
 The look sheet collapses it while the row has no kind, so the title takes the width.
+
+## `<Style x:Key="Theme.Vignette.Heading" TargetType="TextBlock">`
+
+A heading at the height, margin and size of the entry display's section headings.
+So a Situation page heads its parts as an entry page does.
 
 ## `<Style x:Key="Theme.Vignette.Picture" TargetType="ItemsControl">`
 

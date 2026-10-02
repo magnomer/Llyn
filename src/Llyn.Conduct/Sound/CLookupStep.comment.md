@@ -1,4 +1,5 @@
 # CLookupStep.cs
+Hash: `724a23dbea7247a3`
 
 ## `public sealed record CLookupStep(`
 

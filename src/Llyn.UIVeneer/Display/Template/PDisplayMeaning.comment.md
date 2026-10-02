@@ -1,4 +1,5 @@
 # PDisplayMeaning.xaml
+Hash: `479a5df62cdaebd4`
 
 ## `ResourceDictionary`
 
@@ -7,6 +8,11 @@ Its header carries the position and the title, and its body opens with the defin
 The rows under the definition are the shared card body.
 
 ## Inline notes
+
+### `<DataTemplate x:Key="Display.Meaning.Card">`
+
+The header row is fixed at the height the writing card's header takes.
+So the body starts at the same depth in both modes.
 
 ### `<ColumnDefinition Style="{DynamicResource Theme.Card.Gutter}" />`
 

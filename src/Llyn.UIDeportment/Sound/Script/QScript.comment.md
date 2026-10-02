@@ -1,4 +1,5 @@
 # QScript.cs
+Hash: `304ca6b587deb899`
 
 ## `public sealed class QScript : Decorator`
 
@@ -28,7 +29,8 @@ That shows the regenerate button and keeps the box up while nothing is stored.
 
 ## `private readonly Grid _qScriptHead = new();`
 
-The head row: the box's name on the left, then the regenerate button and the switch, present only when folded.
+The head row holds the box's name on the left, then the regenerate button and the switch.
+It is present only when folded.
 
 ## `private readonly ToggleButton _qScriptSwitch = new();`
 

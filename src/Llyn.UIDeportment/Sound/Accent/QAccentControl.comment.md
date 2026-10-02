@@ -1,4 +1,5 @@
 # QAccentControl.cs
+Hash: `12df01bae289db01`
 
 ## `internal static class QAccentControl`
 

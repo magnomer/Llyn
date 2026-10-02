@@ -1,4 +1,5 @@
 # LSentenceVault.cs
+Hash: `475c9e9fd8ab11e5`
 
 ## `public interface LSentenceVault`
 

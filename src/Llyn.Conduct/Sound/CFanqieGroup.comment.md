@@ -1,4 +1,5 @@
 # CFanqieGroup.cs
+Hash: `e29afd04aaf88d65`
 
 ## `public sealed record CFanqieGroup(`
 

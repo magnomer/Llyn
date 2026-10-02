@@ -1,4 +1,5 @@
 # CCatalogRegister.cs
+Hash: `970abba4732aab26`
 
 ## `public sealed record CCatalogRegister(`
 

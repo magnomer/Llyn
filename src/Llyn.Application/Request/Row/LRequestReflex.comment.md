@@ -1,4 +1,5 @@
 # LRequestReflex.cs
+Hash: `422cdc5cc80320ba`
 
 The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The reflex requests, one per change to the entry's ordered reflex list.
@@ -47,7 +48,6 @@ Replaces the source note of one row.
 ## `public sealed record LRequestReflexMain(long LRequestDraftId, long LRequestReflexId, bool LRequestMain)`
 
 Marks or unmarks one row as the reading in common use.
-
 
 ## `public sealed record LRequestReflexAnchor(`
 

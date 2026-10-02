@@ -1,4 +1,5 @@
 # LVaultFault.cs
+Hash: `030adfbeea8a02fa`
 
 ## `public sealed class LVaultFault : Exception`
 

@@ -1,4 +1,5 @@
 # QLabel.cs
+Hash: `28cb1c9304fccd64`
 
 ## `internal sealed class QLabel`
 
@@ -24,7 +25,8 @@ Holds the slate driver too, since the slate finds its card through this one and 
 ## `internal void QLabelTextObserve(PLabelCaret caret, string text)`
 
 Hears each edit of a Tag caret and hands the raw text to the tag gate, unsettled.
-`QSlateRefine` then paints the answer: the text the entry keeps, and the dropdown of stored Tags.
+`QSlateRefine` then paints the answer.
+That is the text the entry keeps and the dropdown of stored Tags.
 
 ## `internal void QLabelChipObserve(object sender, RoutedEventArgs e)`
 
@@ -49,7 +51,8 @@ A Refine, since the arrows only walk the empty entry past a chip and ask no gate
 
 ## `internal void QLabelBlurRefine(object sender, RoutedEventArgs e)`
 
-Shuts the dropdown when focus leaves the entry, since the field it was opened for is no longer typed into.
+Shuts the dropdown when focus leaves the entry.
+The field it was opened for is no longer typed into.
 It is subscribed before the close observer, so the dropdown shuts first.
 
 ## `internal void QLabelCloseObserve(object sender, RoutedEventArgs e)`
@@ -63,8 +66,6 @@ A Refine, since the click changes only where the caret stands and asks no gate.
 Puts the caret in the entry when the field's empty space is clicked.
 So the whole box behaves as the one input it looks like, not only its trailing text.
 
-The Tag dictionary, held for its chip and entry templates.
-
 ## `internal void QLabelApply(FrameworkElement container, object item, string? _)`
 
 Fills one item of a card's Tag field, where bindings and event attributes stood.
@@ -73,5 +74,12 @@ A chip gets its wording, its close icon and its close observer.
 
 ## `internal void QLabelFieldApply(ItemsControl list, PCard card)`
 
-Readies a card's Tag list once: the chip or entry selector, the item fill and the click on its surface.
+Readies a card's Tag list once.
+It wires the chip or entry selector, the item fill and the click on its surface.
 The selector is set only while none is, since a new selector would rebuild every item.
+
+## `internal PCard? QLabelCardFind(object row)`
+
+The card whose Tag field holds this chip or caret, or `null` when no shown card does.
+A field item's data context is the chip or caret, not the card, so every gate first asks this.
+The Tag dropdown `QSlate` asks it too, since a pick on a Tag caret lands on that card.

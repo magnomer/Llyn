@@ -1,4 +1,5 @@
 # TPhonology.cs
+Hash: `312a17addf11abe8`
 
 ## `public sealed class TPhonology`
 

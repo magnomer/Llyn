@@ -1,4 +1,5 @@
 # LStemPage.cs
+Hash: `3049e615b9db6f8a`
 
 ## `public sealed record LStemPage(`
 

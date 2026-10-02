@@ -1,4 +1,5 @@
 # LDraftClerkEquality.cs
+Hash: `475766d62a66dca7`
 
 ## `public static class LDraftClerkEquality`
 
@@ -13,6 +14,7 @@ The save asks it to know whether anything changed.
 
 Whether two held drafts say the same thing, whatever kind of record they hold.
 An example, situation or reference draft is compared through that record's own clerk.
+A reference draft also compares its author draft through the author clerk.
 An author draft is compared by held name, trimmed, because a name is all it carries.
 An entry draft is compared through its content, so blank scaffolding is ignored as it is everywhere.
 

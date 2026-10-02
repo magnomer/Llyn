@@ -1,4 +1,5 @@
 # PCardRow.cs
+Hash: `6ac3c59901a6adab`
 
 ## `internal sealed partial class PCard`
 

@@ -1,4 +1,5 @@
 # LFolioLine.cs
+Hash: `47a15cb22bc534ba`
 
 ## `public static class LFolioLine`
 

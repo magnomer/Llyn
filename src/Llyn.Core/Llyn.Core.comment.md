@@ -1,4 +1,5 @@
 # Llyn.Core.csproj
+Hash: `8f80ea379c17974a`
 
 Builds the domain model and application-facing contracts.
 

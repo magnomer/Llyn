@@ -1,4 +1,5 @@
 # Llyn.UITerminal.csproj
+Hash: `f0b5108e08ea603c`
 
 The console surface, the second UI beside the WPF veneer.
 It holds no source yet.

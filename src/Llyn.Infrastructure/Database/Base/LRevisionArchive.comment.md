@@ -1,4 +1,5 @@
 # LRevisionArchive.cs
+Hash: `ebcfc8e3e6412824`
 
 ## `public sealed class LRevisionArchive : LRevisionVault`
 

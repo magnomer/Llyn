@@ -1,4 +1,5 @@
 # LPronunciationVault.cs
+Hash: `842da86c3b10b1ce`
 
 ## `public interface LPronunciationVault`
 

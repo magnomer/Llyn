@@ -28,7 +28,7 @@ internal sealed partial class QCorpus : QChronicleHost
         _qCorpusSurface = surface;
         _qCorpusEditor = new QEditor(QContract.QContractFind<FrameworkElement>(surface, "PEditor"));
         _qCorpusDisplay = new QDisplay(QContract.QContractFind<FrameworkElement>(surface, "PDisplay"));
-        QLook.QLookStyleAttach(surface.Resources);
+        QLook.QLookStyleAttach(surface);
         QChronicle.QChronicleIntroduce(surface, this);
         _qDrawer = new QDrawer(QCitationDrawer, QCitationSheet, QCitationList, QCitationPressObserve);
 

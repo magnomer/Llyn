@@ -1,4 +1,5 @@
 # CGlossDraft.cs
+Hash: `8fd636e4e09d6989`
 
 ## `public sealed record CGlossDraft(`
 

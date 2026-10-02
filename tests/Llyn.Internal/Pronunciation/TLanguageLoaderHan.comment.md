@@ -1,8 +1,10 @@
 # TLanguageLoaderHan.cs
+Hash: `9e642063ca1a3564`
 
 ## `public sealed class TLanguageLoaderHan`
 
-Covers the pack loader reading the Han-language sections: the script styles, the rime books and the hypothesis.
+Covers the pack loader reading the Han-language sections.
+These are the script styles, the rime books and the hypothesis.
 A `script` list loads its styles in written order with their form fields, groups, prefix, rewrite rules and gloss pattern.
 A style row missing its match pattern is skipped alone, and the optional keys read as empty or zero.
 A `fanqie` list loads its books in written order with their form fields, marker, busy pattern and interval.

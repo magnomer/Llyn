@@ -1,4 +1,5 @@
 # CLecternEtymology.cs
+Hash: `0fc451bebb59080d`
 
 ## `public sealed record CLecternEtymology(`
 

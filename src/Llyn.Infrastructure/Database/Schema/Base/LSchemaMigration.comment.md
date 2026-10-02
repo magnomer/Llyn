@@ -1,4 +1,5 @@
 # LSchemaMigration.cs
+Hash: `f24ed473c9d0adf7`
 
 ## `public static class LSchemaMigration`
 
@@ -66,6 +67,7 @@ A rebuild that fails leaves the old file untouched and no half-built file beside
 Builds the fresh file, copies the old file aside, and attaches the fresh file to the old one.
 One transaction then carries each shared table across and settles old unknown citations and register marks.
 It also dates the stored glyph pictures whose captions still carry their age in the source's own words.
+It also settles frequency and reflex rows an older version stored differently.
 It renumbers every Collocation whose id a Meaning also holds.
 It then sweeps the orphans and brings the rows back.
 Bringing them back drops every old table, runs the schema on the file, and copies the fresh tables in.

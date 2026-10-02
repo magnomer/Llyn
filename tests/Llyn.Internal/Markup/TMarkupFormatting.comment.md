@@ -1,4 +1,5 @@
 # TMarkupFormatting.cs
+Hash: `4317665f39de1a10`
 
 ## `public sealed class TMarkupFormatting`
 

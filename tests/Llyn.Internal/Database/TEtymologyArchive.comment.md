@@ -1,4 +1,5 @@
 # TEtymologyArchive.cs
+Hash: `3552443736aad621`
 
 ## `public sealed class TEtymologyArchive`
 

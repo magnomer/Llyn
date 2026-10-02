@@ -1,4 +1,5 @@
 # CLeaf.cs
+Hash: `361cb8faebb1a57d`
 
 ## `public sealed record CLeaf(`
 

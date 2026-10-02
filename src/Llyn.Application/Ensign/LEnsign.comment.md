@@ -1,8 +1,10 @@
 # LEnsign.cs
+Hash: `ab840c99ea01ed2a`
 
 ## `public sealed class LEnsign`
 
-The cache half of the flag: which key has been asked, and the SVG path each one resolved to.
+The cache half of the flag.
+It holds which key has been asked, and the SVG path each one resolved to.
 A key is a language name, or a language and variety joined by a slash.
 The engine owns one and fills it, and the veneer keeps only the drawings.
 Whether a path is present, and dropping a file, are asked of the `LUsher` handed in.
@@ -14,7 +16,8 @@ Takes the port that answers path facts, an `LUsherFile` in the engine and a reco
 
 ## `public static string LEnsignKeyFormat(string language, string variety)`
 
-The key a variety's flag is kept under: its language and its name joined by a slash.
+The key a variety's flag is kept under.
+It is the language and the variety name joined by a slash.
 `QEnsignImage` spells the same key on its side, so a row hands no logic value down to ask for one.
 
 ## `private int _lEnsignAge;`
@@ -29,7 +32,7 @@ Forgets every path and advances the age, on a workspace change.
 
 The keys not yet asked, each once, with the age the caller hands back when the paths arrive.
 
-## `public void LEnsignPathAdd(int age, IReadOnlyList<string> keys, IReadOnlyList<string?> paths, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
+## `public void LEnsignPathAdd(`
 
 Records the path each key resolved to, null when the usher finds nothing there.
 Throws when `keys` and `paths` differ in length, since each key needs its own path.

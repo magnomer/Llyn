@@ -1,4 +1,5 @@
 # PCollocationTemplate.xaml
+Hash: `8df1ca9ae9503c69`
 
 The editable collocation card, as markup alone.
 The editor's markup merges it, and the editor's fill subscribes the card's events.

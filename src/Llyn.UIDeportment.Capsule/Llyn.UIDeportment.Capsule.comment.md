@@ -1,4 +1,5 @@
 # Llyn.UIDeportment.Capsule.csproj
+Hash: `c26a2a97a04873fe`
 
 Builds Deportment's own storage, which keeps the GUI-only state that outlives a run.
 

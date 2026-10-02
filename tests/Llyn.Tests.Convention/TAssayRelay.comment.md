@@ -1,4 +1,5 @@
 # TAssayRelay.cs
+Hash: `f4f232d8e0412019`
 
 ## `public sealed class TAssayRelay`
 

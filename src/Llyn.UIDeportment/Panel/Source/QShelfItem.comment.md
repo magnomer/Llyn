@@ -1,4 +1,5 @@
 # QShelfItem.cs
+Hash: `b3332826cebe73ac`
 
 ## `internal sealed class QShelfItem`
 

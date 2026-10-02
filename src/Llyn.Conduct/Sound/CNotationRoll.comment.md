@@ -1,4 +1,5 @@
 # CNotationRoll.cs
+Hash: `07195c961635b8f1`
 
 ## `public sealed record CNotationRoll(`
 

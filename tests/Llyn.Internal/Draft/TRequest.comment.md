@@ -1,8 +1,11 @@
 # TRequest.cs
+Hash: `1e6b3d7ebb6c2119`
 
 ## `public sealed class TRequest`
 
 Covers the requests a form sends to edit a held draft, and what the engine answers.
+Also covers a repeated text that writes and raises nothing.
+Also covers the panel Situation's title, description and kind.
 
 ## `public void RequestApply_HeadwordText_PersistsInDraftFile()`
 
@@ -64,9 +67,3 @@ A stored recording is audio in the old language, so a new language drops it like
 ## `private static string TRequestRecordingSave(TWorkspace workspace)`
 
 Writes one byte of audio under the workspace, so a saved entry resolves it back to the same path.
-
-## Inline notes
-
-### `private sealed class TRequestObserver : QObserver`
-
-Collects every bulletin raised, so a test can count them and read what they name.

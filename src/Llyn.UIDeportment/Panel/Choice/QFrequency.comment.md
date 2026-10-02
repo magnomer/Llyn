@@ -1,4 +1,5 @@
 # QFrequency.cs
+Hash: `f22c25bc99b7294e`
 
 ## `internal sealed class QFrequency`
 

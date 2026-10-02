@@ -1,4 +1,5 @@
 # CLecternCard.cs
+Hash: `5150e6ad9d7f0a78`
 
 ## `public sealed record CLecternCard(`
 

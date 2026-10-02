@@ -1,4 +1,18 @@
 # PCard.cs
+Hash: `6cce150cad8e6944`
+
+## `internal sealed partial class PCard : INotifyPropertyChanged`
+
+One meaning or collocation card of the editor, the item the card list draws.
+Each field it shows lives in its own partial file beside this one.
+It holds the engine's values as they stand, so it never resolves a state.
+
+## `internal PCard(`
+
+The catalog, particle, dependence and language lists are the editor's own, shared by every card.
+Each Example row reads them, so one write reaches every card at once.
+The Situation, Register, Translation and Tag fields set their caret hints here.
+So an empty card shows its placeholders before any draft arrives.
 
 ## `internal static void PCardRowApply(FrameworkElement container, PCard card, string? changed)`
 

@@ -1,4 +1,5 @@
 # CRepertoire.cs
+Hash: `e5fb55b1c7ad8b81`
 
 ## `public sealed class CRepertoire`
 

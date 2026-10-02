@@ -1,4 +1,5 @@
 # PDisplay.xaml
+Hash: `947e0f800c0ae922`
 
 ## `<UserControl.Resources>`
 
@@ -53,6 +54,17 @@ The words after it say what the shown step means, and follow the pointer while i
 The entry as it reads, with nothing to type into.
 The panel that hosts this decides what is selected and when the editor takes its place.
 So the same view serves the library panel, the phonology panel and the taxonomy panel unchanged.
+
+## `<TextBlock x:Name="PDisplayEmpty" ...>`
+
+The prompt shown while no entry is chosen.
+`QLectern` shows either this or `PDisplayContents`, never both.
+The contents start collapsed, so a fresh view shows the prompt.
+
+## `<TextBlock x:Name="PDisplayReading" Grid.Row="1" Style="{StaticResource Theme.Text.Reading}" />`
+
+The line under the headword holds the reading taken from the rime-book placements.
+It stays empty until those placements are fetched, and an empty reading takes no room.
 
 ## `<Border x:Name="PDisplayPronunciationSurface" Style="{StaticResource Theme.Pronunciation.Surface}" ...>`
 
@@ -159,6 +171,12 @@ The entry's creation and last update times, closing the page beneath one hairlin
 Two bare rows, no card, because the stamps are a footnote and not content.
 The times come from the stored entry rather than the draft, since the draft carries no clock.
 Each is shown in local time in the short general format of the current culture.
+
+## `<local:PSwath x:Name="PDisplaySwath" />`
+
+The drag band shares the page's grid cell and lies on top of it.
+It sits inside the scroll viewer, so it scrolls and clips with the text it highlights.
+`QDisplay` attaches it to `PDisplayContents`, so a press anywhere on the page reaches it first.
 
 ## `<Ellipse x:Name="PDisplayLanguageGlobe"`
 

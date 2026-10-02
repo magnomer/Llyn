@@ -1,4 +1,5 @@
 # QContract.cs
+Hash: `850ec3785efc9939`
 
 ## `public static class QContract`
 
@@ -24,6 +25,7 @@ A page-local dictionary merged by its markup is found this way, since it is not 
 
 ## `private static QContractPart QContractResolve<QContractPart>(object? found, string id, string kind)`
 
-The one rule every find shares: the part found must exist and carry the asked type.
+The one rule every find shares.
+The part found must exist and carry the asked type.
 Otherwise it throws, naming the contract `kind`, the ID and the asked type.
 `kind` is "element" for a named element and "resource" for a keyed resource.

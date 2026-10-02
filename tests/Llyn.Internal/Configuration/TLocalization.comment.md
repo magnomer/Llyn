@@ -1,4 +1,5 @@
 # TLocalization.cs
+Hash: `1407ac74b05cbe5c`
 
 ## `public sealed class TLocalization`
 

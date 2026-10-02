@@ -1,4 +1,5 @@
 # CFrequency.cs
+Hash: `73ccde2d55b7f548`
 
 ## `public sealed record CFrequency(`
 

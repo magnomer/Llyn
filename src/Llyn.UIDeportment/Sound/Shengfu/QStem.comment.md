@@ -1,9 +1,11 @@
 # QStem.cs
+Hash: `96461e7115c0da6d`
 
 ## `internal sealed class QStem`
 
 The driver of the series page of the xiesheng panel, the counterpart of the category page of the yunjing panel.
-It decides nothing: the page is composed by the engine and this file writes the controls.
+It decides nothing.
+The engine composes the page and this file writes the controls.
 `QXiesheng` builds it over the nested page, as `QPhonology` builds `QArticulation`.
 
 ## `internal QStem(UserControl surface)`

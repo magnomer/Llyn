@@ -1,8 +1,10 @@
 # QCitation.cs
+Hash: `3d9e7f3ce263259c`
 
 ## `internal sealed class QCitation`
 
-The citation field of an Example row: what a typed line becomes, and how rows show the Source they cite.
+The citation field of an Example row.
+It decides what a typed line becomes, and how rows show the Source they cite.
 A citation is either a stored Source or nothing, so the field never keeps a line that matches no Source.
 One list of Sources serves every row on the form, Example and Situation alike.
 
@@ -21,7 +23,8 @@ The list is refilled when the Sources change and when a workspace opens.
 
 ## `internal void QCitationApply(FrameworkElement container)`
 
-Hooks a row's citation field: the dropdown's key handlers first, then this driver's commit and escape, and its leave.
+Hooks a row's citation field.
+The dropdown's key handlers come first, then this driver's commit and escape, and its leave.
 Each event is hooked once, so a refill leaves one handler.
 
 ## `internal void QCitationFieldRefine(PCard card, PSentence row, TextBox box)`

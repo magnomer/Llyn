@@ -1,4 +1,5 @@
 # CScreen.cs
+Hash: `060eb21146468883`
 
 ## `public sealed record CScreen(`
 

@@ -1,4 +1,5 @@
 # QRepertoireBrowse.cs
+Hash: `a05fe497fd658ee8`
 
 ## `internal sealed partial class QRepertoire`
 
@@ -9,17 +10,10 @@ A chosen row is read back and shown, and the middle column narrows to the entrie
 The editor's own fields live in `QRepertoireEditor.cs`.
 The entry column lives in `QRepertoireEntry.cs`.
 The reading side that draws the chosen Situation lives in `QRepertoireVignette.cs`.
-The panel answers two questions rather than one: what this Situation is, and where it is used.
+The panel answers two questions rather than one.
+It shows what this Situation is, and where it is used.
 
 ## Inline notes
-
-### `private CRepertoire _cRepertoire = null!;`
-
-The repertoire Conduct, holding the atlas, the occurrence list, the desk, the session and the panel's mode.
-The atlas's vista carries the order, the inquest, and the languages hidden from the entry column.
-The panel keeps no copy of any of them and asks the Conduct for each where it needs it.
-It is null until the window hands one over, so the handlers do nothing before that.
-A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
 ## `private async void QRepertoireWorkspaceRefine()`
 

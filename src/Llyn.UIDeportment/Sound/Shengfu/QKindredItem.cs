@@ -100,7 +100,7 @@ internal sealed class QKindredItem : INotifyPropertyChanged
 
         if (QLook.QLookPartFind<Run>(container, "PKindredEpithet") is Run epithet)
         {
-            epithet.Text = " " + kindred.QKindredItemEpithet;
+            epithet.Text = QLook.QLookEpithetRead(kindred.QKindredItemEpithet);
         }
     }
 }

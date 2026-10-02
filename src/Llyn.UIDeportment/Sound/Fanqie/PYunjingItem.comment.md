@@ -1,10 +1,11 @@
 # PYunjingItem.cs
+Hash: `088c374bb3ae2233`
 
 ## `internal sealed class PYunjingItem`
 
 One category as a row of the onset or rime column: its key, 來 or 寒, and its entry count.
 Both columns share the row, since an initial and a rime are the same kind of thing to choose from.
-The row remembers its side, so a click can say which column it came from.
+The row carries its final flag, so a click can say which kind of category it names.
 The mark saying whether the row is chosen is the one thing that changes after the row is built.
 
 ## `internal static IReadOnlyList<PYunjingItem> PYunjingItemBuild(IReadOnlyList<CDiwei> rows)`

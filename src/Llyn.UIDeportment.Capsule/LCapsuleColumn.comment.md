@@ -1,4 +1,5 @@
 # LCapsuleColumn.cs
+Hash: `44bd0b0b1df9a41e`
 
 ## `public sealed record LCapsuleColumn(`
 

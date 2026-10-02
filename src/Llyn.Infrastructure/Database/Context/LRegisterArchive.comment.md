@@ -1,8 +1,9 @@
 # LRegisterArchive.cs
+Hash: `cbafb357a0065a1b`
 
 ## `public sealed class LRegisterArchive`
 
-Persists Registers — independent data no Entry, Meaning, or Collocation owns.
+Persists Registers, independent data no Entry, Meaning, or Collocation owns.
 A Register is created once with an id and is then *referenced* by any number of Meanings and Collocations.
 Each association carries the position the Register takes for that referrer alone.
 Attaching and detaching therefore only ever write association rows.
@@ -23,7 +24,7 @@ Binds the store to the workspace `database` it opens sessions through.
 
 ## `public LRegister LRegisterCreate(LRegister register)`
 
-Inserts `register` with a fresh id when it carries none, and returns the stored Register.
+Inserts `register` under a fresh id and returns the stored Register.
 The new Register is referenced by nothing until it is attached to a referrer.
 
 ## `public void LRegisterDefaultCreate(IReadOnlyList<LRegister> registers)`
@@ -59,7 +60,7 @@ Reads the Registers a Collocation is marked with, in the order that Collocation 
 Rewrites the visible name of a written Register and never its id.
 A row a language pack ships is left as it stands, because the pack owns its wording.
 
-## `public IReadOnlyDictionary<string, int> LRegisterReferenceRead()`
+## `public IReadOnlyDictionary<long, int> LRegisterReferenceRead()`
 
 Counts every referenced Register in one read, so a shelf never asks once per row.
 A Register nothing references is absent rather than present as zero.

@@ -1,4 +1,5 @@
 # CSubject.cs
+Hash: `4b2430ad86175f61`
 
 ## `public enum CSubject`
 

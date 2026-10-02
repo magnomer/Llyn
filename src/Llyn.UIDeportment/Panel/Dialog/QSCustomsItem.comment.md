@@ -1,4 +1,5 @@
 # QSCustomsItem.cs
+Hash: `5bff43c2c4aa264d`
 
 ## `internal sealed class QSCustomsItem`
 

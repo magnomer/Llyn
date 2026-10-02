@@ -72,7 +72,7 @@ internal sealed partial class QTaxonomy
 
         if (QLook.QLookPartFind<Run>(container, "PMembershipEpithet") is Run epithet)
         {
-            epithet.Text = " " + membership.QMembershipItemEpithet;
+            epithet.Text = QLook.QLookEpithetRead(membership.QMembershipItemEpithet);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PMembershipLanguage") is TextBlock language)

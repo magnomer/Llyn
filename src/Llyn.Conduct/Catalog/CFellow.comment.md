@@ -1,4 +1,5 @@
 # CFellow.cs
+Hash: `471ce5e8f48636dd`
 
 ## `public sealed record CFellow(long CFellowId, string CFellowName, string CFellowCount)`
 

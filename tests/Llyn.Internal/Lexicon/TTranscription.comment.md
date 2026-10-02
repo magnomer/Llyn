@@ -1,4 +1,5 @@
 # TTranscription.cs
+Hash: `9a7fc295dc68d7d6`
 
 ## `public sealed class TTranscription`
 

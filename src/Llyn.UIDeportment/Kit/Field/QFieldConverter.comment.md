@@ -1,6 +1,7 @@
 # QFieldConverter.cs
+Hash: `492cd567c2fe7f08`
 
-## `internal sealed class QFieldConverter`
+## `internal sealed class QFieldConverter : IMultiValueConverter`
 
 Measures the frame a written field is drawn in so every field carries the same frame.
 A card writes its fields at the sizes and faces the reading view draws them in.
@@ -9,6 +10,11 @@ So the frame is measured outward from the line instead, to one height for the wh
 
 The frame is a sibling drawn behind the text with a negative margin, never padding.
 A field therefore keeps the text where the reading view puts it whatever the frame does.
+
+## `public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)`
+
+The bound values arrive as the face, the size and the padding, in that order.
+Until all three are settled it answers no margin, so a half-built field draws no frame rather than failing.
 
 ## Inline notes
 

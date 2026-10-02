@@ -1,6 +1,7 @@
 # LSpeechArchive.cs
+Hash: `3a369bef2d4375ca`
 
-## `public sealed class LSpeechArchive`
+## `public sealed class LSpeechArchive : LSpeechVault`
 
 Persists and resolves a language's part-of-speech vocabulary.
 An entry's POS rows link a `speech_value` row by id.

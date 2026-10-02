@@ -1,4 +1,5 @@
 # CClipRoll.cs
+Hash: `71c16169b341a872`
 
 ## `public sealed record CClipRoll(`
 

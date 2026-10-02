@@ -1,45 +1,45 @@
 # TMention.cs
+Hash: `fdba931989b92f37`
 
 ## `public sealed class TMention`
 
 Mentions persist ordered text spans linked to Entries and optional meanings.
 Overlaps, out-of-range spans, and meanings without Entries are rejected.
 Deleting linked records or shortening text preserves only valid data.
-Copies receive new IDs.
 Sentence reads restore mention data for each embedded Example.
 
-## `ExampleCreate_TwoMentions_ReadsBackSortedByStart()`
+## `public void ExampleCreate_TwoMentions_ReadsBackSortedByStart()`
 
 Creating an Example sorts mentions by text offset and assigns IDs.
 Archive reads preserve spans and links, including optional sense identity.
 
-## `MentionSave_OverlappingPair_Refuses()`
+## `public void MentionSave_OverlappingPair_Refuses()`
 
 Overlapping spans are rejected without leaving partial mention rows behind.
 
-## `MentionSave_SpanPastText_Refuses()`
+## `public void MentionSave_SpanPastText_Refuses()`
 
 A span extending beyond Example text is refused, while the same start with an in-bounds length can be saved.
 
-## `MentionSave_SenseWithoutEntry_RefusesAtCheck()`
+## `public void MentionSave_SenseWithoutEntry_RefusesAtCheck()`
 
 A sense reference without its required Entry violates the database check.
 An Entry-less mention without a sense remains valid.
 
-## `EntryDelete_MentionedEntry_DropsTheMention()`
+## `public void EntryDelete_MentionedEntry_DropsTheMention()`
 
 Deleting an Entry removes mentions that point to it but preserves the containing Example.
 
-## `MeaningDelete_MentionedSense_KeepsTheEntry()`
+## `public void MeaningDelete_MentionedSense_KeepsTheEntry()`
 
 Deleting a referenced meaning clears only the sense link, retaining the mention ID and its Entry link.
 
-## `ExampleTextUpdate_ShorterText_DropsOnlyTheSpanPastTheEnd()`
+## `public void ExampleTextUpdate_ShorterText_DropsOnlyTheSpanPastTheEnd()`
 
 When Example text shrinks, mentions extending beyond its end are removed.
 Earlier spans remain.
 
-## `SentenceMeaningRead_MentionedExamples_FillsEveryRow()`
+## `public void SentenceMeaningRead_MentionedExamples_FillsEveryRow()`
 
 Meaning-based sentence reads include mention data in each Example row, preserve non-Example rows, and retain sense links.
 
@@ -47,6 +47,6 @@ Meaning-based sentence reads include mention data in each Example row, preserve 
 
 Creates a minimal Entry and Meaning pair for persistence and referential-integrity cases.
 
-## `MentionDraftResolve_NegativeId_KeepsTheSpan()`
+## `public void MentionDraftResolve_NegativeId_KeepsTheSpan()`
 
 Resolving a draft preserves its temporary negative ID, offsets, and Entry/meaning links for unsaved mentions.

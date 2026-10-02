@@ -1,4 +1,5 @@
 # TInterfaceCatalog.cs
+Hash: `5e6bdac7f9362b14`
 
 ## `internal static partial class TInterface`
 

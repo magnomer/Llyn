@@ -1,6 +1,8 @@
 # PScreen.xaml
+Hash: `deedb7ba5fc2437f`
 
-The static frame one film plays in: a black stage above a play switch.
+The static frame one film plays in.
+It is a black stage above a play switch.
 The markup carries no hook.
 `QScreen` in Deportment pulls each part by name, subscribes every event and places each player inside the stage.
 Each video template places it as `veneer:PScreen`, and `QScreen` drives each realized instance.

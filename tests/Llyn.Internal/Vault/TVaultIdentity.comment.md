@@ -1,4 +1,5 @@
 # TVaultIdentity.cs
+Hash: `b1c9da224009716a`
 
 ## `public sealed class TVaultIdentity`
 

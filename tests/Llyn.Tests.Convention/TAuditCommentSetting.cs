@@ -90,7 +90,7 @@ internal static class TAuditCommentSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditCommentCeiling = new Dictionary<string, int>
     {
-        ["Unstamped"] = 1705,
+        ["Unstamped"] = 0,
     };
 
     public static readonly Dictionary<string, string> TAuditCommentClosers = new(StringComparer.Ordinal)

@@ -21,7 +21,7 @@ internal sealed partial class QArticulation
         ArgumentNullException.ThrowIfNull(surface);
 
         _qArticulationSurface = surface;
-        QLook.QLookStyleAttach(surface.Resources);
+        QLook.QLookStyleAttach(surface);
 
         QArticulationLane.SizeChanged += QArticulationLaneRefine;
 

@@ -1,4 +1,5 @@
 # LEntryLoader.cs
+Hash: `b74798386b02dc7c`
 
 ## `public sealed class LEntryLoader`
 
@@ -8,7 +9,8 @@ It composes what the archives already read into one value shape.
 That shape is what a draft commit consumes, so a save and a load are inverses.
 The parts are the entry row, its meanings and collocations, its note, its pronunciations and its transcriptions.
 They include the entry's forms, its parts of speech and its inflections with their features.
-They also include every Example and Situation each card references and every Tag and Translation it carries.
+They include its reflexes and its etymology.
+They also include every sentence, Situation, Register, Tag, Translation, Image and Video each card carries.
 All of them arrive in stored order.
 
 The whole composition runs inside one `LDatabaseSession`.
@@ -27,7 +29,7 @@ Binds the loader to the workspace `database` it reads through.
 
 Returns the draft for the entry identified by `id`, or `null` when no entry has that id.
 
-A card's rows, Situations, Tags and Translations are ordered sets.
+A card's sentences, Situations, Registers, Tags, Translations, Images and Videos are ordered sets.
 Every row the card references or carries fills the field, in the order the associations record.
 So a card referencing three tags loads back with three.
 Meanings arrive as the tree the store keeps, each card holding the cards nested under it.
@@ -57,15 +59,14 @@ An entry that declares no origin gives an empty draft rather than null.
 
 ### `private IReadOnlyList<LReflexDraft> LEntryReflexRead(long id)`
 
-Every stored reflex of the entry, in stored order, each with its language, kind, mark and id.
+Every stored reflex of the entry, in stored order, each with its id.
 
 ### `private IReadOnlyList<LSpeechDraft> LEntrySpeechFormat(IReadOnlyList<LSpeech> speeches)`
 
 Every part of speech the entry carries, in stored order.
 The draft keeps the value link and the custom name apart, and carries the name to show beside them.
 A custom row shows the text it carries.
-A row linking a value shows that row's name.
-An id is still what the entry was filed under, and showing it beats showing nothing.
+A row linking a value shows that value's name, or nothing when the value is gone.
 
 ### `private IReadOnlyList<LCardDraft> LEntryChildRead(`
 
@@ -87,7 +88,7 @@ The draft is built by [LExampleDraft](../../Llyn.Core/Lexicon/LExampleDraft.comm
 ### `private LCardDraft LEntryCardRead(`
 
 The one read path for the independents a card references.
-A Meaning card and a Collocation card hold Examples, Situations, Tags and Translations on identical terms.
+A Meaning card and a Collocation card hold sentences, Situations, Registers, Translations, Tags, Images and Videos on identical terms.
 So which owner side is being read is the only thing that differs.
 The collocation flag says which side ownerId names.
 The card's own columns are handed in already read off its row.
@@ -98,10 +99,3 @@ Both archives keep their positions contiguous from zero, so the one place that a
 
 The card says which stored row it is.
 So a draft handed back to the engine updates that row rather than reading as a new card.
-
-### `private static IReadOnlyList<string> LEntryTextRead<TRow>(`
-
-A card field is an ordered set, so every referenced row fills it and none is discarded.
-The rows arrive ordered by the position each association carries.
-That is the order the save wrote them in, so the field reads back as it was typed.
-A row whose text is null reads as the empty string the draft uses for "nothing was typed".

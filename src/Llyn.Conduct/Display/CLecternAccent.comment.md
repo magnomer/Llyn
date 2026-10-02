@@ -1,4 +1,5 @@
 # CLecternAccent.cs
+Hash: `92ed38553d3d9914`
 
 ## `public sealed record CLecternAccent(`
 

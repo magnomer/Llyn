@@ -1,4 +1,5 @@
 # LSourceFactoryHttp.cs
+Hash: `0e012faa3406448c`
 
 ## `public sealed class LSourceFactoryHttp : LSourceFactory`
 

@@ -1,4 +1,5 @@
 # LSchemaMarker.cs
+Hash: `7f186069510a11a3`
 
 ## `public static class LSchemaMarker`
 
@@ -7,17 +8,17 @@ They are its Tags, its translation links, and the independent Situations it reac
 
 ## `public static void LSchemaMarkerCreate(SqliteConnection connection)`
 
-A Tag has no table of its own, because its text is its identity.
-So the association row is the Tag.
-It is one card, one text, and the position that text takes on that card.
-The primary key on (card, text) stops a card carrying the same Tag twice.
+A Tag is one shared row whose text is unique.
+The association row links a card to it by `tag_ref` and holds the position.
+The primary key on (card, tag) stops a card carrying the same Tag twice.
 The unique index on (card, position) keeps the order free of duplicates.
-Both cascade with the card, since a Tag no card writes is not data left behind.
+The association rows cascade with the card.
+The `tag_ref` foreign key has no cascade, so the Tag row survives every detach.
 The translation tables beside them are the links a card carries to another Entry.
 A link stores the target's id and never its text, so it is one card, one entry, one position.
 The primary key on (card, entry) stops a card linking the same Entry twice.
 The entry_ref cascade is deliberate, since deleting a target Entry drops the links pointing at it.
-Situation is the opposite and keeps the older shape.
+A Situation is shared in the same way.
 It carries its own opaque id, and its visible data is never identity.
 It is reached only through the association tables below it.
 Their situation_ref foreign keys deliberately have no cascade.

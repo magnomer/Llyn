@@ -1,4 +1,5 @@
 # QCategory.cs
+Hash: `4f271babba69ddf3`
 
 ## `internal sealed class QCategory`
 
@@ -26,7 +27,8 @@ Holds the Conduct editor whose speech gate a picked row calls.
 
 ## `internal void QCategoryRefine(CCategory category)`
 
-Paints the menu Conduct handed over: its rows, and the notice when a hint key stands in their place.
+Paints the menu Conduct handed over, with its rows.
+When a hint key stands in their place, it shows the notice instead.
 The key is Conduct's choice, so the notice only looks it up.
 The marker's own repaint and its typing hand the menu in, so it follows every draft and every keystroke.
 
@@ -34,7 +36,8 @@ The marker's own repaint and its typing hand the menu in, so it follows every dr
 
 ### `private void QCategoryApply(FrameworkElement container, object item, string? _)`
 
-Fills one category row: its name, its check icon shown only when taken, and its click.
+Fills one category row with its name, its click, and its check icon.
+The check icon shows only when the row is taken.
 
 ### `private void QCategoryObserve(object sender, RoutedEventArgs e)`
 

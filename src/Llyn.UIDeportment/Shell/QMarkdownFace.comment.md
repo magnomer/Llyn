@@ -1,4 +1,5 @@
 # QMarkdownFace.cs
+Hash: `a8b1a38c9f5de60f`
 
 ## `public static class QMarkdownFace`
 

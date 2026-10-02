@@ -1,17 +1,17 @@
 # QSpeaker.cs
+Hash: `cb1f35f8f3901cd2`
 
 ## `internal sealed class QSpeaker`
 
 The editor's language pill and its menu of loaded languages.
 The pill shows the draft's language, and a pick hands the language to the editor's gate.
-It takes the plain scope, since it calls no member of the editor.
 
 ## `internal QSpeaker(FrameworkElement surface, ObservableCollection<PLanguageItem> language, QLink link)`
 
 Hands the language list its rows and fill, and ties the pill to its menu.
 The menu opens and closes with the pill, where a binding followed its check.
 The rows are the editor's one language list, which every card's Gloss picker also shows.
-The Translation driver is held for its flags, which wait on the same catalog load.
+The link driver is held for its flags, which wait on the same catalog load.
 
 ## `private ToggleButton QSpeakerSwitch`
 

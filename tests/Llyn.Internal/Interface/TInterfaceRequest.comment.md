@@ -1,4 +1,5 @@
 # TInterfaceRequest.cs
+Hash: `d7420cabc74f38e9`
 
 ## `internal static partial class TInterface`
 

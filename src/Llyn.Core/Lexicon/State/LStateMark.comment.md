@@ -1,8 +1,9 @@
 # LStateMark.cs
+Hash: `f3767a2996426dbe`
 
-## `public sealed record LStateMark`
+## `public sealed record LStateMark(`
 
-A stated field with no payload beside it: the three-way state alone.
+A stated field with no payload beside it, holding the three-way state alone.
 
 `LStateValue` carries text and `LStateAnchor` carries an id.
 This carries a field whose content lives in another table, so nothing sits next to the state.
@@ -19,3 +20,8 @@ The readable mark for a state the interface or a request supplies.
 ## `public LStateMark LStateMarkNormalize()`
 
 This mark when it is readable, and the unspecified mark when it is not.
+
+## `public bool LStateMarkEmpty`
+
+Whether nothing was recorded.
+An unreadable mark reads empty too, because its state stands unspecified.

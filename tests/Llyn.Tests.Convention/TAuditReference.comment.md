@@ -1,4 +1,5 @@
 # TAuditReference.cs
+Hash: `fcb934e7ce7e1f37`
 
 ## `internal static class TAuditReference`
 
@@ -14,7 +15,7 @@ The pattern of the project files whose outputs are read.
 
 The generated `.g.cs` markup classes of every project, temp projects left out.
 A project with markup but no generated folder fails with the build step named.
-Assembly attributes and other generated files are left out, since the projects compile as one.
+Generated files not ending in `.g.cs`, such as assembly attributes, are left out.
 
 ## `private static IReadOnlyList<string> TAuditProjectRead()`
 

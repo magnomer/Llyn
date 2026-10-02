@@ -1,8 +1,9 @@
 # LImageArchive.cs
+Hash: `3e72bea858510071`
 
-## `public sealed class LImageArchive`
+## `public sealed class LImageArchive : LImageVault`
 
-Persists Images — independent data no Entry, Meaning, or Collocation owns.
+Persists Images, which are independent data no Entry, Meaning, or Collocation owns.
 An Image is created once with an opaque id.
 It is then *referenced* by any number of Meanings, Collocations, and Situations through the association tables.
 Each association carries the position the Image takes for that referrer alone.

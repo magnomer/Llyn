@@ -1,4 +1,5 @@
 # TRepertoireRow.cs
+Hash: `fee32a749b0766b0`
 
 ## `public sealed class TRepertoireRow`
 

@@ -1,4 +1,5 @@
 # TEngineReflex.cs
+Hash: `f4fe937a804c4fd9`
 
 ## `public sealed class TEngineReflex`
 
@@ -13,9 +14,10 @@ A `main` group that captured marks the row, and `every` keeps every match of a r
 A rule with `first` marks its first row when no match captured `main`, and a captured `main` wins over it.
 Rows of one character that all carry one text are all marked, whichever of them the page marked.
 The Classical Chinese Korean pattern reads a 훈 of several words whole, the last word alone being the 음.
-A rule's rewrites run over the formatted text, so slashed readings are stored bracketed.
-Each row's respelling is filled through its own language pack's groups whatever the switch says, the text and note untouched.
-A phonemic borrower pack has the brackets of its respelling turned into slashes.
-A headword of two characters has its rows of one language and kind folded into one.
+A rule's `recast` moves a leading tone digit of the romanization to its end.
+The `superscript` flag then raises the digits of that romanization.
+Each row's respelling is filled through its own language pack, beside the text and romanization as read.
+A row whose language has no respelling stays blank.
+A headword of two characters has its marked rows of one language and kind joined into one.
 The fetch that stores the rows on an entry is covered in `TEngineReflexStore.cs`.
 The packs, pages and row readers the two share live in `TReflexFixture.cs`.

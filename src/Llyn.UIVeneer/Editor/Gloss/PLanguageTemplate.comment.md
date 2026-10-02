@@ -1,4 +1,5 @@
 # PLanguageTemplate.xaml
+Hash: `0e92873e942cc0c6`
 
 The language selector row of the editor, as markup alone.
 The editor's markup merges it, and the editor's fill fills the named parts.

@@ -1,4 +1,5 @@
 # LStemArchive.cs
+Hash: `e99e8535eb5c71de`
 
 ## `public sealed class LStemArchive : LStemVault`
 
@@ -46,7 +47,7 @@ The characters linked to the series, in the order their Shengfu rows were stored
 The entries of the language whose headword carries a character of every series named.
 Counting the distinct series matched keeps the answer an intersection, as a cell of the rime table is.
 
-## `private static void LStemCharacterApply(...)`
+## `private static void LStemCharacterApply(`
 
 Clears the links of one character's Shengfu row and writes one link per series key.
 
@@ -66,6 +67,6 @@ Links one character's Shengfu row to one series, leaving a link already held as 
 
 Drops every series of the language nothing links to any more.
 
-## `private static LStemRowRead(SqliteDataReader reader)`
+## `private static LStem LStemRowRead(SqliteDataReader reader)`
 
 Reads one series row with its counted entries off the reader.

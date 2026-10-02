@@ -1,4 +1,5 @@
 # QRosterItem.cs
+Hash: `ccf3353eb6ac254d`
 
 ## `internal sealed class QRosterItem`
 

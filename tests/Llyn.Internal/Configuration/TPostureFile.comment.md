@@ -1,4 +1,5 @@
 # TPostureFile.cs
+Hash: `b37706d39b7c30e7`
 
 ## `public sealed class TPostureFile`
 

@@ -1,4 +1,5 @@
 # LMentionResult.cs
+Hash: `399eeb22d50b4440`
 
 ## `public sealed record LMentionResult(`
 

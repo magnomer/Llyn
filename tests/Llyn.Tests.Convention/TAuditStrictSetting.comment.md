@@ -1,8 +1,10 @@
 # TAuditStrictSetting.cs
+Hash: `32238c15e307f4e2`
 
 ## `internal static class TAuditStrictSetting`
 
-Hand-written and tracked: the surface-audit switch, the report path and the classifiers live here.
+Hand-written and tracked.
+The surface-audit switch, the report path and the classifiers live here.
 The per-file ceilings live in the ledger named by `TAuditLedgerFile`.
 No script writes this file.
 
@@ -80,7 +82,8 @@ That work belongs below the UI, in the engine or in `LUsher`.
 ## `public static readonly string[] TAuditCatalogExempt`
 
 The surface files whose stream use is the framework's own: a resource stream, a bitmap decode, a browser page.
-Empty: the exempt files moved to Deportment in the Great Purge.
+It is empty.
+The exempt files moved to Deportment in the Great Purge.
 
 ## `public static readonly string[] TAuditDiskPatterns`
 
@@ -90,7 +93,8 @@ The patterns name the types, so the console's `TextReader` and `TextWriter` pass
 ## `public static readonly string[] TAuditDiskExempt`
 
 The driver files exempt from the disk scan by name.
-Empty: no driver file names the file system.
+It is empty.
+No driver file names the file system.
 
 ## `public static readonly string[] TAuditOverreachingNamespaces`
 

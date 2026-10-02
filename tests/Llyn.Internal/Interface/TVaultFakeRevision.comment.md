@@ -1,4 +1,5 @@
 # TVaultFakeRevision.cs
+Hash: `6f60bed6da1e60c5`
 
 ## `internal sealed class TVaultFakeRevision : LRevisionVault`
 

@@ -1,9 +1,9 @@
 # TFrequencyGauge.cs
+Hash: `722313e1e4741b9f`
 
 ## `public sealed class TFrequencyGauge`
 
 Covers the rules that gather an entry's frequency rows into the one answer its chip shows.
-They sat in the conduct's display before, and they now live beside the frequency record.
 
 ## `public void FrequencyGaugeResolve_NoRows_ReturnsNone()`
 

@@ -1,4 +1,5 @@
 # CTranscriptionRow.cs
+Hash: `0011cc7ba8719efc`
 
 ## `public sealed record CTranscriptionRow(`
 

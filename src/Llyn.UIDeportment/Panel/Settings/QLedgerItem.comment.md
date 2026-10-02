@@ -1,4 +1,5 @@
 # QLedgerItem.cs
+Hash: `24868b3c638df739`
 
 ## `internal sealed class QLedgerItem`
 

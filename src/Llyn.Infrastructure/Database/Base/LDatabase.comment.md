@@ -1,4 +1,5 @@
 # LDatabase.cs
+Hash: `7ed9662f8bae6357`
 
 ## `public sealed class LDatabase : LVault`
 
@@ -7,7 +8,7 @@ That is the only place it ever lives (`LWorkspaceRoot.LWorkspaceDatabaseRead`).
 Hands out ready connections with the workspace pragmas already applied, and initializes the file's schema on first use.
 Every later data store reaches the file through here so no code reaches past the workspace for the database.
 
-It also holds the *ambient session*: the unit of work an operation runs in.
+It also holds the *ambient session*, the unit of work an operation runs in.
 A store asks for a session rather than a connection (`LDatabaseSessionStart`).
 So several stores called one after another share one connection and one transaction.
 Either all of them land or none do.
@@ -21,12 +22,12 @@ The first to finish would close it under the second.
 Binds this database to `root`, the resolved workspace folder that owns the database file.
 The file is not opened until a connection or a session is asked for.
 
-## `public string LDatabaseFile`
+## `public string LDatabaseFile => _lDatabaseFile;`
 
 The path of the database file this instance is bound to.
 `LDoctor` needs it to move an unusable database aside, which is work on the file rather than on its contents.
 
-## `public bool LDatabaseMigrated`
+## `public bool LDatabaseMigrated { get; private set; }`
 
 Whether `LDatabaseCreate` rebuilt the file from an older schema version.
 The engine reads it once after opening, to derive the stored strings the new columns hold.
@@ -84,7 +85,8 @@ It then opens a connection and runs the schema.
 So the file, its tables, and its indexes exist and its version is current.
 A file that had no version table before this ran is a new workspace.
 Such a file is given the Unknown Source once.
-Idempotent — running it against an already-initialized database creates nothing and migrates only what is behind.
+It is idempotent.
+Running it against an already-initialized database creates nothing and migrates only what is behind.
 
 ## `internal void LDatabaseSessionClear(LDatabaseSession session)`
 

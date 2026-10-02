@@ -1,4 +1,5 @@
 # TAuditTruthRelay.cs
+Hash: `ebf21d8a8bd4999b`
 
 ## `internal static partial class TAuditTruthWalker`
 

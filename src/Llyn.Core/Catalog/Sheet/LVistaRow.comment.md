@@ -1,4 +1,5 @@
 # LVistaRow.cs
+Hash: `a8c21bb590b88b0f`
 
 ## `public sealed record LVistaRow(`
 

@@ -1,4 +1,5 @@
 # QLecternCard.cs
+Hash: `9c92fb5f038aebc9`
 
 ## `public sealed class QLecternCard`
 

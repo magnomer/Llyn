@@ -1,4 +1,5 @@
 # LTenureState.cs
+Hash: `cf447781d6e742b6`
 
 ## `public sealed record LTenureState(`
 

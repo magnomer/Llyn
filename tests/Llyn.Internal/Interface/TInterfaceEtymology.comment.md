@@ -1,11 +1,13 @@
 # TInterfaceEtymology.cs
+Hash: `8f3d2327f0bc0fe9`
 
 ## `internal static partial class TInterface`
 
-The etymology half of the test interface: the record and the requests a test needs built.
+The etymology half of the test interface.
+It builds the record and the requests a test needs.
 Tests never construct a production type, so every shape crosses here.
 
-## `internal static LEtymology TEtymologyCreate(long entryId, string text, IReadOnlyList<LMention> mentions)`
+## `internal static LEtymology TEtymologyCreate(string text, IReadOnlyList<LMention> mentions)`
 
 One narrative with its spans and no id, as a store is handed it.
 

@@ -1,4 +1,5 @@
 # PDisplayCard.xaml
+Hash: `41272158f1fa21c6`
 
 ## `ResourceDictionary`
 
@@ -20,9 +21,14 @@ The merge order is the reading order of a card, so the file list doubles as the 
 
 The picture and video rows live with the other media markup, and the leaf fills their lines.
 
+### `<Style x:Key="Display.Card.Title" TargetType="TextBlock">`
+
+The right margin equals the one the writing card's title field carries.
+So a long title is cut at the same width in both modes.
+
 ### `<DataTemplate x:Key="Display.Card.Body">`
 
-Situations, translations, examples and tags read the same on both cards.
+Situations, registers, translations, examples, tags, pictures and videos read the same on both cards.
 So the shared tail is one template, handed to each card through a content control.
 Each row is named, so the fill sets its items and folds it away when it has none.
 A meaning card adds its definition above it, and a collocation card its expression and meaning.

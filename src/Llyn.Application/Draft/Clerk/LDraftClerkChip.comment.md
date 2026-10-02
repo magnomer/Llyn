@@ -1,4 +1,5 @@
 # LDraftClerkChip.cs
+Hash: `cf21b4dbaa84388a`
 
 ## `public sealed class LDraftClerkChip`
 

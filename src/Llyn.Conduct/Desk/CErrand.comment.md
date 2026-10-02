@@ -1,4 +1,5 @@
 # CErrand.cs
+Hash: `7632751047e7ab12`
 
 ## `public sealed class CErrand`
 

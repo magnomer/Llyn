@@ -1,4 +1,5 @@
 # LParadigmSlot.cs
+Hash: `a7a400a5d798cc46`
 
 ## `public sealed record LParadigmSlot(`
 
@@ -19,3 +20,9 @@ The paradigm the form was declared on rides along, so a reader can judge whether
 - `LParadigmSlotInflection` — The stored inflection answering the slot, or null when none does.
 - `LParadigmSlotState` — Whether the slot is answered.
 - `LParadigmSlotParadigm` — The paradigm that named the form, carrying its regular pattern if any.
+
+## `public bool LParadigmSlotMatch(LParadigmSlot other)`
+
+Whether two slots belong in one row of the paradigm table.
+They match when they share a part of speech and both carry inflections of the same text.
+A slot with no stored inflection matches nothing, so it never merges with a neighbour.

@@ -1,4 +1,5 @@
 # TDiweiArchive.cs
+Hash: `087ce03a177eb633`
 
 ## `public sealed class TDiweiArchive`
 

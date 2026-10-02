@@ -1,4 +1,5 @@
 # LRequestEntry.cs
+Hash: `f925c684fa14deb0`
 
 The entry-level requests, one per field of the form that is not a card.
 Each carries the draft id and the new value, and nothing else.

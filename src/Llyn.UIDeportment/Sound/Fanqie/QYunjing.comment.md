@@ -1,8 +1,9 @@
 # QYunjing.cs
+Hash: `a194b6ad1dbe9581`
 
 ## `internal sealed class QYunjing`
 
-The yunjing panel's driver: the workspace browsed as a rime table, by onset and rime of the user's reconstruction.
+The yunjing panel's driver, which browses the workspace as a rime table by onset and rime.
 It is shown only while a loaded language pack carries rime books, since without them there is no table.
 Every decision lives in [CYunjing](../../../Llyn.Conduct/Panel/CYunjing.comment.md), and this file writes controls on notice.
 It drives the Veneer page `PYunjing`, so the page holds only markup.
@@ -120,7 +121,7 @@ Closes the rime column's order menu.
 
 ## `private void QYunjingObserve(object sender, RoutedEventArgs e)`
 
-A click on either column hands the cell's id and side to the select gate.
+A click on either column hands the cell's id and final flag to the select gate.
 
 ## `private void QXiaoyunObserve(object sender, RoutedEventArgs e)`
 

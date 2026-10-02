@@ -1,4 +1,5 @@
 # TDraftSituation.cs
+Hash: `053245519d6d4c18`
 
 ## `public sealed class TDraftSituation`
 
@@ -8,11 +9,12 @@ A situation draft carries a Situation where a sentence draft carries an Example.
 ## `public void RequestApply_HeldSituation_SurvivesScan()`
 
 A context typed and then lost with its launch is still on disk, and recovery offers it back.
-This is the loss the downstream exists to prevent: the panel used to hold the context in its controls alone.
+This is the loss the downstream exists to prevent.
+The panel used to hold the context in its controls alone.
 
 ## `public void SituationCommit_HeldSituation_LeavesNothingBehind()`
 
-A committed context becomes a Situation and leaves no file, no claim and nothing to recover.
+A committed context becomes a Situation and leaves no file and nothing to recover.
 A commit that kept its file would offer saved work back at every launch.
 
 ## `public void LeftoverSweep_SituationMatchingStoredSituation_SweepsIt()`

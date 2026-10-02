@@ -1,4 +1,5 @@
 # TInterfaceCitation.cs
+Hash: `bceb4b5dc0877cbe`
 
 ## `internal static class TInterfaceCitation`
 

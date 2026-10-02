@@ -1,9 +1,15 @@
 # LCatalogTag.cs
+Hash: `17fde97cf17d2843`
 
-## `public static class LCatalogTag`
+## `public sealed record LCatalogTag(LTag LCatalogTagStored, bool LCatalogTagChosen = false)`
 
-The orderings the tag catalog is listed in, and what counts as a matching tag.
+One Tag as a browsed row, and the home of the orderings and the match the tag catalog uses.
 A tag is a word and nothing else, so both answers are about that one text.
+
+**Parameters**
+
+- `LCatalogTagStored` — The stored Tag the row stands for.
+- `LCatalogTagChosen` — True on the row of the Tag the vista stands on, false until the vista find fills it.
 
 ## `public static IReadOnlyList<LTag> LCatalogTagSort(IReadOnlyList<LTag> tags, LCatalogOrder order)`
 

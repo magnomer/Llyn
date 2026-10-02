@@ -1,4 +1,5 @@
 # CEsteem.cs
+Hash: `5f3d6e7977baa120`
 
 ## `public sealed class CEsteem`
 
@@ -14,6 +15,11 @@ The stored entry the held draft stands on, or null for a fresh draft or an empty
 ## `public int CEsteemGraspStep`
 
 The last grasp step, which the star control takes as its limit so it names no engine constant.
+
+## `public event Action? CEsteemFavoriteChanged;`
+
+Raised only by `CEsteemFavoriteSet`, refused or not, so the star reads the store again.
+No bulletin raises it, unlike `CEsteemGraspChanged`.
 
 ## `public event Action? CEsteemFrequencyChanged;`
 

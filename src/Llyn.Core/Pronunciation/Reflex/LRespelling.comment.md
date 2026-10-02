@@ -1,10 +1,11 @@
 # LRespelling.cs
+Hash: `c4d22e7995592870`
 
 ## `public sealed record LRespelling(`
 
 One group of ordered rewrite rules a language pack declares, scoped to the regional varieties it names.
 A pack recasts a looked-up transcription into its preferred symbol convention through these groups.
-The engine knows a group only as a name, a variety scope, and a rule list.
+The engine knows a group only as a variety scope and a rule list.
 Nothing consumes the groups until the lookup applies them and the user switches respelling on.
 
 **Parameters**

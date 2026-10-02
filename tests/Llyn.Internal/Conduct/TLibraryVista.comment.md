@@ -1,4 +1,5 @@
 # TLibraryVista.cs
+Hash: `bbea1b556e48e4a9`
 
 ## `public sealed class TLibraryVista`
 
@@ -10,4 +11,4 @@ A workspace notice closes the chosen entry and tells the driver once.
 A settings notice raises the rows through the marshal.
 The menu offers four orderings.
 The window's exit gate closes the editor and stops the recording.
-Its flag-fill load answers the same rows once the fill has run.
+The rows load answers the stored rows and the languages once the fill has run.

@@ -1,4 +1,5 @@
 # CImageDraft.cs
+Hash: `0b5d2be277f0c915`
 
 ## `public sealed record CImageDraft(`
 

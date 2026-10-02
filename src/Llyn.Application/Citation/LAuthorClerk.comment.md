@@ -1,4 +1,5 @@
 # LAuthorClerk.cs
+Hash: `ba4020ddf959abc1`
 
 ## `public sealed class LAuthorClerk`
 
@@ -87,7 +88,8 @@ The rows come by shared count falling, then by name, case aside, so the closest 
 
 ## `public (string LUnionDropped, string LUnionKept) LAuthorUnionRead(LDraft? draft, long kept)`
 
-The two names a union question shows: the Author held by `draft`, then the stored Author `kept`.
+The two names a union question shows.
+They are the Author held by `draft`, then the stored Author `kept`.
 Each name loses its outer spaces, and a missing Author reads as empty.
 
 ## `public LVita LAuthorVitaRead(long? authorId, IReadOnlyList<LUsage> usages, Func<string, string> localize)`

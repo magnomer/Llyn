@@ -1,4 +1,5 @@
 # QRegister.cs
+Hash: `8cb2a277996528d2`
 
 ## `internal sealed class QRegister`
 
@@ -22,7 +23,8 @@ Holds the Conduct editor whose card gates the handlers call, and the dropdown dr
 ## `internal void QRegisterTextObserve(PRegisterCaret caret, string text)`
 
 Hears each edit of a Register caret and hands the raw text to the register gate, unsettled.
-`QProfferRegisterRefine` then paints the answer: the kept text and the offered Registers.
+`QProfferRegisterRefine` then paints the answer.
+That is the kept text and the offered Registers.
 
 ## `internal void QRegisterChipObserve(object sender, RoutedEventArgs e)`
 
@@ -64,8 +66,6 @@ Puts the caret at the end of the field when the empty space beside the chips is 
 
 The card whose Register field holds this chip or caret, or `null` when no shown card does.
 
-The Register dictionary, held for its chip and entry templates.
-
 ## `internal void QRegisterApply(FrameworkElement container, object item, string? _)`
 
 Fills one item of a card's Register field, where bindings and event attributes stood.
@@ -74,5 +74,6 @@ A chip gets its wording, its close icon and its close observer.
 
 ## `internal void QRegisterFieldApply(ItemsControl list, PCard card)`
 
-Readies a card's Register list once: the chip or entry selector, the item fill and the click on its surface.
+Readies a card's Register list once.
+It sets the chip or entry selector, the item fill and the click on its surface.
 The selector is set only while none is, since a new selector would rebuild every item.

@@ -1,4 +1,5 @@
 # PVita.xaml
+Hash: `3eaa69baaf0d545b`
 
 ## `<UserControl.Resources>`
 

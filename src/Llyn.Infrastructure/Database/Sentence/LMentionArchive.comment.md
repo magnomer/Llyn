@@ -1,11 +1,12 @@
 # LMentionArchive.cs
+Hash: `96d0fccc401a7bd6`
 
-## `public sealed class LMentionArchive`
+## `public sealed class LMentionArchive : LMentionVault`
 
 Persists Mentions, the words of an Example that stand for an Entry.
 A Mention is the Example's own row, so it is read and written by Example.
 `LExampleArchive` and `LSentenceArchive` call the static readers here to fill every Example they return.
-Nothing in the engine or the UI reads the rows yet.
+`LExampleClerk` in the Application layer reads them through the vault to attach each Example's Mentions.
 
 ## `public LMentionArchive(LDatabase database)`
 

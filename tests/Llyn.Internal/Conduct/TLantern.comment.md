@@ -1,4 +1,5 @@
 # TLantern.cs
+Hash: `a0a4f67dca4a3f12`
 
 ## `public sealed class TLantern`
 

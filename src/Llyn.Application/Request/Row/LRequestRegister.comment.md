@@ -1,4 +1,5 @@
 # LRequestRegister.cs
+Hash: `89dc8d8bedcdd41f`
 
 The register requests, shaped like the situation requests.
 A register is a shared row, so its name is edited by row id and not by card.
@@ -20,6 +21,6 @@ Unlinks one register from the card.
 
 Moves one register chip to `LRequestPosition` inside its card.
 
-## `public sealed record LRequestRegisterName(long LRequestDraftId, long LRequestRegisterId, LStateValue LRequestValue)`
+## `public sealed record LRequestRegisterName(long LRequestDraftId, long LRequestRegisterId, LStateWritten LRequestValue)`
 
 Replaces the name of the register, wherever the draft holds it.

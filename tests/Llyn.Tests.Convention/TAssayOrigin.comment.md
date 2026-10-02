@@ -1,11 +1,13 @@
 # TAssayOrigin.cs
+Hash: `be57f8199e1d6303`
 
 ## `public sealed class TAssayOrigin`
 
 Assays of the contesting origin paths that `TAssayContesting` leaves out.
-They share its shape: the driver field is written by the engine and then through one origin path.
+They share its shape.
+The driver field is written by the engine and then through one origin path.
 Each path is judged as a hit beside a no-hit.
-The blank pair also guards against over-breadth with `false` and zero writes.
+The blank no-hit also has `false` and zero hit twins that guard against over-breadth.
 Each rule was switched off once, and only its own facts failed.
 A failing assay exposes a walker bug, never a source to fix.
 

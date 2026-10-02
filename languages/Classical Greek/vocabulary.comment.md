@@ -1,4 +1,5 @@
 # vocabulary.json
+Hash: `2978dd29b1bb25bf`
 
 ## file
 
@@ -43,11 +44,11 @@ It lists the values each feature takes.
 It lists the forms a part is expected to inflect into.
 `part` names the part id and `values` the morphology value ids in display order.
 `except` lists part ids on the parent chain the paradigm must not reach.
-The noun paradigm asks for the genitive singular, which fixes the declension and stem.
+The noun paradigm asks for the genitive, which fixes the declension and stem.
 A proper noun is excepted.
 The verb paradigm asks for the five further principal parts after the present, in dictionary order.
 They are the future, aorist, perfect active, perfect middle and aorist passive.
 A slot the verb lacks is left empty.
-The adjective paradigm asks for the feminine and neuter nominative, which a two-termination adjective repeats.
+The adjective paradigm asks for the feminine and neuter forms, which a two-termination adjective repeats.
 No `regular` predictions are declared.
 A Greek form is a fact of its stem and its accent rather than of its spelling.

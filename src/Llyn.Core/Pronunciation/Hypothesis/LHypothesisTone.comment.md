@@ -1,4 +1,5 @@
 # LHypothesisTone.cs
+Hash: `d0dbcdd3cbf6fd01`
 
 ## `public sealed record LHypothesisTone(`
 
@@ -16,7 +17,8 @@ The compiled form is a private field, so it never enters the record's equality.
 
 ## `public bool LHypothesisToneMatch(string onset)`
 
-Whether the row takes this onset: true for an empty pattern, else the regex's own answer.
+Whether the row takes this onset.
+It is true for an empty pattern, else the regex's own answer.
 
 ## `public string LHypothesisToneResolve(string syllable)`
 

@@ -1,15 +1,18 @@
 # TAuditPlatformSetting.cs
+Hash: `8d7ea316c5c89f0a`
 
 ## `internal static class TAuditPlatformSetting`
 
-Hand-written and tracked: the platform table, the frameworks, the Windows markers and the ceilings live here.
+Hand-written and tracked.
+The platform table, the frameworks, the Windows markers and the ceilings live here.
 No script writes this file.
 `auditplatform.ps1` reads its own auditplatform.json and never writes this file.
 
 ## `public const bool TAuditPlatformEnforced = true;`
 
-False makes every platform fact a warning that passes.
-True fails a fact when a kind counts above its ceiling.
+False lets the ceiling fact pass above its ceilings.
+True fails it when a kind counts above its ceiling.
+Unreadable files and stale ceilings fail the facts either way.
 
 ## `public const string TAuditPlatformRoot = "src/";`
 

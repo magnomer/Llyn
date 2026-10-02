@@ -1,4 +1,5 @@
 # TVaultFakeTranscription.cs
+Hash: `76c3478e6a91afcf`
 
 ## `internal sealed class TVaultFakeTranscription : LTranscriptionVault`
 

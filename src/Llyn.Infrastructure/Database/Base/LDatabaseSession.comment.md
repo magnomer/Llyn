@@ -1,8 +1,10 @@
 # LDatabaseSession.cs
+Hash: `806db50c3af90cde`
 
 ## `public sealed class LDatabaseSession : LVaultSession, IDisposable`
 
-One unit of work against the workspace database: a connection and the transaction every statement in the unit runs in.
+One unit of work against the workspace database.
+It holds a connection and the transaction every statement in the unit runs in.
 A store asks `LDatabase.LDatabaseSessionStart` for one.
 It runs its statements against `LDatabaseSessionConnection` and commits.
 Disposal without a commit rolls the whole unit back.
@@ -17,7 +19,7 @@ Only the outermost session decides.
 
 ## `internal LDatabaseSession(LDatabase owner, SqliteConnection connection)`
 
-Opens the outermost session: the transaction the whole unit of work runs in.
+Opens the outermost session and the transaction the whole unit of work runs in.
 
 ## `internal LDatabaseSession(LDatabaseSession session)`
 

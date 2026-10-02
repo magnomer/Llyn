@@ -1,4 +1,5 @@
 # QTaxonomyBrowse.cs
+Hash: `ed7734b2c277cff1`
 
 ## `internal sealed partial class QTaxonomy`
 

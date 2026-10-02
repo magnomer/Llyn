@@ -1,4 +1,5 @@
 # TAuditTruthLedger.json
+Hash: `dd2678b382b83208`
 
 The driver audit's ceilings, by kind and then by repo-relative file.
 Each ceiling is the count of that kind in that file, and may only fall.

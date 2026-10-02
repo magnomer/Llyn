@@ -1,4 +1,5 @@
 # TCaretKey.cs
+Hash: `6eaf4b7930a95206`
 
 ## `public sealed class TCaretKey`
 

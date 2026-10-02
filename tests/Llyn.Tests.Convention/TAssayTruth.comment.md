@@ -1,4 +1,5 @@
 # TAssayTruth.cs
+Hash: `b120366814776efa`
 
 ## `public sealed class TAssayTruth`
 

@@ -1,4 +1,5 @@
 # source.json
+Hash: `ff2ada6889564a86`
 
 ## pack
 
@@ -8,7 +9,8 @@ No varieties are declared, so every reading is the standard Tokyo one.
 No respelling groups are declared, so every reading shows as its source wrote it.
 Segoe UI has no kana or kanji glyphs, so the headword and example blocks name the Yu fonts instead.
 The gloss block keeps Georgia, since the translations under an example are not Japanese.
-Every Wiktionary page is asked as the article page before the REST rendering.
+Every Wiktionary page except the kana lookup is asked as the article page before the REST rendering.
+The kana lookup reads wikitext through the action API.
 Both hosts reject bursts with 429, and the article page recovers first.
 A kana-form page carries no reading of its own.
 It only points at its kanji form through `{{ja-see}}`, so each Wiktionary attempt follows that pointer.

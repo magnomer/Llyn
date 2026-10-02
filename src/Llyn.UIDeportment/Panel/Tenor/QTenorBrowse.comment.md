@@ -1,4 +1,5 @@
 # QTenorBrowse.cs
+Hash: `b2b4506b9b795df8`
 
 ## `internal sealed partial class QTenor`
 
@@ -19,7 +20,7 @@ The panel keeps no copy of any of the four and asks Conduct for each where it ne
 The Register is held by its id rather than its name, since a name may be rewritten under the panel.
 A null Register is not an absence to be corrected.
 It is the whole workspace, which is what the panel shows first.
-The vista is null until the window hands one over, so the handlers do nothing before that.
+The Conduct tenor is null until the window introduces the panel, so only the print gate checks for it.
 A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
 ### `private async void QTenorWorkspaceRefine()`

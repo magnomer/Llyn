@@ -1,4 +1,5 @@
 # QParadigm.cs
+Hash: `ec20f091191f8d9d`
 
 ## `public sealed class QParadigm : Decorator`
 
@@ -10,7 +11,7 @@ It collapses while it holds nothing, so a headword without forms leaves no gap.
 
 ## `public static readonly DependencyProperty QParadigmItemsProperty`
 
-The rows shown, already mapped from slots by `QParadigmItemCreate`.
+The rows shown, already mapped from slots by `QParadigmItemScan`.
 An empty or null list collapses the box.
 
 ## `public QParadigm()`

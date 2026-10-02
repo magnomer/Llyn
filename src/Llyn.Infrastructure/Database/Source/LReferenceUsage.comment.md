@@ -1,4 +1,5 @@
 # LReferenceUsage.cs
+Hash: `3e8e36ca00e5472a`
 
 ## `public sealed class LReferenceUsage`
 
@@ -17,7 +18,7 @@ So a card arm is a join back up the chain and detaching is clearing two columns 
 
 Binds the store to the workspace `database` it opens sessions through.
 
-## `public IReadOnlyDictionary<string, int> LReferenceUsageRead()`
+## `public IReadOnlyDictionary<long, int> LReferenceUsageRead()`
 
 Counts the citations of every Source at once, for the catalog, the ordering, and the delete.
 A Source nothing cites is absent from the map rather than present at zero.

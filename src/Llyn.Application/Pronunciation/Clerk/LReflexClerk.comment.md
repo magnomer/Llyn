@@ -1,4 +1,5 @@
 # LReflexClerk.cs
+Hash: `8b3b079bbe46f6bd`
 
 ## `public sealed class LReflexClerk`
 

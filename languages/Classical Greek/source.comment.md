@@ -1,4 +1,5 @@
 # source.json
+Hash: `c7e28292475825db`
 
 ## pack
 
@@ -17,7 +18,7 @@ The 4th century CE Koine and 15th century CE Constantinopolitan rows can be adde
 They are labelled by name, since no flag stands for a period.
 No respelling is declared.
 The Attic reading already writes the pitch accent with an acute and vowel length with a colon.
-No morphology sources are listed, because no `vocabulary.json` declares the paradigms yet.
+No morphology sources are listed.
 
 ## `pronunciation[0]` Wiktionary
 

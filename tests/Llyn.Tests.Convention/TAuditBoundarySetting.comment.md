@@ -1,8 +1,10 @@
 # TAuditBoundarySetting.cs
+Hash: `f3d84be7a3a7e427`
 
 ## `internal static class TAuditBoundarySetting`
 
-Hand-written and tracked: the names and files the boundary facts hold the shell to.
+Hand-written and tracked.
+It holds the names and files the boundary facts hold the shell to.
 No script writes this file.
 
 ## `public static readonly string[] TAuditBoundaryForbidden`
@@ -25,7 +27,8 @@ A converter is still a surface type, so the strict audit counts every branch in 
 ## `public static readonly string[] TAuditBoundaryHidden`
 
 The constructs that keep code out of a syntax walk: a preprocessor branch, reflection, `dynamic`, inline markup code.
-Also an enum parsed from text and a `using` alias, which each give a logic name a second spelling.
+Also an enum parsed from text, a `using` alias and an `extern alias`.
+Each gives a logic name a second spelling.
 The walkers parse without symbols, so a branch would be skipped, and reflection names nothing the walk can follow.
 
 ## `public static readonly string[] TAuditBoundaryLoader`

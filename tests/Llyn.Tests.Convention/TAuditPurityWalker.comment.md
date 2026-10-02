@@ -1,9 +1,10 @@
 # TAuditPurityWalker.cs
+Hash: `62bceda77b50b01a`
 
 ## `internal static class TAuditPurityWalker`
 
 Reads every framework namespace and eavesdropping member a pure ring names.
-A namespace is read twice: from the using directive, and from the symbol a name binds to.
+A namespace is read twice, from the using directive and from the symbol a name binds to.
 A package the project references beyond the runtime stays unbound, so its using directive is what is read.
 
 ## `private static readonly string TAuditPurityProject`

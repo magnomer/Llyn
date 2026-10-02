@@ -1,4 +1,5 @@
 # QGraspStar.cs
+Hash: `9aaf0688f6ffc8b6`
 
 ## `public sealed class QGraspStar`
 
@@ -18,7 +19,8 @@ The half step under the pointer, or null while the pointer is off the row.
 
 ## `public int QGraspPointed`
 
-The half step to word beside the stars: the hovered one, else the set one.
+The half step to word beside the stars.
+It is the hovered one, else the set one.
 
 ## `public static object QGraspLimitDraw(DependencyObject sender, object value, DependencyProperty limit)`
 
@@ -26,7 +28,9 @@ Holds the step at or under the limit, since a step past the last star has nothin
 
 ## `public Size QGraspSizeDraw()`
 
-Five stars and the four gaps between them, at a fixed size, plus a slack border on every side.
+One star for every two steps of the limit and the gaps between them.
+A slack border is added on every side.
+Each star has a fixed size.
 The slack lets a pointer near the row count as on it.
 
 ## `public void QGraspHoverRefine(Point point)`

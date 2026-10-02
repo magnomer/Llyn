@@ -1,4 +1,5 @@
 # LScriptStyle.cs
+Hash: `6a49289ad2a1fd2e`
 
 ## `public sealed record LScriptStyle(`
 

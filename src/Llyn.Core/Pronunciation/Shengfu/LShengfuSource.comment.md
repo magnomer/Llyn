@@ -1,4 +1,5 @@
 # LShengfuSource.cs
+Hash: `2481ad03add835ef`
 
 ## `public interface LShengfuSource`
 

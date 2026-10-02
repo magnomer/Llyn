@@ -1,4 +1,5 @@
 # PCorpus.xaml
+Hash: `ac9ca89779fe6dd8`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -6,7 +7,8 @@ The seams that part the example catalog, the entries quoting the chosen example,
 The row seam runs under the ordering bar and the command row.
 It is bled past the panel margin so it meets the navigation's own edge.
 The column seam sits in the middle of the gutter and reaches the foot of the window.
-Neither seam encloses anything, which is the whole rule: a line marks a division, a box would claim an object.
+Neither seam encloses anything, which is the whole rule.
+A line marks a division, and a box would claim an object.
 
 ## `<Border x:Name="PRank" ... Style="{StaticResource Theme.Search.Bar}">`
 
@@ -75,7 +77,8 @@ What it shares with the entry panels is the read-and-edit mechanism, the `PCorpu
 The sentence stands at the head of the page.
 The language and the usage count stand as chips on the row beneath it.
 The translations and the cited Source are headings over their values, as a situation's description is.
-No field is labeled, because the entry display labels nothing: position and dress say what a value is.
+No field is labeled, because the entry display labels nothing.
+Position and dress say what a value is.
 A never-written translation or citation is not drawn at all, as a situation with no description draws none.
 An unknown citation reads the unknown mark where the Source would stand.
 A never-written sentence reads the unwritten text in the muted colour, because the head of the page cannot be empty.
@@ -90,13 +93,14 @@ The click is answered by the panel, which knows which Example is open.
 
 ## `<ItemsControl x:Name="PQuotation">`
 
-The middle column: every Entry whose cards quote the selected Example, one row per Entry.
+The middle column lists every Entry whose cards quote the selected Example, one row per Entry.
 An Entry quoting it from several cards is still one row.
 While no Example is chosen, every Entry is listed, as the tenor panel lists every Entry under no register.
 A row reads the flag, the headword and the language, as a cohort row does.
 Its parts are named, and the panel fills them as it fills the catalog rows.
 Choosing a row shows that Entry in `PDisplay`, in place of the Example reading, without leaving the tab.
-The list is read-only: a reference is added or dropped on the card holding it, never here.
+The list is read-only.
+A reference is added or dropped on the card holding it, never here.
 An Example nothing quotes shows the empty state rather than hiding the column.
 
 ## `<Grid x:Name="PTranscript" Margin="21,18,0,0" Visibility="Collapsed">`

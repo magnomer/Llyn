@@ -1,4 +1,5 @@
 # LMarkupCard.cs
+Hash: `3bb4ce7a45f8ba43`
 
 ## `public sealed record LMarkupCard(`
 

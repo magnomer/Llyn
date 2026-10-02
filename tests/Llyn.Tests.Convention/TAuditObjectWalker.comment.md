@@ -1,4 +1,5 @@
 # TAuditObjectWalker.cs
+Hash: `c6a6c3eb423c7f25`
 
 ## `internal static class TAuditObjectWalker`
 

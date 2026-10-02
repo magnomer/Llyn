@@ -1,4 +1,5 @@
 # CReflexHead.cs
+Hash: `c080539fc6f40a2c`
 
 ## `public sealed record CReflexHead(long CReflexHeadId, bool CReflexHeadLead);`
 

@@ -1,4 +1,5 @@
 # LPortraitVault.cs
+Hash: `08e36764f5ed58fa`
 
 ## `public interface LPortraitVault`
 

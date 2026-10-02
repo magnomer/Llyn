@@ -1,9 +1,11 @@
 # TTranslation.cs
+Hash: `f7b6241d9396bff9`
 
 ## `public sealed class TTranslation`
 
 Covers the Translation link store, which mirrors the Tag one on an id instead of a text.
-A card writes its whole line at once, so every case here is a write followed by a read.
+A card writes its whole line at once, so most cases are a write followed by a read.
+It also covers resolving a typed word to one Entry, and finding the Entries a word could name.
 
 ## `public void TranslationMeaningSave_CardWithLinks_ReadsBackInOrder()`
 

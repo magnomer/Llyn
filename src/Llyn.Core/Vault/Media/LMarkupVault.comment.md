@@ -1,4 +1,5 @@
 # LMarkupVault.cs
+Hash: `5fd18fc7c6622ed6`
 
 ## `public interface LMarkupVault`
 

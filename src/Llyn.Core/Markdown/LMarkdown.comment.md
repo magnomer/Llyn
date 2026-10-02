@@ -1,8 +1,9 @@
 # LMarkdown.cs
+Hash: `bb31d2bb95bbf5db`
 
 ## `public static class LMarkdown`
 
-The note dialect: the one reader every writer and the engine share.
+The note dialect, the one reader every writer and the engine share.
 It is a small CommonMark subset, so a note written here reads the same in any Markdown viewer.
 Block shapes are headings, paragraphs, bullet and numbered items, quotes, fenced code and rules.
 Inline shapes are those of `LMarkdownInline`.

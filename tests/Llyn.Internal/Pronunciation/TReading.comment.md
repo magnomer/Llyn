@@ -1,4 +1,5 @@
 # TReading.cs
+Hash: `90dbf2aa8f082f59`
 
 ## `public sealed class TReading`
 

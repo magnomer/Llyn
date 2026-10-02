@@ -1,4 +1,5 @@
 # LMarkupExample.cs
+Hash: `37ee565aa8477893`
 
 ## `public sealed record LMarkupExample(`
 

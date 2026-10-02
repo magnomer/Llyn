@@ -1,4 +1,5 @@
 # CReference.cs
+Hash: `00e2cdde24ed090c`
 
 ## `public sealed record CReference(`
 

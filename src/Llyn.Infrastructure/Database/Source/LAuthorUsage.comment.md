@@ -1,4 +1,5 @@
 # LAuthorUsage.cs
+Hash: `84b9399a3cd77f2e`
 
 ## `public sealed class LAuthorUsage`
 

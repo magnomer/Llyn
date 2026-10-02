@@ -1,4 +1,5 @@
 # TAssayLaundering.cs
+Hash: `e147f9011639bd32`
 
 ## `public sealed class TAssayLaundering`
 

@@ -1,4 +1,5 @@
 # LSituationClerk.cs
+Hash: `51caaa90635460ab`
 
 ## `public sealed class LSituationClerk`
 
@@ -21,7 +22,8 @@ What a draft naming no Situation is measured against.
 ## `public LSituation LSituationClerkCreate(LSituation situation)`
 
 Creates `situation` and returns it with its assigned id and its media read back.
-Its title is not identity: the same words saved twice are two Situations.
+Its title is not identity.
+The same words saved twice are two Situations.
 The row and its media are written in one session, so a failed picture leaves no half Situation.
 
 ## `public LSituation? LSituationClerkRead(long id)`

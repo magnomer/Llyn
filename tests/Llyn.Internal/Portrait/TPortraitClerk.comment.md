@@ -1,4 +1,5 @@
 # TPortraitClerk.cs
+Hash: `e3daf217c7f0f374`
 
 ## `public sealed class TPortraitClerk`
 

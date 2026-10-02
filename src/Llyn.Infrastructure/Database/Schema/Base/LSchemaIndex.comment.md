@@ -1,4 +1,5 @@
 # LSchemaIndex.cs
+Hash: `4f11331ef2110360`
 
 ## `public static class LSchemaIndex`
 
@@ -40,7 +41,7 @@ Operational rows pointing at lexical rows and at history.
 ### `command.CommandText =`
 
 The ordered sets that were left without a unique position.
-They are a collocation within its Entry, and a pronunciation or a transcription within its Entry.
+They are a collocation, a pronunciation, a transcription, and an Etymon, each within its Entry.
 The translation links a card carries are ordered the same way and take the same index.
 Every other ordered set already has one.
 Without it a duplicate position is silently possible and the read order becomes arbitrary.

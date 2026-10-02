@@ -1,4 +1,5 @@
 # TAuditLaunderingWalker.cs
+Hash: `9ee9e531fc35de52`
 
 ## `internal static class TAuditLaunderingWalker`
 

@@ -1,4 +1,5 @@
 # LSpeechPack.cs
+Hash: `85238115ffc157c9`
 
 ## `public sealed record LSpeechPack(`
 

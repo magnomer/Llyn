@@ -1,4 +1,5 @@
 # QWorkspace.cs
+Hash: `27b24b17e726e96f`
 
 ## `internal sealed class QWorkspace`
 

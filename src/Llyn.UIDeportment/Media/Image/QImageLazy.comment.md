@@ -1,4 +1,5 @@
 # QImageLazy.cs
+Hash: `5ec419d0f109cfbe`
 
 ## `public sealed class QImageLazy : Decorator`
 

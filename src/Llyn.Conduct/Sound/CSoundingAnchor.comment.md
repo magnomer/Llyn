@@ -1,4 +1,5 @@
 # CSoundingAnchor.cs
+Hash: `6d49a433602eccb2`
 
 ## `public sealed class CSoundingAnchor`
 

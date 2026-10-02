@@ -1,4 +1,5 @@
 # TCorpus.cs
+Hash: `cee4c8294e980e3f`
 
 ## `public sealed class TCorpus`
 

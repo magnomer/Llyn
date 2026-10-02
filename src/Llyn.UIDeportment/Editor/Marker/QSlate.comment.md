@@ -1,4 +1,5 @@
 # QSlate.cs
+Hash: `576ebc68a3a5fcdb`
 
 ## `internal sealed class QSlate`
 

@@ -1,4 +1,5 @@
 # CCatalogTag.cs
+Hash: `0e9bba49508a93e1`
 
 ## `public sealed record CCatalogTag(CTag CCatalogTagStored, bool CCatalogTagChosen)`
 

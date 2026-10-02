@@ -1,4 +1,5 @@
 # LOutline.cs
+Hash: `04c1fe57bee401a5`
 
 ## `public static class LOutline`
 
@@ -15,4 +16,4 @@ The sections follow in the order the likeness carries them, through `LOutlineSec
 ## `public static string LOutlineNormalize(string? text)`
 
 Entry text may hold any character, and a stray hash or asterisk would silently restructure the document.
-Every control character is escaped rather than stripped, so nothing the reader wrote is lost.
+Every markdown special character gets a backslash rather than being stripped, so nothing the reader wrote is lost.

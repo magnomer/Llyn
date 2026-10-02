@@ -1,4 +1,5 @@
 # LCapsuleWindow.cs
+Hash: `1821cf8a791ff226`
 
 ## `public sealed record LCapsuleWindow(`
 

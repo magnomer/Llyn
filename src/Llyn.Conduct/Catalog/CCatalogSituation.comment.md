@@ -1,4 +1,5 @@
 # CCatalogSituation.cs
+Hash: `2be1f43f5ab654e1`
 
 ## `public sealed record CCatalogSituation(`
 

@@ -1,4 +1,5 @@
 # LTranscriptionDraft.cs
+Hash: `26688400b68e77bc`
 
 ## `public sealed record LTranscriptionDraft(`
 

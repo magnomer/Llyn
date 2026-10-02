@@ -32,6 +32,7 @@ public sealed class LEngine : IDisposable
     internal LTrove LEngineTrove { get; } = new();
     internal LSettings LEngineSettingsHeld { get; set; }
     internal HashSet<long> LEngineDraftStale { get; } = [];
+    internal long LEngineRevision { get; set; }
     private readonly List<Action<LBulletin>> _lEngineObservers = [];
     private readonly Func<string, LRig> _lEngineFactory;
     private readonly Action<string> _lEnginePointer;
@@ -257,6 +258,7 @@ public sealed class LEngine : IDisposable
         Action<LBulletin>[] observers;
         lock (LEngineGate)
         {
+            LEngineRevision++;
             if (_lEngineObservers.Count == 0)
             {
                 return;

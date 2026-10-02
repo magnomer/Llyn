@@ -1,4 +1,5 @@
 # TInterfaceCapsule.cs
+Hash: `062207ed6f90f438`
 
 ## `internal static class TInterfaceCapsule`
 

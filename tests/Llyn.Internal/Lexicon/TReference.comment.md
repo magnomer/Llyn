@@ -1,4 +1,5 @@
 # TReference.cs
+Hash: `e00eb34a59be63a7`
 
 ## `public sealed class TReference`
 
@@ -8,6 +9,8 @@ Each side refuses a plain delete while something still points at the row.
 The detaching delete the catalog runs lets go of every pointer and the row together.
 Neither a Reference nor an Author is deleted by a citation or a credit going.
 Both are deliberate data, not something typed into a card.
+Usage reads name every card and Example that cites a Reference or sits under a credited Author.
+A Reference whose stored author state word is broken reads as unreadable and refuses commit until swept.
 
 ## Inline notes
 

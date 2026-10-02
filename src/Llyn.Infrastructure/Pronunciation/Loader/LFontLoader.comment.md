@@ -1,8 +1,10 @@
 # LFontLoader.cs
+Hash: `24fdea5b38e44d4d`
 
 ## `internal static class LFontLoader`
 
-The font side of the pack loader: the typography blocks a pack declares.
+The font side of the pack loader.
+It reads the typography blocks a pack declares.
 One block names a family, a size and a style.
 `LLanguageLoader` and `LGlyphLoader` call it.
 

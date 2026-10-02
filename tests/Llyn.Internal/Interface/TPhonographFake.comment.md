@@ -1,4 +1,5 @@
 # TPhonographFake.cs
+Hash: `af34df5efbe42d1c`
 
 ## `internal sealed class TPhonographFake : LPhonograph`
 

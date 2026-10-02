@@ -1,4 +1,5 @@
 # TEntryStore.cs
+Hash: `12123a7394e00580`
 
 ## `public sealed class TEntryStore`
 
@@ -8,15 +9,15 @@ It is also the refusal to report success for an update that reached no row.
 
 ## Inline notes
 
-### `Assert.NotNull(examples.LExampleRead(example.LExampleId));`
+### `Assert.NotNull(examples.TExampleRead(example.LExampleId));`
 
 The Example was referenced, never owned, so it outlives the Entry that pointed at it.
 
-### `Assert.Equal("Äpfel", Assert.Single(entries.LEntryFind("äpfel")).LEntryHeadword);`
+### `Assert.Equal("Äpfel", Assert.Single(entries.TEntryFind("äpfel")).LEntryHeadword);`
 
 SQLite's own lower() folds ASCII only, so this is the case the old matching could not make.
 
-### `Assert.Equal(2, entries.LEntryFind("   ").Count);`
+### `Assert.Equal(2, entries.TEntryFind("   ").Count);`
 
 A query of whitespace alone lists everything, exactly as an empty box does.
 A query is trimmed before it is matched.

@@ -1,4 +1,5 @@
 # TAuditTruthTampering.cs
+Hash: `cba81ad7ba88ce49`
 
 ## `internal static partial class TAuditTruthWalker`
 

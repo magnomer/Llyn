@@ -1,4 +1,5 @@
 # CArticulation.cs
+Hash: `8a6ec94f7906876a`
 
 ## `public sealed record CArticulation(`
 

@@ -1,15 +1,18 @@
 # LSituation.cs
+Hash: `3fc8114fa6850e39`
 
 ## `public sealed record LSituation(`
 
-One Situation — the usage context a Meaning or Collocation belongs to, and independent data owned by nothing.
+One Situation is the usage context a Meaning or Collocation belongs to.
+It is independent data owned by nothing.
 No Entry, Meaning, or Collocation contains a Situation.
 Any number of Meanings and Collocations *reference* it instead.
 The order a Situation appears in lives on each reference rather than here.
 `LSituationId` is the identity, an opaque and program-generated stable id.
 The title, description, and kind are visible data and never identity.
 Editing any of them leaves the id and every reference to it untouched.
-A Situation cites nothing: it is a description the user writes, not a passage quoted from a work.
+A Situation cites nothing.
+It is a description the user writes, not a passage quoted from a work.
 The images and videos it shows are independent records too, referenced in the order the reference holds.
 So a Situation reaches its media exactly as a Meaning does.
 Every field here that can stand empty carries `LStateValue`.

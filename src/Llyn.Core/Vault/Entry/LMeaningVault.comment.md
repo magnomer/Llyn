@@ -1,4 +1,5 @@
 # LMeaningVault.cs
+Hash: `dd2452bda2202cc2`
 
 ## `public interface LMeaningVault`
 

@@ -1,4 +1,5 @@
 # LSchemaLacuna.cs
+Hash: `91d309bcaa047fae`
 
 ## `public static class LSchemaLacuna`
 

@@ -1,4 +1,5 @@
 # LVaultSession.cs
+Hash: `d05acc00ce5ec68f`
 
 ## `public interface LVaultSession : IDisposable`
 

@@ -1,8 +1,10 @@
 # TAuditCensusSetting.cs
+Hash: `05ecfbe1d883c716`
 
 ## `internal static class TAuditCensusSetting`
 
-Hand-written and tracked: the floors, the squatting patterns and the smuggling words of the census.
+Hand-written and tracked.
+It holds the floors, the squatting patterns and the smuggling words of the census.
 No script writes this file, and the census fact reads no script configuration.
 `auditstructure.json` holds its own copy, kept in step by hand as scripts/principles.md asks.
 

@@ -1,4 +1,5 @@
 # PEditorField.xaml
+Hash: `f3c21eda21dc7150`
 
 ## `ResourceDictionary`
 
@@ -7,7 +8,7 @@ Each is a rule about one box rather than a piece of the form's shape.
 
 ## Inline notes
 
-### `<Style x:Key="Editor.Field.Ghost" TargetType="TextBlock">`
+### `<Style x:Key="Editor.Field.Ghost" TargetType="TextBlock" BasedOn="{StaticResource Theme.Text.Headword}">`
 
 The unseen twin that measures the headword, standing in the same QGauge as the box.
 It alone is measured, so the cell closes on the text rather than on the box.

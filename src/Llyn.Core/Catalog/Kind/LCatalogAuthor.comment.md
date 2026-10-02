@@ -1,4 +1,5 @@
 # LCatalogAuthor.cs
+Hash: `4ce4794a49e22664`
 
 ## `public sealed record LCatalogAuthor(`
 
@@ -12,6 +13,11 @@ An Author credited nowhere is still a row, because the workspace still holds it.
 - `LCatalogAuthorWork` — How many Sources credit the Author.
 - `LCatalogAuthorUsage` — How many Entries and Examples cite the Sources crediting the Author.
 - `LCatalogAuthorChosen` — True on the row of the Author the vista stands on, false until the vista find fills it.
+
+## `public string LCatalogAuthorName { get; init; }`
+
+The name as the row shows it.
+It is the stored name until the vista find numbers twins apart, while sort and match read the stored name.
 
 ## `public string LCatalogAuthorCount`
 

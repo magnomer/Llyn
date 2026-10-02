@@ -1,4 +1,5 @@
 # TPortraitOutline.cs
+Hash: `cc48a5b4e8ecdc12`
 
 ## `public sealed class TPortraitOutline`
 
@@ -10,4 +11,4 @@ Markdown carries no theme, so order is the only fidelity it has.
 
 ## `public void OutlineFormat_MarkdownInFieldText_EscapesEveryControlCharacter()`
 
-An unescaped hash or asterisk would silently restructure the document.
+An unescaped angle bracket in field text would silently restructure the document.

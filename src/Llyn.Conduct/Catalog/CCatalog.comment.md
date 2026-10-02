@@ -1,9 +1,10 @@
 # CCatalog.cs
+Hash: `e3a3755cd9279a51`
 
 ## `public sealed class CCatalog`
 
-The reference reads every driver shares: fonts, rules, orders, schemes, parts of speech, glyphs and languages.
-It also sorts an entry's meanings and finds the entries a markup line names.
+The reference reads every driver shares.
+They cover fonts, sentence orders, glyphs, languages, flags, meanings and articulation charts.
 It maps each engine record into its Conduct record, so a driver never names a Core type.
 It stands on the atelier's ports, and `CAtelier` hands one out on each read.
 It holds no state of its own.
@@ -25,9 +26,11 @@ An unknown role throws, so a role added on one side alone fails loudly.
 
 ## `internal static async Task<CEnsignSheet<LCatalogKind>> LCatalogEnsignLoad<LCatalogKind>(`
 
-The one ordering rule for an area's rows that show flags: the flag fill first, then the area's read.
+The one ordering rule for an area's rows that show flags.
+The flag fill runs first, then the area's read.
 The fill runs into the driver's store, so each row painted afterwards finds its flag drawn.
-A failed fill is silent: the languages are read without flags, and the rows are still answered.
+A failed fill is silent.
+The languages are read without flags, and the rows are still answered.
 Every area's `…Load` member reaches it, so no driver orders the two engine calls itself.
 
 ## `internal static CSentenceOrder CCatalogOrderRead(LSentenceOrder order)`

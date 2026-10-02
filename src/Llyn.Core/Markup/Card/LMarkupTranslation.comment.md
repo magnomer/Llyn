@@ -1,4 +1,5 @@
 # LMarkupTranslation.cs
+Hash: `38e82c598b03d683`
 
 ## `public sealed record LMarkupTranslation(`
 

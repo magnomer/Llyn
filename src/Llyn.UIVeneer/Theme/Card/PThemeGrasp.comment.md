@@ -1,4 +1,5 @@
 # PThemeGrasp.xaml
+Hash: `0e8eaf94c43d71f6`
 
 ## `<SolidColorBrush x:Key="Theme.Grasp.Fill" ...>`
 
@@ -16,7 +17,8 @@ Muted like the label beside it, so an unjudged row does not call for attention.
 
 ## `<SolidColorBrush x:Key="Theme.Grasp.Preview" ...>`
 
-The fill drawn while the pointer hovers, before a click commits: the accent at half strength.
+The fill drawn while the pointer hovers, before a click commits.
+It is the accent at half strength.
 Strong enough to read at a glance, yet plainly not the committed fill beside it.
 
 ## `<Style x:Key="Theme.Grasp.Mark" TargetType="local:PGrasp">`

@@ -1,4 +1,5 @@
 # PLinkCaret.cs
+Hash: `27a04697ff1232e0`
 
 ## `internal sealed class PLinkCaret`
 

@@ -1,4 +1,5 @@
 # TAssaySink.cs
+Hash: `cf2cd066fe22bd29`
 
 ## `public sealed class TAssaySink`
 

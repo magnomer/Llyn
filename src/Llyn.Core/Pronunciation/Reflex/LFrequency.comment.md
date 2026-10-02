@@ -1,9 +1,11 @@
 # LFrequency.cs
+Hash: `f39a12951b92e8f3`
 
 ## `public sealed record LFrequency(`
 
 One frequency value an entry carries from one source.
-The engine fetches it once from a web source the pack names and stores the raw figure and its band.
+The engine fetches it once from a web source the pack names.
+It stores the raw figure and its band.
 The raw figure is the ground truth and the band is a cached label recomputed from it on every read.
 The pack knows where the value lives and how its unit turns into a word interval.
 The interval is graded on one ladder shared by every language, so a label means the same everywhere.
@@ -23,7 +25,8 @@ The shared ladder, one rung per decade of the word interval.
 Core is one occurrence within 10,000 words, Everyday within 100,000, Advanced within 1,000,000, Rare beyond.
 The decades follow the Zipf scale of van Heuven, Mandera, Keuleers and Brysbaert (2014).
 Zipf 5 and above is at least 100 per million, Zipf 4 at least 10, Zipf 3 at least 1.
-The names are vocabulary tiers: the core thousand, the everyday five thousand, the advanced thirty thousand, the rest.
+The names are vocabulary tiers.
+They are the core thousand, the everyday five thousand, the advanced thirty thousand, and the rest.
 The ladder lives here so no pack can grade its own figures on a scale of its own.
 Every language observes these four rungs and these four names, whatever its source measures.
 A pack may declare pattern bands only when its source yields no figure an interval can be read from.
@@ -41,6 +44,11 @@ The band names from rare to core, so every reader of the ladder reads this one l
 
 Rare followed by the ladder's names in reverse, built from `LFrequencyBands`.
 So each band name is spelled once, and the ranks cannot drift from the ladder.
+
+## `public int LFrequencyRank`
+
+The band's place on the scale, from one for rare up to four for core.
+No band, or a name off the ladder, ranks zero.
 
 ## `public static string? LFrequencyBandResolve(LSourceSpec spec, double raw)`
 

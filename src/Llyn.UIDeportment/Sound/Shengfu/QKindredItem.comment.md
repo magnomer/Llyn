@@ -1,4 +1,5 @@
 # QKindredItem.cs
+Hash: `88afc38dc2aabcda`
 
 ## `internal sealed class QKindredItem : INotifyPropertyChanged`
 

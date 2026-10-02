@@ -1,11 +1,17 @@
 # QLibrary.cs
+Hash: `c278da8b45ef9ebe`
 
 ## `internal sealed class QLibrary`
 
-Drives the library panel: what it is made of, and what it forwards.
+Drives the library panel by what it is made of and what it forwards.
 Every branch it once carried lives in the Conduct `CLibrary` and the `CPanel` it holds.
 The search, the ordering, the index, the read-only display, the editor and the import are all wired here.
 The panel itself is the veneer's `PLibrary` page, which the window places.
+
+## `internal QLectern QLibraryLectern { get; private set; } = null!;`
+
+Null until `QLibraryIntroduce` builds the lectern over the Conduct editor's display.
+The window reads it only after the panel is introduced.
 
 ## `internal QLibrary(UserControl surface)`
 
@@ -69,7 +75,7 @@ The entry was already closed in Conduct.
 
 ## `private bool QLibraryShownCheck()`
 
-The shown seam: whether this tab is the one in front, which only the page knows.
+The shown seam answers whether this tab is the one in front, which only the page knows.
 
 ## `internal void QLibraryExitRefine()`
 
@@ -137,7 +143,7 @@ What arrives is any number of entries, none of them the one being written.
 
 ## `private void QLibraryPressRefine(object sender, CanExecuteRoutedEventArgs e)`
 
-Whether the print button is live: exactly when an entry is read in the display.
+Whether the print button is live, exactly when an entry is read in the display.
 The controller answers, so no control state is read.
 
 ## `private async void QLibraryPressObserve(object sender, ExecutedRoutedEventArgs e)`

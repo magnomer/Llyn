@@ -1,4 +1,5 @@
 # LReferenceFacade.cs
+Hash: `8cbd0714c8059af7`
 
 ## `internal sealed class LReferenceFacade`
 
@@ -45,7 +46,7 @@ The sources panel and the oeuvre list share it.
 
 ## `internal void LEngineReferenceDelete(long id, bool detach)`
 
-The same delete, with `detach` clearing every citation first.
+Deletes the Reference and announces it, with `detach` clearing every citation first.
 
 ## `public LColophon LEngineColophonRead(LDraft draft)`
 

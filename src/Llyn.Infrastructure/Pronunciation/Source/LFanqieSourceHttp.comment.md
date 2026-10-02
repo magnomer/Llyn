@@ -1,4 +1,5 @@
 # LFanqieSourceHttp.cs
+Hash: `a1a947d8114d8b4b`
 
 ## `public sealed class LFanqieSourceHttp : LFanqieSource`
 
@@ -7,7 +8,8 @@ Asks one rime book's site for one character and reads the placements it answers 
 A table site answers with the whole rime table the character sits in, one table per rime group.
 A cell there holds one group per 小韻, and only the groups carrying the marked character are read.
 A line site answers with plain text, one placement per match of the book's line pattern.
-Nothing here knows the site: the address, the form and every pattern come from the pack.
+Nothing here knows the site.
+The address, the form and every pattern come from the pack.
 
 ## `public LFanqieSourceHttp(HttpClient client)`
 
@@ -19,7 +21,8 @@ The placeholder in a form value that the character replaces.
 
 ## `private const RegexOptions LFanqieSourceLoose =`
 
-The options the table patterns share: case-blind tags and dots that cross lines.
+The options the table patterns share.
+Tags are case-blind and dots cross lines.
 
 ## `private static readonly Regex LFanqieSourceTable = new("<table[^>]*>(.*?)</table>", LFanqieSourceLoose);`
 
@@ -93,7 +96,7 @@ One column heading with its division and tone read by the column pattern, or emp
 
 ## `private static IEnumerable<LFanqieRow> LFanqieLineScan(`
 
-Reads one body row: the first cell is the initial.
+Reads one body row, whose first cell is the initial.
 Every marked group of a later cell yields a row.
 A cell past the last column is read under an empty column.
 
@@ -103,7 +106,7 @@ The groups of a cell, parted by the split pattern, or the whole cell when the bo
 
 ## `private static LFanqieRow LFanqieGroupRead(LFanqieShape shape, string initial, LFanqieColumn column, string group)`
 
-One row from one marked group: the line text, the parts the hypothesis reads and the 反切 spelling.
+One row from one marked group, carrying the line text, the parts the hypothesis reads and the 反切 spelling.
 The column's division wins over the group's, since the group's follows the 韻鏡 placement.
 The character, book, source and position are left blank here and set afterwards.
 

@@ -1,4 +1,5 @@
 # TVaultFakeDraft.cs
+Hash: `d96b3d7a5a5022e9`
 
 ## `internal sealed class TVaultFakeDraft : LDraftVault`
 

@@ -1,4 +1,5 @@
 # LRegisterClerk.cs
+Hash: `f4eae331feb4508a`
 
 ## `public sealed class LRegisterClerk`
 

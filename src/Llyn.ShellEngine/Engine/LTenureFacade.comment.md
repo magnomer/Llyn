@@ -1,4 +1,5 @@
 # LTenureFacade.cs
+Hash: `009af0e2e10c4361`
 
 ## `internal sealed class LTenureFacade`
 

@@ -1,4 +1,5 @@
 # QStateConverter.cs
+Hash: `1a6bf847c5428ade`
 
 ## `internal static class QStateConverter`
 

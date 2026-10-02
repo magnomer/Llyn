@@ -1,4 +1,5 @@
 # LCatalogSituation.cs
+Hash: `417b4e8d591233e1`
 
 ## `public sealed record LCatalogSituation(`
 
@@ -10,6 +11,11 @@ The count travels with the row because the ordering reads it and the row shows i
 - `LCatalogSituationStored` — The stored Situation the row stands for.
 - `LCatalogSituationUsage` — How many Meanings and Collocations reference it.
 - `LCatalogSituationChosen` — True on the row of the Situation the vista stands on, false until the vista find fills it.
+
+## `public string LCatalogSituationName { get; init; }`
+
+The title as the row shows it, which the vista find words and numbers apart from its twins.
+Sort and match read the stored title instead.
 
 ## `public string LCatalogSituationKind { get; init; }`
 

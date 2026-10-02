@@ -1,4 +1,5 @@
 # CMentionSense.cs
+Hash: `e8041d6157173d41`
 
 ## `public sealed record CMentionSense(string CMentionSenseKey, IReadOnlyList<CMeaning> CMentionSenseRow);`
 

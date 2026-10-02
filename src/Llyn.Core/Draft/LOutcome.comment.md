@@ -1,4 +1,5 @@
 # LOutcome.cs
+Hash: `a1f449a024fa30b3`
 
 ## `public sealed record LOutcome(`
 

@@ -1,4 +1,5 @@
 # CQuotation.cs
+Hash: `7faee6deb56c6813`
 
 ## `public sealed class CQuotation`
 

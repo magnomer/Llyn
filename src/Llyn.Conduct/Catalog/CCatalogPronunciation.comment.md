@@ -1,4 +1,5 @@
 # CCatalogPronunciation.cs
+Hash: `e74014415ee6721f`
 
 ## `public sealed record CCatalogPronunciation(`
 

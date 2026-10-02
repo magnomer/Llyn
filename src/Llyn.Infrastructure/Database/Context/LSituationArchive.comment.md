@@ -1,8 +1,9 @@
 # LSituationArchive.cs
+Hash: `fa71f0351f83546e`
 
 ## `public sealed partial class LSituationArchive`
 
-Persists Situations — independent data no Entry, Meaning, or Collocation owns.
+Persists Situations, independent data no Entry, Meaning, or Collocation owns.
 A Situation is created once with an opaque id.
 It is then *referenced* by any number of Meanings and Collocations through the association tables.
 Each association carries the position the Situation takes for that referrer alone.
@@ -55,7 +56,8 @@ Throws when no Situation carries that id.
 
 ## `public int LSituationReferenceRead(long id)`
 
-Counts the references that still point at the Situation identified by `id` — the number `LSituationDelete` refuses a delete over.
+Counts the references that still point at the Situation identified by `id`.
+That is the number `LSituationDelete` refuses a delete over.
 A caller that has just detached one reference reads this.
 It learns whether the row it detached from was the last one.
 No store of its own has to know which association tables exist.
@@ -73,7 +75,7 @@ Nothing can attach the row between them.
 Every Situation the workspace holds, in the order they were written.
 It includes one nothing references, which is reachable nowhere else.
 
-## `public IReadOnlyDictionary<string, int> LSituationReferenceRead()`
+## `public IReadOnlyDictionary<long, int> LSituationReferenceRead()`
 
 How many places reference each Situation, the whole shelf in one statement.
 A panel listing the catalog needs the figure on every row.

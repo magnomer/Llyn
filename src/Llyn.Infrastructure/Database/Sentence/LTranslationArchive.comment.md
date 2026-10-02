@@ -1,6 +1,7 @@
 # LTranslationArchive.cs
+Hash: `4a4152b539f88782`
 
-## `public sealed class LTranslationArchive`
+## `public sealed class LTranslationArchive : LTranslationVault`
 
 Persists the Translation links a Meaning or a Collocation makes to other Entries.
 A Translation carries no words of its own.
@@ -10,7 +11,7 @@ The two association tables are therefore the whole of the storage.
 
 A card's Translation line is written as a whole rather than edited a link at a time.
 The old rows go and the new ones are numbered from zero in the order given.
-Blank ids and repeats are dropped on the way.
+Zero ids and repeats are dropped on the way.
 So saving the same list twice leaves the same rows, and positions stay contiguous by construction.
 
 Links are stored one way, from the card to the Entry.
@@ -32,16 +33,17 @@ Reads the links a Collocation makes, in the order that Collocation gives them.
 ## `public void LTranslationMeaningSave(long meaningId, IReadOnlyList<LTranslation> translations)`
 
 Writes a Meaning's whole Translation line, replacing whatever it carried.
-Ids are trimmed, blanks and repeats are dropped, and what survives is numbered from zero.
+Zero ids and repeats are dropped, and what survives is numbered from zero.
 
 ## `public void LTranslationCollocationSave(long collocationId, IReadOnlyList<LTranslation> translations)`
 
 The same write for a Collocation.
 
-## `public IReadOnlyList<LTranslationTarget> LTranslationTargetRead(IReadOnlyList<string> ids)`
+## `public IReadOnlyList<LTranslationTarget> LTranslationTargetRead(IReadOnlyList<long> ids)`
 
 Reads the headword and language of every Entry named by `ids`, in the order the ids were given.
 A whole card's links resolve in one query rather than one query each.
+Zero and repeated ids are dropped first.
 An id no Entry answers is skipped rather than reported, because a caller wants what it can show.
 
 ## `public IReadOnlyList<LUsage> LTranslationIncomingRead(long entryId)`
@@ -52,14 +54,14 @@ Meanings come before Collocations, each group ordered by headword and then by pl
 
 ## Inline notes
 
-### `private void LTranslationReferrerSave(string table, string column, string referrerId, IReadOnlyList<LTranslation> translations)`
+### `private void LTranslationReferrerSave(string table, string column, long referrerId, IReadOnlyList<LTranslation> translations)`
 
 The two association tables differ only in their name and their card column, so the write is one implementation.
 Both identifiers are store-owned literals chosen by the methods above, never caller input.
 So composing them into the statement text opens no injection seam.
 Every value still travels as a parameter.
 
-### `public IReadOnlyList<LTranslationTarget> LTranslationTargetRead(IReadOnlyList<string> ids)`
+### `public IReadOnlyList<LTranslationTarget> LTranslationTargetRead(IReadOnlyList<long> ids)`
 
 The ids travel as one JSON parameter and the statement unpacks them with `json_each`.
 So no id is ever composed into the statement, and the list has no ceiling.

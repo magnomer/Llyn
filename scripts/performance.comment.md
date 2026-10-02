@@ -1,4 +1,5 @@
 # performance.ps1
+Hash: `fb805e48db38a97c`
 
 Times every method of the target project and ranks them from the slowest to the fastest.
 The target is `Llyn.Conduct` by default.
@@ -28,7 +29,8 @@ The hook takes every constructor and method each type of the assembly declares.
 
 - Compiler-made types and members are left out, since they are not written logic.
   A lambda, a local function or an async state machine counts inside the method that holds it.
-- Abstract members and delegate types are left out, since they hold no code.
+- Abstract members, interfaces and delegate types are left out, since they hold no code.
+- A member with no body, such as an external one, is listed as skipped.
 - A generic method or a member of a generic type is listed as skipped.
   The patching library cannot time an open generic definition.
 - A member the patching fails on is listed as skipped with the exception name.
@@ -92,6 +94,7 @@ An overloaded method shows its parameter types.
 
 | Key | Meaning |
 |---|---|
+| `generation` | Number printed in the console heading. |
 | `configuration` | Build configuration of the measured code. |
 | `output` | Folder the hook and the stamped report folders go to. |
 | `target` | Project whose methods are timed. |

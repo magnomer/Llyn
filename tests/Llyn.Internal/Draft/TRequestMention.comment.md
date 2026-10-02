@@ -1,10 +1,12 @@
 # TRequestMention.cs
+Hash: `641a2cef5326a4ec`
 
 ## `public sealed class TRequestMention`
 
 Covers the Mention requests and what commit makes of them.
 A word is linked on a card row and on the corpus panel through the same three requests.
 A span overlapping a Mention replaces it, and a Meaning of another Entry is refused.
+A zero Meaning clears the choice, and a Mention linking nothing refuses one.
 A text edit shifts, keeps or drops the Mentions by where the edit fell.
 Commit writes the rows and maps the minted ids.
 It edits a shared row in place for a Mention-only change and forks it for a text change.

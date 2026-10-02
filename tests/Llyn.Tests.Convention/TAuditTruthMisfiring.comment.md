@@ -1,4 +1,5 @@
 # TAuditTruthMisfiring.cs
+Hash: `8f41e72a8037d28d`
 
 ## `internal static partial class TAuditTruthWalker`
 

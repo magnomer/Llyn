@@ -1,9 +1,11 @@
 # LReference.cs
+Hash: `cff39ef01b5f86a1`
 
 ## `public sealed record LReference(`
 
-One bibliographic Reference — the material an Entry or an Example cites.
-A Reference is independent: no Entry, Example, or Author owns it, and it owns none of them.
+One bibliographic Reference is the material an Entry or an Example cites.
+A Reference is independent.
+No Entry, Example, or Author owns it, and it owns none of them.
 Entries reach it through ordered reference rows and an Example through its single source column.
 Deleting a citing row never touches the Reference.
 Deleting the Reference never touches its citers.
@@ -49,6 +51,11 @@ The year, url and note hints beside it read the same way.
 
 The unknown mark for an unknown value, else the key the field owns.
 
+## `public bool LReferenceKindCheck()`
+
+Whether a kind was stated at all.
+An unknown kind counts as stated, since the user chose it.
+
 ## `public string LReferenceNameRead()`
 
 The name the Reference is shown under, which is the first field it actually states.
@@ -59,9 +66,20 @@ A Reference that names itself nowhere is shown under its id.
 It is never shown as a blank the reader could not tell from the next one.
 The rule lives on the record because the catalog, the row and the citation list all need the same answer.
 
+## `public string? LReferenceCreditRead(IReadOnlyList<LAuthor> credits)`
+
+The credited names joined by a comma, or null when nobody is credited.
+Unlike the byline, it never falls back to the title or adds the year.
+
+## `public bool LReferenceAuthorCheck(IReadOnlyList<LAuthor> credits)`
+
+Whether the authorship is answered.
+Attached Authors answer it, and so does an authorship the user marked unknown.
+An unreadable authorship with no credits stays unanswered.
+
 ## `public string LReferenceBylineRead(IReadOnlyList<LAuthor> credits)`
 
-The line a citation is written as beside a quoted sentence: `Author (Year)`.
+The line a citation is written as beside a quoted sentence, shaped `Author (Year)`.
 Every credited name is listed in order, joined by a comma.
 A Reference crediting nobody is written under its name instead, so the line is never blank.
 The year follows in parentheses only when it is stated.

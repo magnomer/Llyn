@@ -1,4 +1,5 @@
 # CTranscriptionDraft.cs
+Hash: `30358840feabf11a`
 
 ## `public sealed record CTranscriptionDraft(`
 

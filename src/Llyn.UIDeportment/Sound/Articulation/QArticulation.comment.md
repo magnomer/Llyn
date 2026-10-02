@@ -1,4 +1,5 @@
 # QArticulation.cs
+Hash: `bcbef32d8a85b281`
 
 ## `internal sealed partial class QArticulation`
 

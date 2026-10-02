@@ -1,4 +1,5 @@
 # LHypothesisLocus.cs
+Hash: `ea88078b2a91068d`
 
 ## `public sealed record LHypothesisLocus(`
 

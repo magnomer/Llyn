@@ -1,11 +1,12 @@
 # LEntryClerkTwin.cs
+Hash: `385aba5b4ed785b9`
 
 ## `public static class LEntryClerkTwin`
 
 The twin naming every catalog of entries or labels runs through.
 Two rows sharing a name are numbered so a list never shows the same words twice unmarked.
 Nothing here reads a store, so the helpers are static over the rows handed in.
-The engine's vista, author, example, reference, situation and markup parts all number through it.
+The engine's vista and the markup clerk number through it.
 
 ## `public static string[] LTwinRead(IReadOnlyList<LEntry> entries)`
 

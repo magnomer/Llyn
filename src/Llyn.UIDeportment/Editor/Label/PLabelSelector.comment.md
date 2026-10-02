@@ -1,4 +1,5 @@
 # PLabelSelector.cs
+Hash: `5d02f6ec75586886`
 
 ## `internal sealed class PLabelSelector`
 

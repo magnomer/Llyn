@@ -1,4 +1,5 @@
 # LRevisionDelta.cs
+Hash: `43e38e48b2297841`
 
 ## `public sealed record LRevisionDelta(`
 
@@ -11,7 +12,8 @@ So the changes of a revision read back in the sequence they were recorded.
 They give the target row's id and the kind of entity it is.
 They are plain recorded values rather than a foreign key.
 A change routinely describes a row that no longer exists.
-That is the point of the history: a deletion is still readable after the deleted row is gone.
+That is the point of the history.
+A deletion is still readable after the deleted row is gone.
 
 **Parameters**
 

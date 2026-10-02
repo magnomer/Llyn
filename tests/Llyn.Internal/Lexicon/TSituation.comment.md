@@ -1,4 +1,5 @@
 # TSituation.cs
+Hash: `7f5d27e8b871cd41`
 
 ## `public sealed class TSituation`
 

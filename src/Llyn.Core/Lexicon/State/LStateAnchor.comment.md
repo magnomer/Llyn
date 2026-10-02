@@ -1,12 +1,14 @@
 # LStateAnchor.cs
+Hash: `c1b737c1a1e8275d`
 
-## `public sealed record LStateAnchor`
+## `public sealed record LStateAnchor(`
 
-A stated link to another row: the state, and the id it points at.
+A stated link to another row, holding the state and the id it points at.
 
 `LStateValue` carries a field the user typed, so its payload is text.
 This carries a field that names another row, so its payload is an id and never text.
-A link slot has two answers: nothing was linked, or this row was linked.
+A link slot has two answers.
+Either nothing was linked, or this row was linked.
 There is no unknown anchor, because "the source is not known" is itself a row to link.
 A workspace starts with a Reference titled Unknown for exactly that, and the user may delete or recreate it.
 
@@ -35,3 +37,8 @@ Callers that only want to follow the link get one value to test rather than a st
 ## `public LStateAnchor LStateAnchorNormalize()`
 
 This anchor when it is readable, and the unspecified anchor when it is not.
+
+## `public bool LStateAnchorEmpty`
+
+Whether nothing was linked.
+An unreadable anchor reads empty too, because its state stands unspecified.

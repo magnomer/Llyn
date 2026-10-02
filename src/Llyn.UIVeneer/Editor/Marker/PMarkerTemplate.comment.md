@@ -1,4 +1,5 @@
 # PMarkerTemplate.xaml
+Hash: `e803ebcae4464898`
 
 The speech marker chip of the editor, as markup alone.
 The Deportment class of the same name loads it and forwards the chip's click to the editor.

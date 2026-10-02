@@ -1,4 +1,5 @@
 # CVoyage.cs
+Hash: `a3937490b66ec360`
 
 ## `internal sealed class CVoyage`
 

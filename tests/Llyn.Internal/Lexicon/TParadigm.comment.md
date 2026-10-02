@@ -1,10 +1,12 @@
 # TParadigm.cs
+Hash: `6842bace6e0ef24a`
 
 ## `public sealed class TParadigm`
 
 Covers what a language pack declares about inflection: which part specialises which, and which forms a part takes.
-Each test writes a pack of its own into a temporary language folder and loads it.
+The loader tests write a pack of their own into a temporary language folder and load it.
 So the vocabulary loader is read as it reads a real pack, and nothing shipped is touched.
+The other tests read the shipped packs or build rows in memory.
 
 ## `public void SpeechPackLoad_PartNamingParent_ReadsParentCode()`
 
@@ -13,12 +15,13 @@ A part naming its parent carries that code, and one naming none or naming it bad
 ## `public void SpeechPackLoad_ParadigmDeclared_ReadsValuesInOrder()`
 
 A paradigm keeps its values in the order the pack lists them, because that order is the display order.
-The regular-form pattern is carried as written, and null when the pack states none.
+A regular-form rule keeps its pattern as written.
+A rule with a bad pattern or shape is skipped, and the paradigm is kept.
 
 ## `public void SpeechPackLoad_ParadigmRowMalformed_SkipsRow()`
 
 A row whose part or any value is not a positive integer is dropped, and its neighbours are kept.
-A blank pattern is no pattern.
+A malformed regular or except entry is ignored and the row is kept.
 
 ## `public void SpeechPackLoad_EnglishPack_DeclaresParadigms()`
 
@@ -26,7 +29,7 @@ The shipped English pack states parents and paradigms, so the loader is read aga
 
 ## `public void SpeechPackLoad_ClassicalPack_DeclaresPrincipalParts(`
 
-The shipped Latin and Greek packs each declare a noun, verb and adjective paradigm.
+The shipped Latin and Greek packs each declare three paradigms.
 The noun asks for the genitive alone and excepts the proper noun, the verb for its principal parts.
 Every value a paradigm names is a morphology value the same pack declares.
 

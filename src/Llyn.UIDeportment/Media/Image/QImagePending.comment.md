@@ -1,4 +1,5 @@
 # QImagePending.cs
+Hash: `0cdc26e686b37582`
 
 ## `public interface QImagePending`
 

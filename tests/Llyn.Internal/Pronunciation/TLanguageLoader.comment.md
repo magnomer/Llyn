@@ -1,11 +1,13 @@
 # TLanguageLoader.cs
+Hash: `f9036c185251f294`
 
 ## `public sealed class TLanguageLoader`
 
-Covers the language pack loader reading the pack-level blocks: varieties, flags, rewrites, schemes and the spelling list.
+Covers the language pack loader reading the pack-level blocks, such as varieties, flags, rewrites, schemes and the spelling list.
 The English pack declares two flagged varieties and a pack without the block declares none.
 The Mandarin and Cantonese packs declare tone and the English pack does not.
 The Classical Chinese pack is silent, and the Wu pack is phonemic but stays off the language list.
+The Mandarin and Cantonese packs are phonemic, the English pack is not, and all three carry respellings.
 The English pack loads exactly two respelling groups, both scoped, and an empty cleanup list.
 A fixture pack that declares varieties drops every group without a non-empty `varieties` list and keeps the rest.
 A fixture pack without varieties keeps such groups, so the key stays optional there.

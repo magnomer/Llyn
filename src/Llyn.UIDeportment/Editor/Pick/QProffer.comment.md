@@ -1,4 +1,5 @@
 # QProffer.cs
+Hash: `ca7b178961c2ebb5`
 
 ## `internal sealed class QProffer`
 
@@ -40,12 +41,14 @@ The clerk skips a row the card already carries.
 
 ## `internal void QProfferRegisterRefine(PCard card, CProffer offer)`
 
-Paints the register gate's answer: the kept text into the card's entry, then the dropdown.
+Paints the register gate's answer.
+The kept text goes into the card's entry, then the dropdown follows.
 The dropdown opens when the answer says so and shuts otherwise.
 
 ## `internal void QProfferSituationRefine(PCard card, CProffer offer)`
 
-Paints the situation gate's answer: the kept text into the card's entry, then the dropdown.
+Paints the situation gate's answer.
+The kept text goes into the card's entry, then the dropdown follows.
 The dropdown opens when the answer says so and shuts otherwise.
 The gate matches the wording anywhere inside a stored title, so "the situation" finds "This is the situation".
 Rows come most used first, so the settled wordings stand first, and the list stays shut when nothing matches.

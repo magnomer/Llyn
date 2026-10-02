@@ -1,8 +1,9 @@
 # CLedger.cs
+Hash: `6d68fc5fdb3d40e7`
 
 ## `public sealed class CLedger`
 
-The settings ledger: the workspace settings, their saves, and the pages a settings view lists.
+The settings ledger holds the workspace settings, their saves and the pages a settings view lists.
 A view attaches once and is handed one ready state on attach and after every settings or workspace change.
 It stands on the atelier's settings port, and `CAtelier` hands one out on each read.
 
@@ -70,7 +71,8 @@ The one owner of the notice read, which `CLedgerNoticeRead` and every gate's fai
 
 ## `internal static void LLedgerFailureShow(CEnvoy envoy, LSettingsPort settings, string key, Exception exception)`
 
-A gate's failure policy: the gate chose `key`, and the envoy gets the ready notice to show with it.
+A gate's failure policy.
+The gate chose `key`, and the envoy gets the ready notice to show with it.
 The driver's consult never reads Conduct again, so it only shows what it was handed.
 
 ## `public void CLedgerFolderOpen(CEnvoy envoy)`
@@ -97,7 +99,8 @@ The keys are Conduct's choice, and the match is the engine's in one call.
 
 ## `private CLedgerState LLedgerRead()`
 
-Builds the state a view shows: the settings, folder, language, texts, language list and pages.
+Builds the state a view shows.
+It holds the settings, folder, language, texts, language list and pages.
 The texts are loaded first, so every title and summary reads in the stored language.
 The Layout page's summary is left empty, since only the driver knows the linked switch.
 The pages the kept search shows ride along, so a settings change keeps the catalog narrowed.

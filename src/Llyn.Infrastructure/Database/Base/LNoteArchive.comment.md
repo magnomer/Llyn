@@ -1,6 +1,7 @@
 # LNoteArchive.cs
+Hash: `74e55e205494b7b9`
 
-## `public sealed class LNoteArchive`
+## `public sealed class LNoteArchive : LNoteVault`
 
 Persists the single Note an entry owns.
 The note table is keyed by `entry_parent`, so at most one Note exists per entry.

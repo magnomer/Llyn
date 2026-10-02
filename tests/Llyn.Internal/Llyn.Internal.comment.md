@@ -1,4 +1,5 @@
 # Llyn.Internal.csproj
+Hash: `6364b88c19e65698`
 
 Builds the portable behaviour tests, everything that runs without Windows.
 

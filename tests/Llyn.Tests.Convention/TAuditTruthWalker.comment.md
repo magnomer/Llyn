@@ -1,4 +1,5 @@
 # TAuditTruthWalker.cs
+Hash: `a9187f7b01dca6c6`
 
 ## `internal static partial class TAuditTruthWalker`
 
@@ -40,7 +41,7 @@ The driver members that read logic or request, for the laundering scan.
 
 ## `private static Dictionary<INamedTypeSymbol, List<TypeDeclarationSyntax>> TAuditPartRead(`
 
-Compiles, keeps the walked roots, builds the identifier index, groups the outermost types and reads the relays.
+Compiles, keeps the walked roots, builds the identifier index, groups the outermost types and reads the relays and senders.
 
 ## `private static IEnumerable<TAuditTruthField> TAuditFieldRead(IReadOnlyList<TypeDeclarationSyntax> type)`
 

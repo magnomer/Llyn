@@ -1,4 +1,5 @@
 # LDraft.cs
+Hash: `85d6791676c44e3e`
 
 ## `public sealed record LDraft(`
 
@@ -34,6 +35,15 @@ The kind is read from the content rather than from a tag beside it, so the two c
   A credit with a minted id names an author commit creates before attaching.
 - `LDraftAuthorHeld` — The author being named, or null when this draft holds no author.
   An author draft carries no source and no credits, because an author is a shared row edited alone.
+
+## `public long? LDraftStored`
+
+The id of the stored record the draft edits, or null for a new one, whose id is zero.
+
+## `public LTag? LDraftTag { get; init; }`
+
+The Tag a vista load carries when the vista's chosen row is a Tag, otherwise null.
+`LDraftRegister` carries a chosen Register the same way.
 
 ## `public IReadOnlyList<LAuthor> LDraftAuthor { get; init; }`
 

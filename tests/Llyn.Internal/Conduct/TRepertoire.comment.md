@@ -1,4 +1,5 @@
 # TRepertoire.cs
+Hash: `a5bf6346c4d021e9`
 
 ## `public sealed class TRepertoire`
 

@@ -1,9 +1,10 @@
 # TEngineParadigm.cs
+Hash: `e023dc9e17f86f4e`
 
 ## `public sealed class TEngineParadigm`
 
 Covers the engine's answer to which forms an entry is expected to have.
-Every test saves an entry through the engine against the shipped English pack.
+Each engine test saves an entry through the engine against the shipped English pack.
 So the parent chain, the paradigms, and the morphology rows are the real ones and not a fixture.
 
 ## `public void ParadigmShow_ChildOfDeclaredPart_ReturnsParentSlots()`
@@ -32,7 +33,7 @@ A code or language the workspace lacks answers null.
 ## `public void ParadigmMatch_NounPattern_AcceptsRegularForm()`
 
 The shipped noun pattern accepts a regular plural regardless of case and rejects an irregular one.
-A paradigm stating no pattern, or one that does not parse, answers false.
+A paradigm stating no pattern answers false.
 
 ## `public void ParadigmShow_RegularNounPlural_DropsSlot()`
 

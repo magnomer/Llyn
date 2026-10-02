@@ -1,4 +1,5 @@
 # auditui.ps1
+Hash: `e29bbd462b9988ac`
 
 The standalone counterpart script of the convention tests `TAuditStrict`, `TAuditTruth` and `TAuditBoundary`.
 It never reads, runs or depends on the test project, and the tests never read it.
@@ -87,5 +88,5 @@ The report states the generation it reads from `auditui.json`.
 A file above the ceiling of a kind fails, and a ceiling above its count is stale and fails.
 Every fact the tests gate is one counter, and the counters sum to zero exactly when those tests pass.
 The report lists every hit in the line format of the test reports, so the two diff directly.
-The Veneer audit is the Strict surface counters, `Tethering` and `Freelancing` among them.
-The driver, host and Truth counters are not gated until stage 3 of the Great Purge.
+The `enforced` flag of the `strict` and `truth` settings gates the kinds of each audit.
+Both flags are set now.

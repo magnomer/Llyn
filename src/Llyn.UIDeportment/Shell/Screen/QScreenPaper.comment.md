@@ -1,4 +1,5 @@
 # QScreenPaper.cs
+Hash: `19b30d60a425f0b3`
 
 ## `internal static class QScreenPaper`
 

@@ -1,4 +1,5 @@
 # PDuplex.xaml
+Hash: `53f7bb0809856f2e`
 
 ## `<Rectangle Grid.Row="0" ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -8,7 +9,7 @@ Its row is fixed to the bar's height and gap, since the bars belong to the wings
 The column seam sits in the middle of the gutter and parts one side from the other.
 Neither seam encloses anything, and the two entries read as two pages side by side.
 
-## `<local:PWing x:Name="PLeftWing" ... />`
+## `<veneer:PWing x:Name="PLeftWing" ... />`
 
 Each side is one wing: bar, matches and display.
 The two wings are peers and neither drives the other.

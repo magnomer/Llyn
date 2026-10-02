@@ -1,4 +1,5 @@
 # LSource.cs
+Hash: `50be833c18cceb0e`
 
 ## `public interface LSource`
 

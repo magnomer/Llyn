@@ -1,4 +1,5 @@
 # TExample.cs
+Hash: `8f0512ac1ef6d659`
 
 ## `public sealed class TExample`
 

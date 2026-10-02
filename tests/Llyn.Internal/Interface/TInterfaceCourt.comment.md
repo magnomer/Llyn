@@ -1,4 +1,5 @@
 # TInterfaceCourt.cs
+Hash: `e54217724f909f82`
 
 ## `internal static partial class TInterface`
 

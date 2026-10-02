@@ -1,4 +1,5 @@
 # LTallyMark.cs
+Hash: `884a04865414a2e4`
 
 ## `public sealed record LTallyMark(string LTallyMarkText, IReadOnlyList<string> LTallyMarkCharacters)`
 

@@ -1,4 +1,5 @@
 # source.json
+Hash: `864be66a326318a4`
 
 ## pack
 
@@ -182,6 +183,12 @@ Wiktionary embeds Commons recordings as protocol-relative addresses, so `prefix`
 Only the transcoded mp3 rendition is taken, because the original is Ogg Vorbis or WAV.
 The first attempt takes an `En-` filename, the second a Lingua Libre `LL-Q1860_%28eng%29-` one.
 Both prefixes mark the recording as English.
+
+## `audio[5]` Dictionary.com
+
+Dictionary.com exposes absolute mp3 addresses under `audio.dictionary.com`.
+The page marks no variety on them, so the attempt takes the first one untagged.
+An untagged recording shows once per declared variety, unless the menu opens on a tagged row.
 
 ## `frequency[0]` Datamuse
 

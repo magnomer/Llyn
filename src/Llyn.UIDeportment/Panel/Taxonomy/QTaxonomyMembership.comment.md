@@ -1,8 +1,10 @@
 # QTaxonomyMembership.cs
+Hash: `0c249cfbb6d2e493`
 
 ## `internal sealed partial class QTaxonomy`
 
-The entry list of the taxonomy panel: the entries carrying the chosen tag, and the one the reader stands on.
+The entry list of the taxonomy panel.
+It shows the entries carrying the chosen tag, and the one the reader stands on.
 Choosing a row loads it back from the workspace into the reader, or the editor when that side is open.
 
 ## `private void QMembershipObserve(object sender, RoutedEventArgs e)`

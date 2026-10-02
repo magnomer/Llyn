@@ -1,4 +1,5 @@
 # LReading.cs
+Hash: `d6aea69d0a952cf3`
 
 ## `public sealed record LReading(string LReadingVariety, string LReadingPhonetic)`
 

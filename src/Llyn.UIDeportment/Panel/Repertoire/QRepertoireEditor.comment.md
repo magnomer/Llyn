@@ -1,4 +1,5 @@
 # QRepertoireEditor.cs
+Hash: `7034d050e8a5a2df`
 
 ## `internal sealed partial class QRepertoire`
 

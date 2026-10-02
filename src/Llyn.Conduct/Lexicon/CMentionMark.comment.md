@@ -1,4 +1,5 @@
 # CMentionMark.cs
+Hash: `e508634d8bf3ccb9`
 
 ## `public sealed record CMentionMark(`
 

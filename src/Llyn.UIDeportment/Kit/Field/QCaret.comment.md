@@ -1,4 +1,5 @@
 # QCaret.cs
+Hash: `9944fb03dcc1c00e`
 
 ## `internal sealed class QCaret : Adorner`
 
@@ -6,7 +7,8 @@ The text cursor every input field is typed against.
 WPF draws its own, but only its color can be set.
 Its width comes from a Windows-wide setting and its blink is a hard on-off.
 So the framework caret is made transparent and this one is drawn over the field instead.
-It is two pixels wide with rounded ends, painted in the theme accent, and it fades rather than snaps.
+It is at least two pixels wide with rounded ends, painted in the theme accent.
+It fades rather than snaps.
 
 It also holds the caret rules every chip entry shares, kept where a test can reach them without a window.
 
@@ -59,7 +61,8 @@ Each chip entry's erase Observe calls it and ends in its remove gate.
 
 ## `internal static bool QCaretStepApply(string key, int length, int selection, Func<int, bool> move, Action place)`
 
-The arrow keys alone: an empty entry is walked past a chip, and `place` puts the caret back.
+It takes the arrow keys alone.
+An empty entry is walked past a chip, and `place` puts the caret back.
 So a chip is crossed the way a character is, in either direction.
 Each chip entry's caret Refine calls it after the erase Observe, which ignores the arrows.
 The answer says whether the key was taken.

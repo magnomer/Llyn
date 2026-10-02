@@ -1,4 +1,5 @@
 # CLibrary.cs
+Hash: `4b97abb3aab16e2f`
 
 ## `public sealed class CLibrary`
 
@@ -21,7 +22,7 @@ Builds the panel over the atelier, so the driver hands it no port.
 The marshal puts each engine notice on the driver's thread.
 Building it is no user action, so it is no gate on the atelier.
 
-## `public event Action? CLibraryWorkspaceChanged`
+## `public event Action? CLibraryWorkspaceChanged;`
 
 Raised once the workspace notice has closed the chosen entry, so the driver reloads its flags.
 
@@ -93,7 +94,7 @@ The reader is asked for the printer through the panel's envoy, and a decline pri
 
 ## `public Task CLibraryPortraitExport()`
 
-Exports the chosen entry to `path` in the chosen format.
+Exports the chosen entry under the file name and format the reader picks.
 The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.
 

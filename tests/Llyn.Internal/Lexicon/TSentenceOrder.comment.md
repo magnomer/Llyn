@@ -1,4 +1,5 @@
 # TSentenceOrder.cs
+Hash: `8167c86b34858bbf`
 
 ## `public sealed class TSentenceOrder`
 

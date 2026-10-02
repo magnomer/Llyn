@@ -1,4 +1,5 @@
 # PThemeCatalog.xaml
+Hash: `f51d9c83102a77d5`
 
 ## `<Style x:Key="Theme.Catalog.Row" TargetType="Button">`
 
@@ -12,7 +13,8 @@ One ground and one ink say chosen together, so no rail or edge repeats them.
 
 ## `<Style x:Key="Theme.Catalog.Epithet" TargetType="Run">`
 
-The epithet run after a listed headword: the reading the language pack names, such as `희롱할 롱` after `弄`.
+The epithet run after a listed headword.
+It is the reading the language pack names, such as `희롱할 롱` after `弄`.
 It sits on the headword's baseline, two steps smaller and muted, so the headword stays the row's one bold word.
 No binding fills it, since the row fill in the deportment writes its text.
 That fill prepends an en space, so the run needs no margin of its own.

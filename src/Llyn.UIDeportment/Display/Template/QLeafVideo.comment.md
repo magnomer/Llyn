@@ -1,4 +1,5 @@
 # QLeafVideo.cs
+Hash: `84c2368cbae3d081`
 
 ## `internal sealed record QLeafVideo(QVideoItem QLeafVideoRow, bool QLeafVideoEmpty)`
 

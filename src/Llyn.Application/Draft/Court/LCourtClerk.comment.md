@@ -1,10 +1,12 @@
 # LCourtClerk.cs
+Hash: `2f01c91a2fa61d24`
 
 ## `public sealed class LCourtClerk`
 
 The rows linking a held draft to a target that is not an entry yet.
 A chip naming a word the user has not stored is such a target.
-The row outlives neither end: committing settles it and cancelling drops it.
+The row outlives neither end.
+Committing settles it and cancelling drops it.
 The translation side of a commit lives here too, since it is the court that decides what a chip becomes.
 The settle pass maps each tentative id through the round's identity map and strikes what still names nothing.
 The court pass runs once the round is through and writes the links the walk had to hold back.
@@ -18,7 +20,8 @@ The translation clerk appends the settled links.
 
 ## `public LCourt LCourtClerkSave(long ownerId, long targetId, string headword, string language)`
 
-Writes one court row: a link from a held draft to a target that is not an entry yet.
+Writes one court row.
+It links a held draft to a target that is not an entry yet.
 The headword and language travel with it, because the chip is shown long before the target is real.
 Returns the row so the caller can drop it again by id.
 
@@ -49,7 +52,7 @@ A real id of zero strikes the tentative id instead, which is how a cancelled tar
 
 Drops the rows whose file is of another version or half written.
 
-## `public void LCourtClerkApply(IReadOnlyDictionary<long, LDraft> loaded, IReadOnlyDictionary<long, LOutcome> settled, IReadOnlyList<LCourt> deferred)`
+## `public void LCourtClerkApply(`
 
 Writes every link the walk held back, now that every draft of the round has an entry id.
 The owner's content as it was loaded says which cards carried the target's draft id.
@@ -61,7 +64,7 @@ A link whose owner or target did not settle is passed over, because there is not
 The same content with every translation that names no stored entry removed.
 Both card lists are settled, because a chip can sit on a meaning or on a collocation.
 
-## `private IReadOnlyList<LCardDraft> LTranslationSettle(IReadOnlyList<LCardDraft> cards, IReadOnlyDictionary<long, long> identity)`
+## `private IReadOnlyList<LCardDraft> LTranslationSettle(`
 
 Keeps only the translations that still read as a stored entry.
 An id that reads nothing points at a record that was discarded or never arrived.
@@ -69,7 +72,7 @@ It may also be one still being committed in this round.
 There is nothing to store it against yet, and the round's last pass writes the ones that become real.
 The check is a single row read, not a load of the whole entry tree.
 
-## `private void LCourtClerkApply(IReadOnlyList<LCardDraft> cards, LOutcome made, long draftId, long entryId, bool collocation)`
+## `private void LCourtClerkApply(`
 
 One card list of the owner walked for the target's draft id, children included.
 A card that carried it has the target's entry id appended to its stored translations.
@@ -87,7 +90,7 @@ Adds `entryId` to the end of one stored card's translations, unless the card alr
 Rewrites the one draft that held a settled link.
 The owner's chronicle is dropped first, because a snapshot from before the rewrite would bring the draft id back.
 
-## `private static IReadOnlyList<LCardDraft> LTranslationUpdate(IReadOnlyList<LCardDraft> cards, long draftId, long realId)`
+## `private static IReadOnlyList<LCardDraft> LTranslationUpdate(`
 
 Swaps the tentative id for the real one wherever a card's translations name it.
 An empty real id drops the tentative one instead.

@@ -1,4 +1,5 @@
 # QEditorCard.cs
+Hash: `37667127c9309184`
 
 ## `internal sealed class QEditorCard`
 
@@ -17,6 +18,15 @@ It keeps the one list of loaded languages, which the language menu fills and eve
 
 Builds the card drivers over the editor scope in the order the editor once built them.
 The routed text handler is added where the editor once added it, after the language toggle.
+
+## `internal QSentence QEditorCardSentence { get; }`
+
+The sentence driver, handed out so the editor subscribes its frame and mention redraws itself.
+The frame must draw before the cards and the mention chips after them, so the editor orders them.
+
+## `internal QProspect QEditorCardProspect { get; }`
+
+The Translation and mention dropdown, handed out so the corpus can open it over its transcript.
 
 ## `internal void QEditorCardIntroduce(QWindow host, CEditor editor)`
 

@@ -1,4 +1,5 @@
 # TSounding.cs
+Hash: `8cc444dcb7358512`
 
 ## `public sealed class TSounding`
 

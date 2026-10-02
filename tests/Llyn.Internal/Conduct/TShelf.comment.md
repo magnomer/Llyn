@@ -1,4 +1,5 @@
 # TShelf.cs
+Hash: `f33f806f2c7c3e2a`
 
 ## `public sealed class TShelf`
 
@@ -19,14 +20,14 @@ A finish without storing drops the draft of the side in front, the Source draft 
 A kept leave on an entry click stays on the held Source draft.
 Toggling the Source side into edit mode opens its draft, and toggling it off drops the draft.
 An entry notice with the entry side closed shows the chosen Source again.
-A close clears both sides, and a print with nothing shown prints nothing.
+A workspace notice clears both sides, and a print with nothing shown prints nothing.
 An export writes only an entry on display.
 
 ## `internal static CShelf TShelfPrepare(CAtelier atelier, CEnvoy envoy)`
 
 Builds the shelf over the atelier with its own editor, and the shelf restores both vistas itself.
 Its seam answers that the tab is in front, and its marshal runs each notice at once.
-`TShelfImprint` shares it.
+`TShelfImprint`, `TShelfRoll` and `TShelfVista` share it.
 
 ## `private static LEntry TShelfEntrySave(LEngine engine, string headword)`
 

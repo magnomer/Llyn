@@ -1,4 +1,5 @@
 # CMarkdownBlock.cs
+Hash: `b47cef424818f689`
 
 ## `public sealed record CMarkdownBlock(`
 

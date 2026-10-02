@@ -1,4 +1,5 @@
 # LEngineStaff.cs
+Hash: `a5a76aa2692354bf`
 
 ## `internal sealed record LEngineStaff(...)`
 

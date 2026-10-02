@@ -1,4 +1,5 @@
 # PNotationTemplate.xaml
+Hash: `7a89fbe72cfbd19e`
 
 ## `<DataTemplate x:Key="Theme.Notation.Reading">`
 

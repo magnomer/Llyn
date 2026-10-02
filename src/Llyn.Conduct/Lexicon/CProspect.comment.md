@@ -1,4 +1,5 @@
 # CProspect.cs
+Hash: `ff7d458631523cb8`
 
 ## `public sealed record CProspect(`
 

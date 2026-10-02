@@ -1,4 +1,5 @@
 # LTranscription.cs
+Hash: `fb0d929274331d18`
 
 ## `public sealed record LTranscription(`
 

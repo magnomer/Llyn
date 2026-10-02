@@ -1,10 +1,10 @@
 # LEntryFacade.cs
+Hash: `69db313d94c11b39`
 
 ## `internal sealed class LEntryFacade`
 
 The engine's facade for entry.
 Every call takes the engine's gate and hands the work to `LEntryClerk`, which holds the rules.
-The one thing done here beyond the clerk is resolving a recording to a full path on load.
 The glyph, grasp, epithet, establishment and usage reads sit here too, since each is one call on an entry.
 
 ## `public LEntryFacade(LEngine engine)`

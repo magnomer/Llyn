@@ -1,4 +1,5 @@
 # LSchemaCollocation.cs
+Hash: `86c796f37e3bf539`
 
 ## `public static class LSchemaCollocation`
 

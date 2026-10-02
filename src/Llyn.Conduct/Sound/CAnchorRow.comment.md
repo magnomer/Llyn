@@ -1,4 +1,5 @@
 # CAnchorRow.cs
+Hash: `285a2303c7372f60`
 
 ## `public sealed record CAnchorRow(`
 

@@ -1,4 +1,5 @@
 # LOutlineSection.cs
+Hash: `1e873c050dfd5694`
 
 ## `public static class LOutlineSection`
 
@@ -7,7 +8,9 @@ The role of the node decides its form, so a situation, a register and a tag keep
 
 ## `public static void LOutlineSectionAppend(StringBuilder outline, LPortraitSection section, int depth)`
 
-Dispatches on the role: card, phrase, scene, tone, label, bridge, quote, else band.
+Dispatch follows the role.
+Card and kind, phrase, scene, tone, label, bridge, quote and usage each have a form.
+Any other role is a band.
 A scene is an italic run, and a tone and a label are code runs.
 A bridge is the arrow run of the shared body.
 
@@ -24,7 +27,8 @@ Each line is a paragraph, and the rest of the shared body follows.
 
 ## `private static void LOutlineUsageAppend(StringBuilder outline, LPortraitSection section)`
 
-One list item: the headword in bold, the card title after a dash, then the kind and language in brackets.
+One list item.
+The headword is bold, the card title follows a dash, and the kind and language close it in brackets.
 
 ## `private static void LOutlineQuoteAppend(StringBuilder outline, LPortraitSection section, int depth)`
 

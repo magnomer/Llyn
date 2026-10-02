@@ -1,4 +1,5 @@
 # LReceiverRelay.cs
+Hash: `fe0b8f14b06a6a0e`
 
 ## `public sealed class LReceiverRelay : LReceiver`
 

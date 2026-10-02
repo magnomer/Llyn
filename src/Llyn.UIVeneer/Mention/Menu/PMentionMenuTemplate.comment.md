@@ -1,4 +1,5 @@
 # PMentionMenuTemplate.xaml
+Hash: `127541dade3ce021`
 
 ## `ResourceDictionary`
 
@@ -17,7 +18,7 @@ The look sheet switches both states on the surface.
 
 ## `<DataTemplate x:Key="Theme.Mention.Row">`
 
-One row of the menu: the name, with the flag and language beside it.
+One row of the menu holds the name, with the flag and language beside it.
 The flag and language show only when the row stands for an Entry.
 A Sense-mode row carries no language, and the fill folds that column away rather than leaving a gap.
 The fill indents the row by its depth, so a sub-sense sits under its parent.

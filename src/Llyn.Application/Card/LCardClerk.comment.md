@@ -1,4 +1,5 @@
 # LCardClerk.cs
+Hash: `f2a194dc4dd2aef9`
 
 ## `public sealed class LCardClerk`
 

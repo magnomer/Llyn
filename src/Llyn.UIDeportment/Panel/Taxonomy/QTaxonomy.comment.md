@@ -1,8 +1,10 @@
 # QTaxonomy.cs
+Hash: `882d8199eea33655`
 
 ## `internal sealed partial class QTaxonomy`
 
-Drives the taxonomy panel: what it is made of, and when it starts and stops.
+Drives the taxonomy panel.
+It owns what the panel is made of, and when it starts and stops.
 Browsing itself lives in the file beside this one.
 That is the tag search, the tag ordering, the tag catalog and the entries under a tag.
 The reader and editor stand beside them.
@@ -32,7 +34,8 @@ So the panel is current whether or not its tab is the one in front.
 ## `internal void QTaxonomyExitRefine()`
 
 Releases the editor's player, so none outlives the window.
-It calls no gate: the window's exit gate `CAtelierClose` closes the editor and stops its playback in Conduct.
+It calls no gate.
+The window's exit gate `CAtelierClose` closes the editor and stops its playback in Conduct.
 
 ## `private void QTaxonomyPressRefine(object sender, CanExecuteRoutedEventArgs e)`
 

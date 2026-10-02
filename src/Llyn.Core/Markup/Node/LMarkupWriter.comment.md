@@ -1,4 +1,5 @@
 # LMarkupWriter.cs
+Hash: `0dae20148268df61`
 
 ## `internal static class LMarkupWriter`
 
@@ -48,5 +49,5 @@ Writes one `transcription` element with its scheme and text.
 
 ## `private static LMarkupNode LMarkupReflexFormat(LReflexDraft reflex)`
 
-Writes one `reflex` element with its language, kind, text, romanization, meaning, note and region.
+Writes one `reflex` element with its language, kind, text, respelling, romanization, meaning, note and region.
 It writes empty `owned` and `main` elements when their flags are marked.

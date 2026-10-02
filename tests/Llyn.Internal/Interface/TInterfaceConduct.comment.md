@@ -1,4 +1,5 @@
 # TInterfaceConduct.cs
+Hash: `f99a788df379dd5e`
 
 ## `internal static class TInterfaceConduct`
 
@@ -114,7 +115,7 @@ Starts a fresh entry already linked to the Situation, as the repertoire's new oc
 
 Starts a fresh entry already citing the Example, as the corpus's new quotation does.
 
-## `internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen)`
+## `internal static LVistaRow TVistaRowCreate(long id, string epithet, bool chosen)`
 
 Builds one Latin entry row with the given id, epithet and chosen mark.
 
@@ -150,7 +151,7 @@ A fact hands its own `media`, so it can watch what the map asks and what the add
 A media port that only resolves locations, each to no address.
 The map relays hand it to the image map, so a fact without an engine still reads its rows.
 
-## `internal static IReadOnlyList<CVideoDraft> TCardVideoRead(IReadOnlyList<LVideoDraft> videos)`
+## `internal static IReadOnlyList<CVideoDraft> TCardVideoRead(IReadOnlyList<LVideoDraft> videos, LMediaPort media)`
 
 Relays the internal video map, so a fact can hand it a row nobody located.
 

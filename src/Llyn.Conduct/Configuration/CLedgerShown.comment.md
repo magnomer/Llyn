@@ -1,4 +1,5 @@
 # CLedgerShown.cs
+Hash: `8b61a9eaaf6811db`
 
 ## `public sealed record CLedgerShown(IReadOnlyList<string> CLedgerShownChildren, bool CLedgerShownEmpty);`
 

@@ -1,4 +1,5 @@
 # PThemeCategory.xaml
+Hash: `331d3745f7a12209`
 
 Defines the shared button style for category rows.
 

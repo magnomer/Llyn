@@ -1,4 +1,5 @@
 # CSentenceFrame.cs
+Hash: `dcb9e108a9b63eb9`
 
 ## `public sealed record CSentenceFrame(`
 

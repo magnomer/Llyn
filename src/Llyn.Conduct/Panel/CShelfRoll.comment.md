@@ -1,4 +1,5 @@
 # CShelfRoll.cs
+Hash: `5b98cc881a816079`
 
 ## `public sealed record CShelfRoll(`
 

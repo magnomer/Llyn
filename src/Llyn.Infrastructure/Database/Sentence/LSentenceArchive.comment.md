@@ -1,6 +1,7 @@
 # LSentenceArchive.cs
+Hash: `3e860d98972f8c9b`
 
-## `public sealed class LSentenceArchive`
+## `public sealed class LSentenceArchive : LSentenceVault`
 
 Owns the association that reaches an Example from a Meaning or a Collocation.
 It stands apart from `LExampleLink` because this association is the one that carries data.
@@ -9,7 +10,7 @@ That fact does not belong on the Example, which is shared and owned by nothing.
 Nothing here creates, changes, or deletes an Example.
 
 Each row carries the position the Example takes for that owner, and that order is a unique index.
-So every write renumbers the owner's whole set through `LDatabaseOrder`.
+So every save writes the owner's whole set under fresh positions.
 A caller names the index it wants and never has to find a free position.
 
 The two owners differ only in the table their rows live in and the column naming the owner.
@@ -64,6 +65,7 @@ The example order the language pack declares, read through `LSentenceLoader`.
 
 Drops every owner's hold on one Example before that Example is deleted.
 Both tables are swept, because a Meaning and a Collocation may each cite it.
+It renumbers each owner's remaining set through `LDatabaseOrder`, so no gap is left.
 It takes the caller's connection, so the clearing and the delete that follows commit together.
 
 ### `private IReadOnlyList<string> LSentenceFrameRead(string column, string language)`

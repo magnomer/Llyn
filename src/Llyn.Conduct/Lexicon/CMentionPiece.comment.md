@@ -1,4 +1,5 @@
 # CMentionPiece.cs
+Hash: `ad0aea6a01028a5e`
 
 ## `public sealed record CMentionPiece(`
 

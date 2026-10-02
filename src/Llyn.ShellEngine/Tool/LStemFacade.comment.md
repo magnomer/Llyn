@@ -1,4 +1,5 @@
 # LStemFacade.cs
+Hash: `6eb1677d4fa7961e`
 
 ## `internal sealed class LStemFacade`
 

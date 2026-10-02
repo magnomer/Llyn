@@ -1,4 +1,5 @@
 # CRegister.cs
+Hash: `6046704730b3906a`
 
 ## `public sealed record CRegister(long CRegisterId, string CRegisterName)`
 

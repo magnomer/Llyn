@@ -1,10 +1,11 @@
 # QFanqieItem.cs
+Hash: `10e8fcc47e24b5d3`
 
 ## `internal sealed class QFanqieItem`
 
-One block of the fanqie box: the placements of one character in one rime book from one source.
+One block of the fanqie box, holding the placements of one character in one rime book from one source.
 They are drawn as [QFanqieLine](QFanqieLine.comment.md) rows in shared columns.
-The blocks are built from the stored rows and the pack's book list, with no engine call of their own.
+The blocks are built from the groups the engine handed over, with no engine call of their own.
 
 ## `public string QFanqieItemCharacter`
 
@@ -31,7 +32,7 @@ The character's placements in that book from that source, one line each, in answ
 
 ## `internal static void QFanqieItemRefine(FrameworkElement container, object item, string? _)`
 
-Fills a block of `Theme.Fanqie.Row`: the stem line, character, book chip, source and lines.
+Fills a block of `Theme.Fanqie.Row` with the stem line, character, book chip, source and lines.
 The stem line shows only while the block has stems, and the book chip keeps its room when blank.
 The line list is attached to `QFanqieLine.QFanqieLineRefine`.
 

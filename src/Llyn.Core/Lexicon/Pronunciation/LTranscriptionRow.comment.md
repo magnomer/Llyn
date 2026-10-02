@@ -1,4 +1,5 @@
 # LTranscriptionRow.cs
+Hash: `c4e44a0a8772aae4`
 
 ## `public sealed record LTranscriptionRow(`
 

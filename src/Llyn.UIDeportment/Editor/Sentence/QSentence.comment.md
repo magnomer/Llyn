@@ -1,8 +1,10 @@
 # QSentence.cs
+Hash: `121db976e3f9d796`
 
 ## `internal sealed class QSentence`
 
-The sentence row's driver: the row's opening, adding, dropping and typing, its mention commands and its frame.
+The sentence row's driver.
+It handles the row's opening, adding, dropping and typing, its mention commands and its frame.
 It holds the editor scope, whose card lists it walks, and the Conduct editor area once introduced.
 The citation field is [QCitation](QCitation.comment.md), the Gloss rows are [QGloss](../Gloss/QGloss.comment.md) and the mention dropdown is `QProspect`.
 
@@ -47,7 +49,8 @@ It answers the draft change after the cards, so a new row already stands.
 
 ## `internal void QSentenceApply(FrameworkElement container, object item, string? _)`
 
-Fills a row's template: the command bindings, the buttons, the citation field, the chip lines and the Gloss lines.
+Fills a row's template.
+That covers the command bindings, the buttons, the citation field, the chip lines and the Gloss lines.
 It hooks each typed field to its own observer, the two choices through their inner box's text change.
 Each event is hooked once, so a refill leaves one handler.
 
@@ -85,7 +88,8 @@ Gives each row on the cards its chip line.
 
 ## `private static void QSentenceRevealRefine(ItemsControl list)`
 
-Shows or hides each row's controls, and dims an uncited row's citation field while the list is not hovered.
+Shows or hides each row's controls.
+It dims an uncited row's citation field while the list is neither hovered nor focused.
 Whether a row is cited is the ready verdict `PSentenceCited`, and the driver adds only its own hover state.
 The two event overloads only hand their sender to it.
 

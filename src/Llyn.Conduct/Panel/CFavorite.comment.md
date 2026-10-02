@@ -1,4 +1,5 @@
 # CFavorite.cs
+Hash: `3bc75f2d8b0c004c`
 
 ## `public sealed class CFavorite`
 
@@ -22,7 +23,7 @@ Builds the panel over the atelier, so the driver hands it no port.
 Building it is no user action, so it is no gate on the atelier.
 The driver hands the marshal that runs an answer on the UI thread.
 
-## `public event Action? CFavoriteWorkspaceChanged`
+## `public event Action? CFavoriteWorkspaceChanged;`
 
 Raised after a workspace notice has closed the chosen entry.
 The driver reloads its language flags on it.
@@ -97,6 +98,6 @@ The reader is asked for the printer through the panel's envoy, and a decline pri
 
 ## `public Task CFavoritePortraitExport()`
 
-Exports the chosen entry to `path` in the chosen format.
+Exports the chosen entry to a file in the chosen format.
 The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.

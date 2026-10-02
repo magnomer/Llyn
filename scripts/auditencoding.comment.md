@@ -1,4 +1,5 @@
 # auditencoding.ps1
+Hash: `3f18f39720d7d14e`
 
 Checks every tracked text file for one encoding form, without the convention tests.
 It is the standalone counterpart of `TAuditEncoding` and reports the same hits.

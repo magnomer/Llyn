@@ -1,4 +1,5 @@
 # QCollocation.cs
+Hash: `12c65ccfc8ab4677`
 
 ## `internal sealed class QCollocation`
 

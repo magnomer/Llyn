@@ -1,4 +1,5 @@
 # CLedgerNotice.cs
+Hash: `34a2b3923db6163d`
 
 ## `public sealed record CLedgerNotice(string CLedgerNoticeKey, string? CLedgerNoticeLabel, string? CLedgerNoticePath);`
 

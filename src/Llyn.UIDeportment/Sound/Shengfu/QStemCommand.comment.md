@@ -1,4 +1,5 @@
 # QStemCommand.cs
+Hash: `d6be3a8a0a6c3372`
 
 ## `internal static class QStemCommand`
 

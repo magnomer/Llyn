@@ -1,4 +1,5 @@
 # LTranscriptionSheet.cs
+Hash: `968b1aed56c83ea4`
 
 ## `public sealed record LTranscriptionSheet(`
 

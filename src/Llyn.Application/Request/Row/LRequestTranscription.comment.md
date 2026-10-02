@@ -1,4 +1,5 @@
 # LRequestTranscription.cs
+Hash: `9238d000b827e9b5`
 
 The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The transcription requests, one per change to the entry's ordered transcription list.

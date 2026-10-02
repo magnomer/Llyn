@@ -1,4 +1,5 @@
 # CDiwei.cs
+Hash: `c9423f175ee0f891`
 
 ## `public sealed record CDiwei(long CDiweiId, string CDiweiKey, int CDiweiCount, bool CDiweiFinal, bool CDiweiChosen);`
 

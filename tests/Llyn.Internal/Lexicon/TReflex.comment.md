@@ -1,4 +1,5 @@
 # TReflex.cs
+Hash: `1ba46b2eaa35ff87`
 
 ## `public sealed class TReflex`
 

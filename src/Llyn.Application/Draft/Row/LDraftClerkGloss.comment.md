@@ -1,4 +1,5 @@
 # LDraftClerkGloss.cs
+Hash: `23cda3d8e4c46055`
 
 ## `public sealed class LDraftClerkGloss`
 

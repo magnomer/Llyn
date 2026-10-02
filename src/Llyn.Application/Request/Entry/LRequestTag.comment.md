@@ -1,4 +1,5 @@
 # LRequestTag.cs
+Hash: `9faa8a436f5964ce`
 
 The tag requests, shaped like the situation requests.
 A tag carries plain text rather than a state value, because a tag is never unknown.

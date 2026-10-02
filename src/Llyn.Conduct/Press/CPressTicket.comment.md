@@ -1,9 +1,10 @@
 # CPressTicket.cs
+Hash: `c3b0099fa14be1fa`
 
 ## `public sealed record CPressTicket(`
 
 What the print dialog answered, as a driver's envoy answers the gate's question.
-The panel controller turns it into the engine's ticket.
+`CPortrait` turns it into the engine's ticket.
 
 **Parameters**
 

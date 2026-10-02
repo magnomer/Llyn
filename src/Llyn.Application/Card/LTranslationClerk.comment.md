@@ -1,4 +1,5 @@
 # LTranslationClerk.cs
+Hash: `7e6bf3fb60f67730`
 
 ## `public sealed class LTranslationClerk`
 
@@ -52,7 +53,7 @@ A draft naming no language, or no draft at all, keeps every language.
 
 ## `public static string? LTranslationWordRead(string text)`
 
-The word a typed translation stands for: the text trimmed, or null when nothing is left.
+The word a typed translation stands for is the text trimmed, or null when nothing is left.
 A blank word names no Entry, so it neither resolves nor offers prospects.
 Resolving and offering both read the word here, so the rule has one owner.
 

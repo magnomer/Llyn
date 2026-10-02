@@ -1,4 +1,5 @@
 # CShelf.cs
+Hash: `8f691cfa7806b070`
 
 ## `public sealed class CShelf`
 
@@ -29,17 +30,25 @@ Building it is no user action, so it is no gate on the atelier.
 `shownSeam` answers whether the tab is in front, which only the surface knows until `CNavigation` owns it.
 `marshal` hands an engine notice onto the driver's thread.
 
-## `public event Action? CShelfChanged`
+## `public event Action? CShelfChanged;`
 
 Raised when the source desk or the entry editor changes state, so a driver repaints the mode.
 
-## `public event Action<CColophon>? CShelfColophonChanged`
+## `public event Action<CColophon>? CShelfColophonChanged;`
 
 Raised with the colophon of each Source draft the Source panel loads.
 
 ## `public CEditor CShelfEditor { get; }`
 
 The entry editor of the entry side, which the driver wraps for its editor page.
+
+## `public CPanel CShelfPanel { get; }`
+
+The Source panel, whose rows are the Sources the vista finds.
+
+## `public CFootnote CShelfFootnote { get; }`
+
+The entry list, whose rows are the entries citing the chosen Source.
 
 ## `public CImprint CShelfImprint { get; }`
 
@@ -85,7 +94,7 @@ The constructor runs it last, and a workspace change runs it again through `CWor
 
 Attaches the Source list's subjects, each answered through `marshal`.
 Vista, Author, Reference, Example, Reflex and Settings notices refill the Source rows.
-An Author notice also rereads the source draft, and a Workspace notice closes the shown Source.
+An Author notice also rereads the source draft, and a Workspace notice closes both sides.
 
 ## `private void LShelfWorkspaceResonate()`
 
@@ -104,6 +113,11 @@ So the tally never counts a Source the panel just left.
 Runs the flag fill into the driver's `store`, then answers `CShelfRollRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
 
+## `public void CShelfQuerySet(string query)`
+
+Hands the search text to the Source vista, which announces only a changed text.
+A workspace change carries it into the fresh vista, so the driver never re-sends it.
+
 ## `public void CShelfOrderSet(CCatalogOrder? order)`
 
 Takes the chosen order, and the vista keeps its own order when none is chosen.
@@ -111,6 +125,11 @@ Takes the chosen order, and the vista keeps its own order when none is chosen.
 ## `public static IReadOnlyList<CCatalogOrder> CShelfOrderRead()`
 
 The orders the Source list offers, in the order a driver lists them.
+
+## `public void CShelfFilterSet(CCatalogFilter filter)`
+
+Hands the hidden languages to the Source vista, and the posture stores them under the tab.
+The vista announces only a changed filter.
 
 ## `internal bool LShelfChangeRead()`
 

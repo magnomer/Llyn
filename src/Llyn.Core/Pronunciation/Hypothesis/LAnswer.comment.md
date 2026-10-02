@@ -1,4 +1,5 @@
 # LAnswer.cs
+Hash: `271b9a9f3a96cc59`
 
 ## `public sealed record LAnswer(IReadOnlyList<LReading> LAnswerReadings, bool LAnswerReached)`
 
@@ -15,7 +16,7 @@ The same record serves the reader below it, where the value is a page body rathe
   A pronunciation source may return several, one per variety the page lists.
   An audio source or a page reader returns one untagged reading holding an address or a body.
 - `LAnswerReached` — Whether the source answered at all.
-  False means every URL failed: a timeout, a refused connection, or a 5xx that outlived its retries.
+  False means every URL failed, by a timeout, a refused connection, or a 5xx that outlived its retries.
   True with no readings means the source answered and simply had nothing for this word.
 
 ## `public static LAnswer LAnswerLost { get; }`
@@ -42,4 +43,4 @@ It serves the callers that need a single string, such as audio harvest.
 
 ## `public bool LAnswerEmpty`
 
-Whether there is a reading to take, whatever the source's fate was.
+Whether there is no reading to take, whatever the source's fate was.

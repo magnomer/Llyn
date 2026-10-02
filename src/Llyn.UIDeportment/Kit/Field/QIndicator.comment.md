@@ -1,4 +1,5 @@
 # QIndicator.cs
+Hash: `e233e4df0680962e`
 
 ## Inline notes
 

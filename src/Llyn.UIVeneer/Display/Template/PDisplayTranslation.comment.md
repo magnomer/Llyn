@@ -1,4 +1,5 @@
 # PDisplayTranslation.xaml
+Hash: `d881e278e4be7660`
 
 ## `ResourceDictionary`
 

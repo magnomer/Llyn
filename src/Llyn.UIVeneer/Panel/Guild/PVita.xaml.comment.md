@@ -1,4 +1,5 @@
 # PVita.xaml.cs
+Hash: `59b2c434aa6269a3`
 
 ## `public partial class PVita : UserControl`
 

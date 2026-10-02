@@ -1,4 +1,5 @@
 # PGlossCommand.cs
+Hash: `6c1cd0128de1e28d`
 
 ## `public static class PGlossCommand`
 

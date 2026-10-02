@@ -1,4 +1,5 @@
 # CWorkspaceState.cs
+Hash: `839ed72bc34e2337`
 
 ## `public sealed record CWorkspaceState(long? CWorkspaceStateLeft, long? CWorkspaceStateRight);`
 

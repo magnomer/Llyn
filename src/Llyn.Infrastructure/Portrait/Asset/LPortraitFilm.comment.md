@@ -1,4 +1,5 @@
 # LPortraitFilm.cs
+Hash: `5295c2a2ef3a8a94`
 
 ## `public static class LPortraitFilm`
 

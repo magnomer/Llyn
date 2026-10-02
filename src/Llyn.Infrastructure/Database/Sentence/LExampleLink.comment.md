@@ -1,8 +1,9 @@
 # LExampleLink.cs
+Hash: `f186acc4bc1939d3`
 
 ## `public sealed class LExampleLink`
 
-Reads the quoting side of an Example: which Meanings and Collocations quote it.
+Reads the quoting side of an Example, meaning which Meanings and Collocations quote it.
 A Meaning and a Collocation reach their Examples through `LSentenceArchive`, because that association carries data.
 This class owns no association table of its own.
 It lives beside `LExampleArchive` rather than inside it.

@@ -1,4 +1,5 @@
 # QMorphology.cs
+Hash: `fc970ffc370ee5bc`
 
 ## `internal sealed class QMorphology`
 

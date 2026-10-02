@@ -1,4 +1,5 @@
 # TEpoch.cs
+Hash: `36c2d103a0f377c7`
 
 ## `public sealed class TEpoch`
 

@@ -1,4 +1,5 @@
 # QSeam.cs
+Hash: `d891f1e383c6901a`
 
 ## `public sealed class QSeam : Thumb`
 

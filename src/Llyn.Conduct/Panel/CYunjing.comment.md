@@ -1,4 +1,5 @@
 # CYunjing.cs
+Hash: `4792d16fdcd37e66`
 
 ## `public sealed class CYunjing`
 
@@ -22,7 +23,7 @@ Building it is no user action, so it is no gate on the atelier.
 `shownSeam` answers whether the tab is in front, which only the surface knows until `CNavigation` owns it.
 `marshal` carries every engine notice onto the driver's thread, so the driver holds no observer.
 
-## `public event Action? CYunjingChanged`
+## `public event Action? CYunjingChanged;`
 
 Raised whenever a column, the page, the tally or the mode changed and the driver must copy again.
 Each column, the page and the mode answer it with their own read.

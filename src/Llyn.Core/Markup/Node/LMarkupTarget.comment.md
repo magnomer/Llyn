@@ -1,4 +1,5 @@
 # LMarkupTarget.cs
+Hash: `05bdbd40d0434f3b`
 
 ## `public sealed record LMarkupTarget(`
 

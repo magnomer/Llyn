@@ -1,4 +1,5 @@
 # QEstablishment.cs
+Hash: `815cc79e3ddb3125`
 
 ## `internal sealed class QEstablishment`
 

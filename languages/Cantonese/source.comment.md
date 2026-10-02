@@ -1,4 +1,5 @@
 # source.json
+Hash: `592a033242aa3f9a`
 
 ## pack
 
@@ -7,7 +8,8 @@ Every URL and extraction rule is data, so an edit here needs no recompile.
 The `pronunciation` and `audio` lists are independent and each is shown in the order written here.
 The pronunciation sources publish IPA, while Jyutping and Yale are the transcription schemes above.
 No morphology sources are listed, because Cantonese words do not inflect.
-Every source is read from an ordinary article page rather than a machine API.
+The Jyutping, glyph and Commons sources call the MediaWiki API.
+The other sources read an ordinary article page.
 The article hosts impose no request ceiling, while the REST endpoints reject bursts with 429.
 The reader would report such a rejection as an unreachable source.
 
@@ -20,7 +22,7 @@ A comma separates alternative readings and each is shown.
 The same parameter also carries markers after a comma, such as `1nb=` for a note on the first reading.
 So the pattern stops at the first piece holding an equals sign.
 A simplified-form or variant-form page only points at its main form through `{{zh-see}}`.
-The wikitext attempt follows that pointer and the later attempts ask for the form it named.
+The attempt follows that pointer and reads the form it named.
 
 ## `transcription[1]` Yale
 
@@ -51,6 +53,7 @@ Standard Cantonese vowels are written without length marks and with plain letter
 The result is phonemic, so `phonemic` is on and the respelling stands between slashes.
 The open-mid front vowel becomes e and the close-mid central rounded vowel becomes œ.
 The open-mid back vowel becomes o and the near-close front vowel becomes i.
+The near-close back vowel becomes u.
 ɐ stays as written.
 The sources anchor on the Standard Cantonese row alone, so no other variety reaches these rules.
 

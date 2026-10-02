@@ -1,4 +1,5 @@
 # vocabulary.json
+Hash: `0a6492b05dbf073c`
 
 ## file
 

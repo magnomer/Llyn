@@ -1,4 +1,5 @@
 # LReflexClerkEpithet.cs
+Hash: `ab4f791973019bc8`
 
 ## `public static class LReflexClerkEpithet`
 
@@ -14,5 +15,5 @@ The epithet pieces of every rule over the rows of its language, joined.
 
 ## `private static string LReflexEpithetFormat(LReflexRule rule, LReflex row)`
 
-One piece with the text, kind and note placed, the clip pattern removed and whitespace folded.
+One piece with the text, kind, romanization, meaning and note placed, the clip pattern removed and whitespace folded.
 A clip pattern that fails to compile or times out leaves the piece unclipped.

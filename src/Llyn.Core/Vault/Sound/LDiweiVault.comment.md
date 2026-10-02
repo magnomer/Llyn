@@ -1,4 +1,5 @@
 # LDiweiVault.cs
+Hash: `017f3ac58a9ed64e`
 
 ## `public interface LDiweiVault`
 

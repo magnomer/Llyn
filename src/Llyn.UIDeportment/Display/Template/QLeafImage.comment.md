@@ -1,4 +1,5 @@
 # QLeafImage.cs
+Hash: `ebc626cc614700b7`
 
 ## `internal sealed record QLeafImage(QImageItem QLeafImageRow, bool QLeafImageEmpty)`
 

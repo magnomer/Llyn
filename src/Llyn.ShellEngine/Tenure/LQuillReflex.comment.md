@@ -1,4 +1,5 @@
 # LQuillReflex.cs
+Hash: `829c5d2bb19cfa43`
 
 ## `public sealed class LQuillReflex`
 

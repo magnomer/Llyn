@@ -1,6 +1,7 @@
 # LScriptArchive.cs
+Hash: `18af2084d379dd21`
 
-## `public sealed class LScriptArchive`
+## `public sealed class LScriptArchive : LScriptVault`
 
 Stores and reads the glyph pictures of a character, per language.
 A character's pictures are written as one set and read back in the order they were written.

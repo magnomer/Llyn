@@ -1,4 +1,5 @@
 # QCitationItem.cs
+Hash: `b0bb21eefb49ff43`
 
 ## `internal sealed class QCitationItem`
 

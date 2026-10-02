@@ -1,4 +1,5 @@
 # TRequestGloss.cs
+Hash: `9a586e92a53522da`
 
 ## `public sealed class TRequestGloss`
 

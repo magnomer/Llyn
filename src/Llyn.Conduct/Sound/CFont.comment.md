@@ -1,4 +1,5 @@
 # CFont.cs
+Hash: `7f6ce54a831db5bf`
 
 ## `public sealed record CFont(string? CFontFamily, double? CFontSize, string? CFontStyle);`
 

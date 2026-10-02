@@ -1,4 +1,5 @@
 # PThemePanel.xaml
+Hash: `ab2e3967da3cb3d9`
 
 ## `<Style x:Key="Theme.Panel.Surface" TargetType="Border">`
 

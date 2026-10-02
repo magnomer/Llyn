@@ -1,4 +1,5 @@
 # LAnchorRow.cs
+Hash: `4665863180f042a8`
 
 ## `public sealed record LAnchorRow(LFanqieRow LAnchorRowFanqie, bool LAnchorRowHeld, bool LAnchorRowEstimated);`
 

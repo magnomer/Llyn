@@ -1,4 +1,5 @@
 # PTenor.xaml.cs
+Hash: `86aaf60058c17542`
 
 ## `public partial class PTenor : UserControl`
 

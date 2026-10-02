@@ -1,4 +1,5 @@
 # QScreenBrowser.cs
+Hash: `281237ea9374045d`
 
 ## `internal sealed class QScreenBrowser`
 

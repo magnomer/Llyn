@@ -1,18 +1,51 @@
 # LEntryPort.cs
+Hash: `b35cc17de4f9d4bb`
 
 ## `public interface LEntryPort`
 
 The slice of the engine a deportment sees when it reads stored records.
 It finds and reads entries, the catalog rows of every tab, and the per-entry marks a reader shows.
-The marks are favourite, grasp, frequency, epithet, incoming links, mentions and glyphs.
+The marks are favourite, grasp, frequency, incoming links, mentions and glyphs.
 The catalog side finds and creates tags, registers, situations, examples, references and authors.
 The pure facts a panel draws with travel here too: the grasp step and wording, twin names and markdown blocks.
-Everything here reads or writes a committed record, never a held draft.
-`LEngine` implements it today, and the entry clerk takes it over when the parts are dismantled.
+Everything here reads or writes committed records, apart from the few reads that name a held draft.
+`LEntryOutlet` implements it today, and the entry clerk takes it over when the parts are dismantled.
+
+## `IReadOnlyList<LVistaRow> LEngineEntryFind(LVista vista);`
+
+The entry rows the vista lists, with its query, order and filter applied.
+A blank vista with nothing typed answers no rows.
 
 ## `IReadOnlyList<LVistaRow> LEngineEntryFind(LVista? parent, LVista? child);`
 
 The entry rows of a child list narrowed by the parent catalog's choice, as the footnote and cohort lists read.
+
+## `LEntryDraft? LEngineEntryLoad(long id);`
+
+The stored entry as a draft, or null when it no longer stands.
+Its recordings come resolved to absolute paths.
+
+## `int LEngineGraspStep { get; }`
+
+The last grasp step, the limit a star control draws to.
+
+## `int LEngineGraspRead(long entryId);`
+
+The grasp stored on the entry, in half steps.
+A missing entry reads zero, the same as one never rated.
+
+## `void LEngineGraspSave(long entryId, int grasp);`
+
+Writes the grasp, then raises a Grasp bulletin for the entry.
+
+## `LFrequencyGauge? LEngineFrequencyResolve(long entryId, string once);`
+
+The entry's frequency gathered into one answer, or null when it has none.
+The `once` text words a word interval.
+
+## `IReadOnlyList<LUsage> LEngineIncomingRead(long entryId);`
+
+Every card of either kind that links to the entry, with the epithet the settings ask for.
 
 ## `IReadOnlyList<LGlyphCell> LEngineGlyphDivide(LEntryDraft draft);`
 
@@ -34,6 +67,12 @@ The filled transcription rows a reading view lists, without the glyph row.
 
 The written reflex rows of the draft, which a reading view lists.
 
+## `IReadOnlyList<LCatalogTag> LEngineTagFind(LVista vista);`
+
+The Tags the taxonomy panel's vista lists, with its query and order.
+The vista's language filter is not applied, since it hides entries, not Tags.
+A vista whose chosen Tag no longer answers is deselected.
+
 ## `IReadOnlyList<LCatalogAuthor> LEngineRollFind(LVista? vista);`
 
 The Authors of the authors panel's roll, headed by the uncredited row, and none while the vista is missing.
@@ -49,6 +88,11 @@ The held draft's written Author name and the kept Author's name, as the union qu
 ## `LVita LEngineVitaRead(LVista? roll);`
 
 The read sheet of the Author the roll stands on, or the sheet of nobody.
+
+## `void LEngineAuthorAbsorb(long kept, long dropped);`
+
+Folds the Author `dropped` into `kept` and deletes the dropped row.
+Observers hear both ids, so a panel standing on the dropped Author moves to the kept one.
 
 ## `IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista? roll, LVista? oeuvre);`
 
@@ -74,6 +118,10 @@ The credit rows of the held Source draft, after its deferred requests are applie
 
 The citation line of one Source, worded as none when no Source is given.
 
+## `IReadOnlyList<string> LEngineNameResolve(IReadOnlyList<string> labels);`
+
+The labels made distinct in their given order, numbered where two share a name.
+
 ## `IReadOnlyList<LCatalogReference> LEngineReferenceFind();`
 
 Every Source as the whole shelf lists it, ordered by author.
@@ -92,7 +140,6 @@ The engine parses and words the stored stamps, so Conduct only copies them.
 
 The kind menu of the source editor, each option's tag and localization key, in menu order.
 It is static, since the menu is the same for every Source and needs no port.
-
 
 ## `static long? LEngineLinkRead(long? link)`
 

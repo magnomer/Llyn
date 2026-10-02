@@ -1,4 +1,5 @@
 # TEasel.cs
+Hash: `2baca4a0e726cc15`
 
 ## `public sealed class TEasel`
 

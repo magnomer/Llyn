@@ -1,4 +1,5 @@
 # TAuditContractWalker.cs
+Hash: `d4347c0e2f22830b`
 
 ## `internal static class TAuditContractWalker`
 

@@ -1,4 +1,5 @@
 # CNavigation.cs
+Hash: `068280fe17e68e61`
 
 ## `public sealed class CNavigation`
 

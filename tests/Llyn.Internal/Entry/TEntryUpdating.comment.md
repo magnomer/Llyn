@@ -1,4 +1,5 @@
 # TEntryUpdating.cs
+Hash: `b32b807d081bd69c`
 
 ## `public sealed class TEntryUpdating`
 
@@ -9,11 +10,10 @@ An entry that is no longer there is refused.
 An update that fails part-way leaves the stored entry exactly as it was.
 The update stamp moves only when the draft differs from what is stored.
 A change to any card alone moves it, because the stamp belongs to the whole entry.
-A card changed through its own seam, outside the draft, moves it as well.
 
 ## Inline notes
 
-### `LEntryDraft? loaded = engine.LEngineEntryLoad(entry.LEntryId);`
+### `LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);`
 
 What the shell hands back.
 It is the loaded draft with its middle card dropped and its first card renamed.
@@ -29,7 +29,7 @@ The cards the draft still named kept their rows.
 So anything pointing at them still points at the same Meaning.
 The card added got a row of its own.
 
-### `Assert.Equal(revision.LRevisionId, engine.LEngineWorkspace.LEngineStateRead().LWorkspaceStateRevision);`
+### `Assert.Equal(revision, engine.TEngineStateRead().LWorkspaceStateRevision);`
 
 The workspace row moved onto the revision the update recorded.
 
@@ -44,7 +44,8 @@ Reordering re-attached the rows that were already there rather than writing new 
 
 ### `Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_tag;"));`
 
-The dropped Tag was detached, not deleted: it is independent data the card only referenced.
+The dropped Tag was detached from the card.
+It is independent data the card only referenced.
 
 ### `LRefusal refusal = Assert.Throws<LRefusal>(() => engine.TEngineEntryUpdate(`
 

@@ -1,4 +1,5 @@
 # LSpeechClerk.cs
+Hash: `1215322af9ec046e`
 
 ## `public static class LSpeechClerk`
 
@@ -17,7 +18,8 @@ The trimmed typed text when it appends a part to the chips, else null.
 
 ## `public static IReadOnlyList<LSpeechDraft> LSpeechChipRead(IReadOnlyList<LSpeechDraft> shown, string? pending)`
 
-The draft's parts as chips: the last part left out when it is the pending custom one, the rest cleaned.
+The draft's parts as chips, cleaned.
+The last part is left out when it is the pending custom one.
 
 ## `public static bool LSpeechTypedCheck(string? typed)`
 
@@ -46,4 +48,4 @@ Otherwise the draft changed from elsewhere, so its parts become the committed on
 
 ## `private static IReadOnlyList<LSpeechDraft> LSpeechNormalize(IReadOnlyList<LSpeechDraft> shown)`
 
-The draft's parts as chips: trimmed, never blank, and each name once.
+The draft's parts as chips, trimmed, never blank, and each name once.

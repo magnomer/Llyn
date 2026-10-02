@@ -1,9 +1,10 @@
 # TAuditCommentSetting.cs
-Hash: `318cf6dc490d8fc8`
+Hash: `aae83cdf109ff239`
 
 ## `internal static class TAuditCommentSetting`
 
-Hand-written and tracked: the comment-audit rules and scope live here, not in a generated sidecar.
+Hand-written and tracked.
+The comment-audit rules and scope live here, not in a generated sidecar.
 auditcomments.ps1 reads its own tracked auditcomments.json and never writes this file.
 The audits read no script configuration, and both copies change together as scripts/principles.md asks.
 

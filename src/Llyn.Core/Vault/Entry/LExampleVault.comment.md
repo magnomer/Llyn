@@ -1,4 +1,5 @@
 # LExampleVault.cs
+Hash: `5d07c9ed93b8b1be`
 
 ## `public interface LExampleVault`
 
@@ -39,13 +40,16 @@ Throws when no Example carries that id.
 
 ## `void LExampleSourceUpdate(long exampleId, LStateAnchor source);`
 
-Sets or clears the single Source the Example identified by `exampleId` cites — pass `null` for `sourceId` to clear it.
-Only the reference moves: the Source row itself is never created, changed, or removed here.
+Sets or clears the single Source the Example identified by `exampleId` cites.
+An unspecified `source` clears the citation.
+Only the reference moves.
+The Source row itself is never created, changed, or removed here.
 Throws when no Example carries that id.
 
 ## `int LExampleReferenceRead(long id);`
 
-Counts the references that still point at the Example identified by `id` — the number `LExampleDelete` refuses a delete over.
+Counts the references that still point at the Example identified by `id`.
+It is the number `LExampleDelete` refuses a delete over.
 A caller that has just detached one reference reads this.
 It learns whether the row it detached from was the last one.
 No store of its own has to know which association tables exist.

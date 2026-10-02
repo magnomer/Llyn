@@ -1,4 +1,5 @@
 # LRecording.cs
+Hash: `1f78459a2bd0625b`
 
 ## `public sealed record LRecording(string LRecordingSource, string? LRecordingAddress, int LRecordingOrder, bool LRecordingReached, string LRecordingVariety)`
 

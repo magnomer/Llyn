@@ -1,8 +1,10 @@
 # TGlyph.cs
+Hash: `7e364e23da41c029`
 
 ## `public sealed class TGlyph`
 
-Covers the glyph section: the split of a text into its Han characters and the entry one character opens.
+Covers the glyph section.
+It splits a text into its Han characters and opens the entry of one character.
 The split keeps Han characters only, each once, in first-seen order, and keeps an ideograph beyond the basic plane whole.
 The divide reads the transcription of the glyph scheme over the headword.
 Each Han cell of the divide carries the glyph language and any other cell carries none.

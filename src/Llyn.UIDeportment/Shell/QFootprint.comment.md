@@ -1,4 +1,5 @@
 # QFootprint.cs
+Hash: `3c5265be4b52dbbb`
 
 ## `public sealed class QFootprint`
 
@@ -29,7 +30,7 @@ A monitor that is gone, or a saved size larger than the desktop, must not leave 
 
 ## `public (double QFootprintWidth, double QFootprintHeight) QFootprintSizeRead(double width, double height, double minWidth, double minHeight)`
 
-The size a first launch takes: its share of the work area, never below the minimum size.
+The size a first launch takes is its share of the work area, never below the minimum size.
 
 ## `private static LCapsuleWindow? QFootprintPlace(LCapsuleWindow? state, double left, double top, double width, double height, double minWidth, double minHeight)`
 

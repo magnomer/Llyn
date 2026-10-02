@@ -1,10 +1,11 @@
 # QFavorite.cs
+Hash: `cec6848cbe8158f3`
 
 ## `internal sealed partial class QFavorite`
 
 Drives the favorites panel: what it is made of, and when it starts and stops.
-Browsing itself lives in the file beside this one.
-That is the search, the ordering, the roster, the read-only display and the editor beside it.
+Browsing lives in the file beside this one.
+That is the search, the ordering, the roster and the switch between reading and editing.
 The panel itself is the veneer's `QFavorite` page, which the window places.
 
 ## `internal QFavorite(UserControl surface)`

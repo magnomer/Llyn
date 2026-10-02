@@ -1,4 +1,5 @@
 # TDraftCancelling.cs
+Hash: `8e5113e3e3f1289b`
 
 ## `public sealed class TDraftCancelling`
 

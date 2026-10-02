@@ -1,4 +1,5 @@
 # LReferenceClerk.cs
+Hash: `dda3748dad4dc171`
 
 ## `public sealed class LReferenceClerk`
 
@@ -21,7 +22,8 @@ Its author state is unspecified, because nobody has been credited or ruled unkno
 ## `public LReference LReferenceClerkCreate(LReference reference)`
 
 Creates `reference` and returns it with its assigned id.
-Its fields carry the three-state distinction the model gives them: unspecified, deliberately unknown, or a value.
+Its fields carry the three-state distinction the model gives them.
+Each is unspecified, deliberately unknown, or a value.
 
 ## `public LReference LReferenceClerkCreate(string title)`
 

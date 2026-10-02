@@ -1,4 +1,5 @@
 # CPlayback.cs
+Hash: `c1f2eb26f288201a`
 
 ## `public sealed class CPlayback`
 

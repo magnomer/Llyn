@@ -66,7 +66,7 @@ internal sealed class QUsageItem
 
         if (QLook.QLookPartFind<Run>(container, "PUsageEpithet") is Run epithet)
         {
-            epithet.Text = " " + usage.QUsageItemEpithet;
+            epithet.Text = QLook.QLookEpithetRead(usage.QUsageItemEpithet);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PUsageTitle") is TextBlock title)

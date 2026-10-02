@@ -1,4 +1,5 @@
 # QSCoinage.cs
+Hash: `3733e3d9e93dd6df`
 
 ## `internal sealed class QSCoinage`
 

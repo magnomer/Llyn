@@ -1,4 +1,5 @@
 # LForay.cs
+Hash: `d7aa21b288852b8a`
 
 ## `public sealed class LForay`
 

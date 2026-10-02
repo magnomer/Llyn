@@ -1,4 +1,5 @@
 # TCardCaret.cs
+Hash: `718e7b57cfb578b3`
 
 ## `public sealed class TCardCaret`
 

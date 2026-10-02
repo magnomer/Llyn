@@ -1,4 +1,5 @@
 # LFanqieBook.cs
+Hash: `fd87cb371d75c44d`
 
 ## `public sealed record LFanqieBook(`
 

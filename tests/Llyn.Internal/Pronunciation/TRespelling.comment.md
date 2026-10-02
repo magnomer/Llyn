@@ -1,4 +1,5 @@
 # TRespelling.cs
+Hash: `9b028c6a6eb94ab3`
 
 ## `public sealed class TRespelling`
 

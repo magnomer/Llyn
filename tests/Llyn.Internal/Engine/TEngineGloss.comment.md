@@ -1,4 +1,5 @@
 # TEngineGloss.cs
+Hash: `c1402f7638e6237b`
 
 ## `public sealed class TEngineGloss`
 

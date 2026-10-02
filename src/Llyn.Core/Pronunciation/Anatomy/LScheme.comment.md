@@ -1,4 +1,5 @@
 # LScheme.cs
+Hash: `fac16e5145ab1d73`
 
 ## `public sealed record LScheme(string LSchemeName, IReadOnlyList<LSourceSpec> LSchemeSources)`
 

@@ -1,4 +1,5 @@
 # LDraftVault.cs
+Hash: `7f358df47b4aeaa4`
 
 ## `public interface LDraftVault`
 

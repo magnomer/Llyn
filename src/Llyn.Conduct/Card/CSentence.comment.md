@@ -1,4 +1,5 @@
 # CSentence.cs
+Hash: `d24d9c816ea6ebb6`
 
 ## `public sealed class CSentence`
 

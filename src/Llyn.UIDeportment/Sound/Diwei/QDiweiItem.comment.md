@@ -1,4 +1,5 @@
 # QDiweiItem.cs
+Hash: `1e5db46e6a6657f1`
 
 ## `internal sealed class QDiweiItem`
 

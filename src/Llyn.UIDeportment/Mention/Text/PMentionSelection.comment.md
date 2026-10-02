@@ -1,4 +1,5 @@
 # PMentionSelection.cs
+Hash: `7d417cfa25650b56`
 
 ## `internal static class PMentionSelection`
 
@@ -9,4 +10,4 @@ Both hosts of the gesture place it the same way, so the placing lives apart from
 
 Where a popup opened for the selection should stand, in the field's own coordinates.
 It is the rectangle of the selection's first character.
-A field not yet laid out answers an empty rectangle, so the popup falls to the field's foot instead.
+A field not yet laid out answers a zero-size rectangle at the field's foot.

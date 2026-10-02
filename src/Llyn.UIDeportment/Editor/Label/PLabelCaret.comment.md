@@ -1,4 +1,5 @@
 # PLabelCaret.cs
+Hash: `0d4f6dcb01fcf3e9`
 
 ## `internal sealed class PLabelCaret`
 

@@ -1,4 +1,5 @@
 # QGuild.cs
+Hash: `259eaa224d5899b6`
 
 ## `internal sealed class QGuild`
 

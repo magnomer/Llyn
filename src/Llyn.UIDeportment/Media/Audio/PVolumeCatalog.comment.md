@@ -1,6 +1,7 @@
 # PVolumeCatalog.cs
+Hash: `14f683ff44188bce`
 
-## `public sealed class PVolumeCatalog`
+## `public sealed class PVolumeCatalog : INotifyPropertyChanged`
 
 The one loudness the program plays at, held where anything that plays can reach it.
 

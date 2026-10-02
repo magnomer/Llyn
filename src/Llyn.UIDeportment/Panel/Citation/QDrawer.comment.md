@@ -1,4 +1,5 @@
 # QDrawer.cs
+Hash: `5bbc059f4b2fd2de`
 
 ## `internal sealed class QDrawer`
 

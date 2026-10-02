@@ -1,4 +1,5 @@
 # LUsher.cs
+Hash: `3f38471976099398`
 
 ## `public interface LUsher`
 

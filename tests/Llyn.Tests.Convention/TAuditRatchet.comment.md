@@ -1,4 +1,5 @@
 # TAuditRatchet.cs
+Hash: `97c45fc187594b1a`
 
 ## `public sealed class TAuditRatchet`
 

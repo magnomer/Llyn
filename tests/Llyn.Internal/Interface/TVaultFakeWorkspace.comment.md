@@ -1,4 +1,5 @@
 # TVaultFakeWorkspace.cs
+Hash: `a96b117fe0a93ff7`
 
 ## `internal sealed class TVaultFakeWorkspace : LWorkspaceVault`
 

@@ -1,4 +1,5 @@
 # LClaimClerk.cs
+Hash: `6b711d14e0628640`
 
 ## `public sealed class LClaimClerk`
 
@@ -104,7 +105,8 @@ The rows pointing at this draft are left, because the caller dropping a chip alr
 
 ## `public void LClaimClerkCancel(long id)`
 
-Discards held work: the court first, the file second.
+Discards held work.
+The court goes first and the file second.
 The rows this draft owns go with their targets, and the rows pointing at it are settled to nothing.
 Each row pointing at it has its tentative id struck from the draft that held it.
 A chip left carrying it would be stored as a translation of a record that never existed.

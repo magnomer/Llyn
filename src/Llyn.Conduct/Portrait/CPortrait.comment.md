@@ -1,4 +1,5 @@
 # CPortrait.cs
+Hash: `0be22ff469162c31`
 
 ## `internal static class CPortrait`
 

@@ -1,4 +1,5 @@
 # CXiesheng.cs
+Hash: `c988e3385b49fd7c`
 
 ## `public sealed class CXiesheng`
 
@@ -22,7 +23,7 @@ Building it is no user action, so it is no gate on the atelier.
 `shownSeam` answers whether the tab is in front, which only the surface knows until `CNavigation` owns it.
 `marshal` carries every engine notice onto the driver's thread, so the driver holds no observer.
 
-## `public event Action? CXieshengChanged`
+## `public event Action? CXieshengChanged;`
 
 Raised whenever a column, the page or the mode changed and the driver must copy again.
 
@@ -81,7 +82,7 @@ The localization key the empty entry list prints, telling no series chosen from 
 
 The ordering the series column is listed in, defaulted by the engine while no vista stands.
 
-## `private readonly Action<Action> _cXieshengMarshal`
+## `private readonly Action<Action> _cXieshengMarshal;`
 
 The medium's marshal the observers run each answer through, since only the medium knows its thread.
 

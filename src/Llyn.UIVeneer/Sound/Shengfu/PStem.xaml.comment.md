@@ -1,4 +1,5 @@
 # PStem.xaml.cs
+Hash: `a5432e520addf565`
 
 ## `public partial class PStem : UserControl`
 

@@ -1,4 +1,5 @@
 # LImageDraft.cs
+Hash: `84e14c7d69765300`
 
 ## `public sealed record LImageDraft(`
 

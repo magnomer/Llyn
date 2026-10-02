@@ -108,7 +108,7 @@ internal sealed class QIndexItem : INotifyPropertyChanged
 
         if (QLook.QLookPartFind<Run>(container, "PIndexEpithet") is Run epithet)
         {
-            epithet.Text = " " + row.QIndexItemEpithet;
+            epithet.Text = QLook.QLookEpithetRead(row.QIndexItemEpithet);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PIndexLanguage") is TextBlock language)

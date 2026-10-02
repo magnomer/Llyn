@@ -1,4 +1,5 @@
 # CScenario.cs
+Hash: `4034ea22cef6f454`
 
 ## `public sealed record CScenario(CSituationDraft CScenarioDraft)`
 

@@ -1,4 +1,5 @@
 # LImageVault.cs
+Hash: `d78a56fcecd0d006`
 
 ## `public interface LImageVault`
 

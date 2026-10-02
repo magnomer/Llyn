@@ -1,4 +1,5 @@
 # QWindowChronicle.cs
+Hash: `331b41d5ff8fa89c`
 
 ## `public partial class QWindow`
 

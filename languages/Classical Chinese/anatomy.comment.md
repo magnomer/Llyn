@@ -1,6 +1,7 @@
 # anatomy.json
+Hash: `89e0b3ff3c6880e9`
 
-Declares how a reflex reading is cut into its anatomy: onset, vowel, coda and tone.
+Declares how a reflex reading is cut into onset, vowel, coda and tone.
 
 ## `anatomy`
 

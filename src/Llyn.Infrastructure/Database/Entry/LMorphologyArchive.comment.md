@@ -1,6 +1,7 @@
 # LMorphologyArchive.cs
+Hash: `4439bbd38a6fd68f`
 
-## `public sealed class LMorphologyArchive`
+## `public sealed class LMorphologyArchive : LMorphologyVault`
 
 Persists and resolves a language's morphology vocabulary.
 A feature belongs to a part of speech and owns its values.

@@ -1,8 +1,9 @@
 # QWing.cs
+Hash: `70a68658e2033730`
 
 ## `internal sealed class QWing`
 
-Drives one side of the duplex panel: a search bar, the matches it finds and the Entry picked from them.
+Drives one side of the duplex panel, made of a search bar, its matches and the Entry picked from them.
 The two sides are peers, so each place of the veneer's `PWing` gets its own driver.
 Each driver has its own vista and its own display.
 The panel never writes, so there is no editor and nothing to discard.
@@ -72,7 +73,8 @@ Hands the text to the vista, then shows the list while the vista holds a query a
 
 ## `private void QWingKeyRefine(object sender, KeyEventArgs e)`
 
-The field's first key handler: Escape hides an open list and takes the key.
+The field's first key handler.
+Escape hides an open list and takes the key.
 A handled key ends the route, so the key observe never hears it.
 
 ## `private void QWingKeyObserve(object sender, KeyEventArgs e)`

@@ -1,4 +1,5 @@
 # QSLeave.cs
+Hash: `2593298a265736ae`
 
 ## `internal sealed class QSLeave`
 

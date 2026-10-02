@@ -1,4 +1,5 @@
 # TCardMention.cs
+Hash: `5eeda0186e62f4b8`
 
 ## `public sealed class TCardMention`
 

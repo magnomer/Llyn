@@ -1,4 +1,5 @@
 # TMeaning.cs
+Hash: `01c521d394b928d6`
 
 ## `public sealed class TMeaning`
 

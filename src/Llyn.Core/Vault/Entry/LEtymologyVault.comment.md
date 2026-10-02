@@ -1,4 +1,5 @@
 # LEtymologyVault.cs
+Hash: `5a5ef80155a96f0f`
 
 ## `public interface LEtymologyVault`
 

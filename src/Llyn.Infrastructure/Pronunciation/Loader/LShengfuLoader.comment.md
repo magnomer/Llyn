@@ -1,8 +1,10 @@
 # LShengfuLoader.cs
+Hash: `68404391d41adc01`
 
 ## `internal static class LShengfuLoader`
 
-The `shengfu` side of the pack loader: the one phonetic-series lookup a Han language pack may declare.
+The `shengfu` side of the pack loader.
+It reads the one phonetic-series lookup a Han language pack may declare.
 `LLanguageLoader` calls it.
 
 ## `private const string LShengfuKey = "shengfu";`

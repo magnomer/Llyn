@@ -1,4 +1,5 @@
 # LCatalogExample.cs
+Hash: `299a18d7a5dec3fc`
 
 ## `public sealed record LCatalogExample(`
 
@@ -11,13 +12,21 @@ An Example citing nothing carries an empty name rather than an id nobody would r
 - `LCatalogExampleStored` — The stored Example the row stands for.
 - `LCatalogExampleSource` — The name of the Source it cites, empty where it cites none.
 - `LCatalogExampleUsage` — How many places quote it.
-- `LCatalogExampleCount` — The usage as shown, blank while unused, by `LCatalog.LCatalogUsageFormat`.
 - `LCatalogExampleChosen` — True on the row of the Example the vista stands on, false until the vista find fills it.
+
+## `public string LCatalogExampleName { get; init; }`
+
+The sentence as a name, which the vista find words and numbers apart from its twins.
+`LCatalogExampleText` carries the same wording without the twin number.
 
 ## `public string LCatalogExampleText`
 
 The sentence as the list shows it, worded by the vista find for an unknown or unwritten text.
 It is the stored text until a find words it.
+
+## `public string LCatalogExampleCount { get; init; }`
+
+The usage worded once when the row is built, so a copy with another usage keeps the old count.
 
 ## `public static LCatalogExample LCatalogExampleCreate(LExample example, string? source, int usage)`
 

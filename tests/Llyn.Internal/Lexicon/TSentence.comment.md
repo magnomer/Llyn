@@ -1,4 +1,5 @@
 # TSentence.cs
+Hash: `5a98fed15af695c0`
 
 ## `public sealed class TSentence`
 
@@ -54,6 +55,6 @@ Deleting the owner takes its holds and leaves the Example, which is owned by not
 
 ## Inline notes
 
-### `private static string TSentenceCollocationCreate(TWorkspace workspace, string expression = "in a word")`
+### `private static long TSentenceCollocationCreate(TWorkspace workspace, string expression = "in a word")`
 
 One entry with one Collocation on it, holding nothing yet.

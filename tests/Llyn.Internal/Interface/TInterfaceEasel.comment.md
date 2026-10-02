@@ -1,4 +1,5 @@
 # TInterfaceEasel.cs
+Hash: `03424a4497abcd42`
 
 ## `internal static partial class TInterface`
 

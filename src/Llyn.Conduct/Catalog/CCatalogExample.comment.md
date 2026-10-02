@@ -1,4 +1,5 @@
 # CCatalogExample.cs
+Hash: `a3c4c5ca7f06fa47`
 
 ## `public sealed record CCatalogExample(`
 

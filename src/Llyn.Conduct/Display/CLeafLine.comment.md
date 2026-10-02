@@ -1,4 +1,5 @@
 # CLeafLine.cs
+Hash: `1d18a14305c141da`
 
 ## `public sealed record CLeafLine(`
 

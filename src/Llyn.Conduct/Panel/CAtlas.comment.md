@@ -1,4 +1,5 @@
 # CAtlas.cs
+Hash: `3c497ec96a9196a9`
 
 ## `public sealed class CAtlas`
 
@@ -56,7 +57,7 @@ Only the repertoire's print gate calls it, which chooses the side that prints.
 
 ## `internal static CCatalogSituation LAtlasRowRead(LCatalogSituation row)`
 
-The one map for a found situation, shared by the Proffer dropdown and the atlas.
+The one map for a found situation to its row.
 The title is the name the engine gave the row, so the atlas keeps its unknown and untitled words.
 The kind and the count arrive worded, so no driver words either.
 

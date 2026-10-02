@@ -30,8 +30,6 @@ public sealed partial class LTenure
 
     private bool _lTenureEnded;
 
-    private LTenureState _lTenureLast;
-
     internal LTenure(LEngine engine, LSubject subject, long id)
     {
         _lEngine = engine;
@@ -63,6 +61,12 @@ public sealed partial class LTenure
 
     public LTenureState LTenureStateRead()
     {
+        long revision;
+        lock (_lEngine.LEngineGate)
+        {
+            revision = _lEngine.LEngineRevision;
+        }
+
         bool halted;
         lock (_lTenureGate)
         {
@@ -72,17 +76,31 @@ public sealed partial class LTenure
             }
 
             halted = _lTenureFault is not null;
+            if (!halted && _lTenureState is LTenureState kept && _lTenureStateRevision == revision)
+            {
+                return kept;
+            }
         }
 
         try
         {
             bool changed = _lEngine.LEngineDraft.LEngineDraftCheck(LTenureId, out string? refusal);
-            return new LTenureState(
+            LTenureState state = new(
                 changed,
                 refusal,
                 !halted && _lEngine.LEngineRequest.LEngineUndoCheck(LTenureId),
                 !halted && _lEngine.LEngineRequest.LEngineRedoCheck(LTenureId),
                 halted);
+            lock (_lTenureGate)
+            {
+                if (!halted && !_lTenureEnded && _lTenureFault is null)
+                {
+                    _lTenureState = state;
+                    _lTenureStateRevision = revision;
+                }
+            }
+
+            return state;
         }
         catch (Exception exception)
         {
@@ -477,21 +495,5 @@ public sealed partial class LTenure
         }
 
         LTenureStateRaise();
-    }
-
-    private void LTenureStateRaise()
-    {
-        LTenureState state = LTenureStateRead();
-        lock (_lTenureGate)
-        {
-            if (state == _lTenureLast)
-            {
-                return;
-            }
-
-            _lTenureLast = state;
-        }
-
-        _lEngine.LEngineBulletinRaise(LSubject.LSubjectTenure, LTenureId);
     }
 }

@@ -1,6 +1,7 @@
 # PGloss.cs
+Hash: `525a4fcf25be9516`
 
-## `internal sealed class PGloss`
+## `internal sealed class PGloss : INotifyPropertyChanged`
 
 One Gloss row as the UI shows it: the language it is written in and its flag.
 The text is the engine's value, state and all, and the converter reads its mark.

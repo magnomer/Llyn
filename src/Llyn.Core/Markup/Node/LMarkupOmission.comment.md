@@ -1,4 +1,5 @@
 # LMarkupOmission.cs
+Hash: `40e39dad503436c1`
 
 ## `public sealed record LMarkupOmission(`
 
@@ -8,4 +9,4 @@ The parser reports unknown elements and attributes here, and the import later ad
 **Parameters**
 
 - `LMarkupOmissionLine` — The line of the file the omission sits on, zero when unknown.
-- `LMarkupOmissionText` — What was skipped, such as `<etymology>` or `id="42"`.
+- `LMarkupOmissionText` — What was skipped, such as `<colour>` or `id="42"`.

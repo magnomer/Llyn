@@ -1,4 +1,5 @@
 # CReflex.cs
+Hash: `5a79375ca7318d5f`
 
 ## `public sealed record CReflex(`
 

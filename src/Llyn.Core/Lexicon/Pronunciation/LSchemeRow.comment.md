@@ -1,4 +1,5 @@
 # LSchemeRow.cs
+Hash: `a93789d3acd56059`
 
 ## `public sealed record LSchemeRow(string LSchemeRowName, bool LSchemeRowTaken);`
 

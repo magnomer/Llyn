@@ -1,4 +1,5 @@
 # TAuditName.cs
+Hash: `111ff1f8160f9b22`
 
 ## `public sealed class TAuditName`
 

@@ -1,4 +1,5 @@
 # LCapsuleContent.cs
+Hash: `317a1c8615f8b974`
 
 ## `public sealed record LCapsuleContent(`
 

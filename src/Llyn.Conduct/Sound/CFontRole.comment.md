@@ -1,4 +1,5 @@
 # CFontRole.cs
+Hash: `4f4b9a9bc58621ca`
 
 ## `public enum CFontRole`
 

@@ -1,4 +1,5 @@
 # LFanqieSource.cs
+Hash: `74ef99396d60bbbb`
 
 ## `public interface LFanqieSource`
 

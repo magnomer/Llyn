@@ -1,4 +1,5 @@
 # TAuditLine.cs
+Hash: `867c2c819f1106ac`
 
 ## `public sealed class TAuditLine`
 

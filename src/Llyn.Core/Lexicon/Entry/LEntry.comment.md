@@ -1,4 +1,5 @@
 # LEntry.cs
+Hash: `33c513a331042530`
 
 ## `public sealed record LEntry(`
 

@@ -1,4 +1,5 @@
 # LQuillChip.cs
+Hash: `9bb1c9bfa907a125`
 
 ## `public sealed class LQuillChip`
 

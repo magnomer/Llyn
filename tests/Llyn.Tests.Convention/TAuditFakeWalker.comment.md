@@ -1,4 +1,5 @@
 # TAuditFakeWalker.cs
+Hash: `94c64e46333f20f3`
 
 ## `internal static class TAuditFakeWalker`
 

@@ -1,4 +1,5 @@
 # LLanguageLoader.cs
+Hash: `6ad8ffd0edb7c484`
 
 ## `public sealed class LLanguageLoader : LLanguageVault`
 
@@ -50,7 +51,7 @@ The port's name check, answered by the static `LLanguageNameValidate` the pack l
 
 Scans the `languages/` folder for available packs, returning the name of every language that has a `source.json`.
 A pack whose `listed` key is `false` is left off, though it still loads by name.
-Language-agnostic: the set of languages is whatever is on disk, discovered at runtime.
+The set of languages is whatever is on disk, discovered at runtime.
 So adding a pack folder makes it selectable with no code change.
 
 ## `public static bool LLanguageNameValidate(string? language)`
@@ -59,6 +60,11 @@ Whether `language` is a plain folder name a pack could sit under.
 A separator, a rooted path, a dot name or a character no file name may hold fails.
 A language name comes from an entry, and an entry can come from an imported file.
 Every loader that joins the name onto the `languages/` folder asks here first, so no name walks out of it.
+
+## `public static LLanguage LLanguageLoaderLoad(string language)`
+
+A name `LLanguageNameValidate` refuses reads as a blank pack, so no name opens a file outside `languages/`.
+The file is read anew on every call, so any caching belongs to the caller.
 
 ## Inline notes
 

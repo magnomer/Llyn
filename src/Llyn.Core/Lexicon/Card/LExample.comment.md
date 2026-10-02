@@ -1,9 +1,11 @@
 # LExample.cs
+Hash: `a4f2e873837bd96c`
 
 ## `public sealed record LExample(`
 
-One Example — the first independent shared entity in the lexicon.
-An Example is owned by nothing: no Entry, Meaning, or Collocation contains it.
+One Example, the first independent shared entity in the lexicon.
+An Example is owned by nothing.
+No Entry, Meaning, or Collocation contains it.
 Any number of them *reference* it instead.
 The order an Example appears in lives on each reference rather than here.
 So the same Example can sit first under one Entry and third under a Meaning.
@@ -15,8 +17,9 @@ An Example carries its own Glosses in `LExampleGloss` and references *at most on
 A Gloss is the sentence rendered as plain text in one language.
 One Example may carry any number of them.
 The Translation a Meaning carries is instead a link to another Entry.
-The Source reference is a pointer, not ownership: clearing it or deleting the Example never touches the Source.
-Every field here that can stand empty carries `LStateValue`.
+The Source reference is a pointer, not ownership.
+Clearing it or deleting the Example never touches the Source.
+Every text and citation field here carries a state, in `LStateValue` or `LStateAnchor`.
 A field holding nothing says whether nothing was ever recorded.
 It says instead when the user marked the value as not known.
 
@@ -34,6 +37,16 @@ It says instead when the user marked the value as not known.
 - `LExampleMention` — The words of the sentence that stand for an Entry, as [LMention](LMention.comment.md) rows ordered by start.
   The list is the Example's own, so every card quoting the sentence reads the same words the same way.
   It stands empty until one is drawn.
+
+## `public LStateValue LExampleText { get; init; }`
+
+A null handed in becomes unspecified, so no reader checks for null.
+`LExampleSource` falls back to the unspecified anchor the same way.
+
+## `public IReadOnlyList<LGloss> LExampleGloss { get; init; }`
+
+A null handed in becomes the empty list, so a reader walks it without a check.
+`LExampleMention` does the same.
 
 ## `public IReadOnlyList<LMention> LExampleExcerpt`
 

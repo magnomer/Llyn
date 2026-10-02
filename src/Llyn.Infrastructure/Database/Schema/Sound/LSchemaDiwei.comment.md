@@ -1,8 +1,9 @@
 # LSchemaDiwei.cs
+Hash: `44e5cb3ba99ac99d`
 
 ## `public static class LSchemaDiwei`
 
-Creates the diwei store: the 音韻地位 categories and the links from fanqie rows to them.
+Creates the diwei store of 音韻地位 categories and the links from fanqie rows to them.
 
 ## `public static void LSchemaDiweiCreate(SqliteConnection connection)`
 

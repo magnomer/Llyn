@@ -1,4 +1,5 @@
 # QProspect.cs
+Hash: `186382f77ebcf842`
 
 ## `internal sealed class QProspect`
 

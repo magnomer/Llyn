@@ -1,4 +1,5 @@
 # CCohort.cs
+Hash: `f080aba1108daaf5`
 
 ## `public sealed class CCohort`
 
@@ -46,5 +47,9 @@ Prints the shown entry, and does nothing while none is shown outside edit mode.
 `CCohortPortraitExport` exports it under the same condition.
 The reader is asked for the printer through the envoy, and a decline prints nothing.
 `CPortrait` words the page through the engine and shows `Print.Failed` through the envoy.
+
+## `public Task CCohortPortraitExport()`
+
+The file is offered under the entry's headword, as `LVista.LVistaFileRead` words it.
 The reader is asked for the file and format through the envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the envoy.

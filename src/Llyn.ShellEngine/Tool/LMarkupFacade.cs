@@ -57,6 +57,7 @@ internal sealed class LMarkupFacade
     {
         lock (_lMarkupFacadeGate)
         {
+            _lMarkupFacadeEngine.LEngineRevision++;
             return LMarkupFacadeStaff.LEngineStaffIntake.LMarkupClerkImport(cargo, intakes);
         }
     }

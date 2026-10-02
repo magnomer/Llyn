@@ -1,4 +1,5 @@
 # QGlyphItem.cs
+Hash: `c73eaf6d3021fc9a`
 
 ## `public sealed record QGlyphItem(string QGlyphItemText, string QGlyphItemLanguage, bool QGlyphItemLinked)`
 
@@ -10,4 +11,4 @@ An unlinked chip is inert, so punctuation is drawn like the editor field draws i
 ## `internal static void QGlyphItemRefine(FrameworkElement container, object item, string? _)`
 
 Fills one chip of `Theme.Glyph.Display` with its character and its item as the command parameter.
-An unlinked chip is made inert: no hit test, no hand cursor, no tooltip.
+An unlinked chip is made inert with no hit test, no hand cursor and no tooltip.

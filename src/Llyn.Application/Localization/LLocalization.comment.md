@@ -1,4 +1,5 @@
 # LLocalization.cs
+Hash: `61dcb1b98b6ce723`
 
 ## `public static class LLocalization`
 

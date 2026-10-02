@@ -1,4 +1,5 @@
 # CRespelling.cs
+Hash: `ca506af293f608c4`
 
 ## `public static class CRespelling`
 

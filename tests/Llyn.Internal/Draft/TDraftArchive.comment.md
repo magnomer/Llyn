@@ -1,10 +1,11 @@
 # TDraftArchive.cs
+Hash: `f50c7c0d5ba9f2d3`
 
 ## `public sealed class TDraftArchive`
 
 Covers the drafts folder, the store that keeps unsaved work outside the database.
 It also covers the court beneath it, the register of links pointing at records that are still tentative.
-Each test reads the files back through the archive alone, with no engine in between.
+Tests read the files back through the archive alone, using an engine only to start a Situation draft.
 
 ## `public void DraftArchiveSave_WholeDraft_ReadsBackAsWritten()`
 
@@ -12,7 +13,7 @@ A saved draft comes back field for field, nested content included.
 The record holds lists and state values.
 A shallow round trip would pass while losing the part the user typed.
 
-### `public void DraftArchiveSave_DerivedProperties_LeavesThemOutOfTheFile()`
+## `public void DraftArchiveSave_DerivedProperties_LeavesThemOutOfTheFile()`
 
 The file carries the stored fields and none of the derived ones.
 The adapter's serializer option does that, and this pins it so the option is not lost.

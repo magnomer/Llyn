@@ -1,8 +1,10 @@
 # TAuditEncodingSetting.cs
+Hash: `aec3c4dd51d40010`
 
 ## `internal static class TAuditEncodingSetting`
 
-Hand-written and tracked: the kinds of file the encoding facts read, the names they skip and the patterns they match.
+Hand-written and tracked.
+It holds the kinds of file the encoding facts read, the names they skip and the patterns they match.
 No script writes this file.
 Every pattern is spelled in escapes, so this file passes its own audit however it is copied.
 

@@ -1,13 +1,15 @@
 # QGauge.cs
+Hash: `8314a21d3efc20db`
 
 ## `public sealed class QGauge : Panel`
 
 The two-child panel an edit field stands in, so the field lands where the read view puts its text.
 It is public because the editor markup in the Veneer places it.
 
-The first child is the mark: an unseen text block holding the same words.
+The first child is the mark, an unseen text block holding the same words.
 It takes the read view's own style.
-It alone is measured, so the cell closes on the plain text width rather than on the field's own.
+Both children are measured, but only the mark's size is reported.
+So the cell closes on the plain text width rather than on the field's own.
 The second child is the field, arranged at its own width inside the mark's slot.
 Room is left for its caret.
 

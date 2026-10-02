@@ -1,4 +1,5 @@
 # CClipItem.cs
+Hash: `e294fb2ad85bc190`
 
 ## `public sealed record CClipItem(`
 

@@ -1,4 +1,5 @@
 # CScheme.cs
+Hash: `6ffa9b01eb9c03f6`
 
 ## `public sealed record CScheme(string CSchemeName, bool CSchemeTaken)`
 

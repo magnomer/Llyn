@@ -71,7 +71,7 @@ internal sealed partial class QRepertoire
 
         if (QLook.QLookPartFind<Run>(container, "POccurrenceEpithet") is Run epithet)
         {
-            epithet.Text = " " + occurrence.QOccurrenceItemEpithet;
+            epithet.Text = QLook.QLookEpithetRead(occurrence.QOccurrenceItemEpithet);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "POccurrenceLanguage") is TextBlock language)

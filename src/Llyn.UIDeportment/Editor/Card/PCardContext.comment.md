@@ -1,4 +1,5 @@
 # PCardContext.cs
+Hash: `408f3e77258f9391`
 
 ## `internal sealed partial class PCard`
 

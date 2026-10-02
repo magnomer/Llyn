@@ -1,4 +1,5 @@
 # TNavigation.cs
+Hash: `c6a168bfe7d17ce9`
 
 ## `public sealed class TNavigation`
 
@@ -11,6 +12,7 @@ Any refusal keeps the open tab, saves nothing and paints nothing.
 A jump records the station it leaves, and the voyage steps land where they recorded.
 A jump its target or the open tab declines records no station, so a later step back finds nothing.
 A step whose landing tab declines stays put and keeps the trail for the next try.
+Adding a station for the open tab records it and paints no tab.
 A citing place opens its Example or its Entry.
 The area's own open receives the landed record, and a rime cell reaches the yunjing area's attached open.
 A series reaches the xiesheng area's attached open, and nothing opens before it is attached.

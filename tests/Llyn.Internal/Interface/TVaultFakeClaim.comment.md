@@ -1,4 +1,5 @@
 # TVaultFakeClaim.cs
+Hash: `df75b32eafaf645b`
 
 ## `internal sealed class TVaultFakeClaim : LClaimVault`
 

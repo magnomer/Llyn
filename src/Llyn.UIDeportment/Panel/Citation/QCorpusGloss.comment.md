@@ -1,8 +1,9 @@
 # QCorpusGloss.cs
+Hash: `47dc42f474aabdf6`
 
 ## `internal sealed partial class QCorpus`
 
-The Gloss rows of the corpus panel: the ones the read area lists and the ones the edit area holds.
+The corpus panel lists Gloss rows in the read area and holds them in the edit area.
 Every edit goes through the anthology's gloss gates, the card sentence's gates over the Example itself.
 
 ## `private void QExcerptGlossShow(IReadOnlyList<CGlossDraft> glosses)`

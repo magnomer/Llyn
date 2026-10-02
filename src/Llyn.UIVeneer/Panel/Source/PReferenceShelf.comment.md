@@ -1,9 +1,10 @@
 # PReferenceShelf.xaml
+Hash: `fa263b4fc98f1928`
 
 ## `ResourceDictionary`
 
 The shelf row as the source catalog draws it.
-The row shows the resolved name over its credits and year, with the citation count at the right.
+The row shows the resolved name beside its credits and year, with the citation count at the right.
 It is a dictionary rather than markup in the panel, because the panel outgrew one file.
 The authors panel merges it too, so a Source reads alike in both catalogs.
 

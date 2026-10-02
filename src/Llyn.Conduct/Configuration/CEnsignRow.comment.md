@@ -1,4 +1,5 @@
 # CEnsignRow.cs
+Hash: `d37a5b74883a579a`
 
 ## `public sealed record CEnsignRow(string CEnsignRowKey, string CEnsignRowPath);`
 

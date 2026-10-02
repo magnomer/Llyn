@@ -1,4 +1,5 @@
 # LRefusal.cs
+Hash: `a0d284dc50160277`
 
 ## `public sealed class LRefusal : Exception`
 
@@ -98,3 +99,8 @@ Refuses a request for `reason`, a localization key.
 ## `public string LRefusalReason { get; }`
 
 The localization key naming why the request was refused.
+
+## `public bool LRefusalIllegible`
+
+Whether the refusal is for a value the store could not read.
+Only this refusal lets a commit retry, once the user agrees to drop such values.

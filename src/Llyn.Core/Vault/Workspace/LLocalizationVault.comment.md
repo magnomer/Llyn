@@ -1,4 +1,5 @@
 # LLocalizationVault.cs
+Hash: `e00de5956dc8719e`
 
 ## `public interface LLocalizationVault`
 

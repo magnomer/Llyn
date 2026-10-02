@@ -1,4 +1,5 @@
 # LCase.cs
+Hash: `c1f75946f621b3a1`
 
 ## `public static class LCase`
 

@@ -1,4 +1,5 @@
 # TEntryLoading.cs
+Hash: `689b354d4759b520`
 
 ## `public sealed class TEntryLoading`
 
@@ -19,11 +20,11 @@ The row comes back naming no Example, because none was ever stored.
 
 ## Inline notes
 
-### `Assert.Equal(["sword", "word"], engine.LEngineEntryFind(string.Empty).Select(e => e.LEntryHeadword));`
+### `Assert.Equal(["sword", "word"], engine.TEngineEntryFind(string.Empty).Select(e => e.LEntryHeadword));`
 
 An empty query lists everything, ordered by headword.
 
-### `Assert.Equal(["sword", "word"], engine.LEngineEntryFind("WORD").Select(e => e.LEntryHeadword));`
+### `Assert.Equal(["sword", "word"], engine.TEngineEntryFind("WORD").Select(e => e.LEntryHeadword));`
 
 A partial headword narrows it, case-insensitively, and matches anywhere in the headword.
 "word" is inside "sword" too.
@@ -46,16 +47,16 @@ So a card that was written comes back exactly as it went in.
 
 The file the downloader would have written: under the workspace, in its audio bucket.
 
-### `LPronunciationArchive pronunciations = new(workspace.TWorkspaceDatabase);`
+### `LPronunciationArchive pronunciations = TInterface.TPronunciationArchiveCreate(workspace.TWorkspaceDatabase);`
 
 Stored relative, so a workspace that is moved or copied keeps its audio.
 The row is read through the archive rather than as SQL text, so the path separator stays the platform's.
 
-### `LMeaning meaning = Assert.Single(new LMeaningArchive(workspace.TWorkspaceDatabase).LMeaningRead(stored.LEntryId));`
+### `LMeaning meaning = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(stored.LEntryId));`
 
 The titles are columns of the cards themselves, so they are on the rows before any load.
 
-### `LMeaning meaning = Assert.Single(new LMeaningArchive(workspace.TWorkspaceDatabase).LMeaningRead(stored.LEntryId));`
+### `workspace.TWorkspaceColumnRead("SELECT position FROM sense_tag ORDER BY position;"));`
 
 The rows are stored at the positions the lists held.
 So nothing shares a position.
@@ -69,7 +70,7 @@ Three tags and two examples on the one card, all five back in the order they wer
 
 The collocation card references its own sets on the same terms.
 
-### `LEntry stored = engine.TEngineEntrySave(new LEntryDraft(`
+### `LEntry stored = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(`
 
 A blank value in a list is not a row.
 An empty field detaches.

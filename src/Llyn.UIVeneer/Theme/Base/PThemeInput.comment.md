@@ -1,7 +1,14 @@
 # PThemeInput.xaml
+Hash: `a527ebaae63e82f0`
 
 Every hover, press, check and disabled look is switched by `QLook` in the deportment.
 Every template part takes its control's values through `QLook` rather than a template binding.
+
+## `<Style x:Key="Theme.Input.Field" TargetType="TextBox">`
+
+Undo is switched off in every field.
+`QWindowChronicle` takes Ctrl+Z and Ctrl+Y for the entry's own history.
+A field's private undo would fight it.
 
 ## `<Style x:Key="Theme.Input.Choice" TargetType="ComboBox">`
 
@@ -12,6 +19,11 @@ The arrow names its asset by pack URI, since a markup extension from code would 
 
 A tab of the editor's strip, whose selected or idle cue `QLook` reads from `QLook.QLookCueProperty`.
 The style sets no tag, so the editor tags each tab when its strip attaches.
+
+## `<Style x:Key="Theme.Input.Headword" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Field}">`
+
+The headword field at the size and weight of `Theme.Text.Headword`, with no frame or padding.
+So the headword stands still when the reader turns to writing.
 
 ## `<Style x:Key="Theme.Text.Reading" TargetType="TextBlock">`
 

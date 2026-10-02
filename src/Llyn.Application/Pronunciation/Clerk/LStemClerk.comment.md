@@ -1,9 +1,11 @@
 # LStemClerk.cs
+Hash: `28c8c3a040b03165`
 
 ## `public sealed class LStemClerk`
 
 The read side of the phonetic series the xiesheng panel browses by.
-It writes nothing: the links are made where a series is stored, in `LShengfuClerk`.
+It writes nothing.
+The links are made where a series is stored, in `LShengfuClerk`.
 
 ## `public LStemClerk(LRig rig)`
 
@@ -27,4 +29,4 @@ The entries the series reach, narrowed by the query the list was typed into.
 
 ## `public LStemPage LStemPageRead(LStem stem)`
 
-The page of one series: its language, its key and the characters linked to it.
+The page of one series, holding its language, its key and the characters linked to it.

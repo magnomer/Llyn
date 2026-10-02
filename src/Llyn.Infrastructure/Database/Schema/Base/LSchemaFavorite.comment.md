@@ -1,4 +1,5 @@
 # LSchemaFavorite.cs
+Hash: `e20098526745e8aa`
 
 ## `public static class LSchemaFavorite`
 

@@ -1,4 +1,5 @@
 # TRigFake.cs
+Hash: `b9853deec07d26ff`
 
 ## `internal static class TRigFake`
 
@@ -36,11 +37,12 @@ An audit shelf that records nothing, so a gate's failure notice reads with no au
 ## `private static TRigFakePort TRigStubCreate<TRigFakePort>() where TRigFakePort : class =>`
 
 One throwing stub for the port `TRigFakePort`, generated over the proxy below.
-A generated stub per port spares the suite a hand-written class for every one of the forty ports.
+A generated stub per port spares the suite a hand-written class for every one of the forty-odd ports.
 
 ## `public class TRigFakeProxy : DispatchProxy`
 
-The proxy base every stub derives from: any call throws and names the member that was asked.
+The proxy base every stub derives from.
+Any call throws and names the member that was asked.
 It is public because the runtime derives a type from it in a dynamic assembly.
 
 ## `private sealed class TRigFakeVault : LVault`

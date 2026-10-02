@@ -1,4 +1,5 @@
 # LReflexVault.cs
+Hash: `19a0dda293df5730`
 
 ## `public interface LReflexVault`
 

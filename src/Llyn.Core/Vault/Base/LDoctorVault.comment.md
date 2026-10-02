@@ -1,4 +1,5 @@
 # LDoctorVault.cs
+Hash: `e354cbea24a852f6`
 
 ## `public interface LDoctorVault`
 

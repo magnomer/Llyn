@@ -1,4 +1,5 @@
 # QChronicleHost.cs
+Hash: `7351a1a9a0bf31e1`
 
 ## `internal interface QChronicleHost`
 
@@ -11,7 +12,7 @@ The desk's own state notice settles the undo and redo buttons after every step.
 
 ## `internal static class QChronicle`
 
-The one wrap the four hosts put around their engine step.
+The one wrap the hosts and the guild panel put around their engine step.
 It also keeps the hosts that drive a veneer surface, since such a surface is not a host itself.
 
 ## `private static readonly ConditionalWeakTable<DependencyObject, QChronicleHost> QChronicleHold = [];`

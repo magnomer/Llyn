@@ -1,4 +1,5 @@
 # TDisplaySound.cs
+Hash: `139ba6f58a4e20dc`
 
 ## `public sealed class TDisplaySound`
 
@@ -61,7 +62,7 @@ With nothing open, the fanqie, script and paradigm blocks are empty, not pending
 
 ## `public void DisplayBlocksRead_EnglishEntry_AnswersNoRimeScriptOrParadigmRows()`
 
-An English uncountable entry has no rime-book, script or paradigm rows.
+An English entry has no rime-book, script or paradigm rows.
 
 ## `public void DisplayParadigmRead_MorphologyOff_AnswersTheAbsentTipWithoutALookup()`
 

@@ -1,4 +1,5 @@
 # PThemePopup.xaml
+Hash: `ac36471dcdc422e9`
 
 ## `<Style x:Key="Theme.Popup.Surface" TargetType="Border">`
 
@@ -9,7 +10,8 @@ The list reads as one surface instead of a stack of tiles.
 
 ## `<Style x:Key="Theme.Popup.Title" TargetType="TextBlock">`
 
-What the popup is, said once and quietly: the rows below are the content, not this line.
+What the popup is, said once and quietly.
+The rows below are the content, not this line.
 
 ## `<Style x:Key="Theme.Popup.Notice" TargetType="TextBlock">`
 
@@ -32,6 +34,13 @@ It carries no border and no fill of its own.
 A row can offer more than one action, so every action is its own button.
 The row itself takes no click.
 Phonetician and downloader rows are the same row.
+
+## `<Style x:Key="Theme.Popup.RowChoice" TargetType="Button">`
+
+The taking button of a picker row, a pill carrying one word.
+Its template binds nothing.
+The look sheet copies the content into `PLabel` as text, and the fill and edge into `PSurface`.
+So it cannot carry an image, which is why `Theme.Popup.RowReading` exists.
 
 ## `<Style x:Key="Theme.Popup.RowReading" TargetType="Button">`
 

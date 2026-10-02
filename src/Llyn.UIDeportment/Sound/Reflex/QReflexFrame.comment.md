@@ -1,4 +1,5 @@
 # QReflexFrame.cs
+Hash: `851450c503d34bce`
 
 ## `public sealed class QReflexFrame : Decorator`
 

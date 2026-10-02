@@ -70,7 +70,7 @@ internal sealed partial class QCorpus
 
         if (QLook.QLookPartFind<Run>(container, "PQuotationEpithet") is Run epithet)
         {
-            epithet.Text = " " + quotation.QQuotationItemEpithet;
+            epithet.Text = QLook.QLookEpithetRead(quotation.QQuotationItemEpithet);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PQuotationLanguage") is TextBlock language)

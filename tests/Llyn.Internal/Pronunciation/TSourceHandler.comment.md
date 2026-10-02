@@ -1,4 +1,5 @@
 # TSourceHandler.cs
+Hash: `f659143aec39b9ee`
 
 ## `internal sealed class TSourceHandler`
 

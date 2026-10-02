@@ -1,6 +1,7 @@
 # LPronunciationArchive.cs
+Hash: `c8c4cca122d11a5a`
 
-## `public sealed class LPronunciationArchive`
+## `public sealed class LPronunciationArchive : LPronunciationVault`
 
 Persists the ordered pronunciations an entry owns, each with its ordered syllables.
 A pronunciation's id is assigned here on creation.
@@ -9,7 +10,7 @@ Their `pronunciation_parent` and `position` come from that id and list order.
 So reordering rewrites positions only.
 A new pronunciation is appended after the entry's others, and `LPronunciationOrderSet` places the whole list.
 Reading returns every pronunciation of an entry in order.
-Updating replaces the variety, the IPA and the syllables of one row.
+Updating replaces the variety, the IPA, the respelling and the syllables of one row.
 Deleting removes the syllables through the foreign-key cascade.
 
 A pronunciation also owns at most one downloaded recording, kept beside the aggregate rather than inside it.

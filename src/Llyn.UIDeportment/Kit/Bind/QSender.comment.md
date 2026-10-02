@@ -1,4 +1,5 @@
 # QSender.cs
+Hash: `052f89559a071f0d`
 
 ## `internal static class QSender`
 

@@ -1,4 +1,5 @@
 # QLeafLine.cs
+Hash: `4560569bbd433ef9`
 
 ## `internal sealed record QLeafLine(string QLeafLineHead, long QLeafLineSentence, IReadOnlyList<QMentionPiece> QLeafLinePiece, string QLeafLineCitation, IReadOnlyList<PGloss> QLeafLineGloss)`
 

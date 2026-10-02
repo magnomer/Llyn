@@ -1,4 +1,5 @@
 # CCard.cs
+Hash: `c64b52fae792c1c7`
 
 ## `public sealed class CCard`
 
@@ -6,7 +7,6 @@ The gates of the editor's cards: what a card's fields ask while the user types i
 The translation field finds prospects, resolves a typed word, and links or unlinks an Entry.
 The situation and source fields find the stored rows a typed word matches.
 The translation, situation, register and tag fields add what the user typed and pick stored rows.
-The sentence menu reads the particles and dependences of a language.
 The etymology field sends its narrative, its source links and its spans through it, over the editor's desk.
 The maps from engine drafts to their shapes sit on `CFolio`.
 It holds no state of its own.

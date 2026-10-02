@@ -1,4 +1,5 @@
 # LPostureState.cs
+Hash: `ea33d7f7b2e30456`
 
 ## `public sealed record LPostureState(`
 

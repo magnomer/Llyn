@@ -1,4 +1,5 @@
 # LTenure.cs
+Hash: `fa6dd9f993b118da`
 
 ## `public sealed partial class LTenure`
 
@@ -10,7 +11,8 @@ Every step ends by reading the state and raising a tenure bulletin when it moved
 The panel settles its buttons from that bulletin and keeps no dirty flag or halted flag of its own.
 A request the engine refuses is dropped, and a draft bulletin sends the panel back to the draft.
 A request that fails otherwise halts the tenure, since editing on would collect keystrokes nothing is holding.
-Two locks: the gate guards the queue and the flags, and the turn serialises the applies.
+Two locks.
+The gate guards the queue and the flags, and the turn serialises the applies.
 No engine call is made under the gate, because the engine raises bulletins that read the state back.
 
 ## `private static readonly LTenureState LTenureStateHalted = new(false, null, false, false, true);`
@@ -53,10 +55,6 @@ The failure that halted the tenure, or null while it runs.
 
 Whether the draft has been committed or cancelled, after which the tenure is inert.
 
-## `private LTenureState _lTenureLast;`
-
-The state last announced, so the bulletin is raised only when the state moved.
-
 ## `internal LTenure(LEngine engine, LSubject subject, long id)`
 
 Made by the engine alone, once the draft is started and on disk.
@@ -82,6 +80,10 @@ An ended tenure answers a fixed state without touching the engine.
 A halted one still asks whether the draft changed, so a closing window can still warn.
 It can neither undo nor redo, since nothing further applies.
 A check the engine refuses halts the tenure, because the draft can no longer be reached.
+A live tenure reuses its kept state while the engine revision stands, sparing the disk and the database.
+Every write to a draft, a stored record or the chronicle moves the revision.
+The revision is read before computing, so a change landing mid-reading forces the next reading to compute.
+A halted tenure neither keeps nor reuses a state, and a reading that fails keeps nothing.
 
 ## `public void LTenureRequestDefer(LRequest request)`
 
@@ -227,7 +229,3 @@ Called under the turn.
 
 Halts the tenure once, keeping the failure for the finish to rethrow.
 The wait and the queue are dropped, since nothing further applies.
-
-## `private void LTenureStateRaise()`
-
-Reads the state and raises the tenure bulletin when it differs from the last one raised.

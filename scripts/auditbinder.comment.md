@@ -1,4 +1,5 @@
 # auditbinder.cs
+Hash: `8e2ff3e20b91b673`
 
 The one compilation every bound audit script shares, the script counterpart of the convention test's `TAuditBinder`.
 auditstructure, auditobject, auditfake and auditplatform copy it into their helper beside their own program.
@@ -24,3 +25,13 @@ A compile error fails the bind, so an unbound name can never slip past an audit.
 
 `LAuditTrees` holds the trees under the source root outside any `obj` folder, the files an audit walks.
 The generated trees stay in the compilation, so a partial type binds whole.
+
+## `public static List<string> LAuditFileRead(`
+
+Git enumerates the files, so tracked and untracked files count and ignored ones never do.
+Each pattern matches case-insensitively.
+A tracked file deleted from disk is dropped rather than failing a later read.
+An empty `roots` list admits every folder.
+Segment and suffix exclusions ignore case, but a name prefix must match its case exactly.
+The list comes back sorted, so an audit's findings keep a stable order.
+A git failure throws with git's own error text.

@@ -1,9 +1,10 @@
 # QFanqieLine.cs
+Hash: `24b335be02441cde`
 
 ## `public sealed class QFanqieLine`
 
 One placement drawn as one row of the fanqie block, its parts in shared columns.
-The columns read as a 音韻地位: reading, tone class, initial, rime, 重紐, 開合, division, tone and 反切.
+The columns read as a 音韻地位, in the order reading, tone class, initial, rime, 重紐, 開合, division, tone and 反切.
 
 ## `public int QFanqieLineRank`
 

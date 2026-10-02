@@ -1,4 +1,5 @@
 # LTag.cs
+Hash: `4c045bfae2973c3e`
 
 ## `public sealed record LTag(`
 

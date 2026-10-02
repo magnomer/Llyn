@@ -1,4 +1,5 @@
 # LTagOffer.cs
+Hash: `d72f09d5ee506774`
 
 ## `public sealed record LTagOffer(`
 

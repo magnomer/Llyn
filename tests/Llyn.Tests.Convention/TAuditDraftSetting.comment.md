@@ -1,8 +1,10 @@
 # TAuditDraftSetting.cs
+Hash: `d8d87d54785d82cc`
 
 ## `internal static class TAuditDraftSetting`
 
-Hand-written and tracked: the draft-coverage scope and waivers live here, and no script writes this file.
+Hand-written and tracked.
+The draft-coverage scope and waivers live here, and no script writes this file.
 Each side is a list of `git ls-files` patterns, so a split file joins its side without an edit here.
 A waiver is a property name, and this file names why each one is waived.
 
@@ -33,6 +35,7 @@ Names the portrait shows another way or never prints.
 - `LPronunciationDraftAudio` and `LPronunciationDraftSource` are behind the reading, which prints alone.
 - `LPronunciationDraftSyllables` and every `LSyllable` part are the cut of a reading the portrait prints whole.
 - `LMentionDraftOffset`, `LMentionDraftLength` and `LMentionDraftSense` are the span, and the portrait links the entry.
+- `LReflexDraftOwned` marks a user-entered meaning for rebuilds, so the portrait never names it.
 - `LSituationDraftDescription` and `LSituationDraftKind` belong to the situation's own page, the card shows its title.
 
 ## `public static readonly string[] TAuditMarkupWaiver`
@@ -41,4 +44,4 @@ Names the portrait shows another way or never prints.
 
 ## `public static readonly string[] TAuditExemplarWaiver`
 
-Empty: the exemplar fills every typed field by name.
+Empty, since the exemplar fills every typed field by name.

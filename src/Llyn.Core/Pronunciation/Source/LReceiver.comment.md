@@ -1,4 +1,5 @@
 # LReceiver.cs
+Hash: `7e3f3275d0559f71`
 
 ## `public interface LReceiver`
 

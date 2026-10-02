@@ -1,4 +1,5 @@
 # Llyn.slnx
+Hash: `62f044b684ced0b3`
 
 Lists the twelve source projects that `dotnet build Llyn.slnx` compiles.
 This file is the single authoritative statement of the target structure.
@@ -125,9 +126,10 @@ The audits and convention tests measure the lag as falling ceilings.
 - Deportment manipulates the Veneer, and nothing else.
 - A driver never defines what the application does.
   It only defines how its medium shows it and how its medium hears the user.
-- Every line of a driver answers one question: would the other driver need this same answer?
-- Yes: it is behaviour, and it moves into Conduct or deeper.
-- No, it only concerns pixels, controls, focus or the console: it stays in the driver.
+- Every line of a driver answers one question.
+  Would the other driver need this same answer?
+- If yes, it is behaviour, and it moves into Conduct or deeper.
+- If no, it only concerns pixels, controls, focus or the console, and it stays in the driver.
 - Behaviour includes creating, changing, removing, ordering or linking anything.
 - It includes validation, trimming, empty and duplicate checks, limits, clamps, defaults and fallbacks.
 - It includes choosing a localization key, parsing text, and deciding what happens next.

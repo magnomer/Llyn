@@ -1,4 +1,5 @@
 # QParadigmItem.cs
+Hash: `d502b1646f6c45e3`
 
 ## `public sealed class QParadigmItem`
 

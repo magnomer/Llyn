@@ -1,8 +1,10 @@
 # TAuditTruthSetting.cs
+Hash: `40e38979908540c0`
 
 ## `internal static class TAuditTruthSetting`
 
-Hand-written and tracked: the driver-audit scope, the binder inputs and the handle list live here.
+Hand-written and tracked.
+The driver-audit scope, the binder inputs and the handle list live here.
 The per-file ceilings live in the ledger named by `TAuditLedgerFile`.
 No script writes this file.
 

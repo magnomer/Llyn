@@ -1,4 +1,5 @@
 # PCategoryItem.cs
+Hash: `71ea20d738839356`
 
 ## `internal sealed class PCategoryItem`
 

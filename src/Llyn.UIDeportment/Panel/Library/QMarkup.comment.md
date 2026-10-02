@@ -1,4 +1,5 @@
 # QMarkup.cs
+Hash: `2a6d5e1d2cf25221`
 
 ## `internal static class QMarkup`
 

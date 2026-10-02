@@ -1,4 +1,5 @@
 # CNotationItem.cs
+Hash: `4238658664f1d524`
 
 ## `public sealed record CNotationItem(`
 

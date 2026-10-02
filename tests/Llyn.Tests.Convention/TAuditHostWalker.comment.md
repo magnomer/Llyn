@@ -1,9 +1,10 @@
 # TAuditHostWalker.cs
+Hash: `ce6a796b32bfc112`
 
 ## `internal static class TAuditHostWalker`
 
 Holds Host to construction and wiring, since Host holds no behaviour.
-A statement passes as a declaration, an expression statement or a closing `return`.
+A statement passes as a declaration, an expression statement, a local function or a closing `return`.
 An expression passes as a name, a literal, a member chain, a call or a construction.
 An assignment, an `await` and a lambda pass too.
 Anything else is an overworking hit on its line, with every statement nested in it.

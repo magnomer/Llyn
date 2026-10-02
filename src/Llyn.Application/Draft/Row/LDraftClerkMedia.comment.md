@@ -1,4 +1,5 @@
 # LDraftClerkMedia.cs
+Hash: `acfdfc7d76de3b97`
 
 ## `public sealed class LDraftClerkMedia`
 

@@ -1,4 +1,5 @@
 # QField.cs
+Hash: `f4ae6a9f9911bdeb`
 
 ## `internal static readonly DependencyProperty QFieldHintProperty`
 
@@ -8,7 +9,8 @@ The field templates and the bare choice read it, so no hint travels through `Tag
 
 ## `internal static void QFieldGhostAttach(TextBlock ghost, TextBox field)`
 
-Binds a measuring ghost to its field: the text, or the hint while the field is empty.
+Binds a measuring ghost to its field.
+The ghost shows the text, or the hint while the field is empty.
 The choice is made by `QFieldGhost`, so the ghost follows every text and hint change by itself.
 
 ## Inline notes
@@ -24,7 +26,7 @@ Registered by QFieldApply under the key the "Theme.Input.Field" style binds its 
 
 ### `var pContent = new FrameworkElementFactory(typeof(ScrollViewer), "PART_ContentHost");`
 
-No Margin binding here: WPF already offsets the editable text by TextBox.Padding internally.
+The templates bind no Margin to the host, since WPF already offsets the editable text internally.
 Binding the host's Margin to Padding too would apply it twice.
 The caret would be pushed right and down while the placeholder, padded once, stayed put.
 
@@ -114,7 +116,8 @@ A cell declares its editor through the attached `QFieldCellProperty`.
 
 ## `internal sealed record QFieldCell(string QFieldCellStyle, string QFieldCellPath, string? QFieldCellHint);`
 
-A cell's editor order: the box style key, the bound property, and an optional placeholder key.
+A cell's editor order.
+It holds the box style key, the bound property, and an optional placeholder key.
 The row fill is the one place it is written.
 
 ## `internal static void QFieldCellAttach(UIElement host)`

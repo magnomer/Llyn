@@ -1,4 +1,5 @@
 # TAssayMisfiring.cs
+Hash: `95f6de869d00617b`
 
 ## `public sealed class TAssayMisfiring`
 
@@ -58,7 +59,8 @@ A ternary on a control read through a type-only property pattern is pairing, as 
 
 ## `public void AuditTruth_GuardNestedConstant_ReportsMisfiring()`
 
-The hit twin of `GuardNestedType`: a guard testing the control's state through a nested pattern decides.
+This is the hit twin of `GuardNestedType`.
+A guard testing the control's state through a nested pattern decides.
 It fails when the guard rule is removed, which the no-hit twin alone cannot show.
 
 ## `public void AuditTruth_ArmConstant_ReportsMisfiring()`

@@ -1,4 +1,5 @@
 # LPortraitFrame.cs
+Hash: `897bc6f64abf68e4`
 
 ## `public static class LPortraitFrame`
 

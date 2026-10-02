@@ -1,4 +1,5 @@
 # TPosture.cs
+Hash: `5b1460a345d1842d`
 
 ## `public sealed class TPosture`
 
@@ -14,6 +15,6 @@ A workspace with only the legacy settings file is read once and its posture writ
 A posture file standing beside the legacy one wins.
 A workspace moved onto keeps its own posture, and one without any inherits the posture held.
 One moved onto with only the legacy settings file yields its mode and volume.
-The settings file is not rewritten before the posture reads it.
+A volume set without a save reads the new level and writes nothing.
 A posture file that will not read leaves the posture held and the file as it was.
 The loader round-trips an ordering by its stored name, and reads nothing, junk and unusable keys as defaults.

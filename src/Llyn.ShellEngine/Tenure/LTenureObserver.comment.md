@@ -1,4 +1,5 @@
 # LTenureObserver.cs
+Hash: `70f81e40c832f8f9`
 
 A tenure subscribes to the engine for its lifetime and owns the shell's subject-specific observers.
 An observer is a delegate over a bulletin, so the shell hands a method and implements no contract.
@@ -9,6 +10,31 @@ Preparation drops the held draft's own notices, because the caller reads the new
 A replayed notice would show the same draft twice, and the editor's show is its costliest step.
 The scope unwinds on failure and returns the newest draft after successful preparation.
 Cancel and successful finish detach the engine subscription and release the observer list.
+
+## `private LTenureState _lTenureLast;`
+
+The state last announced, so the bulletin is raised only when the state moved.
+
+## `private LTenureState? _lTenureState;`
+
+The state last read, kept because one editor refresh asks for it several times over.
+An ended or halted tenure never answers it, so the end and the halt need not drop it.
+Cancel and finish both announce through the engine as well, which moves the revision past it.
+
+## `private long _lTenureStateRevision;`
+
+The engine revision read before the kept state was computed.
+A change landing mid-reading moves the revision past it, so the next reading computes again.
+
+## `public void LTenureObserverAttach(LSubject subject, Action<LBulletin> observer)`
+
+An attach after the tenure ended is dropped, so a late panel holds nothing past cancel or finish.
+The draft and entry attaches drop it the same way.
+
+## `public void LTenureEntryAttach(LSubject subject, Action<LBulletin> observer)`
+
+The entry id is read at attach time.
+A draft never stored attaches nothing, and storing it later does not attach it.
 
 ## `public LDraft? LTenurePrepare()`
 
@@ -23,6 +49,12 @@ Three rounds cover cards, then their sentences, then the check that nothing is l
 ## `private bool LTenureDraftApply()`
 
 One round: applies what the engine still finds missing and says whether anything was.
+
+## `public LDraft? LTenurePrepare(Action prepare)`
+
+Runs `prepare` holding the turn, so no other turn interleaves with it.
+An ended tenure runs nothing and answers null.
+The kept draft is dropped afterwards, so a Mention find never trusts a read taken mid-preparation.
 
 ## `public LMentionDraft? LTenureEtymologyFind(LMentionDraft span)`
 
@@ -59,3 +91,7 @@ A stale draft after a workspace switch is refused, and the read then answers non
 
 Drops the kept draft and advances the round, so a read already under way is not kept.
 It runs under the gate, since bulletins can arrive off the veneer's thread.
+
+## `private void LTenureStateRaise()`
+
+Reads the state and raises the tenure bulletin when it differs from the last one raised.

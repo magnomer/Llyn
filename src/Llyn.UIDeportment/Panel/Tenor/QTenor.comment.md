@@ -1,8 +1,9 @@
 # QTenor.cs
+Hash: `4a75794a51ae77ae`
 
 ## `internal sealed partial class QTenor`
 
-The tenor panel: the workspace browsed by the Registers its cards carry.
+The tenor panel browses the workspace by the Registers its cards carry.
 It is the taxonomy panel's shape read through a different question, so it holds the same three columns.
 It owns a reader and an editor over one Entry, and answers the engine rather than its own visibility.
 The panel itself is the veneer's `PTenor` page, which the window places.
@@ -29,11 +30,12 @@ The area's rows, opening and workspace events are subscribed here, each to its o
 ## `internal void QTenorExitRefine()`
 
 Releases the editor's player, so none outlives the window.
-It calls no gate: the window's exit gate `CAtelierClose` closes the editor and stops its playback in Conduct.
+It calls no gate.
+The window's exit gate `CAtelierClose` closes the editor and stops its playback in Conduct.
 
 ## `private void QTenorPressRefine(object sender, CanExecuteRoutedEventArgs e)`
 
-Whether the print and export buttons are live: exactly when an entry is read in the display.
+The print and export buttons are live exactly when an entry is read in the display.
 An editor on screen prints nothing, because what is printed is what is read.
 The buttons follow this answer on their own, so no panel state has to switch them.
 

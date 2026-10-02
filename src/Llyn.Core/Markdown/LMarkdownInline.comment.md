@@ -1,4 +1,5 @@
 # LMarkdownInline.cs
+Hash: `338516db3f85fad1`
 
 ## `public static class LMarkdownInline`
 
@@ -15,7 +16,7 @@ A link keeps the style around it and carries its target trimmed.
 
 ## `private static bool LMarkdownInlineFind(string text, string marker, int from)`
 
-Reports whether `marker` closes somewhere after `from` with at least one letter between.
+Reports whether `marker` closes somewhere after `from` with at least one character between.
 
 ## `private static bool LMarkdownInlineCheck(string text, int place, int width)`
 

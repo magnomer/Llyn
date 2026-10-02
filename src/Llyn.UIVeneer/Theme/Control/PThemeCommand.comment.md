@@ -1,4 +1,5 @@
 # PThemeCommand.xaml
+Hash: `cfac497267cf2e60`
 
 ## `<Style x:Key="Theme.Command.Group" TargetType="Border">`
 
@@ -16,7 +17,7 @@ It is tinted while its menu stands open, so the tray says which picker is showin
 ## `<ControlTemplate x:Key="Theme.Command.Segment.Template" TargetType="ButtonBase">`
 
 One command inside the tray, drawn for a button and for a mode radio alike.
-The icon is the button's `QLook.QLookIconProperty`, masked into a rectangle that takes its colour from Foreground.
+The icon is the button's `QLook.QLookIconProperty`, drawn by a `QIconImage` part.
 A command with no icon collapses the icon part and keeps its word alone.
 The label is a TextBlock the template owns, because the app-wide TextBlock style outranks an inherited colour.
 Deportment fills the icon, the label and every state through `QLook` rows on the named parts.

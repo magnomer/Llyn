@@ -1,4 +1,5 @@
 # CCandidate.cs
+Hash: `0c6c2a48a0d7ad06`
 
 ## `public sealed record CCandidate(`
 

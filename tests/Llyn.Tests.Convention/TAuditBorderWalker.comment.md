@@ -1,4 +1,5 @@
 # TAuditBorderWalker.cs
+Hash: `db888dbdfdc30350`
 
 ## `internal static class TAuditBorderWalker`
 
@@ -43,7 +44,7 @@ The rings each ring may see at any depth: its neighbour, then that neighbour's n
 ## `private static List<TAuditHit> TAuditTreeScan(SemanticModel model, string relative, string ring, Dictionary<string, HashSet<string>> inner)`
 
 Walks one tree and gives every simple name bound to a type of another ring its verdict.
-It is `Commuting` for the neighbour the table names.
+It is `Commuting` for the neighbour the table names and for the ring's capsule.
 Past the neighbour it is `Trespassing` beyond the closure, `Ferrying` for data and `Leapfrogging` for behaviour.
 A method called on a data type is behaviour, so it is `Leapfrogging`.
 In a cut ring, a name from outside the UI rings is `Undercutting` ahead of `Ferrying`.

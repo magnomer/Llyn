@@ -1,8 +1,10 @@
 # TAuditCensus.cs
+Hash: `1927cbc5ad714acf`
 
 ## `public sealed class TAuditCensus`
 
-Keeps the census of every ring: what a ring holds, not what it names.
+Keeps the census of every ring.
+It counts what a ring holds, not what it names.
 A ring holds no word listed for its folder, enough source files and no squatting type.
 The same census is audited by `auditstructure.ps1` from its own configuration, and neither reads the other.
 

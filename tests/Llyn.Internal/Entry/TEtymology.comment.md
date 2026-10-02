@@ -1,8 +1,10 @@
 # TEtymology.cs
+Hash: `5b4acea82de6c313`
 
 ## `public sealed class TEtymology`
 
-Covers the etymology an entry declares: the two shapes, the spans of the narrative, and what a commit stores.
+Covers the etymology an entry declares.
+That is the two shapes, the spans of the narrative, and what a commit stores.
 
 ## `public void EtymologyCommit_ProseBesideLinks_StoresTheProseAlone()`
 

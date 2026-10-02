@@ -1,4 +1,5 @@
 # CTaxonomy.cs
+Hash: `591a87680b98d190`
 
 ## `public sealed class CTaxonomy`
 
@@ -104,10 +105,20 @@ A different workspace has its own Tags, so the Tag this panel stood on may not e
 A Tag notice carries a Tag id, not an entry id, so it never selects a row.
 It raises the rows, then rereads the shown entry, whose chips may carry the renamed Tag.
 
+## `public void CTaxonomyQuerySet(string query)`
+
+Hands the search text to the tag vista, which announces only a changed text.
+A workspace change carries it into the fresh vista, so the driver never re-sends it.
+
 ## `public void CTaxonomyOrderSet(CCatalogOrder? order)`
 
 Orders the Tag list as the user chose.
 A null order keeps the current one, which the vista decides.
+
+## `public void CTaxonomyFilterSet(CCatalogFilter filter)`
+
+Hands the hidden languages to the tag vista, and the posture stores them under the tab.
+The vista announces only a changed filter.
 
 ## `public IReadOnlyList<CCatalogTag> CTaxonomyRowsRead()`
 

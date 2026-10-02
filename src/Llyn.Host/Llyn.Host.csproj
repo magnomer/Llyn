@@ -11,6 +11,10 @@
     <ApplicationIcon>..\..\assets\brand\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <PublishReadyToRun>true</PublishReadyToRun>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Llyn.Core\Llyn.Core.csproj" />
     <ProjectReference Include="..\Llyn.Application\Llyn.Application.csproj" />

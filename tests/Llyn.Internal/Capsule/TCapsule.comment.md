@@ -1,4 +1,5 @@
 # TCapsule.cs
+Hash: `a1e4da75536d795b`
 
 ## `public sealed class TCapsule`
 

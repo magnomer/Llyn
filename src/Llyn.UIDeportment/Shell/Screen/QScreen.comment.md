@@ -1,4 +1,5 @@
 # QScreen.cs
+Hash: `cdde399312a28b63`
 
 ## `internal sealed class QScreen`
 

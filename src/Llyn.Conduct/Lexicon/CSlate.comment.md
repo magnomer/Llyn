@@ -1,4 +1,5 @@
 # CSlate.cs
+Hash: `6af89931ecb0fa35`
 
 ## `public sealed record CSlate(`
 

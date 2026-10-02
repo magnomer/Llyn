@@ -1,4 +1,5 @@
 # LExampleDraft.cs
+Hash: `bd2f4955c8899713`
 
 ## `public sealed record LExampleDraft(`
 

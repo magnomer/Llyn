@@ -1,4 +1,5 @@
 # TAtelierRespelling.cs
+Hash: `a3920a39bdc64baa`
 
 ## `public sealed class TAtelierRespelling`
 

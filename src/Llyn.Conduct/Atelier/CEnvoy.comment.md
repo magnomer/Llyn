@@ -1,4 +1,5 @@
 # CEnvoy.cs
+Hash: `84918b6a5e79898e`
 
 ## `public interface CEnvoy`
 

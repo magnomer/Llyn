@@ -1,4 +1,5 @@
 # PEditorPopup.xaml
+Hash: `8f407343120ec80d`
 
 ## `ResourceDictionary`
 
@@ -13,7 +14,7 @@ A row that lights on hover and fills when picked is one behaviour, so it is decl
 A row in a picker takes the width of the picker, not of its own text.
 Notation, clip and category lists all say this and nothing else about their containers.
 
-### `<Style x:Key="Editor.Popup.Frame" TargetType="Border">`
+### `<Style x:Key="Editor.Popup.Frame" TargetType="Border" BasedOn="{StaticResource Theme.Popup.Surface}">`
 
 The surface a caret's dropdown stands on, with the gutter its shadow needs.
 Only the width follows the caret it was opened from.
@@ -30,7 +31,7 @@ The translation row, drawn against a field several times a caret's size.
 It carries the height and the corner a reader of that panel expects.
 Its hover and pick fills are look rows on the part `PSurface`, not triggers.
 
-### `<Style x:Key="Editor.Popup.Caret" TargetType="ListBoxItem">`
+### `<Style x:Key="Editor.Popup.Caret" TargetType="ListBoxItem" BasedOn="{StaticResource Editor.Popup.Row}">`
 
 The row a caret's dropdown carries, cut down from the translation row.
 Situation and slate lists are drawn against a short caret, so both take this one.

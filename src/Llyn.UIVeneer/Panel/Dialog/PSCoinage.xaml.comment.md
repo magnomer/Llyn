@@ -1,4 +1,5 @@
 # PSCoinage.xaml.cs
+Hash: `236c0943b576a5b9`
 
 ## `public partial class PSCoinage : Window`
 

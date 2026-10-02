@@ -109,7 +109,7 @@ internal sealed class PXiaoyunItem : INotifyPropertyChanged
 
         if (QLook.QLookPartFind<Run>(container, "PXiaoyunEpithet") is Run epithet)
         {
-            epithet.Text = " " + xiaoyun.PXiaoyunItemEpithet;
+            epithet.Text = QLook.QLookEpithetRead(xiaoyun.PXiaoyunItemEpithet);
         }
     }
 }

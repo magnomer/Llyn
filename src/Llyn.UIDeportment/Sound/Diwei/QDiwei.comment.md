@@ -1,4 +1,5 @@
 # QDiwei.cs
+Hash: `3d0d49f83fa39ee9`
 
 ## `internal sealed class QDiwei`
 

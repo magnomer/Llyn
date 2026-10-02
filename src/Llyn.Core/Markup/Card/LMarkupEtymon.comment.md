@@ -1,4 +1,5 @@
 # LMarkupEtymon.cs
+Hash: `6f1dbcfb517f40f7`
 
 ## `public sealed record LMarkupEtymon(`
 

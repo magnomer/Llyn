@@ -1,4 +1,5 @@
 # TDraftReference.cs
+Hash: `a3396f13b207c550`
 
 ## `public sealed class TDraftReference`
 
@@ -8,11 +9,12 @@ A source draft carries a Reference where a situation draft carries a Situation.
 ## `public void RequestApply_HeldReference_SurvivesScan()`
 
 A source typed and then lost with its launch is still on disk, and recovery offers it back.
-This is the loss the downstream exists to prevent: the panel used to hold the source in its controls alone.
+This is the loss the downstream exists to prevent.
+The panel used to hold the source in its controls alone.
 
 ## `public void ReferenceCommit_HeldReference_LeavesNothingBehind()`
 
-A committed source becomes a Reference and leaves no file, no claim and nothing to recover.
+A committed source becomes a Reference and leaves no file and nothing to recover.
 A commit that kept its file would offer saved work back at every launch.
 
 ## `public void LeftoverSweep_ReferenceMatchingStoredReference_SweepsIt()`

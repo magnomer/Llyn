@@ -1,4 +1,5 @@
 # TUsage.cs
+Hash: `670e2af1d20f3d1a`
 
 ## `public sealed class TUsage`
 

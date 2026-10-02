@@ -1,4 +1,5 @@
 # QLecternAccent.cs
+Hash: `0acaeb2d18a71c82`
 
 ## `public sealed class QLecternAccent`
 
@@ -6,7 +7,7 @@ The reading view's accent driver, standing between the veneer and the display's 
 It draws the primary pronunciation and the accent rows from the block Conduct answers ready.
 Flags come from `QEnsignImage`, and every rule of which flag or reading shows stays in Conduct and below.
 
-## `private DependencyProperty _qLecternAccentSyllables`
+## `private DependencyProperty _qLecternAccentSyllables = null!;`
 
 The contour box's syllables property, handed in by the page so the driver copies each ready contour into it.
 
@@ -33,7 +34,8 @@ A load answering nothing paints nothing, since another entry shown meanwhile win
 
 ## `public void QLecternMuteRefine()`
 
-Answers an entry closing: collapses the surface and its label column, empties the rows and clears the flag.
+Answers an entry closing.
+It collapses the surface and its label column, empties the rows and clears the flag.
 
 ## `private void QLecternAccentRefine(CLecternAccent accent)`
 

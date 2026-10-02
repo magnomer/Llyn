@@ -1,9 +1,10 @@
 # LPortraitPage.cs
+Hash: `3e6eb968cfa99588`
 
 ## `public sealed record LPortraitPage`
 
-Format-neutral likeness of one read view: an entry, an example, a source or a situation.
-It is laid out as those views are: a title, reading lines and chips, then a tree of sections.
+Format-neutral likeness of one read view, which is an entry, an example, a source or a situation.
+It is laid out as those views are, with a title, reading lines and chips, then a tree of sections.
 Every field is already the text the reader sees, so a renderer decides nothing.
 A page that is printed or exported comes from here, never from the screen.
 

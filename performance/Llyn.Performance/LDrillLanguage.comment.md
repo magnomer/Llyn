@@ -1,4 +1,5 @@
 # LDrillLanguage.cs
+Hash: `3c467b3df7e2b5e7`
 
 ## `internal sealed class LDrillLanguage : LDrill`
 

@@ -1,4 +1,5 @@
 # TIndexItem.cs
+Hash: `95431f069623230a`
 
 ## `public sealed class TIndexItem`
 

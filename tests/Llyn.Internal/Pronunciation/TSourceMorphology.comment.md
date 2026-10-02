@@ -1,4 +1,5 @@
 # TSourceMorphology.cs
+Hash: `f44ba2e6e6e41216`
 
 ## `public sealed class TSourceMorphology`
 

@@ -1,4 +1,5 @@
 # QMembershipItem.cs
+Hash: `ce3c25bec96a4c5b`
 
 ## `internal sealed class QMembershipItem`
 
@@ -10,6 +11,11 @@ The two panels list the same entries but reach them through different questions.
 The flag is resolved once for the language and handed to the row, not read from disk by the row.
 A row is built while its list is being filled, and reading a file there would stall the fill.
 The row announces its chosen flag, so the mark moves without the list being rebuilt.
+
+## `internal QMembershipItem(long id, string headword, string language, string epithet = "", bool chosen = false)`
+
+The epithet defaults to empty and the mark to unchosen, and a null epithet reads as empty.
+The shown name is a required init, so no row is built without the engine's numbering.
 
 ## `public required string QMembershipItemName { get; init; }`
 
@@ -30,3 +36,8 @@ Whether the two rows show the same values, the chosen mark left aside.
 ## `internal static void QMembershipItemSync(QMembershipItem held, QMembershipItem fresh)`
 
 Copies the chosen mark of the fresh row onto the held row that `QSplice` kept.
+
+## `public bool QMembershipItemChosen`
+
+Whether this row is the one the panel stands on, which the row template paints an accent edge for.
+The engine row carries it, and `QSplice` moves the mark in place, so the list keeps its scroll position.

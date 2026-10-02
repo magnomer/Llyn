@@ -1,4 +1,5 @@
 # LShengfuRule.cs
+Hash: `99b4ac853bd0d108`
 
 ## `public sealed record LShengfuRule(`
 

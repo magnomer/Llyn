@@ -1,4 +1,5 @@
 # QNotationReading.cs
+Hash: `3d289fd0b9fc5b84`
 
 ## `internal sealed class QNotationReading`
 

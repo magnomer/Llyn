@@ -1,11 +1,32 @@
 # LPortraitPort.cs
+Hash: `df0aefe3b097ee9c`
 
 ## `public interface LPortraitPort`
 
 The slice of the engine a panel sees when it prints, exports or imports.
 Printing and exporting portray the record a vista chose, so the caller hands the vista and never the id.
 The markup import runs as one call, which reads the cargo and stores it under declared intakes.
-`LEngine` implements it today, and a portrait clerk takes it over when the parts are dismantled.
+`LPortraitOutlet` implements it today, and a portrait clerk takes it over when the parts are dismantled.
+
+## `Task LEnginePortraitPrint(LVista? vista, LPortraitLabel label, LPressTicket ticket);`
+
+Prints the entry the vista has chosen, and does nothing when the vista holds no entry.
+
+## `Task LEnginePortraitPrint(LVista? vista, LPortraitLegend legend, LPressTicket ticket);`
+
+Prints the Example, Situation or Source a catalog vista has chosen.
+Any other subject is a caller mistake and throws.
+
+## `Task LEnginePortraitExport(LVista? vista, string path, LPortraitMedium format, LPortraitLabel label);`
+
+Exports the entry the vista has chosen to `path`, and does nothing when the vista holds no entry.
+
+## `Task<IReadOnlyList<LMarkupOmission>?> LEngineMarkupStart(`
+
+Reads the markup file, asks `declare` for the intakes, then stores the cargo.
+The read and the store run on a worker thread, while `declare` runs back on the caller's thread.
+A `declare` answering null stores nothing and answers null.
+Otherwise it answers what the read and the import left behind.
 
 ## `static LPressTicket LEngineTicketRead(string printer, double? width, double? height, bool landscape, int copies, bool collated, LPressSide side, LPressInk ink)`
 

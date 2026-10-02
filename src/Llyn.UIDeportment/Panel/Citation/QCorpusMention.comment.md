@@ -1,4 +1,5 @@
 # QCorpusMention.cs
+Hash: `87732a83528e0fa3`
 
 ## `internal sealed partial class QCorpus`
 

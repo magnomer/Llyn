@@ -1,4 +1,5 @@
 # QClipReading.cs
+Hash: `3a7de531b7f11376`
 
 ## `internal sealed class QClipReading`
 

@@ -15,6 +15,12 @@ public sealed partial class LTenure
 
     private int _lTenureRound;
 
+    private LTenureState _lTenureLast;
+
+    private LTenureState? _lTenureState;
+
+    private long _lTenureStateRevision;
+
     public void LTenureObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
         LTenureObserverInsert(subject, observer, null);
@@ -226,5 +232,21 @@ public sealed partial class LTenure
         {
             _lTenureObservers.Clear();
         }
+    }
+
+    private void LTenureStateRaise()
+    {
+        LTenureState state = LTenureStateRead();
+        lock (_lTenureGate)
+        {
+            if (state == _lTenureLast)
+            {
+                return;
+            }
+
+            _lTenureLast = state;
+        }
+
+        _lEngine.LEngineBulletinRaise(LSubject.LSubjectTenure, LTenureId);
     }
 }

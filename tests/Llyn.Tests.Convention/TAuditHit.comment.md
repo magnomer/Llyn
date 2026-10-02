@@ -1,4 +1,5 @@
 # TAuditHit.cs
+Hash: `695336cb3b584873`
 
 ## `internal sealed record TAuditHit`
 

@@ -1,4 +1,5 @@
 # PThemeSpeech.xaml
+Hash: `5a2d70e137a93e76`
 
 ## `<Style x:Key="Theme.Speech.Chip" TargetType="Border">`
 

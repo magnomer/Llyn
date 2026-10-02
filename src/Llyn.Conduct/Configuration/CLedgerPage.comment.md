@@ -1,4 +1,5 @@
 # CLedgerPage.cs
+Hash: `45f2b5ab3f092932`
 
 ## `public sealed record CLedgerPage(string CLedgerPageChild, string CLedgerPageTitle, string CLedgerPageMeta);`
 

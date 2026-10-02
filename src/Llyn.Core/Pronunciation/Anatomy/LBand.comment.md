@@ -1,4 +1,5 @@
 # LBand.cs
+Hash: `6f106042a7418ad3`
 
 ## `public sealed record LBand(string LBandName, string LBandPattern)`
 

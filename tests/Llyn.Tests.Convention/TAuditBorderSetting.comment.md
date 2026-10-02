@@ -1,4 +1,5 @@
 # TAuditBorderSetting.cs
+Hash: `957dcb1f347e9342`
 
 ## `internal static class TAuditBorderSetting`
 
@@ -13,7 +14,7 @@ The one project that names every project, so it is no ring of the border.
 
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditBorderNeighbour`
 
-Every project under `src`, as its name to the one ring it may name as neighbour.
+Every ring project under `src`, Host excepted, as its name to the one ring it may name as neighbour.
 A ring names its neighbour alone and ferries the data of every ring inside it.
 The two adapters name `Llyn.Core` as spokes, since the contracts they implement live there.
 The core names no neighbour.
@@ -26,9 +27,9 @@ A cut ring names only its neighbour, and nothing from below the cut undercuts in
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditBorderOffer`
 
 For a `ring>neighbour` pair, the neighbour types the ring may name at all.
-Conduct names ShellEngine through the six `L*Port` interfaces, which ShellEngine declares, and four handles.
+Conduct names ShellEngine through the six `L*Port` interfaces, which ShellEngine declares, and ten other `L` types.
 Every other engine type is a helper Conduct may not name.
-Both drivers name Conduct only through the display types, the dialog gates and the shapes sealed controllers hand over.
+Both drivers name Conduct only through the `L` display types and the `C` shapes sealed controllers hand over.
 
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditUnsealingPrefix`
 
@@ -42,7 +43,7 @@ Deportment seals `L`, the medium-free controllers that later sink into Conduct.
 The name count each `Kind:Ring>Target` pair may hold.
 A count above fails the fact, a ceiling above the count is stale and fails too.
 Lower a ceiling when a ring sheds a name, never raise one to admit a new one.
-The `Undercutting` pairs are the bulk, as the UI rings still name core data and engine types.
+Every `Undercutting` and `Unsealing` ceiling is zero.
 
 ## `public static readonly string[] TAuditBorderExempt`
 

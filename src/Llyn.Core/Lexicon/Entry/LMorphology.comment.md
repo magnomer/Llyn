@@ -1,4 +1,5 @@
 # LMorphology.cs
+Hash: `2a3f289bb2192405`
 
 ## `public sealed record LMorphology(`
 

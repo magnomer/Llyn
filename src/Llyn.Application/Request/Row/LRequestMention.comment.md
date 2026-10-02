@@ -1,4 +1,5 @@
 # LRequestMention.cs
+Hash: `c201672700398580`
 
 The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The Mention requests, one per gesture a shown sentence offers on one of its words.

@@ -1,4 +1,5 @@
 # TEsteem.cs
+Hash: `47aebeaa0d53caba`
 
 ## `public sealed class TEsteem`
 

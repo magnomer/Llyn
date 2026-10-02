@@ -1,4 +1,5 @@
 # TCatalogEntry.cs
+Hash: `2b468f78833b8bc5`
 
 ## `public sealed class TCatalogEntry`
 

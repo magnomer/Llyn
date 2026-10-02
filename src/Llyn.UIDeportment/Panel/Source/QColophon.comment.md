@@ -1,4 +1,5 @@
 # QColophon.cs
+Hash: `e705a093da63a352`
 
 ## `internal sealed class QColophon`
 
@@ -18,7 +19,8 @@ Each named part of the page is found through `QContract.QContractFind` under its
 
 ## `internal void QColophonRefine(CColophon sheet)`
 
-Writes a composed sheet onto the page: one text and one look per field, and the page shown.
+Writes a composed sheet onto the page.
+Each field gets one text and one look, and the page is shown.
 A never-written field hides its heading, so a blank line never stands for two facts.
 An unknown field is dressed as the placeholder the edit side shows, so the two sides read alike.
 

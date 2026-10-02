@@ -1,4 +1,5 @@
 # QBylineItem.cs
+Hash: `306f99953f0cd7a3`
 
 ## `internal sealed class QBylineItem`
 

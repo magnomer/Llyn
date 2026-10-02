@@ -1,4 +1,5 @@
 # CCompassRow.cs
+Hash: `4e72fde382d89dbf`
 
 ## `public sealed record CCompassRow(`
 

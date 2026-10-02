@@ -1,4 +1,5 @@
 # LStateValue.cs
+Hash: `26c31c3a21cdded9`
 
 ## `public sealed record LStateValue(`
 
@@ -73,12 +74,24 @@ A reader above the engine maps it plainly, so no layer above keeps its own empty
 ## `public bool LStateValueEmpty`
 
 Whether nothing was ever recorded.
-An unknown value is not empty by this reading: something is there, and only its text is beyond reach.
+An unknown value is not empty by this reading.
+Something is there, and only its text is beyond reach.
+
+## `public bool LStateValueLegible`
+
+Whether the value holds text to show.
+An unreadable value counts, since it keeps its stored text for showing.
+An unknown value never does.
 
 ## `public bool LStateValueFilled`
 
 Whether the value holds legible text or the user's mark that it is not known.
 Only a value nothing was ever recorded for, and which the store read cleanly, is not filled.
+
+## `public bool LStateValueSound`
+
+Whether the value states readable, non-empty text that may be written back.
+Unreadable values and blank text fail it, though `LStateValueLegible` accepts them.
 
 ## `public LStateValue LStateValueNormalize()`
 

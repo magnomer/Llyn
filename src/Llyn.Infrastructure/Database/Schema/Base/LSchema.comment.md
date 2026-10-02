@@ -1,4 +1,5 @@
 # LSchema.cs
+Hash: `44ff9081e28e57cd`
 
 ## `public static class LSchema`
 
@@ -19,7 +20,8 @@ One of them cannot exist until the migration has cleaned the rows it indexes.
 Creates every table that does not yet exist.
 Migrates a database built by an earlier version.
 Creates the lookup indexes.
-Safe to run on each startup: existing tables and an existing version row are left as they are.
+Safe to run on each startup.
+Existing tables and an existing version row are left as they are.
 
 ## Inline notes
 

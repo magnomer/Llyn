@@ -1,4 +1,5 @@
 # LReferenceVault.cs
+Hash: `875f0706a5b64d06`
 
 ## `public interface LReferenceVault`
 

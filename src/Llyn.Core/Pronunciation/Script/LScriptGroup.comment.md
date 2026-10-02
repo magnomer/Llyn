@@ -1,4 +1,5 @@
 # LScriptGroup.cs
+Hash: `2a71ba602270b84b`
 
 ## `public sealed record LScriptGroup(`
 

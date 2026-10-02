@@ -1,4 +1,5 @@
 # LCatalogFavorite.cs
+Hash: `2bd0c4a411b48c86`
 
 ## `public sealed record LCatalogFavorite(LEntry LCatalogFavoriteEntry, string LCatalogFavoriteMarked)`
 

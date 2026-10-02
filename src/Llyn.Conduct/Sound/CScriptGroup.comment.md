@@ -1,4 +1,5 @@
 # CScriptGroup.cs
+Hash: `03d1afbf6b64cc6a`
 
 ## `public sealed record CScriptGroup(`
 

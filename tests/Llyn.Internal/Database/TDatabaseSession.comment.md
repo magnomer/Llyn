@@ -1,14 +1,17 @@
 # TDatabaseSession.cs
+Hash: `aeb59896a4ae99a9`
 
 ## `public sealed class TDatabaseSession`
 
 Covers the unit of work and the ordering it makes possible.
 A session spanning several stores lands as one transaction or not at all.
 A nested session leaves the decision to the outermost one.
-Every ordered set stays numbered `0 … n-1` across a move, an insert, and a removal.
+Every ordered set stays numbered `0 … n-1` across a removal and a rewrite of the set.
 Those are the reorders the unique position indexes used to make impossible.
 A session whose connection is already closed still releases the ambient slot when disposed.
 The next session must open cleanly, or every later store call would be refused.
+An example update keeps its translations and the row ids of reordered ones.
+Stored identities drawn in a run are negative and never repeat.
 
 ## Inline notes
 

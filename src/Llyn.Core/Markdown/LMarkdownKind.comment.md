@@ -1,4 +1,5 @@
 # LMarkdownKind.cs
+Hash: `4ff637425b26ccd5`
 
 ## `public enum LMarkdownKind`
 

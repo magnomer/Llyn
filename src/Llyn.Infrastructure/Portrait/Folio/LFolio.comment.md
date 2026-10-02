@@ -1,4 +1,5 @@
 # LFolio.cs
+Hash: `0a4966817b9beb2f`
 
 ## `public static class LFolio`
 

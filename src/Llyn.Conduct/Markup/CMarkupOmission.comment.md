@@ -1,4 +1,5 @@
 # CMarkupOmission.cs
+Hash: `54cc1b1f6e97dba1`
 
 ## `public sealed record CMarkupOmission(string CMarkupOmissionLine, string CMarkupOmissionText)`
 

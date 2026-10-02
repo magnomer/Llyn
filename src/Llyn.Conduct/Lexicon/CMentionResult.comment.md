@@ -1,4 +1,5 @@
 # CMentionResult.cs
+Hash: `b6fa25e7cd5757cf`
 
 ## `public sealed record CMentionResult(`
 

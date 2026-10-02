@@ -1,4 +1,5 @@
 # QTallyMark.cs
+Hash: `97ffc197d08bc1fc`
 
 ## `internal sealed class QTallyMark`
 
@@ -23,7 +24,7 @@ The characters that bear the mark, listed in its dropdown.
 
 ## `internal static void QTallyMarkRefine(FrameworkElement container, object item, string? _)`
 
-Fills a mark chip: the toggle's text and count, and the dropdown's characters.
+Fills a mark chip with the toggle's text and count and the dropdown's characters.
 The toggle opens the dropdown, and a dropdown closed from outside clears the toggle.
 
 ## `private static void QTallyDropRefine(object sender, RoutedEventArgs e)`

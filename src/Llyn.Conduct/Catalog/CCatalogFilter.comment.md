@@ -1,4 +1,5 @@
 # CCatalogFilter.cs
+Hash: `e9f0bc44660f8df4`
 
 ## `public sealed record CCatalogFilter(IReadOnlyList<string> CCatalogFilterHidden)`
 

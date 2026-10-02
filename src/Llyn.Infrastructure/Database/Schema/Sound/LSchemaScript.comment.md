@@ -1,8 +1,14 @@
 # LSchemaScript.cs
+Hash: `30f069237e5995fd`
 
 ## `public static class LSchemaScript`
 
 Creates the script store, one row per glyph picture of one character in one style.
+
+## `public const long LSchemaScriptNoted = 73;`
+
+The schema version from which every stored caption already holds its age apart, in `epoch`.
+The settle dates only workspaces stored below it, so no caption is cut twice.
 
 ## `public static void LSchemaScriptCreate(SqliteConnection connection)`
 

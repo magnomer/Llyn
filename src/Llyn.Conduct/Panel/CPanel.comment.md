@@ -1,4 +1,5 @@
 # CPanel.cs
+Hash: `03e340e57bc9f130`
 
 ## `public sealed class CPanel`
 
@@ -32,6 +33,19 @@ A two-list tab hands in its session's finish, so the whole tab stores as one.
 Whether the panel's tab is the one in front, which only the driver's surface knows.
 It is consulted when a stored entry is announced, so a hidden tab in edit mode does not adopt it.
 
+## `internal CPanel(`
+
+`loadKey` words every failed load and tally read, so a blank one throws.
+The panel holds no vista until `CPanelVistaRestore`, so every verdict before it reads as no row and no edit.
+
+## `public event Action? CPanelChanged;`
+
+The mode or the loaded draft moved, so a driver reads its verdicts again.
+
+## `public event Action? CPanelCleared;`
+
+The chosen row closed, so the owner drops the draft its editor held.
+
 ## `internal event Action<LDraft>? CPanelDraftChanged;`
 
 The draft just loaded, passed on unread for the controllers that show it.
@@ -40,6 +54,19 @@ It is internal because a draft is engine data, which no driver receives from Con
 ## `public event Action<long>? CPanelEdited;`
 
 The editor must show this stored entry, raised only while the panel is in edit mode.
+
+## `internal LVista? CPanelVista`
+
+The vista the panel stands on, or null before a restore.
+It is internal so `CGuild` can print the Source its oeuvre panel holds.
+
+## `public bool CPanelBinEnabled`
+
+Live while a row is chosen, so owners read it as the panel's chosen-row fact too.
+
+## `public bool CPanelPressAllowed`
+
+Print takes a chosen row only while it is read, since a draft being written is not stored yet.
 
 ## `public CCatalogOrder CPanelOrder`
 
@@ -82,7 +109,7 @@ The same as `CPanelObserverAttach`, but only for notices about the chosen row.
 
 ## `internal bool LPanelChangeCheck()`
 
-Whether the editor holds unstored changes, which can only be so while it is shown.
+Whether the editor holds unstored changes, which can only be so while the panel is in edit mode.
 
 ## `public bool CPanelLeaveConfirm()`
 
@@ -92,11 +119,13 @@ Storing runs the finish seam, discarding leaves the dropping to the step that as
 
 ## `public void CPanelEntryClose()`
 
-Closes what the panel shows: nothing is chosen, the rows re-list and the viewer returns.
+Closes what the panel shows.
+Nothing is chosen, the rows re-list and the viewer returns.
 
 ## `public void CPanelEntryCreate()`
 
-The fresh request: after the leave question it opens the scribe on nothing.
+The fresh request.
+After the leave question it opens the scribe on nothing.
 
 ## `public void CPanelFreshOpen()`
 
@@ -109,7 +138,8 @@ The navigation calls it for the tab it restores at startup.
 
 ## `public void CPanelScribeToggle(bool editing)`
 
-The mode toggle: a switch to the mode already shown does nothing, so a reloaded editor never drops typing.
+The mode toggle.
+A switch to the mode already shown does nothing, so a reloaded editor never drops typing.
 Leaving the editor asks first, and a refusal re-shows the editor so the toggle reads right again.
 Leaving with a chosen row reloads it into the display, leaving with none closes the panel.
 
@@ -124,7 +154,8 @@ A two-list tab carries the mode from one list to the other with it.
 
 ## `public void CPanelRowSelect(long? id)`
 
-A click on a row: after the leave question the row is opened.
+A click on a row.
+After the leave question the row is opened.
 A panel standing on a tab first records the station the click leaves.
 
 ## `internal void LPanelStationAttach(Action record)`
@@ -165,7 +196,8 @@ It raises nothing, because the adopted entry's own notice reloads and repaints t
 
 ## `public void CPanelEntryDelete()`
 
-The bin request: a panel without a delete scope does nothing.
+The bin request.
+A panel without a delete scope does nothing.
 The question names how many places the delete reaches, which the vista counts.
 A refused delete is told through the envoy, and a done one closes the panel.
 

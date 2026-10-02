@@ -1,4 +1,5 @@
 # CByline.cs
+Hash: `2594b745d66b028f`
 
 ## `public sealed class CByline`
 
@@ -17,6 +18,11 @@ The word, the lit row or the open state moved, so the driver reads the byline ag
 ## `public bool CBylineShown`
 
 Whether the last read offered any row.
+
+## `public int CBylineIndex`
+
+The lit row's place among the offered rows, or `-1` while none is lit.
+A new word and a close both put it back to `-1`.
 
 ## `public void CBylineWordSet(string? text, bool? focused)`
 

@@ -1,4 +1,5 @@
 # LRequestPronunciation.cs
+Hash: `0db0bd99c329efb9`
 
 The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The pronunciation requests, one per change to the entry's ordered pronunciation list.

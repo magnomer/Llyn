@@ -1,4 +1,5 @@
 # LDrillMarkup.cs
+Hash: `9e852dad98180a72`
 
 ## `internal sealed class LDrillMarkup : LDrill`
 

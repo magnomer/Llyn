@@ -1,4 +1,5 @@
 # LCatalogRegister.cs
+Hash: `cdd454f689f313ee`
 
 ## `public sealed record LCatalogRegister(`
 
@@ -9,6 +10,7 @@ The count travels with the row because the ordering reads it and the row shows i
 
 - `LCatalogRegisterStored` — The stored Register the row stands for.
 - `LCatalogRegisterUsage` — How many Meanings and Collocations are marked with it.
+- `LCatalogRegisterChosen` — True on the row of the Register the vista stands on, false until the vista find fills it.
 
 ## `private static readonly Dictionary<string, string> LCatalogRegisterIcons`
 

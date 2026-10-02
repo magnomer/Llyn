@@ -1,4 +1,5 @@
 # LCollocationVault.cs
+Hash: `545de2a8c78042bf`
 
 ## `public interface LCollocationVault`
 

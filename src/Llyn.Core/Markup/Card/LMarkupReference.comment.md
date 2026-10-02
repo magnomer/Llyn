@@ -1,4 +1,5 @@
 # LMarkupReference.cs
+Hash: `2f84e64ee7543778`
 
 ## `public sealed record LMarkupReference(`
 

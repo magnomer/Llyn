@@ -1,4 +1,5 @@
 # LLocalizationReader.cs
+Hash: `387deda70a914eae`
 
 ## `internal static class LLocalizationReader`
 

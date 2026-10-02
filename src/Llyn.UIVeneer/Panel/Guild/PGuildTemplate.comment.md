@@ -1,4 +1,5 @@
 # PGuildTemplate.xaml
+Hash: `de72aca78db37007`
 
 ## `ResourceDictionary`
 

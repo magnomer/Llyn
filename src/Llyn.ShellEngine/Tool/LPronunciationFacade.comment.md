@@ -1,4 +1,5 @@
 # LPronunciationFacade.cs
+Hash: `2e93b7b185281e63`
 
 ## `internal sealed class LPronunciationFacade`
 

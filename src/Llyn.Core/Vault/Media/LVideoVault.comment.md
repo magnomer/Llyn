@@ -1,4 +1,5 @@
 # LVideoVault.cs
+Hash: `4c3a94abc0b9b854`
 
 ## `public interface LVideoVault`
 

@@ -1,4 +1,5 @@
 # QGlyph.cs
+Hash: `1010ad846cfa3633`
 
 ## `internal sealed class QGlyph`
 
@@ -30,7 +31,7 @@ The engine finds that scheme's sources in the pack's glyph section.
 
 ## `private void QGlyphItemRefine(FrameworkElement container, object item, string? _)`
 
-Fills one row of `Theme.Glyph.Row`: the scheme name, the measure twin, the field and the lookup button.
+Fills one row of `Theme.Glyph.Row`, which holds the scheme name, the measure twin, the field and the lookup button.
 The field is filled while its typing is not heard, so a repaint sends nothing.
 The lookup button shows only when the list tag says the pack declares sources.
 

@@ -1,4 +1,5 @@
 # LInflection.cs
+Hash: `899802cd6c6f9178`
 
 ## `public sealed record LInflection(`
 

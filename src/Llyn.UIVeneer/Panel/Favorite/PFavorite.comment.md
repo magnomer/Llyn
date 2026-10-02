@@ -1,4 +1,5 @@
 # PFavorite.xaml
+Hash: `dbb6bdd2f075ac56`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -6,7 +7,8 @@ The seams that part the favourite catalog from the entry it opens.
 The row seam runs under the ordering bar and the command row.
 It is bled past the panel margin so it meets the navigation's own edge.
 The column seam sits in the middle of the gutter and reaches the foot of the window.
-Neither seam encloses anything, which is the whole rule: a line marks a division, a box would claim an object.
+Neither seam encloses anything, which is the whole rule.
+A line marks a division, and a box would claim an object.
 
 ## `<Border x:Name="PSeries" ... Style="{StaticResource Theme.Search.Bar}">`
 

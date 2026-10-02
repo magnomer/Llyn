@@ -1,8 +1,9 @@
 # PDisplayCompass.xaml
+Hash: `aa1aeb296e1b4678`
 
 ## `ResourceDictionary`
 
-The floating contents column of the entry page: its row, its number and the row template.
+The floating contents column of the entry page, with its row, its number and the row template.
 The row answers a click the panel handles.
 The display page merges this markup in its own resources.
 The display hands the click on to [QCompass](../../../Llyn.UIDeportment/Display/QCompass.comment.md).

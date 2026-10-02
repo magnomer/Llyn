@@ -123,7 +123,7 @@ public sealed class CDesk
 
     public void CDeskStart(long? id)
     {
-        CDeskCancel();
+        bool dropped = LDeskTenureClear();
         if (_cDeskVista is LVista vista)
         {
             CDeskStartRun(() => _cDeskPort.LEngineTenureStart(vista, id));
@@ -133,51 +133,87 @@ public sealed class CDesk
         if (_cDeskOrigin is string origin)
         {
             CDeskStartRun(() => _cDeskPort.LEngineTenureStart(origin, CPanel.CPanelSubjectRead(_cDeskSubject), id));
+            return;
+        }
+
+        if (dropped)
+        {
+            CDeskStateChanged?.Invoke();
         }
     }
 
     internal void LDeskOccurrenceStart(long? situation)
     {
-        CDeskCancel();
+        bool dropped = LDeskTenureClear();
         if (_cDeskVista is LVista vista)
         {
             CDeskStartRun(() => _cDeskPort.LEngineOccurrenceStart(vista, situation));
+            return;
+        }
+
+        if (dropped)
+        {
+            CDeskStateChanged?.Invoke();
         }
     }
 
     internal void LDeskQuotationStart(long? example)
     {
-        CDeskCancel();
+        bool dropped = LDeskTenureClear();
         if (_cDeskVista is LVista vista)
         {
             CDeskStartRun(() => _cDeskPort.LEngineQuotationStart(vista, example));
+            return;
+        }
+
+        if (dropped)
+        {
+            CDeskStateChanged?.Invoke();
         }
     }
 
     internal void LDeskFootnoteStart(long? reference)
     {
-        CDeskCancel();
+        bool dropped = LDeskTenureClear();
         if (_cDeskVista is LVista vista)
         {
             CDeskStartRun(() => _cDeskPort.LEngineFootnoteStart(vista, reference));
+            return;
+        }
+
+        if (dropped)
+        {
+            CDeskStateChanged?.Invoke();
         }
     }
 
     internal void LDeskMembershipStart(long? tag)
     {
-        CDeskCancel();
+        bool dropped = LDeskTenureClear();
         if (_cDeskVista is LVista vista)
         {
             CDeskStartRun(() => _cDeskPort.LEngineMembershipStart(vista, tag));
+            return;
+        }
+
+        if (dropped)
+        {
+            CDeskStateChanged?.Invoke();
         }
     }
 
     internal void LDeskCohortStart(long? register)
     {
-        CDeskCancel();
+        bool dropped = LDeskTenureClear();
         if (_cDeskVista is LVista vista)
         {
             CDeskStartRun(() => _cDeskPort.LEngineCohortStart(vista, register));
+            return;
+        }
+
+        if (dropped)
+        {
+            CDeskStateChanged?.Invoke();
         }
     }
 
@@ -196,7 +232,8 @@ public sealed class CDesk
         }
         catch (Exception exception)
         {
-            CDeskCancel();
+            LDeskTenureClear();
+            CDeskStateChanged?.Invoke();
             CLedger.LLedgerFailureShow(_cDeskEnvoy, _cDeskSettings, _cDeskScope + ".LoadFailed", exception);
             return;
         }
@@ -369,9 +406,17 @@ public sealed class CDesk
 
     public void CDeskCancel()
     {
+        if (LDeskTenureClear())
+        {
+            CDeskStateChanged?.Invoke();
+        }
+    }
+
+    private bool LDeskTenureClear()
+    {
         if (_cDeskTenure is not LTenure held)
         {
-            return;
+            return false;
         }
 
         _cDeskTenure = null;
@@ -379,6 +424,6 @@ public sealed class CDesk
         _cDeskEasel = null;
         _cDeskChip = null;
         held.LTenureCancel();
-        CDeskStateChanged?.Invoke();
+        return true;
     }
 }

@@ -1,4 +1,5 @@
 # TDraftExample.cs
+Hash: `3efc49f55fab5220`
 
 ## `public sealed class TDraftExample`
 
@@ -9,11 +10,12 @@ The folder holds both the same way.
 ## `public void RequestApply_HeldSentence_SurvivesScan()`
 
 A sentence typed and then lost with its launch is still on disk, and recovery offers it back.
-This is the loss the downstream exists to prevent: the panel used to hold the sentence in its controls alone.
+This is the loss the downstream exists to prevent.
+The panel used to hold the sentence in its controls alone.
 
 ## `public void ExampleCommit_HeldSentence_LeavesNothingBehind()`
 
-A committed sentence becomes an Example and leaves no file, no claim and nothing to recover.
+A committed sentence becomes an Example and leaves no file and nothing to recover.
 A commit that kept its file would offer saved work back at every launch.
 
 ## `public void LeftoverSweep_SentenceMatchingStoredExample_SweepsIt()`

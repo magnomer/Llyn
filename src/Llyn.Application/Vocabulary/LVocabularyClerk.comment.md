@@ -1,4 +1,5 @@
 # LVocabularyClerk.cs
+Hash: `4ca949979653b67f`
 
 ## `public sealed class LVocabularyClerk`
 

@@ -1,4 +1,5 @@
 # LLayout.cs
+Hash: `16b6ed3bb1beaa53`
 
 ## `public sealed record LLayout(`
 
@@ -14,3 +15,7 @@ Panel widths are GUI-only, so they live in the GUI driver's Capsule, not here.
 - `LLayoutTab` — The lowercase name of the tab the record belongs to, for example `"library"`.
 - `LLayoutOrder` — The ordering the tab's catalog lists by, or nothing before one was chosen.
 - `LLayoutFilter` — The languages the tab hides from its entries, or nothing before any was hidden.
+
+## `public bool LLayoutTabMatch(string tab)`
+
+Compares ordinally, so a caller hands the lowercase tab name the record keeps.

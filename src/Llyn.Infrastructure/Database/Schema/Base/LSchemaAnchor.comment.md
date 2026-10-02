@@ -1,8 +1,10 @@
 # LSchemaAnchor.cs
+Hash: `269b59734b8ecf68`
 
 ## `public static class LSchemaAnchor`
 
-Creates the anchor store: the ties from reflex rows to the fanqie rows they answer.
+Creates the anchor store.
+It holds the ties from reflex rows to the fanqie rows they answer.
 
 ## `public static void LSchemaAnchorCreate(SqliteConnection connection)`
 

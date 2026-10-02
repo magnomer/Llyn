@@ -1,9 +1,10 @@
 # TMarkupParsing.cs
+Hash: `ebc4a716a4fa2bcf`
 
 ## `public sealed class TMarkupParsing`
 
 Covers the markup reader: what a well-formed file yields and what a strange one reports.
-An unknown element or any attribute is an omission with its line, never an error.
+An unknown element or attribute is an omission with its line, never an error.
 Malformed text or a foreign root is refused outright.
 The state attribute reads a value as unknown while an empty element reads as unspecified.
 

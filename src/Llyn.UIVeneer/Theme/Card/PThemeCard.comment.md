@@ -1,4 +1,5 @@
 # PThemeCard.xaml
+Hash: `a2d23960afc4a95d`
 
 ## `<sys:Double x:Key="Theme.Card.TitleSize">`
 
@@ -7,6 +8,18 @@ A card must read the same whether it is being written or being read.
 The two are drawn by dictionaries that never meet.
 So the numbers live where both can reach them.
 Neither can drift from the other by an edit to one file.
+
+## `<sys:Double x:Key="Theme.Card.ExampleSize">`
+
+This size and `Theme.Card.ExampleFamily` are fallbacks only.
+`QFontFace` sets both on each view's resources from the language pack.
+Every dynamic reference to the keys then takes the pack's values.
+A pack that declares none leaves these values in force.
+
+## `<sys:Double x:Key="Theme.Card.GlossSize">`
+
+The Gloss family, size and slant are fallbacks in the same way.
+`QFontFace` sets them from the pack's Gloss typography.
 
 ## `<Style x:Key="Theme.Card.Shell" TargetType="Border">`
 
@@ -24,6 +37,12 @@ Reserving the strip in both modes makes a line wrap identically whether or not t
 A row inside the body reaching back out into that strip.
 The row's text keeps the body's width and its handles hang in the gutter beside it.
 The transparent background makes the whole row hit-testable so hovering the gutter reveals the handles.
+
+## `<Style x:Key="Theme.Card.Control" TargetType="FrameworkElement">`
+
+A row's add and remove buttons start invisible and take no pointer.
+The row driver shows both while its list is hovered or holds focus.
+It then clears its values, so this style rules again.
 
 ## `<Style x:Key="Theme.Card.Pellet" TargetType="Border">`
 

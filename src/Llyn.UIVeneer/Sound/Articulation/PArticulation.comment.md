@@ -1,4 +1,5 @@
 # PArticulation.xaml
+Hash: `fcb4d7e02766ce3b`
 
 ## `<UserControl.Resources>`
 

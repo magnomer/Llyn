@@ -1,4 +1,5 @@
 # TEntrySaving.cs
+Hash: `bec85961944355e0`
 
 ## `public sealed class TEntrySaving`
 
@@ -10,7 +11,7 @@ The save is one unit of work or none.
 
 ## Inline notes
 
-### `IReadOnlyList<LMeaning> meanings = new LMeaningArchive(workspace.TWorkspaceDatabase).LMeaningRead(entry.LEntryId);`
+### `IReadOnlyList<LMeaning> meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId);`
 
 The meanings land in card order, each at the position its card held.
 
@@ -28,21 +29,21 @@ Each field became a row of its own that the card now references, not a column on
 
 ### `LEntry second = engine.TEngineEntrySave(draft);`
 
-Saving the same text again matches nothing.
-Every non-empty field creates a new row.
-So the second entry references rows of its own rather than the first entry's.
+Saving the same text again writes a new Example row for each sentence.
+A Situation is matched by its text, so the second entry shares the first entry's row.
+A Tag reads back the same text on both entries.
 
-### `LCardDraft blank = new(`
+### `LCardDraft blank = TInterface.TCardDraftCreate(`
 
 What the form always hands over.
 That is one seeded Meaning card and one seeded Collocation card, both untouched.
 It refuses to remove a list's last card.
 
-### `LEntryDraft? loaded = engine.LEngineEntryLoad(entry.LEntryId);`
+### `LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);`
 
 An entry with no cards loads as cleanly as it saved.
 
-### `LEntry entry = engine.TEngineEntrySave(new LEntryDraft(`
+### `LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(`
 
 A card of whitespace counts as blank, on the same terms a card field does.
 

@@ -1,8 +1,10 @@
 # LAnchor.cs
+Hash: `7054ca273c51f91d`
 
 ## `public static class LAnchor`
 
-The anchors of a reflex row: the ids of the fanqie rows the user tied that reading to by hand.
+The anchors of a reflex row are the ids of the fanqie rows.
+The user tied that reading to them by hand.
 Nothing derives an anchor, so a reading counts on a Diwei page only through the placements the user chose.
 A row without anchors counts nowhere.
 The helpers keep the list sorted and free of repeats, so two lists compare by position.

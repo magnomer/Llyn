@@ -1,4 +1,5 @@
 # PThemeScript.xaml
+Hash: `0982495d8d4d730c`
 
 ## `<Style x:Key="Theme.Script.Box" TargetType="Border">`
 

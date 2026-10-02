@@ -1,4 +1,5 @@
 # CTimbreGlyph.cs
+Hash: `effdd102dadc3581`
 
 ## `public sealed record CTimbreGlyph(`
 

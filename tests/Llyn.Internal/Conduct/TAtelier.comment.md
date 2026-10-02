@@ -1,4 +1,5 @@
 # TAtelier.cs
+Hash: `efe8ff515882dd10`
 
 ## `public sealed class TAtelier`
 
@@ -21,8 +22,9 @@ The folder question starts from the folder in use, and its answer is moved onto.
 A declined folder question moves nothing, and a failing one is shown as `Workspace.OpenFailed`.
 The status strip is shown the status at once, and a detached strip is shown nothing more.
 The status carries the wording keys the atelier chose from the engine's verdicts, and the amount in their unit.
-A video location answers its address and the hosted film id the engine read, or no film id.
-A missing workspace file and no location answer nothing.
+Opening raises the views before their state, and sweeps a blank leftover draft first.
+Opening twice still lets each ledger change be heard once.
+A held input editor survives a cancelled leave on a blank entry, and a quit discards every area.
 
 ## `private static CEnvoy TAtelierEnvoyCreate(Func<string, string?> folder, List<string> asked)`
 

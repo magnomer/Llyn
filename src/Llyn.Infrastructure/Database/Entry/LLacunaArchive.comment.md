@@ -1,6 +1,7 @@
 # LLacunaArchive.cs
+Hash: `43d1568e30aedcab`
 
-## `public sealed class LLacunaArchive`
+## `public sealed class LLacunaArchive : LLacunaVault`
 
 Reads and writes the lacuna rows one entry carries, one row per paradigm slot the web could not fill.
 

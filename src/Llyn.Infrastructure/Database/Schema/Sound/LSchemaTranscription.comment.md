@@ -1,4 +1,5 @@
 # LSchemaTranscription.cs
+Hash: `48785491e41f1877`
 
 ## `public static class LSchemaTranscription`
 

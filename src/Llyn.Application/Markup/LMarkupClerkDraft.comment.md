@@ -1,4 +1,5 @@
 # LMarkupClerkDraft.cs
+Hash: `baf4a5ab041c5a03`
 
 ## `public sealed class LMarkupClerkDraft`
 

@@ -1,10 +1,13 @@
 # TEditorField.cs
+Hash: `ed48cc7fd0783802`
 
 ## `public sealed class TEditorField`
 
 Covers the editor's typed field gates over an input editor on a real workspace, with no delay.
 A card's title, expression and definition land as typed once the deferred requests are flushed.
-A card's links read back ready, in the card's order, and an unknown card or an empty desk reads nothing.
+A card's links read back in the card's order.
+A card without links reads none.
+An empty desk reads nothing.
 An image's location, a video's location and span, and a gloss's text land as typed.
 A pressed gloss button appends a gloss in the engine's gloss language, after the glosses held.
 A removed gloss leaves, and a picked language retags the gloss that stays.

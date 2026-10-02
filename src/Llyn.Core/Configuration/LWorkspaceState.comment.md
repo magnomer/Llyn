@@ -1,4 +1,5 @@
 # LWorkspaceState.cs
+Hash: `f1376a62e761ae0b`
 
 ## `public sealed record LWorkspaceState(`
 
@@ -14,7 +15,7 @@ Deleting an Entry simply empties whichever duplex side was showing it.
 
 State that names a row of this workspace's database is stored here, beside that database.
 The Entry a duplex side stands on names such a row, and so does the revision.
-State that names only panels is stored in [`LSettings`](LSettings.comment.md) instead.
+State that names only panels is stored in [`LPostureState`](LPostureState.comment.md) instead.
 That is the open tab, its split, each ordering and each hidden language.
 No query reads it back, so the database has no use for it.
 

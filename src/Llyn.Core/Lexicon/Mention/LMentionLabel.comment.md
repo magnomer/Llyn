@@ -1,4 +1,5 @@
 # LMentionLabel.cs
+Hash: `3b945f646dfa9f9b`
 
 ## `public sealed record LMentionLabel(`
 

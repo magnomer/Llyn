@@ -1,4 +1,5 @@
 # CDisplay.cs
+Hash: `a789e7a9731843e4`
 
 ## `public sealed class CDisplay`
 
@@ -64,7 +65,8 @@ The subject and bulletin maps are the display's, which reuse `CPanel.CPanelSubje
 
 ## `public void CDisplayPanelAttach(CPanel panel)`
 
-Follows a panel: each draft it loads opens here, and its clearing closes the view.
+Follows a panel.
+Each draft it loads opens here, and its clearing closes the view.
 The view's deportment names the panel, since a view may follow a panel or none.
 
 ## `internal void LDisplayEntryOpen(LEntryDraft? draft)`
@@ -119,7 +121,7 @@ The shown draft the sound half holds, passed unread to the engine.
 ## `public CLecternCard CDisplayCardRead()`
 
 The shown entry's cards, each ready to paint, with whether their sections show.
-The order, the bylines and the link names are three reads, each answering empty when refused.
+The order, the bylines and the link names are three reads, each answering a fallback when refused.
 The page thus still draws, as the sentence frame's read does in the editor.
 The unknown mark is the engine's word, so a frame or a sentence embeds it ready.
 

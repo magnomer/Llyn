@@ -1,8 +1,9 @@
 # LImage.cs
+Hash: `4825abe1204c6769`
 
 ## `public sealed record LImage(`
 
-One Image — independent data owned by nothing.
+One Image, independent data owned by nothing.
 No Entry, Meaning, or Collocation contains an Image.
 Any number of Meanings and Collocations *reference* it instead.
 The order an Image appears in lives on each reference rather than here.

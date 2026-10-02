@@ -1,4 +1,5 @@
 # QDiweiCommand.cs
+Hash: `97c3bc8ee506d7e0`
 
 ## `internal static class QDiweiCommand`
 

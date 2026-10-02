@@ -1,4 +1,5 @@
 # PSentenceGloss.cs
+Hash: `af5ef2cc9209611a`
 
 ## `internal sealed partial class PSentence`
 

@@ -1,8 +1,10 @@
 # LDescent.cs
+Hash: `e79f6eb5541e2a1b`
 
 ## `public sealed record LDescent(`
 
-The tone correspondence of one borrowing language: which rime-book tone classes a contour of that language descends from.
+The tone correspondence of one borrowing language.
+It names which rime-book tone classes a contour of that language descends from.
 Mandarin `55` descends from class 1 and, for a checked syllable, class 7.
 Cantonese `13` descends from 4S or 4, since both fell together there.
 The Classical Chinese pack declares one row per reflex language in `anatomy_tone.json`, beside `anatomy.json`.

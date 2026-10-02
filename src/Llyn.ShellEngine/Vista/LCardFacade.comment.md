@@ -1,4 +1,5 @@
 # LCardFacade.cs
+Hash: `ab5001fe8185cf44`
 
 ## `internal sealed class LCardFacade`
 
@@ -45,7 +46,7 @@ The stored Tags a card's tag field offers for the text it keeps.
 Those the held draft's card already shows are left out.
 The draft is read before the gate is taken, as the tenure guards itself.
 
-## `public IReadOnlyList<LTag> LEngineTagFind(LVista vista)`
+## `public IReadOnlyList<LCatalogTag> LEngineTagFind(LVista vista)`
 
 The tags the taxonomy panel's vista lists, with the query and order read off the vista.
 The vista's filter hides languages from the entries of the chosen tag, not tags, so it is not applied here.
@@ -96,6 +97,11 @@ The translation clerk's stub create under the gate.
 A frequency fill starts for it after the commit, exactly as it does for a saved draft.
 The making is announced as an entry bulletin once the lock is released.
 The library list then shows the stub at once.
+
+## `public IReadOnlyList<LTranslationTarget> LEngineTargetRead(IReadOnlyList<long> ids)`
+
+Stored Entries only, read without any draft's court links.
+So a tentative id reads as nothing here, where the owner overload would name it.
 
 ## `public IReadOnlyList<LTranslationTarget> LEngineEtymonRead(LEntryDraft draft)`
 

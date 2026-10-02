@@ -1,4 +1,5 @@
 # LDraftClerkPanel.cs
+Hash: `50e4dd9f45a7bff0`
 
 ## `public sealed class LDraftClerkPanel`
 

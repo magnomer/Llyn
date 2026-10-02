@@ -1,4 +1,5 @@
 # QVita.cs
+Hash: `6d84b1873a1caa23`
 
 ## `internal sealed class QVita`
 

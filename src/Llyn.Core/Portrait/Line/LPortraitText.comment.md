@@ -1,4 +1,5 @@
 # LPortraitText.cs
+Hash: `daff705434b56781`
 
 ## `public static class LPortraitText`
 
@@ -8,6 +9,7 @@ Every writer takes its text from here, so no two formats disagree about an unkno
 ## `public static string LPortraitTextRead(LStateValue? value, string mark)`
 
 A specified value shows its text, an unknown one shows the mark, and an unset one shows nothing.
+An unreadable value shows its stored text as written.
 This is the display's own rule, kept in logic so an export cannot drift from it.
 
 ## `public static string LPortraitTitleRead(LStateValue value, string vacant, string mark)`

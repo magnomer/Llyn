@@ -1,4 +1,5 @@
 # CNotationReading.cs
+Hash: `b8295d70dfb42aa0`
 
 ## `public sealed record CNotationReading(`
 

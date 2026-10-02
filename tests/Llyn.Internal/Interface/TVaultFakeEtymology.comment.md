@@ -1,4 +1,5 @@
 # TVaultFakeEtymology.cs
+Hash: `db8f128df75fca2c`
 
 ## `internal sealed class TVaultFakeEtymology : LEtymologyVault`
 
@@ -16,8 +17,8 @@ The links held for the entry, empty when none were set.
 
 ## `public LEtymology? LEtymologySave(long entryId, LEtymology? etymology)`
 
-Keeps the narrative, numbering its spans from one, and forgets it when the prose is blank.
+Keeps the narrative, numbering its mentions from one, and forgets it when the prose is blank.
 
 ## `public IReadOnlyList<LEtymon> LEtymologyEtymonSet(long entryId, IReadOnlyList<long> targetIds)`
 
-Keeps the links in the order given, numbering ids and positions as the database would.
+Keeps the links in the order given, each holding only its target.

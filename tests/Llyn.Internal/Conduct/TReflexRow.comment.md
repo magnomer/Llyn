@@ -1,8 +1,9 @@
 # TReflexRow.cs
+Hash: `84e56e72ca1e24f8`
 
 ## `public sealed class TReflexRow`
 
-Covers the reflex row rules both panes share: the label keys, the lead and the hidden row.
+Covers the reflex row rules both panes share, namely the label keys, the lead and the hidden row.
 
 ## `public void ReflexLanguageKey_NamedOrBlank_PrefixesTheReflexKey()`
 

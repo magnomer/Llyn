@@ -1,4 +1,5 @@
 # TAuditStrictWalker.cs
+Hash: `2e3ea7ac8f91bbf3`
 
 ## `internal static class TAuditStrictWalker`
 
@@ -92,7 +93,8 @@ The condition unwrapped from parentheses and negation.
 
 ## `public static bool TAuditPatternCheck(PatternSyntax pattern)`
 
-True for a null constant, its negation, an empty property pattern, or a declaration that only names the value.
+True for a null constant, its negation, an empty property pattern or a type pattern.
+A declaration or `var` pattern that only names the value also passes.
 
 ## `public static bool TAuditNullCheck(ExpressionSyntax expression)`
 

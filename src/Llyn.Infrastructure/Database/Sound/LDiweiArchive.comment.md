@@ -1,6 +1,7 @@
 # LDiweiArchive.cs
+Hash: `264d319e5ce5bf75`
 
-## `public sealed class LDiweiArchive`
+## `public sealed class LDiweiArchive : LDiweiVault`
 
 Derives and reads the 音韻地位 categories of a language from its stored fanqie rows.
 The categories follow the fanqie store and the hypothesis, never the user.
@@ -8,7 +9,8 @@ The entries a category counts follow the anchors the user drew from reflex rows 
 
 ## `private const string LDiweiArchiveTally =`
 
-The count of entries in a category: entries owning a reflex row anchored to a linked fanqie row.
+The count of entries in a category.
+An entry counts when it owns a reflex row anchored to a linked fanqie row.
 An entry with no anchored row is not counted, whatever its headword.
 
 ## `public void LDiweiApply(string language, string character, LHypothesis? hypothesis)`
@@ -63,7 +65,8 @@ A row already holding the same pair is not written, so a rebuild at every open d
 
 ## `private static IEnumerable<(string, string)> LDiweiKeyScan(LFanqieRow row, LHypothesisSound? sound)`
 
-The category keys one fanqie row carries: its initial, its rime keyed with division and 開合, and its tone class.
+A fanqie row carries up to three category keys.
+They are its initial, its rime keyed with division and 開合, and its tone class.
 The tone class comes from the sound the hypothesis derived.
 A row it could not resolve links to no tone.
 An empty part is skipped.

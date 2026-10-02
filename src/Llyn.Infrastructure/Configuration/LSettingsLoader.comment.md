@@ -1,4 +1,5 @@
 # LSettingsLoader.cs
+Hash: `6ea9e7ea2e809b55`
 
 ## `public sealed class LSettingsLoader : LSettingsVault`
 
@@ -9,7 +10,7 @@ It decides only how the settings file within it is read and written.
 A missing or unknown file yields defaults so the program always starts.
 A key it does not know is passed over.
 So a file written before the window posture moved out still loads.
-An unreadable file is copied aside as `settings.broken.json` first, so the next save does not destroy it.
+An unparseable file is copied aside as `settings.broken.json` first, so the next save does not destroy it.
 It is written under a pending name and moved into place, so a crash mid-write leaves the old file whole.
 
 ## `public LSettingsLoader(string root)`
@@ -20,6 +21,12 @@ Binds the loader to the workspace `root` whose `settings.json` it reads and writ
 
 Reports whether the workspace already holds a settings file.
 The engine asks before moving onto a workspace, so one that has its own preferences keeps them.
+
+## `public LSettings LSettingsRead()`
+
+Valid JSON whose root is not an object reads as defaults and is not copied aside.
+So the next save writes over it.
+A file that cannot be opened reads as defaults too, so a locked file never stops the start.
 
 ## `public void LSettingsSave(LSettings settings)`
 

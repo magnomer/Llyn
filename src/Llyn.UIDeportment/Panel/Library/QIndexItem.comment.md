@@ -1,6 +1,7 @@
 # QIndexItem.cs
+Hash: `f2e8778b89af3698`
 
-## `internal sealed class QIndexItem`
+## `internal sealed class QIndexItem : INotifyPropertyChanged`
 
 Presentation item for one entry row in the Library and Duplex entry lists.
 Carries the headword and language the row shows, and the entry id the row loads through.

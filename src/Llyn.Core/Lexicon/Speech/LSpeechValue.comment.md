@@ -1,4 +1,5 @@
 # LSpeechValue.cs
+Hash: `952a748c7cb55732`
 
 ## `public sealed record LSpeechValue(`
 

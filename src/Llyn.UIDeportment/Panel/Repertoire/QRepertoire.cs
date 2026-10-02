@@ -27,7 +27,7 @@ internal sealed partial class QRepertoire : QChronicleHost
         _qRepertoireSurface = surface;
         _qRepertoireEditor = new QEditor(QContract.QContractFind<FrameworkElement>(surface, "PEditor"));
         _qRepertoireDisplay = new QDisplay(QContract.QContractFind<FrameworkElement>(surface, "PDisplay"));
-        QLook.QLookStyleAttach(surface.Resources);
+        QLook.QLookStyleAttach(surface);
         QChronicle.QChronicleIntroduce(surface, this);
 
         surface.CommandBindings.Add(new CommandBinding(

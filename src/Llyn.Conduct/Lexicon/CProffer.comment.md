@@ -1,4 +1,5 @@
 # CProffer.cs
+Hash: `8b6860f7cafb1ed0`
 
 ## `public sealed record CProffer(`
 

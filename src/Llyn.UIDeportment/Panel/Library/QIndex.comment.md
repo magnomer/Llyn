@@ -1,9 +1,10 @@
 # QIndex.cs
+Hash: `00fd6b5e2e1d5fd1`
 
 ## `internal sealed class QIndex`
 
 The entry list of the Library panel and of each duplex wing.
-It holds the rows, the empty notice and the click that reads an entry back.
+It holds the rows and the empty notice.
 The panel hands over the veneer's controls once, and fills and steers them through it from then on.
 It is medium, so it lives beside the views and never in a controller.
 
@@ -15,6 +16,11 @@ Only the index touches it, so no caller reads a control's state.
 ## `private readonly FrameworkElement _qIndexEmpty;`
 
 The notice shown in place of rows when a request found nothing.
+
+## `internal QIndex(ItemsControl view, FrameworkElement empty)`
+
+Sets the held list as the view's source once.
+Every later fill splices that list, so the view's source never changes and its rows keep their containers.
 
 ## `internal bool QIndexShown { get; private set; }`
 

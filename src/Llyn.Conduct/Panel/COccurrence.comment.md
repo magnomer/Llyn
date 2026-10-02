@@ -1,4 +1,5 @@
 # COccurrence.cs
+Hash: `c6b1228b33120891`
 
 ## `public sealed class COccurrence`
 
@@ -60,5 +61,5 @@ Only the repertoire's print gate calls it, which chooses the side that prints.
 
 ## `internal Task LOccurrencePortraitExport(CEnvoy envoy, LSettingsPort settings)`
 
-Exports the chosen entry to `path` in the chosen format.
+Exports the chosen entry under the file name and format the reader picks through `envoy`.
 Only the repertoire's export gate calls it, which checks that an entry is on display.

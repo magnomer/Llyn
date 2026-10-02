@@ -1,4 +1,5 @@
 # CLedgerState.cs
+Hash: `a50b903fdb52a7de`
 
 ## `public sealed record CLedgerState(`
 

@@ -1,4 +1,5 @@
 # LRespellingRule.cs
+Hash: `57925fff177f64f7`
 
 ## `public sealed record LRespellingRule(string LRespellingRulePattern, string LRespellingRuleReplacement)`
 

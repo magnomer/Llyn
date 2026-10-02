@@ -1,4 +1,5 @@
 # CTranscriptionSheet.cs
+Hash: `4117d0055e9f99a9`
 
 ## `public sealed record CTranscriptionSheet(`
 

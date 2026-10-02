@@ -1,4 +1,5 @@
 # LCardClerkField.cs
+Hash: `2dd7273843384a1b`
 
 ## `public static class LCardClerkField`
 
@@ -23,8 +24,8 @@ A card carrying nothing but a Translation is a card, because a link is something
 The form always hands over at least one card of each kind.
 It seeds one of each and refuses to remove a list's last card.
 So this is where an entry with nothing typed stops becoming rows.
-Positions come from the stored sibling count.
-So skipping a card in the middle still leaves 0, 1, 2 over the cards that remain.
+The callers number the cards that remain in order.
+So skipping a card in the middle still leaves 0, 1, 2 over them.
 
 ## `public static IEnumerable<LSentenceDraft> LSentenceRead(IReadOnlyList<LSentenceDraft> drafts)`
 

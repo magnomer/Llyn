@@ -1,4 +1,5 @@
 # TCitationPage.cs
+Hash: `c70a25e1637c2a36`
 
 ## `public sealed class TCitationPage`
 
@@ -7,7 +8,8 @@ Each carries the rows the read areas show, so the engine's page facade has nothi
 
 ## `public void ExamplePageRead_GlossAndSource_CarriesWhatTheExcerptShows()`
 
-The sentence heads the page, the language and tally are its chips, and the gloss and source are its sections.
+The sentence heads the page, the language is its own field, and the tally is its chip.
+The gloss and source are its sections.
 
 ## `public void ExamplePageRead_UnwrittenAndUncited_FallsBackToTheUnwrittenWord()`
 

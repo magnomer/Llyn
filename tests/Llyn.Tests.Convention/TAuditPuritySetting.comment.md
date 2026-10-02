@@ -1,4 +1,5 @@
 # TAuditPuritySetting.cs
+Hash: `a1b273289f1d0f5b`
 
 ## `internal static class TAuditPuritySetting`
 
@@ -25,7 +26,8 @@ The shell engine and Conduct rethrow a captured exception, so only they name `Sy
 
 ## `public static readonly string[] TAuditEavesdroppingMember`
 
-The members a pure ring never touches: the clock, the environment, an id, a random, the console, the disk.
+The members a pure ring never touches.
+They cover the clock, the environment, an id, a random, the console, the disk and a process.
 A member matches when its full name equals a row or sits under it.
 
 ## `public static readonly IReadOnlyDictionary<string, int> TAuditPurityCeiling`
@@ -41,3 +43,4 @@ It stays declared so the next break has a row to fail.
 The `path:name` rows that break the purity today, one per break, each deleted by a later plan.
 A path ending in `/*` exempts a whole folder for one name.
 Every row must still match a hit, so a fixed break deletes its row.
+No row stands today.

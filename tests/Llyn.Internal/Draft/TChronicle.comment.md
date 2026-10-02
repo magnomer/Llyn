@@ -1,4 +1,5 @@
 # TChronicle.cs
+Hash: `47fd8579113e846b`
 
 ## `public sealed class TChronicle`
 

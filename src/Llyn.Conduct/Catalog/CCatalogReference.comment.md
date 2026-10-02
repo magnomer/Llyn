@@ -1,4 +1,5 @@
 # CCatalogReference.cs
+Hash: `6655818475029685`
 
 ## `public sealed record CCatalogReference(`
 

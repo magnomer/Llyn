@@ -1,4 +1,5 @@
 # QGamutItem.cs
+Hash: `1bc14a0eef461532`
 
 ## `internal sealed class QGamutItem`
 

@@ -1,4 +1,5 @@
 # CCardDraft.cs
+Hash: `0dc23bd6c26822d4`
 
 ## `public sealed record CCardDraft(`
 

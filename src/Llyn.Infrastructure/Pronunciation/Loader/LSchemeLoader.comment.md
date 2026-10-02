@@ -1,8 +1,10 @@
 # LSchemeLoader.cs
+Hash: `12783f0161d9cb8f`
 
 ## `internal static class LSchemeLoader`
 
-The transcription side of the pack loader, the `transcription` list.
+The transcription side of the pack loader.
+It reads the `transcription` list.
 The schemes read their sources the way a pronunciation source is read.
 The language loader calls it.
 

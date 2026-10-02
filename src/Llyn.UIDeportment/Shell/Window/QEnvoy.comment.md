@@ -1,4 +1,5 @@
 # QEnvoy.cs
+Hash: `0ffd24c91a4a117d`
 
 ## `internal sealed class QEnvoy : CEnvoy`
 

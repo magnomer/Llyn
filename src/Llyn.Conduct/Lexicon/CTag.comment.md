@@ -1,4 +1,5 @@
 # CTag.cs
+Hash: `2f2ddfeffcfb75c8`
 
 ## `public sealed record CTag(long CTagId, string CTagText)`
 

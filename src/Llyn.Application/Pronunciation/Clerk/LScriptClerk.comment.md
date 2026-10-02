@@ -1,4 +1,5 @@
 # LScriptClerk.cs
+Hash: `73d4856164a53e2a`
 
 ## `public sealed class LScriptClerk`
 

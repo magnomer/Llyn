@@ -1,4 +1,5 @@
 # TMarkupLink.cs
+Hash: `81efe778db52e454`
 
 ## `public sealed class TMarkupLink`
 

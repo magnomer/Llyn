@@ -1,4 +1,5 @@
 # QLectern.cs
+Hash: `fd7a6b5cb1c9ac5c`
 
 ## `public sealed class QLectern`
 

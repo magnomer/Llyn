@@ -1,8 +1,9 @@
 # LVideo.cs
+Hash: `99c10bad4f5c23b8`
 
 ## `public sealed record LVideo(`
 
-One Video — independent data owned by nothing.
+One Video, independent data owned by nothing.
 No Entry, Meaning, or Collocation contains a Video.
 Any number of Meanings and Collocations *reference* it instead.
 The order a Video appears in lives on each reference rather than here.

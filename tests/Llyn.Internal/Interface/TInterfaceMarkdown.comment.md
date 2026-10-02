@@ -1,4 +1,5 @@
 # TInterfaceMarkdown.cs
+Hash: `39eac35086cac686`
 
 ## `internal static class TInterfaceMarkdown`
 

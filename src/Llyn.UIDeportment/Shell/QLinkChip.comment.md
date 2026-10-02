@@ -1,4 +1,5 @@
 # QLinkChip.cs
+Hash: `2d39a5c48955b383`
 
 ## `public sealed class QLinkChip : INotifyPropertyChanged`
 

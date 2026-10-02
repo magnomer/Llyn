@@ -1,4 +1,5 @@
 # LFont.cs
+Hash: `30764e9a14a19e36`
 
 ## `public sealed record LFont(`
 

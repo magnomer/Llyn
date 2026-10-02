@@ -1,4 +1,5 @@
 # LGloss.cs
+Hash: `7589b256dc19f233`
 
 ## `public sealed record LGloss(`
 

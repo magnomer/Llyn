@@ -1,8 +1,10 @@
 # LHypothesis.cs
+Hash: `920118ac81cd5b51`
 
 ## `public sealed record LHypothesis(`
 
-The reconstruction a language pack names under `hypothesis`: how a rime-book placement sounds.
+The reconstruction a language pack names under `hypothesis`.
+It says how a rime-book placement sounds.
 It is the user's own system of initials, finals and tone changes, held as tables in a pack file.
 The engine knows nothing of Middle Chinese, only that an initial and a final are looked up and joined.
 A pack without the file carries `null`, and the fanqie box prints the placement alone.
@@ -14,9 +16,11 @@ A pack without the file carries `null`, and the fanqie box prints the placement 
   A rounded placement first tries the key with `合` appended, such as `寒 一 合` to `wan`.
   A rime ending in a capital letter, the 重紐 mark, is tried as written and then without the letter.
 - `LHypothesisTones` — The class rows of each rime-book tone, keyed by the tone's character.
-  Each row is one [LHypothesisTone](LHypothesisTone.comment.md): an onset pattern, its rewrites and its class label.
+  Each row is one [LHypothesisTone](LHypothesisTone.comment.md).
+  It holds an onset pattern, its rewrites and its class label.
 - `LHypothesisPlaces` — The articulatory places the pack lists under `place`, in its order, empty when it lists none.
-  Each is one [LHypothesisLocus](LHypothesisLocus.comment.md): a name and the initials it gathers.
+  Each is one [LHypothesisLocus](LHypothesisLocus.comment.md).
+  It holds a name and the initials it gathers.
 
 ## `private const string LHypothesisRounded = "合";`
 
@@ -24,7 +28,8 @@ The suffix a rounded final's key carries.
 
 ## `public LHypothesisSound? LHypothesisResolve(LFanqieRow row)`
 
-The sound of one placement: onset and final joined, then the tone's first matching row applied.
+The sound of one placement.
+The onset and final are joined, then the tone's first matching row is applied.
 The row's rewrites run over the joined syllable, and its class becomes the sound's class.
 A tone outside the table, or with no row taking the onset, keeps the joined syllable with a blank class.
 `null` when the initial or the final is not in the tables.
@@ -57,5 +62,5 @@ The rime as written, then the rime without a trailing capital letter when it has
 
 ## `private static string LHypothesisKeyFormat(string rime, string division, bool rounded)`
 
-The finals key: rime, a space and the division, then a space and `合` when rounded.
+The finals key is the rime, a space and the division, then a space and `合` when rounded.
 A placement without a division keys on the rime alone.

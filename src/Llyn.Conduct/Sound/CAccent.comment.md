@@ -1,6 +1,7 @@
 # CAccent.cs
+Hash: `3f7f73ae88ffdb69`
 
-## `public sealed record CAccent(long CAccentId, CVariety CAccentVariety, string CAccentText, string CAccentAudio)`
+## `public sealed record CAccent(long CAccentId, CVariety CAccentVariety, string CAccentText, string CAccentAudio);`
 
 One pronunciation row after the primary, ready to show.
 

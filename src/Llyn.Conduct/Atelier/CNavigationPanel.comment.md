@@ -1,4 +1,5 @@
 # CNavigationPanel.cs
+Hash: `269271317524a145`
 
 ## `internal sealed record CNavigationPanel(`
 

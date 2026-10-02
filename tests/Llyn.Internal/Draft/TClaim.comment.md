@@ -1,16 +1,18 @@
 # TClaim.cs
+Hash: `3717bbbfffe16b67`
 
 ## `public sealed class TClaim`
 
 Covers the claim files, the record on disk of which running program holds which tentative draft.
 An in-memory set answers that for one copy of the program only, and two copies may run on one workspace.
-The tests spawn a real child process.
+Where the holder must be gone, the tests spawn a real child process.
 A claim is only worth anything if the operating system agrees the holder is alive.
 
 ## `public void ClaimArchiveCheck_ProcessRunning_HoldsDraft()`
 
 A claim naming a live process with its true start time reports the draft as held.
-This is the case that must never be swept: it is a window somebody is typing into.
+This is the case that must never be swept.
+It is a window somebody is typing into.
 
 ## `public void ClaimArchiveCheck_ProcessGone_SweepsClaim()`
 

@@ -1,4 +1,5 @@
 # LDatabaseOrder.cs
+Hash: `d02d69fd03dc1028`
 
 ## `public static class LDatabaseOrder`
 
@@ -21,7 +22,7 @@ Every value still travels as a parameter.
 
 The shift that shelves the current positions while the final ones are written.
 
-## `public static IReadOnlyList<string> LDatabaseOrderRead(`
+## `public static IReadOnlyList<long> LDatabaseOrderRead(`
 
 Reads the members of an ordered set in their stored order.
 That is the `id` column of a stable-id table, or the member column of an association table.
@@ -35,7 +36,7 @@ Every row in the scope must appear in the list.
 `memberColumn` is the column that names a member.
 It is `id` for a stable-id table, and the member column for an association table.
 
-## `public static IReadOnlyList<string> LDatabaseOrderInsert(`
+## `public static IReadOnlyList<long> LDatabaseOrderInsert(`
 
 Places `member` at `target` in `identifiers`, clamping the target into the list.
 Returns the resulting order for a normalize call.

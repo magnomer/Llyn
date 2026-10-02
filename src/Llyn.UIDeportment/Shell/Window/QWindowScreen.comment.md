@@ -1,4 +1,5 @@
 # QWindowScreen.cs
+Hash: `eb76a072e3a88c02`
 
 ## `internal sealed class QWindowScreen`
 

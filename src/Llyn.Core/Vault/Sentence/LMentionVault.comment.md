@@ -1,4 +1,5 @@
 # LMentionVault.cs
+Hash: `88bb6bed978dbd37`
 
 ## `public interface LMentionVault`
 
@@ -17,7 +18,7 @@ A span past the end of the stored text is refused, and so is a pair of spans tha
 The refusal names the offending span and throws before any row is touched.
 Existing rows are shelved by shifting their start far up, so the unique (example, start) index never trips.
 A row whose positive id survives is rewritten in place, the rest are inserted, and the shelf is deleted.
-This is the same shape as `LSentenceOwnerSave`.
+This is the same shape as `LSentenceMeaningSave`.
 
 ## `IReadOnlyList<long> LMentionSenseClear(long meaningId);`
 

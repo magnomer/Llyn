@@ -1,4 +1,5 @@
 # CUsage.cs
+Hash: `4618200229fd8db0`
 
 ## `public sealed record CUsage(`
 
@@ -17,7 +18,7 @@ One place that cites what a vita or the lectern shows, as their citation lists r
 
 ## `public string CUsageOwnerKey`
 
-The localization key naming the kind of the citing side: a Collocation, an Example or a Meaning.
+The localization key naming the citing side as a Collocation, an Example or a Meaning.
 Both drivers word the place by it, so neither picks the key.
 
 ## `public string? CUsageTitleKey`

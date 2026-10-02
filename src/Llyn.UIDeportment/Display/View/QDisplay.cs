@@ -173,7 +173,7 @@ internal sealed class QDisplay
     internal void QDisplayIntroduce(QWindow host, QLectern lectern)
     {
         _qDisplayLectern = lectern;
-        QLook.QLookStyleAttach(_qDisplaySurface.Resources);
+        QLook.QLookStyleAttach(_qDisplaySurface);
 
         QDisplaySwath.PSwathAttach(QDisplayContents);
 
@@ -377,7 +377,7 @@ internal sealed class QDisplay
 
         if (QLook.QLookPartFind<Run>(container, "PUsageEpithet") is Run epithet)
         {
-            epithet.Text = "\u2002" + usage.QUsageItemEpithet;
+            epithet.Text = QLook.QLookEpithetRead(usage.QUsageItemEpithet);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PUsageTitle") is TextBlock title)

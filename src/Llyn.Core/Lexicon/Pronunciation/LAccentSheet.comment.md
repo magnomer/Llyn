@@ -1,4 +1,5 @@
 # LAccentSheet.cs
+Hash: `e0f80fe78410f836`
 
 ## `public sealed record LAccentSheet(`
 

@@ -1,4 +1,5 @@
 # QMentionChip.cs
+Hash: `cc27f95b02746bc8`
 
 ## `internal static class QMentionChip`
 

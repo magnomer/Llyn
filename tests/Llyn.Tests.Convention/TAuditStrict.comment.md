@@ -1,8 +1,10 @@
 # TAuditStrict.cs
+Hash: `0f49fd176daedd1d`
 
 ## `public sealed class TAuditStrict`
 
-The surface rules: a surface is what the user sees, and a surface member only calls a function.
+These are the surface rules.
+A surface is what the user sees, and a surface member only calls a function.
 A surface holds no state, never branches or computes, and names only its driver.
 The rules hold the Veneer and UITerminal alike, and Host is held to construction and wiring.
 A surface type holds no member but a constructor, and its markup holds no hook into logic.

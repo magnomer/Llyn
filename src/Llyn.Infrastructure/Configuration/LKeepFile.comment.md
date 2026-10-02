@@ -1,4 +1,5 @@
 # LKeepFile.cs
+Hash: `c6c78aa9341281fa`
 
 ## `public sealed class LKeepFile : LKeep`
 
@@ -12,3 +13,8 @@ That is the same move the settings loader makes, so both files survive a crash t
 A missing file reads as nothing, so the owner falls back to its defaults and starts.
 A file that exists but will not read throws.
 The owner then keeps what it holds and does not write over the file.
+
+## `public void LKeepSave(string name, string text)`
+
+Creates the workspace folder first, so the first save into a fresh workspace succeeds.
+A failed write throws the system's own exception, unlike the settings save, which wraps it in `LVaultFault`.

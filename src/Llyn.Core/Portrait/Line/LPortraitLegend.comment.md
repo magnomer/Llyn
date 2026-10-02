@@ -1,4 +1,5 @@
 # LPortraitLegend.cs
+Hash: `a249935f5a5769be`
 
 ## `public sealed record LPortraitLegend`
 

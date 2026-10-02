@@ -1,4 +1,5 @@
 # QDirectoryItem.cs
+Hash: `832f9a698b828323`
 
 ## `internal sealed class QDirectoryItem`
 

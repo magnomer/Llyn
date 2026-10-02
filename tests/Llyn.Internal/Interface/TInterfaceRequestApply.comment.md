@@ -1,4 +1,5 @@
 # TInterfaceRequestApply.cs
+Hash: `f5faa2e334a822c4`
 
 ## `internal static partial class TInterface`
 
@@ -30,8 +31,6 @@ Sends one form request over a stored entry and commits it, the way the entry for
 The request is built from the draft this opens, since the draft mints its own card ids.
 
 ## `internal static LCardDraft TRequestCardFind(LEntryDraft content, long cardId)`
-
-
 
 The card carrying the id, wherever it nests, for a test that needs the row the engine just minted.
 

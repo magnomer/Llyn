@@ -1,10 +1,16 @@
 # QClipItem.cs
+Hash: `fcd2539c79608e01`
 
 ## `internal sealed class QClipItem`
 
 One source row of the audio menu, painted from the errand's ready `CClipItem`.
 It only turns the row's keys into text and its readings into previewable entries.
 It raises no change, since the menu builds its rows afresh from each clip state.
+
+## `public string QClipItemSource`
+
+The source's name as the pack gives it.
+It is a proper name, so unlike the notice it is shown without a catalog lookup.
 
 ## `public IReadOnlyList<QClipReading> QClipItemReading`
 

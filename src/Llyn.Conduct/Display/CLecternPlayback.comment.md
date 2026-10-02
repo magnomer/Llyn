@@ -1,4 +1,5 @@
 # CLecternPlayback.cs
+Hash: `182378266a721075`
 
 ## `public sealed record CLecternPlayback(bool CLecternPlaybackRecorded, bool CLecternPlaybackAudible);`
 

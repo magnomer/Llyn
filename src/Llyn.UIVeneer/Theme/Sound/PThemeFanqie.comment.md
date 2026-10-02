@@ -1,4 +1,5 @@
 # PThemeFanqie.xaml
+Hash: `9617690fd799a490`
 
 ## `<Style x:Key="Theme.Fanqie.Box" TargetType="Border">`
 
@@ -59,6 +60,11 @@ It is read out of the link so the chip can carry the rime key alone.
 
 The reading column, bold in the interface font, collapsed by a `QLook` row when the line has no reading.
 
+## `<Style x:Key="Theme.Fanqie.Label" TargetType="TextBlock" BasedOn="{StaticResource Theme.Fanqie.Part}">`
+
+The label column after the reading, set in the interface font and the accent rather than the glyph face.
+A `QLook` row collapses it on a line that carries no label.
+
 ## `<Style x:Key="Theme.Fanqie.Medial" TargetType="Border">`
 
 The 開合 column, a bare word on no ground, so it never reads as a link chip.
@@ -95,7 +101,7 @@ The line fill sets its cue to `Marked`, or `Faded` for a marked secondary line, 
 
 ## `<DataTemplate x:Key="Theme.Fanqie.Line">`
 
-One placement across the shared columns: representative, reading, initial, rime, heading, 重紐, 開合, division, tone, 反切.
+One placement across the shared columns: representative, reading, label, initial, rime, heading, 重紐, 開合, division, tone, 反切.
 The initial and the rime are links into the rime table, the rime heading sitting in the next column.
 The columns share their widths across every block of the box, so the parts line up under each other.
 `QFanqieLine.QFanqieLineRefine` fills its named parts.

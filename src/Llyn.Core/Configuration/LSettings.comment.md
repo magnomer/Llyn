@@ -1,9 +1,11 @@
 # LSettings.cs
+Hash: `fa908770890d916c`
 
 ## `public sealed record LSettings(`
 
 The user's persisted engine settings.
-These live as `settings.json` inside the user's workspace folder — never elsewhere — so a workspace carries its own preferences.
+These live as `settings.json` inside the user's workspace folder and nowhere else.
+So a workspace carries its own preferences.
 Every field here is an engine fact: what the engine fetches, shows or transcribes.
 How the window stands is not an engine fact, so it lives in the shell's posture beside this file.
 The workspace folder path itself is not stored here.

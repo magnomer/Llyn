@@ -1,4 +1,5 @@
 # LMarkupCardWriter.cs
+Hash: `c75ea8440b523bed`
 
 ## `internal static class LMarkupCardWriter`
 

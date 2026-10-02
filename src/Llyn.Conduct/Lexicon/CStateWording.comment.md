@@ -1,4 +1,5 @@
 # CStateWording.cs
+Hash: `dfa5e26486b97164`
 
 ## `public sealed record CStateWording(string CStateWordingText, string? CStateWordingKey, bool CStateWordingMuted, string? CStateWordingHint)`
 

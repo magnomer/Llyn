@@ -1,4 +1,5 @@
 # QCardDrag.cs
+Hash: `e295a62707c9e199`
 
 ## `internal sealed class QCardDrag`
 
@@ -103,8 +104,9 @@ Moving it first would show an order the engine may yet refuse.
 
 ### `if (index < current && top < middle)`
 
-Upward: the first card whose middle the ghost's top has risen above.
-Downward: the last card whose middle its bottom has fallen past, so one long drag passes every card it crosses.
+Going up, the target is the first card whose middle the ghost's top has risen above.
+Going down, it is the last card whose middle the bottom has fallen past.
+So one long drag passes every card it crosses.
 
 ### `_qCardDragHost = null;`
 

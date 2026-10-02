@@ -1,4 +1,5 @@
 # LGlossVault.cs
+Hash: `84566b6b656d2469`
 
 ## `public interface LGlossVault`
 

@@ -1,4 +1,5 @@
 # LRegisterRow.cs
+Hash: `2151ecf0889e96df`
 
 ## `public sealed record LRegisterRow(`
 

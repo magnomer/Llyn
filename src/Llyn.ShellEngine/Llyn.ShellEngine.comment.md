@@ -1,4 +1,5 @@
 # Llyn.ShellEngine.csproj
+Hash: `c3102cc7d5899e98`
 
 Builds the shell-facing engine that connects application workflows to the interface.
 

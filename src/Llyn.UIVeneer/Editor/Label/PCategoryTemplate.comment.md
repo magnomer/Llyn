@@ -1,4 +1,5 @@
 # PCategoryTemplate.xaml
+Hash: `2925083bcf2f8563`
 
 The category row of the editor's speech menu, as markup alone.
 The editor's markup merges this dictionary, and the editor's fill subscribes the row's click.

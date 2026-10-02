@@ -1,15 +1,16 @@
 # LExampleArchive.cs
+Hash: `b9bb4d64c0d8097f`
 
-## `public sealed class LExampleArchive`
+## `public sealed class LExampleArchive : LExampleVault`
 
-Persists Examples — the first entity no Entry, Meaning, or Collocation owns.
+Persists Examples, the first entity no Entry, Meaning, or Collocation owns.
 An Example is created once with an opaque id.
 It is then *referenced* by any number of referrers through the association tables.
 Each association carries the position the Example takes for that referrer alone.
 Attaching and detaching therefore only ever write association rows.
 Detaching leaves the Example and its other references untouched.
 `LExampleDelete` refuses to run while any reference remains.
-The translation is text on the Example row itself, rewritten with it and removed with it.
+The Glosses are rows kept by `LGlossArchive`, rewritten with the Example and removed with it.
 The single Source an Example cites is a reference only.
 It is never created, updated, or deleted from here.
 
@@ -37,7 +38,7 @@ Reads the Example identified by `id`, or `null` when no such Example exists.
 ## `public void LExampleUpdate(LExample example)`
 
 Rewrites the Example identified by `example`'s id.
-It rewrites its language, text, translation, Source reference, and Mention list.
+It rewrites its language, text, Source reference, Glosses, and Mention list.
 The Example's own id and every reference pointing at it are untouched.
 So an update never changes where the Example appears or in what order.
 Throws when no Example carries that id.
@@ -49,15 +50,17 @@ A Mention whose span no longer fits the new text is dropped, and the rest are ke
 Shifting a span to follow an edit is the engine's work, not the store's.
 Throws when no Example carries that id.
 
-## `public void LExampleSourceUpdate(long exampleId, string? sourceId)`
+## `public void LExampleSourceUpdate(long exampleId, LStateAnchor source)`
 
-Sets or clears the single Source the Example identified by `exampleId` cites — pass `null` for `sourceId` to clear it.
-Only the reference moves: the Source row itself is never created, changed, or removed here.
+Sets the single Source the Example identified by `exampleId` cites, or records that it has none.
+Only the reference moves.
+The Source row itself is never created, changed, or removed here.
 Throws when no Example carries that id.
 
 ## `public int LExampleReferenceRead(long id)`
 
-Counts the references that still point at the Example identified by `id` — the number `LExampleDelete` refuses a delete over.
+Counts the references that still point at the Example identified by `id`.
+This is the number `LExampleDelete` refuses a delete over.
 A caller that has just detached one reference reads this.
 It learns whether the row it detached from was the last one.
 No store of its own has to know which association tables exist.
@@ -85,9 +88,9 @@ Nothing can attach the row between them.
 Every stored Example, in insertion order.
 One statement answers for the whole table, rather than one per Example.
 
-## `public IReadOnlyDictionary<string, int> LExampleReferenceRead()`
+## `public IReadOnlyDictionary<long, int> LExampleReferenceRead()`
 
-How many rows reference each Example, counted across the three association tables at once.
+How many rows reference each Example, counted across the two association tables at once.
 The browsing panel needs the figure for every row it lists, so one statement answers for all of them.
 
 ## `public IReadOnlyList<LUsage> LExampleUsageRead(long id)`

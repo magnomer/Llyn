@@ -1,10 +1,12 @@
 # TSettings.cs
+Hash: `95636eecf95d5576`
 
 ## `public sealed class TSettings`
 
 Covers the settings file the engine keeps: the interface language and the switches beside it.
-Each is pushed as a field of its own, so whichever is written second must leave the first standing.
-The same must hold once the workspace is opened again, since the file is what carries them.
+The epithet switch round-trips under the `epithet` key and is written even when off.
+The tally switch loads as off unless the key is an explicit true, and the engine's save writes it.
+A language the catalog does not list is kept as saved but reads back as the default.
 A file written before the window posture moved out still loads, its posture keys passed over.
 The respelling switch round-trips through the loader as a JSON boolean.
 A missing key or a non-boolean value loads as off, so an older or hand-edited file never turns it on.

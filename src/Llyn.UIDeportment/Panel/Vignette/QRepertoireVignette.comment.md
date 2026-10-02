@@ -1,4 +1,5 @@
 # QRepertoireVignette.cs
+Hash: `5ec48448d06caee3`
 
 ## `internal sealed partial class QRepertoire`
 
@@ -24,7 +25,6 @@ A never-written title arrives muted, and paints in the muted colour, because the
 ## `private void QVignetteKindRefine(CStateWording kind)`
 
 Draws the kind in its chip, or hides the chip while no kind was ever written.
-An entry with no speech draws no speech chip, and the kind follows that.
 
 ## `private void QVignetteDescriptionRefine(CSituation situation)`
 

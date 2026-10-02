@@ -1,4 +1,5 @@
 # TEntryClerkSaving.cs
+Hash: `29a931ce1925eb15`
 
 ## `public sealed class TEntryClerkSaving`
 
@@ -12,4 +13,4 @@ The workspace row points at that revision.
 
 ## `public void EntryClerkSave_PronunciationDraft_WritesRowAndRecordsCreate()`
 
-A draft carrying a reading writes its pronunciation row through the fake vault and still records one revision per save.
+Two saves, the first carrying a reading, store distinct entries and record one revision per save.

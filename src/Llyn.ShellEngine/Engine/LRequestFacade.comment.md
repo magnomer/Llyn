@@ -1,4 +1,5 @@
 # LRequestFacade.cs
+Hash: `bb20f83448ca8d5e`
 
 ## `internal sealed class LRequestFacade`
 
@@ -6,7 +7,7 @@ The engine's facade for requests against held drafts.
 A form sends one edit at a time as an `LRequest`, and the engine applies it, saves, and announces.
 The form never assembles an `LEntryDraft` from its controls, so the engine's file is the only truth.
 The applying itself is `LDraftClerk`'s, over the ports of the rig.
-The card order calls, the undo and redo calls and the court calls of a held draft live here too.
+The undo and redo calls and the court calls of a held draft live here too.
 The facade shares the engine gate and uses the engine for draft operations and bulletins.
 
 ## `public LRequestFacade(LEngine engine)`
@@ -60,7 +61,7 @@ Whether a redo would step anywhere.
 
 ## `internal LCourt LEngineCourtSave(long ownerId, long targetId, string headword, string language)`
 
-Writes one court row: a link from a held draft to a target that is not an entry yet.
+Writes one court row, a link from a held draft to a target that is not an entry yet.
 Returns the row so the caller can drop it again by id.
 
 ## `internal LCourt LEngineCourtStart(long ownerId, string origin, string headword, string language)`

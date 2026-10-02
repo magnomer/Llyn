@@ -1,4 +1,5 @@
 # QHeadquarter.cs
+Hash: `2d8e7abf172f7038`
 
 ## `public partial class QWindow`
 

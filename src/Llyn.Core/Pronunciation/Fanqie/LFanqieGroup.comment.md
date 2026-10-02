@@ -1,4 +1,5 @@
 # LFanqieGroup.cs
+Hash: `94e4cc192f546564`
 
 ## `public sealed record LFanqieGroup(`
 

@@ -1,4 +1,5 @@
 # CStateValue.cs
+Hash: `7834e3a4c04a214e`
 
 ## `public sealed record CStateValue(string CStateValueText, bool CStateValueUncertain)`
 

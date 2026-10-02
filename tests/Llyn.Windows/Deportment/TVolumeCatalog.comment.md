@@ -1,4 +1,5 @@
 # TVolumeCatalog.cs
+Hash: `06af9ab5bfd628be`
 
 ## `public sealed class TVolumeCatalog`
 

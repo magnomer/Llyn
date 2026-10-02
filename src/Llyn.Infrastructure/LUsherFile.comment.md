@@ -1,9 +1,10 @@
 # LUsherFile.cs
+Hash: `4c0ba06ff2d16b37`
 
 ## `public sealed class LUsherFile : LUsher`
 
 Answers the `LUsher` port from the file system.
-The engine builds one and hands it to `LEnsign`, so the cache half of the flag reaches no disk itself.
+The host wraps one in `LUsherShell` and hands that to the rig factory.
 Opening a folder or a link lives in the media ring's `LUsherShell`, since a launch is platform work.
 
 ## `public bool LUsherPathExist(string? path)`

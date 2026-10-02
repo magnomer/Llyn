@@ -1,4 +1,5 @@
 # QNavigationTab.cs
+Hash: `9e5af415a32e99f4`
 
 ## `public partial class QWindow`
 

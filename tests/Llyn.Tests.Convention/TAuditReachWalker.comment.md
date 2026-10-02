@@ -1,4 +1,5 @@
 # TAuditReachWalker.cs
+Hash: `7f5a6432187cb26c`
 
 ## `internal static class TAuditReachWalker`
 

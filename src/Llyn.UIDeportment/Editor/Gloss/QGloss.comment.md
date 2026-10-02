@@ -1,4 +1,5 @@
 # QGloss.cs
+Hash: `4ec560ef56146fba`
 
 ## `internal sealed class QGloss`
 

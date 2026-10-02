@@ -1,4 +1,5 @@
 # CLantern.cs
+Hash: `571f5e22e9961578`
 
 ## `public static class CLantern`
 

@@ -1,4 +1,5 @@
 # PThemeCaption.xaml
+Hash: `3e87659ad411aeea`
 
 Styles the window caption buttons.
 Deportment switches their hover and press through `QLook` rows on the named surface.
@@ -9,4 +10,4 @@ Provides the shared dimensions and surface behavior for caption buttons.
 
 ## `Theme.Caption.Close`
 
-Highlights the close button with the warning color on hover and press.
+Names the close button so `QLook` gives it the warning color on hover and press.

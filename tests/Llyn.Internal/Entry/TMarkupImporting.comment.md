@@ -1,4 +1,5 @@
 # TMarkupImporting.cs
+Hash: `c83cde9093ef5be0`
 
 ## `public sealed class TMarkupImporting`
 
@@ -11,7 +12,7 @@ A refusal anywhere in the file must leave the workspace as it was.
 
 ### `public void MarkupImport_TwoEntriesLinked_StoresBothWithLinks()`
 
-Each entry translates to the other, so both links can only resolve through the prepared bare entries.
+Each entry translates to the other, so both links resolve to rows the same import creates.
 
 ### `public void MarkupImport_TwinTargets_DropsLinkAndReportsOmission()`
 
@@ -25,7 +26,7 @@ The first entry is sound on its own, and only the rollback removes it.
 
 The exported entry is deleted before the file comes back, so the import creates rather than finds it.
 The mentioned entry and the reference stay, so the file's names resolve to the rows that were there.
-The reference count stays at one, which shows the file's reference was matched and not created again.
+The example keeps the original reference id, which shows the file's reference was matched.
 
 ### `private static IReadOnlyList<LMarkupIntake> TMarkupIntakeCreate(int count)`
 

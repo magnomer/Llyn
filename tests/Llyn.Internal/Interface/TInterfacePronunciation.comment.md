@@ -1,4 +1,5 @@
 # TInterfacePronunciation.cs
+Hash: `60c7d19ea190e42a`
 
 ## `internal static partial class TInterface`
 
@@ -10,18 +11,19 @@ The frequency record, its parse and its stored form are relayed here too.
 The tone contour parse, the engine's tonal check and its language list are relayed here too.
 The reading hypothesis, its resolve and the fanqie row it reads are relayed here too.
 The diwei section scan is relayed over one fixed row and two tally lines.
-Only the shown set and the localizer vary.
+Only the respelling switch and the localizer vary.
 Each relay is transparent and carries no test logic of its own.
 
 ## `internal static LSource TSourceGenericCreate(LSourceSpec spec, HttpClient client)`
 
 Returns the source as its interface, so a test never names the infrastructure type.
 
-## `internal static LSeeker TLookupCreate(IReadOnlyList<LSource> sources, IReadOnlyList<LVariety>? varieties = null)`
+## `internal static LSeeker TLookupCreate(IReadOnlyList<LSource> sources, IReadOnlyList<LVariety>? varieties = null, IReadOnlyList<LRespelling>? cleanups = null, bool literal = false)`
 
 Returns the lookup as its interface for the same reason.
 The varieties default to none, so a test without a pack behaves like a language without varieties.
 The cleanups default to none too, so a test without a pack sees only the built-in normalization.
+The literal flag defaults to false.
 
 ## `internal static LReceiver TReceiverRespellingCreate(LReceiver inner, IReadOnlyList<LRespelling> groups)`
 
@@ -70,7 +72,7 @@ Relays `LDescent.LDescentScan`.
 
 Relays `LDescent.LDescentMatch`.
 
-## `internal static LHypothesis THypothesisCreate(IReadOnlyDictionary<string, string> initials, IReadOnlyDictionary<string, string> finals, IReadOnlyDictionary<string, IReadOnlyList<LRespellingRule>> tones)`
+## `internal static LHypothesis THypothesisCreate(IReadOnlyDictionary<string, string> initials, IReadOnlyDictionary<string, string> finals, IReadOnlyDictionary<string, IReadOnlyList<LHypothesisTone>> tones, IReadOnlyList<LHypothesisLocus>? places = null)`
 
 Builds the hypothesis tables directly, so a test needs no language pack to check the join.
 

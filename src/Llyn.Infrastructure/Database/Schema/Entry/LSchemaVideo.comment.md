@@ -1,4 +1,5 @@
 # LSchemaVideo.cs
+Hash: `2efb072b3d190c61`
 
 ## `public static class LSchemaVideo`
 

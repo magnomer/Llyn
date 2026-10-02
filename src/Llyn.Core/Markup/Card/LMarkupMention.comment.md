@@ -1,4 +1,5 @@
 # LMarkupMention.cs
+Hash: `2e7b97e5ba67f17e`
 
 ## `public sealed record LMarkupMention(`
 

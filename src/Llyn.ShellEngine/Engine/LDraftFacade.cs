@@ -203,6 +203,7 @@ internal sealed class LDraftFacade
     {
         lock (_lDraftFacadeGate)
         {
+            _lDraftFacadeEngine.LEngineRevision++;
             LDraftFacadeStaff.LEngineStaffClaim.LClaimClerkSweep();
 
             foreach (LDraft draft in LDraftFacadeStaff.LEngineStaffClaim.LDraftScan())

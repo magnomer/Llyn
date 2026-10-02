@@ -1,4 +1,5 @@
 # LRequestImage.cs
+Hash: `2e60398607e76ed3`
 
 The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The image requests, shaped like the situation requests.
@@ -21,6 +22,6 @@ Unlinks one image from the card.
 
 Moves one image row to `LRequestPosition` inside its card.
 
-## `public sealed record LRequestImageLocation(long LRequestDraftId, long LRequestImageId, LStateValue LRequestValue)`
+## `public sealed record LRequestImageLocation(long LRequestDraftId, long LRequestImageId, LStateWritten LRequestValue)`
 
 Replaces the location of the image, wherever the draft holds it.

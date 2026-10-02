@@ -1,4 +1,5 @@
 # CImprint.cs
+Hash: `80d2a1670ec995d6`
 
 ## `public sealed class CImprint`
 

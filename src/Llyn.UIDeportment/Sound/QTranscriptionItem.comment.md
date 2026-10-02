@@ -1,4 +1,5 @@
 # QTranscriptionItem.cs
+Hash: `2df6c3ee6ca2c1c9`
 
 ## `public sealed class QTranscriptionItem : INotifyPropertyChanged`
 
@@ -40,8 +41,8 @@ Each kept choice takes the taken mark of the scheme at its place, since both fol
 
 ## `internal static void QTranscriptionItemRefine(FrameworkElement container, object item, string? _)`
 
-Fills the parts both views share: the scheme name, the text and the unseen measure twin.
-The editor's field and scheme dropdown are filled by `PEditor.PTranscriptionRefine`, which calls this first.
+Fills the parts both views share, which are the scheme name, the text and the unseen measure twin.
+The editor's own refine in `QTranscription` calls this first, then fills its field and scheme dropdown.
 
 ## `private static void QTranscriptionMeasureRefine(TextBlock measure, string text)`
 

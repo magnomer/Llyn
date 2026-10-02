@@ -1,4 +1,5 @@
 # LSchemaImage.cs
+Hash: `fc247d892e283225`
 
 ## `public static class LSchemaImage`
 

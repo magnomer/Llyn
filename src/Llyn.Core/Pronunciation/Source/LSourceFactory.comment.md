@@ -1,4 +1,5 @@
 # LSourceFactory.cs
+Hash: `addbe5c215fc30e4`
 
 ## `public interface LSourceFactory`
 

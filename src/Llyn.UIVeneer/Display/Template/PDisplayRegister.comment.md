@@ -1,4 +1,5 @@
 # PDisplayRegister.xaml
+Hash: `d128fa6b868d9cb7`
 
 ## `ResourceDictionary`
 

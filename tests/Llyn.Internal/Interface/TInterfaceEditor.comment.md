@@ -1,4 +1,5 @@
 # TInterfaceEditor.cs
+Hash: `d1bf4d925a91b1e2`
 
 ## `internal static class TInterfaceEditor`
 

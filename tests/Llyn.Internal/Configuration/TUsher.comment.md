@@ -1,4 +1,5 @@
 # TUsher.cs
+Hash: `2bb1b70a37a362bc`
 
 ## `public sealed class TUsher`
 

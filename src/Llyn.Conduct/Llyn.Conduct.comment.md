@@ -1,4 +1,5 @@
 # Llyn.Conduct.csproj
+Hash: `fccccd64d471c3ad`
 
 Builds Conduct, which holds every behaviour of the application behind the screen.
 

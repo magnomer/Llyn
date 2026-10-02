@@ -1,4 +1,5 @@
 # ko.json
+Hash: `98447cb28f4eb46b`
 
 The Korean interface catalog, with the same shape and rules as `en.json`.
 

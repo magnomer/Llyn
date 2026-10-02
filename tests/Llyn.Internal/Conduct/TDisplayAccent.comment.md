@@ -1,4 +1,5 @@
 # TDisplayAccent.cs
+Hash: `6a6438c3f6c27907`
 
 ## `public sealed class TDisplayAccent`
 

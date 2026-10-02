@@ -1,4 +1,5 @@
 # PThemePalette.xaml
+Hash: `be59d4de986fccd8`
 
 Defines shared color brushes and font families used by the interface theme.
 

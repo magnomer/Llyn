@@ -1,8 +1,10 @@
 # LWorkspaceRoot.cs
+Hash: `d5d006ed2b119ddf`
 
 ## `public static class LWorkspaceRoot`
 
-Resolves and persists the user's workspace folder — the single location that owns the user's settings and database.
+Resolves and persists the user's workspace folder.
+It is the single location that owns the user's settings and database.
 The chosen folder path is the one piece of state that cannot itself live in the workspace.
 It is what tells the program where the workspace is.
 So it is kept in a small pointer file under the user's application-data folder.
@@ -12,7 +14,6 @@ Everything else the program persists goes inside the resolved workspace, never b
 
 Returns the current workspace folder, creating it if needed.
 When no folder has been chosen yet, a default under the user profile is used.
-It is recorded so later runs are stable.
 
 ## `public static void LWorkspaceRootChange(string path)`
 

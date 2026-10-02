@@ -1,4 +1,5 @@
 # LShengfuClerk.cs
+Hash: `ef3f1a099a816629`
 
 ## `public sealed class LShengfuClerk`
 

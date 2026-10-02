@@ -1,8 +1,10 @@
 # PTenor.xaml
+Hash: `0b59d797692b32a2`
 
 ## `<Grid Margin="34,20,34,38">`
 
-Three columns, narrow to wide: the register catalog, the Entries marked with the chosen Register, then the reader.
+Three columns run from narrow to wide.
+They hold the register catalog, the Entries marked with the chosen Register, then the reader.
 The taxonomy panel asks for an Entry by a label somebody put on one of its cards.
 This panel asks for it by how formal the wording on that card is.
 So the catalog here is a Register, and the entry list beside it is what carries that Register.

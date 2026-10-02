@@ -1,8 +1,9 @@
 # TAuditPurity.cs
+Hash: `9acbad32aaa34359`
 
 ## `public sealed class TAuditPurity`
 
-Keeps every pure ring inside its frame: what a ring may name outside the project.
+Keeps every pure ring inside its frame, which limits what a ring may name outside the project.
 A pure ring names only the framework namespaces the frame lists and touches no eavesdropping member.
 The clock, the environment, the disk and the console arrive through a port or not at all.
 The same purity is audited by `auditstructure.ps1` from its own configuration, and neither reads the other.

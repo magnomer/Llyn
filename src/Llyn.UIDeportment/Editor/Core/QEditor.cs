@@ -28,7 +28,7 @@ internal sealed class QEditor : QChronicleHost
         ArgumentNullException.ThrowIfNull(surface);
 
         _qEditorSurface = surface;
-        QLook.QLookStyleAttach(surface.Resources);
+        QLook.QLookStyleAttach(surface);
         QChronicle.QChronicleIntroduce(surface, this);
         _qEditorCard = new QEditorCard(surface);
         _qMarker = new QMarker(surface);

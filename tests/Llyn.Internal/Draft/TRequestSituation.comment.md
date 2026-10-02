@@ -1,4 +1,5 @@
 # TRequestSituation.cs
+Hash: `a5ec292348812d73`
 
 ## `public sealed class TRequestSituation`
 
@@ -19,5 +20,6 @@ A removal naming a row the Situation does not hold is refused as an item, exactl
 
 ## `public void RequestApply_ImageAdditionOnEntryDraft_StillRoutesToTheCard()`
 
-An Entry draft is untouched by the Situation branch: its picture lands on the card named.
+An Entry draft is untouched by the Situation branch.
+Its picture lands on the card named.
 A card id of 0 on an Entry draft is still refused as a card, so the drafts stay apart.

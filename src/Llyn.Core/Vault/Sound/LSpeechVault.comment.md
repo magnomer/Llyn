@@ -1,4 +1,5 @@
 # LSpeechVault.cs
+Hash: `eb4c4d0120ad8509`
 
 ## `public interface LSpeechVault`
 

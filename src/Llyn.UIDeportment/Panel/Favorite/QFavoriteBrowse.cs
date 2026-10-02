@@ -124,7 +124,7 @@ internal sealed partial class QFavorite
 
         if (QLook.QLookPartFind<Run>(container, "PRosterEpithet") is Run epithet)
         {
-            epithet.Text = " " + roster.QRosterItemEpithet;
+            epithet.Text = QLook.QLookEpithetRead(roster.QRosterItemEpithet);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PRosterLanguage") is TextBlock language)

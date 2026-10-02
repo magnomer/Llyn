@@ -1,4 +1,5 @@
 # QEditorSound.cs
+Hash: `e4c220f081eb2950`
 
 ## `internal sealed class QEditorSound`
 
@@ -37,6 +38,12 @@ Releases the editor's recording player, the Veneer half of a close.
 ## `internal void QEditorReadingRefine()`
 
 The reading line follows the headword the field holds.
+
+## `internal void QEditorPronunciationRefine(CEntryDraft _)`
+
+Writes the primary reading as the editor reads it, respelled when the pack respells.
+The draft is ignored, since only the editor knows the respelling.
+The guarded write leaves the caret of a box being typed into alone.
 
 ## `internal void QEditorTimbreRefine(CEntryDraft _)`
 

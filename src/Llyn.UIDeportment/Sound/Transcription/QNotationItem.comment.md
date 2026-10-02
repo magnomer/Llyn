@@ -1,4 +1,5 @@
 # QNotationItem.cs
+Hash: `8a72ca494c1fb157`
 
 ## `internal sealed class QNotationItem`
 

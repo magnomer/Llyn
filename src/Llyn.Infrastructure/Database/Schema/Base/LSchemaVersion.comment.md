@@ -1,4 +1,5 @@
 # LSchemaVersion.cs
+Hash: `331b3131521e536f`
 
 ## `public static class LSchemaVersion`
 

@@ -1,4 +1,5 @@
 # LFanqieColumn.cs
+Hash: `fe092d15c9a6224c`
 
 ## `internal sealed record LFanqieColumn(`
 

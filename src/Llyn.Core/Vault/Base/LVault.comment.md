@@ -1,4 +1,5 @@
 # LVault.cs
+Hash: `d0de38b0fce48b77`
 
 ## `public interface LVault`
 

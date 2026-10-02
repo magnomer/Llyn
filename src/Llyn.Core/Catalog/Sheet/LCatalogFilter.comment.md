@@ -1,4 +1,5 @@
 # LCatalogFilter.cs
+Hash: `2a78cb399c5b8aea`
 
 ## `public sealed record LCatalogFilter(IReadOnlyList<string> LCatalogFilterHidden)`
 

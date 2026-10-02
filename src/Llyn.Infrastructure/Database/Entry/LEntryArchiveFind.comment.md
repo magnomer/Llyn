@@ -1,24 +1,24 @@
 # LEntryArchiveFind.cs
+Hash: `41bbfca1a9cb55c5`
 
 ## `public sealed partial class LEntryArchive`
 
-The finding side of the Entry store: every reader that answers a query with a list of Entries.
+The finding side of the Entry store.
+It holds every reader that answers a query with a list of Entries.
 A headword match, a text scan, and the owner finds over Tag, Register, Situation, Example and Reference live here.
 Each list comes back ordered by headword so a panel can show it as read.
 
 ## `public IReadOnlyList<LEntry> LEntryFind(string query)`
 
-Returns the entries whose headword contains `query`, ordered by headword.
+Returns the entries whose headword matches `query`, ordered by headword.
 It returns every entry when `query` is empty or holds nothing but whitespace.
-Matching is a case-insensitive contains and nothing more.
+Matching is `lmatch()`, the catalog text match registered on every connection (`LDatabase.LDatabaseConnectionRead`).
+It is a case-insensitive contains, and `*` and `?` in the query act as wildcards.
 Anything cleverer waits for a stated requirement rather than being guessed at here.
 Prefix weighting, forms and accent folding are such things.
 
-Case is folded over the whole of Unicode, not just ASCII.
-`Ä` finds `ä`, and Turkish, Greek or Cyrillic headwords match in either case.
-That is what `lfold()` is for.
-It is the invariant .NET fold registered on every connection (`LDatabase.LDatabaseConnectionRead`).
-It stands in for SQLite's `lower()`, which folds ASCII only.
+Case is folded with the invariant .NET lowercase, not SQLite's `lower()`, which folds ASCII only.
+`Ä` finds `ä`, and Greek or Cyrillic headwords match in either case.
 Scripts without case (Korean, Japanese, Chinese) are unaffected either way.
 
 The query is trimmed before it is matched.
@@ -28,6 +28,7 @@ A query of spaces alone lists everything, exactly as an empty box does.
 ## `public IReadOnlyList<LEntry> LEntryHeadwordFind(string language, string headword)`
 
 Every Entry whose language and headword equal the given ones, letter case folded, in headword order.
+The fold is `lfold()`, the invariant lowercase registered beside `lmatch()`.
 This is the candidate list for a clicked word, and zero rows is a legitimate answer.
 
 ## `public IReadOnlyList<LEntry> LEntryHeadwordScan(string language, string text)`

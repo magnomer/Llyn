@@ -1,4 +1,5 @@
 # TSchemaMigration.cs
+Hash: `ffdf9f59b7b92ac4`
 
 ## `public sealed class TSchemaMigration`
 
@@ -55,7 +56,7 @@ Opening a workspace again never re-seeds the Unknown Reference, so deleting it h
 
 ## Inline notes
 
-### `Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_ref"));`
+### `Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_parent"));`
 
 A child column with no index turns each parent delete into a full scan of the child table.
 So the index set is part of the schema rather than an optimization applied later.

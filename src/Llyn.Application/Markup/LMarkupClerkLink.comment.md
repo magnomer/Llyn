@@ -1,4 +1,5 @@
 # LMarkupClerkLink.cs
+Hash: `a3002ed47745277d`
 
 ## `public sealed class LMarkupClerkLink`
 
@@ -7,7 +8,7 @@ The draft resolver and the intake both lean on it.
 
 ## `public LMarkupClerkLink(LRig rig, LReferenceClerk references, LAuthorClerk authors, LTrailClerk trail)`
 
-Reads the entry and meaning ports out of `rig` and keeps the clerks a reference is created through.
+Reads the entry and meaning ports out of `rig` and keeps the reference, author and trail clerks.
 
 ## `public IReadOnlyList<LEntry> LMarkupEntryFind(string headword, string language)`
 

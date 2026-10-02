@@ -203,7 +203,8 @@
                                     <TextBlock x:Name="PInventoryPronunciation" Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" />
                                     <StackPanel Grid.Column="2" Margin="10,0,0,0" Orientation="Horizontal">
                                         <TextBlock MaxWidth="150" Style="{StaticResource Theme.Catalog.Meta}"><Run x:Name="PInventoryName" /><Run
-                                            x:Name="PInventoryEpithet" /></TextBlock>
+                                            x:Name="PInventoryEpithet"
+                                            Style="{StaticResource Theme.Catalog.Epithet}" /></TextBlock>
                                         <TextBlock Style="{StaticResource Theme.Catalog.Dot}" />
                                         <TextBlock x:Name="PInventoryLanguage" Style="{StaticResource Theme.Catalog.Meta}" />
                                     </StackPanel>

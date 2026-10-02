@@ -1,4 +1,5 @@
 # QConsonant.cs
+Hash: `a98eb57d77b00543`
 
 ## `internal sealed partial class QArticulation`
 

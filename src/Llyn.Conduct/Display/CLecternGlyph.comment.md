@@ -1,4 +1,5 @@
 # CLecternGlyph.cs
+Hash: `00744b0b4ab090a8`
 
 ## `public sealed record CLecternGlyph(`
 

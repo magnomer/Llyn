@@ -1,8 +1,9 @@
 # QXiesheng.cs
+Hash: `e7c953ed60fa2222`
 
 ## `internal sealed class QXiesheng`
 
-The xiesheng panel: the workspace browsed by the phonetic series its characters belong to.
+The xiesheng panel browses the workspace by the phonetic series its characters belong to.
 It is shown only while a loaded language pack declares a series source, since without one there is no series.
 Every decision lives in [CXiesheng](../../../Llyn.Conduct/Panel/CXiesheng.comment.md), and this file writes controls on notice.
 The series column, the entry list, the reader and the editor are served from one file.

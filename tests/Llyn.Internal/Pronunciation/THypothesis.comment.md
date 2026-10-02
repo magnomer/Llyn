@@ -1,4 +1,5 @@
 # THypothesis.cs
+Hash: `bd75364ce142b552`
 
 ## `public sealed class THypothesis`
 
@@ -10,3 +11,5 @@ The level tone unfolds a voiced obstruent, the rising tone appends a glottal sto
 A tone outside the table keeps the joined syllable with a blank class.
 An initial or rime outside the tables, or an empty one, reads `null`.
 A rounded row whose rime has no rounded key falls back to the plain final.
+The onset alone and the place of articulation are read from the same tables.
+A place ranks its initials in pack order across all places, and an unplaced initial ranks -1.

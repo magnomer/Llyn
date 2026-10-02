@@ -1,4 +1,5 @@
 # TInterfaceNavigation.cs
+Hash: `300a8562d489add6`
 
 ## `internal static class TInterfaceNavigation`
 

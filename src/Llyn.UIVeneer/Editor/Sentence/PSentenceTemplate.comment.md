@@ -1,4 +1,5 @@
 # PSentenceTemplate.xaml
+Hash: `03db122236c6034d`
 
 ## `Theme.Sentence.Row`
 
@@ -63,7 +64,8 @@ The fill writes the sign and hides the switch once the frame is written.
 
 ## `PSentenceFrame`
 
-The frame is written where it is read: `(+marker role)` in front of the sentence, in the sentence's own face.
+The frame is written where it is read, as `(+marker role)` in front of the sentence.
+It is in the sentence's own face.
 Fields of its own, sitting above or beside the line, would say the frame is a property of the row.
 It is the opening of the sentence, and the reading view has always drawn it as one.
 The frame stands at the top of the row rather than filling it.

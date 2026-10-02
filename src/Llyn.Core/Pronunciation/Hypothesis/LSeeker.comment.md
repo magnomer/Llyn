@@ -1,4 +1,5 @@
 # LSeeker.cs
+Hash: `2fe65bdc22766bf7`
 
 ## `public interface LSeeker`
 

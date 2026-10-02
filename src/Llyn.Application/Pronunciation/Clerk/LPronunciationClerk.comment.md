@@ -1,4 +1,5 @@
 # LPronunciationClerk.cs
+Hash: `b34bea6a41f9529e`
 
 ## `public sealed class LPronunciationClerk`
 

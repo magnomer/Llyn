@@ -1,4 +1,5 @@
 # TPronunciationHelper.cs
+Hash: `5adbea2c6e5e2ab4`
 
 ## `internal static class TPronunciationHelper`
 

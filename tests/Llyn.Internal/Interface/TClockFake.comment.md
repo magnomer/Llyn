@@ -1,4 +1,5 @@
 # TClockFake.cs
+Hash: `9521b11efc1a8408`
 
 ## `internal sealed class TClockFake : LClock`
 

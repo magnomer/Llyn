@@ -1,4 +1,5 @@
 # TVaultFakePronunciation.cs
+Hash: `23fc443861d386b7`
 
 ## `internal sealed class TVaultFakePronunciation : LPronunciationVault`
 

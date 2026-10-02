@@ -1,4 +1,5 @@
 # LTranslation.cs
+Hash: `d6e1755ff6d48650`
 
 ## `public sealed record LTranslation(`
 

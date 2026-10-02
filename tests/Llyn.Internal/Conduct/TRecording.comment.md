@@ -1,4 +1,5 @@
 # TRecording.cs
+Hash: `334b415330962833`
 
 ## `public sealed class TRecording`
 

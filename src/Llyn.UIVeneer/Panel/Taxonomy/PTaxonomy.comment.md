@@ -1,4 +1,5 @@
 # PTaxonomy.xaml
+Hash: `b708a8f765f7359d`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -7,11 +8,13 @@ The row seam runs under the ordering bar and the command row.
 It is bled past the panel margin so it meets the navigation's own edge.
 There are two column seams here rather than one, because this panel reads across three columns and not two.
 The column seam sits in the middle of the gutter and reaches the foot of the window.
-Neither seam encloses anything, which is the whole rule: a line marks a division, a box would claim an object.
+Neither seam encloses anything.
+That is the whole rule, since a line marks a division and a box would claim an object.
 
 ## `<Grid Margin="34,20,34,38">`
 
-Three columns, narrow to wide: the tag catalog, the entries under the chosen tag, then the reader.
+Three columns run from narrow to wide.
+They hold the tag catalog, the entries under the chosen tag, then the reader.
 The library panel asks for an entry by its headword.
 This panel asks for it by a label somebody put on one of its cards.
 So the catalog here is a tag, and the entry list beside it is what that tag holds.

@@ -1,4 +1,5 @@
 # PThemeDiwei.xaml
+Hash: `3bc509521e75d83f`
 
 ## `<Style x:Key="Theme.Diwei.Empty" TargetType="TextBlock">`
 
@@ -70,12 +71,12 @@ One character as a chip, shared by the plate rows and the mark popups.
 ## `<DataTemplate x:Key="Theme.Diwei.MarkChip">`
 
 One mark: the toggle drawing the part text and its raised count, and the popup it opens listing the characters.
-`PTallyMark.PTallyMarkApply` fills the toggle, opens the popup under it and lists the characters.
+`QTallyMark.QTallyMarkRefine` fills the toggle, opens the popup under it and lists the characters.
 
 ## `<DataTemplate x:Key="Theme.Diwei.TallyLine">`
 
 One tally line across shared columns: the language name, the kind, then its chips wrapping.
-`PTally.PTallyApply` fills its named parts.
+`QTally.QTallyItemRefine` fills its named parts.
 
 ## `<Style x:Key="Theme.Diwei.Tally" TargetType="ItemsControl">`
 
@@ -116,10 +117,10 @@ The word takes the button's ink itself, since the default text style would paint
 ## `<DataTemplate x:Key="Theme.Diwei.Line">`
 
 One row across shared columns: reading, label, 合口 chip, then the characters wrapping.
-`PDiweiLine.PDiweiLineApply` fills its named parts.
+`QDiweiLine.QDiweiLineRefine` fills its named parts.
 
 ## `<DataTemplate x:Key="Theme.Diwei.Section">`
 
 One section: its heading with the switch at its right end, its tally lines and the plate of rows.
 The rows share column widths within the section.
-`PDiweiItem.PDiweiItemApply` fills its named parts and attaches the tally and line fills.
+`QDiweiItem.QDiweiItemRefine` fills its named parts and attaches the tally and line fills.

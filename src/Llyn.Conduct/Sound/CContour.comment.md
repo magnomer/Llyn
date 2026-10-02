@@ -1,4 +1,5 @@
 # CContour.cs
+Hash: `56e1f5c1decca68c`
 
 ## `public sealed record CContour(string CContourText, IReadOnlyList<int> CContourLevels, bool CContourToned)`
 

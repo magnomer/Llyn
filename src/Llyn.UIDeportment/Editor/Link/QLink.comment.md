@@ -1,4 +1,5 @@
 # QLink.cs
+Hash: `b20bde9565d9dd67`
 
 ## `internal sealed class QLink`
 
@@ -27,7 +28,8 @@ Every card the editor builds is heard, whether it was loaded or added by hand.
 
 ## `private void QLinkRefine(PCard card, CProspect prospect)`
 
-Paints a translation gate's answer: the text the entry keeps, then the dropdown open or shut.
+Paints a translation gate's answer.
+That is the text the entry keeps, then the dropdown open or shut.
 The rows, the word and the chosen row come ready, so nothing is decided here.
 
 ## `private void QLinkDropObserve(object sender, RoutedEventArgs e)`
@@ -79,7 +81,8 @@ A chip gets its wording, its close icon and its close observer.
 
 ## `internal void QLinkFieldApply(ItemsControl list, PCard card)`
 
-Readies a card's Translation list once: the chip or entry selector, the item fill and the click on its surface.
+Readies a card's Translation list once.
+It wires the chip or entry selector, the item fill and the click on its surface.
 The selector is set only while none is, since a new selector would rebuild every item.
 The entry is built by `QBerth` beside the chips and painted by the same fill.
 It stands where the card's caret is anchored.

@@ -1,4 +1,5 @@
 # TAuditBorder.cs
+Hash: `08e3733dc78abcaf`
 
 ## `public sealed class TAuditBorder`
 
@@ -23,10 +24,11 @@ The tree hits, the offer hits and the seal hits, bound once and shared by every 
 ## `public void AuditBorder_Rings_NameOneNeighbour()`
 
 No ring names more than one neighbour or itself, and every neighbour named is declared.
+A capsule must be declared, have no neighbour and belong to one ring alone.
 
 ## `public void AuditBorder_Cut_MatchesShellRoots()`
 
-The cut holds exactly the UI rings the driver and surface audits walk.
+The cut holds exactly the shell and capsule rings.
 
 ## `public void AuditBorder_Sources_HoldNoLeapfrogging()`
 
@@ -35,7 +37,7 @@ A method called on a deeper record is behaviour, even though the record is data.
 
 ## `public void AuditBorder_Sources_HoldNoTrespassing()`
 
-No pair holds more `Trespassing` names, from an outer ring, than its ceiling.
+No pair holds more `Trespassing` names, from a ring outside its closure, than its ceiling.
 
 ## `public void AuditBorder_Sources_HoldNoUndercutting()`
 

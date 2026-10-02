@@ -1,4 +1,5 @@
 # LChronicleClerk.cs
+Hash: `7bcb9cac27242b5d`
 
 ## `public sealed class LChronicleClerk`
 
@@ -62,7 +63,7 @@ Whether an undo would step anywhere, so a button can dim before it is pressed.
 
 Whether a redo would step anywhere.
 
-## `private LDraft? LChronicleClerkRestore(long id, Dictionary<long, List<LDraft>> source, Dictionary<long, List<LDraft>> target)`
+## `private LDraft? LChronicleClerkRestore(`
 
 The one step undo and redo share, with the two lists swapped between them.
 The newest snapshot of `source` is written as the held draft.

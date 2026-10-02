@@ -1,4 +1,5 @@
 # CReflexTyped.cs
+Hash: `935837db9afc0585`
 
 ## `public sealed record CReflexTyped(`
 

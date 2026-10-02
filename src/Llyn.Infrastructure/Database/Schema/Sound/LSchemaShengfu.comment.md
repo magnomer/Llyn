@@ -1,4 +1,5 @@
 # LSchemaShengfu.cs
+Hash: `4625f65aa2d80cae`
 
 ## `public static class LSchemaShengfu`
 

@@ -1,4 +1,5 @@
 # CDraft.cs
+Hash: `b3bb4baa7849e72b`
 
 ## `public sealed record CDraft(string CDraftAuthorName);`
 

@@ -1,4 +1,5 @@
 # TVaultFakeReflex.cs
+Hash: `f5c05bb32d9f3a49`
 
 ## `internal sealed class TVaultFakeReflex : LReflexVault`
 

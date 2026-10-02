@@ -1,6 +1,7 @@
 # LFrequencyArchive.cs
+Hash: `77aaabace2baf0bc`
 
-## `public sealed class LFrequencyArchive`
+## `public sealed class LFrequencyArchive : LFrequencyVault`
 
 Reads and writes the frequency rows one entry carries, one row per pack source that answered.
 

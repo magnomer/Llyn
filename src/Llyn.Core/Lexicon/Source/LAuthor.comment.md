@@ -1,8 +1,9 @@
 # LAuthor.cs
+Hash: `d04f32b02160720e`
 
 ## `public sealed record LAuthor(`
 
-One Author — independent data owned by nothing.
+One Author is independent data owned by nothing.
 No Reference contains an Author.
 Any number of References *reference* it instead.
 The order an Author takes lives on each reference rather than here.
@@ -20,6 +21,11 @@ Those are states on the Reference itself (`LReference.LReferenceAuthorState`).
 
 - `LAuthorId` — Opaque, program-generated stable id.
 - `LAuthorName` — The author's name, which is display text and never identity.
+
+## `public bool LAuthorNamed`
+
+Whether the name holds more than whitespace.
+An author draft without one is refused with `LRefusal.LRefusalName`.
 
 ## `public bool LAuthorStored`
 

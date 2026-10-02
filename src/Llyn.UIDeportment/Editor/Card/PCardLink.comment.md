@@ -1,4 +1,5 @@
 # PCardLink.cs
+Hash: `d507591e30abddac`
 
 ## `internal sealed partial class PCard`
 

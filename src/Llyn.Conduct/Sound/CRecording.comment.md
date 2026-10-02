@@ -1,4 +1,5 @@
 # CRecording.cs
+Hash: `035955e38d4b2fe8`
 
 ## `public sealed record CRecording(`
 

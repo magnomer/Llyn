@@ -1,4 +1,5 @@
 # LPortraitReading.cs
+Hash: `7087431c92ea45bb`
 
 ## `public static class LPortraitReading`
 
@@ -44,4 +45,5 @@ The one reading a row shows, trimmed.
 
 ## `private static (string, string) LPortraitMarkRead(bool phonemic, bool bracketed)`
 
-The marks around a reading: slashes when phonemic, square brackets when a bracketed row, else none.
+The marks around a reading are slashes when phonemic.
+A bracketed row takes square brackets otherwise, and any other row takes none.

@@ -61,7 +61,7 @@ internal sealed class QProspect
 
         if (QLook.QLookPartFind<Run>(container, "PProspectEpithet") is Run epithet)
         {
-            epithet.Text = " " + row.PProspectItemEpithet;
+            epithet.Text = QLook.QLookEpithetRead(row.PProspectItemEpithet);
         }
 
         if (QLook.QLookPartFind<Image>(container, "PProspectFlag") is Image flag)

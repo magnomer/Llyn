@@ -1,4 +1,5 @@
 # QVowel.cs
+Hash: `22c5af90a2e64ea3`
 
 ## `internal sealed partial class QArticulation`
 

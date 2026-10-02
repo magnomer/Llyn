@@ -1,4 +1,5 @@
 # TQuotation.cs
+Hash: `efaaee04ee9000fd`
 
 ## `public sealed class TQuotation`
 

@@ -1,4 +1,5 @@
 # PThemeDefault.xaml
+Hash: `f10311a6336a0666`
 
 Applies the default canvas, ink, and font to windows and text blocks.
 

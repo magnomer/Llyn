@@ -1,4 +1,5 @@
 # LDisplay.cs
+Hash: `2c7aed2ea5c09c9f`
 
 ## `public sealed class LDisplay`
 
@@ -8,6 +9,11 @@ The lectern's gates and change events live in its area, [CDisplay](CDisplay.comm
 It forwards the pending checks the editor reads to the sound half.
 Every other member forwards one read or one mark request to the ports, so the view never holds an engine.
 A refused read or mark reaches the user through the envoy the panel handed over.
+
+## `internal LDisplay(`
+
+Builds the sound half and both areas once, so every driver over this display shares them.
+No vista is held yet, so the display stands on no entry until `LDisplayVistaRestore`.
 
 ## `public LDisplaySound LDisplaySound { get; }`
 
@@ -40,6 +46,10 @@ The sound half's failures go to it too, so every driver over this display shows 
 ## `private readonly LSettingsPort _lDisplaySettings;`
 
 The port a failure's ready notice is read through before the envoy shows it.
+
+## `internal long? LDisplayChosen => _lDisplayVista?.LVistaChosen;`
+
+The entry the display vista has chosen, or null before a vista is restored.
 
 ## `public void LDisplayVistaRestore(LVista vista)`
 

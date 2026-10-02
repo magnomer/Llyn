@@ -1,4 +1,5 @@
 # PThemeGloss.xaml
+Hash: `7069508ab866d557`
 
 The look of a Gloss row, shared by the card editor and the corpus panel.
 The input part is merged.
@@ -39,7 +40,8 @@ Its command is a `QLook` row, and the row fill gives the row as its parameter an
 
 ## `<DataTemplate x:Key="Theme.Gloss.Row">`
 
-The inline row under a card's sentence: the flag that opens the picker and the bare text field.
+The inline row under a card's sentence.
+It holds the flag that opens the picker and the bare text field.
 The field is in the muted colour, and the cross follows it.
 The margin under each row keeps two neighbouring frames apart for the same reason.
 The flag toggle is pulled left by its own padding, so the flag starts where the sentence above starts.
@@ -51,10 +53,11 @@ What is typed leaves through the editor's own handler, so the row holds no copy 
 
 ## `<DataTemplate x:Key="Theme.Gloss.Field">`
 
-The boxed row of the corpus edit area: the language toggle with flag and name.
-The boxed text field and the cross follow it.
+The boxed row of the corpus edit area.
+It holds the language toggle with flag and name, then the boxed text field and the cross.
 
 ## `<DataTemplate x:Key="Theme.Gloss.Display">`
 
-The read-only line of the corpus read area: the flag and the text.
+The read-only line of the corpus read area.
+It holds the flag and the text.
 The unknown mark stands in when the text is not known.

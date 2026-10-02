@@ -1,4 +1,5 @@
 # LReflex.cs
+Hash: `feea4782d7bf1916`
 
 ## `public sealed record LReflex(`
 

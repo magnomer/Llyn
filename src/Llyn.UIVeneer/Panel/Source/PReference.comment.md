@@ -1,4 +1,5 @@
 # PReference.xaml
+Hash: `f481a1001b5ed713`
 
 ## `<UserControl.Resources>`
 
@@ -6,19 +7,26 @@ The row and card templates the panel draws with live in `PReferenceShelf.xaml` a
 Only the styles built on another style stay here, because a dictionary standing on its own cannot resolve one.
 The rows wear `Theme.Catalog.Row` directly, and the panel marks the chosen one.
 
+## `<Style x:Key="Theme.Shelf.Meta" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Meta}" />`
+
+The shelf rows reach this key by a dynamic reference, so each panel merging the shelf defines it.
+The authors panel defines the same style, and the two must stay alike.
+
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
 The seams that part the source catalog, the entries citing the chosen source, and the source itself.
 The row seam runs under the ordering bar and the command row.
 It is bled past the panel margin so it meets the navigation's own edge.
-The column seam sits in the middle of the gutter and reaches the foot of the window.
-Neither seam encloses anything, which is the whole rule: a line marks a division, a box would claim an object.
+The two column seams sit in the middle of the gutters and reach the foot of the window.
+Neither seam encloses anything.
+That is the whole rule.
+A line marks a division, and a box would claim an object.
 
 ## `<Border x:Name="PGrade" ... Style="{StaticResource Theme.Search.Bar}">`
 
 The ordering button and the search field are one control over the catalog column.
 The action row over the broader column stands in the same top row, as the corpus panel arranges it.
-The catalog column takes 380, because a row carries a name over an author-and-year line.
+The catalog column takes 380, because a row carries a name beside an author-and-year line.
 The dropdowns, icons and field events are wired by the panel, so every part carries a name.
 
 ## `<Border x:Name="PTrellis" ... Style="{StaticResource Theme.Search.Bar}">`
@@ -77,15 +85,16 @@ It sits in the action row as it does in every built panel.
 
 ## `<ItemsControl x:Name="PFootnote" ...>`
 
-The middle column: every Entry whose cards quote an Example citing the selected Source, one row per Entry.
+The middle column lists every Entry whose cards quote an Example citing the selected Source, one row per Entry.
 Only Entries are listed, so an Example citing the Source is reached through the Entry quoting it.
 While no Source is chosen, every Entry is listed, as the tenor panel lists every Entry under no register.
 The row is drawn by a template the merged dictionary holds, and the panel fills it and takes its click.
 A Situation is not listed, because a Situation is written rather than quoted and cites no Source.
 Choosing a row shows that Entry in `PDisplay`, in place of the Source reading, without leaving the tab.
-The list is read-only, because a citation is set or cleared where it is held.
+The list is read-only.
+A citation is set or cleared where it is held.
 
-## `<local:PImprint x:Name="PImprint" Margin="21,18,0,0" Visibility="Collapsed" />`
+## `<veneer:PImprint x:Name="PImprint" Margin="21,18,0,0" Visibility="Collapsed" />`
 
 The edit area, a control of its own and described in `PImprint.comment.md`.
 It sits over the read area in the same cell and at the same inset.

@@ -1,16 +1,17 @@
 # TAuditTruth.cs
+Hash: `ea48a7d22f06865b`
 
 ## `public sealed class TAuditTruth`
 
-The driver rules: a driver gathers input, calls a Conduct gate and shows the verdict.
+The driver rules say a driver gathers input, calls a Conduct gate and shows the verdict.
 It never builds, checks or decides what a gate owns, and it reaches the engine only through Conduct.
 The rules hold Deportment and Demeanor alike.
 The walk runs once and every fact reads the same hits.
-While `TAuditTruthEnforced` is false every fact passes and reports as a warning.
+While `TAuditTruthEnforced` is false every fact passes and only prints its count.
 Enforced, a kind fails in any file whose count stands above its ledger ceiling.
 The ledger keys each ceiling by file, so each medium's lag is its own.
 A new file starts at zero.
-`TAssayTruth` and its siblings `TAssaySink`, `TAssayRelay`, `TAssayMisfiring` and `TAssayContesting` assay the walker on hand-written sources.
+`TAssayTruth` and its `TAssay` siblings assay the walker on hand-written sources.
 Assays check the walker, not the tree, so they gate no tree result and no ledger ceiling.
 
 ## `private const string TAuditTruthAudit = "AUDITTRUTH";`
@@ -41,7 +42,7 @@ Keeps the runner's output so a passing fact can still print its count.
 
 A driver value that reaches a request, as an argument or as the condition around one.
 A request is a call to a Conduct gate, to the engine or to a driver relay of either.
-Gatekeeping counts every condition: `if`, `?:`, `switch`, loops, `when` clauses, `?.`, `&&`, `||` and `??`.
+Gatekeeping counts every condition: `if`, `?:`, `switch`, loops, `when` clauses, catch filters, `?.`, `&&`, `||` and `??`.
 Gatekeeping through a getter property counts as a read of the field it returns.
 An engine answer or a dialog answer deciding a request is gatekeeping too, since the gate owns that decision.
 

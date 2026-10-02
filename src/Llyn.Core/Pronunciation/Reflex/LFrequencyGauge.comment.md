@@ -1,4 +1,5 @@
 # LFrequencyGauge.cs
+Hash: `2e99bcb669df169e`
 
 ## `public sealed record LFrequencyGauge(int LFrequencyGaugeBand, string LFrequencyGaugeSource)`
 

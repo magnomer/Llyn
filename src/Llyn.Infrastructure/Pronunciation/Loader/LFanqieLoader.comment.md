@@ -1,8 +1,10 @@
 # LFanqieLoader.cs
+Hash: `eaf86e4c2be229a4`
 
 ## `internal static class LFanqieLoader`
 
-The `fanqie` side of the pack loader: the rime books a Han language pack lists.
+The `fanqie` side of the pack loader.
+It reads the rime books a Han language pack lists.
 Each row becomes an [LFanqieBook](../../../Llyn.Core/Pronunciation/Fanqie/LFanqieBook.comment.md), in written order.
 `LLanguageLoader` calls it.
 

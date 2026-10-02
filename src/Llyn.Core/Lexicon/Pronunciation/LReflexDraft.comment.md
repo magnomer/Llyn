@@ -1,4 +1,5 @@
 # LReflexDraft.cs
+Hash: `e793b093b22f50f0`
 
 ## `public sealed record LReflexDraft(`
 
@@ -28,6 +29,11 @@ On commit a row is stored whenever any of its seven texts is filled.
   A view reads it and never cuts a reading itself.
 - `LReflexDraftAnchors` — The ids of the fanqie rows the user tied this reading to, sorted, each once.
   The anchor request toggles one id, and the row is stored with them on commit.
+
+## `public bool LReflexDraftWritten`
+
+Whether the row carries a reading, blanks aside.
+The entry view lists only written rows, while a row still being filled stays in the draft.
 
 ## `public bool LReflexDraftEmpty`
 

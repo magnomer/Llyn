@@ -1,9 +1,11 @@
 # LVocabularyFacade.cs
+Hash: `07edbb38ea8111d1`
 
 ## `internal sealed class LVocabularyFacade`
 
 The engine facade for vocabulary, inflections and paradigms.
-Every call takes the gate and hands the work to the vocabulary, inflection or paradigm clerk.
+Every call hands the work to the vocabulary, inflection or paradigm clerk.
+The vocabulary and paradigm calls take the gate first, and the lacuna clerk holds it for the inflection calls.
 The facade stays because the shell calls the engine, and the engine alone holds the gate and the pending fetch.
 
 ## `public LVocabularyFacade(LEngine engine)`

@@ -1,4 +1,5 @@
 # LVideoDraft.cs
+Hash: `73038fe3640b1b10`
 
 ## `public sealed record LVideoDraft(`
 
@@ -16,6 +17,9 @@ Half-typed text is what a form actually holds, and refusing to carry it would lo
 - `LVideoDraftLocation` — Where the film is read from, a file path or a web address.
 - `LVideoDraftSpan` — The stretch of the film worth watching, written as `mm:ss - mm:ss`.
   An unspecified span is a film watched whole.
+- `LVideoDraftId` — The stored row this draft stands for, zero when the row is new.
+  A card points at a video rather than owning one, and two cards may point at the same film.
+  Carrying the row id beside the location is what lets a citation stay a citation.
 
 ## Inline notes
 
@@ -23,12 +27,6 @@ Half-typed text is what a form actually holds, and refusing to carry it would lo
 
 A row is empty when it names no film.
 A span alone points at nothing, so it never keeps a row alive.
-
-### `public string LVideoDraftId`
-
-The stored row this draft stands for, empty when the row is new.
-A card points at a video rather than owning one, and two cards may point at the same film.
-Carrying the row id beside the location is what lets a citation stay a citation.
 
 ## `public LVideoDraft LVideoDraftNormalize()`
 

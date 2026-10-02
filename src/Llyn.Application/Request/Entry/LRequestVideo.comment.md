@@ -1,4 +1,5 @@
 # LRequestVideo.cs
+Hash: `b406e17e4ce90dfc`
 
 The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The video requests, shaped like the image requests with a second field for the span.
@@ -19,10 +20,10 @@ Unlinks one video from the card.
 
 Moves one video row to `LRequestPosition` inside its card.
 
-## `public sealed record LRequestVideoLocation(long LRequestDraftId, long LRequestVideoId, LStateValue LRequestValue)`
+## `public sealed record LRequestVideoLocation(long LRequestDraftId, long LRequestVideoId, LStateWritten LRequestValue)`
 
 Replaces the location of the video, wherever the draft holds it.
 
-## `public sealed record LRequestVideoSpan(long LRequestDraftId, long LRequestVideoId, LStateValue LRequestValue)`
+## `public sealed record LRequestVideoSpan(long LRequestDraftId, long LRequestVideoId, LStateWritten LRequestValue)`
 
 Replaces the span of the video, wherever the draft holds it.
