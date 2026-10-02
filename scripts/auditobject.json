@@ -1,5 +1,5 @@
 {
-  "generation": 18,
+  "generation": 19,
   "project": "Llyn",
   "enforced": true,
   "helper": {
@@ -44,18 +44,17 @@
     "hub": { "parts": 5 }
   },
   "ceiling": {
-    "hydra": 2,
+    "hydra": 1,
     "kraken": 8,
     "spider": 6,
     "chameleon": 11,
     "octopus": 14,
-    "centipede": 37,
-    "serpent": 8,
+    "centipede": 36,
+    "serpent": 7,
     "hub": 3
   },
   "parts": {
     "Llyn.Infrastructure.LEntryArchive": 2,
-    "Llyn.Infrastructure.LLanguageLoader": 10,
     "Llyn.Infrastructure.LSituationArchive": 3,
     "Llyn.ShellEngine.LTenure": 4,
     "Llyn.UIDeportment.QArticulation": 3,

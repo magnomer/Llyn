@@ -1,6 +1,6 @@
-# TAnatomyTone.cs
+# TDescent.cs
 
-## `public sealed class TAnatomyTone`
+## `public sealed class TDescent`
 
 Covers the tone correspondence rows the Classical Chinese pack declares, over the shipped `anatomy_tone.json`.
 The pack lists rows for Mandarin, Cantonese, Gan, Jin and Xiang, and a pack without the key lists none.

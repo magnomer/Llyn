@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditObjectSetting
 {
-    public const int TAuditGeneration = 18;
+    public const int TAuditGeneration = 19;
     public const bool TAuditObjectEnforced = true;
     public const string TAuditObjectReport = "temp/audit/Object-{0}.md";
 
@@ -47,20 +47,19 @@ internal static class TAuditObjectSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditObjectCeiling = new Dictionary<string, int>
     {
-        ["Hydra"] = 2,
+        ["Hydra"] = 1,
         ["Kraken"] = 8,
         ["Spider"] = 6,
         ["Chameleon"] = 11,
         ["Octopus"] = 14,
-        ["Centipede"] = 37,
-        ["Serpent"] = 8,
+        ["Centipede"] = 36,
+        ["Serpent"] = 7,
         ["Hub"] = 3,
     };
 
     public static readonly IReadOnlyDictionary<string, int> TAuditPartsCeiling = new Dictionary<string, int>
     {
         ["Llyn.Infrastructure.LEntryArchive"] = 2,
-        ["Llyn.Infrastructure.LLanguageLoader"] = 10,
         ["Llyn.Infrastructure.LSituationArchive"] = 3,
         ["Llyn.ShellEngine.LTenure"] = 4,
         ["Llyn.UIDeportment.QArticulation"] = 3,

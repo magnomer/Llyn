@@ -35,7 +35,7 @@ Each colour has one meaning, and nothing else wears it.
 | Dark gray | Frame | The scope line and every section heading's dashed underline. |
 | Green | Pass | The `OK` status word and the `PASS` verdict line. |
 | Red | Fail | The `FAIL` status word and the `FAIL` verdict line. |
-| Yellow | Warning | A warning line, a warning-band section heading, and the paging prompt. |
+| Yellow | Warning | The `WARN` status word, a warning line, a warning-band section heading, and the paging prompt. |
 | Default | Content | Table rows, meanings, counts, paths and `Report:` lines. |
 
 Colour marks a word or line only for its meaning, so a `Result` row colours its status word alone.
@@ -45,12 +45,16 @@ Colour marks a word or line only for its meaning, so a `Result` row colours its 
 Every gate is one row of the `Result` table, so a done run shows every row at 0.
 The table has the columns `Status`, `Count`, `Gate` and `Meaning`.
 `Status` reads `OK` in green when the count is 0 and `FAIL` in red otherwise.
+A warning gate carries a ceiling.
+It reads `WARN` in yellow while its count sits above 0 and at or below the ceiling.
+Above the ceiling it reads `FAIL`.
+A passing verdict with a `WARN` row names each warning gate's section.
 `Gate` is the label of the gate, and a gate that lists findings carries its finding section's label.
 `Meaning` says in a few words what the gate counts.
 A verdict line follows the table after a blank line.
 It reads `PASS: all N gates at 0.` in green, or `FAIL: X of N gates above 0.` in red.
 A failing verdict names each failing gate's finding section after `See`.
-The audit exits 1 when any gate is above 0 and 0 otherwise.
+The audit exits 1 when any gate reads `FAIL` and 0 otherwise.
 A number that gates nothing belongs in the scope line or a group section.
 
 ## Tables

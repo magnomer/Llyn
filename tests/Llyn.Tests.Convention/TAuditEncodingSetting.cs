@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditEncodingSetting
 {
-    public const int TAuditGeneration = 18;
+    public const int TAuditGeneration = 19;
 
     public static readonly string[] TAuditEncodingInclude =
     [

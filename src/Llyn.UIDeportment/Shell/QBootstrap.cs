@@ -11,11 +11,6 @@ public sealed class QBootstrap
 {
     private Func<Exception, string?> _qBootstrapAudit = _ => null;
 
-    public QBootstrap()
-    {
-        QLook.QLookStateAttach();
-    }
-
     public void QBootstrapIntroduce<QBootstrapEngine>(
         Func<Func<string, string>> colorSeam,
         Func<IReadOnlyDictionary<string, string>> catalogSeam,
@@ -31,6 +26,8 @@ public sealed class QBootstrap
         {
             return;
         }
+
+        QLook.QLookStateAttach();
 
         if (QBootstrapBuild(workspaceSeam, buildSeam, busySeam) is QBootstrapEngine engine)
         {

@@ -23,7 +23,7 @@ internal sealed class LReflexFacade
     public IReadOnlyList<LAnchorRow> LEngineAnchorScan(
         IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string language, string reflex, string tone)
     {
-        return LReflexClerk.LReflexAnchorScan(rows, anchors, LEngineToneRead(language), reflex, tone);
+        return LReflexClerk.LReflexAnchorScan(rows, anchors, LEngineDescentRead(language), reflex, tone);
     }
 
     public IReadOnlyList<LAnchorRow> LEngineAnchorScan(
@@ -89,11 +89,11 @@ internal sealed class LReflexFacade
         return LReflexFacadeStaff.LEngineStaffReflex.LReflexClerkCheck(entryId);
     }
 
-    public IReadOnlyList<LAnatomyTone> LEngineToneRead(string language)
+    public IReadOnlyList<LDescent> LEngineDescentRead(string language)
     {
         return string.IsNullOrWhiteSpace(language)
             ? []
-            : _lReflexFacadeEngine.LEngineLanguage.LEngineLanguageLoad(language).LLanguageAnatomyTones;
+            : _lReflexFacadeEngine.LEngineLanguage.LEngineLanguageLoad(language).LLanguageDescents;
     }
 
     private LReflexGuise LEngineGuiseBuild(string reflex, IReadOnlyList<string> folded)

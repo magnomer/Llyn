@@ -1,4 +1,5 @@
 # QBootstrap.cs
+Hash: `8edcdbf59cb3f7b3`
 
 ## `public sealed class QBootstrap`
 
@@ -14,14 +15,12 @@ So nothing here calls `Shutdown` while the program is starting.
 Records a fault and names the log it went to.
 It stays silent until the host attaches the engine's audit, since no fault handler runs before that.
 
-## `public QBootstrap()`
-
-Attaches the visual-state handlers once, before any window loads.
-
 ## `public void QBootstrapIntroduce<QBootstrapEngine>(`
 
 Receives the start the host constructed and runs it step by step.
 It applies the theme, builds the engine, and hands the engine to the rest of the run.
+The visual-state handlers attach after the theme, before any window loads.
+Attaching builds palette brushes, and a brush built before its color never takes it.
 A theme that fails stops before the build, and an engine that fails stops before the rest.
 The host thus only constructs and wires, and the decision to continue lives here.
 

@@ -59,7 +59,7 @@ Clears and fetches the reflexes of an entry again.
 
 Whether a reflex fetch is pending for the entry.
 
-## `public IReadOnlyList<LAnatomyTone> LEngineToneRead(string language)`
+## `public IReadOnlyList<LDescent> LEngineDescentRead(string language)`
 
 The tone classes the pack of a language declares, or none for a blank language.
 

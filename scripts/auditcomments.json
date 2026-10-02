@@ -1,5 +1,5 @@
 {
-  "generation": 18,
+  "generation": 19,
   "project": "Llyn",
   "sources": {
     "roots": [
@@ -86,6 +86,9 @@
     "exemptFiles": [
       "TAuditNameRegistry.cs"
     ]
+  },
+  "ceilings": {
+    "unstamped": 1705
   },
   "report": {
     "directory": "docs-work/audit",

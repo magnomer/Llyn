@@ -62,13 +62,13 @@ Relays `LAnatomy.LAnatomyScan`.
 
 Relays `LAnatomyRule.LAnatomyRuleMatch`.
 
-## `internal static IReadOnlyList<string> TAnatomyToneScan(IReadOnlyList<LAnatomyTone> rules, string language, string tone)`
+## `internal static IReadOnlyList<string> TDescentScan(IReadOnlyList<LDescent> rules, string language, string tone)`
 
-Relays `LAnatomyTone.LAnatomyToneScan`.
+Relays `LDescent.LDescentScan`.
 
-## `internal static bool TAnatomyToneMatch(this LAnatomyTone rule, string language)`
+## `internal static bool TDescentMatch(this LDescent rule, string language)`
 
-Relays `LAnatomyTone.LAnatomyToneMatch`.
+Relays `LDescent.LDescentMatch`.
 
 ## `internal static LHypothesis THypothesisCreate(IReadOnlyDictionary<string, string> initials, IReadOnlyDictionary<string, string> finals, IReadOnlyDictionary<string, IReadOnlyList<LRespellingRule>> tones)`
 

@@ -5,7 +5,7 @@
 The language-pack definition of one source.
 It gives its name and the ordered extraction attempts.
 The list it is declared in decides what it is for, so it carries no kind of its own.
-This is pure data loaded from `languages//source.json`.
+This is pure data loaded from `languages/<Lang>/source.json`.
 The generic source runner turns it into a live `LSource`.
 So no source-specific code is needed for an ordinary source.
 A frequency source also carries its bands and the figures that turn its raw value into a word interval.

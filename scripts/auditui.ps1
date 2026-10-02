@@ -60,7 +60,7 @@ auditui -Open
 auditui -Configuration Release
 #>
 #requires -Version 5.1
-# AUDITUI GENERATION 18 - auditui.ps1.
+# AUDITUI GENERATION 19 - auditui.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -89,6 +89,8 @@ auditui -Configuration Release
 # and a receiver behind ! is still only a receiver.
 # It also sees a field passed by ref, a delegate stored from a parameter, an interface event, a static
 # Conduct value in driver arithmetic, and a surface loaded through a built URI.
+# Generation 19: nothing this audit reports changes; the number rises with the comment audit, whose
+# hash line ties every comment file to the sources it describes.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -191,7 +193,7 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 18
+$script:AuditGeneration = 19
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
 

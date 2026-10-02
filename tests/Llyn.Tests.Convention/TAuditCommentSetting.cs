@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditCommentSetting
 {
-    public const int TAuditGeneration = 18;
+    public const int TAuditGeneration = 19;
     public const int TAuditCommentWords = 20;
     public const string TAuditCommentPattern = "*.comment.md";
 
@@ -86,6 +86,11 @@ internal static class TAuditCommentSetting
         [".props"] = ["<!--"],
         [".csproj"] = ["<!--"],
         [".slnx"] = ["<!--"],
+    };
+
+    public static readonly IReadOnlyDictionary<string, int> TAuditCommentCeiling = new Dictionary<string, int>
+    {
+        ["Unstamped"] = 1705,
     };
 
     public static readonly Dictionary<string, string> TAuditCommentClosers = new(StringComparer.Ordinal)

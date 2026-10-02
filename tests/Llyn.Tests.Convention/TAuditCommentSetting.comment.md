@@ -1,4 +1,5 @@
 # TAuditCommentSetting.cs
+Hash: `318cf6dc490d8fc8`
 
 ## `internal static class TAuditCommentSetting`
 
@@ -27,6 +28,13 @@ Abbreviations whose full stop ends no sentence, matching `rules.abbreviations` i
 ## `public static readonly Dictionary<string, string[]> TAuditCommentMarkers`
 
 The comment markers per source extension, matching `remark.markers` in the script configuration.
+
+## `public static readonly IReadOnlyDictionary<string, int> TAuditCommentCeiling`
+
+The count of comment files with no hash that may stand as a warning, matching `ceilings.unstamped`.
+It stood at the backlog on the day the stamp became a check.
+A count above it fails, and a ceiling above the count is stale and fails too.
+Lower it with each stamp, never raise it to admit a new unstamped file.
 
 ## `public static readonly Dictionary<string, string> TAuditCommentClosers`
 

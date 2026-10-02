@@ -1,21 +1,23 @@
 # LLanguageLoader.cs
 
-## `public sealed partial class LLanguageLoader : LLanguageVault`
+## `public sealed class LLanguageLoader : LLanguageVault`
 
-Loads a language pack from `languages//source.json`.
+Loads a language pack from `languages/<Lang>/source.json`.
 It is resolved against the application's base directory, so packs are drop-in.
 Adding or editing a language needs no recompile.
 A missing or malformed pack yields a language with both source lists empty rather than throwing.
 So one bad pack never breaks the app.
 This is the only place source.json is read.
 The loaded `LLanguage` carries every language-specific fact onward.
-The reading of one declared source, its attempts and its readings, sits in `LLanguageLoaderSource.cs`.
-The reading of the `script` list, one character style per row, sits in `LLanguageLoaderScript.cs`.
-The reading of the `fanqie` list, one rime book per row, sits in `LLanguageLoaderFanqie.cs`.
-The reading of the `shengfu` block, the one phonetic-series source, sits in `LLanguageLoaderShengfu.cs`.
-The reading of the `reflex` list, one fetch rule per borrowing language, sits in `LLanguageLoaderReflex.cs`.
-The reading of the `hypothesis` file, the reconstruction tables, sits in `LLanguageLoaderHypothesis.cs`.
-The reading of the rewrite rules and the transcription schemes sits in `LLanguageLoaderRespelling.cs`.
+The reading of one declared source, its attempts and its readings, sits in `LSourceLoader`.
+The reading of the `fanqie` list sits in `LFanqieLoader`, the `shengfu` block in `LShengfuLoader`, and the `reflex` list in `LReflexLoader`.
+The `script` list sits in `LScriptLoader`, and the `hypothesis` tables in `LHypothesisLoader`.
+The `anatomy` rules sit in `LAnatomyLoader`, and the `tone` rows in `LDescentLoader`.
+The reading of the rewrite rules sits in `LRespellingLoader`, and that of the transcription schemes in `LSchemeLoader`.
+The typography blocks sit in `LFontLoader`, and the `glyph` section in `LGlyphLoader`.
+The shared field readers sit in `LPack`, and side files open through `LPackFile`.
+The posted form and request headers of a fetch read through `LEnvelope`.
+The flag download and its workspace cache sit in `LEnsignLoader`.
 
 ## `private static string? LLanguageEmblemRead(string language, JsonElement root)`
 
@@ -25,19 +27,12 @@ A classical language has no country, so its pack ships its own emblem.
 
 ## `public LLanguageLoader(string root, HttpClient client)`
 
-Binds the loader to the workspace `root` its flag cache lives under and the `client` that fills it.
+Checks the workspace `root` and the `client`, then hands both to the `LEnsignLoader` it builds.
 The packs themselves are read beside the program, not under the root.
 
-## `public async Task<string?> LLanguageFlagRead(string code, CancellationToken cancellation)`
+## `public Task<string?> LLanguageFlagRead(string code, CancellationToken cancellation)`
 
-Returns the local path to the flag image for `code`, an ISO 3166-1 alpha-2 country code.
-It downloads it from the flag-icons set into the workspace's `flags` folder on first use.
-It serves the cached copy thereafter.
-Returns `null` when the download fails, so a missing flag never blocks the UI.
-
-## `private static string LLanguageFlagNormalize(string code)`
-
-The code made safe as one lowercased file name segment, the leaf the flag set names its files by.
+The port's flag read, answered by `LEnsignFileRead` in `LEnsignLoader`.
 
 ## `public IReadOnlyList<string> LLanguageScan()`
 
@@ -67,12 +62,6 @@ Every loader that joins the name onto the `languages/` folder asks here first, s
 
 ## Inline notes
 
-### `private const string LLanguageFlagHost = "https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/4x3/";`
-
-The flag-icons set (github.com/lipis/flag-icons), served over jsDelivr's CDN of the repo.
-The 4x3 SVGs match the flag box's aspect.
-The leaf is the lowercased ISO 3166-1 alpha-2 code.
-
 ### `private static void LLanguageSort(List<string> names)`
 
 English always heads the language list.
@@ -80,17 +69,11 @@ Every other pack follows in ordinal order.
 The order is a rule about the language set, not a detail of one menu.
 So it is settled here, not in the UI.
 
-### `private static LFont LLanguageFontRead(JsonElement root, string key)`
-
-One reader serves both typography blocks the pack declares, `font` for the word and `example` for the sentence.
-The two blocks carry the same shape, so a second reader would only repeat this one.
-A block the pack omits reads as blank, and the theme's own typography stands.
-
-### `string? flag = root.ValueKind == JsonValueKind.Object ? LLanguageTextRead(root, "flag") : null;`
+### `string? flag = root.ValueKind == JsonValueKind.Object ? LPack.LPackTextRead(root, "flag")?.Trim() : null;`
 
 The flag is declared in the pack as an ISO 3166-1 alpha-2 country code.
 The image itself is not shipped.
-The engine downloads and caches it on demand.
+`LEnsignLoader` downloads and caches it on demand.
 Absent code means no flag.
 
 ### `private static IReadOnlyList<LVariety> LLanguageVarietyScan(JsonElement root)`
@@ -104,8 +87,13 @@ A missing block reads as no varieties, and a repeated name keeps its first row.
 The top-level `tonal` key is read as a plain boolean, and only a literal `true` switches the tone contour on.
 The top-level `silent` key is read the same way, and only a literal `true` hides the pronunciation rows.
 The top-level `phonemic` key is read the same way, and only a literal `true` puts a respelled reading between slashes.
-The top-level `anatomy` key is read by `LLanguageAnatomyRead` in `LLanguageLoaderAnatomy.cs`.
-The top-level `tone` key is read by `LLanguageClassRead` in `LLanguageLoaderClass.cs`.
+The top-level `anatomy` key is read by `LAnatomyPackRead` in `LAnatomyLoader`.
+The top-level `tone` key is read by `LDescentPackRead` in `LDescentLoader`.
+
+### `private static bool LLanguageSeparatorRead(JsonElement root)`
+
+The `separator` value, on unless the pack writes `none`.
+A language whose words carry no spaces turns the reading separator off here.
 
 ### `private static bool LLanguageFlaggedCheck(JsonElement root)`
 

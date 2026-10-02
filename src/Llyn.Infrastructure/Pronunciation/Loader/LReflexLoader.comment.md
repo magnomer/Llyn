@@ -1,14 +1,23 @@
-# LLanguageLoaderReflex.cs
+# LReflexLoader.cs
 
-## `public static partial class LLanguageLoader`
+## `internal static class LReflexLoader`
 
 The reflex side of the pack loader: the `reflex` list naming one fetch rule per borrowing language.
+`LLanguageLoader` calls it.
 
-## `private static IReadOnlyList<LReflexRule> LLanguageReflexScan(JsonElement root)`
+## `private const string LReflexKey = "reflex";`
+
+The key of the rule list.
+
+## `private const string LReflexRecast = "recast";`
+
+The key of a rule's romanization rewrite array.
+
+## `public static IReadOnlyList<LReflexRule> LReflexPackScan(JsonElement root)`
 
 Every well-formed rule under `reflex`, in written order, or an empty list when the key is absent.
 
-## `private static LReflexRule? LLanguageReflexRead(JsonElement row)`
+## `private static LReflexRule? LReflexClauseRead(JsonElement row)`
 
 One rule from one object of the list.
 An object lacking a language, an address or a match pattern yields `null`.

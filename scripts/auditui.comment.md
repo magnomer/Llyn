@@ -37,6 +37,7 @@ Generation 18 stops five false truth findings, so every setting carries 18.
 Generation 18 also sees a field passed by `ref` and a delegate stored from a parameter.
 It sees an interface event, a static Conduct value and a surface loaded through a built URI.
 It traces a delegate handed in from any tracked source, such as the composition root.
+Generation 19 adds the comment hash check, so every setting carries 19.
 A `break` in a switch skips only the rest of its own section.
 An `if` without `else` leaves only when its body always reaches a `return`, `throw`, `break` or `continue`.
 Such a jump has only plain blocks between it and the `if`.

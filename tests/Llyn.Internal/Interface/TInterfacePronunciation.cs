@@ -88,20 +88,20 @@ internal static partial class TInterface
     internal static bool TAnatomyRuleMatch(this LAnatomyRule rule, string language) =>
         rule.LAnatomyRuleMatch(language);
 
-    internal static IReadOnlyList<string> TAnatomyToneScan(
-        IReadOnlyList<LAnatomyTone> rules, string language, string tone) =>
-        LAnatomyTone.LAnatomyToneScan(rules, language, tone);
+    internal static IReadOnlyList<string> TDescentScan(
+        IReadOnlyList<LDescent> rules, string language, string tone) =>
+        LDescent.LDescentScan(rules, language, tone);
 
     internal static IReadOnlyList<LAnchorRow> TReflexAnchorScan(
         IReadOnlyList<LFanqieRow> rows,
         IReadOnlyList<long> anchors,
-        IReadOnlyList<LAnatomyTone> tones,
+        IReadOnlyList<LDescent> tones,
         string reflex,
         string tone) =>
         LReflexClerk.LReflexAnchorScan(rows, anchors, tones, reflex, tone);
 
-    internal static bool TAnatomyToneMatch(this LAnatomyTone rule, string language) =>
-        rule.LAnatomyToneMatch(language);
+    internal static bool TDescentMatch(this LDescent rule, string language) =>
+        rule.LDescentMatch(language);
 
     internal static LCandidate TCandidateCreate(
         string source,

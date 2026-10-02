@@ -1,56 +1,38 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public sealed partial class LLanguageLoader : LLanguageVault
+public sealed class LLanguageLoader : LLanguageVault
 {
-    private const string LLanguageLoaderFolder = "languages";
     private const string LLanguageLoaderFile = "source.json";
     private const string LLanguageLoaderPrimary = "English";
     private const string LLanguageLoaderLookup = "pronunciation";
     private const string LLanguageLoaderHarvest = "audio";
-    private const string LLanguageLoaderFont = "font";
-    private const string LLanguageLoaderExample = "example";
-    private const string LLanguageLoaderGloss = "gloss";
-    private const string LLanguageLoaderScheme = "transcription";
-    private const string LLanguageLoaderSources = "sources";
     private const string LLanguageLoaderSeparator = "separator";
     private const string LLanguageLoaderVarieties = "varieties";
-    private const string LLanguageLoaderReadings = "readings";
-    private const string LLanguageLoaderCleanup = "cleanup";
-    private const string LLanguageLoaderRespelling = "respelling";
-    private const string LLanguageLoaderSpelling = "spelling";
-    private const string LLanguageLoaderFollow = "follow";
     private const string LLanguageLoaderFrequency = "frequency";
     private const string LLanguageLoaderMorphology = "morphology";
     private const string LLanguageLoaderTonal = "tonal";
     private const string LLanguageLoaderSilent = "silent";
     private const string LLanguageLoaderPhonemic = "phonemic";
     private const string LLanguageLoaderListed = "listed";
-    private const string LLanguageLoaderGlyph = "glyph";
     private const string LLanguageLoaderEmblem = ".svg";
-    private const string LLanguageLoaderFlags = "flags";
-    private const string LLanguageFlagHost = "https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/4x3/";
 
-    private readonly string _lLanguageLoaderRoot;
-
-    private readonly HttpClient _lLanguageLoaderClient;
+    private readonly LEnsignLoader _lLanguageLoaderEnsign;
 
     public LLanguageLoader(string root, HttpClient client)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentNullException.ThrowIfNull(client);
-        _lLanguageLoaderRoot = root;
-        _lLanguageLoaderClient = client;
+        _lLanguageLoaderEnsign = new LEnsignLoader(root, client);
     }
 
     public IReadOnlyList<string> LLanguageScan()
@@ -68,47 +50,14 @@ public sealed partial class LLanguageLoader : LLanguageVault
         return LLanguageNameValidate(language);
     }
 
-    public async Task<string?> LLanguageFlagRead(string code, CancellationToken cancellation)
+    public Task<string?> LLanguageFlagRead(string code, CancellationToken cancellation)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(code);
-
-        string key = LLanguageFlagNormalize(code);
-        string directory = Path.Combine(_lLanguageLoaderRoot, LLanguageLoaderFlags);
-        Directory.CreateDirectory(directory);
-
-        string path = Path.Combine(directory, key + LLanguageLoaderEmblem);
-        if (File.Exists(path))
-        {
-            return path;
-        }
-
-        try
-        {
-            byte[] svg = await _lLanguageLoaderClient
-                .GetByteArrayAsync(LLanguageFlagHost + key + LLanguageLoaderEmblem, cancellation)
-                .ConfigureAwait(false);
-            await LWorkspaceRoot.LWorkspaceFileSave(path, svg, cancellation).ConfigureAwait(false);
-            return path;
-        }
-        catch (HttpRequestException)
-        {
-            return null;
-        }
-    }
-
-    private static string LLanguageFlagNormalize(string code)
-    {
-        foreach (char invalid in Path.GetInvalidFileNameChars())
-        {
-            code = code.Replace(invalid, '_');
-        }
-
-        return code.Trim().ToLowerInvariant();
+        return _lLanguageLoaderEnsign.LEnsignFileRead(code, cancellation);
     }
 
     public static IReadOnlyList<string> LLanguageLoaderScan()
     {
-        string root = Path.Combine(AppContext.BaseDirectory, LLanguageLoaderFolder);
+        string root = Path.Combine(AppContext.BaseDirectory, LPackFile.LPackFileFolder);
         if (!Directory.Exists(root))
         {
             return Array.Empty<string>();
@@ -176,7 +125,7 @@ public sealed partial class LLanguageLoader : LLanguageVault
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
 
-        string folder = Path.Combine(AppContext.BaseDirectory, LLanguageLoaderFolder, language);
+        string folder = Path.Combine(AppContext.BaseDirectory, LPackFile.LPackFileFolder, language);
         string path = Path.Combine(folder, LLanguageLoaderFile);
         if (!LLanguageNameValidate(language) || !File.Exists(path))
         {
@@ -199,8 +148,8 @@ public sealed partial class LLanguageLoader : LLanguageVault
     {
         return new LLanguage(
             null,
-            LLanguageFontBlank,
-            LLanguageFontBlank,
+            LFontLoader.LFontBlank,
+            LFontLoader.LFontBlank,
             Array.Empty<LSourceSpec>(),
             Array.Empty<LSourceSpec>());
     }
@@ -210,34 +159,34 @@ public sealed partial class LLanguageLoader : LLanguageVault
         string? flag = LLanguageEmblemRead(language, root);
         IReadOnlyList<LVariety> varieties = LLanguageVarietyScan(root);
         bool scoped = varieties.Count > 0;
-        IReadOnlyList<LRespellingRule> spelling = LLanguageSpellingScan(root);
+        IReadOnlyList<LRespellingRule> spelling = LRespellingLoader.LRespellingSpellingScan(root);
 
         return new LLanguage(
             flag,
-            LLanguageFontRead(root, LLanguageLoaderFont),
-            LLanguageFontRead(root, LLanguageLoaderExample),
-            LLanguageSourceScan(root, LLanguageLoaderLookup, spelling),
-            LLanguageSourceScan(root, LLanguageLoaderHarvest, spelling),
-            LLanguageSchemeScan(root, spelling),
+            LFontLoader.LFontPackRead(root, LFontLoader.LFontKey),
+            LFontLoader.LFontPackRead(root, LFontLoader.LFontExample),
+            LSourceLoader.LSourceSpecScan(root, LLanguageLoaderLookup, spelling),
+            LSourceLoader.LSourceSpecScan(root, LLanguageLoaderHarvest, spelling),
+            LSchemeLoader.LSchemePackScan(root, spelling),
             LLanguageSeparatorRead(root),
             varieties,
             LLanguageFlaggedCheck(root),
-            LLanguageFontRead(root, LLanguageLoaderGloss),
-            LLanguageRespellingScan(root, LLanguageLoaderCleanup, scoped),
-            LLanguageRespellingScan(root, LLanguageLoaderRespelling, scoped),
-            LLanguageSourceScan(root, LLanguageLoaderFrequency, spelling),
-            LLanguageSourceScan(root, LLanguageLoaderMorphology, spelling),
-            root.ValueKind == JsonValueKind.Object && LLanguageBooleanRead(root, LLanguageLoaderTonal),
-            LLanguageGlyphRead(root, spelling),
-            LLanguageScriptScan(root),
-            LLanguageFanqieScan(root),
-            LLanguageHypothesisRead(language, root),
-            root.ValueKind == JsonValueKind.Object && LLanguageBooleanRead(root, LLanguageLoaderSilent),
-            LLanguageReflexScan(root),
-            root.ValueKind == JsonValueKind.Object && LLanguageBooleanRead(root, LLanguageLoaderPhonemic),
-            LLanguageAnatomyRead(language, root),
-            LLanguageClassRead(language, root),
-            LLanguageShengfuRead(root));
+            LFontLoader.LFontPackRead(root, LFontLoader.LFontGloss),
+            LRespellingLoader.LRespellingPackScan(root, LRespellingLoader.LRespellingCleanup, scoped),
+            LRespellingLoader.LRespellingPackScan(root, LRespellingLoader.LRespellingKey, scoped),
+            LSourceLoader.LSourceSpecScan(root, LLanguageLoaderFrequency, spelling),
+            LSourceLoader.LSourceSpecScan(root, LLanguageLoaderMorphology, spelling),
+            root.ValueKind == JsonValueKind.Object && LPack.LPackBooleanRead(root, LLanguageLoaderTonal),
+            LGlyphLoader.LGlyphPackRead(root, spelling),
+            LScriptLoader.LScriptPackScan(root),
+            LFanqieLoader.LFanqiePackScan(root),
+            LHypothesisLoader.LHypothesisPackRead(language, root),
+            root.ValueKind == JsonValueKind.Object && LPack.LPackBooleanRead(root, LLanguageLoaderSilent),
+            LReflexLoader.LReflexPackScan(root),
+            root.ValueKind == JsonValueKind.Object && LPack.LPackBooleanRead(root, LLanguageLoaderPhonemic),
+            LAnatomyLoader.LAnatomyPackRead(language, root),
+            LDescentLoader.LDescentPackRead(language, root),
+            LShengfuLoader.LShengfuPackRead(root));
     }
 
     private static bool LLanguageListedRead(JsonElement root)
@@ -248,36 +197,15 @@ public sealed partial class LLanguageLoader : LLanguageVault
 
     private static string? LLanguageEmblemRead(string language, JsonElement root)
     {
-        string? flag = root.ValueKind == JsonValueKind.Object ? LLanguageTextRead(root, "flag")?.Trim() : null;
+        string? flag = root.ValueKind == JsonValueKind.Object ? LPack.LPackTextRead(root, "flag")?.Trim() : null;
         if (string.IsNullOrEmpty(flag))
         {
             return null;
         }
 
         return flag.EndsWith(LLanguageLoaderEmblem, StringComparison.OrdinalIgnoreCase)
-            ? Path.Combine(AppContext.BaseDirectory, LLanguageLoaderFolder, language, flag)
+            ? Path.Combine(AppContext.BaseDirectory, LPackFile.LPackFileFolder, language, flag)
             : flag;
-    }
-
-    private static LFont LLanguageFontBlank => new(null, 0);
-
-    private static LFont LLanguageFontRead(JsonElement root, string key)
-    {
-        if (root.ValueKind != JsonValueKind.Object ||
-            !root.TryGetProperty(key, out JsonElement font) ||
-            font.ValueKind != JsonValueKind.Object)
-        {
-            return LLanguageFontBlank;
-        }
-
-        string? family = LLanguageTextRead(font, "family");
-        double size = LLanguageMeasureRead(font, "size");
-        string? style = LLanguageTextRead(font, "style");
-
-        return new LFont(
-            string.IsNullOrWhiteSpace(family) ? null : family,
-            size,
-            string.IsNullOrWhiteSpace(style) ? null : style.Trim());
     }
 
     private static IReadOnlyList<LVariety> LLanguageVarietyScan(JsonElement root)
@@ -312,14 +240,22 @@ public sealed partial class LLanguageLoader : LLanguageVault
             return null;
         }
 
-        string name = LLanguageTextRead(row, "name")?.Trim() ?? string.Empty;
+        string name = LPack.LPackTextRead(row, "name")?.Trim() ?? string.Empty;
         if (name.Length == 0)
         {
             return null;
         }
 
-        string? flag = LLanguageTextRead(row, "flag")?.Trim();
+        string? flag = LPack.LPackTextRead(row, "flag")?.Trim();
         return new LVariety(name, string.IsNullOrEmpty(flag) ? null : flag);
+    }
+
+    private static bool LLanguageSeparatorRead(JsonElement root)
+    {
+        string? separator = root.ValueKind == JsonValueKind.Object
+            ? LPack.LPackTextRead(root, LLanguageLoaderSeparator)
+            : null;
+        return !string.Equals(separator?.Trim(), "none", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool LLanguageFlaggedCheck(JsonElement root)
@@ -331,38 +267,7 @@ public sealed partial class LLanguageLoader : LLanguageVault
             return false;
         }
 
-        string? shown = LLanguageTextRead(block, "shown");
+        string? shown = LPack.LPackTextRead(block, "shown");
         return string.Equals(shown?.Trim(), "flag", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static string? LLanguageTextRead(JsonElement element, string key)
-    {
-        return element.TryGetProperty(key, out JsonElement value) && value.ValueKind == JsonValueKind.String
-            ? value.GetString()
-            : null;
-    }
-
-    private static int LLanguageNumberRead(JsonElement element, string key)
-    {
-        return element.TryGetProperty(key, out JsonElement value)
-            && value.ValueKind == JsonValueKind.Number
-            && value.TryGetInt32(out int number)
-            ? number
-            : 0;
-    }
-
-    private static double LLanguageMeasureRead(JsonElement element, string key)
-    {
-        return element.TryGetProperty(key, out JsonElement value)
-            && value.ValueKind == JsonValueKind.Number
-            && value.TryGetDouble(out double measure)
-            && measure > 0
-            ? measure
-            : 0;
-    }
-
-    private static bool LLanguageBooleanRead(JsonElement element, string key)
-    {
-        return element.TryGetProperty(key, out JsonElement value) && value.ValueKind == JsonValueKind.True;
     }
 }

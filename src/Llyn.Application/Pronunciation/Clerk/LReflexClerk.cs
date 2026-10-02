@@ -44,11 +44,11 @@ public sealed class LReflexClerk
     public static IReadOnlyList<LAnchorRow> LReflexAnchorScan(
         IReadOnlyList<LFanqieRow> rows,
         IReadOnlyList<long> anchors,
-        IReadOnlyList<LAnatomyTone> tones,
+        IReadOnlyList<LDescent> tones,
         string reflex,
         string tone)
     {
-        return LAnchor.LAnchorRowScan(rows, anchors, LAnatomyTone.LAnatomyToneScan(tones, reflex, tone));
+        return LAnchor.LAnchorRowScan(rows, anchors, LDescent.LDescentScan(tones, reflex, tone));
     }
 
     public static bool LReflexAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword)

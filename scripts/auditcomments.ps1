@@ -12,8 +12,20 @@ performs these actions on every run:
      character, or more than one sentence.
   5. Prints in-code comment lines found inside sources, every line of a block comment included.
   6. Prints signature headings that name no identifier of the source they describe.
-  7. Writes a Markdown report to {report.directory}\{prefix}{version}.md.
+  7. Prints comment files whose second line holds a hash their source no longer matches, and
+     those whose second line holds no hash.
+  8. Writes a Markdown report to {report.directory}\{prefix}{version}.md.
 The console follows scripts\report.md: widest view first, empty lists left out.
+
+The second line of every paired comment file reads Hash: `<16 hex digits>`. The digits are
+the first 16 of the lowercase SHA-256 of the UTF-8 text of the sources paired to that file,
+each with its byte order mark dropped and CRLF or CR turned into LF, joined in ordinal
+file-name order. A source edit therefore flags its comment file until a person rereads the
+prose and restamps it with stampcomment.ps1. Exempt files are skipped, as for headings.
+
+A stale hash always fails. A missing hash is backlog from before the stamp existed: its gate
+reads WARN in yellow while the count sits at or below ceilings.unstamped, and FAIL above it.
+A ceiling above the count is stale and fails, so the ceiling only walks down as files are stamped.
 
 Everything project-specific lives in auditcomments.json. The script itself
 carries no project knowledge. Files come from git: tracked and untracked files,
@@ -25,7 +37,7 @@ An unreadable file is reported once, under Unreadable files, and never as a miss
 
 auditcomments.json shape:
   {
-    "generation": 18,
+    "generation": 19,
     "project": "Llyn",
     "sources": {
       "roots": ["languages", "localization", "src", "tests", "themes"],
@@ -45,6 +57,7 @@ auditcomments.json shape:
       "closers": { "/*": "*/", "<!--": "-->" },
       "exemptFiles": ["TAuditNameRegistry.cs"]
     },
+    "ceilings": { "unstamped": 1705 },
     "report": {
       "directory": "docs-work/audit",
       "versionFile": "version.json",
@@ -97,7 +110,7 @@ auditcomments -Segments 2
 auditcomments -SourceRoots .\src -MaxWords 25
 #>
 #requires -Version 5.1
-# AUDITCOMMENTS GENERATION 18 - auditcomments.ps1.
+# AUDITCOMMENTS GENERATION 19 - auditcomments.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -124,6 +137,8 @@ auditcomments -SourceRoots .\src -MaxWords 25
 # of the UI, object, structure and name audits.
 # Generation 18: nothing this audit reports changes; the number rises with the UI audit, whose
 # truth detector stops five false findings.
+# Generation 19: every paired comment file carries a hash of its sources on its second line. A hash
+# its sources no longer match is a finding, and a missing hash is a warning under a falling ceiling.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -171,6 +186,12 @@ CHECKS
         or not, carries none, exempt files and excluded suffixes aside.
     Headings: every signature heading names an identifier of its source,
         in every comment file the line rules read.
+    Hashes: the second line of every paired comment file is Hash: `<hex>`,
+        16 digits of the SHA-256 of its sources' LF-normalized text. A stale
+        hash is a finding. A missing hash is a WARN while the count sits at
+        or below ceilings.unstamped, a finding above it, and a ceiling above
+        the count is stale and a finding. Restamp one file with
+        stampcomment.ps1 only after rereading its prose.
     A configured root or root-level file that does not exist, or a failing
     git, stops the audit with an error. Paths print with forward slashes
     in the order of the convention tests.
@@ -223,7 +244,7 @@ $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 18
+$script:AuditGeneration = 19
 
 # Console paging. A page is one window of rows; the audit stops at each page boundary and waits
 # for a key so the reader can inspect the output before it scrolls away. Any key shows the next
@@ -388,6 +409,7 @@ function Read-AuditConfig {
         'sources.excludeSegments' = 'strings'; 'sources.excludeSuffixes' = 'strings'
         'rules.maxWords' = 'int'; 'rules.forbidden' = 'strings'; 'rules.sentenceMarks' = 'strings'; 'rules.abbreviations' = 'strings'
         'remark.markers' = 'mapStrings'; 'remark.closers' = 'map'; 'remark.exemptFiles' = 'strings'
+        'ceilings.unstamped' = 'int'
         'report.directory' = 'string'; 'report.versionFile' = 'string'; 'report.versionKey' = 'string'; 'report.prefix' = 'string'; 'report.segments' = 'int'
     }
 
@@ -525,10 +547,13 @@ function Test-IsExcludedPath {
 }
 
 function Write-SectionTitle {
-    param([Parameter(Mandatory = $true)][string]$Text)
+    param(
+        [Parameter(Mandatory = $true)][string]$Text,
+        [System.ConsoleColor]$Color = [System.ConsoleColor]::Blue
+    )
 
     Write-AuditLine ""
-    Write-AuditLine $Text -ForegroundColor Blue
+    Write-AuditLine $Text -ForegroundColor $Color
     Write-AuditLine ('-' * $Text.Length) -ForegroundColor DarkGray
 }
 
@@ -543,21 +568,34 @@ function Write-ResultTable {
     Write-AuditLine ('{0}  {1}  {2}  Meaning' -f 'Status'.PadRight($statusWidth), 'Count'.PadLeft($countWidth), 'Gate'.PadRight($gateWidth)) -ForegroundColor Cyan
     Write-AuditLine (@(('-' * $statusWidth), ('-' * $countWidth), ('-' * $gateWidth), ('-' * $meaningWidth)) -join '  ') -ForegroundColor Cyan
     foreach ($row in $Rows) {
-        $failing = $row.Count -gt 0
-        $status = if ($failing) { 'FAIL' } else { 'OK' }
+        $status = Get-GateStatus -Row $row
         $text = '{0}  {1}  {2}  {3}' -f $status.PadRight($statusWidth), (Format-Integer $row.Count).PadLeft($countWidth), $row.Gate.PadRight($gateWidth), $row.Meaning
-        Write-AuditLine $text -Lead $status -LeadColor $(if ($failing) { 'Red' } else { 'Green' })
+        Write-AuditLine $text -Lead $status -LeadColor $(switch ($status) { 'FAIL' { 'Red' } 'WARN' { 'Yellow' } default { 'Green' } })
     }
 
-    $failed = @($Rows | Where-Object { $_.Count -gt 0 })
+    $failed = @($Rows | Where-Object { (Get-GateStatus -Row $_) -eq 'FAIL' })
+    $warned = @($Rows | Where-Object { (Get-GateStatus -Row $_) -eq 'WARN' })
     Write-AuditLine ''
-    if ($failed.Count -eq 0) {
+    if ($failed.Count -eq 0 -and $warned.Count -eq 0) {
         Write-AuditLine ('PASS: all {0} gates at 0.' -f $Rows.Count) -ForegroundColor Green
+    }
+    elseif ($failed.Count -eq 0) {
+        $sections = ($warned | ForEach-Object { '"' + $_.Section + '"' }) -join ', '
+        Write-AuditLine ('PASS: no gate fails, {0} of {1} gates warn. See {2}.' -f $warned.Count, $Rows.Count, $sections) -ForegroundColor Yellow
     }
     else {
         $sections = ($failed | ForEach-Object { '"' + $_.Section + '"' }) -join ', '
         Write-AuditLine ('FAIL: {0} of {1} gates above 0. See {2}.' -f $failed.Count, $Rows.Count, $sections) -ForegroundColor Red
     }
+}
+
+# A gate with a Ceiling warns while its count sits at or below it, and fails above it.
+function Get-GateStatus {
+    param([Parameter(Mandatory = $true)]$Row)
+
+    if ($Row.Count -eq 0) { return 'OK' }
+    if ($null -ne $Row.PSObject.Properties['Ceiling'] -and $Row.Count -le $Row.Ceiling) { return 'WARN' }
+    return 'FAIL'
 }
 
 function Format-Cell {
@@ -1058,6 +1096,50 @@ foreach ($comment in $commentFiles) {
     }
 }
 
+# Source hashes on the second line of every paired comment file.
+$hashHits = [System.Collections.Generic.List[object]]::new()
+$unstampedHits = [System.Collections.Generic.List[object]]::new()
+$unstampedCeiling = [int]$config.ceilings.unstamped
+$hashLinePattern = [System.Text.RegularExpressions.Regex]::new('^Hash: `(?<hash>[0-9a-f]{16})`$')
+$hashEncoding = [System.Text.UTF8Encoding]::new($false)
+$hashAlgorithm = [System.Security.Cryptography.SHA256]::Create()
+$ownersByComment = @{}
+foreach ($source in $sourceFiles) {
+    $pairedFull = [System.IO.Path]::Combine($source.Directory, $source.Expected)
+    if (-not $ownersByComment.ContainsKey($pairedFull)) { $ownersByComment[$pairedFull] = [System.Collections.Generic.List[object]]::new() }
+    $ownersByComment[$pairedFull].Add($source)
+}
+foreach ($comment in $commentFiles) {
+    if (-not $comment.Readable -or -not $ownersByComment.ContainsKey($comment.Full)) { continue }
+    $owners = @($ownersByComment[$comment.Full] | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Name } })
+    if (@($owners | Where-Object { $exemptFiles.Contains($_.Name) }).Count -gt 0) { continue }
+    $joined = [System.Text.StringBuilder]::new()
+    $readable = $true
+    foreach ($owner in $owners) {
+        try { $ownerText = [System.IO.File]::ReadAllText($owner.Full) }
+        catch {
+            if ($unreadable.Add($owner.Full)) { $readErrors.Add("$($owner.Relative): $($_.Exception.Message)") }
+            $readable = $false
+            break
+        }
+        [void]$joined.Append($ownerText.Replace("`r`n", "`n").Replace("`r", "`n"))
+    }
+    if (-not $readable) { continue }
+    $digest = $hashAlgorithm.ComputeHash($hashEncoding.GetBytes($joined.ToString()))
+    $expectedHash = (-join @($digest | ForEach-Object { $_.ToString('x2') })).Substring(0, 16)
+    $commentLines = [System.IO.File]::ReadAllLines($comment.Full)
+    $second = if ($commentLines.Count -ge 2) { $commentLines[1] } else { '' }
+    $stamp = $hashLinePattern.Match($second)
+    if (-not $stamp.Success) {
+        $unstampedHits.Add([pscustomobject]@{ Relative = $comment.Relative; Line = 2; Problem = 'no hash'; Text = $second.Trim() })
+    }
+    elseif ($stamp.Groups['hash'].Value -cne $expectedHash) {
+        $hashHits.Add([pscustomobject]@{ Relative = $comment.Relative; Line = 2; Problem = 'source changed'; Text = $second.Trim() })
+    }
+}
+$hashAlgorithm.Dispose()
+$staleCeilings = if ($unstampedCeiling -gt $unstampedHits.Count) { 1 } else { 0 }
+
 # Version, read from the configured version file and key.
 $version = "0.0.0"
 if ([System.IO.File]::Exists($versionPathFull)) {
@@ -1091,6 +1173,9 @@ $gateRows = @(
     [pscustomobject]@{ Gate = 'Comment lines breaking the line rules'; Count = $ruleHits.Count; Meaning = 'lines too long, multi-sentence or with a forbidden char'; Section = 'Comment lines breaking the line rules' },
     [pscustomobject]@{ Gate = 'In-code comments'; Count = $remarkHits.Count; Meaning = 'comment lines left inside sources'; Section = 'In-code comments' },
     [pscustomobject]@{ Gate = 'Headings naming nothing in their source'; Count = $headingHits.Count; Meaning = 'headings naming no identifier of their source'; Section = 'Headings naming nothing in their source' },
+    [pscustomobject]@{ Gate = 'Comment files with a stale hash'; Count = $hashHits.Count; Meaning = 'comment files stamped for an older source'; Section = 'Comment files with a stale hash' },
+    [pscustomobject]@{ Gate = 'Comment files with no hash'; Count = $unstampedHits.Count; Ceiling = $unstampedCeiling; Meaning = "unstamped comment files, warn up to ceiling $(Format-Integer $unstampedCeiling)"; Section = 'Comment files with no hash' },
+    [pscustomobject]@{ Gate = 'Stale ceilings'; Count = $staleCeilings; Meaning = 'ceilings set above their count'; Section = 'Stale ceilings' },
     [pscustomobject]@{ Gate = 'Unreadable files'; Count = $readErrors.Count; Meaning = 'files the audit could not read'; Section = 'Unreadable files' }
 )
 Write-ResultTable -Rows $gateRows
@@ -1152,6 +1237,26 @@ if ($headingHits.Count -gt 0) {
     Write-HitTable -Items @($headingHits) -Kind 'Problem'
 }
 
+if ($hashHits.Count -gt 0) {
+    Write-SectionTitle ("Comment files with a stale hash ({0:N0})" -f $hashHits.Count)
+    Write-HitTable -Items @($hashHits) -Kind 'Problem'
+}
+
+if ($unstampedHits.Count -gt $unstampedCeiling) {
+    Write-SectionTitle ("Comment files with no hash ({0:N0}, ceiling {1:N0})" -f $unstampedHits.Count, $unstampedCeiling)
+    Write-HitTable -Items @($unstampedHits) -Kind 'Problem'
+}
+elseif ($unstampedHits.Count -gt 0) {
+    # The backlog list is long, so a warning prints its count here and the report keeps the full list.
+    Write-SectionTitle ("Comment files with no hash ({0:N0}, ceiling {1:N0})" -f $unstampedHits.Count, $unstampedCeiling) -Color Yellow
+    Write-AuditLine ("WARNING: {0:N0} comment files carry no hash. Reread each one, stamp it with stampcomment.ps1, and lower ceilings.unstamped. The report lists them all." -f $unstampedHits.Count) -ForegroundColor Yellow
+}
+
+if ($staleCeilings -gt 0) {
+    Write-SectionTitle "Stale ceilings (1)"
+    Write-AuditLine ("ceilings.unstamped is {0:N0} but only {1:N0} comment files carry no hash, so lower it." -f $unstampedCeiling, $unstampedHits.Count)
+}
+
 if ($remarkHits.Count -gt 0) {
     Write-SectionTitle ("In-code comments ({0:N0})" -f $remarkHits.Count)
     Write-HitTable -Items @($remarkHits) -Kind 'Marker'
@@ -1187,6 +1292,9 @@ $report = [System.Text.StringBuilder]::new()
 [void]$report.AppendLine("| Lines breaking the line rules | $(Format-Integer $ruleHits.Count) |")
 [void]$report.AppendLine("| In-code comments | $(Format-Integer $remarkHits.Count) |")
 [void]$report.AppendLine("| Headings naming nothing in their source | $(Format-Integer $headingHits.Count) |")
+[void]$report.AppendLine("| Comment files with a stale hash | $(Format-Integer $hashHits.Count) |")
+[void]$report.AppendLine("| Comment files with no hash (warning) | $(Format-Integer $unstampedHits.Count) |")
+[void]$report.AppendLine("| Ceiling for comment files with no hash | $(Format-Integer $unstampedCeiling) |")
 [void]$report.AppendLine()
 [void]$report.AppendLine("## Comment lines by folder")
 [void]$report.AppendLine()
@@ -1232,6 +1340,27 @@ else {
     [void]$report.AppendLine("|------|-----:|--------|------|")
     foreach ($item in $remarkHits) { [void]$report.AppendLine("| $(ConvertTo-MarkdownCell $item.Relative) | $(Format-Integer $item.Line) | $(ConvertTo-MarkdownCell $item.Marker) | $(ConvertTo-MarkdownCell $item.Text) |") }
 }
+[void]$report.AppendLine()
+[void]$report.AppendLine("## Comment files with a stale hash")
+[void]$report.AppendLine()
+if ($hashHits.Count -eq 0) { [void]$report.AppendLine("None.") }
+else {
+    [void]$report.AppendLine("| File | Problem |")
+    [void]$report.AppendLine("|------|---------|")
+    foreach ($item in $hashHits) { [void]$report.AppendLine("| $(ConvertTo-MarkdownCell $item.Relative) | $(ConvertTo-MarkdownCell $item.Problem) |") }
+}
+[void]$report.AppendLine()
+[void]$report.AppendLine("## Comment files with no hash")
+[void]$report.AppendLine()
+[void]$report.AppendLine("A warning while the count sits at or below the ceiling of $(Format-Integer $unstampedCeiling), a failure above it.")
+[void]$report.AppendLine("Reread each file, then stamp it with stampcomment.ps1 and lower the ceiling.")
+[void]$report.AppendLine()
+if ($unstampedHits.Count -eq 0) { [void]$report.AppendLine("None.") }
+else {
+    [void]$report.AppendLine("| File | Problem |")
+    [void]$report.AppendLine("|------|---------|")
+    foreach ($item in $unstampedHits) { [void]$report.AppendLine("| $(ConvertTo-MarkdownCell $item.Relative) | $(ConvertTo-MarkdownCell $item.Problem) |") }
+}
 if ($readErrors.Count -gt 0) {
     [void]$report.AppendLine()
     [void]$report.AppendLine("## Read errors")
@@ -1247,7 +1376,7 @@ if ($Open) {
     Start-Process -FilePath $outputPathFull
 }
 
-if (($missingComments.Count + $orphanComments.Count + $ruleHits.Count + $remarkHits.Count + $headingHits.Count + $readErrors.Count) -gt 0) {
+if (($missingComments.Count + $orphanComments.Count + $ruleHits.Count + $remarkHits.Count + $headingHits.Count + $hashHits.Count + $staleCeilings + $readErrors.Count) -gt 0 -or $unstampedHits.Count -gt $unstampedCeiling) {
     exit 1
 }
 
