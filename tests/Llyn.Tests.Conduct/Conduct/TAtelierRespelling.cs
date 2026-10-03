@@ -23,7 +23,8 @@ public sealed class TAtelierRespelling
             });
 
         CReflex reflex = Assert.Single(
-            TInterfaceConduct.TRespellingReflexScan(phonology, "Chinese", [TAtelierReflexCreate(1, "Wu", "ipa", "")]));
+            TInterfaceConductSound.TRespellingReflexScan(
+                phonology, "Chinese", [TAtelierReflexCreate(1, "Wu", "ipa", "")]));
 
         Assert.Equal(new CRespellingMark(respelled, slash, slash), reflex.CReflexMark);
     }
@@ -46,7 +47,7 @@ public sealed class TAtelierRespelling
                 },
             });
 
-        IReadOnlyList<CReflex> reflexes = TInterfaceConduct.TRespellingReflexScan(
+        IReadOnlyList<CReflex> reflexes = TInterfaceConductSound.TRespellingReflexScan(
             phonology,
             "Chinese",
             [TAtelierReflexCreate(4, " Wu", "ipa", "respelt"), TAtelierReflexCreate(5, "Jin", "ipa", "")]);
@@ -70,7 +71,7 @@ public sealed class TAtelierRespelling
     {
         CRespellingMark mark = new(shown, "[", "]");
 
-        Assert.Equal(expected, TInterfaceConduct.TRespellingResolve(mark, "ipa", respelling));
+        Assert.Equal(expected, TInterfaceConductSound.TRespellingResolve(mark, "ipa", respelling));
     }
 
     private static CReflexDraft TAtelierReflexCreate(long id, string language, string text, string respelling)

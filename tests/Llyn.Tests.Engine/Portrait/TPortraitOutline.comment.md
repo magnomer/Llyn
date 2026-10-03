@@ -13,3 +13,8 @@ Markdown carries no theme, so order is the only fidelity it has.
 
 An unescaped angle bracket, hash or asterisk in field text would silently restructure the document.
 Every character the formatter escapes is checked in the title, language and chip, and through the normalizer directly.
+
+## `public void OutlineFormat_MarkdownNote_KeepsTheNoteUnescaped()`
+
+The note is already Markdown, so its emphasis and list marks pass into the page as written.
+Escaping it as field text would show raw asterisks in place of a note the user formatted.

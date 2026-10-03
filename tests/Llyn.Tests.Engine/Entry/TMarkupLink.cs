@@ -299,7 +299,7 @@ public sealed class TMarkupLink
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
             LReferenceKind.LReferenceKindOther,
-            TInterface.TStateValueCreate("a note"),
+            TInterfaceState.TStateValueCreate("a note"),
             LStateValue.LStateValueUnspecified,
             LStateMark.LStateMarkUnspecified));
 

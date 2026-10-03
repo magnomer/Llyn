@@ -77,7 +77,7 @@ public sealed class TCustoms
     }
 
     private static CSCustoms TCustomsPrepare(params long[][] rows) =>
-        TInterfaceConduct.TCustomsCreate(
+        TInterfaceConductDialog.TCustomsCreate(
             rows.Select(static ids => new CMarkupEntry("English", "ember", ids)).ToList(),
             rows.SelectMany(static ids => ids)
                 .Distinct()

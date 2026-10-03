@@ -90,9 +90,9 @@ public sealed class TCardSentence
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineDelaySet(0);
-        CDesk desk = TInterfaceConduct.TDeskCreate(
+        CDesk desk = TInterfaceConductDesk.TDeskCreate(
             engine, "Input", TEnvoyFake.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
-        CSentence sentence = TInterfaceConduct.TSentenceCreate(engine, desk);
+        CSentence sentence = TInterfaceConductCard.TSentenceCreate(engine, desk);
 
         sentence.CSentenceAdd(1, 0);
 
@@ -122,10 +122,10 @@ public sealed class TCardSentence
     private static (CDesk TSentenceDesk, CSentence TSentenceGate) TSentencePrepare(LEngine engine)
     {
         engine.TEngineDelaySet(0);
-        CDesk desk = TInterfaceConduct.TDeskCreate(
+        CDesk desk = TInterfaceConductDesk.TDeskCreate(
             engine, "Input", TEnvoyFake.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
         desk.CDeskStart(null);
-        return (desk, TInterfaceConduct.TSentenceCreate(engine, desk));
+        return (desk, TInterfaceConductCard.TSentenceCreate(engine, desk));
     }
 
     private static (long TSentenceSheet, long TSentenceRow) TSentenceCardAdd(CDesk desk)

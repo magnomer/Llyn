@@ -1,5 +1,5 @@
 # TEntryStore.cs
-Hash: `12123a7394e00580`
+Hash: `2b49ecaf34e6c067`
 
 ## `public sealed class TEntryStore`
 

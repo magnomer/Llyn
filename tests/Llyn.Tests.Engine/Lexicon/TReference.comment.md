@@ -1,5 +1,5 @@
 # TReference.cs
-Hash: `e00eb34a59be63a7`
+Hash: `0ac9eace2d168f67`
 
 ## `public sealed class TReference`
 
@@ -24,4 +24,4 @@ A credited Author is not deletable until the delete detaches its credits.
 
 ### `engine.TEngineReferenceDelete(reference.LReferenceId, true);`
 
-Deleting the Reference takes the credits it owns and leaves the Author it credited.
+The detaching delete drops the Reference and its links, and leaves every Example and Author it touched.

@@ -1,5 +1,5 @@
 # TAuditBorderWalker.cs
-Hash: `db888dbdfdc30350`
+Hash: `1e0a93d7cce62b75`
 
 ## `internal static class TAuditBorderWalker`
 
@@ -35,11 +35,12 @@ Every member of the type and of each public type nested in it.
 ## `private static IEnumerable<INamedTypeSymbol> TAuditSignatureRead(ISymbol member)`
 
 Every named type in a member signature, with array elements and type arguments unwrapped.
-A method of any kind, a property, an event, a field and a nested type's bases each have a signature.
+A plain method, a property, an event, a field and a nested type's bases each have a signature.
+A property accessor is covered by its property.
 
 ## `private static Dictionary<string, HashSet<string>> TAuditInnerRead()`
 
-The rings each ring may see at any depth: its neighbour, then that neighbour's neighbour, and so on.
+The rings each ring may see at any depth, which are its neighbour, that neighbour's neighbour, and so on.
 
 ## `private static List<TAuditHit> TAuditTreeScan(SemanticModel model, string relative, string ring, Dictionary<string, HashSet<string>> inner)`
 
@@ -48,7 +49,8 @@ It is `Commuting` for the neighbour the table names and for the ring's capsule.
 Past the neighbour it is `Trespassing` beyond the closure, `Ferrying` for data and `Leapfrogging` for behaviour.
 A method called on a data type is behaviour, so it is `Leapfrogging`.
 In a cut ring, a name from outside the UI rings is `Undercutting` ahead of `Ferrying`.
-A `using` of a deeper ring's namespace counts as data, so it is `Undercutting` above the cut and `Ferrying` below.
+A `using` of a deeper ring counts as data.
+It is `Undercutting` from a cut ring to an uncut one and `Ferrying` otherwise.
 One hit per line, kind, target and name, so a name used twice on a line counts once.
 
 ## `private static string? TAuditSpaceRead(string space)`

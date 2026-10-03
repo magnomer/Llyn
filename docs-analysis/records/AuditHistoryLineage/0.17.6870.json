@@ -1,0 +1,10 @@
+{
+  "version": "0.17.6870",
+  "commit": "9f31ff78151c521620d97c57580586c0f88d7a90",
+  "previous": "0.17.6850",
+  "previousCommit": "ee8fe941e5fcb6d04c748c19df0512b371b098a4",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.UIVeneer/Shell/Window/PWindowState.comment.md", "src/Llyn.UIDeportment/Shell/LFootprint.comment.md"]
+  ]
+}

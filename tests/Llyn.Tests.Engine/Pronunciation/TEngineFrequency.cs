@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 
 public sealed class TEngineFrequency
 {
-    private const string TEngineFrequencyPack =
+    internal const string TEngineFrequencyPack =
         """
         { "frequency": [
             { "name": "First", "attempts": [
@@ -29,7 +29,7 @@ public sealed class TEngineFrequency
               "unit": "Level" } ] }
         """;
 
-    private static readonly TimeSpan TEngineFrequencyPatience = TimeSpan.FromSeconds(5);
+    internal static readonly TimeSpan TEngineFrequencyPatience = TimeSpan.FromSeconds(5);
 
     [Fact]
     public async Task FrequencyStart_FirstSourceSilent_StoresSecondAlone()
@@ -90,254 +90,6 @@ public sealed class TEngineFrequency
     }
 
     [Fact]
-    public void FrequencyRead_StoredRaw_GradesByIntervalBeforePatterns()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        engine.TEngineFrequencySave(false);
-        long entryId = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName)).LEntryId;
-
-        Assert.Equal("Advanced", TFrequencyBandRead(workspace, engine, entryId, "First", "5"));
-        Assert.Equal("Everyday", TFrequencyBandRead(workspace, engine, entryId, "First", "50"));
-        Assert.Equal("Core", TFrequencyBandRead(workspace, engine, entryId, "First", "500"));
-        Assert.Equal("Rare", TFrequencyBandRead(workspace, engine, entryId, "First", "0.5"));
-        Assert.Equal("Core", TFrequencyBandRead(workspace, engine, entryId, "First", "W1"));
-        Assert.Null(TFrequencyBandRead(workspace, engine, entryId, "First", "W2"));
-        Assert.Equal("Core", TFrequencyBandRead(workspace, engine, entryId, "Second", "100"));
-        Assert.Equal("Advanced", TFrequencyBandRead(workspace, engine, entryId, "Second", "50000"));
-        Assert.Equal("Rare", TFrequencyBandRead(workspace, engine, entryId, "Second", "unranked"));
-        Assert.Null(TFrequencyBandRead(workspace, engine, entryId, "Third", "5"));
-        Assert.Null(TFrequencyBandRead(workspace, engine, entryId, "Fourth", "5"));
-    }
-
-    [Fact]
-    public void FrequencyRead_StaleStoredBand_RegradesFromRawAndStoresIt()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        engine.TEngineFrequencySave(false);
-        LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName));
-        TFrequencyStoredSet(workspace, entry.LEntryId, "First", "5", "Stale");
-
-        IReadOnlyList<LFrequency> read = engine.TEngineFrequencyRead(entry.LEntryId);
-
-        LFrequency row = Assert.Single(read);
-        Assert.Equal(
-            ("First", "5", "Advanced", 200000L),
-            (row.LFrequencySource, row.LFrequencyRaw, row.LFrequencyBand, row.LFrequencyOnce));
-        Assert.Equal(1, workspace.TWorkspaceCountRead(
-            $"SELECT COUNT(*) FROM frequency WHERE entry_parent = {entry.LEntryId} AND band = 'Advanced';"));
-    }
-
-    [Fact]
-    public void FrequencyRead_MigratedRowWithoutBand_ResolvesAndStoresIt()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        engine.TEngineFrequencySave(false);
-        LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName));
-        TFrequencyStoredSet(workspace, entry.LEntryId, "First", "5", null);
-
-        IReadOnlyList<LFrequency> read = engine.TEngineFrequencyRead(entry.LEntryId);
-
-        Assert.Equal("Advanced", Assert.Single(read).LFrequencyBand);
-        Assert.Equal(1, workspace.TWorkspaceCountRead(
-            $"SELECT COUNT(*) FROM frequency WHERE entry_parent = {entry.LEntryId} AND band = 'Advanced';"));
-    }
-
-    [Fact]
-    public void FrequencyStart_SettingOff_WritesNothingRaisesNothing()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate("a=7", HttpStatusCode.OK));
-        TFrequencyObserver observer = new();
-        engine.TEngineObserverAttach(observer.TFrequencyObserverHandle);
-        engine.TEngineFrequencySave(false);
-
-        LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName));
-        engine.TEngineFrequencyStart(entry.LEntryId);
-
-        Assert.Empty(engine.TEngineFrequencyRead(entry.LEntryId));
-        Assert.Equal(0, TFrequencyCountRead(workspace, entry.LEntryId));
-        Assert.False(observer.TFrequencyObserverRaised.IsCompleted);
-    }
-
-    [Fact]
-    public async Task EntryUpdate_HeadwordChanged_ClearsStoredRowsThenRefetches()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate("a=7", gate.Task));
-        TFrequencyObserver observer = new();
-        engine.TEngineObserverAttach(observer.TFrequencyObserverHandle);
-        engine.TEngineFrequencySave(false);
-        LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName));
-        TFrequencyStoredSet(workspace, entry.LEntryId, "First", "5", "Everyday");
-        engine.TEngineFrequencySave(true);
-
-        LEntryDraft loaded = engine.TEngineEntryLoad(entry.LEntryId)!;
-        engine.TEngineEntryUpdate(entry.LEntryId, loaded with { LEntryDraftHeadword = "tomatoes" });
-
-        Assert.Equal(0, TFrequencyCountRead(workspace, entry.LEntryId));
-
-        gate.SetResult();
-        LBulletin raised = await observer.TFrequencyObserverRaised.WaitAsync(TEngineFrequencyPatience);
-
-        Assert.Equal(entry.LEntryId, raised.LBulletinId);
-        Assert.Equal(1, TFrequencyCountRead(workspace, entry.LEntryId));
-        Assert.Equal(1, workspace.TWorkspaceCountRead(
-            $"SELECT COUNT(*) FROM frequency WHERE entry_parent = {entry.LEntryId} " +
-            "AND source = 'First' AND raw = '7' AND band = 'Advanced';"));
-    }
-
-    [Fact]
-    public async Task FrequencyStart_EntryDeletedMidFlight_WritesNothing()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate("a=7", gate.Task));
-        TFrequencyObserver observer = new();
-        engine.TEngineObserverAttach(observer.TFrequencyObserverHandle);
-
-        LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName));
-        engine.TEngineEntryDelete(entry.LEntryId);
-        gate.SetResult();
-
-        Task settled = await Task.WhenAny(observer.TFrequencyObserverRaised, Task.Delay(500));
-
-        Assert.NotSame(observer.TFrequencyObserverRaised, settled);
-        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
-        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM frequency;"));
-    }
-
-    [Fact]
-    public void FrequencyRead_BlankLanguage_ReadsNothingWithoutFill()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate("a=7", HttpStatusCode.OK));
-        TFrequencyObserver observer = new();
-        engine.TEngineObserverAttach(observer.TFrequencyObserverHandle);
-        engine.TEngineFrequencySave(false);
-        LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName));
-        workspace.TWorkspaceScriptRun($"UPDATE entry SET language = '' WHERE entry_id = {entry.LEntryId};");
-        engine.TEngineFrequencySave(true);
-
-        Assert.Empty(engine.TEngineFrequencyRead(entry.LEntryId));
-        engine.TEngineFrequencyStart(entry.LEntryId);
-
-        Assert.Equal(0, TFrequencyCountRead(workspace, entry.LEntryId));
-        Assert.False(observer.TFrequencyObserverRaised.IsCompleted);
-    }
-
-    [Fact]
-    public void FrequencyRead_BlankLanguageWithStoredRow_LeavesBandAndOnceNull()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        engine.TEngineFrequencySave(false);
-        LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", "English"));
-        workspace.TWorkspaceScriptRun($"UPDATE entry SET language = '' WHERE entry_id = {entry.LEntryId};");
-        TFrequencyStoredSet(workspace, entry.LEntryId, "First", "5", null);
-
-        LFrequency read = Assert.Single(engine.TEngineFrequencyRead(entry.LEntryId));
-
-        Assert.Equal(("First", "5"), (read.LFrequencySource, read.LFrequencyRaw));
-        Assert.Null(read.LFrequencyBand);
-        Assert.Null(read.LFrequencyOnce);
-    }
-
-    [Fact]
-    public async Task EntryUpdate_LanguageChangedMidFlight_DropsOldAnswer()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TLanguageFixture silent = TLanguageFixture.TLanguageFixtureCreate("{}");
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate("a=7", gate.Task));
-        TFrequencyObserver observer = new();
-        engine.TEngineObserverAttach(observer.TFrequencyObserverHandle);
-
-        LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName));
-        LEntryDraft loaded = engine.TEngineEntryLoad(entry.LEntryId)!;
-        engine.TEngineEntryUpdate(entry.LEntryId, loaded with { LEntryDraftLanguage = silent.TLanguageFixtureName });
-        gate.SetResult();
-
-        Task settled = await Task.WhenAny(observer.TFrequencyObserverRaised, Task.Delay(500));
-
-        Assert.NotSame(observer.TFrequencyObserverRaised, settled);
-        Assert.Equal(0, TFrequencyCountRead(workspace, entry.LEntryId));
-    }
-
-    [Fact]
-    public async Task FrequencyRead_SourcesSilent_AsksOncePerSession()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        TSourceHandler handler = new("nothing here", HttpStatusCode.OK);
-        using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
-
-        LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName));
-        await TFrequencyCountCheck(handler, 3);
-        await Task.Delay(200);
-
-        Assert.Empty(engine.TEngineFrequencyRead(entry.LEntryId));
-        Assert.Empty(engine.TEngineFrequencyRead(entry.LEntryId));
-        await Task.Delay(200);
-
-        Assert.Equal(3, handler.TSourceHandlerCount);
-    }
-
-    [Fact]
-    public async Task FrequencyRead_FetchPending_KeepsFetchRunning()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        TSourceHandler handler = new("a=7", HttpStatusCode.OK, gate.Task);
-        using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
-        TFrequencyObserver observer = new();
-        engine.TEngineObserverAttach(observer.TFrequencyObserverHandle);
-
-        LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName));
-        await TFrequencyCountCheck(handler, 1);
-        Assert.Empty(engine.TEngineFrequencyRead(entry.LEntryId));
-        Assert.Empty(engine.TEngineFrequencyRead(entry.LEntryId));
-        await Task.Delay(200);
-        gate.SetResult();
-        await observer.TFrequencyObserverRaised.WaitAsync(TEngineFrequencyPatience);
-
-        Assert.Equal(3, handler.TSourceHandlerCount);
-    }
-
-    [Fact]
-    public async Task FrequencyRead_SourcesUnreachable_AsksAgain()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        TSourceHandler handler = new(string.Empty, HttpStatusCode.ServiceUnavailable);
-        using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
-
-        LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName));
-        await TFrequencyCountCheck(handler, 3);
-        await Task.Delay(200);
-
-        Assert.Empty(engine.TEngineFrequencyRead(entry.LEntryId));
-        await TFrequencyCountCheck(handler, 6);
-    }
-
-    [Fact]
     public async Task FrequencyStart_FirstSourceAnswers_AsksEverySource()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
@@ -354,16 +106,6 @@ public sealed class TEngineFrequency
         Assert.Equal(3, handler.TSourceHandlerCount);
     }
 
-    private static async Task TFrequencyCountCheck(TSourceHandler handler, int count)
-    {
-        DateTime deadline = DateTime.UtcNow + TEngineFrequencyPatience;
-        while (handler.TSourceHandlerCount < count)
-        {
-            Assert.True(DateTime.UtcNow < deadline, $"Waited for {count} requests, saw {handler.TSourceHandlerCount}.");
-            await Task.Delay(20);
-        }
-    }
-
     private static async Task<IReadOnlyList<LFrequency>> TFrequencyFetchRead(LEngine engine, string language)
     {
         TFrequencyObserver observer = new();
@@ -373,15 +115,7 @@ public sealed class TEngineFrequency
         return engine.TEngineFrequencyRead(entry.LEntryId);
     }
 
-    private static string? TFrequencyBandRead(
-        TWorkspace workspace, LEngine engine, long entryId, string source, string raw)
-    {
-        workspace.TWorkspaceScriptRun($"DELETE FROM frequency WHERE entry_parent = {entryId};");
-        TFrequencyStoredSet(workspace, entryId, source, raw, null);
-        return Assert.Single(engine.TEngineFrequencyRead(entryId)).LFrequencyBand;
-    }
-
-    private static LEntryDraft TFrequencyDraftCreate(string headword, string language)
+    internal static LEntryDraft TFrequencyDraftCreate(string headword, string language)
     {
         return TInterface.TEntryDraftCreate(
             headword,
@@ -392,7 +126,8 @@ public sealed class TEngineFrequency
             []);
     }
 
-    private static void TFrequencyStoredSet(TWorkspace workspace, long entryId, string source, string raw, string? band)
+    internal static void TFrequencyStoredSet(
+        TWorkspace workspace, long entryId, string source, string raw, string? band)
     {
         string label = band is null ? "NULL" : $"'{band}'";
         workspace.TWorkspaceScriptRun(
@@ -400,12 +135,12 @@ public sealed class TEngineFrequency
             $"VALUES ({entryId}, '{source}', '{raw}', {label}, '2026-01-01');");
     }
 
-    private static long TFrequencyCountRead(TWorkspace workspace, long entryId)
+    internal static long TFrequencyCountRead(TWorkspace workspace, long entryId)
     {
         return workspace.TWorkspaceCountRead($"SELECT COUNT(*) FROM frequency WHERE entry_parent = {entryId};");
     }
 
-    private sealed class TFrequencyObserver
+    internal sealed class TFrequencyObserver
     {
         private readonly TaskCompletionSource<LBulletin> _tFrequencyObserverRaised =
             new(TaskCreationOptions.RunContinuationsAsynchronously);

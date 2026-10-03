@@ -39,7 +39,7 @@ A configuration that gives a ring more than one neighbour, or whose cut differs 
 folders, is refused before the audit runs. A ring may also name one capsule: a leaf ring with no
 neighbour that no other ring names.
 
-Binding goes through the shared binder of auditbinder.cs and auditbinder.json: the tracked
+Binding goes through the shared binder of AuditBinder.cs and AuditBinder.json: the tracked
 sources, the generated code of every project and the host build output, with no compile error
 allowed. Build the solution first so the generated markup classes and the package assemblies exist.
 The helper targets helper.framework and is compiled once per text and SDK into the temp folder.
@@ -70,7 +70,7 @@ AuditStructure.json shape:
     "smugglingWords": { "src/Llyn.ShellEngine": [ "LVaultSessionStart" ] },
     "exempt": { "border": [], "purity": [] },
     "console": { "top": 50 },
-    "report": { "directory": "audit", "versionFile": "version.json", "versionKey": "current-version", "prefix": "AuditStructure-" }
+    "report": { "directory": "docs-analysis", "versionFile": "version.json", "versionKey": "current-version", "prefix": "AuditStructure-" }
   }
 
 A missing key is an error, never a default, and an unknown key is an error rather than a silent
@@ -107,7 +107,7 @@ AuditStructure -ReportDirectory D:\temp\audit -Top 10 -Open -NoOpen
 Write the reports elsewhere, show ten rows of each list, open the Markdown report but not the page.
 #>
 #requires -Version 5.1
-# AUDITSTRUCTURE GENERATION 19 - AuditStructure.ps1.
+# AUDITSTRUCTURE - AUDIT GENERATION 19.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -132,7 +132,7 @@ Write the reports elsewhere, show ten rows of each list, open the Markdown repor
 # which checks that a deportment field reaches no request, keeps one writer, holds no logic and
 # treats no engine data.
 # Generation 12: the audit reports what the convention tests TAuditBorder, TAuditCensus,
-# TAuditPurity and TAuditCharter report. It binds through the shared binder of auditbinder.cs with
+# TAuditPurity and TAuditCharter report. It binds through the shared binder of AuditBinder.cs with
 # no compile error, counts a ceiling in hits, counts a using of a deeper ring and a method call on a
 # deeper record as Leapfrogging, walks using static names, and adds the Leaking, Poaching,
 # Squatting, Smuggling, Hollowing, Rerouting, Backdooring and Piggybacking kinds.
@@ -236,7 +236,7 @@ $script:AuditGeneration = 19
 $OutputEncoding = [Console]::OutputEncoding
 
 $script:ConfigDocument = 'AuditStructure.json'
-$script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
+$script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'AuditBinder.cs'))
 $script:PathSeparators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
 $script:ItemLimit = 0
 
@@ -387,7 +387,7 @@ function Write-AuditItems {
     }
 }
 
-Write-AuditLine "AUDITSTRUCTURE GENERATION $script:AuditGeneration" -ForegroundColor Blue
+Write-AuditLine "AUDITSTRUCTURE - AUDIT GENERATION $script:AuditGeneration" -ForegroundColor Blue
 
 # Each entry is a path through the document and the kind of value that must be found there.
 # 'string', 'count' for an integer of zero or more, 'string[]', 'ring[]' for the ring table,
@@ -1444,7 +1444,7 @@ function Invoke-AuditHelper {
 
         $nativePreference = $ErrorActionPreference
         $ErrorActionPreference = 'Continue'
-        $helperOutput = & $dotnet.Source $binaryPath $ConfigPath $ProjectRoot (Join-Path $PSScriptRoot 'auditbinder.json') $outputPath 2>&1
+        $helperOutput = & $dotnet.Source $binaryPath $ConfigPath $ProjectRoot (Join-Path $PSScriptRoot 'AuditBinder.json') $outputPath 2>&1
         $ErrorActionPreference = $nativePreference
         if ($LASTEXITCODE -ne 0) {
             throw "The structure binder failed.`n$($helperOutput -join [Environment]::NewLine)"

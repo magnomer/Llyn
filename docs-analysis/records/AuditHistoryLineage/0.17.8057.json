@@ -1,0 +1,19 @@
+{
+  "version": "0.17.8057",
+  "commit": "b7391164f4bf6cc91d4aab070dd78efc4215f59a",
+  "previous": "0.17.8007",
+  "previousCommit": "c195b385b62164d49a1fa8bf0279f596be77b77b",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.UIDeportment/Sound/Articulation/PArticulation.comment.md", "src/Llyn.UIDeportment/Sound/Articulation/QArticulation.comment.md"],
+    ["src/Llyn.UIDeportment/Sound/Articulation/PConsonant.comment.md", "src/Llyn.UIDeportment/Sound/Articulation/QConsonant.comment.md"],
+    ["src/Llyn.UIDeportment/Sound/Articulation/PConsonant.cs", "src/Llyn.UIDeportment/Sound/Articulation/QConsonant.cs"],
+    ["src/Llyn.UIDeportment/Sound/Articulation/PInventoryItem.comment.md", "src/Llyn.UIDeportment/Sound/Articulation/QInventoryItem.comment.md"],
+    ["src/Llyn.UIDeportment/Sound/Articulation/PPhonology.comment.md", "src/Llyn.UIDeportment/Sound/Articulation/QPhonology.comment.md"],
+    ["src/Llyn.UIDeportment/Sound/Articulation/PVowel.comment.md", "src/Llyn.UIDeportment/Sound/Articulation/QVowel.comment.md"],
+    ["src/Llyn.UIDeportment/Sound/Articulation/PVowel.cs", "src/Llyn.UIDeportment/Sound/Articulation/QVowel.cs"],
+    ["src/Llyn.UIDeportment/Sound/Diwei/PTallyMark.comment.md", "src/Llyn.UIDeportment/Sound/Diwei/QTallyMark.comment.md"],
+    ["src/Llyn.UIDeportment/Sound/Diwei/PTallyMark.cs", "src/Llyn.UIDeportment/Sound/Diwei/QTallyMark.cs"],
+    ["src/Llyn.UIDeportment/Sound/Shengfu/PStemCommand.comment.md", "src/Llyn.UIDeportment/Sound/Shengfu/QStemCommand.comment.md"]
+  ]
+}

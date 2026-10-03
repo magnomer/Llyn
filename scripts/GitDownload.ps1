@@ -41,16 +41,16 @@
     GitDownload -Threshold 2.0.6920
     Save the threshold and download versions newer than 2.0.6920.
 #>
-# SNAPSHOT GENERATION 1 - GitDownload.ps1.
+# GITDOWNLOAD - SNAPSHOT GENERATION 1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the executed outcome changes.
 # A generation names how the family archives the source, fetches archives from GitHub, cleans the
 # tree and maintains the code index. Two projects on the same generation produce the same archive
 # from the same tree and lay out snapshots/ the same, whatever else differs between the files.
-# Generation 1: zip.ps1 archives the Git-visible file set as snapshots/<version>/<project>-V<version>.zip,
+# Generation 1: Zip.ps1 archives the Git-visible file set as snapshots/<version>/<project>-V<version>.zip,
 # refuses to overwrite and refuses a tree that no longer matches an executable snapshot; GitDownload.ps1
 # fetches every version-labelled commit above the threshold from GitHub into the same layout;
-# clean.ps1 removes obj/, bin/, TestResults/ and WPF temp projects outside the protected trees and
+# Clean.ps1 removes obj/, bin/, TestResults/ and WPF temp projects outside the protected trees and
 # maintains the editor exclusions.
 # Every project-specific value lives in snapshot.json, so this file is identical in every project at
 # this generation.
@@ -108,6 +108,8 @@ NOTES
 '@ | Write-Host
     exit 0
 }
+
+Write-Host 'GITDOWNLOAD - SNAPSHOT GENERATION 1' -ForegroundColor Blue
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'

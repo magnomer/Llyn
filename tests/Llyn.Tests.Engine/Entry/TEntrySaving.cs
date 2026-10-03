@@ -79,12 +79,12 @@ public sealed class TEntrySaving
             string.Empty,
             [TInterface.TCardDraftCreate(
                 string.Empty, string.Empty, "a meaning",
-                [TInterface.TSentenceDraftCreate("he said a word")],
+                [TInterfaceExample.TSentenceDraftCreate("he said a word")],
                 [TInterface.TSituationDraftCreate("conversation")],
                 [], ["spoken"], [], 1)],
             [TInterface.TCardDraftCreate(
                 string.Empty, "in a word", "briefly",
-                [TInterface.TSentenceDraftCreate("in a word, no")],
+                [TInterfaceExample.TSentenceDraftCreate("in a word, no")],
                 [TInterface.TSituationDraftCreate("summary")],
                 [], ["written"], [], 1)]);
 

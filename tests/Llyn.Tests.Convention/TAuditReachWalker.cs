@@ -23,7 +23,7 @@ internal static class TAuditReachWalker
     public static IReadOnlyList<TViolation> TAuditRun(IEnumerable<string> markupPaths)
     {
         List<TViolation> violations = [];
-        IReadOnlySet<string> deportment = TAuditBinder.TAuditDeportmentRead();
+        IReadOnlySet<string> deportment = TAuditBinderSide.TAuditDeportmentRead();
         Dictionary<string, List<string>> spaces = TAuditSpaceRead();
         foreach (string path in markupPaths)
         {

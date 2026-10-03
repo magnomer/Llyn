@@ -1,5 +1,5 @@
 # TLedger.cs
-Hash: `74e394f351378156`
+Hash: `41d7bf92cd2687a6`
 
 ## `public sealed class TLedger`
 
@@ -12,7 +12,7 @@ An attached view is shown every page at once, with its titles.
 The Web summary counts out of two, and the Layout summary is left to the driver.
 A saved epithet shows the view again with Listing on, and a detached view is shown nothing more.
 The fake port's normalised language and online count reach the state unchanged.
-A shipped language reads its native name, and the epithet saves reach the port.
+A scanned language reads its native name, an unscanned one its code, and the epithet saves reach the port.
 A wrapped refusal answers its reason alone, and a bare fault answers the unexpected key with its audit file.
 
 ## `private static List<CLedgerState> TLedgerShowRead(CAtelier atelier)`
@@ -21,4 +21,4 @@ Attaches a view that keeps every state it is shown, and answers that list.
 
 ## `private static LSettingsPort TLedgerPortCreate(Dictionary<string, Func<object?[]?, object?>> answers)`
 
-A fake settings port that answers the ledger's reads for a Korean workspace, over any answers the test sets.
+A fake settings port that answers the ledger's reads for a Korean localization, over any answers the test sets.

@@ -86,7 +86,7 @@ public sealed class TRequest
         long second = TRequestCardAdd(engine, started.LDraftId, 1);
 
         LDraft answered = engine.TEngineRequestApply(
-            TInterface.TRequestTitleCreate(started.LDraftId, second, TInterface.TStateValueCreate("set alight")));
+            TInterface.TRequestTitleCreate(started.LDraftId, second, TInterfaceState.TStateValueCreate("set alight")));
 
         IReadOnlyList<LCardDraft> cards = answered.LDraftContent.LEntryDraftMeanings;
         Assert.Equal(first, cards[0].LCardDraftId);
@@ -254,12 +254,12 @@ public sealed class TRequest
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LDraft started = engine.TEngineExampleStart("Example", null);
         LDraft changed = engine.TEngineRequestApply(
-            TInterface.TExampleTextCreate(started.LDraftId, TInterface.TStateValueCreate("a line")));
+            TInterface.TExampleTextCreate(started.LDraftId, TInterfaceState.TStateValueCreate("a line")));
         List<LBulletin> bulletins = [];
         engine.TEngineObserverAttach(bulletins.Add);
 
         LDraft answered = engine.TEngineRequestApply(
-            TInterface.TExampleTextCreate(started.LDraftId, TInterface.TStateValueCreate("a line")));
+            TInterface.TExampleTextCreate(started.LDraftId, TInterfaceState.TStateValueCreate("a line")));
 
         Assert.Equal(changed.LDraftVersion, answered.LDraftVersion);
         Assert.Equal(changed.LDraftExample, answered.LDraftExample);
@@ -277,11 +277,11 @@ public sealed class TRequest
         long id = started.LDraftSituation!.LSituationId;
 
         engine.TEngineRequestApply(TInterface.TSituationTitleCreate(
-            started.LDraftId, id, TInterface.TStateValueCreate("around a hearth")));
+            started.LDraftId, id, TInterfaceState.TStateValueCreate("around a hearth")));
         engine.TEngineRequestApply(TInterface.TSituationDescriptionCreate(
-            started.LDraftId, id, TInterface.TStateValueCreate("a fireside")));
+            started.LDraftId, id, TInterfaceState.TStateValueCreate("a fireside")));
         LDraft answered = engine.TEngineRequestApply(TInterface.TSituationKindCreate(
-            started.LDraftId, id, TInterface.TStateValueCreate("place")));
+            started.LDraftId, id, TInterfaceState.TStateValueCreate("place")));
 
         Assert.Equal(id, answered.LDraftSituation!.LSituationId);
         Assert.Equal("around a hearth", answered.LDraftSituation.LSituationTitle.TStateValueShow());

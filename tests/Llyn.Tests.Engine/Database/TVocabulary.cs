@@ -137,7 +137,7 @@ public sealed class TVocabulary
         LMorphology plural = engine.TParadigmMorphologyRead(entry.LEntryId, "plural");
 
         engine.TEntryInflectionSave(entry.LEntryId, [
-            TInterface.TInflectionCreate(entry.LEntryId, 0, "words", null, noun.LSpeechValueId,
+            TInterfaceInflection.TInflectionCreate(entry.LEntryId, 0, "words", null, noun.LSpeechValueId,
                 [plural.LMorphologyId]),
         ]);
 
@@ -161,7 +161,7 @@ public sealed class TVocabulary
         LEntry entry = engine.TEngineEntrySave(TVocabularyDraftCreate("Noun"));
 
         Assert.Throws<LRefusal>(() => engine.TEntryInflectionSave(entry.LEntryId, [
-            TInterface.TInflectionCreate(entry.LEntryId, 0, "words", null, null,
+            TInterfaceInflection.TInflectionCreate(entry.LEntryId, 0, "words", null, null,
                 [999999]),
         ]));
         Assert.Empty(engine.TEntryInflectionRead(entry.LEntryId));

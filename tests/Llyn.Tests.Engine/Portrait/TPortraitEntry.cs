@@ -16,10 +16,10 @@ public sealed class TPortraitEntry
         engine.TEngineMorphologySave(false);
 
         LCardDraft meaning = TInterface.TCardDraftCreate(
-            TInterface.TStateValueCreate("set alight"),
+            TInterfaceState.TStateValueCreate("set alight"),
             LStateValue.LStateValueUnspecified,
-            TInterface.TStateValueCreate("to set something burning"),
-            [TInterface.TSentenceDraftCreate("she knelt to kindle the damp logs")],
+            TInterfaceState.TStateValueCreate("to set something burning"),
+            [TInterfaceExample.TSentenceDraftCreate("she knelt to kindle the damp logs")],
             [TInterface.TSituationDraftCreate("around a hearth")],
             [],
             ["literal"],

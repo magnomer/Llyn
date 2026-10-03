@@ -91,10 +91,10 @@ public sealed class TMeaning
 
         IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> rows = TInterface.TMeaningClerkSort(
             [
-                TInterface.TMeaningCreate(3, 7, null, 2, TInterface.TStateValueCreate("second"), blank),
-                TInterface.TMeaningCreate(1, 7, null, 1, TInterface.TStateValueCreate("first"), blank),
-                TInterface.TMeaningCreate(4, 7, 1, 2, TInterface.TStateValueCreate("first-b"), blank),
-                TInterface.TMeaningCreate(2, 7, 1, 1, TInterface.TStateValueCreate("first-a"), blank),
+                TInterface.TMeaningCreate(3, 7, null, 2, TInterfaceState.TStateValueCreate("second"), blank),
+                TInterface.TMeaningCreate(1, 7, null, 1, TInterfaceState.TStateValueCreate("first"), blank),
+                TInterface.TMeaningCreate(4, 7, 1, 2, TInterfaceState.TStateValueCreate("first-b"), blank),
+                TInterface.TMeaningCreate(2, 7, 1, 1, TInterfaceState.TStateValueCreate("first-a"), blank),
             ],
             "unknown");
 
@@ -117,8 +117,8 @@ public sealed class TMeaning
     {
         LStateValue blank = LStateValue.LStateValueUnspecified;
 
-        LStateValue first = TInterface.TStateValueCreate("first");
-        LStateValue second = TInterface.TStateValueCreate("second");
+        LStateValue first = TInterfaceState.TStateValueCreate("first");
+        LStateValue second = TInterfaceState.TStateValueCreate("second");
 
         Assert.Equal("first", TInterface.TMeaningCreate(2, 9, 1, 0, first, blank).LMeaningName);
         Assert.Equal("second", TInterface.TMeaningCreate(3, 9, 1, 1, blank, second).LMeaningName);

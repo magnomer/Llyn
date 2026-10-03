@@ -1,0 +1,20 @@
+{
+  "version": "0.17.12368",
+  "commit": "b11aab4a228224cfde91ede5ceb12fd7b0f4ef13",
+  "previous": "0.17.12318",
+  "previousCommit": "eb8d3098e20d5cb472cc49d019cab0f2f24cae35",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.UIDeportment/Shell/LCaption.comment.md", "src/Llyn.UIDeportment/Shell/QCaption.comment.md"],
+    ["src/Llyn.UIDeportment/Shell/LCaption.cs", "src/Llyn.UIDeportment/Shell/QCaption.cs"],
+    ["src/Llyn.UIDeportment/Shell/LEnsignImage.comment.md", "src/Llyn.UIDeportment/Shell/QEnsignImage.comment.md"],
+    ["src/Llyn.UIDeportment/Shell/LFontFace.comment.md", "src/Llyn.UIDeportment/Shell/QFontFace.comment.md"],
+    ["src/Llyn.UIDeportment/Shell/LFootprint.comment.md", "src/Llyn.UIDeportment/Shell/QFootprint.comment.md"],
+    ["src/Llyn.UIDeportment/Shell/LFootprint.cs", "src/Llyn.UIDeportment/Shell/QFootprint.cs"],
+    ["src/Llyn.UIDeportment/Shell/LMarkdownFace.cs", "src/Llyn.UIDeportment/Shell/QMarkdownFace.cs"],
+    ["src/Llyn.UIDeportment/Shell/LObserver.comment.md", "src/Llyn.UIDeportment/Shell/QObserver.comment.md"],
+    ["src/Llyn.UIDeportment/Shell/LObserver.cs", "src/Llyn.UIDeportment/Shell/QObserver.cs"],
+    ["src/Llyn.UIDeportment/Shell/LSplice.comment.md", "src/Llyn.UIDeportment/Shell/QSplice.comment.md"],
+    ["src/Llyn.UIDeportment/Shell/LSplice.cs", "src/Llyn.UIDeportment/Shell/QSplice.cs"]
+  ]
+}

@@ -1,5 +1,5 @@
 # TSituation.cs
-Hash: `7f5d27e8b871cd41`
+Hash: `82bd50332a683fac`
 
 ## `public sealed class TSituation`
 
@@ -9,11 +9,32 @@ It covers the delete the references refuse and the detach that leaves the row st
 Situations on a card are read back through the entry's load, as the editor reads them.
 The Images and Videos a Situation shows are covered by `TSituationMedia`.
 
+## `public void SituationUpdate_OnManyCards_ShowsNewWordingOnEach()`
+
+Rewriting a Situation shows its new title on every card that references it, Meaning and Collocation alike.
+A Situation is one shared row, so no card may keep the old wording.
+
 ## `public void SituationPick_CollocationCard_LandsOnThatCard()`
 
 A request names its card by id alone.
 So a Meaning and a Collocation of one entry must never share an id.
 A pick aimed at the Collocation of a fresh entry once landed on its Meaning, since both were number 1.
+
+## `public void SituationRead_CardHoldingSeveral_ReturnsCardOrder()`
+
+A card reads its Situations in the order they sit on it, and a pick at position 0 goes first.
+The order is the one the user arranged, so a read must not fall back to creation order.
+
+## `public void SituationDelete_StillReferenced_RefusesAndDetachKeepsIt()`
+
+The plain delete is refused while a card references the Situation.
+Detaching it from the card empties that card and leaves the Situation row standing.
+
+## `public void EntryUpdate_SituationEdited_KeepsId()`
+
+Editing, reordering and adding Situations through a card keeps the id of each edited one.
+The edited row is rewritten in place and a new chip becomes a new row.
+So no card loses a reference.
 
 ## `public void SituationRead_WorkspaceShelf_ReturnsReferenceCounts()`
 
@@ -44,7 +65,7 @@ The second one asked for position 0, so it takes it and the set is renumbered ar
 
 The first Meaning or Collocation card of the entry as its load returns it.
 
-### `private static void TSituationPickApply(`
+### `private static void TSituationPickApply(LEngine engine, long entryId, long situationId, int position)`
 
 References a stored Situation from the first Meaning the way the entry form does, by picking it in a draft.
 

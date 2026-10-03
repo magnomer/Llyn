@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -10,25 +8,6 @@ namespace Llyn.Tests;
 
 public sealed class TCorpus
 {
-    [Fact]
-    public void CorpusExampleCreate_NoRowChosen_StartsABlankTranscript()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        List<CExample> held = [];
-        corpus.CCorpusTranscriptChanged += held.Add;
-
-        corpus.CCorpusExampleCreate();
-
-        Assert.True(corpus.CCorpusDesk.CDeskHeld);
-        Assert.True(corpus.CCorpusTranscriptShown);
-        Assert.True(corpus.CCorpusScribeChecked);
-        Assert.NotNull(held[^1]);
-        Assert.NotNull(corpus.TCorpusTranscriptRead());
-    }
-
     [Fact]
     public void CorpusExampleCreate_ExampleChosen_OpensAQuotingEntryInTheEditor()
     {
@@ -116,90 +95,6 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public void CorpusExampleSelect_UnsavedTranscriptKept_RecordsNothing()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        LExample cat = TCorpusExampleSave(engine, "a cat sat");
-        List<string> asked = [];
-        CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
-        corpus.CCorpusExampleCreate();
-        corpus.CCorpusDesk.TDeskDefer(
-            TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterface.TStateValueCreate("a dog")));
-        int recorded = 0;
-        atelier.CAtelierNavigation.CNavigationChanged += _ => recorded++;
-
-        corpus.CCorpusExampleSelect(cat.LExampleId);
-
-        Assert.Equal(0, recorded);
-        Assert.Equal(["Leave"], asked);
-        Assert.True(corpus.CCorpusTranscriptShown);
-        Assert.Null(corpus.CCorpusAnthology.CAnthologyChosen);
-    }
-
-    [Fact]
-    public void CorpusLeaveConfirm_UnsavedTranscriptDiscarded_LeavesWithoutStoring()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        List<string> asked = [];
-        CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
-
-        Assert.True(corpus.TCorpusLeaveConfirm());
-        Assert.Empty(asked);
-
-        corpus.CCorpusExampleCreate();
-        corpus.CCorpusDesk.TDeskDefer(
-            TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterface.TStateValueCreate("a dog")));
-
-        Assert.True(corpus.TCorpusLeaveConfirm());
-        Assert.Equal(["Leave"], asked);
-        Assert.Empty(corpus.CCorpusAnthology.TAnthologyRowsRead());
-    }
-
-    [Fact]
-    public void CorpusScribeToggle_ClosingTheTranscript_CancelsTheDesk()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        LExample cat = TCorpusExampleSave(engine, "a cat sat");
-        CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        corpus.TCorpusExampleOpen(cat.LExampleId);
-
-        corpus.CCorpusScribeToggle(true);
-
-        Assert.True(corpus.CCorpusTranscriptShown);
-        Assert.True(corpus.CCorpusDesk.CDeskHeld);
-
-        corpus.CCorpusScribeToggle(false);
-
-        Assert.True(corpus.CCorpusExcerptShown);
-        Assert.False(corpus.CCorpusDesk.CDeskHeld);
-        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyChosen);
-    }
-
-    [Fact]
-    public void CorpusScribeToggle_ClosingTheQuotationEditor_FallsBackToTheChosenExample()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        LExample cat = TCorpusExampleSave(engine, "a cat sat");
-        CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        corpus.TCorpusExampleOpen(cat.LExampleId);
-        corpus.CCorpusExampleCreate();
-
-        corpus.CCorpusScribeToggle(false);
-
-        Assert.False(corpus.CCorpusEditorShown);
-        Assert.True(corpus.CCorpusExcerptShown);
-        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyChosen);
-    }
-
-    [Fact]
     public void CorpusQuotationSelect_QuotingEntry_ShowsItOnTheDisplay()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -241,21 +136,6 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public void CorpusEntryResonate_NoChosenQuotation_KeepsTheTranscript()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        corpus.CCorpusExampleCreate();
-
-        corpus.TCorpusEntryResonate();
-
-        Assert.True(corpus.CCorpusTranscriptShown);
-        Assert.True(corpus.CCorpusDesk.CDeskHeld);
-    }
-
-    [Fact]
     public void CorpusEntryResonate_QuotationOnDisplay_KeepsTheQuotationSide()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -272,57 +152,6 @@ public sealed class TCorpus
 
         Assert.True(corpus.CCorpusDisplayShown);
         Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyChosen);
-    }
-
-    [Fact]
-    public void CorpusLeaveConfirm_UnsavedTranscriptKept_StaysOnTheTranscript()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        List<string> asked = [];
-        CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
-        corpus.CCorpusExampleCreate();
-        corpus.CCorpusDesk.TDeskDefer(
-            TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterface.TStateValueCreate("a dog")));
-
-        Assert.False(corpus.TCorpusLeaveConfirm());
-        Assert.Equal(["Leave"], asked);
-        Assert.True(corpus.CCorpusTranscriptShown);
-        Assert.True(corpus.CCorpusDesk.CDeskHeld);
-    }
-
-    [Fact]
-    public void CorpusLeaveConfirm_UnsavedTranscriptStored_StoresTheExample()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(true, []));
-        corpus.CCorpusExampleCreate();
-        corpus.CCorpusDesk.TDeskDefer(
-            TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterface.TStateValueCreate("a dog")));
-
-        Assert.True(corpus.TCorpusLeaveConfirm());
-        Assert.Single(corpus.CCorpusAnthology.TAnthologyRowsRead());
-    }
-
-    [Fact]
-    public void CorpusSessionSave_FreshTranscript_ShowsTheStoredExampleOnTheExcerpt()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        corpus.CCorpusExampleCreate();
-        corpus.CCorpusDesk.TDeskDefer(
-            TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterface.TStateValueCreate("a dog")));
-
-        Assert.True(corpus.CCorpusSession.CSessionSave());
-
-        Assert.True(corpus.CCorpusExcerptShown);
-        Assert.True(corpus.CCorpusExcerptHeld);
-        Assert.False(corpus.CCorpusScribeChecked);
     }
 
     [Fact]
@@ -385,91 +214,6 @@ public sealed class TCorpus
         Assert.True(corpus.CCorpusDisplayShown);
     }
 
-    [Fact]
-    public void AtelierClose_QuotingEntryOnTheEditor_CancelsTheEditorDeskAndStopsPlayback()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        int stopped = 0;
-        LMediaPort media = TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["LEngineRecordingStop"] = _ =>
-            {
-                stopped++;
-                return null;
-            },
-        });
-        using CAtelier atelier = TInterfaceConduct.TAtelierMediaCreate(engine, media);
-        LExample cat = TCorpusExampleSave(engine, "a cat sat");
-        CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        corpus.TCorpusExampleOpen(cat.LExampleId);
-        corpus.CCorpusExampleCreate();
-        Assert.True(corpus.CCorpusEditor.CEditorDesk.CDeskHeld);
-
-        atelier.CAtelierClose();
-
-        Assert.False(corpus.CCorpusEditor.CEditorDesk.CDeskHeld);
-        Assert.Equal(1, stopped);
-    }
-
-    [Fact]
-    public void CorpusCreate_TranscriptEdited_HandsTheHeldExampleThroughTheMarshal()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        engine.TEngineDelaySet(0);
-        LExample cat = TCorpusExampleSave(engine, "a cat sat");
-        int marshalled = 0;
-        CCorpus corpus = CCorpus.CCorpusCreate(
-            atelier,
-            static () => true,
-            TEnvoyFake.TEnvoyCreate(false, []),
-            run =>
-            {
-                marshalled++;
-                run();
-            });
-        corpus.TCorpusExampleOpen(cat.LExampleId);
-        corpus.CCorpusScribeToggle(true);
-        List<CExample> drafted = [];
-        corpus.CCorpusDraftChanged += drafted.Add;
-
-        corpus.CCorpusMentionAdd("a cat sat", 2, 3, 0);
-        corpus.CCorpusDesk.CDeskPersist();
-
-        Assert.True(marshalled > 0);
-        Assert.Equal("a cat sat", drafted[^1].CExampleText.CStateValueText);
-    }
-
-    [Fact]
-    public void CorpusTranscriptChanged_StoredExampleThenCancel_RaisesItsTallyThenABlankExample()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        LExample cat = TCorpusExampleSave(engine, "a cat sat");
-        engine.TRequestQuoteApply(TCorpusEntrySave(engine).LEntryId, cat.LExampleId);
-        CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        List<CExample> held = [];
-        corpus.CCorpusTranscriptChanged += held.Add;
-        corpus.TCorpusExampleOpen(cat.LExampleId);
-        corpus.CCorpusScribeToggle(true);
-        CExample stored = held[^1];
-
-        corpus.CCorpusSession.CSessionCancel();
-
-        string once = TInterface.TLocalizationTextRead("Example.UsageOne");
-        Assert.Equal(
-            ("a cat sat", "Example.Text", once),
-            (stored.CExampleText.CStateValueText, stored.CExampleTextHint, stored.CExampleTally));
-        CExample blank = held[^1];
-        Assert.Equal(
-            (string.Empty, "Example.Text", once),
-            (blank.CExampleText.CStateValueText, blank.CExampleTextHint, blank.CExampleTally));
-        Assert.Empty(blank.CExampleGloss);
-    }
-
     internal static CCorpus TCorpusPrepare(CAtelier atelier, CEnvoy envoy)
     {
         CCorpus corpus = CCorpus.CCorpusCreate(atelier, static () => true, envoy, static run => run());
@@ -478,8 +222,8 @@ public sealed class TCorpus
 
     internal static LExample TCorpusExampleSave(LEngine engine, string text)
     {
-        return engine.TEngineExampleCreate(TInterface.TExampleCreate(
-            0, "English", TInterface.TStateValueCreate(text), null, TInterface.TStateAnchorRead(null)));
+        return engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
+            0, "English", TInterfaceState.TStateValueCreate(text), null, TInterfaceState.TStateAnchorRead(null)));
     }
 
     internal static LEntry TCorpusEntrySave(LEngine engine)

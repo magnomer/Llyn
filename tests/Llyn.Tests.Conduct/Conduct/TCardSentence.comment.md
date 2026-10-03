@@ -1,5 +1,5 @@
 # TCardSentence.cs
-Hash: `063f9bd8b937e922`
+Hash: `04006230f6c0a70c`
 
 ## `public sealed class TCardSentence`
 

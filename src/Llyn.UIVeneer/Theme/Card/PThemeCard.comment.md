@@ -46,9 +46,16 @@ It then clears its values, so this style rules again.
 
 ## `<Style x:Key="Theme.Card.Pellet" TargetType="Border">`
 
-A translation, a situation and a tag as chips.
-A translation is tinted blue, a situation tinted amber and a tag outlined.
-A row of chips is therefore never read as the wrong kind.
+A translation as a chip tinted in the soft accent.
+A link and an etymon take the same chip.
+A situation and a tag take styles of their own.
+So a row of chips is never read as the wrong kind.
+
+## `<Style x:Key="Theme.Card.Badge" TargetType="Border">`
+
+A tag as an outlined chip with no fill of its own.
+A label and a mention take the same outline.
+Beside the tinted translation and the amber situation, the outline marks it as a different kind.
 
 ## `<Style x:Key="Theme.Card.Situation" TargetType="Border">`
 

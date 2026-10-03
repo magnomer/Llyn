@@ -94,7 +94,7 @@
     ]
   },
   "report": {
-    "directory": "audit",
+    "directory": "docs-analysis",
     "versionFile": "version.json",
     "versionKey": "current-version",
     "prefix": "AuditPlatform-"

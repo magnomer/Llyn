@@ -51,8 +51,8 @@ public sealed class TEntryDraft
                     string.Empty,
                     string.Empty,
                     "to stay until something happens",
-                    [TInterface.TSentenceDraftCreate(
-                        TInterface.TStateValueCreate("for"), TInterface.TStateValueCreate("Patient"))],
+                    [TInterfaceExample.TSentenceDraftCreate(
+                        TInterfaceState.TStateValueCreate("for"), TInterfaceState.TStateValueCreate("Patient"))],
                     [],
                     [],
                     [],
@@ -100,7 +100,7 @@ public sealed class TEntryDraft
                 string.Empty,
                 string.Empty,
                 "a unit of language",
-                [TInterface.TSentenceDraftCreate("he said a word")],
+                [TInterfaceExample.TSentenceDraftCreate("he said a word")],
                 [],
                 [],
                 [],
@@ -269,17 +269,17 @@ public sealed class TEntryDraft
                     "to set alight",
                     [],
                     [TInterface.TSituationDraftCreate(
-                        TInterface.TStateValueCreate("writing a formal letter"),
+                        TInterfaceState.TStateValueCreate("writing a formal letter"),
                         0,
-                        TInterface.TStateValueCreate("the register an institution expects"),
-                        TInterface.TStateValueCreate("writing"))],
+                        TInterfaceState.TStateValueCreate("the register an institution expects"),
+                        TInterfaceState.TStateValueCreate("writing"))],
                     [target.LEntryId],
                     [],
                     [],
                     1,
                     video: [TInterface.TVideoDraftCreate("media/kindling.mp4", "00:12-00:19")],
                     register: [TInterface.TRegisterDraftCreate(
-                        TInterface.TStateValueCreate("courtroom"), 0)]),
+                        TInterfaceState.TStateValueCreate("courtroom"), 0)]),
             ],
             []));
 
@@ -323,14 +323,14 @@ public sealed class TEntryDraft
             "Chiefly literary.",
             [
                 TInterface.TCardDraftCreate(
-                    TInterface.TStateValueCreate("set alight"),
+                    TInterfaceState.TStateValueCreate("set alight"),
                     LStateValue.LStateValueUnspecified,
-                    TInterface.TStateValueCreate("to set something burning"),
+                    TInterfaceState.TStateValueCreate("to set something burning"),
                     [
-                        TInterface.TSentenceDraftCreate("he kindled the dry brush"),
-                        TInterface.TSentenceDraftCreate(
-                            TInterface.TStateValueCreate("with"),
-                            TInterface.TStateValueCreate("Instrument")),
+                        TInterfaceExample.TSentenceDraftCreate("he kindled the dry brush"),
+                        TInterfaceExample.TSentenceDraftCreate(
+                            TInterfaceState.TStateValueCreate("with"),
+                            TInterfaceState.TStateValueCreate("Instrument")),
                     ],
                     [TInterface.TSituationDraftCreate("story telling")],
                     [target.LEntryId],
@@ -347,7 +347,7 @@ public sealed class TEntryDraft
                 string.Empty,
                 "kindle interest",
                 "to make someone care",
-                [TInterface.TSentenceDraftCreate("the speech kindled a hope")],
+                [TInterfaceExample.TSentenceDraftCreate("the speech kindled a hope")],
                 [],
                 [target.LEntryId],
                 ["idiom"],

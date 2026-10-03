@@ -124,8 +124,8 @@ public sealed class TMarkupImporting
 
         LReference reference = engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
             0,
-            TInterface.TStateValueCreate("A Dictionary"),
-            TInterface.TStateValueCreate("1998"),
+            TInterfaceState.TStateValueCreate("A Dictionary"),
+            TInterfaceState.TStateValueCreate("1998"),
             LReferenceKind.LReferenceKindBook,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
@@ -133,15 +133,15 @@ public sealed class TMarkupImporting
         LAuthor kim = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Kim"));
         engine.TRequestCreditApply(reference.LReferenceId, kim.LAuthorId, 0);
 
-        LSentenceDraft sentence = TInterface.TSentenceDraftCreate(
-            TInterface.TStateValueCreate("The ember glows."),
+        LSentenceDraft sentence = TInterfaceExample.TSentenceDraftCreate(
+            TInterfaceState.TStateValueCreate("The ember glows."),
             0,
-            TInterface.TStateAnchorRead(reference.LReferenceId));
+            TInterfaceState.TStateAnchorRead(reference.LReferenceId));
         sentence = sentence with
         {
             LSentenceDraftExample = Assert.IsType<LExampleDraft>(sentence.LSentenceDraftExample) with
             {
-                LExampleDraftMention = [TInterface.TMentionDraftCreate(0, 10, 5, glow.LEntryId, senseId)],
+                LExampleDraftMention = [TInterfaceMentionSpan.TMentionDraftCreate(0, 10, 5, glow.LEntryId, senseId)],
             },
         };
 
@@ -149,9 +149,9 @@ public sealed class TMarkupImporting
             "ember", "English", string.Empty, "a note",
             [
                 TInterface.TCardDraftCreate(
-                    TInterface.TStateValueCreate("glowing coal"),
+                    TInterfaceState.TStateValueCreate("glowing coal"),
                     LStateValue.LStateValueUnspecified,
-                    TInterface.TStateValueCreate("a small piece of burning coal"),
+                    TInterfaceState.TStateValueCreate("a small piece of burning coal"),
                     [sentence], [], [glow.LEntryId], ["fire"], [], 1) with
                 {
                     LCardDraftChild = [TInterface.TCardCreate("a fading one", 1)],
@@ -161,7 +161,7 @@ public sealed class TMarkupImporting
             [
                 TInterface.TCardDraftCreate(
                     LStateValue.LStateValueUnspecified,
-                    TInterface.TStateValueCreate("dying ember"),
+                    TInterfaceState.TStateValueCreate("dying ember"),
                     LStateValue.LStateValueUnspecified,
                     [], [], [], [], [], 1),
             ]));

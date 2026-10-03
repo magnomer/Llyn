@@ -5,6 +5,8 @@ Hash: `5e6bdac7f9362b14`
 
 The relay for the browsing seam: the find call of each browsed kind, and the catalog vocabulary.
 Each relay delegates to one engine or Core operation and returns what that operation returned.
+`TCardChildSet` is one exception, since it builds the card itself.
+`TEngineCitationCreate` is the other, which creates the reference, raises a reference bulletin and returns the stored reference.
 The orderings and the matches under test are reached only here, so no test body calls them itself.
 
 ## `internal static LCatalogRegister TCatalogRegisterCreate(LRegister register, int usage)`

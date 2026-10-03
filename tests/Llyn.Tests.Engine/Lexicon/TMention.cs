@@ -17,13 +17,13 @@ public sealed class TMention
         LMentionArchive mentions = TInterface.TMentionArchiveCreate(workspace.TWorkspaceDatabase);
 
         (long entryId, long meaningId) = TMentionEntryCreate(workspace);
-        LExample stored = examples.TExampleCreate(TInterface.TExampleCreate(
+        LExample stored = examples.TExampleCreate(TInterfaceExample.TExampleCreate(
             0, "en", "he said the word", null, null) with
         {
             LExampleMention =
             [
-                TInterface.TMentionCreate(0, 12, 4, entryId, meaningId),
-                TInterface.TMentionCreate(0, 3, 4, entryId),
+                TInterfaceMentionSpan.TMentionCreate(0, 12, 4, entryId, meaningId),
+                TInterfaceMentionSpan.TMentionCreate(0, 3, 4, entryId),
             ],
         });
 
@@ -49,11 +49,14 @@ public sealed class TMention
 
         (long entryId, _) = TMentionEntryCreate(workspace);
         LExample stored = examples.TExampleCreate(
-            TInterface.TExampleCreate(0, "en", "he said the word", null, null));
+            TInterfaceExample.TExampleCreate(0, "en", "he said the word", null, null));
 
         Assert.Throws<InvalidOperationException>(() => mentions.TMentionSave(
             stored.LExampleId,
-            [TInterface.TMentionCreate(0, 3, 4, entryId), TInterface.TMentionCreate(0, 5, 3, entryId)]));
+            [
+                TInterfaceMentionSpan.TMentionCreate(0, 3, 4, entryId),
+                TInterfaceMentionSpan.TMentionCreate(0, 5, 3, entryId),
+            ]));
         Assert.Empty(mentions.TMentionRead(stored.LExampleId));
     }
 
@@ -66,11 +69,11 @@ public sealed class TMention
 
         (long entryId, _) = TMentionEntryCreate(workspace);
         LExample stored = examples.TExampleCreate(
-            TInterface.TExampleCreate(0, "en", "he said the word", null, null));
+            TInterfaceExample.TExampleCreate(0, "en", "he said the word", null, null));
 
         Assert.Throws<InvalidOperationException>(() => mentions.TMentionSave(
-            stored.LExampleId, [TInterface.TMentionCreate(0, 12, 5, entryId)]));
-        mentions.TMentionSave(stored.LExampleId, [TInterface.TMentionCreate(0, 12, 4, entryId)]);
+            stored.LExampleId, [TInterfaceMentionSpan.TMentionCreate(0, 12, 5, entryId)]));
+        mentions.TMentionSave(stored.LExampleId, [TInterfaceMentionSpan.TMentionCreate(0, 12, 4, entryId)]);
         Assert.Single(mentions.TMentionRead(stored.LExampleId));
     }
 
@@ -83,11 +86,11 @@ public sealed class TMention
 
         (_, long meaningId) = TMentionEntryCreate(workspace);
         LExample stored = examples.TExampleCreate(
-            TInterface.TExampleCreate(0, "en", "he said the word", null, null));
+            TInterfaceExample.TExampleCreate(0, "en", "he said the word", null, null));
 
         Assert.Throws<SqliteException>(() => mentions.TMentionSave(
-            stored.LExampleId, [TInterface.TMentionCreate(0, 3, 4, 0, meaningId)]));
-        mentions.TMentionSave(stored.LExampleId, [TInterface.TMentionCreate(0, 3, 4, 0)]);
+            stored.LExampleId, [TInterfaceMentionSpan.TMentionCreate(0, 3, 4, 0, meaningId)]));
+        mentions.TMentionSave(stored.LExampleId, [TInterfaceMentionSpan.TMentionCreate(0, 3, 4, 0)]);
         Assert.Equal(0, Assert.Single(mentions.TMentionRead(stored.LExampleId)).LMentionEntryId);
     }
 
@@ -101,8 +104,8 @@ public sealed class TMention
 
         (long entryId, long meaningId) = TMentionEntryCreate(workspace);
         LExample stored = examples.TExampleCreate(
-            TInterface.TExampleCreate(0, "en", "he said the word", null, null));
-        mentions.TMentionSave(stored.LExampleId, [TInterface.TMentionCreate(0, 12, 4, entryId, meaningId)]);
+            TInterfaceExample.TExampleCreate(0, "en", "he said the word", null, null));
+        mentions.TMentionSave(stored.LExampleId, [TInterfaceMentionSpan.TMentionCreate(0, 12, 4, entryId, meaningId)]);
 
         entries.TEntryDelete(entryId);
 
@@ -120,9 +123,9 @@ public sealed class TMention
 
         (long entryId, long meaningId) = TMentionEntryCreate(workspace);
         LExample stored = examples.TExampleCreate(
-            TInterface.TExampleCreate(0, "en", "he said the word", null, null));
+            TInterfaceExample.TExampleCreate(0, "en", "he said the word", null, null));
         long mentionId = Assert.Single(mentions.TMentionSave(
-            stored.LExampleId, [TInterface.TMentionCreate(0, 12, 4, entryId, meaningId)]));
+            stored.LExampleId, [TInterfaceMentionSpan.TMentionCreate(0, 12, 4, entryId, meaningId)]));
 
         meanings.TMeaningDelete(meaningId);
 
@@ -141,12 +144,15 @@ public sealed class TMention
 
         (long entryId, _) = TMentionEntryCreate(workspace);
         LExample stored = examples.TExampleCreate(
-            TInterface.TExampleCreate(0, "en", "he said the word", null, null));
+            TInterfaceExample.TExampleCreate(0, "en", "he said the word", null, null));
         mentions.TMentionSave(
             stored.LExampleId,
-            [TInterface.TMentionCreate(0, 3, 4, entryId), TInterface.TMentionCreate(0, 12, 4, entryId)]);
+            [
+                TInterfaceMentionSpan.TMentionCreate(0, 3, 4, entryId),
+                TInterfaceMentionSpan.TMentionCreate(0, 12, 4, entryId),
+            ]);
 
-        examples.TExampleTextUpdate(stored.LExampleId, TInterface.TStateValueCreate("he said the"));
+        examples.TExampleTextUpdate(stored.LExampleId, TInterfaceState.TStateValueCreate("he said the"));
 
         LMention kept = Assert.Single(mentions.TMentionRead(stored.LExampleId));
         Assert.Equal(3, kept.LMentionOffset);
@@ -162,18 +168,18 @@ public sealed class TMention
 
         (long entryId, long meaningId) = TMentionEntryCreate(workspace);
         LExample first = examples.TExampleCreate(
-            TInterface.TExampleCreate(0, "en", "he said the word", null, null));
+            TInterfaceExample.TExampleCreate(0, "en", "he said the word", null, null));
         LExample second = examples.TExampleCreate(
-            TInterface.TExampleCreate(0, "en", "a word of advice", null, null));
-        mentions.TMentionSave(first.LExampleId, [TInterface.TMentionCreate(0, 12, 4, entryId)]);
-        mentions.TMentionSave(second.LExampleId, [TInterface.TMentionCreate(0, 2, 4, entryId, meaningId)]);
+            TInterfaceExample.TExampleCreate(0, "en", "a word of advice", null, null));
+        mentions.TMentionSave(first.LExampleId, [TInterfaceMentionSpan.TMentionCreate(0, 12, 4, entryId)]);
+        mentions.TMentionSave(second.LExampleId, [TInterfaceMentionSpan.TMentionCreate(0, 2, 4, entryId, meaningId)]);
 
         sentences.TSentenceMeaningSave(
             meaningId,
             [
-                TInterface.TSentenceCreate(0, first, null, null),
-                TInterface.TSentenceCreate(0, null, "for", null),
-                TInterface.TSentenceCreate(0, second, null, null),
+                TInterfaceExample.TSentenceCreate(0, first, null, null),
+                TInterfaceExample.TSentenceCreate(0, null, "for", null),
+                TInterfaceExample.TSentenceCreate(0, second, null, null),
             ]);
 
         IReadOnlyList<LSentence> read = sentences.TSentenceMeaningRead(meaningId);
@@ -190,7 +196,7 @@ public sealed class TMention
 
         LEntry entry = entries.TEntryCreate(
             TInterface.TEntryCreate(0, "word", "en", 0, null, null),
-            [TInterface.TFormCreate(0, 0, "word", null, "headword")],
+            [TInterfaceInflection.TFormCreate(0, 0, "word", null, "headword")],
             []);
         LMeaning meaning = meanings.TMeaningCreate(
             TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "a unit of language"));
@@ -200,7 +206,8 @@ public sealed class TMention
     [Fact]
     public void MentionDraftResolve_NegativeId_KeepsTheSpan()
     {
-        LMention resolved = TInterface.TMentionDraftResolve(TInterface.TMentionDraftCreate(-3, 12, 4, 7, 9));
+        LMention resolved =
+            TInterfaceMentionSpan.TMentionDraftResolve(TInterfaceMentionSpan.TMentionDraftCreate(-3, 12, 4, 7, 9));
 
         Assert.Equal(-3, resolved.LMentionId);
         Assert.Equal((12, 4), (resolved.LMentionOffset, resolved.LMentionLength));

@@ -197,7 +197,7 @@ public sealed class TEngineReflexSource
             new string('a', 40) + "!", HttpStatusCode.OK);
 
         (IReadOnlyList<LReflexDraft> found, bool reached) =
-            await TInterface.TReflexSourceFind(client, "(a+)+$", "整");
+            await TInterfaceSource.TReflexSourceFind(client, "(a+)+$", "整");
 
         Assert.Empty(found);
         Assert.False(reached);

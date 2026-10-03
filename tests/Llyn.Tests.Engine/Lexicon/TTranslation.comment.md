@@ -59,6 +59,21 @@ A blank card is skipped, and a link is not blankness.
 So a card whose only content is a link is written and comes back holding it.
 Without a row the link would have nothing to hang from and would be lost on save.
 
+## `public void TranslationResolve_TypedWord_MatchesWholeHeadword()`
+
+A typed word resolves only to an Entry whose whole headword reads as it, ignoring case and padding.
+A prefix finds candidates but settles nothing, so the card never links a half-typed word.
+
+## `public void TranslationResolve_SharedHeadword_SettlesNothing()`
+
+Two Entries sharing one headword resolve to nothing, and the find still lists both.
+Picking either one silently would link the wrong Entry, so the user must choose.
+
+## `public void TranslationResolve_EntryBeingEdited_NeverOffersItself()`
+
+Given the id of the Entry being edited, the resolve and the find leave that Entry out.
+An Entry may not translate itself, and the same word still resolves for any other card.
+
 ## `public void TranslationIncomingRead_EntryPointedAt_FindsBothCards()`
 
 Links are stored one way, so the target finds them by looking back rather than by holding them.

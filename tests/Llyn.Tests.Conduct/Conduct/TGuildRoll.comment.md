@@ -1,5 +1,5 @@
 # TGuildRoll.cs
-Hash: `dcdc70778513b7b1`
+Hash: `ba4c3c972e76b734`
 
 ## `public sealed class TGuildRoll`
 

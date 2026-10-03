@@ -146,6 +146,6 @@ public sealed class TDraftSituation
         Assert.NotNull(draft.LDraftSituation);
 
         return engine.TEngineRequestApply(TInterface.TSituationTitleCreate(
-            draft.LDraftId, draft.LDraftSituation.LSituationId, TInterface.TStateValueCreate(title)));
+            draft.LDraftId, draft.LDraftSituation.LSituationId, TInterfaceState.TStateValueCreate(title)));
     }
 }

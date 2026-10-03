@@ -79,10 +79,10 @@ public sealed class TCardTranslation
         long twin = engine.TEngineEntrySave(
             TInterface.TEntryDraftCreate("water", "English", "", "", [], [])).LEntryId;
         engine.TEngineDelaySet(0);
-        CDesk desk = TInterfaceConduct.TDeskCreate(
+        CDesk desk = TInterfaceConductDesk.TDeskCreate(
             engine, "Input", TEnvoyFake.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
         desk.CDeskStart(edited);
-        CCard card = TInterfaceConduct.TCardCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, []));
+        CCard card = TInterfaceConductCard.TCardCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, []));
 
         CProspect typed = card.CCardTranslationAdd(TCard.TCardSheetAdd(desk), "water", 0);
 
@@ -241,10 +241,10 @@ public sealed class TCardTranslation
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineDelaySet(0);
         List<string> asked = [];
-        CDesk desk = TInterfaceConduct.TDeskCreate(
+        CDesk desk = TInterfaceConductDesk.TDeskCreate(
             engine, "Input", TEnvoyFake.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
         desk.CDeskStart(null);
-        CCard card = TInterfaceConduct.TCardCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, asked));
+        CCard card = TInterfaceConductCard.TCardCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, asked));
         long sheet = TCard.TCardSheetAdd(desk);
 
         card.CCardTranslationInsert(sheet, 0, " ", "French", 0);

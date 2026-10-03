@@ -15,16 +15,16 @@ public sealed class TErrand
     {
         LRecording recording = TInterface.TRecordingCreate("Oxford", "https://example.test/a.mp3", 2, false, "British");
 
-        CRecording? mirror = TInterfaceConduct.TErrandRecordingRead(recording);
+        CRecording? mirror = TInterfaceConductDesk.TErrandRecordingRead(recording);
 
         Assert.Equal(new CRecording("Oxford", "https://example.test/a.mp3", 2, false, "British"), mirror);
-        Assert.Equal(recording, TInterfaceConduct.TErrandRecordingRead(mirror!));
+        Assert.Equal(recording, TInterfaceConductDesk.TErrandRecordingRead(mirror!));
     }
 
     [Fact]
     public void ErrandRecordingRead_NoRecording_ReturnsNone()
     {
-        Assert.Null(TInterfaceConduct.TErrandRecordingRead((LRecording?)null));
+        Assert.Null(TInterfaceConductDesk.TErrandRecordingRead((LRecording?)null));
     }
 
     [Fact]
@@ -34,13 +34,13 @@ public sealed class TErrand
 
         Assert.Equal(
             new CCandidate("Wiktionary", "ˈhæpi", 1, true, "American", null),
-            TInterfaceConduct.TErrandCandidateRead(candidate));
+            TInterfaceConductDesk.TErrandCandidateRead(candidate));
     }
 
     [Fact]
     public void ErrandCandidateRead_NoCandidate_ReturnsNone()
     {
-        Assert.Null(TInterfaceConduct.TErrandCandidateRead(null));
+        Assert.Null(TInterfaceConductDesk.TErrandCandidateRead(null));
     }
 
     [Fact]
@@ -48,7 +48,7 @@ public sealed class TErrand
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CDesk desk = TInterfaceConduct.TDeskCreate(engine, "Input", TEnvoyFake.TEnvoyCreate(false, []));
+        CDesk desk = TInterfaceConductDesk.TDeskCreate(engine, "Input", TEnvoyFake.TEnvoyCreate(false, []));
 
         CClipRoll roll = desk.CDeskErrand.CErrandRecordingStart(0);
 
@@ -162,7 +162,7 @@ public sealed class TErrand
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CErrand errand = TInterfaceConduct.TDeskCreate(engine, "Input", TEnvoyFake.TEnvoyCreate(false, []))
+        CErrand errand = TInterfaceConductDesk.TDeskCreate(engine, "Input", TEnvoyFake.TEnvoyCreate(false, []))
             .CDeskErrand;
 
         Assert.False(await errand.CErrandRecordingSave(
@@ -172,5 +172,5 @@ public sealed class TErrand
     }
 
     private static CErrand TErrandCreate(LEngine engine) =>
-        TInterfaceConduct.TDeskCreate(engine, "Input", TEnvoyFake.TEnvoyCreate(false, [])).CDeskErrand;
+        TInterfaceConductDesk.TDeskCreate(engine, "Input", TEnvoyFake.TEnvoyCreate(false, [])).CDeskErrand;
 }

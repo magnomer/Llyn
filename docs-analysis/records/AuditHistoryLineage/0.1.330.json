@@ -1,0 +1,10 @@
+{
+  "version": "0.1.330",
+  "commit": "209273d16caa56e7b435cd344644caf23d5ea0c7",
+  "previous": "0.1.320",
+  "previousCommit": "c9c89339171f224b95f575c0cd751438fd94fd0d",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.UIShell/UI/PLinkItem.comment.md", "src/Llyn.UIShell/UI/PProspectItem.comment.md"]
+  ]
+}

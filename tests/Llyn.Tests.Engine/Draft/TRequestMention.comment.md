@@ -1,5 +1,5 @@
 # TRequestMention.cs
-Hash: `641a2cef5326a4ec`
+Hash: `8c77716a894e181c`
 
 ## `public sealed class TRequestMention`
 
@@ -12,12 +12,13 @@ Commit writes the rows and maps the minted ids.
 It edits a shared row in place for a Mention-only change and forks it for a text change.
 The draft file round-trips a minted negative id and a Mention standing for nothing.
 The sequences the editor's four gestures send are run as the editor sends them.
-A selection past a surrogate pair carries code-point offsets, link then choose then unlink leaves nothing.
+A selection past a surrogate pair carries code-point offsets.
+Link then choose then unlink leaves nothing.
 Silence then choose is refused, and a word linked in the scribe is found at its offset once committed.
 
 ## Inline notes
 
-### `LDraft edited = TMentionTextApply(engine, started.LDraftId, card, sentence, "then she knelt to candle the damp logs again");`
+### `LDraft edited = TMentionTextApply(`
 
 Rewriting the letters inside a word drops its Mention and leaves the one after it where it was.
 Only a change of length moves the later spans.

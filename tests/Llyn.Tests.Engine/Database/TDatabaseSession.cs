@@ -134,7 +134,7 @@ public sealed class TDatabaseSession
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
 
-        LExample stored = examples.TExampleCreate(TInterface.TExampleCreate(
+        LExample stored = examples.TExampleCreate(TInterfaceExample.TExampleCreate(
             0, "en", "a sentence", "one translation", LStateAnchor.LStateAnchorUnspecified));
 
         examples.TExampleUpdate(stored with { LExampleText = "a changed sentence" });
@@ -152,12 +152,12 @@ public sealed class TDatabaseSession
         LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
 
         LExample stored = examples.TExampleCreate(
-            TInterface.TExampleCreate(0, "en", "a sentence", null, LStateAnchor.LStateAnchorUnspecified) with
+            TInterfaceExample.TExampleCreate(0, "en", "a sentence", null, LStateAnchor.LStateAnchorUnspecified) with
             {
                 LExampleGloss =
                 [
-                    TInterface.TGlossCreate(0, "ko", "한 문장"),
-                    TInterface.TGlossCreate(0, "fr", "une phrase"),
+                    TInterfaceExample.TGlossCreate(0, "ko", "한 문장"),
+                    TInterfaceExample.TGlossCreate(0, "fr", "une phrase"),
                 ],
             });
         long korean = stored.LExampleGloss[0].LGlossId;

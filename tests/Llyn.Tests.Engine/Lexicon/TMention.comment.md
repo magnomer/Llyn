@@ -1,5 +1,5 @@
 # TMention.cs
-Hash: `fdba931989b92f37`
+Hash: `cb740644a69ee697`
 
 ## `public sealed class TMention`
 
@@ -49,4 +49,4 @@ Creates a minimal Entry and Meaning pair for persistence and referential-integri
 
 ## `public void MentionDraftResolve_NegativeId_KeepsTheSpan()`
 
-Resolving a draft preserves its temporary negative ID, offsets, and Entry/meaning links for unsaved mentions.
+Resolving a draft preserves its temporary negative ID, span, and Entry/meaning links for unsaved mentions.

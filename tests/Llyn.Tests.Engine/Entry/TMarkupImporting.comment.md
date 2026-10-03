@@ -1,5 +1,5 @@
 # TMarkupImporting.cs
-Hash: `86b9ab9b98055b4b`
+Hash: `d64b109ef77ea29e`
 
 ## `public sealed class TMarkupImporting`
 
@@ -14,9 +14,17 @@ A refusal anywhere in the file must leave the workspace as it was.
 
 Each entry translates to the other, so both links resolve to rows the same import creates.
 
+### `public void MarkupImport_AbsentTranslation_StoresEntryAndReportsOmission()`
+
+The translation target is neither stored nor in the file, so only the link is dropped.
+
 ### `public void MarkupImport_TwinTargets_DropsLinkAndReportsOmission()`
 
 The two stored twins differ only in case, so normalization is what makes them twins.
+
+### `public void MarkupImport_MalformedFile_RefusesAndStoresNothing()`
+
+A file that is not well-formed is refused whole, and no entry is stored.
 
 ### `public void MarkupImport_BlankSecondHeadword_StoresNeither()`
 

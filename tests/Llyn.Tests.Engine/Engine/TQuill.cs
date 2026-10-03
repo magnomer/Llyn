@@ -25,7 +25,7 @@ public sealed class TQuill
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LTenure tenure = TQuillExampleStart(engine, TInterface.TStateValueResolve(null, true));
+        LTenure tenure = TQuillExampleStart(engine, TInterfaceState.TStateValueResolve(null, true));
 
         tenure.TQuillCreate().TQuillExampleSet("a dog");
 
@@ -40,7 +40,7 @@ public sealed class TQuill
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LTenure tenure = TQuillExampleStart(engine, TInterface.TStateValueCreate("a cat"));
+        LTenure tenure = TQuillExampleStart(engine, TInterfaceState.TStateValueCreate("a cat"));
 
         tenure.TQuillCreate().TQuillSpeakerSet("French");
 
@@ -54,13 +54,13 @@ public sealed class TQuill
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LReference reference = engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
             0,
-            TInterface.TStateValueCreate("Bestiary"),
+            TInterfaceState.TStateValueCreate("Bestiary"),
             LStateValue.LStateValueUnspecified,
             LReferenceKind.LReferenceKindUnknown,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
             LStateMark.LStateMarkUnspecified));
-        LTenure tenure = TQuillExampleStart(engine, TInterface.TStateValueCreate("a cat"));
+        LTenure tenure = TQuillExampleStart(engine, TInterfaceState.TStateValueCreate("a cat"));
 
         tenure.TQuillCreate().TQuillReferenceSet(reference.LReferenceId);
 
@@ -73,7 +73,7 @@ public sealed class TQuill
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LTenure tenure = TQuillExampleStart(engine, TInterface.TStateValueCreate("a cat"));
+        LTenure tenure = TQuillExampleStart(engine, TInterfaceState.TStateValueCreate("a cat"));
 
         tenure.TTenureGlossInsert(0);
 
@@ -86,7 +86,7 @@ public sealed class TQuill
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LTenure tenure = TQuillExampleStart(engine, TInterface.TStateValueCreate("a cat"));
+        LTenure tenure = TQuillExampleStart(engine, TInterfaceState.TStateValueCreate("a cat"));
         LQuill quill = tenure.TQuillCreate();
 
         tenure.TTenureGlossInsert(0);
@@ -101,7 +101,7 @@ public sealed class TQuill
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineDelaySet(0);
-        LTenure tenure = TQuillExampleStart(engine, TInterface.TStateValueCreate("a cat"));
+        LTenure tenure = TQuillExampleStart(engine, TInterfaceState.TStateValueCreate("a cat"));
         LQuill quill = tenure.TQuillCreate();
 
         tenure.TTenureGlossInsert(0);
@@ -226,7 +226,7 @@ public sealed class TQuill
     {
         engine.TEngineDelaySet(0);
         LExample stored = engine.TEngineExampleCreate(
-            TInterface.TExampleCreate(0, "English", text, null, LStateAnchor.LStateAnchorUnspecified));
+            TInterfaceExample.TExampleCreate(0, "English", text, null, LStateAnchor.LStateAnchorUnspecified));
         return engine.TEngineTenureStart("test", LSubject.LSubjectExample, stored.LExampleId);
     }
 

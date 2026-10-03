@@ -13,8 +13,8 @@ public sealed class TPortraitPage
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LReference source = TPortraitSourceCreate(engine, "Field Notes");
-        LExample example = engine.TEngineExampleCreate(TInterface.TExampleCreate(
-            0, "English", "The fire kindled.", "불이 붙었다.", TInterface.TStateAnchorRead(source.LReferenceId)));
+        LExample example = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
+            0, "English", "The fire kindled.", "불이 붙었다.", TInterfaceState.TStateAnchorRead(source.LReferenceId)));
 
         LPortraitPage page = engine.TEnginePortraitRead(
             example.LExampleId, LOwner.LOwnerExample, TInterface.TPortraitLegendRead());
@@ -33,8 +33,8 @@ public sealed class TPortraitPage
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LExample example = engine.TEngineExampleCreate(TInterface.TExampleCreate(
-            0, "English", null, null, TInterface.TStateAnchorRead(null)));
+        LExample example = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
+            0, "English", null, null, TInterfaceState.TStateAnchorRead(null)));
 
         LPortraitPage page = engine.TEnginePortraitRead(
             example.LExampleId, LOwner.LOwnerExample, TInterface.TPortraitLegendRead());
@@ -124,8 +124,8 @@ public sealed class TPortraitPage
         using LEngine engine = workspace.TWorkspaceEngineStart();
         TPress press = workspace.TWorkspacePress;
 
-        LExample example = engine.TEngineExampleCreate(TInterface.TExampleCreate(
-            0, "English", "The fire kindled.", null, TInterface.TStateAnchorRead(null)));
+        LExample example = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
+            0, "English", "The fire kindled.", null, TInterfaceState.TStateAnchorRead(null)));
 
         await engine.TEnginePortraitPrint(
             example.LExampleId,

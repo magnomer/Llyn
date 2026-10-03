@@ -16,7 +16,7 @@ It is composed out of the clerks for each part of an entry.
 
 Reads the ports the lifecycle touches out of `rig` and takes the frequency clerk for clearing a renamed entry.
 The ports are the root, the entries, the etymologies, the notes, the revisions, the tombstones and the workspace row.
-The nine part clerks handed in write the parts of an entry a commit spans.
+The eight part clerks handed in write the parts of an entry a commit spans.
 The recording clerk resolves the recording paths of a loaded draft.
 
 ## `public LEntry? LEntryClerkRead(long id)`
@@ -91,7 +91,8 @@ Returns the recorded revision.
 
 The delete runs first.
 So a refused delete records no history at all and throws its own message through.
-A delete is refused when another entry still links to the entry.
+A link from another entry does not refuse the delete.
+The schema deletes the linking row with the entry.
 
 All four writes share one session, so they are one transaction.
 Either all land or none of them do.
@@ -106,7 +107,7 @@ No revision is recorded, because a rating is a reading mark and not an edit of t
 
 ## `public IReadOnlyDictionary<long, string> LEntryEpithetScan(IReadOnlyList<long> ids)`
 
-The epithet of every listed entry that has one, keyed by id, in one statement.
+The epithet of every listed entry that has one, keyed by id, in one session.
 
 ## `public long LEntryCountRead()`
 

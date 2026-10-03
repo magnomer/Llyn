@@ -37,7 +37,7 @@ public sealed class TEngineParadigm
         LEntry entry = engine.TEngineEntrySave(TParadigmDraftCreate("word", "Verb, transitive"));
         LParadigmSlot past = engine.TEngineParadigmShow(entry.LEntryId)[0];
         TParadigmInflectionSave(engine, entry.LEntryId, [
-            TInterface.TInflectionCreate(
+            TInterfaceInflection.TInflectionCreate(
                 entry.LEntryId, 0, "worded", null, null, [past.LParadigmSlotMorphology.LMorphologyId]),
         ]);
 
@@ -115,7 +115,7 @@ public sealed class TEngineParadigm
         Assert.False(TInterface.TEngineParadigmMatch(noun, "mouse", "mice"));
         Assert.False(TInterface.TEngineParadigmMatch(noun, "child", "children"));
         Assert.False(TInterface.TEngineParadigmMatch(noun, "cat", ""));
-        Assert.False(TInterface.TEngineParadigmMatch(TInterface.TParadigmCreate(1, [2]), "cat", "cats"));
+        Assert.False(TInterface.TEngineParadigmMatch(TInterfaceInflection.TParadigmCreate(1, [2]), "cat", "cats"));
     }
 
     [Fact]
@@ -127,7 +127,7 @@ public sealed class TEngineParadigm
         LEntry entry = engine.TEngineEntrySave(TParadigmDraftCreate("walk", "Verb"));
         IReadOnlyList<LParadigmSlot> empty = engine.TEngineParadigmShow(entry.LEntryId);
         TParadigmInflectionSave(engine, entry.LEntryId, [
-            TInterface.TInflectionCreate(
+            TInterfaceInflection.TInflectionCreate(
                 entry.LEntryId,
                 0,
                 "walked",
@@ -229,7 +229,7 @@ public sealed class TEngineParadigm
         List<LInflection> inflections = [];
         for (int index = 0; index < forms.Length; index++)
         {
-            inflections.Add(TInterface.TInflectionCreate(
+            inflections.Add(TInterfaceInflection.TInflectionCreate(
                 entryId, 0, forms[index], null, null, [slots[index].LParadigmSlotMorphology.LMorphologyId]));
         }
 

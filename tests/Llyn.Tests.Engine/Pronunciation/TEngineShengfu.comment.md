@@ -1,5 +1,5 @@
 # TEngineShengfu.cs
-Hash: `044f579d57392cb8`
+Hash: `2c50687e1b2839b6`
 
 ## `public sealed class TEngineShengfu`
 
@@ -22,3 +22,11 @@ A pack declaring no series source fetches none and stores none.
 ## `public async Task ShengfuSourceFind_PatternTimesOut_AnswersNotReached()`
 
 A pack pattern that times out answers no series and not reached, so the miss is not remembered.
+
+## `private static async Task TShengfuSettle(LEngine engine, long entryId)`
+
+Waits until no fanqie fetch runs for the entry, since the series rides on that fetch.
+
+## `private static LEntryDraft TShengfuDraftCreate(string headword, string language)`
+
+A one-meaning draft in the fixture pack, so each test saves a real entry to start from.

@@ -19,7 +19,7 @@ public sealed class TPortrait
         Assert.Equal(media.Length, Enum.GetValues<LPortraitMedium>().Length);
         foreach (CPortraitMedium medium in media)
         {
-            Assert.Equal(medium.ToString()[1..], TInterfaceConduct.TPortraitMediumRead(medium).ToString()[1..]);
+            Assert.Equal(medium.ToString()[1..], TInterfaceConductPortrait.TPortraitMediumRead(medium).ToString()[1..]);
         }
     }
 
@@ -32,7 +32,7 @@ public sealed class TPortrait
         {
             foreach (CPressInk ink in Enum.GetValues<CPressInk>())
             {
-                LPressTicket ticket = TInterfaceConduct.TPortraitTicketRead(
+                LPressTicket ticket = TInterfaceConductPortrait.TPortraitTicketRead(
                     new CPressTicket("Office", 8.27, 11.69, true, 2, false, side, ink));
 
                 Assert.Equal(side.ToString()[1..], ticket.LPressTicketSide.ToString()[1..]);
@@ -45,22 +45,24 @@ public sealed class TPortrait
     public void PortraitMediumRead_UnknownFormat_Throws()
     {
         Assert.Throws<ArgumentOutOfRangeException>(
-            static () => TInterfaceConduct.TPortraitMediumRead((CPortraitMedium)99));
+            static () => TInterfaceConductPortrait.TPortraitMediumRead((CPortraitMedium)99));
     }
 
     [Fact]
     public void PortraitTicketRead_UnknownSideOrInk_Throws()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(static () => TInterfaceConduct.TPortraitTicketRead(new CPressTicket(
-            "Office", null, null, false, 1, true, (CPressSide)99, CPressInk.CPressInkDefault)));
-        Assert.Throws<ArgumentOutOfRangeException>(static () => TInterfaceConduct.TPortraitTicketRead(new CPressTicket(
-            "Office", null, null, false, 1, true, CPressSide.CPressSideDefault, (CPressInk)99)));
+        Assert.Throws<ArgumentOutOfRangeException>(static () =>
+            TInterfaceConductPortrait.TPortraitTicketRead(new CPressTicket(
+                "Office", null, null, false, 1, true, (CPressSide)99, CPressInk.CPressInkDefault)));
+        Assert.Throws<ArgumentOutOfRangeException>(static () =>
+            TInterfaceConductPortrait.TPortraitTicketRead(new CPressTicket(
+                "Office", null, null, false, 1, true, CPressSide.CPressSideDefault, (CPressInk)99)));
     }
 
     [Fact]
     public void PortraitTicketRead_NamedSheet_CarriesTheDialogAnswer()
     {
-        LPressTicket ticket = TInterfaceConduct.TPortraitTicketRead(new CPressTicket(
+        LPressTicket ticket = TInterfaceConductPortrait.TPortraitTicketRead(new CPressTicket(
             "Office", 816.0, 1056.0, true, 2, false, CPressSide.CPressSideLong, CPressInk.CPressInkGray));
 
         Assert.Equal("Office", ticket.LPressTicketPrinter);
@@ -74,7 +76,7 @@ public sealed class TPortrait
     [Fact]
     public void PortraitTicketRead_NoSheetNamed_TakesTheLocalSheet()
     {
-        LPressTicket ticket = TInterfaceConduct.TPortraitTicketRead(new CPressTicket(
+        LPressTicket ticket = TInterfaceConductPortrait.TPortraitTicketRead(new CPressTicket(
             "Office", null, 11.0, false, 1, true, CPressSide.CPressSideDefault, CPressInk.CPressInkDefault));
 
         Assert.Equal(LPressPaper.LPressPaperLocal, ticket.LPressTicketPaper);
@@ -83,7 +85,7 @@ public sealed class TPortrait
     [Fact]
     public void PortraitTicketRead_EmptySide_TakesTheLocalSheet()
     {
-        LPressTicket ticket = TInterfaceConduct.TPortraitTicketRead(new CPressTicket(
+        LPressTicket ticket = TInterfaceConductPortrait.TPortraitTicketRead(new CPressTicket(
             "Office", 0.0, 1056.0, false, 1, true, CPressSide.CPressSideDefault, CPressInk.CPressInkDefault));
 
         Assert.Equal(LPressPaper.LPressPaperLocal, ticket.LPressTicketPaper);
@@ -92,7 +94,7 @@ public sealed class TPortrait
     [Fact]
     public void PortraitLabelRead_EngineWording_WordsEveryHeadingByItsKey()
     {
-        LPortraitLabel label = TInterfaceConduct.TPortraitLabelRead(TPortraitSettingsCreate());
+        LPortraitLabel label = TInterfaceConductPortrait.TPortraitLabelRead(TPortraitSettingsCreate());
 
         Assert.Equal("text:Display.Unknown", label.LPortraitLabelUnknown);
         Assert.Equal("text:Display.MeaningPlural", label.LPortraitLabelMeanings);
@@ -110,7 +112,7 @@ public sealed class TPortrait
     [InlineData("Situation", "text:Situation.Untitled")]
     public void PortraitLegendRead_Realm_WordsTheFallbackTallyAndEveryKind(string realm, string untitled)
     {
-        LPortraitLegend legend = TInterfaceConduct.TPortraitLegendRead(TPortraitSettingsCreate(), realm);
+        LPortraitLegend legend = TInterfaceConductPortrait.TPortraitLegendRead(TPortraitSettingsCreate(), realm);
 
         Assert.Equal(untitled, legend.LPortraitLegendUntitled);
         Assert.Equal("text:Example.Unwritten", legend.LPortraitLegendUnwritten);
@@ -127,7 +129,7 @@ public sealed class TPortrait
     [Fact]
     public void PortraitChoiceRead_EngineFormats_OffersEveryFormatWithHtmlFirstChosen()
     {
-        IReadOnlyList<CPortraitChoice> choices = TInterfaceConduct.TPortraitChoiceRead();
+        IReadOnlyList<CPortraitChoice> choices = TInterfaceConductPortrait.TPortraitChoiceRead();
 
         Assert.Equal(
             Enum.GetValues<CPortraitMedium>().Order(),
@@ -150,7 +152,7 @@ public sealed class TPortrait
         List<string> asked = [];
         List<(string, LPortraitMedium)> exported = [];
 
-        await TInterfaceConduct.TPortraitFileExport(
+        await TInterfaceConductPortrait.TPortraitFileExport(
             TEnvoyFake.TEnvoyFileCreate(null, CPortraitMedium.CPortraitMediumPdf, asked),
             "water",
             (path, medium) =>
@@ -158,7 +160,7 @@ public sealed class TPortrait
                 exported.Add((path, medium));
                 return Task.CompletedTask;
             });
-        await TInterfaceConduct.TPortraitFileExport(
+        await TInterfaceConductPortrait.TPortraitFileExport(
             TEnvoyFake.TEnvoyFileCreate("water.pdf", CPortraitMedium.CPortraitMediumPdf, asked),
             "water",
             (path, medium) =>
@@ -166,7 +168,7 @@ public sealed class TPortrait
                 exported.Add((path, medium));
                 return Task.CompletedTask;
             });
-        await TInterfaceConduct.TPortraitFileExport(
+        await TInterfaceConductPortrait.TPortraitFileExport(
             TEnvoyFake.TEnvoyFileCreate("water.md", CPortraitMedium.CPortraitMediumMarkdown, asked),
             "water",
             static (_, _) => throw new InvalidOperationException("The disk is full."));
@@ -183,22 +185,22 @@ public sealed class TPortrait
         CPressTicket ticket = new(
             "Office", null, null, false, 1, true, CPressSide.CPressSideDefault, CPressInk.CPressInkDefault);
 
-        await TInterfaceConduct.TPortraitTicketPrint(
+        await TInterfaceConductPortrait.TPortraitTicketPrint(
             TEnvoyFake.TEnvoyTicketCreate(() => null, asked), chosen =>
         {
             printed.Add(chosen.LPressTicketPrinter);
             return Task.CompletedTask;
         });
-        await TInterfaceConduct.TPortraitTicketPrint(
+        await TInterfaceConductPortrait.TPortraitTicketPrint(
             TEnvoyFake.TEnvoyTicketCreate(() => ticket, asked), chosen =>
         {
             printed.Add(chosen.LPressTicketPrinter);
             return Task.CompletedTask;
         });
-        await TInterfaceConduct.TPortraitTicketPrint(
+        await TInterfaceConductPortrait.TPortraitTicketPrint(
             TEnvoyFake.TEnvoyTicketCreate(() => ticket, asked),
             static _ => throw new InvalidOperationException("The printer is gone."));
-        await TInterfaceConduct.TPortraitTicketPrint(
+        await TInterfaceConductPortrait.TPortraitTicketPrint(
             TEnvoyFake.TEnvoyTicketCreate(
                 static () => throw new InvalidOperationException("The spooler is down."), asked),
             chosen =>

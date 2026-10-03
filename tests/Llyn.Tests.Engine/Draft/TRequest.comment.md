@@ -1,5 +1,5 @@
 # TRequest.cs
-Hash: `1e6b3d7ebb6c2119`
+Hash: `50746c3c8c590192`
 
 ## `public sealed class TRequest`
 
@@ -67,3 +67,13 @@ A stored recording is audio in the old language, so a new language drops it like
 ## `private static string TRequestRecordingSave(TWorkspace workspace)`
 
 Writes one byte of audio under the workspace, so a saved entry resolves it back to the same path.
+
+## `public void RequestApply_UnchangedText_WritesNothingAndRaisesNothing()`
+
+A text sent again exactly as the Example holds it changes nothing.
+The draft version stays and no bulletin is raised, so a repeated send does not wake every surface.
+
+## `public void RequestApply_SituationFields_ChangesThePanelSituation()`
+
+Title, description and kind requests each change the situation the panel holds.
+The situation keeps its id throughout, so the panel never swaps to another record.

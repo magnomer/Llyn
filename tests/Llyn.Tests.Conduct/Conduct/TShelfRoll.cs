@@ -74,7 +74,7 @@ public sealed class TShelfRoll
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LReference book = TShelfWordingPrepare(
-            engine, "Book", TInterface.TStateValueCreate("1999"), LStateMark.LStateMarkUnknown);
+            engine, "Book", TInterfaceState.TStateValueCreate("1999"), LStateMark.LStateMarkUnknown);
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
 
@@ -89,7 +89,7 @@ public sealed class TShelfRoll
     {
         return engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
             0,
-            TInterface.TStateValueCreate(title),
+            TInterfaceState.TStateValueCreate(title),
             year,
             LReferenceKind.LReferenceKindBook,
             LStateValue.LStateValueUnspecified,
@@ -109,7 +109,7 @@ public sealed class TShelfRoll
                 string.Empty,
                 string.Empty,
                 "a meaning",
-                [TInterface.TSentenceDraftCreate(
+                [TInterfaceExample.TSentenceDraftCreate(
                     "a warm hearth", 0, TInterface.TStateAnchorCreate(book.LReferenceId))],
                 [],
                 [],

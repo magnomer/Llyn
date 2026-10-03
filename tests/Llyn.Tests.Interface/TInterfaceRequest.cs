@@ -85,7 +85,8 @@ internal static partial class TInterface
         new LRequestMentionSense(draftId, cardId, sentenceId, mentionId, senseId);
 
     internal static LRequest TSituationAdditionCreate(long draftId, long cardId, string title, int position) =>
-        new LRequestSituationAddition(draftId, cardId, TStateValueCreate(title).TStateWrittenRead(), position);
+        new LRequestSituationAddition(
+            draftId, cardId, TInterfaceState.TStateValueCreate(title).TStateWrittenRead(), position);
 
     internal static LRequest TSituationPickCreate(long draftId, long cardId, long situationId, int position) =>
         new LRequestSituationPick(draftId, cardId, situationId, position);
@@ -100,7 +101,8 @@ internal static partial class TInterface
         new LRequestSituationTitle(draftId, situationId, value.TStateWrittenRead());
 
     internal static LRequest TRegisterAdditionCreate(long draftId, long cardId, string name, int position) =>
-        new LRequestRegisterAddition(draftId, cardId, TStateValueCreate(name).TStateWrittenRead(), position);
+        new LRequestRegisterAddition(
+            draftId, cardId, TInterfaceState.TStateValueCreate(name).TStateWrittenRead(), position);
 
     internal static LRequest TRegisterPickCreate(long draftId, long cardId, long registerId, int position) =>
         new LRequestRegisterPick(draftId, cardId, registerId, position);
@@ -118,7 +120,8 @@ internal static partial class TInterface
         new LRequestTranslationPick(draftId, cardId, entryId, position);
 
     internal static LRequest TImageAdditionCreate(long draftId, long cardId, string location, int position) =>
-        new LRequestImageAddition(draftId, cardId, TStateValueCreate(location).TStateWrittenRead(), position);
+        new LRequestImageAddition(
+            draftId, cardId, TInterfaceState.TStateValueCreate(location).TStateWrittenRead(), position);
 
     internal static LRequest TImageRemovalCreate(long draftId, long cardId, long imageId) =>
         new LRequestImageRemoval(draftId, cardId, imageId);
@@ -130,7 +133,8 @@ internal static partial class TInterface
         new LRequestImageLocation(draftId, imageId, value.TStateWrittenRead());
 
     internal static LRequest TVideoAdditionCreate(long draftId, long cardId, string location, int position) =>
-        new LRequestVideoAddition(draftId, cardId, TStateValueCreate(location).TStateWrittenRead(), position);
+        new LRequestVideoAddition(
+            draftId, cardId, TInterfaceState.TStateValueCreate(location).TStateWrittenRead(), position);
 
     internal static LRequest TExampleTextCreate(long draftId, LStateValue value) =>
         new LRequestExampleText(draftId, value.TStateWrittenRead());

@@ -1,5 +1,5 @@
 # TEntryLoading.cs
-Hash: `689b354d4759b520`
+Hash: `312bb2445f4a871e`
 
 ## `public sealed class TEntryLoading`
 
@@ -14,7 +14,7 @@ It is also the whole ordered set of Examples, Situations and Tags it references.
 
 ## `public void EntryLoad_FrameWithNoExample_KeepsTheFrame()`
 
-An Example row carrying a frame and no sentence survives a save and a load.
+A sentence row carrying a frame and no Example survives a save and a load.
 The frame is the card's own, so nothing about it may wait on a sentence being written first.
 The row comes back naming no Example, because none was ever stored.
 
@@ -45,14 +45,14 @@ So a card that was written comes back exactly as it went in.
 
 ### `string folder = Path.Combine(workspace.TWorkspaceFolder, "audio", "english");`
 
-The file the downloader would have written: under the workspace, in its audio bucket.
+The file the downloader would have written, under the workspace in its audio bucket.
 
 ### `LPronunciationArchive pronunciations = TInterface.TPronunciationArchiveCreate(workspace.TWorkspaceDatabase);`
 
 Stored relative, so a workspace that is moved or copied keeps its audio.
 The row is read through the archive rather than as SQL text, so the path separator stays the platform's.
 
-### `LMeaning meaning = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(stored.LEntryId));`
+### `Assert.Equal("the plain meaning", meaning.LMeaningTitle);`
 
 The titles are columns of the cards themselves, so they are on the rows before any load.
 
@@ -62,7 +62,7 @@ The rows are stored at the positions the lists held.
 So nothing shares a position.
 The order is a fact of the store rather than of the read.
 
-### `LCardDraft card = Assert.Single(loaded.LEntryDraftMeanings);`
+### `Assert.Equal(["verb", "formal", "spoken"], TInterface.TTagDraftRead(card.LCardDraftTag));`
 
 Three tags and two examples on the one card, all five back in the order they were written.
 
@@ -70,7 +70,7 @@ Three tags and two examples on the one card, all five back in the order they wer
 
 The collocation card references its own sets on the same terms.
 
-### `LEntry stored = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(`
+### `[TInterfaceExample.TSentenceDraftCreate("  ")], [], [], [], [], 1),`
 
 A blank value in a list is not a row.
 An empty field detaches.

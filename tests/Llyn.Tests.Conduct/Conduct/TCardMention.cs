@@ -104,10 +104,10 @@ public sealed class TCardMention
         TMentionPrepare(LEngine engine)
     {
         engine.TEngineDelaySet(0);
-        CDesk desk = TInterfaceConduct.TDeskCreate(
+        CDesk desk = TInterfaceConductDesk.TDeskCreate(
             engine, "Input", TEnvoyFake.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
         desk.CDeskStart(null);
-        CSentence sentence = TInterfaceConduct.TSentenceCreate(engine, desk);
+        CSentence sentence = TInterfaceConductCard.TSentenceCreate(engine, desk);
         desk.TDeskDefer(TInterface.TRequestAdditionCreate(desk.CDeskId, LCardKind.LCardKindMeaning, 0, int.MaxValue));
         long sheet = desk.TDeskRead()!.LDraftContent.LEntryDraftMeanings[^1].LCardDraftId;
         desk.TDeskDefer(TInterface.TSentenceAdditionCreate(desk.CDeskId, sheet, 0));
@@ -132,9 +132,9 @@ public sealed class TCardMention
             string.Empty,
             [
                 TInterface.TCardDraftCreate(
-                    TInterface.TStateValueCreate("set alight"),
+                    TInterfaceState.TStateValueCreate("set alight"),
                     LStateValue.LStateValueUnspecified,
-                    TInterface.TStateValueCreate("to set something burning"),
+                    TInterfaceState.TStateValueCreate("to set something burning"),
                     [],
                     [],
                     [],

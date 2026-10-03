@@ -1,11 +1,15 @@
 # TAuditComment.cs
-Hash: `229025c85f979e29`
+Hash: `3a54468c02a313ea`
 
 ## `public sealed class TAuditComment`
 
 Keeps prose in the comment files and out of the sources.
 Every rule value comes from `TAuditCommentSetting`, which mirrors scripts/AuditComments.json.
 The findings match AuditComments.ps1 on the same tree, in the same order, though neither reads the other.
+
+## `public TAuditComment(ITestOutputHelper output)`
+
+Keeps the test output sink so a fact can write its findings beside the failure.
 
 ## `public void AuditComment_CommentLines_KeepLineRules()`
 
@@ -51,7 +55,18 @@ A heading for a member that was renamed or deleted is otherwise never noticed.
 A comment file that carries a hash must carry the hash of its paired sources.
 A source edit thus flags its comment file until a person rereads the prose and restamps it.
 A stale hash always fails, whatever the ceiling.
-Restamping is done one file at a time with scripts/stampcomment.ps1.
+Restamping is done one file at a time with scripts/StampComment.ps1.
+The failure message spells out the fix.
+Diff the sources, reread the touched sections, revise, then stamp.
+A bare restamp is the evasion it warns against.
+
+## `public void AuditComment_RestampedFiles_ReviseProse()`
+
+Flags comment files restamped while their prose still matches the text they held when stale.
+`TAuditCommentSnapshot` keeps that text between runs.
+The hits go to the test output under a capitalized warning, and the fact still passes.
+The script prints the same list as a `WARN` row.
+Each side keeps its own snapshot, so each flags only the stale files it saw itself.
 
 ## `public void AuditComment_UnstampedFiles_HoldWithinCeiling()`
 
@@ -69,6 +84,10 @@ A ceiling left above the count is stale and fails, so each stamp lowers it on bo
 
 Every paired comment file whose second line holds no hash or a hash its sources no longer match.
 A missing line reads as no hash, a wrong value as a changed source.
+
+## `private static List<(string, string, string)> TAuditStateRead(string repoRoot)`
+
+Every paired comment file with its second line and the hash its sources call for.
 The comment files come from the owner list, so the root-level ones count too and come last.
 A comment file whose source is exempt is skipped, as for headings.
 

@@ -1,5 +1,5 @@
 # TLookup.cs
-Hash: `c7eb5cc411d328fa`
+Hash: `dcbc5c3e948c53ce`
 
 ## `public sealed class TLookup`
 
@@ -9,7 +9,7 @@ An untagged reading in a language with varieties becomes one candidate per decla
 Without varieties the untagged reading stays untagged, so a pack like Spanish is unchanged.
 A variety the answer already tags is not fanned out again.
 An empty answer stays one untagged null candidate even when the pack declares varieties.
-An empty answer still yields one candidate without a phonetic, so the shell can say why.
+Without varieties too, that candidate is reached and handed to the receiver, so the shell can say why.
 A dotted or spaced source form reaches the candidate normalized, with no switch involved.
 A literal lookup keeps the spaces and skips the cleanup, trimming the ends alone, because a transcription is not IPA.
 A pack cleanup group applies to every candidate the same way, and a scoped one only to its fanned-out variety.

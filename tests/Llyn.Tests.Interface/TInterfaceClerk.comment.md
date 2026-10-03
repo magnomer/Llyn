@@ -14,6 +14,46 @@ Relays the meaning clerk's reading order, so the rule is tested over handed-in M
 
 Relays the typed-list parse, so a test reads the rule where it is owned.
 
+## `internal static IReadOnlyList<LSpeechDraft> TSpeechParse(IReadOnlyList<LSpeechDraft> held, string? typed)`
+
+Relays the speech clerk's parse of a typed list against the held chips.
+
+## `internal static IReadOnlyList<LSpeechDraft>? TSpeechAdd(`
+
+Relays the speech clerk's add of one named chip, declaring unknown names through `declare`.
+
+## `internal static IReadOnlyList<LSpeechDraft> TSpeechRemove(IReadOnlyList<LSpeechDraft> held, string? name)`
+
+Relays the speech clerk's removal of one named chip.
+
+## `internal static (IReadOnlyList<LSpeechDraft> LSpeechHeld, string LSpeechTyped) TSpeechSettle(`
+
+Relays the speech clerk's settling of the shown chips and the typed text into held chips and leftover text.
+
+## `internal static IReadOnlyList<LSpeechDraft> TSpeechChipRead(IReadOnlyList<LSpeechDraft> shown, string? pending)`
+
+Relays the speech clerk's reading of the chips the shown list and the pending text make.
+
+## `internal static string? TSpeechPendingRead(IReadOnlyList<LSpeechDraft> held, string? typed)`
+
+Relays the speech clerk's reading of the typed text still pending.
+
+## `internal static LSpeechOffer TSpeechFind(`
+
+Relays the speech clerk's offer of the values that fit the typed text.
+
+## `internal static bool TGlossEmptyCheck(LDraft draft, long cardId, long sentenceId)`
+
+Relays the gloss clerk's check that a sentence of a card holds no gloss.
+
+## `internal static int TCardEndRead(LEntryDraft content, LCardKind kind)`
+
+Relays the card clerk's reading of the end place of one card kind.
+
+## `internal static bool TCardLoneCheck(LEntryDraft content, long id)`
+
+Relays the card clerk's check that a card is alone in its kind.
+
 ## `internal static int? TCardOrdinalRead(LEntryDraft content, long id, string ordinal)`
 
 Relays the card clerk's reading of a typed place, so its clamp is tested over a held draft.
@@ -21,6 +61,14 @@ Relays the card clerk's reading of a typed place, so its clamp is tested over a 
 ## `internal static int? TCardShiftRead(LEntryDraft content, long id, int place)`
 
 Relays the card clerk's judgement of a dragged place, so its unchanged and stray places are tested.
+
+## `internal static LSpeechDraft TSpeechCreate(long value, string name)`
+
+Builds a chip for a declared value when `value` is positive, else a chip for a new name.
+
+## `internal static LSpeechValue TSpeechValueCreate(long value, string name)`
+
+Builds an English speech value with `value` as its id and `name` as its name.
 
 ## `internal static LRig TRigClerkCreate(LEntryVault entries)`
 
@@ -42,6 +90,10 @@ Marks one draft of the rig's draft fake as what the next sweep drops.
 ## `internal static LTombstone? TTombstoneRead(this LRig rig, long entryId)`
 
 The tombstone the rig's tombstone fake holds for that entry, or `null`.
+
+## `internal static IReadOnlyList<LRevisionDelta> TRevisionChangeRead(this LRig rig, long revisionId)`
+
+The deltas the rig's revision fake recorded for one revision.
 
 ## `internal static IReadOnlyList<LPronunciation> TPronunciationRead(this LRig rig, long entryId)`
 
@@ -67,9 +119,45 @@ The court clerk over `rig`, with its own issuer and chronicle over the same rig.
 
 Starts a blank entry draft through the clerk and holds it.
 
+## `internal static IReadOnlySet<long> TClaimHeldRead(this LClaimClerk clerk)`
+
+The ids of the drafts the clerk holds.
+
+## `internal static bool TClaimClerkCheck(this LClaimClerk clerk, long id)`
+
+Relays the claim clerk's check of one draft id.
+
+## `internal static bool TClaimForeignCheck(this LClaimClerk clerk, long id)`
+
+Relays the claim clerk's check that another process holds the draft.
+
+## `internal static LDraft? TClaimDraftRead(this LClaimClerk clerk, long id)`
+
+Relays the claim clerk's read of one draft.
+
+## `internal static IReadOnlyList<LDraft> TClaimDraftScan(this LClaimClerk clerk)`
+
+Relays the claim clerk's scan of its drafts.
+
+## `internal static void TClaimClerkFinish(this LClaimClerk clerk, long id)`
+
+Relays the claim clerk's finish of one draft.
+
+## `internal static void TClaimClerkCancel(this LClaimClerk clerk, long id)`
+
+Relays the claim clerk's cancel of one draft.
+
+## `internal static void TClaimClerkSweep(this LClaimClerk clerk)`
+
+Relays the claim clerk's sweep.
+
 ## `internal static LCourt TCourtClerkSave(this LCourtClerk clerk, long ownerId, long targetId, string headword)`
 
 Writes one English court row through the clerk.
+
+## `internal static IReadOnlyList<LCourt> TCourtClerkScan(this LCourtClerk clerk)`
+
+Relays the court clerk's scan of its court rows.
 
 ## `internal static LPortraitPage TExamplePageRead(LExample example, LReference? cited, int count, LPortraitLegend legend)`
 
@@ -83,9 +171,25 @@ The page the reference clerk composes for one Source.
 
 The page the situation clerk composes for one Situation.
 
+## `internal static bool TSchemeTakenCheck(IReadOnlyList<LTranscriptionDraft> drafts, string scheme, long ownId)`
+
+Relays the reading clerk's check that another draft than `ownId` already uses the scheme.
+
+## `internal static LTranscriptionSheet TTranscriptionSheetRead(`
+
+Relays the reading clerk's composing of the transcription sheet from schemes, drafts and the other drafts.
+
+## `internal static int TTranscriptionPositionRead(IReadOnlyList<LTranscriptionDraft> spelled, long transcription)`
+
+Relays the reading clerk's reading of one transcription's position among the spelled drafts.
+
 ## `internal static LDraftClerk TDraftClerkCreate(LRig rig)`
 
 The draft clerk over `rig`, with its issuer and its language cache built over the same rig.
+
+## `internal static LDraft TDraftClerkApply(this LDraftClerk clerk, LDraft draft, LRequest request)`
+
+Relays the draft clerk's application of one request to a draft, answering the changed draft.
 
 ## `internal static LRequest TRequestStrayCreate(long draftId)`
 
@@ -192,6 +296,38 @@ Relays the entry page of the portrait clerk.
 
 Relays the print of the portrait clerk.
 
+## `internal static LEntry TEntryClerkSave(this LEntryClerk clerk, LEntryDraft draft)`
+
+Relays the entry clerk's save of a draft with no extra changes.
+
+## `internal static LTranslationClerk TTranslationClerkCreate(LRig rig)`
+
+The translation clerk over `rig`.
+
+## `internal static IReadOnlyList<LEntry> TTranslationClerkFind(`
+
+Relays the translation clerk's find of entries for a query, with an optional entry id.
+
+## `internal static LEntry? TTranslationClerkResolve(this LTranslationClerk clerk, string word, long? entryId)`
+
+Relays the translation clerk's resolve of a word to one entry, or `null`.
+
+## `internal static string? TTranslationWordRead(string text)`
+
+Relays the translation clerk's static reading of the word in a text.
+
 ## `internal static LEntry TEntryClerkAdd(this LRig rig, LEntry entry)`
 
 Creates a bare entry with the headword and language of `entry`, as a translation link does.
+
+## `internal static LEntry? TEntryClerkRead(this LEntryClerk clerk, long id)`
+
+Relays the entry clerk's read of one entry, or `null`.
+
+## `internal static IReadOnlyList<LEntry> TEntryClerkFind(this LEntryClerk clerk, string query, LCatalogOrder order)`
+
+Relays the entry clerk's find of entries for a query in the given order.
+
+## `internal static LRevision TEntryClerkDelete(this LEntryClerk clerk, long id)`
+
+Relays the entry clerk's delete of one entry, answering the revision it recorded.

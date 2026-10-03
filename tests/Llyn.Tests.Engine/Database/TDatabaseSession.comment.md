@@ -1,5 +1,5 @@
 # TDatabaseSession.cs
-Hash: `aeb59896a4ae99a9`
+Hash: `1fa6062d74eacb4d`
 
 ## `public sealed class TDatabaseSession`
 
@@ -11,7 +11,7 @@ Those are the reorders the unique position indexes used to make impossible.
 A session whose connection is already closed still releases the ambient slot when disposed.
 The next session must open cleanly, or every later store call would be refused.
 An example update keeps its translations and the row ids of reordered ones.
-Stored identities drawn in a run are negative and never repeat.
+The test identity counter hands out negative values that never repeat.
 
 ## Inline notes
 

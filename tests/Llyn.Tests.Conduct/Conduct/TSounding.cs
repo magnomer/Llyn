@@ -161,7 +161,7 @@ public sealed class TSounding
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
         LSpeechValue noun = TInterface.TSpeechValueCreate("English", 1, "noun", 0) with { LSpeechValueId = 1 };
-        LMorphology plural = TInterface.TMorphologyCreate(1, 1, "plural", 0);
+        LMorphology plural = TInterfaceInflection.TMorphologyCreate(1, 1, "plural", 0);
         IReadOnlyList<LParadigmRow> rows = TInterface.TParadigmRowScan(
             [TInterface.TParadigmSlotCreate(noun, plural, null, LState.LStateUnspecified)]);
         CSounding sounding = TSoundingCreate(editor, new Dictionary<string, Func<object?[]?, object?>>
@@ -184,9 +184,9 @@ public sealed class TSounding
         CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
         LSpeechValue noun = TInterface.TSpeechValueCreate("English", 1, "noun", 0) with { LSpeechValueId = 1 };
         LSpeechValue verb = TInterface.TSpeechValueCreate("English", 2, "verb", 1) with { LSpeechValueId = 2 };
-        LMorphology plural = TInterface.TMorphologyCreate(1, 1, "plural", 0);
-        LMorphology past = TInterface.TMorphologyCreate(2, 1, "past", 0);
-        LInflection wolves = TInterface.TInflectionCreate(1, 0, "wolves", null, 1, [1]);
+        LMorphology plural = TInterfaceInflection.TMorphologyCreate(1, 1, "plural", 0);
+        LMorphology past = TInterfaceInflection.TMorphologyCreate(2, 1, "past", 0);
+        LInflection wolves = TInterfaceInflection.TInflectionCreate(1, 0, "wolves", null, 1, [1]);
         IReadOnlyList<LParadigmRow> rows = TInterface.TParadigmRowScan(
         [
             TInterface.TParadigmSlotCreate(noun, plural, wolves, LState.LStateSpecified),
@@ -340,7 +340,7 @@ public sealed class TSounding
         List<string> notices,
         LSettingsPort? pack = null)
     {
-        return TInterfaceConduct.TSoundingCreate(
+        return TInterfaceConductSound.TSoundingCreate(
             editor.CEditorDesk,
             TEngineFake.TEngineCreate<LPhonologyPort>(answers),
             TEnvoyFake.TEnvoyCreate(false, notices),

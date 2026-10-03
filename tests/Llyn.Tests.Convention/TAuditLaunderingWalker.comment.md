@@ -1,5 +1,5 @@
 # TAuditLaunderingWalker.cs
-Hash: `9ee9e531fc35de52`
+Hash: `28315a381571431e`
 
 ## `internal static class TAuditLaunderingWalker`
 
@@ -24,7 +24,7 @@ Outside a run it is null.
 
 ## `public static IReadOnlyList<TViolation> TAuditRun(`
 
-Compiles every file and scans each walked member on its own, since a taint lives inside one member.
+Walks every driver file and scans each member on its own, since a taint lives inside one member.
 The readers are cleared when the walk returns, even on a failure.
 
 ## `private static void TAuditMemberScan(MemberDeclarationSyntax member, List<TViolation> violations)`

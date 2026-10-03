@@ -1,5 +1,5 @@
 # TExampleLine.cs
-Hash: `1241dc5c685d1186`
+Hash: `4be8f294e50e560a`
 
 ## `public sealed class TExampleLine`
 

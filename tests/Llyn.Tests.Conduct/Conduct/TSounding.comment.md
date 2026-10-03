@@ -1,5 +1,5 @@
 # TSounding.cs
-Hash: `8cc444dcb7358512`
+Hash: `ad6e09124a6e7684`
 
 ## `public sealed class TSounding`
 
@@ -13,7 +13,7 @@ A blank variety has no flag key, and its label key finds no text.
 
 ## `public void SoundingFanqieRead_FreshDraft_AnswersEmpty()`
 
-A fresh draft has no stored entry, so every read answers empty without asking the engine.
+A fresh draft has no stored entry, so every read answers empty.
 
 ## `public void SoundingFanqieRead_StoredEntry_ShapesTheEngineGroups()`
 
@@ -30,19 +30,21 @@ A rebuild that lands raises the change event once and shows no notice.
 
 ## `public void SoundingFanqieResolve_RefusedRebuild_ShowsTheNotice()`
 
-Each refused gate asks the envoy to show its own notice key and announces no change.
+Each refused rebuild and rank edit asks the envoy to show its own notice key.
+None of them announces a change.
 
 ## `public void SoundingFanqieSet_StoredEntry_SendsTheRank()`
 
-The rank edit reaches the engine with the stored entry, the row, the held rank and the raise flag.
+The rank edit reaches the engine with the stored entry, the row, the given rank and the raise flag.
 
 ## `public void SchemeKeyRead_SchemeOrBlank_PrefixesTheSchemeKey()`
 
 A scheme is labelled under `Scheme.` plus its name, and a blank one keys `Scheme.` alone.
 
-## `public void SoundingParadigmRead_UnansweredSlot_AnswersTheTipOfItsPendingAndMorphologyVerdicts(`
+## `public void SoundingParadigmRead_UnansweredSlot_AnswersTheTipOfItsPendingAndMorphologyVerdicts(bool pending, bool morphology, string text, string tip)`
+
 An unanswered slot answers the pending tip while the fetch runs, whatever the morphology setting says.
-After the fetch it answers the held tip when morphology is on, since the editor's draft holds the missing form.
+After the fetch it answers the held tip when morphology is on.
 With morphology off it answers the absent tip.
 
 ## `public void SoundingParadigmRead_TwoSlotsOneForm_JoinsThemIntoOneRow()`
@@ -53,7 +55,7 @@ The block also carries the font of the language the engine resolves.
 
 ## `public void SoundingScriptRead_StoredEntry_AnswersTheWholeBlockInTheDraftLanguage()`
 
-The script and rime-book blocks carry the waiting checks and the rebuild offers.
+The script and fanqie blocks carry their waiting checks and rebuild offers.
 The pack checks and the glyph fonts are asked in the draft's language.
 
 ## `public void SoundingFanqieRead_NoStoredEntry_OffersNoRebuildAndWaitsForNothing()`
@@ -63,7 +65,7 @@ A desk with no stored entry offers no rebuild and waits for nothing, whatever th
 ## `public void SoundingDiweiOpen_HeldDraft_OpensTheCellInTheDraftLanguage()`
 
 A pressed initial or rime key reaches the navigation's yunjing opener with the draft's language.
-The engine names the kind from the initial flag.
+The kind reads initial for an initial key and rime for the other.
 
 ## `public void SoundingDiweiOpen_EmptyKey_OpensNothing()`
 
@@ -81,7 +83,7 @@ Stores one English entry and answers its id.
 
 An editor on the library tab, holding `entry` or a fresh draft.
 
-## `private static CSounding TSoundingCreate(`
+## `private static CSounding TSoundingCreate(CEditor editor, Dictionary<string, Func<object?[]?, object?>> answers, List<string> notices, LSettingsPort? pack = null)`
 
 A sound sheet over the editor's desk with fake ports answering `answers`.
 Every notice the envoy is asked to show lands in `notices`.

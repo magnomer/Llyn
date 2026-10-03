@@ -1,12 +1,12 @@
 # TSentence.cs
-Hash: `5a98fed15af695c0`
+Hash: `6b1a3fcdaa01b3d5`
 
 ## `public sealed class TSentence`
 
 Covers the association a Meaning or a Collocation holds over an Example.
 That association carries data, so what is tested is the frame surviving a write and a read.
 It covers the order the owner gives its rows.
-It covers what deleting an owner and deleting a cited Example each reach.
+It covers what deleting an owner reaches.
 
 ## `public void SentenceSave_Frame_ReadsItBack()`
 
@@ -34,10 +34,20 @@ A row the owner stopped naming goes, and a row named by no id is new.
 The row is a thing with content of its own.
 A caller holding its id must therefore find the same row after a save.
 
+## `public void MeaningDelete_HeldSentences_LeavesNoRows()`
+
+Deleting a Meaning removes its sentence rows and keeps the Examples they cited.
+An Example belongs to no owner, so another card may still quote it.
+
 ## `public void SentenceSave_SharedExample_KeepsEachMeaningsFrame()`
 
 Two Meanings citing one Example must read it under their own frame.
 A frame living on the Example instead would make the second write overwrite the first.
+
+## `public void SentenceSave_ManyRows_KeepsTheOrderGiven()`
+
+Rows come back in the order the owner gave them, not in the order the Examples were made.
+That order is the sentence order the user arranged on the card.
 
 ## `public void SentenceSave_CollocationFrame_ReadsItBack()`
 

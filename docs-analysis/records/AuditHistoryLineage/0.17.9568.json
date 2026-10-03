@@ -1,0 +1,10 @@
+{
+  "version": "0.17.9568",
+  "commit": "5702ac68255d90ae6c7a6a471fcf58ff01a423f5",
+  "previous": "0.17.9518",
+  "previousCommit": "1db211122b7a7ced8f9f4b7a8396c87b0e2f7d9e",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.UIDeportment/Sound/LTranscriptionChoice.comment.md", "src/Llyn.UIDeportment/Sound/QTranscriptionChoice.comment.md"]
+  ]
+}

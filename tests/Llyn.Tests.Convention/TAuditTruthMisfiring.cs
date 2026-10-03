@@ -103,7 +103,7 @@ internal static partial class TAuditTruthWalker
         return TAuditAnswerCheck(condition)
                || condition.DescendantNodesAndSelf(node => !TAuditNameofCheck(node)).Any(node =>
                    node is IdentifierNameSyntax or MemberAccessExpressionSyntax or InvocationExpressionSyntax
-                   && TAuditBinder.TAuditSymbolRead(node) is { } symbol
+                   && TAuditBinderSymbol.TAuditSymbolRead(node) is { } symbol
                    && TAuditReaderNames.Contains(symbol));
     }
 
@@ -120,15 +120,15 @@ internal static partial class TAuditTruthWalker
         foreach (SyntaxNode node in condition.DescendantNodesAndSelf())
         {
             if (node is MemberAccessExpressionSyntax access
-                && TAuditBinder.TAuditControlCheck(TAuditBinder.TAuditTypeRead(access.Expression))
-                && !TAuditBinder.TAuditLogicCheck(access))
+                && TAuditBinderSymbol.TAuditControlCheck(TAuditBinderSymbol.TAuditTypeRead(access.Expression))
+                && !TAuditBinderSide.TAuditLogicCheck(access))
             {
                 return access.Expression.ToString();
             }
 
             if (node is IdentifierNameSyntax name
                 && carried.Count > 0
-                && TAuditBinder.TAuditSymbolRead(name) is { } symbol
+                && TAuditBinderSymbol.TAuditSymbolRead(name) is { } symbol
                 && carried.Contains(symbol))
             {
                 return name.Identifier.ValueText;
@@ -157,7 +157,7 @@ internal static partial class TAuditTruthWalker
                     TAuditSymbolAdd(declarator, carried);
                     break;
                 case AssignmentExpressionSyntax { Left: IdentifierNameSyntax target } assignment
-                    when TAuditBinder.TAuditSymbolRead(target) is ILocalSymbol or IParameterSymbol
+                    when TAuditBinderSymbol.TAuditSymbolRead(target) is ILocalSymbol or IParameterSymbol
                          && TAuditControlRead(assignment.Right, carried) is not null:
                     TAuditSymbolAdd(target, carried);
                     break;
@@ -165,7 +165,7 @@ internal static partial class TAuditTruthWalker
                     {
                         Parent: ArgumentListSyntax { Parent: InvocationExpressionSyntax call } list
                     } argument
-                    when TAuditBinder.TAuditSymbolRead(call) is IMethodSymbol
+                    when TAuditBinderSymbol.TAuditSymbolRead(call) is IMethodSymbol
                              { MethodKind: MethodKind.LocalFunction } local
                          && TAuditControlRead(argument.Expression, carried) is not null:
                     int index = argument.NameColon is { Name.Identifier.ValueText: var label }
@@ -186,7 +186,7 @@ internal static partial class TAuditTruthWalker
     private static bool TAuditShapeCheck(SyntaxNode node)
     {
         return node is RecursivePatternSyntax { Type: { } type, PropertyPatternClause: { } clause }
-               && TAuditBinder.TAuditControlCheck(TAuditBinder.TAuditTypeRead(type))
+               && TAuditBinderSymbol.TAuditControlCheck(TAuditBinderSymbol.TAuditTypeRead(type))
                && !clause.Subpatterns.All(part => TAuditPairCheck(part.Pattern));
     }
 
@@ -244,7 +244,7 @@ internal static partial class TAuditTruthWalker
                     }
                 } test
                 => TAuditControlRead(test.Expression) is null
-                   && TAuditBinder.TAuditControlCheck(TAuditBinder.TAuditTypeRead(type))
+                   && TAuditBinderSymbol.TAuditControlCheck(TAuditBinderSymbol.TAuditTypeRead(type))
                    && clause.Subpatterns.All(part =>
                        TAuditPairCheck(part.Pattern)
                        || (part.NameColon is { Name.Identifier.ValueText: var name }
@@ -297,7 +297,7 @@ internal static partial class TAuditTruthWalker
     {
         return TAuditStrictWalker.TAuditPatternCheck(pattern) || pattern switch
         {
-            ConstantPatternSyntax { Expression: var named } => TAuditBinder.TAuditSymbolRead(named) is ITypeSymbol,
+            ConstantPatternSyntax { Expression: var name } => TAuditBinderSymbol.TAuditSymbolRead(name) is ITypeSymbol,
             ParenthesizedPatternSyntax { Pattern: var inner } => TAuditPairCheck(inner),
             UnaryPatternSyntax { Pattern: var negated } => TAuditPairCheck(negated),
             BinaryPatternSyntax { Left: var left, Right: var right }
@@ -310,15 +310,15 @@ internal static partial class TAuditTruthWalker
 
     private static bool TAuditConsoleCheck(InvocationExpressionSyntax call)
     {
-        ISymbol? callee = TAuditBinder.TAuditSymbolRead(call);
-        return TAuditBinder.TAuditMemberCheck(callee, TAuditTruthSetting.TAuditConsoleInput);
+        ISymbol? callee = TAuditBinderSymbol.TAuditSymbolRead(call);
+        return TAuditBinderSymbol.TAuditMemberCheck(callee, TAuditTruthSetting.TAuditConsoleInput);
     }
 
     private static string? TAuditDialogRead(ExpressionSyntax condition)
     {
         return condition.DescendantNodesAndSelf()
             .OfType<InvocationExpressionSyntax>()
-            .FirstOrDefault(call => TAuditBinder.TAuditSymbolRead(call)?.ContainingType is { } owner
+            .FirstOrDefault(call => TAuditBinderSymbol.TAuditSymbolRead(call)?.ContainingType is { } owner
                                     && TAuditTruthSetting.TAuditDialogTypes.Contains(
                                         owner.ToDisplayString(), StringComparer.Ordinal))
             ?.Expression.ToString();
@@ -327,15 +327,16 @@ internal static partial class TAuditTruthWalker
     private static bool TAuditClockCheck(SyntaxNode clock)
     {
         ITypeSymbol? type = clock is BaseObjectCreationExpressionSyntax creation
-            ? TAuditBinder.TAuditTypeRead(creation)
-            : TAuditBinder.TAuditTypeRead(clock);
-        return TAuditBinder.TAuditNamedCheck(type, TAuditTruthSetting.TAuditClockTypes);
+            ? TAuditBinderSymbol.TAuditTypeRead(creation)
+            : TAuditBinderSymbol.TAuditTypeRead(clock);
+        return TAuditBinderSymbol.TAuditNamedCheck(type, TAuditTruthSetting.TAuditClockTypes);
     }
 
     private static bool TAuditDelayCheck(SyntaxNode loop)
     {
         return loop.DescendantNodes().OfType<InvocationExpressionSyntax>().Any(call =>
-            TAuditBinder.TAuditMemberCheck(TAuditBinder.TAuditSymbolRead(call), TAuditTruthSetting.TAuditDelayMembers)
+            TAuditBinderSymbol.TAuditMemberCheck(
+                TAuditBinderSymbol.TAuditSymbolRead(call), TAuditTruthSetting.TAuditDelayMembers)
             || (call.Expression is MemberAccessExpressionSyntax access && TAuditClockCheck(access.Expression)));
     }
 
@@ -348,7 +349,7 @@ internal static partial class TAuditTruthWalker
             _ => null
         };
         if (parameter is null
-            || TAuditBinder.TAuditSymbolRead(parameter) is not IParameterSymbol symbol
+            || TAuditBinderSymbol.TAuditSymbolRead(parameter) is not IParameterSymbol symbol
             || symbol.Type.Name != TAuditTruthSetting.TAuditBulletinType)
         {
             return false;
@@ -363,7 +364,7 @@ internal static partial class TAuditTruthWalker
         return TAuditRequestCheck(handler)
                || handler.DescendantNodesAndSelf().OfType<IdentifierNameSyntax>()
                    .Any(name =>
-                       TAuditBinder.TAuditSymbolRead(name) is { } symbol && TAuditRelayNames.Contains(symbol));
+                       TAuditBinderSymbol.TAuditSymbolRead(name) is { } symbol && TAuditRelayNames.Contains(symbol));
     }
 
     private static string? TAuditDeafRead(MethodDeclarationSyntax handler)
@@ -371,8 +372,8 @@ internal static partial class TAuditTruthWalker
         foreach (ParameterSyntax parameter in handler.ParameterList.Parameters)
         {
             if (parameter.Type is null
-                || TAuditBinder.TAuditTypeRead(parameter.Type)?.Name != TAuditTruthSetting.TAuditBulletinType
-                || TAuditBinder.TAuditSymbolRead(parameter) is not { } symbol)
+                || TAuditBinderSymbol.TAuditTypeRead(parameter.Type)?.Name != TAuditTruthSetting.TAuditBulletinType
+                || TAuditBinderSymbol.TAuditSymbolRead(parameter) is not { } symbol)
             {
                 continue;
             }

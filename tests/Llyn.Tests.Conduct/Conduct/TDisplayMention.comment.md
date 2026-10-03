@@ -1,5 +1,5 @@
 # TDisplayMention.cs
-Hash: `7ce317213e28463e`
+Hash: `2ad648e2acb419ef`
 
 ## `public sealed class TDisplayMention`
 
@@ -28,10 +28,10 @@ Registers a Library tab whose leave records itself and answers `leave`, and whos
 
 The sentence rows of the shown entry's one Meaning card, in order, as the card gate hands them.
 
-## `private static LSentenceDraft TDisplaySentenceCreate(`
+## `private static LSentenceDraft TDisplaySentenceCreate(string text, string language, IReadOnlyList<LMentionDraft> mentions) =>`
 
 A sentence row quoting a new Example with `text`, `language` and `mentions`.
 
-## `private static LEntry TDisplayEntrySave(`
+## `private static LEntry TDisplayEntrySave(LEngine engine, string headword, string language, params LSentenceDraft[] sentences) =>`
 
 Saves an entry with one Meaning card under `headword` in `language`, holding `sentences`.

@@ -159,7 +159,8 @@ public sealed class TCatalogExample
             0);
 
     private static LSentenceDraft TCatalogSentenceCreate(long? source) =>
-        TInterface.TSentenceDraftCreate(TInterface.TStateValueCreate("a line"), 0, TInterface.TStateAnchorRead(source));
+        TInterfaceExample.TSentenceDraftCreate(
+            TInterfaceState.TStateValueCreate("a line"), 0, TInterfaceState.TStateAnchorRead(source));
 
     private static LExample TCatalogExampleCreate(
         LEngine engine,
@@ -168,12 +169,12 @@ public sealed class TCatalogExample
         long? source,
         string? translation = null)
     {
-        return engine.TEngineExampleCreate(TInterface.TExampleCreate(
+        return engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
             0,
             language,
             text,
             translation,
-            TInterface.TStateAnchorRead(source)));
+            TInterfaceState.TStateAnchorRead(source)));
     }
 
     private static LReference TCatalogSourceCreate(LEngine engine, string title)

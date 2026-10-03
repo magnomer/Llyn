@@ -15,12 +15,12 @@ public sealed class TSentence
 
         long meaningId = TSentenceMeaningCreate(workspace);
         LExample stated = examples.TExampleCreate(
-            TInterface.TExampleCreate(
+            TInterfaceExample.TExampleCreate(
             0, "en", "he waited for her", null, null));
 
         sentences.TSentenceMeaningSave(
             meaningId,
-            [TInterface.TSentenceCreate(0, stated, "for", "Patient")]);
+            [TInterfaceExample.TSentenceCreate(0, stated, "for", "Patient")]);
 
         LSentence read = Assert.Single(sentences.TSentenceMeaningRead(meaningId));
         Assert.Equal(stated.LExampleId, read.LSentenceExample!.LExampleId);
@@ -39,7 +39,7 @@ public sealed class TSentence
 
         sentences.TSentenceMeaningSave(
             meaningId,
-            [TInterface.TSentenceCreate(0, null, "for", "Patient")]);
+            [TInterfaceExample.TSentenceCreate(0, null, "for", "Patient")]);
 
         LSentence read = Assert.Single(sentences.TSentenceMeaningRead(meaningId));
         Assert.Null(read.LSentenceExample);
@@ -62,10 +62,10 @@ public sealed class TSentence
 
         sentences.TSentenceMeaningSave(
             english,
-            [TInterface.TSentenceCreate(0, null, "for", "Patient")]);
+            [TInterfaceExample.TSentenceCreate(0, null, "for", "Patient")]);
         sentences.TSentenceMeaningSave(
             japanese,
-            [TInterface.TSentenceCreate(0, null, "を", "Object")]);
+            [TInterfaceExample.TSentenceCreate(0, null, "を", "Object")]);
 
         Assert.Equal(["for"], sentences.TSentenceParticleRead("en"));
         Assert.Equal(["Patient"], sentences.TSentenceDependenceRead("en"));
@@ -83,13 +83,13 @@ public sealed class TSentence
         long first = TSentenceMeaningCreate(workspace);
         long second = TSentenceMeaningCreate(workspace, "another meaning");
         LExample shared = examples.TExampleCreate(
-            TInterface.TExampleCreate(
+            TInterfaceExample.TExampleCreate(
             0, "en", "she ran", null, null));
 
         sentences.TSentenceMeaningSave(
-            first, [TInterface.TSentenceCreate(0, shared, "to", "Goal")]);
+            first, [TInterfaceExample.TSentenceCreate(0, shared, "to", "Goal")]);
         sentences.TSentenceMeaningSave(
-            second, [TInterface.TSentenceCreate(0, shared, "from", "Source")]);
+            second, [TInterfaceExample.TSentenceCreate(0, shared, "from", "Source")]);
 
         Assert.Equal("to", Assert.Single(sentences.TSentenceMeaningRead(first)).LSentenceParticle.TStateValueShow());
         Assert.Equal(
@@ -105,16 +105,16 @@ public sealed class TSentence
 
         long meaningId = TSentenceMeaningCreate(workspace);
         LExample first = examples.TExampleCreate(
-            TInterface.TExampleCreate(
+            TInterfaceExample.TExampleCreate(
             0, "en", "first", null, null));
         LExample second = examples.TExampleCreate(
-            TInterface.TExampleCreate(
+            TInterfaceExample.TExampleCreate(
             0, "en", "second", null, null));
 
         sentences.TSentenceMeaningSave(
             meaningId,
-            [TInterface.TSentenceCreate(0, second, null, null),
-             TInterface.TSentenceCreate(0, first, null, null)]);
+            [TInterfaceExample.TSentenceCreate(0, second, null, null),
+             TInterfaceExample.TSentenceCreate(0, first, null, null)]);
 
         Assert.Equal(
             ["second", "first"],
@@ -131,21 +131,21 @@ public sealed class TSentence
 
         long meaningId = TSentenceMeaningCreate(workspace);
         LExample first = examples.TExampleCreate(
-            TInterface.TExampleCreate(
+            TInterfaceExample.TExampleCreate(
             0, "en", "first", null, null));
         LExample second = examples.TExampleCreate(
-            TInterface.TExampleCreate(
+            TInterfaceExample.TExampleCreate(
             0, "en", "second", null, null));
 
         IReadOnlyList<long> written = sentences.TSentenceMeaningSave(
             meaningId,
-            [TInterface.TSentenceCreate(0, first, null, null),
-             TInterface.TSentenceCreate(0, second, null, null)]);
+            [TInterfaceExample.TSentenceCreate(0, first, null, null),
+             TInterfaceExample.TSentenceCreate(0, second, null, null)]);
 
         IReadOnlyList<long> rewritten = sentences.TSentenceMeaningSave(
             meaningId,
-            [TInterface.TSentenceCreate(written[1], second, "for", null),
-             TInterface.TSentenceCreate(0, first, null, null)]);
+            [TInterfaceExample.TSentenceCreate(written[1], second, "for", null),
+             TInterfaceExample.TSentenceCreate(0, first, null, null)]);
 
         Assert.Equal(written[1], rewritten[0]);
         Assert.NotEqual(written[0], rewritten[1]);
@@ -165,9 +165,9 @@ public sealed class TSentence
 
         long meaningId = TSentenceMeaningCreate(workspace);
         LExample example = examples.TExampleCreate(
-            TInterface.TExampleCreate(
+            TInterfaceExample.TExampleCreate(
             0, "en", "a sentence", null, null));
-        sentences.TSentenceMeaningSave(meaningId, [TInterface.TSentenceCreate(0, example, null, null)]);
+        sentences.TSentenceMeaningSave(meaningId, [TInterfaceExample.TSentenceCreate(0, example, null, null)]);
 
         meanings.TMeaningDelete(meaningId);
 
@@ -184,12 +184,12 @@ public sealed class TSentence
 
         long collocationId = TSentenceCollocationCreate(workspace);
         LExample stated = examples.TExampleCreate(
-            TInterface.TExampleCreate(
+            TInterfaceExample.TExampleCreate(
             0, "en", "in a word, no", null, null));
 
         sentences.TSentenceCollocationSave(
             collocationId,
-            [TInterface.TSentenceCreate(0, stated, "in", "Manner")]);
+            [TInterfaceExample.TSentenceCreate(0, stated, "in", "Manner")]);
 
         LSentence read = Assert.Single(sentences.TSentenceCollocationRead(collocationId));
         Assert.Equal(stated.LExampleId, read.LSentenceExample!.LExampleId);
@@ -208,14 +208,14 @@ public sealed class TSentence
         long meaningId = TSentenceMeaningCreate(workspace);
         long collocationId = TSentenceCollocationCreate(workspace);
         LExample shared = examples.TExampleCreate(
-            TInterface.TExampleCreate(
+            TInterfaceExample.TExampleCreate(
             0, "en", "she ran", null, null));
 
         sentences.TSentenceMeaningSave(
-            meaningId, [TInterface.TSentenceCreate(0, shared, "to", "Goal")]);
+            meaningId, [TInterfaceExample.TSentenceCreate(0, shared, "to", "Goal")]);
         sentences.TSentenceCollocationSave(
             collocationId,
-            [TInterface.TSentenceCreate(0, shared, "from", "Source")]);
+            [TInterfaceExample.TSentenceCreate(0, shared, "from", "Source")]);
 
         Assert.Equal(
             "to", Assert.Single(sentences.TSentenceMeaningRead(meaningId)).LSentenceParticle.TStateValueShow());
@@ -234,10 +234,10 @@ public sealed class TSentence
 
         long collocationId = TSentenceCollocationCreate(workspace);
         LExample example = examples.TExampleCreate(
-            TInterface.TExampleCreate(
+            TInterfaceExample.TExampleCreate(
             0, "en", "a sentence", null, null));
         sentences.TSentenceCollocationSave(
-            collocationId, [TInterface.TSentenceCreate(0, example, null, null)]);
+            collocationId, [TInterfaceExample.TSentenceCreate(0, example, null, null)]);
 
         collocations.TCollocationDelete(collocationId);
 
@@ -252,7 +252,7 @@ public sealed class TSentence
 
         LEntry entry = entries.TEntryCreate(
             TInterface.TEntryCreate(0, "word", "en", 0, null, null),
-            [TInterface.TFormCreate(0, 0, "word", null, "headword")],
+            [TInterfaceInflection.TFormCreate(0, 0, "word", null, "headword")],
             []);
 
         return collocations.TCollocationCreate(
@@ -261,7 +261,7 @@ public sealed class TSentence
                 entry.LEntryId,
                 0,
                 LStateValue.LStateValueUnspecified,
-                TInterface.TStateValueCreate(expression),
+                TInterfaceState.TStateValueCreate(expression),
                 LStateValue.LStateValueUnspecified)).LCollocationId;
     }
 
@@ -273,7 +273,7 @@ public sealed class TSentence
 
         LEntry entry = entries.TEntryCreate(
             TInterface.TEntryCreate(0, "word", language, 0, null, null),
-            [TInterface.TFormCreate(0, 0, "word", null, "headword")],
+            [TInterfaceInflection.TFormCreate(0, 0, "word", null, "headword")],
             []);
 
         return meanings.TMeaningCreate(

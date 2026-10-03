@@ -1,10 +1,10 @@
 # TEngineParadigm.cs
-Hash: `e023dc9e17f86f4e`
+Hash: `681b8057621a20c4`
 
 ## `public sealed class TEngineParadigm`
 
 Covers the engine's answer to which forms an entry is expected to have.
-Each engine test saves an entry through the engine against the shipped English pack.
+Most tests save an entry through the engine against the shipped English pack.
 So the parent chain, the paradigms, and the morphology rows are the real ones and not a fixture.
 
 ## `public void ParadigmShow_ChildOfDeclaredPart_ReturnsParentSlots()`
@@ -16,6 +16,11 @@ With nothing stored every slot is unspecified.
 
 An appended inflection carrying a slot's morphology row answers that slot and makes it specified.
 Its neighbour stays unspecified.
+
+## `public void ParadigmShow_ExceptedPart_ReturnsNothing()`
+
+A part of speech the paradigm excepts shows no slots, while a countable noun shows its one.
+Uncountable water has no plural to fill, so offering a slot for it would invite a wrong form.
 
 ## `public void ParadigmShow_CustomPart_ReturnsNothing()`
 
@@ -34,6 +39,11 @@ A code or language the workspace lacks answers null.
 
 The shipped noun pattern accepts a regular plural regardless of case and rejects an irregular one.
 A paradigm stating no pattern answers false.
+
+## `public void ParadigmShow_SharedForm_FillsBothSlots()`
+
+One form that carries both morphology rows of a verb fills both slots.
+The two slots then answer the same stored inflection, so the form is held once and not twice.
 
 ## `public void ParadigmShow_RegularNounPlural_DropsSlot()`
 

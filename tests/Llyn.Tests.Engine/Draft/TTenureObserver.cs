@@ -18,7 +18,7 @@ public sealed class TTenureObserver
         LDraft? draft = tenure.TTenurePrepare(() =>
         {
             tenure.TTenureRequestApply(
-                TInterface.TExampleTextCreate(tenure.LTenureId, TInterface.TStateValueCreate("new text")));
+                TInterface.TExampleTextCreate(tenure.LTenureId, TInterfaceState.TStateValueCreate("new text")));
             Assert.Empty(_tTenureNotices);
         });
         Assert.Equal("new text", draft?.LDraftExample?.LExampleText.LStateValueText);

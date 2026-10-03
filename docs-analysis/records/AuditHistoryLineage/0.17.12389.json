@@ -1,0 +1,28 @@
+{
+  "version": "0.17.12389",
+  "commit": "f6577fdc8f266ff82520079646ff2071047b1852",
+  "previous": "0.17.12368",
+  "previousCommit": "b11aab4a228224cfde91ede5ceb12fd7b0f4ef13",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["tests/Llyn.Tests.Convention/TAuditChainSetting.cs", "tests/Llyn.Tests.Convention/TAuditBorderSetting.cs"],
+    ["tests/Llyn.Tests.Convention/TAuditChainWalker.comment.md", "tests/Llyn.Tests.Convention/TAuditBorderWalker.comment.md"],
+    ["tests/Llyn.Tests.Convention/TAuditChainWalker.cs", "tests/Llyn.Tests.Convention/TAuditBorderWalker.cs"],
+    ["tests/Llyn.Tests.Convention/TAuditFrameSetting.comment.md", "tests/Llyn.Tests.Convention/TAuditPuritySetting.comment.md"],
+    ["tests/Llyn.Tests.Convention/TAuditFrameSetting.cs", "tests/Llyn.Tests.Convention/TAuditPuritySetting.cs"],
+    ["tests/Llyn.Tests.Convention/TAuditFrameWalker.comment.md", "tests/Llyn.Tests.Convention/TAuditPurityWalker.comment.md"],
+    ["tests/Llyn.Tests.Convention/TAuditFrameWalker.cs", "tests/Llyn.Tests.Convention/TAuditPurityWalker.cs"],
+    ["tests/Llyn.Tests.Convention/TAuditRing.comment.md", "tests/Llyn.Tests.Convention/TAuditCharter.comment.md"],
+    ["tests/Llyn.Tests.Convention/TAuditRing.cs", "tests/Llyn.Tests.Convention/TAuditCharter.cs"],
+    ["tests/Llyn.Tests.Convention/TAuditRingSetting.comment.md", "tests/Llyn.Tests.Convention/TAuditCharterSetting.comment.md"],
+    ["tests/Llyn.Tests.Convention/TAuditRingSetting.cs", "tests/Llyn.Tests.Convention/TAuditCharterSetting.cs"],
+    ["tests/Llyn.Tests.Convention/TAuditTaintWalker.comment.md", "tests/Llyn.Tests.Convention/TAuditLaunderingWalker.comment.md"],
+    ["tests/Llyn.Tests.Convention/TAuditTaintWalker.cs", "tests/Llyn.Tests.Convention/TAuditLaunderingWalker.cs"],
+    ["tests/Llyn.Tests.Convention/TAuditTreatWalker.comment.md", "tests/Llyn.Tests.Convention/TAuditMoonlightingWalker.comment.md"],
+    ["tests/Llyn.Tests.Convention/TAuditTreatWalker.cs", "tests/Llyn.Tests.Convention/TAuditMoonlightingWalker.cs"],
+    ["tests/Llyn.Tests.Convention/TAuditTruthMutation.comment.md", "tests/Llyn.Tests.Convention/TAuditTruthTampering.comment.md"],
+    ["tests/Llyn.Tests.Convention/TAuditTruthMutation.cs", "tests/Llyn.Tests.Convention/TAuditTruthTampering.cs"],
+    ["tests/Llyn.Tests.Convention/TAuditTruthShape.comment.md", "tests/Llyn.Tests.Convention/TAuditTruthMisfiring.comment.md"],
+    ["tests/Llyn.Tests.Convention/TAuditTruthShape.cs", "tests/Llyn.Tests.Convention/TAuditTruthMisfiring.cs"]
+  ]
+}

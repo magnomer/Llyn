@@ -98,7 +98,7 @@ internal static partial class TInterface
         return TInterface.TCardDraftCreate(
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
-            TInterface.TStateValueCreate(definition),
+            TInterfaceState.TStateValueCreate(definition),
             [], [], [], [], [], position);
     }
 }

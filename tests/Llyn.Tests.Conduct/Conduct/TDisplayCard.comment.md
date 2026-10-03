@@ -1,10 +1,11 @@
 # TDisplayCard.cs
-Hash: `6c8ea6768f04c0d9`
+Hash: `50e526f4f1d8a874`
 
 ## `public sealed class TDisplayCard`
 
-Covers the reading view's card reads and click gates on a real workspace.
-The wing opens the entry, so each case stands on its display's area.
+Covers the reading view's card, media, etymology and chip reads and click gates.
+Most cases run on a real workspace, where the wing opens the entry and the display's area answers.
+The media cases call the card reads directly with a real or fake media port.
 
 ## `public void DisplayCardRead_ShownEntry_AnswersReadyCardsAndSections()`
 
@@ -15,7 +16,8 @@ Its link arrives named, and its stored tag arrives worded and ready to open.
 ## `public void DisplayCardRead_SentenceRow_AnswersTheReadyLine()`
 
 A sentence row arrives with its frame and divided sentence ready, and names its stored row.
-An unknown role reads the engine's unknown mark inside the frame's brackets.
+An unknown role reads the unknown mark inside the head's brackets.
+A sentence with no citation or gloss answers an empty citation and no gloss.
 
 ## `public void DisplayCardRead_NothingShown_AnswersNoCardsAndNoSections()`
 
@@ -25,10 +27,20 @@ With nothing open, no card or section is answered.
 
 A picture or video row with no location carries the empty verdict, and a located one does not.
 
+## `public void FolioImageRead_LocatedRow_CarriesTheAddressTheEngineResolved()`
+
+An image row carries the address the port answers for its plain location, and none where the port answers none.
+The map hands the port the plain text, including a blank one, and settles nothing itself.
+
 ## `public void FolioVideoRead_LocatedRow_CarriesTheScreenTheEngineResolved()`
 
 A video row carries the screen the port answers for its plain location, and none where the port answers none.
 The map hands the port the plain text and settles nothing itself.
+
+## `public void FolioVideoRead_WrittenSpan_CarriesTheMomentsTheEngineRead()`
+
+A written span carries its start and end moments.
+A row with no span starts at zero and has no end.
 
 ## `public void FolioVideoRead_HostedOrOtherLocation_CarriesAddressAndEngineFilmId()`
 
@@ -42,12 +54,12 @@ With no entry chosen, no usage is listed.
 
 ## `public void DisplayEtymologyRead_SourceLink_ShowsTheFieldWithItsNamedLink()`
 
-A source link alone shows the field, the row of links and the section, with the link named.
+A source link alone shows the field, the row of links and the section, aimed at its source Entry.
 Its read narrative stays hidden, since no words stand.
 
 ## `public void DisplayEtymologyRead_TwoSourceLinks_ShowsTheRowOfLinks()`
 
-Two source links show the row of links with both named.
+Two source links show the row of links with both targets.
 
 ## `public void DisplayEtymologyRead_Narrative_ShowsTheFieldWithItsText()`
 
@@ -81,11 +93,11 @@ A ready chip of `subject` naming `id`, stored or not.
 
 ## `private static bool TDisplayChipOpen(CDisplay area, CLeafChip? chip, long? link, List<string> opened)`
 
-Clicks `chip` while noting in `opened` each tab and record the chip raises for the navigation.
+Clicks `chip` or `link` and notes in `opened` each tab and record the click raises.
 
 ## `private static CWing TDisplayWingPrepare(CAtelier atelier, List<string> asked)`
 
-A wing on its left side whose envoy notes every question and failure in `asked`.
+A left wing whose envoy notes every question and failure in `asked`.
 
 ## `private static LEntry TDisplayEntrySave(LEngine engine, string headword)`
 

@@ -1,14 +1,14 @@
 # TReflexRow.cs
-Hash: `84e56e72ca1e24f8`
+Hash: `ca3aab315c60f731`
 
 ## `public sealed class TReflexRow`
 
-Covers the reflex row rules both panes share, namely the label keys, the lead and the hidden row.
+Covers the reflex row rules, namely the label keys, the lead and the hidden row.
 
 ## `public void ReflexLanguageKey_NamedOrBlank_PrefixesTheReflexKey()`
 
 A language or kind is labelled under `Reflex.` plus its name.
-A blank name keys `Reflex.` alone, which no catalog holds.
+A blank name keys `Reflex.` alone.
 
 ## `public void ReflexLeadRead_ThreeRuns_LeadsEachRunOnce()`
 

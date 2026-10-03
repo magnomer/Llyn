@@ -1,5 +1,5 @@
 # TAuditRatchet.cs
-Hash: `97c45fc187594b1a`
+Hash: `6aeea5f9be323410`
 
 ## `public sealed class TAuditRatchet`
 
@@ -141,9 +141,10 @@ True for a settings file or a ledger of the convention tests.
 
 The working copy of one held file.
 
-## `private static string? TAuditCommittedRead(string path)`
+## `internal static string? TAuditCommittedRead(string path)`
 
 The file as `git show HEAD:` prints it, or null when it is not in HEAD.
+`TAuditCommentSnapshot` reads it too, to learn whether HEAD already carries a new stamp.
 
 ## `private static string? TAuditGitRead(params string[] arguments)`
 

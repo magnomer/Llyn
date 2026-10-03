@@ -12,7 +12,7 @@ internal static partial class TAuditTruthWalker
         List<SyntaxNode> writes = scope.DescendantNodes().OfType<IdentifierNameSyntax>()
             .Where(identifier => TAuditFieldCheck(identifier, field.TFieldSymbols)
                                  || (identifier.Parent is InvocationExpressionSyntax
-                                     && TAuditBinder.TAuditSymbolRead(identifier) is { } callee
+                                     && TAuditBinderSymbol.TAuditSymbolRead(identifier) is { } callee
                                      && writers.Contains(callee)))
             .Select(TAuditReferenceRead)
             .Where(reference => reference.Parent is not MemberAccessExpressionSyntax)
@@ -73,7 +73,7 @@ internal static partial class TAuditTruthWalker
                 .Select(TAuditReferenceRead)
                 .Where(reference => reference.Parent is not MemberAccessExpressionSyntax)
                 .Any(reference => TAuditWriteCheck(reference, out _));
-            if (writes && TAuditBinder.TAuditSymbolRead(method) is { } symbol)
+            if (writes && TAuditBinderSymbol.TAuditSymbolRead(method) is { } symbol)
             {
                 writers.Add(symbol);
             }
@@ -88,8 +88,8 @@ internal static partial class TAuditTruthWalker
         {
             foreach (BaseTypeSyntax baseType in part.BaseList?.Types ?? [])
             {
-                ITypeSymbol? symbol = TAuditBinder.TAuditTypeRead(baseType.Type);
-                if (symbol is null || !TAuditBinder.TAuditEngineCheck(symbol))
+                ITypeSymbol? symbol = TAuditBinderSymbol.TAuditTypeRead(baseType.Type);
+                if (symbol is null || !TAuditBinderSide.TAuditEngineCheck(symbol))
                 {
                     continue;
                 }
@@ -173,7 +173,8 @@ internal static partial class TAuditTruthWalker
                     TAuditSymbolAdd(declarator, answered);
                     break;
                 case AssignmentExpressionSyntax { Left: IdentifierNameSyntax local } assignment
-                    when TAuditBinder.TAuditSymbolRead(local) is ILocalSymbol && TAuditAnswerCheck(assignment.Right):
+                    when TAuditBinderSymbol.TAuditSymbolRead(local) is ILocalSymbol
+                         && TAuditAnswerCheck(assignment.Right):
                     TAuditSymbolAdd(local, answered);
                     break;
                 case AssignmentExpressionSyntax assignment when TAuditAnswerCheck(assignment.Right):
@@ -225,7 +226,7 @@ internal static partial class TAuditTruthWalker
         foreach (IdentifierNameSyntax name in node.DescendantNodesAndSelf().OfType<IdentifierNameSyntax>())
         {
             if (name.Parent is TupleExpressionSyntax or ArgumentSyntax { Parent: TupleExpressionSyntax }
-                && TAuditBinder.TAuditSymbolRead(name) is ILocalSymbol local)
+                && TAuditBinderSymbol.TAuditSymbolRead(name) is ILocalSymbol local)
             {
                 answered.Add(local);
             }
@@ -252,7 +253,7 @@ internal static partial class TAuditTruthWalker
             InvocationExpressionSyntax or BaseObjectCreationExpressionSyntax
                 => TAuditCallRead((ExpressionSyntax)node) is not null,
             MemberAccessExpressionSyntax or MemberBindingExpressionSyntax
-                => TAuditBinder.TAuditLogicCheck(TAuditBinder.TAuditSymbolRead(node)),
+                => TAuditBinderSide.TAuditLogicCheck(TAuditBinderSymbol.TAuditSymbolRead(node)),
             _ => false
         });
     }

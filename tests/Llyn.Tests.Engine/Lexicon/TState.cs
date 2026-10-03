@@ -21,8 +21,8 @@ public sealed class TState
             [TInterface.TCardDraftCreate(
                 LStateValue.LStateValueUnknown,
                 LStateValue.LStateValueUnspecified,
-                TInterface.TStateValueCreate("a unit of language"),
-                [TInterface.TSentenceDraftCreate(
+                TInterfaceState.TStateValueCreate("a unit of language"),
+                [TInterfaceExample.TSentenceDraftCreate(
                     LStateValue.LStateValueUnknown, 0, LStateAnchor.LStateAnchorUnspecified)],
                 [TInterface.TSituationDraftCreate(LStateValue.LStateValueUnknown, 0)],
                 [],
@@ -73,12 +73,12 @@ public sealed class TState
             [TInterface.TCardDraftCreate(
                 LStateValue.LStateValueUnspecified,
                 LStateValue.LStateValueUnspecified,
-                TInterface.TStateValueCreate("a unit of language"),
+                TInterfaceState.TStateValueCreate("a unit of language"),
                 [
-                    TInterface.TSentenceDraftCreate("he said a word"),
-                    TInterface.TSentenceDraftCreate(
+                    TInterfaceExample.TSentenceDraftCreate("he said a word"),
+                    TInterfaceExample.TSentenceDraftCreate(
                         LStateValue.LStateValueUnknown, 0, LStateAnchor.LStateAnchorUnspecified),
-                    TInterface.TSentenceDraftCreate("   "),
+                    TInterfaceExample.TSentenceDraftCreate("   "),
                 ],
                 [],
                 [],
@@ -105,13 +105,13 @@ public sealed class TState
             [TInterface.TCardDraftCreate(
                 LStateValue.LStateValueUnspecified,
                 LStateValue.LStateValueUnspecified,
-                TInterface.TStateValueCreate("a unit of language"),
+                TInterfaceState.TStateValueCreate("a unit of language"),
                 [
-                    TInterface.TSentenceDraftCreate(
-                        TInterface.TStateValueCreate("he said a word"),
+                    TInterfaceExample.TSentenceDraftCreate(
+                        TInterfaceState.TStateValueCreate("he said a word"),
                         0,
-                        TInterface.TStateAnchorRead(unknown)),
-                    TInterface.TSentenceDraftCreate("not a word was spoken"),
+                        TInterfaceState.TStateAnchorRead(unknown)),
+                    TInterfaceExample.TSentenceDraftCreate("not a word was spoken"),
                 ],
                 [],
                 [],
@@ -134,7 +134,7 @@ public sealed class TState
         LCardDraft card = Assert.Single(loaded.LEntryDraftMeanings);
 
         Assert.Equal(
-            TInterface.TStateAnchorRead(unknown),
+            TInterfaceState.TStateAnchorRead(unknown),
             TExampleDraftRead(card.LCardDraftSentence[0]).LExampleDraftReference);
         Assert.Equal(
             LStateAnchor.LStateAnchorUnspecified,
@@ -189,13 +189,13 @@ public sealed class TState
             [
                 card with
                 {
-                    LCardDraftTitle = TInterface.TStateValueCreate("the plain meaning"),
+                    LCardDraftTitle = TInterfaceState.TStateValueCreate("the plain meaning"),
                     LCardDraftMeaning = LStateValue.LStateValueUnspecified,
                     LCardDraftSituation =
                     [
                         card.LCardDraftSituation[0] with
                         {
-                            LSituationDraftTitle = TInterface.TStateValueCreate("in court"),
+                            LSituationDraftTitle = TInterfaceState.TStateValueCreate("in court"),
                         },
                     ],
                 },
@@ -205,12 +205,12 @@ public sealed class TState
         LEntryDraft second = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(stored.LEntryId));
         LCardDraft written = Assert.Single(second.LEntryDraftMeanings);
 
-        Assert.Equal(TInterface.TStateValueCreate("the plain meaning"), written.LCardDraftTitle);
+        Assert.Equal(TInterfaceState.TStateValueCreate("the plain meaning"), written.LCardDraftTitle);
         Assert.Equal(LStateValue.LStateValueUnspecified, written.LCardDraftMeaning);
 
         LSituationDraft situation = Assert.Single(written.LCardDraftSituation);
         Assert.Equal(situationId, situation.LSituationDraftId);
-        Assert.Equal(TInterface.TStateValueCreate("in court"), situation.LSituationDraftTitle);
+        Assert.Equal(TInterfaceState.TStateValueCreate("in court"), situation.LSituationDraftTitle);
     }
 
     [Theory]
@@ -224,7 +224,7 @@ public sealed class TState
     [InlineData(null, true)]
     public void StateValueResolve_TextAndMark_MapsOneStateEach(string? text, bool unknown)
     {
-        LStateValue resolved = TInterface.TStateValueResolve(text, unknown);
+        LStateValue resolved = TInterfaceState.TStateValueResolve(text, unknown);
 
         if (unknown)
         {
@@ -239,7 +239,7 @@ public sealed class TState
             return;
         }
 
-        Assert.Equal(TInterface.TStateValueCreate(text), resolved);
+        Assert.Equal(TInterfaceState.TStateValueCreate(text), resolved);
     }
 
     [Fact]
@@ -255,9 +255,9 @@ public sealed class TState
                 string.Empty,
                 string.Empty,
                 [TInterface.TCardDraftCreate(
-                    TInterface.TStateValueResolve(string.Empty, true),
-                    TInterface.TStateValueResolve("   ", false),
-                    TInterface.TStateValueResolve("a unit of language", false),
+                    TInterfaceState.TStateValueResolve(string.Empty, true),
+                    TInterfaceState.TStateValueResolve("   ", false),
+                    TInterfaceState.TStateValueResolve("a unit of language", false),
                     [],
                     [],
                     [],
@@ -277,19 +277,19 @@ public sealed class TState
         engine.TEngineRequestApply(TInterface.TRequestTitleCreate(
             opened.LDraftId,
             card.LCardDraftId,
-            TInterface.TStateValueResolve(
+            TInterfaceState.TStateValueResolve(
                 card.LCardDraftTitle.TStateValueShow(),
                 card.LCardDraftTitle.LStateValueState == LState.LStateUnknown)));
         engine.TEngineRequestApply(TInterface.TRequestExpressionCreate(
             opened.LDraftId,
             card.LCardDraftId,
-            TInterface.TStateValueResolve(
+            TInterfaceState.TStateValueResolve(
                 card.LCardDraftExpression.TStateValueShow(),
                 card.LCardDraftExpression.LStateValueState == LState.LStateUnknown)));
         engine.TEngineRequestApply(TInterface.TRequestMeaningCreate(
             opened.LDraftId,
             card.LCardDraftId,
-            TInterface.TStateValueResolve(
+            TInterfaceState.TStateValueResolve(
                 card.LCardDraftMeaning.TStateValueShow(),
                 card.LCardDraftMeaning.LStateValueState == LState.LStateUnknown)));
 
@@ -308,9 +308,9 @@ public sealed class TState
             string.Empty,
             string.Empty,
             [TInterface.TCardDraftCreate(
-                TInterface.TStateValueCreate("a title"),
+                TInterfaceState.TStateValueCreate("a title"),
                 LStateValue.LStateValueUnspecified,
-                TInterface.TStateValueCreate("a unit of language"),
+                TInterfaceState.TStateValueCreate("a unit of language"),
                 [], [], [], [], [], 1)],
             []));
 
@@ -338,9 +338,9 @@ public sealed class TState
             string.Empty,
             string.Empty,
             [TInterface.TCardDraftCreate(
-                TInterface.TStateValueCreate("a title"),
+                TInterfaceState.TStateValueCreate("a title"),
                 LStateValue.LStateValueUnspecified,
-                TInterface.TStateValueCreate("a unit of language"),
+                TInterfaceState.TStateValueCreate("a unit of language"),
                 [], [], [], [], [], 1)],
             []));
 

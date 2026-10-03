@@ -1,8 +1,12 @@
 {
   "repository": "magnomer/Llyn",
-  "records": "../audit/records/AuditLinesHistory",
+  "records": "../docs-analysis/records/AuditLinesHistory",
+  "lineage": {
+    "records": "../docs-analysis/records/AuditHistoryLineage",
+    "share": 0.25
+  },
   "report": {
-    "directory": "../audit",
+    "directory": "../docs-analysis",
     "versionFile": "../version.json",
     "versionKey": "current-version",
     "prefix": "AuditLinesHistory-"

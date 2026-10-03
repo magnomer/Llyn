@@ -1,5 +1,5 @@
 # TRequestList.cs
-Hash: `bcf5c32567c39a51`
+Hash: `fbebdd5557b297cc`
 
 ## `public sealed class TRequestList`
 
@@ -60,7 +60,7 @@ The blank row the form keeps reaches the store as nothing at all.
 
 ## `public void DraftCommit_FullRequestSequence_StoresTheSameRowsAsTheFixture()`
 
-A fixture sent as requests commits to the rows the old whole-draft save produced, every list included.
+A fixture sent as requests commits to the same rows the fixture holds, every list included.
 Every stored row carries a positive id afterwards.
 
 ## `public void ReferenceCommit_AuthorsAddedAndPicked_AttachesThemInOrder()`

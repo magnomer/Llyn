@@ -11,8 +11,8 @@ public sealed class TCitationPage
         LReference source = TInterface.TReferenceCreate(
             7, "Field Notes", null, LReferenceKind.LReferenceKindUnspecified, null, null,
             LStateMark.LStateMarkUnspecified);
-        LExample example = TInterface.TExampleCreate(
-            3, "English", "The fire kindled.", "불이 붙었다.", TInterface.TStateAnchorRead(source.LReferenceId));
+        LExample example = TInterfaceExample.TExampleCreate(
+            3, "English", "The fire kindled.", "불이 붙었다.", TInterfaceState.TStateAnchorRead(source.LReferenceId));
 
         LPortraitPage page = TInterface.TExamplePageRead(example, source, 2, TInterface.TPortraitLegendRead());
 
@@ -27,7 +27,8 @@ public sealed class TCitationPage
     [Fact]
     public void ExamplePageRead_UnwrittenAndUncited_FallsBackToTheUnwrittenWord()
     {
-        LExample example = TInterface.TExampleCreate(3, "English", null, null, TInterface.TStateAnchorRead(null));
+        LExample example =
+            TInterfaceExample.TExampleCreate(3, "English", null, null, TInterfaceState.TStateAnchorRead(null));
 
         LPortraitPage page = TInterface.TExamplePageRead(example, null, 0, TInterface.TPortraitLegendRead());
 

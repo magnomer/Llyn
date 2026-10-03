@@ -1,5 +1,5 @@
 # TPronunciationHelper.cs
-Hash: `d2638782c16a87b0`
+Hash: `5e32f29b42e25acc`
 
 ## `internal static class TPronunciationHelper`
 
@@ -16,4 +16,5 @@ A listener stub is the recording counterpart of the receiver stub.
 ## `internal const string TPronunciationHelperUrl`
 
 The one address every stub attempt fetches.
-The handler ignores it, so a test never depends on the word being escaped.
+A single-body handler ignores it, so such a test never depends on the word being escaped.
+A page-map handler answers by the escaped address, so its keys spell the word escaped.

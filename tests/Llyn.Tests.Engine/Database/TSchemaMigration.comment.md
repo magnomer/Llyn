@@ -1,5 +1,5 @@
 # TSchemaMigration.cs
-Hash: `ffdf9f59b7b92ac4`
+Hash: `59dc0c10918ea99c`
 
 ## `public sealed class TSchemaMigration`
 
@@ -17,42 +17,10 @@ A row the current schema cannot hold, such as a child whose parent is gone, is d
 The launch goes on without it.
 The id counters carry across, so a rebuilt workspace never hands out an id a tombstone remembers.
 The realm row, the stamp and the id counter on a fresh workspace are covered by `TSchemaRealm`.
-A version-71 reflex carries its old note into romanization and its old remark into the new note.
-Its new meaning is empty and its ownership flag is clear.
-
-## `public void DatabaseCreate_BuildWithoutEtymology_RaisesTheTablesEmpty()`
-
-A version-73 workspace has no etymology tables.
-The rebuild adds all three empty and carries every entry across.
-
-## `public void DatabaseCreate_CollocationSharingMeaningId_RenumbersItAndItsLinks()`
-
-An older workspace numbered Collocations apart from Meanings, so the first of each was number 1.
-The migration moves the Collocation above both sequences and its links and history follow it.
-The Meaning and a Collocation with a number of its own keep theirs.
-
-## `public void DatabaseCreate_SituationMediaAbsent_RebuildsWithSituationsIntact()`
-
-A version-47 workspace has no Situation media tables.
-The rebuild adds them empty and carries every Situation and Image across untouched.
-
-## `public void DatabaseCreate_UnknownSourceWording_LinksTheUnknownSource()`
-
-A version-48 workspace wrote `unknown` as an example's source state.
-The rebuild points such an example at the Unknown Reference the workspace already holds, and mints no second one.
-
-## `public void DatabaseCreate_UnknownSourceDeleted_MintsItForOldWording()`
-
-A workspace whose Unknown Reference was deleted, yet whose old rows still carry the wording, gets the row back.
-Only the old wording brings it back, since the row is ordinary data the user may remove.
-
-## `public void DatabaseCreate_NewWorkspace_SeedsTheUnknownSource()`
-
-A new workspace starts with exactly one Reference, titled Unknown.
-
-## `public void DatabaseCreate_UnknownSourceDeleted_SeedsNothingAgain()`
-
-Opening a workspace again never re-seeds the Unknown Reference, so deleting it holds.
+The reflex rows of an older build are in `TSchemaMigrationReflex`.
+The Unknown Reference is in `TSchemaMigrationReference`.
+The steps that belong to one older version are in `TSchemaMigrationVersion`.
+A fact that needs the built schema takes its workspace from `TWorkspace.TWorkspacePrepare`.
 
 ## Inline notes
 

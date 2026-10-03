@@ -1,12 +1,12 @@
 # TShelfRoll.cs
-Hash: `807cccc93f5c7ea3`
+Hash: `bd852800b06174eb`
 
 ## `public sealed class TShelfRoll`
 
 Covers the shelf's one rows answer on a real workspace.
 The rows, the empty verdict and the chosen Source's worded tally arrive together, so the view reads once.
 A chosen Source the query filters out closes before the tally is read, so the tally counts nothing.
-Each row words its authors and year ready: the text, or the unknown or unset key.
+Each row words its authors and year ready, by their text or by the unknown or unset key.
 A credited author shows even while the authorship is marked unknown.
 
 ## `private static LReference TShelfRollPrepare(LEngine engine)`

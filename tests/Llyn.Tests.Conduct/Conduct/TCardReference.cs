@@ -95,7 +95,7 @@ public sealed class TCardReference
         List<string> asked = [];
         CDesk desk = TInterfaceCitation.TDeskFailCreate(engine, TEnvoyFake.TEnvoyCreate(false, []));
         desk.CDeskStart(null);
-        CCard card = TInterfaceConduct.TCardCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, asked));
+        CCard card = TInterfaceConductCard.TCardCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, asked));
         (long sheet, long sentence) = TCard.TCardSentenceAdd(desk);
 
         card.CCardCitationSet(sheet, sentence, "Field notes");
@@ -113,7 +113,7 @@ public sealed class TCardReference
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineDelaySet(0);
         List<string> asked = [];
-        CDesk desk = TInterfaceConduct.TDeskCreate(
+        CDesk desk = TInterfaceConductDesk.TDeskCreate(
             engine, "Input", TEnvoyFake.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
         CCard card = TInterfaceCitation.TCardFailCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, asked));
 
@@ -121,5 +121,33 @@ public sealed class TCardReference
 
         Assert.Empty(read);
         Assert.Equal(["Reference.LoadFailed"], asked);
+    }
+
+    [Fact]
+    public void CitationSet_TypedTitle_CitesTheResolvedSource()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
+        (long sheet, long sentence) = TCard.TCardSentenceAdd(desk);
+
+        card.CCardCitationSet(sheet, sentence, "Field notes");
+
+        LExampleDraft? example = TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet)
+            .LCardDraftSentence.Single(row => row.LSentenceDraftId == sentence).LSentenceDraftExample;
+        long? cited = example?.LExampleDraftReference.LStateAnchorShown;
+        Assert.NotNull(cited);
+        Assert.Equal("Field notes", engine.TEngineCitationRead()[cited!.Value]);
+    }
+
+    [Fact]
+    public void ReferenceFind_NoWord_ListsEveryStoredSource()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LReference notes = engine.TEngineCitationCreate("Field notes");
+        (_, CCard card) = TCard.TCardPrepare(engine);
+
+        Assert.Contains(card.CCardReferenceRead(), row => row.CCatalogReferenceId == notes.LReferenceId);
     }
 }

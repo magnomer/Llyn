@@ -287,7 +287,7 @@ public sealed class TLedger
         answers.TryAdd("LEngineLocalizationLoad", _ => new Dictionary<string, string>());
         answers.TryAdd("LEngineLocalizationScan", _ => new List<string> { "de" });
         answers.TryAdd("LEngineWorkspaceRead", _ => "fake");
-        answers.TryAdd("LEngineWorkspaceStart", _ => TInterface.TWorkspaceStateCreate());
+        answers.TryAdd("LEngineWorkspaceStart", _ => TInterfaceEngineWorkspace.TWorkspaceStateCreate());
         answers.TryAdd("LEngineWorkspaceFormat", _ => "fake");
         answers.TryAdd("LEngineTextRead", args => (string)args![0]!);
         answers.TryAdd("LEngineGroupFind", args => ((IReadOnlyList<(string, IReadOnlyList<string>)>)args![0]!)

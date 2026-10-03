@@ -9,6 +9,16 @@ So a new node field the reader fills turns every format red until its writer car
 
 ## Inline notes
 
+### `public async Task PortraitExport_Exemplar_HtmlCarriesEveryText()`
+
+The exemplar written as an HTML file carries every text the page tree shows.
+A node field the writer forgets turns this red, so no export silently drops a string.
+
+### `public async Task PortraitExport_Exemplar_MarkdownCarriesEveryText()`
+
+The exemplar written as a Markdown file carries every text the page tree shows, after normalizing.
+The check is the same as for HTML, so both formats answer to one list of texts.
+
 ### `private static void TPortraitExportMatch(LEngine engine, long id, string written, System.Func<string?, string> normalize)`
 
 One page string is named outright, so an empty tree cannot pass by having nothing to check.

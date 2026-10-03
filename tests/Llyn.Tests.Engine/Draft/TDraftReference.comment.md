@@ -1,5 +1,5 @@
 # TDraftReference.cs
-Hash: `a3396f13b207c550`
+Hash: `32f442cd70178839`
 
 ## `public sealed class TDraftReference`
 
@@ -19,6 +19,6 @@ A commit that kept its file would offer saved work back at every launch.
 
 ## `public void LeftoverSweep_ReferenceMatchingStoredReference_SweepsIt()`
 
-A draft matching the Reference it names is collected, and one differing from its own is kept.
+A draft matching the Reference it names is collected, and a draft naming no stored Reference is kept.
 A kill just after a commit leaves such a file.
 Only the sweep can tell it from work the user would lose.

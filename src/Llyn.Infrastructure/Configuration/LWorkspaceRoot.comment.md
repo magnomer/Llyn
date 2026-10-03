@@ -38,7 +38,7 @@ The pronunciation cache under `temp` is a separate folder and is never reused fo
 
 The folder inside the drafts folder that holds one file per tentative link, created if needed.
 The court sits under `drafts` because a link is only meaningful while the draft it points at is still tentative.
-Its files are named after link ids, so a listing of the drafts folder itself never picks them up.
+Its files sit one folder down, so a listing of the drafts folder itself never picks them up.
 
 ## `public static string LWorkspaceBrokenRead(string root)`
 
@@ -49,7 +49,7 @@ It sits under `drafts` so the file stays beside the drafts it came from, out of 
 
 The folder inside the drafts folder that holds one file per claim on a tentative record, created if needed.
 A claim sits under `drafts` because it means nothing once the draft it names is gone.
-Its files are named after draft ids, so a listing of the drafts folder itself never picks them up.
+Its files sit one folder down, so a listing of the drafts folder itself never picks them up.
 
 ## `public static void LWorkspacePendingCommit(string pending, string path)`
 
@@ -63,4 +63,4 @@ Every draft, link and claim archive completes its save through this one place.
 
 Writes the bytes beside the target and moves them over it in one step.
 A kill mid-write leaves a `.tmp` file, never a truncated recording or flag that would be served forever.
-The recording archive and the language loader's flag cache both save through it.
+The recording archive and the flag cache in `LEnsignLoader` both save through it.

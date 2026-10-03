@@ -1,5 +1,5 @@
 # TDesk.cs
-Hash: `e8ec9dc140076505`
+Hash: `f625d316f464d1e1`
 
 ## `public sealed class TDesk`
 
@@ -13,3 +13,11 @@ A finish with nothing held reads done and stores nothing.
 A state bulletin without a halt shows no notice through the envoy.
 A tenure the engine refuses to start shows the scope's load failure through the envoy once.
 A start over a held tenure, a refused start and a cancel each announce the change of state once.
+
+## `private static CDesk TDeskPrepare(LEngine engine)`
+
+Builds the same guild desk as the overload below, its shown keys thrown away.
+
+## `private static CDesk TDeskPrepare(LEngine engine, List<string> asked)`
+
+Builds a desk on the guild vista whose envoy records each shown key in `asked`.

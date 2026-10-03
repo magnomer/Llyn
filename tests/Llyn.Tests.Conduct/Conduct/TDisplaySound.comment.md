@@ -1,11 +1,13 @@
 # TDisplaySound.cs
-Hash: `139ba6f58a4e20dc`
+Hash: `35038c898c7b175c`
 
 ## `public sealed class TDisplaySound`
 
 Covers the reading view's sound area, its reads and gates alike, on a real workspace.
 The wing opens the entry, so each case stands on its display's sound area.
-A fake port stands in where a case must see what the gate hands the engine.
+The playback gates live in `TDisplaySoundPlayback`.
+The fanqie, script and paradigm blocks and their clicks live in `TDisplaySoundBlock`.
+Both build their wing and entries through this class's helpers.
 
 ## `public void DisplayFontRead_ShownEntryOrNothingShown_ReadsThePackFontOfTheShownLanguage()`
 
@@ -36,62 +38,25 @@ Only the written row stands, marked as the lead of its language, with an anchor 
 
 ## `public void DisplayReflexResonate_ShownDraftWithoutRows_ReadsTheStoredRows()`
 
-The notice reloads the stored entry, so its rows replace the shown draft's empty list.
+Resonating reloads the stored entry, so its rows replace the shown draft's empty list.
 
 ## `public void DisplayReflexToggle_Opened_SetsTheSharedFoldAndRaisesTheChange()`
 
 The gate opens the fold the editor shares and raises the change once.
 
-## `public void DisplayPlaybackRead_AccentWithAudioOnly_ShowsTheTrayButNotTheButton()`
+## `internal static CWing TDisplayWingPrepare(CAtelier atelier, List<string> asked)`
 
-An accent row with audio shows the tray, while the missing own recording hides the button.
-Nothing open hides both.
+A left wing whose envoy notes every question and failure in `asked`.
+The other sound classes build their wing through it.
 
-## `public void DisplayPlaybackStart_AccentRow_PlaysAtTheLevelAndTheCancelStopsThatPlay()`
+## `internal static LEntryDraft TDisplayDraftCreate(string headword, string language, IReadOnlyList<LReflexDraft> reflexes)`
 
-The row plays its file and the button plays the shown draft, each at the level handed in.
-Nothing open plays nothing, and the cancel stops the latest play's ticket.
+One draft with a single meaning, carrying `reflexes`.
 
-## `public void DisplayPlaybackCancel_NothingPlaying_KeepsTheShownEntry()`
+## `internal static LEntry TDisplayEnglishSave(LEngine engine)`
 
-Stopping play with nothing playing leaves the shown entry standing.
+Stores the English entry water with no reflexes.
 
-## `public void DisplayBlocksRead_NothingShown_AnswersEmptyBlocks()`
+## `internal static LEntry TDisplayKoreanSave(LEngine engine)`
 
-With nothing open, the fanqie, script and paradigm blocks are empty, not pending and carry no font.
-
-## `public void DisplayBlocksRead_EnglishEntry_AnswersNoRimeScriptOrParadigmRows()`
-
-An English entry has no rime-book, script or paradigm rows.
-
-## `public void DisplayParadigmRead_MorphologyOff_AnswersTheAbsentTipWithoutALookup()`
-
-With morphology off, saving the entry starts no inflection lookup.
-The unanswered plural slot then shows the absent tip.
-The source is gated, so a started lookup would show the pending tip instead.
-
-## `public async Task DisplayParadigmRead_LookupGatedThenLost_AnswersThePendingTipThenTheLostTip()`
-
-With morphology on, saving the entry starts a lookup that the gated source holds open.
-While it is held, the unanswered plural slot shows the pending tip.
-The source then answers unreachable and leaves the slot with no form.
-The display, which never holds the draft, then shows the lost tip.
-
-## `public void DisplayDiweiAndStemOpen_ShownEntry_RaiseTheShownLanguage()`
-
-Each click is raised in the shown entry's language, and nothing open raises nothing.
-The engine names the cell kind from the initial flag.
-
-## `public void DisplayDiweiOpen_EmptyKey_OpensNothing()`
-
-A blank key of either kind raises nothing and answers false.
-
-## `public void DisplayFanqieSet_ShownEntry_SetsTheRankForTheShownEntry()`
-
-The gate hands the held rank and the raise flag for the shown entry, and nothing open sets nothing.
-
-## Inline notes
-
-### `private static LEntry TDisplayCatSave(LEngine engine)`
-
-Saves a countable English noun whose paradigm asks for a plural nothing stores.
+Stores a Korean entry with a plain row, a Hanja row and an empty Yale row.

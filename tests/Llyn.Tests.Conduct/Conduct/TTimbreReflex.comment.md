@@ -1,5 +1,5 @@
 # TTimbreReflex.cs
-Hash: `c4e2ecaefd58876c`
+Hash: `9c48cc1641de482c`
 
 ## `public sealed class TTimbreReflex`
 

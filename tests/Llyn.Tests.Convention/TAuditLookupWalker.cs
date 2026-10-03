@@ -22,8 +22,8 @@ internal static class TAuditLookupWalker
 
             foreach (ExpressionSyntax call in calls)
             {
-                shared ??= TAuditBinder.TAuditSymbolRead(call);
-                if (!SymbolEqualityComparer.Default.Equals(shared, TAuditBinder.TAuditSymbolRead(call)))
+                shared ??= TAuditBinderSymbol.TAuditSymbolRead(call);
+                if (!SymbolEqualityComparer.Default.Equals(shared, TAuditBinderSymbol.TAuditSymbolRead(call)))
                 {
                     return null;
                 }
@@ -58,8 +58,8 @@ internal static class TAuditLookupWalker
         }
 
         if (value is InvocationExpressionSyntax or BaseObjectCreationExpressionSyntax
-            && TAuditBinder.TAuditSymbolRead(value) is IMethodSymbol callee
-            && TAuditBinder.TAuditShellCheck(callee.ContainingType)
+            && TAuditBinderSymbol.TAuditSymbolRead(value) is IMethodSymbol callee
+            && TAuditBinderSide.TAuditShellCheck(callee.ContainingType)
             && TAuditTruthWalker.TAuditCallRead(value) is null)
         {
             calls.Add(value);
@@ -67,7 +67,7 @@ internal static class TAuditLookupWalker
         }
 
         return value is IdentifierNameSyntax or MemberAccessExpressionSyntax
-               && TAuditBinder.TAuditSymbolRead(value) is { } held
+               && TAuditBinderSymbol.TAuditSymbolRead(value) is { } held
                && visiting.Add(held)
                && TAuditOriginWalker.TAuditOriginRead(held) is { Count: > 0 } writes
                && writes.Where(write => TAuditOriginWalker.TAuditWriterResolve(write) != "clear")
@@ -81,7 +81,7 @@ internal static class TAuditLookupWalker
             InvocationExpressionSyntax invocation => invocation.ArgumentList.Arguments
                 .Select(argument => argument.Expression)
                 .Concat(invocation.Expression is MemberAccessExpressionSyntax access
-                        && TAuditBinder.TAuditSymbolRead(call) is { IsStatic: false }
+                        && TAuditBinderSymbol.TAuditSymbolRead(call) is { IsStatic: false }
                     ? [access.Expression]
                     : []),
             BaseObjectCreationExpressionSyntax creation => (creation.ArgumentList?.Arguments

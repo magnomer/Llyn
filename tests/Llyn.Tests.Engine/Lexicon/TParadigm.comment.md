@@ -1,9 +1,10 @@
 # TParadigm.cs
-Hash: `6842bace6e0ef24a`
+Hash: `7fe3ad57dfa43ab2`
 
 ## `public sealed class TParadigm`
 
-Covers what a language pack declares about inflection: which part specialises which, and which forms a part takes.
+Covers what a language pack declares about inflection.
+That is which part specialises which, and which forms a part takes.
 The loader tests write a pack of their own into a temporary language folder and load it.
 So the vocabulary loader is read as it reads a real pack, and nothing shipped is touched.
 The other tests read the shipped packs or build rows in memory.
@@ -32,6 +33,12 @@ The shipped English pack states parents and paradigms, so the loader is read aga
 The shipped Latin and Greek packs each declare three paradigms.
 The noun asks for the genitive alone and excepts the proper noun, the verb for its principal parts.
 Every value a paradigm names is a morphology value the same pack declares.
+
+## `public void ParadigmRowScan_TwoPartsOfSpeech_LeadsEachPartOnce()`
+
+Slots sharing one form fold into one row, and the first row of each part of speech leads that part.
+An uncertain first slot marks its row, and no slots give no rows.
+The table prints a part name once per part, so a lost or doubled lead would drop or repeat it.
 
 ## `public void ParadigmClerkCheck_WrittenOrEmptyForm_AnswersTextOrAbsentWhateverIsPending()`
 

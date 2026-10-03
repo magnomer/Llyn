@@ -1,5 +1,5 @@
 # TEngineScript.cs
-Hash: `77f3d872df80400d`
+Hash: `0415cbcec38e368c`
 
 ## `public sealed class TEngineScript`
 
@@ -11,6 +11,7 @@ A read of an entry with nothing stored returns empty, and a start fetches every 
 It stores the sets and raises the script bulletin.
 A character every database answered for yet none drew still raises the bulletin.
 It is asked once per session and stores nothing.
+A rebuild drops the stored sets and fetches again, asking even sources once silent.
 A language whose pack lists no styles reads empty and asks nothing.
 
 ## `public async Task ScriptSourceFind_PatternTimesOut_AnswersNotReached()`

@@ -1,5 +1,5 @@
 # TMarkupLink.cs
-Hash: `81efe778db52e454`
+Hash: `8380f987077ed8e4`
 
 ## `public sealed class TMarkupLink`
 
@@ -52,6 +52,10 @@ A stored reference with no title and no year must not catch every file reference
 ### `private static LExampleDraft TExampleRead(LCardDraft card)`
 
 The one example a card of these files carries.
+
+### `private static LMarkupExample TExampleRead(LMarkupCard card)`
+
+The same read on a card parsed back from an exported file.
 
 ### `private static string TMarkupSave(TWorkspace workspace, string text)`
 

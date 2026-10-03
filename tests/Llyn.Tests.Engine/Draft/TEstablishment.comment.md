@@ -1,5 +1,5 @@
 # TEstablishment.cs
-Hash: `61c4c31a75757036`
+Hash: `7c95814d06051070`
 
 ## `public sealed class TEstablishment`
 
@@ -19,7 +19,7 @@ The blank one is still held, so being held is not what counts.
 
 Committing moves the draft out of the unsaved count and into the entry count.
 
-## `public void EstablishmentAmount_AnySize_CountsMegabytesFromOneAndKilobytesRoundedUp(`
+## `public void EstablishmentAmount_AnySize_CountsMegabytesFromOneAndKilobytesRoundedUp(long size, bool large, double amount)`
 
 The size counts in megabytes once it reaches one, and in kilobytes rounded up below that.
 A file of one byte therefore counts as one kilobyte, never as zero.

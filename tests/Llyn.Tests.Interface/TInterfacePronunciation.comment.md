@@ -1,26 +1,25 @@
 # TInterfacePronunciation.cs
-Hash: `bff2ba501307bae2`
+Hash: `f6b7200ad7bbbed3`
 
 ## `internal static partial class TInterface`
 
 The relays for the pronunciation lookup seams below the engine.
-That is the reading and answer records, the respelling rules, the generic source over a client, and the lookup fan-out.
+That is the reading, answer, candidate and variety records, the respelling rules, and the lookup fan-out.
 The recording records, the harvest fan-out, the workspace download, and the engine discovery are relayed here too.
-The language pack loader and the per-session trove are relayed here too.
-The frequency record, its parse and its stored form are relayed here too.
-The tone contour parse, the engine's tonal check and its language list are relayed here too.
-The reading hypothesis, its resolve and the fanqie row it reads are relayed here too.
-The diwei section scan is relayed over one fixed row and two tally lines.
-Only the respelling switch and the localizer vary.
+The language pack loader, the glyph split and the engine's language reads are relayed here too.
+The anatomy, descent and tone contour reads are relayed here too.
+The reflex guise, the stem key scan and the shengfu record are relayed here too.
+The frequency records, the gauge, and the once and band resolves are relayed here too.
+The two short fanqie row builders sit here beside the full one in `TInterfaceFact`.
 Each relay is transparent and carries no test logic of its own.
 
-## `internal static LSource TSourceGenericCreate(LSourceSpec spec, HttpClient client)`
-
-Returns the source as its interface, so a test never names the infrastructure type.
+`TInterfaceFanqie` holds the anchor, diwei and hypothesis relays.
+`TInterfaceSource` holds the source specs and the page sources over a client.
+`TInterfaceTrove` holds the per-session trove.
 
 ## `internal static LSeeker TLookupCreate(IReadOnlyList<LSource> sources, IReadOnlyList<LVariety>? varieties = null, IReadOnlyList<LRespelling>? cleanups = null, bool literal = false)`
 
-Returns the lookup as its interface for the same reason.
+Returns the lookup as its interface, so a test never names the application type.
 The varieties default to none, so a test without a pack behaves like a language without varieties.
 The cleanups default to none too, so a test without a pack sees only the built-in normalization.
 The literal flag defaults to false.
@@ -72,20 +71,7 @@ Relays `LDescent.LDescentScan`.
 
 Relays `LDescent.LDescentMatch`.
 
-## `internal static LHypothesis THypothesisCreate(IReadOnlyDictionary<string, string> initials, IReadOnlyDictionary<string, string> finals, IReadOnlyDictionary<string, IReadOnlyList<LHypothesisTone>> tones, IReadOnlyList<LHypothesisLocus>? places = null)`
-
-Builds the hypothesis tables directly, so a test needs no language pack to check the join.
-
 ## `internal static LFanqieRow TFanqieRowCreate(string initial, string rime, string heading, string division, string tone, bool rounded)`
 
 A row carrying only the parts the hypothesis reads.
 The character, book, position and text are fixed, because the resolve never looks at them.
-
-## `internal static LTrove TTroveCreate()`
-
-The trove is internal to the engine assembly, which opens its internals to this suite.
-
-## `internal static Task<(IReadOnlyList<LReflexDraft> LReflexFound, bool LReflexReached)> TReflexSourceFind(HttpClient client, string pattern, string character)`
-
-Reads one character through the reflex page source with a bare rule holding only the given pattern.
-The shengfu, script and fanqie finds beside it do the same for their sources.

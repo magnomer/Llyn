@@ -81,7 +81,7 @@ public sealed class TEngineFellow
     {
         LReference reference = engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
             0,
-            TInterface.TStateValueCreate(title),
+            TInterfaceState.TStateValueCreate(title),
             LStateValue.LStateValueUnspecified,
             LReferenceKind.LReferenceKindBook,
             LStateValue.LStateValueUnspecified,

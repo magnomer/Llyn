@@ -10,17 +10,17 @@ public sealed class TDiweiArchive
 {
     private const string TDiweiArchivePack = """{ "language": "Fixture" }""";
 
-    private static readonly LHypothesis TDiweiArchiveTables = TInterface.THypothesisCreate(
+    private static readonly LHypothesis TDiweiArchiveTables = TInterfaceFanqie.THypothesisCreate(
         new Dictionary<string, string> { ["來"] = "l", ["見"] = "k" },
         new Dictionary<string, string> { ["寒 一"] = "an", ["模 一"] = "o" },
         new Dictionary<string, IReadOnlyList<LHypothesisTone>>
         {
             ["去"] =
             [
-                TInterface.THypothesisToneCreate("^[ptcskʔh]", [], "5"),
-                TInterface.THypothesisToneCreate("", [], "6"),
+                TInterfaceFanqie.THypothesisToneCreate("^[ptcskʔh]", [], "5"),
+                TInterfaceFanqie.THypothesisToneCreate("", [], "6"),
             ],
-            ["平"] = [TInterface.THypothesisToneCreate("", [], "1")],
+            ["平"] = [TInterfaceFanqie.THypothesisToneCreate("", [], "1")],
         });
 
     [Fact]
@@ -133,7 +133,7 @@ public sealed class TDiweiArchive
     public void RimeFormat_DivisionAndRounding_KeysSeparateRows(
         string rime, string division, bool rounded, string expected)
     {
-        Assert.Equal(expected, TInterface.TDiweiRimeFormat(rime, division, rounded));
+        Assert.Equal(expected, TInterfaceFanqie.TDiweiRimeFormat(rime, division, rounded));
     }
 
     [Theory]
@@ -144,7 +144,7 @@ public sealed class TDiweiArchive
     [InlineData("", "")]
     public void ChongniuRead_TrailingCapital_ReadsTheLetterAlone(string rime, string expected)
     {
-        Assert.Equal(expected, TInterface.TDiweiChongniuRead(rime));
+        Assert.Equal(expected, TInterfaceFanqie.TDiweiChongniuRead(rime));
     }
 
     private static LFanqieRow TDiweiRowCreate(

@@ -14,7 +14,7 @@ public sealed class TAtelierMention
     public void MentionDivide_LinkedMention_ReturnsSpanPieces()
     {
         IReadOnlyList<CMentionPiece> pieces =
-            CMention.CMentionDivide("the cat sat", [TInterface.TMentionCreate(1, 4, 3, 7)]);
+            CMention.CMentionDivide("the cat sat", [TInterfaceMentionSpan.TMentionCreate(1, 4, 3, 7)]);
 
         Assert.Equal(3, pieces.Count);
         Assert.Equal("cat", pieces[1].CMentionPieceText);
@@ -63,7 +63,8 @@ public sealed class TAtelierMention
     [Fact]
     public void MentionResultRead_StoredMention_CarriesLink()
     {
-        CMentionResult held = TInterfaceConduct.TMentionResultRead(2, TInterface.TMentionCreate(1, 2, 3, 40, 7));
+        CMentionResult held =
+            TInterfaceMention.TMentionResultRead(2, TInterfaceMentionSpan.TMentionCreate(1, 2, 3, 40, 7));
 
         Assert.Equal(2, held.CMentionResultOffset);
         Assert.Equal(40, held.CMentionResultStored?.CMentionMarkEntry);
@@ -75,7 +76,7 @@ public sealed class TAtelierMention
     [Fact]
     public void MentionResultRead_NothingStored_CarriesNoMark()
     {
-        Assert.Null(TInterfaceConduct.TMentionResultRead(2, null).CMentionResultStored);
+        Assert.Null(TInterfaceMention.TMentionResultRead(2, null).CMentionResultStored);
     }
 
     [Theory]
@@ -194,11 +195,11 @@ public sealed class TAtelierMention
         return TInterfaceConduct.TAtelierCreate(engine, new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineSpanRead"] = args =>
-                TInterface.TMentionSpanRead((string)args![0]!, (int)args[1]!, (int)args[2]!),
+                TInterfaceMentionSpan.TMentionSpanRead((string)args![0]!, (int)args[1]!, (int)args[2]!),
             ["LEngineUnitRead"] = args =>
-                TInterface.TMentionUnitRead((string)args![0]!, (int)args[1]!),
+                TInterfaceMentionSpan.TMentionUnitRead((string)args![0]!, (int)args[1]!),
             ["LEngineOffsetRead"] = args =>
-                TInterface.TMentionOffsetRead((string)args![0]!, (int)args[1]!),
+                TInterfaceMentionSpan.TMentionOffsetRead((string)args![0]!, (int)args[1]!),
         });
     }
 }

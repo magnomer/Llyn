@@ -1,6 +1,6 @@
 {
   "project": "Llyn",
-  "report": { "directory": "audit", "versionFile": "version.json", "versionKey": "current-version", "prefix": "Audit-", "keep": ["records"] },
+  "report": { "directory": "docs-analysis", "versionFile": "version.json", "versionKey": "current-version", "prefix": "Audit-", "keep": ["records"] },
   "audits": [
     "AuditLines", "AuditLinesHistory", "AuditComments", "AuditFake", "AuditNames",
     "AuditObject", "AuditObjectHistory", "AuditPlatform", "AuditStructure", "AuditUI",

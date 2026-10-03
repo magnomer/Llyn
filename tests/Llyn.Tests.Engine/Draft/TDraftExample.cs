@@ -131,6 +131,6 @@ public sealed class TDraftExample
 
         engine.TEngineRequestApply(TInterface.TExampleLanguageCreate(draft.LDraftId, language));
         return engine.TEngineRequestApply(
-            TInterface.TExampleTextCreate(draft.LDraftId, TInterface.TStateValueCreate(text)));
+            TInterface.TExampleTextCreate(draft.LDraftId, TInterfaceState.TStateValueCreate(text)));
     }
 }

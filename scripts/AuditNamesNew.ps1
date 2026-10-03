@@ -1,4 +1,5 @@
 #requires -Version 5.1
+# AUDITNAMESNEW - AUDIT GENERATION 19.
 [CmdletBinding()]
 param(
     [string]$File,
@@ -28,6 +29,8 @@ if ($Help) {
     Write-NewNameManual
     exit 0
 }
+
+Write-Host 'AUDITNAMESNEW - AUDIT GENERATION 19' -ForegroundColor Blue
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'

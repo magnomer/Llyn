@@ -50,7 +50,7 @@ public sealed class TDraftFact
         LCardDraft root = TInterface.TCardDraftCreate("root", "", "", [], [], [], [], [], 0) with
         {
             LCardDraftChild = [branch],
-            LCardDraftSentence = [TInterface.TSentenceDraftCreate("a sentence")],
+            LCardDraftSentence = [TInterfaceExample.TSentenceDraftCreate("a sentence")],
         };
 
         Assert.Equal(4, root.LCardDraftTally);
@@ -61,7 +61,7 @@ public sealed class TDraftFact
     [Fact]
     public void StateValueShown_UnknownAndBlank_ReportsNothingToShow()
     {
-        LStateValue written = TInterface.TStateValueCreate("wolf");
+        LStateValue written = TInterfaceState.TStateValueCreate("wolf");
         LStateValue unreadable = TInterface.TStateUnreadableCreate("w0lf");
 
         Assert.Equal("wolf", written.LStateValueShown);
@@ -87,8 +87,9 @@ public sealed class TDraftFact
     [Fact]
     public void MentionSpanDivide_SilentAndLinkedMentions_MarksOnlyTheLinkedPiece()
     {
-        IReadOnlyList<LMentionPiece> pieces = TInterface.TMentionSpanDivide(
-            "the grey wolf", [TInterface.TMentionCreate(1, 4, 4, 5, 2), TInterface.TMentionCreate(2, 9, 4, 0)]);
+        IReadOnlyList<LMentionPiece> pieces = TInterfaceMentionSpan.TMentionSpanDivide(
+            "the grey wolf",
+            [TInterfaceMentionSpan.TMentionCreate(1, 4, 4, 5, 2), TInterfaceMentionSpan.TMentionCreate(2, 9, 4, 0)]);
 
         Assert.Equal([0, 4, 8, 9], pieces.Select(piece => piece.LMentionPieceOffset));
         Assert.Equal(["the ", "grey", " ", "wolf"], pieces.Select(piece => piece.LMentionPieceText));
@@ -96,8 +97,8 @@ public sealed class TDraftFact
             [false, true, false, false],
             pieces.Select(piece => piece.LMentionPieceStored is { LMentionLinked: true }));
         Assert.True(pieces[1].LMentionPieceStored!.LMentionSensed);
-        Assert.True(TInterface.TMentionDraftCreate(1, 4, 4, 5).LMentionDraftLinked);
-        Assert.False(TInterface.TMentionDraftCreate(2, 9, 4, 0).LMentionDraftLinked);
+        Assert.True(TInterfaceMentionSpan.TMentionDraftCreate(1, 4, 4, 5).LMentionDraftLinked);
+        Assert.False(TInterfaceMentionSpan.TMentionDraftCreate(2, 9, 4, 0).LMentionDraftLinked);
     }
 
     [Theory]

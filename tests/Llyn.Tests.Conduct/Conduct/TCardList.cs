@@ -199,7 +199,7 @@ public sealed class TCardList
     private static (CDesk TCardListDesk, CCardList TCardListCard) TCardListPrepare(LEngine engine, int count)
     {
         (CDesk desk, _) = TCard.TCardPrepare(engine);
-        CCardList card = TInterfaceConduct.TCardListCreate(desk);
+        CCardList card = TInterfaceConductCard.TCardListCreate(desk);
         while (TCardMeaningRead(desk).Count < count)
         {
             card.CCardMeaningAdd();

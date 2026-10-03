@@ -1,0 +1,18 @@
+{
+  "version": "0.17.7050",
+  "commit": "a37f2af0c9b68293ee30a2cecc6a8511e88c94d9",
+  "previous": "0.17.7000",
+  "previousCommit": "a158a65b0dbe95507005204a23e781852bee2191",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.Media/Llyn.Media.csproj", "src/Llyn.Core.Windows/Llyn.Core.Windows.csproj"],
+    ["src/Llyn.Media/LPressBrowser.comment.md", "src/Llyn.Core.Windows/LPressBrowser.comment.md"],
+    ["src/Llyn.Media/LPressBrowser.cs", "src/Llyn.Core.Windows/LPressBrowser.cs"],
+    ["src/Llyn.Media/LUsherShell.comment.md", "src/Llyn.Core.Windows/LUsherShell.comment.md"],
+    ["src/Llyn.Media/LUsherShell.cs", "src/Llyn.Core.Windows/LUsherShell.cs"],
+    ["src/Llyn.UIVeneer/Kit/Asset/PEnsign.comment.md", "src/Llyn.UIDeportment/Shell/LEnsignImage.comment.md"],
+    ["src/Llyn.UIVeneer/Kit/Asset/PMarkdown.cs", "src/Llyn.UIDeportment/Shell/LMarkdownFace.cs"],
+    ["src/Llyn.UIVeneer/Shell/Frame/PObserver.comment.md", "src/Llyn.UIDeportment/Shell/LObserver.comment.md"],
+    ["src/Llyn.UIVeneer/Shell/Frame/PObserver.cs", "src/Llyn.UIDeportment/Shell/LObserver.cs"]
+  ]
+}

@@ -1,10 +1,10 @@
 # TDraftExample.cs
-Hash: `3efc49f55fab5220`
+Hash: `3f1d3998d7a49532`
 
 ## `public sealed class TDraftExample`
 
 Covers the sentence side of the drafts folder, the held work the corpus panel pushes into.
-A sentence draft carries an Example where an entry draft carries a form.
+A sentence draft carries an Example where an entry draft carries entry content.
 The folder holds both the same way.
 
 ## `public void RequestApply_HeldSentence_SurvivesScan()`
@@ -20,7 +20,7 @@ A commit that kept its file would offer saved work back at every launch.
 
 ## `public void LeftoverSweep_SentenceMatchingStoredExample_SweepsIt()`
 
-A draft matching the Example it names is collected, and one differing from its own is kept.
+A draft matching the Example it names is collected, and a draft naming no stored Example is kept.
 A kill just after a commit leaves such a file.
 Only the sweep can tell it from work the user would lose.
 

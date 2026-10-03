@@ -9,7 +9,7 @@ public sealed class TTrove
     [Fact]
     public void TroveCandidateSave_SeveralPerOrder_ReadsAllBack()
     {
-        LTrove trove = TInterface.TTroveCreate();
+        LTrove trove = TInterfaceTrove.TTroveCreate();
         LCandidate[] found =
         [
             TInterface.TCandidateCreate("Cambridge", "təˈmɑːtəʊ", 0, true, "British"),
@@ -26,7 +26,7 @@ public sealed class TTrove
     [Fact]
     public void TroveCandidateSave_NoPhonetic_KeepsNothing()
     {
-        LTrove trove = TInterface.TTroveCreate();
+        LTrove trove = TInterfaceTrove.TTroveCreate();
 
         trove.TTroveCandidateSave(
             7, "tomato", "English", [TInterface.TCandidateCreate("Longman", null, 0, false, string.Empty)]);
@@ -37,7 +37,7 @@ public sealed class TTrove
     [Fact]
     public void TroveRecordingRead_SeveralPerOrder_ReadsAllBack()
     {
-        LTrove trove = TInterface.TTroveCreate();
+        LTrove trove = TInterfaceTrove.TTroveCreate();
         LRecording[] found =
         [
             TInterface.TRecordingCreate("Oxford", "https://example.test/tomato-gb.mp3", 0, true, "British"),
@@ -53,7 +53,7 @@ public sealed class TTrove
     [Fact]
     public void TroveTranscriptionRead_TwoSchemes_ReadsEachBack()
     {
-        LTrove trove = TInterface.TTroveCreate();
+        LTrove trove = TInterfaceTrove.TTroveCreate();
         LCandidate[] pinyin = [TInterface.TCandidateCreate("Wiktionary", "nǐ hǎo", 0, true, string.Empty)];
         LCandidate[] bopomofo = [TInterface.TCandidateCreate("Wiktionary", "ㄋㄧˇ ㄏㄠˇ", 0, true, string.Empty)];
 
@@ -69,7 +69,7 @@ public sealed class TTrove
     [Fact]
     public void TroveClear_Session_DropsEveryScheme()
     {
-        LTrove trove = TInterface.TTroveCreate();
+        LTrove trove = TInterfaceTrove.TTroveCreate();
         LCandidate[] found = [TInterface.TCandidateCreate("Wiktionary", "nǐ hǎo", 0, true, string.Empty)];
         trove.TTroveTranscriptionSave(7, "你好", "Mandarin", "Pinyin", found);
         trove.TTroveTranscriptionSave(8, "你好", "Mandarin", "Pinyin", found);
@@ -83,7 +83,7 @@ public sealed class TTrove
     [Fact]
     public void TroveRecordingSave_NoAddress_KeepsNothing()
     {
-        LTrove trove = TInterface.TTroveCreate();
+        LTrove trove = TInterfaceTrove.TTroveCreate();
 
         trove.TTroveRecordingSave(
             7, "tomato", "English", [TInterface.TRecordingCreate("Oxford", null, 0, false, string.Empty)]);

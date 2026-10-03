@@ -1,9 +1,9 @@
 # TAuditTruthSink.cs
-Hash: `1a362e5af39085ae`
+Hash: `b0f34faf27d74fcd`
 
 ## `internal static partial class TAuditTruthWalker`
 
-The sink half of the truth walker: where a driver value may not go.
+The sink half of the truth walker, covering where a driver value may not go.
 
 ## `private static (string TViolationKind, string TViolationReason)? TAuditSinkRead(SyntaxNode reference)`
 

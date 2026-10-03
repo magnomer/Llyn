@@ -1,12 +1,12 @@
 # TSpeech.cs
-Hash: `93755d685de70a31`
+Hash: `f1ce4382086375ff`
 
 ## `public sealed class TSpeech`
 
 Covers the controlled vocabularies and the inflections that use them.
 The engine writes parts of speech and morphology into a workspace from the packs on disk.
 It covers a pack row rewritten in place, as a second import rewrites it.
-It covers an Entry's inflected forms appended to, moved and deleted through the entry update.
+It covers an Entry's inflected forms appended to, moved and deleted through the inflection save.
 
 ## `public void EntryDraftNames_UnnamedSpeech_LeavesItOut()`
 
@@ -61,4 +61,5 @@ The field cleared is the entry left with no part of speech, not the last one sti
 
 ### `engine.TEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Noun"));`
 
-An update that leaves the field as it stands records nothing about it.
+Setting the field records a speech change.
+The same update made again leaves the field as it stands and records nothing about it.

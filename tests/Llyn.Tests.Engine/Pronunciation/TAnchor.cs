@@ -96,7 +96,7 @@ public sealed class TAnchor
         LFanqieRow loose = TAnchorRowCreate("疑", 1);
         LFanqieRow held = TAnchorRowCreate("匣", 0) with { LFanqieRowClass = "A", LFanqieRowId = 5 };
 
-        LAnchorRow row = Assert.Single(TInterface.TAnchorRowScan([held, loose], [5], ["A"]));
+        LAnchorRow row = Assert.Single(TInterfaceFanqie.TAnchorRowScan([held, loose], [5], ["A"]));
 
         Assert.True(row.LAnchorRowHeld);
         Assert.True(row.LAnchorRowEstimated);
@@ -107,8 +107,8 @@ public sealed class TAnchor
     {
         LFanqieRow held = TAnchorRowCreate("匣", 0) with { LFanqieRowId = 5, LFanqieRowSummary = "胡官切" };
 
-        Assert.Equal("胡官切", TInterface.TAnchorTextFormat([held], [5], "完"));
-        Assert.Empty(TInterface.TAnchorTextFormat([held], [5], "完全"));
+        Assert.Equal("胡官切", TInterfaceFanqie.TAnchorTextFormat([held], [5], "完"));
+        Assert.Empty(TInterfaceFanqie.TAnchorTextFormat([held], [5], "完全"));
     }
 
     private static LFanqieRow TAnchorRowCreate(string initial, int position, string rime = "寒")

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Llyn.Application;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -28,7 +29,7 @@ internal static class TInterfaceMention
             entries,
             new LPortraitOutlet(engine),
             new LSettingsOutlet(engine),
-            TInterfaceConduct.TDeskCreate(engine, "Example", envoy),
+            TInterfaceConductDesk.TDeskCreate(engine, "Example", envoy),
             static () => true,
             envoy,
             static _ => true,
@@ -50,7 +51,7 @@ internal static class TInterfaceMention
             entries,
             new LPortraitOutlet(engine),
             new LSettingsOutlet(engine),
-            TInterfaceConduct.TDeskCreate(engine, "Example", envoy),
+            TInterfaceConductDesk.TDeskCreate(engine, "Example", envoy),
             static () => true,
             envoy,
             static _ => true,
@@ -63,6 +64,12 @@ internal static class TInterfaceMention
 
     internal static CMentionOffer TMentionResultOpen(CAtelier atelier, CMentionResult result) =>
         atelier.CAtelierMention.LMentionResultOpen(result);
+
+    internal static CMentionResult TMentionResultRead(int offset, LMention? stored) =>
+        CMention.CMentionResultRead(new LMentionResult(offset, stored, []));
+
+    internal static LExample TExampleMentionAdd(this LExample example, LMention mention) =>
+        example with { LExampleMention = [mention] };
 
     internal static CMentionOffer? TDisplayMentionFind(LEngine engine, CAtelier atelier, CEnvoy envoy, long shown)
     {

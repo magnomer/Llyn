@@ -1,9 +1,10 @@
 # TPortraitPage.cs
-Hash: `e2bc7871d39be4c9`
+Hash: `11adb43c004b1e46`
 
 ## `public sealed class TPortraitPage`
 
-Covers the page likeness: an example, a source or a situation read into the shape the sheet prints.
+Covers the page likeness.
+An example, a source or a situation is read into the shape the sheet prints.
 It covers the engine read for each realm, the HTML rendering, and the print hand-off to the press.
 
 ## `public void PortraitRead_ExampleWithGlossAndSource_CarriesWhatTheExcerptShows()`

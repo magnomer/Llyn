@@ -16,7 +16,7 @@ A script never reads, runs or builds a test to learn a rule, and never parses a 
 A test never reads a script or its configuration to learn a rule or a setting.
 Each side carries its own settings, copied by hand, in its own place.
 A script keeps them in its `.json` file, and a test keeps them in its `TAudit*Setting.cs` file or ledger.
-The scripts share `auditbinder.cs` among themselves, and the tests share their helpers among themselves.
+The scripts share `AuditBinder.cs` among themselves, and the tests share their helpers among themselves.
 Nothing is shared across the two sides.
 A file on either side may still be audited as a subject, like any other tracked file.
 A script never writes a test file as part of an audit.

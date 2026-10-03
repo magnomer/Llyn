@@ -107,6 +107,6 @@ public sealed class TDraftReference
         Assert.NotNull(draft.LDraftReference);
 
         return engine.TEngineRequestApply(
-            TInterface.TReferenceTitleCreate(draft.LDraftId, TInterface.TStateValueCreate(title)));
+            TInterface.TReferenceTitleCreate(draft.LDraftId, TInterfaceState.TStateValueCreate(title)));
     }
 }

@@ -79,7 +79,7 @@ public sealed class TOccurrence
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        COccurrence occurrence = TInterfaceConduct.TOccurrenceCreate(engine);
+        COccurrence occurrence = TInterfaceConductPanel.TOccurrenceCreate(engine);
 
         occurrence.COccurrenceQuerySet("zzz");
 
@@ -89,7 +89,7 @@ public sealed class TOccurrence
 
     private static (COccurrence, LVista, LVista) TOccurrencePrepare(LEngine engine)
     {
-        COccurrence occurrence = TInterfaceConduct.TOccurrenceCreate(engine);
+        COccurrence occurrence = TInterfaceConductPanel.TOccurrenceCreate(engine);
         LVista roll = engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName);
         LVista vista = engine.TEngineVistaStart("occurrence", LCatalogOrder.LCatalogOrderHeadword);
         occurrence.TOccurrenceVistaRestore(roll, vista);

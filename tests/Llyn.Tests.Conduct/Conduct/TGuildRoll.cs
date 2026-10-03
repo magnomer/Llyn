@@ -77,9 +77,11 @@ public sealed class TGuildRoll
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
         engine.TEngineExampleCreate(
-            TInterface.TExampleCreate(0, "English", "one word", null, TInterface.TStateAnchorRead(book.LReferenceId)));
+            TInterfaceExample.TExampleCreate(
+                0, "English", "one word", null, TInterfaceState.TStateAnchorRead(book.LReferenceId)));
         engine.TEngineExampleCreate(
-            TInterface.TExampleCreate(0, "English", "two words", null, TInterface.TStateAnchorRead(book.LReferenceId)));
+            TInterfaceExample.TExampleCreate(
+                0, "English", "two words", null, TInterfaceState.TStateAnchorRead(book.LReferenceId)));
 
         CGuildRoll roll = guild.CGuildRollRead();
 

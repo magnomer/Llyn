@@ -1,5 +1,5 @@
 # TEngineWorkspace.cs
-Hash: `f0b1011ff70b981a`
+Hash: `d677d9bea96f62c9`
 
 ## `public sealed class TEngineWorkspace`
 
@@ -16,6 +16,7 @@ Cancelling the stale id releases it, so the engine no longer holds it.
 The move raises the workspace bulletin once to an attached observer.
 A setting saved after the move lands in the target, and the target reopens on it.
 The folder open hands the workspace folder in use to the usher.
+The workspace format answers the open folder's name.
 
 ## `private sealed class TUsherOpened : LUsher`
 

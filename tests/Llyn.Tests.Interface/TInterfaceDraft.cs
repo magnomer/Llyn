@@ -8,7 +8,7 @@ internal static partial class TInterface
     internal static LCardDraft TDraftCardCreate(string title)
     {
         return TInterface.TCardDraftCreate(
-            TInterface.TStateValueCreate(title),
+            TInterfaceState.TStateValueCreate(title),
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
             [],
@@ -22,9 +22,9 @@ internal static partial class TInterface
     internal static LEntryDraft TDraftPlainCreate(string headword)
     {
         LCardDraft meaning = TInterface.TCardDraftCreate(
-            TInterface.TStateValueCreate("set alight"),
+            TInterfaceState.TStateValueCreate("set alight"),
             LStateValue.LStateValueUnspecified,
-            TInterface.TStateValueCreate("to set something burning"),
+            TInterfaceState.TStateValueCreate("to set something burning"),
             [],
             [],
             [],
@@ -42,12 +42,12 @@ internal static partial class TInterface
 
     internal static LDraft TDraftNestedCreate(string origin, string headword)
     {
-        LSentenceDraft sentence = TInterface.TSentenceDraftCreate("she knelt to kindle the damp logs");
+        LSentenceDraft sentence = TInterfaceExample.TSentenceDraftCreate("she knelt to kindle the damp logs");
         LSituationDraft situation = TInterface.TSituationDraftCreate("around a hearth");
         LCardDraft meaning = TInterface.TCardDraftCreate(
-            TInterface.TStateValueCreate("set alight"),
+            TInterfaceState.TStateValueCreate("set alight"),
             LStateValue.LStateValueUnspecified,
-            TInterface.TStateValueCreate("to set something burning"),
+            TInterfaceState.TStateValueCreate("to set something burning"),
             [
                 sentence with
                 {

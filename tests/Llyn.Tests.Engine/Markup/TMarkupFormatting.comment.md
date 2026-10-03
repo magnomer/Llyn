@@ -1,5 +1,5 @@
 # TMarkupFormatting.cs
-Hash: `4317665f39de1a10`
+Hash: `53ff55fe6a447494`
 
 ## `public sealed class TMarkupFormatting`
 
@@ -12,6 +12,16 @@ An unspecified value leaves no element behind and an unknown value leaves a mark
 ### `public void MarkupFormat_ParsedEntry_RoundTripsEqual()`
 
 Record equality covers every field, and text equality shows the writer is stable on its own output.
+
+### `public void MarkupFormat_UnspecifiedFields_OmitsElements()`
+
+A field the entry never stated writes no element, and the text carries no XML declaration.
+An empty element would read back as a stated empty value, which the entry never held.
+
+### `public void MarkupFormat_UnknownValue_WritesStateAttribute()`
+
+A value marked unknown writes its element empty with a state attribute of unknown.
+That attribute is the only way the reader tells unknown apart from unspecified.
 
 ### `public void MarkupFormat_ControlCharacter_DropsIt()`
 

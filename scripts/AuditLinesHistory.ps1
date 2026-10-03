@@ -24,6 +24,16 @@
     AuditLinesHistory.json is counted again, and so is a version whose commit
     changed.
 
+    Lineage links one folder to another where git renamed source files from
+    the first into the second between two consecutive versions, and those files
+    are at least the lineage share of AuditLinesHistory.json of the files the
+    old folder held before or the new folder holds after. The renames come from
+    AuditHistory.lineage.ps1 and stay in the lineage folder named in
+    AuditLinesHistory.json, apart from the line records, so no lineage change
+    counts a version again. The
+    page's Lineage checkbox gives every folder linked this way, directly or
+    through others, one shared color.
+
     All records, sorted by version, are then placed into the page template
     AuditLinesHistory.html, written as {prefix}{version}.html into the report folder named in AuditLinesHistory.json,
     and opened in the default browser. The page is self-contained and works
@@ -43,6 +53,7 @@
     AuditLinesHistory -Rebuild
     Count every version again.
 #>
+# AUDITLINESHISTORY - AUDIT GENERATION 19.
 [CmdletBinding()]
 param(
     [switch]$Rebuild,
@@ -58,6 +69,8 @@ if ($Help) {
     Get-Help -Name $PSCommandPath -Detailed
     return
 }
+
+Write-Host 'AUDITLINESHISTORY - AUDIT GENERATION 19' -ForegroundColor Blue
 
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -103,6 +116,11 @@ if ($sourceRoots.Count -eq 0 -or $sourceExtensions.Count -eq 0 -or $segments -lt
 
 $repository = ([string]$config.repository).Trim()
 $recordsPath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ([string]$config.records)))
+$lineagePath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ([string]$config.lineage.records)))
+$lineageShare = [double]$config.lineage.share
+if (-not ($lineageShare -gt 0 -and $lineageShare -le 1)) {
+    throw "AuditLinesHistory.json needs a lineage share above 0 and at most 1."
+}
 
 function Get-OrdinalList {
     param([object[]]$Values)
@@ -385,13 +403,76 @@ function Add-FolderText {
     [void]$Builder.Append($(if ($Folders.Count -eq 0) { "]`n" } else { "`n$Indent]`n" }))
 }
 
+. (Join-Path $PSScriptRoot 'AuditHistory.lineage.ps1')
+
+# The folder row a repository path counts in, as root|name, or $null when no source rule takes it.
+function Get-LineageSlot {
+    param([Parameter(Mandatory = $true)][string]$Relative)
+
+    if (Test-IsExcludedPath -Relative $Relative) { return $null }
+    if (-not $sourceExtensions.Contains([System.IO.Path]::GetExtension($Relative).ToLowerInvariant())) { return $null }
+    $prefix = Find-RootPrefix -Relative $Relative -Roots $sourceRoots
+    if ($null -eq $prefix) { return $null }
+    return $prefix.TrimEnd('/') + '|' + (Get-FolderKey -Relative $Relative.Substring($prefix.Length))
+}
+
+# The folder links: renamed source files from one folder to another, kept when they are at least the lineage share
+# of the files the old folder held at the version before, or of the files the new folder holds at that version.
+function Get-LineageLink {
+    param(
+        [Parameter(Mandatory = $true)][System.Collections.Generic.List[object]]$Records,
+        [Parameter(Mandatory = $true)][System.Collections.Generic.List[object]]$Lineage
+    )
+
+    $files = @{}
+    foreach ($record in $Records) {
+        $map = @{}
+        foreach ($folder in @($record.Folders)) { $map[$folder.Root + '|' + $folder.Name] = [int]$folder.Files }
+        $files[$record.Version] = $map
+    }
+    $links = [System.Collections.Generic.List[object]]::new()
+    foreach ($step in $Lineage) {
+        if (-not $files.ContainsKey($step.Version) -or -not $files.ContainsKey($step.Previous)) { continue }
+        $counts = @{}
+        foreach ($move in $step.Moves) {
+            $from = Get-LineageSlot -Relative $move.From
+            $to = Get-LineageSlot -Relative $move.To
+            if ($null -eq $from -or $null -eq $to -or $from -ceq $to) { continue }
+            $key = $from + "`n" + $to
+            $counts[$key] = 1 + $(if ($counts.ContainsKey($key)) { $counts[$key] } else { 0 })
+        }
+        foreach ($key in (Get-OrdinalList -Values @($counts.Keys))) {
+            $pair = $key.Split("`n")
+            $count = [int]$counts[$key]
+            $before = $files[$step.Previous][$pair[0]]
+            $after = $files[$step.Version][$pair[1]]
+            $kept = ($null -ne $before -and $before -gt 0 -and $count / $before -ge $lineageShare) -or
+                ($null -ne $after -and $after -gt 0 -and $count / $after -ge $lineageShare)
+            if ($kept) { $links.Add([pscustomobject]@{ Version = $step.Version; From = $pair[0]; To = $pair[1]; Files = $count }) }
+        }
+    }
+    return , $links
+}
+
 # The page data: every record sorted by version under the current rules, in the shape the template reads.
 function Get-PageRecordText {
-    param([Parameter(Mandatory = $true)][System.Collections.Generic.List[object]]$Records)
+    param(
+        [Parameter(Mandatory = $true)][System.Collections.Generic.List[object]]$Records,
+        [Parameter(Mandatory = $true)][AllowEmptyCollection()][System.Collections.Generic.List[object]]$Links
+    )
 
     $sorted = @($Records | Sort-Object -Property @{ Expression = { [version]$_.Version } })
     $builder = [System.Text.StringBuilder]::new()
-    [void]$builder.Append("{`n  `"rules`": " + (ConvertTo-JsonText $rules) + ",`n  `"versions`": [")
+    [void]$builder.Append("{`n  `"rules`": " + (ConvertTo-JsonText $rules) + ",`n")
+    [void]$builder.Append('  "lineage": { "share": ' + $lineageShare.ToString([System.Globalization.CultureInfo]::InvariantCulture) + ', "links": [')
+    for ($i = 0; $i -lt $Links.Count; $i++) {
+        $link = $Links[$i]
+        [void]$builder.Append($(if ($i -eq 0) { "`n" } else { ",`n" }))
+        [void]$builder.Append('    { "version": ' + (ConvertTo-JsonText $link.Version) + ', "from": ' + (ConvertTo-JsonText $link.From) +
+            ', "to": ' + (ConvertTo-JsonText $link.To) + ', "files": ' + $link.Files + ' }')
+    }
+    [void]$builder.Append($(if ($Links.Count -eq 0) { "] },`n" } else { "`n  ] },`n" }))
+    [void]$builder.Append('  "versions": [')
     for ($i = 0; $i -lt $sorted.Count; $i++) {
         $record = $sorted[$i]
         [void]$builder.Append($(if ($i -eq 0) { "`n" } else { ",`n" }))
@@ -542,8 +623,11 @@ $versionCount = $records.Count
 if ($versionCount -eq 0) {
     throw "The records hold no versions: $recordsPath"
 }
+$lineage = Update-Lineage -Root $localRoot -Folder $lineagePath -VersionMap $versionMap
+$links = Get-LineageLink -Records $records -Lineage $lineage
+Write-Host "Lineage links: $($links.Count) at a share of $lineageShare or more."
 $utf8 = [System.Text.UTF8Encoding]::new($false)
-$recordText = Get-PageRecordText -Records $records
+$recordText = Get-PageRecordText -Records $records -Links $links
 $pageTitle = $repository.Split('/')[-1]
 $template = [System.IO.File]::ReadAllText($templatePath, $utf8)
 foreach ($marker in @('/*__DATA__*/', '__TITLE__', '__AUDITPAGE__')) {

@@ -1,9 +1,9 @@
 # TAuditTruthRelay.cs
-Hash: `ebf21d8a8bd4999b`
+Hash: `207276be89e57590`
 
 ## `internal static partial class TAuditTruthWalker`
 
-The relay half of the truth walker: which driver members stand in for logic, and at which parameters.
+The relay half of the truth walker, covering which driver members stand in for logic and at which parameters.
 Every set is keyed by symbol, so two members sharing a name never share a verdict.
 It also holds the handle and alias rules that decide which fields the walker follows.
 
@@ -16,7 +16,7 @@ Invoking one of those is then a request, so a request behind a delegate cannot h
 ## `internal static HashSet<ISymbol> TAuditReaderNames`
 
 The driver members whose body reads or requests logic, so a value from one is an engine value.
-A call to one of them is a request, so a private wrapper cannot launder a sink.
+A request is a read too, so a relay is read through as well.
 
 ## `private static Dictionary<ISymbol, HashSet<int>> TAuditHotNames`
 
@@ -27,7 +27,7 @@ An argument at any other position is shown, not sent, and is no sink.
 
 The requesting members of every driver, directly or through another relay, and the reading ones beside.
 A delegate member becomes a relay when a driver assigns or subscribes a request, a relay or logic to it.
-Only delegate-typed members declared in UI source count, so a framework property never becomes a relay.
+Only delegate-typed members declared in UI or capsule source count, so a framework property never becomes a relay.
 An interface event counts too, since a shell type raises it through its own implementation.
 A delegate local becomes a relay when its initialiser or a later assignment is one.
 A delegate parameter stored in a member or local passes on what its callers hand it.

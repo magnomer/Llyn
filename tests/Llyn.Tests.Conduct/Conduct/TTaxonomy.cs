@@ -28,119 +28,6 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void TaxonomyEntryCreate_PaddedWordingNothingChosen_AsksTheWordingAndOpensTheTrimmedTagChosen()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        List<string> asked = [];
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCoinageCreate("  motion ", null, asked));
-        int opened = 0;
-        taxonomy.CTaxonomyTagOpened += () => opened++;
-
-        taxonomy.CTaxonomyEntryCreate();
-
-        long tag = Assert.NotNull(taxonomy.LTaxonomyChosen);
-        CCatalogTag row = Assert.Single(taxonomy.CTaxonomyRowsRead(), row => row.CCatalogTagStored.CTagId == tag);
-        Assert.Equal(new CTag(tag, "motion"), row.CCatalogTagStored);
-        Assert.True(row.CCatalogTagChosen);
-        Assert.Equal(1, opened);
-        Assert.Equal(["Coinage:Coinage.Tag"], asked);
-        Assert.False(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
-    }
-
-    [Fact]
-    public void TaxonomyEntryCreate_BlankWording_ShowsTheFailureAndOpensNothing()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        List<string> asked = [];
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCoinageCreate(" ", null, asked));
-        int opened = 0;
-        taxonomy.CTaxonomyTagOpened += () => opened++;
-
-        taxonomy.CTaxonomyEntryCreate();
-
-        Assert.Equal(["Coinage:Coinage.Tag", "Tag.CreateFailed"], asked);
-        Assert.Equal(0, opened);
-        Assert.Null(taxonomy.LTaxonomyChosen);
-    }
-
-    [Fact]
-    public void TaxonomyEntryCreate_RetreatedWording_MakesNothing()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        List<string> asked = [];
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCoinageCreate(null, null, asked));
-        int opened = 0;
-        taxonomy.CTaxonomyTagOpened += () => opened++;
-
-        taxonomy.CTaxonomyEntryCreate();
-
-        Assert.Equal(["Coinage:Coinage.Tag"], asked);
-        Assert.Equal(0, opened);
-        Assert.Null(taxonomy.LTaxonomyChosen);
-        Assert.Empty(taxonomy.CTaxonomyRowsRead());
-        Assert.False(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
-    }
-
-    [Fact]
-    public void TaxonomyEntryCreate_ChangedFreshEntryStayed_AsksOnlyTheLeaveQuestion()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        List<string> asked = [];
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCoinageCreate("motion", null, asked));
-        TTaxonomyChangePrepare(engine, taxonomy);
-
-        taxonomy.CTaxonomyEntryCreate();
-
-        Assert.Equal(["Leave"], asked);
-        Assert.Null(taxonomy.LTaxonomyChosen);
-        Assert.True(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
-        Assert.True(taxonomy.CTaxonomyEditor.CEditorDesk.CDeskChanged);
-    }
-
-    [Fact]
-    public void TaxonomyEntryCreate_ChangedFreshEntryDiscarded_AsksTheLeaveThenTheWording()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        List<string> asked = [];
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCoinageCreate("motion", false, asked));
-        TTaxonomyChangePrepare(engine, taxonomy);
-
-        taxonomy.CTaxonomyEntryCreate();
-
-        Assert.Equal(["Leave", "Coinage:Coinage.Tag"], asked);
-        Assert.NotNull(taxonomy.LTaxonomyChosen);
-        Assert.False(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
-    }
-
-    [Fact]
-    public void TaxonomyEntryCreate_TagChosen_StartsAnEntryWithoutAskingTheWording()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        List<string> asked = [];
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCoinageCreate("motion", null, asked));
-        LTag tag = engine.TEngineTagCreate("botany");
-        taxonomy.CTaxonomyTagToggle(tag.LTagId);
-
-        taxonomy.CTaxonomyEntryCreate();
-
-        Assert.Empty(asked);
-        Assert.Equal(tag.LTagId, taxonomy.LTaxonomyChosen);
-        Assert.True(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
-    }
-
-    [Fact]
     public void TaxonomyEmptyKey_BlankOrWrittenSearch_PicksVacantOrUnmatched()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -156,66 +43,6 @@ public sealed class TTaxonomy
 
         Assert.Equal("Tag.Unmatched", taxonomy.CTaxonomyMembership.CMembershipEmptyKey);
         Assert.Empty(taxonomy.CTaxonomyMembership.CMembershipRowsRead());
-    }
-
-    [Fact]
-    public void TaxonomyEntryCreate_TagChosen_OpensAnEntryCarryingItThatListsOnceStored()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        LTag tag = engine.TEngineTagCreate("botany");
-        taxonomy.CTaxonomyTagToggle(tag.LTagId);
-        List<CEntryDraft> shown = [];
-        taxonomy.CTaxonomyEditor.CEditorDraftChanged += shown.Add;
-
-        taxonomy.CTaxonomyEntryCreate();
-
-        Assert.Contains(shown[0].CEntryDraftMeanings[0].CCardDraftTag, row => row.CTagDraftId == tag.LTagId);
-        Assert.True(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
-        Assert.False(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelBinEnabled);
-
-        taxonomy.CTaxonomyEditor.CEditorHeadwordSet("fern");
-        taxonomy.CTaxonomyEditor.CEditorEntrySave();
-
-        Assert.Equal(["fern"], taxonomy.CTaxonomyMembership.CMembershipRowsRead().Select(row => row.CVistaRowHeadword));
-    }
-
-    [Fact]
-    public void TaxonomyEntryCreate_EntryShownNoTagChosen_OpensABlankEntry()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        LEntry hearth = TTaxonomyEntrySave(engine);
-        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelRowOpen(hearth.LEntryId);
-        List<CEntryDraft> shown = [];
-        taxonomy.CTaxonomyEditor.CEditorDraftChanged += shown.Add;
-
-        taxonomy.CTaxonomyEntryCreate();
-
-        Assert.Empty(shown[0].CEntryDraftMeanings[0].CCardDraftTag);
-        Assert.False(taxonomy.CTaxonomyEditor.CEditorDesk.CDeskChanged);
-        Assert.True(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
-    }
-
-    [Fact]
-    public void TaxonomyPanelEntryClose_FreshEntryHeld_DropsTheDraft()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        taxonomy.CTaxonomyTagToggle(engine.TEngineTagCreate("botany").LTagId);
-        taxonomy.CTaxonomyEntryCreate();
-        long held = taxonomy.CTaxonomyEditor.CEditorDesk.CDeskId;
-
-        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEntryClose();
-
-        Assert.Null(engine.TEngineDraftRead(held));
-        Assert.False(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
     }
 
     [Fact]
@@ -433,13 +260,13 @@ public sealed class TTaxonomy
         Assert.Equal(1, stopped);
     }
 
-    private static LEntry TTaxonomyEntrySave(LEngine engine)
+    internal static LEntry TTaxonomyEntrySave(LEngine engine)
     {
         return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "hearth", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a meaning", 1)], []));
     }
 
-    private static void TTaxonomyChangePrepare(LEngine engine, CTaxonomy taxonomy)
+    internal static void TTaxonomyChangePrepare(LEngine engine, CTaxonomy taxonomy)
     {
         long tag = engine.TEngineTagCreate("botany").LTagId;
         taxonomy.CTaxonomyTagToggle(tag);

@@ -44,7 +44,7 @@ internal static class TAuditBorderWalker
             IEnumerable<ISymbol> members = offer
                 .SelectMany(name => TAuditBinder.TAuditCompilation.GetSymbolsWithName(name, SymbolFilter.Type))
                 .OfType<INamedTypeSymbol>()
-                .Where(type => TAuditBinder.TAuditSourceRead(type) is { } source
+                .Where(type => TAuditBinderSymbol.TAuditSourceRead(type) is { } source
                     && TAuditBinder.TAuditRingRead(source, TAuditBorderSetting.TAuditBorderNeighbour.Keys) == neighbour)
                 .SelectMany(TAuditPublicRead)
                 .Where(member => member.DeclaredAccessibility == Accessibility.Public && !member.IsImplicitlyDeclared);
@@ -60,7 +60,7 @@ internal static class TAuditBorderWalker
                 int line = location.GetLineSpan().StartLinePosition.Line + 1;
                 foreach (INamedTypeSymbol type in TAuditSignatureRead(member))
                 {
-                    string? source = TAuditBinder.TAuditSourceRead(type);
+                    string? source = TAuditBinderSymbol.TAuditSourceRead(type);
                     string? target = source is null
                         ? null
                         : TAuditBinder.TAuditRingRead(source, TAuditBorderSetting.TAuditBorderNeighbour.Keys);
@@ -92,7 +92,7 @@ internal static class TAuditBorderWalker
                 .GetSymbolsWithName(name => TAuditSealCheck(name, prefixes), SymbolFilter.Type)
                 .OfType<INamedTypeSymbol>()
                 .Where(type => type.ContainingType is null && type.DeclaredAccessibility == Accessibility.Public
-                    && TAuditBinder.TAuditSourceRead(type) is { } source
+                    && TAuditBinderSymbol.TAuditSourceRead(type) is { } source
                     && TAuditBinder.TAuditRingRead(source, TAuditBorderSetting.TAuditBorderNeighbour.Keys) == ring)
                 .SelectMany(TAuditPublicRead)
                 .Where(member => member.DeclaredAccessibility == Accessibility.Public && !member.IsImplicitlyDeclared);
@@ -108,7 +108,7 @@ internal static class TAuditBorderWalker
                 int line = location.GetLineSpan().StartLinePosition.Line + 1;
                 foreach (INamedTypeSymbol type in TAuditSignatureRead(member))
                 {
-                    string? source = TAuditBinder.TAuditSourceRead(type);
+                    string? source = TAuditBinderSymbol.TAuditSourceRead(type);
                     string? target = source is null
                         ? null
                         : TAuditBinder.TAuditRingRead(source, TAuditBorderSetting.TAuditBorderNeighbour.Keys);
@@ -249,18 +249,19 @@ internal static class TAuditBorderWalker
         foreach (SimpleNameSyntax name in root.DescendantNodes().OfType<SimpleNameSyntax>())
         {
             UsingDirectiveSyntax? header = name.FirstAncestorOrSelf<UsingDirectiveSyntax>();
-            if (TAuditBinder.TAuditHeaderCheck(name) && header?.StaticKeyword.IsKind(SyntaxKind.StaticKeyword) != true)
+            if (TAuditBinderSymbol.TAuditHeaderCheck(name)
+                && header?.StaticKeyword.IsKind(SyntaxKind.StaticKeyword) != true)
             {
                 continue;
             }
 
-            ISymbol? symbol = TAuditBinder.TAuditSymbolRead(model, name);
-            if (symbol is null || TAuditBinder.TAuditTypeRead(symbol) is not INamedTypeSymbol type)
+            ISymbol? symbol = TAuditBinderSymbol.TAuditSymbolRead(model, name);
+            if (symbol is null || TAuditBinderSymbol.TAuditTypeRead(symbol) is not INamedTypeSymbol type)
             {
                 continue;
             }
 
-            string? source = TAuditBinder.TAuditSourceRead(type);
+            string? source = TAuditBinderSymbol.TAuditSourceRead(type);
             string? target = source is null
                 ? null
                 : TAuditBinder.TAuditRingRead(source, TAuditBorderSetting.TAuditBorderNeighbour.Keys);
@@ -270,7 +271,7 @@ internal static class TAuditBorderWalker
                 {
                     MethodKind: MethodKind.Ordinary or MethodKind.ReducedExtension
                 };
-                TAuditHitAdd(name, target, type.Name, TAuditBinder.TAuditDataCheck(type) && !behaviour);
+                TAuditHitAdd(name, target, type.Name, TAuditBinderSymbol.TAuditDataCheck(type) && !behaviour);
             }
         }
 

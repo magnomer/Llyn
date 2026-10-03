@@ -21,7 +21,7 @@ Some Conduct test bodies still reach internal Conduct members directly.
 
 ## `<InternalsVisibleTo Include="Llyn.Tests.Windows" />`
 
-The Windows behaviour tests build `CAtelier` for the deportments they drive.
+The Windows behaviour tests read `LDisplayFoldOpened`, the internal fold state of a sound display.
 
 ## `<InternalsVisibleTo Include="Llyn" />`
 

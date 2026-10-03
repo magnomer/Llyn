@@ -44,7 +44,7 @@ internal static class TAuditMoonlightingWalker
                     => $"logic value queried by {access.Name.Identifier.ValueText}",
                 CastExpressionSyntax cast when TAuditStrictWalker.TAuditDataCheck(cast.Expression)
                     => $"logic value cast to {cast.Type}",
-                TypeOfExpressionSyntax reflected when TAuditBinder.TAuditEngineCheck(reflected.Type)
+                TypeOfExpressionSyntax reflected when TAuditBinderSide.TAuditEngineCheck(reflected.Type)
                     => "logic type taken by typeof",
                 AttributeArgumentSyntax argument when TAuditStrictWalker.TAuditDataCheck(argument.Expression)
                     => "logic value in an attribute",
@@ -105,14 +105,14 @@ internal static class TAuditMoonlightingWalker
 
         return new[] { binary.Left, binary.Right }.Any(side =>
             side is IdentifierNameSyntax { Identifier.ValueText: "value" }
-            && TAuditBinder.TAuditSymbolRead(side) is IParameterSymbol { IsImplicitlyDeclared: true });
+            && TAuditBinderSymbol.TAuditSymbolRead(side) is IParameterSymbol { IsImplicitlyDeclared: true });
     }
 
     private static bool TAuditVerdictCheck(ExpressionSyntax condition)
     {
         ExpressionSyntax core = TAuditStrictWalker.TAuditCoreRead(condition);
         return core is InvocationExpressionSyntax or MemberAccessExpressionSyntax or IdentifierNameSyntax
-               && TAuditBinder.TAuditLogicCheck(TAuditBinder.TAuditSymbolRead(core));
+               && TAuditBinderSide.TAuditLogicCheck(TAuditBinderSymbol.TAuditSymbolRead(core));
     }
 
     private static int TAuditLineRead(SyntaxNode node)

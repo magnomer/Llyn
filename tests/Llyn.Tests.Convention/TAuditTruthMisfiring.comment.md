@@ -1,9 +1,9 @@
 # TAuditTruthMisfiring.cs
-Hash: `8f41e72a8037d28d`
+Hash: `df395d997e7a5fb1`
 
 ## `internal static partial class TAuditTruthWalker`
 
-The misfiring half of the truth walker: what the driver's medium may not decide.
+The misfiring half of the truth walker, covering what the driver's medium may not decide.
 `TAuditCarriedNames` caches each member's carried names, keyed by the member node.
 A control's state, console input, a clock and a deaf handler count as misfiring.
 None of them is a user act or an engine fact.
@@ -14,7 +14,7 @@ It also holds the gatekeeping rules for answers a driver branches on.
 Walks every node of a file for misfiring and reports each once per line, kind and name.
 An `if` or ternary whose condition reads a control or console input and whose branch requests lets the medium decide.
 A switch case or arm deciding on a control read is the same misfiring, when any section or arm requests.
-Every form exempts the same reads: a presence test, or an `is` test of type tests alone.
+Every form exempts the same reads, a presence test or an `is` test of type tests alone.
 So the verdict never depends on the syntax the author picked.
 An `if` that only hears whose event it is decides nothing, so a focus guard is no hit.
 An `if` deciding a request on a dialog answer is gatekeeping.

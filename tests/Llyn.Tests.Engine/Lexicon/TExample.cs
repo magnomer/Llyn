@@ -36,7 +36,7 @@ public sealed class TExample
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LExample glossed = engine.TEngineExampleCreate(TInterface.TExampleCreate(
+        LExample glossed = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
             0,
             "English",
             "he said the word",
@@ -49,7 +49,7 @@ public sealed class TExample
             Assert.Single(engine.TEngineExampleRead(glossed.LExampleId)!.LExampleGloss).LGlossText.TStateValueShow());
 
         LExample example = engine.TEngineExampleCreate(
-            TInterface.TExampleCreate(0, "English", "he spoke a word", null, null));
+            TInterfaceExample.TExampleCreate(0, "English", "he spoke a word", null, null));
         LEntry entry = TExampleEntryCreate(engine, [TExampleCiteCreate(example)], [TExampleCiteCreate(example)]);
 
         Assert.Equal(
@@ -81,9 +81,9 @@ public sealed class TExample
                 string.Empty,
                 "a unit of language",
                 [
-                    TInterface.TSentenceDraftCreate("he said a word"),
-                    TInterface.TSentenceDraftCreate("not a word was spoken"),
-                    TInterface.TSentenceDraftCreate("a word of advice"),
+                    TInterfaceExample.TSentenceDraftCreate("he said a word"),
+                    TInterfaceExample.TSentenceDraftCreate("not a word was spoken"),
+                    TInterfaceExample.TSentenceDraftCreate("a word of advice"),
                 ],
                 [],
                 [],
@@ -102,7 +102,7 @@ public sealed class TExample
 
         LReference reference = engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
             0,
-            TInterface.TStateValueCreate("A Dictionary"),
+            TInterfaceState.TStateValueCreate("A Dictionary"),
             LStateValue.LStateValueUnspecified,
             LReferenceKind.LReferenceKindUnspecified,
             LStateValue.LStateValueUnspecified,
@@ -113,7 +113,7 @@ public sealed class TExample
         {
             LSentenceDraftExample = TExampleDraftRead(card.LCardDraftSentence[1]) with
             {
-                LExampleDraftReference = TInterface.TStateAnchorRead(reference.LReferenceId),
+                LExampleDraftReference = TInterfaceState.TStateAnchorRead(reference.LReferenceId),
             },
         };
         engine.TEngineEntryUpdate(entry.LEntryId, loaded with
@@ -131,7 +131,7 @@ public sealed class TExample
         card = loaded.LEntryDraftMeanings[0];
         Assert.Equal(citedId, TExampleDraftRead(card.LCardDraftSentence[1]).LExampleDraftId);
         Assert.Equal(
-            TInterface.TStateAnchorRead(reference.LReferenceId),
+            TInterfaceState.TStateAnchorRead(reference.LReferenceId),
             TExampleDraftRead(card.LCardDraftSentence[1]).LExampleDraftReference);
 
         LSentenceDraft cited = card.LCardDraftSentence[1];
@@ -152,7 +152,7 @@ public sealed class TExample
                             },
                         },
                         card.LCardDraftSentence[0],
-                        TInterface.TSentenceDraftCreate("in a word"),
+                        TInterfaceExample.TSentenceDraftCreate("in a word"),
                     ],
                 },
             ],
@@ -188,7 +188,7 @@ public sealed class TExample
             string.Empty,
             [TInterface.TCardDraftCreate(
                 string.Empty, string.Empty, "a unit of language",
-                [TInterface.TSentenceDraftCreate("he said a word")],
+                [TInterfaceExample.TSentenceDraftCreate("he said a word")],
                 [], [], [], [], 1)],
             []));
 
@@ -199,7 +199,8 @@ public sealed class TExample
             "say", "English", string.Empty, string.Empty,
             [TInterface.TCardDraftCreate(
                 string.Empty, string.Empty, "to utter",
-                [TInterface.TSentenceDraftCreate("he said a word", exampleId, LStateAnchor.LStateAnchorUnspecified)],
+                [TInterfaceExample.TSentenceDraftCreate(
+                    "he said a word", exampleId, LStateAnchor.LStateAnchorUnspecified)],
                 [], [], [], [], 1)],
             []));
 
@@ -243,8 +244,8 @@ public sealed class TExample
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LExample shared = engine.TEngineExampleCreate(
-            TInterface.TExampleCreate(0, "English", "he said the word", null, null));
-        LExample lonely = engine.TEngineExampleCreate(TInterface.TExampleCreate(
+            TInterfaceExample.TExampleCreate(0, "English", "he said the word", null, null));
+        LExample lonely = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
             0,
             "English",
             "nobody quotes me",
@@ -278,7 +279,7 @@ public sealed class TExample
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LExample example = engine.TEngineExampleCreate(
-            TInterface.TExampleCreate(0, "English", "he said the word", null, null));
+            TInterfaceExample.TExampleCreate(0, "English", "he said the word", null, null));
         LEntry entry = TExampleEntryCreate(engine, [TExampleCiteCreate(example)], [TExampleCiteCreate(example)]);
         long meaningId = TExampleCardRead(engine, entry.LEntryId, false).LCardDraftId;
 
@@ -322,7 +323,7 @@ public sealed class TExample
 
     private static LSentenceDraft TExampleCiteCreate(LExample example)
     {
-        return TInterface.TSentenceDraftCreate(example.LExampleText, example.LExampleId, example.LExampleSource);
+        return TInterfaceExample.TSentenceDraftCreate(example.LExampleText, example.LExampleId, example.LExampleSource);
     }
 
     private static LCardDraft TExampleCardRead(LEngine engine, long entryId, bool collocation)

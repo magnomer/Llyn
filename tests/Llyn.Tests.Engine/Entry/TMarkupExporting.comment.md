@@ -1,5 +1,5 @@
 # TMarkupExporting.cs
-Hash: `ad259484c075ae0f`
+Hash: `2be8cb426b7007e7`
 
 ## `public sealed class TMarkupExporting`
 
@@ -12,8 +12,16 @@ The portrait export in markup format is the same file by another door.
 ### `public void MarkupExport_LinkedEntry_WritesNamesNotIds()`
 
 The entry links to two other entries, a reference with two authors and a sub-sense of the mentioned entry.
-The file is parsed back through the reader, so every assertion is on records and not on text.
-The one text assertion is that no `id` appears anywhere.
+The file is parsed back through the reader, so the assertions are on records and not on text.
+The one exception asserts that no `id` appears anywhere in the text.
+
+### `public void MarkupExport_UnknownTitle_WritesStateAttribute()`
+
+A title stated as unknown leaves as a `state` attribute and reads back as unknown.
+
+### `public void MarkupExport_MissingEntry_Refuses()`
+
+An id naming no stored entry is refused before any file is written.
 
 ### `public async Task MarkupExport_PortraitMarkupFormat_WritesSameText()`
 

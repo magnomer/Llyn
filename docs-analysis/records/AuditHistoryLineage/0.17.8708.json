@@ -1,0 +1,11 @@
+{
+  "version": "0.17.8708",
+  "commit": "f5ded7487874e81380b2d55134a866dac423ba30",
+  "previous": "0.17.8658",
+  "previousCommit": "4da4da15ead23c501469f5bdb5a8c174fbab3365",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.UIDeportment/Shell/QEsteem.comment.md", "src/Llyn.Conduct/Desk/CEsteem.comment.md"],
+    ["src/Llyn.UIDeportment/Shell/QPortrait.cs", "src/Llyn.Conduct/Portrait/CPortrait.cs"]
+  ]
+}

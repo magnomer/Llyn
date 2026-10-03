@@ -25,7 +25,14 @@ The second line of every paired comment file reads Hash: `<16 hex digits>`. The 
 the first 16 of the lowercase SHA-256 of the UTF-8 text of the sources paired to that file,
 each with its byte order mark dropped and CRLF or CR turned into LF, joined in ordinal
 file-name order. A source edit therefore flags its comment file until a person rereads the
-prose and restamps it with stampcomment.ps1. Exempt files are skipped, as for headings.
+prose and restamps it with StampComment.ps1. Exempt files are skipped, as for headings.
+
+Each run keeps the text of every stale comment file in AuditCommentsSnapshot.json next to
+this script, once per stale stamp. A later run that finds the file restamped while its prose,
+spacing and blank lines aside, still matches that text lists it under Comment files restamped
+unrevised, with a capitalized warning. That gate only warns. Its entry clears once the prose
+changes, once HEAD carries the new stamp, or once the file is gone. The convention test keeps
+its own snapshot, so each side flags only the stale files it saw itself.
 
 A stale hash always fails. A missing hash is backlog from before the stamp existed: its gate
 reads WARN in yellow while the count sits at or below ceilings.unstamped, and FAIL above it.
@@ -57,13 +64,14 @@ AuditComments.json shape:
     "rules": { "maxWords": 20, "forbidden": [";"], "sentenceMarks": [".", "!", "?"],
                "abbreviations": ["e.g", "i.e", "etc", "vs", "cf"] },
     "remark": {
-      "markers": { ".cs": ["//", "/*"], ".xaml": ["<!--"], ".props": ["<!--"] },
+      "markers": { ".cs": ["//", "/*"], ".xaml": ["<!--"], ".props": ["<!--"],
+                   ".csproj": ["<!--"], ".slnx": ["<!--"] },
       "closers": { "/*": "*/", "<!--": "-->" },
       "exemptFiles": ["TAuditNameRegistry.cs"]
     },
-    "ceilings": { "unstamped": 1705 },
+    "ceilings": { "unstamped": <n> },
     "report": {
-      "directory": "audit",
+      "directory": "docs-analysis",
       "versionFile": "version.json",
       "versionKey": "current-version",
       "prefix": "AuditComments-",
@@ -119,7 +127,7 @@ AuditComments -Segments 2
 AuditComments -SourceRoots .\src -MaxWords 25
 #>
 #requires -Version 5.1
-# AUDITCOMMENTS GENERATION 19 - AuditComments.ps1.
+# AUDITCOMMENTS - AUDIT GENERATION 19.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -205,7 +213,9 @@ CHECKS
         hash is a finding. A missing hash is a WARN while the count sits at
         or below ceilings.unstamped, a finding above it, and a ceiling above
         the count is stale and a finding. Restamp one file with
-        stampcomment.ps1 only after rereading its prose.
+        StampComment.ps1 only after rereading its prose.
+    Restamps: a file restamped while its prose still matches the text it
+        held when stale is a WARN, kept in AuditCommentsSnapshot.json.
     A configured root or root-level file that does not exist, or a failing
     git, stops the audit with an error. Paths print with forward slashes
     in the order of the convention tests.
@@ -324,7 +334,7 @@ function Write-AuditLine {
     }
 }
 
-Write-AuditLine "AUDITCOMMENTS GENERATION $script:AuditGeneration" -ForegroundColor Blue
+Write-AuditLine "AUDITCOMMENTS - AUDIT GENERATION $script:AuditGeneration" -ForegroundColor Blue
 
 
 function Get-ConfigNode {
@@ -611,6 +621,7 @@ function Get-GateStatus {
     param([Parameter(Mandatory = $true)]$Row)
 
     if ($Row.Count -eq 0) { return 'OK' }
+    if ($null -ne $Row.PSObject.Properties['Warn']) { return 'WARN' }
     if ($null -ne $Row.PSObject.Properties['Ceiling'] -and $Row.Count -le $Row.Ceiling) { return 'WARN' }
     return 'FAIL'
 }
@@ -815,6 +826,51 @@ function Test-CommentLine {
     if ($sentences -gt 1) { $problems.Add("$sentences sentences") }
 
     return @($problems)
+}
+
+# JSON written by hand, so Windows PowerShell 5.1 and pwsh 7 produce the same bytes.
+function ConvertTo-PageJson {
+    param([AllowNull()][object]$Value)
+
+    if ($null -eq $Value) { return 'null' }
+    if ($Value -is [bool]) { return $(if ($Value) { 'true' } else { 'false' }) }
+    if ($Value -is [string]) {
+        if ($Value -notmatch '[^ -~]|["<>&]|\\') { return '"' + $Value + '"' }
+        $builder = [System.Text.StringBuilder]::new('"')
+        foreach ($character in $Value.ToCharArray()) {
+            $code = [int]$character
+            if ($character -eq '"') { [void]$builder.Append('\"') }
+            elseif ($character -eq '\') { [void]$builder.Append('\\') }
+            elseif ($code -lt 0x20 -or $code -gt 0x7E -or $character -eq '<' -or $character -eq '>' -or $character -eq '&') { [void]$builder.Append('\u' + $code.ToString('x4')) }
+            else { [void]$builder.Append($character) }
+        }
+        return $builder.Append('"').ToString()
+    }
+    if ($Value -is [int] -or $Value -is [long]) { return $Value.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
+    if ($Value -is [System.Collections.IDictionary]) {
+        $pairs = @(foreach ($key in $Value.Keys) { (ConvertTo-PageJson ([string]$key)) + ':' + (ConvertTo-PageJson $Value[$key]) })
+        return '{' + ($pairs -join ',') + '}'
+    }
+    if ($Value -is [System.Collections.IEnumerable]) {
+        $items = @(foreach ($item in $Value) { ConvertTo-PageJson $item })
+        return '[' + ($items -join ",`n") + ']'
+    }
+    throw "The page data holds a value of an unexpected type: $($Value.GetType().FullName)"
+}
+
+# The prose of a comment file without its Hash line, with blank lines and spacing left out.
+function ConvertTo-ProseKey {
+    param([Parameter(Mandatory = $true)][AllowEmptyString()][string]$Text)
+
+    $kept = [System.Collections.Generic.List[string]]::new()
+    $number = 0
+    foreach ($line in ($Text -split "`n")) {
+        $number++
+        if ($number -eq 2 -and $line -cmatch '^Hash: `[0-9a-f]{16}`\s*$') { continue }
+        $squeezed = [System.Text.RegularExpressions.Regex]::Replace($line.Trim(), '\s+', ' ')
+        if ($squeezed.Length -gt 0) { $kept.Add($squeezed) }
+    }
+    return ($kept -join "`n")
 }
 
 function Invoke-AuditGit {
@@ -1116,6 +1172,7 @@ foreach ($comment in $commentFiles) {
 # Source hashes on the second line of every paired comment file.
 $hashHits = [System.Collections.Generic.List[object]]::new()
 $unstampedHits = [System.Collections.Generic.List[object]]::new()
+$stampStates = [System.Collections.Generic.List[object]]::new()
 $unstampedCeiling = [int]$config.ceilings.unstamped
 $hashLinePattern = [System.Text.RegularExpressions.Regex]::new('^Hash: `(?<hash>[0-9a-f]{16})`$')
 $hashEncoding = [System.Text.UTF8Encoding]::new($false)
@@ -1150,11 +1207,57 @@ foreach ($comment in $commentFiles) {
     if (-not $stamp.Success) {
         $unstampedHits.Add([pscustomobject]@{ Relative = $comment.Relative; Line = 2; Problem = 'no hash'; Text = $second.Trim() })
     }
-    elseif ($stamp.Groups['hash'].Value -cne $expectedHash) {
-        $hashHits.Add([pscustomobject]@{ Relative = $comment.Relative; Line = 2; Problem = 'source changed'; Text = $second.Trim() })
+    else {
+        $current = $stamp.Groups['hash'].Value -ceq $expectedHash
+        $stampStates.Add([pscustomobject]@{ Relative = $comment.Relative; Full = $comment.Full; Stamp = $second; Current = $current })
+        if (-not $current) {
+            $hashHits.Add([pscustomobject]@{ Relative = $comment.Relative; Line = 2; Problem = 'source changed'; Text = $second.Trim() })
+        }
     }
 }
 $hashAlgorithm.Dispose()
+
+# Snapshots of stale comment files, kept between runs in scripts\AuditCommentsSnapshot.json.
+# A stale file is recorded once per stale stamp, with its text at the first run that saw it stale.
+# A later run that finds it restamped but with the same prose flags a hash bumped without a revision.
+# The entry clears when the prose changes, when HEAD carries the new stamp, or when the file goes away.
+$restampHits = [System.Collections.Generic.List[object]]::new()
+$snapshotPath = Join-Path $PSScriptRoot 'AuditCommentsSnapshot.json'
+$snapshots = @{}
+if ([System.IO.File]::Exists($snapshotPath)) {
+    try {
+        $snapshotData = Get-Content -LiteralPath $snapshotPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        foreach ($property in @($snapshotData.PSObject.Properties)) {
+            $snapshots[[string]$property.Name] = [pscustomobject]@{ Stamp = [string]$property.Value[0]; Text = [string]$property.Value[1] }
+        }
+    }
+    catch { $snapshots = @{} }
+}
+$keptSnapshots = [ordered]@{}
+foreach ($state in @($stampStates | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Relative } })) {
+    $text = [System.IO.File]::ReadAllText($state.Full).Replace("`r`n", "`n").Replace("`r", "`n")
+    $entry = $snapshots[$state.Relative]
+    if (-not $state.Current) {
+        if ($null -eq $entry -or $entry.Stamp -cne $state.Stamp) { $entry = [pscustomobject]@{ Stamp = $state.Stamp; Text = $text } }
+        $keptSnapshots[$state.Relative] = $entry
+        continue
+    }
+    if ($null -eq $entry -or $entry.Stamp -ceq $state.Stamp) { continue }
+    if ((ConvertTo-ProseKey -Text $text) -cne (ConvertTo-ProseKey -Text $entry.Text)) { continue }
+    $committed = Invoke-AuditGit -Arguments @('-C', $repoRootFull, 'show', "HEAD:$($state.Relative)")
+    if ($committed.ExitCode -eq 0 -and @($committed.Lines).Count -ge 2 -and ([string]$committed.Lines[1]).TrimEnd() -ceq $state.Stamp.TrimEnd()) { continue }
+    $restampHits.Add([pscustomobject]@{ Relative = $state.Relative; Line = 2; Problem = 'restamped, prose unchanged'; Text = $state.Stamp.Trim() })
+    $keptSnapshots[$state.Relative] = $entry
+}
+$snapshotText = [System.Text.StringBuilder]::new("{")
+$snapshotIndex = 0
+foreach ($key in $keptSnapshots.Keys) {
+    $separator = if ($snapshotIndex -eq 0) { "`n" } else { ",`n" }
+    [void]$snapshotText.Append($separator + '  ' + (ConvertTo-PageJson $key) + ': [' + (ConvertTo-PageJson $keptSnapshots[$key].Stamp) + ', ' + (ConvertTo-PageJson $keptSnapshots[$key].Text) + ']')
+    $snapshotIndex++
+}
+[void]$snapshotText.Append($(if ($snapshotIndex -eq 0) { "}`n" } else { "`n}`n" }))
+[System.IO.File]::WriteAllText($snapshotPath, $snapshotText.ToString(), [System.Text.UTF8Encoding]::new($false))
 $staleCeilings = if ($unstampedCeiling -gt $unstampedHits.Count) { 1 } else { 0 }
 
 # Version, read from the configured version file and key.
@@ -1181,6 +1284,23 @@ $outputPathFull = Resolve-UserPath -Path $OutputPath
 
 $generatedAt = Get-Date
 
+# Advice printed under the hash findings, in the console and the report alike.
+$staleAdvice = @(
+    'A stale hash means the source changed under this prose. Do not just restamp it.',
+    'For each file, diff its sources (git diff -- <source>) and reread every section the diff touches.',
+    'Rewrite prose that no longer holds, add sections for new members and drop sections for removed ones.',
+    'Only then run StampComment.ps1 on the file. It lists the sections the source changes touch.',
+    'A restamp that leaves the prose word for word is flagged on the next run.'
+)
+$restampAdvice = @(
+    'WARNING: HASH BUMPED, COMMENT NOT REVISED.',
+    'THESE FILES WERE RESTAMPED, YET THEIR PROSE MATCHES THE TEXT THEY HELD WHILE STALE.',
+    'DO NOT BUMP HASHES MINDLESSLY. A STAMP VOUCHES THAT THE PROSE WAS REREAD.',
+    'DIFF EACH SOURCE, REREAD EVERY SECTION IT TOUCHES, REWRITE WHAT NO LONGER HOLDS.',
+    'IF THE PROSE STILL HOLDS, STATE WHY FOR EACH FILE IN THE REPORT OF THIS CHANGE.',
+    'THE WARNING CLEARS WHEN THE PROSE CHANGES OR A COMMIT CARRIES THE NEW STAMP.'
+)
+
 # Console output.
 Write-AuditLine ("Scanned: {0:N0} source files, {1:N0} comment files" -f $sourceFiles.Count, $commentFiles.Count) -ForegroundColor DarkGray
 
@@ -1191,6 +1311,7 @@ $gateRows = @(
     [pscustomobject]@{ Gate = 'In-code comments'; Count = $remarkHits.Count; Meaning = 'comment lines left inside sources'; Section = 'In-code comments' },
     [pscustomobject]@{ Gate = 'Headings naming nothing in their source'; Count = $headingHits.Count; Meaning = 'headings naming no identifier of their source'; Section = 'Headings naming nothing in their source' },
     [pscustomobject]@{ Gate = 'Comment files with a stale hash'; Count = $hashHits.Count; Meaning = 'comment files stamped for an older source'; Section = 'Comment files with a stale hash' },
+    [pscustomobject]@{ Gate = 'Comment files restamped unrevised'; Count = $restampHits.Count; Warn = $true; Meaning = 'hash bumped while the prose stayed word for word, warn only'; Section = 'Comment files restamped unrevised' },
     [pscustomobject]@{ Gate = 'Comment files with no hash'; Count = $unstampedHits.Count; Ceiling = $unstampedCeiling; Meaning = "unstamped comment files, warn up to ceiling $(Format-Integer $unstampedCeiling)"; Section = 'Comment files with no hash' },
     [pscustomobject]@{ Gate = 'Stale ceilings'; Count = $staleCeilings; Meaning = 'ceilings set above their count'; Section = 'Stale ceilings' },
     [pscustomobject]@{ Gate = 'Unreadable files'; Count = $readErrors.Count; Meaning = 'files the audit could not read'; Section = 'Unreadable files' }
@@ -1257,6 +1378,13 @@ if ($headingHits.Count -gt 0) {
 if ($hashHits.Count -gt 0) {
     Write-SectionTitle ("Comment files with a stale hash ({0:N0})" -f $hashHits.Count)
     Write-HitTable -Items @($hashHits) -Kind 'Problem'
+    foreach ($advice in $staleAdvice) { Write-AuditLine $advice -ForegroundColor Yellow }
+}
+
+if ($restampHits.Count -gt 0) {
+    Write-SectionTitle ("Comment files restamped unrevised ({0:N0})" -f $restampHits.Count) -Color Red
+    foreach ($advice in $restampAdvice) { Write-AuditLine $advice -ForegroundColor Red }
+    Write-HitTable -Items @($restampHits) -Kind 'Problem'
 }
 
 if ($unstampedHits.Count -gt $unstampedCeiling) {
@@ -1266,7 +1394,7 @@ if ($unstampedHits.Count -gt $unstampedCeiling) {
 elseif ($unstampedHits.Count -gt 0) {
     # The backlog list is long, so a warning prints its count here and the report keeps the full list.
     Write-SectionTitle ("Comment files with no hash ({0:N0}, ceiling {1:N0})" -f $unstampedHits.Count, $unstampedCeiling) -Color Yellow
-    Write-AuditLine ("WARNING: {0:N0} comment files carry no hash. Reread each one, stamp it with stampcomment.ps1, and lower ceilings.unstamped. The report lists them all." -f $unstampedHits.Count) -ForegroundColor Yellow
+    Write-AuditLine ("WARNING: {0:N0} comment files carry no hash. Reread each one, stamp it with StampComment.ps1, and lower ceilings.unstamped. The report lists them all." -f $unstampedHits.Count) -ForegroundColor Yellow
 }
 
 if ($staleCeilings -gt 0) {
@@ -1310,6 +1438,7 @@ $report = [System.Text.StringBuilder]::new()
 [void]$report.AppendLine("| In-code comments | $(Format-Integer $remarkHits.Count) |")
 [void]$report.AppendLine("| Headings naming nothing in their source | $(Format-Integer $headingHits.Count) |")
 [void]$report.AppendLine("| Comment files with a stale hash | $(Format-Integer $hashHits.Count) |")
+[void]$report.AppendLine("| Comment files restamped unrevised (warning) | $(Format-Integer $restampHits.Count) |")
 [void]$report.AppendLine("| Comment files with no hash (warning) | $(Format-Integer $unstampedHits.Count) |")
 [void]$report.AppendLine("| Ceiling for comment files with no hash | $(Format-Integer $unstampedCeiling) |")
 [void]$report.AppendLine()
@@ -1365,12 +1494,25 @@ else {
     [void]$report.AppendLine("| File | Problem |")
     [void]$report.AppendLine("|------|---------|")
     foreach ($item in $hashHits) { [void]$report.AppendLine("| $(ConvertTo-MarkdownCell $item.Relative) | $(ConvertTo-MarkdownCell $item.Problem) |") }
+    [void]$report.AppendLine()
+    foreach ($advice in $staleAdvice) { [void]$report.AppendLine($advice) }
+}
+[void]$report.AppendLine()
+[void]$report.AppendLine("## Comment files restamped unrevised")
+[void]$report.AppendLine()
+if ($restampHits.Count -eq 0) { [void]$report.AppendLine("None.") }
+else {
+    foreach ($advice in $restampAdvice) { [void]$report.AppendLine("**$advice**") }
+    [void]$report.AppendLine()
+    [void]$report.AppendLine("| File | Problem |")
+    [void]$report.AppendLine("|------|---------|")
+    foreach ($item in $restampHits) { [void]$report.AppendLine("| $(ConvertTo-MarkdownCell $item.Relative) | $(ConvertTo-MarkdownCell $item.Problem) |") }
 }
 [void]$report.AppendLine()
 [void]$report.AppendLine("## Comment files with no hash")
 [void]$report.AppendLine()
 [void]$report.AppendLine("A warning while the count sits at or below the ceiling of $(Format-Integer $unstampedCeiling), a failure above it.")
-[void]$report.AppendLine("Reread each file, then stamp it with stampcomment.ps1 and lower the ceiling.")
+[void]$report.AppendLine("Reread each file, then stamp it with StampComment.ps1 and lower the ceiling.")
 [void]$report.AppendLine()
 if ($unstampedHits.Count -eq 0) { [void]$report.AppendLine("None.") }
 else {
@@ -1388,36 +1530,6 @@ if ($readErrors.Count -gt 0) {
 [System.IO.File]::WriteAllText($outputPathFull, ($report.ToString() -replace "`r`n", "`n"), [System.Text.UTF8Encoding]::new($false))
 
 # Page output: the full result as data inside the template AuditComments.html.
-# The JSON is written by hand, so Windows PowerShell 5.1 and pwsh 7 produce the same bytes.
-function ConvertTo-PageJson {
-    param([AllowNull()][object]$Value)
-
-    if ($null -eq $Value) { return 'null' }
-    if ($Value -is [bool]) { return $(if ($Value) { 'true' } else { 'false' }) }
-    if ($Value -is [string]) {
-        if ($Value -notmatch '[^ -~]|["<>&]|\\') { return '"' + $Value + '"' }
-        $builder = [System.Text.StringBuilder]::new('"')
-        foreach ($character in $Value.ToCharArray()) {
-            $code = [int]$character
-            if ($character -eq '"') { [void]$builder.Append('\"') }
-            elseif ($character -eq '\') { [void]$builder.Append('\\') }
-            elseif ($code -lt 0x20 -or $code -gt 0x7E -or $character -eq '<' -or $character -eq '>' -or $character -eq '&') { [void]$builder.Append('\u' + $code.ToString('x4')) }
-            else { [void]$builder.Append($character) }
-        }
-        return $builder.Append('"').ToString()
-    }
-    if ($Value -is [int] -or $Value -is [long]) { return $Value.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
-    if ($Value -is [System.Collections.IDictionary]) {
-        $pairs = @(foreach ($key in $Value.Keys) { (ConvertTo-PageJson ([string]$key)) + ':' + (ConvertTo-PageJson $Value[$key]) })
-        return '{' + ($pairs -join ',') + '}'
-    }
-    if ($Value -is [System.Collections.IEnumerable]) {
-        $items = @(foreach ($item in $Value) { ConvertTo-PageJson $item })
-        return '[' + ($items -join ",`n") + ']'
-    }
-    throw "The page data holds a value of an unexpected type: $($Value.GetType().FullName)"
-}
-
 function ConvertTo-PageLink {
     param([Parameter(Mandatory = $true)][string]$Path)
 
@@ -1498,6 +1610,9 @@ $pageData = [ordered]@{
     rules = ConvertTo-PageHit -Items @($ruleHits) -Kind 'Problem'
     headings = ConvertTo-PageHit -Items @($headingHits) -Kind 'Problem'
     stale = ConvertTo-PageHit -Items @($hashHits) -Kind 'Problem'
+    staleAdvice = @($staleAdvice)
+    restamped = ConvertTo-PageHit -Items @($restampHits) -Kind 'Problem'
+    restampAdvice = @($restampAdvice)
     unstamped = ConvertTo-PageHit -Items @($unstampedHits) -Kind 'Problem'
     remarks = ConvertTo-PageHit -Items @($remarkHits) -Kind 'Marker'
     unreadable = @($readErrors)

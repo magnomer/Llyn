@@ -1,5 +1,5 @@
 # TExample.cs
-Hash: `8f0512ac1ef6d659`
+Hash: `a9f3021b68f07b9d`
 
 ## `public sealed class TExample`
 
@@ -14,6 +14,18 @@ The whole-table read fills every Example's Glosses and Mentions in one statement
 Past 32 766 Examples that statement can no longer bind one parameter per id.
 So the ids travel as one JSON value.
 A corpus that deep must still open.
+
+## `public void ExampleCite_BothCardSides_ReadsBackFromEach()`
+
+An Example quoted by a Meaning card and a Collocation card reads back as the same Example from each side.
+A gloss given at creation is stored with its Example.
+An edit to the Example reads back from the store.
+
+## `public void EntryUpdate_ExampleEdited_KeepsIdAndSource()`
+
+Editing a quoted Example through its card keeps the Example id and the Reference it points at.
+Cards that hold the id would otherwise lose their quote.
+Reordering or adding sentences must not mint new rows for the others.
 
 ## `public void EntryUpdate_SharedExampleEdited_LeavesOtherCardsSentence()`
 

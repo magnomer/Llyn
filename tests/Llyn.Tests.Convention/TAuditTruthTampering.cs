@@ -34,7 +34,7 @@ internal static partial class TAuditTruthWalker
 
             if (assignment.Parent is InitializerExpressionSyntax { Parent: WithExpressionSyntax }
                 && assignment.Left is IdentifierNameSyntax field
-                && TAuditBinder.TAuditLogicCheck(TAuditBinder.TAuditSymbolRead(field)))
+                && TAuditBinderSide.TAuditLogicCheck(TAuditBinderSymbol.TAuditSymbolRead(field)))
             {
                 violations.Add(new TViolation(
                     root.SyntaxTree.FilePath,
@@ -60,7 +60,7 @@ internal static partial class TAuditTruthWalker
 
             if (assignment.Parent is InitializerExpressionSyntax
                 || assignment.Left is not MemberAccessExpressionSyntax target
-                || !TAuditBinder.TAuditLogicCheck(TAuditBinder.TAuditSymbolRead(target)))
+                || !TAuditBinderSide.TAuditLogicCheck(TAuditBinderSymbol.TAuditSymbolRead(target)))
             {
                 continue;
             }
@@ -120,8 +120,8 @@ internal static partial class TAuditTruthWalker
             foreach (ExpressionSyntax value in values)
             {
                 if (value is AnonymousFunctionExpressionSyntax
-                    || TAuditBinder.TAuditTypeRead(value) is not { } type
-                    || !TAuditBinder.TAuditLogicCheck(type))
+                    || TAuditBinderSymbol.TAuditTypeRead(value) is not { } type
+                    || !TAuditBinderSide.TAuditLogicCheck(type))
                 {
                     continue;
                 }
@@ -145,8 +145,8 @@ internal static partial class TAuditTruthWalker
     {
         for (ExpressionSyntax? current = receiver; current is not null;)
         {
-            ITypeSymbol? type = TAuditBinder.TAuditTypeRead(current);
-            if (TAuditBinder.TAuditControlCheck(type) || TAuditBinder.TAuditSurfaceCheck(type))
+            ITypeSymbol? type = TAuditBinderSymbol.TAuditTypeRead(current);
+            if (TAuditBinderSymbol.TAuditControlCheck(type) || TAuditBinderSide.TAuditSurfaceCheck(type))
             {
                 return true;
             }
@@ -175,12 +175,12 @@ internal static partial class TAuditTruthWalker
             string driver = drivers.First(folder =>
                 relative.StartsWith(folder + "/", StringComparison.OrdinalIgnoreCase));
             declared[driver].AddRange(root.DescendantNodes().OfType<TypeDeclarationSyntax>()
-                .Select(type => TAuditBinder.TAuditSymbolRead(type)).OfType<INamedTypeSymbol>());
+                .Select(type => TAuditBinderSymbol.TAuditSymbolRead(type)).OfType<INamedTypeSymbol>());
             foreach (SimpleNameSyntax name in root.DescendantNodes().OfType<SimpleNameSyntax>())
             {
-                if (TAuditBinder.TAuditSymbolRead(name) is not { } member
+                if (TAuditBinderSymbol.TAuditSymbolRead(name) is not { } member
                     || member is not (IMethodSymbol or IPropertySymbol)
-                    || !TAuditBinder.TAuditConductCheck(member.ContainingType))
+                    || !TAuditBinderSide.TAuditConductCheck(member.ContainingType))
                 {
                     continue;
                 }
@@ -211,7 +211,7 @@ internal static partial class TAuditTruthWalker
                 violations.Add(new TViolation(
                     site.SyntaxTree.FilePath,
                     TAuditLineRead(site),
-                    TAuditBinder.TAuditLabelRead(member),
+                    TAuditBinderSymbol.TAuditLabelRead(member),
                     "Mismatching",
                     $"reaches a Conduct member that {missing} never reaches"));
             }
@@ -220,7 +220,7 @@ internal static partial class TAuditTruthWalker
         foreach (INamedTypeSymbol port in TAuditBinder.TAuditCompilation
                      .GetSymbolsWithName(_ => true, SymbolFilter.Type)
                      .OfType<INamedTypeSymbol>()
-                     .Where(type => type.TypeKind == TypeKind.Interface && TAuditBinder.TAuditConductCheck(type)))
+                     .Where(type => type.TypeKind == TypeKind.Interface && TAuditBinderSide.TAuditConductCheck(type)))
         {
             foreach (string driver in drivers.Where(driver => !declared[driver].Any(type =>
                          type.AllInterfaces.Contains(port, SymbolEqualityComparer.Default))))
@@ -238,7 +238,7 @@ internal static partial class TAuditTruthWalker
 
     private static bool TAuditFreshCheck(ExpressionSyntax rows)
     {
-        if (TAuditBinder.TAuditSymbolRead(rows) is not ILocalSymbol local)
+        if (TAuditBinderSymbol.TAuditSymbolRead(rows) is not ILocalSymbol local)
         {
             return false;
         }
@@ -253,7 +253,7 @@ internal static partial class TAuditTruthWalker
 
     private static bool TAuditStoreCheck(ExpressionSyntax rows)
     {
-        ITypeSymbol? type = TAuditBinder.TAuditTypeRead(rows);
+        ITypeSymbol? type = TAuditBinderSymbol.TAuditTypeRead(rows);
         if (type is null || type.TypeKind == TypeKind.Error)
         {
             return true;
@@ -265,8 +265,8 @@ internal static partial class TAuditTruthWalker
             INamedTypeSymbol named => named.TypeArguments,
             _ => []
         };
-        return held.Any(part => TAuditBinder.TAuditLogicCheck(part)
-                                || TAuditBinder.TAuditShellCheck(part)
+        return held.Any(part => TAuditBinderSide.TAuditLogicCheck(part)
+                                || TAuditBinderSide.TAuditShellCheck(part)
                                 || part.SpecialType == SpecialType.System_Object);
     }
 }

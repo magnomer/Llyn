@@ -9,26 +9,26 @@ public sealed class TDiwei
     [Fact]
     public void DiweiRankRead_RimeDivisionOrder()
     {
-        LHypothesis hypothesis = TInterface.THypothesisCreate(
+        LHypothesis hypothesis = TInterfaceFanqie.THypothesisCreate(
             new Dictionary<string, string>(),
             new Dictionary<string, string>(),
             new Dictionary<string, IReadOnlyList<LHypothesisTone>>(),
             [
-                TInterface.THypothesisPlaceCreate("dental", ["端"]),
-                TInterface.THypothesisPlaceCreate("velar", ["見"]),
+                TInterfaceFanqie.THypothesisPlaceCreate("dental", ["端"]),
+                TInterfaceFanqie.THypothesisPlaceCreate("velar", ["見"]),
             ]);
 
         Assert.Equal(
             [0, 1, 2, 3, 4, int.MaxValue],
             new[] { "一", "二", "三", "四", "五", "" }
-                .Select(division => TInterface.TDiweiRankRead(LDiwei.LDiweiInitial, division, hypothesis)));
+                .Select(division => TInterfaceFanqie.TDiweiRankRead(LDiwei.LDiweiInitial, division, hypothesis)));
         Assert.Equal(
             [1, 0, 2, int.MaxValue],
             new[] { "velar", "dental", "labial", "" }
-                .Select(place => TInterface.TDiweiRankRead(LDiwei.LDiweiRime, place, hypothesis)));
-        Assert.Equal(0, TInterface.TDiweiRankRead(LDiwei.LDiweiRime, "dental", null));
-        Assert.Equal(int.MaxValue, TInterface.TDiweiRankNormalize(-1));
-        Assert.Equal(3, TInterface.TDiweiRankNormalize(3));
+                .Select(place => TInterfaceFanqie.TDiweiRankRead(LDiwei.LDiweiRime, place, hypothesis)));
+        Assert.Equal(0, TInterfaceFanqie.TDiweiRankRead(LDiwei.LDiweiRime, "dental", null));
+        Assert.Equal(int.MaxValue, TInterfaceFanqie.TDiweiRankNormalize(-1));
+        Assert.Equal(3, TInterfaceFanqie.TDiweiRankNormalize(3));
     }
 
     [Theory]
@@ -36,7 +36,7 @@ public sealed class TDiwei
     [InlineData(true, "L", "蘭")]
     public void DiweiSectionScan_TallyUnderHeading_KeepsOnlyTheShownSet(bool respelled, string text, string character)
     {
-        LDiweiSection section = TInterface.TDiweiSectionScan(respelled, static _ => null);
+        LDiweiSection section = TInterfaceFanqie.TDiweiSectionScan(respelled, static _ => null);
 
         Assert.True(section.LDiweiSectionSwitched);
         Assert.Equal(respelled, section.LDiweiSectionRespelled);
@@ -54,7 +54,7 @@ public sealed class TDiwei
     [InlineData("{0}등", "一등")]
     public void DiweiSectionScan_DivisionHeading_LabelsItByTheLocalizedPattern(string? pattern, string label)
     {
-        LDiweiSection section = TInterface.TDiweiSectionScan(
+        LDiweiSection section = TInterfaceFanqie.TDiweiSectionScan(
             false, key => key == "Yunjing.Division" ? pattern : null);
 
         Assert.Equal(label, section.LDiweiSectionLabel);

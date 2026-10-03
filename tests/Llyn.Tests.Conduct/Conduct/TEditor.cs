@@ -31,52 +31,6 @@ public sealed class TEditor
     }
 
     [Fact]
-    public void EntryOpen_Null_ResetsToAFreshDraft()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry entry = TEditorEntryPrepare(engine);
-        CEditor editor = TEditorPrepare(engine, "input");
-        editor.CEditorEntryOpen(entry.LEntryId);
-
-        editor.CEditorEntryOpen(null);
-
-        Assert.True(editor.CEditorDesk.CDeskHeld);
-        Assert.Null(editor.CEditorDesk.CDeskStoredRead());
-        Assert.Equal(string.Empty, editor.TEditorDraftRead()?.CEntryDraftHeadword);
-        Assert.True(editor.CEditorOwned);
-    }
-
-    [Fact]
-    public void EntryOpen_MissingEntry_FallsBackToAFreshDraft()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorPrepare(engine, "library");
-
-        editor.CEditorEntryOpen(987654);
-
-        Assert.True(editor.CEditorDesk.CDeskHeld);
-        Assert.Null(editor.CEditorDesk.CDeskStoredRead());
-    }
-
-    [Fact]
-    public void EntryOpen_FreshDraft_PreparesOneCardOfEachKind()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorPrepare(engine, "input");
-
-        editor.CEditorEntryOpen(null);
-
-        CEntryDraft? draft = editor.TEditorDraftRead();
-        Assert.NotNull(draft);
-        Assert.Single(draft.CEntryDraftMeanings);
-        Assert.Single(draft.CEntryDraftCollocations);
-        Assert.Single(draft.CEntryDraftMeanings[0].CCardDraftSentence);
-    }
-
-    [Fact]
     public void EntryOpen_AnyDraft_AnnouncesTheShapedContent()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -317,120 +271,13 @@ public sealed class TEditor
         Assert.Equal(string.Empty, editor.TEditorDraftRead()?.CEntryDraftHeadword);
     }
 
-    [Fact]
-    public void MembershipStart_TagGiven_OpensAFreshDraftCarryingIt()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LTag tag = engine.TEngineTagCreate("botany");
-        CEditor editor = TEditorPrepare(engine, "membership");
-        editor.CEditorEntryOpen(null);
-        long replaced = editor.CEditorDesk.CDeskId;
-
-        editor.CEditorDesk.TDeskMembershipStart(tag.LTagId);
-
-        Assert.Contains(
-            editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftTag ?? [],
-            row => row.CTagDraftId == tag.LTagId);
-        Assert.NotEqual(replaced, editor.CEditorDesk.CDeskId);
-        Assert.Null(engine.TEngineDraftRead(replaced));
-    }
-
-    [Fact]
-    public void CohortStart_RegisterGiven_OpensAFreshDraftCarryingIt()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LRegister register = engine.TEngineRegisterCreate("formal");
-        CEditor editor = TEditorPrepare(engine, "cohort");
-        editor.CEditorEntryOpen(null);
-        long replaced = editor.CEditorDesk.CDeskId;
-
-        editor.CEditorDesk.TDeskCohortStart(register.LRegisterId);
-
-        Assert.Contains(
-            editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftRegister ?? [],
-            row => row.CRegisterDraftId == register.LRegisterId);
-        Assert.NotEqual(replaced, editor.CEditorDesk.CDeskId);
-        Assert.Null(engine.TEngineDraftRead(replaced));
-    }
-
-    [Fact]
-    public void OccurrenceStart_SituationGiven_OpensAFreshDraftAlreadyLinked()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LStateValue text = TInterface.TStateValueCreate("at the market");
-        LSituation situation = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, text, text, text));
-        CEditor editor = TEditorPrepare(engine, "occurrence");
-        List<CEntryDraft> shown = [];
-        editor.CEditorDraftChanged += shown.Add;
-
-        editor.CEditorDesk.TDeskOccurrenceStart(situation.LSituationId);
-
-        Assert.True(editor.CEditorDesk.CDeskHeld);
-        Assert.False(editor.CEditorDesk.CDeskStored);
-        Assert.Contains(
-            Assert.Single(shown).CEntryDraftMeanings[0].CCardDraftSituation,
-            row => row.CSituationDraftId == situation.LSituationId);
-    }
-
-    [Fact]
-    public void OccurrenceStart_NoSituation_OpensABlankDraft()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorPrepare(engine, "occurrence");
-
-        editor.CEditorDesk.TDeskOccurrenceStart(null);
-
-        Assert.True(editor.CEditorDesk.CDeskHeld);
-        Assert.False(editor.CEditorDesk.CDeskChanged);
-    }
-
-    [Fact]
-    public void QuotationStart_ExampleGiven_OpensAFreshDraftCitingIt()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LExample example = engine.TEngineExampleCreate(TInterface.TExampleCreate(
-            0, "English", TInterface.TStateValueCreate("Water is wet."), null, LStateAnchor.LStateAnchorUnspecified));
-        CEditor editor = TEditorPrepare(engine, "quotation");
-        editor.CEditorEntryOpen(null);
-        long replaced = editor.CEditorDesk.CDeskId;
-
-        editor.CEditorDesk.TDeskQuotationStart(example.LExampleId);
-
-        CExampleDraft? cited =
-            editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;
-        Assert.Equal("Water is wet.", cited?.CExampleDraftText.CStateValueText);
-        Assert.NotEqual(replaced, editor.CEditorDesk.CDeskId);
-        Assert.Null(engine.TEngineDraftRead(replaced));
-    }
-
-    [Fact]
-    public void FootnoteStart_SourceGiven_OpensAFreshDraftCitingIt()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LReference book = engine.TEngineCitationCreate("Book");
-        CEditor editor = TEditorPrepare(engine, "footnote");
-        editor.CEditorEntryOpen(null);
-
-        editor.CEditorDesk.TDeskFootnoteStart(book.LReferenceId);
-
-        CExampleDraft? cited =
-            editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;
-        Assert.Equal(book.LReferenceId, cited?.CExampleDraftReference);
-    }
-
-    private static LEntry TEditorEntryPrepare(LEngine engine)
+    internal static LEntry TEditorEntryPrepare(LEngine engine)
     {
         return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "water", "English", "ˈwɔːtə", string.Empty, [TInterface.TCardCreate("a liquid", 1)], []));
     }
 
-    private static CEditor TEditorPrepare(LEngine engine, string tab)
+    internal static CEditor TEditorPrepare(LEngine engine, string tab)
     {
         CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart(tab, LCatalogOrder.LCatalogOrderHeadword));

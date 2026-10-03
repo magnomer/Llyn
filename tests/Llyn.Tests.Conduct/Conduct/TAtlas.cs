@@ -144,7 +144,7 @@ public sealed class TAtlas
     [Fact]
     public void AtlasDraftRead_NoSituation_ReturnsNone()
     {
-        Assert.Null(TInterfaceConduct.TAtlasDraftRead(null));
+        Assert.Null(TInterfaceConductPanel.TAtlasDraftRead(null));
     }
 
     [Fact]
@@ -152,7 +152,7 @@ public sealed class TAtlas
     {
         LSituation situation = TInterface.TSituationCreate(7, "Hearth", "By the fire", LStateValue.LStateValueUnknown);
 
-        CSituationDraft? held = TInterfaceConduct.TAtlasDraftRead(situation);
+        CSituationDraft? held = TInterfaceConductPanel.TAtlasDraftRead(situation);
 
         Assert.NotNull(held);
         Assert.Equal(7, held!.CSituationDraftId);
@@ -166,16 +166,16 @@ public sealed class TAtlas
     [Fact]
     public void AtlasSituationRead_NoSituation_ReturnsNone()
     {
-        Assert.Null(TInterfaceConduct.TAtlasSituationRead(null));
+        Assert.Null(TInterfaceConductPanel.TAtlasSituationRead(null));
     }
 
     [Fact]
     public void AtlasSituationRead_WrittenFields_ShowsTheirTextWithNoKey()
     {
         LSituation situation = TInterface.TSituationCreate(
-            7, TInterface.TStateValueCreate("Hearth"), "By the fire", TInterface.TStateValueCreate("home"));
+            7, TInterfaceState.TStateValueCreate("Hearth"), "By the fire", TInterfaceState.TStateValueCreate("home"));
 
-        CSituation? shown = TInterfaceConduct.TAtlasSituationRead(situation);
+        CSituation? shown = TInterfaceConductPanel.TAtlasSituationRead(situation);
 
         Assert.NotNull(shown);
         Assert.Equal(new CStateWording("Hearth", null, false, null), shown!.CSituationTitle);
@@ -188,7 +188,7 @@ public sealed class TAtlas
     {
         LSituation situation = TInterface.TSituationCreate(7, "Hearth", "By the **fire**\n\n- warm", null);
 
-        CSituation shown = TInterfaceConduct.TAtlasSituationRead(situation)!;
+        CSituation shown = TInterfaceConductPanel.TAtlasSituationRead(situation)!;
 
         Assert.Equal(2, shown.CSituationMarkdown.Count);
         Assert.True(shown.CSituationMarkdown[0].CMarkdownBlockSpan[1].CMarkdownSpanBold);
@@ -202,7 +202,7 @@ public sealed class TAtlas
         LSituation situation = TInterface.TSituationCreate(
             7, LStateValue.LStateValueUnknown, LStateValue.LStateValueUnknown, LStateValue.LStateValueUnknown);
 
-        CSituation shown = TInterfaceConduct.TAtlasSituationRead(situation)!;
+        CSituation shown = TInterfaceConductPanel.TAtlasSituationRead(situation)!;
 
         Assert.Equal(
             new CStateWording(string.Empty, "Display.Unknown", false, "Display.Unknown"), shown.CSituationTitle);
@@ -217,7 +217,7 @@ public sealed class TAtlas
     {
         LSituation situation = TInterface.TSituationCreate(7, null, null, null);
 
-        CSituation shown = TInterfaceConduct.TAtlasSituationRead(situation)!;
+        CSituation shown = TInterfaceConductPanel.TAtlasSituationRead(situation)!;
 
         Assert.Equal(new CStateWording(string.Empty, "Situation.Untitled", true, null), shown.CSituationTitle);
         Assert.Equal(new CStateWording(string.Empty, null, true, null), shown.CSituationKind);
@@ -249,7 +249,7 @@ public sealed class TAtlas
             ],
         };
 
-        CSituation shown = TInterfaceConduct.TAtlasSituationRead(situation)!;
+        CSituation shown = TInterfaceConductPanel.TAtlasSituationRead(situation)!;
 
         Assert.Equal([1L, 3L, 4L], shown.CSituationImage.Select(row => row.CImageDraftId));
         Assert.True(shown.CSituationImage[1].CImageDraftLocation.CStateValueUncertain);
@@ -266,7 +266,7 @@ public sealed class TAtlas
         List<string> asked = [];
         CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
 
-        Assert.Null(TInterfaceConduct.TAtlasFailRead(engine, envoy));
+        Assert.Null(TInterfaceConductPanel.TAtlasFailRead(engine, envoy));
         Assert.Equal(["Situation.LoadFailed"], asked);
     }
 
@@ -283,7 +283,7 @@ public sealed class TAtlas
             atelier.CAtelierEntryPort,
             atelier.CAtelierPortraitPort,
             atelier.CAtelierSettingsPort,
-            TInterfaceConduct.TDeskCreate(engine, "Situation", envoy, "Repertoire", CSubject.CSubjectSituation),
+            TInterfaceConductDesk.TDeskCreate(engine, "Situation", envoy, "Repertoire", CSubject.CSubjectSituation),
             static () => true,
             envoy,
             static _ => true);
@@ -304,7 +304,7 @@ public sealed class TAtlas
     private static CAtlas TAtlasPrepare(LEngine engine, CAtelier atelier)
     {
         CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, []);
-        CDesk desk = TInterfaceConduct.TDeskCreate(
+        CDesk desk = TInterfaceConductDesk.TDeskCreate(
             engine, "Situation", envoy, "Repertoire", CSubject.CSubjectSituation);
         return new CAtlas(
             atelier.CAtelierEntryPort,

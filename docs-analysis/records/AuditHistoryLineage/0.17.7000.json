@@ -1,0 +1,21 @@
+{
+  "version": "0.17.7000",
+  "commit": "a158a65b0dbe95507005204a23e781852bee2191",
+  "previous": "0.17.6950",
+  "previousCommit": "0f3ba14722a555fe19fb3b2f7528c67474e25be6",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.UIDeportment/Shell/LDisplay.comment.md", "src/Llyn.Conduct/Display/LDisplay.comment.md"],
+    ["src/Llyn.UIDeportment/Shell/LDisplay.cs", "src/Llyn.Conduct/Display/LDisplay.cs"],
+    ["src/Llyn.UIVeneer/Kit/Bind/PFont.comment.md", "src/Llyn.UIDeportment/Shell/LFontFace.comment.md"],
+    ["src/Llyn.UIVeneer/Kit/Bind/PFont.cs", "src/Llyn.UIDeportment/Shell/LFontFace.cs"],
+    ["src/Llyn.UIVeneer/Kit/Bind/PFrequencyLabel.comment.md", "src/Llyn.UIDeportment/Sound/LFrequencyLabel.comment.md"],
+    ["src/Llyn.UIVeneer/Kit/Bind/PFrequencyLabel.cs", "src/Llyn.UIDeportment/Sound/LFrequencyLabel.cs"],
+    ["src/Llyn.UIVeneer/Sound/Accent/PAccentItem.comment.md", "src/Llyn.UIDeportment/Sound/LAccentItem.comment.md"],
+    ["src/Llyn.UIVeneer/Sound/Accent/PRespelling.comment.md", "src/Llyn.UIDeportment/Sound/LRespellingMark.comment.md"],
+    ["src/Llyn.UIVeneer/Sound/Reflex/PReflexItem.comment.md", "src/Llyn.UIDeportment/Sound/LReflexItem.comment.md"],
+    ["src/Llyn.UIVeneer/Sound/Script/PGlyphItem.comment.md", "src/Llyn.UIDeportment/Sound/LGlyphItem.comment.md"],
+    ["src/Llyn.UIVeneer/Sound/Transcription/PTranscriptionChoice.comment.md", "src/Llyn.UIDeportment/Sound/LTranscriptionChoice.comment.md"],
+    ["src/Llyn.UIVeneer/Sound/Transcription/PTranscriptionItem.comment.md", "src/Llyn.UIDeportment/Sound/LTranscriptionItem.comment.md"]
+  ]
+}

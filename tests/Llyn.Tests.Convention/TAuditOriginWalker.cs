@@ -53,15 +53,15 @@ internal static class TAuditOriginWalker
             node switch
             {
                 MemberAccessExpressionSyntax or MemberBindingExpressionSyntax
-                    => TAuditBinder.TAuditLogicCheck(TAuditBinder.TAuditSymbolRead(node)),
+                    => TAuditBinderSide.TAuditLogicCheck(TAuditBinderSymbol.TAuditSymbolRead(node)),
                 InvocationExpressionSyntax call
                     => TAuditTruthWalker.TAuditCallRead(call) is not null
-                       || (TAuditBinder.TAuditSymbolRead(call) is { } callee
+                       || (TAuditBinderSymbol.TAuditSymbolRead(call) is { } callee
                            && TAuditTruthWalker.TAuditReaderNames.Contains(callee)),
                 BaseObjectCreationExpressionSyntax creation => TAuditTruthWalker.TAuditCallRead(creation) is not null,
-                IdentifierNameSyntax name => TAuditBinder.TAuditSymbolRead(name) switch
+                IdentifierNameSyntax name => TAuditBinderSymbol.TAuditSymbolRead(name) switch
                 {
-                    ILocalSymbol or IParameterSymbol when TAuditBinder.TAuditLogicCheck(name) => true,
+                    ILocalSymbol or IParameterSymbol when TAuditBinderSide.TAuditLogicCheck(name) => true,
                     { } held => TAuditOriginCheck(held, visiting),
                     _ => false
                 },
@@ -87,7 +87,7 @@ internal static class TAuditOriginWalker
         foreach (ExpressionSyntax? write in TAuditOriginRead(held) ?? [])
         {
             if (write is IdentifierNameSyntax or MemberAccessExpressionSyntax
-                && TAuditBinder.TAuditSymbolRead(write) is { } copied && visiting.Contains(copied))
+                && TAuditBinderSymbol.TAuditSymbolRead(write) is { } copied && visiting.Contains(copied))
             {
                 continue;
             }
@@ -132,7 +132,7 @@ internal static class TAuditOriginWalker
                     RefKind: RefKind.None, ContainingSymbol: IMethodSymbol { MethodKind: MethodKind.Ordinary }
                 })
             || owner.DeclaringSyntaxReferences.IsEmpty
-            || !TAuditBinder.TAuditShellCheck(owner.ContainingType))
+            || !TAuditBinderSide.TAuditShellCheck(owner.ContainingType))
         {
             return null;
         }
@@ -200,7 +200,7 @@ internal static class TAuditOriginWalker
 
     internal static List<ExpressionSyntax?>? TAuditHelperRead(IdentifierNameSyntax identifier, SyntaxNode reference)
     {
-        if (TAuditBinder.TAuditSymbolRead(identifier) is IParameterSymbol
+        if (TAuditBinderSymbol.TAuditSymbolRead(identifier) is IParameterSymbol
             {
                 RefKind: RefKind.Ref, ContainingSymbol: IMethodSymbol inner
             } held
@@ -236,7 +236,7 @@ internal static class TAuditOriginWalker
         foreach (IdentifierNameSyntax use in method.DeclaringSyntaxReferences
                      .SelectMany(source => source.GetSyntax().DescendantNodes().OfType<IdentifierNameSyntax>()))
         {
-            if (!SymbolEqualityComparer.Default.Equals(TAuditBinder.TAuditSymbolRead(use), held)
+            if (!SymbolEqualityComparer.Default.Equals(TAuditBinderSymbol.TAuditSymbolRead(use), held)
                 || !TAuditTruthWalker.TAuditWriteCheck(use, out _))
             {
                 continue;
@@ -247,7 +247,8 @@ internal static class TAuditOriginWalker
                     RawKind: (int)SyntaxKind.SimpleAssignmentExpression
                 } set
                 || set.Left != use
-                || TAuditBinder.TAuditSymbolRead(set.Right) is not IParameterSymbol { RefKind: RefKind.None } given
+                || TAuditBinderSymbol.TAuditSymbolRead(set.Right)
+                    is not IParameterSymbol { RefKind: RefKind.None } given
                 || !SymbolEqualityComparer.Default.Equals(given.ContainingSymbol, method))
             {
                 return null;
@@ -265,7 +266,7 @@ internal static class TAuditOriginWalker
             .OfType<IdentifierNameSyntax>()
             .Where(identifier => !identifier.Ancestors().Any(TAuditTruthWalker.TAuditNameofCheck)
                                  && SymbolEqualityComparer.Default.Equals(
-                                     TAuditBinder.TAuditSymbolRead(identifier), held));
+                                     TAuditBinderSymbol.TAuditSymbolRead(identifier), held));
     }
 
     private static List<ExpressionSyntax?> TAuditPropertyRead(ISymbol held, SyntaxNode declaration)
@@ -293,7 +294,7 @@ internal static class TAuditOriginWalker
                 continue;
             }
 
-            switch ((TAuditBinder.TAuditSymbolRead(call) as IMethodSymbol)?.Name)
+            switch ((TAuditBinderSymbol.TAuditSymbolRead(call) as IMethodSymbol)?.Name)
             {
                 case "SetValue" or "SetCurrentValue" when list.Arguments.Count == 2 && list.Arguments[0] == argument:
                     writes.Add(list.Arguments[1].Expression);
@@ -340,7 +341,7 @@ internal static class TAuditOriginWalker
             sites = (TAuditSiteNames.GetValueOrDefault(method.Name) ?? [])
                 .OfType<IdentifierNameSyntax>()
                 .Where(identifier => !identifier.Ancestors().Any(TAuditTruthWalker.TAuditNameofCheck)
-                                     && TAuditBinder.TAuditSymbolRead(identifier) is IMethodSymbol called
+                                     && TAuditBinderSymbol.TAuditSymbolRead(identifier) is IMethodSymbol called
                                      && SymbolEqualityComparer.Default.Equals(
                                          (called.ReducedFrom ?? called).OriginalDefinition, method))
                 .Select(identifier => identifier.Parent is MemberBindingExpressionSyntax binding
@@ -367,7 +368,7 @@ internal static class TAuditOriginWalker
                 .Select(node => node.Parent is QualifiedNameSyntax qualified ? qualified.Parent : node.Parent)
                 .Concat(TAuditSiteNames.GetValueOrDefault("new") ?? [])
                 .Where(site => site is not null
-                               && SymbolEqualityComparer.Default.Equals(TAuditBinder.TAuditSymbolRead(site), method))
+                    && SymbolEqualityComparer.Default.Equals(TAuditBinderSymbol.TAuditSymbolRead(site), method))
                 .ToList();
         }
 
@@ -453,7 +454,7 @@ internal static class TAuditOriginWalker
         if (value.IsKind(SyntaxKind.NullLiteralExpression)
             || value.IsKind(SyntaxKind.DefaultLiteralExpression)
             || value is DefaultExpressionSyntax
-            || TAuditBinder.TAuditSymbolRead(value) is IFieldSymbol
+            || TAuditBinderSymbol.TAuditSymbolRead(value) is IFieldSymbol
             {
                 Name: "Empty", ContainingType.SpecialType: SpecialType.System_String
             })
@@ -468,8 +469,8 @@ internal static class TAuditOriginWalker
     private static bool TAuditCapsuleCheck(SyntaxNode node)
     {
         string? source = node is InvocationExpressionSyntax
-                         && TAuditBinder.TAuditSymbolRead(node) is IMethodSymbol { ContainingType: { } owner }
-            ? TAuditBinder.TAuditSourceRead(owner.OriginalDefinition)
+                         && TAuditBinderSymbol.TAuditSymbolRead(node) is IMethodSymbol { ContainingType: { } owner }
+            ? TAuditBinderSymbol.TAuditSourceRead(owner.OriginalDefinition)
             : null;
         return source is not null && TAuditBinder.TAuditRootRead(TAuditTruthSetting.TAuditCapsuleInclude)
             .Any(folder => source.StartsWith(folder + "/", StringComparison.OrdinalIgnoreCase));

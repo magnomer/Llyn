@@ -18,7 +18,9 @@ The pronunciation catalog: every entry matching `query` with its first reading, 
 
 ## `public void LPronunciationClerkSync(long entryId, IReadOnlyList<LPronunciationDraft> drafts, List<LRevisionDelta> changes, Dictionary<long, long> identity)`
 
-Blank rows are left out, because a row with neither reading nor recording is not a pronunciation.
+Only a seeded row still holding no IPA, respelling, recording or syllables is left out.
+The draft seeds that row itself for a first reading, so emptied again it holds nothing written.
+A blank row that was not seeded is kept and written.
 A positive id naming no stored row of this entry refuses the commit rather than rebinding to a fresh row.
 A stored row the draft no longer names is deleted, its recording with it.
 Every row kept is rewritten only when it changed, so an unchanged row raises no change.
@@ -42,7 +44,7 @@ The engine's draft match filters the same way, so a held draft and its origin co
 
 ## `private long LPronunciationClerkSave(LPronunciation stored, LPronunciationDraft draft, List<LRevisionDelta> changes)`
 
-One kept row brought to the draft's variety, reading and syllables.
+One kept row brought to the draft's variety, reading, respelling and syllables.
 Its id and its place survive, so the recording hanging from it stays attached across an edit of the IPA.
 
 ## `private long LPronunciationClerkInsert(long entryId, LPronunciationDraft draft, List<LRevisionDelta> changes, Dictionary<long, long> identity)`

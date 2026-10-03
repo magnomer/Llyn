@@ -1,7 +1,7 @@
 # Llyn.Performance.csproj
 Hash: `7b39d5753ab0e0d9`
 
-Builds the drills, the fixed workloads `scripts/performance.ps1` runs under the sampling profiler.
+Builds the drills, the fixed workloads `scripts/TracePerformance.ps1` runs under the sampling profiler.
 
 ## `<OutputType>Exe</OutputType>`
 

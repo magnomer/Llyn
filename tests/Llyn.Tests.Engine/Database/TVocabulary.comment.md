@@ -1,5 +1,5 @@
 # TVocabulary.cs
-Hash: `f26f7132ee275202`
+Hash: `ec13137bc408eab1`
 
 ## `public sealed class TVocabulary`
 
@@ -11,6 +11,6 @@ A renamed pack row keeps its id, so an entry that linked it shows the new name w
 A user-added preset takes a negative code, so no pack can ever collide with it.
 An entry whose part of speech no preset names stores the text and no link.
 A draft that already links a value stores that link, and its display name is not consulted.
-An inflection feature links a `morphology_value` row by the inflection's own id.
-A link to a value row that does not exist is refused by the foreign key.
+An inflection feature row hangs off the inflection's own id and links a `morphology_value` row.
+A link to a value row that does not exist is refused by the clerk's link check.
 The write then leaves nothing behind.

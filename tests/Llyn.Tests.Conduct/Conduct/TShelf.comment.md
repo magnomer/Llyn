@@ -1,5 +1,5 @@
 # TShelf.cs
-Hash: `f33f806f2c7c3e2a`
+Hash: `1b16f5fa1d7b8129`
 
 ## `public sealed class TShelf`
 
@@ -9,26 +9,21 @@ A fresh request with a Source chosen opens an entry that cites it from its first
 A fresh request with nothing chosen opens a Source draft in the source editor.
 Leaving a fresh entry's edit mode returns to the chosen Source in its read area.
 The bin ignores the entry side and deletes the chosen Source only from the Source side.
-Every offered order keeps every Source listed, a null order keeps the vista's own, and name order sorts.
+Every offered order keeps every Source listed, a null order keeps the order already set, and name order sorts.
 An unmatched query empties the shelf and closes the shown Source.
 A hidden language marks the shelf filtered, and an empty filter clears the mark.
-A chosen Source records the voyage station, and a kept leave records nothing and stays on the held draft.
-A stored leave saves the held draft and shows the stored Source.
-A leave with nothing unsaved asks nothing.
-The rail's undo, redo and save act on the Source draft while the Source side edits.
-A finish without storing drops the draft of the side in front, the Source draft or the entry draft.
-A kept leave on an entry click stays on the held Source draft.
 Toggling the Source side into edit mode opens its draft, and toggling it off drops the draft.
-An entry notice with the entry side closed shows the chosen Source again.
-A workspace notice clears both sides, and a print with nothing shown prints nothing.
+A print with nothing shown prints nothing.
+The leave and draft gates live in `TShelfDraft`, and the notices live in `TShelfVista`.
 An export writes only an entry on display.
 
 ## `internal static CShelf TShelfPrepare(CAtelier atelier, CEnvoy envoy)`
 
 Builds the shelf over the atelier with its own editor, and the shelf restores both vistas itself.
 Its seam answers that the tab is in front, and its marshal runs each notice at once.
-`TShelfImprint`, `TShelfRoll` and `TShelfVista` share it.
+`TShelfDraft`, `TShelfImprint`, `TShelfRoll` and `TShelfVista` share it.
 
-## `private static LEntry TShelfEntrySave(LEngine engine, string headword)`
+## `internal static LEntry TShelfEntrySave(LEngine engine, string headword)`
 
 Stores one English entry with a single meaning.
+`TShelfDraft` shares it.

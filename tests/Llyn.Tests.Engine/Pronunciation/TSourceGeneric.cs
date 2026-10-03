@@ -33,8 +33,8 @@ public sealed class TSourceGeneric
     [Fact]
     public async Task SourceFind_SecondAttempt_FillsMissedVariety()
     {
-        LSource source = TInterface.TSourceGenericCreate(
-            TInterface.TSourceSpecCreate(
+        LSource source = TInterfaceSource.TSourceGenericCreate(
+            TInterfaceSource.TSourceSpecCreate(
                 "Stub",
                 [
                     TPronunciationHelper.TSourceAttemptCreate(
@@ -101,7 +101,7 @@ public sealed class TSourceGeneric
     public async Task SourceFind_DecodedAttempt_MatchesEntityWrittenCharacters()
     {
         const string body = "<title>&#x6574; - site</title><td>&#x56DB;&#x5E93;</td><td>&#x6574;</td><td>48825</td>";
-        LSourceReading count = TInterface.TSourceReadingCreate(
+        LSourceReading count = TInterfaceSource.TSourceReadingCreate(
             "1", "regex", "<td>四库</td><td>{word}</td><td>(\\d+)</td>", 1, null, false, 0);
         LSource source = TSourceGenericCreate(
             body,
@@ -121,13 +121,13 @@ public sealed class TSourceGeneric
     [Fact]
     public async Task SourceFind_FollowPointer_ReadsTargetPage()
     {
-        LSource source = TInterface.TSourceGenericCreate(
-            TInterface.TSourceSpecCreate(
+        LSource source = TInterfaceSource.TSourceGenericCreate(
+            TInterfaceSource.TSourceSpecCreate(
                 "Stub",
                 [
                     TPronunciationHelper.TSourceFollowCreate(
-                        TInterface.TSourceReadingCreate(string.Empty, "regex", "see=([^;]+);", 1, null, false, 0),
-                        TInterface.TSourceReadingCreate(string.Empty, "regex", "m=([^;]+);", 1, null, false, 0)),
+                        TInterfaceSource.TSourceReadingCreate(string.Empty, "regex", "see=([^;]+);", 1, null, false, 0),
+                        TInterfaceSource.TSourceReadingCreate(string.Empty, "regex", "m=([^;]+);", 1, null, false, 0)),
                 ]),
             TPronunciationHelper.TSourceClientCreate(new Dictionary<string, string>
             {
@@ -143,13 +143,13 @@ public sealed class TSourceGeneric
     [Fact]
     public async Task SourceFind_FollowLoop_StopsAtHopLimit()
     {
-        LSource source = TInterface.TSourceGenericCreate(
-            TInterface.TSourceSpecCreate(
+        LSource source = TInterfaceSource.TSourceGenericCreate(
+            TInterfaceSource.TSourceSpecCreate(
                 "Stub",
                 [
                     TPronunciationHelper.TSourceFollowCreate(
-                        TInterface.TSourceReadingCreate(string.Empty, "regex", "see=([^;]+);", 1, null, false, 0),
-                        TInterface.TSourceReadingCreate(string.Empty, "regex", "m=([^;]+);", 1, null, false, 0)),
+                        TInterfaceSource.TSourceReadingCreate(string.Empty, "regex", "see=([^;]+);", 1, null, false, 0),
+                        TInterfaceSource.TSourceReadingCreate(string.Empty, "regex", "m=([^;]+);", 1, null, false, 0)),
                 ]),
             TPronunciationHelper.TSourceClientCreate(new Dictionary<string, string>
             {
@@ -166,16 +166,16 @@ public sealed class TSourceGeneric
     [Fact]
     public async Task SourceFind_FollowPointer_CarriesToNextAttempt()
     {
-        LSource source = TInterface.TSourceGenericCreate(
-            TInterface.TSourceSpecCreate(
+        LSource source = TInterfaceSource.TSourceGenericCreate(
+            TInterfaceSource.TSourceSpecCreate(
                 "Stub",
                 [
                     TPronunciationHelper.TSourceFollowCreate(
-                        TInterface.TSourceReadingCreate(string.Empty, "regex", "see=([^;]+);", 1, null, false, 0),
-                        TInterface.TSourceReadingCreate(string.Empty, "regex", "m=([^;]+);", 1, null, false, 0)),
-                    TInterface.TSourceAttemptCreate(
+                        TInterfaceSource.TSourceReadingCreate(string.Empty, "regex", "see=([^;]+);", 1, null, false, 0),
+                        TInterfaceSource.TSourceReadingCreate(string.Empty, "regex", "m=([^;]+);", 1, null, false, 0)),
+                    TInterfaceSource.TSourceAttemptCreate(
                         ["https://example.test/html/{word}"],
-                        [TInterface.TSourceReadingCreate(string.Empty, "regex", "b=([^;]+);", 1, null, false, 0)],
+                        [TInterfaceSource.TSourceReadingCreate(string.Empty, "regex", "b=([^;]+);", 1, null, false, 0)],
                         null,
                         null,
                         null),
@@ -226,7 +226,7 @@ public sealed class TSourceGeneric
         LSource source = TSourceGenericCreate(
             "x=a;x=b;x=c;",
             TPronunciationHelper.TSourceAttemptCreate(
-                TInterface.TSourceReadingCreate(string.Empty, "regex", "x=([^;]+);", 1, null, false, 1)));
+                TInterfaceSource.TSourceReadingCreate(string.Empty, "regex", "x=([^;]+);", 1, null, false, 1)));
 
         LAnswer answer = await source.TSourceFind("x", CancellationToken.None);
 
@@ -251,13 +251,13 @@ public sealed class TSourceGeneric
     [Fact]
     public async Task SourceFind_FollowPointer_KeepsOwnReadingToo()
     {
-        LSource source = TInterface.TSourceGenericCreate(
-            TInterface.TSourceSpecCreate(
+        LSource source = TInterfaceSource.TSourceGenericCreate(
+            TInterfaceSource.TSourceSpecCreate(
                 "Stub",
                 [
                     TPronunciationHelper.TSourceFollowCreate(
-                        TInterface.TSourceReadingCreate(string.Empty, "regex", "see=([^;]+);", 1, null, false, 0),
-                        TInterface.TSourceReadingCreate(string.Empty, "regex", "c=([^;]+);", 1, null, true, 0)),
+                        TInterfaceSource.TSourceReadingCreate(string.Empty, "regex", "see=([^;]+);", 1, null, false, 0),
+                        TInterfaceSource.TSourceReadingCreate(string.Empty, "regex", "c=([^;]+);", 1, null, true, 0)),
                 ]),
             TPronunciationHelper.TSourceClientCreate(new Dictionary<string, string>
             {
@@ -276,7 +276,8 @@ public sealed class TSourceGeneric
         LSource source = TSourceGenericCreate(
             "file=a.b.mp3;file=a+b.mp3;",
             TPronunciationHelper.TSourceAttemptCreate(
-                TInterface.TSourceReadingCreate(string.Empty, "regex", "file=({word}\\.mp3);", 1, null, false, 0)));
+                TInterfaceSource.TSourceReadingCreate(
+                    string.Empty, "regex", "file=({word}\\.mp3);", 1, null, false, 0)));
 
         LAnswer answer = await source.TSourceFind("a+b", CancellationToken.None);
 
@@ -286,12 +287,12 @@ public sealed class TSourceGeneric
     [Fact]
     public async Task SourceFind_SpellingRules_RecastHeadwordBeforeToken()
     {
-        LSource source = TInterface.TSourceGenericCreate(
-            TInterface.TSourceSpecCreate(
+        LSource source = TInterfaceSource.TSourceGenericCreate(
+            TInterfaceSource.TSourceSpecCreate(
                 "Stub",
                 [
                     TPronunciationHelper.TSourceAttemptCreate(
-                        TInterface.TSourceReadingCreate(
+                        TInterfaceSource.TSourceReadingCreate(
                             string.Empty, "regex", "file=({word}\\.mp3);", 1, null, false, 0)),
                 ],
                 [TInterface.TRespellingRuleCreate("[āă]", "a"), TInterface.TRespellingRuleCreate("ō", "o")]),
@@ -305,13 +306,13 @@ public sealed class TSourceGeneric
     [Fact]
     public async Task SourceFind_LinkStrategy_AnswersTypedHeadwordAddress()
     {
-        LSource source = TInterface.TSourceGenericCreate(
-            TInterface.TSourceSpecCreate(
+        LSource source = TInterfaceSource.TSourceGenericCreate(
+            TInterfaceSource.TSourceSpecCreate(
                 "Stub",
                 [
-                    TInterface.TSourceAttemptCreate(
+                    TInterfaceSource.TSourceAttemptCreate(
                         ["https://example.test/tts?text={headword}"],
-                        [TInterface.TSourceReadingCreate(string.Empty, "link", null, 0, null, false, 0)],
+                        [TInterfaceSource.TSourceReadingCreate(string.Empty, "link", null, 0, null, false, 0)],
                         null,
                         null,
                         null),
@@ -348,8 +349,8 @@ public sealed class TSourceGeneric
 
     private static LSource TSourceGenericCreate(string body, HttpStatusCode status, LSourceAttempt attempt)
     {
-        return TInterface.TSourceGenericCreate(
-            TInterface.TSourceSpecCreate("Stub", [attempt]),
+        return TInterfaceSource.TSourceGenericCreate(
+            TInterfaceSource.TSourceSpecCreate("Stub", [attempt]),
             TPronunciationHelper.TSourceClientCreate(body, status));
     }
 }

@@ -202,6 +202,41 @@ public sealed class TShelfVista
             });
     }
 
+    [Fact]
+    public void ShelfEntryNotice_EntrySideClosed_ReshowsTheChosenSource()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
+        LReference book = engine.TEngineCitationCreate("Book");
+        shelf.CShelfReferenceSelect(book.LReferenceId);
+        List<CColophon> shown = [];
+        shelf.CShelfColophonChanged += shown.Add;
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectEntry, 0);
+
+        Assert.Equal("Book", Assert.Single(shown).CColophonTitle);
+        Assert.True(shelf.CShelfColophonShown);
+    }
+
+    [Fact]
+    public void ShelfWorkspaceNotice_SourceShown_ClosesBothSides()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
+        LReference book = engine.TEngineCitationCreate("Book");
+        shelf.TShelfReferenceOpen(book.LReferenceId);
+
+        engine.TEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
+
+        Assert.False(shelf.CShelfBinEnabled);
+        Assert.False(shelf.CShelfModeEnabled);
+        Assert.False(shelf.CShelfPressAllowed);
+    }
+
     private static LEntry TShelfEntrySave(LEngine engine, string headword)
     {
         return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(

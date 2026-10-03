@@ -26,13 +26,13 @@ internal static class TPronunciationHelper
         string match,
         int skip = 0,
         bool every = false) =>
-        TInterface.TSourceReadingCreate(variety, strategy, match, 0, null, true, skip, every);
+        TInterfaceSource.TSourceReadingCreate(variety, strategy, match, 0, null, true, skip, every);
 
     internal static LSourceAttempt TSourceAttemptCreate(params LSourceReading[] readings) =>
-        TInterface.TSourceAttemptCreate([TPronunciationHelperUrl], readings, null, null, null);
+        TInterfaceSource.TSourceAttemptCreate([TPronunciationHelperUrl], readings, null, null, null);
 
     internal static LSourceAttempt TSourceFollowCreate(LSourceReading follow, params LSourceReading[] readings) =>
-        TInterface.TSourceAttemptCreate([TPronunciationHelperUrl], readings, null, null, null, follow);
+        TInterfaceSource.TSourceAttemptCreate([TPronunciationHelperUrl], readings, null, null, null, follow);
 
     internal static LSource TSourceStubCreate(params LReading[] readings) =>
         new TSourceStub(TInterface.TAnswerCreate(readings));

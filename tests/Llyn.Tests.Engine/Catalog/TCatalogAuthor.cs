@@ -154,7 +154,7 @@ public sealed class TCatalogAuthor
     {
         return engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
             0,
-            TInterface.TStateValueCreate(title),
+            TInterfaceState.TStateValueCreate(title),
             LStateValue.LStateValueUnspecified,
             kind,
             LStateValue.LStateValueUnspecified,
@@ -165,7 +165,7 @@ public sealed class TCatalogAuthor
     private static void TCatalogCitationCreate(LEngine engine, string text, long referenceId)
     {
         engine.TEngineExampleCreate(
-            TInterface.TExampleCreate(
-            0, "English", text, null, TInterface.TStateAnchorRead(referenceId)));
+            TInterfaceExample.TExampleCreate(
+            0, "English", text, null, TInterfaceState.TStateAnchorRead(referenceId)));
     }
 }

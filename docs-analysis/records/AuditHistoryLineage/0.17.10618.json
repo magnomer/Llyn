@@ -1,0 +1,11 @@
+{
+  "version": "0.17.10618",
+  "commit": "296cad85d35d2c5f3fe59d4e5db0bc437b6d6237",
+  "previous": "0.17.10568",
+  "previousCommit": "dea4992b673bbc2d076e48fbc0e8a7e6652d4af1",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.UIVeneer/Editor/Pick/PCandidateTemplate.comment.md", "src/Llyn.UIVeneer/Editor/Pick/PProfferTemplate.comment.md"],
+    ["src/Llyn.UIVeneer/Editor/Pick/PCandidateTemplate.xaml", "src/Llyn.UIVeneer/Editor/Pick/PProfferTemplate.xaml"]
+  ]
+}

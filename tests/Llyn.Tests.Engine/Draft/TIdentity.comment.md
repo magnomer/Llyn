@@ -1,5 +1,5 @@
 # TIdentity.cs
-Hash: `797c32c79a4dc1a7`
+Hash: `91d8f92b072ca101`
 
 ## `public sealed class TIdentity`
 
@@ -9,7 +9,7 @@ Every item is positive or negative, and only the engine mints.
 ## `public void RequestApply_TwoNewSentencesSharingText_MintsTwoIdsAndCommitStoresTwoRows()`
 
 Two new sentences with one wording are two items, not one.
-Each gets its own negative id when its text is requested and its own row on commit.
+Each gets its own negative id when the content is applied, and its own row on commit.
 Matching by text would have collapsed them.
 
 ## `public void RequestApply_SentencePickingStoredExample_KeepsIdAndCommitReusesRow()`
@@ -42,3 +42,20 @@ A later draft typing it finds the row the first one made.
 
 The drafts folder will not write a draft whose item still carries zero.
 The rule cannot be bypassed by writing the file directly.
+
+## `private static LEntryDraft TIdentityContentCreate(IReadOnlyList<LSentenceDraft> sentences)`
+
+One entry with a pronunciation and a single Meaning card holding the given sentences.
+The card carries a negative id from the test counter, not one the engine minted.
+
+## `private static void TIdentityNegativeRead(LEntryDraft content, List<long> minted)`
+
+Gathers every negative id the entry holds, from its pronunciation, Meaning and Collocation cards.
+
+## `private static void TIdentityNegativeRead(IReadOnlyList<LCardDraft> cards, List<long> minted)`
+
+Gathers every negative id of each card and its items, then walks its child cards.
+
+## `private static void TIdentityNegativeAdd(long id, List<long> minted)`
+
+Keeps an id only when it is negative, so stored and empty ids are skipped.

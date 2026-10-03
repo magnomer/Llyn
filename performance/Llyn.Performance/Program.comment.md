@@ -2,7 +2,7 @@
 Hash: `78c451c217af7731`
 
 The entry point of the drill process.
-`scripts/performance.ps1` starts it with the runtime tracing switched on.
+`scripts/TracePerformance.ps1` starts it with the runtime tracing switched on.
 
 ## Arguments
 

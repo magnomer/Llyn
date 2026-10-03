@@ -1,5 +1,5 @@
 # TCardTranslation.cs
-Hash: `6c6de6f0be13e6f8`
+Hash: `0d538460f899293b`
 
 ## `public sealed class TCardTranslation`
 

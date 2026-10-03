@@ -1,5 +1,5 @@
 # TEngineObserver.cs
-Hash: `187689938e19be02`
+Hash: `612db4ae2c0a859f`
 
 ## `public sealed class TEngineObserver`
 
@@ -9,13 +9,28 @@ A method group detached with the delegate it was attached with falls silent, sin
 The same method group attached twice is one subscriber, so a re-attached surface keeps one voice.
 A tenure keeps its state until an announcement moves the engine revision, so its readings are covered here too.
 
+## `public void ObserverAttach_SettingsChanged_CountsOne()`
+
+A lambda attached to the engine hears one bulletin when a setting is saved.
+It is the plain case of a surface subscribing, and every other observer fact builds on it.
+
+## `public void ObserverDetach_SameDelegate_CountStays()`
+
+Detaching the delegate that was attached silences it, so the bulletins stop at the one already heard.
+A surface that closes must stop being called, or it would be told about state it no longer shows.
+
+## `public void ObserverAttach_SameDelegateTwice_CountsOnce()`
+
+Attaching the same method twice leaves one subscriber, so one change reaches it once.
+A surface that attaches again on reopening would otherwise repeat every announcement.
+
 ## `public void TenureStateRead_NothingChanged_AnswersTheKeptStateAgain()`
 
 A second reading with nothing written between answers the very same state, so a refresh skips the disk.
 
 ## `public void TenureStateRead_RequestApplied_ComputesAFreshStateThatSeesTheChange()`
 
-An applied request announces a draft change, so the next reading computes and sees the edit and its undo.
+An applied request announces a draft change, so the next reading computes and sees the edit with an undo waiting.
 
 ## `public void TenureStateRead_Undone_ComputesAFreshStateThatSeesTheStepBack()`
 

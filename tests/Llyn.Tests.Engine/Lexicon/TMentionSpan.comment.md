@@ -1,12 +1,12 @@
 # TMentionSpan.cs
-Hash: `043a30e6f2903192`
+Hash: `6da0d408f0502d28`
 
 ## `public sealed class TMentionSpan`
 
 Span operations use code-point offsets and respect word and script boundaries.
 Division preserves gaps and avoids empty pieces around mentions.
 Selection normalization trims outer spaces.
-Etymology and sentence lookup accept only selections contained by one mention.
+Etymology and Example lookup accept only selections contained by one mention.
 A draft reads a sentence example by its card and sentence ids.
 
 ## `public void MentionSpanResolve_MidWord_ReturnsTheWholeWord()`
@@ -55,7 +55,8 @@ Overlapping mention ranges are rejected instead of producing ambiguous pieces.
 
 ## `public void MentionOffsetRead_AcrossSurrogatePair_RoundTripsWithUnitRead()`
 
-Offset-to-unit and unit-to-offset conversions round-trip code-point positions across a surrogate pair, including positions inside the pair.
+Offset-to-unit and unit-to-offset conversions round-trip every code-point position across a surrogate pair.
+A unit inside the pair reads back as the pair's own offset.
 
 ## `public void MentionSpanRead_PaddedSelection_DropsTheOuterSpaces()`
 
@@ -80,7 +81,7 @@ A wider selection or a later unrelated selection does not match a mention merely
 
 ## `public void ExampleDraftFind_SelectionInsideMention_ReturnsIt()`
 
-A sentence answers a selection wholly inside one of its Mentions, and nothing for one running past its end.
+An Example draft answers a selection wholly inside one of its Mentions, and nothing for one running past its end.
 
 ## `public void DraftExampleRead_HeldCardAndSentence_ReturnsTheSentenceExample()`
 

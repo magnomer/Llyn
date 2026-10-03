@@ -31,7 +31,8 @@ public sealed class TEngineWorkspace
     public void FolderOpen_OpenWorkspace_HandsItsFolderToTheUsher()
     {
         TUsherOpened usher = new();
-        using LEngine engine = TRigFake.TRigFakeStart(TInterface.TRigUsherSet(TRigFake.TRigFakeBuild(), usher));
+        using LEngine engine =
+            TRigFake.TRigFakeStart(TInterfaceEngineWorkspace.TRigUsherSet(TRigFake.TRigFakeBuild(), usher));
 
         engine.TEngineFolderOpen();
 

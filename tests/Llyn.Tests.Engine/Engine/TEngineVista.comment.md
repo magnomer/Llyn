@@ -1,11 +1,15 @@
 # TEngineVista.cs
-Hash: `149f97f4239fc72c`
+Hash: `edc90f30c4ba2d58`
 
 ## `public sealed class TEngineVista`
 
 The vista's promises, one fact per thing a browse panel relies on.
-Each fact starts a vista on a fresh workspace and drives it through the relays alone.
+Each fact starts a vista on a fresh workspace and changes it through the vista itself.
 A fact that must find an ordering or filter again starts its vistas through the posture, which stores them.
+This class covers starting a vista and listing the library's entries through it.
+The other panels' finds live in `TEngineVistaList`.
+The raised bulletins live in `TEngineVistaBulletin`.
+The reads and filter relays live in `TEngineVistaRelay`.
 
 ## `public void EntryFind_NoEpithetHeld_CarriesAnEmptyEpithet()`
 
@@ -49,71 +53,7 @@ An unshared headword is listed unnumbered.
 
 The row of the selected entry is the one row marked chosen.
 
-## `public void PronunciationFind_VistaOrder_SortsRows()`
-
-The pronunciation rows come in the vista's ordering, here headwords reversed.
-
-## `public void DiweiFind_VistaUsageOrder_CountsFirst()`
-
-Under the usage ordering the onset anchored by more entries lists first.
-Under the name ordering it lists second.
-The chosen onset names the language both columns list.
-
-## `public void TagFind_VistaQuery_MatchesName()`
-
-Only the tags whose text matches the vista's query are listed.
-
-## `public void VistaOrderSet_ChangedOrder_RaisesVistaBulletin()`
-
-A changed ordering raises one vista bulletin carrying the vista's own id.
-
-## `public void FavoriteFind_VistaTwins_NumbersRows()`
-
-The favorites vista find answers vista rows, twins numbered by entry id as the library does.
-
-## `public void PronunciationFind_VistaTwins_NumbersRows()`
-
-The phonology vista find fills each row's twin name, so the panel numbers nothing itself.
-
-## `public void PronunciationFind_NoEpithet_CarriesAnEmptyOne()`
-
-A phonology row with no epithet carries an empty one, so the Conduct map needs no fallback.
-
-## `public void VistaOrderSet_SameOrder_RaisesNothing()`
-
-Setting the order, the filter, the query or the chosen row to what it already is raises no bulletin.
-A repeated click therefore re-lists nothing.
-
-## `private static LEntry TVistaEntryCreate(LEngine engine, string headword, string language)`
+## `internal static LEntry TVistaEntryCreate(LEngine engine, string headword, string language)`
 
 Stores one entry with one meaning in the given language, the least an entry needs to be listed.
-
-## `private static void TVistaDiweiPlace(LEngine engine, TWorkspace workspace, string language, string character, string initial)`
-
-Stores one entry for the character, places the character under one onset, and anchors the entry's reflex to it.
-The anchor is what the onset's entry count is tallied over, so a placement alone counts nothing.
-
-## `public void VistaOrderRead_NoVista_ReadsHeadwordOrder()`
-
-A panel with no vista yet reads the headword order.
-
-## `public void VistaStoredCheck_OrphanRowOrNone_IsNotStored()`
-
-No row and the zero row the engine words itself name no stored record, and a positive id does.
-
-## `public void VistaFilterRead_NoVista_ReadsEmptyFilter()`
-
-A panel with no vista yet reads the shared empty filter.
-
-## `public void VistaFilterSet_NothingHidden_KeepsSharedEmptyFilter()`
-
-Hidden languages set on the vista are kept as given.
-Hiding nothing sets the engine's shared empty filter.
-
-## `public void VistaUsageRead_CreditedAuthor_CountsItsWorks()`
-
-An Author reaches the Sources that credit it, and nothing while no row is chosen.
-
-## `public void VistaUsageRead_ChosenEntry_CountsNothing()`
-
-A chosen entry is referenced by no other record, so its count is zero.
+The sibling classes build their entries through it.

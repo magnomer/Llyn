@@ -64,8 +64,8 @@ internal static class TExemplar
 
         LReference reference = engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
             0,
-            TInterface.TStateValueCreate("Exemplar Sourcebook"),
-            TInterface.TStateValueCreate("1999"),
+            TInterfaceState.TStateValueCreate("Exemplar Sourcebook"),
+            TInterfaceState.TStateValueCreate("1999"),
             LReferenceKind.LReferenceKindBook,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
@@ -136,7 +136,7 @@ internal static class TExemplar
                             LStateValue.LStateValueUnspecified,
                             LStateValue.LStateValueUnspecified),
                         new LSentenceDraft(
-                            TInterface.TExampleDraftCreate("Every exemplar earns its name."),
+                            TInterfaceExample.TExampleDraftCreate("Every exemplar earns its name."),
                             "with",
                             "of"),
                     ],

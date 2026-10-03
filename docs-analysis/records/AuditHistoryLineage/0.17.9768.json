@@ -1,0 +1,11 @@
+{
+  "version": "0.17.9768",
+  "commit": "e618f181fce804e25087ec0246c4ebe2730e6992",
+  "previous": "0.17.9718",
+  "previousCommit": "6d84a6d83f668fec7883360fba0140d1a20aae13",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.UIDeportment/Display/LCompass.comment.md", "src/Llyn.UIDeportment/Display/QCompass.comment.md"],
+    ["src/Llyn.UIDeportment/Display/LGraspStar.comment.md", "src/Llyn.UIDeportment/Display/QGraspStar.comment.md"]
+  ]
+}

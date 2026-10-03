@@ -1,11 +1,11 @@
 # TAuditTruthWalker.cs
-Hash: `a9187f7b01dca6c6`
+Hash: `bbe74476521d8ce4`
 
 ## `internal static partial class TAuditTruthWalker`
 
 Follows each driver field to where its value goes, by symbol.
 A settable property and a positional record parameter are followed the same way.
-Logic is what `TAuditBinder` says lies below the cut, Conduct's gates and the engine alike.
+Logic is what `TAuditBinderSide` says lies below the cut, Conduct's gates and the engine alike.
 A request is a call into logic or into a driver relay of one.
 A field holding a Conduct type is a handle, while a field holding an engine type is duplicating.
 Partial classes are joined by their type symbol.
@@ -28,7 +28,7 @@ A name inside `nameof` reads nothing, so it is left out of the index.
 
 ## `private sealed record TAuditTruthField(`
 
-One audited field: the symbols that mean it, its label, its type and where it is declared.
+One audited field, with the symbols that mean it, its label, its type and where it is declared.
 A positional parameter carries both its parameter symbol and the property it generates.
 
 ## `public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> sourcePaths)`
@@ -41,7 +41,7 @@ The driver members that read logic or request, for the laundering scan.
 
 ## `private static Dictionary<INamedTypeSymbol, List<TypeDeclarationSyntax>> TAuditPartRead(`
 
-Compiles, keeps the walked roots, builds the identifier index, groups the outermost types and reads the relays and senders.
+Keeps the walked roots, builds the identifier index, groups the outermost types and reads the relays and senders.
 
 ## `private static IEnumerable<TAuditTruthField> TAuditFieldRead(IReadOnlyList<TypeDeclarationSyntax> type)`
 
@@ -103,7 +103,7 @@ Adds the symbol a declaration or name resolves to, when it resolves.
 
 ## `private static SyntaxNode TAuditReferenceRead(IdentifierNameSyntax identifier)`
 
-The reference node: the access when the identifier is a member of `this` or a named owner, else itself.
+The reference node is the access when the identifier is a member of `this` or a named owner, else itself.
 
 ## `internal static bool TAuditWriteCheck(SyntaxNode reference, out ExpressionSyntax? value)`
 

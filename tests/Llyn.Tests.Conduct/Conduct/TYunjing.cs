@@ -152,118 +152,6 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingDiweiRead_InitialCell_SectionsByDivisionWithSortedLines()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        string language = pack.TLanguageFixtureName;
-        TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
-        TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, language, "蘭", "來");
-        CYunjing yunjing = TYunjingPrepare(atelier);
-        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
-
-        CDiweiPage page = yunjing.CYunjingDiweiRead();
-
-        Assert.Equal((language, "來"), (page.CDiweiPageLanguage, page.CDiweiPageKey));
-        Assert.False(page.CDiweiPageEmpty);
-        CDiweiSection section = Assert.Single(page.CDiweiPageSections);
-        Assert.Equal((false, false), (section.CDiweiSectionSwitched, section.CDiweiSectionRespelled));
-        CDiweiLine line = Assert.Single(section.CDiweiSectionLines);
-        Assert.Equal(
-            ("寒", string.Empty, false), (line.CDiweiLineLabel, line.CDiweiLineReading, line.CDiweiLineRounded));
-        Assert.Equal(["爛", "蘭"], line.CDiweiLineCharacters);
-    }
-
-    [Fact]
-    public void YunjingDiweiRead_BookCell_CarriesTheFontsOfTheCellLanguage()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, TYunjingBook, "爛", "來");
-        CYunjing yunjing = TYunjingPrepare(atelier);
-        CDiweiPage blank = yunjing.CYunjingDiweiRead();
-        yunjing.TYunjingDiweiOpen(TYunjingBook, LDiwei.LDiweiInitial, "來");
-
-        CDiweiPage page = yunjing.CYunjingDiweiRead();
-
-        Assert.Equal(new CFont(null, null, null), blank.CDiweiPageFont);
-        Assert.Equal(new CFont(null, null, null), blank.CDiweiPageGlyph);
-        const string family = "Microsoft JhengHei UI, Microsoft YaHei UI, Malgun Gothic";
-        Assert.Equal(family, page.CDiweiPageFont.CFontFamily);
-        Assert.Equal<double?>(40, page.CDiweiPageFont.CFontSize);
-        Assert.Equal(family, page.CDiweiPageGlyph.CFontFamily);
-        Assert.Equal<double?>(16, page.CDiweiPageGlyph.CFontSize);
-    }
-
-    [Fact]
-    public void YunjingDiweiRead_ReflexUnderTheCell_CopiesTheTallyOfTheShownSet()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, TYunjingBook, "爛", "來");
-        TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, TYunjingBook, "蘭", "來");
-        CYunjing yunjing = TYunjingPrepare(atelier);
-        yunjing.TYunjingDiweiOpen(TYunjingBook, LDiwei.LDiweiInitial, "來");
-
-        CDiweiSection section = Assert.Single(yunjing.CYunjingDiweiRead().CDiweiPageSections);
-
-        CTally tally = Assert.Single(section.CDiweiSectionTallies);
-        Assert.Equal(("Korean", string.Empty), (tally.CTallyLanguage, tally.CTallyKind));
-        CTallyMark mark = Assert.Single(tally.CTallyMarks);
-        Assert.Equal(("ㄹ", 2), (mark.CTallyMarkText, mark.CTallyMarkCount));
-        Assert.Equal(["爛", "蘭"], mark.CTallyMarkCharacters);
-    }
-
-    [Fact]
-    public void YunjingTallyToggle_SwitchThenNull_SavesOnceAndRaisesOnce()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CYunjing yunjing = TYunjingPrepare(atelier);
-        int changed = 0;
-        yunjing.CYunjingChanged += () => changed++;
-
-        yunjing.CYunjingTallyToggle(true);
-
-        Assert.Equal(1, changed);
-        Assert.True(engine.TEngineSettingsRead().LSettingsTally);
-
-        yunjing.CYunjingTallyToggle(null);
-
-        Assert.Equal(1, changed);
-    }
-
-    [Fact]
-    public void YunjingGlyphSelect_PageShown_OpensTheGlyphEntryInThePageLanguage()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        string language = pack.TLanguageFixtureName;
-        TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
-        CYunjing yunjing = TYunjingPrepare(atelier);
-        List<long> chosen = [];
-        atelier.CAtelierNavigation.TNavigationTabAdd(
-            "Library", static () => true, static () => 0, static _ => { }, chosen.Add);
-
-        yunjing.CYunjingGlyphSelect("爛");
-
-        Assert.Empty(chosen);
-
-        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
-        yunjing.CYunjingGlyphSelect(string.Empty);
-        yunjing.CYunjingGlyphSelect("爛");
-
-        Assert.Equal([engine.TEngineGlyphResolve("爛", language).LEntryId], chosen);
-    }
-
-    [Fact]
     public void YunjingShengmuFind_UnmatchedQuery_UnchoosesAndReadsTheUnmatchedKeys()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
@@ -333,33 +221,6 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public async Task YunjingPortraitExport_ChosenEntry_WritesItAndNothingBefore()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        string language = pack.TLanguageFixtureName;
-        TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
-        string path = Path.Combine(workspace.TWorkspaceFolder, "rotten.md");
-        CYunjing yunjing = TYunjingPrepare(
-            atelier, TEnvoyFake.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
-
-        await yunjing.CYunjingPortraitExport();
-
-        Assert.False(File.Exists(path));
-
-        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
-        yunjing.CYunjingPanel.CPanelRowSelect(Assert.Single(yunjing.CYunjingXiaoyunRead()).CVistaRowId);
-        await yunjing.CYunjingPortraitExport();
-
-        Assert.Contains("爛", File.ReadAllText(path), StringComparison.Ordinal);
-        Assert.Contains("爛", yunjing.TYunjingFileRead(), StringComparison.Ordinal);
-        Assert.False(yunjing.CYunjingDiweiShown);
-        Assert.True(yunjing.CYunjingDisplayShown);
-    }
-
-    [Fact]
     public void YunjingPanelRowOpen_ScribeOn_OpensTheEntryInTheEditorUntilClosed()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
@@ -396,24 +257,12 @@ public sealed class TYunjing
             CYunjing.CYunjingOrderRead());
     }
 
-    [Fact]
-    public void YunjingPortraitPrint_NoEntryChosen_PrintsNothing()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CYunjing yunjing = TYunjingPrepare(atelier);
-
-        Assert.False(yunjing.CYunjingPanel.CPanelPressAllowed);
-        Assert.Same(Task.CompletedTask, yunjing.CYunjingPortraitPrint());
-    }
-
     internal static CYunjing TYunjingPrepare(CAtelier atelier)
     {
         return TYunjingPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
     }
 
-    private static CYunjing TYunjingPrepare(CAtelier atelier, CEnvoy envoy)
+    internal static CYunjing TYunjingPrepare(CAtelier atelier, CEnvoy envoy)
     {
         CYunjing yunjing = CYunjing.CYunjingCreate(atelier, static () => true, envoy, static run => run());
         return yunjing;

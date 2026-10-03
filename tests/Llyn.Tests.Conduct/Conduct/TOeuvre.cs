@@ -31,7 +31,7 @@ public sealed class TOeuvre
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineCitationCreate("Orphan");
-        COeuvre oeuvre = TInterfaceConduct.TOeuvreCreate(engine);
+        COeuvre oeuvre = TInterfaceConductPanel.TOeuvreCreate(engine);
 
         Assert.Empty(oeuvre.COeuvreRowsRead());
         Assert.True(oeuvre.COeuvreEmpty);
@@ -145,7 +145,7 @@ public sealed class TOeuvre
         LReference book = engine.TEngineCitationCreate("Book");
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
-        COeuvre oeuvre = TInterfaceConduct.TOeuvreCreate(engine);
+        COeuvre oeuvre = TInterfaceConductPanel.TOeuvreCreate(engine);
 
         IReadOnlyList<CCatalogAuthor> rows =
             oeuvre.TOeuvreAuthorRead(engine.TEngineAuthorFind(string.Empty, LCatalogOrder.LCatalogOrderName));
@@ -156,7 +156,7 @@ public sealed class TOeuvre
 
     private static (COeuvre, LVista, LVista) TOeuvrePrepare(LEngine engine)
     {
-        COeuvre oeuvre = TInterfaceConduct.TOeuvreCreate(engine);
+        COeuvre oeuvre = TInterfaceConductPanel.TOeuvreCreate(engine);
         LVista roll = engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderName);
         LVista vista = engine.TEngineVistaStart("oeuvre", LCatalogOrder.LCatalogOrderName);
         oeuvre.TOeuvreVistaRestore(roll, vista);

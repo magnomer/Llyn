@@ -9,7 +9,7 @@ no assignment, no held state and no reach into the engine. A driver drives its s
 deportment (Llyn.UIDeportment) and the demeanor (Llyn.UIDemeanor). A driver may control its
 medium freely, but it must not decide the data: that stays with the Conduct gates and the engine.
 
-The script binds the source with Roslyn through the shared binder of auditbinder.cs and walks it
+The script binds the source with Roslyn through the shared binder of AuditBinder.cs and walks it
 with its own copy of the walkers of the convention tests TAuditStrict, TAuditTruth and
 TAuditBoundary. It never reads, runs or depends on the test project: the rules live in AuditUI.json
 and the ceilings in AuditUI.ledger.json. The tests and this script audit the same ground truth, so
@@ -41,7 +41,7 @@ Path to the JSON configuration. Defaults to AuditUI.json next to this script.
 
 .PARAMETER Configuration
 Build configuration the binder reads generated code and references from: Debug or Release.
-Defaults to the configuration in auditbinder.json.
+Defaults to the configuration in AuditBinder.json.
 
 .PARAMETER OutputPath
 Overrides the Markdown report path for this run. The page is written beside it with the .html
@@ -69,7 +69,7 @@ AuditUI -NoOpen
 AuditUI -Configuration Release
 #>
 #requires -Version 5.1
-# AUDITUI GENERATION 19 - AuditUI.ps1.
+# AUDITUI - AUDIT GENERATION 19.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -80,7 +80,7 @@ AuditUI -Configuration Release
 # Generation 11: the truth audit also checks that a deportment field reaches no request, keeps one
 # writer, holds no logic and treats no engine data.
 # Generation 12: the audit is the standalone counterpart of the convention tests. It binds through the
-# shared binder of auditbinder.cs, walks with its own copy of the strict, truth and boundary walkers,
+# shared binder of AuditBinder.cs, walks with its own copy of the strict, truth and boundary walkers,
 # holds every hit against its own ledger, and counts every fact the tests gate.
 # Generation 13: the strict audit also counts every surface markup line that hooks logic into the
 # markup, and every surface member that is not a constructor. The veneer may hold no markup file.
@@ -132,7 +132,7 @@ CONFIGURATION
                           framework, the ledger file and the report location.
     AuditUI.ledger.json   The ceiling of every kind per file, for Strict and Truth.
     AuditUI.html          The page template the HTML report is built from.
-    auditbinder.json      The shared binder: source root, build configuration,
+    AuditBinder.json      The shared binder: source root, build configuration,
                           host project, frameworks and exclusions.
 
     The script never reads the test project. A test and this script agree
@@ -152,7 +152,7 @@ OPTIONS
         JSON configuration file. Defaults to .\AuditUI.json.
 
     -Configuration <Debug|Release>
-        Build output the binder reads. Defaults to auditbinder.json.
+        Build output the binder reads. Defaults to AuditBinder.json.
 
     -OutputPath <path>
         Markdown report path. By default, the project version is used to
@@ -215,9 +215,9 @@ $OutputEncoding = [Console]::OutputEncoding
 
 $script:AuditGeneration = 19
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
-$script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
+$script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'AuditBinder.cs'))
 
-Write-Host "AUDITUI GENERATION $script:AuditGeneration" -ForegroundColor Blue
+Write-Host "AUDITUI - AUDIT GENERATION $script:AuditGeneration" -ForegroundColor Blue
 
 function Format-Count {
     param([long]$Value)
@@ -5771,11 +5771,11 @@ $temporaryFolder = Join-Path ([System.IO.Path]::GetTempPath()) ([string]$config.
 [System.IO.Directory]::CreateDirectory($temporaryFolder) | Out-Null
 try {
     # -Configuration changes the build output the binder reads, through a copy of its settings.
-    $binderFull = Join-Path $PSScriptRoot 'auditbinder.json'
+    $binderFull = Join-Path $PSScriptRoot 'AuditBinder.json'
     if ($PSBoundParameters.ContainsKey('Configuration')) {
         $binderText = [System.IO.File]::ReadAllText($binderFull)
         $binderText = [regex]::Replace($binderText, '"configuration"\s*:\s*"[^"]*"', ('"configuration": "' + $Configuration + '"'))
-        $binderFull = Join-Path $temporaryFolder 'auditbinder.json'
+        $binderFull = Join-Path $temporaryFolder 'AuditBinder.json'
         [System.IO.File]::WriteAllText($binderFull, $binderText, (New-Object System.Text.UTF8Encoding($false)))
     }
 

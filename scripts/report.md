@@ -68,4 +68,4 @@ Every count carries thousands separators, while a `path:line` location never doe
 
 A warning prints as a plain line and never through `Write-Warning`.
 A failure the audit cannot judge throws and exits with an error.
-`check.ps1` reads only the `Status`, `Count` and `Gate` columns of the `Result` table, so they are the whole contract.
+`Check.ps1` reads only the `Status`, `Count` and `Gate` columns of the `Result` table, so they are the whole contract.

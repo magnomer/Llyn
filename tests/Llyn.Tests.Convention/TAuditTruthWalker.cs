@@ -67,7 +67,7 @@ internal static partial class TAuditTruthWalker
             foreach (TypeDeclarationSyntax type in root.DescendantNodes().OfType<TypeDeclarationSyntax>())
             {
                 if (type.Ancestors().OfType<TypeDeclarationSyntax>().Any()
-                    || TAuditBinder.TAuditSymbolRead(type) is not INamedTypeSymbol key)
+                    || TAuditBinderSymbol.TAuditSymbolRead(type) is not INamedTypeSymbol key)
                 {
                     continue;
                 }
@@ -86,7 +86,7 @@ internal static partial class TAuditTruthWalker
         foreach (IdentifierNameSyntax identifier in TAuditRoots.SelectMany(root =>
                      root.DescendantNodes(node => !TAuditNameofCheck(node)).OfType<IdentifierNameSyntax>()))
         {
-            if (TAuditBinder.TAuditSymbolRead(identifier) is not { } symbol)
+            if (TAuditBinderSymbol.TAuditSymbolRead(identifier) is not { } symbol)
             {
                 continue;
             }
@@ -118,18 +118,18 @@ internal static partial class TAuditTruthWalker
                     || modifier.IsKind(SyntaxKind.ConstKeyword));
                 foreach (VariableDeclaratorSyntax variable in field.Declaration.Variables)
                 {
-                    if (TAuditBinder.TAuditSymbolRead(variable) is not IFieldSymbol symbol
+                    if (TAuditBinderSymbol.TAuditSymbolRead(variable) is not IFieldSymbol symbol
                         || TAuditHandleCheck(symbol.Type))
                     {
                         continue;
                     }
 
                     HashSet<ISymbol> symbols = TAuditAliasRead(symbol, type);
-                    if (!fixture || TAuditBinder.TAuditEngineCheck(symbol.Type) || TAuditFillCheck(symbols, type))
+                    if (!fixture || TAuditBinderSide.TAuditEngineCheck(symbol.Type) || TAuditFillCheck(symbols, type))
                     {
                         yield return new TAuditTruthField(
                             symbols,
-                            TAuditBinder.TAuditLabelRead(symbol),
+                            TAuditBinderSymbol.TAuditLabelRead(symbol),
                             symbol.Type,
                             field.SyntaxTree.FilePath,
                             TAuditLineRead(variable),
@@ -140,7 +140,7 @@ internal static partial class TAuditTruthWalker
 
             foreach (ParameterSyntax parameter in part.ParameterList?.Parameters ?? [])
             {
-                if (TAuditBinder.TAuditSymbolRead(parameter) is not IParameterSymbol symbol
+                if (TAuditBinderSymbol.TAuditSymbolRead(parameter) is not IParameterSymbol symbol
                     || TAuditHandleCheck(symbol.Type))
                 {
                     continue;
@@ -155,7 +155,7 @@ internal static partial class TAuditTruthWalker
 
                 yield return new TAuditTruthField(
                     symbols,
-                    TAuditBinder.TAuditLabelRead(symbol),
+                    TAuditBinderSymbol.TAuditLabelRead(symbol),
                     symbol.Type,
                     parameter.SyntaxTree.FilePath,
                     TAuditLineRead(parameter),
@@ -168,7 +168,7 @@ internal static partial class TAuditTruthWalker
                     accessor.IsKind(SyntaxKind.SetAccessorDeclaration)
                     || accessor.IsKind(SyntaxKind.InitAccessorDeclaration)) == true;
                 if (!settable
-                    || TAuditBinder.TAuditSymbolRead(property) is not IPropertySymbol symbol
+                    || TAuditBinderSymbol.TAuditSymbolRead(property) is not IPropertySymbol symbol
                     || TAuditHandleCheck(symbol.Type))
                 {
                     continue;
@@ -176,7 +176,7 @@ internal static partial class TAuditTruthWalker
 
                 yield return new TAuditTruthField(
                     new HashSet<ISymbol>([symbol], SymbolEqualityComparer.Default),
-                    TAuditBinder.TAuditLabelRead(symbol),
+                    TAuditBinderSymbol.TAuditLabelRead(symbol),
                     symbol.Type,
                     property.SyntaxTree.FilePath,
                     TAuditLineRead(property),
@@ -205,14 +205,14 @@ internal static partial class TAuditTruthWalker
 
     private static bool TAuditFieldCheck(IdentifierNameSyntax identifier, HashSet<ISymbol> symbols)
     {
-        ISymbol? symbol = TAuditBinder.TAuditSymbolRead(identifier);
+        ISymbol? symbol = TAuditBinderSymbol.TAuditSymbolRead(identifier);
         return symbol is not null && symbols.Contains(symbol);
     }
 
     private static void TAuditFieldCheck(
         TAuditTruthField field, IReadOnlyList<TypeDeclarationSyntax> type, List<TViolation> violations)
     {
-        if (TAuditBinder.TAuditEngineCheck(field.TFieldType))
+        if (TAuditBinderSide.TAuditEngineCheck(field.TFieldType))
         {
             violations.Add(new TViolation(
                 field.TFieldPath,
@@ -255,7 +255,7 @@ internal static partial class TAuditTruthWalker
                      .ThenBy(identifier => identifier.SpanStart))
         {
             bool inside = TAuditInsideCheck(identifier, type)
-                || TAuditBinder.TAuditSymbolRead(identifier) is IParameterSymbol { RefKind: not RefKind.None };
+                || TAuditBinderSymbol.TAuditSymbolRead(identifier) is IParameterSymbol { RefKind: not RefKind.None };
             if (!inside && !field.TFieldShared)
             {
                 continue;
@@ -370,8 +370,8 @@ internal static partial class TAuditTruthWalker
                 continue;
             }
 
-            string? via = TAuditBinder.TAuditSymbolRead(identifier) is IParameterSymbol { RefKind: not RefKind.None }
-                ? "ref"
+            string? via = TAuditBinderSymbol.TAuditSymbolRead(identifier)
+                is IParameterSymbol { RefKind: not RefKind.None } ? "ref"
                 : direct ? null : "local";
             string reason = via is null
                 ? sink.Value.TViolationReason
@@ -397,7 +397,7 @@ internal static partial class TAuditTruthWalker
                     TAuditSymbolAdd(declarator, tainted);
                     break;
                 case AssignmentExpressionSyntax { Left: IdentifierNameSyntax local } assignment
-                    when TAuditBinder.TAuditSymbolRead(local) is ILocalSymbol
+                    when TAuditBinderSymbol.TAuditSymbolRead(local) is ILocalSymbol
                          && TAuditNameCheck(assignment.Right, field.TFieldSymbols):
                     TAuditSymbolAdd(local, tainted);
                     break;
@@ -417,7 +417,7 @@ internal static partial class TAuditTruthWalker
 
     private static void TAuditSymbolAdd(SyntaxNode node, HashSet<ISymbol> symbols)
     {
-        if (TAuditBinder.TAuditSymbolRead(node) is { } symbol)
+        if (TAuditBinderSymbol.TAuditSymbolRead(node) is { } symbol)
         {
             symbols.Add(symbol);
         }

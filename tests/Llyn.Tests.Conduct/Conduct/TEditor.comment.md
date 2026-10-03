@@ -1,12 +1,12 @@
 # TEditor.cs
-Hash: `3f5b74d5b2950b8c`
+Hash: `ef5643e711597398`
 
 ## `public sealed class TEditor`
 
 Covers the entry editor's gates end to end on a real workspace.
-An open holds the entry, and a null open holds a fresh draft.
-A missing entry falls back to a fresh draft.
-Every open announces the shaped content once, and a fresh draft holds one card of each kind.
+An open holds the entry.
+The fresh drafts live in `TEditorFresh`.
+Every open announces the shaped content once.
 A save reopens what it stored, but a fresh input draft reopens blank.
 An unchanged save stores nothing, and a finish without storing lets the tenure go.
 An undo drops the typing by reopening the stored entry.
@@ -14,16 +14,13 @@ Field gates write the headword, the trimmed note and the reading, and an empty l
 The tenure's variety set tags the draft's primary reading, and a blank one or missing row changes nothing.
 The reads answer empty on an empty desk, and an added etymon reads back by headword.
 A field edit made while the desk fills its controls is dropped.
-A fresh occurrence start opens a draft already linked to its Situation, and a blank one without.
-A fresh quotation start replaces the held draft with one already citing its Example.
-A fresh footnote start opens a draft already citing its Source in the first sentence.
-A fresh membership start replaces the held draft with one already carrying its Tag.
-A fresh cohort start replaces the held draft with one already carrying its Register.
 
-## `private static LEntry TEditorEntryPrepare(LEngine engine)`
+## `internal static LEntry TEditorEntryPrepare(LEngine engine)`
 
 Stores the English entry water with one card, so an editor has something to open.
+`TEditorFresh` shares it.
 
-## `private static CEditor TEditorPrepare(LEngine engine, string tab)`
+## `internal static CEditor TEditorPrepare(LEngine engine, string tab)`
 
 Builds an editor over the engine and restores the vista of the named tab, ordered by headword.
+`TEditorFresh` shares it.

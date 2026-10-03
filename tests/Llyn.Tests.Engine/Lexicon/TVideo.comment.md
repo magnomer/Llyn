@@ -17,3 +17,9 @@ The host name is read without case and without its `www.` label.
 Another host, an unknown path and a local file answer null.
 An id of the wrong length or with a stray character answers null too.
 The character check matters because the id is written into a page's script.
+
+## `public void VideoSpanRead_WrittenSpan_AnswersItsMomentsOrTheWholeFilm(string span, int from, int? until)`
+
+A written span reads as a start and an optional end, each in `m:ss` or `h:mm:ss` form.
+A lone moment gives no end, and an unreadable start gives zero.
+The player is told these moments, so a bad span must play the film rather than refuse.

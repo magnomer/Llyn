@@ -39,7 +39,7 @@ public sealed class TRequestSituation
         long image = added.LDraftSituation!.LSituationImage[0].LImageDraftId;
 
         LDraft answered = engine.TEngineRequestApply(TInterface.TImageLocationCreate(
-            started.LDraftId, image, TInterface.TStateValueCreate("court-b.png")));
+            started.LDraftId, image, TInterfaceState.TStateValueCreate("court-b.png")));
 
         LImageDraft held = Assert.Single(answered.LDraftSituation!.LSituationImage);
         Assert.Equal(image, held.LImageDraftId);

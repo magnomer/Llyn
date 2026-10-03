@@ -267,7 +267,7 @@ public sealed class TCorpusMention
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
         corpus.CCorpusExampleCreate();
         corpus.CCorpusDesk.TDeskDefer(
-            TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterface.TStateValueCreate("a dog")));
+            TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterfaceState.TStateValueCreate("a dog")));
 
         Assert.Null(corpus.CCorpusMentionFind(2));
         Assert.Equal(["Leave"], asked);

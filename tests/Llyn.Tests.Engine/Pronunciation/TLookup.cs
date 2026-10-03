@@ -153,7 +153,7 @@ public sealed class TLookup
     {
         LSeeker lookup = TInterface.TLookupCreate(
             [TPronunciationHelper.TSourceStubCreate(TInterface.TReadingCreate("British", "ˈhæp.i"))]);
-        LTrove trove = TInterface.TTroveCreate();
+        LTrove trove = TInterfaceTrove.TTroveCreate();
 
         IReadOnlyList<LCandidate> found = await lookup.TLookupStart(
             "happy", TPronunciationHelper.TReceiverCreate(), CancellationToken.None);

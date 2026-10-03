@@ -45,11 +45,11 @@ A claim outliving its draft would be swept only by luck, since nothing asks abou
 
 Cancelling a draft removes its claim too.
 
-## `private static string TClaimDraftCreate(TWorkspace workspace)`
+## `private static long TClaimDraftCreate(TWorkspace workspace)`
 
 Starts a draft through an engine that is then closed, leaving held work behind with content worth recovering.
 An untouched draft is not a leftover whatever claims it.
-The content has to differ from the entry it opened from.
+The content has to differ from the blank draft it started as.
 
 ## `private static Process TClaimProcessStart()`
 

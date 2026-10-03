@@ -12,11 +12,16 @@ The entry whose whole headword reads as the query leads, and the containing one 
 
 ## `public void TranslationClerkFind_PaddedQuery_RanksAsTheTrimmedQuery()`
 
-The clerk ranks a padded query as its trimmed text, so no driver trims the typed word.
+The clerk ranks a padded query as its trimmed text, so padding never changes the order.
 
 ## `public void TranslationClerkFind_OwnEntry_IsLeftOut()`
 
 A card may not translate its own entry, so the search drops the id it is given.
+
+## `public void TranslationWordRead_PaddedOrBlankText_AnswersTheTrimmedWordOrNothing()`
+
+The word read answers the typed text trimmed, and answers null when only blanks were typed.
+A driver asks it once, so no card sends a padded or empty word to the search.
 
 ## `public void TranslationClerkResolve_TwoEntriesShareHeadword_AnswersNothing()`
 

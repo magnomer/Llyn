@@ -1,0 +1,17 @@
+{
+  "version": "0.13.6000",
+  "commit": "4dc20274f6f4a06f506a8db419e7e323b3da0920",
+  "previous": "0.13.5850",
+  "previousCommit": "9caf67657d8d25240c939d932db355363fce8c39",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.ShellEngine/LEngineDraftMatch.comment.md", "src/Llyn.Application/Draft/LDraftClerkEquality.comment.md"],
+    ["src/Llyn.ShellEngine/LEngineDraftMatch.cs", "src/Llyn.Application/Draft/LDraftClerkEquality.cs"],
+    ["src/Llyn.ShellEngine/LEngineEpithet.cs", "src/Llyn.Application/Pronunciation/LReflexClerkEpithet.cs"],
+    ["src/Llyn.ShellEngine/LEngineMarkupAppend.cs", "src/Llyn.Application/Markup/LMarkupClerkUnion.cs"],
+    ["src/Llyn.ShellEngine/LEngineMarkupDraft.cs", "src/Llyn.Application/Markup/LMarkupClerkDraft.cs"],
+    ["src/Llyn.ShellEngine/LEngineMarkupLink.cs", "src/Llyn.Application/Markup/LMarkupClerkLink.cs"],
+    ["src/Llyn.ShellEngine/LEnginePortraitCard.cs", "src/Llyn.Application/Portrait/LPortraitClerkCard.cs"],
+    ["src/Llyn.ShellEngine/LEnginePortraitCrest.cs", "src/Llyn.Application/Portrait/LPortraitClerkCrest.cs"]
+  ]
+}

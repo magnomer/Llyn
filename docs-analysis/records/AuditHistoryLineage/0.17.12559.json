@@ -1,0 +1,19 @@
+{
+  "version": "0.17.12559",
+  "commit": "075cf338d6e8eba902199d4314f18ba521a8daee",
+  "previous": "0.17.12509",
+  "previousCommit": "9b66a6de6f4f0e0778dd20fb7eb7220010cdaaea",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.Core/Pronunciation/Anatomy/LAnatomyTone.comment.md", "src/Llyn.Core/Pronunciation/Descent/LDescent.comment.md"],
+    ["src/Llyn.Infrastructure/Pronunciation/Loader/LLanguageLoaderAnatomy.comment.md", "src/Llyn.Infrastructure/Pronunciation/Loader/LAnatomyLoader.comment.md"],
+    ["src/Llyn.Infrastructure/Pronunciation/Loader/LLanguageLoaderClass.comment.md", "src/Llyn.Infrastructure/Pronunciation/Loader/LDescentLoader.comment.md"],
+    ["src/Llyn.Infrastructure/Pronunciation/Loader/LLanguageLoaderFanqie.comment.md", "src/Llyn.Infrastructure/Pronunciation/Loader/LFanqieLoader.comment.md"],
+    ["src/Llyn.Infrastructure/Pronunciation/Loader/LLanguageLoaderHypothesis.cs", "src/Llyn.Infrastructure/Pronunciation/Loader/LHypothesisLoader.cs"],
+    ["src/Llyn.Infrastructure/Pronunciation/Loader/LLanguageLoaderReflex.comment.md", "src/Llyn.Infrastructure/Pronunciation/Loader/LReflexLoader.comment.md"],
+    ["src/Llyn.Infrastructure/Pronunciation/Loader/LLanguageLoaderRespelling.comment.md", "src/Llyn.Infrastructure/Pronunciation/Loader/LRespellingLoader.comment.md"],
+    ["src/Llyn.Infrastructure/Pronunciation/Loader/LLanguageLoaderSource.comment.md", "src/Llyn.Infrastructure/Pronunciation/Loader/LSourceLoader.comment.md"],
+    ["tests/Llyn.Internal/Pronunciation/TAnatomyTone.comment.md", "tests/Llyn.Internal/Pronunciation/TDescent.comment.md"],
+    ["tests/Llyn.Internal/Pronunciation/TAnatomyTone.cs", "tests/Llyn.Internal/Pronunciation/TDescent.cs"]
+  ]
+}

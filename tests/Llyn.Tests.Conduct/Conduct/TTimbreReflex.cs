@@ -28,7 +28,7 @@ public sealed class TTimbreReflex
                 ]));
         List<object?[]?> checks = [];
         List<object?[]?> formats = [];
-        CTimbre timbre = TInterfaceConduct.TTimbreCreate(
+        CTimbre timbre = TInterfaceConductSound.TTimbreCreate(
             editor,
             TTimbreGuisePrepare(),
             TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
@@ -88,7 +88,7 @@ public sealed class TTimbreReflex
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TTimbreReflexPrepare(engine, null);
-        CTimbre timbre = TInterfaceConduct.TTimbreCreate(
+        CTimbre timbre = TInterfaceConductSound.TTimbreCreate(
             editor, TTimbreGuisePrepare(), TEngineFake.TEngineStubCreate<LDraftPort>());
 
         CTimbreReflex reflex = timbre.CTimbreReflexRead();
@@ -107,7 +107,7 @@ public sealed class TTimbreReflex
             engine,
             TTimbreReflexSave(
                 engine, "water", "English", [TInterface.TReflexDraftCreate("Korean", string.Empty, "a")]));
-        CTimbre timbre = TInterfaceConduct.TTimbreCreate(
+        CTimbre timbre = TInterfaceConductSound.TTimbreCreate(
             editor, TTimbreGuisePrepare(), TEngineFake.TEngineStubCreate<LDraftPort>());
 
         CTimbreReflex reflex = timbre.CTimbreReflexRead();
@@ -250,7 +250,7 @@ public sealed class TTimbreReflex
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TTimbreReflexPrepare(engine, TTimbreReflexSave(engine));
         long first = TTimbreReflexRead(editor)[0].CReflexId;
-        CTimbre respelled = TInterfaceConduct.TTimbreCreate(
+        CTimbre respelled = TInterfaceConductSound.TTimbreCreate(
             editor, TTimbreGuisePrepare(true), TEngineFake.TEngineStubCreate<LDraftPort>());
 
         Assert.Empty(respelled.CTimbreReflexSet(first, CReflexField.CReflexFieldText, "sü").CReflexTypedHeads);
@@ -267,7 +267,7 @@ public sealed class TTimbreReflex
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TTimbreReflexPrepare(engine, TTimbreReflexSave(engine));
         long first = TTimbreReflexRead(editor)[0].CReflexId;
-        CTimbre plain = TInterfaceConduct.TTimbreCreate(
+        CTimbre plain = TInterfaceConductSound.TTimbreCreate(
             editor, TTimbreGuisePrepare(), TEngineFake.TEngineStubCreate<LDraftPort>());
 
         Assert.Empty(plain.CTimbreReflexSet(first, CReflexField.CReflexFieldText, "sɿ").CReflexTypedHeads);
@@ -317,7 +317,7 @@ public sealed class TTimbreReflex
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TTimbreReflexPrepare(engine, TTimbreReflexSave(engine));
         long first = TTimbreReflexRead(editor)[0].CReflexId;
-        CTimbre timbre = TInterfaceConduct.TTimbreCreate(
+        CTimbre timbre = TInterfaceConductSound.TTimbreCreate(
             editor, TTimbreGuisePrepare(), TEngineFake.TEngineStubCreate<LDraftPort>());
         List<CReflexTyped> typed = [];
         editor.CEditorDesk.CDeskDraftChanged += _ =>
@@ -348,7 +348,7 @@ public sealed class TTimbreReflex
     private static IReadOnlyList<CReflex> TTimbreReflexRead(CEditor editor)
     {
         editor.CEditorDesk.CDeskPersist();
-        return TInterfaceConduct
+        return TInterfaceConductSound
             .TTimbreCreate(editor, TTimbreGuisePrepare(), TEngineFake.TEngineStubCreate<LDraftPort>())
             .CTimbreReflexRead()
             .CTimbreReflexRows;

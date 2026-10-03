@@ -104,8 +104,8 @@ public sealed class TDraftClerk
         LDraft entry = TInterface.TDraftNestedCreate("Input", "kindle");
         LDraft example = entry with
         {
-            LDraftExample = TInterface.TExampleCreate(
-                0, "English", TInterface.TStateValueCreate("a cat"), null, TInterface.TStateAnchorRead(null)),
+            LDraftExample = TInterfaceExample.TExampleCreate(
+                0, "English", TInterfaceState.TStateValueCreate("a cat"), null, TInterfaceState.TStateAnchorRead(null)),
         };
 
         LDraft glossed = clerk.TDraftClerkApply(

@@ -62,7 +62,7 @@ public sealed class TEstablishment
     public void EstablishmentAmount_AnySize_CountsMegabytesFromOneAndKilobytesRoundedUp(
         long size, bool large, double amount)
     {
-        LEstablishment establishment = TInterface.TEstablishmentCreate(0, 1, size);
+        LEstablishment establishment = TInterfaceEngineWorkspace.TEstablishmentCreate(0, 1, size);
 
         Assert.Equal(large, establishment.LEstablishmentLarge);
         Assert.Equal(amount, establishment.LEstablishmentAmount);

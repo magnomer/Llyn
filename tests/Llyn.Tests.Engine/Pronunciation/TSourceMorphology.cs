@@ -56,19 +56,19 @@ public sealed class TSourceMorphology
 
     private static LSource TSourceMorphologyCreate(string body, HttpStatusCode status, string? confirm)
     {
-        LSourceAttempt attempt = TInterface.TSourceAttemptCreate(
+        LSourceAttempt attempt = TInterfaceSource.TSourceAttemptCreate(
             [TPronunciationHelper.TPronunciationHelperUrl],
             [
-                TInterface.TSourceReadingCreate("5", "regex", TSourceMorphologyPast, 1, null, false, 0),
-                TInterface.TSourceReadingCreate("6", "regex", TSourceMorphologyParticiple, 1, null, false, 0),
-                TInterface.TSourceReadingCreate("2", "regex", TSourceMorphologyPlural, 1, null, false, 0),
+                TInterfaceSource.TSourceReadingCreate("5", "regex", TSourceMorphologyPast, 1, null, false, 0),
+                TInterfaceSource.TSourceReadingCreate("6", "regex", TSourceMorphologyParticiple, 1, null, false, 0),
+                TInterfaceSource.TSourceReadingCreate("2", "regex", TSourceMorphologyPlural, 1, null, false, 0),
             ],
             confirm,
             null,
             null);
 
-        return TInterface.TSourceGenericCreate(
-            TInterface.TSourceSpecCreate("Wiktionary", [attempt]),
+        return TInterfaceSource.TSourceGenericCreate(
+            TInterfaceSource.TSourceSpecCreate("Wiktionary", [attempt]),
             TPronunciationHelper.TSourceClientCreate(body, status));
     }
 }

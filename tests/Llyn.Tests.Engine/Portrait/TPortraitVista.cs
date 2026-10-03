@@ -51,7 +51,7 @@ public sealed class TPortraitVista
         using LEngine engine = workspace.TWorkspaceEngineStart();
         TPress press = workspace.TWorkspacePress;
         LExample example = engine.TEngineExampleCreate(
-            TInterface.TExampleCreate(0, "English", "Water flows.", null, LStateAnchor.LStateAnchorUnspecified));
+            TInterfaceExample.TExampleCreate(0, "English", "Water flows.", null, LStateAnchor.LStateAnchorUnspecified));
         LVista vista = engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText);
         vista.TVistaSelect(example.LExampleId);
         await engine.TEnginePortraitPrint(

@@ -40,6 +40,18 @@
     measuring program is measured again, and so is a version whose commit
     changed.
 
+    Lineage links one type to another where git renamed a source file between
+    two consecutive versions and the project folder or the file stem changed:
+    the listed type the old stem names in the old project, listed before that
+    version, links to the listed type the new stem names in the new project,
+    listed from that version on. A stem names the longest listed type name
+    that begins it and ends at its end or before a capital, so PCorpusBrowse
+    names PCorpus. The renames come from
+    AuditHistory.lineage.ps1 and stay in the lineage folder named in
+    AuditObjectHistory.json, apart from the measure records, so no lineage
+    change measures a version again. The page's Lineage checkbox gives every
+    type linked this way, directly or through others, one shared color.
+
     All records, sorted by version, are then placed into the page template
     AuditObjectHistory.html, written as {prefix}{version}.html into the report
     folder named in AuditObjectHistory.json, and opened in the default browser. The page charts every flag count and
@@ -62,6 +74,7 @@
     Measure every version again.
 #>
 #requires -Version 5.1
+# AUDITOBJECTHISTORY - AUDIT GENERATION 19.
 [CmdletBinding()]
 param(
     [switch]$Rebuild,
@@ -77,6 +90,8 @@ if ($Help) {
     Get-Help -Name $PSCommandPath -Detailed
     return
 }
+
+Write-Host 'AUDITOBJECTHISTORY - AUDIT GENERATION 19' -ForegroundColor Blue
 
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
@@ -98,6 +113,7 @@ if ($sourceRoots.Count -eq 0 -or $packs.Count -eq 0) {
 
 $repository = ([string]$config.repository).Trim()
 $recordsPath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ([string]$config.records)))
+$lineagePath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ([string]$config.lineage.records)))
 $framework = [string]$objectConfig.helper.framework
 $projectName = [string]$objectConfig.project
 $objectTerms = @('Hydra', 'Kraken', 'Spider', 'Chameleon', 'Octopus', 'Centipede', 'Serpent', 'Hub', 'Colony')
@@ -911,13 +927,122 @@ function ConvertTo-JsonText {
     return '"' + $Value.Replace('\', '\\').Replace('"', '\"') + '"'
 }
 
+. (Join-Path $PSScriptRoot 'AuditHistory.lineage.ps1')
+
+# Whether a type namespace belongs to a project folder name: the same name, or one nested in the other.
+function Test-LineageNamespace {
+    param(
+        [Parameter(Mandatory = $true)][AllowEmptyString()][string]$Namespace,
+        [Parameter(Mandatory = $true)][string]$Project
+    )
+
+    return $Namespace -ceq $Project -or $Namespace.StartsWith($Project + '.', [System.StringComparison]::Ordinal) -or
+        $Project.StartsWith($Namespace + '.', [System.StringComparison]::Ordinal)
+}
+
+# Whether a project folder such as src/Llyn.Core lies under a source root.
+function Test-LineageSource {
+    param([Parameter(Mandatory = $true)][string]$Project)
+
+    foreach ($root in $sourceRoots) {
+        if ($Project.StartsWith($root + '/', [System.StringComparison]::OrdinalIgnoreCase)) { return $true }
+    }
+    return $false
+}
+
+# The listed types a file stem names: the longest listed type name that begins the stem and ends at its end or
+# before a capital, in a namespace of the project, kept when Keep accepts it. PCorpusBrowse names PCorpus.
+function Find-LineageType {
+    param(
+        [Parameter(Mandatory = $true)][hashtable]$ByShort,
+        [Parameter(Mandatory = $true)][string]$Stem,
+        [Parameter(Mandatory = $true)][string]$Project,
+        [Parameter(Mandatory = $true)][scriptblock]$Keep
+    )
+
+    for ($length = $Stem.Length; $length -gt 0; $length--) {
+        if ($length -lt $Stem.Length -and -not [char]::IsUpper($Stem[$length])) { continue }
+        $short = $Stem.Substring(0, $length)
+        if (-not $ByShort.ContainsKey($short)) { continue }
+        $found = @($ByShort[$short] | Where-Object { (Test-LineageNamespace -Namespace $_.Namespace -Project $Project) -and (& $Keep $_) })
+        if ($found.Count -gt 0) { return , $found }
+    }
+    return , @()
+}
+
+# The type links: a renamed source file whose project or stem changed links the listed type its old stem names in
+# the old project, listed before that version, to the listed type its new stem names in the new project, listed
+# from that version on.
+function Get-LineageLink {
+    param(
+        [Parameter(Mandatory = $true)][System.Collections.Generic.List[object]]$Records,
+        [Parameter(Mandatory = $true)][System.Collections.Generic.List[object]]$Lineage
+    )
+
+    $sorted = @($Records | Sort-Object -Property @{ Expression = { [version]$_.Version } })
+    $position = @{}
+    $types = @{}
+    for ($i = 0; $i -lt $sorted.Count; $i++) {
+        $position[$sorted[$i].Version] = $i
+        foreach ($match in [System.Text.RegularExpressions.Regex]::Matches($sorted[$i].Measure, '"name":"(?<name>[^"]+)"')) {
+            $name = $match.Groups['name'].Value
+            if ($types.ContainsKey($name)) { $types[$name].Last = $i; continue }
+            $cut = $name.LastIndexOf('.')
+            $types[$name] = [pscustomobject]@{ Name = $name; Namespace = $(if ($cut -lt 0) { '' } else { $name.Substring(0, $cut) }); Short = $name.Substring($cut + 1); First = $i; Last = $i }
+        }
+    }
+    $byShort = @{}
+    foreach ($type in $types.Values) {
+        if (-not $byShort.ContainsKey($type.Short)) { $byShort[$type.Short] = [System.Collections.Generic.List[object]]::new() }
+        $byShort[$type.Short].Add($type)
+    }
+
+    $links = [System.Collections.Generic.List[object]]::new()
+    $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    foreach ($step in $Lineage) {
+        if (-not $position.ContainsKey($step.Version)) { continue }
+        $at = [int]$position[$step.Version]
+        foreach ($move in $step.Moves) {
+            if (-not $move.From.EndsWith('.cs', [System.StringComparison]::OrdinalIgnoreCase) -or -not $move.To.EndsWith('.cs', [System.StringComparison]::OrdinalIgnoreCase)) { continue }
+            $fromProject = Get-LineageProject -Relative $move.From
+            $toProject = Get-LineageProject -Relative $move.To
+            if ($null -eq $fromProject -or $null -eq $toProject -or -not (Test-LineageSource -Project $fromProject) -or -not (Test-LineageSource -Project $toProject)) { continue }
+            $fromStem = Get-LineageStem -Relative $move.From
+            $toStem = Get-LineageStem -Relative $move.To
+            $fromName = $fromProject.Substring($fromProject.IndexOf('/') + 1)
+            $toName = $toProject.Substring($toProject.IndexOf('/') + 1)
+            $olds = Find-LineageType -ByShort $byShort -Stem $fromStem -Project $fromName -Keep { param($type) $type.First -lt $at }
+            if ($olds.Count -eq 0) { continue }
+            $news = Find-LineageType -ByShort $byShort -Stem $toStem -Project $toName -Keep { param($type) $type.Last -ge $at }
+            foreach ($old in $olds) {
+                foreach ($new in $news) {
+                    if ($new.Name -ceq $old.Name) { continue }
+                    if (-not $seen.Add($old.Name + "`n" + $new.Name)) { continue }
+                    $links.Add([pscustomobject]@{ Version = $step.Version; From = $old.Name; To = $new.Name })
+                }
+            }
+        }
+    }
+    return , $links
+}
+
 # The page data: every record sorted by version, under the current rules, thresholds, ceilings and parts ledger.
 function Get-PageRecordText {
-    param([Parameter(Mandatory = $true)][System.Collections.Generic.List[object]]$Records)
+    param(
+        [Parameter(Mandatory = $true)][System.Collections.Generic.List[object]]$Records,
+        [Parameter(Mandatory = $true)][AllowEmptyCollection()][System.Collections.Generic.List[object]]$Links
+    )
 
     $sorted = @($Records | Sort-Object -Property @{ Expression = { [version]$_.Version } })
     $builder = [System.Text.StringBuilder]::new()
     [void]$builder.Append("{`n  `"rules`": " + (ConvertTo-JsonText $rules) + ",`n")
+    [void]$builder.Append('  "lineage": { "links": [')
+    for ($i = 0; $i -lt $Links.Count; $i++) {
+        $link = $Links[$i]
+        [void]$builder.Append($(if ($i -eq 0) { "`n" } else { ",`n" }))
+        [void]$builder.Append('    { "version": ' + (ConvertTo-JsonText $link.Version) + ', "from": ' + (ConvertTo-JsonText $link.From) + ', "to": ' + (ConvertTo-JsonText $link.To) + ' }')
+    }
+    [void]$builder.Append($(if ($Links.Count -eq 0) { "] },`n" } else { "`n  ] },`n" }))
     [void]$builder.Append('  "thresholds": ' + ($objectConfig.thresholds | ConvertTo-Json -Compress -Depth 4) + ",`n")
     [void]$builder.Append('  "ceiling": ' + ($objectConfig.ceiling | ConvertTo-Json -Compress -Depth 4) + ",`n")
     [void]$builder.Append('  "parts": ' + ($objectConfig.parts | ConvertTo-Json -Compress -Depth 4) + ",`n")
@@ -1090,8 +1215,11 @@ $versionCount = $records.Count
 if ($versionCount -eq 0) {
     throw "The records hold no versions: $recordsPath"
 }
+$lineage = Update-Lineage -Root $localRoot -Folder $lineagePath -VersionMap $versionMap
+$links = Get-LineageLink -Records $records -Lineage $lineage
+Write-Host "Lineage links: $($links.Count) between types."
 $utf8 = [System.Text.UTF8Encoding]::new($false)
-$recordText = Get-PageRecordText -Records $records
+$recordText = Get-PageRecordText -Records $records -Links $links
 $pageTitle = $repository.Split('/')[-1]
 $template = [System.IO.File]::ReadAllText($templatePath, $utf8)
 foreach ($marker in @('/*__DATA__*/', '__TITLE__', '__AUDITPAGE__')) {

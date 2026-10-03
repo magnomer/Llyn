@@ -65,7 +65,7 @@ AuditObject.json, a missing ceiling key included, and refuses a configuration at
 generation. The test reads a missing ceiling key as 0, so that flag's fact fails once the flag
 has a hit. A missing limit key throws on both sides.
 
-Binding goes through the shared binder of auditbinder.cs and auditbinder.json: the tracked
+Binding goes through the shared binder of AuditBinder.cs and AuditBinder.json: the tracked
 sources, the generated code and the host build output, with no compile error allowed. The
 solution must be built first. The scope line counts the listed source files the binder walked.
 The helper targets helper.framework, the framework of the convention tests, and is compiled
@@ -113,7 +113,7 @@ AuditObject -ReportDirectory D:\temp\audit -Top 10 -Open -NoOpen
 Write the reports elsewhere, show ten rows per list, open the Markdown report but not the page.
 #>
 #requires -Version 5.1
-# AUDITOBJECT GENERATION 19 - AuditObject.ps1.
+# AUDITOBJECT - AUDIT GENERATION 19.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -259,7 +259,7 @@ function Write-AuditLine {
     }
 }
 
-Write-AuditLine "AUDITOBJECT GENERATION $script:AuditGeneration" -ForegroundColor Blue
+Write-AuditLine "AUDITOBJECT - AUDIT GENERATION $script:AuditGeneration" -ForegroundColor Blue
 $script:PathSeparators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
 
 function Resolve-ProjectRoot {
@@ -1273,7 +1273,7 @@ function Get-HelperBinary {
     }
 
     $sdkVersion = ([string]($sdkOutput | Select-Object -First 1)).Trim()
-    $binderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
+    $binderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'AuditBinder.cs'))
     $sha = [System.Security.Cryptography.SHA256]::Create()
     try {
         $seed = $script:HelperProject + "`n" + $script:HelperProgram + "`n" + $binderSource + "`n" + $TargetFramework + "`n" + $sdkVersion
@@ -1361,7 +1361,7 @@ try {
         $version,
         $reportPath,
         $Top,
-        (Join-Path $PSScriptRoot 'auditbinder.json'),
+        (Join-Path $PSScriptRoot 'AuditBinder.json'),
         $pageDataPath
     )
 

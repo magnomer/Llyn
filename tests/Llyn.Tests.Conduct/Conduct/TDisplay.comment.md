@@ -1,5 +1,5 @@
 # TDisplay.cs
-Hash: `baab45553967b5fd`
+Hash: `a5e4ef2949477d66`
 
 ## `public sealed class TDisplay`
 
@@ -16,11 +16,10 @@ Clearing a shown draft drops both the draft and its entry.
 ## `public void DisplayReflexRead_LoadedReflex_PrefersIt()`
 
 The stored reflexes loaded for the shown entry win over the shown draft's empty ones.
-A refused draft load stays untested, since no seam fails the entry load.
 
 ## `public void DisplayFrequencyRead_NoEntry_ReturnsNone()`
 
-A fresh draft has no entry, so no frequency chip shows.
+With no entry given, no frequency chip shows.
 
 ## `public void DisplayFrequencyRead_EntryWithoutFrequency_ReturnsNone()`
 
@@ -28,9 +27,9 @@ A stored entry no source has ranked shows no chip.
 
 ## `public void DisplayCompassRead_ShownCards_NamesEachPartAndCardAndNumbersTwins()`
 
-The lookup echoes each key but the collocation one, so every other wording key Conduct chose shows in the names.
+The lookup echoes each key but the collocation one, so every other wording key shows in the names.
 A titled card keeps its title, an untitled one its kind, and an uncertain one the unknown mark.
-The collocation kind is looked up to the meaning wording, so the engine numbers the two twins.
+The collocation kind is looked up to the meaning wording, so the two twins carry one name and are numbered.
 Each card carries its number, its depth and its place in its section's list.
 
 ## `public void DisplayCompassRead_NothingShown_NamesOnlyTheParts()`

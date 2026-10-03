@@ -16,8 +16,8 @@ public sealed class TIdentity
         LDraft started = engine.TEngineDraftStart("editor", null);
         LEntryDraft stored = engine.TRequestContentApply(started.LDraftId, TIdentityContentCreate(
                 [
-                    TInterface.TSentenceDraftCreate("she knelt to kindle the damp logs"),
-                    TInterface.TSentenceDraftCreate("she knelt to kindle the damp logs"),
+                    TInterfaceExample.TSentenceDraftCreate("she knelt to kindle the damp logs"),
+                    TInterfaceExample.TSentenceDraftCreate("she knelt to kindle the damp logs"),
                 ])).LDraftContent;
 
         IReadOnlyList<LSentenceDraft> sentences = stored.LEntryDraftMeanings[0].LCardDraftSentence;
@@ -45,18 +45,18 @@ public sealed class TIdentity
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LExample example = engine.TEngineExampleCreate(TInterface.TExampleCreate(
+        LExample example = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
             0,
             "English",
-            TInterface.TStateValueCreate("the speech kindled a hope"),
+            TInterfaceState.TStateValueCreate("the speech kindled a hope"),
             LStateValue.LStateValueUnspecified,
-            TInterface.TStateAnchorRead(null)));
+            TInterfaceState.TStateAnchorRead(null)));
 
         LDraft started = engine.TEngineDraftStart("editor", null);
         LEntryDraft stored = engine.TRequestContentApply(started.LDraftId, TIdentityContentCreate(
                 [
-                    TInterface.TSentenceDraftCreate(
-                        example.LExampleText, example.LExampleId, TInterface.TStateAnchorRead(null)),
+                    TInterfaceExample.TSentenceDraftCreate(
+                        example.LExampleText, example.LExampleId, TInterfaceState.TStateAnchorRead(null)),
                 ])).LDraftContent;
 
         LSentenceDraft sentence = Assert.Single(stored.LEntryDraftMeanings[0].LCardDraftSentence);
@@ -79,7 +79,7 @@ public sealed class TIdentity
 
         LDraft started = engine.TEngineDraftStart("editor", null);
         LEntryDraft content = TIdentityContentCreate(
-            [TInterface.TSentenceDraftCreate("he kindled the dry brush")]);
+            [TInterfaceExample.TSentenceDraftCreate("he kindled the dry brush")]);
         LCardDraft card = content.LEntryDraftMeanings[0] with
         {
             LCardDraftSituation = [TInterface.TSituationDraftCreate("story telling")],
@@ -129,7 +129,7 @@ public sealed class TIdentity
 
         LSituation stored = engine.TEngineSituationCreate(TInterface.TSituationCreate(
             0,
-            TInterface.TStateValueCreate("story telling"),
+            TInterfaceState.TStateValueCreate("story telling"),
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified));
 
@@ -155,7 +155,7 @@ public sealed class TIdentity
 
         LSituation situation = engine.TEngineSituationCreate(TInterface.TSituationCreate(
             0,
-            TInterface.TStateValueCreate("Story telling"),
+            TInterfaceState.TStateValueCreate("Story telling"),
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified));
 
@@ -195,7 +195,7 @@ public sealed class TIdentity
             TInterface.TIdentityCreate(),
             "editor",
             0,
-            TIdentityContentCreate([TInterface.TSentenceDraftCreate("he kindled the dry brush")]),
+            TIdentityContentCreate([TInterfaceExample.TSentenceDraftCreate("he kindled the dry brush")]),
             DateTimeOffset.UtcNow);
 
         Assert.Throws<InvalidOperationException>(() =>
@@ -211,9 +211,9 @@ public sealed class TIdentity
             string.Empty,
             [
                 TInterface.TCardDraftCreate(
-                    TInterface.TStateValueCreate("set alight"),
+                    TInterfaceState.TStateValueCreate("set alight"),
                     LStateValue.LStateValueUnspecified,
-                    TInterface.TStateValueCreate("to set something burning"),
+                    TInterfaceState.TStateValueCreate("to set something burning"),
                     sentences,
                     [],
                     [],

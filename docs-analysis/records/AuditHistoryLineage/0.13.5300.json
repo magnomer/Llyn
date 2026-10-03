@@ -1,0 +1,15 @@
+{
+  "version": "0.13.5300",
+  "commit": "31ed90aa92deded101a73f336398838216b48e25",
+  "previous": "0.13.5250",
+  "previousCommit": "880b494bf8a6d20a8dfaf703421d6b069f2ac565",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.Core/Configuration/LLayout.comment.md", "src/Llyn.ShellEngine/LLayout.comment.md"],
+    ["src/Llyn.Core/Configuration/LLayout.cs", "src/Llyn.ShellEngine/LLayout.cs"],
+    ["src/Llyn.Core/Configuration/LWindowState.comment.md", "src/Llyn.ShellEngine/LWindowState.comment.md"],
+    ["src/Llyn.Core/Configuration/LWindowState.cs", "src/Llyn.ShellEngine/LWindowState.cs"],
+    ["src/Llyn.Infrastructure/Portrait/LTheme.comment.md", "src/Llyn.Core/Portrait/LTheme.comment.md"],
+    ["src/Llyn.Infrastructure/Portrait/LTheme.cs", "src/Llyn.Core/Portrait/LTheme.cs"]
+  ]
+}

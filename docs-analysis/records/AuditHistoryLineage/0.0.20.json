@@ -1,0 +1,12 @@
+{
+  "version": "0.0.20",
+  "commit": "56eeb62e258b5cd6475674f9e4ec583dd010cc88",
+  "previous": "0.0.2",
+  "previousCommit": "9d8de967e5bde7877c5081797df3e6ae31e5488f",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.Core/Pronunciation/IPronunciationLookup.cs", "src/Llyn.Core/Pronunciation/LSeeker.cs"],
+    ["src/Llyn.Core/Pronunciation/IPronunciationReceiver.cs", "src/Llyn.Core/Pronunciation/LReceiver.cs"],
+    ["src/Llyn.Core/Pronunciation/IPronunciationSource.cs", "src/Llyn.Core/Pronunciation/LSource.cs"]
+  ]
+}

@@ -72,11 +72,11 @@
     "top": 25
   },
   "history": {
-    "records": "audit/records/AuditObjectHistory",
+    "records": "docs-analysis/records/AuditObjectHistory",
     "pagePrefix": "AuditObjectHistory-"
   },
   "report": {
-    "directory": "audit",
+    "directory": "docs-analysis",
     "versionFile": "version.json",
     "versionKey": "current-version",
     "prefix": "AuditObject-"

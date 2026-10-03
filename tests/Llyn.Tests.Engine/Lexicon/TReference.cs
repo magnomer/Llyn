@@ -13,8 +13,8 @@ public sealed class TReference
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LReference reference = TReferenceCreate(engine, "A Dictionary");
-        LExample example = engine.TEngineExampleCreate(TInterface.TExampleCreate(
-            0, "English", "he said the word", null, TInterface.TStateAnchorRead(reference.LReferenceId)));
+        LExample example = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
+            0, "English", "he said the word", null, TInterfaceState.TStateAnchorRead(reference.LReferenceId)));
 
         Assert.Throws<InvalidOperationException>(() =>
             engine.TEngineReferenceDelete(reference.LReferenceId, false));
@@ -65,8 +65,8 @@ public sealed class TReference
     {
         return engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
             0,
-            TInterface.TStateValueCreate(title),
-            TInterface.TStateValueCreate("1998"),
+            TInterfaceState.TStateValueCreate(title),
+            TInterfaceState.TStateValueCreate("1998"),
             LReferenceKind.LReferenceKindUnspecified,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
@@ -90,10 +90,10 @@ public sealed class TReference
                 TInterface.TCardDraftCreate(
                     string.Empty, string.Empty, "a meaning",
                     [
-                        TInterface.TSentenceDraftCreate(
-                            "he said the word", 0, TInterface.TStateAnchorRead(dictionary.LReferenceId)),
-                        TInterface.TSentenceDraftCreate(
-                            "not a word was spoken", 0, TInterface.TStateAnchorRead(dictionary.LReferenceId)),
+                        TInterfaceExample.TSentenceDraftCreate(
+                            "he said the word", 0, TInterfaceState.TStateAnchorRead(dictionary.LReferenceId)),
+                        TInterfaceExample.TSentenceDraftCreate(
+                            "not a word was spoken", 0, TInterfaceState.TStateAnchorRead(dictionary.LReferenceId)),
                     ],
                     [], [], [], [], 1),
             ],
@@ -101,8 +101,8 @@ public sealed class TReference
                 TInterface.TCardDraftCreate(
                     string.Empty, "in a word", "briefly",
                     [
-                        TInterface.TSentenceDraftCreate(
-                            "in a word, no", 0, TInterface.TStateAnchorRead(dictionary.LReferenceId)),
+                        TInterfaceExample.TSentenceDraftCreate(
+                            "in a word, no", 0, TInterfaceState.TStateAnchorRead(dictionary.LReferenceId)),
                     ],
                     [], [], [], [], 1),
             ]));
@@ -169,10 +169,10 @@ public sealed class TReference
                 TInterface.TCardDraftCreate(
                     string.Empty, string.Empty, "a meaning",
                     [
-                        TInterface.TSentenceDraftCreate(
-                            "he said the word", 0, TInterface.TStateAnchorRead(dictionary.LReferenceId)),
-                        TInterface.TSentenceDraftCreate(
-                            "not a word was spoken", 0, TInterface.TStateAnchorRead(dictionary.LReferenceId)),
+                        TInterfaceExample.TSentenceDraftCreate(
+                            "he said the word", 0, TInterfaceState.TStateAnchorRead(dictionary.LReferenceId)),
+                        TInterfaceExample.TSentenceDraftCreate(
+                            "not a word was spoken", 0, TInterfaceState.TStateAnchorRead(dictionary.LReferenceId)),
                     ],
                     [], [], [], [], 1),
             ],
@@ -180,8 +180,8 @@ public sealed class TReference
                 TInterface.TCardDraftCreate(
                     string.Empty, "in a word", "briefly",
                     [
-                        TInterface.TSentenceDraftCreate(
-                            "in a word, no", 0, TInterface.TStateAnchorRead(grammar.LReferenceId)),
+                        TInterfaceExample.TSentenceDraftCreate(
+                            "in a word, no", 0, TInterfaceState.TStateAnchorRead(grammar.LReferenceId)),
                     ],
                     [], [], [], [], 1),
             ]));

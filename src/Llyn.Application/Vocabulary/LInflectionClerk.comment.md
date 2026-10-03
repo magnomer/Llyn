@@ -7,17 +7,18 @@ The clerk over the inflected forms an Entry owns.
 Each carries the ordered grammatical features that say what form it is.
 Unlike a Tag or an Example, an inflection is not independent data.
 It belongs to its Entry and is identified by its place in that Entry's list.
-That is why these seams are keyed by the Entry and a position, not by an id of their own.
+That is why these seams are keyed by the Entry, not by an id of their own.
 
 The update makes the stored list the list the draft holds, which is what an editor showing every form does.
 
 The clerk deletes the Entry's lacuna rows when a hand edit invalidates them.
 Cancelling the fetch that may still be filling them is the engine's, since the engine owns the task.
 
-## `public LInflectionClerk(LRig rig, LParadigmClerk paradigms)`
+## `public LInflectionClerk(LRig rig)`
 
 Reads the inflection, lacuna, morphology and speech ports out of `rig`.
-The regular flag is judged by the paradigm clerk, which the entry save calls after its writes.
+The regular flag is not judged here.
+The entry save asks the paradigm clerk for it after its writes.
 
 ## `public void LInflectionClerkValidate(IReadOnlyList<LInflection> inflections)`
 

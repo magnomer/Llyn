@@ -338,7 +338,7 @@ The audits and convention tests measure the lag as falling ceilings.
 ## Test projects
 
 The projects under `tests` are left out on purpose.
-`scripts/test.ps1` finds, builds and runs them from the tests folder instead.
+`scripts/Test.ps1` finds, builds and runs them from the tests folder instead.
 `Llyn.Tests.Interface` holds the relays, fakes and workspace, and references Core, Infrastructure, ShellEngine and Conduct.
 `Llyn.Tests.Engine` tests Core, Application, Infrastructure and ShellEngine, and references only `Llyn.Tests.Interface`.
 `Llyn.Tests.Conduct` tests the Conduct gates, and references only `Llyn.Tests.Interface`.
@@ -348,5 +348,5 @@ The projects under `tests` are left out on purpose.
 ## Performance project
 
 `performance/Llyn.Performance` is left out on purpose too.
-It holds the drills, fixed workloads that `scripts/performance.ps1` builds and runs under the sampling profiler.
+It holds the drills, fixed workloads that `scripts/TracePerformance.ps1` builds and runs under the sampling profiler.
 It references portable engine projects only, never a UI project.

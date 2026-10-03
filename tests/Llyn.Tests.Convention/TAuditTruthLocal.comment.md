@@ -1,9 +1,9 @@
 # TAuditTruthLocal.cs
-Hash: `633bee879d0ec056`
+Hash: `64b5e23f06efa75b`
 
 ## `internal static partial class TAuditTruthWalker`
 
-The local half of the truth walker: what a member may not do with an engine answer it briefly holds.
+The local half of the truth walker, covering what a member may not do with an engine answer it holds.
 A Conduct type's member is an answer too, since a gate's verdict may not decide the next request.
 
 ## `private static void TAuditToggleCheck(`

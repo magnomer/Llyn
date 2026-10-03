@@ -1,5 +1,5 @@
 # TState.cs
-Hash: `a4653c5097c0b15e`
+Hash: `40a7ada7b5110e57`
 
 ## `public sealed class TState`
 
@@ -45,3 +45,13 @@ Any other text states itself.
 
 A field holding only whitespace is stored, loaded, and mapped again by the same rule.
 What comes back maps to what was sent, so the editor holding it is not dirty.
+
+## `public void EntryLoad_BrokenStateWord_ReadsUnreadableAndRefusesSave()`
+
+A stored state word the program does not know loads as an unreadable field that shows its stored word.
+Saving that draft back is refused, so a damaged field is never silently overwritten.
+
+## `public void DraftNormalize_UnreadableField_DropsItAndCommits()`
+
+A draft holding an unreadable field refuses to commit until the sweep drops that field to unspecified.
+After the sweep the commit succeeds and writes the field as unspecified.

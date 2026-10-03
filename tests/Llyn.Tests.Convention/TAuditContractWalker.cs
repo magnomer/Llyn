@@ -81,7 +81,7 @@ internal static class TAuditContractWalker
     {
         foreach (TypeDeclarationSyntax type in root.DescendantNodes().OfType<TypeDeclarationSyntax>())
         {
-            if (TAuditBinder.TAuditSymbolRead(type) is not INamedTypeSymbol symbol)
+            if (TAuditBinderSymbol.TAuditSymbolRead(type) is not INamedTypeSymbol symbol)
             {
                 continue;
             }

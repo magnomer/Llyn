@@ -28,6 +28,12 @@ Every panel starts one at launch, and a kill leaves ten such files behind each t
 Recovery never offers a blank one back, so nothing else would ever collect them.
 A draft naming no entry but holding text survives and is still offered back.
 
+## `public void WorkspaceStart_BlankDraftNamingNoEntry_SweepsItAndAnswersTheState()`
+
+Starting a workspace sweeps a blank draft that names no entry, so no leftover remains to offer.
+The state it answers equals a fresh read taken after the sweep.
+The shell reads that state at launch, so it must not predate the sweep.
+
 ## `public void LeftoverSweep_ClaimWithoutDraftFile_DropsIt()`
 
 A claim file whose draft is gone is deleted by the sweep.

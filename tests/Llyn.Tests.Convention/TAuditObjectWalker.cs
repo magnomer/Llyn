@@ -154,7 +154,7 @@ internal static class TAuditObjectWalker
                 .OfType<SimpleNameSyntax>();
             foreach (SimpleNameSyntax name in names)
             {
-                used.UnionWith(TAuditUseRead(TAuditBinder.TAuditSymbolRead(model, name)).Where(target =>
+                used.UnionWith(TAuditUseRead(TAuditBinderSymbol.TAuditSymbolRead(model, name)).Where(target =>
                     codebase.Contains(target)
                     && !SymbolEqualityComparer.Default.Equals(target, user)
                     && !TAuditNestCheck(user, target)));

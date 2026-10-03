@@ -1,5 +1,5 @@
 # TDraftSituation.cs
-Hash: `053245519d6d4c18`
+Hash: `25860dbb392ccf0b`
 
 ## `public sealed class TDraftSituation`
 
@@ -19,7 +19,7 @@ A commit that kept its file would offer saved work back at every launch.
 
 ## `public void LeftoverSweep_SituationMatchingStoredSituation_SweepsIt()`
 
-A draft matching the Situation it names is collected, and one differing from its own is kept.
+A draft matching the Situation it names is collected, and a draft naming no stored Situation is kept.
 A kill just after a commit leaves such a file.
 Only the sweep can tell it from work the user would lose.
 

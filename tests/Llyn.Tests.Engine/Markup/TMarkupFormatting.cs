@@ -80,7 +80,7 @@ public sealed class TMarkupFormatting
     public void MarkupFormat_EmptyLocal_RoundTripsEmpty()
     {
         LMarkupEntry entry = TInterface.TMarkupEntryCreate(
-            "ember", "en", [TInterface.TFormCreate(0, 0, "embers", string.Empty, "plural")]);
+            "ember", "en", [TInterfaceInflection.TFormCreate(0, 0, "embers", string.Empty, "plural")]);
 
         LMarkupEntry again = Assert.Single(TInterface.TMarkupParse(TInterface.TMarkupFormat([entry])));
 

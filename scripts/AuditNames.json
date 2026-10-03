@@ -167,5 +167,5 @@
       ]
     }
   },
-  "report": { "directory": "audit", "versionFile": "version.json", "versionKey": "current-version", "prefix": "AuditNames-" }
+  "report": { "directory": "docs-analysis", "versionFile": "version.json", "versionKey": "current-version", "prefix": "AuditNames-" }
 }

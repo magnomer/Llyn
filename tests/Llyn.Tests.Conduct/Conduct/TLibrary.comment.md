@@ -1,5 +1,5 @@
 # TLibrary.cs
-Hash: `e0eec34477e460cd`
+Hash: `85e8021e4a9b4c1a`
 
 ## `public sealed class TLibrary`
 
@@ -7,19 +7,18 @@ Covers the library panel's Conduct end to end on a real workspace.
 Its rows, query, order and filter follow the vista, which a fresh area already stands on.
 The empty verdict follows the last rows read.
 A chosen row is marked and reported as the station, and a deleted one reports zero again.
-The markup import asks for the file first, and a cancelled pick asks nothing more.
-It then asks the customs question once and stores under the declared rows.
-The question shows each entry with its ready targets, and a clean file reports nothing after.
-A merge row appends to its target, so the declared mode reaches the engine unchanged.
-A declined question stores nothing, and a malformed file shows the import failure.
 An entry jump through the navigation opens the entry in the area, asking nothing.
 A row click on the tab records the station it leaves, and an empty click records nothing.
+A row open with the scribe on opens the entry in the editor.
 A quit while editing asks once and stores the entry.
 The portrait export writes only a chosen entry, asks for the file, and shows the failure when the write fails.
 A new order of none keeps the order.
+The markup import lives in `TLibraryMarkup`.
 
-## `private static CEnvoy TLibraryEnvoyCreate(`
+## `internal static CLibrary TLibraryPrepare(CAtelier atelier, CEnvoy envoy)`
 
-An envoy that answers the file question with `file` and the customs question through `customs`.
-It records every question it is asked.
-`customs` drives the handed gate as a window would, then answers whether the user accepted.
+Builds the library panel over the atelier with the given envoy, and its marshal runs each notice at once.
+
+## `internal static LEntry TLibraryEntrySave(LEngine engine, string headword, string language)`
+
+Stores one entry with a single card under the headword and language.

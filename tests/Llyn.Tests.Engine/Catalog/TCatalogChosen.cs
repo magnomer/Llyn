@@ -11,11 +11,11 @@ public sealed class TCatalogChosen
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LStateValue text = TInterface.TStateValueCreate("same");
+        LStateValue text = TInterfaceState.TStateValueCreate("same");
         LExample example = engine.TEngineExampleCreate(
-            TInterface.TExampleCreate(0, "English", text, null, LStateAnchor.LStateAnchorUnspecified));
+            TInterfaceExample.TExampleCreate(0, "English", text, null, LStateAnchor.LStateAnchorUnspecified));
         engine.TEngineExampleCreate(
-            TInterface.TExampleCreate(0, "French", text, null, LStateAnchor.LStateAnchorUnspecified));
+            TInterfaceExample.TExampleCreate(0, "French", text, null, LStateAnchor.LStateAnchorUnspecified));
         LSituation situation = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, text, text, text));
         LReference reference = engine.TEngineCitationCreate("Source");
         LAuthor author = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Writer"));
@@ -56,8 +56,8 @@ public sealed class TCatalogChosen
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LStateValue unknown = LStateValue.LStateValueUnknown;
         LStateAnchor anchor = LStateAnchor.LStateAnchorUnspecified;
-        engine.TEngineExampleCreate(TInterface.TExampleCreate(0, "English", unknown, null, anchor));
-        engine.TEngineExampleCreate(TInterface.TExampleCreate(0, "French", unknown, null, anchor));
+        engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(0, "English", unknown, null, anchor));
+        engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(0, "French", unknown, null, anchor));
         LVista vista = engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText);
         Assert.Equal(["Unknown (1)", "Unknown (2)"], engine.TEngineExampleFind(vista, "Unknown", "Unwritten")
             .Select(row => row.LCatalogExampleName));

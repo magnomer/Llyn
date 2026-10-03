@@ -1,5 +1,5 @@
 # TEntryDraft.cs
-Hash: `2b80a1478e9c16d2`
+Hash: `e7076b12c7cffecf`
 
 ## `public sealed class TEntryDraft`
 
@@ -55,7 +55,17 @@ Bookkeeping the format deliberately does not carry is left out of the comparison
 
 Every table a card's content reaches, read whole rather than counted.
 A count would pass while a column quietly changed under it.
-The entry row is read by its named columns, because its timestamps move on every save by design.
+The entry row is read by its named columns, which leaves out its stamps and other bookkeeping.
+Its update stamp moves on every save by design, so a whole-row read would never match.
+
+### `private static LCardDraft TEntryCardCreate(string meaning, int position)`
+
+A bare card carrying only a meaning and a position.
+The tree tests need nothing else on it.
+
+### `private static LExampleDraft TEntryExampleRead(LSentenceDraft sentence)`
+
+The Example a sentence names, which these tests require to be there.
 
 ### `private static IReadOnlyList<string> TEntryTableRead(TWorkspace workspace)`
 

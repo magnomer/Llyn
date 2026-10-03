@@ -1,9 +1,10 @@
 # TEtymologyArchive.cs
-Hash: `3552443736aad621`
+Hash: `978f595216e4bddc`
 
 ## `public sealed class TEtymologyArchive`
 
-Covers the etymology store: the narrative row with its spans, the ordered source links, and who names an entry.
+Covers the etymology store, holding the narrative row with its spans and the ordered source links.
+It also covers what happens to both when a named entry is deleted.
 
 ## `public void EtymologySave_ProseWithSpans_ReadsThemBackInOrder()`
 
@@ -19,7 +20,7 @@ A span must fit the text, name an entry, and overlap no other, and a broken one 
 
 ## `public void EtymonSet_RepeatsSelfAndNothing_StoresTheRestInOrder()`
 
-Repeats, the entry itself and an empty id are skipped, and the rest are numbered from zero.
+Repeats, the entry itself and an empty id are skipped, and the rest keep their given order.
 
 ## `public void EtymonSet_EmptyList_ClearsEveryLink()`
 

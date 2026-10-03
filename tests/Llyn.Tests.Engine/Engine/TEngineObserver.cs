@@ -82,7 +82,7 @@ public sealed class TEngineObserver
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectExample, null);
         LTenureState before = tenure.TTenureStateRead();
         tenure.TTenureRequestApply(
-            TInterface.TExampleTextCreate(tenure.LTenureId, TInterface.TStateValueCreate("ember")));
+            TInterface.TExampleTextCreate(tenure.LTenureId, TInterfaceState.TStateValueCreate("ember")));
         LTenureState after = tenure.TTenureStateRead();
 
         Assert.NotSame(before, after);
@@ -101,7 +101,7 @@ public sealed class TEngineObserver
 
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectExample, null);
         tenure.TTenureRequestApply(
-            TInterface.TExampleTextCreate(tenure.LTenureId, TInterface.TStateValueCreate("ember")));
+            TInterface.TExampleTextCreate(tenure.LTenureId, TInterfaceState.TStateValueCreate("ember")));
         LTenureState before = tenure.TTenureStateRead();
         tenure.TTenureUndo();
         LTenureState after = tenure.TTenureStateRead();
@@ -122,14 +122,14 @@ public sealed class TEngineObserver
 
         LTenure first = engine.TEngineTenureStart("test", LSubject.LSubjectExample, null);
         first.TTenureRequestApply(
-            TInterface.TExampleTextCreate(first.LTenureId, TInterface.TStateValueCreate("ash")));
+            TInterface.TExampleTextCreate(first.LTenureId, TInterfaceState.TStateValueCreate("ash")));
         long stored = first.TTenureFinish(true)!.Value;
 
         LTenure watching = engine.TEngineTenureStart("test", LSubject.LSubjectExample, stored);
         LTenureState before = watching.TTenureStateRead();
         LTenure storing = engine.TEngineTenureStart("test", LSubject.LSubjectExample, stored);
         storing.TTenureRequestApply(
-            TInterface.TExampleTextCreate(storing.LTenureId, TInterface.TStateValueCreate("ember")));
+            TInterface.TExampleTextCreate(storing.LTenureId, TInterfaceState.TStateValueCreate("ember")));
         storing.TTenureFinish(true);
         LTenureState after = watching.TTenureStateRead();
 
@@ -148,7 +148,7 @@ public sealed class TEngineObserver
 
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectExample, null);
         tenure.TTenureRequestApply(
-            TInterface.TExampleTextCreate(tenure.LTenureId, TInterface.TStateValueCreate("ember")));
+            TInterface.TExampleTextCreate(tenure.LTenureId, TInterfaceState.TStateValueCreate("ember")));
         LTenureState before = tenure.TTenureStateRead();
         tenure.TTenureCancel();
         LTenureState after = tenure.TTenureStateRead();

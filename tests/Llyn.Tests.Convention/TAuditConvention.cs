@@ -8,7 +8,7 @@ public sealed class TAuditConvention
 
     public static string TAuditReportFormat(string audit, string report)
     {
-        return $"{audit} GENERATION {TAuditGeneration}\n{report}";
+        return $"{audit} - AUDIT GENERATION {TAuditGeneration}\n{report}";
     }
 
     [Fact]

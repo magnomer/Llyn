@@ -77,7 +77,7 @@ public sealed class TAuthorAbsorbing
     {
         return engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
             0,
-            TInterface.TStateValueCreate(title),
+            TInterfaceState.TStateValueCreate(title),
             LStateValue.LStateValueUnspecified,
             LReferenceKind.LReferenceKindUnspecified,
             LStateValue.LStateValueUnspecified,

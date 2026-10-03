@@ -198,6 +198,8 @@ tr.gone td { color: var(--ink-3); }
 .stroke { display: inline-block; flex: none; vertical-align: middle; }
 .picker button.action { border-style: dashed; }
 .empty { color: var(--ink-3); padding: 48px 0; text-align: center; }
+.lineage { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); font-size: 12px; cursor: pointer; padding: 6px 0; }
+.lineage input { margin: 0; accent-color: var(--ink-2); cursor: pointer; }
 .chip { font-size: 11px; color: var(--ink-2); border: 1px solid var(--ring); border-radius: 999px; padding: 0 6px; margin-left: 6px; }
 </style>
 </head>
@@ -227,6 +229,7 @@ tr.gone td { color: var(--ink-3); }
         <h2>By folder</h2>
         <div class="muted" id="foldernote"></div>
       </div>
+      <label class="lineage" title="Folders linked by renamed files share one color"><input type="checkbox" id="lineage">Lineage</label>
       <div class="segmented" role="group" aria-label="Folder view" id="foldermode"></div>
     </div>
     <div class="picker" id="picker"></div>
@@ -273,6 +276,30 @@ tr.gone td { color: var(--ink-3); }
     });
   });
   var folderList = Array.from(folders.values());
+
+  var lineage = raw.lineage || { share: 0, links: [] };
+  var parent = new Map();
+  function head(id) {
+    while (parent.has(id) && parent.get(id) !== id) id = parent.get(id);
+    return id;
+  }
+  lineage.links.forEach(function (link) {
+    if (!folders.has(link.from) || !folders.has(link.to)) return;
+    var a = head(link.from), b = head(link.to);
+    if (!parent.has(a)) parent.set(a, a);
+    if (a !== b) parent.set(b, a);
+  });
+  var families = [];
+  folderList.slice().sort(function (a, b) { return a.first - b.first || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0); }).forEach(function (f) {
+    if (!parent.has(f.id)) { f.family = -1; return; }
+    var top = head(f.id), at = families.indexOf(top);
+    if (at < 0) { at = families.length; families.push(top); }
+    f.family = at;
+  });
+  folderList.forEach(function (f) { if (f.family === undefined) f.family = -1; });
+  var familyNames = families.map(function (top, k) {
+    return folderList.filter(function (f) { return f.family === k; }).sort(function (a, b) { return a.first - b.first; }).map(function (f) { return f.name; });
+  });
 
   var totals = {};
   METRICS.forEach(function (m) {
@@ -323,7 +350,8 @@ tr.gone td { color: var(--ink-3); }
   }
   function minorOf(v) { return v.split('.').slice(0, 2).join('.'); }
 
-  var state = { metric: 'lines', sel: V - 1, hover: null };
+  var state = { metric: 'lines', sel: V - 1, hover: null, lineage: false };
+  try { state.lineage = localStorage.getItem('linehistory.lineage') === 'on'; } catch (e) { }
   try { var saved = localStorage.getItem('linehistory.metric'); if (saved && METRICS.some(function (m) { return m.key === saved; })) state.metric = saved; } catch (e) { }
 
   var metricBox = document.getElementById('metric');
@@ -378,8 +406,26 @@ tr.gone td { color: var(--ink-3); }
     ordered('lines').active.slice(0, 5).forEach(function (f, k) { state.picks[k] = f.id; });
   }
 
-  function pickColor(slot) { return 'var(--cmp-' + (slot % PAINTS + 1) + ')'; }
-  function pickDash(slot) { return DASHES[Math.floor(slot % PAINTS / 8)]; }
+  function familyColor(f) { return 'var(--cmp-' + (f.family % PAINTS + 1) + ')'; }
+  function folderColor(f, isRetired) { return state.lineage && f.family >= 0 ? familyColor(f) : isRetired ? 'var(--retired)' : color(f.root); }
+  function kinOf(slot) {
+    var f = folders.get(state.picks[slot]);
+    return state.lineage && f.family >= 0 ? f : null;
+  }
+  function groupOf(id) { var f = folders.get(id); return f.family >= 0 ? 'family ' + f.family : 'folder ' + id; }
+  function pickColor(slot) {
+    if (!state.lineage) return 'var(--cmp-' + (slot % PAINTS + 1) + ')';
+    var groups = [];
+    state.picks.forEach(function (id) { if (id !== null && groups.indexOf(groupOf(id)) < 0) groups.push(groupOf(id)); });
+    return 'var(--cmp-' + (groups.indexOf(groupOf(state.picks[slot])) % PAINTS + 1) + ')';
+  }
+  function pickDash(slot) {
+    var kin = kinOf(slot);
+    if (!kin) return state.lineage ? '' : DASHES[Math.floor(slot % PAINTS / 8)];
+    var rank = 0;
+    for (var k = 0; k < slot; k++) if (state.picks[k] !== null && folders.get(state.picks[k]).family === kin.family) rank++;
+    return DASHES[rank % DASHES.length];
+  }
   function pickSwatch(slot) {
     return '<svg class="stroke" width="18" height="10" aria-hidden="true"><line x1="1" y1="5" x2="17" y2="5" stroke="' + pickColor(slot) +
       '" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="' + pickDash(slot) + '"/></svg>';
@@ -407,6 +453,16 @@ tr.gone td { color: var(--ink-3); }
       retired: folderList.filter(function (f) { return f.v.lines[s] === null; }).sort(function (a, b) { return b.last - a.last; })
     };
   }
+
+  var lineageBox = document.getElementById('lineage');
+  lineageBox.checked = state.lineage;
+  lineageBox.disabled = families.length === 0;
+  lineageBox.addEventListener('change', function () {
+    state.lineage = lineageBox.checked;
+    try { localStorage.setItem('linehistory.lineage', state.lineage ? 'on' : 'off'); } catch (e) { }
+    renderFolders();
+    setSel(state.sel);
+  });
 
   var modeBox = document.getElementById('foldermode');
   MODES.forEach(function (x) {
@@ -664,7 +720,8 @@ tr.gone td { color: var(--ink-3); }
       for (var i = 0; i < V; i++) if (f.v[key][i] !== null && f.v[key][i] > peak) { peak = f.v[key][i]; peakAt = i; }
       card.innerHTML = '<div class="top"><span class="name" title="' + esc(f.name) + '">' + esc(f.name) + '</span><span class="val"></span>' +
         '<button type="button" class="pick"></button></div>' +
-        '<div class="meta"><i class="swatch" style="background:' + (isRetired ? 'var(--retired)' : color(f.root)) + '"></i>' + esc(f.root) + DOT +
+        '<div class="meta"' + (state.lineage && f.family >= 0 ? ' title="Lineage: ' + esc(familyNames[f.family].join(', ')) + '"' : '') +
+        '><i class="swatch" style="background:' + folderColor(f, isRetired) + '"></i>' + esc(f.root) + DOT +
         esc(versions[f.first].version) + ' \u2013 ' + (isRetired ? esc(versions[f.last].version) : 'now') + '</div>';
       var holder = document.createElement('div');
       holder.className = 'plot';
@@ -839,9 +896,11 @@ tr.gone td { color: var(--ink-3); }
   function renderFolders() {
     var compare = state.mode === 'compare';
     Array.prototype.forEach.call(modeBox.children, function (b) { b.setAttribute('aria-pressed', String(b.dataset.key === state.mode)); });
-    document.getElementById('foldernote').textContent = compare
+    document.getElementById('foldernote').textContent = (compare
       ? 'Picked folders on one chart, one scale fitted to them. A folder keeps its color while picked. Past eight, deeper and paler shades take dashed and dotted lines.'
-      : 'One chart per folder. All share the same axes: every version on x, one scale on y, so heights compare directly. Active folders first, largest first. + adds a folder to Compare.';
+      : 'One chart per folder. All share the same axes: every version on x, one scale on y, so heights compare directly. Active folders first, largest first. + adds a folder to Compare.') +
+      (state.lineage ? ' Lineage: folders linked by renamed files share one color, when the renamed files reach ' + Math.round(lineage.share * 100) +
+        ' % of either folder' + (compare ? '; kin picked together take solid, dashed and dotted lines.' : '.') : '');
     document.getElementById('picker').style.display = compare ? '' : 'none';
     compareBox.style.display = compare ? '' : 'none';
     document.getElementById('cards').style.display = compare ? 'none' : '';
@@ -869,7 +928,7 @@ tr.gone td { color: var(--ink-3); }
       gl.textContent = short(g);
       svg.appendChild(gl);
     }
-    var stroke = ref.retired ? 'var(--retired)' : color(f.root);
+    var stroke = folderColor(f, ref.retired);
     runsOf(f.v[key]).forEach(function (r) {
       var line = r.map(function (i) { return X(i).toFixed(1) + ',' + Y(f.v[key][i]).toFixed(1); }).join('L');
       var area = 'M' + X(r[0]).toFixed(1) + ',' + (H - pad) + 'L' + line + 'L' + X(r[r.length - 1]).toFixed(1) + ',' + (H - pad) + 'Z';

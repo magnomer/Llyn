@@ -138,7 +138,7 @@ public sealed class TDraftCommitting
         engine.TEngineRequestApply(TInterface.TExampleLanguageCreate(sentence.LDraftId, "English"));
         engine.TEngineRequestApply(
             TInterface.TExampleTextCreate(
-                sentence.LDraftId, TInterface.TStateValueCreate("she knelt to kindle the logs")));
+                sentence.LDraftId, TInterfaceState.TStateValueCreate("she knelt to kindle the logs")));
         LExample example = engine.TEngineExampleCommit(sentence.LDraftId);
 
         LDraft started = engine.TEngineDraftStart("Input", null);
@@ -160,7 +160,7 @@ public sealed class TDraftCommitting
         engine.TEngineRequestApply(TInterface.TExampleLanguageCreate(sentence.LDraftId, "English"));
         engine.TEngineRequestApply(
             TInterface.TExampleTextCreate(
-                sentence.LDraftId, TInterface.TStateValueCreate("she knelt to kindle the logs")));
+                sentence.LDraftId, TInterfaceState.TStateValueCreate("she knelt to kindle the logs")));
         LExample example = engine.TEngineExampleCommit(sentence.LDraftId);
 
         long? revision = engine.TEngineRevisionRead();
@@ -175,9 +175,9 @@ public sealed class TDraftCommitting
     private static LEntryDraft TDraftContentCreate(string headword)
     {
         LCardDraft meaning = TInterface.TCardDraftCreate(
-            TInterface.TStateValueCreate("set alight"),
+            TInterfaceState.TStateValueCreate("set alight"),
             LStateValue.LStateValueUnspecified,
-            TInterface.TStateValueCreate("to set something burning"),
+            TInterfaceState.TStateValueCreate("to set something burning"),
             [],
             [],
             [],

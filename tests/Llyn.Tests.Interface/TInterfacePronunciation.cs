@@ -10,14 +10,6 @@ namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
-    internal static IReadOnlyList<LAnchorRow> TAnchorRowScan(
-        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, IReadOnlyList<string> classes) =>
-        LAnchor.LAnchorRowScan(rows, anchors, classes);
-
-    internal static string TAnchorTextFormat(
-        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword) =>
-        LAnchor.LAnchorTextFormat(rows, anchors, headword, " · ");
-
     internal static LReflexGuise TReflexGuiseCreate(bool respelled, bool phonemic, bool folded) =>
         new(respelled, phonemic, folded);
 
@@ -32,36 +24,6 @@ internal static partial class TInterface
 
     internal static string TReadingNormalize(string phonetic) =>
         LReading.LReadingNormalize(phonetic);
-
-    internal static string TDiweiRimeFormat(string rime, string division, bool rounded) =>
-        LDiwei.LDiweiRimeFormat(rime, division, rounded);
-
-    internal static string TDiweiChongniuRead(string rime) =>
-        LDiwei.LDiweiChongniuRead(rime);
-
-    internal static int TDiweiRankRead(string kind, string heading, LHypothesis? hypothesis) =>
-        LDiwei.LDiweiRankRead(kind, heading, hypothesis);
-
-    internal static int TDiweiRankNormalize(int rank) =>
-        LDiwei.LDiweiRankNormalize(rank);
-
-    internal static LDiweiSection TDiweiSectionScan(bool respelled, Func<string, string?> localize) =>
-        LDiweiSection.LDiweiSectionScan(
-            LDiwei.LDiweiInitial,
-            [new LFanqieRow("爛", "book", 0, "text", "來", "寒", "寒", "一", "平")],
-            null,
-            [
-                new LTally(
-                    "一",
-                    [
-                        new LTallyLine(
-                            "Cantonese", "literary", [new LTallyMark("l", ["爛"])], [new LTallyMark("L", ["蘭"])]),
-                        new LTallyLine("Korean", string.Empty, [new LTallyMark("r", ["爛"])], []),
-                    ]),
-            ],
-            true,
-            respelled,
-            localize)[0];
 
     internal static IReadOnlyList<string> TStemKeyScan(string text, string separator) =>
         LStem.LStemKeyScan(text, separator);
@@ -94,14 +56,6 @@ internal static partial class TInterface
         IReadOnlyList<LDescent> rules, string language, string tone) =>
         LDescent.LDescentScan(rules, language, tone);
 
-    internal static IReadOnlyList<LAnchorRow> TReflexAnchorScan(
-        IReadOnlyList<LFanqieRow> rows,
-        IReadOnlyList<long> anchors,
-        IReadOnlyList<LDescent> tones,
-        string reflex,
-        string tone) =>
-        LReflexClerk.LReflexAnchorScan(rows, anchors, tones, reflex, tone);
-
     internal static bool TDescentMatch(this LDescent rule, string language) =>
         rule.LDescentMatch(language);
 
@@ -112,42 +66,6 @@ internal static partial class TInterface
         bool reached,
         string variety) =>
         new LCandidate(source, phonetic, order, reached, variety);
-
-    internal static LSourceReading TSourceReadingCreate(
-        string variety,
-        string strategy,
-        string? pattern,
-        int group,
-        string? path,
-        bool phonetic,
-        int skip,
-        bool every = false) =>
-        new LSourceReading(variety, strategy, pattern, group, path, phonetic, skip, every);
-
-    internal static LSourceAttempt TSourceAttemptCreate(
-        IReadOnlyList<string> urls,
-        IReadOnlyList<LSourceReading> readings,
-        string? guard,
-        IReadOnlyDictionary<string, string>? headers,
-        string? prefix,
-        LSourceReading? follow = null) =>
-        new LSourceAttempt(urls, readings, guard, headers, prefix, follow);
-
-    internal static LSourceSpec TSourceSpecCreate(
-        string name,
-        IReadOnlyList<LSourceAttempt> attempts,
-        IReadOnlyList<LRespellingRule>? spelling = null,
-        double? total = null,
-        double? factor = null,
-        double? power = null,
-        string? unit = null) =>
-        new LSourceSpec(name, attempts, spelling, null, total, factor, power, unit);
-
-    internal static LSource TSourceGenericCreate(LSourceSpec spec, HttpClient client) =>
-        new LSourceGeneric(spec, client);
-
-    internal static Task<LAnswer> TSourceFind(this LSource source, string word, CancellationToken cancellation) =>
-        source.LSourceFind(word, cancellation);
 
     internal static LVariety TVarietyCreate(string name, string? flag = null) =>
         new LVariety(name, flag);
@@ -239,67 +157,6 @@ internal static partial class TInterface
         LGlyph? glyph, IReadOnlyList<LTranscriptionDraft> rows) =>
         LGlyph.LGlyphOtherRead(glyph, rows);
 
-    internal static LTrove TTroveCreate() =>
-        new LTrove();
-
-    internal static void TTroveCandidateSave(
-        this LTrove trove,
-        long session,
-        string word,
-        string language,
-        IReadOnlyList<LCandidate> found)
-    {
-        trove.LTroveCandidateSave(session, word, language, found);
-    }
-
-    internal static IReadOnlyList<LCandidate>? TTroveCandidateRead(
-        this LTrove trove,
-        long session,
-        string word,
-        string language) =>
-        trove.LTroveCandidateRead(session, word, language);
-
-    internal static void TTroveRecordingSave(
-        this LTrove trove,
-        long session,
-        string word,
-        string language,
-        IReadOnlyList<LRecording> found)
-    {
-        trove.LTroveRecordingSave(session, word, language, found);
-    }
-
-    internal static IReadOnlyList<LRecording>? TTroveRecordingRead(
-        this LTrove trove,
-        long session,
-        string word,
-        string language) =>
-        trove.LTroveRecordingRead(session, word, language);
-
-    internal static void TTroveTranscriptionSave(
-        this LTrove trove,
-        long session,
-        string word,
-        string language,
-        string scheme,
-        IReadOnlyList<LCandidate> found)
-    {
-        trove.LTroveTranscriptionSave(session, word, language, scheme, found);
-    }
-
-    internal static IReadOnlyList<LCandidate>? TTroveTranscriptionRead(
-        this LTrove trove,
-        long session,
-        string word,
-        string language,
-        string scheme) =>
-        trove.LTroveTranscriptionRead(session, word, language, scheme);
-
-    internal static void TTroveClear(this LTrove trove, long session)
-    {
-        trove.LTroveClear(session);
-    }
-
     internal static IReadOnlyList<LRecording> THarvestRecordingScan(
         IReadOnlyList<LRecording> recordings,
         string variety) =>
@@ -377,32 +234,6 @@ internal static partial class TInterface
     internal static string? TFrequencyBandResolve(LSourceSpec spec, double raw) =>
         LFrequency.LFrequencyBandResolve(spec, raw);
 
-    internal static LHypothesis THypothesisCreate(
-        IReadOnlyDictionary<string, string> initials,
-        IReadOnlyDictionary<string, string> finals,
-        IReadOnlyDictionary<string, IReadOnlyList<LHypothesisTone>> tones,
-        IReadOnlyList<LHypothesisLocus>? places = null) =>
-        new(initials, finals, tones, places);
-
-    internal static LHypothesisLocus THypothesisPlaceCreate(string name, IReadOnlyList<string> initials) =>
-        new(name, initials);
-
-    internal static string? THypothesisInitialFind(this LHypothesis hypothesis, LFanqieRow row) =>
-        hypothesis.LHypothesisInitialFind(row);
-
-    internal static LHypothesisLocus? THypothesisPlaceFind(this LHypothesis hypothesis, string initial) =>
-        hypothesis.LHypothesisLocusFind(initial);
-
-    internal static int THypothesisRankRead(this LHypothesis hypothesis, string initial) =>
-        hypothesis.LHypothesisRankRead(initial);
-
-    internal static LHypothesisTone THypothesisToneCreate(
-        string onset, IReadOnlyList<LRespellingRule> rules, string label) =>
-        new(onset, rules, label);
-
-    internal static LHypothesisSound? THypothesisResolve(this LHypothesis hypothesis, LFanqieRow row) =>
-        hypothesis.LHypothesisResolve(row);
-
     internal static LFanqieRow TFanqieRowCreate(
         string initial, string rime, string heading, string division, string tone, bool rounded) =>
         new("字", "book", 0, "text", initial, rime, heading, division, tone, rounded);
@@ -410,39 +241,4 @@ internal static partial class TInterface
     internal static LFanqieRow TFanqieRowCreate(
         string character, int position, string initial, string rime, string division, string tone) =>
         new(character, "book", position, "text", initial, rime, rime, division, tone, false);
-
-    internal static Task<(IReadOnlyList<LReflexDraft> LReflexFound, bool LReflexReached)> TReflexSourceFind(
-        HttpClient client, string pattern, string character) =>
-        new LReflexSourceHttp(client).LReflexSourceFind(
-            new LReflexRule(
-                "Xiang", "https://example.test/wiki/{word}", new Dictionary<string, string>(), pattern),
-            character,
-            CancellationToken.None);
-
-    internal static Task<(LShengfu? LShengfuFound, bool LShengfuReached)> TShengfuSourceFind(
-        HttpClient client, string pattern, string character) =>
-        new LShengfuSourceHttp(client).LShengfuSourceFind(
-            new LShengfuRule("https://example.test/series/{word}", pattern, new Dictionary<string, string>()),
-            character,
-            CancellationToken.None);
-
-    internal static Task<(IReadOnlyList<LScriptImage> LScriptFound, bool LScriptReached)> TScriptSourceFind(
-        HttpClient client, string pattern, string character) =>
-        new LScriptSourceHttp(client).LScriptSourceFind(
-            new LScriptStyle(
-                "Seal", "https://example.test/seal/search", new Dictionary<string, string>(), pattern, 0, 0),
-            character,
-            CancellationToken.None);
-
-    internal static Task<(IReadOnlyList<LFanqieRow> LFanqieFound, bool LFanqieReached)> TFanqieSourceFind(
-        HttpClient client, string pattern, string character) =>
-        new LFanqieSourceHttp(client).LFanqieSourceFind(
-            new LFanqieBook(
-                "Broad",
-                "https://example.test/wiki/{word}",
-                new Dictionary<string, string>(),
-                "{word}",
-                LFanqieBookLine: pattern),
-            character,
-            CancellationToken.None);
 }

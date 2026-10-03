@@ -28,10 +28,20 @@ A card given nothing but a video reads as changed against the entry it was opene
 The comparison decides whether the editor offers to store at all.
 A field it skips is a field the user cannot save.
 
+## `public void DraftCheck_OnlyLanguageChanged_ReportsChanged()`
+
+Changing nothing but the language of an opened entry reads as changed.
+A skipped language field would leave the editor unable to offer a store for that edit.
+
 ## `public void DraftCheck_NewDraftCarryingLanguage_ReportsUnchanged()`
 
 A fresh draft holding nothing but the tongue the shell chose is not changed work.
 The editor writes that tongue on its own, so counting it would warn about edits the user never made.
+
+## `public void DraftCommit_DraftsPointingAtEachOther_NoRecursion()`
+
+Two drafts that each name the other as a court target commit without looping.
+The entry and its target are each stored once, and no draft or court file is left behind.
 
 ## `public void DraftCommit_NamesStoredEntry_UpdatesIt()`
 
@@ -61,3 +71,14 @@ The file it leaves names the entry it became.
 The holder's own commit updates that entry instead of storing the word twice.
 The chip still lands on a real id.
 The court row is settled exactly as a held target's would be.
+
+## `public void DraftCommit_TargetHeldByAnotherEngine_LeavesItNamingTheStoredEntry()`
+
+A target held by a second engine is stored, and its draft file stays and names the new entry.
+The holder can then update that entry instead of storing the word twice.
+The leftover list ends empty, so nothing is offered back as unfinished.
+
+## `public void DraftCommit_TranslationNamingNoEntry_DropsItInsteadOfFailing()`
+
+A translation naming an entry that does not exist is dropped when the draft commits.
+Failing instead would leave the whole commit refused over one stale link.

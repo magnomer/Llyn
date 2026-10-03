@@ -1,5 +1,5 @@
 # TAuditMoonlightingWalker.cs
-Hash: `9d2a4567d4c47c1f`
+Hash: `6d1a66707e3b50e5`
 
 ## `internal static class TAuditMoonlightingWalker`
 

@@ -121,13 +121,13 @@ public sealed class TMarkupReplace
         long senseId = Assert.Single(
             Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(glow.LEntryId)).LEntryDraftMeanings).LCardDraftId;
 
-        LSentenceDraft sentence = TInterface.TSentenceDraftCreate(
-            TInterface.TStateValueCreate("The ember glows."), 0, LStateAnchor.LStateAnchorUnspecified);
+        LSentenceDraft sentence = TInterfaceExample.TSentenceDraftCreate(
+            TInterfaceState.TStateValueCreate("The ember glows."), 0, LStateAnchor.LStateAnchorUnspecified);
         sentence = sentence with
         {
             LSentenceDraftExample = Assert.IsType<LExampleDraft>(sentence.LSentenceDraftExample) with
             {
-                LExampleDraftMention = [TInterface.TMentionDraftCreate(0, 10, 5, glow.LEntryId, senseId)],
+                LExampleDraftMention = [TInterfaceMentionSpan.TMentionDraftCreate(0, 10, 5, glow.LEntryId, senseId)],
             },
         };
         LEntry ember = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
@@ -136,7 +136,7 @@ public sealed class TMarkupReplace
                 TInterface.TCardDraftCreate(
                     LStateValue.LStateValueUnspecified,
                     LStateValue.LStateValueUnspecified,
-                    TInterface.TStateValueCreate("a glowing coal"),
+                    TInterfaceState.TStateValueCreate("a glowing coal"),
                     [sentence], [], [], [], [], 1),
             ],
             []));
@@ -176,8 +176,8 @@ public sealed class TMarkupReplace
                 TInterface.TCardDraftCreate(
                     LStateValue.LStateValueUnspecified,
                     LStateValue.LStateValueUnspecified,
-                    TInterface.TStateValueCreate("shine"),
-                    [TInterface.TSentenceDraftCreate("The coals glow.")],
+                    TInterfaceState.TStateValueCreate("shine"),
+                    [TInterfaceExample.TSentenceDraftCreate("The coals glow.")],
                     [TInterface.TSituationDraftCreate("by the fire")],
                     [], [], [], 1),
             ],

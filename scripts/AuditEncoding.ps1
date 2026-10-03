@@ -43,7 +43,7 @@ AuditEncoding.json shape:
       "mojibake": "<regex, where {trail} stands for the trail pattern>"
     },
     "report": {
-      "directory": "audit",
+      "directory": "docs-analysis",
       "versionFile": "version.json",
       "versionKey": "current-version",
       "prefix": "AuditEncoding-"
@@ -74,7 +74,7 @@ AuditEncoding -Root D:\temp\sample
 Audit another git working tree with this configuration.
 #>
 #requires -Version 5.1
-# AUDITENCODING GENERATION 19 - AuditEncoding.ps1.
+# AUDITENCODING - AUDIT GENERATION 19.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -188,7 +188,7 @@ $OutputEncoding = [Console]::OutputEncoding
 $script:AuditGeneration = 19
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 
-Write-Host "AUDITENCODING GENERATION $script:AuditGeneration" -ForegroundColor Blue
+Write-Host "AUDITENCODING - AUDIT GENERATION $script:AuditGeneration" -ForegroundColor Blue
 
 function Get-ConfigNode {
     param(

@@ -33,14 +33,14 @@
     "band": 5
   },
   "report": {
-    "directory": "audit",
+    "directory": "docs-analysis",
     "versionFile": "version.json",
     "versionKey": "current-version",
     "prefix": "AuditLines-",
     "segments": 1
   },
   "history": {
-    "records": "audit/records/AuditLinesHistory",
+    "records": "docs-analysis/records/AuditLinesHistory",
     "pagePrefix": "AuditLinesHistory-"
   },
   "width": {

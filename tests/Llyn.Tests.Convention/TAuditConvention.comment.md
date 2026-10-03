@@ -1,5 +1,5 @@
 # TAuditConvention.cs
-Hash: `f4402c276f2c1ddd`
+Hash: `edf4480fee0a3689`
 
 ## `public sealed class TAuditConvention`
 
@@ -9,7 +9,8 @@ Every audit and every settings sidecar share one number, so a report from any of
 
 ## `public static string TAuditReportFormat(string audit, string report)`
 
-Puts the audit name and the generation on the first line of every audit report.
+Puts the audit name, its family and the generation on the first line of every audit report.
+The line reads `AUDITLINES - AUDIT GENERATION <n>`, the form the scripts print on launch.
 The stamp matches the generation the registry and each setting file carry, so reports compare by one grep.
 
 ## `public const int TAuditGeneration`

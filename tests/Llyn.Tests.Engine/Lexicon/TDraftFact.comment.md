@@ -1,6 +1,7 @@
 # TDraftFact.cs
-Hash: `0f7eb204f6b5bce6`
+Hash: `951a84cb5f7f828d`
 
 ## `public sealed class TDraftFact`
 
-The facts a draft answers about itself, so the shell copies a verdict instead of counting.
+The facts a draft and the values in it answer about themselves.
+So the shell copies a verdict instead of counting.

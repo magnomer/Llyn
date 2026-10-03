@@ -14,7 +14,7 @@ internal static class TAuditStrictWalker
         {
             foreach (TypeDeclarationSyntax type in root.DescendantNodes().OfType<TypeDeclarationSyntax>())
             {
-                if (TAuditBinder.TAuditSymbolRead(type) is not INamedTypeSymbol key)
+                if (TAuditBinderSymbol.TAuditSymbolRead(type) is not INamedTypeSymbol key)
                 {
                     continue;
                 }
@@ -286,7 +286,7 @@ internal static class TAuditStrictWalker
                 break;
         }
 
-        if (TAuditBinder.TAuditSymbolRead(call) is IMethodSymbol method
+        if (TAuditBinderSymbol.TAuditSymbolRead(call) is IMethodSymbol method
             && TAuditStrictSetting.TAuditQueryTypes.Contains(
                 (method.ReducedFrom ?? method).ContainingType.ToDisplayString(), StringComparer.Ordinal))
         {
@@ -340,7 +340,7 @@ internal static class TAuditStrictWalker
             .OfType<SimpleNameSyntax>();
         foreach (SimpleNameSyntax name in names)
         {
-            if (!TAuditBinder.TAuditLogicCheck(name))
+            if (!TAuditBinderSide.TAuditLogicCheck(name))
             {
                 continue;
             }
@@ -428,7 +428,7 @@ internal static class TAuditStrictWalker
         {
             bool logic = child switch
             {
-                IdentifierNameSyntax or MemberBindingExpressionSyntax => TAuditBinder.TAuditEngineCheck(child),
+                IdentifierNameSyntax or MemberBindingExpressionSyntax => TAuditBinderSide.TAuditEngineCheck(child),
                 _ => false
             };
             if (logic)

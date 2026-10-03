@@ -53,7 +53,8 @@ public sealed class TSpeech
         LSpeechValue renamed = TInterface.TSpeechArchiveCreate(workspace.TWorkspaceDatabase).TSpeechValueCreate(
             TInterface.TSpeechValueCreate("English", noun.LSpeechValueCode, "substantive", 0));
         LMorphology relabeled = TInterface.TMorphologyArchiveCreate(workspace.TWorkspaceDatabase).TMorphologyCreate(
-            TInterface.TMorphologyCreate(plural.LMorphologyFeatureId, plural.LMorphologyCode, "plural form", 1));
+            TInterfaceInflection.TMorphologyCreate(
+                plural.LMorphologyFeatureId, plural.LMorphologyCode, "plural form", 1));
 
         Assert.Equal(noun.LSpeechValueId, renamed.LSpeechValueId);
         Assert.Equal(plural.LMorphologyId, relabeled.LMorphologyId);
@@ -84,13 +85,13 @@ public sealed class TSpeech
         LMorphology plural = engine.TParadigmMorphologyRead(entry.LEntryId, "plural");
 
         engine.TEntryInflectionSave(entry.LEntryId, [
-            TInterface.TInflectionCreate(entry.LEntryId, 0, "word", null, noun.LSpeechValueId, []),
-            TInterface.TInflectionCreate(entry.LEntryId, 1, "words", null, noun.LSpeechValueId,
+            TInterfaceInflection.TInflectionCreate(entry.LEntryId, 0, "word", null, noun.LSpeechValueId, []),
+            TInterfaceInflection.TInflectionCreate(entry.LEntryId, 1, "words", null, noun.LSpeechValueId,
                 [plural.LMorphologyId]),
         ]);
         engine.TEntryInflectionSave(entry.LEntryId, [
             .. engine.TEntryInflectionRead(entry.LEntryId),
-            TInterface.TInflectionCreate(entry.LEntryId, 2, "word's", null, noun.LSpeechValueId, []),
+            TInterfaceInflection.TInflectionCreate(entry.LEntryId, 2, "word's", null, noun.LSpeechValueId, []),
         ]);
 
         IReadOnlyList<LInflection> stored = engine.TEntryInflectionRead(entry.LEntryId);

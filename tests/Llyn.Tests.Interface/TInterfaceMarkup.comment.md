@@ -1,5 +1,5 @@
 # TInterfaceMarkup.cs
-Hash: `98236fd8492b4168`
+Hash: `8dd12a9205a0e3aa`
 
 ## `internal static partial class TInterface`
 
@@ -7,7 +7,7 @@ The relay for the markup reader and writer.
 A test hands text in and reads entries and omissions back through here alone.
 Text becomes the node tree through `LMarkupFile`, the same adapter the engine's rig carries.
 An intake for the import is built here too.
-A test names an index and a mode and nothing more.
+A test names an index and a mode, and a target only when one is replaced.
 An entry is built here as well, for a writer test that starts from a record rather than text.
 A target is counted here from a stored draft, for a test of what a replacement drops.
 

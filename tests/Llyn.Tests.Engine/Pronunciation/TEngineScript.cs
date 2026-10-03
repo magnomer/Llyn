@@ -43,7 +43,7 @@ public sealed class TEngineScript
             new string('a', 40) + "!", HttpStatusCode.OK);
 
         (IReadOnlyList<LScriptImage> found, bool reached) =
-            await TInterface.TScriptSourceFind(client, "(a+)+$", "整");
+            await TInterfaceSource.TScriptSourceFind(client, "(a+)+$", "整");
 
         Assert.Empty(found);
         Assert.False(reached);

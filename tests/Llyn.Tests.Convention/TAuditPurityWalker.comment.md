@@ -1,5 +1,5 @@
 # TAuditPurityWalker.cs
-Hash: `62bceda77b50b01a`
+Hash: `77f32b04ab93854e`
 
 ## `internal static class TAuditPurityWalker`
 

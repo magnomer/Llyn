@@ -262,9 +262,32 @@ public sealed class TAuditComment
 
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITCOMMENTS",
-            $"{hits.Count} comment file(s) carry a hash their source no longer matches. "
-            + "Reread the prose, then restamp with scripts/stampcomment.ps1.\n"
+            $"{hits.Count} comment file(s) carry a hash their source no longer matches.\n"
+            + "A stale hash means the source changed under this prose. Do not just restamp it.\n"
+            + "For each file, diff its sources (git diff -- <source>) and reread every section the diff touches.\n"
+            + "Rewrite prose that no longer holds, add sections for new members and drop sections for removed ones.\n"
+            + "Only then run scripts/StampComment.ps1 on the file. It lists the sections the source changes touch.\n"
+            + "A restamp that leaves the prose word for word is flagged on the next run.\n"
             + string.Join('\n', hits)));
+    }
+
+    [Fact]
+    public void AuditComment_RestampedFiles_ReviseProse()
+    {
+        string repoRoot = TAuditSource.TAuditRootRead();
+        List<string> hits = TAuditCommentSnapshot.TAuditRestampRead(repoRoot, TAuditStateRead(repoRoot));
+        if (hits.Count > 0)
+        {
+            _tAuditOutput.WriteLine(TAuditConvention.TAuditReportFormat(
+                "AUDITCOMMENTS",
+                "WARNING: HASH BUMPED, COMMENT NOT REVISED.\n"
+                + "THESE FILES WERE RESTAMPED, YET THEIR PROSE MATCHES THE TEXT THEY HELD WHILE STALE.\n"
+                + "DO NOT BUMP HASHES MINDLESSLY. A STAMP VOUCHES THAT THE PROSE WAS REREAD.\n"
+                + "DIFF EACH SOURCE, REREAD EVERY SECTION IT TOUCHES, REWRITE WHAT NO LONGER HOLDS.\n"
+                + "IF THE PROSE STILL HOLDS, STATE WHY FOR EACH FILE IN THE REPORT OF THIS CHANGE.\n"
+                + "THE WARNING CLEARS WHEN THE PROSE CHANGES OR A COMMIT CARRIES THE NEW STAMP."));
+            _tAuditOutput.WriteLine(string.Join('\n', hits));
+        }
     }
 
     [Fact]
@@ -280,7 +303,7 @@ public sealed class TAuditComment
                 "AUDITCOMMENTS",
                 $"WARNING (not a failure while at or below the ceiling {ceiling}): "
                 + $"{hits.Count} comment file(s) carry no hash. "
-                + "Reread each one, then stamp it with scripts/stampcomment.ps1."));
+                + "Reread each one, then stamp it with scripts/StampComment.ps1."));
             _tAuditOutput.WriteLine(string.Join('\n', hits));
         }
 
@@ -306,6 +329,25 @@ public sealed class TAuditComment
     private static List<string> TAuditStampRead(string repoRoot)
     {
         List<string> hits = [];
+        foreach ((string path, string second, string expected) in TAuditStateRead(repoRoot))
+        {
+            Match stamp = TAuditHashPattern.Match(second);
+            string problem = !stamp.Success
+                ? TAuditMissingProblem
+                : stamp.Groups["hash"].Value == expected ? string.Empty : TAuditChangedProblem;
+            if (problem.Length > 0)
+            {
+                string relative = Path.GetRelativePath(repoRoot, path).Replace('\\', '/');
+                hits.Add($"  {relative}:2 {problem}");
+            }
+        }
+
+        return hits;
+    }
+
+    private static List<(string, string, string)> TAuditStateRead(string repoRoot)
+    {
+        List<(string, string, string)> states = [];
         HashSet<string> rooted = new(
             TAuditCommentSetting.TAuditCommentFiles.Select(file => TAuditCommentRead(Path.Combine(repoRoot, file))),
             StringComparer.OrdinalIgnoreCase);
@@ -324,18 +366,10 @@ public sealed class TAuditComment
             }
 
             string[] lines = File.ReadAllLines(pair.Key);
-            Match stamp = TAuditHashPattern.Match(lines.Length >= 2 ? lines[1] : string.Empty);
-            string problem = !stamp.Success
-                ? TAuditMissingProblem
-                : stamp.Groups["hash"].Value == TAuditHashRead(owners) ? string.Empty : TAuditChangedProblem;
-            if (problem.Length > 0)
-            {
-                string relative = Path.GetRelativePath(repoRoot, pair.Key).Replace('\\', '/');
-                hits.Add($"  {relative}:2 {problem}");
-            }
+            states.Add((pair.Key, lines.Length >= 2 ? lines[1] : string.Empty, TAuditHashRead(owners)));
         }
 
-        return hits;
+        return states;
     }
 
     private static string TAuditHashRead(IEnumerable<string> owners)

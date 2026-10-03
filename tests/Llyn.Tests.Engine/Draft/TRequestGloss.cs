@@ -38,7 +38,7 @@ public sealed class TRequestGloss
         long second = TGlossRead(added, card)[1].LGlossDraftId;
 
         engine.TEngineRequestApply(TInterface.TGlossTextCreate(
-            started.LDraftId, card, sentence, second, TInterface.TStateValueCreate("elle s'agenouilla")));
+            started.LDraftId, card, sentence, second, TInterfaceState.TStateValueCreate("elle s'agenouilla")));
         LDraft answered = engine.TEngineRequestApply(
             TInterface.TGlossLanguageCreate(started.LDraftId, card, sentence, second, "German"));
 
@@ -96,7 +96,7 @@ public sealed class TRequestGloss
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LExample stored = engine.TEngineExampleCreate(TInterface.TExampleCreate(
+        LExample stored = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
             0, "English", "she knelt to kindle the damp logs", "그녀는 무릎을 꿇었다", null));
         long first = TGlossSharedCommit(engine, stored.LExampleId, "ember");
 
@@ -106,7 +106,7 @@ public sealed class TRequestGloss
             TInterface.TSentenceExampleCreate(started.LDraftId, card, sentence, stored.LExampleId));
         long gloss = Assert.Single(TGlossRead(picked, card)).LGlossDraftId;
         engine.TEngineRequestApply(TInterface.TGlossTextCreate(
-            started.LDraftId, card, sentence, gloss, TInterface.TStateValueCreate("그녀는 불을 지폈다")));
+            started.LDraftId, card, sentence, gloss, TInterfaceState.TStateValueCreate("그녀는 불을 지폈다")));
         TGlossAdd(engine, started.LDraftId, card, sentence, "French", "elle s'agenouilla");
         LEntry second = engine.TEngineDraftCommit(started.LDraftId);
 
@@ -127,13 +127,13 @@ public sealed class TRequestGloss
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LDraft started = engine.TEngineExampleStart("Corpus", null);
         engine.TEngineRequestApply(
-            TInterface.TExampleTextCreate(started.LDraftId, TInterface.TStateValueCreate("a line")));
+            TInterface.TExampleTextCreate(started.LDraftId, TInterfaceState.TStateValueCreate("a line")));
         engine.TEngineRequestApply(TInterface.TExampleLanguageCreate(started.LDraftId, "English"));
         LDraft added = engine.TEngineRequestApply(
             TInterface.TGlossAdditionCreate(started.LDraftId, 0, 0, "Korean", 0));
         long gloss = Assert.Single(added.LDraftExample!.LExampleGloss).LGlossId;
         engine.TEngineRequestApply(TInterface.TGlossTextCreate(
-            started.LDraftId, 0, 0, gloss, TInterface.TStateValueCreate("한 줄")));
+            started.LDraftId, 0, 0, gloss, TInterfaceState.TStateValueCreate("한 줄")));
         engine.TEngineRequestApply(TInterface.TGlossLanguageCreate(started.LDraftId, 0, 0, gloss, "Japanese"));
 
         LExample settled = engine.TEngineExampleCommit(started.LDraftId);
@@ -151,7 +151,7 @@ public sealed class TRequestGloss
             TInterface.TGlossAdditionCreate(draftId, card, sentence, language, int.MaxValue));
         long gloss = TGlossRead(added, card)[^1].LGlossDraftId;
         engine.TEngineRequestApply(
-            TInterface.TGlossTextCreate(draftId, card, sentence, gloss, TInterface.TStateValueCreate(text)));
+            TInterface.TGlossTextCreate(draftId, card, sentence, gloss, TInterfaceState.TStateValueCreate(text)));
     }
 
     private static long TGlossSharedCommit(LEngine engine, long exampleId, string headword)
@@ -173,7 +173,7 @@ public sealed class TRequestGloss
         LDraft rowed = engine.TEngineRequestApply(TInterface.TSentenceAdditionCreate(draftId, card, 0));
         long sentence = TInterface.TRequestCardFind(rowed.LDraftContent, card).LCardDraftSentence[0].LSentenceDraftId;
         engine.TEngineRequestApply(
-            TInterface.TSentenceTextCreate(draftId, card, sentence, TInterface.TStateValueCreate(text)));
+            TInterface.TSentenceTextCreate(draftId, card, sentence, TInterfaceState.TStateValueCreate(text)));
         return (card, sentence);
     }
 

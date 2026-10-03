@@ -16,7 +16,7 @@ public sealed class TSession
         CDesk desk = TSessionDeskPrepare(engine);
         List<long> shown = [];
         CSession session =
-            TInterfaceConduct.TSessionCreate(desk, [desk.LDeskChangeCheck], static () => true, shown.Add);
+            TInterfaceConductDesk.TSessionCreate(desk, [desk.LDeskChangeCheck], static () => true, shown.Add);
         int held = 0;
         session.CSessionHeld += () => held++;
 
@@ -38,7 +38,7 @@ public sealed class TSession
         CDesk desk = TSessionDeskPrepare(engine);
         List<long> shown = [];
         CSession session =
-            TInterfaceConduct.TSessionCreate(desk, [desk.LDeskChangeCheck], static () => true, shown.Add);
+            TInterfaceConductDesk.TSessionCreate(desk, [desk.LDeskChangeCheck], static () => true, shown.Add);
 
         session.CSessionStart(null);
 
@@ -54,7 +54,7 @@ public sealed class TSession
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDesk desk = TSessionDeskPrepare(engine);
-        CSession session = TInterfaceConduct.TSessionCreate(desk, [], static () => false, static _ => { });
+        CSession session = TInterfaceConductDesk.TSessionCreate(desk, [], static () => false, static _ => { });
         session.CSessionStart(null);
         desk.TDeskDefer(TInterface.TRequestAuthorCreate(desk.CDeskId, "Ada"));
 
@@ -73,7 +73,7 @@ public sealed class TSession
         CDesk desk = TSessionDeskPrepare(engine);
         long? finished = null;
         desk.CDeskFinished += id => finished = id;
-        CSession session = TInterfaceConduct.TSessionCreate(desk, [], static () => false, static _ => { });
+        CSession session = TInterfaceConductDesk.TSessionCreate(desk, [], static () => false, static _ => { });
         session.CSessionStart(null);
         desk.TDeskDefer(TInterface.TRequestAuthorCreate(desk.CDeskId, "Ada"));
 
@@ -87,7 +87,7 @@ public sealed class TSession
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDesk desk = TSessionDeskPrepare(engine);
-        CSession session = TInterfaceConduct.TSessionCreate(desk, [], static () => true, static _ => { });
+        CSession session = TInterfaceConductDesk.TSessionCreate(desk, [], static () => true, static _ => { });
         int held = 0;
         int changed = 0;
         session.CSessionHeld += () => held++;
@@ -107,7 +107,7 @@ public sealed class TSession
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDesk desk = TSessionDeskPrepare(engine);
-        CSession session = TInterfaceConduct.TSessionCreate(desk, [], static () => true, static _ => { });
+        CSession session = TInterfaceConductDesk.TSessionCreate(desk, [], static () => true, static _ => { });
         session.CSessionStart(null);
         desk.TDeskDefer(TInterface.TRequestAuthorCreate(desk.CDeskId, "Ada"));
         desk.CDeskPersist();
@@ -131,7 +131,7 @@ public sealed class TSession
         CDesk desk = TSessionDeskPrepare(engine);
         CDesk editor = TSessionDeskPrepare(engine);
         List<string> seen = [];
-        CSession session = TInterfaceConduct.TSessionCreate(desk, editor, static () => true, seen);
+        CSession session = TInterfaceConductDesk.TSessionCreate(desk, editor, static () => true, seen);
 
         Assert.True(session.TSessionFinish(true));
         Assert.True(session.CSessionClose(false));
@@ -148,7 +148,7 @@ public sealed class TSession
         CDesk desk = TSessionDeskPrepare(engine);
         CDesk editor = TSessionDeskPrepare(engine);
         List<string> seen = [];
-        CSession session = TInterfaceConduct.TSessionCreate(desk, editor, static () => false, seen);
+        CSession session = TInterfaceConductDesk.TSessionCreate(desk, editor, static () => false, seen);
         session.CSessionStart(null);
 
         Assert.True(session.TSessionFinish(false));
@@ -209,7 +209,7 @@ public sealed class TSession
 
     private static CDesk TSessionDeskPrepare(LEngine engine)
     {
-        CDesk desk = TInterfaceConduct.TDeskCreate(engine, "Guild", TEnvoyFake.TEnvoyCreate(false, []));
+        CDesk desk = TInterfaceConductDesk.TDeskCreate(engine, "Guild", TEnvoyFake.TEnvoyCreate(false, []));
         desk.TDeskVistaRestore(engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderName));
         return desk;
     }

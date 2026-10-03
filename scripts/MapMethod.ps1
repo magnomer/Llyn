@@ -30,6 +30,7 @@
     MapMethod -NoBuild -NoOpen
     Write the page from the current graph without opening it.
 #>
+# MAPMETHOD - MAP GENERATION 1.
 [CmdletBinding()]
 param(
     [switch]$NoBuild,
@@ -45,6 +46,8 @@ if ($Help) {
     Get-Help -Name $PSCommandPath -Detailed
     return
 }
+
+Write-Host 'MAPMETHOD - MAP GENERATION 1' -ForegroundColor Blue
 
 $configPath = Join-Path $PSScriptRoot 'MapMethod.json'
 $templatePath = Join-Path $PSScriptRoot 'MapMethod.html'

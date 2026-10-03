@@ -46,14 +46,14 @@ AuditLines.json shape:
     "hotspot": { "commits": 30, "top": 15 },
     "tally": { "roots": ["scripts"], "extensions": [".ps1", ".cs"] },
     "report": {
-      "directory": "audit",
+      "directory": "docs-analysis",
       "versionFile": "version.json",
       "versionKey": "current-version",
       "prefix": "AuditLines-",
       "segments": 1
     },
     "history": {
-      "records": "audit/records/AuditLinesHistory",
+      "records": "docs-analysis/records/AuditLinesHistory",
       "pagePrefix": "AuditLinesHistory-"
     }
   }
@@ -117,7 +117,7 @@ AuditLines -Extensions .cs, .xaml
 AuditLines -SourceRoots .\src, .\tests
 #>
 #requires -Version 5.1
-# AUDITLINES GENERATION 19 - AuditLines.ps1.
+# AUDITLINES - AUDIT GENERATION 19.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -255,7 +255,7 @@ EXAMPLES
         Audit with the configured settings.
 
     AuditLines -LimitThreshold 600 -WarningThreshold 500
-        Report files at 600 lines or more, and files from 500 to 599 lines.
+        Report files over 600 lines, and warn on files from 501 to 600 lines.
 
     AuditLines -Extensions .cs, .xaml
         Count only C# and XAML files.
@@ -337,7 +337,7 @@ function Write-AuditLine {
     }
 }
 
-Write-AuditLine "AUDITLINES GENERATION $script:AuditGeneration" -ForegroundColor Blue
+Write-AuditLine "AUDITLINES - AUDIT GENERATION $script:AuditGeneration" -ForegroundColor Blue
 
 
 function Get-ConfigNode {

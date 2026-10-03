@@ -22,7 +22,7 @@ public sealed class TEntryLoading
             [
                 TInterface.TCardDraftCreate(
                     string.Empty, string.Empty, "to stay until something happens",
-                    [TInterface.TSentenceDraftCreate(
+                    [TInterfaceExample.TSentenceDraftCreate(
                         LStateValue.LStateValueUnspecified, 0,
                         LStateAnchor.LStateAnchorUnspecified, "for", "Patient")],
                     [], [], [], [], 1),
@@ -84,7 +84,7 @@ public sealed class TEntryLoading
             [
                 TInterface.TCardDraftCreate(
                     string.Empty, string.Empty, "a unit of language",
-                    [TInterface.TSentenceDraftCreate("he said a word")],
+                    [TInterfaceExample.TSentenceDraftCreate("he said a word")],
                     [TInterface.TSituationDraftCreate("conversation")],
                     [], ["spoken"], [], 1),
                 TInterface.TCardDraftCreate(string.Empty, string.Empty, "a promise", [], [], [], [], [], 2),
@@ -92,7 +92,7 @@ public sealed class TEntryLoading
             [
                 TInterface.TCardDraftCreate(
                     string.Empty, "in a word", "briefly",
-                    [TInterface.TSentenceDraftCreate("in a word, no")],
+                    [TInterfaceExample.TSentenceDraftCreate("in a word, no")],
                     [TInterface.TSituationDraftCreate("summary")],
                     [], ["written"], [], 1),
             ]);
@@ -272,8 +272,8 @@ public sealed class TEntryLoading
                 string.Empty,
                 "a unit of language",
                 [
-                    TInterface.TSentenceDraftCreate("he said a word"),
-                    TInterface.TSentenceDraftCreate("not a word was spoken"),
+                    TInterfaceExample.TSentenceDraftCreate("he said a word"),
+                    TInterfaceExample.TSentenceDraftCreate("not a word was spoken"),
                 ],
                 [TInterface.TSituationDraftCreate("conversation")],
                 [],
@@ -282,7 +282,7 @@ public sealed class TEntryLoading
                 string.Empty,
                 "in a word",
                 "briefly",
-                [TInterface.TSentenceDraftCreate("in a word, no")],
+                [TInterfaceExample.TSentenceDraftCreate("in a word, no")],
                 [TInterface.TSituationDraftCreate("summary"), TInterface.TSituationDraftCreate("writing")],
                 [],
                 ["written", "idiom"], [], 1)]));
@@ -329,7 +329,7 @@ public sealed class TEntryLoading
             [
                 TInterface.TCardDraftCreate(
                     string.Empty, string.Empty, "a meaning",
-                    [TInterface.TSentenceDraftCreate("  ")], [], [], [], [], 1),
+                    [TInterfaceExample.TSentenceDraftCreate("  ")], [], [], [], [], 1),
             ],
             []));
 

@@ -1,5 +1,5 @@
 # TEntrySaving.cs
-Hash: `c3e0ac2732d50a60`
+Hash: `aefb951dbbf559b1`
 
 ## `public sealed class TEntrySaving`
 
@@ -13,7 +13,7 @@ The save is one unit of work or none.
 
 ### `IReadOnlyList<LMeaning> meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId);`
 
-The meanings land in card order, each at the position its card held.
+The meanings land in card order, renumbered from zero.
 
 ### `LCollocation collocation = Assert.Single(`
 
@@ -23,7 +23,7 @@ The collocation carries both of its fields: the expression and the meaning that 
 
 The save is recorded as history and the workspace row is moved onto it.
 
-### `Assert.Equal(`
+### `LSentenceArchive examples = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);`
 
 Each field became a row of its own that the card now references, not a column on the card.
 
@@ -37,7 +37,7 @@ A Tag reads back the same text on both entries.
 
 What the form always hands over.
 That is one seeded Meaning card and one seeded Collocation card, both untouched.
-It refuses to remove a list's last card.
+The form refuses to remove a list's last card.
 
 ### `LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);`
 

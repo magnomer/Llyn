@@ -11,7 +11,7 @@ Each facade reads its concern from this record.
 
 - `LEngineStaffDraft` manages held drafts.
 - `LEngineStaffChronicle` manages draft history.
-- `LEngineStaffCourt` manages claims and ownership history.
+- `LEngineStaffCourt` manages links from a held draft to a target not yet stored.
 - `LEngineStaffClaim` manages held claims.
 - `LEngineStaffTag` manages tags.
 - `LEngineStaffRegister` manages registers.
@@ -31,19 +31,19 @@ Each facade reads its concern from this record.
 - `LEngineStaffTranscription` manages transcriptions.
 - `LEngineStaffReflex` manages reflexes.
 - `LEngineStaffEntry` manages entries.
-- `LEngineStaffLacuna` manages missing entries.
+- `LEngineStaffLacuna` fetches missing inflected forms and records the lacunae left.
 - `LEngineStaffFrequency` manages frequency data.
-- `LEngineStaffOutcome` manages outcome calculations.
+- `LEngineStaffOutcome` runs the commit round of an entry draft.
 - `LEngineStaffAuthor` manages authors.
 - `LEngineStaffFavorite` manages favorites.
 - `LEngineStaffCitation` manages citations.
 - `LEngineStaffFanqie` manages fanqie data.
-- `LEngineStaffShengfu` manages 音韻地位 data.
+- `LEngineStaffShengfu` manages a character's phonetic series, its 聲符.
 - `LEngineStaffStem` manages stems.
 - `LEngineStaffDiwei` manages 音韻地位 placements.
 - `LEngineStaffScript` manages script data.
 - `LEngineStaffWorkspace` manages workspace state.
-- `LEngineStaffMarkup` manages markup records.
+- `LEngineStaffMarkup` translates an entry to and from markup.
 - `LEngineStaffIntake` imports markup.
 - `LEngineStaffPortrait` builds portraits.
 - `LEngineStaffEnsign` manages language flags.
@@ -51,5 +51,6 @@ Each facade reads its concern from this record.
 ## `internal static LEngineStaff LEngineStaffBuild(...)`
 
 Builds the staff in dependency order over one rig.
-Fetch clerks receive the gate, settings reader and bulletin raiser supplied by the engine.
+Fetch clerks receive the gate and the bulletin raiser supplied by the engine.
+The frequency and lacuna fetches also receive the settings reader.
 The identity issuer receives the stale ids, so the new workspace never issues one a tenure still holds.

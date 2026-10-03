@@ -1,0 +1,20 @@
+{
+  "version": "0.2.500",
+  "commit": "2084287e0338bc011fd6a4e410bb518285f20845",
+  "previous": "0.1.410",
+  "previousCommit": "5746c6faed55eb4b97ee96d7b0b49c2de9cae14a",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.Infrastructure/Database/LSenseArchive.cs", "src/Llyn.Infrastructure/Database/LMeaningArchive.cs"],
+    ["src/Llyn.ShellEngine/LEngineSense.comment.md", "src/Llyn.ShellEngine/LEngineMeaning.comment.md"],
+    ["src/Llyn.ShellEngine/LEngineSense.cs", "src/Llyn.ShellEngine/LEngineMeaning.cs"],
+    ["src/Llyn.UIShell/UI/PCardSituation.comment.md", "src/Llyn.UIShell/UI/PCardContext.comment.md"],
+    ["src/Llyn.UIShell/UI/PMarkupImport.comment.md", "src/Llyn.UIShell/UI/PLibraryMarkup.comment.md"],
+    ["src/Llyn.UIShell/UI/PMarkupImport.cs", "src/Llyn.UIShell/UI/PLibraryMarkup.cs"],
+    ["src/Llyn.UIShell/UI/PSenseTemplate.xaml", "src/Llyn.UIShell/UI/PMeaningTemplate.xaml"],
+    ["src/Llyn.UIShell/UI/PSenseTemplate.xaml.comment.md", "src/Llyn.UIShell/UI/PMeaningTemplate.xaml.comment.md"],
+    ["src/Llyn.UIShell/UI/PSenseTemplate.xaml.cs", "src/Llyn.UIShell/UI/PMeaningTemplate.xaml.cs"],
+    ["tests/Llyn.Tests/Lexicon/TSense.comment.md", "tests/Llyn.Tests/Lexicon/TMeaning.comment.md"],
+    ["tests/Llyn.Tests/Lexicon/TSense.cs", "tests/Llyn.Tests/Lexicon/TMeaning.cs"]
+  ]
+}

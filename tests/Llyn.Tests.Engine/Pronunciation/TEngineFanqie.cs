@@ -24,26 +24,6 @@ public sealed class TEngineFanqie
               "match": "<span class='string'>{word}</span>", "busy": "Too fast" } ] }
         """;
 
-    private const string TEngineWikiPack =
-        """
-        { "fanqie": [
-            { "name": "Broad", "source": "Kaom", "url": "https://example.test/broad",
-              "form": { "word": "{word}", "t": "g" },
-              "match": "<span class='string'>{word}</span>" },
-            { "name": "Broad", "source": "Wiki", "url": "https://example.test/wiki/{word}?raw",
-              "match": "{word}",
-              "line": "\"(?<initial>.)(?<rime>.)(?<division>.)(?<rounded>[開合]) (?<tone>.)(?<spelling>..)\"",
-              "rounded": "合" } ] }
-        """;
-
-    private const string TEngineFanqieWiki =
-        """
-        return {
-            "知東三開 平陟弓",
-            "見桓一合 去古玩"
-        }
-        """;
-
     private const string TEngineFanqieGuan =
         """
         <table>
@@ -56,7 +36,7 @@ public sealed class TEngineFanqie
         </table>
         """;
 
-    private const string TEngineFanqieBroad =
+    internal const string TEngineFanqieBroad =
         """
         <p class="word">Broad</p>
         <table><caption>Page 12</caption>
@@ -82,19 +62,6 @@ public sealed class TEngineFanqie
         </table>
         """;
 
-    [Fact]
-    public async Task FanqieSourceFind_PatternTimesOut_AnswersNotReached()
-    {
-        using HttpClient client = TPronunciationHelper.TSourceClientCreate(
-            new string('a', 40) + "!", HttpStatusCode.OK);
-
-        (IReadOnlyList<LFanqieRow> found, bool reached) =
-            await TInterface.TFanqieSourceFind(client, "(a+)+$", "整");
-
-        Assert.Empty(found);
-        Assert.False(reached);
-    }
-
     private static readonly TimeSpan TEngineFanqiePatience = TimeSpan.FromSeconds(5);
 
     private static readonly Dictionary<string, string> TEngineFanqiePages = new()
@@ -102,95 +69,6 @@ public sealed class TEngineFanqie
         ["https://example.test/broad"] = TEngineFanqieBroad,
         ["https://example.test/collected"] = TEngineFanqieCollected,
     };
-
-    [Fact]
-    public async Task FanqieStart_LineBook_StoresPartsUnderItsSource()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineWikiPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        Dictionary<string, string> pages = new()
-        {
-            ["https://example.test/broad"] = TEngineFanqieBroad,
-            ["https://example.test/wiki/%E5%90%B3?raw"] = TEngineFanqieWiki,
-        };
-        using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(pages));
-
-        IReadOnlyList<LFanqieRow> found = await TFanqieFetchRead(engine, "吳", pack.TLanguageFixtureName);
-
-        Assert.Equal(["Kaom", "Wiki", "Wiki"], found.Select(row => row.LFanqieRowSource).ToList());
-        Assert.Equal("知 東 三等平", found[1].LFanqieRowText);
-        Assert.Equal(("知", "東", "", "三", "平", false), TFanqiePartRead(found[1]));
-        Assert.Equal(["", "陟弓", "古玩"], found.Select(row => row.LFanqieRowSpelling).ToList());
-        Assert.Equal(("見", "桓", "", "一", "去", true), TFanqiePartRead(found[2]));
-        Assert.Equal([0, 0, 1], found.Select(row => row.LFanqieRowPosition).ToList());
-    }
-
-    [Fact]
-    public async Task FanqieStart_TwoSourcesOneBook_StoresRowsOfBoth()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineWikiPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        Dictionary<string, string> pages = new()
-        {
-            ["https://example.test/broad"] = TEngineFanqieBroad,
-            ["https://example.test/wiki/%E5%90%B3?raw"] = TEngineFanqieWiki,
-        };
-        using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(pages));
-        LEntry entry = engine.TEngineEntrySave(TFanqieDraftCreate("吳", pack.TLanguageFixtureName));
-
-        engine.TEngineFanqieStart(entry.LEntryId);
-        await TFanqieSettle(engine, entry.LEntryId);
-
-        IReadOnlyList<LFanqieRow> read = engine.TEngineFanqieRead(entry.LEntryId);
-        Assert.Equal(["Kaom", "Wiki", "Wiki"], read.Select(row => row.LFanqieRowSource).ToList());
-        Assert.Equal(3, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM fanqie;"));
-    }
-
-    [Fact]
-    public async Task FanqieFind_LineBookNotFound_ReadsReachedAndEmpty()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineWikiPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        TSourceHandler handler = new("gone", HttpStatusCode.NotFound);
-        using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
-        LEntry entry = engine.TEngineEntrySave(TFanqieDraftCreate("吳", pack.TLanguageFixtureName));
-
-        engine.TEngineFanqieStart(entry.LEntryId);
-        await TFanqieCountCheck(handler, 2);
-        await TFanqieSettle(engine, entry.LEntryId);
-        engine.TEngineFanqieStart(entry.LEntryId);
-        await Task.Delay(200);
-
-        Assert.Equal(2, handler.TSourceHandlerCount);
-    }
-
-    [Fact]
-    public async Task FanqieSet_HeldRank_StoresTheResolvedRank()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineWikiPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        Dictionary<string, string> pages = new()
-        {
-            ["https://example.test/broad"] = TEngineFanqieBroad,
-            ["https://example.test/wiki/%E5%90%B3?raw"] = TEngineFanqieWiki,
-        };
-        using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(pages));
-        LEntry entry = engine.TEngineEntrySave(TFanqieDraftCreate("吳", pack.TLanguageFixtureName));
-        engine.TEngineFanqieStart(entry.LEntryId);
-        await TFanqieSettle(engine, entry.LEntryId);
-        IReadOnlyList<long> ids = engine.TEngineFanqieRead(entry.LEntryId).Select(row => row.LFanqieRowId).ToList();
-
-        engine.TEngineFanqieSet(entry.LEntryId, ids[0], 0, false);
-        engine.TEngineFanqieSet(entry.LEntryId, ids[1], 0, true);
-        List<int> appended = TFanqieRankRead(engine, entry.LEntryId, ids);
-        engine.TEngineFanqieSet(entry.LEntryId, ids[1], 2, true);
-        List<int> raised = TFanqieRankRead(engine, entry.LEntryId, ids);
-        engine.TEngineFanqieSet(entry.LEntryId, ids[0], 2, false);
-
-        Assert.Equal([1, 2, 0], appended);
-        Assert.Equal([2, 1, 0], raised);
-        Assert.Equal([0, 1, 0], TFanqieRankRead(engine, entry.LEntryId, ids));
-    }
 
     [Fact]
     public async Task FanqieStart_GroupedCell_StoresEachGroupWithItsParts()
@@ -340,7 +218,7 @@ public sealed class TEngineFanqie
         Assert.Equal(0, handler.TSourceHandlerCount);
     }
 
-    private static async Task<IReadOnlyList<LFanqieRow>> TFanqieFetchRead(
+    internal static async Task<IReadOnlyList<LFanqieRow>> TFanqieFetchRead(
         LEngine engine, string headword, string language)
     {
         LEntry entry = engine.TEngineEntrySave(TFanqieDraftCreate(headword, language));
@@ -349,13 +227,7 @@ public sealed class TEngineFanqie
         return engine.TEngineFanqieRead(entry.LEntryId);
     }
 
-    private static List<int> TFanqieRankRead(LEngine engine, long entryId, IReadOnlyList<long> ids)
-    {
-        IReadOnlyList<LFanqieRow> rows = engine.TEngineFanqieRead(entryId);
-        return ids.Select(id => rows.Single(row => row.LFanqieRowId == id).LFanqieRowRepresentative).ToList();
-    }
-
-    private static async Task TFanqieSettle(LEngine engine, long entryId)
+    internal static async Task TFanqieSettle(LEngine engine, long entryId)
     {
         DateTime deadline = DateTime.UtcNow + TEngineFanqiePatience;
         while (engine.TEngineFanqieCheck(entryId))
@@ -365,7 +237,7 @@ public sealed class TEngineFanqie
         }
     }
 
-    private static async Task TFanqieCountCheck(TSourceHandler handler, int count)
+    internal static async Task TFanqieCountCheck(TSourceHandler handler, int count)
     {
         DateTime deadline = DateTime.UtcNow + TEngineFanqiePatience;
         while (handler.TSourceHandlerCount < count)
@@ -378,11 +250,11 @@ public sealed class TEngineFanqie
     private static (string, string, int, string) TFanqieRowRead(LFanqieRow row) =>
         (row.LFanqieRowCharacter, row.LFanqieRowBook, row.LFanqieRowPosition, row.LFanqieRowText);
 
-    private static (string, string, string, string, string, bool) TFanqiePartRead(LFanqieRow row) =>
+    internal static (string, string, string, string, string, bool) TFanqiePartRead(LFanqieRow row) =>
         (row.LFanqieRowInitial, row.LFanqieRowRime, row.LFanqieRowHeading,
          row.LFanqieRowDivision, row.LFanqieRowTone, row.LFanqieRowRounded);
 
-    private static LEntryDraft TFanqieDraftCreate(string headword, string language)
+    internal static LEntryDraft TFanqieDraftCreate(string headword, string language)
     {
         return TInterface.TEntryDraftCreate(
             headword,

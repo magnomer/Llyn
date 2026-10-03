@@ -75,7 +75,7 @@ public sealed class TRequestMention
         (long entryId, _) = TMentionEntryCreate(engine, "kindle");
         LDraft started = engine.TEngineExampleStart("Corpus", null);
         engine.TEngineRequestApply(TInterface.TExampleTextCreate(
-            started.LDraftId, TInterface.TStateValueCreate("she knelt to kindle the damp logs")));
+            started.LDraftId, TInterfaceState.TStateValueCreate("she knelt to kindle the damp logs")));
 
         LDraft answered = engine.TEngineRequestApply(
             TInterface.TMentionAdditionCreate(started.LDraftId, 0, 0, 13, 6, entryId));
@@ -195,10 +195,10 @@ public sealed class TRequestMention
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (long entryId, _) = TMentionEntryCreate(engine, "kindle");
-        LExample stored = engine.TEngineExampleCreate(TInterface.TExampleCreate(
+        LExample stored = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
             0, "English", "she knelt to kindle the damp logs", null, null) with
         {
-            LExampleMention = [TInterface.TMentionCreate(0, 29, 4, entryId)],
+            LExampleMention = [TInterfaceMentionSpan.TMentionCreate(0, 29, 4, entryId)],
         });
         long first = TMentionSharedCommit(engine, stored.LExampleId, "ember");
 
@@ -247,8 +247,8 @@ public sealed class TRequestMention
         const string text = "🔥 she knelt to kindle the damp logs";
         (long card, long sentence) = TMentionSentenceAdd(engine, started.LDraftId, text);
         int unit = text.IndexOf("kindle", StringComparison.Ordinal);
-        int offset = TInterface.TMentionOffsetRead(text, unit);
-        int length = TInterface.TMentionOffsetRead(text, unit + 6) - offset;
+        int offset = TInterfaceMentionSpan.TMentionOffsetRead(text, unit);
+        int length = TInterfaceMentionSpan.TMentionOffsetRead(text, unit + 6) - offset;
 
         LDraft answered = engine.TEngineRequestApply(
             TInterface.TMentionAdditionCreate(started.LDraftId, card, sentence, offset, length, entryId));
@@ -256,7 +256,7 @@ public sealed class TRequestMention
         LMentionDraft mention = Assert.Single(TMentionRead(answered, card));
         Assert.Equal(15, mention.LMentionDraftOffset);
         Assert.Equal(6, mention.LMentionDraftLength);
-        Assert.Equal(unit, TInterface.TMentionUnitRead(text, mention.LMentionDraftOffset));
+        Assert.Equal(unit, TInterfaceMentionSpan.TMentionUnitRead(text, mention.LMentionDraftOffset));
     }
 
     [Fact]
@@ -294,7 +294,7 @@ public sealed class TRequestMention
         (long entryId, long senseId) = TMentionEntryCreate(engine, "kindle");
         LDraft started = engine.TEngineExampleStart("Corpus", null);
         engine.TEngineRequestApply(TInterface.TExampleTextCreate(
-            started.LDraftId, TInterface.TStateValueCreate("she knelt to kindle the damp logs")));
+            started.LDraftId, TInterfaceState.TStateValueCreate("she knelt to kindle the damp logs")));
         LDraft held = engine.TEngineRequestApply(
             TInterface.TMentionAdditionCreate(started.LDraftId, 0, 0, 13, 6, entryId));
         long mentionId = Assert.Single(held.LDraftExample!.LExampleMention).LMentionId;
@@ -330,9 +330,9 @@ public sealed class TRequestMention
             string.Empty,
             [
                 TInterface.TCardDraftCreate(
-                    TInterface.TStateValueCreate("set alight"),
+                    TInterfaceState.TStateValueCreate("set alight"),
                     LStateValue.LStateValueUnspecified,
-                    TInterface.TStateValueCreate("to set something burning"),
+                    TInterfaceState.TStateValueCreate("to set something burning"),
                     [],
                     [],
                     [],
@@ -364,7 +364,7 @@ public sealed class TRequestMention
     private static LDraft TMentionTextApply(LEngine engine, long draftId, long card, long sentence, string text)
     {
         return engine.TEngineRequestApply(
-            TInterface.TSentenceTextCreate(draftId, card, sentence, TInterface.TStateValueCreate(text)));
+            TInterface.TSentenceTextCreate(draftId, card, sentence, TInterfaceState.TStateValueCreate(text)));
     }
 
     private static IReadOnlyList<LMentionDraft> TMentionRead(LDraft draft, long card)

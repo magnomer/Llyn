@@ -1,5 +1,5 @@
 # TCorpusMention.cs
-Hash: `8ca997e8ee5bb199`
+Hash: `ae284a008fb2ec07`
 
 ## `public sealed class TCorpusMention`
 
@@ -10,9 +10,9 @@ A Mention drops by the selection over it and by its chip's id.
 The chip line names a linked headword and keys a silent chip.
 A corpus holding no transcript answers no chips and no Meanings.
 A failed chip line or Meaning read reports `Mention.FindFailed` once and answers nothing.
-A failed Meaning read hands the envoy the ledger's ready notice.
+A failed Meaning read hands the envoy the `Notice.Unexpected` ledger notice.
 A link over an Entry keeps the selection's span and carries no sense.
-The Meaning read maps each row whole and asks the engine with the unknown key.
+The Meaning read leads with the whole Entry, maps each row, and asks the engine with the unknown key.
 A transcript word is searched in the Example's language, and the pick links it.
 An excerpt click with no chosen Example finds nothing, and a kept leave asks once and finds nothing.
 A failed word find reports `Mention.FindFailed` and offers nothing.

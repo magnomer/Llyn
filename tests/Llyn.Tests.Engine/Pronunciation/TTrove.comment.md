@@ -1,5 +1,5 @@
 # TTrove.cs
-Hash: `da961e344f046bf0`
+Hash: `3e97d43994b785d0`
 
 ## `public sealed class TTrove`
 
@@ -9,5 +9,5 @@ A hold is read back only for the same word and language.
 A find with no phonetic at all is not held.
 A recording hold keeps every variety a source gave, read back only for the same word and language.
 A recording find with no address at all is not held.
-A transcription hold is kept once per scheme, so two schemes of one draft read back separately.
+A transcription hold is kept once per scheme, so two schemes of one word read back separately.
 Clearing a session drops every scheme it held and leaves another session's holds standing.

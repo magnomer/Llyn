@@ -1,30 +1,24 @@
 # TCorpus.cs
-Hash: `cee4c8294e980e3f`
+Hash: `499591202df0dddd`
 
 ## `public sealed class TCorpus`
 
-Covers the corpus panel's gates end to end on a real workspace.
-A fresh start with no row chosen opens a blank transcript, and with an Example chosen a quoting entry.
-The quoting entry shows the citation from its first paint.
+Covers how the corpus panel chooses and shows an Example, end to end on a real workspace.
+With an Example chosen, a fresh start opens a quoting entry that shows the quoted Example from its first paint.
 An opened Example shows on the excerpt, and one hidden by the query drops the query first.
-A click records the voyage and shows the Example, and a refused leave records nothing.
-A leave with nothing unsaved asks nothing, and a discard stores nothing.
-A kept leave stays on the transcript, and a stored leave keeps the Example.
-A saved fresh transcript shows the stored Example on the excerpt outside the scribe.
-Closing the transcript cancels the desk, and closing the quotation editor falls back to the chosen Example.
+A click with nothing unsaved records the voyage and shows the Example.
 A quoting entry shows on the display, and a workspace notice clears both lists and tells the driver.
-An entry notice keeps the transcript without a chosen quotation, and keeps the display with one.
+An entry notice keeps the display while a quotation is chosen.
 A rows read that no longer lists the shown Example clears both lists.
 A confirmed delete removes the chosen Example, and the quotation side deletes nothing.
-The window's exit gate cancels the entry editor's desk and stops its display's playback once.
-The marshal the corpus is built with hands each transcript edit on as the held Example.
-A held stored Example carries its tally and text placeholder, and a cancel raises the blank Example with both.
+The transcript desk lives in `TCorpusScribe`.
+The marshal, the held Example and the window's exit gate live in `TCorpusHold`.
 
 ## `internal static CCorpus TCorpusPrepare(CAtelier atelier, CEnvoy envoy)`
 
 Builds the corpus over the atelier with its own editor, and the corpus restores both vistas itself.
 Its seam answers that the tab is in front, and its marshal runs each desk notice at once.
-`TQuotation` builds its corpus the same way.
+Every `TCorpus` sibling class and `TQuotation` build their corpus through it.
 
 ## `internal static LExample TCorpusExampleSave(LEngine engine, string text)`
 

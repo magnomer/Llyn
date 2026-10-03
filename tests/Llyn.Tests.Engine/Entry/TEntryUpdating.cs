@@ -143,7 +143,7 @@ public sealed class TEntryUpdating
             [
                 TInterface.TCardDraftCreate(
                     string.Empty, string.Empty, "meaning",
-                    [TInterface.TSentenceDraftCreate("one"), TInterface.TSentenceDraftCreate("two")],
+                    [TInterfaceExample.TSentenceDraftCreate("one"), TInterfaceExample.TSentenceDraftCreate("two")],
                     [], [], ["kept", "dropped"], [], 1),
             ],
             []));

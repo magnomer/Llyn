@@ -8,7 +8,7 @@ Both hold the same rules and ceilings, so each still tells the truth when the ot
 ## Helper
 
 The walkers live in the script as C# text, ported rule for rule from the test walkers.
-The script writes them beside `auditbinder.cs` into a helper project and builds it once per text and SDK.
+The script writes them beside `AuditBinder.cs` into a helper project and builds it once per text and SDK.
 The helper binds the source through the shared binder with Roslyn 4.14.0, the version the tests pin.
 The build is cached under the temp folder, so a later run pays for the binding alone.
 
@@ -26,7 +26,7 @@ The helper also names each gate's meaning, so the console and the page read one 
 `AuditUI.json` holds every rule value of the three test settings, copied by hand.
 Its `helper.framework` pins the framework the helper targets.
 `AuditUI.ledger.json` holds the ceiling of every kind per file, one block for Strict and one for Truth.
-The binder settings and the exclusions come from `auditbinder.json`.
+The binder settings and the exclusions come from `AuditBinder.json`.
 `strict.tetheringSlots` lists the attributes that tether logic, whether set directly or through `Setter Property=`.
 It holds `Command`, `CommandParameter`, `CommandTarget`, `DisplayMemberPath`, `SelectedValuePath` and `RelativeSource`.
 `strict.tetheringLiterals` lists the attributes that tether only when their value is a plain literal.

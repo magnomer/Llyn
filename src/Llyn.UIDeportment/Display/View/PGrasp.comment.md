@@ -62,6 +62,11 @@ The half step to word beside the stars, read from `QGraspStar.QGraspPointed`.
 
 The row's size comes from `QGraspStar.QGraspSizeDraw`.
 
+## `protected override void OnRender(DrawingContext drawingContext)`
+
+The row has no child elements, so this override alone puts the stars on screen.
+The step, the limit and every brush affect render, so changing any of them redraws the stars.
+
 ## `protected override void OnMouseMove(MouseEventArgs e)`
 
 Hands the pointer position to `QGraspStar.QGraspHoverRefine`.

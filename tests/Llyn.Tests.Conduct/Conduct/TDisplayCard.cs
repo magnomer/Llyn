@@ -59,10 +59,10 @@ public sealed class TDisplayCard
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        LSentenceDraft sentence = TInterface.TSentenceDraftCreate(
+        LSentenceDraft sentence = TInterfaceExample.TSentenceDraftCreate(
             LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnknown) with
         {
-            LSentenceDraftExample = TInterface.TExampleDraftCreate(
+            LSentenceDraftExample = TInterfaceExample.TExampleDraftCreate(
                 "the water runs", 0, LStateAnchor.LStateAnchorUnspecified, "English"),
         };
         LEntry water = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
@@ -105,10 +105,10 @@ public sealed class TDisplayCard
     [Fact]
     public void FolioImageRead_RowNobodyLocated_CarriesTheEmptyVerdict()
     {
-        IReadOnlyList<CImageDraft> images = TInterfaceConduct.TCardImageRead(
+        IReadOnlyList<CImageDraft> images = TInterfaceConductCard.TCardImageRead(
             [TInterface.TImageDraftCreate(string.Empty, 3), TInterface.TImageDraftCreate("still.png", 4)],
             TInterfaceConduct.TMediaCreate());
-        IReadOnlyList<CVideoDraft> videos = TInterfaceConduct.TCardVideoRead(
+        IReadOnlyList<CVideoDraft> videos = TInterfaceConductCard.TCardVideoRead(
             [TInterface.TVideoDraftCreate(string.Empty, id: 5), TInterface.TVideoDraftCreate("clip.mp4", "0:01", 6)],
             TInterfaceConduct.TMediaCreate());
 
@@ -130,7 +130,7 @@ public sealed class TDisplayCard
             },
         });
 
-        IReadOnlyList<CImageDraft> images = TInterfaceConduct.TCardImageRead(
+        IReadOnlyList<CImageDraft> images = TInterfaceConductCard.TCardImageRead(
             [TInterface.TImageDraftCreate(string.Empty, 3), TInterface.TImageDraftCreate("still.png", 4)], media);
 
         Assert.Equal([string.Empty, "still.png"], asked);
@@ -151,7 +151,7 @@ public sealed class TDisplayCard
             },
         });
 
-        IReadOnlyList<CVideoDraft> videos = TInterfaceConduct.TCardVideoRead(
+        IReadOnlyList<CVideoDraft> videos = TInterfaceConductCard.TCardVideoRead(
             [TInterface.TVideoDraftCreate(string.Empty, id: 5), TInterface.TVideoDraftCreate("reel.mp4", "0:01", 6)],
             media);
 
@@ -162,7 +162,7 @@ public sealed class TDisplayCard
     [Fact]
     public void FolioVideoRead_WrittenSpan_CarriesTheMomentsTheEngineRead()
     {
-        IReadOnlyList<CVideoDraft> videos = TInterfaceConduct.TCardVideoRead(
+        IReadOnlyList<CVideoDraft> videos = TInterfaceConductCard.TCardVideoRead(
             [TInterface.TVideoDraftCreate("reel.mp4", "0:10 - 0:40"), TInterface.TVideoDraftCreate("reel.mp4")],
             TInterfaceConduct.TMediaCreate());
 
@@ -177,7 +177,7 @@ public sealed class TDisplayCard
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        IReadOnlyList<CVideoDraft> videos = TInterfaceConduct.TCardVideoRead(
+        IReadOnlyList<CVideoDraft> videos = TInterfaceConductCard.TCardVideoRead(
             [
                 TInterface.TVideoDraftCreate(" https://youtu.be/dQw4w9WgXcQ "),
                 TInterface.TVideoDraftCreate("https://example.com/reel.mp4"),

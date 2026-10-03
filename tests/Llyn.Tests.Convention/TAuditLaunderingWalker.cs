@@ -103,8 +103,8 @@ internal static class TAuditLaunderingWalker
         Dictionary<ISymbol, string> tainted = new(SymbolEqualityComparer.Default);
         foreach (ParameterSyntax parameter in member.DescendantNodesAndSelf().OfType<ParameterSyntax>())
         {
-            if (TAuditBinder.TAuditSymbolRead(parameter) is IParameterSymbol symbol
-                && TAuditBinder.TAuditEngineCheck(symbol.Type))
+            if (TAuditBinderSymbol.TAuditSymbolRead(parameter) is IParameterSymbol symbol
+                && TAuditBinderSide.TAuditEngineCheck(symbol.Type))
             {
                 tainted[symbol] = TAuditLogicColour;
             }
@@ -119,7 +119,7 @@ internal static class TAuditLaunderingWalker
                     TAuditColourAdd(declarator, colour, tainted);
                     break;
                 case AssignmentExpressionSyntax { Left: IdentifierNameSyntax local } assignment
-                    when TAuditBinder.TAuditSymbolRead(local) is ILocalSymbol
+                    when TAuditBinderSymbol.TAuditSymbolRead(local) is ILocalSymbol
                          && TAuditColourRead(assignment.Right, tainted) is string colour:
                     TAuditColourAdd(local, colour, tainted);
                     break;
@@ -143,7 +143,7 @@ internal static class TAuditLaunderingWalker
 
     private static void TAuditColourAdd(SyntaxNode node, string colour, Dictionary<ISymbol, string> tainted)
     {
-        if (TAuditBinder.TAuditSymbolRead(node) is { } symbol)
+        if (TAuditBinderSymbol.TAuditSymbolRead(node) is { } symbol)
         {
             tainted[symbol] = colour;
         }
@@ -162,37 +162,38 @@ internal static class TAuditLaunderingWalker
                      {
                          Expression: IdentifierNameSyntax { Identifier.ValueText: "nameof" }
                      } named
-                     || TAuditBinder.TAuditSymbolRead(named) is not null))
+                     || TAuditBinderSymbol.TAuditSymbolRead(named) is not null))
         {
             switch (child)
             {
                 case IdentifierNameSyntax name
-                    when TAuditBinder.TAuditSymbolRead(name) is { } symbol
+                    when TAuditBinderSymbol.TAuditSymbolRead(name) is { } symbol
                          && tainted.TryGetValue(symbol, out string? colour):
                     return (name.Identifier.ValueText, colour);
                 case IdentifierNameSyntax or MemberBindingExpressionSyntax
-                    when TAuditBinder.TAuditEngineCheck(child):
+                    when TAuditBinderSide.TAuditEngineCheck(child):
                     return (child.ToString(), TAuditLogicColour);
                 case IdentifierNameSyntax name
-                    when TAuditBinder.TAuditSymbolRead(name) is
+                    when TAuditBinderSymbol.TAuditSymbolRead(name) is
                          {
                              IsStatic: true,
                              Kind: SymbolKind.Field or SymbolKind.Property,
                              ContainingType: { TypeKind: not TypeKind.Enum } owner
                          }
-                         && TAuditBinder.TAuditConductCheck(owner):
+                         && TAuditBinderSide.TAuditConductCheck(owner):
                     return (name.Identifier.ValueText, TAuditLogicColour);
                 case IdentifierNameSyntax name
-                    when TAuditBinder.TAuditSymbolRead(name) is { } symbol && TAuditReaderNames.Value!.Contains(symbol):
+                    when TAuditBinderSymbol.TAuditSymbolRead(name) is { } symbol
+                         && TAuditReaderNames.Value!.Contains(symbol):
                     return (name.Identifier.ValueText, TAuditLogicColour);
                 case InvocationExpressionSyntax input
-                    when TAuditBinder.TAuditMemberCheck(
-                        TAuditBinder.TAuditSymbolRead(input), TAuditTruthSetting.TAuditConsoleInput):
+                    when TAuditBinderSymbol.TAuditMemberCheck(
+                        TAuditBinderSymbol.TAuditSymbolRead(input), TAuditTruthSetting.TAuditConsoleInput):
                     return (input.Expression.ToString(), TAuditTextColour);
                 case MemberAccessExpressionSyntax input
                     when TAuditTruthSetting.TAuditInputMembers.Contains(
                              input.Name.Identifier.ValueText, StringComparer.Ordinal)
-                         && TAuditBinder.TAuditControlCheck(TAuditBinder.TAuditTypeRead(input.Expression)):
+                         && TAuditBinderSymbol.TAuditControlCheck(TAuditBinderSymbol.TAuditTypeRead(input.Expression)):
                     return (input.Expression.ToString(), TAuditTextColour);
             }
         }
@@ -225,12 +226,12 @@ internal static class TAuditLaunderingWalker
     {
         ExpressionSyntax core = TAuditStrictWalker.TAuditCoreRead(condition);
         if (core is not (InvocationExpressionSyntax or MemberAccessExpressionSyntax or IdentifierNameSyntax)
-            || TAuditBinder.TAuditSymbolRead(core) is not { } symbol)
+            || TAuditBinderSymbol.TAuditSymbolRead(core) is not { } symbol)
         {
             return false;
         }
 
-        return TAuditBinder.TAuditLogicCheck(symbol) || TAuditReaderNames.Value!.Contains(symbol);
+        return TAuditBinderSide.TAuditLogicCheck(symbol) || TAuditReaderNames.Value!.Contains(symbol);
     }
 
     private static int TAuditLineRead(SyntaxNode node)

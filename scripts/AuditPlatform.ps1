@@ -25,7 +25,7 @@ reads every project file under the configured root, and reports:
              a pragma or a SuppressMessage attribute
   Implicit   a project or Directory.Build file that turns implicit usings on
   Domain     a twin type that implements no port of its portable half, bound with Roslyn
-             through the shared binder in auditbinder.cs and auditbinder.json
+             through the shared binder in AuditBinder.cs and AuditBinder.json
 
 The host may reference every project, so its edges are never reported. The layer chain itself is
 the structure audit's concern and is not repeated here.
@@ -78,7 +78,7 @@ AuditPlatform -NoOpen
 Audit the current checkout and write the page without opening it.
 #>
 #requires -Version 5.1
-# AUDITPLATFORM GENERATION 19 - AuditPlatform.ps1.
+# AUDITPLATFORM - AUDIT GENERATION 19.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -242,7 +242,7 @@ function Write-AuditLine {
     }
 }
 
-Write-AuditLine "AUDITPLATFORM GENERATION $script:AuditGeneration" -ForegroundColor Blue
+Write-AuditLine "AUDITPLATFORM - AUDIT GENERATION $script:AuditGeneration" -ForegroundColor Blue
 $script:PathSeparators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
 
 function Resolve-ProjectRoot {
@@ -534,8 +534,8 @@ function Invoke-DomainHelper {
     }
 
     $targetFramework = [string]$config.helper.framework
-    $binderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
-    $binderConfig = Join-Path $PSScriptRoot 'auditbinder.json'
+    $binderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'AuditBinder.cs'))
+    $binderConfig = Join-Path $PSScriptRoot 'AuditBinder.json'
 
     $sha = [System.Security.Cryptography.SHA256]::Create()
     try {

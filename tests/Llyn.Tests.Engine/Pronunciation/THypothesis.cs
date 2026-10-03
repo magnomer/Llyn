@@ -11,7 +11,7 @@ public sealed class THypothesis
         TInterface.TRespellingRuleCreate("n$", "t"),
     ];
 
-    private static readonly LHypothesis THypothesisTables = TInterface.THypothesisCreate(
+    private static readonly LHypothesis THypothesisTables = TInterfaceFanqie.THypothesisCreate(
         new Dictionary<string, string>
         {
             ["疑"] = "ng", ["見"] = "k", ["端"] = "t", ["定"] = "d", ["匣"] = "x", ["來"] = "l",
@@ -29,26 +29,26 @@ public sealed class THypothesis
         {
             ["平"] =
             [
-                TInterface.THypothesisToneCreate("^[ptcskʔh]", [], "1"),
-                TInterface.THypothesisToneCreate(
+                TInterfaceFanqie.THypothesisToneCreate("^[ptcskʔh]", [], "1"),
+                TInterfaceFanqie.THypothesisToneCreate(
                     "^[bdqzg]", [TInterface.TRespellingRuleCreate("^(.)", "$1h")], "2"),
-                TInterface.THypothesisToneCreate("", [], "2"),
+                TInterfaceFanqie.THypothesisToneCreate("", [], "2"),
             ],
             ["上"] =
             [
-                TInterface.THypothesisToneCreate("^[ptcskʔh]", [TInterface.TRespellingRuleCreate("$", "ʔ")], "3"),
-                TInterface.THypothesisToneCreate("^[mnjwl]", [TInterface.TRespellingRuleCreate("$", "ʔ")], "4S"),
-                TInterface.THypothesisToneCreate("", [TInterface.TRespellingRuleCreate("$", "ʔ")], "4"),
+                TInterfaceFanqie.THypothesisToneCreate("^[ptcskʔh]", [TInterface.TRespellingRuleCreate("$", "ʔ")], "3"),
+                TInterfaceFanqie.THypothesisToneCreate("^[mnjwl]", [TInterface.TRespellingRuleCreate("$", "ʔ")], "4S"),
+                TInterfaceFanqie.THypothesisToneCreate("", [TInterface.TRespellingRuleCreate("$", "ʔ")], "4"),
             ],
             ["入"] =
             [
-                TInterface.THypothesisToneCreate("^[ptcskʔh]", THypothesisStops, "7"),
-                TInterface.THypothesisToneCreate("", THypothesisStops, "8"),
+                TInterfaceFanqie.THypothesisToneCreate("^[ptcskʔh]", THypothesisStops, "7"),
+                TInterfaceFanqie.THypothesisToneCreate("", THypothesisStops, "8"),
             ],
         },
         [
-            TInterface.THypothesisPlaceCreate("dental", ["端", "定"]),
-            TInterface.THypothesisPlaceCreate("velar", ["疑", "見", "匣"]),
+            TInterfaceFanqie.THypothesisPlaceCreate("dental", ["端", "定"]),
+            TInterfaceFanqie.THypothesisPlaceCreate("velar", ["疑", "見", "匣"]),
         ]);
 
     [Theory]

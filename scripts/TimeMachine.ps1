@@ -28,7 +28,7 @@
 
     Every project-specific value - project file, executable, historical project
     names, runtime, publish properties, folder names, git remote and commit
-    subject shape, version file - lives in execution.json. This script carries
+    subject shape, version file - lives in Execution.json. This script carries
     none, so the file is identical in every project at the same generation.
 .PARAMETER Version
     Historical major.minor.revision to build. Omit it to use the current working tree.
@@ -63,22 +63,22 @@
     Rebuild the 2.9.9991 snapshot from its commit without launching it.
 #>
 #requires -Version 5.1
-# EXECUTION GENERATION 2 - TimeMachine.ps1.
+# TIMEMACHINE - EXECUTION GENERATION 2.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the executed outcome changes.
 # A generation names what the family builds, where it installs, and what it launches. Two projects on
 # the same generation publish the same way and their folders lay out the same, whatever else differs
 # between the files. A publish flag, a destination, a temp isolation rule, or a launch step added,
 # removed, or changed is a new generation; wording, plumbing, and refactoring leave it alone.
-# Generation 2: the family lives in scripts/ with execution.json beside it and is invoked by bare name
-# through the dispatchers install.ps1 installs; current source publishes Release, self-contained, with
+# Generation 2: the family lives in scripts/ with Execution.json beside it and is invoked by bare name
+# through the dispatchers Install.ps1 installs; current source publishes Release, self-contained, with
 # the configured properties into run/, build/, or snapshots/<version>/; a historical version climbs
 # the ladder - snapshot executable, local commit, fetched commit, nearest lower - and a commit is
 # exported and published into snapshots/<version>/; debug publishes Debug into debug/; when a live
 # process runs from the install folder the build goes into an eight-digit slot inside it instead, and
-# slots nothing runs from are reaped first; every launch is written to the ledger so stop.ps1 can end
+# slots nothing runs from are reaped first; every launch is written to the ledger so Stop.ps1 can end
 # it; every intermediate file lives under <work root>/temp, removed on success and kept on failure.
-# Every project-specific value lives in execution.json, so this file is identical in every project at
+# Every project-specific value lives in Execution.json, so this file is identical in every project at
 # this generation.
 [CmdletBinding()]
 param(
@@ -170,7 +170,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $root = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-. (Join-Path $PSScriptRoot 'execution.config.ps1')
+. (Join-Path $PSScriptRoot 'Execution.config.ps1')
 
 Write-ExecutionGeneration -Script 'TimeMachine.ps1'
 $config = Read-ExecutionConfig -ProjectRoot $root
@@ -280,7 +280,7 @@ function Install-Payload {
             $stale | ForEach-Object { Remove-Item -LiteralPath $_.FullName -Recurse -Force }
         }
         catch {
-            throw "The installed build could not be replaced, most likely because $projectName is still running from it. Run stop.ps1 or close $projectName and run again: $Destination"
+            throw "The installed build could not be replaced, most likely because $projectName is still running from it. Run Stop.ps1 or close $projectName and run again: $Destination"
         }
     }
     else {

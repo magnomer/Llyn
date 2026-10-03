@@ -1,0 +1,40 @@
+# TEngineTenureSubject.cs
+Hash: `e61020f4830570f6`
+
+## `public sealed class TEngineTenureSubject`
+
+Covers how a finished tenure commits each subject it can hold, on a fresh workspace.
+A changed example, entry, situation or reference is stored, its draft dropped and its id answered.
+An author tenure is ready only once its name is written.
+A tenure on a stored Author renames it in place.
+It builds each tenure through `TWorkspace.TWorkspacePrepare` and waits through `TEngineTenure.TTenureHold`.
+
+## `public void TenureFinish_Changed_CommitsExample()`
+
+Finishing a changed example tenure stores the example, drops the draft and answers the stored id.
+
+## `public void TenureFinish_Changed_CommitsEntry()`
+
+Finishing a changed entry tenure stores the entry, drops the draft and answers the stored id.
+
+## `public void TenureFinish_Changed_CommitsSituation()`
+
+Finishing a changed situation tenure stores the situation the same way.
+The title names the Situation the draft holds, as the scenario's own edit does.
+
+## `public void TenureFinish_Changed_CommitsReference()`
+
+Finishing a changed reference tenure stores the source the same way.
+
+## `public void TenureFinish_Changed_CommitsAuthor()`
+
+Finishing a changed author tenure creates the Author under the deferred name.
+
+## `public void TenureReadyCheck_AuthorNamedLater_ReadyOnceTheNameIsWritten()`
+
+A fresh author tenure is not ready with its blank name, and a deferred name makes it ready.
+The check writes the queued name first, so the long hold never has to pass.
+
+## `public void TenureFinish_Renamed_UpdatesAuthor()`
+
+An author tenure on a stored Author reads its name, stays unchanged until a name is deferred, then renames it.

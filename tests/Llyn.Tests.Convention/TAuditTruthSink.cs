@@ -144,7 +144,7 @@ internal static partial class TAuditTruthWalker
 
     private static bool TAuditHotCheck(ISymbol callee, ArgumentSyntax argument)
     {
-        if (TAuditBinder.TAuditLogicCheck(callee))
+        if (TAuditBinderSide.TAuditLogicCheck(callee))
         {
             return true;
         }
@@ -163,12 +163,12 @@ internal static partial class TAuditTruthWalker
     internal static ISymbol? TAuditCallRead(ExpressionSyntax call)
     {
         if (call is not (InvocationExpressionSyntax or BaseObjectCreationExpressionSyntax)
-            || TAuditBinder.TAuditSymbolRead(call) is not { } callee)
+            || TAuditBinderSymbol.TAuditSymbolRead(call) is not { } callee)
         {
             return null;
         }
 
-        if (TAuditBinder.TAuditLogicCheck(callee) || TAuditRelayNames.Contains(callee))
+        if (TAuditBinderSide.TAuditLogicCheck(callee) || TAuditRelayNames.Contains(callee))
         {
             return callee;
         }
@@ -204,7 +204,7 @@ internal static partial class TAuditTruthWalker
             IdentifierNameSyntax or MemberAccessExpressionSyntax => invocation.Expression,
             _ => null
         };
-        return target is null ? null : TAuditBinder.TAuditSymbolRead(target);
+        return target is null ? null : TAuditBinderSymbol.TAuditSymbolRead(target);
     }
 
     internal static bool TAuditNameofCheck(SyntaxNode node)
@@ -213,6 +213,6 @@ internal static partial class TAuditTruthWalker
                {
                    Expression: IdentifierNameSyntax { Identifier.ValueText: "nameof" }
                } named
-               && TAuditBinder.TAuditSymbolRead(named) is null;
+               && TAuditBinderSymbol.TAuditSymbolRead(named) is null;
     }
 }

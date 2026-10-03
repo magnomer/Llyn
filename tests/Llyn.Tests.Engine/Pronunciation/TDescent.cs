@@ -98,7 +98,7 @@ public sealed class TDescent
         LFanqieRow departing = TInterface.TFanqieRowCreate("匣", "寒", "寒", "一", "去", false)
             with { LFanqieRowId = 6, LFanqieRowClass = "5" };
 
-        IReadOnlyList<LAnchorRow> rows = TInterface.TReflexAnchorScan(
+        IReadOnlyList<LAnchorRow> rows = TInterfaceFanqie.TReflexAnchorScan(
             [level, departing], [6], TDescentRead(), "Mandarin", "55");
 
         Assert.Equal(2, rows.Count);

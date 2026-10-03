@@ -440,7 +440,7 @@ public sealed class TAuditRatchet
         return File.ReadAllText(Path.Combine(TAuditSource.TAuditRootRead(), TAuditSettingFolder, name));
     }
 
-    private static string? TAuditCommittedRead(string path)
+    internal static string? TAuditCommittedRead(string path)
     {
         return TAuditGitRead("show", $"HEAD:{path}");
     }

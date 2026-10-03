@@ -1,14 +1,15 @@
 # TAuditTruthTampering.cs
-Hash: `cba81ad7ba88ce49`
+Hash: `9d7959085892693a`
 
 ## `internal static partial class TAuditTruthWalker`
 
-The tampering half of the truth walker: what a driver line may not do to logic without a request.
-It also holds the spoonfeeding rule and the mismatching rule, which read every driver file at once.
+The tampering half of the truth walker, covering what a driver line may not do to logic without a request.
+It also holds the spoonfeeding rule and the mismatching rule.
+The mismatching rule reads every driver file at once.
 
 ## `private static void TAuditTamperingScan(SyntaxNode root, List<TViolation> violations)`
 
-Every plain assignment to a logic-named member outside an object initialiser.
+Every plain assignment to a logic member outside an object initialiser.
 An event subscription is a compound assignment and is not reported.
 A tuple assignment over indexed slots is a swap, and a swap reorders a collection.
 A `with` copy that sets a logic member rewrites logic the engine handed over.
@@ -33,7 +34,7 @@ True when the receiver, or any object along its member chain, is a control or a 
 
 Every Conduct member one driver reaches and another never does, once per file and member.
 Every Conduct interface that a driver declares no implementation of, once per driver.
-Both drivers stand on one Conduct, so an asymmetry is medium work or a leak, and the ledger holds it.
+The drivers stand on one Conduct, so an asymmetry is medium work or a leak, and the ledger holds it.
 
 ## `private static bool TAuditFreshCheck(ExpressionSyntax rows)`
 

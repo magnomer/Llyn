@@ -1,11 +1,11 @@
 # TAuditObjectWalker.cs
-Hash: `c6a6c3eb423c7f25`
+Hash: `6f0da4a7cb6ec6f4`
 
 ## `internal static class TAuditObjectWalker`
 
 Merges every partial type of the bound sources and measures how tightly its parts are glued.
 It also measures how far each type couples to other codebase types, and how much state it rebinds.
-Binding goes through `TAuditBinder`, the compilation every bound audit and scripts/auditbinder.cs share.
+Binding goes through `TAuditBinder`, the compilation every bound audit shares.
 
 ## `public static IReadOnlyList<TAuditObjectRow> TAuditRun(IReadOnlyList<string> sourcePaths)`
 

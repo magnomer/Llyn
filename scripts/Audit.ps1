@@ -4,8 +4,9 @@ Runs every audit, prints one result row per audit, and writes one summary page t
 
 .DESCRIPTION
 Reads the configuration from Audit.json next to this script, then performs these actions:
-  1. Deletes every file directly inside the report folder, so the run leaves only fresh
-     output. -Keep skips this. The folder must be a direct child of the repository root
+  1. Deletes every audit page directly inside the report folder, the summary page and each
+     listed audit's own, so the run leaves only fresh output. The folder holds the reports of
+     every script family, so a file of another name is never touched. -Keep skips this. The folder must be a direct child of the repository root
      with the configured name, or the run stops. Subfolders are never deleted, moved or
      written, and the folders named in report.keep, such as records, which holds the
      history records, are never touched.
@@ -27,7 +28,7 @@ table: they pass when they exit with 0, and their last console line is their ver
 Audit.json shape:
   {
     "project": "Llyn",
-    "report": { "directory": "audit", "versionFile": "version.json", "versionKey": "current-version", "prefix": "Audit-", "keep": ["records"] },
+    "report": { "directory": "docs-analysis", "versionFile": "version.json", "versionKey": "current-version", "prefix": "Audit-", "keep": ["records"] },
     "audits": [ "AuditLines", "AuditLinesHistory", "AuditEncoding" ]
   }
 
@@ -52,6 +53,7 @@ Audit
 Audit -Keep -NoOpen
 #>
 #requires -Version 5.1
+# AUDIT - AUDIT GENERATION 19.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -83,8 +85,10 @@ CONFIGURATION
     audits to run, in order. Each audit names scripts\<name>.ps1.
 
 RUN
-    First every file directly inside the report folder is deleted, unless
-    -Keep is given. The folder must be a direct child of the repository root
+    First every audit page directly inside the report folder is deleted,
+    unless -Keep is given: a file named after the summary prefix or a listed
+    audit. The folder holds the reports of every script family, so any other
+    file stays. The folder must be a direct child of the repository root
     with the configured name. Only files directly inside it are deleted:
     subfolders are never deleted, moved or written, and the subfolders named
     in report.keep, such as records with the history records, are never
@@ -126,6 +130,8 @@ EXAMPLES
 '@ | Write-Host
     exit 0
 }
+
+Write-Host 'AUDIT - AUDIT GENERATION 19' -ForegroundColor Blue
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -220,11 +226,14 @@ function Resolve-ReportFolder {
 }
 
 function Clear-ReportFolder {
-    # Deletes only the files directly inside the folder. Every subfolder is skipped, so nothing
-    # under it is ever deleted, moved or written, and an entry named in Keep is never touched.
+    # Deletes only the audit pages directly inside the folder: the files whose name starts with one
+    # of the prefixes. The folder holds the reports of every script family, so a file of any other
+    # name is never touched. Every subfolder is skipped, so nothing under it is ever deleted, moved
+    # or written, and an entry named in Keep is never touched.
     param(
         [Parameter(Mandatory = $true)][string]$Folder,
-        [Parameter(Mandatory = $true)][AllowEmptyCollection()][string[]]$Keep
+        [Parameter(Mandatory = $true)][AllowEmptyCollection()][string[]]$Keep,
+        [Parameter(Mandatory = $true)][string[]]$Prefixes
     )
 
     if (-not [System.IO.Directory]::Exists($Folder)) { return }
@@ -233,7 +242,10 @@ function Clear-ReportFolder {
     foreach ($entry in [System.IO.Directory]::GetFileSystemEntries($Folder)) {
         $attributes = [System.IO.File]::GetAttributes($entry)
         if (($attributes -band [System.IO.FileAttributes]::Directory) -ne 0) { continue }
-        if ($kept.Contains([System.IO.Path]::GetFileName($entry))) { continue }
+        $name = [System.IO.Path]::GetFileName($entry)
+        if ($kept.Contains($name)) { continue }
+        $owned = @($Prefixes | Where-Object { $name.StartsWith($_, [System.StringComparison]::OrdinalIgnoreCase) })
+        if ($owned.Count -eq 0) { continue }
         [System.IO.File]::Delete($entry)
     }
 }
@@ -498,8 +510,6 @@ $versionKey = [string]$config.report.versionKey
 $reportPrefix = [string]$config.report.prefix
 $keptFolders = @(Get-KeptFolders -Config $config)
 
-Write-Host 'AUDIT' -ForegroundColor Blue
-
 # Version, read from the configured version file and key.
 $version = '0.0.0'
 if ([System.IO.File]::Exists($versionPathFull)) {
@@ -519,7 +529,9 @@ else {
 }
 
 if (-not $Keep) {
-    Clear-ReportFolder -Folder $reportFolder -Keep $keptFolders
+    # The summary page and every listed audit name their pages <prefix><version>.
+    $auditPrefixes = @($reportPrefix) + @($audits | ForEach-Object { [string]$_ + '-' })
+    Clear-ReportFolder -Folder $reportFolder -Keep $keptFolders -Prefixes $auditPrefixes
 }
 [System.IO.Directory]::CreateDirectory($reportFolder) | Out-Null
 

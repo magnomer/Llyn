@@ -114,7 +114,9 @@ public sealed class TDisplayMention
             "run",
             "English",
             TDisplaySentenceCreate(
-                "the water", string.Empty, [TInterface.TMentionDraftCreate(0, 4, 5, water.LEntryId, sense)]));
+                "the water",
+                string.Empty,
+                [TInterfaceMentionSpan.TMentionDraftCreate(0, 4, 5, water.LEntryId, sense)]));
         List<string> asked = [];
         List<long> arrived = TDisplayLibraryAdd(atelier, asked, true);
         List<long> senses = [];
@@ -231,9 +233,9 @@ public sealed class TDisplayMention
 
     private static LSentenceDraft TDisplaySentenceCreate(
         string text, string language, IReadOnlyList<LMentionDraft> mentions) =>
-        TInterface.TSentenceDraftCreate(text) with
+        TInterfaceExample.TSentenceDraftCreate(text) with
         {
-            LSentenceDraftExample = TInterface.TExampleDraftCreate(text) with
+            LSentenceDraftExample = TInterfaceExample.TExampleDraftCreate(text) with
             {
                 LExampleDraftLanguage = language,
                 LExampleDraftMention = mentions,

@@ -1,0 +1,10 @@
+{
+  "version": "0.17.11768",
+  "commit": "7d7a3f17abb16201060f35d740eabc769227bdda",
+  "previous": "0.17.11718",
+  "previousCommit": "4cec590e94b0240a511acb4dcd1df39bfcc25c60",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.UIDeportment/Media/Audio/PClipReading.comment.md", "src/Llyn.UIDeportment/Media/Audio/QClipReading.comment.md"]
+  ]
+}

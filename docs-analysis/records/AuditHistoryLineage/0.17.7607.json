@@ -1,0 +1,11 @@
+{
+  "version": "0.17.7607",
+  "commit": "49482e58b507fbf32e148920adebcfc9b3a3f872",
+  "previous": "0.17.7507",
+  "previousCommit": "6f5f5394ba9e977eed156203643c160d545ec549",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.UIDeportment/Panel/Dialog/PSLeaveAnswer.comment.md", "src/Llyn.UIDeportment/Panel/Dialog/QSLeaveAnswer.comment.md"],
+    ["src/Llyn.UIDeportment/Shell/LBootstrap.comment.md", "src/Llyn.UIDeportment/Shell/QBootstrap.comment.md"]
+  ]
+}

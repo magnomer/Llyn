@@ -141,7 +141,7 @@ public sealed class TSituation
 
         LReference reference = engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
             0,
-            TInterface.TStateValueCreate("A Dictionary"),
+            TInterfaceState.TStateValueCreate("A Dictionary"),
             LStateValue.LStateValueUnspecified,
             LReferenceKind.LReferenceKindUnspecified,
             LStateValue.LStateValueUnspecified,

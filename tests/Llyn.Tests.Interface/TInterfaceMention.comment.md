@@ -1,5 +1,5 @@
 # TInterfaceMention.cs
-Hash: `63b9fa74206ec9ba`
+Hash: `c9db23b5f991af6c`
 
 ## `internal static class TInterfaceMention`
 
@@ -8,7 +8,9 @@ It also runs the shared chip read over a failing draft port.
 It runs the shared Meaning read over a scripted draft port.
 It runs the corpus rows read over a failing entry port.
 It runs the favorites rows read over a failing entry port.
+It runs the quotation rows read over a failing entry port.
 It runs the occurrence rows read over a failing entry port.
+It maps a click result and adds a Mention to an Example, so a test builds no engine record itself.
 It is transparent and carries no test logic of its own.
 
 ## `internal static CSentence TSentenceFailCreate(LEngine engine, CDesk desk, CEnvoy envoy)`
@@ -29,6 +31,14 @@ The atelier's navigation opens what the find opens at once.
 
 Runs the shared open of a find answer over the atelier's mention area.
 
+## `internal static CMentionResult TMentionResultRead(int offset, LMention? stored) =>`
+
+Maps a click result holding only `stored`, so a test builds no engine record itself.
+
+## `internal static LExample TExampleMentionAdd(this LExample example, LMention mention) =>`
+
+The Example with `mention` as its only Mention, so a test builds an Example that links.
+
 ## `internal static CMentionOffer? TDisplayMentionFind(LEngine engine, CAtelier atelier, CEnvoy envoy, long shown)`
 
 Finds a word through a display whose entry port's word find throws.
@@ -39,13 +49,17 @@ It shows the stored entry `shown`, since a display showing nothing answers befor
 
 Runs the shared chip line read over a draft port whose resolve throws.
 
+## `internal static IReadOnlyList<CVistaRow> TQuotationFailRead(LEngine engine, CEnvoy envoy)`
+
+Runs the quotation rows read over an entry port whose entry find throws.
+
 ## `internal static IReadOnlyList<CVistaRow> TOccurrenceFailRead(LEngine engine, CEnvoy envoy)`
 
 Runs the occurrence rows read over an entry port whose find throws.
 
 ## `internal static IReadOnlyList<CVistaRow> TFavoriteFailRead(LEngine engine, CEnvoy envoy)`
 
-Runs the favorites rows read over an entry port whose favorite find throws, on a real vista.
+Runs the favorites rows read over an entry port whose favorite find throws, through a real atelier.
 
 ## `internal static CMentionSense? TMentionSenseRead(LEngine engine, CDesk desk, CEnvoy envoy, Func<object?[]?, object?> sense)`
 

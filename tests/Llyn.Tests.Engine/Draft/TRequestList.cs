@@ -34,7 +34,7 @@ public sealed class TRequestList
         long sentence = TRequestSentenceAdd(engine, started.LDraftId, card, 0);
 
         LDraft answered = engine.TEngineRequestApply(TInterface.TSentenceTextCreate(
-            started.LDraftId, card, sentence, TInterface.TStateValueCreate("she knelt to kindle the damp logs")));
+            started.LDraftId, card, sentence, TInterfaceState.TStateValueCreate("she knelt to kindle the damp logs")));
 
         LExampleDraft example = Assert.IsType<LExampleDraft>(
             answered.LDraftContent.LEntryDraftMeanings[0].LCardDraftSentence[0].LSentenceDraftExample);
@@ -83,12 +83,12 @@ public sealed class TRequestList
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LExample stored = engine.TEngineExampleCreate(TInterface.TExampleCreate(
+        LExample stored = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
             0,
             "English",
-            TInterface.TStateValueCreate("the speech kindled a hope"),
+            TInterfaceState.TStateValueCreate("the speech kindled a hope"),
             LStateValue.LStateValueUnspecified,
-            TInterface.TStateAnchorRead(null)));
+            TInterfaceState.TStateAnchorRead(null)));
         LDraft started = engine.TEngineDraftStart("Input", null);
         long card = TRequestCardAdd(engine, started.LDraftId);
         long sentence = TRequestSentenceAdd(engine, started.LDraftId, card, 0);
@@ -125,8 +125,8 @@ public sealed class TRequestList
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LSituation stored = engine.TEngineSituationCreate(TInterface.TSituationCreate(
             0,
-            TInterface.TStateValueCreate("around a hearth"),
-            TInterface.TStateValueCreate("telling stories"),
+            TInterfaceState.TStateValueCreate("around a hearth"),
+            TInterfaceState.TStateValueCreate("telling stories"),
             LStateValue.LStateValueUnspecified));
         LDraft started = engine.TEngineDraftStart("Input", null);
         long card = TRequestCardAdd(engine, started.LDraftId);
@@ -149,7 +149,7 @@ public sealed class TRequestList
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LSituation stored = engine.TEngineSituationCreate(TInterface.TSituationCreate(
             0,
-            TInterface.TStateValueCreate("around a hearth"),
+            TInterfaceState.TStateValueCreate("around a hearth"),
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified));
         LDraft started = engine.TEngineDraftStart("Input", null);
@@ -161,7 +161,7 @@ public sealed class TRequestList
             TInterface.TSituationPickCreate(started.LDraftId, second, stored.LSituationId, 0));
 
         LDraft answered = engine.TEngineRequestApply(TInterface.TSituationTitleCreate(
-            started.LDraftId, stored.LSituationId, TInterface.TStateValueCreate("by the fire")));
+            started.LDraftId, stored.LSituationId, TInterfaceState.TStateValueCreate("by the fire")));
 
         Assert.All(
             answered.LDraftContent.LEntryDraftMeanings,
@@ -242,7 +242,7 @@ public sealed class TRequestList
         engine.TEngineRequestApply(TInterface.TRequestHeadwordCreate(started.LDraftId, "kindle"));
         long card = TRequestCardAdd(engine, started.LDraftId);
         engine.TEngineRequestApply(
-            TInterface.TRequestTitleCreate(started.LDraftId, card, TInterface.TStateValueCreate("set alight")));
+            TInterface.TRequestTitleCreate(started.LDraftId, card, TInterfaceState.TStateValueCreate("set alight")));
         TRequestSentenceAdd(engine, started.LDraftId, card, 0);
 
         LEntry stored = engine.TEngineDraftCommit(started.LDraftId);
@@ -263,10 +263,10 @@ public sealed class TRequestList
             "a note",
             [
                 TInterface.TCardDraftCreate(
-                    TInterface.TStateValueCreate("set alight"),
+                    TInterfaceState.TStateValueCreate("set alight"),
                     LStateValue.LStateValueUnspecified,
-                    TInterface.TStateValueCreate("to set something burning"),
-                    [TInterface.TSentenceDraftCreate("she knelt to kindle the damp logs")],
+                    TInterfaceState.TStateValueCreate("to set something burning"),
+                    [TInterfaceExample.TSentenceDraftCreate("she knelt to kindle the damp logs")],
                     [TInterface.TSituationDraftCreate("around a hearth")],
                     [],
                     ["fire", "literary"],
@@ -307,7 +307,7 @@ public sealed class TRequestList
         LAuthor known = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         LDraft started = engine.TEngineReferenceStart("Reference", null);
         engine.TEngineRequestApply(
-            TInterface.TReferenceTitleCreate(started.LDraftId, TInterface.TStateValueCreate("the evening news")));
+            TInterface.TReferenceTitleCreate(started.LDraftId, TInterfaceState.TStateValueCreate("the evening news")));
 
         engine.TEngineRequestApply(TInterface.TAuthorAdditionCreate(started.LDraftId, "Brook", 0));
         LDraft answered = engine.TEngineRequestApply(

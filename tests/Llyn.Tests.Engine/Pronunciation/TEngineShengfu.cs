@@ -48,7 +48,7 @@ public sealed class TEngineShengfu
             new string('a', 40) + "!", HttpStatusCode.OK);
 
         (LShengfu? found, bool reached) =
-            await TInterface.TShengfuSourceFind(client, "(a+)+$", "整");
+            await TInterfaceSource.TShengfuSourceFind(client, "(a+)+$", "整");
 
         Assert.Null(found);
         Assert.False(reached);

@@ -7,8 +7,8 @@ public sealed class TCoinage
     [Fact]
     public void CoinageWordingCheck_BlankWording_IsFalse()
     {
-        Assert.False(TInterfaceConduct.TCoinageWordingCheck(null));
-        Assert.False(TInterfaceConduct.TCoinageWordingCheck(" \t "));
-        Assert.True(TInterfaceConduct.TCoinageWordingCheck(" tag "));
+        Assert.False(TInterfaceConductDialog.TCoinageWordingCheck(null));
+        Assert.False(TInterfaceConductDialog.TCoinageWordingCheck(" \t "));
+        Assert.True(TInterfaceConductDialog.TCoinageWordingCheck(" tag "));
     }
 }

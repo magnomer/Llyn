@@ -10,7 +10,7 @@ public sealed class TExampleLine
     [Fact]
     public void EngineLineRead_TrailingOrder_WritesTheRoleBeforeTheMarker()
     {
-        LSentenceDraft sentence = TInterface.TSentenceDraftCreate(
+        LSentenceDraft sentence = TInterfaceExample.TSentenceDraftCreate(
             "an example", 0, LStateAnchor.LStateAnchorUnspecified, "of", "Something");
 
         (string head, IReadOnlyList<LMentionPiece> pieces, _) = TInterface.TEngineLineRead(
@@ -25,7 +25,7 @@ public sealed class TExampleLine
     [Fact]
     public void EngineLineRead_UnknownMarker_WritesTheMark()
     {
-        LSentenceDraft sentence = TInterface.TSentenceDraftCreate(
+        LSentenceDraft sentence = TInterfaceExample.TSentenceDraftCreate(
             LStateValue.LStateValueUnknown, LStateValue.LStateValueUnspecified);
 
         (string head, IReadOnlyList<LMentionPiece> pieces, string citation) = TInterface.TEngineLineRead(
@@ -37,10 +37,10 @@ public sealed class TExampleLine
     [Fact]
     public void EngineLineRead_EmptyFields_DropsTheHead()
     {
-        LSentenceDraft marker = TInterface.TSentenceDraftCreate("to", LStateValue.LStateValueUnspecified);
-        LSentenceDraft none = TInterface.TSentenceDraftCreate(
+        LSentenceDraft marker = TInterfaceExample.TSentenceDraftCreate("to", LStateValue.LStateValueUnspecified);
+        LSentenceDraft none = TInterfaceExample.TSentenceDraftCreate(
             LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnspecified);
-        LSentenceDraft written = TInterface.TSentenceDraftCreate("text");
+        LSentenceDraft written = TInterfaceExample.TSentenceDraftCreate("text");
         LSentenceOrder order = TInterface.TSentenceOrderCreate(0, 1);
         Dictionary<long, string> citations = [];
 
@@ -52,9 +52,9 @@ public sealed class TExampleLine
     [Fact]
     public void EngineLineRead_CitedSource_AnswersItsLine()
     {
-        LSentenceDraft cited = TInterface.TSentenceDraftCreate("a line", 0, TInterface.TStateAnchorCreate(5));
-        LSentenceDraft lost = TInterface.TSentenceDraftCreate("a line", 0, TInterface.TStateAnchorCreate(6));
-        LSentenceDraft plain = TInterface.TSentenceDraftCreate("a line");
+        LSentenceDraft cited = TInterfaceExample.TSentenceDraftCreate("a line", 0, TInterface.TStateAnchorCreate(5));
+        LSentenceDraft lost = TInterfaceExample.TSentenceDraftCreate("a line", 0, TInterface.TStateAnchorCreate(6));
+        LSentenceDraft plain = TInterfaceExample.TSentenceDraftCreate("a line");
         LSentenceOrder order = TInterface.TSentenceOrderCreate(0, 1);
         Dictionary<long, string> citations = new() { [5] = "Field notes, 1999" };
 
@@ -66,12 +66,12 @@ public sealed class TExampleLine
     [Fact]
     public void EngineLineRead_LinkedMention_DividesTheSentenceAroundIt()
     {
-        LSentenceDraft sentence = TInterface.TSentenceDraftCreate("the cat sat");
+        LSentenceDraft sentence = TInterfaceExample.TSentenceDraftCreate("the cat sat");
         sentence = sentence with
         {
             LSentenceDraftExample = sentence.LSentenceDraftExample! with
             {
-                LExampleDraftMention = [TInterface.TMentionDraftCreate(1, 4, 3, 7)],
+                LExampleDraftMention = [TInterfaceMentionSpan.TMentionDraftCreate(1, 4, 3, 7)],
             },
         };
 

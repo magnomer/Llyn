@@ -26,6 +26,11 @@ Redo then steps nowhere, and the new edit stands.
 A request that changes nothing leaves no snapshot behind.
 The one undo steps over the repeated request straight to the start.
 
+## `public void RequestApply_Scaffolding_RecordsNothing()`
+
+Choosing a language and adding empty cards or sentences are scaffolding, so they leave no undo step.
+The first real edit is the first step, and undoing it returns to a blank headword.
+
 ## `public void RequestApply_SameTypeWithinWindow_MergesStep()`
 
 Two headword edits a second apart are one step, and a third two seconds later is another.
@@ -43,7 +48,7 @@ Undo steps back to the redone draft, not past it.
 ## `public void CardShift_ThenUndo_RestoresOrder()`
 
 A card move is an edit, so undo puts the cards back in their earlier order.
-The card ids are what is compared, since the move touched only their places.
+The titles show the restored order, and the held cards keep the ids they had before the move.
 
 ## `public void DraftCommit_ClearsChronicle()`
 

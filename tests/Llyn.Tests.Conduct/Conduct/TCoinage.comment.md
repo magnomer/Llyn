@@ -1,5 +1,5 @@
 # TCoinage.cs
-Hash: `92b1cb2a915209e9`
+Hash: `28e73c2c1f3b58a7`
 
 ## `public sealed class TCoinage`
 

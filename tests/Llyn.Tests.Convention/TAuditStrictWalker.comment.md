@@ -1,5 +1,5 @@
 # TAuditStrictWalker.cs
-Hash: `067bfe1690eb0b7d`
+Hash: `b278297806b26526`
 
 ## `internal static class TAuditStrictWalker`
 
@@ -51,7 +51,7 @@ The breach and every statement or switch arm inside it.
 
 ## `private static IEnumerable<SyntaxNode> TAuditBodyRead(MemberDeclarationSyntax member)`
 
-Every body of a member: block, arrow, accessor bodies and a constructor initializer's arguments.
+Every body of a member, meaning block, arrow, accessor bodies and a constructor initializer's arguments.
 A field or property initializer is a body too, so a lambda there cannot hide its logic.
 
 ## `private static void TAuditBodyScan(SyntaxNode body, List<SyntaxNode> breaches)`

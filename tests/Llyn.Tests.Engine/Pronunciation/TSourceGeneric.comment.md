@@ -1,5 +1,5 @@
 # TSourceGeneric.cs
-Hash: `4183281730e8596d`
+Hash: `095a67904a6f352c`
 
 ## `public sealed class TSourceGeneric`
 

@@ -1,10 +1,10 @@
 # TDiweiArchive.cs
-Hash: `087ce03a177eb633`
+Hash: `7ff34907ce49c7c7`
 
 ## `public sealed class TDiweiArchive`
 
 Covers the diwei store over stored fanqie rows and a small hypothesis.
-A character with two placements links every part of each, and counts entries through their anchored reflex rows.
+A character with two placements links every part of each, and counts entries through the fanqie rows they anchor.
 An entry with no anchored row counts nowhere, whatever its headword holds.
 Two categories together pick the entries of one cell, and two that share no row pick none.
 Applying stores the derived reading and tone class on each row, blank where the hypothesis has no answer.

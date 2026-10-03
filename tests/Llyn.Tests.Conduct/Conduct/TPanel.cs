@@ -101,249 +101,9 @@ public sealed class TPanel
     }
 
     [Fact]
-    public void PanelRowSelect_UnsavedLeaveKept_KeepsTheRow()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => true);
-        long chosen = panel.TPanelChosenRead();
-        panel.CPanelScribeToggle(true);
-
-        panel.CPanelRowSelect(chosen + 100);
-
-        Assert.Equal(chosen, panel.TPanelChosenRead());
-    }
-
-    [Theory]
-    [InlineData(false, true)]
-    [InlineData(null, false)]
-    public void PanelRowSelect_UnsavedDraft_AsksBeforeRecordingTheStation(bool? answer, bool left)
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        List<string> asked = [];
-        CPanel panel = TPanelPrepare(engine, answer, asked, [], "Scribe", () => true);
-        panel.TPanelStationAttach(() => asked.Add("Station"));
-        LEntry fire = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "fire", "English", "f", string.Empty, [TInterface.TCardCreate("a flame", 1)], []));
-        long chosen = panel.TPanelChosenRead();
-        panel.CPanelScribeToggle(true);
-
-        panel.CPanelRowSelect(fire.LEntryId);
-
-        Assert.Equal(left ? ["Leave", "Station"] : ["Leave"], asked);
-        Assert.Equal(left ? fire.LEntryId : chosen, panel.TPanelChosenRead());
-    }
-
-    [Fact]
-    public void PanelRowOpen_StoredRow_ChoosesTheRow()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => false);
-        long chosen = panel.TPanelChosenRead();
-        panel.CPanelEntryClose();
-        int changed = 0;
-        panel.CPanelChanged += () => changed++;
-
-        bool opened = panel.CPanelRowOpen(chosen);
-
-        Assert.True(opened);
-        Assert.Equal(chosen, panel.TPanelChosenRead());
-        Assert.Equal(1, changed);
-    }
-
-    [Fact]
-    public void PanelRowOpen_MissingRow_ClosesThePanel()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        List<string> asked = [];
-        CPanel panel = TPanelPrepare(engine, null, asked, [], "Scribe", () => false);
-        long chosen = panel.TPanelChosenRead();
-        int cleared = 0;
-        panel.CPanelCleared += () => cleared++;
-
-        bool opened = panel.CPanelRowOpen(chosen + 100);
-
-        Assert.False(opened);
-        Assert.Equal(0, panel.TPanelChosenRead());
-        Assert.Equal(1, cleared);
-        Assert.Empty(asked);
-    }
-
-    [Fact]
-    public void PanelRowOpen_EditingPanel_HandsTheRowToTheEditor()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => false);
-        long chosen = panel.TPanelChosenRead();
-        panel.CPanelEntryCreate();
-        List<long> edited = [];
-        panel.CPanelEdited += edited.Add;
-
-        panel.CPanelRowOpen(chosen);
-
-        Assert.Equal([chosen], edited);
-        Assert.True(panel.CPanelEditing);
-    }
-
-    [Fact]
-    public void PanelDraftResonate_StoredEntry_RepaintsThePanel()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => false);
-        long chosen = panel.TPanelChosenRead();
-        int changed = 0;
-        panel.CPanelChanged += () => changed++;
-
-        panel.CPanelDraftResonate();
-
-        Assert.Equal(1, changed);
-        Assert.Equal(chosen, panel.TPanelChosenRead());
-    }
-
-    [Fact]
-    public void PanelDraftResonate_DeletedEntry_ClosesThePanel()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => false);
-        engine.TEngineEntryDelete(panel.TPanelChosenRead());
-        int cleared = 0;
-        panel.CPanelCleared += () => cleared++;
-
-        panel.CPanelDraftResonate();
-
-        Assert.Equal(1, cleared);
-        Assert.Equal(0, panel.TPanelChosenRead());
-    }
-
-    [Fact]
-    public void PanelEntryResonate_StoredBulletin_RelistsTheRows()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => false);
-        int rows = 0;
-        int changed = 0;
-        panel.CPanelRowsChanged += () => rows++;
-        panel.CPanelChanged += () => changed++;
-
-        panel.CPanelEntryResonate(new CBulletin(panel.TPanelChosenRead(), true));
-
-        Assert.Equal(1, rows);
-        Assert.Equal(1, changed);
-    }
-
-    [Fact]
-    public void PanelEntryDelete_Declined_KeepsChosenAndEntry()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        List<string> asked = [];
-        CPanel panel = TPanelPrepare(engine, false, asked, [], "Scribe", () => false);
-        long chosen = panel.TPanelChosenRead();
-
-        panel.CPanelEntryDelete();
-
-        Assert.Equal(["Scribe.DeleteConfirm"], asked);
-        Assert.Equal(chosen, panel.TPanelChosenRead());
-        Assert.NotNull(engine.TEngineEntryLoad(chosen));
-    }
-
-    [Fact]
-    public void PanelEntryDelete_Accepted_DropsChosenAndEntry()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CPanel panel = TPanelPrepare(engine, true, [], [], "Scribe", () => false);
-        long chosen = panel.TPanelChosenRead();
-
-        panel.CPanelEntryDelete();
-
-        Assert.Equal(0, panel.TPanelChosenRead());
-        Assert.False(panel.CPanelBinEnabled);
-        Assert.Null(engine.TEngineEntryLoad(chosen));
-    }
-
-    [Fact]
-    public void PanelEntryDelete_NoScope_AsksNothing()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        List<string> asked = [];
-        CPanel panel = TPanelPrepare(engine, true, asked, [], null, () => false);
-        long chosen = panel.TPanelChosenRead();
-
-        panel.CPanelEntryDelete();
-
-        Assert.Empty(asked);
-        Assert.NotNull(engine.TEngineEntryLoad(chosen));
-    }
-
-    [Fact]
-    public void PanelEntryDelete_CreditedAuthor_AsksWithTheTally()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LReference book = engine.TEngineCitationCreate("Book");
-        LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
-        engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
-        List<string> asked = [];
-        CEnvoy envoy = TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["CEnvoyConfirm"] = args =>
-            {
-                asked.Add(string.Join(">", args!));
-                return false;
-            },
-        });
-        CPanel panel = TInterfaceConduct.TPanelCreate(envoy, "Guild", static () => false, static _ => true);
-        LVista vista = engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderName);
-        panel.TPanelVistaRestore(vista);
-        vista.TVistaSelect(ada.LAuthorId);
-
-        panel.CPanelEntryDelete();
-
-        Assert.Equal(["Guild.DetachConfirm>Guild.DetachCount>1"], asked);
-        Assert.Equal(ada.LAuthorId, panel.TPanelChosenRead());
-    }
-
-    [Fact]
-    public void PanelEntrySelect_StoredWhileFreshEditing_AdoptsTheEntry()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CPanel panel = TPanelPrepare(engine, true, [], [], "Scribe", () => false);
-        long chosen = panel.TPanelChosenRead();
-        panel.CPanelEntryCreate();
-
-        panel.CPanelEntrySelect(new CBulletin(chosen, true));
-
-        Assert.Equal(chosen, panel.TPanelChosenRead());
-    }
-
-    [Fact]
-    public void PanelEntrySelect_Viewing_KeepsNothingChosen()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CPanel panel = TPanelPrepare(engine, true, [], [], "Scribe", () => false);
-        long chosen = panel.TPanelChosenRead();
-        panel.CPanelEntryClose();
-
-        panel.CPanelEntrySelect(new CBulletin(chosen, true));
-
-        Assert.Equal(0, panel.TPanelChosenRead());
-    }
-
-    [Fact]
     public void PanelScribeRestore_EditingWithoutRow_StaysViewer()
     {
-        CPanel panel = TInterfaceConduct.TPanelCreate(
+        CPanel panel = TInterfaceConductPanel.TPanelCreate(
             TEnvoyFake.TEnvoyCreate(true, []), "Scribe", static () => false, static _ => true);
 
         panel.TPanelScribeRestore(true);
@@ -357,7 +117,7 @@ public sealed class TPanel
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CPanel panel = TInterfaceConduct.TPanelCreate(
+        CPanel panel = TInterfaceConductPanel.TPanelCreate(
             TEnvoyFake.TEnvoyCreate(true, []), "Scribe", static () => false, static _ => true);
         LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
         vista.TVistaEditingSet(true);
@@ -376,17 +136,17 @@ public sealed class TPanel
         Assert.Equal(orders.Length, Enum.GetValues<CCatalogOrder>().Length);
         foreach (LCatalogOrder order in orders)
         {
-            CCatalogOrder mirror = TInterfaceConduct.TPanelOrderRead(order);
+            CCatalogOrder mirror = TInterfaceConductPanel.TPanelOrderRead(order);
 
             Assert.Equal(order.ToString()[1..], mirror.ToString()[1..]);
-            Assert.Equal(order, TInterfaceConduct.TPanelOrderRead(mirror));
+            Assert.Equal(order, TInterfaceConductPanel.TPanelOrderRead(mirror));
         }
     }
 
     [Fact]
     public void PanelOrderRead_NoOrder_ReturnsNone()
     {
-        Assert.Null(TInterfaceConduct.TPanelOrderRead(null));
+        Assert.Null(TInterfaceConductPanel.TPanelOrderRead(null));
     }
 
     [Fact]
@@ -397,24 +157,25 @@ public sealed class TPanel
         Assert.Equal(subjects.Length, Enum.GetValues<LSubject>().Length);
         foreach (CSubject subject in subjects)
         {
-            Assert.Equal(subject.ToString()[1..], TInterfaceConduct.TPanelSubjectRead(subject).ToString()[1..]);
+            Assert.Equal(subject.ToString()[1..], TInterfaceConductPanel.TPanelSubjectRead(subject).ToString()[1..]);
         }
     }
 
     [Fact]
     public void PanelFilterRead_HiddenLanguages_CarriesThemOver()
     {
-        CCatalogFilter filter = TInterfaceConduct.TPanelFilterRead(TInterface.TCatalogFilterCreate("Latin", "Greek"));
+        CCatalogFilter filter =
+            TInterfaceConductPanel.TPanelFilterRead(TInterface.TCatalogFilterCreate("Latin", "Greek"));
 
         Assert.Equal(["Latin", "Greek"], filter.CCatalogFilterHidden);
     }
 
-    private static CPanel TPanelPrepare(
+    internal static CPanel TPanelPrepare(
         LEngine engine, bool? answer, List<string> asked, List<bool> finished, string? scope, Func<bool> change)
     {
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "water", "English", "w", string.Empty, [TInterface.TCardCreate("a liquid", 1)], []));
-        CPanel panel = TInterfaceConduct.TPanelCreate(
+        CPanel panel = TInterfaceConductPanel.TPanelCreate(
             TEnvoyFake.TEnvoyCreate(answer, asked),
             scope,
             change,

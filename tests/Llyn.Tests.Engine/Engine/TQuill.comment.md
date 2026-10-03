@@ -1,9 +1,9 @@
 # TQuill.cs
-Hash: `38fd9298c21bdfef`
+Hash: `72a8c33cda9e6afe`
 
 ## `public sealed class TQuill`
 
-The quill's text edits, one fact per member.
+The quill's edits to a held draft, one fact per edit.
 Each fact starts a tenure on a fresh workspace with no delay, so a deferred edit lands at once.
 
 ## `public void AuthorSet_FreshAuthor_WritesName()`

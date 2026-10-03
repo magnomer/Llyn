@@ -33,3 +33,13 @@ The update path normalizes as well, so no path stores a raw note.
 ## `private static LEntryDraft TMarkdownNoteCreate(string note)`
 
 A minimal saveable draft carrying only `note`.
+
+## `public void MarkdownParse_NumberedRuns_NumbersEachRunFromOne()`
+
+Each run of numbered lines is counted from one, and a block outside a run counts zero.
+A later list after plain text must restart, or the reader would show a continued count.
+
+## `public void MarkdownSpanAddress_WebAndLocalLinks_KeepsOnlyWebAddresses()`
+
+A link span carries an address only when it is a web address, and local file links carry none.
+The reader opens only what carries an address, so a note cannot launch a local path.

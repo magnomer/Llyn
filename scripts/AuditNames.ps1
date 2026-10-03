@@ -41,7 +41,7 @@ AuditNames -Root C:\path\to\project
 Audit a specific checkout.
 #>
 #requires -Version 5.1
-# AUDITNAMES GENERATION 19 - AuditNames.ps1.
+# AUDITNAMES - AUDIT GENERATION 19.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -51,8 +51,9 @@ Audit a specific checkout.
 # ending, plus a descriptive test-method exemption governed by an all-or-nothing test-prefix
 # consistency gate, and the generated-name pass that audits a name a source generator emits at the
 # declaration it is built from.
-# Bases come from the configured base block and nothing else, so prose never mints one; the exempt
-# block clears a finding only inside the files its row names, and a row that matched nothing is
+# Bases come from AuditNames.registry.json and nothing else, so prose never mints one. Read-AuditRegistry
+# validates that file and the helper's ReadRegistry reads it. Its exempt map clears a finding only
+# inside the files its row names, or everywhere for a "*" row. A row that matched nothing is
 # reported as stale and fails the run, never pruned. The tooling's own files are not audited.
 # Generation 7 moved every project-specific value into AuditNames.json, so this file is identical in
 # every project at this generation. Generation 8 splits the convention-test settings per audit: the
@@ -232,7 +233,7 @@ function Write-AuditLine {
     }
 }
 
-Write-AuditLine "AUDITNAMES GENERATION $script:AuditGeneration" -ForegroundColor Blue
+Write-AuditLine "AUDITNAMES - AUDIT GENERATION $script:AuditGeneration" -ForegroundColor Blue
 $script:PathSeparators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
 
 function Resolve-ProjectRoot {
@@ -1164,7 +1165,7 @@ internal static class Program
         }
     }
 
-    // The exempt registry is the configured exempt block: one "Name | scope" row
+    // The exempt registry is the exempt map of AuditNames.registry.json, read by ReadRegistry: one row
     // per externally imposed name, where the scope is the file names the row grants the name in,
     // or "*" for a mechanism that is universal by spelling. A row clears a finding only inside
     // its scope, so the same word stays a violation everywhere else.

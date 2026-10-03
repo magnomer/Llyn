@@ -12,10 +12,10 @@ public sealed class TMentionFinding
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long entryId = TMentionEntryCreate(engine, "kindle", "English");
-        LExample stored = engine.TEngineExampleCreate(TInterface.TExampleCreate(
+        LExample stored = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
             0, "English", "she knelt to kindle the damp logs", null, null) with
         {
-            LExampleMention = [TInterface.TMentionCreate(0, 10, 9, 0)],
+            LExampleMention = [TInterfaceMentionSpan.TMentionCreate(0, 10, 9, 0)],
         });
 
         LMentionResult found = engine.TEngineMentionFind(stored.LExampleId, 15);

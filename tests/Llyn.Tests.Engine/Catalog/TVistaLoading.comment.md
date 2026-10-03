@@ -1,5 +1,5 @@
 # TVistaLoading.cs
-Hash: `6a4640a6866116ad`
+Hash: `904ecacd94f6d945`
 
 ## `public sealed class TVistaLoading`
 
@@ -17,7 +17,7 @@ The underlying Entry remains stored.
 
 ## `public void FileRead_NoVista_ReturnsEntry()`
 
-Without a selected view, file-name generation uses the generic Entry name.
+Without a view, file-name generation uses the generic Entry name.
 
 ## `public void FileRead_ChosenEntry_ReturnsCleanedHeadword()`
 

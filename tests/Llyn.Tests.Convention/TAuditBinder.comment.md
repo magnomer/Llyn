@@ -1,5 +1,5 @@
 # TAuditBinder.cs
-Hash: `57ddd49c5ba1241a`
+Hash: `2ab060ef20485ddb`
 
 ## `internal static class TAuditBinder`
 
@@ -9,27 +9,13 @@ The shell's generated markup classes join the compilation, so an `x:Name` field 
 `TAuditReference` supplies the references and the generated code.
 The compilation must hold no error, so an unbound name can never drop out of a walk unseen.
 Nothing here names a project.
-The folders, the exclusions and the project name come from the settings.
+The folders and the exclusions come from the settings.
+`TAuditBinderSymbol` reads symbols and types from these trees.
+`TAuditBinderSide` tells which side of the cut a type is declared on.
 
 ## `private const string TAuditBinderSource = "src/";`
 
 The folder every ring lives under.
-
-## `private const string TAuditShellSide = "shell";`
-
-The side of a type declared under a UI root.
-
-## `private const string TAuditConductSide = "conduct";`
-
-The side of a type declared in Conduct, the gates a driver is meant to hold.
-
-## `private const string TAuditEngineSide = "engine";`
-
-The side of a type declared in any other source, below Conduct.
-
-## `private static readonly string[] TAuditLogicSides`
-
-The sides below the cut, which a request reaches.
 
 ## `private static readonly CSharpParseOptions TAuditSyntaxOptions`
 
@@ -58,10 +44,6 @@ Outside an assay it is null and markup is read from disk.
 ## `private static readonly Dictionary<SyntaxTree, SemanticModel> TAuditModels`
 
 One semantic model per tree, built on first read and kept, since every walker reads it.
-
-## `private static readonly Dictionary<SyntaxNode, ISymbol?> TAuditSymbols`
-
-Every symbol lookup is cached by node, since the walkers ask for the same identifier many times.
 
 ## `public static string TAuditRoot { get; }`
 
@@ -123,112 +105,6 @@ The repo-relative path with forward slashes.
 
 The ring whose folder holds the file, or null outside every ring given.
 A ring is its project folder under `src`, matched whole, so `Llyn.UI` never claims `Llyn.UIVeneer`.
-
-## `public static bool TAuditHeaderCheck(SimpleNameSyntax name)`
-
-True for a name inside a using directive or a namespace declaration, which names no type.
-
-## `public static bool TAuditDataCheck(INamedTypeSymbol type)`
-
-True for an enum, a struct, a record or a delegate: a type a value is the whole of.
-A class or an interface is behaviour, and a static class is behaviour reached through its name.
-
-## `public static INamedTypeSymbol? TAuditTypeRead(ISymbol symbol)`
-
-The type a name stands for: the type itself, or the type owning the member the name picks.
-A local or a parameter is a name the file gave itself, so its uses are not counted again.
-
-## `public static ISymbol? TAuditSymbolRead(SemanticModel model, SimpleNameSyntax name)`
-
-The symbol a name binds to, or the first candidate when the bind is ambiguous.
-
-## `public static ISymbol? TAuditSymbolRead(SyntaxNode node)`
-
-The symbol a node declares or binds to, by its original definition, cached by node.
-An argument is read through its expression.
-
-## `public static ITypeSymbol? TAuditTypeRead(SyntaxNode node)`
-
-The type of an expression, or the type behind the symbol a node names.
-
-## `public static string? TAuditSourceRead(INamedTypeSymbol type)`
-
-The repo-relative file declaring the type, or null for a type outside the sources.
-
-## `public static bool TAuditLogicCheck(SyntaxNode node)`
-
-True when the node's symbol or its type is logic.
-
-## `public static bool TAuditLogicCheck(ISymbol? symbol)`
-
-True for a type below the cut, a member of one, or a local or parameter of one.
-
-## `public static bool TAuditLogicCheck(ITypeSymbol? type)`
-
-True when the type, its element or any type argument is declared below the cut, Conduct included.
-
-## `public static bool TAuditEngineCheck(SyntaxNode node)`
-
-True when the node's symbol or its type is declared below Conduct.
-
-## `public static bool TAuditEngineCheck(ISymbol? symbol)`
-
-True for a type below Conduct, a member of one, or a local or parameter of one.
-
-## `public static bool TAuditEngineCheck(ITypeSymbol? type)`
-
-True when the type, its element or any type argument is declared below Conduct.
-
-## `public static bool TAuditConductCheck(ITypeSymbol? type)`
-
-True for a Conduct type whose type arguments are Conduct types too, which a driver may hold.
-
-## `public static bool TAuditShellCheck(ITypeSymbol? type)`
-
-True when the type, its element or any type argument is declared in a UI source, generated ones included.
-
-## `public static bool TAuditSurfaceCheck(ITypeSymbol? type)`
-
-True when the type is declared under a veneer root.
-
-## `private static bool TAuditDepthCheck(ISymbol? symbol, string[] sides)`
-
-True when the symbol is a type on a given side, a member of one, or a local of one.
-A parameter counts as a local here.
-
-## `private static bool TAuditDepthCheck(ITypeSymbol? type, string[] sides)`
-
-True when the type, its element or any type argument is declared on one of the sides.
-
-## `public static bool TAuditControlCheck(ITypeSymbol? type)`
-
-True when the type or any base of it is a listed control base.
-
-## `public static bool TAuditMemberCheck(ISymbol? symbol, IReadOnlyList<string> members)`
-
-True when the symbol's declaring type and name, joined by a dot, are in the list.
-
-## `public static bool TAuditNamedCheck(ITypeSymbol? type, IReadOnlyList<string> names)`
-
-True when the type's bare name is in the list.
-
-## `public static string TAuditLabelRead(ISymbol symbol)`
-
-The symbol's name, prefixed by its owning type's name when it has one.
-
-## `public static IReadOnlySet<string> TAuditDeportmentRead()`
-
-Every type name and member name the deportment namespace declares, so a markup binding to one is not a reach.
-A name that a type below the cut also declares is removed, so a deeper binding cannot pass by coincidence.
-
-## `private static string? TAuditSideRead(INamedTypeSymbol? type)`
-
-The side a type is declared on: shell, conduct or engine.
-A type from metadata sits on no side.
-
-## `private static ISymbol? TAuditSymbolResolve(SyntaxNode node)`
-
-The declared symbol of a declaration node, else the bound symbol, else the first candidate.
 
 ## `private static IReadOnlyList<SyntaxTree> TAuditTrackedRead(CSharpCompilation compilation)`
 

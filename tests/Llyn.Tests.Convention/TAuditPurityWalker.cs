@@ -54,18 +54,18 @@ internal static class TAuditPurityWalker
                 continue;
             }
 
-            if (node is not SimpleNameSyntax name || TAuditBinder.TAuditHeaderCheck(name))
+            if (node is not SimpleNameSyntax name || TAuditBinderSymbol.TAuditHeaderCheck(name))
             {
                 continue;
             }
 
-            ISymbol? symbol = TAuditBinder.TAuditSymbolRead(model, name);
-            if (symbol is null || TAuditBinder.TAuditTypeRead(symbol) is not INamedTypeSymbol type)
+            ISymbol? symbol = TAuditBinderSymbol.TAuditSymbolRead(model, name);
+            if (symbol is null || TAuditBinderSymbol.TAuditTypeRead(symbol) is not INamedTypeSymbol type)
             {
                 continue;
             }
 
-            if (TAuditBinder.TAuditSourceRead(type) is not null)
+            if (TAuditBinderSymbol.TAuditSourceRead(type) is not null)
             {
                 continue;
             }

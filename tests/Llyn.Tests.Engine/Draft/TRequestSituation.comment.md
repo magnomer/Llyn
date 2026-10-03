@@ -1,9 +1,9 @@
 # TRequestSituation.cs
-Hash: `a5ec292348812d73`
+Hash: `d3464c9cd4221713`
 
 ## `public sealed class TRequestSituation`
 
-Covers the media requests a Situation draft takes, the same ten a card takes, with the card id ignored.
+Covers the image and video requests a Situation draft takes, the same a card takes, with the card id ignored.
 The panel sends a card id of 0, because a Situation draft carries no card.
 
 ## `public void RequestApply_ImageRemovalOnSituationDraft_DropsTheRow()`

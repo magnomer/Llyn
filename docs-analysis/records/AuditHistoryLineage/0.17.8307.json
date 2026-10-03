@@ -1,0 +1,13 @@
+{
+  "version": "0.17.8307",
+  "commit": "6a0d67cadc07ecbcca5ebb99e96282b066a558d8",
+  "previous": "0.17.8207",
+  "previousCommit": "f883c794afe47d06c3f1cb42586fa254f8255098",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.UIDeportment/Shell/LDesk.comment.md", "src/Llyn.Conduct/Desk/CDesk.comment.md"],
+    ["src/Llyn.UIDeportment/Shell/QErrand.comment.md", "src/Llyn.Conduct/Desk/CErrand.comment.md"],
+    ["src/Llyn.UIDeportment/Shell/QErrand.cs", "src/Llyn.Conduct/Desk/CErrand.cs"],
+    ["src/Llyn.UIDeportment/Shell/QVigil.comment.md", "src/Llyn.Conduct/Desk/LVigil.comment.md"]
+  ]
+}

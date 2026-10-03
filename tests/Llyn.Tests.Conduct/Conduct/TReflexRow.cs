@@ -20,9 +20,9 @@ public sealed class TReflexRow
     [Fact]
     public void ReflexLeadRead_ThreeRuns_LeadsEachRunOnce()
     {
-        Assert.Equal([true, false, true, true], TInterfaceConduct.TReflexLeadRead(["Wu", "Wu", "Jin", "Wu"]));
-        Assert.Equal([true, true], TInterfaceConduct.TReflexLeadRead(["Wu", "Wu "]));
-        Assert.Empty(TInterfaceConduct.TReflexLeadRead([]));
+        Assert.Equal([true, false, true, true], TInterfaceConductSound.TReflexLeadRead(["Wu", "Wu", "Jin", "Wu"]));
+        Assert.Equal([true, true], TInterfaceConductSound.TReflexLeadRead(["Wu", "Wu "]));
+        Assert.Empty(TInterfaceConductSound.TReflexLeadRead([]));
     }
 
     [Fact]

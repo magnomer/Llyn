@@ -1,0 +1,11 @@
+{
+  "version": "0.13.4500",
+  "commit": "c60682b570418068cdd7f92a71e1d7949fa31f4a",
+  "previous": "0.13.4410",
+  "previousCommit": "3945dde967c88e2c0d5e3dbdf76846fad09ae868",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.UIShell/UI/PTwin.comment.md", "src/Llyn.Core/Catalog/LTwin.comment.md"],
+    ["src/Llyn.UIShell/UI/PTwin.cs", "src/Llyn.Core/Catalog/LTwin.cs"]
+  ]
+}

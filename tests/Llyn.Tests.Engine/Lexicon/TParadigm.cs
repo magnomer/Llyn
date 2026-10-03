@@ -45,8 +45,8 @@ public sealed class TParadigm
         Assert.Equal([2L], noun.LParadigmMorphology);
         Assert.Equal([3L, 4L], noun.LParadigmExcept);
         Assert.Equal(["$", "y$"], noun.LParadigmRegular.Select(rule => rule.LParadigmRulePattern));
-        Assert.Equal("cats", TInterface.TParadigmRuleResolve(noun.LParadigmRegular[0], "cat"));
-        Assert.Null(TInterface.TParadigmRuleResolve(noun.LParadigmRegular[1], "cat"));
+        Assert.Equal("cats", TInterfaceInflection.TParadigmRuleResolve(noun.LParadigmRegular[0], "cat"));
+        Assert.Null(TInterfaceInflection.TParadigmRuleResolve(noun.LParadigmRegular[1], "cat"));
     }
 
     [Fact]
@@ -125,9 +125,9 @@ public sealed class TParadigm
     {
         LSpeechValue noun = TInterface.TSpeechValueCreate("English", 1, "noun", 0) with { LSpeechValueId = 1 };
         LSpeechValue verb = TInterface.TSpeechValueCreate("English", 2, "verb", 1) with { LSpeechValueId = 2 };
-        LMorphology plural = TInterface.TMorphologyCreate(1, 1, "plural", 0);
-        LMorphology past = TInterface.TMorphologyCreate(2, 1, "past", 0);
-        LInflection wolves = TInterface.TInflectionCreate(1, 0, "wolves", null, 1, [1]);
+        LMorphology plural = TInterfaceInflection.TMorphologyCreate(1, 1, "plural", 0);
+        LMorphology past = TInterfaceInflection.TMorphologyCreate(2, 1, "past", 0);
+        LInflection wolves = TInterfaceInflection.TInflectionCreate(1, 0, "wolves", null, 1, [1]);
         IReadOnlyList<LParadigmSlot> slots =
         [
             TInterface.TParadigmSlotCreate(noun, plural, wolves, LState.LStateSpecified),
@@ -149,8 +149,8 @@ public sealed class TParadigm
     [Fact]
     public void ParadigmClerkCheck_WrittenOrEmptyForm_AnswersTextOrAbsentWhateverIsPending()
     {
-        LInflection wolves = TInterface.TInflectionCreate(1, 0, "wolves", null, 1, [1]);
-        LInflection empty = TInterface.TInflectionCreate(1, 0, string.Empty, null, 1, [1]);
+        LInflection wolves = TInterfaceInflection.TInflectionCreate(1, 0, "wolves", null, 1, [1]);
+        LInflection empty = TInterfaceInflection.TInflectionCreate(1, 0, string.Empty, null, 1, [1]);
 
         Assert.Equal(
             LParadigmStatus.LParadigmStatusText, TParadigmStatusRead(wolves, LState.LStateSpecified, true, true));
@@ -184,7 +184,7 @@ public sealed class TParadigm
         LInflection? inflection, LState state, bool pending, bool enabled)
     {
         LSpeechValue noun = TInterface.TSpeechValueCreate("English", 1, "noun", 0) with { LSpeechValueId = 1 };
-        LMorphology plural = TInterface.TMorphologyCreate(1, 1, "plural", 0);
+        LMorphology plural = TInterfaceInflection.TMorphologyCreate(1, 1, "plural", 0);
         LParadigmRow row = Assert.Single(TInterface.TParadigmRowScan(
             [TInterface.TParadigmSlotCreate(noun, plural, inflection, state)]));
         return TInterface.TParadigmClerkCheck(row, pending, enabled);

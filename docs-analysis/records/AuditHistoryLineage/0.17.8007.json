@@ -1,0 +1,28 @@
+{
+  "version": "0.17.8007",
+  "commit": "c195b385b62164d49a1fa8bf0279f596be77b77b",
+  "previous": "0.17.7857",
+  "previousCommit": "a983a3b8538d2f43a60e750f2b1a80a8fef0ac53",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.UIDeportment/Panel/Citation/PCitationConverter.comment.md", "src/Llyn.UIDeportment/Panel/Citation/QCitationConverter.comment.md"],
+    ["src/Llyn.UIDeportment/Panel/Citation/PCitationConverter.cs", "src/Llyn.UIDeportment/Panel/Citation/QCitationConverter.cs"],
+    ["src/Llyn.UIDeportment/Panel/Citation/PCitationItem.comment.md", "src/Llyn.UIDeportment/Panel/Citation/QCitationItem.comment.md"],
+    ["src/Llyn.UIDeportment/Panel/Citation/POccurrenceItem.comment.md", "src/Llyn.UIDeportment/Panel/Citation/QOccurrenceItem.comment.md"],
+    ["src/Llyn.UIDeportment/Panel/Citation/PQuotationItem.comment.md", "src/Llyn.UIDeportment/Panel/Citation/QQuotationItem.comment.md"],
+    ["src/Llyn.UIDeportment/Panel/Corpus/PAnthologyItem.comment.md", "src/Llyn.UIDeportment/Panel/Corpus/QAnthologyItem.comment.md"],
+    ["src/Llyn.UIDeportment/Panel/Corpus/PCorpus.comment.md", "src/Llyn.UIDeportment/Panel/Corpus/QCorpus.comment.md"],
+    ["src/Llyn.UIDeportment/Panel/Corpus/PCorpusBrowse.comment.md", "src/Llyn.UIDeportment/Panel/Corpus/QCorpusBrowse.comment.md"],
+    ["src/Llyn.UIDeportment/Panel/Corpus/PCorpusBrowse.cs", "src/Llyn.UIDeportment/Panel/Corpus/QCorpusBrowse.cs"],
+    ["src/Llyn.UIDeportment/Panel/Guild/PFellowItem.comment.md", "src/Llyn.UIDeportment/Panel/Guild/QFellowItem.comment.md"],
+    ["src/Llyn.UIDeportment/Panel/Guild/PRollItem.comment.md", "src/Llyn.UIDeportment/Panel/Guild/QRollItem.comment.md"],
+    ["src/Llyn.UIDeportment/Panel/Imprint/PAuthorItem.comment.md", "src/Llyn.UIDeportment/Panel/Imprint/QAuthorItem.comment.md"],
+    ["src/Llyn.UIDeportment/Panel/Imprint/PBylineItem.comment.md", "src/Llyn.UIDeportment/Panel/Imprint/QBylineItem.comment.md"],
+    ["src/Llyn.UIDeportment/Panel/Imprint/PBylineItem.cs", "src/Llyn.UIDeportment/Panel/Imprint/QBylineItem.cs"],
+    ["src/Llyn.UIDeportment/Panel/Imprint/PChronicleHost.comment.md", "src/Llyn.UIDeportment/Panel/Imprint/QChronicleHost.comment.md"],
+    ["src/Llyn.UIDeportment/Panel/Imprint/PChronicleHost.cs", "src/Llyn.UIDeportment/Panel/Imprint/QChronicleHost.cs"],
+    ["src/Llyn.UIDeportment/Panel/Source/PFootnoteItem.comment.md", "src/Llyn.UIDeportment/Panel/Source/QFootnoteItem.comment.md"],
+    ["src/Llyn.UIDeportment/Panel/Source/PShelfItem.comment.md", "src/Llyn.UIDeportment/Panel/Source/QShelfItem.comment.md"],
+    ["src/Llyn.UIDeportment/Panel/Source/PShelfItem.cs", "src/Llyn.UIDeportment/Panel/Source/QShelfItem.cs"]
+  ]
+}

@@ -1,31 +1,21 @@
 # TAnthology.cs
-Hash: `a653e93c0622651b`
+Hash: `c754dfc872dc49ea`
 
 ## `public sealed class TAnthology`
 
 Covers the corpus panel's example list end to end on a real workspace.
-Before a vista arrives the list reads nothing, and an unknown text is worded with the engine's word.
+Before a vista arrives the list reads nothing, and an unknown text shows the localized unknown word.
 A failing find shows `Example.LoadFailed` and answers nothing.
-A tally the engine refuses shows the same failure once and answers an empty chip.
+A tally the engine refuses shows the same failure once and answers an empty tally.
 The ordering menu offers text, language, Source and usage.
 A typed query narrows the rows, no order keeps the ordering, and a hidden language marks the list filtered.
-The held transcript carries the ready line of the Source it cites, and none before it cites one.
-A typed title cites the Source it resolves to, and a failing resolve shows `Reference.CreateFailed` and cites nothing.
-The citation drawer offers a Source split around the trimmed word, with no count while nothing cites it.
-It offers nothing for a blank word, with no held transcript, or for the byline of the Source already cited.
-The transcript's gloss gates add below a row in the gloss language, or before the first row.
-They seed a first gloss only into an empty held transcript.
-They write a gloss text, retag its language and drop it.
-The text gate writes the typed sentence and answers the text placeholder, and the speaker gate sets the language.
-A blank field matches an empty text.
-The Example map divides its excerpt at linked Mentions only while the text reads soundly.
-It carries the tally it is handed, and the unknown mark as placeholder only for an unknown text.
-The excerpt's word is the unknown mark or `Example.Unwritten`, and only a never-written text is muted.
+The held transcript's citation lives in `TAnthologyCitation`, its glosses in `TAnthologyGloss`, and its text and Example map in `TAnthologyExample`.
 
-## `private static CAnthology TAnthologyPrepare(LEngine engine, CAtelier atelier, out CDesk desk)`
+## `internal static CAnthology TAnthologyPrepare(LEngine engine, CAtelier atelier, out CDesk desk)`
 
 Builds the list over the atelier and a corpus desk, through the relay of its internal factory.
 Its seams answer that the tab is in front and that every finish succeeds.
+Every `TAnthology` sibling class builds its list through it.
 
 ## `private static LExample TAnthologyExampleSave(LEngine engine, LStateValue text, long? source)`
 

@@ -244,6 +244,8 @@ th { color: var(--ink-2); font-weight: 600; font-size: 12px; }
 th.l, td.l { text-align: left; }
 tr.gone td { color: var(--ink-3); }
 td.over { color: var(--over); font-weight: 600; }
+.lineage { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); font-size: 12px; cursor: pointer; padding: 6px 0; }
+.lineage input { margin: 0; accent-color: var(--ink-2); cursor: pointer; }
 .chip { font-size: 11px; color: var(--ink-2); border: 1px solid var(--ring); border-radius: 999px; padding: 0 6px; margin-left: 6px; }
 .verdict { display: inline-flex; align-items: center; gap: 6px; }
 </style>
@@ -281,8 +283,9 @@ td.over { color: var(--over); font-weight: 600; }
     <div class="panelhead">
       <div>
         <h2>By type</h2>
-        <div class="muted">Picked types on one chart, one scale fitted to them. A gap means the type was then a Hermit with no hub, or did not exist. Click a version to select it; arrow keys step.</div>
+        <div class="muted">Picked types on one chart, one scale fitted to them. A gap means the type was then a Hermit with no hub, or did not exist. Click a version to select it; arrow keys step. With Lineage, types linked by renamed files share one color, and kin picked together take solid, dashed and dotted lines.</div>
       </div>
+      <label class="lineage" title="Types linked by renamed files share one color"><input type="checkbox" id="lineage">Lineage</label>
       <div class="segmented" role="group" aria-label="Metric" id="metric"></div>
     </div>
     <div class="picker" id="picker"></div>
@@ -357,6 +360,30 @@ td.over { color: var(--over); font-weight: 600; }
     });
   });
   var typeList = Array.from(types.values());
+
+  var lineage = raw.lineage || { links: [] };
+  var parent = new Map();
+  function head(id) {
+    while (parent.has(id) && parent.get(id) !== id) id = parent.get(id);
+    return id;
+  }
+  lineage.links.forEach(function (link) {
+    if (!types.has(link.from) || !types.has(link.to)) return;
+    var a = head(link.from), b = head(link.to);
+    if (!parent.has(a)) parent.set(a, a);
+    if (a !== b) parent.set(b, a);
+  });
+  var families = [];
+  typeList.forEach(function (t) { t.family = -1; });
+  typeList.slice().sort(function (a, b) { return a.first - b.first || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0); }).forEach(function (t) {
+    if (!parent.has(t.id)) return;
+    var top = head(t.id), at = families.indexOf(top);
+    if (at < 0) { at = families.length; families.push(top); }
+    t.family = at;
+  });
+  var familyNames = families.map(function (top, k) {
+    return typeList.filter(function (t) { return t.family === k; }).sort(function (a, b) { return a.first - b.first; }).map(function (t) { return shortName(t.name); });
+  });
 
   function fmt(n, frac) { return n === null || n === undefined ? DASH : frac ? n.toFixed(2) : NF.format(n); }
   function brief(n, frac) {
@@ -755,8 +782,25 @@ td.over { color: var(--over); font-weight: 600; }
   if (Array.isArray(savedPicks)) savedPicks.forEach(function (id, k) { if (k < SLOTS && types.has(id) && view.picks.indexOf(id) < 0) view.picks[k] = id; });
   else ordered().active.slice(0, 5).forEach(function (t, k) { view.picks[k] = t.id; });
 
-  function pickColor(slot) { return 'var(--cmp-' + (slot % PAINTS + 1) + ')'; }
-  function pickDash(slot) { return DASHES[Math.floor(slot % PAINTS / 8)]; }
+  view.lineage = load('lineage') === 'on';
+  function kinOf(slot) {
+    var t = types.get(view.picks[slot]);
+    return view.lineage && t.family >= 0 ? t : null;
+  }
+  function groupOf(id) { var t = types.get(id); return t.family >= 0 ? 'family ' + t.family : 'type ' + id; }
+  function pickColor(slot) {
+    if (!view.lineage) return 'var(--cmp-' + (slot % PAINTS + 1) + ')';
+    var groups = [];
+    view.picks.forEach(function (id) { if (id !== null && groups.indexOf(groupOf(id)) < 0) groups.push(groupOf(id)); });
+    return 'var(--cmp-' + (groups.indexOf(groupOf(view.picks[slot])) % PAINTS + 1) + ')';
+  }
+  function pickDash(slot) {
+    var kin = kinOf(slot);
+    if (!kin) return view.lineage ? '' : DASHES[Math.floor(slot % PAINTS / 8)];
+    var rank = 0;
+    for (var k = 0; k < slot; k++) if (view.picks[k] !== null && types.get(view.picks[k]).family === kin.family) rank++;
+    return DASHES[rank % DASHES.length];
+  }
   function pickSwatch(slot) { return swatchLine(pickColor(slot), pickDash(slot)); }
   function pickedList() {
     var list = [];
@@ -774,6 +818,15 @@ td.over { color: var(--over); font-weight: 600; }
     }
     savePicks();
   }
+
+  var lineageBox = document.getElementById('lineage');
+  lineageBox.checked = view.lineage;
+  lineageBox.disabled = families.length === 0;
+  lineageBox.addEventListener('change', function () {
+    view.lineage = lineageBox.checked;
+    store('lineage', view.lineage ? 'on' : 'off');
+    renderCompareView();
+  });
 
   var metricBox = document.getElementById('metric');
   METRICS.forEach(function (m) {
@@ -822,7 +875,8 @@ td.over { color: var(--over); font-weight: 600; }
       var b = document.createElement('button');
       b.type = 'button';
       b.setAttribute('aria-pressed', String(slot >= 0));
-      b.title = t.name + DOT + versions[t.first].version + ' \u2013 ' + (t.last === V - 1 ? 'now' : versions[t.last].version);
+      b.title = t.name + DOT + versions[t.first].version + ' \u2013 ' + (t.last === V - 1 ? 'now' : versions[t.last].version) +
+        (view.lineage && t.family >= 0 ? DOT + 'lineage: ' + familyNames[t.family].join(', ') : '');
       b.innerHTML = (slot >= 0 ? pickSwatch(slot) : '<i class="swatch" style="border:1px solid var(--ink-3)"></i>') + esc(shortName(t.name));
       b.dataset.id = t.id;
       b.addEventListener('click', function () {

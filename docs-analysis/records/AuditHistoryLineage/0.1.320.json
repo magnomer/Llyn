@@ -1,0 +1,28 @@
+{
+  "version": "0.1.320",
+  "commit": "c9c89339171f224b95f575c0cd751438fd94fd0d",
+  "previous": "0.1.310",
+  "previousCommit": "2fab11c2c90907098c53882aa8817ee1ce29cfce",
+  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
+  "moves": [
+    ["src/Llyn.UIShell/UI/PCardTag.comment.md", "src/Llyn.UIShell/UI/PCardLabel.comment.md"],
+    ["src/Llyn.UIShell/UI/PCardTranslation.comment.md", "src/Llyn.UIShell/UI/PCardLink.comment.md"],
+    ["src/Llyn.UIShell/UI/PTagChip.comment.md", "src/Llyn.UIShell/UI/PLabelChip.comment.md"],
+    ["src/Llyn.UIShell/UI/PTagEntry.comment.md", "src/Llyn.UIShell/UI/PLabelCaret.comment.md"],
+    ["src/Llyn.UIShell/UI/PTagMenu.comment.md", "src/Llyn.UIShell/UI/PLabel.comment.md"],
+    ["src/Llyn.UIShell/UI/PTagMenu.cs", "src/Llyn.UIShell/UI/PLabel.cs"],
+    ["src/Llyn.UIShell/UI/PTagSelector.comment.md", "src/Llyn.UIShell/UI/PLabelSelector.comment.md"],
+    ["src/Llyn.UIShell/UI/PTagTemplate.comment.md", "src/Llyn.UIShell/UI/PLabelTemplate.comment.md"],
+    ["src/Llyn.UIShell/UI/PTagTemplate.xaml", "src/Llyn.UIShell/UI/PLabelTemplate.xaml"],
+    ["src/Llyn.UIShell/UI/PTranslationChip.comment.md", "src/Llyn.UIShell/UI/PLinkChip.comment.md"],
+    ["src/Llyn.UIShell/UI/PTranslationConverter.comment.md", "src/Llyn.UIShell/UI/PLinkConverter.comment.md"],
+    ["src/Llyn.UIShell/UI/PTranslationConverter.cs", "src/Llyn.UIShell/UI/PLinkConverter.cs"],
+    ["src/Llyn.UIShell/UI/PTranslationEntry.comment.md", "src/Llyn.UIShell/UI/PLinkCaret.comment.md"],
+    ["src/Llyn.UIShell/UI/PTranslationItem.comment.md", "src/Llyn.UIShell/UI/PLinkItem.comment.md"],
+    ["src/Llyn.UIShell/UI/PTranslationMenu.comment.md", "src/Llyn.UIShell/UI/PLink.comment.md"],
+    ["src/Llyn.UIShell/UI/PTranslationMenu.cs", "src/Llyn.UIShell/UI/PLink.cs"],
+    ["src/Llyn.UIShell/UI/PTranslationSelector.comment.md", "src/Llyn.UIShell/UI/PLinkSelector.comment.md"],
+    ["src/Llyn.UIShell/UI/PTranslationTemplate.comment.md", "src/Llyn.UIShell/UI/PLinkTemplate.comment.md"],
+    ["src/Llyn.UIShell/UI/PTranslationTemplate.xaml", "src/Llyn.UIShell/UI/PLinkTemplate.xaml"]
+  ]
+}

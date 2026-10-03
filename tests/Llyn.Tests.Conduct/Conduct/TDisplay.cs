@@ -14,7 +14,7 @@ public sealed class TDisplay
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LDisplaySound sound = TInterfaceConduct.TDisplaySoundCreate(engine);
+        LDisplaySound sound = TInterfaceConductSound.TDisplaySoundCreate(engine);
 
         sound.TDisplayFoldSet(true);
         sound.TDisplayFoldSet(true);
@@ -27,7 +27,7 @@ public sealed class TDisplay
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LDisplaySound sound = TInterfaceConduct.TDisplaySoundCreate(engine);
+        LDisplaySound sound = TInterfaceConductSound.TDisplaySoundCreate(engine);
         sound.TDisplaySoundShow(7, TDisplayDraftCreate([]));
 
         sound.TDisplaySoundClear();
@@ -41,7 +41,7 @@ public sealed class TDisplay
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LDisplaySound sound = TInterfaceConduct.TDisplaySoundCreate(engine);
+        LDisplaySound sound = TInterfaceConductSound.TDisplaySoundCreate(engine);
         LEntryDraft draft = TDisplayDraftCreate([TInterface.TReflexDraftCreate("Korean", "", "a")]);
         long id = TExemplar.TExemplarSave(engine, draft)[0];
         sound.TDisplaySoundShow(id, TDisplayDraftCreate([]));
