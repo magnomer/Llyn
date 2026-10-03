@@ -1,6 +1,6 @@
-# Source line report - 0.17.12800
+# Source line report - 0.17.12801
 
-- Generated: 2026-10-03 19:29:38 +09:00
+- Generated: 2026-10-03 19:51:09 +09:00
 - Source roots: D:\Programming\Llyn\src; D:\Programming\Llyn\tests
 - Counted extensions: .cs, .csproj, .xaml
 - Excluded directories: .git, .vs, artifacts, bin, node_modules, obj, packages, publish
@@ -17,7 +17,7 @@
 | Blank lines | 32,938 |
 | Total bytes | 8,198,625 |
 | Files over 500 lines | 0 |
-| Files at 451-500 lines | 23 |
+| Files at 401-500 lines | 56 |
 | Lines over the width limit | 0 |
 | Lines within 5 columns of the width limit | 1,032 |
 | Enforced | yes |
@@ -30,7 +30,7 @@
 
 None.
 
-## Files at 451-500 lines
+## Files at 401-500 lines
 
 | Lines | Non-blank | Folder | File |
 |------:|----------:|--------|------|
@@ -57,6 +57,39 @@ None.
 | 457 | 379 | tests / Tests.Conduct | tests/Llyn.Tests.Conduct/Conduct/TTenor.cs |
 | 456 | 379 | tests / Tests.Conduct | tests/Llyn.Tests.Conduct/Conduct/TTaxonomy.cs |
 | 454 | 374 | tests / Tests.Conduct | tests/Llyn.Tests.Conduct/Conduct/TShelf.cs |
+| 448 | 375 | src / UIDeportment | src/Llyn.UIDeportment/Kit/Field/QField.cs |
+| 448 | 372 | tests / Tests.Engine | tests/Llyn.Tests.Engine/Database/TSchemaMigration.cs |
+| 448 | 360 | tests / Tests.Interface | tests/Llyn.Tests.Interface/TInterfacePronunciation.cs |
+| 447 | 416 | src / UIVeneer | src/Llyn.UIVeneer/Editor/Core/PEditor.xaml |
+| 446 | 346 | src / UIDeportment | src/Llyn.UIDeportment/Display/View/QDisplay.cs |
+| 443 | 384 | tests / Tests.Convention | tests/Llyn.Tests.Convention/TAssayContesting.cs |
+| 443 | 372 | tests / Tests.Convention | tests/Llyn.Tests.Convention/TAuditBinder.cs |
+| 441 | 355 | src / Conduct | src/Llyn.Conduct/Panel/CShelf.cs |
+| 441 | 383 | tests / Tests.Convention | tests/Llyn.Tests.Convention/TAuditComment.cs |
+| 439 | 360 | tests / Tests.Conduct | tests/Llyn.Tests.Conduct/Conduct/TEditor.cs |
+| 437 | 368 | tests / Tests.Conduct | tests/Llyn.Tests.Conduct/Conduct/TAnthology.cs |
+| 437 | 361 | tests / Tests.Interface | tests/Llyn.Tests.Interface/TInterfaceLexicon.cs |
+| 436 | 370 | src / UIDeportment | src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs |
+| 433 | 363 | tests / Tests.Conduct | tests/Llyn.Tests.Conduct/Conduct/TCard.cs |
+| 430 | 354 | tests / Tests.Conduct | tests/Llyn.Tests.Conduct/Conduct/TPanel.cs |
+| 429 | 342 | src / Conduct | src/Llyn.Conduct/Desk/CDesk.cs |
+| 428 | 423 | tests / Tests.Convention | tests/Llyn.Tests.Convention/TAuditNameRegistry.cs |
+| 425 | 384 | tests / Tests.Conduct | tests/Llyn.Tests.Conduct/Conduct/TErrandNotation.cs |
+| 423 | 359 | tests / Tests.Engine | tests/Llyn.Tests.Engine/Pronunciation/TEngineFrequency.cs |
+| 421 | 378 | src / UIDeportment | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs |
+| 421 | 353 | tests / Tests.Conduct | tests/Llyn.Tests.Conduct/Conduct/TYunjing.cs |
+| 419 | 352 | tests / Tests.Conduct | tests/Llyn.Tests.Conduct/Conduct/TLibrary.cs |
+| 416 | 350 | src / Application | src/Llyn.Application/Citation/LCitationClerk.cs |
+| 415 | 382 | src / Core | src/Llyn.Core/Markup/Node/LMarkupReader.cs |
+| 415 | 339 | tests / Tests.Engine | tests/Llyn.Tests.Engine/Engine/TEngineVista.cs |
+| 412 | 329 | src / Conduct | src/Llyn.Conduct/Panel/CGuild.cs |
+| 412 | 393 | src / UIVeneer | src/Llyn.UIVeneer/Panel/Corpus/PCorpus.xaml |
+| 411 | 333 | src / Conduct | src/Llyn.Conduct/Panel/CYunjing.cs |
+| 411 | 354 | tests / Tests.Engine | tests/Llyn.Tests.Engine/Pronunciation/TEngineFanqie.cs |
+| 410 | 351 | src / Application | src/Llyn.Application/Draft/Clerk/LDraftClerkEquality.cs |
+| 408 | 315 | src / UIDeportment | src/Llyn.UIDeportment/Sound/Fanqie/QYunjing.cs |
+| 405 | 341 | src / Conduct | src/Llyn.Conduct/Display/CDisplaySound.cs |
+| 404 | 378 | src / UIVeneer | src/Llyn.UIVeneer/Panel/Repertoire/PRepertoire.xaml |
 
 ## Lines over the width limit (.cs 120, .xaml 200)
 

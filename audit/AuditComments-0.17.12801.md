@@ -1,6 +1,6 @@
-# Comment report - 0.17.12800
+# Comment report - 0.17.12801
 
-- Generated: 2026-10-03 19:30:04 +09:00
+- Generated: 2026-10-03 19:51:29 +09:00
 - Source roots: D:\Programming\Llyn\languages; D:\Programming\Llyn\localization; D:\Programming\Llyn\src; D:\Programming\Llyn\tests; D:\Programming\Llyn\themes
 - Source files: D:\Programming\Llyn\Directory.Build.props; D:\Programming\Llyn\Llyn.slnx; D:\Programming\Llyn\version.json
 - Comment pattern: `*.comment.md`

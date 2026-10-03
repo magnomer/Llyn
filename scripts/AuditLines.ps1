@@ -41,7 +41,7 @@ AuditLines.json shape:
       "extensions": [".cs", ".xaml", ".csproj"],
       "excludeSegments": [".git", ".vs", "bin", "obj", "artifacts", "packages", "node_modules", "publish"]
     },
-    "thresholds": { "limit": 500, "warning": 450, "band": 5 },
+    "thresholds": { "limit": 500, "warning": 400, "band": 5 },
     "width": { ".cs": 120, ".xaml": 200 },
     "hotspot": { "commits": 30, "top": 15 },
     "tally": { "roots": ["scripts"], "extensions": [".ps1", ".cs"] },

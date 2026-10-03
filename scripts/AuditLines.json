@@ -29,7 +29,7 @@
   },
   "thresholds": {
     "limit": 500,
-    "warning": 450,
+    "warning": 400,
     "band": 5
   },
   "report": {
