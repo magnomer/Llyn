@@ -1,5 +1,5 @@
 # Llyn.UIDeportment.csproj
-Hash: `f63aa6be98fc13b4`
+Hash: `919ceca0fde3664e`
 
 ## `<TargetFramework>net10.0-windows10.0.17763.0</TargetFramework>`
 
@@ -11,7 +11,7 @@ It hosts the WebView2 player of `QScreenBrowser`, so it takes the Windows versio
 Deportment names windows, controls and event arguments directly.
 It holds no markup, since every page and dictionary lives in the veneer.
 
-## `<InternalsVisibleTo Include="Llyn.Windows" />`
+## `<InternalsVisibleTo Include="Llyn.Tests.Windows" />`
 
 Only the Windows behaviour tests can load Deportment, so only they reach its internals.
 
@@ -69,8 +69,8 @@ Every panel area moves to the veneer by the same steps, first proven on taxonomy
 - A controller that names WPF types splits in two, as `LLibrary` did.
   Its WPF half joins the driver, and its engine half stays a sealed controller.
   A driver never holds a vista, since only handles escape the Truth audit.
-- Sealed-controller tests stay in `Llyn.Windows` until job44 and job45 sink their controllers.
-  Shape tests go to `Llyn.Internal`.
+- Sealed-controller tests stay in `Llyn.Tests.Windows` until job44 and job45 sink their controllers.
+  Shape tests go to `Llyn.Tests.Conduct`.
 - A file is renamed only in the job that brings its Truth and Strict rows to zero.
   The ratchet reads a renamed row as new.
 - A big class is cleaned in place first and renamed last.

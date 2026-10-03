@@ -1,5 +1,5 @@
 # LEnsignLoader.cs
-Hash: `0480ead60fb710c5`
+Hash: `6182caab47803052`
 
 ## `internal sealed class LEnsignLoader`
 
@@ -17,7 +17,8 @@ Binds the fetch to the workspace `root` its flag cache lives under and the `clie
 Returns the local path to the flag image for `code`, an ISO 3166-1 alpha-2 country code.
 It downloads it from the flag-icons set into the workspace's `flags` folder on first use.
 It serves the cached copy thereafter.
-Returns `null` when the download fails, so a missing flag never blocks the UI.
+Returns `null` when the download fails or the client times out, so a missing flag never blocks the UI.
+A cancellation the caller requested still propagates.
 
 ## `private static string LEnsignCodeNormalize(string code)`
 

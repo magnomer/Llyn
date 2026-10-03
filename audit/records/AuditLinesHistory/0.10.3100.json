@@ -1,0 +1,17 @@
+{
+  "version": "0.10.3100",
+  "commit": "8cc99ce4445b166f1351b02fdac13ccc6a1aac86",
+  "date": "2026-09-14 18:34:10 +09:00",
+  "source": "local",
+  "rules": "80c346e374cdd4434474028f589e212b41bfa78b2ea48410edc85b8b0cc5e222",
+  "folders": [
+    { "name": "Llyn.Application", "root": "src", "files": 4, "lines": 344, "nonBlank": 295, "blank": 49, "bytes": 11232 },
+    { "name": "Llyn.Core", "root": "src", "files": 170, "lines": 5370, "nonBlank": 4459, "blank": 911, "bytes": 180909 },
+    { "name": "Llyn.Infrastructure", "root": "src", "files": 95, "lines": 14322, "nonBlank": 12165, "blank": 2157, "bytes": 536398 },
+    { "name": "Llyn.Media", "root": "src", "files": 2, "lines": 261, "nonBlank": 222, "blank": 39, "bytes": 8600 },
+    { "name": "Llyn.ShellEngine", "root": "src", "files": 61, "lines": 11047, "nonBlank": 9521, "blank": 1526, "bytes": 387455 },
+    { "name": "Llyn.UIShell", "root": "src", "files": 335, "lines": 37288, "nonBlank": 31941, "blank": 5347, "bytes": 1378424 },
+    { "name": "Llyn.Convention.Tests", "root": "tests", "files": 16, "lines": 1547, "nonBlank": 1377, "blank": 170, "bytes": 49613 },
+    { "name": "Llyn.Tests", "root": "tests", "files": 102, "lines": 19641, "nonBlank": 16239, "blank": 3402, "bytes": 839026 }
+  ]
+}

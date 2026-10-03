@@ -1,0 +1,25 @@
+{
+  "version": "0.17.8358",
+  "commit": "150effae62248b400d38596e2d68d986acef9d66",
+  "date": "2026-09-28 10:40:43 +09:00",
+  "source": "local",
+  "rules": "80c346e374cdd4434474028f589e212b41bfa78b2ea48410edc85b8b0cc5e222",
+  "folders": [
+    { "name": "Llyn.Application", "root": "src", "files": 97, "lines": 15304, "nonBlank": 13071, "blank": 2233, "bytes": 534068 },
+    { "name": "Llyn.Conduct", "root": "src", "files": 116, "lines": 4066, "nonBlank": 3317, "blank": 749, "bytes": 116211 },
+    { "name": "Llyn.Core", "root": "src", "files": 265, "lines": 9476, "nonBlank": 7680, "blank": 1796, "bytes": 299063 },
+    { "name": "Llyn.Core.Windows", "root": "src", "files": 4, "lines": 357, "nonBlank": 298, "blank": 59, "bytes": 10545 },
+    { "name": "Llyn.Host", "root": "src", "files": 2, "lines": 90, "nonBlank": 85, "blank": 5, "bytes": 3676 },
+    { "name": "Llyn.Infrastructure", "root": "src", "files": 136, "lines": 19111, "nonBlank": 16364, "blank": 2747, "bytes": 691128 },
+    { "name": "Llyn.ShellEngine", "root": "src", "files": 46, "lines": 6267, "nonBlank": 5094, "blank": 1173, "bytes": 201645 },
+    { "name": "Llyn.UIDemeanor", "root": "src", "files": 1, "lines": 12, "nonBlank": 11, "blank": 1, "bytes": 355 },
+    { "name": "Llyn.UIDeportment", "root": "src", "files": 329, "lines": 42924, "nonBlank": 35228, "blank": 7696, "bytes": 1425785 },
+    { "name": "Llyn.UIDeportment.Capsule", "root": "src", "files": 5, "lines": 91, "nonBlank": 77, "blank": 14, "bytes": 3014 },
+    { "name": "Llyn.UITerminal", "root": "src", "files": 1, "lines": 12, "nonBlank": 11, "blank": 1, "bytes": 361 },
+    { "name": "Llyn.UIVeneer", "root": "src", "files": 138, "lines": 11590, "nonBlank": 10588, "blank": 1002, "bytes": 579905 },
+    { "name": "Llyn.Internal", "root": "tests", "files": 246, "lines": 34621, "nonBlank": 28733, "blank": 5888, "bytes": 1433506 },
+    { "name": "Llyn.Tests.Convention", "root": "tests", "files": 68, "lines": 11263, "nonBlank": 9987, "blank": 1276, "bytes": 432407 },
+    { "name": "Llyn.Windows", "root": "tests", "files": 32, "lines": 2839, "nonBlank": 2307, "blank": 532, "bytes": 108871 },
+    { "name": "scripts", "root": "scripts", "files": 24, "lines": 20713, "nonBlank": 17876, "blank": 2837, "bytes": 848247 }
+  ]
+}

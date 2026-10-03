@@ -53,7 +53,7 @@ public sealed class LShengfuSourceHttp : LShengfuSource
         }
         catch (RegexMatchTimeoutException)
         {
-            return (null, true);
+            return (null, false);
         }
     }
 

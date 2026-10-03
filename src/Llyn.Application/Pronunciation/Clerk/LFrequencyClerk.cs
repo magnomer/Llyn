@@ -54,12 +54,12 @@ public sealed class LFrequencyClerk
     {
         LEntry? entry;
         IReadOnlyList<LFrequency> stored;
-        bool missed;
+        bool settled;
         lock (_lFrequencyClerkGate)
         {
             entry = _lFrequencyClerkEntries.LEntryRead(entryId);
             stored = entry is null ? [] : _lFrequencyClerkFrequencies.LFrequencyRead(entryId);
-            missed = _lFrequencyClerkMissed.Contains(entryId);
+            settled = _lFrequencyClerkMissed.Contains(entryId) || _lFrequencyClerkPending.ContainsKey(entryId);
         }
 
         if (entry is null)
@@ -69,7 +69,7 @@ public sealed class LFrequencyClerk
 
         if (stored.Count == 0)
         {
-            if (!missed)
+            if (!settled)
             {
                 LFrequencyClerkStart(entryId);
             }

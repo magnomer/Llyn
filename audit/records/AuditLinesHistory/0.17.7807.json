@@ -1,0 +1,24 @@
+{
+  "version": "0.17.7807",
+  "commit": "72e2cecb7d10cd7d20ce73d77e36109e0acaa592",
+  "date": "2026-09-27 10:53:56 +09:00",
+  "source": "local",
+  "rules": "80c346e374cdd4434474028f589e212b41bfa78b2ea48410edc85b8b0cc5e222",
+  "folders": [
+    { "name": "Llyn.Application", "root": "src", "files": 97, "lines": 15282, "nonBlank": 13051, "blank": 2231, "bytes": 533467 },
+    { "name": "Llyn.Conduct", "root": "src", "files": 67, "lines": 1522, "nonBlank": 1241, "blank": 281, "bytes": 39882 },
+    { "name": "Llyn.Core", "root": "src", "files": 266, "lines": 9532, "nonBlank": 7724, "blank": 1808, "bytes": 301090 },
+    { "name": "Llyn.Core.Windows", "root": "src", "files": 4, "lines": 357, "nonBlank": 298, "blank": 59, "bytes": 10545 },
+    { "name": "Llyn.Host", "root": "src", "files": 2, "lines": 92, "nonBlank": 87, "blank": 5, "bytes": 3726 },
+    { "name": "Llyn.Infrastructure", "root": "src", "files": 136, "lines": 19208, "nonBlank": 16444, "blank": 2764, "bytes": 694590 },
+    { "name": "Llyn.ShellEngine", "root": "src", "files": 44, "lines": 5989, "nonBlank": 4882, "blank": 1107, "bytes": 192293 },
+    { "name": "Llyn.UIDemeanor", "root": "src", "files": 1, "lines": 12, "nonBlank": 11, "blank": 1, "bytes": 355 },
+    { "name": "Llyn.UIDeportment", "root": "src", "files": 326, "lines": 43942, "nonBlank": 36068, "blank": 7874, "bytes": 1443769 },
+    { "name": "Llyn.UITerminal", "root": "src", "files": 1, "lines": 12, "nonBlank": 11, "blank": 1, "bytes": 361 },
+    { "name": "Llyn.UIVeneer", "root": "src", "files": 119, "lines": 11344, "nonBlank": 10382, "blank": 962, "bytes": 574773 },
+    { "name": "Llyn.Internal", "root": "tests", "files": 226, "lines": 32141, "nonBlank": 26695, "blank": 5446, "bytes": 1340414 },
+    { "name": "Llyn.Tests.Convention", "root": "tests", "files": 68, "lines": 11120, "nonBlank": 9849, "blank": 1271, "bytes": 428067 },
+    { "name": "Llyn.Windows", "root": "tests", "files": 33, "lines": 2720, "nonBlank": 2206, "blank": 514, "bytes": 102932 },
+    { "name": "scripts", "root": "scripts", "files": 24, "lines": 20706, "nonBlank": 17873, "blank": 2833, "bytes": 849195 }
+  ]
+}

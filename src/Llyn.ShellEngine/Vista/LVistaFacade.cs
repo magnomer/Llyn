@@ -258,12 +258,12 @@ internal sealed class LVistaFacade
                 LSubject.LSubjectAuthor => _lVistaFacadeEngine.LEngineAuthor.LEngineAuthorRead(id) is LAuthor author
                     ? draft with { LDraftAuthorHeld = author } : null,
                 LSubject.LSubjectTag =>
-                    _lVistaFacadeEngine.LEngineCard.LEngineTagRead().FirstOrDefault(row => row.LTagId == id) is LTag tag
-                    ? draft with { LDraftTag = tag } : null,
+                    _lVistaFacadeEngine.LEngineCard.LEngineTagRead().FirstOrDefault(row => row.LTagId == id) is not null
+                    ? draft : null,
                 LSubject.LSubjectRegister => _lVistaFacadeEngine.LEngineCard.LEngineRegisterFind(
                     string.Empty, LCatalogOrder.LCatalogOrderName)
-                    .FirstOrDefault(row => row.LCatalogRegisterStored.LRegisterId == id) is LCatalogRegister register
-                    ? draft with { LDraftRegister = register.LCatalogRegisterStored } : null,
+                    .FirstOrDefault(row => row.LCatalogRegisterStored.LRegisterId == id) is not null
+                    ? draft : null,
                 _ => null,
             };
         }

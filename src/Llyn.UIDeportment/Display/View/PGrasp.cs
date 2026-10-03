@@ -7,8 +7,6 @@ public sealed class PGrasp : FrameworkElement
 {
     private static readonly ImageSource? PGraspStarImage = QIcon.QIconResolve("star", 16);
 
-    private static readonly ImageSource? PGraspGrayImage = QIcon.QIconResolve(null, 0, PGraspStarImage, false);
-
     public static readonly DependencyProperty PGraspLimitProperty = DependencyProperty.Register(
         nameof(PGraspLimit),
         typeof(int),
@@ -82,8 +80,7 @@ public sealed class PGrasp : FrameworkElement
             PGraspLimitProperty,
             PGraspChangedEvent,
             PGraspHoveredEvent,
-            PGraspStarImage,
-            PGraspGrayImage);
+            PGraspStarImage);
     }
 
     public event RoutedEventHandler PGraspChanged
@@ -144,7 +141,7 @@ public sealed class PGrasp : FrameworkElement
     protected override void OnRender(DrawingContext drawingContext)
     {
         base.OnRender(drawingContext);
-        _qGraspStar.QGraspDraw(drawingContext);
+        _qGraspStar.QGraspDraw(drawingContext, PGraspFill, PGraspEmpty, PGraspUnrated, PGraspPreview);
     }
 
     protected override void OnMouseMove(MouseEventArgs e)

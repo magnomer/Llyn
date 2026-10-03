@@ -3,7 +3,7 @@
 Read and validate execution.json for the execution tooling.
 
 .DESCRIPTION
-Dot-sourced by run.ps1, build.ps1, debug.ps1 and timemachine.ps1. Holds the generation
+Dot-sourced by run.ps1, build.ps1, debug.ps1 and TimeMachine.ps1. Holds the generation
 number, the configuration schema, and the strict reader every script uses. No
 project-specific value appears here: this file is identical in every project at this
 generation.

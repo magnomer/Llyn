@@ -18,7 +18,7 @@ performance -Help
 ```
 performance
 performance -Filter "FullyQualifiedName~TEditor" -Repeat 3
-performance -Project Llyn.Internal -Top 100
+performance -Project Llyn.Tests.Engine -Top 100
 ```
 
 ## Methods

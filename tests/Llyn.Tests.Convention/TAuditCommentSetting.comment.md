@@ -5,7 +5,7 @@ Hash: `aae83cdf109ff239`
 
 Hand-written and tracked.
 The comment-audit rules and scope live here, not in a generated sidecar.
-auditcomments.ps1 reads its own tracked auditcomments.json and never writes this file.
+AuditComments.ps1 reads its own tracked AuditComments.json and never writes this file.
 The audits read no script configuration, and both copies change together as scripts/principles.md asks.
 
 ## `public static readonly string[] TAuditCommentFiles`
@@ -20,7 +20,7 @@ TAuditNameRegistry.cs is generated and carries a generated-file header, so it al
 ## `public static readonly string[] TAuditCommentSources`
 
 Lists the source extensions that need paired comment files.
-Its patterns match the source pairs in scripts/auditcomments.json.
+Its patterns match the source pairs in scripts/AuditComments.json.
 
 ## `public static readonly string[] TAuditCommentAbbreviations`
 

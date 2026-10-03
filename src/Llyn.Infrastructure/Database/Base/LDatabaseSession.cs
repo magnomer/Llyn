@@ -16,7 +16,15 @@ public sealed class LDatabaseSession : LVaultSession, IDisposable
     {
         _lDatabaseSessionOwner = owner;
         _lDatabaseSessionLink = connection;
-        _lDatabaseSessionScope = connection.BeginTransaction();
+        try
+        {
+            _lDatabaseSessionScope = connection.BeginTransaction();
+        }
+        catch
+        {
+            connection.Dispose();
+            throw;
+        }
     }
 
     internal LDatabaseSession(LDatabaseSession session)

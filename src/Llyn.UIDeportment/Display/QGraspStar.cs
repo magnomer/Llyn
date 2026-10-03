@@ -25,16 +25,13 @@ public sealed class QGraspStar
 
     private readonly ImageSource _qGraspStarImage;
 
-    private readonly ImageSource _qGraspGrayImage;
-
     public QGraspStar(
         FrameworkElement grasp,
         DependencyProperty step,
         DependencyProperty limit,
         RoutedEvent changed,
         RoutedEvent hovered,
-        ImageSource? star,
-        ImageSource? gray)
+        ImageSource? star)
     {
         _qGraspElement = grasp;
         _qGraspStep = step;
@@ -42,7 +39,6 @@ public sealed class QGraspStar
         _qGraspChanged = changed;
         _qGraspHovered = hovered;
         _qGraspStarImage = star ?? throw new ArgumentNullException(nameof(star));
-        _qGraspGrayImage = gray ?? throw new ArgumentNullException(nameof(gray));
         grasp.IsEnabledChanged += (_, _) => grasp.Opacity = grasp.IsEnabled ? 1 : 0.4;
     }
 
@@ -115,9 +111,11 @@ public sealed class QGraspStar
         e.Handled = true;
     }
 
-    public void QGraspDraw(DrawingContext context)
+    public void QGraspDraw(DrawingContext context, Brush fill, Brush empty, Brush unrated, Brush preview)
     {
         int shown = QGraspPointed;
+        Brush back = shown == 0 ? unrated : empty;
+        Brush front = QGraspHover is null ? fill : preview;
 
         context.DrawRectangle(Brushes.Transparent, null, new Rect(_qGraspElement.RenderSize));
         context.PushTransform(new TranslateTransform(QGraspHitSlack, QGraspHitSlack));
@@ -129,16 +127,14 @@ public sealed class QGraspStar
             int filled = Math.Clamp(shown - star * 2, 0, 2);
             context.PushTransform(new TranslateTransform(star * pitch, 0));
             context.PushOpacity(shown == 0 ? 0.35 : 0.55);
-            context.DrawImage(_qGraspGrayImage, frame);
+            QGraspStarDraw(context, back, frame);
             context.Pop();
 
             if (filled > 0)
             {
                 context.PushClip(new RectangleGeometry(
                     new Rect(0, 0, filled == 2 ? QGraspStarSize : QGraspStarSize / 2, QGraspStarSize)));
-                context.PushOpacity(QGraspHover is null ? 1 : 0.7);
-                context.DrawImage(_qGraspStarImage, frame);
-                context.Pop();
+                QGraspStarDraw(context, front, frame);
                 context.Pop();
             }
 
@@ -159,6 +155,13 @@ public sealed class QGraspStar
     {
         _qGraspElement.SetValue(_qGraspStep, step);
         _qGraspElement.RaiseEvent(new RoutedEventArgs(_qGraspChanged, _qGraspElement));
+    }
+
+    private void QGraspStarDraw(DrawingContext context, Brush ink, Rect frame)
+    {
+        context.PushOpacityMask(new ImageBrush(_qGraspStarImage));
+        context.DrawRectangle(ink, null, frame);
+        context.Pop();
     }
 
     private int QGraspStepDraw(Point point)

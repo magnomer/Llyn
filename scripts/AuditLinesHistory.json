@@ -1,0 +1,20 @@
+{
+  "repository": "magnomer/Llyn",
+  "records": "../audit/records/AuditLinesHistory",
+  "report": {
+    "directory": "../audit",
+    "versionFile": "../version.json",
+    "versionKey": "current-version",
+    "prefix": "AuditLinesHistory-"
+  },
+  "sources": {
+    "roots": ["src", "tests"],
+    "extensions": [".cs", ".xaml", ".csproj"],
+    "excludeSegments": [".git", ".vs", "bin", "obj", "artifacts", "packages", "node_modules", "publish"]
+  },
+  "segments": 1,
+  "tally": {
+    "roots": ["scripts"],
+    "extensions": [".ps1", ".cs"]
+  }
+}

@@ -20,7 +20,6 @@ public sealed class TAuditConvention
             (nameof(TAuditNameSetting), TAuditNameSetting.TAuditGeneration),
             (nameof(TAuditLineSetting), TAuditLineSetting.TAuditGeneration),
             (nameof(TAuditCommentSetting), TAuditCommentSetting.TAuditGeneration),
-            (nameof(TAuditDraftSetting), TAuditDraftSetting.TAuditGeneration),
             (nameof(TAuditTruthSetting), TAuditTruthSetting.TAuditGeneration),
             (nameof(TAuditStrictSetting), TAuditStrictSetting.TAuditGeneration),
             (nameof(TAuditCharterSetting), TAuditCharterSetting.TAuditGeneration),

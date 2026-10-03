@@ -1,5 +1,5 @@
 # LFrequencyClerk.cs
-Hash: `40b23ae8c79565ea`
+Hash: `c6c836c1b335e1f1`
 
 ## `public sealed class LFrequencyClerk`
 
@@ -22,7 +22,8 @@ The `once` text words a word interval.
 
 The stored rows of an entry, regraded under the current pack.
 A regrade that changed is written back.
-An entry with no rows starts a fetch unless a source already answered nothing for it.
+An entry with no rows starts a fetch.
+None starts while one is pending or after a source answered nothing.
 
 ## `public void LFrequencyClerkStart(long entryId)`
 

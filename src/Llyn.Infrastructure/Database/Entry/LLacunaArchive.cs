@@ -36,7 +36,7 @@ public sealed class LLacunaArchive : LLacunaVault
         return rows;
     }
 
-    public void LLacunaSave(long entryId, IReadOnlyList<long?> morphologyIds)
+    public void LLacunaSave(long entryId, IReadOnlyList<long> morphologyIds)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
         ArgumentNullException.ThrowIfNull(morphologyIds);
@@ -46,19 +46,8 @@ public sealed class LLacunaArchive : LLacunaVault
         using LDatabaseSession session = _lLacunaArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
         LLacunaClear(connection, entryId);
-        bool lost = false;
-        foreach (long? morphologyId in morphologyIds)
+        foreach (long morphologyId in morphologyIds)
         {
-            if (morphologyId is null)
-            {
-                if (lost)
-                {
-                    continue;
-                }
-
-                lost = true;
-            }
-
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
                 """
@@ -66,7 +55,7 @@ public sealed class LLacunaArchive : LLacunaVault
                 VALUES ($id, $morphology, $fetched);
                 """;
             command.Parameters.AddWithValue("$id", entryId);
-            command.Parameters.AddWithValue("$morphology", (object?)morphologyId ?? DBNull.Value);
+            command.Parameters.AddWithValue("$morphology", morphologyId);
             command.Parameters.AddWithValue("$fetched", now);
             command.ExecuteNonQuery();
         }

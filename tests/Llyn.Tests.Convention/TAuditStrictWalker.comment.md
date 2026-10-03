@@ -1,5 +1,5 @@
 # TAuditStrictWalker.cs
-Hash: `2e3ea7ac8f91bbf3`
+Hash: `067bfe1690eb0b7d`
 
 ## `internal static class TAuditStrictWalker`
 
@@ -90,6 +90,7 @@ The surface walk and the driver walk each count it under their own audit.
 ## `public static ExpressionSyntax TAuditCoreRead(ExpressionSyntax condition)`
 
 The condition unwrapped from parentheses and negation.
+Any other prefix operator stops the unwrapping and is returned as the core.
 
 ## `public static bool TAuditPatternCheck(PatternSyntax pattern)`
 

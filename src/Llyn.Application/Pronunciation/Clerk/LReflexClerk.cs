@@ -81,11 +81,12 @@ public sealed class LReflexClerk
         long entryId,
         string language,
         IReadOnlyList<LReflexDraft> drafts,
-        List<LRevisionDelta>? changes,
+        List<LRevisionDelta> changes,
         Dictionary<long, long> identity)
     {
         ArgumentNullException.ThrowIfNull(language);
         ArgumentNullException.ThrowIfNull(drafts);
+        ArgumentNullException.ThrowIfNull(changes);
         ArgumentNullException.ThrowIfNull(identity);
 
         LReflexVault reflexes = _lReflexClerkReflexes;
@@ -120,7 +121,7 @@ public sealed class LReflexClerk
             return;
         }
 
-        changes?.Add(new LRevisionDelta(
+        changes.Add(new LRevisionDelta(
             entryId,
             "reflex",
             current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",

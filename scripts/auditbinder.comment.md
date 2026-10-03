@@ -2,7 +2,7 @@
 Hash: `8e2ff3e20b91b673`
 
 The one compilation every bound audit script shares, the script counterpart of the convention test's `TAuditBinder`.
-auditstructure, auditobject, auditfake and auditplatform copy it into their helper beside their own program.
+AuditStructure, AuditObject, AuditFake and AuditPlatform copy it into their helper beside their own program.
 Each helper builds once into the temp folder, keyed by a hash of its text, binder, framework and SDK.
 So an edit rebuilds every helper once.
 
@@ -18,7 +18,7 @@ The sources are the tracked and untracked `.cs` files under the source root, nev
 The generated `.g.cs` files of every project join them, `_wpftmp` copies left out.
 A project that holds markup but has no generated folder fails, since the solution was not built.
 The references are the shared frameworks beside the helper runtime and the host build output, own assemblies left out.
-The helper framework picks those shared frameworks, so auditfake and auditobject pin it to the test framework.
+The helper framework picks those shared frameworks, so AuditFake and AuditObject pin it to the test framework.
 A compile error fails the bind, so an unbound name can never slip past an audit.
 
 ## Trees

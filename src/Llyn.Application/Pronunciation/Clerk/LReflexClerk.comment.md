@@ -1,5 +1,5 @@
 # LReflexClerk.cs
-Hash: `8b3b079bbe46f6bd`
+Hash: `b0743db639ed5ff9`
 
 ## `public sealed class LReflexClerk`
 
@@ -34,7 +34,7 @@ The reflex rules the pack of `language` declares, or none for a blank language.
 The languages the pack of `language` folds away, read from its reflex rules.
 None for a blank language or a pack without folded rules.
 
-## `public void LReflexClerkSync(long entryId, string language, IReadOnlyList<LReflexDraft> drafts, List<LRevisionDelta>? changes, Dictionary<long, long> identity)`
+## `public void LReflexClerkSync(long entryId, string language, IReadOnlyList<LReflexDraft> drafts, List<LRevisionDelta> changes, Dictionary<long, long> identity)`
 
 The reflexes of an entry reconciled to its draft, anatomies filled from the pack.
 An unchanged list writes nothing.

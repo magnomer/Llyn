@@ -6,7 +6,7 @@ public interface LLacunaVault
 {
     IReadOnlyList<LLacuna> LLacunaRead(long entryId);
 
-    void LLacunaSave(long entryId, IReadOnlyList<long?> morphologyIds);
+    void LLacunaSave(long entryId, IReadOnlyList<long> morphologyIds);
 
     void LLacunaDelete(long entryId);
 }

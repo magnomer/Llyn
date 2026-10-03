@@ -21,6 +21,7 @@ public sealed class LSettingsLoader : LSettingsVault
     private const string LSettingsLoaderDefault = "en";
 
     private readonly string _lSettingsLoaderRoot;
+    private bool _lSettingsLoaderUnread;
 
     public LSettingsLoader(string root)
     {
@@ -36,6 +37,7 @@ public sealed class LSettingsLoader : LSettingsVault
     public LSettings LSettingsRead()
     {
         string path = Path.Combine(_lSettingsLoaderRoot, LSettingsLoaderFile);
+        _lSettingsLoaderUnread = false;
         if (!File.Exists(path))
         {
             return new LSettings(LSettingsLoaderDefault);
@@ -90,19 +92,23 @@ public sealed class LSettingsLoader : LSettingsVault
             }
             catch (IOException)
             {
+                _lSettingsLoaderUnread = true;
             }
             catch (UnauthorizedAccessException)
             {
+                _lSettingsLoaderUnread = true;
             }
 
             return new LSettings(LSettingsLoaderDefault);
         }
         catch (IOException)
         {
+            _lSettingsLoaderUnread = true;
             return new LSettings(LSettingsLoaderDefault);
         }
         catch (UnauthorizedAccessException)
         {
+            _lSettingsLoaderUnread = true;
             return new LSettings(LSettingsLoaderDefault);
         }
     }
@@ -110,6 +116,11 @@ public sealed class LSettingsLoader : LSettingsVault
     public void LSettingsSave(LSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
+
+        if (_lSettingsLoaderUnread)
+        {
+            throw new LVaultFault(new IOException("settings.json could not be read, so it is not overwritten."));
+        }
 
         Dictionary<string, object> payload = new(StringComparer.Ordinal)
         {

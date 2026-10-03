@@ -1,5 +1,5 @@
 # LCatalogExample.cs
-Hash: `299a18d7a5dec3fc`
+Hash: `19c17ba6264de9f2`
 
 ## `public sealed record LCatalogExample(`
 
@@ -24,9 +24,9 @@ The sentence as a name, which the vista find words and numbers apart from its tw
 The sentence as the list shows it, worded by the vista find for an unknown or unwritten text.
 It is the stored text until a find words it.
 
-## `public string LCatalogExampleCount { get; init; }`
+## `public string LCatalogExampleCount`
 
-The usage worded once when the row is built, so a copy with another usage keeps the old count.
+The usage worded on every read, so a copy with another usage shows its own count.
 
 ## `public static LCatalogExample LCatalogExampleCreate(LExample example, string? source, int usage)`
 

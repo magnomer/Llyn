@@ -20,8 +20,6 @@ public interface LEntryVault
 
     void LEntrySpeechSet(long id, IReadOnlyList<LSpeech> speeches);
 
-    void LEntryUpdatedSet(long id);
-
     string LEntryEpithetRead(long entryId);
 
     void LEntryEpithetSave(long entryId, string epithet);

@@ -5,7 +5,7 @@ Hash: `957dcb1f347e9342`
 
 Hand-written and tracked: the ring neighbours, their offers, their ceilings and their exempt rows.
 No script writes this file, and the border fact reads no script configuration.
-`auditstructure.json` holds its own copy, kept in step by hand as scripts/principles.md asks.
+`AuditStructure.json` holds its own copy, kept in step by hand as scripts/principles.md asks.
 The neighbours and the cut are tied to the charter and the UI roots by facts, not by hand.
 
 ## `public const string TAuditBorderHost = "Llyn.Host";`

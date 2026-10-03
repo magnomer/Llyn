@@ -1,5 +1,5 @@
 # LWorkspaceRoot.cs
-Hash: `d5d006ed2b119ddf`
+Hash: `17802ced47eeb2be`
 
 ## `public static class LWorkspaceRoot`
 
@@ -14,6 +14,7 @@ Everything else the program persists goes inside the resolved workspace, never b
 
 Returns the current workspace folder, creating it if needed.
 When no folder has been chosen yet, a default under the user profile is used.
+The same default applies when the pointer file exists but cannot be read.
 
 ## `public static void LWorkspaceRootChange(string path)`
 

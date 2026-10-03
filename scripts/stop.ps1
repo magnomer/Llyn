@@ -2,7 +2,7 @@
 .SYNOPSIS
     End every instance the execution family launched.
 .DESCRIPTION
-    Reads the launch ledger that run.ps1, build.ps1, debug.ps1 and timemachine.ps1
+    Reads the launch ledger that run.ps1, build.ps1, debug.ps1 and TimeMachine.ps1
     write, and ends every process still alive in it: the main window is asked to
     close first so the application saves what it holds, and a process that lingers
     past the timeout is killed. Ledger entries whose process is gone are dropped.

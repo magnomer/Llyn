@@ -26,7 +26,7 @@ internal sealed class LVigil
     {
         ArgumentNullException.ThrowIfNull(observer);
 
-        LSubject held = (LSubject)subject;
+        LSubject held = CPanel.CPanelSubjectRead(subject);
         _lVigilTenureObservers.Add((held, LVigilBulletinSend));
         _lVigilDesk.CDeskTenure?.LTenureObserverAttach(held, LVigilBulletinSend);
 
@@ -40,7 +40,7 @@ internal sealed class LVigil
     {
         ArgumentNullException.ThrowIfNull(observer);
 
-        LSubject held = (LSubject)subject;
+        LSubject held = CPanel.CPanelSubjectRead(subject);
         _lVigilDraftObservers.Add((held, LVigilBulletinSend));
         _lVigilDesk.CDeskTenure?.LTenureDraftAttach(held, LVigilBulletinSend);
 
@@ -54,7 +54,7 @@ internal sealed class LVigil
     {
         ArgumentNullException.ThrowIfNull(observer);
 
-        LSubject held = (LSubject)subject;
+        LSubject held = CPanel.CPanelSubjectRead(subject);
         _lVigilEntryObservers.Add((held, LVigilBulletinSend));
         _lVigilDesk.CDeskTenure?.LTenureEntryAttach(held, LVigilBulletinSend);
 

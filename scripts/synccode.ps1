@@ -36,7 +36,7 @@ every project at the same generation.
 # tree and maintains the code index. Two projects on the same generation produce the same archive
 # from the same tree and lay out snapshots/ the same, whatever else differs between the files.
 # Generation 1: zip.ps1 archives the Git-visible file set as snapshots/<version>/<project>-V<version>.zip,
-# refuses to overwrite and refuses a tree that no longer matches an executable snapshot; gitdownload.ps1
+# refuses to overwrite and refuses a tree that no longer matches an executable snapshot; GitDownload.ps1
 # fetches every version-labelled commit above the threshold from GitHub into the same layout;
 # clean.ps1 removes obj/, bin/, TestResults/ and WPF temp projects outside the protected trees and
 # maintains the editor exclusions; synccode.ps1 syncs the CodeGraph index and reports the delta.

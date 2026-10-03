@@ -35,9 +35,10 @@ public sealed class LTrailSystem : LTrail
         ArgumentNullException.ThrowIfNull(path);
 
         string relative = Path.GetRelativePath(root, path);
-        return Path.IsPathRooted(relative) || relative.StartsWith("..", StringComparison.Ordinal)
-            ? null
-            : relative;
+        bool escapes = relative == ".."
+            || relative.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal)
+            || relative.StartsWith(".." + Path.AltDirectorySeparatorChar, StringComparison.Ordinal);
+        return Path.IsPathRooted(relative) || escapes ? null : relative;
     }
 
     public string LTrailNameRead(string path)

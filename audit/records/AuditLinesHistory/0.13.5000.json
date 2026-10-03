@@ -1,0 +1,18 @@
+{
+  "version": "0.13.5000",
+  "commit": "ab7021b22804584e0c52c43761134a263e4dcbd9",
+  "date": "2026-09-19 13:18:27 +09:00",
+  "source": "local",
+  "rules": "80c346e374cdd4434474028f589e212b41bfa78b2ea48410edc85b8b0cc5e222",
+  "folders": [
+    { "name": "Llyn.Application", "root": "src", "files": 9, "lines": 729, "nonBlank": 619, "blank": 110, "bytes": 23767 },
+    { "name": "Llyn.Core", "root": "src", "files": 203, "lines": 8058, "nonBlank": 6657, "blank": 1401, "bytes": 268320 },
+    { "name": "Llyn.Infrastructure", "root": "src", "files": 123, "lines": 17944, "nonBlank": 15324, "blank": 2620, "bytes": 671518 },
+    { "name": "Llyn.Media", "root": "src", "files": 2, "lines": 261, "nonBlank": 222, "blank": 39, "bytes": 8600 },
+    { "name": "Llyn.ShellEngine", "root": "src", "files": 91, "lines": 15460, "nonBlank": 13320, "blank": 2140, "bytes": 531746 },
+    { "name": "Llyn.UIDeportment", "root": "src", "files": 4, "lines": 551, "nonBlank": 439, "blank": 112, "bytes": 13382 },
+    { "name": "Llyn.UIVeneer", "root": "src", "files": 411, "lines": 44118, "nonBlank": 38044, "blank": 6074, "bytes": 1648815 },
+    { "name": "Llyn.Convention.Tests", "root": "tests", "files": 37, "lines": 5477, "nonBlank": 4912, "blank": 565, "bytes": 210676 },
+    { "name": "Llyn.Tests", "root": "tests", "files": 171, "lines": 28016, "nonBlank": 23320, "blank": 4696, "bytes": 1206692 }
+  ]
+}

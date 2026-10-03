@@ -1,0 +1,63 @@
+{
+  "generation": 19,
+  "project": "Llyn",
+  "enforced": true,
+  "ceilings": {
+    "Length": 0,
+    "Width": 0
+  },
+  "sources": {
+    "roots": [
+      "src",
+      "tests"
+    ],
+    "extensions": [
+      ".cs",
+      ".xaml",
+      ".csproj"
+    ],
+    "excludeSegments": [
+      ".git",
+      ".vs",
+      "bin",
+      "obj",
+      "artifacts",
+      "packages",
+      "node_modules",
+      "publish"
+    ]
+  },
+  "thresholds": {
+    "limit": 500,
+    "warning": 450,
+    "band": 5
+  },
+  "report": {
+    "directory": "audit",
+    "versionFile": "version.json",
+    "versionKey": "current-version",
+    "prefix": "AuditLines-",
+    "segments": 1
+  },
+  "history": {
+    "records": "audit/records/AuditLinesHistory",
+    "pagePrefix": "AuditLinesHistory-"
+  },
+  "width": {
+    ".cs": 120,
+    ".xaml": 200
+  },
+  "hotspot": {
+    "commits": 30,
+    "top": 15
+  },
+  "tally": {
+    "roots": [
+      "scripts"
+    ],
+    "extensions": [
+      ".ps1",
+      ".cs"
+    ]
+  }
+}

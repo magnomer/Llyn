@@ -1,5 +1,5 @@
 # PGrasp.cs
-Hash: `ecb0dbe378778dfc`
+Hash: `52c1e8985d941502`
 
 ## `public sealed class PGrasp : FrameworkElement`
 
@@ -22,22 +22,22 @@ So no surface can set a value the store would refuse.
 ## `public static readonly DependencyProperty PGraspFillProperty`
 
 A themed brush for a committed star, set from the theme resource.
-The draw paints star images with opacity, so nothing reads it yet.
+The draw reads it, so a theme change recolours the stars.
 
 ## `public static readonly DependencyProperty PGraspEmptyProperty`
 
 A themed brush for every star's outline, set from the theme resource.
-The draw paints star images with opacity, so nothing reads it yet.
+The draw reads it, so a theme change recolours the stars.
 
 ## `public static readonly DependencyProperty PGraspUnratedProperty`
 
 A themed brush for the outlines while no step stands, set from the theme resource.
-The draw paints star images with opacity, so nothing reads it yet.
+The draw reads it, so a theme change recolours the stars.
 
 ## `public static readonly DependencyProperty PGraspPreviewProperty`
 
 A themed brush for the hover preview, set from the theme resource.
-The draw paints star images with opacity, so nothing reads it yet.
+The draw reads it, so a theme change recolours the stars.
 
 ## `public static readonly RoutedEvent PGraspChangedEvent`
 
@@ -51,7 +51,8 @@ The listener reads `PGraspPointed` and words the step beside the stars.
 
 ## `public PGrasp()`
 
-Builds the `QGraspStar` that sizes, draws, hit-tests and steps the stars from this row's own properties, events and images.
+Builds the `QGraspStar` that sizes, draws, hit-tests and steps the stars from this row's own properties, events and star image.
+Each draw hands it the themed brushes.
 
 ## `public int PGraspPointed`
 

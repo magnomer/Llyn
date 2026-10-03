@@ -1,5 +1,5 @@
 # Llyn.Conduct.csproj
-Hash: `fccccd64d471c3ad`
+Hash: `246ef06664a7ce7e`
 
 Builds Conduct, which holds every behaviour of the application behind the screen.
 
@@ -11,11 +11,15 @@ Conduct names no window or control, so it builds for every platform.
 
 A Windows-only call turns the build red, so the platform stays out of Conduct.
 
-## `<InternalsVisibleTo Include="Llyn.Internal" />`
+## `<InternalsVisibleTo Include="Llyn.Tests.Interface" />`
 
-The portable behaviour tests reach Conduct internals directly.
+The relay layer reaches Conduct internals so the behaviour tests need not.
 
-## `<InternalsVisibleTo Include="Llyn.Windows" />`
+## `<InternalsVisibleTo Include="Llyn.Tests.Conduct" />`
+
+Some Conduct test bodies still reach internal Conduct members directly.
+
+## `<InternalsVisibleTo Include="Llyn.Tests.Windows" />`
 
 The Windows behaviour tests build `CAtelier` for the deportments they drive.
 

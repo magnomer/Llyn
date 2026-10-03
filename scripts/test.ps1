@@ -6,8 +6,8 @@
     The test projects are discovered on disk, not through the solution. By
     default every project runs, the convention test project included. -Main
     skips the convention project and -Convention runs it alone.
-    -Platform picks the test project mapped to one platform in test.json; the
-    convention project still runs beside it unless -Main is given. A Windows
+    -Platform picks the test projects mapped to one platform in test.json; the
+    convention project still runs beside them unless -Main is given. A Windows
     project on a host that is not Windows is skipped with a notice line.
     Given symbol names, only the tests a change inside those symbols can affect
     run: detector.ps1 finds them, and each test project runs with a filter that
@@ -31,7 +31,7 @@
 .PARAMETER Project
     Name of a single test project to run. Defaults to all. Overrides the scope switches and -Platform.
 .PARAMETER Platform
-    All (default), Internal or Windows. A platform other than All runs only the test project test.json
+    All (default), Internal or Windows. A platform other than All runs only the test projects test.json
     maps to it, and the convention project unless -Main is given. Cannot be combined with -Convention.
 .PARAMETER All
     Run every test project, the convention project included. This is the default. Alias: -a.
@@ -107,8 +107,8 @@
 # each test project runs with a filter selecting them - by method, by class when the method filter
 # grows too long, whole when the class filter does too - a project with none is skipped, and the
 # convention project runs whole.
-# Generation 4: everything in generation 3; test.json maps each platform to one test project, -Platform
-# runs only that project beside the convention project, -Main still drops the convention project, and a
+# Generation 4: everything in generation 3; test.json maps each platform to one test project or a list, -Platform
+# runs only those projects beside the convention project, -Main still drops the convention project, and a
 # Windows project on a host that is not Windows is skipped with a notice line instead of failing.
 # Every project-specific value lives in test.json, so this file is identical in every project at
 # this generation.
@@ -188,7 +188,7 @@ OPTIONS
         Overrides the scope switches and -Platform.
 
     -Platform <All|Internal|Windows>
-        Run the test project test.json maps to the platform, and the
+        Run the test projects test.json maps to the platform, and the
         convention project unless -Main is given. Defaults to All, every
         project. A Windows project on a host that is not Windows is skipped
         with a notice line. Cannot be combined with -Convention.
@@ -349,12 +349,14 @@ else {
             throw "The test configuration maps no project to the platform: $Platform"
         }
 
-        $platformProject = [string]$mapped.Value
-        if (@($projects | Where-Object { $_.BaseName -eq $platformProject }).Count -eq 0) {
-            throw "The $Platform test project was not found under tests: $platformProject"
+        $platformProjects = @($mapped.Value | ForEach-Object { [string]$_ })
+        foreach ($platformProject in $platformProjects) {
+            if (@($projects | Where-Object { $_.BaseName -eq $platformProject }).Count -eq 0) {
+                throw "The $Platform test project was not found under tests: $platformProject"
+            }
         }
 
-        $projects = @($projects | Where-Object { $_.BaseName -eq $platformProject -or $_.BaseName -eq [string]$config.convention })
+        $projects = @($projects | Where-Object { $platformProjects -contains $_.BaseName -or $_.BaseName -eq [string]$config.convention })
     }
 
     if ($Main) {
@@ -365,10 +367,10 @@ else {
 # A Windows test project targets a Windows framework, which builds and runs on Windows alone.
 $windowsMapped = $config.platforms.PSObject.Properties['Windows']
 if ($null -ne $windowsMapped -and [System.Environment]::OSVersion.Platform -ne [System.PlatformID]::Win32NT) {
-    $windowsProject = [string]$windowsMapped.Value
-    if (@($projects | Where-Object { $_.BaseName -eq $windowsProject }).Count -gt 0) {
-        Write-Host "$windowsProject is skipped: this host is not Windows."
-        $projects = @($projects | Where-Object { $_.BaseName -ne $windowsProject })
+    $windowsProjects = @($windowsMapped.Value | ForEach-Object { [string]$_ })
+    if (@($projects | Where-Object { $windowsProjects -contains $_.BaseName }).Count -gt 0) {
+        Write-Host "$($windowsProjects -join ', ') is skipped: this host is not Windows."
+        $projects = @($projects | Where-Object { $windowsProjects -notcontains $_.BaseName })
         if ($projects.Count -eq 0) {
             exit 0
         }

@@ -1,0 +1,114 @@
+using Llyn.Core;
+using Llyn.ShellEngine;
+using Xunit;
+
+namespace Llyn.Tests;
+
+public sealed class TCatalogFavorite
+{
+    [Fact]
+    public void FavoriteFind_HeadwordOrder_ReturnsAlphabetical()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        TCatalogFavoriteSave(engine, "stone", "English");
+        TCatalogFavoriteSave(engine, "apple", "English");
+
+        Assert.Equal(
+            ["apple", "stone"],
+            engine.TEngineFavoriteFind(string.Empty, LCatalogOrder.LCatalogOrderHeadword)
+                .Select(favorite => favorite.LCatalogFavoriteEntry.LEntryHeadword));
+    }
+
+    [Fact]
+    public void FavoriteFind_ReverseOrder_ReturnsReverseAlphabetical()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        TCatalogFavoriteSave(engine, "apple", "English");
+        TCatalogFavoriteSave(engine, "stone", "English");
+
+        Assert.Equal(
+            ["stone", "apple"],
+            engine.TEngineFavoriteFind(string.Empty, LCatalogOrder.LCatalogOrderReverse)
+                .Select(favorite => favorite.LCatalogFavoriteEntry.LEntryHeadword));
+    }
+
+    [Fact]
+    public void FavoriteFind_LanguageOrder_ReturnsLanguageGrouped()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        TCatalogFavoriteSave(engine, "apple", "Korean");
+        TCatalogFavoriteSave(engine, "stone", "English");
+
+        Assert.Equal(
+            ["English", "Korean"],
+            engine.TEngineFavoriteFind(string.Empty, LCatalogOrder.LCatalogOrderLanguage)
+                .Select(favorite => favorite.LCatalogFavoriteEntry.LEntryLanguage));
+    }
+
+    [Fact]
+    public void FavoriteFind_MarkedOrder_ReturnsNewestMarkFirst()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry apple = TCatalogEntrySave(engine, "apple", "English");
+        LEntry stone = TCatalogEntrySave(engine, "stone", "English");
+        engine.TEngineFavoriteSave(stone.LEntryId);
+        engine.TEngineFavoriteSave(apple.LEntryId);
+
+        Assert.Equal(
+            ["apple", "stone"],
+            engine.TEngineFavoriteFind(string.Empty, LCatalogOrder.LCatalogOrderMarked)
+                .Select(favorite => favorite.LCatalogFavoriteEntry.LEntryHeadword));
+    }
+
+    [Fact]
+    public void FavoriteFind_GraspOrder_ReturnsHighestGraspFirst()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        TCatalogFavoriteSave(engine, "apple", "English");
+        TCatalogFavoriteSave(engine, "stone", "English");
+        TCatalogFavoriteSave(engine, "river", "English");
+
+        LCatalogFavorite stone = engine.TEngineFavoriteFind("stone", LCatalogOrder.LCatalogOrderRecent).Single();
+        engine.TEngineGraspSave(stone.LCatalogFavoriteEntry.LEntryId, 7);
+
+        Assert.Equal(
+            ["stone", "apple", "river"],
+            engine.TEngineFavoriteFind(string.Empty, LCatalogOrder.LCatalogOrderGrasp)
+                .Select(favorite => favorite.LCatalogFavoriteEntry.LEntryHeadword));
+    }
+
+    private static void TCatalogFavoriteSave(LEngine engine, string headword, string language)
+    {
+        engine.TEngineFavoriteSave(TCatalogEntrySave(engine, headword, language).LEntryId);
+    }
+
+    private static LEntry TCatalogEntrySave(LEngine engine, string headword, string language)
+    {
+        return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            headword,
+            language,
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardDraftCreate(
+                string.Empty,
+                string.Empty,
+                "a meaning",
+                [],
+                [],
+                [],
+                [],
+                [],
+                1)],
+            []));
+    }
+}

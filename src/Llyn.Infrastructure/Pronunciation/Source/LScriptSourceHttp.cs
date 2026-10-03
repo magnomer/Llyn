@@ -52,7 +52,7 @@ public sealed class LScriptSourceHttp : LScriptSource
         }
         catch (RegexMatchTimeoutException)
         {
-            return ([], true);
+            return ([], false);
         }
 
         List<LScriptImage> images = [];

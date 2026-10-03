@@ -70,7 +70,7 @@ internal sealed record LEngineStaff(
         LUsageClerk usage = new(rig);
         LVocabularyClerk vocabulary = new(rig);
         LParadigmClerk paradigm = new(rig);
-        LInflectionClerk inflection = new(rig, paradigm);
+        LInflectionClerk inflection = new(rig);
         LPronunciationClerk pronunciation = new(rig);
         LTrailClerk trail = new(rig);
         LLanguageClerk language = new(rig, cache, trail);

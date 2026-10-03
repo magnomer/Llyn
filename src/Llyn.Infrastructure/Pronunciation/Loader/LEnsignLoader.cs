@@ -44,7 +44,11 @@ internal sealed class LEnsignLoader
             await LWorkspaceRoot.LWorkspaceFileSave(path, svg, cancellation).ConfigureAwait(false);
             return path;
         }
-        catch (HttpRequestException)
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception exception) when (exception is HttpRequestException or OperationCanceledException)
         {
             return null;
         }

@@ -58,29 +58,6 @@ public sealed class LMeaningClerk
         return rows;
     }
 
-    public void LMeaningClerkCreate(
-        long entryId, long? parentId, LCardDraft card, string language, Dictionary<long, long> identity)
-    {
-        ArgumentNullException.ThrowIfNull(card);
-        ArgumentNullException.ThrowIfNull(identity);
-
-        LMeaning meaning = _lMeaningClerkMeanings.LMeaningCreate(new LMeaning(
-            0,
-            entryId,
-            parentId,
-            0,
-            card.LCardDraftTitle,
-            card.LCardDraftMeaning));
-
-        LIdentity.LIdentityRecord(identity, card.LCardDraftId, meaning.LMeaningId);
-        _lMeaningClerkCards.LCardClerkSync(meaning.LMeaningId, card, language, false, identity);
-
-        foreach (LCardDraft child in LCardClerkField.LCardRead(card.LCardDraftChild))
-        {
-            LMeaningClerkCreate(entryId, meaning.LMeaningId, child, language, identity);
-        }
-    }
-
     public void LMeaningClerkSave(
         long entryId,
         IReadOnlyList<LCardDraft> cards,
@@ -106,24 +83,36 @@ public sealed class LMeaningClerk
         LMeaningClerkScan(cards, stored, named);
 
         HashSet<long> gone = [];
-        foreach (long dropped in storedOrder)
+        List<long> deleted = [];
+        foreach (long id in storedOrder)
         {
-            LMeaning row = stored[dropped];
-            if (row.LMeaningParentId is long parent && gone.Contains(parent))
+            bool dropped = !named.Contains(id);
+            bool shadowed = false;
+            HashSet<long> walked = [id];
+            long? up = stored[id].LMeaningParentId;
+            while (up is long ancestor && stored.TryGetValue(ancestor, out LMeaning? above)
+                && walked.Add(ancestor))
             {
-                gone.Add(dropped);
-                continue;
+                shadowed |= !named.Contains(ancestor);
+                up = above.LMeaningParentId;
             }
 
-            if (named.Contains(dropped))
+            if (dropped || shadowed)
             {
-                continue;
+                gone.Add(id);
             }
 
-            gone.Add(dropped);
+            if (dropped && !shadowed)
+            {
+                deleted.Add(id);
+            }
+        }
+
+        foreach (long id in deleted)
+        {
             changes.Add(new LRevisionDelta(
-                dropped, "sense", "delete", row.LMeaningDefinition.LStateValueShow()));
-            meanings.LMeaningDelete(dropped);
+                id, "sense", "delete", stored[id].LMeaningDefinition.LStateValueShow()));
+            meanings.LMeaningDelete(id);
         }
 
         LMeaningClerkApply(

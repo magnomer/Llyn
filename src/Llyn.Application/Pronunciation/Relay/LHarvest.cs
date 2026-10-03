@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Core;
@@ -49,8 +50,7 @@ public sealed class LHarvest
             }
         }
 
-        found.Sort(static (one, other) => one.LRecordingOrder.CompareTo(other.LRecordingOrder));
-        return found;
+        return found.OrderBy(static recording => recording.LRecordingOrder).ToList();
     }
 
     private static async Task LHarvestSourceRun(

@@ -1,5 +1,5 @@
 # LEntryDraft.cs
-Hash: `a1f6130de5a43fb3`
+Hash: `7c3557c606c71b35`
 
 ## `public sealed record LEntryDraft(`
 
@@ -37,12 +37,6 @@ A part stored with no name is left out, since only its stored value would show.
 ## `public bool LEntryDraftDerived`
 
 Whether the entry says anything about its origin, by prose or by link.
-
-## `public IReadOnlyList<long> LEntryDraftTargets`
-
-Every Entry the top-level Meaning and Collocation cards are translated by, each once, in first-seen order.
-Child cards are not walked, unlike `LEntryDraftCitations`.
-It is derived, so the draft archive never writes it.
 
 ## `public IReadOnlyList<long> LEntryDraftSources`
 

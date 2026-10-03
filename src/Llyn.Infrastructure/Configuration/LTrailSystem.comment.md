@@ -1,5 +1,5 @@
 # LTrailSystem.cs
-Hash: `a49f73c86c86cf44`
+Hash: `5a881c39877d0491`
 
 ## `public sealed class LTrailSystem : LTrail`
 
@@ -15,6 +15,7 @@ Text the system cannot read as a path resolves to nothing rather than throwing.
 ## `public string? LTrailRelativeResolve(string root, string path)`
 
 The relative form, or nothing when the system answers with a rooted path or a climb out of `root`.
+Only a whole `..` segment is a climb, so a name like `..notes.txt` is kept.
 
 ## `public string LTrailNameRead(string path)`
 

@@ -1,0 +1,8 @@
+{
+  "version": "0.0.40",
+  "commit": "5995183ac260ca86e4f0184b93b7121792b49072",
+  "date": "2026-08-31 20:54:16 +09:00",
+  "source": "local",
+  "rules": "05adddd7d05c6486b927efcd6f9eb2ec131f4a3a5a362e847ed2e11ae95399ce",
+  "measure": {"files":50,"types":34,"verdicts":{"hydra":0,"kraken":0,"spider":0,"chameleon":0,"octopus":0,"centipede":1,"serpent":0,"colony":0,"hermit":33},"flags":{"hydra":0,"kraken":0,"spider":0,"chameleon":0,"octopus":0,"centipede":1,"serpent":1,"hub":0},"list":[{"name":"Llyn.UIShell.PWindow","verdict":"centipede","flags":["centipede","serpent"],"parts":1,"lines":616,"members":57,"mutable":5,"outgoing":11,"incoming":0,"shared":0,"crossings":0,"glued":1,"fused":1,"density":0}]}
+}

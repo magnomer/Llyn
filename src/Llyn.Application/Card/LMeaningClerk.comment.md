@@ -1,5 +1,5 @@
 # LMeaningClerk.cs
-Hash: `ec9fd4b845ade16a`
+Hash: `b945a912fe7276b0`
 
 ## `public sealed class LMeaningClerk`
 
@@ -29,13 +29,6 @@ A Meaning is named by its title, or by its definition when it has no title.
 One with neither takes `unknown`, the worded fallback the caller hands in.
 A row naming itself as its parent is skipped rather than followed, so it cannot loop the walk.
 
-## `public void LMeaningClerkCreate(long entryId, long? parentId, LCardDraft card, string language, Dictionary<long, long> identity)`
-
-Writes one Meaning and then the Meanings nested under it, parent before child.
-A child needs its parent's id, which only exists once the parent row is written.
-Each is appended within its own sibling group, so card order becomes stored position.
-An empty child is skipped on the same terms an empty card is.
-
 ## `public void LMeaningClerkSave(long entryId, IReadOnlyList<LCardDraft> cards, string language, List<LRevisionDelta> changes, Dictionary<long, long> identity)`
 
 Reconciles the whole Meaning tree of one entry to the cards the draft holds.
@@ -45,7 +38,11 @@ Deleting a parent takes its children with it, because the store cascades on `sen
 So a child of a dropped parent is marked gone even when the draft still names it.
 That card is then written as a new row rather than onto a row that no longer exists.
 The store orders rows by parent id with roots last.
-So the pass can read a child before its parent is marked.
+A moved row may also sit under a larger id.
+So the pass walks each row's parents up to the root to learn whether any was dropped.
+Every row is marked before anything is deleted.
+Only a dropped row with no dropped ancestor is deleted and reported.
+A new entry is saved through here too, with nothing stored, so every card is a created and reported row.
 
 ## `private void LMeaningClerkApply(long entryId, long? parentId, IReadOnlyList<LCardDraft> cards, string language, List<LRevisionDelta> changes, IReadOnlyDictionary<long, LMeaning> stored, ISet<long> gone, ISet<long> applied, Dictionary<long, long> identity)`
 

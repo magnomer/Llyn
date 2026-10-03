@@ -385,17 +385,19 @@ internal static class TAuditStrictWalker
         ExpressionSyntax core = condition;
         while (true)
         {
-            core = core switch
+            ExpressionSyntax? peeled = core switch
             {
                 ParenthesizedExpressionSyntax wrapped => wrapped.Expression,
                 PrefixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.LogicalNotExpression } negated
                     => negated.Operand,
-                _ => core
+                _ => null
             };
-            if (core is not (ParenthesizedExpressionSyntax or PrefixUnaryExpressionSyntax))
+            if (peeled is null)
             {
                 return core;
             }
+
+            core = peeled;
         }
     }
 

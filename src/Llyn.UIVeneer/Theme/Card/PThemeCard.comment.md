@@ -1,5 +1,5 @@
 # PThemeCard.xaml
-Hash: `a2d23960afc4a95d`
+Hash: `cf6851f246838c27`
 
 ## `<sys:Double x:Key="Theme.Card.TitleSize">`
 

@@ -1,5 +1,5 @@
 # LSettingsLoader.cs
-Hash: `6ea9e7ea2e809b55`
+Hash: `2c4736f56df03b7e`
 
 ## `public sealed class LSettingsLoader : LSettingsVault`
 
@@ -27,11 +27,14 @@ The engine asks before moving onto a workspace, so one that has its own preferen
 Valid JSON whose root is not an object reads as defaults and is not copied aside.
 So the next save writes over it.
 A file that cannot be opened reads as defaults too, so a locked file never stops the start.
+It also marks the loader, so a save refuses to write until a later read succeeds.
+An unparseable file whose copy aside fails marks the loader the same way.
 
 ## `public void LSettingsSave(LSettings settings)`
 
 Writes the settings as JSON through a pending file, so a crash mid-write leaves the old file whole.
 A folder that cannot be created or a file that cannot be written raises `LVaultFault` around the system's exception.
+After a read that failed to open the file, it raises `LVaultFault` without writing.
 
 ## Inline notes
 

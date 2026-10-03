@@ -1,5 +1,5 @@
 # LInflectionClerk.cs
-Hash: `e04dca5279b91b7d`
+Hash: `7a4a319c6709fd78`
 
 ## `public sealed class LInflectionClerk`
 
@@ -9,21 +9,15 @@ Unlike a Tag or an Example, an inflection is not independent data.
 It belongs to its Entry and is identified by its place in that Entry's list.
 That is why these seams are keyed by the Entry and a position, not by an id of their own.
 
-The set makes the stored list the list it is handed, which is what an editor showing every form does.
+The update makes the stored list the list the draft holds, which is what an editor showing every form does.
 
 The clerk deletes the Entry's lacuna rows when a hand edit invalidates them.
 Cancelling the fetch that may still be filling them is the engine's, since the engine owns the task.
 
 ## `public LInflectionClerk(LRig rig, LParadigmClerk paradigms)`
 
-Reads the entry, inflection, lacuna, morphology and speech ports out of `rig`.
-The paradigm clerk judges the regular flag after every write.
-
-## `public void LInflectionClerkSet(long entryId, IReadOnlyList<LInflection> inflections)`
-
-Makes the stored inflections of the Entry identified by `entryId` exactly `inflections`.
-They are stored in the order given, and an empty list clears them.
-The regular flags are judged again, the lacuna rows are deleted and the Entry's updated stamp moves.
+Reads the inflection, lacuna, morphology and speech ports out of `rig`.
+The regular flag is judged by the paradigm clerk, which the entry save calls after its writes.
 
 ## `public void LInflectionClerkValidate(IReadOnlyList<LInflection> inflections)`
 
@@ -41,6 +35,7 @@ Deletes the Entry's lacuna rows, so a form the web could not name before may be 
 The inflections of the entry as the draft holds them, features and all.
 A feature list that differs at one place is a different inflection, so the whole set is rewritten.
 An unchanged set writes no row and records no change.
+A new entry is saved through here too, so its first inflections are recorded as a create.
 
 ## `public static bool LInflectionClerkMatch(IReadOnlyList<LInflection> stored, IReadOnlyList<LInflection> current)`
 

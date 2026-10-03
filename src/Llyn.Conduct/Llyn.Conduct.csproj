@@ -7,8 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Llyn.Internal" />
-    <InternalsVisibleTo Include="Llyn.Windows" />
+    <InternalsVisibleTo Include="Llyn.Tests.Interface" />
+    <InternalsVisibleTo Include="Llyn.Tests.Conduct" />
+    <InternalsVisibleTo Include="Llyn.Tests.Windows" />
     <InternalsVisibleTo Include="Llyn" />
   </ItemGroup>
 

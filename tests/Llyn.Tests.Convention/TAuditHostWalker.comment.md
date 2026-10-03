@@ -1,5 +1,5 @@
 # TAuditHostWalker.cs
-Hash: `ce6a796b32bfc112`
+Hash: `2a48c5d2dab0f8e1`
 
 ## `internal static class TAuditHostWalker`
 
@@ -11,7 +11,12 @@ Anything else is an overworking hit on its line, with every statement nested in 
 
 ## `public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> sourcePaths)`
 
-Scans the top-level statements and every member body of each host file.
+Reads the breaches of each host file and reports one hit per line.
+
+## `public static List<SyntaxNode> TAuditBreachRead(SyntaxNode root)`
+
+Scans the top-level statements and every member body of one tree.
+An expression body counts for a method, a property and an indexer alike.
 A property accessor with a body is behaviour and counts whole.
 
 ## `private static void TAuditBlockScan(IReadOnlyList<StatementSyntax> statements, List<SyntaxNode> breaches)`

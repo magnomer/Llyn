@@ -7,7 +7,7 @@ Keeps every ring inside its border: which ring a ring may name.
 A ring names its one neighbour, ferries the data of any deeper ring and names nothing outward.
 Above the cut, a UI ring names only its neighbour, data included.
 A pair is counted in names, so a file already over its border cannot add names unseen.
-The same border is audited by `auditstructure.ps1` from its own configuration, and neither reads the other.
+The same border is audited by `AuditStructure.ps1` from its own configuration, and neither reads the other.
 
 ## `private const string TAuditBorderAudit = "AUDITBORDER";`
 

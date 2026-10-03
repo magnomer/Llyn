@@ -2,7 +2,7 @@
 .SYNOPSIS
     Build a source snapshot without launching it.
 .DESCRIPTION
-    Delegates to timemachine.ps1 with -NoLaunch and the build folder as its
+    Delegates to TimeMachine.ps1 with -NoLaunch and the build folder as its
     work root. With no version, the current working-tree source is built there,
     installed into the build folder and copied, with all publish dependencies,
     into snapshots/<version>/. With a version, the historical source archive is
@@ -102,9 +102,9 @@ $root = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 Write-ExecutionGeneration -Script 'build.ps1'
 $config = Read-ExecutionConfig -ProjectRoot $root
 
-$timeMachine = Join-Path $PSScriptRoot 'timemachine.ps1'
+$timeMachine = Join-Path $PSScriptRoot 'TimeMachine.ps1'
 if (-not (Test-Path -LiteralPath $timeMachine -PathType Leaf)) {
-    throw "timemachine.ps1 was not found: $timeMachine"
+    throw "TimeMachine.ps1 was not found: $timeMachine"
 }
 
 if ($Version -eq 'stable') {

@@ -1,0 +1,25 @@
+{
+  "graph": "../graft/.graph/wiring.json",
+  "library": "vendor/3d-force-graph.min.js",
+  "projectRoots": ["src", "tests", "performance"],
+  "layers": [
+    { "project": "Llyn.Host", "short": "Host", "rank": 8, "names": "*" },
+    { "project": "Llyn.UIVeneer", "short": "Veneer", "rank": 7, "names": ["Deportment"] },
+    { "project": "Llyn.UITerminal", "short": "UITerminal", "rank": 7, "names": ["Demeanor"] },
+    { "project": "Llyn.UIDeportment", "short": "Deportment", "rank": 6, "names": ["Conduct", "Capsule"] },
+    { "project": "Llyn.UIDemeanor", "short": "Demeanor", "rank": 6, "names": ["Conduct"] },
+    { "project": "Llyn.UIDeportment.Capsule", "short": "Capsule", "rank": 5.5, "names": [] },
+    { "project": "Llyn.Conduct", "short": "Conduct", "rank": 5, "names": ["ShellEngine"] },
+    { "project": "Llyn.ShellEngine", "short": "ShellEngine", "rank": 4, "names": ["Application"] },
+    { "project": "Llyn.Application", "short": "Application", "rank": 3, "names": ["Core"] },
+    { "project": "Llyn.Infrastructure", "short": "Infrastructure", "rank": 2, "names": ["Core"] },
+    { "project": "Llyn.Core", "short": "Core", "rank": 1, "names": [] },
+    { "project": "Llyn.Core.Windows", "short": "Core.Windows", "rank": 1, "names": ["Core"] }
+  ],
+  "report": {
+    "directory": "../audit",
+    "versionFile": "../version.json",
+    "versionKey": "current-version",
+    "prefix": "MapMethod-"
+  }
+}

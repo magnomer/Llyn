@@ -22,10 +22,6 @@ public sealed record LDraft(
 
     public string LDraftMentionLanguage => LDraftExample?.LExampleLanguage ?? LDraftContent.LEntryDraftLanguage;
 
-    public LTag? LDraftTag { get; init; }
-
-    public LRegister? LDraftRegister { get; init; }
-
     public IReadOnlyList<LAuthor> LDraftAuthor { get; init; } = LDraftAuthor ?? [];
 
     public IReadOnlyList<LAuthorRow> LDraftCreditRead()

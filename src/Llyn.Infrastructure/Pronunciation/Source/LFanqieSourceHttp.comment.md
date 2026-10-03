@@ -1,5 +1,5 @@
 # LFanqieSourceHttp.cs
-Hash: `a1a947d8114d8b4b`
+Hash: `e69d1b6764990620`
 
 ## `public sealed class LFanqieSourceHttp : LFanqieSource`
 
@@ -63,7 +63,7 @@ Fetches the answer and reads every placement of the character, in answer order.
 The table reader or the line reader is chosen by whether the book has a line pattern.
 An unreachable site or a failed request reads as not reached, with nothing found.
 An answer matching the book's busy pattern is a throttle, so it too reads as not reached.
-A pattern that runs past its patience reads as reached with nothing found.
+A pattern that runs past its patience reads as not reached, since the answer was never fully read.
 
 ## `private static async Task<string?> LFanqieBodyRead(`
 

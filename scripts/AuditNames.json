@@ -1,0 +1,171 @@
+{
+  "generation": 19,
+  "project": "Llyn",
+  "sources": {
+    "include": [
+      "*.cs",
+      "*.xaml"
+    ],
+    "excludeSegments": [
+      ".git",
+      "bin",
+      "obj",
+      "out",
+      "publish",
+      "snapshots",
+      "TestResults"
+    ],
+    "excludeSuffixes": [
+      ".md",
+      ".g.cs",
+      ".g.i.cs",
+      ".AssemblyInfo.cs",
+      ".GlobalUsings.g.cs",
+      ".Designer.cs"
+    ],
+    "excludePrefixes": [
+      "TemporaryGeneratedFile_",
+      "GeneratedInternalTypeHelper"
+    ],
+    "selfExclude": [
+      "TAuditComment.cs",
+      "TAuditCommentSetting.cs",
+      "TAuditConvention.cs",
+      "TAuditLine.cs",
+      "TAuditLineSetting.cs",
+      "TAuditName.cs",
+      "TAuditNameFilter.cs",
+      "TAuditNameRegistry.cs",
+      "TAuditNameSetting.cs",
+      "TAuditNameWalker.cs",
+      "TAuditRegistry.cs",
+      "TAuditScope.cs",
+      "TAuditSource.cs",
+      "TSpecimen.cs",
+      "TViolation.cs"
+    ]
+  },
+  "naming": {
+    "prefixes": [
+      "PS",
+      "QS",
+      "CS",
+      "LS",
+      "ps",
+      "qs",
+      "cs",
+      "ls",
+      "P",
+      "Q",
+      "C",
+      "L",
+      "T",
+      "p",
+      "q",
+      "c",
+      "l",
+      "t"
+    ],
+    "prefixTurfs": {
+      "src/Llyn.Application": ["L", "LS"],
+      "src/Llyn.Conduct": ["C", "CS"],
+      "src/Llyn.Core": ["L", "LS"],
+      "src/Llyn.Core.Windows": ["L", "LS"],
+      "src/Llyn.Host": ["L", "LS"],
+      "src/Llyn.Infrastructure": ["L", "LS"],
+      "src/Llyn.ShellEngine": ["L", "LS"],
+      "src/Llyn.UIDemeanor": ["Q", "QS"],
+      "src/Llyn.UIDeportment": ["Q", "QS"],
+      "src/Llyn.UITerminal": ["P", "PS"],
+      "src/Llyn.UIVeneer": ["P", "PS"],
+      "tests/Llyn.Tests.Interface": ["T"],
+      "tests/Llyn.Tests.Engine": ["T"],
+      "tests/Llyn.Tests.Conduct": ["T"],
+      "tests/Llyn.Tests.Convention": ["T"],
+      "tests/Llyn.Tests.Windows": ["T"]
+    },
+    "prefixCeiling": 57,
+    "testPrefix": "T",
+    "componentLimit": 3,
+    "componentReview": 3,
+    "componentPattern": "[A-Z]+(?=[A-Z][a-z]|[0-9]|$)|[A-Z]?[a-z]+|[0-9]+"
+  },
+  "kinds": {
+    "method": [
+      "Method",
+      "LocalFunction"
+    ],
+    "verbForbidden": [
+      "Field",
+      "Property",
+      "EnumMember",
+      "RecordProperty",
+      "XamlName",
+      "GeneratedCommand",
+      "TupleElement",
+      "TypeParameter",
+      "AnonymousMember",
+      "ClassDeclaration",
+      "StructDeclaration",
+      "InterfaceDeclaration",
+      "RecordDeclaration",
+      "RecordStructDeclaration",
+      "EnumDeclaration",
+      "Delegate",
+      "Event",
+      "EventField"
+    ]
+  },
+  "platform": {
+    "xamlNamespace": "http://schemas.microsoft.com/winfx/2006/xaml",
+    "testAttributes": [
+      "Fact",
+      "Theory"
+    ],
+    "generatedAttributes": [
+      "GeneratedCode",
+      "CompilerGenerated"
+    ],
+    "externalAttributes": [
+      "DllImport",
+      "LibraryImport"
+    ],
+    "commandAttributes": [
+      "RelayCommand",
+      "RelayCommandAttribute"
+    ],
+    "commandCancelArgument": "IncludeCancelCommand",
+    "commandAsyncSuffix": "Async",
+    "commandSuffix": "Command",
+    "commandCancelSuffix": "CancelCommand",
+    "frameworkContracts": {
+      "IEquatable": [
+        "Equals"
+      ],
+      "IDisposable": [
+        "Dispose"
+      ],
+      "IAsyncDisposable": [
+        "DisposeAsync"
+      ],
+      "INotifyPropertyChanged": [
+        "PropertyChanged"
+      ],
+      "INotifyPropertyChanging": [
+        "PropertyChanging"
+      ],
+      "IProgress": [
+        "Report"
+      ],
+      "IValueConverter": [
+        "Convert",
+        "ConvertBack"
+      ],
+      "IMultiValueConverter": [
+        "Convert",
+        "ConvertBack"
+      ]
+    }
+  },
+  "report": { "directory": "audit", "versionFile": "version.json", "versionKey": "current-version", "prefix": "AuditNames-" }
+}

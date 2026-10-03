@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Llyn.Windows" />
+    <InternalsVisibleTo Include="Llyn.Tests.Windows" />
   </ItemGroup>
 
   <ItemGroup>

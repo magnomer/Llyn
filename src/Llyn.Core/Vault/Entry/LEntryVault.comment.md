@@ -1,5 +1,5 @@
 # LEntryVault.cs
-Hash: `a97ec6796520c3c9`
+Hash: `a7f5c0edc0db4644`
 
 ## `public interface LEntryVault`
 
@@ -40,10 +40,6 @@ Replaces the entry's written forms with `forms` in list order.
 ## `void LEntrySpeechSet(long id, IReadOnlyList<LSpeech> speeches);`
 
 Replaces the entry's part-of-speech assignments with `speeches` in list order.
-
-## `void LEntryUpdatedSet(long id);`
-
-Stamps a fresh modification time on the entry.
 
 ## `string LEntryEpithetRead(long entryId);`
 

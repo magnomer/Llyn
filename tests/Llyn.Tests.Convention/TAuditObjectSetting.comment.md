@@ -5,7 +5,7 @@ Hash: `4ed4255a933315a0`
 
 Hand-written and tracked, this file holds the object-audit settings grouped by verdict.
 No script writes this file.
-`auditobject.ps1` keeps its own copy in auditobject.json, and neither side reads the other.
+`AuditObject.ps1` keeps its own copy in AuditObject.json, and neither side reads the other.
 Each threshold dictionary is named for its verdict and ends in `Limit`.
 The ratchet holds every name ending in `Limit`, so its values may only fall.
 Raising a limit spares more types, which would loosen the audit.

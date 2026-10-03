@@ -58,15 +58,15 @@ Prints the count and fails when an enforced kind counts above its ceiling.
 ## `private static IReadOnlyList<TViolation> TAuditFakeRead()`
 
 Enumerates the tracked tests and markup and runs the walker.
-Tests and markup drop the same excluded segments, suffixes and prefixes, as auditfake.ps1 does.
+Tests and markup drop the same excluded segments, suffixes and prefixes, as AuditFake.ps1 does.
 The markup words are the attribute names, the attribute values and the property element names.
 Text and comments are left out, so a word in prose keeps nothing alive.
 The element names are the types markup constructs.
 An empty test enumeration fails, since the audit would otherwise pass vacuously.
-A project without markup is audited all the same, as auditfake.ps1 does.
+A project without markup is audited all the same, as AuditFake.ps1 does.
 
 ## `private static string TAuditReportSave()`
 
 Writes the counts, the ceilings and every hit, grouped by kind, to the report under `temp`.
-The text matches the report of auditfake.ps1 line for line, so a diff of the two shows any drift.
+The text matches the report of AuditFake.ps1 line for line, so a diff of the two shows any drift.
 Lines end in LF alone, as every file in the repository does.

@@ -30,31 +30,33 @@ A name whose meaning must change is renamed everywhere in the same change.
 | Name | Meaning | Scripts |
 |---|---|---|
 | `-Help`, `-?` | Print the help and exit without doing anything else. | all |
-| `-Root` | Project root to work on, defaulting to the parent of `scripts/`. | auditfake, auditnames, auditnewnames, auditobject, auditplatform, auditstructure, syncnames |
-| `-ConfigPath` | JSON configuration file, defaulting to the script's own file beside it. | auditcomments, auditlines, auditui |
-| `-Configuration` | Build configuration, `Debug` or `Release`. | auditui, test |
-| `-SourceRoots` | Source roots to scan, overriding `sources.roots`. | auditcomments, auditlines |
-| `-Extensions` | File extensions to scan, overriding `sources.extensions`. | auditlines |
+| `-Root` | Project root to work on, defaulting to the parent of `scripts/`. | AuditEncoding, AuditFake, AuditNames, AuditNamesNew, AuditObject, AuditPlatform, AuditStructure, SyncNames |
+| `-ConfigPath` | JSON configuration file, defaulting to the script's own file beside it. | Audit, AuditComments, AuditEncoding, AuditLines, AuditUI |
+| `-Configuration` | Build configuration, `Debug` or `Release`. | AuditUI, test |
+| `-SourceRoots` | Source roots to scan, overriding `sources.roots`. | AuditComments, AuditLines |
+| `-Extensions` | File extensions to scan, overriding `sources.extensions`. | AuditLines |
 | `-Exclude` | Git pathspecs left out of every measurement. | vestimate |
-| `-Segments` | Path segments under a root that form one folder row. | auditcomments, auditlines |
-| `-MaxWords` | Word limit of one comment line, overriding `rules.maxWords`. | auditcomments |
-| `-LimitThreshold` | Last line count that passes, overriding `thresholds.limit`. | auditlines |
-| `-WarningThreshold` | Last line count below the warning band, overriding `thresholds.warning`. | auditlines |
-| `-Commits` | How many recent commits feed the statistics. | auditlines, vestimate |
-| `-Top` | How many rows a console table shows. | auditfake, auditobject, vestimate |
-| `-OutputPath` | File the Markdown output is written to. | auditcomments, auditlines, auditui, tracer |
-| `-ReportDirectory` | Folder the Markdown report is written to under its versioned name. | auditfake, auditobject, auditplatform |
-| `-Open` | Open the report once the run finishes. | auditcomments, auditfake, auditlines, auditobject, auditplatform, auditstructure, auditui |
-| `-NoPause` | Never stop at a console page. | auditcomments, auditfake, auditlines, auditnames, auditobject, auditplatform, auditstructure, vestimate |
+| `-Segments` | Path segments under a root that form one folder row. | AuditComments, AuditLines |
+| `-MaxWords` | Word limit of one comment line, overriding `rules.maxWords`. | AuditComments |
+| `-LimitThreshold` | Last line count that passes, overriding `thresholds.limit`. | AuditLines |
+| `-WarningThreshold` | Last line count below the warning band, overriding `thresholds.warning`. | AuditLines |
+| `-Commits` | How many recent commits feed the statistics. | AuditLines, vestimate |
+| `-Top` | How many rows a console table shows. | AuditFake, AuditObject, AuditStructure, vestimate |
+| `-OutputPath` | File the Markdown output is written to. | AuditComments, AuditLines, AuditUI, tracer |
+| `-ReportDirectory` | Folder the Markdown report is written to under its versioned name. | AuditFake, AuditObject, AuditPlatform, AuditStructure |
+| `-Keep` | Keep the existing output instead of clearing it first. | Audit |
+| `-Open` | Open the report once the run finishes. | AuditComments, AuditEncoding, AuditFake, AuditLines, AuditNames, AuditObject, AuditPlatform, AuditStructure, AuditUI, check |
+| `-NoOpen` | Write the page without opening it. | Audit, AuditComments, AuditEncoding, AuditFake, AuditLines, AuditLinesHistory, AuditNames, AuditObject, AuditObjectHistory, AuditPlatform, AuditStructure, AuditUI |
+| `-NoPause` | Never stop at a console page. | AuditComments, AuditFake, AuditLines, AuditNames, AuditObject, AuditPlatform, AuditStructure, vestimate |
 | `-Name` | Symbol names the walk starts from. | detector, test |
 | `-Depth` | Maximum hops a walk takes, where 0 walks until nothing new turns up. | detector, tracer |
 | `-Entry` | Method that takes the injected value. | tracer |
 | `-Value` | Value injected into the entry. | tracer |
 | `-Parameter` | Parameter of the entry that takes the value. | tracer |
 | `-Json` | Write the result as JSON instead of the report. | detector |
-| `-Version` | The `major.minor.revision` version the script acts on, or `stable` where accepted. | build, run, stop, timemachine, version |
+| `-Version` | The `major.minor.revision` version the script acts on, or `stable` where accepted. | build, run, stop, TimeMachine, version |
 | `-Command` | Version operation to perform. | version |
-| `-Rebuild` | Discard the existing result and produce it again from scratch. | build, gitdownload, run, synccode, timemachine, vestimate |
+| `-Rebuild` | Discard the existing result and produce it again from scratch. | AuditLinesHistory, AuditObjectHistory, build, GitDownload, run, synccode, TimeMachine, vestimate |
 | `-All`, `-a` | Take every item instead of the default subset. | stop, test |
 | `-Force` | Kill a process at once instead of asking its window to close. | stop |
 | `-TimeoutSeconds` | Seconds to wait for a window to close before the kill. | stop |
@@ -62,7 +64,7 @@ A name whose meaning must change is renamed everywhere in the same change.
 | `-NoRestore` | Skip the package restore. | test |
 | `-NoTest` | Skip the test run. | check |
 | `-NoAudit` | Skip the audits. | check |
-| `-NoLaunch` | Build and install without starting the application. | timemachine |
+| `-NoLaunch` | Build and install without starting the application. | TimeMachine |
 | `-Grep` | Patterns whose every hit in the sources counts as a failure. | check |
 | `-Filter` | VSTest filter expression that selects the tests. | test |
 | `-Project` | Single test project to run. | test |
@@ -76,12 +78,12 @@ A name whose meaning must change is renamed everywhere in the same change.
 | `-TempOnly` | Remove only stray WPF temporary-project files. | clean |
 | `-IdeCache` | Also reset the VS Code C# Dev Kit workspace cache. | clean |
 | `-FingerprintOnly` | Print the source fingerprint without writing an archive. | zip |
-| `-Repository` | GitHub repository in `owner/name` form. | gitdownload |
-| `-SnapshotDirectory` | Folder that receives the version folders and their archives. | gitdownload |
-| `-Threshold` | Exclusive version threshold saved to `snapshot.json`, where 0 takes every version. | gitdownload |
+| `-Repository` | GitHub repository in `owner/name` form. | GitDownload |
+| `-SnapshotDirectory` | Folder that receives the version folders and their archives. | GitDownload |
+| `-Threshold` | Exclusive version threshold saved to `snapshot.json`, where 0 takes every version. | GitDownload |
 | `-Destination` | Folder the dispatchers are written to. | install |
-| `-File` | Text file of name tokens to check. | auditnewnames |
-| `-Token` | Name tokens to check. | auditnewnames |
+| `-File` | Text file of name tokens to check. | AuditNamesNew |
+| `-Token` | Name tokens to check. | AuditNamesNew |
 | `-Round` | Granularity of the suggested version step. | vestimate |
 | `-MovedWeight` | Weight of a moved line. | vestimate |
 | `-ReflowWeight` | Weight of a reflowed line. | vestimate |
@@ -95,8 +97,8 @@ These names exist for one script calling another and are never typed by hand.
 
 | Name | Meaning | Scripts |
 |---|---|---|
-| `-CurrentDestination` | Layout key that receives a current-source build. | timemachine |
-| `-WorkRoot` | Layout key whose temp subfolder holds the intermediate files. | timemachine |
-| `-MirrorCurrentSnapshot` | Also copy a current-source publish into its snapshot folder. | timemachine |
-| `-Invoker` | Name of the delegating script, written into the record. | timemachine |
+| `-CurrentDestination` | Layout key that receives a current-source build. | TimeMachine |
+| `-WorkRoot` | Layout key whose temp subfolder holds the intermediate files. | TimeMachine |
+| `-MirrorCurrentSnapshot` | Also copy a current-source publish into its snapshot folder. | TimeMachine |
+| `-Invoker` | Name of the delegating script, written into the record. | TimeMachine |
 | `-SnapshotStagingDirectory` | Staging folder used while installing a current snapshot. | zip |

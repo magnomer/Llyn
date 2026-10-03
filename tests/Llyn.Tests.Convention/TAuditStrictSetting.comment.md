@@ -123,7 +123,7 @@ The command slots, `DisplayMemberPath` and `SelectedValuePath` all name what cod
 The attributes that tether only when set to a plain literal, directly or through a `Setter`.
 `Tag` is one, since code branches on a literal tag.
 A value opening a markup extension is left to the extension rules.
-The script reads the same list from `tetheringLiterals` in `auditui.json`.
+The script reads the same list from `tetheringLiterals` in `AuditUI.json`.
 
 ## `public static readonly string[] TAuditTetheringExtensions`
 

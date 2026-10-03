@@ -1,5 +1,5 @@
 # LParadigmClerk.cs
-Hash: `70ccd51065abe634`
+Hash: `bc1240ba90947043`
 
 ## `public sealed class LParadigmClerk`
 
@@ -8,6 +8,7 @@ It answers which forms an entry is expected to have and which of them are stored
 A language pack declares the forms by code on a part of speech.
 The clerk resolves those codes to the workspace's rows and pairs each with a stored inflection.
 A slot a reached source could not fill reads unknown, as the lacuna rows the engine's fetch stores record it.
+A lacuna row with no morphology, left by an older workspace, names no slot and is ignored.
 The pack is read once per language through the speech vault and kept on the clerk.
 The engine news the clerk with the rig, so a switched workspace starts with an empty cache.
 
@@ -35,10 +36,6 @@ The display slots of an entry joined into the rows a paradigm box shows.
 ## `public string LParadigmLanguageRead(long entryId)`
 
 The language the entry's display slots are written in, or empty when it has none.
-
-## `public void LParadigmClerkUpdate(long entryId)`
-
-Derives the regular flag of every stored form of the entry `entryId` names, or does nothing for a missing entry.
 
 ## `public void LParadigmClerkUpdate(LEntry entry)`
 

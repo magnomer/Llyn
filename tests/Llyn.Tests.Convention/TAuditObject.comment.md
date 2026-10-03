@@ -11,7 +11,7 @@ While `TAuditObjectEnforced` is false, the flag, hub and part facts pass and onl
 Enforced, such a fact fails when its count rises above its ceiling.
 The stale-ceiling fact fails either way.
 
-`auditobject.ps1` is the counterpart script, and neither side reads the other.
+`AuditObject.ps1` is the counterpart script, and neither side reads the other.
 On the same tree both reach the same results, and each side keeps its own presentation.
 The only allowed difference in results is a config fault.
 The script throws on any missing key in its json, a missing ceiling key included.
@@ -136,7 +136,7 @@ A closing line counts the Hermits left out.
 
 Enumerates the sources with Git and runs the walker once.
 An empty enumeration fails rather than passing vacuously.
-A list the binder walks none of fails too, as auditobject.ps1 does.
+A list the binder walks none of fails too, as AuditObject.ps1 does.
 
 ## `private static string TAuditReportSave()`
 

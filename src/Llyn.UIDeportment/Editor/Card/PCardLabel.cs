@@ -7,7 +7,7 @@ namespace Llyn.UIDeportment;
 
 internal sealed partial class PCard
 {
-    private const string PCardLabelHint = "Add tags";
+    private const string PCardLabelHint = "Card.LabelHint";
 
     private readonly PLabelCaret _pCardLabelCaret = new();
 
@@ -91,6 +91,8 @@ internal sealed partial class PCard
 
     private void PCardLabelUpdate()
     {
-        _pCardLabelCaret.PLabelCaretHint = PCardLabel.Count > 0 ? string.Empty : PCardLabelHint;
+        _pCardLabelCaret.PLabelCaretHint = PCardLabel.Count > 0
+            ? string.Empty
+            : QLocalizationCatalog.QLocalizationTextRead(PCardLabelHint);
     }
 }

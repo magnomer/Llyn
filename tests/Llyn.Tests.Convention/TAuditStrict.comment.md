@@ -1,5 +1,5 @@
 # TAuditStrict.cs
-Hash: `0f49fd176daedd1d`
+Hash: `19f7ff3adee80ada`
 
 ## `public sealed class TAuditStrict`
 
@@ -125,6 +125,18 @@ The console's reader and writer live in `System.IO` too, so the namespace alone 
 A surface line that reads a file, parses JSON, runs a regex, starts a process or starts a task.
 Each of those is work the engine or `LUsher` does, and the surface only asks for the answer.
 A file whose stream use is the framework's own may be exempt by name.
+
+## `public async Task AuditStrict_CoreRead_UserPrefixOperatorReturns()`
+
+The core read of `-flag` returns within five seconds instead of looping on the operator.
+
+## `public void AuditStrict_BreachRead_ExpressionIndexerBranchFlags()`
+
+A branch in an expression-bodied indexer is a host breach.
+
+## `public void AuditStrict_BreachRead_ExpressionLocalFunctionBranchFlags()`
+
+A branch in an expression-bodied local function is a host breach.
 
 ## `public void AuditStrict_Exempt_MatchesSource()`
 

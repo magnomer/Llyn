@@ -1,5 +1,5 @@
 # LReflexSourceHttp.cs
-Hash: `3b8b64348be12e9f`
+Hash: `7de288f3ccdddd8b`
 
 ## `public sealed class LReflexSourceHttp : LReflexSource`
 
@@ -45,7 +45,7 @@ The second value says whether the site was reached and read.
 A page never fetched and a busy answer are not reached.
 So the character is asked again later.
 A page reached but matching nothing is reached, and the miss is remembered for the session.
-A pack regex that times out also answers reached with no rows.
+A pack regex that times out is not reached either, since the page was never fully read.
 
 ## `public static IReadOnlyList<LReflexDraft> LReflexSourceScan(LReflexRule rule, string character, string body)`
 

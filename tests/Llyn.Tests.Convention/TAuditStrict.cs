@@ -1,5 +1,8 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -133,6 +136,36 @@ public sealed class TAuditStrict
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             TAuditStrictAudit,
             $"{hits.Count} surface line(s) do file, JSON, regex, process or task work:\n{string.Join('\n', hits)}"));
+    }
+
+    [Fact]
+    public async Task AuditStrict_CoreRead_UserPrefixOperatorReturns()
+    {
+        ExpressionSyntax condition = SyntaxFactory.ParseExpression("-flag");
+        ExpressionSyntax? core = null;
+        Task read = Task.Run(() => core = TAuditStrictWalker.TAuditCoreRead(condition));
+
+        Task first = await Task.WhenAny(read, Task.Delay(TimeSpan.FromSeconds(5)));
+        Assert.True(first == read, "TAuditCoreRead hung on a prefix operator");
+        Assert.IsType<PrefixUnaryExpressionSyntax>(core);
+    }
+
+    [Fact]
+    public void AuditStrict_BreachRead_ExpressionIndexerBranchFlags()
+    {
+        SyntaxNode root = CSharpSyntaxTree.ParseText(
+            "class Host { int this[int slot] => slot > 0 ? slot : 0; }").GetRoot();
+
+        Assert.NotEmpty(TAuditHostWalker.TAuditBreachRead(root));
+    }
+
+    [Fact]
+    public void AuditStrict_BreachRead_ExpressionLocalFunctionBranchFlags()
+    {
+        SyntaxNode root = CSharpSyntaxTree.ParseText(
+            "class Host { void Wire() { int Pick(int slot) => slot > 0 ? slot : 0; } }").GetRoot();
+
+        Assert.NotEmpty(TAuditHostWalker.TAuditBreachRead(root));
     }
 
     [Fact]

@@ -259,6 +259,7 @@
     "Card.DependenceHint": "Dependence",
     "Card.SituationHint": "Where or when is it used?",
     "Card.RegisterHint": "What register does it carry?",
+    "Card.LabelHint": "Add {terms.tag}",
     "Card.PositionHint": "Double-click to change the number",
     "Card.ImageAdd": "Add image",
     "Card.VideoAdd": "Add video",

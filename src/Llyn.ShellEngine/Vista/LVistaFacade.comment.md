@@ -1,5 +1,5 @@
 # LVistaFacade.cs
-Hash: `ccfdfb0a9bb3a18f`
+Hash: `73801547ec8c1aed`
 
 ## `internal sealed class LVistaFacade`
 
@@ -109,4 +109,4 @@ The entry stands, still reachable through the entry catalog.
 Loads the selected record according to the vista subject under the engine gate.
 The result is a snapshot, with no claim file, editing identity, or registered tenure.
 Reference snapshots include credits.
-Tag and register snapshots retain their own stored records.
+Tag and register loads carry no record, only the proof the chosen row still exists.

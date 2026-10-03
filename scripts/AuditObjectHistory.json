@@ -1,0 +1,11 @@
+{
+  "repository": "magnomer/Llyn",
+  "records": "../audit/records/AuditObjectHistory",
+  "report": {
+    "directory": "../audit",
+    "versionFile": "../version.json",
+    "versionKey": "current-version",
+    "prefix": "AuditObjectHistory-"
+  },
+  "packs": ["Microsoft.NETCore.App", "Microsoft.WindowsDesktop.App"]
+}

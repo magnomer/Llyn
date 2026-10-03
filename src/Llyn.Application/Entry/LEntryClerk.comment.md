@@ -1,5 +1,5 @@
 # LEntryClerk.cs
-Hash: `66b67f5451c3d7b3`
+Hash: `14b006794946113e`
 
 ## `public sealed class LEntryClerk`
 
@@ -132,6 +132,9 @@ It is also its note, its inflections and its pronunciations when they carry anyt
 It is also its etymology, written in whichever of the two shapes the draft ended in.
 The note is stored as Markdown normalized by `LMarkdown`.
 It is also the revision recording the create, and the workspace row is moved onto that revision.
+That revision holds the entry's create first and then a change for every child row written.
+Each child is written through the same clerk and seam an update uses, onto an entry with nothing stored.
+So a create records exactly what an update adding the same rows to an empty entry would.
 Returns the stored entry with its assigned id and timestamps.
 A blank headword is refused before any session opens.
 The outcome clerk normalizes the draft and trims the headword before handing it over.
@@ -143,7 +146,7 @@ A card with every field blank writes nothing.
 The form keeps an empty card on screen to type into and refuses to remove a list's last card.
 Deciding that a blank one is neither belongs here, not in the form.
 
-The part of speech is written with the entry rather than after it, as its owned child row.
+The entry row is written bare, and its parts of speech and forms follow through the update seams.
 Text naming a preset the entry's language declares is stored as that preset's stable id.
 Text naming no preset is stored as typed, because the field is editable.
 

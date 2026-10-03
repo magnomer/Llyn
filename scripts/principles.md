@@ -20,7 +20,7 @@ The scripts share `auditbinder.cs` among themselves, and the tests share their h
 Nothing is shared across the two sides.
 A file on either side may still be audited as a subject, like any other tracked file.
 A script never writes a test file as part of an audit.
-`syncnames.ps1` refreshes the test's name registry, but it is a separate tool run by hand.
+`SyncNames.ps1` refreshes the test's name registry, but it is a separate tool run by hand.
 
 ## Same truth
 
@@ -40,23 +40,28 @@ A script may add views that gate nothing, such as totals, hotspots or at-limit n
 A console list may be cut short, while the report file stays complete.
 Every allowed difference in results is written in the script header or the test sidecar.
 
+## Project-agnostic
+
+Every audit and every convention test is project-agnostic.
+Its rule makes sense in any project, and only its settings name this project.
+A rule about one project's own features is a test in that project's suite, with no script.
+
 ## Pairs
 
 | Script | Counterpart tests |
 |---|---|
-| `auditnames.ps1` | `TAuditName` |
-| `auditlines.ps1` | `TAuditLine` |
-| `auditcomments.ps1` | `TAuditComment` |
-| `auditfake.ps1` | `TAuditFake` |
-| `auditobject.ps1` | `TAuditObject` |
-| `auditplatform.ps1` | `TAuditPlatform` |
-| `auditstructure.ps1` | `TAuditBorder`, `TAuditCensus`, `TAuditPurity`, `TAuditCharter` |
-| `auditui.ps1` | `TAuditStrict`, `TAuditTruth`, `TAuditBoundary` |
-| `auditencoding.ps1` | `TAuditEncoding` |
-| `auditdraft.ps1` | `TAuditDraft` |
+| `AuditNames.ps1` | `TAuditName` |
+| `AuditLines.ps1` | `TAuditLine` |
+| `AuditComments.ps1` | `TAuditComment` |
+| `AuditFake.ps1` | `TAuditFake` |
+| `AuditObject.ps1` | `TAuditObject` |
+| `AuditPlatform.ps1` | `TAuditPlatform` |
+| `AuditStructure.ps1` | `TAuditBorder`, `TAuditCensus`, `TAuditPurity`, `TAuditCharter` |
+| `AuditUI.ps1` | `TAuditStrict`, `TAuditTruth`, `TAuditBoundary` |
+| `AuditEncoding.ps1` | `TAuditEncoding` |
 
 `TAuditRatchet` and `TAuditConvention` check the test settings themselves, so they have no counterpart.
-`auditnewnames.ps1` checks names before any code exists, so it has no counterpart.
+`AuditNamesNew.ps1` checks names before any code exists, so it has no counterpart.
 `TAssay*` tests check the walkers on hand-written sources, not the tree, so they have no counterpart.
 
 ## Changing a rule

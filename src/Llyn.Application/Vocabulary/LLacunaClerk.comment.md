@@ -1,5 +1,5 @@
 # LLacunaClerk.cs
-Hash: `946b6adc1e0d4862`
+Hash: `77695f29e005e72b`
 
 ## `public sealed class LLacunaClerk`
 
@@ -19,16 +19,18 @@ Whether a fetch is pending for the entry.
 
 ## `public void LLacunaClerkStart(long entryId)`
 
-Starts a fetch for an entry with unspecified slots, no held draft and no lacuna already marked unreachable.
+Starts a fetch for an entry with unspecified slots and no held draft.
+Nothing starts for an entry whose fetch went unanswered earlier in this session.
 Nothing starts when the setting is off or the language declares no morphology source.
 
 ## `public void LLacunaClerkCancel(long entryId)`
 
 Cancels the pending fetch of the entry and deletes its lacunae, before a save rewrites the inflections.
+It also forgets an unanswered fetch, so an edited entry is asked again.
 
 ## `public void LLacunaClerkClear()`
 
-Cancels every pending fetch.
+Cancels every pending fetch and forgets every unanswered one.
 
 ## `private LDraft? LDraftFind(long entryId)`
 
@@ -50,4 +52,6 @@ Appends one inflection per unspecified slot the answer filled and records the re
 
 The answer is written only when the fetch still stands and the setting is still on.
 The entry must still read the same and no draft may hold it.
-A source that never answered marks a null lacuna, so the read does not start the same fetch again.
+A source that never answered is not an answer and stores nothing.
+The entry is remembered in memory for the session only.
+The same fetch does not start again until a restart, a clear or an edit.

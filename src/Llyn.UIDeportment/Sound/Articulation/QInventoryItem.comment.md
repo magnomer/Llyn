@@ -1,5 +1,5 @@
 # QInventoryItem.cs
-Hash: `b8b53b7c558b9fbe`
+Hash: `b544669a3ae33bbd`
 
 ## `internal sealed class QInventoryItem`
 
@@ -39,6 +39,7 @@ A plain copy loop, so the panel that asks for it carries no loop of its own.
 ## `internal static bool QInventoryItemMatch(QInventoryItem held, QInventoryItem fresh)`
 
 Whether the two rows show the same values, the chosen mark left aside.
+The pronunciation counts too, so a changed reading refills the list.
 The flag counts too, so a flag loaded after the rows were built refills the list.
 `QSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
 

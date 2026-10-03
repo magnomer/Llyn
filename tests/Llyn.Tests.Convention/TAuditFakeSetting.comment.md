@@ -1,12 +1,12 @@
 # TAuditFakeSetting.cs
-Hash: `9d5c75906d6a6751`
+Hash: `b642b7f49e445ef1`
 
 ## `internal static class TAuditFakeSetting`
 
 Hand-written and tracked.
 The fake-audit switch, the report path, the ceilings and the scopes live here.
 No script writes this file.
-`auditfake.ps1` reads its own auditfake.json and never writes this file.
+`AuditFake.ps1` reads its own AuditFake.json and never writes this file.
 
 ## `public const bool TAuditFakeEnforced = true;`
 

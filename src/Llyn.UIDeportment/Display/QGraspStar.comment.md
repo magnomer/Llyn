@@ -1,5 +1,5 @@
 # QGraspStar.cs
-Hash: `9aaf0688f6ffc8b6`
+Hash: `a7b21edb79db715c`
 
 ## `public sealed class QGraspStar`
 
@@ -7,9 +7,9 @@ Sizes, draws, hit-tests and steps the stars of one grasp row, so the veneer cont
 It reads and writes the row's step through the dependency properties the row hands it.
 The limit is set on the row by its host from `LDisplay`, so this class names no Core constant.
 
-## `public QGraspStar(FrameworkElement grasp, DependencyProperty step, DependencyProperty limit, RoutedEvent changed, RoutedEvent hovered, ImageSource? star, ImageSource? gray)`
+## `public QGraspStar(FrameworkElement grasp, DependencyProperty step, DependencyProperty limit, RoutedEvent changed, RoutedEvent hovered, ImageSource? star)`
 
-Keeps the row, its step and limit properties, its two events and the two star images.
+Keeps the row, its step and limit properties, its two events and the star image.
 A missing star image throws here, so a broken asset fails before the row draws.
 A disabled row is dimmed rather than hidden, so the header keeps its shape on a form standing on nothing.
 
@@ -51,11 +51,17 @@ Whether a press on the standing step clears it is the Conduct gate's rule, so th
 Left and Right move one half step, Home clears, End sets the limit.
 A key that lands on the standing step raises nothing, so the gate never reads it as a repeated press.
 
-## `public void QGraspDraw(DrawingContext context)`
+## `public void QGraspDraw(DrawingContext context, Brush fill, Brush empty, Brush unrated, Brush preview)`
 
 A transparent rectangle over the whole row is drawn first, so the pointer hits the row, not only the ink.
-Draws every star in gray, then the colored star clipped to the whole or left half for each earned step.
-While the pointer hovers, the preview step is drawn fainter instead of the committed one.
+The star image is only a mask, so the row's themed brushes give every star its colour.
+Draws every star in the empty brush, or the unrated one while no step stands.
+Then the fill brush is clipped to the whole or left half for each earned step.
+While the pointer hovers, the preview brush replaces the fill brush.
+
+## `private void QGraspStarDraw(DrawingContext context, Brush ink, Rect frame)`
+
+Paints one star frame in the brush, masked by the star image.
 
 ## `private void QGraspPreviewRefine(int? hovered)`
 

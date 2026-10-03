@@ -62,14 +62,6 @@ public sealed record LEntryDraft(
     public bool LEntryDraftDerived =>
         LEntryDraftEtymology.LEtymologyDraftNarrated || LEntryDraftEtymology.LEtymologyDraftLinked;
 
-    public bool LEntryDraftTargeted => LEntryDraftTargets.Count > 0;
-
-    public IReadOnlyList<long> LEntryDraftTargets =>
-        LEntryDraftMeanings.Concat(LEntryDraftCollocations)
-            .SelectMany(static card => card.LCardDraftTranslation)
-            .Distinct()
-            .ToList();
-
     public IReadOnlyList<long> LEntryDraftSources =>
         LEntryDraftEtymology.LEtymologyDraftEtymons
             .Concat(LEntryDraftEtymology.LEtymologyDraftMentions.Select(

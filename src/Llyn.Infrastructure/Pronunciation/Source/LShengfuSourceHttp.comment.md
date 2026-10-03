@@ -1,5 +1,5 @@
 # LShengfuSourceHttp.cs
-Hash: `bd329c4fb0f3db41`
+Hash: `a68541ea74e50135`
 
 ## `public sealed class LShengfuSourceHttp : LShengfuSource`
 
@@ -15,7 +15,7 @@ Takes the one client the rig shares, so every fetch keeps the same agent and tim
 
 Fetches the page of the character and reads the series out of it.
 A missing page counts as answered with nothing, so the character is not fetched again.
-A refused, busy or unreachable page counts as unanswered, so a later display retries it.
+A refused, busy, unreachable or regex-timed-out page counts as unanswered, so a later display retries it.
 
 ## `public static LShengfu? LShengfuSourceScan(LShengfuRule rule, string character, string body)`
 

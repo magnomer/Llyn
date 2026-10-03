@@ -63,7 +63,7 @@ public sealed class LReflexSourceHttp : LReflexSource
         }
         catch (RegexMatchTimeoutException)
         {
-            return ([], true);
+            return ([], false);
         }
     }
 

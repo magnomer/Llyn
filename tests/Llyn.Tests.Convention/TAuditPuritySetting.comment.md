@@ -6,7 +6,7 @@ Hash: `a1b273289f1d0f5b`
 Hand-written and tracked: the pure rings, the frame, the eavesdropping members, the ceilings and the exempt rows.
 No script writes this file, and the purity fact reads no script configuration.
 Both copies change together, as scripts/principles.md asks.
-`auditstructure.json` holds its own copy of the ring frames for the structure script.
+`AuditStructure.json` holds its own copy of the ring frames for the structure script.
 
 ## `public static readonly string[] TAuditPurityRing`
 
@@ -21,7 +21,7 @@ The framework namespaces a pure ring may name.
 
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditPurityExtra`
 
-The namespaces one pure ring adds to the shared frame, matching the ring frames of scripts/auditstructure.json.
+The namespaces one pure ring adds to the shared frame, matching the ring frames of scripts/AuditStructure.json.
 The shell engine and Conduct rethrow a captured exception, so only they name `System.Runtime.ExceptionServices`.
 
 ## `public static readonly string[] TAuditEavesdroppingMember`

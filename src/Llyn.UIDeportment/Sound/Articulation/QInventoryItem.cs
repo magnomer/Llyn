@@ -63,6 +63,7 @@ internal sealed class QInventoryItem : INotifyPropertyChanged
             && string.Equals(held.QInventoryItemName, fresh.QInventoryItemName, StringComparison.Ordinal)
             && string.Equals(held.QInventoryItemLanguage, fresh.QInventoryItemLanguage, StringComparison.Ordinal)
             && string.Equals(held.QInventoryItemSound, fresh.QInventoryItemSound, StringComparison.Ordinal)
+            && held.QInventoryItemPronunciation == fresh.QInventoryItemPronunciation
             && ReferenceEquals(held.QInventoryItemFlag, fresh.QInventoryItemFlag);
     }
 

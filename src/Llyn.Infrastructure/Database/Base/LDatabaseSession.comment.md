@@ -1,5 +1,5 @@
 # LDatabaseSession.cs
-Hash: `806db50c3af90cde`
+Hash: `2d0a0294da057251`
 
 ## `public sealed class LDatabaseSession : LVaultSession, IDisposable`
 
@@ -20,6 +20,7 @@ Only the outermost session decides.
 ## `internal LDatabaseSession(LDatabase owner, SqliteConnection connection)`
 
 Opens the outermost session and the transaction the whole unit of work runs in.
+If the transaction cannot begin, the connection is disposed and the fault rethrown, so no file stays held.
 
 ## `internal LDatabaseSession(LDatabaseSession session)`
 

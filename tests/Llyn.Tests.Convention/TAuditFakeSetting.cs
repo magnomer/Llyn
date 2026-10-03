@@ -14,8 +14,10 @@ internal static class TAuditFakeSetting
 
     public static readonly string[] TAuditFakeInclude =
     [
-        "tests/Llyn.Internal/*.cs",
-        "tests/Llyn.Windows/*.cs",
+        "tests/Llyn.Tests.Interface/*.cs",
+        "tests/Llyn.Tests.Engine/*.cs",
+        "tests/Llyn.Tests.Conduct/*.cs",
+        "tests/Llyn.Tests.Windows/*.cs",
     ];
 
     public static readonly string[] TAuditMarkupInclude =

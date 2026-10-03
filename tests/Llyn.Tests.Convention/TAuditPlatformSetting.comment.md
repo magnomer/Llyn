@@ -6,7 +6,7 @@ Hash: `8d7ea316c5c89f0a`
 Hand-written and tracked.
 The platform table, the frameworks, the Windows markers and the ceilings live here.
 No script writes this file.
-`auditplatform.ps1` reads its own auditplatform.json and never writes this file.
+`AuditPlatform.ps1` reads its own AuditPlatform.json and never writes this file.
 
 ## `public const bool TAuditPlatformEnforced = true;`
 
@@ -34,7 +34,7 @@ With it, a Windows API in a portable half fails the build.
 ## `public static readonly string[] TAuditPlatformShell`
 
 The columns whose twins are the UI projects, which the domain rule leaves to the UI audits.
-It matches `domain.exempt` in scripts/auditplatform.json.
+It matches `domain.exempt` in scripts/AuditPlatform.json.
 
 ## `public static readonly IReadOnlyDictionary<string, string> TAuditPlatformSilencers`
 

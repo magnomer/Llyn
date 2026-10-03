@@ -32,5 +32,5 @@ Each hit prints as `path:line [Kind] Name - reason`, sorted as the script sorts 
 
 ## `private static string TViolationFormat(string repoRoot, IReadOnlyList<TViolation> violations)`
 
-Sorts the violations by repo-relative path, then line, then name, as auditnames.ps1 sorts its hits.
+Sorts the violations by repo-relative path, then line, then name, as AuditNames.ps1 sorts its hits.
 Renders one `path:line [Kind] Name - reason` line per violation, the same line the script prints.

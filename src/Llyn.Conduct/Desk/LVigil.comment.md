@@ -1,5 +1,5 @@
 # LVigil.cs
-Hash: `96fc0e6175539610`
+Hash: `bb987a215465644b`
 
 ## `internal sealed class LVigil`
 
@@ -14,6 +14,7 @@ Only the desk builds one, over itself.
 
 Registers an observer for the draft-level subjects.
 An observer is a delegate over a Conduct bulletin, which the vigil copies from each engine bulletin.
+The subject maps through `CPanel.CPanelSubjectRead`, by name, so an unknown subject throws.
 A tenure already held gets the observer at once.
 `LVigilObserverAttach` and `LVigilEntryAttach` do the same for the tenure-wide and entry-level subjects.
 

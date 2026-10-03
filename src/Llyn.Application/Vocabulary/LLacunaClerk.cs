@@ -21,6 +21,7 @@ public sealed class LLacunaClerk
     private readonly Action<LSubject, long> _lLacunaClerkBulletin;
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lLacunaClerkSources = new(StringComparer.Ordinal);
     private readonly Dictionary<long, CancellationTokenSource> _lLacunaClerkPending = [];
+    private readonly HashSet<long> _lLacunaClerkMissed = [];
 
     public LLacunaClerk(
         LRig rig,
@@ -66,6 +67,7 @@ public sealed class LLacunaClerk
         {
             if (!_lLacunaClerkSettings().LSettingsMorphology
                 || _lLacunaClerkPending.ContainsKey(entryId)
+                || _lLacunaClerkMissed.Contains(entryId)
                 || LDraftFind(entryId) is not null)
             {
                 return;
@@ -75,14 +77,6 @@ public sealed class LLacunaClerk
             if (entry is null || LMorphologySourceRead(entry.LEntryLanguage).Count == 0)
             {
                 return;
-            }
-
-            foreach (LLacuna lacuna in _lLacunaClerkLacunae.LLacunaRead(entryId))
-            {
-                if (lacuna.LLacunaMorphologyId is null)
-                {
-                    return;
-                }
             }
 
             bool wanted = false;
@@ -113,6 +107,7 @@ public sealed class LLacunaClerk
                 held.Dispose();
             }
 
+            _lLacunaClerkMissed.Remove(entryId);
             _lLacunaClerkLacunae.LLacunaDelete(entryId);
         }
     }
@@ -128,6 +123,7 @@ public sealed class LLacunaClerk
             }
 
             _lLacunaClerkPending.Clear();
+            _lLacunaClerkMissed.Clear();
         }
     }
 
@@ -195,7 +191,7 @@ public sealed class LLacunaClerk
     private void LLacunaClerkApply(LEntry entry, IReadOnlyDictionary<string, string> found)
     {
         List<LInflection> appended = [];
-        List<long?> missed = [];
+        List<long> missed = [];
         foreach (LParadigmSlot slot in _lLacunaClerkParadigms.LParadigmClerkRead(entry))
         {
             if (slot.LParadigmSlotState == LState.LStateSpecified)
@@ -260,15 +256,7 @@ public sealed class LLacunaClerk
                 }
                 else
                 {
-                    LLacunaVault lacunae = _lLacunaClerkLacunae;
-                    List<long?> kept = [];
-                    foreach (LLacuna lacuna in lacunae.LLacunaRead(entry.LEntryId))
-                    {
-                        kept.Add(lacuna.LLacunaMorphologyId);
-                    }
-
-                    kept.Add(null);
-                    lacunae.LLacunaSave(entry.LEntryId, kept);
+                    _lLacunaClerkMissed.Add(entry.LEntryId);
                 }
 
                 finished = true;

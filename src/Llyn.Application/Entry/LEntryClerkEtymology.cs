@@ -7,11 +7,12 @@ namespace Llyn.Application;
 public static class LEntryClerkEtymology
 {
     public static void LEtymologyUpdate(
-        LEtymologyVault etymologies, long entryId, LEntryDraft draft, List<LRevisionDelta>? changes)
+        LEtymologyVault etymologies, long entryId, LEntryDraft draft, List<LRevisionDelta> changes)
     {
         ArgumentNullException.ThrowIfNull(etymologies);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
         ArgumentNullException.ThrowIfNull(draft);
+        ArgumentNullException.ThrowIfNull(changes);
 
         LEtymologyDraft stored = LEtymologyRead(etymologies, entryId);
         LEtymologyDraft current = draft.LEntryDraftEtymology;
@@ -36,7 +37,7 @@ public static class LEntryClerkEtymology
             etymologies.LEtymologyEtymonSet(entryId, []);
         }
 
-        changes?.Add(new LRevisionDelta(
+        changes.Add(new LRevisionDelta(
             entryId,
             "etymology",
             current.LEtymologyDraftEmpty ? "delete" : stored.LEtymologyDraftEmpty ? "create" : "update",

@@ -6,7 +6,7 @@ Hash: `05ecfbe1d883c716`
 Hand-written and tracked.
 It holds the floors, the squatting patterns and the smuggling words of the census.
 No script writes this file, and the census fact reads no script configuration.
-`auditstructure.json` holds its own copy, kept in step by hand as scripts/principles.md asks.
+`AuditStructure.json` holds its own copy, kept in step by hand as scripts/principles.md asks.
 
 ## `public static readonly IReadOnlyDictionary<string, int> TAuditHollowingFloor`
 
@@ -21,4 +21,4 @@ A request record belongs to the application, so one in the core is misplaced.
 
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditSmugglingWord`
 
-Words no bound source under a folder may name, matching `smugglingWords` in scripts/auditstructure.json.
+Words no bound source under a folder may name, matching `smugglingWords` in scripts/AuditStructure.json.

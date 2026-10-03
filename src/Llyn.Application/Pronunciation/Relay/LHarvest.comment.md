@@ -1,5 +1,5 @@
 # LHarvest.cs
-Hash: `11a863f6bb57b66f`
+Hash: `da372eaf0fe7fceb`
 
 ## `public sealed class LHarvest`
 

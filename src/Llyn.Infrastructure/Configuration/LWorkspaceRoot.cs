@@ -140,6 +140,10 @@ public static class LWorkspaceRoot
         {
             return null;
         }
+        catch (UnauthorizedAccessException)
+        {
+            return null;
+        }
     }
 
     private static void LWorkspacePointerSave(string path)

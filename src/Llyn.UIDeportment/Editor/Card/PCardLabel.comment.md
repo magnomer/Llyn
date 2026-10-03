@@ -1,5 +1,5 @@
 # PCardLabel.cs
-Hash: `a07c058c3d913dce`
+Hash: `ead6a716b4c3f4e8`
 
 ## `internal sealed partial class PCard`
 

@@ -50,9 +50,11 @@ internal static class TAuditNameSetting
         ["src/Llyn.UIDeportment"] = ["Q", "QS"],
         ["src/Llyn.UITerminal"] = ["P", "PS"],
         ["src/Llyn.UIVeneer"] = ["P", "PS"],
-        ["tests/Llyn.Internal"] = ["T"],
+        ["tests/Llyn.Tests.Interface"] = ["T"],
+        ["tests/Llyn.Tests.Engine"] = ["T"],
+        ["tests/Llyn.Tests.Conduct"] = ["T"],
         ["tests/Llyn.Tests.Convention"] = ["T"],
-        ["tests/Llyn.Windows"] = ["T"],
+        ["tests/Llyn.Tests.Windows"] = ["T"],
     };
 
     public static readonly string[] TAuditSourceInclude =

@@ -182,8 +182,8 @@
 
     <Style x:Key="Theme.Card.Instance" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
         <Setter Property="Margin" Value="{StaticResource Theme.Card.ExampleLineMargin}" />
-        <Setter Property="FontFamily" Value="{StaticResource Theme.Card.ExampleFamily}" />
-        <Setter Property="FontSize" Value="{StaticResource Theme.Card.ExampleSize}" />
+        <Setter Property="FontFamily" Value="{DynamicResource Theme.Card.ExampleFamily}" />
+        <Setter Property="FontSize" Value="{DynamicResource Theme.Card.ExampleSize}" />
     </Style>
 
     <Style x:Key="Theme.Card.Handle" TargetType="Button" BasedOn="{StaticResource Theme.Input.Action}">

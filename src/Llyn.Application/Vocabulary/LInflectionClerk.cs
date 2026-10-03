@@ -6,33 +6,18 @@ namespace Llyn.Application;
 
 public sealed class LInflectionClerk
 {
-    private readonly LEntryVault _lInflectionClerkEntries;
     private readonly LInflectionVault _lInflectionClerkInflections;
     private readonly LLacunaVault _lInflectionClerkLacunae;
     private readonly LMorphologyVault _lInflectionClerkMorphologies;
     private readonly LSpeechVault _lInflectionClerkSpeeches;
-    private readonly LParadigmClerk _lInflectionClerkParadigms;
 
-    public LInflectionClerk(LRig rig, LParadigmClerk paradigms)
+    public LInflectionClerk(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
-        ArgumentNullException.ThrowIfNull(paradigms);
-        _lInflectionClerkEntries = rig.LRigEntries;
         _lInflectionClerkInflections = rig.LRigInflections;
         _lInflectionClerkLacunae = rig.LRigLacunae;
         _lInflectionClerkMorphologies = rig.LRigMorphologies;
         _lInflectionClerkSpeeches = rig.LRigSpeeches;
-        _lInflectionClerkParadigms = paradigms;
-    }
-
-    public void LInflectionClerkSet(long entryId, IReadOnlyList<LInflection> inflections)
-    {
-        ArgumentNullException.ThrowIfNull(inflections);
-        LInflectionClerkValidate(inflections);
-        _lInflectionClerkInflections.LInflectionSet(entryId, inflections);
-        _lInflectionClerkParadigms.LParadigmClerkUpdate(entryId);
-        _lInflectionClerkLacunae.LLacunaDelete(entryId);
-        _lInflectionClerkEntries.LEntryUpdatedSet(entryId);
     }
 
     public void LInflectionClerkValidate(IReadOnlyList<LInflection> inflections)

@@ -14,7 +14,7 @@ public sealed record LCatalogExample(
 
     public string LCatalogExampleText { get; init; } = LCatalogExampleStored.LExampleText.LStateValueShow();
 
-    public string LCatalogExampleCount { get; init; } = LCatalog.LCatalogUsageFormat(LCatalogExampleUsage);
+    public string LCatalogExampleCount => LCatalog.LCatalogUsageFormat(LCatalogExampleUsage);
 
     public static LCatalogExample LCatalogExampleCreate(LExample example, string? source, int usage)
     {

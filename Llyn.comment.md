@@ -339,6 +339,11 @@ The audits and convention tests measure the lag as falling ceilings.
 
 The projects under `tests` are left out on purpose.
 `scripts/test.ps1` finds, builds and runs them from the tests folder instead.
+`Llyn.Tests.Interface` holds the relays, fakes and workspace, and references Core, Infrastructure, ShellEngine and Conduct.
+`Llyn.Tests.Engine` tests Core, Application, Infrastructure and ShellEngine, and references only `Llyn.Tests.Interface`.
+`Llyn.Tests.Conduct` tests the Conduct gates, and references only `Llyn.Tests.Interface`.
+`Llyn.Tests.Windows` tests Capsule and Deportment, and references `Llyn.Tests.Interface` and Deportment.
+`Llyn.Tests.Convention` audits the source tree as text, and references no project.
 
 ## Performance project
 

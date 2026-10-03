@@ -1,0 +1,112 @@
+using Llyn.Conduct;
+using Llyn.Core;
+using Xunit;
+
+namespace Llyn.Tests;
+
+public sealed class TDraftFact
+{
+    [Fact]
+    public void EntryDraftNoted_EmptySections_ReportsEverySectionAbsent()
+    {
+        LEntryDraft draft = TInterface.TEntryDraftCreate("wolf", "English", string.Empty, string.Empty, [], []);
+
+        Assert.False(draft.LEntryDraftNoted);
+        Assert.False(draft.LEntryDraftMarked);
+        Assert.False(draft.LEntryDraftDefined);
+        Assert.False(draft.LEntryDraftCollocated);
+        Assert.False(draft.LEntryDraftReflected);
+        Assert.Empty(draft.LEntryDraftAccents);
+    }
+
+    [Fact]
+    public void EntryDraftAccents_ThreePronunciations_SkipsThePrimary()
+    {
+        LEntryDraft draft = TInterface.TEntryDraftCreate("colour", "English", "ˈkʌlə", "a note", [], []) with
+        {
+            LEntryDraftPronunciations =
+            [
+                TInterface.TPronunciationDraftCreate("ˈkʌlə", "RP"),
+                TInterface.TPronunciationDraftCreate("ˈkʌlɚ", "GA"),
+                TInterface.TPronunciationDraftCreate(string.Empty, "AU"),
+            ],
+        };
+
+        Assert.Equal("RP", draft.LEntryDraftPronunciation?.LPronunciationDraftVariety);
+        Assert.Equal(["GA", "AU"], draft.LEntryDraftAccents.Select(spoken => spoken.LPronunciationDraftVariety));
+        Assert.True(draft.LEntryDraftAccents[0].LPronunciationDraftNotated);
+        Assert.False(draft.LEntryDraftAccents[1].LPronunciationDraftNotated);
+        Assert.True(draft.LEntryDraftNoted);
+    }
+
+    [Fact]
+    public void CardDraftTally_NestedChildren_CountsEveryCard()
+    {
+        LCardDraft leaf = TInterface.TCardDraftCreate("leaf", "", "", [], [], [], [], [], 0);
+        LCardDraft branch = TInterface.TCardDraftCreate("branch", "", "", [], [], [], [], [], 0) with
+        {
+            LCardDraftChild = [leaf, leaf],
+        };
+        LCardDraft root = TInterface.TCardDraftCreate("root", "", "", [], [], [], [], [], 0) with
+        {
+            LCardDraftChild = [branch],
+            LCardDraftSentence = [TInterface.TSentenceDraftCreate("a sentence")],
+        };
+
+        Assert.Equal(4, root.LCardDraftTally);
+        Assert.True(root.LCardDraftExemplified);
+        Assert.False(leaf.LCardDraftExemplified);
+    }
+
+    [Fact]
+    public void StateValueShown_UnknownAndBlank_ReportsNothingToShow()
+    {
+        LStateValue written = TInterface.TStateValueCreate("wolf");
+        LStateValue unreadable = TInterface.TStateUnreadableCreate("w0lf");
+
+        Assert.Equal("wolf", written.LStateValueShown);
+        Assert.True(written.LStateValueSound);
+        Assert.Null(LStateValue.LStateValueUnknown.LStateValueShown);
+        Assert.True(LStateValue.LStateValueUnknown.LStateValueUncertain);
+        Assert.Null(LStateValue.LStateValueUnspecified.LStateValueShown);
+        Assert.True(unreadable.LStateValueLegible);
+        Assert.False(unreadable.LStateValueSound);
+    }
+
+    [Fact]
+    public void StateAnchorShown_ZeroAndStoredIds_ReportsOnlyTheStoredOne()
+    {
+        LStateAnchor linked = TInterface.TStateAnchorCreate(42);
+
+        Assert.Equal(42, linked.LStateAnchorShown);
+        Assert.True(linked.LStateAnchorLinked);
+        Assert.Null(LStateAnchor.LStateAnchorUnspecified.LStateAnchorShown);
+        Assert.False(LStateAnchor.LStateAnchorUnspecified.LStateAnchorLinked);
+    }
+
+    [Fact]
+    public void MentionSpanDivide_SilentAndLinkedMentions_MarksOnlyTheLinkedPiece()
+    {
+        IReadOnlyList<LMentionPiece> pieces = TInterface.TMentionSpanDivide(
+            "the grey wolf", [TInterface.TMentionCreate(1, 4, 4, 5, 2), TInterface.TMentionCreate(2, 9, 4, 0)]);
+
+        Assert.Equal([0, 4, 8, 9], pieces.Select(piece => piece.LMentionPieceOffset));
+        Assert.Equal(["the ", "grey", " ", "wolf"], pieces.Select(piece => piece.LMentionPieceText));
+        Assert.Equal(
+            [false, true, false, false],
+            pieces.Select(piece => piece.LMentionPieceStored is { LMentionLinked: true }));
+        Assert.True(pieces[1].LMentionPieceStored!.LMentionSensed);
+        Assert.True(TInterface.TMentionDraftCreate(1, 4, 4, 5).LMentionDraftLinked);
+        Assert.False(TInterface.TMentionDraftCreate(2, 9, 4, 0).LMentionDraftLinked);
+    }
+
+    [Theory]
+    [InlineData("a tale", true)]
+    [InlineData("  a tale  ", true)]
+    [InlineData(" \t\n ", false)]
+    [InlineData("", false)]
+    public void EtymologyDraftNarrated_Text_HoldsWordsOnlyWhenNotBlank(string text, bool expected)
+    {
+        Assert.Equal(expected, TInterface.TEtymologyDraftCreate(text).LEtymologyDraftNarrated);
+    }
+}

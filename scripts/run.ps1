@@ -2,7 +2,7 @@
 .SYNOPSIS
     Build and launch a source snapshot.
 .DESCRIPTION
-    Delegates to timemachine.ps1 with the run folder as its work root. With no
+    Delegates to TimeMachine.ps1 with the run folder as its work root. With no
     version, the current working-tree source is built there, installed with all
     publish dependencies into snapshots/<current-version>/, and launched from
     that folder. With a version, the historical source archive is built the
@@ -103,9 +103,9 @@ $root = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 Write-ExecutionGeneration -Script 'run.ps1'
 $config = Read-ExecutionConfig -ProjectRoot $root
 
-$timeMachine = Join-Path $PSScriptRoot 'timemachine.ps1'
+$timeMachine = Join-Path $PSScriptRoot 'TimeMachine.ps1'
 if (-not (Test-Path -LiteralPath $timeMachine -PathType Leaf)) {
-    throw "timemachine.ps1 was not found: $timeMachine"
+    throw "TimeMachine.ps1 was not found: $timeMachine"
 }
 
 if ($Version -eq 'stable') {

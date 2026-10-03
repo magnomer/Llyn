@@ -1,5 +1,5 @@
 # LEntryArchive.cs
-Hash: `6681be4d144571f0`
+Hash: `b6fa4fa2c290140d`
 
 ## `public sealed partial class LEntryArchive : LEntryVault`
 
@@ -60,12 +60,6 @@ So reordering rewrites positions while the entry id stays fixed.
 Replaces the entry's part-of-speech assignments with `speeches` in list order, clearing the existing rows first.
 Reordering rewrites positions.
 The entry id stays fixed.
-
-## `public void LEntryUpdatedSet(long id)`
-
-Moves `updated_utc` alone to now.
-The engine calls it when a part of the entry changes through its own seam.
-An id no entry carries is not an error here, since nothing was meant to be read back.
 
 ## `public string LEntryEpithetRead(long entryId)`
 

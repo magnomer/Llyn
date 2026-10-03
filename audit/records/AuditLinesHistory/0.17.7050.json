@@ -1,0 +1,23 @@
+{
+  "version": "0.17.7050",
+  "commit": "a37f2af0c9b68293ee30a2cecc6a8511e88c94d9",
+  "date": "2026-09-25 21:22:06 +09:00",
+  "source": "local",
+  "rules": "80c346e374cdd4434474028f589e212b41bfa78b2ea48410edc85b8b0cc5e222",
+  "folders": [
+    { "name": "Llyn.Application", "root": "src", "files": 97, "lines": 15216, "nonBlank": 12993, "blank": 2223, "bytes": 531723 },
+    { "name": "Llyn.Conduct", "root": "src", "files": 4, "lines": 817, "nonBlank": 675, "blank": 142, "bytes": 21005 },
+    { "name": "Llyn.Core", "root": "src", "files": 266, "lines": 9537, "nonBlank": 7729, "blank": 1808, "bytes": 300970 },
+    { "name": "Llyn.Core.Windows", "root": "src", "files": 4, "lines": 323, "nonBlank": 270, "blank": 53, "bytes": 9657 },
+    { "name": "Llyn.Host", "root": "src", "files": 1, "lines": 7, "nonBlank": 7, "blank": 0, "bytes": 214 },
+    { "name": "Llyn.Infrastructure", "root": "src", "files": 136, "lines": 19189, "nonBlank": 16428, "blank": 2761, "bytes": 694072 },
+    { "name": "Llyn.ShellEngine", "root": "src", "files": 44, "lines": 5970, "nonBlank": 4866, "blank": 1104, "bytes": 191598 },
+    { "name": "Llyn.UIDemeanor", "root": "src", "files": 1, "lines": 12, "nonBlank": 11, "blank": 1, "bytes": 355 },
+    { "name": "Llyn.UIDeportment", "root": "src", "files": 62, "lines": 11107, "nonBlank": 8901, "blank": 2206, "bytes": 316257 },
+    { "name": "Llyn.UITerminal", "root": "src", "files": 1, "lines": 12, "nonBlank": 11, "blank": 1, "bytes": 361 },
+    { "name": "Llyn.UIVeneer", "root": "src", "files": 368, "lines": 38105, "nonBlank": 33135, "blank": 4970, "bytes": 1484507 },
+    { "name": "Llyn.Convention.Tests", "root": "tests", "files": 63, "lines": 8330, "nonBlank": 7323, "blank": 1007, "bytes": 305422 },
+    { "name": "Llyn.Tests", "root": "tests", "files": 247, "lines": 34106, "nonBlank": 28298, "blank": 5808, "bytes": 1418014 },
+    { "name": "scripts", "root": "scripts", "files": 20, "lines": 11485, "nonBlank": 9711, "blank": 1774, "bytes": 447383 }
+  ]
+}

@@ -70,7 +70,7 @@ public sealed class LFanqieSourceHttp : LFanqieSource
         }
         catch (RegexMatchTimeoutException)
         {
-            return ([], true);
+            return ([], false);
         }
     }
 

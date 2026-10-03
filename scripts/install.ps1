@@ -12,6 +12,18 @@
     installation serves every project on the machine; a dispatcher this project
     has no script for is left alone, since another project may own it.
 
+    A bare name reaches its script in any letter case. Windows finds the
+    dispatcher and the script without regard to case, so audit, auditlines,
+    auditlineshistory, auditcomments, auditencoding, auditfake, auditnames,
+    auditnamesnew, auditobject, auditobjecthistory, auditplatform,
+    auditstructure and auditui run Audit.ps1, AuditLines.ps1,
+    AuditLinesHistory.ps1, AuditComments.ps1, AuditEncoding.ps1, AuditFake.ps1,
+    AuditNames.ps1, AuditNamesNew.ps1, AuditObject.ps1, AuditObjectHistory.ps1,
+    AuditPlatform.ps1, AuditStructure.ps1 and AuditUI.ps1.
+    The helpers work the same way, for example timemachine and syncnames.
+    An older dispatcher file named in another case keeps working and is
+    updated in place.
+
     The destination folder is created when missing and appended to the user PATH
     when absent; the current session's PATH is updated as well. Consoles already
     open elsewhere see the new PATH only after they are reopened.

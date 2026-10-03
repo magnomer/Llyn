@@ -206,49 +206,49 @@ public sealed class LEntryClerk
 
         string language = draft.LEntryDraftLanguage;
         LEntry entry = _lEntryClerkEntries.LEntryCreate(
-            new LEntry(0, draft.LEntryDraftHeadword, language, 0, null, null),
-            forms: draft.LEntryDraftForms,
-            speeches: _lEntryClerkVocabulary.LSpeechResolve(language, draft.LEntryDraftSpeeches));
-
-        if (draft.LEntryDraftInflections.Count > 0)
-        {
-            _lEntryClerkInflections.LInflectionClerkValidate(draft.LEntryDraftInflections);
-            _lEntryClerkInflections.LInflectionClerkSet(entry.LEntryId, draft.LEntryDraftInflections);
-        }
+            new LEntry(0, draft.LEntryDraftHeadword, language, 0, null, null), forms: [], speeches: []);
+        List<LRevisionDelta> changes = [new LRevisionDelta(entry.LEntryId, "entry", "create", entry.LEntryHeadword)];
 
         LCardClerkField.LCardValidate(draft.LEntryDraftMeanings, collocation: false);
         LCardClerkField.LCardValidate(draft.LEntryDraftCollocations, collocation: true);
 
-        foreach (LCardDraft card in LCardClerkField.LCardRead(draft.LEntryDraftMeanings))
+        if (draft.LEntryDraftMeanings.Count > 0)
         {
-            _lEntryClerkMeanings.LMeaningClerkCreate(entry.LEntryId, null, card, language, identity);
+            _lEntryClerkMeanings.LMeaningClerkSave(
+                entry.LEntryId, draft.LEntryDraftMeanings, language, changes, identity);
         }
 
-        foreach (LCardDraft card in LCardClerkField.LCardRead(draft.LEntryDraftCollocations))
+        if (draft.LEntryDraftCollocations.Count > 0)
         {
-            long rowId = _lEntryClerkCards.LCollocationInsert(entry.LEntryId, card, identity);
-            _lEntryClerkCards.LCardClerkSync(rowId, card, language, true, identity);
+            _lEntryClerkCards.LCollocationSave(
+                entry.LEntryId, draft.LEntryDraftCollocations, language, changes, identity);
         }
 
-        string note = LMarkdown.LMarkdownNormalize(draft.LEntryDraftNote);
-        if (note.Length > 0)
+        _lEntryClerkVocabulary.LSpeechUpdate(entry.LEntryId, draft, changes);
+        LEntryClerkField.LFormUpdate(_lEntryClerkEntries, entry.LEntryId, draft, changes);
+        if (draft.LEntryDraftInflections.Count > 0)
         {
-            _lEntryClerkNotes.LNoteSave(new LNote(entry.LEntryId, note));
+            _lEntryClerkInflections.LInflectionClerkUpdate(entry.LEntryId, draft, changes);
+        }
+
+        if (!string.IsNullOrWhiteSpace(draft.LEntryDraftNote))
+        {
+            LEntryClerkField.LNoteUpdate(_lEntryClerkNotes, entry.LEntryId, draft, changes);
         }
 
         _lEntryClerkPronunciations.LPronunciationClerkSync(
-            entry.LEntryId, LEntryClerkField.LPronunciationReset(draft.LEntryDraftPronunciations), null, identity);
+            entry.LEntryId, LEntryClerkField.LPronunciationReset(draft.LEntryDraftPronunciations), changes, identity);
         _lEntryClerkTranscriptions.LTranscriptionClerkSync(
             entry.LEntryId,
             LTranscriptionClerk.LTranscriptionClerkReset(draft.LEntryDraftTranscriptions),
-            null,
+            changes,
             identity);
         _lEntryClerkReflexes.LReflexClerkSync(
-            entry.LEntryId, language, LReflexClerk.LReflexClerkReset(draft.LEntryDraftReflexes), null, identity);
-        LEntryClerkEtymology.LEtymologyUpdate(_lEntryClerkEtymologies, entry.LEntryId, draft, null);
+            entry.LEntryId, language, LReflexClerk.LReflexClerkReset(draft.LEntryDraftReflexes), changes, identity);
+        LEntryClerkEtymology.LEtymologyUpdate(_lEntryClerkEtymologies, entry.LEntryId, draft, changes);
         _lEntryClerkParadigms.LParadigmClerkUpdate(entry);
 
-        LRevisionRecord([new LRevisionDelta(entry.LEntryId, "entry", "create", entry.LEntryHeadword)]);
+        LRevisionRecord(changes);
 
         session.LVaultSessionCommit();
         return entry;

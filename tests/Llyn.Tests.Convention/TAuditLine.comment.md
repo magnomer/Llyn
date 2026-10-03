@@ -7,7 +7,7 @@ Holds every source file within the line limit and every line within the width li
 A file or line in the band below a limit prints as a warning and does not fail.
 Enforced, a kind fails when it counts above its ceiling.
 The advice printed with a hit says to reconsider the code, never to split or wrap it mechanically.
-Every hit, warning and ceiling matches auditlines.ps1 on the same tree, though neither reads the other.
+Every hit, warning and ceiling matches AuditLines.ps1 on the same tree, though neither reads the other.
 
 ## `private static readonly Lazy<IReadOnlyList<TAuditLineRow>> TAuditLineRows = new(TAuditLineRead);`
 

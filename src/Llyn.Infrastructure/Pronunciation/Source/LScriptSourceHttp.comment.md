@@ -1,5 +1,5 @@
 # LScriptSourceHttp.cs
-Hash: `b95fcc959e135a70`
+Hash: `b6c875b5ac8aa0de`
 
 ## `public sealed class LScriptSourceHttp : LScriptSource`
 
@@ -37,6 +37,7 @@ The gloss read from the page is repeated on every picture of the style.
 A caption's chronology is stored as its own code, so nothing is fetched again when the interface language changes.
 The second value says whether the database answered at all.
 An answer naming no picture is a miss, while a database that never answered is not.
+A page the pattern could not read in time counts as never answered.
 
 ## `private static async Task<string?> LScriptBodyRead(HttpClient client, LScriptStyle style, string character, CancellationToken cancellation)`
 

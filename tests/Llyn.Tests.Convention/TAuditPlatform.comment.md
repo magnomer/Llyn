@@ -6,7 +6,7 @@ Hash: `b784de5a31bda494`
 Holds every project under `src` to the platform table.
 A layer splits into a portable half and a Windows twin, and this fact keeps that split.
 The layer chain itself is the charter and border facts' concern.
-`scripts/auditplatform.ps1` reports the same kinds from its own configuration.
+`scripts/AuditPlatform.ps1` reports the same kinds from its own configuration.
 The two never read each other, yet they give the same counts, hits and wording.
 Project names, frameworks, packages, property names and rule codes compare without case, as MSBuild does.
 

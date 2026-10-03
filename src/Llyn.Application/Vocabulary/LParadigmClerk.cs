@@ -91,15 +91,6 @@ public sealed class LParadigmClerk
         return LParadigm.LParadigmLanguageRead(LParadigmClerkShow(entryId));
     }
 
-    public void LParadigmClerkUpdate(long entryId)
-    {
-        LEntry? entry = _lParadigmClerkEntries.LEntryRead(entryId);
-        if (entry is not null)
-        {
-            LParadigmClerkUpdate(entry);
-        }
-    }
-
     public void LParadigmClerkUpdate(LEntry entry)
     {
         ArgumentNullException.ThrowIfNull(entry);

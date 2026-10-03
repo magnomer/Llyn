@@ -4,8 +4,8 @@ Hash: `229025c85f979e29`
 ## `public sealed class TAuditComment`
 
 Keeps prose in the comment files and out of the sources.
-Every rule value comes from `TAuditCommentSetting`, which mirrors scripts/auditcomments.json.
-The findings match auditcomments.ps1 on the same tree, in the same order, though neither reads the other.
+Every rule value comes from `TAuditCommentSetting`, which mirrors scripts/AuditComments.json.
+The findings match AuditComments.ps1 on the same tree, in the same order, though neither reads the other.
 
 ## `public void AuditComment_CommentLines_KeepLineRules()`
 

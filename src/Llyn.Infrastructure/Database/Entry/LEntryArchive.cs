@@ -182,24 +182,6 @@ public sealed partial class LEntryArchive : LEntryVault
         session.LDatabaseSessionCommit();
     }
 
-    public void LEntryUpdatedSet(long id)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-
-        string now = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
-
-        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
-        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
-        {
-            command.CommandText = "UPDATE entry SET updated_utc = $updated WHERE entry_id = $id;";
-            command.Parameters.AddWithValue("$updated", now);
-            command.Parameters.AddWithValue("$id", id);
-            command.ExecuteNonQuery();
-        }
-
-        session.LDatabaseSessionCommit();
-    }
-
     public string LEntryEpithetRead(long entryId)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
