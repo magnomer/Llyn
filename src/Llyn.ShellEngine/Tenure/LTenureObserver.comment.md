@@ -1,5 +1,5 @@
 # LTenureObserver.cs
-Hash: `a18863c0ea66f111`
+Hash: `4515fbe4760df3c5`
 
 A tenure subscribes to the engine for its lifetime and owns the shell's subject-specific observers.
 An observer is a delegate over a bulletin, so the shell hands a method and implements no contract.

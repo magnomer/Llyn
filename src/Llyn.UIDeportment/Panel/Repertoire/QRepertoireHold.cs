@@ -8,7 +8,7 @@ internal sealed partial class QRepertoire
 {
     private void QScenarioDeskIntroduce()
     {
-        _cRepertoire.CRepertoireDraftChanged += QScenarioFieldsRefine;
+        _cPlaywright.CPlaywrightDraftChanged += QScenarioFieldsRefine;
     }
 
     public void QChronicleUndoObserve()

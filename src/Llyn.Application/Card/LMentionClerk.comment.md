@@ -1,5 +1,5 @@
 # LMentionClerk.cs
-Hash: `6c3f6dd7bed66a7b`
+Hash: `c1c5b3bade528a93`
 
 ## `public sealed class LMentionClerk`
 
@@ -61,6 +61,16 @@ The code-point offset of a UTF-16 index in the text.
 ## `public static LMentionDraft LMentionSpanRead(string text, int start, int length)`
 
 A selection of the text in UTF-16 units, read as a span in code points without its outer whitespace.
+
+## `public static LMentionDraft? LMentionEtymologyFind(LDraft? draft, LMentionDraft span)`
+
+The span of the draft's etymology that the given span lies inside, or none without a draft.
+It is static so the tenure can call it under its own gate and never take the engine gate.
+
+## `public static LMentionDraft? LMentionSpanFind(LDraft? draft, long cardId, long sentenceId, LMentionDraft span)`
+
+The Mention the span lies inside, in the Example one sentence field holds, or none without a draft.
+It is static so the tenure can call it under its own gate and never take the engine gate.
 
 ## `public IReadOnlyList<LMentionLabel> LMentionClerkResolve(string text, IReadOnlyList<LMentionDraft> mentions)`
 

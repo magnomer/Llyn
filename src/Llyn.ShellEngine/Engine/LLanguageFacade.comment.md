@@ -1,5 +1,5 @@
 # LLanguageFacade.cs
-Hash: `a680c03a23fe4b19`
+Hash: `da4901ce1f429249`
 
 ## `internal sealed class LLanguageFacade`
 
@@ -144,6 +144,16 @@ The gate is taken only to read the clerk field, which a rig apply replaces.
 
 The draft's transcription rows split by its glyph section, as an editor lists them, through the language clerk.
 The gate is taken only to read the clerk field, as for the transcription rows.
+
+## `public LGlyph? LEngineGlyphRead(string language)`
+
+The glyph section the pack of `language` declares, or null when the language shows no glyph row.
+The language clerk loads it, and the gate is taken only to read the clerk field.
+
+## `public IReadOnlyList<LGlyphCell> LEngineGlyphDivide(LEntryDraft draft)`
+
+The cells of the draft's glyph row, through the language clerk.
+The gate is taken only to read the clerk field, as for the glyph block.
 
 ## `public void LEngineSoundStart(long entryId)`
 

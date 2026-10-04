@@ -1,5 +1,5 @@
 # LPronunciationClerk.cs
-Hash: `a55ec74c732f56f4`
+Hash: `07e5ba5231596a73`
 
 ## `public sealed class LPronunciationClerk`
 
@@ -15,6 +15,12 @@ Reads the entry and pronunciation ports, the trail and the workspace root out of
 ## `public IReadOnlyList<LCatalogPronunciation> LPronunciationClerkFind(string query, LCatalogOrder order)`
 
 The pronunciation catalog: every entry matching `query` with its first reading, sorted.
+
+## `public static IReadOnlyList<LCatalogPronunciation> LPronunciationClerkFind(IReadOnlyList<LCatalogPronunciation> rows, LCatalogFilter filter)`
+
+The catalog rows with those of a hidden language left out, in the order given.
+The engine calls here so that the filter rule has one owner.
+It is static, since filtering reads no store and needs no gate.
 
 ## `public void LPronunciationClerkSync(long entryId, IReadOnlyList<LPronunciationDraft> drafts, List<LRevisionDelta> changes, Dictionary<long, long> identity)`
 

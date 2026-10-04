@@ -99,7 +99,12 @@ public sealed class LEntryClerk
     public IReadOnlyList<LEntry> LEntryClerkFind(string query, LCatalogOrder order, LCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
-        return filter.LCatalogFilterApply(LEntryClerkFind(query, order), entry => entry.LEntryLanguage);
+        return filter.LCatalogFilterApply(LEntryClerkFind(query, order), LEntryLanguageRead);
+    }
+
+    private static string? LEntryLanguageRead(LEntry entry)
+    {
+        return entry.LEntryLanguage;
     }
 
     public IReadOnlyList<LEntry> LEntryClerkFind(LTag tag)
@@ -141,6 +146,13 @@ public sealed class LEntryClerk
         return trimmed.Length == 0
             ? entries
             : [.. entries.Where(entry => LCatalog.LCatalogTextMatch(entry.LEntryHeadword, trimmed))];
+    }
+
+    public static IReadOnlyList<LEntry> LEntryClerkMatch(
+        IReadOnlyList<LEntry> entries, LCatalogFilter filter, string query)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+        return LEntryClerkMatch(filter.LCatalogFilterApply(entries, LEntryLanguageRead), query);
     }
 
     public LRevision LEntryClerkDelete(long id)

@@ -1,5 +1,5 @@
 # LStemFacade.cs
-Hash: `6eb1677d4fa7961e`
+Hash: `a5e13d58789fa5b1`
 
 ## `internal sealed class LStemFacade`
 
@@ -10,10 +10,6 @@ The links themselves are written where a series is stored, so nothing here write
 ## `public LStemFacade(LEngine engine)`
 
 The facade bound to its engine and the engine's gate.
-
-## `internal IReadOnlyList<LStem> LEngineStemRead(string language)`
-
-The stored series of the language, unsorted and unnarrowed.
 
 ## `public LStem? LEngineStemRead(long? id)`
 

@@ -116,16 +116,6 @@ internal sealed class LEntryFacade
         return recorded;
     }
 
-    public LGlyph? LEngineGlyphRead(string language)
-    {
-        if (string.IsNullOrWhiteSpace(language))
-        {
-            return null;
-        }
-
-        return _lEntryFacadeEngine.LEngineLanguage.LEngineLanguageLoad(language).LLanguageGlyph;
-    }
-
     public IReadOnlyList<LReflexDraft> LEngineReflexRead(LEntryDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);

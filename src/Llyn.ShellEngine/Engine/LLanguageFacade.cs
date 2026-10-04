@@ -269,6 +269,28 @@ internal sealed class LLanguageFacade
         return languages.LLanguageGlyphRead(draft);
     }
 
+    public LGlyph? LEngineGlyphRead(string language)
+    {
+        LLanguageClerk languages;
+        lock (_lLanguageFacadeGate)
+        {
+            languages = LLanguageFacadeStaff.LEngineStaffLanguage;
+        }
+
+        return languages.LLanguageGlyphLoad(language);
+    }
+
+    public IReadOnlyList<LGlyphCell> LEngineGlyphDivide(LEntryDraft draft)
+    {
+        LLanguageClerk languages;
+        lock (_lLanguageFacadeGate)
+        {
+            languages = LLanguageFacadeStaff.LEngineStaffLanguage;
+        }
+
+        return languages.LLanguageGlyphDivide(draft);
+    }
+
     public void LEngineSoundStart(long entryId)
     {
         _lLanguageFacadeEngine.LEngineReflex.LEngineReflexStart(entryId);

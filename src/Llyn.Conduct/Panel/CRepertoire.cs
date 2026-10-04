@@ -29,18 +29,12 @@ public sealed class CRepertoire
         _cRepertoireMarshal = marshal;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CRepertoireEditor = editor;
-        CRepertoireDesk = new CDesk(
-            atelier.CAtelierDraftPort,
-            atelier.CAtelierSettingsPort,
-            "Situation",
-            envoy,
-            "Repertoire",
-            CSubject.CSubjectSituation);
+        CRepertoirePlaywright = new CPlaywright(atelier, envoy, marshal);
         CRepertoireAtlas = new CAtlas(
             atelier.CAtelierEntryPort,
             atelier.CAtelierPortraitPort,
             atelier.CAtelierSettingsPort,
-            CRepertoireDesk,
+            CRepertoirePlaywright.LPlaywrightDesk,
             shownSeam,
             envoy,
             store => CRepertoireSession!.LSessionFinish(store));
@@ -54,16 +48,14 @@ public sealed class CRepertoire
             shownSeam);
         CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += CRepertoireOccurrence.COccurrencePanel.CPanelRowsResonate;
         CRepertoireSession = new CSession(
-            CRepertoireDesk,
+            CRepertoirePlaywright.LPlaywrightDesk,
             [CRepertoireOccurrence.COccurrencePanel.LPanelChangeCheck, CRepertoireAtlas.CAtlasPanel.LPanelChangeCheck],
             editor.CEditorDesk,
             () => CRepertoireOccurrence.COccurrencePanel.CPanelEditing,
             editor.LEditorFinish,
             static () => true,
             LRepertoireStoredShow);
-        CRepertoireSession.CSessionHeld += () =>
-            CRepertoireScenarioChanged?.Invoke(
-                new CScenario(LRepertoireScenarioRead() ?? CScenario.LScenarioBlankRead()));
+        CRepertoireSession.CSessionHeld += CRepertoirePlaywright.LPlaywrightHeldResonate;
         CRepertoireSession.CSessionChanged += () => CRepertoireChanged?.Invoke();
         CRepertoireAtlas.CAtlasPanel.CPanelEdited += id => CRepertoireSession.CSessionStart(id);
         CRepertoireAtlas.CAtlasPanel.CPanelCleared += CRepertoireSession.CSessionCancel;
@@ -82,7 +74,6 @@ public sealed class CRepertoire
             CRepertoireSession.LSessionChangeCheck, CRepertoireSession.LSessionFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LRepertoireVistaRestore);
         atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LRepertoireClose);
-        CRepertoireDesk.CDeskObserverAttach(marshal, LRepertoireDraftResonate);
         LRepertoireVistaRestore();
     }
 
@@ -94,10 +85,6 @@ public sealed class CRepertoire
 
     public event Action? CRepertoireChanged;
 
-    public event Action<CScenario>? CRepertoireScenarioChanged;
-
-    public event Action<CScenario>? CRepertoireDraftChanged;
-
     public event Action<CSituation>? CRepertoireSituationChanged;
 
     public event Action? CRepertoireQueryCleared;
@@ -106,17 +93,13 @@ public sealed class CRepertoire
 
     public CEditor CRepertoireEditor { get; }
 
-    public CDesk CRepertoireDesk { get; }
+    public CPlaywright CRepertoirePlaywright { get; }
 
     public CSession CRepertoireSession { get; }
 
     public CAtlas CRepertoireAtlas { get; }
 
     public COccurrence CRepertoireOccurrence { get; }
-
-    public CImage CRepertoireImage => new(CRepertoireDesk);
-
-    public CVideo CRepertoireVideo => new(CRepertoireDesk);
 
     public bool CRepertoireScenarioShown =>
         !LRepertoireOccurrenceSide && CRepertoireAtlas.CAtlasPanel.CPanelEditing;
@@ -144,14 +127,15 @@ public sealed class CRepertoire
         !LRepertoireOccurrenceSide && CRepertoireAtlas.CAtlasPanel.CPanelBinEnabled;
 
     public bool CRepertoireStoreEnabled =>
-        CRepertoireEditorShown ? CRepertoireEditor.CEditorDesk.CDeskStorable : CRepertoireDesk.CDeskStorable;
+        CRepertoireEditorShown
+            ? CRepertoireEditor.CEditorDesk.CDeskStorable
+            : CRepertoirePlaywright.LPlaywrightDesk.CDeskStorable;
+
+    public bool CRepertoireScenarioEnabled => CRepertoirePlaywright.LPlaywrightDesk.CDeskRunning;
 
     public bool CRepertoirePressAllowed => CRepertoireDisplayShown || LRepertoireRowShown;
 
     public bool CRepertoirePortraitAllowed => CRepertoireDisplayShown;
-
-    private LQuillSituation? LRepertoireQuill =>
-        !CRepertoireDesk.CDeskFilling && CRepertoireDesk.CDeskTenure is LTenure held ? new LQuillSituation(held) : null;
 
     private bool LRepertoireOccurrenceSide => CRepertoireOccurrence.COccurrencePanel.CPanelModeEnabled;
 
@@ -159,27 +143,6 @@ public sealed class CRepertoire
 
     private bool LRepertoireRowHeld =>
         CRepertoireAtlas.CAtlasPanel.CPanelBinEnabled || CRepertoireOccurrence.COccurrencePanel.CPanelBinEnabled;
-
-    internal CSituationDraft? LRepertoireScenarioRead()
-    {
-        try
-        {
-            return CAtlas.LAtlasDraftRead(CRepertoireDesk.CDeskRead(), _cRepertoireAtelier.CAtelierMediaPort);
-        }
-        catch (Exception exception)
-        {
-            CLedger.LLedgerFailureShow(_cRepertoireEnvoy, _cRepertoireSettingsPort, "Situation.HoldFailed", exception);
-            return null;
-        }
-    }
-
-    private void LRepertoireDraftResonate()
-    {
-        if (LRepertoireScenarioRead() is CSituationDraft situation)
-        {
-            CRepertoireDraftChanged?.Invoke(new CScenario(situation));
-        }
-    }
 
     private void LRepertoireWorkspaceResonate()
     {
@@ -252,7 +215,7 @@ public sealed class CRepertoire
             return;
         }
 
-        CRepertoireDesk.CDeskCancel();
+        CRepertoirePlaywright.LPlaywrightDesk.CDeskCancel();
         CRepertoireAtlas.CAtlasPanel.CPanelScribeSet(false);
         if (editing)
         {
@@ -310,7 +273,7 @@ public sealed class CRepertoire
         CRepertoireAtlas.CAtlasPanel.CPanelScribeToggle(editing);
         if (!CRepertoireAtlas.CAtlasPanel.CPanelEditing)
         {
-            CRepertoireDesk.CDeskCancel();
+            CRepertoirePlaywright.LPlaywrightDesk.CDeskCancel();
         }
     }
 
@@ -347,7 +310,7 @@ public sealed class CRepertoire
     private void LRepertoireOccurrenceCreate()
     {
         long? chosen = CRepertoireAtlas.CAtlasChosen;
-        CRepertoireDesk.CDeskCancel();
+        CRepertoirePlaywright.LPlaywrightDesk.CDeskCancel();
         CRepertoireAtlas.CAtlasPanel.CPanelScribeSet(false);
         CRepertoireOccurrence.COccurrencePanel.CPanelFreshOpen();
         CRepertoireEditor.CEditorDesk.LDeskOccurrenceStart(chosen);
@@ -408,30 +371,6 @@ public sealed class CRepertoire
     public Task<CEnsignSheet<IReadOnlyList<CCatalogSituation>>> CRepertoireRowsLoad(
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
         CCatalog.LCatalogEnsignLoad(_cRepertoireSettingsPort, store, CRepertoireRowsRead);
-
-    public CScenarioLine CRepertoireTitleSet(string text)
-    {
-        ArgumentNullException.ThrowIfNull(text);
-
-        LRepertoireQuill?.LQuillTitleSet(text);
-        return CScenario.LScenarioTitleRead(text, false);
-    }
-
-    public CScenarioLine CRepertoireKindSet(string text)
-    {
-        ArgumentNullException.ThrowIfNull(text);
-
-        LRepertoireQuill?.LQuillKindSet(text);
-        return CScenario.LScenarioKindRead(text, false);
-    }
-
-    public CScenarioLine CRepertoireDescriptionSet(string text)
-    {
-        ArgumentNullException.ThrowIfNull(text);
-
-        LRepertoireQuill?.LQuillDescriptionSet(text);
-        return CScenario.LScenarioDescriptionRead(text, false);
-    }
 
     public void CRepertoireSituationDelete()
     {

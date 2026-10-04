@@ -1,5 +1,5 @@
 # LBulletin.cs
-Hash: `9da65da18b2b5de5`
+Hash: `2688781444381d03`
 
 ## `public sealed record LBulletin(LSubject LBulletinSubject, long LBulletinId)`
 

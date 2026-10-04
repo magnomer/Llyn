@@ -82,9 +82,16 @@ public sealed class LLanguageClerk
         return LGlyph.LGlyphBlockRead(LLanguageGlyphLoad(draft.LEntryDraftLanguage), draft.LEntryDraftTranscriptions);
     }
 
-    private LGlyph? LLanguageGlyphLoad(string language)
+    public IReadOnlyList<LGlyphCell> LLanguageGlyphDivide(LEntryDraft draft)
     {
-        return language.Trim().Length > 0 ? LLanguageClerkLoad(language).LLanguageGlyph : null;
+        ArgumentNullException.ThrowIfNull(draft);
+
+        return LLanguageGlyphLoad(draft.LEntryDraftLanguage)?.LGlyphDivide(draft) ?? [];
+    }
+
+    public LGlyph? LLanguageGlyphLoad(string language)
+    {
+        return string.IsNullOrWhiteSpace(language) ? null : LLanguageClerkLoad(language).LLanguageGlyph;
     }
 
     public bool LLanguagePhonemicCheck(string language)

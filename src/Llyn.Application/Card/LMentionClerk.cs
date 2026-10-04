@@ -128,6 +128,18 @@ public sealed class LMentionClerk
         return LMentionSpan.LMentionSpanRead(text, start, length);
     }
 
+    public static LMentionDraft? LMentionEtymologyFind(LDraft? draft, LMentionDraft span)
+    {
+        ArgumentNullException.ThrowIfNull(span);
+        return draft?.LDraftEtymologyFind(span);
+    }
+
+    public static LMentionDraft? LMentionSpanFind(LDraft? draft, long cardId, long sentenceId, LMentionDraft span)
+    {
+        ArgumentNullException.ThrowIfNull(span);
+        return draft?.LDraftMentionFind(cardId, sentenceId, span);
+    }
+
     public IReadOnlyList<LMentionLabel> LMentionClerkResolve(string text, IReadOnlyList<LMentionDraft> mentions)
     {
         ArgumentNullException.ThrowIfNull(text);

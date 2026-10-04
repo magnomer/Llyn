@@ -1,5 +1,5 @@
 # LGlyph.cs
-Hash: `cbaf5699e185e0e3`
+Hash: `e97c068b351c9c0f`
 
 ## `public sealed record LGlyph(string LGlyphName, string LGlyphLanguage, IReadOnlyList<LSourceSpec> LGlyphSources, LFont? LGlyphFont = null)`
 
@@ -29,14 +29,6 @@ Kana, Latin letters, punctuation and repeats are dropped.
 
 Whether the text holds exactly one distinct Han character.
 Other runes and repeats are ignored, so a lone rune passes only when it is Han.
-
-## `public static bool LGlyphRowCheck(LGlyph? glyph, IReadOnlyList<LTranscriptionDraft> rows)`
-
-Whether a transcription row already stands under the glyph section's own scheme.
-
-## `public static bool LGlyphOtherCheck(LGlyph? glyph, IReadOnlyList<LTranscriptionDraft> rows)`
-
-Whether a row stands under any scheme but the glyph section's, or under any scheme when there is no section.
 
 ## `public static IReadOnlyList<LTranscriptionDraft> LGlyphOtherRead(LGlyph? glyph, IReadOnlyList<LTranscriptionDraft> rows)`
 

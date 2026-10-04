@@ -1,5 +1,5 @@
 # LStemClerk.cs
-Hash: `28c8c3a040b03165`
+Hash: `8e4b084b84c9e3cc`
 
 ## `public sealed class LStemClerk`
 
@@ -22,6 +22,11 @@ The series row that identity names, or null when nothing was chosen.
 ## `public LStem? LStemClerkFind(string language, string key)`
 
 The series row of that language and key, or null while the series was never stored.
+
+## `public IReadOnlyList<LStem> LStemClerkFind(string language, string query, LCatalogOrder order)`
+
+The series of the language as the xiesheng column lists them, narrowed by the query and sorted by the order.
+It delegates to the shared catalog rule in `LCatalogClerk`, so the engine only marks the chosen row.
 
 ## `public IReadOnlyList<LEntry> LStemEntryScan(string language, IReadOnlyList<long> stemIds, string query)`
 

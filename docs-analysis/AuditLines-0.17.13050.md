@@ -1,6 +1,6 @@
 # Source line report - 0.17.13050
 
-- Generated: 2026-10-04 15:28:50 +09:00
+- Generated: 2026-10-04 16:23:11 +09:00
 - Source roots: D:\Programming\Llyn\src; D:\Programming\Llyn\tests
 - Counted extensions: .cs, .csproj, .xaml
 - Excluded directories: .git, .vs, artifacts, bin, node_modules, obj, packages, publish
@@ -11,15 +11,15 @@
 | Metric | Value |
 |--------|------:|
 | Folders | 18 |
-| Counted files | 1,796 |
-| Physical lines | 221,465 |
-| Non-blank lines | 187,638 |
-| Blank lines | 33,827 |
-| Total bytes | 8,519,309 |
+| Counted files | 1,797 |
+| Physical lines | 221,504 |
+| Non-blank lines | 187,668 |
+| Blank lines | 33,836 |
+| Total bytes | 8,521,320 |
 | Files over 500 lines | 0 |
 | Files at 401-500 lines | 12 |
 | Lines over the width limit | 0 |
-| Lines within 5 columns of the width limit | 1,113 |
+| Lines within 5 columns of the width limit | 1,114 |
 | Enforced | yes |
 | Length above ceiling | 0 |
 | Width above ceiling | 0 |
@@ -34,11 +34,11 @@ None.
 
 | Lines | Non-blank | Folder | File |
 |------:|----------:|--------|------|
-| 485 | 392 | src / Conduct | src/Llyn.Conduct/Panel/CRepertoire.cs |
 | 458 | 365 | src / Conduct | src/Llyn.Conduct/Desk/CDesk.cs |
 | 447 | 416 | src / UIVeneer | src/Llyn.UIVeneer/Editor/Core/PEditor.xaml |
 | 446 | 360 | src / Conduct | src/Llyn.Conduct/Panel/CShelf.cs |
-| 429 | 424 | tests / Tests.Convention | tests/Llyn.Tests.Convention/TAuditNameRegistry.cs |
+| 430 | 425 | tests / Tests.Convention | tests/Llyn.Tests.Convention/TAuditNameRegistry.cs |
+| 424 | 343 | src / Conduct | src/Llyn.Conduct/Panel/CRepertoire.cs |
 | 419 | 337 | src / Conduct | src/Llyn.Conduct/Panel/CCorpus.cs |
 | 412 | 393 | src / UIVeneer | src/Llyn.UIVeneer/Panel/Corpus/PCorpus.xaml |
 | 411 | 333 | src / Conduct | src/Llyn.Conduct/Panel/CYunjing.cs |
@@ -170,10 +170,9 @@ None.
 | 119 | 120 | src/Llyn.Conduct/Panel/COccurrence.cs:89 |
 | 119 | 120 | src/Llyn.Conduct/Panel/COeuvre.cs:45 |
 | 117 | 120 | src/Llyn.Conduct/Panel/CPhonology.cs:97 |
-| 116 | 120 | src/Llyn.Conduct/Panel/CRepertoire.cs:55 |
-| 119 | 120 | src/Llyn.Conduct/Panel/CRepertoire.cs:58 |
-| 120 | 120 | src/Llyn.Conduct/Panel/CRepertoire.cs:154 |
-| 119 | 120 | src/Llyn.Conduct/Panel/CRepertoire.cs:171 |
+| 120 | 120 | src/Llyn.Conduct/Panel/CPlaywright.cs:41 |
+| 116 | 120 | src/Llyn.Conduct/Panel/CRepertoire.cs:49 |
+| 119 | 120 | src/Llyn.Conduct/Panel/CRepertoire.cs:52 |
 | 116 | 120 | src/Llyn.Conduct/Panel/CShelf.cs:148 |
 | 119 | 120 | src/Llyn.Conduct/Panel/CTaxonomy.cs:110 |
 | 117 | 120 | src/Llyn.Conduct/Panel/CTranscript.cs:51 |
@@ -524,17 +523,17 @@ None.
 | 117 | 120 | src/Llyn.UIDeportment/Panel/Imprint/QImprint.cs:63 |
 | 117 | 120 | src/Llyn.UIDeportment/Panel/Imprint/QImprint.cs:67 |
 | 117 | 120 | src/Llyn.UIDeportment/Panel/Library/QLibrary.cs:86 |
-| 116 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:79 |
-| 116 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:91 |
-| 116 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:108 |
-| 118 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:115 |
-| 116 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:117 |
-| 118 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:119 |
-| 118 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:137 |
-| 120 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:160 |
-| 118 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:173 |
-| 120 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:182 |
+| 116 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:81 |
+| 116 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:93 |
+| 116 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:110 |
+| 118 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:117 |
+| 116 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:119 |
+| 118 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:121 |
+| 118 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:139 |
+| 120 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:162 |
+| 118 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:175 |
 | 120 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:184 |
+| 120 | 120 | src/Llyn.UIDeportment/Panel/Repertoire/QRepertoire.cs:186 |
 | 116 | 120 | src/Llyn.UIDeportment/Panel/Settings/QSettings.cs:74 |
 | 117 | 120 | src/Llyn.UIDeportment/Panel/Source/QReference.cs:85 |
 | 119 | 120 | src/Llyn.UIDeportment/Panel/Source/QReference.cs:113 |
@@ -631,6 +630,8 @@ None.
 | 117 | 120 | tests/Llyn.Tests.Conduct/Conduct/TDisplaySound.cs:45 |
 | 116 | 120 | tests/Llyn.Tests.Conduct/Conduct/TDisplaySound.cs:142 |
 | 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TDisplaySoundBlock.cs:175 |
+| 117 | 120 | tests/Llyn.Tests.Conduct/Conduct/TEaselDesk.cs:76 |
+| 117 | 120 | tests/Llyn.Tests.Conduct/Conduct/TEaselDesk.cs:142 |
 | 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TEaselDesk.cs:215 |
 | 117 | 120 | tests/Llyn.Tests.Conduct/Conduct/TEditor.cs:196 |
 | 118 | 120 | tests/Llyn.Tests.Conduct/Conduct/TEditorField.cs:67 |
@@ -1201,17 +1202,17 @@ None.
 | Folder | Files | Lines | Non-blank | Share | Average lines | Bytes | Size share | Average bytes |
 |--------|------:|------:|----------:|------:|--------------:|------:|-----------:|--------------:|
 | scripts | 34 | 33,599 | 29,315 | 15.2 % | 988 | 1,427,903 | 16.8 % | 41,997 |
-| src / UIDeportment | 282 | 32,407 | 26,577 | 14.6 % | 115 | 1,132,619 | 13.3 % | 4,016 |
+| src / UIDeportment | 282 | 32,411 | 26,580 | 14.6 % | 115 | 1,132,736 | 13.3 % | 4,017 |
 | tests / Tests.Engine | 190 | 29,495 | 24,734 | 13.3 % | 155 | 1,252,646 | 14.7 % | 6,593 |
-| tests / Tests.Conduct | 119 | 21,510 | 18,249 | 9.7 % | 181 | 891,467 | 10.5 % | 7,491 |
+| tests / Tests.Conduct | 119 | 21,510 | 18,249 | 9.7 % | 181 | 892,259 | 10.5 % | 7,498 |
 | src / Infrastructure | 143 | 19,120 | 16,371 | 8.6 % | 134 | 690,263 | 8.1 % | 4,827 |
 | src / Application | 107 | 16,671 | 14,210 | 7.5 % | 156 | 583,107 | 6.8 % | 5,450 |
-| tests / Tests.Convention | 105 | 15,593 | 13,852 | 7.0 % | 149 | 594,451 | 7.0 % | 5,661 |
-| src / Conduct | 217 | 14,081 | 11,523 | 6.4 % | 65 | 438,028 | 5.1 % | 2,019 |
+| tests / Tests.Convention | 105 | 15,595 | 13,854 | 7.0 % | 149 | 594,500 | 7.0 % | 5,662 |
+| src / Conduct | 218 | 14,114 | 11,548 | 6.4 % | 65 | 439,059 | 5.2 % | 2,014 |
 | src / UIVeneer | 144 | 11,694 | 10,676 | 5.3 % | 81 | 583,759 | 6.9 % | 4,054 |
 | src / Core | 292 | 10,134 | 8,214 | 4.6 % | 35 | 319,447 | 3.7 % | 1,094 |
 | src / ShellEngine | 51 | 8,289 | 6,770 | 3.7 % | 163 | 270,847 | 3.2 % | 5,311 |
-| tests / Tests.Interface | 85 | 7,354 | 5,852 | 3.3 % | 87 | 284,557 | 3.3 % | 3,348 |
+| tests / Tests.Interface | 85 | 7,354 | 5,852 | 3.3 % | 87 | 284,579 | 3.3 % | 3,348 |
 | tests / Tests.Windows | 14 | 951 | 808 | 0.4 % | 68 | 32,048 | 0.4 % | 2,289 |
 | src / Core.Windows | 4 | 357 | 298 | 0.2 % | 89 | 10,545 | 0.1 % | 2,636 |
 | src / UIDeportment.Capsule | 5 | 97 | 83 | 0.0 % | 19 | 3,094 | 0.0 % | 619 |
@@ -1223,6 +1224,6 @@ None.
 
 | Extension | Files | Lines | Non-blank | Blank | Share |
 |-----------|------:|------:|----------:|------:|------:|
-| .cs | 1,633 | 176,185 | 147,642 | 28,543 | 79.6 % |
+| .cs | 1,634 | 176,224 | 147,672 | 28,552 | 79.6 % |
 | .xaml | 112 | 11,333 | 10,378 | 955 | 5.1 % |
 | .csproj | 17 | 348 | 303 | 45 | 0.2 % |

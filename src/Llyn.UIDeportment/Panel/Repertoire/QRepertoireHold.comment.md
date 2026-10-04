@@ -1,10 +1,10 @@
 # QRepertoireHold.cs
-Hash: `eac8b15f515b2ced`
+Hash: `b4b5a8c5bd14dccd`
 
 ## `internal sealed partial class QRepertoire`
 
 When what the user typed into the situation editor reaches the draft the engine holds.
-The panel holds its controls, and the desk on its Conduct holds the tenure from start to commit or cancel.
+The panel holds its controls, and the desk on its playwright holds the tenure from start to commit or cancel.
 The panel keeps no draft id, halted flag, timer or pending map of its own, since the engine owns them.
 Every edit goes through one of the Conduct's gates, whose engine member builds the request and defers or sends it.
 Typing is deferred through the tenure and written once the user stops, so a keystroke is not a write.
@@ -13,9 +13,9 @@ The tenure raises a bulletin when its state moves, and the Conduct settles the b
 
 ## `private void QScenarioDeskIntroduce()`
 
-Wires the Conduct's draft notice to `QScenarioFieldsRefine`.
+Wires the playwright's draft notice to `QScenarioFieldsRefine`.
 The desk shows its own failures and refused holds.
-The Conduct attaches the desk's observers itself at build, through the marshal `QRepertoire` hands it.
+The playwright attaches the desk's observers itself at build, through the marshal `QRepertoire` hands it.
 
 ## `public void QChronicleUndoObserve()`
 

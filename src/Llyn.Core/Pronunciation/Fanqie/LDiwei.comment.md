@@ -1,5 +1,5 @@
 # LDiwei.cs
-Hash: `d505cd93a1c138a3`
+Hash: `a4d9ffba3bed0f78`
 
 ## `public sealed record LDiwei(long LDiweiId, string LDiweiLanguage, string LDiweiKind, string LDiweiKey, int LDiweiCount = 0, bool LDiweiChosen = false)`
 

@@ -1,5 +1,5 @@
 # LReferenceClerk.cs
-Hash: `dda3748dad4dc171`
+Hash: `620da417fc192d0a`
 
 ## `public sealed class LReferenceClerk`
 
@@ -39,6 +39,12 @@ Bylines repeat across works by one author, and only this rule stops a silent swi
 Otherwise a title match beats a byline match, since a byline leaves the title out once credits exist.
 Ties go to the oldest id, so the same line always lands on the same Reference.
 
+## `public long? LReferenceClerkResolve(string title, LDraft draft, long card, long sentence)`
+
+Resolves a typed citation with the Reference the draft's Example cites now as the held one.
+The engine hands the draft over, so the shell never reads the held Reference itself.
+A draft without a cited Reference holds zero, which no Reference carries.
+
 ## `public LReference? LReferenceClerkRead(long id)`
 
 Reads the Reference for `id`, or `null` when none has that id.
@@ -72,6 +78,11 @@ The Sources a citation field offers for the typed word, the most cited first.
 The word is trimmed, and a blank word offers none.
 A word that already names the byline of the `held` Source offers none.
 The citation then stands as typed, so nothing is left to pick.
+
+## `private static long? LReferenceHeldRead(LDraft? draft, long card, long sentence)`
+
+The Reference the draft's Example of that card sentence cites now, or none.
+The offer and the resolve share it, so both hold the same Reference against a typed line.
 
 ## `public IReadOnlyList<LCatalogReference> LReferenceOeuvreFind(long? author, string query, LCatalogFilter kind, LCatalogOrder order)`
 

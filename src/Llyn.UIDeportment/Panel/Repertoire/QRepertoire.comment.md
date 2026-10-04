@@ -1,11 +1,11 @@
 # QRepertoire.cs
-Hash: `f145a14ec587ce1f`
+Hash: `df1d4607bb24e13d`
 
 ## `internal sealed partial class QRepertoire : QChronicleHost`
 
 The Repertoire panel's driver, the view of the shared stock of usage contexts itself.
 A Situation is independent data owned by nothing, so this panel is not a view of one Entry's contexts.
-It holds the surface, the host and the repertoire Conduct the browsing side calls, and nothing else.
+This part holds the surface, the host, the entry editor and display drivers, the repertoire Conduct and its playwright.
 The browsing behavior lives in `QRepertoireBrowse.cs` and the editing in `QRepertoireEditor.cs`, one file per responsibility.
 The held draft the editor writes into lives in `QRepertoireHold.cs`, apart from the controls it reads.
 `QRepertoireDialog.cs` answers the picture and video row clicks.
@@ -25,21 +25,26 @@ Each named part of the page is pulled through `QContract.QContractFind` by its c
 
 ## `private CRepertoire _cRepertoire = null!;`
 
-The repertoire Conduct, holding the atlas, the occurrence list, the desk, the session and the panel's mode.
+The repertoire Conduct, holding the atlas, the occurrence list, the playwright, the session and the panel's mode.
 The atlas's vista carries the order, the inquest, and the languages hidden from the entry column.
 The panel keeps no copy of any of them and asks the Conduct for each where it needs it.
 It is null until `QRepertoireIntroduce` builds it, so only the print and portrait gates guard against that.
 A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
+## `private CPlaywright _cPlaywright = null!;`
+
+The playwright handle, read once off the repertoire at introduce.
+Every part reaches the scenario's gates and notices through it, never through the repertoire.
+
 ## `internal void QRepertoireIntroduce(QWindow host)`
 
-Builds the repertoire Conduct, which builds its editor, and wires the desk's notices.
+Builds the repertoire Conduct, which builds its editor, and wires the playwright's notices.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 The lectern follows the occurrence panel, whose loads and clears reach the display's area, never the veneer.
 Binds the panel to the window it asks for confirmations and panel switches through.
 It binds its lists, the editor's media rows among them, and subscribes to the engine, and reads nothing yet.
 The atlas and occurrence lists get their row fills through `QLookItemAttach`.
-The picture and video drivers are handed the repertoire's own image and video gates.
+The picture and video drivers are handed the playwright's image and video gates.
 It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
 The engine's change notices drive the mode, and its row notices drive the two lists.
 Its scenario and situation notices paint the sheet.
@@ -59,7 +64,7 @@ Whether the panel is on screen, so the engine knows when a notice needs painting
 
 Paints the mode the engine decides.
 It shows the page, checks the toggle and lights the buttons the mode names.
-The scenario is live only while its desk runs.
+The scenario is live only while `CRepertoireScenarioEnabled` holds.
 It folds the trail pair and the chronicle pair by the same mode as the toggle.
 It ends by refreshing the rail's undo and redo.
 

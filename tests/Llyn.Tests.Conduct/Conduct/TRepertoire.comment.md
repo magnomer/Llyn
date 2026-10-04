@@ -1,5 +1,5 @@
 # TRepertoire.cs
-Hash: `b8c775ab4d0cf342`
+Hash: `54cd0f03f698ea73`
 
 ## `public sealed class TRepertoire`
 
@@ -20,7 +20,7 @@ Its seam answers that the tab is in front, and its marshal runs each notice at o
 
 ## `internal static void TRepertoireTitleDefer(CRepertoire repertoire)`
 
-Writes a title into the held scenario, so the desk holds an unsaved change.
+Writes a title into the held scenario, so the playwright's desk holds an unsaved change.
 The draft's own Situation id comes from the scenario read.
 
 ## `internal static LSituation TRepertoireSituationSave(LEngine engine, string title)`

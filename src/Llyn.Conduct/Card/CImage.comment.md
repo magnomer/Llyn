@@ -4,7 +4,7 @@ Hash: `beb6a0fe9f91a4b3`
 ## `public sealed class CImage`
 
 The image rows of the held draft's cards, as the user types into them.
-It keeps no state, so the editor and the repertoire each build it fresh over their desk.
+It keeps no state, so the editor and the playwright each build it fresh over their desk.
 
 ## `public void CImageLocationSet(long imageId, string location)`
 

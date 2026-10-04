@@ -1,5 +1,5 @@
 # LClaimClerk.cs
-Hash: `6b711d14e0628640`
+Hash: `ec49d3daed796438`
 
 ## `public sealed class LClaimClerk`
 
@@ -77,6 +77,11 @@ A broken file is skipped rather than thrown, so one bad draft never hides the re
 ## `public void LDraftSave(LDraft draft)`
 
 Writes one draft file over whatever stood there.
+
+## `public LDraft LDraftSweep(long id)`
+
+Loads a draft, drops its unreadable values to unspecified, and stores it again.
+The facade calls it so Core's normalizing never runs in the engine.
 
 ## `public bool LClaimClerkCheck(long id)`
 

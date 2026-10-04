@@ -40,7 +40,7 @@ internal static class TInterfaceNavigation
         repertoire.LRepertoireSituationOpen(id);
 
     internal static CSituationDraft? TRepertoireScenarioRead(this CRepertoire repertoire) =>
-        repertoire.LRepertoireScenarioRead();
+        repertoire.CRepertoirePlaywright.LPlaywrightScenarioRead();
 
     internal static void TShelfReferenceOpen(this CShelf shelf, long id) => shelf.LShelfReferenceOpen(id);
 

@@ -37,6 +37,14 @@ public sealed class LDiweiClerk
         return _lDiweiClerkDiwei.LDiweiFind(language, kind, key);
     }
 
+    public IReadOnlyList<LDiwei> LDiweiClerkFind(string language, string kind, string query, LCatalogOrder order)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+
+        return LCatalogClerk.LCatalogClerkFind(
+            LDiweiClerkRead(language, kind), query, order, row => row.LDiweiKey, row => row.LDiweiCount);
+    }
+
     public static string LDiweiKindRead(bool final)
     {
         return LDiwei.LDiweiKindRead(final);

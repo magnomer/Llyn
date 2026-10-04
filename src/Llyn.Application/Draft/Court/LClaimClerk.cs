@@ -126,6 +126,13 @@ public sealed class LClaimClerk
         _lClaimClerkDrafts.LDraftSave(draft);
     }
 
+    public LDraft LDraftSweep(long id)
+    {
+        LDraft swept = LDraftLoad(id).LDraftNormalize();
+        LDraftSave(swept);
+        return swept;
+    }
+
     public bool LClaimClerkCheck(long id)
     {
         LClaim? claim = _lClaimClerkClaims.LClaimCheck(id)

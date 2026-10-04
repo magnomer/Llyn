@@ -36,8 +36,7 @@ internal sealed class LPronunciationFacade
         LCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
-        return filter.LCatalogFilterApply(
-            LEnginePronunciationFind(query, order), row => row.LCatalogPronunciationEntry.LEntryLanguage);
+        return LPronunciationClerk.LPronunciationClerkFind(LEnginePronunciationFind(query, order), filter);
     }
 
     public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(LVista vista)

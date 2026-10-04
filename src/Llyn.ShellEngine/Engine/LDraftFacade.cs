@@ -60,15 +60,16 @@ internal sealed class LDraftFacade
                 LEngineSentencePrepare(id, card, requests);
             }
 
-            LGlyph? glyph = _lDraftFacadeEngine.LEngineEntry.LEngineGlyphRead(draft.LEntryDraftLanguage);
+            LGlyph? glyph = _lDraftFacadeEngine.LEngineLanguage.LEngineGlyphRead(draft.LEntryDraftLanguage);
+            LGlyphBlock block = _lDraftFacadeEngine.LEngineLanguage.LEngineGlyphRead(draft);
             if (_lDraftFacadeEngine.LEnginePronunciation
                     .LEngineSchemeRead(draft.LEntryDraftLanguage) is [string scheme, ..]
-                && !LGlyph.LGlyphOtherCheck(glyph, draft.LEntryDraftTranscriptions))
+                && block.LGlyphBlockOther.Count == 0)
             {
                 requests.Add(new LRequestTranscriptionAddition(id, scheme, 0, true));
             }
 
-            if (glyph is not null && !LGlyph.LGlyphRowCheck(glyph, draft.LEntryDraftTranscriptions))
+            if (glyph is not null && block.LGlyphBlockRows.Count == 0)
             {
                 requests.Add(new LRequestTranscriptionAddition(
                     id, glyph.LGlyphName, draft.LEntryDraftTranscriptions.Count, true));
@@ -153,8 +154,7 @@ internal sealed class LDraftFacade
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
 
-            saved = LEngineDraftLoad(id).LDraftNormalize();
-            LDraftFacadeStaff.LEngineStaffClaim.LDraftSave(saved);
+            saved = LDraftFacadeStaff.LEngineStaffClaim.LDraftSweep(id);
         }
 
         _lDraftFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectDraft, saved.LDraftId);

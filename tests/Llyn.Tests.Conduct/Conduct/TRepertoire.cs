@@ -24,7 +24,7 @@ public sealed class TRepertoire
 
         Assert.True(repertoire.CRepertoireEditorShown);
         Assert.False(repertoire.CRepertoireVignetteShown);
-        Assert.False(repertoire.CRepertoireDesk.CDeskHeld);
+        Assert.False(repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskHeld);
         Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);
         Assert.Contains(
             shown[0].CEntryDraftMeanings[0].CCardDraftSituation,
@@ -215,8 +215,8 @@ public sealed class TRepertoire
 
     internal static void TRepertoireTitleDefer(CRepertoire repertoire)
     {
-        repertoire.CRepertoireDesk.TDeskDefer(TInterface.TSituationTitleCreate(
-            repertoire.CRepertoireDesk.CDeskId,
+        repertoire.CRepertoirePlaywright.LPlaywrightDesk.TDeskDefer(TInterface.TSituationTitleCreate(
+            repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskId,
             repertoire.TRepertoireScenarioRead()!.CSituationDraftId,
             TInterfaceState.TStateValueCreate("in court")));
     }

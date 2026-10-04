@@ -37,6 +37,13 @@ public sealed class LPronunciationClerk
         return LCatalogPronunciation.LCatalogPronunciationSort(rows, order);
     }
 
+    public static IReadOnlyList<LCatalogPronunciation> LPronunciationClerkFind(
+        IReadOnlyList<LCatalogPronunciation> rows, LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+        return filter.LCatalogFilterApply(rows, row => row.LCatalogPronunciationEntry.LEntryLanguage);
+    }
+
     public void LPronunciationClerkSync(
         long entryId,
         IReadOnlyList<LPronunciationDraft> drafts,

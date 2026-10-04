@@ -1,5 +1,5 @@
 # LPronunciationFacade.cs
-Hash: `4aa90b84b9dd6820`
+Hash: `82acd942575f91df`
 
 ## `internal sealed class LPronunciationFacade`
 
@@ -30,6 +30,8 @@ The pronunciation catalog rows matching `query`, sorted.
 ## `public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(string query, LCatalogOrder order, LCatalogFilter filter)`
 
 The same rows with the language filter applied.
+The pronunciation clerk applies the filter, so the shell holds no filter rule.
+The filter needs no clerk state, so only the unfiltered read takes the gate.
 
 ## `public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(LVista vista)`
 

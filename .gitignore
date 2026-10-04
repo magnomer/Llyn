@@ -108,7 +108,6 @@ $RECYCLE.BIN/
 !/Llyn.slnx
 !/Llyn.comment.md
 !/version.json
-!/docs-analysis/
 !/version.comment.md
 !/assets/
 !/languages/
@@ -207,3 +206,6 @@ $RECYCLE.BIN/
 !/scripts/vendor/
 !/scripts/Zip.ps1
 
+# Analysis Report
+!/docs-analysis/
+/docs-analysis/**/*.html

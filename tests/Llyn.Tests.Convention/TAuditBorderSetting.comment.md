@@ -1,5 +1,5 @@
 # TAuditBorderSetting.cs
-Hash: `b18c148f5c298c98`
+Hash: `177850f2d5d27cb4`
 
 ## `internal static class TAuditBorderSetting`
 

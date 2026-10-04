@@ -1,11 +1,11 @@
 # LEntryFacade.cs
-Hash: `69db313d94c11b39`
+Hash: `37a7d05ce7733652`
 
 ## `internal sealed class LEntryFacade`
 
 The engine's facade for entry.
 Every call takes the engine's gate and hands the work to `LEntryClerk`, which holds the rules.
-The glyph, grasp, epithet, establishment and usage reads sit here too, since each is one call on an entry.
+The glyph resolve and the grasp, epithet, establishment and usage reads sit here, each one call on an entry.
 
 ## `public LEntryFacade(LEngine engine)`
 
@@ -39,10 +39,6 @@ The entry clerk resolves its recordings to absolute paths.
 
 The clerk's delete under the gate, then the entry bulletin raised outside it.
 Returns the recorded revision.
-
-## `public LGlyph? LEngineGlyphRead(string language)`
-
-The glyph section the pack of `language` declares, or null when the language shows no glyph row.
 
 ## `public IReadOnlyList<LReflexDraft> LEngineReflexRead(LEntryDraft draft)`
 

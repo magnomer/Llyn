@@ -13,26 +13,6 @@ public sealed record LDiwei(
 {
     public bool LDiweiFinal => string.Equals(LDiweiKind, LDiweiRime, StringComparison.Ordinal);
 
-    public bool LDiweiMatch(long id)
-    {
-        return LDiweiId == id;
-    }
-
-    public static LDiwei? LDiweiFind(IReadOnlyList<LDiwei> rows, long id)
-    {
-        ArgumentNullException.ThrowIfNull(rows);
-
-        foreach (LDiwei row in rows)
-        {
-            if (row.LDiweiMatch(id))
-            {
-                return row;
-            }
-        }
-
-        return null;
-    }
-
     public const string LDiweiInitial = "initial";
 
     public const string LDiweiRime = "rime";

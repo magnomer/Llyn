@@ -197,6 +197,7 @@ internal static class TAuditNameRegistry
         "Phonograph",
         "Phonology",
         "Playback",
+        "Playwright",
         "Plumb",
         "Portrait",
         "Posture",

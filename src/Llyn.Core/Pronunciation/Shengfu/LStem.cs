@@ -11,26 +11,6 @@ public sealed record LStem(
     int LStemCount = 0,
     bool LStemChosen = false)
 {
-    public bool LStemMatch(long id)
-    {
-        return LStemId == id;
-    }
-
-    public static LStem? LStemFind(IReadOnlyList<LStem> rows, long id)
-    {
-        ArgumentNullException.ThrowIfNull(rows);
-
-        foreach (LStem row in rows)
-        {
-            if (row.LStemMatch(id))
-            {
-                return row;
-            }
-        }
-
-        return null;
-    }
-
     public static IReadOnlyList<string> LStemKeyScan(string text, string separator)
     {
         ArgumentNullException.ThrowIfNull(text);

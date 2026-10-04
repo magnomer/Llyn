@@ -19,11 +19,11 @@ public sealed class TEaselDesk
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CRepertoire repertoire = TEaselScenarioPrepare(atelier);
-        repertoire.CRepertoireImage.CImageAdd(0);
+        repertoire.CRepertoirePlaywright.CPlaywrightImage.CImageAdd(0);
         long first = TEaselImageRead(repertoire)[0].CImageDraftId;
-        repertoire.CRepertoireImage.CImageFileSet(first, "cat.png");
+        repertoire.CRepertoirePlaywright.CPlaywrightImage.CImageFileSet(first, "cat.png");
 
-        repertoire.CRepertoireImage.CImageAdd(0);
+        repertoire.CRepertoirePlaywright.CPlaywrightImage.CImageAdd(0);
 
         IReadOnlyList<CImageDraft> rows = TEaselImageRead(repertoire);
         Assert.Equal(2, rows.Count);
@@ -38,11 +38,11 @@ public sealed class TEaselDesk
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CRepertoire repertoire = TEaselScenarioPrepare(atelier);
-        repertoire.CRepertoireImage.CImageAdd(0);
+        repertoire.CRepertoirePlaywright.CPlaywrightImage.CImageAdd(0);
         long image = TEaselImageRead(repertoire)[0].CImageDraftId;
 
         engine.TEngineDelaySet(TEaselDeskHold);
-        repertoire.CRepertoireImage.CImageFileSet(image, "cat.png");
+        repertoire.CRepertoirePlaywright.CPlaywrightImage.CImageFileSet(image, "cat.png");
 
         Assert.Equal("cat.png", TEaselImageRead(repertoire)[0].CImageDraftLocation.CStateValueShown);
     }
@@ -54,10 +54,10 @@ public sealed class TEaselDesk
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CRepertoire repertoire = TEaselScenarioPrepare(atelier);
-        repertoire.CRepertoireImage.CImageAdd(0);
+        repertoire.CRepertoirePlaywright.CPlaywrightImage.CImageAdd(0);
         long image = TEaselImageRead(repertoire)[0].CImageDraftId;
 
-        repertoire.CRepertoireImage.CImageFileSet(image, null);
+        repertoire.CRepertoirePlaywright.CPlaywrightImage.CImageFileSet(image, null);
 
         Assert.Null(TEaselImageRead(repertoire)[0].CImageDraftLocation.CStateValueShown);
     }
@@ -69,11 +69,11 @@ public sealed class TEaselDesk
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CRepertoire repertoire = TEaselScenarioPrepare(atelier);
-        repertoire.CRepertoireImage.CImageAdd(0);
-        repertoire.CRepertoireImage.CImageAdd(0);
+        repertoire.CRepertoirePlaywright.CPlaywrightImage.CImageAdd(0);
+        repertoire.CRepertoirePlaywright.CPlaywrightImage.CImageAdd(0);
         long kept = TEaselImageRead(repertoire)[1].CImageDraftId;
 
-        repertoire.CRepertoireImage.CImageRemove(TEaselImageRead(repertoire)[0].CImageDraftId);
+        repertoire.CRepertoirePlaywright.CPlaywrightImage.CImageRemove(TEaselImageRead(repertoire)[0].CImageDraftId);
 
         Assert.Equal([kept], TEaselImageRead(repertoire).Select(static row => row.CImageDraftId));
     }
@@ -85,11 +85,11 @@ public sealed class TEaselDesk
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CRepertoire repertoire = TEaselScenarioPrepare(atelier);
-        repertoire.CRepertoireVideo.CVideoAdd(0);
+        repertoire.CRepertoirePlaywright.CPlaywrightVideo.CVideoAdd(0);
         long first = TEaselVideoRead(repertoire)[0].CVideoDraftId;
-        repertoire.CRepertoireVideo.CVideoFileSet(first, "cat.mp4");
+        repertoire.CRepertoirePlaywright.CPlaywrightVideo.CVideoFileSet(first, "cat.mp4");
 
-        repertoire.CRepertoireVideo.CVideoAdd(0);
+        repertoire.CRepertoirePlaywright.CPlaywrightVideo.CVideoAdd(0);
 
         IReadOnlyList<CVideoDraft> rows = TEaselVideoRead(repertoire);
         Assert.Equal(2, rows.Count);
@@ -104,11 +104,11 @@ public sealed class TEaselDesk
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CRepertoire repertoire = TEaselScenarioPrepare(atelier);
-        repertoire.CRepertoireVideo.CVideoAdd(0);
+        repertoire.CRepertoirePlaywright.CPlaywrightVideo.CVideoAdd(0);
         long video = TEaselVideoRead(repertoire)[0].CVideoDraftId;
 
         engine.TEngineDelaySet(TEaselDeskHold);
-        repertoire.CRepertoireVideo.CVideoFileSet(video, "cat.mp4");
+        repertoire.CRepertoirePlaywright.CPlaywrightVideo.CVideoFileSet(video, "cat.mp4");
 
         Assert.Equal("cat.mp4", TEaselVideoRead(repertoire)[0].CVideoDraftLocation.CStateValueShown);
     }
@@ -120,10 +120,10 @@ public sealed class TEaselDesk
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CRepertoire repertoire = TEaselScenarioPrepare(atelier);
-        repertoire.CRepertoireVideo.CVideoAdd(0);
+        repertoire.CRepertoirePlaywright.CPlaywrightVideo.CVideoAdd(0);
         long video = TEaselVideoRead(repertoire)[0].CVideoDraftId;
 
-        repertoire.CRepertoireVideo.CVideoFileSet(video, null);
+        repertoire.CRepertoirePlaywright.CPlaywrightVideo.CVideoFileSet(video, null);
 
         Assert.Null(TEaselVideoRead(repertoire)[0].CVideoDraftLocation.CStateValueShown);
     }
@@ -135,11 +135,11 @@ public sealed class TEaselDesk
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CRepertoire repertoire = TEaselScenarioPrepare(atelier);
-        repertoire.CRepertoireVideo.CVideoAdd(0);
-        repertoire.CRepertoireVideo.CVideoAdd(0);
+        repertoire.CRepertoirePlaywright.CPlaywrightVideo.CVideoAdd(0);
+        repertoire.CRepertoirePlaywright.CPlaywrightVideo.CVideoAdd(0);
         long kept = TEaselVideoRead(repertoire)[1].CVideoDraftId;
 
-        repertoire.CRepertoireVideo.CVideoRemove(TEaselVideoRead(repertoire)[0].CVideoDraftId);
+        repertoire.CRepertoirePlaywright.CPlaywrightVideo.CVideoRemove(TEaselVideoRead(repertoire)[0].CVideoDraftId);
 
         Assert.Equal([kept], TEaselVideoRead(repertoire).Select(static row => row.CVideoDraftId));
     }

@@ -1,5 +1,5 @@
 # LFanqieFacade.cs
-Hash: `3e7245329d0f39d9`
+Hash: `1c88c33d633fbb99`
 
 ## `internal sealed class LFanqieFacade`
 
@@ -52,10 +52,6 @@ Fetches every character of the entry again, its series along with its rows.
 ## `public bool LEngineFanqieCheck(long entryId)`
 
 Whether a fetch of rows or of a series is pending for any character of the entry.
-
-## `internal IReadOnlyList<LDiwei> LEngineDiweiRead(string language, string kind)`
-
-The diwei of one kind in one language.
 
 ## `public LDiwei? LEngineDiweiRead(long? id)`
 

@@ -2,8 +2,8 @@
 
 - Generation: 19
 - Enforced: True
-- Types: 956, declared in several parts: 13
-- Verdicts: (1) Hydra 1, (2) Kraken 7, (3) Spider 2, (4) Chameleon 10, (5) Octopus 7, (6) Centipede 24, (7) Serpent 2, (9) Colony 2, Hermit 901
+- Types: 957, declared in several parts: 13
+- Verdicts: (1) Hydra 1, (2) Kraken 7, (3) Spider 2, (4) Chameleon 10, (5) Octopus 7, (6) Centipede 24, (7) Serpent 2, (9) Colony 2, Hermit 902
 - (1) Hydra: 1, ceiling 1
 - (2) Kraken: 8, ceiling 8
 - (3) Spider: 6, ceiling 6
@@ -11,7 +11,7 @@
 - (5) Octopus: 14, ceiling 14
 - (6) Centipede: 36, ceiling 36
 - (7) Serpent: 7, ceiling 7
-- (8) Hub: 3, ceiling 3
+- (8) Hub: 2, ceiling 2
 - Above ceiling: 0
 - Stale ceilings: 0
 
@@ -27,7 +27,7 @@ A Hydra has Parts 5 and Lines 1000, and Fused 0.75 or Density 0.50. A Kraken is 
 | `Llyn.ShellEngine.LEntryOutlet` | (2) Kraken | (2) Kraken, (5) Octopus, (6) Centipede | 0 | 1 | 146 | 49 | 0 | 42 | 0 |
 | `Llyn.ShellEngine.LEntryPort` | (2) Kraken | (2) Kraken, (3) Spider, (6) Centipede | 0 | 1 | 140 | 52 | 0 | 34 | 26 |
 | `Llyn.ShellEngine.LTenure` | (2) Kraken | (2) Kraken, (3) Spider, (4) Chameleon, (5) Octopus, (6) Centipede, (7) Serpent | 0 | 4 | 970 | 92 | 9 | 56 | 35 |
-| `Llyn.UIDeportment.QRepertoire` | (2) Kraken | (2) Kraken, (5) Octopus, (6) Centipede, (7) Serpent | 1 | 7 | 818 | 138 | 2 | 50 | 1 |
+| `Llyn.UIDeportment.QRepertoire` | (2) Kraken | (2) Kraken, (5) Octopus, (6) Centipede, (7) Serpent | 0 | 7 | 822 | 139 | 3 | 50 | 1 |
 | `Llyn.UIDeportment.QWindow` | (2) Kraken | (2) Kraken, (3) Spider, (5) Octopus, (6) Centipede, (7) Serpent | 1 | 7 | 856 | 110 | 3 | 48 | 30 |
 | `Llyn.Conduct.CCatalog` | (3) Spider | (3) Spider | 0 | 1 | 221 | 20 | 0 | 25 | 41 |
 | `Llyn.Conduct.CEditor` | (3) Spider | (3) Spider | 0 | 1 | 199 | 37 | 2 | 34 | 55 |
@@ -53,7 +53,7 @@ A Hydra has Parts 5 and Lines 1000, and Fused 0.75 or Density 0.50. A Kraken is 
 | `Llyn.Conduct.CDisplaySound` | (6) Centipede | (6) Centipede | 0 | 1 | 400 | 43 | 0 | 37 | 19 |
 | `Llyn.Conduct.CGuild` | (6) Centipede | (6) Centipede | 0 | 1 | 400 | 58 | 1 | 22 | 3 |
 | `Llyn.Conduct.CPanel` | (6) Centipede | (6) Centipede | 0 | 1 | 371 | 48 | 2 | 11 | 32 |
-| `Llyn.Conduct.CRepertoire` | (6) Centipede | (6) Centipede | 0 | 1 | 477 | 64 | 0 | 30 | 1 |
+| `Llyn.Conduct.CRepertoire` | (6) Centipede | (6) Centipede | 0 | 1 | 416 | 55 | 0 | 23 | 1 |
 | `Llyn.Conduct.CShelf` | (6) Centipede | (6) Centipede | 0 | 1 | 438 | 63 | 1 | 29 | 1 |
 | `Llyn.Conduct.CXiesheng` | (6) Centipede | (6) Centipede | 0 | 1 | 309 | 49 | 4 | 26 | 2 |
 | `Llyn.ShellEngine.LPhonologyOutlet` | (6) Centipede | (6) Centipede | 0 | 1 | 129 | 44 | 0 | 25 | 0 |
@@ -77,7 +77,7 @@ A Hydra has Parts 5 and Lines 1000, and Fused 0.75 or Density 0.50. A Kraken is 
 | `Llyn.UIDeportment.PSwath` | (9) Colony | none | 0 | 2 | 430 | 34 | 5 | 3 | 1 |
 | `Llyn.UIDeportment.QArticulation` | (9) Colony | none | 0 | 3 | 219 | 22 | 1 | 4 | 1 |
 
-Every other type (901) is a Hermit: one part, no flag and no hub.
+Every other type (902) is a Hermit: one part, no flag and no hub.
 
 ## Split types
 
@@ -86,7 +86,7 @@ Every other type (901) is a Hermit: one part, no flag and no hub.
 | `Llyn.UIDeportment.QCorpus` | 9 | 1081 | 163 | 4 | 54 | 1 | 1 | 163 | 1.00 | 1.00 | 1.00 | (1) Hydra |
 | `Llyn.ShellEngine.LTenure` | 4 | 970 | 92 | 9 | 56 | 35 | 0 | 110 | 1.00 | 1.00 | 1.20 | (2) Kraken |
 | `Llyn.UIDeportment.QWindow` | 7 | 856 | 110 | 3 | 48 | 30 | 1 | 112 | 1.00 | 1.00 | 1.02 | (2) Kraken |
-| `Llyn.UIDeportment.QRepertoire` | 7 | 818 | 138 | 2 | 50 | 1 | 1 | 116 | 1.00 | 1.00 | 0.84 | (2) Kraken |
+| `Llyn.UIDeportment.QRepertoire` | 7 | 822 | 139 | 3 | 50 | 1 | 0 | 116 | 1.00 | 1.00 | 0.83 | (2) Kraken |
 | `Llyn.UIDeportment.PCard` | 9 | 779 | 102 | 6 | 30 | 24 | 0 | 27 | 1.00 | 1.00 | 0.26 | (6) Centipede |
 | `Llyn.Infrastructure.LEntryArchive` | 2 | 640 | 33 | 0 | 9 | 2 | 0 | 14 | 1.00 | 1.00 | 0.42 | (7) Serpent |
 | `Llyn.Infrastructure.LSituationArchive` | 3 | 568 | 28 | 0 | 15 | 2 | 0 | 12 | 1.00 | 1.00 | 0.43 | (7) Serpent |
@@ -106,7 +106,7 @@ Every other type (901) is a Hermit: one part, no flag and no hub.
 - Llyn.UIDeportment.QCorpus: lines 1081, members 163, outgoing 54, incoming 1
 - Llyn.ShellEngine.LTenure: lines 970, members 92, outgoing 56, incoming 35
 - Llyn.UIDeportment.QWindow: lines 856, members 110, outgoing 48, incoming 30
-- Llyn.UIDeportment.QRepertoire: lines 818, members 138, outgoing 50, incoming 1
+- Llyn.UIDeportment.QRepertoire: lines 822, members 139, outgoing 50, incoming 1
 - Llyn.Application.LEntryClerk: lines 345, members 42, outgoing 40, incoming 11
 - Llyn.ShellEngine.LEngine: lines 269, members 51, outgoing 41, incoming 32
 - Llyn.ShellEngine.LEntryOutlet: lines 146, members 49, outgoing 42, incoming 0
@@ -157,13 +157,13 @@ Every other type (901) is a Hermit: one part, no flag and no hub.
 - Llyn.UIDeportment.QCorpus: members 163
 - Llyn.ShellEngine.LTenure: members 92
 - Llyn.UIDeportment.QWindow: members 110
-- Llyn.UIDeportment.QRepertoire: members 138
+- Llyn.UIDeportment.QRepertoire: members 139
 - Llyn.UIDeportment.PCard: members 102
-- Llyn.Conduct.CRepertoire: members 64
 - Llyn.UIDeportment.QTenor: members 75
 - Llyn.UIDeportment.QTaxonomy: members 75
 - Llyn.Conduct.CDesk: members 64
 - Llyn.Conduct.CShelf: members 63
+- Llyn.Conduct.CRepertoire: members 55
 - Llyn.Conduct.CCorpus: members 57
 - Llyn.Conduct.CYunjing: members 63
 - Llyn.Conduct.CDisplaySound: members 43
@@ -196,7 +196,7 @@ Every other type (901) is a Hermit: one part, no flag and no hub.
 - Llyn.UIDeportment.QCorpus: lines 1081
 - Llyn.ShellEngine.LTenure: lines 970
 - Llyn.UIDeportment.QWindow: lines 856
-- Llyn.UIDeportment.QRepertoire: lines 818
+- Llyn.UIDeportment.QRepertoire: lines 822
 - Llyn.UIDeportment.PCard: lines 779
 - Llyn.Infrastructure.LEntryArchive: lines 640
 - Llyn.Infrastructure.LSituationArchive: lines 568
@@ -205,7 +205,6 @@ Every other type (901) is a Hermit: one part, no flag and no hub.
 
 - Llyn.UIDeportment.QCorpus: `_cCorpus` reaches 8 parts
 - Llyn.UIDeportment.QWindow: `_qWindowSurface` reaches 5 parts
-- Llyn.UIDeportment.QRepertoire: `_cRepertoire` reaches 6 parts
 
 ## Above ceiling
 

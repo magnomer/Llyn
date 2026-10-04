@@ -1,23 +1,23 @@
 # CRepertoire.cs
-Hash: `338b1763402d0194`
+Hash: `02cda3d930978f82`
 
 ## `public sealed class CRepertoire`
 
-The repertoire panel's session over the situation list, the occurrence list, the scenario desk and the entry editor.
+The repertoire panel's session over the situation list, the occurrence list, the playwright and the entry editor.
 The two vistas' chosen rows and editing flags are the panel's mode, and the drivers only follow.
-Every gate holds only the interaction and reaches the engine through a panel, the desk or the editor.
+Every gate holds only the interaction and reaches the engine through a panel, the playwright or the editor.
 It asks the user and reports failures through the envoy, never through a seam a driver hands up.
 It restores both vistas itself and chooses which side prints, exports or deletes.
 
 ## `private CRepertoire(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
-Builds the desk under the `Situation` scope, the atlas over it and the occurrence list over the editor's desk.
-The desk starts by subject rather than by a vista, with the `Repertoire` origin.
+Builds the entry editor, the playwright, the atlas over the playwright's desk and the occurrence list over the editor's desk.
 The session defers to the entry editor while the occurrence list edits.
 A stored Situation is shown again outside the scribe through `LRepertoireStoredShow`.
 The occurrence panel opens the editor on the entry it edits, and a clear cancels the editor's desk.
 The atlas's row notices reach the occurrence panel, whose rows follow the chosen Situation.
-It registers `LRepertoireClose` with the workspace and attaches the scenario desk's observers through the marshal.
+It registers `LRepertoireClose` with the workspace.
+The session's held notice reaches the playwright, which raises the scenario.
 It keeps the marshal, so each vista restore attaches the lists' observers on the fresh vistas.
 It restores its vistas last, so a built area already stands on started vistas.
 
@@ -29,17 +29,7 @@ Building it is no user action, so it is no gate on the atelier.
 
 ## `public event Action? CRepertoireChanged`
 
-Raised when the desk or the entry editor changes state, so a driver repaints the mode.
-
-## `public event Action<CScenario>? CRepertoireScenarioChanged`
-
-Raised with the scenario of the Situation the desk holds after a start.
-A cancel or a refused start raises the blank scenario, so the driver keeps no default of its own.
-
-## `public event Action<CScenario>? CRepertoireDraftChanged`
-
-Raised with the held Situation's scenario after an edit, through the marshal the repertoire was built with.
-`CRepertoireScenarioChanged` fills the scenario anew, while this one only refreshes what the edit changed.
+Raised when the playwright's desk or the entry editor changes state, so a driver repaints the mode.
 
 ## `public event Action<CSituation>? CRepertoireSituationChanged`
 
@@ -57,18 +47,15 @@ Raised once an arrival drops the query and the language filter, so a driver empt
 
 The atelier the two vistas start through on every restore.
 
+## `public CPlaywright CRepertoirePlaywright { get; }`
+
+The Situation scenario's editor, whose desk the atlas and the session run on.
+Drivers reach the scenario's gates and notices through it, as they reach the entry's through `CRepertoireEditor`.
+
 ## `public COccurrence CRepertoireOccurrence { get; }`
 
 The occurrence list, whose panel asks the entry editor's desk whether the entry holds unsaved changes.
 It is built over the atelier's entry and portrait ports, so no driver holds either.
-
-## `public CImage CRepertoireImage`
-
-The scenario's picture gates, built fresh over the repertoire's desk as the editor builds its own.
-
-## `public CVideo CRepertoireVideo`
-
-The scenario's video gates, built fresh over the repertoire's desk.
 
 ## `public bool CRepertoireScenarioShown`
 
@@ -81,16 +68,13 @@ The other mode flags follow the same two facts, which side is in front and wheth
 `CRepertoireModeEnabled` holds on the occurrence side, and on the situation side follows its panel.
 `CRepertoireBinEnabled` holds only on the situation side, where it follows its panel.
 `CRepertoireVignetteHeld` and `CRepertoireVignetteBlank` say whether the situation list has a chosen row.
-`CRepertoireStoreEnabled` follows the entry editor while it shows, and the scenario desk otherwise.
+`CRepertoireStoreEnabled` follows the entry editor while it shows, and the playwright's desk otherwise.
+`CRepertoireScenarioEnabled` holds while the playwright's desk runs a tenure, so the scenario area is enabled.
 
 ## `public bool CRepertoirePressAllowed`
 
 Print takes an entry on display or a chosen Situation on the vignette.
 Export, as `CRepertoirePortraitAllowed` says, takes only an entry on display.
-
-## `private LQuillSituation? LRepertoireQuill`
-
-The scenario's typed edits over the desk's live tenure, or null while no tenure runs or the desk fills.
 
 ## `private bool LRepertoireOccurrenceSide`
 
@@ -104,17 +88,6 @@ True while the vignette shows a chosen Situation, the only case a missing row cl
 ## `private bool LRepertoireRowHeld`
 
 True while either list has a chosen row, so a fresh start opens an occurrence.
-
-## `internal CSituationDraft? LRepertoireScenarioRead()`
-
-Reads the Situation the desk holds, which persists the tenure first and so can throw.
-A throw reports `Situation.HoldFailed` through the envoy and reads as null.
-`CRepertoireDraftChanged` hands it on each draft bulletin, so the desk never hands a driver a draft.
-
-## `private void LRepertoireDraftResonate()`
-
-Answers the desk's draft notice with the held Situation read afresh.
-A notice with no Situation to show raises nothing, so the driver never redraws from nothing.
 
 ## `private void LRepertoireClose()`
 
@@ -164,7 +137,7 @@ Starts an occurrence for the chosen row when a row is chosen, else a blank Situa
 ## `public void CRepertoireScribeToggle(bool editing)`
 
 Toggles the scribe on the side in front.
-Closing the occurrence side falls back to the chosen Situation, and closing the scenario cancels the desk.
+Closing the occurrence side falls back to the chosen Situation, and closing the scenario cancels the playwright's desk.
 
 ## `private void LRepertoireSituationRestore(bool editing)`
 
@@ -184,7 +157,7 @@ Drops the query and the language filter on the situation vista and raises `CRepe
 
 ## `private void LRepertoireStoredShow(long id)`
 
-Shows the stored Situation outside the scribe after the desk stores it.
+Shows the stored Situation outside the scribe after the playwright's desk stores it.
 The save button, a tab leave and the window's close finish through it, and a row click does not.
 
 ## `private void LRepertoireOccurrenceCreate()`
@@ -219,19 +192,6 @@ The clear announces fresh rows, which carry the same Situations, so a driver's n
 
 Runs the flag fill into the driver's `store`, then answers `CRepertoireRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
-
-## `public CScenarioLine CRepertoireTitleSet(string text)`
-
-Hands the typed title to the scenario's own edit on the tenure, which defers it.
-It answers the typed line, whose hint is the untitled text, since typing ends an unknown mark.
-
-## `public CScenarioLine CRepertoireKindSet(string text)`
-
-Hands the typed kind on as the title gate does, and answers the kind's typed line.
-
-## `public CScenarioLine CRepertoireDescriptionSet(string text)`
-
-Hands the typed description on as the title gate does, and answers the description's typed line.
 
 ## `public void CRepertoireSituationDelete()`
 

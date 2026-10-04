@@ -28,10 +28,10 @@ public sealed class TRepertoireHold
             });
         repertoire.CRepertoireSituationCreate();
         List<CScenario> drafted = [];
-        repertoire.CRepertoireDraftChanged += drafted.Add;
+        repertoire.CRepertoirePlaywright.CPlaywrightDraftChanged += drafted.Add;
 
         TRepertoire.TRepertoireTitleDefer(repertoire);
-        repertoire.CRepertoireDesk.CDeskPersist();
+        repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskPersist();
 
         Assert.True(marshalled > 0);
         Assert.Equal("in court", drafted[^1].CScenarioDraft.CSituationDraftTitle.CStateValueText);
@@ -47,8 +47,8 @@ public sealed class TRepertoireHold
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         repertoire.CRepertoireSituationCreate();
 
-        CScenarioLine typed = repertoire.CRepertoireTitleSet("in court");
-        CScenarioLine cleared = repertoire.CRepertoireDescriptionSet(string.Empty);
+        CScenarioLine typed = repertoire.CRepertoirePlaywright.CPlaywrightTitleSet("in court");
+        CScenarioLine cleared = repertoire.CRepertoirePlaywright.CPlaywrightDescriptionSet(string.Empty);
 
         CSituationDraft held = repertoire.TRepertoireScenarioRead()!;
         Assert.Equal("in court", held.CSituationDraftTitle.CStateValueText);
@@ -68,9 +68,9 @@ public sealed class TRepertoireHold
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         repertoire.CRepertoireSituationCreate();
 
-        CScenarioLine typed = repertoire.CRepertoireKindSet("formal");
+        CScenarioLine typed = repertoire.CRepertoirePlaywright.CPlaywrightKindSet("formal");
         string kind = repertoire.TRepertoireScenarioRead()!.CSituationDraftKind.CStateValueText;
-        CScenarioLine cleared = repertoire.CRepertoireKindSet(string.Empty);
+        CScenarioLine cleared = repertoire.CRepertoirePlaywright.CPlaywrightKindSet(string.Empty);
 
         Assert.Equal("formal", kind);
         Assert.Equal(("Situation.Kind", null), (typed.CScenarioLineHint, typed.CScenarioLineWording));
@@ -87,7 +87,7 @@ public sealed class TRepertoireHold
             TInterface.TSituationCreate(0, "at home", null, LStateValue.LStateValueUnknown));
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         List<CScenario> held = [];
-        repertoire.CRepertoireScenarioChanged += held.Add;
+        repertoire.CRepertoirePlaywright.CPlaywrightScenarioChanged += held.Add;
         repertoire.TRepertoireSituationOpen(home.LSituationId);
         repertoire.CRepertoireScribeToggle(true);
         CScenario stored = held[^1];

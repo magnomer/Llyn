@@ -1,9 +1,9 @@
 # TRepertoireHold.cs
-Hash: `e562f235fb55ad1a`
+Hash: `5513261f8748ea62`
 
 ## `public sealed class TRepertoireHold`
 
-Covers the two things the repertoire registers when it is built, and the scenario's typing gates.
+Covers the two things building a repertoire registers, and the playwright's typing gates.
 A draft notice on the scenario desk reaches the driver through the marshal the repertoire was given.
 The window's exit gate closes the entry editor and stops the display's playback.
 The scenario's three typing gates write their field and answer its typed line.

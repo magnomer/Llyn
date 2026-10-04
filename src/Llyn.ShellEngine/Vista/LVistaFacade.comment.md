@@ -1,5 +1,5 @@
 # LVistaFacade.cs
-Hash: `73801547ec8c1aed`
+Hash: `2459c471ed23ff49`
 
 ## `internal sealed class LVistaFacade`
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Application;
@@ -91,14 +90,6 @@ internal sealed class LFanqieFacade
             || LFanqieFacadeStaff.LEngineStaffShengfu.LShengfuClerkCheck(entryId);
     }
 
-    internal IReadOnlyList<LDiwei> LEngineDiweiRead(string language, string kind)
-    {
-        lock (_lFanqieFacadeGate)
-        {
-            return LFanqieFacadeStaff.LEngineStaffDiwei.LDiweiClerkRead(language, kind);
-        }
-    }
-
     public LDiwei? LEngineDiweiRead(long? id)
     {
         lock (_lFanqieFacadeGate)
@@ -160,24 +151,27 @@ internal sealed class LFanqieFacade
 
         string language = LEngineLanguageRead(chosen);
         string kind = LDiweiClerk.LDiweiKindRead(final);
-        string wanted = vista.LVistaQuery.Trim();
-        IEnumerable<LDiwei> kept = LEngineDiweiRead(language, kind).Where(row =>
-            wanted.Length == 0 || row.LDiweiKey.Contains(wanted, StringComparison.OrdinalIgnoreCase));
-        IReadOnlyList<LDiwei> sorted = vista.LVistaOrder switch
+        LDiweiClerk diwei;
+        lock (_lFanqieFacadeGate)
         {
-            LCatalogOrder.LCatalogOrderReverse => [.. kept
-                .OrderByDescending(row => row.LDiweiKey, StringComparer.Ordinal)],
-            LCatalogOrder.LCatalogOrderUsage => [.. kept
-                .OrderByDescending(row => row.LDiweiCount)
-                .ThenBy(row => row.LDiweiKey, StringComparer.Ordinal)],
-            _ => [.. kept.OrderBy(row => row.LDiweiKey, StringComparer.Ordinal)],
-        };
-        if (vista.LVistaChosen is long held && LDiwei.LDiweiFind(sorted, held) is null)
+            diwei = LFanqieFacadeStaff.LEngineStaffDiwei;
+        }
+
+        List<LDiwei> rows = [];
+        bool kept = false;
+        foreach (LDiwei row in diwei.LDiweiClerkFind(language, kind, vista.LVistaQuery, vista.LVistaOrder))
+        {
+            bool held = vista.LVistaMatch(row.LDiweiId);
+            kept |= held;
+            rows.Add(row with { LDiweiChosen = held });
+        }
+
+        if (!kept)
         {
             vista.LVistaSelect(null);
         }
 
-        return [.. sorted.Select(row => row with { LDiweiChosen = vista.LVistaMatch(row.LDiweiId) })];
+        return rows;
     }
 
     public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(

@@ -87,11 +87,11 @@ internal sealed partial class QRepertoire
 
     private void QImageAddObserve(object sender, RoutedEventArgs e)
     {
-        _cRepertoire.CRepertoireImage.CImageAdd(0);
+        _cPlaywright.CPlaywrightImage.CImageAdd(0);
     }
 
     private void QVideoAddObserve(object sender, RoutedEventArgs e)
     {
-        _cRepertoire.CRepertoireVideo.CVideoAdd(0);
+        _cPlaywright.CPlaywrightVideo.CVideoAdd(0);
     }
 }

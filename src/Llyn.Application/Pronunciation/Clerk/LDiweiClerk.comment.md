@@ -1,5 +1,5 @@
 # LDiweiClerk.cs
-Hash: `4496ab287a760242`
+Hash: `d1577cb0ed9d0390`
 
 ## `public sealed class LDiweiClerk`
 
@@ -21,6 +21,11 @@ One diwei by id, or null for no id.
 ## `public LDiwei? LDiweiClerkFind(string language, string kind, string key)`
 
 The diwei of one kind with the given key.
+
+## `public IReadOnlyList<LDiwei> LDiweiClerkFind(string language, string kind, string query, LCatalogOrder order)`
+
+The diwei of one kind as a yunjing column lists them, narrowed by the query and sorted by the order.
+It delegates to the shared catalog rule in `LCatalogClerk`, so the engine only marks the chosen row.
 
 ## `public static string LDiweiKindRead(bool final)`
 

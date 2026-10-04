@@ -25,9 +25,8 @@ internal sealed class LReferenceFacade
             ArgumentOutOfRangeException.ThrowIfZero(draftId);
             _lReferenceFacadeEngine.LEngineDraft.LEngineDraftValidate(draftId);
 
-            long held = _lReferenceFacadeEngine.LEngineDraft.LEngineDraftLoad(draftId)
-                .LDraftExampleRead(cardId, sentenceId)?.LExampleDraftReference.LStateAnchorShow() ?? 0;
-            long? found = LReferenceFacadeStaff.LEngineStaffReference.LReferenceClerkResolve(title, held);
+            long? found = LReferenceFacadeStaff.LEngineStaffReference.LReferenceClerkResolve(
+                title, _lReferenceFacadeEngine.LEngineDraft.LEngineDraftLoad(draftId), cardId, sentenceId);
             if (found is long id)
             {
                 return id;

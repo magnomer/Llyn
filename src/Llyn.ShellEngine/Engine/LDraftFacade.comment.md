@@ -1,5 +1,5 @@
 # LDraftFacade.cs
-Hash: `e88d79573a58bc3e`
+Hash: `a2cafadaa7f190c0`
 
 ## `internal sealed class LDraftFacade`
 

@@ -1,5 +1,5 @@
 # LPosture.cs
-Hash: `a03a28c3de1f63bc`
+Hash: `1ce185e01bdbee4f`
 
 ## `public sealed class LPosture : IDisposable`
 
@@ -24,6 +24,7 @@ Whether the tab named is the one stored as standing open.
 ## `private static LLayout? LPostureLayoutFind(LPostureState state, string tab)`
 
 The record of one tab in `state`, which the vista start reads its ordering and filter from.
+Tab identity is ordinal, the same identity the layout dictionary in `LPostureLayoutSave` keys by.
 
 ## `public LVista LPostureVistaStart(string tab, LSubject? subject, LCatalogOrder fallback, bool blank = false)`
 

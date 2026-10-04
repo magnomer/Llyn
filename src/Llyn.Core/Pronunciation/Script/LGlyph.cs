@@ -39,20 +39,6 @@ public sealed record LGlyph(
 
     public bool LGlyphSourced => LGlyphSources.Count > 0;
 
-    public static bool LGlyphRowCheck(LGlyph? glyph, IReadOnlyList<LTranscriptionDraft> rows)
-    {
-        ArgumentNullException.ThrowIfNull(rows);
-
-        return glyph is not null && rows.Any(spelled => glyph.LGlyphSchemeCheck(spelled.LTranscriptionDraftScheme));
-    }
-
-    public static bool LGlyphOtherCheck(LGlyph? glyph, IReadOnlyList<LTranscriptionDraft> rows)
-    {
-        ArgumentNullException.ThrowIfNull(rows);
-
-        return rows.Any(spelled => glyph?.LGlyphSchemeCheck(spelled.LTranscriptionDraftScheme) != true);
-    }
-
     public static IReadOnlyList<LTranscriptionDraft> LGlyphOtherRead(
         LGlyph? glyph, IReadOnlyList<LTranscriptionDraft> rows)
     {

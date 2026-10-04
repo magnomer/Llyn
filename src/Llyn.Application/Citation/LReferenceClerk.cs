@@ -79,6 +79,13 @@ public sealed class LReferenceClerk
         return titled ?? signed;
     }
 
+    public long? LReferenceClerkResolve(string title, LDraft draft, long card, long sentence)
+    {
+        ArgumentNullException.ThrowIfNull(title);
+        ArgumentNullException.ThrowIfNull(draft);
+        return LReferenceClerkResolve(title, LReferenceHeldRead(draft, card, sentence) ?? 0);
+    }
+
     public LReference? LReferenceClerkRead(long id)
     {
         return _lReferenceClerkReferences.LReferenceRead(id);
@@ -135,7 +142,7 @@ public sealed class LReferenceClerk
         ArgumentNullException.ThrowIfNull(text);
 
         string word = text.Trim();
-        long? held = draft?.LDraftExampleRead(card, sentence)?.LExampleDraftReference.LStateAnchorShown;
+        long? held = LReferenceHeldRead(draft, card, sentence);
         List<LReferenceRow> rows = [];
         foreach (LCatalogReference row in LReferenceCitationFind(word, held))
         {
@@ -176,6 +183,11 @@ public sealed class LReferenceClerk
         }
 
         return found;
+    }
+
+    private static long? LReferenceHeldRead(LDraft? draft, long card, long sentence)
+    {
+        return draft?.LDraftExampleRead(card, sentence)?.LExampleDraftReference.LStateAnchorShown;
     }
 
     public IReadOnlyList<LCatalogReference> LReferenceOeuvreFind(

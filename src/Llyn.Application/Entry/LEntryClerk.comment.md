@@ -1,5 +1,5 @@
 # LEntryClerk.cs
-Hash: `14b006794946113e`
+Hash: `dc9c1790aed21263`
 
 ## `public sealed class LEntryClerk`
 
@@ -49,6 +49,11 @@ The store answers which entries match, and the ordering is applied over what it 
 The ordered search with the entries in a hidden language left out.
 The library panel lists through this, so the filter is applied here and never in the shell.
 
+## `private static string? LEntryLanguageRead(LEntry entry)`
+
+The language an entry is filtered by.
+Both filtered lookups share it, so the filter never reads the language two ways.
+
 ## `public IReadOnlyList<LEntry> LEntryClerkFind(LTag tag)`
 
 Returns the entries carrying `tag`, matched by its id, ordered by headword.
@@ -80,6 +85,11 @@ A zero id stands for no source chosen and returns every entry.
 The entries whose headword matches `query` by the catalog match.
 An empty or blank `query` narrows nothing.
 The engine's vista narrows a child list the same way, so it calls here.
+
+## `public static IReadOnlyList<LEntry> LEntryClerkMatch(IReadOnlyList<LEntry> entries, LCatalogFilter filter, string query)`
+
+The entries left after the language filter, narrowed by the catalog match of `query`.
+The vista lists a catalog record's entries through this, so the shell holds no filter rule.
 
 ## `public LRevision LEntryClerkDelete(long id)`
 

@@ -99,7 +99,7 @@ internal static partial class TInterface
         engine.LEnginePronunciation.LEngineSchemeRead(language);
 
     internal static LGlyph? TEngineGlyphRead(this LEngine engine, string language) =>
-        engine.LEngineEntry.LEngineGlyphRead(language);
+        engine.LEngineLanguage.LEngineGlyphRead(language);
 
     internal static LEntry TEngineGlyphResolve(this LEngine engine, string character, string language) =>
         engine.LEngineEntry.LEngineGlyphResolve(character, language);

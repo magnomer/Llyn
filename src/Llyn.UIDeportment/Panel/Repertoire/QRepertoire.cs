@@ -20,6 +20,8 @@ internal sealed partial class QRepertoire : QChronicleHost
 
     private CRepertoire _cRepertoire = null!;
 
+    private CPlaywright _cPlaywright = null!;
+
     internal QRepertoire(UserControl surface)
     {
         ArgumentNullException.ThrowIfNull(surface);
@@ -206,11 +208,12 @@ internal sealed partial class QRepertoire : QChronicleHost
             QRepertoireShownCheck,
             host.QWindowEnvoy,
             QObserver.QObserverCreate<Action>(static run => run()));
+        _cPlaywright = _cRepertoire.CRepertoirePlaywright;
         QLectern lectern = new(
             _cRepertoire.CRepertoireEditor.CEditorDisplay, _cRepertoire.CRepertoireOccurrence.COccurrencePanel);
         QScenarioDeskIntroduce();
-        _qImage.QImageIntroduce(_cRepertoire.CRepertoireImage);
-        _qVideo.QVideoIntroduce(_cRepertoire.CRepertoireVideo);
+        _qImage.QImageIntroduce(_cPlaywright.CPlaywrightImage);
+        _qVideo.QVideoIntroduce(_cPlaywright.CPlaywrightVideo);
 
         QChoice.QChoiceOrderBuild(QTierList, "Tier", QTierObserve, CAtlas.CAtlasOrderRead());
         QAtlas.ItemsSource = _qAtlasList;
@@ -230,7 +233,7 @@ internal sealed partial class QRepertoire : QChronicleHost
         CPanel atlas = _cRepertoire.CRepertoireAtlas.CAtlasPanel;
         CPanel occurrence = _cRepertoire.CRepertoireOccurrence.COccurrencePanel;
         _cRepertoire.CRepertoireChanged += QRepertoireModeRefine;
-        _cRepertoire.CRepertoireScenarioChanged += QScenarioRefine;
+        _cPlaywright.CPlaywrightScenarioChanged += QScenarioRefine;
         _cRepertoire.CRepertoireSituationChanged += QVignetteRefine;
         _cRepertoire.CRepertoireQueryCleared += QInquestRefine;
         _cRepertoire.CRepertoireWorkspaceChanged += QRepertoireWorkspaceRefine;
@@ -262,7 +265,7 @@ internal sealed partial class QRepertoire : QChronicleHost
         QRepertoireMode.IsEnabled = _cRepertoire.CRepertoireModeEnabled;
         QRepertoireBin.IsEnabled = _cRepertoire.CRepertoireBinEnabled;
         QRepertoireStore.IsEnabled = _cRepertoire.CRepertoireStoreEnabled;
-        QScenario.IsEnabled = _cRepertoire.CRepertoireDesk.CDeskRunning;
+        QScenario.IsEnabled = _cRepertoire.CRepertoireScenarioEnabled;
         QRepertoireChronicleRefine();
     }
 

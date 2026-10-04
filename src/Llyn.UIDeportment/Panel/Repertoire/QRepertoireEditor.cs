@@ -21,17 +21,18 @@ internal sealed partial class QRepertoire
 
     private void QScenarioTitleObserve(object sender, TextChangedEventArgs e)
     {
-        QScenarioTitleRefine(_cRepertoire.CRepertoireTitleSet(QScenarioTitle.Text));
+        QScenarioTitleRefine(_cPlaywright.CPlaywrightTitleSet(QScenarioTitle.Text));
     }
 
     private void QScenarioKindObserve(object sender, TextChangedEventArgs e)
     {
-        QScenarioKindRefine(_cRepertoire.CRepertoireKindSet(QScenarioKind.Text));
+        QScenarioKindRefine(_cPlaywright.CPlaywrightKindSet(QScenarioKind.Text));
     }
 
     private void QScenarioDescriptionObserve(object sender, TextChangedEventArgs e)
     {
-        QScenarioDescriptionRefine(_cRepertoire.CRepertoireDescriptionSet(QScenarioDescription.Text));
+        QScenarioDescriptionRefine(
+            _cPlaywright.CPlaywrightDescriptionSet(QScenarioDescription.Text));
     }
 
     private void QScenarioTitleRefine(CScenarioLine line)

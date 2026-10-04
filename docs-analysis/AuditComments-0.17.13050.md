@@ -1,6 +1,6 @@
 # Comment report - 0.17.13050
 
-- Generated: 2026-10-04 15:25:45 +09:00
+- Generated: 2026-10-04 16:13:03 +09:00
 - Source roots: D:\Programming\Llyn\languages; D:\Programming\Llyn\localization; D:\Programming\Llyn\src; D:\Programming\Llyn\tests; D:\Programming\Llyn\themes
 - Source files: D:\Programming\Llyn\Directory.Build.props; D:\Programming\Llyn\Llyn.slnx; D:\Programming\Llyn\version.json
 - Comment pattern: `*.comment.md`
@@ -13,16 +13,16 @@
 | Metric | Value |
 |--------|------:|
 | Folders | 48 |
-| Source files | 1,816 |
-| Comment files | 1,816 |
-| Comment lines | 75,014 |
+| Source files | 1,817 |
+| Comment files | 1,817 |
+| Comment lines | 75,052 |
 | Sources without a comment file | 0 |
 | Comment files without a source | 0 |
 | Lines breaking the line rules | 0 |
 | In-code comments | 0 |
 | Headings naming nothing in their source | 0 |
 | Comment files with a stale hash | 0 |
-| Comment files restamped unrevised (warning) | 1 |
+| Comment files restamped unrevised (warning) | 10 |
 | Comment files with no hash (warning) | 0 |
 | Ceiling for comment files with no hash | 0 |
 | Exempt comment files | 1 |
@@ -33,8 +33,8 @@ Density is the number of non-blank comment lines written per non-blank source li
 
 | Folder | Sources | Files | Lines | Non-blank | Share | Bytes | Average bytes | Density |
 |--------|--------:|------:|------:|----------:|------:|------:|--------------:|--------:|
-| Llyn.UIDeportment | 282 | 282 | 14,758 | 9,594 | 19.7 % | 677,218 | 2,401 | 0.36 |
-| Llyn.Conduct | 217 | 217 | 9,363 | 6,082 | 12.5 % | 425,090 | 1,959 | 0.53 |
+| Llyn.UIDeportment | 282 | 282 | 14,763 | 9,597 | 19.7 % | 677,484 | 2,402 | 0.36 |
+| Llyn.Conduct | 218 | 218 | 9,396 | 6,105 | 12.5 % | 426,770 | 1,958 | 0.53 |
 | Llyn.Core | 292 | 292 | 8,800 | 6,105 | 11.7 % | 431,063 | 1,476 | 0.74 |
 | Llyn.Infrastructure | 143 | 143 | 6,516 | 4,429 | 8.7 % | 307,867 | 2,153 | 0.27 |
 | Llyn.Application | 107 | 107 | 6,038 | 3,926 | 8.0 % | 295,026 | 2,757 | 0.28 |
@@ -42,7 +42,7 @@ Density is the number of non-blank comment lines written per non-blank source li
 | Llyn.Tests.Convention | 107 | 107 | 5,452 | 3,492 | 7.3 % | 246,343 | 2,302 | 0.25 |
 | Llyn.UIVeneer | 144 | 144 | 4,984 | 3,465 | 6.6 % | 234,230 | 1,627 | 0.32 |
 | Llyn.ShellEngine | 51 | 51 | 4,455 | 2,779 | 5.9 % | 198,701 | 3,896 | 0.41 |
-| Llyn.Tests.Conduct | 119 | 119 | 2,716 | 1,918 | 3.6 % | 131,283 | 1,103 | 0.11 |
+| Llyn.Tests.Conduct | 119 | 119 | 2,716 | 1,918 | 3.6 % | 131,303 | 1,103 | 0.11 |
 | Llyn.Tests.Interface | 85 | 85 | 2,494 | 1,542 | 3.3 % | 110,121 | 1,296 | 0.26 |
 | (root) | 3 | 3 | 377 | 314 | 0.5 % | 17,728 | 5,909 | 8.49 |
 | Classical Chinese | 4 | 4 | 323 | 254 | 0.4 % | 17,079 | 4,270 | 0.25 |
@@ -113,7 +113,16 @@ None.
 
 | File | Problem |
 |------|---------|
-| tests/Llyn.Tests.Conduct/Conduct/TTranscriptMention.comment.md | restamped, prose unchanged |
+| src/Llyn.Conduct/Panel/CPlaywright.comment.md | restamped, prose unchanged |
+| src/Llyn.Conduct/Panel/CRepertoire.comment.md | restamped, prose unchanged |
+| src/Llyn.UIDeportment/Panel/Repertoire/QRepertoireHold.comment.md | restamped, prose unchanged |
+| src/Llyn.UIDeportment/Panel/Vignette/QRepertoireDialog.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Conduct/Conduct/TRepertoire.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Conduct/Conduct/TRepertoireHold.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Conduct/Conduct/TRepertoireScribe.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Convention/TAuditBorderSetting.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Convention/TAuditObjectSetting.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Interface/TInterfaceNavigation.comment.md | restamped, prose unchanged |
 
 ## Comment files with no hash
 

@@ -1,10 +1,10 @@
 # QRepertoireEditor.cs
-Hash: `17cb42a142ea42d8`
+Hash: `d382dbeaf726460b`
 
 ## `internal sealed partial class QRepertoire`
 
 The edit area of the Repertoire panel, `QScenario`, and what its three fields do.
-Typing hands each field's text to its own gate on the repertoire, which defers it on the tenure.
+Typing hands each field's text to its own gate on the playwright, which defers it on the tenure.
 The gate answers the typed line, and the field's placeholder and twins are painted from it.
 The engine answers with a bulletin, and the fields are redrawn from the draft.
 A field already reading the same text is left alone by the text box itself, caret included.
@@ -21,15 +21,15 @@ So the panel keeps no loading flag.
 
 ## `private void QScenarioTitleObserve(object sender, TextChangedEventArgs e)`
 
-Hands the typed title to `CRepertoireTitleSet` and paints the line it answers.
+Hands the typed title to `CPlaywrightTitleSet` and paints the line it answers.
 
 ## `private void QScenarioKindObserve(object sender, TextChangedEventArgs e)`
 
-Hands the typed kind to `CRepertoireKindSet` and paints the line it answers.
+Hands the typed kind to `CPlaywrightKindSet` and paints the line it answers.
 
 ## `private void QScenarioDescriptionObserve(object sender, TextChangedEventArgs e)`
 
-Hands the typed description to `CRepertoireDescriptionSet` and paints the line it answers.
+Hands the typed description to `CPlaywrightDescriptionSet` and paints the line it answers.
 
 ## `private void QScenarioTitleRefine(CScenarioLine line)`
 

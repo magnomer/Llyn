@@ -30,8 +30,8 @@ No prefix, shape, base, verb, or count violations were found.
 ## Component Name Audit 0.17.13050
 
 - Version: `0.17.13050`
-- Source names examined: 20378
-- Files with findings: 1371
+- Source names examined: 20385
+- Files with findings: 1372
 - Non-conforming names: 0
 - Stale exempt rows: 0
 - Types outside their prefix turf: 57 (ceiling 57)
@@ -40,7 +40,7 @@ No prefix, shape, base, verb, or count violations were found.
 - Primary reason Base: 0
 - Primary reason Verb: 0
 - Primary reason Count: 0
-- At-limit review names: 10732
+- At-limit review names: 10734
 - Counting: `PS`, `QS`, `CS`, `LS`, `P`, `Q`, `C`, `L`, `T` is a prefix and is not counted as a component.
 - Non-conforming name: counted once, whatever number of reasons it carries; its primary reason is the first check that failed.
 - Prefix: a codebase-owned name carries no `PS`, `QS`, `CS`, `LS`, `P`, `Q`, `C`, `L`, `T` prefix, or a test method breaks the `T` test-prefix gate.
@@ -3418,6 +3418,18 @@ No prefix, shape, base, verb, or count violations were found.
   - `CPhonologyPortraitPrint` - Review: 3 components: `Phonology` + `Portrait` + `Print` - line 176
   - `CPhonologyPortraitExport` - Review: 3 components: `Phonology` + `Portrait` + `Export` - line 185
 
+#### `CPlaywright.cs`
+
+- `CPlaywright`
+  - `CPlaywrightScenarioChanged` - Review: 3 components: `Playwright` + `Scenario` + `Changed` - line 30
+  - `CPlaywrightDraftChanged` - Review: 3 components: `Playwright` + `Draft` + `Changed` - line 32
+  - `LPlaywrightScenarioRead` - Review: 3 components: `Playwright` + `Scenario` + `Read` - line 43
+  - `LPlaywrightHeldResonate` - Review: 3 components: `Playwright` + `Held` + `Resonate` - line 57
+  - `LPlaywrightDraftResonate` - Review: 3 components: `Playwright` + `Draft` + `Resonate` - line 63
+  - `CPlaywrightTitleSet` - Review: 3 components: `Playwright` + `Title` + `Set` - line 71
+  - `CPlaywrightKindSet` - Review: 3 components: `Playwright` + `Kind` + `Set` - line 79
+  - `CPlaywrightDescriptionSet` - Review: 3 components: `Playwright` + `Description` + `Set` - line 87
+
 #### `CQuotation.cs`
 
 - `CQuotation`
@@ -3438,54 +3450,48 @@ No prefix, shape, base, verb, or count violations were found.
 
 - `CRepertoire`
   - `_cRepertoireSettingsPort` - Review: 3 components: `Repertoire` + `Settings` + `Port` - line 15
-  - `CRepertoireScenarioChanged` - Review: 3 components: `Repertoire` + `Scenario` + `Changed` - line 97
-  - `CRepertoireDraftChanged` - Review: 3 components: `Repertoire` + `Draft` + `Changed` - line 99
-  - `CRepertoireSituationChanged` - Review: 3 components: `Repertoire` + `Situation` + `Changed` - line 101
-  - `CRepertoireQueryCleared` - Review: 3 components: `Repertoire` + `Query` + `Cleared` - line 103
-  - `CRepertoireWorkspaceChanged` - Review: 3 components: `Repertoire` + `Workspace` + `Changed` - line 105
-  - `CRepertoireScenarioShown` - Review: 3 components: `Repertoire` + `Scenario` + `Shown` - line 121
-  - `CRepertoireVignetteShown` - Review: 3 components: `Repertoire` + `Vignette` + `Shown` - line 124
-  - `CRepertoireDisplayShown` - Review: 3 components: `Repertoire` + `Display` + `Shown` - line 127
-  - `CRepertoireEditorShown` - Review: 3 components: `Repertoire` + `Editor` + `Shown` - line 130
-  - `CRepertoireVignetteHeld` - Review: 3 components: `Repertoire` + `Vignette` + `Held` - line 132
-  - `CRepertoireVignetteBlank` - Review: 3 components: `Repertoire` + `Vignette` + `Blank` - line 134
-  - `CRepertoireScribeChecked` - Review: 3 components: `Repertoire` + `Scribe` + `Checked` - line 136
-  - `CRepertoireViewerChecked` - Review: 3 components: `Repertoire` + `Viewer` + `Checked` - line 138
-  - `CRepertoireModeEnabled` - Review: 3 components: `Repertoire` + `Mode` + `Enabled` - line 140
-  - `CRepertoireBinEnabled` - Review: 3 components: `Repertoire` + `Bin` + `Enabled` - line 143
-  - `CRepertoireStoreEnabled` - Review: 3 components: `Repertoire` + `Store` + `Enabled` - line 146
-  - `CRepertoirePressAllowed` - Review: 3 components: `Repertoire` + `Press` + `Allowed` - line 149
-  - `CRepertoirePortraitAllowed` - Review: 3 components: `Repertoire` + `Portrait` + `Allowed` - line 151
-  - `LRepertoireOccurrenceSide` - Review: 3 components: `Repertoire` + `Occurrence` + `Side` - line 156
-  - `LRepertoireRowShown` - Review: 3 components: `Repertoire` + `Row` + `Shown` - line 158
-  - `LRepertoireRowHeld` - Review: 3 components: `Repertoire` + `Row` + `Held` - line 160
-  - `LRepertoireScenarioRead` - Review: 3 components: `Repertoire` + `Scenario` + `Read` - line 163
-  - `LRepertoireDraftResonate` - Review: 3 components: `Repertoire` + `Draft` + `Resonate` - line 176
-  - `LRepertoireWorkspaceResonate` - Review: 3 components: `Repertoire` + `Workspace` + `Resonate` - line 184
-  - `LRepertoireVignetteShow` - Review: 3 components: `Repertoire` + `Vignette` + `Show` - line 196
-  - `LRepertoireSituationOpen` - Review: 3 components: `Repertoire` + `Situation` + `Open` - line 206
-  - `LRepertoireSituationShow` - Review: 3 components: `Repertoire` + `Situation` + `Show` - line 224
-  - `CRepertoireSituationSelect` - Review: 3 components: `Repertoire` + `Situation` + `Select` - line 231
-  - `LRepertoireOccurrenceOpen` - Review: 3 components: `Repertoire` + `Occurrence` + `Open` - line 248
-  - `CRepertoireOccurrenceSelect` - Review: 3 components: `Repertoire` + `Occurrence` + `Select` - line 263
-  - `CRepertoireSituationCreate` - Review: 3 components: `Repertoire` + `Situation` + `Create` - line 279
-  - `CRepertoireScribeToggle` - Review: 3 components: `Repertoire` + `Scribe` + `Toggle` - line 297
-  - `LRepertoireSituationRestore` - Review: 3 components: `Repertoire` + `Situation` + `Restore` - line 317
-  - `LRepertoireSituationClose` - Review: 3 components: `Repertoire` + `Situation` + `Close` - line 328
-  - `LRepertoireQueryClear` - Review: 3 components: `Repertoire` + `Query` + `Clear` - line 334
-  - `LRepertoireStoredShow` - Review: 3 components: `Repertoire` + `Stored` + `Show` - line 341
-  - `LRepertoireOccurrenceCreate` - Review: 3 components: `Repertoire` + `Occurrence` + `Create` - line 347
-  - `LRepertoireLeaveConfirm` - Review: 3 components: `Repertoire` + `Leave` + `Confirm` - line 356
-  - `LRepertoireEntryResonate` - Review: 3 components: `Repertoire` + `Entry` + `Resonate` - line 376
-  - `CRepertoireRowsRead` - Review: 3 components: `Repertoire` + `Rows` + `Read` - line 393
-  - `CRepertoireRowsLoad` - Review: 3 components: `Repertoire` + `Rows` + `Load` - line 408
-  - `CRepertoireTitleSet` - Review: 3 components: `Repertoire` + `Title` + `Set` - line 412
-  - `CRepertoireKindSet` - Review: 3 components: `Repertoire` + `Kind` + `Set` - line 420
-  - `CRepertoireDescriptionSet` - Review: 3 components: `Repertoire` + `Description` + `Set` - line 428
-  - `CRepertoireSituationDelete` - Review: 3 components: `Repertoire` + `Situation` + `Delete` - line 436
-  - `CRepertoirePortraitPrint` - Review: 3 components: `Repertoire` + `Portrait` + `Print` - line 446
-  - `CRepertoirePortraitExport` - Review: 3 components: `Repertoire` + `Portrait` + `Export` - line 462
-  - `LRepertoireVistaRestore` - Review: 3 components: `Repertoire` + `Vista` + `Restore` - line 472
+  - `CRepertoireSituationChanged` - Review: 3 components: `Repertoire` + `Situation` + `Changed` - line 88
+  - `CRepertoireQueryCleared` - Review: 3 components: `Repertoire` + `Query` + `Cleared` - line 90
+  - `CRepertoireWorkspaceChanged` - Review: 3 components: `Repertoire` + `Workspace` + `Changed` - line 92
+  - `CRepertoireScenarioShown` - Review: 3 components: `Repertoire` + `Scenario` + `Shown` - line 104
+  - `CRepertoireVignetteShown` - Review: 3 components: `Repertoire` + `Vignette` + `Shown` - line 107
+  - `CRepertoireDisplayShown` - Review: 3 components: `Repertoire` + `Display` + `Shown` - line 110
+  - `CRepertoireEditorShown` - Review: 3 components: `Repertoire` + `Editor` + `Shown` - line 113
+  - `CRepertoireVignetteHeld` - Review: 3 components: `Repertoire` + `Vignette` + `Held` - line 115
+  - `CRepertoireVignetteBlank` - Review: 3 components: `Repertoire` + `Vignette` + `Blank` - line 117
+  - `CRepertoireScribeChecked` - Review: 3 components: `Repertoire` + `Scribe` + `Checked` - line 119
+  - `CRepertoireViewerChecked` - Review: 3 components: `Repertoire` + `Viewer` + `Checked` - line 121
+  - `CRepertoireModeEnabled` - Review: 3 components: `Repertoire` + `Mode` + `Enabled` - line 123
+  - `CRepertoireBinEnabled` - Review: 3 components: `Repertoire` + `Bin` + `Enabled` - line 126
+  - `CRepertoireStoreEnabled` - Review: 3 components: `Repertoire` + `Store` + `Enabled` - line 129
+  - `CRepertoireScenarioEnabled` - Review: 3 components: `Repertoire` + `Scenario` + `Enabled` - line 134
+  - `CRepertoirePressAllowed` - Review: 3 components: `Repertoire` + `Press` + `Allowed` - line 136
+  - `CRepertoirePortraitAllowed` - Review: 3 components: `Repertoire` + `Portrait` + `Allowed` - line 138
+  - `LRepertoireOccurrenceSide` - Review: 3 components: `Repertoire` + `Occurrence` + `Side` - line 140
+  - `LRepertoireRowShown` - Review: 3 components: `Repertoire` + `Row` + `Shown` - line 142
+  - `LRepertoireRowHeld` - Review: 3 components: `Repertoire` + `Row` + `Held` - line 144
+  - `LRepertoireWorkspaceResonate` - Review: 3 components: `Repertoire` + `Workspace` + `Resonate` - line 147
+  - `LRepertoireVignetteShow` - Review: 3 components: `Repertoire` + `Vignette` + `Show` - line 159
+  - `LRepertoireSituationOpen` - Review: 3 components: `Repertoire` + `Situation` + `Open` - line 169
+  - `LRepertoireSituationShow` - Review: 3 components: `Repertoire` + `Situation` + `Show` - line 187
+  - `CRepertoireSituationSelect` - Review: 3 components: `Repertoire` + `Situation` + `Select` - line 194
+  - `LRepertoireOccurrenceOpen` - Review: 3 components: `Repertoire` + `Occurrence` + `Open` - line 211
+  - `CRepertoireOccurrenceSelect` - Review: 3 components: `Repertoire` + `Occurrence` + `Select` - line 226
+  - `CRepertoireSituationCreate` - Review: 3 components: `Repertoire` + `Situation` + `Create` - line 242
+  - `CRepertoireScribeToggle` - Review: 3 components: `Repertoire` + `Scribe` + `Toggle` - line 260
+  - `LRepertoireSituationRestore` - Review: 3 components: `Repertoire` + `Situation` + `Restore` - line 280
+  - `LRepertoireSituationClose` - Review: 3 components: `Repertoire` + `Situation` + `Close` - line 291
+  - `LRepertoireQueryClear` - Review: 3 components: `Repertoire` + `Query` + `Clear` - line 297
+  - `LRepertoireStoredShow` - Review: 3 components: `Repertoire` + `Stored` + `Show` - line 304
+  - `LRepertoireOccurrenceCreate` - Review: 3 components: `Repertoire` + `Occurrence` + `Create` - line 310
+  - `LRepertoireLeaveConfirm` - Review: 3 components: `Repertoire` + `Leave` + `Confirm` - line 319
+  - `LRepertoireEntryResonate` - Review: 3 components: `Repertoire` + `Entry` + `Resonate` - line 339
+  - `CRepertoireRowsRead` - Review: 3 components: `Repertoire` + `Rows` + `Read` - line 356
+  - `CRepertoireRowsLoad` - Review: 3 components: `Repertoire` + `Rows` + `Load` - line 371
+  - `CRepertoireSituationDelete` - Review: 3 components: `Repertoire` + `Situation` + `Delete` - line 375
+  - `CRepertoirePortraitPrint` - Review: 3 components: `Repertoire` + `Portrait` + `Print` - line 385
+  - `CRepertoirePortraitExport` - Review: 3 components: `Repertoire` + `Portrait` + `Export` - line 401
+  - `LRepertoireVistaRestore` - Review: 3 components: `Repertoire` + `Vista` + `Restore` - line 411
 
 #### `CShelf.cs`
 
@@ -11636,17 +11642,17 @@ No prefix, shape, base, verb, or count violations were found.
 #### `QRepertoire.cs`
 
 - `QRepertoire`
-  - `QVignetteDescriptionSection` - Review: 3 components: `Vignette` + `Description` + `Section` - line 151
-  - `QScenarioPictureIcon` - Review: 3 components: `Scenario` + `Picture` + `Icon` - line 188
-  - `QScenarioFilmIcon` - Review: 3 components: `Scenario` + `Film` + `Icon` - line 193
-  - `QRepertoireBinIcon` - Review: 3 components: `Repertoire` + `Bin` + `Icon` - line 198
-  - `QRepertoireShownCheck` - Review: 3 components: `Repertoire` + `Shown` + `Check` - line 245
-  - `QRepertoireModeRefine` - Review: 3 components: `Repertoire` + `Mode` + `Refine` - line 250
-  - `QRepertoireExitRefine` - Review: 3 components: `Repertoire` + `Exit` + `Refine` - line 269
-  - `QRepertoirePressRefine` - Review: 3 components: `Repertoire` + `Press` + `Refine` - line 276
-  - `QRepertoirePressObserve` - Review: 3 components: `Repertoire` + `Press` + `Observe` - line 281
-  - `QRepertoirePortraitRefine` - Review: 3 components: `Repertoire` + `Portrait` + `Refine` - line 286
-  - `QRepertoirePortraitObserve` - Review: 3 components: `Repertoire` + `Portrait` + `Observe` - line 291
+  - `QVignetteDescriptionSection` - Review: 3 components: `Vignette` + `Description` + `Section` - line 153
+  - `QScenarioPictureIcon` - Review: 3 components: `Scenario` + `Picture` + `Icon` - line 190
+  - `QScenarioFilmIcon` - Review: 3 components: `Scenario` + `Film` + `Icon` - line 195
+  - `QRepertoireBinIcon` - Review: 3 components: `Repertoire` + `Bin` + `Icon` - line 200
+  - `QRepertoireShownCheck` - Review: 3 components: `Repertoire` + `Shown` + `Check` - line 248
+  - `QRepertoireModeRefine` - Review: 3 components: `Repertoire` + `Mode` + `Refine` - line 253
+  - `QRepertoireExitRefine` - Review: 3 components: `Repertoire` + `Exit` + `Refine` - line 272
+  - `QRepertoirePressRefine` - Review: 3 components: `Repertoire` + `Press` + `Refine` - line 279
+  - `QRepertoirePressObserve` - Review: 3 components: `Repertoire` + `Press` + `Observe` - line 284
+  - `QRepertoirePortraitRefine` - Review: 3 components: `Repertoire` + `Portrait` + `Refine` - line 289
+  - `QRepertoirePortraitObserve` - Review: 3 components: `Repertoire` + `Portrait` + `Observe` - line 294
 
 #### `QRepertoireBrowse.cs`
 
@@ -11670,13 +11676,13 @@ No prefix, shape, base, verb, or count violations were found.
   - `QScenarioTitleObserve` - Review: 3 components: `Scenario` + `Title` + `Observe` - line 22
   - `QScenarioKindObserve` - Review: 3 components: `Scenario` + `Kind` + `Observe` - line 27
   - `QScenarioDescriptionObserve` - Review: 3 components: `Scenario` + `Description` + `Observe` - line 32
-  - `QScenarioTitleRefine` - Review: 3 components: `Scenario` + `Title` + `Refine` - line 37
-  - `QScenarioKindRefine` - Review: 3 components: `Scenario` + `Kind` + `Refine` - line 44
-  - `QScenarioDescriptionRefine` - Review: 3 components: `Scenario` + `Description` + `Refine` - line 51
-  - `QScenarioHintRefine` - Review: 3 components: `Scenario` + `Hint` + `Refine` - line 57
-  - `QScenarioMeasureRefine` - Review: 3 components: `Scenario` + `Measure` + `Refine` - line 64
-  - `QScenarioFieldsRefine` - Review: 3 components: `Scenario` + `Fields` + `Refine` - line 77
-  - `QScenarioFieldRefine` - Review: 3 components: `Scenario` + `Field` + `Refine` - line 93
+  - `QScenarioTitleRefine` - Review: 3 components: `Scenario` + `Title` + `Refine` - line 38
+  - `QScenarioKindRefine` - Review: 3 components: `Scenario` + `Kind` + `Refine` - line 45
+  - `QScenarioDescriptionRefine` - Review: 3 components: `Scenario` + `Description` + `Refine` - line 52
+  - `QScenarioHintRefine` - Review: 3 components: `Scenario` + `Hint` + `Refine` - line 58
+  - `QScenarioMeasureRefine` - Review: 3 components: `Scenario` + `Measure` + `Refine` - line 65
+  - `QScenarioFieldsRefine` - Review: 3 components: `Scenario` + `Fields` + `Refine` - line 78
+  - `QScenarioFieldRefine` - Review: 3 components: `Scenario` + `Field` + `Refine` - line 94
 
 #### `QRepertoireHold.cs`
 
@@ -13757,9 +13763,9 @@ No prefix, shape, base, verb, or count violations were found.
   - `TAuditBorderCapsule` - Review: 3 components: `Audit` + `Border` + `Capsule` - line 24
   - `TAuditBorderCut` - Review: 3 components: `Audit` + `Border` + `Cut` - line 29
   - `TAuditBorderOffer` - Review: 3 components: `Audit` + `Border` + `Offer` - line 38
-  - `TAuditUnsealingPrefix` - Review: 3 components: `Audit` + `Unsealing` + `Prefix` - line 366
-  - `TAuditBorderCeiling` - Review: 3 components: `Audit` + `Border` + `Ceiling` - line 372
-  - `TAuditBorderExempt` - Review: 3 components: `Audit` + `Border` + `Exempt` - line 388
+  - `TAuditUnsealingPrefix` - Review: 3 components: `Audit` + `Unsealing` + `Prefix` - line 367
+  - `TAuditBorderCeiling` - Review: 3 components: `Audit` + `Border` + `Ceiling` - line 373
+  - `TAuditBorderExempt` - Review: 3 components: `Audit` + `Border` + `Exempt` - line 389
 
 #### `TAuditBorderWalker.cs`
 

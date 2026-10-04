@@ -1,5 +1,5 @@
 # LStem.cs
-Hash: `fa332aee1ac2af1d`
+Hash: `b5fadbe183372f8b`
 
 ## `public sealed record LStem(long LStemId, string LStemLanguage, string LStemKey, int LStemCount = 0, bool LStemChosen = false)`
 
@@ -14,14 +14,6 @@ It is derived from the series text rather than from placements, so it needs no H
 - `LStemKey` — The series as the source printed it, such as 工.
 - `LStemCount` — The number of entries whose headword carries one of its characters.
 - `LStemChosen` — True while the column shows this series as the chosen one.
-
-## `public bool LStemMatch(long id)`
-
-True while the row is the one that identity names.
-
-## `public static LStem? LStemFind(IReadOnlyList<LStem> rows, long id)`
-
-The row of that identity among the rows, or null when none carries it.
 
 ## `public static IReadOnlyList<string> LStemKeyScan(string text, string separator)`
 

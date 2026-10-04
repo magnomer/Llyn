@@ -1,5 +1,5 @@
 # LCatalogClerk.cs
-Hash: `c4680b58860e3aa1`
+Hash: `56685f63108c1e84`
 
 ## `public static class LCatalogClerk`
 
@@ -13,3 +13,9 @@ The filter as its stored text, an absent filter formatted as the empty one.
 
 The filter hiding the given languages, built by the filter's own rule.
 A list hiding nothing is the shared empty filter.
+
+## `public static IReadOnlyList<LCatalogRow> LCatalogClerkFind<LCatalogRow>(IEnumerable<LCatalogRow> rows, string query, LCatalogOrder order, Func<LCatalogRow, string> key, Func<LCatalogRow, int> count)`
+
+The one rule every catalog column narrows and sorts by, so series and diwei lists agree.
+Rows whose key holds the trimmed query stay, ignoring case, and a blank query keeps all.
+Reverse sorts keys descending, usage sorts by count descending then key, and any other order sorts keys ascending.

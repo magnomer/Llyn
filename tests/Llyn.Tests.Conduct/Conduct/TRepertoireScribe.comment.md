@@ -1,9 +1,9 @@
 # TRepertoireScribe.cs
-Hash: `95556055de3a03cf`
+Hash: `6d1f9967a6fd7607`
 
 ## `public sealed class TRepertoireScribe`
 
-Covers the repertoire scenario desk, how it opens and how it is left, on a real workspace.
+Covers the playwright's scenario desk, how it opens and how it is left, on a real workspace.
 It builds each repertoire through `TRepertoire.TRepertoirePrepare`.
 A fresh start with no row chosen opens a blank scenario under a checked scribe.
 A saved fresh scenario shows the stored Situation on the vignette, outside the scribe.

@@ -1,5 +1,5 @@
 # LReferenceFacade.cs
-Hash: `34eb54c6efa42a51`
+Hash: `c373a7aaf2862ba0`
 
 ## `internal sealed class LReferenceFacade`
 
@@ -17,7 +17,7 @@ Stores the engine and its gate for reference operations.
 ## `public long LEngineCitationResolve(long draftId, long cardId, long sentenceId, string title)`
 
 The Reference a typed citation names, found or created under one hold of the gate.
-The Reference cited now is read off the held draft, so no shell carries it in.
+The reference clerk reads the Reference cited now off the held draft, so no shell carries it in.
 Zero card and sentence ids name the draft's own Example, as on the corpus panel.
 The clerk decides the match, and only a created Reference is announced.
 

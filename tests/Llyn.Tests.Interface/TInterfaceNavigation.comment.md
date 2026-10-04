@@ -1,5 +1,5 @@
 # TInterfaceNavigation.cs
-Hash: `300a8562d489add6`
+Hash: `860a179cae6ebe17`
 
 ## `internal static class TInterfaceNavigation`
 
@@ -38,4 +38,4 @@ The arrival relays of the other areas do the same.
 
 ## `internal static CSituationDraft? TRepertoireScenarioRead(this CRepertoire repertoire) =>`
 
-Relays the held Situation read, which only the repertoire's own notices ask in production.
+Relays the held Situation read, which only the playwright's own notices ask in production.

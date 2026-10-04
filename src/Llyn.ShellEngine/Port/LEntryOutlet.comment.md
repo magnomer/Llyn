@@ -1,5 +1,5 @@
 # LEntryOutlet.cs
-Hash: `89e9ff08acdb266a`
+Hash: `b9f8632835a3fad0`
 
 ## `public sealed class LEntryOutlet : LEntryPort`
 

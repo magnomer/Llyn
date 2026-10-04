@@ -67,10 +67,10 @@ public sealed class LEntryOutlet : LEntryPort
         _lEntryOutletEngine.LEngineMention.LEngineEtymologyFind(shown, offset);
 
     public IReadOnlyList<LGlyphCell> LEngineGlyphDivide(LEntryDraft draft) =>
-        _lEntryOutletEngine.LEngineEntry.LEngineGlyphRead(draft.LEntryDraftLanguage)?.LGlyphDivide(draft) ?? [];
+        _lEntryOutletEngine.LEngineLanguage.LEngineGlyphDivide(draft);
 
     public LGlyph? LEngineGlyphRead(LEntryDraft draft) =>
-        _lEntryOutletEngine.LEngineEntry.LEngineGlyphRead(draft.LEntryDraftLanguage);
+        _lEntryOutletEngine.LEngineLanguage.LEngineGlyphRead(draft.LEntryDraftLanguage);
 
     public long LEngineGlyphResolve(string character, string language) =>
         _lEntryOutletEngine.LEngineEntry.LEngineGlyphResolve(character, language).LEntryId;

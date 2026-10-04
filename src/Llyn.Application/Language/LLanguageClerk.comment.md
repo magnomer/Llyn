@@ -1,5 +1,5 @@
 # LLanguageClerk.cs
-Hash: `38eb6aa09f42e759`
+Hash: `9e87acc52cfa9048`
 
 ## `public sealed class LLanguageClerk`
 
@@ -50,9 +50,15 @@ The glyph section is the one the draft's pack declares, and a blank language has
 The draft's transcription rows split by its pack's glyph section, by Core's `LGlyphBlockRead`.
 An editor lists both sides, blank rows included.
 
-## `private LGlyph? LLanguageGlyphLoad(string language)`
+## `public IReadOnlyList<LGlyphCell> LLanguageGlyphDivide(LEntryDraft draft)`
 
-The glyph section the pack of `language` declares, or none for a blank language.
+The cells of the draft's glyph row, empty when its pack declares no glyph section.
+The engine reaches the Core division only through this clerk.
+
+## `public LGlyph? LLanguageGlyphLoad(string language)`
+
+The glyph section the pack of `language` declares, or none for a null or blank language.
+It is the one glyph loader, shared by the draft readers here and the engine.
 
 ## `public bool LLanguagePhonemicCheck(string language)`
 

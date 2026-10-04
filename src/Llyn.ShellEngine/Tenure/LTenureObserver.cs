@@ -151,14 +151,14 @@ public sealed partial class LTenure
     {
         ArgumentNullException.ThrowIfNull(span);
 
-        return LTenureRead()?.LDraftEtymologyFind(span);
+        return LMentionClerk.LMentionEtymologyFind(LTenureRead(), span);
     }
 
     public LMentionDraft? LTenureMentionFind(long cardId, long sentenceId, LMentionDraft span)
     {
         ArgumentNullException.ThrowIfNull(span);
 
-        return LTenureKeptRead()?.LDraftMentionFind(cardId, sentenceId, span);
+        return LMentionClerk.LMentionSpanFind(LTenureKeptRead(), cardId, sentenceId, span);
     }
 
     public bool LTenureMentionCheck(long cardId, long sentenceId, string text, int start, int length)

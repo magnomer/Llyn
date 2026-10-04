@@ -4,7 +4,7 @@ Hash: `4b59c9ab118f2816`
 ## `public sealed class CVideo`
 
 The video rows of the held draft's cards, as the user types into them.
-It keeps no state, so the editor and the repertoire each build it fresh over their desk.
+It keeps no state, so the editor and the playwright each build it fresh over their desk.
 
 ## `public void CVideoLocationSet(long videoId, string location)`
 

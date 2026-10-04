@@ -16,11 +16,11 @@ public sealed class TRepertoireScribe
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         List<CScenario> held = [];
-        repertoire.CRepertoireScenarioChanged += held.Add;
+        repertoire.CRepertoirePlaywright.CPlaywrightScenarioChanged += held.Add;
 
         repertoire.CRepertoireSituationCreate();
 
-        Assert.True(repertoire.CRepertoireDesk.CDeskHeld);
+        Assert.True(repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskHeld);
         Assert.True(repertoire.CRepertoireScenarioShown);
         Assert.True(repertoire.CRepertoireScribeChecked);
         Assert.NotNull(held[^1]);
@@ -124,7 +124,7 @@ public sealed class TRepertoireScribe
 
         Assert.False(repertoire.TRepertoireLeaveConfirm());
         Assert.True(repertoire.CRepertoireScenarioShown);
-        Assert.True(repertoire.CRepertoireDesk.CDeskHeld);
+        Assert.True(repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskHeld);
     }
 
     [Fact]
@@ -158,12 +158,12 @@ public sealed class TRepertoireScribe
         repertoire.CRepertoireScribeToggle(true);
 
         Assert.True(repertoire.CRepertoireScenarioShown);
-        Assert.True(repertoire.CRepertoireDesk.CDeskHeld);
+        Assert.True(repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskHeld);
 
         repertoire.CRepertoireScribeToggle(false);
 
         Assert.True(repertoire.CRepertoireVignetteShown);
-        Assert.False(repertoire.CRepertoireDesk.CDeskHeld);
+        Assert.False(repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskHeld);
         Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);
     }
 
@@ -197,6 +197,6 @@ public sealed class TRepertoireScribe
         engine.TEngineBulletinRaise(LSubject.LSubjectEntry, 0);
 
         Assert.True(repertoire.CRepertoireScenarioShown);
-        Assert.True(repertoire.CRepertoireDesk.CDeskHeld);
+        Assert.True(repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskHeld);
     }
 }

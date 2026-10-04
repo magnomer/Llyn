@@ -151,13 +151,13 @@ public sealed class LPosture : IDisposable
 
     private void LPostureBulletinHandle(LBulletin bulletin)
     {
-        if (bulletin.LBulletinMatch(LSubject.LSubjectWorkspace))
+        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
             LPostureLoad();
             return;
         }
 
-        if (!bulletin.LBulletinMatch(LSubject.LSubjectVista) ||
+        if (bulletin.LBulletinSubject != LSubject.LSubjectVista ||
             _lEngine.LEngineVista.LEngineVistaRead(bulletin.LBulletinId) is not LVista vista)
         {
             return;
@@ -199,7 +199,7 @@ public sealed class LPosture : IDisposable
     {
         foreach (LLayout record in state.LPostureStateLayout ?? [])
         {
-            if (record.LLayoutTabMatch(tab))
+            if (string.Equals(record.LLayoutTab, tab, StringComparison.Ordinal))
             {
                 return record;
             }
