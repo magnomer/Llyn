@@ -81,7 +81,7 @@ public sealed class COccurrence
         try
         {
             return _cOccurrenceEntryPort.LEngineEntryFind(_cOccurrenceRoll, _cOccurrenceVista)
-                .Select(CPanel.CPanelRowRead)
+                .Select(CCatalog.LCatalogRowRead)
                 .ToList();
         }
         catch (Exception exception)
@@ -114,7 +114,7 @@ public sealed class COccurrence
         return CPortrait.LPortraitFileExport(
             envoy,
             settings,
-            LOccurrenceFileRead(),
+            LOccurrenceFileRead,
             (file, medium) => _cOccurrencePortraitPort.LEnginePortraitExport(
                 _cOccurrenceVista, file, medium, CPortrait.LPortraitLabelRead(settings)));
     }

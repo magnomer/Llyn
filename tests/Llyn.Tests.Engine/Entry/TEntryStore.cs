@@ -51,7 +51,7 @@ public sealed class TEntryStore
             TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "a meaning"));
         LExample example = examples.TExampleCreate(
             TInterfaceExample.TExampleCreate(
-            0, "en", "a sentence", null, null));
+                0, "en", "a sentence", null, null));
         links.TSentenceMeaningSave(meaning.LMeaningId, [TInterfaceExample.TSentenceCreate(0, example, null, null)]);
 
         entries.TEntryDelete(entry.LEntryId);

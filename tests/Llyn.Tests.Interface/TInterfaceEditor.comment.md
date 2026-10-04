@@ -1,11 +1,17 @@
 # TInterfaceEditor.cs
-Hash: `d1bf4d925a91b1e2`
+Hash: `9bd23ef4e4e7e7b8`
 
 ## `internal static class TInterfaceEditor`
 
 The relays that build an editor gate over outlets or fakes and reach its internal members.
 It is a class of its own, apart from `TInterfaceConduct` and its sibling conduct relay classes.
 Each relay is transparent and carries no test logic of its own.
+An editor built here gets a fresh repaint memory, since no atelier stands behind it.
+
+## `internal static CEditor TEditorCreate(LEngine engine, CEnvoy envoy) => new(`
+
+Builds the editor over every real outlet on `engine`, as the plain overload does, but with the given `envoy`.
+A test thus reads each notice the editor shows.
 
 ## `internal static CEntryDraft? TEditorDraftRead(this CEditor editor)`
 

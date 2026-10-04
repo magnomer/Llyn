@@ -1,5 +1,5 @@
 # LTenure.cs
-Hash: `f3bca6bccefe22cf`
+Hash: `583188d66de803cb`
 
 ## `public sealed partial class LTenure`
 
@@ -73,7 +73,7 @@ The state in one reading, made of changed, refusal, undo, redo and halted.
 An ended tenure answers a fixed state without touching the engine.
 A halted one still asks whether the draft changed, so a closing window can still warn.
 It can neither undo nor redo, since nothing further applies.
-A check the engine refuses halts the tenure, because the draft can no longer be reached.
+A check that fails halts the tenure, because the draft can no longer be reached.
 A live tenure reuses its kept state while the engine revision stands, sparing the disk and the database.
 Every write to a draft, a stored record or the chronicle moves the revision.
 The revision is read before computing, so a change landing mid-reading forces the next reading to compute.
@@ -99,7 +99,7 @@ It takes the turn even when nothing waits, so the next draft read sees a flush i
 
 Whether the draft carries no refusal the engine knows ahead, once the waiting requests are written.
 It writes first, so a name typed a moment ago counts.
-A save asks it before storing, and a store button asks it before enabling.
+A save asks it before storing.
 
 ## `public bool LTenureChangeCheck()`
 
@@ -155,8 +155,10 @@ Drops the unreadable values of the draft, so a refused commit can be tried again
 
 Discards the draft and ends the tenure, cancelling any search still in flight for it.
 The tenure is marked ended before the engine is asked, so a failing discard cannot leave it writing.
-A failing discard reaches the caller, since it leaves the draft behind on disk.
-The engine already passes over a draft marked stale, so no refusal is expected here.
+A refused workspace is swallowed, since its draft can no longer be reached.
+Any other failing discard reaches the caller, since it leaves the draft behind on disk.
+The state is raised in a `finally`, so the panel settles its buttons even when the discard throws.
+The engine passes over a draft marked stale, so cancelling one is no error.
 
 ## `public long? LTenureFinish(bool store, Func<bool> unreadableSeam)`
 

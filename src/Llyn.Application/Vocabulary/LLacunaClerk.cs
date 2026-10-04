@@ -13,6 +13,7 @@ public sealed class LLacunaClerk
     private readonly LInflectionVault _lLacunaClerkInflections;
     private readonly LLacunaVault _lLacunaClerkLacunae;
     private readonly LSourceFactory _lLacunaClerkFactory;
+    private readonly LAuditVault _lLacunaClerkAudit;
     private readonly LLanguageCache _lLacunaClerkLanguages;
     private readonly LParadigmClerk _lLacunaClerkParadigms;
     private readonly LClaimClerk _lLacunaClerkClaims;
@@ -43,6 +44,7 @@ public sealed class LLacunaClerk
         _lLacunaClerkInflections = rig.LRigInflections;
         _lLacunaClerkLacunae = rig.LRigLacunae;
         _lLacunaClerkFactory = rig.LRigSources;
+        _lLacunaClerkAudit = rig.LRigAudit;
         _lLacunaClerkLanguages = languages;
         _lLacunaClerkParadigms = paradigms;
         _lLacunaClerkClaims = claims;
@@ -262,8 +264,12 @@ public sealed class LLacunaClerk
                 finished = true;
             }
         }
-        catch (Exception)
+        catch (OperationCanceledException) when (fetch.IsCancellationRequested)
         {
+        }
+        catch (Exception exception)
+        {
+            _lLacunaClerkAudit.LAuditRecord(exception);
         }
         finally
         {

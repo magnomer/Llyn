@@ -158,7 +158,7 @@ public sealed class CPhonology
 
     public void CPhonologyOrderSet(CCatalogOrder? order)
     {
-        _cPhonologyVista?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
+        _cPhonologyVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
     }
 
     public void CPhonologyFilterSet(CCatalogFilter filter)
@@ -187,7 +187,7 @@ public sealed class CPhonology
         return CPortrait.LPortraitFileExport(
             _cPhonologyEnvoy,
             _cPhonologySettingsPort,
-            LPhonologyFileRead(),
+            LPhonologyFileRead,
             (file, medium) => _cPhonologyPortraitPort.LEnginePortraitExport(
                 _cPhonologyVista, file, medium, CPortrait.LPortraitLabelRead(_cPhonologySettingsPort)));
     }

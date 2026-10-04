@@ -79,7 +79,7 @@ public sealed class CMembership
         try
         {
             return _cMembershipEntryPort.LEngineEntryFind(_cMembershipRoll, _cMembershipVista)
-                .Select(CPanel.CPanelRowRead)
+                .Select(CCatalog.LCatalogRowRead)
                 .ToList();
         }
         catch (Exception exception)
@@ -118,7 +118,7 @@ public sealed class CMembership
         return CPortrait.LPortraitFileExport(
             _cMembershipEnvoy,
             _cMembershipSettingsPort,
-            LMembershipFileRead(),
+            LMembershipFileRead,
             (file, medium) => _cMembershipPortraitPort.LEnginePortraitExport(
                 _cMembershipVista, file, medium, CPortrait.LPortraitLabelRead(_cMembershipSettingsPort)));
     }

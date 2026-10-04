@@ -88,15 +88,7 @@ public sealed class LPortraitClerk
         IReadOnlyDictionary<long, LPortraitLink> targets = LPortraitTargetScan(ids);
         IReadOnlyDictionary<long, string> sources = LPortraitSourceScan();
 
-        bool favorite;
-        try
-        {
-            favorite = _lPortraitClerkFavorites.LFavoriteClerkCheck(entryId);
-        }
-        catch (Exception)
-        {
-            favorite = false;
-        }
+        bool favorite = _lPortraitClerkFavorites.LFavoriteClerkCheck(entryId);
 
         IReadOnlyList<LFanqieRow> fanqie = LPortraitFanqieScan(entryId, language);
 
@@ -243,18 +235,11 @@ public sealed class LPortraitClerk
     {
         Dictionary<long, LPortraitLink> targets = [];
 
-        try
+        foreach (LTranslationTarget target in _lPortraitClerkTranslations.LTranslationTargetRead(ids))
         {
-            foreach (LTranslationTarget target in _lPortraitClerkTranslations.LTranslationTargetRead(ids))
-            {
-                targets[target.LTranslationTargetId] = new LPortraitLink(
-                    target.LTranslationTargetHeadword,
-                    target.LTranslationTargetLanguage);
-            }
-        }
-        catch (Exception)
-        {
-            targets.Clear();
+            targets[target.LTranslationTargetId] = new LPortraitLink(
+                target.LTranslationTargetHeadword,
+                target.LTranslationTargetLanguage);
         }
 
         return targets;
@@ -262,102 +247,46 @@ public sealed class LPortraitClerk
 
     private IReadOnlyDictionary<long, string> LPortraitSourceScan()
     {
-        try
-        {
-            return _lPortraitClerkReferences.LCitationRead();
-        }
-        catch (Exception)
-        {
-            return new Dictionary<long, string>();
-        }
+        return _lPortraitClerkReferences.LCitationRead();
     }
 
     private IReadOnlyList<LFanqieRow> LPortraitFanqieScan(long entryId, string language)
     {
-        try
-        {
-            return _lPortraitClerkFanqie.LFanqieBookRead(language).Count == 0
-                ? []
-                : _lPortraitClerkFanqie.LFanqieClerkRead(entryId);
-        }
-        catch (Exception)
-        {
-            return [];
-        }
+        return _lPortraitClerkFanqie.LFanqieBookRead(language).Count == 0
+            ? []
+            : _lPortraitClerkFanqie.LFanqieClerkRead(entryId);
     }
 
     private LSentenceOrder LPortraitOrderRead(string language)
     {
-        try
-        {
-            return _lPortraitClerkVocabulary.LSentenceOrderRead(language);
-        }
-        catch (Exception)
-        {
-            return LSentenceOrder.LSentenceOrderDefault;
-        }
+        return _lPortraitClerkVocabulary.LSentenceOrderRead(language);
     }
 
     private LGlyph? LPortraitGlyphRead(string language)
     {
-        try
-        {
-            return language.Length == 0 ? null : _lPortraitClerkLanguages.LLanguageClerkLoad(language).LLanguageGlyph;
-        }
-        catch (Exception)
-        {
-            return null;
-        }
+        return language.Length == 0 ? null : _lPortraitClerkLanguages.LLanguageClerkLoad(language).LLanguageGlyph;
     }
 
     private IReadOnlyList<LFrequency> LPortraitFrequencyScan(long entryId)
     {
-        try
-        {
-            return _lPortraitClerkFrequencies.LFrequencyClerkRead(entryId);
-        }
-        catch (Exception)
-        {
-            return [];
-        }
+        return _lPortraitClerkFrequencies.LFrequencyClerkRead(entryId);
     }
 
     private IReadOnlyList<LParadigmSlot> LPortraitParadigmScan(long entryId)
     {
-        try
-        {
-            return _lPortraitClerkParadigms.LParadigmClerkShow(entryId);
-        }
-        catch (Exception)
-        {
-            return [];
-        }
+        return _lPortraitClerkParadigms.LParadigmClerkShow(entryId);
     }
 
     private IReadOnlyList<LUsage> LPortraitIncomingScan(long entryId)
     {
-        try
-        {
-            return _lPortraitClerkTranslations.LTranslationIncomingRead(
-                entryId, _lPortraitClerkSettings().LSettingsEpithet);
-        }
-        catch (Exception)
-        {
-            return [];
-        }
+        return _lPortraitClerkTranslations.LTranslationIncomingRead(
+            entryId, _lPortraitClerkSettings().LSettingsEpithet);
     }
 
     private IReadOnlyList<LScriptImage> LPortraitScriptScan(long entryId, string language)
     {
-        try
-        {
-            return _lPortraitClerkScripts.LScriptStyleRead(language).Count == 0
-                ? []
-                : _lPortraitClerkScripts.LScriptClerkRead(entryId);
-        }
-        catch (Exception)
-        {
-            return [];
-        }
+        return _lPortraitClerkScripts.LScriptStyleRead(language).Count == 0
+            ? []
+            : _lPortraitClerkScripts.LScriptClerkRead(entryId);
     }
 }

@@ -1,5 +1,5 @@
 # CYunjing.cs
-Hash: `4792d16fdcd37e66`
+Hash: `561e2234e8b0bba2`
 
 ## `public sealed class CYunjing`
 
@@ -230,6 +230,7 @@ A refused resolve is shown through the catalog's one glyph failure owner, and no
 ## `internal string LYunjingFileRead()`
 
 The file name an export of the read entry is offered under.
+`CPortrait` reads it only once the export starts, and a failed read shows `Export.NameFailed`.
 
 ## `public Task CYunjingPortraitPrint()`
 

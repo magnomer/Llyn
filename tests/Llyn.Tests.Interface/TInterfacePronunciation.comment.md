@@ -1,5 +1,5 @@
 # TInterfacePronunciation.cs
-Hash: `f6b7200ad7bbbed3`
+Hash: `556af54c9de69241`
 
 ## `internal static partial class TInterface`
 
@@ -54,6 +54,11 @@ Relays the preview download into the workspace cache.
 ## `internal static Task TEngineRecordingFind(this LEngine engine, long session, string word, string language, long target, Action<LHarvestStep> sink, CancellationToken cancellation)`
 
 Relays the engine-level discovery, so a test can see the draft's row variety narrow the search.
+It wraps `sink` in a fresh relay, as the tenure does.
+
+## `internal static Task TEngineTranscriptionFind(this LEngine engine, long session, string word, string language, string scheme, Action<LLookupStep> sink, CancellationToken cancellation)`
+
+Relays the engine-level lookup under one scheme, wrapping `sink` in a fresh relay the same way.
 
 ## `internal static LAnatomy TAnatomyScan(IReadOnlyList<LAnatomyRule> rules, string language, string text, string respelling)`
 
@@ -75,3 +80,8 @@ Relays `LDescent.LDescentMatch`.
 
 A row carrying only the parts the hypothesis reads.
 The character, book, position and text are fixed, because the resolve never looks at them.
+
+## `internal static LFanqieRow TFanqieRowCreate(string character, int position, string initial, string rime, string division, string tone)`
+
+A row carrying a chosen character and position, for a test that saves rows into a fanqie store.
+The book and text are fixed, the heading repeats the rime, and the row is never rounded.

@@ -304,6 +304,69 @@ public sealed class TErrandClip
         editor.TEditorFinish(false);
     }
 
+    [Fact]
+    public async Task PreviewStart_HostBroken_ShowsTheNoticeAndMarksTheReadingRefused()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate(new InvalidOperationException("broken")));
+        engine.TEngineDelaySet(0);
+        List<string> asked = [];
+        CErrand errand = await TErrandClipStart(TErrandClipPrepare(engine, asked), pack.TLanguageFixtureName);
+        CRecording found = new("Tagged", "https://example.test/gb.mp3", 0, true, "British");
+        errand.TErrandHarvestResonate(new CHarvestStep("Tagged", 0, found, false));
+        List<CClipRoll> changes = [];
+        errand.CErrandClipChanged += changes.Add;
+        asked.Clear();
+
+        Assert.Null(await errand.CErrandPreviewStart(found).WaitAsync(TimeSpan.FromSeconds(5)));
+
+        Assert.Equal(["Input.RecordingFailed"], asked);
+        Assert.True(changes[^1].CClipRollRows[0].CClipItemReading[0].CClipReadingRefused);
+    }
+
+    [Fact]
+    public async Task RecordingSave_HostBroken_ShowsTheNoticeAndOffersTheRetry()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate(new InvalidOperationException("broken")));
+        engine.TEngineDelaySet(0);
+        List<string> asked = [];
+        CErrand errand = await TErrandClipStart(TErrandClipPrepare(engine, asked), pack.TLanguageFixtureName);
+        CRecording found = new("Tagged", "https://example.test/gb.mp3", 0, true, "British");
+        errand.TErrandHarvestResonate(new CHarvestStep("Tagged", 0, found, false));
+        List<CClipRoll> changes = [];
+        errand.CErrandClipChanged += changes.Add;
+        asked.Clear();
+
+        Assert.False(await errand.CErrandRecordingSave(found).WaitAsync(TimeSpan.FromSeconds(5)));
+
+        Assert.Equal(["Input.RecordingFailed"], asked);
+        Assert.Equal("Downloader.Retry", changes[^1].CClipRollRows[0].CClipItemReading[0].CClipReadingAction);
+    }
+
+    [Fact]
+    public async Task ErrandEnsignLoad_FlagBroken_ShowsTheNotice()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
+            "{ \"varieties\": { \"shown\": \"flag\", \"list\": [ { \"name\": \"British\", \"flag\": \"gb\" } ] } }");
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate(new InvalidOperationException("broken")));
+        engine.TEngineDelaySet(0);
+        List<string> asked = [];
+        CErrand errand = await TErrandClipStart(TErrandClipPrepare(engine, asked), pack.TLanguageFixtureName);
+        asked.Clear();
+
+        CClipRoll roll = await errand.CErrandEnsignLoad(static (_, _) => static () => { });
+
+        Assert.Equal(["Input.RecordingFailed"], asked);
+        Assert.False(roll.CClipRollSearching);
+    }
+
     private static async Task<CErrand> TErrandClipStart(CEditor editor, string language)
     {
         editor.CEditorEntryOpen(null);
@@ -323,9 +386,11 @@ public sealed class TErrandClip
         return errand;
     }
 
-    private static CEditor TErrandClipPrepare(LEngine engine)
+    private static CEditor TErrandClipPrepare(LEngine engine) => TErrandClipPrepare(engine, []);
+
+    private static CEditor TErrandClipPrepare(LEngine engine, List<string> asked)
     {
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine, TEnvoyFake.TEnvoyCreate(false, asked));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
         return editor;
     }

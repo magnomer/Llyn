@@ -1,5 +1,5 @@
 # QBerth.cs
-Hash: `67c4719e362531eb`
+Hash: `296b6bc885b1b87e`
 
 ## `public sealed class QBerth : Panel`
 
@@ -66,7 +66,7 @@ A panel not yet hosted by a field waits for a later measure.
 Seats the waiting entry as a child of this panel.
 An entry still held by a panel the field built earlier is released from it first.
 
-## `private void QBerthEntryDetach()`
+## `private void QBerthEntryTeardown()`
 
 Releases the seated entry.
 

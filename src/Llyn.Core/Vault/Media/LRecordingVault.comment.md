@@ -6,6 +6,7 @@ Hash: `39b6741017af9521`
 The port that brings a chosen recording's bytes into the workspace and answers with a local path.
 `LRecordingArchive` in Infrastructure is its adapter over the workspace root and the shared `HttpClient`.
 The engine holds the port from the rig, so it names neither the folder nor the client.
+A failed fetch or file write raises `LVaultFault`, so a caller past the adapter names no file or network type.
 
 ## `Task<string> LRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation);`
 

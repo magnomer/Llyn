@@ -14,8 +14,9 @@ performs these actions on every run:
   6. Prints signature headings that name no identifier of the source they describe.
   7. Prints comment files whose second line holds a hash their source no longer matches, and
      those whose second line holds no hash.
-  8. Writes a Markdown report to {report.directory}\{prefix}{version}.md.
-  9. Writes the full result as a page to {report.directory}\{prefix}{version}.html.
+  8. Prints the exempt comment files, which the line rules, headings and hashes skip.
+  9. Writes a Markdown report to {report.directory}\{prefix}{version}.md.
+ 10. Writes the full result as a page to {report.directory}\{prefix}{version}.html.
      The page opens in the default browser unless -NoOpen is given.
 The console follows scripts\report.md: widest view first, empty lists left out.
 The page holds everything the console and the report hold, plus every comment file read.
@@ -26,6 +27,12 @@ the first 16 of the lowercase SHA-256 of the UTF-8 text of the sources paired to
 each with its byte order mark dropped and CRLF or CR turned into LF, joined in ordinal
 file-name order. A source edit therefore flags its comment file until a person rereads the
 prose and restamps it with StampComment.ps1. Exempt files are skipped, as for headings.
+
+Exempt comment files, listed by path under exempt.comments, belong to the developer alone. Only
+the developer edits them, so the audit never judges them: no line rule, heading or hash check
+reads them, and StampComment.ps1 refuses them. They still pair with their sources, count in the
+folder totals, and print under Exempt comment files. A listed path that does not exist stops the
+audit with an error.
 
 Each run keeps the text of every stale comment file in AuditCommentsSnapshot.json next to
 this script, once per stale stamp. A later run that finds the file restamped while its prose,
@@ -69,6 +76,7 @@ AuditComments.json shape:
       "closers": { "/*": "*/", "<!--": "-->" },
       "exemptFiles": ["TAuditNameRegistry.cs"]
     },
+    "exempt": { "comments": ["version.comment.md"] },
     "ceilings": { "unstamped": <n> },
     "report": {
       "directory": "docs-analysis",
@@ -156,6 +164,7 @@ AuditComments -SourceRoots .\src -MaxWords 25
 # truth detector stops five false findings.
 # Generation 19: every paired comment file carries a hash of its sources on its second line. A hash
 # its sources no longer match is a finding, and a missing hash is a warning under a falling ceiling.
+# Exempt comment files belong to the developer alone, and no line rule, heading or hash check reads them.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -192,7 +201,7 @@ CONFIGURATION
     All project-specific values live in AuditComments.json next to the script:
     source roots, comment-file pattern, source-to-comment pairs, excluded
     directory names and suffixes, line rules, in-code comment markers and
-    exempt files, report directory, version file and key, and the report
+    exempt files, exempt comment files, report directory, version file and key, and the report
     file-name prefix. Parameters below override it per run.
 
 PAGE
@@ -216,6 +225,9 @@ CHECKS
         StampComment.ps1 only after rereading its prose.
     Restamps: a file restamped while its prose still matches the text it
         held when stale is a WARN, kept in AuditCommentsSnapshot.json.
+    Exempt: the comment files under exempt.comments belong to the developer
+        alone. Line rules, headings and hashes skip them, and they are
+        listed under Exempt comment files.
     A configured root or root-level file that does not exist, or a failing
     git, stops the audit with an error. Paths print with forward slashes
     in the order of the convention tests.
@@ -436,6 +448,7 @@ function Read-AuditConfig {
         'sources.excludeSegments' = 'strings'; 'sources.excludeSuffixes' = 'strings'
         'rules.maxWords' = 'int'; 'rules.forbidden' = 'strings'; 'rules.sentenceMarks' = 'strings'; 'rules.abbreviations' = 'strings'
         'remark.markers' = 'mapStrings'; 'remark.closers' = 'map'; 'remark.exemptFiles' = 'strings'
+        'exempt.comments' = 'strings'
         'ceilings.unstamped' = 'int'
         'report.directory' = 'string'; 'report.versionFile' = 'string'; 'report.versionKey' = 'string'; 'report.prefix' = 'string'; 'report.segments' = 'int'
     }
@@ -914,6 +927,15 @@ if (-not $PSBoundParameters.ContainsKey('SourceRoots')) {
     }
 }
 
+# Comment files only the developer edits, so no check judges them.
+$exemptComments = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+foreach ($entry in @($config.exempt.comments)) {
+    if ([string]::IsNullOrWhiteSpace($entry)) { continue }
+    $exemptFull = Join-AuditPath -Root $repoRootFull -Relative $entry
+    if (-not [System.IO.File]::Exists($exemptFull)) { throw "The configured exempt comment file does not exist: $exemptFull" }
+    [void]$exemptComments.Add($exemptFull)
+}
+
 $sourceFiles = [System.Collections.Generic.List[object]]::new()
 $commentFiles = [System.Collections.Generic.List[object]]::new()
 $remarkFiles = [System.Collections.Generic.List[object]]::new()
@@ -1091,7 +1113,7 @@ $orphanComments = @($commentFiles | Where-Object {
 # Line rules inside comment files.
 $ruleHits = [System.Collections.Generic.List[object]]::new()
 foreach ($comment in $commentFiles) {
-    if (-not $comment.Readable) { continue }
+    if (-not $comment.Readable -or $exemptComments.Contains($comment.Full)) { continue }
     $number = 0
     foreach ($line in [System.IO.File]::ReadLines($comment.Full)) {
         $number++
@@ -1145,7 +1167,7 @@ $fileNamePattern = [System.Text.RegularExpressions.Regex]::new('^[\w.]+\.(cs|xam
 $genericPattern = [System.Text.RegularExpressions.Regex]::new('<[^<>]*>')
 $identifierPattern = [System.Text.RegularExpressions.Regex]::new('@?[A-Za-z_][A-Za-z0-9_]*')
 foreach ($comment in $commentFiles) {
-    if (-not $comment.Readable) { continue }
+    if (-not $comment.Readable -or $exemptComments.Contains($comment.Full)) { continue }
     $stem = $comment.Full.Substring(0, $comment.Full.Length - $commentSuffix.Length)
     $owners = @(@('', '.cs', '.xaml', '.xaml.cs') | ForEach-Object { $stem + $_ } | Where-Object { [System.IO.File]::Exists($_) })
     if ($owners.Count -eq 0 -or $exemptFiles.Contains([System.IO.Path]::GetFileName($owners[0]))) { continue }
@@ -1184,7 +1206,7 @@ foreach ($source in $sourceFiles) {
     $ownersByComment[$pairedFull].Add($source)
 }
 foreach ($comment in $commentFiles) {
-    if (-not $comment.Readable -or -not $ownersByComment.ContainsKey($comment.Full)) { continue }
+    if (-not $comment.Readable -or $exemptComments.Contains($comment.Full) -or -not $ownersByComment.ContainsKey($comment.Full)) { continue }
     $owners = @($ownersByComment[$comment.Full] | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Name } })
     if (@($owners | Where-Object { $exemptFiles.Contains($_.Name) }).Count -gt 0) { continue }
     $joined = [System.Text.StringBuilder]::new()
@@ -1259,6 +1281,8 @@ foreach ($key in $keptSnapshots.Keys) {
 [void]$snapshotText.Append($(if ($snapshotIndex -eq 0) { "}`n" } else { "`n}`n" }))
 [System.IO.File]::WriteAllText($snapshotPath, $snapshotText.ToString(), [System.Text.UTF8Encoding]::new($false))
 $staleCeilings = if ($unstampedCeiling -gt $unstampedHits.Count) { 1 } else { 0 }
+
+$exemptListed = @($commentFiles | Where-Object { $exemptComments.Contains($_.Full) })
 
 # Version, read from the configured version file and key.
 $version = "0.0.0"
@@ -1407,6 +1431,12 @@ if ($remarkHits.Count -gt 0) {
     Write-HitTable -Items @($remarkHits) -Kind 'Marker'
 }
 
+if ($exemptListed.Count -gt 0) {
+    Write-SectionTitle ("Exempt comment files ({0:N0})" -f $exemptListed.Count)
+    Write-AuditLine 'Only the developer edits these. Line rules, headings and hashes skip them.' -ForegroundColor DarkGray
+    foreach ($item in $exemptListed) { Write-AuditLine $item.Relative }
+}
+
 if ($readErrors.Count -gt 0) {
     Write-SectionTitle ("Unreadable files ({0:N0})" -f $readErrors.Count)
     foreach ($readError in $readErrors) { Write-AuditLine $readError }
@@ -1441,6 +1471,7 @@ $report = [System.Text.StringBuilder]::new()
 [void]$report.AppendLine("| Comment files restamped unrevised (warning) | $(Format-Integer $restampHits.Count) |")
 [void]$report.AppendLine("| Comment files with no hash (warning) | $(Format-Integer $unstampedHits.Count) |")
 [void]$report.AppendLine("| Ceiling for comment files with no hash | $(Format-Integer $unstampedCeiling) |")
+[void]$report.AppendLine("| Exempt comment files | $(Format-Integer $exemptListed.Count) |")
 [void]$report.AppendLine()
 [void]$report.AppendLine("## Comment lines by folder")
 [void]$report.AppendLine()
@@ -1520,6 +1551,13 @@ else {
     [void]$report.AppendLine("|------|---------|")
     foreach ($item in $unstampedHits) { [void]$report.AppendLine("| $(ConvertTo-MarkdownCell $item.Relative) | $(ConvertTo-MarkdownCell $item.Problem) |") }
 }
+[void]$report.AppendLine()
+[void]$report.AppendLine("## Exempt comment files")
+[void]$report.AppendLine()
+[void]$report.AppendLine("Only the developer edits these. Line rules, headings and hashes skip them.")
+[void]$report.AppendLine()
+if ($exemptListed.Count -eq 0) { [void]$report.AppendLine("None.") }
+else { foreach ($item in $exemptListed) { [void]$report.AppendLine("- $(ConvertTo-MarkdownCell $item.Relative)") } }
 if ($readErrors.Count -gt 0) {
     [void]$report.AppendLine()
     [void]$report.AppendLine("## Read errors")
@@ -1559,6 +1597,7 @@ foreach ($comment in $commentFiles) {
     $state = 'stamped'
     if (-not $comment.Readable) { $state = 'unreadable' }
     elseif ($owners.Count -eq 0) { $state = 'no source' }
+    elseif ($exemptComments.Contains($comment.Full)) { $state = 'exempt' }
     elseif (@($owners | Where-Object { $exemptFiles.Contains($_.Name) }).Count -gt 0) { $state = 'exempt' }
     elseif ($staleRelatives.Contains($comment.Relative)) { $state = 'stale' }
     elseif ($unstampedRelatives.Contains($comment.Relative)) { $state = 'no hash' }
@@ -1601,6 +1640,7 @@ $pageData = [ordered]@{
         markers = @($config.remark.markers.PSObject.Properties | ForEach-Object { [ordered]@{ extension = [string]$_.Name; tokens = @($_.Value | ForEach-Object { [string]$_ }) } })
         closers = @($config.remark.closers.PSObject.Properties | ForEach-Object { [ordered]@{ open = [string]$_.Name; close = [string]$_.Value } })
         exemptFiles = @($config.remark.exemptFiles | ForEach-Object { [string]$_ })
+        exemptComments = @($exemptListed | ForEach-Object { [string]$_.Relative })
     }
     folders = @($folderResults | ForEach-Object {
         [ordered]@{ name = [string]$_.Name; sourceFiles = [long]$_.SourceFiles; sourceNonBlank = [long]$_.SourceNonBlank; files = [long]$_.Files; lines = [long]$_.Lines; nonBlank = [long]$_.NonBlank; bytes = [long]$_.Bytes }

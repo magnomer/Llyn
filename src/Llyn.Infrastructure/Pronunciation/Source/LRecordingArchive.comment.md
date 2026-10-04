@@ -1,5 +1,5 @@
 # LRecordingArchive.cs
-Hash: `b537e7281ab6637c`
+Hash: `db5e03769dd9cc13`
 
 ## `public sealed class LRecordingArchive : LRecordingVault`
 
@@ -19,6 +19,8 @@ Binds the archive to the workspace `root` every file lands under and the `client
 Downloads a chosen recording into the workspace and returns the saved path.
 The file sits under `audio/<language>/` and is named by the headword, the recording's variety and its address.
 A recording carrying no variety leaves the variety part out, so a pack without varieties reads the same.
+A refused or timed-out fetch, or a folder or file that cannot be written, raises `LVaultFault` with the cause inside.
+A cancellation the caller asked for rethrows as it is, and any other fault propagates unwrapped.
 
 ## `public void LRecordingSweep(IReadOnlySet<string> kept)`
 
@@ -34,6 +36,14 @@ The pause is the host's Retry-After when it is longer than five seconds and five
 Wikimedia's audio host answers 429 to a handful of quick fetches.
 It names one second, which retries proved too short.
 Any other failing status raises, so the caller sees a refused fetch rather than an empty file.
+The two public callers wrap that raise in `LVaultFault`.
+
+## `private static bool LRecordingFaultCheck(Exception exception, CancellationToken cancellation)`
+
+Whether `exception` is an expected outside failure the archive wraps in `LVaultFault`.
+These are a network failure, a file or access failure, and a cancellation the caller did not ask for.
+That last is how a timeout arrives.
+A cancellation the caller asked for is not wrapped, so it still reads as a cancellation.
 
 ## `private static string LRecordingStemRead(string word, string variety, string address)`
 
@@ -56,6 +66,7 @@ Playing a local file is reliable, whereas streaming a remote, token-bearing URL 
 The file is named by a digest of the full address, so two sources' same-named files never collide.
 A file already in the cache is returned as it stands, without another fetch.
 Rewriting it would fail anyway, since the player keeps the file it last played open.
+Fetch and file failures raise `LVaultFault`, as `LRecordingSave` raises them.
 
 ## `private static string LRecordingExtensionRead(string address)`
 

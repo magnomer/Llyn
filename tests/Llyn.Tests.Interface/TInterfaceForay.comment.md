@@ -1,5 +1,5 @@
 # TInterfaceForay.cs
-Hash: `062c794aad305d36`
+Hash: `f71d74a9bee614fc`
 
 ## `internal static partial class TInterface`
 
@@ -7,3 +7,4 @@ The relays for a foray, one search a tenure started for its draft.
 The two starts are relayed over the tenure.
 The cancel, the save, the preview fetch and the flag load are relayed over the foray itself.
 Each relay is transparent and carries no test logic of its own.
+The save and the preview fetch pass on the foray's null for an outside failure.

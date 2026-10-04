@@ -408,6 +408,7 @@ internal static class TAuditNameRegistry
         "Suspend",
         "Sweep",
         "Sync",
+        "Teardown",
         "Tick",
         "Toggle",
         "Undo",

@@ -1,5 +1,5 @@
 # TSounding.cs
-Hash: `ad6e09124a6e7684`
+Hash: `89b38cb197915640`
 
 ## `public sealed class TSounding`
 
@@ -23,6 +23,15 @@ The sheet asks the engine for the stored entry's groups and shapes every row.
 
 A refused read answers empty, since a box that cannot fetch still has to draw.
 A refused pack check offers no rebuild.
+
+## `public void SoundingReadingRead_RefusedRead_ShowsTheReadingFailure()`
+
+A refused reading answers empty and shows `Display.ReadingFailed` through the envoy.
+
+## `public void SoundingParadigmRead_RefusedMorphology_ShowsTheMorphologyFailure()`
+
+An editor whose settings port answers no morphology verdict shows `Sound.MorphologyFailed`.
+The voice raises it, and the editor's display passes it on to the envoy.
 
 ## `public void SoundingFanqieResolve_StoredEntry_AnnouncesTheChange()`
 
@@ -61,6 +70,7 @@ The pack checks and the glyph fonts are asked in the draft's language.
 ## `public void SoundingFanqieRead_NoStoredEntry_OffersNoRebuildAndWaitsForNothing()`
 
 A desk with no stored entry offers no rebuild and waits for nothing, whatever the pack says.
+Its settings port answers the morphology verdict, so the paradigm read meets no refusal.
 
 ## `public void SoundingDiweiOpen_HeldDraft_OpensTheCellInTheDraftLanguage()`
 

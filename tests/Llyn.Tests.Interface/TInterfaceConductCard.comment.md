@@ -1,5 +1,5 @@
 # TInterfaceConductCard.cs
-Hash: `2321ef7baad7dba6`
+Hash: `ee9cf72ea3595fe5`
 
 ## `internal static class TInterfaceConductCard`
 
@@ -20,6 +20,7 @@ Builds the card list gates over `desk`, as the editor does on every use.
 
 Builds the sentence gates over `desk` with real phonology and draft outlets on `engine`.
 Its settings port is the shared fake, and its envoy answers no to every question.
+It holds a fresh repaint memory of its own.
 
 ## `internal static CStateValue TCardStateRead(LStateValue value)`
 

@@ -81,6 +81,36 @@ public sealed class TSounding
     }
 
     [Fact]
+    public void SoundingReadingRead_RefusedRead_ShowsTheReadingFailure()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
+        List<string> notices = [];
+        CSounding sounding = TSoundingCreate(editor, [], notices);
+
+        Assert.Equal(string.Empty, sounding.CSoundingReadingRead("water"));
+        Assert.Equal(["Display.ReadingFailed"], notices);
+    }
+
+    [Fact]
+    public void SoundingParadigmRead_RefusedMorphology_ShowsTheMorphologyFailure()
+    {
+        List<string> notices = [];
+        CSounding sounding = TInterfaceEditor.TEditorCreate(
+                TEngineFake.TEngineStubCreate<LDraftPort>(),
+                TEngineFake.TEngineStubCreate<LEntryPort>(),
+                TEngineFake.TEngineStubCreate<LPhonologyPort>(),
+                TInterfaceConduct.TSettingsCreate(),
+                TEngineFake.TEngineStubCreate<LMediaPort>(),
+                TEnvoyFake.TEnvoyCreate(false, notices))
+            .CEditorSounding;
+
+        Assert.Empty(sounding.CSoundingParadigmRead().CLecternParadigmSlots);
+        Assert.Equal(["Sound.MorphologyFailed"], notices);
+    }
+
+    [Fact]
     public void SoundingFanqieResolve_StoredEntry_AnnouncesTheChange()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -265,7 +295,10 @@ public sealed class TSounding
                     ["LEngineScriptCheck"] = _ => true,
                     ["LEngineInflectionCheck"] = _ => true,
                 }),
-                TEngineFake.TEngineStubCreate<LSettingsPort>(),
+                TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
+                {
+                    ["LEngineMorphologyCheck"] = _ => false,
+                }),
                 TEngineFake.TEngineStubCreate<LMediaPort>())
             .CEditorSounding;
 

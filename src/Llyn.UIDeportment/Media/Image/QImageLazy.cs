@@ -70,7 +70,7 @@ public sealed class QImageLazy : Decorator
 
     private void QImageDropRefine(object sender, RoutedEventArgs e)
     {
-        QImageLazyDetach();
+        QImageLazyTeardown();
     }
 
     private void QImageVisibleRefine(object sender, DependencyPropertyChangedEventArgs e)
@@ -104,7 +104,7 @@ public sealed class QImageLazy : Decorator
             return;
         }
 
-        QImageLazyDetach();
+        QImageLazyTeardown();
         row.QImagePendingLoad();
     }
 
@@ -177,7 +177,7 @@ public sealed class QImageLazy : Decorator
         }
     }
 
-    private void QImageLazyDetach()
+    private void QImageLazyTeardown()
     {
         if (!_pImageLazyWatched)
         {

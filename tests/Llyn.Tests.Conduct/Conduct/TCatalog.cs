@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Llyn.Application;
@@ -104,16 +105,17 @@ public sealed class TCatalog
     }
 
     [Fact]
-    public void CatalogFontRead_RefusedRead_AnswersNothingSet()
+    public void CatalogFontRead_RefusedRead_RaisesTheFailure()
     {
         LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
         {
             ["LEngineFontRead"] = _ => throw new InvalidOperationException("no pack"),
         });
 
-        CFont font = TInterfaceFont.TCatalogFontRead(settings, "Korean", CFontRole.CFontRoleExample);
+        InvalidOperationException failure = Assert.Throws<InvalidOperationException>(
+            () => TInterfaceFont.TCatalogFontRead(settings, "Korean", CFontRole.CFontRoleExample));
 
-        Assert.Equal(new CFont(null, null, null), font);
+        Assert.Equal("no pack", failure.Message);
     }
 
     [Fact]
@@ -172,20 +174,37 @@ public sealed class TCatalog
     }
 
     [Fact]
-    public async Task CatalogEnsignLoad_FailedFill_AnswersTheLanguagesAndStillTheRows()
+    public async Task CatalogEnsignLoad_FailedFill_LeavesTheFailureToTheCaller()
     {
         LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
         {
             ["LEngineEnsignLoad"] = _ =>
-                Task.FromException<IReadOnlyList<string>>(new InvalidOperationException("offline")),
+                Task.FromException<IReadOnlyList<string>>(new IOException("disk full")),
             ["LEngineLanguageRead"] = _ => (IReadOnlyList<string>)["Mandarin", "Welsh"],
         });
 
-        CEnsignSheet<string> answered = await TInterfaceEnsign.TCatalogEnsignLoad(
-            settings, static (_, _) => static () => { }, static () => "rows");
+        IOException failure = await Assert.ThrowsAsync<IOException>(
+            () => TInterfaceEnsign.TCatalogEnsignLoad(
+                settings, static (_, _) => static () => { }, static () => "rows"));
 
-        Assert.Equal(["Mandarin", "Welsh"], answered.CEnsignSheetLanguages);
-        Assert.Equal("rows", answered.CEnsignSheetRows);
+        Assert.Equal("disk full", failure.Message);
+    }
+
+    [Fact]
+    public async Task CatalogEnsignLoad_BrokenFill_RaisesTheFailure()
+    {
+        LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
+        {
+            ["LEngineEnsignLoad"] = _ =>
+                Task.FromException<IReadOnlyList<string>>(new InvalidOperationException("broken")),
+            ["LEngineLanguageRead"] = _ => (IReadOnlyList<string>)["Mandarin", "Welsh"],
+        });
+
+        InvalidOperationException failure = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => TInterfaceEnsign.TCatalogEnsignLoad(
+                settings, static (_, _) => static () => { }, static () => "rows"));
+
+        Assert.Equal("broken", failure.Message);
     }
 
     [Fact]

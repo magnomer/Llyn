@@ -229,16 +229,7 @@ internal sealed class LCardFacade
 
         IReadOnlyList<LCardDraft> cards = [.. draft.LEntryDraftMeanings, .. draft.LEntryDraftCollocations];
         List<long> ids = cards.SelectMany(static card => card.LCardDraftTranslation).Distinct().ToList();
-        IReadOnlyList<LTranslationTarget> read;
-        try
-        {
-            read = ids.Count == 0 ? [] : LEngineTargetRead(ids);
-        }
-        catch (Exception)
-        {
-            read = [];
-        }
-
+        IReadOnlyList<LTranslationTarget> read = ids.Count == 0 ? [] : LEngineTargetRead(ids);
         return LEngineTranslationResolve(cards, read);
     }
 
@@ -280,14 +271,7 @@ internal sealed class LCardFacade
     public LEtymologyResult LEngineEtymologyRead(LEntryDraft draft)
     {
         bool narrated = draft.LEntryDraftEtymology.LEtymologyDraftNarrated;
-        try
-        {
-            return new LEtymologyResult(LEngineEtymonRead(draft), narrated);
-        }
-        catch (Exception)
-        {
-            return new LEtymologyResult([], narrated);
-        }
+        return new LEtymologyResult(LEngineEtymonRead(draft), narrated);
     }
 
     public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId, IReadOnlyList<long> ids)

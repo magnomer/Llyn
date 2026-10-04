@@ -99,16 +99,7 @@ public sealed class LVista
 
     public static string LVistaFileRead(LVista? vista)
     {
-        string headword;
-        try
-        {
-            headword = vista?.LVistaLoad()?.LDraftContent.LEntryDraftHeadword ?? string.Empty;
-        }
-        catch (Exception)
-        {
-            headword = string.Empty;
-        }
-
+        string headword = vista?.LVistaLoad()?.LDraftContent.LEntryDraftHeadword ?? string.Empty;
         string trimmed = headword.Trim();
         return trimmed.Length == 0 || vista is null
             ? "entry"

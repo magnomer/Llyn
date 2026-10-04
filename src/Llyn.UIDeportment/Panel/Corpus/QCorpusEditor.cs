@@ -15,7 +15,7 @@ internal sealed partial class QCorpus
         QTranscriptText.TextChanged += QTranscriptTextObserve;
     }
 
-    private void QTranscriptDetach()
+    private void QTranscriptTeardown()
     {
         QTranscriptText.TextChanged -= QTranscriptTextObserve;
     }
@@ -70,7 +70,7 @@ internal sealed partial class QCorpus
 
     private void QTranscriptRefine(CExample example)
     {
-        QTranscriptDetach();
+        QTranscriptTeardown();
 
         QTranscriptText.Text = example.CExampleText.CStateValueText;
         QTranscriptHintRefine(example.CExampleTextHint);
@@ -91,7 +91,7 @@ internal sealed partial class QCorpus
 
     private void QTranscriptDraftRefine(CExample example)
     {
-        QTranscriptDetach();
+        QTranscriptTeardown();
 
         if (!CAnthology.CAnthologyTextCheck(QTranscriptText.Text, example.CExampleText))
         {

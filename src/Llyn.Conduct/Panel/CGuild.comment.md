@@ -1,5 +1,5 @@
 # CGuild.cs
-Hash: `0c613c170e79c654`
+Hash: `cf367860b406a640`
 
 ## `public sealed class CGuild`
 

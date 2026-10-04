@@ -162,12 +162,7 @@ public sealed class TImprint
 
     internal static CImprint TImprintPrepare(LEngine engine, CAtelier atelier)
     {
-        CImprint imprint = new(
-            atelier.CAtelierDraftPort,
-            atelier.CAtelierEntryPort,
-            atelier.CAtelierSettingsPort,
-            TEnvoyFake.TEnvoyCreate(false, []),
-            static run => run());
+        CImprint imprint = TInterfaceCitation.TImprintCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         imprint.CImprintDesk.TDeskVistaRestore(
             engine.TEngineVistaStart("reference", LCatalogOrder.LCatalogOrderName));
         return imprint;

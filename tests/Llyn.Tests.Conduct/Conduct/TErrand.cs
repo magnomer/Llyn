@@ -171,6 +171,33 @@ public sealed class TErrand
             new CRecording("Tagged", "https://example.test/gb.mp3", 0, true, "British")));
     }
 
+    [Fact]
+    public void ErrandStart_WorkspaceChanged_ShowsNothingAndFinishes()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+        CDesk desk = TErrandDeskCreate(engine, asked);
+        engine.TEngineWorkspaceOpen(workspace.TWorkspaceFolder);
+
+        CClipRoll roll = desk.CDeskErrand.CErrandRecordingStart(0);
+        CNotationRoll notation = desk.CDeskErrand.CErrandTranscriptionStart(0, "ipa");
+
+        Assert.Empty(asked);
+        Assert.False(roll.CClipRollSearching);
+        Assert.False(notation.CNotationRollSearching);
+    }
+
+    private static CDesk TErrandDeskCreate(LEngine engine, List<string> asked)
+    {
+        CDesk desk = TInterfaceConductDesk.TDeskCreate(engine, "Input", TEnvoyFake.TEnvoyCreate(false, asked));
+        desk.TDeskVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
+        desk.CDeskStart(null);
+        desk.TDeskDefer(TInterface.TRequestHeadwordCreate(desk.CDeskId, "tomato"));
+        desk.CDeskPersist();
+        return desk;
+    }
+
     private static CErrand TErrandCreate(LEngine engine) =>
         TInterfaceConductDesk.TDeskCreate(engine, "Input", TEnvoyFake.TEnvoyCreate(false, [])).CDeskErrand;
 }

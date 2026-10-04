@@ -43,9 +43,10 @@ public sealed class CErrand
                 _cErrandClip.LClipFinish();
             }
         }
-        catch (Exception)
+        catch (Exception exception)
         {
             _cErrandClip.LClipFinish();
+            _cErrandDesk.LDeskFailureShow(".RecordingFailed", exception);
         }
 
         return _cErrandClip.LClipRead();
@@ -68,9 +69,9 @@ public sealed class CErrand
         {
             await LErrandEnsignRun(_cErrandRecording, store);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
-            return _cErrandClip.LClipRead();
+            _cErrandDesk.LDeskFailureShow(".RecordingFailed", exception);
         }
 
         return _cErrandClip.LClipRead();
@@ -91,9 +92,10 @@ public sealed class CErrand
                 _cErrandNotation.LNotationFinish();
             }
         }
-        catch (Exception)
+        catch (Exception exception)
         {
             _cErrandNotation.LNotationFinish();
+            _cErrandDesk.LDeskFailureShow(".TranscriptionFailed", exception);
         }
 
         return _cErrandNotation.LNotationRead();
@@ -116,8 +118,9 @@ public sealed class CErrand
         {
             await LErrandEnsignRun(_cErrandTranscription, store);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            _cErrandDesk.LDeskFailureShow(".TranscriptionFailed", exception);
         }
 
         return _cErrandNotation.LNotationRead();
@@ -197,23 +200,31 @@ public sealed class CErrand
 
         _cErrandClip.LClipPreviewStart(recording);
         CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
+        string? path;
         try
         {
-            Uri address = new(await foray.LForayRecordingPrepare(CErrandRecordingRead(recording)));
-            if (!_cErrandClip.LClipPreviewPlay(recording))
-            {
-                return null;
-            }
-
-            CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
-            return address;
+            path = await foray.LForayRecordingPrepare(CErrandRecordingRead(recording));
         }
-        catch (Exception)
+        catch (Exception exception)
+        {
+            _cErrandDesk.LDeskFailureShow(".RecordingFailed", exception);
+            path = null;
+        }
+
+        if (path is null || !Uri.TryCreate(path, UriKind.Absolute, out Uri? address))
         {
             _cErrandClip.LClipRefusedSet(recording);
             CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
             return null;
         }
+
+        if (!_cErrandClip.LClipPreviewPlay(recording))
+        {
+            return null;
+        }
+
+        CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
+        return address;
     }
 
     public void CErrandPreviewFinish()
@@ -234,19 +245,20 @@ public sealed class CErrand
         }
 
         CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
+        bool? attached;
         try
         {
-            bool attached = await foray.LForayRecordingSave(CErrandRecordingRead(recording));
-            _cErrandClip.LClipSaveFinish(recording, true);
-            CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
-            return attached;
+            attached = await foray.LForayRecordingSave(CErrandRecordingRead(recording));
         }
-        catch (Exception)
+        catch (Exception exception)
         {
-            _cErrandClip.LClipSaveFinish(recording, false);
-            CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
-            return false;
+            _cErrandDesk.LDeskFailureShow(".RecordingFailed", exception);
+            attached = null;
         }
+
+        _cErrandClip.LClipSaveFinish(recording, attached is not null);
+        CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
+        return attached == true;
     }
 
     public void CErrandCancel()

@@ -1,5 +1,5 @@
 # CByline.cs
-Hash: `2594b745d66b028f`
+Hash: `e0137a6efea61338`
 
 ## `public sealed class CByline`
 
@@ -7,9 +7,10 @@ The popup of Authors a typed credit may already name, owned by the source editor
 It keeps the typed word, how many rows it offers, and which offered row is lit.
 The rows are read from the engine on every notice and never kept.
 
-## `internal CByline(CImprint imprint, LDraftPort drafts)`
+## `internal CByline(CImprint imprint, LDraftPort drafts, CLedgerNoticed noticed)`
 
 Builds the byline over its editor, whose held draft it searches beside.
+It takes the atelier's repaint memory, since its rows are read on every repaint.
 
 ## `public event Action? CBylineChanged;`
 
@@ -59,3 +60,5 @@ Forgets the word, the offered count and the lit row without announcing it.
 ## `private IReadOnlyList<CAuthor> LBylineFind()`
 
 A failed search offers nothing, so the popup stays shut rather than failing the field.
+The failure is still shown, under `Source.FindFailed`, through the imprint desk's `LDeskRepaintShow`.
+The rows are read on every repaint, so a lasting failure shows once until the user acts.

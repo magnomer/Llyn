@@ -18,24 +18,27 @@ public sealed class CSounding
 
     private readonly LDisplaySound _cSoundingVoice;
 
+    private readonly CLedgerNoticed _cSoundingNoticed;
+
     internal CSounding(
         CDesk desk,
         LPhonologyPort phonology,
         LSettingsPort settings,
-        LDisplaySound voice,
+        LDisplay display,
         CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(settings);
-        ArgumentNullException.ThrowIfNull(voice);
+        ArgumentNullException.ThrowIfNull(display);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _cSoundingDesk = desk;
         _cSoundingPhonologyPort = phonology;
         _cSoundingEnvoy = envoy;
         _cSoundingSettingsPort = settings;
-        _cSoundingVoice = voice;
+        _cSoundingVoice = display.LDisplaySound;
+        _cSoundingNoticed = display.LDisplayNoticed;
     }
 
     public event Action? CSoundingChanged;
@@ -56,17 +59,20 @@ public sealed class CSounding
     {
         long? entry = LSoundingEntry;
         return new CSoundingFanqie(
-            CSoundingFanqieRead(LSoundingListRead(_cSoundingPhonologyPort.LEngineFanqieRead)),
+            CSoundingFanqieRead(LSoundingListRead(
+                _cSoundingPhonologyPort.LEngineFanqieRead, "Display.FanqieReadFailed")),
             _cSoundingVoice.LDisplayFanqieCheck(entry),
             entry is not null
-            && LSoundingAnswerRead(() => _cSoundingPhonologyPort.LEngineBookCheck(LSoundingLanguage), false),
+            && _cSoundingNoticed.LLedgerRepaintRead(_cSoundingEnvoy, _cSoundingSettingsPort,
+                () => _cSoundingPhonologyPort.LEngineBookCheck(LSoundingLanguage), false, "Display.BookFailed"),
             CCatalog.LCatalogFontRead(_cSoundingSettingsPort, LSoundingLanguage, CFontRole.CFontRoleGlyph));
     }
 
     public string CSoundingReadingRead(string headword)
     {
         return LSoundingEntry is long id
-            ? LSoundingAnswerRead(() => _cSoundingPhonologyPort.LEngineReadingRead(id, headword), string.Empty)
+            ? _cSoundingNoticed.LLedgerRepaintRead(_cSoundingEnvoy, _cSoundingSettingsPort,
+                () => _cSoundingPhonologyPort.LEngineReadingRead(id, headword), string.Empty, "Display.ReadingFailed")
             : string.Empty;
     }
 
@@ -94,10 +100,12 @@ public sealed class CSounding
     {
         long? entry = LSoundingEntry;
         return new CSoundingScript(
-            CSoundingScriptRead(LSoundingListRead(_cSoundingPhonologyPort.LEngineScriptRead)),
+            CSoundingScriptRead(LSoundingListRead(
+                _cSoundingPhonologyPort.LEngineScriptRead, "Display.ScriptReadFailed")),
             _cSoundingVoice.LDisplayScriptCheck(entry),
             entry is not null
-            && LSoundingAnswerRead(() => _cSoundingPhonologyPort.LEngineStyleCheck(LSoundingLanguage), false),
+            && _cSoundingNoticed.LLedgerRepaintRead(_cSoundingEnvoy, _cSoundingSettingsPort,
+                () => _cSoundingPhonologyPort.LEngineStyleCheck(LSoundingLanguage), false, "Display.StyleFailed"),
             CCatalog.LCatalogFontRead(_cSoundingSettingsPort, LSoundingLanguage, CFontRole.CFontRoleGlyph));
     }
 
@@ -109,9 +117,11 @@ public sealed class CSounding
     public CLecternParadigm CSoundingParadigmRead()
     {
         string language = LSoundingEntry is long id
-            ? LSoundingAnswerRead(() => _cSoundingPhonologyPort.LEngineLanguageResolve(id), string.Empty)
+            ? _cSoundingNoticed.LLedgerRepaintRead(_cSoundingEnvoy, _cSoundingSettingsPort,
+                () => _cSoundingPhonologyPort.LEngineLanguageResolve(id), string.Empty, "Display.LanguageFailed")
             : string.Empty;
-        IReadOnlyList<LParadigmRow> rows = LSoundingListRead(_cSoundingPhonologyPort.LEngineParadigmScan);
+        IReadOnlyList<LParadigmRow> rows =
+            LSoundingListRead(_cSoundingPhonologyPort.LEngineParadigmScan, "Display.ParadigmReadFailed");
         bool pending = _cSoundingVoice.LDisplayParadigmCheck(LSoundingEntry);
         return new CLecternParadigm(
             CSoundingParadigmRead(rows, pending, _cSoundingVoice.LDisplayMorphologyRead(), true),
@@ -119,22 +129,11 @@ public sealed class CSounding
     }
 
     private IReadOnlyList<LSoundingItem> LSoundingListRead<LSoundingItem>(
-        Func<long, IReadOnlyList<LSoundingItem>> read)
+        Func<long, IReadOnlyList<LSoundingItem>> read, string key)
     {
-        return LSoundingEntry is long id ? LSoundingAnswerRead(() => read(id), []) : [];
-    }
-
-    private static LSoundingAnswer LSoundingAnswerRead<LSoundingAnswer>(
-        Func<LSoundingAnswer> read, LSoundingAnswer fallback)
-    {
-        try
-        {
-            return read();
-        }
-        catch (Exception)
-        {
-            return fallback;
-        }
+        return LSoundingEntry is long id
+            ? _cSoundingNoticed.LLedgerRepaintRead(_cSoundingEnvoy, _cSoundingSettingsPort, () => read(id), [], key)
+            : [];
     }
 
     private void LSoundingMarkSend(Action<long> mark, string key)
@@ -278,34 +277,6 @@ public sealed class CSounding
             .Select(static row => new CTranscriptionDraft(
                 row.LTranscriptionDraftId, row.LTranscriptionDraftScheme, row.LTranscriptionDraftText))
             .ToList();
-    }
-
-    internal static CLecternAnchor LSoundingAnchorRead(
-        LDraftPort drafts, long? entry, string headword, IReadOnlyList<CReflex> rows)
-    {
-        ArgumentNullException.ThrowIfNull(drafts);
-        ArgumentNullException.ThrowIfNull(rows);
-
-        if (entry is not long id)
-        {
-            return new CLecternAnchor(false, new Dictionary<long, string>());
-        }
-
-        try
-        {
-            Dictionary<long, string> texts = [];
-            foreach (CReflex reflex in rows)
-            {
-                texts[reflex.CReflexId] = drafts.LEngineAnchorFormat(
-                    id, reflex.CReflexAnchors, headword, CReflex.LReflexSeparator);
-            }
-
-            return new CLecternAnchor(drafts.LEngineAnchorCheck(id, headword), texts);
-        }
-        catch (Exception)
-        {
-            return new CLecternAnchor(false, new Dictionary<long, string>());
-        }
     }
 
     internal static IReadOnlyList<CReflexDraft> CSoundingReflexRead(IReadOnlyList<LReflexDraft> reflexes)

@@ -1,6 +1,8 @@
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -9,7 +11,7 @@ namespace Llyn.Tests;
 
 public sealed class TForay
 {
-    private const string TForayPack =
+    internal const string TForayPack =
         """
         { "varieties": { "list": [ { "name": "British" } ] },
           "audio": [
@@ -103,11 +105,80 @@ public sealed class TForay
         LRecording recording = TInterface.TRecordingCreate(
             "Oxford", "https://example.test/tomato.mp3", 0, true, "British");
 
-        string path = await foray.TForayRecordingPrepare(recording);
+        string? path = await foray.TForayRecordingPrepare(recording);
 
+        Assert.NotNull(path);
         Assert.Equal("audio", await File.ReadAllTextAsync(path));
         Assert.Equal(string.Empty, tenure.TTenureRead()?.LDraftContent.LEntryDraftAudio);
         tenure.TTenureCancel();
+    }
+
+    [Fact]
+    public async Task ForayRecordingPrepare_HostRefuses_AnswersNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate(new HttpRequestException("refused")));
+        LForay foray = TForayStart(engine, "English");
+
+        Assert.Null(await foray.TForayRecordingPrepare(
+            TInterface.TRecordingCreate("Oxford", "https://example.test/tomato.mp3", 0, true, "British")));
+    }
+
+    [Fact]
+    public async Task ForayRecordingSave_HostRefuses_AnswersNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate(new HttpRequestException("refused")));
+        LForay foray = TForayStart(engine, "English");
+
+        Assert.Null(await foray.TForayRecordingSave(
+            TInterface.TRecordingCreate("Oxford", "https://example.test/tomato.mp3", 0, true, "British")));
+    }
+
+    [Fact]
+    public async Task ForayRecordingSave_AudioFolderBlocked_AnswersNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "audio"), string.Empty);
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate("audio", HttpStatusCode.OK));
+        LForay foray = TForayStart(engine, "English");
+
+        Assert.Null(await foray.TForayRecordingSave(
+            TInterface.TRecordingCreate("Oxford", "https://example.test/tomato.mp3", 0, true, "British")));
+    }
+
+    [Fact]
+    public async Task ForayRecordingPrepare_CacheFolderBlocked_AnswersNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "temp"), string.Empty);
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate("audio", HttpStatusCode.OK));
+        LForay foray = TForayStart(engine, "English");
+
+        Assert.Null(await foray.TForayRecordingPrepare(
+            TInterface.TRecordingCreate("Oxford", "https://example.test/tomato.mp3", 0, true, "British")));
+    }
+
+    [Fact]
+    public async Task ForayEnsignLoad_FlagFileFails_StoresNothing()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
+            "{ \"varieties\": { \"shown\": \"flag\", \"list\": [ { \"name\": \"British\", \"flag\": \"gb\" } ] } }");
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "flags"), string.Empty);
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate("<svg/>", HttpStatusCode.OK));
+        LForay foray = TForayStart(engine, pack.TLanguageFixtureName);
+        List<LEnsignRow> stored = [];
+
+        await foray.TForayEnsignLoad((rows, _) => () => stored.AddRange(rows));
+
+        Assert.True(foray.LForayFlagged);
+        Assert.Empty(stored);
     }
 
     [Fact]
@@ -203,9 +274,41 @@ public sealed class TForay
         tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "   "));
         int steps = 0;
 
-        Assert.Null(tenure.TTenureTranscriptionStart(0, string.Empty, _ => steps++));
-        Assert.Equal(0, steps);
+        Assert.Null(tenure.TTenureTranscriptionStart(0, string.Empty, _ => Interlocked.Increment(ref steps)));
+        Assert.Equal(0, Volatile.Read(ref steps));
         tenure.TTenureCancel();
+    }
+
+    [Fact]
+    public void RecordingStart_WorkspaceChanged_StartsNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
+        tenure.TTenureRequestApply(TInterface.TRequestLanguageCreate(tenure.LTenureId, "English"));
+        tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "tomato"));
+        engine.TEngineWorkspaceOpen(workspace.TWorkspaceFolder);
+        TListenerStub listener = TPronunciationHelper.TListenerCreate();
+
+        Assert.Null(tenure.TTenureRecordingStart(0, listener.TListenerStubHandle));
+        Assert.Empty(listener.TListenerStubSources);
+    }
+
+    [Fact]
+    public void TranscriptionStart_WorkspaceChanged_StartsNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
+        tenure.TTenureRequestApply(TInterface.TRequestLanguageCreate(tenure.LTenureId, "English"));
+        tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "tomato"));
+        engine.TEngineWorkspaceOpen(workspace.TWorkspaceFolder);
+        int steps = 0;
+
+        Assert.Null(tenure.TTenureTranscriptionStart(0, "ipa", _ => Interlocked.Increment(ref steps)));
+        Assert.Equal(0, Volatile.Read(ref steps));
     }
 
     [Fact]
@@ -234,5 +337,14 @@ public sealed class TForay
         foray.TForayCancel();
         gate.SetResult();
         tenure.TTenureCancel();
+    }
+
+    private static LForay TForayStart(LEngine engine, string language)
+    {
+        engine.TEngineDelaySet(0);
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
+        tenure.TTenureRequestApply(TInterface.TRequestLanguageCreate(tenure.LTenureId, language));
+        tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "tomato"));
+        return tenure.TTenureRecordingStart(0, TPronunciationHelper.TListenerCreate().TListenerStubHandle)!;
     }
 }

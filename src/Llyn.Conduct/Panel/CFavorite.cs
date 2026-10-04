@@ -124,7 +124,7 @@ public sealed class CFavorite
 
     public void CFavoriteOrderSet(CCatalogOrder? order)
     {
-        _cFavoriteVista?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
+        _cFavoriteVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
     }
 
     public void CFavoriteFilterSet(CCatalogFilter filter)
@@ -155,7 +155,7 @@ public sealed class CFavorite
 
         try
         {
-            return _cFavoriteEntryPort.LEngineFavoriteFind(vista).Select(CPanel.CPanelRowRead).ToList();
+            return _cFavoriteEntryPort.LEngineFavoriteFind(vista).Select(CCatalog.LCatalogRowRead).ToList();
         }
         catch (Exception exception)
         {
@@ -187,7 +187,7 @@ public sealed class CFavorite
         return CPortrait.LPortraitFileExport(
             _cFavoriteEnvoy,
             _cFavoriteSettingsPort,
-            LFavoriteFileRead(),
+            LFavoriteFileRead,
             (file, medium) => _cFavoritePortraitPort.LEnginePortraitExport(
                 _cFavoriteVista, file, medium, CPortrait.LPortraitLabelRead(_cFavoriteSettingsPort)));
     }

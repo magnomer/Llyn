@@ -18,10 +18,10 @@ internal static partial class TInterface
         foray.LForayCancel();
     }
 
-    internal static Task<bool> TForayRecordingSave(this LForay foray, LRecording recording) =>
+    internal static Task<bool?> TForayRecordingSave(this LForay foray, LRecording recording) =>
         foray.LForayRecordingSave(recording);
 
-    internal static Task<string> TForayRecordingPrepare(this LForay foray, LRecording recording) =>
+    internal static Task<string?> TForayRecordingPrepare(this LForay foray, LRecording recording) =>
         foray.LForayRecordingPrepare(recording);
 
     internal static Task TForayEnsignLoad(

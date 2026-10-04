@@ -1,5 +1,5 @@
 # COccurrence.cs
-Hash: `c6b1228b33120891`
+Hash: `05c85bbd10489618`
 
 ## `public sealed class COccurrence`
 
@@ -53,6 +53,7 @@ The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver make
 ## `internal string LOccurrenceFileRead()`
 
 The file name an export of the entry on display is offered under.
+`CPortrait` reads it only once the export starts, and a failed read shows `Export.NameFailed`.
 
 ## `internal Task LOccurrencePortraitPrint(CEnvoy envoy, LSettingsPort settings)`
 

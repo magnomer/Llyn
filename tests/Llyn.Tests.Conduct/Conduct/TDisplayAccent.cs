@@ -83,7 +83,7 @@ public sealed class TDisplayAccent
         wing.CWingEntryOpen(hill.LEntryId);
         List<string> stored = [];
 
-        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.CDisplayEnsignLoad((rows, _) =>
+        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.TDisplayEnsignLoad((rows, _) =>
         {
             stored.AddRange(rows.Select(static row => row.CEnsignRowKey));
             return static () => { };
@@ -111,7 +111,7 @@ public sealed class TDisplayAccent
         CWing wing = TDisplayWingPrepare(atelier, []);
         wing.CWingEntryOpen(hill.LEntryId);
 
-        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.CDisplayEnsignLoad((_, _) =>
+        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.TDisplayEnsignLoad((_, _) =>
         {
             wing.CWingEntryOpen(dale.LEntryId);
             return static () => { };
@@ -132,7 +132,7 @@ public sealed class TDisplayAccent
         CWing wing = TDisplayWingPrepare(atelier, asked);
         wing.CWingEntryOpen(hill.LEntryId);
 
-        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.CDisplayEnsignLoad(
+        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.TDisplayEnsignLoad(
             (_, _) => throw new InvalidOperationException("The flags cannot be stored."));
 
         Assert.Null(accent);
@@ -147,7 +147,7 @@ public sealed class TDisplayAccent
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CWing wing = TDisplayWingPrepare(atelier, []);
 
-        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.CDisplayEnsignLoad(
+        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.TDisplayEnsignLoad(
             (_, _) => throw new InvalidOperationException("Nothing is shown, so nothing loads."));
 
         Assert.Null(accent);

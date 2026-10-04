@@ -86,7 +86,7 @@ public sealed class CFootnote
     public IReadOnlyList<CVistaRow> CFootnoteRowsRead()
     {
         return _cFootnoteEntryPort.LEngineEntryFind(_cFootnoteParent, _cFootnoteVista)
-            .Select(CPanel.CPanelRowRead)
+            .Select(CCatalog.LCatalogRowRead)
             .ToList();
     }
 
@@ -120,7 +120,7 @@ public sealed class CFootnote
         return CPortrait.LPortraitFileExport(
             envoy,
             settings,
-            LFootnoteFileRead(),
+            LFootnoteFileRead,
             (file, medium) => _cFootnotePortraitPort.LEnginePortraitExport(
                 _cFootnoteVista, file, medium, CPortrait.LPortraitLabelRead(settings)));
     }

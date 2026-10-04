@@ -1,5 +1,5 @@
 # TWorkspace.cs
-Hash: `4cd36507d0f55809`
+Hash: `b63f4db5dd78bb50`
 
 ## `[assembly: CollectionBehavior(DisableTestParallelization = true)]`
 
@@ -8,30 +8,39 @@ So two workspaces must not be alive in parallel.
 
 ## `internal sealed class TWorkspace : IDisposable`
 
-A throwaway workspace folder with its own `llyn.db`, so every test runs against a database nothing else has touched.
+A throwaway workspace folder with its own database, so every test runs against a database nothing else has touched.
 Disposing removes the folder.
 The connection pool is cleared first.
 A pooled connection would otherwise keep the file open and the delete would fail on Windows.
+
+## `private readonly string _tWorkspaceRoot;`
+
+The folder under the temporary path that this workspace owns.
+
+## `private TWorkspace(string root)`
+
+Stores the folder and binds a database to it.
+Only the two create forms call it.
 
 ## `public LDatabase TWorkspaceDatabase { get; }`
 
 The database bound to this workspace folder.
 
-## `public string TWorkspaceFolder => _tWorkspaceRoot;`
+## `public string TWorkspaceFolder`
 
 The folder itself, for a test that has to reach the file directly.
 
 ## `public TClockFake TWorkspaceClock { get; }`
 
-The frozen clock every rig of this workspace carries.
+The fake clock every rig of this workspace carries.
 
 ## `public TPress TWorkspacePress { get; }`
 
-The fake press every rig of this workspace carries, holding the last sheet and ticket it received.
+The fake press every rig of this workspace carries, so a print test reads what reached it.
 
 ## `public TPhonographFake TWorkspacePhonograph { get; }`
 
-The fake phonograph every rig of this workspace carries, holding each file it was asked to play.
+The fake phonograph every rig of this workspace carries.
 
 ## `public void TWorkspaceClockSet(Func<DateTimeOffset> clock)`
 
@@ -61,13 +70,26 @@ A saved entry starts a background frequency fetch, and a real client would hit t
 Binds an engine whose sources fetch through `client`, so a discovery test runs against a stub handler.
 The rig is built through the real factory, so the suite starts its engines the way the bootstrap does.
 A workspace change builds its rig the same way, and no test ever writes the user's workspace pointer.
-Only the clock is swapped for the workspace's `TClockFake`, so a test can freeze time through `TWorkspaceClockSet`.
-The rig carries the workspace's `TPress`, so a print test reads what reached it from the workspace.
+The clock is swapped for the workspace's `TClockFake`, so a test can set time through `TWorkspaceClockSet`.
+The rig carries the workspace's `TPress` and `TPhonographFake`, so a test reads what reached them.
 An engine over fakes instead starts from `TRigFake`.
+
+## `public LEngine TWorkspaceEngineStart(LSourceFactory sources)`
+
+Binds an engine like the client form, over a client that answers 404, with `sources` as its source factory.
+A workspace change keeps the same `sources`.
+A throwing factory lets a test fail a search before its harvest or lookup starts.
+
+## `private LEngine TWorkspaceEngineStart(HttpClient client, LSourceFactory? sources)`
+
+The one engine build both public forms reach, so the rig shape lives in one place.
+Both the first rig and every workspace change's rig fetch through `client` and carry the workspace clock.
+When `sources` is given, a local function puts it on each rig as its source factory.
+Null keeps the factory the rig built.
 
 ## `public LRig TWorkspaceRigCreate()`
 
-A rig over the workspace with a client that answers nothing, for a clerk test.
+A rig over the workspace with a client that answers 404, for a clerk test.
 
 ## `public LRig TWorkspaceRigCreate(HttpClient client)`
 
@@ -79,7 +101,7 @@ Opens a raw connection to the workspace database, bypassing the store layer.
 
 ## `public long TWorkspaceCountRead(string sql)`
 
-Runs one statement against the workspace database and returns its first column.
+Runs one statement against the workspace database and returns its first value as a number.
 
 ## `public IReadOnlyList<long> TWorkspaceColumnRead(string sql)`
 
@@ -97,6 +119,11 @@ The fields are joined by a separator no stored text carries.
 ## `public void TWorkspaceScriptRun(string sql)`
 
 Runs statements that set the database up in a shape the store layer would not produce.
+
+## `public void Dispose()`
+
+Clears every pooled connection, then deletes the workspace folder.
+A delete that fails on an unreleased file is ignored.
 
 ## Inline notes
 

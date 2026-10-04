@@ -1,5 +1,5 @@
 # TEnsign.cs
-Hash: `fb5de061dc5ea9b0`
+Hash: `8447c7c7fc14f81e`
 
 ## `public sealed class TEnsign`
 
@@ -8,8 +8,11 @@ A broken file is forwarded to the usher once, and a locked one is kept.
 A deleted path is asked again, a clear during the store commits nothing, and uneven paths throw.
 The engine keys a named variety's flag through the same format, and a blank variety to nothing.
 Each cache case builds its own cache over a fake usher, so none touches a disk or another's store.
-The unflagged variety case alone starts an engine on a temporary workspace.
+The unflagged variety case and the blocked flag folder case start an engine on a temporary workspace.
 Two overlapping fills on the fake rig fetch and store a flag once.
+The engine's fill, which the settings outlet forwards to, still answers the languages over a flagged pack.
+In that case the flag folder of the pack is blocked by a file.
+That disk failure is answered by the flag loader in Infrastructure, so the outlet only forwards.
 The engine runs one fill at a time, so the second finds the flag already kept.
 The fetch waits on a completion the case sets, so the overlap never depends on timing.
 

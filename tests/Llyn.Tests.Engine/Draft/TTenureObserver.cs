@@ -95,6 +95,40 @@ public sealed class TTenureObserver
         Assert.Null(tenure.TTenureStoredRead());
     }
 
+    [Fact]
+    public void Cancel_DiscardFails_EndsTheTenureRaisesItsStateAndThrows()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectExample, null);
+        engine.TEngineDraftCancel(tenure.LTenureId);
+        tenure.TTenureRequestDefer(
+            TInterface.TExampleTextCreate(tenure.LTenureId, TInterfaceState.TStateValueCreate("lost")));
+        Assert.True(tenure.TTenureStateRead().LTenureStateHalted);
+        string court = TInterface.TWorkspaceCourtRead(workspace.TWorkspaceFolder);
+        Directory.Delete(court, true);
+        File.WriteAllText(court, "");
+        engine.TEngineObserverAttach(_tTenureNotices.Add);
+
+        IOException fault;
+        try
+        {
+            fault = Assert.Throws<IOException>(() => tenure.TTenureCancel());
+        }
+        finally
+        {
+            File.Delete(court);
+            Directory.CreateDirectory(court);
+        }
+
+        Assert.Contains(court, fault.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(
+            _tTenureNotices,
+            row => row.LBulletinSubject == LSubject.LSubjectTenure && row.LBulletinId == tenure.LTenureId);
+        Assert.False(tenure.TTenureStateRead().LTenureStateHalted);
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

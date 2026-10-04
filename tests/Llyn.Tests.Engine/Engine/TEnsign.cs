@@ -1,4 +1,5 @@
 using System.IO;
+using System.Net;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -156,6 +157,23 @@ public sealed class TEnsign
         Assert.Equal([TInterface.TEnsignRowCreate("English/Scottish", "C:/flags/gb.svg")], await first);
         Assert.Empty(await second);
         Assert.Equal(1, languages.TLanguageFakeAsked);
+    }
+
+    [Fact]
+    public async Task SettingsEnsignLoad_FlagFileFails_AnswersTheLanguages()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{ \"flag\": \"gb\" }");
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "flags"), string.Empty);
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate("<svg/>", HttpStatusCode.OK));
+        List<LEnsignRow> stored = [];
+
+        IReadOnlyList<string> answered = await engine.TEngineEnsignLoad((rows, _) => () => stored.AddRange(rows));
+
+        Assert.Contains(pack.TLanguageFixtureName, answered);
+        Assert.Equal(engine.TEngineLanguageRead(), answered);
+        Assert.DoesNotContain(stored, row => row.LEnsignRowKey == pack.TLanguageFixtureName);
     }
 
     private sealed class TLanguageFake : LLanguageVault

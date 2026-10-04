@@ -77,9 +77,9 @@ public sealed class CTenor
 
     public bool CTenorFiltered => _cTenorVista?.LVistaFiltered ?? false;
 
-    public CCatalogOrder CTenorOrder => CPanel.CPanelOrderRead(LVista.LVistaOrderRead(_cTenorVista));
+    public CCatalogOrder CTenorOrder => CCatalog.LCatalogOrderRead(LVista.LVistaOrderRead(_cTenorVista));
 
-    public CCatalogFilter CTenorFilter => CPanel.CPanelFilterRead(LVista.LVistaFilterRead(_cTenorVista));
+    public CCatalogFilter CTenorFilter => CCatalog.LCatalogFilterRead(LVista.LVistaFilterRead(_cTenorVista));
 
     internal void LTenorVistaRestore()
     {
@@ -107,7 +107,7 @@ public sealed class CTenor
 
     private void LTenorSubjectAttach(CSubject subject, Action resonate)
     {
-        _cTenorVista?.LVistaObserverAttach(CPanel.CPanelSubjectRead(subject), _ => _cTenorMarshal(resonate));
+        _cTenorVista?.LVistaObserverAttach(CCatalog.LCatalogSubjectRead(subject), _ => _cTenorMarshal(resonate));
     }
 
     private void LTenorRowsResonate()
@@ -138,7 +138,7 @@ public sealed class CTenor
 
     public void CTenorOrderSet(CCatalogOrder? order)
     {
-        _cTenorVista?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
+        _cTenorVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
     }
 
     public void CTenorFilterSet(CCatalogFilter filter)

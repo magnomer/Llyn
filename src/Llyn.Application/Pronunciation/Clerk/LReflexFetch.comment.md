@@ -1,5 +1,5 @@
 # LReflexFetch.cs
-Hash: `1d351de521453168`
+Hash: `aadcba8d0f38a9c7`
 
 ## `public sealed class LReflexFetch`
 
@@ -10,7 +10,7 @@ Rules are read and the epithet rewritten through `LReflexClerk`, which builds an
 
 ## `public LReflexFetch(LRig rig, LReflexClerk clerk, LLanguageCache languages, LClaimClerk claims, object gate, Action<LSubject, long> raise)`
 
-Reads the entry and reflex ports, the reflex source and the clock out of `rig`.
+Reads the entry and reflex ports, the reflex source, the clock and the fault log out of `rig`.
 The claim clerk supplies the held drafts a fetch fills.
 
 ## `public void LReflexFetchStart(long entryId)`
@@ -19,7 +19,8 @@ Starts a fetch for an entry that has rules, no rows and no remembered miss.
 
 ## `public void LReflexFetchRebuild(long entryId)`
 
-Clears the rows and the miss of an entry, empties its held drafts, and fetches again.
+Does nothing while a fetch is pending or the language has no rules.
+Otherwise it clears the rows and the miss, rewrites the epithet, empties the plain held drafts, and fetches again.
 Before clearing, it hands the stored rows to `LReflexGloss` to remember their user-owned meanings.
 When the fetch lands, those meanings replace the scraped meanings of matching rows.
 The bulletins for the entry and every emptied draft are raised here.
@@ -44,8 +45,11 @@ One fetch admitted through the two-wide gate.
 The answer is written only when the fetch still stands and the entry still has no rows.
 The entry must still read the same headword and language.
 A miss is remembered and a failure still raises the bulletin, so the panel stops waiting.
+The fetch is never awaited, so a failure is recorded in the fault log rather than lost unobserved.
+Cancellation by the fetch's own token is not a failure and is not recorded.
 
 ## `private List<long> LReflexFetchPropagate(long entryId, IReadOnlyList<LReflex> saved, bool sweep = false)`
 
-Copies the saved rows into every held entry draft of the entry that has no reflex rows of its own.
+Copies the saved rows into every plain held draft of the entry that has no reflex rows of its own.
+A draft carrying an example, situation, reference or author is skipped.
 `sweep` overwrites drafts that have rows, for a rebuild.

@@ -145,10 +145,40 @@ public sealed class TRecordingSaving
         LRecording recording = TInterface.TRecordingCreate(
             "Wiktionary", "https://example.test/Fr-manger.ogg.mp3", 0, true, string.Empty);
 
-        await Assert.ThrowsAsync<HttpRequestException>(() => TInterface.TWorkspaceRecordingPrepare(
+        LVaultFault fault = await Assert.ThrowsAsync<LVaultFault>(() => TInterface.TWorkspaceRecordingPrepare(
             recording, workspace.TWorkspaceFolder, client, CancellationToken.None));
 
+        Assert.IsType<HttpRequestException>(fault.InnerException);
         Assert.Equal(3, handler.TRefusalHandlerCount);
         Assert.False(Directory.Exists(Path.Combine(workspace.TWorkspaceFolder, "temp")));
+    }
+
+    [Fact]
+    public async Task RecordingSave_AudioFolderBlocked_RaisesVaultFault()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "audio"), string.Empty);
+        using HttpClient client = TPronunciationHelper.TSourceClientCreate("audio", HttpStatusCode.OK);
+        LRecording recording = TInterface.TRecordingCreate(
+            "Oxford", "https://example.test/tomato.mp3", 0, true, "British");
+
+        LVaultFault fault = await Assert.ThrowsAsync<LVaultFault>(() => TInterface.TWorkspaceRecordingSave(
+            recording, "tomato", "English", workspace.TWorkspaceFolder, client, CancellationToken.None));
+
+        Assert.IsAssignableFrom<IOException>(fault.InnerException);
+    }
+
+    [Fact]
+    public async Task RecordingPrepare_CallerCancels_RaisesCancellation()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using HttpClient client = TPronunciationHelper.TSourceClientCreate("audio", HttpStatusCode.OK);
+        using CancellationTokenSource cancellation = new();
+        await cancellation.CancelAsync();
+        LRecording recording = TInterface.TRecordingCreate(
+            "Oxford", "https://example.test/tomato.mp3", 0, true, "British");
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => TInterface.TWorkspaceRecordingPrepare(
+            recording, workspace.TWorkspaceFolder, client, cancellation.Token));
     }
 }

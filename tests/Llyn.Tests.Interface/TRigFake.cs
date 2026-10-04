@@ -84,13 +84,17 @@ internal static class TRigFake
             workspace);
     }
 
+    internal static LSourceFactory TRigSourceCreate() => TRigStubCreate<LSourceFactory>();
+
+    internal static string TRigFaultRead(string? method) => $"The fake rig answers no {method}.";
+
     private static TRigFakePort TRigStubCreate<TRigFakePort>() where TRigFakePort : class =>
         DispatchProxy.Create<TRigFakePort, TRigFakeProxy>();
 
     public class TRigFakeProxy : DispatchProxy
     {
         protected override object? Invoke(MethodInfo? targetMethod, object?[]? args) =>
-            throw new NotSupportedException($"The fake rig answers no {targetMethod?.Name}.");
+            throw new NotSupportedException(TRigFaultRead(targetMethod?.Name));
     }
 
     private sealed class TRigFakeVault : LVault

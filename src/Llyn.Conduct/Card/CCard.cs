@@ -107,7 +107,7 @@ public sealed class CCard
         return new CProspect(
             offer.LTranslationOfferText,
             offer.LTranslationOfferWord,
-            offer.LTranslationOfferRows.Select(CPanel.CPanelRowRead).ToList(),
+            offer.LTranslationOfferRows.Select(CCatalog.LCatalogRowRead).ToList(),
             offer.LTranslationOfferShown,
             offer.LTranslationOfferChosen,
             offer.LTranslationOfferLanguages);

@@ -1,5 +1,5 @@
 # TTenureObserver.cs
-Hash: `49187a44daaa1b48`
+Hash: `48226af69615022a`
 
 ## `public sealed class TTenureObserver`
 
@@ -31,6 +31,14 @@ A deferred headword stays unapplied, so the read persisted nothing.
 
 A workspace switch leaves the held draft stale, so its read is refused.
 The stored-id read answers null instead of throwing.
+
+## `public void Cancel_DiscardFails_EndsTheTenureRaisesItsStateAndThrows()`
+
+A halted tenure whose discard fails, because a file stands where the court folder belongs, still raises its state.
+The failure reaches the caller as exactly an `IOException` naming the court folder.
+The tenure answers the ended state, no longer halted.
+The court folder is restored right after the cancel, even when the assertion fails.
+So the engine and workspace dispose over a sound tree.
 
 ## `public void Prepare_NestedNotices_DropsEveryOneUntilOutermostScopeExits(bool fails)`
 

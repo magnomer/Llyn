@@ -23,6 +23,8 @@ internal static class TAuditCommentFile
             .Where(root => !Directory.Exists(Path.Combine(repoRoot, root)))
             .Concat(TAuditCommentSetting.TAuditCommentFiles
                 .Where(file => !File.Exists(Path.Combine(repoRoot, file))))
+            .Concat(TAuditCommentSetting.TAuditCommentReserved
+                .Where(file => !File.Exists(Path.Combine(repoRoot, file))))
             .ToList();
         Assert.True(missing.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITCOMMENTS",
@@ -32,6 +34,14 @@ internal static class TAuditCommentFile
         Assert.True(paths.Count > 0, TAuditConvention.TAuditReportFormat(
             "AUDITCOMMENTS", "No tracked file lies in the comment scope, so the audit cannot judge."));
         return paths;
+    }
+
+    public static bool TAuditReservedCheck(string repoRoot, string path)
+    {
+        return TAuditCommentSetting.TAuditCommentReserved.Any(file => string.Equals(
+            Path.GetFullPath(Path.Combine(repoRoot, file)),
+            Path.GetFullPath(path),
+            StringComparison.OrdinalIgnoreCase));
     }
 
     public static string TAuditCommentRead(string path)

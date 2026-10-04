@@ -1,5 +1,5 @@
 # TInterfaceConductPortrait.cs
-Hash: `a3ab7010ac60a0b5`
+Hash: `bce5987f96fc49d2`
 
 ## `internal static class TInterfaceConductPortrait`
 
@@ -30,7 +30,13 @@ Relays the export formats the file question offers.
 ## `internal static Task TPortraitFileExport(CEnvoy envoy, string file, Func<string, LPortraitMedium, Task> export) =>`
 
 Relays the shared export core with its question and failure policy.
+The fixed `file` is handed on as the core's name read.
 Its settings port is the shared fake from `TInterfaceConduct`.
+
+## `internal static Task TPortraitFileExport(CEnvoy envoy, LSettingsPort settings, Func<string> fileRead, Func<string, LPortraitMedium, Task> export) =>`
+
+Relays the shared export core with a given settings port and name read.
+A fact can thus fail the name read or pass no settings.
 
 ## `internal static Task TPortraitTicketPrint(CEnvoy envoy, Func<LPressTicket, Task> print) =>`
 

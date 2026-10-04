@@ -1,5 +1,5 @@
 # LAuthorCitation.cs
-Hash: `cdee2f6c0e2709e3`
+Hash: `ada286dfd2c61e8f`
 
 ## `public sealed class LAuthorCitation`
 
@@ -25,6 +25,7 @@ Turns a held Author into a stored one and returns it.
 A draft naming no Author is a create, one naming an Author is a rename.
 An Author id naming a row since deleted is a create as well, because there is nothing left to rename.
 A blank name throws `LRefusal.LRefusalName`, because an Author is its name and the panel guards it too.
+The verdict is asked of `LClaimClerk.LDraftRefusalRead`, the one owner of the unnamed-author rule.
 The Author and the revision recording it are written in one session.
 The draft file is rewritten with the stored id the moment that write returns.
 The held file is deleted last, so a failure anywhere above leaves the work recoverable.

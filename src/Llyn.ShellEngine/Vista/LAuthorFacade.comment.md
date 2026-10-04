@@ -1,11 +1,12 @@
 # LAuthorFacade.cs
-Hash: `13c7b382cdaa4a72`
+Hash: `c69cee68d2df65a9`
 
 ## `internal sealed class LAuthorFacade`
 
 The engine's facade for Authors.
 It provides the workspace browsed by the people its Sources credit.
-Every read and write goes through the author clerk under the gate, and every change is announced here.
+Reads and writes go through the staff clerks under the gate.
+Every change is announced here.
 The vista overloads stay here, because a vista is the shell's and the twin names are numbered per panel.
 The author draft starts and commits here too, through the `LAuthorCitation` the citation clerk holds.
 
@@ -86,7 +87,9 @@ Reads the Author for `id`, or `null` when none has that id.
 
 The byline rows a typed credit may already name, at most `LAuthorFacadeLimit` of them.
 The draft is read here by its id, so the editor never carries the credits it holds back down.
-No draft offers nothing, and neither does a blank word.
+No draft offers nothing, and neither does a blank word or a draft raised in a workspace no longer open.
+Only the stale refusal is caught.
+Every other failure reaches the caller.
 
 ## `public static string LEngineBylineRead(string? text)`
 
@@ -107,7 +110,7 @@ Deletes the Author and announces it, with `detach` dropping every credit first.
 
 ## `internal LDraft LEngineAuthorStart(string origin, long? authorId)`
 
-Mints a draft id, writes the first file, and returns the held Author.
+Mints a draft id, writes the first file, and returns the draft holding the Author.
 An Author that is gone is refused before a file is written, so no draft can point at nothing.
 
 ## `internal LAuthor LEngineAuthorCommit(long id)`

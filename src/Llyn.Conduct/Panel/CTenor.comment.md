@@ -1,5 +1,5 @@
 # CTenor.cs
-Hash: `990176a210eb7486`
+Hash: `2686825fbe779c2f`
 
 ## `public sealed class CTenor`
 

@@ -1,5 +1,5 @@
 # CWorkspace.cs
-Hash: `cd89549d0bc2d0c9`
+Hash: `9e0ad922a2ff905b`
 
 ## `public sealed class CWorkspace`
 
@@ -28,6 +28,12 @@ It has no area of its own, so the quit asks it directly and a workspace change r
 
 Whether the ledger and status bulletins are heard yet.
 They attach on the first open, since an atelier is also built over fake ports that answer no attach.
+
+## `private CEnvoy? _cWorkspaceEnvoy;`
+
+The envoy of the latest open.
+The status bulletin, attached once, reads it on each bulletin.
+So a later open's envoy shows the failure rather than the first one's.
 
 ## `internal CWorkspace(CAtelier atelier)`
 
@@ -67,10 +73,12 @@ It then moves as the path gate does.
 The question is asked inside the failure policy, so a dialog that fails shows `Workspace.OpenFailed`.
 A declined question moves nothing and answers the folder in use.
 
-## `internal void LWorkspaceOpen(CWorkspaceState state)`
+## `internal void LWorkspaceOpen(CWorkspaceState state, CEnvoy envoy)`
 
 The open's order after the sweep: the views, the ledger, the status, the wings' `state`, then the stored tab.
 The ledger and status bulletins are attached on the first open only.
+`envoy` is the caller's, carried down so a failed status read is shown.
+Each open keeps `envoy` as the latest, and the status bulletin shows through it.
 `CAtelierOpen` calls it at startup, and `CWorkspaceChange` after a move.
 
 ## `internal bool LWorkspaceQuitConfirm(CEnvoy envoy)`
@@ -115,7 +123,8 @@ Only `CWorkspaceChange` calls it, before the open events, so each view restores 
 
 Keeps the input tab's editor, which `LAtelierInputRestore` hands over on every restore.
 
-## `private void LWorkspaceEstablishmentRaise()`
+## `private void LWorkspaceEstablishmentRaise(CEnvoy envoy)`
 
 Reads the status and raises `CWorkspaceEstablishmentChanged` with it.
-A read that fails is skipped, so a busy or closing workspace leaves the strip as it stood.
+A read that fails raises nothing, so the strip stays as it stood.
+The failure is shown through `envoy` under `Workspace.EstablishmentFailed`.

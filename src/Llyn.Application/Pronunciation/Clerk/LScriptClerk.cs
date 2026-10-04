@@ -13,6 +13,7 @@ public sealed class LScriptClerk
     private readonly LScriptSource _lScriptClerkSource;
     private readonly LLanguageCache _lScriptClerkLanguages;
     private readonly object _lScriptClerkGate;
+    private readonly LAuditVault _lScriptClerkAudit;
     private readonly Action<LSubject, long> _lScriptClerkBulletin;
     private readonly SemaphoreSlim _lScriptClerkAdmission = new(2, 2);
     private readonly Dictionary<string, CancellationTokenSource> _lScriptClerkPending = new(StringComparer.Ordinal);
@@ -27,6 +28,7 @@ public sealed class LScriptClerk
         _lScriptClerkEntries = rig.LRigEntries;
         _lScriptClerkScripts = rig.LRigScripts;
         _lScriptClerkSource = rig.LRigScriptSource;
+        _lScriptClerkAudit = rig.LRigAudit;
         _lScriptClerkLanguages = languages;
         _lScriptClerkGate = gate;
         _lScriptClerkBulletin = raise;
@@ -255,9 +257,14 @@ public sealed class LScriptClerk
                 }
             }
         }
-        catch (Exception)
+        catch (OperationCanceledException) when (fetch.IsCancellationRequested)
+        {
+            raised = false;
+        }
+        catch (Exception exception)
         {
             raised = !fetch.IsCancellationRequested;
+            _lScriptClerkAudit.LAuditRecord(exception);
         }
         finally
         {

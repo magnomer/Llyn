@@ -1,10 +1,11 @@
 # LPortraitClerk.cs
-Hash: `c45e1099365b439c`
+Hash: `c1d148772574efd3`
 
 ## `public sealed class LPortraitClerk`
 
 The entry page composed for display, export and print.
-Every side reading is guarded, so a failing fetch or vault leaves a section out rather than a page unrendered.
+A failing read of any section throws to the caller.
+No section is silently left out of the page.
 The kind pages of examples, references and situations are composed by their own clerks.
 
 ## `private const double LPortraitInch = 96.0;`
@@ -19,6 +20,7 @@ Reads the portrait port and the press out of `rig` and keeps the clerks each sec
 
 The page of one entry, refused when the entry no longer stands.
 Sections come in display order, then the readings with respelling and phonemic marks decided per language.
+A failing favorite check throws rather than showing the entry as no favorite.
 
 ## `public async Task LPortraitClerkExport(LPortraitPage portrait, string path, LPortraitMedium format)`
 
@@ -37,7 +39,7 @@ The page rendered as sheet HTML and handed to the press with the ticket.
 The ticket a print dialog's answer stands for.
 The dialog measures the sheet in device-independent pixels, and the paper takes inches.
 A dialog that named no usable sheet size prints on the local sheet.
-A side left unnamed, empty or negative is no usable size.
+A width or height that is missing or not above zero is no usable size.
 
 ## `public static IReadOnlyList<(LPortraitMedium, string, bool)> LPortraitMediumRead()`
 
@@ -62,36 +64,45 @@ Each Source kind is worded by its stored word, and a kind the words leave out ke
 
 ## `private IReadOnlyDictionary<long, LPortraitLink> LPortraitTargetScan(IReadOnlyList<long> ids)`
 
-The translation targets as links, empty when the read fails.
+The translation targets as links, keyed by entry id.
+A failing read throws.
 
 ## `private IReadOnlyDictionary<long, string> LPortraitSourceScan()`
 
-The citation names by reference id, empty when the read fails.
+The citation names by reference id.
+A failing read throws.
 
 ## `private IReadOnlyList<LFanqieRow> LPortraitFanqieScan(long entryId, string language)`
 
-The fanqie rows for a language with books, empty otherwise or on failure.
+The fanqie rows for a language with books, empty otherwise.
+A failing read throws.
 
 ## `private LSentenceOrder LPortraitOrderRead(string language)`
 
-The sentence order of the language, the default on failure.
+The sentence order of the language.
+A failing read throws.
 
 ## `private LGlyph? LPortraitGlyphRead(string language)`
 
-The glyph of the language, null for a blank language or on failure.
+The glyph of the language, null for a blank language.
+A failing read throws.
 
 ## `private IReadOnlyList<LFrequency> LPortraitFrequencyScan(long entryId)`
 
-The frequency rows, empty on failure.
+The frequency rows.
+A failing read throws.
 
 ## `private IReadOnlyList<LParadigmSlot> LPortraitParadigmScan(long entryId)`
 
-The paradigm slots as shown, empty on failure.
+The paradigm slots as shown.
+A failing read throws.
 
 ## `private IReadOnlyList<LUsage> LPortraitIncomingScan(long entryId)`
 
-The incoming translations, empty on failure.
+The incoming translations.
+A failing read throws.
 
 ## `private IReadOnlyList<LScriptImage> LPortraitScriptScan(long entryId, string language)`
 
-The script images for a language with styles, empty otherwise or on failure.
+The script images for a language with styles, empty otherwise.
+A failing read throws.

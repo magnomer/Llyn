@@ -1,5 +1,5 @@
 # CReflex.cs
-Hash: `5a79375ca7318d5f`
+Hash: `72e315d2f582cc8a`
 
 ## `public sealed record CReflex(long CReflexId, string CReflexLanguage, string CReflexKind, string CReflexText, string CReflexRomanization, string CReflexMeaning, string CReflexNote, bool CReflexMain, string CReflexRegion, IReadOnlyList<long> CReflexAnchors, CRespellingMark CReflexMark, bool CReflexFolded, bool CReflexLead)`
 
@@ -25,7 +25,7 @@ Conduct resolved its text and its mark, so no driver asks the pack about the row
 ## `internal const string LReflexSeparator = " · ";`
 
 The mark between two anchored placements in a row's anchor label.
-Both panes format the label with it, so the wording has one owner.
+`LReflexAnchorRead` formats the label with it for both panes, so the wording has one owner.
 
 ## `public string CReflexLanguageKey`
 
@@ -49,6 +49,16 @@ The text the row shows in the cell `field`.
 Whether each row opens a run of one language, so the language prints once per run.
 The scan marks its rows by it.
 `CTimbre.CTimbreReflexSet` asks it again while a language is typed, since a row leads by position.
+
+## `internal static CLecternAnchor LReflexAnchorRead(CEnvoy envoy, LSettingsPort settings, CLedgerNoticed noticed, LDraftPort drafts, long? entry, string headword, IReadOnlyList<CReflex> rows)`
+
+Whether the headword offers anchoring for `entry`, and the anchor text of each row, keyed by its id.
+The engine's entry-based anchor rule answers both, and the placements are joined by `LReflexSeparator`.
+The reading view and the editor's reflex block both read their anchors here, so the map has one owner.
+It lives with the rows it labels, so the sound sheet `CSounding` carries no draft port for it.
+No stored entry or a refusal answers no anchor.
+A refusal also shows `Display.AnchorFailed` through `envoy`, once through `noticed`, since both callers read on a repaint.
+Each caller passes its own envoy and `settings`, as `CCatalog.LCatalogGlyphOpen` takes them.
 
 ## `private static string LReflexKeyRead(string name)`
 

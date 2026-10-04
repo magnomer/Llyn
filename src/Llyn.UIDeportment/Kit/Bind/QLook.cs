@@ -110,7 +110,7 @@ internal static class QLook
         EventManager.RegisterClassHandler(
             typeof(FrameworkElement), FrameworkElement.LoadedEvent, new RoutedEventHandler(QLookStateRefine), true);
         EventManager.RegisterClassHandler(
-            typeof(FrameworkElement), FrameworkElement.UnloadedEvent, new RoutedEventHandler(QLookStateDetach), true);
+            typeof(FrameworkElement), FrameworkElement.UnloadedEvent, new RoutedEventHandler(QLookStateTeardown), true);
         EventManager.RegisterClassHandler(
             typeof(FrameworkElement), UIElement.MouseEnterEvent, new MouseEventHandler(QLookStateRefine), true);
         EventManager.RegisterClassHandler(
@@ -291,7 +291,7 @@ internal static class QLook
         return shown ? cue : QLookCue.QLookCueBase;
     }
 
-    private static void QLookStateDetach(object sender, RoutedEventArgs e)
+    private static void QLookStateTeardown(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement element
             || !QLookTrack.TryGetValue(element, out List<DependencyPropertyDescriptor>? tracked))

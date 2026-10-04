@@ -79,7 +79,9 @@ internal sealed class LLanguageFacade
                 return languages;
             }
 
-            string?[] paths = await Task.WhenAll(missing.Select(LEngineEnsignRead)).ConfigureAwait(true);
+            string?[] paths = await Task
+                .WhenAll(missing.Select(language => LEngineFlagRead(language, CancellationToken.None)))
+                .ConfigureAwait(true);
             ensign.LEnsignPathAdd(age, missing, paths, store);
             return languages;
         }
@@ -114,37 +116,13 @@ internal sealed class LLanguageFacade
             }
 
             string?[] paths = await Task
-                .WhenAll(missing.Select(key => LEngineEnsignResolve(language, keyed[key])))
+                .WhenAll(missing.Select(key => LEngineVarietyResolve(language, keyed[key], CancellationToken.None)))
                 .ConfigureAwait(true);
             ensign.LEnsignPathAdd(age, missing, paths, store);
         }
         finally
         {
             _lLanguageFacadeEnsign.Release();
-        }
-    }
-
-    private async Task<string?> LEngineEnsignRead(string language)
-    {
-        try
-        {
-            return await LEngineFlagRead(language, CancellationToken.None).ConfigureAwait(false);
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-    }
-
-    private async Task<string?> LEngineEnsignResolve(string language, string variety)
-    {
-        try
-        {
-            return await LEngineVarietyResolve(language, variety, CancellationToken.None).ConfigureAwait(false);
-        }
-        catch (Exception)
-        {
-            return null;
         }
     }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Llyn.Conduct;
+using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -24,6 +25,67 @@ public sealed class TAtelierWorkspace
 
         Assert.Equal([second.TWorkspaceFolder], pointed);
         Assert.Equal(second.TWorkspaceFolder, shown);
+    }
+
+    [Fact]
+    public void AtelierOpen_EstablishmentFails_ShowsTheFailureAndRaisesNoStatus()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
+            engine,
+            TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineWorkspaceStart"] = _ => TInterfaceEngineWorkspace.TWorkspaceStateCreate(),
+                ["LEngineFailureRead"] = args => ((string)args![1]!, (string?)null, (string?)null),
+            }));
+        List<string> asked = [];
+        List<CEstablishment> shown = [];
+        atelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged += shown.Add;
+
+        atelier.TAtelierOpen(TEnvoyFake.TEnvoyCreate(false, asked));
+
+        Assert.Equal(["Workspace.EstablishmentFailed"], asked);
+        Assert.Empty(shown);
+    }
+
+    [Fact]
+    public void AtelierOpen_SecondEnvoy_ShowsALaterEstablishmentFailureThroughTheLatestEnvoy()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<Action<LBulletin>> observers = [];
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
+            engine,
+            TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineWorkspaceStart"] = _ => TInterfaceEngineWorkspace.TWorkspaceStateCreate(),
+                ["LEngineFailureRead"] = args => ((string)args![1]!, (string?)null, (string?)null),
+            }),
+            TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineLeftoverSweep"] = _ => null,
+                ["LEngineObserverAttach"] = args =>
+                {
+                    observers.Add((Action<LBulletin>)args![0]!);
+                    return null;
+                },
+                ["LEngineObserverDetach"] = _ => null,
+            }));
+        List<string> first = [];
+        List<string> second = [];
+        atelier.TAtelierOpen(TEnvoyFake.TEnvoyCreate(false, first));
+        atelier.TAtelierOpen(TEnvoyFake.TEnvoyCreate(false, second));
+        first.Clear();
+        second.Clear();
+
+        foreach (Action<LBulletin> observer in observers.ToArray())
+        {
+            observer(TInterfaceEngineWorkspace.TBulletinCreate(default, 1));
+        }
+
+        Assert.Empty(first);
+        Assert.Equal(["Workspace.EstablishmentFailed"], second);
     }
 
     [Fact]

@@ -51,18 +51,25 @@ public sealed class LRecordingArchive : LRecordingVault
         ArgumentException.ThrowIfNullOrWhiteSpace(recording.LRecordingAddress);
 
         string address = recording.LRecordingAddress;
-        byte[] audio = await LRecordingArchiveRead(address, cancellation).ConfigureAwait(false);
+        try
+        {
+            byte[] audio = await LRecordingArchiveRead(address, cancellation).ConfigureAwait(false);
 
-        string directory = Path.Combine(
-            _lRecordingArchiveRoot, LRecordingArchiveBucket, LRecordingArchiveNormalize(language));
-        Directory.CreateDirectory(directory);
+            string directory = Path.Combine(
+                _lRecordingArchiveRoot, LRecordingArchiveBucket, LRecordingArchiveNormalize(language));
+            Directory.CreateDirectory(directory);
 
-        string path = Path.Combine(
-            directory,
-            LRecordingStemRead(word, recording.LRecordingVariety, address)
-                + LRecordingExtensionRead(address));
-        await LWorkspaceRoot.LWorkspaceFileSave(path, audio, cancellation).ConfigureAwait(false);
-        return path;
+            string path = Path.Combine(
+                directory,
+                LRecordingStemRead(word, recording.LRecordingVariety, address)
+                    + LRecordingExtensionRead(address));
+            await LWorkspaceRoot.LWorkspaceFileSave(path, audio, cancellation).ConfigureAwait(false);
+            return path;
+        }
+        catch (Exception exception) when (LRecordingFaultCheck(exception, cancellation))
+        {
+            throw new LVaultFault(exception);
+        }
     }
 
     public async Task<string> LRecordingPrepare(LRecording recording, CancellationToken cancellation)
@@ -78,10 +85,17 @@ public sealed class LRecordingArchive : LRecordingVault
             return path;
         }
 
-        byte[] audio = await LRecordingArchiveRead(address, cancellation).ConfigureAwait(false);
-        Directory.CreateDirectory(directory);
-        await LWorkspaceRoot.LWorkspaceFileSave(path, audio, cancellation).ConfigureAwait(false);
-        return path;
+        try
+        {
+            byte[] audio = await LRecordingArchiveRead(address, cancellation).ConfigureAwait(false);
+            Directory.CreateDirectory(directory);
+            await LWorkspaceRoot.LWorkspaceFileSave(path, audio, cancellation).ConfigureAwait(false);
+            return path;
+        }
+        catch (Exception exception) when (LRecordingFaultCheck(exception, cancellation))
+        {
+            throw new LVaultFault(exception);
+        }
     }
 
     public void LRecordingSweep(IReadOnlySet<string> kept)
@@ -131,6 +145,13 @@ public sealed class LRecordingArchive : LRecordingVault
             TimeSpan pause = asked > LRecordingArchivePatience ? asked : LRecordingArchivePatience;
             await Task.Delay(pause, cancellation).ConfigureAwait(false);
         }
+    }
+
+    private static bool LRecordingFaultCheck(Exception exception, CancellationToken cancellation)
+    {
+        return exception is OperationCanceledException
+            ? !cancellation.IsCancellationRequested
+            : exception is HttpRequestException or IOException or UnauthorizedAccessException;
     }
 
     private static string LRecordingStemRead(string word, string variety, string address)

@@ -70,7 +70,7 @@ public sealed class LForay
         _lForayCancellation.Dispose();
     }
 
-    public async Task<bool> LForayRecordingSave(LRecording recording)
+    public async Task<bool?> LForayRecordingSave(LRecording recording)
     {
         ArgumentNullException.ThrowIfNull(recording);
 
@@ -79,9 +79,13 @@ public sealed class LForay
             return false;
         }
 
-        string path = await _lEngine
+        string? path = await _lEngine
             .LEnginePronunciation.LEngineRecordingSave(recording, LForayWord, LForayLanguage, CancellationToken.None)
             .ConfigureAwait(false);
+        if (path is null)
+        {
+            return null;
+        }
 
         if (!LForayDraftCheck())
         {
@@ -97,7 +101,7 @@ public sealed class LForay
         return true;
     }
 
-    public Task<string> LForayRecordingPrepare(LRecording recording)
+    public Task<string?> LForayRecordingPrepare(LRecording recording)
     {
         ArgumentNullException.ThrowIfNull(recording);
 
@@ -135,12 +139,12 @@ public sealed class LForay
         return draft?.LDraftContent.LEntryDraftHeadword.Trim() ?? string.Empty;
     }
 
-    internal void LForayStart(Func<CancellationToken, Task> search, Action finish)
+    internal void LForayStart(Func<CancellationToken, Task> search, Action unstarted)
     {
-        _ = LForayRun(search, finish);
+        _ = LForayRun(search, unstarted);
     }
 
-    private async Task LForayRun(Func<CancellationToken, Task> search, Action finish)
+    private async Task LForayRun(Func<CancellationToken, Task> search, Action unstarted)
     {
         CancellationToken token;
         lock (_lForayCancellation)
@@ -160,9 +164,20 @@ public sealed class LForay
         catch (OperationCanceledException)
         {
         }
-        catch (Exception)
+        catch (Exception exception)
         {
-            finish();
+            _lEngine.LEngineAuditRecord(exception);
+            if (!token.IsCancellationRequested)
+            {
+                try
+                {
+                    unstarted();
+                }
+                catch (Exception ending)
+                {
+                    _lEngine.LEngineAuditRecord(ending);
+                }
+            }
         }
     }
 

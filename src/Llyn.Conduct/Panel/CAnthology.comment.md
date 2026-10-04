@@ -1,5 +1,5 @@
 # CAnthology.cs
-Hash: `b842a38cf2dd8a9b`
+Hash: `3aac6d1511d9f595`
 
 ## `public sealed class CAnthology`
 

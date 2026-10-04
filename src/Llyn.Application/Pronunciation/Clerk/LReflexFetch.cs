@@ -13,6 +13,7 @@ public sealed class LReflexFetch
     private readonly LReflexVault _lReflexFetchReflexes;
     private readonly LReflexSource _lReflexFetchSource;
     private readonly LClock _lReflexFetchClock;
+    private readonly LAuditVault _lReflexFetchAudit;
     private readonly LLanguageCache _lReflexFetchLanguages;
     private readonly LClaimClerk _lReflexFetchClaims;
     private readonly object _lReflexFetchGate;
@@ -38,6 +39,7 @@ public sealed class LReflexFetch
         _lReflexFetchReflexes = rig.LRigReflexes;
         _lReflexFetchSource = rig.LRigReflexSource;
         _lReflexFetchClock = rig.LRigClock;
+        _lReflexFetchAudit = rig.LRigAudit;
         _lReflexFetchLanguages = languages;
         _lReflexFetchClaims = claims;
         _lReflexFetchGate = gate;
@@ -222,9 +224,14 @@ public sealed class LReflexFetch
                 drafts = LReflexFetchPropagate(entry.LEntryId, saved);
             }
         }
-        catch (Exception)
+        catch (OperationCanceledException) when (fetch.IsCancellationRequested)
+        {
+            raised = false;
+        }
+        catch (Exception exception)
         {
             raised = !fetch.IsCancellationRequested;
+            _lReflexFetchAudit.LAuditRecord(exception);
         }
         finally
         {

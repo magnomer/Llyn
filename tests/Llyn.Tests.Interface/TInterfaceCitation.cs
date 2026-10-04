@@ -25,6 +25,34 @@ internal static class TInterfaceCitation
         return new CDesk(drafts, new LSettingsOutlet(engine), scope, envoy, origin, subject);
     }
 
+    internal static CImprint TImprintCreate(CAtelier atelier, CEnvoy envoy) => new(
+        atelier.CAtelierDraftPort,
+        atelier.CAtelierEntryPort,
+        atelier.CAtelierSettingsPort,
+        envoy,
+        atelier.CAtelierLedger.LLedgerRepaint,
+        static run => run());
+
+    internal static CImprint TImprintFailCreate(LEngine engine, CEnvoy envoy)
+    {
+        LDraftPort real = new LDraftOutlet(engine);
+        LDraftPort drafts = TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineTenureStart"] = args => real.LEngineTenureStart((LVista)args![0]!, (long?)args[1]),
+            ["LEngineObserverAttach"] = _ => null,
+            ["LEngineObserverDetach"] = _ => null,
+            ["LEngineBylineRead"] = args => real.LEngineBylineRead((string?)args![0]),
+            ["LEngineBylineFind"] = _ => throw new InvalidOperationException("no authors"),
+        });
+        return new CImprint(
+            drafts,
+            new LEntryOutlet(engine),
+            new LSettingsOutlet(engine),
+            envoy,
+            new CLedgerNoticed(),
+            static run => run());
+    }
+
     internal static CExample? TAnthologyDraftRead(this CAnthology anthology, LDraft? draft) =>
         anthology.LAnthologyDraftRead(draft, string.Empty);
 

@@ -108,7 +108,7 @@ public sealed class CAnthology
 
     public void CAnthologyOrderSet(CCatalogOrder? order)
     {
-        _cAnthologyVista?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
+        _cAnthologyVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
     }
 
     public static IReadOnlyList<CCatalogOrder> CAnthologyOrderRead()

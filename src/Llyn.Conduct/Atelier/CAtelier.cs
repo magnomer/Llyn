@@ -67,8 +67,8 @@ public sealed class CAtelier : IDisposable
     {
         return CAtelierPosture.LPostureVistaStart(
             tab,
-            subject is CSubject held ? CPanel.CPanelSubjectRead(held) : null,
-            CPanel.LPanelOrderRead(fallback),
+            subject is CSubject held ? CCatalog.LCatalogSubjectRead(held) : null,
+            CCatalog.LCatalogOrderRead(fallback),
             blank);
     }
 
@@ -108,9 +108,11 @@ public sealed class CAtelier : IDisposable
         }
     }
 
-    public void CAtelierOpen()
+    public void CAtelierOpen(CEnvoy envoy)
     {
-        CAtelierWorkspace.LWorkspaceOpen(LAtelierStateRead(CAtelierSettingsPort.LEngineWorkspaceStart()));
+        ArgumentNullException.ThrowIfNull(envoy);
+
+        CAtelierWorkspace.LWorkspaceOpen(LAtelierStateRead(CAtelierSettingsPort.LEngineWorkspaceStart()), envoy);
     }
 
     public bool CAtelierQuitConfirm(CEnvoy envoy)
@@ -179,7 +181,7 @@ public sealed class CAtelier : IDisposable
 
         return LAtelierObserverAdd(bulletin =>
         {
-            if (bulletin.LBulletinSubject == CPanel.CPanelSubjectRead(subject))
+            if (bulletin.LBulletinSubject == CCatalog.LCatalogSubjectRead(subject))
             {
                 observer(CAtelierBulletinRead(bulletin));
             }

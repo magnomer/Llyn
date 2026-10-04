@@ -77,9 +77,9 @@ public sealed class CTaxonomy
 
     public bool CTaxonomyFiltered => _cTaxonomyVista?.LVistaFiltered ?? false;
 
-    public CCatalogOrder CTaxonomyOrder => CPanel.CPanelOrderRead(LVista.LVistaOrderRead(_cTaxonomyVista));
+    public CCatalogOrder CTaxonomyOrder => CCatalog.LCatalogOrderRead(LVista.LVistaOrderRead(_cTaxonomyVista));
 
-    public CCatalogFilter CTaxonomyFilter => CPanel.CPanelFilterRead(LVista.LVistaFilterRead(_cTaxonomyVista));
+    public CCatalogFilter CTaxonomyFilter => CCatalog.LCatalogFilterRead(LVista.LVistaFilterRead(_cTaxonomyVista));
 
     internal void LTaxonomyVistaRestore()
     {
@@ -107,7 +107,7 @@ public sealed class CTaxonomy
 
     private void LTaxonomySubjectAttach(CSubject subject, Action resonate)
     {
-        _cTaxonomyVista?.LVistaObserverAttach(CPanel.CPanelSubjectRead(subject), _ => _cTaxonomyMarshal(resonate));
+        _cTaxonomyVista?.LVistaObserverAttach(CCatalog.LCatalogSubjectRead(subject), _ => _cTaxonomyMarshal(resonate));
     }
 
     private void LTaxonomyRowsResonate()
@@ -138,7 +138,7 @@ public sealed class CTaxonomy
 
     public void CTaxonomyOrderSet(CCatalogOrder? order)
     {
-        _cTaxonomyVista?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
+        _cTaxonomyVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
     }
 
     public void CTaxonomyFilterSet(CCatalogFilter filter)

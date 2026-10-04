@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -22,6 +23,8 @@ public sealed class QBootstrap
     {
         ArgumentNullException.ThrowIfNull(runSeam);
 
+        QBootstrapContextIntroduce();
+
         if (!QBootstrapThemeApply(colorSeam, catalogSeam))
         {
             return;
@@ -33,6 +36,12 @@ public sealed class QBootstrap
         {
             runSeam(engine);
         }
+    }
+
+    internal static void QBootstrapContextIntroduce()
+    {
+        SynchronizationContext.SetSynchronizationContext(
+            new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
     }
 
     private static bool QBootstrapThemeApply(

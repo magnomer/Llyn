@@ -34,8 +34,13 @@ public sealed class CLedger
 
     public event Action<CLedgerState>? CLedgerChanged;
 
+    internal CLedgerNoticed LLedgerRepaint { get; } = new();
+
     internal void LLedgerAttach()
     {
+        _cLedgerAtelier.LAtelierObserverAttach(CSubject.CSubjectSettings, _ => LLedgerRepaint.LLedgerNoticedClear());
+        _cLedgerAtelier.LAtelierObserverAttach(CSubject.CSubjectWorkspace, _ => LLedgerRepaint.LLedgerNoticedClear());
+        _cLedgerAtelier.LAtelierObserverAttach(CSubject.CSubjectVista, _ => LLedgerRepaint.LLedgerNoticedClear());
         _cLedgerAtelier.LAtelierObserverAttach(CSubject.CSubjectSettings, _ => LLedgerRaise());
         _cLedgerAtelier.LAtelierObserverAttach(CSubject.CSubjectWorkspace, _ => LLedgerRaise());
     }
@@ -88,6 +93,7 @@ public sealed class CLedger
     internal static void LLedgerFailureShow(CEnvoy envoy, LSettingsPort settings, string key, Exception exception)
     {
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(settings);
 
         envoy.CEnvoyFailureShow(key, LLedgerNoticeRead(settings, exception));
     }

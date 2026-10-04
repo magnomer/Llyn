@@ -115,9 +115,9 @@ public sealed class CYunjing
 
     public string CYunjingXiaoyunKey => LYunjingDiweiChosen ? LYunjingVacantKey : "Yunjing.XiaoyunEmpty";
 
-    public CCatalogOrder CYunjingShengmuOrder => CPanel.CPanelOrderRead(LVista.LVistaOrderRead(_cYunjingShengmu));
+    public CCatalogOrder CYunjingShengmuOrder => CCatalog.LCatalogOrderRead(LVista.LVistaOrderRead(_cYunjingShengmu));
 
-    public CCatalogOrder CYunjingYunmuOrder => CPanel.CPanelOrderRead(LVista.LVistaOrderRead(_cYunjingYunmu));
+    public CCatalogOrder CYunjingYunmuOrder => CCatalog.LCatalogOrderRead(LVista.LVistaOrderRead(_cYunjingYunmu));
 
     private string LYunjingVacantKey =>
         _cYunjingXiaoyun?.LVistaQueried ?? false ? "Yunjing.XiaoyunUnmatched" : "Yunjing.XiaoyunVacant";
@@ -188,7 +188,7 @@ public sealed class CYunjing
         IReadOnlyList<CVistaRow> rows =
             _cYunjingShengmu is LVista onset && _cYunjingYunmu is LVista rime && _cYunjingXiaoyun is LVista xiaoyun
                 ? _cYunjingPort.LEngineXiaoyunFind(LYunjingSide?.LVistaChosen, onset, rime, xiaoyun)
-                    .Select(CPanel.CPanelRowRead)
+                    .Select(CCatalog.LCatalogRowRead)
                     .ToList()
                 : [];
         _cYunjingXiaoyunCount = rows.Count;
@@ -235,12 +235,12 @@ public sealed class CYunjing
 
     public void CYunjingShengmuSet(CCatalogOrder? order)
     {
-        _cYunjingShengmu?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
+        _cYunjingShengmu?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
     }
 
     public void CYunjingYunmuSet(CCatalogOrder? order)
     {
-        _cYunjingYunmu?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
+        _cYunjingYunmu?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
     }
 
     private void LYunjingWorkspaceResonate()
@@ -365,7 +365,7 @@ public sealed class CYunjing
         return CPortrait.LPortraitFileExport(
             _cYunjingEnvoy,
             _cYunjingSettingsPort,
-            LYunjingFileRead(),
+            LYunjingFileRead,
             (file, medium) => _cYunjingPortraitPort.LEnginePortraitExport(
                 _cYunjingXiaoyun, file, medium, CPortrait.LPortraitLabelRead(_cYunjingSettingsPort)));
     }
@@ -406,6 +406,6 @@ public sealed class CYunjing
         ArgumentNullException.ThrowIfNull(observer);
 
         column.LVistaObserverAttach(
-            CPanel.CPanelSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
+            CCatalog.LCatalogSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
     }
 }

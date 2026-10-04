@@ -36,42 +36,37 @@ public sealed class LTranscriptionClerk
     }
 
     public Task<IReadOnlyList<LCandidate>> LTranscriptionClerkFind(
-        string word, string language, Action<LLookupStep> sink, CancellationToken cancellation)
+        string word, string language, LReceiver receiver, CancellationToken cancellation)
     {
-        ArgumentNullException.ThrowIfNull(sink);
+        ArgumentNullException.ThrowIfNull(receiver);
 
         LLanguage pack = _lTranscriptionClerkLanguages.LLanguageCacheRead(language);
         return new LLookup(LLookupSourceRead(language, pack), pack.LLanguageVarieties, pack.LLanguageCleanups)
-            .LSeekerStart(word, LReceiverCreate(pack, sink), cancellation);
+            .LSeekerStart(word, LReceiverCreate(pack, receiver), cancellation);
     }
 
     public Task<IReadOnlyList<LCandidate>> LTranscriptionClerkFind(
-        string word, string language, string scheme, Action<LLookupStep> sink, CancellationToken cancellation)
+        string word, string language, string scheme, LReceiver receiver, CancellationToken cancellation)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(scheme);
-        ArgumentNullException.ThrowIfNull(sink);
+        ArgumentNullException.ThrowIfNull(receiver);
 
         return new LLookup(LSchemeSourceRead(language, scheme), [], [], true)
-            .LSeekerStart(word, new LReceiverRelay(sink), cancellation);
+            .LSeekerStart(word, receiver, cancellation);
     }
 
-    public Task LTranscriptionClerkPublish(IReadOnlyList<LCandidate> held, string language, Action<LLookupStep> sink)
+    public Task LTranscriptionClerkPublish(IReadOnlyList<LCandidate> held, string language, LReceiver receiver)
     {
-        ArgumentNullException.ThrowIfNull(sink);
+        ArgumentNullException.ThrowIfNull(receiver);
 
         LLanguage pack = _lTranscriptionClerkLanguages.LLanguageCacheRead(language);
-        return LTranscriptionClerkPublish(held, LReceiverCreate(pack, sink));
+        return LTranscriptionClerkPublish(held, LReceiverCreate(pack, receiver));
     }
 
-    public static Task LTranscriptionClerkPublish(IReadOnlyList<LCandidate> held, Action<LLookupStep> sink)
-    {
-        ArgumentNullException.ThrowIfNull(sink);
-        return LTranscriptionClerkPublish(held, new LReceiverRelay(sink));
-    }
-
-    private static Task LTranscriptionClerkPublish(IReadOnlyList<LCandidate> held, LReceiver receiver)
+    public static Task LTranscriptionClerkPublish(IReadOnlyList<LCandidate> held, LReceiver receiver)
     {
         ArgumentNullException.ThrowIfNull(held);
+        ArgumentNullException.ThrowIfNull(receiver);
 
         foreach (LCandidate candidate in held)
         {
@@ -82,9 +77,8 @@ public sealed class LTranscriptionClerk
         return Task.CompletedTask;
     }
 
-    private static LReceiver LReceiverCreate(LLanguage pack, Action<LLookupStep> sink)
+    private static LReceiver LReceiverCreate(LLanguage pack, LReceiver receiver)
     {
-        LReceiver receiver = new LReceiverRelay(sink);
         return pack.LLanguageRespellings.Count > 0
             ? new LReceiverRespelling(receiver, pack.LLanguageRespellings)
             : receiver;

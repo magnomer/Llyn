@@ -18,6 +18,8 @@ public sealed class CWorkspace
 
     private bool _cWorkspaceHeard;
 
+    private CEnvoy? _cWorkspaceEnvoy;
+
     internal CWorkspace(CAtelier atelier)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -54,7 +56,7 @@ public sealed class CWorkspace
         }
 
         LWorkspaceVistaRestore();
-        LWorkspaceOpen(state);
+        LWorkspaceOpen(state, envoy);
         return _cWorkspaceAtelier.CAtelierPathRead();
     }
 
@@ -77,20 +79,22 @@ public sealed class CWorkspace
         return chosen is null ? _cWorkspaceAtelier.CAtelierPathRead() : CWorkspaceChange(chosen, envoy);
     }
 
-    internal void LWorkspaceOpen(CWorkspaceState state)
+    internal void LWorkspaceOpen(CWorkspaceState state, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(envoy);
 
+        _cWorkspaceEnvoy = envoy;
         if (!_cWorkspaceHeard)
         {
             _cWorkspaceHeard = true;
             _cWorkspaceAtelier.CAtelierLedger.LLedgerAttach();
-            _cWorkspaceAtelier.LAtelierObserverAdd(_ => LWorkspaceEstablishmentRaise());
+            _cWorkspaceAtelier.LAtelierObserverAdd(_ => LWorkspaceEstablishmentRaise(_cWorkspaceEnvoy ?? envoy));
         }
 
         CWorkspaceOpened?.Invoke();
         _cWorkspaceAtelier.CAtelierLedger.LLedgerRaise();
-        LWorkspaceEstablishmentRaise();
+        LWorkspaceEstablishmentRaise(envoy);
         LWorkspaceStateOpened?.Invoke(state);
         _cWorkspaceAtelier.CAtelierNavigation.LNavigationTabOpen();
     }
@@ -175,15 +179,17 @@ public sealed class CWorkspace
         _cWorkspaceInput = editor;
     }
 
-    private void LWorkspaceEstablishmentRaise()
+    private void LWorkspaceEstablishmentRaise(CEnvoy envoy)
     {
         CEstablishment establishment;
         try
         {
             establishment = _cWorkspaceAtelier.LAtelierEstablishmentRead();
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            CLedger.LLedgerFailureShow(
+                envoy, _cWorkspaceAtelier.CAtelierSettingsPort, "Workspace.EstablishmentFailed", exception);
             return;
         }
 

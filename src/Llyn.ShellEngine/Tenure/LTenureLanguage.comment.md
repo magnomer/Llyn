@@ -5,11 +5,16 @@ Answers about the held draft that need an engine lookup beyond the draft itself.
 Language-dependent flag queries read the held draft instead of an editable control.
 An ended tenure or empty language answers false for flags.
 
+## `public bool LTenureFlaggedCheck()`
+
+Whether the draft's language shows its varieties as flags.
+An ended tenure or an empty language answers false.
+
 ## `public LTranscriptionSheet? LTenureTranscriptionRead()`
 
 The held draft's transcription rows outside the glyph scheme, each with the schemes its pack declares.
 The engine answers the pack's schemes and the glyph split, and the clerk builds the sheet from them.
-So each mark and the free scheme follow the clerk's one-scheme rule.
+The clerk marks each scheme taken per row and names the first scheme still free.
 An ended tenure holds no draft, so it answers nothing.
 
 ## `public LGlyphBlock? LTenureGlyphRead()`
@@ -32,7 +37,7 @@ The reflex clerk refuses a second lookup for the same entry itself.
 ## `public IReadOnlyList<LAnchorRow> LTenureAnchorScan(long reflex)`
 
 The stored fanqie rows the reflex row `reflex` may anchor to, each marked when the row holds it.
-The row's tone is compared under the draft language's tone classes, and an estimate is marked.
+The row's tone is compared under the draft language's tone classes.
 A draft never stored, an unknown row or a refused read answers empty, so the menu shows its notice.
 Any other failure of the scan reaches the caller.
 
@@ -52,9 +57,8 @@ The language clerk resolves each row's printed form.
 Loads the flags the live draft's accent sheet draws into `store`, then answers a fresh sheet.
 A pack that labels varieties by name answers null at once and builds no sheet.
 Nothing loads while no draft is held, and the answer is null.
-A language changed meanwhile answers null, since its own bulletin asks again.
-The sheet is read again after the load, because each read of the draft is a new record.
-So nothing proves the sheet read before the load still current.
+The sheet is read again after the load.
+A language changed meanwhile answers null instead of the fresh sheet.
 
 ## `public void LTenurePronunciationSet(string text)`
 
@@ -142,8 +146,7 @@ Sends the chips without the named one, the pending typed text still included.
 
 Appends a Gloss to the sentence's list, in the settings' gloss language when it is loaded.
 The engine's gloss read owns that fallback, so no language name is written in code.
-The end place is past the list, and the clerk's clamp puts it last.
-It is the insert past the list.
+It is the insert at the end place, past the list.
 
 ## `public void LTenureGlossInsert(long card, long sentence, int position)`
 
@@ -154,11 +157,15 @@ The clerk's clamp keeps the place inside the list.
 
 Appends a first Gloss only when the sentence's Example holds none, and answers whether it did.
 A draft without that Example answers false.
-The transcript's empty seed hands the focus on only when a row was made.
 
 ## `private IReadOnlyList<LSpeechDraft> LTenureChipRead()`
 
 The draft's parts without the pending one, cleaned, so every edit starts from the draft.
+
+## `private void LTenureSpeechSend(IReadOnlyList<LSpeechDraft> held, string typed, bool deferred)`
+
+Remembers the part of speech the typed text appends, then sends the chips with the typed text.
+The request is deferred when `deferred` is true and applied at once otherwise.
 
 ## `private LSpeechOffer LTenureSpeechFind(IReadOnlyList<LSpeechDraft> held, string typed)`
 
@@ -168,6 +175,6 @@ Any other failure reaches the caller.
 
 ## `private LSpeechValue? LTenureSpeechCreate(string language, string name)`
 
+Declares the name in the language's catalog and answers its value.
 A catalog that refuses the name answers nothing, so the part of speech is kept as typed.
-The commit later stores a typed part of speech as custom, so nothing is lost.
 Any other failure of the catalog write reaches the caller.

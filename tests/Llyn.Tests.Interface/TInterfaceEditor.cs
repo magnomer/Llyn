@@ -11,7 +11,17 @@ internal static class TInterfaceEditor
         new LPhonologyOutlet(engine),
         new LSettingsOutlet(engine),
         new LMediaOutlet(engine),
-        TEnvoyFake.TEnvoyCreate(false, []));
+        TEnvoyFake.TEnvoyCreate(false, []),
+        new CLedgerNoticed());
+
+    internal static CEditor TEditorCreate(LEngine engine, CEnvoy envoy) => new(
+        new LDraftOutlet(engine),
+        new LEntryOutlet(engine),
+        new LPhonologyOutlet(engine),
+        new LSettingsOutlet(engine),
+        new LMediaOutlet(engine),
+        envoy,
+        new CLedgerNoticed());
 
     internal static CEditor TEditorCreate(LEngine engine, LPhonologyPort phonology) =>
         TEditorCreate(
@@ -32,7 +42,7 @@ internal static class TInterfaceEditor
         LSettingsPort settings,
         LMediaPort media,
         CEnvoy envoy) =>
-        new(drafts, entries, phonology, settings, media, envoy);
+        new(drafts, entries, phonology, settings, media, envoy, new CLedgerNoticed());
 
     internal static void TEditorVistaRestore(this CEditor editor, LVista vista) => editor.LEditorVistaRestore(vista);
 

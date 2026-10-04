@@ -1,5 +1,5 @@
 # CPhonology.cs
-Hash: `710f85b92b243c06`
+Hash: `4b219634f22cbb59`
 
 ## `public sealed class CPhonology`
 
@@ -97,5 +97,6 @@ The reader is asked for the printer through the panel's envoy, and a decline pri
 ## `public Task CPhonologyPortraitExport()`
 
 The file is offered under the entry's headword, as `LVista.LVistaFileRead` words it.
+`CPortrait` reads that name only once the export starts, and a failed read shows `Export.NameFailed`.
 The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.

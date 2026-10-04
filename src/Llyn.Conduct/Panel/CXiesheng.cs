@@ -102,7 +102,7 @@ public sealed class CXiesheng
 
     public string CXieshengKindredKey => LXieshengStemChosen ? LXieshengVacantKey : "Xiesheng.KindredEmpty";
 
-    public CCatalogOrder CXieshengOrder => CPanel.CPanelOrderRead(LVista.LVistaOrderRead(_cXieshengGrove));
+    public CCatalogOrder CXieshengOrder => CCatalog.LCatalogOrderRead(LVista.LVistaOrderRead(_cXieshengGrove));
 
     private string LXieshengVacantKey =>
         _cXieshengKindred?.LVistaQueried ?? false ? "Xiesheng.KindredUnmatched" : "Xiesheng.KindredVacant";
@@ -161,7 +161,7 @@ public sealed class CXiesheng
     public IReadOnlyList<CVistaRow> CXieshengKindredRead()
     {
         IReadOnlyList<CVistaRow> rows = _cXieshengGrove is LVista grove && _cXieshengKindred is LVista kindred
-            ? _cXieshengPort.LEngineKindredFind(grove, kindred).Select(CPanel.CPanelRowRead).ToList()
+            ? _cXieshengPort.LEngineKindredFind(grove, kindred).Select(CCatalog.LCatalogRowRead).ToList()
             : [];
         _cXieshengKindredCount = rows.Count;
         return rows;
@@ -200,7 +200,7 @@ public sealed class CXiesheng
 
     public void CXieshengGroveSet(CCatalogOrder? order)
     {
-        _cXieshengGrove?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
+        _cXieshengGrove?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
     }
 
     private void LXieshengWorkspaceResonate()
@@ -303,7 +303,7 @@ public sealed class CXiesheng
         return CPortrait.LPortraitFileExport(
             _cXieshengEnvoy,
             _cXieshengSettingsPort,
-            LXieshengFileRead(),
+            LXieshengFileRead,
             (file, medium) => _cXieshengPortraitPort.LEnginePortraitExport(
                 _cXieshengKindred, file, medium, CPortrait.LPortraitLabelRead(_cXieshengSettingsPort)));
     }
@@ -313,6 +313,6 @@ public sealed class CXiesheng
         ArgumentNullException.ThrowIfNull(observer);
 
         grove.LVistaObserverAttach(
-            CPanel.CPanelSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
+            CCatalog.LCatalogSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
     }
 }

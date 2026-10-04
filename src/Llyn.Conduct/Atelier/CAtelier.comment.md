@@ -1,13 +1,13 @@
 # CAtelier.cs
-Hash: `ae3c224caf6d2159`
+Hash: `f4d5f258fa85fbdb`
 
 ## `public sealed class CAtelier : IDisposable`
 
 Conduct's root: the working session over one workspace, which Host builds and hands to a driver.
 It holds the six engine ports and the session's posture.
 Its gates are the medium-free actions no single panel owns.
-Those are opening, quitting and changing the workspace, bulletins, vista start, volume and split.
-The session reads, the recordings and the folder locations sit here too, since the workspace owns them.
+Those are opening, quitting and closing the session, bulletins, vista start, volume and split.
+The workspace path read, the status read and the folder location opener sit here too.
 GUI-only state such as window geometry and panel widths never reaches it.
 
 ## `internal CAtelier(LPosture posture, LDraftPort drafts, LEntryPort entries, LSettingsPort settings, LPhonologyPort phonology, LMediaPort media, LPortraitPort portraits)`
@@ -65,12 +65,12 @@ The workspace keeps the editor, so the quit can ask whether it holds unsaved wor
 Starts the tab's vista on its stored order, filter and split.
 The driver names the subject and order in Conduct's enums, so it never names a Core one.
 It is internal, since the vista it answers is an engine handle.
-The subject and order reach the engine through `CPanel`'s by-name maps, never by cast.
+The subject and order reach the engine through `CCatalog`'s by-name maps, never by cast.
 
 ## `internal bool LAtelierSplitRead()`
 
 Whether the open tab shows its editor rather than its read area.
-Only the navigation reads it, when it restores the open tab at startup.
+Only the navigation reads it, when it restores the open tab on every open.
 
 ## `public double CAtelierVolumeRead()`
 
@@ -82,9 +82,10 @@ Sets the one audio level and hands it to the player.
 The level is written only when `settled`, so a drag costs no write per step.
 A driver passes `settled` once the gesture ends, and a key press is settled at once.
 
-## `public void CAtelierOpen()`
+## `public void CAtelierOpen(CEnvoy envoy)`
 
 Opens the session on the workspace in use at startup.
+`envoy` is the window's, passed down so a failed status read is shown rather than dropped.
 One engine call sweeps the leftover drafts and recordings and answers the stored state.
 The sweep runs before any view restores, so nothing already saved is counted as lost work.
 `CAtelierWorkspace` then raises its open events, and the stored tab opens last.

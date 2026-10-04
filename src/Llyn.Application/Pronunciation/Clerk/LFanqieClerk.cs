@@ -19,6 +19,7 @@ public sealed class LFanqieClerk
     private readonly LClock _lFanqieClerkClock;
     private readonly LLanguageCache _lFanqieClerkLanguages;
     private readonly object _lFanqieClerkGate;
+    private readonly LAuditVault _lFanqieClerkAudit;
     private readonly Action<LSubject, long> _lFanqieClerkBulletin;
     private readonly SemaphoreSlim _lFanqieClerkAdmission = new(1, 1);
     private readonly Dictionary<string, CancellationTokenSource> _lFanqieClerkPending = new(StringComparer.Ordinal);
@@ -38,6 +39,7 @@ public sealed class LFanqieClerk
         _lFanqieClerkSource = rig.LRigFanqieSource;
         _lFanqieClerkPacks = rig.LRigLanguages;
         _lFanqieClerkClock = rig.LRigClock;
+        _lFanqieClerkAudit = rig.LRigAudit;
         _lFanqieClerkLanguages = languages;
         _lFanqieClerkGate = gate;
         _lFanqieClerkBulletin = raise;
@@ -337,9 +339,14 @@ public sealed class LFanqieClerk
                 }
             }
         }
-        catch (Exception)
+        catch (OperationCanceledException) when (fetch.IsCancellationRequested)
+        {
+            raised = false;
+        }
+        catch (Exception exception)
         {
             raised = !fetch.IsCancellationRequested;
+            _lFanqieClerkAudit.LAuditRecord(exception);
         }
         finally
         {

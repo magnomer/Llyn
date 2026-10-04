@@ -80,7 +80,7 @@ public sealed class CCohort
         try
         {
             return _cCohortEntryPort.LEngineEntryFind(_cCohortRoll, _cCohortVista)
-                .Select(CPanel.CPanelRowRead)
+                .Select(CCatalog.LCatalogRowRead)
                 .ToList();
         }
         catch (Exception exception)
@@ -119,7 +119,7 @@ public sealed class CCohort
         return CPortrait.LPortraitFileExport(
             _cCohortEnvoy,
             _cCohortSettingsPort,
-            LCohortFileRead(),
+            LCohortFileRead,
             (file, medium) => _cCohortPortraitPort.LEnginePortraitExport(
                 _cCohortVista, file, medium, CPortrait.LPortraitLabelRead(_cCohortSettingsPort)));
     }

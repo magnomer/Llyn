@@ -23,7 +23,11 @@ internal static class TInterfaceConductPortrait
     internal static IReadOnlyList<CPortraitChoice> TPortraitChoiceRead() => CPortrait.LPortraitChoiceRead();
 
     internal static Task TPortraitFileExport(CEnvoy envoy, string file, Func<string, LPortraitMedium, Task> export) =>
-        CPortrait.LPortraitFileExport(envoy, TInterfaceConduct.TSettingsCreate(), file, export);
+        CPortrait.LPortraitFileExport(envoy, TInterfaceConduct.TSettingsCreate(), () => file, export);
+
+    internal static Task TPortraitFileExport(
+        CEnvoy envoy, LSettingsPort settings, Func<string> fileRead, Func<string, LPortraitMedium, Task> export) =>
+        CPortrait.LPortraitFileExport(envoy, settings, fileRead, export);
 
     internal static Task TPortraitTicketPrint(CEnvoy envoy, Func<LPressTicket, Task> print) =>
         CPortrait.LPortraitTicketPrint(envoy, TInterfaceConduct.TSettingsCreate(), print);

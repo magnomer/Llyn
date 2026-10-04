@@ -378,6 +378,7 @@ footer { color: var(--ink-3); font-size: 12px; display: flex; flex-wrap: wrap; g
     ['In-code markers', d.scope.markers.map(function (m) { return esc(m.extension) + ' ' + codes(m.tokens); }).join(', ')],
     ['Block closers', d.scope.closers.map(function (c) { return '<code>' + esc(c.open) + '</code> \u2026 <code>' + esc(c.close) + '</code>'; }).join(', ')],
     ['Exempt files', d.scope.exemptFiles.length ? esc(d.scope.exemptFiles.join(', ')) : 'None'],
+    ['Exempt comment files', d.scope.exemptComments.length ? esc(d.scope.exemptComments.join(', ')) + ' (developer only, never judged)' : 'None'],
     ['Excluded folders', esc(d.scope.excluded.join(', '))],
     ['Excluded suffixes', d.scope.excludedSuffixes.length ? esc(d.scope.excludedSuffixes.join(', ')) : 'None']
   ];

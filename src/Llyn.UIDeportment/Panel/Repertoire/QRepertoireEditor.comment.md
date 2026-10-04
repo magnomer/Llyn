@@ -1,5 +1,5 @@
 # QRepertoireEditor.cs
-Hash: `7034d050e8a5a2df`
+Hash: `17cb42a142ea42d8`
 
 ## `internal sealed partial class QRepertoire`
 
@@ -13,7 +13,7 @@ A field already reading the same text is left alone by the text box itself, care
 
 Subscribes the three fields' text changes.
 
-## `private void QScenarioDetach()`
+## `private void QScenarioTeardown()`
 
 Unsubscribes them while the fields are filled from a held Situation.
 Filling a field raises the same change the user typing raises, and only typing may reach the gate.

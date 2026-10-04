@@ -1,5 +1,5 @@
 # LFrequencyClerk.cs
-Hash: `c6c836c1b335e1f1`
+Hash: `60bc1e0a233b1578`
 
 ## `public sealed class LFrequencyClerk`
 
@@ -9,7 +9,7 @@ The engine's gate is shared, so a fetch that lands writes under the same lock as
 
 ## `public LFrequencyClerk(LRig rig, LLanguageCache languages, object gate, Func<LSettings> settings, Action<LSubject, long> raise)`
 
-Reads the entry and frequency ports and the source factory out of `rig`.
+Reads the entry and frequency ports, the source factory and the fault log out of `rig`.
 `settings` is read at fetch time, so a setting turned off mid-fetch discards the answer.
 `raise` publishes the bulletin when a fetch lands.
 
@@ -73,3 +73,5 @@ One fetch admitted through the four-wide gate.
 The answer is written only when the fetch still stands and the setting is still on.
 The entry must still read the same headword and language.
 A miss is remembered so the read does not start the same fetch again.
+The fetch is never awaited, so a failure is recorded in the fault log rather than lost unobserved.
+Cancellation by the fetch's own token is not a failure and is not recorded.

@@ -39,7 +39,7 @@ public sealed record CLeaf(
                 card.LCardDraftSituation.Select(CLeafChip.LLeafChipRead).ToList(),
                 card.LCardDraftRegister.Select(CLeafChip.LLeafChipRead).ToList(),
                 card.LCardDraftTag.Select(CLeafChip.LLeafChipRead).ToList(),
-                CFolio.CFolioTargetRead(targets[card.LCardDraftId]),
+                CFolio.CFolioTargetRead(targets.GetValueOrDefault(card.LCardDraftId, [])),
                 card.LCardDraftSentence
                     .Select(sentence => CLeafLine.LLeafLineRead(sentence, order, mark, citations))
                     .ToList(),

@@ -43,7 +43,7 @@ internal static class QLookItem
         QLookList.Add(list, fill);
         list.ItemContainerGenerator.StatusChanged += (_, _) => QLookItemScan(list, fill, false);
         list.Loaded += (_, _) => QLookItemScan(list, fill, false);
-        list.Unloaded += (_, _) => QLookItemDetach(list, []);
+        list.Unloaded += (_, _) => QLookItemTeardown(list, []);
         QLookItemScan(list, fill, false);
     }
 
@@ -104,10 +104,10 @@ internal static class QLookItem
             QLookWatch.Add(container, Tuple.Create(item, handler));
         }
 
-        QLookItemDetach(list, live);
+        QLookItemTeardown(list, live);
     }
 
-    private static void QLookItemDetach(ItemsControl list, HashSet<FrameworkElement> live)
+    private static void QLookItemTeardown(ItemsControl list, HashSet<FrameworkElement> live)
     {
         HashSet<FrameworkElement> roster = QLookRoster.GetValue(list, _ => []);
         foreach (FrameworkElement container in roster.Where(container => !live.Contains(container)).ToList())

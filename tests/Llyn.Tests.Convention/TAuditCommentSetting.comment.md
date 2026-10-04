@@ -1,5 +1,5 @@
 # TAuditCommentSetting.cs
-Hash: `aae83cdf109ff239`
+Hash: `ef939d3e5ffdfe2f`
 
 ## `internal static class TAuditCommentSetting`
 
@@ -16,6 +16,12 @@ Each needs its comment file at the root, and a listed `.props` file must carry n
 ## `public static readonly string[] TAuditCommentExempt`
 
 TAuditNameRegistry.cs is generated and carries a generated-file header, so it alone is exempt.
+
+## `public static readonly string[] TAuditCommentReserved`
+
+Comment files only the developer edits, matching `exempt.comments` in the script configuration.
+No line rule, heading or hash check reads them.
+Each path is relative to the repository root and must exist.
 
 ## `public static readonly string[] TAuditCommentSources`
 

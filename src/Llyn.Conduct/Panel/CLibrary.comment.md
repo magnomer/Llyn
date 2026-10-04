@@ -1,5 +1,5 @@
 # CLibrary.cs
-Hash: `4b97abb3aab16e2f`
+Hash: `83f895f4242046ff`
 
 ## `public sealed class CLibrary`
 
@@ -85,6 +85,7 @@ The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver make
 ## `internal string LLibraryFileRead()`
 
 The file name an export of the chosen entry is offered under.
+`CPortrait` reads it only once the export starts, and a failed read shows `Export.NameFailed`.
 
 ## `public Task CLibraryPortraitPrint()`
 

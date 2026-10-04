@@ -18,7 +18,8 @@ internal static class TInterfaceConductCard
         new LPhonologyOutlet(engine),
         new LDraftOutlet(engine),
         TInterfaceConduct.TSettingsCreate(),
-        TEnvoyFake.TEnvoyCreate(false, []));
+        TEnvoyFake.TEnvoyCreate(false, []),
+        new CLedgerNoticed());
 
     internal static CStateValue TCardStateRead(LStateValue value) => CFolio.CFolioStateRead(value);
 

@@ -1,5 +1,5 @@
 # CShelf.cs
-Hash: `fb4cc68739055505`
+Hash: `24e3b352f4ef84e8`
 
 ## `public sealed class CShelf`
 
@@ -12,6 +12,7 @@ It restores both vistas itself and chooses which side prints, exports, saves or 
 ## `private CShelf(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the entry editor, the source editor, the Source panel and the entry list over the atelier's ports.
+The source editor also takes the atelier's repaint memory, for its byline's search.
 The Source panel asks the source desk before it leaves a Source, and both panels finish through `LShelfDraftFinish`.
 A cleared Source panel cancels the source draft, and an edited row opens the source editor on it.
 A loaded Source draft is shaped into its colophon through `COeuvre`'s map, with no second panel.

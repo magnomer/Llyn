@@ -87,6 +87,11 @@
       "TAuditNameRegistry.cs"
     ]
   },
+  "exempt": {
+    "comments": [
+      "version.comment.md"
+    ]
+  },
   "ceilings": {
     "unstamped": 0
   },

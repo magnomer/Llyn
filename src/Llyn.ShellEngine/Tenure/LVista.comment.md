@@ -1,12 +1,12 @@
 # LVista.cs
-Hash: `4b0f6ef9ce048792`
+Hash: `4e732b64a9d1d126`
 
 ## `public sealed class LVista`
 
 The engine's view state for one catalog tab: order, language filter, query, chosen row and editing mode.
 A panel holds one vista and its controls, and keeps no copy of these values.
-Order and filter are saved under the tab as they change, so a reopen finds them.
-Query and chosen row live only for the session, as they do today.
+Order and filter are announced as they change, and the posture stores them under the tab.
+Query and chosen row live only for the session.
 Every change to order, filter or query raises a vista bulletin carrying this vista's id.
 The panel re-lists its rows from that bulletin, so the vista and the list never disagree.
 An unchanged value raises nothing, so a repeated click costs no re-list.
@@ -14,7 +14,6 @@ The chosen row raises nothing, since the panel that chose it re-marks its rows i
 It is also the panel's subscription to the engine's bulletins.
 The engine attaches every vista it starts, and the panel attaches one observer per subject to the vista.
 So the panel writes no switch over the subject and compares no bulletin id against its own.
-Before this every panel took every bulletin and sorted them itself, a hundred comparisons over the shell.
 A vista bulletin reaches the panel only when it names this vista, so a sibling tab's move is never seen.
 A chosen observer is reached only for the row the panel stands on, or for a bulletin naming no row.
 The setters run on the UI thread, while a bulletin may arrive on the thread that raised it.
@@ -27,7 +26,7 @@ The posture stores it as the split every tab opens on next time.
 
 ## `private readonly LEngine _lEngine;`
 
-The engine that saves the layout and raises the bulletin.
+The engine that loads the draft, saves the side and raises the bulletin.
 
 ## `private readonly object _lVistaGate = new();`
 
@@ -48,7 +47,7 @@ Made by the engine alone, with the order and filter already read from the tab's 
 ## `public long LVistaId { get; }`
 
 The id every vista bulletin carries, so a panel answers only its own vista.
-It counts up per engine and names no stored record.
+It names no stored record.
 
 ## `public string LVistaTab { get; }`
 
@@ -57,8 +56,7 @@ The layout tab the order and filter are saved under.
 ## `public bool LVistaBlank { get; }`
 
 Whether an empty query lists nothing rather than every row.
-The duplex wings search on demand, so a wing with nothing typed offers no rows.
-Every other tab lists its whole catalog on an empty query.
+The facade lists nothing for an empty query when this is set.
 
 ## `public LCatalogOrder LVistaOrder { get; private set; }`
 
@@ -79,7 +77,7 @@ The id of the row the panel stands on, or null when none is chosen.
 ## `public static bool LVistaStoredCheck(long? id)`
 
 Whether a row id names a stored record.
-A zero id marks a row the engine words itself, such as the uncredited authors.
+A zero or negative id marks a row the engine words itself.
 `LVistaStored` asks it, and so does `CGuild` before it keeps edit mode on an opened row.
 
 ## `public void LVistaOrderSet(LCatalogOrder? order)`
@@ -149,6 +147,30 @@ A stored choice that no longer loads is dropped here, so a panel never branches 
 Selects the row and loads it, restoring the previous choice when the load throws.
 So a failed click leaves the panel where it stood, and no caller keeps the prior choice.
 
+## `public long? LVistaStored`
+
+The chosen id when it names a stored record, otherwise null.
+
+## `public bool LVistaMatch(long id)`
+
+Whether `id` is the chosen row.
+
+## `public bool LVistaFiltered`
+
+Whether the filter hides any language.
+
+## `public bool LVistaQueried`
+
+Whether the query holds anything besides whitespace.
+
+## `public bool LVistaLeft`
+
+Whether the tab is the left duplex side.
+
+## `public bool LVistaInput`
+
+Whether the tab is the input tab.
+
 ## `public bool LVistaNarrowed`
 
 Whether the filter or the query narrows the rows, so a panel asks one question instead of combining two.
@@ -157,7 +179,9 @@ Whether the filter or the query narrows the rows, so a panel asks one question i
 
 The file name an export of the vista's entry is offered under is the headword with barred characters replaced.
 The trail port of the vista's engine says which characters are barred, so the vista reads no file rule itself.
-A vista that holds nothing, or fails to load, is offered as `entry`.
+A missing vista, or a blank headword, is offered as `entry`.
+A failed load is not caught here.
+It travels up to the export gate.
 
 ## `public static LCatalogOrder LVistaOrderRead(LVista? vista)`
 

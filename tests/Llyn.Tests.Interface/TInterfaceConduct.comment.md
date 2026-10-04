@@ -1,5 +1,5 @@
 # TInterfaceConduct.cs
-Hash: `c59ff8e7a63ff17f`
+Hash: `8d79e16c5516c0a3`
 
 ## `internal static class TInterfaceConduct`
 
@@ -30,6 +30,11 @@ Builds an atelier over a fake `settings` port, for the ledger's reads and saves.
 Its draft port answers the sweep and the observer attach and detach.
 The ledger can thus attach without a real engine.
 
+## `internal static CAtelier TAtelierCreate(LEngine engine, LSettingsPort settings, LDraftPort drafts)`
+
+Builds an atelier over a given settings port and draft port.
+A fact can then hold the bulletin observers the draft port is handed and send a bulletin itself.
+
 ## `internal static CAtelier TAtelierCreate(LEngine engine, Dictionary<string, Func<object?[]?, object?>> answers)`
 
 Builds an atelier whose draft, entry and phonology ports answer from `answers`, for the text gates.
@@ -47,9 +52,11 @@ The card and atlas map relays hand it on, so a fact without an engine still read
 
 ## `internal static LSettingsPort TSettingsCreate() =>`
 
-A settings port that answers only failure notices and text keys.
+A settings port that answers only failure notices, text keys and fonts.
 A notice reads as the unexpected key it is handed, and a text key as the key itself.
 A test thus sees which wording a gate chose.
+A font reads as one with nothing set, as for a language whose pack sets none.
+This holds since the font rule no longer catches a refusal.
 A gate over fakes can then show its failure without a real engine behind the notice.
 
 ## `internal static CVoyageState TVoyageRead(this CVoyage voyage) => voyage.LVoyageRead();`
@@ -73,7 +80,25 @@ A test can then see how the workspace asks and closes drafts.
 
 Subscribes `heard` to the workspace's internal state event, so a test hears what the wings restore from.
 
+## `internal static void TLedgerFailureShow(this CAtelier atelier, CEnvoy envoy, string key, Exception exception) =>`
+
+Relays a gate's failure policy over the atelier's own settings port, so a test can show a chosen key twice.
+
+## `internal static void TLedgerRepaintShow(this CAtelier atelier, CEnvoy envoy, string key, Exception exception) =>`
+
+Relays a repaint read's failure through the atelier's repaint memory, so a test can watch repeats merge.
+
 ## `internal static CWorkspaceState? TAtelierStateOpen(this CAtelier atelier)`
 
-Opens the atelier and returns the workspace state it announced, or nothing when none came.
+Opens the atelier through `TAtelierStubOpen` and returns the workspace state it announced, or nothing when none came.
 The subscription is removed again before it returns.
+
+## `internal static void TAtelierStubOpen(this CAtelier atelier) =>`
+
+Opens the atelier with a stub envoy, so a test opens it without a window.
+The stub answers every call with nothing.
+
+## `internal static void TAtelierOpen(this CAtelier atelier, CEnvoy envoy) =>`
+
+Opens the atelier with the given `envoy`, so a test reads the notices the open shows.
+A test that opens twice hands a second envoy, and sees which one later notices reach.

@@ -186,7 +186,8 @@ internal static partial class TInterface
         long target,
         Action<LHarvestStep> sink,
         CancellationToken cancellation) =>
-        engine.LEnginePronunciation.LEngineRecordingFind(session, word, language, target, sink, cancellation);
+        engine.LEnginePronunciation.LEngineRecordingFind(
+            session, word, language, target, new LListenerRelay(sink), cancellation);
 
     internal static Task TEngineTranscriptionFind(
         this LEngine engine,
@@ -196,7 +197,8 @@ internal static partial class TInterface
         string scheme,
         Action<LLookupStep> sink,
         CancellationToken cancellation) =>
-        engine.LEnginePronunciation.LEngineTranscriptionFind(session, word, language, scheme, sink, cancellation);
+        engine.LEnginePronunciation.LEngineTranscriptionFind(
+            session, word, language, scheme, new LReceiverRelay(sink), cancellation);
 
     internal static IReadOnlyList<LVariety> TEngineVarietyRead(this LEngine engine, string language) =>
         engine.LEngineLanguage.LEngineVarietyRead(language);

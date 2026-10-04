@@ -1,5 +1,5 @@
 # CFavorite.cs
-Hash: `3bc75f2d8b0c004c`
+Hash: `66d4b9d194189bab`
 
 ## `public sealed class CFavorite`
 
@@ -89,6 +89,7 @@ The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver make
 ## `internal string LFavoriteFileRead()`
 
 The file name an export of the chosen entry is offered under.
+`CPortrait` reads it only once the export starts, and a failed read shows `Export.NameFailed`.
 
 ## `public Task CFavoritePortraitPrint()`
 

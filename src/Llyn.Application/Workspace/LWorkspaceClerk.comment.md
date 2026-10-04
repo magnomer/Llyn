@@ -1,5 +1,5 @@
 # LWorkspaceClerk.cs
-Hash: `ef6cc4ebc46f62d2`
+Hash: `9c0bf8c2a9ea024d`
 
 ## `public sealed class LWorkspaceClerk`
 
@@ -56,6 +56,12 @@ Only the exception itself is read, since a wrapped refusal is not the commit's o
 
 Whether `exception` is a refused edit rather than a lost draft, which the shell skips and goes on.
 A refusal saying the draft is gone is left out, since that is a lost hold and halts the tenure.
+
+## `public static bool LWorkspaceStaleCheck(Exception exception)`
+
+Whether `exception` is the refusal of a stale draft, and nothing else.
+A recording search, a reading search or a byline find over such a draft answers nothing.
+A stale draft is no failure, so the shell shows no notice for it.
 
 ## `public IReadOnlyDictionary<string, string> LWorkspaceLocalizationLoad(string language)`
 

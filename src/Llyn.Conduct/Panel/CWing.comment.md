@@ -1,5 +1,5 @@
 # CWing.cs
-Hash: `353a07de7d1583a7`
+Hash: `d8282b6d0dedf72d`
 
 ## `public sealed class CWing`
 
@@ -18,6 +18,7 @@ Whether this is the left side, which names its vista's tab and its slot in the w
 
 Takes the atelier the side reads through, the envoy that reports a failed load, and which place it is.
 The reading display is built here, since a side has no editor to own it.
+It hands the display the atelier's repaint memory, so both sides and every editor share it.
 It opens what it is asked to through the atelier's navigation.
 It starts its first vista at once, so the driver's first paint finds one.
 It registers its vista restore and its close with the workspace, as every area does.

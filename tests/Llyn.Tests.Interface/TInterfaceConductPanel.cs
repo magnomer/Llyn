@@ -12,7 +12,7 @@ internal static class TInterfaceConductPanel
     internal static bool TCatalogFilterMatch(this CCatalogFilter filter, string? language) =>
         filter.CCatalogFilterMatch(language);
 
-    internal static CVistaRow TPanelRowRead(LVistaRow row) => CPanel.CPanelRowRead(row);
+    internal static CVistaRow TPanelRowRead(LVistaRow row) => CCatalog.LCatalogRowRead(row);
 
     internal static CPanel TPanelCreate(
         CEnvoy envoy, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam) =>
@@ -29,13 +29,13 @@ internal static class TInterfaceConductPanel
 
     internal static LVista? TPanelVistaRead(this CPanel panel) => panel.CPanelVista;
 
-    internal static CCatalogOrder TPanelOrderRead(LCatalogOrder order) => CPanel.CPanelOrderRead(order);
+    internal static CCatalogOrder TPanelOrderRead(LCatalogOrder order) => CCatalog.LCatalogOrderRead(order);
 
-    internal static LCatalogOrder? TPanelOrderRead(CCatalogOrder? order) => CPanel.CPanelOrderRead(order);
+    internal static LCatalogOrder? TPanelOrderRead(CCatalogOrder? order) => CCatalog.LCatalogOrderRead(order);
 
-    internal static CCatalogFilter TPanelFilterRead(LCatalogFilter filter) => CPanel.CPanelFilterRead(filter);
+    internal static CCatalogFilter TPanelFilterRead(LCatalogFilter filter) => CCatalog.LCatalogFilterRead(filter);
 
-    internal static LSubject TPanelSubjectRead(CSubject subject) => CPanel.CPanelSubjectRead(subject);
+    internal static LSubject TPanelSubjectRead(CSubject subject) => CCatalog.LCatalogSubjectRead(subject);
 
     internal static COeuvre TOeuvreCreate(LEngine engine) =>
         new(

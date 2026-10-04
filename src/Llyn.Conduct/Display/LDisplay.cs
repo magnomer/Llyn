@@ -25,24 +25,30 @@ public sealed class LDisplay
         LPhonologyPort phonology,
         LSettingsPort settings,
         LMediaPort media,
-        CEnvoy envoy)
+        CEnvoy envoy,
+        CLedgerNoticed noticed)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(noticed);
 
         _lEntryPort = entries;
         _lDisplayEnvoy = envoy;
         _lDisplaySettings = settings;
+        LDisplayNoticed = noticed;
         LDisplayMediaPort = media;
         LDisplaySound = new LDisplaySound(entries, phonology, media, settings);
         LDisplaySound.LDisplaySoundFailed +=
+            (key, exception) => noticed.LLedgerRepaintShow(envoy, settings, key, exception);
+        LDisplaySound.LDisplayMarkFailed +=
             (key, exception) => CLedger.LLedgerFailureShow(envoy, settings, key, exception);
         CDisplayArea = new CDisplay(this, entries, phonology, settings, envoy);
-        CDisplaySound = new CDisplaySound(
-            LDisplaySound, CDisplayArea, drafts, entries, phonology, media, settings, envoy);
+        CDisplaySound = new CDisplaySound(this, CDisplayArea, drafts, entries, phonology, media, settings, envoy);
     }
 
     public LDisplaySound LDisplaySound { get; }
+
+    internal CLedgerNoticed LDisplayNoticed { get; }
 
     internal LMediaPort LDisplayMediaPort { get; }
 
@@ -75,13 +81,13 @@ public sealed class LDisplay
     internal void LDisplayChosenAttach(CSubject subject, Action<CBulletin> observer)
     {
         _lDisplayVista?.LVistaChosenAttach(
-            CPanel.CPanelSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
+            CCatalog.LCatalogSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
     }
 
     internal void LDisplayObserverAttach(CSubject subject, Action<CBulletin> observer)
     {
         _lDisplayVista?.LVistaObserverAttach(
-            CPanel.CPanelSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
+            CCatalog.LCatalogSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
     }
 
     internal void LDisplayDraftLoad(Action<LEntryDraft?> show)
@@ -95,7 +101,7 @@ public sealed class LDisplay
         }
         catch (Exception exception)
         {
-            CLedger.LLedgerFailureShow(_lDisplayEnvoy, _lDisplaySettings, "Sound.LoadFailed", exception);
+            LDisplayNoticed.LLedgerRepaintShow(_lDisplayEnvoy, _lDisplaySettings, "Sound.LoadFailed", exception);
             return;
         }
 
@@ -120,8 +126,9 @@ public sealed class LDisplay
         {
             return _lEntryPort.LEngineFavoriteCheck(id);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            LDisplayNoticed.LLedgerRepaintShow(_lDisplayEnvoy, _lDisplaySettings, "Favorite.ReadFailed", exception);
             return false;
         }
     }
@@ -214,7 +221,7 @@ public sealed class LDisplay
         }
         catch (Exception exception)
         {
-            CLedger.LLedgerFailureShow(_lDisplayEnvoy, _lDisplaySettings, "Display.NameFailed", exception);
+            LDisplayNoticed.LLedgerRepaintShow(_lDisplayEnvoy, _lDisplaySettings, "Display.NameFailed", exception);
             return labels;
         }
     }
@@ -239,8 +246,9 @@ public sealed class LDisplay
             _lDisplayGrasp = (id, step);
             return step;
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            LDisplayNoticed.LLedgerRepaintShow(_lDisplayEnvoy, _lDisplaySettings, "Grasp.ReadFailed", exception);
             return 0;
         }
     }
@@ -276,8 +284,9 @@ public sealed class LDisplay
         {
             gauge = _lEntryPort.LEngineFrequencyResolve(id, once);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            LDisplayNoticed.LLedgerRepaintShow(_lDisplayEnvoy, _lDisplaySettings, "Frequency.ReadFailed", exception);
             return null;
         }
 

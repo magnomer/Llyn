@@ -1,5 +1,5 @@
 # TPortrait.cs
-Hash: `b6130da6d17d12fc`
+Hash: `725338783a1ac1bb`
 
 ## `public sealed class TPortrait`
 
@@ -12,6 +12,7 @@ The fake wording answers `text:` plus the key.
 The formats offered and the default one come from the engine.
 A declined file or printer question does nothing.
 A failing dialog or engine call shows its key through the envoy.
+A failing name read shows `Export.NameFailed` and exports nothing, and no settings port throws.
 
 ## `private static LSettingsPort TPortraitSettingsCreate()`
 

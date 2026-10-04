@@ -1,5 +1,5 @@
 # CSounding.cs
-Hash: `a3928ea29b5fcfcc`
+Hash: `f1d34b274303252b`
 
 ## `public sealed class CSounding`
 
@@ -8,19 +8,22 @@ It covers the entry's rime-book groups, its script rows and its paradigm slots.
 It also holds the maps from an entry's sound rows to the shapes the drivers show.
 Every read and gate works on the entry the desk has stored, so no driver passes an entry.
 A fresh draft has no stored entry, so every read answers empty and every gate does nothing.
-Every read swallows a refusal and answers empty, since a box that cannot fetch still has to draw.
-Every gate announces the change, or asks the envoy to show the refusal under its own notice key.
+Every read answers empty on a refusal, since a box that cannot fetch still has to draw.
+The refusal still shows through the envoy under the read's own notice key, so none passes unseen.
+A read runs on every repaint, so it shows through the atelier's repaint memory, once until the user acts.
+Every mark gate announces the change, or shows the refusal under its own notice key.
 
 ## `internal void LSoundingObserverAttach(Action<Action> marshal)`
 
 Hears the tenure's fanqie subject and raises `CSoundingChanged` on the driver's thread.
 A fanqie changed elsewhere refreshes the editor as a fanqie set here does.
 
-## `internal CSounding(CDesk desk, LPhonologyPort phonology, LSettingsPort settings, LDisplaySound voice, CEnvoy envoy)`
+## `internal CSounding(CDesk desk, LPhonologyPort phonology, LSettingsPort settings, LDisplay display, CEnvoy envoy)`
 
 Takes the editor's desk and the phonology port every sound read goes through.
 A refused load shows through `envoy`, with the ready notice `settings` reads.
-The waiting checks and the morphology verdict come from `voice`, the editor's display voice.
+The waiting checks and the morphology verdict come from the voice of `display`, the editor's display.
+The repaint memory comes from `display` too, so the width did not grow.
 Only the editor builds one, so the constructor is internal.
 
 ## `public event Action? CSoundingChanged;`
@@ -82,17 +85,16 @@ Both verdicts stand in each slot's ready status, so the driver never reads them.
 The headword font is that of the paradigm's own language, as the reading view picks it.
 Every block's font goes through the one font rule `CCatalog.LCatalogFontRead` holds.
 
-## `private IReadOnlyList<LSoundingItem> LSoundingListRead<LSoundingItem>(Func<long, IReadOnlyList<LSoundingItem>> read)`
+## `private IReadOnlyList<LSoundingItem> LSoundingListRead<LSoundingItem>(Func<long, IReadOnlyList<LSoundingItem>> read, string key)`
 
 One list read for the stored entry, empty for a fresh draft or a refusal.
-
-## `private static LSoundingAnswer LSoundingAnswerRead<LSoundingAnswer>(Func<LSoundingAnswer> read, LSoundingAnswer fallback)`
-
-One engine answer, or the fallback when the engine refuses.
+A refusal shows `key`: `Display.FanqieReadFailed`, `Display.ScriptReadFailed` or `Display.ParadigmReadFailed`.
+The reading view names its rows with the same keys.
 
 ## `private void LSoundingMarkSend(Action<long> mark, string key)`
 
 Sends one change for the stored entry, then announces it or shows the refusal under `key`.
+A send answers a user act, so its refusal shows every time.
 
 ## `internal static IReadOnlyList<CFanqieGroup> CSoundingFanqieRead(IReadOnlyList<LFanqieGroup> groups)`
 
@@ -106,6 +108,10 @@ Copies every cell the fanqie line shows, derived cells included.
 ## `internal static IReadOnlyList<CScriptGroup> CSoundingScriptRead(IReadOnlyList<LScriptGroup> groups)`
 
 The one map from the engine's script groups to their shape, shared with the lectern.
+
+## `private static CScriptImage LSoundingImageRead(LScriptImage image)`
+
+Copies the data, caption and epoch of one script image.
 
 ## `internal static IReadOnlyList<CParadigmSlot> CSoundingParadigmRead(IReadOnlyList<LParadigmRow> rows, bool pending, bool enabled, bool held)`
 
@@ -139,14 +145,11 @@ The editor's contour and the reading view's block share it.
 
 The transcriptions of a draft, shaped for the transcription rows and the lectern.
 
-## `internal static CLecternAnchor LSoundingAnchorRead(LDraftPort drafts, long? entry, string headword, IReadOnlyList<CReflex> rows)`
-
-Whether the headword offers anchoring for `entry`, and the anchor text of each row, keyed by its id.
-The engine's entry-based anchor rule answers both, and the placements are joined by `CReflex.LReflexSeparator`.
-The reading view and the editor's reflex block both read their anchors here, so the map has one owner.
-No stored entry or a refusal answers no anchor.
-
 ## `internal static IReadOnlyList<CReflexDraft> CSoundingReflexRead(IReadOnlyList<LReflexDraft> reflexes)`
 
 The reflexes of a draft, shaped for the reflex rows and the lectern.
 The tone travels as text, so no driver reads an anatomy.
+
+## `private static CReflexDraft CSoundingReflexRead(LReflexDraft reflex)`
+
+Copies every field of one engine reflex draft into its shape.

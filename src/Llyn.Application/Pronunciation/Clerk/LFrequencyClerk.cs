@@ -15,6 +15,7 @@ public sealed class LFrequencyClerk
     private readonly LEntryVault _lFrequencyClerkEntries;
     private readonly LFrequencyVault _lFrequencyClerkFrequencies;
     private readonly LSourceFactory _lFrequencyClerkFactory;
+    private readonly LAuditVault _lFrequencyClerkAudit;
     private readonly LLanguageCache _lFrequencyClerkLanguages;
     private readonly object _lFrequencyClerkGate;
     private readonly Func<LSettings> _lFrequencyClerkSettings;
@@ -39,6 +40,7 @@ public sealed class LFrequencyClerk
         _lFrequencyClerkEntries = rig.LRigEntries;
         _lFrequencyClerkFrequencies = rig.LRigFrequencies;
         _lFrequencyClerkFactory = rig.LRigSources;
+        _lFrequencyClerkAudit = rig.LRigAudit;
         _lFrequencyClerkLanguages = languages;
         _lFrequencyClerkGate = gate;
         _lFrequencyClerkSettings = settings;
@@ -317,8 +319,12 @@ public sealed class LFrequencyClerk
                 raised = true;
             }
         }
-        catch (Exception)
+        catch (OperationCanceledException) when (fetch.IsCancellationRequested)
         {
+        }
+        catch (Exception exception)
+        {
+            _lFrequencyClerkAudit.LAuditRecord(exception);
         }
         finally
         {

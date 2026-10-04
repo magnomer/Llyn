@@ -84,7 +84,7 @@ public sealed class CQuotation
         try
         {
             return _cQuotationEntryPort.LEngineEntryFind(_cQuotationRoll, _cQuotationVista)
-                .Select(CPanel.CPanelRowRead)
+                .Select(CCatalog.LCatalogRowRead)
                 .ToList();
         }
         catch (Exception exception)
@@ -122,7 +122,7 @@ public sealed class CQuotation
         return CPortrait.LPortraitFileExport(
             _cQuotationEnvoy,
             _cQuotationSettingsPort,
-            LQuotationFileRead(),
+            LQuotationFileRead,
             (file, medium) => _cQuotationPortraitPort.LEnginePortraitExport(
                 _cQuotationVista, file, medium, CPortrait.LPortraitLabelRead(_cQuotationSettingsPort)));
     }

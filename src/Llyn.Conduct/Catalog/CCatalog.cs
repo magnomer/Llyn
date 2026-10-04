@@ -28,15 +28,8 @@ public sealed class CCatalog
             return new CFont(null, null, null);
         }
 
-        try
-        {
-            LFont font = settings.LEngineFontRead(language, LCatalogRoleRead(role));
-            return new CFont(font.LFontFamily, font.LFontSized, font.LFontStyle);
-        }
-        catch (Exception)
-        {
-            return new CFont(null, null, null);
-        }
+        LFont font = settings.LEngineFontRead(language, LCatalogRoleRead(role));
+        return new CFont(font.LFontFamily, font.LFontSized, font.LFontStyle);
     }
 
     private static LFontRole LCatalogRoleRead(CFontRole role)
@@ -96,16 +89,9 @@ public sealed class CCatalog
         ArgumentNullException.ThrowIfNull(store);
         ArgumentNullException.ThrowIfNull(read);
 
-        IReadOnlyList<string> languages;
-        try
-        {
-            languages = await settings.LEngineEnsignLoad((rows, delete) => store(CCatalogEnsignRead(rows), delete))
-                .ConfigureAwait(true);
-        }
-        catch (Exception)
-        {
-            languages = settings.LEngineLanguageRead();
-        }
+        IReadOnlyList<string> languages = await settings
+            .LEngineEnsignLoad((rows, delete) => store(CCatalogEnsignRead(rows), delete))
+            .ConfigureAwait(true);
 
         return new CEnsignSheet<LCatalogKind>(languages, read());
     }
@@ -139,5 +125,107 @@ public sealed class CCatalog
     internal static IReadOnlyList<CEnsignRow> CCatalogEnsignRead(IReadOnlyList<LEnsignRow> rows)
     {
         return rows.Select(static row => new CEnsignRow(row.LEnsignRowKey, row.LEnsignRowPath)).ToList();
+    }
+
+    internal static CCatalogOrder LCatalogOrderRead(LCatalogOrder order)
+    {
+        return order switch
+        {
+            LCatalogOrder.LCatalogOrderName => CCatalogOrder.CCatalogOrderName,
+            LCatalogOrder.LCatalogOrderHeadword => CCatalogOrder.CCatalogOrderHeadword,
+            LCatalogOrder.LCatalogOrderReverse => CCatalogOrder.CCatalogOrderReverse,
+            LCatalogOrder.LCatalogOrderRecent => CCatalogOrder.CCatalogOrderRecent,
+            LCatalogOrder.LCatalogOrderEarliest => CCatalogOrder.CCatalogOrderEarliest,
+            LCatalogOrder.LCatalogOrderYear => CCatalogOrder.CCatalogOrderYear,
+            LCatalogOrder.LCatalogOrderAuthor => CCatalogOrder.CCatalogOrderAuthor,
+            LCatalogOrder.LCatalogOrderUsage => CCatalogOrder.CCatalogOrderUsage,
+            LCatalogOrder.LCatalogOrderLanguage => CCatalogOrder.CCatalogOrderLanguage,
+            LCatalogOrder.LCatalogOrderMarked => CCatalogOrder.CCatalogOrderMarked,
+            LCatalogOrder.LCatalogOrderText => CCatalogOrder.CCatalogOrderText,
+            LCatalogOrder.LCatalogOrderSource => CCatalogOrder.CCatalogOrderSource,
+            LCatalogOrder.LCatalogOrderKind => CCatalogOrder.CCatalogOrderKind,
+            LCatalogOrder.LCatalogOrderSound => CCatalogOrder.CCatalogOrderSound,
+            LCatalogOrder.LCatalogOrderPending => CCatalogOrder.CCatalogOrderPending,
+            LCatalogOrder.LCatalogOrderWork => CCatalogOrder.CCatalogOrderWork,
+            LCatalogOrder.LCatalogOrderGrasp => CCatalogOrder.CCatalogOrderGrasp,
+            _ => throw new ArgumentOutOfRangeException(nameof(order), order, null),
+        };
+    }
+
+    internal static LCatalogOrder? LCatalogOrderRead(CCatalogOrder? order)
+    {
+        return order is CCatalogOrder held ? LCatalogOrderRead(held) : null;
+    }
+
+    internal static LCatalogOrder LCatalogOrderRead(CCatalogOrder order)
+    {
+        return order switch
+        {
+            CCatalogOrder.CCatalogOrderName => LCatalogOrder.LCatalogOrderName,
+            CCatalogOrder.CCatalogOrderHeadword => LCatalogOrder.LCatalogOrderHeadword,
+            CCatalogOrder.CCatalogOrderReverse => LCatalogOrder.LCatalogOrderReverse,
+            CCatalogOrder.CCatalogOrderRecent => LCatalogOrder.LCatalogOrderRecent,
+            CCatalogOrder.CCatalogOrderEarliest => LCatalogOrder.LCatalogOrderEarliest,
+            CCatalogOrder.CCatalogOrderYear => LCatalogOrder.LCatalogOrderYear,
+            CCatalogOrder.CCatalogOrderAuthor => LCatalogOrder.LCatalogOrderAuthor,
+            CCatalogOrder.CCatalogOrderUsage => LCatalogOrder.LCatalogOrderUsage,
+            CCatalogOrder.CCatalogOrderLanguage => LCatalogOrder.LCatalogOrderLanguage,
+            CCatalogOrder.CCatalogOrderMarked => LCatalogOrder.LCatalogOrderMarked,
+            CCatalogOrder.CCatalogOrderText => LCatalogOrder.LCatalogOrderText,
+            CCatalogOrder.CCatalogOrderSource => LCatalogOrder.LCatalogOrderSource,
+            CCatalogOrder.CCatalogOrderKind => LCatalogOrder.LCatalogOrderKind,
+            CCatalogOrder.CCatalogOrderSound => LCatalogOrder.LCatalogOrderSound,
+            CCatalogOrder.CCatalogOrderPending => LCatalogOrder.LCatalogOrderPending,
+            CCatalogOrder.CCatalogOrderWork => LCatalogOrder.LCatalogOrderWork,
+            CCatalogOrder.CCatalogOrderGrasp => LCatalogOrder.LCatalogOrderGrasp,
+            _ => throw new ArgumentOutOfRangeException(nameof(order), order, null),
+        };
+    }
+
+    internal static CCatalogFilter LCatalogFilterRead(LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+
+        return new CCatalogFilter(filter.LCatalogFilterHidden);
+    }
+
+    internal static LSubject LCatalogSubjectRead(CSubject subject)
+    {
+        return subject switch
+        {
+            CSubject.CSubjectEntry => LSubject.LSubjectEntry,
+            CSubject.CSubjectExample => LSubject.LSubjectExample,
+            CSubject.CSubjectSituation => LSubject.LSubjectSituation,
+            CSubject.CSubjectReference => LSubject.LSubjectReference,
+            CSubject.CSubjectAuthor => LSubject.LSubjectAuthor,
+            CSubject.CSubjectTag => LSubject.LSubjectTag,
+            CSubject.CSubjectRegister => LSubject.LSubjectRegister,
+            CSubject.CSubjectFavorite => LSubject.LSubjectFavorite,
+            CSubject.CSubjectWorkspace => LSubject.LSubjectWorkspace,
+            CSubject.CSubjectDraft => LSubject.LSubjectDraft,
+            CSubject.CSubjectFrequency => LSubject.LSubjectFrequency,
+            CSubject.CSubjectGrasp => LSubject.LSubjectGrasp,
+            CSubject.CSubjectInflection => LSubject.LSubjectInflection,
+            CSubject.CSubjectScript => LSubject.LSubjectScript,
+            CSubject.CSubjectFanqie => LSubject.LSubjectFanqie,
+            CSubject.CSubjectReflex => LSubject.LSubjectReflex,
+            CSubject.CSubjectSettings => LSubject.LSubjectSettings,
+            CSubject.CSubjectTenure => LSubject.LSubjectTenure,
+            CSubject.CSubjectVista => LSubject.LSubjectVista,
+            _ => throw new ArgumentOutOfRangeException(nameof(subject), subject, null),
+        };
+    }
+
+    internal static CVistaRow LCatalogRowRead(LVistaRow row)
+    {
+        ArgumentNullException.ThrowIfNull(row);
+
+        return new CVistaRow(
+            row.LVistaRowId,
+            row.LVistaRowHeadword,
+            row.LVistaRowLanguage,
+            row.LVistaRowEpithet,
+            row.LVistaRowName,
+            row.LVistaRowChosen);
     }
 }

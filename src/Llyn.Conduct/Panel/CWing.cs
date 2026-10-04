@@ -31,7 +31,8 @@ public sealed class CWing
             atelier.CAtelierPhonologyPort,
             atelier.CAtelierSettingsPort,
             atelier.CAtelierMediaPort,
-            envoy);
+            envoy,
+            atelier.CAtelierLedger.LLedgerRepaint);
         CWingDisplay.LDisplayNavigationAttach(atelier.CAtelierNavigation, atelier.CAtelierMention);
         LWingVistaRestore();
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LWingVistaRestore);
@@ -58,9 +59,9 @@ public sealed class CWing
 
     public bool CWingEmpty => CWingQueried && _cWingRows.Count == 0;
 
-    public CCatalogOrder CWingOrder => CPanel.CPanelOrderRead(LVista.LVistaOrderRead(_cWingVista));
+    public CCatalogOrder CWingOrder => CCatalog.LCatalogOrderRead(LVista.LVistaOrderRead(_cWingVista));
 
-    public CCatalogFilter CWingFilter => CPanel.CPanelFilterRead(LVista.LVistaFilterRead(_cWingVista));
+    public CCatalogFilter CWingFilter => CCatalog.LCatalogFilterRead(LVista.LVistaFilterRead(_cWingVista));
 
     private void LWingVistaRestore()
     {
@@ -88,7 +89,7 @@ public sealed class CWing
             return;
         }
 
-        vista.LVistaOrderSet(CPanel.CPanelOrderRead(order) ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(CCatalog.LCatalogOrderRead(order) ?? vista.LVistaOrder);
     }
 
     public void CWingFilterSet(CCatalogFilter filter)
@@ -146,7 +147,7 @@ public sealed class CWing
     public IReadOnlyList<CVistaRow> CWingRowsRead()
     {
         _cWingRows = _cWingVista is LVista vista
-            ? _cWingAtelier.CAtelierEntryPort.LEngineEntryFind(vista).Select(CPanel.CPanelRowRead).ToList()
+            ? _cWingAtelier.CAtelierEntryPort.LEngineEntryFind(vista).Select(CCatalog.LCatalogRowRead).ToList()
             : [];
         return _cWingRows;
     }

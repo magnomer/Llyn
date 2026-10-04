@@ -1,5 +1,5 @@
 # TErrandClip.cs
-Hash: `4e403b338e0b8f6d`
+Hash: `54cf9b11e31bb8c1`
 
 ## `public sealed class TErrandClip`
 
@@ -12,6 +12,8 @@ The finish returns the recording to plain once, and a refused fetch marks the re
 A popup cancelled mid-fetch plays nothing.
 A taking reads saving while a step lands, starts nothing on a second press, then reads saved.
 It tags the primary row with the recording's variety, and a refused download offers the retry.
+A broken host shows the recording notice once, for the preview, the taking and the flag load alike.
+The preview still marks the recording refused, and the taking still offers the retry.
 
 ## `private const string TErrandClipPack`
 
@@ -24,4 +26,9 @@ A pack without sources ends the search at once, so later steps are the test's ow
 
 ## `private static CEditor TErrandClipPrepare(LEngine engine)`
 
+Builds an editor over the engine whose notices nobody reads.
+
+## `private static CEditor TErrandClipPrepare(LEngine engine, List<string> asked)`
+
 Builds an editor over the engine and restores the input tab's vista, ordered by headword.
+Each notice the editor shows is added to `asked`.

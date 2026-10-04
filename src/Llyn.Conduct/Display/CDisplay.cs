@@ -71,6 +71,8 @@ public sealed class CDisplay
 
     private LEntryDraft? LDisplayShown => _cDisplayRule.LDisplaySound.LDisplayShown;
 
+    private CLedgerNoticed LDisplayNoticed => _cDisplayRule.LDisplayNoticed;
+
     internal void LDisplayVistaAttach()
     {
         _cDisplayRule.LDisplayChosenAttach(
@@ -146,8 +148,9 @@ public sealed class CDisplay
         {
             return _cDisplayPort.LEngineStampRead(id);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Display.StampFailed", exception);
             return (false, string.Empty, string.Empty);
         }
     }
@@ -218,8 +221,7 @@ public sealed class CDisplay
 
         LSentenceOrder order = LDisplayOrderRead(shown.LEntryDraftLanguage);
         IReadOnlyDictionary<long, string> citations = LDisplayCitationRead(shown);
-        IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets =
-            _cDisplayPort.LEngineTranslationRead(shown);
+        IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets = LDisplayTranslationRead(shown);
         string mark = _cDisplaySettings.LEngineTextRead("Display.Unknown");
         LMediaPort media = _cDisplayRule.LDisplayMediaPort;
         return new CLecternCard(
@@ -229,14 +231,29 @@ public sealed class CDisplay
             shown.LEntryDraftCollocated);
     }
 
+    private IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LDisplayTranslationRead(LEntryDraft shown)
+    {
+        try
+        {
+            return _cDisplayPort.LEngineTranslationRead(shown);
+        }
+        catch (Exception exception)
+        {
+            LDisplayNoticed.LLedgerRepaintShow(
+                _cDisplayEnvoy, _cDisplaySettings, "Display.TranslationFailed", exception);
+            return new Dictionary<long, IReadOnlyList<LTranslationTarget>>();
+        }
+    }
+
     private LSentenceOrder LDisplayOrderRead(string language)
     {
         try
         {
             return _cDisplayPhonology.LEngineOrderRead(language);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Display.OrderFailed", exception);
             return LSentenceOrder.LSentenceOrderDefault;
         }
     }
@@ -247,8 +264,9 @@ public sealed class CDisplay
         {
             return _cDisplayPort.LEngineCitationRead(shown);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Display.CitationFailed", exception);
             return new Dictionary<long, string>();
         }
     }
@@ -266,7 +284,7 @@ public sealed class CDisplay
         }
         catch (Exception exception)
         {
-            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Display.IncomingFailed", exception);
+            LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Display.IncomingFailed", exception);
             return [];
         }
     }
@@ -278,7 +296,17 @@ public sealed class CDisplay
             return new CLecternEtymology(string.Empty, [], false, false, false, false);
         }
 
-        LEtymologyResult etymology = _cDisplayPort.LEngineEtymologyRead(shown);
+        LEtymologyResult etymology;
+        try
+        {
+            etymology = _cDisplayPort.LEngineEtymologyRead(shown);
+        }
+        catch (Exception exception)
+        {
+            LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Display.EtymologyFailed", exception);
+            etymology = new LEtymologyResult([], shown.LEntryDraftEtymology.LEtymologyDraftNarrated);
+        }
+
         return new CLecternEtymology(
             shown.LEntryDraftEtymology.LEtymologyDraftText,
             CFolio.CFolioTargetRead(etymology.LEtymologyResultTargets),

@@ -42,9 +42,9 @@ public sealed class LAuthorCitation
         LDraft draft = _lAuthorCitationClaims.LDraftLoad(id);
         LAuthor held = draft.LDraftAuthorHeld ?? throw new LRefusal(LRefusal.LRefusalLink);
         string name = held.LAuthorName.Trim();
-        if (!held.LAuthorNamed)
+        if (LClaimClerk.LDraftRefusalRead(draft) is string refusal)
         {
-            throw new LRefusal(LRefusal.LRefusalName);
+            throw new LRefusal(refusal);
         }
 
         LAuthor stored;

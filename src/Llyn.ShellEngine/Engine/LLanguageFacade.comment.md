@@ -1,5 +1,5 @@
 # LLanguageFacade.cs
-Hash: `0c76ffe5a5eedb0d`
+Hash: `a680c03a23fe4b19`
 
 ## `internal sealed class LLanguageFacade`
 
@@ -11,13 +11,7 @@ The clerk is rebuilt with the workspace, since a pack's source lists belong to t
 The shell never reaches into the `languages/` folder itself.
 The script facades sit here too, since a script style is a fact of the pack.
 
-## `public LFont LEngineFontRead(string language, LFontRole role)`
-
-The typography the pack declares for one role: the headword, an example line, a gloss, or a glyph chip.
-The glyph role falls back to the example typography, so a chip stays serif when the section names no font.
-A pack that declares none for the role answers a blank font, and the theme's own typography stands.
-
-## `private readonly SemaphoreSlim _lLanguageFacadeEnsign = new(1, 1);`
+## `private readonly SemaphoreSlim _lLanguageFacadeEnsign`
 
 One flag fill runs at a time, around its missing read, its fetch and its record.
 Several panels ask on the same announcement, and each fill is a set of downloads.
@@ -32,7 +26,7 @@ Stores the engine and its gate, which the facade uses for its language-pack oper
 ## `public IReadOnlyList<string> LEngineLanguageRead()`
 
 Returns the names of the languages that have a pack on disk, for the UI to offer as choices.
-The scan opens and parses every pack once, and the engine keeps the list until the workspace changes.
+The clerk scans the packs once and keeps the list, so a repeated ask does not scan again.
 Every panel asks for it on each entry switch, so a fresh scan each time stalled the UI thread.
 
 ## `public string LEngineGlossRead()`
@@ -41,6 +35,11 @@ Picks the gloss language of the settings when a pack for it is loaded.
 Otherwise it falls back to the first loaded language, and to empty when none is loaded.
 A settings file names a language the workspace may lack, so the pick checks the list first.
 
+## `public LFont LEngineFontRead(string language, LFontRole role)`
+
+The typography the pack declares for one role: the headword, an example line, a gloss, or a glyph chip.
+The glyph role falls back to the example typography, so a chip stays serif when the section names no font.
+
 ## `public Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)`
 
 Returns the local path to the given language's flag image, for the UI to display beside it.
@@ -48,6 +47,25 @@ It returns `null` when the pack declares no flag or the download fails.
 The pack declares only an ISO country code.
 The engine downloads the matching flag from the flag-icons set and caches it in the workspace.
 So the UI never reaches into the `languages/` folder itself.
+
+## `public async Task<IReadOnlyList<string>> LEngineEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
+
+Fetches the flag of every language not yet asked of the cache, all at once, and records what came back.
+Hands the rows newly kept to `store`, so the shell draws only those and asks nothing about the rest.
+A fill that a workspace change outran records nothing and calls nothing.
+The cache is read once before the fetch and kept, since a workspace change builds a new one.
+Asking the staff again after the fetch would meet the new cache at a matching age.
+It answers the loaded languages it read, so a language menu fills from the same load.
+The fetch resumes on the caller's context, so the shell's seam runs on the shell's thread.
+It waits its turn at `_lLanguageFacadeEnsign`, so a second fill reads the cache after the first recorded.
+A failed download answers null inside the loader, so one missing flag never stops the fill.
+Any other failure, such as a file write, is not caught here and ends the fill.
+
+## `public async Task LEngineEnsignLoad(string language, IEnumerable<string> varieties, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
+
+The same fill for the named varieties of one language, keyed `language/variety`.
+It waits at the same gate as the language fill.
+Failures travel as in the language fill.
 
 ## `internal IReadOnlyList<LVariety> LEngineVarietyRead(string language)`
 
@@ -59,6 +77,10 @@ It reads the pack from the engine's cache, so a menu reopened does not reparse t
 
 Reports whether the pack asks the UI to label a reading's variety by flag rather than by name.
 It reads the cached pack as `LEngineVarietyRead` does.
+
+## `public bool LEngineFlaggedCheck(LEntryDraft draft)`
+
+Reads the language from the displayed draft and treats an empty language as unflagged.
 
 ## `public LAccentSheet LEngineAccentRead(LEntryDraft draft)`
 
@@ -72,14 +94,14 @@ Only further pronunciations that carry a reading become rows.
 The pronunciation block of `draft` with `accents` as its rows.
 The reading view hands the notated rows, and the editor hands every row.
 
-## `public async Task LEngineEnsignLoad(LAccentSheet sheet, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
-
-Loads the flags `sheet` draws into `store`.
-A pack that labels varieties by name loads nothing.
-
 ## `public async Task<LAccentSheet> LEngineAccentLoad(LEntryDraft draft, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
 
 Loads the flags the block of `draft` draws into `store`, then answers the block.
+A pack that labels varieties by name loads nothing.
+
+## `public async Task LEngineEnsignLoad(LAccentSheet sheet, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
+
+Loads the flags `sheet` draws into `store`.
 A pack that labels varieties by name loads nothing.
 
 ## `public IReadOnlyList<LContour> LEngineContourRead(string language, string ipa)`
@@ -93,35 +115,10 @@ Reports whether the pack declares the language silent, so the input panel knows 
 It reads the cached pack as `LEngineVarietyRead` does.
 A blank language has no pack and answers false, so an empty desk keeps its pronunciation rows.
 
-## `public async Task<IReadOnlyList<string>> LEngineEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
-
-Fetches the flag of every language not yet asked of the cache, all at once, and records what came back.
-Hands the rows newly kept to `store`, so the shell draws only those and asks nothing about the rest.
-A fill that a workspace change outran records nothing and calls nothing.
-The cache is read once before the fetch and kept, since a workspace change builds a new one.
-Asking the staff again after the fetch would meet the new cache at a matching age.
-It answers the loaded languages it read, so a language menu fills from the same load.
-The fetch resumes on the caller's context, so the shell's seam runs on the shell's thread.
-It waits its turn at `_lLanguageFacadeEnsign`, so a second fill reads the cache after the first recorded.
-
-## `public async Task LEngineEnsignLoad(string language, IEnumerable<string> varieties, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
-
-The same fill for the named varieties of one language, keyed `language/variety`.
-It waits at the same gate as the language fill.
-
-## `private async Task<string?> LEngineEnsignRead(string language)`
-
-One language's flag path, or null when the pack declares none or the fetch failed.
-One missing flag never stops the fill.
-
-## `private async Task<string?> LEngineEnsignResolve(string language, string variety)`
-
-One variety's flag path, or null on the same terms.
-
 ## `public Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)`
 
 Returns the local path to the flag image of one named variety of the language.
-It returns `null` when the pack does not declare that variety, declares no flag for it, or the download fails.
+It returns `null` when the pack lacks that variety or its flag, or the download fails.
 The name is matched exactly, because it is the tag the pack's own readings carry.
 
 ## `internal LLanguage LEngineLanguageLoad(string language)`
@@ -175,6 +172,6 @@ The images grouped by style, after starting the fetch of every character still m
 
 Whether a fetch is pending for any character of the entry.
 
-## `public bool LEngineFlaggedCheck(LEntryDraft draft)`
+## `private LEngineStaff LLanguageFacadeStaff`
 
-Reads the language from the displayed draft and treats an empty language as unflagged.
+The engine's held staff, read afresh at each use.

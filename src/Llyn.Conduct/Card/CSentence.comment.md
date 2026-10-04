@@ -1,18 +1,18 @@
 # CSentence.cs
-Hash: `d24d9c816ea6ebb6`
+Hash: `ee2c9b26f685d20b`
 
 ## `public sealed class CSentence`
 
 The sentence gates of the entry editor, one per user action on a card's sentence rows.
 Each gate holds the interaction only and calls one ShellEngine member on the held draft.
 The rules about the rows live in the Application clerk, so no gate trims, clamps or checks.
-A gate does nothing while the desk is filling a draft, since the quill reads null then.
-It is the reference example of the pipeline in `docs-work/JobPrinciple.md` section 13.
+Most gates do nothing while the desk is filling a draft, since the quill reads null then.
 
-## `internal CSentence(CDesk desk, LPhonologyPort phonology, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy)`
+## `internal CSentence(CDesk desk, LPhonologyPort phonology, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy, CLedgerNoticed noticed)`
 
 Builds the gates over the editor's desk and the phonology port.
 The draft port reads the chip lines, and the settings port with the envoy reports a failed read.
+It takes the atelier's repaint memory, which it has no other way to, for its list reads.
 
 ## `private LTenure? CSentenceTenure`
 
@@ -118,7 +118,4 @@ Each unlinked chip carries its own key, so the driver passes no silent word.
 The frame every sentence row of the held draft offers, in the draft's language.
 It answers the word order, the particles and the dependences at once.
 A failed particle or dependence read leaves that list empty, so the editor still opens.
-
-## `private static IReadOnlyList<string> CSentenceListRead(Func<IReadOnlyList<string>> read)`
-
-Runs one engine read and answers an empty list when it fails.
+The failure shows `Sentence.ParticleFailed` or `Sentence.DependenceFailed`.

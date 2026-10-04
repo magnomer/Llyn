@@ -1,5 +1,5 @@
 # TAtelierWorkspace.cs
-Hash: `713cd91271db51c1`
+Hash: `08cebffa57219b33`
 
 ## `public sealed class TAtelierWorkspace`
 
@@ -13,6 +13,8 @@ A stored answer finishes every area before the move.
 A folder that fails is shown as `Workspace.OpenFailed`, leaves the engine where it stood and writes no pointer.
 The folder question starts from the folder in use, and its answer is moved onto.
 A declined folder question moves nothing, and a failing one is shown as `Workspace.OpenFailed`.
+An open whose status read fails shows `Workspace.EstablishmentFailed` through the envoy handed in, and raises no status.
+After a second open with another envoy, a status bulletin shows the failure through that latest envoy only.
 
 ## `private static CEnvoy TAtelierEnvoyCreate(Func<string, string?> folder, List<string> asked)`
 

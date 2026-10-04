@@ -12,7 +12,7 @@ internal sealed partial class QRepertoire
         QScenarioDescription.TextChanged += QScenarioDescriptionObserve;
     }
 
-    private void QScenarioDetach()
+    private void QScenarioTeardown()
     {
         QScenarioTitle.TextChanged -= QScenarioTitleObserve;
         QScenarioKind.TextChanged -= QScenarioKindObserve;
@@ -76,7 +76,7 @@ internal sealed partial class QRepertoire
 
     private void QScenarioFieldsRefine(CScenario scenario)
     {
-        QScenarioDetach();
+        QScenarioTeardown();
 
         QScenarioFieldRefine(QScenarioTitle, scenario.CScenarioTitle);
         QScenarioFieldRefine(QScenarioKind, scenario.CScenarioKind);

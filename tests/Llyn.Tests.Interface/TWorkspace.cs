@@ -64,13 +64,26 @@ internal sealed class TWorkspace : IDisposable
 
     public LEngine TWorkspaceEngineStart(HttpClient client)
     {
+        return TWorkspaceEngineStart(client, null);
+    }
+
+    public LEngine TWorkspaceEngineStart(LSourceFactory sources)
+    {
+        return TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate(string.Empty, HttpStatusCode.NotFound), sources);
+    }
+
+    private LEngine TWorkspaceEngineStart(HttpClient client, LSourceFactory? sources)
+    {
+        LRig TWorkspaceSourcesApply(LRig rig) => sources is null ? rig : rig with { LRigSources = sources };
+
         return new LEngine(
-            TWorkspaceRigCreate(client),
-            workspace => LRigFactory.LRigFactoryBuild(
+            TWorkspaceSourcesApply(TWorkspaceRigCreate(client)),
+            workspace => TWorkspaceSourcesApply(LRigFactory.LRigFactoryBuild(
                 workspace, client, new LUsherFile(), TWorkspacePress, TWorkspacePhonograph) with
             {
                 LRigClock = TWorkspaceClock,
-            },
+            }),
             _ => { });
     }
 

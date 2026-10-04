@@ -1,5 +1,5 @@
 # LReceiverRelay.cs
-Hash: `fe0b8f14b06a6a0e`
+Hash: `8154e1068d60cb50`
 
 ## `public sealed class LReceiverRelay : LReceiver`
 
@@ -13,6 +13,12 @@ A respelling wrapper sits in front of it like any receiver, so cached and live l
 
 The sink is required, since a relay with nowhere to send is a caller mistake.
 
+## `public bool LReceiverRelayEnded { get; private set; }`
+
+Whether this relay has sent its end step, through a respelling wrapper or directly.
+The tenure that made the relay reads it after a failed lookup.
+It ends the sink itself only when the lookup never did.
+
 ## `public void LReceiverSourceStart(string source, int order)`
 
 A source step naming the source and its position, with no candidate.
@@ -24,3 +30,5 @@ A candidate step, with the source and position read off the candidate itself.
 ## `public void LReceiverLookupFinish()`
 
 The end step, naming no source and carrying order zero.
+It marks the relay ended before the step leaves.
+So a sink that throws on the end is never ended twice.

@@ -1,5 +1,5 @@
 # LRecordingClerk.cs
-Hash: `d807d00e09ed2354`
+Hash: `a4980ec6270b64b1`
 
 ## `public sealed class LRecordingClerk`
 
@@ -20,13 +20,19 @@ A harvest of `word` over the language's harvest sources, its steps sent to `list
 
 Replays a remembered harvest to `listener`, filtered to `variety`, and finishes it.
 
-## `public Task<string> LRecordingClerkSave(LRecording recording, string word, string language, CancellationToken cancellation)`
+## `public async Task<string?> LRecordingClerkSave(LRecording recording, string word, string language, CancellationToken cancellation)`
 
 Stores a harvested recording under the workspace and answers its path.
+Null when the port raises `LVaultFault`: the download was refused or timed out, or a file was not written.
+That failure is expected, so it ends here as the empty answer.
+The shell names no file or network type.
+Any other fault, a cancellation the caller asked for among them, reaches the caller.
 
-## `public Task<string> LRecordingClerkPrepare(LRecording recording, CancellationToken cancellation)`
+## `public async Task<string?> LRecordingClerkPrepare(LRecording recording, CancellationToken cancellation)`
 
 Fetches a recording to a playable local file without storing it.
+Null when the port raises `LVaultFault`, as `LRecordingClerkSave` answers null.
+Any other fault reaches the caller.
 
 ## `public bool LRecordingClerkExist(string? file)`
 

@@ -12,6 +12,8 @@ public sealed class LListenerRelay : LListener
         _lListenerRelaySink = sink ?? throw new ArgumentNullException(nameof(sink));
     }
 
+    public bool LListenerRelayEnded { get; private set; }
+
     public void LListenerSourceStart(string source, int order)
     {
         _lListenerRelaySink(new LHarvestStep(LHarvestKind.LHarvestKindSource, source, order, null));
@@ -27,6 +29,7 @@ public sealed class LListenerRelay : LListener
 
     public void LListenerFinish()
     {
+        LListenerRelayEnded = true;
         _lListenerRelaySink(new LHarvestStep(LHarvestKind.LHarvestKindEnd, string.Empty, 0, null));
     }
 }

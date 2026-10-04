@@ -16,7 +16,13 @@ internal static class TInterfaceMention
         {
             ["LEngineMentionResolve"] = _ => throw new InvalidOperationException("no headwords"),
         });
-        return new CSentence(desk, new LPhonologyOutlet(engine), drafts, new LSettingsOutlet(engine), envoy);
+        return new CSentence(
+            desk,
+            new LPhonologyOutlet(engine),
+            drafts,
+            new LSettingsOutlet(engine),
+            envoy,
+            new CLedgerNoticed());
     }
 
     internal static IReadOnlyList<CCatalogExample>? TAnthologyFailRead(LEngine engine, CAtelier atelier, CEnvoy envoy)
@@ -83,7 +89,8 @@ internal static class TInterfaceMention
             new LPhonologyOutlet(engine),
             new LSettingsOutlet(engine),
             TEngineFake.TEngineStubCreate<LMediaPort>(),
-            envoy);
+            envoy,
+            new CLedgerNoticed());
         display.LDisplayNavigationAttach(atelier.CAtelierNavigation, atelier.CAtelierMention);
         display.LDisplaySound.LDisplaySoundShow(shown, engine.TEngineEntryLoad(shown)!);
         return display.CDisplayArea.CDisplayMentionFind(1, 1);

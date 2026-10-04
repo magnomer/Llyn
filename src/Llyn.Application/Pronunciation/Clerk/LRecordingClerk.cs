@@ -57,17 +57,33 @@ public sealed class LRecordingClerk
         return Task.CompletedTask;
     }
 
-    public Task<string> LRecordingClerkSave(
+    public async Task<string?> LRecordingClerkSave(
         LRecording recording, string word, string language, CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(recording);
-        return _lRecordingClerkRecordings.LRecordingSave(recording, word, language, cancellation);
+        try
+        {
+            return await _lRecordingClerkRecordings.LRecordingSave(recording, word, language, cancellation)
+                .ConfigureAwait(false);
+        }
+        catch (LVaultFault)
+        {
+            return null;
+        }
     }
 
-    public Task<string> LRecordingClerkPrepare(LRecording recording, CancellationToken cancellation)
+    public async Task<string?> LRecordingClerkPrepare(LRecording recording, CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(recording);
-        return _lRecordingClerkRecordings.LRecordingPrepare(recording, cancellation);
+        try
+        {
+            return await _lRecordingClerkRecordings.LRecordingPrepare(recording, cancellation)
+                .ConfigureAwait(false);
+        }
+        catch (LVaultFault)
+        {
+            return null;
+        }
     }
 
     public bool LRecordingClerkExist(string? file)

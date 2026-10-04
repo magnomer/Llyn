@@ -46,6 +46,8 @@ public sealed class LDisplaySound
 
     internal event Action<string, Exception>? LDisplaySoundFailed;
 
+    internal event Action<string, Exception>? LDisplayMarkFailed;
+
     internal void LDisplaySoundShow(long? id, LEntryDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
@@ -53,7 +55,7 @@ public sealed class LDisplaySound
         _lDisplaySoundEntry = id;
         _lDisplaySoundDraft = draft;
         _lDisplaySoundReflex = null;
-        LDisplayMarkSend(_lPhonologyPort.LEngineSoundStart, id);
+        LDisplayMarkSend(_lPhonologyPort.LEngineSoundStart, id, "Sound.StartFailed");
     }
 
     internal void LDisplaySoundClear()
@@ -99,7 +101,7 @@ public sealed class LDisplaySound
 
     internal void LDisplayReflexRebuild(long? id)
     {
-        LDisplayMarkSend(_lPhonologyPort.LEngineReflexRebuild, id);
+        LDisplayMarkSend(_lPhonologyPort.LEngineReflexRebuild, id, "Display.ReflexRebuildFailed");
     }
 
     internal bool LDisplayFanqieCheck(long? id)
@@ -123,8 +125,9 @@ public sealed class LDisplaySound
         {
             return _lSettingsPort.LEngineMorphologyCheck();
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            LDisplaySoundFailed?.Invoke("Sound.MorphologyFailed", exception);
             return false;
         }
     }
@@ -134,7 +137,8 @@ public sealed class LDisplaySound
         _lMediaPort.LEngineRecordingStop(LDisplayTicket);
     }
 
-    internal IReadOnlyList<LDisplayItem> LDisplayListRead<LDisplayItem>(Func<long, IReadOnlyList<LDisplayItem>> read)
+    internal IReadOnlyList<LDisplayItem> LDisplayListRead<LDisplayItem>(
+        Func<long, IReadOnlyList<LDisplayItem>> read, string key)
     {
         if (_lDisplaySoundEntry is not long shown)
         {
@@ -145,13 +149,14 @@ public sealed class LDisplaySound
         {
             return read(shown);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            LDisplaySoundFailed?.Invoke(key, exception);
             return [];
         }
     }
 
-    private static void LDisplayMarkSend(Action<long> mark, long? id)
+    private void LDisplayMarkSend(Action<long> mark, long? id, string key)
     {
         if (id is not long shown)
         {
@@ -162,12 +167,13 @@ public sealed class LDisplaySound
         {
             mark(shown);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            LDisplayMarkFailed?.Invoke(key, exception);
         }
     }
 
-    private static bool LDisplayPendingRead(Func<long, bool> check, long? id)
+    private bool LDisplayPendingRead(Func<long, bool> check, long? id)
     {
         if (id is not long shown)
         {
@@ -178,8 +184,9 @@ public sealed class LDisplaySound
         {
             return check(shown);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            LDisplaySoundFailed?.Invoke("Sound.PendingFailed", exception);
             return false;
         }
     }

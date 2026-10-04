@@ -1,5 +1,5 @@
 # TInterfaceMention.cs
-Hash: `c9db23b5f991af6c`
+Hash: `b40dfa679a8bffe0`
 
 ## `internal static class TInterfaceMention`
 
@@ -15,7 +15,7 @@ It is transparent and carries no test logic of its own.
 
 ## `internal static CSentence TSentenceFailCreate(LEngine engine, CDesk desk, CEnvoy envoy)`
 
-Builds sentence gates whose chip line read throws, over a real desk.
+Builds sentence gates whose chip line read throws, over a real desk and a fresh repaint memory.
 
 ## `internal static IReadOnlyList<CCatalogExample>? TAnthologyFailRead(LEngine engine, CAtelier atelier, CEnvoy envoy)`
 
@@ -43,6 +43,7 @@ The Example with `mention` as its only Mention, so a test builds an Example that
 
 Finds a word through a display whose entry port's word find throws.
 The display is attached to the atelier's navigation and mention area, as the composition does.
+It holds a fresh repaint memory, since the lookup is a user act that never goes through it.
 It shows the stored entry `shown`, since a display showing nothing answers before it asks the engine.
 
 ## `internal static IReadOnlyList<CMentionLabel> TMentionFailRead(LEngine engine, CDesk desk, CEnvoy envoy)`

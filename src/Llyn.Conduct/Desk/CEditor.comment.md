@@ -1,5 +1,5 @@
 # CEditor.cs
-Hash: `d703df4a6fdbe8a9`
+Hash: `5f7769dd1e4e8ff7`
 
 ## `public sealed class CEditor`
 
@@ -17,14 +17,16 @@ The vista of the tab the editor serves, which says whether it is the input tab's
 Whether the draft being stored stood on no entry, written just before each finish.
 A fresh store on the input tab reopens a blank draft, while every other store reopens what was stored.
 
-## `internal CEditor(LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media, CEnvoy envoy)`
+## `internal CEditor(LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media, CEnvoy envoy, CLedgerNoticed noticed)`
 
 Every editor's desk takes the `Input` scope, so its failure notices use the input wording on any tab.
+It takes the atelier's repaint memory, which nothing else here can reach, and widens by that one argument.
+The display, the sentence gates and the sound sheet show their repaint read failures through it.
 The sound facts take `envoy` too, so a failed flag load shows its notice.
 
 ## `public static CEditor CEditorCreate(CAtelier atelier, CEnvoy envoy)`
 
-Builds an entry editor over the atelier's ports, asking its questions through `envoy`.
+Builds an entry editor over the atelier's ports and repaint memory, asking its questions through `envoy`.
 Each tab that edits entries holds its own, so no driver ever holds a port for it.
 Building a session is composition, not a user action, so it is no gate.
 The editor's display and sounding open what they are asked to through the atelier's navigation.
@@ -151,6 +153,21 @@ The primary reading as the field shows it, respelled when the pack respells.
 ## `public IReadOnlyList<CTranslationTarget> CEditorEtymonRead()`
 
 The etymons of the held entry, as the etymology field lists them.
+
+## `public void CEditorHeadwordSet(string text)`
+
+Hands the typed headword to the tenure.
+A desk that holds no tenure or fills its view takes no edit.
+
+## `public void CEditorNoteSet(string text)`
+
+Hands the typed note to the tenure.
+A desk that holds no tenure or fills its view takes no edit.
+
+## `public void CEditorLanguageSet(string language)`
+
+Hands the chosen language to the tenure.
+A desk that holds no tenure or fills its view takes no edit.
 
 ## `public void CEditorPronunciationSet(string text)`
 

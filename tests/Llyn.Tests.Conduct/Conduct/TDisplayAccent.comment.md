@@ -1,10 +1,11 @@
 # TDisplayAccent.cs
-Hash: `cd370a4d95972235`
+Hash: `30ea2c49d646e145`
 
 ## `public sealed class TDisplayAccent`
 
 Covers the reading view's pronunciation block, read and flag load alike, on a real workspace.
 The wing opens the entry, so each case stands on its display's sound area.
+Each flag load goes through the `TInterfaceConductSound.TDisplayEnsignLoad` relay.
 
 ## `public void DisplayAccentRead_ShownEntry_AnswersTheBlockReadyToShow()`
 

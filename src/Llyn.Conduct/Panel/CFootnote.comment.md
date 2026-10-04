@@ -1,5 +1,5 @@
 # CFootnote.cs
-Hash: `c6d419cc0341e7af`
+Hash: `9fd1aab02560f030`
 
 ## `public sealed class CFootnote`
 
@@ -51,6 +51,7 @@ The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver make
 ## `internal string LFootnoteFileRead()`
 
 The file name an export of the chosen entry offers, read from the list's own vista.
+`CPortrait` reads it only once the export starts, and a failed read shows `Export.NameFailed`.
 
 ## `internal void LFootnoteEntryCreate()`
 

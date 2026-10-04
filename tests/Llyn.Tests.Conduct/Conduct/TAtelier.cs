@@ -102,7 +102,7 @@ public sealed class TAtelier
         List<CEstablishment> shown = [];
 
         atelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged += shown.Add;
-        atelier.CAtelierOpen();
+        atelier.TAtelierStubOpen();
         atelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged -= shown.Add;
         atelier.CAtelierLedger.CLedgerEpithetSave(!engine.TEngineSettingsRead().LSettingsEpithet);
 
@@ -149,7 +149,7 @@ public sealed class TAtelier
         atelier.CAtelierWorkspace.TWorkspaceStateAdd(
             state => heard.Add(state == new CWorkspaceState(null, null) ? "Blank" : "Kept"));
 
-        atelier.CAtelierOpen();
+        atelier.TAtelierStubOpen();
 
         Assert.Equal(["Opened", "Blank"], heard);
     }
@@ -169,7 +169,7 @@ public sealed class TAtelier
         bool? swept = null;
         atelier.CAtelierWorkspace.CWorkspaceOpened += () => swept = engine.TEngineDraftRead(blank) is null;
 
-        atelier.CAtelierOpen();
+        atelier.TAtelierStubOpen();
 
         Assert.True(swept);
     }
@@ -182,8 +182,8 @@ public sealed class TAtelier
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<CLedgerState> shown = [];
         atelier.CAtelierLedger.CLedgerChanged += shown.Add;
-        atelier.CAtelierOpen();
-        atelier.CAtelierOpen();
+        atelier.TAtelierStubOpen();
+        atelier.TAtelierStubOpen();
         int opened = shown.Count;
 
         atelier.CAtelierLedger.CLedgerEpithetSave(!engine.TEngineSettingsRead().LSettingsEpithet);

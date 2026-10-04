@@ -1,12 +1,12 @@
 # LForay.cs
-Hash: `d7aa21b288852b8a`
+Hash: `1af5649d49e9e2aa`
 
 ## `public sealed class LForay`
 
 One in-flight recording or transcription search a tenure started for its draft.
 It keeps the word, language, target row and scheme the search was asked with, and the cancellation that ends it.
 The menu that asked reads those back instead of copying them into fields of its own.
-The tenure makes one, cancels the last of its kind, and cancels every open one when it ends.
+The tenure makes one, cancels the last of its kind, and cancels both current ones when it ends.
 The search is not awaited by the caller, because the listener hears its end.
 
 ## `private readonly LEngine _lEngine;`
@@ -50,6 +50,14 @@ The transcription scheme searched, or empty for a pronunciation or recording sea
 
 Whether the language shows its varieties as flags, read once at the start.
 
+## `public bool LForaySchemed`
+
+Whether a transcription scheme was named, so the search is a transcription lookup.
+
+## `public bool LForayPrimary`
+
+Whether the search was opened from the primary row, whose target is zero.
+
 ## `public bool LForayCancelled`
 
 Whether the search was cancelled, so a step it streamed earlier no longer belongs to the current search.
@@ -60,7 +68,7 @@ A replaced or stopped search is always cancelled, so a live one is always the cu
 Ends the search so nothing further streams in.
 A second call is inert.
 
-## `public async Task<bool> LForayRecordingSave(LRecording recording)`
+## `public async Task<bool?> LForayRecordingSave(LRecording recording)`
 
 Downloads the taken recording into the workspace and attaches it to the target row.
 False when the draft's headword or language no longer matches what was searched for, before or after the download.
@@ -69,11 +77,18 @@ The primary row takes an audio request and a further row a pronunciation audio r
 The row is then tagged with the recording's variety, as taking a reading tags it.
 An untagged recording sends no variety, and the row keeps whatever it had.
 Waiting keystrokes are written before each check, so a headword still in the quiet counts as typed.
+Null when the recording clerk answers no path.
+Then the download was refused or timed out, or a file was not written.
+Infrastructure owns that expected failure and the clerk turns it into null.
+So neither the foray nor Conduct names a file or network type.
+Any other fault is a bug and reaches the caller.
 
-## `public Task<string> LForayRecordingPrepare(LRecording recording)`
+## `public Task<string?> LForayRecordingPrepare(LRecording recording)`
 
 Fetches a listed recording into the workspace cache for a preview and answers the local path.
 It attaches nothing, and the search's cancellation does not stop it.
+Null when the recording clerk answers no path, for the same failures `LForayRecordingSave` answers null for.
+Any other fault is a bug and reaches the caller.
 
 ## `public Task LForayEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
 
@@ -96,14 +111,19 @@ The switch is the one `LForayMarkRead` answers, so the text and its brackets alw
 The word a draft is searched for, its headword trimmed, or empty for no draft.
 The start and the pick's check share it, so both read the same word.
 
-## `internal void LForayStart(Func<CancellationToken, Task> search, Action finish)`
+## `internal void LForayStart(Func<CancellationToken, Task> search, Action unstarted)`
 
 Runs the search under this foray's cancellation without anyone awaiting it.
 
-## `private async Task LForayRun(Func<CancellationToken, Task> search, Action finish)`
+## `private async Task LForayRun(Func<CancellationToken, Task> search, Action unstarted)`
 
 A cancelled search ends quietly, because whoever cancelled it has moved on.
-A search that fails otherwise tells its listener it finished, so the menu leaves its searching state.
+A search that fails otherwise is written to the engine's fault record, since nobody awaits it to see the failure.
+After the record it runs `unstarted`, unless the foray was cancelled meanwhile.
+The tenure's `unstarted` ends the sink only when its relay never sent an end.
+So a fault before the harvest or lookup started still closes the menu once.
+A sink that throws inside `unstarted` is recorded the same way.
+It is never retried.
 A foray cancelled before the search began runs nothing.
 
 ## `private bool LForayDraftCheck()`

@@ -16,7 +16,8 @@ public sealed class CEditor
         LPhonologyPort phonology,
         LSettingsPort settings,
         LMediaPort media,
-        CEnvoy envoy)
+        CEnvoy envoy,
+        CLedgerNoticed noticed)
     {
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
@@ -25,10 +26,10 @@ public sealed class CEditor
         ArgumentNullException.ThrowIfNull(media);
 
         CEditorDesk = new CDesk(drafts, settings, "Input", envoy);
-        CEditorDisplay = new LDisplay(drafts, entries, phonology, settings, media, envoy);
+        CEditorDisplay = new LDisplay(drafts, entries, phonology, settings, media, envoy, noticed);
         CEditorCard = new CCard(CEditorDesk, drafts, entries, settings, envoy);
-        CEditorSentence = new CSentence(CEditorDesk, phonology, drafts, settings, envoy);
-        CEditorSounding = new CSounding(CEditorDesk, phonology, settings, CEditorDisplay.LDisplaySound, envoy);
+        CEditorSentence = new CSentence(CEditorDesk, phonology, drafts, settings, envoy, noticed);
+        CEditorSounding = new CSounding(CEditorDesk, phonology, settings, CEditorDisplay, envoy);
         CEditorEsteem = new CEsteem(CEditorDesk, CEditorDisplay);
         CEditorTimbre = new CTimbre(CEditorDesk, phonology, CEditorDisplay, drafts, settings, envoy);
         CEditorPlayback = new CPlayback(CEditorDesk, media);
@@ -56,7 +57,8 @@ public sealed class CEditor
             atelier.CAtelierPhonologyPort,
             atelier.CAtelierSettingsPort,
             atelier.CAtelierMediaPort,
-            envoy);
+            envoy,
+            atelier.CAtelierLedger.LLedgerRepaint);
         editor.CEditorDisplay.LDisplayNavigationAttach(atelier.CAtelierNavigation, atelier.CAtelierMention);
         editor.CEditorSounding.LSoundingDiweiChosen +=
             (language, kind, key) => atelier.CAtelierNavigation.LNavigationDiweiOpen(language, kind, key);

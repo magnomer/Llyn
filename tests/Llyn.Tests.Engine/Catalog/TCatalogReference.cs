@@ -287,6 +287,6 @@ public sealed class TCatalogReference
     {
         engine.TEngineExampleCreate(
             TInterfaceExample.TExampleCreate(
-            0, "English", text, null, TInterfaceState.TStateAnchorRead(referenceId)));
+                0, "English", text, null, TInterfaceState.TStateAnchorRead(referenceId)));
     }
 }

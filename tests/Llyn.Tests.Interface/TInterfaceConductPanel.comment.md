@@ -1,5 +1,5 @@
 # TInterfaceConductPanel.cs
-Hash: `e5d3e89585c69b40`
+Hash: `b4c5370362798ccf`
 
 ## `internal static class TInterfaceConductPanel`
 
@@ -8,44 +8,44 @@ They reach the panel, the oeuvre, the occurrence list, the atlas, the example li
 They also reach each panel's offered file name, its leave question and its startup editor restore.
 Each relay is transparent and carries no test logic of its own.
 
-## `internal static bool TCatalogFilterMatch(this CCatalogFilter filter, string? language) =>`
+## `internal static bool TCatalogFilterMatch(this CCatalogFilter filter, string? language)`
 
 Relays whether a catalog filter admits a row of the given language.
 
 ## `internal static CVistaRow TPanelRowRead(LVistaRow row)`
 
-Relays the internal entry row map.
+Relays the catalog's map of an engine entry row.
 
-## `internal static CPanel TPanelCreate(CEnvoy envoy, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam) =>`
+## `internal static CPanel TPanelCreate(CEnvoy envoy, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam)`
 
 Builds a bare panel over the fake settings port, with the given delete scope and change and finish seams.
 Its load-failed key is fixed and its last seam always answers yes.
 A test thus varies only the seams it passes.
 
-## `internal static void TPanelVistaRestore(this CPanel panel, LVista vista) => panel.CPanelVistaRestore(vista);`
+## `internal static void TPanelVistaRestore(this CPanel panel, LVista vista)`
 
 Relays the panel's restore of a saved vista, which only the navigation runs in production.
 
-## `internal static LVista? TPanelVistaRead(this CPanel panel) => panel.CPanelVista;`
+## `internal static LVista? TPanelVistaRead(this CPanel panel)`
 
 Reads the vista the panel currently holds, or nothing when it holds none.
 
-## `internal static CCatalogOrder TPanelOrderRead(LCatalogOrder order) => CPanel.CPanelOrderRead(order);`
+## `internal static CCatalogOrder TPanelOrderRead(LCatalogOrder order)`
 
-Relays the panel's turning of a stored catalog order into the one its list shows.
+Relays the catalog's map of a stored catalog order into the one its list shows.
 
-## `internal static LCatalogOrder? TPanelOrderRead(CCatalogOrder? order) => CPanel.CPanelOrderRead(order);`
+## `internal static LCatalogOrder? TPanelOrderRead(CCatalogOrder? order)`
 
-Relays the panel's turning of a shown catalog order back into the stored one.
+Relays the catalog's map of a shown catalog order back into the stored one.
 A missing order stays missing.
 
-## `internal static CCatalogFilter TPanelFilterRead(LCatalogFilter filter) => CPanel.CPanelFilterRead(filter);`
+## `internal static CCatalogFilter TPanelFilterRead(LCatalogFilter filter)`
 
-Relays the panel's turning of a stored catalog filter into the one its list shows.
+Relays the catalog's map of a stored catalog filter into the one its list shows.
 
-## `internal static LSubject TPanelSubjectRead(CSubject subject) => CPanel.CPanelSubjectRead(subject);`
+## `internal static LSubject TPanelSubjectRead(CSubject subject)`
 
-Relays the panel's turning of a shown subject into the stored one.
+Relays the catalog's map of a shown subject into the stored one.
 
 ## `internal static COeuvre TOeuvreCreate(LEngine engine)`
 
@@ -111,23 +111,23 @@ A failed read throws, so a test never mistakes a failure for an empty list.
 
 Maps a stored Example and a ready citation line through the list's internal helper.
 
-## `internal static void TFootnoteVistaRestore(this CFootnote footnote, LVista parent, LVista vista) =>`
+## `internal static void TFootnoteVistaRestore(this CFootnote footnote, LVista parent, LVista vista)`
 
 Relays the footnote's restore of its parent vista and its own, which only the navigation runs in production.
 
-## `internal static void TFootnoteEntryCreate(this CFootnote footnote) => footnote.LFootnoteEntryCreate();`
+## `internal static void TFootnoteEntryCreate(this CFootnote footnote)`
 
 Relays the footnote's start of a new entry.
 
-## `internal static void TImprintOpen(this CImprint imprint, long? id) => imprint.LImprintOpen(id);`
+## `internal static void TImprintOpen(this CImprint imprint, long? id)`
 
 Relays the imprint's opening of the given record, or of a new one when the id is missing.
 
-## `internal static void TImprintCancel(this CImprint imprint) => imprint.LImprintCancel();`
+## `internal static void TImprintCancel(this CImprint imprint)`
 
 Relays the imprint's cancel of its open edit.
 
-## `internal static void TImprintSave(this CImprint imprint) => imprint.LImprintSave();`
+## `internal static void TImprintSave(this CImprint imprint)`
 
 Relays the imprint's save of its open edit.
 
@@ -135,51 +135,51 @@ Relays the imprint's save of its open edit.
 
 Builds one Latin entry row with the given id, epithet and chosen mark.
 
-## `internal static string TFavoriteFileRead(this CFavorite favorite) =>`
+## `internal static string TFavoriteFileRead(this CFavorite favorite)`
 
 Relays a panel's internal offered file name, as the siblings below do for their panels.
 
-## `internal static long TPanelChosenRead(this CPanel panel) => panel.LPanelChosenRead();`
+## `internal static long TPanelChosenRead(this CPanel panel)`
 
 Relays the record a panel stands on, which only the navigation reads in production.
 
-## `internal static void TPanelStationAttach(this CPanel panel, Action record) => panel.LPanelStationAttach(record);`
+## `internal static void TPanelStationAttach(this CPanel panel, Action record)`
 
 Hands a panel the station record its tab's area would attach, so a test can see when it runs.
 
-## `internal static void TPanelScribeRestore(this CPanel panel, bool editing) => panel.LPanelScribeRestore(editing);`
+## `internal static void TPanelScribeRestore(this CPanel panel, bool editing)`
 
 Relays the startup editor restore, which only the navigation runs in production.
 
-## `internal static void TGuildScribeRestore(this CGuild guild, bool editing) => guild.LGuildScribeRestore(editing);`
+## `internal static void TGuildScribeRestore(this CGuild guild, bool editing)`
 
 Relays the guild's startup editor restore, as the navigation runs it.
 
-## `internal static bool TRepertoireLeaveConfirm(this CRepertoire repertoire) =>`
+## `internal static bool TRepertoireLeaveConfirm(this CRepertoire repertoire)`
 
 Relays the repertoire's leave question as the navigation asks it when the tab is left.
 
-## `internal static bool TShelfLeaveConfirm(this CShelf shelf) => shelf.LShelfLeaveConfirm();`
+## `internal static bool TShelfLeaveConfirm(this CShelf shelf)`
 
 Relays the sources tab's leave question.
 
-## `internal static bool TShelfChangeRead(this CShelf shelf) => shelf.LShelfChangeRead();`
+## `internal static bool TShelfChangeRead(this CShelf shelf)`
 
 Relays whether the sources tab holds an unsaved change.
 
-## `internal static bool TShelfDraftFinish(this CShelf shelf, bool store) => shelf.LShelfDraftFinish(store);`
+## `internal static bool TShelfDraftFinish(this CShelf shelf, bool store)`
 
 Relays the sources tab's finish of its draft, stored or dropped as `store` says.
 It answers whether the finish went through.
 
-## `internal static CExample? TCorpusTranscriptRead(this CCorpus corpus) => corpus.LCorpusTranscriptRead();`
+## `internal static CExample? TCorpusTranscriptRead(this CCorpus corpus)`
 
 Relays the corpus's read of the Example its transcript desk holds, which its two transcript events hand on.
 
-## `internal static void TCorpusEntryResonate(this CCorpus corpus) => corpus.LCorpusEntryResonate();`
+## `internal static void TCorpusEntryResonate(this CCorpus corpus)`
 
 Relays the corpus's answer to the chosen entry's notice, which its quotation observers run.
 
-## `internal static bool TCorpusLeaveConfirm(this CCorpus corpus) => corpus.LCorpusLeaveConfirm(true);`
+## `internal static bool TCorpusLeaveConfirm(this CCorpus corpus)`
 
 Relays the corpus's leave question, which the navigation's tab and the excerpt's word click ask.

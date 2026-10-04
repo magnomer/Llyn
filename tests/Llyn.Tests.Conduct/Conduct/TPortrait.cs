@@ -178,6 +178,36 @@ public sealed class TPortrait
     }
 
     [Fact]
+    public async Task PortraitFileExport_NameReadFails_ShowsTheNameFailureAndExportsNothing()
+    {
+        List<string> asked = [];
+        List<string> exported = [];
+
+        await TInterfaceConductPortrait.TPortraitFileExport(
+            TEnvoyFake.TEnvoyFileCreate("water.pdf", CPortraitMedium.CPortraitMediumPdf, asked),
+            TInterfaceConduct.TSettingsCreate(),
+            static () => throw new InvalidOperationException("The name is unreadable."),
+            (path, _) =>
+            {
+                exported.Add(path);
+                return Task.CompletedTask;
+            });
+
+        Assert.Equal(["Export.NameFailed"], asked);
+        Assert.Empty(exported);
+    }
+
+    [Fact]
+    public async Task PortraitFileExport_NoSettings_Throws()
+    {
+        await Assert.ThrowsAsync<ArgumentNullException>(() => TInterfaceConductPortrait.TPortraitFileExport(
+            TEngineFake.TEngineStubCreate<CEnvoy>(),
+            null!,
+            static () => "water",
+            static (_, _) => Task.CompletedTask));
+    }
+
+    [Fact]
     public async Task PortraitTicketPrint_DeclinedOrFailed_AsksThenPrintsNothingOrShowsTheFailure()
     {
         List<string> asked = [];

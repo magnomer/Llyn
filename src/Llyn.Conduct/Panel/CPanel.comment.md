@@ -1,5 +1,5 @@
 # CPanel.cs
-Hash: `a94771e128c09ada`
+Hash: `9effaf5eb143dc66`
 
 ## `public sealed class CPanel`
 
@@ -207,31 +207,3 @@ A refused delete is told through the envoy, and a done one closes the panel.
 
 A record nothing references is a plain question.
 One something references is asked with its tally, because the delete drops those references too.
-
-## `internal static CCatalogOrder CPanelOrderRead(LCatalogOrder order)`
-
-The Conduct mirror of an engine ordering, member for member.
-It maps each member by name, never by cast, so a reordered enum cannot shift a meaning.
-An unknown member is a caller's error.
-
-## `internal static LCatalogOrder? CPanelOrderRead(CCatalogOrder? order)`
-
-The engine ordering a driver's choice stands for, or null when the driver chose none.
-
-## `internal static LCatalogOrder LPanelOrderRead(CCatalogOrder order)`
-
-The by-name map from a Conduct ordering to the engine's, shared by the panels and the atelier.
-
-## `internal static CCatalogFilter CPanelFilterRead(LCatalogFilter filter)`
-
-The Conduct copy of an engine filter, carrying its hidden languages.
-
-## `internal static LSubject CPanelSubjectRead(CSubject subject)`
-
-The engine subject a driver's subject names, mapped member by member by name like the ordering.
-
-## `internal static CVistaRow CPanelRowRead(LVistaRow row)`
-
-The Conduct copy of one entry a vista lists, carrying its chosen flag.
-Every entry list and the prospect popup map through here, so the copy has one home.
-It copies the engine's empty epithet as it stands, so the map holds no fallback.

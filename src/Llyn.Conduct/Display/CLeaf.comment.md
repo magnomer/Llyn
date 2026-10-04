@@ -1,5 +1,5 @@
 # CLeaf.cs
-Hash: `361cb8faebb1a57d`
+Hash: `b161867d1381e3de`
 
 ## `public sealed record CLeaf(int CLeafPosition, CStateWording CLeafTitle, CStateWording CLeafExpression, CStateWording CLeafMeaning, IReadOnlyList<CLeafChip> CLeafSituation, IReadOnlyList<CLeafChip> CLeafRegister, IReadOnlyList<CLeafChip> CLeafTag, IReadOnlyList<CTranslationTarget> CLeafTranslation, IReadOnlyList<CLeafLine> CLeafSentence, IReadOnlyList<CImageDraft> CLeafImage, IReadOnlyList<CVideoDraft> CLeafVideo)`
 
@@ -26,5 +26,6 @@ Every text arrives worded and every row arrives mapped, so the leaf fill only lo
 Maps the shown entry's cards of one list to their ready form.
 The order, the unknown mark, the Source lines and the link targets are read once for the entry.
 Each card's links are its own entry of the target map, which the engine keys by every card.
+A card missing from the map has no links, since a refused target read answers an empty map.
 The rules stay below, so this map only pairs and chooses no key but the unknown mark's.
 Each picture row carries the address `media` resolves, so the page loads it without asking.

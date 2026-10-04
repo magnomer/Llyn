@@ -24,6 +24,8 @@ public sealed class CDisplaySound
 
     private readonly LDisplaySound _cDisplayVoice;
 
+    private readonly CLedgerNoticed _cDisplayNoticed;
+
     private readonly CDisplay _cDisplayHeader;
 
     private readonly LDraftPort _cDisplayDraft;
@@ -39,7 +41,7 @@ public sealed class CDisplaySound
     private readonly CEnvoy _cDisplayEnvoy;
 
     internal CDisplaySound(
-        LDisplaySound voice,
+        LDisplay display,
         CDisplay header,
         LDraftPort drafts,
         LEntryPort entries,
@@ -48,7 +50,7 @@ public sealed class CDisplaySound
         LSettingsPort settings,
         CEnvoy envoy)
     {
-        ArgumentNullException.ThrowIfNull(voice);
+        ArgumentNullException.ThrowIfNull(display);
         ArgumentNullException.ThrowIfNull(header);
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
@@ -57,7 +59,8 @@ public sealed class CDisplaySound
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
-        _cDisplayVoice = voice;
+        _cDisplayVoice = display.LDisplaySound;
+        _cDisplayNoticed = display.LDisplayNoticed;
         _cDisplayHeader = header;
         _cDisplayDraft = drafts;
         _cDisplayPort = entries;
@@ -94,7 +97,7 @@ public sealed class CDisplaySound
         }
         catch (Exception exception)
         {
-            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
+            _cDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
             return _cDisplayMute;
         }
     }
@@ -117,7 +120,7 @@ public sealed class CDisplaySound
         }
         catch (Exception exception)
         {
-            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
+            _cDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
             return null;
         }
 
@@ -151,7 +154,7 @@ public sealed class CDisplaySound
         }
         catch (Exception exception)
         {
-            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
+            _cDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
             return new CLecternPlayback(false, false);
         }
     }
@@ -205,7 +208,7 @@ public sealed class CDisplaySound
         }
         catch (Exception exception)
         {
-            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
+            _cDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
             return blank;
         }
 
@@ -249,7 +252,7 @@ public sealed class CDisplaySound
         }
         catch (Exception exception)
         {
-            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
+            _cDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
             return [];
         }
     }
@@ -291,9 +294,11 @@ public sealed class CDisplaySound
 
         string headword = _cDisplayHeader.CDisplayShown.CLecternHeadword;
         return new CLecternFanqie(
-            CSounding.CSoundingFanqieRead(_cDisplayVoice.LDisplayListRead(_cDisplayPhonology.LEngineFanqieDivide)),
+            CSounding.CSoundingFanqieRead(_cDisplayVoice.LDisplayListRead(
+                _cDisplayPhonology.LEngineFanqieDivide, "Display.FanqieReadFailed")),
             _cDisplayVoice.LDisplayFanqieCheck(id),
-            LDisplayAnswerRead(() => _cDisplayPhonology.LEngineReadingRead(id, headword), string.Empty),
+            _cDisplayNoticed.LLedgerRepaintRead(_cDisplayEnvoy, _cDisplaySettings,
+                () => _cDisplayPhonology.LEngineReadingRead(id, headword), string.Empty, "Display.ReadingFailed"),
             LDisplayAnchorRead(LDisplayReflexScan()),
             CDisplayFontRead(CFontRole.CFontRoleGlyph));
     }
@@ -346,7 +351,8 @@ public sealed class CDisplaySound
         }
 
         return new CLecternScript(
-            CSounding.CSoundingScriptRead(_cDisplayVoice.LDisplayListRead(_cDisplayPhonology.LEngineScriptDivide)),
+            CSounding.CSoundingScriptRead(_cDisplayVoice.LDisplayListRead(
+                _cDisplayPhonology.LEngineScriptDivide, "Display.ScriptReadFailed")),
             _cDisplayVoice.LDisplayScriptCheck(id),
             CDisplayFontRead(CFontRole.CFontRoleGlyph));
     }
@@ -358,8 +364,10 @@ public sealed class CDisplaySound
             return new CLecternParadigm([], _cDisplayBare);
         }
 
-        string language = LDisplayAnswerRead(() => _cDisplayPhonology.LEngineLanguageResolve(id), string.Empty);
-        IReadOnlyList<LParadigmRow> rows = _cDisplayVoice.LDisplayListRead(_cDisplayPhonology.LEngineParadigmScan);
+        string language = _cDisplayNoticed.LLedgerRepaintRead(_cDisplayEnvoy, _cDisplaySettings,
+            () => _cDisplayPhonology.LEngineLanguageResolve(id), string.Empty, "Display.LanguageFailed");
+        IReadOnlyList<LParadigmRow> rows = _cDisplayVoice.LDisplayListRead(
+            _cDisplayPhonology.LEngineParadigmScan, "Display.ParadigmReadFailed");
         bool pending = _cDisplayVoice.LDisplayParadigmCheck(id);
         return new CLecternParadigm(
             CSounding.CSoundingParadigmRead(rows, pending, _cDisplayVoice.LDisplayMorphologyRead(), false),
@@ -375,32 +383,27 @@ public sealed class CDisplaySound
                 _cDisplayHeader.CDisplayShown.CLecternLanguage,
                 CSounding.CSoundingReflexRead(_cDisplayVoice.LDisplayReflexRead()));
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            _cDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Display.ReflexFailed", exception);
             return [];
         }
     }
 
     private CLecternAnchor LDisplayAnchorRead(IReadOnlyList<CReflex> rows)
     {
-        return CSounding.LSoundingAnchorRead(
-            _cDisplayDraft, LDisplayEntry, _cDisplayHeader.CDisplayShown.CLecternHeadword, rows);
+        return CReflex.LReflexAnchorRead(
+            _cDisplayEnvoy,
+            _cDisplaySettings,
+            _cDisplayNoticed,
+            _cDisplayDraft,
+            LDisplayEntry,
+            _cDisplayHeader.CDisplayShown.CLecternHeadword,
+            rows);
     }
 
     public CFont CDisplayFontRead(CFontRole role)
     {
         return CCatalog.LCatalogFontRead(_cDisplaySettings, _cDisplayHeader.CDisplayShown.CLecternLanguage, role);
-    }
-
-    private static LDisplayAnswer LDisplayAnswerRead<LDisplayAnswer>(Func<LDisplayAnswer> read, LDisplayAnswer fallback)
-    {
-        try
-        {
-            return read();
-        }
-        catch (Exception)
-        {
-            return fallback;
-        }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Llyn.Conduct;
 using Llyn.Core;
@@ -178,6 +179,51 @@ public sealed class TByline
         imprint.CImprintByline.CBylineSelect(null, 0, ada.LAuthorId);
 
         Assert.Equal(1, reverted);
+    }
+
+    [Fact]
+    public void BylineRowsRead_FindFails_ShowsTheFindFailureAndOffersNone()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+        CImprint imprint = TInterfaceCitation.TImprintFailCreate(engine, TEnvoyFake.TEnvoyCreate(false, asked));
+        TBylineWordSet(engine, imprint);
+
+        IReadOnlyList<CAuthor> rows = imprint.CImprintByline.CBylineRowsRead();
+
+        Assert.Equal(["Source.FindFailed"], asked);
+        Assert.Empty(rows);
+    }
+
+    [Fact]
+    public void BylineRowsRead_WorkspaceChanged_ShowsNothingAndOffersNone()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CImprint imprint = TBylineImprintCreate(engine, atelier, asked);
+        engine.TEngineWorkspaceOpen(workspace.TWorkspaceFolder);
+
+        IReadOnlyList<CAuthor> rows = imprint.CImprintByline.CBylineRowsRead();
+
+        Assert.Empty(asked);
+        Assert.Empty(rows);
+    }
+
+    private static CImprint TBylineImprintCreate(LEngine engine, CAtelier atelier, List<string> asked)
+    {
+        CImprint imprint = TInterfaceCitation.TImprintCreate(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
+        TBylineWordSet(engine, imprint);
+        return imprint;
+    }
+
+    private static void TBylineWordSet(LEngine engine, CImprint imprint)
+    {
+        imprint.CImprintDesk.TDeskVistaRestore(engine.TEngineVistaStart("reference", LCatalogOrder.LCatalogOrderName));
+        TBylineOpen(engine, imprint);
+        imprint.CImprintByline.CBylineWordSet("Ad", true);
     }
 
     private static LAuthor TBylineOpen(LEngine engine, CImprint imprint)

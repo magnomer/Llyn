@@ -36,7 +36,8 @@ public sealed class TAuditComment
         IEnumerable<string> comments = TAuditCommentFile.TAuditScanRead(repoRoot, scope).Concat(
             TAuditCommentSetting.TAuditCommentFiles
                 .Select(file => TAuditCommentFile.TAuditCommentRead(Path.Combine(repoRoot, file)))
-                .Where(File.Exists));
+                .Where(File.Exists))
+            .Where(path => !TAuditCommentFile.TAuditReservedCheck(repoRoot, path));
         foreach (string path in comments)
         {
             string[] lines = File.ReadAllLines(path);
@@ -176,7 +177,8 @@ public sealed class TAuditComment
         IEnumerable<string> comments = TAuditCommentFile.TAuditScanRead(repoRoot, scope).Concat(
             TAuditCommentSetting.TAuditCommentFiles
                 .Select(file => TAuditCommentFile.TAuditCommentRead(Path.Combine(repoRoot, file)))
-                .Where(File.Exists));
+                .Where(File.Exists))
+            .Where(path => !TAuditCommentFile.TAuditReservedCheck(repoRoot, path));
         foreach (string comment in comments)
         {
             string stem = comment[..^TAuditCommentSetting.TAuditCommentPattern.TrimStart('*').Length];

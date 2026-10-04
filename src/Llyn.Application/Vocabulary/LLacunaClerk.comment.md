@@ -1,5 +1,5 @@
 # LLacunaClerk.cs
-Hash: `77695f29e005e72b`
+Hash: `5db94b23e1d0fb4b`
 
 ## `public sealed class LLacunaClerk`
 
@@ -10,7 +10,7 @@ The engine's gate is shared, so a fetch that lands writes under the same lock as
 
 ## `public LLacunaClerk(LRig rig, LLanguageCache languages, LParadigmClerk paradigms, LClaimClerk claims, object gate, Func<LSettings> settings, Action<LSubject, long> raise)`
 
-Reads the entry, inflection and lacuna ports and the source factory out of `rig`.
+Reads the entry, inflection and lacuna ports, the source factory and the fault log out of `rig`.
 `settings` is read at fetch time, so a setting turned off mid-fetch discards the answer.
 
 ## `public bool LLacunaClerkCheck(long entryId)`
@@ -46,12 +46,14 @@ Asks every source for `word` and keeps the first form each morphology code got.
 
 ## `private void LLacunaClerkApply(LEntry entry, IReadOnlyDictionary<string, string> found)`
 
-Appends one inflection per unspecified slot the answer filled and records the rest as lacunae.
+Appends one inflection per slot not yet specified that the answer filled and records the rest as lacunae.
 
 ## `private async Task LLacunaClerkRun(LEntry entry, CancellationTokenSource fetch)`
 
 The answer is written only when the fetch still stands and the setting is still on.
 The entry must still read the same and no draft may hold it.
 A source that never answered is not an answer and stores nothing.
-The entry is remembered in memory for the session only.
+An unanswered entry is remembered in memory for the session only.
 The same fetch does not start again until a restart, a clear or an edit.
+The fetch is never awaited, so a failure is recorded in the fault log rather than lost unobserved.
+Cancellation by the fetch's own token is not a failure and is not recorded.

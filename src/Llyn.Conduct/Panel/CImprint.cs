@@ -15,7 +15,12 @@ public sealed class CImprint
     private int _cImprintCount;
 
     internal CImprint(
-        LDraftPort drafts, LEntryPort entries, LSettingsPort settings, CEnvoy envoy, Action<Action> marshal)
+        LDraftPort drafts,
+        LEntryPort entries,
+        LSettingsPort settings,
+        CEnvoy envoy,
+        CLedgerNoticed noticed,
+        Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
@@ -24,7 +29,7 @@ public sealed class CImprint
 
         _cImprintEntryPort = entries;
         CImprintDesk = new CDesk(drafts, settings, "Source", envoy);
-        CImprintByline = new CByline(this, drafts);
+        CImprintByline = new CByline(this, drafts, noticed);
         CImprintDesk.CDeskDraftPrepared += LImprintDraftShow;
         CImprintDesk.CDeskObserverAttach(marshal);
     }

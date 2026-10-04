@@ -1,5 +1,5 @@
 # LShengfuClerk.cs
-Hash: `e921914f3d8283e2`
+Hash: `c3236ed8904fb14b`
 
 ## `public sealed class LShengfuClerk`
 
@@ -10,7 +10,8 @@ Storing a row also links its character to the Stem series the row names.
 
 ## `public LShengfuClerk(LRig rig, LLanguageCache languages, object gate, Action<LSubject, long> raise)`
 
-Takes the ports off the rig, the shared engine gate, and the notice the shell refreshes on.
+Takes the ports and the fault log off the rig.
+It also takes the shared engine gate and the notice the shell refreshes on.
 
 ## `public LShengfuRule? LShengfuRuleRead(string language)`
 
@@ -42,6 +43,10 @@ Cancels every pending fetch and forgets what was missing, as a workspace closes.
 
 The separator the pack rule joins several series with, or empty when it declares no rule.
 
+## `private static string LShengfuKeyFormat(string language, string character)`
+
+The pending key of one character in one language.
+
 ## `private async Task<(LShengfu? LShengfuFound, bool LShengfuReached)> LShengfuClerkScan(string character, string language, CancellationToken cancellation)`
 
 One request for the character, spaced by the rule's interval from the last one.
@@ -57,4 +62,6 @@ Starts one character's fetch unless it is pending or already missed.
 One fetch admitted through the single-wide gate.
 A series found is stored and linked to its Stem keys.
 A miss is remembered and a failure still raises the bulletin, so the panel stops waiting.
+The fetch is never awaited, so a failure is recorded in the fault log rather than lost unobserved.
+Cancellation by the fetch's own token is not a failure and is not recorded.
 The bulletin names the fanqie subject, because the fanqie panel prints the series.

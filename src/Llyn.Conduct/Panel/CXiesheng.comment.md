@@ -1,5 +1,5 @@
 # CXiesheng.cs
-Hash: `c988e3385b49fd7c`
+Hash: `b3879cd4c5ad22f6`
 
 ## `public sealed class CXiesheng`
 
@@ -188,6 +188,7 @@ A refused resolve is shown through the catalog's one glyph failure owner, and no
 ## `internal string LXieshengFileRead()`
 
 The file name an export of the read entry is offered under.
+`CPortrait` reads it only once the export starts, and a failed read shows `Export.NameFailed`.
 
 ## `public Task CXieshengPortraitPrint()`
 

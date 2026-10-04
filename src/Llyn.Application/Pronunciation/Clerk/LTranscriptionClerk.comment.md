@@ -1,11 +1,11 @@
 # LTranscriptionClerk.cs
-Hash: `cb10cebae836ab61`
+Hash: `72c8cdb6f6df1a52`
 
 ## `public sealed class LTranscriptionClerk`
 
 Transcriptions of an entry and the lookups that feed them.
 The pronunciation lookup and the per-scheme lookup both run here, over sources built once per language.
-The engine hands in a step sink and never sees the receiver the lookup is typed by.
+The tenure builds the receiver and hands it in, so it can read afterwards whether the lookup ended it.
 
 ## `public LTranscriptionClerk(LRig rig, LLanguageCache languages)`
 
@@ -15,30 +15,27 @@ Reads the transcription port and the source factory out of `rig`.
 
 The scheme names the pack of `language` declares, or none for a blank language.
 
-## `public Task<IReadOnlyList<LCandidate>> LTranscriptionClerkFind(string word, string language, Action<LLookupStep> sink, CancellationToken cancellation)`
+## `public Task<IReadOnlyList<LCandidate>> LTranscriptionClerkFind(string word, string language, LReceiver receiver, CancellationToken cancellation)`
 
 The pronunciation lookup of `word`, with the pack's varieties and cleanups.
-A pack with respelling groups gets a receiver that respells each candidate before `sink` sees it.
+A pack with respelling groups puts a receiver in front of `receiver` that respells each candidate first.
+A pack load or source build that throws here leaves `receiver` unended, since the lookup never started.
 
-## `public Task<IReadOnlyList<LCandidate>> LTranscriptionClerkFind(string word, string language, string scheme, Action<LLookupStep> sink, CancellationToken cancellation)`
+## `public Task<IReadOnlyList<LCandidate>> LTranscriptionClerkFind(string word, string language, string scheme, LReceiver receiver, CancellationToken cancellation)`
 
 The lookup of `word` over the sources of one scheme, raw.
 
-## `public Task LTranscriptionClerkPublish(IReadOnlyList<LCandidate> held, string language, Action<LLookupStep> sink)`
+## `public Task LTranscriptionClerkPublish(IReadOnlyList<LCandidate> held, string language, LReceiver receiver)`
 
-Replays remembered pronunciation candidates to `sink`, respelled the way a fresh lookup would be.
+Replays remembered pronunciation candidates to `receiver`, respelled the way a fresh lookup would be.
 
-## `public static Task LTranscriptionClerkPublish(IReadOnlyList<LCandidate> held, Action<LLookupStep> sink)`
-
-Replays remembered scheme candidates to `sink` and finishes.
-
-## `private static Task LTranscriptionClerkPublish(IReadOnlyList<LCandidate> held, LReceiver receiver)`
+## `public static Task LTranscriptionClerkPublish(IReadOnlyList<LCandidate> held, LReceiver receiver)`
 
 Hands every held candidate to `receiver` and finishes the lookup.
 
-## `private static LReceiver LReceiverCreate(LLanguage pack, Action<LLookupStep> sink)`
+## `private static LReceiver LReceiverCreate(LLanguage pack, LReceiver receiver)`
 
-A relay to `sink`, wrapped in a respelling receiver when `pack` declares respelling groups.
+`receiver` itself, or wrapped in a respelling receiver when `pack` declares respelling groups.
 
 ## `public void LTranscriptionClerkSync(long entryId, IReadOnlyList<LTranscriptionDraft> drafts, List<LRevisionDelta> changes, Dictionary<long, long> identity)`
 

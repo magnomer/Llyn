@@ -1,15 +1,13 @@
 # LCardFacade.cs
-Hash: `ab5001fe8185cf44`
+Hash: `6f3d0b6c7b94ffc9`
 
 ## `internal sealed class LCardFacade`
 
 The engine's facade for cards, over Meanings, Collocations, Tags, Registers and Translations.
-Every call takes the gate and hands the work to the clerk that owns the rows.
+A call that reaches a clerk takes the gate and hands the work to the clerk owning the rows.
 The facade stays because the shell calls the engine, and the engine alone holds the gate and the observers.
 Which side an id names arrives as an `LOwner` rather than in the method's name.
-A name carries three components after its prefix, and a method per side would need four.
-A Tag, a Register or a link hangs from a Meaning or a Collocation and from nothing else.
-So the facade turns the owner into the flag the clerks take, and any other side is refused here.
+Only an Entry holds Meanings, so any other side is refused here.
 
 ## `public LCardFacade(LEngine engine)`
 
@@ -20,13 +18,13 @@ Stores the engine and its shared gate for this facade.
 Reads the Meanings of the Entry identified by `ownerId`, in stored order.
 Only an Entry holds Meanings, so any other owner is refused.
 
-## `public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)`
+## `public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> LEngineMeaningRead(long entryId, string key)`
 
 Reads the Meanings of the Entry identified by `entryId`, ready in reading order.
 The clerk's `LMeaningClerkSort` owns the order and the name fallback.
 `key` is the localization key of that fallback, which the caller chooses and the engine words.
 
-## `public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)`
+## `public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(LTenure held, long card, long sentence, string text, int start, int length, string key)`
 
 The Meanings a sense menu offers for the linked Mention under a sentence field's selection.
 The held draft finds the Mention first, then its Entry's Meanings are read in reading order.
@@ -56,7 +54,6 @@ A vista whose chosen tag no longer answers is deselected.
 
 The tag clerk's create, then the tag bulletin raised outside the gate.
 The catalog is announced so every panel listing Tags shows the new row.
-The rename and the delete raise the same bulletin the same way.
 
 ## `public LRegisterOffer LEngineRegisterFind(LTenure held, long card, string text)`
 
@@ -69,13 +66,12 @@ The draft is read before the gate is taken, as the tenure guards itself.
 
 The shelf the tenor panel's vista lists, with the query and order read off the vista.
 The vista's filter hides languages from the entries of the chosen Register, not Registers, so it is not applied here.
+A vista whose chosen Register no longer answers is deselected.
 
 ## `public LRegister LEngineRegisterCreate(string name)`
 
 The register clerk's create, then the register bulletin raised outside the gate.
-The announcement is raised either way, so the panel lists and selects the row.
-The rename and the delete raise the same bulletin whether or not the row moved.
-So a shown panel always re-reads.
+The announcement is raised after the lock is released, so the panel lists and selects the row.
 
 ## `public LTranslationOffer LEngineTranslationFind(LTenure held, string text, string word, bool chosen)`
 
@@ -112,12 +108,14 @@ A link whose entry is gone is left out, so a chip is never drawn blank.
 
 The draft's named source links and whether its narrative holds words, as one record.
 The narrated verdict is read once here, from the etymology draft's own rule.
-A failed link read answers no links, so the narrative still shows.
+A failed link read is not caught here.
+It travels up to the reading view's gate.
 
 ## `public IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(LEntryDraft draft)`
 
 The link targets of every card of a stored entry, keyed by card id, in one read.
-A refused read answers every card empty, so the reading view still draws its cards.
+A failed read is not caught here.
+It travels up to the reading view's gate.
 
 ## `internal static IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationResolve(IReadOnlyList<LCardDraft> cards, IReadOnlyList<LTranslationTarget> read)`
 

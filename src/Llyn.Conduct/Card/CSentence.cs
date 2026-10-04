@@ -16,20 +16,29 @@ public sealed class CSentence
 
     private readonly CEnvoy _cSentenceEnvoy;
 
+    private readonly CLedgerNoticed _cSentenceNoticed;
+
     internal CSentence(
-        CDesk desk, LPhonologyPort phonology, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy)
+        CDesk desk,
+        LPhonologyPort phonology,
+        LDraftPort drafts,
+        LSettingsPort settings,
+        CEnvoy envoy,
+        CLedgerNoticed noticed)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(noticed);
 
         _cSentenceDesk = desk;
         _cSentencePhonologyPort = phonology;
         _cSentenceDraftPort = drafts;
         _cSentenceSettingsPort = settings;
         _cSentenceEnvoy = envoy;
+        _cSentenceNoticed = noticed;
     }
 
     private LTenure? CSentenceTenure => _cSentenceDesk.CDeskFilling ? null : _cSentenceDesk.CDeskTenure;
@@ -160,19 +169,17 @@ public sealed class CSentence
         string language = _cSentenceDesk.CDeskTenure?.LTenureLanguageRead() ?? string.Empty;
         return new CSentenceFrame(
             CCatalog.CCatalogOrderRead(_cSentencePhonologyPort.LEngineOrderRead(language)),
-            CSentenceListRead(() => _cSentencePhonologyPort.LEngineParticleRead(language)),
-            CSentenceListRead(() => _cSentencePhonologyPort.LEngineDependenceRead(language)));
-    }
-
-    private static IReadOnlyList<string> CSentenceListRead(Func<IReadOnlyList<string>> read)
-    {
-        try
-        {
-            return read();
-        }
-        catch (Exception)
-        {
-            return [];
-        }
+            _cSentenceNoticed.LLedgerRepaintRead(
+                _cSentenceEnvoy,
+                _cSentenceSettingsPort,
+                () => _cSentencePhonologyPort.LEngineParticleRead(language),
+                [],
+                "Sentence.ParticleFailed"),
+            _cSentenceNoticed.LLedgerRepaintRead(
+                _cSentenceEnvoy,
+                _cSentenceSettingsPort,
+                () => _cSentencePhonologyPort.LEngineDependenceRead(language),
+                [],
+                "Sentence.DependenceFailed"));
     }
 }

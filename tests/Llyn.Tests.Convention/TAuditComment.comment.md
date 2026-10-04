@@ -1,5 +1,5 @@
 # TAuditComment.cs
-Hash: `c0b91787c44310bd`
+Hash: `cb449dbff9ce0bcb`
 
 ## `public sealed class TAuditComment`
 
@@ -12,6 +12,7 @@ The scope reads they share live in `TAuditCommentFile`.
 ## `public void AuditComment_CommentLines_KeepLineRules()`
 
 Reads every comment file under the configured roots, plus those of the listed root-level files.
+A reserved comment file is skipped, since only the developer edits it.
 A blank line is skipped, and a heading loses its `#` marks before it is judged.
 Every line must be one sentence, hold at most the configured words, and carry none of the forbidden characters.
 A heading counts only its words outside code spans.

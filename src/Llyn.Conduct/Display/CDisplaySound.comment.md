@@ -1,5 +1,5 @@
 # CDisplaySound.cs
-Hash: `c05aaa0e11d3f559`
+Hash: `e6c0cf413754995c`
 
 ## `public sealed class CDisplaySound`
 
@@ -24,9 +24,12 @@ The font with nothing set, so a block with nothing shown keeps its theme.
 
 The anchors while nothing is shown or the engine refused, with no row anchored.
 
-## `internal CDisplaySound(LDisplaySound voice, CDisplay header, LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LMediaPort media, LSettingsPort settings, CEnvoy envoy)`
+## `internal CDisplaySound(LDisplay display, CDisplay header, LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LMediaPort media, LSettingsPort settings, CEnvoy envoy)`
 
 Only the display builds its sound area, over the ports and the envoy the panel handed down.
+It takes the sound half and the atelier's repaint memory from `display`, so the width did not grow.
+Every read below shows its failure through that memory, since it runs on every repaint.
+The play and fanqie gates answer a user act, so they show every failure.
 
 ## `public event Action? CDisplayFoldChanged;`
 
@@ -62,7 +65,7 @@ The shown entry's id, which every phonology read is made for.
 The shown entry's pronunciation block, ready to draw.
 The engine answers the readings, the brackets and the pack's verdicts in one read.
 Conduct only chooses each variety's label key through `CSounding.CSoundingVarietyRead`.
-Nothing shown answers the mute block, and a refused read shows `Sound.LoadFailed` and answers it too.
+Nothing shown answers the mute block, and a refused read shows `Sound.LoadFailed` once and answers it too.
 
 ## `public async Task<CLecternAccent?> CDisplayEnsignLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
@@ -71,8 +74,7 @@ The engine picks the varieties and loads nothing for a pack that names them.
 `store` is the driver's own image store, handed the rows through the one flag map.
 It answers the block again once the flags are in, so the driver repaints its rows.
 Another entry shown meanwhile wins, so a late load answers null and paints nothing.
-A failed load shows `Sound.LoadFailed` and answers null, like `CDisplayAccentRead`.
-A refused load answers null too, since a missing flag falls back to its name.
+A failed load shows `Sound.LoadFailed` once and answers null, like `CDisplayAccentRead`.
 
 ## `private static CLecternAccent LDisplayAccentRead(LAccentSheet sheet)`
 
@@ -82,7 +84,7 @@ Maps the engine's block into the Conduct record, reading no rule.
 
 The play button and volume tray verdicts for the shown entry.
 The engine answers both, so Conduct reads no audio field.
-A refused read shows `Sound.LoadFailed` and hides both.
+A refused read shows `Sound.LoadFailed` once and hides both.
 
 ## `public void CDisplayPlaybackStart(double volume)`
 
@@ -98,7 +100,7 @@ It plays that row's recording at the slider's level.
 ## `private void LDisplayPlaybackStart(Func<int> play)`
 
 Runs one play and keeps its ticket in the sound half, so a later stop reaches this play alone.
-A refused play shows `Sound.PlayFailed` and keeps the old ticket.
+A refused play shows `Sound.PlayFailed` every time and keeps the old ticket.
 
 ## `public void CDisplayPlaybackCancel()`
 
@@ -111,7 +113,7 @@ A sound another view started plays on.
 The shown entry's glyph row, ready to draw.
 The heading key is chosen by `CScheme.CSchemeKeyRead`, and the cells map the engine's division by name.
 A language without a glyph section, or a refused read, answers the hidden row.
-A refused read also shows `Sound.LoadFailed`.
+A refused read also shows `Sound.LoadFailed` once.
 
 ## `public bool CDisplayGlyphOpen(string character, string language)`
 
@@ -123,7 +125,7 @@ A refused resolve shows `Glyph.OpenFailed` through the catalog's one failure own
 ## `public IReadOnlyList<CTranscriptionDraft> CDisplayTranscriptionRead()`
 
 The shown entry's transcription rows, ready to draw, without the glyph row.
-The engine filters them, and a refused read shows `Sound.LoadFailed` and answers none.
+The engine filters them, and a refused read shows `Sound.LoadFailed` once and answers none.
 
 ## `public CLecternReflex CDisplayReflexRead()`
 
@@ -146,20 +148,21 @@ The editor's reflex block and the reading view share the one fold.
 
 The shown entry's rime-book block, ready to draw, with its reading, anchors and font.
 The anchors are read again, since new fanqie rows can change which reflex rows anchor.
+A refused row read shows `Display.FanqieReadFailed` through the voice's failure event.
 
 ## `public void CDisplayFanqieSet(long fanqieId, int rank, bool raise)`
 
 The gate for a representative pick.
 It hands the held `rank` and the raise flag for the shown entry.
 The fanqie clerk resolves the new rank, as behind the editor's gate.
-A refusal shows `Display.FanqieRepresentativeFailed`, as the editor's gate does.
+A refusal shows `Display.FanqieRepresentativeFailed` every time, as the editor's gate does.
 
 ## `public bool CDisplayDiweiOpen(bool initial, string key)`
 
 The gate for a rime-cell click.
 It raises the cell in the shown entry's language for the navigation.
 The engine names the cell kind from the initial flag.
-Nothing shown, or a blank key, opens nothing.
+Nothing shown, or a key the engine names no kind for, opens nothing.
 
 ## `public bool CDisplayStemOpen(string? key)`
 
@@ -170,6 +173,7 @@ Nothing shown opens nothing.
 ## `public CLecternScript CDisplayScriptRead()`
 
 The shown entry's script block, ready to draw.
+A refused row read shows `Display.ScriptReadFailed` through the voice's failure event.
 
 ## `public CLecternParadigm CDisplayParadigmRead()`
 
@@ -177,21 +181,20 @@ The shown entry's paradigm block, ready to draw.
 Its font follows the paradigm's own language, which the engine resolves.
 The slots carry their status and tip key, so the driver reads neither verdict.
 The inflection fetch is started when the entry opens, never by this read.
+A refused row read shows `Display.ParadigmReadFailed` through the voice's failure event.
 
 ## `private IReadOnlyList<CReflex> LDisplayReflexScan()`
 
-The written reflex rows of the shown entry through the shared scan, none when the scan is refused.
+The written reflex rows of the shown entry through the shared scan.
+A refused scan shows `Display.ReflexFailed` once and answers no rows.
 
 ## `private CLecternAnchor LDisplayAnchorRead(IReadOnlyList<CReflex> rows)`
 
 Whether the shown headword offers anchoring, and each row's anchor text.
-The shared anchor map `CSounding.LSoundingAnchorRead` answers both, the one the editor's block uses.
+The shared anchor map `CReflex.LReflexAnchorRead` answers both, the one the editor's block uses.
+It hands the map this view's envoy, settings and repaint memory, so a refusal shows `Display.AnchorFailed` once.
 
 ## `public CFont CDisplayFontRead(CFontRole role)`
 
 The font of `role` in the shown language, through the catalog's one font rule.
 The reading view paints its headword and its example cards from it, so no driver hands a language back.
-
-## `private static LDisplayAnswer LDisplayAnswerRead<LDisplayAnswer>(Func<LDisplayAnswer> read, LDisplayAnswer fallback)`
-
-Runs `read`, answering `fallback` for a refusal.

@@ -28,16 +28,16 @@ internal sealed class LEnsignLoader
 
         string key = LEnsignCodeNormalize(code);
         string directory = Path.Combine(_lEnsignRoot, LEnsignFolder);
-        Directory.CreateDirectory(directory);
-
         string path = Path.Combine(directory, key + LEnsignSuffix);
-        if (File.Exists(path))
-        {
-            return path;
-        }
 
         try
         {
+            Directory.CreateDirectory(directory);
+            if (File.Exists(path))
+            {
+                return path;
+            }
+
             byte[] svg = await _lEnsignClient
                 .GetByteArrayAsync(LEnsignAddress + key + LEnsignSuffix, cancellation)
                 .ConfigureAwait(false);
@@ -48,7 +48,8 @@ internal sealed class LEnsignLoader
         {
             throw;
         }
-        catch (Exception exception) when (exception is HttpRequestException or OperationCanceledException)
+        catch (Exception exception) when (exception is HttpRequestException or OperationCanceledException
+            or IOException or UnauthorizedAccessException)
         {
             return null;
         }

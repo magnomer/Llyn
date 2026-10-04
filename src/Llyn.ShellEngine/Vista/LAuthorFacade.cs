@@ -187,7 +187,16 @@ internal sealed class LAuthorFacade
             return [];
         }
 
-        IReadOnlyList<LAuthor> credited = _lAuthorFacadeEngine.LEngineDraft.LEngineDraftRead(draft)?.LDraftAuthor ?? [];
+        IReadOnlyList<LAuthor> credited;
+        try
+        {
+            credited = _lAuthorFacadeEngine.LEngineDraft.LEngineDraftRead(draft)?.LDraftAuthor ?? [];
+        }
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceStaleCheck(exception))
+        {
+            return [];
+        }
+
         lock (_lAuthorFacadeGate)
         {
             return LAuthorFacadeStaff.LEngineStaffAuthor.LBylineFind(credited, query, LAuthorFacadeLimit);

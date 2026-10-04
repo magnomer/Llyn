@@ -1,9 +1,9 @@
 # TInterfaceCitation.cs
-Hash: `bceb4b5dc0877cbe`
+Hash: `d1820b4bf7e071df`
 
 ## `internal static class TInterfaceCitation`
 
-The relays that build a desk and a card over engine ports that fail on the Source calls.
+The relays that build a desk, an imprint and a card over engine ports that fail on the Source calls.
 It also reads the corpus list's internal draft map.
 Each relay is transparent and carries no test logic of its own.
 
@@ -15,6 +15,17 @@ Builds an entry desk whose tenure is real but whose title resolve throws.
 
 Builds a desk of the given scope, origin and subject whose tenure is real but whose title resolve throws.
 The corpus tests build an Example desk with it.
+
+## `internal static CImprint TImprintCreate(CAtelier atelier, CEnvoy envoy)`
+
+Builds a Source imprint over the atelier's ports and repaint memory, as the shelf does.
+The byline and imprint tests build theirs here, so they never call the internal constructor.
+
+## `internal static CImprint TImprintFailCreate(LEngine engine, CEnvoy envoy)`
+
+Builds a Source imprint whose tenure is real but whose byline find throws.
+It holds a fresh repaint memory of its own.
+The byline tests prove a failed find reaches the notice with it.
 
 ## `internal static CExample? TAnthologyDraftRead(this CAnthology anthology, LDraft? draft)`
 

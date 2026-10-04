@@ -1,5 +1,5 @@
 # CCard.cs
-Hash: `9020c54c39ef3302`
+Hash: `8a5170a1d117e322`
 
 ## `public sealed class CCard`
 
@@ -9,7 +9,7 @@ The situation and source fields find the stored rows a typed word matches.
 The translation, situation, register and tag fields add what the user typed and pick stored rows.
 The etymology field sends its narrative, its source links and its spans through it, over the editor's desk.
 The maps from engine drafts to their shapes sit on `CFolio`.
-It holds no state of its own.
+It holds only the desk and the ports it was given.
 The editor owns one and hands it to the card views beside the desk.
 
 ## `internal CCard(CDesk desk, LDraftPort drafts, LEntryPort entries, LSettingsPort settings, CEnvoy envoy)`
@@ -54,7 +54,7 @@ It searches in the editor draft's own language, through `CMention.LMentionProspe
 
 ## `internal static CProspect LCardProspectRead(LTranslationOffer offer)`
 
-A plain map of the engine's offer, with no rule, and its rows through `CPanel.CPanelRowRead`.
+A plain map of the engine's offer, with no rule, and its rows through `CCatalog.LCatalogRowRead`.
 The mention picker's helper in `CMention` reuses it, since both dropdowns answer the same offer.
 
 ## `public CProffer CCardReferenceFind(long cardId, long sentenceId, string text)`
@@ -91,8 +91,8 @@ The gate for a tag typed into a card, as the user wrote it, and answers what the
 The field hands every change unsettled, and Enter or leaving the field hands the text settled.
 The same answer carries the dropdown of stored Tags the kept text matches, so the field paints both at once.
 It holds no rule of its own.
-The list parse and the clerk split, trim and skip blank or held text.
-The tag clerk trims, filters, limits and splits the offered rows, and a failed search offers nothing.
+A card with no chip quill answers the text and no dropdown, and any failure reaches the caller.
+A refused search is caught lower, in `LQuillChip`, and offers nothing.
 
 ## `private static CSlate LCardSlateRead(LTagOffer offer)`
 
@@ -101,7 +101,7 @@ A plain map of the engine's tag offer, with no rule.
 ## `public CProffer CCardSituationAdd(long cardId, string text, int position, bool settled)`
 
 The gate for a situation typed into a card, shaped as the tag gate is.
-It answers the kept text and the dropdown of stored Situations that text matches, most used first.
+It answers the kept text and the dropdown of stored Situations that text matches.
 A card with no chip quill answers the text and no dropdown.
 
 ## `private static CProffer LCardProfferRead(LSituationOffer offer)`
@@ -120,8 +120,9 @@ The gate for a situation chip erased from a card.
 
 The gate for a register typed into a card, shaped as the tag gate is.
 The same answer carries the dropdown of stored Registers the kept text matches, so the field paints both at once.
-The register clerk trims, filters, limits and splits the offered rows, and a failed search offers nothing.
-The draft's own language seeds the shelf, so the driver passes none.
+A card with no chip quill answers the text and no dropdown, and any failure reaches the caller.
+A refused search is caught lower, in `LQuillChip`, and offers nothing.
+The held draft's language seeds the search, so the driver passes none.
 
 ## `private static CProffer LCardProfferRead(LRegisterOffer offer)`
 
@@ -158,7 +159,7 @@ Defers the narrative like every typed field, so one keystroke is not one request
 
 The chips of the held draft's etymology, ready to paint.
 An empty desk answers no chips.
-Like the old line read, it adds no failure notice of its own.
+It adds no failure notice of its own.
 
 ## `public void CCardEtymonAdd(long entryId)`
 

@@ -75,10 +75,10 @@ internal sealed class LPronunciationFacade
         long session,
         string word,
         string language,
-        Action<LLookupStep> sink,
+        LReceiverRelay receiver,
         CancellationToken cancellation)
     {
-        ArgumentNullException.ThrowIfNull(sink);
+        ArgumentNullException.ThrowIfNull(receiver);
 
         IReadOnlyList<LCandidate>? held;
         Task<IReadOnlyList<LCandidate>>? scan = null;
@@ -88,12 +88,12 @@ internal sealed class LPronunciationFacade
             if (held is null)
             {
                 scan = LPronunciationFacadeStaff.LEngineStaffTranscription.LTranscriptionClerkFind(
-                    word, language, sink, cancellation);
+                    word, language, receiver, cancellation);
             }
         }
 
         return scan is null
-            ? LPronunciationFacadeStaff.LEngineStaffTranscription.LTranscriptionClerkPublish(held!, language, sink)
+            ? LPronunciationFacadeStaff.LEngineStaffTranscription.LTranscriptionClerkPublish(held!, language, receiver)
             : LEngineTroveSave(scan, session, word, language, null);
     }
 
@@ -121,12 +121,11 @@ internal sealed class LPronunciationFacade
         string word,
         string language,
         long target,
-        Action<LHarvestStep> sink,
+        LListenerRelay listener,
         CancellationToken cancellation)
     {
-        ArgumentNullException.ThrowIfNull(sink);
+        ArgumentNullException.ThrowIfNull(listener);
 
-        LListenerRelay listener = new(sink);
         IReadOnlyList<LRecording>? held;
         string variety;
         Task<IReadOnlyList<LRecording>>? scan = null;
@@ -187,7 +186,7 @@ internal sealed class LPronunciationFacade
         return string.Empty;
     }
 
-    internal Task<string> LEngineRecordingSave(
+    internal Task<string?> LEngineRecordingSave(
         LRecording recording, string word, string language, CancellationToken cancellation)
     {
         LRecordingClerk recordings;
@@ -199,7 +198,7 @@ internal sealed class LPronunciationFacade
         return recordings.LRecordingClerkSave(recording, word, language, cancellation);
     }
 
-    public Task<string> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation)
+    public Task<string?> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation)
     {
         LRecordingClerk recordings;
         lock (_lPronunciationFacadeGate)
@@ -287,10 +286,10 @@ internal sealed class LPronunciationFacade
         string word,
         string language,
         string scheme,
-        Action<LLookupStep> sink,
+        LReceiverRelay receiver,
         CancellationToken cancellation)
     {
-        ArgumentNullException.ThrowIfNull(sink);
+        ArgumentNullException.ThrowIfNull(receiver);
         ArgumentException.ThrowIfNullOrWhiteSpace(scheme);
 
         IReadOnlyList<LCandidate>? held;
@@ -301,12 +300,12 @@ internal sealed class LPronunciationFacade
             if (held is null)
             {
                 scan = LPronunciationFacadeStaff.LEngineStaffTranscription.LTranscriptionClerkFind(
-                    word, language, scheme, sink, cancellation);
+                    word, language, scheme, receiver, cancellation);
             }
         }
 
         return scan is null
-            ? LTranscriptionClerk.LTranscriptionClerkPublish(held!, sink)
+            ? LTranscriptionClerk.LTranscriptionClerkPublish(held!, receiver)
             : LEngineTroveSave(scan, session, word, language, scheme);
     }
 

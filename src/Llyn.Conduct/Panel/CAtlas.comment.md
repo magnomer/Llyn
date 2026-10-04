@@ -1,5 +1,5 @@
 # CAtlas.cs
-Hash: `3c497ec96a9196a9`
+Hash: `bc38d0661c268d83`
 
 ## `public sealed class CAtlas`
 

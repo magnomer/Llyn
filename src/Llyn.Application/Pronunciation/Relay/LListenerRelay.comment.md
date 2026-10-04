@@ -1,5 +1,5 @@
 # LListenerRelay.cs
-Hash: `5bb996ddf16eee13`
+Hash: `fc5a424248587ed6`
 
 ## `public sealed class LListenerRelay : LListener`
 
@@ -12,6 +12,12 @@ Each call becomes exactly one step, on the thread that made the call.
 
 The sink is required, since a relay with nowhere to send is a caller mistake.
 
+## `public bool LListenerRelayEnded { get; private set; }`
+
+Whether this relay has sent its end step.
+The tenure that made the relay reads it after a failed search.
+It ends the sink itself only when the harvest never did.
+
 ## `public void LListenerSourceStart(string source, int order)`
 
 A source step naming the source and its position, with no recording.
@@ -23,3 +29,5 @@ A recording step, with the source and position read off the recording itself.
 ## `public void LListenerFinish()`
 
 The end step, naming no source and carrying order zero.
+It marks the relay ended before the step leaves.
+So a sink that throws on the end is never ended twice.

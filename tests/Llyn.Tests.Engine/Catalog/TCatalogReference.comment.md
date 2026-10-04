@@ -1,5 +1,5 @@
 # TCatalogReference.cs
-Hash: `7848c28fcdeecb79`
+Hash: `28340ac559d1b2dc`
 
 ## `public sealed class TCatalogReference`
 

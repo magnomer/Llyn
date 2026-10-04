@@ -6,4 +6,5 @@ Hash: `e29bb4ed78677ffd`
 The relays for a quill, built over a tenure.
 The gloss relays name card zero and sentence zero, as the held Example does.
 The chip relays build the chip edits over a tenure and a draft port a test may fake.
+The situation relays build a situation quill over a tenure and set its title, kind and description.
 Each relay is transparent and carries no test logic of its own.

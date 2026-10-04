@@ -152,7 +152,7 @@ public sealed class LHarvest
         {
             throw;
         }
-        catch
+        catch (OperationCanceledException)
         {
             return LAnswer.LAnswerLost;
         }

@@ -388,6 +388,7 @@
     "Suspend",
     "Sweep",
     "Sync",
+    "Teardown",
     "Tick",
     "Toggle",
     "Undo",

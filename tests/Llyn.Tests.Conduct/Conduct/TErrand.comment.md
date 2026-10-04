@@ -1,5 +1,5 @@
 # TErrand.cs
-Hash: `72457feed82e5c66`
+Hash: `0ec7aad2ed809419`
 
 ## `public sealed class TErrand`
 
@@ -11,3 +11,8 @@ Each recording step raises the clip once, and a row turns ready only when its re
 Rows keep the pack's order once each, and a row without an address says missing or broken.
 An empty answer after a recording keeps the recording, and an untagged one carries a blank flag key.
 A pick saved or previewed while no recording search runs does nothing.
+A start over a tenure the workspace change made stale shows no notice and leaves each popup finished.
+
+## `private static CDesk TErrandDeskCreate(LEngine engine, List<string> asked)`
+
+Builds an Input desk holding a fresh entry headed "tomato", whose notices land in `asked`.

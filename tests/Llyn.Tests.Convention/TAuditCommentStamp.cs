@@ -125,6 +125,7 @@ public sealed class TAuditCommentStamp
         IEnumerable<IGrouping<string, string>> pairs = TAuditCommentFile.TAuditOwnerRead(repoRoot)
             .GroupBy(TAuditCommentFile.TAuditCommentRead, StringComparer.OrdinalIgnoreCase)
             .Where(group => File.Exists(group.Key))
+            .Where(group => !TAuditCommentFile.TAuditReservedCheck(repoRoot, group.Key))
             .OrderBy(group => rooted.Contains(group.Key))
             .ThenBy(group => group.Key, StringComparer.OrdinalIgnoreCase);
         foreach (IGrouping<string, string> pair in pairs)

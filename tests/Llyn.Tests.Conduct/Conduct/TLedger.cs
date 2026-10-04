@@ -121,6 +121,102 @@ public sealed class TLedger
     }
 
     [Fact]
+    public void LedgerFolderOpen_ShellFailsTwice_ShowsTwoNotices()
+    {
+        List<string> asked = [];
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
+            engine,
+            TLedgerPortCreate(new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineFolderOpen"] = _ => throw new IOException("moved away"),
+            }));
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
+
+        atelier.CAtelierLedger.CLedgerFolderOpen(envoy);
+        atelier.CAtelierLedger.CLedgerFolderOpen(envoy);
+
+        Assert.Equal(["Settings.FolderFailed", "Settings.FolderFailed"], asked);
+    }
+
+    [Fact]
+    public void LedgerFailureShow_FailsTwice_ShowsTwoNotices()
+    {
+        List<string> asked = [];
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TLedgerPortCreate([]));
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
+
+        atelier.TLedgerFailureShow(envoy, "Export.Failed", new IOException("locked"));
+        atelier.TLedgerFailureShow(envoy, "Export.Failed", new IOException("locked"));
+
+        Assert.Equal(["Export.Failed", "Export.Failed"], asked);
+    }
+
+    [Fact]
+    public void LedgerRepaintShow_FailsTwice_ShowsOneNotice()
+    {
+        List<string> asked = [];
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TLedgerPortCreate([]));
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
+
+        atelier.TLedgerRepaintShow(envoy, "Display.OrderFailed", new IOException("locked"));
+        atelier.TLedgerRepaintShow(envoy, "Display.OrderFailed", new IOException("locked"));
+
+        Assert.Equal(["Display.OrderFailed"], asked);
+    }
+
+    [Fact]
+    public void LedgerRepaintShow_SameKeyThenOtherKey_ShowsEachKeyOnce()
+    {
+        List<string> asked = [];
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TLedgerPortCreate([]));
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
+
+        atelier.TLedgerRepaintShow(envoy, "Display.OrderFailed", new IOException("locked"));
+        atelier.TLedgerRepaintShow(envoy, "Display.OrderFailed", new IOException("locked"));
+        atelier.TLedgerRepaintShow(envoy, "Display.CitationFailed", new IOException("locked"));
+        atelier.TLedgerRepaintShow(envoy, "Display.OrderFailed", new IOException("locked"));
+
+        Assert.Equal(["Display.OrderFailed", "Display.CitationFailed"], asked);
+    }
+
+    [Fact]
+    public void LedgerRepaintShow_OtherAtelier_ShowsTheKeyAgain()
+    {
+        List<string> asked = [];
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TLedgerPortCreate([]));
+        using CAtelier other = TInterfaceConduct.TAtelierCreate(engine, TLedgerPortCreate([]));
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
+
+        atelier.TLedgerRepaintShow(envoy, "Display.OrderFailed", new IOException("locked"));
+        other.TLedgerRepaintShow(envoy, "Display.OrderFailed", new IOException("locked"));
+
+        Assert.Equal(["Display.OrderFailed", "Display.OrderFailed"], asked);
+    }
+
+    [Fact]
+    public void LedgerRepaintShow_SettingsSavedBetween_ShowsTheKeyAgain()
+    {
+        List<string> asked = [];
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<CLedgerState> shown = TLedgerShowRead(atelier);
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
+
+        atelier.TLedgerRepaintShow(envoy, "Display.OrderFailed", new IOException("locked"));
+        atelier.TLedgerRepaintShow(envoy, "Display.OrderFailed", new IOException("locked"));
+        atelier.CAtelierLedger.CLedgerEpithetSave(!shown[^1].CLedgerStateSettings.CSettingsEpithet);
+        atelier.TLedgerRepaintShow(envoy, "Display.OrderFailed", new IOException("locked"));
+
+        Assert.Equal(["Display.OrderFailed", "Display.OrderFailed"], asked);
+    }
+
+    [Fact]
     public void LedgerChanged_Opened_ShowsEveryPageAtOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -188,7 +284,7 @@ public sealed class TLedger
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<CLedgerState> shown = [];
         atelier.CAtelierLedger.CLedgerChanged += shown.Add;
-        atelier.CAtelierOpen();
+        atelier.TAtelierStubOpen();
         atelier.CAtelierLedger.CLedgerChanged -= shown.Add;
 
         atelier.CAtelierLedger.CLedgerEpithetSave(!shown[0].CLedgerStateSettings.CSettingsEpithet);
@@ -277,7 +373,7 @@ public sealed class TLedger
     {
         List<CLedgerState> shown = [];
         atelier.CAtelierLedger.CLedgerChanged += shown.Add;
-        atelier.CAtelierOpen();
+        atelier.TAtelierStubOpen();
         return shown;
     }
 
@@ -289,6 +385,7 @@ public sealed class TLedger
         answers.TryAdd("LEngineWorkspaceRead", _ => "fake");
         answers.TryAdd("LEngineWorkspaceStart", _ => TInterfaceEngineWorkspace.TWorkspaceStateCreate());
         answers.TryAdd("LEngineWorkspaceFormat", _ => "fake");
+        answers.TryAdd("LEngineEstablishmentRead", _ => TInterfaceEngineWorkspace.TEstablishmentCreate(0, 0, 0));
         answers.TryAdd("LEngineTextRead", args => (string)args![0]!);
         answers.TryAdd("LEngineGroupFind", args => ((IReadOnlyList<(string, IReadOnlyList<string>)>)args![0]!)
             .Select(static group => group.Item1)

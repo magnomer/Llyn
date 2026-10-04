@@ -1,5 +1,5 @@
 # LFanqieClerk.cs
-Hash: `121d29854aaf3440`
+Hash: `6002e953c2453046`
 
 ## `public sealed class LFanqieClerk`
 
@@ -9,7 +9,8 @@ The engine's gate is shared, so a fetch that lands writes under the same lock as
 
 ## `public LFanqieClerk(LRig rig, LLanguageCache languages, object gate, Action<LSubject, long> raise)`
 
-Reads the entry, fanqie, shengfu, diwei and language ports, the fanqie source and the clock out of `rig`.
+Reads the entry, fanqie, shengfu, diwei and language ports out of `rig`.
+It also reads the fanqie source, the clock and the fault log.
 
 ## `public IReadOnlyList<LFanqieBook> LFanqieBookRead(string language)`
 
@@ -85,3 +86,5 @@ Starts one character's fetch unless it is pending or already missed.
 One fetch admitted through the single-wide gate.
 Rows found are stored and the character's diwei reapplied.
 A miss is remembered and a failure still raises the bulletin, so the panel stops waiting.
+The fetch is never awaited, so a failure is recorded in the fault log rather than lost unobserved.
+Cancellation by the fetch's own token is not a failure and is not recorded.

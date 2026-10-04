@@ -1,5 +1,5 @@
 # QBootstrap.cs
-Hash: `5f2cf9f7962b4e3d`
+Hash: `e0acb96d04b6b1b8`
 
 ## `public sealed class QBootstrap`
 
@@ -23,6 +23,16 @@ The visual-state handlers attach after the theme, before any window loads.
 Attaching builds palette brushes, and a brush built before its color never takes it.
 A theme that fails stops before the build, and an engine that fails stops before the rest.
 The host thus only constructs and wires, and the decision to continue lives here.
+The dispatcher context goes in first, before any window is built.
+
+## `internal static void QBootstrapContextIntroduce()`
+
+Installs the dispatcher's synchronization context on the startup thread.
+The host builds the main window before the dispatcher runs, and WPF installs no context until then.
+An await in a handler raised while the window is built would otherwise resume on the thread pool.
+On a new empty workspace the flag download is such an await.
+The speaker and wing lists then changed off the UI thread and ended the process.
+With the context in place every such await resumes on the UI thread.
 
 ## `private static bool QBootstrapThemeApply(Func<Func<string, string>> colorSeam, Func<IReadOnlyDictionary<string, string>> catalogSeam)`
 

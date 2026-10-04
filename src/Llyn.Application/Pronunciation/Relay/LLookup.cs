@@ -131,7 +131,7 @@ public sealed class LLookup : LSeeker
         {
             throw;
         }
-        catch
+        catch (OperationCanceledException)
         {
             return LAnswer.LAnswerLost;
         }

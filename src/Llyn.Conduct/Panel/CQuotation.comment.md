@@ -1,5 +1,5 @@
 # CQuotation.cs
-Hash: `7faee6deb56c6813`
+Hash: `0e2f5eb2c6d6b1a3`
 
 ## `public sealed class CQuotation`
 
@@ -58,6 +58,7 @@ The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver make
 ## `internal string LQuotationFileRead()`
 
 The file name an export of the entry on display is offered under.
+`CPortrait` reads it only once the export starts, and a failed read shows `Export.NameFailed`.
 
 ## `internal Task LQuotationPortraitPrint(CEnvoy envoy, LSettingsPort settings)`
 

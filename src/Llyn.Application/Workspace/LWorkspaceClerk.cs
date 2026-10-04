@@ -114,6 +114,13 @@ public sealed class LWorkspaceClerk
         return exception is LRefusal refusal && refusal.LRefusalReason != LRefusal.LRefusalDraft;
     }
 
+    public static bool LWorkspaceStaleCheck(Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(exception);
+
+        return exception is LRefusal { LRefusalReason: LRefusal.LRefusalStale };
+    }
+
     public IReadOnlyDictionary<string, string> LWorkspaceLocalizationLoad(string language)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);

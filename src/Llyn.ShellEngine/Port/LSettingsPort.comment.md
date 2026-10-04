@@ -93,6 +93,7 @@ Fetches the flag of every language the cache has not yet asked, then hands the n
 It answers the loaded languages it read, so a language menu fills from the same load.
 A fill that a workspace change outran records nothing and calls nothing.
 It resumes on the caller's context, so `store` runs on the shell's thread.
+A flag file that cannot be written or read answers the languages without flags.
 
 ## `LEstablishment LEngineEstablishmentRead();`
 

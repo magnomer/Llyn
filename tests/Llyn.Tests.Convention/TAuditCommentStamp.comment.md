@@ -1,5 +1,5 @@
 # TAuditCommentStamp.cs
-Hash: `23330aaec9d292ad`
+Hash: `23c317818eaca20d`
 
 ## `public sealed class TAuditCommentStamp`
 
@@ -52,6 +52,7 @@ A missing line reads as no hash, a wrong value as a changed source.
 Every paired comment file with its second line and the hash its sources call for.
 The comment files come from the owner list, so the root-level ones count too and come last.
 A comment file whose source is exempt is skipped, as for headings.
+A reserved comment file is skipped too, since only the developer edits it.
 
 ## `private const string TAuditMissingProblem`
 

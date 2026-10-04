@@ -1,5 +1,5 @@
 # CCohort.cs
-Hash: `f080aba1108daaf5`
+Hash: `18788fe757db38d5`
 
 ## `public sealed class CCohort`
 
@@ -51,5 +51,6 @@ The reader is asked for the printer through the envoy, and a decline prints noth
 ## `public Task CCohortPortraitExport()`
 
 The file is offered under the entry's headword, as `LVista.LVistaFileRead` words it.
+`CPortrait` reads that name only once the export starts, and a failed read shows `Export.NameFailed`.
 The reader is asked for the file and format through the envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the envoy.

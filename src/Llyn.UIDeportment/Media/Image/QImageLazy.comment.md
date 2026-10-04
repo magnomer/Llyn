@@ -1,5 +1,5 @@
 # QImageLazy.cs
-Hash: `5ec419d0f109cfbe`
+Hash: `1ff9279b6097bd60`
 
 ## `public sealed class QImageLazy : Decorator`
 
@@ -88,6 +88,6 @@ The scroll regions between the element and the root, nearest first.
 
 Watches every scroll region above the element, once.
 
-## `private void QImageLazyDetach()`
+## `private void QImageLazyTeardown()`
 
 Stops watching, so a loaded or removed element costs the regions nothing more.

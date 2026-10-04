@@ -1,5 +1,5 @@
 # CTaxonomy.cs
-Hash: `591a87680b98d190`
+Hash: `28c00d4d6ee3ed3e`
 
 ## `public sealed class CTaxonomy`
 

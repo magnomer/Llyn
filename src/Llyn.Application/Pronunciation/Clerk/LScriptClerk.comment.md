@@ -1,5 +1,5 @@
 # LScriptClerk.cs
-Hash: `73d4856164a53e2a`
+Hash: `f5feacc1c1ca855b`
 
 ## `public sealed class LScriptClerk`
 
@@ -9,7 +9,7 @@ The engine's gate is shared, so a fetch that lands writes under the same lock as
 
 ## `public LScriptClerk(LRig rig, LLanguageCache languages, object gate, Action<LSubject, long> raise)`
 
-Reads the entry and script ports and the script source out of `rig`.
+Reads the entry and script ports, the script source and the fault log out of `rig`.
 
 ## `public IReadOnlyList<LScriptStyle> LScriptStyleRead(string language)`
 
@@ -27,6 +27,7 @@ Starts a fetch for every character of the entry that has no images yet.
 
 Drops the stored images of every character of the entry and fetches them again.
 The missed mark goes too, so a character the sources once denied is asked once more.
+The script bulletin is raised once the fetches are started.
 
 ## `public IReadOnlyList<LScriptGroup> LScriptClerkDivide(long entryId)`
 
@@ -56,3 +57,5 @@ Starts one character's fetch unless it is pending or already missed.
 
 One fetch admitted through the two-wide gate.
 A miss is remembered and a failure still raises the bulletin, so the panel stops waiting.
+The fetch is never awaited, so a failure is recorded in the fault log rather than lost unobserved.
+Cancellation by the fetch's own token is not a failure and is not recorded.

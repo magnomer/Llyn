@@ -1,5 +1,5 @@
 # CPortrait.cs
-Hash: `0be22ff469162c31`
+Hash: `0aa6bfe43f6c49de`
 
 ## `internal static class CPortrait`
 
@@ -21,14 +21,15 @@ The engine names the formats, their suffixes and the default one.
 
 One engine format as a ready row, mapped by name, with the key its name is worded by.
 
-## `internal static async Task LPortraitFileExport(CEnvoy envoy, LSettingsPort settings, string file, Func<string, LPortraitMedium, Task> export)`
+## `internal static async Task LPortraitFileExport(CEnvoy envoy, LSettingsPort settings, Func<string> fileRead, Func<string, LPortraitMedium, Task> export)`
 
-Asks the reader through `envoy` for a path and a format, offering `file` as the name.
+Reads the offered name through `fileRead`, then asks the reader through `envoy` for a path and a format.
+The name is read here, so a failed read shows `Export.NameFailed` and asks nothing.
+Its own key tells a failed name read apart from a failed export.
 Then it runs the panel's export.
 The question needs the gate's offered name and formats, so the envoy asks it rather than the driver beforehand.
 No path means the reader cancelled, which exports nothing and is no failure.
 A failed export shows `Export.Failed` through the panel's envoy, with the notice `settings` reads.
-The whole attempt stands together, because a half-written document is of no use.
 
 ## `internal static async Task LPortraitTicketPrint(CEnvoy envoy, LSettingsPort settings, Func<LPressTicket, Task> print)`
 

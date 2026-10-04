@@ -54,6 +54,8 @@ internal static class TInterfaceEngineWorkspace
 
     internal static LWorkspaceState TWorkspaceStateCreate() => new(1);
 
+    internal static LBulletin TBulletinCreate(LSubject subject, long id) => new(subject, id);
+
     internal static void TEngineObserverAttach(this LEngine engine, Action<LBulletin> observer)
     {
         engine.LEngineObserverAttach(observer);

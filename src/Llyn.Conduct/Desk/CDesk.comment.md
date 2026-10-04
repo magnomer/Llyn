@@ -1,5 +1,5 @@
 # CDesk.cs
-Hash: `1c4b6974eb8a4259`
+Hash: `d75ca28c514a357d`
 
 ## `public sealed class CDesk`
 
@@ -125,7 +125,21 @@ The tenure halted since the last bulletin.
 
 ## `internal LTenure? CDeskTenure`
 
-The held tenure, for the editor that reads the draft's language and reflex state from it.
+The held tenure, for the card and sentence editors that read the draft's language and spans from it.
+
+## `public bool CDeskHeld`
+
+Whether a tenure is held, whether or not it still takes requests.
+
+## `private void CDeskStartRun(Func<LTenure> start)`
+
+Runs the given start and builds the quill, easel and chip over the tenure it returns.
+The vigil applies its observers to the new tenure before the start is announced.
+A failing start leaves the desk empty and shows the scope's `LoadFailed` notice.
+
+## `public void CDeskObserverAttach(Action<Action> marshal)`
+
+Attaches the observers with `CDeskDraftResonate` as the draft action.
 
 ## `internal void CDeskVistaRestore(LVista vista)`
 
@@ -181,6 +195,7 @@ The tenure answers a refused read with null, so the desk catches nothing itself.
 ## `public void CDeskDraftResonate()`
 
 Reads the draft again and announces it, unless the announcement itself is what is running.
+A failing read is shown under the scope's `LoadFailed` key and announces nothing.
 
 ## `private LDraft? CDeskPrepare()`
 
@@ -208,6 +223,7 @@ The tenure writes and answers in one call, and an empty desk answers false.
 ## `internal bool LDeskReadyCheck()`
 
 Whether the held draft may be stored, after the deferred requests have been applied.
+`LTenureReadyCheck` writes them itself, so the desk adds no write of its own.
 Only a store asks it, since it writes.
 
 ## `public bool CDeskFinish(bool store)`
@@ -245,6 +261,20 @@ A failed step is shown under the scope's `HoldFailed` key and still announces.
 
 Asks through `CEnvoy` whether an unreadable draft may be dropped.
 The key is chosen here, so no driver decides what is asked.
+
+## `internal void LDeskFailureShow(string key, Exception exception)`
+
+Shows a failure caught by a Conduct helper that holds this desk, such as `CErrand` or `CByline`.
+`key` is the suffix after the scope, such as `.RecordingFailed`, so each area's key keeps its prefix.
+It routes through the desk's own envoy and settings with `CLedger.LLedgerFailureShow`.
+It answers a user act, so every failure shows.
+
+## `internal void LDeskRepaintShow(CLedgerNoticed noticed, string key, Exception exception)`
+
+Shows a failure caught by a helper's repaint read, such as `CByline`'s search, through `noticed`.
+`key` is the suffix after the scope, as for `LDeskFailureShow`.
+The memory belongs to the atelier, not the desk, so the helper hands it in.
+A key already shown is merged until the user acts.
 
 ## `public void CDeskObserverAttach(Action<Action> marshal, Action drafted)`
 

@@ -121,7 +121,7 @@ public sealed class CLibrary
 
     public void CLibraryOrderSet(CCatalogOrder? order)
     {
-        _cLibraryVista?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
+        _cLibraryVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
     }
 
     public void CLibraryFilterSet(CCatalogFilter filter)
@@ -145,7 +145,7 @@ public sealed class CLibrary
     public IReadOnlyList<CVistaRow> CLibraryRowsRead()
     {
         IReadOnlyList<CVistaRow> rows = _cLibraryVista is LVista vista
-            ? _cLibraryEntryPort.LEngineEntryFind(vista).Select(CPanel.CPanelRowRead).ToList()
+            ? _cLibraryEntryPort.LEngineEntryFind(vista).Select(CCatalog.LCatalogRowRead).ToList()
             : [];
         _cLibraryCount = rows.Count;
         return rows;
@@ -174,7 +174,7 @@ public sealed class CLibrary
         return CPortrait.LPortraitFileExport(
             _cLibraryEnvoy,
             _cLibrarySettingsPort,
-            LLibraryFileRead(),
+            LLibraryFileRead,
             (file, medium) => _cLibraryPortraitPort.LEnginePortraitExport(
                 _cLibraryVista, file, medium, CPortrait.LPortraitLabelRead(_cLibrarySettingsPort)));
     }

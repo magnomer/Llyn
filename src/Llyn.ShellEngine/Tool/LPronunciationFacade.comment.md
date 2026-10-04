@@ -1,15 +1,27 @@
 # LPronunciationFacade.cs
-Hash: `2e93b7b185281e63`
+Hash: `4aa90b84b9dd6820`
 
 ## `internal sealed class LPronunciationFacade`
 
-The engine's facade for pronunciation rows, notes, recordings, lookups, transcriptions and frequencies.
-Each takes the gate and calls the pronunciation, recording, transcription or frequency clerk.
+The engine's facade for pronunciation rows, recordings, lookups, transcriptions and frequencies.
+Most calls take the gate and call the pronunciation, recording, transcription or frequency clerk.
 The session trove that remembers a lookup or harvest stays here, since a session is an engine fact.
+
+## `private readonly LEngine _lPronunciationFacadeEngine;`
+
+The engine whose staff, trove, draft and vista this facade reaches.
+
+## `private readonly object _lPronunciationFacadeGate;`
+
+The engine's own gate, which the locked calls take.
 
 ## `public LPronunciationFacade(LEngine engine)`
 
 Stores the engine and its gate.
+
+## `private LEngineStaff LPronunciationFacadeStaff`
+
+The engine's held staff, read at each call.
 
 ## `public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(string query, LCatalogOrder order)`
 
@@ -23,9 +35,10 @@ The same rows with the language filter applied.
 
 The rows of a vista, twinned names and the chosen mark applied through the vista build.
 
-## `public Task LEnginePronunciationFind(long session, string word, string language, Action<LLookupStep> sink, CancellationToken cancellation)`
+## `public Task LEnginePronunciationFind(long session, string word, string language, LReceiverRelay receiver, CancellationToken cancellation)`
 
-The pronunciation lookup of `word`, its steps sent to `sink`.
+The pronunciation lookup of `word`, its steps sent through `receiver`.
+The caller builds the relay, so after a failure it can read whether the lookup ended it.
 A session that already looked the word up is replayed from the trove instead.
 The lookup is started under the gate and awaited outside it.
 
@@ -33,10 +46,12 @@ The lookup is started under the gate and awaited outside it.
 
 Remembers the candidates a finished lookup found under the session, plain or per scheme.
 
-## `internal Task LEngineRecordingFind(long session, string word, string language, long target, Action<LHarvestStep> sink, CancellationToken cancellation)`
+## `internal Task LEngineRecordingFind(long session, string word, string language, long target, LListenerRelay listener, CancellationToken cancellation)`
 
-The recording harvest of `word`, filtered to the variety of the draft row `target` names.
+The recording harvest of `word`, filtered to the variety of the draft row `target` names, its steps sent through `listener`.
+The caller builds the relay, so after a failure it can read whether the harvest ended it.
 A session that already harvested the word is replayed from the trove instead.
+A fresh harvest is saved to the trove once it finishes.
 
 ## `private async Task LEngineTroveSave(Task<IReadOnlyList<LRecording>> scan, long session, string word, string language)`
 
@@ -46,13 +61,15 @@ Remembers the recordings a finished harvest found under the session.
 
 The variety of the draft row `target` names, the first row's for zero, empty outside a session.
 
-## `internal Task<string> LEngineRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)`
+## `internal Task<string?> LEngineRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)`
 
 Stores a harvested recording under the workspace and answers its path.
+Null when the fetch or the file write failed, as the clerk answers.
 
-## `public Task<string> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation)`
+## `public Task<string?> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation)`
 
 Fetches a recording to a playable local file without storing it.
+Null when the fetch or the file write failed, as the clerk answers.
 
 ## `public void LEngineRecordingSweep()`
 
@@ -69,7 +86,7 @@ Answers the play's ticket, or zero when nothing played.
 
 ## `public int LEngineRecordingPlay(LEntryDraft draft, double volume)`
 
-Plays the draft's own recording, the audio of its first pronunciation, as the file form does.
+Plays the draft's own recording, as the file form does.
 
 ## `public (bool, bool) LEnginePlaybackRead(LEntryDraft draft)`
 
@@ -99,9 +116,11 @@ Sets the playing level without the gate, for the same reason as a stop.
 
 The scheme names of a language.
 
-## `internal Task LEngineTranscriptionFind(long session, string word, string language, string scheme, Action<LLookupStep> sink, CancellationToken cancellation)`
+## `internal Task LEngineTranscriptionFind(long session, string word, string language, string scheme, LReceiverRelay receiver, CancellationToken cancellation)`
 
-The lookup of `word` under one scheme, replayed from the trove when the session already asked.
+The lookup of `word` under one scheme, its steps sent through `receiver`.
+It is replayed from the trove when the session already asked.
+A blank scheme throws.
 
 ## `public LFrequencyGauge? LEngineFrequencyResolve(long entryId, string once)`
 

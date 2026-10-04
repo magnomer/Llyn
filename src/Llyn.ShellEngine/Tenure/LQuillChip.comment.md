@@ -6,7 +6,6 @@ Hash: `ff1d421919aac7dd`
 The chip row edits of one tenure: a card's tags, situations, registers and translations.
 It also finds the Sources a card sentence's citation field offers, since it holds the draft port.
 The mention picker's find and link sit here for the same port, which reads the Entries and the span.
-It was split off `LQuill` in job39 by role, and the tag members moved here unchanged.
 A typed list goes through `LDraftClerkList.LDraftListParse`, and each completed part is one request.
 Its members keep the `LQuill` base, as `CDisplaySound`'s keep `CDisplay`.
 

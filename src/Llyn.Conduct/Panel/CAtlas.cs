@@ -83,7 +83,7 @@ public sealed class CAtlas
 
     public void CAtlasOrderSet(CCatalogOrder? order)
     {
-        _cAtlasVista?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
+        _cAtlasVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
     }
 
     public static IReadOnlyList<CCatalogOrder> CAtlasOrderRead()

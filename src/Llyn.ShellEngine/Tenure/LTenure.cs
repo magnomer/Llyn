@@ -225,9 +225,18 @@ public sealed partial class LTenure
             }
         }
 
-        LTenureObserverClear();
-        _lEngine.LEngineDraft.LEngineDraftCancel(LTenureId);
-        LTenureStateRaise();
+        try
+        {
+            LTenureObserverClear();
+            _lEngine.LEngineDraft.LEngineDraftCancel(LTenureId);
+        }
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
+        {
+        }
+        finally
+        {
+            LTenureStateRaise();
+        }
     }
 
     public long? LTenureFinish(bool store, Func<bool> unreadableSeam)

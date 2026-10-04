@@ -162,7 +162,7 @@ public sealed class QBerth : Panel
             return;
         }
 
-        berth.QBerthEntryDetach();
+        berth.QBerthEntryTeardown();
         berth._qBerthPending = e.NewValue as UIElement;
     }
 
@@ -187,7 +187,7 @@ public sealed class QBerth : Panel
 
         if (VisualTreeHelper.GetParent(_qBerthPending) is QBerth prior)
         {
-            prior.QBerthEntryDetach();
+            prior.QBerthEntryTeardown();
             prior.InvalidateMeasure();
         }
 
@@ -196,7 +196,7 @@ public sealed class QBerth : Panel
         AddLogicalChild(_qBerthEntry);
     }
 
-    private void QBerthEntryDetach()
+    private void QBerthEntryTeardown()
     {
         if (_qBerthEntry is null)
         {

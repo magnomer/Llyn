@@ -1,5 +1,5 @@
 # QLook.cs
-Hash: `7c2087d5ae5abddb`
+Hash: `37588513698d8cdb`
 
 ## `internal static class QLook`
 
@@ -95,7 +95,7 @@ An open combo box is `Opened`, and a checked toggle is `Checked`.
 A selected list item is `Selected`.
 A highlighted combo item is `Highlight`, and a dragged thumb is `Drag`.
 
-## `private static void QLookStateDetach(object sender, RoutedEventArgs e)`
+## `private static void QLookStateTeardown(object sender, RoutedEventArgs e)`
 
 Removes an unloaded element's value-change watches, so the descriptors stop holding it.
 A later load adds them again.

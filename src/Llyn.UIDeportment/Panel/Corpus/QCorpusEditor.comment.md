@@ -1,5 +1,5 @@
 # QCorpusEditor.cs
-Hash: `4c225bafc4a058a9`
+Hash: `737f9ed49ee18c48`
 
 ## `internal sealed partial class QCorpus`
 
@@ -21,7 +21,7 @@ A bulletin repaints the field only when the carried line differs from it, so typ
 
 Subscribes the sentence field's typing Observe.
 
-## `private void QTranscriptDetach()`
+## `private void QTranscriptTeardown()`
 
 Unsubscribes the typing handler, so a fill from the held sentence writes nothing back.
 Filling a field raises the same change the user typing raises, and only typing is a request.

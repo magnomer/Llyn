@@ -8,7 +8,8 @@ A name below the driver is an overreaching hit, and a trigger or a computing bin
 A line through which logic reaches the markup is one tethering hit, whatever the layer it reaches.
 A name that starts with `L` and a capital is a logic name, wherever it stands in a value.
 A name only the Deportment namespace declares is the driver's own and is not overreaching.
-A binding without a logic name, such as `{Binding}`, is held by the spoonfeeding rule on the driver side.
+A binding without a logic name, such as `{Binding}`, raises no overreaching hit.
+`TAuditValueScan` reports only names the logic patterns match.
 
 ## `private static readonly Regex TAuditLogicPattern`
 

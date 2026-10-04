@@ -12,6 +12,8 @@ public sealed class LReceiverRelay : LReceiver
         _lReceiverRelaySink = sink ?? throw new ArgumentNullException(nameof(sink));
     }
 
+    public bool LReceiverRelayEnded { get; private set; }
+
     public void LReceiverSourceStart(string source, int order)
     {
         _lReceiverRelaySink(new LLookupStep(LLookupKind.LLookupKindSource, source, order, null));
@@ -27,6 +29,7 @@ public sealed class LReceiverRelay : LReceiver
 
     public void LReceiverLookupFinish()
     {
+        LReceiverRelayEnded = true;
         _lReceiverRelaySink(new LLookupStep(LLookupKind.LLookupKindEnd, string.Empty, 0, null));
     }
 }

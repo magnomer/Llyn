@@ -1,5 +1,5 @@
 # CMembership.cs
-Hash: `7e2732781a89791c`
+Hash: `64028e7aaa6989ee`
 
 ## `public sealed class CMembership`
 
@@ -51,5 +51,6 @@ The reader is asked for the printer through the envoy, and a decline prints noth
 ## `public Task CMembershipPortraitExport()`
 
 The file is offered under the entry's headword, as `LVista.LVistaFileRead` words it.
+`CPortrait` reads that name only once the export starts, and a failed read shows `Export.NameFailed`.
 The reader is asked for the file and format through the envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the envoy.

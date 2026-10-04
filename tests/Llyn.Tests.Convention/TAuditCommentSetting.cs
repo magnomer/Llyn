@@ -70,6 +70,11 @@ internal static class TAuditCommentSetting
         "TAuditNameRegistry.cs",
     ];
 
+    public static readonly string[] TAuditCommentReserved =
+    [
+        "version.comment.md",
+    ];
+
     public static readonly string[] TAuditCommentAbbreviations =
     [
         "e.g",

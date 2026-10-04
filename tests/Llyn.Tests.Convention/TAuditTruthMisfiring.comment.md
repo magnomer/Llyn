@@ -66,7 +66,8 @@ It is the pattern form of a control read when the tested value is not typed as a
 ## `private static bool TAuditHearingCheck(IfStatementSyntax branch)`
 
 True when an `if` without `else` only drops an event the user did not cause.
-This is hearing under JobRule B2, not misfiring, since it picks no gate and decides no data.
+Such an `if` is not misfiring.
+Dropping an event the user did not cause picks no gate and decides no data.
 An early exit qualifies when its body is a bare `return` and its condition negates a focus guard.
 Any other `if` qualifies when its condition is a focus guard and no request follows it in the member.
 So the false path drops the event, and no other arm calls a gate.

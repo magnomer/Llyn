@@ -1,5 +1,5 @@
 # QLookItem.cs
-Hash: `c1d693947da785ce`
+Hash: `11bbcfda39d490d9`
 
 ## `internal static class QLookItem`
 
@@ -38,7 +38,7 @@ A full pass fills the known containers too.
 A container that took another item drops the old item's handler.
 Containers no longer live are unhooked after the walk.
 
-## `private static void QLookItemDetach(ItemsControl list, HashSet<FrameworkElement> live)`
+## `private static void QLookItemTeardown(ItemsControl list, HashSet<FrameworkElement> live)`
 
 Unhooks the item handler of every rostered container missing from `live`, then records `live` as the roster.
 An empty `live` unhooks the whole list, which its unload uses.

@@ -1,5 +1,5 @@
 # CErrand.cs
-Hash: `7632751047e7ab12`
+Hash: `2683f0540c004cf5`
 
 ## `public sealed class CErrand`
 
@@ -11,7 +11,7 @@ The notation popup's state, which the reading search fills, sits beside it.
 ## `private LForay? _cErrandRecording;`
 
 The recording search running over the held tenure.
-`_cErrandTranscription` is the reading search, kept apart since the engine runs both kinds side by side.
+`_cErrandTranscription` is the reading search, kept in its own field beside this one.
 
 ## `private readonly CClip _cErrandClip = new();`
 
@@ -50,13 +50,15 @@ It stops both searches, clears the popup and starts a recording search over the 
 The tenure reads the draft's headword itself and starts nothing for a blank one.
 The clip is marked searching before the start, since a step may land during it.
 A start that answers nothing or fails leaves the popup finished with its empty notice.
+A failed start is also shown under the desk's `RecordingFailed` key, through `LDeskFailureShow`.
 Each engine step reaches the popup's state through the marshal.
 
 ## `public async Task<CClipRoll> CErrandEnsignLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Loads the flags of the running search's varieties, then answers the clip state to repaint.
 The foray loads nothing when its language shows no flags.
-A failed load leaves the flags out and the search running.
+The foray already leaves the flags out when a flag file cannot be written or read.
+Any other failure shows the recording notice, and the clip state is still answered.
 
 ## `public CNotationRoll CErrandTranscriptionStart(long target, string scheme)`
 
@@ -65,6 +67,7 @@ It stops both searches first, as the clip popup's start does, and answers the po
 The tenure reads the draft's headword itself and starts nothing for a blank one.
 The popup is marked searching before the start, since a step may land during it.
 A start that answers nothing or fails leaves the popup finished with its empty notice.
+A failed start is also shown under the desk's `TranscriptionFailed` key, through `LDeskFailureShow`.
 A schemed start picks the transcription notice, and a plain one the reading notice.
 Each engine step reaches `LErrandLookupResonate` through the marshal, with the foray it came from.
 
@@ -73,7 +76,8 @@ Each engine step reaches `LErrandLookupResonate` through the marshal, with the f
 Loads the flags of the running reading search's varieties, after the start.
 The foray loads nothing for a schemed search or a language that shows no flags.
 It then answers the notation state, so readings that landed before the flags repaint with them.
-A failed load leaves the flags out and still answers the state.
+The foray already leaves the flags out when a flag file cannot be written or read.
+Any other failure shows the transcription notice, and the state is still answered.
 
 ## `public void CErrandReadingSet(string phonetic, string variety)`
 
@@ -106,6 +110,9 @@ Streaming the remote, token-bearing address through the media stack is unreliabl
 It answers the file's address once the recording is marked playing.
 It answers nothing when another preview took over or the popup closed during the fetch.
 A failed fetch marks the recording refused and answers nothing, so a refusal is not mistaken for silence.
+The foray answers no path for an outside failure.
+A path that is no absolute address is refused the same way.
+Any other failure also marks the recording refused, and shows the recording notice.
 Only one preview is marked at a time, so starting another clears the last.
 It does nothing while no recording search runs.
 
@@ -122,7 +129,9 @@ The download is reported on the recording taken, not on the popup's notice, whic
 The foray downloads it, attaches it and tags its row with its variety.
 A taken recording then reads saved, even when the draft moved on and nothing was attached.
 Only an attached recording closes the popup.
-A failed download offers another try and asks the user nothing, as before.
+A failed download offers another try.
+The foray answers null for an outside failure, which asks the user nothing.
+Any other failure also offers the retry, and shows the recording notice.
 
 ## `public void CErrandCancel()`
 

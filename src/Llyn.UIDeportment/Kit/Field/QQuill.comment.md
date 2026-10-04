@@ -1,5 +1,5 @@
 # QQuill.cs
-Hash: `7a5284ffbb8a5a4d`
+Hash: `f75f8cd176f99399`
 
 ## `internal static readonly DependencyProperty QQuillCellProperty`
 
@@ -48,7 +48,7 @@ It listens for its own loss of keyboard focus, which is when it leaves.
 
 Focus has moved on, so the editor leaves its cell.
 
-## `private static void QQuillCloseIntroduce(TextBox box, Grid cell)`
+## `private static void QQuillCloseTeardown(TextBox box, Grid cell)`
 
 Unwires the editor and takes it out of its cell.
 The box leaves the tree before its binding is cleared, so the text change that clearing raises reaches nobody.

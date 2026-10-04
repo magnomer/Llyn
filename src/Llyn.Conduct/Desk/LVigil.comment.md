@@ -1,5 +1,5 @@
 # LVigil.cs
-Hash: `bb987a215465644b`
+Hash: `1a3cb2985ea5a680`
 
 ## `internal sealed class LVigil`
 
@@ -20,7 +20,7 @@ It maps, copies and attaches as `LVigilDraftAttach` describes.
 
 Registers an observer for the draft-level subjects.
 An observer is a delegate over a Conduct bulletin, which the vigil copies from each engine bulletin.
-The subject maps through `CPanel.CPanelSubjectRead`, so a subject it does not list throws.
+The subject maps through `CCatalog.LCatalogSubjectRead`, so a subject it does not list throws.
 A tenure already held gets the observer at once.
 
 ## `internal void LVigilEntryAttach(CSubject subject, Action<CBulletin> observer)`

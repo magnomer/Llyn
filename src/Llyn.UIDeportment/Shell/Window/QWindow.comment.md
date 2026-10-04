@@ -1,5 +1,5 @@
 # QWindow.cs
-Hash: `096c17de590d5eaf`
+Hash: `3228fbc2b82f5942`
 
 ## `public partial class QWindow`
 
@@ -14,13 +14,11 @@ It stops them at the end.
 
 Opens the window on Conduct's root, already built over an engine bound to a workspace that opened.
 No engine and no posture is constructed or named here.
-Opening the workspace can fail.
-A failure in a window constructor has nowhere to be shown.
 The host builds the engine and the root, and hands the root over.
 The window keeps the root, and builds the GUI-only posture beside it with no handle on it.
 The window disposes its posture and closes the root when it closes, and the bootstrap disposes the engine on exit.
 The envoy is built over the loaded window and this class, so that window owns every question.
-It paints the chrome, introduces every part, then makes its one gate call, `CAtelierOpen`.
+It paints the chrome, introduces every part, then makes its one gate call, `CAtelierOpen`, with its envoy.
 The opening hands the posture its workspace path, and the stored geometry is placed after it.
 
 ## `private readonly QEstablishment _qEstablishment;`

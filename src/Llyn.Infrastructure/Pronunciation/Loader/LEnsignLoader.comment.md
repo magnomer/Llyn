@@ -1,5 +1,5 @@
 # LEnsignLoader.cs
-Hash: `6182caab47803052`
+Hash: `bbe110761a561bde`
 
 ## `internal sealed class LEnsignLoader`
 
@@ -18,6 +18,9 @@ Returns the local path to the flag image for `code`, an ISO 3166-1 alpha-2 count
 It downloads it from the flag-icons set into the workspace's `flags` folder on first use.
 It serves the cached copy thereafter.
 Returns `null` when the download fails or the client times out, so a missing flag never blocks the UI.
+It returns `null` as well when the flag folder or file cannot be made, read or written.
+The caller then draws the name without its flag, as for a failed download.
+Any other fault still reaches the caller.
 A cancellation the caller requested still propagates.
 
 ## `private static string LEnsignCodeNormalize(string code)`

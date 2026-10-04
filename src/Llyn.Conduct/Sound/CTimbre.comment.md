@@ -1,5 +1,5 @@
 # CTimbre.cs
-Hash: `3da21cec8aea36c3`
+Hash: `e31b4eebbcfac9f5`
 
 ## `public sealed class CTimbre`
 
@@ -7,6 +7,11 @@ The sound facts of the entry an editor holds, as the editor shows or offers them
 The pack facts are read for the held draft's language, and the waiting reflexes from the editor's display.
 The editor builds it over its desk, its display, its phonology, draft and settings ports, and its envoy.
 So it keeps no copy.
+
+## `internal CTimbre(CDesk desk, LPhonologyPort phonology, LDisplay display, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy)`
+
+Takes `envoy`, so a failed flag load shows its notice through `CLedger`.
+It starts the reflex lookup whenever the desk prepares a draft.
 
 ## `public event Action? CTimbreParadigmChanged;`
 
@@ -59,7 +64,6 @@ A language whose pack labels varieties by name answers null at once, so the edit
 A language or desk changed meanwhile answers null, so a late load paints nothing.
 A load or read that fails answers null too, and the labels stand.
 That failure shows the `Sound.LoadFailed` notice through `CLedger`, so it is never silent.
-Conduct cannot name the refusal check, so a refused read shows the notice as well.
 
 ## `private static CTimbreAccent LTimbreAccentRead(LAccentSheet sheet)`
 
@@ -83,9 +87,11 @@ An empty desk answers the hidden block with no rows.
 The held draft's reflex block, ready to paint, as the reading view reads its own.
 Every row shows, the blank ones included, each resolved by the shared reflex scan.
 The anchor labels are read against the draft's headword through the shared anchor map.
+It hands the map this class's envoy and settings and the display's repaint memory.
+So a refused anchor read shows `Display.AnchorFailed` once until the user acts.
 The fold comes from the editor's display, which shares it with every reading view.
 An empty desk answers no rows, no anchor and no fetching line.
-A refused scan reaches the draft bulletin's caller, as it did from the driver.
+A refused scan is not caught here.
 
 ## `private void LTimbreReflexStart(LDraft _)`
 
@@ -134,7 +140,7 @@ Marks the rows the engine answered by the lead rule `CReflex.LReflexLeadRead`, t
 
 ## `internal void LTimbreObserverAttach(Action<Action> marshal)`
 
-Hears the paradigm and reflex subjects of the held entry and the tenure's script subject.
+Hears the paradigm and reflex subjects of the held entry and the script subject.
 
 ## `public bool CTimbreSpoken`
 

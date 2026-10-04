@@ -1,5 +1,5 @@
 # CLedger.cs
-Hash: `6d68fc5fdb3d40e7`
+Hash: `9a3155bf03fab2eb`
 
 ## `public sealed class CLedger`
 
@@ -28,9 +28,17 @@ Only the atelier builds it, once, over its own settings port.
 The whole settings state, raised on every open and after every settings or workspace bulletin.
 A settings view subscribes once and never asks the engine piece by piece.
 
+## `internal CLedgerNoticed LLedgerRepaint { get; }`
+
+The atelier's repaint memory, built once with the ledger, so it lives and ends with the atelier.
+The ledger owns it, since it is the failure policy every gate funnels through and it hears the user's acts.
+The editors, the sides and the source editor take it at build, so every repaint read shares it.
+
 ## `internal void LLedgerAttach()`
 
 Attaches the ledger to the settings and workspace bulletins.
+The same bulletins and the vista bulletin first clear the repaint memory, since each follows a user act.
+A vista bulletin comes only when the user selects, searches, orders, filters or edits, never on a redraw.
 The workspace calls it on its first open only.
 
 ## `internal void LLedgerRaise()`
@@ -73,6 +81,8 @@ The one owner of the notice read, which `CLedgerNoticeRead` and every gate's fai
 
 A gate's failure policy.
 The gate chose `key`, and the envoy gets the ready notice to show with it.
+Every call shows, so a user act that fails again on a retry shows its failure again.
+A read that runs on every repaint goes through `LLedgerRepaint` first, which merges its repeats.
 The driver's consult never reads Conduct again, so it only shows what it was handed.
 
 ## `public void CLedgerFolderOpen(CEnvoy envoy)`

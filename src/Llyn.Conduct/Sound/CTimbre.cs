@@ -172,7 +172,14 @@ public sealed class CTimbre
         return new CTimbreReflex(
             held.LTenureReflexCheck(),
             rows,
-            CSounding.LSoundingAnchorRead(_cTimbreDraftPort, LTimbreEntry, content.LEntryDraftHeadword, rows),
+            CReflex.LReflexAnchorRead(
+                _cTimbreEnvoy,
+                _cTimbreSettingsPort,
+                _cTimbreDisplay.LDisplayNoticed,
+                _cTimbreDraftPort,
+                LTimbreEntry,
+                content.LEntryDraftHeadword,
+                rows),
             opened,
             CTimbreReflexPending);
     }

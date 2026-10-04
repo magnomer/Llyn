@@ -100,7 +100,7 @@ public sealed class TWing
         wing.CWingDisplay.CDisplayArea.CDisplayClosed += () => heard.Add("Closed");
         wing.CWingLoaded += () => heard.Add("Loaded");
 
-        atelier.CAtelierOpen();
+        atelier.TAtelierStubOpen();
 
         Assert.Equal(["Closed", "Loaded"], heard);
     }

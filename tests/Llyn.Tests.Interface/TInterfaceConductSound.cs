@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Conduct;
 using Llyn.Core;
@@ -34,6 +36,13 @@ internal static class TInterfaceConductSound
 
     internal static int TDisplayGraspRead(this LDisplay display, long? entry) => display.LDisplayGraspRead(entry);
 
+    internal static bool TDisplayFavoriteRead(this LDisplay display, long? entry) =>
+        display.LDisplayFavoriteRead(entry);
+
+    internal static Task<CLecternAccent?> TDisplayEnsignLoad(
+        this CDisplaySound sound, Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
+        sound.CDisplayEnsignLoad(store);
+
     internal static CSounding TSoundingCreate(
         CDesk desk, LPhonologyPort phonology, CEnvoy envoy, LSettingsPort? pack = null)
     {
@@ -42,11 +51,14 @@ internal static class TInterfaceConductSound
             desk,
             phonology,
             settings,
-            new LDisplaySound(
+            new LDisplay(
+                TEngineFake.TEngineStubCreate<LDraftPort>(),
                 TEngineFake.TEngineStubCreate<LEntryPort>(),
                 phonology,
+                settings,
                 TEngineFake.TEngineStubCreate<LMediaPort>(),
-                settings),
+                envoy,
+                new CLedgerNoticed()),
             envoy);
     }
 
@@ -63,6 +75,6 @@ internal static class TInterfaceConductSound
             phonology,
             editor.CEditorDisplay,
             drafts,
-            TEngineFake.TEngineStubCreate<LSettingsPort>(),
+            TInterfaceConduct.TSettingsCreate(),
             TEnvoyFake.TEnvoyCreate(false, []));
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Conduct;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
@@ -57,6 +58,15 @@ internal static class TInterfaceConduct
         TEngineFake.TEngineStubCreate<LMediaPort>(),
         new LPortraitOutlet(engine));
 
+    internal static CAtelier TAtelierCreate(LEngine engine, LSettingsPort settings, LDraftPort drafts) => new(
+        new LPosture(engine),
+        drafts,
+        new LEntryOutlet(engine),
+        settings,
+        new LPhonologyOutlet(engine),
+        TEngineFake.TEngineStubCreate<LMediaPort>(),
+        new LPortraitOutlet(engine));
+
     internal static CAtelier TAtelierCreate(LEngine engine, Dictionary<string, Func<object?[]?, object?>> answers)
     {
         answers["LEngineLeftoverSweep"] = _ => null;
@@ -85,6 +95,7 @@ internal static class TInterfaceConduct
         {
             ["LEngineFailureRead"] = args => ((string)args![1]!, (string?)null, (string?)null),
             ["LEngineTextRead"] = args => (string)args![0]!,
+            ["LEngineFontRead"] = _ => new LFont(null, 0),
         });
 
     internal static CVoyageState TVoyageRead(this CVoyage voyage) => voyage.LVoyageRead();
@@ -109,13 +120,25 @@ internal static class TInterfaceConduct
     internal static void TWorkspaceStateAdd(this CWorkspace workspace, Action<CWorkspaceState> heard) =>
         workspace.LWorkspaceStateOpened += heard;
 
+    internal static void TLedgerFailureShow(this CAtelier atelier, CEnvoy envoy, string key, Exception exception) =>
+        CLedger.LLedgerFailureShow(envoy, atelier.CAtelierSettingsPort, key, exception);
+
+    internal static void TLedgerRepaintShow(this CAtelier atelier, CEnvoy envoy, string key, Exception exception) =>
+        atelier.CAtelierLedger.LLedgerRepaint.LLedgerRepaintShow(envoy, atelier.CAtelierSettingsPort, key, exception);
+
     internal static CWorkspaceState? TAtelierStateOpen(this CAtelier atelier)
     {
         CWorkspaceState? opened = null;
         Action<CWorkspaceState> heard = state => opened = state;
         atelier.CAtelierWorkspace.LWorkspaceStateOpened += heard;
-        atelier.CAtelierOpen();
+        atelier.TAtelierStubOpen();
         atelier.CAtelierWorkspace.LWorkspaceStateOpened -= heard;
         return opened;
     }
+
+    internal static void TAtelierStubOpen(this CAtelier atelier) =>
+        atelier.CAtelierOpen(TEngineFake.TEngineStubCreate<CEnvoy>());
+
+    internal static void TAtelierOpen(this CAtelier atelier, CEnvoy envoy) =>
+        atelier.CAtelierOpen(envoy);
 }

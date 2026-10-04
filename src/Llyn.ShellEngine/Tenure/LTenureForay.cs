@@ -15,14 +15,23 @@ public sealed partial class LTenure
         ArgumentNullException.ThrowIfNull(sink);
 
         LTenurePersist();
-        string word = LForay.LForayWordRead(LTenureRead());
+        string word;
+        string language;
+        try
+        {
+            word = LForay.LForayWordRead(LTenureRead());
+            language = word.Length == 0 ? string.Empty : LTenureLanguageRead();
+        }
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceStaleCheck(exception))
+        {
+            return null;
+        }
+
         if (word.Length == 0)
         {
             return null;
         }
 
-        LListenerRelay listener = new(sink);
-        string language = LTenureLanguageRead();
         LForay foray = new(_lEngine, this, word, language, target, string.Empty);
         lock (_lTenureGate)
         {
@@ -30,9 +39,17 @@ public sealed partial class LTenure
             _lTenureRecordingForay = foray;
         }
 
+        LListenerRelay listener = new(sink);
         foray.LForayStart(
-            token => _lEngine.LEnginePronunciation.LEngineRecordingFind(LTenureId, word, language, target, sink, token),
-            listener.LListenerFinish);
+            token => _lEngine.LEnginePronunciation.LEngineRecordingFind(
+                LTenureId, word, language, target, listener, token),
+            () =>
+            {
+                if (!listener.LListenerRelayEnded)
+                {
+                    listener.LListenerFinish();
+                }
+            });
         return foray;
     }
 
@@ -42,16 +59,25 @@ public sealed partial class LTenure
         ArgumentNullException.ThrowIfNull(sink);
 
         LTenurePersist();
-        string word = LForay.LForayWordRead(LTenureRead());
+        string word;
+        string language;
+        try
+        {
+            word = LForay.LForayWordRead(LTenureRead());
+            language = word.Length == 0 ? string.Empty : LTenureLanguageRead();
+        }
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceStaleCheck(exception))
+        {
+            return null;
+        }
+
         if (word.Length == 0)
         {
             return null;
         }
 
-        string language = LTenureLanguageRead();
         LForay foray = new(_lEngine, this, word, language, target, scheme);
-        Action<LLookupStep> relay = step => sink(foray, step);
-        LReceiverRelay receiver = new(relay);
+        LReceiverRelay receiver = new(step => sink(foray, step));
         lock (_lTenureGate)
         {
             _lTenureTranscriptionForay?.LForayCancel();
@@ -60,10 +86,16 @@ public sealed partial class LTenure
 
         foray.LForayStart(
             token => scheme.Length == 0
-                ? _lEngine.LEnginePronunciation.LEnginePronunciationFind(LTenureId, word, language, relay, token)
+                ? _lEngine.LEnginePronunciation.LEnginePronunciationFind(LTenureId, word, language, receiver, token)
                 : _lEngine.LEnginePronunciation.LEngineTranscriptionFind(
-                    LTenureId, word, language, scheme, relay, token),
-            receiver.LReceiverLookupFinish);
+                    LTenureId, word, language, scheme, receiver, token),
+            () =>
+            {
+                if (!receiver.LReceiverRelayEnded)
+                {
+                    receiver.LReceiverLookupFinish();
+                }
+            });
         return foray;
     }
 

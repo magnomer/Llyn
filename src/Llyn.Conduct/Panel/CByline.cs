@@ -11,19 +11,23 @@ public sealed class CByline
 
     private readonly LDraftPort _cBylineDraftPort;
 
+    private readonly CLedgerNoticed _cBylineNoticed;
+
     private int _cBylineIndex = -1;
 
     private int _cBylineCount;
 
     private string _cBylineWord = string.Empty;
 
-    internal CByline(CImprint imprint, LDraftPort drafts)
+    internal CByline(CImprint imprint, LDraftPort drafts, CLedgerNoticed noticed)
     {
         ArgumentNullException.ThrowIfNull(imprint);
         ArgumentNullException.ThrowIfNull(drafts);
+        ArgumentNullException.ThrowIfNull(noticed);
 
         _cBylineImprint = imprint;
         _cBylineDraftPort = drafts;
+        _cBylineNoticed = noticed;
     }
 
     public event Action? CBylineChanged;
@@ -118,8 +122,9 @@ public sealed class CByline
                     row.LBylineRowId, row.LBylineRowLead, row.LBylineRowMark, row.LBylineRowTail))
                 .ToList();
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            _cBylineImprint.CImprintDesk.LDeskRepaintShow(_cBylineNoticed, ".FindFailed", exception);
             return [];
         }
     }

@@ -225,7 +225,7 @@ public sealed class TEditorField
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CEditor editor = atelier.CAtelierInputCreate(TEnvoyFake.TEnvoyCreate(false, []));
 
-        atelier.CAtelierOpen();
+        atelier.TAtelierStubOpen();
 
         Assert.True(editor.CEditorDesk.CDeskHeld);
         Assert.Null(editor.CEditorDesk.CDeskStoredRead());

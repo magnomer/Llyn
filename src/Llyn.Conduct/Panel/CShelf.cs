@@ -38,7 +38,12 @@ public sealed class CShelf
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CShelfEditor = editor;
         CShelfImprint = new CImprint(
-            atelier.CAtelierDraftPort, atelier.CAtelierEntryPort, atelier.CAtelierSettingsPort, envoy, marshal);
+            atelier.CAtelierDraftPort,
+            atelier.CAtelierEntryPort,
+            atelier.CAtelierSettingsPort,
+            envoy,
+            atelier.CAtelierLedger.LLedgerRepaint,
+            marshal);
         CShelfPanel = new CPanel(
             envoy,
             _cShelfSettingsPort,
@@ -188,7 +193,7 @@ public sealed class CShelf
 
     public void CShelfOrderSet(CCatalogOrder? order)
     {
-        _cShelfVista?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
+        _cShelfVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
     }
 
     public static IReadOnlyList<CCatalogOrder> CShelfOrderRead()

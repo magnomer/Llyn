@@ -16,6 +16,7 @@ public sealed class LShengfuClerk
     private readonly LClock _lShengfuClerkClock;
     private readonly LLanguageCache _lShengfuClerkLanguages;
     private readonly object _lShengfuClerkGate;
+    private readonly LAuditVault _lShengfuClerkAudit;
     private readonly Action<LSubject, long> _lShengfuClerkBulletin;
     private readonly SemaphoreSlim _lShengfuClerkAdmission = new(1, 1);
     private readonly Dictionary<string, CancellationTokenSource> _lShengfuClerkPending = new(StringComparer.Ordinal);
@@ -34,6 +35,7 @@ public sealed class LShengfuClerk
         _lShengfuClerkPacks = rig.LRigLanguages;
         _lShengfuClerkSource = rig.LRigShengfuSource;
         _lShengfuClerkClock = rig.LRigClock;
+        _lShengfuClerkAudit = rig.LRigAudit;
         _lShengfuClerkLanguages = languages;
         _lShengfuClerkGate = gate;
         _lShengfuClerkBulletin = raise;
@@ -242,9 +244,14 @@ public sealed class LShengfuClerk
                 }
             }
         }
-        catch (Exception)
+        catch (OperationCanceledException) when (fetch.IsCancellationRequested)
+        {
+            raised = false;
+        }
+        catch (Exception exception)
         {
             raised = !fetch.IsCancellationRequested;
+            _lShengfuClerkAudit.LAuditRecord(exception);
         }
         finally
         {

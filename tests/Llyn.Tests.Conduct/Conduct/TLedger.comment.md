@@ -1,5 +1,5 @@
 # TLedger.cs
-Hash: `41d7bf92cd2687a6`
+Hash: `b374875443a24872`
 
 ## `public sealed class TLedger`
 
@@ -8,6 +8,9 @@ A blank search lists every page in order, and a switch label finds only its page
 A search nothing reads answers empty, and a later state keeps the narrowing the search left.
 The Layout read words the page for the linked flag handed in.
 The folder gate opens the folder and asks nothing, and a shell failure shows `Settings.FolderFailed`.
+A user act that fails twice shows two notices, both through the folder gate and through the failure policy.
+A repaint read that fails twice shows one notice, and another key still shows.
+Another atelier keeps its own repaint memory, and a settings save lets the key show again.
 An attached view is shown every page at once, with its titles.
 The Web summary counts out of two, and the Layout summary is left to the driver.
 A saved epithet shows the view again with Listing on, and a detached view is shown nothing more.
@@ -22,3 +25,4 @@ Attaches a view that keeps every state it is shown, and answers that list.
 ## `private static LSettingsPort TLedgerPortCreate(Dictionary<string, Func<object?[]?, object?>> answers)`
 
 A fake settings port that answers the ledger's reads for a Korean localization, over any answers the test sets.
+It also answers an empty workspace status and an empty establishment read, so an open shows no failure.

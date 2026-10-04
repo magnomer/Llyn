@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Llyn.Application;
@@ -22,6 +23,10 @@ internal static class TInterfaceEngineLanguage
         await engine.LEngineLanguage.LEngineEnsignLoad(language, varieties, (rows, _) => () => kept.AddRange(rows));
         return kept;
     }
+
+    internal static Task<IReadOnlyList<string>> TEngineEnsignLoad(
+        this LEngine engine, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store) =>
+        engine.LEngineLanguage.LEngineEnsignLoad(store);
 
     internal static IReadOnlyList<LFrequency> TEngineFrequencyRead(this LEngine engine, long entryId) =>
         engine.LEngineStaffHeld.LEngineStaffFrequency.LFrequencyClerkRead(entryId);

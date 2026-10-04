@@ -130,7 +130,7 @@ public sealed class CDesk
 
         if (_cDeskOrigin is string origin)
         {
-            CDeskStartRun(() => _cDeskPort.LEngineTenureStart(origin, CPanel.CPanelSubjectRead(_cDeskSubject), id));
+            CDeskStartRun(() => _cDeskPort.LEngineTenureStart(origin, CCatalog.LCatalogSubjectRead(_cDeskSubject), id));
             return;
         }
 
@@ -331,7 +331,6 @@ public sealed class CDesk
 
     internal bool LDeskReadyCheck()
     {
-        _cDeskTenure?.LTenurePersist();
         return _cDeskTenure?.LTenureReadyCheck() ?? false;
     }
 
@@ -415,6 +414,23 @@ public sealed class CDesk
     private bool CDeskUnreadableConfirm()
     {
         return _cDeskEnvoy.CEnvoyConfirm("Notice.UnreadableDrop");
+    }
+
+    internal void LDeskFailureShow(string key, Exception exception)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(key);
+        ArgumentNullException.ThrowIfNull(exception);
+
+        CLedger.LLedgerFailureShow(_cDeskEnvoy, _cDeskSettings, _cDeskScope + key, exception);
+    }
+
+    internal void LDeskRepaintShow(CLedgerNoticed noticed, string key, Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(noticed);
+        ArgumentException.ThrowIfNullOrWhiteSpace(key);
+        ArgumentNullException.ThrowIfNull(exception);
+
+        noticed.LLedgerRepaintShow(_cDeskEnvoy, _cDeskSettings, _cDeskScope + key, exception);
     }
 
     public void CDeskCancel()

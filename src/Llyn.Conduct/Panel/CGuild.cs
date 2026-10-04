@@ -172,7 +172,7 @@ public sealed class CGuild
 
     public void CGuildOrderSet(CCatalogOrder? order)
     {
-        _cGuildVista?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
+        _cGuildVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
     }
 
     public void CGuildFilterSet(CCatalogFilter filter)

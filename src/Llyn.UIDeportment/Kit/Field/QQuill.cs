@@ -74,7 +74,7 @@ internal static class QQuill
         e.Handled = true;
         if (!box.Focus())
         {
-            QQuillCloseIntroduce(box, cell);
+            QQuillCloseTeardown(box, cell);
             QQuillBlockRefine(cell);
         }
     }
@@ -107,12 +107,12 @@ internal static class QQuill
     {
         if (sender is TextBox box && box.Parent is Grid cell)
         {
-            QQuillCloseIntroduce(box, cell);
+            QQuillCloseTeardown(box, cell);
             QQuillBlockRefine(cell);
         }
     }
 
-    private static void QQuillCloseIntroduce(TextBox box, Grid cell)
+    private static void QQuillCloseTeardown(TextBox box, Grid cell)
     {
         box.LostKeyboardFocus -= QQuillBlurRefine;
         cell.Children.Remove(box);

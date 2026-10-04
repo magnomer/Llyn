@@ -61,10 +61,23 @@ internal static class CPortrait
     }
 
     internal static async Task LPortraitFileExport(
-        CEnvoy envoy, LSettingsPort settings, string file, Func<string, LPortraitMedium, Task> export)
+        CEnvoy envoy, LSettingsPort settings, Func<string> fileRead, Func<string, LPortraitMedium, Task> export)
     {
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(fileRead);
         ArgumentNullException.ThrowIfNull(export);
+
+        string file;
+        try
+        {
+            file = fileRead();
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(envoy, settings, "Export.NameFailed", exception);
+            return;
+        }
 
         (string? path, CPortraitMedium format) = envoy.CEnvoyFileRead(file, LPortraitChoiceRead());
         if (path is null)
