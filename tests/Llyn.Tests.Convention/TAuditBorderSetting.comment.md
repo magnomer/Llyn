@@ -1,5 +1,5 @@
 # TAuditBorderSetting.cs
-Hash: `177850f2d5d27cb4`
+Hash: `532181d7929d3f10`
 
 ## `internal static class TAuditBorderSetting`
 
@@ -31,6 +31,7 @@ Conduct names ShellEngine through the six `L*Port` interfaces, which ShellEngine
 Every other engine type is a helper Conduct may not name.
 Both drivers name Conduct only through the `L` display types, the sealed controllers and the `C` shapes they hand over.
 Deportment names `CTranscript`, since the corpus driver holds the transcript apart from the corpus.
+`LDisplaySound` stays offered though internal, since the ratchet counts a dropped offer as loosening.
 
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditUnsealingPrefix`
 
@@ -45,9 +46,10 @@ The name count each `Kind:Ring>Target` pair may hold.
 A count above fails the fact, a ceiling above the count is stale and fails too.
 Lower a ceiling when a ring sheds a name, never raise one to admit a new one.
 Every `Undercutting` and `Unsealing` ceiling is zero.
+Both `Leaking` ceilings on `Llyn.Core` are zero, since no driver reads a Core type through Conduct.
 
 ## `public static readonly string[] TAuditBorderExempt`
 
-The `path:name` rows that break the border today, one per break, each deleted by a later plan.
+The `path:name` rows that break the border today, one row per break.
 A path ending in `/*` exempts a whole folder for one name.
 Every row must still match a hit, so a fixed break deletes its row.

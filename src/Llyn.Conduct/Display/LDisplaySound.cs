@@ -5,7 +5,7 @@ using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
 
-public sealed class LDisplaySound
+internal sealed class LDisplaySound
 {
     private readonly LEntryPort _lEntryPort;
 
@@ -36,7 +36,7 @@ public sealed class LDisplaySound
         _lSettingsPort = settings;
     }
 
-    public LEntryDraft? LDisplayShown => _lDisplaySoundDraft;
+    internal LEntryDraft? LDisplayShown => _lDisplaySoundDraft;
 
     internal long? LDisplayEntry => _lDisplaySoundEntry;
 

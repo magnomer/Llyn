@@ -47,7 +47,6 @@ It is internal, since the posture is an engine handle.
 
 A transitional handle for the deportments not yet moved into Conduct.
 The five other port handles below it stand for the same reason.
-job14-30 deletes all six.
 
 ## `public CEditor CAtelierInputCreate(CEnvoy envoy)`
 

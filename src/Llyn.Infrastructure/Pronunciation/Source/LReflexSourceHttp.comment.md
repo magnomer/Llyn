@@ -69,7 +69,7 @@ True when two rows carry one kind, one text and one romanization, so the second 
 ## `private static string LReflexDelimiterRemove(string text)`
 
 Drops every slash and bracket, so a stored reading is bare.
-A later job can then read its onset, nucleus and coda.
+`LLanguageCache.LLanguageAnatomyResolve` then splits it into onset, vowel and coda.
 
 ## `private static IReadOnlyList<string> LReflexPieceScan(LReflexRule rule, string text)`
 

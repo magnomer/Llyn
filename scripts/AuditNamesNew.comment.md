@@ -37,7 +37,7 @@ Tokens from `-File` and from the command line are checked together.
 AuditNamesNew tester
 AuditNamesNew PHelper base:Helper
 AuditNamesNew method:LHelperRead data:PHelperFont base:Helper
-AuditNamesNew -File docs-work/names.txt
+AuditNamesNew -File names.txt
 ```
 
 ## Name list file
@@ -47,7 +47,7 @@ Text after `#` on a line is ignored.
 Blank lines are ignored.
 
 ```
-# Job 42 names
+# New names
 base:Helper
 PHelper
 method:LHelperRead

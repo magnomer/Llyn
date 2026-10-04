@@ -52,7 +52,7 @@ Methods, operators, conversions, properties, events, fields and nested public ty
 ## `public void AuditBorder_SealedTypes_HoldNoUnsealing()`
 
 No pair holds more `Unsealing` sealed member types from below the neighbour than its ceiling.
-The ceilings fall as each job seals a controller, until none is left to count.
+The ceilings fall as each controller is sealed, until none is left to count.
 
 ## `public void AuditBorder_Sources_HoldNoPoaching()`
 

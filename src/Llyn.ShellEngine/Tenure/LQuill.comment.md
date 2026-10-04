@@ -6,7 +6,7 @@ Hash: `1d3ba21ec077b47b`
 The typed text edits of one tenure, each building exactly one request.
 A driver hands it raw values, and it chooses whether the request is sent or deferred.
 Which member runs for a field is the caller's decision, not the quill's.
-A card's chip rows went to `LQuillChip` in job39, the tag members with them, so this type stays small.
+A card's chip rows and the tag members live in `LQuillChip`, so this type stays small.
 
 ## `private readonly LTenure _lQuillTenure;`
 

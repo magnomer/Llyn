@@ -69,9 +69,9 @@ Every panel area moves to the veneer by the same steps, first proven on taxonomy
 - A controller that names WPF types splits in two, as `LLibrary` did.
   Its WPF half joins the driver, and its engine half stays a sealed controller.
   A driver never holds a vista, since only handles escape the Truth audit.
-- Sealed-controller tests stay in `Llyn.Tests.Windows` until job44 and job45 sink their controllers.
+- Sealed-controller tests stay in `Llyn.Tests.Windows` while their controllers sit in a Windows project.
   Shape tests go to `Llyn.Tests.Conduct`.
-- A file is renamed only in the job that brings its Truth and Strict rows to zero.
+- A file is renamed only once its Truth and Strict rows reach zero.
   The ratchet reads a renamed row as new.
 - A big class is cleaned in place first and renamed last.
 - A page nested in another page gets its own driver, which the parent driver builds.

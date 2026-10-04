@@ -46,7 +46,7 @@ public sealed class LDisplay
         CDisplaySound = new CDisplaySound(this, CDisplayArea, drafts, entries, phonology, media, settings, envoy);
     }
 
-    public LDisplaySound LDisplaySound { get; }
+    internal LDisplaySound LDisplaySound { get; }
 
     internal CLedgerNoticed LDisplayNoticed { get; }
 

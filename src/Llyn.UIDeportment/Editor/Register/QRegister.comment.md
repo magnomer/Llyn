@@ -3,7 +3,7 @@ Hash: `8cb2a277996528d2`
 
 ## `internal sealed class QRegister`
 
-The Register field's driver, torn apart by role as `docs-work/JobPrinciple.md` section 13 asks.
+The Register field's driver, split by role.
 Each Observe hears one event and ends in one card gate, and each Refine only changes the look.
 The entry's keys are heard by several handlers in order, and the first to handle a key ends its route.
 The dropdown's key handlers come first, so an open dropdown hears a key before the entry does.

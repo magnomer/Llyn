@@ -3,7 +3,7 @@ Hash: `28cb1c9304fccd64`
 
 ## `internal sealed class QLabel`
 
-The Tag field's driver, torn apart by role as `docs-work/JobPrinciple.md` section 13 asks.
+The Tag field's driver, split by role.
 Each Observe hears one event and ends in one card gate, and each Refine only changes the look.
 The entry's keys are heard by several handlers in order, and the first to handle a key ends its route.
 The trim, the blank check and the duplicate check live in the Application clerk, not here.

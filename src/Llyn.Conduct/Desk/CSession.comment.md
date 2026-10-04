@@ -6,7 +6,7 @@ Hash: `eea044b444bc35f1`
 One side panel's draft session over its desk, shared by the repertoire, the corpus and the guild.
 It starts, finishes, saves, undoes and redoes the desk, and defers to the entry editor while it shows.
 Each variant of a panel enters as a constructor parameter or a seam, never as a second copy.
-The entry editor stays in Deportment until job06-10, so it enters through seams and its desk.
+The entry editor enters only as its desk and seams, so the session never depends on the editor type.
 
 ## `internal CSession(CDesk desk, IReadOnlyList<Func<bool>> pending, CDesk? editor, Func<bool> shownSeam, Func<bool, bool> finishSeam, Func<bool> readySeam, Action<long> storedSeam)`
 

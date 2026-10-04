@@ -1,5 +1,5 @@
 # LDisplay.cs
-Hash: `2857ebd542c4d61a`
+Hash: `fa8a60cd05aecbff`
 
 ## `public sealed class LDisplay`
 
@@ -16,14 +16,16 @@ It takes the atelier's repaint memory, so a read failing on every repaint shows 
 The sound half's read failures go through that memory, and its failed sends show every time.
 No vista is held yet, so the display stands on no entry until `LDisplayVistaRestore`.
 
-## `public LDisplaySound LDisplaySound { get; }`
+## `internal LDisplaySound LDisplaySound { get; }`
 
-The sound half, which holds the shown draft, the fold state and every phonology read.
+The sound half, which holds the shown draft, its entry, the fold state and the latest play's ticket.
+Only Conduct reads it, so no driver is offered the Core draft it holds.
 
 ## `internal CLedgerNoticed LDisplayNoticed { get; }`
 
 The atelier's repaint memory, which every repaint read of this display shows its failure through.
-The area, the sound area and the editor's reading view reach it here, so they share one memory.
+The area, the sound area and the editor's sound sheet and sound facts reach it here.
+So they share one memory.
 
 ## `internal LMediaPort LDisplayMediaPort { get; }`
 
@@ -73,7 +75,7 @@ Each vista is new, so the plan is subscribed once per vista.
 ## `internal void LDisplayChosenAttach(CSubject subject, Action<CBulletin> observer)`
 
 Hands `observer` the display vista's bulletins about `subject` that name the chosen entry or no entry.
-The area names the subject and hear the bulletin in Conduct's records, never the engine's.
+The area names the subject and hears the bulletin in Conduct's records, never the engine's.
 The subject maps through `CCatalog.LCatalogSubjectRead`, by name, so an unknown subject throws.
 
 ## `internal void LDisplayObserverAttach(CSubject subject, Action<CBulletin> observer)`

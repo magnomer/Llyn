@@ -3,7 +3,7 @@ Hash: `b20bde9565d9dd67`
 
 ## `internal sealed class QLink`
 
-The Translation field's driver, torn apart by role as `docs-work/JobPrinciple.md` section 13 asks.
+The Translation field's driver, split by role.
 Each Observe hears one event and ends in one card gate, and each Refine only changes the look.
 The entry's keys are heard by several handlers in order, and the first to handle a key ends its route.
 The trim, the blank check, the resolve and the search live below Conduct, not here.

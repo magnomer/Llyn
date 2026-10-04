@@ -372,9 +372,9 @@ internal static class TAuditBorderSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditBorderCeiling = new Dictionary<string, int>
     {
-        ["Leaking:Llyn.UIDemeanor>Llyn.Core"] = 1,
+        ["Leaking:Llyn.UIDemeanor>Llyn.Core"] = 0,
         ["Leaking:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
-        ["Leaking:Llyn.UIDeportment>Llyn.Core"] = 1,
+        ["Leaking:Llyn.UIDeportment>Llyn.Core"] = 0,
         ["Leaking:Llyn.UIDeportment>Llyn.ShellEngine"] = 1,
         ["Leapfrogging:Llyn.Conduct>Llyn.Core"] = 0,
         ["Leapfrogging:Llyn.ShellEngine>Llyn.Core"] = 0,

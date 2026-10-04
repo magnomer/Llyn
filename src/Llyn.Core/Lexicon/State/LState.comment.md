@@ -5,7 +5,7 @@ Hash: `459365b435331ed3`
 
 The three-state distinction a stored value can carry.
 It says whether the value was never given, was marked as not known, or holds a real value.
-Source metadata (job10) uses this, and so does any other field with the same need.
+Source metadata such as `LReference` uses it, and so does any other field with the same need.
 Such a field must tell "no value yet" apart from "known to be absent".
 
 ## `LStateUnspecified,`
