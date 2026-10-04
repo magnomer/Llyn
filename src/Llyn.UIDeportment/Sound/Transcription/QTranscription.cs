@@ -97,7 +97,7 @@ internal sealed class QTranscription
     private void QTranscriptionAddObserve(object sender, ExecutedRoutedEventArgs e)
     {
         _cEditor.CEditorTranscription.CTranscriptionAdd(
-            e.Parameter is QTranscriptionItem row ? row.QTranscriptionItemId : 0);
+            (e.Parameter as QTranscriptionItem)?.QTranscriptionItemId);
     }
 
     private void QTranscriptionAddRefine(object sender, CanExecuteRoutedEventArgs e)
@@ -143,18 +143,17 @@ internal sealed class QTranscription
             sheet.CTranscriptionSheetRows,
             static row => row.QTranscriptionItemId,
             static line => line.CTranscriptionRowDraft.CTranscriptionDraftId,
-            static line => QTranscriptionItem.QTranscriptionRowRefine(line.CTranscriptionRowDraft),
-            (row, line) => QTranscriptionItem.QTranscriptionStateRefine(row, line.CTranscriptionRowDraft));
-
-        foreach (CTranscriptionRow line in sheet.CTranscriptionSheetRows)
-        {
-            foreach (QTranscriptionItem row in _qTranscriptionItem)
+            static line =>
             {
-                if (row.QTranscriptionItemId == line.CTranscriptionRowDraft.CTranscriptionDraftId)
-                {
-                    row.QTranscriptionSchemeRefine(line.CTranscriptionRowSchemes);
-                }
-            }
-        }
+                QTranscriptionItem row = QTranscriptionItem.QTranscriptionRowRefine(line.CTranscriptionRowDraft);
+                row.QTranscriptionSchemeRefine(line.CTranscriptionRowSchemes);
+                return row;
+            },
+            static (row, line) =>
+            {
+                QTranscriptionItem.QTranscriptionStateRefine(row, line.CTranscriptionRowDraft);
+                row.QTranscriptionSchemeRefine(line.CTranscriptionRowSchemes);
+                return row;
+            });
     }
 }

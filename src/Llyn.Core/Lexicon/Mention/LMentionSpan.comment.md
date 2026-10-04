@@ -1,5 +1,5 @@
 # LMentionSpan.cs
-Hash: `2097ee0eea876a98`
+Hash: `4b41f8d5dad0330e`
 
 ## `public static class LMentionSpan`
 
@@ -27,7 +27,7 @@ The span carries no id and no entry, since it only measures where a Mention woul
 ## `public static IReadOnlyList<LMentionPiece> LMentionSpanDivide(string text, IReadOnlyList<LMention> mentions)`
 
 Cuts `text` at every Mention boundary into pieces that cover it end to end.
-Each piece carries its offset, its Mention or null for a gap, and its own text.
+Each piece carries its Mention or null for a gap, and its own text.
 No piece is empty, so a sentence with no Mention is one piece and an empty sentence is none.
 A Mention reaching past the end of the text is trimmed to it rather than refused.
 The store never writes such a Mention, and a stale one must not blank the sentence.

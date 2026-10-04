@@ -1,16 +1,19 @@
 # QLecternCard.cs
-Hash: `9c92fb5f038aebc9`
+Hash: `05935fed2db36a71`
 
 ## `public sealed class QLecternCard`
 
-The reading view's card driver, standing between the veneer and the display's area, [CDisplay](../../Llyn.Conduct/Display/CDisplay.comment.md).
+The reading view's card driver, standing between the veneer and the areas [CDisplay](../../Llyn.Conduct/Display/CDisplay.comment.md) hands out.
 It draws the Meaning and Collocation cards, their links and bylines, the incoming rows and the etymology.
 It hears every chip, row, source link and word clicked on them and hands each to one gate.
 
-## `public QLecternCard(LDisplay display)`
+## `public QLecternCard(CDisplay display)`
 
-Builds the half over the display, whose area answers every read and gate.
-The card lists take the ready cards the area answers, so no engine record reaches the veneer.
+Builds the half over the areas the display hands out, so the half names no `L` type.
+The card area answers the card, incoming and etymology reads.
+The route area answers every chip, link and word gate.
+The compass answers where a card stands, and the sound area the pack's typography.
+The card lists take the ready cards the card area answers, so no engine record reaches the veneer.
 
 ## `public void QLecternCardIntroduce(ResourceDictionary resources, ItemsControl meaning, UIElement meaningSection, ItemsControl collocation, UIElement collocationSection, ScrollViewer contents, QCompass compass)`
 
@@ -94,13 +97,15 @@ Hears a click on a source link and hands `CDisplayChipOpen` the entry id it carr
 
 ## `public void QLecternMentionObserve(PMentionArgument e)`
 
-Hears a word clicked in an example line and hands its sentence row and offset to `CDisplayMentionFind`.
-The gate reads the text itself, finds, opens and reports.
+Hears a word clicked in an example line and reads the sentence row and the raw click values.
+It hands them unchanged to its one gate, `CDisplayMentionFind`.
+The gate converts the click, reads the sentence itself, finds, opens and reports.
 Its offer goes to the window's `QWindowMentionRefine` under the clicked control.
 
 ## `public void QLecternEtymologyObserve(PMentionArgument e)`
 
-Hears a word clicked in the etymology prose and hands its offset to `CDisplayEtymologyFind`.
+Hears a word clicked in the etymology prose and reads the raw click values.
+It hands them unchanged to its one gate, `CDisplayEtymologyFind`.
 The offer goes to the window's `QWindowMentionRefine` under the prose.
 
 ## `public void QLecternSpotlightRefine(long id)`
@@ -110,6 +115,6 @@ The card containers exist one dispatcher turn after the entry is shown, so the s
 
 ## `private void QLecternSpotlightRefine((CCompassPart, int)? place)`
 
-Finds the container at the place `CDisplayCardFind` answered and lets the compass scroll it.
+Finds the container at the place `CCompassCardFind` answered and lets the compass scroll it.
 The compass scrolls it, so the card is led by the same distance as a row.
 A card the entry no longer has is left unfound, and nothing moves.

@@ -1,5 +1,5 @@
 # TInterfaceMention.cs
-Hash: `b40dfa679a8bffe0`
+Hash: `13ee8e89302ebf06`
 
 ## `internal static class TInterfaceMention`
 
@@ -10,7 +10,9 @@ It runs the corpus rows read over a failing entry port.
 It runs the favorites rows read over a failing entry port.
 It runs the quotation rows read over a failing entry port.
 It runs the occurrence rows read over a failing entry port.
+It runs the display word find over a failing or recording entry port.
 It maps a click result and adds a Mention to an Example, so a test builds no engine record itself.
+It runs the unit read of a piece and the shared open of a find answer.
 It is transparent and carries no test logic of its own.
 
 ## `internal static CSentence TSentenceFailCreate(LEngine engine, CDesk desk, CEnvoy envoy)`
@@ -23,13 +25,18 @@ Runs the corpus rows read over an entry port whose Example find throws, on a rea
 
 ## `internal static CMentionOffer? TAnthologyMentionFind(LEngine engine, CAtelier atelier, CEnvoy envoy, long? chosen, IReadOnlyList<long>? found)`
 
-Finds the word at offset 3 of the chosen Example, with `chosen` on a real vista.
+Finds the word clicked at unit 3 of the chosen Example's text, with `chosen` on a real vista.
 The fake word find answers the word at offset 2 with the `found` Entries, and throws when `found` is null.
 The atelier's navigation opens what the find opens at once.
 
-## `internal static CMentionOffer TMentionResultOpen(CAtelier atelier, CMentionResult result) =>`
+## `internal static CMentionOffer TMentionResultOpen(CAtelier atelier, CMentionResult result, string text) =>`
 
 Runs the shared open of a find answer over the atelier's mention area.
+The whole shown `text` places the offer.
+
+## `internal static int? TMentionUnitRead(CAtelier atelier, string text, int start, int offset) =>`
+
+Runs the atelier's unit read of one piece, which only the result open calls in the product.
 
 ## `internal static CMentionResult TMentionResultRead(int offset, LMention? stored) =>`
 
@@ -42,6 +49,16 @@ The Example with `mention` as its only Mention, so a test builds an Example that
 ## `internal static CMentionOffer? TDisplayMentionFind(LEngine engine, CAtelier atelier, CEnvoy envoy, long shown)`
 
 Finds a word through a display whose entry port's word find throws.
+
+## `internal static int? TDisplayOffsetRead(LEngine engine, CAtelier atelier, long shown, string text, int unit)`
+
+Clicks a word through the display find gate and answers the offset the engine find was handed.
+The fake word find records that offset and then throws, so nothing opens.
+Null means the gate never reached the engine.
+
+## `private static CDisplay TDisplayCreate(LEngine engine, CAtelier atelier, CEnvoy envoy, LEntryPort entries, long shown)`
+
+Builds a display over the scripted `entries`, for both display finds above.
 The display is attached to the atelier's navigation and mention area, as the composition does.
 It holds a fresh repaint memory, since the lookup is a user act that never goes through it.
 It shows the stored entry `shown`, since a display showing nothing answers before it asks the engine.

@@ -64,6 +64,16 @@ public sealed class LSettingsOutlet : LSettingsPort
     public void LEngineRespellingSave(bool respelled) =>
         _lSettingsOutletEngine.LEngineSettings.LEngineRespellingSave(respelled);
 
+    public void LEngineFanqieSave(bool opened) => _lSettingsOutletEngine.LEngineSettings.LEngineFanqieSave(opened);
+
+    public void LEngineScriptSave(bool opened) => _lSettingsOutletEngine.LEngineSettings.LEngineScriptSave(opened);
+
+    public event Action? LEngineFoldChanged
+    {
+        add => _lSettingsOutletEngine.LEngineSettings.LEngineFoldChanged += value;
+        remove => _lSettingsOutletEngine.LEngineSettings.LEngineFoldChanged -= value;
+    }
+
     public (string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(
         Exception exception, string unexpected, string recorded) =>
         _lSettingsOutletEngine.LEngineFailureRead(exception, unexpected, recorded);

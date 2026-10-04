@@ -20,6 +20,10 @@ public sealed class CWorkspace
 
     private CEnvoy? _cWorkspaceEnvoy;
 
+    private Action<Exception>? _cWorkspaceFailure;
+
+    private Exception? _cWorkspaceUnshown;
+
     internal CWorkspace(CAtelier atelier)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -79,12 +83,37 @@ public sealed class CWorkspace
         return chosen is null ? _cWorkspaceAtelier.CAtelierPathRead() : CWorkspaceChange(chosen, envoy);
     }
 
+    internal void LWorkspaceObserverAttach(Action<Action> marshal)
+    {
+        ArgumentNullException.ThrowIfNull(marshal);
+
+        LPosture posture = _cWorkspaceAtelier.CAtelierPosture;
+        posture.LPostureSaveFailed -= _cWorkspaceFailure;
+        _cWorkspaceFailure = exception => marshal(() =>
+        {
+            if (_cWorkspaceEnvoy is CEnvoy envoy)
+            {
+                envoy.CEnvoyFailureShow("Layout.SaveFailed");
+                return;
+            }
+
+            _cWorkspaceUnshown = exception;
+        });
+        posture.LPostureSaveFailed += _cWorkspaceFailure;
+    }
+
     internal void LWorkspaceOpen(CWorkspaceState state, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _cWorkspaceEnvoy = envoy;
+        if (_cWorkspaceUnshown is not null)
+        {
+            _cWorkspaceUnshown = null;
+            envoy.CEnvoyFailureShow("Layout.SaveFailed");
+        }
+
         if (!_cWorkspaceHeard)
         {
             _cWorkspaceHeard = true;
@@ -157,6 +186,8 @@ public sealed class CWorkspace
         {
             closure();
         }
+
+        _cWorkspaceAtelier.CAtelierPosture.LPostureSaveFailed -= _cWorkspaceFailure;
     }
 
     private void LWorkspaceVistaRestore()

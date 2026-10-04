@@ -1,9 +1,11 @@
 # TAuditBorderSetting.cs
-Hash: `532181d7929d3f10`
+Hash: `89ce837988d85f12`
 
 ## `internal static class TAuditBorderSetting`
 
-Hand-written and tracked: the ring neighbours, their offers, their ceilings and their exempt rows.
+Hand-written and tracked settings for the ring structure of the border.
+They hold the neighbours, the capsule, the cut, the sealed prefixes, the ceilings and the exempt rows.
+The offers each pair may name live in `TAuditEngineSetting`, `TAuditDeportmentSetting` and `TAuditDemeanorSetting`.
 No script writes this file, and the border fact reads no script configuration.
 `AuditStructure.json` holds its own copy, kept in step by hand as scripts/principles.md asks.
 The neighbours and the cut are tied to the charter and the UI roots by facts, not by hand.
@@ -24,15 +26,6 @@ The core names no neighbour.
 The UI rings above the cut.
 A cut ring names only its neighbour, and nothing from below the cut undercuts into it.
 
-## `public static readonly IReadOnlyDictionary<string, string[]> TAuditBorderOffer`
-
-For a `ring>neighbour` pair, the neighbour types the ring may name at all.
-Conduct names ShellEngine through the six `L*Port` interfaces, which ShellEngine declares, and ten other `L` types.
-Every other engine type is a helper Conduct may not name.
-Both drivers name Conduct only through the `L` display types, the sealed controllers and the `C` shapes they hand over.
-Deportment names `CTranscript`, since the corpus driver holds the transcript apart from the corpus.
-`LDisplaySound` stays offered though internal, since the ratchet counts a dropped offer as loosening.
-
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditUnsealingPrefix`
 
 For a UI ring, the type prefixes it seals.
@@ -46,7 +39,7 @@ The name count each `Kind:Ring>Target` pair may hold.
 A count above fails the fact, a ceiling above the count is stale and fails too.
 Lower a ceiling when a ring sheds a name, never raise one to admit a new one.
 Every `Undercutting` and `Unsealing` ceiling is zero.
-Both `Leaking` ceilings on `Llyn.Core` are zero, since no driver reads a Core type through Conduct.
+Every `Leaking` ceiling is zero, since no driver reads a Core or engine type through Conduct.
 
 ## `public static readonly string[] TAuditBorderExempt`
 

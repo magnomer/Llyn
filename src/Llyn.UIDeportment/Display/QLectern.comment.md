@@ -1,5 +1,5 @@
 # QLectern.cs
-Hash: `fd7a6b5cb1c9ac5c`
+Hash: `0f5767d234ae576c`
 
 ## `public sealed class QLectern`
 
@@ -9,7 +9,7 @@ Its halves draw the rest, and each answers the area's events itself.
 The area decides when an entry opens or closes, so this class only answers its events.
 The veneer names only this class, so no veneer reaches Conduct.
 
-## `public QLectern(LDisplay display, CPanel panel)`
+## `public QLectern(CDisplay display, CPanel panel)`
 
 Builds a view that follows `panel`, so each draft the panel loads opens here.
 A view following no panel, such as the wing's, takes the other constructor.
@@ -17,6 +17,8 @@ A view following no panel, such as the wing's, takes the other constructor.
 ## `public CDisplay QLecternArea { get; }`
 
 The display's area, whose gates the view hosting this driver calls directly.
+The driver holds only this area, so no `L` type crosses into Deportment.
+The compass and the card half take the areas it hands out.
 
 ## `public CDisplaySound QLecternSoundArea { get; }`
 
@@ -45,13 +47,14 @@ Card scrolling goes through its scroll, so a card lands where a row would put it
 
 ## `public void QLecternCompassIntroduce(FrameworkElement view, ScrollViewer contents, FrameworkElement header, FrameworkElement compass, UIElement surface, ToggleButton toggle, ItemsControl list)`
 
-Builds the compass over the display and the view's controls.
+Builds the compass over the display's compass area and the view's controls.
 The compass subscribes to them itself, so the veneer names no compass handler.
 It answers the area's open and close last, once every section's visibility is set.
 
-## `public void QLecternIntroduce(CAtelier atelier, UIElement empty, UIElement contents, Action swathSeam)`
+## `public void QLecternIntroduce(CAtelier atelier, CEnvoy envoy, UIElement empty, UIElement contents, Action swathSeam)`
 
-Takes the atelier, the unselected notice, the page and the swath's clear, then answers the area's events.
+Takes the atelier, the envoy, the unselected notice, the page and the swath's clear, then answers the area's events.
+The envoy is the window's, which the catalog's flag load reports its failure through.
 The swath's clear is a seam, since the band a reader drags lies in the veneer.
 Opening or closing an entry drops the band first, since the text it spanned is gone.
 The header, the halves and the compass then redraw in subscription order.
@@ -102,6 +105,7 @@ The flag comes from `QEnsignImage`, which every tab holding a display reads too.
 The first call may await a fetch, so a later entry may be shown before it arrives.
 The flag is then drawn for the language the pill shows now, not the one opened.
 The globe stands in until then, and wherever no flag is known.
+A failed flag load is reported by the catalog, so the globe stays and the view goes on.
 
 ## `private void QLecternEmptyRefine()`
 

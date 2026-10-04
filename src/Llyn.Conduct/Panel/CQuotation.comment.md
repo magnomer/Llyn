@@ -1,5 +1,5 @@
 # CQuotation.cs
-Hash: `0e2f5eb2c6d6b1a3`
+Hash: `f72cbc5e632fceb4`
 
 ## `public sealed class CQuotation`
 
@@ -54,6 +54,8 @@ The engine matches the query and drops the hidden languages, so the list decides
 
 Runs the flag fill into the driver's `store`, then answers `CQuotationRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+A failed flag fill shows `Example.LoadFailed` and still answers the rows with no languages.
+The driver awaits it from an event handler, where a fault would end the app.
 
 ## `internal string LQuotationFileRead()`
 

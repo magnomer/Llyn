@@ -1,13 +1,13 @@
 # LSettings.cs
-Hash: `fa908770890d916c`
+Hash: `7366c7fd60ed862d`
 
-## `public sealed record LSettings(string LSettingsLocalization, bool LSettingsRespelled = false, bool LSettingsFrequency = true, bool LSettingsMorphology = true, bool LSettingsEpithet = true, bool LSettingsTally = false, string LSettingsGloss = "English")`
+## `public sealed record LSettings(string LSettingsLocalization, bool LSettingsRespelled = false, bool LSettingsFrequency = true, bool LSettingsMorphology = true, bool LSettingsEpithet = true, bool LSettingsTally = false, string LSettingsGloss = "English", bool LSettingsFanqieOpened = false, bool LSettingsScriptOpened = false)`
 
 The user's persisted engine settings.
 These live as `settings.json` inside the user's workspace folder and nowhere else.
 So a workspace carries its own preferences.
-Every field here is an engine fact: what the engine fetches, shows or transcribes.
-How the window stands is not an engine fact, so it lives in the shell's posture beside this file.
+Every field here is a user choice: what the engine fetches, shows or transcribes, or which box stays open.
+How the window stands is not such a choice, so it lives in the shell's posture beside this file.
 The workspace folder path itself is not stored here.
 It is the bootstrap locator that tells the program where to find this file.
 It is kept in a small fixed pointer outside the workspace.
@@ -23,3 +23,7 @@ It is kept in a small fixed pointer outside the workspace.
 - `LSettingsTally` — Whether the tally lines of a category page print the respelling set rather than IPA, off by default.
 - `LSettingsGloss` — The language a new translation of an Example starts in, English by default.
   The pack list holds no such default, so the user's own language is kept here.
+- `LSettingsFanqieOpened` — Whether the editor's folded rime-book box stands open, off by default.
+  It survives a move to another entry and a restart, so the user opens it once.
+- `LSettingsScriptOpened` — Whether the editor's folded script box stands open, off by default.
+  It is kept the same way as the rime-book box.

@@ -1,5 +1,5 @@
 # QWing.cs
-Hash: `70a68658e2033730`
+Hash: `299ee2f3f7a30180`
 
 ## `internal sealed class QWing`
 
@@ -36,6 +36,7 @@ The display is its own subscriber, so it stays current on its own.
 Answers every workspace open, once Conduct has handed the side its vista.
 The list is cleared, then the flags are loaded before any row is built.
 The language menu is built from the languages that load answers.
+The window's envoy goes with the load, so the catalog reports a failed load and answers no languages.
 The dropdown lists the shared entry orderings, and the filter mark is drawn from the side's verdict.
 The field is emptied, since the fresh vista holds no query.
 Conduct restores the entry itself, so this paint calls no gate.

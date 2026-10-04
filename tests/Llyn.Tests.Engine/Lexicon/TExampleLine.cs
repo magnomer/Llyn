@@ -79,7 +79,6 @@ public sealed class TExampleLine
             sentence, TInterface.TSentenceOrderCreate(0, 1), "?", new Dictionary<long, string>());
 
         Assert.Equal(["the ", "cat", " sat"], pieces.Select(static piece => piece.LMentionPieceText));
-        Assert.Equal(4, pieces[1].LMentionPieceOffset);
         Assert.Equal(7, pieces[1].LMentionPieceStored?.LMentionEntryId);
         Assert.Null(pieces[0].LMentionPieceStored);
     }

@@ -1,5 +1,5 @@
 # TCardTranslation.cs
-Hash: `0d538460f899293b`
+Hash: `265de7207ac29b5b`
 
 ## `public sealed class TCardTranslation`
 
@@ -13,6 +13,7 @@ The edited Entry is left out, and its twin keeps its number.
 A padded word finds what the trimmed word finds, since the engine trims it.
 The mention read offers only Entries in the draft language, with the first chosen.
 A blank or unmatched mention word offers nothing.
+The insert gate takes the raw pick, a stored id or null with a word and language.
 A fresh row starts a court under the owner draft's origin.
 Its removal drops the link, the court and the court's draft.
 A stored Entry removed from a card leaves the card and stays findable.

@@ -66,12 +66,14 @@ The variety of the draft row `target` names, the first row's for zero, empty out
 ## `internal Task<string?> LEngineRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)`
 
 Stores a harvested recording under the workspace and answers its path.
-Null when the fetch or the file write failed, as the clerk answers.
+Null only when nothing was saved, as the clerk answers.
+A failed fetch or file write reaches the caller as the clerk's vault fault, still unrecorded.
 
 ## `public Task<string?> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation)`
 
 Fetches a recording to a playable local file without storing it.
-Null when the fetch or the file write failed, as the clerk answers.
+Null only when nothing was prepared, as the clerk answers.
+A failed fetch or file write reaches the caller as the clerk's vault fault, still unrecorded.
 
 ## `public void LEngineRecordingSweep()`
 

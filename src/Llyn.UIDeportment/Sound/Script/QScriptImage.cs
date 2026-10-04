@@ -16,8 +16,6 @@ internal sealed class QScriptImage : INotifyPropertyChanged, QImagePending
 
     private const int QScriptImageDecode = 2;
 
-    private const string QScriptImageArea = "Epoch.";
-
     private readonly string _qScriptImageEpoch;
 
     private readonly Action<Exception> _qScriptImageFailure;
@@ -54,7 +52,7 @@ internal sealed class QScriptImage : INotifyPropertyChanged, QImagePending
 
     public string QScriptImageEpoch => _qScriptImageEpoch.Length == 0
         ? string.Empty
-        : QLocalizationCatalog.QLocalizationTextFind(QScriptImageArea + _qScriptImageEpoch) ?? string.Empty;
+        : QLocalizationCatalog.QLocalizationTextFind(_qScriptImageEpoch) ?? string.Empty;
 
     public double QScriptImageWidth { get; }
 

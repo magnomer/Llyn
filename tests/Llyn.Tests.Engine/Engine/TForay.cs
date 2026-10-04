@@ -114,31 +114,31 @@ public sealed class TForay
     }
 
     [Fact]
-    public async Task ForayRecordingPrepare_HostRefuses_AnswersNothing()
+    public async Task ForayRecordingPrepare_HostRefuses_PassesTheVaultFaultUp()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(new HttpRequestException("refused")));
         LForay foray = TForayStart(engine, "English");
 
-        Assert.Null(await foray.TForayRecordingPrepare(
+        await Assert.ThrowsAsync<LVaultFault>(() => foray.TForayRecordingPrepare(
             TInterface.TRecordingCreate("Oxford", "https://example.test/tomato.mp3", 0, true, "British")));
     }
 
     [Fact]
-    public async Task ForayRecordingSave_HostRefuses_AnswersNothing()
+    public async Task ForayRecordingSave_HostRefuses_PassesTheVaultFaultUp()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(new HttpRequestException("refused")));
         LForay foray = TForayStart(engine, "English");
 
-        Assert.Null(await foray.TForayRecordingSave(
+        await Assert.ThrowsAsync<LVaultFault>(() => foray.TForayRecordingSave(
             TInterface.TRecordingCreate("Oxford", "https://example.test/tomato.mp3", 0, true, "British")));
     }
 
     [Fact]
-    public async Task ForayRecordingSave_AudioFolderBlocked_AnswersNothing()
+    public async Task ForayRecordingSave_AudioFolderBlocked_PassesTheVaultFaultUp()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "audio"), string.Empty);
@@ -146,12 +146,12 @@ public sealed class TForay
             TPronunciationHelper.TSourceClientCreate("audio", HttpStatusCode.OK));
         LForay foray = TForayStart(engine, "English");
 
-        Assert.Null(await foray.TForayRecordingSave(
+        await Assert.ThrowsAsync<LVaultFault>(() => foray.TForayRecordingSave(
             TInterface.TRecordingCreate("Oxford", "https://example.test/tomato.mp3", 0, true, "British")));
     }
 
     [Fact]
-    public async Task ForayRecordingPrepare_CacheFolderBlocked_AnswersNothing()
+    public async Task ForayRecordingPrepare_CacheFolderBlocked_PassesTheVaultFaultUp()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "temp"), string.Empty);
@@ -159,7 +159,7 @@ public sealed class TForay
             TPronunciationHelper.TSourceClientCreate("audio", HttpStatusCode.OK));
         LForay foray = TForayStart(engine, "English");
 
-        Assert.Null(await foray.TForayRecordingPrepare(
+        await Assert.ThrowsAsync<LVaultFault>(() => foray.TForayRecordingPrepare(
             TInterface.TRecordingCreate("Oxford", "https://example.test/tomato.mp3", 0, true, "British")));
     }
 

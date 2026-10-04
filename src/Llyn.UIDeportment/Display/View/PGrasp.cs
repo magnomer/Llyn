@@ -13,19 +13,14 @@ public sealed class PGrasp : FrameworkElement
         typeof(PGrasp),
         new FrameworkPropertyMetadata(
             0,
-            FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender,
-            PGraspLimitRefine),
+            FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender),
         value => (int)value >= 0);
 
     public static readonly DependencyProperty PGraspStepProperty = DependencyProperty.Register(
         nameof(PGraspStep),
         typeof(int),
         typeof(PGrasp),
-        new FrameworkPropertyMetadata(
-            0,
-            FrameworkPropertyMetadataOptions.AffectsRender,
-            null,
-            (sender, value) => QGraspStar.QGraspLimitDraw(sender, value, PGraspLimitProperty)),
+        new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsRender),
         value => (int)value >= 0);
 
     public static readonly DependencyProperty PGraspFillProperty = DependencyProperty.Register(
@@ -167,10 +162,5 @@ public sealed class PGrasp : FrameworkElement
     {
         base.OnKeyDown(e);
         _qGraspStar.QGraspKeyRefine(e);
-    }
-
-    private static void PGraspLimitRefine(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-    {
-        sender.CoerceValue(PGraspStepProperty);
     }
 }

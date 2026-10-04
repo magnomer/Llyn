@@ -1,5 +1,5 @@
 # QTenorBrowse.cs
-Hash: `b2b4506b9b795df8`
+Hash: `4b19689008dabbb9`
 
 ## `internal sealed partial class QTenor`
 
@@ -27,6 +27,7 @@ A switched workspace hands over a fresh vista, read from that workspace's own la
 
 Answers the area's workspace event, which has already emptied the panel and raised the rows.
 It loads the flags of the workspace that moved.
+The window's envoy goes with the load, so the catalog reports a failed load and answers no languages.
 
 ### `private void QSoundingObserve(object sender, TextChangedEventArgs e)`
 

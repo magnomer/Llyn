@@ -8,9 +8,9 @@ namespace Llyn.UIDeportment;
 
 public sealed class QLectern
 {
-    private readonly LDisplay _qLecternDisplay;
-
     private CAtelier _qLecternAtelier = null!;
+
+    private CEnvoy _qLecternEnvoy = null!;
 
     private UIElement _qLecternEmpty = null!;
 
@@ -54,12 +54,11 @@ public sealed class QLectern
 
     private Panel _qLecternNote = null!;
 
-    public QLectern(LDisplay display)
+    public QLectern(CDisplay display)
     {
         ArgumentNullException.ThrowIfNull(display);
 
-        _qLecternDisplay = display;
-        QLecternArea = display.CDisplayArea;
+        QLecternArea = display;
         QLecternSoundArea = display.CDisplaySound;
         QLecternAccent = new QLecternAccent(display.CDisplaySound);
         QLecternSound = new QLecternSound(display.CDisplaySound);
@@ -67,7 +66,7 @@ public sealed class QLectern
         QLecternCard = new QLecternCard(display);
     }
 
-    public QLectern(LDisplay display, CPanel panel)
+    public QLectern(CDisplay display, CPanel panel)
         : this(display)
     {
         QLecternArea.CDisplayPanelAttach(panel);
@@ -96,19 +95,23 @@ public sealed class QLectern
         ToggleButton toggle,
         ItemsControl list)
     {
-        QLecternCompass = new QCompass(_qLecternDisplay, view, contents, header, compass, surface, toggle, list);
+        QLecternCompass = new QCompass(
+            QLecternArea.CDisplayCompass, view, contents, header, compass, surface, toggle, list);
         QLecternArea.CDisplayOpened += QLecternCompass.QCompassRefine;
         QLecternArea.CDisplayClosed += QLecternCompass.QCompassEmptyRefine;
     }
 
-    public void QLecternIntroduce(CAtelier atelier, UIElement empty, UIElement contents, Action swathSeam)
+    public void QLecternIntroduce(
+        CAtelier atelier, CEnvoy envoy, UIElement empty, UIElement contents, Action swathSeam)
     {
         ArgumentNullException.ThrowIfNull(atelier);
+        ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(empty);
         ArgumentNullException.ThrowIfNull(contents);
         ArgumentNullException.ThrowIfNull(swathSeam);
 
         _qLecternAtelier = atelier;
+        _qLecternEnvoy = envoy;
         _qLecternEmpty = empty;
         _qLecternContents = contents;
 
@@ -278,7 +281,7 @@ public sealed class QLectern
     {
         QEnsignImage.QEnsignFlagRefine(_qLecternFlag, _qLecternGlobe, string.Empty);
 
-        await _qLecternAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
+        await _qLecternAtelier.CAtelierCatalog.CCatalogEnsignLoad(_qLecternEnvoy, QEnsignImage.QEnsignDraw);
 
         QEnsignImage.QEnsignFlagRefine(_qLecternFlag, _qLecternGlobe, _qLecternLanguage.Text);
     }

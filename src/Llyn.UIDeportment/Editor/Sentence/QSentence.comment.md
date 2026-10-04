@@ -1,5 +1,5 @@
 # QSentence.cs
-Hash: `88dd52be69d7ea1f`
+Hash: `d11e55033a7b1175`
 
 ## `internal sealed class QSentence`
 
@@ -80,10 +80,13 @@ Refills one offered list.
 ## `private static void QSentenceChipRefine(IReadOnlyList<PCard> cards, IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> lines)`
 
 Gives each row on the cards its chip line.
+Conduct answers one entry per sentence, with an empty list for none.
+A row with no entry is drawn with no chips, so a dropped line never leaves stale chips.
 
 ## `internal void QSentenceAddObserve(object sender, RoutedEventArgs e)`
 
 Finds the row's card and asks the gate to add a row after it.
+It hands the row's index in the card's sentences, the place Conduct defines for `below`.
 
 ## `internal void QSentenceRemoveObserve(object sender, RoutedEventArgs e)`
 
@@ -104,7 +107,8 @@ Hands the picked sense and the selection to the gate.
 
 ## `internal void QSentenceSilenceObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Hands the selection to the gate as a mention with no target.
+Hands the selection to the silence gate as a mention with no target.
+The gate is its own, so no magic id is sent.
 
 ## `internal void QSentenceUnlinkObserve(object sender, ExecutedRoutedEventArgs e)`
 

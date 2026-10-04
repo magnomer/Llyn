@@ -25,7 +25,7 @@ public sealed class TDisplayArea
             [],
             speeches: ["noun"]));
         CWing wing = TDisplayWingPrepare(atelier);
-        CDisplay area = wing.CWingDisplay.CDisplayArea;
+        CDisplay area = wing.CWingDisplay;
         int opened = 0;
         int closed = 0;
         area.CDisplayOpened += () => opened++;
@@ -46,7 +46,7 @@ public sealed class TDisplayArea
         Assert.True(shown.CLecternStamped);
         Assert.NotEmpty(shown.CLecternAdded);
         Assert.NotEmpty(shown.CLecternUpdated);
-        Assert.Equal("water", wing.CWingDisplay.LDisplaySound.LDisplayShown?.LEntryDraftHeadword);
+        Assert.Equal("water", wing.CWingDisplay.LDisplayRule.LDisplaySound.LDisplayShown?.LEntryDraftHeadword);
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public sealed class TDisplayArea
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TDisplayAtelierCreate(engine);
         CWing wing = TDisplayWingPrepare(atelier);
-        CDisplay area = wing.CWingDisplay.CDisplayArea;
+        CDisplay area = wing.CWingDisplay;
         int opened = 0;
         int closed = 0;
         area.CDisplayOpened += () => opened++;
@@ -67,7 +67,7 @@ public sealed class TDisplayArea
         Assert.Equal((0, 1), (opened, closed));
         Assert.Empty(area.CDisplayShown.CLecternHeadword);
         Assert.False(area.CDisplayShown.CLecternStamped);
-        Assert.Null(wing.CWingDisplay.LDisplaySound.LDisplayShown);
+        Assert.Null(wing.CWingDisplay.LDisplayRule.LDisplaySound.LDisplayShown);
     }
 
     [Fact]
@@ -78,7 +78,7 @@ public sealed class TDisplayArea
         using CAtelier atelier = TDisplayAtelierCreate(engine);
         LEntry water = TDisplayEntrySave(engine, "water");
         CWing wing = TDisplayWingPrepare(atelier);
-        CDisplay area = wing.CWingDisplay.CDisplayArea;
+        CDisplay area = wing.CWingDisplay;
         wing.CWingEntryOpen(water.LEntryId);
         int closed = 0;
         area.CDisplayClosed += () => closed++;
@@ -87,7 +87,7 @@ public sealed class TDisplayArea
 
         Assert.Equal(1, closed);
         Assert.Empty(area.CDisplayShown.CLecternHeadword);
-        Assert.Null(wing.CWingDisplay.LDisplaySound.LDisplayShown);
+        Assert.Null(wing.CWingDisplay.LDisplayRule.LDisplaySound.LDisplayShown);
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public sealed class TDisplayArea
         LEntry river = TDisplayEntrySave(engine, "river");
         CLibrary library = CLibrary.CLibraryCreate(
             atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
-        CDisplay area = library.CLibraryEditor.CEditorDisplay.CDisplayArea;
+        CDisplay area = library.CLibraryEditor.CEditorDisplay;
         area.CDisplayPanelAttach(library.CLibraryPanel);
         library.TLibraryVistaRestore();
         int opened = 0;
@@ -126,7 +126,7 @@ public sealed class TDisplayArea
         using CAtelier atelier = TDisplayAtelierCreate(engine);
         LEntry water = TDisplayEntrySave(engine, "water");
         CWing wing = TDisplayWingPrepare(atelier);
-        CDisplay area = wing.CWingDisplay.CDisplayArea;
+        CDisplay area = wing.CWingDisplay;
         wing.CWingEntryOpen(water.LEntryId);
         int opened = 0;
         area.CDisplayOpened += () => opened++;
@@ -144,7 +144,7 @@ public sealed class TDisplayArea
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TDisplayAtelierCreate(engine);
         CWing wing = TDisplayWingPrepare(atelier);
-        CDisplay area = wing.CWingDisplay.CDisplayArea;
+        CDisplay area = wing.CWingDisplay;
         int changed = 0;
         area.CDisplayOpened += () => changed++;
         area.CDisplayClosed += () => changed++;
@@ -162,7 +162,7 @@ public sealed class TDisplayArea
         using CAtelier atelier = TDisplayAtelierCreate(engine);
         LEntry water = TDisplayEntrySave(engine, "water");
         CWing wing = TDisplayWingPrepare(atelier);
-        CDisplay area = wing.CWingDisplay.CDisplayArea;
+        CDisplay area = wing.CWingDisplay;
         wing.CWingEntryOpen(water.LEntryId);
         int closed = 0;
         area.CDisplayClosed += () => closed++;
@@ -170,7 +170,7 @@ public sealed class TDisplayArea
         area.CDisplayWorkspaceResonate();
 
         Assert.Equal(1, closed);
-        Assert.Null(wing.CWingDisplay.LDisplaySound.LDisplayShown);
+        Assert.Null(wing.CWingDisplay.LDisplayRule.LDisplaySound.LDisplayShown);
     }
 
     [Fact]
@@ -181,7 +181,7 @@ public sealed class TDisplayArea
         using CAtelier atelier = TDisplayAtelierCreate(engine);
         LEntry water = TDisplayEntrySave(engine, "water");
         CWing wing = TDisplayWingPrepare(atelier);
-        CDisplay area = wing.CWingDisplay.CDisplayArea;
+        CDisplay area = wing.CWingDisplay;
         wing.CWingEntryOpen(water.LEntryId);
         List<CBulletin> favorites = [];
         int grasps = 0;
@@ -202,7 +202,7 @@ public sealed class TDisplayArea
         using CAtelier atelier = TDisplayAtelierCreate(engine);
         LEntry water = TDisplayEntrySave(engine, "water");
         CWing wing = TDisplayWingPrepare(atelier);
-        CDisplay area = wing.CWingDisplay.CDisplayArea;
+        CDisplay area = wing.CWingDisplay;
         wing.CWingEntryOpen(water.LEntryId);
 
         Assert.True(area.CDisplayFavoriteToggle(true));
@@ -218,7 +218,7 @@ public sealed class TDisplayArea
         using CAtelier atelier = TDisplayAtelierCreate(engine);
         CWing wing = TDisplayWingPrepare(atelier);
 
-        Assert.False(wing.CWingDisplay.CDisplayArea.CDisplayFavoriteToggle(true));
+        Assert.False(wing.CWingDisplay.CDisplayFavoriteToggle(true));
     }
 
     [Fact]
@@ -229,7 +229,7 @@ public sealed class TDisplayArea
         using CAtelier atelier = TDisplayAtelierCreate(engine);
         LEntry water = TDisplayEntrySave(engine, "water");
         CWing wing = TDisplayWingPrepare(atelier);
-        CDisplay area = wing.CWingDisplay.CDisplayArea;
+        CDisplay area = wing.CWingDisplay;
         wing.CWingEntryOpen(water.LEntryId);
 
         CGrasp six = area.CDisplayGraspSet(6);
@@ -252,7 +252,7 @@ public sealed class TDisplayArea
         using CAtelier atelier = TDisplayAtelierCreate(engine);
         LEntry water = TDisplayEntrySave(engine, "water");
         CWing wing = TDisplayWingPrepare(atelier);
-        CDisplay area = wing.CWingDisplay.CDisplayArea;
+        CDisplay area = wing.CWingDisplay;
 
         CGrasp grasp = area.CDisplayGraspSet(4);
 
@@ -272,7 +272,7 @@ public sealed class TDisplayArea
         wing.CWingEntryOpen(water.LEntryId);
         List<string> keys = [];
 
-        CFrequency? frequency = wing.CWingDisplay.CDisplayArea.CDisplayFrequencyRead(key =>
+        CFrequency? frequency = wing.CWingDisplay.CDisplayFrequencyRead(key =>
         {
             keys.Add(key);
             return "once in {0} words";

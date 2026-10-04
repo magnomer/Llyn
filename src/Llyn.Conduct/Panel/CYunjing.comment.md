@@ -1,5 +1,5 @@
 # CYunjing.cs
-Hash: `561e2234e8b0bba2`
+Hash: `353317163d2e1dce`
 
 ## `public sealed class CYunjing`
 
@@ -148,11 +148,15 @@ The rime column as the driver copies it, counted for the empty verdict.
 ## `public IReadOnlyList<CVistaRow> CYunjingXiaoyunRead()`
 
 The entry list under the chosen cells, copied through the shared row map and counted for the empty verdict.
+A failed read shows `Yunjing.LoadFailed` through the envoy and answers no rows, so the count reads zero.
+The load task runs this read after the flag fill, so a throw here would fault the driver.
 
 ## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CYunjingXiaoyunLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `CYunjingXiaoyunRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+A failed flag fill shows `Yunjing.LoadFailed` and still answers the rows with no languages.
+The driver awaits it from an event handler, where a fault would end the app.
 
 ## `public CDiweiPage CYunjingDiweiRead()`
 
@@ -217,6 +221,7 @@ Both columns are unchosen first, so the page shows only that cell.
 
 Shows the tallies in the respelled or the phonemic set, as the switch names.
 The engine keeps the choice as a setting.
+A failed save is shown, and the remembered choice stays as saved.
 
 ## `public void CYunjingGlyphSelect(string? character)`
 

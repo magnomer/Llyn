@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -45,5 +48,39 @@ public sealed class TEngineRig
         Assert.Equal("ember", engine.TEngineEntryRead(seeded.LEntryId)?.LEntryHeadword);
         Assert.Equal(0, first.TVaultFakeReads);
         Assert.True(engine.TEngineSettingsRead().LSettingsRespelled);
+    }
+
+    [Fact]
+    public void RigApply_UnwritableDefaultSettings_StillOpensTheSecondRig()
+    {
+        List<Exception> recorded = [];
+        Dictionary<string, Func<object?[]?, object?>> stored = new()
+        {
+            ["LSettingsExist"] = _ => false,
+            ["LSettingsSave"] = _ => throw TInterface.TVaultFaultCreate("The folder is read-only."),
+        };
+        Dictionary<string, Func<object?[]?, object?>> audited = new()
+        {
+            ["LAuditRecord"] = args =>
+            {
+                recorded.Add((Exception)args![0]!);
+                return null;
+            },
+        };
+        TVaultFake second = new();
+        LEntry seeded = second.TVaultFakeAdd(TInterface.TEntryCreate(0, "ember", "en", 0, null, null));
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild(new TVaultFake(), "fake-first"));
+        engine.TEngineRespellingSave(true);
+
+        engine.TEngineRigApply(TRigFake.TRigFakeBuild(second, "fake-second") with
+        {
+            LRigSettings = TEngineFake.TEngineCreate<LSettingsVault>(stored),
+            LRigAudit = TEngineFake.TEngineCreate<LAuditVault>(audited),
+        });
+
+        Assert.Equal("fake-second", engine.TEngineWorkspaceRead());
+        Assert.Equal("ember", engine.TEngineEntryRead(seeded.LEntryId)?.LEntryHeadword);
+        Assert.True(engine.TEngineSettingsRead().LSettingsRespelled);
+        Assert.IsType<LVaultFault>(Assert.Single(recorded));
     }
 }

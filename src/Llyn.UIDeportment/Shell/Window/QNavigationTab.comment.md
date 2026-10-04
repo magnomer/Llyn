@@ -1,5 +1,5 @@
 # QNavigationTab.cs
-Hash: `9e5af415a32e99f4`
+Hash: `33d5ada2f52b6df5`
 
 ## `public partial class QWindow`
 
@@ -67,7 +67,8 @@ Each button reaches its one voyage gate.
 
 Shows the menu a word click's gate left, under the found word of `anchor`.
 Every panel that draws a sentence takes this one path, the reading display and the corpus excerpt alike.
-The word's place is read off the control that drew it, at the offset the engine settled on.
+The word's place is read off the control that drew it, from the offer's unit in the whole text.
+That is a ready surface value, so the window calls no gate here.
 The gate already asked, found and opened, so the window only paints the offer.
 A null offer shows nothing, and an empty one only closes any open menu.
 

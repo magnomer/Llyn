@@ -1,5 +1,5 @@
 # TCardMention.cs
-Hash: `a76d4665e68a650a`
+Hash: `06e08bea90e1992b`
 
 ## `public sealed class TCardMention`
 
@@ -8,7 +8,8 @@ A linked Mention offers its Entry's Meanings, and the sense gate narrows it to o
 A silent Mention may be unlinked but offers no sense.
 A Mention drops by the selection over it and by its chip's id.
 The chip line names a linked headword, and keys a silent chip with no name or sense.
-A failed chip line read reports `Mention.FindFailed` once and answers no rows.
+A failed chip line read reports `Mention.FindFailed` once.
+It still keys every sentence of the held draft, each with an empty chip line.
 
 ## `private static (CDesk TMentionDesk, CSentence TMentionGate, long TMentionSheet, long TMentionRow) TMentionPrepare(LEngine engine)`
 

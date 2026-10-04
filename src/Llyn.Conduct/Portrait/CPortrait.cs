@@ -37,8 +37,18 @@ internal static class CPortrait
 
     internal static IReadOnlyList<CPortraitChoice> LPortraitChoiceRead()
     {
-        return LPortraitPort.LEngineMediumRead()
-            .Select(static row => LPortraitChoiceCreate(row.Item1, row.Item2, row.Item3))
+        List<CPortraitChoice> choices = LPortraitPort.LEngineMediumRead()
+            .Select(static row => LPortraitChoiceCreate(
+                row.Item1, row.Item2.Replace("|", string.Empty, StringComparison.Ordinal), row.Item3))
+            .ToList();
+        if (choices.Count == 0)
+        {
+            return [LPortraitChoiceCreate(LPortraitMedium.LPortraitMediumMarkup, string.Empty, true)];
+        }
+
+        int chosen = Math.Max(0, choices.FindIndex(static choice => choice.CPortraitChoiceChosen));
+        return choices
+            .Select((choice, index) => choice with { CPortraitChoiceChosen = index == chosen })
             .ToList();
     }
 
@@ -79,14 +89,14 @@ internal static class CPortrait
             return;
         }
 
-        (string? path, CPortraitMedium format) = envoy.CEnvoyFileRead(file, LPortraitChoiceRead());
-        if (path is null)
-        {
-            return;
-        }
-
         try
         {
+            (string? path, CPortraitMedium format) = envoy.CEnvoyFileRead(file, LPortraitChoiceRead());
+            if (path is null)
+            {
+                return;
+            }
+
             await export(path, LPortraitMediumRead(format));
         }
         catch (Exception exception)

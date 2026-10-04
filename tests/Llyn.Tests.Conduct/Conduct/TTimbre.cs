@@ -291,9 +291,15 @@ public sealed class TTimbre
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CTimbre timbre = TTimbreAccentPrepare(engine).CEditorTimbre;
 
-        Assert.Equal(new CFont("Segoe UI", 40, null), timbre.CTimbreFontRead(CFontRole.CFontRoleHeadword));
-        Assert.Equal(new CFont("Georgia, Segoe UI", 15, null), timbre.CTimbreFontRead(CFontRole.CFontRoleExample));
-        Assert.Equal(new CFont("Georgia, Segoe UI", 15, "italic"), timbre.CTimbreFontRead(CFontRole.CFontRoleGloss));
+        Assert.Equal(
+            new CFont("Segoe UI", 40, CFontSlant.CFontSlantTheme),
+            timbre.CTimbreFontRead(CFontRole.CFontRoleHeadword));
+        Assert.Equal(
+            new CFont("Georgia, Segoe UI", 15, CFontSlant.CFontSlantTheme),
+            timbre.CTimbreFontRead(CFontRole.CFontRoleExample));
+        Assert.Equal(
+            new CFont("Georgia, Segoe UI", 15, CFontSlant.CFontSlantItalic),
+            timbre.CTimbreFontRead(CFontRole.CFontRoleGloss));
     }
 
     [Fact]
@@ -301,7 +307,9 @@ public sealed class TTimbre
     {
         CTimbre timbre = TTimbrePrepare([]);
 
-        Assert.Equal(new CFont(null, null, null), timbre.CTimbreFontRead(CFontRole.CFontRoleGlyph));
+        Assert.Equal(
+            new CFont(null, null, CFontSlant.CFontSlantTheme),
+            timbre.CTimbreFontRead(CFontRole.CFontRoleGlyph));
     }
 
     internal static CEditor TTimbreAccentPrepare(LEngine engine, params string[] accents)

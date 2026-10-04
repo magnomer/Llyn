@@ -1,8 +1,13 @@
 # Llyn.UITerminal.csproj
-Hash: `f0b5108e08ea603c`
+Hash: `0f5afd6f5ca66e78`
 
 The console surface, the second UI beside the WPF veneer.
 It holds no source yet.
+
+## `<DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>`
+
+UITerminal compiles against Demeanor alone, never Conduct or the rings below it.
+A name past Demeanor fails the build, not only the border audit.
 
 ## `<ProjectReference Include="..\Llyn.UIDemeanor\Llyn.UIDemeanor.csproj" />`
 

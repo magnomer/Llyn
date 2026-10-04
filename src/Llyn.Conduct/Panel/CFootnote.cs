@@ -14,6 +14,8 @@ public sealed class CFootnote
 
     private readonly LSettingsPort _cFootnoteSettingsPort;
 
+    private readonly CEnvoy _cFootnoteEnvoy;
+
     private readonly CEditor _cFootnoteEditor;
 
     private LVista? _cFootnoteParent;
@@ -33,11 +35,13 @@ public sealed class CFootnote
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(editor);
+        ArgumentNullException.ThrowIfNull(envoy);
 
         _cFootnoteEntryPort = entries;
         _cFootnotePortraitPort = portraits;
         _cFootnoteSettingsPort = settings;
         _cFootnoteEditor = editor;
+        _cFootnoteEnvoy = envoy;
         CFootnotePanel = new CPanel(
             envoy,
             settings,
@@ -85,14 +89,23 @@ public sealed class CFootnote
 
     public IReadOnlyList<CVistaRow> CFootnoteRowsRead()
     {
-        return _cFootnoteEntryPort.LEngineEntryFind(_cFootnoteParent, _cFootnoteVista)
-            .Select(CCatalog.LCatalogRowRead)
-            .ToList();
+        try
+        {
+            return _cFootnoteEntryPort.LEngineEntryFind(_cFootnoteParent, _cFootnoteVista)
+                .Select(CCatalog.LCatalogRowRead)
+                .ToList();
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cFootnoteEnvoy, _cFootnoteSettingsPort, "List.LoadFailed", exception);
+            return [];
+        }
     }
 
     public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CFootnoteRowsLoad(
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
-        CCatalog.LCatalogEnsignLoad(_cFootnoteSettingsPort, store, CFootnoteRowsRead);
+        CCatalog.LCatalogEnsignLoad(
+            _cFootnoteEnvoy, _cFootnoteSettingsPort, "List.LoadFailed", store, CFootnoteRowsRead);
 
     internal string LFootnoteFileRead()
     {

@@ -31,7 +31,7 @@ public sealed class TDisplayFailure
         CWing wing = TDisplayWingOpen(engine, atelier, asked);
         asked.Clear();
 
-        wing.CWingDisplay.CDisplayArea.CDisplayCardRead();
+        wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
 
         Assert.Contains("Display.OrderFailed", asked);
     }
@@ -46,7 +46,7 @@ public sealed class TDisplayFailure
         CWing wing = TDisplayWingOpen(engine, atelier, asked);
         asked.Clear();
 
-        wing.CWingDisplay.CDisplayArea.CDisplayCardRead();
+        wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
 
         Assert.Contains("Display.CitationFailed", asked);
     }
@@ -194,8 +194,8 @@ public sealed class TDisplayFailure
         CWing wing = TDisplayWingOpen(engine, atelier, asked);
         asked.Clear();
 
-        wing.CWingDisplay.CDisplayArea.CDisplayCardRead();
-        wing.CWingDisplay.CDisplayArea.CDisplayCardRead();
+        wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
+        wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
 
         Assert.Single(asked, key => key == "Display.OrderFailed");
     }
@@ -210,8 +210,8 @@ public sealed class TDisplayFailure
         CWing wing = TDisplayWingOpen(engine, atelier, asked);
         asked.Clear();
 
-        wing.CWingDisplay.CDisplayArea.CDisplayFavoriteToggle(true);
-        wing.CWingDisplay.CDisplayArea.CDisplayFavoriteToggle(true);
+        wing.CWingDisplay.CDisplayFavoriteToggle(true);
+        wing.CWingDisplay.CDisplayFavoriteToggle(true);
 
         Assert.Equal(2, asked.FindAll(key => key == "Favorite.MarkFailed").Count);
     }

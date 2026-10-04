@@ -160,6 +160,9 @@ The audits and convention tests measure the lag as falling ceilings.
 ## `<Project Path="src/Llyn.Conduct/Llyn.Conduct.csproj" />`
 
 - Conduct is the abstraction that serves both Deportment and Demeanor.
+  The layers above the cut must keep working when every layer below Conduct is swapped and Conduct is not.
+- A driver relies only on what Conduct promises, never on how the engine below behaves.
+  A driver that trusts an engine habit Conduct does not guarantee breaks under the swap.
 - Conduct holds every behaviour behind the screen that does not depend on the medium.
 - Conduct uses no WPF and no console.
 - Conduct asks the user through ports that each driver implements.

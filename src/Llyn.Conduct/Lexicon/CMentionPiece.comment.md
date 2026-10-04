@@ -1,12 +1,11 @@
 # CMentionPiece.cs
-Hash: `ad0aea6a01028a5e`
+Hash: `6094ea24cbc39f8d`
 
-## `public sealed record CMentionPiece(int CMentionPieceOffset, string CMentionPieceText, bool? CMentionPieceLinked)`
+## `public sealed record CMentionPiece(string CMentionPieceText, bool? CMentionPieceLinked)`
 
 One run of a mention text, cut by the engine at the Mentions.
 
 **Parameters**
 
-- `CMentionPieceOffset`: where the run starts in the text.
 - `CMentionPieceText`: the run's text.
 - `CMentionPieceLinked`: whether the run's Mention links an entry, null for plain text.

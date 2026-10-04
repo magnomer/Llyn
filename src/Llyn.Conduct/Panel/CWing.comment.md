@@ -1,5 +1,5 @@
 # CWing.cs
-Hash: `d8282b6d0dedf72d`
+Hash: `e1dba255ba19cdd0`
 
 ## `public sealed class CWing`
 
@@ -44,9 +44,10 @@ A load that failed raises nothing, since the side stands where it stood.
 Raised when a key moved the choice, so the driver re-marks the rows in place.
 A selection raises no engine announcement, so the side raises its own.
 
-## `public LDisplay CWingDisplay { get; }`
+## `public CDisplay CWingDisplay { get; }`
 
-The reading display the driver's lectern paints.
+The reading area the driver's lectern paints.
+It is the C area, so the lectern never names the rules under it.
 
 ## `public bool CWingFiltered`
 
@@ -118,6 +119,8 @@ No row picks nothing and answers false, so the key stays with the field and the 
 
 The rows the engine returns for the vista, crossing as shapes so the side names no engine row.
 The side holds them, so the keys and the empty notice follow what the driver shows.
+A failed find is shown under `Duplex.LoadFailed` and answers no rows, as every sibling rows read does.
+So a swapped engine that throws never reaches the driver, and the side holds no stale rows.
 
 ## `private void LWingClose()`
 
@@ -128,4 +131,5 @@ Stops the display's playback when the atelier closes, registered with the worksp
 Loads one entry onto this side.
 An entry that is gone leaves the side empty rather than showing what it was.
 A load that failed leaves the side where it stood and reports the failure through the envoy.
-The display loads and chooses the entry, so the side never holds the draft.
+The display's rules load and choose the entry, and its area opens the draft they answer.
+The side only passes that draft across, so it never keeps it.

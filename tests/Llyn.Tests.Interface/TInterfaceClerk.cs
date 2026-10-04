@@ -46,9 +46,6 @@ internal static partial class TInterface
     internal static bool TCardLoneCheck(LEntryDraft content, long id) =>
         LDraftClerkCard.LCardLoneCheck(content, id);
 
-    internal static int? TCardOrdinalRead(LEntryDraft content, long id, string ordinal) =>
-        LDraftClerkCard.LCardOrdinalRead(content, id, ordinal);
-
     internal static int? TCardShiftRead(LEntryDraft content, long id, int place) =>
         LDraftClerkCard.LCardShiftRead(content, id, place);
 

@@ -10,6 +10,8 @@ internal sealed class QFrequency
 
     private CLedger _qFrequencyLedger = null!;
 
+    private CEnvoy _qFrequencyEnvoy = null!;
+
     internal QFrequency(FrameworkElement settings)
     {
         _qFrequencySettings = settings;
@@ -19,9 +21,10 @@ internal sealed class QFrequency
     private ToggleButton QFrequencySwitch =>
         QContract.QContractFind<ToggleButton>(_qFrequencySettings, "PFrequency");
 
-    internal void QFrequencyIntroduce(CLedger ledger)
+    internal void QFrequencyIntroduce(CLedger ledger, CEnvoy envoy)
     {
         _qFrequencyLedger = ledger;
+        _qFrequencyEnvoy = envoy;
     }
 
     internal void QFrequencyRefine(bool chosen)
@@ -31,6 +34,7 @@ internal sealed class QFrequency
 
     private void QFrequencyObserve(object sender, RoutedEventArgs e)
     {
-        _qFrequencyLedger.CLedgerFrequencySave(QLook.QLookCheckedRead(QFrequencySwitch.IsChecked));
+        _qFrequencyLedger.CLedgerFrequencySave(
+            QLook.QLookCheckedRead(QFrequencySwitch.IsChecked), _qFrequencyEnvoy);
     }
 }

@@ -1,5 +1,5 @@
 # TDisplay.cs
-Hash: `a5e4ef2949477d66`
+Hash: `d5bca173eb524b33`
 
 ## `public sealed class TDisplay`
 

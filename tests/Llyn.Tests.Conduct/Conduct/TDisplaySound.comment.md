@@ -1,5 +1,5 @@
 # TDisplaySound.cs
-Hash: `35038c898c7b175c`
+Hash: `06ea88bd1e60516f`
 
 ## `public sealed class TDisplaySound`
 

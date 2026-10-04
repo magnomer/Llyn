@@ -245,7 +245,8 @@ internal sealed class QImprint : QChronicleHost
 
     private void QAuthorRemoveObserve(object sender, RoutedEventArgs e)
     {
-        _cImprint.CImprintAuthorRemove(QSender.QSenderItemRead<QAuthorItem>(sender)?.QAuthorItemId);
+        _cImprint.CImprintAuthorRemove(
+            QSender.QSenderItemRead<QAuthorItem>(sender)?.QAuthorItemId);
     }
 
     private void QAuthorRetreatObserve(object sender, RoutedEventArgs e)

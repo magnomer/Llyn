@@ -1,5 +1,5 @@
 # CShelf.cs
-Hash: `24e3b352f4ef84e8`
+Hash: `7e96acdc1a6fd630`
 
 ## `public sealed class CShelf`
 
@@ -107,11 +107,16 @@ Reads the Sources the vista finds, mapped as the oeuvre maps its own, into one a
 A shown Source the rows no longer choose is closed, so a stale selection never stays in front.
 The tally is read after that close, through the panel's own tally read and its failure report.
 So the tally never counts a Source the panel just left.
+A failed read shows `Source.LoadFailed` through the envoy and goes on with no Sources.
+The roll is then the same empty roll a vista with no Sources gives, close and tally included.
+The load task runs this read after the flag fill, so a throw here would fault the driver.
 
 ## `public Task<CEnsignSheet<CShelfRoll>> CShelfRollLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `CShelfRollRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+A failed flag fill shows `Source.LoadFailed` and still answers the rows with no languages.
+The driver awaits it from an event handler, where a fault would end the app.
 
 ## `public void CShelfQuerySet(string query)`
 

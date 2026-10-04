@@ -4,6 +4,7 @@ Hash: `c42372c296c3d088`
 ## `public sealed class TByline`
 
 Covers the byline the source editor opens under a typed credit.
+The credit row it opens a blank row under hands its place and stored id.
 Typing in a field without the keyboard opens nothing, and typing with it offers the Authors not yet credited.
 Each offered name comes split around the word, case-blind, keeping the name's own case.
 The word loses its outer spaces, and a blank word closes the byline again.

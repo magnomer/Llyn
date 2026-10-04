@@ -51,7 +51,7 @@ internal static class TInterfaceEditor
             ? CFolio.CFolioEntryRead(
                 draft.LDraftContent,
                 held.LTenureTranslationRead(draft.LDraftContent),
-                editor.CEditorDisplay.LDisplayMediaPort)
+                editor.CEditorDisplay.LDisplayRule.LDisplayMediaPort)
             : null;
 
     internal static bool TEditorFinish(this CEditor editor, bool store) => editor.LEditorFinish(store);

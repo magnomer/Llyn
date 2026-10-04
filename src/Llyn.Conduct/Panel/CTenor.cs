@@ -194,7 +194,8 @@ public sealed class CTenor
 
     public Task<CEnsignSheet<IReadOnlyList<CCatalogRegister>>> CTenorRowsLoad(
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
-        CCatalog.LCatalogEnsignLoad(_cTenorSettingsPort, store, CTenorRowsRead);
+        CCatalog.LCatalogEnsignLoad(
+            _cTenorEnvoy, _cTenorSettingsPort, "Register.LoadFailed", store, CTenorRowsRead);
 
     private bool LTenorCoinageAllowed =>
         LTenorChosen is null && !CTenorCohort.CCohortPanel.CPanelBinEnabled;

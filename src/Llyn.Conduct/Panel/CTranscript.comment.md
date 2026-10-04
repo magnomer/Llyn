@@ -1,5 +1,5 @@
 # CTranscript.cs
-Hash: `53291c2e62b8029a`
+Hash: `37e9eb79827357fc`
 
 ## `public sealed class CTranscript`
 
@@ -50,11 +50,20 @@ The gate that opens the transcript's mention picker, for the selected word as th
 It searches in the held Example's own language, through `CMention.LMentionProspectRead`.
 The offer is raised as `CTranscriptMentionOffered`, which the corpus editor's picker paints.
 
-## `public void CTranscriptMentionAdd(string text, int start, int length, long entryId)`
+## `public void CTranscriptMentionAdd(string text, int start, int length, long? entryId)`
 
 The gate for an Entry picked for the transcript's selection, with the box's raw text and selection.
 The span rule and the request are ShellEngine's.
-Entry 0 marks the selection as standing for nothing, which is the silence command.
+The driver hands the raw pick, a null id for a fresh row.
+The engine has no new Entry path for a Mention.
+So a null id shows `Refusal.TargetMissing` through the envoy and links nothing.
+
+## `public void CTranscriptSilenceSet(string text, int start, int length)`
+
+The gate for the silence command on the transcript's selection.
+It marks the selection as standing for nothing.
+It has its own gate, so a fresh pick's null id is never read as silence.
+Conduct maps the silence to the engine's Entry 0 here, so the driver never sends it.
 
 ## `public void CTranscriptSenseSet(string text, int start, int length, long senseId)`
 

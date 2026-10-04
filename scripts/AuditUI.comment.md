@@ -48,6 +48,12 @@ Generation 18 also sees a field passed by `ref` and a delegate stored from a par
 It sees an interface event, a static Conduct value and a surface loaded through a built URI.
 It traces a delegate handed in from any tracked source, such as the composition root.
 Generation 19 adds the comment hash check, so every setting carries 19.
+Generation 20 adds `truth.informative`, so every setting carries 20.
+It maps a truth kind to the driver folders it waits on.
+The kind gates nothing while a listed folder holds no tracked source.
+Its hits still reach the report, under a line naming the kind as informative.
+Mismatching waits on `src/Llyn.UIDemeanor`, so it holds no ledger rows.
+Once Demeanor holds a source, every mismatching hit fails.
 A `break` in a switch skips only the rest of its own section.
 An `if` without `else` leaves only when its body always reaches a `return`, `throw`, `break` or `continue`.
 Such a jump has only plain blocks between it and the `if`.
@@ -63,6 +69,14 @@ A local or parameter that carries a control read counts as that read within its 
 A declaration, an assignment or a local function argument carries it, in source order.
 A pattern designation never carries, and a call that takes a control is not a read of it.
 A type pattern naming a control reads it, even on a value typed `object` such as `sender`.
+`truth.inputBase` names the base type of every control that takes user input.
+The laundering walk colours a `truth.inputMembers` read only on a receiver deriving from it.
+So `Run.Text` or `TextBlock.Text` is no control input, since the driver wrote it.
+Caret and selection positions stay off the list, since a driver keeps caret, focus and placement work.
+`TAuditTruthSetting.TAuditInputMembers` holds the same list, copied by hand.
+An error type, a `dynamic` receiver or a missing type keeps the colour, as `LAuditInputCheck` reads it.
+A namespace receiver, as in `System.Text`, reads no value and is not coloured.
+`TAuditTruthSetting.TAuditInputBase` holds the same name, copied by hand.
 `truth.focusMembers` lists the members that tell whether the user is at a control.
 An `if` without `else` that only drops an event the user did not cause is hearing, not misfiring.
 It qualifies as a bare `return` under a negated focus guard, or as a focus guard with no later request.
@@ -99,3 +113,4 @@ Every fact the tests gate is one counter, and the counters sum to zero exactly w
 The report lists every hit in the line format of the test reports, so the two diff directly.
 The `enforced` flag of the `strict` and `truth` settings gates the kinds of each audit.
 Both flags are set now.
+An informative kind that waits on an empty driver adds no row to its counter.

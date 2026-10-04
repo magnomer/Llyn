@@ -25,7 +25,7 @@ public sealed class CWing
         _cWingAtelier = atelier;
         _cWingEnvoy = envoy;
         _cWingLeft = left;
-        CWingDisplay = new LDisplay(
+        CWingDisplay = new CDisplay(
             atelier.CAtelierDraftPort,
             atelier.CAtelierEntryPort,
             atelier.CAtelierPhonologyPort,
@@ -51,7 +51,7 @@ public sealed class CWing
 
     public event Action? CWingRowsChanged;
 
-    public LDisplay CWingDisplay { get; }
+    public CDisplay CWingDisplay { get; }
 
     public bool CWingFiltered => _cWingVista?.LVistaFiltered ?? false;
 
@@ -69,10 +69,10 @@ public sealed class CWing
             _cWingLeft ? "left" : "right", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword, true);
         _cWingRows = [];
         CWingDisplay.LDisplayVistaRestore(_cWingVista);
-        CWingDisplay.LDisplayObserverAttach(CSubject.CSubjectVista, LWingBulletinSend);
-        CWingDisplay.LDisplayObserverAttach(CSubject.CSubjectEntry, LWingBulletinSend);
-        CWingDisplay.LDisplayObserverAttach(CSubject.CSubjectReflex, LWingBulletinSend);
-        CWingDisplay.LDisplayObserverAttach(CSubject.CSubjectSettings, LWingBulletinSend);
+        CWingDisplay.LDisplayRule.LDisplayObserverAttach(CSubject.CSubjectVista, LWingBulletinSend);
+        CWingDisplay.LDisplayRule.LDisplayObserverAttach(CSubject.CSubjectEntry, LWingBulletinSend);
+        CWingDisplay.LDisplayRule.LDisplayObserverAttach(CSubject.CSubjectReflex, LWingBulletinSend);
+        CWingDisplay.LDisplayRule.LDisplayObserverAttach(CSubject.CSubjectSettings, LWingBulletinSend);
     }
 
     public void CWingQuerySet(string query)
@@ -125,7 +125,7 @@ public sealed class CWing
 
     private void LWingEntryRestore(CWorkspaceState state)
     {
-        CWingDisplay.CDisplayArea.CDisplayEntryClose();
+        CWingDisplay.CDisplayEntryClose();
         if ((_cWingLeft ? state.CWorkspaceStateLeft : state.CWorkspaceStateRight) is long shown)
         {
             LWingEntryLoad(shown);
@@ -146,9 +146,18 @@ public sealed class CWing
 
     public IReadOnlyList<CVistaRow> CWingRowsRead()
     {
-        _cWingRows = _cWingVista is LVista vista
-            ? _cWingAtelier.CAtelierEntryPort.LEngineEntryFind(vista).Select(CCatalog.LCatalogRowRead).ToList()
-            : [];
+        try
+        {
+            _cWingRows = _cWingVista is LVista vista
+                ? _cWingAtelier.CAtelierEntryPort.LEngineEntryFind(vista).Select(CCatalog.LCatalogRowRead).ToList()
+                : [];
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cWingEnvoy, _cWingAtelier.CAtelierSettingsPort, "Duplex.LoadFailed", exception);
+            _cWingRows = [];
+        }
+
         return _cWingRows;
     }
 
@@ -156,7 +165,7 @@ public sealed class CWing
     {
         try
         {
-            CWingDisplay.LDisplayEntryLoad(id);
+            CWingDisplay.LDisplayEntryOpen(CWingDisplay.LDisplayRule.LDisplayEntryLoad(id));
         }
         catch (Exception exception)
         {

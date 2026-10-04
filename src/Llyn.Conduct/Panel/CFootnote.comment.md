@@ -1,5 +1,5 @@
 # CFootnote.cs
-Hash: `9fd1aab02560f030`
+Hash: `4e3511a2d1404f2a`
 
 ## `public sealed class CFootnote`
 
@@ -14,6 +14,7 @@ Builds the list's panel under the `List.LoadFailed` key over the shelf's entry e
 The panel asks the editor's desk before it leaves an entry, and finishes through the shelf's seam.
 A cleared panel drops the editor's draft, and an edited row opens in it.
 A fresh entry is started by `LFootnoteEntryCreate` alone, so no blank draft paints before the cited one.
+It keeps `envoy` too, so a failed flag fill in `CFootnoteRowsLoad` can be shown.
 
 ## `public CPanel CFootnotePanel { get; }`
 
@@ -42,11 +43,15 @@ Takes the text typed into the rummage field as the list's query.
 ## `public IReadOnlyList<CVistaRow> CFootnoteRowsRead()`
 
 Reads the entries citing the parent's chosen Source, mapped as the quotation list maps its own.
+A failed read shows `List.LoadFailed` through the envoy and answers no rows.
+The load task runs this read after the flag fill, so a throw here would fault the driver.
 
 ## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CFootnoteRowsLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `CFootnoteRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+A failed flag fill shows `List.LoadFailed` and still answers the rows with no languages.
+The driver awaits it from an event handler, where a fault would end the app.
 
 ## `internal string LFootnoteFileRead()`
 

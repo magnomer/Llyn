@@ -185,19 +185,30 @@ public sealed class CYunjing
 
     public IReadOnlyList<CVistaRow> CYunjingXiaoyunRead()
     {
-        IReadOnlyList<CVistaRow> rows =
-            _cYunjingShengmu is LVista onset && _cYunjingYunmu is LVista rime && _cYunjingXiaoyun is LVista xiaoyun
-                ? _cYunjingPort.LEngineXiaoyunFind(LYunjingSide?.LVistaChosen, onset, rime, xiaoyun)
-                    .Select(CCatalog.LCatalogRowRead)
-                    .ToList()
-                : [];
+        IReadOnlyList<CVistaRow> rows;
+        try
+        {
+            rows =
+                _cYunjingShengmu is LVista onset && _cYunjingYunmu is LVista rime && _cYunjingXiaoyun is LVista xiaoyun
+                    ? _cYunjingPort.LEngineXiaoyunFind(LYunjingSide?.LVistaChosen, onset, rime, xiaoyun)
+                        .Select(CCatalog.LCatalogRowRead)
+                        .ToList()
+                    : [];
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cYunjingEnvoy, _cYunjingSettingsPort, "Yunjing.LoadFailed", exception);
+            rows = [];
+        }
+
         _cYunjingXiaoyunCount = rows.Count;
         return rows;
     }
 
     public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CYunjingXiaoyunLoad(
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
-        CCatalog.LCatalogEnsignLoad(_cYunjingSettingsPort, store, CYunjingXiaoyunRead);
+        CCatalog.LCatalogEnsignLoad(
+            _cYunjingEnvoy, _cYunjingSettingsPort, "Yunjing.LoadFailed", store, CYunjingXiaoyunRead);
 
     public CDiweiPage CYunjingDiweiRead()
     {
@@ -315,7 +326,15 @@ public sealed class CYunjing
             return;
         }
 
-        _cYunjingPort.LEngineTallySave(chosen);
+        try
+        {
+            _cYunjingPort.LEngineTallySave(chosen);
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cYunjingEnvoy, _cYunjingSettingsPort, "Settings.SaveFailed", exception);
+        }
+
         CYunjingChanged?.Invoke();
     }
 

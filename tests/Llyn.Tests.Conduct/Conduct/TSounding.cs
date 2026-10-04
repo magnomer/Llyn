@@ -34,7 +34,7 @@ public sealed class TSounding
         Assert.Empty(sounding.CSoundingScriptRead().CSoundingScriptGroups);
         Assert.Empty(paradigm.CLecternParadigmSlots);
         Assert.Equal(string.Empty, sounding.CSoundingReadingRead("water"));
-        Assert.Equal(new CFont(null, null, null), paradigm.CLecternParadigmFont);
+        Assert.Equal(new CFont(null, null, CFontSlant.CFontSlantTheme), paradigm.CLecternParadigmFont);
     }
 
     [Fact]
@@ -239,7 +239,7 @@ public sealed class TSounding
                 new CParadigmSlot("verb", "past", "—", "Paradigm.Unknown"),
             ],
             paradigm.CLecternParadigmSlots);
-        Assert.Equal(new CFont("Noto Serif", 21, null), paradigm.CLecternParadigmFont);
+        Assert.Equal(new CFont("Noto Serif", 21, CFontSlant.CFontSlantTheme), paradigm.CLecternParadigmFont);
         Assert.Equal([("Latin", LFontRole.LFontRoleHeadword)], asked);
     }
 
@@ -276,7 +276,7 @@ public sealed class TSounding
         Assert.True(script.CSoundingScriptRebuildable);
         Assert.False(fanqie.CSoundingFanqiePending);
         Assert.False(fanqie.CSoundingFanqieRebuildable);
-        Assert.Equal(new CFont("Noto Serif", 21, null), script.CSoundingScriptFont);
+        Assert.Equal(new CFont("Noto Serif", 21, CFontSlant.CFontSlantTheme), script.CSoundingScriptFont);
         Assert.Equal(["English", "English"], packs);
         Assert.Equal([("English", LFontRole.LFontRoleGlyph), ("English", LFontRole.LFontRoleGlyph)], asked);
     }

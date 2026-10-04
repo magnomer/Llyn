@@ -35,13 +35,22 @@ public sealed class CCardList
 
     public void CCardMove(long cardId, int place)
     {
-        CCardListQuill?.LQuillCardMove(cardId, place);
+        if (CCardListQuill is LQuillCard quill
+            && _cCardListDesk.CDeskTenure?.LTenureRead() is LDraft held
+            && CFolio.CFolioPlaceRead(held.LDraftContent, cardId, place) is int target)
+        {
+            quill.LQuillCardMove(cardId, target);
+        }
     }
 
     public void CCardMove(long cardId, string ordinal)
     {
         ArgumentNullException.ThrowIfNull(ordinal);
 
-        CCardListQuill?.LQuillCardMove(cardId, ordinal);
+        if (_cCardListDesk.CDeskTenure?.LTenureRead() is LDraft held
+            && CFolio.CFolioOrdinalRead(held.LDraftContent, cardId, ordinal) is int place)
+        {
+            CCardMove(cardId, place);
+        }
     }
 }

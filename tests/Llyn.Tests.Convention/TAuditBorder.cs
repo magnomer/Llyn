@@ -123,7 +123,9 @@ public sealed class TAuditBorder
     public void AuditBorder_Sources_HoldNoPoaching()
     {
         List<string> hits = [];
-        foreach ((string pair, string[] offer) in TAuditBorderSetting.TAuditBorderOffer)
+        foreach ((string pair, string[] offer) in TAuditEngineSetting.TAuditEngineOffer
+                     .Concat(TAuditDeportmentSetting.TAuditDeportmentOffer)
+                     .Concat(TAuditDemeanorSetting.TAuditDemeanorOffer))
         {
             hits.AddRange(TAuditBorderHits.Value
                 .Where(hit => hit.TAuditHitKind == "Commuting" && hit.TAuditPairRead() == "Commuting:" + pair)

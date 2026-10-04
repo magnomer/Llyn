@@ -1,5 +1,5 @@
 # QRespelling.cs
-Hash: `8c439918eea71c66`
+Hash: `467f73e266176961`
 
 ## `internal sealed class QRespelling`
 
@@ -13,9 +13,10 @@ The same bulletin redraws this panel.
 
 Wires the switch's click once, through its markup name, as the settings panel is built.
 
-## `internal void QRespellingIntroduce(CLedger ledger)`
+## `internal void QRespellingIntroduce(CLedger ledger, CEnvoy envoy)`
 
 Puts the switch to work on the ledger the panel hands over at introduction.
+It keeps the window's envoy, which the ledger shows a failed save through.
 
 ## `internal void QRespellingRefine(bool chosen)`
 
@@ -24,4 +25,5 @@ Setting `IsChecked` in code raises no `Click`, so a painted switch writes nothin
 
 ## `private void QRespellingObserve(object sender, RoutedEventArgs e)`
 
-Only hands the raw switch to one ledger save.
+Only hands the raw switch to one ledger save, with the kept envoy.
+A failed save raises the ledger again, which paints the switch back.

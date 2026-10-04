@@ -1,12 +1,14 @@
 # TCardList.cs
-Hash: `7eb40b7d386300aa`
+Hash: `4700acc755d2cbf7`
 
 ## `public sealed class TCardList`
 
 Covers the card list gates over an entry desk on a real workspace, with no delay.
 A new meaning or collocation lands last in its own list.
 A card is dropped from a list of two, and a list of one keeps its card.
-A typed number moves a card to that place, clamped to the list, and an unreadable one moves nothing.
+A typed number moves a card to that place, clamped to either end of the list.
+A typed number naming the card's own place keeps the order.
+Text that is no whole number, such as "2nd", moves nothing.
 A dragged place moves a card there as it stands.
 A card the draft lacks keeps the order rather than being refused.
 A dragged place is a move only when it lies in the list and differs from the card's own.

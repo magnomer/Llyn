@@ -151,10 +151,8 @@ internal sealed class QSentence
         {
             foreach (PSentence row in card.PCardSentence)
             {
-                if (lines.TryGetValue(row.PSentenceRow, out IReadOnlyList<CMentionLabel>? labels))
-                {
-                    row.PSentenceChip.PMentionLineRefine(QMentionChip.QMentionChipCreate(labels));
-                }
+                row.PSentenceChip.PMentionLineRefine(QMentionChip.QMentionChipCreate(
+                    lines.TryGetValue(row.PSentenceRow, out IReadOnlyList<CMentionLabel>? labels) ? labels : []));
             }
         }
     }
@@ -229,8 +227,8 @@ internal sealed class QSentence
             return;
         }
 
-        _cEditor.CEditorSentence.CSentenceMentionAdd(
-            card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength, 0);
+        _cEditor.CEditorSentence.CSentenceSilenceSet(
+            card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength);
     }
 
     internal void QSentenceUnlinkObserve(object sender, ExecutedRoutedEventArgs e)

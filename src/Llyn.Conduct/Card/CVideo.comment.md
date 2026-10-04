@@ -1,5 +1,5 @@
 # CVideo.cs
-Hash: `4b59c9ab118f2816`
+Hash: `5c798de1e64fe7f4`
 
 ## `public sealed class CVideo`
 
@@ -14,9 +14,11 @@ The user typed a video's location, deferred like every typed field.
 
 The user typed a video's span, deferred like its location.
 
-## `public void CVideoAdd(long cardId)`
+## `public void CVideoAdd(long? cardId)`
 
-The user pressed add under a card's videos, or under a Situation's with card zero.
+The user pressed add under a card's videos, or under a Situation's with a null card.
+Null means no card owns the row.
+Conduct maps null to the engine's card 0, so the driver never sends a magic id.
 The row lands after the rows held, and the driver hands no count.
 
 ## `public void CVideoRemove(long videoId)`

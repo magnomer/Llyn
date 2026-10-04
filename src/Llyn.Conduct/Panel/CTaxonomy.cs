@@ -191,7 +191,8 @@ public sealed class CTaxonomy
 
     public Task<CEnsignSheet<IReadOnlyList<CCatalogTag>>> CTaxonomyRowsLoad(
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
-        CCatalog.LCatalogEnsignLoad(_cTaxonomySettingsPort, store, CTaxonomyRowsRead);
+        CCatalog.LCatalogEnsignLoad(
+            _cTaxonomyEnvoy, _cTaxonomySettingsPort, "Tag.LoadFailed", store, CTaxonomyRowsRead);
 
     private bool LTaxonomyCoinageAllowed =>
         LTaxonomyChosen is null && !CTaxonomyMembership.CMembershipPanel.CPanelBinEnabled;

@@ -172,7 +172,8 @@ public sealed class TDisplaySoundBlock
                 },
             }));
         editor.CEditorDisplay.CDisplaySound.CDisplayFanqieSet(3, 1, false);
-        editor.CEditorDisplay.LDisplaySound.TDisplaySoundShow(7, TDisplaySound.TDisplayDraftCreate("國", "Korean", []));
+        editor.CEditorDisplay.LDisplayRule.LDisplaySound.TDisplaySoundShow(
+            7, TDisplaySound.TDisplayDraftCreate("國", "Korean", []));
 
         editor.CEditorDisplay.CDisplaySound.CDisplayFanqieSet(3, 2, true);
 

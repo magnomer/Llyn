@@ -34,7 +34,7 @@ public sealed class TDisplayCard
         CWing wing = TDisplayWingPrepare(atelier, []);
         wing.CWingEntryOpen(water.LEntryId);
 
-        CLecternCard card = wing.CWingDisplay.CDisplayArea.CDisplayCardRead();
+        CLecternCard card = wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
 
         CLeaf leaf = Assert.Single(card.CLecternCardMeanings);
         Assert.Equal(1, leaf.CLeafPosition);
@@ -75,7 +75,7 @@ public sealed class TDisplayCard
         CWing wing = TDisplayWingPrepare(atelier, []);
         wing.CWingEntryOpen(water.LEntryId);
 
-        CLeaf leaf = Assert.Single(wing.CWingDisplay.CDisplayArea.CDisplayCardRead().CLecternCardMeanings);
+        CLeaf leaf = Assert.Single(wing.CWingDisplay.CDisplayCard.CDisplayCardRead().CLecternCardMeanings);
 
         CLeafLine line = Assert.Single(leaf.CLeafSentence);
         Assert.Equal("(+" + TInterface.TLocalizationTextRead("Display.Unknown") + ")", line.CLeafLineHead);
@@ -94,7 +94,7 @@ public sealed class TDisplayCard
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CWing wing = TDisplayWingPrepare(atelier, []);
 
-        CLecternCard card = wing.CWingDisplay.CDisplayArea.CDisplayCardRead();
+        CLecternCard card = wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
 
         Assert.Empty(card.CLecternCardMeanings);
         Assert.Empty(card.CLecternCardCollocations);
@@ -200,7 +200,7 @@ public sealed class TDisplayCard
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CWing wing = TDisplayWingPrepare(atelier, []);
 
-        Assert.Empty(wing.CWingDisplay.CDisplayArea.CDisplayIncomingRead());
+        Assert.Empty(wing.CWingDisplay.CDisplayCard.CDisplayIncomingRead());
     }
 
     [Fact]
@@ -217,7 +217,7 @@ public sealed class TDisplayCard
         CWing wing = TDisplayWingPrepare(atelier, []);
         wing.CWingEntryOpen(run.LEntryId);
 
-        CLecternEtymology etymology = wing.CWingDisplay.CDisplayArea.CDisplayEtymologyRead();
+        CLecternEtymology etymology = wing.CWingDisplay.CDisplayCard.CDisplayEtymologyRead();
 
         Assert.Equal(rinnan.LEntryId, Assert.Single(etymology.CLecternEtymologyTargets).CTranslationTargetId);
         Assert.True(etymology.CLecternEtymologyShown);
@@ -242,7 +242,7 @@ public sealed class TDisplayCard
         CWing wing = TDisplayWingPrepare(atelier, []);
         wing.CWingEntryOpen(run.LEntryId);
 
-        CLecternEtymology etymology = wing.CWingDisplay.CDisplayArea.CDisplayEtymologyRead();
+        CLecternEtymology etymology = wing.CWingDisplay.CDisplayCard.CDisplayEtymologyRead();
 
         Assert.Equal(2, etymology.CLecternEtymologyTargets.Count);
         Assert.True(etymology.CLecternEtymologyLinked);
@@ -261,7 +261,7 @@ public sealed class TDisplayCard
         CWing wing = TDisplayWingPrepare(atelier, []);
         wing.CWingEntryOpen(run.LEntryId);
 
-        CLecternEtymology etymology = wing.CWingDisplay.CDisplayArea.CDisplayEtymologyRead();
+        CLecternEtymology etymology = wing.CWingDisplay.CDisplayCard.CDisplayEtymologyRead();
 
         Assert.Equal("From rinnan.", etymology.CLecternEtymologyText);
         Assert.Empty(etymology.CLecternEtymologyTargets);
@@ -286,7 +286,7 @@ public sealed class TDisplayCard
         CWing wing = TDisplayWingPrepare(atelier, []);
         wing.CWingEntryOpen(run.LEntryId);
 
-        CLecternEtymology etymology = wing.CWingDisplay.CDisplayArea.CDisplayEtymologyRead();
+        CLecternEtymology etymology = wing.CWingDisplay.CDisplayCard.CDisplayEtymologyRead();
 
         Assert.Equal(expected, etymology.CLecternEtymologyNarrated);
     }
@@ -301,7 +301,7 @@ public sealed class TDisplayCard
         CWing wing = TDisplayWingPrepare(atelier, []);
         wing.CWingEntryOpen(run.LEntryId);
 
-        CLecternEtymology etymology = wing.CWingDisplay.CDisplayArea.CDisplayEtymologyRead();
+        CLecternEtymology etymology = wing.CWingDisplay.CDisplayCard.CDisplayEtymologyRead();
 
         Assert.False(etymology.CLecternEtymologyShown);
         Assert.False(etymology.CLecternEtymologyNarrated);
@@ -315,7 +315,7 @@ public sealed class TDisplayCard
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CDisplay area = TDisplayWingPrepare(atelier, []).CWingDisplay.CDisplayArea;
+        CDisplay area = TDisplayWingPrepare(atelier, []).CWingDisplay;
         List<string> opened = [];
 
         bool situation = TDisplayChipOpen(area, TDisplayChipCreate(7, CSubject.CSubjectSituation, true), null, opened);
@@ -333,7 +333,7 @@ public sealed class TDisplayCard
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CDisplay area = TDisplayWingPrepare(atelier, []).CWingDisplay.CDisplayArea;
+        CDisplay area = TDisplayWingPrepare(atelier, []).CWingDisplay;
         List<string> opened = [];
 
         bool situation = TDisplayChipOpen(area, TDisplayChipCreate(0, CSubject.CSubjectSituation, false), null, opened);
@@ -358,17 +358,17 @@ public sealed class TDisplayCard
             [TInterface.TCardCreate("a liquid", 1), TInterface.TCardCreate("a sea", 2)],
             [TInterface.TCardCreate("still water", 1)]));
         CWing wing = TDisplayWingPrepare(atelier, []);
-        CDisplay area = wing.CWingDisplay.CDisplayArea;
-        Assert.Null(area.CDisplayCardFind(1));
+        CCompass area = wing.CWingDisplay.CDisplayCompass;
+        Assert.Null(area.CCompassCardFind(1));
         wing.CWingEntryOpen(water.LEntryId);
-        LEntryDraft shown = wing.CWingDisplay.LDisplaySound.LDisplayShown!;
+        LEntryDraft shown = wing.CWingDisplay.LDisplayRule.LDisplaySound.LDisplayShown!;
 
-        (CCompassPart, int)? sea = area.CDisplayCardFind(shown.LEntryDraftMeanings[1].LCardDraftId);
-        (CCompassPart, int)? still = area.CDisplayCardFind(shown.LEntryDraftCollocations[0].LCardDraftId);
+        (CCompassPart, int)? sea = area.CCompassCardFind(shown.LEntryDraftMeanings[1].LCardDraftId);
+        (CCompassPart, int)? still = area.CCompassCardFind(shown.LEntryDraftCollocations[0].LCardDraftId);
 
         Assert.Equal((CCompassPart.CCompassPartMeaning, 1), sea);
         Assert.Equal((CCompassPart.CCompassPartCollocation, 0), still);
-        Assert.Null(area.CDisplayCardFind(987654));
+        Assert.Null(area.CCompassCardFind(987654));
     }
 
     private static CLeafChip TDisplayChipCreate(long id, CSubject subject, bool stored) =>
@@ -377,9 +377,9 @@ public sealed class TDisplayCard
     private static bool TDisplayChipOpen(CDisplay area, CLeafChip? chip, long? link, List<string> opened)
     {
         Action<string, long> chosen = (tab, id) => opened.Add(tab + " " + id);
-        area.CDisplayRowChosen += chosen;
-        bool asked = area.CDisplayChipOpen(chip, link);
-        area.CDisplayRowChosen -= chosen;
+        area.CDisplayRoute.CDisplayRowChosen += chosen;
+        bool asked = area.CDisplayRoute.CDisplayChipOpen(chip, link);
+        area.CDisplayRoute.CDisplayRowChosen -= chosen;
         return asked;
     }
 

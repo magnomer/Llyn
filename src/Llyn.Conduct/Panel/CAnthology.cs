@@ -153,7 +153,7 @@ public sealed class CAnthology
         }
     }
 
-    internal CMentionOffer? LAnthologyMentionFind(int offset)
+    internal CMentionOffer? LAnthologyMentionFind(string text, int unit)
     {
         try
         {
@@ -162,8 +162,9 @@ public sealed class CAnthology
                 return null;
             }
 
-            return _cAnthologyMention.LMentionResultOpen(
-                CMention.CMentionResultRead(_cAnthologyEntryPort.LEngineMentionFind(chosen, offset)));
+            int offset = _cAnthologyMention.LMentionOffsetRead(text, unit);
+            CMentionResult found = CMention.CMentionResultRead(_cAnthologyEntryPort.LEngineMentionFind(chosen, offset));
+            return _cAnthologyMention.LMentionResultOpen(found, text);
         }
         catch (Exception exception)
         {

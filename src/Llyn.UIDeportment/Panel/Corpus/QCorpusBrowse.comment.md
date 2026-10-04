@@ -1,5 +1,5 @@
 # QCorpusBrowse.cs
-Hash: `8f83881952bc4cb6`
+Hash: `eebf0f6ffdef1b36`
 
 ## `internal sealed partial class QCorpus`
 
@@ -15,6 +15,7 @@ They are what this sentence is, and where it is quoted.
 Answers `CCorpusWorkspaceChanged`, raised after the corpus closed its Example on a workspace notice.
 The flags and the language menu belong to the old folder, so both are loaded again.
 One ensign read loads the flags and answers the languages the speaker menu lists.
+The window's envoy goes with the load, so the catalog reports a failed load and answers no languages.
 
 ## `private void QQueryObserve(object sender, TextChangedEventArgs e)`
 

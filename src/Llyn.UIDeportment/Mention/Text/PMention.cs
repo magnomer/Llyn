@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -75,45 +75,36 @@ public sealed class PMention : TextBlock
         _pMentionPress = null;
 
         Point release = e.GetPosition(this);
-        int? clicked = PMentionOffsetRead(release);
         if (press is null
             || Math.Abs(release.X - press.Value.X) > SystemParameters.MinimumHorizontalDragDistance
             || Math.Abs(release.Y - press.Value.Y) > SystemParameters.MinimumVerticalDragDistance
-            || clicked is not int offset)
+            || PMentionRunFind(release) is not PMentionArgument click)
         {
             return;
         }
 
         e.Handled = true;
-        RaiseEvent(new PMentionArgument(PMentionClickEvent, this, offset));
+        RaiseEvent(click);
     }
 
-    internal Rect PMentionPieceRead(int offset)
+    internal Rect PMentionPlaceRead(int? unit)
     {
-        if (PMentionHost is not QWindow host)
-        {
-            return new Rect(0, ActualHeight, 0, 0);
-        }
-
+        int before = 0;
         foreach (Inline inline in Inlines)
         {
-            if (inline is not Run run)
+            if (inline is not Run run || run.Tag is not QMentionPiece)
             {
                 continue;
             }
 
-            if (run.Tag is not QMentionPiece piece)
+            int inside = unit is int whole ? whole - before : -1;
+            before += run.Text.Length;
+            if (inside < 0 || inside >= run.Text.Length)
             {
                 continue;
             }
 
-            if (host.QWindowAtelier.CAtelierMention.CMentionUnitRead(
-                    run.Text, piece.QMentionPieceOffset, offset) is not int unit)
-            {
-                continue;
-            }
-
-            TextPointer pointer = run.ContentStart.GetPositionAtOffset(unit) ?? run.ContentStart;
+            TextPointer pointer = run.ContentStart.GetPositionAtOffset(inside) ?? run.ContentStart;
             Rect found = pointer.GetCharacterRect(LogicalDirection.Forward);
             if (!found.IsEmpty)
             {
@@ -147,7 +138,7 @@ public sealed class PMention : TextBlock
         }
     }
 
-    private int? PMentionOffsetRead(Point point)
+    private PMentionArgument? PMentionRunFind(Point point)
     {
         TextPointer? pointer;
         try
@@ -164,19 +155,34 @@ public sealed class PMention : TextBlock
             return null;
         }
 
-        if (run.Tag is not QMentionPiece piece)
+        if (run.Tag is not QMentionPiece)
         {
             return null;
         }
 
-        if (PMentionHost is not QWindow host)
+        if (PMentionHost is null)
         {
             return null;
         }
 
-        int unit = run.ContentStart.GetOffsetToPosition(pointer);
-        return PMentionOffsetRead(
-            piece.QMentionPieceOffset, host.QWindowAtelier.CAtelierMention.CMentionOffsetRead(run.Text, unit));
+        StringBuilder shown = new();
+        int clicked = run.ContentStart.GetOffsetToPosition(pointer);
+        foreach (Inline inline in Inlines)
+        {
+            if (inline is not Run drawn || drawn.Tag is not QMentionPiece)
+            {
+                continue;
+            }
+
+            if (ReferenceEquals(drawn, run))
+            {
+                clicked += shown.Length;
+            }
+
+            shown.Append(drawn.Text);
+        }
+
+        return new PMentionArgument(PMentionClickEvent, this, shown.ToString(), clicked);
     }
 
     private static void PMentionStyleApply(Run run, bool? linked)
@@ -189,10 +195,5 @@ public sealed class PMention : TextBlock
         {
             run.SetResourceReference(FrameworkContentElement.StyleProperty, "Theme.Mention.Silent");
         }
-    }
-
-    private static int PMentionOffsetRead(int start, int offset)
-    {
-        return start + offset;
     }
 }

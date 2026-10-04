@@ -1,5 +1,5 @@
 # QCadence.cs
-Hash: `0f99f62297098ca3`
+Hash: `9ed0edc2ed98e643`
 
 ## `internal sealed class QCadence`
 
@@ -9,9 +9,15 @@ Each panel paints one ready block its sounding read answers, font first, then it
 
 ## `internal void QCadenceIntroduce(CEditor editor)`
 
-Takes the editor for every sounding read and gate.
+Takes the editor for every sounding and fold read and gate.
 Each panel answers a tenure start and its own change event from the editor, one subscriber each.
 Both panels' renewal notices and the fanqie panel's diwei and representative notices are wired once, to their observers.
+Both panels' fold notices go straight to the fold's toggle gates, since each hands one raw value on.
+The fold paint answers a tenure start and the fold's change event.
+
+## `private void QCadenceFoldRefine()`
+
+Paints both panels' open switches and bodies from the open states the fold remembers.
 
 ## `private void QCadenceScriptRefine()`
 

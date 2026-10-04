@@ -1,5 +1,5 @@
 # LDraftClerkCard.cs
-Hash: `042735087ea7f53f`
+Hash: `e395d586324b6643`
 
 ## `public static class LDraftClerkCard`
 
@@ -37,14 +37,6 @@ A card the user adds goes last, whoever asks for it.
 Whether the card is the only one in the meanings or in the collocations.
 Removing it would leave the list with nothing to type into, so a user edit keeps it.
 The removal request itself stays free to empty a list, as a replay or an import needs.
-
-## `public static int? LCardOrdinalRead(LEntryDraft content, long id, string ordinal)`
-
-The place a typed number names for a card in its own list, counting from one.
-A number above the count lands the card last, and one below one lands it first.
-That is what a writer means by "9 of 3", rather than a refusal.
-Text that is no number answers null.
-The clamped place is then judged by `LCardShiftRead`, as a dragged place is.
 
 ## `public static int? LCardShiftRead(LEntryDraft content, long id, int place)`
 

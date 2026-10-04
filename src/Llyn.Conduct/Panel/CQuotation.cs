@@ -96,7 +96,8 @@ public sealed class CQuotation
 
     public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CQuotationRowsLoad(
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
-        CCatalog.LCatalogEnsignLoad(_cQuotationSettingsPort, store, CQuotationRowsRead);
+        CCatalog.LCatalogEnsignLoad(
+            _cQuotationEnvoy, _cQuotationSettingsPort, "Example.LoadFailed", store, CQuotationRowsRead);
 
     internal string LQuotationFileRead()
     {

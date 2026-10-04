@@ -1,5 +1,5 @@
 # QCorpusMention.cs
-Hash: `1ed447fc9d9cd2ae`
+Hash: `feba4bace2752def`
 
 ## `internal sealed partial class QCorpus`
 
@@ -18,6 +18,7 @@ The command runs only when the selection spans anything, so no empty look happen
 
 Hears the mention pick command run on the transcript and links its selection to the chosen Entry.
 The box's text and selection are handed raw, and the span is read below Conduct.
+The command's parameter is the raw nullable id, and the gate decides what null means.
 
 ## `private void QTranscriptMeaningRefine(object sender, ExecutedRoutedEventArgs e)`
 
@@ -31,7 +32,8 @@ The Mention under the selection at the pick is the one narrowed.
 
 ## `private void QTranscriptSilenceObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Hands the field's raw selection to the add gate with Entry 0, which marks it as standing for nothing.
+Hands the field's raw selection to the silence gate, so the selection stands for nothing.
+The gate is its own, so no magic id is sent.
 
 ## `private void QTranscriptUnlinkObserve(object sender, ExecutedRoutedEventArgs e)`
 

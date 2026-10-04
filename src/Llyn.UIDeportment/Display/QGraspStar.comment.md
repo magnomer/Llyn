@@ -1,5 +1,5 @@
 # QGraspStar.cs
-Hash: `a7b21edb79db715c`
+Hash: `bd96316dbb7c2641`
 
 ## `public sealed class QGraspStar`
 
@@ -22,13 +22,11 @@ The half step under the pointer, or null while the pointer is off the row.
 The half step to word beside the stars.
 It is the hovered one, else the set one.
 
-## `public static object QGraspLimitDraw(DependencyObject sender, object value, DependencyProperty limit)`
-
-Holds the step at or under the limit, since a step past the last star has nothing to draw.
-
 ## `public Size QGraspSizeDraw()`
 
-One star for every two steps of the limit and the gaps between them.
+One star for every two steps of the limit, rounded up, and the gaps between them.
+An odd limit ends on a half star, so its last step still shows.
+A limit of zero measures no star and no gap.
 A slack border is added on every side.
 Each star has a fixed size.
 The slack lets a pointer near the row count as on it.
@@ -73,6 +71,7 @@ Sets the step and raises the change.
 
 ## `private int QGraspStepDraw(Point point)`
 
-Maps a point on the row to a half step from one to the limit.
+Maps a point on the row to a half step from one to the limit, and never past it.
+A row with no star maps every point to zero.
 The left half of a star is its odd step and the right half its even step.
 Gaps and slack fold into the nearest star, so no point near the row is dead.

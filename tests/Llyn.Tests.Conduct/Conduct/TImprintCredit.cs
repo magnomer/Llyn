@@ -55,6 +55,31 @@ public sealed class TImprintCredit
     }
 
     [Fact]
+    public void ImprintAuthorAdd_BlankRow_OnlyAsksForTheCaret()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CImprint imprint = TImprint.TImprintPrepare(engine, atelier);
+        LAuthor ada = TImprintOpen(engine, imprint, "Ada").Single();
+        imprint.CImprintAuthorAdd(0, ada.LAuthorId);
+        int focused = 0;
+        int changed = 0;
+        imprint.CImprintFocused += () => focused++;
+        imprint.CImprintChanged += () => changed++;
+
+        imprint.CImprintAuthorAdd(1, 0);
+        imprint.CImprintAuthorAdd(0, 0);
+
+        Assert.Equal(1, focused);
+        Assert.Equal(0, changed);
+        Assert.Equal(
+            [(ada.LAuthorId, 0), (0L, 1)],
+            imprint.CImprintCreditRead().Select(row => (row.CAuthorRowId, row.CAuthorRowPosition)));
+        Assert.False(imprint.CImprintDesk.TDeskChangeCheck());
+    }
+
+    [Fact]
     public void ImprintAuthorMove_FirstCreditLater_ShiftsItBack()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

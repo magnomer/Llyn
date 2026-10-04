@@ -1,28 +1,38 @@
 # PCardRow.cs
-Hash: `6ac3c59901a6adab`
+Hash: `cff92a97c742cac2`
 
 ## `internal sealed partial class PCard`
 
 The one diff every list inside a card renders through.
-The engine holds the list, and the card only shows it.
+The engine holds the list and owns its order, and the card only copies it.
 So a bulletin brings the whole list back, and the card must change only what differs.
-Rows are matched by id, updated in place, added, removed and reordered, never rebuilt.
-A row the user is typing in is therefore the same object after the bulletin as before it.
+Rows are paired by id and only removed by identity or appended.
+The driver may never insert or move a row, because the engine alone owns the order.
+The longest head of the new order already standing keeps its objects and controls.
+Every engine row after the first mismatch is re-added, so its object survives but its control is rebuilt.
 
 ## `internal static void PCardRowShow<PCardItem, PCardDraft>(ObservableCollection<PCardItem> rows, IReadOnlyList<PCardDraft> drafts, Func<PCardItem, long?> key, Func<PCardDraft, long> id, Func<PCardDraft, PCardItem> create, Func<PCardItem, PCardDraft, PCardItem> update)`
 
-Makes `rows` show `drafts`, matching each draft to the row carrying its id.
-A row carrying an id the drafts no longer name is removed first.
-Then each draft in turn is found and offered `update`, or built with `create` and placed.
-A row `key` answers null for is not the engine's and is stepped over.
-A new row lands right after the previous draft's row.
-A row found out of order is moved back to its place.
-`update` may answer a fresh object, and the collection slot is replaced when it does.
-So an immutable chip is redrawn by replacement and a mutable row is edited in place.
-
-## `internal static int PCardRowFind<PCardItem>(IReadOnlyList<PCardItem> rows, Func<PCardItem, long?> key, long id)`
-
-The place of the row carrying `id`, or minus one.
+Makes `rows` show `drafts` in their order, duplicates included, around any row it does not own.
+Each draft claims the first unclaimed row carrying its id, so pairing is one to one.
+A draft with no such row is built with `create`.
+`update` may answer a fresh object, which then takes the paired row's place.
+Only removal by identity and appending are used, because the engine alone owns the order.
+The rows kept untouched are the longest head of the new order already standing in that sequence.
+They are compared by object identity, and each keeps its object and its control.
+Every engine row after the first mismatch is removed and re-added.
+Its object survives, but its control is rebuilt and loses focus and caret.
+This includes rows the change never passed.
+Moving B to the front of A, B, C, D rebuilds A, C and D.
+An insert in the middle rebuilds every later row.
+Moving a row to the end rebuilds only that row.
+That cost is the price of never inserting or moving.
+A fresh object from `update` counts as a mismatch, so it and every later row are re-added.
+Conduct does not promise unique ids, so repeated ids show faithfully and never throw.
+Removing repeats is behaviour, owned by Conduct or a layer below it, never by the driver.
+A row `key` answers null for is not the engine's, so it is never removed or re-added.
+It keeps its place among the rows, and the drafts show in order around it.
+No caller holds such a row today, because every key answers an id.
 
 ## `private static int PCardCaretFind<PCardItem>(IReadOnlyList<PCardItem> rows, PCardItem? anchor)`
 

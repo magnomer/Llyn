@@ -53,7 +53,7 @@ internal sealed class QClip
 
     private void QClipButtonObserve(object sender, RoutedEventArgs e)
     {
-        QClipRecordingStart(0);
+        QClipRecordingStart(null);
     }
 
     private void QClipClosedObserve(object? sender, EventArgs e)
@@ -68,7 +68,7 @@ internal sealed class QClip
         QClipPopup.IsOpen = true;
     }
 
-    internal void QClipRecordingStart(long id)
+    internal void QClipRecordingStart(long? id)
     {
         QClipEnsignRefine(_cEditor.CEditorDesk.CDeskErrand.CErrandRecordingStart(id));
     }

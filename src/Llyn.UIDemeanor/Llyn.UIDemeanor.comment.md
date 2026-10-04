@@ -1,5 +1,5 @@
 # Llyn.UIDemeanor.csproj
-Hash: `e29deea2e14477bd`
+Hash: `6803174312c7ea64`
 
 Demeanor drives the console surface, as Deportment drives the veneer.
 It holds no source yet.
@@ -8,6 +8,11 @@ It holds no source yet.
 
 The console needs no Windows code, so Demeanor is portable and has no twin.
 A Windows API fails its build through CA1416.
+
+## `<DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>`
+
+Demeanor compiles against Conduct alone, never the rings Conduct references.
+A name from ShellEngine, Application or Core fails the build, not only the border audit.
 
 ## `<ProjectReference Include="..\Llyn.Conduct\Llyn.Conduct.csproj" />`
 

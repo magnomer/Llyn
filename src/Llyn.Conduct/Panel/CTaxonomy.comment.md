@@ -1,5 +1,5 @@
 # CTaxonomy.cs
-Hash: `28c00d4d6ee3ed3e`
+Hash: `f700aebbcdb8566c`
 
 ## `public sealed class CTaxonomy`
 
@@ -133,6 +133,8 @@ A failed read raises nothing more, so the user sees one notice, as before.
 
 Runs the flag fill into the driver's `store`, then answers `CTaxonomyRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+A failed flag fill shows `Tag.LoadFailed` and still answers the rows with no languages.
+The driver awaits it from an event handler, where a fault would end the app.
 
 ## `private void LTaxonomyTagCreate(string name)`
 

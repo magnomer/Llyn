@@ -1,5 +1,5 @@
 # CAnthology.cs
-Hash: `c3f71ca197884395`
+Hash: `9c87fa1ee183b59c`
 
 ## `public sealed class CAnthology`
 
@@ -51,12 +51,16 @@ The rows the vista lists, none before a vista arrives.
 The words for an unknown or unwritten text are the engine's, read through the settings port.
 A failure shows `Example.LoadFailed` and answers null, so the corpus clears nothing on it.
 
-## `internal CMentionOffer? LAnthologyMentionFind(int offset)`
+## `internal CMentionOffer? LAnthologyMentionFind(string text, int unit)`
 
-Finds the word at `offset` fresh in the chosen Example and opens what `CMention.LMentionResultOpen` opens at once.
+Turns the click into a code-point offset through `CMention.LMentionOffsetRead`.
+The `text` is the whole shown excerpt, and `unit` is the clicked UTF-16 unit in it.
+Then it finds the word fresh in the chosen Example.
+It opens what `CMention.LMentionResultOpen` opens at once.
+It hands the open the same `text`, so the offer places the menu as a surface unit.
 The answer is what the menu offers under the found word.
 Null when no Example is chosen or the find fails, so the window shows nothing.
-A failure shows `Mention.FindFailed`, and the open sits inside the same catch.
+A failure shows `Mention.FindFailed`, and the offset read and the open sit inside the same catch.
 No driver calls it, since `CCorpusMentionFind` asks the leave question first.
 
 ## `internal Task LAnthologyPortraitPrint(CEnvoy envoy, LSettingsPort settings)`

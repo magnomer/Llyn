@@ -7,7 +7,9 @@ public sealed record LSettings(
     bool LSettingsMorphology = true,
     bool LSettingsEpithet = true,
     bool LSettingsTally = false,
-    string LSettingsGloss = "English")
+    string LSettingsGloss = "English",
+    bool LSettingsFanqieOpened = false,
+    bool LSettingsScriptOpened = false)
 {
     public int LSettingsOnline => (LSettingsFrequency ? 1 : 0) + (LSettingsMorphology ? 1 : 0);
 }

@@ -1,5 +1,5 @@
 # CLibrary.cs
-Hash: `83f895f4242046ff`
+Hash: `fea9c453765587b2`
 
 ## `public sealed class CLibrary`
 
@@ -76,11 +76,15 @@ The wings share them, so no driver names an engine ordering.
 The rows the engine returns for the vista, none before a vista arrives.
 They come already filtered, sorted, numbered and marked, so the list decides nothing about them.
 The count is kept for `CLibraryEmpty`, so the empty notice follows the rows shown.
+A failed read shows `List.LoadFailed` through the envoy and answers no rows, so the count reads zero.
+The load task runs this read after the flag fill, so a throw here would fault the driver.
 
 ## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CLibraryRowsLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `CLibraryRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+A failed flag fill shows `List.LoadFailed` and still answers the rows with no languages.
+The driver awaits it from an event handler, where a fault would end the app.
 
 ## `internal string LLibraryFileRead()`
 

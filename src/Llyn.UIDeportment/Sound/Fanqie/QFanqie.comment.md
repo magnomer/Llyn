@@ -1,12 +1,12 @@
 # QFanqie.cs
-Hash: `63fbb34b0d9e05cd`
+Hash: `61627b4f768b8277`
 
 ## `public sealed class QFanqie : Decorator`
 
 The fanqie box as a control, so the reading view and the editor draw the same thing.
-It is handed the blocks and whether a fetch runs, and shows or hides itself from those alone.
+It shows or hides itself from its blocks, a running fetch and a handed rebuild alone.
 Folded, it carries a head with the box's name and a switch.
-It then keeps its blocks out of sight until the switch is on.
+It then keeps its blocks out of sight until the remembered state is open.
 The editor folds it, since the placements are reference beside the fields, and the reading view leaves it open.
 
 ## `public static readonly DependencyProperty QFanqieItemsProperty`
@@ -21,6 +21,10 @@ That shows the loading line and keeps the box up while nothing is stored.
 ## `public static readonly DependencyProperty QFanqieFoldedProperty`
 
 Whether the box starts closed under a head with a switch.
+A change sets the body first, collapsed when folded and visible when not, then redraws the rest.
+So a folded box never flashes open before `QFanqieFoldRefine` paints the remembered state.
+The switch is not touched there, so no flip reaches the gate.
+It is unchecked from construction until that paint.
 
 ## `public static readonly DependencyProperty QFanqieRenewableProperty`
 
@@ -41,10 +45,13 @@ Its mark turns while a fetch runs, as the readings button's does.
 ## `private readonly ToggleButton _qFanqieSwitch = new();`
 
 The switch opening the body, drawn like the marker switch with the expand chevron.
+It shows the remembered open state and hands each click to the gate, never deciding itself.
+The switch is heard on click only.
 
 ## `private readonly StackPanel _qFanqieBody = new();`
 
-The blocks and the loading line, hidden while the box is folded and the switch is off.
+The blocks and the loading line, hidden while the box is folded and the remembered state is closed.
+A folded box starts with it collapsed, set by the `QFanqieFolded` change, until the first paint.
 
 ## `private readonly ItemsControl _qFanqieList = new();`
 
@@ -116,15 +123,35 @@ Hears the representative command of a line and hands its id, its held rank and t
 
 ## `public bool QFanqieFolded`
 
-Whether the box starts closed under its head.
+Whether this screen shows the box under a head with an open switch.
+It is a layout choice of the screen, set in markup, not a remembered state.
+A folded box starts closed until the remembered state is painted.
+An unfolded box always shows its body.
+
+## `internal event Action<bool>? QFanqieFoldNotice;`
+
+What a click on the open switch runs, handed whether the switch is now on.
+The editor driver subscribes its sounding's toggle gate once.
+
+## `private void QFanqieFoldObserve(object sender, RoutedEventArgs e)`
+
+Hears a click on the switch and hands its checked state on through `QFanqieFoldNotice`.
+The switch is heard on click only.
+
+## `internal void QFanqieFoldRefine(bool opened)`
+
+Paints the remembered open state the editor driver read from its sounding.
+It sets the switch and shows the body when open or when the box is not folded.
+A paint never reaches the gate.
 
 ## `private void QFanqieStateRefine()`
 
-Redraws the box when any of its four properties change or its switch flips.
+Redraws the box when any of its four properties change.
 Feeds the list and shows the loading line while pending.
 The regenerate button stands wherever one was handed over, and it carries the `Pending` cue while a fetch runs.
-The head shows only when folded, and the body only when open.
-The box itself is visible when it has blocks or a fetch runs, and collapsed otherwise.
+The head shows only when folded.
+The body is left to `QFanqieFoldRefine`, which paints it from the remembered state.
+The box itself is visible when it has blocks, a fetch runs, or a rebuild was handed over.
 
 ## `internal void QFanqieRefine(IReadOnlyList<CFanqieGroup> groups, bool pending)`
 

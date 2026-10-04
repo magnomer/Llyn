@@ -48,7 +48,7 @@ internal sealed class QNotation
 
     private void QPhoneticianObserve(object sender, RoutedEventArgs e)
     {
-        QNotationStartRefine(_cEditor.CEditorDesk.CDeskErrand.CErrandTranscriptionStart(0, string.Empty));
+        QNotationStartRefine(_cEditor.CEditorDesk.CDeskErrand.CErrandTranscriptionStart(null, string.Empty));
     }
 
     private void QNotationClosedObserve(object? sender, EventArgs e)

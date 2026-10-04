@@ -1,5 +1,5 @@
 # LSettingsLoader.cs
-Hash: `2c4736f56df03b7e`
+Hash: `c542de607e6c2d9e`
 
 ## `public sealed class LSettingsLoader : LSettingsVault`
 
@@ -59,6 +59,16 @@ The epithet switch defaults on the same way, so an older workspace lists its Han
 ### `set.ValueKind == JsonValueKind.True;`
 
 The tally switch defaults off like the respelling switch, so an older workspace prints its tallies in IPA.
+
+### `rime.ValueKind == JsonValueKind.True;`
+
+The rime-book box state is read under the `fanqie` key, only as a JSON boolean.
+Anything else means closed, so an older workspace shows the box folded as before.
+
+### `writing.ValueKind == JsonValueKind.True;`
+
+The script box state is read under the `script` key the same way, closed unless the file says open.
+Both states are set after construction, so the positional fields keep their order.
 
 ### `&& speech.GetString() is { Length: > 0 } gloss`
 

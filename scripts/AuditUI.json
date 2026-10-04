@@ -1,5 +1,5 @@
 {
-  "generation": 19,
+  "generation": 20,
   "project": "Llyn",
   "helper": {
     "framework": "net10.0"
@@ -162,6 +162,11 @@
       "src/Llyn.UIDeportment/*.cs",
       "src/Llyn.UIDemeanor/*.cs"
     ],
+    "informative": {
+      "Mismatching": [
+        "src/Llyn.UIDemeanor"
+      ]
+    },
     "controlBases": [
       "System.Windows.FrameworkElement",
       "System.Windows.FrameworkContentElement"
@@ -216,6 +221,7 @@
     "delayMembers": [
       "System.Threading.Tasks.Task.Delay"
     ],
+    "inputBase": "System.Windows.Controls.Control",
     "inputMembers": [
       "IsChecked",
       "Password",

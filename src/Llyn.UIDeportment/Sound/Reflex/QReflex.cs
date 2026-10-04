@@ -66,7 +66,7 @@ internal sealed class QReflex
 
     private void QReflexAddObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        _cEditor.CEditorTimbre.CTimbreReflexAdd((e.Parameter as QReflexItem)?.QReflexItemId ?? 0);
+        _cEditor.CEditorTimbre.CTimbreReflexAdd((e.Parameter as QReflexItem)?.QReflexItemId);
     }
 
     private void QReflexRemoveObserve(object sender, ExecutedRoutedEventArgs e)

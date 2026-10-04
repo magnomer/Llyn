@@ -1,5 +1,5 @@
 # TTimbre.cs
-Hash: `be22187431f1d8b9`
+Hash: `6743d7fa61353452`
 
 ## `public sealed class TTimbre`
 

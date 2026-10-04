@@ -1,5 +1,5 @@
 # QFavoriteBrowse.cs
-Hash: `cda66d0212d2518f`
+Hash: `5f99ac25cc2f4c62`
 
 ## `internal sealed partial class QFavorite`
 
@@ -10,6 +10,7 @@ The panel shell lives in the file beside this one.
 
 Answers the area's workspace event, which has already closed the chosen entry.
 It loads the flags of the workspace that moved, so the rows built next carry the right ones.
+The window's envoy goes with the load, so the catalog reports a failed load and answers no languages.
 
 ## `private void QRecallObserve(object sender, TextChangedEventArgs e)`
 

@@ -1,5 +1,5 @@
 # TErrandClip.cs
-Hash: `54cf9b11e31bb8c1`
+Hash: `b2e2633f856bc3ae`
 
 ## `public sealed class TErrandClip`
 
@@ -14,6 +14,8 @@ A taking reads saving while a step lands, starts nothing on a second press, then
 It tags the primary row with the recording's variety, and a refused download offers the retry.
 A broken host shows the recording notice once, for the preview, the taking and the flag load alike.
 The preview still marks the recording refused, and the taking still offers the retry.
+A recording store that raises a vault fault shows the same notice and records the fault once.
+The preview then marks the recording refused, and the taking offers the retry with nothing attached.
 
 ## `private const string TErrandClipPack`
 
@@ -23,6 +25,11 @@ A one-source pack whose recording source answers one British recording.
 
 Opens a new entry with a headword in the language, and waits until its recording search ended.
 A pack without sources ends the search at once, so later steps are the test's own.
+
+## `private static LEngine TErrandFaultStart(TWorkspace workspace, List<Exception> recorded)`
+
+Starts an engine on the workspace whose recording store faults on every save and fetch.
+Its audit recorder adds each recorded fault to `recorded`.
 
 ## `private static CEditor TErrandClipPrepare(LEngine engine)`
 

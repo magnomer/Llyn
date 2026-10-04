@@ -24,7 +24,7 @@ public sealed class TWing
         wing.CWingEntryOpen(water.LEntryId);
 
         Assert.Equal(1, loaded);
-        Assert.Equal(water.LEntryId, wing.CWingDisplay.LDisplayChosen);
+        Assert.Equal(water.LEntryId, wing.CWingDisplay.LDisplayRule.LDisplayChosen);
         Assert.Equal(new CWorkspaceState(water.LEntryId, null), atelier.TAtelierStateOpen());
     }
 
@@ -41,7 +41,7 @@ public sealed class TWing
 
         wing.CWingEntryOpen(target.LEntryId);
 
-        CUsage usage = Assert.Single(wing.CWingDisplay.CDisplayArea.CDisplayIncomingRead());
+        CUsage usage = Assert.Single(wing.CWingDisplay.CDisplayCard.CDisplayIncomingRead());
         Assert.Equal(water.LEntryId, usage.CUsageEntry);
         Assert.Equal("water", usage.CUsageName);
         Assert.Equal("English", usage.CUsageLanguage);
@@ -82,8 +82,8 @@ public sealed class TWing
         Assert.Equal(new CWorkspaceState(water.LEntryId, null), opened);
         Assert.Equal(1, loaded);
         Assert.Equal(0, blank);
-        Assert.Equal(water.LEntryId, left.CWingDisplay.LDisplayChosen);
-        Assert.Null(right.CWingDisplay.LDisplayChosen);
+        Assert.Equal(water.LEntryId, left.CWingDisplay.LDisplayRule.LDisplayChosen);
+        Assert.Null(right.CWingDisplay.LDisplayRule.LDisplayChosen);
         Assert.Equal(opened, atelier.TAtelierStateOpen());
     }
 
@@ -97,7 +97,7 @@ public sealed class TWing
         CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         wing.CWingEntryOpen(water.LEntryId);
         List<string> heard = [];
-        wing.CWingDisplay.CDisplayArea.CDisplayClosed += () => heard.Add("Closed");
+        wing.CWingDisplay.CDisplayClosed += () => heard.Add("Closed");
         wing.CWingLoaded += () => heard.Add("Loaded");
 
         atelier.TAtelierStubOpen();

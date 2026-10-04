@@ -1,17 +1,18 @@
 # LDisplay.cs
-Hash: `fa8a60cd05aecbff`
+Hash: `55e2815852ae5f9b`
 
-## `public sealed class LDisplay`
+## `internal sealed class LDisplay`
 
 The reading view's conduct, which holds its state, decisions and engine reads.
-Beyond Conduct, only the display drivers, such as [QLectern](../../Llyn.UIDeportment/Display/QLectern.comment.md), name it, so no veneer reaches Conduct.
-The lectern's gates and change events live in its area, [CDisplay](CDisplay.comment.md), so this class holds the rules they share.
+It is internal, so no driver names it and no `L` type crosses into Deportment.
+The lectern's gates and change events live in its area, [CDisplay](CDisplay.comment.md), and the areas it hands out.
+That area builds this class and holds it, so this class holds only the rules they share.
 Most members forward one read or one mark request to the ports, so the view never holds an engine.
 A refused read or mark reaches the user through the envoy the panel handed over.
 
 ## `internal LDisplay(LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media, CEnvoy envoy, CLedgerNoticed noticed)`
 
-Builds the sound half and both areas once, so every driver over this display shares them.
+Builds the sound half once, so the area and the sound area over it share one shown draft.
 It takes the atelier's repaint memory, so a read failing on every repaint shows its notice once.
 The sound half's read failures go through that memory, and its failed sends show every time.
 No vista is held yet, so the display stands on no entry until `LDisplayVistaRestore`.
@@ -32,20 +33,6 @@ So they share one memory.
 The port a card's picture addresses are resolved through.
 The lectern's cards and the editor's draft read it, so both carry the same ready address.
 
-## `internal void LDisplayNavigationAttach(CNavigation navigation, CMention mention)`
-
-Hands every record, rime cell and series the display's gates raise to the atelier's navigation.
-Hands the area the atelier's mention area too, which opens what a clicked word found.
-The composition that owns the atelier calls it once, so a display built alone opens nothing.
-
-## `public CDisplay CDisplayArea { get; }`
-
-The lectern's area, built once here, so every driver over this display hears the same events.
-
-## `public CDisplaySound CDisplaySound { get; }`
-
-The lectern's sound area, built once here over the sound half and the header area.
-
 ## `private readonly LEntryPort _lEntryPort;`
 
 The entry port every read and mark of this class goes through.
@@ -56,7 +43,7 @@ The vista the display follows, null until `LDisplayVistaRestore` takes one.
 
 ## `private readonly CEnvoy _lDisplayEnvoy;`
 
-The envoy a refused load, mark or name lookup is shown through, with its text key.
+The envoy a refused load or mark is shown through, with its text key.
 The sound half's failures go to it too.
 
 ## `private readonly LSettingsPort _lDisplaySettings;`
@@ -67,10 +54,11 @@ The port a failure's ready notice is read through before the envoy shows it.
 
 The entry the display vista has chosen, or null before a vista is restored.
 
-## `public void LDisplayVistaRestore(LVista vista)`
+## `internal void LDisplayVistaRestore(LVista vista)`
 
-Takes the vista the display follows, then lets the area subscribe its plan on it.
-Each vista is new, so the plan is subscribed once per vista.
+Takes the vista the display follows.
+The area subscribes its plan on it right after, so the plan is subscribed once per vista.
+It stays internal, since the vista is an engine type no driver may name.
 
 ## `internal void LDisplayChosenAttach(CSubject subject, Action<CBulletin> observer)`
 
@@ -85,26 +73,7 @@ Hands `observer` every bulletin about `subject` the display vista hears, in Cond
 ## `internal int LDisplayGraspStep`
 
 The last grasp step, which the display's star control takes as its limit.
-
-## `public IReadOnlyList<CCompassRow> CDisplayCompassRead(IReadOnlyList<CCompassPart> parts, Func<string, string> lookup)`
-
-The read behind the floating contents, one row per shown part and one per card under it.
-The driver names the parts that stand on the page, in page order, and its own text lookup.
-Conduct chooses every wording key and the driver's lookup turns it into text.
-A card is named by its own title, else by its kind, and an uncertain title by the unknown mark.
-Its number is carried apart from its name, since a number is not part of a sentence.
-A card's title goes through the one state map, and its number is copied as the engine holds it.
-The full card map is not run, since the contents need no card's lists or links.
-The engine then numbers the names two rows share, so the contents never show two rows alike.
-
-## `private static string LDisplayKeyRead(CCompassPart part)`
-
-The wording key of each part, mapped by name so an unknown part throws.
-
-## `private IReadOnlyList<string> LDisplayNameResolve(IReadOnlyList<string> labels)`
-
-The compass wordings made distinct by the engine's twin rule.
-A refused lookup is shown once through the repaint memory and answers the plain wordings.
+A negative engine limit is raised to zero, since a star row cannot count below none.
 
 ## `internal string LDisplayGraspFormat(long? entry, int step)`
 
@@ -116,10 +85,11 @@ Reloads the chosen entry's draft from the vista and hands it to `show`, or null 
 A refused load calls nothing and shows `Sound.LoadFailed` once through the repaint memory.
 The page keeps what it shows, so no draft is paired with an id it was not loaded for.
 
-## `internal void LDisplayEntryLoad(long id)`
+## `internal LEntryDraft? LDisplayEntryLoad(long id)`
 
-Loads one entry for a pick, chooses it on the vista, and opens its draft in the area.
-An entry that is gone chooses nothing, so the side stands on no entry and the area closes.
+Loads one entry for a pick, chooses it on the vista, and answers its draft.
+The wing opens that draft in the area, since this class no longer knows the area.
+A gone entry chooses nothing and answers null, so the side stands on no entry and the area closes.
 A refused load throws before anything changes, so the caller can report it.
 
 ## `internal bool LDisplayFavoriteRead(long? entry)`
@@ -136,6 +106,7 @@ A refused mark shows `Favorite.MarkFailed` through the envoy every time, and the
 ## `internal int LDisplayGraspRead(long? entry)`
 
 The entry's grasp step, zero when no entry is given.
+The engine's step is held between zero and `LDisplayGraspStep`, since the stars draw only that range.
 A failed read shows `Grasp.ReadFailed` once until the user acts, and answers zero.
 The step it answers is held with its entry, since that is the step the stars now show.
 
@@ -155,7 +126,14 @@ A refused save shows `Grasp.MarkFailed` through the envoy every time, and the st
 
 The entry's frequency chip, since the draft does not carry the frequency.
 The engine gathers the rows, words them, and names the rank and the spare stars.
-This read only reshapes the answer.
+This read reshapes the answer and raises a negative band or spare count to zero.
+A count below zero has no star row, so the chip never receives one.
+The rank name becomes a tier through `LDisplayTierRead`.
 A failed read shows `Frequency.ReadFailed` once until the user acts, and answers no chip.
 It answers null when no entry is given, the entry has no frequency, or the read fails.
+
+## `private static CFrequencyTier LDisplayTierRead(string rank)`
+
+The tier an engine rank name stands for, matched by name.
+Any other name is the unknown tier, so the chip always finds a brush and a name.
 

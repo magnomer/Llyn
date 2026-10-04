@@ -1,5 +1,5 @@
 # QCorpusExcerpt.cs
-Hash: `e216c68aebe07068`
+Hash: `30b9a2adbeba8fa5`
 
 ## `internal sealed partial class QCorpus`
 
@@ -19,7 +19,7 @@ It looks up `CExampleWording` when Conduct chose a word, and shows the text itse
 `CExampleMuted` picks the muted colour, because the head of the page cannot be empty.
 The text itself draws the pieces Conduct divided at its Mentions.
 A worded key draws as one plain piece made by `QMentionPieceCreate`, since the pieces belong to the text it replaces.
-The click asks the corpus gate by offset alone, so the mention text holds no Mentions here.
+The click hands the corpus gate only raw click values, so the mention text holds no Mentions here.
 
 ## `private void QExcerptCitationRefine(CExample example)`
 
@@ -27,5 +27,6 @@ Writes the Example's ready citation line under its heading, or hides the heading
 
 ## `private void QExcerptMentionObserve(object? sender, PMentionArgument e)`
 
-Hands the clicked offset to `CCorpusMentionFind`, which asks, finds, opens and reports failures.
-Its ready offer goes to the window's menu under the clicked word.
+Reads the raw click values and hands them unchanged to its one gate, `CCorpusMentionFind`.
+The gate asks, converts the click, finds, opens and reports failures.
+Its ready offer goes to the window's menu under the found word.

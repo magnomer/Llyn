@@ -46,7 +46,7 @@ public sealed class TDisplayAccent
         CWing wing = TDisplayWingPrepare(atelier, []);
         wing.CWingEntryOpen(weight.LEntryId);
         IReadOnlyList<LPronunciationDraft> stored =
-            wing.CWingDisplay.LDisplaySound.LDisplayShown!.LEntryDraftPronunciations;
+            wing.CWingDisplay.LDisplayRule.LDisplaySound.LDisplayShown!.LEntryDraftPronunciations;
 
         CLecternAccent accent = wing.CWingDisplay.CDisplaySound.CDisplayAccentRead();
 

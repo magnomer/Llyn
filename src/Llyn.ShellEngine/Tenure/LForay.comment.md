@@ -77,18 +77,19 @@ The primary row takes an audio request and a further row a pronunciation audio r
 The row is then tagged with the recording's variety, as taking a reading tags it.
 An untagged recording sends no variety, and the row keeps whatever it had.
 Waiting keystrokes are written before each check, so a headword still in the quiet counts as typed.
-Null when the recording clerk answers no path.
-Then the download was refused or timed out, or a file was not written.
-Infrastructure owns that expected failure and the clerk turns it into null.
-So neither the foray nor Conduct names a file or network type.
-Any other fault is a bug and reaches the caller.
+Null only when the recording clerk answers no path, so nothing was saved.
+A refused or timed out download, or a file not written, reaches the caller as the clerk's vault fault.
+Nothing here records it, since the gate that shows it records it once.
+The fault wraps the cause, so neither the foray nor Conduct names a file or network type.
+Any other fault is a bug and reaches the caller too.
 
 ## `public Task<string?> LForayRecordingPrepare(LRecording recording)`
 
 Fetches a listed recording into the workspace cache for a preview and answers the local path.
 It attaches nothing, and the search's cancellation does not stop it.
-Null when the recording clerk answers no path, for the same failures `LForayRecordingSave` answers null for.
-Any other fault is a bug and reaches the caller.
+Null only when the recording clerk answers no path, so nothing was prepared.
+A failed fetch reaches the caller unrecorded, as in `LForayRecordingSave`.
+Any other fault is a bug and reaches the caller too.
 
 ## `public Task LForayEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
 

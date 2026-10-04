@@ -5,6 +5,7 @@
     <UseWPF>true</UseWPF>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
     <AssemblyName>Llyn.UIVeneer</AssemblyName>
     <RootNamespace>Llyn.UIVeneer</RootNamespace>
   </PropertyGroup>

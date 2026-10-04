@@ -103,7 +103,7 @@ internal sealed class QEtymologyEditor
         if (e.Source is TextBox box)
         {
             _cEditor.CEditorCard.CCardMentionSave(
-                box.Text, box.SelectionStart, box.SelectionLength, (long)e.Parameter);
+                box.Text, box.SelectionStart, box.SelectionLength, e.Parameter as long?);
         }
     }
 

@@ -1,5 +1,5 @@
 # TVolumeCatalog.cs
-Hash: `06af9ab5bfd628be`
+Hash: `7d8119e688ca8282`
 
 ## `public sealed class TVolumeCatalog`
 
@@ -10,7 +10,3 @@ The level is a plain value, so the tests need no WPF thread.
 
 A set to the level already held raises no notice.
 This silence keeps the trays and the display from notifying each other in a loop.
-
-## `public void VolumeCatalogLevel_OutOfRangeLevel_ClampsToTheNearestEnd(double asked, double held)`
-
-A level outside silence and full is pulled to the nearest end rather than refused.

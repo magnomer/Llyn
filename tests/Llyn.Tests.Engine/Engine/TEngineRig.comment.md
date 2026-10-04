@@ -1,5 +1,5 @@
 # TEngineRig.cs
-Hash: `91514f594789460c`
+Hash: `3fd868a63b28c5a2`
 
 ## `public sealed class TEngineRig`
 
@@ -9,3 +9,5 @@ An entry created through the engine lands in the fake entry vault and reads back
 A rig apply moves the engine onto the second rig.
 The next read then hits the second fake and not the first.
 The settings the second rig never held are inherited, as a fresh folder inherits them.
+A second rig whose default settings cannot be written still opens with the inherited settings.
+The write's vault fault is recorded once and goes no further.

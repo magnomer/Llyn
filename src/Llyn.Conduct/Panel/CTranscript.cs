@@ -67,9 +67,20 @@ public sealed class CTranscript
             CMention.LMentionProspectRead(_cTranscriptDesk, word, _cTranscriptEnvoy, _cTranscriptSettingsPort));
     }
 
-    public void CTranscriptMentionAdd(string text, int start, int length, long entryId)
+    public void CTranscriptMentionAdd(string text, int start, int length, long? entryId)
     {
-        _cTranscriptDesk.CDeskChip?.LQuillMentionAdd(0, 0, text, start, length, entryId);
+        if (entryId is not long stored)
+        {
+            _cTranscriptEnvoy.CEnvoyFailureShow("Refusal.TargetMissing");
+            return;
+        }
+
+        _cTranscriptDesk.CDeskChip?.LQuillMentionAdd(0, 0, text, start, length, stored);
+    }
+
+    public void CTranscriptSilenceSet(string text, int start, int length)
+    {
+        _cTranscriptDesk.CDeskChip?.LQuillMentionAdd(0, 0, text, start, length, 0);
     }
 
     public void CTranscriptSenseSet(string text, int start, int length, long senseId)

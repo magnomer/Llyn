@@ -1,5 +1,5 @@
 # CRepertoire.cs
-Hash: `02cda3d930978f82`
+Hash: `87646a6a456f6ca5`
 
 ## `public sealed class CRepertoire`
 
@@ -192,6 +192,8 @@ The clear announces fresh rows, which carry the same Situations, so a driver's n
 
 Runs the flag fill into the driver's `store`, then answers `CRepertoireRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+A failed flag fill shows `Situation.LoadFailed` and still answers the rows with no languages.
+The driver awaits it from an event handler, where a fault would end the app.
 
 ## `public void CRepertoireSituationDelete()`
 

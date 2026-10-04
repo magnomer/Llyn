@@ -87,6 +87,67 @@ public sealed class TAssayLaundering
             """, null);
     }
 
+    [Fact]
+    public void AuditTruth_RunText_AllowsDecision()
+    {
+        TAssayLaunderingCheck("""
+                    System.Windows.Documents.Run run = new();
+                    if (string.IsNullOrEmpty(run.Text))
+                    {
+                    }
+            """, null);
+    }
+
+    [Fact]
+    public void AuditTruth_TextBlockText_AllowsDecision()
+    {
+        TAssayLaunderingCheck("""
+                    System.Windows.Controls.TextBlock block = new();
+                    if (string.IsNullOrEmpty(block.Text))
+                    {
+                    }
+            """, null);
+    }
+
+    [Fact]
+    public void AuditTruth_TextBoxText_ReportsLaundering()
+    {
+        TAssayLaunderingCheck("""
+                    System.Windows.Controls.TextBox box = new();
+                    if (string.IsNullOrEmpty(box.Text))
+                    {
+                    }
+            """, new TViolation(
+            TAssayTruth.TAssayDriverPath, 15, "if (string.IsNullOrEmpty(box.Text))", "Laundering",
+            "control input decides an if through 'box'"));
+    }
+
+    [Fact]
+    public void AuditTruth_ToggleChecked_ReportsLaundering()
+    {
+        TAssayLaunderingCheck("""
+                    System.Windows.Controls.Primitives.ToggleButton toggle = new();
+                    if (toggle.IsChecked == true)
+                    {
+                    }
+            """, new TViolation(
+            TAssayTruth.TAssayDriverPath, 15, "if (toggle.IsChecked == true)", "Laundering",
+            "control input decides an if through 'toggle'"));
+    }
+
+    [Fact]
+    public void AuditTruth_UnresolvedReceiver_ReportsLaundering()
+    {
+        TAssayLaunderingCheck("""
+                    dynamic shown = new System.Windows.Documents.Run();
+                    if (string.IsNullOrEmpty(shown.Text))
+                    {
+                    }
+            """, new TViolation(
+            TAssayTruth.TAssayDriverPath, 15, "if (string.IsNullOrEmpty(shown.Text))", "Laundering",
+            "control input decides an if through 'shown'"));
+    }
+
     private static void TAssayLaunderingCheck(string body, TViolation? expected)
     {
         Dictionary<string, string> sources = new(StringComparer.Ordinal)

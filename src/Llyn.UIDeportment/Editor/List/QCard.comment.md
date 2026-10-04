@@ -1,5 +1,5 @@
 # QCard.cs
-Hash: `98f347f18feb1463`
+Hash: `0031b532e71ca530`
 
 ## `internal sealed class QCard`
 
@@ -72,15 +72,26 @@ Which of the two lists a card belongs to, since both are drawn from the same tem
 
 ### `internal void QCardRefine(ObservableCollection<PCard> cards, string prefix, IReadOnlyList<CCardDraft> drafts)`
 
-Brings one list into line with the draft's cards, pairing each control with its card by id.
-The ids are the draft's, and the draft never holds two cards under one id.
+Brings one list into line with the draft's cards, so the list shows exactly those cards in their order.
+Each draft card claims the first unclaimed PCard with its id, else a new card is built.
+A claimed card is never claimed again, so two draft cards never share one PCard.
+Conduct does not promise unique ids, so a repeated id is shown twice and never throws.
+Removing repeats is behaviour, owned by Conduct or a layer below it, never by this list.
+The engine alone owns the order, so the list only removes by identity and appends, never inserting or moving.
 A card the form does not show yet is built, then painted like a kept one.
-Its sentence notice is subscribed as it is built.
-So a Gloss pick reaches the editor.
-A card the draft no longer names is dropped.
-A card that moved is moved to the place the ready list holds it at.
-The rest keep their controls, so the caret stays in a card while its neighbours change.
-Every card, new or kept, is then painted, since any of its values may have changed.
+Its sentence notice is subscribed as it is built, so a Gloss pick reaches the editor.
+Every card, new or kept, is painted, since any of its values may have changed.
+The kept cards are the longest head of the draft's order already standing in that sequence.
+They are compared by object identity, so a kept card is the same PCard, not an equal one.
+Kept cards need not be adjacent in the old list.
+Every other card is removed by identity, and the rest of the draft is appended in its order.
+A card the draft no longer names is therefore dropped, and any other removed card returns at its draft place.
+Only kept cards keep their controls and caret, since they never leave the list.
+A re-added card keeps its object but gets a rebuilt control, which loses focus and caret.
+Every card after the first mismatch is re-added, even one the change never passed.
+Moving B to the front of A, B, C, D rebuilds A, C and D.
+An insert in the middle rebuilds every later card, and moving a card to the end rebuilds only it.
+That cost is the price of never inserting or moving.
 
 ### `private void QCardDraftRefine(PCard card, CCardDraft draft)`
 

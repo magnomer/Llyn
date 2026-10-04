@@ -100,7 +100,7 @@ internal sealed class QEditorCard
         _qProffer.QProfferIntroduce(editor);
         QEditorCardProspect.QProspectIntroduce(editor, _qLink);
         _qLink.QLinkIntroduce(editor);
-        _qSpeaker.QSpeakerIntroduce(editor, host.QWindowAtelier);
+        _qSpeaker.QSpeakerIntroduce(editor, host.QWindowAtelier, host.QWindowEnvoy);
         _qGloss.QGlossIntroduce(editor);
         QEditorCardSentence.QSentenceIntroduce(
             editor, host, QEditorCardProspect, _qGloss, _qCitation);

@@ -41,7 +41,7 @@ AuditNames -Root C:\path\to\project
 Audit a specific checkout.
 #>
 #requires -Version 5.1
-# AUDITNAMES - AUDIT GENERATION 19.
+# AUDITNAMES - AUDIT GENERATION 20.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -82,6 +82,8 @@ Audit a specific checkout.
 # truth detector stops five false findings.
 # Generation 19: nothing this audit reports changes; the number rises with the comment audit, whose
 # hash line ties every comment file to the sources it describes.
+# Generation 20: nothing this audit reports changes; the number rises with the UI audit, whose
+# Mismatching kind only informs while a driver folder it waits on holds no source.
 [CmdletBinding()]
 param(
     [string]$Root,

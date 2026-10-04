@@ -5,4 +5,5 @@ public sealed record CAuthorRow(
     string CAuthorRowName,
     int CAuthorRowPosition,
     bool CAuthorRowEarlier,
-    bool CAuthorRowLater);
+    bool CAuthorRowLater,
+    bool CAuthorRowBlank);

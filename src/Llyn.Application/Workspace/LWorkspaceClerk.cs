@@ -65,6 +65,13 @@ public sealed class LWorkspaceClerk
     {
         ArgumentNullException.ThrowIfNull(settings);
 
+        _lWorkspaceClerkSettings.LSettingsSave(settings);
+    }
+
+    public void LWorkspaceFallbackSave(LSettings settings)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+
         try
         {
             _lWorkspaceClerkSettings.LSettingsSave(settings);
@@ -160,7 +167,7 @@ public sealed class LWorkspaceClerk
         }
     }
 
-    public void LWorkspacePostureSave(string name, LPostureState state)
+    public bool LWorkspacePostureSave(string name, LPostureState state, out Exception? fault)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         ArgumentNullException.ThrowIfNull(state);
@@ -168,10 +175,14 @@ public sealed class LWorkspaceClerk
         try
         {
             _lWorkspaceClerkPosture.LPostureSave(name, state);
+            fault = null;
+            return true;
         }
         catch (LVaultFault exception)
         {
             _lWorkspaceClerkAudit.LAuditRecord(exception);
+            fault = exception;
+            return false;
         }
     }
 

@@ -10,6 +10,8 @@ internal sealed class QRespelling
 
     private CLedger _qRespellingLedger = null!;
 
+    private CEnvoy _qRespellingEnvoy = null!;
+
     internal QRespelling(FrameworkElement settings)
     {
         _qRespellingSettings = settings;
@@ -19,9 +21,10 @@ internal sealed class QRespelling
     private ToggleButton QRespellingSwitch =>
         QContract.QContractFind<ToggleButton>(_qRespellingSettings, "PRespelling");
 
-    internal void QRespellingIntroduce(CLedger ledger)
+    internal void QRespellingIntroduce(CLedger ledger, CEnvoy envoy)
     {
         _qRespellingLedger = ledger;
+        _qRespellingEnvoy = envoy;
     }
 
     internal void QRespellingRefine(bool chosen)
@@ -31,6 +34,7 @@ internal sealed class QRespelling
 
     private void QRespellingObserve(object sender, RoutedEventArgs e)
     {
-        _qRespellingLedger.CLedgerRespellingSave(QLook.QLookCheckedRead(QRespellingSwitch.IsChecked));
+        _qRespellingLedger.CLedgerRespellingSave(
+            QLook.QLookCheckedRead(QRespellingSwitch.IsChecked), _qRespellingEnvoy);
     }
 }

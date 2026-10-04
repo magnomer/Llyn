@@ -84,14 +84,17 @@ public sealed class CTimbre
             : string.Empty;
     }
 
-    public void CTimbrePronunciationAdd(long accent)
+    public void CTimbrePronunciationAdd(long? accent)
     {
-        LTimbreTenure?.LTenurePronunciationAdd(accent);
+        LTimbreTenure?.LTenurePronunciationAdd(accent ?? 0);
     }
 
-    public void CTimbrePronunciationRemove(long accent)
+    public void CTimbrePronunciationRemove(long? accent)
     {
-        LTimbreTenure?.LTenurePronunciationRemove(accent);
+        if (accent is long held)
+        {
+            LTimbreTenure?.LTenurePronunciationRemove(held);
+        }
     }
 
     public CTimbreAccent CTimbreAccentRead()
@@ -194,9 +197,9 @@ public sealed class CTimbre
         _cTimbreDisplay.LDisplaySound.LDisplayReflexRebuild(LTimbreEntry);
     }
 
-    public void CTimbreReflexAdd(long reflex)
+    public void CTimbreReflexAdd(long? reflex)
     {
-        LTimbreQuill?.LQuillReflexAdd(reflex);
+        LTimbreQuill?.LQuillReflexAdd(reflex ?? 0);
     }
 
     public void CTimbreReflexRemove(long reflex)

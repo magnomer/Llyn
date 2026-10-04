@@ -1,5 +1,5 @@
 # LSettingsPort.cs
-Hash: `f8375ac840b99fde`
+Hash: `f137fee32ce7b52f`
 
 ## `public interface LSettingsPort`
 
@@ -76,6 +76,22 @@ Turning it off cancels every pending inflection fetch.
 
 Persists whether readings show and edit in their respelled form.
 Every reading is stored in both forms, so a flip only changes which one each surface shows.
+
+## `void LEngineFanqieSave(bool opened);`
+
+Persists whether the editor's rime-book box stands open, so it survives a restart.
+The current state is read back from `LEngineSettingsRead`.
+A real change raises `LEngineFoldChanged`.
+
+## `void LEngineScriptSave(bool opened);`
+
+Persists whether the editor's script box stands open, read back the same way.
+A real change raises `LEngineFoldChanged`.
+
+## `event Action? LEngineFoldChanged;`
+
+A saved fold state changed, heard by every editor over the same engine.
+It reaches only the fold switches, so no panel refills for a box opened elsewhere.
 
 ## `(string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath)`
 

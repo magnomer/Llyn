@@ -35,6 +35,8 @@ internal static class TInterfaceConduct
         media,
         new LPortraitOutlet(engine));
 
+    internal static LSettingsPort TSettingsOutletCreate(LEngine engine) => new LSettingsOutlet(engine);
+
     internal static CAtelier TAtelierMediaCreate(LEngine engine, LMediaPort media) => new(
         new LPosture(engine),
         new LDraftOutlet(engine),
@@ -117,6 +119,9 @@ internal static class TInterfaceConduct
     internal static void TWorkspaceDraftAdd(this CWorkspace workspace, Func<bool> pending, Func<bool, bool> closure) =>
         workspace.LWorkspaceDraftAdd(pending, closure);
 
+    internal static void TWorkspaceObserverAttach(this CWorkspace workspace, Action<Action> marshal) =>
+        workspace.LWorkspaceObserverAttach(marshal);
+
     internal static void TWorkspaceStateAdd(this CWorkspace workspace, Action<CWorkspaceState> heard) =>
         workspace.LWorkspaceStateOpened += heard;
 
@@ -137,8 +142,8 @@ internal static class TInterfaceConduct
     }
 
     internal static void TAtelierStubOpen(this CAtelier atelier) =>
-        atelier.CAtelierOpen(TEngineFake.TEngineStubCreate<CEnvoy>());
+        atelier.CAtelierOpen(TEngineFake.TEngineStubCreate<CEnvoy>(), static run => run());
 
     internal static void TAtelierOpen(this CAtelier atelier, CEnvoy envoy) =>
-        atelier.CAtelierOpen(envoy);
+        atelier.CAtelierOpen(envoy, static run => run());
 }

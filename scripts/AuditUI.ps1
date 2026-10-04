@@ -69,7 +69,7 @@ AuditUI -NoOpen
 AuditUI -Configuration Release
 #>
 #requires -Version 5.1
-# AUDITUI - AUDIT GENERATION 19.
+# AUDITUI - AUDIT GENERATION 20.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -100,6 +100,8 @@ AuditUI -Configuration Release
 # Conduct value in driver arithmetic, and a surface loaded through a built URI.
 # Generation 19: nothing this audit reports changes; the number rises with the comment audit, whose
 # hash line ties every comment file to the sources it describes.
+# Generation 20: a truth kind named in the informative map gates nothing while a driver folder
+# it waits on holds no source. Mismatching waits on Demeanor, so it only informs until the CUI has code.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -213,7 +215,7 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 19
+$script:AuditGeneration = 20
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'AuditBinder.cs'))
 
@@ -382,6 +384,11 @@ LAuditLedger.LAuditLoad(ledgerPath);
 LAuditStrictRun strict = LAuditStrictRun.LAuditRead(projectRoot);
 LAuditTruthRun truth = LAuditTruthRun.LAuditRead(projectRoot);
 List<LAuditCounter> counters = [];
+
+// Whether a file above the ceiling of this kind fails: an informative truth kind gates nothing yet.
+bool EnforceCheck(string audit, string kind) => audit == "Strict"
+    ? LAuditStrictSetting.LAuditStrictEnforced
+    : LAuditTruthSetting.LAuditTruthEnforced && truth.LAuditEnforceCheck(kind);
 List<LAuditKindRow> kinds = [];
 
 foreach (string kind in LAuditStrictRun.LAuditKinds)
@@ -404,7 +411,7 @@ int strictEnd = counters.Count;
 
 foreach (string kind in LAuditTruthRun.LAuditKinds)
 {
-    counters.Add(LAuditLedger.LAuditOverRead("Truth", kind, truth.LAuditHits, LAuditTruthSetting.LAuditTruthEnforced, kinds));
+    counters.Add(LAuditLedger.LAuditOverRead("Truth", kind, truth.LAuditHits, EnforceCheck("Truth", kind), kinds));
 }
 
 counters.Add(new LAuditCounter("Truth stale ceilings", LAuditLedger.LAuditStaleRead("Truth", LAuditTruthRun.LAuditKinds, truth.LAuditHits)));
@@ -512,11 +519,12 @@ var page = new
         files = row.LAuditFiles,
         ceiling = row.LAuditCeiling,
         over = row.LAuditOver,
+        enforced = EnforceCheck(row.LAuditAudit, row.LAuditKind),
     }),
     ledger = LAuditLedger.LAuditPlaceRead("Strict", LAuditStrictRun.LAuditKinds, strict.LAuditHits)
-        .Select(place => new { audit = "Strict", kind = place.Kind, file = place.File, hits = place.Hits, ceiling = place.Ceiling })
+        .Select(place => new { audit = "Strict", kind = place.Kind, file = place.File, hits = place.Hits, ceiling = place.Ceiling, enforced = EnforceCheck("Strict", place.Kind) })
         .Concat(LAuditLedger.LAuditPlaceRead("Truth", LAuditTruthRun.LAuditKinds, truth.LAuditHits)
-            .Select(place => new { audit = "Truth", kind = place.Kind, file = place.File, hits = place.Hits, ceiling = place.Ceiling })),
+            .Select(place => new { audit = "Truth", kind = place.Kind, file = place.File, hits = place.Hits, ceiling = place.Ceiling, enforced = EnforceCheck("Truth", place.Kind) })),
     above = LAuditLedger.LAuditAboveHits.Select(pair => new
     {
         audit = pair.Audit,
@@ -725,6 +733,13 @@ internal sealed class LAuditTruthRun
 
     public required IReadOnlyList<string> LAuditSources { get; init; }
 
+    public bool LAuditEnforceCheck(string kind)
+    {
+        return !LAuditTruthSetting.LAuditTruthInformative.TryGetValue(kind, out string[]? folders)
+            || folders.All(folder => LAuditSources.Any(source =>
+                LAuditBind.LAuditRelativeRead(source).StartsWith(folder + "/", StringComparison.OrdinalIgnoreCase)));
+    }
+
     public static LAuditTruthRun LAuditRead(string repoRoot)
     {
         IReadOnlyList<string> sources = LAuditScopeSetting.LAuditFileRead(repoRoot, LAuditTruthSetting.LAuditTruthInclude);
@@ -932,7 +947,7 @@ internal static class LAuditLedger
         foreach (IGrouping<string, LViolation> place in places)
         {
             int ceiling = ceilings.GetValueOrDefault(place.Key);
-            if (place.Count() <= ceiling)
+            if (place.Count() <= ceiling || !enforced)
             {
                 continue;
             }
@@ -949,7 +964,7 @@ internal static class LAuditLedger
         }
 
         kinds.Add(new LAuditKindRow(audit, kind, held.Count, places.Count, ceilings.Values.Sum(), over.Count));
-        return new LAuditCounter($"{audit} {kind} over ceiling", enforced ? over : []);
+        return new LAuditCounter($"{audit} {kind} over ceiling", over);
     }
 
     public static List<LAuditRow> LAuditStaleRead(string audit, IReadOnlyList<string> kinds, IReadOnlyList<LViolation> hits)
@@ -1029,6 +1044,11 @@ internal static class LAuditReport
         text.Append($"- Generation: {generation}\n");
         text.Append($"- Strict enforced: {LAuditStrictSetting.LAuditStrictEnforced}\n");
         text.Append($"- Truth enforced: {LAuditTruthSetting.LAuditTruthEnforced}\n");
+        foreach ((string kind, string[] folders) in LAuditTruthSetting.LAuditTruthInformative
+                     .Where(pair => !truth.LAuditEnforceCheck(pair.Key)))
+        {
+            text.Append($"- Truth informative: {kind}, until {string.Join(", ", folders)} holds a source\n");
+        }
         text.Append($"- Surface types: {strict.LAuditVeneers.Count}\n");
         text.Append($"- Strict hits: {strict.LAuditHits.Count}\n");
         text.Append($"- Truth hits: {truth.LAuditHits.Count}\n");
@@ -1505,7 +1525,8 @@ internal static class LAuditSettingRead
         [
             "enforced", "stateSuffix", "bulletinType", "conductRoot", "capsuleInclude", "shellInclude", "truthInclude",
             "controlBases", "orderVerbs", "fillVerbs", "requestPrefix", "sendRoots", "clockTypes", "consoleInput",
-            "dialogTypes", "delayMembers", "inputMembers", "focusMembers", "truthHandles", "moonlightingVerbs"
+            "dialogTypes", "delayMembers", "inputMembers", "focusMembers", "truthHandles", "moonlightingVerbs",
+            "informative", "inputBase"
         ],
         ["boundary"] =
         [
@@ -1588,10 +1609,14 @@ internal static class LAuditSettingRead
         LAuditTruthSetting.LAuditConsoleInput = LAuditListRead(truth, "consoleInput");
         LAuditTruthSetting.LAuditDialogTypes = LAuditListRead(truth, "dialogTypes");
         LAuditTruthSetting.LAuditDelayMembers = LAuditListRead(truth, "delayMembers");
+        LAuditTruthSetting.LAuditInputBase = truth.GetProperty("inputBase").GetString()!;
         LAuditTruthSetting.LAuditInputMembers = LAuditListRead(truth, "inputMembers");
         LAuditTruthSetting.LAuditFocusMembers = LAuditListRead(truth, "focusMembers");
         LAuditTruthSetting.LAuditTruthHandles = LAuditListRead(truth, "truthHandles");
         LAuditTruthSetting.LAuditMoonlightingVerbs = LAuditListRead(truth, "moonlightingVerbs");
+        JsonElement informative = truth.GetProperty("informative");
+        LAuditTruthSetting.LAuditTruthInformative = informative.EnumerateObject()
+            .ToDictionary(kind => kind.Name, kind => LAuditListRead(informative, kind.Name), StringComparer.Ordinal);
 
         JsonElement boundary = config.GetProperty("boundary");
         LAuditBoundarySetting.LAuditBoundaryForbidden = LAuditListRead(boundary, "forbidden");
@@ -1805,6 +1830,7 @@ internal static class LAuditContractWalker
 internal static class LAuditTruthSetting
 {
     public static bool LAuditTruthEnforced;
+    public static Dictionary<string, string[]> LAuditTruthInformative = new(StringComparer.Ordinal);
     public static string LAuditStateSuffix = "";
     public static string LAuditBulletinType = "";
     public static string LAuditConductRoot = "";
@@ -1820,6 +1846,7 @@ internal static class LAuditTruthSetting
     public static string[] LAuditConsoleInput = [];
     public static string[] LAuditDialogTypes = [];
     public static string[] LAuditDelayMembers = [];
+    public static string LAuditInputBase = "";
     public static string[] LAuditInputMembers = [];
     public static string[] LAuditFocusMembers = [];
     public static string[] LAuditTruthHandles = [];
@@ -5491,12 +5518,32 @@ internal static class LAuditLaunderingWalker
                 case MemberAccessExpressionSyntax input
                     when LAuditTruthSetting.LAuditInputMembers.Contains(
                              input.Name.Identifier.ValueText, StringComparer.Ordinal)
-                         && LAuditBind.LAuditControlCheck(LAuditBind.LAuditTypeRead(input.Expression)):
+                         && LAuditInputCheck(input.Expression):
                     return (input.Expression.ToString(), LAuditTextColour);
             }
         }
 
         return null;
+    }
+
+    private static bool LAuditInputCheck(ExpressionSyntax receiver)
+    {
+        if (LAuditBind.LAuditSymbolRead(receiver) is INamespaceSymbol)
+        {
+            return false;
+        }
+
+        ITypeSymbol? type = LAuditBind.LAuditTypeRead(receiver);
+        for (ITypeSymbol? current = type; current is not null; current = current.BaseType)
+        {
+            if (current.TypeKind is TypeKind.Error or TypeKind.Dynamic
+                || current.ToDisplayString() == LAuditTruthSetting.LAuditInputBase)
+            {
+                return true;
+            }
+        }
+
+        return type is null;
     }
 
     private static bool LAuditConditionCheck(ExpressionSyntax condition)

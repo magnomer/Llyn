@@ -1,5 +1,5 @@
 # TInterfaceConduct.cs
-Hash: `8d79e16c5516c0a3`
+Hash: `0e05e2b4df81319c`
 
 ## `internal static class TInterfaceConduct`
 
@@ -19,6 +19,10 @@ Disposing also runs each area's registered close, and the corpus's close stops i
 
 Builds Conduct's atelier over outlets on `engine` as Host does, with `media` standing in for the player.
 The draft port is a fake that sweeps nothing, since the fake rig holds no drafts.
+
+## `internal static LSettingsPort TSettingsOutletCreate(LEngine engine) =>`
+
+The settings port over the real `engine`, so a test drives the engine through the port the atelier holds.
 
 ## `internal static CAtelier TAtelierMediaCreate(LEngine engine, LMediaPort media)`
 
@@ -76,6 +80,10 @@ Relays the establishment the atelier holds, which the navigation reads on a tab 
 Hands the workspace a draft's pending question and its closing step.
 A test can then see how the workspace asks and closes drafts.
 
+## `internal static void TWorkspaceObserverAttach(this CWorkspace workspace, Action<Action> marshal) =>`
+
+Attaches the workspace observer with the given `marshal`, as the atelier open does.
+
 ## `internal static void TWorkspaceStateAdd(this CWorkspace workspace, Action<CWorkspaceState> heard) =>`
 
 Subscribes `heard` to the workspace's internal state event, so a test hears what the wings restore from.
@@ -95,10 +103,12 @@ The subscription is removed again before it returns.
 
 ## `internal static void TAtelierStubOpen(this CAtelier atelier) =>`
 
-Opens the atelier with a stub envoy, so a test opens it without a window.
+Opens the atelier with a stub envoy and a marshal that runs at once.
+So a test opens it without a window.
 The stub answers every call with nothing.
 
 ## `internal static void TAtelierOpen(this CAtelier atelier, CEnvoy envoy) =>`
 
-Opens the atelier with the given `envoy`, so a test reads the notices the open shows.
+Opens the atelier with the given `envoy` and a marshal that runs at once.
+So a test reads the notices the open shows, a layout failure among them.
 A test that opens twice hands a second envoy, and sees which one later notices reach.

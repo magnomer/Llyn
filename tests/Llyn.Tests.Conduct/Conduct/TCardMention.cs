@@ -85,19 +85,27 @@ public sealed class TCardMention
     }
 
     [Fact]
-    public void MentionRead_EngineFails_ShowsTheFindFailureAndAnswersNoRows()
+    public void MentionRead_EngineFails_ShowsTheFindFailureAndKeysEverySentenceEmpty()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         List<string> asked = [];
-        (CDesk desk, _, _, _) = TMentionPrepare(engine);
+        (CDesk desk, _, _, long row) = TMentionPrepare(engine);
         CSentence failing = TInterfaceMention.TSentenceFailCreate(
             engine, desk, TEnvoyFake.TEnvoyCreate(false, asked));
+        LEntryDraft content = desk.TDeskRead()!.LDraftContent;
+        long[] sentences = content.LEntryDraftMeanings.Concat(content.LEntryDraftCollocations)
+            .SelectMany(static card => card.LCardDraftSentence)
+            .Select(static sentence => sentence.LSentenceDraftId)
+            .Order()
+            .ToArray();
 
         IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> lines = failing.CSentenceMentionRead();
 
-        Assert.Empty(lines);
         Assert.Equal(["Mention.FindFailed"], asked);
+        Assert.Contains(row, sentences);
+        Assert.Equal(sentences, lines.Keys.Order());
+        Assert.All(lines.Values, static labels => Assert.Empty(labels));
     }
 
     private static (CDesk TMentionDesk, CSentence TMentionGate, long TMentionSheet, long TMentionRow)

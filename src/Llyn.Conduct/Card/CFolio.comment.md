@@ -1,5 +1,5 @@
 # CFolio.cs
-Hash: `2b92c8562ab71068`
+Hash: `f0f520a06bf38b25`
 
 ## `internal static class CFolio`
 
@@ -29,6 +29,34 @@ A card's situation link carries no media, so its picture and video lists stay em
 A card's links are its own entry of the tenure's target map, mapped by the one target map.
 The tenure answers an entry for every card, so a missing one is a fault and throws.
 The title, expression and meaning arrive worded, and `meaning` names the meaning field's hint for the sheet.
+The cards come in the order `CFolioOrderRead` sets, so a driver's list index is a Conduct place.
+
+## `internal static int? CFolioPlaceRead(LEntryDraft content, long cardId, int place)`
+
+Turns a place in the card list Conduct handed out into the engine's index for the same card.
+A place is the index of a card in `CEntryDraftMeanings` or `CEntryDraftCollocations` of the last read.
+It reads the list holding `cardId` in the order `CFolioOrderRead` sets, so it matches the handed list.
+It answers null for a place outside that list, so a stale place sends nothing.
+
+## `internal static int? CFolioOrdinalRead(LEntryDraft content, long cardId, string ordinal)`
+
+Turns the number typed in a card's badge into a place in the handed list.
+The number counts from one, and a number past either end is pulled to that end.
+Text that is not a whole number answers null, so it moves nothing.
+It answers a place, not an engine index, so the typed move goes through `CFolioPlaceRead` like a drag.
+So the badge number and the shown order agree even when the engine list is not in position order.
+
+## `internal static IReadOnlyList<LCardDraft> CFolioOrderRead(IReadOnlyList<LCardDraft> cards)`
+
+The one order of a card list, by the engine's position, with ties kept in the engine's order.
+Every Conduct path that numbers or finds a card reads it, so all of them agree.
+Those are the sheet map, the place map, the reading view's cards and the contents.
+It is internal so the display reads the same order rather than a copy of the sort.
+
+## `private static IReadOnlyList<LCardDraft> CFolioListRead(LEntryDraft content, long cardId)`
+
+The list that holds `cardId`, the collocations when no meaning holds it.
+The place map and the ordinal map share it, so both read the same list.
 
 ## `private static CSentenceDraft CFolioSentenceRead(LSentenceDraft sentence)`
 

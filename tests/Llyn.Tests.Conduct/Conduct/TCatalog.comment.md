@@ -1,5 +1,5 @@
 # TCatalog.cs
-Hash: `65e5be741346da51`
+Hash: `9e6a31f19effa024`
 
 ## `public sealed class TCatalog`
 
@@ -10,10 +10,11 @@ Fonts map across, an unsized font carries no size, and a blank language answers 
 A refused font read is not caught by the font rule, so the case expects the port's exception.
 Every engine font role casts to its mirror.
 The font rule is driven with its settings port handed in, since every area reads it in its own language.
-A pack's slant arrives lower case, and an unknown slant arrives blank.
+A pack's slant in any case arrives as its slant, and an unknown slant keeps the theme's.
 The flag load hands the store Conduct rows and answers the loaded languages.
+Its two cases hand it a fake envoy, since the gate now takes one for its failure notice.
 The shared fill rule reads an area's rows only once the fill completes.
 The case holds the fill open with a completion it sets itself.
-The settings outlet owns the disk failure, so a fake port that throws `IOException` reaches the caller too.
-Any failed fill reaches the caller, so both cases expect the exception.
+A fill that faults or throws shows the handed key through the envoy and answers no languages.
+The rows are still read, so both cases expect the rows beside an empty language list.
 On a workspace the flag load answers the same languages the catalog reads, which the favorites filter offers.

@@ -1,5 +1,5 @@
 # QCompass.cs
-Hash: `cce9c0645585757c`
+Hash: `8eecd899aaddfb0c`
 
 ## `public sealed class QCompass`
 
@@ -13,8 +13,9 @@ The rows follow what the view is actually showing, never the draft alone.
 A section the entry left empty is collapsed, and a collapsed section is not a place a reader can go.
 The frequency row follows the parts of speech, in the order the sections stand on the page.
 
-## `public QCompass(LDisplay display, FrameworkElement view, ScrollViewer contents, FrameworkElement header, FrameworkElement compass, UIElement surface, ToggleButton toggle, ItemsControl list)`
+## `public QCompass(CCompass area, FrameworkElement view, ScrollViewer contents, FrameworkElement header, FrameworkElement compass, UIElement surface, ToggleButton toggle, ItemsControl list)`
 
+Takes the display's compass, whose `CCompassRead` answers the ready rows.
 Takes the view's controls as handles and subscribes to them itself.
 The view, the header and the toggle re-place the contents, and scrolling syncs the current row.
 The toggle is set from `_qCompassOpened`, so the two start alike whatever the markup says.

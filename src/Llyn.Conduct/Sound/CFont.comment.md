@@ -1,12 +1,12 @@
 # CFont.cs
-Hash: `7f6ce54a831db5bf`
+Hash: `8adfffa58a28950f`
 
-## `public sealed record CFont(string? CFontFamily, double? CFontSize, string? CFontStyle);`
+## `public sealed record CFont(string? CFontFamily, double? CFontSize, CFontSlant CFontStyle);`
 
 The font a language's pack sets for one role.
 
 **Parameters**
 
-- `CFontFamily`: the family name, null to keep the theme's.
-- `CFontSize`: the size, null to keep the theme's.
-- `CFontStyle`: the style name, null to keep the theme's.
+- `CFontFamily`: the family name, never blank, null to keep the theme's.
+- `CFontSize`: the size, always finite and positive, null to keep the theme's.
+- `CFontStyle`: the slant, `CFontSlantTheme` to keep the theme's.

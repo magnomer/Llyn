@@ -213,7 +213,7 @@ public partial class QWindow
             return;
         }
 
-        QMentionOfferRefine(anchor, anchor.PMentionPieceRead(offer.CMentionOfferOffset), offer);
+        QMentionOfferRefine(anchor, anchor.PMentionPlaceRead(offer.CMentionOfferUnit), offer);
     }
 
     private void QMentionSenseRefine(long sense)

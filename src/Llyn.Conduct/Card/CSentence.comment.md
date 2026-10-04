@@ -1,11 +1,12 @@
 # CSentence.cs
-Hash: `ee2c9b26f685d20b`
+Hash: `2f3d42b194f89225`
 
 ## `public sealed class CSentence`
 
 The sentence gates of the entry editor, one per user action on a card's sentence rows.
 Each gate holds the interaction only and calls one ShellEngine member on the held draft.
-The rules about the rows live in the Application clerk, so no gate trims, clamps or checks.
+The rules about the rows live in the Application clerk, so no gate trims or clamps.
+The add gate alone checks its row index, since Conduct defines what that index means.
 Most gates do nothing while the desk is filling a draft, since the quill reads null then.
 
 ## `internal CSentence(CDesk desk, LPhonologyPort phonology, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy, CLedgerNoticed noticed)`
@@ -30,8 +31,10 @@ Hears the reference subject on every tenure the desk starts.
 ## `public void CSentenceAdd(long cardId, int below)`
 
 The gate for the add button on a sentence row.
+`below` is the index of the pressed row in the card's `CCardDraftSentence` that Conduct handed out.
+`CFolio` maps the sentences in the engine's order, so that index is the engine's index.
+The gate checks the index against the held card's sentences, so a stale or foreign index sends nothing.
 The user asks for a row below the one pressed, so the new row takes the next place.
-The clerk clamps the place to the list.
 
 ## `public void CSentenceRemove(long cardId, long sentenceId)`
 
@@ -72,11 +75,21 @@ The engine picks the gloss language and puts the new gloss last.
 
 The gate for the cross on a gloss row.
 
-## `public void CSentenceMentionAdd(long cardId, long sentenceId, string text, int start, int length, long entryId)`
+## `public void CSentenceMentionAdd(long cardId, long sentenceId, string text, int start, int length, long? entryId)`
 
 The gate for an Entry picked for a card sentence's selection, with the box's raw text and selection.
 The span rule and the request are ShellEngine's, shared with the corpus transcript's gate.
-The silence command calls it too, with Entry 0, since a silent Mention is a Mention linking nothing.
+The driver hands the raw pick, a null id for a fresh row.
+The engine has no new Entry path for a Mention.
+So a null id shows `Refusal.TargetMissing` through the envoy and links nothing.
+Null no longer means silence, since a fresh pick and a silence are different user actions.
+
+## `public void CSentenceSilenceSet(long cardId, long sentenceId, string text, int start, int length)`
+
+The gate for the silence command on a card sentence's selection.
+A silent Mention links nothing, so the selection stands for nothing.
+It has its own gate, so the driver never sends the engine's id 0.
+Conduct maps the silence to the engine's Entry 0 here.
 
 ## `public void CSentenceSenseSet(long cardId, long sentenceId, string text, int start, int length, long senseId)`
 
@@ -110,7 +123,10 @@ A failed read shows `Mention.FindFailed` and answers null.
 ## `public IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> CSentenceMentionRead()`
 
 The chip lines of every sentence row in the held draft, keyed by the row.
-A failed read shows `Mention.FindFailed` once and answers no rows, so the form keeps its lines as drawn.
+It answers one entry for every sentence of the held cards, and an empty list means no chips.
+`CMention.LMentionLineRead` builds the entries from the draft's sentences, so no row is missing.
+A failed read shows `Mention.FindFailed` once and answers an empty list for every sentence.
+With no draft held it answers no entries, since there is no sentence to key.
 Each unlinked chip carries its own key, so the driver passes no silent word.
 
 ## `public CSentenceFrame CSentenceFrameRead()`

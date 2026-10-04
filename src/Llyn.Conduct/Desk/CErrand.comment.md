@@ -1,5 +1,5 @@
 # CErrand.cs
-Hash: `2683f0540c004cf5`
+Hash: `9c755cc857aa739f`
 
 ## `public sealed class CErrand`
 
@@ -43,9 +43,11 @@ Raised with the ready notation state whenever the reading search changes it.
 A starting source, a found reading and the search's end each raise it once.
 The popup repaints from it and needs to tell no cause apart.
 
-## `public CClipRoll CErrandRecordingStart(long target)`
+## `public CClipRoll CErrandRecordingStart(long? target)`
 
 The user asks for recordings of the headword on one pronunciation row.
+A null target means no row, the headword's own search from the clip button.
+Conduct maps null to the engine's row 0, so the driver never sends a magic id.
 It stops both searches, clears the popup and starts a recording search over the held tenure.
 The tenure reads the draft's headword itself and starts nothing for a blank one.
 The clip is marked searching before the start, since a step may land during it.
@@ -60,9 +62,11 @@ The foray loads nothing when its language shows no flags.
 The foray already leaves the flags out when a flag file cannot be written or read.
 Any other failure shows the recording notice, and the clip state is still answered.
 
-## `public CNotationRoll CErrandTranscriptionStart(long target, string scheme)`
+## `public CNotationRoll CErrandTranscriptionStart(long? target, string scheme)`
 
 The user asks for readings of the headword for one row, in IPA or in the row's scheme.
+A null target means no row, the headword's own search from the phonetician button.
+Conduct maps null to the engine's row 0, so the driver never sends a magic id.
 It stops both searches first, as the clip popup's start does, and answers the popup's state to paint.
 The tenure reads the draft's headword itself and starts nothing for a blank one.
 The popup is marked searching before the start, since a step may land during it.
@@ -110,9 +114,9 @@ Streaming the remote, token-bearing address through the media stack is unreliabl
 It answers the file's address once the recording is marked playing.
 It answers nothing when another preview took over or the popup closed during the fetch.
 A failed fetch marks the recording refused and answers nothing, so a refusal is not mistaken for silence.
-The foray answers no path for an outside failure.
+The fetch failure reaches the catch, which shows the recording notice through `LDeskFailureShow`.
+The foray answers no path only when nothing was prepared, and that is refused without a notice.
 A path that is no absolute address is refused the same way.
-Any other failure also marks the recording refused, and shows the recording notice.
 Only one preview is marked at a time, so starting another clears the last.
 It does nothing while no recording search runs.
 
@@ -130,8 +134,9 @@ The foray downloads it, attaches it and tags its row with its variety.
 A taken recording then reads saved, even when the draft moved on and nothing was attached.
 Only an attached recording closes the popup.
 A failed download offers another try.
-The foray answers null for an outside failure, which asks the user nothing.
-Any other failure also offers the retry, and shows the recording notice.
+The download failure reaches the catch, which shows the recording notice through `LDeskFailureShow`.
+The clerk has already written a vault fault to the audit log.
+The foray answers null only when nothing was saved, which offers the retry without a notice.
 
 ## `public void CErrandCancel()`
 

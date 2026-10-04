@@ -31,13 +31,13 @@ public sealed class CErrand
 
     public event Action<CNotationRoll>? CErrandNotationChanged;
 
-    public CClipRoll CErrandRecordingStart(long target)
+    public CClipRoll CErrandRecordingStart(long? target)
     {
         CErrandCancel();
         _cErrandClip.LClipStart();
         try
         {
-            _cErrandRecording = LErrandRecordingRun(_cErrandDesk.CDeskTenure, target, LErrandHarvestSend);
+            _cErrandRecording = LErrandRecordingRun(_cErrandDesk.CDeskTenure, target ?? 0, LErrandHarvestSend);
             if (_cErrandRecording is null)
             {
                 _cErrandClip.LClipFinish();
@@ -77,7 +77,7 @@ public sealed class CErrand
         return _cErrandClip.LClipRead();
     }
 
-    public CNotationRoll CErrandTranscriptionStart(long target, string scheme)
+    public CNotationRoll CErrandTranscriptionStart(long? target, string scheme)
     {
         ArgumentNullException.ThrowIfNull(scheme);
 
@@ -86,7 +86,7 @@ public sealed class CErrand
         try
         {
             _cErrandTranscription = LErrandTranscriptionRun(
-                _cErrandDesk.CDeskTenure, target, scheme, LErrandLookupSend);
+                _cErrandDesk.CDeskTenure, target ?? 0, scheme, LErrandLookupSend);
             if (_cErrandTranscription is null)
             {
                 _cErrandNotation.LNotationFinish();

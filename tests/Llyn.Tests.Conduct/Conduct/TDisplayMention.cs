@@ -28,10 +28,10 @@ public sealed class TDisplayMention
         CDisplay area = TDisplayMentionPrepare(atelier, asked, run.LEntryId);
         IReadOnlyList<long> lines = TDisplayLineRead(area);
 
-        CMentionOffer? found = area.CDisplayMentionFind(lines[0], 1);
-        CMentionOffer? foreign = area.CDisplayMentionFind(lines[1], 1);
+        CMentionOffer? found = area.CDisplayRoute.CDisplayMentionFind(lines[0], "water", 1);
+        CMentionOffer? foreign = area.CDisplayRoute.CDisplayMentionFind(lines[1], "water", 1);
 
-        Assert.Equal(0, found?.CMentionOfferOffset);
+        Assert.Equal(0, found?.CMentionOfferUnit);
         Assert.Empty(found!.CMentionOfferEntry);
         Assert.Empty(foreign!.CMentionOfferEntry);
         Assert.Equal([water.LEntryId], arrived);
@@ -50,7 +50,8 @@ public sealed class TDisplayMention
         List<long> arrived = TDisplayLibraryAdd(atelier, asked, false);
         CDisplay area = TDisplayMentionPrepare(atelier, asked, run.LEntryId);
 
-        CMentionOffer? offer = area.CDisplayMentionFind(Assert.Single(TDisplayLineRead(area)), 1);
+        CMentionOffer? offer =
+            area.CDisplayRoute.CDisplayMentionFind(Assert.Single(TDisplayLineRead(area)), "water", 1);
 
         Assert.Empty(offer!.CMentionOfferEntry);
         Assert.Empty(arrived);
@@ -71,14 +72,46 @@ public sealed class TDisplayMention
         List<long> arrived = TDisplayLibraryAdd(atelier, asked, true);
         CDisplay area = TDisplayMentionPrepare(atelier, asked, run.LEntryId);
 
-        CMentionOffer? offer = area.CDisplayMentionFind(Assert.Single(TDisplayLineRead(area)), 5);
+        CMentionOffer? offer =
+            area.CDisplayRoute.CDisplayMentionFind(Assert.Single(TDisplayLineRead(area)), "the water", 5);
 
-        Assert.Equal(4, offer?.CMentionOfferOffset);
+        Assert.Equal(4, offer?.CMentionOfferUnit);
         Assert.Equal(
             [first.LEntryId, second.LEntryId],
             offer!.CMentionOfferEntry.Select(entry => entry.CTranslationTargetId).Order());
         Assert.Empty(arrived);
         Assert.Empty(asked);
+    }
+
+    [Fact]
+    public void DisplayMentionFind_AstralCharacterBeforeWordStartingInAnEarlierPiece_OffersItsWholeTextUnit()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry water = TDisplayEntrySave(engine, "water", "English");
+        TDisplayEntrySave(engine, "waterfall", "English");
+        TDisplayEntrySave(engine, "waterfall", "English");
+        string text = "\U0001F600 waterfall";
+        LEntry run = TDisplayEntrySave(
+            engine,
+            "run",
+            "English",
+            TDisplaySentenceCreate(
+                text, string.Empty, [TInterfaceMentionSpan.TMentionDraftCreate(0, 2, 5, water.LEntryId, 0)]));
+        List<string> asked = [];
+        List<long> arrived = TDisplayLibraryAdd(atelier, asked, true);
+        CDisplay area = TDisplayMentionPrepare(atelier, asked, run.LEntryId);
+        CLeafLine line = Assert.Single(
+            Assert.Single(area.CDisplayCard.CDisplayCardRead().CLecternCardMeanings).CLeafSentence);
+
+        CMentionOffer? offer = area.CDisplayRoute.CDisplayMentionFind(line.CLeafLineSentence, text, 8);
+
+        Assert.Equal("fall", line.CLeafLinePiece[^1].CMentionPieceText);
+        Assert.Equal(text, string.Concat(line.CLeafLinePiece.Select(static piece => piece.CMentionPieceText)));
+        Assert.Equal(3, offer?.CMentionOfferUnit);
+        Assert.Equal(2, offer!.CMentionOfferEntry.Count);
+        Assert.Empty(arrived);
     }
 
     [Fact]
@@ -92,7 +125,8 @@ public sealed class TDisplayMention
         List<long> arrived = TDisplayLibraryAdd(atelier, asked, true);
         CDisplay area = TDisplayMentionPrepare(atelier, asked, run.LEntryId);
 
-        CMentionOffer? offer = area.CDisplayMentionFind(Assert.Single(TDisplayLineRead(area)), 1);
+        CMentionOffer? offer =
+            area.CDisplayRoute.CDisplayMentionFind(Assert.Single(TDisplayLineRead(area)), "quartz", 1);
 
         Assert.NotNull(offer);
         Assert.Empty(offer!.CMentionOfferEntry);
@@ -123,7 +157,8 @@ public sealed class TDisplayMention
         atelier.CAtelierMention.CMentionSenseChosen += senses.Add;
         CDisplay area = TDisplayMentionPrepare(atelier, asked, run.LEntryId);
 
-        CMentionOffer? offer = area.CDisplayMentionFind(Assert.Single(TDisplayLineRead(area)), 5);
+        CMentionOffer? offer =
+            area.CDisplayRoute.CDisplayMentionFind(Assert.Single(TDisplayLineRead(area)), "the water", 5);
 
         Assert.Empty(offer!.CMentionOfferEntry);
         Assert.Equal([water.LEntryId], arrived);
@@ -142,7 +177,8 @@ public sealed class TDisplayMention
         List<long> arrived = TDisplayLibraryAdd(atelier, asked, true);
         CDisplay area = TDisplayMentionPrepare(atelier, asked, run.LEntryId);
 
-        CMentionOffer? offer = area.CDisplayMentionFind(Assert.Single(TDisplayLineRead(area)) + 1000, 1);
+        CMentionOffer? offer =
+            area.CDisplayRoute.CDisplayMentionFind(Assert.Single(TDisplayLineRead(area)) + 1000, "water", 1);
 
         Assert.Empty(offer!.CMentionOfferEntry);
         Assert.Empty(arrived);
@@ -164,9 +200,9 @@ public sealed class TDisplayMention
         List<long> arrived = TDisplayLibraryAdd(atelier, asked, true);
         CDisplay area = TDisplayMentionPrepare(atelier, asked, run.LEntryId);
 
-        CMentionOffer? offer = area.CDisplayEtymologyFind(6);
+        CMentionOffer? offer = area.CDisplayRoute.CDisplayEtymologyFind("from water", 6);
 
-        Assert.Equal(5, offer?.CMentionOfferOffset);
+        Assert.Equal(5, offer?.CMentionOfferUnit);
         Assert.Empty(offer!.CMentionOfferEntry);
         Assert.Equal([water.LEntryId], arrived);
         Assert.Equal(["Library"], asked);
@@ -181,7 +217,7 @@ public sealed class TDisplayMention
         List<string> asked = [];
         CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, asked), true);
 
-        Assert.Null(wing.CWingDisplay.CDisplayArea.CDisplayEtymologyFind(1));
+        Assert.Null(wing.CWingDisplay.CDisplayRoute.CDisplayEtymologyFind("from water", 1));
         Assert.Empty(asked);
     }
 
@@ -207,11 +243,11 @@ public sealed class TDisplayMention
     {
         CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, asked), true);
         wing.CWingEntryOpen(shown);
-        return wing.CWingDisplay.CDisplayArea;
+        return wing.CWingDisplay;
     }
 
     private static IReadOnlyList<long> TDisplayLineRead(CDisplay area) =>
-        Assert.Single(area.CDisplayCardRead().CLecternCardMeanings).CLeafSentence
+        Assert.Single(area.CDisplayCard.CDisplayCardRead().CLecternCardMeanings).CLeafSentence
             .Select(static line => line.CLeafLineSentence)
             .ToList();
 

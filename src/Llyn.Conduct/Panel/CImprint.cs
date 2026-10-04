@@ -119,6 +119,7 @@ public sealed class CImprint
     {
         return LEntryPort.LEngineKindRead()
             .Select(static kind => new CReferenceKind(kind.LReferenceKindTag, kind.LReferenceKindKey))
+            .DistinctBy(static kind => kind.CReferenceKindTag, StringComparer.Ordinal)
             .ToList();
     }
 
@@ -130,7 +131,8 @@ public sealed class CImprint
                 row.LAuthorRowName,
                 row.LAuthorRowPosition,
                 row.LAuthorRowEarlier,
-                row.LAuthorRowLater))
+                row.LAuthorRowLater,
+                false))
             .ToList();
         _cImprintCount = rows.Count;
         if (CImprintHeld)
@@ -140,7 +142,7 @@ public sealed class CImprint
 
         if (_cImprintBlankAt >= 0 && _cImprintBlankAt <= rows.Count)
         {
-            rows.Insert(_cImprintBlankAt, new CAuthorRow(0, string.Empty, _cImprintBlankAt, false, false));
+            rows.Insert(_cImprintBlankAt, new CAuthorRow(0, string.Empty, _cImprintBlankAt, false, false, true));
         }
 
         return rows;
@@ -154,6 +156,11 @@ public sealed class CImprint
         }
 
         if (position is not int at || id is not long author)
+        {
+            return;
+        }
+
+        if (author == 0 && at != _cImprintBlankAt)
         {
             return;
         }
@@ -182,8 +189,12 @@ public sealed class CImprint
         CImprintByline.CBylineClose();
         if (author == 0)
         {
-            _cImprintBlankAt = -1;
-            CImprintChanged?.Invoke();
+            if (_cImprintBlankAt >= 0)
+            {
+                _cImprintBlankAt = -1;
+                CImprintChanged?.Invoke();
+            }
+
             return;
         }
 

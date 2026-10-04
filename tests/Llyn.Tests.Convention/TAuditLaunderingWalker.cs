@@ -193,12 +193,32 @@ internal static class TAuditLaunderingWalker
                 case MemberAccessExpressionSyntax input
                     when TAuditTruthSetting.TAuditInputMembers.Contains(
                              input.Name.Identifier.ValueText, StringComparer.Ordinal)
-                         && TAuditBinderSymbol.TAuditControlCheck(TAuditBinderSymbol.TAuditTypeRead(input.Expression)):
+                         && TAuditInputCheck(input.Expression):
                     return (input.Expression.ToString(), TAuditTextColour);
             }
         }
 
         return null;
+    }
+
+    private static bool TAuditInputCheck(ExpressionSyntax receiver)
+    {
+        if (TAuditBinderSymbol.TAuditSymbolRead(receiver) is INamespaceSymbol)
+        {
+            return false;
+        }
+
+        ITypeSymbol? type = TAuditBinderSymbol.TAuditTypeRead(receiver);
+        for (ITypeSymbol? current = type; current is not null; current = current.BaseType)
+        {
+            if (current.TypeKind is TypeKind.Error or TypeKind.Dynamic
+                || current.ToDisplayString() == TAuditTruthSetting.TAuditInputBase)
+            {
+                return true;
+            }
+        }
+
+        return type is null;
     }
 
     private static bool TAuditConditionCheck(ExpressionSyntax condition)

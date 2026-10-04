@@ -1,5 +1,5 @@
 # CTimbre.cs
-Hash: `e31b4eebbcfac9f5`
+Hash: `5961ec2915db7d98`
 
 ## `public sealed class CTimbre`
 
@@ -41,14 +41,18 @@ It then answers the text its sheet holds for the row.
 
 The text the held sheet shows on one accent row, or nothing for a row it lacks.
 
-## `public void CTimbrePronunciationAdd(long accent)`
+## `public void CTimbrePronunciationAdd(long? accent)`
 
-The user pressed plus on the accent row `accent`, or on the primary for id zero.
+The user pressed plus on the accent row `accent`, or on the primary with null.
+Null means the primary, which carries no row of its own.
+Conduct maps null to the engine's id 0, so the driver never sends a magic id.
 A blank pronunciation follows that row.
 
-## `public void CTimbrePronunciationRemove(long accent)`
+## `public void CTimbrePronunciationRemove(long? accent)`
 
-The user pressed minus on the accent row `accent`, or on the primary for id zero.
+The user pressed minus on the accent row `accent`.
+The driver always calls it, with null when no row was carried.
+Null names no row, so Conduct removes nothing then.
 
 ## `public CTimbreAccent CTimbreAccentRead()`
 
@@ -104,9 +108,11 @@ A failure is not caught here, so it reaches the desk's draft load and shows its 
 
 The user asked to look the held entry's reflexes up again.
 
-## `public void CTimbreReflexAdd(long reflex)`
+## `public void CTimbreReflexAdd(long? reflex)`
 
-The user pressed the plus of reflex row `reflex`, or of the header when it is zero.
+The user pressed the plus of reflex row `reflex`, or of the header when it is null.
+Null means no row is pressed, so the new row lands after all rows.
+Conduct maps null to the engine's id 0, so the driver never sends a magic id.
 The engine places the new row below the pressed one, in its language and kind.
 
 ## `public void CTimbreReflexRemove(long reflex)`

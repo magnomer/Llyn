@@ -1,5 +1,5 @@
 # LRecordingClerk.cs
-Hash: `a4980ec6270b64b1`
+Hash: `797abb22d4d9fd66`
 
 ## `public sealed class LRecordingClerk`
 
@@ -9,7 +9,7 @@ The session trove that remembers a harvest stays in the engine, so the clerk onl
 
 ## `public LRecordingClerk(LRig rig, LLanguageCache languages, LTrailClerk trail, LClaimClerk claims)`
 
-Reads the recording and pronunciation ports and the source factory out of `rig`.
+Reads the recording and pronunciation ports, the source factory and the phonograph out of `rig`.
 The claim clerk supplies the held drafts the sweep must keep.
 
 ## `public Task<IReadOnlyList<LRecording>> LRecordingClerkFind(string word, string language, string variety, LListener listener, CancellationToken cancellation)`
@@ -23,16 +23,18 @@ Replays a remembered harvest to `listener`, filtered to `variety`, and finishes 
 ## `public async Task<string?> LRecordingClerkSave(LRecording recording, string word, string language, CancellationToken cancellation)`
 
 Stores a harvested recording under the workspace and answers its path.
-Null when the port raises `LVaultFault`: the download was refused or timed out, or a file was not written.
-That failure is expected, so it ends here as the empty answer.
-The shell names no file or network type.
-Any other fault, a cancellation the caller asked for among them, reaches the caller.
+Null only when nothing was saved.
+An `LVaultFault` means the download was refused or timed out, or a file was not written.
+That fault reaches the caller unrecorded, since the gate that shows it records it once.
+The shell names no file or network type, since the fault wraps the cause.
+Any other fault, a cancellation the caller asked for among them, reaches the caller too.
 
 ## `public async Task<string?> LRecordingClerkPrepare(LRecording recording, CancellationToken cancellation)`
 
 Fetches a recording to a playable local file without storing it.
-Null when the port raises `LVaultFault`, as `LRecordingClerkSave` answers null.
-Any other fault reaches the caller.
+Null only when nothing was prepared.
+An `LVaultFault` reaches the caller unrecorded, as in `LRecordingClerkSave`.
+Any other fault reaches the caller too.
 
 ## `public bool LRecordingClerkExist(string? file)`
 

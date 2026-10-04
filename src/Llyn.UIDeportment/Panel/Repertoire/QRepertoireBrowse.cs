@@ -12,7 +12,8 @@ internal sealed partial class QRepertoire
 
     private async void QRepertoireWorkspaceRefine()
     {
-        await _qRepertoireHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
+        await _qRepertoireHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(
+            _qRepertoireHost.QWindowEnvoy, QEnsignImage.QEnsignDraw);
     }
 
     private void QInquestObserve(object sender, TextChangedEventArgs e)

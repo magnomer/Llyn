@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -197,20 +196,6 @@ public static class LDraftClerkCard
     private static bool LCardLoneCheck(IReadOnlyList<LCardDraft> cards, long id)
     {
         return cards.Count == 1 && cards[0].LCardDraftId == id;
-    }
-
-    public static int? LCardOrdinalRead(LEntryDraft content, long id, string ordinal)
-    {
-        ArgumentNullException.ThrowIfNull(content);
-        ArgumentNullException.ThrowIfNull(ordinal);
-
-        if (!int.TryParse(ordinal, NumberStyles.Integer, CultureInfo.InvariantCulture, out int wanted))
-        {
-            return null;
-        }
-
-        int count = Math.Max(LCardListRead(content, id).Count, 1);
-        return LCardShiftRead(content, id, Math.Clamp(wanted, 1, count) - 1);
     }
 
     public static int? LCardShiftRead(LEntryDraft content, long id, int place)

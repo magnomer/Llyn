@@ -1,15 +1,16 @@
 # PProspectItem.cs
-Hash: `d90c7fe9dac1860d`
+Hash: `0db2c8c692a1358d`
 
 ## `internal sealed class PProspectItem`
 
 One row of the dropdown that opens when typed text matches more than one Entry.
 Most rows stand for an Entry that already exists, so they carry its id.
 The closing rows offer a fresh Entry for the typed word, one per language, with no id yet.
-Only those rows are marked fresh.
+Their id is null, so no magic id stands for a fresh Entry.
+Only those rows are marked fresh, read from the null id.
 The flag is derived from the language so the dropdown reads the same as every other headword list.
 
-## `internal PProspectItem(long id, string headword, string language, bool fresh, string epithet = "", string? name = null)`
+## `internal PProspectItem(long? id, string headword, string language, string epithet = "", string? name = null)`
 
 The shown name defaults to the headword, so a create row needs none passed.
 

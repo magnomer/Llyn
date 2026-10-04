@@ -1,5 +1,5 @@
 # TAuditTruth.cs
-Hash: `ea48a7d22f06865b`
+Hash: `0404c7c117bdb3db`
 
 ## `public sealed class TAuditTruth`
 
@@ -91,6 +91,7 @@ A surface binding reads the members of what it is fed, so spoonfeeding is where 
 A Conduct member one driver reaches and the other never does.
 Also a Conduct port a driver does not implement.
 Both drivers call the same gate for the same action, so an asymmetry is medium work or a leak.
+It only informs while Demeanor holds no source, as `TAuditTruthInformative` sets.
 
 ## `public void AuditTruth_Ledger_MatchesHits()`
 
@@ -105,6 +106,13 @@ An empty driver passes, but a file the binder dropped does not pass unseen.
 ## `private void TAuditTruthCheck(string kind, string summary)`
 
 Holds one kind against the ledger and prints the count and the report path.
+An informative kind waiting on an empty driver prints its count and fails nothing.
+
+## `private static bool TAuditEnforceCheck(string kind)`
+
+True when the kind gates now.
+A kind outside `TAuditTruthInformative` always gates.
+A listed kind gates once every folder it waits on holds a walked source.
 
 ## `private static int TAuditKindRead(string kind)`
 

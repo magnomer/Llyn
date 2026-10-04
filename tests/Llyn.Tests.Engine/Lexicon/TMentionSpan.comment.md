@@ -1,5 +1,5 @@
 # TMentionSpan.cs
-Hash: `6da0d408f0502d28`
+Hash: `40e8ee01cf5db21d`
 
 ## `public sealed class TMentionSpan`
 
@@ -32,16 +32,16 @@ Japanese runs stop when the script changes, and punctuation positions resolve to
 ## `public void MentionSpanDivide_TwoMentionsAndGap_CutsFivePiecesInOrder()`
 
 Out-of-order mentions return as alternating text and mention pieces in source order.
-Each piece retains its exact offset, length, and mention identity.
+Each piece retains its exact text and mention identity.
 
 ## `public void MentionSpanDivide_MentionsAtBothEnds_CutsNoEmptyPiece()`
 
 Mentions at the start and end leave only the intervening text piece.
 No zero-length boundary pieces are emitted.
 
-## `public void MentionSpanDivide_SurrogatePairBeforeMention_KeepsCodePointOffsets()`
+## `public void MentionSpanDivide_SurrogatePairBeforeMention_CutsAtTheMention()`
 
-A mention after a surrogate pair retains code-point offsets when the text is divided.
+A mention after a surrogate pair is cut at its own characters when the text is divided.
 Each piece's text is still cut whole, with the pair kept in one piece.
 
 ## `public void MentionSpanDivide_NoMention_CutsOnePiece()`

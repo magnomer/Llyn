@@ -1,5 +1,5 @@
 # LEngine.cs
-Hash: `247fee14f53d35e9`
+Hash: `ad9d1c944b724369`
 
 ## `public sealed class LEngine : IDisposable`
 
@@ -160,6 +160,8 @@ The new rig's rescue and settings are read through the clerk's static open steps
 A folder that cannot be opened therefore leaves the old clerks and caches untouched.
 A workspace that already holds a settings file is opened on its own settings.
 One without any receives the current settings and has them written.
+That write goes through the clerk's `LWorkspaceFallbackSave`, which records a vault fault and swallows it.
+So the switch never stops halfway, and the next settings save tries again.
 The drafts this engine claimed are forgotten with the old folder and each id is marked stale.
 The old recording clerk stops its playback, since the shared phonograph outlives it.
 A shell still holding one is refused instead of writing here.

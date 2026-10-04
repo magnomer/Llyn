@@ -90,9 +90,9 @@ public sealed class TDisplay
                     LStateValue.LStateValueUnknown, string.Empty, "a spark", [], [], [], [], [], 3),
             ],
             [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a fire", [], [], [], [], [], 1)]);
-        editor.CEditorDisplay.LDisplaySound.TDisplaySoundShow(7, draft);
+        editor.CEditorDisplay.LDisplayRule.LDisplaySound.TDisplaySoundShow(7, draft);
 
-        IReadOnlyList<CCompassRow> rows = editor.CEditorDisplay.CDisplayCompassRead(
+        IReadOnlyList<CCompassRow> rows = editor.CEditorDisplay.CDisplayCompass.CCompassRead(
             [CCompassPart.CCompassPartSpeech, CCompassPart.CCompassPartMeaning, CCompassPart.CCompassPartCollocation],
             key => key == "Display.CollocationSingle" ? "Display.MeaningSingle" : key);
 
@@ -120,7 +120,7 @@ public sealed class TDisplay
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TInterfaceEditor.TEditorCreate(engine);
 
-        IReadOnlyList<CCompassRow> rows = editor.CEditorDisplay.CDisplayCompassRead(
+        IReadOnlyList<CCompassRow> rows = editor.CEditorDisplay.CDisplayCompass.CCompassRead(
             [CCompassPart.CCompassPartMeaning, CCompassPart.CCompassPartIncoming, CCompassPart.CCompassPartNote],
             static key => "<" + key + ">");
 

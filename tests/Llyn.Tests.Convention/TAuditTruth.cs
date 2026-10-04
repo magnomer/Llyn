@@ -112,9 +112,16 @@ public sealed class TAuditTruth
             TAuditTruthSetting.TAuditLedgerFile,
             kind,
             TAuditTruthHits.Value.TAuditHits,
-            TAuditTruthSetting.TAuditTruthEnforced,
+            TAuditTruthSetting.TAuditTruthEnforced && TAuditEnforceCheck(kind),
             summary);
         _tAuditOutput.WriteLine($"{TAuditTruthAudit} {kind}: {count} {summary}. Report: {report}");
+    }
+
+    private static bool TAuditEnforceCheck(string kind)
+    {
+        return !TAuditTruthSetting.TAuditTruthInformative.TryGetValue(kind, out string[]? folders)
+            || folders.All(folder => TAuditTruthHits.Value.TAuditSources.Any(source =>
+                TAuditBinder.TAuditRelativeRead(source).StartsWith(folder + "/", StringComparison.OrdinalIgnoreCase)));
     }
 
     private static int TAuditKindRead(string kind)
@@ -136,6 +143,11 @@ public sealed class TAuditTruth
         text.AppendLine();
         text.AppendLine($"- Generation: {TAuditConvention.TAuditGeneration}");
         text.AppendLine($"- Enforced: {TAuditTruthSetting.TAuditTruthEnforced}");
+        foreach (string kind in TAuditTruthSetting.TAuditTruthInformative.Keys.Where(kind => !TAuditEnforceCheck(kind)))
+        {
+            text.AppendLine($"- Informative: {kind}");
+        }
+
         foreach (string kind in TAuditTruthKinds)
         {
             text.AppendLine($"- {kind}: {TAuditKindRead(kind)}");

@@ -1,5 +1,5 @@
 # QProspect.cs
-Hash: `186382f77ebcf842`
+Hash: `ef93fdf922bd353d`
 
 ## `internal sealed class QProspect`
 
@@ -52,10 +52,13 @@ Hands the row the pointer chose to the one gate its field names.
 The field is found from the anchor the dropdown stands at.
 The row is a plain surface rather than a button, so the list beneath it keeps its own selection.
 A card's link caret takes the row through the translation insert gate, then the dropdown shuts and the entry empties.
-The gate starts a tentative entry first on a create row, whose id is zero.
-An etymon entry adds the Entry and empties itself.
-A card sentence links the selected span on its own row.
-Any other field runs the mention pick command on itself, with the raw Entry id as its parameter.
+Every pick hands the raw row, a nullable id with the word and language it carries.
+A create row has a null id, and the gate alone decides what that means.
+The translation gate starts a tentative entry for it first, then links it.
+An etymon entry hands the raw id to its gate and empties itself.
+A card sentence hands the raw id for the selected span on its own row.
+Any other field runs the mention pick command on itself, with the raw nullable id as its parameter.
+The driver never tests the id, so no value of it skips a gate or picks another.
 The field's owner binds that command where it lives, so the anchor reaches its owner's gate alone.
 The etymology text and the corpus transcript are such fields.
 The field's text and selection are read at the pick, raw, since the dropdown never takes focus.
@@ -76,7 +79,8 @@ A click elsewhere shuts it without `QProspectShutRefine`, and a kept selection w
 
 ## `internal void QProspectKeyObserve(object sender, KeyEventArgs e)`
 
-Enter on a selected row hands that row's Entry, word and language to the translation insert gate.
+Enter on a selected row hands the raw row to the translation insert gate.
+That is its nullable id, its word and its language, and the gate decides between them.
 It runs after the dropdown's Refine and before the entry's own enter, so a chosen row wins.
 The dropdown shuts and the entry empties after the gate.
 

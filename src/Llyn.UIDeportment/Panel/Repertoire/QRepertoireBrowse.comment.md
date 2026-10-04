@@ -1,5 +1,5 @@
 # QRepertoireBrowse.cs
-Hash: `a05fe497fd658ee8`
+Hash: `672c7d5446b99f0d`
 
 ## `internal sealed partial class QRepertoire`
 
@@ -19,6 +19,7 @@ It shows what this Situation is, and where it is used.
 
 Answers the Conduct's workspace change by reloading the flags, since they do not belong to the old folder's rows.
 The Conduct has already closed the shown Situation and dropped the old selection.
+The window's envoy goes with the load, so the catalog reports a failed load and answers no languages.
 
 ### `private void QInquestObserve(object sender, TextChangedEventArgs e)`
 

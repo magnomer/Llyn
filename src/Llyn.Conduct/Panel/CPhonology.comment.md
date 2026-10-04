@@ -1,5 +1,5 @@
 # CPhonology.cs
-Hash: `4b219634f22cbb59`
+Hash: `853f365cb5d7f8ab`
 
 ## `public sealed class CPhonology`
 
@@ -76,11 +76,15 @@ The rows the engine returns for the vista, already filtered, sorted, twinned and
 Each maps plainly to its shape: the entry as a `CVistaRow` and the sound beside it.
 The engine fills every epithet, so the map copies it as it stands.
 It answers nothing before the vista is restored.
+A failed read shows `Sound.LoadFailed` through the envoy and answers no rows, so the count reads zero.
+The load task runs this read after the flag fill, so a throw here would fault the driver.
 
 ## `public Task<CEnsignSheet<IReadOnlyList<CCatalogPronunciation>>> CPhonologyRowsLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `CPhonologyRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+A failed flag fill shows `Sound.LoadFailed` and still answers the rows with no languages.
+The driver awaits it from an event handler, where a fault would end the app.
 
 ## `public void CPhonologyOrderSet(CCatalogOrder? order)`
 

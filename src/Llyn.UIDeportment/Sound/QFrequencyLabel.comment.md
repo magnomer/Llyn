@@ -1,5 +1,5 @@
 # QFrequencyLabel.cs
-Hash: `8784d33ed0c70320`
+Hash: `e5ef5e451796d518`
 
 ## `internal static class QFrequencyLabel`
 
@@ -24,7 +24,7 @@ A null frequency collapses the section, so both surfaces hide it the same way.
 
 Words and colours one chip with the rung name in the rung's brush, then the star row.
 The name looks up the key Conduct chose, so the chip speaks the user's language while the engine keeps English.
-The rung's brush is the theme's resource under the rank's name.
+The rung's brush is the theme's resource the tier switches to, and an unknown tier takes the muted brush.
 The earned stars take the rung's brush and the spare ones the faint empty brush.
 The engine counts the spare stars, so the row stays as wide as the ladder.
 The spare stars are the same glyph dimmed, since a hollow glyph beside a filled one reads as five stars.

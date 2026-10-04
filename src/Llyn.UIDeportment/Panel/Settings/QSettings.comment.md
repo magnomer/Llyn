@@ -1,5 +1,5 @@
 # QSettings.cs
-Hash: `bff490fcbf15fafb`
+Hash: `c42a6a392223357f`
 
 ## `internal sealed class QSettings`
 
@@ -24,6 +24,7 @@ Each named part of the markup is pulled by its contract ID, which keeps the mark
 
 Sets the search hint and the two page icons, and subscribes the panel's own events.
 It introduces each choice driver to only the Conduct area it calls, or to the posture.
+Each settings switch also receives the window's envoy, for a failed save.
 This happens before `CLedgerChanged` is subscribed, so the first state finds them ready.
 It also subscribes the posture's linked switch, so the summary row follows a tick.
 The ledger raises the state on every open and after every settings or workspace change.
@@ -41,6 +42,7 @@ So a painted switch writes nothing back at all.
 ## `private void QSettingsEpithetObserve(object sender, RoutedEventArgs e)`
 
 The listing switch was ticked, so the ledger saves the raw switch.
+The window's envoy goes with it, so a failed save is shown.
 
 ## `private (string QSettingsChild, StackPanel QSettingsPage)[] QSettingsTableRead()`
 

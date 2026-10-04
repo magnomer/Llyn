@@ -100,8 +100,9 @@ public sealed class CSounding
     {
         long? entry = LSoundingEntry;
         return new CSoundingScript(
-            CSoundingScriptRead(LSoundingListRead(
-                _cSoundingPhonologyPort.LEngineScriptRead, "Display.ScriptReadFailed")),
+            CSoundingScriptRead(
+                LSoundingListRead(_cSoundingPhonologyPort.LEngineScriptRead, "Display.ScriptReadFailed"),
+                _cSoundingSettingsPort),
             _cSoundingVoice.LDisplayScriptCheck(entry),
             entry is not null
             && _cSoundingNoticed.LLedgerRepaintRead(_cSoundingEnvoy, _cSoundingSettingsPort,
@@ -192,22 +193,28 @@ public sealed class CSounding
             row.LFanqieRowRemainder);
     }
 
-    internal static IReadOnlyList<CScriptGroup> CSoundingScriptRead(IReadOnlyList<LScriptGroup> groups)
+    internal static IReadOnlyList<CScriptGroup> CSoundingScriptRead(
+        IReadOnlyList<LScriptGroup> groups, LSettingsPort settings)
     {
         ArgumentNullException.ThrowIfNull(groups);
+        ArgumentNullException.ThrowIfNull(settings);
 
         return groups
-            .Select(static group => new CScriptGroup(
+            .Select(group => new CScriptGroup(
                 group.LScriptGroupHeading,
                 group.LScriptGroupStyle,
                 group.LScriptGroupGloss,
-                group.LScriptGroupImages.Select(LSoundingImageRead).ToList()))
+                group.LScriptGroupImages.Select(image => LSoundingImageRead(image, settings)).ToList()))
             .ToList();
     }
 
-    private static CScriptImage LSoundingImageRead(LScriptImage image)
+    private static CScriptImage LSoundingImageRead(LScriptImage image, LSettingsPort settings)
     {
-        return new CScriptImage(image.LScriptImageData, image.LScriptImageCaption, image.LScriptImageEpoch);
+        string epoch = "Epoch." + image.LScriptImageEpoch;
+        return new CScriptImage(
+            image.LScriptImageData,
+            image.LScriptImageCaption,
+            image.LScriptImageEpoch.Length > 0 && settings.LEngineTextFind(epoch) is not null ? epoch : string.Empty);
     }
 
     internal static IReadOnlyList<CParadigmSlot> CSoundingParadigmRead(
@@ -262,9 +269,13 @@ public sealed class CSounding
     {
         ArgumentNullException.ThrowIfNull(syllables);
 
+        IReadOnlyList<int> scale = CContour.CContourScale;
         return syllables
-            .Select(static syllable => new CContour(
-                syllable.LContourText, syllable.LContourLevels, syllable.LContourToned))
+            .Select(syllable =>
+            {
+                List<int> levels = syllable.LContourLevels.Where(level => scale.Contains(level)).ToList();
+                return new CContour(syllable.LContourText, levels, syllable.LContourToned && levels.Count > 0);
+            })
             .ToList();
     }
 

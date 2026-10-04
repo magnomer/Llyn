@@ -50,17 +50,12 @@ public sealed class QGraspStar
 
     private int QGraspLast => (int)_qGraspElement.GetValue(_qGraspLimit);
 
-    private int QGraspStarCount => QGraspLast / 2;
-
-    public static object QGraspLimitDraw(DependencyObject sender, object value, DependencyProperty limit)
-    {
-        return Math.Min((int)value, (int)sender.GetValue(limit));
-    }
+    private int QGraspStarCount => (QGraspLast + 1) / 2;
 
     public Size QGraspSizeDraw()
     {
         return new Size(
-            QGraspStarCount * QGraspStarSize + (QGraspStarCount - 1) * QGraspStarGap + 2 * QGraspHitSlack,
+            QGraspStarCount * QGraspStarSize + Math.Max(0, QGraspStarCount - 1) * QGraspStarGap + 2 * QGraspHitSlack,
             QGraspStarSize + 2 * QGraspHitSlack);
     }
 
@@ -169,8 +164,8 @@ public sealed class QGraspStar
         double pitch = QGraspStarSize + QGraspStarGap;
         double x = point.X - QGraspHitSlack + QGraspStarGap / 2;
         int star = (int)Math.Floor(x / pitch);
-        star = Math.Clamp(star, 0, QGraspStarCount - 1);
+        star = Math.Clamp(star, 0, Math.Max(0, QGraspStarCount - 1));
         double within = x - star * pitch;
-        return star * 2 + (within < pitch / 2 ? 1 : 2);
+        return Math.Min(QGraspLast, star * 2 + (within < pitch / 2 ? 1 : 2));
     }
 }

@@ -1,11 +1,12 @@
 # TEditorField.cs
-Hash: `c840be44352d45d6`
+Hash: `8c76c5432157c1ba`
 
 ## `public sealed class TEditorField`
 
 Covers the editor's typed field gates over an input editor on a real workspace, with no delay.
 A card's title, expression and definition land as typed once the deferred requests are flushed.
 A card's links read back in the card's order.
+Each link is a stored pick, so its word and language go empty.
 A card without links reads none.
 An empty desk reads nothing.
 An image's location, a video's location and span, and a gloss's text land as typed.
@@ -13,6 +14,7 @@ A pressed gloss button appends a gloss in the engine's gloss language, after the
 A removed gloss leaves, and a picked language retags the gloss that stays.
 A gloss with no language carries Conduct's hint key, and a named one carries none.
 The close gate lets the held draft and every search go.
+An editor closed and then reopened hears a fold toggled in another editor again, once.
 The editor reads its draft's language, and an opened workspace opens a fresh draft in it.
 The observers the editor attaches show the draft through the marshal the driver hands.
 

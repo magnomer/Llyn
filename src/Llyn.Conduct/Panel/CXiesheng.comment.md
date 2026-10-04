@@ -1,5 +1,5 @@
 # CXiesheng.cs
-Hash: `b3879cd4c5ad22f6`
+Hash: `0ac0ab0f096b6665`
 
 ## `public sealed class CXiesheng`
 
@@ -123,11 +123,15 @@ The engine picks the language and answers nothing while no pack carries series.
 ## `public IReadOnlyList<CVistaRow> CXieshengKindredRead()`
 
 The entry list of the chosen series, copied through the shared row map and counted for the empty verdict.
+A failed read shows `Xiesheng.LoadFailed` through the envoy and answers no rows, so the count reads zero.
+The load task runs this read after the flag fill, so a throw here would fault the driver.
 
 ## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CXieshengKindredLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `CXieshengKindredRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+A failed flag fill shows `Xiesheng.LoadFailed` and still answers the rows with no languages.
+The driver awaits it from an event handler, where a fault would end the app.
 
 ## `public CStemPage CXieshengStemRead()`
 

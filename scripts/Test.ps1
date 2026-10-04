@@ -16,8 +16,10 @@
     Supports VSTest filters, test discovery, repeated runs for investigating
     intermittent failures, and additional arguments passed to dotnet test.
 
-    The script stops after the first failed run and returns dotnet test's exit
-    code to the caller.
+    Every project builds first, one by one, then all run at once, each in its
+    own process; a project's output prints whole when it ends. Every failing
+    project is named. The script stops after the first failed run and returns
+    the exit code of the first failing project in discovery order.
 
     Every project-specific value - project name, tests folder, convention
     project, platform projects - lives in Test.json. This script carries none, so the file is
@@ -94,7 +96,7 @@
     Forward logger and results-directory options to dotnet test.
 #>
 #requires -Version 5.1
-# TEST - TEST GENERATION 4.
+# TEST - TEST GENERATION 5.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the executed outcome changes.
 # A generation names how the family finds and runs the tests. Two projects on the same generation
@@ -110,6 +112,9 @@
 # Generation 4: everything in generation 3; Test.json maps each platform to one test project or a list, -Platform
 # runs only those projects beside the convention project, -Main still drops the convention project, and a
 # Windows project on a host that is not Windows is skipped with a notice line instead of failing.
+# Generation 5: everything in generation 4, except that every project builds first, one by one, and then
+# all run at once in their own processes; every failing project is named, not only the first, and the
+# first failing project in discovery order gives the exit code.
 # Every project-specific value lives in Test.json, so this file is identical in every project at
 # this generation.
 [CmdletBinding()]
@@ -266,7 +271,7 @@ EXAMPLES
     exit 0
 }
 
-Write-Host 'TEST - TEST GENERATION 4' -ForegroundColor Blue
+Write-Host 'TEST - TEST GENERATION 5' -ForegroundColor Blue
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -303,8 +308,8 @@ function Read-TestConfig {
         }
     }
 
-    if ([int]$config.generation -ne 4) {
-        throw "The test configuration is generation $($config.generation); this script is generation 4."
+    if ([int]$config.generation -ne 5) {
+        throw "The test configuration is generation $($config.generation); this script is generation 5."
     }
 
     return $config
@@ -449,12 +454,24 @@ $commonArguments = @(
     '--nologo'
 )
 
-if ($NoBuild) {
-    $commonArguments += '--no-build'
+# The projects run at once, and two builds of one shared reference collide on its output files, so
+# every project builds first, one by one, and each run then reuses that output.
+if (-not $NoBuild) {
+    $buildArguments = $commonArguments
+    if ($NoRestore) {
+        $buildArguments += '--no-restore'
+    }
+
+    foreach ($testProject in $projects) {
+        & $dotnet.Source build $testProject.FullName @buildArguments
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "Build failed in $($testProject.BaseName) (exit code $LASTEXITCODE)." -ForegroundColor Red
+            exit $LASTEXITCODE
+        }
+    }
 }
-elseif ($NoRestore) {
-    $commonArguments += '--no-restore'
-}
+
+$commonArguments += '--no-build'
 
 if ($List) {
     $commonArguments += '--list-tests'
@@ -464,8 +481,21 @@ if ($null -ne $AdditionalArguments -and $AdditionalArguments.Count -gt 0) {
     $commonArguments += $AdditionalArguments
 }
 
+function ConvertTo-Argument {
+    # Start-Process takes one command line, so each argument is quoted the way the C runtime splits it.
+    param([string]$Text)
+    if ($Text -ne '' -and $Text -notmatch '[\s"]') {
+        return $Text
+    }
+
+    return '"' + (($Text -replace '(\\*)"', '$1$1\"') -replace '(\\+)$', '$1$1') + '"'
+}
+
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 $exitCode = 0
+$running = @()
+$outputRoot = Join-Path ([System.IO.Path]::GetTempPath()) ('Test-' + [guid]::NewGuid().ToString('N'))
+$null = New-Item -ItemType Directory -Path $outputRoot
 
 Push-Location $root
 try {
@@ -474,9 +504,9 @@ try {
             Write-Host "Test run $run of $Repeat" -ForegroundColor Cyan
         }
 
-        foreach ($testProject in $projects) {
-            Write-Host $testProject.BaseName -ForegroundColor Cyan
-
+        # Every project runs at once in its own process. Its output goes to a file and is printed whole
+        # when the process ends, so the lines of two projects never interleave.
+        $running = @(foreach ($testProject in $projects) {
             $projectFilter = $Filter
             if ($selections.ContainsKey($testProject.BaseName)) {
                 $selection = $selections[$testProject.BaseName]
@@ -488,12 +518,36 @@ try {
                 $filterArguments = @('--filter', $projectFilter)
             }
 
-            & $dotnet.Source @('test', $testProject.FullName) @filterArguments @commonArguments
-            $exitCode = $LASTEXITCODE
+            $arguments = @('test', $testProject.FullName) + $filterArguments + $commonArguments
+            $outputPath = Join-Path $outputRoot "$($testProject.BaseName).out"
+            $errorPath = Join-Path $outputRoot "$($testProject.BaseName).err"
+            $process = Start-Process -FilePath $dotnet.Source -ArgumentList (@($arguments | ForEach-Object { ConvertTo-Argument $_ }) -join ' ') `
+                -WorkingDirectory $root -NoNewWindow -PassThru -RedirectStandardOutput $outputPath -RedirectStandardError $errorPath
+            # Windows PowerShell 5.1 reports no exit code for a process whose handle was never read.
+            $null = $process.Handle
+            [pscustomobject]@{ Project = $testProject; Process = $process; Output = $outputPath; Error = $errorPath; Shown = $false }
+        })
 
-            if ($exitCode -ne 0) {
-                Write-Host "Tests failed in $($testProject.BaseName) on run $run of $Repeat (exit code $exitCode)." -ForegroundColor Red
-                break
+        while (@($running | Where-Object { -not $_.Shown }).Count -gt 0) {
+            foreach ($entry in @($running | Where-Object { -not $_.Shown -and $_.Process.HasExited })) {
+                $entry.Process.WaitForExit()
+                $entry.Shown = $true
+                Write-Host ('{0} ({1:N1}s)' -f $entry.Project.BaseName, ($entry.Process.ExitTime - $entry.Process.StartTime).TotalSeconds) -ForegroundColor Cyan
+                foreach ($path in @($entry.Output, $entry.Error)) {
+                    [System.IO.File]::ReadAllLines($path, [Console]::OutputEncoding)
+                }
+            }
+
+            Start-Sleep -Milliseconds 200
+        }
+
+        # Every failing project is named, and the first in discovery order gives the exit code.
+        foreach ($entry in $running) {
+            if ($entry.Process.ExitCode -ne 0) {
+                Write-Host "Tests failed in $($entry.Project.BaseName) on run $run of $Repeat (exit code $($entry.Process.ExitCode))." -ForegroundColor Red
+                if ($exitCode -eq 0) {
+                    $exitCode = $entry.Process.ExitCode
+                }
             }
         }
 
@@ -503,6 +557,13 @@ try {
     }
 }
 finally {
+    foreach ($entry in $running) {
+        if (-not $entry.Process.HasExited) {
+            $entry.Process.Kill()
+        }
+    }
+
+    Remove-Item -LiteralPath $outputRoot -Recurse -Force -ErrorAction SilentlyContinue
     Pop-Location
     $stopwatch.Stop()
 }

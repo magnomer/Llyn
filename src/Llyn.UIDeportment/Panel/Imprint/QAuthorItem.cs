@@ -15,9 +15,10 @@ internal sealed class QAuthorItem : INotifyPropertyChanged
 
     private bool _qAuthorItemLater;
 
-    internal QAuthorItem(long id, string name, int position, bool earlier, bool later)
+    internal QAuthorItem(long id, string name, int position, bool earlier, bool later, bool blank)
     {
         QAuthorItemId = id;
+        QAuthorItemBlank = blank;
         QAuthorItemPosition = position;
         _qAuthorItemName = name;
         _qAuthorItemEarlier = earlier;
@@ -30,7 +31,7 @@ internal sealed class QAuthorItem : INotifyPropertyChanged
 
     public int QAuthorItemPosition { get; }
 
-    public bool QAuthorItemBlank => QAuthorItemId == 0;
+    public bool QAuthorItemBlank { get; }
 
     public string QAuthorItemName
     {
@@ -92,7 +93,8 @@ internal sealed class QAuthorItem : INotifyPropertyChanged
                 row.CAuthorRowName,
                 row.CAuthorRowPosition,
                 row.CAuthorRowEarlier,
-                row.CAuthorRowLater));
+                row.CAuthorRowLater,
+                row.CAuthorRowBlank));
         }
 
         return built;

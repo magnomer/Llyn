@@ -27,7 +27,12 @@ public sealed class QScript : Decorator
         nameof(QScriptFolded),
         typeof(bool),
         typeof(QScript),
-        new FrameworkPropertyMetadata(false, static (sender, _) => ((QScript)sender).QScriptStateRefine()));
+        new FrameworkPropertyMetadata(false, static (sender, _) =>
+        {
+            QScript box = (QScript)sender;
+            box._qScriptBody.Visibility = QLook.QLookVisibleRead(!box.QScriptFolded);
+            box.QScriptStateRefine();
+        }));
 
     public static readonly DependencyProperty QScriptRenewableProperty = DependencyProperty.Register(
         nameof(QScriptRenewable),
@@ -57,8 +62,7 @@ public sealed class QScript : Decorator
         QIconImage chevron = new() { Width = 12, Height = 12, QIconSource = QIcon.QIconResolve("expand", 12) };
         _qScriptSwitch.Content = chevron;
         _qScriptSwitch.SetResourceReference(StyleProperty, "Theme.Marker.Switch");
-        _qScriptSwitch.Checked += (_, _) => QScriptStateRefine();
-        _qScriptSwitch.Unchecked += (_, _) => QScriptStateRefine();
+        _qScriptSwitch.Click += QScriptFoldObserve;
         _qScriptRefresh.SetResourceReference(StyleProperty, "Theme.Sound.Rebuild");
         _qScriptRefresh.Click += QScriptRefreshObserve;
         _qScriptHead.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -114,6 +118,8 @@ public sealed class QScript : Decorator
 
     internal event Action? QScriptRenewalNotice;
 
+    internal event Action<bool>? QScriptFoldNotice;
+
     internal void QScriptRefine(IReadOnlyList<CScriptGroup> groups, bool pending)
     {
         SetCurrentValue(QScriptItemsProperty, QScriptItem.QScriptItemScan(groups, QScriptFailureRefine));
@@ -152,6 +158,17 @@ public sealed class QScript : Decorator
         QScriptRenewalNotice?.Invoke();
     }
 
+    private void QScriptFoldObserve(object sender, RoutedEventArgs e)
+    {
+        QScriptFoldNotice?.Invoke(QLook.QLookCheckedRead(_qScriptSwitch.IsChecked));
+    }
+
+    internal void QScriptFoldRefine(bool opened)
+    {
+        _qScriptSwitch.IsChecked = opened;
+        _qScriptBody.Visibility = QLook.QLookVisibleRead(opened || !QScriptFolded);
+    }
+
     private void QScriptStateRefine()
     {
         IReadOnlyList<QScriptItem>? items = QScriptItems;
@@ -163,9 +180,6 @@ public sealed class QScript : Decorator
             QLook.QLookCueProperty,
             QLook.QLookFirstRead(QScriptPending, QLookCue.QLookCuePending, QLookCue.QLookCueBase));
         _qScriptHead.Visibility = QScriptFolded ? Visibility.Visible : Visibility.Collapsed;
-        _qScriptBody.Visibility = !QScriptFolded || _qScriptSwitch.IsChecked == true
-            ? Visibility.Visible
-            : Visibility.Collapsed;
         Visibility = filled || QScriptPending || QScriptRenewable
             ? Visibility.Visible
             : Visibility.Collapsed;

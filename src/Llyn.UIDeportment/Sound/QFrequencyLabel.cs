@@ -29,7 +29,14 @@ internal static class QFrequencyLabel
 
     private static void QFrequencyLabelRefine(TextBlock name, TextBlock band, CFrequency frequency)
     {
-        string brush = "Theme.Frequency." + frequency.CFrequencyRank;
+        string brush = frequency.CFrequencyRank switch
+        {
+            CFrequencyTier.CFrequencyTierCore => "Theme.Frequency.Core",
+            CFrequencyTier.CFrequencyTierEveryday => "Theme.Frequency.Everyday",
+            CFrequencyTier.CFrequencyTierAdvanced => "Theme.Frequency.Advanced",
+            CFrequencyTier.CFrequencyTierRare => "Theme.Frequency.Rare",
+            _ => "Theme.Frequency.Unknown",
+        };
         name.Text = QLocalizationCatalog.QLocalizationTextRead(frequency.CFrequencyKey);
         name.SetResourceReference(TextBlock.ForegroundProperty, brush);
 

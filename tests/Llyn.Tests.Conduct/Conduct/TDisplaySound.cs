@@ -40,9 +40,13 @@ public sealed class TDisplaySound
 
         CDisplaySound sound = wing.CWingDisplay.CDisplaySound;
 
-        Assert.Equal(new CFont(null, null, null), blank);
-        Assert.Equal(new CFont("Segoe UI", 40, null), sound.CDisplayFontRead(CFontRole.CFontRoleHeadword));
-        Assert.Equal(new CFont("Georgia, Segoe UI", 15, "italic"), sound.CDisplayFontRead(CFontRole.CFontRoleGloss));
+        Assert.Equal(new CFont(null, null, CFontSlant.CFontSlantTheme), blank);
+        Assert.Equal(
+            new CFont("Segoe UI", 40, CFontSlant.CFontSlantTheme),
+            sound.CDisplayFontRead(CFontRole.CFontRoleHeadword));
+        Assert.Equal(
+            new CFont("Georgia, Segoe UI", 15, CFontSlant.CFontSlantItalic),
+            sound.CDisplayFontRead(CFontRole.CFontRoleGloss));
     }
 
     [Fact]
@@ -140,7 +144,7 @@ public sealed class TDisplaySound
         CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         LEntry kindle = engine.TEngineEntrySave(
             TDisplayDraftCreate("kindle", "English", [TInterface.TReflexDraftCreate("Korean", string.Empty, "a")]));
-        editor.CEditorDisplay.LDisplaySound.TDisplaySoundShow(
+        editor.CEditorDisplay.LDisplayRule.LDisplaySound.TDisplaySoundShow(
             kindle.LEntryId, TDisplayDraftCreate("kindle", "English", []));
         CLecternReflex shown = editor.CEditorDisplay.CDisplaySound.CDisplayReflexRead();
 
@@ -163,7 +167,7 @@ public sealed class TDisplaySound
         area.CDisplayReflexToggle(true);
 
         Assert.True(area.CDisplayFoldOpened);
-        Assert.True(editor.CEditorDisplay.LDisplaySound.LDisplayFoldOpened);
+        Assert.True(editor.CEditorDisplay.LDisplayRule.LDisplaySound.LDisplayFoldOpened);
         Assert.Equal(1, changed);
     }
 

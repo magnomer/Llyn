@@ -30,7 +30,7 @@ public sealed record CLeaf(
         ArgumentNullException.ThrowIfNull(cards);
         ArgumentNullException.ThrowIfNull(targets);
 
-        return cards
+        return CFolio.CFolioOrderRead(cards)
             .Select(card => new CLeaf(
                 card.LCardDraftPosition,
                 CStateWording.LStateWordingRead(CFolio.CFolioStateRead(card.LCardDraftTitle), null),

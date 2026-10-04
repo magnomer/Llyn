@@ -58,7 +58,8 @@ public sealed class TLedger
         Assert.Equal(6, shown[0].CLedgerStateShown.CLedgerShownChildren.Count);
 
         CLedgerShown found = atelier.CAtelierLedger.CLedgerFind(engine.TEngineTextRead("Epithet.Switch"));
-        atelier.CAtelierLedger.CLedgerEpithetSave(!shown[^1].CLedgerStateSettings.CSettingsEpithet);
+        atelier.CAtelierLedger.CLedgerEpithetSave(
+            !shown[^1].CLedgerStateSettings.CSettingsEpithet, TEnvoyFake.TEnvoyCreate(false, []));
 
         Assert.Contains("Listing", found.CLedgerShownChildren);
         Assert.Equal(found.CLedgerShownChildren, shown[^1].CLedgerStateShown.CLedgerShownChildren);
@@ -210,7 +211,8 @@ public sealed class TLedger
 
         atelier.TLedgerRepaintShow(envoy, "Display.OrderFailed", new IOException("locked"));
         atelier.TLedgerRepaintShow(envoy, "Display.OrderFailed", new IOException("locked"));
-        atelier.CAtelierLedger.CLedgerEpithetSave(!shown[^1].CLedgerStateSettings.CSettingsEpithet);
+        atelier.CAtelierLedger.CLedgerEpithetSave(
+            !shown[^1].CLedgerStateSettings.CSettingsEpithet, TEnvoyFake.TEnvoyCreate(false, []));
         atelier.TLedgerRepaintShow(envoy, "Display.OrderFailed", new IOException("locked"));
 
         Assert.Equal(["Display.OrderFailed", "Display.OrderFailed"], asked);
@@ -267,8 +269,8 @@ public sealed class TLedger
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<CLedgerState> shown = TLedgerShowRead(atelier);
 
-        atelier.CAtelierLedger.CLedgerEpithetSave(false);
-        atelier.CAtelierLedger.CLedgerEpithetSave(true);
+        atelier.CAtelierLedger.CLedgerEpithetSave(false, TEnvoyFake.TEnvoyCreate(false, []));
+        atelier.CAtelierLedger.CLedgerEpithetSave(true, TEnvoyFake.TEnvoyCreate(false, []));
 
         CLedgerState last = shown[^1];
         Assert.True(shown.Count >= 2);
@@ -287,7 +289,8 @@ public sealed class TLedger
         atelier.TAtelierStubOpen();
         atelier.CAtelierLedger.CLedgerChanged -= shown.Add;
 
-        atelier.CAtelierLedger.CLedgerEpithetSave(!shown[0].CLedgerStateSettings.CSettingsEpithet);
+        atelier.CAtelierLedger.CLedgerEpithetSave(
+            !shown[0].CLedgerStateSettings.CSettingsEpithet, TEnvoyFake.TEnvoyCreate(false, []));
 
         Assert.Single(shown);
     }
@@ -337,10 +340,75 @@ public sealed class TLedger
                 },
             }));
 
-        atelier.CAtelierLedger.CLedgerEpithetSave(false);
-        atelier.CAtelierLedger.CLedgerEpithetSave(true);
+        atelier.CAtelierLedger.CLedgerEpithetSave(false, TEnvoyFake.TEnvoyCreate(false, []));
+        atelier.CAtelierLedger.CLedgerEpithetSave(true, TEnvoyFake.TEnvoyCreate(false, []));
 
         Assert.Equal([false, true], saved);
+    }
+
+    [Fact]
+    public void LedgerSave_RefusedSaves_ShowsEachSaveFailureAndRepaints()
+    {
+        List<string> asked = [];
+        Func<object?[]?, object?> refuse = _ => throw new IOException("The disk is full.");
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
+            engine,
+            TLedgerPortCreate(new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineLocalizationSave"] = refuse,
+                ["LEngineEpithetSave"] = refuse,
+                ["LEngineFrequencySave"] = refuse,
+                ["LEngineMorphologySave"] = refuse,
+                ["LEngineRespellingSave"] = refuse,
+            }));
+        List<CLedgerState> shown = TLedgerShowRead(atelier);
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
+        CLedger ledger = atelier.CAtelierLedger;
+
+        ledger.CLedgerLocalizationSave("de", envoy);
+        ledger.CLedgerEpithetSave(true, envoy);
+        ledger.CLedgerFrequencySave(false, envoy);
+        ledger.CLedgerMorphologySave(false, envoy);
+        ledger.CLedgerRespellingSave(false, envoy);
+
+        Assert.Equal(Enumerable.Repeat("Settings.SaveFailed", 5), asked);
+        Assert.Equal(6, shown.Count);
+        Assert.Equal(shown[0].CLedgerStateSettings, shown[^1].CLedgerStateSettings);
+    }
+
+    [Fact]
+    public void LedgerSave_FaultingStore_ShowsTheSaveFailureAndRecordsTheFaultOnce()
+    {
+        List<string> asked = [];
+        List<Exception> recorded = [];
+        Dictionary<string, Func<object?[]?, object?>> stored = new()
+        {
+            ["LSettingsRead"] = _ => TInterface.TSettingsCreate("en"),
+            ["LSettingsSave"] = _ => throw TInterface.TVaultFaultCreate("The disk is full."),
+        };
+        Dictionary<string, Func<object?[]?, object?>> audited = new()
+        {
+            ["LAuditRecord"] = args =>
+            {
+                recorded.Add((Exception)args![0]!);
+                return null;
+            },
+        };
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild() with
+        {
+            LRigSettings = TEngineFake.TEngineCreate<LSettingsVault>(stored),
+            LRigAudit = TEngineFake.TEngineCreate<LAuditVault>(audited),
+        });
+        LSettingsPort settings = TInterfaceConduct.TSettingsOutletCreate(engine);
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, settings);
+        bool epithet = engine.TEngineSettingsRead().LSettingsEpithet;
+
+        atelier.CAtelierLedger.CLedgerEpithetSave(!epithet, TEnvoyFake.TEnvoyCreate(false, asked));
+
+        Assert.Equal(["Settings.SaveFailed"], asked);
+        Assert.Equal(epithet, engine.TEngineSettingsRead().LSettingsEpithet);
+        Assert.IsType<LVaultFault>(Assert.Single(recorded));
     }
 
     [Fact]

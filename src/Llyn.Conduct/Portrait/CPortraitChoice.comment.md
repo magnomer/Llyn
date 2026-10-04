@@ -10,6 +10,6 @@ The envoy's file question lists the rows and answers the chosen row's medium.
 **Parameters**
 
 - `CPortraitChoiceKey`: the localization key of the format's name.
-- `CPortraitChoiceSuffix`: the file suffix the format is written under, dot included.
-- `CPortraitChoiceChosen`: whether the format is the one offered first.
+- `CPortraitChoiceSuffix`: the file suffix the format is written under, dot included, never holding `|`.
+- `CPortraitChoiceChosen`: whether the format is the one offered first, true on exactly one row.
 - `CPortraitChoiceMedium`: the format itself, as the export gate takes it.

@@ -1,5 +1,5 @@
 # QMorphology.cs
-Hash: `fc970ffc370ee5bc`
+Hash: `ca18d5605dce8e31`
 
 ## `internal sealed class QMorphology`
 
@@ -14,9 +14,10 @@ The settings bulletin the engine raises redraws the panel.
 
 Wires the switch's click once, through its markup name, as the settings panel is built.
 
-## `internal void QMorphologyIntroduce(CLedger ledger)`
+## `internal void QMorphologyIntroduce(CLedger ledger, CEnvoy envoy)`
 
 Puts the switch to work on the ledger the panel hands over at introduction.
+It keeps the window's envoy, which the ledger shows a failed save through.
 
 ## `internal void QMorphologyRefine(bool chosen)`
 
@@ -25,4 +26,5 @@ Setting `IsChecked` in code raises no `Click`, so a painted switch writes nothin
 
 ## `private void QMorphologyObserve(object sender, RoutedEventArgs e)`
 
-Only hands the raw switch to one ledger save.
+Only hands the raw switch to one ledger save, with the kept envoy.
+A failed save raises the ledger again, which paints the switch back.

@@ -1,5 +1,5 @@
 # CLedger.cs
-Hash: `9a3155bf03fab2eb`
+Hash: `b6fed17b27362b3a`
 
 ## `public sealed class CLedger`
 
@@ -45,25 +45,35 @@ The workspace calls it on its first open only.
 
 Reads the whole settings state and raises `CLedgerChanged` with it.
 
-## `public void CLedgerLocalizationSave(string language)`
+## `public void CLedgerLocalizationSave(string language, CEnvoy envoy)`
 
 Stores the interface language.
+A failed save is shown through `envoy` as `Settings.SaveFailed`.
+The ledger is then raised again, so the driver repaints from the saved settings.
 
-## `public void CLedgerEpithetSave(bool epithet)`
+## `public void CLedgerEpithetSave(bool epithet, CEnvoy envoy)`
 
 Stores whether lists show epithets.
+A failed save is shown through `envoy` as `Settings.SaveFailed`.
+The ledger is then raised again, so the driver repaints from the saved settings.
 
-## `public void CLedgerFrequencySave(bool frequency)`
+## `public void CLedgerFrequencySave(bool frequency, CEnvoy envoy)`
 
 Stores whether the frequency lookup is on.
+A failed save is shown through `envoy` as `Settings.SaveFailed`.
+The ledger is then raised again, so the driver repaints from the saved settings.
 
-## `public void CLedgerMorphologySave(bool morphology)`
+## `public void CLedgerMorphologySave(bool morphology, CEnvoy envoy)`
 
 Stores whether the morphology lookup is on.
+A failed save is shown through `envoy` as `Settings.SaveFailed`.
+The ledger is then raised again, so the driver repaints from the saved settings.
 
-## `public void CLedgerRespellingSave(bool respelled)`
+## `public void CLedgerRespellingSave(bool respelled, CEnvoy envoy)`
 
 Stores whether transcriptions show respelled.
+A failed save is shown through `envoy` as `Settings.SaveFailed`.
+The ledger is then raised again, so the driver repaints from the saved settings.
 
 ## `public CLedgerNotice CLedgerNoticeRead(Exception exception)`
 
@@ -127,3 +137,5 @@ An unknown page reads empty.
 ## `private string CLedgerLanguageRead(string localization)`
 
 The native name of an interface language the program ships, or the code itself for one it does not.
+A shipped code the culture table does not know also answers the code itself.
+So a bad code never throws through a settings repaint.

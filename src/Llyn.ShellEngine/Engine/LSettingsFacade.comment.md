@@ -1,17 +1,23 @@
 # LSettingsFacade.cs
-Hash: `0d7b40bb3eb9ef18`
+Hash: `71ac248c4bda0b5d`
 
 ## `internal sealed class LSettingsFacade`
 
 The engine's facade for settings.
 The user's persisted settings are read here and changed one field at a time.
-Every change is written to the open workspace at once, so the file never lags what the engine holds.
+Every change is written to the open workspace at once, and a failed write restores the previous settings.
 The record itself is loaded when the workspace opens.
 A workspace moved onto keeps its own settings, and only one without any inherits the current record.
 
 ## `public LSettingsFacade(LEngine engine)`
 
 Creates the facade for its owning engine and shares the engine gate for settings operations.
+
+## `internal event Action? LEngineFoldChanged;`
+
+A saved fold state changed, so every open editor over this engine repaints its rime-book and script switches.
+It is the narrow notice of the folds, raised outside the gate.
+An unchanged save raises nothing, so a repainted switch that echoes its state cannot loop.
 
 ## `internal LSettings LEngineSettingsRead()`
 
@@ -22,9 +28,11 @@ Returns the user's persisted settings.
 The posture stored under `name`, read through the workspace clerk.
 False means a vault fault, recorded, and the caller keeps what it has.
 
-## `internal void LEnginePostureSave(string name, LPostureState state)`
+## `internal bool LEnginePostureSave(string name, LPostureState state, out Exception? fault)`
 
-The posture written under `name` through the workspace clerk, a vault fault recorded and swallowed.
+The posture written under `name` through the workspace clerk, answering whether the write succeeded.
+A vault fault is recorded by the clerk and handed back as `fault`, never thrown.
+`fault` is a plain `Exception`, so the shell names no Core type.
 
 ## `internal DateTimeOffset LEngineStampRead()`
 
@@ -99,6 +107,17 @@ A settings bulletin is raised when the switch changed, so the settings panel rew
 Persists whether the tally lines of a category page print the respelling set and keeps it current.
 The page reads the switch on every fill, so the choice survives a restart and a change of category alike.
 
+## `internal void LEngineFanqieSave(bool opened)`
+
+Persists whether the editor's rime-book box stands open and keeps it current.
+A real change raises `LEngineFoldChanged`, so every open editor repaints its switch.
+No settings bulletin is raised, since that would refill every panel for one switch.
+
+## `internal void LEngineScriptSave(bool opened)`
+
+Persists whether the editor's script box stands open and keeps it current.
+It raises `LEngineFoldChanged` on a real change, as the rime-book save does.
+
 ## `internal void LEngineFrequencySave(bool frequency)`
 
 Persists whether an entry's frequency is fetched from the pack's web source and keeps it current.
@@ -118,6 +137,8 @@ Turning it off cancels every pending inflection fetch through the lacuna clerk.
 
 Applies one change to the settings snapshot under the gate and writes it through the workspace clerk.
 An unchanged snapshot writes nothing and answers false.
+A write that throws puts the previous snapshot back before the exception leaves, still under the gate.
+The caller then raises no notice, so a rolled-back change tells no one.
 
 
 

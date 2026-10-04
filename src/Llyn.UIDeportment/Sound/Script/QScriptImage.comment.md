@@ -1,5 +1,5 @@
 # QScriptImage.cs
-Hash: `375698adcb7ee82c`
+Hash: `5f0922efc7df87bf`
 
 ## `internal sealed class QScriptImage : INotifyPropertyChanged, QImagePending`
 
@@ -20,10 +20,6 @@ The height every picture is drawn at, in device-independent pixels.
 
 How many pixels are decoded per drawn pixel of height, so a scaled display still reads crisp.
 
-## `private const string QScriptImageArea`
-
-The localization area a stored age's code is read under.
-
 ## `public BitmapSource? QScriptImageSource`
 
 The decoded picture, used as an opacity mask so the glyph takes the theme's ink.
@@ -37,9 +33,9 @@ The caption printed under the picture, without its age, or empty so the template
 ## `public string QScriptImageEpoch`
 
 The stored age in the interface language, printed above the caption, or empty so the template collapses it.
-The stored code names a localization text, which is read on every request rather than kept.
+Conduct hands the age as a wording key, or empty when it has no wording.
+The key is read on every request rather than kept.
 So the line follows a language change with no fetch and no rebuilt row.
-A code no shipped language names reads as empty, because a bare code says less than nothing to a reader.
 
 ## `public double QScriptImageWidth`
 

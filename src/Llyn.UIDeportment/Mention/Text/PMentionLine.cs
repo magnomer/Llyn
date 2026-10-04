@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Llyn.UIDeportment;
 
@@ -12,21 +13,15 @@ internal sealed class PMentionLine
     {
         ArgumentNullException.ThrowIfNull(wanted);
 
-        for (int index = 0; index < wanted.Count; index++)
+        if (PMentionLineChip.SequenceEqual(wanted))
         {
-            if (index >= PMentionLineChip.Count)
-            {
-                PMentionLineChip.Add(wanted[index]);
-            }
-            else if (!PMentionLineChip[index].Equals(wanted[index]))
-            {
-                PMentionLineChip[index] = wanted[index];
-            }
+            return;
         }
 
-        while (PMentionLineChip.Count > wanted.Count)
+        PMentionLineChip.Clear();
+        foreach (PMentionChip chip in wanted)
         {
-            PMentionLineChip.RemoveAt(PMentionLineChip.Count - 1);
+            PMentionLineChip.Add(chip);
         }
     }
 }

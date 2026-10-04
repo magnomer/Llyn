@@ -31,13 +31,14 @@ internal static class TInterfaceConductSound
     internal static IReadOnlyList<LReflexDraft> TDisplayReflexRead(this LDisplaySound sound) =>
         sound.LDisplayReflexRead();
 
-    internal static CFrequency? TDisplayFrequencyRead(this LDisplay display, long? entry, string once) =>
-        display.LDisplayFrequencyRead(entry, once);
+    internal static CFrequency? TDisplayFrequencyRead(this CDisplay display, long? entry, string once) =>
+        display.LDisplayRule.LDisplayFrequencyRead(entry, once);
 
-    internal static int TDisplayGraspRead(this LDisplay display, long? entry) => display.LDisplayGraspRead(entry);
+    internal static int TDisplayGraspRead(this CDisplay display, long? entry) =>
+        display.LDisplayRule.LDisplayGraspRead(entry);
 
-    internal static bool TDisplayFavoriteRead(this LDisplay display, long? entry) =>
-        display.LDisplayFavoriteRead(entry);
+    internal static bool TDisplayFavoriteRead(this CDisplay display, long? entry) =>
+        display.LDisplayRule.LDisplayFavoriteRead(entry);
 
     internal static Task<CLecternAccent?> TDisplayEnsignLoad(
         this CDisplaySound sound, Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
@@ -62,6 +63,8 @@ internal static class TInterfaceConductSound
             envoy);
     }
 
+    internal static CFold TFoldCreate(LSettingsPort settings, CEnvoy envoy) => new(settings, envoy);
+
     internal static IReadOnlyList<CReflex> TRespellingReflexScan(
         LPhonologyPort phonology, string language, IReadOnlyList<CReflexDraft> reflexes) =>
         CRespelling.LRespellingReflexScan(phonology, language, reflexes);
@@ -73,7 +76,7 @@ internal static class TInterfaceConductSound
         new(
             editor.CEditorDesk,
             phonology,
-            editor.CEditorDisplay,
+            editor.CEditorDisplay.LDisplayRule,
             drafts,
             TInterfaceConduct.TSettingsCreate(),
             TEnvoyFake.TEnvoyCreate(false, []));

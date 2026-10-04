@@ -29,13 +29,23 @@ internal sealed class QCadence
         editor.CEditorDesk.CDeskStarted += QCadenceParadigmRefine;
         editor.CEditorDesk.CDeskStarted += QCadenceScriptRefine;
         editor.CEditorDesk.CDeskStarted += QCadenceFanqieRefine;
+        editor.CEditorDesk.CDeskStarted += QCadenceFoldRefine;
         editor.CEditorTimbre.CTimbreParadigmChanged += QCadenceParadigmRefine;
         editor.CEditorTimbre.CTimbreScriptChanged += QCadenceScriptRefine;
         editor.CEditorSounding.CSoundingChanged += QCadenceFanqieRefine;
+        editor.CEditorFold.CFoldChanged += QCadenceFoldRefine;
         QCadenceScript.QScriptRenewalNotice += QCadenceScriptObserve;
         QCadenceFanqie.QFanqieRenewalNotice += QCadenceFanqieObserve;
         QCadenceFanqie.QFanqieDiweiNotice += QCadenceDiweiObserve;
         QCadenceFanqie.QFanqieRepresentativeNotice += QCadenceRepresentativeObserve;
+        QCadenceFanqie.QFanqieFoldNotice += editor.CEditorFold.CFoldFanqieToggle;
+        QCadenceScript.QScriptFoldNotice += editor.CEditorFold.CFoldScriptToggle;
+    }
+
+    private void QCadenceFoldRefine()
+    {
+        QCadenceFanqie.QFanqieFoldRefine(_cEditor.CEditorFold.CFoldFanqieOpened);
+        QCadenceScript.QScriptFoldRefine(_cEditor.CEditorFold.CFoldScriptOpened);
     }
 
     private void QCadenceParadigmRefine()

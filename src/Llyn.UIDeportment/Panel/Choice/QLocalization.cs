@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +12,8 @@ internal sealed class QLocalization
 
     private CLedger _qLocalizationLedger = null!;
 
+    private CEnvoy _qLocalizationEnvoy = null!;
+
     internal QLocalization(FrameworkElement settings)
     {
         _qLocalizationSettings = settings;
@@ -21,23 +24,41 @@ internal sealed class QLocalization
     private ComboBox QLocalizationChoice =>
         QContract.QContractFind<ComboBox>(_qLocalizationSettings, "PLocalization");
 
-    internal void QLocalizationIntroduce(CLedger ledger)
+    internal void QLocalizationIntroduce(CLedger ledger, CEnvoy envoy)
     {
         _qLocalizationLedger = ledger;
+        _qLocalizationEnvoy = envoy;
     }
 
     internal void QLocalizationRefine(IReadOnlyList<KeyValuePair<string, string>> languages, string localization)
     {
-        if (QLocalizationChoice.Items.Count == 0)
+        QLocalizationChoice.SelectionChanged -= QLocalizationObserve;
+        try
         {
             QLocalizationChoiceRefine(languages);
+            QLocalizationChoice.SelectedValue = localization;
         }
-
-        QLocalizationChoice.SelectedValue = localization;
+        finally
+        {
+            QLocalizationChoice.SelectionChanged += QLocalizationObserve;
+        }
     }
 
     private void QLocalizationChoiceRefine(IReadOnlyList<KeyValuePair<string, string>> languages)
     {
+        bool matched = QLocalizationChoice.Items.Count == languages.Count;
+        for (int index = 0; matched && index < languages.Count; index++)
+        {
+            matched = QLocalizationChoice.Items[index] is ComboBoxItem { Content: string shown, Tag: string tag }
+                && string.Equals(shown, languages[index].Value, StringComparison.Ordinal)
+                && string.Equals(tag, languages[index].Key, StringComparison.Ordinal);
+        }
+
+        if (matched)
+        {
+            return;
+        }
+
         QLocalizationChoice.Items.Clear();
         foreach (KeyValuePair<string, string> language in languages)
         {
@@ -56,6 +77,6 @@ internal sealed class QLocalization
             return;
         }
 
-        _qLocalizationLedger.CLedgerLocalizationSave(language);
+        _qLocalizationLedger.CLedgerLocalizationSave(language, _qLocalizationEnvoy);
     }
 }

@@ -1,5 +1,5 @@
 # CCard.cs
-Hash: `8a5170a1d117e322`
+Hash: `441ce73235e550a5`
 
 ## `public sealed class CCard`
 
@@ -35,11 +35,16 @@ Leaving links one whole-headword match without asking, and answers what the entr
 That choice between showing and linking is the interaction this gate holds.
 A failed search or link shows `Input.TranslationFailed` and leaves the word in the entry.
 
-## `public void CCardTranslationInsert(long cardId, long entryId, string headword, string language, int position)`
+## `public void CCardTranslationInsert(long cardId, long? entryId, string headword, string language, int position)`
 
-The gate for a row picked from the dropdown, linked to the card.
-A stored Entry is linked at once, and a fresh row's word and language start a court first.
-A failed start shows `Input.TranslationFailed`.
+The one gate for any row picked from the dropdown.
+The driver hands the raw pick, and this gate decides what it means.
+A stored Entry id links that Entry to the card at once.
+A null id is a fresh row, a new Entry in one language.
+A fresh row has no Entry yet, so its word and language start the court.
+The court starts first, then its new Entry is linked to the card.
+The driver never sends the engine's id 0 for a new Entry.
+A failed link or start shows `Input.TranslationFailed`.
 
 ## `public void CCardTranslationRemove(long cardId, long entryId)`
 
@@ -161,17 +166,23 @@ The chips of the held draft's etymology, ready to paint.
 An empty desk answers no chips.
 It adds no failure notice of its own.
 
-## `public void CCardEtymonAdd(long entryId)`
+## `public void CCardEtymonAdd(long? entryId)`
 
 Appends a source link at the end of the row.
+The driver hands the raw pick, a null id for a fresh row.
+The engine has no new Entry path for a source link.
+So a null id shows `Refusal.TargetMissing` through the envoy and links nothing.
+That notice says the word is no entry yet, so the pick is never silently lost.
 
 ## `public void CCardEtymonRemove(long entryId)`
 
 Drops one source link.
 
-## `public void CCardMentionSave(string text, int start, int length, long entryId)`
+## `public void CCardMentionSave(string text, int start, int length, long? entryId)`
 
 Links a selection of the narrative to an entry, the span measured by the engine.
+The mention pick hands the raw pick, a null id for a fresh row.
+The engine has no new Entry path for a span, so a null id shows `Refusal.TargetMissing`.
 
 ## `public void CCardMentionDelete(string text, int start, int length)`
 

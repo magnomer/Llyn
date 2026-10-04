@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -46,7 +47,7 @@ internal static class CFolio
         LMediaPort media,
         string meaning)
     {
-        return cards
+        return CFolioOrderRead(cards)
             .Select(card => new CCardDraft(
                 card.LCardDraftId,
                 card.LCardDraftPosition,
@@ -74,6 +75,57 @@ internal static class CFolio
                 CFolioImageRead(card.LCardDraftImage, media),
                 CFolioVideoRead(card.LCardDraftVideo, media)))
             .ToList();
+    }
+
+    internal static int? CFolioPlaceRead(LEntryDraft content, long cardId, int place)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+
+        IReadOnlyList<LCardDraft> cards = CFolioListRead(content, cardId);
+        IReadOnlyList<LCardDraft> shown = CFolioOrderRead(cards);
+        if (place < 0 || place >= shown.Count)
+        {
+            return null;
+        }
+
+        long target = shown[place].LCardDraftId;
+        for (int index = 0; index < cards.Count; index++)
+        {
+            if (cards[index].LCardDraftId == target)
+            {
+                return index;
+            }
+        }
+
+        return null;
+    }
+
+    internal static int? CFolioOrdinalRead(LEntryDraft content, long cardId, string ordinal)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+        ArgumentNullException.ThrowIfNull(ordinal);
+
+        if (!int.TryParse(ordinal, NumberStyles.Integer, CultureInfo.InvariantCulture, out int wanted))
+        {
+            return null;
+        }
+
+        int count = Math.Max(CFolioListRead(content, cardId).Count, 1);
+        return Math.Clamp(wanted, 1, count) - 1;
+    }
+
+    internal static IReadOnlyList<LCardDraft> CFolioOrderRead(IReadOnlyList<LCardDraft> cards)
+    {
+        ArgumentNullException.ThrowIfNull(cards);
+
+        return cards.OrderBy(static card => card.LCardDraftPosition).ToList();
+    }
+
+    private static IReadOnlyList<LCardDraft> CFolioListRead(LEntryDraft content, long cardId)
+    {
+        return content.LEntryDraftMeanings.Any(card => card.LCardDraftId == cardId)
+            ? content.LEntryDraftMeanings
+            : content.LEntryDraftCollocations;
     }
 
     private static CSentenceDraft CFolioSentenceRead(LSentenceDraft sentence)

@@ -1,15 +1,14 @@
 # QMentionPiece.cs
-Hash: `faf46b3fe50d5e46`
+Hash: `b7c7137a742199df`
 
-## `internal sealed record QMentionPiece(string QMentionPieceText, int QMentionPieceOffset, bool? QMentionPieceLinked)`
+## `internal sealed record QMentionPiece(string QMentionPieceText, bool? QMentionPieceLinked)`
 
 One run of a shown sentence, as the mention text draws it.
-It carries the run's text, its code-point start and its link state, so the control never holds a Conduct piece.
+It carries the run's text and its link state, so the control never holds a Conduct piece.
 
 **Parameters**
 
 - `QMentionPieceText`: the run's text.
-- `QMentionPieceOffset`: where the run starts in the whole text, in code points.
 - `QMentionPieceLinked`: whether the run's Mention links an entry, null for plain text.
 
 ## `internal static IReadOnlyList<QMentionPiece> QMentionPieceCreate(IReadOnlyList<CMentionPiece> pieces)`

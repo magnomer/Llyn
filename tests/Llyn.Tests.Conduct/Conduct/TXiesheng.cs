@@ -121,8 +121,8 @@ public sealed class TXiesheng
 
         CStemPage page = xiesheng.CXieshengStemRead();
 
-        Assert.Equal(new CFont(null, null, null), blank.CStemPageFont);
-        Assert.Equal(new CFont(null, null, null), blank.CStemPageGlyph);
+        Assert.Equal(new CFont(null, null, CFontSlant.CFontSlantTheme), blank.CStemPageFont);
+        Assert.Equal(new CFont(null, null, CFontSlant.CFontSlantTheme), blank.CStemPageGlyph);
         Assert.Equal(
             TInterfaceFont.TCatalogFontRead(atelier.CAtelierSettingsPort, language, CFontRole.CFontRoleHeadword),
             page.CStemPageFont);

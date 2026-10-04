@@ -220,13 +220,12 @@ internal sealed class QProspect
                 entry.CVistaRowId,
                 entry.CVistaRowHeadword,
                 entry.CVistaRowLanguage,
-                false,
                 entry.CVistaRowEpithet, entry.CVistaRowName));
         }
 
         foreach (string language in prospect.CProspectLanguages)
         {
-            _qProspectItem.Add(new PProspectItem(0, prospect.CProspectWord, language, true));
+            _qProspectItem.Add(new PProspectItem(null, prospect.CProspectWord, language));
         }
 
         QProspectPopup.IsOpen = true;

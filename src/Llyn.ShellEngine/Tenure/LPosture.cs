@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -22,6 +23,10 @@ public sealed class LPosture : IDisposable
 
     private double _lPostureStored = 1;
 
+    private bool _lPostureFailed;
+
+    private Exception? _lPostureFault;
+
     public LPosture(LEngine engine)
     {
         ArgumentNullException.ThrowIfNull(engine);
@@ -30,6 +35,8 @@ public sealed class LPosture : IDisposable
         LPostureLoad();
         _lEngine.LEngineObserverAttach(LPostureBulletinHandle);
     }
+
+    public event Action<Exception>? LPostureSaveFailed;
 
     public LPostureState LPostureRead()
     {
@@ -89,6 +96,8 @@ public sealed class LPosture : IDisposable
 
             LPostureSave();
         }
+
+        LPostureFaultRaise();
     }
 
     public void LPostureModeSave(string mode)
@@ -132,6 +141,8 @@ public sealed class LPosture : IDisposable
             List<LLayout> list = [.. merged.Values];
             LPostureChange(state => state with { LPostureStateLayout = list });
         }
+
+        LPostureFaultRaise();
     }
 
     public void Dispose()
@@ -154,6 +165,7 @@ public sealed class LPosture : IDisposable
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
             LPostureLoad();
+            LPostureFaultRaise();
             return;
         }
 
@@ -164,6 +176,7 @@ public sealed class LPosture : IDisposable
         }
 
         LPostureVistaSave(vista);
+        LPostureFaultRaise();
     }
 
     private void LPostureVistaSave(LVista vista)
@@ -221,6 +234,7 @@ public sealed class LPosture : IDisposable
     {
         lock (_lPostureGate)
         {
+            _lPostureFailed = false;
             if (!_lEngine.LEngineSettings.LEnginePostureLoad(LPostureName, out LPostureState? kept))
             {
                 return;
@@ -249,23 +263,55 @@ public sealed class LPosture : IDisposable
 
     private bool LPostureChange(Func<LPostureState, LPostureState> change)
     {
+        bool moved = false;
         lock (_lPostureGate)
         {
             LPostureState changed = change(_lPostureState);
-            if (changed == _lPostureState)
+            if (changed != _lPostureState)
             {
-                return false;
+                _lPostureState = changed;
+                LPostureSave();
+                moved = true;
             }
-
-            _lPostureState = changed;
-            LPostureSave();
-            return true;
         }
+
+        LPostureFaultRaise();
+        return moved;
     }
 
     private void LPostureSave()
     {
-        _lEngine.LEngineSettings.LEnginePostureSave(LPostureName, _lPostureState);
+        if (!_lEngine.LEngineSettings.LEnginePostureSave(LPostureName, _lPostureState, out Exception? fault))
+        {
+            if (!_lPostureFailed)
+            {
+                _lPostureFailed = true;
+                _lPostureFault = fault;
+            }
+
+            return;
+        }
+
         _lPostureStored = _lPostureState.LPostureStateVolume;
+    }
+
+    private void LPostureFaultRaise()
+    {
+        if (Monitor.IsEntered(_lPostureGate))
+        {
+            return;
+        }
+
+        Exception? fault;
+        lock (_lPostureGate)
+        {
+            fault = _lPostureFault;
+            _lPostureFault = null;
+        }
+
+        if (fault is not null)
+        {
+            LPostureSaveFailed?.Invoke(fault);
+        }
     }
 }

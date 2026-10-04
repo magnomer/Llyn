@@ -1,5 +1,5 @@
 # PMentionLine.cs
-Hash: `2aae44d50459f259`
+Hash: `22f095195fcc0546`
 
 ## `internal sealed class PMentionLine`
 
@@ -14,5 +14,7 @@ The chips in Mention order, bound by the line's items control.
 ## `internal void PMentionLineRefine(IReadOnlyList<PMentionChip> wanted)`
 
 Paints the ready chips on the line.
-Chips are diffed by position and replaced only where they differ, so an unchanged chip is not rebuilt.
+The engine alone owns their order, so the line copies the wanted order and never chooses one.
+A line that already holds the wanted chips is left alone, so it raises no change.
+Any difference clears the line and adds every wanted chip in order.
 The card rows, the etymology and the corpus transcript build their chips through [QMentionChip](QMentionChip.comment.md).

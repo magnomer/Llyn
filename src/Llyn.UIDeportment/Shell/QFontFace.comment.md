@@ -1,5 +1,5 @@
 # QFontFace.cs
-Hash: `d0c5aa32ce7d09bf`
+Hash: `affd158188696d07`
 
 ## `public static class QFontFace`
 
@@ -51,9 +51,8 @@ A part the pack leaves out has its key removed, so the theme's own value stands.
 Puts the typography Conduct read for the Glosses under example sentences into the same card resources.
 The gloss also carries its slant, which `QFontStyleRead` maps.
 
-### `private static FontStyle? QFontStyleRead(string? style)`
+### `private static FontStyle? QFontStyleRead(CFontSlant style)`
 
-Maps the slant word Core already normalized, `italic` or `oblique`, onto its WPF style.
-Any other word, or none, is answered with nothing, so the theme's upright stands.
-A Refine never throws on data, so the map stays total though Core lets no other word through.
+Maps the slant Conduct closed, italic or oblique, onto its WPF style.
+`CFontSlantTheme` is answered with nothing, so the theme's upright stands.
 

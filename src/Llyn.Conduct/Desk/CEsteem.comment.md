@@ -12,9 +12,15 @@ It only supplies the stored id, and a refusal reaches the window through the dis
 
 The stored entry the held draft stands on, or null for a fresh draft or an empty desk.
 
+## `public int CEsteemGrasp`
+
+The stored entry's grasp step, zero for a fresh draft or a failed read.
+It is never negative and never above `CEsteemGraspStep`, since the stars draw only that range.
+
 ## `public int CEsteemGraspStep`
 
 The last grasp step, which the star control takes as its limit so it names no engine constant.
+It is never negative, since `LDisplay` raises a negative engine limit to zero.
 
 ## `public event Action? CEsteemFavoriteChanged;`
 

@@ -1,5 +1,5 @@
 # QEtymologyEditor.cs
-Hash: `1775b92054faa4b0`
+Hash: `67eb3f084146fc41`
 
 ## `internal sealed class QEtymologyEditor`
 
@@ -68,6 +68,7 @@ The pick comes back as the mention pick command on the box, heard by `QEtymology
 
 Links the selected span of the narrative box to the picked Entry.
 The box is the command's source, the anchor the menu stood at, and its text and selection are read raw.
+The command's parameter is the raw nullable id, and the gate decides what null means.
 
 ### `private void QEtymologyUnlinkObserve(object sender, ExecutedRoutedEventArgs e)`
 

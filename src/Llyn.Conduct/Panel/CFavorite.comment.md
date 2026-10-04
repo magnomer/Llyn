@@ -1,5 +1,5 @@
 # CFavorite.cs
-Hash: `66d4b9d194189bab`
+Hash: `4f207394b84147ad`
 
 ## `public sealed class CFavorite`
 
@@ -85,6 +85,8 @@ A failed read shows `Favorite.LoadFailed` through the envoy and answers no rows.
 
 Runs the flag fill into the driver's `store`, then answers `CFavoriteRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+A failed flag fill shows `Favorite.LoadFailed` and still answers the rows with no languages.
+The driver awaits it from an event handler, where a fault would end the app.
 
 ## `internal string LFavoriteFileRead()`
 

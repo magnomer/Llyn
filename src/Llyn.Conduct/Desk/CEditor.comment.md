@@ -1,5 +1,5 @@
 # CEditor.cs
-Hash: `5f7769dd1e4e8ff7`
+Hash: `451f4b4b238fee2a`
 
 ## `public sealed class CEditor`
 
@@ -60,11 +60,13 @@ The held draft's language, or empty while no draft is held.
 
 Hands every area of the editor the driver's marshal once.
 Each area then raises its own change event on the driver's thread when the engine announces its subject.
+The folds hear the settings port's own fold event rather than a subject.
 A settings change reads the held draft again, since the draft's shown form depends on the settings.
 
 ## `public void CEditorClose()`
 
 The editor closes with its view.
+The folds' handler leaves the engine event first, so a closed editor hears no other editor's fold.
 The held draft is let go, then every running search.
 Closing is one user action, and the order of the cancels is the editor's.
 
@@ -74,9 +76,11 @@ The held entry was read again, so a driver writes its controls from it.
 It carries the content the desk prepared, never a second read of the draft.
 The tenure resolves the cards' link targets for that same content, so every card paints its links ready.
 
-## `public LDisplay CEditorDisplay { get; }`
+## `public CDisplay CEditorDisplay { get; }`
 
-The display of the editor's entry, holding the favourite, grasp and sound facts.
+The display area of the editor's entry, holding the favourite, grasp and sound facts.
+It is the C area, so a lectern over the editor never names the rules under it.
+The esteem, the sound sheet and the sound facts take those rules from it.
 
 ## `public CCard CEditorCard { get; }`
 
@@ -90,6 +94,12 @@ The sentence gates over the editor's desk.
 
 The sound sheet of the entry the editor's desk holds.
 It shares the editor's envoy, so a refused rebuild shows the same notice as the desk's own failures.
+
+## `public CFold CEditorFold { get; }`
+
+The open state of the rime-book and script boxes, which the user keeps across entries.
+It shares the editor's settings port and envoy, so a failed save shows like the desk's own failures.
+The editor puts its engine handler back on open and takes it off on close.
 
 ## `public CEsteem CEditorEsteem { get; }`
 
@@ -124,6 +134,7 @@ Only the Conduct areas call it as they restore their vistas, so it is a helper.
 ## `public void CEditorEntryOpen(long? id)`
 
 Opens the entry, or a fresh draft when the id is null.
+It puts the folds' handler back first, so an editor reopened after a close hears the folds again.
 An entry that cannot be opened falls back to a fresh draft, after the failure has been announced.
 
 ## `public void CEditorEntryUndo()`

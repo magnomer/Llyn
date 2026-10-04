@@ -25,7 +25,8 @@ internal sealed partial class QCorpus
     {
         if (e.Source is TextBox box)
         {
-            _cTranscript.CTranscriptMentionAdd(box.Text, box.SelectionStart, box.SelectionLength, (long)e.Parameter);
+            _cTranscript.CTranscriptMentionAdd(
+                box.Text, box.SelectionStart, box.SelectionLength, e.Parameter as long?);
         }
     }
 
@@ -60,7 +61,7 @@ internal sealed partial class QCorpus
             return;
         }
 
-        _cTranscript.CTranscriptMentionAdd(box.Text, box.SelectionStart, box.SelectionLength, 0);
+        _cTranscript.CTranscriptSilenceSet(box.Text, box.SelectionStart, box.SelectionLength);
     }
 
     private void QTranscriptUnlinkObserve(object sender, ExecutedRoutedEventArgs e)

@@ -9,4 +9,4 @@ One historical form of a character, as the script panel draws it.
 
 - `CScriptImageData`: the image bytes.
 - `CScriptImageCaption`: the caption under the image.
-- `CScriptImageEpoch`: the era the form belongs to.
+- `CScriptImageEpoch`: the wording key of the era the form belongs to, or empty when the era has no wording.

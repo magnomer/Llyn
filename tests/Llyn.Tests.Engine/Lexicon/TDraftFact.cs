@@ -91,7 +91,6 @@ public sealed class TDraftFact
             "the grey wolf",
             [TInterfaceMentionSpan.TMentionCreate(1, 4, 4, 5, 2), TInterfaceMentionSpan.TMentionCreate(2, 9, 4, 0)]);
 
-        Assert.Equal([0, 4, 8, 9], pieces.Select(piece => piece.LMentionPieceOffset));
         Assert.Equal(["the ", "grey", " ", "wolf"], pieces.Select(piece => piece.LMentionPieceText));
         Assert.Equal(
             [false, true, false, false],

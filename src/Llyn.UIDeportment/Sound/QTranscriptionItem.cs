@@ -68,7 +68,20 @@ public sealed class QTranscriptionItem : INotifyPropertyChanged
     {
         ArgumentNullException.ThrowIfNull(schemes);
 
-        if (QTranscriptionItemChoice.Count != schemes.Count)
+        bool matched = QTranscriptionItemChoice.Count == schemes.Count;
+        for (int index = 0; matched && index < schemes.Count; index++)
+        {
+            matched = string.Equals(
+                    QTranscriptionItemChoice[index].QTranscriptionChoiceScheme,
+                    schemes[index].CSchemeName,
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    QTranscriptionItemChoice[index].QTranscriptionChoiceLabel,
+                    QTranscriptionLabelRefine(schemes[index].CSchemeKey, schemes[index].CSchemeName),
+                    StringComparison.Ordinal);
+        }
+
+        if (!matched)
         {
             QTranscriptionItemChoice.Clear();
             foreach (CScheme scheme in schemes)

@@ -1,5 +1,5 @@
 # QWindow.cs
-Hash: `3228fbc2b82f5942`
+Hash: `bc49eb4be8caa74e`
 
 ## `public partial class QWindow`
 
@@ -18,7 +18,9 @@ The host builds the engine and the root, and hands the root over.
 The window keeps the root, and builds the GUI-only posture beside it with no handle on it.
 The window disposes its posture and closes the root when it closes, and the bootstrap disposes the engine on exit.
 The envoy is built over the loaded window and this class, so that window owns every question.
-It paints the chrome, introduces every part, then makes its one gate call, `CAtelierOpen`, with its envoy.
+It paints the chrome, introduces every part, then makes its one gate call, `CAtelierOpen`.
+The gate takes its envoy and a marshal over the window's dispatcher.
+So a failed layout save shows on the window's thread, whichever thread saved.
 The opening hands the posture its workspace path, and the stored geometry is placed after it.
 
 ## `private readonly QEstablishment _qEstablishment;`

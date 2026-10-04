@@ -46,6 +46,12 @@ public interface LSettingsPort
 
     void LEngineRespellingSave(bool respelled);
 
+    void LEngineFanqieSave(bool opened);
+
+    void LEngineScriptSave(bool opened);
+
+    event Action? LEngineFoldChanged;
+
     (string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(
         Exception exception, string unexpected, string recorded);
 

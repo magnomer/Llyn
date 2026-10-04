@@ -88,10 +88,10 @@ internal sealed class QSettings
 
         CLedger ledger = QSettingsAtelier.CAtelierLedger;
         _qSettingsWorkspace.QWorkspaceIntroduce(QSettingsAtelier, host.QWindowEnvoy);
-        _qSettingsLocalization.QLocalizationIntroduce(ledger);
-        _qSettingsRespelling.QRespellingIntroduce(ledger);
-        _qSettingsFrequency.QFrequencyIntroduce(ledger);
-        _qSettingsMorphology.QMorphologyIntroduce(ledger);
+        _qSettingsLocalization.QLocalizationIntroduce(ledger, host.QWindowEnvoy);
+        _qSettingsRespelling.QRespellingIntroduce(ledger, host.QWindowEnvoy);
+        _qSettingsFrequency.QFrequencyIntroduce(ledger, host.QWindowEnvoy);
+        _qSettingsMorphology.QMorphologyIntroduce(ledger, host.QWindowEnvoy);
         _qSettingsLayout.QLayoutIntroduce(_qSettingsSurface);
         QLookItem.QLookItemAttach(QSettingsLedger, QSettingsItemRefine);
         QSettingsPosture.QPostureLinkedChanged += QSettingsMetaRefine;
@@ -116,7 +116,8 @@ internal sealed class QSettings
 
     private void QSettingsEpithetObserve(object sender, RoutedEventArgs e)
     {
-        QSettingsAtelier.CAtelierLedger.CLedgerEpithetSave(QSettingsEpithet.IsChecked == true);
+        QSettingsAtelier.CAtelierLedger.CLedgerEpithetSave(
+            QSettingsEpithet.IsChecked == true, _qSettingsHost.QWindowEnvoy);
     }
 
     private (string QSettingsChild, StackPanel QSettingsPage)[] QSettingsTableRead()

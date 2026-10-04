@@ -1,5 +1,5 @@
 # TCorpusMention.cs
-Hash: `fd4d502a06000f50`
+Hash: `cb4d2c7383c9ded1`
 
 ## `public sealed class TCorpusMention`
 

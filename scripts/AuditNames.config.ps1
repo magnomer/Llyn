@@ -8,7 +8,7 @@ generation number, the configuration schema, and the strict reader they use. No 
 value appears here: this file is identical in every project at this generation.
 #>
 #requires -Version 5.1
-# AUDITNAMES.CONFIG - AUDIT GENERATION 19.
+# AUDITNAMES.CONFIG - AUDIT GENERATION 20.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A configuration is total: every key in the schema must be present, a missing key is an error rather
@@ -47,7 +47,9 @@ value appears here: this file is identical in every project at this generation.
 # truth detector stops five false findings.
 # Generation 19: nothing this audit reports changes; the number rises with the comment audit, whose
 # hash line ties every comment file to the sources it describes.
-$script:AuditGeneration = 19
+# Generation 20: nothing this audit reports changes; the number rises with the UI audit, whose
+# Mismatching kind only informs while a driver folder it waits on holds no source.
+$script:AuditGeneration = 20
 
 # The generated name registry beside this file. SyncNames.ps1 writes it from docs-internal; the audits
 # read it and never docs-internal.

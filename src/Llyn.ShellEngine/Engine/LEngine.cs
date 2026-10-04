@@ -197,7 +197,7 @@ public sealed class LEngine : IDisposable
                 rig, LEngineGate, LEngineBulletinRaise, LEngineSettingsRead, LEngineDraftStale);
             if (!settled)
             {
-                _lEngineStaff.LEngineStaffWorkspace.LWorkspaceSettingsSave(LEngineSettingsHeld);
+                _lEngineStaff.LEngineStaffWorkspace.LWorkspaceFallbackSave(LEngineSettingsHeld);
             }
 
             LEngineWorkspaceOpen();

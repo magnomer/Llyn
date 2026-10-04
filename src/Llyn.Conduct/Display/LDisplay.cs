@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
 
-public sealed class LDisplay
+internal sealed class LDisplay
 {
     private readonly LEntryPort _lEntryPort;
 
@@ -42,8 +39,6 @@ public sealed class LDisplay
             (key, exception) => noticed.LLedgerRepaintShow(envoy, settings, key, exception);
         LDisplaySound.LDisplayMarkFailed +=
             (key, exception) => CLedger.LLedgerFailureShow(envoy, settings, key, exception);
-        CDisplayArea = new CDisplay(this, entries, phonology, settings, envoy);
-        CDisplaySound = new CDisplaySound(this, CDisplayArea, drafts, entries, phonology, media, settings, envoy);
     }
 
     internal LDisplaySound LDisplaySound { get; }
@@ -52,30 +47,13 @@ public sealed class LDisplay
 
     internal LMediaPort LDisplayMediaPort { get; }
 
-    internal void LDisplayNavigationAttach(CNavigation navigation, CMention mention)
-    {
-        ArgumentNullException.ThrowIfNull(navigation);
-
-        CDisplayArea.LDisplayMentionAttach(mention);
-        CDisplayArea.CDisplayRowChosen += (tab, id) => navigation.LNavigationRowOpen(tab, id);
-        CDisplaySound.CDisplayRowChosen += (tab, id) => navigation.LNavigationRowOpen(tab, id);
-        CDisplaySound.CDisplayDiweiChosen +=
-            (language, kind, key) => navigation.LNavigationDiweiOpen(language, kind, key);
-        CDisplaySound.CDisplayStemChosen += (language, key) => navigation.LNavigationStemOpen(language, key);
-    }
-
-    public CDisplay CDisplayArea { get; }
-
-    public CDisplaySound CDisplaySound { get; }
-
     internal long? LDisplayChosen => _lDisplayVista?.LVistaChosen;
 
-    public void LDisplayVistaRestore(LVista vista)
+    internal void LDisplayVistaRestore(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
 
         _lDisplayVista = vista;
-        CDisplayArea.LDisplayVistaAttach();
     }
 
     internal void LDisplayChosenAttach(CSubject subject, Action<CBulletin> observer)
@@ -108,11 +86,11 @@ public sealed class LDisplay
         show(draft);
     }
 
-    internal void LDisplayEntryLoad(long id)
+    internal LEntryDraft? LDisplayEntryLoad(long id)
     {
         LEntryDraft? loaded = _lEntryPort.LEngineEntryLoad(id);
         _lDisplayVista?.LVistaSelect(loaded is null ? null : id);
-        CDisplayArea.LDisplayEntryOpen(loaded);
+        return loaded;
     }
 
     internal bool LDisplayFavoriteRead(long? entry)
@@ -157,74 +135,7 @@ public sealed class LDisplay
         }
     }
 
-    internal int LDisplayGraspStep => _lEntryPort.LEngineGraspStep;
-
-    public IReadOnlyList<CCompassRow> CDisplayCompassRead(
-        IReadOnlyList<CCompassPart> parts, Func<string, string> lookup)
-    {
-        ArgumentNullException.ThrowIfNull(parts);
-        ArgumentNullException.ThrowIfNull(lookup);
-
-        LEntryDraft? shown = LDisplaySound.LDisplayShown;
-        List<CCompassRow> rows = [];
-        List<string> labels = [];
-        foreach (CCompassPart part in parts)
-        {
-            rows.Add(new CCompassRow(part, null, string.Empty, string.Empty, 0));
-            labels.Add(lookup(LDisplayKeyRead(part)));
-            if (shown is null
-                || part is not (CCompassPart.CCompassPartMeaning or CCompassPart.CCompassPartCollocation))
-            {
-                continue;
-            }
-
-            bool collocated = part == CCompassPart.CCompassPartCollocation;
-            IReadOnlyList<LCardDraft> cards = collocated ? shown.LEntryDraftCollocations : shown.LEntryDraftMeanings;
-            string kind = lookup(collocated ? "Display.CollocationSingle" : "Display.MeaningSingle");
-            string unknown = lookup("Display.Unknown");
-            for (int index = 0; index < cards.Count; index++)
-            {
-                CStateValue title = CFolio.CFolioStateRead(cards[index].LCardDraftTitle);
-                rows.Add(new CCompassRow(
-                    part,
-                    index,
-                    string.Empty,
-                    cards[index].LCardDraftPosition.ToString(CultureInfo.CurrentCulture),
-                    1));
-                labels.Add(title.CStateValueUncertain ? unknown : title.CStateValueShown ?? kind);
-            }
-        }
-
-        IReadOnlyList<string> names = LDisplayNameResolve(labels);
-        return rows.Select((row, index) => row with { CCompassRowName = names[index] }).ToList();
-    }
-
-    private static string LDisplayKeyRead(CCompassPart part)
-    {
-        return part switch
-        {
-            CCompassPart.CCompassPartSpeech => "Speech.Title",
-            CCompassPart.CCompassPartFrequency => "Frequency.Title",
-            CCompassPart.CCompassPartMeaning => "Display.MeaningPlural",
-            CCompassPart.CCompassPartCollocation => "Display.Collocation",
-            CCompassPart.CCompassPartIncoming => "Display.Translated",
-            CCompassPart.CCompassPartNote => "Display.Note",
-            _ => throw new ArgumentOutOfRangeException(nameof(part), part, null),
-        };
-    }
-
-    private IReadOnlyList<string> LDisplayNameResolve(IReadOnlyList<string> labels)
-    {
-        try
-        {
-            return _lEntryPort.LEngineNameResolve(labels);
-        }
-        catch (Exception exception)
-        {
-            LDisplayNoticed.LLedgerRepaintShow(_lDisplayEnvoy, _lDisplaySettings, "Display.NameFailed", exception);
-            return labels;
-        }
-    }
+    internal int LDisplayGraspStep => Math.Max(0, _lEntryPort.LEngineGraspStep);
 
     internal string LDisplayGraspFormat(long? entry, int step)
     {
@@ -242,7 +153,7 @@ public sealed class LDisplay
 
         try
         {
-            int step = _lEntryPort.LEngineGraspRead(id);
+            int step = Math.Clamp(_lEntryPort.LEngineGraspRead(id), 0, LDisplayGraspStep);
             _lDisplayGrasp = (id, step);
             return step;
         }
@@ -293,10 +204,22 @@ public sealed class LDisplay
         return gauge is null
             ? null
             : new CFrequency(
-                gauge.LFrequencyGaugeBand,
+                Math.Max(0, gauge.LFrequencyGaugeBand),
                 gauge.LFrequencyGaugeSource,
-                gauge.LFrequencyGaugeRank,
-                gauge.LFrequencyGaugeSpare,
+                LDisplayTierRead(gauge.LFrequencyGaugeRank),
+                Math.Max(0, gauge.LFrequencyGaugeSpare),
                 gauge.LFrequencyGaugeRanked);
+    }
+
+    private static CFrequencyTier LDisplayTierRead(string rank)
+    {
+        return rank switch
+        {
+            "Core" => CFrequencyTier.CFrequencyTierCore,
+            "Everyday" => CFrequencyTier.CFrequencyTierEveryday,
+            "Advanced" => CFrequencyTier.CFrequencyTierAdvanced,
+            "Rare" => CFrequencyTier.CFrequencyTierRare,
+            _ => CFrequencyTier.CFrequencyTierUnknown,
+        };
     }
 }

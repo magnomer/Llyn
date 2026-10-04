@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditTruthSetting
 {
-    public const int TAuditGeneration = 19;
+    public const int TAuditGeneration = 20;
     public const bool TAuditTruthEnforced = true;
     public const string TAuditTruthReport = "temp/audit/Custody-{0}.md";
     public const string TAuditStateSuffix = "State";
@@ -30,6 +30,11 @@ internal static class TAuditTruthSetting
         "src/Llyn.UIDeportment/*.cs",
         "src/Llyn.UIDemeanor/*.cs",
     ];
+
+    public static readonly Dictionary<string, string[]> TAuditTruthInformative = new(StringComparer.Ordinal)
+    {
+        ["Mismatching"] = ["src/Llyn.UIDemeanor"],
+    };
 
     public static readonly string[] TAuditFrameworkPacks =
     [
@@ -107,6 +112,8 @@ internal static class TAuditTruthSetting
     [
         "System.Threading.Tasks.Task.Delay",
     ];
+
+    public const string TAuditInputBase = "System.Windows.Controls.Control";
 
     public static readonly string[] TAuditInputMembers =
     [

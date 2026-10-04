@@ -1,5 +1,5 @@
 # QDisplay.cs
-Hash: `83e667175f59beb8`
+Hash: `eca8f7ede19390dc`
 
 ## `internal sealed class QDisplay`
 
@@ -35,7 +35,7 @@ It then hands every part to the lectern.
 
 ## `private void QDisplayLecternAttach(QWindow host, QLectern lectern)`
 
-The window's atelier, the notice and the page go to the lectern.
+The window's atelier and envoy, the notice and the page go to the lectern.
 The header, stamp, frequency, speech and note controls follow.
 The swath's clear and the star row's two properties are its seams.
 The sound strip is introduced next through [QSounding](QSounding.comment.md), which hands its own parts over.

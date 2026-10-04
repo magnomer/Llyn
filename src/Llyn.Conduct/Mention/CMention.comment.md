@@ -1,10 +1,10 @@
 # CMention.cs
-Hash: `2ebc8a076c0fae0c`
+Hash: `e56d10daa00dc8de`
 
 ## `public sealed class CMention`
 
 The mention gates: how a text divides into Mention pieces, and how its chips are named.
-It also converts between code points and UTF-16 units for a driver's caret and selection.
+It converts click units to code points for the find gates, and the found word's start back to a unit.
 It stands on the atelier's ports, and `CAtelier` builds the one instance every driver shares.
 It holds no state of its own.
 Its click gate opens what a found word names through the atelier's navigation.
@@ -17,7 +17,7 @@ Only the atelier builds it, so each session has one.
 
 Raised with a stored Mention's sense once its entry has opened, so the driver brings that sense card into view.
 
-## `internal CMentionOffer LMentionResultOpen(CMentionResult result)`
+## `internal CMentionOffer LMentionResultOpen(CMentionResult result, string text)`
 
 Decides what a click on a text opens next, for every find gate alike.
 A stored Mention opens its linked entry through the navigation's entry open, and a link to nothing opens nothing.
@@ -25,7 +25,10 @@ Its sense is raised only when the open went through, so a declined leave spotlig
 A single matching entry opens at once.
 Several matching entries open nothing and come back as the candidates the driver offers in a menu.
 Every other answer offers nothing, so the driver's menu shows nothing.
-The offer carries the found word's start, where the menu stands, and the menu's title key `Mention.Title`.
+The offer carries the menu's title key `Mention.Title` and the place the menu stands on.
+That place is the found word's start, so the menu hangs under the whole word and not under the click.
+It is given as a UTF-16 unit in the whole shown `text`, ready for the control.
+So a word that starts in an earlier piece than the click still places the menu on its start.
 
 ## `internal static IReadOnlyList<CMentionPiece> CMentionDivide(string text, IReadOnlyList<LMention> mentions)`
 
@@ -35,7 +38,7 @@ The reading card and the corpus excerpt divide their text while they map it, so 
 
 ## `internal static IReadOnlyList<CMentionPiece> LMentionPieceRead(IReadOnlyList<LMentionPiece> pieces)`
 
-Maps the engine's pieces field for field.
+Maps each engine piece to its text and its link state, leaving its offset behind.
 The corpus excerpt maps the pieces it divides, and the reading card maps the pieces its line read answers.
 
 ## `internal static CProspect LMentionProspectRead(CDesk desk, string word, CEnvoy envoy, LSettingsPort settings)`
@@ -60,15 +63,20 @@ The chip line of one Example of a desk's draft, ready to paint, keyed by card an
 A desk without a live draft, or an Example with no Mentions, answers no chips.
 A failed read shows `Mention.FindFailed` and answers no chips.
 
-## `public int? CMentionUnitRead(string text, int start, int offset)`
+## `internal int? LMentionUnitRead(string text, int start, int offset)`
 
 The UTF-16 unit inside one piece where a code-point offset starts, for placing a popup.
 The piece begins at the code-point `start` of the whole text.
-An offset outside the piece answers null, so the driver asks each piece in turn.
+An offset outside the piece answers null.
+Only the result open calls it, with the whole text as one piece at zero.
+So the offer reaches the driver with its unit ready.
 
-## `public int CMentionOffsetRead(string text, int unit)`
+## `internal int LMentionOffsetRead(string text, int unit)`
 
-The code-point offset a UTF-16 unit falls in, for turning a click into a Mention offset.
+The code-point offset of a click in the whole shown text.
+The engine turns the UTF-16 `unit` in `text` into code points.
+It is the inverse of the unit read above at a start of zero.
+Only the find gates call it, so a driver hands raw click values and composes no offset.
 
 ## `public bool CMentionSpanCheck(string text, int start, int length)`
 
@@ -85,10 +93,13 @@ It stays internal, since it names engine types.
 Maps what a click on a text found to its shape, and a stored Mention under the click with it.
 The corpus excerpt and the lectern both hand the window this shape, so the lectern calls it too.
 
-## `internal static IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> LMentionLineRead(IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> lines)`
+## `internal static IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> LMentionLineRead(LEntryDraft content, IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> lines)`
 
 The chip lines of the draft's sentence rows, keyed by the row, as the sentence area answers them.
-It only maps, so the sentence area names no engine record.
+It keys one entry for every sentence of the meaning and collocation cards in `content`.
+A sentence the engine sent no line for gets an empty list, so a missing key never means stale.
+A line for a sentence outside `content` is dropped, since no row shows it.
+The sentence area names no engine record.
 
 ## `internal static IReadOnlyList<CMentionLabel> LMentionLabelRead(IReadOnlyList<LMentionLabel> labels)`
 

@@ -180,9 +180,9 @@ public sealed class CCorpus
         CCorpusAnthology.CAnthologyPanel.CPanelRowOpen(id);
     }
 
-    public CMentionOffer? CCorpusMentionFind(int offset)
+    public CMentionOffer? CCorpusMentionFind(string text, int unit)
     {
-        return LCorpusLeaveConfirm(true) ? CCorpusAnthology.LAnthologyMentionFind(offset) : null;
+        return LCorpusLeaveConfirm(true) ? CCorpusAnthology.LAnthologyMentionFind(text, unit) : null;
     }
 
     public void CCorpusExampleSelect(long? id)
@@ -370,7 +370,8 @@ public sealed class CCorpus
 
     public Task<CEnsignSheet<IReadOnlyList<CCatalogExample>>> CCorpusRowsLoad(
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
-        CCatalog.LCatalogEnsignLoad(_cCorpusSettingsPort, store, CCorpusRowsRead);
+        CCatalog.LCatalogEnsignLoad(
+            _cCorpusEnvoy, _cCorpusSettingsPort, "Example.LoadFailed", store, CCorpusRowsRead);
 
     public void CCorpusExampleDelete()
     {

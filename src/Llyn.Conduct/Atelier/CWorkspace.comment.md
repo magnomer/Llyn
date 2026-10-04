@@ -1,5 +1,5 @@
 # CWorkspace.cs
-Hash: `9e0ad922a2ff905b`
+Hash: `8b760ad4d85adf9f`
 
 ## `public sealed class CWorkspace`
 
@@ -34,6 +34,15 @@ They attach on the first open, since an atelier is also built over fake ports th
 The envoy of the latest open.
 The status bulletin, attached once, reads it on each bulletin.
 So a later open's envoy shows the failure rather than the first one's.
+
+## `private Action<Exception>? _cWorkspaceFailure;`
+
+The posture's save failure observer, kept so the exit can detach it.
+
+## `private Exception? _cWorkspaceUnshown;`
+
+A layout save failure heard before any open, when no envoy could show it yet.
+The next open shows it through its envoy and clears it, so the notice is never lost.
 
 ## `internal CWorkspace(CAtelier atelier)`
 
@@ -73,9 +82,22 @@ It then moves as the path gate does.
 The question is asked inside the failure policy, so a dialog that fails shows `Workspace.OpenFailed`.
 A declined question moves nothing and answers the folder in use.
 
+## `internal void LWorkspaceObserverAttach(Action<Action> marshal)`
+
+Hears the posture's `LPostureSaveFailed` and shows it as `Layout.SaveFailed` through the latest open's envoy.
+`marshal` is the driver's, so the notice shows on the driver's thread whichever thread saved.
+The posture raises it once per open workspace, so a drag that keeps failing shows one notice.
+The notice goes straight to `CEnvoyFailureShow` with its key alone.
+The clerk already recorded the fault, so the notice records nothing again.
+A notice raised before any open is kept in `_cWorkspaceUnshown` for the next open.
+A second attach replaces the first, so the notice is never heard twice.
+In product code only the startup gate `CAtelierOpen` calls it, so the driver makes no second gate call.
+`CAtelierClose` detaches it through `LWorkspaceClose`.
+
 ## `internal void LWorkspaceOpen(CWorkspaceState state, CEnvoy envoy)`
 
 The open's order after the sweep: the views, the ledger, the status, the wings' `state`, then the stored tab.
+A layout failure kept from before the open is shown first through `envoy`, then dropped.
 The ledger and status bulletins are attached on the first open only.
 `envoy` is the caller's, carried down so a failed status read is shown.
 Each open keeps `envoy` as the latest, and the status bulletin shows through it.
@@ -112,6 +134,7 @@ Only the areas call it, each once from its constructor.
 ## `internal void LWorkspaceClose()`
 
 Runs every registered area close, in the order the areas were built.
+It then detaches the posture's save failure observer, before the atelier releases the posture.
 Only the exit gate `CAtelier.CAtelierClose` calls it, before the leftover sweep.
 
 ## `private void LWorkspaceVistaRestore()`

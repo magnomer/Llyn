@@ -3,4 +3,4 @@ using System.Collections.Generic;
 namespace Llyn.Conduct;
 
 public sealed record CMentionOffer(
-    int CMentionOfferOffset, IReadOnlyList<CTranslationTarget> CMentionOfferEntry, string CMentionOfferKey);
+    int? CMentionOfferUnit, IReadOnlyList<CTranslationTarget> CMentionOfferEntry, string CMentionOfferKey);

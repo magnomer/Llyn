@@ -1,5 +1,5 @@
 # LWorkspaceClerk.cs
-Hash: `9c0bf8c2a9ea024d`
+Hash: `97e9012a19bd2a32`
 
 ## `public sealed class LWorkspaceClerk`
 
@@ -27,7 +27,15 @@ The stored settings of this workspace.
 ## `public void LWorkspaceSettingsSave(LSettings settings)`
 
 Writes the settings.
-A vault fault is recorded in the audit and swallowed, since settings are never worth a crash.
+A vault fault is thrown on to the caller unrecorded.
+The caller restores what it held and lets the gate show the failure.
+The gate's failure policy records the fault, so it is recorded once.
+
+## `public void LWorkspaceFallbackSave(LSettings settings)`
+
+Writes the fallback settings a newly opened workspace had none of.
+A vault fault is recorded in the audit and swallowed, so the open goes on.
+The engine keeps the fallback in memory, so the session goes on with it.
 
 ## `public bool LWorkspaceClerkMigrated`
 
@@ -83,10 +91,16 @@ Writes the workspace state row.
 
 Reads the posture stored under `name`.
 Answers false on a vault fault, after recording it, so the caller keeps what it has.
+No user action triggers a read, so a failure is recorded and shows no notice.
 
-## `public void LWorkspacePostureSave(string name, LPostureState state)`
+## `public bool LWorkspacePostureSave(string name, LPostureState state, out Exception? fault)`
 
-Writes the posture under `name`, recording and swallowing a vault fault.
+Writes the posture under `name` and answers whether the write succeeded.
+A vault fault is recorded in the audit and handed back as `fault`, never thrown.
+`fault` is a plain `Exception`, so the shell above names no Core type.
+The posture's notice must not record it again.
+A layout save runs during drags and bulletins, where a throw would break the view.
+So the posture decides how to tell the user, and the clerk only reports.
 
 ## `public void LWorkspaceClerkUpdate()`
 

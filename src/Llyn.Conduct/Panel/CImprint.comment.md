@@ -1,5 +1,5 @@
 # CImprint.cs
-Hash: `44b2c6319be105b3`
+Hash: `9ab5ad183d26da12`
 
 ## `public sealed class CImprint`
 
@@ -72,26 +72,38 @@ Hands the picked menu tag to the quill, which sends the kind at once.
 
 The kind menu the driver builds once, each option's tag and key already decided by the engine.
 It is static, since the menu is the same for every Source and needs no desk.
+Every tag appears once, since the read drops a repeated tag and keeps its first kind.
+So a driver can pair each option to its tag without meeting two radios for one kind.
 
 ## `public IReadOnlyList<CAuthorRow> CImprintCreditRead()`
 
 The credit rows of the held draft, with the one blank row already placed among them.
 While a draft is held, the blank row is opened on an empty list and kept within the rows.
 The blank row has id `0`, an empty name, its own place and no move.
+The blank row alone carries `CAuthorRowBlank`, and every engine row carries it false.
+The driver tests that mark only to paint the row.
+The add, remove and move gates never take that mark back from the driver.
+They decide blankness from Conduct's own marker, the place the blank row was inserted.
+Id `0` is the engine's word for no Author, so no stored credit carries it.
 
 ## `public void CImprintAuthorAdd(int? position, long? id)`
 
 The add button of a credit row opens a blank row beneath it and asks for the caret.
 The blank row's own add button only asks for the caret.
+A row with id `0` is the blank row only at the place Conduct keeps for it.
+An id `0` anywhere else names no row, so nothing happens.
 
 ## `public void CImprintAuthorRemove(long? id)`
 
 The remove button closes the byline, then closes the blank row or sends the credit's removal.
+Id `0` is the blank row, closed only while Conduct's marker says one is open.
+Id `0` is never sent to the engine.
 
 ## `public void CImprintAuthorMove(int? position, long? id, int step)`
 
 The earlier or later button sends the credit one place along by `step`.
 The blank row has no place in the draft, so it never moves.
+Id `0` names the blank row or no row, so it is never sent to the engine.
 
 ## `public bool CImprintAuthorFinish(int? position, long? id, string? text, long? chosen)`
 

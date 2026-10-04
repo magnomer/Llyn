@@ -17,24 +17,27 @@ public sealed class TAtelierMention
             CMention.CMentionDivide("the cat sat", [TInterfaceMentionSpan.TMentionCreate(1, 4, 3, 7)]);
 
         Assert.Equal(3, pieces.Count);
-        Assert.Equal("cat", pieces[1].CMentionPieceText);
-        Assert.Equal(4, pieces[1].CMentionPieceOffset);
-        Assert.Equal(7, pieces[2].CMentionPieceOffset);
-        Assert.Null(pieces[0].CMentionPieceLinked);
-        Assert.True(pieces[1].CMentionPieceLinked);
+        Assert.Equal(["the ", "cat", " sat"], pieces.Select(static piece => piece.CMentionPieceText));
+        Assert.Equal([null, true, null], pieces.Select(static piece => piece.CMentionPieceLinked));
     }
 
     [Fact]
-    public void MentionOffsetRead_UnitRead_RoundTrips()
+    public void MentionUnitRead_DisplayMentionFind_RoundTrips()
     {
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TAtelierMentionCreate(engine);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        long shown = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "run", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a thing", 1)], [])).LEntryId;
         string text = "\U0001F600 cat";
 
-        int? unit = atelier.CAtelierMention.CMentionUnitRead(text, 0, 2);
+        int? unit = TInterfaceMention.TMentionUnitRead(atelier, text, 0, 2);
 
         Assert.Equal(3, unit);
-        Assert.Equal(2, atelier.CAtelierMention.CMentionOffsetRead(text, unit!.Value));
+        Assert.Equal(2, TInterfaceMention.TDisplayOffsetRead(engine, atelier, shown, text, unit!.Value));
+        Assert.Equal(
+            TInterfaceMention.TDisplayOffsetRead(engine, atelier, shown, text, unit.Value) + 2,
+            TInterfaceMention.TDisplayOffsetRead(engine, atelier, shown, text, unit.Value + 2));
     }
 
     [Theory]
@@ -46,7 +49,7 @@ public sealed class TAtelierMention
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TAtelierMentionCreate(engine);
 
-        Assert.Equal(expected, atelier.CAtelierMention.CMentionUnitRead("c\U0001F600t", 3, offset));
+        Assert.Equal(expected, TInterfaceMention.TMentionUnitRead(atelier, "c\U0001F600t", 3, offset));
     }
 
     [Theory]
@@ -57,7 +60,7 @@ public sealed class TAtelierMention
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TAtelierMentionCreate(engine);
 
-        Assert.Null(atelier.CAtelierMention.CMentionUnitRead("c\U0001F600t", 3, offset));
+        Assert.Null(TInterfaceMention.TMentionUnitRead(atelier, "c\U0001F600t", 3, offset));
     }
 
     [Fact]
@@ -92,9 +95,10 @@ public sealed class TAtelierMention
 
         CMentionOffer offer = TInterfaceMention.TMentionResultOpen(
             atelier,
-            new CMentionResult(2, new CMentionMark(40, sense), [TMentionTargetCreate(8)]));
+            new CMentionResult(2, new CMentionMark(40, sense), [TMentionTargetCreate(8)]),
+            "a cat");
 
-        Assert.Equal(2, offer.CMentionOfferOffset);
+        Assert.Equal(2, offer.CMentionOfferUnit);
         Assert.Empty(offer.CMentionOfferEntry);
         Assert.Equal([40L], arrived);
         Assert.Equal(raised ? [sense] : [], senses);
@@ -114,9 +118,10 @@ public sealed class TAtelierMention
 
         CMentionOffer offer = TInterfaceMention.TMentionResultOpen(
             atelier,
-            new CMentionResult(2, new CMentionMark(entry, 7), []));
+            new CMentionResult(2, new CMentionMark(entry, 7), []),
+            "a cat");
 
-        Assert.Equal(2, offer.CMentionOfferOffset);
+        Assert.Equal(2, offer.CMentionOfferUnit);
         Assert.Empty(offer.CMentionOfferEntry);
         Assert.Empty(arrived);
         Assert.Empty(senses);
@@ -131,9 +136,10 @@ public sealed class TAtelierMention
 
         CMentionOffer offer = TInterfaceMention.TMentionResultOpen(
             atelier,
-            new CMentionResult(2, null, [TMentionTargetCreate(8)]));
+            new CMentionResult(2, null, [TMentionTargetCreate(8)]),
+            "a cat");
 
-        Assert.Equal(2, offer.CMentionOfferOffset);
+        Assert.Equal(2, offer.CMentionOfferUnit);
         Assert.Empty(offer.CMentionOfferEntry);
         Assert.Equal([8L], arrived);
     }
@@ -150,9 +156,10 @@ public sealed class TAtelierMention
 
         CMentionOffer offer = TInterfaceMention.TMentionResultOpen(
             atelier,
-            new CMentionResult(2, null, candidates));
+            new CMentionResult(2, null, candidates),
+            "a cat");
 
-        Assert.Equal(2, offer.CMentionOfferOffset);
+        Assert.Equal(2, offer.CMentionOfferUnit);
         Assert.Equal(candidates, offer.CMentionOfferEntry);
         Assert.Equal("Mention.Title", offer.CMentionOfferKey);
         Assert.Empty(arrived);

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -11,37 +10,37 @@ public sealed class CDisplay
     private static readonly CLectern _cDisplayBlank = new(
         string.Empty, string.Empty, [], false, [], false, string.Empty, string.Empty, false);
 
-    private readonly LDisplay _cDisplayRule;
-
     private readonly LEntryPort _cDisplayPort;
-
-    private readonly LPhonologyPort _cDisplayPhonology;
 
     private readonly CEnvoy _cDisplayEnvoy;
 
     private readonly LSettingsPort _cDisplaySettings;
 
-    private CMention? _cDisplayMention;
-
     internal CDisplay(
-        LDisplay display, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, CEnvoy envoy)
+        LDraftPort drafts,
+        LEntryPort entries,
+        LPhonologyPort phonology,
+        LSettingsPort settings,
+        LMediaPort media,
+        CEnvoy envoy,
+        CLedgerNoticed noticed)
     {
-        ArgumentNullException.ThrowIfNull(display);
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
-        _cDisplayRule = display;
+        LDisplayRule = new LDisplay(drafts, entries, phonology, settings, media, envoy, noticed);
         _cDisplayPort = entries;
-        _cDisplayPhonology = phonology;
         _cDisplayEnvoy = envoy;
         _cDisplaySettings = settings;
+        CDisplaySound = new CDisplaySound(LDisplayRule, this, drafts, entries, phonology, media, settings, envoy);
+        CDisplayCard = new CDisplayCard(LDisplayRule, entries, phonology, settings, envoy);
+        CDisplayRoute = new CDisplayRoute(LDisplayRule, entries, settings, envoy);
+        CDisplayCompass = new CCompass(LDisplayRule, entries, settings, envoy);
     }
 
     public event Action? CDisplayOpened;
-
-    internal event Action<string, long>? CDisplayRowChosen;
 
     public event Action? CDisplayClosed;
 
@@ -65,31 +64,50 @@ public sealed class CDisplay
 
     public CLectern CDisplayShown { get; private set; } = _cDisplayBlank;
 
-    public int CDisplayGraspStep => _cDisplayRule.LDisplayGraspStep;
+    public CDisplaySound CDisplaySound { get; }
 
-    private long? LDisplayChosen => _cDisplayRule.LDisplayChosen;
+    public CDisplayCard CDisplayCard { get; }
 
-    private LEntryDraft? LDisplayShown => _cDisplayRule.LDisplaySound.LDisplayShown;
+    public CDisplayRoute CDisplayRoute { get; }
 
-    private CLedgerNoticed LDisplayNoticed => _cDisplayRule.LDisplayNoticed;
+    public CCompass CDisplayCompass { get; }
 
-    internal void LDisplayVistaAttach()
+    internal LDisplay LDisplayRule { get; }
+
+    public int CDisplayGraspStep => LDisplayRule.LDisplayGraspStep;
+
+    private long? LDisplayChosen => LDisplayRule.LDisplayChosen;
+
+    internal void LDisplayNavigationAttach(CNavigation navigation, CMention mention)
     {
-        _cDisplayRule.LDisplayChosenAttach(
+        ArgumentNullException.ThrowIfNull(navigation);
+
+        CDisplayRoute.LDisplayMentionAttach(mention);
+        CDisplayRoute.CDisplayRowChosen += (tab, id) => navigation.LNavigationRowOpen(tab, id);
+        CDisplaySound.CDisplayRowChosen += (tab, id) => navigation.LNavigationRowOpen(tab, id);
+        CDisplaySound.CDisplayDiweiChosen +=
+            (language, kind, key) => navigation.LNavigationDiweiOpen(language, kind, key);
+        CDisplaySound.CDisplayStemChosen += (language, key) => navigation.LNavigationStemOpen(language, key);
+    }
+
+    internal void LDisplayVistaRestore(LVista vista)
+    {
+        LDisplayRule.LDisplayVistaRestore(vista);
+        LDisplayRule.LDisplayChosenAttach(
             CSubject.CSubjectFavorite, bulletin => CDisplayFavoriteChanged?.Invoke(bulletin));
-        _cDisplayRule.LDisplayChosenAttach(CSubject.CSubjectGrasp, bulletin => CDisplayGraspChanged?.Invoke(bulletin));
-        _cDisplayRule.LDisplayChosenAttach(
+        LDisplayRule.LDisplayChosenAttach(CSubject.CSubjectGrasp, bulletin => CDisplayGraspChanged?.Invoke(bulletin));
+        LDisplayRule.LDisplayChosenAttach(
             CSubject.CSubjectFrequency, bulletin => CDisplayFrequencyChanged?.Invoke(bulletin));
-        _cDisplayRule.LDisplayChosenAttach(
+        LDisplayRule.LDisplayChosenAttach(
             CSubject.CSubjectInflection, bulletin => CDisplayParadigmChanged?.Invoke(bulletin));
-        _cDisplayRule.LDisplayChosenAttach(
+        LDisplayRule.LDisplayChosenAttach(
             CSubject.CSubjectReflex, bulletin => CDisplayReflexChanged?.Invoke(bulletin));
-        _cDisplayRule.LDisplayChosenAttach(CSubject.CSubjectEntry, bulletin => CDisplayEntryChanged?.Invoke(bulletin));
-        _cDisplayRule.LDisplayObserverAttach(
+        LDisplayRule.LDisplayChosenAttach(CSubject.CSubjectEntry, bulletin => CDisplayEntryChanged?.Invoke(bulletin));
+        LDisplayRule.LDisplayObserverAttach(
             CSubject.CSubjectScript, bulletin => CDisplayScriptChanged?.Invoke(bulletin));
-        _cDisplayRule.LDisplayObserverAttach(
+        LDisplayRule.LDisplayObserverAttach(
             CSubject.CSubjectFanqie, bulletin => CDisplayFanqieChanged?.Invoke(bulletin));
-        _cDisplayRule.LDisplayObserverAttach(
+        LDisplayRule.LDisplayObserverAttach(
             CSubject.CSubjectWorkspace, bulletin => CDisplayWorkspaceChanged?.Invoke(bulletin));
         foreach (CSubject subject in (CSubject[])
                  [
@@ -102,7 +120,7 @@ public sealed class CDisplay
                      CSubject.CSubjectSettings,
                  ])
         {
-            _cDisplayRule.LDisplayObserverAttach(subject, bulletin => CDisplayEntryChanged?.Invoke(bulletin));
+            LDisplayRule.LDisplayObserverAttach(subject, bulletin => CDisplayEntryChanged?.Invoke(bulletin));
         }
     }
 
@@ -127,7 +145,7 @@ public sealed class CDisplay
             return;
         }
 
-        _cDisplayRule.LDisplaySound.LDisplaySoundShow(id, draft);
+        LDisplayRule.LDisplaySound.LDisplaySoundShow(id, draft);
         (bool, string, string) stamp = LDisplayStampRead(id);
         CDisplayShown = new CLectern(
             draft.LEntryDraftHeadword,
@@ -150,14 +168,15 @@ public sealed class CDisplay
         }
         catch (Exception exception)
         {
-            LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Display.StampFailed", exception);
+            LDisplayRule.LDisplayNoticed.LLedgerRepaintShow(
+                _cDisplayEnvoy, _cDisplaySettings, "Display.StampFailed", exception);
             return (false, string.Empty, string.Empty);
         }
     }
 
     public void CDisplayEntryClose()
     {
-        _cDisplayRule.LDisplaySound.LDisplaySoundClear();
+        LDisplayRule.LDisplaySound.LDisplaySoundClear();
         CDisplayShown = _cDisplayBlank;
         CDisplayClosed?.Invoke();
     }
@@ -169,7 +188,7 @@ public sealed class CDisplay
             return;
         }
 
-        _cDisplayRule.LDisplayDraftLoad(LDisplayEntryOpen);
+        LDisplayRule.LDisplayDraftLoad(LDisplayEntryOpen);
     }
 
     public void CDisplayWorkspaceResonate()
@@ -179,29 +198,29 @@ public sealed class CDisplay
 
     public bool CDisplayFavoriteRead()
     {
-        return _cDisplayRule.LDisplayFavoriteRead(LDisplayChosen);
+        return LDisplayRule.LDisplayFavoriteRead(LDisplayChosen);
     }
 
     public bool CDisplayFavoriteToggle(bool marked)
     {
-        _cDisplayRule.LDisplayFavoriteSave(LDisplayChosen, marked);
+        LDisplayRule.LDisplayFavoriteSave(LDisplayChosen, marked);
         return CDisplayFavoriteRead();
     }
 
     public CGrasp CDisplayGraspRead()
     {
-        int step = _cDisplayRule.LDisplayGraspRead(LDisplayChosen);
+        int step = LDisplayRule.LDisplayGraspRead(LDisplayChosen);
         return new CGrasp(step, CDisplayGraspRead(step));
     }
 
     public string CDisplayGraspRead(int step)
     {
-        return _cDisplayRule.LDisplayGraspFormat(LDisplayChosen, step);
+        return LDisplayRule.LDisplayGraspFormat(LDisplayChosen, step);
     }
 
     public CGrasp CDisplayGraspSet(int step)
     {
-        _cDisplayRule.LDisplayGraspSave(LDisplayChosen, step);
+        LDisplayRule.LDisplayGraspSave(LDisplayChosen, step);
         return CDisplayGraspRead();
     }
 
@@ -209,189 +228,6 @@ public sealed class CDisplay
     {
         ArgumentNullException.ThrowIfNull(lookup);
 
-        return _cDisplayRule.LDisplayFrequencyRead(LDisplayChosen, lookup("Frequency.Once"));
-    }
-
-    public CLecternCard CDisplayCardRead()
-    {
-        if (LDisplayShown is not LEntryDraft shown)
-        {
-            return new CLecternCard([], [], false, false);
-        }
-
-        LSentenceOrder order = LDisplayOrderRead(shown.LEntryDraftLanguage);
-        IReadOnlyDictionary<long, string> citations = LDisplayCitationRead(shown);
-        IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets = LDisplayTranslationRead(shown);
-        string mark = _cDisplaySettings.LEngineTextRead("Display.Unknown");
-        LMediaPort media = _cDisplayRule.LDisplayMediaPort;
-        return new CLecternCard(
-            CLeaf.LLeafRead(shown.LEntryDraftMeanings, order, mark, citations, targets, media),
-            CLeaf.LLeafRead(shown.LEntryDraftCollocations, order, mark, citations, targets, media),
-            shown.LEntryDraftDefined,
-            shown.LEntryDraftCollocated);
-    }
-
-    private IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LDisplayTranslationRead(LEntryDraft shown)
-    {
-        try
-        {
-            return _cDisplayPort.LEngineTranslationRead(shown);
-        }
-        catch (Exception exception)
-        {
-            LDisplayNoticed.LLedgerRepaintShow(
-                _cDisplayEnvoy, _cDisplaySettings, "Display.TranslationFailed", exception);
-            return new Dictionary<long, IReadOnlyList<LTranslationTarget>>();
-        }
-    }
-
-    private LSentenceOrder LDisplayOrderRead(string language)
-    {
-        try
-        {
-            return _cDisplayPhonology.LEngineOrderRead(language);
-        }
-        catch (Exception exception)
-        {
-            LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Display.OrderFailed", exception);
-            return LSentenceOrder.LSentenceOrderDefault;
-        }
-    }
-
-    private IReadOnlyDictionary<long, string> LDisplayCitationRead(LEntryDraft shown)
-    {
-        try
-        {
-            return _cDisplayPort.LEngineCitationRead(shown);
-        }
-        catch (Exception exception)
-        {
-            LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Display.CitationFailed", exception);
-            return new Dictionary<long, string>();
-        }
-    }
-
-    public IReadOnlyList<CUsage> CDisplayIncomingRead()
-    {
-        if (LDisplayChosen is not long id)
-        {
-            return [];
-        }
-
-        try
-        {
-            return _cDisplayPort.LEngineIncomingRead(id).Select(COeuvre.COeuvreUsageRead).ToList();
-        }
-        catch (Exception exception)
-        {
-            LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Display.IncomingFailed", exception);
-            return [];
-        }
-    }
-
-    public CLecternEtymology CDisplayEtymologyRead()
-    {
-        if (LDisplayShown is not LEntryDraft shown)
-        {
-            return new CLecternEtymology(string.Empty, [], false, false, false, false);
-        }
-
-        LEtymologyResult etymology;
-        try
-        {
-            etymology = _cDisplayPort.LEngineEtymologyRead(shown);
-        }
-        catch (Exception exception)
-        {
-            LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Display.EtymologyFailed", exception);
-            etymology = new LEtymologyResult([], shown.LEntryDraftEtymology.LEtymologyDraftNarrated);
-        }
-
-        return new CLecternEtymology(
-            shown.LEntryDraftEtymology.LEtymologyDraftText,
-            CFolio.CFolioTargetRead(etymology.LEtymologyResultTargets),
-            etymology.LEtymologyResultFilled,
-            etymology.LEtymologyResultNarrated,
-            etymology.LEtymologyResultLinked,
-            shown.LEntryDraftDerived);
-    }
-
-    public bool CDisplayChipOpen(CLeafChip? chip, long? link)
-    {
-        if (chip is { CLeafChipStored: true })
-        {
-            CDisplayRowChosen?.Invoke(LDisplayTabRead(chip.CLeafChipSubject), chip.CLeafChipId);
-            return true;
-        }
-
-        if (LEntryPort.LEngineLinkRead(link) is not long id)
-        {
-            return false;
-        }
-
-        CDisplayRowChosen?.Invoke("Library", id);
-        return true;
-    }
-
-    private static string LDisplayTabRead(CSubject subject)
-    {
-        return subject switch
-        {
-            CSubject.CSubjectSituation => "Repertoire",
-            CSubject.CSubjectRegister => "Tenor",
-            CSubject.CSubjectTag => "Taxonomy",
-            _ => throw new ArgumentOutOfRangeException(nameof(subject), subject, null),
-        };
-    }
-
-    internal void LDisplayMentionAttach(CMention mention)
-    {
-        ArgumentNullException.ThrowIfNull(mention);
-
-        _cDisplayMention = mention;
-    }
-
-    public CMentionOffer? CDisplayMentionFind(long sentence, int offset)
-    {
-        return LDisplayMentionOpen(shown => _cDisplayPort.LEngineMentionFind(shown, sentence, offset));
-    }
-
-    public CMentionOffer? CDisplayEtymologyFind(int offset)
-    {
-        return LDisplayMentionOpen(shown => _cDisplayPort.LEngineEtymologyFind(shown, offset));
-    }
-
-    private CMentionOffer? LDisplayMentionOpen(Func<LEntryDraft, LMentionResult> find)
-    {
-        if (_cDisplayMention is not CMention mention || LDisplayShown is not LEntryDraft shown)
-        {
-            return null;
-        }
-
-        try
-        {
-            return mention.LMentionResultOpen(CMention.CMentionResultRead(find(shown)));
-        }
-        catch (Exception exception)
-        {
-            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Mention.FindFailed", exception);
-            return null;
-        }
-    }
-
-    public (CCompassPart, int)? CDisplayCardFind(long id)
-    {
-        if (LDisplayShown is not LEntryDraft shown
-            || LEntryPort.LEngineCardFind(shown, id) is not (LOwner owner, int index))
-        {
-            return null;
-        }
-
-        return owner switch
-        {
-            LOwner.LOwnerMeaning => (CCompassPart.CCompassPartMeaning, index),
-            LOwner.LOwnerCollocation => (CCompassPart.CCompassPartCollocation, index),
-            _ => throw new ArgumentOutOfRangeException(nameof(id), owner, null),
-        };
+        return LDisplayRule.LDisplayFrequencyRead(LDisplayChosen, lookup("Frequency.Once"));
     }
 }

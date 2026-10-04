@@ -370,7 +370,8 @@ public sealed class CRepertoire
 
     public Task<CEnsignSheet<IReadOnlyList<CCatalogSituation>>> CRepertoireRowsLoad(
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
-        CCatalog.LCatalogEnsignLoad(_cRepertoireSettingsPort, store, CRepertoireRowsRead);
+        CCatalog.LCatalogEnsignLoad(
+            _cRepertoireEnvoy, _cRepertoireSettingsPort, "Situation.LoadFailed", store, CRepertoireRowsRead);
 
     public void CRepertoireSituationDelete()
     {

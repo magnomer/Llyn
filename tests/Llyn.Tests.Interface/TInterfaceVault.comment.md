@@ -1,5 +1,5 @@
 # TInterfaceVault.cs
-Hash: `ebdaecc68be7a493`
+Hash: `0a3cdd5f271284f2`
 
 ## `internal static partial class TInterface`
 
@@ -40,3 +40,7 @@ The workspace archive over `database`, handed out as the port the identity count
 ## `internal static LIdentity TIdentityCreate(LWorkspaceVault workspaces) =>`
 
 The identity issuer over a workspace port, as the engine builds it.
+
+## `internal static LVaultFault TVaultFaultCreate(string message) =>`
+
+The vault fault a port raises when its disk refuses, carrying an I/O cause with `message`.

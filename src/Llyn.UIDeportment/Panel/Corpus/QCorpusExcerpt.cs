@@ -34,6 +34,8 @@ internal sealed partial class QCorpus
 
     private void QExcerptMentionObserve(object? sender, PMentionArgument e)
     {
-        _qCorpusHost.QWindowMentionRefine(QExcerptText, _cCorpus.CCorpusMentionFind(e.PMentionArgumentOffset));
+        _qCorpusHost.QWindowMentionRefine(
+            QExcerptText,
+            _cCorpus.CCorpusMentionFind(e.PMentionArgumentText, e.PMentionArgumentUnit));
     }
 }

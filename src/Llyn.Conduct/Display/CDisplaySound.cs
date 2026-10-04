@@ -18,7 +18,7 @@ public sealed class CDisplaySound
         [],
         false);
 
-    private static readonly CFont _cDisplayBare = new(null, null, null);
+    private static readonly CFont _cDisplayBare = new(null, null, CFontSlant.CFontSlantTheme);
 
     private static readonly CLecternAnchor _cDisplayUnanchored = new(false, new Dictionary<long, string>());
 
@@ -351,8 +351,9 @@ public sealed class CDisplaySound
         }
 
         return new CLecternScript(
-            CSounding.CSoundingScriptRead(_cDisplayVoice.LDisplayListRead(
-                _cDisplayPhonology.LEngineScriptDivide, "Display.ScriptReadFailed")),
+            CSounding.CSoundingScriptRead(
+                _cDisplayVoice.LDisplayListRead(_cDisplayPhonology.LEngineScriptDivide, "Display.ScriptReadFailed"),
+                _cDisplaySettings),
             _cDisplayVoice.LDisplayScriptCheck(id),
             CDisplayFontRead(CFontRole.CFontRoleGlyph));
     }

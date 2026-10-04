@@ -99,7 +99,8 @@ internal sealed class QWing
     {
         _qIndex.QIndexClearRefine();
         IReadOnlyList<string> languages =
-            await _qWingHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
+            await _qWingHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(
+                _qWingHost.QWindowEnvoy, QEnsignImage.QEnsignDraw);
 
         QChoice.QChoiceOrderBuild(QWingOrderList, "Order", QWingOrderObserve, CLibrary.CLibraryOrderRead());
         QChoice.QChoiceOrderApply(QWingOrderDropdown, _cWing.CWingOrder);

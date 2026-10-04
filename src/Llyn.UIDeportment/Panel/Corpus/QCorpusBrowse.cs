@@ -15,7 +15,8 @@ internal sealed partial class QCorpus
     private async void QCorpusWorkspaceRefine()
     {
         QSpeakerRefine(
-            await _qCorpusHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw));
+            await _qCorpusHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(
+                _qCorpusHost.QWindowEnvoy, QEnsignImage.QEnsignDraw));
     }
 
     private void QQueryObserve(object sender, TextChangedEventArgs e)

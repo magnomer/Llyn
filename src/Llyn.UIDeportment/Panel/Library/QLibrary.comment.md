@@ -1,5 +1,5 @@
 # QLibrary.cs
-Hash: `c278da8b45ef9ebe`
+Hash: `bd63b1dc345865f5`
 
 ## `internal sealed class QLibrary`
 
@@ -72,6 +72,7 @@ Builds the filter menu from the languages the flag load answered.
 
 Answers the area's workspace notice by loading the flags of the new workspace.
 The entry was already closed in Conduct.
+The window's envoy goes with the load, so the catalog reports a failed load and answers no languages.
 
 ## `private bool QLibraryShownCheck()`
 

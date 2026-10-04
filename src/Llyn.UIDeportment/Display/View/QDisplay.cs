@@ -149,7 +149,8 @@ internal sealed class QDisplay
 
     private void QDisplayLecternAttach(QWindow host, QLectern lectern)
     {
-        lectern.QLecternIntroduce(host.QWindowAtelier, QDisplayEmpty, QDisplayContents, QDisplaySwath.PSwathClear);
+        lectern.QLecternIntroduce(
+            host.QWindowAtelier, host.QWindowEnvoy, QDisplayEmpty, QDisplayContents, QDisplaySwath.PSwathClear);
         lectern.QLecternHeaderIntroduce(
             QDisplayHeadword,
             QDisplayLanguage,

@@ -27,7 +27,12 @@ public sealed class QFanqie : Decorator
         nameof(QFanqieFolded),
         typeof(bool),
         typeof(QFanqie),
-        new FrameworkPropertyMetadata(false, static (sender, _) => ((QFanqie)sender).QFanqieStateRefine()));
+        new FrameworkPropertyMetadata(false, static (sender, _) =>
+        {
+            QFanqie box = (QFanqie)sender;
+            box._qFanqieBody.Visibility = QLook.QLookVisibleRead(!box.QFanqieFolded);
+            box.QFanqieStateRefine();
+        }));
 
     public static readonly DependencyProperty QFanqieRenewableProperty = DependencyProperty.Register(
         nameof(QFanqieRenewable),
@@ -57,8 +62,7 @@ public sealed class QFanqie : Decorator
         QIconImage chevron = new() { Width = 12, Height = 12, QIconSource = QIcon.QIconResolve("expand", 12) };
         _qFanqieSwitch.Content = chevron;
         _qFanqieSwitch.SetResourceReference(StyleProperty, "Theme.Marker.Switch");
-        _qFanqieSwitch.Checked += (_, _) => QFanqieStateRefine();
-        _qFanqieSwitch.Unchecked += (_, _) => QFanqieStateRefine();
+        _qFanqieSwitch.Click += QFanqieFoldObserve;
         _qFanqieRefresh.SetResourceReference(StyleProperty, "Theme.Sound.Rebuild");
         _qFanqieRefresh.Click += QFanqieRefreshObserve;
         _qFanqieHead.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -121,6 +125,8 @@ public sealed class QFanqie : Decorator
 
     internal event Action? QFanqieRenewalNotice;
 
+    internal event Action<bool>? QFanqieFoldNotice;
+
     internal event Action<bool, string>? QFanqieDiweiNotice;
 
     internal event Action<string?>? QFanqieStemNotice;
@@ -165,6 +171,17 @@ public sealed class QFanqie : Decorator
         QFanqieRenewalNotice?.Invoke();
     }
 
+    private void QFanqieFoldObserve(object sender, RoutedEventArgs e)
+    {
+        QFanqieFoldNotice?.Invoke(QLook.QLookCheckedRead(_qFanqieSwitch.IsChecked));
+    }
+
+    internal void QFanqieFoldRefine(bool opened)
+    {
+        _qFanqieSwitch.IsChecked = opened;
+        _qFanqieBody.Visibility = QLook.QLookVisibleRead(opened || !QFanqieFolded);
+    }
+
     private void QFanqieStateRefine()
     {
         IReadOnlyList<QFanqieItem>? items = QFanqieItems;
@@ -176,9 +193,6 @@ public sealed class QFanqie : Decorator
             QLook.QLookCueProperty,
             QLook.QLookFirstRead(QFanqiePending, QLookCue.QLookCuePending, QLookCue.QLookCueBase));
         _qFanqieHead.Visibility = QFanqieFolded ? Visibility.Visible : Visibility.Collapsed;
-        _qFanqieBody.Visibility = !QFanqieFolded || _qFanqieSwitch.IsChecked == true
-            ? Visibility.Visible
-            : Visibility.Collapsed;
         Visibility = filled || QFanqiePending || QFanqieRenewable
             ? Visibility.Visible
             : Visibility.Collapsed;

@@ -1,5 +1,5 @@
 # QAuthorItem.cs
-Hash: `417db759f68d9c5a`
+Hash: `44206716aeb026c4`
 
 ## `internal sealed class QAuthorItem`
 
@@ -7,15 +7,15 @@ Presentation item for one credit row of the Source edit area, copied from the so
 The list is spliced on each notice.
 A row that keeps its id and place thus keeps its field and caret.
 
-## `internal QAuthorItem(long id, string name, int position, bool earlier, bool later)`
+## `internal QAuthorItem(long id, string name, int position, bool earlier, bool later, bool blank)`
 
 Takes each value apart, so the row's changing fields are written by the shell alone.
 
-## `public bool QAuthorItemBlank => QAuthorItemId == 0;`
+## `public bool QAuthorItemBlank { get; }`
 
 Whether the row credits nobody yet.
-A stored Author has a positive id and a minted one a negative id.
-So zero is free to mean neither.
+It copies Conduct's `CAuthorRowBlank` mark, so no id value has to mean blank.
+An engine row is thus never taken for the blank row, whatever its id.
 
 ## `public string QAuthorItemName`
 

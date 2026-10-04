@@ -1,5 +1,5 @@
 # COccurrence.cs
-Hash: `05c85bbd10489618`
+Hash: `8370ec9a5b2f7923`
 
 ## `public sealed class COccurrence`
 
@@ -49,6 +49,8 @@ A failed read shows the `Situation.LoadFailed` notice once through the ledger an
 
 Runs the flag fill into the driver's `store`, then answers `COccurrenceRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+A failed flag fill shows `Situation.LoadFailed` and still answers the rows with no languages.
+The driver awaits it from an event handler, where a fault would end the app.
 
 ## `internal string LOccurrenceFileRead()`
 

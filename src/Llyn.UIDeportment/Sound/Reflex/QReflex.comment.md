@@ -1,5 +1,5 @@
 # QReflex.cs
-Hash: `2824189e8841c079`
+Hash: `47fe684c518cfb4d`
 
 ## `internal sealed class QReflex`
 
@@ -16,7 +16,8 @@ Holds the Conduct editor and subscribes the draft, desk start, sounding, reflex 
 
 ## `private void QReflexAddObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Hands the row the plus was pressed on to `CTimbre.CTimbreReflexAdd`, or zero for the header's plus.
+Hands the row the plus was pressed on to `CTimbre.CTimbreReflexAdd`, or null for the header's plus.
+Null is Conduct's word for no row, so no magic id is sent.
 The clerk places the new row and gives it the pressed row's language and kind.
 
 ## `private void QReflexRemoveObserve(object sender, ExecutedRoutedEventArgs e)`

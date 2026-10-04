@@ -1,5 +1,10 @@
 # Llyn.UIVeneer.csproj
-Hash: `986f3a293466e76f`
+Hash: `b305211001a11aef`
+
+## `<DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>`
+
+The veneer compiles against the deportment alone, never the rings below it.
+A page that names Conduct or the engine fails the build, not only the border audit.
 
 ## `<ProjectReference Include="..\Llyn.UIDeportment\Llyn.UIDeportment.csproj" />`
 

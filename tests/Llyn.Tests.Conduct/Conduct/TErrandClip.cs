@@ -349,6 +349,63 @@ public sealed class TErrandClip
     }
 
     [Fact]
+    public async Task RecordingSave_StoreFaults_ShowsTheNoticeRecordsTheFaultAndOffersTheRetry()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        List<Exception> recorded = [];
+        using LEngine engine = TErrandFaultStart(workspace, recorded);
+        List<string> asked = [];
+        CEditor editor = TErrandClipPrepare(engine, asked);
+        CErrand errand = await TErrandClipStart(editor, pack.TLanguageFixtureName);
+        CRecording found = new("Tagged", "https://example.test/gb.mp3", 0, true, "British");
+        errand.TErrandHarvestResonate(new CHarvestStep("Tagged", 0, found, false));
+        List<CClipRoll> changes = [];
+        errand.CErrandClipChanged += changes.Add;
+        asked.Clear();
+
+        Assert.False(await errand.CErrandRecordingSave(found).WaitAsync(TimeSpan.FromSeconds(5)));
+
+        Assert.Equal(["Input.RecordingFailed"], asked);
+        Assert.IsType<LVaultFault>(Assert.Single(recorded));
+        CClipReading retry = changes[^1].CClipRollRows[0].CClipItemReading[0];
+        Assert.Equal("Downloader.Retry", retry.CClipReadingAction);
+        Assert.True(retry.CClipReadingReady);
+        Assert.Equal(
+            string.Empty,
+            editor.CEditorDesk.TDeskRead()?.LDraftContent.LEntryDraftPronunciation?.LPronunciationDraftAudio
+            ?? string.Empty);
+        editor.TEditorFinish(false);
+    }
+
+    [Fact]
+    public async Task PreviewStart_StoreFaults_ShowsTheNoticeRecordsTheFaultAndMarksTheReadingRefused()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        List<Exception> recorded = [];
+        using LEngine engine = TErrandFaultStart(workspace, recorded);
+        List<string> asked = [];
+        CEditor editor = TErrandClipPrepare(engine, asked);
+        CErrand errand = await TErrandClipStart(editor, pack.TLanguageFixtureName);
+        CRecording found = new("Tagged", "https://example.test/gb.mp3", 0, true, "British");
+        errand.TErrandHarvestResonate(new CHarvestStep("Tagged", 0, found, false));
+        List<CClipRoll> changes = [];
+        errand.CErrandClipChanged += changes.Add;
+        asked.Clear();
+
+        Assert.Null(await errand.CErrandPreviewStart(found).WaitAsync(TimeSpan.FromSeconds(5)));
+
+        Assert.Equal(["Input.RecordingFailed"], asked);
+        Assert.IsType<LVaultFault>(Assert.Single(recorded));
+        CClipReading refused = changes[^1].CClipRollRows[0].CClipItemReading[0];
+        Assert.False(refused.CClipReadingFetching);
+        Assert.False(refused.CClipReadingPlaying);
+        Assert.True(refused.CClipReadingRefused);
+        editor.TEditorFinish(false);
+    }
+
+    [Fact]
     public async Task ErrandEnsignLoad_FlagBroken_ShowsTheNotice()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
@@ -384,6 +441,32 @@ public sealed class TErrandClip
         errand.CErrandRecordingStart(0);
         await finished.Task.WaitAsync(TimeSpan.FromSeconds(5));
         return errand;
+    }
+
+    private static LEngine TErrandFaultStart(TWorkspace workspace, List<Exception> recorded)
+    {
+        Dictionary<string, Func<object?[]?, object?>> stored = new()
+        {
+            ["LRecordingSave"] = _ => Task.FromException<string>(TInterface.TVaultFaultCreate("The disk is full.")),
+            ["LRecordingPrepare"] = _ => Task.FromException<string>(TInterface.TVaultFaultCreate("Refused.")),
+            ["LRecordingSweep"] = _ => null,
+        };
+        Dictionary<string, Func<object?[]?, object?>> audited = new()
+        {
+            ["LAuditRecord"] = args =>
+            {
+                recorded.Add((Exception)args![0]!);
+                return null;
+            },
+        };
+        LRig rig = workspace.TWorkspaceRigCreate() with
+        {
+            LRigRecordings = TEngineFake.TEngineCreate<LRecordingVault>(stored),
+            LRigAudit = TEngineFake.TEngineCreate<LAuditVault>(audited),
+        };
+        LEngine engine = new(rig, _ => rig, _ => { });
+        engine.TEngineDelaySet(0);
+        return engine;
     }
 
     private static CEditor TErrandClipPrepare(LEngine engine) => TErrandClipPrepare(engine, []);

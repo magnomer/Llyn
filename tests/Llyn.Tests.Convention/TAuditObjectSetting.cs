@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditObjectSetting
 {
-    public const int TAuditGeneration = 19;
+    public const int TAuditGeneration = 20;
     public const bool TAuditObjectEnforced = true;
     public const string TAuditObjectReport = "temp/audit/Object-{0}.md";
 
@@ -52,7 +52,7 @@ internal static class TAuditObjectSetting
         ["Spider"] = 6,
         ["Chameleon"] = 11,
         ["Octopus"] = 14,
-        ["Centipede"] = 36,
+        ["Centipede"] = 35,
         ["Serpent"] = 7,
         ["Hub"] = 2,
     };

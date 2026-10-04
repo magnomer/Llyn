@@ -1,5 +1,5 @@
 # CAtelier.cs
-Hash: `f4d5f258fa85fbdb`
+Hash: `a6c97fd6bcb3cf88`
 
 ## `public sealed class CAtelier : IDisposable`
 
@@ -74,17 +74,30 @@ Only the navigation reads it, when it restores the open tab on every open.
 ## `public double CAtelierVolumeRead()`
 
 The session's one audio level, between zero and one.
+A level outside that range is pulled to the nearest end.
+A level that is not a number reads as full, the posture's default.
+So every slider and player can take it unchecked.
 
 ## `public void CAtelierVolumeSet(double volume, bool settled)`
 
 Sets the one audio level and hands it to the player.
+The level is first pulled into the read's range by `LAtelierVolumeClamp`, so the player never hears an unchecked level.
+The posture keeps that same level, so a read after a set answers what the player was given.
 The level is written only when `settled`, so a drag costs no write per step.
 A driver passes `settled` once the gesture ends, and a key press is settled at once.
 
-## `public void CAtelierOpen(CEnvoy envoy)`
+## `private static double LAtelierVolumeClamp(double volume)`
+
+The one rule for a level, shared by the read and the set.
+A level outside zero to one is pulled to the nearest end, and a non-number reads as full.
+Infinite levels fall to the nearest end, so the answer is always finite.
+
+## `public void CAtelierOpen(CEnvoy envoy, Action<Action> marshal)`
 
 Opens the session on the workspace in use at startup.
 `envoy` is the window's, passed down so a failed status read is shown rather than dropped.
+`marshal` is the window's too, and the layout save failure is heard through it before the open.
+So the driver wires that notice and opens with one gate call.
 One engine call sweeps the leftover drafts and recordings and answers the stored state.
 The sweep runs before any view restores, so nothing already saved is counted as lost work.
 `CAtelierWorkspace` then raises its open events, and the stored tab opens last.

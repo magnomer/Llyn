@@ -40,8 +40,8 @@ public sealed class TEditorField
         CEditor editor = TEditorFieldPrepare(engine);
         long sheet = TEditorSheetAdd(editor);
         long bare = TEditorSheetAdd(editor);
-        editor.CEditorCard.CCardTranslationInsert(sheet, gato, "gato", "Spanish", 0);
-        editor.CEditorCard.CCardTranslationInsert(sheet, chat, "chat", "French", 0);
+        editor.CEditorCard.CCardTranslationInsert(sheet, gato, string.Empty, string.Empty, 0);
+        editor.CEditorCard.CCardTranslationInsert(sheet, chat, string.Empty, string.Empty, 0);
 
         IReadOnlyList<CTranslationTarget> targets = TEditorCardRead(editor, sheet).CCardDraftTranslation;
 
@@ -57,7 +57,7 @@ public sealed class TEditorField
         long chat = engine.TEngineTranslationCreate("chat", "French").LEntryId;
         CEditor editor = TEditorFieldPrepare(engine);
         long sheet = TEditorSheetAdd(editor);
-        editor.CEditorCard.CCardTranslationInsert(sheet, chat, "chat", "French", 0);
+        editor.CEditorCard.CCardTranslationInsert(sheet, chat, string.Empty, string.Empty, 0);
         List<CEntryDraft> shown = [];
         editor.CEditorDraftChanged += shown.Add;
 
@@ -203,6 +203,24 @@ public sealed class TEditorField
             new CRecording("Tagged", "https://example.test/gb.mp3", 0, true, "British")));
         Assert.Null(editor.CEditorDesk.CDeskStoredRead());
         Assert.Equal(string.Empty, editor.CEditorLanguage);
+    }
+
+    [Fact]
+    public void EditorEntryOpen_ClosedThenReopened_HearsTheFoldChangeAgain()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CFold toggled = TEditorFieldPrepare(engine).CEditorFold;
+        CEditor editor = TEditorFieldPrepare(engine);
+        editor.CEditorObserverAttach(static run => run());
+        int changed = 0;
+        editor.CEditorFold.CFoldChanged += () => changed++;
+        editor.CEditorClose();
+
+        editor.CEditorEntryOpen(null);
+        toggled.CFoldScriptToggle(true);
+
+        Assert.Equal(1, changed);
     }
 
     [Fact]

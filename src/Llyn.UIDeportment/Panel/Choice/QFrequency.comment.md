@@ -1,5 +1,5 @@
 # QFrequency.cs
-Hash: `f22c25bc99b7294e`
+Hash: `0b63620f68a1644a`
 
 ## `internal sealed class QFrequency`
 
@@ -13,9 +13,10 @@ The settings bulletin the engine raises redraws the panel.
 
 Wires the switch's click once, through its markup name, as the settings panel is built.
 
-## `internal void QFrequencyIntroduce(CLedger ledger)`
+## `internal void QFrequencyIntroduce(CLedger ledger, CEnvoy envoy)`
 
 Puts the switch to work on the ledger the panel hands over at introduction.
+It keeps the window's envoy, which the ledger shows a failed save through.
 
 ## `internal void QFrequencyRefine(bool chosen)`
 
@@ -24,4 +25,5 @@ Setting `IsChecked` in code raises no `Click`, so a painted switch writes nothin
 
 ## `private void QFrequencyObserve(object sender, RoutedEventArgs e)`
 
-Only hands the raw switch to one ledger save.
+Only hands the raw switch to one ledger save, with the kept envoy.
+A failed save raises the ledger again, which paints the switch back.

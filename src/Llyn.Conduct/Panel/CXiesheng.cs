@@ -160,16 +160,27 @@ public sealed class CXiesheng
 
     public IReadOnlyList<CVistaRow> CXieshengKindredRead()
     {
-        IReadOnlyList<CVistaRow> rows = _cXieshengGrove is LVista grove && _cXieshengKindred is LVista kindred
-            ? _cXieshengPort.LEngineKindredFind(grove, kindred).Select(CCatalog.LCatalogRowRead).ToList()
-            : [];
+        IReadOnlyList<CVistaRow> rows;
+        try
+        {
+            rows = _cXieshengGrove is LVista grove && _cXieshengKindred is LVista kindred
+                ? _cXieshengPort.LEngineKindredFind(grove, kindred).Select(CCatalog.LCatalogRowRead).ToList()
+                : [];
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cXieshengEnvoy, _cXieshengSettingsPort, "Xiesheng.LoadFailed", exception);
+            rows = [];
+        }
+
         _cXieshengKindredCount = rows.Count;
         return rows;
     }
 
     public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CXieshengKindredLoad(
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
-        CCatalog.LCatalogEnsignLoad(_cXieshengSettingsPort, store, CXieshengKindredRead);
+        CCatalog.LCatalogEnsignLoad(
+            _cXieshengEnvoy, _cXieshengSettingsPort, "Xiesheng.LoadFailed", store, CXieshengKindredRead);
 
     public CStemPage CXieshengStemRead()
     {

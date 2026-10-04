@@ -1,5 +1,5 @@
 # TAuditLaunderingWalker.cs
-Hash: `76805758bd6fc670`
+Hash: `a1fdc8f98a04be4b`
 
 ## `internal static class TAuditLaunderingWalker`
 
@@ -53,9 +53,18 @@ The colour an expression carries, or null when it is clean.
 
 The first tainted name inside a node and its colour.
 A tainted local, an engine symbol, a reader member, a control input member and a console read each count.
+A control input member counts only when `TAuditInputCheck` accepts its receiver.
 A static Conduct field or property is a logic value too, as a driver method returning it is.
 An enum member is not, since comparing to one only dispatches on a verdict.
 A name inside `nameof` reads no value and is skipped.
+
+## `private static bool TAuditInputCheck(ExpressionSyntax receiver)`
+
+True when the receiver of an input member is a control the user can change.
+Its type must derive from `TAuditTruthSetting.TAuditInputBase`, resolved through the semantic model.
+A `TextBlock`, a `Run` or any other display element holds only what the driver wrote.
+An error type, a `dynamic` receiver or a missing type keeps the colour, so no unresolved read escapes.
+A namespace receiver, as in `System.Text`, reads no value and is false.
 
 ## `private static bool TAuditConditionCheck(ExpressionSyntax condition)`
 

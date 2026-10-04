@@ -78,7 +78,7 @@ AuditPlatform -NoOpen
 Audit the current checkout and write the page without opening it.
 #>
 #requires -Version 5.1
-# AUDITPLATFORM - AUDIT GENERATION 19.
+# AUDITPLATFORM - AUDIT GENERATION 20.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -105,6 +105,8 @@ Audit the current checkout and write the page without opening it.
 # truth detector stops five false findings.
 # Generation 19: nothing this audit reports changes; the number rises with the comment audit, whose
 # hash line ties every comment file to the sources it describes.
+# Generation 20: nothing this audit reports changes; the number rises with the UI audit, whose
+# Mismatching kind only informs while a driver folder it waits on holds no source.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -163,7 +165,7 @@ EXIT CODES
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$script:AuditGeneration = 19
+$script:AuditGeneration = 20
 $script:AuditKinds = @('Unmapped', 'Absent', 'Framework', 'Reference', 'Column', 'Analyzer', 'Windows', 'Empty',
     'Suppress', 'Implicit', 'Domain')
 

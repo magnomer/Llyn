@@ -1,5 +1,5 @@
 # LPosture.cs
-Hash: `1ce185e01bdbee4f`
+Hash: `ee7910eb61c46b82`
 
 ## `public sealed class LPosture : IDisposable`
 
@@ -12,6 +12,24 @@ It listens to the engine as an observer.
 A vista bulletin stores the order and filter that vista now holds.
 A workspace bulletin reloads the posture of the workspace moved onto.
 The atelier disposes it on exit, which detaches it and lets go of every vista it watched.
+A failed save raises `LPostureSaveFailed` once per open workspace, so the user learns the layout is not kept.
+
+## `private bool _lPostureFailed;`
+
+Whether a save has failed since the workspace opened.
+Once set, later failures raise nothing more, since a drag would otherwise repeat the notice.
+`LPostureLoad` clears it, so each workspace opened can raise its own notice.
+
+## `private Exception? _lPostureFault;`
+
+The first failed save's fault, held until the gate is let go and the notice is raised.
+
+## `public event Action<Exception>? LPostureSaveFailed;`
+
+Raised with the fault the first time a posture save fails after a workspace opens.
+Later failures on the same workspace raise nothing more.
+It is raised outside the gate, so a subscriber that shows a dialog holds no lock.
+Conduct's workspace hears it and shows the failure through the window's envoy.
 
 ## `public LPostureState LPostureRead()`
 
@@ -46,6 +64,8 @@ A level that is not a finite number is ignored, so no save ever writes one.
 
 Writes the held level once a gesture ends.
 A level equal to the one last written writes nothing, so no shell asks before it saves.
+A failed write leaves the last written level as it was, so the next settled gesture tries again.
+A first failure raises `LPostureSaveFailed` once the gate is let go.
 
 ## `public void LPostureModeSave(string mode)`
 
@@ -59,6 +79,7 @@ A field left empty keeps what the record had.
 Every tab not given keeps the record it had.
 A new ordering therefore never drops the filter a tab chose, and a filter never drops an ordering.
 Nothing is written while no tab's record moved, so a bulletin that changed nothing costs no file.
+A first failed write raises `LPostureSaveFailed` once the gate is let go.
 
 ## `public void Dispose()`
 
@@ -70,6 +91,7 @@ The posture's own subscription, attached as a method group when it is made and d
 
 A workspace bulletin reloads the posture, since the workspace moved onto carries its own.
 A vista bulletin names the vista by id, and the engine says which one still stands under it.
+Either save's first failure is raised here, after the gate is let go.
 
 ## `private void LPostureVistaSave(LVista vista)`
 
@@ -87,6 +109,7 @@ Two filters compare by the text the catalog writes them in, since the record com
 
 ## `private void LPostureLoad()`
 
+Clears the failed flag, since it runs when the posture is built and on every workspace open.
 Reads the stored posture through the engine, then the legacy settings key when none is stored.
 A vault fault on either read leaves the posture as it stands, so a broken file never resets the session.
 A legacy posture that differs from the default is adopted and written under the current key.
@@ -95,7 +118,16 @@ A legacy posture that differs from the default is adopted and written under the 
 
 Applies `change` under the gate and writes the result out, saying whether anything moved.
 An equal record is not written again.
+A first failed write raises `LPostureSaveFailed` after the gate is let go.
 
 ## `private void LPostureSave()`
 
-Writes the posture through the engine, which records and swallows a vault fault.
+Writes the posture through the engine, which records a vault fault and answers whether it wrote.
+A failed write keeps the first fault since the open for `LPostureFaultRaise`, and marks the flag.
+A later failure keeps nothing, so the notice is raised only once.
+Only a write that succeeded moves the last written level.
+
+## `private void LPostureFaultRaise()`
+
+Raises `LPostureSaveFailed` with the held fault, then drops it.
+A call made while the gate is still held does nothing, so the outermost caller raises.

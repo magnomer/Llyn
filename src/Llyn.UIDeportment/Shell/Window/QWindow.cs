@@ -83,7 +83,7 @@ public partial class QWindow
         QWindowIconRefine();
         QWindowIntroduce();
 
-        QWindowAtelier.CAtelierOpen(QWindowEnvoy);
+        QWindowAtelier.CAtelierOpen(QWindowEnvoy, QObserver.QObserverCreate<Action>(static run => run()));
         QFootprintRefine();
     }
 

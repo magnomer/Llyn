@@ -1,5 +1,5 @@
 # TAuditObjectSetting.cs
-Hash: `29392a6b2d36921d`
+Hash: `d6b462a10e883782`
 
 ## `internal static class TAuditObjectSetting`
 
@@ -63,6 +63,7 @@ A type counts once under every flag it hits, so a Kraken still counts as an Octo
 A count above fails the fact, and a ceiling above the count is stale and fails too.
 Lower a ceiling when a type sheds a flag, never raise one to admit a new one.
 A key missing here reads as a ceiling of 0.
+Each key is kept equal to its twin under `ceiling` in AuditObject.json, by hand.
 
 ## `public static readonly IReadOnlyDictionary<string, int> TAuditPartsCeiling`
 

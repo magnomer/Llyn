@@ -266,11 +266,16 @@ internal sealed class QCard
 
     internal void QCardRefine(ObservableCollection<PCard> cards, string prefix, IReadOnlyList<CCardDraft> drafts)
     {
+        List<PCard> free = [.. cards];
         List<PCard> shown = new(drafts.Count);
         foreach (CCardDraft draft in drafts)
         {
-            PCard? card = QCardFind(cards, draft.CCardDraftId);
-            if (card is null)
+            PCard? card = free.Find(row => row.PCardId == draft.CCardDraftId);
+            if (card is not null)
+            {
+                free.Remove(card);
+            }
+            else
             {
                 card = new PCard(
                     prefix,
@@ -283,28 +288,34 @@ internal sealed class QCard
                     PCardId = draft.CCardDraftId,
                 };
                 card.PCardSentenceNotice += _qCardSentence.QSentenceGlossObserve;
-                cards.Add(card);
             }
 
             QCardDraftRefine(card, draft);
             shown.Add(card);
         }
 
-        for (int index = cards.Count - 1; index >= 0; index--)
+        int kept = 0;
+        List<PCard> gone = [];
+        foreach (PCard card in cards)
         {
-            if (!shown.Contains(cards[index]))
+            if (kept < shown.Count && ReferenceEquals(card, shown[kept]))
             {
-                cards.RemoveAt(index);
+                kept++;
+            }
+            else
+            {
+                gone.Add(card);
             }
         }
 
-        for (int index = 0; index < shown.Count; index++)
+        foreach (PCard card in gone)
         {
-            int current = cards.IndexOf(shown[index]);
-            if (current != index)
-            {
-                cards.Move(current, index);
-            }
+            cards.Remove(card);
+        }
+
+        for (int index = kept; index < shown.Count; index++)
+        {
+            cards.Add(shown[index]);
         }
     }
 
@@ -321,19 +332,6 @@ internal sealed class QCard
         card.PCardImageShow(draft.CCardDraftImage);
         card.PCardVideoShow(draft.CCardDraftVideo);
         card.PCardPosition = draft.CCardDraftPosition;
-    }
-
-    private static PCard? QCardFind(IReadOnlyList<PCard> cards, long id)
-    {
-        foreach (PCard card in cards)
-        {
-            if (card.PCardId == id)
-            {
-                return card;
-            }
-        }
-
-        return null;
     }
 
     private void QCardTitleObserve(object sender, TextChangedEventArgs e)

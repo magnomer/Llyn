@@ -64,12 +64,12 @@ internal sealed class QAccent
 
     private void QAccentAddObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        _cEditor.CEditorTimbre.CTimbrePronunciationAdd((e.Parameter as QAccentItem)?.QAccentItemId ?? 0);
+        _cEditor.CEditorTimbre.CTimbrePronunciationAdd((e.Parameter as QAccentItem)?.QAccentItemId);
     }
 
     private void QAccentRemoveObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        _cEditor.CEditorTimbre.CTimbrePronunciationRemove((e.Parameter as QAccentItem)?.QAccentItemId ?? 0);
+        _cEditor.CEditorTimbre.CTimbrePronunciationRemove((e.Parameter as QAccentItem)?.QAccentItemId);
     }
 
     private void QAccentNotationRefine(object sender, ExecutedRoutedEventArgs e)

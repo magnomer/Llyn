@@ -1,5 +1,5 @@
 # TForay.cs
-Hash: `40daf41d683e8302`
+Hash: `c61708681cad4fd0`
 
 ## `public sealed class TForay`
 
@@ -8,9 +8,9 @@ A cancelled search never tells its listener it finished, so the menu is not told
 A pick after the headword moved attaches nothing, and one over an unchanged draft attaches the audio.
 That pick also writes the recording's variety onto the row it filled.
 A preview fetch answers the cached file and attaches nothing.
-A refused host makes the preview fetch and the pick answer null.
+A refused host makes the preview fetch and the pick pass the vault fault up.
 So does an audio or cache folder blocked by a file.
-The recording clerk answers no path for the archive's `LVaultFault`.
+The recording clerk lets the archive's `LVaultFault` pass up to the gate.
 A flag folder blocked by a file stores no flag, since the flag loader in Infrastructure answers no path.
 A cancelled tenure takes its foray down with it.
 A recording or transcription start searches the trimmed headword, and a blank one starts nothing.

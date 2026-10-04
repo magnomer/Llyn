@@ -15,59 +15,52 @@ internal sealed partial class PCard
         Func<PCardDraft, PCardItem> create,
         Func<PCardItem, PCardDraft, PCardItem> update)
     {
-        HashSet<long> wanted = [];
+        List<PCardItem> shown = [];
+        bool[] taken = new bool[rows.Count];
         foreach (PCardDraft draft in drafts)
         {
-            wanted.Add(id(draft));
-        }
-
-        for (int index = rows.Count - 1; index >= 0; index--)
-        {
-            if (key(rows[index]) is long held && !wanted.Remove(held))
+            long wanted = id(draft);
+            int found = -1;
+            for (int index = 0; index < rows.Count && found < 0; index++)
             {
-                rows.RemoveAt(index);
+                if (!taken[index] && key(rows[index]) == wanted)
+                {
+                    found = index;
+                }
             }
-        }
 
-        int slot = -1;
-        foreach (PCardDraft draft in drafts)
-        {
-            int found = PCardRowFind(rows, key, id(draft));
             if (found < 0)
             {
-                slot++;
-                rows.Insert(slot, create(draft));
+                shown.Add(create(draft));
                 continue;
             }
 
-            PCardItem shown = update(rows[found], draft);
-            if (!ReferenceEquals(shown, rows[found]))
-            {
-                rows[found] = shown;
-            }
-
-            if (found <= slot)
-            {
-                rows.Move(found, slot);
-            }
-            else
-            {
-                slot = found;
-            }
+            taken[found] = true;
+            shown.Add(update(rows[found], draft));
         }
-    }
 
-    internal static int PCardRowFind<PCardItem>(IReadOnlyList<PCardItem> rows, Func<PCardItem, long?> key, long id)
-    {
-        for (int index = 0; index < rows.Count; index++)
+        List<PCardItem> standing = [.. rows];
+        int next = 0;
+        foreach (PCardItem row in standing)
         {
-            if (key(rows[index]) == id)
+            if (key(row) is null)
             {
-                return index;
+                continue;
             }
+
+            if (next < shown.Count && ReferenceEquals(row, shown[next]))
+            {
+                next++;
+                continue;
+            }
+
+            rows.Remove(row);
         }
 
-        return -1;
+        for (; next < shown.Count; next++)
+        {
+            rows.Add(shown[next]);
+        }
     }
 
     private static int PCardCaretFind<PCardItem>(IReadOnlyList<PCardItem> rows, PCardItem? anchor)

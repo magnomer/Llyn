@@ -50,29 +50,84 @@ public sealed class CLedger
         CLedgerChanged?.Invoke(LLedgerRead());
     }
 
-    public void CLedgerLocalizationSave(string language)
+    public void CLedgerLocalizationSave(string language, CEnvoy envoy)
     {
-        _cLedgerAtelier.CAtelierSettingsPort.LEngineLocalizationSave(language);
+        ArgumentNullException.ThrowIfNull(envoy);
+
+        LSettingsPort port = _cLedgerAtelier.CAtelierSettingsPort;
+        try
+        {
+            port.LEngineLocalizationSave(language);
+        }
+        catch (Exception exception)
+        {
+            LLedgerFailureShow(envoy, port, "Settings.SaveFailed", exception);
+            LLedgerRaise();
+        }
     }
 
-    public void CLedgerEpithetSave(bool epithet)
+    public void CLedgerEpithetSave(bool epithet, CEnvoy envoy)
     {
-        _cLedgerAtelier.CAtelierSettingsPort.LEngineEpithetSave(epithet);
+        ArgumentNullException.ThrowIfNull(envoy);
+
+        LSettingsPort port = _cLedgerAtelier.CAtelierSettingsPort;
+        try
+        {
+            port.LEngineEpithetSave(epithet);
+        }
+        catch (Exception exception)
+        {
+            LLedgerFailureShow(envoy, port, "Settings.SaveFailed", exception);
+            LLedgerRaise();
+        }
     }
 
-    public void CLedgerFrequencySave(bool frequency)
+    public void CLedgerFrequencySave(bool frequency, CEnvoy envoy)
     {
-        _cLedgerAtelier.CAtelierSettingsPort.LEngineFrequencySave(frequency);
+        ArgumentNullException.ThrowIfNull(envoy);
+
+        LSettingsPort port = _cLedgerAtelier.CAtelierSettingsPort;
+        try
+        {
+            port.LEngineFrequencySave(frequency);
+        }
+        catch (Exception exception)
+        {
+            LLedgerFailureShow(envoy, port, "Settings.SaveFailed", exception);
+            LLedgerRaise();
+        }
     }
 
-    public void CLedgerMorphologySave(bool morphology)
+    public void CLedgerMorphologySave(bool morphology, CEnvoy envoy)
     {
-        _cLedgerAtelier.CAtelierSettingsPort.LEngineMorphologySave(morphology);
+        ArgumentNullException.ThrowIfNull(envoy);
+
+        LSettingsPort port = _cLedgerAtelier.CAtelierSettingsPort;
+        try
+        {
+            port.LEngineMorphologySave(morphology);
+        }
+        catch (Exception exception)
+        {
+            LLedgerFailureShow(envoy, port, "Settings.SaveFailed", exception);
+            LLedgerRaise();
+        }
     }
 
-    public void CLedgerRespellingSave(bool respelled)
+    public void CLedgerRespellingSave(bool respelled, CEnvoy envoy)
     {
-        _cLedgerAtelier.CAtelierSettingsPort.LEngineRespellingSave(respelled);
+        ArgumentNullException.ThrowIfNull(envoy);
+
+        LSettingsPort port = _cLedgerAtelier.CAtelierSettingsPort;
+        try
+        {
+            port.LEngineRespellingSave(respelled);
+        }
+        catch (Exception exception)
+        {
+            LLedgerFailureShow(envoy, port, "Settings.SaveFailed", exception);
+            LLedgerRaise();
+        }
     }
 
     public CLedgerNotice CLedgerNoticeRead(Exception exception)
@@ -206,9 +261,19 @@ public sealed class CLedger
 
     private string CLedgerLanguageRead(string localization)
     {
-        return _cLedgerAtelier.CAtelierSettingsPort.LEngineLocalizationScan()
-            .Contains(localization, StringComparer.Ordinal)
-                ? CultureInfo.GetCultureInfo(localization).NativeName
-                : localization;
+        if (!_cLedgerAtelier.CAtelierSettingsPort.LEngineLocalizationScan()
+            .Contains(localization, StringComparer.Ordinal))
+        {
+            return localization;
+        }
+
+        try
+        {
+            return CultureInfo.GetCultureInfo(localization).NativeName;
+        }
+        catch (CultureNotFoundException)
+        {
+            return localization;
+        }
     }
 }

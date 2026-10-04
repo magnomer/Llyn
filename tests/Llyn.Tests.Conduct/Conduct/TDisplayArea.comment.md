@@ -1,5 +1,5 @@
 # TDisplayArea.cs
-Hash: `64f83d1f1f4adbe1`
+Hash: `df422da478ec48fa`
 
 ## `public sealed class TDisplayArea`
 

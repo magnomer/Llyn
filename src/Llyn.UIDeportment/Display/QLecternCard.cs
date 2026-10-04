@@ -12,7 +12,11 @@ namespace Llyn.UIDeportment;
 
 public sealed class QLecternCard
 {
-    private readonly CDisplay _qLecternCardArea;
+    private readonly CDisplayCard _qLecternCardArea;
+
+    private readonly CDisplayRoute _qLecternCardRoute;
+
+    private readonly CCompass _qLecternCardFinder;
 
     private readonly CDisplaySound _qLecternCardSound;
 
@@ -40,11 +44,13 @@ public sealed class QLecternCard
 
     private UIElement _qLecternCardOrigin = null!;
 
-    public QLecternCard(LDisplay display)
+    public QLecternCard(CDisplay display)
     {
         ArgumentNullException.ThrowIfNull(display);
 
-        _qLecternCardArea = display.CDisplayArea;
+        _qLecternCardArea = display.CDisplayCard;
+        _qLecternCardRoute = display.CDisplayRoute;
+        _qLecternCardFinder = display.CDisplayCompass;
         _qLecternCardSound = display.CDisplaySound;
     }
 
@@ -182,7 +188,7 @@ public sealed class QLecternCard
     {
         ArgumentNullException.ThrowIfNull(e);
 
-        e.Handled = _qLecternCardArea.CDisplayChipOpen(
+        e.Handled = _qLecternCardRoute.CDisplayChipOpen(
             QSender.QSenderSourceRead<QLeafChip>(e)?.QLeafChipOrigin,
             QSender.QSenderSourceRead<QLinkChip>(e)?.QLinkChipTarget.CTranslationTargetId);
     }
@@ -195,7 +201,7 @@ public sealed class QLecternCard
 
     public void QLecternEtymonObserve(object parameter)
     {
-        _qLecternCardArea.CDisplayChipOpen(null, parameter as long?);
+        _qLecternCardRoute.CDisplayChipOpen(null, parameter as long?);
     }
 
     public void QLecternMentionObserve(PMentionArgument e)
@@ -204,7 +210,8 @@ public sealed class QLecternCard
 
         _qLecternCardHost.QWindowMentionRefine(
             e.PMentionArgumentOrigin,
-            _qLecternCardArea.CDisplayMentionFind(e.PMentionArgumentSentence, e.PMentionArgumentOffset));
+            _qLecternCardRoute.CDisplayMentionFind(
+                e.PMentionArgumentSentence, e.PMentionArgumentText, e.PMentionArgumentUnit));
     }
 
     public void QLecternEtymologyObserve(PMentionArgument e)
@@ -212,13 +219,14 @@ public sealed class QLecternCard
         ArgumentNullException.ThrowIfNull(e);
 
         _qLecternCardHost.QWindowMentionRefine(
-            e.PMentionArgumentOrigin, _qLecternCardArea.CDisplayEtymologyFind(e.PMentionArgumentOffset));
+            e.PMentionArgumentOrigin,
+            _qLecternCardRoute.CDisplayEtymologyFind(e.PMentionArgumentText, e.PMentionArgumentUnit));
     }
 
     public void QLecternSpotlightRefine(long id)
     {
         _qLecternCardContents.Dispatcher.BeginInvoke(
-            DispatcherPriority.Loaded, () => QLecternSpotlightRefine(_qLecternCardArea.CDisplayCardFind(id)));
+            DispatcherPriority.Loaded, () => QLecternSpotlightRefine(_qLecternCardFinder.CCompassCardFind(id)));
     }
 
     private void QLecternSpotlightRefine((CCompassPart, int)? place)

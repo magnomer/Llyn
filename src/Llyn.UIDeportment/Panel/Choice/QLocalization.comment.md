@@ -1,5 +1,5 @@
 # QLocalization.cs
-Hash: `10e7803b573f882f`
+Hash: `099a4d0f00dfe588`
 
 ## `internal sealed class QLocalization`
 
@@ -9,29 +9,32 @@ The language alone is handed downstream, never the whole settings record, so a g
 
 ## `internal QLocalization(FrameworkElement settings)`
 
-Names the language box's value path and wires its selection change once.
+Names the language box's value path and wires its selection change.
 The box starts empty, since its items wait for the first ledger state.
 
-## `internal void QLocalizationIntroduce(CLedger ledger)`
+## `internal void QLocalizationIntroduce(CLedger ledger, CEnvoy envoy)`
 
 Puts the box to work on the ledger the panel hands over at introduction.
+It keeps the window's envoy, which the ledger shows a failed save through.
 
 ## `internal void QLocalizationRefine(IReadOnlyList<KeyValuePair<string, string>> languages, string localization)`
 
 Paints the box from one ledger state the panel hands over.
-The items are built once, from the first state.
-Setting the selection raises the selection change, and the observer writes the value back.
-That write leaves the record equal, so the engine neither saves nor raises a bulletin.
+The items are rebuilt whenever the ledger's list differs from what the box shows.
+The observer is unhooked while the items and the selection are painted, and hooked again after.
+So a selection the driver set itself raises no save.
 
 ## `private void QLocalizationChoiceRefine(IReadOnlyList<KeyValuePair<string, string>> languages)`
 
 Fills the box with one item per interface language the ledger lists.
+It keeps the items when each one already matches the list by name, code and order.
 Each item shows the native name and carries its language code as `Tag`.
 The markup lists no language, so a new catalog file needs no edit to either side.
 
 ## `private void QLocalizationObserve(object sender, SelectionChangedEventArgs e)`
 
-Only hands the raw language to one ledger save.
+Only hands the raw language a user picked to one ledger save, with the kept envoy.
+A failed save raises the ledger again, which paints the box back.
 The ledger state the save brings back applies the catalog.
 
 ## Inline notes

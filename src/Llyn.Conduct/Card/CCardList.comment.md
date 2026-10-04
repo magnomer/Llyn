@@ -1,5 +1,5 @@
 # CCardList.cs
-Hash: `3994cad19350a223`
+Hash: `0eba8a22f49a6e1b`
 
 ## `public sealed class CCardList`
 
@@ -7,6 +7,7 @@ The gates of the editor's two card lists: adding, removing and moving whole card
 It is split from `CCard` by role, and its members keep the `CCard` base.
 It keeps no state, so the editor builds it fresh over its desk.
 Every rule sits in `LDraftClerkCard`, reached through one `LQuillCard` call per gate.
+Both move gates first turn their place into the engine's index through `CFolio.CFolioPlaceRead`.
 
 ## `private LQuillCard? CCardListQuill`
 
@@ -30,12 +31,18 @@ A card alone in its list is kept by the clerk's rule, so the view sends every pr
 ## `public void CCardMove(long cardId, int place)`
 
 The move gate for a drag, which hands the place its geometry found.
-The card clerk judges the place, so a stale card or an unchanged place sends nothing.
+A place is the index of a card in the list `CEditorDraftChanged` last handed out.
+That list is in the order `CFolio` sets, so the gate maps the place through `CFolio.CFolioPlaceRead`.
+A place outside the handed list sends nothing.
+The card clerk judges the engine index, so a stale card or an unchanged place sends nothing.
 The view hands every place it finds and keeps no rule of its own.
 
 ## `public void CCardMove(long cardId, string ordinal)`
 
 The move gate for the position badge, which hands the raw typed text.
-The parse, the clamp and the unchanged place are the card clerk's.
+`CFolio.CFolioOrdinalRead` reads the text as a place in the handed list, clamped to its ends.
+The place then goes through the drag gate, so the typed number counts in the shown order.
+The engine's own ordinal rule counts its raw list, which may not be in position order.
+Text that is no number, or a desk with no draft, sends nothing.
 The two overloads are one action heard in two raw forms.
 One signature would make the view parse text or format a number.

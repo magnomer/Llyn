@@ -51,9 +51,9 @@ public sealed class CTranscription
         _cTranscriptionDesk.CDeskQuill?.LQuillSchemeSet(transcription, scheme);
     }
 
-    public void CTranscriptionAdd(long transcription)
+    public void CTranscriptionAdd(long? transcription)
     {
-        _cTranscriptionDesk.CDeskQuill?.LQuillTranscriptionAdd(transcription);
+        _cTranscriptionDesk.CDeskQuill?.LQuillTranscriptionAdd(transcription ?? 0);
     }
 
     public void CTranscriptionRemove(long transcription)

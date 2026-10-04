@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
@@ -53,6 +55,16 @@ public sealed class CSentence
 
     public void CSentenceAdd(long cardId, int below)
     {
+        if (_cSentenceDesk.CDeskTenure?.LTenureRead() is not LDraft held
+            || held.LDraftContent.LEntryDraftMeanings
+                .Concat(held.LDraftContent.LEntryDraftCollocations)
+                .FirstOrDefault(card => card.LCardDraftId == cardId) is not LCardDraft card
+            || below < 0
+            || below >= card.LCardDraftSentence.Count)
+        {
+            return;
+        }
+
         _cSentenceDesk.CDeskQuill?.LQuillSentenceAdd(cardId, below + 1);
     }
 
@@ -101,9 +113,20 @@ public sealed class CSentence
         _cSentenceDesk.CDeskQuill?.LQuillGlossRemove(cardId, sentenceId, glossId);
     }
 
-    public void CSentenceMentionAdd(long cardId, long sentenceId, string text, int start, int length, long entryId)
+    public void CSentenceMentionAdd(long cardId, long sentenceId, string text, int start, int length, long? entryId)
     {
-        _cSentenceDesk.CDeskChip?.LQuillMentionAdd(cardId, sentenceId, text, start, length, entryId);
+        if (entryId is not long stored)
+        {
+            _cSentenceEnvoy.CEnvoyFailureShow("Refusal.TargetMissing");
+            return;
+        }
+
+        _cSentenceDesk.CDeskChip?.LQuillMentionAdd(cardId, sentenceId, text, start, length, stored);
+    }
+
+    public void CSentenceSilenceSet(long cardId, long sentenceId, string text, int start, int length)
+    {
+        _cSentenceDesk.CDeskChip?.LQuillMentionAdd(cardId, sentenceId, text, start, length, 0);
     }
 
     public void CSentenceSenseSet(long cardId, long sentenceId, string text, int start, int length, long senseId)
@@ -148,19 +171,20 @@ public sealed class CSentence
 
     public IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> CSentenceMentionRead()
     {
-        if (_cSentenceDesk.CDeskTenure is not LTenure held)
+        if (_cSentenceDesk.CDeskTenure is not LTenure held || held.LTenureRead() is not LDraft draft)
         {
             return new Dictionary<long, IReadOnlyList<CMentionLabel>>();
         }
 
         try
         {
-            return CMention.LMentionLineRead(_cSentenceDraftPort.LEngineMentionResolve(held));
+            return CMention.LMentionLineRead(draft.LDraftContent, _cSentenceDraftPort.LEngineMentionResolve(held));
         }
         catch (Exception exception)
         {
             CLedger.LLedgerFailureShow(_cSentenceEnvoy, _cSentenceSettingsPort, "Mention.FindFailed", exception);
-            return new Dictionary<long, IReadOnlyList<CMentionLabel>>();
+            return CMention.LMentionLineRead(
+                draft.LDraftContent, new Dictionary<long, IReadOnlyList<LMentionLabel>>());
         }
     }
 

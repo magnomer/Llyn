@@ -1,5 +1,5 @@
 # TAuditTruthSetting.cs
-Hash: `40e38979908540c0`
+Hash: `ccd18e201dce3ef6`
 
 ## `internal static class TAuditTruthSetting`
 
@@ -62,6 +62,13 @@ A type declared in Conduct is a gate type, and a type declared under any other s
 The patterns of the driver sources the driver walks audit, Deportment and Demeanor alike.
 The surfaces are left to the surface audit, where holding anything is already a hit.
 
+## `public static readonly Dictionary<string, string[]> TAuditTruthInformative`
+
+The kinds that only inform, each with the driver folders it waits on.
+Such a kind gates nothing while a listed folder holds no tracked source.
+Once every listed folder holds one, the kind fails like any other.
+Mismatching waits on Demeanor, since every Deportment reach mismatches while the CUI has no code.
+
 ## `public static readonly string[] TAuditFrameworkPacks`
 
 The shared frameworks referenced beside the test runtime, so framework types resolve.
@@ -107,9 +114,18 @@ A confirm belongs in the gate behind a port, so a dialog answer deciding a reque
 
 The waits that turn a loop into a clock.
 
+## `public const string TAuditInputBase = "System.Windows.Controls.Control";`
+
+The base type of every control that takes user input.
+The laundering walk colours an input member only on a receiver deriving from it.
+`TextBox`, `ComboBox` and `ToggleButton` derive from it, while `TextBlock` and `Run` do not.
+`AuditUI.json` holds the same name as `truth.inputBase`, copied by hand.
+
 ## `public static readonly string[] TAuditInputMembers`
 
 The members of a GUI control that carry what the user typed or chose.
+Caret and selection positions stay off the list, since a driver keeps caret, focus and placement work.
+`AuditUI.json` holds the same list as `truth.inputMembers`, copied by hand.
 
 ## `public static readonly string[] TAuditFocusMembers`
 

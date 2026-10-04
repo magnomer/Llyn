@@ -1,5 +1,5 @@
 # TAuditBorderWalker.cs
-Hash: `1e0a93d7cce62b75`
+Hash: `49973f97d24e0f47`
 
 ## `internal static class TAuditBorderWalker`
 

@@ -1,5 +1,5 @@
 # CCorpus.cs
-Hash: `2b214093053e0c7a`
+Hash: `69b7780648810cc6`
 
 ## `public sealed class CCorpus`
 
@@ -127,9 +127,10 @@ A row that vanished stays cleared, and without a query or filter nothing is drop
 Clears the quotation side and shows the Example in the mode the caller read.
 The anthology panel loads the row, clears a vanished one and restarts the transcript through its edit event.
 
-## `public CMentionOffer? CCorpusMentionFind(int offset)`
+## `public CMentionOffer? CCorpusMentionFind(string text, int unit)`
 
-The gate for a click at `offset` on a word of the excerpt.
+The gate for a click on a word of the excerpt.
+The driver hands the raw click: the whole shown text and the clicked UTF-16 unit in it.
 It asks the leave question first, since the click may open an Entry in another panel.
 The anthology then finds the word, opens what opens at once and reports a failure.
 The answer is what the menu offers under the found word, null when the user stays.
@@ -217,6 +218,8 @@ The clear announces fresh rows, which carry the same Examples, so a driver's nes
 
 Runs the flag fill into the driver's `store`, then answers `CCorpusRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+A failed flag fill shows `Example.LoadFailed` and still answers the rows with no languages.
+The driver awaits it from an event handler, where a fault would end the app.
 
 ## `public void CCorpusExampleDelete()`
 

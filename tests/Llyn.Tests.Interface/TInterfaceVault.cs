@@ -75,4 +75,7 @@ internal static partial class TInterface
     {
         draftVault.LDraftDelete(id);
     }
+
+    internal static LVaultFault TVaultFaultCreate(string message) =>
+        new(new System.IO.IOException(message));
 }

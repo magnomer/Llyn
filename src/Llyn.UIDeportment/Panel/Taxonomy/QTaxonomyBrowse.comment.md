@@ -1,5 +1,5 @@
 # QTaxonomyBrowse.cs
-Hash: `ed7734b2c277cff1`
+Hash: `bf286c630610ad78`
 
 ## `internal sealed partial class QTaxonomy`
 
@@ -17,6 +17,7 @@ The entry list itself lives in [QTaxonomyMembership.cs](QTaxonomyMembership.comm
 
 Answers the area's workspace event, which has already emptied the panel and raised the rows.
 It loads the flags of the workspace that moved.
+The window's envoy goes with the load, so the catalog reports a failed load and answers no languages.
 
 ### `private void QExplorationObserve(object sender, TextChangedEventArgs e)`
 

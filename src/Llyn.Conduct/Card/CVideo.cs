@@ -23,9 +23,9 @@ public sealed class CVideo
         _cVideoDesk.CDeskEasel?.LEaselSpanSet(videoId, span);
     }
 
-    public void CVideoAdd(long cardId)
+    public void CVideoAdd(long? cardId)
     {
-        _cVideoDesk.CDeskEasel?.LEaselVideoAdd(cardId);
+        _cVideoDesk.CDeskEasel?.LEaselVideoAdd(cardId ?? 0);
     }
 
     public void CVideoRemove(long videoId)

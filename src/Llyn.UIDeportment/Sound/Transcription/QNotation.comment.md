@@ -1,5 +1,5 @@
 # QNotation.cs
-Hash: `7d5de7c0987493e0`
+Hash: `d50314ab9e3a7d64`
 
 ## `internal sealed class QNotation`
 
@@ -30,6 +30,7 @@ It is subscribed before `QPhoneticianObserve`, so the old search closes before t
 ## `private void QPhoneticianObserve(object sender, RoutedEventArgs e)`
 
 Asks the errand for a pronunciation search on the primary row, then paints the start.
+The target is null, Conduct's word for no row, never a magic id.
 
 ## `private void QNotationClosedObserve(object? sender, EventArgs e)`
 

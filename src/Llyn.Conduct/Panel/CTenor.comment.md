@@ -1,5 +1,5 @@
 # CTenor.cs
-Hash: `2686825fbe779c2f`
+Hash: `ea0f459516a416f2`
 
 ## `public sealed class CTenor`
 
@@ -133,6 +133,8 @@ A failed read raises nothing more, so the user sees one notice, as before.
 
 Runs the flag fill into the driver's `store`, then answers `CTenorRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
+A failed flag fill shows `Register.LoadFailed` and still answers the rows with no languages.
+The driver awaits it from an event handler, where a fault would end the app.
 
 ## `private void LTenorRegisterCreate(string name)`
 

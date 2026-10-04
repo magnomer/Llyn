@@ -1,5 +1,5 @@
 # TDraftFact.cs
-Hash: `951a84cb5f7f828d`
+Hash: `a064114eb9112a4b`
 
 ## `public sealed class TDraftFact`
 

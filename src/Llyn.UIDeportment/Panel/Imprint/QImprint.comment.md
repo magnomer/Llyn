@@ -1,5 +1,5 @@
 # QImprint.cs
-Hash: `9b39117b6be646e7`
+Hash: `53a3bedb295e03ee`
 
 ## `internal sealed class QImprint : QChronicleHost`
 
@@ -74,6 +74,7 @@ It then hands off to `QImprintKindRefine`, which shuts the chip.
 ## `private void QAuthorAddObserve(object sender, RoutedEventArgs e)`
 
 The add button of a credit row, handed to `CImprintAuthorAdd` with the row's place and Author.
+None of these buttons hands the row's blank mark, so Conduct decides blankness from its own marker.
 The remove button hands its row to `CImprintAuthorRemove`.
 The earlier and later buttons hand theirs to `CImprintAuthorMove`, one place back or on.
 

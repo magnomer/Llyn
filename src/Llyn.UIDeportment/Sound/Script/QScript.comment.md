@@ -1,12 +1,12 @@
 # QScript.cs
-Hash: `304ca6b587deb899`
+Hash: `fa8283aaf0e3acc4`
 
 ## `public sealed class QScript : Decorator`
 
 The script box as a control, so the reading view and the editor draw the same thing.
-It is handed the rows and whether a fetch runs, and shows or hides itself from those alone.
+It shows or hides itself from its rows, a running fetch and a handed rebuild alone.
 Folded, it carries a head with the box's name and a switch.
-It then keeps its rows out of sight until the switch is on.
+It then keeps its rows out of sight until the remembered state is open.
 The editor folds it, since the pictures are reference beside the fields, and the reading view leaves it open.
 
 ## `public static readonly DependencyProperty QScriptItemsProperty`
@@ -21,6 +21,10 @@ That shows the loading line and keeps the box up while nothing is stored.
 ## `public static readonly DependencyProperty QScriptFoldedProperty`
 
 Whether the box starts closed under a head with a switch.
+A change sets the body first, collapsed when folded and visible when not, then redraws the rest.
+So a folded box never flashes open before `QScriptFoldRefine` paints the remembered state.
+The switch is not touched there, so no flip reaches the gate.
+It is unchecked from construction until that paint.
 
 ## `public static readonly DependencyProperty QScriptRenewableProperty`
 
@@ -35,10 +39,13 @@ It is present only when folded.
 ## `private readonly ToggleButton _qScriptSwitch = new();`
 
 The switch opening the body, drawn like the marker switch with the expand chevron.
+It shows the remembered open state and hands each click to the gate, never deciding itself.
+The switch is heard on click only.
 
 ## `private readonly StackPanel _qScriptBody = new();`
 
-The rows and the loading line, hidden while the box is folded and the switch is off.
+The rows and the loading line, hidden while the box is folded and the remembered state is closed.
+A folded box starts with it collapsed, set by the `QScriptFolded` change, until the first paint.
 
 ## `private readonly ItemsControl _qScriptList = new();`
 
@@ -75,7 +82,26 @@ Whether a fetch runs for the entry shown.
 
 ## `public bool QScriptFolded`
 
-Whether the box starts closed under its head.
+Whether this screen shows the box under a head with an open switch.
+It is a layout choice of the screen, set in markup, not a remembered state.
+A folded box starts closed until the remembered state is painted.
+An unfolded box always shows its body.
+
+## `internal event Action<bool>? QScriptFoldNotice;`
+
+What a click on the open switch runs, handed whether the switch is now on.
+The editor driver subscribes its sounding's toggle gate once.
+
+## `private void QScriptFoldObserve(object sender, RoutedEventArgs e)`
+
+Hears a click on the switch and hands its checked state on through `QScriptFoldNotice`.
+The switch is heard on click only.
+
+## `internal void QScriptFoldRefine(bool opened)`
+
+Paints the remembered open state the editor driver read from its sounding.
+It sets the switch and shows the body when open or when the box is not folded.
+A paint never reaches the gate.
 
 ## `internal bool QScriptRenewable`
 
@@ -100,7 +126,8 @@ Nothing is read from the engine and nothing is fetched, because only the printed
 
 Feeds the list and shows the loading line while pending.
 The regenerate button stands wherever one was handed over, and it carries the `Pending` cue while a fetch runs.
-The head shows only when folded, and the body only when open.
+The head shows only when folded.
+The body is left to `QScriptFoldRefine`, which paints it from the remembered state.
 The box is visible when it has rows, a fetch runs, or a rebuild was handed over, and collapsed otherwise.
 
 ## `internal void QScriptRefine(IReadOnlyList<CScriptGroup> groups, bool pending)`

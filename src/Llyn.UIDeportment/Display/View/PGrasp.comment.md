@@ -1,5 +1,5 @@
 # PGrasp.cs
-Hash: `52c1e8985d941502`
+Hash: `dc06ab6f3f11777e`
 
 ## `public sealed class PGrasp : FrameworkElement`
 
@@ -12,12 +12,13 @@ The row only maps a click to a step and raises it, and never decides what the st
 ## `public static readonly DependencyProperty PGraspLimitProperty`
 
 The last step, set once by the host from its deportment before any step is shown.
-It measures the row, since the star count is half of it.
+It measures the row, since the star count is half of it, rounded up.
 
 ## `public static readonly DependencyProperty PGraspStepProperty`
 
-The shown step, never negative and clamped to the limit.
-So no surface can set a value the store would refuse.
+The shown step, never negative.
+Conduct promises a step within the limit, and the row's own pointer and keys never pass it.
+So the row holds no clamp of its own.
 
 ## `public static readonly DependencyProperty PGraspFillProperty`
 
@@ -82,8 +83,3 @@ Hands the press to `QGraspStar.QGraspPressRefine` and marks the click handled.
 ## `protected override void OnKeyDown(KeyEventArgs e)`
 
 Hands the key to `QGraspStar.QGraspKeyRefine`.
-
-## `private static void PGraspLimitRefine(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
-
-A new limit clamps the step already held.
-So a limit set after the step never leaves it out of range.

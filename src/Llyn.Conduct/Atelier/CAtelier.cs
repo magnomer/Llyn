@@ -95,23 +95,30 @@ public sealed class CAtelier : IDisposable
 
     public double CAtelierVolumeRead()
     {
-        return CAtelierPosture.LPostureRead().LPostureStateVolume;
+        return LAtelierVolumeClamp(CAtelierPosture.LPostureRead().LPostureStateVolume);
     }
 
     public void CAtelierVolumeSet(double volume, bool settled)
     {
-        CAtelierPosture.LPostureVolumeSet(volume);
-        CAtelierMediaPort.LEngineVolumeSet(volume);
+        double level = LAtelierVolumeClamp(volume);
+        CAtelierPosture.LPostureVolumeSet(level);
+        CAtelierMediaPort.LEngineVolumeSet(level);
         if (settled)
         {
             CAtelierPosture.LPostureVolumeSave();
         }
     }
 
-    public void CAtelierOpen(CEnvoy envoy)
+    private static double LAtelierVolumeClamp(double volume)
+    {
+        return double.IsNaN(volume) ? 1 : Math.Clamp(volume, 0, 1);
+    }
+
+    public void CAtelierOpen(CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(envoy);
 
+        CAtelierWorkspace.LWorkspaceObserverAttach(marshal);
         CAtelierWorkspace.LWorkspaceOpen(LAtelierStateRead(CAtelierSettingsPort.LEngineWorkspaceStart()), envoy);
     }
 

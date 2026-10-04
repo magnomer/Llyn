@@ -1,5 +1,5 @@
 # QAccent.cs
-Hash: `37ab74c6aaf9c514`
+Hash: `d3efcc8157b61323`
 
 ## `internal sealed class QAccent`
 
@@ -20,11 +20,13 @@ Holds the Conduct editor and repaints the rows and the flags after each draft ch
 
 ## `private void QAccentAddObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Hands the pressed row's id to the add gate, or zero for the primary when no row is carried.
+Hands the pressed row's id to the add gate, or null for the primary when no row is carried.
+Null is Conduct's word for the primary, so no magic id is sent.
 
 ## `private void QAccentRemoveObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Hands the pressed row's id to the remove gate, or zero for the primary when no row is carried.
+Hands the pressed row's id to the remove gate, or null when no row is carried.
+The gate is always called, and Conduct removes nothing on null.
 The engine answers with a draft bulletin, and the render takes the row off the screen.
 
 ## `private void QAccentNotationRefine(object sender, ExecutedRoutedEventArgs e)`

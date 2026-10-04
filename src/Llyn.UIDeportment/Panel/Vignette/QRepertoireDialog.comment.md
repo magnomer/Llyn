@@ -1,5 +1,5 @@
 # QRepertoireDialog.cs
-Hash: `b81b28fcff3df73c`
+Hash: `37e5be683b8ddfc3`
 
 ## `internal sealed partial class QRepertoire`
 
@@ -7,7 +7,8 @@ What the picture and video rows of the situation editor hear and paint.
 The same `QImage` and `QVideo` drivers as the card editor's hear a row's browse and remove buttons.
 Here they hold the playwright's image and video gates instead of the editor's.
 This part hears a location or span written and the add buttons outside any row.
-A Situation has no card, so each add names card zero, and the draft routes it.
+A Situation has no card, so each add names a null card, and the draft routes it.
+Null is Conduct's word for no card, so no magic id is sent.
 The panel keeps no count and no map of which row is still waiting.
 
 ## `private void QScenarioImageRefine(IReadOnlyList<CImageDraft> rows)`

@@ -1,5 +1,5 @@
 # QClip.cs
-Hash: `6bbb878733fec290`
+Hash: `04b0756edcc0240a`
 
 ## `internal sealed class QClip`
 
@@ -34,7 +34,8 @@ Places the menu under the editor's own download button.
 ## `private void QClipButtonObserve(object sender, RoutedEventArgs e)`
 
 Starts the search for the primary row once the menu stands.
-A target of zero is the primary row, which the engine may not have minted yet.
+A null target is the primary row, which the engine may not have minted yet.
+Null is Conduct's word for no row, so no magic id is sent.
 
 ## `private void QClipClosedObserve(object? sender, EventArgs e)`
 
@@ -46,9 +47,10 @@ Nothing is repainted, since the next opening paints the fresh state its start an
 Opens the menu under the button of one row.
 The popup is shut first, so a press on another row's button moves it instead of leaving it put.
 
-## `internal void QClipRecordingStart(long id)`
+## `internal void QClipRecordingStart(long? id)`
 
 Starts the recording search for the row with that id and paints the roll it answers.
+A null id is the primary row, passed on to the errand untouched.
 The input editor's accent rows call it, so no Conduct roll crosses to the surface.
 
 ## `private async void QClipEnsignRefine(CClipRoll roll)`

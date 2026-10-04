@@ -197,7 +197,8 @@ internal sealed class QLibrary
 
     private async void QLibraryWorkspaceRefine()
     {
-        await _qLibraryHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
+        await _qLibraryHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(
+            _qLibraryHost.QWindowEnvoy, QEnsignImage.QEnsignDraw);
     }
 
     private bool QLibraryShownCheck()

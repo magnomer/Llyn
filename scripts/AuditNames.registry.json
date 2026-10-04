@@ -1,5 +1,5 @@
 {
-  "generation": 19,
+  "generation": 20,
   "bases": [
     "Accent",
     "Anatomy",
@@ -91,6 +91,7 @@
     "Feature",
     "Fellow",
     "Field",
+    "Fold",
     "Folio",
     "Font",
     "Footnote",

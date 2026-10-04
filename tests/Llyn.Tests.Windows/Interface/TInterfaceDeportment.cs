@@ -45,7 +45,7 @@ internal static class TInterfaceDeportment
         editor.CEditorDisplay.CDisplaySound.CDisplayReflexToggle(opened);
 
     internal static bool TDisplayFoldRead(this CEditor editor) =>
-        editor.CEditorDisplay.LDisplaySound.LDisplayFoldOpened;
+        editor.CEditorDisplay.LDisplayRule.LDisplaySound.LDisplayFoldOpened;
 
     internal static void TLecternReflexAttach(
         this QLectern lectern, ItemsControl reflex, UIElement loading, ToggleButton fold) =>

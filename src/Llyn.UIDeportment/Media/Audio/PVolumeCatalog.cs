@@ -13,13 +13,12 @@ public sealed class PVolumeCatalog : INotifyPropertyChanged
         get => _pVolumeCatalogLevel;
         set
         {
-            double chosen = value < 0 ? 0 : value > 1 ? 1 : value;
-            if (_pVolumeCatalogLevel == chosen)
+            if (_pVolumeCatalogLevel == value)
             {
                 return;
             }
 
-            _pVolumeCatalogLevel = chosen;
+            _pVolumeCatalogLevel = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PVolumeCatalogLevel)));
         }
     }

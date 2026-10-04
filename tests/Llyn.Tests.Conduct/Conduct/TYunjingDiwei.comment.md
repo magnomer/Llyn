@@ -1,5 +1,5 @@
 # TYunjingDiwei.cs
-Hash: `1cce8956ab4a2cc1`
+Hash: `6705435040c803ca`
 
 ## `public sealed class TYunjingDiwei`
 
@@ -10,4 +10,5 @@ The section label is localized from a shared catalog, so `TDiwei` checks it with
 The page carries the headword and glyph fonts of its language, and the blank page carries none.
 Under the bundled book language, a Korean reading under the cell reaches the page as one tally.
 The tally switch is saved once, and a switch without a side changes nothing.
+A refused tally save is shown as `Settings.SaveFailed`, and the saved switch stays off.
 A glyph opens in the library tab only while a cell page shows, in the language of that page.

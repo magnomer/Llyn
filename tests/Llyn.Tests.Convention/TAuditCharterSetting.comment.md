@@ -1,5 +1,5 @@
 # TAuditCharterSetting.cs
-Hash: `9c22b209210e186b`
+Hash: `33df2aa859ceb1cd`
 
 ## `internal static class TAuditCharterSetting`
 
@@ -18,4 +18,5 @@ The engine references the application alone and ferries core records through it.
 
 The count each charter kind may hold.
 `Piggybacking` counts the cut projects that still compile against rings past their neighbour.
+Every cut project disables transitive project references, so the ceiling holds at zero.
 A count above fails the fact, a ceiling above the count is stale and fails too.

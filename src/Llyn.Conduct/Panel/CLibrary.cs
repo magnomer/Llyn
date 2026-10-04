@@ -144,16 +144,27 @@ public sealed class CLibrary
 
     public IReadOnlyList<CVistaRow> CLibraryRowsRead()
     {
-        IReadOnlyList<CVistaRow> rows = _cLibraryVista is LVista vista
-            ? _cLibraryEntryPort.LEngineEntryFind(vista).Select(CCatalog.LCatalogRowRead).ToList()
-            : [];
+        IReadOnlyList<CVistaRow> rows;
+        try
+        {
+            rows = _cLibraryVista is LVista vista
+                ? _cLibraryEntryPort.LEngineEntryFind(vista).Select(CCatalog.LCatalogRowRead).ToList()
+                : [];
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cLibraryEnvoy, _cLibrarySettingsPort, "List.LoadFailed", exception);
+            rows = [];
+        }
+
         _cLibraryCount = rows.Count;
         return rows;
     }
 
     public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CLibraryRowsLoad(
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
-        CCatalog.LCatalogEnsignLoad(_cLibrarySettingsPort, store, CLibraryRowsRead);
+        CCatalog.LCatalogEnsignLoad(
+            _cLibraryEnvoy, _cLibrarySettingsPort, "List.LoadFailed", store, CLibraryRowsRead);
 
     internal string LLibraryFileRead()
     {

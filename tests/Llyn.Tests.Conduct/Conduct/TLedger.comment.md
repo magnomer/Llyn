@@ -1,5 +1,5 @@
 # TLedger.cs
-Hash: `b374875443a24872`
+Hash: `065ca3b45e24a757`
 
 ## `public sealed class TLedger`
 
@@ -16,6 +16,9 @@ The Web summary counts out of two, and the Layout summary is left to the driver.
 A saved epithet shows the view again with Listing on, and a detached view is shown nothing more.
 The fake port's normalised language and online count reach the state unchanged.
 A scanned language reads its native name, an unscanned one its code, and the epithet saves reach the port.
+Each of the five settings gates shows a refused save as `Settings.SaveFailed` through the envoy.
+Each refusal raises the ledger again with the settings unchanged, so the driver repaints.
+A faulting settings store under a real engine shows the same notice and records the fault once.
 A wrapped refusal answers its reason alone, and a bare fault answers the unexpected key with its audit file.
 
 ## `private static List<CLedgerState> TLedgerShowRead(CAtelier atelier)`

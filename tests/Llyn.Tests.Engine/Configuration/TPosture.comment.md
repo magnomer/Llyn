@@ -1,5 +1,5 @@
 # TPosture.cs
-Hash: `5b1460a345d1842d`
+Hash: `a645d8f2fa5e2f88`
 
 ## `public sealed class TPosture`
 
@@ -17,4 +17,7 @@ A workspace moved onto keeps its own posture, and one without any inherits the p
 One moved onto with only the legacy settings file yields its mode and volume.
 A volume set without a save reads the new level and writes nothing.
 A posture file that will not read leaves the posture held and the file as it was.
+A posture store whose save throws `LVaultFault` has each fault recorded in the audit.
+Two failing saves raise `LPostureSaveFailed` once, with the first fault.
+A failing save after a workspace opens raises it again, since each open clears the failed flag.
 The loader round-trips an ordering by its stored name, and reads nothing, junk and unusable keys as defaults.

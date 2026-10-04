@@ -1,5 +1,5 @@
 # CTranscription.cs
-Hash: `bbc3a19c98fda403`
+Hash: `8888e98afd098d59`
 
 ## `public sealed class CTranscription`
 
@@ -24,9 +24,11 @@ The engine defers it, and a filling desk writes nothing.
 The user picked `scheme` in the dropdown of the transcription row `transcription`.
 The engine applies it at once, and a filling desk writes nothing.
 
-## `public void CTranscriptionAdd(long transcription)`
+## `public void CTranscriptionAdd(long? transcription)`
 
-The user pressed plus on the transcription row `transcription`, or on the block for id zero.
+The user pressed plus on the transcription row `transcription`, or on the block with null.
+Null means no row is pressed, so the new row is appended.
+Conduct maps null to the engine's id 0, so the driver never sends a magic id.
 The engine adds the row under the first free scheme, and a filling desk writes nothing.
 
 ## `public void CTranscriptionRemove(long transcription)`

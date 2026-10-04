@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using Llyn.Conduct;
+using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -94,6 +96,138 @@ public sealed class TAtelier
     }
 
     [Fact]
+    public void AtelierVolumeSet_FaultingPostureStore_ShowsTheLayoutFailureOnceAndRecordsEachFault()
+    {
+        List<double> played = [];
+        List<string> notices = [];
+        List<Exception> thrown = [];
+        List<Exception> recorded = [];
+        LPostureVault faulting = TEngineFake.TEngineCreate<LPostureVault>(
+            new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LPostureRead"] = _ => TInterface.TPostureStateCreate(),
+                ["LPostureSave"] = _ =>
+                {
+                    LVaultFault fault = TInterface.TVaultFaultCreate("The disk is full.");
+                    thrown.Add(fault);
+                    throw fault;
+                },
+            });
+        LAuditVault audit = TEngineFake.TEngineCreate<LAuditVault>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LAuditRecord"] = args =>
+            {
+                recorded.Add((Exception)args![0]!);
+                return null;
+            },
+        });
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(
+            workspace.TWorkspaceRigCreate() with { LRigPosture = faulting, LRigAudit = audit },
+            _ => throw new NotSupportedException("The test moves no workspace."),
+            _ => { });
+        using CAtelier atelier = TInterfaceConduct.TAtelierMediaCreate(engine, TAtelierMediaCreate(played));
+        atelier.TAtelierOpen(TEnvoyFake.TEnvoyCreate(false, notices));
+
+        atelier.CAtelierVolumeSet(0.5, true);
+        atelier.CAtelierVolumeSet(0.25, true);
+
+        Assert.Equal(["Layout.SaveFailed"], notices);
+        Assert.Equal(2, thrown.Count);
+        Assert.Equal(thrown, recorded);
+        Assert.Equal([0.5, 0.25], played);
+        Assert.Equal(0.25, atelier.CAtelierVolumeRead());
+    }
+
+    [Fact]
+    public void AtelierOpen_LayoutFailureBeforeOpen_ShowsTheNoticeOnTheOpen()
+    {
+        List<string> notices = [];
+        LPostureVault faulting = TEngineFake.TEngineCreate<LPostureVault>(
+            new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LPostureRead"] = _ => TInterface.TPostureStateCreate(),
+                ["LPostureSave"] = _ => throw TInterface.TVaultFaultCreate("The disk is full."),
+            });
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(
+            workspace.TWorkspaceRigCreate() with { LRigPosture = faulting },
+            _ => throw new NotSupportedException("The test moves no workspace."),
+            _ => { });
+        using CAtelier atelier = TInterfaceConduct.TAtelierMediaCreate(engine, TAtelierMediaCreate([]));
+        atelier.CAtelierWorkspace.TWorkspaceObserverAttach(static run => run());
+        atelier.CAtelierVolumeSet(0.5, true);
+        Assert.Empty(notices);
+
+        atelier.TAtelierOpen(TEnvoyFake.TEnvoyCreate(false, notices));
+        atelier.TAtelierOpen(TEnvoyFake.TEnvoyCreate(false, notices));
+
+        Assert.Equal(["Layout.SaveFailed"], notices);
+    }
+
+    [Theory]
+    [InlineData(-0.5, 0)]
+    [InlineData(1.5, 1)]
+    [InlineData(double.NaN, 1)]
+    [InlineData(double.PositiveInfinity, 1)]
+    [InlineData(double.NegativeInfinity, 0)]
+    public void AtelierVolumeRead_KeptLevelOutOfRange_ReadsAFiniteLevelFromSilenceToFull(double level, double read)
+    {
+        LPostureVault kept = TEngineFake.TEngineCreate<LPostureVault>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LPostureRead"] = _ => TInterface.TPostureStateCreate(volume: level),
+            ["LPostureSave"] = _ => null,
+        });
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild() with { LRigPosture = kept });
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
+
+        Assert.Equal(read, atelier.CAtelierVolumeRead());
+    }
+
+    [Theory]
+    [InlineData(-0.5, 0)]
+    [InlineData(1.5, 1)]
+    [InlineData(double.NaN, 1)]
+    [InlineData(double.PositiveInfinity, 1)]
+    [InlineData(double.NegativeInfinity, 0)]
+    public void AtelierVolumeSet_LevelOutOfRange_PlaysAndKeepsAFiniteLevelFromSilenceToFull(double level, double kept)
+    {
+        List<double> played = [];
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TAtelierMediaCreate(played));
+        atelier.CAtelierVolumeSet(0.4, false);
+
+        atelier.CAtelierVolumeSet(level, true);
+
+        using CAtelier reopened = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
+        Assert.Equal([0.4, kept], played);
+        Assert.Equal(kept, atelier.CAtelierVolumeRead());
+        Assert.Equal(kept, reopened.CAtelierVolumeRead());
+    }
+
+    [Fact]
+    public void FoldToggle_ThrowingWrite_KeepsTheSettingsAndTellsNoOtherEditor()
+    {
+        Dictionary<string, Func<object?[]?, object?>> answers = new()
+        {
+            ["LSettingsRead"] = _ => TInterface.TSettingsCreate("en"),
+            ["LSettingsSave"] = _ => throw new InvalidOperationException("The settings file is unreadable."),
+        };
+        LSettingsVault throwing = TEngineFake.TEngineCreate<LSettingsVault>(answers);
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild() with { LRigSettings = throwing });
+        LSettings before = engine.TEngineSettingsRead();
+        CEditor second = TInterfaceEditor.TEditorCreate(engine);
+        second.CEditorObserverAttach(static run => run());
+        int changed = 0;
+        second.CEditorFold.CFoldChanged += () => changed++;
+
+        TInterfaceEditor.TEditorCreate(engine).CEditorFold.CFoldFanqieToggle(true);
+
+        Assert.Equal(before, engine.TEngineSettingsRead());
+        Assert.Equal(0, changed);
+    }
+
+    [Fact]
     public void WorkspaceEstablishmentChanged_Opened_ShowsTheStatusAtOnceAndStopsOnDetach()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -104,7 +238,8 @@ public sealed class TAtelier
         atelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged += shown.Add;
         atelier.TAtelierStubOpen();
         atelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged -= shown.Add;
-        atelier.CAtelierLedger.CLedgerEpithetSave(!engine.TEngineSettingsRead().LSettingsEpithet);
+        atelier.CAtelierLedger.CLedgerEpithetSave(
+            !engine.TEngineSettingsRead().LSettingsEpithet, TEnvoyFake.TEnvoyCreate(false, []));
 
         Assert.Equal([atelier.TAtelierEstablishmentRead()], shown);
     }
@@ -186,7 +321,8 @@ public sealed class TAtelier
         atelier.TAtelierStubOpen();
         int opened = shown.Count;
 
-        atelier.CAtelierLedger.CLedgerEpithetSave(!engine.TEngineSettingsRead().LSettingsEpithet);
+        atelier.CAtelierLedger.CLedgerEpithetSave(
+            !engine.TEngineSettingsRead().LSettingsEpithet, TEnvoyFake.TEnvoyCreate(false, []));
 
         Assert.Equal(opened + 1, shown.Count);
     }

@@ -65,11 +65,14 @@ internal static class TInterfaceMention
         LVista vista = engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText);
         anthology.LAnthologyVistaRestore(vista);
         vista.LVistaSelect(chosen);
-        return anthology.LAnthologyMentionFind(3);
+        return anthology.LAnthologyMentionFind("a cat sat", 3);
     }
 
-    internal static CMentionOffer TMentionResultOpen(CAtelier atelier, CMentionResult result) =>
-        atelier.CAtelierMention.LMentionResultOpen(result);
+    internal static CMentionOffer TMentionResultOpen(CAtelier atelier, CMentionResult result, string text) =>
+        atelier.CAtelierMention.LMentionResultOpen(result, text);
+
+    internal static int? TMentionUnitRead(CAtelier atelier, string text, int start, int offset) =>
+        atelier.CAtelierMention.LMentionUnitRead(text, start, offset);
 
     internal static CMentionResult TMentionResultRead(int offset, LMention? stored) =>
         CMention.CMentionResultRead(new LMentionResult(offset, stored, []));
@@ -83,7 +86,31 @@ internal static class TInterfaceMention
         {
             ["LEngineMentionFind"] = _ => throw new InvalidOperationException("no words"),
         });
-        LDisplay display = new(
+        CDisplay display = TDisplayCreate(engine, atelier, envoy, entries, shown);
+        return display.CDisplayRoute.CDisplayMentionFind(1, "water", 1);
+    }
+
+    internal static int? TDisplayOffsetRead(LEngine engine, CAtelier atelier, long shown, string text, int unit)
+    {
+        int? heard = null;
+        LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineMentionFind"] = args =>
+            {
+                heard = (int)args![2]!;
+                throw new InvalidOperationException("no words");
+            },
+        });
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, []);
+        CDisplay display = TDisplayCreate(engine, atelier, envoy, entries, shown);
+        display.CDisplayRoute.CDisplayMentionFind(1, text, unit);
+        return heard;
+    }
+
+    private static CDisplay TDisplayCreate(
+        LEngine engine, CAtelier atelier, CEnvoy envoy, LEntryPort entries, long shown)
+    {
+        CDisplay display = new(
             new LDraftOutlet(engine),
             entries,
             new LPhonologyOutlet(engine),
@@ -92,8 +119,8 @@ internal static class TInterfaceMention
             envoy,
             new CLedgerNoticed());
         display.LDisplayNavigationAttach(atelier.CAtelierNavigation, atelier.CAtelierMention);
-        display.LDisplaySound.LDisplaySoundShow(shown, engine.TEngineEntryLoad(shown)!);
-        return display.CDisplayArea.CDisplayMentionFind(1, 1);
+        display.LDisplayRule.LDisplaySound.LDisplaySoundShow(shown, engine.TEngineEntryLoad(shown)!);
+        return display;
     }
 
     internal static IReadOnlyList<CMentionLabel> TMentionFailRead(LEngine engine, CDesk desk, CEnvoy envoy)

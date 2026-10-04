@@ -25,7 +25,7 @@ public sealed class QCompass
     private readonly List<(CCompassPart, FrameworkElement)> _qCompassSections = [];
 
 
-    private readonly LDisplay _qCompassDisplay;
+    private readonly CCompass _qCompassArea;
 
     private readonly FrameworkElement _qCompassView;
 
@@ -44,7 +44,7 @@ public sealed class QCompass
     private ItemsControl _qCompassCollocations = null!;
 
     public QCompass(
-        LDisplay display,
+        CCompass area,
         FrameworkElement view,
         ScrollViewer contents,
         FrameworkElement header,
@@ -53,7 +53,7 @@ public sealed class QCompass
         ToggleButton toggle,
         ItemsControl list)
     {
-        ArgumentNullException.ThrowIfNull(display);
+        ArgumentNullException.ThrowIfNull(area);
         ArgumentNullException.ThrowIfNull(view);
         ArgumentNullException.ThrowIfNull(contents);
         ArgumentNullException.ThrowIfNull(header);
@@ -62,7 +62,7 @@ public sealed class QCompass
         ArgumentNullException.ThrowIfNull(toggle);
         ArgumentNullException.ThrowIfNull(list);
 
-        _qCompassDisplay = display;
+        _qCompassArea = area;
         _qCompassView = view;
         _qCompassContents = contents;
         _qCompassHeader = header;
@@ -120,7 +120,7 @@ public sealed class QCompass
             }
         }
 
-        QCompassRowsRefine(_qCompassDisplay.CDisplayCompassRead(parts, QLocalizationCatalog.QLocalizationTextRead));
+        QCompassRowsRefine(_qCompassArea.CCompassRead(parts, QLocalizationCatalog.QLocalizationTextRead));
         QCompassColumnRefine();
         QCompassCurrentRefine();
     }

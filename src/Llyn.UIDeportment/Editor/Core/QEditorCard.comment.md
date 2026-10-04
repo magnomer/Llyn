@@ -1,5 +1,5 @@
 # QEditorCard.cs
-Hash: `37667127c9309184`
+Hash: `43b74f38ef246e93`
 
 ## `internal sealed class QEditorCard`
 
@@ -32,6 +32,7 @@ The Translation and mention dropdown, handed out so the corpus can open it over 
 
 Hands the Conduct editor to each card driver, in the order the editor once introduced them.
 The card, drag and list drivers are handed it last.
+The language toggle also takes the window's envoy, which its catalog load reports a failure through.
 
 ## `internal void QEditorStartRefine()`
 

@@ -18,9 +18,9 @@ public sealed class CImage
         _cImageDesk.CDeskEasel?.LEaselImageSet(imageId, location, true);
     }
 
-    public void CImageAdd(long cardId)
+    public void CImageAdd(long? cardId)
     {
-        _cImageDesk.CDeskEasel?.LEaselImageAdd(cardId);
+        _cImageDesk.CDeskEasel?.LEaselImageAdd(cardId ?? 0);
     }
 
     public void CImageRemove(long imageId)

@@ -85,6 +85,6 @@ public sealed class TDisplaySoundPlayback
 
         wing.CWingDisplay.CDisplaySound.CDisplayPlaybackCancel();
 
-        Assert.Equal("water", wing.CWingDisplay.CDisplayArea.CDisplayShown.CLecternHeadword);
+        Assert.Equal("water", wing.CWingDisplay.CDisplayShown.CLecternHeadword);
     }
 }

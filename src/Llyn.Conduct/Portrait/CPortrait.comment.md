@@ -1,10 +1,11 @@
 # CPortrait.cs
-Hash: `0aa6bfe43f6c49de`
+Hash: `0505cc4141698ab2`
 
 ## `internal static class CPortrait`
 
 What every panel's export and print gate shares: the formats offered, the words, and the failure policy.
-Each map only copies or maps by name, and the engine builds every record it takes.
+Each map copies or maps by name, and the engine builds every record it takes.
+Only the offered formats carry a rule of their own.
 An enum member a map does not know throws, so a reordered enum cannot shift a meaning.
 Only the panel gates call it, so every member is an `L` helper.
 
@@ -16,6 +17,11 @@ The wording keys of an entry page, in the order of the engine label's words.
 
 The export formats the file question offers, in the engine's order, each with its wording key.
 The engine names the formats, their suffixes and the default one.
+Conduct strips every `|` from a suffix, since a dialog filter splits on it.
+Exactly one format comes back chosen, the engine's first chosen one or else the first.
+So the dialog always opens on a real format.
+An empty engine list still offers one format, so the reader can always export.
+That one is the program's own markup, under no suffix, so its filter shows every file.
 
 ## `private static CPortraitChoice LPortraitChoiceCreate(LPortraitMedium medium, string suffix, bool chosen)`
 
@@ -30,6 +36,9 @@ Then it runs the panel's export.
 The question needs the gate's offered name and formats, so the envoy asks it rather than the driver beforehand.
 No path means the reader cancelled, which exports nothing and is no failure.
 A failed export shows `Export.Failed` through the panel's envoy, with the notice `settings` reads.
+The format read and the question run inside that same try, as the print path does.
+So an engine throw or an unknown format is shown, and the export stops cleanly.
+The task never faults, since its drivers await it from event handlers.
 
 ## `internal static async Task LPortraitTicketPrint(CEnvoy envoy, LSettingsPort settings, Func<LPressTicket, Task> print)`
 

@@ -117,7 +117,7 @@ public sealed class TCorpusMention
         List<string> asked = [];
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
 
-        Assert.Null(corpus.CCorpusMentionFind(2));
+        Assert.Null(corpus.CCorpusMentionFind("a dog", 2));
         Assert.Empty(asked);
     }
 
@@ -133,7 +133,7 @@ public sealed class TCorpusMention
         corpus.CCorpusDesk.TDeskDefer(
             TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterfaceState.TStateValueCreate("a dog")));
 
-        Assert.Null(corpus.CCorpusMentionFind(2));
+        Assert.Null(corpus.CCorpusMentionFind("a dog", 2));
         Assert.Equal(["Leave"], asked);
         Assert.True(corpus.CCorpusDesk.CDeskHeld);
     }
@@ -167,7 +167,7 @@ public sealed class TCorpusMention
             engine, atelier, TEnvoyFake.TEnvoyCreate(false, []), cat.LExampleId, [8]);
 
         Assert.NotNull(offer);
-        Assert.Equal(2, offer!.CMentionOfferOffset);
+        Assert.Equal(2, offer!.CMentionOfferUnit);
         Assert.Empty(offer.CMentionOfferEntry);
         Assert.Equal([8L], arrived);
     }
@@ -185,7 +185,7 @@ public sealed class TCorpusMention
             engine, atelier, TEnvoyFake.TEnvoyCreate(false, []), cat.LExampleId, [8, 9]);
 
         Assert.NotNull(offer);
-        Assert.Equal(2, offer!.CMentionOfferOffset);
+        Assert.Equal(2, offer!.CMentionOfferUnit);
         Assert.Equal([8L, 9L], offer.CMentionOfferEntry.Select(entry => entry.CTranslationTargetId));
         Assert.Empty(arrived);
     }

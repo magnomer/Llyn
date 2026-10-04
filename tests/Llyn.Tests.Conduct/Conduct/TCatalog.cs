@@ -67,7 +67,7 @@ public sealed class TCatalog
 
         CFont font = TInterfaceFont.TCatalogFontRead(settings, "Korean", CFontRole.CFontRoleGlyph);
 
-        Assert.Equal(new CFont("Noto Serif", 21, null), font);
+        Assert.Equal(new CFont("Noto Serif", 21, CFontSlant.CFontSlantTheme), font);
         Assert.Equal([("Korean", LFontRole.LFontRoleGlyph)], asked);
     }
 
@@ -100,7 +100,7 @@ public sealed class TCatalog
 
         CFont font = TInterfaceFont.TCatalogFontRead(settings, " ", CFontRole.CFontRoleHeadword);
 
-        Assert.Equal(new CFont(null, null, null), font);
+        Assert.Equal(new CFont(null, null, CFontSlant.CFontSlantTheme), font);
         Assert.Empty(asked);
     }
 
@@ -132,7 +132,7 @@ public sealed class TCatalog
         });
 
         Assert.Equal(
-            ["italic", "oblique", null],
+            [CFontSlant.CFontSlantItalic, CFontSlant.CFontSlantOblique, CFontSlant.CFontSlantTheme],
             new[] { CFontRole.CFontRoleGloss, CFontRole.CFontRoleExample, CFontRole.CFontRoleHeadword }
                 .Select(role => TInterfaceFont.TCatalogFontRead(settings, "Korean", role).CFontStyle));
     }
@@ -155,7 +155,9 @@ public sealed class TCatalog
         });
 
         Task<CEnsignSheet<int>> sheet = TInterfaceEnsign.TCatalogEnsignLoad(
+            TEnvoyFake.TEnvoyCreate(false, []),
             settings,
+            "Tag.LoadFailed",
             (rows, _) =>
             {
                 stored.AddRange(rows);
@@ -174,37 +176,48 @@ public sealed class TCatalog
     }
 
     [Fact]
-    public async Task CatalogEnsignLoad_FailedFill_LeavesTheFailureToTheCaller()
+    public async Task CatalogEnsignLoad_FailedFill_ShowsTheFailureAndAnswersNoLanguages()
     {
+        List<string> asked = [];
         LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
         {
             ["LEngineEnsignLoad"] = _ =>
                 Task.FromException<IReadOnlyList<string>>(new IOException("disk full")),
-            ["LEngineLanguageRead"] = _ => (IReadOnlyList<string>)["Mandarin", "Welsh"],
+            ["LEngineFailureRead"] = args => ((string)args![1]!, (string?)null, (string?)null),
         });
 
-        IOException failure = await Assert.ThrowsAsync<IOException>(
-            () => TInterfaceEnsign.TCatalogEnsignLoad(
-                settings, static (_, _) => static () => { }, static () => "rows"));
+        CEnsignSheet<string> answered = await TInterfaceEnsign.TCatalogEnsignLoad(
+            TEnvoyFake.TEnvoyCreate(false, asked),
+            settings,
+            "Tag.LoadFailed",
+            static (_, _) => static () => { },
+            static () => "rows");
 
-        Assert.Equal("disk full", failure.Message);
+        Assert.Equal(["Tag.LoadFailed"], asked);
+        Assert.Empty(answered.CEnsignSheetLanguages);
+        Assert.Equal("rows", answered.CEnsignSheetRows);
     }
 
     [Fact]
-    public async Task CatalogEnsignLoad_BrokenFill_RaisesTheFailure()
+    public async Task CatalogEnsignLoad_ThrownFill_ShowsTheFailureAndAnswersNoLanguages()
     {
+        List<string> asked = [];
         LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
         {
-            ["LEngineEnsignLoad"] = _ =>
-                Task.FromException<IReadOnlyList<string>>(new InvalidOperationException("broken")),
-            ["LEngineLanguageRead"] = _ => (IReadOnlyList<string>)["Mandarin", "Welsh"],
+            ["LEngineEnsignLoad"] = _ => throw new InvalidOperationException("broken"),
+            ["LEngineFailureRead"] = args => ((string)args![1]!, (string?)null, (string?)null),
         });
 
-        InvalidOperationException failure = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => TInterfaceEnsign.TCatalogEnsignLoad(
-                settings, static (_, _) => static () => { }, static () => "rows"));
+        CEnsignSheet<string> answered = await TInterfaceEnsign.TCatalogEnsignLoad(
+            TEnvoyFake.TEnvoyCreate(false, asked),
+            settings,
+            "Register.LoadFailed",
+            static (_, _) => static () => { },
+            static () => "rows");
 
-        Assert.Equal("broken", failure.Message);
+        Assert.Equal(["Register.LoadFailed"], asked);
+        Assert.Empty(answered.CEnsignSheetLanguages);
+        Assert.Equal("rows", answered.CEnsignSheetRows);
     }
 
     [Fact]
@@ -215,7 +228,8 @@ public sealed class TCatalog
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
 
         IReadOnlyList<string> languages =
-            await atelier.CAtelierCatalog.CCatalogEnsignLoad(static (_, _) => static () => { });
+            await atelier.CAtelierCatalog.CCatalogEnsignLoad(
+                TEnvoyFake.TEnvoyCreate(false, []), static (_, _) => static () => { });
 
         Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), languages);
     }
@@ -238,11 +252,13 @@ public sealed class TCatalog
                 },
             }));
 
-        IReadOnlyList<string> languages = await atelier.CAtelierCatalog.CCatalogEnsignLoad((rows, _) =>
-        {
-            stored.AddRange(rows);
-            return static () => { };
-        });
+        IReadOnlyList<string> languages = await atelier.CAtelierCatalog.CCatalogEnsignLoad(
+            TEnvoyFake.TEnvoyCreate(false, []),
+            (rows, _) =>
+            {
+                stored.AddRange(rows);
+                return static () => { };
+            });
 
         Assert.Equal(["English", "French"], languages);
         Assert.Equal([new CEnsignRow("French", "C:/flags/fr.svg")], stored);

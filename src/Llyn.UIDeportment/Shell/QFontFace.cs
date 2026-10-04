@@ -75,12 +75,12 @@ public static class QFontFace
         QFontResourceRefine(resources, "Theme.Card.GlossStyle", QFontStyleRead(gloss.CFontStyle));
     }
 
-    private static FontStyle? QFontStyleRead(string? style)
+    private static FontStyle? QFontStyleRead(CFontSlant style)
     {
         return style switch
         {
-            "italic" => FontStyles.Italic,
-            "oblique" => FontStyles.Oblique,
+            CFontSlant.CFontSlantItalic => FontStyles.Italic,
+            CFontSlant.CFontSlantOblique => FontStyles.Oblique,
             _ => null,
         };
     }

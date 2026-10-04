@@ -1,5 +1,5 @@
 #requires -Version 5.1
-# AUDITNAMESNEW - AUDIT GENERATION 19.
+# AUDITNAMESNEW - AUDIT GENERATION 20.
 [CmdletBinding()]
 param(
     [string]$File,
@@ -30,7 +30,7 @@ if ($Help) {
     exit 0
 }
 
-Write-Host 'AUDITNAMESNEW - AUDIT GENERATION 19' -ForegroundColor Blue
+Write-Host 'AUDITNAMESNEW - AUDIT GENERATION 20' -ForegroundColor Blue
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'

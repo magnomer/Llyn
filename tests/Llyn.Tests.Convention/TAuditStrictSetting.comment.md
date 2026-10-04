@@ -1,5 +1,5 @@
 # TAuditStrictSetting.cs
-Hash: `32238c15e307f4e2`
+Hash: `87a2bcb905539564`
 
 ## `internal static class TAuditStrictSetting`
 

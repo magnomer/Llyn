@@ -19,6 +19,8 @@ internal sealed class QSpeaker
 
     private CAtelier _cAtelier = null!;
 
+    private CEnvoy _qSpeakerEnvoy = null!;
+
     internal QSpeaker(FrameworkElement surface, ObservableCollection<PLanguageItem> language, QLink link)
     {
         _qSpeakerSurface = surface;
@@ -41,10 +43,11 @@ internal sealed class QSpeaker
 
     private ItemsControl QSpeakerList => QContract.QContractFind<ItemsControl>(_qSpeakerSurface, "PLanguageList");
 
-    internal void QSpeakerIntroduce(CEditor editor, CAtelier atelier)
+    internal void QSpeakerIntroduce(CEditor editor, CAtelier atelier, CEnvoy envoy)
     {
         _cEditor = editor;
         _cAtelier = atelier;
+        _qSpeakerEnvoy = envoy;
         editor.CEditorDraftChanged += QSpeakerRefine;
         atelier.CAtelierWorkspace.CWorkspaceOpened += QSpeakerLanguageRefine;
     }
@@ -59,7 +62,7 @@ internal sealed class QSpeaker
     {
         PLanguageItem.PLanguageItemReset(
             _qSpeakerLanguage,
-            await _cAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw));
+            await _cAtelier.CAtelierCatalog.CCatalogEnsignLoad(_qSpeakerEnvoy, QEnsignImage.QEnsignDraw));
         QSpeakerEnsignRefine();
         _qSpeakerLink.QLinkFlagRefine();
     }
@@ -77,7 +80,7 @@ internal sealed class QSpeaker
 
     private async void QSpeakerFlagRefine()
     {
-        await _cAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
+        await _cAtelier.CAtelierCatalog.CCatalogEnsignLoad(_qSpeakerEnvoy, QEnsignImage.QEnsignDraw);
         QSpeakerEnsignRefine();
     }
 

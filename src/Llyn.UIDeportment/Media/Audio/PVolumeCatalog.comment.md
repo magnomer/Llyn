@@ -1,5 +1,5 @@
 # PVolumeCatalog.cs
-Hash: `14f683ff44188bce`
+Hash: `41e6d4d87a7a028c`
 
 ## `public sealed class PVolumeCatalog : INotifyPropertyChanged`
 
@@ -19,6 +19,7 @@ The volume owner paints this on every tray, so a move in one tray moves every ot
 ### `public double PVolumeCatalogLevel { get; set; }`
 
 Held between silence and full, because that is the range every player here takes.
-A value outside it is pulled to the nearest end rather than refused.
+Conduct promises a finite level in that range, and the slider cannot leave it.
+So the level is taken as given, with no clamp here.
 Only the volume owner sets it, from a moved grip or from the level a workspace opens with.
 A set to the level it already holds raises no notice.

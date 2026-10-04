@@ -78,11 +78,17 @@ public sealed class CCard
         }
     }
 
-    public void CCardTranslationInsert(long cardId, long entryId, string headword, string language, int position)
+    public void CCardTranslationInsert(long cardId, long? entryId, string headword, string language, int position)
     {
         try
         {
-            _cCardDesk.CDeskChip?.LQuillTranslationStart(cardId, entryId, headword, language, position);
+            if (entryId is long stored)
+            {
+                _cCardDesk.CDeskChip?.LQuillTranslationInsert(cardId, stored, position);
+                return;
+            }
+
+            _cCardDesk.CDeskChip?.LQuillTranslationStart(cardId, 0, headword, language, position);
         }
         catch (Exception exception)
         {
@@ -273,9 +279,15 @@ public sealed class CCard
             : [];
     }
 
-    public void CCardEtymonAdd(long entryId)
+    public void CCardEtymonAdd(long? entryId)
     {
-        _cCardDesk.CDeskQuill?.LQuillEtymonAdd(entryId, int.MaxValue);
+        if (entryId is not long stored)
+        {
+            _cCardEnvoy.CEnvoyFailureShow("Refusal.TargetMissing");
+            return;
+        }
+
+        _cCardDesk.CDeskQuill?.LQuillEtymonAdd(stored, int.MaxValue);
     }
 
     public void CCardEtymonRemove(long entryId)
@@ -283,9 +295,15 @@ public sealed class CCard
         _cCardDesk.CDeskQuill?.LQuillEtymonRemove(entryId);
     }
 
-    public void CCardMentionSave(string text, int start, int length, long entryId)
+    public void CCardMentionSave(string text, int start, int length, long? entryId)
     {
-        CCardMentionSend(_cCardDraftPort.LEngineSpanRead(text, start, length), entryId);
+        if (entryId is not long stored)
+        {
+            _cCardEnvoy.CEnvoyFailureShow("Refusal.TargetMissing");
+            return;
+        }
+
+        CCardMentionSend(_cCardDraftPort.LEngineSpanRead(text, start, length), stored);
     }
 
     public void CCardMentionDelete(string text, int start, int length)

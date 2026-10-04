@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -18,9 +19,10 @@ public sealed class CMention
 
     public event Action<long>? CMentionSenseChosen;
 
-    internal CMentionOffer LMentionResultOpen(CMentionResult result)
+    internal CMentionOffer LMentionResultOpen(CMentionResult result, string text)
     {
         ArgumentNullException.ThrowIfNull(result);
+        ArgumentNullException.ThrowIfNull(text);
 
         CNavigation navigation = _cMentionAtelier.CAtelierNavigation;
         IReadOnlyList<CTranslationTarget> offered = [];
@@ -42,7 +44,7 @@ public sealed class CMention
             offered = result.CMentionResultEntry;
         }
 
-        return new CMentionOffer(result.CMentionResultOffset, offered, "Mention.Title");
+        return new CMentionOffer(LMentionUnitRead(text, 0, result.CMentionResultOffset), offered, "Mention.Title");
     }
 
     internal static IReadOnlyList<CMentionPiece> CMentionDivide(string text, IReadOnlyList<LMention> mentions)
@@ -56,7 +58,6 @@ public sealed class CMention
         foreach (LMentionPiece piece in pieces)
         {
             read.Add(new CMentionPiece(
-                piece.LMentionPieceOffset,
                 piece.LMentionPieceText,
                 piece.LMentionPieceStored?.LMentionLinked));
         }
@@ -134,7 +135,7 @@ public sealed class CMention
         }
     }
 
-    public int? CMentionUnitRead(string text, int start, int offset)
+    internal int? LMentionUnitRead(string text, int start, int offset)
     {
         LDraftPort drafts = _cMentionAtelier.CAtelierDraftPort;
         int inside = offset - start;
@@ -143,7 +144,7 @@ public sealed class CMention
             : null;
     }
 
-    public int CMentionOffsetRead(string text, int unit)
+    internal int LMentionOffsetRead(string text, int unit)
     {
         return _cMentionAtelier.CAtelierDraftPort.LEngineOffsetRead(text, unit);
     }
@@ -177,14 +178,21 @@ public sealed class CMention
     }
 
     internal static IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> LMentionLineRead(
-        IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> lines)
+        LEntryDraft content, IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> lines)
     {
+        ArgumentNullException.ThrowIfNull(content);
         ArgumentNullException.ThrowIfNull(lines);
 
-        Dictionary<long, IReadOnlyList<CMentionLabel>> read = new(lines.Count);
-        foreach ((long sentence, IReadOnlyList<LMentionLabel> labels) in lines)
+        Dictionary<long, IReadOnlyList<CMentionLabel>> read = [];
+        foreach (LCardDraft card in content.LEntryDraftMeanings.Concat(content.LEntryDraftCollocations))
         {
-            read[sentence] = LMentionLabelRead(labels);
+            foreach (LSentenceDraft sentence in card.LCardDraftSentence)
+            {
+                read[sentence.LSentenceDraftId] =
+                    lines.TryGetValue(sentence.LSentenceDraftId, out IReadOnlyList<LMentionLabel>? labels)
+                        ? LMentionLabelRead(labels)
+                        : [];
+            }
         }
 
         return read;

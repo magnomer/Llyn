@@ -4,13 +4,16 @@ namespace Llyn.UIDeportment;
 
 public sealed class PMentionArgument : RoutedEventArgs
 {
-    internal PMentionArgument(RoutedEvent routed, PMention origin, int offset)
+    internal PMentionArgument(RoutedEvent routed, PMention origin, string text, int unit)
         : base(routed, origin)
     {
-        PMentionArgumentOffset = offset;
+        PMentionArgumentText = text;
+        PMentionArgumentUnit = unit;
     }
 
-    public int PMentionArgumentOffset { get; }
+    public string PMentionArgumentText { get; }
+
+    public int PMentionArgumentUnit { get; }
 
     public PMention PMentionArgumentOrigin => (PMention)OriginalSource;
 

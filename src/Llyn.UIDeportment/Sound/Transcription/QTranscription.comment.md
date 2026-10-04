@@ -1,5 +1,5 @@
 # QTranscription.cs
-Hash: `c55c1c0d43ad1197`
+Hash: `b213bedd6ede5d21`
 
 ## `internal sealed class QTranscription`
 
@@ -40,7 +40,8 @@ The fill unhooks it while it sets the selection, so only a user's pick is heard.
 
 ## `private void QTranscriptionAddObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Hands the pressed row's id, or zero without a row, to the add gate, `CTranscription.CTranscriptionAdd`.
+Hands the pressed row's id, or null without a row, to the add gate, `CTranscription.CTranscriptionAdd`.
+Null is Conduct's word for append, so no magic id is sent.
 The engine picks the free scheme and the place after the row.
 
 ## `private void QTranscriptionAddRefine(object sender, CanExecuteRoutedEventArgs e)`
@@ -67,6 +68,7 @@ Asks the errand for a search on the pressed row in that row's scheme, then paint
 Paints the ready block `CTranscription.CTranscriptionRead`, a row per transcription keyed by its id.
 The block shows while the read answers it shown.
 It stores the read's free verdict for the plus and asks the commands to requery.
-Each row's dropdown takes the schemes its ready row carries, paired by the row's id.
+Each row's dropdown takes the schemes its ready row carries, inside the pairing of `PCard.PCardRowShow`.
+That pairing matches rows one to one, so a repeated id never gives one row two scheme lists.
 A stored row in a scheme the pack no longer declares is still shown, because it is the entry's data.
 The read leaves out the glyph row the glyph block shows beneath.

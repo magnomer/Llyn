@@ -170,8 +170,18 @@ public sealed class CShelf
 
     public CShelfRoll CShelfRollRead()
     {
-        IReadOnlyList<CCatalogReference> rows = COeuvre.COeuvreReferenceRead(
-            _cShelfVista is LVista vista ? _cShelfEntryPort.LEngineReferenceFind(vista) : []);
+        IReadOnlyList<CCatalogReference> rows;
+        try
+        {
+            rows = COeuvre.COeuvreReferenceRead(
+                _cShelfVista is LVista vista ? _cShelfEntryPort.LEngineReferenceFind(vista) : []);
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cShelfEnvoy, _cShelfSettingsPort, "Source.LoadFailed", exception);
+            rows = [];
+        }
+
         if (LShelfSourceShown && !rows.Any(static row => row.CCatalogReferenceChosen))
         {
             CShelfPanel.CPanelEntryClose();
@@ -182,7 +192,8 @@ public sealed class CShelf
 
     public Task<CEnsignSheet<CShelfRoll>> CShelfRollLoad(
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
-        CCatalog.LCatalogEnsignLoad(_cShelfSettingsPort, store, CShelfRollRead);
+        CCatalog.LCatalogEnsignLoad(
+            _cShelfEnvoy, _cShelfSettingsPort, "Source.LoadFailed", store, CShelfRollRead);
 
     public void CShelfQuerySet(string query)
     {

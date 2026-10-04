@@ -1,5 +1,5 @@
 {
-  "generation": 19,
+  "generation": 20,
   "project": "Llyn",
   "enforced": true,
   "helper": {
@@ -49,7 +49,7 @@
     "spider": 6,
     "chameleon": 11,
     "octopus": 14,
-    "centipede": 36,
+    "centipede": 35,
     "serpent": 7,
     "hub": 2
   },

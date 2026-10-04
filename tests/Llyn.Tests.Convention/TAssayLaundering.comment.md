@@ -1,5 +1,5 @@
 # TAssayLaundering.cs
-Hash: `e147f9011639bd32`
+Hash: `eeb01ce89d2b4fec`
 
 ## `public sealed class TAssayLaundering`
 
@@ -44,6 +44,32 @@ A logic value read inside an interpolation is still its source.
 
 A logic local named inside `nameof` is not read.
 It fails when `nameof` operands are no longer skipped.
+
+## `public void AuditTruth_RunText_AllowsDecision()`
+
+The `Text` of a `Run` deciding an if is no control input.
+It fails when an input member is coloured by its name alone.
+
+## `public void AuditTruth_TextBlockText_AllowsDecision()`
+
+The `Text` of a `TextBlock` deciding an if is no control input.
+A `TextBlock` is a `FrameworkElement` but no `Control`, so the user cannot change it.
+
+## `public void AuditTruth_TextBoxText_ReportsLaundering()`
+
+The `Text` of a `TextBox` deciding an if is control input.
+It fails when a control that takes input is no longer coloured.
+
+## `public void AuditTruth_ToggleChecked_ReportsLaundering()`
+
+The `IsChecked` of a `ToggleButton` deciding an if is control input.
+It fails when the base walk checks only the direct base type.
+
+## `public void AuditTruth_UnresolvedReceiver_ReportsLaundering()`
+
+An input member on a `dynamic` receiver keeps its colour, even when the object is a `Run`.
+The assay compilation rejects errors, so `dynamic` stands in for a receiver type the model cannot resolve.
+It fails when an unresolved read escapes the rule.
 
 ## `private static void TAssayLaunderingCheck(string body, TViolation? expected)`
 

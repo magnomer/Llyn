@@ -1,5 +1,5 @@
 # CSounding.cs
-Hash: `f1d34b274303252b`
+Hash: `539e531c4453d192`
 
 ## `public sealed class CSounding`
 
@@ -8,6 +8,7 @@ It covers the entry's rime-book groups, its script rows and its paradigm slots.
 It also holds the maps from an entry's sound rows to the shapes the drivers show.
 Every read and gate works on the entry the desk has stored, so no driver passes an entry.
 A fresh draft has no stored entry, so every read answers empty and every gate does nothing.
+The open state of its boxes belongs to the user, not the entry, so `CFold` keeps it apart.
 Every read answers empty on a refusal, since a box that cannot fetch still has to draw.
 The refusal still shows through the envoy under the read's own notice key, so none passes unseen.
 A read runs on every repaint, so it shows through the atelier's repaint memory, once until the user acts.
@@ -105,13 +106,17 @@ The lectern calls it too, so both fanqie tables draw the same shape.
 
 Copies every cell the fanqie line shows, derived cells included.
 
-## `internal static IReadOnlyList<CScriptGroup> CSoundingScriptRead(IReadOnlyList<LScriptGroup> groups)`
+## `internal static IReadOnlyList<CScriptGroup> CSoundingScriptRead(IReadOnlyList<LScriptGroup> groups, LSettingsPort settings)`
 
 The one map from the engine's script groups to their shape, shared with the lectern.
+`settings` checks each epoch key against the interface wording.
 
-## `private static CScriptImage LSoundingImageRead(LScriptImage image)`
+## `private static CScriptImage LSoundingImageRead(LScriptImage image, LSettingsPort settings)`
 
-Copies the data, caption and epoch of one script image.
+Copies the data and caption of one script image, and turns its epoch code into a wording key.
+Epoch codes come from pack data, so they form an open set and stay a string.
+The key is kept only when `settings` finds a wording for it.
+Otherwise the epoch is empty, so a driver never looks up a key that has no text.
 
 ## `internal static IReadOnlyList<CParadigmSlot> CSoundingParadigmRead(IReadOnlyList<LParadigmRow> rows, bool pending, bool enabled, bool held)`
 
@@ -138,7 +143,9 @@ The editor's sheet and the reading view's block share it.
 
 ## `internal static IReadOnlyList<CContour> LSoundingContourRead(IReadOnlyList<LContour> syllables)`
 
-Maps the engine's contour syllables into ready ones, reading no rule.
+Maps the engine's contour syllables into ready ones.
+It drops every level outside `CContour.CContourScale`, since the drawing has no guide line for it.
+A toned syllable left with no level is marked untoned, so a drawn pitch line always has a point.
 The editor's contour and the reading view's block share it.
 
 ## `internal static IReadOnlyList<CTranscriptionDraft> CSoundingTranscriptionRead(IReadOnlyList<LTranscriptionDraft> transcriptions)`

@@ -1,5 +1,5 @@
 # QTranscriptionItem.cs
-Hash: `2df6c3ee6ca2c1c9`
+Hash: `5588437e4b77d737`
 
 ## `public sealed class QTranscriptionItem : INotifyPropertyChanged`
 
@@ -35,9 +35,10 @@ It announces only a real change, so a render writing the same text stays silent.
 ## `internal void QTranscriptionSchemeRefine(IReadOnlyList<CScheme> schemes)`
 
 Gives the dropdown the choices Conduct answered and marks the ones it answered taken.
-The choices are built once and kept, so an open dropdown is not rebound under the pointer.
-They are rebuilt only when the pack's scheme count differs, which a language switch brings.
-Each kept choice takes the taken mark of the scheme at its place, since both follow the pack's order.
+The choices are kept while they match, so an open dropdown is not rebound under the pointer.
+They are rebuilt when the count, a scheme name or a label differs from what Conduct answered.
+So a renamed or reordered scheme at the same count never leaves a stale label.
+Each kept choice takes the taken mark of the scheme at its place, since the check matched them in order.
 
 ## `internal static void QTranscriptionItemRefine(FrameworkElement container, object item, string? _)`
 

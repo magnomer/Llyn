@@ -46,15 +46,4 @@ public sealed class LQuillCard
                 new LRequestCardShift(_lQuillCardTenure.LTenureId, card, 0, target));
         }
     }
-
-    public void LQuillCardMove(long card, string ordinal)
-    {
-        ArgumentNullException.ThrowIfNull(ordinal);
-
-        if (_lQuillCardTenure.LTenureRead() is LDraft held
-            && LDraftClerkCard.LCardOrdinalRead(held.LDraftContent, card, ordinal) is int place)
-        {
-            LQuillCardMove(card, place);
-        }
-    }
 }

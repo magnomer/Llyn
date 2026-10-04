@@ -32,7 +32,9 @@ internal static class TAuditBorderWalker
         Dictionary<string, HashSet<string>> inner = TAuditInnerRead();
         List<TAuditHit> hits = [];
         HashSet<string> taken = new(StringComparer.Ordinal);
-        foreach ((string pair, string[] offer) in TAuditBorderSetting.TAuditBorderOffer)
+        foreach ((string pair, string[] offer) in TAuditEngineSetting.TAuditEngineOffer
+                     .Concat(TAuditDeportmentSetting.TAuditDeportmentOffer)
+                     .Concat(TAuditDemeanorSetting.TAuditDemeanorOffer))
         {
             string ring = pair[..pair.IndexOf('>')];
             string neighbour = pair[(pair.IndexOf('>') + 1)..];

@@ -1,5 +1,5 @@
 # TInterfaceClerk.cs
-Hash: `7aef635c9e1fd0e5`
+Hash: `c83a6287cecf64b9`
 
 ## `internal static partial class TInterface`
 
@@ -53,10 +53,6 @@ Relays the card clerk's reading of the end place of one card kind.
 ## `internal static bool TCardLoneCheck(LEntryDraft content, long id)`
 
 Relays the card clerk's check that a card is alone in its kind.
-
-## `internal static int? TCardOrdinalRead(LEntryDraft content, long id, string ordinal)`
-
-Relays the card clerk's reading of a typed place, so its clamp is tested over a held draft.
 
 ## `internal static int? TCardShiftRead(LEntryDraft content, long id, int place)`
 

@@ -25,11 +25,24 @@ public sealed class CCatalog
 
         if (string.IsNullOrWhiteSpace(language))
         {
-            return new CFont(null, null, null);
+            return new CFont(null, null, CFontSlant.CFontSlantTheme);
         }
 
         LFont font = settings.LEngineFontRead(language, LCatalogRoleRead(role));
-        return new CFont(font.LFontFamily, font.LFontSized, font.LFontStyle);
+        return new CFont(
+            string.IsNullOrWhiteSpace(font.LFontFamily) ? null : font.LFontFamily,
+            font.LFontSized is double size && double.IsFinite(size) && size > 0 ? size : null,
+            LCatalogSlantRead(font.LFontStyle));
+    }
+
+    private static CFontSlant LCatalogSlantRead(string? style)
+    {
+        return style?.ToLowerInvariant() switch
+        {
+            "italic" => CFontSlant.CFontSlantItalic,
+            "oblique" => CFontSlant.CFontSlantOblique,
+            _ => CFontSlant.CFontSlantTheme,
+        };
     }
 
     private static LFontRole LCatalogRoleRead(CFontRole role)
@@ -46,7 +59,10 @@ public sealed class CCatalog
 
     internal static CSentenceOrder CCatalogOrderRead(LSentenceOrder order)
     {
-        return new CSentenceOrder(order.LSentenceOrderParticle, order.LSentenceOrderDependence);
+        return order.LSentenceOrderParticle is 0 or 1
+            && order.LSentenceOrderDependence == 1 - order.LSentenceOrderParticle
+                ? new CSentenceOrder(order.LSentenceOrderParticle, order.LSentenceOrderDependence)
+                : new CSentenceOrder(0, 1);
     }
 
     internal static long? LCatalogGlyphOpen(CEnvoy envoy, LSettingsPort settings, Func<long> resolve)
@@ -71,27 +87,52 @@ public sealed class CCatalog
     }
 
 
-    public Task<IReadOnlyList<string>> CCatalogEnsignLoad(
+    public async Task<IReadOnlyList<string>> CCatalogEnsignLoad(
+        CEnvoy envoy,
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)
     {
+        ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(store);
 
-        return _cCatalogAtelier.CAtelierSettingsPort.LEngineEnsignLoad(
-            (rows, delete) => store(CCatalogEnsignRead(rows), delete));
+        LSettingsPort settings = _cCatalogAtelier.CAtelierSettingsPort;
+        try
+        {
+            return await settings
+                .LEngineEnsignLoad((rows, delete) => store(CCatalogEnsignRead(rows), delete))
+                .ConfigureAwait(true);
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(envoy, settings, "Language.LoadFailed", exception);
+            return [];
+        }
     }
 
     internal static async Task<CEnsignSheet<LCatalogKind>> LCatalogEnsignLoad<LCatalogKind>(
+        CEnvoy envoy,
         LSettingsPort settings,
+        string key,
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store,
         Func<LCatalogKind> read)
     {
+        ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(settings);
+        ArgumentException.ThrowIfNullOrWhiteSpace(key);
         ArgumentNullException.ThrowIfNull(store);
         ArgumentNullException.ThrowIfNull(read);
 
-        IReadOnlyList<string> languages = await settings
-            .LEngineEnsignLoad((rows, delete) => store(CCatalogEnsignRead(rows), delete))
-            .ConfigureAwait(true);
+        IReadOnlyList<string> languages;
+        try
+        {
+            languages = await settings
+                .LEngineEnsignLoad((rows, delete) => store(CCatalogEnsignRead(rows), delete))
+                .ConfigureAwait(true);
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(envoy, settings, key, exception);
+            languages = [];
+        }
 
         return new CEnsignSheet<LCatalogKind>(languages, read());
     }
@@ -116,10 +157,15 @@ public sealed class CCatalog
 
     private static CArticulation LCatalogArticulationRead(LArticulation chart)
     {
-        return new CArticulation(
-            chart.LArticulationHeaders.Select(static name => string.Concat("Articulation.", name)).ToList(),
-            chart.LArticulationSides.Select(static name => string.Concat("Articulation.", name)).ToList(),
-            chart.LArticulationCells);
+        List<string> headers =
+            chart.LArticulationHeaders.Select(static name => string.Concat("Articulation.", name)).ToList();
+        List<string> sides =
+            chart.LArticulationSides.Select(static name => string.Concat("Articulation.", name)).ToList();
+        List<IReadOnlyList<IReadOnlyList<string>>> cells = sides
+            .Select((_, row) => chart.LArticulationCells.ElementAtOrDefault(row) ?? [])
+            .Select(row => (IReadOnlyList<IReadOnlyList<string>>)row.Take(headers.Count).ToList())
+            .ToList();
+        return new CArticulation(headers, sides, cells);
     }
 
     internal static IReadOnlyList<CEnsignRow> CCatalogEnsignRead(IReadOnlyList<LEnsignRow> rows)

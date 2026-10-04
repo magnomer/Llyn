@@ -127,27 +127,38 @@ public sealed class CPhonology
 
     public IReadOnlyList<CCatalogPronunciation> CPhonologyRowsRead()
     {
-        IReadOnlyList<CCatalogPronunciation> rows = _cPhonologyVista is LVista vista
-            ? _cPhonologyPort.LEnginePronunciationFind(vista)
-                .Select(static row => new CCatalogPronunciation(
-                    new CVistaRow(
-                        row.LCatalogPronunciationEntry.LEntryId,
-                        row.LCatalogPronunciationEntry.LEntryHeadword,
-                        row.LCatalogPronunciationEntry.LEntryLanguage,
-                        row.LCatalogPronunciationEpithet,
-                        row.LCatalogPronunciationName,
-                        row.LCatalogPronunciationChosen),
-                    row.LCatalogPronunciationSound,
-                    row.LCatalogPronunciationText))
-                .ToList()
-            : [];
+        IReadOnlyList<CCatalogPronunciation> rows;
+        try
+        {
+            rows = _cPhonologyVista is LVista vista
+                ? _cPhonologyPort.LEnginePronunciationFind(vista)
+                    .Select(static row => new CCatalogPronunciation(
+                        new CVistaRow(
+                            row.LCatalogPronunciationEntry.LEntryId,
+                            row.LCatalogPronunciationEntry.LEntryHeadword,
+                            row.LCatalogPronunciationEntry.LEntryLanguage,
+                            row.LCatalogPronunciationEpithet,
+                            row.LCatalogPronunciationName,
+                            row.LCatalogPronunciationChosen),
+                        row.LCatalogPronunciationSound,
+                        row.LCatalogPronunciationText))
+                    .ToList()
+                : [];
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cPhonologyEnvoy, _cPhonologySettingsPort, "Sound.LoadFailed", exception);
+            rows = [];
+        }
+
         _cPhonologyCount = rows.Count;
         return rows;
     }
 
     public Task<CEnsignSheet<IReadOnlyList<CCatalogPronunciation>>> CPhonologyRowsLoad(
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
-        CCatalog.LCatalogEnsignLoad(_cPhonologySettingsPort, store, CPhonologyRowsRead);
+        CCatalog.LCatalogEnsignLoad(
+            _cPhonologyEnvoy, _cPhonologySettingsPort, "Sound.LoadFailed", store, CPhonologyRowsRead);
 
     public void CPhonologyQuerySet(string query)
     {

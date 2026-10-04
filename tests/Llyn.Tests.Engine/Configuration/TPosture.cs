@@ -349,6 +349,73 @@ public sealed class TPosture
     }
 
     [Fact]
+    public void PostureSave_FaultingStore_RecordsEachFaultAndRaisesTheFailureOnce()
+    {
+        List<Exception> thrown = [];
+        List<Exception> recorded = [];
+        List<Exception> failed = [];
+        LPostureVault faulting = TEngineFake.TEngineCreate<LPostureVault>(
+            new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LPostureRead"] = _ => TInterface.TPostureStateCreate(),
+                ["LPostureSave"] = _ =>
+                {
+                    LVaultFault fault = new(new IOException("The disk is full."));
+                    thrown.Add(fault);
+                    throw fault;
+                },
+            });
+        LAuditVault audit = TEngineFake.TEngineCreate<LAuditVault>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LAuditRecord"] = args =>
+            {
+                recorded.Add((Exception)args![0]!);
+                return null;
+            },
+        });
+        using LEngine engine = TRigFake.TRigFakeStart(
+            TRigFake.TRigFakeBuild() with { LRigPosture = faulting, LRigAudit = audit });
+        LPosture posture = engine.TPostureStart();
+        posture.LPostureSaveFailed += failed.Add;
+
+        posture.TPostureModeSave("Corpus");
+        posture.TPostureModeSave("Library");
+
+        Assert.Equal(2, thrown.Count);
+        Assert.Equal(thrown, recorded);
+        Assert.Same(thrown[0], Assert.Single(failed));
+        Assert.Equal("Library", posture.TPostureRead().LPostureStateMode);
+    }
+
+    [Fact]
+    public void PostureSave_FaultAfterWorkspaceOpens_RaisesTheFailureAgain()
+    {
+        List<Exception> thrown = [];
+        List<Exception> failed = [];
+        LPostureVault faulting = TEngineFake.TEngineCreate<LPostureVault>(
+            new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LPostureRead"] = _ => TInterface.TPostureStateCreate(),
+                ["LPostureSave"] = _ =>
+                {
+                    LVaultFault fault = new(new IOException("The disk is full."));
+                    thrown.Add(fault);
+                    throw fault;
+                },
+            });
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild() with { LRigPosture = faulting });
+        LPosture posture = engine.TPostureStart();
+        posture.LPostureSaveFailed += failed.Add;
+        posture.TPostureModeSave("Corpus");
+
+        engine.TEngineRigApply(TRigFake.TRigFakeBuild(new TVaultFake(), "fake-second") with { LRigPosture = faulting });
+        posture.TPostureModeSave("Library");
+
+        Assert.Equal(2, thrown.Count);
+        Assert.Equal(thrown, failed);
+    }
+
+    [Fact]
     public void PostureLoader_VolumeAboveOne_ClampsToOne()
     {
         Assert.Equal(1, TInterface.TPostureLoaderRead("{ \"volume\": 4 }").LPostureStateVolume);

@@ -1,12 +1,12 @@
 # CDisplaySound.cs
-Hash: `e6c0cf413754995c`
+Hash: `7f035f09a19f0b1b`
 
 ## `public sealed class CDisplaySound`
 
 The reading view's sound area, holding the gates and reads of its pronunciation, playback, glyph and sound blocks.
-It is split from [CDisplay](CDisplay.comment.md) by role, since the header and card half keeps its own area.
-The display builds one over the sound half and the header area.
-So every driver over that display hears the same events.
+It is split from [CDisplay](CDisplay.comment.md) by role, since the header keeps its own area.
+The header area builds one over the rules' sound half and itself.
+So every driver over that area hears the same events.
 It holds no state of its own.
 The shown draft, the fold and the latest play stay in [LDisplaySound](LDisplaySound.comment.md).
 The shown language and headword come from the header's C record, so no engine record is read for them.
@@ -26,7 +26,7 @@ The anchors while nothing is shown or the engine refused, with no row anchored.
 
 ## `internal CDisplaySound(LDisplay display, CDisplay header, LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LMediaPort media, LSettingsPort settings, CEnvoy envoy)`
 
-Only the display builds its sound area, over the ports and the envoy the panel handed down.
+Only the header area builds its sound area, over the ports and the envoy the atelier handed down.
 It takes the sound half and the atelier's repaint memory from `display`, so the width did not grow.
 Every read below shows its failure through that memory, since it runs on every repaint.
 The play and fanqie gates answer a user act, so they show every failure.

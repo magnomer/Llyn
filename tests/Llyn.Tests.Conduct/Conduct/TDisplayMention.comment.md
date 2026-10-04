@@ -1,5 +1,5 @@
 # TDisplayMention.cs
-Hash: `2ad648e2acb419ef`
+Hash: `c3cfe0e5e95f19c9`
 
 ## `public sealed class TDisplayMention`
 
@@ -9,6 +9,8 @@ A sentence naming no language is read in the shown entry's language, and French 
 A sole entry opens at once through the Library's leave question and leaves an empty menu.
 A declined leave opens nothing.
 Several entries stay offered under the found word, and nothing opens or asks.
+An astral character before the word moves its UTF-16 unit one past its code-point offset.
+That holds when the word starts in a Mention piece before the clicked piece.
 A word nobody holds offers an empty menu.
 A stored Mention opens its entry and raises its sense.
 A row the shown entry does not hold offers an empty menu.

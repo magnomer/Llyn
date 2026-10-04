@@ -14,7 +14,8 @@ internal sealed partial class QTaxonomy
 
     private async void QTaxonomyWorkspaceRefine()
     {
-        await _qTaxonomyHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(QEnsignImage.QEnsignDraw);
+        await _qTaxonomyHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(
+            _qTaxonomyHost.QWindowEnvoy, QEnsignImage.QEnsignDraw);
     }
 
     private void QExplorationObserve(object sender, TextChangedEventArgs e)

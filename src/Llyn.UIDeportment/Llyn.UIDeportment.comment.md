@@ -1,5 +1,5 @@
 # Llyn.UIDeportment.csproj
-Hash: `919ceca0fde3664e`
+Hash: `8a587084008458d3`
 
 ## `<TargetFramework>net10.0-windows10.0.17763.0</TargetFramework>`
 
@@ -11,16 +11,20 @@ It hosts the WebView2 player of `QScreenBrowser`, so it takes the Windows versio
 Deportment names windows, controls and event arguments directly.
 It holds no markup, since every page and dictionary lives in the veneer.
 
+## `<DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>`
+
+Deportment compiles against Conduct and its capsule alone, never the rings below Conduct.
+A name from ShellEngine, Application or Core fails the build, not only the border audit.
+
 ## `<InternalsVisibleTo Include="Llyn.Tests.Windows" />`
 
 Only the Windows behaviour tests can load Deportment, so only they reach its internals.
 
 ## `<ProjectReference Include="..\Llyn.Conduct\Llyn.Conduct.csproj" />`
 
-Conduct is the layer below, and ShellEngine, Application and Core arrive through it.
-Deportment reaches the engine only through Conduct's atelier and its transitional port handles.
-The engine handles a panel keeps, `LVista`, `LTenure` and `LForay`, are its whole reason to exist.
-The ring guard lists the handles it may name, and every other engine type is out of reach.
+Conduct is the layer below, and the only ring Deportment compiles against.
+Deportment reaches the engine only through Conduct's atelier and gates.
+No engine type is in reach, so no engine handle is named here.
 `Llyn.Core.Windows` is not referenced, since playback runs through WPF and WebView2 controls held here.
 
 ## `<ProjectReference Include="..\Llyn.UIDeportment.Capsule\Llyn.UIDeportment.Capsule.csproj" />`

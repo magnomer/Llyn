@@ -5,7 +5,7 @@ namespace Llyn.UIDeportment;
 internal sealed class PProspectItem
 {
     internal PProspectItem(
-        long id, string headword, string language, bool fresh, string epithet = "", string? name = null)
+        long? id, string headword, string language, string epithet = "", string? name = null)
     {
         PProspectItemId = id;
         PProspectItemHeadword = headword;
@@ -13,10 +13,9 @@ internal sealed class PProspectItem
         PProspectItemEpithet = epithet ?? string.Empty;
         PProspectItemLanguage = language;
         PProspectItemFlag = QEnsignImage.QEnsignRead(language);
-        PProspectItemFresh = fresh;
     }
 
-    public long PProspectItemId { get; }
+    public long? PProspectItemId { get; }
 
     public string PProspectItemHeadword { get; }
 
@@ -28,5 +27,5 @@ internal sealed class PProspectItem
 
     public ImageSource? PProspectItemFlag { get; }
 
-    public bool PProspectItemFresh { get; }
+    public bool PProspectItemFresh => PProspectItemId is null;
 }

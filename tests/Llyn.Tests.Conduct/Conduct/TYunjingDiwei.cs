@@ -50,8 +50,8 @@ public sealed class TYunjingDiwei
 
         CDiweiPage page = yunjing.CYunjingDiweiRead();
 
-        Assert.Equal(new CFont(null, null, null), blank.CDiweiPageFont);
-        Assert.Equal(new CFont(null, null, null), blank.CDiweiPageGlyph);
+        Assert.Equal(new CFont(null, null, CFontSlant.CFontSlantTheme), blank.CDiweiPageFont);
+        Assert.Equal(new CFont(null, null, CFontSlant.CFontSlantTheme), blank.CDiweiPageGlyph);
         const string family = "Microsoft JhengHei UI, Microsoft YaHei UI, Malgun Gothic";
         Assert.Equal(family, page.CDiweiPageFont.CFontFamily);
         Assert.Equal<double?>(40, page.CDiweiPageFont.CFontSize);
@@ -97,6 +97,28 @@ public sealed class TYunjingDiwei
         yunjing.CYunjingTallyToggle(null);
 
         Assert.Equal(1, changed);
+    }
+
+    [Fact]
+    public void YunjingTallyToggle_RefusedSave_ShowsTheSaveFailureAndKeepsTheState()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        Dictionary<string, Func<object?[]?, object?>> refusing = new()
+        {
+            ["LEngineTallySave"] = _ => throw new InvalidOperationException("The settings file is unreadable."),
+        };
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, refusing);
+        List<string> notices = [];
+        CYunjing yunjing = TYunjing.TYunjingPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, notices));
+        int changed = 0;
+        yunjing.CYunjingChanged += () => changed++;
+
+        yunjing.CYunjingTallyToggle(true);
+
+        Assert.Equal(["Settings.SaveFailed"], notices);
+        Assert.Equal(1, changed);
+        Assert.False(engine.TEngineSettingsRead().LSettingsTally);
     }
 
     [Fact]

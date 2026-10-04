@@ -253,7 +253,7 @@ footer { color: var(--ink-3); font-size: 12px; display: flex; flex-wrap: wrap; g
   }
   function text(v) { return v === null || v === undefined ? '' : String(v); }
   function slug(t) { return 'sec-' + String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
-  function statusClass(s) { return s === 'FAIL' || s === 'ABOVE' || s === 'STALE' ? 'fail' : s === 'WARN' || s === 'OVER' ? 'warn' : 'ok'; }
+  function statusClass(s) { return s === 'FAIL' || s === 'ABOVE' || s === 'STALE' ? 'fail' : s === 'WARN' || s === 'OVER' ? 'warn' : s === 'INFORMATIVE' ? 'plain' : 'ok'; }
   function compare(a, b) { return a < b ? -1 : a > b ? 1 : 0; }
   function auditClass(a) { return 'k' + Math.max(0, AUDITS.indexOf(a)); }
   function load(key, fallback, allowed) {
@@ -362,14 +362,16 @@ footer { color: var(--ink-3); font-size: 12px; display: flex; flex-wrap: wrap; g
   // Tiles.
   function sum(list, key) { return list.reduce(function (t, x) { return t + x[key]; }, 0); }
   function auditHits(audit) { return d.hits.filter(function (h) { return h.audit === audit; }).length; }
-  var aboveFiles = d.ledger.filter(function (p) { return p.hits > p.ceiling; }).length;
+  var aboveFiles = d.ledger.filter(function (p) { return p.enforced && p.hits > p.ceiling; }).length;
+  var informativeFiles = d.ledger.filter(function (p) { return !p.enforced && p.hits > p.ceiling; }).length;
+  var informativeKinds = d.kinds.filter(function (k) { return !k.enforced; }).map(function (k) { return k.audit + ' ' + k.kind; });
   var belowFiles = d.ledger.filter(function (p) { return p.hits < p.ceiling; }).length;
   var tiles = [
     { label: 'Gates', value: fmt(d.gates.length - failed.length) + ' <small>/ ' + fmt(d.gates.length) + '</small>', note: failed.length ? fmt(failed.length) + ' above 0' : 'All at 0', cls: failed.length ? 'fail' : '' },
     { label: 'Strict hits', value: fmt(s.strict), note: fmt(sum(d.kinds.filter(function (k) { return k.audit === 'Strict'; }), 'ceiling')) + ' held by the ledger', cls: '' },
     { label: 'Truth hits', value: fmt(s.truth), note: fmt(sum(d.kinds.filter(function (k) { return k.audit === 'Truth'; }), 'ceiling')) + ' held by the ledger', cls: '' },
     { label: 'Boundary findings', value: fmt(auditHits('Boundary')), note: 'Guards that keep the walkers sound', cls: auditHits('Boundary') ? 'fail' : '' },
-    { label: 'Files over ceiling', value: fmt(sum(d.kinds, 'over')), note: fmt(aboveFiles) + ' above' + DOT + fmt(belowFiles) + ' below their ceiling', cls: aboveFiles || belowFiles ? 'fail' : '' },
+    { label: 'Files over ceiling', value: fmt(aboveFiles), note: fmt(belowFiles) + ' below their ceiling' + (informativeFiles ? DOT + fmt(informativeFiles) + ' informative' : ''), cls: aboveFiles || belowFiles ? 'fail' : '' },
     { label: 'Files scanned', value: fmt(s.surface + s.host + s.markup + s.driver), note: fmt(s.surface) + ' shell' + DOT + fmt(s.host) + ' host' + DOT + fmt(s.markup) + ' markup' + DOT + fmt(s.driver) + ' driver', cls: '' },
     { label: 'Surface types', value: fmt(d.surfaceTypes), note: 'Veneer and terminal types walked', cls: '' }
   ];
@@ -379,7 +381,8 @@ footer { color: var(--ink-3); font-size: 12px; display: flex; flex-wrap: wrap; g
 
   // Hits by kind.
   document.getElementById('enforced').textContent = 'Strict ' + (d.strictEnforced ? 'enforced' : 'not enforced') + DOT + 'Truth ' +
-    (d.truthEnforced ? 'enforced' : 'not enforced') + '. A file above the ceiling of its kind fails while its audit is enforced.';
+    (d.truthEnforced ? 'enforced' : 'not enforced') + (informativeKinds.length ? DOT + 'Informative, gating nothing yet: ' + informativeKinds.join(', ') : '') +
+    '. A file above the ceiling of its kind fails while its audit is enforced.';
   sortable(document.getElementById('kinds'), {
     columns: [
       { key: 'audit', label: 'Audit' }, { key: 'kind', label: 'Kind' }, { key: 'hits', label: 'Hits', num: true },
@@ -394,11 +397,11 @@ footer { color: var(--ink-3); font-size: 12px; display: flex; flex-wrap: wrap; g
   });
 
   // Ledger.
-  d.ledger.forEach(function (p) { p.state = p.hits > p.ceiling ? 'ABOVE' : p.hits < p.ceiling ? 'STALE' : 'OK'; });
+  d.ledger.forEach(function (p) { p.state = p.hits > p.ceiling ? (p.enforced ? 'ABOVE' : 'INFORMATIVE') : p.hits < p.ceiling ? 'STALE' : 'OK'; });
   var staleRows = [];
   d.gates.forEach(function (g) { if (/stale ceilings$/.test(g.gate)) staleRows = staleRows.concat(g.rows); });
   document.getElementById('ledgerlead').textContent = fmt(d.ledger.length) + ' file ceilings' + DOT + fmt(aboveFiles) + ' above their ceiling' + DOT +
-    fmt(belowFiles) + ' below their ceiling (stale)' + DOT + fmt(staleRows.length) + ' stale ceiling rows. A ceiling only walks down.';
+    (informativeFiles ? fmt(informativeFiles) + ' above but informative' + DOT : '') + fmt(belowFiles) + ' below their ceiling (stale)' + DOT + fmt(staleRows.length) + ' stale ceiling rows. A ceiling only walks down.';
   sortable(document.getElementById('ledger'), {
     columns: [
       { key: 'state', label: 'State', cell: chipCell('state', function (r) { return statusClass(r.state); }) },

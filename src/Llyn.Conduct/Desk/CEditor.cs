@@ -26,12 +26,13 @@ public sealed class CEditor
         ArgumentNullException.ThrowIfNull(media);
 
         CEditorDesk = new CDesk(drafts, settings, "Input", envoy);
-        CEditorDisplay = new LDisplay(drafts, entries, phonology, settings, media, envoy, noticed);
+        CEditorDisplay = new CDisplay(drafts, entries, phonology, settings, media, envoy, noticed);
         CEditorCard = new CCard(CEditorDesk, drafts, entries, settings, envoy);
         CEditorSentence = new CSentence(CEditorDesk, phonology, drafts, settings, envoy, noticed);
-        CEditorSounding = new CSounding(CEditorDesk, phonology, settings, CEditorDisplay, envoy);
-        CEditorEsteem = new CEsteem(CEditorDesk, CEditorDisplay);
-        CEditorTimbre = new CTimbre(CEditorDesk, phonology, CEditorDisplay, drafts, settings, envoy);
+        CEditorSounding = new CSounding(CEditorDesk, phonology, settings, CEditorDisplay.LDisplayRule, envoy);
+        CEditorFold = new CFold(settings, envoy);
+        CEditorEsteem = new CEsteem(CEditorDesk, CEditorDisplay.LDisplayRule);
+        CEditorTimbre = new CTimbre(CEditorDesk, phonology, CEditorDisplay.LDisplayRule, drafts, settings, envoy);
         CEditorPlayback = new CPlayback(CEditorDesk, media);
         CEditorSpeech = new CCardSpeech(CEditorDesk);
         CEditorDesk.CDeskFinished += CEditorStoredShow;
@@ -42,7 +43,7 @@ public sealed class CEditor
                 CEditorDraftChanged?.Invoke(CFolio.CFolioEntryRead(
                     draft.LDraftContent,
                     held.LTenureTranslationRead(draft.LDraftContent),
-                    CEditorDisplay.LDisplayMediaPort));
+                    CEditorDisplay.LDisplayRule.LDisplayMediaPort));
             }
         };
     }
@@ -70,13 +71,15 @@ public sealed class CEditor
 
     public CDesk CEditorDesk { get; }
 
-    public LDisplay CEditorDisplay { get; }
+    public CDisplay CEditorDisplay { get; }
 
     public CCard CEditorCard { get; }
 
     public CSentence CEditorSentence { get; }
 
     public CSounding CEditorSounding { get; }
+
+    public CFold CEditorFold { get; }
 
     public CEsteem CEditorEsteem { get; }
 
@@ -110,6 +113,7 @@ public sealed class CEditor
         CEditorEsteem.LEsteemObserverAttach(marshal);
         CEditorTimbre.LTimbreObserverAttach(marshal);
         CEditorSounding.LSoundingObserverAttach(marshal);
+        CEditorFold.LFoldObserverAttach(marshal);
         CEditorSentence.LSentenceObserverAttach(marshal);
         CEditorDesk.CDeskVigil.LVigilObserverAttach(
             CSubject.CSubjectSettings, _ => marshal(CEditorDesk.CDeskDraftResonate));
@@ -126,6 +130,7 @@ public sealed class CEditor
 
     public void CEditorEntryOpen(long? id)
     {
+        CEditorFold.LFoldAttach();
         CEditorDesk.CDeskStart(id);
         if (id is not null && !CEditorDesk.CDeskHeld)
         {
@@ -135,6 +140,7 @@ public sealed class CEditor
 
     public void CEditorClose()
     {
+        CEditorFold.LFoldDetach();
         CEditorDesk.CDeskCancel();
         CEditorDesk.CDeskErrand.CErrandCancel();
     }

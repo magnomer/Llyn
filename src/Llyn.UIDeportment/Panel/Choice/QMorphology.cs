@@ -10,6 +10,8 @@ internal sealed class QMorphology
 
     private CLedger _qMorphologyLedger = null!;
 
+    private CEnvoy _qMorphologyEnvoy = null!;
+
     internal QMorphology(FrameworkElement settings)
     {
         _qMorphologySettings = settings;
@@ -19,9 +21,10 @@ internal sealed class QMorphology
     private ToggleButton QMorphologySwitch =>
         QContract.QContractFind<ToggleButton>(_qMorphologySettings, "PMorphology");
 
-    internal void QMorphologyIntroduce(CLedger ledger)
+    internal void QMorphologyIntroduce(CLedger ledger, CEnvoy envoy)
     {
         _qMorphologyLedger = ledger;
+        _qMorphologyEnvoy = envoy;
     }
 
     internal void QMorphologyRefine(bool chosen)
@@ -31,6 +34,7 @@ internal sealed class QMorphology
 
     private void QMorphologyObserve(object sender, RoutedEventArgs e)
     {
-        _qMorphologyLedger.CLedgerMorphologySave(QLook.QLookCheckedRead(QMorphologySwitch.IsChecked));
+        _qMorphologyLedger.CLedgerMorphologySave(
+            QLook.QLookCheckedRead(QMorphologySwitch.IsChecked), _qMorphologyEnvoy);
     }
 }
