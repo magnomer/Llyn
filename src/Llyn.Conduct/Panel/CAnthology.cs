@@ -258,10 +258,10 @@ public sealed class CAnthology
         return LEntryPort.LEngineTextMatch(text, value.CStateValueText);
     }
 
-    internal CExample? LAnthologyDraftRead(LDraft? draft, string tally)
+    internal CExample? LAnthologyDraftRead(LDraft? draft)
     {
         return draft?.LDraftExample is LExample example
-            ? LAnthologyExampleRead(example, LAnthologyCitationRead(draft), tally)
+            ? LAnthologyExampleRead(example, LAnthologyCitationRead(draft), CAnthologyPanel.CPanelTallyRead())
             : null;
     }
 

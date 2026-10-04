@@ -1,9 +1,10 @@
 # TCorpusHold.cs
-Hash: `91620a6cf31a7bed`
+Hash: `060b799087e6c00c`
 
 ## `public sealed class TCorpusHold`
 
 Covers the marshal the corpus is built with, the Example it holds and the exit gate, on a real workspace.
-The marshal the corpus is built with hands each transcript edit on as the held Example.
+The marshal the corpus is built with carries each transcript edit to `CTranscriptDraftChanged` as the held Example.
+The edit and the persist after it raise exactly one draft notice between them.
 A held stored Example carries its tally and text placeholder, and a cancel raises the blank Example with both.
 The window's exit gate cancels the entry editor's desk and stops its display's playback once.

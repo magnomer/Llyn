@@ -1,11 +1,11 @@
 # QCorpus.cs
-Hash: `4d8a68c279d2bc32`
+Hash: `9934a4edc15b957e`
 
 ## `internal sealed partial class QCorpus : QChronicleHost`
 
 The Corpus panel's driver is the view of the shared stock of sentences itself.
 An Example is independent data owned by nothing, so this panel is not a view of one Entry's sentences.
-It holds the surface, the editor, the display, the drawer, the host and the corpus Conduct.
+It holds the surface, the editor, the display, the drawer, the host, the corpus Conduct and its transcript.
 The browsing behavior lives in `QCorpusBrowse.cs` and the editing in `QCorpusEditor.cs`, one file per responsibility.
 The held draft the editor writes into lives in `QCorpusHold.cs`, apart from the controls it reads.
 The linking gesture over the transcript lives in `QCorpusMention.cs`.
@@ -13,10 +13,16 @@ It answers the window's undo and redo keys as `QChronicleHost`, attached to its 
 
 ## `private CCorpus _cCorpus`
 
-The corpus Conduct, holding the anthology, the quotation list, the desk, the session and the panel's mode.
+The corpus Conduct, holding the anthology, the quotation list, the transcript, the session and the panel's mode.
 The anthology's vista carries the order, the query, and the languages hidden from the entry column.
 The driver keeps no copy of any of them and asks the Conduct for each where it needs it.
 It is null until the window hands one over, so the command checks answer false before that.
+
+## `private CTranscript _cTranscript`
+
+The corpus's transcript, read once from `CCorpusTranscript` at introduce.
+The mention and hold parts call its gates and hear its notices without reaching through the corpus.
+It is null until the window hands the corpus over.
 
 ## `private readonly QDrawer _qDrawer`
 
@@ -40,7 +46,8 @@ Each named part of the page is pulled through `QContract.QContractFind` by its c
 
 Builds the corpus Conduct with the window's envoy, and the corpus builds its editor and its desk.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
-It subscribes the draft notice through `QTranscriptDeskIntroduce`, and the desk shows its own failures.
+It reads `_cTranscript` first, since `QTranscriptDeskIntroduce` subscribes the transcript's draft notice on it.
+The desk and the transcript show their own failures through the envoy.
 The lectern follows the quotation panel, whose loads and clears reach the display's area, never the veneer.
 Binds the panel to the window it asks for confirmations and panel switches through.
 It binds its lists and subscribes to the engine, and reads nothing yet.
@@ -48,7 +55,7 @@ The chip line and the two Gloss lists are attached to their fills, since their t
 The transcript Gloss list takes the driver's own fill, which wires the row's handlers around the shared fill.
 It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
 The transcript hears the mention pick through its own command binding, since that field is the corpus's, not the editor's.
-The corpus's mention offer is wired to the editor's picker Refine, so no record is handed across.
+The transcript's mention offer is wired to the editor's picker Refine, so no record is handed across.
 It builds the ordering menu once, from the orderings `CAnthology.CAnthologyOrderRead` offers.
 The engine's change notices drive the mode, and its row notices drive the two lists and the tally chips.
 Its transcript and example notices paint the sheet, and its workspace notice reloads the speaker menu.
@@ -66,7 +73,7 @@ Whether the page is on screen, so the engine knows when a notice needs painting.
 
 Paints the mode the engine decides.
 It sets which page shows, which toggle is checked and which button is live.
-The transcript is live only while its desk runs.
+The transcript is live while the corpus says so, through `CCorpusTranscriptEnabled`.
 It ends by refreshing the rail's undo and redo.
 
 ## `internal void QCorpusExitRefine()`

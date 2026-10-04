@@ -1,15 +1,16 @@
 # QCorpusMention.cs
-Hash: `87732a83528e0fa3`
+Hash: `1ed447fc9d9cd2ae`
 
 ## `internal sealed partial class QCorpus`
 
 The corpus scribe's side of the linking gesture, the same asks the card row makes.
-Every gate call is the corpus's own, so the engine lands it on the draft's own Example.
-The chip line under the transcript shows what the corpus reads from that draft.
+Every gate call is the transcript's own, through `_cTranscript`, so the engine lands it on the draft's own Example.
+No call asks the leave question, which is why the gates live on `CTranscript` and not `CCorpus`.
+The chip line under the transcript shows what the transcript reads from that draft.
 
 ## `private void QTranscriptLinkObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Places the Entry picker over the field's selection, then calls the corpus's open gate with the selected word.
+Places the Entry picker over the field's selection, then calls the transcript's open gate with the selected word.
 The picker belongs to an editor, so the corpus's own editor shows it.
 The command runs only when the selection spans anything, so no empty look happens here.
 
@@ -20,7 +21,7 @@ The box's text and selection are handed raw, and the span is read below Conduct.
 
 ## `private void QTranscriptMeaningRefine(object sender, ExecutedRoutedEventArgs e)`
 
-Opens the Meaning menu on the Meanings the corpus reads ready for the field's selection.
+Opens the Meaning menu on the Meanings the transcript reads ready for the field's selection.
 A selection inside no linked Mention reads nothing, so the menu stays shut.
 
 ## `private void QTranscriptSenseObserve(FrameworkElement anchor, long sense)`
@@ -44,13 +45,13 @@ The link and silence commands share it.
 
 ## `private void QTranscriptSenseRefine(object sender, CanExecuteRoutedEventArgs e)`
 
-Whether a Mention linked to an Entry stands under the selection, as the corpus answers.
+Whether a Mention linked to an Entry stands under the selection, as the transcript answers.
 
 ## `private void QTranscriptUnlinkRefine(object sender, CanExecuteRoutedEventArgs e)`
 
-Whether a chip was asked from, or a Mention stands under the selection, as the corpus answers.
+Whether a chip was asked from, or a Mention stands under the selection, as the transcript answers.
 
 ## `private void QTranscriptMentionRefine()`
 
-Paints the chip line from the corpus's ready read, so a draft that holds no Mention shows an empty line.
+Paints the chip line from the transcript's ready read, so a draft that holds no Mention shows an empty line.
 The read's labels become chips through `QMentionChipCreate` first.

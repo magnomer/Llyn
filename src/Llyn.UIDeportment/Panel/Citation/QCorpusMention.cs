@@ -18,20 +18,20 @@ internal sealed partial class QCorpus
         }
 
         _qCorpusEditor.QEditorProspect.QProspectPlaceRefine(box, PMentionSelection.PMentionSelectionPlace(box));
-        _cCorpus.CCorpusMentionOpen(box.SelectedText);
+        _cTranscript.CTranscriptMentionOpen(box.SelectedText);
     }
 
     private void QTranscriptPickObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Source is TextBox box)
         {
-            _cCorpus.CCorpusMentionAdd(box.Text, box.SelectionStart, box.SelectionLength, (long)e.Parameter);
+            _cTranscript.CTranscriptMentionAdd(box.Text, box.SelectionStart, box.SelectionLength, (long)e.Parameter);
         }
     }
 
     private void QTranscriptMeaningRefine(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_cCorpus.CCorpusSenseRead(
+        if (_cTranscript.CTranscriptSenseRead(
                 QTranscriptText.Text, QTranscriptText.SelectionStart, QTranscriptText.SelectionLength)
             is CMentionSense sense)
         {
@@ -50,7 +50,7 @@ internal sealed partial class QCorpus
             return;
         }
 
-        _cCorpus.CCorpusSenseSet(box.Text, box.SelectionStart, box.SelectionLength, sense);
+        _cTranscript.CTranscriptSenseSet(box.Text, box.SelectionStart, box.SelectionLength, sense);
     }
 
     private void QTranscriptSilenceObserve(object sender, ExecutedRoutedEventArgs e)
@@ -60,18 +60,18 @@ internal sealed partial class QCorpus
             return;
         }
 
-        _cCorpus.CCorpusMentionAdd(box.Text, box.SelectionStart, box.SelectionLength, 0);
+        _cTranscript.CTranscriptMentionAdd(box.Text, box.SelectionStart, box.SelectionLength, 0);
     }
 
     private void QTranscriptUnlinkObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is PMentionChip chip)
         {
-            _cCorpus.CCorpusMentionRemove(chip.PMentionChipId);
+            _cTranscript.CTranscriptMentionRemove(chip.PMentionChipId);
         }
         else if (e.Source is TextBox)
         {
-            _cCorpus.CCorpusMentionRemove(
+            _cTranscript.CTranscriptMentionRemove(
                 QTranscriptText.Text, QTranscriptText.SelectionStart, QTranscriptText.SelectionLength);
         }
     }
@@ -86,7 +86,7 @@ internal sealed partial class QCorpus
     private void QTranscriptSenseRefine(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = e.Source is TextBox
-            && _cCorpus.CCorpusSenseCheck(
+            && _cTranscript.CTranscriptSenseCheck(
                 QTranscriptText.Text, QTranscriptText.SelectionStart, QTranscriptText.SelectionLength);
     }
 
@@ -94,12 +94,12 @@ internal sealed partial class QCorpus
     {
         e.CanExecute = e.Parameter is PMentionChip
             || (e.Source is TextBox
-                && _cCorpus.CCorpusMentionCheck(
+                && _cTranscript.CTranscriptMentionCheck(
                     QTranscriptText.Text, QTranscriptText.SelectionStart, QTranscriptText.SelectionLength));
     }
 
     private void QTranscriptMentionRefine()
     {
-        _qTranscriptChip.PMentionLineRefine(QMentionChip.QMentionChipCreate(_cCorpus.CCorpusMentionRead()));
+        _qTranscriptChip.PMentionLineRefine(QMentionChip.QMentionChipCreate(_cTranscript.CTranscriptMentionRead()));
     }
 }

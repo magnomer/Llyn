@@ -62,6 +62,7 @@ internal static class TAuditBorderSetting
             "LDisplaySound",
             "CSentence",
             "CSentenceFrame",
+            "CTranscript",
             "CSCoinage",
             "CSCustoms",
             "CSCustomsMode",

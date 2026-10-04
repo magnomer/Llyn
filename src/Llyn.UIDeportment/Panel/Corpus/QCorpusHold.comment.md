@@ -1,5 +1,5 @@
 # QCorpusHold.cs
-Hash: `c21d0390aca69907`
+Hash: `fd5cf0170a01e7a9`
 
 ## `internal sealed partial class QCorpus`
 
@@ -7,14 +7,14 @@ When what the user typed into the sentence editor reaches the draft the engine h
 The driver holds its controls.
 The desk on the corpus Conduct holds the tenure from start to commit or cancel.
 The driver keeps no draft id, halted flag or timer of its own, since the engine owns each of those.
-Every change goes through a gate on `CAnthology` or `CCorpus`.
+Every change goes through a gate on `CAnthology`, `CCorpus` or `CTranscript`.
 Typing is deferred, and a pick or a row is sent at once.
 
 ## `private void QTranscriptDeskIntroduce()`
 
-Subscribes the Conduct's draft notice once.
+Subscribes the transcript's draft notice once, through `_cTranscript`, which the introduce read first.
 The desk shows its own failures and refused holds.
-The corpus raises `CCorpusDraftChanged` with the held Example on each draft bulletin.
+The transcript raises `CTranscriptDraftChanged` with the held Example on each draft bulletin.
 `QTranscriptDraftRefine` answers it and redraws the controls where they differ.
 The introduce built the corpus with its marshal, so the driver hands no marshal and no reread here.
 

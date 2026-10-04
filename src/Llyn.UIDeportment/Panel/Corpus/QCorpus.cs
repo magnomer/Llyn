@@ -21,6 +21,8 @@ internal sealed partial class QCorpus : QChronicleHost
 
     private CCorpus _cCorpus = null!;
 
+    private CTranscript _cTranscript = null!;
+
     internal QCorpus(UserControl surface)
     {
         ArgumentNullException.ThrowIfNull(surface);
@@ -236,6 +238,7 @@ internal sealed partial class QCorpus : QChronicleHost
             QCorpusShownCheck,
             host.QWindowEnvoy,
             QObserver.QObserverCreate<Action>(static run => run()));
+        _cTranscript = _cCorpus.CCorpusTranscript;
         QLectern lectern = new(_cCorpus.CCorpusEditor.CEditorDisplay, _cCorpus.CCorpusQuotation.CQuotationPanel);
         QTranscriptDeskIntroduce();
 
@@ -252,7 +255,7 @@ internal sealed partial class QCorpus : QChronicleHost
 
         _qCorpusDisplay.QDisplayIntroduce(host, lectern);
         _qCorpusEditor.QEditorIntroduce(host, _cCorpus.CCorpusEditor);
-        _cCorpus.CCorpusMentionOffered += _qCorpusEditor.QEditorProspect.QProspectOpenRefine;
+        _cTranscript.CTranscriptMentionOffered += _qCorpusEditor.QEditorProspect.QProspectOpenRefine;
 
         CPanel anthology = _cCorpus.CCorpusAnthology.CAnthologyPanel;
         CPanel quotation = _cCorpus.CCorpusQuotation.CQuotationPanel;
@@ -288,7 +291,7 @@ internal sealed partial class QCorpus : QChronicleHost
         QCorpusMode.IsEnabled = _cCorpus.CCorpusModeEnabled;
         QCorpusBin.IsEnabled = _cCorpus.CCorpusBinEnabled;
         QCorpusStore.IsEnabled = _cCorpus.CCorpusStoreEnabled;
-        QTranscript.IsEnabled = _cCorpus.CCorpusDesk.CDeskRunning;
+        QTranscript.IsEnabled = _cCorpus.CCorpusTranscriptEnabled;
         QCorpusChronicleRefine();
     }
 

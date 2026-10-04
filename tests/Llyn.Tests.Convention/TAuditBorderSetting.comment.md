@@ -1,5 +1,5 @@
 # TAuditBorderSetting.cs
-Hash: `957dcb1f347e9342`
+Hash: `b18c148f5c298c98`
 
 ## `internal static class TAuditBorderSetting`
 
@@ -29,7 +29,8 @@ A cut ring names only its neighbour, and nothing from below the cut undercuts in
 For a `ring>neighbour` pair, the neighbour types the ring may name at all.
 Conduct names ShellEngine through the six `L*Port` interfaces, which ShellEngine declares, and ten other `L` types.
 Every other engine type is a helper Conduct may not name.
-Both drivers name Conduct only through the `L` display types and the `C` shapes sealed controllers hand over.
+Both drivers name Conduct only through the `L` display types, the sealed controllers and the `C` shapes they hand over.
+Deportment names `CTranscript`, since the corpus driver holds the transcript apart from the corpus.
 
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditUnsealingPrefix`
 

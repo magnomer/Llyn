@@ -1,5 +1,5 @@
 # TInterfaceConductPanel.cs
-Hash: `b4c5370362798ccf`
+Hash: `aa1189d5e71ee857`
 
 ## `internal static class TInterfaceConductPanel`
 
@@ -174,7 +174,8 @@ It answers whether the finish went through.
 
 ## `internal static CExample? TCorpusTranscriptRead(this CCorpus corpus)`
 
-Relays the corpus's read of the Example its transcript desk holds, which its two transcript events hand on.
+Relays the transcript's read of the Example the corpus desk holds, through `CCorpusTranscript`.
+`CCorpusTranscriptChanged` and `CTranscriptDraftChanged` hand that same read on.
 
 ## `internal static void TCorpusEntryResonate(this CCorpus corpus)`
 

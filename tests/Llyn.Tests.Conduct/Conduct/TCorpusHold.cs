@@ -30,12 +30,13 @@ public sealed class TCorpusHold
         corpus.TCorpusExampleOpen(cat.LExampleId);
         corpus.CCorpusScribeToggle(true);
         List<CExample> drafted = [];
-        corpus.CCorpusDraftChanged += drafted.Add;
+        corpus.CCorpusTranscript.CTranscriptDraftChanged += drafted.Add;
 
-        corpus.CCorpusMentionAdd("a cat sat", 2, 3, 0);
+        corpus.CCorpusTranscript.CTranscriptMentionAdd("a cat sat", 2, 3, 0);
         corpus.CCorpusDesk.CDeskPersist();
 
         Assert.True(marshalled > 0);
+        Assert.Single(drafted);
         Assert.Equal("a cat sat", drafted[^1].CExampleText.CStateValueText);
     }
 

@@ -242,6 +242,7 @@
       "LDisplaySound",
       "CSentence",
       "CSentenceFrame",
+      "CTranscript",
       "CSCoinage",
       "CSCustoms",
       "CSCustomsMode",

@@ -54,7 +54,7 @@ internal static class TInterfaceCitation
     }
 
     internal static CExample? TAnthologyDraftRead(this CAnthology anthology, LDraft? draft) =>
-        anthology.LAnthologyDraftRead(draft, string.Empty);
+        anthology.LAnthologyDraftRead(draft);
 
     internal static CCard TCardFailCreate(LEngine engine, CDesk desk, CEnvoy envoy)
     {

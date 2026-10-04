@@ -1,5 +1,5 @@
 # CAnthology.cs
-Hash: `3aac6d1511d9f595`
+Hash: `c3f71ca197884395`
 
 ## `public sealed class CAnthology`
 
@@ -127,13 +127,13 @@ Whether a field showing `text` already shows `value`, as the engine would store 
 The transcript keeps a matching field untouched, so a bulletin never moves the caret.
 It is static, since it reads no state of the list.
 
-## `internal CExample? LAnthologyDraftRead(LDraft? draft, string tally)`
+## `internal CExample? LAnthologyDraftRead(LDraft? draft)`
 
 Maps the Example a draft carries to its shape, and a draft of another subject to null.
 The engine answers the cited Source's line for the draft, so the driver never looks a name up.
-`CCorpus` calls it for the transcript desk and for the anthology's loaded drafts.
-So the corpus names no engine record.
-The corpus hands its tally along, so the transcript's chip needs no read of its own.
+`CTranscript` calls it for the transcript desk, and `CCorpus` for the anthology's loaded drafts.
+So neither caller names an engine record.
+It reads the tally from its own panel, so neither caller hands one along.
 
 ## `private string LAnthologyCitationRead(LDraft draft)`
 

@@ -1,5 +1,5 @@
 # TInterfaceCitation.cs
-Hash: `d1820b4bf7e071df`
+Hash: `61b64b8ba579cfe3`
 
 ## `internal static class TInterfaceCitation`
 
@@ -30,7 +30,7 @@ The byline tests prove a failed find reaches the notice with it.
 ## `internal static CExample? TAnthologyDraftRead(this CAnthology anthology, LDraft? draft)`
 
 Maps a held draft through the list's internal map, which reads the ready citation line.
-It hands an empty tally, since the tally is `CCorpus`'s read.
+The map reads the tally from the anthology's own panel, so the relay hands none.
 
 ## `internal static CCard TCardFailCreate(LEngine engine, CDesk desk, CEnvoy envoy)`
 

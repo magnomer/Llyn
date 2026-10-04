@@ -31,7 +31,7 @@ The blank word, the find, the self filter, the languages and the failure notice 
 The stored rows come first, then one create row per offered language.
 A mention's offer carries no language, because a Mention may only point at an Entry that already exists.
 An offer not shown leaves the dropdown shut.
-The corpus hears its offer as `CCorpusMentionOffered`, so its driver hands the editor no Conduct record.
+The corpus transcript raises its offer as `CTranscriptMentionOffered`, so its driver hands the editor no Conduct record.
 
 The plus of a create row is shown in the fill, where a data trigger stood.
 The create row carries the typed word untouched, because that word is what the tentative entry will be called.

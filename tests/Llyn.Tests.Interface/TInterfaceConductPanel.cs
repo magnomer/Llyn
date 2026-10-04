@@ -165,7 +165,7 @@ internal static class TInterfaceConductPanel
 
     internal static bool TShelfDraftFinish(this CShelf shelf, bool store) => shelf.LShelfDraftFinish(store);
 
-    internal static CExample? TCorpusTranscriptRead(this CCorpus corpus) => corpus.LCorpusTranscriptRead();
+    internal static CExample? TCorpusTranscriptRead(this CCorpus corpus) => corpus.CCorpusTranscript.LTranscriptRead();
 
     internal static void TCorpusEntryResonate(this CCorpus corpus) => corpus.LCorpusEntryResonate();
 

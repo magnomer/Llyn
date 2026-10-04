@@ -8,7 +8,7 @@ internal sealed partial class QCorpus
 {
     private void QTranscriptDeskIntroduce()
     {
-        _cCorpus.CCorpusDraftChanged += QTranscriptDraftRefine;
+        _cTranscript.CTranscriptDraftChanged += QTranscriptDraftRefine;
     }
 
     public void QChronicleUndoObserve()
