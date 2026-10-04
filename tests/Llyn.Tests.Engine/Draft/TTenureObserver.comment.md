@@ -1,5 +1,5 @@
 # TTenureObserver.cs
-Hash: `3b2568e4a4ed2def`
+Hash: `49187a44daaa1b48`
 
 ## `public sealed class TTenureObserver`
 
@@ -21,6 +21,16 @@ Unrelated subjects and IDs are ignored, and cancellation removes the observer.
 ## `public void EntryAttach_StoredEntryIdentity_IsDistinctFromDraftIdentity()`
 
 An Entry subscription matches the stored Entry ID rather than the separate tenure/draft ID.
+
+## `public void StoredRead_StoredDraft_AnswersIdWithoutPersisting()`
+
+A stored draft answers its Entry ID.
+A deferred headword stays unapplied, so the read persisted nothing.
+
+## `public void StoredRead_RefusedDraft_AnswersNull()`
+
+A workspace switch leaves the held draft stale, so its read is refused.
+The stored-id read answers null instead of throwing.
 
 ## `public void Prepare_NestedNotices_DropsEveryOneUntilOutermostScopeExits(bool fails)`
 

@@ -1,7 +1,7 @@
 # LLookupStep.cs
 Hash: `e346977745adccf4`
 
-## `public sealed record LLookupStep(`
+## `public sealed record LLookupStep(LLookupKind LLookupStepKind, string LLookupStepSource, int LLookupStepOrder, LCandidate? LLookupStepCandidate)`
 
 One step of a pronunciation or transcription lookup, carried to the caller as data.
 The lookup streams a source step per source, a candidate per source, and one end, in that order.

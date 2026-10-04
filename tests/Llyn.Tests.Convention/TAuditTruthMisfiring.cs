@@ -17,7 +17,7 @@ internal static partial class TAuditTruthWalker
             (string TViolationKind, string TViolationName, string TViolationReason)? hit = node switch
             {
                 IfStatementSyntax branch when TAuditControlRead(branch.Condition) is string control
-                                              && !(TAuditStrictWalker.TAuditCoreRead(branch.Condition)
+                                              && !(TAuditStrictCondition.TAuditCoreRead(branch.Condition)
                                                        is IsPatternExpressionSyntax { Pattern: var shape }
                                                    && TAuditPairCheck(shape))
                                               && !TAuditHearingCheck(branch)
@@ -25,7 +25,7 @@ internal static partial class TAuditTruthWalker
                     => ("Misfiring", control, "control decides a request in an if"),
                 ConditionalExpressionSyntax choice when TAuditControlRead(choice.Condition) is string control
                                                         && !TAuditPresenceCheck(choice.Condition)
-                                                        && !(TAuditStrictWalker.TAuditCoreRead(choice.Condition)
+                                                        && !(TAuditStrictCondition.TAuditCoreRead(choice.Condition)
                                                                  is IsPatternExpressionSyntax { Pattern: var shape }
                                                              && TAuditPairCheck(shape))
                                                         && (TAuditRequestCheck(choice.WhenTrue)
@@ -80,7 +80,7 @@ internal static partial class TAuditTruthWalker
                 continue;
             }
 
-            int line = TAuditLineRead(node);
+            int line = TAuditTruthReference.TAuditLineRead(node);
             if (seen.Add($"{line}:{hit.Value.TViolationKind}:{hit.Value.TViolationName}"))
             {
                 violations.Add(new TViolation(
@@ -154,12 +154,12 @@ internal static partial class TAuditTruthWalker
             {
                 case VariableDeclaratorSyntax { Initializer.Value: var value } declarator
                     when TAuditControlRead(value, carried) is not null:
-                    TAuditSymbolAdd(declarator, carried);
+                    TAuditTruthReference.TAuditSymbolAdd(declarator, carried);
                     break;
                 case AssignmentExpressionSyntax { Left: IdentifierNameSyntax target } assignment
                     when TAuditBinderSymbol.TAuditSymbolRead(target) is ILocalSymbol or IParameterSymbol
                          && TAuditControlRead(assignment.Right, carried) is not null:
-                    TAuditSymbolAdd(target, carried);
+                    TAuditTruthReference.TAuditSymbolAdd(target, carried);
                     break;
                 case ArgumentSyntax
                     {
@@ -261,7 +261,7 @@ internal static partial class TAuditTruthWalker
     {
         bool decided = label switch
         {
-            CaseSwitchLabelSyntax constant => !TAuditStrictWalker.TAuditNullCheck(constant.Value),
+            CaseSwitchLabelSyntax constant => !TAuditStrictCondition.TAuditNullCheck(constant.Value),
             CasePatternSwitchLabelSyntax shape => !TAuditPairCheck(shape.Pattern),
             SwitchExpressionArmSyntax arm => arm.Pattern is not DiscardPatternSyntax && !TAuditPairCheck(arm.Pattern),
             _ => false
@@ -275,8 +275,8 @@ internal static partial class TAuditTruthWalker
         if (guard is not null
             && TAuditControlRead(guard.Condition) is string control
             && !TAuditPresenceCheck(guard.Condition)
-            && !(TAuditStrictWalker.TAuditCoreRead(guard.Condition) is IsPatternExpressionSyntax { Pattern: var test }
-                 && TAuditPairCheck(test)))
+            && !(TAuditStrictCondition.TAuditCoreRead(guard.Condition)
+                     is IsPatternExpressionSyntax { Pattern: var test } && TAuditPairCheck(test)))
         {
             return control;
         }
@@ -295,7 +295,7 @@ internal static partial class TAuditTruthWalker
 
     private static bool TAuditPairCheck(PatternSyntax pattern)
     {
-        return TAuditStrictWalker.TAuditPatternCheck(pattern) || pattern switch
+        return TAuditStrictCondition.TAuditPatternCheck(pattern) || pattern switch
         {
             ConstantPatternSyntax { Expression: var name } => TAuditBinderSymbol.TAuditSymbolRead(name) is ITypeSymbol,
             ParenthesizedPatternSyntax { Pattern: var inner } => TAuditPairCheck(inner),
@@ -356,7 +356,7 @@ internal static partial class TAuditTruthWalker
         }
 
         HashSet<ISymbol> symbols = new([symbol], SymbolEqualityComparer.Default);
-        return parameter.Identifier.ValueText == "_" || !TAuditNameCheck(lambda.Body, symbols);
+        return parameter.Identifier.ValueText == "_" || !TAuditTruthReference.TAuditNameCheck(lambda.Body, symbols);
     }
 
     private static bool TAuditDriveCheck(SyntaxNode handler)
@@ -380,7 +380,7 @@ internal static partial class TAuditTruthWalker
 
             SyntaxNode? body = (SyntaxNode?)handler.Body ?? handler.ExpressionBody;
             HashSet<ISymbol> symbols = new([symbol], SymbolEqualityComparer.Default);
-            if (body is not null && !TAuditNameCheck(body, symbols))
+            if (body is not null && !TAuditTruthReference.TAuditNameCheck(body, symbols))
             {
                 return parameter.Identifier.ValueText;
             }

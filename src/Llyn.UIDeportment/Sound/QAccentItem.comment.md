@@ -1,5 +1,5 @@
 # QAccentItem.cs
-Hash: `9174d3507fb27841`
+Hash: `6182de520abb69ad`
 
 ## `public sealed class QAccentItem : INotifyPropertyChanged`
 
@@ -10,7 +10,7 @@ The variety is shown as a flag when the pack draws varieties as flags, and as a 
 The flag may arrive after the row, so it notifies when it lands.
 It stays public, since the reading cell binds its text by name.
 
-## `private QAccentItem(`
+## `private QAccentItem(long id, string variety, string name, string ensign, bool flagged, string text, string audio, CRespellingMark respelling)`
 
 Builds the row from plain values, under the mark the row prints between.
 The flag key is kept, so a later flag lookup needs no language.
@@ -70,7 +70,7 @@ Whether the row holds audio, so its play button shows.
 
 Fills a row of `Theme.Accent.Row` or `Theme.Accent.Display` with flag, variety name, brackets, text and play button.
 The editor row's text shows the placeholder in the muted colour while the row is blank.
-It also gives the editor row's reading cell its `QFieldCell` order and tags its slot with `Theme.Accent.Slot`.
+It also gives the editor row's reading cell its `QQuillCell` order and tags its slot with `Theme.Accent.Slot`.
 Those order strings live here, so the Veneer markup carries none.
 It runs again on every change the row raises, so a typed pronunciation or a new flag shows at once.
 

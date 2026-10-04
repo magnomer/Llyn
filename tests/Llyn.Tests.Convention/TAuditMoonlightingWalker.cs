@@ -29,32 +29,32 @@ internal static class TAuditMoonlightingWalker
                     when !binary.IsKind(SyntaxKind.CoalesceExpression)
                          && !binary.IsKind(SyntaxKind.LogicalAndExpression)
                          && !binary.IsKind(SyntaxKind.LogicalOrExpression)
-                         && !TAuditStrictWalker.TAuditNullCheck(binary.Left)
-                         && !TAuditStrictWalker.TAuditNullCheck(binary.Right)
+                         && !TAuditStrictCondition.TAuditNullCheck(binary.Left)
+                         && !TAuditStrictCondition.TAuditNullCheck(binary.Right)
                          && !TAuditSetterCheck(binary)
-                         && (TAuditStrictWalker.TAuditDataCheck(binary.Left)
-                             || TAuditStrictWalker.TAuditDataCheck(binary.Right))
+                         && (TAuditStrictCondition.TAuditDataCheck(binary.Left)
+                             || TAuditStrictCondition.TAuditDataCheck(binary.Right))
                     => $"logic value in {binary.OperatorToken.ValueText}",
                 InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax access } query
                     when TAuditTruthSetting.TAuditMoonlightingVerbs.Contains(
                              access.Name.Identifier.ValueText, StringComparer.Ordinal)
-                         && (TAuditStrictWalker.TAuditDataCheck(access.Expression)
+                         && (TAuditStrictCondition.TAuditDataCheck(access.Expression)
                              || query.ArgumentList.Arguments.Any(argument =>
-                                 TAuditStrictWalker.TAuditDataCheck(argument.Expression)))
+                                 TAuditStrictCondition.TAuditDataCheck(argument.Expression)))
                     => $"logic value queried by {access.Name.Identifier.ValueText}",
-                CastExpressionSyntax cast when TAuditStrictWalker.TAuditDataCheck(cast.Expression)
+                CastExpressionSyntax cast when TAuditStrictCondition.TAuditDataCheck(cast.Expression)
                     => $"logic value cast to {cast.Type}",
                 TypeOfExpressionSyntax reflected when TAuditBinderSide.TAuditEngineCheck(reflected.Type)
                     => "logic type taken by typeof",
-                AttributeArgumentSyntax argument when TAuditStrictWalker.TAuditDataCheck(argument.Expression)
+                AttributeArgumentSyntax argument when TAuditStrictCondition.TAuditDataCheck(argument.Expression)
                     => "logic value in an attribute",
                 IfStatementSyntax branch when TAuditConditionCheck(branch.Condition)
                     => "logic value decides an if",
                 ConditionalExpressionSyntax choice when TAuditConditionCheck(choice.Condition)
                     => "logic value decides a ternary",
-                SwitchStatementSyntax select when TAuditStrictWalker.TAuditDataCheck(select.Expression)
+                SwitchStatementSyntax select when TAuditStrictCondition.TAuditDataCheck(select.Expression)
                     => "logic value decides a switch",
-                SwitchExpressionSyntax arms when TAuditStrictWalker.TAuditDataCheck(arms.GoverningExpression)
+                SwitchExpressionSyntax arms when TAuditStrictCondition.TAuditDataCheck(arms.GoverningExpression)
                     => "logic value decides a switch expression",
                 _ => null
             };
@@ -76,21 +76,21 @@ internal static class TAuditMoonlightingWalker
     private static bool TAuditConditionCheck(ExpressionSyntax condition)
     {
         if (condition is IsPatternExpressionSyntax { Pattern: var pattern }
-            && TAuditStrictWalker.TAuditPatternCheck(pattern))
+            && TAuditStrictCondition.TAuditPatternCheck(pattern))
         {
             return false;
         }
 
         if (condition is BinaryExpressionSyntax binary
             && (binary.IsKind(SyntaxKind.EqualsExpression) || binary.IsKind(SyntaxKind.NotEqualsExpression))
-            && (TAuditStrictWalker.TAuditNullCheck(binary.Left)
-                || TAuditStrictWalker.TAuditNullCheck(binary.Right)
+            && (TAuditStrictCondition.TAuditNullCheck(binary.Left)
+                || TAuditStrictCondition.TAuditNullCheck(binary.Right)
                 || TAuditSetterCheck(binary)))
         {
             return false;
         }
 
-        return !TAuditVerdictCheck(condition) && TAuditStrictWalker.TAuditDataCheck(condition);
+        return !TAuditVerdictCheck(condition) && TAuditStrictCondition.TAuditDataCheck(condition);
     }
 
     private static bool TAuditSetterCheck(BinaryExpressionSyntax binary)
@@ -110,7 +110,7 @@ internal static class TAuditMoonlightingWalker
 
     private static bool TAuditVerdictCheck(ExpressionSyntax condition)
     {
-        ExpressionSyntax core = TAuditStrictWalker.TAuditCoreRead(condition);
+        ExpressionSyntax core = TAuditStrictCondition.TAuditCoreRead(condition);
         return core is InvocationExpressionSyntax or MemberAccessExpressionSyntax or IdentifierNameSyntax
                && TAuditBinderSide.TAuditLogicCheck(TAuditBinderSymbol.TAuditSymbolRead(core));
     }

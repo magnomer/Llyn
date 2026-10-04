@@ -1,7 +1,7 @@
 # LDraft.cs
 Hash: `81fc63ccf63b77dc`
 
-## `public sealed record LDraft(`
+## `public sealed record LDraft(long LDraftId, string LDraftOrigin, long LDraftEntryId, LEntryDraft LDraftContent, DateTimeOffset LDraftMoment, LExample? LDraftExample = null, LSituation? LDraftSituation = null, LReference? LDraftReference = null, int LDraftVersion = 0, IReadOnlyList<LAuthor>? LDraftAuthor = null, LAuthor? LDraftAuthorHeld = null)`
 
 One tentative record, held in the workspace folder before it reaches the database.
 It is plain data and knows nothing of files or the database.

@@ -1,7 +1,7 @@
 # LEtymologyResult.cs
 Hash: `ca0d5ab7dc7d79d7`
 
-## `public sealed record LEtymologyResult(`
+## `public sealed record LEtymologyResult(IReadOnlyList<LTranslationTarget> LEtymologyResultTargets, bool LEtymologyResultNarrated)`
 
 The engine's answer for an entry's etymology as the reading view shows it.
 Named fields keep the narrated and linked verdicts from trading places.

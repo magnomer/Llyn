@@ -1,5 +1,5 @@
 # TAuditTruthSink.cs
-Hash: `b0f34faf27d74fcd`
+Hash: `16247d275454f57c`
 
 ## `internal static partial class TAuditTruthWalker`
 
@@ -13,7 +13,7 @@ Parentheses and a null-forgiving `!` between the two do not change that.
 The owner of that member audits its own field.
 The target of `?.` whose tail requests is gatekeeping, since its presence decides the request.
 A hot argument is a replaying sink.
-So is a value written into a record copy or a construction initialiser.
+So is a value written into a record copy or the initialiser of a logic or relay construction.
 The condition of an if, ternary or switch whose branch requests is a gatekeeping sink.
 So is the condition of a while, do or for loop whose body requests.
 So is a `when` clause on a switch arm or a catch that requests.

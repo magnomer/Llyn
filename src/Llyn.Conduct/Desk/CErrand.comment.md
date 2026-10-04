@@ -52,7 +52,7 @@ The clip is marked searching before the start, since a step may land during it.
 A start that answers nothing or fails leaves the popup finished with its empty notice.
 Each engine step reaches the popup's state through the marshal.
 
-## `public async Task<CClipRoll> CErrandEnsignLoad(`
+## `public async Task<CClipRoll> CErrandEnsignLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Loads the flags of the running search's varieties, then answers the clip state to repaint.
 The foray loads nothing when its language shows no flags.
@@ -68,7 +68,7 @@ A start that answers nothing or fails leaves the popup finished with its empty n
 A schemed start picks the transcription notice, and a plain one the reading notice.
 Each engine step reaches `LErrandLookupResonate` through the marshal, with the foray it came from.
 
-## `public async Task<CNotationRoll> CErrandFlagLoad(`
+## `public async Task<CNotationRoll> CErrandFlagLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Loads the flags of the running reading search's varieties, after the start.
 The foray loads nothing for a schemed search or a language that shows no flags.

@@ -89,10 +89,10 @@ internal static partial class TAuditTruthWalker
 
                     violations.Add(new TViolation(
                         scope.SyntaxTree.FilePath,
-                        TAuditLineRead(sends[later]),
+                        TAuditTruthReference.TAuditLineRead(sends[later]),
                         TAuditMemberRead(scope),
                         "Misfiring",
-                        $"sends a second request after line {TAuditLineRead(sends[earlier])}"));
+                        $"sends a second request after line {TAuditTruthReference.TAuditLineRead(sends[earlier])}"));
                     later = sends.Count;
                     break;
                 }

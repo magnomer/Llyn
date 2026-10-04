@@ -1,9 +1,9 @@
 # CGuild.cs
-Hash: `2d7ea12cda1ecc59`
+Hash: `0c613c170e79c654`
 
 ## `public sealed class CGuild`
 
-The authors panel: the panel state over the roll, the oeuvre beside it, and the autograph desk.
+The authors panel, holding the panel state over the roll, the oeuvre beside it, and the autograph desk.
 The tab stands on one side at a time.
 The source side is in front while a Source is chosen in the oeuvre, else the author side.
 The author side shows the vita while reading and the autograph while writing.
@@ -42,7 +42,7 @@ A save refuses a blank name through `LGuildAutographCheck` before the engine is 
 
 ## `public bool CGuildVitaHeld`
 
-Whether the vita has an Author to show: one stored and not being written.
+Whether the vita has an Author to show, meaning one stored and not being written.
 
 ## `public bool CGuildModeEnabled`
 
@@ -56,8 +56,8 @@ The orphan row and a fresh draft hold no stored Author, so both leave it dead.
 
 ## `public bool CGuildStoreEnabled`
 
-The store button is live while the autograph holds a changed draft the engine would store.
-The tenure's `LTenureReadyCheck` answers whether it would.
+The store button is live on the author side while the autograph desk reports its draft storable.
+The desk's tenure answers the verdict, so the guild combines no state fields itself.
 
 ## `public bool CGuildPressAllowed`
 
@@ -122,18 +122,19 @@ No event is raised, since the panels' own row notices repaint every list.
 ## `private void LGuildCatalogResonate()`
 
 Something cited or credited changed, so the roll and the counts are read again.
-The colophon is reloaded only while a Source is in front, so no split preference is touched otherwise.
+The oeuvre's draft is refreshed only while a Source is in front.
+It then raises `CGuildChanged`, so the buttons are read again.
 It answers an engine notice through the marshal, so it takes the `Resonate` ending.
 
 ## `public void CGuildAuthorSelect(long? id)`
 
-A click on the roll or a fellow: asks once for the tab, then opens the Author on its side.
+A click on the roll or a fellow asks once for the tab, then opens the Author on its side.
 Once the leave is settled, the navigation records the station the click leaves.
 The mode carries over, so an Author clicked while writing opens in the autograph.
 
 ## `internal void LGuildAuthorOpen(long id)`
 
-The navigation's arrival: opens the Author without asking, since the navigation has already asked.
+The navigation's arrival opens the Author without asking, since the navigation has already asked.
 
 ## `private void LGuildAuthorOpen(long? id, bool editing)`
 
@@ -147,7 +148,7 @@ The autograph stored this Author, so the roll stands on it and a fresh tenure op
 
 ## `public void CGuildSourceSelect(long? id)`
 
-A click on the oeuvre: asks once for the tab, drops the held draft, then opens the colophon.
+A click on the oeuvre asks once for the tab, drops the held draft, then opens the colophon.
 
 ## `public void CGuildAuthorCreate()`
 
@@ -166,7 +167,7 @@ Reopens the side the last session ended on, but only the reading side while no A
 ## `private bool LGuildAutographCheck()`
 
 Whether the held draft may be stored, telling the user `Guild.NameBlank` when the engine refuses it.
-The tenure answers the refusal itself through `LTenureReadyCheck`, so no draft state is read here.
+`LDeskReadyCheck` of the desk decides, so no draft state is read here.
 
 ## `public void CGuildAuthorDelete()`
 
@@ -192,7 +193,7 @@ The engine drops blank text, leaves the Author itself out and caps the list.
 
 ## `public void CGuildUnionSelect(long? id)`
 
-A pick in the union list: asks before folding the written Author into the kept one.
+A pick in the union list asks before folding the written Author into the kept one.
 A confirmed fold reopens the kept Author on the reading side, and a failure is shown as `Guild.MergeFailed`.
 
 ## `private bool LGuildUnionConfirm(long kept)`

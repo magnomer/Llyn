@@ -21,7 +21,7 @@ It returns null for a request it does not own, so the draft clerk may try the ne
 Sets the prose and carries the spans across the edit.
 `LDraftClerkMention` does the carrying, so etymology prose and sentence text shift alike.
 
-## `private LEtymologyDraft LEtymologyMentionApply(`
+## `private LEtymologyDraft LEtymologyMentionApply(LEtymologyDraft etymology, int offset, int length, long entryId)`
 
 Puts one span over the range given, or clears the range when no Entry is named.
 Every span the range touches is dropped first, so no two spans overlap.
@@ -49,6 +49,6 @@ Refuses an id that is not a positive id of an Entry the store holds.
 
 The length of the prose in code points, which is what a span offset counts.
 
-## `private static LEntryDraft LEtymologyChange(`
+## `private static LEntryDraft LEtymologyChange(LEntryDraft content, Func<LEtymologyDraft, LEtymologyDraft> change)`
 
 Puts the changed etymology back on the draft.

@@ -1,5 +1,5 @@
 # TAuditStrict.cs
-Hash: `19f7ff3adee80ada`
+Hash: `bec8aee286d94f66`
 
 ## `public sealed class TAuditStrict`
 
@@ -8,7 +8,7 @@ A surface is what the user sees, and a surface member only calls a function.
 A surface holds no state, never branches or computes, and names only its driver.
 The rules hold the Veneer and UITerminal alike, and Host is held to construction and wiring.
 A surface type holds no member but a constructor, and its markup holds no hook into logic.
-The Veneer audit is the `Surface` facts, and it gates every batch of the Great Purge.
+Each fact holds one hit kind against the ledger.
 While `TAuditStrictEnforced` is false every fact passes and reports as a warning.
 Enforced, a kind fails in any file whose count stands above its ledger ceiling.
 The ledger keys each ceiling by file, so each medium's lag is its own.
@@ -149,26 +149,26 @@ The lowered ledger is written under `temp/audit` to copy over the tracked one.
 
 ## `public void AuditStrict_Sources_WalkEveryFile()`
 
-Every tracked surface, driver and host source reached the walkers.
-An empty surface passes, but a file the binder dropped does not pass unseen.
+Every tracked surface and host source reached the walkers.
+A file the binder dropped does not pass unseen.
 
 ## `private void TAuditStrictCheck(string kind, string summary)`
 
 Holds one kind against the ledger and prints the count and the report path.
 
-## `private static IEnumerable<string> TAuditExemptRead(`
+## `private static IEnumerable<string> TAuditExemptRead(IReadOnlyList<string> include, IReadOnlyList<string> forbidden, IReadOnlyList<string> exempt)`
 
 The exempt file names that hold no line the forbidden patterns match.
 
-## `private static List<string> TAuditSourceScan(`
+## `private static List<string> TAuditSourceScan(IReadOnlyList<string> include, IReadOnlyList<string> forbidden, IReadOnlyList<string> exempt)`
 
 Every line of every included source that matches a forbidden pattern, outside the exempt files.
 A string literal and a line comment are blanked first, so a word inside a message is not a hit.
-No hit count is kept for these, since both start at zero and stay there.
+These facts assert zero hits and keep no ledger.
 
 ## `private static (IReadOnlyList<TViolation> TAuditHits, IReadOnlyList<string> TAuditVeneers,`
 
-Enumerates the UI sources, the host sources and the surface markup with Git.
+Enumerates the UI sources, host sources, surface markup and driver sources with Git.
 It fails when the UI or host set is empty, since the audit would then pass vacuously.
 An empty markup set passes, since the Veneer gets its markup back one batch at a time.
 It then runs the four walkers once, with paths made repo-relative.
@@ -180,7 +180,7 @@ The tracked files matching the patterns, with the usual exclusions.
 
 ## `private static string TAuditReportSave()`
 
-Writes the markdown report under `temp/audit` and returns its repo-relative path.
+Writes the markdown report at the path the strict setting names and returns it repo-relative.
 The report opens with the counts, then a per-type table, then every hit by kind.
 
 ## `private static int TAuditClassRead(IReadOnlyList<TViolation> hits, string type, string kind)`

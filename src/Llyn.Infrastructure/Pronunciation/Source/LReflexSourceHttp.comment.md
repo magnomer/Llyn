@@ -38,7 +38,7 @@ A single bracket is literal, so `[{text}]` prints the reading in brackets.
 
 How long one pack regex may run over one page before the page yields no rows.
 
-## `public async Task<(IReadOnlyList<LReflexDraft> LReflexFound, bool LReflexReached)> LReflexSourceFind(`
+## `public async Task<(IReadOnlyList<LReflexDraft> LReflexFound, bool LReflexReached)`
 
 Fetches the page for `character` and reads its rows.
 The second value says whether the site was reached and read.
@@ -116,7 +116,7 @@ The plain text of one named group, or empty when the group did not take part.
 
 Strips tags, decodes entities, collapses whitespace and composes the text, so a stored reading compares by value.
 
-## `private static async Task<string?> LReflexBodyRead(`
+## `private static async Task<string?> LReflexBodyRead(HttpClient client, LReflexRule rule, string character, CancellationToken cancellation)`
 
 Fetches one page with a GET, or a POST when the rule lists form fields, under the rule's headers.
 Not found answers an empty page, since the site has no entry and the miss is final.

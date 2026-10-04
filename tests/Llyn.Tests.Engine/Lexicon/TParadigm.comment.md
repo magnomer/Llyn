@@ -28,7 +28,7 @@ A malformed regular or except entry is ignored and the row is kept.
 
 The shipped English pack states parents and paradigms, so the loader is read against disk and not a fixture alone.
 
-## `public void SpeechPackLoad_ClassicalPack_DeclaresPrincipalParts(`
+## `public void SpeechPackLoad_ClassicalPack_DeclaresPrincipalParts(string language, int paradigms, long genitive, int principalParts)`
 
 The shipped Latin and Greek packs each declare three paradigms.
 The noun asks for the genitive alone and excepts the proper noun, the verb for its principal parts.

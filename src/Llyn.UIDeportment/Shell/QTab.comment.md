@@ -1,7 +1,7 @@
 # QTab.cs
 Hash: `9f50dd37cd923103`
 
-## `internal sealed record QTab(`
+## `internal sealed record QTab(string QTabMode, FrameworkElement QTabButton, FrameworkElement QTabPanel)`
 
 One tab of the main window as the driver sees it.
 It only pairs the navigation's key with the Veneer parts that paint it.

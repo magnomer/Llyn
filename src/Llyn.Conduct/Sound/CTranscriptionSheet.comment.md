@@ -1,7 +1,7 @@
 # CTranscriptionSheet.cs
 Hash: `4117d0055e9f99a9`
 
-## `public sealed record CTranscriptionSheet(`
+## `public sealed record CTranscriptionSheet(bool CTranscriptionSheetShown, bool CTranscriptionSheetFree, IReadOnlyList<CTranscriptionRow> CTranscriptionSheetRows)`
 
 The editor's transcription block for the held draft, ready to paint.
 The engine answers the rows with their schemes, so no driver matches schemes.

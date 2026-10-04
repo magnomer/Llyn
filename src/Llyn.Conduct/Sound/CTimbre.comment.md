@@ -1,11 +1,11 @@
 # CTimbre.cs
-Hash: `31c935ee5ff49eeb`
+Hash: `3da21cec8aea36c3`
 
 ## `public sealed class CTimbre`
 
 The sound facts of the entry an editor holds, as the editor shows or offers them.
 The pack facts are read for the held draft's language, and the waiting reflexes from the editor's display.
-The editor builds it over its desk, its display and its phonology, draft and settings ports.
+The editor builds it over its desk, its display, its phonology, draft and settings ports, and its envoy.
 So it keeps no copy.
 
 ## `public event Action? CTimbreParadigmChanged;`
@@ -58,6 +58,8 @@ Loads the flags the held sheet draws into `store`, then answers a fresh sheet.
 A language whose pack labels varieties by name answers null at once, so the editor paints nothing more.
 A language or desk changed meanwhile answers null, so a late load paints nothing.
 A load or read that fails answers null too, and the labels stand.
+That failure shows the `Sound.LoadFailed` notice through `CLedger`, so it is never silent.
+Conduct cannot name the refusal check, so a refused read shows the notice as well.
 
 ## `private static CTimbreAccent LTimbreAccentRead(LAccentSheet sheet)`
 
@@ -89,7 +91,8 @@ A refused scan reaches the draft bulletin's caller, as it did from the driver.
 
 Starts the reflex lookup whenever the desk prepares a draft, before the editor's bulletin repaints.
 So the first paint of a stored entry without reflexes already shows the fetching line.
-The tenure decides whether a lookup is due, and a refusal is swallowed as the driver swallowed it.
+The tenure decides whether a lookup is due.
+A failure is not caught here, so it reaches the desk's draft load and shows its `LoadFailed` notice.
 
 ## `public void CTimbreReflexRebuild()`
 

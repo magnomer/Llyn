@@ -1,7 +1,7 @@
 # CCatalogRegister.cs
 Hash: `970abba4732aab26`
 
-## `public sealed record CCatalogRegister(`
+## `public sealed record CCatalogRegister(CRegister CCatalogRegisterStored, int CCatalogRegisterUsage, string CCatalogRegisterIcon, bool CCatalogRegisterChosen)`
 
 One row of a register catalog, as the tenor panel lists it.
 

@@ -124,6 +124,44 @@ public sealed class TDesk
     }
 
     [Fact]
+    public void Undo_WorkspaceChanged_ShowsTheHoldFailureOnce()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+        CDesk desk = TDeskPrepare(engine, asked);
+        desk.CDeskStart(null);
+        desk.TDeskDefer(TInterface.TRequestAuthorCreate(desk.CDeskId, "Ada"));
+        desk.CDeskPersist();
+        engine.TEngineWorkspaceOpen(workspace.TWorkspaceFolder);
+        int changed = 0;
+        desk.CDeskStateChanged += () => changed++;
+
+        desk.CDeskUndo();
+
+        Assert.Equal(["Guild.HoldFailed"], asked);
+        Assert.Equal(1, changed);
+    }
+
+    [Fact]
+    public void Redo_WorkspaceChanged_ShowsTheHoldFailureOnce()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+        CDesk desk = TDeskPrepare(engine, asked);
+        desk.CDeskStart(null);
+        desk.TDeskDefer(TInterface.TRequestAuthorCreate(desk.CDeskId, "Ada"));
+        desk.CDeskPersist();
+        desk.CDeskUndo();
+        engine.TEngineWorkspaceOpen(workspace.TWorkspaceFolder);
+
+        desk.CDeskRedo();
+
+        Assert.Equal(["Guild.HoldFailed"], asked);
+    }
+
+    [Fact]
     public void DraftUpdate_HeldDraft_AnnouncesItWhileFilling()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -1,5 +1,5 @@
 # QCard.cs
-Hash: `6a3ac06dd8c49a96`
+Hash: `98f347f18feb1463`
 
 ## `internal sealed class QCard`
 
@@ -13,7 +13,7 @@ That is how a request names one card rather than a place in a list.
 A Meaning card and a Collocation card are the same card, so one pair of paths serves both lists.
 Nothing is read back from a card, because every edit reached the engine as a request.
 
-## `internal QCard(`
+## `internal QCard(QCardDrag drag, QContext context, QRegister register, QLink link, QLabel label, QSentence sentence, QCitation citation, QImage image, QVideo video, ObservableCollection<PLanguageItem> languages, ObservableCollection<PCard> meanings, ObservableCollection<PCard> collocations)`
 
 Holds the drag driver for the header, and the field drivers each card's inner lists answer to.
 It also holds the shared language list a new card's Gloss picker shows, and both card lists.
@@ -32,6 +32,7 @@ Both lists use this one fill, since both draw the same card.
 
 Hands every list inside a card its items and attaches each list's fill.
 Setting the same items again changes nothing, so a refill does not rebuild the lists.
+The sentence list's fill and hover reveal come from `QExample`, which the sentence driver holds.
 
 ## `private void QCardTitleObserve(object sender, TextChangedEventArgs e)`
 
@@ -73,9 +74,9 @@ Which of the two lists a card belongs to, since both are drawn from the same tem
 
 Brings one list into line with the draft's cards, pairing each control with its card by id.
 The ids are the draft's, and the draft never holds two cards under one id.
-A card the form does not show yet is built empty and filled like a kept one.
-Its notices are subscribed as it is built.
-So a typed situation and a Gloss pick reach the editor.
+A card the form does not show yet is built, then painted like a kept one.
+Its sentence notice is subscribed as it is built.
+So a Gloss pick reaches the editor.
 A card the draft no longer names is dropped.
 A card that moved is moved to the place the ready list holds it at.
 The rest keep their controls, so the caret stays in a card while its neighbours change.
@@ -84,7 +85,6 @@ Every card, new or kept, is then painted, since any of its values may have chang
 ### `private void QCardDraftRefine(PCard card, CCardDraft draft)`
 
 Paints one card from its ready draft card, and the card redraws only a value that changed.
-What was waiting is written before the read, so the draft already holds what the field shows.
 The sentence frame's order goes with the rows, as the last `CSentenceFrameRead` answered it.
 The frame is painted before the cards show, so a new row is built in its language's order.
 The links come ready on the draft card, so the paint asks Conduct nothing per card.

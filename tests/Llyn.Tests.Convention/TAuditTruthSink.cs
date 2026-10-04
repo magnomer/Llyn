@@ -120,16 +120,17 @@ internal static partial class TAuditTruthWalker
 
     private static bool TAuditPresenceCheck(ExpressionSyntax condition)
     {
-        ExpressionSyntax core = TAuditStrictWalker.TAuditCoreRead(condition);
+        ExpressionSyntax core = TAuditStrictCondition.TAuditCoreRead(condition);
         return core switch
         {
             BinaryExpressionSyntax chain
                 when chain.IsKind(SyntaxKind.LogicalAndExpression) || chain.IsKind(SyntaxKind.LogicalOrExpression)
                 => TAuditPresenceCheck(chain.Left) && TAuditPresenceCheck(chain.Right),
-            IsPatternExpressionSyntax { Pattern: var pattern } => TAuditStrictWalker.TAuditPatternCheck(pattern),
+            IsPatternExpressionSyntax { Pattern: var pattern } => TAuditStrictCondition.TAuditPatternCheck(pattern),
             BinaryExpressionSyntax binary
                 when binary.IsKind(SyntaxKind.EqualsExpression) || binary.IsKind(SyntaxKind.NotEqualsExpression)
-                => TAuditStrictWalker.TAuditNullCheck(binary.Left) || TAuditStrictWalker.TAuditNullCheck(binary.Right),
+                => TAuditStrictCondition.TAuditNullCheck(binary.Left)
+                   || TAuditStrictCondition.TAuditNullCheck(binary.Right),
             _ => false
         };
     }

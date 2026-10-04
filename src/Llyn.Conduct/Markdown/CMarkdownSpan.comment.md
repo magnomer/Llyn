@@ -1,7 +1,7 @@
 # CMarkdownSpan.cs
 Hash: `f846037c45e5a4e2`
 
-## `public sealed record CMarkdownSpan(`
+## `public sealed record CMarkdownSpan(string CMarkdownSpanText, bool CMarkdownSpanBold, bool CMarkdownSpanItalic, bool CMarkdownSpanCode, Uri? CMarkdownSpanAddress)`
 
 One styled run of a markdown block.
 

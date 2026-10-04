@@ -1,7 +1,7 @@
 # LTranscriptionSheet.cs
 Hash: `968b1aed56c83ea4`
 
-## `public sealed record LTranscriptionSheet(`
+## `public sealed record LTranscriptionSheet(bool LTranscriptionSheetShown, string? LTranscriptionSheetScheme, IReadOnlyList<LTranscriptionRow> LTranscriptionSheetRows)`
 
 The transcription block of the held draft, answered ready by the engine.
 The glyph rows are left out, since the glyph block shows them.

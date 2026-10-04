@@ -1,5 +1,5 @@
 # LFanqieClerk.cs
-Hash: `a83015d13ddb0f5b`
+Hash: `121d29854aaf3440`
 
 ## `public sealed class LFanqieClerk`
 
@@ -9,7 +9,7 @@ The engine's gate is shared, so a fetch that lands writes under the same lock as
 
 ## `public LFanqieClerk(LRig rig, LLanguageCache languages, object gate, Action<LSubject, long> raise)`
 
-Reads the entry, fanqie, diwei and language ports, the fanqie source and the clock out of `rig`.
+Reads the entry, fanqie, shengfu, diwei and language ports, the fanqie source and the clock out of `rig`.
 
 ## `public IReadOnlyList<LFanqieBook> LFanqieBookRead(string language)`
 
@@ -60,7 +60,8 @@ Rebuilds the diwei of every listed language that declares books.
 
 ## `private async Task<(IReadOnlyList<LFanqieRow> LFanqieFound, bool LFanqieReached)> LFanqieClerkScan(string character, string language, CancellationToken cancellation)`
 
-One request per book, spaced by the book's interval on the clock.
+One request per book, spaced by the book's interval.
+The wait before each request runs on the rig's clock, so a harness can make it virtual.
 
 ## `private static string LFanqieKeyFormat(string language, string character)`
 

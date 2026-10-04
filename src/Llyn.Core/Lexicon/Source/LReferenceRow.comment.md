@@ -1,7 +1,7 @@
 # LReferenceRow.cs
 Hash: `1d28a386f96d681f`
 
-## `public sealed record LReferenceRow(`
+## `public sealed record LReferenceRow(long LReferenceRowId, string LReferenceRowLead, string LReferenceRowMark, string LReferenceRowTail, string LReferenceRowCount)`
 
 One stored Source a citation field offers, its byline already split around the typed word.
 

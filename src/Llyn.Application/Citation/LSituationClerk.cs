@@ -142,8 +142,8 @@ public sealed class LSituationClerk
         return one.LSituationTitle == other.LSituationTitle
             && one.LSituationDescription == other.LSituationDescription
             && one.LSituationKind == other.LSituationKind
-            && LDraftClerkEquality.LImageMatch(one.LSituationImage, other.LSituationImage)
-            && LDraftClerkEquality.LVideoMatch(one.LSituationVideo, other.LSituationVideo);
+            && LCardEquality.LCardEqualityMatch(one.LSituationImage, other.LSituationImage)
+            && LCardEquality.LCardEqualityMatch(one.LSituationVideo, other.LSituationVideo);
     }
 
     public static LPortraitPage LSituationPageRead(LSituation situation, int count, LPortraitLegend legend)

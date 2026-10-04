@@ -33,11 +33,11 @@ A refusal is a `FormatException`, the one exception a pure ring may raise for ba
 
 Keeps one term after checking its key shape.
 
-## `private static Dictionary<string, string> LLocalizationTextScan(`
+## `private static Dictionary<string, string> LLocalizationTextScan(IReadOnlyDictionary<string, string> raw, IReadOnlyDictionary<string, string> terms, CultureInfo culture)`
 
 Resolves every text pair of the raw map against the terms gathered before it.
 
-## `private static string LLocalizationTextResolve(`
+## `private static string LLocalizationTextResolve(string text, string textKey, IReadOnlyDictionary<string, string> terms, CultureInfo culture)`
 
 Replaces each term reference in one text and refuses a brace that is neither a term nor a slot.
 

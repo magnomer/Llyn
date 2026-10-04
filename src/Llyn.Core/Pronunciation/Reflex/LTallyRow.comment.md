@@ -1,7 +1,7 @@
 # LTallyRow.cs
 Hash: `c92108897254182f`
 
-## `public sealed record LTallyRow(`
+## `public sealed record LTallyRow(string LTallyRowLanguage, string LTallyRowKind, IReadOnlyList<LTallyMark> LTallyRowMarks)`
 
 One tally line of a Diwei section with its marks already taken from the shown set.
 The page picks the set once, so no reader chooses between the phonemic and the respelled marks.

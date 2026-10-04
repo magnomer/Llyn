@@ -44,7 +44,7 @@ internal static class TAuditCommentSnapshot
                 continue;
             }
 
-            string? committed = TAuditRatchet.TAuditCommittedRead(relative)?.Split('\n').ElementAtOrDefault(1);
+            string? committed = TAuditRatchetFile.TAuditCommittedRead(relative)?.Split('\n').ElementAtOrDefault(1);
             if (committed?.TrimEnd() == second.TrimEnd())
             {
                 continue;

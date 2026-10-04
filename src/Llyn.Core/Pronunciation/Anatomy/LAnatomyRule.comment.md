@@ -1,7 +1,7 @@
 # LAnatomyRule.cs
 Hash: `86e1d61d797f59c3`
 
-## `public sealed record LAnatomyRule(`
+## `public sealed record LAnatomyRule(IReadOnlyList<string> LAnatomyRuleLanguages, LAnatomyPattern LAnatomyRuleIpa, LAnatomyPattern LAnatomyRuleRespelling)`
 
 One rule of the Classical Chinese pack's `anatomy` file.
 It says how the readings of some reflex languages are cut.

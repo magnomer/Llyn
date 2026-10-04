@@ -1,5 +1,5 @@
 # TAuditTruthMisfiring.cs
-Hash: `df395d997e7a5fb1`
+Hash: `3ed435cc44badaeb`
 
 ## `internal static partial class TAuditTruthWalker`
 
@@ -8,6 +8,7 @@ The misfiring half of the truth walker, covering what the driver's medium may no
 A control's state, console input, a clock and a deaf handler count as misfiring.
 None of them is a user act or an engine fact.
 It also holds the gatekeeping rules for answers a driver branches on.
+Line numbers and name matching come from `TAuditTruthReference`.
 
 ## `private static void TAuditMisfiringScan(SyntaxNode root, List<TViolation> violations)`
 
@@ -22,7 +23,7 @@ The gate asks the user through a port instead.
 An `if`, ternary or switch deciding a request on an engine answer is gatekeeping.
 The gate owns that decision.
 A clock drives a request through an event, a callback it is built with or a loop that waits.
-A method or lambda taking the bulletin type it never reads shows from driver state on a signal it ignored.
+A method or lambda taking a bulletin it never reads is misfiring, since it acts on a signal it ignored.
 
 ## `private static string TAuditExcerptRead(SyntaxNode node)`
 

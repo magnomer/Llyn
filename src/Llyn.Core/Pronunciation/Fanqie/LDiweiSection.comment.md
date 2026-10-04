@@ -1,7 +1,7 @@
 # LDiweiSection.cs
 Hash: `3b18b2d1b876aaaa`
 
-## `public sealed record LDiweiSection(`
+## `public sealed record LDiweiSection(string LDiweiSectionLabel, IReadOnlyList<LDiweiLine> LDiweiSectionLines, IReadOnlyList<LTallyRow> LDiweiSectionTallies, bool LDiweiSectionSwitched, bool LDiweiSectionRespelled)`
 
 One heading of a Diwei page.
 It is a division on an initial page and a place of articulation on a rime page.
@@ -17,13 +17,13 @@ A section is data once built, so the shells carry it without a projection.
 - `LDiweiSectionSwitched`: true when the language has a respelling to switch to.
 - `LDiweiSectionRespelled`: true when the page shows the respelling set.
 
-## `public static IReadOnlyList<LDiweiSection> LDiweiSectionScan(`
+## `public static IReadOnlyList<LDiweiSection> LDiweiSectionScan(string kind, IReadOnlyList<LFanqieRow> rows, LHypothesis? hypothesis, IReadOnlyList<LTally> tallies, bool switched, bool respelled, Func<string, string?> localize)`
 
 Groups the fanqie rows of one category under their headings and lines, sorted as the page prints them.
 The localize seam answers null for a missing key, so the raw heading stands in.
 Characters gather in a list the line record already holds, so the scan mutates nothing after it returns.
 
-## `private static LDiweiLine LDiweiLineCreate(`
+## `private static LDiweiLine LDiweiLineCreate(bool rime, LFanqieRow row, LHypothesis? hypothesis, List<string> characters)`
 
 Builds the line record for the first row met under a key, over the character list the scan keeps filling.
 

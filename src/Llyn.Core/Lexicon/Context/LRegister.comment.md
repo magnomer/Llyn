@@ -1,7 +1,7 @@
 # LRegister.cs
 Hash: `a8e0ff8840957442`
 
-## `public sealed record LRegister(`
+## `public sealed record LRegister(long LRegisterId, LStateValue LRegisterName, bool LRegisterBuiltin = false)`
 
 One Register is the formality or politeness level a Meaning or Collocation is marked with.
 It is independent data owned by nothing, the way a Situation is.

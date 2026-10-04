@@ -1,7 +1,7 @@
 # LMentionPiece.cs
 Hash: `b7af21890c30f382`
 
-## `public sealed record LMentionPiece(`
+## `public sealed record LMentionPiece(int LMentionPieceOffset, LMention? LMentionPieceStored, string LMentionPieceText)`
 
 One stretch of a sentence as it is drawn.
 It is a Mention or the gap between two.

@@ -1,7 +1,7 @@
 # CSituation.cs
 Hash: `e5d67ef144ab7497`
 
-## `public sealed record CSituation(`
+## `public sealed record CSituation(CStateWording CSituationTitle, CStateWording CSituationKind, CStateWording CSituationDescription, IReadOnlyList<CMarkdownBlock> CSituationMarkdown, IReadOnlyList<CImageDraft> CSituationImage, IReadOnlyList<CVideoDraft> CSituationVideo)`
 
 One Situation ready for the repertoire's read page, the vignette.
 Every field arrives worded and every row arrives chosen, so the driver only looks keys up and paints.

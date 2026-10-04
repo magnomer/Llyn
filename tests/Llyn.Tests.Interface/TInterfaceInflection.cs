@@ -28,9 +28,6 @@ internal static class TInterfaceInflection
         IReadOnlyList<long>? except = null) =>
         new(speechCode, morphology, regular, except);
 
-    internal static LParadigmRule TParadigmRuleCreate(string pattern, string replacement) =>
-        new(pattern, replacement);
-
     internal static string? TParadigmRuleResolve(LParadigmRule rule, string headword) =>
         rule.LParadigmRuleResolve(headword);
 

@@ -47,8 +47,6 @@ public sealed class CGuild
             CGuildAutograph, [CGuildPanel.LPanelChangeCheck], null, static () => false, static _ => true,
             LGuildAutographCheck, LGuildStoredShow);
         CGuildSession.CSessionChanged += () => CGuildChanged?.Invoke();
-        CGuildSession.CSessionFailed +=
-            (key, exception) => CLedger.LLedgerFailureShow(envoy, _cGuildSettingsPort, key, exception);
         CGuildPanel.CPanelCleared += CGuildSession.CSessionCancel;
         CGuildPanel.CPanelEdited += id => CGuildSession.CSessionStart(id);
         atelier.CAtelierNavigation.LNavigationTabAdd(
@@ -94,9 +92,7 @@ public sealed class CGuild
     public bool CGuildBinEnabled => !LGuildSourceSide && LGuildAuthorHeld;
 
     public bool CGuildStoreEnabled =>
-        CGuildAutographShown
-        && CGuildAutograph.LDeskChangeCheck()
-        && CGuildAutograph.CDeskTenure?.LTenureReadyCheck() is true;
+        CGuildAutographShown && CGuildAutograph.CDeskStorable;
 
     public bool CGuildPressAllowed => LGuildSourceSide;
 
@@ -325,7 +321,7 @@ public sealed class CGuild
 
     private bool LGuildAutographCheck()
     {
-        if (CGuildAutograph.CDeskTenure?.LTenureReadyCheck() is true)
+        if (CGuildAutograph.LDeskReadyCheck())
         {
             return true;
         }

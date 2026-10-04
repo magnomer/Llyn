@@ -69,7 +69,7 @@ internal static class TAuditLookupWalker
         return value is IdentifierNameSyntax or MemberAccessExpressionSyntax
                && TAuditBinderSymbol.TAuditSymbolRead(value) is { } held
                && visiting.Add(held)
-               && TAuditOriginWalker.TAuditOriginRead(held) is { Count: > 0 } writes
+               && TAuditOriginHolder.TAuditOriginRead(held) is { Count: > 0 } writes
                && writes.Where(write => TAuditOriginWalker.TAuditWriterResolve(write) != "clear")
                    .All(write => TAuditCallScan(write, calls, visiting));
     }

@@ -1,29 +1,29 @@
 # LRequestEtymology.cs
 Hash: `8740750532aed341`
 
-## `public sealed record LRequestEtymologyText(`
+## `public sealed record LRequestEtymologyText(long LRequestDraftId, string LRequestText)`
 
 Sets the prose of the entry's etymology to the text given.
 The spans held on the draft are carried across the edit, and a span the edit destroyed is dropped.
 One key for the whole field, so typing folds into one undo step.
 
-## `public sealed record LRequestEtymologyMention(`
+## `public sealed record LRequestEtymologyMention(long LRequestDraftId, int LRequestOffset, int LRequestLength, long LRequestEntryId)`
 
 Makes the span at the offset given stand for one Entry, or clears it.
 A zero Entry removes whatever span covers the range and adds none.
 Any span the range touches is dropped first, so spans never overlap.
 The key carries the offset, so two spans of one text are separate steps.
 
-## `public sealed record LRequestEtymonAddition(`
+## `public sealed record LRequestEtymonAddition(long LRequestDraftId, long LRequestEntryId, int LRequestPosition)`
 
 Adds a direct link to the source Entry named, at the position given.
 A link already held is refused rather than doubled.
 
-## `public sealed record LRequestEtymonRemoval(`
+## `public sealed record LRequestEtymonRemoval(long LRequestDraftId, long LRequestEntryId)`
 
 Drops the direct link to the source Entry named.
 
-## `public sealed record LRequestEtymonShift(`
+## `public sealed record LRequestEtymonShift(long LRequestDraftId, long LRequestEntryId, int LRequestPosition)`
 
 Moves the direct link to the source Entry named to another position.
 The key carries the Entry, so dragging one chip folds into one step.

@@ -1,7 +1,7 @@
 # LImageDraft.cs
 Hash: `84e14c7d69765300`
 
-## `public sealed record LImageDraft(`
+## `public sealed record LImageDraft(LStateValue LImageDraftLocation, long LImageDraftId = 0)`
 
 One image row a card is holding before it is stored.
 

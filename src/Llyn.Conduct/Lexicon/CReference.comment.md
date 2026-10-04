@@ -1,7 +1,7 @@
 # CReference.cs
 Hash: `00e2cdde24ed090c`
 
-## `public sealed record CReference(`
+## `public sealed record CReference(string CReferenceTitle, string CReferenceTitleHint, string CReferenceYear, string CReferenceYearHint, string CReferenceUrl, string CReferenceUrlHint, string CReferenceNote, string CReferenceNoteHint, string CReferenceKindKey, string CReferenceKindTag)`
 
 The stated fields of the Source draft, as the source editor writes them into its fields.
 It copies the engine's edit sheet, so every text and key is already decided.

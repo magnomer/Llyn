@@ -1,7 +1,7 @@
 # CNavigationPanel.cs
 Hash: `269271317524a145`
 
-## `internal sealed record CNavigationPanel(`
+## `internal sealed record CNavigationPanel(Func<bool> CNavigationPanelLeave, Func<long> CNavigationPanelStation, Action<bool> CNavigationPanelScribe, Action<long> CNavigationPanelArrival, Func<bool>? CNavigationPanelAllowed)`
 
 The hooks one panel area registers with the navigation for its tab.
 Every hook is a member of the area itself, so no hook comes up from a window.

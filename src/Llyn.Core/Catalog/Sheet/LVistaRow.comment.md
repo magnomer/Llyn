@@ -1,7 +1,7 @@
 # LVistaRow.cs
 Hash: `a8c21bb590b88b0f`
 
-## `public sealed record LVistaRow(`
+## `public sealed record LVistaRow(long LVistaRowId, string LVistaRowHeadword, string LVistaRowLanguage, string LVistaRowEpithet, string LVistaRowName, bool LVistaRowChosen)`
 
 One row of a catalog list as the engine hands it to a panel, ready to show.
 The engine has already filtered, sorted, numbered and marked it.

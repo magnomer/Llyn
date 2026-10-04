@@ -1,7 +1,7 @@
 # LMarkdownSpan.cs
 Hash: `50cf65aaa5ddf94a`
 
-## `public sealed record LMarkdownSpan(`
+## `public sealed record LMarkdownSpan(string LMarkdownSpanText, bool LMarkdownSpanBold, bool LMarkdownSpanItalic, bool LMarkdownSpanCode, string LMarkdownSpanLink)`
 
 One stretch of text inside a block that shares a single styling.
 A writer emits it as one run, so no writer re-reads the markers.

@@ -76,17 +76,17 @@ internal sealed class LReflexFacade
 
     public void LEngineReflexStart(long entryId)
     {
-        LReflexFacadeStaff.LEngineStaffReflex.LReflexClerkStart(entryId);
+        LReflexFacadeStaff.LEngineStaffReflex.LReflexClerkFetch.LReflexFetchStart(entryId);
     }
 
     public void LEngineReflexRebuild(long entryId)
     {
-        LReflexFacadeStaff.LEngineStaffReflex.LReflexClerkRebuild(entryId);
+        LReflexFacadeStaff.LEngineStaffReflex.LReflexClerkFetch.LReflexFetchRebuild(entryId);
     }
 
     public bool LEngineReflexCheck(long entryId)
     {
-        return LReflexFacadeStaff.LEngineStaffReflex.LReflexClerkCheck(entryId);
+        return LReflexFacadeStaff.LEngineStaffReflex.LReflexClerkFetch.LReflexFetchCheck(entryId);
     }
 
     public IReadOnlyList<LDescent> LEngineDescentRead(string language)

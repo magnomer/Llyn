@@ -142,7 +142,8 @@ internal sealed class LReferenceFacade
         lock (_lReferenceFacadeGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(origin);
-            return LReferenceFacadeStaff.LEngineStaffCitation.LReferenceStart(origin, referenceId);
+            return LReferenceFacadeStaff.LEngineStaffCitation.LCitationClerkReference
+                .LReferenceCitationStart(origin, referenceId);
         }
     }
 
@@ -153,7 +154,7 @@ internal sealed class LReferenceFacade
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             _lReferenceFacadeEngine.LEngineDraft.LEngineDraftValidate(id);
-            settled = LReferenceFacadeStaff.LEngineStaffCitation.LReferenceCommit(id);
+            settled = LReferenceFacadeStaff.LEngineStaffCitation.LCitationClerkReference.LReferenceCitationCommit(id);
         }
 
         _lReferenceFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectReference, settled.LReferenceId);

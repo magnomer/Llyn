@@ -24,7 +24,7 @@ A blank language or a refused read answers the font with nothing set, so the sur
 The engine role of the same name, switched name by name.
 An unknown role throws, so a role added on one side alone fails loudly.
 
-## `internal static async Task<CEnsignSheet<LCatalogKind>> LCatalogEnsignLoad<LCatalogKind>(`
+## `internal static async Task<CEnsignSheet<LCatalogKind>> LCatalogEnsignLoad<LCatalogKind>(LSettingsPort settings, Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store, Func<LCatalogKind> read)`
 
 The one ordering rule for an area's rows that show flags.
 The flag fill runs first, then the area's read.
@@ -50,12 +50,12 @@ A refused resolve shows `Glyph.OpenFailed` through the panel's envoy and answers
 The lexicon languages the workspace knows.
 
 
-## `public Task<IReadOnlyList<string>> CCatalogEnsignLoad(`
+## `public Task<IReadOnlyList<string>> CCatalogEnsignLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Loads the cached flags, handing `store` each row as the Conduct shape.
 It answers the loaded languages, so a language menu fills from the load that flagged it.
 
-## `internal static IReadOnlyList<CMeaning> LCatalogMeaningRead(`
+## `internal static IReadOnlyList<CMeaning> LCatalogMeaningRead(IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> rows)`
 
 Maps the engine's Meaning rows to sense-menu rows by name, with no rule of its own.
 The shared sense read in `CMention` uses it.

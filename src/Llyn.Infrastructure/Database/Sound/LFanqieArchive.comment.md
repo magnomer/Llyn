@@ -15,7 +15,7 @@ A row not stored yet is inserted, and a stored row the fetch no longer gives is 
 The books arrive in pack order and the positions in table order, and a first save's ids keep that order.
 A representative rank survives the rewrite, and the ranks are closed up when a ranked row is deleted.
 
-## `private static void LFanqieLeftoverDelete(`
+## `private static void LFanqieLeftoverDelete(SqliteConnection connection, string language, string character, List<long> kept)`
 
 Deletes the character's rows whose ids the save did not write, and their diwei links and anchors by cascade.
 

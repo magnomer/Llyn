@@ -1,7 +1,7 @@
 # CLeafLine.cs
 Hash: `1d18a14305c141da`
 
-## `public sealed record CLeafLine(`
+## `public sealed record CLeafLine(string CLeafLineHead, long CLeafLineSentence, IReadOnlyList<CMentionPiece> CLeafLinePiece, string CLeafLineCitation, IReadOnlyList<CGlossDraft> CLeafLineGloss)`
 
 One example line of a reading card, ready to paint.
 

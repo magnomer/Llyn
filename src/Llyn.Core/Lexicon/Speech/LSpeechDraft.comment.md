@@ -1,7 +1,7 @@
 # LSpeechDraft.cs
 Hash: `5f6927ecbc78a962`
 
-## `public sealed record LSpeechDraft(`
+## `public sealed record LSpeechDraft(long LSpeechDraftValue, string? LSpeechDraftCustom, string LSpeechDraftName = "")`
 
 One part of speech as the input form carries it.
 

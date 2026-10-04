@@ -1,7 +1,7 @@
 # LAnatomy.cs
 Hash: `dcae18a4dc62383d`
 
-## `public sealed record LAnatomy(`
+## `public sealed record LAnatomy(string LAnatomyOnsetIpa = "", string LAnatomyVowelIpa = "", string LAnatomyCodaIpa = "", string LAnatomyToneIpa = "", string LAnatomyOnsetRespelling = "", string LAnatomyVowelRespelling = "", string LAnatomyCodaRespelling = "", string LAnatomyToneRespelling = "")`
 
 The phonological anatomy of one reflex reading: its onset, vowel, coda and tone, held twice.
 One set is cut from the reading as fetched, the IPA or script form, and one from its respelling.
@@ -45,7 +45,7 @@ Picks the part for the kind from the three handed in.
 
 Joins the two cut pieces into one anatomy, the first the IPA set and the second the respelling set.
 
-## `public static LAnatomy LAnatomyScan(`
+## `public static LAnatomy LAnatomyScan(IReadOnlyList<LAnatomyRule> rules, string language, string text, string respelling)`
 
 The anatomy of one reading under the first rule that names its language.
 The rule cuts the reading for the IPA set and the respelling for the respelling set.

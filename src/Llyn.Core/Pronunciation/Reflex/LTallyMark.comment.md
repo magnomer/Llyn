@@ -16,7 +16,7 @@ The characters are kept so the view can open a list of them from the part.
 
 How many characters take the part, the printed number.
 
-## `public static IReadOnlyList<LTallyMark> LTallyMarkScan(`
+## `public static IReadOnlyList<LTallyMark> LTallyMarkScan(IReadOnlyDictionary<string, List<string>>? parts)`
 
 The marks of one language from its parts and the characters under each, count descending, then part text.
 A missing or empty table gives no marks.

@@ -1,7 +1,7 @@
 # LSourceAttempt.cs
 Hash: `9055bc342c57fcb2`
 
-## `public sealed record LSourceAttempt(`
+## `public sealed record LSourceAttempt(IReadOnlyList<string> LSourceAttemptUrls, IReadOnlyList<LSourceReading> LSourceAttemptReadings, string? LSourceAttemptGuard, IReadOnlyDictionary<string, string>? LSourceAttemptHeaders, string? LSourceAttemptPrefix, LSourceReading? LSourceAttemptFollow = null, bool LSourceAttemptDecoded = false)`
 
 One fetch attempt within a source, declared by a language pack.
 A source tries its attempts in order and keeps the first that yields a non-empty answer.

@@ -5,7 +5,7 @@ The field requests key `LRequestKey` by type and row id, so a deferred edit repl
 The reflex requests, one per change to the entry's ordered reflex list.
 Each names the row by its id, so a change lands on that row wherever the list has moved it.
 
-## `public sealed record LRequestReflexAddition(`
+## `public sealed record LRequestReflexAddition(long LRequestDraftId, string LRequestLanguage, string LRequestKind, int LRequestPosition)`
 
 Adds a new reflex row at `LRequestPosition` for `LRequestLanguage` and `LRequestKind`, its text still to be typed.
 The form copies the language and kind of the row the plus was pressed on.
@@ -49,7 +49,7 @@ Replaces the source note of one row.
 
 Marks or unmarks one row as the reading in common use.
 
-## `public sealed record LRequestReflexAnchor(`
+## `public sealed record LRequestReflexAnchor(long LRequestDraftId, long LRequestReflexId, long LRequestFanqieId, bool LRequestAnchored)`
 
 Ties one row to the fanqie row `LRequestFanqieId` names when `LRequestAnchored`, and unties it otherwise.
 One request per tick, so the other anchors of the row and the other rows stand untouched.

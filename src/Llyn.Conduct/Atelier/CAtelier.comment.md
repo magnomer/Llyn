@@ -10,7 +10,7 @@ Those are opening, quitting and changing the workspace, bulletins, vista start, 
 The session reads, the recordings and the folder locations sit here too, since the workspace owns them.
 GUI-only state such as window geometry and panel widths never reaches it.
 
-## `internal CAtelier(`
+## `internal CAtelier(LPosture posture, LDraftPort drafts, LEntryPort entries, LSettingsPort settings, LPhonologyPort phonology, LMediaPort media, LPortraitPort portraits)`
 
 Takes the posture and the six ports Host builds over one engine.
 It is internal, so no driver can build a root of its own.

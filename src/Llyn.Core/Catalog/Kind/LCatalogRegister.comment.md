@@ -1,7 +1,7 @@
 # LCatalogRegister.cs
 Hash: `cdd454f689f313ee`
 
-## `public sealed record LCatalogRegister(`
+## `public sealed record LCatalogRegister(LRegister LCatalogRegisterStored, int LCatalogRegisterUsage, bool LCatalogRegisterChosen = false)`
 
 One Register as a browsed row: the stored record and how many cards are marked with it.
 The count travels with the row because the ordering reads it and the row shows it.

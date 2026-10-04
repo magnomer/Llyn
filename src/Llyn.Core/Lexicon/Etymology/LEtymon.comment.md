@@ -1,7 +1,7 @@
 # LEtymon.cs
 Hash: `8ca04787d3309bda`
 
-## `public sealed record LEtymon(`
+## `public sealed record LEtymon(long LEtymonTargetId)`
 
 One source entry an etymology links to directly.
 It is the bare link shape, drawn as a chip beside the headword and carrying no prose.

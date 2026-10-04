@@ -1,7 +1,7 @@
 # LMarkupTranslation.cs
 Hash: `38e82c598b03d683`
 
-## `public sealed record LMarkupTranslation(`
+## `public sealed record LMarkupTranslation(string LMarkupTranslationHeadword, string LMarkupTranslationLanguage)`
 
 A translation link as a markup file carries it, naming its target entry by natural key.
 On import the target is looked up among stored entries and entries the same file creates.

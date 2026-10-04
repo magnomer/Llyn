@@ -1,7 +1,7 @@
 # CAuthorRow.cs
 Hash: `80965ba6672f0a42`
 
-## `public sealed record CAuthorRow(`
+## `public sealed record CAuthorRow(long CAuthorRowId, string CAuthorRowName, int CAuthorRowPosition, bool CAuthorRowEarlier, bool CAuthorRowLater)`
 
 One credit of the Source draft, as the imprint lists its authors.
 

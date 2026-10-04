@@ -30,7 +30,7 @@ internal sealed class QAccent
         _qAccentPlayer = player;
         QAccentList.ItemsSource = _qAccentItem;
         QLookItem.QLookItemAttach(QAccentList, QAccentItem.QAccentItemRefine);
-        QField.QFieldCellAttach(QAccentList);
+        QQuill.QQuillIntroduce(QAccentList);
         QAccentControl.QAccentControlAttach(QAccentList);
         StackPanel sound = QContract.QContractFind<StackPanel>(_qAccentSurface, "PEditorSound");
         CommandBinding clip = new(QAccentCommand.QAccentCommandClip);

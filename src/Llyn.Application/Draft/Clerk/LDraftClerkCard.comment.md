@@ -7,7 +7,7 @@ The card arithmetic of a draft: insert, remove, move, change and find, wherever 
 Every list request inside a card comes through `LCardChange`, so the card check is written once.
 Nothing here mints an id, so the routines are pure and the clerk hands in a card already named.
 
-## `public static LEntryDraft LCardInsert(`
+## `public static LEntryDraft LCardInsert(LEntryDraft content, LCardKind kind, long parentId, int position, LCardDraft card)`
 
 A collocation takes no parent, because only a meaning names a parent in the store.
 A parent the meanings do not hold is a missing card, and is refused as one.

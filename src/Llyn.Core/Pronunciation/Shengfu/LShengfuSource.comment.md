@@ -6,7 +6,7 @@ Hash: `2481ad03add835ef`
 The fetch port the engine reads a character's phonetic series through.
 It says nothing about HTTP, and `LShengfuSourceHttp` in Infrastructure is its adapter.
 
-## `Task<(LShengfu? LShengfuFound, bool LShengfuReached)> LShengfuSourceFind(`
+## `Task<(LShengfu? LShengfuFound, bool LShengfuReached)`
 
 The series of the character under that rule, or null when the source named none.
 The second value tells whether the source answered at all, so a failed fetch is retried later.

@@ -1,7 +1,7 @@
 # LSituationDraft.cs
 Hash: `c7ccc92d37a07b35`
 
-## `public sealed record LSituationDraft(`
+## `public sealed record LSituationDraft(LStateValue LSituationDraftTitle, long LSituationDraftId, LStateValue LSituationDraftDescription, LStateValue LSituationDraftKind)`
 
 One Situation as a card draft carries it.
 It holds the id of the Situation the row edits and the three fields the store keeps.

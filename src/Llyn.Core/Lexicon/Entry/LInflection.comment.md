@@ -1,7 +1,7 @@
 # LInflection.cs
 Hash: `899802cd6c6f9178`
 
-## `public sealed record LInflection(`
+## `public sealed record LInflection(long LInflectionId, long LInflectionEntryId, int LInflectionPosition, string LInflectionText, string? LInflectionLocal, long? LInflectionSpeechId, IReadOnlyList<long> LInflectionMorphology, bool LInflectionRegular = false)`
 
 One inflected form of an entry, ordered within it.
 The inflection has its own row id so its morphology links can name it directly.

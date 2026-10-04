@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -35,7 +36,7 @@ internal sealed class LTenureFacade
         LTenure started = LEngineTenureStart(vista, null);
         if (situation is long linked)
         {
-            started.LTenureSituationAdd(linked);
+            started.LTenureRequestApply(new LRequestSituationPick(started.LTenureId, 0, linked, 0));
         }
 
         return started;
@@ -46,7 +47,7 @@ internal sealed class LTenureFacade
         LTenure started = LEngineTenureStart(vista, null);
         if (example is long cited)
         {
-            started.LTenureExampleAdd(cited);
+            started.LTenureRequestApply(new LRequestSentenceExample(started.LTenureId, 0, 0, cited));
         }
 
         return started;
@@ -57,7 +58,7 @@ internal sealed class LTenureFacade
         LTenure started = LEngineTenureStart(vista, null);
         if (reference is long cited)
         {
-            started.LTenureReferenceAdd(cited);
+            started.LTenureRequestApply(new LRequestSentenceReference(started.LTenureId, 0, 0, cited));
         }
 
         return started;
@@ -68,7 +69,7 @@ internal sealed class LTenureFacade
         LTenure started = LEngineTenureStart(vista, null);
         if (tag is long carried)
         {
-            started.LTenureTagAdd(carried);
+            started.LTenureRequestApply(new LRequestTagPick(started.LTenureId, 0, carried, 0));
         }
 
         return started;
@@ -79,7 +80,7 @@ internal sealed class LTenureFacade
         LTenure started = LEngineTenureStart(vista, null);
         if (register is long carried)
         {
-            started.LTenureRegisterAdd(carried);
+            started.LTenureRequestApply(new LRequestRegisterPick(started.LTenureId, 0, carried, 0));
         }
 
         return started;
@@ -99,5 +100,19 @@ internal sealed class LTenureFacade
         };
 
         return new LTenure(_lTenureFacadeEngine, subject, started.LDraftId);
+    }
+
+    internal long LEngineTenureCommit(LSubject subject, long id)
+    {
+        return subject switch
+        {
+            LSubject.LSubjectEntry => _lTenureFacadeEngine.LEngineDraft.LEngineDraftCommit(id).LOutcomeEntry.LEntryId,
+            LSubject.LSubjectExample => _lTenureFacadeEngine.LEngineExample.LEngineExampleCommit(id).LExampleId,
+            LSubject.LSubjectSituation => _lTenureFacadeEngine.LEngineSituation.LEngineSituationCommit(id).LSituationId,
+            LSubject.LSubjectReference => _lTenureFacadeEngine.LEngineReference.LEngineReferenceCommit(id).LReferenceId,
+            LSubject.LSubjectAuthor => _lTenureFacadeEngine.LEngineAuthor.LEngineAuthorCommit(id).LAuthorId,
+            _ => throw new InvalidOperationException(
+                "A tenure holds only an entry, example, situation, reference or author."),
+        };
     }
 }

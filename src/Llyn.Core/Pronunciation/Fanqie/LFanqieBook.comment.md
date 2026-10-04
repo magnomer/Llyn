@@ -1,7 +1,7 @@
 # LFanqieBook.cs
 Hash: `fd87cb371d75c44d`
 
-## `public sealed record LFanqieBook(`
+## `public sealed record LFanqieBook(string LFanqieBookName, string LFanqieBookUrl, IReadOnlyDictionary<string, string> LFanqieBookForm, string LFanqieBookPattern, string? LFanqieBookBusy = null, int LFanqieBookInterval = 0, string? LFanqieBookSplit = null, string? LFanqieBookHead = null, string? LFanqieBookColumn = null, string? LFanqieBookRounded = null, string? LFanqieBookSource = null, string? LFanqieBookLine = null, string? LFanqieBookSpelling = null)`
 
 One rime book a language pack lists under `fanqie`, such as 廣韻 or 集韻.
 The book names the web database that places a character in its rime tables and how its answer is read.

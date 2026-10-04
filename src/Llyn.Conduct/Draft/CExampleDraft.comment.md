@@ -1,7 +1,7 @@
 # CExampleDraft.cs
 Hash: `7ea7fee42a2f919c`
 
-## `public sealed record CExampleDraft(`
+## `public sealed record CExampleDraft(CStateValue CExampleDraftText, long? CExampleDraftReference, IReadOnlyList<CGlossDraft> CExampleDraftGloss)`
 
 The example a sentence holds, as the sentence row shows it.
 

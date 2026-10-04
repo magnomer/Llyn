@@ -1,7 +1,7 @@
 # LMentionResult.cs
 Hash: `399eeb22d50b4440`
 
-## `public sealed record LMentionResult(`
+## `public sealed record LMentionResult(int LMentionResultOffset, LMention? LMentionResultStored, IReadOnlyList<LTranslationTarget> LMentionResultEntry)`
 
 The engine's answer for a clicked word of a sentence.
 It names the span the click resolves to.

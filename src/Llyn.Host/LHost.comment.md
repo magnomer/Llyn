@@ -34,7 +34,7 @@ Creating it makes it `Application.Current`, which is how the deportment reaches 
 `QBootstrap` applies resources, raises every dialog of the start, and shows the window.
 It pulls the application from `Application.Current`, so the host hands it no application.
 
-## `bootstrap.QBootstrapIntroduce(`
+## `bootstrap.QBootstrapIntroduce(() => LThemeLoader.LThemeLoaderLoad().LThemeColorRead, () => LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault), LWorkspaceRoot.LWorkspaceRootRead, workspace => new LEngine(LRigFactory.LRigFactoryBuild(workspace, client, usher, press, phonograph), path => LRigFactory.LRigFactoryBuild(path, client, usher, press, phonograph), LWorkspaceRoot.LWorkspaceRootChange), LDoctor.LDoctorBusyCheck, engine => { bootstrap.QBootstrapFaultIntroduce(engine.LEngineAuditRecord); LSettingsOutlet settings = new(engine); bootstrap.QBootstrapCatalogApply(() => LLocalization.LLocalizationDefaultCheck(settings.LEngineSettingsRead().LSettingsLocalization), () => settings.LEngineLocalizationLoad(LLocalization.LLocalizationNormalize(settings.LEngineSettingsRead().LSettingsLocalization))); LDoctorRescue rescue = engine.LEngineRescueRead(); bootstrap.QBootstrapRescueConsult(rescue.LDoctorRescueDone, rescue.LDoctorRescueBackup, rescue.LDoctorRescueReason);  bootstrap.QBootstrapWindowShow(new QWindow(new CAtelier(new LPosture(engine), new LDraftOutlet(engine), new LEntryOutlet(engine), settings, new LPhonologyOutlet(engine), new LMediaOutlet(engine), new LPortraitOutlet(engine)))); code = application.Run(); engine.Dispose(); })`
 
 The host hands over the theme, the engine factory and the rest of the run as seams.
 `QBootstrap` decides whether the start continues, so the host holds no branch.
@@ -45,7 +45,7 @@ A theme or an engine that fails leaves the rest unrun, and the exit code stays 1
 The default catalog is applied before any engine exists, so the host opens it through the port itself.
 That load lists the embedded languages first, since it refuses a language the build does not embed.
 
-## `workspace => new LEngine(`
+## `workspace => new LEngine(LRigFactory.LRigFactoryBuild(workspace, client, usher, press, phonograph), path => LRigFactory.LRigFactoryBuild(path, client, usher, press, phonograph), LWorkspaceRoot.LWorkspaceRootChange)`
 
 The engine opens the workspace: settings, database file, and schema.
 The engine receives every adapter through the rig and references Infrastructure nowhere.
@@ -79,11 +79,11 @@ The first step once the engine exists, so a fault in any later step is recorded.
 Built before the window, because the catalog step reads the stored language through it.
 The atelier then takes this same outlet.
 
-## `bootstrap.QBootstrapCatalogApply(`
+## `bootstrap.QBootstrapCatalogApply(() => LLocalization.LLocalizationDefaultCheck(settings.LEngineSettingsRead().LSettingsLocalization), () => settings.LEngineLocalizationLoad(LLocalization.LLocalizationNormalize(settings.LEngineSettingsRead().LSettingsLocalization)))`
 
 It runs before the rescue consult, so the rescue notice speaks the stored language.
 
-## `bootstrap.QBootstrapWindowShow(new QWindow(new CAtelier(`
+## `bootstrap.QBootstrapWindowShow(new QWindow(new CAtelier(new LPosture(engine), new LDraftOutlet(engine), new LEntryOutlet(engine), settings, new LPhonologyOutlet(engine), new LMediaOutlet(engine), new LPortraitOutlet(engine))))`
 
 The host builds Conduct's root and hands it to the deportment's window, so `QBootstrap` builds nothing.
 The root takes the posture and one outlet per port, all over the one engine.

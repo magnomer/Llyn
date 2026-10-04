@@ -1,7 +1,7 @@
 # LTagRow.cs
 Hash: `9102f844e4387a6d`
 
-## `public sealed record LTagRow(`
+## `public sealed record LTagRow(long LTagRowId, string LTagRowLead, string LTagRowMark, string LTagRowTail)`
 
 One stored Tag a tag field offers, its text already split around the typed word.
 

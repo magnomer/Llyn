@@ -1,7 +1,7 @@
 # LHypothesisLocus.cs
 Hash: `ea88078b2a91068d`
 
-## `public sealed record LHypothesisLocus(`
+## `public sealed record LHypothesisLocus(string LHypothesisLocusName, IReadOnlyList<string> LHypothesisLocusInitials)`
 
 One articulatory place of the user's reconstruction, such as the labials, and the initials it gathers.
 The places section a rime's category page, in the order the pack lists them.

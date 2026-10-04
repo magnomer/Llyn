@@ -1,7 +1,7 @@
 # LTombstone.cs
 Hash: `4fc6cedac3c38688`
 
-## `public sealed record LTombstone(`
+## `public sealed record LTombstone(long LTombstoneEntryId, long LTombstoneRevisionId, string LTombstoneDeletedUtc)`
 
 The record that an Entry was deleted: which Entry, under which revision, and when.
 A tombstone outlives the Entry it names.

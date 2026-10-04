@@ -1,5 +1,5 @@
 # TGuildAutograph.cs
-Hash: `516f076690917cf3`
+Hash: `998d9cdbf1450e85`
 
 ## `public sealed class TGuildAutograph`
 
@@ -8,3 +8,4 @@ A typed name on a fresh Author is stored and chosen, and with no tenure held it 
 Opening a stored Author to read clears nothing, and writing it tells the driver once to clear the union.
 A draft notice runs through the marshal the panel is built with and shows the held name once.
 The draft is persisted before the notice, so the deferred name raises no second notice.
+Only the first test sets the edit delay to zero.

@@ -7,7 +7,7 @@ The one place `new L*Archive`, `new L*Loader`, `new L*File` and `new L*Http` are
 The composition root calls it once at start and once per workspace change, and hands the rig to the engine.
 The engine itself contains the use cases and builds none of the adapters they run on.
 
-## `public static LRig LRigFactoryBuild(`
+## `public static LRig LRigFactoryBuild(string workspace, HttpClient client, LUsher usher, LPress press, LPhonograph phonograph)`
 
 Builds every adapter over the workspace at `workspace` and bundles them as one rig.
 The usher, the press and the phonograph are handed in, since all live in Core.Windows, which this project never references.

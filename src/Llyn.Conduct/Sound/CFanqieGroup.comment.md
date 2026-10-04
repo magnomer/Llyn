@@ -1,7 +1,7 @@
 # CFanqieGroup.cs
 Hash: `e29afd04aaf88d65`
 
-## `public sealed record CFanqieGroup(`
+## `public sealed record CFanqieGroup(string CFanqieGroupHeading, string CFanqieGroupLabel, string CFanqieGroupSource, IReadOnlyList<string> CFanqieGroupStems, IReadOnlyList<CFanqieRow> CFanqieGroupRows)`
 
 The fanqie readings of one character in one book, as the fanqie table groups them.
 

@@ -1,7 +1,7 @@
 # TMarkupOutcome.cs
 Hash: `3ad813ad243474aa`
 
-## `internal sealed record TMarkupOutcome(`
+## `internal sealed record TMarkupOutcome(IReadOnlyList<LEntry> TMarkupOutcomeEntry, IReadOnlyList<LMarkupOmission> TMarkupOutcomeOmission)`
 
 What a test import produced, as the import tests read it.
 The engine reports only what the import left behind.

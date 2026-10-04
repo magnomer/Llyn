@@ -1,5 +1,5 @@
 # LSituationFacade.cs
-Hash: `b67bd157bc6b1375`
+Hash: `8cccf96466ce439f`
 
 ## `internal sealed class LSituationFacade`
 
@@ -7,7 +7,7 @@ The Situation half of the engine.
 A Situation is independent data owned by nothing and referenced by any number of cards.
 Every read and write goes through the situation clerk under the gate, and every change is announced here.
 The vista overload stays here, because a vista is the shell's and the twin names are numbered per panel.
-The situation draft starts and commits here too, through the citation clerk.
+The situation draft starts and commits here too, through the `LSituationCitation` the citation clerk holds.
 
 ## `public LSituationFacade(LEngine engine)`
 

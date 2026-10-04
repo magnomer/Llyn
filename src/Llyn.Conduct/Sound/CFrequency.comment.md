@@ -1,7 +1,7 @@
 # CFrequency.cs
 Hash: `73ccde2d55b7f548`
 
-## `public sealed record CFrequency(`
+## `public sealed record CFrequency(int CFrequencyBand, string CFrequencySource, string CFrequencyRank, int CFrequencySpare, bool CFrequencyRanked)`
 
 The frequency of an entry, as the frequency chip shows it.
 A missing frequency is a null shape, so the chip hides.

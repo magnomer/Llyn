@@ -48,7 +48,7 @@ It is the same fold the database's `lfold` helper applies.
 A match made in memory therefore agrees with one made in a query.
 Every place that asks whether two typed wordings name one row folds both sides with this.
 
-## `public static (string LCatalogMarkLead, string LCatalogMarkText, string LCatalogMarkTail) LCatalogMarkFind(`
+## `public static (string LCatalogMarkLead, string LCatalogMarkText, string LCatalogMarkTail)`
 
 Splits a found text around the first place the typed word stands in it, ignoring case in the current culture.
 A picker draws the middle piece in weight, so a reader sees why the row is offered.

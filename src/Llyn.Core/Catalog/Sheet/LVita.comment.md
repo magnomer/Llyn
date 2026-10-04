@@ -1,14 +1,14 @@
 # LVita.cs
 Hash: `287c01caa33e411b`
 
-## `public sealed record LVita(`
+## `public sealed record LVita(string LVitaName, bool LVitaNamed, string LVitaWork, string LVitaTally, IReadOnlyList<LFellow> LVitaFellows, IReadOnlyList<LUsage> LVitaUsages)`
 
 The read sheet of one Author: every text already decided, so the vita page writes and never branches.
 The name falls back to the unnamed label when the stored name is blank, and the flag says so.
 The work and citation sentences are composed here from the counts the catalog row carries.
 The fellows and the citing places travel as rows for the veneer to copy.
 
-## `public static LVita LVitaCreate(`
+## `public static LVita LVitaCreate(LCatalogAuthor? row, IReadOnlyList<LFellow> fellows, IReadOnlyList<LUsage> usages, Func<string, string> localize)`
 
 Composes the sheet from the catalog row, the fellows and the usages of one Author.
 A missing row composes the sheet of nobody, so a fresh author draft still shows zero counts.

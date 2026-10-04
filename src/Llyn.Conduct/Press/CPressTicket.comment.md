@@ -1,7 +1,7 @@
 # CPressTicket.cs
 Hash: `c3b0099fa14be1fa`
 
-## `public sealed record CPressTicket(`
+## `public sealed record CPressTicket(string CPressTicketPrinter, double? CPressTicketWidth, double? CPressTicketHeight, bool CPressTicketLandscape, int CPressTicketCopies, bool CPressTicketCollated, CPressSide CPressTicketSide, CPressInk CPressTicketInk)`
 
 What the print dialog answered, as a driver's envoy answers the gate's question.
 `CPortrait` turns it into the engine's ticket.

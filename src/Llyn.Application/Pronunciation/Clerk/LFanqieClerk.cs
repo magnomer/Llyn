@@ -264,7 +264,7 @@ public sealed class LFanqieClerk
             TimeSpan left = _lFanqieClerkStamp - _lFanqieClerkClock.LClockRead();
             if (left > TimeSpan.Zero)
             {
-                await Task.Delay(left, cancellation).ConfigureAwait(false);
+                await _lFanqieClerkClock.LClockPause(left, cancellation).ConfigureAwait(false);
             }
 
             (IReadOnlyList<LFanqieRow> found, bool answered) = await _lFanqieClerkSource

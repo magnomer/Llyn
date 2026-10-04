@@ -134,4 +134,22 @@ public sealed class TEngineTenureSubject
         Assert.Equal("Ada Lovelace", engine.TEngineAuthorRead(author.LAuthorId)?.LAuthorName);
         Assert.Single(engine.TEngineAuthorFind(string.Empty));
     }
+
+    [Fact]
+    public void TenureFinish_Unnamed_RefusesAuthor()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        LAuthor author = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
+
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectAuthor, author.LAuthorId);
+        tenure.TTenureRequestDefer(TInterface.TAuthorNameCreate(tenure.LTenureId, "  "));
+
+        LRefusal refused = Assert.Throws<LRefusal>(() => tenure.TTenureFinish(true));
+
+        Assert.Equal(LRefusal.LRefusalName, refused.LRefusalReason);
+        Assert.Equal("Ada", engine.TEngineAuthorRead(author.LAuthorId)?.LAuthorName);
+        tenure.TTenureCancel();
+    }
 }

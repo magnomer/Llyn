@@ -1,5 +1,5 @@
 # CEditor.cs
-Hash: `ed33e239ce4894c0`
+Hash: `d703df4a6fdbe8a9`
 
 ## `public sealed class CEditor`
 
@@ -17,9 +17,10 @@ The vista of the tab the editor serves, which says whether it is the input tab's
 Whether the draft being stored stood on no entry, written just before each finish.
 A fresh store on the input tab reopens a blank draft, while every other store reopens what was stored.
 
-## `internal CEditor(`
+## `internal CEditor(LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media, CEnvoy envoy)`
 
 Every editor's desk takes the `Input` scope, so its failure notices use the input wording on any tab.
+The sound facts take `envoy` too, so a failed flag load shows its notice.
 
 ## `public static CEditor CEditorCreate(CAtelier atelier, CEnvoy envoy)`
 

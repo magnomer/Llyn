@@ -1,7 +1,7 @@
 # LPostureState.cs
 Hash: `ea33d7f7b2e30456`
 
-## `public sealed record LPostureState(`
+## `public sealed record LPostureState(IReadOnlyList<LLayout>? LPostureStateLayout = null, string? LPostureStateMode = null, bool LPostureStateSplit = false, double LPostureStateVolume = 1)`
 
 How the session stands in every medium: each tab's listing, the open tab, the split and the volume.
 Window geometry and panel widths are GUI-only, so the GUI driver keeps them in its own Capsule.

@@ -1,5 +1,5 @@
 # QReflex.cs
-Hash: `6f0ee9c29bd0b34b`
+Hash: `2824189e8841c079`
 
 ## `internal sealed class QReflex`
 
@@ -85,7 +85,8 @@ Brings a row up to the ready reflex in place, its mark and fold included.
 
 ## `internal QReflex(FrameworkElement surface, QAnchor anchor)`
 
-Hands the reflex list its rows and fill, and binds the row commands on the sound panel.
+Binds the reflex list to its rows and attaches its look, quill and control behaviour.
+It also binds the row commands on the sound panel.
 The anchor command is heard by the anchor menu's Observe on `QAnchor`.
 The fetch-again command is bound on its own button, as the markup had it.
 The fold switch is subscribed both ways, since one handler reads its state.

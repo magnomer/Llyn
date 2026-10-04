@@ -1,7 +1,7 @@
 # CProspect.cs
 Hash: `ff7d458631523cb8`
 
-## `public sealed record CProspect(`
+## `public sealed record CProspect(string CProspectText, string CProspectWord, IReadOnlyList<CVistaRow> CProspectRows, bool CProspectShown, bool CProspectChosen, IReadOnlyList<string> CProspectLanguages)`
 
 What a translation field keeps after a gate, and the dropdown of Entries it offers, ready to show.
 

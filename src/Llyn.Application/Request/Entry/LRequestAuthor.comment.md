@@ -5,7 +5,7 @@ The author requests of the sources panel.
 The credits of a source are an ordered list held on the draft, so they take the four structural nouns.
 An author is a shared row, so a credit is added by name or picked by id, never edited here.
 
-## `public sealed record LRequestAuthorAddition(`
+## `public sealed record LRequestAuthorAddition(long LRequestDraftId, string LRequestText, int LRequestPosition, long LRequestFormerId = 0)`
 
 Credits a new author with the typed name at `LRequestPosition`.
 The engine mints the id, and commit creates the row before attaching it.
@@ -13,7 +13,7 @@ The engine mints the id, and commit creates the row before attaching it.
 A name that resolves to the former Author itself changes nothing.
 A name matching a known author reuses that author instead of minting one.
 
-## `public sealed record LRequestAuthorPick(`
+## `public sealed record LRequestAuthorPick(long LRequestDraftId, long LRequestAuthorId, int LRequestPosition, long LRequestFormerId = 0)`
 
 Credits an existing author at `LRequestPosition`.
 An author already credited is left as it is.

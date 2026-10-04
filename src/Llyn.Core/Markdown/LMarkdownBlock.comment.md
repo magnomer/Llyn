@@ -1,7 +1,7 @@
 # LMarkdownBlock.cs
 Hash: `e7255d50d2b302f8`
 
-## `public sealed record LMarkdownBlock(`
+## `public sealed record LMarkdownBlock(LMarkdownKind LMarkdownBlockKind, int LMarkdownBlockLevel, IReadOnlyList<LMarkdownSpan> LMarkdownBlockSpan, string LMarkdownBlockText, int LMarkdownBlockOrdinal = 0)`
 
 One block of a parsed note, in reading order.
 Blocks are flat, so a nested list is a run of items whose level grows.

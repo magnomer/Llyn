@@ -19,24 +19,29 @@ public sealed class CTimbre
 
     private readonly LSettingsPort _cTimbreSettingsPort;
 
+    private readonly CEnvoy _cTimbreEnvoy;
+
     internal CTimbre(
         CDesk desk,
         LPhonologyPort phonology,
         LDisplay display,
         LDraftPort drafts,
-        LSettingsPort settings)
+        LSettingsPort settings,
+        CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(display);
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(envoy);
 
         _cTimbreDesk = desk;
         _cTimbrePhonologyPort = phonology;
         _cTimbreDisplay = display;
         _cTimbreDraftPort = drafts;
         _cTimbreSettingsPort = settings;
+        _cTimbreEnvoy = envoy;
         desk.CDeskDraftPrepared += LTimbreReflexStart;
     }
 
@@ -118,8 +123,9 @@ public sealed class CTimbre
                 ? LTimbreAccentRead(sheet)
                 : null;
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            CLedger.LLedgerFailureShow(_cTimbreEnvoy, _cTimbreSettingsPort, "Sound.LoadFailed", exception);
             return null;
         }
     }
@@ -173,13 +179,7 @@ public sealed class CTimbre
 
     private void LTimbreReflexStart(LDraft _)
     {
-        try
-        {
-            _cTimbreDesk.CDeskTenure?.LTenureReflexStart();
-        }
-        catch (Exception)
-        {
-        }
+        _cTimbreDesk.CDeskTenure?.LTenureReflexStart();
     }
 
     public void CTimbreReflexRebuild()

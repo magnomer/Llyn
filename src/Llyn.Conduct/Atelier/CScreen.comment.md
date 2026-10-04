@@ -1,7 +1,7 @@
 # CScreen.cs
 Hash: `060eb21146468883`
 
-## `public sealed record CScreen(`
+## `public sealed record CScreen(Uri CScreenAddress, string? CScreenFilm)`
 
 What a video screen plays, as the engine read it from a stored location.
 

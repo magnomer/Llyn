@@ -15,7 +15,7 @@ The brush suffix of the stars past the earned count.
 
 A four-pointed star, so the row cannot be mistaken for the five-pointed grasp stars.
 
-## `internal static void QFrequencyChipRefine(`
+## `internal static void QFrequencyChipRefine(UIElement section, FrameworkElement chip, TextBlock name, TextBlock band, CFrequency? frequency)`
 
 Fills one whole frequency section with the chip's name, star row and source tooltip.
 A null frequency collapses the section, so both surfaces hide it the same way.

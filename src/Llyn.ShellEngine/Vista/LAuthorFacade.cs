@@ -228,7 +228,7 @@ internal sealed class LAuthorFacade
         lock (_lAuthorFacadeGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(origin);
-            return LAuthorFacadeStaff.LEngineStaffCitation.LAuthorStart(origin, authorId);
+            return LAuthorFacadeStaff.LEngineStaffCitation.LCitationClerkAuthor.LAuthorCitationStart(origin, authorId);
         }
     }
 
@@ -239,7 +239,7 @@ internal sealed class LAuthorFacade
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             _lAuthorFacadeEngine.LEngineDraft.LEngineDraftValidate(id);
-            settled = LAuthorFacadeStaff.LEngineStaffCitation.LAuthorCommit(id);
+            settled = LAuthorFacadeStaff.LEngineStaffCitation.LCitationClerkAuthor.LAuthorCitationCommit(id);
         }
 
         _lAuthorFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectAuthor, settled.LAuthorId);

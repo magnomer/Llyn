@@ -1,5 +1,5 @@
 # LAuthorFacade.cs
-Hash: `39a9c5f2bcb8e1e7`
+Hash: `13c7b382cdaa4a72`
 
 ## `internal sealed class LAuthorFacade`
 
@@ -7,7 +7,7 @@ The engine's facade for Authors.
 It provides the workspace browsed by the people its Sources credit.
 Every read and write goes through the author clerk under the gate, and every change is announced here.
 The vista overloads stay here, because a vista is the shell's and the twin names are numbered per panel.
-The author draft starts and commits here too, through the citation clerk.
+The author draft starts and commits here too, through the `LAuthorCitation` the citation clerk holds.
 
 ## `public LAuthorFacade(LEngine engine)`
 

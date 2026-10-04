@@ -1,7 +1,7 @@
 # LMentionLabel.cs
 Hash: `3b945f646dfa9f9b`
 
-## `public sealed record LMentionLabel(`
+## `public sealed record LMentionLabel(long LMentionLabelId, string LMentionLabelWord, long LMentionLabelEntry, string LMentionLabelName, string LMentionLabelSense)`
 
 One Mention of a sentence as the engine hands it to a chip line, its words already read.
 The line shows it and reads nothing more.

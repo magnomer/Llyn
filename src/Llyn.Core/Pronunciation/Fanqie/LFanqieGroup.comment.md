@@ -1,7 +1,7 @@
 # LFanqieGroup.cs
 Hash: `94e4cc192f546564`
 
-## `public sealed record LFanqieGroup(`
+## `public sealed record LFanqieGroup(string LFanqieGroupHeading, string LFanqieGroupLabel, string LFanqieGroupSource, IReadOnlyList<LFanqieRow> LFanqieGroupRows, IReadOnlyList<string>? LFanqieGroupStems = null)`
 
 One block of the fanqie box: the rows of one character from one book and source.
 The engine groups the rows, so the shell only draws the blocks it is handed.
@@ -14,7 +14,7 @@ The engine groups the rows, so the shell only draws the blocks it is handed.
 - `LFanqieGroupRows` — The rows of the block, as the archive stores them.
 - `LFanqieGroupStems` — The character's phonetic series as separate keys, carried only by its first block.
 
-## `public static IReadOnlyList<LFanqieGroup> LFanqieGroupScan(`
+## `public static IReadOnlyList<LFanqieGroup> LFanqieGroupScan(IReadOnlyList<LFanqieRow> rows, IReadOnlyList<LFanqieBook> books, IReadOnlyList<LShengfu>? shengfu = null, string separator = "")`
 
 Groups the rows by character and then by book, in the order the pack lists the books.
 The series of a character is put on its first block alone, so the line is printed once.

@@ -1,7 +1,7 @@
 # LMention.cs
 Hash: `1d50d63feeca5f28`
 
-## `public sealed record LMention(`
+## `public sealed record LMention(long LMentionId, int LMentionOffset, int LMentionLength, long LMentionEntryId, long LMentionSenseId = 0)`
 
 One word inside an Example that stands for an Entry.
 It holds the span of the sentence text the word occupies and the Entry it points at.

@@ -1,7 +1,7 @@
 # LVideo.cs
 Hash: `99c10bad4f5c23b8`
 
-## `public sealed record LVideo(`
+## `public sealed record LVideo(long LVideoId, LStateValue LVideoLocation, LStateValue LVideoSpan)`
 
 One Video, independent data owned by nothing.
 No Entry, Meaning, or Collocation contains a Video.

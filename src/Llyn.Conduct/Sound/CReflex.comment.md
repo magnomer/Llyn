@@ -1,7 +1,7 @@
 # CReflex.cs
 Hash: `5a79375ca7318d5f`
 
-## `public sealed record CReflex(`
+## `public sealed record CReflex(long CReflexId, string CReflexLanguage, string CReflexKind, string CReflexText, string CReflexRomanization, string CReflexMeaning, string CReflexNote, bool CReflexMain, string CReflexRegion, IReadOnlyList<long> CReflexAnchors, CRespellingMark CReflexMark, bool CReflexFolded, bool CReflexLead)`
 
 One reflex row of an entry, ready to show in the editor or the reading view.
 Conduct resolved its text and its mark, so no driver asks the pack about the row.

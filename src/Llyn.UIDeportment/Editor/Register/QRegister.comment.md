@@ -11,7 +11,7 @@ A chip or caret item's data context is the item, not the card.
 So each handler finds the owning card by asking which card's collection holds the item.
 Reaching the entry itself is shared with the Tag field, which is written the same way.
 
-## `internal QRegister(`
+## `internal QRegister(FrameworkElement surface, ObservableCollection<PCard> meaning, ObservableCollection<PCard> collocation)`
 
 Holds the editor scope, since this driver has no control of its own to wire.
 It holds the two card lists the editor keeps, which its finds walk.

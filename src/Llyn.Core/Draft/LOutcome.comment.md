@@ -1,7 +1,7 @@
 # LOutcome.cs
 Hash: `a1f449a024fa30b3`
 
-## `public sealed record LOutcome(`
+## `public sealed record LOutcome(LEntry LOutcomeEntry, IReadOnlyDictionary<long, long> LOutcomeIdentity)`
 
 What one draft commit produced.
 It is plain data and knows nothing of files or the database.

@@ -107,7 +107,7 @@ public sealed class CShelf
     public bool CShelfBinEnabled => !LShelfEntrySide && CShelfPanel.CPanelBinEnabled;
 
     public bool CShelfStoreEnabled =>
-        LShelfEntrySide ? CShelfEditor.CEditorDesk.CDeskStorable : CShelfImprint.CImprintDesk.LDeskChangeCheck();
+        (LShelfEntrySide ? CShelfEditor.CEditorDesk : CShelfImprint.CImprintDesk).CDeskStorable;
 
     public bool CShelfPressAllowed => CShelfFootnote.CFootnotePanel.CPanelPressAllowed || LShelfSourcePrintable;
 

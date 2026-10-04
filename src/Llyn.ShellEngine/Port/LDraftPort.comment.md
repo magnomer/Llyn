@@ -119,7 +119,7 @@ A field's selection as the span a Mention request carries, measured in code poin
 
 Whether a field's selection covers any code point, so a link command may run.
 
-## `IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(`
+## `IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)`
 
 The Meanings the sense menu offers for the linked Mention under a sentence field's selection.
 Pending typing is persisted before the find, and no linked Mention answers null.

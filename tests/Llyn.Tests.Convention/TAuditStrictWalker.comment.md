@@ -1,5 +1,5 @@
 # TAuditStrictWalker.cs
-Hash: `b278297806b26526`
+Hash: `723eb9e5bd2465ff`
 
 ## `internal static class TAuditStrictWalker`
 
@@ -10,6 +10,7 @@ Partial types are joined by symbol, and one surface part makes the whole type a 
 ## `public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> sourcePaths, out List<string> veneers)`
 
 Groups every type of the UI sources, then scans hoarding, meddling, prying and freelancing per surface type.
+The meddling scan of each member lives in `TAuditStrictMeddling`.
 Every surface file is also scanned for homoglyphs, enums and delegates.
 Outside the surfaces only a mutable static field is a hit.
 The surface type names come back for the report.
@@ -39,44 +40,6 @@ A constructor is the one member the shell keeps.
 
 True for a property whose accessors have no body, which stores a value.
 
-## `private static void TAuditMeddlingScan(`
-
-One hit per line of a surface member that is not a plain call.
-Every statement nested in a breach is a breach of its own line, so a long branch counts in full.
-The hit names the syntax kind that broke the rule.
-
-## `private static IEnumerable<SyntaxNode> TAuditNestRead(SyntaxNode breach)`
-
-The breach and every statement or switch arm inside it.
-
-## `private static IEnumerable<SyntaxNode> TAuditBodyRead(MemberDeclarationSyntax member)`
-
-Every body of a member, meaning block, arrow, accessor bodies and a constructor initializer's arguments.
-A field or property initializer is a body too, so a lambda there cannot hide its logic.
-
-## `private static void TAuditBodyScan(SyntaxNode body, List<SyntaxNode> breaches)`
-
-A block must hold only call statements, and an arrow, lambda body or initializer must be one call.
-
-## `private static void TAuditStatementScan(StatementSyntax statement, List<SyntaxNode> breaches)`
-
-A statement passes as a call statement or as a `return` of a call.
-Any other statement is a breach, whether a branch, a loop, a declaration or a `try`.
-
-## `private static void TAuditInvocationScan(ExpressionSyntax expression, List<SyntaxNode> breaches)`
-
-The expression must be a call on a name or a plain member chain, with plain arguments.
-A call to a query type's method is a breach, whether given a lambda or a method group.
-
-## `private static void TAuditArgumentScan(ArgumentListSyntax arguments, List<SyntaxNode> breaches)`
-
-Every argument must be a plain operand, and a `ref`, `in` or `out` argument is a breach.
-
-## `private static void TAuditOperandScan(ExpressionSyntax operand, List<SyntaxNode> breaches)`
-
-A plain operand is a name, `this`, `base`, a type, a literal, a member chain, a call or a lambda.
-An operator, an assignment, a `new`, a cast, an `await` or a `?.` is a breach.
-
 ## `private static void TAuditEngineScan(SyntaxNode part, string owner, List<TViolation> violations)`
 
 One prying hit per line of a surface declaration naming a type from below the driver.
@@ -86,25 +49,6 @@ Nested types are left to their own scan.
 
 One hit per identifier holding a character outside ASCII, under the homoglyph kind.
 The surface walk and the driver walk each count it under their own audit.
-
-## `public static ExpressionSyntax TAuditCoreRead(ExpressionSyntax condition)`
-
-The condition unwrapped from parentheses and negation.
-Any other prefix operator stops the unwrapping and is returned as the core.
-
-## `public static bool TAuditPatternCheck(PatternSyntax pattern)`
-
-True for a null constant, its negation, an empty property pattern or a type pattern.
-A declaration or `var` pattern that only names the value also passes.
-
-## `public static bool TAuditNullCheck(ExpressionSyntax expression)`
-
-True for the `null` or `default` literal.
-
-## `public static bool TAuditDataCheck(SyntaxNode node)`
-
-True when any name inside the node resolves below Conduct, by its symbol or by its type.
-A Conduct value is the driver's to reshape, so it is not data here.
 
 ## `public static string TAuditMemberRead(MemberDeclarationSyntax member)`
 

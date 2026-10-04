@@ -1,7 +1,7 @@
 # CExample.cs
 Hash: `432033e6ca4b834f`
 
-## `public sealed record CExample(`
+## `public sealed record CExample(string CExampleLanguage, CStateValue CExampleText, long? CExampleSource, string CExampleCitation, string CExampleTally, IReadOnlyList<CGlossDraft> CExampleGloss, IReadOnlyList<CMentionPiece> CExamplePiece)`
 
 One stored Example, as the corpus transcript and excerpt read it.
 

@@ -1,7 +1,7 @@
 # LMarkupEntry.cs
 Hash: `e1b4805e09e19620`
 
-## `public sealed record LMarkupEntry(`
+## `public sealed record LMarkupEntry(string LMarkupEntryHeadword, string LMarkupEntryLanguage, IReadOnlyList<string>? LMarkupEntrySpeech = null, IReadOnlyList<LForm>? LMarkupEntryForm = null, IReadOnlyList<LMarkupInflection>? LMarkupEntryInflection = null, IReadOnlyList<LPronunciationDraft>? LMarkupEntryPronunciation = null, IReadOnlyList<LTranscriptionDraft>? LMarkupEntryTranscription = null, IReadOnlyList<LReflexDraft>? LMarkupEntryReflex = null, IReadOnlyList<LMarkupCard>? LMarkupEntryMeaning = null, IReadOnlyList<LMarkupCard>? LMarkupEntryCollocation = null, string LMarkupEntryNote = "", int LMarkupEntryLine = 0, LMarkupEtymology? LMarkupEntryEtymology = null, IReadOnlyList<LMarkupEtymon>? LMarkupEntryEtymon = null)`
 
 One entry as a markup file carries it, with no id anywhere in it.
 Every link is by natural key, a headword and a language, and every row stands in file order.

@@ -1,6 +1,6 @@
 # Source line report - 0.17.12900
 
-- Generated: 2026-10-04 02:03:55 +09:00
+- Generated: 2026-10-04 09:33:46 +09:00
 - Source roots: D:\Programming\Llyn\src; D:\Programming\Llyn\tests
 - Counted extensions: .cs, .csproj, .xaml
 - Excluded directories: .git, .vs, artifacts, bin, node_modules, obj, packages, publish
@@ -11,20 +11,20 @@
 | Metric | Value |
 |--------|------:|
 | Folders | 18 |
-| Counted files | 1,758 |
-| Physical lines | 218,753 |
-| Non-blank lines | 185,301 |
-| Blank lines | 33,452 |
-| Total bytes | 8,397,448 |
+| Counted files | 1,790 |
+| Physical lines | 219,920 |
+| Non-blank lines | 186,321 |
+| Blank lines | 33,599 |
+| Total bytes | 8,450,426 |
 | Files over 500 lines | 0 |
-| Files at 401-500 lines | 29 |
+| Files at 401-500 lines | 13 |
 | Lines over the width limit | 0 |
-| Lines within 5 columns of the width limit | 1,084 |
+| Lines within 5 columns of the width limit | 1,087 |
 | Enforced | yes |
 | Length above ceiling | 0 |
 | Width above ceiling | 0 |
 | Stale ceilings | 0 |
-| Largest folder | scripts (33,177 lines) |
+| Largest folder | scripts (33,559 lines) |
 
 ## Files over 500 lines
 
@@ -34,34 +34,18 @@ None.
 
 | Lines | Non-blank | Folder | File |
 |------:|----------:|--------|------|
-| 499 | 414 | src / ShellEngine | src/Llyn.ShellEngine/Tenure/LTenure.cs |
-| 497 | 404 | src / Conduct | src/Llyn.Conduct/Panel/CCorpus.cs |
-| 487 | 394 | src / Conduct | src/Llyn.Conduct/Panel/CRepertoire.cs |
-| 478 | 393 | src / Conduct | src/Llyn.Conduct/Panel/CPanel.cs |
-| 478 | 428 | tests / Tests.Convention | tests/Llyn.Tests.Convention/TAuditOriginWalker.cs |
-| 478 | 425 | tests / Tests.Convention | tests/Llyn.Tests.Convention/TAuditTruthWalker.cs |
-| 475 | 414 | tests / Tests.Convention | tests/Llyn.Tests.Convention/TAuditComment.cs |
-| 473 | 419 | tests / Tests.Convention | tests/Llyn.Tests.Convention/TAuditRatchet.cs |
-| 462 | 409 | tests / Tests.Convention | tests/Llyn.Tests.Convention/TAuditFakeWalker.cs |
-| 462 | 417 | tests / Tests.Convention | tests/Llyn.Tests.Convention/TAuditStrictWalker.cs |
-| 458 | 382 | src / Application | src/Llyn.Application/Draft/Clerk/LDraftClerkChip.cs |
-| 457 | 401 | src / Application | src/Llyn.Application/Pronunciation/Clerk/LReflexClerk.cs |
-| 448 | 375 | src / UIDeportment | src/Llyn.UIDeportment/Kit/Field/QField.cs |
+| 495 | 402 | src / Conduct | src/Llyn.Conduct/Panel/CCorpus.cs |
+| 485 | 392 | src / Conduct | src/Llyn.Conduct/Panel/CRepertoire.cs |
+| 479 | 394 | src / Conduct | src/Llyn.Conduct/Panel/CPanel.cs |
 | 447 | 416 | src / UIVeneer | src/Llyn.UIVeneer/Editor/Core/PEditor.xaml |
-| 446 | 346 | src / UIDeportment | src/Llyn.UIDeportment/Display/View/QDisplay.cs |
+| 442 | 353 | src / Conduct | src/Llyn.Conduct/Desk/CDesk.cs |
 | 441 | 355 | src / Conduct | src/Llyn.Conduct/Panel/CShelf.cs |
-| 436 | 370 | src / UIDeportment | src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs |
-| 429 | 342 | src / Conduct | src/Llyn.Conduct/Desk/CDesk.cs |
 | 428 | 423 | tests / Tests.Convention | tests/Llyn.Tests.Convention/TAuditNameRegistry.cs |
-| 421 | 378 | src / UIDeportment | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs |
-| 416 | 350 | src / Application | src/Llyn.Application/Citation/LCitationClerk.cs |
-| 415 | 382 | src / Core | src/Llyn.Core/Markup/Node/LMarkupReader.cs |
-| 412 | 329 | src / Conduct | src/Llyn.Conduct/Panel/CGuild.cs |
 | 412 | 393 | src / UIVeneer | src/Llyn.UIVeneer/Panel/Corpus/PCorpus.xaml |
 | 411 | 333 | src / Conduct | src/Llyn.Conduct/Panel/CYunjing.cs |
-| 410 | 351 | src / Application | src/Llyn.Application/Draft/Clerk/LDraftClerkEquality.cs |
+| 408 | 325 | src / Conduct | src/Llyn.Conduct/Panel/CGuild.cs |
 | 408 | 315 | src / UIDeportment | src/Llyn.UIDeportment/Sound/Fanqie/QYunjing.cs |
-| 405 | 341 | src / Conduct | src/Llyn.Conduct/Display/CDisplaySound.cs |
+| 406 | 342 | src / Conduct | src/Llyn.Conduct/Display/CDisplaySound.cs |
 | 404 | 378 | src / UIVeneer | src/Llyn.UIVeneer/Panel/Repertoire/PRepertoire.xaml |
 
 ## Lines over the width limit (.cs 120, .xaml 200)
@@ -73,33 +57,37 @@ None.
 | Width | Limit | Line |
 |------:|------:|------|
 | 116 | 120 | src/Llyn.Application/Card/LCardClerk.cs:260 |
+| 116 | 120 | src/Llyn.Application/Card/LCardEquality.cs:161 |
 | 116 | 120 | src/Llyn.Application/Card/LMeaningClerk.cs:54 |
 | 119 | 120 | src/Llyn.Application/Card/LRegisterClerk.cs:58 |
+| 117 | 120 | src/Llyn.Application/Card/LRegisterClerk.cs:206 |
 | 119 | 120 | src/Llyn.Application/Card/LTagClerk.cs:57 |
 | 120 | 120 | src/Llyn.Application/Card/LTranslationClerk.cs:169 |
-| 117 | 120 | src/Llyn.Application/Citation/LCitationClerk.cs:87 |
-| 116 | 120 | src/Llyn.Application/Citation/LCitationClerk.cs:167 |
-| 116 | 120 | src/Llyn.Application/Citation/LCitationClerk.cs:235 |
-| 120 | 120 | src/Llyn.Application/Citation/LCitationClerk.cs:411 |
+| 118 | 120 | src/Llyn.Application/Citation/LAuthorCitation.cs:70 |
+| 119 | 120 | src/Llyn.Application/Citation/LCitationClerk.cs:123 |
+| 118 | 120 | src/Llyn.Application/Citation/LExampleCitation.cs:67 |
+| 117 | 120 | src/Llyn.Application/Citation/LExampleCitation.cs:71 |
 | 116 | 120 | src/Llyn.Application/Citation/LExampleClerk.cs:112 |
 | 119 | 120 | src/Llyn.Application/Citation/LFavoriteClerk.cs:22 |
+| 120 | 120 | src/Llyn.Application/Citation/LReferenceCitation.cs:42 |
+| 120 | 120 | src/Llyn.Application/Citation/LSituationCitation.cs:34 |
 | 116 | 120 | src/Llyn.Application/Citation/LSituationClerk.cs:173 |
 | 116 | 120 | src/Llyn.Application/Citation/LSituationClerk.cs:174 |
-| 120 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerk.cs:60 |
-| 118 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerk.cs:72 |
-| 120 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerk.cs:85 |
-| 120 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerk.cs:197 |
-| 120 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerk.cs:202 |
+| 120 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerk.cs:64 |
+| 118 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerk.cs:76 |
+| 120 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerk.cs:89 |
+| 120 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerk.cs:201 |
+| 120 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerk.cs:206 |
 | 120 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerkCard.cs:45 |
 | 119 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerkCard.cs:85 |
 | 118 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerkCard.cs:194 |
-| 120 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerkChip.cs:247 |
-| 118 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerkChip.cs:269 |
-| 120 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerkChip.cs:438 |
-| 119 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerkEquality.cs:22 |
+| 120 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerkChip.cs:135 |
+| 119 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerkEquality.cs:21 |
 | 117 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerkList.cs:126 |
 | 117 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerkPanel.cs:70 |
 | 119 | 120 | src/Llyn.Application/Draft/Clerk/LDraftClerkPanel.cs:105 |
+| 120 | 120 | src/Llyn.Application/Draft/Clerk/LRegisterChip.cs:69 |
+| 118 | 120 | src/Llyn.Application/Draft/Clerk/LRegisterChip.cs:91 |
 | 116 | 120 | src/Llyn.Application/Draft/Court/LCourtClerk.cs:121 |
 | 119 | 120 | src/Llyn.Application/Draft/Court/LOutcomeClerk.cs:51 |
 | 118 | 120 | src/Llyn.Application/Draft/Row/LDraftClerkGloss.cs:101 |
@@ -128,9 +116,9 @@ None.
 | 116 | 120 | src/Llyn.Application/Pronunciation/Clerk/LPronunciationClerk.cs:205 |
 | 118 | 120 | src/Llyn.Application/Pronunciation/Clerk/LRecordingClerk.cs:18 |
 | 120 | 120 | src/Llyn.Application/Pronunciation/Clerk/LRecordingClerk.cs:130 |
-| 119 | 120 | src/Llyn.Application/Pronunciation/Clerk/LReflexClerk.cs:267 |
 | 118 | 120 | src/Llyn.Application/Pronunciation/Clerk/LReflexClerkEpithet.cs:73 |
 | 116 | 120 | src/Llyn.Application/Pronunciation/Clerk/LReflexClerkRow.cs:9 |
+| 119 | 120 | src/Llyn.Application/Pronunciation/Clerk/LReflexFetch.cs:155 |
 | 116 | 120 | src/Llyn.Application/Pronunciation/Clerk/LScriptClerk.cs:18 |
 | 117 | 120 | src/Llyn.Application/Pronunciation/Clerk/LShengfuClerk.cs:21 |
 | 117 | 120 | src/Llyn.Application/Pronunciation/Clerk/LTranscriptionClerk.cs:17 |
@@ -151,14 +139,14 @@ None.
 | 117 | 120 | src/Llyn.Application/Workspace/LTrailClerk.cs:82 |
 | 117 | 120 | src/Llyn.Application/Workspace/LWorkspaceClerk.cs:221 |
 | 117 | 120 | src/Llyn.Conduct/Atelier/CWorkspace.cs:11 |
-| 118 | 120 | src/Llyn.Conduct/Card/CCard.cs:170 |
+| 118 | 120 | src/Llyn.Conduct/Card/CCard.cs:177 |
 | 116 | 120 | src/Llyn.Conduct/Card/CFolio.cs:73 |
 | 117 | 120 | src/Llyn.Conduct/Catalog/CCatalog.cs:118 |
 | 119 | 120 | src/Llyn.Conduct/Configuration/CLedger.cs:155 |
-| 116 | 120 | src/Llyn.Conduct/Desk/CDesk.cs:135 |
+| 116 | 120 | src/Llyn.Conduct/Desk/CDesk.cs:133 |
 | 119 | 120 | src/Llyn.Conduct/Display/CDisplay.cs:78 |
 | 119 | 120 | src/Llyn.Conduct/Display/CDisplay.cs:85 |
-| 120 | 120 | src/Llyn.Conduct/Display/CDisplaySound.cs:394 |
+| 120 | 120 | src/Llyn.Conduct/Display/CDisplaySound.cs:395 |
 | 117 | 120 | src/Llyn.Conduct/Display/LDisplay.cs:175 |
 | 117 | 120 | src/Llyn.Conduct/Display/LDisplaySound.cs:137 |
 | 116 | 120 | src/Llyn.Conduct/Draft/CMarker.cs:5 |
@@ -169,9 +157,9 @@ None.
 | 117 | 120 | src/Llyn.Conduct/Panel/CAnthology.cs:276 |
 | 117 | 120 | src/Llyn.Conduct/Panel/CAtlas.cs:178 |
 | 117 | 120 | src/Llyn.Conduct/Panel/CCorpus.cs:52 |
-| 120 | 120 | src/Llyn.Conduct/Panel/CCorpus.cs:78 |
-| 117 | 120 | src/Llyn.Conduct/Panel/CCorpus.cs:85 |
-| 118 | 120 | src/Llyn.Conduct/Panel/CGuild.cs:56 |
+| 120 | 120 | src/Llyn.Conduct/Panel/CCorpus.cs:76 |
+| 117 | 120 | src/Llyn.Conduct/Panel/CCorpus.cs:83 |
+| 118 | 120 | src/Llyn.Conduct/Panel/CGuild.cs:54 |
 | 119 | 120 | src/Llyn.Conduct/Panel/CLibrary.cs:248 |
 | 118 | 120 | src/Llyn.Conduct/Panel/CMembership.cs:40 |
 | 119 | 120 | src/Llyn.Conduct/Panel/COccurrence.cs:89 |
@@ -179,8 +167,8 @@ None.
 | 117 | 120 | src/Llyn.Conduct/Panel/CPhonology.cs:97 |
 | 116 | 120 | src/Llyn.Conduct/Panel/CRepertoire.cs:55 |
 | 119 | 120 | src/Llyn.Conduct/Panel/CRepertoire.cs:58 |
-| 120 | 120 | src/Llyn.Conduct/Panel/CRepertoire.cs:156 |
-| 119 | 120 | src/Llyn.Conduct/Panel/CRepertoire.cs:173 |
+| 120 | 120 | src/Llyn.Conduct/Panel/CRepertoire.cs:154 |
+| 119 | 120 | src/Llyn.Conduct/Panel/CRepertoire.cs:171 |
 | 116 | 120 | src/Llyn.Conduct/Panel/CShelf.cs:143 |
 | 120 | 120 | src/Llyn.Conduct/Panel/CWing.cs:162 |
 | 116 | 120 | src/Llyn.Conduct/Panel/CXiesheng.cs:131 |
@@ -206,9 +194,9 @@ None.
 | 119 | 120 | src/Llyn.Core/Markdown/LMarkdown.cs:191 |
 | 116 | 120 | src/Llyn.Core/Markup/Card/LMarkupCard.cs:25 |
 | 116 | 120 | src/Llyn.Core/Markup/Card/LMarkupExample.cs:14 |
-| 118 | 120 | src/Llyn.Core/Markup/Node/LMarkupReader.cs:239 |
-| 117 | 120 | src/Llyn.Core/Markup/Node/LMarkupReader.cs:286 |
-| 118 | 120 | src/Llyn.Core/Markup/Node/LMarkupReader.cs:326 |
+| 119 | 120 | src/Llyn.Core/Markup/Node/LMarkupPronunciationReader.cs:7 |
+| 117 | 120 | src/Llyn.Core/Markup/Node/LMarkupPronunciationReader.cs:54 |
+| 119 | 120 | src/Llyn.Core/Markup/Node/LMarkupPronunciationReader.cs:94 |
 | 117 | 120 | src/Llyn.Core/Pronunciation/Anatomy/LContour.cs:119 |
 | 117 | 120 | src/Llyn.Core/Pronunciation/Fanqie/LDiweiSection.cs:65 |
 | 118 | 120 | src/Llyn.Core/Pronunciation/Reflex/LFrequencyGauge.cs:53 |
@@ -267,7 +255,10 @@ None.
 | 117 | 120 | src/Llyn.ShellEngine/Engine/LEngine.cs:149 |
 | 118 | 120 | src/Llyn.ShellEngine/Engine/LEngine.cs:157 |
 | 116 | 120 | src/Llyn.ShellEngine/Engine/LEngine.cs:181 |
-| 116 | 120 | src/Llyn.ShellEngine/Engine/LTenureFacade.cs:98 |
+| 116 | 120 | src/Llyn.ShellEngine/Engine/LTenureFacade.cs:99 |
+| 118 | 120 | src/Llyn.ShellEngine/Engine/LTenureFacade.cs:109 |
+| 120 | 120 | src/Llyn.ShellEngine/Engine/LTenureFacade.cs:111 |
+| 120 | 120 | src/Llyn.ShellEngine/Engine/LTenureFacade.cs:112 |
 | 118 | 120 | src/Llyn.ShellEngine/Port/LDraftOutlet.cs:117 |
 | 117 | 120 | src/Llyn.ShellEngine/Port/LEntryOutlet.cs:31 |
 | 119 | 120 | src/Llyn.ShellEngine/Port/LEntryOutlet.cs:35 |
@@ -302,13 +293,13 @@ None.
 | 120 | 120 | src/Llyn.ShellEngine/Tenure/LQuillChip.cs:95 |
 | 116 | 120 | src/Llyn.ShellEngine/Tenure/LQuillChip.cs:126 |
 | 116 | 120 | src/Llyn.ShellEngine/Tenure/LQuillChip.cs:185 |
-| 120 | 120 | src/Llyn.ShellEngine/Tenure/LQuillChip.cs:232 |
-| 120 | 120 | src/Llyn.ShellEngine/Tenure/LQuillChip.cs:240 |
-| 120 | 120 | src/Llyn.ShellEngine/Tenure/LQuillChip.cs:255 |
+| 120 | 120 | src/Llyn.ShellEngine/Tenure/LQuillChip.cs:226 |
+| 120 | 120 | src/Llyn.ShellEngine/Tenure/LQuillChip.cs:234 |
+| 120 | 120 | src/Llyn.ShellEngine/Tenure/LQuillChip.cs:249 |
 | 118 | 120 | src/Llyn.ShellEngine/Tenure/LQuillReflex.cs:58 |
 | 117 | 120 | src/Llyn.ShellEngine/Tenure/LQuillReflex.cs:70 |
 | 117 | 120 | src/Llyn.ShellEngine/Tenure/LQuillReflex.cs:103 |
-| 118 | 120 | src/Llyn.ShellEngine/Tenure/LTenure.cs:325 |
+| 118 | 120 | src/Llyn.ShellEngine/Tenure/LTenure.cs:272 |
 | 120 | 120 | src/Llyn.ShellEngine/Tenure/LTenureForay.cs:34 |
 | 117 | 120 | src/Llyn.ShellEngine/Tenure/LTenureLanguage.cs:233 |
 | 119 | 120 | src/Llyn.ShellEngine/Tenure/LTenureObserver.cs:166 |
@@ -323,9 +314,12 @@ None.
 | 119 | 120 | src/Llyn.ShellEngine/Tool/LStemFacade.cs:136 |
 | 116 | 120 | src/Llyn.ShellEngine/Vista/LAuthorFacade.cs:75 |
 | 120 | 120 | src/Llyn.ShellEngine/Vista/LAuthorFacade.cs:190 |
+| 119 | 120 | src/Llyn.ShellEngine/Vista/LAuthorFacade.cs:231 |
 | 118 | 120 | src/Llyn.ShellEngine/Vista/LCardFacade.cs:41 |
 | 118 | 120 | src/Llyn.ShellEngine/Vista/LExampleFacade.cs:37 |
 | 116 | 120 | src/Llyn.ShellEngine/Vista/LReferenceFacade.cs:73 |
+| 118 | 120 | src/Llyn.ShellEngine/Vista/LReferenceFacade.cs:157 |
+| 118 | 120 | src/Llyn.ShellEngine/Vista/LSituationFacade.cs:98 |
 | 116 | 120 | src/Llyn.ShellEngine/Vista/LVistaFacade.cs:26 |
 | 118 | 120 | src/Llyn.ShellEngine/Vista/LVistaFacade.cs:92 |
 | 120 | 120 | src/Llyn.ShellEngine/Vista/LVistaFacade.cs:175 |
@@ -339,20 +333,20 @@ None.
 | 116 | 120 | src/Llyn.UIDeportment/Display/QLectern.cs:209 |
 | 119 | 120 | src/Llyn.UIDeportment/Display/QLecternCard.cs:174 |
 | 118 | 120 | src/Llyn.UIDeportment/Display/QLecternSound.cs:104 |
-| 119 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:46 |
-| 117 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:48 |
-| 117 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:85 |
-| 117 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:90 |
-| 119 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:95 |
-| 117 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:102 |
-| 119 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:107 |
-| 117 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:109 |
-| 119 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:121 |
-| 119 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:138 |
-| 119 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:150 |
-| 120 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:164 |
-| 116 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:166 |
-| 117 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:234 |
+| 119 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:48 |
+| 117 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:53 |
+| 119 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:58 |
+| 117 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:60 |
+| 119 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:70 |
+| 119 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:87 |
+| 119 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:97 |
+| 120 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:111 |
+| 116 | 120 | src/Llyn.UIDeportment/Display/View/QDisplay.cs:113 |
+| 119 | 120 | src/Llyn.UIDeportment/Display/View/QSounding.cs:21 |
+| 116 | 120 | src/Llyn.UIDeportment/Display/View/QSounding.cs:50 |
+| 119 | 120 | src/Llyn.UIDeportment/Display/View/QSounding.cs:58 |
+| 117 | 120 | src/Llyn.UIDeportment/Display/View/QSounding.cs:72 |
+| 116 | 120 | src/Llyn.UIDeportment/Display/View/QSounding.cs:115 |
 | 116 | 120 | src/Llyn.UIDeportment/Editor/Context/QContext.cs:138 |
 | 116 | 120 | src/Llyn.UIDeportment/Editor/Context/QContext.cs:159 |
 | 116 | 120 | src/Llyn.UIDeportment/Editor/Core/QEditor.cs:56 |
@@ -367,9 +361,8 @@ None.
 | 118 | 120 | src/Llyn.UIDeportment/Editor/Marker/QSlate.cs:170 |
 | 118 | 120 | src/Llyn.UIDeportment/Editor/Register/QRegister.cs:136 |
 | 118 | 120 | src/Llyn.UIDeportment/Editor/Register/QRegister.cs:157 |
-| 117 | 120 | src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:104 |
-| 116 | 120 | src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:150 |
-| 117 | 120 | src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:158 |
+| 117 | 120 | src/Llyn.UIDeportment/Editor/Sentence/QExample.cs:45 |
+| 120 | 120 | src/Llyn.UIDeportment/Editor/Sentence/QExample.cs:50 |
 | 120 | 120 | src/Llyn.UIDeportment/Kit/Asset/QIcon.cs:28 |
 | 117 | 120 | src/Llyn.UIDeportment/Kit/Asset/QLocalizationCatalog.cs:12 |
 | 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QChoice.cs:54 |
@@ -417,48 +410,48 @@ None.
 | 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookDisplay.cs:41 |
 | 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookDisplay.cs:43 |
 | 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookDisplay.cs:52 |
+| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookInput.cs:32 |
+| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookInput.cs:33 |
+| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookInput.cs:41 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookInput.cs:53 |
+| 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookInput.cs:68 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookInput.cs:80 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookInput.cs:82 |
+| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookInput.cs:83 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookInput.cs:99 |
+| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookInput.cs:100 |
+| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookInput.cs:114 |
+| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookInput.cs:175 |
+| 117 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookInput.cs:179 |
 | 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookItem.cs:26 |
-| 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:37 |
-| 119 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:39 |
-| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:40 |
-| 117 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:43 |
-| 119 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:47 |
-| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:52 |
-| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:72 |
-| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:73 |
-| 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:75 |
-| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:83 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:95 |
-| 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:110 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:122 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:124 |
-| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:125 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:141 |
-| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:142 |
-| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:156 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:180 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:182 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:183 |
-| 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:203 |
-| 117 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:204 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:217 |
-| 117 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:227 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:228 |
-| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:284 |
-| 117 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:288 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:345 |
-| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:347 |
-| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:377 |
-| 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:381 |
-| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:382 |
-| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:383 |
-| 117 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:385 |
-| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:388 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:389 |
-| 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:391 |
-| 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:412 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:413 |
-| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:414 |
+| 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:36 |
+| 119 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:38 |
+| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:39 |
+| 117 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:42 |
+| 119 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:46 |
+| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:51 |
+| 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:53 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:59 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:61 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:62 |
+| 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:82 |
+| 117 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:83 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:96 |
+| 117 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:106 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:107 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:177 |
+| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:179 |
+| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:209 |
+| 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:213 |
+| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:214 |
+| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:215 |
+| 117 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:217 |
+| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:220 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:221 |
+| 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:223 |
+| 116 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:244 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:245 |
+| 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSheet.cs:246 |
 | 117 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSound.cs:94 |
 | 117 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSound.cs:95 |
 | 120 | 120 | src/Llyn.UIDeportment/Kit/Bind/QLookSound.cs:126 |
@@ -482,17 +475,11 @@ None.
 | 118 | 120 | src/Llyn.UIDeportment/Kit/Bind/QStateConverter.cs:21 |
 | 120 | 120 | src/Llyn.UIDeportment/Kit/Field/QBerth.cs:177 |
 | 118 | 120 | src/Llyn.UIDeportment/Kit/Field/QBerth.cs:178 |
-| 119 | 120 | src/Llyn.UIDeportment/Kit/Field/QField.cs:112 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Field/QField.cs:113 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Field/QField.cs:133 |
-| 119 | 120 | src/Llyn.UIDeportment/Kit/Field/QField.cs:154 |
-| 117 | 120 | src/Llyn.UIDeportment/Kit/Field/QField.cs:164 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Field/QField.cs:179 |
-| 119 | 120 | src/Llyn.UIDeportment/Kit/Field/QField.cs:199 |
-| 118 | 120 | src/Llyn.UIDeportment/Kit/Field/QField.cs:224 |
-| 119 | 120 | src/Llyn.UIDeportment/Kit/Field/QField.cs:244 |
-| 117 | 120 | src/Llyn.UIDeportment/Kit/Field/QField.cs:249 |
-| 117 | 120 | src/Llyn.UIDeportment/Kit/Field/QField.cs:255 |
+| 119 | 120 | src/Llyn.UIDeportment/Kit/Field/QEnvelope.cs:28 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Field/QEnvelope.cs:29 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Field/QEnvelope.cs:49 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Field/QEnvelope.cs:102 |
+| 118 | 120 | src/Llyn.UIDeportment/Kit/Field/QEnvelope.cs:148 |
 | 116 | 120 | src/Llyn.UIDeportment/Kit/Field/QFieldGhost.cs:11 |
 | 116 | 120 | src/Llyn.UIDeportment/Media/Audio/QPlayback.cs:42 |
 | 117 | 120 | src/Llyn.UIDeportment/Media/Video/PMedia.cs:36 |
@@ -615,7 +602,7 @@ None.
 | 118 | 120 | tests/Llyn.Tests.Conduct/Conduct/TCorpusMention.cs:28 |
 | 120 | 120 | tests/Llyn.Tests.Conduct/Conduct/TCorpusMention.cs:217 |
 | 118 | 120 | tests/Llyn.Tests.Conduct/Conduct/TDisplay.cs:96 |
-| 120 | 120 | tests/Llyn.Tests.Conduct/Conduct/TDisplayAccent.cs:144 |
+| 120 | 120 | tests/Llyn.Tests.Conduct/Conduct/TDisplayAccent.cs:163 |
 | 117 | 120 | tests/Llyn.Tests.Conduct/Conduct/TDisplayCard.cs:112 |
 | 117 | 120 | tests/Llyn.Tests.Conduct/Conduct/TDisplayCard.cs:155 |
 | 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TDisplayCard.cs:189 |
@@ -670,14 +657,14 @@ None.
 | 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TRecording.cs:11 |
 | 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TRepertoire.cs:212 |
 | 116 | 120 | tests/Llyn.Tests.Conduct/Conduct/TRepertoireHold.cs:58 |
-| 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TSession.cs:163 |
-| 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TSession.cs:167 |
-| 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TSession.cs:168 |
-| 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TSession.cs:181 |
-| 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TSession.cs:185 |
+| 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TSession.cs:182 |
 | 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TSession.cs:186 |
-| 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TSession.cs:199 |
-| 118 | 120 | tests/Llyn.Tests.Conduct/Conduct/TSession.cs:202 |
+| 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TSession.cs:187 |
+| 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TSession.cs:200 |
+| 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TSession.cs:204 |
+| 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TSession.cs:205 |
+| 119 | 120 | tests/Llyn.Tests.Conduct/Conduct/TSession.cs:218 |
+| 118 | 120 | tests/Llyn.Tests.Conduct/Conduct/TSession.cs:221 |
 | 116 | 120 | tests/Llyn.Tests.Conduct/Conduct/TShelfRoll.cs:26 |
 | 116 | 120 | tests/Llyn.Tests.Conduct/Conduct/TShelfRoll.cs:57 |
 | 118 | 120 | tests/Llyn.Tests.Conduct/Conduct/TShelfRoll.cs:88 |
@@ -721,33 +708,33 @@ None.
 | 117 | 120 | tests/Llyn.Tests.Convention/TAuditCensus.cs:53 |
 | 118 | 120 | tests/Llyn.Tests.Convention/TAuditCharter.cs:125 |
 | 118 | 120 | tests/Llyn.Tests.Convention/TAuditCharterSetting.cs:7 |
-| 116 | 120 | tests/Llyn.Tests.Convention/TAuditComment.cs:35 |
-| 116 | 120 | tests/Llyn.Tests.Convention/TAuditComment.cs:49 |
-| 118 | 120 | tests/Llyn.Tests.Convention/TAuditComment.cs:268 |
-| 117 | 120 | tests/Llyn.Tests.Convention/TAuditComment.cs:269 |
-| 116 | 120 | tests/Llyn.Tests.Convention/TAuditComment.cs:352 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditComment.cs:22 |
 | 116 | 120 | tests/Llyn.Tests.Convention/TAuditCommentSetting.cs:82 |
 | 117 | 120 | tests/Llyn.Tests.Convention/TAuditCommentSnapshot.cs:33 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditCommentStamp.cs:17 |
+| 118 | 120 | tests/Llyn.Tests.Convention/TAuditCommentStamp.cs:38 |
+| 117 | 120 | tests/Llyn.Tests.Convention/TAuditCommentStamp.cs:39 |
 | 117 | 120 | tests/Llyn.Tests.Convention/TAuditContractWalker.cs:48 |
 | 119 | 120 | tests/Llyn.Tests.Convention/TAuditContractWalker.cs:75 |
 | 116 | 120 | tests/Llyn.Tests.Convention/TAuditContractWalker.cs:119 |
 | 120 | 120 | tests/Llyn.Tests.Convention/TAuditContractWalker.cs:167 |
 | 117 | 120 | tests/Llyn.Tests.Convention/TAuditEncoding.cs:102 |
 | 119 | 120 | tests/Llyn.Tests.Convention/TAuditFake.cs:74 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditFakeCandidate.cs:14 |
+| 117 | 120 | tests/Llyn.Tests.Convention/TAuditFakeCandidate.cs:111 |
 | 117 | 120 | tests/Llyn.Tests.Convention/TAuditFakeSerial.cs:20 |
-| 118 | 120 | tests/Llyn.Tests.Convention/TAuditFakeWalker.cs:29 |
-| 116 | 120 | tests/Llyn.Tests.Convention/TAuditFakeWalker.cs:81 |
-| 117 | 120 | tests/Llyn.Tests.Convention/TAuditFakeWalker.cs:178 |
-| 116 | 120 | tests/Llyn.Tests.Convention/TAuditFakeWalker.cs:231 |
-| 117 | 120 | tests/Llyn.Tests.Convention/TAuditFakeWalker.cs:302 |
-| 116 | 120 | tests/Llyn.Tests.Convention/TAuditFakeWalker.cs:411 |
-| 119 | 120 | tests/Llyn.Tests.Convention/TAuditFakeWalker.cs:431 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditFakeUse.cs:42 |
+| 117 | 120 | tests/Llyn.Tests.Convention/TAuditFakeUse.cs:113 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditFakeUse.cs:151 |
+| 118 | 120 | tests/Llyn.Tests.Convention/TAuditFakeWalker.cs:26 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditFakeWalker.cs:116 |
+| 119 | 120 | tests/Llyn.Tests.Convention/TAuditFakeWalker.cs:136 |
 | 117 | 120 | tests/Llyn.Tests.Convention/TAuditHostWalker.cs:128 |
 | 119 | 120 | tests/Llyn.Tests.Convention/TAuditLaunderingWalker.cs:15 |
 | 117 | 120 | tests/Llyn.Tests.Convention/TAuditLaunderingWalker.cs:21 |
 | 116 | 120 | tests/Llyn.Tests.Convention/TAuditLaunderingWalker.cs:23 |
 | 119 | 120 | tests/Llyn.Tests.Convention/TAuditLaunderingWalker.cs:196 |
-| 117 | 120 | tests/Llyn.Tests.Convention/TAuditLaunderingWalker.cs:215 |
+| 120 | 120 | tests/Llyn.Tests.Convention/TAuditLaunderingWalker.cs:215 |
 | 116 | 120 | tests/Llyn.Tests.Convention/TAuditLaunderingWalker.cs:217 |
 | 120 | 120 | tests/Llyn.Tests.Convention/TAuditLedger.cs:14 |
 | 116 | 120 | tests/Llyn.Tests.Convention/TAuditLedger.cs:110 |
@@ -769,15 +756,15 @@ None.
 | 116 | 120 | tests/Llyn.Tests.Convention/TAuditObjectWalker.cs:122 |
 | 118 | 120 | tests/Llyn.Tests.Convention/TAuditObjectWalker.cs:253 |
 | 118 | 120 | tests/Llyn.Tests.Convention/TAuditObjectWalker.cs:365 |
-| 118 | 120 | tests/Llyn.Tests.Convention/TAuditOriginWalker.cs:61 |
-| 120 | 120 | tests/Llyn.Tests.Convention/TAuditOriginWalker.cs:188 |
-| 116 | 120 | tests/Llyn.Tests.Convention/TAuditOriginWalker.cs:201 |
-| 117 | 120 | tests/Llyn.Tests.Convention/TAuditOriginWalker.cs:299 |
-| 116 | 120 | tests/Llyn.Tests.Convention/TAuditOriginWalker.cs:377 |
-| 116 | 120 | tests/Llyn.Tests.Convention/TAuditOriginWalker.cs:389 |
-| 118 | 120 | tests/Llyn.Tests.Convention/TAuditOriginWalker.cs:392 |
-| 116 | 120 | tests/Llyn.Tests.Convention/TAuditOriginWalker.cs:417 |
-| 116 | 120 | tests/Llyn.Tests.Convention/TAuditOriginWalker.cs:472 |
+| 120 | 120 | tests/Llyn.Tests.Convention/TAuditOriginHolder.cs:81 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditOriginHolder.cs:94 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditOriginHolder.cs:189 |
+| 117 | 120 | tests/Llyn.Tests.Convention/TAuditOriginSite.cs:63 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditOriginSite.cs:120 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditOriginSite.cs:132 |
+| 118 | 120 | tests/Llyn.Tests.Convention/TAuditOriginSite.cs:135 |
+| 118 | 120 | tests/Llyn.Tests.Convention/TAuditOriginWalker.cs:47 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditOriginWalker.cs:123 |
 | 118 | 120 | tests/Llyn.Tests.Convention/TAuditPlatform.cs:90 |
 | 120 | 120 | tests/Llyn.Tests.Convention/TAuditPlatform.cs:140 |
 | 116 | 120 | tests/Llyn.Tests.Convention/TAuditPlatform.cs:146 |
@@ -797,14 +784,13 @@ None.
 | 120 | 120 | tests/Llyn.Tests.Convention/TAuditPurityWalker.cs:49 |
 | 118 | 120 | tests/Llyn.Tests.Convention/TAuditPurityWalker.cs:93 |
 | 120 | 120 | tests/Llyn.Tests.Convention/TAuditPurityWalker.cs:98 |
-| 117 | 120 | tests/Llyn.Tests.Convention/TAuditRatchet.cs:27 |
-| 120 | 120 | tests/Llyn.Tests.Convention/TAuditRatchet.cs:46 |
-| 119 | 120 | tests/Llyn.Tests.Convention/TAuditRatchet.cs:95 |
-| 120 | 120 | tests/Llyn.Tests.Convention/TAuditRatchet.cs:134 |
-| 116 | 120 | tests/Llyn.Tests.Convention/TAuditRatchet.cs:241 |
-| 117 | 120 | tests/Llyn.Tests.Convention/TAuditRatchet.cs:243 |
-| 118 | 120 | tests/Llyn.Tests.Convention/TAuditRatchet.cs:260 |
-| 117 | 120 | tests/Llyn.Tests.Convention/TAuditRatchet.cs:349 |
+| 117 | 120 | tests/Llyn.Tests.Convention/TAuditRatchet.cs:15 |
+| 120 | 120 | tests/Llyn.Tests.Convention/TAuditRatchet.cs:29 |
+| 120 | 120 | tests/Llyn.Tests.Convention/TAuditRatchet.cs:121 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditRatchetValue.cs:47 |
+| 117 | 120 | tests/Llyn.Tests.Convention/TAuditRatchetValue.cs:49 |
+| 118 | 120 | tests/Llyn.Tests.Convention/TAuditRatchetValue.cs:66 |
+| 117 | 120 | tests/Llyn.Tests.Convention/TAuditRatchetValue.cs:155 |
 | 116 | 120 | tests/Llyn.Tests.Convention/TAuditReachWalker.cs:74 |
 | 116 | 120 | tests/Llyn.Tests.Convention/TAuditReachWalker.cs:77 |
 | 116 | 120 | tests/Llyn.Tests.Convention/TAuditReachWalker.cs:83 |
@@ -823,34 +809,35 @@ None.
 | 119 | 120 | tests/Llyn.Tests.Convention/TAuditTruth.cs:98 |
 | 116 | 120 | tests/Llyn.Tests.Convention/TAuditTruth.cs:170 |
 | 118 | 120 | tests/Llyn.Tests.Convention/TAuditTruth.cs:190 |
+| 118 | 120 | tests/Llyn.Tests.Convention/TAuditTruthField.cs:34 |
 | 117 | 120 | tests/Llyn.Tests.Convention/TAuditTruthLocal.cs:10 |
-| 117 | 120 | tests/Llyn.Tests.Convention/TAuditTruthLocal.cs:19 |
-| 116 | 120 | tests/Llyn.Tests.Convention/TAuditTruthLocal.cs:33 |
-| 119 | 120 | tests/Llyn.Tests.Convention/TAuditTruthLocal.cs:60 |
-| 117 | 120 | tests/Llyn.Tests.Convention/TAuditTruthLocal.cs:72 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditTruthLocal.cs:34 |
+| 119 | 120 | tests/Llyn.Tests.Convention/TAuditTruthLocal.cs:61 |
+| 117 | 120 | tests/Llyn.Tests.Convention/TAuditTruthLocal.cs:73 |
 | 116 | 120 | tests/Llyn.Tests.Convention/TAuditTruthMisfiring.cs:29 |
 | 116 | 120 | tests/Llyn.Tests.Convention/TAuditTruthMisfiring.cs:67 |
 | 117 | 120 | tests/Llyn.Tests.Convention/TAuditTruthMisfiring.cs:75 |
 | 118 | 120 | tests/Llyn.Tests.Convention/TAuditTruthMisfiring.cs:266 |
-| 118 | 120 | tests/Llyn.Tests.Convention/TAuditTruthMisfiring.cs:278 |
 | 119 | 120 | tests/Llyn.Tests.Convention/TAuditTruthMisfiring.cs:300 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditTruthMisfiring.cs:359 |
 | 117 | 120 | tests/Llyn.Tests.Convention/TAuditTruthMisfiring.cs:367 |
+| 117 | 120 | tests/Llyn.Tests.Convention/TAuditTruthReference.cs:9 |
+| 117 | 120 | tests/Llyn.Tests.Convention/TAuditTruthReference.cs:65 |
 | 120 | 120 | tests/Llyn.Tests.Convention/TAuditTruthRelay.cs:26 |
 | 120 | 120 | tests/Llyn.Tests.Convention/TAuditTruthRelay.cs:76 |
 | 118 | 120 | tests/Llyn.Tests.Convention/TAuditTruthRelay.cs:111 |
 | 118 | 120 | tests/Llyn.Tests.Convention/TAuditTruthRelay.cs:191 |
 | 116 | 120 | tests/Llyn.Tests.Convention/TAuditTruthSequence.cs:43 |
-| 119 | 120 | tests/Llyn.Tests.Convention/TAuditTruthSink.cs:132 |
-| 118 | 120 | tests/Llyn.Tests.Convention/TAuditTruthSink.cs:158 |
-| 118 | 120 | tests/Llyn.Tests.Convention/TAuditTruthSink.cs:176 |
+| 117 | 120 | tests/Llyn.Tests.Convention/TAuditTruthSequence.cs:95 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditTruthSink.cs:129 |
+| 118 | 120 | tests/Llyn.Tests.Convention/TAuditTruthSink.cs:159 |
+| 118 | 120 | tests/Llyn.Tests.Convention/TAuditTruthSink.cs:177 |
 | 118 | 120 | tests/Llyn.Tests.Convention/TAuditTruthTampering.cs:12 |
 | 118 | 120 | tests/Llyn.Tests.Convention/TAuditTruthTampering.cs:223 |
-| 117 | 120 | tests/Llyn.Tests.Convention/TAuditTruthWalker.cs:13 |
-| 116 | 120 | tests/Llyn.Tests.Convention/TAuditTruthWalker.cs:56 |
-| 118 | 120 | tests/Llyn.Tests.Convention/TAuditTruthWalker.cs:128 |
-| 119 | 120 | tests/Llyn.Tests.Convention/TAuditTruthWalker.cs:227 |
-| 117 | 120 | tests/Llyn.Tests.Convention/TAuditTruthWalker.cs:258 |
-| 117 | 120 | tests/Llyn.Tests.Convention/TAuditTruthWalker.cs:404 |
+| 116 | 120 | tests/Llyn.Tests.Convention/TAuditTruthWalker.cs:46 |
+| 119 | 120 | tests/Llyn.Tests.Convention/TAuditTruthWalker.cs:97 |
+| 117 | 120 | tests/Llyn.Tests.Convention/TAuditTruthWalker.cs:126 |
+| 118 | 120 | tests/Llyn.Tests.Convention/TAuditTruthWalker.cs:165 |
 | 117 | 120 | tests/Llyn.Tests.Engine/Catalog/TCatalogAuthor.cs:29 |
 | 117 | 120 | tests/Llyn.Tests.Engine/Catalog/TCatalogChosen.cs:73 |
 | 116 | 120 | tests/Llyn.Tests.Engine/Catalog/TCatalogReference.cs:205 |
@@ -945,7 +932,7 @@ None.
 | 116 | 120 | tests/Llyn.Tests.Engine/Engine/TForay.cs:102 |
 | 116 | 120 | tests/Llyn.Tests.Engine/Engine/TForay.cs:149 |
 | 116 | 120 | tests/Llyn.Tests.Engine/Engine/TForay.cs:223 |
-| 118 | 120 | tests/Llyn.Tests.Engine/Engine/TQuill.cs:210 |
+| 118 | 120 | tests/Llyn.Tests.Engine/Engine/TQuill.cs:213 |
 | 116 | 120 | tests/Llyn.Tests.Engine/Entry/TEntryLoading.cs:196 |
 | 116 | 120 | tests/Llyn.Tests.Engine/Entry/TEntrySaving.cs:22 |
 | 117 | 120 | tests/Llyn.Tests.Engine/Entry/TEntrySaving.cs:23 |
@@ -1168,9 +1155,9 @@ None.
 
 | Added | Deleted | Net | File |
 |------:|--------:|----:|------|
-| 477 | 0 | 477 | tests/Llyn.Tests.Convention/TAuditOriginWalker.cs |
+| 494 | 16 | 478 | tests/Llyn.Tests.Convention/TAuditOriginWalker.cs |
 | 448 | 2 | 446 | src/Llyn.UIDeportment/Display/View/QDisplay.cs |
-| 443 | 0 | 443 | tests/Llyn.Tests.Convention/TAssayContesting.cs |
+| 443 | 248 | 195 | tests/Llyn.Tests.Convention/TAssayContesting.cs |
 | 436 | 0 | 436 | src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs |
 | 436 | 28 | 408 | src/Llyn.UIDeportment/Sound/Fanqie/QYunjing.cs |
 | 427 | 2 | 425 | tests/Llyn.Internal/Conduct/TErrandNotation.cs |
@@ -1188,18 +1175,18 @@ None.
 
 | Folder | Files | Lines | Non-blank | Share | Average lines | Bytes | Size share | Average bytes |
 |--------|------:|------:|----------:|------:|--------------:|------:|-----------:|--------------:|
-| scripts | 34 | 33,177 | 28,930 | 15.2 % | 976 | 1,402,430 | 16.7 % | 41,248 |
-| src / UIDeportment | 276 | 32,238 | 26,433 | 14.7 % | 117 | 1,128,020 | 13.4 % | 4,087 |
-| tests / Tests.Engine | 189 | 29,017 | 24,320 | 13.3 % | 154 | 1,230,477 | 14.7 % | 6,510 |
-| tests / Tests.Conduct | 117 | 20,766 | 17,624 | 9.5 % | 177 | 860,193 | 10.2 % | 7,352 |
-| src / Infrastructure | 143 | 19,091 | 16,344 | 8.7 % | 134 | 689,253 | 8.2 % | 4,820 |
-| src / Application | 98 | 16,366 | 13,951 | 7.5 % | 167 | 571,049 | 6.8 % | 5,827 |
-| tests / Tests.Convention | 90 | 15,435 | 13,713 | 7.1 % | 172 | 588,336 | 7.0 % | 6,537 |
-| src / Conduct | 215 | 13,857 | 11,336 | 6.3 % | 64 | 428,074 | 5.1 % | 1,991 |
-| src / UIVeneer | 144 | 11,694 | 10,676 | 5.3 % | 81 | 583,759 | 7.0 % | 4,054 |
-| src / Core | 291 | 10,124 | 8,206 | 4.6 % | 35 | 319,078 | 3.8 % | 1,096 |
-| src / ShellEngine | 50 | 8,292 | 6,769 | 3.8 % | 166 | 268,719 | 3.2 % | 5,374 |
-| tests / Tests.Interface | 85 | 7,231 | 5,751 | 3.3 % | 85 | 279,315 | 3.3 % | 3,286 |
+| scripts | 34 | 33,559 | 29,279 | 15.3 % | 987 | 1,425,269 | 16.9 % | 41,920 |
+| src / UIDeportment | 282 | 32,395 | 26,568 | 14.7 % | 115 | 1,132,115 | 13.4 % | 4,015 |
+| tests / Tests.Engine | 189 | 29,087 | 24,378 | 13.2 % | 154 | 1,233,669 | 14.6 % | 6,527 |
+| tests / Tests.Conduct | 117 | 20,864 | 17,707 | 9.5 % | 178 | 864,079 | 10.2 % | 7,385 |
+| src / Infrastructure | 143 | 19,098 | 16,350 | 8.7 % | 134 | 689,442 | 8.2 % | 4,821 |
+| src / Application | 107 | 16,679 | 14,221 | 7.6 % | 156 | 582,052 | 6.9 % | 5,440 |
+| tests / Tests.Convention | 105 | 15,573 | 13,834 | 7.1 % | 148 | 593,589 | 7.0 % | 5,653 |
+| src / Conduct | 215 | 13,857 | 11,335 | 6.3 % | 64 | 428,181 | 5.1 % | 1,992 |
+| src / UIVeneer | 144 | 11,694 | 10,676 | 5.3 % | 81 | 583,759 | 6.9 % | 4,054 |
+| src / Core | 292 | 10,134 | 8,214 | 4.6 % | 35 | 319,447 | 3.8 % | 1,094 |
+| src / ShellEngine | 51 | 8,272 | 6,752 | 3.8 % | 162 | 270,192 | 3.2 % | 5,298 |
+| tests / Tests.Interface | 85 | 7,243 | 5,759 | 3.3 % | 85 | 279,887 | 3.3 % | 3,293 |
 | tests / Tests.Windows | 13 | 898 | 761 | 0.4 % | 69 | 30,578 | 0.4 % | 2,352 |
 | src / Core.Windows | 4 | 357 | 298 | 0.2 % | 89 | 10,545 | 0.1 % | 2,636 |
 | src / UIDeportment.Capsule | 5 | 97 | 83 | 0.0 % | 19 | 3,094 | 0.0 % | 619 |
@@ -1211,6 +1198,6 @@ None.
 
 | Extension | Files | Lines | Non-blank | Blank | Share |
 |-----------|------:|------:|----------:|------:|------:|
-| .cs | 1,595 | 173,895 | 145,690 | 28,205 | 79.5 % |
+| .cs | 1,627 | 174,680 | 146,361 | 28,319 | 79.4 % |
 | .xaml | 112 | 11,333 | 10,378 | 955 | 5.2 % |
 | .csproj | 17 | 348 | 303 | 45 | 0.2 % |

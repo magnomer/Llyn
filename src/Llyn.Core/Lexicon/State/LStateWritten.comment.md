@@ -1,7 +1,7 @@
 # LStateWritten.cs
 Hash: `be3675f813991acd`
 
-## `public sealed record LStateWritten(`
+## `public sealed record LStateWritten(string? LStateWrittenText, bool LStateWrittenUnknown = false)`
 
 A form field as the user left it.
 It is the text in the box and the mark that says the value is not known.

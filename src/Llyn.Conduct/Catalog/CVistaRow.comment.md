@@ -1,7 +1,7 @@
 # CVistaRow.cs
 Hash: `7137dc910c76071b`
 
-## `public sealed record CVistaRow(`
+## `public sealed record CVistaRow(long CVistaRowId, string CVistaRowHeadword, string CVistaRowLanguage, string CVistaRowEpithet, string CVistaRowName, bool CVistaRowChosen)`
 
 One entry a search found, as the prospect popup and the panels' entry lists show it.
 

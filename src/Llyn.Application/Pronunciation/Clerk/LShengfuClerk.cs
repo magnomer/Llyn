@@ -193,7 +193,7 @@ public sealed class LShengfuClerk
         TimeSpan left = _lShengfuClerkStamp - _lShengfuClerkClock.LClockRead();
         if (left > TimeSpan.Zero)
         {
-            await Task.Delay(left, cancellation).ConfigureAwait(false);
+            await _lShengfuClerkClock.LClockPause(left, cancellation).ConfigureAwait(false);
         }
 
         (LShengfu? found, bool answered) = await _lShengfuClerkSource

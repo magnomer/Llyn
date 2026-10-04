@@ -1,5 +1,5 @@
 # LDraftClerk.cs
-Hash: `621aae0ca24dfb7e`
+Hash: `7fd8c786552f452d`
 
 ## `public sealed class LDraftClerk`
 
@@ -18,6 +18,7 @@ It reads no port after construction that the rig did not hand it.
 ## `public LDraftClerk(LRig rig, LIdentity identity, LLanguageCache languages)`
 
 Seats the concern classes over the ports of `rig` and the two shared services.
+Situation and Register chips each get their own class, `LSituationChip` and `LRegisterChip`, over their own shelf.
 `identity` mints the negative id every new row carries.
 `languages` answers the pack of a language, cached, for respelling and anatomy.
 Neither is a port, so the engine hands them in beside the rig.
@@ -40,7 +41,7 @@ The engine does that after the apply, since only it can read the stored entry th
 
 ## `public LEntryDraft LDraftClerkApply(LEntryDraft content, LRequest request)`
 
-One switch over the entry and card kinds, ending in the reading, reflex and list switches in turn.
+One switch over the entry and card kinds, ending in the reading, reflex, etymology and list switches in turn.
 A language change derives every respelling again and recuts every reflex row under the new pack.
 A kind no switch knows is a programming error, not a refusal, since no form can send one.
 A null text or value is read as empty.

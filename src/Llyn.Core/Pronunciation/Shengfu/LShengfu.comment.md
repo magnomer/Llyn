@@ -1,7 +1,7 @@
 # LShengfu.cs
 Hash: `29ee968017e0bb07`
 
-## `public sealed record LShengfu(`
+## `public sealed record LShengfu(string LShengfuCharacter, string LShengfuText, string LShengfuSource = "")`
 
 The phonetic series one Han character belongs to, as one stored row per language and character.
 A series names the character whose sound the graph was borrowed for, such as 工 for 江.

@@ -1,7 +1,7 @@
 # CNotationReading.cs
 Hash: `b8295d70dfb42aa0`
 
-## `public sealed record CNotationReading(`
+## `public sealed record CNotationReading(string CNotationReadingPhonetic, string CNotationReadingText, CVariety CNotationReadingVariety, bool CNotationReadingFlagged, CRespellingMark CNotationReadingMark)`
 
 One found reading on a source row, ready to paint and to take.
 The driver looks up the label and the flag, and decides nothing about them.

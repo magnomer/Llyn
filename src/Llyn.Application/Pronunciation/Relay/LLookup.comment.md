@@ -30,7 +30,7 @@ Collecting it here costs nothing, since every candidate already passes through t
 The sources are supplied ready-built and language-agnostic (see `LSource`).
 This orchestrator knows nothing about any particular source or language.
 
-## `public async Task<IReadOnlyList<LCandidate>> LSeekerStart(`
+## `public async Task<IReadOnlyList<LCandidate>> LSeekerStart(string word, LReceiver receiver, CancellationToken cancellation)`
 
 A cancelled lookup withholds `LReceiverLookupFinish`, since the menu it would close is already gone.
 Every other ending reports it, a source failure included.

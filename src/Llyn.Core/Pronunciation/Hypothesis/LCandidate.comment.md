@@ -1,7 +1,7 @@
 # LCandidate.cs
 Hash: `839e308b66a8f73c`
 
-## `public sealed record LCandidate(`
+## `public sealed record LCandidate(string LCandidateSource, string? LCandidatePhonetic, int LCandidateOrder, bool LCandidateReached, string LCandidateVariety, string? LCandidateRespelling = null)`
 
 What one lookup source had to say about a headword.
 Every source produces at least one, so the menu shows a row for each and none is silently absent.

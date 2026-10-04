@@ -1,7 +1,7 @@
 # LDiwei.cs
 Hash: `d505cd93a1c138a3`
 
-## `public sealed record LDiwei(`
+## `public sealed record LDiwei(long LDiweiId, string LDiweiLanguage, string LDiweiKind, string LDiweiKey, int LDiweiCount = 0, bool LDiweiChosen = false)`
 
 One 音韻地位 category of a language.
 It is an initial, a rime or a tone class that placements point to.

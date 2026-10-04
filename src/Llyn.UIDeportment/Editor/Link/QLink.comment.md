@@ -11,7 +11,7 @@ The templates that draw the field cannot reach the card the links belong to.
 An item's data context is the link or the entry, not the card.
 So each handler asks which card's collection holds the item, as the Tag field does.
 
-## `internal QLink(`
+## `internal QLink(FrameworkElement surface, ObservableCollection<PCard> meaning, ObservableCollection<PCard> collocation, QProspect prospect)`
 
 Holds the editor scope, the two card lists the finds walk, and the Translation dropdown it opens and shuts.
 The field has no fixed control to wire, since its items are built per card.

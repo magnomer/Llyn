@@ -33,7 +33,7 @@ Refuses an Entry no row carries and a Meaning that does not belong to that Entry
 An Entry of 0 stands for nothing and may carry no Meaning.
 A minted negative id is refused too, because a Mention points only at stored rows.
 
-## `private static LDraft LMentionApply(`
+## `private static LDraft LMentionApply(LDraft draft, long cardId, long sentenceId, Func<LExampleDraft, IReadOnlyList<LMentionDraft>> change)`
 
 Locates the Example on the card row named, or on the draft panel when card and sentence are both 0.
 The panel holds an `LExample`, so its list is converted to drafts for the change and back afterwards.
@@ -47,7 +47,7 @@ Replaces the text of a row's Example and shifts its Mentions to follow.
 
 The same for the Example the corpus panel holds.
 
-## `public static IReadOnlyList<LMentionDraft> LMentionUpdate(`
+## `public static IReadOnlyList<LMentionDraft> LMentionUpdate(string before, string after, IReadOnlyList<LMentionDraft> mentions)`
 
 Recomputes every span after the text changed from `before` to `after`.
 The common prefix and the common suffix of the two texts are found in code points.

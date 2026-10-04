@@ -166,8 +166,16 @@ internal sealed class QCard
         if (QLook.QLookPartFind<ItemsControl>(container, "PCardSentence") is ItemsControl sentence)
         {
             sentence.ItemsSource = card.PCardSentence;
-            QLookItem.QLookItemAttach(sentence, _qCardSentence.QSentenceApply);
-            QSentence.QSentenceRevealAttach(sentence);
+            QExample example = _qCardSentence.QSentenceExample;
+            QLookItem.QLookItemAttach(
+                sentence,
+                (row, item, _) =>
+                {
+                    example.QExampleRefine(row, item);
+                    example.QExampleIntroduce(row, item);
+                });
+            QExample.QExampleRevealIntroduce(sentence);
+            QExample.QExampleRevealRefine(sentence);
         }
 
         if (QLook.QLookPartFind<ItemsControl>(container, "PCardImage") is ItemsControl images)

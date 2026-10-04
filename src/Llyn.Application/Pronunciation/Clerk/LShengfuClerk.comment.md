@@ -1,5 +1,5 @@
 # LShengfuClerk.cs
-Hash: `ef3f1a099a816629`
+Hash: `e921914f3d8283e2`
 
 ## `public sealed class LShengfuClerk`
 
@@ -41,3 +41,20 @@ Cancels every pending fetch and forgets what was missing, as a workspace closes.
 ## `private string LShengfuSeparatorRead(string language)`
 
 The separator the pack rule joins several series with, or empty when it declares no rule.
+
+## `private async Task<(LShengfu? LShengfuFound, bool LShengfuReached)> LShengfuClerkScan(string character, string language, CancellationToken cancellation)`
+
+One request for the character, spaced by the rule's interval from the last one.
+The wait before it runs on the rig's clock, so a harness can make it virtual.
+A language whose pack declares no rule answers nothing and is not reached.
+
+## `private void LShengfuClerkStart(long entryId, string language, string character)`
+
+Starts one character's fetch unless it is pending or already missed.
+
+## `private async Task LShengfuClerkRun(long entryId, string language, string character, string key, CancellationTokenSource fetch)`
+
+One fetch admitted through the single-wide gate.
+A series found is stored and linked to its Stem keys.
+A miss is remembered and a failure still raises the bulletin, so the panel stops waiting.
+The bulletin names the fanqie subject, because the fanqie panel prints the series.

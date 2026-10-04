@@ -7,7 +7,7 @@ The Gloss gestures of a card's sentence row, each handed raw to one sentence gat
 The sentence menu wires the add button and the remove command to it.
 The editor routes typed Gloss text here.
 
-## `internal QGloss(`
+## `internal QGloss(ObservableCollection<PCard> meaning, ObservableCollection<PCard> collocation, QSentence sentence)`
 
 Holds the two card lists the editor keeps, which name the row a Gloss sits under.
 It holds the sentence driver, which finds the card of a pressed sentence row.

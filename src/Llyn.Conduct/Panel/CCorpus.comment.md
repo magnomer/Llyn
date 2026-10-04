@@ -1,9 +1,9 @@
 # CCorpus.cs
-Hash: `8e73c53d58ec3cde`
+Hash: `0a680df1f9645b12`
 
 ## `public sealed class CCorpus`
 
-The corpus panel's session: the example list, the quotation list, the transcript desk and the entry editor.
+The corpus panel's session over the example list, the quotation list, the transcript desk and the entry editor.
 The two vistas' chosen rows and editing flags are the panel's mode, and the drivers only follow.
 Every gate holds only the interaction and reaches the engine through a panel, the desk or the editor.
 It asks the user and reports failures through the envoy, never through a seam a driver hands up.
@@ -71,7 +71,7 @@ It is built over the atelier's entry and portrait ports, so no driver holds eith
 ## `public bool CCorpusTranscriptShown`
 
 True while the example side is in front and in edit mode, so the transcript shows.
-The other mode flags follow the same two facts: which side is in front and whether it edits.
+The other mode flags follow the same two facts, which side is in front and whether it edits.
 `CCorpusExcerptShown` holds for the example side outside edit mode.
 `CCorpusDisplayShown` holds for the quotation side outside edit mode, as `CQuotationShown` says.
 `CCorpusEditorShown` holds while the quotation list is in edit mode.
@@ -171,7 +171,7 @@ The answer is what the menu offers under the found word, null when the user stay
 
 ## `private void LCorpusExampleUpdate(CExample? example)`
 
-Announces the Example a loaded draft carries and ignores drafts of other subjects.
+Announces the Example a loaded draft carries, and ignores a draft that carries none.
 
 ## `internal void LCorpusExampleOpen(long id)`
 
@@ -265,7 +265,7 @@ A failed read is reported by the anthology and answers no rows, and then nothing
 When the excerpt shows a chosen Example the rows no longer list, both lists clear before the rows return.
 The clear announces fresh rows, which carry the same Examples, so a driver's nested refill is harmless.
 
-## `public Task<CEnsignSheet<IReadOnlyList<CCatalogExample>>> CCorpusRowsLoad(`
+## `public Task<CEnsignSheet<IReadOnlyList<CCatalogExample>>> CCorpusRowsLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `CCorpusRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.

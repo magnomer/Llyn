@@ -1,12 +1,12 @@
 # LCardClerkField.cs
-Hash: `2dd7273843384a1b`
+Hash: `9bb3e1536c7cc7cd`
 
 ## `public static class LCardClerkField`
 
 The stateless helpers over the fields a card carries.
 They decide which draft rows are worth writing.
 They also resolve a row into the stored Situation, Image or Video it names.
-The card clerk, the meaning clerk and the engine's situation part all call them.
+The card, meaning, entry, register and situation clerks call them, and so does `LCardEquality`.
 Nothing here holds a vault, so every resolver takes the vault it writes through.
 
 ## `public static void LCardValidate(IReadOnlyList<LCardDraft> cards, bool collocation)`
@@ -41,7 +41,7 @@ The Situation chips of one card that carry a title, in card order.
 
 The stored Situation a chip's positive id names, updated to what the chip now says.
 A positive id nothing is stored under is refused rather than rebound.
-A chip carrying a negative id is looked up by its title first.
+A chip carrying a negative id is looked up by its title first, through `LSituationChip.LSituationChipResolve`.
 A wording the workspace already holds is shared rather than doubled.
 Only then is a fresh Situation made, recorded in the map under the negative id it replaces.
 

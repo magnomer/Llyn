@@ -1,10 +1,10 @@
 # CDesk.cs
-Hash: `344d421b0d6f6005`
+Hash: `1c4b6974eb8a4259`
 
 ## `public sealed class CDesk`
 
 The Conduct seat at one tenure, shared by every edit area through its own deportment.
-It starts, reads, finishes and cancels the held draft, and defers the field requests its owners still build.
+It starts, reads, finishes and cancels the held draft, and applies the requests deferred on the tenure.
 The tenure is started over the panel's vista, whose tab and subject name the draft's origin and kind.
 The vigil attaches the driver's observers when the tenure starts.
 The only question it asks is whether an unreadable draft may be swept, through `CEnvoy`.
@@ -100,7 +100,7 @@ The held draft's id, not the stored record's, or zero while nothing is held.
 ## `public bool CDeskStored`
 
 Whether the held draft stands on a stored record rather than a fresh one.
-It reads `CDeskStoredRead`, so a failed read answers false like the tally.
+It reads `CDeskStoredRead`, so a refused read answers false.
 
 ## `public bool CDeskChanged`
 
@@ -135,7 +135,7 @@ Takes the vista a start runs over, handed on by the controller that owns the des
 
 Drops any held tenure and starts one over the record, or over nothing when the id is null.
 A desk with a restored vista starts over it.
-A desk built with an origin and a subject starts under them instead.
+Without a vista, a desk built with an origin and a subject starts under them.
 Its subject reaches the engine through the panel's map by name, never by cast.
 The repertoire and corpus desks start this way, since their vistas list the records rather than the tab.
 A refused start is announced under the scope's load key and leaves the desk empty.
@@ -174,8 +174,9 @@ The held draft after the deferred requests have been applied, or null while noth
 
 ## `public long? CDeskStoredRead()`
 
-The stored id the held draft stands on, or null for a fresh draft, no tenure or a failed read.
-A tally reads it, so a failed persist only blanks the count.
+The stored id the held draft stands on, or null for a fresh draft, no tenure or a refused read.
+It makes the one tenure call `LTenureStoredRead`, which persists nothing, so pending edits stay pending.
+The tenure answers a refused read with null, so the desk catches nothing itself.
 
 ## `public void CDeskDraftResonate()`
 
@@ -204,10 +205,15 @@ Applies the deferred requests now, as a field is left, unless the controls are b
 Whether the held draft differs from what is stored, after the deferred requests have been applied.
 The tenure writes and answers in one call, and an empty desk answers false.
 
+## `internal bool LDeskReadyCheck()`
+
+Whether the held draft may be stored, after the deferred requests have been applied.
+Only a store asks it, since it writes.
+
 ## `public bool CDeskFinish(bool store)`
 
 Ends the tenure, storing the draft or dropping it as asked, and reports whether it ended.
-A refused store is shown under the scope's save key and keeps the tenure, so the user can read why.
+A failed store is shown under the scope's save key and keeps the tenure, so the user can read why.
 The desk chooses the unreadable-drop key, and the tenure asks through `CEnvoy` before it sweeps.
 
 ## `public bool CDeskFinish(bool store, Action<long> stored)`
@@ -232,17 +238,13 @@ Whether the held draft can step back and forward, or neither while nothing is he
 ## `public void CDeskUndo()`
 
 Steps the held draft back, then announces the change of state.
+A failed step is shown under the scope's `HoldFailed` key and still announces.
 `CDeskRedo` steps it forward the same way.
 
 ## `private bool CDeskUnreadableConfirm()`
 
 Asks through `CEnvoy` whether an unreadable draft may be dropped.
 The key is chosen here, so no driver decides what is asked.
-
-## `internal string CDeskScope`
-
-The scope that prefixes every failure key the desk shows.
-A session over the desk names its failed undo under the same scope.
 
 ## `public void CDeskObserverAttach(Action<Action> marshal, Action drafted)`
 

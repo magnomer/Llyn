@@ -129,6 +129,25 @@ public sealed class TPanelRow
     }
 
     [Fact]
+    public void PanelDraftResonate_EngineFails_ShowsTheLoadFailureOnce()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+        CPanel panel = TPanel.TPanelPrepare(engine, null, asked, [], "Scribe", () => false);
+        long chosen = panel.TPanelChosenRead();
+        workspace.TWorkspaceScriptRun("ALTER TABLE entry RENAME TO entry_gone;");
+        int changed = 0;
+        panel.CPanelChanged += () => changed++;
+
+        panel.CPanelDraftResonate();
+
+        Assert.Equal(["List.LoadFailed"], asked);
+        Assert.Equal(0, changed);
+        Assert.Equal(chosen, panel.TPanelChosenRead());
+    }
+
+    [Fact]
     public void PanelEntryResonate_StoredBulletin_RelistsTheRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

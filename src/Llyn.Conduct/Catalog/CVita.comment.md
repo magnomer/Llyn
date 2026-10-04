@@ -1,7 +1,7 @@
 # CVita.cs
 Hash: `955cf08101155649`
 
-## `public sealed record CVita(`
+## `public sealed record CVita(string CVitaName, bool CVitaNamed, string CVitaWork, string CVitaTally, IReadOnlyList<CFellow> CVitaFellows, IReadOnlyList<CUsage> CVitaUsages)`
 
 The sheet the guild shows for its chosen author.
 

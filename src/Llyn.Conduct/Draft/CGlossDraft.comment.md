@@ -1,7 +1,7 @@
 # CGlossDraft.cs
 Hash: `8fd636e4e09d6989`
 
-## `public sealed record CGlossDraft(`
+## `public sealed record CGlossDraft(long CGlossDraftId, string CGlossDraftLanguage, CStateValue CGlossDraftText, bool CGlossDraftNamed)`
 
 One gloss of an example, as its gloss row shows it.
 

@@ -1,5 +1,5 @@
 # LQuillChip.cs
-Hash: `9bb1c9bfa907a125`
+Hash: `ff1d421919aac7dd`
 
 ## `public sealed class LQuillChip`
 
@@ -89,7 +89,8 @@ A chip's own unlink names its Mention by id through `LQuill.LQuillMentionRemove`
 The stored Sources a citation field offers for the typed text.
 Card and sentence 0 name the draft's own Example, so the corpus transcript's drawer finds the same offer.
 Typing a citation writes nothing, so this only finds.
-A failed search offers nothing, since no one asked yet.
+A refused search offers nothing, since no one asked yet.
+Any other failure reaches the caller, so a fault is never hidden.
 
 ## `public void LQuillCitationResolve(long card, long sentence, string title)`
 
@@ -142,28 +143,30 @@ Unlinks one entry from a card, then drops the court behind it if there was one.
 The link leaves the draft before the court is touched, so nothing points at a dying target.
 A stored entry has no court row, and nothing more happens.
 A tentative one loses its court row and the draft it was holding, which no other draft can name.
-A court that cannot be read or dropped is left alone, since the link is already gone.
+A court or draft that cannot be read or dropped throws to the caller, which shows the failure.
+Left silent, it would orphan both.
 
 ## `private LTagOffer LQuillTagFind(long card, string kept)`
 
 The stored Tags for the text a typed tag list keeps, found after the completed tags went onto the card.
-A failed search offers nothing, since no one asked yet.
+A refused search offers nothing, since no one asked yet, and any other failure reaches the caller.
 
 ## `private LSituationOffer LQuillSituationFind(long card, string kept)`
 
 The stored Situations for the text a typed situation list keeps, found after the completed titles went onto the card.
-A failed search offers nothing, since no one asked yet.
+A refused search offers nothing, since no one asked yet, and any other failure reaches the caller.
 
 ## `private LRegisterOffer LQuillRegisterFind(long card, string kept)`
 
 The stored Registers for the text a typed register list keeps, found after the completed names went onto the card.
-A failed search offers nothing, since no one asked yet.
+A refused search offers nothing, since no one asked yet, and any other failure reaches the caller.
 
 ## `private LTranslationOffer LQuillProspectFind(string kept)`
 
 The prospects for the text a typed list keeps, found as the user types.
 They come in the same shape as `LQuillTranslationFind`'s, with nothing chosen.
-A blank word or a failed search offers nothing, since no one asked yet.
+A blank word or a refused search offers nothing, since no one asked yet.
+Any other failure reaches the caller.
 
 ## `public void LQuillTagInsert(long card, long tag, int position)`
 

@@ -1,7 +1,7 @@
 # LUsage.cs
 Hash: `c1cc5edfa39740bb`
 
-## `public sealed record LUsage(`
+## `public sealed record LUsage(long LUsageId, LOwner LUsageOwner, long LUsageEntry, string LUsageHeadword, string LUsageLanguage, LStateValue LUsageTitle)`
 
 One referring side of a shared object, named rather than counted.
 A shared object is referenced by Meanings, Collocations or Examples, never by an Entry as a whole.

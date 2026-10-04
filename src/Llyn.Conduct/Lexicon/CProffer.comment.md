@@ -1,7 +1,7 @@
 # CProffer.cs
 Hash: `8b6860f7cafb1ed0`
 
-## `public sealed record CProffer(`
+## `public sealed record CProffer(string CProfferText, IReadOnlyList<CProfferRow> CProfferRows, bool CProfferShown)`
 
 What a card field keeps after a gate, and the dropdown of stored rows it offers, ready to show.
 One shape serves every field the shared dropdown opens for.

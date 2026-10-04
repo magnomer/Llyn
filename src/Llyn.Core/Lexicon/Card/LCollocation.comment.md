@@ -1,7 +1,7 @@
 # LCollocation.cs
 Hash: `7410a18b42121456`
 
-## `public sealed record LCollocation(`
+## `public sealed record LCollocation(long LCollocationId, long LCollocationEntryId, int LCollocationPosition, LStateValue LCollocationTitle, LStateValue LCollocationExpression, LStateValue LCollocationMeaning)`
 
 One Collocation owned by an entry, a stable-id node mirroring the Meaning construction.
 It carries an `LCollocationExpression`, the phrase itself.

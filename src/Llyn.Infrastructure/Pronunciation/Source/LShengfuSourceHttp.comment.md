@@ -11,7 +11,7 @@ The address and the regex both come from the rule.
 
 Takes the one client the rig shares, so every fetch keeps the same agent and timeout.
 
-## `public async Task<(LShengfu? LShengfuFound, bool LShengfuReached)> LShengfuSourceFind(`
+## `public async Task<(LShengfu? LShengfuFound, bool LShengfuReached)`
 
 Fetches the page of the character and reads the series out of it.
 A missing page counts as answered with nothing, so the character is not fetched again.

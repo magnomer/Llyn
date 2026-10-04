@@ -1,7 +1,7 @@
 # LScriptImage.cs
 Hash: `fb34205a35977f84`
 
-## `public sealed record LScriptImage(`
+## `public sealed record LScriptImage(string LScriptImageCharacter, string LScriptImageStyle, int LScriptImagePosition, string LScriptImageCaption, string LScriptImageGloss, byte[] LScriptImageData, string LScriptImageEpoch = "")`
 
 One glyph picture of one character in one style, as fetched and as stored.
 The picture belongs to the character, not to the entry, so every entry holding that character shares it.
@@ -26,7 +26,7 @@ The bytes are the original the source drew, and the view scales them down itself
 The distinct characters the pictures draw, in first-seen order.
 The grouping follows that order, so the blocks stand as the headword spells them.
 
-## `public static IReadOnlyList<LScriptImage>? LScriptImageScan(`
+## `public static IReadOnlyList<LScriptImage>? LScriptImageScan(IReadOnlyList<LScriptImage> images, string character, string style)`
 
 The pictures of `character` in `style`, or null when there are none.
 Null rather than empty lets the grouper skip a missing block in one pattern test.

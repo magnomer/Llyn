@@ -1,7 +1,7 @@
 # CLecternAnchor.cs
 Hash: `654f4dc6482c4df1`
 
-## `public sealed record CLecternAnchor(`
+## `public sealed record CLecternAnchor(bool CLecternAnchorOffered, IReadOnlyDictionary<long, string> CLecternAnchorTexts)`
 
 How reflex rows anchor to the fanqie rows, ready to show.
 The reading view and the editor's reflex block both carry it.

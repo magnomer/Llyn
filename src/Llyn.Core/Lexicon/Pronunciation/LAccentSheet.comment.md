@@ -1,7 +1,7 @@
 # LAccentSheet.cs
 Hash: `e0f80fe78410f836`
 
-## `public sealed record LAccentSheet(`
+## `public sealed record LAccentSheet(string LAccentSheetLanguage, bool LAccentSheetFlagged, IReadOnlyList<LContour> LAccentSheetContour, bool LAccentSheetRespelled, string LAccentSheetOpener, string LAccentSheetCloser, LAccentRow LAccentSheetPrimary, IReadOnlyList<LAccentRow> LAccentSheetRows)`
 
 The pronunciation block of the shown entry, answered ready by the engine.
 It carries the pack's verdicts beside the rows, so no caller asks the pack again.

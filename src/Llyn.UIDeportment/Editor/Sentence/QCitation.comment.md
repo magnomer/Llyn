@@ -8,7 +8,7 @@ It decides what a typed line becomes, and how rows show the Source they cite.
 A citation is either a stored Source or nothing, so the field never keeps a line that matches no Source.
 One list of Sources serves every row on the form, Example and Situation alike.
 
-## `internal QCitation(`
+## `internal QCitation(ObservableCollection<PCard> meaning, ObservableCollection<PCard> collocation, QSentence sentence, QProffer proffer)`
 
 Holds the two card lists, the sentence driver that finds a row's card, and the dropdown.
 

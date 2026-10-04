@@ -1,5 +1,5 @@
 # LTenureObserver.cs
-Hash: `70f81e40c832f8f9`
+Hash: `a18863c0ea66f111`
 
 A tenure subscribes to the engine for its lifetime and owns the shell's subject-specific observers.
 An observer is a delegate over a bulletin, so the shell hands a method and implements no contract.
@@ -33,7 +33,7 @@ The draft and entry attaches drop it the same way.
 
 ## `public void LTenureEntryAttach(LSubject subject, Action<LBulletin> observer)`
 
-The entry id is read at attach time.
+The entry id is read at attach time, through the draft's own `LDraftStored` rule.
 A draft never stored attaches nothing, and storing it later does not attach it.
 
 ## `public LDraft? LTenurePrepare()`
@@ -80,6 +80,13 @@ Whether the selection lies inside a Mention that stands for an Entry, so a sense
 The Entry whose Meanings the sense menu offers, or none when the Mention links nothing.
 Pending typing is persisted first, so the Mention is found against the text the field shows.
 
+## `public long? LTenureStoredRead()`
+
+The stored id the held draft stands on, or null for a fresh draft or an ended tenure.
+It persists nothing, so a paint asking for it never forces a save of pending edits.
+A refused read, such as a stale draft after a workspace switch, answers null.
+Every other failure propagates to the caller.
+
 ## `private LDraft? LTenureKeptRead()`
 
 The held draft as the engine stored it, for the Mention find.
@@ -92,6 +99,13 @@ A stale draft after a workspace switch is refused, and the read then answers non
 Drops the kept draft and advances the round, so a read already under way is not kept.
 It runs under the gate, since bulletins can arrive off the veneer's thread.
 
+## `private void LTenureObserverClear()`
+
+Detaches the tenure's engine handler and empties the observer list.
+Cancel and a successful finish call it, so nothing is delivered after the tenure ends.
+
 ## `private void LTenureStateRaise()`
 
 Reads the state and raises the tenure bulletin when it differs from the last one raised.
+`LTenureQueue` calls it through the delegate the constructor hands over, after each apply, restore and halt.
+Sweep, cancel and a successful finish call it directly.

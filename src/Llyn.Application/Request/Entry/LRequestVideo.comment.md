@@ -4,11 +4,11 @@ Hash: `b406e17e4ce90dfc`
 The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The video requests, shaped like the image requests with a second field for the span.
 
-## `public sealed record LRequestVideoAddition(`
+## `public sealed record LRequestVideoAddition(long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue, int LRequestPosition)`
 
 Adds a new video row with `LRequestValue` as its location, empty for a row still to be filled.
 
-## `public sealed record LRequestVideoPick(`
+## `public sealed record LRequestVideoPick(long LRequestDraftId, long LRequestCardId, long LRequestVideoId, int LRequestPosition)`
 
 Links an existing video to the card at `LRequestPosition`, copying the stored row under its positive id.
 
@@ -16,7 +16,7 @@ Links an existing video to the card at `LRequestPosition`, copying the stored ro
 
 Unlinks one video from the card.
 
-## `public sealed record LRequestVideoShift(`
+## `public sealed record LRequestVideoShift(long LRequestDraftId, long LRequestCardId, long LRequestVideoId, int LRequestPosition)`
 
 Moves one video row to `LRequestPosition` inside its card.
 

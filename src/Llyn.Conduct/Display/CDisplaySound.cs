@@ -115,8 +115,9 @@ public sealed class CDisplaySound
             sheet = await _cDisplayPhonology.LEngineAccentLoad(
                 shown, (rows, delete) => store(CCatalog.CCatalogEnsignRead(rows), delete));
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
             return null;
         }
 

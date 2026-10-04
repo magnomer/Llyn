@@ -1,7 +1,7 @@
 # LCatalogReference.cs
 Hash: `3ccbba9305c376ca`
 
-## `public sealed record LCatalogReference(`
+## `public sealed record LCatalogReference(LReference LCatalogReferenceStored, string LCatalogReferenceName, string LCatalogReferenceByline, IReadOnlyList<LAuthor> LCatalogReferenceCredit, int LCatalogReferenceUsage, bool LCatalogReferenceChosen = false)`
 
 One Source as a browsed row: the stored record, its shown name, its byline, its credits, and its citation count.
 The name and the byline are derived once here rather than in whatever is drawing the row.

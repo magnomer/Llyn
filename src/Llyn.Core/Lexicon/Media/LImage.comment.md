@@ -1,7 +1,7 @@
 # LImage.cs
 Hash: `4825abe1204c6769`
 
-## `public sealed record LImage(`
+## `public sealed record LImage(long LImageId, LStateValue LImageLocation)`
 
 One Image, independent data owned by nothing.
 No Entry, Meaning, or Collocation contains an Image.

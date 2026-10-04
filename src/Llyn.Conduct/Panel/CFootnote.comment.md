@@ -8,7 +8,7 @@ It holds the entry and portrait ports, the source vista as its parent and its ow
 The engine narrows the rows by the parent's choice, so the list decides nothing about matching.
 Its panel has no delete scope, because an entry is never deleted from this list.
 
-## `internal CFootnote(`
+## `internal CFootnote(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, CEditor editor, CEnvoy envoy, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
 Builds the list's panel under the `List.LoadFailed` key over the shelf's entry editor.
 The panel asks the editor's desk before it leaves an entry, and finishes through the shelf's seam.
@@ -43,7 +43,7 @@ Takes the text typed into the rummage field as the list's query.
 
 Reads the entries citing the parent's chosen Source, mapped as the quotation list maps its own.
 
-## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CFootnoteRowsLoad(`
+## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CFootnoteRowsLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `CFootnoteRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.

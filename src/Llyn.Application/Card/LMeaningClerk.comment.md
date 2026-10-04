@@ -19,7 +19,7 @@ Reads the meaning port out of `rig` and keeps the card clerk that writes a card'
 
 Reads the Meanings of the Entry identified by `entryId`, in stored order, roots and children together.
 
-## `public static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> LMeaningClerkSort(`
+## `public static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)`
 
 The Meanings of one Entry in reading order, each with its depth and a ready name.
 The store returns them grouped by parent, and a reader wants them in reading order.

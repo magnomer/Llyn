@@ -1,7 +1,7 @@
 # LReferenceOffer.cs
 Hash: `732025f4c3e88fe3`
 
-## `public sealed record LReferenceOffer(`
+## `public sealed record LReferenceOffer(string LReferenceOfferText, IReadOnlyList<LReferenceRow> LReferenceOfferRows, bool LReferenceOfferShown)`
 
 The stored Sources a sentence's citation field offers for the text typed into it.
 

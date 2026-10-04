@@ -1,7 +1,7 @@
 # LSourceSpec.cs
 Hash: `df31fffb637e5565`
 
-## `public sealed record LSourceSpec(`
+## `public sealed record LSourceSpec(string LSourceSpecName, IReadOnlyList<LSourceAttempt> LSourceSpecAttempts, IReadOnlyList<LRespellingRule>? LSourceSpecSpelling = null, IReadOnlyList<LBand>? LSourceSpecBands = null, double? LSourceSpecTotal = null, double? LSourceSpecFactor = null, double? LSourceSpecBase = null, string? LSourceSpecUnit = null)`
 
 The language-pack definition of one source.
 It gives its name and the ordered extraction attempts.

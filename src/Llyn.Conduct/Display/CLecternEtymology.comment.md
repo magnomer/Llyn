@@ -1,7 +1,7 @@
 # CLecternEtymology.cs
 Hash: `0fc451bebb59080d`
 
-## `public sealed record CLecternEtymology(`
+## `public sealed record CLecternEtymology(string CLecternEtymologyText, IReadOnlyList<CTranslationTarget> CLecternEtymologyTargets, bool CLecternEtymologyShown, bool CLecternEtymologyNarrated, bool CLecternEtymologyLinked, bool CLecternEtymologyDerived)`
 
 The etymology of the shown entry in the reading view, ready to show.
 

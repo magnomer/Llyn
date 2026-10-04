@@ -1,7 +1,7 @@
 # LMeaning.cs
 Hash: `39b3ef5e9866c04c`
 
-## `public sealed record LMeaning(`
+## `public sealed record LMeaning(long LMeaningId, long LMeaningEntryId, long? LMeaningParentId, int LMeaningPosition, LStateValue LMeaningTitle, LStateValue LMeaningDefinition)`
 
 One Meaning owned by an entry.
 It is a node in the entry's self-referential Meaning tree.

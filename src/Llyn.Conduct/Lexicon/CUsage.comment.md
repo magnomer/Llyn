@@ -1,7 +1,7 @@
 # CUsage.cs
 Hash: `4618200229fd8db0`
 
-## `public sealed record CUsage(`
+## `public sealed record CUsage(long CUsageId, long CUsageEntry, string CUsageName, string CUsageEpithet, string CUsageLanguage, CStateValue CUsageTitle, bool CUsageQuoted, bool CUsageCollocated)`
 
 One place that cites what a vita or the lectern shows, as their citation lists read it.
 

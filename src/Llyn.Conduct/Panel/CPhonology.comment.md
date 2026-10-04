@@ -16,7 +16,7 @@ A cleared panel empties the editor, and an edited row opens in it.
 It registers its vista restore and its close with `CWorkspace`, as every area does.
 It restores its vistas last, so a built area already stands on started vistas.
 
-## `public static CPhonology CPhonologyCreate(`
+## `public static CPhonology CPhonologyCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the panel over the atelier, so the driver hands it no port.
 Building it is no user action, so it is no gate on the atelier.
@@ -77,7 +77,7 @@ Each maps plainly to its shape: the entry as a `CVistaRow` and the sound beside 
 The engine fills every epithet, so the map copies it as it stands.
 It answers nothing before the vista is restored.
 
-## `public Task<CEnsignSheet<IReadOnlyList<CCatalogPronunciation>>> CPhonologyRowsLoad(`
+## `public Task<CEnsignSheet<IReadOnlyList<CCatalogPronunciation>>> CPhonologyRowsLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `CPhonologyRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.

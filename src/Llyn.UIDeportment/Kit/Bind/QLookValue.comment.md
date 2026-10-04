@@ -9,7 +9,7 @@ Each kind knows how to set itself and how to step back, so `QLook` holds no swit
 The implicit conversions let a row be written with the bare value, as the trigger setter was.
 A fixed value keeps its own type, so no row holds an untyped value.
 
-## `internal abstract void QLookValueApply(`
+## `internal abstract void QLookValueApply(FrameworkElement element, FrameworkElement target, DependencyProperty property)`
 
 Sets the row's value on `target`, which is the styled control or one of its template parts.
 `element` is always the styled control, so a relay reads its source property there.

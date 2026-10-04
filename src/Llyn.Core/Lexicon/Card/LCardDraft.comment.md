@@ -1,7 +1,7 @@
 # LCardDraft.cs
 Hash: `43ce7f51490543d4`
 
-## `public sealed record LCardDraft(`
+## `public sealed record LCardDraft(LStateValue LCardDraftTitle, LStateValue LCardDraftExpression, LStateValue LCardDraftMeaning, IReadOnlyList<LSentenceDraft> LCardDraftSentence, IReadOnlyList<LSituationDraft> LCardDraftSituation, IReadOnlyList<LRegisterDraft> LCardDraftRegister, IReadOnlyList<long> LCardDraftTranslation, IReadOnlyList<LTagDraft> LCardDraftTag, IReadOnlyList<LImageDraft> LCardDraftImage, IReadOnlyList<LVideoDraft> LCardDraftVideo, int LCardDraftPosition, long LCardDraftId = 0, IReadOnlyList<LCardDraft>? LCardDraftChild = null)`
 
 One card of the input form, captured as an immutable value.
 A Meaning card and a Collocation card are the same card.

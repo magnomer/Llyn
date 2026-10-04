@@ -1,7 +1,7 @@
 # CGuildRoll.cs
 Hash: `e9e0b1b258b3eab4`
 
-## `public sealed record CGuildRoll(`
+## `public sealed record CGuildRoll(IReadOnlyList<CCatalogAuthor> CGuildRollRows, bool CGuildRollEmpty, CVita CGuildRollVita)`
 
 The guild's roll answer, ready to paint in one go.
 The vita comes with the rows, so the view never reads the sheet a second time.

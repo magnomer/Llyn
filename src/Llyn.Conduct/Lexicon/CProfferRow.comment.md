@@ -1,7 +1,7 @@
 # CProfferRow.cs
 Hash: `87a509fbfbd29b73`
 
-## `public sealed record CProfferRow(`
+## `public sealed record CProfferRow(long CProfferRowId, string CProfferRowLead, string CProfferRowMark, string CProfferRowTail, string CProfferRowCount = "")`
 
 One stored row the dropdown offers, already split around the typed word.
 

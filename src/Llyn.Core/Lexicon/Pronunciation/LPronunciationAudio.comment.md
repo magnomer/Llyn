@@ -1,7 +1,7 @@
 # LPronunciationAudio.cs
 Hash: `6c2538bc7d21c103`
 
-## `public sealed record LPronunciationAudio(`
+## `public sealed record LPronunciationAudio(string LPronunciationAudioFile, string? LPronunciationAudioSource)`
 
 The recorded audio a pronunciation owns, one downloaded file per pronunciation.
 It is stored as a path relative to the workspace folder.

@@ -1,7 +1,7 @@
 # LEtymologyDraft.cs
 Hash: `f56817dc554fb15c`
 
-## `public sealed record LEtymologyDraft(`
+## `public sealed record LEtymologyDraft(string LEtymologyDraftText = "", IReadOnlyList<LMentionDraft>? LEtymologyDraftMentions = null, IReadOnlyList<long>? LEtymologyDraftEtymons = null, long LEtymologyDraftId = 0)`
 
 The etymology of one entry while it is being edited.
 It carries both shapes together, the prose with its spans and the ordered link ids.

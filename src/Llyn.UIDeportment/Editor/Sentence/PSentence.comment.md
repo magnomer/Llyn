@@ -27,7 +27,7 @@ Each of the two frame fields offers what has already been saved for the language
 Nothing is shipped, so an empty store offers nothing.
 The field is a plain box until something is written in it.
 
-## `internal PSentence(`
+## `internal PSentence(ObservableCollection<QCitationItem> catalog, ObservableCollection<string> particles, ObservableCollection<string> dependences, ObservableCollection<PLanguageItem> languages, CSentenceDraft draft)`
 
 The row for one of the engine's rows, blank or filled.
 It holds the sentence, the Source it cites, the frame, and the Gloss rows as the draft holds them.
@@ -104,7 +104,7 @@ Each frame field takes the column the row was told to take.
 The sentence and citation texts go through the same lookups the converters made.
 The three icons are set here, since an icon is drawn by code.
 
-## `private static void PSentenceChoiceApply(`
+## `private static void PSentenceChoiceApply(FrameworkElement container, string name, CStateWording value, ObservableCollection<string> catalog)`
 
 Fills one frame field.
 It sets the dropdown's offers, text and hint, the ghost copy and the hint shown when empty.

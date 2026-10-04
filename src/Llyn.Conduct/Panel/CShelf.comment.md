@@ -1,9 +1,9 @@
 # CShelf.cs
-Hash: `8f691cfa7806b070`
+Hash: `fb4cc68739055505`
 
 ## `public sealed class CShelf`
 
-The sources panel's session: the Source list, the entries citing the chosen Source, the source editor and the entry editor.
+The sources panel's session over the Source list, the entries citing the chosen Source and two editors.
 The two vistas' chosen rows and editing flags are the panel's mode, and the drivers only follow.
 Every gate holds only the interaction and reaches the engine through a panel, a desk or the editor.
 It asks the user and reports failures through the envoy, never through a seam a driver hands up.
@@ -66,8 +66,7 @@ The other mode flags follow the same two facts: which side is in front and wheth
 
 ## `public bool CShelfStoreEnabled`
 
-On the entry side, whether the entry may be stored.
-On the Source side, whether the Source draft holds a change.
+Whether the desk in front, the entry editor or the Source imprint, reports its draft storable.
 
 ## `public bool CShelfPressAllowed`
 
@@ -108,7 +107,7 @@ A shown Source the rows no longer choose is closed, so a stale selection never s
 The tally is read after that close, through the panel's own tally read and its failure report.
 So the tally never counts a Source the panel just left.
 
-## `public Task<CEnsignSheet<CShelfRoll>> CShelfRollLoad(`
+## `public Task<CEnsignSheet<CShelfRoll>> CShelfRollLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `CShelfRollRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
@@ -147,7 +146,7 @@ The navigation records the voyage station only once the leave is settled, so a k
 
 ## `internal void LShelfReferenceOpen(long id)`
 
-The navigation's arrival: opens one Source without asking, since the navigation already asked.
+The navigation's arrival opens one Source without asking, since the navigation already asked.
 
 ## `public void CShelfEntrySelect(long? id)`
 

@@ -14,7 +14,7 @@ A `#pragma warning disable` line.
 
 A disable that names no rule, which silences every rule the platform one included.
 
-## `public static IEnumerable<TAuditHit> TAuditSuppressRead(`
+## `public static IEnumerable<TAuditHit> TAuditSuppressRead(string repoRoot, string project, IEnumerable<string> held, string name)`
 
 Every way a portable half silences the platform rule.
 `NoWarn` naming it, an analyzer switched off, a `#pragma` disabling it or every rule, or a `SuppressMessage` naming it.

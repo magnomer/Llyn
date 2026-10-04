@@ -32,7 +32,7 @@ Forgets every path and advances the age, on a workspace change.
 
 The keys not yet asked, each once, with the age the caller hands back when the paths arrive.
 
-## `public void LEnsignPathAdd(`
+## `public void LEnsignPathAdd(int age, IReadOnlyList<string> keys, IReadOnlyList<string?> paths, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
 
 Records the path each key resolved to, null when the usher finds nothing there.
 Throws when `keys` and `paths` differ in length, since each key needs its own path.

@@ -1,7 +1,7 @@
 # CAnchor.cs
 Hash: `35297b8cb4f7d0b6`
 
-## `public sealed record CAnchor(`
+## `public sealed record CAnchor(IReadOnlyList<CAnchorRow> CAnchorRows, bool CAnchorEmpty)`
 
 The anchor menu of one reflex row, ready to show.
 

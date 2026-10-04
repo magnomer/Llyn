@@ -1,7 +1,7 @@
 # LScriptStyle.cs
 Hash: `6a49289ad2a1fd2e`
 
-## `public sealed record LScriptStyle(`
+## `public sealed record LScriptStyle(string LScriptStyleName, string LScriptStyleUrl, IReadOnlyDictionary<string, string> LScriptStyleForm, string LScriptStylePattern, int LScriptStyleImage, int LScriptStyleCaption, string? LScriptStylePrefix = null, IReadOnlyList<LRespellingRule>? LScriptStyleRewrite = null, string? LScriptStyleGloss = null, IReadOnlyList<LEpoch>? LScriptStyleEpoch = null)`
 
 One character style a language pack lists under `script`, such as 金文, 小篆 or 隸書.
 The style names the web database that draws the character in that hand and how its answer is read.

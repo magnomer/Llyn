@@ -1,7 +1,7 @@
 # CSCustomsRow.cs
 Hash: `423a98142d4c7c7a`
 
-## `public sealed record CSCustomsRow(`
+## `public sealed record CSCustomsRow(CSCustomsMode CSCustomsRowMode, long CSCustomsRowTarget, bool CSCustomsRowTargeted, string? CSCustomsRowLoss, int CSCustomsRowMeaning, int CSCustomsRowCollocation)`
 
 One row of the customs gate as a driver shows it, read in one call.
 

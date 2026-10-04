@@ -1,7 +1,7 @@
 # CTranscriptionRow.cs
 Hash: `0011cc7ba8719efc`
 
-## `public sealed record CTranscriptionRow(`
+## `public sealed record CTranscriptionRow(CTranscriptionDraft CTranscriptionRowDraft, IReadOnlyList<CScheme> CTranscriptionRowSchemes)`
 
 One row of the editor's transcription block, ready to paint with its scheme dropdown.
 

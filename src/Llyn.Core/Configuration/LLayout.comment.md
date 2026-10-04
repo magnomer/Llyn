@@ -1,7 +1,7 @@
 # LLayout.cs
 Hash: `16b6ed3bb1beaa53`
 
-## `public sealed record LLayout(`
+## `public sealed record LLayout(string LLayoutTab, LCatalogOrder? LLayoutOrder = null, LCatalogFilter? LLayoutFilter = null)`
 
 The ordering one tab lists by and the languages it hides, carried between two runs of the program.
 Both are view state of the same tab, and a console lists by them as the GUI does.

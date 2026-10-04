@@ -1,7 +1,7 @@
 # LMarkupInflection.cs
 Hash: `801a88cc6598dcb6`
 
-## `public sealed record LMarkupInflection(`
+## `public sealed record LMarkupInflection(string LMarkupInflectionText, string? LMarkupInflectionLocal, string LMarkupInflectionSpeech = "", IReadOnlyList<string>? LMarkupInflectionMorphology = null)`
 
 An inflected form as a markup file carries it.
 Its speech and morphologies are names, since the file stores no ids.

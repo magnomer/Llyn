@@ -1,7 +1,7 @@
 # CSoundingFanqie.cs
 Hash: `93987be7b770776b`
 
-## `public sealed record CSoundingFanqie(`
+## `public sealed record CSoundingFanqie(IReadOnlyList<CFanqieGroup> CSoundingFanqieGroups, bool CSoundingFanqiePending, bool CSoundingFanqieRebuildable, CFont CSoundingFanqieFont)`
 
 The rime-book block of the editor for the stored entry, ready to show.
 

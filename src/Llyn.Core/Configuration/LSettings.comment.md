@@ -1,7 +1,7 @@
 # LSettings.cs
 Hash: `fa908770890d916c`
 
-## `public sealed record LSettings(`
+## `public sealed record LSettings(string LSettingsLocalization, bool LSettingsRespelled = false, bool LSettingsFrequency = true, bool LSettingsMorphology = true, bool LSettingsEpithet = true, bool LSettingsTally = false, string LSettingsGloss = "English")`
 
 The user's persisted engine settings.
 These live as `settings.json` inside the user's workspace folder and nowhere else.

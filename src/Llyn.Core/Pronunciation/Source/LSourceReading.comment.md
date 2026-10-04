@@ -1,7 +1,7 @@
 # LSourceReading.cs
 Hash: `471d3bde8bc22fd4`
 
-## `public sealed record LSourceReading(`
+## `public sealed record LSourceReading(string LSourceReadingVariety, string LSourceReadingStrategy, string? LSourceReadingPattern, int LSourceReadingGroup, string? LSourceReadingPath, bool LSourceReadingPhonetic, int LSourceReadingSkip, bool LSourceReadingEvery)`
 
 One extraction a source attempt applies to a fetched page, declared by a language pack.
 An attempt fetches its page once and runs every reading it declares over the same body.

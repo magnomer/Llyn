@@ -1,7 +1,7 @@
 # LSyllable.cs
 Hash: `4f983f6adeb0191f`
 
-## `public sealed record LSyllable(`
+## `public sealed record LSyllable(long LSyllablePronunciationId, int LSyllablePosition, string? LSyllableOnset, string? LSyllableMedial, string LSyllableNucleus, string? LSyllableCoda, int? LSyllableToneNumber, string? LSyllableTonePoints)`
 
 One syllable of a pronunciation, ordered within it.
 It records how the syllable sounds and nothing of how it is written.

@@ -1,5 +1,5 @@
 # LDraftClerkEquality.cs
-Hash: `475766d62a66dca7`
+Hash: `e66facd1e63d8aa9`
 
 ## `public static class LDraftClerkEquality`
 
@@ -25,10 +25,11 @@ Language sits beside the headword, because changing only the tongue is still an 
 The headword is compared trimmed and the note canonical, since the commit stores both that way.
 A form that differs only there would otherwise report itself changed forever.
 The lists inside are compared by their contents, since records compare them by reference.
+The Meaning and Collocation cards are compared through `LCardEquality`, which owns the card rule.
 
 ## `public static IReadOnlyList<LTranscriptionDraft> LTranscriptionScan(IReadOnlyList<LTranscriptionDraft> drafts)`
 
-The transcription rows that count: every row the user added, and a seeded row once it holds text.
+The transcription rows that count are every row the user added, and a seeded row once it holds text.
 A seeded row still blank is left out, because the form offered it and nobody asked for it.
 The transcription sync writes the same rows, so the match and the save agree on what a row is.
 
@@ -62,58 +63,3 @@ The anchors are compared by content, and the rest of the row as a record.
 
 Whether two drafts name the same parts of speech in the same order.
 A language-pack value and a custom name of the same wording are two different parts.
-
-## `private static bool LCardMatch(IReadOnlyList<LCardDraft> one, IReadOnlyList<LCardDraft> other)`
-
-Whether two card lists carry the same cards in the same order.
-Order counts, because the order cards are in is the order they are stored in.
-Position is compared with it, so a reorder is caught by what it changed rather than by chance.
-
-## `public static bool LVideoMatch(IReadOnlyList<LVideoDraft> one, IReadOnlyList<LVideoDraft> other)`
-
-Whether two video lists carry the same clips in the same order.
-Blank rows are left out first, as they are for sentences.
-A Situation compares its own clips through it.
-
-## `private static IReadOnlyList<LCardDraft> LCardScan(IReadOnlyList<LCardDraft> cards)`
-
-The cards that carry something, in their original order.
-
-## `private static bool LCardCheck(LCardDraft card)`
-
-Whether a card holds nothing at all.
-An open form always shows one such card, and offering it is not an edit.
-A blank sentence, image or video row counts as nothing, since the form offers those too.
-
-## `private static bool LSentenceMatch(IReadOnlyList<LSentenceDraft> one, IReadOnlyList<LSentenceDraft> other)`
-
-Whether two row lists say the same thing in the same order.
-Blank rows are left out first, so a row the form added and never filled is not a change.
-The frame counts, so writing a marker or a role and nothing else is a change and is saved.
-The stored row each names counts too, because a row that changed id is a different row.
-
-## `private static bool LExampleMatch(LExampleDraft? one, LExampleDraft? other)`
-
-Whether two rows quote the same Example on the same terms.
-A row quoting none matches only another quoting none.
-The citation counts, so retagging a sentence is a change.
-The Mentions count too, so a word linked or unlinked marks the draft dirty.
-
-## `private static bool LSituationMatch(IReadOnlyList<LSituationDraft> one, IReadOnlyList<LSituationDraft> other)`
-
-Whether two situation lists say the same thing in the same order.
-All three stored fields count, not the title the card happens to show.
-
-## `public static bool LImageMatch(IReadOnlyList<LImageDraft> one, IReadOnlyList<LImageDraft> other)`
-
-Whether two image lists carry the same pictures in the same order.
-Blank rows are left out first, as they are for sentences.
-A Situation compares its own pictures through it.
-
-## `private static bool LLinkMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)`
-
-Whether two translation lists name the same entries in the same order.
-
-## `private static bool LTagMatch(IReadOnlyList<LTagDraft> one, IReadOnlyList<LTagDraft> other)`
-
-Whether two tag lists name the same tags in the same order, by id and by text.

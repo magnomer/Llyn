@@ -1,7 +1,7 @@
 # LSpeech.cs
 Hash: `829653767021fd60`
 
-## `public sealed record LSpeech(`
+## `public sealed record LSpeech(long? LSpeechValueId, string? LSpeechCustom = null)`
 
 One part-of-speech assignment on an entry, ordered within it.
 Identity is `(entry_parent, position)`.

@@ -8,7 +8,7 @@ It holds the entry and portrait ports, the situation vista as its roll and its o
 The occurrence side never deletes, so its panel has no delete scope.
 It is sealed, so its rows, labels, tickets and formats cross as Conduct shapes.
 
-## `internal COccurrence(`
+## `internal COccurrence(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
 Builds the list's panel under the `List.LoadFailed` key and with no delete scope.
 The change seam is the entry editor's desk, and the finish seam is the repertoire session's.
@@ -45,7 +45,7 @@ Reads the entries referencing the roll's chosen Situation, or every entry while 
 The engine matches the query and drops the hidden languages, so the list decides nothing about matching.
 A failed read shows the `Situation.LoadFailed` notice once through the ledger and answers no rows.
 
-## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> COccurrenceRowsLoad(`
+## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> COccurrenceRowsLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `COccurrenceRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.

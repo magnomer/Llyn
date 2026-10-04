@@ -1,7 +1,7 @@
 # LTallyLine.cs
 Hash: `62b7fa9f0651a0d2`
 
-## `public sealed record LTallyLine(`
+## `public sealed record LTallyLine(string LTallyLineLanguage, string LTallyLineKind, IReadOnlyList<LTallyMark> LTallyLineIpa, IReadOnlyList<LTallyMark> LTallyLineRespelling)`
 
 One line of a tally, a language and a kind.
 It holds the parts its readings take, in IPA and in respelling.
@@ -19,7 +19,7 @@ Both sets are always carried, so the view's switch only picks which is printed.
 
 The marks of one set, the respelling marks when asked for, else the IPA marks.
 
-## `public static IReadOnlyList<LTallyLine> LTallyLineScan(`
+## `public static IReadOnlyList<LTallyLine> LTallyLineScan(string kind, IReadOnlyList<string> characters, IReadOnlyDictionary<string, IReadOnlyList<LReflex>> readings, IReadOnlyList<string> ranking)`
 
 The lines of one division.
 The reflex parts of every character are gathered per language and kind, both sets apart.
@@ -28,6 +28,6 @@ A character absent from `readings` adds nothing, and an empty part or blank lang
 Languages sort by their place in `ranking`, unranked ones after by name, then kinds as the rows first name them.
 A line whose two sets are both empty is left out, and each line lists its marks by count.
 
-## `private static void LTallyLineAdd(`
+## `private static void LTallyLineAdd(Dictionary<(string, string), Dictionary<string, List<string>>> marks, (string, string) key, string text, string character)`
 
 Records one character under one language, kind and part, once however many readings take it.

@@ -22,18 +22,18 @@ The row's copy carries the stored id, so commit updates that row rather than mak
 The copy carries the stored Mentions under their positive ids, so a word already linked stays linked.
 An id naming no stored Example is refused.
 
-## `public LEntryDraft LExampleChange(`
+## `public LEntryDraft LExampleChange(LEntryDraft content, long cardId, long sentenceId, Func<LExampleDraft, LExampleDraft> change)`
 
 Applies one change to the Example a row quotes.
 A row quoting nothing is offered a blank Example, and the change decides whether it becomes one.
 A blank Example the change left blank is dropped again, so an empty text on an empty row is nothing.
 One the change wrote into is named here, which is the moment a sentence begins to exist.
 
-## `public static LEntryDraft LSentenceChange(`
+## `public static LEntryDraft LSentenceChange(LEntryDraft content, long cardId, long sentenceId, Func<LSentenceDraft, LSentenceDraft> change)`
 
 Applies one change to the row named, and refuses when the card does not hold it.
 The Gloss and Mention classes reach a row's Example through here.
 
-## `private static LEntryDraft LSentenceApply(`
+## `private static LEntryDraft LSentenceApply(LEntryDraft content, long cardId, Func<IReadOnlyList<LSentenceDraft>, IReadOnlyList<LSentenceDraft>> change)`
 
 Rewrites the row list of one card through the list routine given.

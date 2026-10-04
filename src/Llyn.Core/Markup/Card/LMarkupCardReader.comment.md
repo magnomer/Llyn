@@ -1,5 +1,5 @@
 # LMarkupCardReader.cs
-Hash: `58a8d1068c9fc57f`
+Hash: `59ce082b296bd3ed`
 
 ## `internal static class LMarkupCardReader`
 

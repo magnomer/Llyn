@@ -1,7 +1,7 @@
 # QContourItem.cs
 Hash: `47e2efc87ac9d7bf`
 
-## `public sealed record QContourItem(`
+## `public sealed record QContourItem(string QContourItemText, IReadOnlyList<int> QContourItemLevels, bool QContourItemToned)`
 
 One syllable of the tone contour box, in Deportment's own shape.
 A driver copies it from a ready `CContour`, so the box names no Conduct record.

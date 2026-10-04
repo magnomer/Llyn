@@ -1,7 +1,7 @@
 # LAccentRow.cs
 Hash: `f807d8eedeac364a`
 
-## `public sealed record LAccentRow(`
+## `public sealed record LAccentRow(long LAccentRowId, string LAccentRowVariety, string LAccentRowText, string LAccentRowAudio)`
 
 One pronunciation of the shown entry as the reading view prints it.
 The engine answers it with the reading already resolved under the respelling switch.

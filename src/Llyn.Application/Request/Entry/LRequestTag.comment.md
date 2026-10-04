@@ -4,7 +4,7 @@ Hash: `9faa8a436f5964ce`
 The tag requests, shaped like the situation requests.
 A tag carries plain text rather than a state value, because a tag is never unknown.
 
-## `public sealed record LRequestTagAddition(`
+## `public sealed record LRequestTagAddition(long LRequestDraftId, long LRequestCardId, string LRequestText, int LRequestPosition)`
 
 Adds a new tag with the typed text at `LRequestPosition`.
 

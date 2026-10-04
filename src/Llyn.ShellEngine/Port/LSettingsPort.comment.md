@@ -77,7 +77,7 @@ Turning it off cancels every pending inflection fetch.
 Persists whether readings show and edit in their respelled form.
 Every reading is stored in both forms, so a flip only changes which one each surface shows.
 
-## `(string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(`
+## `(string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath)`
 
 The ready notice of a failure, which is a refusal's reason key or `unexpected` with `recorded` and the audit file.
 One call reads the reason and writes the fault, so Conduct decides nothing about the exception.
@@ -87,7 +87,7 @@ One call reads the reason and writes the fault, so Conduct decides nothing about
 The typography the pack declares for one role, or a blank font so the theme's own stands.
 The glyph role falls back to the example typography.
 
-## `Task<IReadOnlyList<string>> LEngineEnsignLoad(`
+## `Task<IReadOnlyList<string>> LEngineEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
 
 Fetches the flag of every language the cache has not yet asked, then hands the newly kept rows to `store`.
 It answers the loaded languages it read, so a language menu fills from the same load.

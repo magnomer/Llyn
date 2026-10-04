@@ -1,7 +1,7 @@
 # LCatalogSituation.cs
 Hash: `417b4e8d591233e1`
 
-## `public sealed record LCatalogSituation(`
+## `public sealed record LCatalogSituation(LSituation LCatalogSituationStored, int LCatalogSituationUsage, bool LCatalogSituationChosen = false)`
 
 One Situation as a browsed row: the stored record and how many places reference it.
 The count travels with the row because the ordering reads it and the row shows it.

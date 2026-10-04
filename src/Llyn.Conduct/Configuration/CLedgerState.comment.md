@@ -1,7 +1,7 @@
 # CLedgerState.cs
 Hash: `a50b903fdb52a7de`
 
-## `public sealed record CLedgerState(`
+## `public sealed record CLedgerState(CSettings CLedgerStateSettings, string CLedgerStatePath, string CLedgerStateLocalization, IReadOnlyDictionary<string, string> CLedgerStateTexts, IReadOnlyList<KeyValuePair<string, string>> CLedgerStateLanguages, IReadOnlyList<CLedgerPage> CLedgerStatePages, CLedgerShown CLedgerStateShown)`
 
 Everything a settings view shows, read in one call.
 

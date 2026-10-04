@@ -114,6 +114,7 @@ public sealed class TGuildScribe
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
         CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));

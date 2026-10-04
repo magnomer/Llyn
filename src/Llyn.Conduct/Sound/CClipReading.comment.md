@@ -1,7 +1,7 @@
 # CClipReading.cs
 Hash: `5d6edc4fa39063e8`
 
-## `public sealed record CClipReading(`
+## `public sealed record CClipReading(CRecording CClipReadingRecording, CVariety CClipReadingVariety, bool CClipReadingFlagged, string CClipReadingAction, bool CClipReadingReady, bool CClipReadingFetching, bool CClipReadingPlaying, bool CClipReadingRefused)`
 
 One recording on a source row, with its variety keys ready.
 It also carries the recording's preview and taking state.

@@ -1,7 +1,7 @@
 # LReference.cs
 Hash: `cff39ef01b5f86a1`
 
-## `public sealed record LReference(`
+## `public sealed record LReference(long LReferenceId, LStateValue LReferenceTitle, LStateValue LReferenceYear, LReferenceKind LReferenceKind, LStateValue LReferenceNote, LStateValue LReferenceUrl, LStateMark LReferenceAuthorState)`
 
 One bibliographic Reference is the material an Entry or an Example cites.
 A Reference is independent.

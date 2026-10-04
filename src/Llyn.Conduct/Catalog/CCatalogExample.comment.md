@@ -1,7 +1,7 @@
 # CCatalogExample.cs
 Hash: `a3c4c5ca7f06fa47`
 
-## `public sealed record CCatalogExample(`
+## `public sealed record CCatalogExample(long CCatalogExampleId, string CCatalogExampleText, string CCatalogExampleName, string CCatalogExampleLanguage, string CCatalogExampleCount, bool CCatalogExampleChosen)`
 
 One example a search found, as the anthology lists it.
 

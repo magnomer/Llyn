@@ -1,7 +1,7 @@
 # LTranscriptionDraft.cs
 Hash: `26688400b68e77bc`
 
-## `public sealed record LTranscriptionDraft(`
+## `public sealed record LTranscriptionDraft(string LTranscriptionDraftScheme, string LTranscriptionDraftText = "", long LTranscriptionDraftId = 0, bool LTranscriptionDraftSeeded = false)`
 
 One transcription of an entry as one value the input form carries.
 An entry holds an ordered list of these, one per scheme the form shows.

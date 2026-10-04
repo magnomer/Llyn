@@ -59,7 +59,7 @@ Inside an assay, the handed sources instead.
 The whole compilation, generated markup classes included, for a walk that must see every reader.
 Inside an assay, the handed compilation instead.
 
-## `public static TAuditAssayResult TAuditAssayRun<TAuditAssayResult>(`
+## `public static TAuditAssayResult TAuditAssayRun<TAuditAssayResult>(IReadOnlyDictionary<string, string> sources, Func<TAuditAssayResult> walk)`
 
 Runs a walk over a handed source set instead of the tracked tree.
 Each key is a repo-relative virtual path.

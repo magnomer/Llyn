@@ -1,7 +1,7 @@
 # LCapsuleContent.cs
 Hash: `317a1c8615f8b974`
 
-## `public sealed record LCapsuleContent(`
+## `public sealed record LCapsuleContent([property: JsonPropertyName("window")] LCapsuleWindow? LCapsuleContentWindow = null, [property: JsonPropertyName("linked")] bool LCapsuleContentLinked = true, [property: JsonPropertyName("columns")] IReadOnlyList<LCapsuleColumn>? LCapsuleContentColumn = null)`
 
 The GUI-only state one workspace keeps between runs.
 The stored keys are a data contract, so they stay lowercase and independent of member names.

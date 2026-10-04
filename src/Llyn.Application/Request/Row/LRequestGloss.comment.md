@@ -7,20 +7,20 @@ Every one names the card and the sentence by id, real or minted.
 `LRequestCardId` 0 and `LRequestSentenceId` 0 together name the draft's own Example instead, the one the corpus panel holds.
 So one set of four records serves the card editor and the corpus panel alike.
 
-## `public sealed record LRequestGlossAddition(`
+## `public sealed record LRequestGlossAddition(long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, string LRequestLanguage, int LRequestPosition)`
 
 Adds an empty Gloss in `LRequestLanguage` at `LRequestPosition`, clamped into the list.
 The engine mints its negative id, so the form never carries one of its own.
 
-## `public sealed record LRequestGlossRemoval(`
+## `public sealed record LRequestGlossRemoval(long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, long LRequestGlossId)`
 
 Drops one Gloss by id.
 A Gloss no row carries is refused.
 
-## `public sealed record LRequestGlossText(`
+## `public sealed record LRequestGlossText(long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, long LRequestGlossId, LStateWritten LRequestValue)`
 
 Replaces the text of one Gloss, as written with its mark.
 
-## `public sealed record LRequestGlossLanguage(`
+## `public sealed record LRequestGlossLanguage(long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, long LRequestGlossId, string LRequestLanguage)`
 
 Replaces the language of one Gloss.

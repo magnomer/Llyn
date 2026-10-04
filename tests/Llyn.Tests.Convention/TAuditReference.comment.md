@@ -33,7 +33,7 @@ So WPF's `WindowsBase` shadows the runtime's facade and every WPF type binds.
 The project's own assemblies are skipped, since their sources are in the compilation.
 Missing build output fails with the build step named.
 
-## `private static void TAuditAssemblyAdd(`
+## `private static void TAuditAssemblyAdd(Dictionary<string, (Version TAuditVersion, string TAuditPath)> chosen, string path)`
 
 Keeps the assembly when it is managed and newer than the one of that name held so far.
 A native library is skipped, since it cannot be a reference.

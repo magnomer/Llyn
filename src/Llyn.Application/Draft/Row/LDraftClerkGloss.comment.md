@@ -32,11 +32,11 @@ Replaces the text of the Gloss named, resolved from the written value.
 
 Replaces the language of the Gloss named.
 
-## `private static LDraft LGlossChange(`
+## `private static LDraft LGlossChange(LDraft draft, long cardId, long sentenceId, long glossId, Func<LGlossDraft, LGlossDraft> change)`
 
 The one place a Gloss row is found by id and rewritten, refusing when no row carries it.
 
-## `private static LDraft LGlossApply(`
+## `private static LDraft LGlossApply(LDraft draft, long cardId, long sentenceId, Func<LExampleDraft, IReadOnlyList<LGlossDraft>> change)`
 
 Routes one list change to the Example the request names.
 Card 0 and sentence 0 name the draft's own Example, held by the corpus panel.

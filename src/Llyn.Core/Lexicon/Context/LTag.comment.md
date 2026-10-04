@@ -1,7 +1,7 @@
 # LTag.cs
 Hash: `4c045bfae2973c3e`
 
-## `public sealed record LTag(`
+## `public sealed record LTag(long LTagId, string LTagText)`
 
 One Tag.
 A Tag is a shared row any number of Meanings and Collocations link to by id.

@@ -1,7 +1,7 @@
 # LTranslationTarget.cs
 Hash: `4f49dca1ad725101`
 
-## `public sealed record LTranslationTarget(`
+## `public sealed record LTranslationTarget(long LTranslationTargetId, string LTranslationTargetHeadword, string LTranslationTargetLanguage)`
 
 The resolved Entry an `LTranslation` points at.
 It carries the headword and language a shown link needs.

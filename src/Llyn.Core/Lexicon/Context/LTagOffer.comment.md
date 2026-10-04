@@ -1,7 +1,7 @@
 # LTagOffer.cs
 Hash: `d72f09d5ee506774`
 
-## `public sealed record LTagOffer(`
+## `public sealed record LTagOffer(string LTagOfferText, IReadOnlyList<LTagRow> LTagOfferRows, bool LTagOfferShown)`
 
 What a tag field keeps after a gate, and the stored Tags it offers for the kept text.
 

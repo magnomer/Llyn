@@ -1,7 +1,7 @@
 # CAnchorRow.cs
 Hash: `285a2303c7372f60`
 
-## `public sealed record CAnchorRow(`
+## `public sealed record CAnchorRow(long CAnchorRowId, string CAnchorRowSummary, bool CAnchorRowHeld, bool CAnchorRowEstimated)`
 
 One fanqie reading a reflex may anchor to, as the anchor menu offers it.
 

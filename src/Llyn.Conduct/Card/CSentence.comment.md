@@ -9,7 +9,7 @@ The rules about the rows live in the Application clerk, so no gate trims, clamps
 A gate does nothing while the desk is filling a draft, since the quill reads null then.
 It is the reference example of the pipeline in `docs-work/JobPrinciple.md` section 13.
 
-## `internal CSentence(`
+## `internal CSentence(CDesk desk, LPhonologyPort phonology, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy)`
 
 Builds the gates over the editor's desk and the phonology port.
 The draft port reads the chip lines, and the settings port with the envoy reports a failed read.

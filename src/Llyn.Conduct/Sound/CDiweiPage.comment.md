@@ -1,7 +1,7 @@
 # CDiweiPage.cs
 Hash: `91d969e915b886d8`
 
-## `public sealed record CDiweiPage(`
+## `public sealed record CDiweiPage(string CDiweiPageLanguage, string CDiweiPageKey, IReadOnlyList<CDiweiSection> CDiweiPageSections, bool CDiweiPageEmpty, CFont CDiweiPageFont, CFont CDiweiPageGlyph)`
 
 The page of one diwei cell, as the diwei reader prints it.
 The blank page carries empty text and no section.

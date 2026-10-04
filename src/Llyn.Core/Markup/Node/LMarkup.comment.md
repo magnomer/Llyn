@@ -1,5 +1,5 @@
 # LMarkup.cs
-Hash: `7f641e53934f3732`
+Hash: `fbe1c540aea03aa7`
 
 ## `public static class LMarkup`
 
@@ -64,6 +64,12 @@ Unspecified writes nothing, unknown writes an empty element with the state attri
 ## `internal static string LMarkupTextParse(LMarkupNode? element)`
 
 Reads a plain text field, empty when the element is absent.
+
+## `internal static int? LMarkupNumberParse(LMarkupNode element)`
+
+Reads an integer field, nothing when the text is not a number.
+Each caller picks the value that marks the field as unreadable.
+A bad offset is therefore dropped and not moved to zero.
 
 ## `internal static void LMarkupTextFormat(List<LMarkupNode> parent, string name, string? text)`
 

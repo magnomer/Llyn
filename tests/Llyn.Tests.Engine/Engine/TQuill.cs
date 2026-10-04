@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -214,6 +217,25 @@ public sealed class TQuill
         LExampleDraft? example = TInterface.TRequestCardFind(tenure.TTenureRead()!.LDraftContent, card)
             .LCardDraftSentence[0].LSentenceDraftExample;
         Assert.Equal(notes.LReferenceId, example?.LExampleDraftReference.LStateAnchorShown);
+    }
+
+    [Fact]
+    public void TranslationRemove_CourtDeleteFails_RaisesTheFailure()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LTenure tenure = TQuillEntryStart(engine);
+        LDraftPort drafts = TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineCourtFind"] = args =>
+                TInterface.TCourtCreate(1, (long)args![0]!, (long)args[1]!, "chien", "French"),
+            ["LEngineCourtDelete"] = _ => throw new IOException("The court delete failed."),
+        });
+        LQuillChip chip = tenure.TQuillChipCreate(drafts);
+
+        IOException failure = Assert.Throws<IOException>(() => chip.TQuillTranslationRemove(1, 2));
+
+        Assert.Equal("The court delete failed.", failure.Message);
     }
 
     private static LTenure TQuillEntryStart(LEngine engine)

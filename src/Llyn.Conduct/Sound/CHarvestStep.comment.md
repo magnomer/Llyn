@@ -1,7 +1,7 @@
 # CHarvestStep.cs
 Hash: `09213bc87a0aa1cf`
 
-## `public sealed record CHarvestStep(`
+## `public sealed record CHarvestStep(string CHarvestStepSource, int CHarvestStepOrder, CRecording? CHarvestStepRecording, bool CHarvestStepEnded)`
 
 One step of a recording search, as the errand hands it to the driver's thread.
 It carries no kind, since a found recording or the end flag already tells the step apart.

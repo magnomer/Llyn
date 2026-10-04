@@ -1,7 +1,7 @@
 # LCourt.cs
 Hash: `9660b9f2ce0f287e`
 
-## `public sealed record LCourt(`
+## `public sealed record LCourt(long LCourtId, long LCourtOwnerId, long LCourtTargetId, string LCourtHeadword, string LCourtLanguage, int LCourtVersion = 0)`
 
 One tentative link, waiting for the record it points at to become real or be dropped.
 It is plain data and knows nothing of files or the database.

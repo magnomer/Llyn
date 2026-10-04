@@ -1,7 +1,7 @@
 # LPronunciationDraft.cs
 Hash: `183f22249d504061`
 
-## `public sealed record LPronunciationDraft(`
+## `public sealed record LPronunciationDraft(string LPronunciationDraftIpa, IReadOnlyList<LSyllable>? LPronunciationDraftSyllables = null, string LPronunciationDraftAudio = "", string? LPronunciationDraftSource = null, long LPronunciationDraftId = 0, string LPronunciationDraftVariety = "", bool LPronunciationDraftSeeded = false, string LPronunciationDraftRespelling = "")`
 
 One pronunciation of an entry as one value the input form carries.
 

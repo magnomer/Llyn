@@ -1,7 +1,7 @@
 # LDiweiLine.cs
 Hash: `a7890669235899b6`
 
-## `public sealed record LDiweiLine(`
+## `public sealed record LDiweiLine(string LDiweiLineReading, string LDiweiLineLabel, bool LDiweiLineRounded, int LDiweiLineRank, IReadOnlyList<string> LDiweiLineCharacters)`
 
 One line of a Diwei page section.
 It holds a label, its reconstructed reading, and the characters placed there.

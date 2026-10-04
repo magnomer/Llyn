@@ -1,5 +1,5 @@
 # TClockFake.cs
-Hash: `9521b11efc1a8408`
+Hash: `dffa2b2fcf999593`
 
 ## `internal sealed class TClockFake : LClock`
 
@@ -9,6 +9,11 @@ Setting it is the one way to freeze or advance time inside an engine.
 ## `public DateTimeOffset LClockRead()`
 
 The moment the current reader answers.
+
+## `public Task LClockPause(TimeSpan span, CancellationToken cancellation)`
+
+A real wait of the span through `Task.Delay`, so test timing stays as it was.
+Setting the clock never shortens this wait.
 
 ## `internal void TClockSet(Func<DateTimeOffset> read)`
 

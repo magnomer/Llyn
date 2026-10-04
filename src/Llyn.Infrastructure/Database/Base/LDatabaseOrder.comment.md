@@ -22,13 +22,13 @@ Every value still travels as a parameter.
 
 The shift that shelves the current positions while the final ones are written.
 
-## `public static IReadOnlyList<long> LDatabaseOrderRead(`
+## `public static IReadOnlyList<long> LDatabaseOrderRead(SqliteConnection connection, string table, string scope, long? owner, string memberColumn)`
 
 Reads the members of an ordered set in their stored order.
 That is the `id` column of a stable-id table, or the member column of an association table.
 The list an insert or a move rearranges before handing it back to a normalize call.
 
-## `public static void LDatabaseOrderNormalize(`
+## `public static void LDatabaseOrderNormalize(SqliteConnection connection, string table, string scope, long? owner, string memberColumn, IReadOnlyList<long> identifiers)`
 
 Rewrites the positions of an ordered set.
 The members listed in `identifiers` take positions `0 … n-1` in that order.
@@ -36,7 +36,7 @@ Every row in the scope must appear in the list.
 `memberColumn` is the column that names a member.
 It is `id` for a stable-id table, and the member column for an association table.
 
-## `public static IReadOnlyList<long> LDatabaseOrderInsert(`
+## `public static IReadOnlyList<long> LDatabaseOrderInsert(IReadOnlyList<long> identifiers, long member, int target)`
 
 Places `member` at `target` in `identifiers`, clamping the target into the list.
 Returns the resulting order for a normalize call.

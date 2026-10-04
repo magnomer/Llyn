@@ -1,5 +1,5 @@
 # LReferenceFacade.cs
-Hash: `8cbd0714c8059af7`
+Hash: `34eb54c6efa42a51`
 
 ## `internal sealed class LReferenceFacade`
 
@@ -8,7 +8,7 @@ A Reference is the work an Example is drawn from.
 A citation is a reference to a row, never ownership of it.
 Every read and write goes through the reference clerk under the gate, and every change is announced here.
 The vista overload stays here, because a vista is the shell's and the twin names are numbered per panel.
-The source draft starts and commits here too, through the citation clerk.
+The source draft starts and commits here too, through the `LReferenceCitation` the citation clerk holds.
 
 ## `public LReferenceFacade(LEngine engine)`
 

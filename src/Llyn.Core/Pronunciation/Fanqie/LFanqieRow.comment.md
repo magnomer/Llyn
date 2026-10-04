@@ -1,7 +1,7 @@
 # LFanqieRow.cs
 Hash: `8caa3974a271e204`
 
-## `public sealed record LFanqieRow(`
+## `public sealed record LFanqieRow(string LFanqieRowCharacter, string LFanqieRowBook, int LFanqieRowPosition, string LFanqieRowText, string LFanqieRowInitial = "", string LFanqieRowRime = "", string LFanqieRowHeading = "", string LFanqieRowDivision = "", string LFanqieRowTone = "", bool LFanqieRowRounded = false, string? LFanqieRowSource = null, string LFanqieRowSpelling = "", string LFanqieRowReading = "", string LFanqieRowClass = "", long LFanqieRowId = 0, string LFanqieRowLabel = "", string LFanqieRowSummary = "", int LFanqieRowRepresentative = 0)`
 
 One placement of one character in one rime book, as fetched and as stored.
 The row belongs to the character, not to the entry, so every entry holding that character shares it.
@@ -83,7 +83,7 @@ Two sites may serve one book, so the source is part of the match.
 The distinct characters the rows place, in first-seen order.
 The grouping follows that order, so the blocks stand as the headword spells them.
 
-## `public static IReadOnlyList<LFanqieRow>? LFanqieRowScan(`
+## `public static IReadOnlyList<LFanqieRow>? LFanqieRowScan(IReadOnlyList<LFanqieRow> rows, string character, LFanqieBook book)`
 
 The rows placing `character` in `book`, or null when there are none.
 Null rather than empty lets the grouper skip a missing block in one pattern test.

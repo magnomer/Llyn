@@ -106,8 +106,8 @@ public sealed class QAccentItem : INotifyPropertyChanged
             if (prompt.Parent is Grid cell)
             {
                 cell.SetValue(
-                    QField.QFieldCellProperty,
-                    new QField.QFieldCell("Theme.Pronunciation.Field", "QAccentItemText", "Input.Pronunciation"));
+                    QQuill.QQuillCellProperty,
+                    new QQuill.QQuillCell("Theme.Pronunciation.Field", "QAccentItemText", "Input.Pronunciation"));
             }
 
             if (QLook.QLookPartFind<ContentControl>(container, "PAccentShelf") is ContentControl shelf)

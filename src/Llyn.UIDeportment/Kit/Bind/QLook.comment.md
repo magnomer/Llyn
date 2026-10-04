@@ -8,7 +8,7 @@ A veneer member may not branch, so the one `?:` each mapping needs lives here, o
 It also switches the visual states the veneer's styles no longer carry as triggers.
 The item template fills live in [QLookItem](QLookItem.comment.md).
 
-## `internal sealed record QLookSetter(`
+## `internal sealed record QLookSetter(string QLookSetterStyle, QLookCue QLookSetterCue, string? QLookSetterPart, DependencyProperty QLookSetterProperty, QLookValue QLookSetterValue)`
 
 One dismantled trigger setter, holding its style, cues, template part, property and value.
 A null part means the control itself.

@@ -1,7 +1,7 @@
 # LSituationRow.cs
 Hash: `d6494e9dc89cf02b`
 
-## `public sealed record LSituationRow(`
+## `public sealed record LSituationRow(long LSituationRowId, string LSituationRowLead, string LSituationRowMark, string LSituationRowTail, string LSituationRowCount)`
 
 One stored Situation a situation field offers, its title already split around the typed word.
 

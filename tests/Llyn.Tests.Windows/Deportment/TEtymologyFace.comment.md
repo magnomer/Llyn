@@ -6,7 +6,7 @@ Hash: `c9beed6df8dc3c9f`
 Covers how the etymology field paints the verdicts its owning driver hands it.
 The field lives on its own STA thread, since a WPF control demands one.
 
-## `public void EtymologySourceShow_HandedVerdicts_PaintTheRowAndTheReadFace(`
+## `public void EtymologySourceShow_HandedVerdicts_PaintTheRowAndTheReadFace(bool editable, bool narrated, bool linked, Visibility row, Visibility prose)`
 
 The editor's fixed verdicts show the row of links and keep the read narrative hidden over text.
 The lectern's verdicts show the read narrative with words and hide a row with no link.

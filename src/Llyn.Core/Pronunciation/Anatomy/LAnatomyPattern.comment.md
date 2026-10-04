@@ -1,7 +1,7 @@
 # LAnatomyPattern.cs
 Hash: `09972e57107f7c73`
 
-## `public sealed record LAnatomyPattern(`
+## `public sealed record LAnatomyPattern(string LAnatomyPatternRegex, IReadOnlyList<LRespellingRule>? LAnatomyPatternRewrites = null, bool LAnatomyPatternDecomposed = false)`
 
 One way of cutting a reading into its parts.
 The rewrites prepare the reading and the regex cuts it.

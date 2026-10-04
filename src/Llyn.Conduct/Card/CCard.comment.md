@@ -1,5 +1,5 @@
 # CCard.cs
-Hash: `c64b52fae792c1c7`
+Hash: `9020c54c39ef3302`
 
 ## `public sealed class CCard`
 
@@ -45,6 +45,7 @@ A failed start shows `Input.TranslationFailed`.
 
 The gate for a link the user erases, by its close button or a key at the entry's edge.
 The quill drops the court behind a tentative link in the same call.
+A failure to drop that court or its draft shows the `Input.TranslationFailed` notice, as an insert does.
 
 ## `public CProspect CCardMentionRead(string word)`
 

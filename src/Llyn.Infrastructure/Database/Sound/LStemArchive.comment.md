@@ -47,7 +47,7 @@ The characters linked to the series, in the order their Shengfu rows were stored
 The entries of the language whose headword carries a character of every series named.
 Counting the distinct series matched keeps the answer an intersection, as a cell of the rime table is.
 
-## `private static void LStemCharacterApply(`
+## `private static void LStemCharacterApply(LDatabaseSession session, string language, string character, IReadOnlyList<string> keys)`
 
 Clears the links of one character's Shengfu row and writes one link per series key.
 

@@ -34,7 +34,7 @@ public sealed partial class LTenure
     public void LTenureEntryAttach(LSubject subject, Action<LBulletin> observer)
     {
         ArgumentNullException.ThrowIfNull(observer);
-        if (LTenureRead()?.LDraftEntryId is > 0 and var id)
+        if (LTenureRead()?.LDraftStored is long id)
         {
             LTenureObserverInsert(subject, observer, id);
         }
@@ -45,7 +45,7 @@ public sealed partial class LTenure
         ArgumentNullException.ThrowIfNull(observer);
         lock (_lTenureGate)
         {
-            if (!_lTenureEnded)
+            if (!_lTenureQueue.LTenureQueueEnded)
             {
                 _lTenureObservers.Add((subject, observer, id));
             }
@@ -62,7 +62,7 @@ public sealed partial class LTenure
                 LTenureKeptClear();
             }
 
-            if (_lTenureEnded)
+            if (_lTenureQueue.LTenureQueueEnded)
             {
                 return;
             }
@@ -123,7 +123,7 @@ public sealed partial class LTenure
         {
             lock (_lTenureGate)
             {
-                if (_lTenureEnded)
+                if (_lTenureQueue.LTenureQueueEnded)
                 {
                     return null;
                 }
@@ -181,12 +181,24 @@ public sealed partial class LTenure
             : null;
     }
 
+    public long? LTenureStoredRead()
+    {
+        try
+        {
+            return LTenureRead()?.LDraftStored;
+        }
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
+        {
+            return null;
+        }
+    }
+
     private LDraft? LTenureKeptRead()
     {
         int round;
         lock (_lTenureGate)
         {
-            if (_lTenureEnded)
+            if (_lTenureQueue.LTenureQueueEnded)
             {
                 return null;
             }

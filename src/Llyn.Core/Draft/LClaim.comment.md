@@ -1,7 +1,7 @@
 # LClaim.cs
 Hash: `4bf25b6887736f62`
 
-## `public sealed record LClaim(`
+## `public sealed record LClaim(long LClaimDraft, int LClaimProcess, DateTimeOffset LClaimMoment)`
 
 One running program's hold on a tentative record, written where every launch can read it.
 A held draft is otherwise known only to the copy of the program that started it.

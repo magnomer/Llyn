@@ -26,6 +26,6 @@ The transcription gates of an editor over stub ports, whose desk holds nothing.
 
 Opens the stored entry `entry` in an editor over the library vista.
 
-## `private static long TTranscriptionSave(`
+## `private static long TTranscriptionSave(LEngine engine, IReadOnlyList<LTranscriptionDraft> rows, string language = "Cantonese")`
 
 Stores a headword in `language`, Cantonese by default, with the transcription rows `rows`.

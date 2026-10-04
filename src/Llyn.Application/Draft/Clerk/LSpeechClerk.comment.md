@@ -25,13 +25,13 @@ The last part is left out when it is the pending custom one.
 
 Whether the typed text names a part of speech once trimmed.
 
-## `public static IReadOnlyList<LSpeechDraft>? LSpeechAdd(`
+## `public static IReadOnlyList<LSpeechDraft>? LSpeechAdd(IReadOnlyList<LSpeechDraft> held, string? name, Func<string, LSpeechValue?> declare)`
 
 The committed parts with the trimmed name appended, or null for a blank name.
 A name already held answers the list unchanged, so the caller still sends it once.
 `declare` answers the catalog value, and a refused declaration keeps the name as a custom part.
 
-## `public static LSpeechOffer LSpeechFind(`
+## `public static LSpeechOffer LSpeechFind(IReadOnlyList<LSpeechValue> values, IReadOnlyList<LSpeechDraft> held, string? typed)`
 
 The catalog's parts whose name holds the trimmed typed text, each marked when the chips already hold it.
 A blank text matches every part.
@@ -41,7 +41,7 @@ The offer shows only while the text is not blank and some part matches.
 
 The committed parts without the one shown under this exact name.
 
-## `public static (IReadOnlyList<LSpeechDraft> LSpeechHeld, string LSpeechTyped) LSpeechSettle(`
+## `public static (IReadOnlyList<LSpeechDraft> LSpeechHeld, string LSpeechTyped)`
 
 Keeps the committed parts and the typed text while the draft shows exactly what they build.
 Otherwise the draft changed from elsewhere, so its parts become the committed ones and the typed text clears.

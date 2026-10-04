@@ -1,12 +1,13 @@
 # TAuditTruthLocal.cs
-Hash: `64b5e23f06efa75b`
+Hash: `4baaaa83b0678024`
 
 ## `internal static partial class TAuditTruthWalker`
 
 The local half of the truth walker, covering what a member may not do with an engine answer it holds.
 A Conduct type's member is an answer too, since a gate's verdict may not decide the next request.
+Reference lookups and line numbers come from `TAuditTruthReference`.
 
-## `private static void TAuditToggleCheck(`
+## `private static void TAuditToggleCheck(TAuditTruthField field, MemberDeclarationSyntax scope, HashSet<ISymbol> writers, List<TViolation> violations)`
 
 A field written before and again after a request in one member is gatekeeping the shell runs itself.
 Each write must sit in a block that also holds the request, so both run around it.
@@ -29,7 +30,7 @@ A method that requests is a relay and is audited on its own.
 
 ## `private static void TAuditBaseCheck(IReadOnlyList<TypeDeclarationSyntax> type, List<TViolation> violations)`
 
-A driver type deriving from or implementing a type from below Conduct holds logic by inheritance.
+A driver type deriving from or implementing an engine type holds logic by inheritance.
 Implementing a Conduct port is what a driver is for, so it is no hit.
 
 ## `private static IEnumerable<MemberDeclarationSyntax> TAuditScopeRead(IReadOnlyList<TypeDeclarationSyntax> type)`

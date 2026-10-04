@@ -1,5 +1,5 @@
 # CPanel.cs
-Hash: `03e340e57bc9f130`
+Hash: `a94771e128c09ada`
 
 ## `public sealed class CPanel`
 
@@ -33,7 +33,7 @@ A two-list tab hands in its session's finish, so the whole tab stores as one.
 Whether the panel's tab is the one in front, which only the driver's surface knows.
 It is consulted when a stored entry is announced, so a hidden tab in edit mode does not adopt it.
 
-## `internal CPanel(`
+## `internal CPanel(CEnvoy envoy, LSettingsPort settings, string loadKey, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
 `loadKey` words every failed load and tally read, so a blank one throws.
 The panel holds no vista until `CPanelVistaRestore`, so every verdict before it reads as no row and no edit.
@@ -85,7 +85,7 @@ It is one ShellEngine call, `LVista.LVistaTallyRead`, worded by Core's `LCatalog
 Before a vista arrives it reads empty.
 A fresh draft has no chosen row, so it reads as cited nowhere.
 A failure shows the panel's load failure key, as its rows read does, and answers an empty chip.
-Only the situation and example lists call it, since only their vistas count a tally.
+Only the situation, example and reference lists call it, since only their vistas count a tally.
 
 ## `public void CPanelRowsResonate()`
 
@@ -181,8 +181,10 @@ The vista drops a choice that no longer loads, so the chosen verdict decides the
 
 ## `public void CPanelDraftResonate()`
 
-The chosen entry changed under the panel, so it is reloaded quietly.
-A vanished entry closes the panel, and a refused reload changes nothing.
+The chosen entry changed under the panel, so it is reloaded.
+A failed reload shows the panel's load key and repaints nothing.
+The close check still runs after a failure, so a panel whose row went away closes.
+A vanished entry closes the panel.
 
 ## `public void CPanelEntryResonate(CBulletin bulletin)`
 

@@ -177,10 +177,10 @@ internal static class LMarkupCardReader
             switch (child.LMarkupNodeName)
             {
                 case "offset":
-                    offset = LMarkupReader.LMarkupNumberParse(child) ?? -1;
+                    offset = LMarkup.LMarkupNumberParse(child) ?? -1;
                     break;
                 case "length":
-                    length = LMarkupReader.LMarkupNumberParse(child) ?? 0;
+                    length = LMarkup.LMarkupNumberParse(child) ?? 0;
                     break;
                 case "headword":
                     headword = LMarkup.LMarkupTextParse(child);

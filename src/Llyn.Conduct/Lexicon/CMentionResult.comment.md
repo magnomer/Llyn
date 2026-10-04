@@ -1,7 +1,7 @@
 # CMentionResult.cs
 Hash: `b6fa25e7cd5757cf`
 
-## `public sealed record CMentionResult(`
+## `public sealed record CMentionResult(int CMentionResultOffset, CMentionMark? CMentionResultStored, IReadOnlyList<CTranslationTarget> CMentionResultEntry)`
 
 What a click on a text finds at the clicked place.
 

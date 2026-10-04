@@ -1,7 +1,7 @@
 # PMentionChip.cs
 Hash: `8721e4210f843ff2`
 
-## `internal sealed record PMentionChip(`
+## `internal sealed record PMentionChip(long PMentionChipId, string PMentionChipWord, string PMentionChipName, string PMentionChipSense)`
 
 One Mention as the chip line shows it under an editor row.
 It is display only and never edits the span.

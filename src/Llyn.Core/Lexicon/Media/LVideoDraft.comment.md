@@ -1,7 +1,7 @@
 # LVideoDraft.cs
 Hash: `73038fe3640b1b10`
 
-## `public sealed record LVideoDraft(`
+## `public sealed record LVideoDraft(LStateValue LVideoDraftLocation, LStateValue LVideoDraftSpan, long LVideoDraftId = 0)`
 
 One video row a card is holding before it is stored.
 A card names a video by location and by the span of it worth watching.

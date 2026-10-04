@@ -1,7 +1,7 @@
 # CCatalogPronunciation.cs
 Hash: `e74014415ee6721f`
 
-## `public sealed record CCatalogPronunciation(`
+## `public sealed record CCatalogPronunciation(CVistaRow CCatalogPronunciationEntry, string CCatalogPronunciationSound, string CCatalogPronunciationText)`
 
 One entry as the phonology inventory lists it, with the pronunciation it is looked up by.
 

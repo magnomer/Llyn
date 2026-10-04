@@ -57,7 +57,7 @@ Moves the credit carrying the id to the place asked for.
 Writes the typed name over the Author an author draft holds.
 A draft holding no Author is refused, because the request names work of another kind.
 
-## `private static LDraft LAuthorApply(`
+## `private static LDraft LAuthorApply(LDraft draft, Func<IReadOnlyList<LAuthor>, IReadOnlyList<LAuthor>> change, bool credited = true)`
 
 Rewrites the credit list through the routine given, on a draft that holds a source.
 Crediting somebody marks the authorship known, because a source with a credit cannot be one whose authors are unknown.

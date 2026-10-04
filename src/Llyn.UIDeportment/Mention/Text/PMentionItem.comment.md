@@ -1,7 +1,7 @@
 # PMentionItem.cs
 Hash: `00c0ce1f79d4f665`
 
-## `internal sealed record PMentionItem(`
+## `internal sealed record PMentionItem(long PMentionItemEntry, long PMentionItemSense, string PMentionItemName, string PMentionItemLanguage, ImageSource? PMentionItemFlag, int PMentionItemDepth)`
 
 One row of the menu that opens at a clicked word.
 It carries display strings and ids only, so the menu never reads the engine.

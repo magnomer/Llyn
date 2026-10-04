@@ -1,7 +1,7 @@
 # CNotationItem.cs
 Hash: `4238658664f1d524`
 
-## `public sealed record CNotationItem(`
+## `public sealed record CNotationItem(string CNotationItemSource, int CNotationItemOrder, IReadOnlyList<CNotationReading> CNotationItemReading, string CNotationItemNotice, bool CNotationItemReady)`
 
 One source row of the notation popup, as the errand keeps it.
 A row appears the moment its source starts searching, so every declared source shows before any answers.

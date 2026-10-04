@@ -1,18 +1,22 @@
 # LReflexClerk.cs
-Hash: `b0743db639ed5ff9`
+Hash: `45823f4070e12a55`
 
 ## `public sealed class LReflexClerk`
 
-Reflexes of an entry, their fetch, their anchors and the epithet derived from them.
-The row sync serves the entry save, the fetch fills an entry that has none, and the epithet follows both.
-The engine's gate is shared, so a fetch that lands writes under the same lock as every other vault call.
+Reflexes of an entry, their anchors, their rules and the epithet derived from them.
+The row sync serves the entry save, and the epithet follows every write of the rows.
+The fetch that fills an entry with no rows lives in `LReflexFetch`, held here.
 
 ## `public LReflexClerk(LRig rig, LLanguageCache languages, LClaimClerk claims, object gate, Action<LSubject, long> raise)`
 
-Reads the entry and reflex ports, the reflex source and the clock out of `rig`.
-The claim clerk supplies the held drafts a fetch fills.
+Reads the entry and reflex ports out of `rig`.
+The claims, the engine's gate and the bulletin are handed on to the fetch it builds.
 
-## `public static IReadOnlyList<LAnchorRow> LReflexAnchorScan(`
+## `public LReflexFetch LReflexClerkFetch { get; }`
+
+The fetch of this clerk, built with it and handed it for the rules and the epithet.
+
+## `public static IReadOnlyList<LAnchorRow> LReflexAnchorScan(IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, IReadOnlyList<LDescent> tones, string reflex, string tone)`
 
 The stored fanqie rows marked held and estimated for the anchor dropdown.
 The estimated classes are the ones `tones` resolves for the `reflex` language and `tone`.
@@ -21,7 +25,7 @@ The estimated classes are the ones `tones` resolves for the `reflex` language an
 
 Whether the reflex rows of `headword` may carry anchors.
 
-## `public static string LReflexAnchorFormat(`
+## `public static string LReflexAnchorFormat(IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword, string separator)`
 
 The readings of the anchored rows joined with `separator`, or empty when the rows cannot be anchored.
 
@@ -49,51 +53,3 @@ The drafts with every positive id cleared, for a fresh entry that has no stored 
 
 Rewrites the epithet of an entry from its reflex rows and the rules of its language.
 A language whose rules declare no epithet clears it.
-
-## `public void LReflexClerkStart(long entryId)`
-
-Starts a fetch for an entry that has rules, no rows and no remembered miss.
-
-## `public void LReflexClerkRebuild(long entryId)`
-
-Clears the rows and the miss of an entry, empties its held drafts, and fetches again.
-Before clearing, it remembers each user-owned meaning by language, region, kind and text.
-When the fetch lands, those meanings replace the scraped meanings of matching rows.
-The bulletins for the entry and every emptied draft are raised here.
-
-## `public bool LReflexClerkCheck(long entryId)`
-
-Whether a fetch is pending for the entry.
-
-## `public void LReflexClerkClear()`
-
-Cancels every pending fetch and forgets the misses.
-
-## `private async Task<(IReadOnlyList<LReflexDraft> LReflexFound, bool LReflexReached)> LReflexClerkScan(string headword, string language, CancellationToken cancellation)`
-
-One request per rule and character, spaced by the rule's interval on the clock.
-The rounds are merged and every row is respelled and given its anatomy.
-
-## `private async Task LReflexClerkRun(LEntry entry, CancellationTokenSource fetch)`
-
-One fetch admitted through the two-wide gate.
-The answer is written only when the fetch still stands and the entry still has no rows.
-The entry must still read the same headword and language.
-A miss is remembered and a failure still raises the bulletin, so the panel stops waiting.
-
-## `private void LReflexMeaningRecord(long entryId)`
-
-Remembers every non-empty user-owned meaning before a rebuild clears the rows.
-
-## `private IReadOnlyList<LReflex> LReflexMeaningRestore(long entryId, IReadOnlyList<LReflex> rows)`
-
-Restores the remembered meanings to matching fetched rows and consumes the remembered set.
-
-## `private static string LMeaningKeyRead(LReflex row)`
-
-The language, region, kind and text key that identifies a reading across a rebuild.
-
-## `private List<long> LReflexClerkPropagate(long entryId, IReadOnlyList<LReflex> saved, bool sweep = false)`
-
-Copies the saved rows into every held entry draft of the entry that has no reflex rows of its own.
-`sweep` overwrites drafts that have rows, for a rebuild.

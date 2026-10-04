@@ -8,7 +8,7 @@ It holds the entry and portrait ports, the example vista as its roll and its own
 The corpus builds it and restores its vistas, so no driver holds a port or a vista.
 It is sealed, so its rows, labels, tickets and formats cross as Conduct shapes.
 
-## `internal CQuotation(`
+## `internal CQuotation(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
 Builds the list's panel under the `List.LoadFailed` key and with no delete scope.
 The change seam is the entry editor's desk, and the finish seam is the corpus session's.
@@ -50,7 +50,7 @@ Reads the entries quoting the roll's chosen Example, or every entry while none i
 A failed read shows `Example.LoadFailed` through the envoy and answers no rows.
 The engine matches the query and drops the hidden languages, so the list decides nothing about matching.
 
-## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CQuotationRowsLoad(`
+## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CQuotationRowsLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `CQuotationRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.

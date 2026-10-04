@@ -1,7 +1,7 @@
 # CClipRoll.cs
 Hash: `71c16169b341a872`
 
-## `public sealed record CClipRoll(`
+## `public sealed record CClipRoll(IReadOnlyList<CClipItem> CClipRollRows, bool CClipRollEmpty, bool CClipRollSearching, string CClipRollNotice)`
 
 The clip popup's state, ready to paint in one go.
 The errand answers it from the start gate, from the flag load and with each search event.

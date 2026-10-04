@@ -34,6 +34,6 @@ A fact hands its own `media`, so it can watch what the map asks and what the add
 
 Relays the internal video map, so a fact can hand it a row nobody located.
 
-## `internal static CEntryDraft TCardEntryRead(`
+## `internal static CEntryDraft TCardEntryRead(LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets)`
 
 Relays the entry draft map, so the facts pass engine drafts through the boundary.

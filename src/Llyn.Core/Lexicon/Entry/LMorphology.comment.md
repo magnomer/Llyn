@@ -1,7 +1,7 @@
 # LMorphology.cs
 Hash: `2a3f289bb2192405`
 
-## `public sealed record LMorphology(`
+## `public sealed record LMorphology(long LMorphologyId, long LMorphologyFeatureId, long LMorphologyCode, string LMorphologyName, int LMorphologyPosition)`
 
 One value a grammatical feature can take (for example `plural` under `number`).
 Inflections link it by `LMorphologyId` and never copy its name.

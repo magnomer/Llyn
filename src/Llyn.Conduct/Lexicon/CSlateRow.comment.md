@@ -1,7 +1,7 @@
 # CSlateRow.cs
 Hash: `0dcf8ab6e637b755`
 
-## `public sealed record CSlateRow(`
+## `public sealed record CSlateRow(long CSlateRowId, string CSlateRowLead, string CSlateRowMark, string CSlateRowTail)`
 
 One stored Tag the tag dropdown offers, already split around the typed word.
 

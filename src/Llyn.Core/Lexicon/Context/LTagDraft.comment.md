@@ -1,7 +1,7 @@
 # LTagDraft.cs
 Hash: `a16e895a057c5664`
 
-## `public sealed record LTagDraft(`
+## `public sealed record LTagDraft(long LTagDraftId, string LTagDraftText)`
 
 One Tag as a card draft carries it.
 It holds the id of the Tag the row links and the text the row shows.

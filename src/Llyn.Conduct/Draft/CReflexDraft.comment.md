@@ -1,7 +1,7 @@
 # CReflexDraft.cs
 Hash: `020b9e48d15278bf`
 
-## `public sealed record CReflexDraft(`
+## `public sealed record CReflexDraft(long CReflexDraftId, string CReflexDraftLanguage, string CReflexDraftKind, string CReflexDraftText, string CReflexDraftRespelling, string CReflexDraftRomanization, string CReflexDraftMeaning, string CReflexDraftNote, bool CReflexDraftMain, string CReflexDraftRegion, IReadOnlyList<long> CReflexDraftAnchors)`
 
 One reflex of an entry, as the reflex rows show it.
 

@@ -1,7 +1,7 @@
 # LFrequency.cs
 Hash: `f39a12951b92e8f3`
 
-## `public sealed record LFrequency(`
+## `public sealed record LFrequency(string LFrequencySource, string LFrequencyRaw, string? LFrequencyBand, long? LFrequencyOnce = null, string? LFrequencyUnit = null)`
 
 One frequency value an entry carries from one source.
 The engine fetches it once from a web source the pack names.

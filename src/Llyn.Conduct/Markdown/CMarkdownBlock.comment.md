@@ -1,7 +1,7 @@
 # CMarkdownBlock.cs
 Hash: `b47cef424818f689`
 
-## `public sealed record CMarkdownBlock(`
+## `public sealed record CMarkdownBlock(bool CMarkdownBlockHeaded, bool CMarkdownBlockListed, bool CMarkdownBlockQuoted, bool CMarkdownBlockFenced, bool CMarkdownBlockRuled, int CMarkdownBlockLevel, string CMarkdownBlockMark, string CMarkdownBlockText, IReadOnlyList<CMarkdownSpan> CMarkdownBlockSpan)`
 
 One block of parsed markdown, as the markdown face builds it.
 Its verdicts are copied from the engine, so the face never judges a block's kind.

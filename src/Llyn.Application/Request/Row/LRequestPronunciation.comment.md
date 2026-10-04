@@ -25,7 +25,7 @@ The row moved to the front becomes the primary one.
 Replaces the typed reading of one row, leaving its recording and its stored detail alone.
 The engine derives the row's respelling from the new reading again, so a hand-written respelling is replaced.
 
-## `public sealed record LRequestPronunciationRespelling(`
+## `public sealed record LRequestPronunciationRespelling(long LRequestDraftId, long LRequestPronunciationId, string LRequestText)`
 
 Replaces the respelling of one row alone, leaving the original reading as it stands.
 The form sends it in place of `LRequestPronunciationIpa` while the respelling switch is on.
@@ -36,7 +36,7 @@ The value stands until the reading or the variety changes and the engine derives
 Replaces the label that tells one row from the others, such as a region.
 The respelling is derived again, because the pack's respelling groups are scoped by variety.
 
-## `public sealed record LRequestPronunciationAudio(`
+## `public sealed record LRequestPronunciationAudio(long LRequestDraftId, long LRequestPronunciationId, string LRequestFile, string? LRequestSource)`
 
 Replaces the recording of one row and the source it came from.
 An empty file clears it.

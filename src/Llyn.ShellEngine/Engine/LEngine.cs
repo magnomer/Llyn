@@ -213,7 +213,7 @@ public sealed class LEngine : IDisposable
         _lEngineStaff.LEngineStaffScript.LScriptClerkClear();
         _lEngineStaff.LEngineStaffFanqie.LFanqieClerkClear();
         _lEngineStaff.LEngineStaffShengfu.LShengfuClerkClear();
-        _lEngineStaff.LEngineStaffReflex.LReflexClerkClear();
+        _lEngineStaff.LEngineStaffReflex.LReflexClerkFetch.LReflexFetchClear();
     }
 
     internal static ArgumentOutOfRangeException LEngineOwnerRaise(LOwner owner)

@@ -1,7 +1,7 @@
 # LPronunciation.cs
 Hash: `210bd223f3940858`
 
-## `public sealed record LPronunciation(`
+## `public sealed record LPronunciation(long LPronunciationId, long LPronunciationEntryId, int LPronunciationPosition, string? LPronunciationVariety, string? LPronunciationIpa, IReadOnlyList<LSyllable> LPronunciationSyllables, string? LPronunciationRespelling = null)`
 
 One way the entry's reading sounds, written in IPA.
 An entry owns an ordered list of these, and the first is the primary one every summary shows.

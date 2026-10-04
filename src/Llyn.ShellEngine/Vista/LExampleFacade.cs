@@ -73,7 +73,8 @@ internal sealed class LExampleFacade
         lock (_lExampleFacadeGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(origin);
-            return LExampleFacadeStaff.LEngineStaffCitation.LExampleStart(origin, exampleId);
+            return LExampleFacadeStaff.LEngineStaffCitation.LCitationClerkExample
+                .LExampleCitationStart(origin, exampleId);
         }
     }
 
@@ -84,7 +85,7 @@ internal sealed class LExampleFacade
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             _lExampleFacadeEngine.LEngineDraft.LEngineDraftValidate(id);
-            settled = LExampleFacadeStaff.LEngineStaffCitation.LExampleCommit(id);
+            settled = LExampleFacadeStaff.LEngineStaffCitation.LCitationClerkExample.LExampleCitationCommit(id);
         }
 
         _lExampleFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectExample, settled.LExampleId);

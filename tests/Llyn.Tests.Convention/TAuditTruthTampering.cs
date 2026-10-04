@@ -25,7 +25,7 @@ internal static partial class TAuditTruthWalker
                     .First();
                 violations.Add(new TViolation(
                     root.SyntaxTree.FilePath,
-                    TAuditLineRead(assignment),
+                    TAuditTruthReference.TAuditLineRead(assignment),
                     slot.Expression.ToString(),
                     "Tampering",
                     "reorders a collection with a swap"));
@@ -38,7 +38,7 @@ internal static partial class TAuditTruthWalker
             {
                 violations.Add(new TViolation(
                     root.SyntaxTree.FilePath,
-                    TAuditLineRead(assignment),
+                    TAuditTruthReference.TAuditLineRead(assignment),
                     field.Identifier.ValueText,
                     "Tampering",
                     "overrides a logic member in a record copy"));
@@ -51,7 +51,7 @@ internal static partial class TAuditTruthWalker
             {
                 violations.Add(new TViolation(
                     root.SyntaxTree.FilePath,
-                    TAuditLineRead(assignment),
+                    TAuditTruthReference.TAuditLineRead(assignment),
                     rows.ToString(),
                     "Tampering",
                     "overwrites a slot of a row store"));
@@ -67,7 +67,7 @@ internal static partial class TAuditTruthWalker
 
             violations.Add(new TViolation(
                 root.SyntaxTree.FilePath,
-                TAuditLineRead(assignment),
+                TAuditTruthReference.TAuditLineRead(assignment),
                 target.ToString(),
                 "Tampering",
                 "assigns a logic member from the shell"));
@@ -85,7 +85,7 @@ internal static partial class TAuditTruthWalker
 
             violations.Add(new TViolation(
                 root.SyntaxTree.FilePath,
-                TAuditLineRead(call),
+                TAuditTruthReference.TAuditLineRead(call),
                 access.Expression.ToString(),
                 "Tampering",
                 $"reorders a collection with {access.Name.Identifier.ValueText}"));
@@ -126,7 +126,7 @@ internal static partial class TAuditTruthWalker
                     continue;
                 }
 
-                int line = TAuditLineRead(value);
+                int line = TAuditTruthReference.TAuditLineRead(value);
                 string shown = type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
                 if (seen.Add($"{line}:{shown}"))
                 {
@@ -210,7 +210,7 @@ internal static partial class TAuditTruthWalker
             {
                 violations.Add(new TViolation(
                     site.SyntaxTree.FilePath,
-                    TAuditLineRead(site),
+                    TAuditTruthReference.TAuditLineRead(site),
                     TAuditBinderSymbol.TAuditLabelRead(member),
                     "Mismatching",
                     $"reaches a Conduct member that {missing} never reaches"));

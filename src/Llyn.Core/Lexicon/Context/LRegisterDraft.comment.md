@@ -1,7 +1,7 @@
 # LRegisterDraft.cs
 Hash: `e261fb66771499c2`
 
-## `public sealed record LRegisterDraft(`
+## `public sealed record LRegisterDraft(LStateValue LRegisterDraftName, long LRegisterDraftId)`
 
 One Register as a card draft carries it.
 It holds the id of the Register the row edits and its name.

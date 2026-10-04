@@ -1,7 +1,7 @@
 # CLecternCard.cs
 Hash: `5150e6ad9d7f0a78`
 
-## `public sealed record CLecternCard(`
+## `public sealed record CLecternCard(IReadOnlyList<CLeaf> CLecternCardMeanings, IReadOnlyList<CLeaf> CLecternCardCollocations, bool CLecternCardDefined, bool CLecternCardCollocated)`
 
 The cards of the reading view, ready to paint, with whether their sections show.
 

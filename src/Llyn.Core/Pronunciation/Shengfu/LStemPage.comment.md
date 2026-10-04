@@ -1,7 +1,7 @@
 # LStemPage.cs
 Hash: `3049e615b9db6f8a`
 
-## `public sealed record LStemPage(`
+## `public sealed record LStemPage(string LStemPageLanguage, string LStemPageKey, IReadOnlyList<string> LStemPageCharacters)`
 
 The page of one Stem series as the engine composes it.
 It carries the language, the series key and the characters that belong to it.

@@ -16,6 +16,8 @@ internal static partial class TInterface
 
     internal static LDraft? TTenurePrepare(this LTenure tenure, Action prepare) => tenure.LTenurePrepare(prepare);
 
+    internal static long? TTenureStoredRead(this LTenure tenure) => tenure.LTenureStoredRead();
+
     internal static void TEngineBulletinRaise(this LEngine engine, LSubject subject, long id) =>
         engine.LEngineBulletinRaise(subject, id);
 }

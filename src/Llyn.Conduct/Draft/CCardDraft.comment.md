@@ -1,7 +1,7 @@
 # CCardDraft.cs
 Hash: `0dc23bd6c26822d4`
 
-## `public sealed record CCardDraft(`
+## `public sealed record CCardDraft(long CCardDraftId, int CCardDraftPosition, CStateWording CCardDraftTitle, CStateWording CCardDraftExpression, CStateWording CCardDraftMeaning, IReadOnlyList<CSentenceDraft> CCardDraftSentence, IReadOnlyList<CSituationDraft> CCardDraftSituation, IReadOnlyList<CRegisterDraft> CCardDraftRegister, IReadOnlyList<CTranslationTarget> CCardDraftTranslation, IReadOnlyList<CTagDraft> CCardDraftTag, IReadOnlyList<CImageDraft> CCardDraftImage, IReadOnlyList<CVideoDraft> CCardDraftVideo)`
 
 One meaning or collocation of an entry, as the editor's card shows it.
 

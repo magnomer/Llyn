@@ -28,7 +28,7 @@ The vista now standing for each tab, so a restart can detach the one it replaces
 ## `public LVistaFacade(LEngine engine)`
 
 Binds this facade to its engine and the shared gate.
-## `public LVista LEngineVistaStart(`
+## `public LVista LEngineVistaStart(string tab, LSubject? subject, LCatalogOrder order, LCatalogFilter filter, bool editing, bool blank = false)`
 
 Starts a vista for `tab` on the order, filter and mode the caller hands it.
 The shell's posture resolves those from what it stored, so the engine holds no view state of its own.

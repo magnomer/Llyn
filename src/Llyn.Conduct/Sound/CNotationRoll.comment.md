@@ -1,7 +1,7 @@
 # CNotationRoll.cs
 Hash: `07195c961635b8f1`
 
-## `public sealed record CNotationRoll(`
+## `public sealed record CNotationRoll(IReadOnlyList<CNotationItem> CNotationRollRows, bool CNotationRollEmpty, bool CNotationRollSearching, string CNotationRollNotice)`
 
 The notation popup's state, ready to paint in one go.
 The errand answers it from the start gate, from the flag load and with each search event.

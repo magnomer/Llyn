@@ -1,5 +1,5 @@
 # TDisplayAccent.cs
-Hash: `6a6438c3f6c27907`
+Hash: `cd370a4d95972235`
 
 ## `public sealed class TDisplayAccent`
 
@@ -27,6 +27,10 @@ The block then answers again, with the pack's tone and flag verdicts.
 ## `public async Task DisplayEnsignLoad_AnotherEntryShownMeanwhile_AnswersNothing()`
 
 An entry opened while the flags load wins, so the late load answers nothing to paint.
+
+## `public async Task DisplayEnsignLoad_StoreFails_ShowsTheLoadFailureOnce()`
+
+A flag store that throws shows `Sound.LoadFailed` once, and the load answers nothing.
 
 ## `public async Task DisplayEnsignLoad_NothingShown_AnswersNothing()`
 

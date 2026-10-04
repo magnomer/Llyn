@@ -1,5 +1,5 @@
 # TShelfDraft.cs
-Hash: `4ebe6844c6b8e76f`
+Hash: `3e3bbea14056b3fd`
 
 ## `public sealed class TShelfDraft`
 
@@ -11,3 +11,4 @@ A leave with nothing unsaved asks nothing.
 The rail's undo, redo and save act on the Source draft while the Source side edits.
 A finish without storing drops the draft of the side in front, the Source draft or the entry draft.
 A kept leave on an entry click stays on the held Source draft.
+Only the save test sets the edit delay to zero.

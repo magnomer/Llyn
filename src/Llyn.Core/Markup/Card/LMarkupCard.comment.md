@@ -1,7 +1,7 @@
 # LMarkupCard.cs
 Hash: `3bb4ce7a45f8ba43`
 
-## `public sealed record LMarkupCard(`
+## `public sealed record LMarkupCard(LStateValue LMarkupCardTitle, LStateValue LMarkupCardExpression, LStateValue LMarkupCardMeaning, IReadOnlyList<LMarkupSentence>? LMarkupCardSentence = null, IReadOnlyList<LSituationDraft>? LMarkupCardSituation = null, IReadOnlyList<LRegisterDraft>? LMarkupCardRegister = null, IReadOnlyList<LMarkupTranslation>? LMarkupCardTranslation = null, IReadOnlyList<LTagDraft>? LMarkupCardTag = null, IReadOnlyList<LImageDraft>? LMarkupCardImage = null, IReadOnlyList<LVideoDraft>? LMarkupCardVideo = null, IReadOnlyList<LMarkupCard>? LMarkupCardChild = null)`
 
 One meaning or collocation as a markup file carries it.
 The shape is `LCardDraft` with every id and position gone.

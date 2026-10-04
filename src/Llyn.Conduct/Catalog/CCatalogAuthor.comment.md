@@ -1,7 +1,7 @@
 # CCatalogAuthor.cs
 Hash: `b46f14e4512ea3a0`
 
-## `public sealed record CCatalogAuthor(`
+## `public sealed record CCatalogAuthor(long CCatalogAuthorId, string CCatalogAuthorName, string CCatalogAuthorWork, string CCatalogAuthorCount, string CCatalogAuthorIcon, bool CCatalogAuthorChosen)`
 
 One author a search found, as the guild's roll and union list read it.
 

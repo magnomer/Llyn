@@ -1,7 +1,7 @@
 # CParadigmSlot.cs
 Hash: `6f25972be133e4b1`
 
-## `public sealed record CParadigmSlot(`
+## `public sealed record CParadigmSlot(string CParadigmSlotPart, string CParadigmSlotName, string CParadigmSlotText, string? CParadigmSlotTip)`
 
 One row of a paradigm, as the paradigm table lists it.
 The controller joins the engine's slots into rows, so the driver never groups them.

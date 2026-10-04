@@ -90,7 +90,7 @@ The jump replaces what `tab` shows, so `tab` itself is asked first, then the ope
 The station is read before the switch and recorded only once the jump has gone.
 The tab's area then opens the record itself.
 
-## `internal void LNavigationTabAdd(`
+## `internal void LNavigationTabAdd(string tab, Func<bool> leave, Func<long> station, Action<bool> scribe, Action<long> arrival, Func<bool>? allowed = null)`
 
 Each panel area registers its tab here when it is built, as one `CNavigationPanel`.
 `leave` is the panel's own leave question, asked through its envoy.

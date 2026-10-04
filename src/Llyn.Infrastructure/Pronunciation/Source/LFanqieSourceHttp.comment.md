@@ -57,7 +57,7 @@ Any tag, dropped when a cell is read into text.
 
 How long the busy pattern may run over one answer before it is given up.
 
-## `public async Task<(IReadOnlyList<LFanqieRow> LFanqieFound, bool LFanqieReached)> LFanqieSourceFind(`
+## `public async Task<(IReadOnlyList<LFanqieRow> LFanqieFound, bool LFanqieReached)`
 
 Fetches the answer and reads every placement of the character, in answer order.
 The table reader or the line reader is chosen by whether the book has a line pattern.
@@ -65,7 +65,7 @@ An unreachable site or a failed request reads as not reached, with nothing found
 An answer matching the book's busy pattern is a throttle, so it too reads as not reached.
 A pattern that runs past its patience reads as not reached, since the answer was never fully read.
 
-## `private static async Task<string?> LFanqieBodyRead(`
+## `private static async Task<string?> LFanqieBodyRead(HttpClient client, LFanqieBook book, string character, CancellationToken cancellation)`
 
 Posts the book's form with the character in place of the token and returns the answer's text.
 A book with no form field is fetched with a GET, the character escaped into the address.
@@ -73,7 +73,7 @@ A not-found status returns an empty answer, since the site did reply and has not
 Any other refused status or a transport failure returns `null`.
 A cancellation asked for by the caller is thrown through, since the fetch is being abandoned.
 
-## `private static IReadOnlyList<LFanqieRow> LFanqieOriginSet(`
+## `private static IReadOnlyList<LFanqieRow> LFanqieOriginSet(LFanqieBook book, string character, IReadOnlyList<LFanqieRow> found)`
 
 Sets the character, book, source and position on the rows a reader left blank.
 The positions count across the answer.
@@ -94,7 +94,7 @@ Each marked group of a body row becomes one row.
 
 One column heading with its division and tone read by the column pattern, or empty parts without it.
 
-## `private static IEnumerable<LFanqieRow> LFanqieLineScan(`
+## `private static IEnumerable<LFanqieRow> LFanqieLineScan(LFanqieShape shape, IReadOnlyList<LFanqieColumn> columns, string inner)`
 
 Reads one body row, whose first cell is the initial.
 Every marked group of a later cell yields a row.

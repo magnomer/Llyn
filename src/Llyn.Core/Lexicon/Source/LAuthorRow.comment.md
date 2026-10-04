@@ -1,7 +1,7 @@
 # LAuthorRow.cs
 Hash: `5aa095a0df758003`
 
-## `public sealed record LAuthorRow(`
+## `public sealed record LAuthorRow(long LAuthorRowId, string LAuthorRowName, int LAuthorRowPosition, bool LAuthorRowEarlier, bool LAuthorRowLater)`
 
 One credit row of the source editor, already decided for the veneer to copy.
 The blank row the user types a new credit into is the editor's own and is not among these.

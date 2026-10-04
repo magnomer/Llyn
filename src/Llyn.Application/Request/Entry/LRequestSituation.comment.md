@@ -6,12 +6,12 @@ The four structural records name the card and the chip, and the three field reco
 A situation is one row however many cards link it, so a field edit reaches every card holding that id.
 The situation panel sends each field record with the id of the draft's own situation.
 
-## `public sealed record LRequestSituationAddition(`
+## `public sealed record LRequestSituationAddition(long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue, int LRequestPosition)`
 
 Adds a new situation to the card with the typed title at `LRequestPosition`.
 The engine mints its id, and commit creates the row.
 
-## `public sealed record LRequestSituationPick(`
+## `public sealed record LRequestSituationPick(long LRequestDraftId, long LRequestCardId, long LRequestSituationId, int LRequestPosition)`
 
 Links an existing situation to the card at `LRequestPosition`.
 `Pick` reads as a noun here, the item the user picked, since it is not a registered verb.
@@ -23,7 +23,7 @@ A card already holding that id is left as it is.
 Unlinks one situation from the card.
 The row itself stays in the store.
 
-## `public sealed record LRequestSituationShift(`
+## `public sealed record LRequestSituationShift(long LRequestDraftId, long LRequestCardId, long LRequestSituationId, int LRequestPosition)`
 
 Moves one situation chip to `LRequestPosition` inside its card.
 
@@ -32,7 +32,7 @@ Moves one situation chip to `LRequestPosition` inside its card.
 Replaces the title of the situation, wherever the draft holds it.
 A title left empty drops the chip from every card at the next normalize.
 
-## `public sealed record LRequestSituationDescription(`
+## `public sealed record LRequestSituationDescription(long LRequestDraftId, long LRequestSituationId, LStateWritten LRequestValue)`
 
 Replaces the description of the situation, wherever the draft holds it.
 

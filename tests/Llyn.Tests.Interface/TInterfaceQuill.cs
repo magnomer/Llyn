@@ -62,6 +62,13 @@ internal static partial class TInterface
         quill.LQuillCitationSet(card, sentence, reference);
     }
 
+    internal static LQuillChip TQuillChipCreate(this LTenure tenure, LDraftPort drafts) => new(tenure, drafts);
+
+    internal static void TQuillTranslationRemove(this LQuillChip quill, long card, long entry)
+    {
+        quill.LQuillTranslationRemove(card, entry);
+    }
+
     internal static LQuillSituation TQuillSituationCreate(this LTenure tenure) => new(tenure);
 
     internal static void TQuillTitleSet(this LQuillSituation quill, string text)

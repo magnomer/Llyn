@@ -1,7 +1,7 @@
 # CNavigationState.cs
 Hash: `1c11754f58b51511`
 
-## `public sealed record CNavigationState(`
+## `public sealed record CNavigationState(string? CNavigationStateTab, IReadOnlyList<string> CNavigationStateHidden, CVoyageState CNavigationStateVoyage)`
 
 What the window paints after a navigation change.
 Every change carries the whole state, so the window keeps no copy of its own.

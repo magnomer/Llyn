@@ -1,7 +1,7 @@
 # LAuthor.cs
 Hash: `d04f32b02160720e`
 
-## `public sealed record LAuthor(`
+## `public sealed record LAuthor(long LAuthorId, string LAuthorName)`
 
 One Author is independent data owned by nothing.
 No Reference contains an Author.

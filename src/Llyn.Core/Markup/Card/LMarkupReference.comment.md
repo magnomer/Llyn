@@ -1,7 +1,7 @@
 # LMarkupReference.cs
 Hash: `2f84e64ee7543778`
 
-## `public sealed record LMarkupReference(`
+## `public sealed record LMarkupReference(LStateValue LMarkupReferenceTitle, LStateValue LMarkupReferenceYear, LReferenceKind LMarkupReferenceKind, LStateValue LMarkupReferenceUrl, LStateValue LMarkupReferenceNote, IReadOnlyList<string>? LMarkupReferenceAuthor = null)`
 
 A bibliographic source as a markup file carries it, by value and with no id.
 Authors are names in order rather than author references.

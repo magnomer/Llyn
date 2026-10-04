@@ -1,5 +1,5 @@
 # LRegisterClerk.cs
-Hash: `f4eae331feb4508a`
+Hash: `45d08a7596eb38ec`
 
 ## `public sealed class LRegisterClerk`
 
@@ -42,6 +42,7 @@ A row is answered by its name.
 
 Makes a written Register reading `name` with no card marked by it yet, for the tenor panel's New.
 A row already reading the same is returned rather than doubled.
+The lookup is `LRegisterChip.LRegisterChipResolve`, the same rule a card's typed register meets.
 
 ## `public void LRegisterClerkPrepare(string language)`
 

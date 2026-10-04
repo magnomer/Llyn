@@ -8,23 +8,23 @@ It also keeps the media and settings fakes the other conduct relay classes hand 
 Each relay reaches a conduct member or builds one over outlets, so none builds a WPF object.
 Each relay is transparent and carries no test logic of its own.
 
-## `internal static CAtelier TAtelierCreate(LEngine engine) => new(`
+## `internal static CAtelier TAtelierCreate(LEngine engine)`
 
 Builds the atelier over real outlets on `engine`, with a stub player that accepts a stop but never plays.
 The stub resolves every media location to no address and no screen, so a scenario's media rows still read.
 A workspace engine is needed, since disposing sweeps drafts through the real draft outlet.
 Disposing also runs each area's registered close, and the corpus's close stops its display's playback.
 
-## `internal static CAtelier TAtelierCreate(LEngine engine, LMediaPort media) => new(`
+## `internal static CAtelier TAtelierCreate(LEngine engine, LMediaPort media)`
 
 Builds Conduct's atelier over outlets on `engine` as Host does, with `media` standing in for the player.
 The draft port is a fake that sweeps nothing, since the fake rig holds no drafts.
 
-## `internal static CAtelier TAtelierMediaCreate(LEngine engine, LMediaPort media) => new(`
+## `internal static CAtelier TAtelierMediaCreate(LEngine engine, LMediaPort media)`
 
 Builds Conduct's atelier over every outlet on a real workspace engine, with `media` standing in for the player.
 
-## `internal static CAtelier TAtelierCreate(LEngine engine, LSettingsPort settings) => new(`
+## `internal static CAtelier TAtelierCreate(LEngine engine, LSettingsPort settings)`
 
 Builds an atelier over a fake `settings` port, for the ledger's reads and saves.
 Its draft port answers the sweep and the observer attach and detach.

@@ -1,7 +1,7 @@
 # LWorkspaceState.cs
 Hash: `f1376a62e761ae0b`
 
-## `public sealed record LWorkspaceState(`
+## `public sealed record LWorkspaceState(long? LWorkspaceStateLeft = null, long? LWorkspaceStateRight = null, long? LWorkspaceStateRevision = null, long LWorkspaceStateFloor = 0)`
 
 The shell's own view state for one workspace.
 It holds which Entry each duplex side shows.

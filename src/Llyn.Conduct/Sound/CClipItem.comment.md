@@ -1,7 +1,7 @@
 # CClipItem.cs
 Hash: `e294fb2ad85bc190`
 
-## `public sealed record CClipItem(`
+## `public sealed record CClipItem(string CClipItemSource, int CClipItemOrder, IReadOnlyList<CClipReading> CClipItemReading, string CClipItemNotice, bool CClipItemReady)`
 
 One source row of the clip popup, as the errand keeps it.
 A row appears the moment its source starts searching, so every declared source shows before any answers.

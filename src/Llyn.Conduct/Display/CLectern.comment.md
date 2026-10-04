@@ -1,7 +1,7 @@
 # CLectern.cs
 Hash: `c195052498d45f03`
 
-## `public sealed record CLectern(`
+## `public sealed record CLectern(string CLecternHeadword, string CLecternLanguage, IReadOnlyList<string> CLecternSpeeches, bool CLecternMarked, IReadOnlyList<CMarkdownBlock> CLecternNote, bool CLecternNoted, string CLecternAdded, string CLecternUpdated, bool CLecternStamped)`
 
 The header of the reading view for the shown entry, ready to show.
 The display builds it once when an entry opens, so the driver only draws it.

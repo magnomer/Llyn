@@ -1,7 +1,7 @@
 # CDiweiSection.cs
 Hash: `758ca18d8d4174ac`
 
-## `public sealed record CDiweiSection(`
+## `public sealed record CDiweiSection(string CDiweiSectionLabel, IReadOnlyList<CDiweiLine> CDiweiSectionLines, IReadOnlyList<CTally> CDiweiSectionTallies, bool CDiweiSectionSwitched, bool CDiweiSectionRespelled)`
 
 One section of a diwei page, a division or a place with its lines and tallies.
 

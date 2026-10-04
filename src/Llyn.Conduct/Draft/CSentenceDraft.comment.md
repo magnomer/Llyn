@@ -1,7 +1,7 @@
 # CSentenceDraft.cs
 Hash: `705f990e2d9ef2f8`
 
-## `public sealed record CSentenceDraft(`
+## `public sealed record CSentenceDraft(long CSentenceDraftId, CExampleDraft? CSentenceDraftExample, bool CSentenceDraftCited, CStateWording CSentenceDraftText, CStateWording CSentenceDraftParticle, CStateWording CSentenceDraftDependence)`
 
 One sentence of a card, as the sentence row shows it.
 

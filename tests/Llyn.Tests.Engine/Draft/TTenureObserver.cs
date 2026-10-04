@@ -65,6 +65,36 @@ public sealed class TTenureObserver
         Assert.Equal(entry.LEntryId, Assert.Single(_tTenureNotices).LBulletinId);
     }
 
+    [Fact]
+    public void StoredRead_StoredDraft_AnswersIdWithoutPersisting()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(TEngineTenure.TTenureHold);
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("water", "English", "", "", [], []));
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, entry.LEntryId);
+        tenure.TTenureRequestDefer(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "ember"));
+
+        Assert.Equal(entry.LEntryId, tenure.TTenureStoredRead());
+        Assert.Equal("water", tenure.TTenureRead()?.LDraftContent.LEntryDraftHeadword);
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
+    public void StoredRead_RefusedDraft_AnswersNull()
+    {
+        using TWorkspace first = TWorkspace.TWorkspacePrepare();
+        using TWorkspace second = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = first.TWorkspaceEngineStart();
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("water", "English", "", "", [], []));
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, entry.LEntryId);
+
+        engine.TEngineWorkspaceOpen(second.TWorkspaceFolder);
+
+        Assert.Throws<LRefusal>(() => tenure.TTenureRead());
+        Assert.Null(tenure.TTenureStoredRead());
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

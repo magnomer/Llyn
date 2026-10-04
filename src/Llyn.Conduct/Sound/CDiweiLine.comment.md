@@ -1,7 +1,7 @@
 # CDiweiLine.cs
 Hash: `0b229f53dcd37ff6`
 
-## `public sealed record CDiweiLine(`
+## `public sealed record CDiweiLine(string CDiweiLineReading, string CDiweiLineLabel, bool CDiweiLineRounded, IReadOnlyList<string> CDiweiLineCharacters)`
 
 One line of a diwei section: a reading, its label and its characters.
 

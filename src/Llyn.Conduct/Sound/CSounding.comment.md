@@ -16,7 +16,7 @@ Every gate announces the change, or asks the envoy to show the refusal under its
 Hears the tenure's fanqie subject and raises `CSoundingChanged` on the driver's thread.
 A fanqie changed elsewhere refreshes the editor as a fanqie set here does.
 
-## `internal CSounding(`
+## `internal CSounding(CDesk desk, LPhonologyPort phonology, LSettingsPort settings, LDisplaySound voice, CEnvoy envoy)`
 
 Takes the editor's desk and the phonology port every sound read goes through.
 A refused load shows through `envoy`, with the ready notice `settings` reads.
@@ -82,11 +82,11 @@ Both verdicts stand in each slot's ready status, so the driver never reads them.
 The headword font is that of the paradigm's own language, as the reading view picks it.
 Every block's font goes through the one font rule `CCatalog.LCatalogFontRead` holds.
 
-## `private IReadOnlyList<LSoundingItem> LSoundingListRead<LSoundingItem>(`
+## `private IReadOnlyList<LSoundingItem> LSoundingListRead<LSoundingItem>(Func<long, IReadOnlyList<LSoundingItem>> read)`
 
 One list read for the stored entry, empty for a fresh draft or a refusal.
 
-## `private static LSoundingAnswer LSoundingAnswerRead<LSoundingAnswer>(`
+## `private static LSoundingAnswer LSoundingAnswerRead<LSoundingAnswer>(Func<LSoundingAnswer> read, LSoundingAnswer fallback)`
 
 One engine answer, or the fallback when the engine refuses.
 
@@ -107,7 +107,7 @@ Copies every cell the fanqie line shows, derived cells included.
 
 The one map from the engine's script groups to their shape, shared with the lectern.
 
-## `internal static IReadOnlyList<CParadigmSlot> CSoundingParadigmRead(`
+## `internal static IReadOnlyList<CParadigmSlot> CSoundingParadigmRead(IReadOnlyList<LParadigmRow> rows, bool pending, bool enabled, bool held)`
 
 Shapes each paradigm row the engine joined.
 The lectern calls it too, so no driver groups slots.
@@ -135,11 +135,11 @@ The editor's sheet and the reading view's block share it.
 Maps the engine's contour syllables into ready ones, reading no rule.
 The editor's contour and the reading view's block share it.
 
-## `internal static IReadOnlyList<CTranscriptionDraft> CSoundingTranscriptionRead(`
+## `internal static IReadOnlyList<CTranscriptionDraft> CSoundingTranscriptionRead(IReadOnlyList<LTranscriptionDraft> transcriptions)`
 
 The transcriptions of a draft, shaped for the transcription rows and the lectern.
 
-## `internal static CLecternAnchor LSoundingAnchorRead(`
+## `internal static CLecternAnchor LSoundingAnchorRead(LDraftPort drafts, long? entry, string headword, IReadOnlyList<CReflex> rows)`
 
 Whether the headword offers anchoring for `entry`, and the anchor text of each row, keyed by its id.
 The engine's entry-based anchor rule answers both, and the placements are joined by `CReflex.LReflexSeparator`.

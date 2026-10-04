@@ -1,7 +1,7 @@
 # LSentenceDraft.cs
 Hash: `506a1ef90d2ee42f`
 
-## `public sealed record LSentenceDraft(`
+## `public sealed record LSentenceDraft(LExampleDraft? LSentenceDraftExample, LStateValue LSentenceDraftParticle, LStateValue LSentenceDraftDependence, long LSentenceDraftId = 0)`
 
 One card's hold on one Example, as a draft carries it.
 The card holds these rows and never holds Examples directly.

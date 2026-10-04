@@ -7,7 +7,7 @@ Measures how far Deportment stands from the master it must become.
 A master never names the Veneer, holds no scaffold, and pulls each part by an ID the Veneer declares.
 It counts `Hardwiring`, `Masquerading` and `Dangling` hits for the strict ledger.
 
-## `public static IReadOnlyList<TViolation> TAuditRun(`
+## `public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> driverPaths, IEnumerable<string> markupPaths)`
 
 Reads the contract IDs from the surface markup, then walks every driver source.
 The hardwiring scan reads the raw lines of each tree's text, and the other three scans read the bound syntax.

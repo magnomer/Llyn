@@ -1,7 +1,7 @@
 # LTenureState.cs
 Hash: `cf447781d6e742b6`
 
-## `public sealed record LTenureState(`
+## `public sealed record LTenureState(bool LTenureStateChanged, string? LTenureStateRefusal, bool LTenureStateBackward, bool LTenureStateForward, bool LTenureStateHalted)`
 
 What a panel holding a draft needs to know to light its buttons, read in one call.
 The engine owns every answer in it, so the panel keeps no dirty flag, halted flag or chronicle.

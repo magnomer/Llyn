@@ -57,8 +57,8 @@ internal static class TAuditLaunderingWalker
                     when !binary.IsKind(SyntaxKind.CoalesceExpression)
                          && !binary.IsKind(SyntaxKind.LogicalAndExpression)
                          && !binary.IsKind(SyntaxKind.LogicalOrExpression)
-                         && !TAuditStrictWalker.TAuditNullCheck(binary.Left)
-                         && !TAuditStrictWalker.TAuditNullCheck(binary.Right)
+                         && !TAuditStrictCondition.TAuditNullCheck(binary.Left)
+                         && !TAuditStrictCondition.TAuditNullCheck(binary.Right)
                          && !((binary.IsKind(SyntaxKind.EqualsExpression)
                                || binary.IsKind(SyntaxKind.NotEqualsExpression))
                               && (binary.Left.Kind()
@@ -78,7 +78,7 @@ internal static class TAuditLaunderingWalker
                 SwitchExpressionSyntax arms => (arms.GoverningExpression, "decides a switch expression"),
                 _ => null
             };
-            if (sink is null || TAuditStrictWalker.TAuditDataCheck(sink.Value.TViolationSource))
+            if (sink is null || TAuditStrictCondition.TAuditDataCheck(sink.Value.TViolationSource))
             {
                 continue;
             }
@@ -212,11 +212,11 @@ internal static class TAuditLaunderingWalker
                               && !operand.IsKind(SyntaxKind.LogicalOrExpression))
             .All(operand => operand switch
             {
-                IsPatternExpressionSyntax { Pattern: var pattern } => TAuditStrictWalker.TAuditPatternCheck(pattern),
+                IsPatternExpressionSyntax { Pattern: var pattern } => TAuditStrictCondition.TAuditPatternCheck(pattern),
                 BinaryExpressionSyntax binary
                     when binary.IsKind(SyntaxKind.EqualsExpression) || binary.IsKind(SyntaxKind.NotEqualsExpression)
-                    => TAuditStrictWalker.TAuditNullCheck(binary.Left)
-                       || TAuditStrictWalker.TAuditNullCheck(binary.Right),
+                    => TAuditStrictCondition.TAuditNullCheck(binary.Left)
+                       || TAuditStrictCondition.TAuditNullCheck(binary.Right),
                 _ => false
             });
         return !presence && !TAuditVerdictCheck(condition);
@@ -224,7 +224,7 @@ internal static class TAuditLaunderingWalker
 
     private static bool TAuditVerdictCheck(ExpressionSyntax condition)
     {
-        ExpressionSyntax core = TAuditStrictWalker.TAuditCoreRead(condition);
+        ExpressionSyntax core = TAuditStrictCondition.TAuditCoreRead(condition);
         if (core is not (InvocationExpressionSyntax or MemberAccessExpressionSyntax or IdentifierNameSyntax)
             || TAuditBinderSymbol.TAuditSymbolRead(core) is not { } symbol)
         {

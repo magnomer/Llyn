@@ -1,7 +1,7 @@
 # LGloss.cs
 Hash: `7589b256dc19f233`
 
-## `public sealed record LGloss(`
+## `public sealed record LGloss(long LGlossId, string LGlossLanguage, LStateValue LGlossText)`
 
 One Gloss: an Example's sentence rendered as text in one language.
 An Example carries any number of them, in the order the user keeps them.

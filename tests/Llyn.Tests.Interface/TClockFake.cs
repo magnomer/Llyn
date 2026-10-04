@@ -8,6 +8,8 @@ internal sealed class TClockFake : LClock
 
     public DateTimeOffset LClockRead() => _tClockFakeHand();
 
+    public Task LClockPause(TimeSpan span, CancellationToken cancellation) => Task.Delay(span, cancellation);
+
     internal void TClockSet(Func<DateTimeOffset> read)
     {
         ArgumentNullException.ThrowIfNull(read);

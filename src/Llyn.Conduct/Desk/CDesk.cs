@@ -95,8 +95,6 @@ public sealed class CDesk
 
     private bool CDeskStalling => CDeskHalted && !_cDeskHalted;
 
-    internal string CDeskScope => _cDeskScope;
-
     internal LTenure? CDeskTenure => _cDeskTenure;
 
     public void CDeskObserverAttach(Action<Action> marshal)
@@ -255,14 +253,7 @@ public sealed class CDesk
 
     public long? CDeskStoredRead()
     {
-        try
-        {
-            return CDeskRead()?.LDraftStored;
-        }
-        catch (Exception)
-        {
-            return null;
-        }
+        return _cDeskTenure?.LTenureStoredRead();
     }
 
     public void CDeskDraftResonate()
@@ -338,6 +329,12 @@ public sealed class CDesk
         return _cDeskTenure?.LTenureChangeCheck() ?? false;
     }
 
+    internal bool LDeskReadyCheck()
+    {
+        _cDeskTenure?.LTenurePersist();
+        return _cDeskTenure?.LTenureReadyCheck() ?? false;
+    }
+
     public (bool CDeskBackward, bool CDeskForward) CDeskChronicleRead()
     {
         if (_cDeskTenure is not LTenure held)
@@ -351,13 +348,29 @@ public sealed class CDesk
 
     public void CDeskUndo()
     {
-        _cDeskTenure?.LTenureUndo();
+        try
+        {
+            _cDeskTenure?.LTenureUndo();
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cDeskEnvoy, _cDeskSettings, _cDeskScope + ".HoldFailed", exception);
+        }
+
         CDeskStateChanged?.Invoke();
     }
 
     public void CDeskRedo()
     {
-        _cDeskTenure?.LTenureRedo();
+        try
+        {
+            _cDeskTenure?.LTenureRedo();
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cDeskEnvoy, _cDeskSettings, _cDeskScope + ".HoldFailed", exception);
+        }
+
         CDeskStateChanged?.Invoke();
     }
 

@@ -1,7 +1,7 @@
 # CGlyphCell.cs
 Hash: `2f4dded0bc252b1c`
 
-## `public sealed record CGlyphCell(`
+## `public sealed record CGlyphCell(string CGlyphCellText, string CGlyphCellLanguage, bool CGlyphCellLinked)`
 
 One character cell of the glyph row, mapped from the engine cell.
 

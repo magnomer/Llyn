@@ -1,7 +1,7 @@
 # LSituationOffer.cs
 Hash: `d82e5cd8b08662eb`
 
-## `public sealed record LSituationOffer(`
+## `public sealed record LSituationOffer(string LSituationOfferText, IReadOnlyList<LSituationRow> LSituationOfferRows, bool LSituationOfferShown)`
 
 What a situation field keeps after a gate, and the stored Situations it offers for the kept text.
 

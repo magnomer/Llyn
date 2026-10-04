@@ -1,7 +1,7 @@
 # LSentenceOrder.cs
 Hash: `d1834db7de7938f4`
 
-## `public sealed record LSentenceOrder(`
+## `public sealed record LSentenceOrder(int LSentenceOrderParticle, int LSentenceOrderDependence)`
 
 The one fact a language pack states about a Sentence's frame.
 It says which of the two written fields the form writes first.

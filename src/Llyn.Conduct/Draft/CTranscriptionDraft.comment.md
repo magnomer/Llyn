@@ -1,7 +1,7 @@
 # CTranscriptionDraft.cs
 Hash: `30358840feabf11a`
 
-## `public sealed record CTranscriptionDraft(`
+## `public sealed record CTranscriptionDraft(long CTranscriptionDraftId, string CTranscriptionDraftScheme, string CTranscriptionDraftText)`
 
 One transcription of an entry, as the transcription and glyph rows show it.
 

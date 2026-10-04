@@ -1,7 +1,7 @@
 # LSpeechPack.cs
 Hash: `85238115ffc157c9`
 
-## `public sealed record LSpeechPack(`
+## `public sealed record LSpeechPack(IReadOnlyList<LSpeechValue> LSpeechPackValues, IReadOnlyList<LFeature> LSpeechPackFeatures, IReadOnlyList<LMorphology> LSpeechPackMorphology, IReadOnlyList<LParadigm> LSpeechPackParadigms)`
 
 The display vocabulary one language pack declares.
 It lists the parts of speech, the features each takes, and the values each feature takes.

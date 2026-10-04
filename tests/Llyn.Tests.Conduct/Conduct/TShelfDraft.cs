@@ -70,6 +70,7 @@ public sealed class TShelfDraft
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         shelf.CShelfReferenceCreate();

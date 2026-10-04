@@ -1,7 +1,7 @@
 # LGlyphBlock.cs
 Hash: `3efd800ff721c845`
 
-## `public sealed record LGlyphBlock(`
+## `public sealed record LGlyphBlock(bool LGlyphBlockShown, bool LGlyphBlockSourced, IReadOnlyList<LTranscriptionDraft> LGlyphBlockRows, IReadOnlyList<LTranscriptionDraft> LGlyphBlockOther)`
 
 A draft's transcription rows split by its language's glyph section, as an editor lists them.
 [LGlyph](LGlyph.comment.md) builds it, so the scheme match has one owner.

@@ -29,7 +29,7 @@ A line break tag, turned into a space so a two-line caption reads as one line.
 
 How long one pack pattern may run over one answer before the answer counts as empty.
 
-## `public async Task<(IReadOnlyList<LScriptImage> LScriptFound, bool LScriptReached)> LScriptSourceFind(`
+## `public async Task<(IReadOnlyList<LScriptImage> LScriptFound, bool LScriptReached)`
 
 Posts the form, reads the pictures and captions the pattern names, and fetches each picture in turn.
 A picture that cannot be fetched is skipped, and the positions count only those kept.

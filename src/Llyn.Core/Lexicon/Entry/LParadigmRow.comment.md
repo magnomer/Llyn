@@ -1,7 +1,7 @@
 # LParadigmRow.cs
 Hash: `39922e9aee06441c`
 
-## `public sealed record LParadigmRow(`
+## `public sealed record LParadigmRow(IReadOnlyList<LParadigmSlot> LParadigmRowSlots, bool LParadigmRowLead)`
 
 One row of the paradigm table.
 It gathers the slots that share a part of speech and an inflection text.

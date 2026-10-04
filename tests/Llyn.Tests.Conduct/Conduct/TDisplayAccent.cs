@@ -121,6 +121,25 @@ public sealed class TDisplayAccent
     }
 
     [Fact]
+    public async Task DisplayEnsignLoad_StoreFails_ShowsTheLoadFailureOnce()
+    {
+        using TLanguageFixture pack = TDisplayPackCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry hill = TDisplayEntrySave(engine, pack.TLanguageFixtureName, "a˥");
+        List<string> asked = [];
+        CWing wing = TDisplayWingPrepare(atelier, asked);
+        wing.CWingEntryOpen(hill.LEntryId);
+
+        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.CDisplayEnsignLoad(
+            (_, _) => throw new InvalidOperationException("The flags cannot be stored."));
+
+        Assert.Null(accent);
+        Assert.Equal(["Sound.LoadFailed"], asked);
+    }
+
+    [Fact]
     public async Task DisplayEnsignLoad_NothingShown_AnswersNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

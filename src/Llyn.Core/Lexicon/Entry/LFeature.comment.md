@@ -1,7 +1,7 @@
 # LFeature.cs
 Hash: `6987fd240d92b64c`
 
-## `public sealed record LFeature(`
+## `public sealed record LFeature(long LFeatureId, long LFeatureSpeechId, long LFeatureCode, string LFeatureName, int LFeaturePosition)`
 
 One grammatical feature a part of speech takes (for example `number` on a noun).
 It owns the `LMorphology` rows that name its values.

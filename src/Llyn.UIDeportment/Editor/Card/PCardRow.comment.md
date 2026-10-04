@@ -9,7 +9,7 @@ So a bulletin brings the whole list back, and the card must change only what dif
 Rows are matched by id, updated in place, added, removed and reordered, never rebuilt.
 A row the user is typing in is therefore the same object after the bulletin as before it.
 
-## `internal static void PCardRowShow<PCardItem, PCardDraft>(`
+## `internal static void PCardRowShow<PCardItem, PCardDraft>(ObservableCollection<PCardItem> rows, IReadOnlyList<PCardDraft> drafts, Func<PCardItem, long?> key, Func<PCardDraft, long> id, Func<PCardDraft, PCardItem> create, Func<PCardItem, PCardDraft, PCardItem> update)`
 
 Makes `rows` show `drafts`, matching each draft to the row carrying its id.
 A row carrying an id the drafts no longer name is removed first.
@@ -33,7 +33,7 @@ That is the position a chip committed at the caret asks the engine for.
 
 The anchor and every chip after it, read before the rows change.
 
-## `private static PCardItem? PCardCaretResolve<PCardItem>(`
+## `private static PCardItem? PCardCaretResolve<PCardItem>(IReadOnlyList<PCardItem> rows, IReadOnlyList<PCardItem> trail)`
 
 The first chip of the trail that still stands, which becomes the caret's anchor.
 Null when none stands, so the caret goes to the end.

@@ -1,7 +1,7 @@
 # CMentionPiece.cs
 Hash: `ad0aea6a01028a5e`
 
-## `public sealed record CMentionPiece(`
+## `public sealed record CMentionPiece(int CMentionPieceOffset, string CMentionPieceText, bool? CMentionPieceLinked)`
 
 One run of a mention text, cut by the engine at the Mentions.
 

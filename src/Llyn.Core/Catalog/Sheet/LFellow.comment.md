@@ -1,7 +1,7 @@
 # LFellow.cs
 Hash: `3a26e85092f16979`
 
-## `public sealed record LFellow(`
+## `public sealed record LFellow(long LFellowId, string LFellowName, int LFellowShared)`
 
 One co-author of a read Author as the engine hands it to the vita, counted and ordered.
 The vita copies it into its list and decides nothing.

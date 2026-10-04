@@ -13,7 +13,7 @@ The rows follow what the view is actually showing, never the draft alone.
 A section the entry left empty is collapsed, and a collapsed section is not a place a reader can go.
 The frequency row follows the parts of speech, in the order the sections stand on the page.
 
-## `public QCompass(`
+## `public QCompass(LDisplay display, FrameworkElement view, ScrollViewer contents, FrameworkElement header, FrameworkElement compass, UIElement surface, ToggleButton toggle, ItemsControl list)`
 
 Takes the view's controls as handles and subscribes to them itself.
 The view, the header and the toggle re-place the contents, and scrolling syncs the current row.
@@ -30,7 +30,7 @@ Each press writes it back to the toggle, so the control cannot drift from it.
 
 How far above a target the view stops, so a heading never sits flush with the top edge.
 
-## `public void QCompassSectionIntroduce(`
+## `public void QCompassSectionIntroduce(FrameworkElement speech, FrameworkElement frequency, FrameworkElement meaning, ItemsControl meanings, FrameworkElement collocation, ItemsControl collocations, FrameworkElement incoming, FrameworkElement note)`
 
 The six sections the rows can name, handed over once the veneer has built them.
 Each section is paired with the part Conduct knows it by, in page order.

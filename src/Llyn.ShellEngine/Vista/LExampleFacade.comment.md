@@ -1,5 +1,5 @@
 # LExampleFacade.cs
-Hash: `fa87745acf0cde18`
+Hash: `588c0b415541b53d`
 
 ## `internal sealed class LExampleFacade`
 
@@ -7,7 +7,7 @@ The engine's facade for Examples.
 An Example is independent data owned by nothing, so both card sides may reference the same one.
 Every read and write goes through the example clerk under the gate, and every change is announced here.
 The vista overload stays here, because a vista is the shell's and the twin names are numbered per panel.
-The sentence draft starts and commits here too, through the citation clerk.
+The sentence draft starts and commits here too, through the `LExampleCitation` the citation clerk holds.
 
 ## `public LExampleFacade(LEngine engine)`
 

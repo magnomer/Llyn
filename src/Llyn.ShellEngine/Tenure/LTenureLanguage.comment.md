@@ -1,5 +1,5 @@
 # LTenureLanguage.cs
-Hash: `4af2f0defe4f631a`
+Hash: `e0eed31073c8e5a1`
 
 Answers about the held draft that need an engine lookup beyond the draft itself.
 Language-dependent flag queries read the held draft instead of an editable control.
@@ -34,6 +34,7 @@ The reflex clerk refuses a second lookup for the same entry itself.
 The stored fanqie rows the reflex row `reflex` may anchor to, each marked when the row holds it.
 The row's tone is compared under the draft language's tone classes, and an estimate is marked.
 A draft never stored, an unknown row or a refused read answers empty, so the menu shows its notice.
+Any other failure of the scan reaches the caller.
 
 ## `public string LTenurePronunciationRead()`
 
@@ -46,7 +47,7 @@ The live draft's accent sheet with every row after the primary, notated or not.
 It is null while no draft is held.
 The language clerk resolves each row's printed form.
 
-## `public async Task<LAccentSheet?> LTenureAccentLoad(`
+## `public async Task<LAccentSheet?> LTenureAccentLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
 
 Loads the flags the live draft's accent sheet draws into `store`, then answers a fresh sheet.
 A pack that labels varieties by name answers null at once and builds no sheet.
@@ -99,6 +100,7 @@ A missing reading or a blank variety changes nothing.
 
 The etymons of the held entry, resolved to their headwords.
 A refused read answers empty, so the etymology field still draws.
+Any other failure reaches the caller.
 
 ## `public IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LTenureTranslationRead(LEntryDraft draft)`
 
@@ -107,6 +109,7 @@ Each card answers its targets in the order the card lists them.
 One engine read resolves every card's links, so a paint asks nothing per card.
 A target the engine no longer finds is left out, so the chip row never shows a blank.
 A refused read answers every card empty, so the cards still draw.
+Any other failure reaches the caller.
 Every card of the draft has an entry, so the map to the editor's cards never misses one.
 
 ## `private string? _lTenureSpeechPending;`
@@ -114,7 +117,7 @@ Every card of the draft has an entry, so the map to the editor's cards never mis
 The part of speech the last typed text appended to the draft, or null when the text appended none.
 It is draft-edit state, so the committed chips are always read off the draft itself.
 
-## `public (IReadOnlyList<string> LSpeechNames, string LSpeechTyped, LSpeechOffer LSpeechFound) LTenureSpeechRead(`
+## `public (IReadOnlyList<string> LSpeechNames, string LSpeechTyped, LSpeechOffer LSpeechFound) LTenureSpeechRead(string typed)`
 
 The chips the draft holds and the typed text the caller heard, settled against the draft.
 A draft changed from elsewhere answers its own parts and clears the typed text.
@@ -160,8 +163,11 @@ The draft's parts without the pending one, cleaned, so every edit starts from th
 ## `private LSpeechOffer LTenureSpeechFind(IReadOnlyList<LSpeechDraft> held, string typed)`
 
 Reads the draft language's catalog once and hands it to the clerk's find.
-A catalog that fails to read offers nothing, as an empty catalog does.
+A refused catalog read offers nothing, as an empty catalog does.
+Any other failure reaches the caller.
 
 ## `private LSpeechValue? LTenureSpeechCreate(string language, string name)`
 
 A catalog that refuses the name answers nothing, so the part of speech is kept as typed.
+The commit later stores a typed part of speech as custom, so nothing is lost.
+Any other failure of the catalog write reaches the caller.

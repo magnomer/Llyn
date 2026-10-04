@@ -1,7 +1,7 @@
 # LGlyph.cs
 Hash: `cbaf5699e185e0e3`
 
-## `public sealed record LGlyph(`
+## `public sealed record LGlyph(string LGlyphName, string LGlyphLanguage, IReadOnlyList<LSourceSpec> LGlyphSources, LFont? LGlyphFont = null)`
 
 The glyph section a language pack written in Han characters declares.
 It names the storing scheme, the language each character is a word of, and the lookup sources.
@@ -38,7 +38,7 @@ Whether a transcription row already stands under the glyph section's own scheme.
 
 Whether a row stands under any scheme but the glyph section's, or under any scheme when there is no section.
 
-## `public static IReadOnlyList<LTranscriptionDraft> LGlyphOtherRead(`
+## `public static IReadOnlyList<LTranscriptionDraft> LGlyphOtherRead(LGlyph? glyph, IReadOnlyList<LTranscriptionDraft> rows)`
 
 The filled rows a reading view lists as transcriptions, in draft order.
 A row under the glyph section's scheme is left out, since the glyph row shows it.

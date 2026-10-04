@@ -1,7 +1,7 @@
 # LCatalogExample.cs
 Hash: `19c17ba6264de9f2`
 
-## `public sealed record LCatalogExample(`
+## `public sealed record LCatalogExample(LExample LCatalogExampleStored, string LCatalogExampleSource, int LCatalogExampleUsage, bool LCatalogExampleChosen = false)`
 
 One Example as a browsed row: the stored record, the name of the Source it cites, and its quotation count.
 The cited name travels with the row because the ordering, the match and the row all show it.

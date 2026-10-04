@@ -1,7 +1,7 @@
 # CCompassRow.cs
 Hash: `4e72fde382d89dbf`
 
-## `public sealed record CCompassRow(`
+## `public sealed record CCompassRow(CCompassPart CCompassRowPart, int? CCompassRowCard, string CCompassRowName, string CCompassRowNumber, int CCompassRowDepth)`
 
 One row of the floating contents, ready to show.
 

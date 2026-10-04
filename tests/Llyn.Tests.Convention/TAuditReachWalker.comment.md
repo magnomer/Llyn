@@ -32,7 +32,7 @@ Loads every markup file with line numbers and scans each element.
 A file that does not parse is itself a hit, since a walk that cannot read it sees nothing.
 The tethering markers of a file are gathered by line and reported one hit per line, markers joined.
 
-## `private static void TAuditTetheringScan(`
+## `private static void TAuditTetheringScan(XElement element, Dictionary<string, List<string>> spaces, SortedDictionary<int, List<string>> hooks)`
 
 Marks the element line for a binding element, a tethering slot property element, or a converter or selector.
 Marks an attribute line for a tethering slot, a listed extension, or an extension whose prefix maps a code namespace.

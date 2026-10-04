@@ -1,7 +1,7 @@
 # CLeafChip.cs
 Hash: `d604e4f1c5b56d4f`
 
-## `public sealed record CLeafChip(`
+## `public sealed record CLeafChip(long CLeafChipId, CStateWording CLeafChipWording, CSubject CLeafChipSubject, bool CLeafChipStored)`
 
 One situation, register or tag chip of a reading card, ready to paint and to open.
 

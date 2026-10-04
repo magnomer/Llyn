@@ -1,7 +1,7 @@
 # CSentenceFrame.cs
 Hash: `dcb9e108a9b63eb9`
 
-## `public sealed record CSentenceFrame(`
+## `public sealed record CSentenceFrame(CSentenceOrder CSentenceFrameOrder, IReadOnlyList<string> CSentenceFrameParticle, IReadOnlyList<string> CSentenceFrameDependence)`
 
 The frame of the sentence rows in one language, ready for a driver to show.
 

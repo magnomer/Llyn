@@ -211,7 +211,7 @@ internal static partial class TAuditTruthWalker
         });
     }
 
-    private static bool TAuditHandleCheck(ITypeSymbol type)
+    internal static bool TAuditHandleCheck(ITypeSymbol type)
     {
         string shown = type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
         return TAuditBinderSide.TAuditConductCheck(type)
@@ -219,7 +219,7 @@ internal static partial class TAuditTruthWalker
                || TAuditTruthSetting.TAuditTruthHandles.Contains(shown.TrimEnd('?'), StringComparer.Ordinal);
     }
 
-    private static HashSet<ISymbol> TAuditAliasRead(IFieldSymbol field, IReadOnlyList<TypeDeclarationSyntax> type)
+    internal static HashSet<ISymbol> TAuditAliasRead(IFieldSymbol field, IReadOnlyList<TypeDeclarationSyntax> type)
     {
         HashSet<ISymbol> symbols = new([field], SymbolEqualityComparer.Default);
         List<PropertyDeclarationSyntax> getters = type
@@ -237,14 +237,14 @@ internal static partial class TAuditTruthWalker
                 if (TAuditBinderSymbol.TAuditSymbolRead(property) is IPropertySymbol alias
                     && !symbols.Contains(alias)
                     && !TAuditRequestCheck(property)
-                    && TAuditNameCheck(property, symbols))
+                    && TAuditTruthReference.TAuditNameCheck(property, symbols))
                 {
                     symbols.Add(alias);
                     grown = true;
                 }
             }
 
-            foreach (ArgumentSyntax argument in TAuditUseRead(symbols.ToList())
+            foreach (ArgumentSyntax argument in TAuditTruthReference.TAuditUseRead(symbols.ToList())
                          .Select(identifier => identifier.Parent)
                          .OfType<ArgumentSyntax>()
                          .Where(argument => !argument.RefKindKeyword.IsKind(SyntaxKind.None)))

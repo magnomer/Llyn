@@ -1,7 +1,7 @@
 # LReflexDraft.cs
 Hash: `e793b093b22f50f0`
 
-## `public sealed record LReflexDraft(`
+## `public sealed record LReflexDraft(string LReflexDraftLanguage, string LReflexDraftKind = "", string LReflexDraftText = "", bool LReflexDraftMain = false, long LReflexDraftId = 0, string LReflexDraftRomanization = "", string LReflexDraftMeaning = "", bool LReflexDraftOwned = false, string LReflexDraftNote = "", string LReflexDraftRespelling = "", string LReflexDraftRegion = "", LAnatomy? LReflexDraftAnatomy = null, IReadOnlyList<long>? LReflexDraftAnchors = null)`
 
 One reflex of an entry as one value the input form carries.
 An entry holds an ordered list of these, one per row the form shows.

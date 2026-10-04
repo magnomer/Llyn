@@ -1,7 +1,7 @@
 # LMarkupEtymon.cs
 Hash: `6f1dbcfb517f40f7`
 
-## `public sealed record LMarkupEtymon(`
+## `public sealed record LMarkupEtymon(string LMarkupEtymonHeadword, string LMarkupEtymonLanguage)`
 
 One direct link from an entry to the entry it comes from, as a markup file carries it.
 The order of these links in the file is the order they are stored in.

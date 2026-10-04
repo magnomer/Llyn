@@ -1,7 +1,7 @@
 # LFont.cs
 Hash: `30764e9a14a19e36`
 
-## `public sealed record LFont(`
+## `public sealed record LFont(string? LFontFamily, double LFontSize, string? LFontStyle = null)`
 
 The typography a language pack declares for showing its own words.
 One record carries one role, named by [LFontRole](LFontRole.comment.md).

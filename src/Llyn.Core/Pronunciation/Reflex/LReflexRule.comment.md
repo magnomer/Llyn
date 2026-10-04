@@ -1,7 +1,7 @@
 # LReflexRule.cs
 Hash: `fc8e93cfc84b13ae`
 
-## `public sealed record LReflexRule(`
+## `public sealed record LReflexRule(string LReflexRuleLanguage, string LReflexRuleUrl, IReadOnlyDictionary<string, string> LReflexRuleForm, string LReflexRulePattern, string? LReflexRuleTemplate = null, bool LReflexRuleEvery = false, string? LReflexRuleBusy = null, int LReflexRuleInterval = 0, IReadOnlyDictionary<string, string>? LReflexRuleHeaders = null, string? LReflexRuleEpithet = null, string? LReflexRuleClip = null, bool LReflexRuleFirst = false, IReadOnlyList<LRespellingRule>? LReflexRuleRewrite = null, string? LReflexRuleRegion = null, string? LReflexRuleSplit = null, string? LReflexRuleGloss = null, string? LReflexRuleUntil = null, bool LReflexRuleFolded = false, IReadOnlyList<LRespellingRule>? LReflexRuleRecast = null, bool LReflexRuleSuperscript = false)`
 
 One rule a language pack lists under `reflex`, fetching the entry's readings in one borrowing language.
 The rule names the web page that carries the reading and the pattern that reads it out.

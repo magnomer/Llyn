@@ -1,7 +1,7 @@
 # CEnsignSheet.cs
 Hash: `0094aa012192c46f`
 
-## `public sealed record CEnsignSheet<CEnsignSheetKind>(`
+## `public sealed record CEnsignSheet<CEnsignSheetKind>(IReadOnlyList<string> CEnsignSheetLanguages, CEnsignSheetKind CEnsignSheetRows)`
 
 What an area answers once the flag fill has run.
 It carries the loaded languages and the area's ready rows.

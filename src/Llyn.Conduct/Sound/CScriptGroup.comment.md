@@ -1,7 +1,7 @@
 # CScriptGroup.cs
 Hash: `03d1afbf6b64cc6a`
 
-## `public sealed record CScriptGroup(`
+## `public sealed record CScriptGroup(string CScriptGroupHeading, string CScriptGroupStyle, string CScriptGroupGloss, IReadOnlyList<CScriptImage> CScriptGroupImages)`
 
 The forms of one character in one style, as the script panel groups them.
 

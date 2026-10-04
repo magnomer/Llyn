@@ -1,7 +1,7 @@
 # LHarvestStep.cs
 Hash: `3dac0b73825c7f3b`
 
-## `public sealed record LHarvestStep(`
+## `public sealed record LHarvestStep(LHarvestKind LHarvestStepKind, string LHarvestStepSource, int LHarvestStepOrder, LRecording? LHarvestStepRecording)`
 
 One step of an audio-recording discovery, carried to the caller as data.
 The discovery streams a source step per source, a recording per source, and one end, in that order.

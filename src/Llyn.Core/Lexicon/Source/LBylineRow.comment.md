@@ -1,7 +1,7 @@
 # LBylineRow.cs
 Hash: `6b68dcd53dc298d0`
 
-## `public sealed record LBylineRow(`
+## `public sealed record LBylineRow(long LBylineRowId, string LBylineRowLead, string LBylineRowMark, string LBylineRowTail)`
 
 One stored Author the byline dropdown offers, its name already split around the typed word.
 

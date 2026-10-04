@@ -1,7 +1,7 @@
 # CSlate.cs
 Hash: `6af89931ecb0fa35`
 
-## `public sealed record CSlate(`
+## `public sealed record CSlate(string CSlateText, IReadOnlyList<CSlateRow> CSlateRows, bool CSlateShown)`
 
 What a tag field keeps after a gate, and the dropdown of stored Tags it offers, ready to show.
 The driver paints it as it comes and decides nothing about the rows.

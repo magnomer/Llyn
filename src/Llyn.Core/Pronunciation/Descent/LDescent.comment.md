@@ -1,7 +1,7 @@
 # LDescent.cs
 Hash: `e79f6eb5541e2a1b`
 
-## `public sealed record LDescent(`
+## `public sealed record LDescent(IReadOnlyList<string> LDescentLanguages, IReadOnlyDictionary<string, IReadOnlyList<string>> LDescentClasses)`
 
 The tone correspondence of one borrowing language.
 It names which rime-book tone classes a contour of that language descends from.

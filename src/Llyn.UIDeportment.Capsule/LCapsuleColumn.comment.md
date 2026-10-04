@@ -1,7 +1,7 @@
 # LCapsuleColumn.cs
 Hash: `44bd0b0b1df9a41e`
 
-## `public sealed record LCapsuleColumn(`
+## `public sealed record LCapsuleColumn([property: JsonPropertyName("tab")] string LCapsuleColumnTab, [property: JsonPropertyName("left")] double? LCapsuleColumnLeft, [property: JsonPropertyName("middle")] double? LCapsuleColumnMiddle)`
 
 The widths of one tab's fixed panels.
 The last column takes whatever room the window leaves, so it is never stored.

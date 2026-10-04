@@ -1,7 +1,7 @@
 # CLecternFanqie.cs
 Hash: `2e9b18a944919b86`
 
-## `public sealed record CLecternFanqie(`
+## `public sealed record CLecternFanqie(IReadOnlyList<CFanqieGroup> CLecternFanqieGroups, bool CLecternFanqiePending, string CLecternFanqieReading, CLecternAnchor CLecternFanqieAnchor, CFont CLecternFanqieFont)`
 
 The rime-book block of the reading view for the shown entry, ready to show.
 

@@ -22,7 +22,7 @@ The list with `fanqieId` added when `anchored` and removed otherwise, normalized
 Whether two normalized lists hold the same ids in the same order.
 The records carrying anchors compare by reference on the list, so the match is done here.
 
-## `public static IReadOnlyList<LAnchorRow> LAnchorRowScan(`
+## `public static IReadOnlyList<LAnchorRow> LAnchorRowScan(IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, IReadOnlyList<string> classes)`
 
 One mark per stored fanqie row, telling whether the row is anchored and whether its tone class is estimated.
 A row the archive has not kept yet has no id and is left out.
@@ -32,7 +32,7 @@ A row the archive has not kept yet has no id and is left out.
 Whether a reflex row may carry anchors at all.
 Only a single-glyph headword with fanqie rows has placements to tie a reading to.
 
-## `public static string LAnchorTextFormat(`
+## `public static string LAnchorTextFormat(IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword, string separator)`
 
 The readings of the anchored stored rows, each once, joined with `separator`.
 An empty text when `LAnchorCheck` refuses the rows and the headword.

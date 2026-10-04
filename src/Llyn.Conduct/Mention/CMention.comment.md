@@ -45,7 +45,7 @@ Each area passes its own desk, so no driver chooses which draft is searched.
 A desk without a live draft offers nothing.
 A failed search shows `Mention.FindFailed` and offers nothing, so no picker opens.
 
-## `internal static CMentionSense? LMentionSenseRead(`
+## `internal static CMentionSense? LMentionSenseRead(LDraftPort drafts, CDesk desk, long cardId, long sentenceId, string text, int start, int length, CEnvoy envoy, LSettingsPort settings)`
 
 The sense menu for a selection, shared by the editor and the corpus transcript.
 It is titled by the key `Mention.Sense`.
@@ -54,7 +54,7 @@ Each area passes its own desk, so no driver chooses which draft is read.
 A selection inside no linked Mention, or a desk without a live draft, answers nothing.
 A failed read shows `Mention.FindFailed` and answers nothing, so no menu opens.
 
-## `internal static IReadOnlyList<CMentionLabel> LMentionChipRead(`
+## `internal static IReadOnlyList<CMentionLabel> LMentionChipRead(LDraftPort drafts, CDesk desk, long cardId, long sentenceId, CEnvoy envoy, LSettingsPort settings)`
 
 The chip line of one Example of a desk's draft, ready to paint, keyed by card and sentence.
 A desk without a live draft, or an Example with no Mentions, answers no chips.
@@ -85,7 +85,7 @@ It stays internal, since it names engine types.
 Maps what a click on a text found to its shape, and a stored Mention under the click with it.
 The corpus excerpt and the lectern both hand the window this shape, so the lectern calls it too.
 
-## `internal static IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> LMentionLineRead(`
+## `internal static IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> LMentionLineRead(IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> lines)`
 
 The chip lines of the draft's sentence rows, keyed by the row, as the sentence area answers them.
 It only maps, so the sentence area names no engine record.

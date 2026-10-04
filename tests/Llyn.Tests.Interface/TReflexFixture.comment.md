@@ -16,7 +16,7 @@ Waits until the engine reports no fetch running for the entry, or fails after th
 Reads a found or stored row down to its language, kind, text, romanization and main mark.
 A test then compares tuples.
 
-## `internal static async Task<IReadOnlyList<LReflexDraft>> TReflexFetchRead(`
+## `internal static async Task<IReadOnlyList<LReflexDraft>> TReflexFetchRead(LEngine engine, string headword, string language)`
 
 Saves an entry of the headword, starts its reflex fetch, waits for it to settle and reads what it stored.
 

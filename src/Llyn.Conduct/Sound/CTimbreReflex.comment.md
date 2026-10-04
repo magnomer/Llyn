@@ -1,7 +1,7 @@
 # CTimbreReflex.cs
 Hash: `e4f94ce4e8a030d8`
 
-## `public sealed record CTimbreReflex(`
+## `public sealed record CTimbreReflex(bool CTimbreReflexShown, IReadOnlyList<CReflex> CTimbreReflexRows, CLecternAnchor CTimbreReflexAnchor, bool CTimbreReflexOpened, bool CTimbreReflexPending)`
 
 The editor's reflex block for the held draft, ready to paint.
 

@@ -1,7 +1,7 @@
 # LRegisterRow.cs
 Hash: `2151ecf0889e96df`
 
-## `public sealed record LRegisterRow(`
+## `public sealed record LRegisterRow(long LRegisterRowId, string LRegisterRowLead, string LRegisterRowMark, string LRegisterRowTail)`
 
 One stored Register a register field offers, its name already split around the typed word.
 

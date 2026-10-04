@@ -8,16 +8,16 @@ A sentence row, a chip, a media row and a credit are all lists of items addresse
 So one set of insert, remove, move and change routines serves all of them, told the id to read.
 The concern classes hand these routines the list and the key and add nothing but the item to build.
 
-## `public static IReadOnlyList<LDraftItem> LDraftListAdd<LDraftItem>(`
+## `public static IReadOnlyList<LDraftItem> LDraftListAdd<LDraftItem>(IReadOnlyList<LDraftItem> items, LDraftItem item, int position)`
 
 Places a new item at the position asked for, clamped to the list.
 
-## `public static IReadOnlyList<LDraftItem> LDraftListInsert<LDraftItem>(`
+## `public static IReadOnlyList<LDraftItem> LDraftListInsert<LDraftItem>(IReadOnlyList<LDraftItem> items, LDraftItem item, long id, int position, Func<LDraftItem, long> key)`
 
 Places an existing item at the position asked for, unless the list already holds its id.
 A picked row is one thing however many times it is picked, so the second pick is nothing.
 
-## `public static IReadOnlyList<LDraftItem> LDraftListChange<LDraftItem>(`
+## `public static IReadOnlyList<LDraftItem> LDraftListChange<LDraftItem>(IReadOnlyList<LDraftItem> items, LDraftItem item, long id, int position, long former, Func<LDraftItem, long> key)`
 
 Places the item as an insert does, then drops the former item the field stood for.
 A former item the list does not hold is nothing to drop.
@@ -30,22 +30,22 @@ Whether an item changes the slot its former item stood for.
 An item that is its own former changes nothing, in any list.
 `LDraftListChange` and the quill's Author insert both ask it.
 
-## `public static IReadOnlyList<LDraftItem> LDraftListRemove<LDraftItem>(`
+## `public static IReadOnlyList<LDraftItem> LDraftListRemove<LDraftItem>(IReadOnlyList<LDraftItem> items, long id, Func<LDraftItem, long> key)`
 
 Drops the item carrying the id, and refuses when none does.
 
-## `public static IReadOnlyList<LDraftItem> LDraftListMove<LDraftItem>(`
+## `public static IReadOnlyList<LDraftItem> LDraftListMove<LDraftItem>(IReadOnlyList<LDraftItem> items, long id, int position, Func<LDraftItem, long> key)`
 
 Takes the item carrying the id out and puts it back at the position asked for.
 The position is clamped after the removal, so the last place is reachable.
 
-## `public static IReadOnlyList<LDraftItem>? LDraftListChange<LDraftItem>(`
+## `public static IReadOnlyList<LDraftItem>? LDraftListChange<LDraftItem>(IReadOnlyList<LDraftItem> items, long id, Func<LDraftItem, long> key, Func<LDraftItem, LDraftItem> change)`
 
 Applies one change to the item carrying the id, or answers null when the list does not hold it.
 Null rather than a refusal.
 A shared row is looked for in every card, and most cards will not hold it.
 
-## `public static int LDraftListFind<LDraftItem>(`
+## `public static int LDraftListFind<LDraftItem>(IReadOnlyList<LDraftItem> items, long id, Func<LDraftItem, long> key)`
 
 The place of the item carrying the id, or minus one.
 An id of zero is refused here, so no list routine can be asked about nothing.
@@ -56,7 +56,7 @@ Offers every card, nested ones included, one change and keeps the ones that took
 A shared row is edited this way, since the same id may sit in any number of cards.
 No card taking the change means the draft holds no such row, and that is refused.
 
-## `public static IReadOnlyList<LDraftItem> LDraftListNormalize<LDraftItem>(`
+## `public static IReadOnlyList<LDraftItem> LDraftListNormalize<LDraftItem>(IReadOnlyList<LDraftItem> items, Func<LDraftItem, bool> blank, Func<LDraftItem, LDraftItem> name)`
 
 Drops every item `blank` marks and passes the rest through `name`, which issues an id to a new one.
 The list comes back untouched when nothing was dropped or renamed, so a save can tell by reference.
@@ -71,7 +71,7 @@ Text without a comma is then kept whole, since nothing is complete.
 A settled list, as on Enter or on leaving the field, completes every part.
 It holds in a markup import as much as in a field, so it is a data rule.
 
-## `public static bool LDraftHeldCheck<LDraftItem>(`
+## `public static bool LDraftHeldCheck<LDraftItem>(IReadOnlyList<LDraftItem> items, Func<LDraftItem, string> text, string written)`
 
 Whether one of the items already reads exactly the written text.
 The chip clerks and the chip finds ask it, so a typed duplicate and a held suggestion are one rule.

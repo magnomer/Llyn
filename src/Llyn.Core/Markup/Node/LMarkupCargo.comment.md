@@ -1,7 +1,7 @@
 # LMarkupCargo.cs
 Hash: `814d8aeee9c7370b`
 
-## `public sealed record LMarkupCargo(`
+## `public sealed record LMarkupCargo(IReadOnlyList<LMarkupEntry> LMarkupCargoEntry, IReadOnlyList<LMarkupOmission> LMarkupCargoOmission)`
 
 What one read of a markup file holds, the parsed entries and what the read skipped.
 The shell shows the entries, asks how each enters, and hands the same cargo back to the import.

@@ -67,7 +67,7 @@ public sealed partial class LTenure
                     row.LReflexDraftAnatomy.LAnatomyToneIpa)
                 : [];
         }
-        catch (Exception)
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
         {
             return [];
         }
@@ -194,7 +194,7 @@ public sealed partial class LTenure
         {
             return _lEngine.LEngineCard.LEngineEtymonRead(draft);
         }
-        catch (Exception)
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
         {
             return [];
         }
@@ -211,7 +211,7 @@ public sealed partial class LTenure
         {
             read = ids.Count == 0 ? [] : _lEngine.LEngineCard.LEngineTargetRead(LTenureId, ids);
         }
-        catch (Exception)
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
         {
             read = [];
         }
@@ -307,7 +307,7 @@ public sealed partial class LTenure
         {
             values = _lEngine.LEngineVocabulary.LEngineSpeechRead(LTenureLanguageRead());
         }
-        catch (Exception)
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
         {
             values = [];
         }
@@ -321,7 +321,7 @@ public sealed partial class LTenure
         {
             return _lEngine.LEngineVocabulary.LEngineSpeechAdd(language, name);
         }
-        catch (Exception)
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
         {
             return null;
         }

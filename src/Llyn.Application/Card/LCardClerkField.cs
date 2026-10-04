@@ -88,7 +88,7 @@ public static class LCardClerkField
             return stored.LSituationId;
         }
 
-        LSituation? found = LDraftClerkChip.LSituationResolve(situations, draft.LSituationDraftTitle);
+        LSituation? found = LSituationChip.LSituationChipResolve(situations, draft.LSituationDraftTitle);
         if (found is not null)
         {
             return found.LSituationId;

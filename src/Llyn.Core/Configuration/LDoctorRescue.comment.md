@@ -1,7 +1,7 @@
 # LDoctorRescue.cs
 Hash: `e975d172db3ce09b`
 
-## `public sealed record LDoctorRescue(`
+## `public sealed record LDoctorRescue(bool LDoctorRescueDone, string? LDoctorRescueBackup, string? LDoctorRescueReason)`
 
 What the workspace doctor had to do before the program could open its database.
 A launch either found the database usable or found it unusable and started over.

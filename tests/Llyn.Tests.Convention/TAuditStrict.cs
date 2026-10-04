@@ -143,7 +143,7 @@ public sealed class TAuditStrict
     {
         ExpressionSyntax condition = SyntaxFactory.ParseExpression("-flag");
         ExpressionSyntax? core = null;
-        Task read = Task.Run(() => core = TAuditStrictWalker.TAuditCoreRead(condition));
+        Task read = Task.Run(() => core = TAuditStrictCondition.TAuditCoreRead(condition));
 
         Task first = await Task.WhenAny(read, Task.Delay(TimeSpan.FromSeconds(5)));
         Assert.True(first == read, "TAuditCoreRead hung on a prefix operator");

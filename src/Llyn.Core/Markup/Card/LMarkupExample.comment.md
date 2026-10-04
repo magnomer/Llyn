@@ -1,7 +1,7 @@
 # LMarkupExample.cs
 Hash: `37ee565aa8477893`
 
-## `public sealed record LMarkupExample(`
+## `public sealed record LMarkupExample(LStateValue LMarkupExampleText, string LMarkupExampleLanguage = "", IReadOnlyList<LGlossDraft>? LMarkupExampleGloss = null, IReadOnlyList<LMarkupMention>? LMarkupExampleMention = null, LMarkupReference? LMarkupExampleReference = null)`
 
 One example sentence as a markup file carries it.
 Its reference travels by value rather than by id, and its mentions name their targets by natural key.

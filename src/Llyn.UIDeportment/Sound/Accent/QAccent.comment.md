@@ -1,5 +1,5 @@
 # QAccent.cs
-Hash: `db1cfbcc08d2ec4a`
+Hash: `37ab74c6aaf9c514`
 
 ## `internal sealed class QAccent`
 
@@ -11,7 +11,7 @@ That is the same set the primary row wears.
 A row edit goes to the accent gate with that row's id.
 A plus or a minus goes to the add or remove gate with that row's id.
 Lookup and download open the editor's one menu under the row's own button.
-The rows are rendered as a diff on each draft bulletin, and what was waiting is written before the read.
+The rows are rendered as a diff on each draft bulletin.
 The primary field also wears a variety chip here, because the chip is drawn from the same draft row.
 
 ## `internal void QAccentIntroduce(CEditor editor)`
@@ -95,7 +95,8 @@ A null answer paints nothing, since the load failed or another language took the
 
 ## `internal QAccent(FrameworkElement surface, QNotation notation, QClip menu, MediaPlayer player)`
 
-Holds the clip driver whose menu the clip commands open.
-Hands the accent list its rows and fill, and binds the five row commands on the sound panel.
+Holds the surface, the notation and clip menus, and the player the row commands use.
+Binds the accent list to its rows and attaches its look, quill and control behaviour.
+It also binds the five row commands on the sound panel.
 The bindings stand on that panel, as the markup had them, so a row command reaches this editor.
 The clip binding carries its Refine and then its Observe, one handler per role in that order.

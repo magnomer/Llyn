@@ -1,7 +1,7 @@
 # LMarkupNode.cs
 Hash: `0772124e410ccc3b`
 
-## `public sealed record LMarkupNode(`
+## `public sealed record LMarkupNode(string LMarkupNodeName, IReadOnlyDictionary<string, string> LMarkupNodeAttribute, IReadOnlyList<LMarkupNode> LMarkupNodeChild, string LMarkupNodeText, int LMarkupNodeLine)`
 
 One element of a markup file as a value, free of the parser that read it.
 The reader walks a tree of these and the writer builds one, so Core never names XML.

@@ -5,7 +5,7 @@ Hash: `0c6613f3fd9044a1`
 
 The language the first slot's speech carries, or empty when there are no slots, for the section's font.
 
-## `public sealed record LParadigm(`
+## `public sealed record LParadigm(long LParadigmSpeechCode, IReadOnlyList<long> LParadigmMorphology, IReadOnlyList<LParadigmRule>? LParadigmRegular = null, IReadOnlyList<long>? LParadigmExcept = null)`
 
 The forms one part of speech is expected to inflect into, as a language pack declares them.
 A pack states a paradigm on a part by code, so it is never stored and has no row id.

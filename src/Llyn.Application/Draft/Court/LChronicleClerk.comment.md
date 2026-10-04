@@ -1,5 +1,5 @@
 # LChronicleClerk.cs
-Hash: `7bcb9cac27242b5d`
+Hash: `419797efcd999e0f`
 
 ## `public sealed class LChronicleClerk`
 
@@ -15,6 +15,11 @@ Ending a draft drops its chronicle, because the file it walked is gone.
 A settled court link drops the owner's chronicle too.
 A snapshot from before the id rewrite would resurrect a draft translation id.
 Steps that continue the same edit within a short window merge into one.
+It also keeps the keystrokes a tenure defers, and times the quiet before they flush.
+That is a timing rule about draft edits, holding with no user present, so it sits beside the merge window.
+The quiet waits on the rig's clock, so a replay on a virtual clock drives it.
+The deferred requests have their own lock, since every tenure defers from its own thread.
+That lock is never held while the clerk calls out, so it is always the innermost one.
 
 ## `private const int LChronicleClerkCap = 100;`
 
@@ -24,6 +29,15 @@ Beyond it the oldest snapshot is forgotten, so a long session cannot grow withou
 ## `private const int LChronicleClerkWindow = 1500;`
 
 The milliseconds within which a request of the same type on the same draft continues the last step.
+
+## `private readonly Dictionary<long, List<LRequest>> _lChronicleClerkDeferred = [];`
+
+The requests waiting to flush, per draft id, in arrival order and one per `LRequestKey`.
+It is also the lock guarding itself and the pending waits.
+
+## `private readonly Dictionary<long, CancellationTokenSource> _lChronicleClerkPending = [];`
+
+The wait in progress per draft id, cancelled by every new deferral with a delay.
 
 ## `public LChronicleClerk(LRig rig)`
 
@@ -63,7 +77,28 @@ Whether an undo would step anywhere, so a button can dim before it is pressed.
 
 Whether a redo would step anywhere.
 
-## `private LDraft? LChronicleClerkRestore(`
+## `public async Task<CancellationTokenSource?> LChronicleClerkDefer(long id, LRequest request, int delay)`
+
+Files the request for draft `id` and waits out the quiet before its flush.
+A later request with the same `LRequestKey` replaces the earlier one and keeps its place.
+So the order of first arrival holds, and the last value per field wins.
+The filing runs before the first await, so the request is queued when the call returns.
+A positive delay cancels the wait in progress and starts a new one on the rig's clock.
+A delay of zero files the request only and answers null, leaving the flush to the caller.
+The replaced wait is cancelled outside the lock, so its ending runs with no clerk lock held.
+The pause always resumes on a pool thread, so an instant clock never flushes under the caller's locks.
+It answers the wait that ran out, which the caller hands back to `LChronicleClerkDispatch`.
+A cancelled wait answers null, since a newer deferral or a flush has replaced it.
+
+## `public IReadOnlyList<LRequest> LChronicleClerkDispatch(long id, CancellationTokenSource? pending)`
+
+Takes every request waiting for draft `id` and stops its wait.
+Given the wait it resumes from, it takes nothing when a newer wait has replaced that one.
+Given null, it takes regardless, which is how a flush, a close and a halt empty the set.
+The check and the taking share one hold of the lock, so no deferral slips in between them.
+The stopped wait is cancelled outside the lock.
+
+## `private LDraft? LChronicleClerkRestore(long id, Dictionary<long, List<LDraft>> source, Dictionary<long, List<LDraft>> target)`
 
 The one step undo and redo share, with the two lists swapped between them.
 The newest snapshot of `source` is written as the held draft.

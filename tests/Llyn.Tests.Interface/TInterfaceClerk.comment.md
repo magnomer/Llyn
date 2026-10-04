@@ -6,7 +6,7 @@ Hash: `7aef635c9e1fd0e5`
 The relays for the clerks of the application ring, built over a rig of fakes.
 Each relay is transparent and carries no test logic of its own.
 
-## `internal static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> TMeaningClerkSort(`
+## `internal static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)`
 
 Relays the meaning clerk's reading order, so the rule is tested over handed-in Meanings.
 
@@ -18,7 +18,7 @@ Relays the typed-list parse, so a test reads the rule where it is owned.
 
 Relays the speech clerk's parse of a typed list against the held chips.
 
-## `internal static IReadOnlyList<LSpeechDraft>? TSpeechAdd(`
+## `internal static IReadOnlyList<LSpeechDraft>? TSpeechAdd(IReadOnlyList<LSpeechDraft> held, string? name, Func<string, LSpeechValue?> declare)`
 
 Relays the speech clerk's add of one named chip, declaring unknown names through `declare`.
 
@@ -26,7 +26,7 @@ Relays the speech clerk's add of one named chip, declaring unknown names through
 
 Relays the speech clerk's removal of one named chip.
 
-## `internal static (IReadOnlyList<LSpeechDraft> LSpeechHeld, string LSpeechTyped) TSpeechSettle(`
+## `internal static (IReadOnlyList<LSpeechDraft> LSpeechHeld, string LSpeechTyped)`
 
 Relays the speech clerk's settling of the shown chips and the typed text into held chips and leftover text.
 
@@ -38,7 +38,7 @@ Relays the speech clerk's reading of the chips the shown list and the pending te
 
 Relays the speech clerk's reading of the typed text still pending.
 
-## `internal static LSpeechOffer TSpeechFind(`
+## `internal static LSpeechOffer TSpeechFind(IReadOnlyList<LSpeechValue> values, IReadOnlyList<LSpeechDraft> held, string? typed)`
 
 Relays the speech clerk's offer of the values that fit the typed text.
 
@@ -175,7 +175,7 @@ The page the situation clerk composes for one Situation.
 
 Relays the reading clerk's check that another draft than `ownId` already uses the scheme.
 
-## `internal static LTranscriptionSheet TTranscriptionSheetRead(`
+## `internal static LTranscriptionSheet TTranscriptionSheetRead(IReadOnlyList<string> schemes, IReadOnlyList<LTranscriptionDraft> drafts, IReadOnlyList<LTranscriptionDraft> other)`
 
 Relays the reading clerk's composing of the transcription sheet from schemes, drafts and the other drafts.
 
@@ -304,7 +304,7 @@ Relays the entry clerk's save of a draft with no extra changes.
 
 The translation clerk over `rig`.
 
-## `internal static IReadOnlyList<LEntry> TTranslationClerkFind(`
+## `internal static IReadOnlyList<LEntry> TTranslationClerkFind(this LTranslationClerk clerk, string query, long? entryId)`
 
 Relays the translation clerk's find of entries for a query, with an optional entry id.
 

@@ -305,9 +305,10 @@ public sealed class CPanel
         {
             draft = _cPanelVista?.LVistaLoad();
         }
-        catch (Exception)
+        catch (Exception exception)
         {
-            return;
+            CLedger.LLedgerFailureShow(_cPanelEnvoy, _cPanelSettingsPort, _cPanelLoadKey, exception);
+            draft = null;
         }
 
         if (!CPanelBinEnabled)

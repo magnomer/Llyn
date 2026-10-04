@@ -7,7 +7,7 @@ One meaning or collocation card of the editor, the item the card list draws.
 Each field it shows lives in its own partial file beside this one.
 It holds the engine's values as they stand, so it never resolves a state.
 
-## `internal PCard(`
+## `internal PCard(string prefix, ObservableCollection<QCitationItem> catalog, ObservableCollection<string> particles, ObservableCollection<string> dependences, ObservableCollection<PLanguageItem> languages, CCardDraft draft)`
 
 The catalog, particle, dependence and language lists are the editor's own, shared by every card.
 Each Example row reads them, so one write reaches every card at once.

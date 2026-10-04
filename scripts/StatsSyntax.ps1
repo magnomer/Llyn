@@ -383,6 +383,12 @@ function Format-Percent {
     return $Value.ToString("0.00", [System.Globalization.CultureInfo]::InvariantCulture) + " %"
 }
 
+function Format-Rate {
+    param([double]$Value)
+
+    return $Value.ToString("N2", [System.Globalization.CultureInfo]::InvariantCulture)
+}
+
 function Get-RelativePathSafe {
     param(
         [Parameter(Mandatory = $true)][string]$BasePath,
@@ -638,7 +644,7 @@ internal static class Program
         "extension-block", "field-keyword", "static-abstract-interface-member", "default-interface-method", "constructor",
         "static-constructor", "finalizer", "const-field", "readonly-field", "params-collection", "optional-parameter",
         "named-argument", "ref-out-parameter", "in-parameter", "ref-return-local", "local-function", "static-local-function",
-        "type-pattern", "declaration-pattern", "constant-pattern", "is-null", "not-pattern", "and-or-pattern", "relational-pattern",
+        "type-pattern", "is-type", "declaration-pattern", "constant-pattern", "is-null", "not-pattern", "and-or-pattern", "relational-pattern",
         "property-pattern", "positional-pattern", "list-pattern", "var-pattern", "discard-pattern", "switch-expression",
         "switch-statement", "case-guard",
         "lambda", "static-lambda", "anonymous-method", "target-typed-new", "collection-expression", "spread-element",
@@ -650,9 +656,9 @@ internal static class Program
         "if", "for", "foreach", "while", "do", "try", "catch", "finally", "exception-filter", "using-statement",
         "using-declaration", "await-foreach", "await-using", "lock", "yield", "goto", "fixed", "unsafe-block", "local-const",
         "checked-block",
-        "generic-method", "constraint-clause", "notnull-unmanaged-constraint", "variance", "default-of-t",
+        "generic-method", "constraint-clause", "notnull-constraint", "unmanaged-constraint", "variance", "default-of-t",
         "async-method", "async-lambda",
-        "nullable-annotation", "nullable-directive",
+        "nullable-value-annotation", "nullable-reference-annotation", "nullable-directive",
         "pointer-type", "function-pointer",
         "if-directive", "region-directive", "pragma-directive"
     };
@@ -661,6 +667,12 @@ internal static class Program
     {
         "null-check", "object-creation", "collection-creation", "member-body", "local-type", "using", "namespace",
         "text-building", "branch", "lambda-body", "type-test", "constructor"
+    };
+
+    // Well-known BCL structs, and after the first pass also every enum, struct and record struct declared in the sources.
+    internal static readonly HashSet<string> ValueTypeNames = new(StringComparer.Ordinal)
+    {
+        "DateTime", "DateTimeOffset", "TimeSpan", "Guid", "CancellationToken", "KeyValuePair", "Point", "Size", "Rect", "Thickness", "Color"
     };
 
     internal static readonly Dictionary<string, int> FeatureIndex = FeatureIds.Select((id, i) => (id, i)).ToDictionary(p => p.id, p => p.i, StringComparer.Ordinal);
@@ -686,14 +698,32 @@ internal static class Program
             .ToArray();
 
         var options = new CSharpParseOptions(LanguageVersion.Preview, DocumentationMode.None);
-        var results = new FileScan[entries.Length];
+        var texts = new string[entries.Length];
+        var trees = new SyntaxTree[entries.Length];
         Parallel.For(0, entries.Length, i =>
         {
             string full = Path.Combine(args[1], entries[i].Path.Replace('/', Path.DirectorySeparatorChar));
-            string text = File.ReadAllText(full, Encoding.UTF8);
-            var tree = CSharpSyntaxTree.ParseText(text, options, entries[i].Path);
-            var scan = new FileScan(entries[i].Path, entries[i].Project, tree);
-            scan.Run(text);
+            texts[i] = File.ReadAllText(full, Encoding.UTF8);
+            trees[i] = CSharpSyntaxTree.ParseText(texts[i], options, entries[i].Path);
+        });
+
+        // First pass: the names of the enums, structs and record structs declared in the scanned sources.
+        foreach (var tree in trees)
+        {
+            foreach (var declared in tree.GetRoot().DescendantNodes().OfType<BaseTypeDeclarationSyntax>())
+            {
+                if (declared is EnumDeclarationSyntax || declared is StructDeclarationSyntax || declared.IsKind(SyntaxKind.RecordStructDeclaration))
+                {
+                    ValueTypeNames.Add(declared.Identifier.ValueText);
+                }
+            }
+        }
+
+        var results = new FileScan[entries.Length];
+        Parallel.For(0, entries.Length, i =>
+        {
+            var scan = new FileScan(entries[i].Path, entries[i].Project, trees[i]);
+            scan.Run(texts[i]);
             results[i] = scan;
         });
 
@@ -1167,8 +1197,9 @@ internal sealed class FileScan
                 if (Has(parameter.Modifiers, SyntaxKind.InKeyword)) Hit("in-parameter", parameter);
                 return;
             case ArgumentSyntax argument:
-                if (argument.NameColon != null) Hit("named-argument", argument);
-                if (argument.RefKindKeyword.IsKind(SyntaxKind.OutKeyword) && argument.Expression is IdentifierNameSyntax { Identifier.ValueText: "_" }) Hit("discard", argument);
+                if (argument.NameColon != null && argument.Parent is not TupleExpressionSyntax) Hit("named-argument", argument);
+                if (argument.Expression is IdentifierNameSyntax { Identifier.ValueText: "_" } &&
+                    (argument.RefKindKeyword.IsKind(SyntaxKind.OutKeyword) || (argument.Parent is TupleExpressionSyntax target && IsDeconstructionTarget(target)))) Hit("discard", argument);
                 return;
             case AttributeArgumentSyntax attributeArgument:
                 if (attributeArgument.NameColon != null) Hit("named-argument", attributeArgument);
@@ -1284,7 +1315,7 @@ internal sealed class FileScan
                 Hit("with-expression", node);
                 return;
             case TupleExpressionSyntax tuple:
-                if (!(tuple.Parent is AssignmentExpressionSyntax owner && owner.Left == tuple)) Hit("tuple-literal", tuple);
+                if (!IsDeconstructionTarget(tuple)) Hit("tuple-literal", tuple);
                 return;
             case TupleTypeSyntax:
                 Hit("tuple-literal", node);
@@ -1464,15 +1495,16 @@ internal sealed class FileScan
                 Hit("constraint-clause", node);
                 return;
             case TypeConstraintSyntax constraint:
-                if (constraint.Type is IdentifierNameSyntax { Identifier.ValueText: "notnull" or "unmanaged" }) Hit("notnull-unmanaged-constraint", constraint);
+                if (constraint.Type is IdentifierNameSyntax { Identifier.ValueText: "notnull" }) Hit("notnull-constraint", constraint);
+                else if (constraint.Type is IdentifierNameSyntax { Identifier.ValueText: "unmanaged" }) Hit("unmanaged-constraint", constraint);
                 return;
             case TypeParameterSyntax typeParameter:
                 if (!typeParameter.VarianceKeyword.IsKind(SyntaxKind.None)) Hit("variance", typeParameter);
                 return;
 
             // Nullability and unsafe types.
-            case NullableTypeSyntax:
-                Hit("nullable-annotation", node);
+            case NullableTypeSyntax nullable:
+                Hit(IsValueType(nullable.ElementType) ? "nullable-value-annotation" : "nullable-reference-annotation", nullable);
                 return;
             case PointerTypeSyntax:
                 Hit("pointer-type", node);
@@ -1508,7 +1540,7 @@ internal sealed class FileScan
         switch (binary.Kind())
         {
             case SyntaxKind.IsExpression:
-                Hit("type-pattern", binary);
+                Hit("is-type", binary);
                 return;
             case SyntaxKind.AsExpression:
                 Hit("as-cast", binary);
@@ -1525,6 +1557,34 @@ internal sealed class FileScan
                 if (binary.Parent is BinaryExpressionSyntax outer && outer.IsKind(SyntaxKind.AddExpression)) return;
                 if (HasStringOperand(binary)) Side("text-building", false, binary);
                 return;
+        }
+    }
+
+    // True when a tuple, alone or nested in tuples, is the left side of a deconstruction or the variable of a foreach.
+    private static bool IsDeconstructionTarget(TupleExpressionSyntax tuple)
+    {
+        SyntaxNode top = tuple;
+        while (top.Parent is ArgumentSyntax && top.Parent.Parent is TupleExpressionSyntax outer) top = outer;
+        return (top.Parent is AssignmentExpressionSyntax owner && owner.Left == top) || (top.Parent is ForEachVariableStatementSyntax loop && loop.Variable == top);
+    }
+
+    // T? is a value annotation when T is a predefined value type, a tuple, a listed BCL struct or a declared enum, struct or record struct; else a reference annotation.
+    private static bool IsValueType(TypeSyntax type)
+    {
+        switch (type)
+        {
+            case PredefinedTypeSyntax predefined:
+                return !predefined.Keyword.IsKind(SyntaxKind.StringKeyword) && !predefined.Keyword.IsKind(SyntaxKind.ObjectKeyword);
+            case TupleTypeSyntax:
+                return true;
+            case QualifiedNameSyntax qualified:
+                return IsValueType(qualified.Right);
+            case AliasQualifiedNameSyntax aliased:
+                return IsValueType(aliased.Name);
+            case SimpleNameSyntax simple:
+                return Program.ValueTypeNames.Contains(simple.Identifier.ValueText);
+            default:
+                return false;
         }
     }
 
@@ -1722,6 +1782,7 @@ $featureTable = @(foreach ($entry in @($config.features)) {
         family = [string]$entry.family
         version = [string]$entry.version
         count = [long]$row.count
+        perThousand = $(if ([long]$raw.lines -gt 0) { 1000.0 * [long]$row.count / [long]$raw.lines } else { 0.0 })
         files = [long]$row.files
         first = [string]$row.first
         projects = (ConvertTo-ProjectCounts @($row.projects))
@@ -1750,6 +1811,7 @@ $familyTable = @(foreach ($family in $familyOrder) {
         features = [long]$members.Count
         used = [long]@($members | Where-Object { $_.count -gt 0 }).Count
         count = [long](($members | ForEach-Object { $_.count } | Measure-Object -Sum).Sum)
+        perThousand = $(if ([long]$raw.lines -gt 0) { 1000.0 * [long](($members | ForEach-Object { $_.count } | Measure-Object -Sum).Sum) / [long]$raw.lines } else { 0.0 })
     }
 })
 
@@ -1763,16 +1825,65 @@ foreach ($entry in $usedFeatures) {
 }
 $minimumText = if ($minimumVersion.Minor -eq 0) { [string]$minimumVersion.Major } else { [string]$minimumVersion }
 
-$kindTable = @(@($raw.kinds) | Where-Object { $null -ne $_ } | ForEach-Object {
+$kindTable = @(Sort-ByKey -Items @(@($raw.kinds) | Where-Object { $null -ne $_ } | ForEach-Object {
     [ordered]@{ kind = [string]$_.kind; count = [long]$_.count; files = [long]$_.files; projects = (ConvertTo-ProjectCounts @($_.projects)) }
-})
+}) -Key { (Get-DescendingKey $args[0].count) + $args[0].kind })
+
+# The newest C# version among the given features, as the text the catalog gives; '-' when there are none.
+function Get-NewestVersion {
+    param([AllowEmptyCollection()][object[]]$Entries)
+
+    $newest = '-'
+    foreach ($entry in $Entries) {
+        if ($newest -eq '-' -or (ConvertTo-LanguageVersion -Text $entry.version) -gt (ConvertTo-LanguageVersion -Text $newest)) { $newest = $entry.version }
+    }
+    return $newest
+}
+
 $projectTable = @(Sort-ByKey -Items @(@($raw.projects) | Where-Object { $null -ne $_ }) -Key { (Get-DescendingKey ([long]$args[0].lines)) + [string]$args[0].project } | ForEach-Object {
-    [ordered]@{ project = [string]$_.project; files = [long]$_.files; lines = [long]$_.lines; nodes = [long]$_.nodes }
+    $projectName = [string]$_.project
+    $projectFeatures = @($featureTable | Where-Object { $entry = $_; @($entry.projects | Where-Object { $_.project -eq $projectName -and $_.count -gt 0 }).Count -gt 0 })
+    [ordered]@{
+        project = $projectName
+        files = [long]$_.files
+        lines = [long]$_.lines
+        nodes = [long]$_.nodes
+        featuresUsed = [long]$projectFeatures.Count
+        newestVersion = (Get-NewestVersion $projectFeatures)
+    }
 })
-$attributeTable = @(@($raw.attributes) | Where-Object { $null -ne $_ } | ForEach-Object { [ordered]@{ name = [string]$_.name; count = [long]$_.count; files = [long]$_.files } })
+$attributeTable = @(Sort-ByKey -Items @(@($raw.attributes) | Where-Object { $null -ne $_ } | ForEach-Object { [ordered]@{ name = [string]$_.name; count = [long]$_.count; files = [long]$_.files } }) -Key { (Get-DescendingKey $args[0].count) + $args[0].name })
 $diagnosticTable = @(@($raw.diagnostics) | Where-Object { $null -ne $_ } | ForEach-Object {
     [ordered]@{ location = ("{0}:{1}:{2}" -f $_.path, $_.line, $_.column); id = [string]$_.id; message = [string]$_.message }
 })
+
+$versionTable = @(Sort-ByKey -Items @($featureTable | ForEach-Object { $_.version } | Select-Object -Unique) -Key { $parsed = ConvertTo-LanguageVersion -Text $args[0]; '{0:D5}.{1:D5}' -f $parsed.Major, $parsed.Minor } | ForEach-Object {
+    $versionText = $_
+    $members = @($featureTable | Where-Object { $_.version -eq $versionText })
+    [ordered]@{
+        version = $versionText
+        features = [long]$members.Count
+        used = [long]@($members | Where-Object { $_.count -gt 0 }).Count
+        count = [long](($members | ForEach-Object { $_.count } | Measure-Object -Sum).Sum)
+    }
+})
+$rankedTable = @(Sort-ByKey -Items $usedFeatures -Key { (Get-DescendingKey $args[0].count) + $args[0].id })
+$unusedTable = @($featureTable | Where-Object { $_.count -eq 0 })
+$totals = [ordered]@{
+    families = [ordered]@{
+        features = [long](($familyTable | ForEach-Object { $_.features } | Measure-Object -Sum).Sum)
+        used = [long](($familyTable | ForEach-Object { $_.used } | Measure-Object -Sum).Sum)
+        count = [long](($familyTable | ForEach-Object { $_.count } | Measure-Object -Sum).Sum)
+        perThousand = $(if ([long]$raw.lines -gt 0) { 1000.0 * [long](($familyTable | ForEach-Object { $_.count } | Measure-Object -Sum).Sum) / [long]$raw.lines } else { 0.0 })
+    }
+    projects = [ordered]@{
+        files = [long](($projectTable | ForEach-Object { $_.files } | Measure-Object -Sum).Sum)
+        lines = [long](($projectTable | ForEach-Object { $_.lines } | Measure-Object -Sum).Sum)
+        nodes = [long](($projectTable | ForEach-Object { $_.nodes } | Measure-Object -Sum).Sum)
+        featuresUsed = [long]$usedFeatures.Count
+        newestVersion = (Get-NewestVersion $usedFeatures)
+    }
+}
 
 $stats = [ordered]@{
     project = [string]$config.project
@@ -1808,7 +1919,11 @@ $stats = [ordered]@{
     }
     projects = @($projectTable)
     families = @($familyTable)
+    versions = @($versionTable)
+    totals = $totals
     features = @($featureTable)
+    ranked = @($rankedTable)
+    unused = @($unusedTable)
     styles = @($styleTable)
     kinds = @($kindTable)
     attributes = @($attributeTable)
@@ -1837,8 +1952,250 @@ Write-ConsoleTable -Columns @(
     (New-ConsoleColumn -Name 'Value' -Values @($summaryRows | ForEach-Object { $_[1] }))
 )
 
-# ---- END OF CONSOLE SECTION (part A1) ----
-# Part A2 continues here: the remaining console sections and the Markdown report.
-# Part B writes the HTML page.
+function Select-Head {
+    param([AllowEmptyCollection()][object[]]$Rows)
+
+    return , @($Rows | Select-Object -First $Top)
+}
+
+Write-SectionTitle 'Families'
+Write-ConsoleTable -Columns @(
+    (New-ConsoleColumn -Name 'Family' -Right $false -Values @(@($stats.families | ForEach-Object { $_.family }) + 'Total')),
+    (New-ConsoleColumn -Name 'Features' -Values @(@($stats.families | ForEach-Object { Format-Integer $_.features }) + (Format-Integer $stats.totals.families.features))),
+    (New-ConsoleColumn -Name 'Used' -Values @(@($stats.families | ForEach-Object { Format-Integer $_.used }) + (Format-Integer $stats.totals.families.used))),
+    (New-ConsoleColumn -Name 'Count' -Values @(@($stats.families | ForEach-Object { Format-Integer $_.count }) + (Format-Integer $stats.totals.families.count))),
+    (New-ConsoleColumn -Name 'Per 1k lines' -Values @(@($stats.families | ForEach-Object { Format-Rate $_.perThousand }) + (Format-Rate $stats.totals.families.perThousand)))
+)
+
+Write-SectionTitle 'Projects'
+Write-ConsoleTable -Columns @(
+    (New-ConsoleColumn -Name 'Project' -Right $false -Values @(@($stats.projects | ForEach-Object { $_.project }) + 'Total')),
+    (New-ConsoleColumn -Name 'Files' -Values @(@($stats.projects | ForEach-Object { Format-Integer $_.files }) + (Format-Integer $stats.totals.projects.files))),
+    (New-ConsoleColumn -Name 'Lines' -Values @(@($stats.projects | ForEach-Object { Format-Integer $_.lines }) + (Format-Integer $stats.totals.projects.lines))),
+    (New-ConsoleColumn -Name 'Nodes' -Values @(@($stats.projects | ForEach-Object { Format-Integer $_.nodes }) + (Format-Integer $stats.totals.projects.nodes))),
+    (New-ConsoleColumn -Name 'Features used' -Values @(@($stats.projects | ForEach-Object { Format-Integer $_.featuresUsed }) + (Format-Integer $stats.summary.featuresUsed))),
+    (New-ConsoleColumn -Name 'Newest C#' -Values @(@($stats.projects | ForEach-Object { $_.newestVersion }) + $stats.totals.projects.newestVersion))
+)
+
+Write-SectionTitle 'Versions'
+Write-ConsoleTable -Columns @(
+    (New-ConsoleColumn -Name 'C# version' -Right $false -Values @($stats.versions | ForEach-Object { $_.version })),
+    (New-ConsoleColumn -Name 'Features' -Values @($stats.versions | ForEach-Object { Format-Integer $_.features })),
+    (New-ConsoleColumn -Name 'Used' -Values @($stats.versions | ForEach-Object { Format-Integer $_.used })),
+    (New-ConsoleColumn -Name 'Count' -Values @($stats.versions | ForEach-Object { Format-Integer $_.count }))
+)
+
+if ($stats.ranked.Count -gt 0) {
+    $shown = Select-Head $stats.ranked
+    Write-SectionTitle 'Features'
+    Write-ConsoleTable -Columns @(
+        (New-ConsoleColumn -Name 'Feature' -Right $false -Values @($shown | ForEach-Object { $_.label })),
+        (New-ConsoleColumn -Name 'Family' -Right $false -Values @($shown | ForEach-Object { $_.family })),
+        (New-ConsoleColumn -Name 'C#' -Right $false -Values @($shown | ForEach-Object { $_.version })),
+        (New-ConsoleColumn -Name 'Count' -Values @($shown | ForEach-Object { Format-Integer $_.count })),
+        (New-ConsoleColumn -Name 'Per 1k lines' -Values @($shown | ForEach-Object { Format-Rate $_.perThousand })),
+        (New-ConsoleColumn -Name 'Files' -Values @($shown | ForEach-Object { Format-Integer $_.files })),
+        (New-ConsoleColumn -Name 'First' -Right $false -Values @($shown | ForEach-Object { $_.first }))
+    )
+    Write-CutLine -Total $stats.ranked.Count -Shown $shown.Count
+}
+
+Write-SectionTitle 'Styles'
+Write-ConsoleTable -Columns @(
+    (New-ConsoleColumn -Name 'Style' -Right $false -Values @($stats.styles | ForEach-Object { $_.label })),
+    (New-ConsoleColumn -Name 'A' -Right $false -Values @($stats.styles | ForEach-Object { $_.a.label })),
+    (New-ConsoleColumn -Name 'A count' -Values @($stats.styles | ForEach-Object { Format-Integer $_.a.count })),
+    (New-ConsoleColumn -Name 'B' -Right $false -Values @($stats.styles | ForEach-Object { $_.b.label })),
+    (New-ConsoleColumn -Name 'B count' -Values @($stats.styles | ForEach-Object { Format-Integer $_.b.count })),
+    (New-ConsoleColumn -Name 'A share' -Values @($stats.styles | ForEach-Object { Format-Percent $_.shareA }))
+)
+
+if ($stats.unused.Count -gt 0) {
+    $shown = Select-Head $stats.unused
+    Write-SectionTitle ("Features unused ({0})" -f (Format-Integer $stats.unused.Count))
+    Write-ConsoleTable -Columns @(
+        (New-ConsoleColumn -Name 'Feature' -Right $false -Values @($shown | ForEach-Object { $_.label })),
+        (New-ConsoleColumn -Name 'Family' -Right $false -Values @($shown | ForEach-Object { $_.family })),
+        (New-ConsoleColumn -Name 'C#' -Right $false -Values @($shown | ForEach-Object { $_.version }))
+    )
+    Write-CutLine -Total $stats.unused.Count -Shown $shown.Count
+}
+
+if ($stats.kinds.Count -gt 0) {
+    $shown = Select-Head $stats.kinds
+    Write-SectionTitle 'Syntax kinds'
+    Write-ConsoleTable -Columns @(
+        (New-ConsoleColumn -Name 'Kind' -Right $false -Values @($shown | ForEach-Object { $_.kind })),
+        (New-ConsoleColumn -Name 'Count' -Values @($shown | ForEach-Object { Format-Integer $_.count })),
+        (New-ConsoleColumn -Name 'Files' -Values @($shown | ForEach-Object { Format-Integer $_.files }))
+    )
+    Write-CutLine -Total $stats.kinds.Count -Shown $shown.Count
+}
+
+if ($stats.attributes.Count -gt 0) {
+    $shown = Select-Head $stats.attributes
+    Write-SectionTitle 'Attributes'
+    Write-ConsoleTable -Columns @(
+        (New-ConsoleColumn -Name 'Attribute' -Right $false -Values @($shown | ForEach-Object { $_.name })),
+        (New-ConsoleColumn -Name 'Count' -Values @($shown | ForEach-Object { Format-Integer $_.count })),
+        (New-ConsoleColumn -Name 'Files' -Values @($shown | ForEach-Object { Format-Integer $_.files }))
+    )
+    Write-CutLine -Total $stats.attributes.Count -Shown $shown.Count
+}
+
+if ($stats.diagnostics.Count -gt 0) {
+    Write-SectionTitle ("Parse errors ({0})" -f (Format-Integer $stats.diagnostics.Count))
+    Write-ConsoleTable -Columns @(
+        (New-ConsoleColumn -Name 'Location' -Right $false -Values @($stats.diagnostics | ForEach-Object { $_.location })),
+        (New-ConsoleColumn -Name 'Id' -Right $false -Values @($stats.diagnostics | ForEach-Object { $_.id })),
+        (New-ConsoleColumn -Name 'Message' -Right $false -Values @($stats.diagnostics | ForEach-Object { $_.message }))
+    )
+}
+
+# Markdown output.
+$md = [System.Collections.Generic.List[string]]::new()
+
+function Add-MarkdownTable {
+    param(
+        [Parameter(Mandatory = $true)][string]$Title,
+        [Parameter(Mandatory = $true)][string[]]$Headers,
+        [Parameter(Mandatory = $true)][bool[]]$Right,
+        [Parameter(Mandatory = $true)][AllowEmptyCollection()][object[]]$Rows,
+        [Parameter(Mandatory = $true)][scriptblock]$Cells
+    )
+
+    $md.Add('')
+    $md.Add("## $Title")
+    $md.Add('')
+    if ($Rows.Count -eq 0) {
+        $md.Add('None.')
+        return
+    }
+    $md.Add('| ' + ($Headers -join ' | ') + ' |')
+    $rules = for ($i = 0; $i -lt $Headers.Count; $i++) { if ($Right[$i]) { '---:' } else { '---' } }
+    $md.Add('|' + ($rules -join '|') + '|')
+    foreach ($row in $Rows) {
+        $md.Add('| ' + ((@(& $Cells $row) | ForEach-Object { ConvertTo-MarkdownCell $_ }) -join ' | ') + ' |')
+    }
+}
+
+$md.Add("# Syntax statistics - $version")
+$md.Add('')
+$md.Add("- Generated: $($stats.generated)")
+$md.Add("- Source roots: $(ConvertTo-MarkdownCell ($stats.scope.roots -join ', '))")
+$md.Add("- Root-level files: $(if ($stats.scope.rootFiles.Count -gt 0) { ConvertTo-MarkdownCell ($stats.scope.rootFiles -join ', ') } else { 'none' })")
+$md.Add("- Project segments: $($stats.scope.segments)")
+$md.Add("- Excluded directories: $(ConvertTo-MarkdownCell ($stats.scope.excluded -join ', '))")
+$md.Add("- Excluded suffixes: $(ConvertTo-MarkdownCell ($stats.scope.excludedSuffixes -join ', '))")
+$md.Add("- Roslyn: $(ConvertTo-MarkdownCell $stats.scope.roslyn)")
+$md.Add("- Language version: $(ConvertTo-MarkdownCell $stats.scope.languageVersion)")
+$md.Add("- Scanned: $(Format-Integer $stats.scope.files) files, $(Format-Integer $stats.scope.projects) projects, $(Format-Integer $stats.scope.lines) lines")
+
+Add-MarkdownTable -Title 'Summary' -Headers @('Measure', 'Value') -Right @($false, $true) -Rows $summaryRows -Cells {
+    param($r) $r[0], $r[1]
+}
+Add-MarkdownTable -Title 'Families' -Headers @('Family', 'Features', 'Used', 'Count', 'Per 1k lines') -Right @($false, $true, $true, $true, $true) -Rows (@($stats.families) + [ordered]@{ family = 'Total'; features = $stats.totals.families.features; used = $stats.totals.families.used; count = $stats.totals.families.count; perThousand = $stats.totals.families.perThousand }) -Cells {
+    param($r) $r.family, (Format-Integer $r.features), (Format-Integer $r.used), (Format-Integer $r.count), (Format-Rate $r.perThousand)
+}
+Add-MarkdownTable -Title 'Projects' -Headers @('Project', 'Files', 'Lines', 'Nodes', 'Features used', 'Newest C#') -Right @($false, $true, $true, $true, $true, $true) -Rows (@($stats.projects) + [ordered]@{ project = 'Total'; files = $stats.totals.projects.files; lines = $stats.totals.projects.lines; nodes = $stats.totals.projects.nodes; featuresUsed = $stats.summary.featuresUsed; newestVersion = $stats.totals.projects.newestVersion }) -Cells {
+    param($r) $r.project, (Format-Integer $r.files), (Format-Integer $r.lines), (Format-Integer $r.nodes), (Format-Integer $r.featuresUsed), $r.newestVersion
+}
+Add-MarkdownTable -Title 'Versions' -Headers @('C# version', 'Features', 'Used', 'Count') -Right @($false, $true, $true, $true) -Rows $stats.versions -Cells {
+    param($r) $r.version, (Format-Integer $r.features), (Format-Integer $r.used), (Format-Integer $r.count)
+}
+Add-MarkdownTable -Title 'Features' -Headers @('Feature', 'Family', 'C#', 'Count', 'Per 1k lines', 'Files', 'First') -Right @($false, $false, $false, $true, $true, $true, $false) -Rows $stats.ranked -Cells {
+    param($r) $r.label, $r.family, $r.version, (Format-Integer $r.count), (Format-Rate $r.perThousand), (Format-Integer $r.files), $r.first
+}
+Add-MarkdownTable -Title 'Styles' -Headers @('Style', 'A', 'A count', 'B', 'B count', 'A share') -Right @($false, $false, $true, $false, $true, $true) -Rows $stats.styles -Cells {
+    param($r) $r.label, $r.a.label, (Format-Integer $r.a.count), $r.b.label, (Format-Integer $r.b.count), (Format-Percent $r.shareA)
+}
+Add-MarkdownTable -Title ("Features unused ({0})" -f (Format-Integer $stats.unused.Count)) -Headers @('Feature', 'Family', 'C#') -Right @($false, $false, $false) -Rows $stats.unused -Cells {
+    param($r) $r.label, $r.family, $r.version
+}
+Add-MarkdownTable -Title 'Syntax kinds' -Headers @('Kind', 'Count', 'Files') -Right @($false, $true, $true) -Rows $stats.kinds -Cells {
+    param($r) $r.kind, (Format-Integer $r.count), (Format-Integer $r.files)
+}
+Add-MarkdownTable -Title 'Attributes' -Headers @('Attribute', 'Count', 'Files') -Right @($false, $true, $true) -Rows $stats.attributes -Cells {
+    param($r) $r.name, (Format-Integer $r.count), (Format-Integer $r.files)
+}
+Add-MarkdownTable -Title ("Parse errors ({0})" -f (Format-Integer $stats.diagnostics.Count)) -Headers @('Location', 'Id', 'Message') -Right @($false, $false, $false) -Rows $stats.diagnostics -Cells {
+    param($r) $r.location, $r.id, $r.message
+}
+
+$projectNames = @($stats.projects | ForEach-Object { $_.project })
+$projectRight = @($false) + @($projectNames | ForEach-Object { $true })
+Add-MarkdownTable -Title 'Feature counts per project' -Headers (@('Feature') + $projectNames) -Right $projectRight -Rows $stats.ranked -Cells {
+    param($r)
+    $r.label
+    foreach ($name in $projectNames) {
+        $hit = @($r.projects | Where-Object { $_.project -eq $name })
+        if ($hit.Count -gt 0 -and $hit[0].count -gt 0) { Format-Integer $hit[0].count } else { '' }
+    }
+}
+Add-MarkdownTable -Title 'Style A share per project' -Headers (@('Style') + $projectNames) -Right $projectRight -Rows $stats.styles -Cells {
+    param($r)
+    $r.label
+    foreach ($name in $projectNames) {
+        $hit = @($r.projects | Where-Object { $_.project -eq $name })
+        if ($hit.Count -gt 0 -and ($hit[0].a + $hit[0].b) -gt 0) { Format-Percent (100.0 * $hit[0].a / ($hit[0].a + $hit[0].b)) } else { '-' }
+    }
+}
+
+[System.IO.Directory]::CreateDirectory($reportDirectoryFull) | Out-Null
+[System.IO.File]::WriteAllText($reportPathFull, (($md -join "`n") + "`n"), [System.Text.UTF8Encoding]::new($false))
+
+# Page output: the full result as data inside the template StatsSyntax.html.
+# The JSON is written by hand, so Windows PowerShell 5.1 and pwsh 7 produce the same bytes.
+# Dictionaries are read through get_Keys(): "Keys" can be a stored word.
+function ConvertTo-PageJson {
+    param([AllowNull()][object]$Value)
+
+    if ($null -eq $Value) { return 'null' }
+    if ($Value -is [bool]) { return $(if ($Value) { 'true' } else { 'false' }) }
+    if ($Value -is [string]) {
+        if ($Value -notmatch '[^ -~]|["<>&]|\\') { return '"' + $Value + '"' }
+        $builder = [System.Text.StringBuilder]::new('"')
+        foreach ($character in $Value.ToCharArray()) {
+            $code = [int]$character
+            if ($character -eq '"') { [void]$builder.Append('\"') }
+            elseif ($character -eq '\') { [void]$builder.Append('\\') }
+            elseif ($code -lt 0x20 -or $code -gt 0x7E -or $character -eq '<' -or $character -eq '>' -or $character -eq '&') { [void]$builder.Append('\u' + $code.ToString('x4')) }
+            else { [void]$builder.Append($character) }
+        }
+        return $builder.Append('"').ToString()
+    }
+    if ($Value -is [int] -or $Value -is [long]) { return $Value.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
+    if ($Value -is [double] -or $Value -is [single] -or $Value -is [decimal]) {
+        $number = [double]$Value
+        if ([double]::IsNaN($number) -or [double]::IsInfinity($number)) { return 'null' }
+        # Ten fixed decimals: 'R' prints differently on .NET Framework and .NET.
+        return $number.ToString('0.##########', [System.Globalization.CultureInfo]::InvariantCulture)
+    }
+    if ($Value -is [System.Collections.IDictionary]) {
+        $pairs = @(foreach ($key in $Value.get_Keys()) { (ConvertTo-PageJson ([string]$key)) + ':' + (ConvertTo-PageJson $Value[$key]) })
+        return '{' + ($pairs -join ',') + '}'
+    }
+    if ($Value -is [System.Collections.IEnumerable]) {
+        $items = @(foreach ($item in $Value) { ConvertTo-PageJson $item })
+        return '[' + ($items -join ",`n") + ']'
+    }
+    throw "The page data holds a value of an unexpected type: $($Value.GetType().FullName)"
+}
+
+$pageTemplatePath = Join-Path $PSScriptRoot 'StatsSyntax.html'
+$utf8 = [System.Text.UTF8Encoding]::new($false)
+$pageTemplate = [System.IO.File]::ReadAllText($pageTemplatePath, $utf8)
+foreach ($marker in @('/*__DATA__*/', '__TITLE__')) {
+    if (-not $pageTemplate.Contains($marker)) { throw "The page template lacks the marker $marker : $pageTemplatePath" }
+}
+$pageText = $pageTemplate.Replace('__TITLE__', [System.Net.WebUtility]::HtmlEncode([string]$config.project)).Replace('/*__DATA__*/', (ConvertTo-PageJson $stats))
+[System.IO.File]::WriteAllText($pagePathFull, ($pageText -replace "`r`n", "`n"), $utf8)
+
+Write-StatsLine ""
+foreach ($report in $stats.reports) { Write-StatsLine "Report: $($report.path)" }
+
+if (-not $NoOpen) {
+    Start-Process -FilePath $pagePathFull
+}
 
 exit 0

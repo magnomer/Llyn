@@ -1,7 +1,7 @@
 # CCatalogReference.cs
 Hash: `6655818475029685`
 
-## `public sealed record CCatalogReference(`
+## `public sealed record CCatalogReference(long CCatalogReferenceId, string CCatalogReferenceName, string CCatalogReferenceByline, CStateWording CCatalogReferenceCredit, CStateWording CCatalogReferenceYear, int CCatalogReferenceUsage, bool CCatalogReferenceChosen)`
 
 One reference a catalog lists, as the shelf, the Proffer dropdown and the citations read it.
 

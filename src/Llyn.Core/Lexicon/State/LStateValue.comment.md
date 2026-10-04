@@ -1,7 +1,7 @@
 # LStateValue.cs
 Hash: `26c31c3a21cdded9`
 
-## `public sealed record LStateValue(`
+## `public sealed record LStateValue(LState LStateValueState, string? LStateValueText, bool LStateValueUnreadable = false)`
 
 A stored value together with what is known about it.
 A field that shows nothing is not one thing.

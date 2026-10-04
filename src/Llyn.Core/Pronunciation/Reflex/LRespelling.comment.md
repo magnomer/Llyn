@@ -1,7 +1,7 @@
 # LRespelling.cs
 Hash: `c4d22e7995592870`
 
-## `public sealed record LRespelling(`
+## `public sealed record LRespelling(IReadOnlyList<string> LRespellingVarieties, IReadOnlyList<LRespellingRule> LRespellingRules)`
 
 One group of ordered rewrite rules a language pack declares, scoped to the regional varieties it names.
 A pack recasts a looked-up transcription into its preferred symbol convention through these groups.

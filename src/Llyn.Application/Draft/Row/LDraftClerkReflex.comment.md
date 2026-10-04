@@ -42,10 +42,10 @@ A zero or gone id places it last.
 
 A new reflex row for the language and kind sent and a minted id, at the place asked for.
 
-## `private static LEntryDraft LReflexChange(`
+## `private static LEntryDraft LReflexChange(LEntryDraft content, long reflexId, Func<LReflexDraft, LReflexDraft> change)`
 
 Changes the reflex row named, and refuses when the draft holds none by that id.
 
-## `private static LEntryDraft LReflexApply(`
+## `private static LEntryDraft LReflexApply(LEntryDraft content, Func<IReadOnlyList<LReflexDraft>, IReadOnlyList<LReflexDraft>> change)`
 
 Replaces the whole reflex list of the draft with what the change made of it.

@@ -1,11 +1,13 @@
 # TAuditTruthTampering.cs
-Hash: `9d7959085892693a`
+Hash: `78e63b421c0ee57e`
 
 ## `internal static partial class TAuditTruthWalker`
 
 The tampering half of the truth walker, covering what a driver line may not do to logic without a request.
 It also holds the spoonfeeding rule and the mismatching rule.
 The mismatching rule reads every driver file at once.
+Line numbers come from `TAuditTruthReference`.
+A Conduct port is reported at its own declaration line instead.
 
 ## `private static void TAuditTamperingScan(SyntaxNode root, List<TViolation> violations)`
 

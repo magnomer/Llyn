@@ -178,8 +178,8 @@ The ceilings live in `scripts/AuditUI.ledger.json` and the rules in `scripts/Aud
 
 ## Truth Tampering (4)
 
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:289` `cards` reorders a collection with RemoveAt
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:298` `cards` reorders a collection with Move
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:297` `cards` reorders a collection with RemoveAt
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:306` `cards` reorders a collection with Move
 - `src/Llyn.UIDeportment/Mention/Text/PMentionLine.cs:23` `PMentionLineChip` overwrites a slot of a row store
 - `src/Llyn.UIDeportment/Mention/Text/PMentionLine.cs:29` `PMentionLineChip` reorders a collection with RemoveAt
 
@@ -344,7 +344,7 @@ The ceilings live in `scripts/AuditUI.ledger.json` and the rules in `scripts/Aud
 - `src/Llyn.UIDeportment/Display/Template/QLeafLine.cs:22` `CLeafLine.CLeafLineCitation` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
 - `src/Llyn.UIDeportment/Display/Template/QLeafLine.cs:23` `CLeafLine.CLeafLineGloss` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
 - `src/Llyn.UIDeportment/Display/Template/QLeafVideo.cs:13` `CVideoDraft.CVideoDraftEmpty` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Display/View/QDisplay.cs:290` `CDisplaySound.CDisplayFanqieSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Display/View/QDisplay.cs:203` `CDisplaySound.CDisplayFanqieSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
 - `src/Llyn.UIDeportment/Editor/Card/PCard.cs:36` `CCardDraft.CCardDraftTitle` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
 - `src/Llyn.UIDeportment/Editor/Card/PCard.cs:37` `CCardDraft.CCardDraftMeaning` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
 - `src/Llyn.UIDeportment/Editor/Card/PCard.cs:38` `CCardDraft.CCardDraftExpression` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
@@ -489,25 +489,25 @@ The ceilings live in `scripts/AuditUI.ledger.json` and the rules in `scripts/Aud
 - `src/Llyn.UIDeportment/Editor/Link/QLink.cs:141` `CCard.CCardTranslationRemove` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
 - `src/Llyn.UIDeportment/Editor/Link/QLink.cs:142` `CTranslationTarget.CTranslationTargetId` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
 - `src/Llyn.UIDeportment/Editor/Link/QLink.cs:155` `CCard.CCardTranslationResolve` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:190` `CEditor.CEditorList` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:190` `CCardList.CCardRemove` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:243` `CCardList.CCardMove` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:264` `CCardDraft.CCardDraftId` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:305` `CCardDraft.CCardDraftTitle` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:306` `CCardDraft.CCardDraftExpression` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:307` `CCardDraft.CCardDraftMeaning` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:308` `CCardDraft.CCardDraftSentence` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:309` `CCardDraft.CCardDraftSituation` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:310` `CCardDraft.CCardDraftRegister` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:311` `CCardDraft.CCardDraftTranslation` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:312` `CCardDraft.CCardDraftTag` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:313` `CCardDraft.CCardDraftImage` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:314` `CCardDraft.CCardDraftVideo` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:315` `CCardDraft.CCardDraftPosition` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:335` `CEditor.CEditorField` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:335` `CCardField.CCardTitleSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:343` `CCardField.CCardExpressionSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/List/QCard.cs:351` `CCardField.CCardMeaningSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:198` `CEditor.CEditorList` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:198` `CCardList.CCardRemove` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:251` `CCardList.CCardMove` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:272` `CCardDraft.CCardDraftId` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:313` `CCardDraft.CCardDraftTitle` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:314` `CCardDraft.CCardDraftExpression` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:315` `CCardDraft.CCardDraftMeaning` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:316` `CCardDraft.CCardDraftSentence` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:317` `CCardDraft.CCardDraftSituation` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:318` `CCardDraft.CCardDraftRegister` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:319` `CCardDraft.CCardDraftTranslation` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:320` `CCardDraft.CCardDraftTag` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:321` `CCardDraft.CCardDraftImage` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:322` `CCardDraft.CCardDraftVideo` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:323` `CCardDraft.CCardDraftPosition` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:343` `CEditor.CEditorField` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:343` `CCardField.CCardTitleSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:351` `CCardField.CCardExpressionSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/List/QCard.cs:359` `CCardField.CCardMeaningSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
 - `src/Llyn.UIDeportment/Editor/List/QCardDrag.cs:171` `CEditor.CEditorList` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
 - `src/Llyn.UIDeportment/Editor/List/QCardDrag.cs:171` `CCardList.CCardMove` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
 - `src/Llyn.UIDeportment/Editor/List/QCollocation.cs:27` `CEditor.CEditorList` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
@@ -585,29 +585,29 @@ The ceilings live in `scripts/AuditUI.ledger.json` and the rules in `scripts/Aud
 - `src/Llyn.UIDeportment/Editor/Sentence/QCitation.cs:63` `CCard.CCardReferenceFind` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
 - `src/Llyn.UIDeportment/Editor/Sentence/QCitation.cs:69` `CCard.CCardReferenceRead` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
 - `src/Llyn.UIDeportment/Editor/Sentence/QCitation.cs:93` `CCard.CCardCitationSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:72` `CEditor.CEditorSentence` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:72` `CSentence.CSentenceFrameRead` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:73` `CSentenceFrame.CSentenceFrameOrder` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:74` `CSentenceFrame.CSentenceFrameParticle` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:75` `CSentenceFrame.CSentenceFrameDependence` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:91` `CSentence.CSentenceMentionRead` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:189` `CSentence.CSentenceLanguageSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:197` `CSentence.CSentenceTextSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:207` `CSentence.CSentenceParticleSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:217` `CSentence.CSentenceDependenceSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:328` `CSentence.CSentenceAdd` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:339` `CSentence.CSentenceRemove` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:350` `CEditor.CEditorCard` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:350` `CCard.CCardMentionRead` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:361` `CSentence.CSentenceSenseRead` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:378` `CSentence.CSentenceSenseSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:390` `CSentence.CSentenceMentionAdd` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:404` `CSentence.CSentenceMentionRemove` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:408` `CSentence.CSentenceMentionRemove` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:416` `CAtelier.CAtelierMention` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:416` `CMention.CMentionSpanCheck` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:424` `CSentence.CSentenceSenseCheck` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
-- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:433` `CSentence.CSentenceMentionCheck` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:71` `CEditor.CEditorSentence` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:71` `CSentence.CSentenceFrameRead` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:72` `CSentenceFrame.CSentenceFrameOrder` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:73` `CSentenceFrame.CSentenceFrameParticle` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:74` `CSentenceFrame.CSentenceFrameDependence` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:90` `CSentence.CSentenceMentionRead` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:97` `CSentence.CSentenceLanguageSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:105` `CSentence.CSentenceTextSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:115` `CSentence.CSentenceParticleSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:125` `CSentence.CSentenceDependenceSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:170` `CSentence.CSentenceAdd` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:181` `CSentence.CSentenceRemove` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:192` `CEditor.CEditorCard` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:192` `CCard.CCardMentionRead` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:203` `CSentence.CSentenceSenseRead` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:220` `CSentence.CSentenceSenseSet` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:232` `CSentence.CSentenceMentionAdd` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:246` `CSentence.CSentenceMentionRemove` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:250` `CSentence.CSentenceMentionRemove` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:258` `CAtelier.CAtelierMention` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:258` `CMention.CMentionSpanCheck` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:266` `CSentence.CSentenceSenseCheck` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
+- `src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs:275` `CSentence.CSentenceMentionCheck` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
 - `src/Llyn.UIDeportment/Kit/Bind/QChoice.cs:96` `CCatalogFilter.CCatalogFilterMatch` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
 - `src/Llyn.UIDeportment/Kit/Bind/QChoice.cs:118` `CReferenceKind.CReferenceKindTag` reaches a Conduct member that src/Llyn.UIDemeanor never reaches
 - `src/Llyn.UIDeportment/Kit/Bind/QChoice.cs:121` `CReferenceKind.CReferenceKindKey` reaches a Conduct member that src/Llyn.UIDemeanor never reaches

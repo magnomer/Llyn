@@ -83,7 +83,8 @@ internal sealed class LSituationFacade
         lock (_lSituationFacadeGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(origin);
-            return LSituationFacadeStaff.LEngineStaffCitation.LSituationStart(origin, situationId);
+            return LSituationFacadeStaff.LEngineStaffCitation.LCitationClerkSituation
+                .LSituationCitationStart(origin, situationId);
         }
     }
 
@@ -94,7 +95,7 @@ internal sealed class LSituationFacade
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             _lSituationFacadeEngine.LEngineDraft.LEngineDraftValidate(id);
-            settled = LSituationFacadeStaff.LEngineStaffCitation.LSituationCommit(id);
+            settled = LSituationFacadeStaff.LEngineStaffCitation.LCitationClerkSituation.LSituationCitationCommit(id);
         }
 
         _lSituationFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectSituation, settled.LSituationId);

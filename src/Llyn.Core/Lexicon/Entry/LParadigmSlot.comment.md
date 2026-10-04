@@ -1,7 +1,7 @@
 # LParadigmSlot.cs
 Hash: `a7a400a5d798cc46`
 
-## `public sealed record LParadigmSlot(`
+## `public sealed record LParadigmSlot(LSpeechValue LParadigmSlotSpeech, LMorphology LParadigmSlotMorphology, LInflection? LParadigmSlotInflection, LState LParadigmSlotState, LParadigm LParadigmSlotParadigm)`
 
 One form an entry is expected to have, paired with the inflection stored for it.
 A paradigm names forms by pack code, and a slot is that form resolved to the workspace's rows.

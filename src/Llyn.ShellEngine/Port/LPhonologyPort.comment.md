@@ -123,7 +123,7 @@ Whether respellings show for `language`, which needs the setting on and respelli
 
 The pronunciation block of `draft`, ready for the reading view.
 
-## `Task<LAccentSheet> LEngineAccentLoad(`
+## `Task<LAccentSheet> LEngineAccentLoad(LEntryDraft draft, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
 
 Loads the variety flags the block of a draft draws, then answers the block.
 

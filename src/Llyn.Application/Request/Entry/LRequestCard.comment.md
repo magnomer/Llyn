@@ -6,7 +6,7 @@ The card requests.
 Every one names the card by its draft id, real or minted, except the addition, which has no card yet.
 Addition, Removal and Shift are the three structural nouns every list uses, and plan06 reuses them.
 
-## `public sealed record LRequestCardAddition(`
+## `public sealed record LRequestCardAddition(long LRequestDraftId, LCardKind LRequestKind, long LRequestParentId, int LRequestPosition)`
 
 Asks for a new empty card in the list `LRequestKind` names.
 `LRequestParentId` is zero for the top of that list, or the meaning card the new card nests under.
@@ -17,7 +17,7 @@ The engine mints the card's id and answers with it in the returned draft and the
 
 Drops one card, wherever it nests.
 
-## `public sealed record LRequestCardShift(`
+## `public sealed record LRequestCardShift(long LRequestDraftId, long LRequestCardId, long LRequestParentId, int LRequestPosition)`
 
 Moves one card to `LRequestPosition` under `LRequestParentId`, zero for the top of its own list.
 A card keeps its kind, so a collocation never lands under a meaning.

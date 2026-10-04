@@ -1,7 +1,7 @@
 # LStateAnchor.cs
 Hash: `c1b737c1a1e8275d`
 
-## `public sealed record LStateAnchor(`
+## `public sealed record LStateAnchor(LState LStateAnchorState, long? LStateAnchorId, bool LStateAnchorUnreadable = false)`
 
 A stated link to another row, holding the state and the id it points at.
 

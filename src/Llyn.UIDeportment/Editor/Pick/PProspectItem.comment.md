@@ -9,7 +9,7 @@ The closing rows offer a fresh Entry for the typed word, one per language, with 
 Only those rows are marked fresh.
 The flag is derived from the language so the dropdown reads the same as every other headword list.
 
-## `internal PProspectItem(`
+## `internal PProspectItem(long id, string headword, string language, bool fresh, string epithet = "", string? name = null)`
 
 The shown name defaults to the headword, so a create row needs none passed.
 

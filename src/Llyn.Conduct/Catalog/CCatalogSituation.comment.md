@@ -1,7 +1,7 @@
 # CCatalogSituation.cs
 Hash: `2be1f43f5ab654e1`
 
-## `public sealed record CCatalogSituation(`
+## `public sealed record CCatalogSituation(long CCatalogSituationId, string CCatalogSituationTitle, string CCatalogSituationCount, string CCatalogSituationKind, bool CCatalogSituationChosen)`
 
 One situation a search found, as the Proffer dropdown or the atlas lists it.
 

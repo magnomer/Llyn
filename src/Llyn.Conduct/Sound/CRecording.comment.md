@@ -1,7 +1,7 @@
 # CRecording.cs
 Hash: `035955e38d4b2fe8`
 
-## `public sealed record CRecording(`
+## `public sealed record CRecording(string CRecordingSource, string? CRecordingAddress, int CRecordingOrder, bool CRecordingReached, string CRecordingVariety)`
 
 One recording a search found, as the clip popup lists it.
 It keeps every field of the engine's recording, since the clip plays and saves the one it listed.

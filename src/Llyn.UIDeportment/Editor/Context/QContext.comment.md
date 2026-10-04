@@ -10,7 +10,7 @@ The dropdown's key handlers come first, so an open dropdown hears a key before t
 An item's data context is the Situation or the entry, not the card.
 So each handler finds the owning card by asking which card's collection holds the item.
 
-## `internal QContext(`
+## `internal QContext(FrameworkElement surface, ObservableCollection<PCard> meaning, ObservableCollection<PCard> collocation)`
 
 Holds the editor scope, since this driver has no control of its own to wire.
 It holds the two card lists the editor keeps, which its finds walk.

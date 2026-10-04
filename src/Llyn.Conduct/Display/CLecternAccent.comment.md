@@ -1,7 +1,7 @@
 # CLecternAccent.cs
 Hash: `92ed38553d3d9914`
 
-## `public sealed record CLecternAccent(`
+## `public sealed record CLecternAccent(CRespellingMark CLecternAccentMark, IReadOnlyList<CContour> CLecternAccentContour, string CLecternAccentText, bool CLecternAccentSpoken, CVariety CLecternAccentPrimary, IReadOnlyList<CAccent> CLecternAccentRows, bool CLecternAccentFlagged)`
 
 The pronunciation block of the reading view for the shown entry, ready to show.
 The display reads it whenever an entry opens, so the driver only draws it.

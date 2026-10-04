@@ -28,6 +28,7 @@ the prefix is a registered base. Only owned identifiers lose their prefix.
 
 The comment corpus is the prose of every comment file. The hash line, fenced code blocks and
 backtick spans are left out; identifiers inside backtick spans form the cited set.
+Code words merge across case, and a merged word shows its most frequent spelling.
 
 Everything project-specific lives in StatsWords.json. Files come from git: tracked and
 untracked files, never ignored ones. Git is the only external tool required. A configured
@@ -756,18 +757,31 @@ for ($fileIndex = 0; $fileIndex -lt $codeFiles.Count; $fileIndex++) {
     if ($hasOwned) { $ownedFiles++ }
 }
 
-# Code words.
-$codeCounts = [hashtable]::new([System.StringComparer]::Ordinal)
-$ownedCounts = [hashtable]::new([System.StringComparer]::Ordinal)
-$codeFirsts = [hashtable]::new([System.StringComparer]::Ordinal)
+# Code words, merged across case; $spellings counts each spelling to pick the shown one.
+$codeCounts = [hashtable]::new([System.StringComparer]::OrdinalIgnoreCase)
+$ownedCounts = [hashtable]::new([System.StringComparer]::OrdinalIgnoreCase)
+$codeFirsts = [hashtable]::new([System.StringComparer]::OrdinalIgnoreCase)
+$spellings = [hashtable]::new([System.StringComparer]::OrdinalIgnoreCase)
 [long]$codeTokens = 0
 [long]$ownedTokens = 0
 foreach ($info in $identifiers.get_Values()) {
     if ($info.Count -eq 0) { continue }
     foreach ($word in $info.Words) {
         $current = $codeCounts[$word]
-        if ($null -eq $current) { $codeCounts[$word] = $info.Count; $codeFirsts[$word] = $info }
-        else { $codeCounts[$word] = $current + $info.Count }
+        if ($null -eq $current) {
+            $codeCounts[$word] = $info.Count
+            $codeFirsts[$word] = $info
+            $spellings[$word] = [hashtable]::new([System.StringComparer]::Ordinal)
+        }
+        else {
+            $codeCounts[$word] = $current + $info.Count
+            $first = $codeFirsts[$word]
+            if ($info.File -lt $first.File -or ($info.File -eq $first.File -and $info.Index -lt $first.Index)) { $codeFirsts[$word] = $info }
+        }
+        $forms = $spellings[$word]
+        $form = $forms[$word]
+        if ($null -eq $form) { $forms[$word] = $info.Count }
+        else { $forms[$word] = $form + $info.Count }
         $codeTokens += $info.Count
         if ($info.Owned) {
             $current = $ownedCounts[$word]
@@ -776,6 +790,17 @@ foreach ($info in $identifiers.get_Values()) {
             $ownedTokens += $info.Count
         }
     }
+}
+# Re-key each merged word to its most frequent spelling, ties to the ordinal-first.
+foreach ($key in @($spellings.get_Keys())) {
+    $shown = $null
+    foreach ($pair in $spellings[$key].GetEnumerator()) {
+        if ($null -eq $shown -or $pair.Value -gt $spellings[$key][$shown] -or ($pair.Value -eq $spellings[$key][$shown] -and [string]::CompareOrdinal($pair.Key, $shown) -lt 0)) { $shown = $pair.Key }
+    }
+    $total = $codeCounts[$key]; $first = $codeFirsts[$key]
+    $codeCounts.Remove($key); $codeFirsts.Remove($key)
+    $codeCounts[$shown] = $total; $codeFirsts[$shown] = $first
+    if ($ownedCounts.ContainsKey($key)) { $owned = $ownedCounts[$key]; $ownedCounts.Remove($key); $ownedCounts[$shown] = $owned }
 }
 
 # Comment corpus.

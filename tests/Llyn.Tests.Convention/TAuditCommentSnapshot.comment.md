@@ -1,5 +1,5 @@
 # TAuditCommentSnapshot.cs
-Hash: `72922c6152cfe826`
+Hash: `a04b0b3388190199`
 
 ## `internal static class TAuditCommentSnapshot`
 
@@ -7,7 +7,7 @@ Catches a hash bumped without a revision of the prose it vouches for.
 It mirrors the snapshot of scripts/AuditComments.ps1 but keeps its own file, so neither side reads the other.
 A stale file seen by only one side is therefore flagged by that side alone.
 
-## `private const string TAuditSnapshotFile = "tests/Llyn.Tests.Convention/obj/TAuditCommentSnapshot.json";`
+## `private const string TAuditSnapshotFile`
 
 The snapshot sits under `obj`, which git ignores, so it stays local to one working tree.
 Each entry maps a comment file to its stale second line and its full text at that time.

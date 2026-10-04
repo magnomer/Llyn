@@ -1,7 +1,7 @@
 # LImprint.cs
 Hash: `d4089ba314089697`
 
-## `public sealed record LImprint(`
+## `public sealed record LImprint(string LImprintTitle, string LImprintTitleHint, string LImprintYear, string LImprintYearHint, string LImprintUrl, string LImprintUrlHint, string LImprintNote, string LImprintNoteHint, string LImprintKindKey, string LImprintKindTag)`
 
 The edit sheet of one Source: every text and key the imprint fields show, already decided.
 The fields write each value into one control and branch on nothing.

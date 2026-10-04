@@ -1,7 +1,7 @@
 # LArticulation.cs
 Hash: `37b8467d3b4304c6`
 
-## `public sealed record LArticulation(`
+## `public sealed record LArticulation(IReadOnlyList<string> LArticulationHeaders, IReadOnlyList<string> LArticulationSides, IReadOnlyList<IReadOnlyList<IReadOnlyList<string>>> LArticulationCells)`
 
 One IPA chart, the universal notation the input aid offers.
 It is no language's fact, so it lives here and not in a language pack.

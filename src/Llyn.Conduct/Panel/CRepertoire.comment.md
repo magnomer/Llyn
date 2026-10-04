@@ -1,9 +1,9 @@
 # CRepertoire.cs
-Hash: `e5fb55b1c7ad8b81`
+Hash: `338b1763402d0194`
 
 ## `public sealed class CRepertoire`
 
-The repertoire panel's session: the situation list, the occurrence list, the scenario desk and the entry editor.
+The repertoire panel's session over the situation list, the occurrence list, the scenario desk and the entry editor.
 The two vistas' chosen rows and editing flags are the panel's mode, and the drivers only follow.
 Every gate holds only the interaction and reaches the engine through a panel, the desk or the editor.
 It asks the user and reports failures through the envoy, never through a seam a driver hands up.
@@ -73,7 +73,7 @@ The scenario's video gates, built fresh over the repertoire's desk.
 ## `public bool CRepertoireScenarioShown`
 
 True while the situation side is in front and in edit mode, so the scenario shows.
-The other mode flags follow the same two facts: which side is in front and whether it edits.
+The other mode flags follow the same two facts, which side is in front and whether it edits.
 `CRepertoireVignetteShown` holds for the situation side outside edit mode.
 `CRepertoireDisplayShown` holds for the occurrence side outside edit mode.
 `CRepertoireEditorShown` holds while the occurrence list is in edit mode.
@@ -124,7 +124,7 @@ It leaves the scenario desk alone, as the panel's close always did.
 
 ## `private void LRepertoireVignetteShow(CSituation? situation)`
 
-Announces the Situation a loaded draft carries and ignores drafts of other subjects.
+Announces the Situation a loaded draft carries, and ignores a draft that carries none.
 
 ## `internal void LRepertoireSituationOpen(long id)`
 
@@ -197,7 +197,6 @@ The fresh open clears the occurrence panel, which closes the editor before the b
 
 True when nothing is unsaved or the user agrees to leave.
 The navigation asks it with `shown` true when the tab is left, so a save shows the stored Situation afterwards.
-
 Asks the envoy only over unsaved changes.
 A store finishes the session, and a discard leaves without touching it.
 The finish shows the stored Situation only when `shown` holds.
@@ -216,7 +215,7 @@ A failed read is shown by the list and answers no rows, so nothing is cleared.
 When the vignette shows a chosen Situation the rows no longer list, both lists clear before the rows return.
 The clear announces fresh rows, which carry the same Situations, so a driver's nested refill is harmless.
 
-## `public Task<CEnsignSheet<IReadOnlyList<CCatalogSituation>>> CRepertoireRowsLoad(`
+## `public Task<CEnsignSheet<IReadOnlyList<CCatalogSituation>>> CRepertoireRowsLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `CRepertoireRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.

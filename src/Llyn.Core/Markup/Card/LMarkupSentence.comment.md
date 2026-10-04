@@ -1,7 +1,7 @@
 # LMarkupSentence.cs
 Hash: `1c9a356c34ff560d`
 
-## `public sealed record LMarkupSentence(`
+## `public sealed record LMarkupSentence(LMarkupExample? LMarkupSentenceExample, LStateValue LMarkupSentenceParticle, LStateValue LMarkupSentenceDependence)`
 
 One card's hold on one example as a markup file carries it.
 The frame belongs to the card and the example travels inside the row, since the file shares nothing by id.

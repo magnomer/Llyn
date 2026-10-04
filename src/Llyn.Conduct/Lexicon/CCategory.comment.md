@@ -1,7 +1,7 @@
 # CCategory.cs
 Hash: `5a81b26b3cc96c5d`
 
-## `public sealed record CCategory(`
+## `public sealed record CCategory(IReadOnlyList<CCategoryRow> CCategoryRows, bool CCategoryDeclared, bool CCategoryMatched, bool CCategoryShown)`
 
 The category menu of the part of speech field, ready to show.
 

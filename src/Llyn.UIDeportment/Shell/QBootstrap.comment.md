@@ -1,5 +1,5 @@
 # QBootstrap.cs
-Hash: `8edcdbf59cb3f7b3`
+Hash: `5f2cf9f7962b4e3d`
 
 ## `public sealed class QBootstrap`
 
@@ -10,12 +10,12 @@ The host builds the engine and hands each step here as a seam, so this class nam
 A failed step shows its dialog, and the rest of the run is then never called.
 So nothing here calls `Shutdown` while the program is starting.
 
-## `private Func<Exception, string?> _qBootstrapAudit = _ => null;`
+## `private Func<Exception, string?> _qBootstrapAudit`
 
 Records a fault and names the log it went to.
 It stays silent until the host attaches the engine's audit, since no fault handler runs before that.
 
-## `public void QBootstrapIntroduce<QBootstrapEngine>(`
+## `public void QBootstrapIntroduce<QBootstrapEngine>(Func<Func<string, string>> colorSeam, Func<IReadOnlyDictionary<string, string>> catalogSeam, Func<string> workspaceSeam, Func<string, QBootstrapEngine> buildSeam, Func<Exception, bool> busySeam, Action<QBootstrapEngine> runSeam)`
 
 Receives the start the host constructed and runs it step by step.
 It applies the theme, builds the engine, and hands the engine to the rest of the run.
@@ -24,14 +24,14 @@ Attaching builds palette brushes, and a brush built before its color never takes
 A theme that fails stops before the build, and an engine that fails stops before the rest.
 The host thus only constructs and wires, and the decision to continue lives here.
 
-## `private static bool QBootstrapThemeApply(`
+## `private static bool QBootstrapThemeApply(Func<Func<string, string>> colorSeam, Func<IReadOnlyDictionary<string, string>> catalogSeam)`
 
 Applies the default catalog, the theme colors, and the shared control resources in one step.
 It answers whether the program can show anything at all.
 The catalog is what would have translated the failure message, so that one message stays inline in English.
 It is the documented emergency fallback, shown only when the interface text is unavailable.
 
-## `private static QBootstrapEngine? QBootstrapBuild<QBootstrapEngine>(`
+## `private static QBootstrapEngine? QBootstrapBuild<QBootstrapEngine>(Func<string> workspaceSeam, Func<string, QBootstrapEngine> buildSeam, Func<Exception, bool> busySeam)`
 
 Reads the workspace folder and builds the engine over it, answering null when either step fails.
 An unwritable folder must reach the user as a message naming the folder, not as a crash inside a constructor.
@@ -46,7 +46,7 @@ The engine is a type parameter because the deportment may not name the engine it
 Shows the notice of a workspace that failed to open, naming the folder and the fault.
 The key comes from Conduct, and no window exists yet to own the dialog.
 
-## `public void QBootstrapCatalogApply(`
+## `public void QBootstrapCatalogApply(Func<bool> defaultSeam, Func<IReadOnlyDictionary<string, string>> loadSeam)`
 
 Applies the language the workspace stores before any window or notice is shown.
 Every panel therefore attaches in that language, and the rescue notice speaks it too.

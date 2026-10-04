@@ -1,7 +1,7 @@
 # LNote.cs
 Hash: `4e2d219a289a896f`
 
-## `public sealed record LNote(`
+## `public sealed record LNote(long LNoteEntryId, string LNoteText)`
 
 The single Note an entry owns.
 It is subordinate free text hanging from the entry itself, with no id and no order.

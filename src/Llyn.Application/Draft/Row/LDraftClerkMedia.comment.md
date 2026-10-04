@@ -74,7 +74,7 @@ The moments a video row plays from and until, read from its span text by the vid
 
 The card holding the video row, as the picture's card is found.
 
-## `public static LEntryDraft LVideoChange(`
+## `public static LEntryDraft LVideoChange(LEntryDraft content, long videoId, Func<LVideoDraft, LVideoDraft> change)`
 
 Applies one change to the video in every card holding it, and refuses when none does.
 The location and the span come through the same routine with a different lambda.

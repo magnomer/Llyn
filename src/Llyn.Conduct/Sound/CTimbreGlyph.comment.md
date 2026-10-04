@@ -1,7 +1,7 @@
 # CTimbreGlyph.cs
 Hash: `effdd102dadc3581`
 
-## `public sealed record CTimbreGlyph(`
+## `public sealed record CTimbreGlyph(bool CTimbreGlyphShown, bool CTimbreGlyphSourced, IReadOnlyList<CTranscriptionDraft> CTimbreGlyphRows)`
 
 The editor's glyph block for the held draft, ready to paint.
 The engine picks the transcription rows under the pack's glyph scheme, so no driver matches schemes.

@@ -1,7 +1,7 @@
 # CSituationDraft.cs
 Hash: `5fa9d073279c56a7`
 
-## `public sealed record CSituationDraft(`
+## `public sealed record CSituationDraft(long CSituationDraftId, CStateValue CSituationDraftTitle, CStateValue CSituationDraftKind, CStateValue CSituationDraftDescription, IReadOnlyList<CImageDraft> CSituationDraftImage, IReadOnlyList<CVideoDraft> CSituationDraftVideo)`
 
 One situation, as a card's context chips or the repertoire's scenario and vignette show it.
 A card's link carries no media, so its picture and video lists stay empty.

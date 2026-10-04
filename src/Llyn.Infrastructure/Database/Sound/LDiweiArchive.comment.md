@@ -51,7 +51,7 @@ A placement nobody anchored is left out, so the page lists no character without 
 
 One category row with its count, as the read queries select them.
 
-## `private static void LDiweiCharacterApply(`
+## `private static void LDiweiCharacterApply(LDatabaseSession session, string language, string character, LHypothesis? hypothesis)`
 
 Reads the character's fanqie rows with their ids, clears each row's links and writes them afresh.
 The hypothesis is run once per row here.

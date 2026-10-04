@@ -1,7 +1,7 @@
 # LColophon.cs
 Hash: `3907302f9a77bfca`
 
-## `public sealed record LColophon(`
+## `public sealed record LColophon(string LColophonTitle, bool LColophonTitleFaint, string LColophonKind, bool LColophonKindShown, string LColophonYear, bool LColophonYearFaint, bool LColophonYearShown, string LColophonUrl, bool LColophonUrlFaint, bool LColophonUrlShown, string LColophonNote, bool LColophonNoteFaint, bool LColophonNoteShown, string LColophonAuthor, bool LColophonAuthorFaint, bool LColophonAuthorShown, string LColophonTally)`
 
 The read sheet of one Source: every text the colophon page prints and every look it takes, already decided.
 The page writes each value into one control and branches on nothing.
@@ -11,7 +11,7 @@ A shown field has a heading to stand over, so a blank line never stands for two 
 The title alone is never empty.
 A Source without one reads as untitled.
 
-## `public static LColophon LColophonCreate(`
+## `public static LColophon LColophonCreate(LReference reference, IReadOnlyList<LAuthor> credits, string tally, Func<string, string> localize)`
 
 Composes the sheet from the Source, its credited Authors and the tally sentence the panel composed.
 The texts a sheet needs localized come through `localize`, because this record knows no language file.

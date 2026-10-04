@@ -1,7 +1,7 @@
 # CRespellingMark.cs
 Hash: `0e039bb6dba672d3`
 
-## `public sealed record CRespellingMark(`
+## `public sealed record CRespellingMark(bool CRespellingMarkShown, string CRespellingMarkOpener, string CRespellingMarkCloser)`
 
 How one language's readings print, as `CRespelling` decided it.
 A driver compares two marks to know whether a row must be rebuilt.

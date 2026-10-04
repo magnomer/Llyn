@@ -1,7 +1,7 @@
 # CEstablishment.cs
 Hash: `faa9ed337890ca0b`
 
-## `public sealed record CEstablishment(`
+## `public sealed record CEstablishment(int CEstablishmentUnsaved, long CEstablishmentEntry, bool CEstablishmentPending, string CEstablishmentEntryKey, string CEstablishmentSizeKey, string CEstablishmentAmount)`
 
 The workspace's size and unsaved work, as the status strip shows it.
 Its verdicts come from the engine and its keys from the atelier, so the strip judges nothing itself.

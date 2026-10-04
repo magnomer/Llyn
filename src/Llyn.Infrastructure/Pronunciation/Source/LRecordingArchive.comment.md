@@ -14,7 +14,7 @@ Nothing about which source or language is baked in here.
 
 Binds the archive to the workspace `root` every file lands under and the `client` every fetch goes through.
 
-## `public async Task<string> LRecordingSave(`
+## `public async Task<string> LRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)`
 
 Downloads a chosen recording into the workspace and returns the saved path.
 The file sits under `audio/<language>/` and is named by the headword, the recording's variety and its address.

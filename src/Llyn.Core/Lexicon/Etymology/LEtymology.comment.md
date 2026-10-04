@@ -1,7 +1,7 @@
 # LEtymology.cs
 Hash: `524b5b07dde54c2b`
 
-## `public sealed record LEtymology(`
+## `public sealed record LEtymology(long LEtymologyId, string LEtymologyText, IReadOnlyList<LMention>? LEtymologyMentions = null)`
 
 The narrative shape of one entry's etymology.
 It holds the prose text and the spans of that text which name other entries.

@@ -92,7 +92,14 @@ public sealed class CCard
 
     public void CCardTranslationRemove(long cardId, long entryId)
     {
-        _cCardDesk.CDeskChip?.LQuillTranslationRemove(cardId, entryId);
+        try
+        {
+            _cCardDesk.CDeskChip?.LQuillTranslationRemove(cardId, entryId);
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cCardEnvoy, _cCardSettingsPort, "Input.TranslationFailed", exception);
+        }
     }
 
     internal static CProspect LCardProspectRead(LTranslationOffer offer)

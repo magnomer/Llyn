@@ -1,7 +1,7 @@
 # CImageDraft.cs
 Hash: `0b5d2be277f0c915`
 
-## `public sealed record CImageDraft(`
+## `public sealed record CImageDraft(long CImageDraftId, CStateValue CImageDraftLocation, bool CImageDraftEmpty, Uri? CImageDraftAddress)`
 
 One image of a card or a scenario, as its image row shows it.
 

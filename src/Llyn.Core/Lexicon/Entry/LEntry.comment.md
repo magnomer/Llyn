@@ -1,7 +1,7 @@
 # LEntry.cs
 Hash: `33c513a331042530`
 
-## `public sealed record LEntry(`
+## `public sealed record LEntry(long LEntryId, string LEntryHeadword, string LEntryLanguage, int LEntryGrasp, string? LEntryAddedUtc, string? LEntryUpdatedUtc)`
 
 A lexical entry, the headword record.
 It is the root that owns its written forms and parts of speech.

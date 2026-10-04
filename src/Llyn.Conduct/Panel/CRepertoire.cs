@@ -65,8 +65,6 @@ public sealed class CRepertoire
             CRepertoireScenarioChanged?.Invoke(
                 new CScenario(LRepertoireScenarioRead() ?? CScenario.LScenarioBlankRead()));
         CRepertoireSession.CSessionChanged += () => CRepertoireChanged?.Invoke();
-        CRepertoireSession.CSessionFailed +=
-            (key, exception) => CLedger.LLedgerFailureShow(envoy, _cRepertoireSettingsPort, key, exception);
         CRepertoireAtlas.CAtlasPanel.CPanelEdited += id => CRepertoireSession.CSessionStart(id);
         CRepertoireAtlas.CAtlasPanel.CPanelCleared += CRepertoireSession.CSessionCancel;
         CRepertoireAtlas.CAtlasPanel.CPanelDraftChanged +=
@@ -146,7 +144,7 @@ public sealed class CRepertoire
         !LRepertoireOccurrenceSide && CRepertoireAtlas.CAtlasPanel.CPanelBinEnabled;
 
     public bool CRepertoireStoreEnabled =>
-        CRepertoireEditorShown ? CRepertoireEditor.CEditorDesk.CDeskStorable : CRepertoireDesk.CDeskChanged;
+        CRepertoireEditorShown ? CRepertoireEditor.CEditorDesk.CDeskStorable : CRepertoireDesk.CDeskStorable;
 
     public bool CRepertoirePressAllowed => CRepertoireDisplayShown || LRepertoireRowShown;
 

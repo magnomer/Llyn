@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -14,6 +16,8 @@ public sealed class LChronicleClerk
     private readonly LClock _lChronicleClerkClock;
     private readonly Dictionary<long, List<LDraft>> _lChronicleClerkPast = [];
     private readonly Dictionary<long, List<LDraft>> _lChronicleClerkFuture = [];
+    private readonly Dictionary<long, List<LRequest>> _lChronicleClerkDeferred = [];
+    private readonly Dictionary<long, CancellationTokenSource> _lChronicleClerkPending = [];
     private (long, Type, DateTimeOffset)? _lChronicleClerkLast;
 
     public LChronicleClerk(LRig rig)
@@ -82,6 +86,90 @@ public sealed class LChronicleClerk
     public bool LChronicleRedoCheck(long id)
     {
         return _lChronicleClerkFuture.TryGetValue(id, out List<LDraft>? future) && future.Count > 0;
+    }
+
+    public async Task<CancellationTokenSource?> LChronicleClerkDefer(long id, LRequest request, int delay)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        CancellationTokenSource? pending = null;
+        CancellationTokenSource? replaced = null;
+        CancellationToken cancellation = CancellationToken.None;
+        lock (_lChronicleClerkDeferred)
+        {
+            if (!_lChronicleClerkDeferred.TryGetValue(id, out List<LRequest>? deferred))
+            {
+                deferred = [];
+                _lChronicleClerkDeferred[id] = deferred;
+            }
+
+            int index = deferred.FindIndex(
+                held => string.Equals(held.LRequestKey, request.LRequestKey, StringComparison.Ordinal));
+            if (index < 0)
+            {
+                deferred.Add(request);
+            }
+            else
+            {
+                deferred[index] = request;
+            }
+
+            if (delay > 0)
+            {
+                _lChronicleClerkPending.Remove(id, out replaced);
+                pending = new CancellationTokenSource();
+                cancellation = pending.Token;
+                _lChronicleClerkPending[id] = pending;
+            }
+        }
+
+        if (replaced is not null)
+        {
+            replaced.Cancel();
+            replaced.Dispose();
+        }
+
+        if (pending is null)
+        {
+            return null;
+        }
+
+        try
+        {
+            await _lChronicleClerkClock.LClockPause(TimeSpan.FromMilliseconds(delay), cancellation)
+                .ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
+        }
+        catch (OperationCanceledException)
+        {
+            return null;
+        }
+
+        return pending;
+    }
+
+    public IReadOnlyList<LRequest> LChronicleClerkDispatch(long id, CancellationTokenSource? pending)
+    {
+        CancellationTokenSource? stopped;
+        List<LRequest>? taken;
+        lock (_lChronicleClerkDeferred)
+        {
+            _lChronicleClerkPending.TryGetValue(id, out CancellationTokenSource? current);
+            if (pending is not null && !ReferenceEquals(current, pending))
+            {
+                return [];
+            }
+
+            _lChronicleClerkPending.Remove(id, out stopped);
+            _lChronicleClerkDeferred.Remove(id, out taken);
+        }
+
+        if (stopped is not null)
+        {
+            stopped.Cancel();
+            stopped.Dispose();
+        }
+
+        return taken ?? [];
     }
 
     private LDraft? LChronicleClerkRestore(

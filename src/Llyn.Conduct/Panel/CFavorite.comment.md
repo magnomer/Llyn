@@ -81,7 +81,7 @@ The marked rows the engine returns for the vista, none before a vista arrives.
 They come already filtered, sorted and marked, so the list decides nothing about them.
 A failed read shows `Favorite.LoadFailed` through the envoy and answers no rows.
 
-## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CFavoriteRowsLoad(`
+## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CFavoriteRowsLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `CFavoriteRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.

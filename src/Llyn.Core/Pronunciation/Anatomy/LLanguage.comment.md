@@ -1,7 +1,7 @@
 # LLanguage.cs
 Hash: `3ed927fc82fc9782`
 
-## `public sealed record LLanguage(`
+## `public sealed record LLanguage(string? LLanguageFlag, LFont LLanguageFont, LFont LLanguageExample, IReadOnlyList<LSourceSpec> LLanguageLookupSources, IReadOnlyList<LSourceSpec> LLanguageHarvestSources, IReadOnlyList<LScheme>? LLanguageSchemes = null, bool LLanguageSeparated = true, IReadOnlyList<LVariety>? LLanguageVarieties = null, bool LLanguageVarietyFlagged = true, LFont? LLanguageGloss = null, IReadOnlyList<LRespelling>? LLanguageCleanups = null, IReadOnlyList<LRespelling>? LLanguageRespellings = null, IReadOnlyList<LSourceSpec>? LLanguageFrequencies = null, IReadOnlyList<LSourceSpec>? LLanguageMorphologies = null, bool LLanguageTonal = false, LGlyph? LLanguageGlyph = null, IReadOnlyList<LScriptStyle>? LLanguageScripts = null, IReadOnlyList<LFanqieBook>? LLanguageFanqieBooks = null, LHypothesis? LLanguageHypothesis = null, bool LLanguageSilent = false, IReadOnlyList<LReflexRule>? LLanguageReflexRules = null, bool LLanguagePhonemic = false, IReadOnlyList<LAnatomyRule>? LLanguageAnatomies = null, IReadOnlyList<LDescent>? LLanguageDescents = null, LShengfuRule? LLanguageShengfu = null)`
 
 A loaded language pack.
 It holds the two source lists declared for the language and its transcription schemes.

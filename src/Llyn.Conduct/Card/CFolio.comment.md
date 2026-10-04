@@ -10,7 +10,7 @@ It is split from `CCard` by role, since the gates and the maps change for differ
 
 The one map from link targets to their shape, shared with the editor and the lectern.
 
-## `internal static CEntryDraft CFolioEntryRead(`
+## `internal static CEntryDraft CFolioEntryRead(LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets, LMediaPort media)`
 
 Shapes the held entry for the editor view.
 The link targets come keyed by card from the tenure, so each card carries its links ready.
@@ -22,7 +22,7 @@ The one map from a written value to its shape.
 It carries the engine's plain text and verdicts, so no driver judges a state.
 The empty text for a value with nothing legible is the engine's own, so the map keeps no fallback.
 
-## `private static IReadOnlyList<CCardDraft> CFolioSheetRead(`
+## `private static IReadOnlyList<CCardDraft> CFolioSheetRead(IReadOnlyList<LCardDraft> cards, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets, LMediaPort media, string meaning)`
 
 Shapes the meaning or collocation cards with everything the card parts read.
 A card's situation link carries no media, so its picture and video lists stay empty.

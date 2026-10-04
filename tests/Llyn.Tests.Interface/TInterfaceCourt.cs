@@ -46,6 +46,9 @@ internal static partial class TInterface
         new LCourtArchive(root).LCourtSweep();
     }
 
+    internal static LCourt TCourtCreate(long id, long ownerId, long targetId, string headword, string language) =>
+        new(id, ownerId, targetId, headword, language);
+
     internal static void TDraftArchiveDelete(string root, long id)
     {
         new LDraftArchive(root).LDraftDelete(id);

@@ -1,7 +1,7 @@
 # LRegisterOffer.cs
 Hash: `02633798ed7727e1`
 
-## `public sealed record LRegisterOffer(`
+## `public sealed record LRegisterOffer(string LRegisterOfferText, IReadOnlyList<LRegisterRow> LRegisterOfferRows, bool LRegisterOfferShown)`
 
 What a register field keeps after a gate, and the stored Registers it offers for the kept text.
 

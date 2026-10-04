@@ -56,13 +56,13 @@ Every project file and import is read for implicit usings, which the binder woul
 
 One hit as the script prints it, the project first, then the path and line when known, then the text.
 
-## `private static IEnumerable<TAuditHit> TAuditDomainRead(`
+## `private static IEnumerable<TAuditHit> TAuditDomainRead(string repoRoot, string column, IEnumerable<string> held, string name)`
 
 Every top-level type of a twin with no interface or base type declared in its portable half.
 A twin only maps a port call to a Windows API and back.
 So a type serving no port holds domain logic.
 The UI column is left to the driver and surface audits.
 
-## `private static bool TAuditWindowsCheck(`
+## `private static bool TAuditWindowsCheck(string project, IReadOnlyDictionary<string, string> table, IReadOnlyDictionary<string, string> projects)`
 
 True for a twin in the table, or for any project whose file targets a Windows framework.

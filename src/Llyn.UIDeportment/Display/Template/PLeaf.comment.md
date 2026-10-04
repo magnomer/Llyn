@@ -20,7 +20,7 @@ The link chips arrive paired with their flags for the chip template.
 The translation row takes the wider margin when no situation row stands above it.
 The picture and video rows fold by the look sheet, and their lines get the shared media fills.
 
-## `private static void PLeafListRefine<PLeafRow>(`
+## `private static void PLeafListRefine<PLeafRow>(FrameworkElement body, string name, IReadOnlyList<PLeafRow> rows, Action<FrameworkElement, object, string?> fill)`
 
 Sets one chip row's items, folds it when empty and attaches its chip fill.
 

@@ -14,6 +14,7 @@ public sealed class TGuildAutograph
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         guild.CGuildAuthorCreate();

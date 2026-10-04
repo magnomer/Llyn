@@ -1,9 +1,9 @@
 # CDisplaySound.cs
-Hash: `82b49068cb2be02a`
+Hash: `c05aaa0e11d3f559`
 
 ## `public sealed class CDisplaySound`
 
-The reading view's sound area: the gates and reads of the pronunciation, playback, glyph and sound blocks.
+The reading view's sound area, holding the gates and reads of its pronunciation, playback, glyph and sound blocks.
 It is split from [CDisplay](CDisplay.comment.md) by role, since the header and card half keeps its own area.
 The display builds one over the sound half and the header area.
 So every driver over that display hears the same events.
@@ -24,7 +24,7 @@ The font with nothing set, so a block with nothing shown keeps its theme.
 
 The anchors while nothing is shown or the engine refused, with no row anchored.
 
-## `internal CDisplaySound(`
+## `internal CDisplaySound(LDisplaySound voice, CDisplay header, LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LMediaPort media, LSettingsPort settings, CEnvoy envoy)`
 
 Only the display builds its sound area, over the ports and the envoy the panel handed down.
 
@@ -71,6 +71,7 @@ The engine picks the varieties and loads nothing for a pack that names them.
 `store` is the driver's own image store, handed the rows through the one flag map.
 It answers the block again once the flags are in, so the driver repaints its rows.
 Another entry shown meanwhile wins, so a late load answers null and paints nothing.
+A failed load shows `Sound.LoadFailed` and answers null, like `CDisplayAccentRead`.
 A refused load answers null too, since a missing flag falls back to its name.
 
 ## `private static CLecternAccent LDisplayAccentRead(LAccentSheet sheet)`

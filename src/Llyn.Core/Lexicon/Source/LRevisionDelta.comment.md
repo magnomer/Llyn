@@ -1,7 +1,7 @@
 # LRevisionDelta.cs
 Hash: `43e38e48b2297841`
 
-## `public sealed record LRevisionDelta(`
+## `public sealed record LRevisionDelta(long LRevisionDeltaTarget, string LRevisionDeltaSubject, string LRevisionDeltaKind, string? LRevisionDeltaSummary)`
 
 One recorded change inside a `LRevision`.
 A change has no id of its own.

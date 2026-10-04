@@ -1,5 +1,5 @@
 # LEngine.cs
-Hash: `0eb01914f5a71958`
+Hash: `247fee14f53d35e9`
 
 ## `public sealed class LEngine : IDisposable`
 
@@ -26,7 +26,7 @@ A held draft is driven by an `LTenure`, made in `LTenureFacade.cs`, so no panel 
 
 The engine holds no vault of its own.
 Every port arrives in one `LRig` and is handed to the staff `LEngineStaffBuild` builds over it.
-The composition root, `App.xaml.cs`, builds the rig through `LRigFactory`, and a test builds one from fakes.
+The composition root, `LHost`, builds the rig through `LRigFactory`, and a test builds one from fakes.
 The engine never names the infrastructure and needs no SQLite to start.
 All use cases sit in `Llyn.Application` as sealed clerks over the rig, one per concern.
 The core keeps the gate, the staff, shared state, observers and one property per facade.
@@ -134,7 +134,7 @@ It answers with the file the fault went to, or `null` when nothing could be writ
 The reason key of a refusal standing anywhere inside the failure, or null for a fault.
 The workspace clerk walks the inner chain, since the shells name no exception type.
 
-## `public (string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(`
+## `public (string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath)`
 
 The ready notice of a failure, in the order the reasons are tried.
 A refusal answers its own reason key alone.
@@ -169,6 +169,7 @@ The move is then announced, so every surface holding a stored record learns that
 ## `private void LEngineFetchClear()`
 
 Cancels every pending fetch of the six fetching clerks, on a rig apply and on dispose.
+The reflex fetch is reached through the reflex clerk that holds it.
 
 ## `internal static ArgumentOutOfRangeException LEngineOwnerRaise(LOwner owner)`
 

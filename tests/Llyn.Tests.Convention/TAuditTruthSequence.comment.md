@@ -1,11 +1,12 @@
 # TAuditTruthSequence.cs
-Hash: `15ecb395d7e234e0`
+Hash: `a5a77f14c0b84d98`
 
 ## `internal static partial class TAuditTruthWalker`
 
 The sequence half of the truth walker.
 One driver member may not dictate a run of requests.
 One user action is one gate, and the order of several is a gate's decision.
+Line numbers come from `TAuditTruthReference`.
 
 ## `private static HashSet<ISymbol> TAuditSendNames`
 

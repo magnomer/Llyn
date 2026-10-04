@@ -1,7 +1,7 @@
 # LSentence.cs
 Hash: `d36b8b375f438d75`
 
-## `public sealed record LSentence(`
+## `public sealed record LSentence(long LSentenceId, LExample? LSentenceExample, LStateValue LSentenceParticle, LStateValue LSentenceDependence)`
 
 One Example as a single Meaning or Collocation holds it.
 The Example itself is shared and owned by nothing, so nothing about one owner may sit on it.

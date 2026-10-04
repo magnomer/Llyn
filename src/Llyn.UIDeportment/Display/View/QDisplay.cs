@@ -2,7 +2,6 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Shapes;
 
@@ -11,6 +10,8 @@ namespace Llyn.UIDeportment;
 internal sealed class QDisplay
 {
     private readonly FrameworkElement _qDisplaySurface;
+    private readonly QSounding _qDisplaySounding;
+    private readonly QRoster _qDisplayRoster = new();
     private QLectern _qDisplayLectern = null!;
 
     internal QDisplay(FrameworkElement surface)
@@ -18,6 +19,7 @@ internal sealed class QDisplay
         ArgumentNullException.ThrowIfNull(surface);
 
         _qDisplaySurface = surface;
+        _qDisplaySounding = new QSounding(surface);
     }
 
     private TextBlock QDisplayEmpty => QContract.QContractFind<TextBlock>(_qDisplaySurface, "PDisplayEmpty");
@@ -45,57 +47,6 @@ internal sealed class QDisplay
 
     private TextBlock QDisplayGraspLabel => QContract.QContractFind<TextBlock>(_qDisplaySurface, "PDisplayGraspLabel");
 
-    private ItemsControl QDisplayReflex => QContract.QContractFind<ItemsControl>(_qDisplaySurface, "PDisplayReflex");
-
-    private TextBlock QDisplayReflexLoading =>
-        QContract.QContractFind<TextBlock>(_qDisplaySurface, "PDisplayReflexLoading");
-
-    private ToggleButton QDisplayReflexFold =>
-        QContract.QContractFind<ToggleButton>(_qDisplaySurface, "PDisplayReflexFold");
-
-    private Border QDisplayPronunciationSurface =>
-        QContract.QContractFind<Border>(_qDisplaySurface, "PDisplayPronunciationSurface");
-
-    private ColumnDefinition QDisplayPronunciationLead =>
-        QContract.QContractFind<ColumnDefinition>(_qDisplaySurface, "PDisplayPronunciationLead");
-
-    private Image QDisplayPronunciationFlag =>
-        QContract.QContractFind<Image>(_qDisplaySurface, "PDisplayPronunciationFlag");
-
-    private TextBlock QDisplayPronunciationLabel =>
-        QContract.QContractFind<TextBlock>(_qDisplaySurface, "PDisplayPronunciationLabel");
-
-    private TextBlock QDisplayPronunciationOpener =>
-        QContract.QContractFind<TextBlock>(_qDisplaySurface, "PDisplayPronunciationOpener");
-
-    private TextBlock QDisplayPronunciation =>
-        QContract.QContractFind<TextBlock>(_qDisplaySurface, "PDisplayPronunciation");
-
-    private TextBlock QDisplayPronunciationCloser =>
-        QContract.QContractFind<TextBlock>(_qDisplaySurface, "PDisplayPronunciationCloser");
-
-    private Button QDisplayPlaybackAction => QContract.QContractFind<Button>(_qDisplaySurface, "PPlaybackAction");
-
-    private Border QDisplayPlayback => QContract.QContractFind<Border>(_qDisplaySurface, "PPlayback");
-
-    private Slider QDisplayVolume => QContract.QContractFind<Slider>(_qDisplaySurface, "PVolume");
-
-    private PContour QDisplayContour => QContract.QContractFind<PContour>(_qDisplaySurface, "PDisplayContour");
-
-    private ItemsControl QDisplayAccent => QContract.QContractFind<ItemsControl>(_qDisplaySurface, "PDisplayAccent");
-
-    private ItemsControl QDisplayTranscription =>
-        QContract.QContractFind<ItemsControl>(_qDisplaySurface, "PDisplayTranscription");
-
-    private Border QDisplayGlyphSection => QContract.QContractFind<Border>(_qDisplaySurface, "PDisplayGlyphSection");
-
-    private ColumnDefinition QDisplayGlyphLead =>
-        QContract.QContractFind<ColumnDefinition>(_qDisplaySurface, "PDisplayGlyphLead");
-
-    private TextBlock QDisplayGlyphLabel => QContract.QContractFind<TextBlock>(_qDisplaySurface, "PDisplayGlyphLabel");
-
-    private ItemsControl QDisplayGlyph => QContract.QContractFind<ItemsControl>(_qDisplaySurface, "PDisplayGlyph");
-
     private StackPanel QDisplaySpeechSection =>
         QContract.QContractFind<StackPanel>(_qDisplaySurface, "PDisplaySpeechSection");
 
@@ -110,8 +61,6 @@ internal sealed class QDisplay
 
     private TextBlock QDisplayFrequencyBand =>
         QContract.QContractFind<TextBlock>(_qDisplaySurface, "PDisplayFrequencyBand");
-
-    private QParadigm QDisplayParadigm => QContract.QContractFind<QParadigm>(_qDisplaySurface, "PDisplayParadigm");
 
     private QFanqie QDisplayFanqie => QContract.QContractFind<QFanqie>(_qDisplaySurface, "PDisplayFanqie");
 
@@ -141,8 +90,6 @@ internal sealed class QDisplay
         QContract.QContractFind<StackPanel>(_qDisplaySurface, "PDisplayNoteSection");
 
     private StackPanel QDisplayNote => QContract.QContractFind<StackPanel>(_qDisplaySurface, "PDisplayNote");
-
-    private QScript QDisplayScript => QContract.QContractFind<QScript>(_qDisplaySurface, "PDisplayScript");
 
     private StackPanel QDisplayStampSection =>
         QContract.QContractFind<StackPanel>(_qDisplaySurface, "PDisplayStampSection");
@@ -179,18 +126,10 @@ internal sealed class QDisplay
 
         _qDisplaySurface.CommandBindings.Add(new CommandBinding(
             PEtymologyCommand.PEtymologyCommandEntry, QDisplayEtymonObserve));
-        QDisplayAccent.CommandBindings.Add(new CommandBinding(
-            QAccentCommand.QAccentCommandPlayback, QDisplayPlaybackObserve));
-        QDisplayGlyph.CommandBindings.Add(new CommandBinding(
-            QGlyphCommand.QGlyphCommandEntry, QDisplayGlyphObserve));
 
         QDisplayFavorite.Click += QDisplayFavoriteObserve;
         QDisplayGrasp.PGraspChanged += QDisplayGraspObserve;
         QDisplayGrasp.PGraspHovered += QDisplayHoverRefine;
-        QDisplayReflexFold.Checked += QDisplayFoldObserve;
-        QDisplayReflexFold.Unchecked += QDisplayFoldObserve;
-        QDisplayPlaybackAction.Click += QDisplayActionObserve;
-        QDisplayPlaybackAction.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("play", 24));
         QDisplayCompassIcon.QIconSource = QIcon.QIconResolve("compass", 24);
         QDisplayMeaning.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QDisplayCardObserve));
         QDisplayCollocation.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QDisplayCardObserve));
@@ -202,13 +141,8 @@ internal sealed class QDisplay
         QDisplayEtymology.AddHandler(
             PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(QDisplayEtymologyObserve));
 
-        host.QWindowVolume.QVolumeSliderAttach(_qDisplaySurface);
-
-        QLookItem.QLookItemAttach(QDisplaySpeech, QDisplaySpeechRefine);
-        QLookItem.QLookItemAttach(QDisplayMeaning, PLeaf.PLeafCardRefine);
-        QLookItem.QLookItemAttach(QDisplayCollocation, PLeaf.PLeafCardRefine);
-        QLookItem.QLookItemAttach(QDisplayIncoming, QDisplayUsageRefine);
-        QLookItem.QLookItemAttach(QDisplayCompassList, QDisplayCompassRefine);
+        _qDisplayRoster.QRosterIntroduce(
+            lectern, QDisplaySpeech, QDisplayMeaning, QDisplayCollocation, QDisplayIncoming, QDisplayCompassList);
 
         QDisplayLecternAttach(host, lectern);
     }
@@ -231,32 +165,11 @@ internal sealed class QDisplay
             QDisplayFrequencySection, QDisplayFrequencyChip, QDisplayFrequency, QDisplayFrequencyBand);
         lectern.QLecternSpeechIntroduce(QDisplaySpeechSection, QDisplaySpeech);
         lectern.QLecternNoteIntroduce(QDisplayNoteSection, QDisplayNote);
-        lectern.QLecternPlayback.QLecternPlaybackIntroduce(QDisplayPlaybackAction, QDisplayPlayback, QDisplayVolume);
-        lectern.QLecternAccent.QLecternAccentIntroduce(
-            QDisplayPronunciationSurface,
-            QDisplayPronunciationLead,
-            QDisplayPronunciationFlag,
-            QDisplayPronunciationLabel,
-            QDisplayPronunciationOpener,
-            QDisplayPronunciation,
-            QDisplayPronunciationCloser,
-            QDisplayAccent,
-            QDisplayContour,
-            PContour.PContourSyllablesProperty,
-            PContour.PContourScaleProperty);
-        lectern.QLecternSound.QLecternGlyphIntroduce(
-            QDisplayTranscription,
-            QDisplayGlyphSection,
-            QDisplayGlyphLead,
-            QDisplayGlyphLabel,
-            QDisplayGlyph);
-        lectern.QLecternSound.QLecternReflexIntroduce(QDisplayReflex, QDisplayReflexLoading, QDisplayReflexFold);
+        _qDisplaySounding.QSoundingIntroduce(host, lectern);
         lectern.QLecternSound.QLecternFanqieIntroduce(
             QDisplayFanqie,
             QDisplayReading,
             QDisplayFanqie.QFanqieRefine);
-        lectern.QLecternSound.QLecternScriptIntroduce(QDisplayScript, QDisplayScript.QScriptRefine);
-        lectern.QLecternSound.QLecternParadigmIntroduce(QDisplayParadigm, QDisplayParadigm.QParadigmRefine);
         lectern.QLecternCompassIntroduce(
             _qDisplaySurface,
             QDisplayContents,
@@ -290,11 +203,6 @@ internal sealed class QDisplay
         QDisplayFanqie.QFanqieRepresentativeNotice += lectern.QLecternSoundArea.CDisplayFanqieSet;
     }
 
-    private void QDisplayFoldObserve(object sender, RoutedEventArgs e)
-    {
-        _qDisplayLectern.QLecternSound.QLecternFoldObserve();
-    }
-
     private void QDisplayFavoriteObserve(object sender, RoutedEventArgs e)
     {
         _qDisplayLectern.QLecternFavoriteObserve();
@@ -308,21 +216,6 @@ internal sealed class QDisplay
     private void QDisplayHoverRefine(object sender, RoutedEventArgs e)
     {
         _qDisplayLectern.QLecternHoverRefine(QDisplayGrasp.PGraspPointed);
-    }
-
-    private void QDisplayActionObserve(object sender, RoutedEventArgs e)
-    {
-        _qDisplayLectern.QLecternPlayback.QLecternActionObserve();
-    }
-
-    private void QDisplayPlaybackObserve(object sender, ExecutedRoutedEventArgs e)
-    {
-        _qDisplayLectern.QLecternPlayback.QLecternPlaybackObserve(e.Parameter);
-    }
-
-    private void QDisplayGlyphObserve(object sender, ExecutedRoutedEventArgs e)
-    {
-        _qDisplayLectern.QLecternSound.QLecternGlyphObserve(e.Parameter);
     }
 
     private void QDisplayCardObserve(object sender, RoutedEventArgs e)
@@ -348,99 +241,5 @@ internal sealed class QDisplay
     private void QDisplayEtymologyObserve(object? sender, PMentionArgument e)
     {
         _qDisplayLectern.QLecternCard.QLecternEtymologyObserve(e);
-    }
-
-    private static void QDisplaySpeechRefine(FrameworkElement container, object item, string? _)
-    {
-        if (item is string speech && QLook.QLookPartFind<TextBlock>(container, "PSpeechName") is TextBlock name)
-        {
-            name.Text = speech;
-        }
-    }
-
-    private static void QDisplayUsageRefine(FrameworkElement container, object item, string? _)
-    {
-        if (item is not QUsageItem usage)
-        {
-            return;
-        }
-
-        if (QLook.QLookPartFind<QIconImage>(container, "PUsageIcon") is QIconImage icon)
-        {
-            icon.QIconSource = QIcon.QIconResolve("incoming", 24);
-        }
-
-        if (QLook.QLookPartFind<Run>(container, "PUsageName") is Run name)
-        {
-            name.Text = usage.QUsageItemName;
-        }
-
-        if (QLook.QLookPartFind<Run>(container, "PUsageEpithet") is Run epithet)
-        {
-            epithet.Text = QLook.QLookEpithetRead(usage.QUsageItemEpithet);
-        }
-
-        if (QLook.QLookPartFind<TextBlock>(container, "PUsageTitle") is TextBlock title)
-        {
-            title.Text = usage.QUsageItemTitle;
-        }
-
-        if (QLook.QLookPartFind<TextBlock>(container, "PUsageOwner") is TextBlock owner)
-        {
-            owner.Text = usage.QUsageItemOwner;
-        }
-
-        if (QLook.QLookPartFind<Image>(container, "PUsageFlag") is Image flag)
-        {
-            flag.Source = usage.QUsageItemFlag;
-        }
-
-        if (QLook.QLookPartFind<TextBlock>(container, "PUsageLanguage") is TextBlock language)
-        {
-            language.Text = usage.QUsageItemLanguage;
-        }
-    }
-
-    private void QDisplayCompassRefine(FrameworkElement container, object item, string? _)
-    {
-        if (item is not QCompassItem compass)
-        {
-            return;
-        }
-
-        if (QLook.QLookPartFind<Button>(container, "PCompassRow") is Button row)
-        {
-            if (compass.QCompassItemCurrent)
-            {
-                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
-            }
-            else
-            {
-                row.ClearValue(QLook.QLookCueProperty);
-            }
-
-            row.Click -= QDisplayCompassObserve;
-            row.Click += QDisplayCompassObserve;
-        }
-
-        if (QLook.QLookPartFind<Grid>(container, "PCompassIndent") is Grid indent)
-        {
-            indent.Margin = compass.QCompassItemIndent;
-        }
-
-        if (QLook.QLookPartFind<TextBlock>(container, "PCompassNumber") is TextBlock number)
-        {
-            number.Text = compass.QCompassItemNumber;
-        }
-
-        if (QLook.QLookPartFind<TextBlock>(container, "PCompassName") is TextBlock name)
-        {
-            name.Text = compass.QCompassItemName;
-        }
-    }
-
-    private void QDisplayCompassObserve(object sender, RoutedEventArgs e)
-    {
-        _qDisplayLectern.QLecternCompass.QCompassRowRefine(sender);
     }
 }

@@ -1,7 +1,7 @@
 # LStem.cs
 Hash: `fa332aee1ac2af1d`
 
-## `public sealed record LStem(`
+## `public sealed record LStem(long LStemId, string LStemLanguage, string LStemKey, int LStemCount = 0, bool LStemChosen = false)`
 
 One phonetic series of a language as a category of its own.
 The Shengfu rows of the characters that belong to it link to this row.

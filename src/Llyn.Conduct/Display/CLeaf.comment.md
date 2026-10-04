@@ -1,7 +1,7 @@
 # CLeaf.cs
 Hash: `361cb8faebb1a57d`
 
-## `public sealed record CLeaf(`
+## `public sealed record CLeaf(int CLeafPosition, CStateWording CLeafTitle, CStateWording CLeafExpression, CStateWording CLeafMeaning, IReadOnlyList<CLeafChip> CLeafSituation, IReadOnlyList<CLeafChip> CLeafRegister, IReadOnlyList<CLeafChip> CLeafTag, IReadOnlyList<CTranslationTarget> CLeafTranslation, IReadOnlyList<CLeafLine> CLeafSentence, IReadOnlyList<CImageDraft> CLeafImage, IReadOnlyList<CVideoDraft> CLeafVideo)`
 
 One meaning or collocation card of the reading view, ready to paint.
 Every text arrives worded and every row arrives mapped, so the leaf fill only looks keys up and paints.
@@ -21,7 +21,7 @@ Every text arrives worded and every row arrives mapped, so the leaf fill only lo
 - `CLeafImage`: the picture rows, each carrying whether its location is empty.
 - `CLeafVideo`: the video rows, each carrying whether its location is empty.
 
-## `internal static IReadOnlyList<CLeaf> LLeafRead(`
+## `internal static IReadOnlyList<CLeaf> LLeafRead(IReadOnlyList<LCardDraft> cards, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets, LMediaPort media)`
 
 Maps the shown entry's cards of one list to their ready form.
 The order, the unknown mark, the Source lines and the link targets are read once for the entry.

@@ -1,15 +1,15 @@
 # LReflexFacade.cs
-Hash: `e9b3a83e0eb1d0fd`
+Hash: `ff6ab5812f418192`
 
 ## `internal sealed class LReflexFacade`
 
-The engine's facade for reflex, wrapping the clerk's anchors, rules, rows, fetch and tones.
+The engine's facade for reflex, wrapping the clerk's anchors and rules, the fetch the clerk holds, row guises and tones.
 
 ## `public LReflexFacade(LEngine engine)`
 
 The facade bound to its engine and the engine's gate.
 
-## `public IReadOnlyList<LAnchorRow> LEngineAnchorScan(`
+## `public IReadOnlyList<LAnchorRow> LEngineAnchorScan(long entryId, IReadOnlyList<long> anchors, string language, string reflex, string tone)`
 
 The anchor rows of one stored entry, read from its own rime-book rows.
 
@@ -21,7 +21,7 @@ Whether the reflex rows of `headword` may carry anchors, judged on the entry's o
 
 The anchored readings of one stored entry, joined with `separator`.
 
-## `public IReadOnlyList<LAnchorRow> LEngineAnchorScan(`
+## `public IReadOnlyList<LAnchorRow> LEngineAnchorScan(IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string language, string reflex, string tone)`
 
 The stored fanqie rows marked held and estimated for the anchor dropdown.
 The tone rules of the entry `language` resolve the classes of the `reflex` language and `tone`.
@@ -30,7 +30,7 @@ The tone rules of the entry `language` resolve the classes of the `reflex` langu
 
 Whether the reflex rows of `headword` may carry anchors.
 
-## `public string LEngineAnchorFormat(`
+## `public string LEngineAnchorFormat(IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword, string separator)`
 
 The readings of the anchored rows joined with `separator`, or empty when the rows cannot be anchored.
 

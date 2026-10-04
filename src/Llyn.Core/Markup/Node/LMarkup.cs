@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Llyn.Core;
 
@@ -94,6 +95,14 @@ public static class LMarkup
     internal static string LMarkupTextParse(LMarkupNode? element)
     {
         return element?.LMarkupNodeText ?? string.Empty;
+    }
+
+    internal static int? LMarkupNumberParse(LMarkupNode element)
+    {
+        return int.TryParse(
+            element.LMarkupNodeText.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int number)
+            ? number
+            : null;
     }
 
     internal static void LMarkupTextFormat(List<LMarkupNode> parent, string name, string? text)

@@ -1,5 +1,5 @@
 # TGuildScribe.cs
-Hash: `a09f0539fa550a48`
+Hash: `806ab959d6708e68`
 
 ## `public sealed class TGuildScribe`
 
@@ -10,3 +10,4 @@ A jump from another panel opens the Author without asking.
 Writing with no stored Author closes the panel.
 A restored scribe mode opens the autograph only over a stored Author.
 A blank name is refused through the envoy, and a named one is stored and chosen.
+Only the save test sets the edit delay to zero.

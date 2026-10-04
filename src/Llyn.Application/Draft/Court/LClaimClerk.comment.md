@@ -12,7 +12,7 @@ The engine keeps what is engine-wide: the gate, the stale marks, the trove and t
 The engine also keeps the entry commit, because the entry save still lives beside the transcription and reflex syncs.
 The dirty check of an entry draft stays with the engine too.
 Only the engine loads an entry with its audio resolved.
-The per-kind starts and commits live in `LCitationClerk`, over this clerk's primitives.
+The per-kind starts and commits live in the kind owners `LCitationClerk` holds, over this clerk's primitives.
 The court rows live in `LCourtClerk` and the undo history in `LChronicleClerk`.
 A new rig gets a new clerk, so a switched workspace starts with nothing held.
 

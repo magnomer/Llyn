@@ -1,7 +1,7 @@
 # CMentionLabel.cs
 Hash: `f76e9d4f43ab824e`
 
-## `public sealed record CMentionLabel(`
+## `public sealed record CMentionLabel(long CMentionLabelId, string CMentionLabelWord, string CMentionLabelName, string CMentionLabelSense, bool CMentionLabelLinked)`
 
 One chip of a mention line, labelled by the engine.
 

@@ -1,7 +1,7 @@
 # LTranslationOffer.cs
 Hash: `948a55995d01fb21`
 
-## `public sealed record LTranslationOffer(`
+## `public sealed record LTranslationOffer(string LTranslationOfferText, string LTranslationOfferWord, IReadOnlyList<LVistaRow> LTranslationOfferRows, bool LTranslationOfferShown, bool LTranslationOfferChosen, IReadOnlyList<string> LTranslationOfferLanguages)`
 
 What a translation field keeps after a gate, and the Entries its word may link to.
 The engine answers it whole, so the field shows it without deciding anything.

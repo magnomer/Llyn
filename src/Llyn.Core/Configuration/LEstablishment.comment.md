@@ -1,7 +1,7 @@
 # LEstablishment.cs
 Hash: `9bf61dd8ca2a9225`
 
-## `public sealed record LEstablishment(`
+## `public sealed record LEstablishment(int LEstablishmentUnsaved, long LEstablishmentEntry, long LEstablishmentSize)`
 
 What the status bar at the foot of the window prints about the open workspace.
 It is plain data read from the engine in one call and shown as it came.

@@ -1,7 +1,7 @@
 # LMarkupMention.cs
 Hash: `2e7b97e5ba67f17e`
 
-## `public sealed record LMarkupMention(`
+## `public sealed record LMarkupMention(int LMarkupMentionOffset, int LMarkupMentionLength, string LMarkupMentionHeadword, string LMarkupMentionLanguage, string LMarkupMentionSense = "")`
 
 A word inside an example that stands for an entry, as a markup file carries it.
 The target is named by headword and language, and a sense by its position path.

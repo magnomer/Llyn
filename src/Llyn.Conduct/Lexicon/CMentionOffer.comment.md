@@ -1,7 +1,7 @@
 # CMentionOffer.cs
 Hash: `b658890473c714d6`
 
-## `public sealed record CMentionOffer(`
+## `public sealed record CMentionOffer(int CMentionOfferOffset, IReadOnlyList<CTranslationTarget> CMentionOfferEntry, string CMentionOfferKey)`
 
 What a word click leaves for the menu, once the gate has opened what it opens at once.
 

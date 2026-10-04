@@ -16,7 +16,7 @@ A row's id is the stored pronunciation's id, and its audio path is resolved agai
 
 The inflections of a stored entry as the entry form loads them, in their stored order.
 
-## `internal static LEntry TEntryInflectionSave(`
+## `internal static LEntry TEntryInflectionSave(this LEngine engine, long entryId, IReadOnlyList<LInflection> inflections)`
 
 Rewrites the inflections of a stored entry through the entry update, the only seam that writes them.
 The update also regrades each form against its paradigm.
@@ -34,7 +34,7 @@ A test takes a morphology id from here, as the paradigm grid does.
 
 The reflex rows of a stored entry as the entry form loads them, in their stored order.
 
-## `internal static LEntry TEntryAnchorApply(`
+## `internal static LEntry TEntryAnchorApply(this LEngine engine, long entryId, IReadOnlyList<long> anchors, int? position = null)`
 
 Anchors reflex rows of a stored entry to exactly the fanqie rows `anchors` names, as the anchor menu does.
 Each row is toggled one fanqie row at a time in a draft, and the draft is committed once.

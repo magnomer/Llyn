@@ -1,5 +1,5 @@
 # LSituationClerk.cs
-Hash: `51caaa90635460ab`
+Hash: `ccf94ca4b3bfaa9b`
 
 ## `public sealed class LSituationClerk`
 
@@ -15,7 +15,7 @@ The page the repertoire panel reads is composed here too, so screen and print sh
 
 Reads the vault and the situation, image and video ports out of `rig`.
 
-## `public static LSituation LSituationClerkBlank`
+## `public static LSituation LSituationClerkBlank =>`
 
 What a draft naming no Situation is measured against.
 
@@ -64,7 +64,7 @@ Without `detach` it is refused while any Meaning or Collocation still references
 Field by field, whether two Situations say the same thing.
 Identity is left out, because a held Situation is named before the record it becomes exists.
 The title, the description and the kind each count, so any of them typed is an edit.
-The image and video lists count as well, so an added picture is an edit.
+The image and video lists count as well, through `LCardEquality`, so an added picture is an edit.
 A blank row is not, because the commit drops it.
 
 ## `public static LPortraitPage LSituationPageRead(LSituation situation, int count, LPortraitLegend legend)`

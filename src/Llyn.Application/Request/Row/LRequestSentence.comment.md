@@ -18,30 +18,30 @@ The example appears with the first text that arrives for the row.
 
 Drops one sentence row.
 
-## `public sealed record LRequestSentenceShift(`
+## `public sealed record LRequestSentenceShift(long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, int LRequestPosition)`
 
 Moves one sentence row to `LRequestPosition` inside its card.
 
-## `public sealed record LRequestSentenceExample(`
+## `public sealed record LRequestSentenceExample(long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, long LRequestExampleId)`
 
 Picks an existing example for the sentence.
 The engine copies the row's content under its positive id, replacing whatever example the sentence had.
 
-## `public sealed record LRequestSentenceText(`
+## `public sealed record LRequestSentenceText(long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, LStateWritten LRequestValue)`
 
 Replaces the text of the sentence's example.
 On a sentence with no example the first non-empty text mints one.
 On an example with a positive id it edits the draft copy, and commit updates the row.
 
-## `public sealed record LRequestSentenceParticle(`
+## `public sealed record LRequestSentenceParticle(long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, LStateWritten LRequestValue)`
 
 Replaces the particle of the sentence frame.
 
-## `public sealed record LRequestSentenceDependence(`
+## `public sealed record LRequestSentenceDependence(long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, LStateWritten LRequestValue)`
 
 Replaces the dependence of the sentence frame.
 
-## `public sealed record LRequestSentenceReference(`
+## `public sealed record LRequestSentenceReference(long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, long LRequestReferenceId)`
 
 Names the source the sentence's example cites, or zero to cite nothing.
 On a sentence with no example a non-zero source mints one.

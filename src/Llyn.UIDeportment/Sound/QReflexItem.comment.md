@@ -1,12 +1,12 @@
 # QReflexItem.cs
-Hash: `2e7ecf4dbee0ce8e`
+Hash: `b38363f3db0126e5`
 
 ## `public sealed class QReflexItem : INotifyPropertyChanged`
 
 One reflex row as the reading view and the input panel bind it.
 It carries the language, kind, text, romanization, meaning, note, region and main mark of one draft row.
 It also knows whether it leads its language group, and whether it is folded away under the visible rows.
-It holds the fanqie ids the row is anchored to and the label they print as.
+It holds the anchor label the row prints.
 It also knows whether the row may be anchored at all.
 The view only reads it, and the panel's cell editors write its editable properties.
 Every value comes ready from a `CReflex` or from the gate's answer to an edit.
@@ -34,7 +34,7 @@ The fold refine that follows every build decides whether it starts hidden.
 
 The draft row's id, by which the panel's gates name it.
 
-## `public bool QReflexItemFolded`
+## `public bool QReflexItemFolded { get; private set; }`
 
 Whether the row belongs to a language the pack folds away.
 
@@ -48,7 +48,7 @@ The closer Conduct chose for the row's language.
 
 ## `internal event Action<QReflexItem, CReflexField, string>? QReflexItemTyped`
 
-The edit channel: a cell editor's write, with the cell it names and the text typed.
+The edit channel carries a cell editor's write, with the cell it names and the text typed.
 Writing an editable property raises it and changes nothing on the row.
 The panel hands it to the gate and writes the answer back through `QReflexTypeRefine`.
 A reading-view row has no listener, so nothing happens there.
@@ -125,7 +125,7 @@ A row hidden under the fold is unseen and flat, yet still measured for the share
 The language carries the region as its tooltip, and no tooltip when the row names none.
 A row in common use draws its reading and slashes in the accent colour.
 The editor's reading cell names the accent field style for such a row, so its box opens accented.
-The fill also gives each side cell its `QFieldCell` order and tags the slot with `Theme.Reflex.Control`.
+The fill also gives each side cell its `QQuillCell` order and tags the slot with `Theme.Reflex.Control`.
 Those order strings live here, so the Veneer markup carries none.
 The anchor button shows only for an anchorable row and holds the anchor label.
 

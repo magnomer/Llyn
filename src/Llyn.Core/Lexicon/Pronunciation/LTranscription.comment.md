@@ -1,7 +1,7 @@
 # LTranscription.cs
 Hash: `fb0d929274331d18`
 
-## `public sealed record LTranscription(`
+## `public sealed record LTranscription(long LTranscriptionId, long LTranscriptionEntryId, int LTranscriptionPosition, string LTranscriptionScheme, string LTranscriptionText)`
 
 The entry's reading spelled in one named scheme, such as Jyutping or Pinyin.
 It is not a pronunciation.

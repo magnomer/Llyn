@@ -1,7 +1,7 @@
 # LMentionDraft.cs
 Hash: `02129a16e4839db0`
 
-## `public sealed record LMentionDraft(`
+## `public sealed record LMentionDraft(long LMentionDraftId, int LMentionDraftOffset, int LMentionDraftLength, long LMentionDraftEntry, long LMentionDraftSense = 0)`
 
 One Mention as a draft carries it.
 It holds the same five facts as [LMention](LMention.comment.md), under the draft prefix.

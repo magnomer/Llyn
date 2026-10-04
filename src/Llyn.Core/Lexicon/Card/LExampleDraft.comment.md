@@ -1,7 +1,7 @@
 # LExampleDraft.cs
 Hash: `bd2f4955c8899713`
 
-## `public sealed record LExampleDraft(`
+## `public sealed record LExampleDraft(LStateValue LExampleDraftText, long LExampleDraftId, LStateAnchor LExampleDraftReference, string LExampleDraftLanguage = "", IReadOnlyList<LGlossDraft>? LExampleDraftGloss = null, IReadOnlyList<LMentionDraft>? LExampleDraftMention = null)`
 
 One Example as a draft carries it.
 It holds the id of the Example the row edits and the sentence shown.

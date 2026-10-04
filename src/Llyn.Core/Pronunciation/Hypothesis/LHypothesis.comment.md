@@ -1,7 +1,7 @@
 # LHypothesis.cs
 Hash: `920118ac81cd5b51`
 
-## `public sealed record LHypothesis(`
+## `public sealed record LHypothesis(IReadOnlyDictionary<string, string> LHypothesisInitials, IReadOnlyDictionary<string, string> LHypothesisFinals, IReadOnlyDictionary<string, IReadOnlyList<LHypothesisTone>> LHypothesisTones, IReadOnlyList<LHypothesisLocus>? LHypothesisPlaces = null)`
 
 The reconstruction a language pack names under `hypothesis`.
 It says how a rime-book placement sounds.

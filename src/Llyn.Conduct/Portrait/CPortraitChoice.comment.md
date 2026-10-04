@@ -1,7 +1,7 @@
 # CPortraitChoice.cs
 Hash: `57fa08f2f47e2c37`
 
-## `public sealed record CPortraitChoice(`
+## `public sealed record CPortraitChoice(string CPortraitChoiceKey, string CPortraitChoiceSuffix, bool CPortraitChoiceChosen, CPortraitMedium CPortraitChoiceMedium)`
 
 One export format as a driver offers it, ready to show.
 The engine names the formats, their suffixes and the default, and Conduct chooses the wording key.

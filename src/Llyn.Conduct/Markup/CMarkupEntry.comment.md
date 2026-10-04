@@ -1,7 +1,7 @@
 # CMarkupEntry.cs
 Hash: `67623e63568aa0d1`
 
-## `public sealed record CMarkupEntry(`
+## `public sealed record CMarkupEntry(string CMarkupEntryLanguage, string CMarkupEntryName, IReadOnlyList<long> CMarkupEntryTarget)`
 
 One entry a markup file carries, as the import dialog lists it before anything is stored.
 The dialog needs only what it shows, so its targets arrive found.

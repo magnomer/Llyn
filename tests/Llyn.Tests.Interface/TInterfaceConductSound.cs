@@ -63,5 +63,6 @@ internal static class TInterfaceConductSound
             phonology,
             editor.CEditorDisplay,
             drafts,
-            TEngineFake.TEngineStubCreate<LSettingsPort>());
+            TEngineFake.TEngineStubCreate<LSettingsPort>(),
+            TEnvoyFake.TEnvoyCreate(false, []));
 }

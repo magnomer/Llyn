@@ -37,7 +37,7 @@ No stored entry means nothing may stay.
 A row whose id names a stored row keeps the recording that row already carries.
 Any other recording was fetched this draft and is fresh.
 
-## `private LEntryDraft LPronunciationPrimaryChange(`
+## `private LEntryDraft LPronunciationPrimaryChange(LEntryDraft content, Func<LPronunciationDraft, LPronunciationDraft> change)`
 
 Applies a change to the first pronunciation row, minting that row when the list is empty.
 The reading and the recording are two requests, and either may arrive first.
@@ -57,7 +57,7 @@ The place a new pronunciation takes when added after the row `pronunciation`.
 Id zero names the primary, so the new row follows it.
 A row the list no longer holds also answers the place after the primary.
 
-## `private static LEntryDraft LPronunciationChange(`
+## `private static LEntryDraft LPronunciationChange(LEntryDraft content, long pronunciationId, Func<LPronunciationDraft, LPronunciationDraft> change)`
 
 Changes the pronunciation row named, and refuses when the draft holds none by that id.
 
@@ -81,7 +81,7 @@ A blank scheme passes, because a row still being named collides with nothing.
 Whether a row other than `ownId` already holds `scheme`, the one owner of the one-scheme rule.
 The refusal above asks it, and the editor's scheme dropdown asks it to grey out a held scheme.
 
-## `public static LTranscriptionSheet LTranscriptionSheetRead(`
+## `public static LTranscriptionSheet LTranscriptionSheetRead(IReadOnlyList<string> schemes, IReadOnlyList<LTranscriptionDraft> drafts, IReadOnlyList<LTranscriptionDraft> other)`
 
 The editor's transcription block, built from the pack's `schemes` and the draft's rows.
 It lists the `other` rows, which lie outside the glyph scheme.
@@ -98,6 +98,6 @@ It asks the one-scheme rule, so a new row never takes a scheme the addition woul
 A new row goes after the row `transcription`.
 For id zero or a row gone, it goes at the end.
 
-## `private static LEntryDraft LTranscriptionChange(`
+## `private static LEntryDraft LTranscriptionChange(LEntryDraft content, long transcriptionId, Func<LTranscriptionDraft, LTranscriptionDraft> change)`
 
 Changes the transcription row named, and refuses when the draft holds none by that id.

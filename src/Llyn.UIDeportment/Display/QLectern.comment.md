@@ -43,7 +43,7 @@ The playback half, built over the display's sound area, which drives the play bu
 The floating contents, built once the veneer hands over its controls.
 Card scrolling goes through its scroll, so a card lands where a row would put it.
 
-## `public void QLecternCompassIntroduce(`
+## `public void QLecternCompassIntroduce(FrameworkElement view, ScrollViewer contents, FrameworkElement header, FrameworkElement compass, UIElement surface, ToggleButton toggle, ItemsControl list)`
 
 Builds the compass over the display and the view's controls.
 The compass subscribes to them itself, so the veneer names no compass handler.
@@ -63,7 +63,7 @@ The engine's notices arrive on its own thread, so each is marshalled onto `conte
 The draft reload and the workspace swap go straight back to the area's resonates.
 A lectern no view attached to answers nothing, since panels announce drafts in tests with no veneer.
 
-## `public void QLecternHeaderIntroduce(`
+## `public void QLecternHeaderIntroduce(TextBlock headword, TextBlock language, Image flag, UIElement globe, ToggleButton favorite, DependencyObject grasp, DependencyProperty step, DependencyProperty limit, TextBlock graspLabel)`
 
 Takes the headword, the language pill, the heart and the star row.
 The star row is a veneer control, so it is reached through its step and limit properties.

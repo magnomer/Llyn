@@ -16,7 +16,7 @@ The panel asks the editor's desk before it leaves an entry, and finishes through
 A cleared panel empties the editor, and an edited row opens in it.
 It restores its vistas last, so a built area already stands on started vistas.
 
-## `public static CLibrary CLibraryCreate(`
+## `public static CLibrary CLibraryCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the panel over the atelier, so the driver hands it no port.
 The marshal puts each engine notice on the driver's thread.
@@ -77,7 +77,7 @@ The rows the engine returns for the vista, none before a vista arrives.
 They come already filtered, sorted, numbered and marked, so the list decides nothing about them.
 The count is kept for `CLibraryEmpty`, so the empty notice follows the rows shown.
 
-## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CLibraryRowsLoad(`
+## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CLibraryRowsLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `CLibraryRowsRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
@@ -108,7 +108,7 @@ After a store the rows refresh, and what the import could not place is shown thr
 A clean import asks nothing further, so the report is shown only when it holds a line.
 Any failure is shown under `List.ImportFailed`, and the engine stores every entry or none.
 
-## `private IReadOnlyList<LMarkupIntake>? LLibraryIntakeRead(`
+## `private IReadOnlyList<LMarkupIntake>? LLibraryIntakeRead(IReadOnlyList<LMarkupEntry> entries, IReadOnlyList<IReadOnlyList<LMarkupTarget>> targets)`
 
 Builds the customs gate over the parsed entries and their ready targets, then asks the customs question.
 Once accepted, it reads the declared rows back from its own gate and maps each to its engine intake.

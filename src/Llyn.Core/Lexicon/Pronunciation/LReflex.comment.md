@@ -1,7 +1,7 @@
 # LReflex.cs
 Hash: `feea4782d7bf1916`
 
-## `public sealed record LReflex(`
+## `public sealed record LReflex(long LReflexId, long LReflexEntryId, int LReflexPosition, string LReflexLanguage, string LReflexKind, string LReflexText, bool LReflexMain = false, string LReflexRomanization = "", string LReflexMeaning = "", bool LReflexOwned = false, string LReflexNote = "", string LReflexRespelling = "", string LReflexRegion = "", LAnatomy? LReflexAnatomy = null, IReadOnlyList<long>? LReflexAnchors = null)`
 
 One reading of a Han-character entry in a neighbouring language that borrowed the character.
 Korean 음훈, Mandarin IPA and Japanese on'yomi are reflexes of one Middle Chinese reading.

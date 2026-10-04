@@ -18,7 +18,7 @@ The file at `path` parsed into a cargo, unknown languages omitted and twin names
 
 The stored entries each parsed entry may join, found by the intake clerk under the gate.
 
-## `public async Task<IReadOnlyList<LMarkupOmission>?> LEngineMarkupStart(`
+## `public async Task<IReadOnlyList<LMarkupOmission>?> LEngineMarkupStart(string path, Func< IReadOnlyList<LMarkupEntry>, IReadOnlyList<IReadOnlyList<LMarkupTarget>>, IReadOnlyList<LMarkupIntake>?> declare)`
 
 The whole import in its order.
 It reads the file, finds the targets, asks for the intakes, then stores the cargo.

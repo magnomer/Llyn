@@ -10,7 +10,7 @@ It forwards the pending checks the editor reads to the sound half.
 Every other member forwards one read or one mark request to the ports, so the view never holds an engine.
 A refused read or mark reaches the user through the envoy the panel handed over.
 
-## `internal LDisplay(`
+## `internal LDisplay(LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media, CEnvoy envoy)`
 
 Builds the sound half and both areas once, so every driver over this display shares them.
 No vista is held yet, so the display stands on no entry until `LDisplayVistaRestore`.
@@ -70,7 +70,7 @@ Hands `observer` every bulletin about `subject` the display vista hears, in Cond
 
 The last grasp step, which the display's star control takes as its limit.
 
-## `public IReadOnlyList<CCompassRow> CDisplayCompassRead(`
+## `public IReadOnlyList<CCompassRow> CDisplayCompassRead(IReadOnlyList<CCompassPart> parts, Func<string, string> lookup)`
 
 The read behind the floating contents, one row per shown part and one per card under it.
 The driver names the parts that stand on the page, in page order, and its own text lookup.

@@ -1,7 +1,7 @@
 # LForm.cs
 Hash: `08608a643507cab0`
 
-## `public sealed record LForm(`
+## `public sealed record LForm(long LFormEntryId, int LFormPosition, string LFormText, string? LFormLocal, string LFormRole)`
 
 A written form of an entry, ordered within it.
 Identity is `(entry_parent, position)`.

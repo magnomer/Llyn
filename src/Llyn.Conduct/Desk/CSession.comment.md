@@ -1,5 +1,5 @@
 # CSession.cs
-Hash: `2eb3f5ce9dd4bd80`
+Hash: `eea044b444bc35f1`
 
 ## `public sealed class CSession`
 
@@ -24,10 +24,6 @@ Raised after a start or a cancel, so the owner announces what the desk now holds
 
 Raised when the desk or the editor changes state.
 
-## `public event Action<string, Exception>? CSessionFailed;`
-
-Raised with the desk scope's `HoldFailed` key and the exception when an undo or redo of the desk throws.
-
 ## `private CDesk? CSessionEditorRead()`
 
 The editor desk while it shows, else nothing, so each step picks the editor or the desk.
@@ -51,8 +47,9 @@ Finishes like `LSessionFinish` but leaves a stored record unshown, because a row
 
 ## `public bool CSessionSave()`
 
-Finishes the editor with a store while it shows and holds changes, else finishes the desk the same way.
-The ready seam is asked first, so a blank guild name is refused even unchanged.
+Stores the editor while it shows and holds changes, else stores the desk while it is held and changed.
+The ready seam is asked first for the desk, so a blank guild name is refused even unchanged.
+A held desk with no changes stays open and answers true.
 
 ## `private bool CSessionReadyCheck(bool store)`
 
@@ -69,14 +66,11 @@ Reads undo and redo from the editor's desk while it shows, else from the desk.
 ## `public void CSessionUndo()`
 
 Steps the editor back while it shows, else the desk.
+Each desk shows its own failed step, so the session catches nothing.
 
 ## `public void CSessionRedo()`
 
 Steps the editor forward while it shows, else the desk.
-
-## `private void CSessionChronicleRun(Action step)`
-
-Runs a desk step and raises `CSessionFailed` with the desk scope's hold key when it throws.
 
 ## `internal bool LSessionChangeCheck()`
 

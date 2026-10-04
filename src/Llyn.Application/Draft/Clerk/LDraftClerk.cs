@@ -8,6 +8,8 @@ public sealed class LDraftClerk
     private readonly LIdentity _lDraftClerkIdentity;
     private readonly LLanguageCache _lDraftClerkLanguages;
     private readonly LDraftClerkChip _lDraftClerkChip;
+    private readonly LSituationChip _lDraftClerkSituation;
+    private readonly LRegisterChip _lDraftClerkRegister;
     private readonly LDraftClerkEtymology _lDraftClerkEtymology;
     private readonly LDraftClerkGloss _lDraftClerkGloss;
     private readonly LDraftClerkMedia _lDraftClerkMedia;
@@ -25,7 +27,9 @@ public sealed class LDraftClerk
         ArgumentNullException.ThrowIfNull(languages);
         _lDraftClerkIdentity = identity;
         _lDraftClerkLanguages = languages;
-        _lDraftClerkChip = new LDraftClerkChip(rig.LRigSituations, rig.LRigRegisters, rig.LRigTags, identity);
+        _lDraftClerkChip = new LDraftClerkChip(rig.LRigTags, identity);
+        _lDraftClerkSituation = new LSituationChip(rig.LRigSituations, identity);
+        _lDraftClerkRegister = new LRegisterChip(rig.LRigRegisters, identity);
         _lDraftClerkEtymology = new LDraftClerkEtymology(rig.LRigEntries, identity);
         _lDraftClerkGloss = new LDraftClerkGloss(identity);
         _lDraftClerkMedia = new LDraftClerkMedia(rig.LRigImages, rig.LRigVideos, identity);
@@ -94,18 +98,18 @@ public sealed class LDraftClerk
             LRequestAuthorRemoval sent => LDraftClerkPanel.LAuthorRemove(draft, sent.LRequestAuthorId),
             LRequestAuthorShift sent => LDraftClerkPanel.LAuthorMove(draft, sent),
             LRequestAuthorName sent => LDraftClerkPanel.LAuthorChange(draft, sent.LRequestText),
-            LRequestSituationTitle sent => LDraftClerkChip.LSituationChange(
+            LRequestSituationTitle sent => LSituationChip.LSituationChipChange(
                 draft,
                 sent.LRequestSituationId,
                 situation => situation with { LSituationTitle = LStateValue.LStateValueRead(sent.LRequestValue) }),
-            LRequestSituationDescription sent => LDraftClerkChip.LSituationChange(
+            LRequestSituationDescription sent => LSituationChip.LSituationChipChange(
                 draft,
                 sent.LRequestSituationId,
                 situation => situation with
                 {
                     LSituationDescription = LStateValue.LStateValueRead(sent.LRequestValue),
                 }),
-            LRequestSituationKind sent => LDraftClerkChip.LSituationChange(
+            LRequestSituationKind sent => LSituationChip.LSituationChipChange(
                 draft,
                 sent.LRequestSituationId,
                 situation => situation with { LSituationKind = LStateValue.LStateValueRead(sent.LRequestValue) }),
@@ -216,15 +220,15 @@ public sealed class LDraftClerk
                 {
                     LExampleDraftReference = LStateAnchor.LStateAnchorRead(sent.LRequestReferenceId),
                 }),
-            LRequestSituationAddition sent => _lDraftClerkChip.LSituationAdd(content, sent),
-            LRequestSituationPick sent => _lDraftClerkChip.LSituationInsert(content, sent),
-            LRequestSituationRemoval sent => LDraftClerkChip.LSituationRemove(content, sent),
-            LRequestSituationShift sent => LDraftClerkChip.LSituationMove(content, sent),
-            LRequestRegisterAddition sent => _lDraftClerkChip.LRegisterAdd(content, sent),
-            LRequestRegisterPick sent => _lDraftClerkChip.LRegisterInsert(content, sent),
-            LRequestRegisterRemoval sent => LDraftClerkChip.LRegisterRemove(content, sent),
-            LRequestRegisterShift sent => LDraftClerkChip.LRegisterMove(content, sent),
-            LRequestRegisterName sent => LDraftClerkChip.LRegisterChange(content, sent),
+            LRequestSituationAddition sent => _lDraftClerkSituation.LSituationChipAdd(content, sent),
+            LRequestSituationPick sent => _lDraftClerkSituation.LSituationChipInsert(content, sent),
+            LRequestSituationRemoval sent => LSituationChip.LSituationChipRemove(content, sent),
+            LRequestSituationShift sent => LSituationChip.LSituationChipMove(content, sent),
+            LRequestRegisterAddition sent => _lDraftClerkRegister.LRegisterChipAdd(content, sent),
+            LRequestRegisterPick sent => _lDraftClerkRegister.LRegisterChipInsert(content, sent),
+            LRequestRegisterRemoval sent => LRegisterChip.LRegisterChipRemove(content, sent),
+            LRequestRegisterShift sent => LRegisterChip.LRegisterChipMove(content, sent),
+            LRequestRegisterName sent => LRegisterChip.LRegisterChipChange(content, sent),
             LRequestTagAddition sent => _lDraftClerkChip.LTagAdd(content, sent),
             LRequestTagPick sent => _lDraftClerkChip.LTagInsert(content, sent),
             LRequestTagRemoval sent => LDraftClerkChip.LTagRemove(content, sent),

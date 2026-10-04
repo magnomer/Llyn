@@ -1,7 +1,7 @@
 # LCatalogPronunciation.cs
 Hash: `d3a3fb4bb59977c8`
 
-## `public sealed record LCatalogPronunciation(`
+## `public sealed record LCatalogPronunciation(LEntry LCatalogPronunciationEntry, string LCatalogPronunciationSound, string LCatalogPronunciationName = "", string LCatalogPronunciationEpithet = "", bool LCatalogPronunciationChosen = false)`
 
 One entry as a phonology row: the stored entry and the primary pronunciation stored for it.
 The sound travels with the row because two of the orderings read it and the row shows it.

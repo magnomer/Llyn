@@ -1,7 +1,7 @@
 # LAnatomyPiece.cs
 Hash: `3014588afd3f4a9e`
 
-## `public sealed record LAnatomyPiece(`
+## `public sealed record LAnatomyPiece(string LAnatomyPieceOnset = "", string LAnatomyPieceVowel = "", string LAnatomyPieceCoda = "", string LAnatomyPieceTone = "")`
 
 One cut of one reading: the four parts a pattern reads off it.
 Two pieces, one from the reading and one from its respelling, make one [LAnatomy](LAnatomy.comment.md).

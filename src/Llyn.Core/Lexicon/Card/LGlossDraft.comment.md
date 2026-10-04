@@ -1,7 +1,7 @@
 # LGlossDraft.cs
 Hash: `116b34d159dbac58`
 
-## `public sealed record LGlossDraft(`
+## `public sealed record LGlossDraft(long LGlossDraftId, string LGlossDraftLanguage, LStateValue LGlossDraftText)`
 
 One Gloss as a draft carries it.
 It holds the same three facts as [LGloss](LGloss.comment.md), under the draft prefix.

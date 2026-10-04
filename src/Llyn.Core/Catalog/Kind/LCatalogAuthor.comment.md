@@ -1,7 +1,7 @@
 # LCatalogAuthor.cs
 Hash: `4ce4794a49e22664`
 
-## `public sealed record LCatalogAuthor(`
+## `public sealed record LCatalogAuthor(LAuthor LCatalogAuthorStored, int LCatalogAuthorWork, int LCatalogAuthorUsage, bool LCatalogAuthorChosen = false)`
 
 One Author as a browsed row: the stored record, the Sources crediting it, and the places citing those.
 Both counts travel with the row because the ordering reads them and the row draws them.

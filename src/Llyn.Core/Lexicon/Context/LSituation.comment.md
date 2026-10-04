@@ -1,7 +1,7 @@
 # LSituation.cs
 Hash: `3fc8114fa6850e39`
 
-## `public sealed record LSituation(`
+## `public sealed record LSituation(long LSituationId, LStateValue LSituationTitle, LStateValue LSituationDescription, LStateValue LSituationKind, IReadOnlyList<LImageDraft>? LSituationImage = null, IReadOnlyList<LVideoDraft>? LSituationVideo = null)`
 
 One Situation is the usage context a Meaning or Collocation belongs to.
 It is independent data owned by nothing.

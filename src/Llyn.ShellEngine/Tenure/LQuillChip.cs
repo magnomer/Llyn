@@ -103,7 +103,7 @@ public sealed class LQuillChip
         {
             return _lQuillChipDrafts.LEngineReferenceFind(_lQuillChipTenure, card, sentence, text);
         }
-        catch (Exception)
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
         {
             return new LReferenceOffer(text, [], false);
         }
@@ -197,16 +197,10 @@ public sealed class LQuillChip
         _lQuillChipTenure.LTenureRequestApply(
             new LRequestTranslationRemoval(_lQuillChipTenure.LTenureId, card, entry));
 
-        try
+        if (_lQuillChipDrafts.LEngineCourtFind(_lQuillChipTenure.LTenureId, entry) is LCourt court)
         {
-            if (_lQuillChipDrafts.LEngineCourtFind(_lQuillChipTenure.LTenureId, entry) is LCourt court)
-            {
-                _lQuillChipDrafts.LEngineCourtDelete(court.LCourtId);
-                _lQuillChipDrafts.LEngineDraftDelete(entry);
-            }
-        }
-        catch (Exception)
-        {
+            _lQuillChipDrafts.LEngineCourtDelete(court.LCourtId);
+            _lQuillChipDrafts.LEngineDraftDelete(entry);
         }
     }
 
@@ -268,7 +262,7 @@ public sealed class LQuillChip
         {
             return _lQuillChipDrafts.LEngineTagFind(_lQuillChipTenure, card, kept);
         }
-        catch (Exception)
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
         {
             return new LTagOffer(kept, [], false);
         }
@@ -280,7 +274,7 @@ public sealed class LQuillChip
         {
             return _lQuillChipDrafts.LEngineSituationFind(_lQuillChipTenure, card, kept);
         }
-        catch (Exception)
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
         {
             return new LSituationOffer(kept, [], false);
         }
@@ -292,7 +286,7 @@ public sealed class LQuillChip
         {
             return _lQuillChipDrafts.LEngineRegisterFind(_lQuillChipTenure, card, kept);
         }
-        catch (Exception)
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
         {
             return new LRegisterOffer(kept, [], false);
         }
@@ -309,7 +303,7 @@ public sealed class LQuillChip
         {
             return _lQuillChipDrafts.LEngineTranslationFind(_lQuillChipTenure, kept, word, false);
         }
-        catch (Exception)
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
         {
             return new LTranslationOffer(kept, string.Empty, [], false, false, []);
         }

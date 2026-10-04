@@ -60,8 +60,6 @@ public sealed class CCorpus
                 LCorpusTranscriptRead()
                 ?? CExample.LExampleBlankRead(CCorpusAnthology.CAnthologyPanel.CPanelTallyRead()));
         CCorpusSession.CSessionChanged += () => CCorpusChanged?.Invoke();
-        CCorpusSession.CSessionFailed +=
-            (key, exception) => CLedger.LLedgerFailureShow(envoy, _cCorpusSettingsPort, key, exception);
         CCorpusAnthology.CAnthologyPanel.CPanelEdited += id => CCorpusSession.CSessionStart(id);
         CCorpusAnthology.CAnthologyPanel.CPanelCleared += CCorpusSession.CSessionCancel;
         CCorpusAnthology.CAnthologyPanel.CPanelDraftChanged +=
@@ -132,7 +130,7 @@ public sealed class CCorpus
     public bool CCorpusBinEnabled => !LCorpusQuotationSide && CCorpusAnthology.CAnthologyPanel.CPanelBinEnabled;
 
     public bool CCorpusStoreEnabled =>
-        CCorpusEditorShown ? CCorpusEditor.CEditorDesk.CDeskStorable : CCorpusDesk.CDeskChanged;
+        CCorpusEditorShown ? CCorpusEditor.CEditorDesk.CDeskStorable : CCorpusDesk.CDeskStorable;
 
     public bool CCorpusPressAllowed => CCorpusDisplayShown || LCorpusRowShown;
 

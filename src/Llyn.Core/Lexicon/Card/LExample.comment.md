@@ -1,7 +1,7 @@
 # LExample.cs
 Hash: `a4f2e873837bd96c`
 
-## `public sealed record LExample(`
+## `public sealed record LExample(long LExampleId, string LExampleLanguage, LStateValue LExampleText, LStateAnchor LExampleSource, IReadOnlyList<LGloss>? LExampleGloss = null, IReadOnlyList<LMention>? LExampleMention = null)`
 
 One Example, the first independent shared entity in the lexicon.
 An Example is owned by nothing.

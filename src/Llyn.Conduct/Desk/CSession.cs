@@ -53,8 +53,6 @@ public sealed class CSession
 
     public event Action? CSessionChanged;
 
-    public event Action<string, Exception>? CSessionFailed;
-
     private CDesk? CSessionEditorRead()
     {
         if (!_cSessionShownSeam())
@@ -160,7 +158,7 @@ public sealed class CSession
             return;
         }
 
-        CSessionChronicleRun(_cSessionDesk.CDeskUndo);
+        _cSessionDesk.CDeskUndo();
     }
 
     public void CSessionRedo()
@@ -171,19 +169,7 @@ public sealed class CSession
             return;
         }
 
-        CSessionChronicleRun(_cSessionDesk.CDeskRedo);
-    }
-
-    private void CSessionChronicleRun(Action step)
-    {
-        try
-        {
-            step();
-        }
-        catch (Exception exception)
-        {
-            CSessionFailed?.Invoke(_cSessionDesk.CDeskScope + ".HoldFailed", exception);
-        }
+        _cSessionDesk.CDeskRedo();
     }
 
     internal bool LSessionChangeCheck()

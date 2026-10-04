@@ -1,7 +1,7 @@
 # LHypothesisTone.cs
 Hash: `d0dbcdd3cbf6fd01`
 
-## `public sealed record LHypothesisTone(`
+## `public sealed record LHypothesisTone(string LHypothesisToneOnset, IReadOnlyList<LRespellingRule> LHypothesisToneRules, string LHypothesisToneClass)`
 
 One class of a rime-book tone in the user's reconstruction, such as 4S under 上.
 The rows of a tone are tried in order, and the first whose onset pattern matches wins.

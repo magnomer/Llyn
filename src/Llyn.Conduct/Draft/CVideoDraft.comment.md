@@ -1,7 +1,7 @@
 # CVideoDraft.cs
 Hash: `c294d414325388ac`
 
-## `public sealed record CVideoDraft(`
+## `public sealed record CVideoDraft(long CVideoDraftId, CStateValue CVideoDraftLocation, CStateValue CVideoDraftSpan, bool CVideoDraftEmpty, CScreen? CVideoDraftScreen, TimeSpan CVideoDraftFrom, TimeSpan? CVideoDraftUntil)`
 
 One video of a card or a scenario, as its video row shows it.
 

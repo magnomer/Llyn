@@ -1,7 +1,7 @@
 # CSettings.cs
 Hash: `b97186d232bb2636`
 
-## `public sealed record CSettings(`
+## `public sealed record CSettings(string CSettingsLocalization, bool CSettingsRespelled, bool CSettingsFrequency, bool CSettingsMorphology, bool CSettingsEpithet, int CSettingsOnline)`
 
 The workspace settings the settings panel shows.
 The count of online lookups is copied from the engine, so the rule stays there.

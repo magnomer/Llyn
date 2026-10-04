@@ -1,7 +1,7 @@
 # LSpeechValue.cs
 Hash: `952a748c7cb55732`
 
-## `public sealed record LSpeechValue(`
+## `public sealed record LSpeechValue(long LSpeechValueId, string LSpeechValueLanguage, long LSpeechValueCode, string LSpeechValueName, int LSpeechValuePosition, long LSpeechValueParent = 0)`
 
 One row of a language's part-of-speech vocabulary.
 Lexical rows link it by `LSpeechValueId` and never copy its name.

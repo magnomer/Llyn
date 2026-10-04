@@ -1,7 +1,7 @@
 # LEntryDraft.cs
 Hash: `7c3557c606c71b35`
 
-## `public sealed record LEntryDraft(`
+## `public sealed record LEntryDraft(string LEntryDraftHeadword, string LEntryDraftLanguage, IReadOnlyList<LPronunciationDraft>? LEntryDraftPronunciations, string LEntryDraftNote, IReadOnlyList<LCardDraft> LEntryDraftMeanings, IReadOnlyList<LCardDraft> LEntryDraftCollocations, IReadOnlyList<LSpeechDraft>? LEntryDraftSpeeches = null, IReadOnlyList<LForm>? LEntryDraftForms = null, IReadOnlyList<LInflection>? LEntryDraftInflections = null, IReadOnlyList<LTranscriptionDraft>? LEntryDraftTranscriptions = null, IReadOnlyList<LReflexDraft>? LEntryDraftReflexes = null, LEtymologyDraft? LEntryDraftEtymology = null)`
 
 The whole input form as one immutable value.
 The shell reads the visual tree once, builds this, and hands it to the engine.

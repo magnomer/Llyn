@@ -1,7 +1,7 @@
 # CLecternParadigm.cs
 Hash: `adbb29316ca5fb6b`
 
-## `public sealed record CLecternParadigm(`
+## `public sealed record CLecternParadigm(IReadOnlyList<CParadigmSlot> CLecternParadigmSlots, CFont CLecternParadigmFont)`
 
 The paradigm block of the reading view for the shown entry, ready to show.
 

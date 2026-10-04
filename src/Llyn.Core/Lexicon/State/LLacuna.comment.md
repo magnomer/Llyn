@@ -1,7 +1,7 @@
 # LLacuna.cs
 Hash: `7e2f68b009743cc2`
 
-## `public sealed record LLacuna(`
+## `public sealed record LLacuna(long? LLacunaMorphologyId)`
 
 One slot of an entry's paradigm the web was asked for and could not fill.
 A found form is stored as an inflection, so only the negative answer needs a record of its own.

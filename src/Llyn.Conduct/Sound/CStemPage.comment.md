@@ -1,7 +1,7 @@
 # CStemPage.cs
 Hash: `6d750d35babf8c4d`
 
-## `public sealed record CStemPage(`
+## `public sealed record CStemPage(string CStemPageLanguage, string CStemPageKey, IReadOnlyList<string> CStemPageCharacters, bool CStemPageEmpty, CFont CStemPageFont, CFont CStemPageGlyph)`
 
 The page of one phonetic series, as the xiesheng reader prints it.
 The blank page carries empty text and no character.

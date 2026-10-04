@@ -1,5 +1,5 @@
 # TQuill.cs
-Hash: `72a8c33cda9e6afe`
+Hash: `9085b6c8d6e78023`
 
 ## `public sealed class TQuill`
 
@@ -58,6 +58,11 @@ A span of the narrative links to the given entry at the given offset.
 ## `public void CitationSet_SourcePicked_CitesSentence()`
 
 A picked Source becomes the citation of a card's sentence.
+
+## `public void TranslationRemove_CourtDeleteFails_RaisesTheFailure()`
+
+A failing court delete after a translation removal reaches the caller instead of leaving an orphan unseen.
+The chip runs over a fake draft port whose court delete throws.
 
 ## `private static LTenure TQuillEntryStart(LEngine engine)`
 

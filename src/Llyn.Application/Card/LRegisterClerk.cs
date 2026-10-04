@@ -96,7 +96,7 @@ public sealed class LRegisterClerk
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
-        return LDraftClerkChip.LRegisterResolve(_lRegisterClerkRegisters, name)
+        return LRegisterChip.LRegisterChipResolve(_lRegisterClerkRegisters, name)
             ?? _lRegisterClerkRegisters.LRegisterCreate(new LRegister(
                 0,
                 LStateValue.LStateValueRead(name.Trim())));
@@ -203,7 +203,7 @@ public sealed class LRegisterClerk
             return stored.LRegisterId;
         }
 
-        LRegister? found = LDraftClerkChip.LRegisterResolve(registers, draft.LRegisterDraftName.LStateValueShow());
+        LRegister? found = LRegisterChip.LRegisterChipResolve(registers, draft.LRegisterDraftName.LStateValueShow());
         if (found is not null)
         {
             LIdentity.LIdentityRecord(identity, draft.LRegisterDraftId, found.LRegisterId);

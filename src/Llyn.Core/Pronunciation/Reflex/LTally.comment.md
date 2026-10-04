@@ -1,7 +1,7 @@
 # LTally.cs
 Hash: `8c6dfaeeed37515d`
 
-## `public sealed record LTally(`
+## `public sealed record LTally(string LTallyHeading, IReadOnlyList<LTallyLine> LTallyLines)`
 
 The tally of one section on a Diwei page.
 It shows how the characters placed there sound in each borrowing language.

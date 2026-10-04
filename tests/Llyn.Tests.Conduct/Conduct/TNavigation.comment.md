@@ -17,7 +17,7 @@ A citing place opens its Example or its Entry.
 The area's own open receives the landed record, and a rime cell reaches the yunjing area's attached open.
 A series reaches the xiesheng area's attached open, and nothing opens before it is attached.
 
-## `private static void TNavigationTabAdd(`
+## `private static void TNavigationTabAdd(CNavigation navigation, string tab, List<string> asked, bool leave, long station, List<(string, long)> arrived)`
 
 Registers `tab` with a leave question that notes the tab in `asked` and answers `leave`.
 The panel stands on `station`, and its open notes each landed record in `arrived`.

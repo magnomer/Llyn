@@ -1,7 +1,7 @@
 # LContour.cs
 Hash: `ef6f1a72faeca12a`
 
-## `public sealed record LContour(`
+## `public sealed record LContour(string LContourText, IReadOnlyList<int> LContourLevels)`
 
 One syllable of an IPA reading with the pitch levels its tone marks spell.
 It is derived from the reading text alone and never stored.

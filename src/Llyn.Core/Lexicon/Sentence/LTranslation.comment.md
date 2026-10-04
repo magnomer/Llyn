@@ -1,7 +1,7 @@
 # LTranslation.cs
 Hash: `d6e1755ff6d48650`
 
-## `public sealed record LTranslation(`
+## `public sealed record LTranslation(long LTranslationEntryId)`
 
 One translation link a Meaning or Collocation carries to another Entry.
 The link stores the target Entry's id and never its text.

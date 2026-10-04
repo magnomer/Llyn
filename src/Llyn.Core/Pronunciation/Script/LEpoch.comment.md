@@ -1,7 +1,7 @@
 # LEpoch.cs
 Hash: `df9425872b3db824`
 
-## `public sealed record LEpoch(`
+## `public sealed record LEpoch(string LEpochLabel, string LEpochCode)`
 
 One chronology label a language pack lists under a `script` style, paired with the code Llyn stores for it.
 A source names the age of an inscription in its own language, such as 西周早期 under a bronze.
@@ -13,7 +13,7 @@ Every label is pack data, so a source that dates its pictures differently needs 
 - `LEpochLabel` — The chronology exactly as the source prints it in a caption.
 - `LEpochCode` — The stored code the label stands for, which names a localization key under `Epoch`.
 
-## `public static (string LEpochFound, string LEpochCaption) LEpochResolve(`
+## `public static (string LEpochFound, string LEpochCaption)`
 
 Cuts a known chronology out of a caption, returning its code and the caption that remains.
 A caption carries its chronology wherever the source likes, so every word of it is weighed, not the first alone.

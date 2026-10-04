@@ -1,7 +1,7 @@
 # CColophon.cs
 Hash: `50235a38c806148e`
 
-## `public sealed record CColophon(`
+## `public sealed record CColophon(string CColophonTitle, bool CColophonTitleFaint, string CColophonKind, bool CColophonKindShown, string CColophonYear, bool CColophonYearFaint, bool CColophonYearShown, string CColophonUrl, bool CColophonUrlFaint, bool CColophonUrlShown, string CColophonNote, bool CColophonNoteFaint, bool CColophonNoteShown, string CColophonAuthor, bool CColophonAuthorFaint, bool CColophonAuthorShown, string CColophonTally)`
 
 The sheet of a reference, as the colophon panel shows it.
 The engine decides every faint and shown flag, so the panel only places them.

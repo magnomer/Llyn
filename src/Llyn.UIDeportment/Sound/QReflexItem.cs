@@ -206,11 +206,11 @@ public sealed class QReflexItem : INotifyPropertyChanged
         if (cell is not null)
         {
             cell.SetValue(
-                QField.QFieldCellProperty,
+                QQuill.QQuillCellProperty,
                 row.QReflexItemMain
-                    ? new QField.QFieldCell("Theme.Reflex.Lead", "QReflexItemText", "Input.Reflex")
-                    : new QField.QFieldCell("Theme.Reflex.Field", "QReflexItemText", "Input.Reflex"));
-            (string, QField.QFieldCell)[] asides =
+                    ? new QQuill.QQuillCell("Theme.Reflex.Lead", "QReflexItemText", "Input.Reflex")
+                    : new QQuill.QQuillCell("Theme.Reflex.Field", "QReflexItemText", "Input.Reflex"));
+            (string, QQuill.QQuillCell)[] asides =
             [
                 ("PReflexLabel", new("Theme.Reflex.Name", "QReflexItemHead", null)),
                 ("PReflexTag", new("Theme.Reflex.Name", "QReflexItemKind", null)),
@@ -218,11 +218,11 @@ public sealed class QReflexItem : INotifyPropertyChanged
                 ("PReflexMeaning", new("Theme.Reflex.Aside", "QReflexItemMeaning", "Input.Meaning")),
                 ("PReflexNote", new("Theme.Reflex.Aside", "QReflexItemNote", null)),
             ];
-            foreach ((string name, QField.QFieldCell order) in asides)
+            foreach ((string name, QQuill.QQuillCell order) in asides)
             {
                 if (QLook.QLookPartFind<TextBlock>(container, name)?.Parent is Grid aside)
                 {
-                    aside.SetValue(QField.QFieldCellProperty, order);
+                    aside.SetValue(QQuill.QQuillCellProperty, order);
                 }
             }
 

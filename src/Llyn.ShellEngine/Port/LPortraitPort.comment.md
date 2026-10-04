@@ -21,7 +21,7 @@ Any other subject is a caller mistake and throws.
 
 Exports the entry the vista has chosen to `path`, and does nothing when the vista holds no entry.
 
-## `Task<IReadOnlyList<LMarkupOmission>?> LEngineMarkupStart(`
+## `Task<IReadOnlyList<LMarkupOmission>?> LEngineMarkupStart(string path, Func< IReadOnlyList<LMarkupEntry>, IReadOnlyList<IReadOnlyList<LMarkupTarget>>, IReadOnlyList<LMarkupIntake>?> declare)`
 
 Reads the markup file, asks `declare` for the intakes, then stores the cargo.
 The read and the store run on a worker thread, while `declare` runs back on the caller's thread.

@@ -1,7 +1,7 @@
 # CCandidate.cs
 Hash: `0c6c2a48a0d7ad06`
 
-## `public sealed record CCandidate(`
+## `public sealed record CCandidate(string CCandidateSource, string? CCandidatePhonetic, int CCandidateOrder, bool CCandidateReached, string CCandidateVariety, string? CCandidateRespelling)`
 
 One reading a search found, as the notation popup lists it.
 

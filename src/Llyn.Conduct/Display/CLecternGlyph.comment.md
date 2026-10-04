@@ -1,7 +1,7 @@
 # CLecternGlyph.cs
 Hash: `00744b0b4ab090a8`
 
-## `public sealed record CLecternGlyph(`
+## `public sealed record CLecternGlyph(bool CLecternGlyphShown, string CLecternGlyphKey, string CLecternGlyphName, IReadOnlyList<CGlyphCell> CLecternGlyphCells, CFont CLecternGlyphFont)`
 
 The glyph row of the reading view for the shown entry, ready to show.
 The display reads it whenever an entry opens, so the driver only draws it.

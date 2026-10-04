@@ -16,7 +16,7 @@ A cleared panel empties the editor, and an edited row opens in it.
 It registers its vista restore and its close with the workspace.
 It restores its vistas last, so a built area already stands on started vistas.
 
-## `public static CYunjing CYunjingCreate(`
+## `public static CYunjing CYunjingCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the panel over the atelier, so the driver hands it no port.
 Building it is no user action, so it is no gate on the atelier.
@@ -149,7 +149,7 @@ The rime column as the driver copies it, counted for the empty verdict.
 
 The entry list under the chosen cells, copied through the shared row map and counted for the empty verdict.
 
-## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CYunjingXiaoyunLoad(`
+## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CYunjingXiaoyunLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 Runs the flag fill into the driver's `store`, then answers `CYunjingXiaoyunRead` beside the loaded languages.
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.

@@ -1,7 +1,7 @@
 # LStateMark.cs
 Hash: `f3767a2996426dbe`
 
-## `public sealed record LStateMark(`
+## `public sealed record LStateMark(LState LStateMarkState, bool LStateMarkUnreadable = false)`
 
 A stated field with no payload beside it, holding the three-way state alone.
 

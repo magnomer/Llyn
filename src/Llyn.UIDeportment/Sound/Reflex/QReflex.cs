@@ -23,7 +23,7 @@ internal sealed class QReflex
         _qReflexAnchor = anchor;
         QReflexList.ItemsSource = _qReflexItem;
         QLookItem.QLookItemAttach(QReflexList, QReflexItem.QReflexItemRefine);
-        QField.QFieldCellAttach(QReflexList);
+        QQuill.QQuillIntroduce(QReflexList);
         QAccentControl.QAccentControlAttach(QReflexList);
         StackPanel sound = QContract.QContractFind<StackPanel>(_qReflexSurface, "PEditorSound");
         sound.CommandBindings.Add(new CommandBinding(

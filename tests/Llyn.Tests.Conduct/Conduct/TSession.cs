@@ -124,6 +124,25 @@ public sealed class TSession
     }
 
     [Fact]
+    public void Undo_WorkspaceChanged_ShowsTheHoldFailureOnce()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+        CDesk desk = TInterfaceConductDesk.TDeskCreate(engine, "Guild", TEnvoyFake.TEnvoyCreate(false, asked));
+        desk.TDeskVistaRestore(engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderName));
+        CSession session = TInterfaceConductDesk.TSessionCreate(desk, [], static () => true, static _ => { });
+        session.CSessionStart(null);
+        desk.TDeskDefer(TInterface.TRequestAuthorCreate(desk.CDeskId, "Ada"));
+        desk.CDeskPersist();
+        engine.TEngineWorkspaceOpen(workspace.TWorkspaceFolder);
+
+        session.CSessionUndo();
+
+        Assert.Equal(["Guild.HoldFailed"], asked);
+    }
+
+    [Fact]
     public void Finish_EditorShown_HandsTheEditorTheDecision()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

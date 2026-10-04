@@ -1,5 +1,5 @@
 # TAuditLaunderingWalker.cs
-Hash: `28315a381571431e`
+Hash: `76805758bd6fc670`
 
 ## `internal static class TAuditLaunderingWalker`
 
@@ -15,17 +15,17 @@ The colour a taint carries when it came from logic.
 
 The colour a taint carries when it came from an input member of a control or a console read.
 
-## `private static readonly AsyncLocal<IReadOnlySet<ISymbol>?> TAuditReaderNames`
+## `private static readonly AsyncLocal<IReadOnlySet<ISymbol>?> TAuditReaderNames = new();`
 
 The shell members that read logic or request, read by the truth walker.
 It is local to the run's own flow, like the assay compilation in `TAuditBinder`.
 So an assay walking beside the tracked walk never swaps the tracked readers for its own.
 Outside a run it is null.
 
-## `public static IReadOnlyList<TViolation> TAuditRun(`
+## `public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> sourcePaths, IReadOnlySet<ISymbol> readers)`
 
 Walks every driver file and scans each member on its own, since a taint lives inside one member.
-The readers are cleared when the walk returns, even on a failure.
+The caller's reader members are held for the walk and cleared when the walk returns, even on a failure.
 
 ## `private static void TAuditMemberScan(MemberDeclarationSyntax member, List<TViolation> violations)`
 
@@ -49,7 +49,7 @@ Colours the symbol a declaration or name resolves to.
 
 The colour an expression carries, or null when it is clean.
 
-## `private static (string TViolationName, string TViolationColour)? TAuditTaintFind(`
+## `private static (string TViolationName, string TViolationColour)`
 
 The first tainted name inside a node and its colour.
 A tainted local, an engine symbol, a reader member, a control input member and a console read each count.
