@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Core;
 
@@ -31,4 +32,10 @@ public sealed class LPortraitOutlet : LPortraitPort
             IReadOnlyList<IReadOnlyList<LMarkupTarget>>,
             IReadOnlyList<LMarkupIntake>?> declare) =>
         _lPortraitOutletEngine.LEngineMarkup.LEngineMarkupStart(path, declare);
+
+    public Task<LReceipt> LEngineCourierSend(LPortraitLabel label, CancellationToken cancellation) =>
+        _lPortraitOutletEngine.LEngineCourier.LEngineCourierSend(label, cancellation);
+
+    public Task LEngineCourierAttach(CancellationToken cancellation) =>
+        _lPortraitOutletEngine.LEngineCourier.LEngineCourierAttach(cancellation);
 }

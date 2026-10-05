@@ -1,5 +1,5 @@
 # LRigFactory.cs
-Hash: `5990187e4849247b`
+Hash: `191561713f5d3f6f`
 
 ## `public static class LRigFactory`
 
@@ -15,7 +15,8 @@ All live in Core.Windows, which this project never references.
 The path must be fully qualified, so a bare name never lands beside whatever folder the process runs from.
 The folder is created when missing, so a fresh workspace opens as an empty one.
 One database stands behind every archive.
-The client handed in stands behind every fetcher, every download and the Joplin outpost.
+The client handed in stands behind every fetcher and every download.
+The Joplin outpost owns its own client, so the token never meets a redirect or a proxy.
 The caller owns the client and disposes it, so the factory holds nothing across builds.
 The test suite hands in a client over a stub handler, so an engine-level search runs offline.
 Nothing here is opened or read.

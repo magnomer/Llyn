@@ -121,6 +121,22 @@ public sealed class LWorkspaceArchive : LWorkspaceVault
         return file.Exists ? file.Length : 0;
     }
 
+    public Guid LWorkspaceRealmRead()
+    {
+        using LDatabaseSession session = _lWorkspaceArchiveDatabase.LDatabaseSessionStart();
+        byte[] value;
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText = "SELECT value FROM realm WHERE realm_id = $id;";
+            command.Parameters.AddWithValue("$id", LSchemaRealm.LSchemaRealmRow);
+            value = command.ExecuteScalar() as byte[]
+                ?? throw new InvalidOperationException("The realm row is missing from the workspace.");
+        }
+
+        session.LDatabaseSessionCommit();
+        return new Guid(value);
+    }
+
     private static long? LWorkspaceArchiveResolve(SqliteDataReader reader, int column)
     {
         return reader.IsDBNull(column) ? null : reader.GetInt64(column);

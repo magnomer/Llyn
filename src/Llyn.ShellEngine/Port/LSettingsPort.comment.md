@@ -1,5 +1,5 @@
 # LSettingsPort.cs
-Hash: `f137fee32ce7b52f`
+Hash: `f37bcab4f687472e`
 
 ## `public interface LSettingsPort`
 
@@ -9,6 +9,14 @@ It also words a failure into a notice, and loads fonts and flags.
 The interface texts are read through it, so a deportment names no localization.
 Nothing here touches an entry or a draft.
 `LSettingsOutlet` implements it today, and a settings clerk takes it over when the parts are dismantled.
+
+## `LSettings LEngineSettingsRead();`
+
+The user's persisted settings, as the engine holds them.
+
+## `string LEngineWorkspaceRead();`
+
+The workspace folder in use, as the engine holds it.
 
 ## `string LEngineWorkspaceFormat();`
 
@@ -62,10 +70,25 @@ The interface text under `key`, or null when none is loaded, so a caller can tel
 Persists the chosen interface language, writing only that field so a switch flipped elsewhere survives.
 A settings bulletin follows when the language changed, so the shell applies the catalog.
 
+## `void LEngineEpithetSave(bool epithet);`
+
+Persists whether lists show the epithet after every headword.
+A settings bulletin follows when the switch changed, so the settings panel rewrites its summaries.
+
 ## `void LEngineFrequencySave(bool frequency);`
 
 Persists whether an entry's frequency is fetched from the pack's web source.
 The next fill reads the switch, so a flip neither refetches what is stored nor drops it.
+
+## `void LEngineOutpostSave(string text);`
+
+Persists the port the Joplin clipper is looked for on first, from the text the user typed.
+The engine parses it, so every medium hands raw text and shares one rule.
+Text that is not a whole number from 1 to 65535 throws an `LRefusal` with `LRefusalPort`.
+
+## `bool LEngineMorphologyCheck();`
+
+Whether the morphology fetch is on, so a reading view offers its paradigm.
 
 ## `void LEngineMorphologySave(bool morphology);`
 

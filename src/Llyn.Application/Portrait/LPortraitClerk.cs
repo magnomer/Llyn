@@ -69,7 +69,7 @@ public sealed class LPortraitClerk
         _lPortraitClerkSettings = settings;
     }
 
-    public LPortraitPage LPortraitClerkRead(long entryId, LPortraitLabel label)
+    public LPortraitPage LPortraitClerkRead(long entryId, LPortraitLabel label, bool fetch = true)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
         ArgumentNullException.ThrowIfNull(label);
@@ -94,7 +94,7 @@ public sealed class LPortraitClerk
 
         List<LPortraitSection> sections = [];
         LPortraitClerkCrest.LPortraitGlyphAdd(sections, draft, LPortraitGlyphRead(language), label);
-        LPortraitClerkCrest.LPortraitFrequencyAdd(sections, LPortraitFrequencyScan(entryId), label);
+        LPortraitClerkCrest.LPortraitFrequencyAdd(sections, LPortraitFrequencyScan(entryId, fetch), label);
         LPortraitClerkCrest.LPortraitFormAdd(sections, draft, label);
         LPortraitClerkCrest.LPortraitParadigmAdd(sections, LPortraitParadigmScan(entryId), label);
         LPortraitClerkCrest.LPortraitFanqieAdd(sections, fanqie, label);
@@ -267,9 +267,9 @@ public sealed class LPortraitClerk
         return language.Length == 0 ? null : _lPortraitClerkLanguages.LLanguageClerkLoad(language).LLanguageGlyph;
     }
 
-    private IReadOnlyList<LFrequency> LPortraitFrequencyScan(long entryId)
+    private IReadOnlyList<LFrequency> LPortraitFrequencyScan(long entryId, bool fetch)
     {
-        return _lPortraitClerkFrequencies.LFrequencyClerkRead(entryId);
+        return _lPortraitClerkFrequencies.LFrequencyClerkRead(entryId, fetch);
     }
 
     private IReadOnlyList<LParadigmSlot> LPortraitParadigmScan(long entryId)

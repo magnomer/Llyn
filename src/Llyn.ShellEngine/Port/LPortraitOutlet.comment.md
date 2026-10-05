@@ -1,5 +1,5 @@
 # LPortraitOutlet.cs
-Hash: `5263eee19a1a2b4f`
+Hash: `0dc69b6e886a953d`
 
 ## `public sealed class LPortraitOutlet : LPortraitPort`
 

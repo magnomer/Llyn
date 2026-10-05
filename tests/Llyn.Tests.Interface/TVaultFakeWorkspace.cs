@@ -1,3 +1,4 @@
+using System;
 using Llyn.Core;
 
 namespace Llyn.Tests;
@@ -20,4 +21,6 @@ internal sealed class TVaultFakeWorkspace : LWorkspaceVault
     }
 
     public long LWorkspaceSizeRead() => 0;
+
+    public Guid LWorkspaceRealmRead() => Guid.Empty;
 }

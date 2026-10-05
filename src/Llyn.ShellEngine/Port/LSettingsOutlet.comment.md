@@ -1,5 +1,5 @@
 # LSettingsOutlet.cs
-Hash: `cefea79093883f6f`
+Hash: `ac8dada68d0b7cf3`
 
 ## `public sealed class LSettingsOutlet : LSettingsPort`
 

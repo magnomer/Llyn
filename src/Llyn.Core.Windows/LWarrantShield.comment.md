@@ -4,7 +4,8 @@ Hash: `fae5bf15c3da86b0`
 ## `public sealed class LWarrantShield : LWarrant`
 
 The Windows adapter that protects the Joplin token with DPAPI for the current user.
-Only the same user on the same machine can read the stored text back.
+Only the same user can read the stored text back.
+A roaming Windows profile may recover the token on another machine, as `LWarrant.comment.md` says.
 
 ## `private static readonly byte[] LWarrantShieldSalt = Encoding.UTF8.GetBytes("Llyn.Warrant");`
 

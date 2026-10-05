@@ -1,5 +1,5 @@
 # PSettings.xaml
-Hash: `7ff2b5b41c42cce6`
+Hash: `eee0c27cfb1d2e53`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -70,6 +70,25 @@ A pack that declares no frequency source fetches nothing either way, so the swit
 Whether a lookup fetches the headword's inflected forms from the web.
 It stands under the frequency switch, since both govern what a lookup fetches.
 A click saves the choice to the ledger at once, with no apply step.
+
+## `<TextBox x:Name="PDialOutpost" ...>`
+
+The Joplin group closes the Web page, since a push to Joplin also reaches out to the network.
+Its field holds the port Joplin's Data API listens on, and saves on Enter or when focus leaves.
+Escape reverts it to the stored port.
+
+## `<Button x:Name="PDialWarrant" ...>`
+
+Asks Joplin to accept Llyn, which the user confirms in Joplin itself.
+It shares the folder button's segment style, so the page keeps one kind of action.
+
+## `<Button x:Name="PDialCourier" ...>`
+
+Sends every entry to Llyn's own Joplin notebook in one push.
+
+## `<TextBlock x:Name="PDialReceipt" ...>`
+
+The line the last connect or push left, empty until one has run.
 
 ## `<ToggleButton x:Name="PLayoutLinked" ...>`
 

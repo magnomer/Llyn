@@ -1,9 +1,9 @@
 # LOutpostHttp.cs
-Hash: `72f4a87057a629bc`
+Hash: `c67e598e096f6b84`
 
 ## `public sealed class LOutpostHttp : LOutpost`
 
-The adapter behind the `LOutpost` port, bound to the shared `HttpClient` the rig builds it over.
+The adapter behind the `LOutpost` port, which owns its own `HttpClient`.
 It speaks Joplin's local Data API on the loopback address only.
 Joplin listens nowhere else, so no other host is ever contacted.
 Every token rides in the query string, the one place the Data API reads it from.
@@ -31,9 +31,13 @@ How long one port may take to answer a ping.
 A loopback answer is near instant, so a slower port is treated as silent.
 A search tries at most twelve ports, one second each.
 
-## `public LOutpostHttp(HttpClient client)`
+## `private static readonly HttpClient LOutpostClient`
 
-Binds the adapter to the `client` every call goes through.
+The one client every call goes through, built once from an `HttpClientHandler`.
+It never follows a redirect and never uses a proxy.
+The token rides in the URL, so it must not reach any other address.
+Its timeout is 100 seconds, since large uploads need more than the shared ten.
+The one-second ping bound per port is separate and stays.
 
 ## `public async Task<int?> LOutpostFind(int port, CancellationToken cancellation)`
 
@@ -52,7 +56,7 @@ An answer without a ticket throws, since there would be nothing to poll.
 Reads the ticket's status and maps it to a warrant state.
 An accepted answer without a token, any unknown status, an error status or malformed JSON reads as rejected.
 Joplin forgets tickets it no longer knows, so a poll must end rather than wait forever.
-A transport failure still throws, since Joplin may simply have closed.
+A stalled or unreachable Joplin still throws `TimeoutException`, since Joplin may simply have closed.
 
 ## `public async Task LOutpostFolderSave(int port, string token, string id, string title, CancellationToken cancellation)`
 
@@ -71,18 +75,31 @@ An update leaves the body as sent, so no such copy is ever made.
 The update sends a zero deletion time so a trashed note comes back.
 That a zero restores the note is unverified against Joplin and needs a live check.
 
-## `public async Task LOutpostNoteRemove(int port, string token, string id, CancellationToken cancellation)`
+## `public async Task<string?> LOutpostNoteRead(int port, string token, string id, string folder, string title, CancellationToken cancellation)`
+
+Asks only for the title, body, notebook and deletion time, so the check stays one small call.
+A not-found answer reads as null, since the caller then simply creates the note.
+A note outside `folder`, or with any nonzero or unreadable deletion time, reads as null too.
+A note whose title differs from `title` ordinally reads as null as well.
+Such a note was moved, trashed or renamed in Joplin, and the push puts it back.
+A malformed answer still throws, so the entry fails rather than resending blindly.
+
+## `public async Task<bool> LOutpostNoteRemove(int port, string token, string id, CancellationToken cancellation)`
 
 Deletes without the permanent flag, so Joplin moves the note to its trash.
-A note Joplin does not know is already gone, so a not-found answer is success.
+A note Joplin does not know is already gone, so a not-found answer is no failure.
+It answers false then, and true when Joplin trashed the note.
 
 ## `public async Task LOutpostTagSave(int port, string token, string id, IReadOnlyList<string> tags, CancellationToken cancellation)`
 
 Reads the note's current tags, keeps the asked ones and detaches every other.
-Asked tags are trimmed and lowercased, blanks and duplicates dropped, since Joplin stores titles that way.
-Titles then compare ordinally against that stored form, and new tags are created with it.
+Asked tags are trimmed and normalized to NFC, and blanks are dropped.
+Case is kept, since Joplin stores titles as given.
+Titles compare with `StringComparison.OrdinalIgnoreCase` after the same normalization, which also drops duplicates.
 The tag list is read only when a tag is still missing from the note.
 A missing tag is reused when one with that title exists and created otherwise, then attached.
+A create that fails with an HTTP status re-reads the tag list once.
+A tag that now matches is used, and otherwise the failure is rethrown.
 
 ## `public async Task LOutpostParcelSave(int port, string token, LParcel parcel, CancellationToken cancellation)`
 
@@ -104,7 +121,9 @@ Sends one request and hands back the answer when it succeeded.
 A not-found answer is handed back too when `lenient`, for the calls that branch on it.
 A forbidden answer to a tokened call throws the warrant refusal, so the caller asks for a new token.
 Any other failed status throws `HttpRequestException` carrying that status.
-The client's own timeout throws `HttpRequestException` too, so a stalled Joplin fails like an unreachable one.
+A stalled or unreachable Joplin throws `TimeoutException` around the transport failure.
+That covers the client's own timeout and any statusless `HttpRequestException`, such as a refused connection.
+So a caller can tell a silent Joplin from one that answered with an error.
 The caller's own cancellation is thrown through unchanged.
 
 ## `private async Task<List<JsonObject>> LOutpostHttpRead(int port, string token, string path, CancellationToken cancellation)`
@@ -114,7 +133,7 @@ An answer that is not a list object ends the read with what was gathered.
 
 ## `private static string? LOutpostHttpFind(IReadOnlyList<JsonObject> tags, string title)`
 
-The id of the tag whose title matches the normalized title ordinally, or null when none does.
+The id of the tag whose normalized title matches `title` ignoring case, or null when none does.
 
 ## `private static HttpContent LOutpostNoteBuild(LOutpostNote note)`
 

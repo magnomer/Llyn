@@ -15,9 +15,9 @@ Binds the keep the manifest is read from and written to.
 ## `public LManifest LManifestRead()`
 
 A missing file reads as an empty manifest, and so does broken JSON or a wrong shape.
+Broken JSON reads as empty on purpose, so a damaged file never blocks pushing.
+The cost is that notes of entries deleted earlier are no longer trashed.
 A file that exists but cannot be read raises `LVaultFault` around the file system's own exception.
-Reading it as empty would let a later save drop the ids of deleted notes.
-Their Joplin notes would then never be trashed.
 
 ## `public void LManifestSave(LManifest manifest)`
 

@@ -1,5 +1,5 @@
 # LOutpost.cs
-Hash: `4f1a41c04e81bcdb`
+Hash: `6d6633226cbdb55d`
 
 ## `public interface LOutpost`
 
@@ -9,6 +9,8 @@ Every call takes the port first, because Joplin may answer on a port other than 
 Every call carrying a token throws `LRefusal` with `LRefusalWarrant` when Joplin refuses the token.
 So the caller asks for a new token instead of failing each note.
 Every call takes a cancellation last, so a slow or stalled Joplin never holds a push open.
+Every call but `LOutpostFind` throws `TimeoutException` for a stalled or unreachable Joplin.
+So the caller can stop instead of retrying each note.
 
 ## `Task<int?> LOutpostFind(int port, CancellationToken cancellation);`
 
@@ -37,9 +39,16 @@ Llyn owns the note, so any edit made inside Joplin is replaced.
 The save also brings a note back from Joplin's trash and back into its notebook.
 The push is one way, so Llyn's copy wins.
 
-## `Task LOutpostNoteRemove(int port, string token, string id, CancellationToken cancellation);`
+## `Task<string?> LOutpostNoteRead(int port, string token, string id, string folder, string title, CancellationToken cancellation);`
+
+The body Joplin holds for that note, but only while it sits untrashed in `folder` under `title`.
+It answers null for a missing, moved, renamed or trashed note, so the caller sends it again.
+That lets a push repair edits made inside Joplin, or a fresh Joplin profile.
+
+## `Task<bool> LOutpostNoteRemove(int port, string token, string id, CancellationToken cancellation);`
 
 Moves the note to Joplin's trash rather than deleting it.
+It answers false when Joplin no longer knew the note, so the caller does not count it.
 The user can still recover a note whose entry was removed by mistake.
 
 ## `Task LOutpostTagSave(int port, string token, string id, IReadOnlyList<string> tags, CancellationToken cancellation);`

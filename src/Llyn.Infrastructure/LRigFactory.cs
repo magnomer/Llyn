@@ -78,7 +78,7 @@ public static class LRigFactory
             new LShengfuSourceHttp(client),
             new LReflexSourceHttp(client),
             new LScriptSourceHttp(client),
-            new LOutpostHttp(client),
+            new LOutpostHttp(),
             new LRecordingArchive(root, client),
             new LLanguageLoader(root, client),
             new LLocalizationLoader(),

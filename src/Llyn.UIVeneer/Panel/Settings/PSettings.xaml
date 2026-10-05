@@ -211,6 +211,57 @@
                                 VerticalAlignment="Center"
                                 Style="{StaticResource Theme.Choice.Switch}" />
                         </Grid>
+                        <Rectangle Style="{StaticResource Theme.Page.Rule}" />
+                        <StackPanel Margin="0,22,0,0" MaxWidth="560" HorizontalAlignment="Left">
+                            <TextBlock
+                                Style="{StaticResource Theme.Input.Label}"
+                                Text="{DynamicResource Courier.Heading}" />
+                            <TextBlock
+                                Style="{StaticResource Theme.Page.Note}"
+                                Text="{DynamicResource Courier.Helper}" />
+                        </StackPanel>
+                        <Grid Margin="0,16,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource Theme.Input.Label}"
+                                Text="{DynamicResource Courier.Port}" />
+                            <TextBox
+                                x:Name="PDialOutpost"
+                                Grid.Column="1"
+                                Width="120"
+                                Height="44"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource Theme.Input.Field}" />
+                            <Button
+                                x:Name="PDialWarrant"
+                                Grid.Column="2"
+                                Margin="8,0,0,0"
+                                VerticalAlignment="Center"
+                                Content="{DynamicResource Courier.Attach}"
+                                Style="{StaticResource Theme.Command.Segment}" />
+                            <Button
+                                x:Name="PDialCourier"
+                                Grid.Column="3"
+                                Margin="8,0,0,0"
+                                VerticalAlignment="Center"
+                                Content="{DynamicResource Courier.Send}"
+                                Style="{StaticResource Theme.Command.Segment}" />
+                        </Grid>
+                        <TextBlock
+                            x:Name="PDialReceipt"
+                            MaxWidth="560"
+                            Margin="0,8,0,0"
+                            HorizontalAlignment="Left"
+                            Style="{StaticResource Theme.Page.Note}" />
                     </StackPanel>
 
                     <StackPanel x:Name="PDialLayout" Visibility="Collapsed">

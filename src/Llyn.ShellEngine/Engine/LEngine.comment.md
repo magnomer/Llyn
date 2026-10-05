@@ -1,5 +1,5 @@
 # LEngine.cs
-Hash: `ad9d1c944b724369`
+Hash: `6b1cb4ac532c5baf`
 
 ## `public sealed class LEngine : IDisposable`
 
@@ -43,9 +43,89 @@ The clerks are built first, then the settings and the rescue are read through th
 The facades come last, so none of them can ever see an engine without its staff.
 A database this build can no longer read costs the user a launch rather than the program.
 
-## `internal LVistaFacade LEngineVista`
+## `internal LVistaFacade LEngineVista { get; }`
 
 Owns the vista registry and serves the entry and favorite rows shown by each catalog tab.
+
+## `internal LTenureFacade LEngineTenure { get; }`
+
+The facade that starts and commits draft holds, each driven by an `LTenure`.
+
+## `internal LMentionFacade LEngineMention { get; }`
+
+The facade for mentions inside sentences and etymologies, built once with the others.
+
+## `internal LMarkupFacade LEngineMarkup { get; }`
+
+The facade for the markup import, built once with the others.
+
+## `internal LCourierFacade LEngineCourier { get; }`
+
+The facade for the Joplin push and its access grant, which the portrait outlet forwards to.
+
+## `internal LWorkspaceFacade LEngineWorkspace { get; }`
+
+The facade for workspace state and trail operations, built once with the others.
+
+## `internal LReflexFacade LEngineReflex { get; }`
+
+The facade for reflexes and the reflex fetch, built once with the others.
+
+## `internal LPortraitFacade LEnginePortrait { get; }`
+
+The facade for printing and exporting portraits, built once with the others.
+
+## `internal LStemFacade LEngineStem { get; }`
+
+The facade for the phonetic series the xiesheng panel browses, built once with the others.
+
+## `internal LFanqieFacade LEngineFanqie { get; }`
+
+The facade for the fanqie and diwei reads, built once with the others.
+
+## `internal LLanguageFacade LEngineLanguage { get; }`
+
+The facade for language packs, built once with the others.
+
+## `internal LVocabularyFacade LEngineVocabulary { get; }`
+
+The facade for vocabularies, inflections and paradigms, built once with the others.
+
+## `internal LPronunciationFacade LEnginePronunciation { get; }`
+
+The facade for pronunciations, recordings, lookups, transcriptions and frequencies, built once with the others.
+
+## `internal LSettingsFacade LEngineSettings { get; }`
+
+The facade for settings, built once with the others.
+
+## `internal LRequestFacade LEngineRequest { get; }`
+
+The facade that applies one edit request at a time to a held draft.
+
+## `internal LAuthorFacade LEngineAuthor { get; }`
+
+The facade for authors, built once with the others.
+
+## `internal LExampleFacade LEngineExample { get; }`
+
+The facade for examples, built once with the others.
+
+## `internal LReferenceFacade LEngineReference { get; }`
+
+The facade for references, built once with the others.
+
+## `internal LSituationFacade LEngineSituation { get; }`
+
+The facade for situations, built once with the others.
+
+## `internal LCardFacade LEngineCard { get; }`
+
+The facade for cards, over meanings, collocations, tags, registers and translations.
+
+## `internal LEntryFacade LEngineEntry { get; }`
+
+The facade for entries, built once with the others.
 
 ## `internal LEngineStaff LEngineStaffHeld`
 
@@ -58,7 +138,7 @@ It is read under the gate, so a caller outside the gate still sees one whole rec
 The current settings snapshot, read under the gate.
 The fetch clerks hold this reader, so it exists before any facade does.
 
-## `internal LDraftFacade LEngineDraft`
+## `internal LDraftFacade LEngineDraft { get; }`
 
 The draft facade, built once with the others like every facade.
 
@@ -69,25 +149,25 @@ The controlled vocabularies come from the language packs on disk and are written
 The 音韻地位 categories are derived again from the stored placements and the hypothesis on disk.
 A workspace rebuilt from an older schema has its derived strings filled once through the workspace clerk.
 
-## `internal object LEngineGate`
+## `internal object LEngineGate { get; } = new();`
 
 The shared lock every facade and fetching clerk uses for engine state.
 Callers hold it while reading or changing the state below.
 
-## `internal LTrove LEngineTrove`
+## `internal LTrove LEngineTrove { get; } = new();`
 
 The engine session cache, shared with the facades that read and clear it.
 
-## `internal LSettings LEngineSettingsHeld`
+## `internal LSettings LEngineSettingsHeld { get; set; }`
 
 The current settings snapshot.
 Callers read and update it under `LEngineGate`.
 
-## `internal HashSet<long> LEngineDraftStale`
+## `internal HashSet<long> LEngineDraftStale { get; } = [];`
 
 Draft ids claimed in a former workspace, kept so a surviving tenure cannot write into the new one.
 
-## `internal long LEngineRevision`
+## `internal long LEngineRevision { get; set; }`
 
 A count that moves on every announced change, so a tenure knows when its kept state went stale.
 Callers read and move it under `LEngineGate`.

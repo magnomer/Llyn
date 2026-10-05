@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Core;
@@ -20,6 +21,10 @@ public interface LPortraitPort
             IReadOnlyList<LMarkupEntry>,
             IReadOnlyList<IReadOnlyList<LMarkupTarget>>,
             IReadOnlyList<LMarkupIntake>?> declare);
+
+    Task<LReceipt> LEngineCourierSend(LPortraitLabel label, CancellationToken cancellation);
+
+    Task LEngineCourierAttach(CancellationToken cancellation);
 
     static LPressTicket LEngineTicketRead(
         string printer,

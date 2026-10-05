@@ -1,5 +1,5 @@
 # TAuditDeportmentSetting.cs
-Hash: `a48844133a8ece1a`
+Hash: `241a4cd4ee386bfc`
 
 ## `internal static class TAuditDeportmentSetting`
 
@@ -8,6 +8,7 @@ It holds the offer for `Llyn.UIDeportment>Llyn.Conduct` alone.
 No script writes this file.
 `AuditStructure.json` holds its own copy, kept in step by hand as scripts/principles.md asks.
 The border facts read it together with the other offer settings.
+The offer now includes the courier, `CCourier` and `CCourierState`, beside the ledger.
 
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditDeportmentOffer`
 

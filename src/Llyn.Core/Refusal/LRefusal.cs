@@ -38,6 +38,16 @@ public sealed class LRefusal : Exception
 
     public const string LRefusalWarrant = "Refusal.WarrantRejected";
 
+    public const string LRefusalOutpost = "Refusal.OutpostMissing";
+
+    public const string LRefusalMissing = "Refusal.WarrantMissing";
+
+    public const string LRefusalCourier = "Refusal.CourierBusy";
+
+    public const string LRefusalPending = "Refusal.WarrantPending";
+
+    public const string LRefusalPort = "Refusal.OutpostPort";
+
     public LRefusal(string reason)
         : base(reason)
     {

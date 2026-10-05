@@ -20,7 +20,8 @@ public sealed class TWarrantFake : LWarrant
             return null;
         }
 
-        return TWarrantFakeFormat(hidden.Substring(TWarrantFakeMark.Length));
+        string rest = hidden.Substring(TWarrantFakeMark.Length);
+        return rest.Length == 0 ? null : TWarrantFakeFormat(rest);
     }
 
     private static string TWarrantFakeFormat(string text)

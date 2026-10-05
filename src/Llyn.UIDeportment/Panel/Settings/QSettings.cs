@@ -20,6 +20,8 @@ internal sealed class QSettings
 
     private readonly QFrequency _qSettingsFrequency;
 
+    private readonly QCourier _qSettingsCourier;
+
     private readonly QMorphology _qSettingsMorphology;
 
     private readonly QLayout _qSettingsLayout;
@@ -38,6 +40,7 @@ internal sealed class QSettings
         _qSettingsLocalization = new QLocalization(surface);
         _qSettingsRespelling = new QRespelling(surface);
         _qSettingsFrequency = new QFrequency(surface);
+        _qSettingsCourier = new QCourier(surface);
         _qSettingsMorphology = new QMorphology(surface);
         _qSettingsLayout = layout;
     }
@@ -91,11 +94,14 @@ internal sealed class QSettings
         _qSettingsLocalization.QLocalizationIntroduce(ledger, host.QWindowEnvoy);
         _qSettingsRespelling.QRespellingIntroduce(ledger, host.QWindowEnvoy);
         _qSettingsFrequency.QFrequencyIntroduce(ledger, host.QWindowEnvoy);
+        _qSettingsCourier.QCourierIntroduce(ledger, QSettingsAtelier.CAtelierCourier, host.QWindowEnvoy);
         _qSettingsMorphology.QMorphologyIntroduce(ledger, host.QWindowEnvoy);
         _qSettingsLayout.QLayoutIntroduce(_qSettingsSurface);
         QLookItem.QLookItemAttach(QSettingsLedger, QSettingsItemRefine);
         QSettingsPosture.QPostureLinkedChanged += QSettingsMetaRefine;
         ledger.CLedgerChanged += QObserver.QObserverCreate<CLedgerState>(_qSettingsSurface, QSettingsRefine);
+        QSettingsAtelier.CAtelierCourier.CCourierChanged +=
+            QObserver.QObserverCreate<CCourierState>(_qSettingsSurface, _qSettingsCourier.QCourierRefine);
         QSettingsDialRefine("Workspace");
     }
 
@@ -109,6 +115,7 @@ internal sealed class QSettings
         _qSettingsRespelling.QRespellingRefine(settings.CSettingsRespelled);
         QSettingsEpithet.IsChecked = settings.CSettingsEpithet;
         _qSettingsFrequency.QFrequencyRefine(settings.CSettingsFrequency);
+        _qSettingsCourier.QCourierOutpostRefine(settings.CSettingsOutpost);
         _qSettingsMorphology.QMorphologyRefine(settings.CSettingsMorphology);
         _qSettingsLayout.QLayoutLinkedRefine();
         QSettingsLedgerRefine(state);

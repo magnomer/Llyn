@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -165,6 +166,22 @@ internal sealed class LSettingsFacade
         }
     }
 
+    internal void LEngineOutpostSave(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        if (!int.TryParse(text.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out int port)
+            || port < 1
+            || port > 65535)
+        {
+            throw new LRefusal(LRefusal.LRefusalPort);
+        }
+
+        if (LEngineSettingsChange(settings => settings with { LSettingsOutpost = port }))
+        {
+            _lSettingsFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+        }
+    }
+
     internal bool LEngineMorphologyCheck()
     {
         return LEngineSettingsRead().LSettingsMorphology;
@@ -188,7 +205,7 @@ internal sealed class LSettingsFacade
         }
     }
 
-    private bool LEngineSettingsChange(Func<LSettings, LSettings> change)
+    internal bool LEngineSettingsChange(Func<LSettings, LSettings> change)
     {
         lock (_lSettingsFacadeGate)
         {

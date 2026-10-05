@@ -1,5 +1,5 @@
 # QSettings.cs
-Hash: `c42a6a392223357f`
+Hash: `e2eb3799d7e2da76`
 
 ## `internal sealed class QSettings`
 
@@ -24,9 +24,12 @@ Each named part of the markup is pulled by its contract ID, which keeps the mark
 
 Sets the search hint and the two page icons, and subscribes the panel's own events.
 It introduces each choice driver to only the Conduct area it calls, or to the posture.
+The Joplin driver gets the ledger for its port and the courier for its two actions.
 Each settings switch also receives the window's envoy, for a failed save.
 This happens before `CLedgerChanged` is subscribed, so the first state finds them ready.
 It also subscribes the posture's linked switch, so the summary row follows a tick.
+It subscribes `CCourierChanged` through the surface's dispatcher, though the gates already resume on the UI thread.
+So a gate called off the UI thread would still paint safely.
 The ledger raises the state on every open and after every settings or workspace change.
 The ledger rows get their fill through `QLookItemAttach` before the first state arrives.
 It then shows the first card.
@@ -36,6 +39,7 @@ It then shows the first card.
 Paints the whole panel from one ledger state.
 The interface texts are applied first, so everything painted after reads in the stored language.
 Each choice driver is handed its own value from the state, and the linked switch reads the posture.
+The Joplin port arrives as ready text, so a rejected entry is painted over by the stored port.
 The switches listen on `Click`, which setting `IsChecked` in code does not raise.
 So a painted switch writes nothing back at all.
 

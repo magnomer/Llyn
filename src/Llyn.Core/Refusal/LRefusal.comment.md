@@ -1,5 +1,5 @@
 # LRefusal.cs
-Hash: `e438719d0c1eccfd`
+Hash: `b3cce9c782b6cc26`
 
 ## `public sealed class LRefusal : Exception`
 
@@ -96,6 +96,31 @@ Reason key for an author draft whose name is blank.
 
 Reason key for a Joplin call whose token Joplin refused.
 The caller asks for a new token instead of failing each note.
+
+## `public const string LRefusalOutpost = "Refusal.OutpostMissing";`
+
+Reason key for a push or connect that found no Joplin on any port tried, or lost it mid-run.
+Joplin may be closed or its Web Clipper service off, and only the user can change either.
+
+## `public const string LRefusalMissing = "Refusal.WarrantMissing";`
+
+Reason key for a push whose stored token is empty.
+Llyn was never connected to Joplin, so the user is told to click Connect first.
+
+## `public const string LRefusalCourier = "Refusal.CourierBusy";`
+
+Reason key for a push or connect asked while another push or connect still runs.
+Two runs would race over the manifest and the stored token, so the second waits for the user instead.
+
+## `public const string LRefusalPending = "Refusal.WarrantPending";`
+
+Reason key for a connect whose access request Joplin left unanswered past the polling limit.
+The user may simply not have seen the prompt, so they accept it and try again.
+
+## `public const string LRefusalPort = "Refusal.OutpostPort";`
+
+Reason key for a Joplin port the user typed that is not a whole number from 1 to 65535.
+The typed text is the user's to fix, so it reads as a refusal rather than a fault.
 
 ## `public LRefusal(string reason)`
 

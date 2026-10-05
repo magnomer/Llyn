@@ -1,3 +1,5 @@
+using System;
+
 namespace Llyn.Core;
 
 public interface LWorkspaceVault
@@ -9,4 +11,6 @@ public interface LWorkspaceVault
     long LWorkspaceFloorAdjust();
 
     long LWorkspaceSizeRead();
+
+    Guid LWorkspaceRealmRead();
 }

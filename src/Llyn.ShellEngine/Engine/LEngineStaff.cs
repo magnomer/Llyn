@@ -43,7 +43,8 @@ internal sealed record LEngineStaff(
     LMarkupClerk LEngineStaffMarkup,
     LMarkupClerkIntake LEngineStaffIntake,
     LPortraitClerk LEngineStaffPortrait,
-    LEnsign LEngineStaffEnsign)
+    LEnsign LEngineStaffEnsign,
+    LCourierClerk LEngineStaffCourier)
 {
     internal static LEngineStaff LEngineStaffBuild(
         LRig rig,
@@ -102,11 +103,13 @@ internal sealed record LEngineStaff(
             rig, language, entry, vocabulary, translation, reference, favorite, fanqie, frequency,
             paradigm, script, markup, settings);
         LEnsign ensign = new(rig.LRigUsher);
+        LCourierClerk courier = new(
+            rig, portrait, entry, gate, settings, exception => workspace.LWorkspaceAuditRecord(exception));
 
         return new LEngineStaff(
             draft, chronicle, court, claim, tag, register, translation, reference, example,
             situation, meaning, mention, usage, vocabulary, paradigm, pronunciation, trail,
             language, recording, transcription, reflex, entry, lacuna, frequency, outcome, author, favorite,
-            citation, fanqie, shengfu, stem, diwei, script, workspace, markup, intake, portrait, ensign);
+            citation, fanqie, shengfu, stem, diwei, script, workspace, markup, intake, portrait, ensign, courier);
     }
 }

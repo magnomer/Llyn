@@ -1,5 +1,5 @@
 # LWorkspaceArchive.cs
-Hash: `db96d41dce3ac6be`
+Hash: `cf591d9618840594`
 
 ## `public sealed class LWorkspaceArchive : LWorkspaceVault`
 
@@ -12,10 +12,8 @@ So opening the workspace never has to search for it.
 `LWorkspaceStateSave` writes it back in place.
 
 The fixed id is this store's, not the caller's.
-A state travels with the id it was read under, so a caller can see which row it holds.
-But the save always writes the one row.
-Writing a caller-chosen id would let a second workspace row appear.
-The read could never find that row again.
+A state carries no id, so the save always writes the one row.
+A caller-chosen id would let a second workspace row appear that the read could never find.
 
 The row names only rows of this database: the Entry each duplex side shows and the session revision.
 How a panel orders, what it hides and which tab stands open name no row.
@@ -30,7 +28,7 @@ Losing the whole row would lose no dictionary content.
 
 Fixed id of the single workspace row this store reads and writes.
 
-## `private const string LWorkspaceArchiveColumn`
+## `private const string LWorkspaceArchiveColumn =`
 
 The column list the row is created under and read back by, in the order the reader indexes them.
 
@@ -47,7 +45,7 @@ So the caller always receives a state rather than `null`.
 ## `public void LWorkspaceStateSave(LWorkspaceState state)`
 
 Writes `state` back into the workspace row, creating the row when it is absent.
-The row written is always this store's single one, whatever id the state carries.
+The row written is always this store's single one, since a state carries no id.
 The identity floor is written only downward.
 A state read before another engine issued an id would otherwise raise the floor.
 That id could then come round again.
@@ -62,6 +60,12 @@ The row is created at minus one when the database has none yet.
 ## `public long LWorkspaceSizeRead()`
 
 The length of the database file, or zero before it exists.
+
+## `public Guid LWorkspaceRealmRead()`
+
+Reads the realm row the schema writes once when it creates the store.
+The bytes go back to a `Guid` in the order `LSchemaRealmCreate` wrote them.
+A missing row throws, since the schema guarantees one and a guess would mislabel the workspace.
 
 ## `private static long? LWorkspaceArchiveResolve(SqliteDataReader reader, int column)`
 

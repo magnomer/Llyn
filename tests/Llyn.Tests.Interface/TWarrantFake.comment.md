@@ -1,5 +1,5 @@
 # TWarrantFake.cs
-Hash: `70fd35ae4c07f303`
+Hash: `7cef68fe9f435952`
 
 ## `public sealed class TWarrantFake : LWarrant`
 
@@ -17,7 +17,8 @@ Otherwise it returns the marker followed by the reversed token.
 
 ## `public string? LWarrantRestore(string hidden)`
 
-Answers null for blank text or text lacking the marker, as the real adapter does for unrecoverable input.
+Answers null for blank text, text lacking the marker, or nothing after the marker.
+The real adapter answers null for anything it cannot recover.
 Otherwise it returns the token reversed back.
 
 ## `private static string TWarrantFakeFormat(string text)`

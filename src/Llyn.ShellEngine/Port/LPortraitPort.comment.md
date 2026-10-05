@@ -1,10 +1,11 @@
 # LPortraitPort.cs
-Hash: `df0aefe3b097ee9c`
+Hash: `967882659869ba12`
 
 ## `public interface LPortraitPort`
 
 The slice of the engine a panel sees when it prints, exports or imports.
 Printing and exporting portray the record a vista chose, so the caller hands the vista and never the id.
+The Joplin push and attach each run as one call.
 The markup import runs as one call, which reads the cargo and stores it under declared intakes.
 `LPortraitOutlet` implements it today, and a portrait clerk takes it over when the parts are dismantled.
 
@@ -27,6 +28,16 @@ Reads the markup file, asks `declare` for the intakes, then stores the cargo.
 The read and the store run on a worker thread, while `declare` runs back on the caller's thread.
 A `declare` answering null stores nothing and answers null.
 Otherwise it answers what the read and the import left behind.
+
+## `Task<LReceipt> LEngineCourierSend(LPortraitLabel label, CancellationToken cancellation);`
+
+Pushes every entry into Joplin one way, worded with `label`.
+The receipt counts what was saved, kept, removed and failed.
+
+## `Task LEngineCourierAttach(CancellationToken cancellation);`
+
+Asks Joplin to grant access and keeps the hidden token in the settings.
+The caller never sees the raw token, so it cannot leak into a view.
 
 ## `static LPressTicket LEngineTicketRead(string printer, double? width, double? height, bool landscape, int copies, bool collated, LPressSide side, LPressInk ink)`
 

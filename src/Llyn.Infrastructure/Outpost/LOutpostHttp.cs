@@ -15,7 +15,11 @@ namespace Llyn.Infrastructure;
 
 public sealed class LOutpostHttp : LOutpost
 {
-    private readonly HttpClient _lOutpostClient;
+    private static readonly HttpClient LOutpostClient = new(
+        new HttpClientHandler { AllowAutoRedirect = false, UseProxy = false })
+    {
+        Timeout = TimeSpan.FromSeconds(100),
+    };
 
     private const string LOutpostBanner = "JoplinClipperServer";
 
@@ -26,12 +30,6 @@ public sealed class LOutpostHttp : LOutpost
     private const int LOutpostPage = 100;
 
     private static readonly TimeSpan LOutpostPatience = TimeSpan.FromSeconds(1);
-
-    public LOutpostHttp(HttpClient client)
-    {
-        ArgumentNullException.ThrowIfNull(client);
-        _lOutpostClient = client;
-    }
 
     public async Task<int?> LOutpostFind(int port, CancellationToken cancellation)
     {
@@ -157,7 +155,33 @@ public sealed class LOutpostHttp : LOutpost
             HttpMethod.Put, address, LOutpostNoteBuild(note), true, false, cancellation).ConfigureAwait(false);
     }
 
-    public async Task LOutpostNoteRemove(int port, string token, string id, CancellationToken cancellation)
+    public async Task<string?> LOutpostNoteRead(
+        int port, string token, string id, string folder, string title, CancellationToken cancellation)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(token);
+        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentNullException.ThrowIfNull(folder);
+        ArgumentNullException.ThrowIfNull(title);
+
+        string path = "notes/" + Uri.EscapeDataString(id) + "?fields=title,body,parent_id,deleted_time";
+        using HttpResponseMessage response = await LOutpostHttpSend(
+            HttpMethod.Get, LOutpostHttpFormat(port, path, token), null, true, true, cancellation)
+            .ConfigureAwait(false);
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+
+        JsonNode? answer = await LOutpostHttpParse(response, cancellation).ConfigureAwait(false);
+        bool present = answer is JsonObject note && note["deleted_time"] is JsonValue time
+            && time.TryGetValue(out long deleted) && deleted == 0
+            && string.Equals(LOutpostHttpParse(answer, "title"), title, StringComparison.Ordinal);
+        return present && string.Equals(LOutpostHttpParse(answer, "parent_id"), folder, StringComparison.Ordinal)
+            ? LOutpostHttpParse(answer, "body")
+            : null;
+    }
+
+    public async Task<bool> LOutpostNoteRemove(int port, string token, string id, CancellationToken cancellation)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token);
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -169,6 +193,7 @@ public sealed class LOutpostHttp : LOutpost
             true,
             true,
             cancellation).ConfigureAwait(false);
+        return response.StatusCode != HttpStatusCode.NotFound;
     }
 
     public async Task LOutpostTagSave(
@@ -179,12 +204,12 @@ public sealed class LOutpostHttp : LOutpost
         ArgumentNullException.ThrowIfNull(tags);
 
         string note = Uri.EscapeDataString(id);
-        HashSet<string> missing = new(StringComparer.Ordinal);
+        HashSet<string> missing = new(StringComparer.OrdinalIgnoreCase);
         foreach (string tag in tags)
         {
             if (!string.IsNullOrWhiteSpace(tag))
             {
-                missing.Add(tag.Trim().ToLowerInvariant());
+                missing.Add(tag.Trim().Normalize(NormalizationForm.FormC));
             }
         }
 
@@ -194,7 +219,8 @@ public sealed class LOutpostHttp : LOutpost
         {
             string? tagId = LOutpostHttpParse(tag, "id");
             string? title = LOutpostHttpParse(tag, "title");
-            if (string.IsNullOrEmpty(tagId) || (title is not null && missing.Remove(title)))
+            string? kept = title?.Trim().Normalize(NormalizationForm.FormC);
+            if (string.IsNullOrEmpty(tagId) || (kept is not null && missing.Remove(kept)))
             {
                 continue;
             }
@@ -219,15 +245,28 @@ public sealed class LOutpostHttp : LOutpost
             string? tagId = LOutpostHttpFind(known, title);
             if (tagId is null)
             {
-                using HttpResponseMessage create = await LOutpostHttpSend(
-                    HttpMethod.Post,
-                    LOutpostHttpFormat(port, "tags", token),
-                    LOutpostHttpFormat(new JsonObject { ["title"] = title }),
-                    true,
-                    false,
-                    cancellation).ConfigureAwait(false);
-                JsonNode? created = await LOutpostHttpParse(create, cancellation).ConfigureAwait(false);
-                tagId = LOutpostHttpParse(created, "id");
+                try
+                {
+                    using HttpResponseMessage create = await LOutpostHttpSend(
+                        HttpMethod.Post,
+                        LOutpostHttpFormat(port, "tags", token),
+                        LOutpostHttpFormat(new JsonObject { ["title"] = title }),
+                        true,
+                        false,
+                        cancellation).ConfigureAwait(false);
+                    JsonNode? created = await LOutpostHttpParse(create, cancellation).ConfigureAwait(false);
+                    tagId = LOutpostHttpParse(created, "id");
+                }
+                catch (HttpRequestException exception) when (exception.StatusCode is not null)
+                {
+                    known = await LOutpostHttpRead(port, token, "tags", cancellation).ConfigureAwait(false);
+                    tagId = LOutpostHttpFind(known, title);
+                    if (tagId is null)
+                    {
+                        throw;
+                    }
+                }
+
                 if (string.IsNullOrEmpty(tagId))
                 {
                     throw new HttpRequestException("Joplin created a tag without answering its id.");
@@ -293,7 +332,7 @@ public sealed class LOutpostHttp : LOutpost
         try
         {
             using HttpRequestMessage request = new(HttpMethod.Get, LOutpostHttpFormat(port, "ping", null));
-            using HttpResponseMessage response = await _lOutpostClient.SendAsync(request, limit.Token)
+            using HttpResponseMessage response = await LOutpostClient.SendAsync(request, limit.Token)
                 .ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
@@ -325,11 +364,15 @@ public sealed class LOutpostHttp : LOutpost
         HttpResponseMessage response;
         try
         {
-            response = await _lOutpostClient.SendAsync(request, cancellation).ConfigureAwait(false);
+            response = await LOutpostClient.SendAsync(request, cancellation).ConfigureAwait(false);
         }
         catch (OperationCanceledException exception) when (!cancellation.IsCancellationRequested)
         {
-            throw new HttpRequestException("Joplin did not answer in time.", exception);
+            throw new TimeoutException("Joplin did not answer in time.", exception);
+        }
+        catch (HttpRequestException exception) when (exception.StatusCode is null)
+        {
+            throw new TimeoutException("Joplin could not be reached.", exception);
         }
 
         if (response.IsSuccessStatusCode || (lenient && response.StatusCode == HttpStatusCode.NotFound))
@@ -388,7 +431,8 @@ public sealed class LOutpostHttp : LOutpost
     {
         foreach (JsonObject tag in tags)
         {
-            if (string.Equals(LOutpostHttpParse(tag, "title"), title, StringComparison.Ordinal))
+            string? found = LOutpostHttpParse(tag, "title")?.Trim().Normalize(NormalizationForm.FormC);
+            if (string.Equals(found, title, StringComparison.OrdinalIgnoreCase))
             {
                 return LOutpostHttpParse(tag, "id");
             }

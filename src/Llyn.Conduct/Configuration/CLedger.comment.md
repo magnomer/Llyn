@@ -1,11 +1,11 @@
 # CLedger.cs
-Hash: `b6fed17b27362b3a`
+Hash: `48945d5042de3de2`
 
 ## `public sealed class CLedger`
 
 The settings ledger holds the workspace settings, their saves and the pages a settings view lists.
-A view attaches once and is handed one ready state on attach and after every settings or workspace change.
-It stands on the atelier's settings port, and `CAtelier` hands one out on each read.
+A view subscribes once and is handed one ready state on every open and after every settings or workspace change.
+It stands on the atelier's settings port, which it reads from `CAtelier` on every call rather than keeping a copy.
 
 ## `private const int CLedgerWeb = 2;`
 
@@ -14,6 +14,8 @@ How many online lookups the Web page counts against, the frequency and the morph
 ## `private static readonly (string, string[])[] CLedgerPages =`
 
 The settings pages in the order a view lists them, each with the keys its search also reads.
+The Web page carries the Joplin group's heading, helper, port label and both button labels.
+So a search for Joplin, its port or either action finds it.
 
 ## `private string? _cLedgerWanted;`
 
@@ -28,7 +30,7 @@ Only the atelier builds it, once, over its own settings port.
 The whole settings state, raised on every open and after every settings or workspace bulletin.
 A settings view subscribes once and never asks the engine piece by piece.
 
-## `internal CLedgerNoticed LLedgerRepaint { get; }`
+## `internal CLedgerNoticed LLedgerRepaint { get; } = new();`
 
 The atelier's repaint memory, built once with the ledger, so it lives and ends with the atelier.
 The ledger owns it, since it is the failure policy every gate funnels through and it hears the user's acts.
@@ -62,6 +64,14 @@ The ledger is then raised again, so the driver repaints from the saved settings.
 Stores whether the frequency lookup is on.
 A failed save is shown through `envoy` as `Settings.SaveFailed`.
 The ledger is then raised again, so the driver repaints from the saved settings.
+
+## `public void CLedgerOutpostSave(string text, CEnvoy envoy)`
+
+Stores the Joplin port from the raw text the user typed.
+The engine parses and bounds it, so Conduct holds no data rule.
+A refused or failed save is shown through `envoy` as `Settings.SaveFailed`, with the refusal's own reason.
+The ledger is then raised again, so the driver repaints the stored port over the rejected text.
+A successful save raises the ledger too, so the field shows the stored port even when unchanged.
 
 ## `public void CLedgerMorphologySave(bool morphology, CEnvoy envoy)`
 
@@ -127,7 +137,18 @@ The pages the kept search shows ride along, so a settings change keeps the catal
 
 ## `private CSettings CLedgerSettingsRead()`
 
-Copies the engine's settings, with its count of online lookups, into the Conduct shape.
+Copies the engine's settings, with its count of online lookups and the Joplin port, into the Conduct shape.
+The port is formatted by `LLedgerOutpostFormat`.
+
+## `public string CLedgerOutpostRead()`
+
+The stored Joplin port, formatted by `LLedgerOutpostFormat` as the ledger state carries it.
+A driver reverts its field from it, so it keeps no copy of the port.
+
+## `private static string LLedgerOutpostFormat(LSettings settings)`
+
+The one map from the stored port to its text, which `CLedgerSettingsRead` and `CLedgerOutpostRead` share.
+It uses the invariant culture, so the field never shows a grouping separator.
 
 ## `private string CLedgerMetaRead(string child, CSettings settings)`
 

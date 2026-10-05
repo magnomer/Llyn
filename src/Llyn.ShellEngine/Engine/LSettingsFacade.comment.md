@@ -1,5 +1,5 @@
 # LSettingsFacade.cs
-Hash: `71ac248c4bda0b5d`
+Hash: `a239ffadf94f26bd`
 
 ## `internal sealed class LSettingsFacade`
 
@@ -124,6 +124,13 @@ Persists whether an entry's frequency is fetched from the pack's web source and 
 The next fill reads the switch, so a flip neither refetches what is stored nor drops it.
 A settings bulletin is raised when the switch changed, so the settings panel rewrites its summaries.
 
+## `internal void LEngineOutpostSave(string text)`
+
+Persists the port the Joplin clipper is looked for on first, from the text the user typed.
+The text is trimmed and read with the invariant culture, so the parse never follows the locale.
+Anything not a whole number from 1 to 65535 throws an `LRefusal` with `LRefusalPort`, since no clipper could answer there.
+A settings bulletin is raised when the port changed, so the settings panel repaints the stored port.
+
 ## `internal bool LEngineMorphologyCheck()`
 
 Whether the morphology fetch is on, so a reading view offers its paradigm.
@@ -133,12 +140,13 @@ Whether the morphology fetch is on, so a reading view offers its paradigm.
 Turns the morphology fetch on or off.
 Turning it off cancels every pending inflection fetch through the lacuna clerk.
 
-## `private bool LEngineSettingsChange(Func<LSettings, LSettings> change)`
+## `internal bool LEngineSettingsChange(Func<LSettings, LSettings> change)`
 
 Applies one change to the settings snapshot under the gate and writes it through the workspace clerk.
 An unchanged snapshot writes nothing and answers false.
 A write that throws puts the previous snapshot back before the exception leaves, still under the gate.
 The caller then raises no notice, so a rolled-back change tells no one.
+The courier facade also calls it, so the hidden token is stored the same way.
 
 
 

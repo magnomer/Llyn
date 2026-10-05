@@ -1,5 +1,5 @@
 # LEngineStaff.cs
-Hash: `f77a72effef4352b`
+Hash: `be5ae33d2207199c`
 
 ## `internal sealed record LEngineStaff(...)`
 
@@ -47,10 +47,12 @@ Each facade reads its concern from this record.
 - `LEngineStaffIntake` imports markup.
 - `LEngineStaffPortrait` builds portraits.
 - `LEngineStaffEnsign` manages language flags.
+- `LEngineStaffCourier` pushes entries into Joplin.
 
 ## `internal static LEngineStaff LEngineStaffBuild(...)`
 
 Builds the staff in dependency order over one rig.
 Fetch clerks receive the gate and the bulletin raiser supplied by the engine.
+The courier records its failures through the workspace clerk, so a failed push leaves a trace.
 The frequency and lacuna fetches also receive the settings reader.
 The identity issuer receives the stale ids, so the new workspace never issues one a tenure still holds.

@@ -36,6 +36,7 @@ public sealed class CAtelier : IDisposable
         CAtelierMention = new CMention(this);
         CAtelierNavigation = new CNavigation(this);
         CAtelierLedger = new CLedger(this);
+        CAtelierCourier = new CCourier(this);
         CAtelierWorkspace = new CWorkspace(this);
     }
 
@@ -46,6 +47,8 @@ public sealed class CAtelier : IDisposable
     public CCatalog CAtelierCatalog => new(this);
 
     public CLedger CAtelierLedger { get; }
+
+    public CCourier CAtelierCourier { get; }
 
     public CWorkspace CAtelierWorkspace { get; }
 

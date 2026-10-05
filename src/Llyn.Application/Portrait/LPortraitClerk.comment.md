@@ -1,5 +1,5 @@
 # LPortraitClerk.cs
-Hash: `c1d148772574efd3`
+Hash: `3ea493bd4a3562ff`
 
 ## `public sealed class LPortraitClerk`
 
@@ -16,11 +16,12 @@ The device-independent pixels in one inch, the unit a print dialog measures a sh
 
 Reads the portrait port and the press out of `rig` and keeps the clerks each section reads through.
 
-## `public LPortraitPage LPortraitClerkRead(long entryId, LPortraitLabel label)`
+## `public LPortraitPage LPortraitClerkRead(long entryId, LPortraitLabel label, bool fetch = true)`
 
 The page of one entry, refused when the entry no longer stands.
 Sections come in display order, then the readings with respelling and phonemic marks decided per language.
 A failing favorite check throws rather than showing the entry as no favorite.
+A false `fetch` reads stored frequencies only, so a push over every entry starts no network fetch.
 
 ## `public async Task LPortraitClerkExport(LPortraitPage portrait, string path, LPortraitMedium format)`
 
@@ -87,9 +88,9 @@ A failing read throws.
 The glyph of the language, null for a blank language.
 A failing read throws.
 
-## `private IReadOnlyList<LFrequency> LPortraitFrequencyScan(long entryId)`
+## `private IReadOnlyList<LFrequency> LPortraitFrequencyScan(long entryId, bool fetch)`
 
-The frequency rows.
+The frequency rows, starting a fetch for an entry without any only when `fetch` allows.
 A failing read throws.
 
 ## `private IReadOnlyList<LParadigmSlot> LPortraitParadigmScan(long entryId)`

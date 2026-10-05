@@ -1,5 +1,5 @@
 # CAtelier.cs
-Hash: `748c4d2ad0df0105`
+Hash: `1fbfc83f876921c1`
 
 ## `public sealed class CAtelier : IDisposable`
 
@@ -33,6 +33,10 @@ The catalog holds no state, so each read builds a fresh one and the atelier keep
 
 The settings ledger, built once, since it raises `CLedgerChanged` to the views that subscribed.
 
+## `public CCourier CAtelierCourier { get; }`
+
+The Joplin courier, built once, since it keeps the busy mark that stops a second push or connect.
+
 ## `public CWorkspace CAtelierWorkspace { get; }`
 
 The workspace's life cycle, built once: the open events and the drafts the quit asks about.
@@ -46,7 +50,28 @@ It is internal, since the posture is an engine handle.
 ## `internal LDraftPort CAtelierDraftPort { get; }`
 
 A transitional handle for the deportments not yet moved into Conduct.
-The five other port handles below it stand for the same reason.
+It is internal, since every port is an engine handle no driver may hold.
+
+## `internal LEntryPort CAtelierEntryPort { get; }`
+
+The entry port the Conduct areas find, load and mark entries through.
+
+## `internal LSettingsPort CAtelierSettingsPort { get; }`
+
+The settings port, which also words every key and reads every failure notice.
+The ledger, the courier and the workspace all stand on it.
+
+## `internal LPhonologyPort CAtelierPhonologyPort { get; }`
+
+The phonology port the pronunciation areas read through.
+
+## `internal LMediaPort CAtelierMediaPort { get; }`
+
+The media port that plays sound, sets the volume and opens locations.
+
+## `internal LPortraitPort CAtelierPortraitPort { get; }`
+
+The portrait port, through which the courier pushes to Joplin and connects to it.
 
 ## `public CEditor CAtelierInputCreate(CEnvoy envoy)`
 

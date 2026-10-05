@@ -52,7 +52,7 @@ public sealed class LFrequencyClerk
         return LFrequencyGauge.LFrequencyGaugeResolve(LFrequencyClerkRead(entryId), once);
     }
 
-    public IReadOnlyList<LFrequency> LFrequencyClerkRead(long entryId)
+    public IReadOnlyList<LFrequency> LFrequencyClerkRead(long entryId, bool fetch = true)
     {
         LEntry? entry;
         IReadOnlyList<LFrequency> stored;
@@ -71,7 +71,7 @@ public sealed class LFrequencyClerk
 
         if (stored.Count == 0)
         {
-            if (!settled)
+            if (fetch && !settled)
             {
                 LFrequencyClerkStart(entryId);
             }

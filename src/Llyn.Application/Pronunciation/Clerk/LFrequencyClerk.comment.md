@@ -1,5 +1,5 @@
 # LFrequencyClerk.cs
-Hash: `60bc1e0a233b1578`
+Hash: `14b3b505f7e82de3`
 
 ## `public sealed class LFrequencyClerk`
 
@@ -18,12 +18,13 @@ Reads the entry and frequency ports, the source factory and the fault log out of
 The entry's regraded rows gathered into the one answer a frequency chip shows.
 The `once` text words a word interval.
 
-## `public IReadOnlyList<LFrequency> LFrequencyClerkRead(long entryId)`
+## `public IReadOnlyList<LFrequency> LFrequencyClerkRead(long entryId, bool fetch = true)`
 
 The stored rows of an entry, regraded under the current pack.
 A regrade that changed is written back.
 An entry with no rows starts a fetch.
 None starts while one is pending or after a source answered nothing.
+A false `fetch` starts none, so a pass over every entry never floods the sources.
 
 ## `public void LFrequencyClerkStart(long entryId)`
 

@@ -1,5 +1,5 @@
 # ko.json
-Hash: `27439e23f2c808e8`
+Hash: `dcb4cdc71cb3578d`
 
 The Korean interface catalog, with the same shape and rules as `en.json`.
 Each failure text sits beside its area's other texts at the same place as in `en.json`.

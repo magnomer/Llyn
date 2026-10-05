@@ -125,6 +125,8 @@ internal static class TAuditDemeanorSetting
                 "CLedgerState",
                 "CLedgerShown",
                 "CLedgerNotice",
+                "CCourier",
+                "CCourierState",
                 "CWorkspace",
                 "CCardSpeech",
                 "CCardField",

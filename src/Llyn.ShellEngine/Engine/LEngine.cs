@@ -12,6 +12,7 @@ public sealed class LEngine : IDisposable
     internal LTenureFacade LEngineTenure { get; }
     internal LMentionFacade LEngineMention { get; }
     internal LMarkupFacade LEngineMarkup { get; }
+    internal LCourierFacade LEngineCourier { get; }
     internal LWorkspaceFacade LEngineWorkspace { get; }
     internal LReflexFacade LEngineReflex { get; }
     internal LPortraitFacade LEnginePortrait { get; }
@@ -68,6 +69,7 @@ public sealed class LEngine : IDisposable
         LEngineTenure = new LTenureFacade(this);
         LEngineMention = new LMentionFacade(this);
         LEngineMarkup = new LMarkupFacade(this);
+        LEngineCourier = new LCourierFacade(this);
         LEngineWorkspace = new LWorkspaceFacade(this);
         LEngineReflex = new LReflexFacade(this);
         LEnginePortrait = new LPortraitFacade(this);

@@ -1,5 +1,5 @@
 # LWorkspaceVault.cs
-Hash: `2ac91c2f4f03f313`
+Hash: `ef9ab7fcfdfee9d2`
 
 ## `public interface LWorkspaceVault`
 
@@ -16,9 +16,15 @@ Stores `state` as the workspace state.
 
 ## `long LWorkspaceFloorAdjust();`
 
-Issues the next opaque id above the identity floor and raises the floor past it.
+Issues the next provisional id by lowering the identity floor by one and answering the new floor.
 
 ## `long LWorkspaceSizeRead();`
 
 The bytes the workspace store occupies, or zero when nothing is stored yet.
 The establishment panel shows it, and only the adapter knows what file that is.
+
+## `Guid LWorkspaceRealmRead();`
+
+The realm the workspace was created under, fixed for the life of its store.
+The realm separates independently created workspaces.
+A folder copied outside Llyn keeps it and pushes onto the same notes.

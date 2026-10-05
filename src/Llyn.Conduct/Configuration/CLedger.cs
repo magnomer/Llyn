@@ -17,7 +17,11 @@ public sealed class CLedger
         ("Language", []),
         ("Transcription", ["Respelling.Switch", "Respelling.Helper"]),
         ("Listing", ["Epithet.Switch", "Epithet.Helper"]),
-        ("Web", ["Frequency.Switch", "Frequency.Helper", "Morphology.Switch", "Morphology.Helper"]),
+        ("Web",
+        [
+            "Frequency.Switch", "Frequency.Helper", "Morphology.Switch", "Morphology.Helper",
+            "Courier.Heading", "Courier.Helper", "Courier.Port", "Courier.Attach", "Courier.Send"
+        ]),
         ("Layout", ["Layout.Linked", "Layout.LinkedHelper"]),
     ];
 
@@ -96,6 +100,25 @@ public sealed class CLedger
             LLedgerFailureShow(envoy, port, "Settings.SaveFailed", exception);
             LLedgerRaise();
         }
+    }
+
+    public void CLedgerOutpostSave(string text, CEnvoy envoy)
+    {
+        ArgumentNullException.ThrowIfNull(envoy);
+
+        LSettingsPort port = _cLedgerAtelier.CAtelierSettingsPort;
+        try
+        {
+            port.LEngineOutpostSave(text);
+        }
+        catch (Exception exception)
+        {
+            LLedgerFailureShow(envoy, port, "Settings.SaveFailed", exception);
+            LLedgerRaise();
+            return;
+        }
+
+        LLedgerRaise();
     }
 
     public void CLedgerMorphologySave(bool morphology, CEnvoy envoy)
@@ -227,7 +250,18 @@ public sealed class CLedger
             settings.LSettingsFrequency,
             settings.LSettingsMorphology,
             settings.LSettingsEpithet,
-            settings.LSettingsOnline);
+            settings.LSettingsOnline,
+            LLedgerOutpostFormat(settings));
+    }
+
+    public string CLedgerOutpostRead()
+    {
+        return LLedgerOutpostFormat(_cLedgerAtelier.CAtelierSettingsPort.LEngineSettingsRead());
+    }
+
+    private static string LLedgerOutpostFormat(LSettings settings)
+    {
+        return settings.LSettingsOutpost.ToString(CultureInfo.InvariantCulture);
     }
 
     private string CLedgerMetaRead(string child, CSettings settings)
