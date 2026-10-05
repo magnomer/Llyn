@@ -166,6 +166,7 @@ internal static class TAuditNameRegistry
         "Library",
         "Link",
         "Listener",
+        "Livery",
         "Localization",
         "Lodestar",
         "Logo",
