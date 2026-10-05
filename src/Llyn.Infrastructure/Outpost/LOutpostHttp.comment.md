@@ -1,5 +1,5 @@
 # LOutpostHttp.cs
-Hash: `e28113e358b8e277`
+Hash: `72f4a87057a629bc`
 
 ## `public sealed class LOutpostHttp : LOutpost`
 
@@ -64,6 +64,10 @@ That a zero restores the notebook is unverified against Joplin and needs a live 
 ## `public async Task LOutpostNoteSave(int port, string token, LOutpostNote note, CancellationToken cancellation)`
 
 Overwrites the note in place and creates it with the fixed id only when Joplin knows no such id.
+A new note is created with an empty body and then filled by the same update.
+Joplin downloads every picture address in a created body into resources it owns.
+Such copies of remote pictures, like video thumbnails, would be orphaned by the next push.
+An update leaves the body as sent, so no such copy is ever made.
 The update sends a zero deletion time so a trashed note comes back.
 That a zero restores the note is unverified against Joplin and needs a live check.
 
@@ -111,6 +115,10 @@ An answer that is not a list object ends the read with what was gathered.
 ## `private static string? LOutpostHttpFind(IReadOnlyList<JsonObject> tags, string title)`
 
 The id of the tag whose title matches the normalized title ordinally, or null when none does.
+
+## `private static HttpContent LOutpostNoteBuild(LOutpostNote note)`
+
+The update payload, built once so the plain overwrite and the fill after creation never differ.
 
 ## `private static string LOutpostHttpFormat(int port, string path, string? token)`
 

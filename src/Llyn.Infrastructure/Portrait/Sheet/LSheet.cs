@@ -19,7 +19,20 @@ public static class LSheet
             .Append(LSheetNormalize(page.LPortraitPageTitle))
             .Append("</title>\n<style>")
             .Append(LSheetStyle.LSheetStyleRead(theme))
-            .Append("</style>\n</head>\n<body>\n<main class=\"portrait\">\n");
+            .Append("</style>\n</head>\n<body>\n");
+
+        LSheetBodyAppend(sheet, page);
+
+        sheet.Append("</body>\n</html>\n");
+        return sheet.ToString();
+    }
+
+    public static void LSheetBodyAppend(StringBuilder sheet, LPortraitPage page)
+    {
+        ArgumentNullException.ThrowIfNull(sheet);
+        ArgumentNullException.ThrowIfNull(page);
+
+        sheet.Append("<main class=\"portrait\">\n");
 
         LSheetCrestAppend(sheet, page);
 
@@ -28,8 +41,7 @@ public static class LSheet
             LSheetSection.LSheetSectionAppend(sheet, section);
         }
 
-        sheet.Append("</main>\n</body>\n</html>\n");
-        return sheet.ToString();
+        sheet.Append("</main>\n");
     }
 
     public static string LSheetNormalize(string? text)

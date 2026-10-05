@@ -131,19 +131,9 @@ public sealed class LOutpostHttp : LOutpost
         ArgumentNullException.ThrowIfNull(note);
         ArgumentException.ThrowIfNullOrWhiteSpace(note.LOutpostNoteId);
 
+        string address = LOutpostHttpFormat(port, "notes/" + Uri.EscapeDataString(note.LOutpostNoteId), token);
         using HttpResponseMessage put = await LOutpostHttpSend(
-            HttpMethod.Put,
-            LOutpostHttpFormat(port, "notes/" + Uri.EscapeDataString(note.LOutpostNoteId), token),
-            LOutpostHttpFormat(new JsonObject
-            {
-                ["title"] = note.LOutpostNoteTitle,
-                ["body"] = note.LOutpostNoteBody,
-                ["parent_id"] = note.LOutpostNoteFolder,
-                ["deleted_time"] = 0,
-            }),
-            true,
-            true,
-            cancellation).ConfigureAwait(false);
+            HttpMethod.Put, address, LOutpostNoteBuild(note), true, true, cancellation).ConfigureAwait(false);
         if (put.StatusCode != HttpStatusCode.NotFound)
         {
             return;
@@ -156,12 +146,15 @@ public sealed class LOutpostHttp : LOutpost
             {
                 ["id"] = note.LOutpostNoteId,
                 ["title"] = note.LOutpostNoteTitle,
-                ["body"] = note.LOutpostNoteBody,
+                ["body"] = string.Empty,
                 ["parent_id"] = note.LOutpostNoteFolder,
             }),
             true,
             false,
             cancellation).ConfigureAwait(false);
+
+        using HttpResponseMessage fill = await LOutpostHttpSend(
+            HttpMethod.Put, address, LOutpostNoteBuild(note), true, false, cancellation).ConfigureAwait(false);
     }
 
     public async Task LOutpostNoteRemove(int port, string token, string id, CancellationToken cancellation)
@@ -271,7 +264,8 @@ public sealed class LOutpostHttp : LOutpost
         }
 
         ByteArrayContent data = new(parcel.LParcelBytes);
-        data.Headers.ContentType = MediaTypeHeaderValue.TryParse(parcel.LParcelMime, out MediaTypeHeaderValue? mime)
+        data.Headers.ContentType =
+            MediaTypeHeaderValue.TryParse(parcel.LParcelMime, out MediaTypeHeaderValue? mime)
             ? mime
             : new MediaTypeHeaderValue("application/octet-stream");
         JsonObject props = new()
@@ -401,6 +395,17 @@ public sealed class LOutpostHttp : LOutpost
         }
 
         return null;
+    }
+
+    private static HttpContent LOutpostNoteBuild(LOutpostNote note)
+    {
+        return LOutpostHttpFormat(new JsonObject
+        {
+            ["title"] = note.LOutpostNoteTitle,
+            ["body"] = note.LOutpostNoteBody,
+            ["parent_id"] = note.LOutpostNoteFolder,
+            ["deleted_time"] = 0,
+        });
     }
 
     private static string LOutpostHttpFormat(int port, string path, string? token)

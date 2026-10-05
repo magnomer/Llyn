@@ -1,5 +1,5 @@
 # LRigFactory.cs
-Hash: `c3d360fe6d29d8a8`
+Hash: `5990187e4849247b`
 
 ## `public static class LRigFactory`
 
@@ -20,8 +20,12 @@ The caller owns the client and disposes it, so the factory holds nothing across 
 The test suite hands in a client over a stub handler, so an engine-level search runs offline.
 Nothing here is opened or read.
 The engine runs the doctor and settings reads on the rig it receives.
+The theme is loaded once and handed to both the portrait and livery adapters.
+The export and the Joplin notes therefore wear the same theme by construction.
 The posture adapter is built over a keep file of its own.
 So the posture lands beside the settings as before.
+The manifest adapter is built over a keep file of its own the same way.
+So the Joplin manifest lands under the workspace root too.
 The trail, the clock and the process id are read here.
 The root is the one place outside the rings that may touch them.
 A folder that cannot be opened therefore fails in the engine, before the old rig is let go.

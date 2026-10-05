@@ -27,6 +27,7 @@ public static class LRigFactory
         Directory.CreateDirectory(root);
 
         LDatabase database = new(root);
+        LTheme theme = LThemeLoader.LThemeLoaderLoad();
 
         return new LRig(
             database,
@@ -34,6 +35,7 @@ public static class LRigFactory
             new LSettingsLoader(root),
             new LAuditWriter(root),
             new LPostureFile(new LKeepFile(root)),
+            new LManifestFile(new LKeepFile(root)),
             new LEntryArchive(database),
             new LEtymologyArchive(database),
             new LDraftArchive(root),
@@ -81,7 +83,8 @@ public static class LRigFactory
             new LLanguageLoader(root, client),
             new LLocalizationLoader(),
             new LMarkupFile(),
-            new LPortraitFile(LThemeLoader.LThemeLoaderLoad()),
+            new LPortraitFile(theme),
+            new LLiverySheet(theme),
             press,
             warrant,
             usher,

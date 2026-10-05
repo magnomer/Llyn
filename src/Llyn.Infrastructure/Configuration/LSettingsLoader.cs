@@ -20,6 +20,8 @@ public sealed class LSettingsLoader : LSettingsVault
     private const string LSettingsLoaderGloss = "gloss";
     private const string LSettingsLoaderFanqie = "fanqie";
     private const string LSettingsLoaderScript = "script";
+    private const string LSettingsLoaderOutpost = "outpost";
+    private const string LSettingsLoaderWarrant = "warrant";
     private const string LSettingsLoaderDefault = "en";
 
     private readonly string _lSettingsLoaderRoot;
@@ -87,10 +89,26 @@ public sealed class LSettingsLoader : LSettingsVault
                 document.RootElement.TryGetProperty(LSettingsLoaderScript, out JsonElement writing) &&
                 writing.ValueKind == JsonValueKind.True;
 
+            int outpost =
+                document.RootElement.TryGetProperty(LSettingsLoaderOutpost, out JsonElement port) &&
+                port.ValueKind == JsonValueKind.Number &&
+                port.TryGetInt32(out int number) &&
+                number is >= 1 and <= 65535
+                    ? number
+                    : 41184;
+
+            string warrant =
+                document.RootElement.TryGetProperty(LSettingsLoaderWarrant, out JsonElement token) &&
+                token.ValueKind == JsonValueKind.String
+                    ? token.GetString()!
+                    : string.Empty;
+
             LSettings read = new(localization, respelled, frequency, morphology, epithet, tally)
             {
                 LSettingsFanqieOpened = fanqie,
                 LSettingsScriptOpened = script,
+                LSettingsOutpost = outpost,
+                LSettingsWarrant = warrant,
             };
             return document.RootElement.TryGetProperty(LSettingsLoaderGloss, out JsonElement speech)
                 && speech.ValueKind == JsonValueKind.String
@@ -146,7 +164,9 @@ public sealed class LSettingsLoader : LSettingsVault
             [LSettingsLoaderTally] = settings.LSettingsTally,
             [LSettingsLoaderGloss] = settings.LSettingsGloss,
             [LSettingsLoaderFanqie] = settings.LSettingsFanqieOpened,
-            [LSettingsLoaderScript] = settings.LSettingsScriptOpened
+            [LSettingsLoaderScript] = settings.LSettingsScriptOpened,
+            [LSettingsLoaderOutpost] = settings.LSettingsOutpost,
+            [LSettingsLoaderWarrant] = settings.LSettingsWarrant
         };
 
         string pending = Path.Combine(_lSettingsLoaderRoot, LSettingsLoaderPending);

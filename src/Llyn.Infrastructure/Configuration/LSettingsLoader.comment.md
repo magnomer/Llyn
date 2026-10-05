@@ -1,5 +1,5 @@
 # LSettingsLoader.cs
-Hash: `c542de607e6c2d9e`
+Hash: `c200964969e9711b`
 
 ## `public sealed class LSettingsLoader : LSettingsVault`
 
@@ -74,3 +74,13 @@ Both states are set after construction, so the positional fields keep their orde
 
 The gloss language is read only as a non-empty JSON string, and anything else keeps the record's default.
 A missing key keeps the default, so an older workspace starts new translations in English as before.
+
+### `port.TryGetInt32(out int number) &&`
+
+The Joplin port is read under the `outpost` key, only as a whole number from 1 to 65535.
+Anything else means the default Joplin port, so a hand-edited file never aims the push at no port.
+
+### `token.ValueKind == JsonValueKind.String`
+
+The Joplin token is read under the `warrant` key, only as a string.
+Anything else means empty, so an older workspace starts with no token set.

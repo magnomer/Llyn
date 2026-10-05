@@ -1,5 +1,5 @@
 # TRigFake.cs
-Hash: `5e34eb60c8c9dd85`
+Hash: `4360138ca3b18025`
 
 ## `internal static class TRigFake`
 
@@ -40,7 +40,7 @@ The trail is the real system adapter, since path rules touch no disk, and the cl
 The press is a `TPress`, which records what it is handed and touches no printer.
 The warrant is a `TWarrantFake`, so no test touches the operating system store.
 The process id is one.
-Every port not named above is a throwing stub.
+Every port not named above is a throwing stub, the livery and manifest ports among them.
 
 ## `internal static LSourceFactory TRigSourceCreate()`
 

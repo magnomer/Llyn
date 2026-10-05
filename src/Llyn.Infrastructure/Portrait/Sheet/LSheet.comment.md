@@ -1,5 +1,5 @@
 # LSheet.cs
-Hash: `e9048f6c5abe14e8`
+Hash: `290b8d5803491019`
 
 ## `public static class LSheet`
 
@@ -14,6 +14,12 @@ The style sheet is inlined, and pictures are embedded, so the file stands alone 
 The title and crest come first, then the sections in the order the likeness carries them.
 Nothing is decided here.
 An absent section was already left out by whoever built the likeness.
+
+## `public static void LSheetBodyAppend(StringBuilder sheet, LPortraitPage page)`
+
+The page's visible content, from the crest through the last section, inside one `main` element.
+The export wraps it in a document and the Joplin note wraps it in a styled division.
+Both share this one writer, so an entry never looks different in the two places.
 
 ## `public static string LSheetNormalize(string? text)`
 
