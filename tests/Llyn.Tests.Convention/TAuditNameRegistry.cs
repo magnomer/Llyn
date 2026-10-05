@@ -65,6 +65,7 @@ internal static class TAuditNameRegistry
         "Contour",
         "Contract",
         "Corpus",
+        "Courier",
         "Court",
         "Customs",
         "Database",
