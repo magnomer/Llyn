@@ -1,5 +1,5 @@
 # TFault.cs
-Hash: `55146b280f8aea38`
+Hash: `0d25d0e0ee58ba29`
 
 ## `public sealed partial class TFault`
 
@@ -22,6 +22,7 @@ Their rows therefore fault the vault member the tenure reaches, over the real ri
 Panel row loads all await the settings port's flag load before they read their rows.
 Their rows therefore fault `LSettingsPort.LEngineEnsignLoad` and expect the panel's own load-failed key.
 Footnote, occurrence and quotation lists are reached through the shelf, repertoire and corpus that own them.
+Courier rows fault the portrait port's courier members over a courier built by `CCourier.CCourierCreate`.
 Portrait print and export rows live in `TFaultPortrait.cs` and join the list last.
 
 ## `public static TheoryData<string> TFaultGates`

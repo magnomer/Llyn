@@ -1,5 +1,5 @@
 # LLivery.cs
-Hash: `92185ee26454dece`
+Hash: `00a6610a916fda8c`
 
 ## `public interface LLivery`
 
@@ -19,6 +19,12 @@ The CSS never holds three backticks, so the fence cannot close early.
 One entry's note body, written from the same page likeness the HTML export prints.
 The body imports the style note by id, so a theme change touches one note instead of every entry.
 Pictures leave the body as parcels, since Joplin shows images only as its own resources.
+
+## `string LLiveryMarkFormat(string style);`
+
+The first line of every entry body, the import of the style note `style`.
+A note in Llyn's notebook whose body starts with it is proven to be Llyn's own.
+So only such a note may ever be trashed.
 
 ## `string LLiveryIdFormat(string seed);`
 

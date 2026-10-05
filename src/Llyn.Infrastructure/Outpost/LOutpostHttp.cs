@@ -99,35 +99,30 @@ public sealed class LOutpostHttp : LOutpost
         int port, string token, string id, string title, CancellationToken cancellation)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token);
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        LOutpostSeal.LOutpostSealCheck(id);
         ArgumentNullException.ThrowIfNull(title);
 
+        string address = LOutpostHttpFormat(port, "folders/" + Uri.EscapeDataString(id), token);
+        StringContent folder = LOutpostHttpFormat(new JsonObject { ["title"] = title, ["deleted_time"] = 0 });
         using HttpResponseMessage put = await LOutpostHttpSend(
-            HttpMethod.Put,
-            LOutpostHttpFormat(port, "folders/" + Uri.EscapeDataString(id), token),
-            LOutpostHttpFormat(new JsonObject { ["title"] = title, ["deleted_time"] = 0 }),
-            true,
-            true,
-            cancellation).ConfigureAwait(false);
+            HttpMethod.Put, address, folder, true, true, cancellation).ConfigureAwait(false);
         if (put.StatusCode != HttpStatusCode.NotFound)
         {
             return;
         }
 
+        StringContent created = LOutpostHttpFormat(new JsonObject { ["id"] = id, ["title"] = title });
         using HttpResponseMessage post = await LOutpostHttpSend(
-            HttpMethod.Post,
-            LOutpostHttpFormat(port, "folders", token),
-            LOutpostHttpFormat(new JsonObject { ["id"] = id, ["title"] = title }),
-            true,
-            false,
-            cancellation).ConfigureAwait(false);
+            HttpMethod.Post, LOutpostHttpFormat(port, "folders", token), created, true, false, cancellation)
+            .ConfigureAwait(false);
     }
 
     public async Task LOutpostNoteSave(int port, string token, LOutpostNote note, CancellationToken cancellation)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token);
         ArgumentNullException.ThrowIfNull(note);
-        ArgumentException.ThrowIfNullOrWhiteSpace(note.LOutpostNoteId);
+        LOutpostSeal.LOutpostSealCheck(note.LOutpostNoteId);
+        LOutpostSeal.LOutpostSealCheck(note.LOutpostNoteFolder);
 
         string address = LOutpostHttpFormat(port, "notes/" + Uri.EscapeDataString(note.LOutpostNoteId), token);
         using HttpResponseMessage put = await LOutpostHttpSend(
@@ -137,19 +132,16 @@ public sealed class LOutpostHttp : LOutpost
             return;
         }
 
+        StringContent blank = LOutpostHttpFormat(new JsonObject
+        {
+            ["id"] = note.LOutpostNoteId,
+            ["title"] = note.LOutpostNoteTitle,
+            ["body"] = string.Empty,
+            ["parent_id"] = note.LOutpostNoteFolder,
+        });
         using HttpResponseMessage post = await LOutpostHttpSend(
-            HttpMethod.Post,
-            LOutpostHttpFormat(port, "notes", token),
-            LOutpostHttpFormat(new JsonObject
-            {
-                ["id"] = note.LOutpostNoteId,
-                ["title"] = note.LOutpostNoteTitle,
-                ["body"] = string.Empty,
-                ["parent_id"] = note.LOutpostNoteFolder,
-            }),
-            true,
-            false,
-            cancellation).ConfigureAwait(false);
+            HttpMethod.Post, LOutpostHttpFormat(port, "notes", token), blank, true, false, cancellation)
+            .ConfigureAwait(false);
 
         using HttpResponseMessage fill = await LOutpostHttpSend(
             HttpMethod.Put, address, LOutpostNoteBuild(note), true, false, cancellation).ConfigureAwait(false);
@@ -159,8 +151,8 @@ public sealed class LOutpostHttp : LOutpost
         int port, string token, string id, string folder, string title, CancellationToken cancellation)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token);
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
-        ArgumentNullException.ThrowIfNull(folder);
+        LOutpostSeal.LOutpostSealCheck(id);
+        LOutpostSeal.LOutpostSealCheck(folder);
         ArgumentNullException.ThrowIfNull(title);
 
         string path = "notes/" + Uri.EscapeDataString(id) + "?fields=title,body,parent_id,deleted_time";
@@ -173,26 +165,40 @@ public sealed class LOutpostHttp : LOutpost
         }
 
         JsonNode? answer = await LOutpostHttpParse(response, cancellation).ConfigureAwait(false);
-        bool present = answer is JsonObject note && note["deleted_time"] is JsonValue time
-            && time.TryGetValue(out long deleted) && deleted == 0
-            && string.Equals(LOutpostHttpParse(answer, "title"), title, StringComparison.Ordinal);
-        return present && string.Equals(LOutpostHttpParse(answer, "parent_id"), folder, StringComparison.Ordinal)
+        return LOutpostNoteMatch(answer, folder)
+            && string.Equals(LOutpostHttpParse(answer, "title"), title, StringComparison.Ordinal)
             ? LOutpostHttpParse(answer, "body")
             : null;
     }
 
-    public async Task<bool> LOutpostNoteRemove(int port, string token, string id, CancellationToken cancellation)
+    public async Task<bool> LOutpostNoteRemove(
+        int port, string token, string id, string folder, string mark, CancellationToken cancellation)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token);
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        LOutpostSeal.LOutpostSealCheck(id);
+        LOutpostSeal.LOutpostSealCheck(folder);
+        ArgumentException.ThrowIfNullOrEmpty(mark);
+
+        string path = "notes/" + Uri.EscapeDataString(id);
+        string fields = path + "?fields=parent_id,body,deleted_time";
+        using HttpResponseMessage read = await LOutpostHttpSend(
+            HttpMethod.Get, LOutpostHttpFormat(port, fields, token), null, true, true, cancellation)
+            .ConfigureAwait(false);
+        if (read.StatusCode == HttpStatusCode.NotFound)
+        {
+            return false;
+        }
+
+        JsonNode? answer = await LOutpostHttpParse(read, cancellation).ConfigureAwait(false);
+        if (!LOutpostNoteMatch(answer, folder)
+            || LOutpostHttpParse(answer, "body")?.StartsWith(mark, StringComparison.Ordinal) != true)
+        {
+            return false;
+        }
 
         using HttpResponseMessage response = await LOutpostHttpSend(
-            HttpMethod.Delete,
-            LOutpostHttpFormat(port, "notes/" + Uri.EscapeDataString(id), token),
-            null,
-            true,
-            true,
-            cancellation).ConfigureAwait(false);
+            HttpMethod.Delete, LOutpostHttpFormat(port, path, token), null, true, true, cancellation)
+            .ConfigureAwait(false);
         return response.StatusCode != HttpStatusCode.NotFound;
     }
 
@@ -200,7 +206,7 @@ public sealed class LOutpostHttp : LOutpost
         int port, string token, string id, IReadOnlyList<string> tags, CancellationToken cancellation)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token);
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        LOutpostSeal.LOutpostSealCheck(id);
         ArgumentNullException.ThrowIfNull(tags);
 
         string note = Uri.EscapeDataString(id);
@@ -225,13 +231,11 @@ public sealed class LOutpostHttp : LOutpost
                 continue;
             }
 
-            using HttpResponseMessage detach = await LOutpostHttpSend(
-                HttpMethod.Delete,
-                LOutpostHttpFormat(port, "tags/" + Uri.EscapeDataString(tagId) + "/notes/" + note, token),
-                null,
-                true,
-                true,
-                cancellation).ConfigureAwait(false);
+            LOutpostSeal.LOutpostSealCheck(tagId);
+            string detach = "tags/" + Uri.EscapeDataString(tagId) + "/notes/" + note;
+            using HttpResponseMessage gone = await LOutpostHttpSend(
+                HttpMethod.Delete, LOutpostHttpFormat(port, detach, token), null, true, true, cancellation)
+                .ConfigureAwait(false);
         }
 
         if (missing.Count == 0)
@@ -247,13 +251,10 @@ public sealed class LOutpostHttp : LOutpost
             {
                 try
                 {
+                    StringContent named = LOutpostHttpFormat(new JsonObject { ["title"] = title });
                     using HttpResponseMessage create = await LOutpostHttpSend(
-                        HttpMethod.Post,
-                        LOutpostHttpFormat(port, "tags", token),
-                        LOutpostHttpFormat(new JsonObject { ["title"] = title }),
-                        true,
-                        false,
-                        cancellation).ConfigureAwait(false);
+                        HttpMethod.Post, LOutpostHttpFormat(port, "tags", token), named, true, false, cancellation)
+                        .ConfigureAwait(false);
                     JsonNode? created = await LOutpostHttpParse(create, cancellation).ConfigureAwait(false);
                     tagId = LOutpostHttpParse(created, "id");
                 }
@@ -273,13 +274,11 @@ public sealed class LOutpostHttp : LOutpost
                 }
             }
 
-            using HttpResponseMessage attach = await LOutpostHttpSend(
-                HttpMethod.Post,
-                LOutpostHttpFormat(port, "tags/" + Uri.EscapeDataString(tagId) + "/notes", token),
-                LOutpostHttpFormat(new JsonObject { ["id"] = id }),
-                true,
-                false,
-                cancellation).ConfigureAwait(false);
+            LOutpostSeal.LOutpostSealCheck(tagId);
+            string attach = "tags/" + Uri.EscapeDataString(tagId) + "/notes";
+            using HttpResponseMessage joined = await LOutpostHttpSend(HttpMethod.Post,
+                LOutpostHttpFormat(port, attach, token), LOutpostHttpFormat(new JsonObject { ["id"] = id }),
+                true, false, cancellation).ConfigureAwait(false);
         }
     }
 
@@ -287,16 +286,13 @@ public sealed class LOutpostHttp : LOutpost
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token);
         ArgumentNullException.ThrowIfNull(parcel);
-        ArgumentException.ThrowIfNullOrWhiteSpace(parcel.LParcelId);
+        LOutpostSeal.LOutpostSealCheck(parcel.LParcelId);
         ArgumentNullException.ThrowIfNull(parcel.LParcelBytes);
 
+        string resource = "resources/" + Uri.EscapeDataString(parcel.LParcelId);
         using HttpResponseMessage known = await LOutpostHttpSend(
-            HttpMethod.Get,
-            LOutpostHttpFormat(port, "resources/" + Uri.EscapeDataString(parcel.LParcelId), token),
-            null,
-            true,
-            true,
-            cancellation).ConfigureAwait(false);
+            HttpMethod.Get, LOutpostHttpFormat(port, resource, token), null, true, true, cancellation)
+            .ConfigureAwait(false);
         if (known.StatusCode != HttpStatusCode.NotFound)
         {
             return;
@@ -439,6 +435,13 @@ public sealed class LOutpostHttp : LOutpost
         }
 
         return null;
+    }
+
+    private static bool LOutpostNoteMatch(JsonNode? answer, string folder)
+    {
+        return answer is JsonObject note && note["deleted_time"] is JsonValue time
+            && time.TryGetValue(out long deleted) && deleted == 0
+            && string.Equals(LOutpostHttpParse(answer, "parent_id"), folder, StringComparison.Ordinal);
     }
 
     private static HttpContent LOutpostNoteBuild(LOutpostNote note)

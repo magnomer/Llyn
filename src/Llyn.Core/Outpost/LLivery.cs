@@ -8,6 +8,8 @@ public interface LLivery
 
     LLiveryNote LLiveryFormat(LPortraitPage page, string style);
 
+    string LLiveryMarkFormat(string style);
+
     string LLiveryIdFormat(string seed);
 
     string LLiveryDigestFormat(LOutpostNote note, IReadOnlyList<string> tags, IReadOnlyList<LParcel> parcels);

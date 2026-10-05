@@ -33,11 +33,13 @@ internal sealed class QCourier
 
     private TextBlock QCourierReceipt => QContract.QContractFind<TextBlock>(_qCourierSettings, "PDialReceipt");
 
-    internal void QCourierIntroduce(CLedger ledger, CCourier courier, CEnvoy envoy)
+    internal void QCourierIntroduce(CLedger ledger, CAtelier atelier, CEnvoy envoy)
     {
         _qCourierLedger = ledger;
-        _qCourierCourier = courier;
+        _qCourierCourier = CCourier.CCourierCreate(atelier);
         _qCourierEnvoy = envoy;
+        _qCourierCourier.CCourierChanged +=
+            QObserver.QObserverCreate<CCourierState>(_qCourierSettings, QCourierRefine);
         QCourierRefine(_qCourierCourier.CCourierRead());
     }
 

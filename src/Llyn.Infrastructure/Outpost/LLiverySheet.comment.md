@@ -1,5 +1,5 @@
 # LLiverySheet.cs
-Hash: `c9f974c76b350af7`
+Hash: `5c617aaf945a7c22`
 
 ## `public sealed class LLiverySheet : LLivery`
 
@@ -28,9 +28,16 @@ No rule uses a backtick, so only stray theme text is touched.
 
 ## `public LLiveryNote LLiveryFormat(LPortraitPage page, string style)`
 
-The style import comes first, because Joplin's import plugin only sees an import that opens its block.
+The style import from `LLiveryMarkFormat` comes first, since Joplin's import plugin only sees an opening import.
+Writing it through that method keeps the body and the trash check on one line of text.
 The sheet's own body writer follows inside a `.llyn` wrapper, so the export and the note never drift apart.
 Embedded pictures become resource links, and blank lines are folded away last.
+
+## `public string LLiveryMarkFormat(string style)`
+
+The style import line that opens every entry body, with no line break.
+It checks `style` first, so a bad id throws `ArgumentException` here as in the body.
+`LLiveryFormat` writes the body's first line through this method, so the mark never drifts from the body.
 
 ## `public string LLiveryIdFormat(string seed)`
 

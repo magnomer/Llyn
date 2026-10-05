@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -66,6 +67,19 @@ public sealed class LWorkspaceClerk
         ArgumentNullException.ThrowIfNull(settings);
 
         _lWorkspaceClerkSettings.LSettingsSave(settings);
+    }
+
+    public int LWorkspaceOutpostParse(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        if (!int.TryParse(text.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out int port)
+            || port < 1
+            || port > 65535)
+        {
+            throw new LRefusal(LRefusal.LRefusalPort);
+        }
+
+        return port;
     }
 
     public void LWorkspaceFallbackSave(LSettings settings)

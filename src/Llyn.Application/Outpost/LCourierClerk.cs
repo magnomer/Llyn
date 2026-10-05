@@ -14,6 +14,8 @@ public sealed class LCourierClerk
 
     private const string LCourierStyle = "Llyn style";
 
+    private const string LCourierTagPrefix = "llyn/";
+
     private const int LCourierStall = 3;
 
     private const int LCourierPatience = 120;
@@ -158,6 +160,7 @@ public sealed class LCourierClerk
 
         string notebook = _lCourierClerkLivery.LLiveryIdFormat("llyn:notebook");
         string style = _lCourierClerkLivery.LLiveryIdFormat("llyn:style");
+        string mark = _lCourierClerkLivery.LLiveryMarkFormat(style);
 
         LManifest manifest;
         Guid realm;
@@ -169,7 +172,12 @@ public sealed class LCourierClerk
             entries = _lCourierClerkEntry.LEntryClerkFind(string.Empty);
         }
 
-        Dictionary<string, string> digests = new(manifest.LManifestDigest, StringComparer.Ordinal);
+        string stamp = realm.ToString("N");
+        bool foreign = manifest.LManifestRealm.Length > 0
+            && !string.Equals(manifest.LManifestRealm, stamp, StringComparison.Ordinal);
+        Dictionary<string, string> digests = foreign
+            ? new(StringComparer.Ordinal)
+            : new(manifest.LManifestDigest, StringComparer.Ordinal);
         HashSet<string> current = new(StringComparer.Ordinal) { style };
         int saved = 0;
         int kept = 0;
@@ -198,7 +206,7 @@ public sealed class LCourierClerk
             {
                 cancellation.ThrowIfCancellationRequested();
                 string id = _lCourierClerkLivery.LLiveryIdFormat(
-                    "llyn:entry:" + realm.ToString("N") + ":"
+                    "llyn:entry:" + stamp + ":"
                     + entry.LEntryId.ToString(CultureInfo.InvariantCulture));
                 current.Add(id);
                 try
@@ -234,7 +242,8 @@ public sealed class LCourierClerk
                 cancellation.ThrowIfCancellationRequested();
                 try
                 {
-                    bool trashed = await _lCourierClerkOutpost.LOutpostNoteRemove(port, token, id, cancellation)
+                    bool trashed = await _lCourierClerkOutpost
+                        .LOutpostNoteRemove(port, token, id, notebook, mark, cancellation)
                         .ConfigureAwait(false);
                     digests.Remove(id);
                     stalled = 0;
@@ -258,7 +267,7 @@ public sealed class LCourierClerk
         {
             lock (_lCourierClerkGate)
             {
-                _lCourierClerkManifest.LManifestSave(new LManifest(digests));
+                _lCourierClerkManifest.LManifestSave(new LManifest(digests, stamp));
             }
         }
 
@@ -334,7 +343,7 @@ public sealed class LCourierClerk
         SortedSet<string> tags = new(StringComparer.Ordinal);
         if (!string.IsNullOrWhiteSpace(draft.LEntryDraftLanguage))
         {
-            tags.Add(draft.LEntryDraftLanguage.Trim());
+            tags.Add(LCourierTagPrefix + draft.LEntryDraftLanguage.Trim());
         }
 
         Stack<LCardDraft> cards = new(draft.LEntryDraftMeanings.Concat(draft.LEntryDraftCollocations));
@@ -345,7 +354,7 @@ public sealed class LCourierClerk
             {
                 if (!string.IsNullOrWhiteSpace(tag.LTagDraftText))
                 {
-                    tags.Add(tag.LTagDraftText.Trim());
+                    tags.Add(LCourierTagPrefix + tag.LTagDraftText.Trim());
                 }
             }
 

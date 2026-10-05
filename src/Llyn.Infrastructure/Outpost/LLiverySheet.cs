@@ -33,10 +33,9 @@ public sealed class LLiverySheet : LLivery
     public LLiveryNote LLiveryFormat(LPortraitPage page, string style)
     {
         ArgumentNullException.ThrowIfNull(page);
-        LLiveryStyleCheck(style);
 
         StringBuilder sheet = new StringBuilder();
-        sheet.Append("<style>@import \":/").Append(style).Append("\";</style>\n<div class=\"llyn\">\n");
+        sheet.Append(LLiveryMarkFormat(style)).Append("\n<div class=\"llyn\">\n");
         LSheet.LSheetBodyAppend(sheet, page);
         sheet.Append("</div>");
 
@@ -44,6 +43,12 @@ public sealed class LLiverySheet : LLivery
         string body = LLiveryImageApply(sheet.ToString(), parcels);
 
         return new LLiveryNote(LLiveryLineApply(body), [.. parcels.Values]);
+    }
+
+    public string LLiveryMarkFormat(string style)
+    {
+        LLiveryStyleCheck(style);
+        return "<style>@import \":/" + style + "\";</style>";
     }
 
     public string LLiveryIdFormat(string seed)

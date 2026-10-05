@@ -1,5 +1,5 @@
 # CCourier.cs
-Hash: `d639268f0f1c3a69`
+Hash: `36b47020cccf269c`
 
 ## `public sealed class CCourier`
 
@@ -19,9 +19,16 @@ The atelier whose portrait and settings ports every gate calls.
 The state last raised, kept so a gate can tell whether a run is still going.
 It starts idle with both actions allowed.
 
-## `internal CCourier(CAtelier atelier)`
+## `private CCourier(CAtelier atelier)`
 
-Only the atelier builds it, once, so every view shares the same busy mark.
+It is private, so `CCourierCreate` is the one way to build a courier.
+
+## `public static CCourier CCourierCreate(CAtelier atelier)`
+
+Builds the courier over the atelier, so the driver hands it no port.
+The atelier does not name the courier, which keeps its outgoing references under the ceiling.
+The Joplin view builds one and keeps it, so its two buttons share one busy mark.
+Building it is no user action, so it is no gate on the atelier.
 
 ## `public event Action<CCourierState>? CCourierChanged;`
 

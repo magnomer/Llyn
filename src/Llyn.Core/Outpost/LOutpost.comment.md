@@ -1,11 +1,12 @@
 # LOutpost.cs
-Hash: `6d6633226cbdb55d`
+Hash: `e4258bb9879e5c14`
 
 ## `public interface LOutpost`
 
 The port for Joplin's local Data API, which receives Llyn's entries one way.
 Joplin is an outside program reached over HTTP, so the engine names neither the client nor the address.
 Every call takes the port first, because Joplin may answer on a port other than its default.
+Every id is 32 lowercase hex characters, and any other id throws `ArgumentException`.
 Every call carrying a token throws `LRefusal` with `LRefusalWarrant` when Joplin refuses the token.
 So the caller asks for a new token instead of failing each note.
 Every call takes a cancellation last, so a slow or stalled Joplin never holds a push open.
@@ -45,10 +46,12 @@ The body Joplin holds for that note, but only while it sits untrashed in `folder
 It answers null for a missing, moved, renamed or trashed note, so the caller sends it again.
 That lets a push repair edits made inside Joplin, or a fresh Joplin profile.
 
-## `Task<bool> LOutpostNoteRemove(int port, string token, string id, CancellationToken cancellation);`
+## `Task<bool> LOutpostNoteRemove(int port, string token, string id, string folder, string mark, CancellationToken cancellation);`
 
 Moves the note to Joplin's trash rather than deleting it.
-It answers false when Joplin no longer knew the note, so the caller does not count it.
+It trashes only a note proven to be Llyn's, untrashed in `folder` with a body starting with `mark`.
+Llyn must never act on a Joplin item it did not create.
+It answers true only when it trashed, so the caller counts nothing else.
 The user can still recover a note whose entry was removed by mistake.
 
 ## `Task LOutpostTagSave(int port, string token, string id, IReadOnlyList<string> tags, CancellationToken cancellation);`

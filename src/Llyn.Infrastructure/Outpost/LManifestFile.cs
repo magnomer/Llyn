@@ -10,6 +10,7 @@ public sealed class LManifestFile : LManifestVault
 {
     private const string LManifestFileKeep = "joplin";
     private const string LManifestFileNotes = "notes";
+    private const string LManifestFileRealm = "realm";
 
     private readonly LKeep _lManifestFileKeep;
 
@@ -58,7 +59,7 @@ public sealed class LManifestFile : LManifestVault
         Dictionary<string, string> digest = new(StringComparer.Ordinal);
         if (string.IsNullOrWhiteSpace(text))
         {
-            return new LManifest(digest);
+            return new LManifest(digest, string.Empty);
         }
 
         try
@@ -69,22 +70,26 @@ public sealed class LManifestFile : LManifestVault
                 !root.TryGetProperty(LManifestFileNotes, out JsonElement notes) ||
                 notes.ValueKind != JsonValueKind.Object)
             {
-                return new LManifest(digest);
+                return new LManifest(digest, string.Empty);
             }
 
             foreach (JsonProperty note in notes.EnumerateObject())
             {
-                if (note.Value.ValueKind == JsonValueKind.String)
+                if (note.Value.ValueKind == JsonValueKind.String && LOutpostSeal.LOutpostSealMatch(note.Name))
                 {
                     digest[note.Name] = note.Value.GetString()!;
                 }
             }
 
-            return new LManifest(digest);
+            string realm = root.TryGetProperty(LManifestFileRealm, out JsonElement stamp)
+                && stamp.ValueKind == JsonValueKind.String
+                ? stamp.GetString()!
+                : string.Empty;
+            return new LManifest(digest, realm);
         }
         catch (JsonException)
         {
-            return new LManifest(new Dictionary<string, string>(StringComparer.Ordinal));
+            return new LManifest(new Dictionary<string, string>(StringComparer.Ordinal), string.Empty);
         }
     }
 
@@ -94,6 +99,7 @@ public sealed class LManifestFile : LManifestVault
 
         Dictionary<string, object> payload = new(StringComparer.Ordinal)
         {
+            [LManifestFileRealm] = manifest.LManifestRealm ?? string.Empty,
             [LManifestFileNotes] = new SortedDictionary<string, string>(
                 new Dictionary<string, string>(manifest.LManifestDigest, StringComparer.Ordinal),
                 StringComparer.Ordinal)

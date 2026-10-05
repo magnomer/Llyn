@@ -1,5 +1,5 @@
 # LOutpostHttp.cs
-Hash: `c67e598e096f6b84`
+Hash: `27707300dd5a3bdd`
 
 ## `public sealed class LOutpostHttp : LOutpost`
 
@@ -7,6 +7,8 @@ The adapter behind the `LOutpost` port, which owns its own `HttpClient`.
 It speaks Joplin's local Data API on the loopback address only.
 Joplin listens nowhere else, so no other host is ever contacted.
 Every token rides in the query string, the one place the Data API reads it from.
+Every note, folder, resource and tag id passes `LOutpostSeal.LOutpostSealCheck` before any URL is built.
+So no id can bend a path toward an item Llyn never addressed.
 
 ## `private const string LOutpostBanner = "JoplinClipperServer";`
 
@@ -61,6 +63,7 @@ A stalled or unreachable Joplin still throws `TimeoutException`, since Joplin ma
 ## `public async Task LOutpostFolderSave(int port, string token, string id, string title, CancellationToken cancellation)`
 
 Updates the notebook in place and creates it with the fixed id only when Joplin knows no such id.
+An `id` that is not 32 lowercase hex characters throws `ArgumentException` first.
 Trying the update first keeps a repeated push to one call.
 The update sends a zero deletion time so a trashed notebook comes back.
 That a zero restores the notebook is unverified against Joplin and needs a live check.
@@ -68,6 +71,7 @@ That a zero restores the notebook is unverified against Joplin and needs a live 
 ## `public async Task LOutpostNoteSave(int port, string token, LOutpostNote note, CancellationToken cancellation)`
 
 Overwrites the note in place and creates it with the fixed id only when Joplin knows no such id.
+The note id and its folder id must both be 32 lowercase hex characters, or it throws `ArgumentException`.
 A new note is created with an empty body and then filled by the same update.
 Joplin downloads every picture address in a created body into resources it owns.
 Such copies of remote pictures, like video thumbnails, would be orphaned by the next push.
@@ -78,21 +82,27 @@ That a zero restores the note is unverified against Joplin and needs a live chec
 ## `public async Task<string?> LOutpostNoteRead(int port, string token, string id, string folder, string title, CancellationToken cancellation)`
 
 Asks only for the title, body, notebook and deletion time, so the check stays one small call.
+An `id` or `folder` that is not 32 lowercase hex characters throws `ArgumentException` first.
 A not-found answer reads as null, since the caller then simply creates the note.
 A note outside `folder`, or with any nonzero or unreadable deletion time, reads as null too.
 A note whose title differs from `title` ordinally reads as null as well.
 Such a note was moved, trashed or renamed in Joplin, and the push puts it back.
 A malformed answer still throws, so the entry fails rather than resending blindly.
 
-## `public async Task<bool> LOutpostNoteRemove(int port, string token, string id, CancellationToken cancellation)`
+## `public async Task<bool> LOutpostNoteRemove(int port, string token, string id, string folder, string mark, CancellationToken cancellation)`
 
-Deletes without the permanent flag, so Joplin moves the note to its trash.
-A note Joplin does not know is already gone, so a not-found answer is no failure.
-It answers false then, and true when Joplin trashed the note.
+An `id` or `folder` that is not 32 lowercase hex characters throws `ArgumentException` first.
+It reads the note's notebook, body and deletion time before anything is deleted.
+It trashes only a note that sits untrashed in `folder` with a body starting with `mark`.
+Only such a note is proven to be one Llyn wrote, so no other Joplin item is ever touched.
+The delete goes without the permanent flag, so Joplin moves the note to its trash.
+It answers true only when it trashed the note.
+A missing, moved, trashed or foreign note answers false and sends no delete.
 
 ## `public async Task LOutpostTagSave(int port, string token, string id, IReadOnlyList<string> tags, CancellationToken cancellation)`
 
 Reads the note's current tags, keeps the asked ones and detaches every other.
+The note id and every tag id Joplin answers must be 32 lowercase hex characters, or it throws `ArgumentException`.
 Asked tags are trimmed and normalized to NFC, and blanks are dropped.
 Case is kept, since Joplin stores titles as given.
 Titles compare with `StringComparison.OrdinalIgnoreCase` after the same normalization, which also drops duplicates.
@@ -104,6 +114,7 @@ A tag that now matches is used, and otherwise the failure is rethrown.
 ## `public async Task LOutpostParcelSave(int port, string token, LParcel parcel, CancellationToken cancellation)`
 
 Asks for the resource by id and uploads it only when Joplin answers not found.
+A resource id that is not 32 lowercase hex characters throws `ArgumentException` first.
 The upload is a multipart form, the only shape Joplin accepts for resource bytes.
 An unreadable media type falls back to plain bytes rather than failing the push.
 The props also carry the media type, or Joplin would record every image as plain bytes.
@@ -134,6 +145,12 @@ An answer that is not a list object ends the read with what was gathered.
 ## `private static string? LOutpostHttpFind(IReadOnlyList<JsonObject> tags, string title)`
 
 The id of the tag whose normalized title matches `title` ignoring case, or null when none does.
+
+## `private static bool LOutpostNoteMatch(JsonNode? answer, string folder)`
+
+Whether a note answer shows a zero deletion time and sits in `folder`.
+A missing or unreadable deletion time fails the check, so doubt never reads as present.
+The read and the trash share it, so both judge a note alike.
 
 ## `private static HttpContent LOutpostNoteBuild(LOutpostNote note)`
 

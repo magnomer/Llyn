@@ -1,5 +1,5 @@
 # LCourierClerk.cs
-Hash: `6db81d3027e75f96`
+Hash: `2d97db1afd6dc715`
 
 ## `public sealed class LCourierClerk`
 
@@ -7,6 +7,10 @@ Pushes every entry one way into Joplin, so Llyn's copy always wins over edits ma
 The engine's gate guards vault calls only, so a slow Joplin never blocks the rest of the engine.
 Only one push or attach runs at a time in the whole process, even across a workspace switch.
 Two would race over one manifest.
+Overwriting a note Llyn created is accepted policy, since the push is one way.
+Attachments a user pastes into a Llyn note lose their reference when the note is rewritten.
+Joplin's own cleanup may later delete such attachments.
+Llyn never acts on a Joplin item it did not create.
 
 ## `private const string LCourierNotebook = "Llyn";`
 
@@ -15,6 +19,11 @@ The title of the notebook that holds every pushed note.
 ## `private const string LCourierStyle = "Llyn style";`
 
 The title of the note whose CSS every entry note imports.
+
+## `private const string LCourierTagPrefix = "llyn/";`
+
+The prefix on every tag Llyn attaches, the language tag included.
+Llyn's tags can then never coincide with the user's own tags.
 
 ## `private const int LCourierStall = 3;`
 
@@ -72,11 +81,16 @@ A `TimeoutException` there goes to `fault`, then refuses with `LRefusalOutpost`.
 So every cause of an unreachable Joplin reads the same to the user.
 Only a failure inside one entry costs just that entry.
 That entry's fault goes to `fault`, and its headword joins the receipt's failed list.
-Three entries in a row failing with `TimeoutException` refuse with `LRefusalOutpost`, since Joplin stopped answering.
+Three entries in a row failing with `TimeoutException` refuse with `LRefusalOutpost`, as Joplin stopped answering.
 Any other outcome breaks the row, so scattered timeouts never stop a healthy push.
+A manifest whose realm is set and differs from this workspace's realm is treated as empty.
+Nothing from it is trashed, and it is replaced on save.
+A rebuilt database or a foreign file must never drive trashing.
+A manifest with an empty realm was written before realms existed, so it is adopted and stamped.
 Every manifest id that is neither the style note nor a current entry is trashed afterwards.
-A trashed id always leaves the manifest.
-It counts as removed only when Joplin still held the note.
+Each trash passes the notebook id and the livery's mark, so only proven Llyn notes go.
+A trash that answers leaves the manifest whether or not it trashed.
+It counts as removed only when the outpost answers true.
 A failed trash goes to `fault` and keeps its id, so the next push tries again.
 Three trashes in a row failing with `TimeoutException` refuse with `LRefusalOutpost`.
 Any other outcome breaks that row, as in the entry loop.
@@ -104,5 +118,9 @@ The digest is recorded only after the tags land, so a failed note is retried nex
 ## `private static IReadOnlyList<string> LCourierTagRead(LEntryDraft draft)`
 
 Every card tag of the entry, through meanings, collocations and their children, plus its language.
+Each one carries `LCourierTagPrefix`, so it is plainly Llyn's.
 The set is sorted and blank-free, so the same entry always yields the same tags.
+The tag save makes a Llyn note's tag set exact.
+So old unprefixed tags on Llyn notes are detached on the next push.
+The user's tags themselves stay untouched.
 

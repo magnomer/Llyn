@@ -1,5 +1,5 @@
 # QCourier.cs
-Hash: `f5fc424e23311d7d`
+Hash: `b91ad6970486baa2`
 
 ## `internal sealed class QCourier`
 
@@ -15,16 +15,17 @@ Wires the field's keys, its focus loss and both buttons once, as the settings pa
 The field saves on Enter or when focus leaves, and reverts on Escape.
 Escape is heard before Enter, as the workspace field wires them.
 
-## `internal void QCourierIntroduce(CLedger ledger, CCourier courier, CEnvoy envoy)`
+## `internal void QCourierIntroduce(CLedger ledger, CAtelier atelier, CEnvoy envoy)`
 
-Puts the group to work on the ledger and the courier the panel hands over.
+Puts the group to work on the ledger the panel hands over.
+It creates its own courier from `atelier` through `CCourierCreate`, so both buttons share one busy mark.
+It subscribes `CCourierChanged` through `QObserver`, so a state change repaints on the surface's thread.
 It keeps the window's envoy, which both show a failure through.
-It paints `CCourierRead` once through `QCourierRefine`.
-A page opened during a push therefore shows the buttons disabled and the current line.
+It paints `CCourierRead` once through `QCourierRefine`, so the buttons start enabled and the line empty.
 
 ## `internal void QCourierRefine(CCourierState state)`
 
-Paints one courier state the panel hands over.
+Paints one courier state, from the first read or from `CCourierChanged`.
 Both buttons take `CCourierStateAllowed` as it stands, since the courier decides when they rest.
 
 ## `internal void QCourierOutpostRefine(string port)`

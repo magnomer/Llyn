@@ -1,5 +1,5 @@
 # version.json
-Hash: `150b20d7da2e6034`
+Hash: `b3f412542a363135`
 
 ## `record-version`
 

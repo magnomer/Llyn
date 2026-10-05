@@ -1,5 +1,5 @@
 # LSettingsFacade.cs
-Hash: `a239ffadf94f26bd`
+Hash: `90385d9efafa7de3`
 
 ## `internal sealed class LSettingsFacade`
 
@@ -127,8 +127,8 @@ A settings bulletin is raised when the switch changed, so the settings panel rew
 ## `internal void LEngineOutpostSave(string text)`
 
 Persists the port the Joplin clipper is looked for on first, from the text the user typed.
-The text is trimmed and read with the invariant culture, so the parse never follows the locale.
-Anything not a whole number from 1 to 65535 throws an `LRefusal` with `LRefusalPort`, since no clipper could answer there.
+The staff's workspace clerk parses the text through `LWorkspaceOutpostParse`, which throws the port refusal.
+So the engine never builds a Core refusal itself.
 A settings bulletin is raised when the port changed, so the settings panel repaints the stored port.
 
 ## `internal bool LEngineMorphologyCheck()`

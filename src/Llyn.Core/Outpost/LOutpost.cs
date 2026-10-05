@@ -19,7 +19,8 @@ public interface LOutpost
     Task<string?> LOutpostNoteRead(
         int port, string token, string id, string folder, string title, CancellationToken cancellation);
 
-    Task<bool> LOutpostNoteRemove(int port, string token, string id, CancellationToken cancellation);
+    Task<bool> LOutpostNoteRemove(
+        int port, string token, string id, string folder, string mark, CancellationToken cancellation);
 
     Task LOutpostTagSave(
         int port, string token, string id, IReadOnlyList<string> tags, CancellationToken cancellation);

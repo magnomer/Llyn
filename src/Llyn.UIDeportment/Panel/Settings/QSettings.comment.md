@@ -1,5 +1,5 @@
 # QSettings.cs
-Hash: `e2eb3799d7e2da76`
+Hash: `c0be12e9a9c8c573`
 
 ## `internal sealed class QSettings`
 
@@ -24,12 +24,11 @@ Each named part of the markup is pulled by its contract ID, which keeps the mark
 
 Sets the search hint and the two page icons, and subscribes the panel's own events.
 It introduces each choice driver to only the Conduct area it calls, or to the posture.
-The Joplin driver gets the ledger for its port and the courier for its two actions.
+The Joplin driver gets the ledger for its port and the atelier it creates its courier from.
+That driver subscribes its own courier, so this panel holds no courier.
 Each settings switch also receives the window's envoy, for a failed save.
 This happens before `CLedgerChanged` is subscribed, so the first state finds them ready.
 It also subscribes the posture's linked switch, so the summary row follows a tick.
-It subscribes `CCourierChanged` through the surface's dispatcher, though the gates already resume on the UI thread.
-So a gate called off the UI thread would still paint safely.
 The ledger raises the state on every open and after every settings or workspace change.
 The ledger rows get their fill through `QLookItemAttach` before the first state arrives.
 It then shows the first card.

@@ -118,6 +118,32 @@ public sealed partial class TFault
                 return Task.FromResult<Func<Task>>(library.CLibraryMarkupImport);
             }),
         new(
+            "CCourier.CCourierSend",
+            "LPortraitPort.LEngineCourierSend",
+            "Courier.SendFailed",
+            static stage =>
+            {
+                LEngine engine = TFaultEngineStart(stage);
+                CAtelier atelier = stage.TFaultStageAdd(TInterfaceConduct.TAtelierFaultCreate(
+                    engine, stage.TFaultStageMember, stage.TFaultStageThrown));
+                CCourier courier = CCourier.CCourierCreate(atelier);
+                CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard);
+                return Task.FromResult<Func<Task>>(() => courier.CCourierSend(envoy));
+            }),
+        new(
+            "CCourier.CCourierAttach",
+            "LPortraitPort.LEngineCourierAttach",
+            "Courier.AttachFailed",
+            static stage =>
+            {
+                LEngine engine = TFaultEngineStart(stage);
+                CAtelier atelier = stage.TFaultStageAdd(TInterfaceConduct.TAtelierFaultCreate(
+                    engine, stage.TFaultStageMember, stage.TFaultStageThrown));
+                CCourier courier = CCourier.CCourierCreate(atelier);
+                CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard);
+                return Task.FromResult<Func<Task>>(() => courier.CCourierAttach(envoy));
+            }),
+        new(
             "CCorpus.CCorpusRowsLoad",
             "LSettingsPort.LEngineEnsignLoad",
             "Example.LoadFailed",

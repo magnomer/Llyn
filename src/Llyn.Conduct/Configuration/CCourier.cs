@@ -14,11 +14,16 @@ public sealed class CCourier
 
     private CCourierState _cCourierState = new(false, true, string.Empty);
 
-    internal CCourier(CAtelier atelier)
+    private CCourier(CAtelier atelier)
     {
         ArgumentNullException.ThrowIfNull(atelier);
 
         _cCourierAtelier = atelier;
+    }
+
+    public static CCourier CCourierCreate(CAtelier atelier)
+    {
+        return new CCourier(atelier);
     }
 
     public event Action<CCourierState>? CCourierChanged;

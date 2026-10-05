@@ -94,14 +94,12 @@ internal sealed class QSettings
         _qSettingsLocalization.QLocalizationIntroduce(ledger, host.QWindowEnvoy);
         _qSettingsRespelling.QRespellingIntroduce(ledger, host.QWindowEnvoy);
         _qSettingsFrequency.QFrequencyIntroduce(ledger, host.QWindowEnvoy);
-        _qSettingsCourier.QCourierIntroduce(ledger, QSettingsAtelier.CAtelierCourier, host.QWindowEnvoy);
+        _qSettingsCourier.QCourierIntroduce(ledger, QSettingsAtelier, host.QWindowEnvoy);
         _qSettingsMorphology.QMorphologyIntroduce(ledger, host.QWindowEnvoy);
         _qSettingsLayout.QLayoutIntroduce(_qSettingsSurface);
         QLookItem.QLookItemAttach(QSettingsLedger, QSettingsItemRefine);
         QSettingsPosture.QPostureLinkedChanged += QSettingsMetaRefine;
         ledger.CLedgerChanged += QObserver.QObserverCreate<CLedgerState>(_qSettingsSurface, QSettingsRefine);
-        QSettingsAtelier.CAtelierCourier.CCourierChanged +=
-            QObserver.QObserverCreate<CCourierState>(_qSettingsSurface, _qSettingsCourier.QCourierRefine);
         QSettingsDialRefine("Workspace");
     }
 

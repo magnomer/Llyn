@@ -1,11 +1,11 @@
 # LManifestFile.cs
-Hash: `ecb22e9a41a0543f`
+Hash: `ffcd72a145df49ae`
 
 ## `public sealed class LManifestFile : LManifestVault`
 
 The adapter behind the manifest port, keeping the Joplin digests as JSON under the workspace root.
 It reads and writes through the keep it is built over, under the name `joplin`.
-The shape is an object named `notes` mapping each Joplin note id to its digest.
+The shape holds a string `realm` and an object `notes` mapping each Joplin note id to its digest.
 The two conversions are public so a test can run them on text.
 
 ## `public LManifestFile(LKeep keep)`
@@ -27,8 +27,12 @@ A keep that cannot be written raises `LVaultFault` around the file system's own 
 ## `public static LManifest LManifestFileParse(string? text)`
 
 An entry whose digest is not a string is skipped, so one bad entry costs one extra push only.
+An entry whose id is not 32 lowercase hex characters is skipped too, so it can never be trashed.
+A missing or non-string `realm` reads as empty, the mark of a manifest written before realms.
 Text that is blank or not JSON reads as empty.
 
 ## `public static string LManifestFileFormat(LManifest manifest)`
 
 Note ids are written in a fixed order, so an unchanged manifest writes the same bytes.
+The realm is written beside them, so a manifest read in another workspace is known as foreign.
+A rebuilt database or a foreign file must never drive trashing.
