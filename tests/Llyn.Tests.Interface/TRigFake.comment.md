@@ -1,5 +1,5 @@
 # TRigFake.cs
-Hash: `b6d3a08fb8e5b403`
+Hash: `5e34eb60c8c9dd85`
 
 ## `internal static class TRigFake`
 
@@ -38,6 +38,7 @@ A flag fill then runs through the real engine, while the case decides every fetc
 The one rig build the public forms reach, so each fake stays in one place.
 The trail is the real system adapter, since path rules touch no disk, and the clock is a `TClockFake`.
 The press is a `TPress`, which records what it is handed and touches no printer.
+The warrant is a `TWarrantFake`, so no test touches the operating system store.
 The process id is one.
 Every port not named above is a throwing stub.
 

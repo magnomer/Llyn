@@ -10,12 +10,13 @@ public static class LRigFactory
     private const long LRigFactoryCeiling = 8L * 1024 * 1024;
 
     public static LRig LRigFactoryBuild(
-        string workspace, HttpClient client, LUsher usher, LPress press, LPhonograph phonograph)
+        string workspace, HttpClient client, LUsher usher, LPress press, LWarrant warrant, LPhonograph phonograph)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(workspace);
         ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(usher);
         ArgumentNullException.ThrowIfNull(press);
+        ArgumentNullException.ThrowIfNull(warrant);
         ArgumentNullException.ThrowIfNull(phonograph);
         if (!Path.IsPathFullyQualified(workspace))
         {
@@ -75,12 +76,14 @@ public static class LRigFactory
             new LShengfuSourceHttp(client),
             new LReflexSourceHttp(client),
             new LScriptSourceHttp(client),
+            new LOutpostHttp(client),
             new LRecordingArchive(root, client),
             new LLanguageLoader(root, client),
             new LLocalizationLoader(),
             new LMarkupFile(),
             new LPortraitFile(LThemeLoader.LThemeLoaderLoad()),
             press,
+            warrant,
             usher,
             phonograph,
             new LTrailSystem(),

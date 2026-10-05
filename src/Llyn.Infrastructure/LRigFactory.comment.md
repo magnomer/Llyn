@@ -1,5 +1,5 @@
 # LRigFactory.cs
-Hash: `84e44e1cc2dca2c1`
+Hash: `c3d360fe6d29d8a8`
 
 ## `public static class LRigFactory`
 
@@ -7,13 +7,15 @@ The one place `new L*Archive`, `new L*Loader`, `new L*File` and `new L*Http` are
 The composition root calls it once at start and once per workspace change, and hands the rig to the engine.
 The engine itself contains the use cases and builds none of the adapters they run on.
 
-## `public static LRig LRigFactoryBuild(string workspace, HttpClient client, LUsher usher, LPress press, LPhonograph phonograph)`
+## `public static LRig LRigFactoryBuild(string workspace, HttpClient client, LUsher usher, LPress press, LWarrant warrant, LPhonograph phonograph)`
 
 Builds every adapter over the workspace at `workspace` and bundles them as one rig.
-The usher, the press and the phonograph are handed in, since all live in Core.Windows, which this project never references.
+The usher, the press, the warrant and the phonograph are handed in.
+All live in Core.Windows, which this project never references.
 The path must be fully qualified, so a bare name never lands beside whatever folder the process runs from.
 The folder is created when missing, so a fresh workspace opens as an empty one.
-One database stands behind every archive, and the client handed in behind every fetcher and download.
+One database stands behind every archive.
+The client handed in stands behind every fetcher, every download and the Joplin outpost.
 The caller owns the client and disposes it, so the factory holds nothing across builds.
 The test suite hands in a client over a stub handler, so an engine-level search runs offline.
 Nothing here is opened or read.

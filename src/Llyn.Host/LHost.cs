@@ -15,6 +15,7 @@ Thread thread = new(() =>
     HttpClient client = LRigFactory.LRigClientCreate();
     LUsher usher = new LUsherShell(new LUsherFile());
     LPress press = new LPressBrowser();
+    LWarrant warrant = new LWarrantShield();
     LPhonograph phonograph = new LPhonographMedia();
     PBootstrap application = new();
     QBootstrap bootstrap = new();
@@ -24,8 +25,8 @@ Thread thread = new(() =>
         () => LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault),
         LWorkspaceRoot.LWorkspaceRootRead,
         workspace => new LEngine(
-            LRigFactory.LRigFactoryBuild(workspace, client, usher, press, phonograph),
-            path => LRigFactory.LRigFactoryBuild(path, client, usher, press, phonograph),
+            LRigFactory.LRigFactoryBuild(workspace, client, usher, press, warrant, phonograph),
+            path => LRigFactory.LRigFactoryBuild(path, client, usher, press, warrant, phonograph),
             LWorkspaceRoot.LWorkspaceRootChange),
         LDoctor.LDoctorBusyCheck,
         engine =>

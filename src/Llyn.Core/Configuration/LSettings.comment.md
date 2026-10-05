@@ -1,12 +1,13 @@
 # LSettings.cs
-Hash: `7366c7fd60ed862d`
+Hash: `67c9ee0ed763cb5e`
 
-## `public sealed record LSettings(string LSettingsLocalization, bool LSettingsRespelled = false, bool LSettingsFrequency = true, bool LSettingsMorphology = true, bool LSettingsEpithet = true, bool LSettingsTally = false, string LSettingsGloss = "English", bool LSettingsFanqieOpened = false, bool LSettingsScriptOpened = false)`
+## `public sealed record LSettings(string LSettingsLocalization, bool LSettingsRespelled = false, bool LSettingsFrequency = true, bool LSettingsMorphology = true, bool LSettingsEpithet = true, bool LSettingsTally = false, string LSettingsGloss = "English", bool LSettingsFanqieOpened = false, bool LSettingsScriptOpened = false, int LSettingsOutpost = 41184, string LSettingsWarrant = "")`
 
 The user's persisted engine settings.
 These live as `settings.json` inside the user's workspace folder and nowhere else.
 So a workspace carries its own preferences.
-Every field here is a user choice: what the engine fetches, shows or transcribes, or which box stays open.
+Every field here is a user choice, except `LSettingsWarrant`, a machine-bound credential the user grants once.
+The choices cover what the engine fetches, shows or transcribes, or which box stays open.
 How the window stands is not such a choice, so it lives in the shell's posture beside this file.
 The workspace folder path itself is not stored here.
 It is the bootstrap locator that tells the program where to find this file.
@@ -27,3 +28,6 @@ It is kept in a small fixed pointer outside the workspace.
   It survives a move to another entry and a restart, so the user opens it once.
 - `LSettingsScriptOpened` — Whether the editor's folded script box stands open, off by default.
   It is kept the same way as the rime-book box.
+- `LSettingsOutpost` — The port Joplin's Data API is tried on first, 41184 by default.
+- `LSettingsWarrant` — The Joplin token in its hidden form, empty until the user grants one.
+  Only the platform twin of the warrant port can turn it back into the token.

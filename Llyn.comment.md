@@ -248,7 +248,7 @@ The audits and convention tests measure the lag as falling ceilings.
 
 | Portable | Windows twin |
 |---|---|
-| Core | Core.Windows: `LPressBrowser`, `LUsherShell` |
+| Core | Core.Windows: `LPressBrowser`, `LUsherShell`, `LWarrantShield`, `LPhonographMedia` |
 | Conduct | Deportment, Veneer |
 | Application | none |
 | ShellEngine | none |

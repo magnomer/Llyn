@@ -1,5 +1,5 @@
 # LRefusal.cs
-Hash: `a0d284dc50160277`
+Hash: `e438719d0c1eccfd`
 
 ## `public sealed class LRefusal : Exception`
 
@@ -91,6 +91,11 @@ Nothing is read from such a file, so the reader refuses rather than guessing at 
 ## `public const string LRefusalName = "Refusal.NameMissing";`
 
 Reason key for an author draft whose name is blank.
+
+## `public const string LRefusalWarrant = "Refusal.WarrantRejected";`
+
+Reason key for a Joplin call whose token Joplin refused.
+The caller asks for a new token instead of failing each note.
 
 ## `public LRefusal(string reason)`
 

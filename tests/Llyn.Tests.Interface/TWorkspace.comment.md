@@ -1,5 +1,5 @@
 # TWorkspace.cs
-Hash: `b63f4db5dd78bb50`
+Hash: `ad98d0c20cfbd578`
 
 ## `[assembly: CollectionBehavior(DisableTestParallelization = true)]`
 
@@ -71,7 +71,7 @@ Binds an engine whose sources fetch through `client`, so a discovery test runs a
 The rig is built through the real factory, so the suite starts its engines the way the bootstrap does.
 A workspace change builds its rig the same way, and no test ever writes the user's workspace pointer.
 The clock is swapped for the workspace's `TClockFake`, so a test can set time through `TWorkspaceClockSet`.
-The rig carries the workspace's `TPress` and `TPhonographFake`, so a test reads what reached them.
+The rig carries the workspace's `TPress`, a `TWarrantFake` and the `TPhonographFake`, so a test reads what reached them.
 An engine over fakes instead starts from `TRigFake`.
 
 ## `public LEngine TWorkspaceEngineStart(LSourceFactory sources)`
@@ -93,7 +93,7 @@ A rig over the workspace with a client that answers 404, for a clerk test.
 
 ## `public LRig TWorkspaceRigCreate(HttpClient client)`
 
-A rig over the workspace with `client` as its web, the workspace's clock, press and phonograph in place.
+A rig over the workspace with `client` as its web, the workspace's clock, press, a `TWarrantFake` and phonograph in place.
 
 ## `public SqliteConnection TWorkspaceConnectionRead()`
 

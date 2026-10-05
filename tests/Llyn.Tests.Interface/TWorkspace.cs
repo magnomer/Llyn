@@ -80,7 +80,7 @@ internal sealed class TWorkspace : IDisposable
         return new LEngine(
             TWorkspaceSourcesApply(TWorkspaceRigCreate(client)),
             workspace => TWorkspaceSourcesApply(LRigFactory.LRigFactoryBuild(
-                workspace, client, new LUsherFile(), TWorkspacePress, TWorkspacePhonograph) with
+                workspace, client, new LUsherFile(), TWorkspacePress, new TWarrantFake(), TWorkspacePhonograph) with
             {
                 LRigClock = TWorkspaceClock,
             }),
@@ -95,7 +95,7 @@ internal sealed class TWorkspace : IDisposable
     public LRig TWorkspaceRigCreate(HttpClient client)
     {
         LRig rig = LRigFactory.LRigFactoryBuild(
-            _tWorkspaceRoot, client, new LUsherFile(), TWorkspacePress, TWorkspacePhonograph);
+            _tWorkspaceRoot, client, new LUsherFile(), TWorkspacePress, new TWarrantFake(), TWorkspacePhonograph);
         return rig with { LRigClock = TWorkspaceClock };
     }
 

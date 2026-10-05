@@ -34,6 +34,7 @@ internal static class TInterfaceEngineWorkspace
             TPronunciationHelper.TSourceClientCreate(string.Empty, HttpStatusCode.NotFound),
             new LUsherFile(),
             new TPress(),
+            new TWarrantFake(),
             new TPhonographFake())
             with { LRigClock = new TClockFake() });
     }

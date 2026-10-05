@@ -36,6 +36,8 @@ public sealed class LRefusal : Exception
 
     public const string LRefusalName = "Refusal.NameMissing";
 
+    public const string LRefusalWarrant = "Refusal.WarrantRejected";
+
     public LRefusal(string reason)
         : base(reason)
     {
