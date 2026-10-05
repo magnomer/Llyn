@@ -1,5 +1,5 @@
 # TAuditBorder.cs
-Hash: `1533d1d4a52e3efb`
+Hash: `1e3751f40cd58ae4`
 
 ## `public sealed class TAuditBorder`
 
@@ -19,7 +19,7 @@ The kinds a ceiling is written for.
 
 ## `private static readonly Lazy<IReadOnlyList<TAuditHit>> TAuditBorderHits`
 
-The tree hits, the offer hits and the seal hits, bound once and shared by every fact.
+The tree, offer, seal, drift and linger hits, bound once and shared by every fact.
 
 ## `public void AuditBorder_Rings_NameOneNeighbour()`
 
@@ -58,6 +58,31 @@ The ceilings fall as each controller is sealed, until none is left to count.
 
 Where an offer is written for a pair, no `Commuting` name outside it is named.
 A neighbour name outside the offer is `Poaching`.
+
+## `public void AuditBorder_Offers_HoldNoDrifting()`
+
+No offer list drifts from its neighbour, so a renamed, hidden or new type cannot slip past the offers.
+`Drifting` is hard, with no ceiling and no ledger.
+Each hit names the pair, the entry or missing type, and the clause it failed.
+An exempt row clears a hit as it clears every other border hit.
+
+## `public void AuditBorder_Subscriptions_HoldNoLingering()`
+
+No Conduct type leaves an engine event handler attached with no matching removal.
+An engine-lifetime source outlives the Conduct object, so a kept handler keeps the object alive and firing.
+`Lingering` is hard, with no ceiling and no ledger.
+Each hit names the subscribing type, the event and the handler.
+An exempt row clears a hit as it clears every other border hit.
+
+## `public void AuditBorder_DriftedOffer_ReportsEachBreak()`
+
+Proves the drift comparison fires on a stale, an internal, a wrong-prefix and a missing name.
+Each break gives exactly one hit, so no clause reports an entry another clause already caught.
+
+## `public void AuditBorder_EqualOffer_ReportsNoDrifting()`
+
+Proves two cut pairs whose lists equal the neighbour's public types give no hit.
+The lists differ only in order, since an offer is compared as a set.
 
 ## `public void AuditBorder_Ceiling_MatchesHits()`
 

@@ -1,5 +1,5 @@
 # TInterfaceConductPortrait.cs
-Hash: `bce5987f96fc49d2`
+Hash: `05a54e9be80e9cea`
 
 ## `internal static class TInterfaceConductPortrait`
 
@@ -26,6 +26,10 @@ Relays the legend wording of `realm`.
 ## `internal static IReadOnlyList<CPortraitChoice> TPortraitChoiceRead() =>`
 
 Relays the export formats the file question offers.
+
+## `internal static IReadOnlyList<CPortraitChoice> TPortraitChoiceRead(IReadOnlyList<(LPortraitMedium, string, bool)> rows) =>`
+
+Relays the export format map over given engine rows, so a fact feeds hostile rows.
 
 ## `internal static Task TPortraitFileExport(CEnvoy envoy, string file, Func<string, LPortraitMedium, Task> export) =>`
 

@@ -1,5 +1,5 @@
 # TFrequencyGauge.cs
-Hash: `722313e1e4741b9f`
+Hash: `340d7d7ba7c75f43`
 
 ## `public sealed class TFrequencyGauge`
 
@@ -22,6 +22,16 @@ The first row that carries a band resolves to that band's rank.
 
 A first row whose band is not a ladder name is passed over for the next row's band.
 The top rank is named core and spares no star.
+
+## `public void FrequencyGaugeCreate_BandPastScale_ReadsUnknownRank(int band)`
+
+A band past the ladder's end names no ladder entry, so it reads unranked and unknown.
+It spares no star and never reads past the ladder, so it cannot throw.
+
+## `public void FrequencyGaugeCreate_NegativeBand_SparesAFullRow(int band)`
+
+A negative band reads unranked and unknown and spares exactly one full row.
+The lowest integer proves the band is held before the subtraction, so it cannot overflow.
 
 ## `public void FrequencyGaugeResolve_OnceInterval_FormatsTheInterval()`
 

@@ -1,5 +1,5 @@
 # TAuditTruth.cs
-Hash: `0404c7c117bdb3db`
+Hash: `bb581b1016b16e37`
 
 ## `public sealed class TAuditTruth`
 
@@ -45,6 +45,10 @@ A request is a call to a Conduct gate, to the engine or to a driver relay of eit
 Gatekeeping counts every condition: `if`, `?:`, `switch`, loops, `when` clauses, catch filters, `?.`, `&&`, `||` and `??`.
 Gatekeeping through a getter property counts as a read of the field it returns.
 An engine answer or a dialog answer deciding a request is gatekeeping too, since the gate owns that decision.
+Zeroing is a literal `0`, `0L` or `default` sent toward a gate, where it means none, new, silence or append.
+That meaning belongs to the gate, so a driver that spells it out decides for the gate.
+A literal compared with a member that reaches a gate counts too.
+Zeroing reads a wider hot map than Replaying, with constructors and stored parameters added.
 
 ## `public void AuditTruth_DriverFields_KeepOneWriter()`
 
@@ -92,6 +96,13 @@ A Conduct member one driver reaches and the other never does.
 Also a Conduct port a driver does not implement.
 Both drivers call the same gate for the same action, so an asymmetry is medium work or a leak.
 It only informs while Demeanor holds no source, as `TAuditTruthInformative` sets.
+
+## `public void AuditTruth_ControlTypes_HoldNoPuppeteering()`
+
+A member of a control type that requests logic, directly, through a relay or through a lambda.
+A control type is a driver type whose name starts with its ring's prefix in `TAuditControlPrefix`.
+A control shows what its driver hands it, so the request belongs in the driver.
+Reading a Conduct record property is no request and stays legal.
 
 ## `public void AuditTruth_Ledger_MatchesHits()`
 

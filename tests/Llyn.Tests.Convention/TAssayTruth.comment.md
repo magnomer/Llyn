@@ -1,5 +1,5 @@
 # TAssayTruth.cs
-Hash: `b120366814776efa`
+Hash: `a93d0d1bb962df96`
 
 ## `public sealed class TAssayTruth`
 
@@ -9,7 +9,7 @@ Assays check the walker, not the tree, so they gate no tree result and touch no 
 They guard rules the tracked tree never reaches, which the tree audit alone would let break unseen.
 A failing assay exposes a walker bug, never a source to fix.
 `TAuditTruth` holds the facts over the tree.
-Its helpers and stand-in gate are internal, so the sibling assays `TAssaySink`, `TAssayRelay`, `TAssayMisfiring` and `TAssayContesting` reuse them.
+Its helpers and stand-in gate are internal, so sibling truth assays such as `TAssaySink` and `TAssayRelay` reuse them.
 
 ## `internal const string TAssayDriverPath = "src/Llyn.UIDeportment/Assay/QAssay.cs";`
 
@@ -21,8 +21,20 @@ The virtual path of the stand-in gate, under Conduct so its type takes the Condu
 
 ## `internal const string TAssayGateText = """`
 
-A Conduct type with two instance methods, so each call to either is a send.
+A Conduct type with three instance methods, so each call to any is a send.
 `CAssayApply` returns nothing and `CAssayRead` returns an int, so a ternary or an assignment can take its answer.
+`CAssayRemove` takes a nullable id, so a Zeroing assay can send a literal zero or a null.
+
+## `private const string TAssayRemoveText = """`
+
+A driver helper that forwards its id to `CAssayRemove`, so its id position is hot.
+It is four member lines, so body line k of a driver holding it is line 14 + k.
+
+## `private const string TAssayItemText = """`
+
+A driver type appended after `QAssay`, whose constructor stores its id into a getter-only property.
+Appended text leaves every line of `QAssay` where it was.
+The constructor is hot only when the stored property is read inside a hot argument.
 
 ## `public void AuditTruth_NestedReturn_ReportsMisfiring()`
 
@@ -71,6 +83,38 @@ A `break` directly in a branch inside a loop leaves the branch, so the later sen
 ## `public void AuditTruth_OuterLoopContinue_AllowsSecondSend()`
 
 A `continue` directly in a branch inside a loop leaves the branch too.
+
+## `public void AuditTruth_ZeroForward_ReportsZeroing()`
+
+A literal zero passed to a driver helper whose id reaches the gate is Zeroing.
+The hit is named after the helper and lands on the literal's line.
+
+## `public void AuditTruth_NullForward_AllowsNull()`
+
+A `null` at the same hot position is no Zeroing, since absence is spelled in the type.
+
+## `public void AuditTruth_ZeroConstructor_ReportsZeroing()`
+
+A literal zero handed to a driver constructor is Zeroing when the stored id later reaches the gate.
+It needs the wider Zeroing map, since the hot map holds no constructor.
+
+## `public void AuditTruth_NullConstructor_AllowsNull()`
+
+A `null` handed to the same constructor is no Zeroing.
+
+## `public void AuditTruth_ZeroCompare_ReportsZeroing()`
+
+A stored id compared with zero is Zeroing when that id is read inside a hot argument.
+The hit is named after the compared member.
+
+## `public void AuditTruth_NullCompare_AllowsNull()`
+
+The same id compared with `null` is no Zeroing.
+
+## `public void AuditTruth_ZeroHelper_AllowsZero()`
+
+A literal zero passed to a driver helper that never reaches a gate is no Zeroing.
+The helper's position is not hot, so a medium value such as a width stays free.
 
 ## `internal static void TAssayTruthCheck(string driver, string kind, TViolation? expected)`
 

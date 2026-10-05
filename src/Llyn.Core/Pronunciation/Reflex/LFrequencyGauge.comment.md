@@ -1,5 +1,5 @@
 # LFrequencyGauge.cs
-Hash: `2e99bcb669df169e`
+Hash: `f2f497c4d7cf7476`
 
 ## `public sealed record LFrequencyGauge(int LFrequencyGaugeBand, string LFrequencyGaugeSource)`
 
@@ -19,17 +19,19 @@ The rank name of an entry no source ranks.
 
 ## `public bool LFrequencyGaugeRanked`
 
-Whether any source ranks the entry, so the chip shows a star row.
+Whether the band names a ladder entry, so the chip shows a star row.
+A band below one or past the ladder's end is unranked, so the rank never reads outside the ladder.
 
 ## `public string LFrequencyGaugeRank`
 
-The ladder name at the band, or the unknown name while no source ranks the entry.
+The ladder name at the band, or the unknown name while the band names no ladder entry.
 The ladder is `LFrequency.LFrequencyScale`, so the ranking and the chip read one list.
 
 ## `public int LFrequencyGaugeSpare`
 
-The stars past the band in a full row, never below zero.
-The row then stays as wide as the ladder.
+The stars past the band in a full row, counted from the band held within zero and the ladder's length.
+The spare is then never below zero nor above the ladder, so the row stays as wide as the ladder.
+A hostile band such as the lowest integer cannot overflow, since it is held before the subtraction.
 
 ## `public static LFrequencyGauge? LFrequencyGaugeResolve(IReadOnlyList<LFrequency> rows, string once)`
 

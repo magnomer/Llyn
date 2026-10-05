@@ -58,6 +58,30 @@ public sealed class TFrequencyGauge
         Assert.Equal(0, gauge?.LFrequencyGaugeSpare);
     }
 
+    [Theory]
+    [InlineData(5)]
+    [InlineData(int.MaxValue)]
+    public void FrequencyGaugeCreate_BandPastScale_ReadsUnknownRank(int band)
+    {
+        LFrequencyGauge gauge = TInterface.TFrequencyGaugeCreate(band, "src");
+
+        Assert.False(gauge.LFrequencyGaugeRanked);
+        Assert.Equal("Unknown", gauge.LFrequencyGaugeRank);
+        Assert.Equal(0, gauge.LFrequencyGaugeSpare);
+    }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(int.MinValue)]
+    public void FrequencyGaugeCreate_NegativeBand_SparesAFullRow(int band)
+    {
+        LFrequencyGauge gauge = TInterface.TFrequencyGaugeCreate(band, "src");
+
+        Assert.False(gauge.LFrequencyGaugeRanked);
+        Assert.Equal("Unknown", gauge.LFrequencyGaugeRank);
+        Assert.Equal(TInterface.TFrequencyScaleRead().Count, gauge.LFrequencyGaugeSpare);
+    }
+
     [Fact]
     public void FrequencyGaugeResolve_OnceInterval_FormatsTheInterval()
     {

@@ -22,6 +22,10 @@ internal static class TInterfaceConductPortrait
 
     internal static IReadOnlyList<CPortraitChoice> TPortraitChoiceRead() => CPortrait.LPortraitChoiceRead();
 
+    internal static IReadOnlyList<CPortraitChoice> TPortraitChoiceRead(
+        IReadOnlyList<(LPortraitMedium, string, bool)> rows) =>
+        CPortrait.LPortraitChoiceRead(rows);
+
     internal static Task TPortraitFileExport(CEnvoy envoy, string file, Func<string, LPortraitMedium, Task> export) =>
         CPortrait.LPortraitFileExport(envoy, TInterfaceConduct.TSettingsCreate(), () => file, export);
 

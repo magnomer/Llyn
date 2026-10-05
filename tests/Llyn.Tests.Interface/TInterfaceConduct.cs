@@ -35,6 +35,15 @@ internal static class TInterfaceConduct
         media,
         new LPortraitOutlet(engine));
 
+    internal static CAtelier TAtelierFaultCreate(LEngine engine, string member, bool thrown) => new(
+        new LPosture(engine),
+        TEngineFault.TEngineFaultCreate<LDraftPort>(new LDraftOutlet(engine), member, thrown),
+        TEngineFault.TEngineFaultCreate<LEntryPort>(new LEntryOutlet(engine), member, thrown),
+        TEngineFault.TEngineFaultCreate<LSettingsPort>(new LSettingsOutlet(engine), member, thrown),
+        TEngineFault.TEngineFaultCreate<LPhonologyPort>(new LPhonologyOutlet(engine), member, thrown),
+        TEngineFault.TEngineFaultCreate<LMediaPort>(new LMediaOutlet(engine), member, thrown),
+        TEngineFault.TEngineFaultCreate<LPortraitPort>(new LPortraitOutlet(engine), member, thrown));
+
     internal static LSettingsPort TSettingsOutletCreate(LEngine engine) => new LSettingsOutlet(engine);
 
     internal static CAtelier TAtelierMediaCreate(LEngine engine, LMediaPort media) => new(

@@ -1,5 +1,5 @@
 # TInterfaceEngine.cs
-Hash: `edac76c8936c9bd0`
+Hash: `d5c502cd912162dd`
 
 ## `internal static partial class TInterface`
 
@@ -9,6 +9,7 @@ The court relays and the chronicle undo and redo with their two checks are relay
 The author draft start is relayed here beside the entry draft start.
 The grasp, the favorite and the mention find relays sit here as well.
 The leftover read and sweep and the request apply are relayed here too.
+The engine start over a hand-built rig sits here as well.
 Most relays are transparent and carry no test logic of their own.
 A few rebuild a read or a write the engine no longer offers from the clerks it keeps.
 
@@ -29,3 +30,8 @@ No shell reads them until a recovery dialog exists, so the tests read them throu
 
 Relays the example line read.
 It answers the frame, the sentence pieces and the Source line.
+
+## `internal static LEngine TEngineCreate(LRig rig)`
+
+Starts an engine over `rig` that answers the same rig for any workspace and keeps no workspace pointer.
+A fault fact thus runs the engine over a rig whose vaults it has replaced.

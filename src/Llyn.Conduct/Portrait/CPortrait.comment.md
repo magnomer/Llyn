@@ -1,5 +1,5 @@
 # CPortrait.cs
-Hash: `0505cc4141698ab2`
+Hash: `d4234bdb54cf1c39`
 
 ## `internal static class CPortrait`
 
@@ -15,11 +15,18 @@ The wording keys of an entry page, in the order of the engine label's words.
 
 ## `internal static IReadOnlyList<CPortraitChoice> LPortraitChoiceRead()`
 
-The export formats the file question offers, in the engine's order, each with its wording key.
+The export formats the file question offers, read from the engine's static format list.
+It hands that list to the overload, which holds every rule.
+
+## `internal static IReadOnlyList<CPortraitChoice> LPortraitChoiceRead(IReadOnlyList<(LPortraitMedium, string, bool)> rows)`
+
+The export formats of `rows`, in their order, each with its wording key.
+It takes the rows as a parameter, so a test can feed rows the static source never gives.
 The engine names the formats, their suffixes and the default one.
 Conduct strips every `|` from a suffix, since a dialog filter splits on it.
 Exactly one format comes back chosen, the engine's first chosen one or else the first.
 So the dialog always opens on a real format.
+An unknown engine format is a programming mismatch, so the read throws rather than offer it.
 An empty engine list still offers one format, so the reader can always export.
 That one is the program's own markup, under no suffix, so its filter shows every file.
 

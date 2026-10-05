@@ -1,5 +1,5 @@
 # TAuditCensusSetting.cs
-Hash: `cc735421f031878f`
+Hash: `e306cfc526ed19fb`
 
 ## `internal static class TAuditCensusSetting`
 

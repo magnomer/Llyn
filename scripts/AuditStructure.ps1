@@ -13,6 +13,12 @@ the tracked source with Roslyn, and performs these actions:
                 Leapfrogging and any outward name is Trespassing. A using of a deeper ring
                 counts as data, and a method call on a deeper record counts as behaviour.
                 Undercutting, Leaking, Unsealing and Poaching guard the UI cut and the offers.
+                Drifting holds every offer list to its neighbour: each entry resolves to one
+                public type of the neighbour ring carrying an offerPrefixes prefix, a cut
+                pair offers every public type of its neighbour, and pairs sharing a
+                neighbour offer the same list. Lingering holds every Conduct += of an event
+                declared below Conduct to a -= of the same event and handler in the same
+                type, and counts a lambda handler always, since it cannot be removed.
        Purity   a pure ring names only the framework namespaces its frame lists (Foraging)
                 and never touches an eavesdropping member such as the clock, the environment
                 or the file system (Eavesdropping).
@@ -53,7 +59,7 @@ is modified. Git and the .NET SDK are required.
 
 AuditStructure.json shape:
   {
-    "generation": 20,
+    "generation": 21,
     "project": "Llyn",
     "helper": { "framework": "net10.0" },
     "source": "src/",
@@ -64,6 +70,7 @@ AuditStructure.json shape:
     "eavesdroppingMembers": [ "System.DateTime.Now" ],
     "ceilings": { "Leapfrogging:Llyn.ShellEngine>Llyn.Core": 15, "Piggybacking": 4 },
     "offers": { "Llyn.Conduct>Llyn.ShellEngine": [ "LEntryPort" ] },
+    "offerPrefixes": { "Llyn.ShellEngine": [ "L" ] },
     "unsealingPrefixes": { "Llyn.UIDeportment": [ "L" ] },
     "hollowingFloors": { "Llyn.Application": 91 },
     "squattingPatterns": { "Llyn.Core": [ "^LRequest" ] },
@@ -107,7 +114,7 @@ AuditStructure -ReportDirectory D:\temp\audit -Top 10 -Open -NoOpen
 Write the reports elsewhere, show ten rows of each list, open the Markdown report but not the page.
 #>
 #requires -Version 5.1
-# AUDITSTRUCTURE - AUDIT GENERATION 20.
+# AUDITSTRUCTURE - AUDIT GENERATION 21.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -154,6 +161,9 @@ Write the reports elsewhere, show ten rows of each list, open the Markdown repor
 # hash line ties every comment file to the sources it describes.
 # Generation 20: nothing this audit reports changes; the number rises with the UI audit, whose
 # Mismatching kind only informs while a driver folder it waits on holds no source.
+# Generation 21: two border kinds join. Drifting reports an offer list that no longer equals the
+# public types of its neighbour. Lingering reports a Conduct subscription to an engine event with
+# no matching removal.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -196,7 +206,8 @@ KINDS
     Border (counterpart TAuditBorder):
         Trespassing, Leapfrogging, Undercutting, Leaking, Unsealing
             held by a ceiling, one per pair Kind:Ring>Target, counted in hits
-        Poaching            never allowed, failing on the first hit
+        Poaching, Drifting, Lingering
+                            never allowed, failing on the first hit
         Commuting, Ferrying reported only
     Census (counterpart TAuditCensus):
         Squatting, Smuggling, Hollowing
@@ -214,7 +225,8 @@ RESULT
     Above ceiling     Pairs with more hits than their ceiling.
     Stale ceilings    Pairs with fewer hits than their ceiling.
     Stale exemptions  Exemption rows that cleared no finding.
-    Poaching, Squatting, Smuggling, Hollowing, Rerouting, Backdooring
+    Poaching, Drifting, Lingering, Squatting, Smuggling, Hollowing,
+    Rerouting, Backdooring
                       Hits of a kind that allows none.
 
 REPORTS
@@ -230,7 +242,7 @@ EXIT CODES
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$script:AuditGeneration = 20
+$script:AuditGeneration = 21
 
 # dotnet and git write UTF-8. A console still on the OEM code page would show every non-ASCII line
 # garbled, so this process reads and writes UTF-8. Process-local: the calling console keeps its own.
@@ -407,6 +419,7 @@ $script:AuditSchema = [ordered]@{
     'imports'          = 'string[]'
     'eavesdroppingMembers' = 'string[]'
     'offers'           = 'map[]'
+    'offerPrefixes'    = 'map[]'
     'unsealingPrefixes' = 'map[]'
     'squattingPatterns' = 'map[]'
     'smugglingWords'   = 'map[]'
@@ -433,7 +446,7 @@ $script:RingSchema = [ordered]@{
 # Every kind belongs to one family, the family its counterpart convention test is named after.
 # Border: what one ring names from another. Census: what each ring holds. Purity: what a pure ring
 # names from the framework. Charter: what the project files reference.
-$script:BorderChecks = @('Trespassing', 'Leapfrogging', 'Undercutting', 'Leaking', 'Unsealing', 'Poaching', 'Commuting', 'Ferrying')
+$script:BorderChecks = @('Trespassing', 'Leapfrogging', 'Undercutting', 'Leaking', 'Unsealing', 'Poaching', 'Drifting', 'Lingering', 'Commuting', 'Ferrying')
 $script:CensusChecks = @('Squatting', 'Smuggling', 'Hollowing')
 $script:PurityChecks = @('Foraging', 'Eavesdropping')
 $script:CharterChecks = @('Rerouting', 'Backdooring', 'Piggybacking')
@@ -441,12 +454,12 @@ $script:CharterChecks = @('Rerouting', 'Backdooring', 'Piggybacking')
 # A held kind counts its hits per pair against a ceiling. A hard kind allows no hit at all.
 # A reported kind never gates. Piggybacking counts cut projects against its own single ceiling.
 $script:HeldChecks = @('Trespassing', 'Leapfrogging', 'Undercutting', 'Leaking', 'Unsealing', 'Foraging', 'Eavesdropping')
-$script:HardChecks = @('Poaching', 'Squatting', 'Smuggling', 'Hollowing', 'Rerouting', 'Backdooring')
+$script:HardChecks = @('Poaching', 'Drifting', 'Lingering', 'Squatting', 'Smuggling', 'Hollowing', 'Rerouting', 'Backdooring')
 $script:SingleCheck = 'Piggybacking'
 
 # The order is the order the kinds are reported in, heaviest first.
 $script:CheckOrder = @('Trespassing', 'Leapfrogging', 'Undercutting', 'Leaking', 'Unsealing', 'Foraging', 'Eavesdropping',
-    'Piggybacking', 'Poaching', 'Squatting', 'Smuggling', 'Hollowing', 'Rerouting', 'Backdooring', 'Ferrying', 'Commuting')
+    'Piggybacking', 'Poaching', 'Drifting', 'Lingering', 'Squatting', 'Smuggling', 'Hollowing', 'Rerouting', 'Backdooring', 'Ferrying', 'Commuting')
 
 $script:CheckTitles = @{
     'Trespassing'   = 'Outer ring named from an inner ring'
@@ -458,6 +471,8 @@ $script:CheckTitles = @{
     'Eavesdropping' = 'Eavesdropping member touched from a pure ring'
     'Piggybacking'  = 'Cut project compiling against rings past its neighbour'
     'Poaching'      = 'Neighbour name outside the offers the ring may name'
+    'Drifting'      = 'Offer list differing from the public types of its neighbour'
+    'Lingering'     = 'Engine event subscription its Conduct type never removes'
     'Squatting'     = 'Type declared in a ring that may not hold it'
     'Smuggling'     = 'Listed word inside a folder'
     'Hollowing'     = 'Ring holding fewer source files than its floor'
@@ -871,6 +886,7 @@ string[] hostReferences = Strings(config.GetProperty("host").GetProperty("refere
 string[] imports = Strings(config.GetProperty("imports"));
 string[] eavesdropping = Strings(config.GetProperty("eavesdroppingMembers"));
 Dictionary<string, string[]> offers = Map(config.GetProperty("offers"));
+Dictionary<string, string[]> offerPrefixes = Map(config.GetProperty("offerPrefixes"));
 Dictionary<string, string[]> unsealing = Map(config.GetProperty("unsealingPrefixes"));
 Dictionary<string, string[]> squatting = Map(config.GetProperty("squattingPatterns"));
 Dictionary<string, string[]> smuggling = Map(config.GetProperty("smugglingWords"));
@@ -919,6 +935,19 @@ Ring? SourceRing(INamedTypeSymbol type)
 
 static bool IsData(INamedTypeSymbol type) =>
     type.TypeKind is TypeKind.Enum or TypeKind.Struct or TypeKind.Delegate || type.IsRecord;
+
+static bool IsPublic(INamedTypeSymbol type)
+{
+    for (INamedTypeSymbol? current = type; current is not null; current = current.ContainingType)
+    {
+        if (current.DeclaredAccessibility != Accessibility.Public)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 static INamedTypeSymbol? TypeOf(ISymbol symbol) => symbol switch
 {
@@ -1137,6 +1166,62 @@ foreach ((string pair, string[] offer) in offers)
     }
 }
 
+Dictionary<string, List<(string? Ring, bool Public)>> typesOf = compilation
+    .GetSymbolsWithName(_ => true, SymbolFilter.Type)
+    .OfType<INamedTypeSymbol>()
+    .GroupBy(type => type.Name, StringComparer.Ordinal)
+    .ToDictionary(
+        group => group.Key,
+        group => group.Select(type => (SourceRing(type)?.Name, IsPublic(type))).ToList(),
+        StringComparer.Ordinal);
+foreach ((string pair, string[] offer) in offers)
+{
+    string ringName = pair[..pair.IndexOf('>')];
+    string neighbour = pair[(pair.IndexOf('>') + 1)..];
+    string where = source + neighbour;
+    string[] allowed = offerPrefixes.GetValueOrDefault(neighbour, []);
+    HashSet<string> listed = new(offer, StringComparer.Ordinal);
+    foreach (string entry in offer.Distinct(StringComparer.Ordinal))
+    {
+        List<(string? Ring, bool Public)> found = typesOf.GetValueOrDefault(entry, []);
+        string? clause = found.Count == 0 ? "(a) resolves to no type"
+            : found.Count > 1 ? $"(a) resolves to {found.Count} types"
+            : found[0].Ring != neighbour ? $"(a) is declared in {found[0].Ring ?? "no ring"}"
+            : !found[0].Public ? "(a) is not public"
+            : !allowed.Any(prefix => entry.StartsWith(prefix, StringComparison.Ordinal))
+                ? $"(a) lacks the prefix {string.Join(", ", allowed)}"
+            : null;
+        if (clause is not null)
+        {
+            all.Add(new Finding(where, 0, ringName, "Drifting", neighbour, $"{entry} {clause}", ""));
+        }
+    }
+
+    if (rings.FirstOrDefault(candidate => candidate.Name == ringName) is { Cut: true })
+    {
+        IEnumerable<string> unlisted = typesOf
+            .Where(item => item.Value.Any(type => type.Ring == neighbour && type.Public))
+            .Select(item => item.Key)
+            .Where(name => !listed.Contains(name))
+            .Order(StringComparer.Ordinal);
+        foreach (string name in unlisted)
+        {
+            all.Add(new Finding(where, 0, ringName, "Drifting", neighbour,
+                $"{name} (b) is public in {neighbour} but not offered", ""));
+        }
+    }
+
+    foreach ((string other, string[] otherOffer) in offers
+                 .Where(item => item.Key != pair && item.Key[(item.Key.IndexOf('>') + 1)..] == neighbour))
+    {
+        foreach (string name in otherOffer.Distinct(StringComparer.Ordinal).Where(name => !listed.Contains(name)))
+        {
+            all.Add(new Finding(where, 0, ringName, "Drifting", neighbour,
+                $"{name} (c) is offered by {other} but not here", ""));
+        }
+    }
+}
+
 HashSet<string> sealedHits = new(StringComparer.Ordinal);
 foreach ((string ringName, string[] prefixes) in unsealing)
 {
@@ -1181,6 +1266,81 @@ foreach (Finding finding in all.Where(finding => finding.Check == "Commuting").T
         && !offer.Contains(finding.Name, StringComparer.Ordinal))
     {
         all.Add(finding with { Check = "Poaching" });
+    }
+}
+
+string conduct = project + ".Conduct";
+HashSet<string> below = inner.GetValueOrDefault(conduct, []);
+HashSet<string> removed = new(StringComparer.Ordinal);
+List<(Finding Hit, string Key)> subscribed = [];
+foreach (SyntaxTree tree in binder.LAuditTrees)
+{
+    string relative = binder.LAuditRelativeRead(tree.FilePath);
+    if (RingOf(relative)?.Name != conduct)
+    {
+        continue;
+    }
+
+    SemanticModel model = compilation.GetSemanticModel(tree, true);
+    foreach (AssignmentExpressionSyntax assignment in tree.GetRoot().DescendantNodes().OfType<AssignmentExpressionSyntax>())
+    {
+        bool adding = assignment.IsKind(SyntaxKind.AddAssignmentExpression);
+        if ((!adding && !assignment.IsKind(SyntaxKind.SubtractAssignmentExpression))
+            || model.GetSymbolInfo(assignment.Left).Symbol is not IEventSymbol handled
+            || assignment.FirstAncestorOrSelf<TypeDeclarationSyntax>() is not { } holder
+            || model.GetDeclaredSymbol(holder) is not INamedTypeSymbol owner)
+        {
+            continue;
+        }
+
+        IEventSymbol handledEvent = handled.OriginalDefinition;
+        INamedTypeSymbol declaring = handledEvent.ContainingType.OriginalDefinition;
+        if (SymbolEqualityComparer.Default.Equals(declaring, owner.OriginalDefinition))
+        {
+            continue;
+        }
+
+        ExpressionSyntax handler = assignment.Right;
+        while (handler is ParenthesizedExpressionSyntax parenthesized)
+        {
+            handler = parenthesized.Expression;
+        }
+
+        bool anonymous = handler is AnonymousFunctionExpressionSyntax;
+        SymbolInfo handlerInfo = model.GetSymbolInfo(handler);
+        ISymbol? handlerSymbol = anonymous ? null
+            : (handlerInfo.Symbol ?? handlerInfo.CandidateSymbols.FirstOrDefault())?.OriginalDefinition;
+        string key = owner.OriginalDefinition.ToDisplayString() + "|" + handledEvent.ToDisplayString() + "|"
+            + (handlerSymbol?.ToDisplayString() ?? handler.ToString());
+        if (!adding)
+        {
+            if (!anonymous)
+            {
+                removed.Add(key);
+            }
+
+            continue;
+        }
+
+        if (SourceRing(declaring) is not { } target || !below.Contains(target.Name))
+        {
+            continue;
+        }
+
+        int line = assignment.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+        string label = anonymous ? "(lambda)" : handlerSymbol?.Name ?? "(expression)";
+        Finding hit = new(relative, line, conduct, "Lingering", target.Name,
+            $"{owner.Name} {declaring.Name}.{handledEvent.Name} {label}", LineText(tree, line));
+        subscribed.Add((hit, anonymous ? "" : key));
+    }
+}
+
+HashSet<string> lingered = new(StringComparer.Ordinal);
+foreach ((Finding hit, string key) in subscribed)
+{
+    if ((key.Length == 0 || !removed.Contains(key)) && lingered.Add($"{hit.Path}|{hit.Line}|{hit.Name}"))
+    {
+        all.Add(hit);
     }
 }
 
@@ -1495,6 +1655,8 @@ function Format-FindingLine {
     $location = Format-Location -Finding $Finding
     switch -CaseSensitive ($Finding.Check) {
         'Poaching' { return "$location $($Finding.Name) outside $($Finding.Ring)>$($Finding.Target)" }
+        'Drifting' { return "$location $($Finding.Ring)>$($Finding.Target) $($Finding.Name)" }
+        'Lingering' { return "$location $($Finding.Name) never removed" }
         'Squatting' { return "$location $($Finding.Name) ~ $($Finding.Target)" }
         default { return "$location $($Finding.Name)" }
     }
@@ -1893,6 +2055,8 @@ $meanings = @{
     'Stale ceilings'    = 'ring pairs with fewer hits than their ceiling'
     'Stale exemptions'  = 'exemption rows that cleared no finding'
     'Poaching'          = 'names reached outside a pair''s listed offers'
+    'Drifting'          = 'offer entries or public types where a list and its neighbour differ'
+    'Lingering'         = 'engine event subscriptions a Conduct type never removes'
     'Squatting'         = 'types matching a home pattern found elsewhere'
     'Smuggling'         = 'listed words found in their folder'
     'Hollowing'         = 'projects below their floor'

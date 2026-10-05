@@ -155,7 +155,7 @@ public sealed class CCatalog
         return LCatalogArticulationRead(LPhonologyPort.LEngineVowelRead());
     }
 
-    private static CArticulation LCatalogArticulationRead(LArticulation chart)
+    internal static CArticulation LCatalogArticulationRead(LArticulation chart)
     {
         List<string> headers =
             chart.LArticulationHeaders.Select(static name => string.Concat("Articulation.", name)).ToList();

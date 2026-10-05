@@ -8,7 +8,7 @@ generation number, the configuration schema, and the strict reader they use. No 
 value appears here: this file is identical in every project at this generation.
 #>
 #requires -Version 5.1
-# AUDITNAMES.CONFIG - AUDIT GENERATION 20.
+# AUDITNAMES.CONFIG - AUDIT GENERATION 21.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A configuration is total: every key in the schema must be present, a missing key is an error rather
@@ -49,7 +49,9 @@ value appears here: this file is identical in every project at this generation.
 # hash line ties every comment file to the sources it describes.
 # Generation 20: nothing this audit reports changes; the number rises with the UI audit, whose
 # Mismatching kind only informs while a driver folder it waits on holds no source.
-$script:AuditGeneration = 20
+# Generation 21: an out-of-turf type declared public in a sealed turf fails at once, outside the
+# prefix ceiling.
+$script:AuditGeneration = 21
 
 # The generated name registry beside this file. SyncNames.ps1 writes it from docs-internal; the audits
 # read it and never docs-internal.
@@ -74,6 +76,7 @@ $script:AuditSchema = [ordered]@{
     'naming.prefixes'                  = 'string[]'
     'naming.prefixTurfs'               = 'map[]'
     'naming.prefixCeiling'             = 'int'
+    'naming.sealedTurfs'               = 'string[]'
     'naming.testPrefix'                = 'string'
     'naming.componentLimit'            = 'int'
     'naming.componentReview'           = 'int'

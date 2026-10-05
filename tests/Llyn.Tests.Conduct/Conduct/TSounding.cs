@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -18,6 +19,43 @@ public sealed class TSounding
         Assert.Equal(
             new CVariety(string.Empty, "Variety.", string.Empty),
             CSounding.CSoundingVarietyRead("English", string.Empty));
+    }
+
+    [Fact]
+    public void SoundingContourRead_LevelsOffScale_DropsThemAndTheTone()
+    {
+        IReadOnlyList<CContour> syllables = TInterfaceConductSound.TSoundingContourRead(
+            [
+                TInterface.TContourCreate("a", [0, 6, -1]),
+                TInterface.TContourCreate("b", [7, 3, 3, 9]),
+                TInterface.TContourCreate("c", []),
+            ],
+            [5, 4, 3, 2, 1]);
+
+        Assert.Equal(3, syllables.Count);
+        Assert.Empty(syllables[0].CContourLevels);
+        Assert.False(syllables[0].CContourToned);
+        Assert.Equal([3, 3], syllables[1].CContourLevels);
+        Assert.True(syllables[1].CContourToned);
+        Assert.Empty(syllables[2].CContourLevels);
+        Assert.False(syllables[2].CContourToned);
+    }
+
+    [Fact]
+    public void SoundingContourRead_EmptyScale_LeavesEachUntoned()
+    {
+        IReadOnlyList<CContour> syllables = TInterfaceConductSound.TSoundingContourRead(
+            [TInterface.TContourCreate("ma", [5, 5]), TInterface.TContourCreate("ba", [1])], []);
+
+        Assert.Equal(["ma", "ba"], syllables.Select(static syllable => syllable.CContourText));
+        Assert.All(syllables, static syllable => Assert.Empty(syllable.CContourLevels));
+        Assert.All(syllables, static syllable => Assert.False(syllable.CContourToned));
+    }
+
+    [Fact]
+    public void SoundingContourRead_NoSyllables_AnswersNone()
+    {
+        Assert.Empty(TInterfaceConductSound.TSoundingContourRead([], [5, 4, 3, 2, 1]));
     }
 
     [Fact]

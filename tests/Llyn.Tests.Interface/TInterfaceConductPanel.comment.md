@@ -1,5 +1,5 @@
 # TInterfaceConductPanel.cs
-Hash: `aa1189d5e71ee857`
+Hash: `bf45a50780b3defa`
 
 ## `internal static class TInterfaceConductPanel`
 
@@ -15,6 +15,11 @@ Relays whether a catalog filter admits a row of the given language.
 ## `internal static CVistaRow TPanelRowRead(LVistaRow row)`
 
 Relays the catalog's map of an engine entry row.
+
+## `internal static CArticulation TCatalogArticulationRead(IReadOnlyList<string> headers, IReadOnlyList<string> sides, IReadOnlyList<IReadOnlyList<IReadOnlyList<string>>> cells)`
+
+Builds an IPA chart from `headers`, `sides` and `cells` and relays the catalog's map of it.
+A fact thus feeds a hostile chart without building the engine record itself.
 
 ## `internal static CPanel TPanelCreate(CEnvoy envoy, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam)`
 
@@ -130,6 +135,10 @@ Relays the imprint's cancel of its open edit.
 ## `internal static void TImprintSave(this CImprint imprint)`
 
 Relays the imprint's save of its open edit.
+
+## `internal static IReadOnlyList<CReferenceKind> TImprintKindRead(IReadOnlyList<(string LReferenceKindTag, string LReferenceKindKey)> rows)`
+
+Relays the imprint's kind menu map, so a fact feeds hostile kind rows.
 
 ## `internal static LVistaRow TVistaRowCreate(long id, string epithet, bool chosen)`
 

@@ -1,5 +1,5 @@
 {
-  "generation": 20,
+  "generation": 21,
   "project": "Llyn",
   "helper": {
     "framework": "net10.0"
@@ -665,6 +665,14 @@
       "CCompass",
       "CDisplayCard",
       "CDisplayRoute"
+    ]
+  },
+  "offerPrefixes": {
+    "Llyn.Conduct": [
+      "C"
+    ],
+    "Llyn.ShellEngine": [
+      "L"
     ]
   },
   "unsealingPrefixes": {

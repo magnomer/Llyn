@@ -66,6 +66,17 @@ internal static class TEnvoyFake
             },
         });
 
+    internal static CEnvoy TEnvoyMarkupCreate(string? path, List<string> asked) =>
+        TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["CEnvoyMarkupRead"] = _ => path,
+            ["CEnvoyFailureShow"] = args =>
+            {
+                asked.Add((string)args![0]!);
+                return null;
+            },
+        });
+
     internal static CEnvoy TEnvoyTicketCreate(Func<CPressTicket?> answer, List<string> asked) =>
         TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
         {

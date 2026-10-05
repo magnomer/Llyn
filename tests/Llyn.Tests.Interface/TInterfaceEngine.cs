@@ -173,4 +173,6 @@ internal static partial class TInterface
 
     internal static LDraft TEngineRequestApply(this LEngine engine, LRequest request) =>
         engine.LEngineRequest.LEngineRequestApply(request);
+
+    internal static LEngine TEngineCreate(LRig rig) => new(rig, _ => rig, _ => { });
 }

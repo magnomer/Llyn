@@ -14,6 +14,8 @@ public sealed class CWorkspace
 
     private readonly List<Action> _cWorkspaceClosures = [];
 
+    private readonly HashSet<string> _cWorkspaceShown = [];
+
     private CEditor? _cWorkspaceInput;
 
     private bool _cWorkspaceHeard;
@@ -188,6 +190,21 @@ public sealed class CWorkspace
         }
 
         _cWorkspaceAtelier.CAtelierPosture.LPostureSaveFailed -= _cWorkspaceFailure;
+    }
+
+    internal void LWorkspaceFailureShow(string key, Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(key);
+        ArgumentNullException.ThrowIfNull(exception);
+
+        LSettingsPort settings = _cWorkspaceAtelier.CAtelierSettingsPort;
+        if (_cWorkspaceEnvoy is CEnvoy envoy && _cWorkspaceShown.Add(key))
+        {
+            CLedger.LLedgerFailureShow(envoy, settings, key, exception);
+            return;
+        }
+
+        CLedger.LLedgerNoticeRead(settings, exception);
     }
 
     private void LWorkspaceVistaRestore()

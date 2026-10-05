@@ -37,7 +37,15 @@ internal static class CPortrait
 
     internal static IReadOnlyList<CPortraitChoice> LPortraitChoiceRead()
     {
-        List<CPortraitChoice> choices = LPortraitPort.LEngineMediumRead()
+        return LPortraitChoiceRead(LPortraitPort.LEngineMediumRead());
+    }
+
+    internal static IReadOnlyList<CPortraitChoice> LPortraitChoiceRead(
+        IReadOnlyList<(LPortraitMedium, string, bool)> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        List<CPortraitChoice> choices = rows
             .Select(static row => LPortraitChoiceCreate(
                 row.Item1, row.Item2.Replace("|", string.Empty, StringComparison.Ordinal), row.Item3))
             .ToList();

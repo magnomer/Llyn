@@ -60,15 +60,10 @@ public sealed class TAuditName
     [Fact]
     public void AuditName_Types_PrefixMatchesTurf()
     {
-        string repoRoot = TAuditSource.TAuditRootRead();
-        TAuditScope scope = new(
-            [],
-            TAuditNameSetting.TAuditSourceInclude,
-            TAuditNameSetting.TAuditExcludedSegments,
-            TAuditNameSetting.TAuditExcludedSuffixes,
-            TAuditNameSetting.TAuditExcludedPrefixes,
-            TAuditNameSetting.TAuditSelfExcluded);
-        List<string> hits = TAuditTurfRead(repoRoot, TAuditSource.TAuditFileRead(repoRoot, scope));
+        List<string> hits = TAuditTurfRead()
+            .Where(hit => !hit.TAuditSealed)
+            .Select(hit => hit.TAuditText)
+            .ToList();
         string listed = string.Join('\n', hits.Select(hit => $"  {hit}"));
 
         Assert.True(hits.Count <= TAuditNameSetting.TAuditPrefixCeiling, TAuditConvention.TAuditReportFormat(
@@ -81,49 +76,121 @@ public sealed class TAuditName
             + $"{TAuditNameSetting.TAuditPrefixCeiling} is stale and must be lowered."));
     }
 
-    private static List<string> TAuditTurfRead(string repoRoot, IReadOnlyList<string> sources)
+    [Fact]
+    public void AuditName_SealedTurfs_HoldNoPublic()
     {
-        CSharpParseOptions options = new(LanguageVersion.Preview, DocumentationMode.None, SourceCodeKind.Regular);
-        List<(string TAuditPath, int TAuditLine, string TAuditType, string TAuditText)> hits = [];
-        foreach (string path in sources.Where(path => path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)))
+        List<string> hits = TAuditTurfRead()
+            .Where(hit => hit.TAuditSealed)
+            .Select(hit => $"  {hit.TAuditText}")
+            .ToList();
+
+        Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITNAMES",
+            $"{hits.Count} public type(s) carry a prefix outside the turf of a sealed folder:\n"
+            + string.Join('\n', hits)));
+    }
+
+    [Fact]
+    public void AuditName_PublicSealedTurf_ReportsOneHit()
+    {
+        SyntaxNode root = CSharpSyntaxTree
+            .ParseText("namespace Llyn.Conduct;\npublic sealed class LDisplay { }")
+            .GetRoot();
+        List<(int TAuditLine, string TAuditType, string TAuditText, bool TAuditSealed)> hits =
+            TAuditTurfScan("src/Llyn.Conduct/Display/LDisplay.cs", root).ToList();
+
+        Assert.True(Assert.Single(hits).TAuditSealed);
+    }
+
+    [Fact]
+    public void AuditName_InternalSealedTurf_AllowsTheType()
+    {
+        SyntaxNode root = CSharpSyntaxTree
+            .ParseText("namespace Llyn.Conduct;\ninternal sealed class LDisplay { }")
+            .GetRoot();
+        List<(int TAuditLine, string TAuditType, string TAuditText, bool TAuditSealed)> hits =
+            TAuditTurfScan("src/Llyn.Conduct/Display/LDisplay.cs", root).ToList();
+
+        Assert.DoesNotContain(hits, hit => hit.TAuditSealed);
+    }
+
+    internal static IEnumerable<(int TAuditLine, string TAuditType, string TAuditText, bool TAuditSealed)>
+        TAuditTurfScan(string relative, SyntaxNode root)
+    {
+        string? turf = TAuditNameSetting.TAuditPrefixTurfs.Keys
+            .FirstOrDefault(key => relative.StartsWith(key + "/", StringComparison.OrdinalIgnoreCase));
+        if (turf is null)
         {
-            string relative = Path.GetRelativePath(repoRoot, path).Replace('\\', '/');
-            string? turf = TAuditNameSetting.TAuditPrefixTurfs.Keys
-                .FirstOrDefault(key => relative.StartsWith(key + "/", StringComparison.OrdinalIgnoreCase));
-            if (turf is null)
+            yield break;
+        }
+
+        string[] allowed = TAuditNameSetting.TAuditPrefixTurfs[turf];
+        bool sealedTurf = TAuditNameSetting.TAuditTurfSealed.Contains(turf, StringComparer.Ordinal);
+        foreach (SyntaxNode node in root.DescendantNodes())
+        {
+            (SyntaxToken identifier, string kind) = node switch
+            {
+                BaseTypeDeclarationSyntax type => (type.Identifier, type.Kind().ToString()),
+                DelegateDeclarationSyntax shape => (shape.Identifier, "Delegate"),
+                _ => (default, string.Empty),
+            };
+            string name = identifier.ValueText;
+            string? prefix = kind.Length == 0 ? null : TAuditNameFilter.TAuditPrefixRead(name);
+            if (prefix is null || allowed.Contains(prefix, StringComparer.Ordinal))
             {
                 continue;
             }
 
-            string[] allowed = TAuditNameSetting.TAuditPrefixTurfs[turf];
-            SyntaxNode root = CSharpSyntaxTree.ParseText(File.ReadAllText(path), options, path).GetRoot();
-            foreach (SyntaxNode node in root.DescendantNodes())
-            {
-                (SyntaxToken identifier, string kind) = node switch
-                {
-                    BaseTypeDeclarationSyntax type => (type.Identifier, type.Kind().ToString()),
-                    DelegateDeclarationSyntax shape => (shape.Identifier, "Delegate"),
-                    _ => (default, string.Empty),
-                };
-                string name = identifier.ValueText;
-                string? prefix = kind.Length == 0 ? null : TAuditNameFilter.TAuditPrefixRead(name);
-                if (prefix is null || allowed.Contains(prefix, StringComparer.Ordinal))
-                {
-                    continue;
-                }
+            int line = identifier.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+            bool exposed = sealedTurf && TAuditPublicCheck(node);
+            yield return (line, name,
+                $"{relative}:{line} [{kind}] {name} - prefix `{prefix}` is outside the turf of {turf} "
+                + $"({string.Join(", ", allowed.Select(item => $"`{item}`"))})"
+                + (exposed ? " and public in a sealed turf" : ""),
+                exposed);
+        }
+    }
 
-                int line = identifier.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
-                hits.Add((relative, line, name,
-                    $"{relative}:{line} [{kind}] {name} - prefix `{prefix}` is outside the turf of {turf} "
-                    + $"({string.Join(", ", allowed.Select(item => $"`{item}`"))})"));
+    private static bool TAuditPublicCheck(SyntaxNode node)
+    {
+        return node.AncestorsAndSelf()
+            .OfType<MemberDeclarationSyntax>()
+            .Where(member => member is BaseTypeDeclarationSyntax or DelegateDeclarationSyntax)
+            .All(member => member.Modifiers.Any(SyntaxKind.PublicKeyword));
+    }
+
+    private static List<(string TAuditText, bool TAuditSealed)> TAuditTurfRead()
+    {
+        string repoRoot = TAuditSource.TAuditRootRead();
+        TAuditScope scope = new(
+            [],
+            TAuditNameSetting.TAuditSourceInclude,
+            TAuditNameSetting.TAuditExcludedSegments,
+            TAuditNameSetting.TAuditExcludedSuffixes,
+            TAuditNameSetting.TAuditExcludedPrefixes,
+            TAuditNameSetting.TAuditSelfExcluded);
+        CSharpParseOptions options = new(LanguageVersion.Preview, DocumentationMode.None, SourceCodeKind.Regular);
+        List<(string TAuditPath, int TAuditLine, string TAuditType, string TAuditText, bool TAuditSealed)> hits = [];
+        foreach (string path in TAuditSource.TAuditFileRead(repoRoot, scope)
+                     .Where(path => path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)))
+        {
+            string relative = Path.GetRelativePath(repoRoot, path).Replace('\\', '/');
+            if (!TAuditNameSetting.TAuditPrefixTurfs.Keys
+                    .Any(key => relative.StartsWith(key + "/", StringComparison.OrdinalIgnoreCase)))
+            {
+                continue;
             }
+
+            SyntaxNode root = CSharpSyntaxTree.ParseText(File.ReadAllText(path), options, path).GetRoot();
+            hits.AddRange(TAuditTurfScan(relative, root)
+                .Select(hit => (relative, hit.TAuditLine, hit.TAuditType, hit.TAuditText, hit.TAuditSealed)));
         }
 
         return hits
             .OrderBy(hit => hit.TAuditPath, StringComparer.OrdinalIgnoreCase)
             .ThenBy(hit => hit.TAuditLine)
             .ThenBy(hit => hit.TAuditType, StringComparer.Ordinal)
-            .Select(hit => hit.TAuditText)
+            .Select(hit => (hit.TAuditText, hit.TAuditSealed))
             .ToList();
     }
 

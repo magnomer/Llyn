@@ -1,5 +1,5 @@
 # TCardMention.cs
-Hash: `06e08bea90e1992b`
+Hash: `4c866c61f81c700a`
 
 ## `public sealed class TCardMention`
 
@@ -10,6 +10,9 @@ A Mention drops by the selection over it and by its chip's id.
 The chip line names a linked headword, and keys a silent chip with no name or sense.
 A failed chip line read reports `Mention.FindFailed` once.
 It still keys every sentence of the held draft, each with an empty chip line.
+Lines for rows the draft lacks drop, and a held row the engine skips reads an empty line.
+A null answer reports the find failure and keys every sentence empty.
+With no draft held, the read answers no entries and reports nothing.
 
 ## `private static (CDesk TMentionDesk, CSentence TMentionGate, long TMentionSheet, long TMentionRow) TMentionPrepare(LEngine engine)`
 

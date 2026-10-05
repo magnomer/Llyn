@@ -267,9 +267,15 @@ public sealed class CSounding
 
     internal static IReadOnlyList<CContour> LSoundingContourRead(IReadOnlyList<LContour> syllables)
     {
-        ArgumentNullException.ThrowIfNull(syllables);
+        return LSoundingContourRead(syllables, CContour.CContourScale);
+    }
 
-        IReadOnlyList<int> scale = CContour.CContourScale;
+    internal static IReadOnlyList<CContour> LSoundingContourRead(
+        IReadOnlyList<LContour> syllables, IReadOnlyList<int> scale)
+    {
+        ArgumentNullException.ThrowIfNull(syllables);
+        ArgumentNullException.ThrowIfNull(scale);
+
         return syllables
             .Select(syllable =>
             {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -122,4 +123,28 @@ internal static class TInterfaceDeportment
     internal static void TCardPositionHide(object card) => ((PCard)card).PCardPositionHide();
 
     internal static void TCardPositionSet(object card, int position) => ((PCard)card).PCardPosition = position;
+
+    internal static void TCardRowShow(
+        ObservableCollection<QTranscriptionItem> rows, IReadOnlyList<CTranscriptionDraft> drafts) =>
+        PCard.PCardRowShow(
+            rows,
+            drafts,
+            static row => row.QTranscriptionItemId,
+            static draft => draft.CTranscriptionDraftId,
+            QTranscriptionItem.QTranscriptionRowRefine,
+            QTranscriptionItem.QTranscriptionStateRefine);
+
+    internal static void TTranscriptionSchemeRefine(this QTranscriptionItem row, IReadOnlyList<CScheme> schemes) =>
+        row.QTranscriptionSchemeRefine(schemes);
+
+    internal static object TLocalizationCreate(FrameworkElement settings, CLedger ledger, CEnvoy envoy)
+    {
+        QLocalization localization = new(settings);
+        localization.QLocalizationIntroduce(ledger, envoy);
+        return localization;
+    }
+
+    internal static void TLocalizationRefine(
+        object localization, IReadOnlyList<KeyValuePair<string, string>> languages, string chosen) =>
+        ((QLocalization)localization).QLocalizationRefine(languages, chosen);
 }

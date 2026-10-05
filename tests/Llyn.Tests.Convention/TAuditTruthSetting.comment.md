@@ -1,5 +1,5 @@
 # TAuditTruthSetting.cs
-Hash: `ccd18e201dce3ef6`
+Hash: `d2c4c53e746f402a`
 
 ## `internal static class TAuditTruthSetting`
 
@@ -7,6 +7,10 @@ Hand-written and tracked.
 The driver-audit scope, the binder inputs and the handle list live here.
 The per-file ceilings live in the ledger named by `TAuditLedgerFile`.
 No script writes this file.
+
+## `public const int TAuditGeneration = 21;`
+
+Numbers the revision of the driver-audit settings this file holds.
 
 ## `public const bool TAuditTruthEnforced = true;`
 
@@ -68,6 +72,13 @@ The kinds that only inform, each with the driver folders it waits on.
 Such a kind gates nothing while a listed folder holds no tracked source.
 Once every listed folder holds one, the kind fails like any other.
 Mismatching waits on Demeanor, since every Deportment reach mismatches while the CUI has no code.
+
+## `public static readonly Dictionary<string, string> TAuditControlPrefix`
+
+The control prefix of each driver ring, keyed by the ring's folder.
+A driver type whose name starts with its ring's prefix is a control type.
+A control shows what it is handed and may not request logic, so puppeteering names any request inside one.
+`AuditUI.json` holds the same rows as `truth.controlPrefixes`, copied by hand.
 
 ## `public static readonly string[] TAuditFrameworkPacks`
 

@@ -1,5 +1,5 @@
 # TAuditTruthWalker.cs
-Hash: `9d0775c2a1ce79eb`
+Hash: `3f60c19b789b919a`
 
 ## `internal static partial class TAuditTruthWalker`
 
@@ -26,7 +26,8 @@ The walked roots, so a write to a shared field from another class is still seen.
 
 ## `public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> sourcePaths)`
 
-Scans every driver file for tampering, spoonfeeding and misfiring, checks mismatching across the drivers, then checks every type.
+Scans every driver file for tampering, spoonfeeding, misfiring and zeroing, then checks mismatching across the drivers.
+It then names every control member in the relay set as puppeteering and checks every type.
 
 ## `public static IReadOnlySet<ISymbol> TAuditReaderRead(IReadOnlyList<string> sourcePaths)`
 

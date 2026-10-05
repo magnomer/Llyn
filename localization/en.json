@@ -221,6 +221,7 @@
     "Sound.StartFailed": "The pronunciation lookup could not be started.",
     "Sound.MorphologyFailed": "The inflection lookup setting could not be read.",
     "Sound.PendingFailed": "Whether a lookup is still running could not be read.",
+    "Sound.VolumeFailed": "The playback volume could not be changed.",
     "Sequence.Title": "Sort pronunciations",
     "Lens.Title": "Filter by language",
     "Sequence.Headword": "Headword A → Z",

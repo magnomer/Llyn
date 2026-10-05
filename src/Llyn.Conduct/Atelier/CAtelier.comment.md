@@ -1,5 +1,5 @@
 # CAtelier.cs
-Hash: `a6c97fd6bcb3cf88`
+Hash: `748c4d2ad0df0105`
 
 ## `public sealed class CAtelier : IDisposable`
 
@@ -85,6 +85,11 @@ The level is first pulled into the read's range by `LAtelierVolumeClamp`, so the
 The posture keeps that same level, so a read after a set answers what the player was given.
 The level is written only when `settled`, so a drag costs no write per step.
 A driver passes `settled` once the gesture ends, and a key press is settled at once.
+A player fault goes to `CWorkspace.LWorkspaceFailureShow` as `Sound.VolumeFailed`.
+A settled set still writes the level after a player fault.
+The posture and the slider already hold the new level, so the saved level matches what is shown.
+The gate takes no envoy, so the workspace's held envoy shows it.
+A drag fires many sets, so the notice shows once per session and later faults are only recorded.
 
 ## `private static double LAtelierVolumeClamp(double volume)`
 
@@ -100,6 +105,8 @@ Opens the session on the workspace in use at startup.
 So the driver wires that notice and opens with one gate call.
 One engine call sweeps the leftover drafts and recordings and answers the stored state.
 The sweep runs before any view restores, so nothing already saved is counted as lost work.
+A fault in that call shows `Workspace.OpenFailed` through `CLedger.LLedgerFailureShow` and opens nothing.
+That leaves the atelier as a failed `CWorkspaceChange` leaves it, with no open event raised.
 `CAtelierWorkspace` then raises its open events, and the stored tab opens last.
 
 ## `public bool CAtelierQuitConfirm(CEnvoy envoy)`
@@ -151,6 +158,10 @@ Ends the session once the window has closed and every view has stopped.
 It first runs each area's close registered with the workspace, through `CWorkspace.LWorkspaceClose`.
 It then sweeps the leftover drafts once more, then releases the posture, which lets go of every vista it watched.
 Sweeping on the way out as well as on the way in bounds what a long session leaves behind.
+The window is closing and no envoy stands, so a close or sweep fault is recorded and never shown.
+It is recorded through `CLedger.LLedgerNoticeRead`, whose engine read writes the fault record.
+A close fault is caught on its own, so the sweep still runs after it.
+The posture is released in a `finally`, so neither fault leaves its vistas watched.
 
 ## `public void Dispose()`
 

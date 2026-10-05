@@ -1,5 +1,5 @@
 # AuditUI.ps1
-Hash: `37cb569dd2407655`
+Hash: `3a554b30d2b5963d`
 
 The standalone counterpart script of the convention tests `TAuditStrict`, `TAuditTruth` and `TAuditBoundary`.
 It never reads, runs or depends on the test project, and the tests never read it.
@@ -54,6 +54,21 @@ The kind gates nothing while a listed folder holds no tracked source.
 Its hits still reach the report, under a line naming the kind as informative.
 Mismatching waits on `src/Llyn.UIDemeanor`, so it holds no ledger rows.
 Once Demeanor holds a source, every mismatching hit fails.
+`truth.controlPrefixes` maps each driver ring folder to its control prefix.
+A driver type whose name starts with its ring's prefix is a control type.
+Puppeteering names every control member in the relay set, one hit per member.
+Its relay set is the fixed point grown before any event joins.
+A control raising its own event signals, and the driver handling it requests.
+A local function or local stays with its member, and a Conduct record property read is no request.
+`TAuditTruthSetting.TAuditControlPrefix` holds the same rows, copied by hand.
+Puppeteering holds no ledger rows, since no control type requests logic.
+Zeroing reports a literal `0`, `0L` or `default` a driver sends toward a gate.
+It looks through parentheses, casts, both arms of `?:` and the right side of `??`.
+A literal compared with a member read inside a hot argument, or with a logic member, is a hit too.
+Zeroing reads `LAuditZeroingNames`, a copy of `LAuditHotNames` grown with constructors and stored parameters.
+The copy is built after the relay read and never written back, so Replaying keeps its narrower map.
+`TAuditZeroingNames` holds the same rule, written by hand.
+Zeroing holds no ledger rows, since no driver sends a literal zero toward a gate.
 A `break` in a switch skips only the rest of its own section.
 An `if` without `else` leaves only when its body always reaches a `return`, `throw`, `break` or `continue`.
 Such a jump has only plain blocks between it and the `if`.

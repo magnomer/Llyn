@@ -41,7 +41,7 @@ AuditNames -Root C:\path\to\project
 Audit a specific checkout.
 #>
 #requires -Version 5.1
-# AUDITNAMES - AUDIT GENERATION 20.
+# AUDITNAMES - AUDIT GENERATION 21.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -84,6 +84,8 @@ Audit a specific checkout.
 # hash line ties every comment file to the sources it describes.
 # Generation 20: nothing this audit reports changes; the number rises with the UI audit, whose
 # Mismatching kind only informs while a driver folder it waits on holds no source.
+# Generation 21: an out-of-turf type declared public in a sealed turf fails at once, outside the
+# prefix ceiling.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -136,11 +138,14 @@ OPTIONS
         Display this help and exit without running the audit.
 
 OUTPUT
-    Four Result gates fail the run: Non-conforming names, one per name with its
-    reasons joined, Stale exempt rows, and the Turf count above or below its
-    ceiling. Turf counts every type whose prefix lies outside the turf of its
-    project folder, as naming.prefixTurfs maps it. The exit code is 1 when any
-    gate is above 0. Each hit prints as path:line [Kind] Name - reason, the
+    Five Result gates fail the run: Non-conforming names, one per name with its
+    reasons joined, Stale exempt rows, the Turf count above or below its
+    ceiling, and Sealed turf. Turf counts every type whose prefix lies outside
+    the turf of its project folder, as naming.prefixTurfs maps it. Sealed turf
+    takes out of that count every such type in a naming.sealedTurfs folder that
+    is public on itself and every containing type, and allows none of them.
+    The exit code is 1 when any gate is above 0. Each hit prints as
+    path:line [Kind] Name - reason, the
     same line the convention test TAuditName prints. The audit reads the names
     from AuditNames.registry.json and writes no test file. SyncNames.ps1 alone
     reads docs-internal and generates both that registry and the tests'
@@ -525,6 +530,7 @@ internal static class Program
     private static string[] Prefixes = null!;
     private static Dictionary<string, string[]> PrefixTurfs = null!;
     private static int PrefixCeiling;
+    private static string[] SealedTurfs = null!;
     private static string TestPrefix = null!;
     private static int ComponentLimit;
     private static int ComponentReview;
@@ -564,6 +570,7 @@ internal static class Program
             entry => entry.Value.EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray(),
             StringComparer.Ordinal);
         PrefixCeiling = config.Number("naming.prefixCeiling");
+        SealedTurfs = config.List("naming.sealedTurfs");
         TestPrefix = config.Text("naming.testPrefix");
         ComponentLimit = config.Number("naming.componentLimit");
         ComponentReview = config.Number("naming.componentReview");
@@ -637,9 +644,9 @@ internal static class Program
                 records.AddRange(ReadXaml(xamlPath));
             }
 
-            List<string> turfs = ReadTurfs(trees, projectRoot);
+            (List<string> turfs, List<string> sealedHits) = ReadTurfs(trees, projectRoot);
             int failures = WriteReport(
-                records, bases, verbs, exempt, turfs, projectRoot, version, outputPath, pageDataPath);
+                records, bases, verbs, exempt, turfs, sealedHits, projectRoot, version, outputPath, pageDataPath);
             return failures > 0 ? 3 : 0;
         }
         catch (Exception exception)
@@ -651,9 +658,11 @@ internal static class Program
 
     // A turf is the project folder a type is declared in. Its prefix must be one the turf allows.
     // A name with no prefix is left to the name check, so it is never counted twice.
-    private static List<string> ReadTurfs(IEnumerable<SyntaxTree> trees, string projectRoot)
+    // In a sealed turf, an outside type public on itself and every containing type is a hard hit
+    // of its own, kept out of the turf count, so the ceiling never absorbs it.
+    private static (List<string> Turfs, List<string> Sealed) ReadTurfs(IEnumerable<SyntaxTree> trees, string projectRoot)
     {
-        List<(string Path, int Line, string Name, string Text)> hits = [];
+        List<(string Path, int Line, string Name, string Text, bool Sealed)> hits = [];
         foreach (SyntaxTree tree in trees)
         {
             string relative = Path.GetRelativePath(projectRoot, tree.FilePath).Replace('\\', '/');
@@ -665,6 +674,7 @@ internal static class Program
             }
 
             string[] allowed = PrefixTurfs[turf];
+            bool sealedTurf = SealedTurfs.Contains(turf, StringComparer.Ordinal);
             foreach (SyntaxNode node in tree.GetRoot().DescendantNodes())
             {
                 (SyntaxToken identifier, string kind) = node switch
@@ -681,19 +691,30 @@ internal static class Program
                 }
 
                 int line = identifier.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+                bool exposed = sealedTurf && IsPublicChain(node);
                 hits.Add((relative, line, name,
                     $"{relative}:{line} [{kind}] {name} - prefix `{prefix}` is outside the turf of {turf} "
-                    + $"({string.Join(", ", allowed.Select(item => $"`{item}`"))})"));
+                    + $"({string.Join(", ", allowed.Select(item => $"`{item}`"))})"
+                    + (exposed ? " and public in a sealed turf" : ""),
+                    exposed));
             }
         }
 
-        return hits
+        List<(string Path, int Line, string Name, string Text, bool Sealed)> ordered = hits
             .OrderBy(hit => hit.Path, StringComparer.OrdinalIgnoreCase)
             .ThenBy(hit => hit.Line)
             .ThenBy(hit => hit.Name, StringComparer.Ordinal)
-            .Select(hit => hit.Text)
             .ToList();
+        return (
+            ordered.Where(hit => !hit.Sealed).Select(hit => hit.Text).ToList(),
+            ordered.Where(hit => hit.Sealed).Select(hit => hit.Text).ToList());
     }
+
+    // Public is read from the syntax: the declaration and every type around it carry the keyword.
+    private static bool IsPublicChain(SyntaxNode node) => node.AncestorsAndSelf()
+        .OfType<MemberDeclarationSyntax>()
+        .Where(member => member is BaseTypeDeclarationSyntax or DelegateDeclarationSyntax)
+        .All(member => member.Modifiers.Any(SyntaxKind.PublicKeyword));
 
     private static IEnumerable<NameRecord> ReadCSharp(SyntaxTree tree)
     {
@@ -1413,6 +1434,7 @@ internal static class Program
         ISet<string> verbs,
         ExemptRegistry exempt,
         IReadOnlyList<string> turfs,
+        IReadOnlyList<string> sealedHits,
         string projectRoot,
         string version,
         string outputPath,
@@ -1466,6 +1488,7 @@ internal static class Program
             $"- Non-conforming names: {ordered.Length}",
             $"- Stale exempt rows: {stale.Count}",
             $"- Types outside their prefix turf: {turfs.Count} (ceiling {PrefixCeiling})",
+            $"- Public types outside the turf of a sealed folder: {sealedHits.Count}",
             .. reasonRows.Select(row => $"- Primary reason {row.Label}: {row.Value}"),
             $"- At-limit review names: {totalReviews}",
             $"- Counting: {PrefixLegend()} is a prefix and is not counted as a component.",
@@ -1581,6 +1604,13 @@ internal static class Program
         lines.Add($"- Ceiling: {PrefixCeiling}");
         lines.Add("");
         lines.AddRange(turfs.Select(turf => $"- {turf}"));
+        lines.Add("");
+        lines.Add("## Sealed turfs");
+        lines.Add("");
+        lines.Add($"- Sealed folders: {string.Join(", ", SealedTurfs.Select(item => $"`{item}`"))}");
+        lines.Add($"- Public types whose prefix is outside the turf of a sealed folder: {sealedHits.Count}");
+        lines.Add("");
+        lines.AddRange(sealedHits.Select(hit => $"- {hit}"));
 
         // One report holds both: the violated names first, then the complete inventory, each under its
         // own heading one level beneath the report title.
@@ -1600,6 +1630,7 @@ internal static class Program
             ("Stale exempt rows", stale.Count, "exempt rows whose name is gone from source", "Stale exempt rows"),
             ("Turf over ceiling", turfOver, "types outside their prefix turf above the ceiling", "Turf"),
             ("Turf stale ceiling", turfStale, "ceiling points above the types outside their turf", "Turf"),
+            ("Sealed turf", sealedHits.Count, "public types outside the turf of a sealed folder", "Sealed turf"),
         ];
         WritePageData(
             pageDataPath,
@@ -1611,6 +1642,7 @@ internal static class Program
             ordered,
             stale,
             turfs,
+            sealedHits,
             audits,
             [
                 ("names", totalNames),
@@ -1641,11 +1673,12 @@ internal static class Program
         WriteList("Non-conforming names", ordered.Select(HitFormat).ToArray());
         WriteList("Stale exempt rows", stale.ToArray());
         WriteList("Turf", turfs.ToArray());
+        WriteList("Sealed turf", sealedHits.ToArray());
 
         Console.WriteLine();
         Console.WriteLine($"Report: {outputPath}");
 
-        return ordered.Length + stale.Count + turfOver + turfStale;
+        return ordered.Length + stale.Count + turfOver + turfStale + sealedHits.Count;
     }
 
     private static string DemoteHeading(string line) =>
@@ -1665,6 +1698,7 @@ internal static class Program
         NameHit[] ordered,
         IReadOnlyList<string> stale,
         IReadOnlyList<string> turfs,
+        IReadOnlyList<string> sealedHits,
         IReadOnlyList<FileAudit> audits,
         (string Key, int Value)[] totals)
     {
@@ -1712,6 +1746,7 @@ internal static class Program
             }),
             stale,
             turfs,
+            sealedTurfs = sealedHits,
             files = paths,
             names,
         };

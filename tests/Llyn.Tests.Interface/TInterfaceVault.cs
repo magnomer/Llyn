@@ -60,6 +60,14 @@ internal static partial class TInterface
         settingsVault.LSettingsSave(settings);
     }
 
+    internal static LPostureState? TPostureRead(this LPostureVault postureVault, string name) =>
+        postureVault.LPostureRead(name);
+
+    internal static void TPostureSave(this LPostureVault postureVault, string name, LPostureState state)
+    {
+        postureVault.LPostureSave(name, state);
+    }
+
     internal static void TDraftSave(this LDraftVault draftVault, LDraft draft)
     {
         draftVault.LDraftSave(draft);

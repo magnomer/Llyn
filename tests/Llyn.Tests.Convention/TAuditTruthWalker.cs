@@ -20,9 +20,11 @@ internal static partial class TAuditTruthWalker
             {
                 TAuditTamperingScan(root, violations);
                 TAuditMisfiringScan(root, violations);
+                TAuditZeroingScan(root, violations);
             }
 
             TAuditMismatchingScan(violations);
+            TAuditPuppeteeringScan(violations);
             foreach (List<TypeDeclarationSyntax> type in parts.Values)
             {
                 TAuditBaseCheck(type, violations);

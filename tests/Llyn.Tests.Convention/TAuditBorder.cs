@@ -15,6 +15,8 @@ public sealed class TAuditBorder
             .. TAuditBorderWalker.TAuditRun(),
             .. TAuditBorderWalker.TAuditOfferScan(),
             .. TAuditBorderWalker.TAuditSealScan(),
+            .. TAuditBorderWalker.TAuditDriftScan(),
+            .. TAuditBorderWalker.TAuditLingerScan(),
         ]);
 
     [Fact]
@@ -138,6 +140,86 @@ public sealed class TAuditBorder
             TAuditBorderAudit,
             $"{hits.Count} Poaching neighbour name(s) sit outside the offer a ring may name:\n"
             + string.Join('\n', hits)));
+    }
+
+    [Fact]
+    public void AuditBorder_Offers_HoldNoDrifting()
+    {
+        List<string> hits = TAuditBorderHits.Value
+            .Where(hit => hit.TAuditHitKind == "Drifting")
+            .Where(hit => hit.TAuditExemptRead(TAuditBorderSetting.TAuditBorderExempt).Length == 0)
+            .Select(hit => $"  {hit.TAuditHitPath} {hit.TAuditHitRing}>{hit.TAuditHitTarget} {hit.TAuditHitName}")
+            .ToList();
+
+        Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
+            TAuditBorderAudit,
+            $"{hits.Count} Drifting hit(s) where an offer list differs from its neighbour:\n"
+            + string.Join('\n', hits)));
+    }
+
+    [Fact]
+    public void AuditBorder_Subscriptions_HoldNoLingering()
+    {
+        List<string> hits = TAuditBorderHits.Value
+            .Where(hit => hit.TAuditHitKind == "Lingering")
+            .Where(hit => hit.TAuditExemptRead(TAuditBorderSetting.TAuditBorderExempt).Length == 0)
+            .Select(hit => $"  {hit.TAuditHitPath}:{hit.TAuditHitLine} {hit.TAuditHitName} never removed")
+            .ToList();
+
+        Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
+            TAuditBorderAudit,
+            $"{hits.Count} Lingering engine event subscription(s) the subscribing Conduct type never removes:\n"
+            + string.Join('\n', hits)));
+    }
+
+    [Fact]
+    public void AuditBorder_DriftedOffer_ReportsEachBreak()
+    {
+        IReadOnlyList<TAuditHit> hits = TAuditBorderWalker.TAuditDriftRead(
+            new Dictionary<string, string[]>
+            {
+                ["Llyn.UIDeportment>Llyn.Conduct"] = ["CSentence", "CStale", "CHidden", "LDisplay"],
+            },
+            ["Llyn.UIDeportment"],
+            new Dictionary<string, string[]> { ["Llyn.Conduct"] = ["C"] },
+            [
+                ("CSentence", "Llyn.Conduct", true),
+                ("CHidden", "Llyn.Conduct", false),
+                ("LDisplay", "Llyn.Conduct", true),
+                ("CMissing", "Llyn.Conduct", true),
+                ("LTenure", "Llyn.ShellEngine", true),
+            ]);
+        string[] expected =
+        [
+            "CHidden (a) is not public",
+            "CMissing (b) is public in Llyn.Conduct but not offered",
+            "CStale (a) resolves to no type",
+            "LDisplay (a) lacks the prefix C",
+        ];
+
+        Assert.Equal(expected, hits.Select(hit => hit.TAuditHitName));
+        Assert.All(hits, hit => Assert.Equal("Drifting:Llyn.UIDeportment>Llyn.Conduct", hit.TAuditPairRead()));
+    }
+
+    [Fact]
+    public void AuditBorder_EqualOffer_ReportsNoDrifting()
+    {
+        IReadOnlyList<TAuditHit> hits = TAuditBorderWalker.TAuditDriftRead(
+            new Dictionary<string, string[]>
+            {
+                ["Llyn.UIDeportment>Llyn.Conduct"] = ["CSentence", "CMissing"],
+                ["Llyn.UIDemeanor>Llyn.Conduct"] = ["CMissing", "CSentence"],
+            },
+            ["Llyn.UIDeportment", "Llyn.UIDemeanor"],
+            new Dictionary<string, string[]> { ["Llyn.Conduct"] = ["C"] },
+            [
+                ("CSentence", "Llyn.Conduct", true),
+                ("CHidden", "Llyn.Conduct", false),
+                ("CMissing", "Llyn.Conduct", true),
+                ("LTenure", "Llyn.ShellEngine", true),
+            ]);
+
+        Assert.Empty(hits);
     }
 
     [Fact]

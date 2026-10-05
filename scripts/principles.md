@@ -54,6 +54,7 @@ A rule about one project's own features is a test in that project's suite, with 
 | `AuditLines.ps1` | `TAuditLine` |
 | `AuditComments.ps1` | `TAuditComment` |
 | `AuditFake.ps1` | `TAuditFake` |
+| `AuditFault.ps1` | `TAuditFault` |
 | `AuditObject.ps1` | `TAuditObject` |
 | `AuditPlatform.ps1` | `TAuditPlatform` |
 | `AuditStructure.ps1` | `TAuditBorder`, `TAuditCensus`, `TAuditPurity`, `TAuditCharter` |

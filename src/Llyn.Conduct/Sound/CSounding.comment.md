@@ -1,5 +1,5 @@
 # CSounding.cs
-Hash: `539e531c4453d192`
+Hash: `96c2e6b66133345c`
 
 ## `public sealed class CSounding`
 
@@ -24,7 +24,7 @@ A fanqie changed elsewhere refreshes the editor as a fanqie set here does.
 Takes the editor's desk and the phonology port every sound read goes through.
 A refused load shows through `envoy`, with the ready notice `settings` reads.
 The waiting checks and the morphology verdict come from the voice of `display`, the editor's display.
-The repaint memory comes from `display` too, so the width did not grow.
+The repaint memory comes from `display` too, so the constructor takes no further parameter.
 Only the editor builds one, so the constructor is internal.
 
 ## `public event Action? CSoundingChanged;`
@@ -89,7 +89,7 @@ Every block's font goes through the one font rule `CCatalog.LCatalogFontRead` ho
 ## `private IReadOnlyList<LSoundingItem> LSoundingListRead<LSoundingItem>(Func<long, IReadOnlyList<LSoundingItem>> read, string key)`
 
 One list read for the stored entry, empty for a fresh draft or a refusal.
-A refusal shows `key`: `Display.FanqieReadFailed`, `Display.ScriptReadFailed` or `Display.ParadigmReadFailed`.
+A refusal shows `key`, which is `Display.FanqieReadFailed`, `Display.ScriptReadFailed` or `Display.ParadigmReadFailed`.
 The reading view names its rows with the same keys.
 
 ## `private void LSoundingMarkSend(Action<long> mark, string key)`
@@ -143,10 +143,15 @@ The editor's sheet and the reading view's block share it.
 
 ## `internal static IReadOnlyList<CContour> LSoundingContourRead(IReadOnlyList<LContour> syllables)`
 
-Maps the engine's contour syllables into ready ones.
-It drops every level outside `CContour.CContourScale`, since the drawing has no guide line for it.
-A toned syllable left with no level is marked untoned, so a drawn pitch line always has a point.
+Maps the engine's contour syllables into ready ones over `CContour.CContourScale`.
 The editor's contour and the reading view's block share it.
+
+## `internal static IReadOnlyList<CContour> LSoundingContourRead(IReadOnlyList<LContour> syllables, IReadOnlyList<int> scale)`
+
+Maps the contour syllables into ready ones over `scale`.
+It takes the scale as a parameter, so a test can feed levels the static scale never meets.
+It drops every level outside `scale`, since the drawing has no guide line for it.
+A toned syllable left with no level is marked untoned, so a drawn pitch line always has a point.
 
 ## `internal static IReadOnlyList<CTranscriptionDraft> CSoundingTranscriptionRead(IReadOnlyList<LTranscriptionDraft> transcriptions)`
 

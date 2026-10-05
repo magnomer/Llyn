@@ -1,5 +1,5 @@
 # TAuditObjectSetting.cs
-Hash: `d6b462a10e883782`
+Hash: `ee688e46fbd9a053`
 
 ## `internal static class TAuditObjectSetting`
 

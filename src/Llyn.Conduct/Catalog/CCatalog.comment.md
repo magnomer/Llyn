@@ -1,5 +1,5 @@
 # CCatalog.cs
-Hash: `3dd545e270002176`
+Hash: `f5741c0fcbda3333`
 
 ## `public sealed class CCatalog`
 
@@ -88,9 +88,10 @@ It needs no session, so a driver reads it while it builds the aid.
 The IPA vowel chart of the input aid, ready to build.
 It needs no session, so a driver reads it while it builds the aid.
 
-## `private static CArticulation LCatalogArticulationRead(LArticulation chart)`
+## `internal static CArticulation LCatalogArticulationRead(LArticulation chart)`
 
 Chooses the localization key of every header and side.
+It takes the chart as a parameter, so a test can feed a hostile chart the static source never gives.
 It pads a missing cell row with an empty one and drops any row past the last side.
 It cuts each row to the header count, so no cell falls outside the grid.
 It does not pad a row shorter than the headers, so a row may end early.

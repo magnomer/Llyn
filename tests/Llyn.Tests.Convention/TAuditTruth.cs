@@ -17,7 +17,7 @@ public sealed class TAuditTruth
     private static readonly string[] TAuditTruthKinds =
         [
             "Replaying", "Gatekeeping", "Contesting", "Duplicating", "Tampering", "Misfiring", "Moonlighting",
-            "Homoglyph", "Laundering", "Spoonfeeding", "Mismatching",
+            "Homoglyph", "Laundering", "Spoonfeeding", "Mismatching", "Puppeteering", "Zeroing",
         ];
 
     private static readonly string[] TAuditLineKinds =
@@ -35,6 +35,7 @@ public sealed class TAuditTruth
     {
         TAuditTruthCheck("Replaying", "driver value(s) carried into a request");
         TAuditTruthCheck("Gatekeeping", "driver value(s) or answer(s) decide a request");
+        TAuditTruthCheck("Zeroing", "driver literal zero(s) at a gate-bound position");
     }
 
     [Fact]
@@ -89,6 +90,12 @@ public sealed class TAuditTruth
     public void AuditTruth_DriverGates_HoldNoMismatching()
     {
         TAuditTruthCheck("Mismatching", "driver line(s) reach a Conduct member or port the other driver lacks");
+    }
+
+    [Fact]
+    public void AuditTruth_ControlTypes_HoldNoPuppeteering()
+    {
+        TAuditTruthCheck("Puppeteering", "control member(s) request logic");
     }
 
     [Fact]

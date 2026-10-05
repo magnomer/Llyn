@@ -1,5 +1,5 @@
 # TAuditNameSetting.cs
-Hash: `e564c0a09221d194`
+Hash: `ef350d35146542f8`
 
 ## `internal static class TAuditNameSetting`
 
@@ -24,3 +24,10 @@ An `S` after the first letter marks a subwindow, and a lowercase form marks a pr
 
 Each project folder with the prefixes its types may carry.
 The script holds the same map as `naming.prefixTurfs`.
+
+## `public static readonly string[] TAuditTurfSealed`
+
+The turfs whose out-of-turf types may not be public.
+Conduct is sealed, since a public `L` type there would offer the engine to the UI rings.
+A public type here is a hard hit kept out of the turf count, so the ceiling stays unchanged.
+The script holds the same list as `naming.sealedTurfs`.

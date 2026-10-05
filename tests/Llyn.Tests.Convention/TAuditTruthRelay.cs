@@ -8,15 +8,22 @@ internal static partial class TAuditTruthWalker
 {
     private static HashSet<ISymbol> TAuditRelayNames = new(SymbolEqualityComparer.Default);
 
+    private static HashSet<ISymbol>? TAuditPuppetNames;
+
     internal static HashSet<ISymbol> TAuditReaderNames = new(SymbolEqualityComparer.Default);
 
     private static Dictionary<ISymbol, HashSet<int>> TAuditHotNames = new(SymbolEqualityComparer.Default);
+
+    private static Dictionary<ISymbol, HashSet<int>> TAuditZeroingNames = new(SymbolEqualityComparer.Default);
+
+    private static HashSet<ISymbol> TAuditZeroingReads = new(SymbolEqualityComparer.Default);
 
     private static void TAuditRelayRead(IReadOnlyList<TypeDeclarationSyntax> type)
     {
         TAuditRelayNames = new HashSet<ISymbol>(SymbolEqualityComparer.Default);
         TAuditReaderNames = new HashSet<ISymbol>(SymbolEqualityComparer.Default);
         TAuditHotNames = new Dictionary<ISymbol, HashSet<int>>(SymbolEqualityComparer.Default);
+        TAuditPuppetNames = null;
         List<SyntaxNode> declared = type
             .SelectMany(part => part.DescendantNodesAndSelf().OfType<TypeDeclarationSyntax>())
             .SelectMany(part => part.Members)
@@ -95,6 +102,7 @@ internal static partial class TAuditTruthWalker
                     } is { TypeKind: TypeKind.Delegate }
                     && (TAuditBinderSide.TAuditShellCheck(held.ContainingType)
                         || held is IEventSymbol { ContainingType.TypeKind: TypeKind.Interface })
+                    && (held is not IEventSymbol || TAuditPuppetNames is not null)
                     && !TAuditRelayNames.Contains(held)
                     && TAuditSeamCheck(assignment.Right, seams, new(SymbolEqualityComparer.Default)))
                 {
@@ -102,7 +110,15 @@ internal static partial class TAuditTruthWalker
                     grown = true;
                 }
             }
+
+            if (!grown && TAuditPuppetNames is null)
+            {
+                TAuditPuppetNames = new HashSet<ISymbol>(TAuditRelayNames, SymbolEqualityComparer.Default);
+                grown = true;
+            }
         }
+
+        TAuditZeroingRead(type);
     }
 
     private static Dictionary<ISymbol, List<ExpressionSyntax>> TAuditSeamRead(IReadOnlyList<SyntaxNode> roots)
@@ -199,6 +215,116 @@ internal static partial class TAuditTruthWalker
         return grown;
     }
 
+    private static void TAuditZeroingRead(IReadOnlyList<TypeDeclarationSyntax> type)
+    {
+        TAuditZeroingNames = TAuditHotNames.ToDictionary(
+            pair => pair.Key, pair => new HashSet<int>(pair.Value), SymbolEqualityComparer.Default);
+        TAuditZeroingReads = new HashSet<ISymbol>(SymbolEqualityComparer.Default);
+        List<TypeDeclarationSyntax> nested = type
+            .SelectMany(part => part.DescendantNodesAndSelf().OfType<TypeDeclarationSyntax>())
+            .ToList();
+        List<SyntaxNode> declared = nested
+            .SelectMany(part => part.Members)
+            .Where(member => member is BaseMethodDeclarationSyntax or PropertyDeclarationSyntax)
+            .Cast<SyntaxNode>()
+            .ToList();
+        declared.AddRange(declared.SelectMany(member => member.DescendantNodes().OfType<LocalFunctionStatementSyntax>())
+            .ToList());
+        List<ArgumentSyntax> arguments = type
+            .SelectMany(part => part.DescendantNodes().OfType<ArgumentSyntax>())
+            .ToList();
+        Dictionary<ISymbol, HashSet<ISymbol>> aliases = new(SymbolEqualityComparer.Default);
+        bool grown = true;
+        while (grown)
+        {
+            grown = false;
+            foreach (IdentifierNameSyntax used in arguments
+                         .Where(argument => TAuditZeroingCheck(argument, out _))
+                         .SelectMany(argument => argument.Expression.DescendantNodesAndSelf()
+                             .OfType<IdentifierNameSyntax>()))
+            {
+                if (TAuditBinderSymbol.TAuditSymbolRead(used) is { Kind: SymbolKind.Field or SymbolKind.Property } held
+                    && TAuditBinderSide.TAuditShellCheck(held.ContainingType)
+                    && TAuditZeroingReads.Add(held))
+                {
+                    grown = true;
+                }
+            }
+
+            foreach (SyntaxNode member in declared)
+            {
+                ParameterListSyntax? list = member switch
+                {
+                    BaseMethodDeclarationSyntax method => method.ParameterList,
+                    LocalFunctionStatementSyntax local => local.ParameterList,
+                    _ => null
+                };
+                if (list is null || TAuditBinderSymbol.TAuditSymbolRead(member) is not { } symbol)
+                {
+                    continue;
+                }
+
+                if (!TAuditZeroingNames.TryGetValue(symbol, out HashSet<int>? hot))
+                {
+                    hot = [];
+                    TAuditZeroingNames[symbol] = hot;
+                }
+
+                List<ISymbol?> parameters = list.Parameters
+                    .Select(parameter => TAuditBinderSymbol.TAuditSymbolRead(parameter))
+                    .ToList();
+                IEnumerable<ExpressionSyntax> carried = member.DescendantNodes()
+                    .OfType<ArgumentSyntax>()
+                    .Where(argument => TAuditZeroingCheck(argument, out _))
+                    .Select(argument => argument.Expression)
+                    .Concat(member.DescendantNodes()
+                        .OfType<AssignmentExpressionSyntax>()
+                        .Where(assignment => assignment.IsKind(SyntaxKind.SimpleAssignmentExpression)
+                                             && TAuditStoreRead(assignment.Left, nested, aliases)
+                                                 .Overlaps(TAuditZeroingReads))
+                        .Select(assignment => assignment.Right));
+                foreach (IdentifierNameSyntax used in carried.SelectMany(value => value.DescendantNodesAndSelf()
+                             .OfType<IdentifierNameSyntax>()))
+                {
+                    ISymbol? usedSymbol = TAuditBinderSymbol.TAuditSymbolRead(used);
+                    int index = usedSymbol is null
+                        ? -1
+                        : parameters.FindIndex(
+                            parameter => SymbolEqualityComparer.Default.Equals(parameter, usedSymbol));
+                    if (index >= 0 && hot.Add(index))
+                    {
+                        grown = true;
+                    }
+                }
+            }
+        }
+    }
+
+    private static HashSet<ISymbol> TAuditStoreRead(
+        ExpressionSyntax target,
+        IReadOnlyList<TypeDeclarationSyntax> nested,
+        Dictionary<ISymbol, HashSet<ISymbol>> aliases)
+    {
+        ISymbol? stored = TAuditBinderSymbol.TAuditSymbolRead(target);
+        if (stored is not (IFieldSymbol or IPropertySymbol))
+        {
+            return [];
+        }
+
+        if (!aliases.TryGetValue(stored, out HashSet<ISymbol>? names))
+        {
+            names = stored is IFieldSymbol field
+                ? TAuditAliasRead(field, nested
+                    .Where(part => SymbolEqualityComparer.Default.Equals(
+                        TAuditBinderSymbol.TAuditSymbolRead(part), field.ContainingType))
+                    .ToList())
+                : new HashSet<ISymbol>([stored], SymbolEqualityComparer.Default);
+            aliases[stored] = names;
+        }
+
+        return names;
+    }
+
     private static bool TAuditReadCheck(SyntaxNode member)
     {
         return member.DescendantNodes(node => !TAuditNameofCheck(node)).Any(node => node switch
@@ -257,5 +383,48 @@ internal static partial class TAuditTruthWalker
         }
 
         return symbols;
+    }
+
+    private static void TAuditPuppeteeringScan(List<TViolation> violations)
+    {
+        HashSet<string> walked = TAuditRoots
+            .Select(root => root.SyntaxTree.FilePath)
+            .ToHashSet(StringComparer.Ordinal);
+        List<TViolation> hits = [];
+        foreach (ISymbol member in TAuditPuppetNames ?? [])
+        {
+            if (member is not (IMethodSymbol { MethodKind: not MethodKind.LocalFunction }
+                    or IPropertySymbol or IFieldSymbol or IEventSymbol)
+                || member.ContainingType is not { } type
+                || member.Locations
+                    .Where(location => location.SourceTree is { } tree && walked.Contains(tree.FilePath))
+                    .OrderBy(location => location.SourceTree!.FilePath, StringComparer.Ordinal)
+                    .ThenBy(location => location.SourceSpan.Start)
+                    .FirstOrDefault() is not { SourceTree: { } source } location
+                || !TAuditControlCheck(type.Name, source.FilePath))
+            {
+                continue;
+            }
+
+            hits.Add(new TViolation(
+                source.FilePath,
+                location.GetLineSpan().StartLinePosition.Line + 1,
+                $"{type.Name}.{member.Name}",
+                "Puppeteering",
+                "a control member requests logic"));
+        }
+
+        violations.AddRange(hits
+            .OrderBy(hit => hit.TViolationPath, StringComparer.Ordinal)
+            .ThenBy(hit => hit.TViolationLine)
+            .ThenBy(hit => hit.TViolationName, StringComparer.Ordinal));
+    }
+
+    internal static bool TAuditControlCheck(string name, string path)
+    {
+        string relative = TAuditBinder.TAuditRelativeRead(path);
+        return TAuditTruthSetting.TAuditControlPrefix.Any(ring =>
+            relative.StartsWith(ring.Key + "/", StringComparison.OrdinalIgnoreCase)
+            && name.StartsWith(ring.Value, StringComparison.Ordinal));
     }
 }

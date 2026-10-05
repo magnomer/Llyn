@@ -161,6 +161,108 @@ internal static partial class TAuditTruthWalker
         return TAuditHotNames.TryGetValue(callee, out HashSet<int>? hot) && hot.Contains(index);
     }
 
+    private static bool TAuditZeroingCheck(ArgumentSyntax argument, out ISymbol? callee)
+    {
+        callee = argument.Parent is ArgumentListSyntax { Parent: ExpressionSyntax call }
+                 && call is InvocationExpressionSyntax or BaseObjectCreationExpressionSyntax
+            ? TAuditCallRead(call) ?? TAuditBinderSymbol.TAuditSymbolRead(call)
+            : null;
+        if (callee is null || argument.Parent is not ArgumentListSyntax list)
+        {
+            return false;
+        }
+
+        if (TAuditBinderSide.TAuditLogicCheck(callee))
+        {
+            return true;
+        }
+
+        int index = argument.NameColon is { Name.Identifier.ValueText: var name }
+            ? (callee as IMethodSymbol)?.Parameters.FirstOrDefault(parameter => parameter.Name == name)?.Ordinal ?? -1
+            : list.Arguments.IndexOf(argument);
+        return TAuditZeroingNames.TryGetValue(callee, out HashSet<int>? hot) && hot.Contains(index);
+    }
+
+    private static void TAuditZeroingScan(SyntaxNode root, List<TViolation> violations)
+    {
+        foreach (ExpressionSyntax literal in root.DescendantNodes().OfType<ExpressionSyntax>().Where(TAuditZeroCheck))
+        {
+            ExpressionSyntax position = literal;
+            while (position.Parent is ParenthesizedExpressionSyntax or CastExpressionSyntax
+                   || (position.Parent is ConditionalExpressionSyntax choice && choice.Condition != position)
+                   || (position.Parent is BinaryExpressionSyntax
+                       {
+                           RawKind: (int)SyntaxKind.CoalesceExpression
+                       } fallback
+                       && fallback.Right == position))
+            {
+                position = (ExpressionSyntax)position.Parent;
+            }
+
+            (string TViolationName, string TViolationReason)? hit = position.Parent switch
+            {
+                ArgumentSyntax argument when TAuditZeroingCheck(argument, out ISymbol? callee)
+                    => callee is IMethodSymbol { MethodKind: MethodKind.Constructor, ContainingType: { } built }
+                        ? (built.Name, $"passes {literal} to new {built.Name}")
+                        : (callee!.Name, $"passes {literal} to {callee.Name}"),
+                BinaryExpressionSyntax compare
+                    when compare.Kind() is SyntaxKind.EqualsExpression or SyntaxKind.NotEqualsExpression
+                             or SyntaxKind.LessThanExpression or SyntaxKind.GreaterThanExpression
+                             or SyntaxKind.LessThanOrEqualExpression or SyntaxKind.GreaterThanOrEqualExpression
+                         && TAuditComparedRead(compare.Left == position ? compare.Right : compare.Left) is { } member
+                    => (member.Name, $"compares {member.Name} with {literal}"),
+                ConstantPatternSyntax pattern
+                    when (pattern.Parent is UnaryPatternSyntax negated ? negated.Parent : pattern.Parent)
+                             is IsPatternExpressionSyntax test
+                         && TAuditComparedRead(test.Expression) is { } member
+                    => (member.Name, $"compares {member.Name} with {literal}"),
+                _ => null
+            };
+            if (hit is not null)
+            {
+                violations.Add(new TViolation(
+                    root.SyntaxTree.FilePath,
+                    TAuditTruthReference.TAuditLineRead(literal),
+                    hit.Value.TViolationName,
+                    "Zeroing",
+                    hit.Value.TViolationReason));
+            }
+        }
+    }
+
+    private static bool TAuditZeroCheck(ExpressionSyntax node)
+    {
+        return node switch
+        {
+            LiteralExpressionSyntax { RawKind: (int)SyntaxKind.NumericLiteralExpression, Token.Value: 0 or 0L } => true,
+            LiteralExpressionSyntax { RawKind: (int)SyntaxKind.DefaultLiteralExpression } => true,
+            DefaultExpressionSyntax => true,
+            _ => false
+        };
+    }
+
+    private static ISymbol? TAuditComparedRead(ExpressionSyntax side)
+    {
+        ExpressionSyntax core = side;
+        while (core is ParenthesizedExpressionSyntax or CastExpressionSyntax or ConditionalAccessExpressionSyntax
+               or PostfixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.SuppressNullableWarningExpression })
+        {
+            core = core switch
+            {
+                ParenthesizedExpressionSyntax inner => inner.Expression,
+                CastExpressionSyntax cast => cast.Expression,
+                ConditionalAccessExpressionSyntax access => access.WhenNotNull,
+                PostfixUnaryExpressionSyntax suppress => suppress.Operand,
+                _ => core
+            };
+        }
+
+        return TAuditBinderSymbol.TAuditSymbolRead(core) is { Kind: SymbolKind.Field or SymbolKind.Property } member
+               && (TAuditZeroingReads.Contains(member) || TAuditBinderSide.TAuditLogicCheck(member))
+            ? member
+            : null;
+    }
+
     internal static ISymbol? TAuditCallRead(ExpressionSyntax call)
     {
         if (call is not (InvocationExpressionSyntax or BaseObjectCreationExpressionSyntax)

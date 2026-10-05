@@ -1,15 +1,17 @@
 # TTimbre.cs
-Hash: `6743d7fa61353452`
+Hash: `8a1aca988919aaa0`
 
 ## `public sealed class TTimbre`
 
-Covers the sound facts an editor reads for its held draft, over a fake phonology port.
+Covers the sound facts an editor reads for its held draft, over a fake phonology port or a workspace.
 A phonemic respelling needs a respelling pack first, and a silent pack is not spoken.
 An empty desk asks the pack for no language.
 The contour read draws only a tonal pack's toned reading, and its scale runs from five down to one.
+Levels off the scale drop and the rest keep order and repeats, and a syllable left with none is untoned.
+No syllables from the pack read none.
 The accent sheet carries every row in the printed form the respelling switch picks.
 An empty desk answers the mute sheet.
-A typed accent answers the text the row now holds, and an empty desk takes nothing and answers none.
+A typed accent answers the text the row now holds, and an empty desk takes nothing and answers empty text.
 A desk filling its view takes nothing and answers the text its sheet holds for the row.
 Adding a pronunciation places the blank row below its accent row, or first for the primary or a gone row.
 Removing a pronunciation drops that accent row or the primary.

@@ -1,5 +1,5 @@
 {
-  "generation": 20,
+  "generation": 21,
   "bases": [
     "Accent",
     "Anatomy",
@@ -87,6 +87,7 @@
     "Exploration",
     "Fanqie",
     "Fathom",
+    "Fault",
     "Favorite",
     "Feature",
     "Fellow",

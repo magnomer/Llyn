@@ -108,6 +108,69 @@ public sealed class TCardMention
         Assert.All(lines.Values, static labels => Assert.Empty(labels));
     }
 
+    [Fact]
+    public void SentenceMentionRead_UnknownRows_KeysOnlyHeldSentences()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+        (CDesk desk, _, _, long row) = TMentionPrepare(engine);
+        IReadOnlyList<long> sentences = desk.TDeskSentenceRead();
+        LMentionLabel kindle = TInterfaceMention.TMentionLabelCreate(7, "kindle", 3);
+        Dictionary<long, IReadOnlyList<LMentionLabel>> lines = new() { [row] = [kindle, kindle] };
+        foreach (long stray in new[] { 0L, -1L, long.MaxValue, long.MinValue }.Except(sentences))
+        {
+            lines[stray] = [kindle];
+        }
+
+        IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> read = TInterfaceMention.TSentenceLineCreate(
+            engine, desk, TEnvoyFake.TEnvoyCreate(false, asked), lines).CSentenceMentionRead();
+
+        Assert.Empty(asked);
+        Assert.Contains(row, sentences);
+        Assert.Equal(sentences, read.Keys.Order());
+        Assert.Equal(["kindle", "kindle"], read[row].Select(static label => label.CMentionLabelWord));
+        Assert.All(sentences.Where(id => id != row), id => Assert.Empty(read[id]));
+    }
+
+    [Fact]
+    public void SentenceMentionRead_NullLines_ShowsTheFindFailure()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+        (CDesk desk, _, _, _) = TMentionPrepare(engine);
+        IReadOnlyList<long> sentences = desk.TDeskSentenceRead();
+
+        IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> read = TInterfaceMention.TSentenceLineCreate(
+            engine, desk, TEnvoyFake.TEnvoyCreate(false, asked), null).CSentenceMentionRead();
+
+        Assert.Equal(["Mention.FindFailed"], asked);
+        Assert.NotEmpty(sentences);
+        Assert.Equal(sentences, read.Keys.Order());
+        Assert.All(read.Values, static labels => Assert.Empty(labels));
+    }
+
+    [Fact]
+    public void SentenceMentionRead_NoDraftHeld_AnswersNoEntries()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+        CDesk desk = TInterfaceConductDesk.TDeskCreate(
+            engine, "Input", TEnvoyFake.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
+        Dictionary<long, IReadOnlyList<LMentionLabel>> lines = new()
+        {
+            [1] = [TInterfaceMention.TMentionLabelCreate(7, "kindle", 0)],
+        };
+
+        IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> read = TInterfaceMention.TSentenceLineCreate(
+            engine, desk, TEnvoyFake.TEnvoyCreate(false, asked), lines).CSentenceMentionRead();
+
+        Assert.Empty(read);
+        Assert.Empty(asked);
+    }
+
     private static (CDesk TMentionDesk, CSentence TMentionGate, long TMentionSheet, long TMentionRow)
         TMentionPrepare(LEngine engine)
     {

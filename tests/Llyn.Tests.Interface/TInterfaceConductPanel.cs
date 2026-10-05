@@ -14,6 +14,12 @@ internal static class TInterfaceConductPanel
 
     internal static CVistaRow TPanelRowRead(LVistaRow row) => CCatalog.LCatalogRowRead(row);
 
+    internal static CArticulation TCatalogArticulationRead(
+        IReadOnlyList<string> headers,
+        IReadOnlyList<string> sides,
+        IReadOnlyList<IReadOnlyList<IReadOnlyList<string>>> cells) =>
+        CCatalog.LCatalogArticulationRead(new LArticulation(headers, sides, cells));
+
     internal static CPanel TPanelCreate(
         CEnvoy envoy, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam) =>
         new(
@@ -124,6 +130,10 @@ internal static class TInterfaceConductPanel
     internal static void TImprintCancel(this CImprint imprint) => imprint.LImprintCancel();
 
     internal static void TImprintSave(this CImprint imprint) => imprint.LImprintSave();
+
+    internal static IReadOnlyList<CReferenceKind> TImprintKindRead(
+        IReadOnlyList<(string LReferenceKindTag, string LReferenceKindKey)> rows) =>
+        CImprint.LImprintKindRead(rows);
 
     internal static LVistaRow TVistaRowCreate(long id, string epithet, bool chosen) =>
         new(id, "aqua", "Latin", epithet, "aqua (1)", chosen);

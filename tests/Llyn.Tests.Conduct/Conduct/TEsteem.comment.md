@@ -1,5 +1,5 @@
 # TEsteem.cs
-Hash: `6979f43f79fe8c33`
+Hash: `792aeace50d0284f`
 
 ## `public sealed class TEsteem`
 
@@ -10,6 +10,12 @@ A fresh draft ignores the write, words nothing and still announces a re-read.
 A favourite mark and its clearing read back the same way, each announced.
 The grasp limit equals the Core grasp step on a draft and a stored editor.
 A fresh draft reads no frequency chip.
+Any engine grasp limit reads unchanged, except a negative one, which reads zero.
+Any stored step the engine answers reads between zero and that limit.
+
+## `private static long TEsteemStoredPrepare(LEngine engine)`
+
+Stores one English entry, and answers its id, so the marks open it over a fake entry port.
 
 ## `private static LEntry TEsteemEntryPrepare(LEngine engine)`
 

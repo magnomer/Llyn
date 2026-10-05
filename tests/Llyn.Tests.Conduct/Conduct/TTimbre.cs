@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Conduct;
+using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -61,6 +62,41 @@ public sealed class TTimbre
         Assert.Equal([5, 5], syllable.CContourLevels);
         Assert.True(syllable.CContourToned);
         Assert.Equal([string.Empty], asked);
+    }
+
+    [Fact]
+    public void TimbreContourRead_LevelsOffScale_DropsThemAndTheTone()
+    {
+        CTimbre timbre = TTimbrePrepare(new()
+        {
+            ["LEngineContourRead"] = _ => new List<LContour>
+            {
+                TInterface.TContourCreate("a", [0, 6, -1, int.MaxValue, int.MinValue]),
+                TInterface.TContourCreate("b", [5, 9, 5, 0, 1, 3]),
+                TInterface.TContourCreate(string.Empty, []),
+                TInterface.TContourCreate("c", [1]),
+            },
+        });
+
+        IReadOnlyList<CContour> syllables = timbre.CTimbreContourRead("a b c");
+
+        Assert.Equal(["a", "b", string.Empty, "c"], syllables.Select(static syllable => syllable.CContourText));
+        Assert.Empty(syllables[0].CContourLevels);
+        Assert.Equal([5, 5, 1, 3], syllables[1].CContourLevels);
+        Assert.Empty(syllables[2].CContourLevels);
+        Assert.Equal([1], syllables[3].CContourLevels);
+        Assert.Equal([false, true, false, true], syllables.Select(static syllable => syllable.CContourToned));
+        Assert.All(
+            syllables.SelectMany(static syllable => syllable.CContourLevels),
+            static level => Assert.Contains(level, CContour.CContourScale));
+    }
+
+    [Fact]
+    public void TimbreContourRead_NoSyllables_AnswersNone()
+    {
+        CTimbre timbre = TTimbrePrepare(new() { ["LEngineContourRead"] = _ => new List<LContour>() });
+
+        Assert.Empty(timbre.CTimbreContourRead("a"));
     }
 
     [Fact]

@@ -1,5 +1,5 @@
 # TInterfaceConduct.cs
-Hash: `0e05e2b4df81319c`
+Hash: `7bf0f1de56bd3ce9`
 
 ## `internal static class TInterfaceConduct`
 
@@ -20,7 +20,13 @@ Disposing also runs each area's registered close, and the corpus's close stops i
 Builds Conduct's atelier over outlets on `engine` as Host does, with `media` standing in for the player.
 The draft port is a fake that sweeps nothing, since the fake rig holds no drafts.
 
-## `internal static LSettingsPort TSettingsOutletCreate(LEngine engine) =>`
+## `internal static CAtelier TAtelierFaultCreate(LEngine engine, string member, bool thrown)`
+
+Builds the atelier over every real outlet on `engine`, each wrapped by `TEngineFault` on `member`.
+Only the port declaring `member` faults it, so the fault sweep reaches the real engine everywhere else.
+`thrown` picks a throw over a faulted task, as the sweep runs both.
+
+## `internal static LSettingsPort TSettingsOutletCreate(LEngine engine) => new LSettingsOutlet(engine);`
 
 The settings port over the real `engine`, so a test drives the engine through the port the atelier holds.
 
@@ -60,7 +66,7 @@ A settings port that answers only failure notices, text keys and fonts.
 A notice reads as the unexpected key it is handed, and a text key as the key itself.
 A test thus sees which wording a gate chose.
 A font reads as one with nothing set, as for a language whose pack sets none.
-This holds since the font rule no longer catches a refusal.
+The font rule catches no refusal, so without that answer a font read would throw.
 A gate over fakes can then show its failure without a real engine behind the notice.
 
 ## `internal static CVoyageState TVoyageRead(this CVoyage voyage) => voyage.LVoyageRead();`
@@ -73,7 +79,7 @@ Relays the stored split the navigation restores the open tab's editor from.
 
 ## `internal static CEstablishment TAtelierEstablishmentRead(this CAtelier atelier) =>`
 
-Relays the establishment the atelier holds, which the navigation reads on a tab change.
+Relays the atelier's status read, which the workspace raises on every open and bulletin.
 
 ## `internal static void TWorkspaceDraftAdd(this CWorkspace workspace, Func<bool> pending, Func<bool, bool> closure) =>`
 

@@ -102,7 +102,15 @@ public sealed class CAtelier : IDisposable
     {
         double level = LAtelierVolumeClamp(volume);
         CAtelierPosture.LPostureVolumeSet(level);
-        CAtelierMediaPort.LEngineVolumeSet(level);
+        try
+        {
+            CAtelierMediaPort.LEngineVolumeSet(level);
+        }
+        catch (Exception exception)
+        {
+            CAtelierWorkspace.LWorkspaceFailureShow("Sound.VolumeFailed", exception);
+        }
+
         if (settled)
         {
             CAtelierPosture.LPostureVolumeSave();
@@ -119,7 +127,18 @@ public sealed class CAtelier : IDisposable
         ArgumentNullException.ThrowIfNull(envoy);
 
         CAtelierWorkspace.LWorkspaceObserverAttach(marshal);
-        CAtelierWorkspace.LWorkspaceOpen(LAtelierStateRead(CAtelierSettingsPort.LEngineWorkspaceStart()), envoy);
+        LWorkspaceState state;
+        try
+        {
+            state = CAtelierSettingsPort.LEngineWorkspaceStart();
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(envoy, CAtelierSettingsPort, "Workspace.OpenFailed", exception);
+            return;
+        }
+
+        CAtelierWorkspace.LWorkspaceOpen(LAtelierStateRead(state), envoy);
     }
 
     public bool CAtelierQuitConfirm(CEnvoy envoy)
@@ -172,9 +191,27 @@ public sealed class CAtelier : IDisposable
 
     public void CAtelierClose()
     {
-        CAtelierWorkspace.LWorkspaceClose();
-        CAtelierDraftPort.LEngineLeftoverSweep();
-        CAtelierPosture.Dispose();
+        try
+        {
+            CAtelierWorkspace.LWorkspaceClose();
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerNoticeRead(CAtelierSettingsPort, exception);
+        }
+
+        try
+        {
+            CAtelierDraftPort.LEngineLeftoverSweep();
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerNoticeRead(CAtelierSettingsPort, exception);
+        }
+        finally
+        {
+            CAtelierPosture.Dispose();
+        }
     }
 
     public void Dispose()

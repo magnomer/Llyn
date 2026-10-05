@@ -1,5 +1,5 @@
 # CWorkspace.cs
-Hash: `8b760ad4d85adf9f`
+Hash: `359d830f3008ef65`
 
 ## `public sealed class CWorkspace`
 
@@ -19,6 +19,16 @@ Each area registers itself in its constructor, so no driver hands a seam up.
 Every panel area's vista restore, in the order the areas registered.
 A workspace change runs them all, so every area stands on the new workspace's vistas.
 
+## `private readonly List<Action> _cWorkspaceClosures = [];`
+
+Every panel area's own close, in the order the areas registered.
+Only the window's exit runs them, through `LWorkspaceClose`.
+
+## `private readonly HashSet<string> _cWorkspaceShown = [];`
+
+The failure keys `LWorkspaceFailureShow` has already shown in this session.
+A key is added only when shown, so a fault before any open never spends the one notice.
+
 ## `private CEditor? _cWorkspaceInput;`
 
 The input tab's editor, learned when the atelier restores its vista.
@@ -33,6 +43,7 @@ They attach on the first open, since an atelier is also built over fake ports th
 
 The envoy of the latest open.
 The status bulletin, attached once, reads it on each bulletin.
+`LWorkspaceFailureShow` shows through it too, for gates that take no envoy.
 So a later open's envoy shows the failure rather than the first one's.
 
 ## `private Action<Exception>? _cWorkspaceFailure;`
@@ -136,6 +147,15 @@ Only the areas call it, each once from its constructor.
 Runs every registered area close, in the order the areas were built.
 It then detaches the posture's save failure observer, before the atelier releases the posture.
 Only the exit gate `CAtelier.CAtelierClose` calls it, before the leftover sweep.
+
+## `internal void LWorkspaceFailureShow(string key, Exception exception)`
+
+Shows a fault under `key` through the latest open's envoy, once per session for each key.
+It serves gates that take no envoy, such as `CAtelier.CAtelierVolumeSet`.
+A volume slider fires many sets while dragged, so a failing player shows one notice, not one per step.
+The first fault with an envoy held goes through `CLedger.LLedgerFailureShow`, which records and shows it.
+Every later fault, and any before an open, is only recorded through `CLedger.LLedgerNoticeRead`.
+So each fault is recorded exactly once, here where it ends.
 
 ## `private void LWorkspaceVistaRestore()`
 

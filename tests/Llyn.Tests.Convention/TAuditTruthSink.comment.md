@@ -1,5 +1,5 @@
 # TAuditTruthSink.cs
-Hash: `16247d275454f57c`
+Hash: `9c23cfa573bae31a`
 
 ## `internal static partial class TAuditTruthWalker`
 
@@ -18,7 +18,7 @@ The condition of an if, ternary or switch whose branch requests is a gatekeeping
 So is the condition of a while, do or for loop whose body requests.
 So is a `when` clause on a switch arm or a catch that requests.
 So is the left side of `&&`, `||` or `??` whose right side requests.
-A condition that only tests for null or for a type is not a gatekeeping sink.
+An if or ternary condition that only tests for null or for a type is not a gatekeeping sink.
 
 ## `private static bool TAuditGatekeepingCheck(IfStatementSyntax branch)`
 
@@ -44,6 +44,38 @@ True when the node contains a logic call, a logic construction or a call to a re
 
 True for any argument of a logic call, and for a relay argument standing at a hot position.
 A named argument is matched to its parameter by name.
+
+## `private static bool TAuditZeroingCheck(ArgumentSyntax argument, out ISymbol? callee)`
+
+True when an argument of a call or construction stands at a Zeroing hot position.
+Any argument of a logic call is hot, as in `TAuditHotCheck`.
+Otherwise the position must sit in `TAuditZeroingNames`, never in `TAuditHotNames`.
+The callee is the relay or logic symbol, else the plain method or constructor called.
+So a driver constructor or helper outside the relay set can still be hot.
+An indexer argument or a `this` or `base` initialiser is never hot.
+
+## `private static void TAuditZeroingScan(SyntaxNode root, List<TViolation> violations)`
+
+Reports every literal zero or default that a driver sends toward a gate as "none", "new" or "append".
+From the literal it climbs through parentheses, casts, either arm of `?:` and the right side of `??`.
+A literal that then stands at a Zeroing hot position is a hit named after the callee.
+A constructor callee is named by its type, and the reason reads `passes 0 to new T`.
+A literal compared with a hot-read member or a logic member is a hit named after that member.
+The comparisons are `==`, `!=`, `<`, `>`, `<=`, `>=`, `is 0` and `is not 0`.
+A count or length compared with zero reaches no gate, so it is no hit.
+Each literal yields at most one hit, on the literal's own line.
+
+## `private static bool TAuditZeroCheck(ExpressionSyntax node)`
+
+True for the literal `0` or `0L`, the `default` literal and a `default(T)` expression.
+A `null` literal is not one, since it names absence in the type itself.
+
+## `private static ISymbol? TAuditComparedRead(ExpressionSyntax side)`
+
+The field or property on the other side of a zero comparison, when that member counts.
+Parentheses, casts, `?.` and a null-forgiving `!` are looked through to the member read.
+It counts when read inside a Zeroing hot argument or when it is a logic member.
+Otherwise null, so a framework count or a local compared with zero is no hit.
 
 ## `internal static ISymbol? TAuditCallRead(ExpressionSyntax call)`
 

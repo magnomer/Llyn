@@ -1,5 +1,5 @@
 # TAuditCommentSetting.cs
-Hash: `3fe94e1d5f696f17`
+Hash: `40adcb268d1a080d`
 
 ## `internal static class TAuditCommentSetting`
 

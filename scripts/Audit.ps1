@@ -29,7 +29,7 @@ Audit.json shape:
   {
     "project": "Llyn",
     "report": { "directory": "docs-analysis", "versionFile": "version.json", "versionKey": "current-version", "prefix": "Audit-", "keep": ["records"] },
-    "audits": [ "AuditLines", "AuditLinesHistory", "AuditEncoding" ]
+    "audits": [ "AuditLines", "AuditLinesHistory", "AuditEncoding", "AuditFault" ]
   }
 
 Each entry names scripts\<entry>.ps1.
@@ -53,7 +53,7 @@ Audit
 Audit -Keep -NoOpen
 #>
 #requires -Version 5.1
-# AUDIT - AUDIT GENERATION 20.
+# AUDIT - AUDIT GENERATION 21.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -131,7 +131,7 @@ EXAMPLES
     exit 0
 }
 
-Write-Host 'AUDIT - AUDIT GENERATION 20' -ForegroundColor Blue
+Write-Host 'AUDIT - AUDIT GENERATION 21' -ForegroundColor Blue
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'

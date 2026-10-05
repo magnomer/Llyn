@@ -1,14 +1,18 @@
 # TAuditBorderSetting.cs
-Hash: `89ce837988d85f12`
+Hash: `bad21c1428b06c03`
 
 ## `internal static class TAuditBorderSetting`
 
 Hand-written and tracked settings for the ring structure of the border.
-They hold the neighbours, the capsule, the cut, the sealed prefixes, the ceilings and the exempt rows.
+They hold the neighbours, the capsule, the cut, the offer and sealed prefixes, the ceilings and the exempt rows.
 The offers each pair may name live in `TAuditEngineSetting`, `TAuditDeportmentSetting` and `TAuditDemeanorSetting`.
 No script writes this file, and the border fact reads no script configuration.
 `AuditStructure.json` holds its own copy, kept in step by hand as scripts/principles.md asks.
 The neighbours and the cut are tied to the charter and the UI roots by facts, not by hand.
+
+## `public const int TAuditGeneration = 21;`
+
+Numbers the revision of the border settings this file holds.
 
 ## `public const string TAuditBorderHost = "Llyn.Host";`
 
@@ -21,10 +25,22 @@ A ring names its neighbour alone and ferries the data of every ring inside it.
 The two adapters name `Llyn.Core` as spokes, since the contracts they implement live there.
 The core names no neighbour.
 
+## `public static readonly IReadOnlyDictionary<string, string> TAuditBorderCapsule`
+
+For a ring, the one capsule ring it may name beside its neighbour.
+A capsule declares no neighbour of its own and belongs to one ring alone.
+
 ## `public static readonly string[] TAuditBorderCut`
 
 The UI rings above the cut.
 A cut ring names only its neighbour, and nothing from below the cut undercuts into it.
+
+## `public static readonly IReadOnlyDictionary<string, string[]> TAuditOfferPrefix`
+
+For a neighbour ring an offer names, the prefixes every offered type must carry.
+Conduct offers `C` types and the engine offers `L` types.
+A neighbour missing here fails every entry offered from it, so a new pair needs its row.
+The script holds the same map as `offerPrefixes`.
 
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditUnsealingPrefix`
 

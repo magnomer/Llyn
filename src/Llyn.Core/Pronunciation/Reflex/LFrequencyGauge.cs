@@ -9,12 +9,14 @@ public sealed record LFrequencyGauge(int LFrequencyGaugeBand, string LFrequencyG
 {
     private const string LFrequencyGaugeUnknown = "Unknown";
 
-    public bool LFrequencyGaugeRanked => LFrequencyGaugeBand > 0;
+    public bool LFrequencyGaugeRanked =>
+        LFrequencyGaugeBand > 0 && LFrequencyGaugeBand <= LFrequency.LFrequencyScale.Count;
 
     public string LFrequencyGaugeRank =>
         LFrequencyGaugeRanked ? LFrequency.LFrequencyScale[LFrequencyGaugeBand - 1] : LFrequencyGaugeUnknown;
 
-    public int LFrequencyGaugeSpare => Math.Max(LFrequency.LFrequencyScale.Count - LFrequencyGaugeBand, 0);
+    public int LFrequencyGaugeSpare =>
+        LFrequency.LFrequencyScale.Count - Math.Clamp(LFrequencyGaugeBand, 0, LFrequency.LFrequencyScale.Count);
 
     public static LFrequencyGauge? LFrequencyGaugeResolve(IReadOnlyList<LFrequency> rows, string once)
     {

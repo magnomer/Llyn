@@ -117,7 +117,15 @@ public sealed class CImprint
 
     public static IReadOnlyList<CReferenceKind> CImprintKindRead()
     {
-        return LEntryPort.LEngineKindRead()
+        return LImprintKindRead(LEntryPort.LEngineKindRead());
+    }
+
+    internal static IReadOnlyList<CReferenceKind> LImprintKindRead(
+        IReadOnlyList<(string LReferenceKindTag, string LReferenceKindKey)> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        return rows
             .Select(static kind => new CReferenceKind(kind.LReferenceKindTag, kind.LReferenceKindKey))
             .DistinctBy(static kind => kind.CReferenceKindTag, StringComparer.Ordinal)
             .ToList();

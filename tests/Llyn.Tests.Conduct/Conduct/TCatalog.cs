@@ -53,6 +53,49 @@ public sealed class TCatalog
     }
 
     [Fact]
+    public void CatalogArticulationRead_EmptyChart_AnswersAnEmptyGrid()
+    {
+        CArticulation chart = TInterfaceConductPanel.TCatalogArticulationRead([], [], []);
+
+        Assert.Empty(chart.CArticulationHeaders);
+        Assert.Empty(chart.CArticulationSides);
+        Assert.Empty(chart.CArticulationCells);
+    }
+
+    [Fact]
+    public void CatalogArticulationRead_FewerRowsThanSides_PadsEachSide()
+    {
+        CArticulation chart = TInterfaceConductPanel.TCatalogArticulationRead(
+            ["Front", "Back"], ["Close", "Mid", "Open"], [[["i"], ["u"]]]);
+
+        Assert.Equal(["Articulation.Close", "Articulation.Mid", "Articulation.Open"], chart.CArticulationSides);
+        Assert.Equal(chart.CArticulationSides.Count, chart.CArticulationCells.Count);
+        Assert.Equal(["i"], chart.CArticulationCells[0][0]);
+        Assert.Equal(["u"], chart.CArticulationCells[0][1]);
+        Assert.Empty(chart.CArticulationCells[1]);
+        Assert.Empty(chart.CArticulationCells[2]);
+    }
+
+    [Fact]
+    public void CatalogArticulationRead_RowsWiderThanGrid_CutsEachRow()
+    {
+        CArticulation chart = TInterfaceConductPanel.TCatalogArticulationRead(
+            ["Front", "Back"],
+            ["Close"],
+            [[["i"], ["u"], ["x"], ["y"]], [["e"], ["o"], ["z"]], [["a"]]]);
+
+        Assert.Equal(["Articulation.Front", "Articulation.Back"], chart.CArticulationHeaders);
+        IReadOnlyList<IReadOnlyList<string>> row = Assert.Single(chart.CArticulationCells);
+        Assert.Equal(2, row.Count);
+        Assert.Equal(["i"], row[0]);
+        Assert.Equal(["u"], row[1]);
+        Assert.All(
+            TInterfaceConductPanel.TCatalogArticulationRead([], ["Close", "Open"], [[["i"]]])
+                .CArticulationCells,
+            static cells => Assert.Empty(cells));
+    }
+
+    [Fact]
     public void CatalogFontRead_LanguageAndRole_ReadsThePortFont()
     {
         List<(string, LFontRole)> asked = [];

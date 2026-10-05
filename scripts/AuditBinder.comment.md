@@ -1,8 +1,8 @@
 # AuditBinder.cs
-Hash: `8e2ff3e20b91b673`
+Hash: `02159111a03b5ab7`
 
 The one compilation every bound audit script shares, the script counterpart of the convention test's `TAuditBinder`.
-AuditStructure, AuditObject, AuditFake and AuditPlatform copy it into their helper beside their own program.
+AuditStructure, AuditObject, AuditFake, AuditFault, AuditPlatform and AuditUI copy it into their helper beside their own program.
 Each helper builds once into the temp folder, keyed by a hash of its text, binder, framework and SDK.
 So an edit rebuilds every helper once.
 

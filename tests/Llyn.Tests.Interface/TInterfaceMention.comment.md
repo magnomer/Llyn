@@ -1,10 +1,11 @@
 # TInterfaceMention.cs
-Hash: `13ee8e89302ebf06`
+Hash: `8ac88a45e7d8825b`
 
 ## `internal static class TInterfaceMention`
 
 The relay that builds the sentence gates over a draft port whose chip line read fails.
 It also runs the shared chip read over a failing draft port.
+It builds sentence gates whose chip line read answers any lines a fact hands, and one chip.
 It runs the shared Meaning read over a scripted draft port.
 It runs the corpus rows read over a failing entry port.
 It runs the favorites rows read over a failing entry port.
@@ -18,6 +19,17 @@ It is transparent and carries no test logic of its own.
 ## `internal static CSentence TSentenceFailCreate(LEngine engine, CDesk desk, CEnvoy envoy)`
 
 Builds sentence gates whose chip line read throws, over a real desk and a fresh repaint memory.
+
+## `internal static CSentence TSentenceLineCreate(LEngine engine, CDesk desk, CEnvoy envoy, IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>>? lines)`
+
+Builds sentence gates whose chip line read answers `lines` as it stands, over a real desk.
+A fact hands rows the draft lacks, rows it misses or null, so the read meets the engine's worst answer.
+Its repaint memory is fresh, and a failed read reaches `envoy` through a real settings outlet.
+
+## `internal static LMentionLabel TMentionLabelCreate(long id, string word, long entry)`
+
+Builds one chip of `word`, named `word`, with no sense, so a fact builds no engine record itself.
+It is linked whenever `entry` is not zero.
 
 ## `internal static IReadOnlyList<CCatalogExample>? TAnthologyFailRead(LEngine engine, CAtelier atelier, CEnvoy envoy)`
 
@@ -77,7 +89,7 @@ Runs the occurrence rows read over an entry port whose find throws.
 
 ## `internal static IReadOnlyList<CVistaRow> TFavoriteFailRead(LEngine engine, CEnvoy envoy)`
 
-Runs the favorites rows read over an entry port whose favorite find throws, through a real atelier.
+Runs the favorites rows read over an entry port whose favorite find throws, through an atelier built over that port.
 
 ## `internal static CMentionSense? TMentionSenseRead(LEngine engine, CDesk desk, CEnvoy envoy, Func<object?[]?, object?> sense)`
 

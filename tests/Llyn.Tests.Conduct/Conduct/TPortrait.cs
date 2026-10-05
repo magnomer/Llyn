@@ -147,6 +147,68 @@ public sealed class TPortrait
     }
 
     [Fact]
+    public void PortraitChoiceRead_NoRows_OffersMarkupChosen()
+    {
+        CPortraitChoice choice = Assert.Single(TInterfaceConductPortrait.TPortraitChoiceRead([]));
+
+        Assert.Equal(
+            new CPortraitChoice("Export.Markup", string.Empty, true, CPortraitMedium.CPortraitMediumMarkup),
+            choice);
+    }
+
+    [Fact]
+    public void PortraitChoiceRead_PipeInSuffix_StripsEveryPipe()
+    {
+        IReadOnlyList<CPortraitChoice> choices = TInterfaceConductPortrait.TPortraitChoiceRead(
+        [
+            (LPortraitMedium.LPortraitMediumHtml, "|.h|tml|", true),
+            (LPortraitMedium.LPortraitMediumPdf, "||", false),
+        ]);
+
+        Assert.Equal([".html", string.Empty], choices.Select(static choice => choice.CPortraitChoiceSuffix));
+        Assert.Single(choices, static choice => choice.CPortraitChoiceChosen);
+    }
+
+    [Fact]
+    public void PortraitChoiceRead_NoChosenRow_ChoosesTheFirst()
+    {
+        IReadOnlyList<CPortraitChoice> choices = TInterfaceConductPortrait.TPortraitChoiceRead(
+        [
+            (LPortraitMedium.LPortraitMediumDocx, ".docx", false),
+            (LPortraitMedium.LPortraitMediumPdf, ".pdf", false),
+        ]);
+
+        Assert.Equal([true, false], choices.Select(static choice => choice.CPortraitChoiceChosen));
+        Assert.Equal(CPortraitMedium.CPortraitMediumDocx, choices[0].CPortraitChoiceMedium);
+    }
+
+    [Fact]
+    public void PortraitChoiceRead_ManyChosenRows_KeepsTheFirstChosen()
+    {
+        IReadOnlyList<CPortraitChoice> choices = TInterfaceConductPortrait.TPortraitChoiceRead(
+        [
+            (LPortraitMedium.LPortraitMediumMarkdown, ".md", false),
+            (LPortraitMedium.LPortraitMediumHtml, ".html", true),
+            (LPortraitMedium.LPortraitMediumHtml, ".htm", true),
+            (LPortraitMedium.LPortraitMediumPdf, ".pdf", true),
+        ]);
+
+        Assert.Equal(4, choices.Count);
+        Assert.Equal([false, true, false, false], choices.Select(static choice => choice.CPortraitChoiceChosen));
+        Assert.Equal(".html", choices[1].CPortraitChoiceSuffix);
+    }
+
+    [Fact]
+    public void PortraitChoiceRead_UnknownMedium_Throws()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(static () => TInterfaceConductPortrait.TPortraitChoiceRead(
+        [
+            ((LPortraitMedium)99, ".odd", true),
+            (LPortraitMedium.LPortraitMediumPdf, ".pdf", false),
+        ]));
+    }
+
+    [Fact]
     public async Task PortraitFileExport_DeclinedOrFailed_AsksWithTheNameThenExportsNothingOrShowsTheFailure()
     {
         List<string> asked = [];

@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditNameSetting
 {
-    public const int TAuditGeneration = 20;
+    public const int TAuditGeneration = 21;
     public const string TAuditProject = "Llyn";
     public const string TAuditTestPrefix = "T";
     public const string TAuditComponentPattern = "[A-Z]+(?=[A-Z][a-z]|[0-9]|$)|[A-Z]?[a-z]+|[0-9]+";
@@ -56,6 +56,11 @@ internal static class TAuditNameSetting
         ["tests/Llyn.Tests.Convention"] = ["T"],
         ["tests/Llyn.Tests.Windows"] = ["T"],
     };
+
+    public static readonly string[] TAuditTurfSealed =
+    [
+        "src/Llyn.Conduct",
+    ];
 
     public static readonly string[] TAuditSourceInclude =
     [

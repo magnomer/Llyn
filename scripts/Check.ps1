@@ -77,7 +77,7 @@ $kErr = [string]::new([char[]](0xC624, 0xB958))
 $kPass = [string]::new([char[]](0xD1B5, 0xACFC))
 $kFail = [string]::new([char[]](0xC2E4, 0xD328))
 
-$audits = @('AuditNames', 'AuditLines', 'AuditComments', 'AuditFake', 'AuditObject', 'AuditPlatform', 'AuditStructure', 'AuditUI', 'AuditEncoding')
+$audits = @('AuditNames', 'AuditLines', 'AuditComments', 'AuditFake', 'AuditFault', 'AuditObject', 'AuditPlatform', 'AuditStructure', 'AuditUI', 'AuditEncoding')
 
 $tally = [System.Collections.Generic.List[string]]::new()
 $failed = $false

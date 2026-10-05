@@ -1,11 +1,12 @@
 # TAssayRelay.cs
-Hash: `f4f232d8e0412019`
+Hash: `3c4177d77c7181a0`
 
 ## `public sealed class TAssayRelay`
 
-Assays of the relay reading: which delegates count as a request, seen through the gatekeeping they make.
-Each assay tests a field in a branch that calls a delegate.
+Assays of the relay reading: which delegates and members count as a request.
+Each gatekeeping assay tests a field in a branch that calls a delegate.
 The hit appears only when the delegate is a relay.
+The three control assays read the relay set through the puppeteering of a control type.
 They run through `TAuditTruthWalker.TAuditRun` with the helpers of `TAssayTruth`.
 The two-type assays hand a whole source, so the injected delegate crosses from one type to another.
 A failing assay exposes a walker bug, never a source to fix.
@@ -65,9 +66,33 @@ The same interface event wired to a delegate that reaches no gate makes no relay
 It only guards against an over-broad rule.
 Its twin `InterfaceEvent` fails when either half of the interface rule is switched off.
 
+## `public void AuditTruth_ControlRequest_ReportsPuppeteering()`
+
+A control type calling a gate directly and through a driver relay reports both members.
+It follows the shape of the pre-fix `PMention.PMentionPieceRead`, which asked Conduct for a mention's unit and offset.
+The relay type itself is no control, so its own request is not puppeteering.
+
+## `public void AuditTruth_ControlRecord_AllowsRead()`
+
+A control type reading a Conduct record property makes no request and reports nothing.
+It only guards against an over-broad rule.
+Its twin `ControlRequest` fails when the control rule is switched off.
+
+## `public void AuditTruth_ControlSignal_AllowsRaise()`
+
+A control raising its own event, which a driver handles with a gate call, reports nothing.
+The surface signals and the driver requests, so the event is no puppet string.
+It follows the shape of `PGloss.PGlossPickRaise` and the event members of `PGrasp` and `PMention`.
+It fails when events join the relay set before the puppeteering snapshot is taken.
+
 ## `private static void TAssayRelayCheck(string driver, TViolation? expected)`
 
 Holds the gatekeeping hits of a driver run beside the gate and a third source, the interface.
 The interface sits in the Conduct folder, outside the shell.
 So only the interface clause of the wiring rule can make its event a relay.
 `TAssayTruth.TAssayTruthCheck` hands two sources only, so this helper adds the third.
+
+## `private static void TAssayControlCheck(string driver, IReadOnlyList<TViolation> expected)`
+
+Holds the puppeteering hits of a driver run beside the gate and a Conduct record.
+The record sits in the Conduct folder, so reading its property crosses no gate.

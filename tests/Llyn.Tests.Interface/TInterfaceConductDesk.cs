@@ -33,6 +33,33 @@ internal static class TInterfaceConductDesk
 
     internal static LDraft? TDeskRead(this CDesk desk) => desk.CDeskRead();
 
+    internal static IReadOnlyList<long> TDeskSentenceRead(this CDesk desk) =>
+        desk.CDeskRead() is LDraft draft
+            ? draft.LDraftContent.LEntryDraftMeanings.Concat(draft.LDraftContent.LEntryDraftCollocations)
+                .SelectMany(static card => card.LCardDraftSentence)
+                .Select(static sentence => sentence.LSentenceDraftId)
+                .Order()
+                .ToList()
+            : [];
+
+    internal static CEsteem TEsteemCreate(LEngine engine, LEntryPort entries, long stored)
+    {
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, []);
+        CDesk desk = TDeskCreate(engine, "Input", envoy);
+        desk.CDeskVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
+        desk.CDeskStart(stored);
+        return new CEsteem(
+            desk,
+            new LDisplay(
+                new LDraftOutlet(engine),
+                entries,
+                new LPhonologyOutlet(engine),
+                new LSettingsOutlet(engine),
+                TEngineFake.TEngineStubCreate<LMediaPort>(),
+                envoy,
+                new CLedgerNoticed()));
+    }
+
     internal static LDraft? TDeskHeldRead(this CDesk desk) => desk.CDeskTenure?.LTenureRead();
 
     internal static void TDeskVarietySet(this CDesk desk, bool primary, long pronunciation, string variety) =>

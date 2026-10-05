@@ -31,6 +31,22 @@ internal static class TInterfaceConductSound
     internal static IReadOnlyList<LReflexDraft> TDisplayReflexRead(this LDisplaySound sound) =>
         sound.LDisplayReflexRead();
 
+    internal static CDisplay TDisplayChosenCreate(LEngine engine, LEntryPort entries, long chosen)
+    {
+        CDisplay display = new(
+            new LDraftOutlet(engine),
+            entries,
+            new LPhonologyOutlet(engine),
+            new LSettingsOutlet(engine),
+            TEngineFake.TEngineStubCreate<LMediaPort>(),
+            TEnvoyFake.TEnvoyCreate(false, []),
+            new CLedgerNoticed());
+        LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
+        display.LDisplayVistaRestore(vista);
+        vista.LVistaSelect(chosen);
+        return display;
+    }
+
     internal static CFrequency? TDisplayFrequencyRead(this CDisplay display, long? entry, string once) =>
         display.LDisplayRule.LDisplayFrequencyRead(entry, once);
 
@@ -62,6 +78,10 @@ internal static class TInterfaceConductSound
                 new CLedgerNoticed()),
             envoy);
     }
+
+    internal static IReadOnlyList<CContour> TSoundingContourRead(
+        IReadOnlyList<LContour> syllables, IReadOnlyList<int> scale) =>
+        CSounding.LSoundingContourRead(syllables, scale);
 
     internal static CFold TFoldCreate(LSettingsPort settings, CEnvoy envoy) => new(settings, envoy);
 

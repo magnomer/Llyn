@@ -402,14 +402,15 @@ td.name { text-align: left; font: 12px ui-monospace, "Cascadia Mono", Consolas, 
   finding('Stale exempt rows', d.stale, 1, '<th class="l">Exempt row</th>',
     function (s) { return '<tr><td class="name">' + esc(s) + '</td></tr>'; });
   var TURF = /^(.*?):(\d+) \[([^\]]+)\] (\S+) - (.*)$/;
-  finding('Turf', d.turfs, 2,
-    '<th class="l">File</th><th>Line</th><th class="l">Kind</th><th class="l">Name</th><th class="l">Detail</th>',
-    function (s) {
-      var m = TURF.exec(s);
-      if (!m) return '<tr><td class="wrap" colspan="5">' + esc(s) + '</td></tr>';
-      return '<tr><td class="path">' + pathHtml(m[1]) + '</td><td>' + fmt(+m[2]) + '</td><td class="l">' + esc(m[3]) + '</td><td class="name">' + esc(m[4]) +
-        '</td><td class="wrap">' + esc(m[5]) + '</td></tr>';
-    });
+  var TURF_HEAD = '<th class="l">File</th><th>Line</th><th class="l">Kind</th><th class="l">Name</th><th class="l">Detail</th>';
+  function turfRow(s) {
+    var m = TURF.exec(s);
+    if (!m) return '<tr><td class="wrap" colspan="5">' + esc(s) + '</td></tr>';
+    return '<tr><td class="path">' + pathHtml(m[1]) + '</td><td>' + fmt(+m[2]) + '</td><td class="l">' + esc(m[3]) + '</td><td class="name">' + esc(m[4]) +
+      '</td><td class="wrap">' + esc(m[5]) + '</td></tr>';
+  }
+  finding('Turf', d.turfs, 2, TURF_HEAD, turfRow);
+  finding('Sealed turf', d.sealedTurfs || [], 3, TURF_HEAD, turfRow);
 
   // Names by kind and by folder.
   function group(key) {

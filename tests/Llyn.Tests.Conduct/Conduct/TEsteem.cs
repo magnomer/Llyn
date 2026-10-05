@@ -102,6 +102,52 @@ public sealed class TEsteem
         Assert.Null(editor.CEditorEsteem.CEsteemFrequencyRead("once"));
     }
 
+    [Theory]
+    [InlineData(int.MinValue, 0)]
+    [InlineData(-1, 0)]
+    [InlineData(0, 0)]
+    [InlineData(1, 1)]
+    [InlineData(7, 7)]
+    [InlineData(int.MaxValue, int.MaxValue)]
+    public void EsteemGraspStep_HostileLimit_ReadsNoneBelowZero(int limit, int read)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEsteem esteem = TInterfaceConductDesk.TEsteemCreate(
+            engine, TDisplay.TGraspPortCreate(limit, 0), TEsteemStoredPrepare(engine));
+
+        Assert.Equal(read, esteem.CEsteemGraspStep);
+    }
+
+    [Theory]
+    [InlineData(5, int.MinValue, 0)]
+    [InlineData(5, -1, 0)]
+    [InlineData(5, 0, 0)]
+    [InlineData(5, 1, 1)]
+    [InlineData(5, 3, 3)]
+    [InlineData(5, 5, 5)]
+    [InlineData(5, 6, 5)]
+    [InlineData(5, int.MaxValue, 5)]
+    [InlineData(0, 4, 0)]
+    [InlineData(-3, 2, 0)]
+    [InlineData(int.MinValue, int.MaxValue, 0)]
+    public void EsteemGrasp_HostileStep_ClampsBetweenZeroAndLimit(int limit, int stored, int read)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEsteem esteem = TInterfaceConductDesk.TEsteemCreate(
+            engine, TDisplay.TGraspPortCreate(limit, stored), TEsteemStoredPrepare(engine));
+
+        Assert.Equal(read, esteem.CEsteemGrasp);
+        Assert.InRange(esteem.CEsteemGrasp, 0, esteem.CEsteemGraspStep);
+    }
+
+    private static long TEsteemStoredPrepare(LEngine engine)
+    {
+        return TExemplar.TExemplarSave(engine, TInterface.TEntryDraftCreate(
+            "water", "English", "ˈwɔːtə", string.Empty, [TInterface.TCardCreate("a liquid", 1)], []))[0];
+    }
+
     private static LEntry TEsteemEntryPrepare(LEngine engine)
     {
         return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(

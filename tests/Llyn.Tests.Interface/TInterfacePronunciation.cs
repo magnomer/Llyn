@@ -236,6 +236,15 @@ internal static partial class TInterface
     internal static string? TFrequencyBandResolve(LSourceSpec spec, double raw) =>
         LFrequency.LFrequencyBandResolve(spec, raw);
 
+    internal static LFrequencyGauge TFrequencyGaugeCreate(int band, string source) =>
+        new LFrequencyGauge(band, source);
+
+    internal static IReadOnlyList<string> TFrequencyScaleRead() =>
+        LFrequency.LFrequencyScale;
+
+    internal static LContour TContourCreate(string text, IReadOnlyList<int> levels) =>
+        new LContour(text, levels);
+
     internal static LFanqieRow TFanqieRowCreate(
         string initial, string rime, string heading, string division, string tone, bool rounded) =>
         new("字", "book", 0, "text", initial, rime, heading, division, tone, rounded);

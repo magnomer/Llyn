@@ -221,6 +221,7 @@
     "Sound.StartFailed": "발음 찾기를 시작할 수 없습니다.",
     "Sound.MorphologyFailed": "굴절형 찾기 설정을 읽을 수 없습니다.",
     "Sound.PendingFailed": "찾기가 진행 중인지 읽을 수 없습니다.",
+    "Sound.VolumeFailed": "재생 음량을 바꿀 수 없습니다.",
     "Sequence.Title": "발음 정렬",
     "Lens.Title": "언어로 거르기",
     "Sequence.Headword": "표제어 가 → 하",

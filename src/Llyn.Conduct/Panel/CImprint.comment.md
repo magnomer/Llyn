@@ -1,5 +1,5 @@
 # CImprint.cs
-Hash: `9ab5ad183d26da12`
+Hash: `4649fce23c8999d5`
 
 ## `public sealed class CImprint`
 
@@ -32,9 +32,18 @@ A blank row opened, so the driver moves the caret into it.
 
 The typed credit is dropped, so the driver writes the row's held name back into its field.
 
+## `public CDesk CImprintDesk { get; }`
+
+The desk that holds the Source draft and offers its quill.
+The shelf reads its storable state and finish through it, and the byline reads its draft id.
+
 ## `public CByline CImprintByline { get; }`
 
 The popup of Authors a typed credit may already name.
+
+## `public bool CImprintHeld => CImprintDesk.CDeskHeld;`
+
+Whether a draft is held, so every credit gate and the byline do nothing without one.
 
 ## `internal void LImprintOpen(long? id)`
 
@@ -43,7 +52,7 @@ The blank row and the byline start closed.
 
 ## `internal void LImprintCancel()`
 
-Drops the held draft and closes the byline, then announces both.
+Drops the held draft and announces the rows, then closes the byline.
 
 ## `internal void LImprintSave()`
 
@@ -74,6 +83,12 @@ The kind menu the driver builds once, each option's tag and key already decided 
 It is static, since the menu is the same for every Source and needs no desk.
 Every tag appears once, since the read drops a repeated tag and keeps its first kind.
 So a driver can pair each option to its tag without meeting two radios for one kind.
+It hands the engine's static kind list to `LImprintKindRead`, which holds that rule.
+
+## `internal static IReadOnlyList<CReferenceKind> LImprintKindRead(IReadOnlyList<(string LReferenceKindTag, string LReferenceKindKey)> rows)`
+
+Maps the kind rows into menu options, in their order, keeping the first kind of each tag.
+It takes the rows as a parameter, so a test can feed rows the static source never gives.
 
 ## `public IReadOnlyList<CAuthorRow> CImprintCreditRead()`
 

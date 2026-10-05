@@ -121,6 +121,33 @@ public sealed class TImprint
     }
 
     [Fact]
+    public void ImprintKindRead_NoRows_AnswersAnEmptyMenu()
+    {
+        Assert.Empty(TInterfaceConductPanel.TImprintKindRead([]));
+    }
+
+    [Fact]
+    public void ImprintKindRead_RepeatedTags_KeepsTheFirstKindOfEach()
+    {
+        IReadOnlyList<CReferenceKind> menu = TInterfaceConductPanel.TImprintKindRead(
+        [
+            ("book", "Source.KindBook"),
+            ("zither", "Source.KindZither"),
+            ("book", "Source.KindOther"),
+            ("Book", "Source.KindCase"),
+            ("zither", "Source.KindZither"),
+        ]);
+
+        Assert.Equal(
+            [
+                new CReferenceKind("book", "Source.KindBook"),
+                new CReferenceKind("zither", "Source.KindZither"),
+                new CReferenceKind("Book", "Source.KindCase"),
+            ],
+            menu);
+    }
+
+    [Fact]
     public void ImprintEmptyRead_NoDraft_ReadsTheBlankSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

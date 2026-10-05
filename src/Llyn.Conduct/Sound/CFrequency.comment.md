@@ -13,7 +13,7 @@ Conduct raises a negative band or spare count to zero, since a chip cannot draw 
 - `CFrequencySource`: every source's figure, one per line, as the chip's tooltip.
 - `CFrequencyRank`: the tier of the band, or the unknown tier at zero or for a name Conduct does not know.
 - `CFrequencySpare`: the stars past the band in a full row.
-- `CFrequencyRanked`: whether any source ranks the entry, so the chip shows a star row.
+- `CFrequencyRanked`: whether the entry's band lies inside the frequency scale, so the chip shows a star row.
 
 ## `public string CFrequencyKey`
 

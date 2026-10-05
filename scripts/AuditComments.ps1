@@ -55,7 +55,7 @@ An unreadable file is reported once, under Unreadable files, and never as a miss
 
 AuditComments.json shape:
   {
-    "generation": 20,
+    "generation": 21,
     "project": "Llyn",
     "sources": {
       "roots": ["languages", "localization", "src", "tests", "themes"],
@@ -135,7 +135,7 @@ AuditComments -Segments 2
 AuditComments -SourceRoots .\src -MaxWords 25
 #>
 #requires -Version 5.1
-# AUDITCOMMENTS - AUDIT GENERATION 20.
+# AUDITCOMMENTS - AUDIT GENERATION 21.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -167,6 +167,8 @@ AuditComments -SourceRoots .\src -MaxWords 25
 # Exempt comment files belong to the developer alone, and no line rule, heading or hash check reads them.
 # Generation 20: nothing this audit reports changes; the number rises with the UI audit, whose
 # Mismatching kind only informs while a driver folder it waits on holds no source.
+# Generation 21: nothing this audit reports changes; the number rises with the structure, name and
+# UI audits, which gained kinds, and with the new fault audit.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -285,7 +287,7 @@ $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 20
+$script:AuditGeneration = 21
 
 # Console paging. A page is one window of rows; the audit stops at each page boundary and waits
 # for a key so the reader can inspect the output before it scrolls away. Any key shows the next

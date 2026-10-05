@@ -136,6 +136,10 @@ $RECYCLE.BIN/
 !/scripts/AuditFake.html
 !/scripts/AuditFake.json
 !/scripts/AuditFake.ps1
+!/scripts/AuditFault.comment.md
+!/scripts/AuditFault.html
+!/scripts/AuditFault.json
+!/scripts/AuditFault.ps1
 !/scripts/AuditLines.html
 !/scripts/AuditLines.json
 !/scripts/AuditLines.ps1

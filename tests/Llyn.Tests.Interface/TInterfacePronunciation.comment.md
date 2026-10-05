@@ -1,5 +1,5 @@
 # TInterfacePronunciation.cs
-Hash: `556af54c9de69241`
+Hash: `3ec300c368adb1ce`
 
 ## `internal static partial class TInterface`
 
@@ -75,6 +75,20 @@ Relays `LDescent.LDescentScan`.
 ## `internal static bool TDescentMatch(this LDescent rule, string language)`
 
 Relays `LDescent.LDescentMatch`.
+
+## `internal static LFrequencyGauge TFrequencyGaugeCreate(int band, string source)`
+
+Builds a frequency gauge with any band, so a fact can hand Conduct a band the engine never counts.
+The rank, the spare stars and the ranked flag stay the gauge's own reads of that band.
+
+## `internal static IReadOnlyList<string> TFrequencyScaleRead()`
+
+Relays `LFrequency.LFrequencyScale`, so a fact knows how many stars a full chip row holds.
+
+## `internal static LContour TContourCreate(string text, IReadOnlyList<int> levels)`
+
+Builds one contour syllable with any levels, so a fact can hand Conduct levels off the scale.
+Its tone is the syllable's own read, so it is toned whenever `levels` is not empty.
 
 ## `internal static LFanqieRow TFanqieRowCreate(string initial, string rime, string heading, string division, string tone, bool rounded)`
 

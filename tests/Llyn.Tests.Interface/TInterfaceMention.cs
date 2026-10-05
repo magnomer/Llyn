@@ -25,6 +25,25 @@ internal static class TInterfaceMention
             new CLedgerNoticed());
     }
 
+    internal static CSentence TSentenceLineCreate(
+        LEngine engine, CDesk desk, CEnvoy envoy, IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>>? lines)
+    {
+        LDraftPort drafts = TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineMentionResolve"] = _ => lines,
+        });
+        return new CSentence(
+            desk,
+            new LPhonologyOutlet(engine),
+            drafts,
+            new LSettingsOutlet(engine),
+            envoy,
+            new CLedgerNoticed());
+    }
+
+    internal static LMentionLabel TMentionLabelCreate(long id, string word, long entry) =>
+        new(id, word, entry, word, string.Empty);
+
     internal static IReadOnlyList<CCatalogExample>? TAnthologyFailRead(LEngine engine, CAtelier atelier, CEnvoy envoy)
     {
         LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>

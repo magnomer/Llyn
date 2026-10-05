@@ -1,5 +1,5 @@
 # TInterfaceVault.cs
-Hash: `0a3cdd5f271284f2`
+Hash: `77bad45b5f2ce34c`
 
 ## `internal static partial class TInterface`
 
@@ -32,6 +32,14 @@ A pack with no flag and blank fonts that declares `varieties`, for a fake langua
 ## `internal static LSettingsVault TSettingsVaultCreate(string root) =>`
 
 The settings loader over the workspace `root`, handed out as the port.
+
+## `internal static LPostureState? TPostureRead(this LPostureVault postureVault, string name) =>`
+
+Relays the posture port's read of the posture saved under `name`.
+
+## `internal static void TPostureSave(this LPostureVault postureVault, string name, LPostureState state)`
+
+Relays the posture port's save of `state` under `name`.
 
 ## `internal static LWorkspaceVault TWorkspaceVaultCreate(LDatabase database) =>`
 

@@ -1,5 +1,5 @@
 # TAuditTruthRelay.cs
-Hash: `6941514019b8f5d9`
+Hash: `2dad46bfcb711ad7`
 
 ## `internal static partial class TAuditTruthWalker`
 
@@ -13,6 +13,13 @@ The driver members whose body requests logic, so a call to one is a request.
 A local function, a delegate field, a delegate property and an event count too.
 Invoking one of those is then a request, so a request behind a delegate cannot hide.
 
+## `private static HashSet<ISymbol>? TAuditPuppetNames`
+
+The relay set as it stands before any event joins it.
+An event is a signal, and the member that handles it is the one that requests.
+So a control raising its own event, or forwarding a child's, is no puppeteer.
+It stays null while the first pass grows, which keeps events out of the wiring.
+
 ## `internal static HashSet<ISymbol> TAuditReaderNames`
 
 The driver members whose body reads or requests logic, so a value from one is an engine value.
@@ -22,6 +29,18 @@ A request is a read too, so a relay is read through as well.
 
 For each relay, the positions of the parameters that reach logic inside it.
 An argument at any other position is shown, not sent, and is no sink.
+
+## `private static Dictionary<ISymbol, HashSet<int>> TAuditZeroingNames`
+
+The hot positions Zeroing reads, a copy of `TAuditHotNames` grown further.
+Constructors join, and a parameter stored into a member read inside a hot argument is hot too.
+It is a separate dictionary, so every other kind keeps the narrower map unchanged.
+
+## `private static HashSet<ISymbol> TAuditZeroingReads`
+
+The driver fields and properties read inside an argument at a Zeroing hot position.
+Only members of a shell type count, so a framework count or text never joins.
+A literal zero compared with one of them is a hit.
 
 ## `private static void TAuditRelayRead(IReadOnlyList<TypeDeclarationSyntax> type)`
 
@@ -34,6 +53,9 @@ A delegate parameter stored in a member or local passes on what its callers hand
 Wiring, locals and seams are read over every tracked source, not only the walked drivers.
 So a composition root that hands a gate to a driver constructor is traced too.
 Every set and the hot positions grow to a fixed point, so a chain of wrappers is followed through.
+The first fixed point leaves events out and is kept as `TAuditPuppetNames`.
+Growth then resumes with events, so every other set reaches the same end.
+The Zeroing map is built last, from the finished relay set and hot positions.
 
 ## `private static Dictionary<ISymbol, List<ExpressionSyntax>> TAuditSeamRead(IReadOnlyList<SyntaxNode> roots)`
 
@@ -67,6 +89,24 @@ Marks a parameter hot when the body passes it, or its member, to logic or a hot 
 A method and a local function are read alike.
 Returns true when a new position was found, so the caller loops again.
 
+## `private static void TAuditZeroingRead(IReadOnlyList<TypeDeclarationSyntax> type)`
+
+Builds the Zeroing map and its read members, starting from a copy of the current hot positions.
+Methods, constructors, operators and local functions may hold hot parameters.
+A parameter is hot when it appears in a hot argument, as in `TAuditHotRead`.
+It is also hot when stored into a field or property that is read inside a hot argument.
+A store into a field counts when a getter alias of it is read, so a backing field is followed.
+The map and the read members grow together to a fixed point.
+So a constructor whose stored id later reaches a gate gets a hot position.
+`TAuditHotNames` is only copied, never written, so Replaying and the other kinds see no change.
+
+## `private static HashSet<ISymbol> TAuditStoreRead(ExpressionSyntax target, IReadOnlyList<TypeDeclarationSyntax> nested, Dictionary<ISymbol, HashSet<ISymbol>> aliases)`
+
+The stored member and its getter aliases, or an empty set when the target is no field or property.
+A field's aliases come from `TAuditAliasRead` over its own type's parts only.
+A property stands alone.
+Each answer is cached by symbol, since the fixed point asks for the same store many times.
+
 ## `private static bool TAuditReadCheck(SyntaxNode member)`
 
 True when the member's body reads a logic member or calls a reader.
@@ -84,3 +124,19 @@ A getter reading such a property is followed too, to a fixed point.
 Gatekeeping through one of them is gatekeeping on the field itself.
 A parameter the field is passed to by `ref`, `out` or `in` is the field itself inside that method.
 Such a parameter passed on again is followed too.
+
+## `private static void TAuditPuppeteeringScan(List<TViolation> violations)`
+
+Names every control member that stands in `TAuditPuppetNames`, one hit per member.
+A member that reaches logic only by raising an event is no hit, since the handler requests.
+A delegate field or property a driver fills still counts, since the control invokes it.
+A method, property, field or event counts, while a local function or local stays with its member.
+The hit lands on the member's first declaration in a walked driver source.
+A control shows what it is handed, so a request inside one is driver work done in the wrong type.
+The reader set is never consulted, so reading a Conduct record property is no hit.
+Hits are sorted by path, line and name, so the order holds whatever the set's order.
+
+## `internal static bool TAuditControlCheck(string name, string path)`
+
+True when the type name starts with the control prefix of the driver ring holding the path.
+`TAuditTruthSetting.TAuditControlPrefix` keys each prefix by its ring folder.

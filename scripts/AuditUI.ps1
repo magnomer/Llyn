@@ -19,7 +19,7 @@ each tells the truth when the other is broken.
             Homoglyph, Overworking, Tethering, Freelancing, the drivers' Hardwiring, Masquerading and
             Dangling, plus driver disk lines, surface catalog lines and their exemptions.
   Truth     the drivers: Replaying, Gatekeeping, Contesting, Duplicating, Tampering, Misfiring,
-            Moonlighting, Homoglyph, Laundering, Spoonfeeding, Mismatching.
+            Moonlighting, Homoglyph, Laundering, Spoonfeeding, Mismatching, Puppeteering, Zeroing.
   Boundary  the guards that keep the walkers sound: state builds and compares, hidden code,
             reflection, skipped sources, logic panels, hold timers and stale list rows.
 
@@ -69,7 +69,7 @@ AuditUI -NoOpen
 AuditUI -Configuration Release
 #>
 #requires -Version 5.1
-# AUDITUI - AUDIT GENERATION 20.
+# AUDITUI - AUDIT GENERATION 21.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -102,6 +102,9 @@ AuditUI -Configuration Release
 # hash line ties every comment file to the sources it describes.
 # Generation 20: a truth kind named in the informative map gates nothing while a driver folder
 # it waits on holds no source. Mismatching waits on Demeanor, so it only informs until the CUI has code.
+# Generation 21: two truth kinds join. Puppeteering reports a control member that requests logic,
+# counting no event the control raises. Zeroing reports a literal zero at a gate-bound position,
+# or one compared with a gate-reaching member.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -215,7 +218,7 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 20
+$script:AuditGeneration = 21
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'AuditBinder.cs'))
 
@@ -723,7 +726,7 @@ internal sealed class LAuditTruthRun
     public static readonly string[] LAuditKinds =
         [
             "Replaying", "Gatekeeping", "Contesting", "Duplicating", "Tampering", "Misfiring", "Moonlighting",
-            "Homoglyph", "Laundering", "Spoonfeeding", "Mismatching",
+            "Homoglyph", "Laundering", "Spoonfeeding", "Mismatching", "Puppeteering", "Zeroing",
         ];
 
     public static readonly string[] LAuditLineKinds =
@@ -1526,7 +1529,7 @@ internal static class LAuditSettingRead
             "enforced", "stateSuffix", "bulletinType", "conductRoot", "capsuleInclude", "shellInclude", "truthInclude",
             "controlBases", "orderVerbs", "fillVerbs", "requestPrefix", "sendRoots", "clockTypes", "consoleInput",
             "dialogTypes", "delayMembers", "inputMembers", "focusMembers", "truthHandles", "moonlightingVerbs",
-            "informative", "inputBase"
+            "informative", "inputBase", "controlPrefixes"
         ],
         ["boundary"] =
         [
@@ -1617,6 +1620,8 @@ internal static class LAuditSettingRead
         JsonElement informative = truth.GetProperty("informative");
         LAuditTruthSetting.LAuditTruthInformative = informative.EnumerateObject()
             .ToDictionary(kind => kind.Name, kind => LAuditListRead(informative, kind.Name), StringComparer.Ordinal);
+        LAuditTruthSetting.LAuditControlPrefix = truth.GetProperty("controlPrefixes").EnumerateObject()
+            .ToDictionary(ring => ring.Name, ring => ring.Value.GetString()!, StringComparer.Ordinal);
 
         JsonElement boundary = config.GetProperty("boundary");
         LAuditBoundarySetting.LAuditBoundaryForbidden = LAuditListRead(boundary, "forbidden");
@@ -1831,6 +1836,7 @@ internal static class LAuditTruthSetting
 {
     public static bool LAuditTruthEnforced;
     public static Dictionary<string, string[]> LAuditTruthInformative = new(StringComparer.Ordinal);
+    public static Dictionary<string, string> LAuditControlPrefix = new(StringComparer.Ordinal);
     public static string LAuditStateSuffix = "";
     public static string LAuditBulletinType = "";
     public static string LAuditConductRoot = "";
@@ -2814,9 +2820,11 @@ internal static partial class LAuditTruthWalker
             {
                 LAuditTamperingScan(root, violations);
                 LAuditMisfiringScan(root, violations);
+                LAuditZeroingScan(root, violations);
             }
 
             LAuditMismatchingScan(violations);
+            LAuditPuppeteeringScan(violations);
             foreach (List<TypeDeclarationSyntax> type in parts.Values)
             {
                 LAuditBaseCheck(type, violations);
@@ -3786,15 +3794,22 @@ internal static partial class LAuditTruthWalker
 {
     private static HashSet<ISymbol> LAuditRelayNames = new(SymbolEqualityComparer.Default);
 
+    private static HashSet<ISymbol>? LAuditPuppetNames;
+
     internal static HashSet<ISymbol> LAuditReaderNames = new(SymbolEqualityComparer.Default);
 
     private static Dictionary<ISymbol, HashSet<int>> LAuditHotNames = new(SymbolEqualityComparer.Default);
+
+    private static Dictionary<ISymbol, HashSet<int>> LAuditZeroingNames = new(SymbolEqualityComparer.Default);
+
+    private static HashSet<ISymbol> LAuditZeroingReads = new(SymbolEqualityComparer.Default);
 
     private static void LAuditRelayRead(IReadOnlyList<TypeDeclarationSyntax> type)
     {
         LAuditRelayNames = new HashSet<ISymbol>(SymbolEqualityComparer.Default);
         LAuditReaderNames = new HashSet<ISymbol>(SymbolEqualityComparer.Default);
         LAuditHotNames = new Dictionary<ISymbol, HashSet<int>>(SymbolEqualityComparer.Default);
+        LAuditPuppetNames = null;
         List<SyntaxNode> declared = type
             .SelectMany(part => part.DescendantNodesAndSelf().OfType<TypeDeclarationSyntax>())
             .SelectMany(part => part.Members)
@@ -3873,6 +3888,7 @@ internal static partial class LAuditTruthWalker
                     } is { TypeKind: TypeKind.Delegate }
                     && (LAuditBind.LAuditShellCheck(held.ContainingType)
                         || held is IEventSymbol { ContainingType.TypeKind: TypeKind.Interface })
+                    && (held is not IEventSymbol || LAuditPuppetNames is not null)
                     && !LAuditRelayNames.Contains(held)
                     && LAuditSeamCheck(assignment.Right, seams, new(SymbolEqualityComparer.Default)))
                 {
@@ -3880,7 +3896,15 @@ internal static partial class LAuditTruthWalker
                     grown = true;
                 }
             }
+
+            if (!grown && LAuditPuppetNames is null)
+            {
+                LAuditPuppetNames = new HashSet<ISymbol>(LAuditRelayNames, SymbolEqualityComparer.Default);
+                grown = true;
+            }
         }
+
+        LAuditZeroingRead(type);
     }
 
     private static Dictionary<ISymbol, List<ExpressionSyntax>> LAuditSeamRead(IReadOnlyList<SyntaxNode> roots)
@@ -3977,6 +4001,113 @@ internal static partial class LAuditTruthWalker
         return grown;
     }
 
+    private static void LAuditZeroingRead(IReadOnlyList<TypeDeclarationSyntax> type)
+    {
+        LAuditZeroingNames = LAuditHotNames.ToDictionary(
+            pair => pair.Key, pair => new HashSet<int>(pair.Value), SymbolEqualityComparer.Default);
+        LAuditZeroingReads = new HashSet<ISymbol>(SymbolEqualityComparer.Default);
+        List<TypeDeclarationSyntax> nested = type
+            .SelectMany(part => part.DescendantNodesAndSelf().OfType<TypeDeclarationSyntax>())
+            .ToList();
+        List<SyntaxNode> declared = nested
+            .SelectMany(part => part.Members)
+            .Where(member => member is BaseMethodDeclarationSyntax or PropertyDeclarationSyntax)
+            .Cast<SyntaxNode>()
+            .ToList();
+        declared.AddRange(declared.SelectMany(member => member.DescendantNodes().OfType<LocalFunctionStatementSyntax>())
+            .ToList());
+        List<ArgumentSyntax> arguments = type
+            .SelectMany(part => part.DescendantNodes().OfType<ArgumentSyntax>())
+            .ToList();
+        Dictionary<ISymbol, HashSet<ISymbol>> aliases = new(SymbolEqualityComparer.Default);
+        bool grown = true;
+        while (grown)
+        {
+            grown = false;
+            foreach (IdentifierNameSyntax used in arguments
+                         .Where(argument => LAuditZeroingCheck(argument, out _))
+                         .SelectMany(argument => argument.Expression.DescendantNodesAndSelf()
+                             .OfType<IdentifierNameSyntax>()))
+            {
+                if (LAuditBind.LAuditSymbolRead(used) is { Kind: SymbolKind.Field or SymbolKind.Property } held
+                    && LAuditBind.LAuditShellCheck(held.ContainingType)
+                    && LAuditZeroingReads.Add(held))
+                {
+                    grown = true;
+                }
+            }
+
+            foreach (SyntaxNode member in declared)
+            {
+                ParameterListSyntax? list = member switch
+                {
+                    BaseMethodDeclarationSyntax method => method.ParameterList,
+                    LocalFunctionStatementSyntax local => local.ParameterList,
+                    _ => null
+                };
+                if (list is null || LAuditBind.LAuditSymbolRead(member) is not { } symbol)
+                {
+                    continue;
+                }
+
+                if (!LAuditZeroingNames.TryGetValue(symbol, out HashSet<int>? hot))
+                {
+                    hot = [];
+                    LAuditZeroingNames[symbol] = hot;
+                }
+
+                List<ISymbol?> parameters = list.Parameters
+                    .Select(parameter => LAuditBind.LAuditSymbolRead(parameter))
+                    .ToList();
+                IEnumerable<ExpressionSyntax> carried = member.DescendantNodes()
+                    .OfType<ArgumentSyntax>()
+                    .Where(argument => LAuditZeroingCheck(argument, out _))
+                    .Select(argument => argument.Expression)
+                    .Concat(member.DescendantNodes()
+                        .OfType<AssignmentExpressionSyntax>()
+                        .Where(assignment => assignment.IsKind(SyntaxKind.SimpleAssignmentExpression)
+                                             && LAuditStoreRead(assignment.Left, nested, aliases)
+                                                 .Overlaps(LAuditZeroingReads))
+                        .Select(assignment => assignment.Right));
+                foreach (IdentifierNameSyntax used in carried.SelectMany(value => value.DescendantNodesAndSelf()
+                             .OfType<IdentifierNameSyntax>()))
+                {
+                    ISymbol? usedSymbol = LAuditBind.LAuditSymbolRead(used);
+                    int index = usedSymbol is null
+                        ? -1
+                        : parameters.FindIndex(parameter => SymbolEqualityComparer.Default.Equals(parameter, usedSymbol));
+                    if (index >= 0 && hot.Add(index))
+                    {
+                        grown = true;
+                    }
+                }
+            }
+        }
+    }
+
+    private static HashSet<ISymbol> LAuditStoreRead(
+        ExpressionSyntax target, IReadOnlyList<TypeDeclarationSyntax> nested, Dictionary<ISymbol, HashSet<ISymbol>> aliases)
+    {
+        ISymbol? stored = LAuditBind.LAuditSymbolRead(target);
+        if (stored is not (IFieldSymbol or IPropertySymbol))
+        {
+            return [];
+        }
+
+        if (!aliases.TryGetValue(stored, out HashSet<ISymbol>? names))
+        {
+            names = stored is IFieldSymbol field
+                ? LAuditAliasRead(field, nested
+                    .Where(part => SymbolEqualityComparer.Default.Equals(
+                        LAuditBind.LAuditSymbolRead(part), field.ContainingType))
+                    .ToList())
+                : new HashSet<ISymbol>([stored], SymbolEqualityComparer.Default);
+            aliases[stored] = names;
+        }
+
+        return names;
+    }
+
     private static bool LAuditReadCheck(SyntaxNode member)
     {
         return member.DescendantNodes(node => !LAuditNameofCheck(node)).Any(node => node switch
@@ -4035,6 +4166,49 @@ internal static partial class LAuditTruthWalker
         }
 
         return symbols;
+    }
+
+    private static void LAuditPuppeteeringScan(List<LViolation> violations)
+    {
+        HashSet<string> walked = LAuditRoots
+            .Select(root => root.SyntaxTree.FilePath)
+            .ToHashSet(StringComparer.Ordinal);
+        List<LViolation> hits = [];
+        foreach (ISymbol member in LAuditPuppetNames ?? [])
+        {
+            if (member is not (IMethodSymbol { MethodKind: not MethodKind.LocalFunction }
+                    or IPropertySymbol or IFieldSymbol or IEventSymbol)
+                || member.ContainingType is not { } type
+                || member.Locations
+                    .Where(location => location.SourceTree is { } tree && walked.Contains(tree.FilePath))
+                    .OrderBy(location => location.SourceTree!.FilePath, StringComparer.Ordinal)
+                    .ThenBy(location => location.SourceSpan.Start)
+                    .FirstOrDefault() is not { SourceTree: { } source } location
+                || !LAuditControlCheck(type.Name, source.FilePath))
+            {
+                continue;
+            }
+
+            hits.Add(new LViolation(
+                source.FilePath,
+                location.GetLineSpan().StartLinePosition.Line + 1,
+                $"{type.Name}.{member.Name}",
+                "Puppeteering",
+                "a control member requests logic"));
+        }
+
+        violations.AddRange(hits
+            .OrderBy(hit => hit.LViolationPath, StringComparer.Ordinal)
+            .ThenBy(hit => hit.LViolationLine)
+            .ThenBy(hit => hit.LViolationName, StringComparer.Ordinal));
+    }
+
+    internal static bool LAuditControlCheck(string name, string path)
+    {
+        string relative = LAuditBind.LAuditRelativeRead(path);
+        return LAuditTruthSetting.LAuditControlPrefix.Any(ring =>
+            relative.StartsWith(ring.Key + "/", StringComparison.OrdinalIgnoreCase)
+            && name.StartsWith(ring.Value, StringComparison.Ordinal));
     }
 }
 
@@ -4715,6 +4889,108 @@ internal static partial class LAuditTruthWalker
             ? (callee as IMethodSymbol)?.Parameters.FirstOrDefault(parameter => parameter.Name == name)?.Ordinal ?? -1
             : list.Arguments.IndexOf(argument);
         return LAuditHotNames.TryGetValue(callee, out HashSet<int>? hot) && hot.Contains(index);
+    }
+
+    private static bool LAuditZeroingCheck(ArgumentSyntax argument, out ISymbol? callee)
+    {
+        callee = argument.Parent is ArgumentListSyntax { Parent: ExpressionSyntax call }
+                 && call is InvocationExpressionSyntax or BaseObjectCreationExpressionSyntax
+            ? LAuditCallRead(call) ?? LAuditBind.LAuditSymbolRead(call)
+            : null;
+        if (callee is null || argument.Parent is not ArgumentListSyntax list)
+        {
+            return false;
+        }
+
+        if (LAuditBind.LAuditLogicCheck(callee))
+        {
+            return true;
+        }
+
+        int index = argument.NameColon is { Name.Identifier.ValueText: var name }
+            ? (callee as IMethodSymbol)?.Parameters.FirstOrDefault(parameter => parameter.Name == name)?.Ordinal ?? -1
+            : list.Arguments.IndexOf(argument);
+        return LAuditZeroingNames.TryGetValue(callee, out HashSet<int>? hot) && hot.Contains(index);
+    }
+
+    private static void LAuditZeroingScan(SyntaxNode root, List<LViolation> violations)
+    {
+        foreach (ExpressionSyntax literal in root.DescendantNodes().OfType<ExpressionSyntax>().Where(LAuditZeroCheck))
+        {
+            ExpressionSyntax position = literal;
+            while (position.Parent is ParenthesizedExpressionSyntax or CastExpressionSyntax
+                   || (position.Parent is ConditionalExpressionSyntax choice && choice.Condition != position)
+                   || (position.Parent is BinaryExpressionSyntax
+                       {
+                           RawKind: (int)SyntaxKind.CoalesceExpression
+                       } fallback
+                       && fallback.Right == position))
+            {
+                position = (ExpressionSyntax)position.Parent;
+            }
+
+            (string LViolationName, string LViolationReason)? hit = position.Parent switch
+            {
+                ArgumentSyntax argument when LAuditZeroingCheck(argument, out ISymbol? callee)
+                    => callee is IMethodSymbol { MethodKind: MethodKind.Constructor, ContainingType: { } built }
+                        ? (built.Name, $"passes {literal} to new {built.Name}")
+                        : (callee!.Name, $"passes {literal} to {callee.Name}"),
+                BinaryExpressionSyntax compare
+                    when compare.Kind() is SyntaxKind.EqualsExpression or SyntaxKind.NotEqualsExpression
+                             or SyntaxKind.LessThanExpression or SyntaxKind.GreaterThanExpression
+                             or SyntaxKind.LessThanOrEqualExpression or SyntaxKind.GreaterThanOrEqualExpression
+                         && LAuditComparedRead(compare.Left == position ? compare.Right : compare.Left) is { } member
+                    => (member.Name, $"compares {member.Name} with {literal}"),
+                ConstantPatternSyntax pattern
+                    when (pattern.Parent is UnaryPatternSyntax negated ? negated.Parent : pattern.Parent)
+                             is IsPatternExpressionSyntax test
+                         && LAuditComparedRead(test.Expression) is { } member
+                    => (member.Name, $"compares {member.Name} with {literal}"),
+                _ => null
+            };
+            if (hit is not null)
+            {
+                violations.Add(new LViolation(
+                    root.SyntaxTree.FilePath,
+                    LAuditLineRead(literal),
+                    hit.Value.LViolationName,
+                    "Zeroing",
+                    hit.Value.LViolationReason));
+            }
+        }
+    }
+
+    private static bool LAuditZeroCheck(ExpressionSyntax node)
+    {
+        return node switch
+        {
+            LiteralExpressionSyntax { RawKind: (int)SyntaxKind.NumericLiteralExpression, Token.Value: 0 or 0L } => true,
+            LiteralExpressionSyntax { RawKind: (int)SyntaxKind.DefaultLiteralExpression } => true,
+            DefaultExpressionSyntax => true,
+            _ => false
+        };
+    }
+
+    private static ISymbol? LAuditComparedRead(ExpressionSyntax side)
+    {
+        ExpressionSyntax core = side;
+        while (core is ParenthesizedExpressionSyntax or CastExpressionSyntax or ConditionalAccessExpressionSyntax
+               or PostfixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.SuppressNullableWarningExpression })
+        {
+            core = core switch
+            {
+                ParenthesizedExpressionSyntax inner => inner.Expression,
+                CastExpressionSyntax cast => cast.Expression,
+                ConditionalAccessExpressionSyntax access => access.WhenNotNull,
+                PostfixUnaryExpressionSyntax suppress => suppress.Operand,
+                _ => core
+            };
+        }
+
+        return LAuditBind.LAuditSymbolRead(core) is { Kind: SymbolKind.Field or SymbolKind.Property } member
+               && (LAuditZeroingReads.Contains(member) || LAuditBind.LAuditLogicCheck(member))
+            ? member
+            : null;
     }
 
     internal static ISymbol? LAuditCallRead(ExpressionSyntax call)

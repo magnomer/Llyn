@@ -1,5 +1,5 @@
 # TDisplay.cs
-Hash: `d5bca173eb524b33`
+Hash: `4f39d9bb35fa41a0`
 
 ## `public sealed class TDisplay`
 
@@ -35,6 +35,43 @@ Each card carries its number, its depth and its place in its section's list.
 ## `public void DisplayCompassRead_NothingShown_NamesOnlyTheParts()`
 
 With no draft shown, the parts are named through the lookup and carry no cards.
+
+## `public void DisplayGraspStep_HostileLimit_ReadsNoneBelowZero(int limit, int read)`
+
+Any engine grasp limit reads back unchanged, except a negative one, which reads zero.
+So the star control never takes a negative limit, as `CDisplay` promises.
+
+## `public void DisplayGraspRead_HostileStep_ClampsBetweenZeroAndLimit(int limit, int stored, int read)`
+
+Any stored step the engine answers reads between zero and the limit, as `CGrasp` promises.
+A negative limit counts as zero, so every step then reads zero.
+The label is the engine's wording of the clamped step, not of the stored one.
+
+## `public void DisplayFrequencyRead_HostileBand_KeepsAFullStarRow(int band, int stars, CFrequencyTier rank, bool ranked)`
+
+A band at or below zero reads zero stars, the unknown tier and no rank.
+Its spare stars then fill the whole row.
+A band on the scale keeps its stars and tier, and its spare stars fill the row.
+An empty source stays empty, since the chip only shows it as a tooltip.
+
+## `public void DisplayFrequencyRead_BandPastScale_ReadsUnknownTier(int band)`
+
+A band past the scale throws nothing and reads the unknown tier with its key and no spare stars.
+The band stays non-negative and the source passes through.
+
+## `public void DisplayFrequencyRead_NoGauge_ReadsNone()`
+
+An engine that answers no gauge reads no frequency, so the chip hides.
+
+## `internal static LEntryPort TGraspPortCreate(int limit, int stored)`
+
+A fake entry port answering only the grasp limit, the stored step and the step's wording.
+The wording is the step itself, so a fact sees which step was worded.
+`TEsteem` fakes its grasp reads here too.
+
+## `private static LEntryPort TFrequencyPortCreate(LFrequencyGauge? gauge)`
+
+A fake entry port answering only the frequency read, with `gauge` for every entry.
 
 ## `private static LEntryDraft TDisplayDraftCreate(IReadOnlyList<LReflexDraft> reflexes)`
 

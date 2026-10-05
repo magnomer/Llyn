@@ -1,5 +1,5 @@
 # TAuditPlatformSetting.cs
-Hash: `f1522b10a2489437`
+Hash: `ac0ef999b1eb2828`
 
 ## `internal static class TAuditPlatformSetting`
 
@@ -51,6 +51,11 @@ A portable half is its own column.
 A twin names its portable half.
 The host has an empty column because it names every project.
 Twin naming is not settled, so a twin's name here is provisional.
+
+## `public static readonly IReadOnlyDictionary<string, string> TAuditPlatformCapsule`
+
+For a twin, the one capsule project it may reference outside its column.
+The capsule keeps its own portable column, so that reference is no `Column` hit.
 
 ## `public static readonly string[] TAuditPlatformProperties`
 

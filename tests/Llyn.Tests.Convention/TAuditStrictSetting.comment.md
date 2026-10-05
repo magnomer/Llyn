@@ -1,5 +1,5 @@
 # TAuditStrictSetting.cs
-Hash: `87a2bcb905539564`
+Hash: `65b4ee8b61ef8c89`
 
 ## `internal static class TAuditStrictSetting`
 
@@ -77,7 +77,7 @@ The types whose extension methods are queries, each a decision a surface may not
 ## `public static readonly string[] TAuditCatalogPatterns`
 
 A line matching one of these does file, JSON, regex or process work, or starts a task, in the surface.
-That work belongs below the UI, in the engine or in `LUsher`.
+That work belongs below the UI, in the engine or in an `LUsher` adapter.
 
 ## `public static readonly string[] TAuditCatalogExempt`
 

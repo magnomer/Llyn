@@ -1,5 +1,5 @@
 # TEnvoyFake.cs
-Hash: `95d5ac85e3970846`
+Hash: `34b14489609601be`
 
 ## `internal static class TEnvoyFake`
 
@@ -23,6 +23,11 @@ It records each failure key it is shown, so a fact reads the question and the fa
 A fake envoy whose wording question records `Coinage:` plus the message key and answers `wording`.
 The leave question records `Leave` and answers `leave` as given.
 It records each failure key it is shown, so a fact reads the questions and the failure in order.
+
+## `internal static CEnvoy TEnvoyMarkupCreate(string? path, List<string> asked)`
+
+A fake envoy whose markup file question answers `path` unrecorded.
+It records only each failure key it is shown, so a fact counts the notices alone.
 
 ## `internal static CEnvoy TEnvoyTicketCreate(Func<CPressTicket?> answer, List<string> asked)`
 
