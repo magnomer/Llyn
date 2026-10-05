@@ -1,8 +1,0 @@
-{
-  "version": "0.0.80",
-  "commit": "138b1396b361959241f0ad6d213859f2135ce19e",
-  "date": "2026-09-01 16:35:32 +09:00",
-  "source": "local",
-  "rules": "05adddd7d05c6486b927efcd6f9eb2ec131f4a3a5a362e847ed2e11ae95399ce",
-  "measure": {"files":90,"types":54,"verdicts":{"hydra":0,"kraken":0,"spider":0,"chameleon":2,"octopus":0,"centipede":0,"serpent":0,"colony":0,"hermit":52},"flags":{"hydra":0,"kraken":0,"spider":0,"chameleon":2,"octopus":0,"centipede":1,"serpent":1,"hub":0},"list":[{"name":"Llyn.UIShell.PWindow","verdict":"chameleon","flags":["chameleon","centipede","serpent"],"parts":2,"lines":1025,"members":81,"mutable":10,"outgoing":15,"incoming":0,"shared":0,"crossings":5,"glued":1,"fused":1,"density":0.06},{"name":"Llyn.UIShell.PInputCard","verdict":"chameleon","flags":["chameleon"],"parts":1,"lines":155,"members":21,"mutable":8,"outgoing":0,"incoming":1,"shared":0,"crossings":0,"glued":1,"fused":1,"density":0}]}
-}

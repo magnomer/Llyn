@@ -1,8 +1,0 @@
-{
-  "version": "0.17.11318",
-  "commit": "8c23137290c4a22dd1dd34873e658573951636d6",
-  "previous": "0.17.11268",
-  "previousCommit": "0638484de46ca21314f513cf4874abcc011034fb",
-  "rules": "similarity=50;roots=src,tests;kept=project,stem;record=1",
-  "moves": []
-}

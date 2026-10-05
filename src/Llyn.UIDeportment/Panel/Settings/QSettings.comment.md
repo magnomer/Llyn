@@ -1,5 +1,5 @@
 # QSettings.cs
-Hash: `c0be12e9a9c8c573`
+Hash: `a35717ca97616338`
 
 ## `internal sealed class QSettings`
 

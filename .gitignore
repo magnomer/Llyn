@@ -103,6 +103,7 @@ $RECYCLE.BIN/
 !/.gitignore
 !/.gitattributes
 !/.editorconfig
+!/README.md
 !/Directory.Build.props
 !/Directory.Build.comment.md
 !/Llyn.slnx
@@ -140,6 +141,7 @@ $RECYCLE.BIN/
 !/scripts/AuditFault.html
 !/scripts/AuditFault.json
 !/scripts/AuditFault.ps1
+!/scripts/AuditHistory.lineage.ps1
 !/scripts/AuditLines.html
 !/scripts/AuditLines.json
 !/scripts/AuditLines.ps1
@@ -210,6 +212,9 @@ $RECYCLE.BIN/
 !/scripts/vendor/
 !/scripts/Zip.ps1
 
-# Analysis Report
+# Analysis Report: only the Markdown pages Report.ps1 generates
 !/docs-analysis/
-/docs-analysis/**/*.html
+/docs-analysis/*
+!/docs-analysis/Audit*-[0-9]*.[0-9]*.[0-9]*.md
+!/docs-analysis/MapMethod-[0-9]*.[0-9]*.[0-9]*.md
+!/docs-analysis/Stats*-[0-9]*.[0-9]*.[0-9]*.md

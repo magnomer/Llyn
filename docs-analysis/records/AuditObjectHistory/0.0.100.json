@@ -1,8 +1,0 @@
-{
-  "version": "0.0.100",
-  "commit": "16a3f13b1f24a3b7d25c3d77f2d26cb3f5a4d860",
-  "date": "2026-09-01 18:41:01 +09:00",
-  "source": "local",
-  "rules": "05adddd7d05c6486b927efcd6f9eb2ec131f4a3a5a362e847ed2e11ae95399ce",
-  "measure": {"files":96,"types":57,"verdicts":{"hydra":0,"kraken":1,"spider":0,"chameleon":2,"octopus":0,"centipede":0,"serpent":0,"colony":0,"hermit":54},"flags":{"hydra":0,"kraken":1,"spider":0,"chameleon":2,"octopus":1,"centipede":1,"serpent":2,"hub":0},"list":[{"name":"Llyn.UIShell.PWindow","verdict":"chameleon","flags":["chameleon","centipede","serpent"],"parts":4,"lines":1395,"members":105,"mutable":13,"outgoing":18,"incoming":1,"shared":0,"crossings":33,"glued":1,"fused":1,"density":0.31},{"name":"Llyn.ShellEngine.LEngine","verdict":"kraken","flags":["kraken","octopus","serpent"],"parts":2,"lines":543,"members":35,"mutable":3,"outgoing":45,"incoming":2,"shared":0,"crossings":3,"glued":1,"fused":1,"density":0.09},{"name":"Llyn.UIShell.PInputCard","verdict":"chameleon","flags":["chameleon"],"parts":1,"lines":155,"members":21,"mutable":8,"outgoing":0,"incoming":1,"shared":0,"crossings":0,"glued":1,"fused":1,"density":0}]}
-}

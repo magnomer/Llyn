@@ -1,8 +1,0 @@
-{
-  "version": "0.0.20",
-  "commit": "56eeb62e258b5cd6475674f9e4ec583dd010cc88",
-  "date": "2026-08-31 19:40:33 +09:00",
-  "source": "local",
-  "rules": "05adddd7d05c6486b927efcd6f9eb2ec131f4a3a5a362e847ed2e11ae95399ce",
-  "measure": {"files":19,"types":17,"verdicts":{"hydra":0,"kraken":0,"spider":0,"chameleon":0,"octopus":0,"centipede":0,"serpent":0,"colony":0,"hermit":17},"flags":{"hydra":0,"kraken":0,"spider":0,"chameleon":0,"octopus":0,"centipede":0,"serpent":0,"hub":0},"list":[]}
-}

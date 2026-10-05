@@ -94,7 +94,7 @@ internal sealed class QSettings
         _qSettingsLocalization.QLocalizationIntroduce(ledger, host.QWindowEnvoy);
         _qSettingsRespelling.QRespellingIntroduce(ledger, host.QWindowEnvoy);
         _qSettingsFrequency.QFrequencyIntroduce(ledger, host.QWindowEnvoy);
-        _qSettingsCourier.QCourierIntroduce(ledger, QSettingsAtelier, host.QWindowEnvoy);
+        _qSettingsCourier.QCourierIntroduce(ledger, host.QWindowAtelier, host.QWindowEnvoy);
         _qSettingsMorphology.QMorphologyIntroduce(ledger, host.QWindowEnvoy);
         _qSettingsLayout.QLayoutIntroduce(_qSettingsSurface);
         QLookItem.QLookItemAttach(QSettingsLedger, QSettingsItemRefine);
