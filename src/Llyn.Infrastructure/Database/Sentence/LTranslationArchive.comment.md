@@ -1,5 +1,5 @@
 # LTranslationArchive.cs
-Hash: `4a4152b539f88782`
+Hash: `b21dd0173eb4f998`
 
 ## `public sealed class LTranslationArchive : LTranslationVault`
 
@@ -50,7 +50,9 @@ An id no Entry answers is skipped rather than reported, because a caller wants w
 
 Reads the Meanings and Collocations that point at this Entry.
 Each one is a Usage, so an Entry shows what renders it the way an Example shows what quotes it.
-Meanings come before Collocations, each group ordered by headword and then by place on its Entry.
+Meanings come before Collocations, each group ordered by headword.
+Card rows sharing a headword go by language, then entry id, then place on the Entry.
+Those are the keys `LCatalogEntry` breaks entry ties by, so storage order never decides a place.
 
 ## Inline notes
 

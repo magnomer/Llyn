@@ -1,5 +1,5 @@
 # LVistaFacade.cs
-Hash: `d1115a486dbbad74`
+Hash: `2781b8b1fe99e640`
 
 ## `internal sealed class LVistaFacade`
 
@@ -28,6 +28,7 @@ The vista now standing for each tab, so a restart can detach the one it replaces
 ## `public LVistaFacade(LEngine engine)`
 
 Binds this facade to its engine and the shared gate.
+
 ## `public LVista LEngineVistaStart(string tab, LSubject? subject, LCatalogOrder order, LCatalogFilter filter, bool editing, bool blank = false)`
 
 Starts a vista for `tab` on the order, filter and mode the caller hands it.
@@ -54,6 +55,8 @@ The rows are built by the shared builder under one lock.
 The entries the record chosen in a catalog vista reaches, listed in the child vista beside it.
 The parent's language filter applies, since a catalog's filter hides languages from its chosen record's entries.
 The child's query narrows the rows, and the child's chosen row is marked.
+The entry clerk's match filters, narrows and orders the rows by the child's ordering, as the catalog list does.
+So equal headwords go by the entry tie rule, never by the order the store returned them.
 A missing vista, or a parent subject that reaches no entries, answers no rows.
 
 ## `internal IReadOnlyList<LVistaRow> LEngineVistaBuild(IReadOnlyList<LEntry> entries, long? chosen)`

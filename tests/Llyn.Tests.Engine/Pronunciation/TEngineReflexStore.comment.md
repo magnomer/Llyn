@@ -1,5 +1,5 @@
 # TEngineReflexStore.cs
-Hash: `f2765078aaeec221`
+Hash: `7c008566cc68435e`
 
 ## `public sealed class TEngineReflexStore`
 
@@ -11,7 +11,10 @@ A user-entered meaning is restored to a fetched row with the same language, regi
 A scraped meaning is not restored, so a corrected source replaces it.
 An entry every page was not found for is asked once per session and stores nothing.
 A held draft of the entry with no rows takes the stored rows and stays unchanged against the entry.
+It lists them in the pack's declared order, not the order the rules ran in.
+Two unmarked rows of one language and kind follow by text, never by arrival.
 The epithet is derived when the rows are stored and kept on the entry.
+Its pieces follow the pack's declared language order, then reading text, never rule or storage order.
 It reads back blank once the rows are dropped.
 The setting hides it from an incoming usage without touching what is stored.
 A workspace rebuilt from an older schema has its blank epithets and respellings derived once on open.

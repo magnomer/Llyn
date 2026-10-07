@@ -125,11 +125,13 @@ public sealed class LDraftClerk
         return request switch
         {
             LRequestHeadword sent => content with { LEntryDraftHeadword = sent.LRequestText ?? string.Empty },
-            LRequestLanguage sent => _lDraftClerkLanguages.LLanguageAnatomyRebuild(
-                _lDraftClerkLanguages.LLanguageRespellingRebuild(
-                    content with { LEntryDraftLanguage = sent.LRequestText ?? string.Empty })),
+            LRequestLanguage sent => _lDraftClerkLanguages.LLanguageUnitRebuild(
+                _lDraftClerkLanguages.LLanguageAnatomyRebuild(
+                    _lDraftClerkLanguages.LLanguageRespellingRebuild(
+                        content with { LEntryDraftLanguage = sent.LRequestText ?? string.Empty }))),
             LRequestNote sent => content with { LEntryDraftNote = sent.LRequestText ?? string.Empty },
             LRequestSpeech sent => content with { LEntryDraftSpeeches = sent.LRequestSpeeches ?? [] },
+            LRequestUnit sent => content with { LEntryDraftUnit = sent.LRequestValue },
             LRequestCardAddition sent => LCardInsert(content, sent),
             LRequestCardRemoval sent => LDraftClerkCard.LCardRemove(content, sent.LRequestCardId),
             LRequestCardShift sent => LDraftClerkCard.LCardMove(content, sent),

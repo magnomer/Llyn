@@ -1,5 +1,5 @@
 # TCatalogEntry.cs
-Hash: `2b468f78833b8bc5`
+Hash: `74f343bbbae11fce`
 
 ## `public sealed class TCatalogEntry`
 
@@ -8,3 +8,6 @@ It covers headword order and its reverse, which the library and phonology panels
 It covers newest first and oldest first, which read the moment the entry was added.
 It covers the typed query, which the store answers rather than the panel.
 It covers the star and question wildcards, which anchor the query to the whole headword.
+It covers equal headwords, which go by language and then entry id in either headword order.
+It covers equal moments, which go by language, headword and then entry id.
+

@@ -58,7 +58,7 @@ public sealed class LReferenceUsage
             JOIN entry ON entry.entry_id = sense.entry_parent
             WHERE example.reference_ref = $id
             GROUP BY sense.sense_id
-            ORDER BY entry.headword, sense.position;
+            ORDER BY entry.headword, entry.language, entry.entry_id, sense.position;
             """));
         usages.AddRange(LReferenceCardRead(
             connection,
@@ -74,7 +74,7 @@ public sealed class LReferenceUsage
             JOIN entry ON entry.entry_id = collocation.entry_parent
             WHERE example.reference_ref = $id
             GROUP BY collocation.collocation_id
-            ORDER BY entry.headword, collocation.position;
+            ORDER BY entry.headword, entry.language, entry.entry_id, collocation.position;
             """));
         usages.AddRange(LReferenceExampleRead(connection, id));
         return usages;
@@ -148,7 +148,7 @@ public sealed class LReferenceUsage
             LEFT JOIN example_translation gloss
                 ON gloss.example_parent = example.example_id AND gloss.position = 0
             WHERE example.reference_ref = $id
-            ORDER BY example.text;
+            ORDER BY example.text, example.language, example.example_id;
             """;
         command.Parameters.AddWithValue("$id", id);
 

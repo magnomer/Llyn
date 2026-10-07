@@ -138,4 +138,22 @@ public sealed class LLanguageCache
             LEntryDraftReflexes = LLanguageAnatomyScan(content.LEntryDraftLanguage, content.LEntryDraftReflexes),
         };
     }
+
+    public bool LLanguageSpacedCheck(string language)
+    {
+        ArgumentNullException.ThrowIfNull(language);
+
+        return string.IsNullOrWhiteSpace(language) || LLanguageCacheRead(language).LLanguageSpaced;
+    }
+
+    public LEntryDraft LLanguageUnitRebuild(LEntryDraft content)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+
+        return content with
+        {
+            LEntryDraftUnit = LUnitClerk.LUnitSettle(
+                content.LEntryDraftUnit, LLanguageSpacedCheck(content.LEntryDraftLanguage)),
+        };
+    }
 }

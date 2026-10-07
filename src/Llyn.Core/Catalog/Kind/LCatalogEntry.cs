@@ -12,14 +12,31 @@ public static class LCatalogEntry
 
         return order switch
         {
-            LCatalogOrder.LCatalogOrderReverse => [.. entries
-                .OrderByDescending(entry => entry.LEntryHeadword, StringComparer.CurrentCultureIgnoreCase)],
-            LCatalogOrder.LCatalogOrderRecent => [.. entries
-                .OrderByDescending(entry => entry.LEntryAddedUtc ?? string.Empty, StringComparer.Ordinal)],
-            LCatalogOrder.LCatalogOrderEarliest => [.. entries
-                .OrderBy(entry => entry.LEntryAddedUtc ?? string.Empty, StringComparer.Ordinal)],
-            _ => [.. entries
-                .OrderBy(entry => entry.LEntryHeadword, StringComparer.CurrentCultureIgnoreCase)],
+            LCatalogOrder.LCatalogOrderReverse => [.. LCatalogEntrySort(
+                entries.OrderByDescending(entry => entry.LEntryHeadword, StringComparer.CurrentCultureIgnoreCase),
+                static entry => entry)],
+            LCatalogOrder.LCatalogOrderRecent => [.. LCatalogEntrySort(
+                entries.OrderByDescending(entry => entry.LEntryAddedUtc ?? string.Empty, StringComparer.Ordinal),
+                static entry => entry)],
+            LCatalogOrder.LCatalogOrderEarliest => [.. LCatalogEntrySort(
+                entries.OrderBy(entry => entry.LEntryAddedUtc ?? string.Empty, StringComparer.Ordinal),
+                static entry => entry)],
+            _ => [.. LCatalogEntrySort(
+                entries.OrderBy(entry => entry.LEntryHeadword, StringComparer.CurrentCultureIgnoreCase),
+                static entry => entry)],
         };
+    }
+
+    public static IOrderedEnumerable<LCatalogEntryRow> LCatalogEntrySort<LCatalogEntryRow>(
+        IOrderedEnumerable<LCatalogEntryRow> rows,
+        Func<LCatalogEntryRow, LEntry> entry)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+        ArgumentNullException.ThrowIfNull(entry);
+
+        return rows
+            .ThenBy(row => entry(row).LEntryLanguage, StringComparer.CurrentCultureIgnoreCase)
+            .ThenBy(row => entry(row).LEntryHeadword, StringComparer.CurrentCultureIgnoreCase)
+            .ThenBy(row => entry(row).LEntryId);
     }
 }

@@ -1,5 +1,5 @@
 # LReflexFacade.cs
-Hash: `ff6ab5812f418192`
+Hash: `788abb9b304e1b64`
 
 ## `internal sealed class LReflexFacade`
 
@@ -66,4 +66,6 @@ The tone classes the pack of a language declares, or none for a blank language.
 
 ## `private IReadOnlyList<LFanqieRow> LEngineAnchorRead(long entryId)`
 
-The entry's rime-book rows flattened out of their book groups, fetched first when missing.
+The entry's rime-book rows as the clerk's flat list, after starting the fetch of missing characters.
+The flat list runs character by character, each character's rows in the declared book order.
+Flattening the book groups would put book before character instead.

@@ -371,7 +371,7 @@ public sealed class TEngineInflectionFetch
             [],
             string.Empty,
             null,
-            ["Verb, transitive"]);
+            ["Verb"]);
     }
 
     private sealed class TInflectionObserver

@@ -77,6 +77,85 @@ public sealed class TEngineScript
     }
 
     [Fact]
+    public async Task ScriptRead_FetchedOutOfEpochOrder_ListsInDeclaredEpochOrder()
+    {
+        const string epochPack =
+            """
+            { "script": [
+                { "name": "Clerical", "url": "https://example.test/clerical/search",
+                  "form": { "Character": "{word}" },
+                  "match": "<td class=\"Cell\"><img src=\"([^\"]+)\" />(.*?)<td>",
+                  "image": 1, "caption": 2, "prefix": "https://example.test" } ],
+              "epoch": [["Shang", "Shang"], ["Han", "Han"]] }
+            """;
+        Dictionary<string, string> pages = new()
+        {
+            ["https://example.test/clerical/search"] =
+                """
+                <td class="Cell"><img src="/image?text=b" /><br />Stone<br />Han<td>
+                <td class="Cell"><img src="/image?text=c" /><td>
+                <td class="Cell"><img src="/image?text=d" /><br />Bowl<br />Shang<td>
+                """,
+            ["https://example.test/image?text=b"] = "PNG-B",
+            ["https://example.test/image?text=c"] = "PNG-C",
+            ["https://example.test/image?text=d"] = "PNG-D",
+        };
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(epochPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(pages));
+
+        IReadOnlyList<LScriptImage> found = await TScriptFetchRead(engine, "整", pack.TLanguageFixtureName);
+
+        Assert.Equal(["PNG-D", "PNG-B", "PNG-C"], found.Select(TScriptDataRead));
+        Assert.Equal(["Shang", "Han", ""], found.Select(image => image.LScriptImageEpoch));
+    }
+
+    [Fact]
+    public void ScriptImageSort_StoredOutOfPackOrder_ListsByCharacterStyleThenEpoch()
+    {
+        LEpoch[] epochs = [TInterface.TEpochCreate("early", "Early"), TInterface.TEpochCreate("late", "Late")];
+        IReadOnlyList<LScriptStyle> styles =
+        [
+            TInterface.TScriptStyleCreate("seal") with { LScriptStyleEpoch = epochs },
+            TInterface.TScriptStyleCreate("bronze") with { LScriptStyleEpoch = epochs },
+        ];
+        IReadOnlyList<LScriptImage> images =
+        [
+            TInterface.TScriptImageCreate("完", "bronze", 0, "1", "Late"),
+            TInterface.TScriptImageCreate("完", "loose", 0, "2", "Early"),
+            TInterface.TScriptImageCreate("完", "seal", 0, "3", string.Empty),
+            TInterface.TScriptImageCreate("完", "seal", 1, "4", "Unknown"),
+            TInterface.TScriptImageCreate("全", "seal", 0, "5", "Early"),
+            TInterface.TScriptImageCreate("完", "bronze", 1, "6", "Early"),
+            TInterface.TScriptImageCreate("完", "seal", 2, "7", "Late"),
+            TInterface.TScriptImageCreate("完", "bronze", 2, "8", "Late"),
+        ];
+
+        IReadOnlyList<LScriptImage> sorted = TInterface.TScriptImageSort(images, styles, ["完", "全"]);
+
+        Assert.Equal(
+            ["7", "4", "3", "6", "1", "8", "2", "5"],
+            sorted.Select(image => image.LScriptImageCaption));
+    }
+
+    [Fact]
+    public void ScriptImageSort_CharacterOutsideHeadword_FollowsByCodePointThenStoredId()
+    {
+        IReadOnlyList<LScriptStyle> styles = [TInterface.TScriptStyleCreate("seal")];
+        IReadOnlyList<LScriptImage> images =
+        [
+            TInterface.TScriptImageCreate("完", "seal", 0, "a", string.Empty, 9),
+            TInterface.TScriptImageCreate("乙", "seal", 0, "b", string.Empty, 3),
+            TInterface.TScriptImageCreate("全", "seal", 0, "c", string.Empty, 7),
+            TInterface.TScriptImageCreate("完", "seal", 1, "d", string.Empty, 2),
+        ];
+
+        IReadOnlyList<LScriptImage> sorted = TInterface.TScriptImageSort(images, styles, ["全"]);
+
+        Assert.Equal(["c", "b", "d", "a"], sorted.Select(image => image.LScriptImageCaption));
+    }
+
+    [Fact]
     public async Task ScriptStart_ImageUnreachable_SkipsThatFormAlone()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineScriptPack);

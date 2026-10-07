@@ -77,7 +77,8 @@ public sealed class LEntryLoader
             inflections,
             transcriptions,
             reflexes,
-            etymology);
+            etymology,
+            entry.LEntryUnit);
     }
 
     private IReadOnlyList<LCardDraft> LEntryChildRead(

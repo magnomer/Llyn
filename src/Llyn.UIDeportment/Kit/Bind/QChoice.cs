@@ -63,6 +63,22 @@ internal static class QChoice
         ArgumentNullException.ThrowIfNull(dropdown);
 
         dropdown.PlacementTarget = anchor;
+        dropper.PreviewMouseLeftButtonDown += (_, e) =>
+        {
+            e.Handled = true;
+            dropdown.StaysOpen = true;
+            dropper.CaptureMouse();
+            dropper.IsChecked = true;
+        };
+        dropper.PreviewMouseLeftButtonUp += (_, e) =>
+        {
+            if (dropper.IsMouseCaptured)
+            {
+                e.Handled = true;
+                dropper.ReleaseMouseCapture();
+            }
+        };
+        dropper.LostMouseCapture += (_, _) => dropdown.StaysOpen = false;
         dropper.Checked += (_, _) => dropdown.IsOpen = true;
         dropper.Unchecked += (_, _) => dropdown.IsOpen = false;
         dropdown.Closed += (_, _) => dropper.IsChecked = false;

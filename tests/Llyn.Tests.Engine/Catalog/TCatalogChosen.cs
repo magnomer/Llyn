@@ -83,6 +83,44 @@ public sealed class TCatalogChosen
         Assert.Empty(engine.TEngineEntryFind(parent, child));
     }
 
+    [Fact]
+    public void Find_ChildVista_ListsInChildOrder()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LVista parent = TCatalogTagSave(engine, ("apple", "English"), ("water", "English"));
+        LVista child = engine.TEngineVistaStart("membership", LCatalogOrder.LCatalogOrderReverse);
+        Assert.Equal(
+            ["water", "apple"],
+            engine.TEngineEntryFind(parent, child).Select(row => row.LVistaRowHeadword));
+    }
+
+    [Fact]
+    public void Find_ChildVistaEqualHeadwords_ListsByLanguageThenId()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LVista parent = TCatalogTagSave(engine, ("bank", "French"), ("bank", "English"));
+        LVista child = engine.TEngineVistaStart("membership", LCatalogOrder.LCatalogOrderName);
+        Assert.Equal(
+            ["English", "French"],
+            engine.TEngineEntryFind(parent, child).Select(row => row.LVistaRowLanguage));
+    }
+
+    private static LVista TCatalogTagSave(LEngine engine, params (string, string)[] entries)
+    {
+        long tagId = 0;
+        foreach ((string headword, string language) in entries)
+        {
+            LTagDraft fluid = TInterface.TTagDraftCreate("fluid")[0] with { LTagDraftId = tagId };
+            LCardDraft card = TInterface.TCardCreate("liquid", 1) with { LCardDraftTag = [fluid] };
+            engine.TEngineEntrySave(TInterface.TEntryDraftCreate(headword, language, "", "", [card], []));
+            tagId = Assert.Single(engine.TEngineTagFind("fluid", LCatalogOrder.LCatalogOrderName)).LTagId;
+        }
+
+        return TCatalogVistaCreate(engine, "taxonomy", tagId);
+    }
+
     private static LVista TCatalogVistaCreate(LEngine engine, string tab, long id)
     {
         LVista vista = engine.TEngineVistaStart(tab, LCatalogOrder.LCatalogOrderName);

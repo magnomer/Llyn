@@ -69,7 +69,8 @@ public sealed class LMarkupClerkDraft
             inflections,
             entry.LMarkupEntryTranscription,
             entry.LMarkupEntryReflex,
-            _lMarkupDraftLink.LMarkupEtymologyResolve(entry, prepared, omissions));
+            _lMarkupDraftLink.LMarkupEtymologyResolve(entry, prepared, omissions),
+            entry.LMarkupEntryUnit);
     }
 
     private LSpeechValue? LMarkupSpeechResolve(string language, string name, List<LMarkupOmission> omissions)

@@ -1,5 +1,5 @@
 # LLiveryHeader.cs
-Hash: `4e421f227da79359`
+Hash: `4d248ea5befb7c6c`
 
 ## `internal static class LLiveryHeader`
 
@@ -30,6 +30,7 @@ The language chip opens with the flag from `LLiveryBannerFormat` for the draft's
 ## `public static void LLiveryChipAppend(StringBuilder sheet, LLiveryPage page, Func<string, string> lookup)`
 
 Writes the speech chips as one paragraph, then the frequency chip as another.
+The lexical unit leads the speech paragraph as a `llyn-unit` chip, named through `lookup`.
 Each part is left out when the page holds no data for it.
 `LFrequencyGauge.LFrequencyGaugeResolve` reads the stored rows with the `Frequency.Once` text.
 The chip names its band through the `Frequency.` key of the gauge rank.

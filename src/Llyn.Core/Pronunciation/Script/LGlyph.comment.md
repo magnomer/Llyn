@@ -1,5 +1,5 @@
 # LGlyph.cs
-Hash: `e97c068b351c9c0f`
+Hash: `15bc35e2790759b1`
 
 ## `public sealed record LGlyph(string LGlyphName, string LGlyphLanguage, IReadOnlyList<LSourceSpec> LGlyphSources, LFont? LGlyphFont = null)`
 
@@ -49,6 +49,8 @@ Whether `scheme` is this section's own name, so a transcription under it is the 
 
 The cells of the draft's glyph row, one per rune.
 The text is the first filled transcription under this section's scheme, else the headword.
+A headword without a Han character yields no cells.
+  A native Korean or kana-only word has no glyph form, so its glyph row stays hidden.
 A lone Han character carries this section's language, and any other rune carries a blank one.
 
 ## `public IReadOnlyList<LSourceSpec>? LGlyphSourceRead(string scheme)`

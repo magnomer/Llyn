@@ -1,5 +1,5 @@
 # LLanguageLoader.cs
-Hash: `78676b5c4aa7215f`
+Hash: `a44fbda5640ba9f3`
 
 ## `public sealed class LLanguageLoader : LLanguageVault`
 
@@ -11,7 +11,8 @@ So one bad pack never breaks the app.
 This is the only place source.json is read.
 The loaded `LLanguage` carries every language-specific fact onward.
 The reading of one declared source, its attempts and its readings, sits in `LSourceLoader`.
-The reading of the `fanqie` list sits in `LFanqieLoader`, the `shengfu` block in `LShengfuLoader`, and the `reflex` list in `LReflexLoader`.
+The `fanqie` list sits in `LFanqieLoader`, and the `shengfu` block in `LShengfuLoader`.
+The `reflex` list and the `order` block sit in `LReflexLoader`.
 The `script` list sits in `LScriptLoader`, and the `hypothesis` tables in `LHypothesisLoader`.
 The `anatomy` rules sit in `LAnatomyLoader`, and the `tone` rows in `LDescentLoader`.
 The reading of the rewrite rules sits in `LRespellingLoader`, and that of the transcription schemes in `LSchemeLoader`.
@@ -99,6 +100,12 @@ The top-level `silent` key is read the same way, and only a literal `true` hides
 The top-level `phonemic` key is read the same way, and only a literal `true` puts a respelled reading between slashes.
 The top-level `anatomy` key is read by `LAnatomyPackRead` in `LAnatomyLoader`.
 The top-level `tone` key is read by `LDescentPackRead` in `LDescentLoader`.
+The top-level `order` key is read by `LReflexOrderRead` in `LReflexLoader`.
+
+### `private static bool LLanguageSpacedRead(JsonElement root)`
+
+The `spaced` boolean, which falls back to the `separator` value when absent or not a boolean.
+It decides the lexical units only, and never the reading separator or mention spans.
 
 ### `private static bool LLanguageSeparatorRead(JsonElement root)`
 

@@ -1,5 +1,5 @@
 # LEngineStaff.cs
-Hash: `3fb43d45b8043e17`
+Hash: `f0f38339e0962cb5`
 
 ## `internal sealed record LEngineStaff(...)`
 
@@ -56,4 +56,5 @@ Fetch clerks receive the gate and the bulletin raiser supplied by the engine.
 The courier records its failures through the workspace clerk, so a failed push leaves a trace.
 The courier takes no portrait clerk, since `LLiveryFacade` hands it each page at send time.
 The frequency and lacuna fetches also receive the settings reader.
+The markup clerk receives the reflex clerk, so an exported entry lists its reflexes in the pack's declared order.
 The identity issuer receives the stale ids, so the new workspace never issues one a tenure still holds.

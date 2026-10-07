@@ -1,11 +1,12 @@
 # TExemplar.cs
-Hash: `825c6ad8d20d875b`
+Hash: `a214f9c7fe8bd628`
 
 ## `internal static class TExemplar`
 
 The one fully populated entry draft the export coverage tests share.
 Every typed field carries its own distinct string, so a field an export drops names itself in the failure.
 The strings are plain, so no escaping can hide a miss.
+The lexical unit is set too, so an export that drops it fails the coverage test.
 It sits in the interface folder because it builds production records directly.
 
 ## `internal static LEntryDraft TExemplarCreate(LEngine engine)`

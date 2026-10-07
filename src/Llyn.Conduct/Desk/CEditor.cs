@@ -208,4 +208,11 @@ public sealed class CEditor
     {
         CEditorTenure?.LTenureLanguageSet(language);
     }
+
+    public void CEditorUnitSet(string key)
+    {
+        ArgumentNullException.ThrowIfNull(key);
+
+        CEditorTenure?.LTenureUnitSet(CCardSpeech.LUnitRowParse(key));
+    }
 }

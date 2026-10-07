@@ -101,8 +101,12 @@ public sealed class TPortrait
         Assert.Equal("text:Frequency.Title", label.LPortraitLabelFrequency);
         Assert.Equal("text:Reference.Title", label.LPortraitLabelSource);
         Assert.Equal("text:Portrait.Tag", label.LPortraitLabelTag);
+        Assert.Equal("text:Unit.Morpheme", label.LPortraitLabelUnit[LUnit.LUnitMorpheme]);
         Assert.All(
-            typeof(LPortraitLabel).GetProperties().Select(property => (string)property.GetValue(label)!),
+            typeof(LPortraitLabel).GetProperties()
+                .Where(static property => property.PropertyType == typeof(string))
+                .Select(property => (string)property.GetValue(label)!)
+                .Concat(label.LPortraitLabelUnit.Values),
             static word => Assert.StartsWith("text:", word, StringComparison.Ordinal));
     }
 

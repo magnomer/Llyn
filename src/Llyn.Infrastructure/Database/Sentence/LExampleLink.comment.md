@@ -1,5 +1,5 @@
 # LExampleLink.cs
-Hash: `f186acc4bc1939d3`
+Hash: `c43d8a5f1605fbb1`
 
 ## `public sealed class LExampleLink`
 
@@ -24,6 +24,8 @@ A Meaning or Collocation row names the Entry it belongs to.
 A row carries the entry id it is followed through.
 It stays followable after the text it shows is edited.
 A quoting card with no wording of its own falls back to the definition or expression beneath it.
+Card rows sharing a headword go by language, then entry id, then place on the Entry.
+Those are the keys `LCatalogEntry` breaks entry ties by, so storage order never decides a place.
 
 ## `internal static void LExampleLinkClear(SqliteConnection connection, long exampleId)`
 

@@ -1,5 +1,5 @@
 # TInterfacePronunciation.cs
-Hash: `7fcc67aa2f3671fe`
+Hash: `a06763301d118883`
 
 ## `internal static partial class TInterface`
 
@@ -103,3 +103,32 @@ The character, book, position and text are fixed, because the resolve never look
 
 A row carrying a chosen character and position, for a test that saves rows into a fanqie store.
 The book and text are fixed, the heading repeats the rime, and the row is never rounded.
+
+## `internal static LReflexOrder TReflexOrderCreate(IReadOnlyList<string> languages, IReadOnlyDictionary<string, IReadOnlyList<string>> kinds)`
+
+Builds a declared reflex order directly, so a test needs no language pack to check it.
+
+## `internal static IReadOnlyList<LReflexDraft> TReflexOrderSort(this LReflexOrder order, IReadOnlyList<LReflexDraft> rows)`
+
+Relays the reflex list order every view reads the rows in.
+
+## `internal static LReflex TReflexCreate(long id, long entryId, int position, string language, string text, LAnatomy anatomy)`
+
+Builds one stored reflex row with no kind, cut by the given anatomy.
+
+## `internal static LAnatomy TAnatomyCreate(string onset)`
+
+Builds an anatomy that holds only an onset, the part a tally groups by.
+
+## `internal static IReadOnlyList<LTallyLine> TTallyLineScan(string kind, IReadOnlyList<string> characters, IReadOnlyDictionary<string, IReadOnlyList<LReflex>> readings, LReflexOrder order)`
+
+Relays the tally line scan, so a test pins its language order against the reflex list.
+
+## `internal static IReadOnlyList<LFrequency> TFrequencySort(IReadOnlyList<LFrequency> rows, IReadOnlyList<LSourceSpec> declared)`
+
+Relays the frequency order, the pack's declared sources first and the rest by code point.
+
+## `internal static IReadOnlyList<string> TGlyphOrderSort(IReadOnlyList<string> characters)`
+
+Relays the character order by code point.
+Beyond the basic plane it parts from UTF-16 ordinal order, which is why a test pins it.

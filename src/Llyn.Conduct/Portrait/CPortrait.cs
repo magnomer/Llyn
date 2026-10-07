@@ -33,6 +33,10 @@ internal static class CPortrait
         "Portrait.Register",
         "Portrait.Translation",
         "Portrait.Tag",
+        "Unit.Content",
+        "Unit.Function",
+        "Unit.Morpheme",
+        "Unit.Word",
     ];
 
     internal static IReadOnlyList<CPortraitChoice> LPortraitChoiceRead()

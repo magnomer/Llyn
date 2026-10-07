@@ -250,6 +250,83 @@ public sealed class TCatalogReference
         Assert.Equal(2, engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderName).Count);
     }
 
+
+    [Fact]
+    public void ReferenceSort_EqualUsage_ListsByNameThenId()
+    {
+        IReadOnlyList<LCatalogReference> stored =
+        [
+            TCatalogReferenceBuild(3, "bank"),
+            TCatalogReferenceBuild(1, "Bank"),
+            TCatalogReferenceBuild(2, "atlas"),
+        ];
+
+        Assert.Equal(
+            [2L, 1L, 3L],
+            TInterface.TCatalogReferenceSort(stored, LCatalogOrder.LCatalogOrderUsage)
+                .Select(row => row.LCatalogReferenceStored.LReferenceId));
+    }
+
+    [Fact]
+    public void ReferenceSort_EqualYear_ListsByNameThenId()
+    {
+        IReadOnlyList<LCatalogReference> stored =
+        [
+            TCatalogReferenceBuild(3, "bank", "1900"),
+            TCatalogReferenceBuild(1, "Bank", "1900"),
+            TCatalogReferenceBuild(2, "atlas", "1900"),
+        ];
+
+        Assert.Equal(
+            [2L, 1L, 3L],
+            TInterface.TCatalogReferenceSort(stored, LCatalogOrder.LCatalogOrderYear)
+                .Select(row => row.LCatalogReferenceStored.LReferenceId));
+    }
+
+    [Fact]
+    public void ReferenceSort_EqualAuthor_ListsByNameThenId()
+    {
+        IReadOnlyList<LCatalogReference> stored =
+        [
+            TCatalogReferenceBuild(3, "bank"),
+            TCatalogReferenceBuild(1, "Bank"),
+            TCatalogReferenceBuild(2, "atlas"),
+        ];
+
+        Assert.Equal(
+            [2L, 1L, 3L],
+            TInterface.TCatalogReferenceSort(stored, LCatalogOrder.LCatalogOrderAuthor)
+                .Select(row => row.LCatalogReferenceStored.LReferenceId));
+    }
+
+    [Fact]
+    public void ReferenceSort_EqualName_ListsById()
+    {
+        IReadOnlyList<LCatalogReference> stored =
+        [
+            TCatalogReferenceBuild(3, "bank"),
+            TCatalogReferenceBuild(1, "Bank"),
+        ];
+
+        Assert.Equal(
+            [1L, 3L],
+            TInterface.TCatalogReferenceSort(stored, LCatalogOrder.LCatalogOrderName)
+                .Select(row => row.LCatalogReferenceStored.LReferenceId));
+    }
+
+    private static LCatalogReference TCatalogReferenceBuild(long id, string title, string? year = null)
+    {
+        LReference reference = TInterface.TReferenceCreate(
+            id,
+            TInterfaceState.TStateValueCreate(title),
+            year is null ? null : TInterfaceState.TStateValueCreate(year),
+            LReferenceKind.LReferenceKindBook,
+            null,
+            null,
+            LStateMark.LStateMarkUnspecified);
+        return TInterface.TCatalogReferenceCreate(reference, title, title, 1);
+    }
+
     private static LReference TCatalogReferenceCreate(
         LEngine engine,
         string? title,

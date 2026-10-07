@@ -146,6 +146,39 @@ public sealed class TCatalogExample
         Assert.Equal("999", lines[999]);
     }
 
+    [Fact]
+    public void ExampleSort_EqualUsage_ListsByLanguageTextThenId()
+    {
+        IReadOnlyList<LCatalogExample> stored =
+        [
+            TCatalogExampleBuild(3, "French", "bank"),
+            TCatalogExampleBuild(2, "English", "bank"),
+            TCatalogExampleBuild(1, "French", "bank"),
+            TCatalogExampleBuild(4, "French", "ant"),
+        ];
+
+        Assert.Equal(
+            [2L, 4L, 1L, 3L],
+            TInterface.TCatalogExampleSort(stored, LCatalogOrder.LCatalogOrderUsage)
+                .Select(row => row.LCatalogExampleStored.LExampleId));
+        Assert.Equal(
+            [2L, 4L, 1L, 3L],
+            TInterface.TCatalogExampleSort(stored, LCatalogOrder.LCatalogOrderSource)
+                .Select(row => row.LCatalogExampleStored.LExampleId));
+        Assert.Equal(
+            [4L, 2L, 1L, 3L],
+            TInterface.TCatalogExampleSort(stored, LCatalogOrder.LCatalogOrderText)
+                .Select(row => row.LCatalogExampleStored.LExampleId));
+    }
+
+    private static LCatalogExample TCatalogExampleBuild(long id, string language, string text)
+    {
+        return TInterface.TCatalogExampleCreate(
+            TInterfaceExample.TExampleCreate(id, language, TInterfaceState.TStateValueCreate(text), null, null),
+            "source",
+            1);
+    }
+
     private static LCardDraft TCatalogCardCreate(params LSentenceDraft[] sentences) =>
         TInterface.TCardDraftCreate(
             LStateValue.LStateValueUnspecified,

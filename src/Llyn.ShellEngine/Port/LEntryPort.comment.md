@@ -1,5 +1,5 @@
 # LEntryPort.cs
-Hash: `b35cc17de4f9d4bb`
+Hash: `8cfae1a4bed916c0`
 
 ## `public interface LEntryPort`
 
@@ -125,6 +125,11 @@ The labels made distinct in their given order, numbered where two share a name.
 ## `IReadOnlyList<LCatalogReference> LEngineReferenceFind();`
 
 Every Source as the whole shelf lists it, ordered by author.
+
+## `static string LEngineUnitFormat(LUnit unit)`
+
+The localization key that names a lexical unit, empty when none is chosen.
+It is static, since Conduct maps a unit while it builds a row and needs no port for it.
 
 ## `static bool LEngineTextMatch(string field, string shown)`
 

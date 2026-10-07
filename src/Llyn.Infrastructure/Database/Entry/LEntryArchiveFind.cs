@@ -17,10 +17,10 @@ public sealed partial class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
             FROM entry
             WHERE lmatch(headword, $query)
-            ORDER BY headword;
+            ORDER BY headword, language, entry_id;
             """;
         command.Parameters.AddWithValue("$query", query);
 
@@ -43,10 +43,10 @@ public sealed partial class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
             FROM entry
             WHERE lfold(language) = lfold($language) AND lfold(headword) = lfold($headword)
-            ORDER BY headword, entry_id;
+            ORDER BY headword, language, entry_id;
             """;
         command.Parameters.AddWithValue("$language", language);
         command.Parameters.AddWithValue("$headword", headword);
@@ -63,7 +63,7 @@ public sealed partial class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
             FROM entry
             WHERE language = $language AND headword <> '' AND instr(lfold($text), lfold(headword)) > 0
             ORDER BY length(headword) DESC, headword, entry_id;
@@ -92,7 +92,7 @@ public sealed partial class LEntryArchive
             using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
             command.CommandText =
                 $"""
-                SELECT entry_id, headword, language, grasp, added_utc, updated_utc
+                SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
                 FROM entry
                 WHERE entry_id IN ({LEntryListFormat(command, batch)}) AND lmatch(headword, $query)
                 ORDER BY entry_id;
@@ -180,7 +180,7 @@ public sealed partial class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
             FROM entry
             WHERE $tag = 0
                OR entry_id IN (
@@ -193,7 +193,7 @@ public sealed partial class LEntryArchive
                       FROM collocation_tag
                       JOIN collocation ON collocation.collocation_id = collocation_tag.collocation_parent
                       WHERE collocation_tag.tag_ref = $tag)
-            ORDER BY headword;
+            ORDER BY headword, language, entry_id;
             """;
         command.Parameters.AddWithValue("$tag", tagId);
 
@@ -215,7 +215,7 @@ public sealed partial class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
             FROM entry
             WHERE $register = 0
                OR entry_id IN (
@@ -228,7 +228,7 @@ public sealed partial class LEntryArchive
                       FROM collocation_register
                       JOIN collocation ON collocation.collocation_id = collocation_register.collocation_parent
                       WHERE collocation_register.register_ref = $register)
-            ORDER BY headword;
+            ORDER BY headword, language, entry_id;
             """;
         command.Parameters.AddWithValue("$register", registerId);
 
@@ -249,7 +249,7 @@ public sealed partial class LEntryArchive
         return LEntryOwnerFind(
             situationId,
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
             FROM entry
             WHERE $owner = 0
                OR entry_id IN (
@@ -262,7 +262,7 @@ public sealed partial class LEntryArchive
                       FROM collocation_situation
                       JOIN collocation ON collocation.collocation_id = collocation_situation.collocation_parent
                       WHERE collocation_situation.situation_ref = $owner)
-            ORDER BY headword;
+            ORDER BY headword, language, entry_id;
             """);
     }
 
@@ -273,7 +273,7 @@ public sealed partial class LEntryArchive
         return LEntryOwnerFind(
             exampleId,
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
             FROM entry
             WHERE $owner = 0
                OR entry_id IN (
@@ -286,7 +286,7 @@ public sealed partial class LEntryArchive
                       FROM collocation_example
                       JOIN collocation ON collocation.collocation_id = collocation_example.collocation_parent
                       WHERE collocation_example.example_ref = $owner)
-            ORDER BY headword;
+            ORDER BY headword, language, entry_id;
             """);
     }
 
@@ -297,7 +297,7 @@ public sealed partial class LEntryArchive
         return LEntryOwnerFind(
             referenceId,
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
             FROM entry
             WHERE $owner = 0
                OR entry_id IN (
@@ -312,7 +312,7 @@ public sealed partial class LEntryArchive
                       JOIN example ON example.example_id = collocation_example.example_ref
                       JOIN collocation ON collocation.collocation_id = collocation_example.collocation_parent
                       WHERE example.reference_ref = $owner)
-            ORDER BY headword;
+            ORDER BY headword, language, entry_id;
             """);
     }
 

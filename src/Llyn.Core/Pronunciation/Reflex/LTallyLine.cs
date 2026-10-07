@@ -26,12 +26,12 @@ public sealed record LTallyLine(
         string kind,
         IReadOnlyList<string> characters,
         IReadOnlyDictionary<string, IReadOnlyList<LReflex>> readings,
-        IReadOnlyList<string> ranking)
+        LReflexOrder order)
     {
         ArgumentNullException.ThrowIfNull(kind);
         ArgumentNullException.ThrowIfNull(characters);
         ArgumentNullException.ThrowIfNull(readings);
-        ArgumentNullException.ThrowIfNull(ranking);
+        ArgumentNullException.ThrowIfNull(order);
 
         Dictionary<(string, string), Dictionary<string, List<string>>> ipa = [];
         Dictionary<(string, string), Dictionary<string, List<string>>> respelling = [];
@@ -61,30 +61,26 @@ public sealed record LTallyLine(
             }
         }
 
-        Func<string, int> rank = language =>
-        {
-            for (int index = 0; index < ranking.Count; index++)
-            {
-                if (string.Equals(ranking[index], language, StringComparison.OrdinalIgnoreCase))
-                {
-                    return index;
-                }
-            }
-
-            return ranking.Count;
-        };
+        Func<string, IReadOnlyList<string>> kinds = language =>
+            order.LReflexOrderKinds.GetValueOrDefault(language) ?? Array.Empty<string>();
 
         List<(string, string)> ordered = [.. keys];
         ordered.Sort((left, right) =>
         {
-            int order = rank(left.Item1).CompareTo(rank(right.Item1));
-            if (order != 0)
+            int place = LReflexOrder.LReflexOrderFind(order.LReflexOrderLanguages, left.Item1)
+                .CompareTo(LReflexOrder.LReflexOrderFind(order.LReflexOrderLanguages, right.Item1));
+            if (place == 0)
             {
-                return order;
+                place = string.Compare(left.Item1, right.Item1, StringComparison.Ordinal);
             }
 
-            order = string.Compare(left.Item1, right.Item1, StringComparison.OrdinalIgnoreCase);
-            return order != 0 ? order : keys.IndexOf(left).CompareTo(keys.IndexOf(right));
+            if (place == 0)
+            {
+                place = LReflexOrder.LReflexOrderFind(kinds(left.Item1), left.Item2)
+                    .CompareTo(LReflexOrder.LReflexOrderFind(kinds(right.Item1), right.Item2));
+            }
+
+            return place != 0 ? place : string.Compare(left.Item2, right.Item2, StringComparison.Ordinal);
         });
 
         List<LTallyLine> lines = new(ordered.Count);

@@ -188,5 +188,5 @@ public sealed class TDisplaySoundBlock
             string.Empty,
             [TInterface.TCardCreate("a thing", 1)],
             [],
-            speeches: ["Noun, countable"]));
+            speeches: ["Noun"]));
 }

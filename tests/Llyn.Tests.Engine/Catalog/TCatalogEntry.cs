@@ -124,6 +124,31 @@ public sealed class TCatalogEntry
                 .Select(entry => entry.LEntryHeadword));
     }
 
+    [Fact]
+    public void EntrySort_EqualHeadwords_ListsByLanguageThenId()
+    {
+        IReadOnlyList<LEntry> stored =
+        [
+            TInterface.TEntryCreate(3, "bank", "French", 0, null, null),
+            TInterface.TEntryCreate(2, "bank", "English", 0, null, null),
+            TInterface.TEntryCreate(1, "bank", "French", 0, null, null),
+            TInterface.TEntryCreate(4, "ant", "French", 0, null, null),
+        ];
+
+        Assert.Equal(
+            [4L, 2L, 1L, 3L],
+            TInterface.TCatalogEntrySort(stored, LCatalogOrder.LCatalogOrderHeadword)
+                .Select(entry => entry.LEntryId));
+        Assert.Equal(
+            [2L, 1L, 3L, 4L],
+            TInterface.TCatalogEntrySort(stored, LCatalogOrder.LCatalogOrderReverse)
+                .Select(entry => entry.LEntryId));
+        Assert.Equal(
+            [2L, 4L, 1L, 3L],
+            TInterface.TCatalogEntrySort(stored, LCatalogOrder.LCatalogOrderRecent)
+                .Select(entry => entry.LEntryId));
+    }
+
     private static LEntry TCatalogEntryCreate(LEngine engine, string headword)
     {
         return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(

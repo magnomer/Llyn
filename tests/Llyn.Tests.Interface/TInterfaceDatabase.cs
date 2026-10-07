@@ -268,6 +268,13 @@ internal static partial class TInterface
         LSpeechValue value) =>
         speechArchive.LSpeechValueCreate(value);
 
+    internal static void TSpeechRetirementApply(
+        this LSpeechArchive speechArchive, string language, LSpeechRetirement row) =>
+        speechArchive.LSpeechRetirementApply(language, row);
+
+    internal static LSpeechRetirement TSpeechRetirementCreate(long code, long target, LUnit unit) =>
+        new(code, target, unit);
+
     internal static LDiweiArchive TDiweiArchiveCreate(LDatabase database) =>
         new(database);
 

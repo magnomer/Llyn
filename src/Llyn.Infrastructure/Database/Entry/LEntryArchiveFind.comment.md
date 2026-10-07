@@ -1,5 +1,5 @@
 # LEntryArchiveFind.cs
-Hash: `41bbfca1a9cb55c5`
+Hash: `4fbdd3bbabe252b2`
 
 ## `public sealed partial class LEntryArchive`
 
@@ -7,6 +7,10 @@ The finding side of the Entry store.
 It holds every reader that answers a query with a list of Entries.
 A headword match, a text scan, and the owner finds over Tag, Register, Situation, Example and Reference live here.
 Each list comes back ordered by headword so a panel can show it as read.
+Equal headwords go by language, then entry id, the keys `LCatalogEntry` breaks entry ties by.
+The id comes last, so storage order only parts rows equal on every declared key.
+SQLite compares headwords by code point, while the catalog sort folds case by culture.
+Every reader selects the lexical unit with the row, so a found entry carries it.
 
 ## `public IReadOnlyList<LEntry> LEntryFind(string query)`
 
@@ -28,6 +32,8 @@ A query of spaces alone lists everything, exactly as an empty box does.
 ## `public IReadOnlyList<LEntry> LEntryHeadwordFind(string language, string headword)`
 
 Every Entry whose language and headword equal the given ones, letter case folded, in headword order.
+Rows tied on headword follow by language spelling, then by id, as the other headword queries do.
+The id comes last, so it only steadies rows equal on every declared key.
 The fold is `lfold()`, the invariant lowercase registered beside `lmatch()`.
 This is the candidate list for a clicked word, and zero rows is a legitimate answer.
 

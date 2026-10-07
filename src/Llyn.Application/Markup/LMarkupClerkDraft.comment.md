@@ -1,5 +1,5 @@
 # LMarkupClerkDraft.cs
-Hash: `baf4a5ab041c5a03`
+Hash: `d0c4cfc9f3dad5b3`
 
 ## `public sealed class LMarkupClerkDraft`
 
@@ -16,6 +16,7 @@ The draft of one entry.
 A speech the workspace does not know stays as a named draft, an inflection's unknown speech is omitted.
 A recording whose location cannot stand loses the recording.
 The etymology is resolved beside the rest, both shapes at once.
+The lexical unit passes through as the file names it.
 
 ## `private LSpeechValue? LMarkupSpeechResolve(string language, string name, List<LMarkupOmission> omissions)`
 

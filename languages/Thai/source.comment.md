@@ -1,10 +1,12 @@
 # source.json
-Hash: `902393b51169ce0f`
+Hash: `f0efad68feb69a8f`
 
 ## pack
 
 Language pack for Thai.
 The pack format is documented in `languages/English/source.comment.md`.
+`spaced` is false, because Thai writes no space between its words.
+So an entry is offered Word or Morpheme as its unit.
 No varieties are declared, so every reading is the standard one.
 No respelling groups are declared, so every reading shows as its source wrote it.
 Segoe UI has no Thai glyphs, so the headword and example blocks name Leelawadee UI first.

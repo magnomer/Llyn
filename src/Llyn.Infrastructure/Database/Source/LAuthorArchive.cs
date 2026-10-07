@@ -74,7 +74,7 @@ public sealed class LAuthorArchive : LAuthorVault
     {
         using LDatabaseSession session = _lAuthorArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText = "SELECT author_id, name FROM author ORDER BY name;";
+        command.CommandText = "SELECT author_id, name FROM author ORDER BY name, author_id;";
 
         List<LAuthor> authors = [];
         using SqliteDataReader reader = command.ExecuteReader();

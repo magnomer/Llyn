@@ -20,17 +20,10 @@ public sealed class LRegisterClerk
 
         LRegisterClerkPrepare(language);
 
-        string written = query.Trim();
         List<LRegister> found = [];
-        foreach (LRegister register in _lRegisterClerkRegisters.LRegisterRead())
+        foreach (LCatalogRegister row in LRegisterClerkFind(query, LCatalogOrder.LCatalogOrderUsage))
         {
-            if (written.Length != 0
-                && !LCatalog.LCatalogTextMatch(register.LRegisterName.LStateValueShow(), written))
-            {
-                continue;
-            }
-
-            found.Add(register);
+            found.Add(row.LCatalogRegisterStored);
         }
 
         return found;

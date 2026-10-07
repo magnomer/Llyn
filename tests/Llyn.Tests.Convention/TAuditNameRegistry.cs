@@ -302,6 +302,7 @@ internal static class TAuditNameRegistry
         "Trove",
         "Twin",
         "Union",
+        "Unit",
         "Usage",
         "Usher",
         "Variety",

@@ -1,5 +1,5 @@
 # LFanqieGroup.cs
-Hash: `94e4cc192f546564`
+Hash: `4606266e58eb483c`
 
 ## `public sealed record LFanqieGroup(string LFanqieGroupHeading, string LFanqieGroupLabel, string LFanqieGroupSource, IReadOnlyList<LFanqieRow> LFanqieGroupRows, IReadOnlyList<string>? LFanqieGroupStems = null)`
 
@@ -11,12 +11,15 @@ The engine groups the rows, so the shell only draws the blocks it is handed.
 - `LFanqieGroupHeading` — The character, printed once at its first block when the entry has several.
 - `LFanqieGroupLabel` — The book name, printed once and blank while the book stays the same.
 - `LFanqieGroupSource` — The source the rows came from.
-- `LFanqieGroupRows` — The rows of the block, as the archive stores them.
+- `LFanqieGroupRows` — The rows of the block, in the order `LFanqieRow.LFanqieRowSort` declares.
 - `LFanqieGroupStems` — The character's phonetic series as separate keys, carried only by its first block.
 
 ## `public static IReadOnlyList<LFanqieGroup> LFanqieGroupScan(IReadOnlyList<LFanqieRow> rows, IReadOnlyList<LFanqieBook> books, IReadOnlyList<LShengfu>? shengfu = null, string separator = "")`
 
-Groups the rows by character and then by book, in the order the pack lists the books.
+Groups the rows by character and then by book, with characters in the order the rows bring them.
+The rows are sorted by `LFanqieRow.LFanqieRowSort` first, whatever order the caller hands them in.
+A book's block stands where its first sorted row stands.
+So a book holding a ranked row comes first, and unranked books keep the pack's order.
 The series of a character is put on its first block alone, so the line is printed once.
 The stored series text is cut on the separator, so each series stands as its own chip.
 Handing no series over leaves every block without one, as a pack declaring none does.

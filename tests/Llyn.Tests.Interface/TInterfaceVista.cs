@@ -43,8 +43,8 @@ internal static partial class TInterface
         engine.LEngineFanqie.LEngineDiweiFind(vista, chosen, final);
 
     internal static IReadOnlyList<LVistaRow> TEngineXiaoyunFind(
-        this LEngine engine, string language, IReadOnlyList<long> diweiIds, string query) =>
-        engine.LEngineFanqie.LEngineXiaoyunFind(language, diweiIds, query);
+        this LEngine engine, string language, IReadOnlyList<long> diweiIds, string query, LVista? vista = null) =>
+        engine.LEngineFanqie.LEngineXiaoyunFind(language, diweiIds, query, vista);
 
     internal static void TVistaOrderSet(this LVista vista, LCatalogOrder order)
     {

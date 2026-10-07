@@ -26,6 +26,19 @@ public sealed class TGlyph
     }
 
     [Fact]
+    public void GlyphOrderSort_SupplementaryIdeograph_SortsByCodePointNotUtf16()
+    {
+        string rare = char.ConvertFromUtf32(0x20000);
+        string compatibility = char.ConvertFromUtf32(0xF900);
+
+        Assert.Equal(
+            ["工", "江", compatibility, rare], TInterface.TGlyphOrderSort([rare, compatibility, "江", "工"]));
+        Assert.Equal(["工", "工江"], TInterface.TGlyphOrderSort(["工江", "工"]));
+        Assert.Equal([compatibility, rare], TInterface.TGlyphOrderSort([rare, compatibility]));
+        Assert.True(string.CompareOrdinal(compatibility, rare) > 0);
+    }
+
+    [Fact]
     public void GlyphDivide_GlyphScheme_TakesTranscription()
     {
         LGlyph glyph = TInterface.TGlyphCreate("Traditional", "Classical Chinese");
@@ -38,6 +51,21 @@ public sealed class TGlyph
             ]);
 
         Assert.Equal(["國", "家"], glyph.TGlyphDivide(draft).Select(cell => cell.LGlyphCellText));
+    }
+
+    [Fact]
+    public void GlyphDivide_NativeHeadwordAndEmptyGlyphRow_AnswersNoCells()
+    {
+        LGlyph glyph = TInterface.TGlyphCreate("Hanja", "Classical Chinese");
+        LEntryDraft draft = TInterface.TEntryDraftCreate(
+            "물", "Korean", string.Empty, string.Empty, [], [],
+            transcriptions:
+            [
+                TInterface.TTranscriptionDraftCreate("Revised Romanization", "mul"),
+                TInterface.TTranscriptionDraftCreate("Hanja", string.Empty),
+            ]);
+
+        Assert.Empty(glyph.TGlyphDivide(draft));
     }
 
     [Fact]

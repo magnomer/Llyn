@@ -1,5 +1,5 @@
 # LPortraitClerk.cs
-Hash: `3ea493bd4a3562ff`
+Hash: `2d689e9b18f16a53`
 
 ## `public sealed class LPortraitClerk`
 
@@ -20,6 +20,7 @@ Reads the portrait port and the press out of `rig` and keeps the clerks each sec
 
 The page of one entry, refused when the entry no longer stands.
 Sections come in display order, then the readings with respelling and phonemic marks decided per language.
+The speech chips open with the name of the entry's lexical unit when one is chosen.
 A failing favorite check throws rather than showing the entry as no favorite.
 A false `fetch` reads stored frequencies only, so a push over every entry starts no network fetch.
 
@@ -56,6 +57,7 @@ A legend is worded per kind by these words, so no caller names the kinds.
 ## `public static LPortraitLabel LPortraitLabelCreate(IReadOnlyList<string> words)`
 
 The label an entry page is worded with, taken word by word in the record's order.
+The last four words name the units Content, Function, Morpheme and Word, in that order.
 It throws unless every one of the label's words is given.
 
 ## `public static LPortraitLegend LPortraitLegendCreate(IReadOnlyList<string> words, IReadOnlyDictionary<string, string> kinds)`

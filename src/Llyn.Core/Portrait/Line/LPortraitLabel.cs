@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Llyn.Core;
 
 public sealed record LPortraitLabel(
@@ -22,4 +24,5 @@ public sealed record LPortraitLabel(
     string LPortraitLabelSituation,
     string LPortraitLabelRegister,
     string LPortraitLabelTranslation,
-    string LPortraitLabelTag);
+    string LPortraitLabelTag,
+    IReadOnlyDictionary<LUnit, string> LPortraitLabelUnit);

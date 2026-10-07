@@ -16,48 +16,12 @@
       "name": "Noun"
     },
     {
-      "id": 2,
-      "name": "Noun, proper"
-    },
-    {
       "id": 3,
       "name": "Verb"
     },
     {
-      "id": 4,
-      "name": "Verb, transitive"
-    },
-    {
-      "id": 5,
-      "name": "Verb, intransitive"
-    },
-    {
-      "id": 6,
-      "name": "Verb, godan"
-    },
-    {
-      "id": 7,
-      "name": "Verb, ichidan"
-    },
-    {
-      "id": 8,
-      "name": "Verb, suru"
-    },
-    {
-      "id": 9,
-      "name": "Verb, irregular"
-    },
-    {
       "id": 10,
       "name": "I-adjective"
-    },
-    {
-      "id": 11,
-      "name": "I-adjective, attributive"
-    },
-    {
-      "id": 12,
-      "name": "I-adjective, predicative"
     },
     {
       "id": 13,
@@ -66,18 +30,6 @@
     {
       "id": 14,
       "name": "Adverb"
-    },
-    {
-      "id": 15,
-      "name": "Adverb, manner"
-    },
-    {
-      "id": 16,
-      "name": "Adverb, degree"
-    },
-    {
-      "id": 17,
-      "name": "Adverb, frequency"
     },
     {
       "id": 18,
@@ -92,14 +44,6 @@
       "name": "Conjunction"
     },
     {
-      "id": 21,
-      "name": "Conjunction, coordinating"
-    },
-    {
-      "id": 22,
-      "name": "Conjunction, subordinating"
-    },
-    {
       "id": 23,
       "name": "Interjection"
     },
@@ -112,56 +56,110 @@
       "name": "Pronoun"
     },
     {
+      "id": 32,
+      "name": "Prenominal adjectival"
+    }
+  ],
+  "retired": [
+    {
+      "id": 2,
+      "into": 1
+    },
+    {
+      "id": 4,
+      "into": 3
+    },
+    {
+      "id": 5,
+      "into": 3
+    },
+    {
+      "id": 6,
+      "into": 3
+    },
+    {
+      "id": 7,
+      "into": 3
+    },
+    {
+      "id": 8,
+      "into": 3
+    },
+    {
+      "id": 9,
+      "into": 3
+    },
+    {
+      "id": 11,
+      "into": 10
+    },
+    {
+      "id": 12,
+      "into": 10
+    },
+    {
+      "id": 15,
+      "into": 14
+    },
+    {
+      "id": 16,
+      "into": 14
+    },
+    {
+      "id": 17,
+      "into": 14
+    },
+    {
+      "id": 21,
+      "into": 20
+    },
+    {
+      "id": 22,
+      "into": 20
+    },
+    {
       "id": 26,
-      "name": "Pronoun, personal"
+      "into": 25
     },
     {
       "id": 27,
-      "name": "Pronoun, possessive"
+      "into": 25
     },
     {
       "id": 28,
-      "name": "Pronoun, demonstrative"
+      "into": 25
     },
     {
       "id": 29,
-      "name": "Pronoun, relative"
+      "into": 25
     },
     {
       "id": 30,
-      "name": "Pronoun, interrogative"
+      "into": 25
     },
     {
       "id": 31,
-      "name": "Pronoun, reflexive"
+      "into": 25
     },
     {
-      "id": 32,
-      "name": "Prenominal adjectival"
+      "id": 33
     },
     {
-      "id": 33,
-      "name": "Phrase"
+      "id": 34
     },
     {
-      "id": 34,
-      "name": "Idiom"
+      "id": 35
     },
     {
-      "id": 35,
-      "name": "Proverb"
-    },
-    {
-      "id": 36,
-      "name": "Abbreviation"
+      "id": 36
     },
     {
       "id": 37,
-      "name": "Prefix"
+      "unit": "morpheme"
     },
     {
       "id": 38,
-      "name": "Suffix"
+      "unit": "morpheme"
     }
   ],
   "features": [

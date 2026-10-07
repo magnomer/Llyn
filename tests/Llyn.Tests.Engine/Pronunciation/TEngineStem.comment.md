@@ -1,5 +1,5 @@
 # TEngineStem.cs
-Hash: `7294220ec4e19046`
+Hash: `f70fd3c87969a477`
 
 ## `public sealed class TEngineStem`
 
@@ -16,3 +16,15 @@ A blank key finds no series.
 
 A pack declaring no series source stores no series, so no chip of its language opens one.
 The blank page answers for a panel with nothing chosen.
+
+## `public void StemResolve_StoredOutOfCodePointOrder_ListsCharactersByCodePoint()`
+
+The page lists its characters by code point, whatever order their Shengfu rows were stored in.
+An ideograph beyond the basic plane sorts after the compatibility block, as its code point says.
+UTF-16 ordinal order would have put it first.
+
+## `public void KindredFind_StoredOutOfHeadwordOrder_ListsInThePanelOrder()`
+
+The series reaches two entries saved against headword order, so storage order cannot pass for it.
+Without a vista they list by headword.
+A vista set to reverse lists them by headword descending, as the panel's order setting asks.

@@ -1,5 +1,5 @@
 # LDraftClerk.cs
-Hash: `7fd8c786552f452d`
+Hash: `8c9833bd3b159859`
 
 ## `public sealed class LDraftClerk`
 
@@ -43,6 +43,7 @@ The engine does that after the apply, since only it can read the stored entry th
 
 One switch over the entry and card kinds, ending in the reading, reflex, etymology and list switches in turn.
 A language change derives every respelling again and recuts every reflex row under the new pack.
+It also settles the lexical unit to one the new language offers.
 A kind no switch knows is a programming error, not a refusal, since no form can send one.
 A null text or value is read as empty.
 So a request can never leave a null where the draft holds text.

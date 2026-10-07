@@ -1,5 +1,5 @@
 # TCatalogReference.cs
-Hash: `28340ac559d1b2dc`
+Hash: `7792c9eb54f4676b`
 
 ## `public sealed class TCatalogReference`
 
@@ -17,3 +17,11 @@ It covers resolving a typed citation line to the Source it names, minting one on
 A blank line resolves to nothing and changes no Source.
 The Source already cited keeps a byline other works share, and a credited title finds its own Source.
 Every workspace starts with the Source titled Unknown, so each listing carries it among the rows the test made.
+It covers equal usage, year and author, which go by name and then id.
+It covers equal names, which ignore case and go by id.
+So a citation offer never follows storage order.
+
+## `private static LCatalogReference TCatalogReferenceBuild(long id, string title, string? year = null)`
+
+One browsed Source row cited once, named by its title, uncredited, with an optional year.
+Only name and id can tell such rows apart.

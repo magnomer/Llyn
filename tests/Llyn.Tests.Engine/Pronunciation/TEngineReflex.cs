@@ -86,8 +86,8 @@ public sealed class TEngineReflex
                 ("Korean", "", "롱(농) | 희롱할", "", true),
                 ("Japanese", "Go-on", "る", "", false),
                 ("Japanese", "Kan-on", "ろう", "", true),
-                ("Mandarin", "", "nʊŋ⁵¹", "nòng", false),
                 ("Mandarin", "", "lʊŋ⁵¹", "nòng", false),
+                ("Mandarin", "", "nʊŋ⁵¹", "nòng", false),
             ],
             found.Select(TReflexFixture.TReflexRowRead));
         Assert.Equal("Beijing", found[3].LReflexDraftRegion);
@@ -200,9 +200,9 @@ public sealed class TEngineReflex
 
             await TReflexFixture.TReflexFetchRead(engine, "弄", pack.TLanguageFixtureName);
 
-        Assert.Equal("nʊŋ⁵¹", found[3].LReflexDraftText);
-        Assert.Equal("nuŋ4", found[3].LReflexDraftRespelling);
-        Assert.Equal("luŋ4", found[4].LReflexDraftRespelling);
+        Assert.Equal("lʊŋ⁵¹", found[3].LReflexDraftText);
+        Assert.Equal("luŋ4", found[3].LReflexDraftRespelling);
+        Assert.Equal("nuŋ4", found[4].LReflexDraftRespelling);
         Assert.Equal("nòng", found[3].LReflexDraftRomanization);
         Assert.Equal("ろう", found[2].LReflexDraftText);
         Assert.Equal(string.Empty, found[2].LReflexDraftRespelling);
@@ -225,8 +225,8 @@ public sealed class TEngineReflex
                 ("Korean", "", "롱(농) | 희롱할 장 | 홀", "", true),
                 ("Japanese", "Go-on", "る", "", false),
                 ("Japanese", "Kan-on", "ろう しょう", "", true),
-                ("Mandarin", "", "nʊŋ⁵¹", "nòng", false),
                 ("Mandarin", "", "lʊŋ⁵¹", "nòng", false),
+                ("Mandarin", "", "nʊŋ⁵¹", "nòng", false),
                 ("Mandarin", "", "ʈ͡ʂɑŋ⁵⁵", "zhāng", false),
             ],
             found.Select(TReflexFixture.TReflexRowRead));

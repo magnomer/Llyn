@@ -50,6 +50,8 @@ public sealed class QLectern
 
     private ItemsControl _qLecternSpeech = null!;
 
+    private TextBlock _qLecternUnit = null!;
+
     private UIElement _qLecternNoteSection = null!;
 
     private Panel _qLecternNote = null!;
@@ -222,13 +224,15 @@ public sealed class QLectern
         _qLecternBand = band;
     }
 
-    public void QLecternSpeechIntroduce(UIElement section, ItemsControl speech)
+    public void QLecternSpeechIntroduce(UIElement section, ItemsControl speech, TextBlock unit)
     {
         ArgumentNullException.ThrowIfNull(section);
         ArgumentNullException.ThrowIfNull(speech);
+        ArgumentNullException.ThrowIfNull(unit);
 
         _qLecternSpeechSection = section;
         _qLecternSpeech = speech;
+        _qLecternUnit = unit;
     }
 
     public void QLecternNoteIntroduce(UIElement section, Panel note)
@@ -262,6 +266,7 @@ public sealed class QLectern
         _qLecternHeadword.Text = shown.CLecternHeadword;
         _qLecternLanguage.Text = shown.CLecternLanguage;
         _qLecternSpeech.ItemsSource = shown.CLecternSpeeches;
+        QLecternUnitRefine(shown.CLecternUnit);
         _qLecternSpeechSection.Visibility = QLook.QLookVisibleRead(shown.CLecternMarked);
         _qLecternNoteSection.Visibility = QLook.QLookVisibleRead(shown.CLecternNoted);
         _qLecternAdded.Text = shown.CLecternAdded;
@@ -269,6 +274,15 @@ public sealed class QLectern
         _qLecternStamp.Visibility = QLook.QLookVisibleRead(shown.CLecternStamped);
         _qLecternEmpty.Visibility = Visibility.Collapsed;
         _qLecternContents.Visibility = Visibility.Visible;
+    }
+
+    private void QLecternUnitRefine(string key)
+    {
+        _qLecternUnit.Visibility = QLook.QLookVisibleRead(key.Length > 0);
+        if (key.Length > 0)
+        {
+            _qLecternUnit.SetResourceReference(TextBlock.TextProperty, key);
+        }
     }
 
     private void QLecternFontRefine()
@@ -330,6 +344,7 @@ public sealed class QLectern
         _qLecternLanguage.Text = string.Empty;
         QEnsignImage.QEnsignFlagRefine(_qLecternFlag, _qLecternGlobe, string.Empty);
         _qLecternSpeech.ItemsSource = null;
+        QLecternUnitRefine(string.Empty);
         _qLecternSpeechSection.Visibility = Visibility.Collapsed;
         QFrequencyLabel.QFrequencyChipRefine(
             _qLecternFrequencySection, _qLecternChip, _qLecternName, _qLecternBand, null);

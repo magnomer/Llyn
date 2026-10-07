@@ -35,7 +35,7 @@ public sealed class LExampleLink
             JOIN sense ON sense.sense_id = link.sense_parent
             JOIN entry ON entry.entry_id = sense.entry_parent
             WHERE link.example_ref = $id
-            ORDER BY entry.headword, sense.position;
+            ORDER BY entry.headword, entry.language, entry.entry_id, sense.position;
             """));
         usages.AddRange(LExampleUsageRead(
             connection,
@@ -49,7 +49,7 @@ public sealed class LExampleLink
             JOIN collocation ON collocation.collocation_id = link.collocation_parent
             JOIN entry ON entry.entry_id = collocation.entry_parent
             WHERE link.example_ref = $id
-            ORDER BY entry.headword, collocation.position;
+            ORDER BY entry.headword, entry.language, entry.entry_id, collocation.position;
             """));
 
         return usages;

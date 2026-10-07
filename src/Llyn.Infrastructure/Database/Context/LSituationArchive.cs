@@ -171,7 +171,7 @@ public sealed partial class LSituationArchive : LSituationVault
             JOIN sense ON sense.sense_id = link.sense_parent
             JOIN entry ON entry.entry_id = sense.entry_parent
             WHERE link.situation_ref = $id
-            ORDER BY entry.headword, sense.position;
+            ORDER BY entry.headword, entry.language, entry.entry_id, sense.position;
             """));
         usages.AddRange(LSituationUsageRead(
             connection,
@@ -185,7 +185,7 @@ public sealed partial class LSituationArchive : LSituationVault
             JOIN collocation ON collocation.collocation_id = link.collocation_parent
             JOIN entry ON entry.entry_id = collocation.entry_parent
             WHERE link.situation_ref = $id
-            ORDER BY entry.headword, collocation.position;
+            ORDER BY entry.headword, entry.language, entry.entry_id, collocation.position;
             """));
 
         return usages;

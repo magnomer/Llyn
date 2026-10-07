@@ -16,96 +16,24 @@
       "name": "Noun"
     },
     {
-      "id": 2,
-      "name": "Noun, proper"
-    },
-    {
       "id": 3,
       "name": "Verb"
-    },
-    {
-      "id": 4,
-      "name": "Verb, transitive"
-    },
-    {
-      "id": 5,
-      "name": "Verb, intransitive"
-    },
-    {
-      "id": 6,
-      "name": "Verb, resultative"
-    },
-    {
-      "id": 7,
-      "name": "Verb, separable"
     },
     {
       "id": 8,
       "name": "Adjective"
     },
     {
-      "id": 9,
-      "name": "Adjective, attributive"
-    },
-    {
-      "id": 10,
-      "name": "Adjective, predicative"
-    },
-    {
       "id": 11,
       "name": "Adverb"
-    },
-    {
-      "id": 12,
-      "name": "Adverb, manner"
-    },
-    {
-      "id": 13,
-      "name": "Adverb, degree"
-    },
-    {
-      "id": 14,
-      "name": "Adverb, frequency"
     },
     {
       "id": 15,
       "name": "Pronoun"
     },
     {
-      "id": 16,
-      "name": "Pronoun, personal"
-    },
-    {
-      "id": 17,
-      "name": "Pronoun, possessive"
-    },
-    {
-      "id": 18,
-      "name": "Pronoun, demonstrative"
-    },
-    {
-      "id": 19,
-      "name": "Pronoun, relative"
-    },
-    {
-      "id": 20,
-      "name": "Pronoun, interrogative"
-    },
-    {
-      "id": 21,
-      "name": "Pronoun, reflexive"
-    },
-    {
       "id": 22,
       "name": "Numeral"
-    },
-    {
-      "id": 23,
-      "name": "Numeral, cardinal"
-    },
-    {
-      "id": 24,
-      "name": "Numeral, ordinal"
     },
     {
       "id": 25,
@@ -120,28 +48,8 @@
       "name": "Conjunction"
     },
     {
-      "id": 28,
-      "name": "Conjunction, coordinating"
-    },
-    {
-      "id": 29,
-      "name": "Conjunction, subordinating"
-    },
-    {
       "id": 30,
       "name": "Particle"
-    },
-    {
-      "id": 31,
-      "name": "Particle, aspect"
-    },
-    {
-      "id": 32,
-      "name": "Particle, modal"
-    },
-    {
-      "id": 33,
-      "name": "Particle, sentence-final"
     },
     {
       "id": 34,
@@ -150,30 +58,120 @@
     {
       "id": 35,
       "name": "Auxiliary"
+    }
+  ],
+  "retired": [
+    {
+      "id": 2,
+      "into": 1
     },
     {
-      "id": 36,
-      "name": "Phrase"
+      "id": 4,
+      "into": 3
     },
     {
-      "id": 37,
-      "name": "Idiom"
+      "id": 5,
+      "into": 3
     },
     {
-      "id": 38,
-      "name": "Proverb"
+      "id": 6,
+      "into": 3
     },
     {
-      "id": 39,
-      "name": "Abbreviation"
+      "id": 7,
+      "into": 3
+    },
+    {
+      "id": 9,
+      "into": 8
+    },
+    {
+      "id": 10,
+      "into": 8
+    },
+    {
+      "id": 12,
+      "into": 11
+    },
+    {
+      "id": 13,
+      "into": 11
+    },
+    {
+      "id": 14,
+      "into": 11
+    },
+    {
+      "id": 16,
+      "into": 15
+    },
+    {
+      "id": 17,
+      "into": 15
+    },
+    {
+      "id": 18,
+      "into": 15
+    },
+    {
+      "id": 19,
+      "into": 15
+    },
+    {
+      "id": 20,
+      "into": 15
+    },
+    {
+      "id": 21,
+      "into": 15
+    },
+    {
+      "id": 23,
+      "into": 22
+    },
+    {
+      "id": 24,
+      "into": 22
+    },
+    {
+      "id": 28,
+      "into": 27
+    },
+    {
+      "id": 29,
+      "into": 27
+    },
+    {
+      "id": 31,
+      "into": 30
+    },
+    {
+      "id": 32,
+      "into": 30
+    },
+    {
+      "id": 33,
+      "into": 30
+    },
+    {
+      "id": 36
+    },
+    {
+      "id": 37
+    },
+    {
+      "id": 38
+    },
+    {
+      "id": 39
     },
     {
       "id": 40,
-      "name": "Prefix"
+      "unit": "morpheme"
     },
     {
       "id": 41,
-      "name": "Suffix"
+      "unit": "morpheme"
     }
   ],
   "features": [

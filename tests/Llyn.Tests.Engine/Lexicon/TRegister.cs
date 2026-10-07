@@ -34,6 +34,25 @@ public sealed class TRegister
     }
 
     [Fact]
+    public void RegisterSort_EqualNames_ListsById()
+    {
+        IReadOnlyList<LCatalogRegister> stored =
+        [
+            TInterface.TCatalogRegisterCreate(TInterface.TRegisterCreate(3, "formal"), 1),
+            TInterface.TCatalogRegisterCreate(TInterface.TRegisterCreate(1, "Formal"), 1),
+        ];
+
+        Assert.Equal(
+            [1L, 3L],
+            TInterface.TCatalogRegisterSort(stored, LCatalogOrder.LCatalogOrderName)
+                .Select(row => row.LCatalogRegisterStored.LRegisterId));
+        Assert.Equal(
+            [1L, 3L],
+            TInterface.TCatalogRegisterSort(stored, LCatalogOrder.LCatalogOrderUsage)
+                .Select(row => row.LCatalogRegisterStored.LRegisterId));
+    }
+
+    [Fact]
     public void RegisterSave_CardCarryingPresetNames_StoresBuiltinRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -214,6 +233,46 @@ public sealed class TRegister
 
         Assert.Equal(written.LRegisterId, again.LRegisterId);
         Assert.Single(engine.TEngineRegisterFind("gruff", "English"), row => !row.LRegisterBuiltin);
+    }
+
+    [Fact]
+    public void RegisterOffer_StoredBeforeTheMarkedOne_OffersMostMarkedFirstThenByName()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        foreach (string name in
+            (string[])["gruff", "grumpy", "groan", "grill", "grey", "green", "great", "grave", "grand"])
+        {
+            engine.TEngineRegisterCreate(name);
+        }
+
+        engine.TEngineEntrySave(TRegisterDraftBuild(engine, ["grim"]));
+
+        LRegisterOffer offer = engine.TEngineRegisterFind("gr", "English", 1);
+
+        Assert.Equal(
+            ["grim", "grand", "grave", "great", "green", "grey", "grill", "groan"],
+            offer.LRegisterOfferRows.Select(
+                static row => row.LRegisterRowLead + row.LRegisterRowMark + row.LRegisterRowTail));
+    }
+
+    [Fact]
+    public void RegisterFind_EqualUsageStoredOutOfNameOrder_ListsByName()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineRegisterCreate("gruff");
+        engine.TEngineRegisterCreate("Grave");
+        engine.TEngineRegisterCreate("grand");
+        engine.TEngineEntrySave(TRegisterDraftBuild(engine, ["grim"]));
+
+        IReadOnlyList<LCatalogRegister> read = engine.TEngineRegisterFind("gr", LCatalogOrder.LCatalogOrderUsage);
+
+        Assert.Equal(
+            ["grim", "grand", "Grave", "gruff"],
+            read.Select(static row => row.LCatalogRegisterStored.LRegisterName.TStateValueShow()));
     }
 
     private static LRegister TRegisterBlankCreate()

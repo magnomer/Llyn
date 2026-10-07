@@ -1,5 +1,5 @@
 # LReflexClerkRow.cs
-Hash: `dc654af87cf303da`
+Hash: `e5aa7a54543a2d92`
 
 ## `public static class LReflexClerkRow`
 
@@ -12,11 +12,14 @@ A row already joined in the same round stays separate.
 
 ## `public static IReadOnlyList<LReflex> LReflexRowRead(long entryId, IReadOnlyList<LReflexDraft> drafts)`
 
-The rows a draft list means, trimmed and placed in order.
+The rows a draft list means, trimmed, each with its place in the draft as its position.
 
 ## `public static bool LReflexRowMatch(IReadOnlyList<LReflex> stored, IReadOnlyList<LReflex> current)`
 
 Whether two row lists say the same thing, anchors compared as sets.
+Each current row is paired with the stored row of its id, so position and list order are ignored.
+Every view orders the rows on read, so a stored position is never compared.
+A current row without a stored id, or naming one twice, is a change.
 
 ## `public static IReadOnlyList<LReflex> LReflexAnatomyClear(IReadOnlyList<LReflex> rows)`
 

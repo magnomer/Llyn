@@ -1,4 +1,5 @@
 using Llyn.Core;
+using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -79,6 +80,53 @@ public sealed class TEngineStem
 
         Assert.Null(engine.TEngineStemFind(pack.TLanguageFixtureName, "龍"));
         Assert.True(engine.TEngineStemResolve(null).LStemPageEmpty);
+    }
+
+    [Fact]
+    public void StemResolve_StoredOutOfCodePointOrder_ListsCharactersByCodePoint()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("""{ "language": "Fixture" }""");
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        string language = pack.TLanguageFixtureName;
+        string rare = char.ConvertFromUtf32(0x20000);
+        LShengfuArchive shengfu = TInterface.TShengfuArchiveCreate(workspace.TWorkspaceDatabase);
+        LStemArchive archive = TInterface.TStemArchiveCreate(workspace.TWorkspaceDatabase);
+        foreach (string character in new[] { rare, "江", "豈", "工" })
+        {
+            shengfu.TShengfuSave(language, TInterface.TShengfuCreate(character, "工"));
+            archive.TStemApply(language, character, ["工"]);
+        }
+
+        LStem stem = Assert.IsType<LStem>(archive.TStemFind(language, "工"));
+        Assert.Equal([rare, "江", "豈", "工"], archive.TStemCharacterRead(stem.LStemId));
+
+        LStemPage page = engine.TEngineStemResolve(stem.LStemId);
+
+        Assert.Equal(["工", "江", "豈", rare], page.LStemPageCharacters);
+    }
+
+    [Fact]
+    public void KindredFind_StoredOutOfHeadwordOrder_ListsInThePanelOrder()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("""{ "language": "Fixture" }""");
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        string language = pack.TLanguageFixtureName;
+        LShengfuArchive shengfu = TInterface.TShengfuArchiveCreate(workspace.TWorkspaceDatabase);
+        LStemArchive archive = TInterface.TStemArchiveCreate(workspace.TWorkspaceDatabase);
+        shengfu.TShengfuSave(language, TInterface.TShengfuCreate("工", "工"));
+        archive.TStemApply(language, "工", ["工"]);
+        engine.TEngineEntrySave(TStemDraftCreate("工b", language));
+        engine.TEngineEntrySave(TStemDraftCreate("工a", language));
+        LStem stem = Assert.IsType<LStem>(archive.TStemFind(language, "工"));
+        LVista reverse = engine.TEngineVistaStart("kindred", LCatalogOrder.LCatalogOrderReverse);
+
+        IReadOnlyList<LVistaRow> plain = engine.TEngineKindredFind(language, [stem.LStemId], string.Empty);
+        IReadOnlyList<LVistaRow> reversed = engine.TEngineKindredFind(language, [stem.LStemId], string.Empty, reverse);
+
+        Assert.Equal(["工a", "工b"], plain.Select(row => row.LVistaRowHeadword));
+        Assert.Equal(["工b", "工a"], reversed.Select(row => row.LVistaRowHeadword));
     }
 
     private static async Task TStemSettle(LEngine engine, long entryId)

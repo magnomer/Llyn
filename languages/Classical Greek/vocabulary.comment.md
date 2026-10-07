@@ -1,5 +1,5 @@
 # vocabulary.json
-Hash: `2978dd29b1bb25bf`
+Hash: `0cdc8ee7b52fffdf`
 
 ## file
 
@@ -25,9 +25,18 @@ A user may still write a register no preset names.
 
 ## `parts`
 
-It lists the parts of speech.
+It lists the parts of speech, each a bare role.
+Valency and other subtypes belong to the dependence field and the morphology, not here.
 A part may carry `parent`, the id of the part it specialises.
 A paradigm declared on the parent applies to it.
+
+## `retired`
+
+It lists the parts once published and since removed, so no id is ever reused.
+The import applies every row on each start, and a row whose part is already gone does nothing.
+`into` names the part that takes over the removed part's links.
+`unit` names the lexical unit set on a linking entry that has none yet.
+A row with neither drops the links.
 
 ## `features`
 

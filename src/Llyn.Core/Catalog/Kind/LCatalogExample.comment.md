@@ -1,5 +1,5 @@
 # LCatalogExample.cs
-Hash: `19c17ba6264de9f2`
+Hash: `c086e3b8f39c8ef8`
 
 ## `public sealed record LCatalogExample(LExample LCatalogExampleStored, string LCatalogExampleSource, int LCatalogExampleUsage, bool LCatalogExampleChosen = false)`
 
@@ -36,6 +36,12 @@ Builds the row from the stored Example and the name resolved for its citation.
 
 Orders the rows under one ordering, and under the sentence where the ordering is not one an Example answers to.
 Ordering by Source orders by the resolved name rather than the id, because the id is never shown.
+Rows equal under the ordering go by language, then sentence, then id.
+The id comes last and only keeps the result stable, so storage order never decides a place.
+
+## `private static IReadOnlyList<LCatalogExample> LCatalogExampleSort(IOrderedEnumerable<LCatalogExample> rows)`
+
+The tie rule every Example ordering ends with, so each ordering breaks its ties alike.
 
 ## `public bool LCatalogExampleMatch(string query)`
 

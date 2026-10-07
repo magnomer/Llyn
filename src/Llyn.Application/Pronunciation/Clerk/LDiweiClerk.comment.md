@@ -1,5 +1,5 @@
 # LDiweiClerk.cs
-Hash: `d1577cb0ed9d0390`
+Hash: `c6258da8e528ae77`
 
 ## `public sealed class LDiweiClerk`
 
@@ -40,9 +40,11 @@ A fanqie row without a parsed initial or rime carries a blank key, and pressing 
 
 The fanqie rows filed under the diwei.
 
-## `public IReadOnlyList<LEntry> LDiweiEntryScan(string language, IReadOnlyList<long> diweiIds, string query)`
+## `public IReadOnlyList<LEntry> LDiweiEntryScan(string language, IReadOnlyList<long> diweiIds, string query, LCatalogOrder order)`
 
 The entries filed under all of the diwei that match `query`.
+They come back in `order` through `LCatalogEntry.LCatalogEntrySort`, the owner every entry list shares.
+The archive reads in storage order, so no caller may show its rows unsorted.
 
 ## `public LDiweiPage LDiweiPageRead(LDiwei diwei, bool switched, bool tallied, Func<string, string?> localize)`
 
@@ -53,15 +55,12 @@ The page of one diwei, its sections scanned from the rows, the hypothesis and th
 
 The reflexes anchored to the diwei's rows, grouped by heading and character.
 The heading is the division, or the place of articulation for a rime.
-Languages are ranked in the order of the reflex rules.
+Languages and kinds are ranked in the order the pack declares under `order`, never by its fetch rules.
+The anchor query's own order only gathers rows, so it never shows.
 
 ## `private LHypothesis? LHypothesisRead(string language)`
 
 The hypothesis of `language`, or null for a blank language.
-
-## `private IReadOnlyList<LReflexRule> LReflexRuleRead(string language)`
-
-The reflex rules of `language`, or none for a blank language.
 
 ## `private static string LTallyHeadingRead(string kind, LFanqieRow row, LHypothesis? hypothesis)`
 

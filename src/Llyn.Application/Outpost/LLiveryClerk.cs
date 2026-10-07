@@ -90,7 +90,8 @@ public static class LLiveryClerk
             foreach (LStem row in stem.LStemClerkFind(language, string.Empty, LCatalogOrder.LCatalogOrderName))
             {
                 series.Add(new LLiveryStem(
-                    stem.LStemPageRead(row), stem.LStemEntryScan(language, [row.LStemId], string.Empty)));
+                    stem.LStemPageRead(row),
+                    stem.LStemEntryScan(language, [row.LStemId], string.Empty, LCatalogOrder.LCatalogOrderHeadword)));
             }
         }
 
@@ -105,7 +106,8 @@ public static class LLiveryClerk
                     categories.Add(new LLiveryDiwei(
                         kind,
                         diwei.LDiweiPageRead(row, switched, tallied, localize),
-                        diwei.LDiweiEntryScan(language, [row.LDiweiId], string.Empty)));
+                        diwei.LDiweiEntryScan(
+                            language, [row.LDiweiId], string.Empty, LCatalogOrder.LCatalogOrderHeadword)));
                 }
             }
         }

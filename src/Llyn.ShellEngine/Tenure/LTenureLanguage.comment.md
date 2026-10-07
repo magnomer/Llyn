@@ -1,5 +1,5 @@
 # LTenureLanguage.cs
-Hash: `e0eed31073c8e5a1`
+Hash: `3f59345c70c0f3b2`
 
 Answers about the held draft that need an engine lookup beyond the draft itself.
 Language-dependent flag queries read the held draft instead of an editable control.
@@ -141,6 +141,19 @@ A blank name sends nothing.
 ## `public void LTenureSpeechRemove(string name, string typed)`
 
 Sends the chips without the named one, the pending typed text still included.
+
+## `public LUnit LTenureUnitRead()`
+
+The lexical unit of the displayed draft, unchosen when no draft is held.
+
+## `public IReadOnlyList<LUnit> LTenureUnitScan()`
+
+The units the draft's language offers, in dropdown order.
+
+## `public void LTenureUnitSet(LUnit unit)`
+
+Applies the chosen unit to the draft at once.
+Choosing the unit already held clears it, so the dropdown both sets and unsets.
 
 ## `public void LTenureGlossAdd(long card, long sentence)`
 

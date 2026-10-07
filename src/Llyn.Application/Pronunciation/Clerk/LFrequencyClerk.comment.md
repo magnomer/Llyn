@@ -1,5 +1,5 @@
 # LFrequencyClerk.cs
-Hash: `14b3b505f7e82de3`
+Hash: `22073abcc54ccca6`
 
 ## `public sealed class LFrequencyClerk`
 
@@ -21,6 +21,7 @@ The `once` text words a word interval.
 ## `public IReadOnlyList<LFrequency> LFrequencyClerkRead(long entryId, bool fetch = true)`
 
 The stored rows of an entry, regraded under the current pack.
+They come back in `LFrequency.LFrequencySort` order, so the gauge, its tooltip, Livery and the portrait agree.
 A regrade that changed is written back.
 An entry with no rows starts a fetch.
 None starts while one is pending or after a source answered nothing.

@@ -1,5 +1,5 @@
 # CDisplay.cs
-Hash: `6e138c006e4c8089`
+Hash: `e80ebbe50e051e15`
 
 ## `public sealed class CDisplay`
 
@@ -7,6 +7,7 @@ The reading view's header area.
 It owns the entry's life on the lectern, the favourite and grasp gates, and the change events its drivers answer.
 The editor and each wing build one, and it builds its rules and its other areas once.
 So every driver over it hears the same events.
+The lectern names the entry's lexical unit by the localization key `LEngineUnitFormat` gives.
 Drivers hold this area and the areas it hands out, never its rules, so no `L` type crosses into Deportment.
 The sound half stands on [CDisplaySound](CDisplaySound.comment.md), which reads the header here.
 The card reads stand on [CDisplayCard](CDisplayCard.comment.md).

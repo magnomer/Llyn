@@ -1,5 +1,5 @@
 # TInterfaceDraft.cs
-Hash: `d736148f79ab8c91`
+Hash: `9e0f2092fe8249e1`
 
 ## `internal static partial class TInterface`
 
@@ -20,3 +20,7 @@ An entry with one meaning and nothing nested, for tests that read links rather t
 ## `internal static LCourt TDraftLinkCreate(long owner, long target, string headword)`
 
 A court link with a fresh id, for tests that seed the register directly.
+
+## `internal static bool TDraftMatch(LEntryDraft one, LEntryDraft other)`
+
+Relays the draft equality the save and the dirty check share.

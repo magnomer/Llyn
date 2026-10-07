@@ -8,7 +8,7 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 75;
+    public const long LSchemaMigrationVersion = 76;
 
     private const string LSchemaMigrationFresh = "fresh";
 

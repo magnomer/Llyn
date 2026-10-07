@@ -63,6 +63,61 @@ public sealed class TFanqieRow
     }
 
     [Fact]
+    public void FanqieRowSort_StoredOutOfDeclaredOrder_ListsRankThenBookThenReadingThenId()
+    {
+        LFanqieBook guangyun = TInterface.TFanqieBookCreate("廣韻", "廣韻");
+        LFanqieBook jiyun = TInterface.TFanqieBookCreate("集韻", "集韻");
+        IReadOnlyList<LFanqieRow> rows =
+        [
+            TInterface.TFanqieRowCreate("平", "集韻", "蒲兵切", reading: "b", id: 1),
+            TInterface.TFanqieRowCreate("平", "廣韻", "符兵切", reading: "c", id: 2),
+            TInterface.TFanqieRowCreate("平", "廣韻", "符兵切", reading: "a", id: 6),
+            TInterface.TFanqieRowCreate("平", "廣韻", "符兵切", reading: "a", id: 3),
+            TInterface.TFanqieRowCreate("平", "集韻", "皮命切", reading: "z", id: 4, rank: 2),
+            TInterface.TFanqieRowCreate("平", "廣韻", "房連切", reading: "y", id: 5, rank: 1),
+        ];
+
+        IReadOnlyList<LFanqieRow> sorted = TInterface.TFanqieRowSort(rows, [guangyun, jiyun]);
+
+        Assert.Equal([5L, 4L, 3L, 6L, 2L, 1L], sorted.Select(row => row.LFanqieRowId));
+    }
+
+    [Fact]
+    public void FanqieRowSort_BookMissingFromPack_ListsItAfterDeclaredBooks()
+    {
+        IReadOnlyList<LFanqieRow> rows =
+        [
+            TInterface.TFanqieRowCreate("平", "韻略", "符兵切", id: 1),
+            TInterface.TFanqieRowCreate("平", "集韻", "蒲兵切", id: 2),
+        ];
+
+        IReadOnlyList<LFanqieRow> sorted = TInterface.TFanqieRowSort(
+            rows, [TInterface.TFanqieBookCreate("集韻", "集韻")]);
+
+        Assert.Equal([2L, 1L], sorted.Select(row => row.LFanqieRowId));
+    }
+
+    [Fact]
+    public void FanqieGroupScan_RankedRowInLaterBook_ListsThatBookFirstAndRowsInDeclaredOrder()
+    {
+        LFanqieBook guangyun = TInterface.TFanqieBookCreate("廣韻", "廣韻");
+        LFanqieBook jiyun = TInterface.TFanqieBookCreate("集韻", "集韻");
+        IReadOnlyList<LFanqieRow> rows =
+        [
+            TInterface.TFanqieRowCreate("平", "廣韻", "符兵切", reading: "b", id: 1),
+            TInterface.TFanqieRowCreate("平", "廣韻", "符兵切", reading: "a", id: 2),
+            TInterface.TFanqieRowCreate("平", "集韻", "蒲兵切", id: 3),
+            TInterface.TFanqieRowCreate("平", "集韻", "皮命切", id: 4, rank: 1),
+        ];
+
+        IReadOnlyList<LFanqieGroup> groups = TInterface.TFanqieGroupScan(rows, [guangyun, jiyun]);
+
+        Assert.Equal(["集韻", "廣韻"], groups.Select(group => group.LFanqieGroupLabel));
+        Assert.Equal([4L, 3L], groups[0].LFanqieGroupRows.Select(row => row.LFanqieRowId));
+        Assert.Equal([2L, 1L], groups[1].LFanqieGroupRows.Select(row => row.LFanqieRowId));
+    }
+
+    [Fact]
     public void ScriptGroupScan_StylesInPackOrder_GroupsByCharacterThenStyle()
     {
         IReadOnlyList<LScriptImage> images =

@@ -1,10 +1,11 @@
 # TReflexFixture.cs
-Hash: `346812854c69832d`
+Hash: `3f1ba34dce04007a`
 
 ## `internal static class TReflexFixture`
 
 The reflex pack, the pages behind it and the readers the reflex engine tests share.
 The pack declares three rules, one each for Korean, Japanese and Mandarin, over the stubbed pages.
+It declares the same languages as its row order, with Go-on before Kan-on.
 The Wu pack declares one rule with a recast and superscript tones.
 
 ## `internal static async Task TReflexSettle(LEngine engine, long entryId)`

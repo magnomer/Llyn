@@ -258,6 +258,21 @@ public sealed partial class LTenure
         LTenureSpeechSend(LSpeechClerk.LSpeechRemove(LTenureChipRead(), name), typed, false);
     }
 
+    public LUnit LTenureUnitRead()
+    {
+        return LTenureRead()?.LDraftContent.LEntryDraftUnit ?? LUnit.LUnitEmpty;
+    }
+
+    public IReadOnlyList<LUnit> LTenureUnitScan()
+    {
+        return LUnitClerk.LUnitScan(_lEngine.LEngineLanguage.LEngineSpacedCheck(LTenureLanguageRead()));
+    }
+
+    public void LTenureUnitSet(LUnit unit)
+    {
+        LTenureRequestApply(new LRequestUnit(LTenureId, unit == LTenureUnitRead() ? LUnit.LUnitEmpty : unit));
+    }
+
     public void LTenureGlossAdd(long card, long sentence)
     {
         LTenureGlossInsert(card, sentence, int.MaxValue);

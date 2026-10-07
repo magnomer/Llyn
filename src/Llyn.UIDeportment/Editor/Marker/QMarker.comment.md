@@ -1,5 +1,5 @@
 # QMarker.cs
-Hash: `8754ece389bc0785`
+Hash: `3c777c95992bed7a`
 
 ## `internal sealed class QMarker`
 
@@ -19,9 +19,10 @@ Hands the chip list its chips and fill, and subscribes the marker field's keys a
 The chip list is held to the width of its row, where a binding followed that width.
 The switch icon is set here, where the markup held an icon lookup.
 
-## `internal void QMarkerIntroduce(CEditor editor, QCategory category)`
+## `internal void QMarkerIntroduce(CEditor editor, QCategory category, QUnit unit)`
 
-Holds the Conduct handle and the category driver, and subscribes the marker Refine to the draft.
+Holds the Conduct handle, the category driver and the unit driver, and subscribes the marker Refine to the draft.
+Each draft change hands the unit driver the units read with the field, so the row is read once.
 
 ## `private void QMarkerApply(FrameworkElement container, object item, string? _)`
 

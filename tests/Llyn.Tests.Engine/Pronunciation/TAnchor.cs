@@ -67,22 +67,22 @@ public sealed class TAnchor
         fanqie.TFanqieSave(TAnchorLanguage, "完", [TAnchorRowCreate("匣", 0), TAnchorRowCreate("溪", 1)]);
         IReadOnlyList<long> ids = fanqie.TFanqieRead(TAnchorLanguage, "完").Select(row => row.LFanqieRowId).ToList();
         LDraft started = engine.TEngineDraftStart("Input", wan.LEntryId);
-        long gwan = started.LDraftContent.LEntryDraftReflexes[1].LReflexDraftId;
+        long gwan = started.LDraftContent.LEntryDraftReflexes[0].LReflexDraftId;
 
         LDraft answered = engine.TEngineRequestApply(
             TInterface.TReflexAnchorCreate(started.LDraftId, gwan, ids[1], true));
-        Assert.Equal([ids[1]], answered.LDraftContent.LEntryDraftReflexes[1].LReflexDraftAnchors);
-        Assert.Empty(answered.LDraftContent.LEntryDraftReflexes[0].LReflexDraftAnchors);
+        Assert.Equal([ids[1]], answered.LDraftContent.LEntryDraftReflexes[0].LReflexDraftAnchors);
+        Assert.Empty(answered.LDraftContent.LEntryDraftReflexes[1].LReflexDraftAnchors);
         Assert.True(engine.TEngineDraftCheck(started.LDraftId));
 
         answered = engine.TEngineRequestApply(TInterface.TReflexAnchorCreate(started.LDraftId, gwan, ids[0], true));
         answered = engine.TEngineRequestApply(TInterface.TReflexAnchorCreate(started.LDraftId, gwan, ids[1], false));
-        Assert.Equal([ids[0]], answered.LDraftContent.LEntryDraftReflexes[1].LReflexDraftAnchors);
+        Assert.Equal([ids[0]], answered.LDraftContent.LEntryDraftReflexes[0].LReflexDraftAnchors);
 
         engine.TEngineDraftCommit(started.LDraftId);
 
         IReadOnlyList<LReflexDraft> stored = engine.TEntryReflexRead(wan.LEntryId);
-        Assert.Equal([[], [ids[0]]], stored.Select(reflex => reflex.LReflexDraftAnchors.ToArray()));
+        Assert.Equal([[ids[0]], []], stored.Select(reflex => reflex.LReflexDraftAnchors.ToArray()));
     }
 
     private static void TAnchorApply(LEngine engine, long entryId, IReadOnlyList<long> anchors)

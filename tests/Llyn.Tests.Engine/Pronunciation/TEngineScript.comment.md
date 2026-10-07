@@ -1,5 +1,5 @@
 # TEngineScript.cs
-Hash: `0415cbcec38e368c`
+Hash: `6a91e6d779c08fe6`
 
 ## `public sealed class TEngineScript`
 
@@ -13,6 +13,12 @@ A character every database answered for yet none drew still raises the bulletin.
 It is asked once per session and stores nothing.
 A rebuild drops the stored sets and fetches again, asking even sources once silent.
 A language whose pack lists no styles reads empty and asks nothing.
+
+A fetch lists its pictures in the pack's declared epoch order, an undated picture last.
+The image sort orders by character, then pack style, then declared epoch.
+Characters follow the headword's spelling, and one the headword lacks follows by code point.
+The stored id breaks the last tie, so input order never decides.
+An undeclared style follows the declared ones, and an undeclared epoch precedes an undated one.
 
 ## `public async Task ScriptSourceFind_PatternTimesOut_AnswersNotReached()`
 

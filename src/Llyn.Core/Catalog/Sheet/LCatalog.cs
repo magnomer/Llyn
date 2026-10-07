@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace Llyn.Core;
 
@@ -106,6 +108,34 @@ public static class LCatalog
     public static string LCatalogUsageFormat(int usage)
     {
         return usage > 0 ? usage.ToString(CultureInfo.CurrentCulture) : string.Empty;
+    }
+
+    public static IReadOnlyList<LCatalogRow> LCatalogUsageSort<LCatalogRow>(
+        IEnumerable<LCatalogRow> rows,
+        Func<LCatalogRow, int> usage,
+        Func<LCatalogRow, string> name,
+        Func<LCatalogRow, long> id)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+        ArgumentNullException.ThrowIfNull(usage);
+        ArgumentNullException.ThrowIfNull(name);
+        ArgumentNullException.ThrowIfNull(id);
+
+        return [.. LCatalogNameSort(rows.OrderByDescending(usage), name, id)];
+    }
+
+    public static IOrderedEnumerable<LCatalogRow> LCatalogNameSort<LCatalogRow>(
+        IOrderedEnumerable<LCatalogRow> rows,
+        Func<LCatalogRow, string> name,
+        Func<LCatalogRow, long> id)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+        ArgumentNullException.ThrowIfNull(name);
+        ArgumentNullException.ThrowIfNull(id);
+
+        return rows
+            .ThenBy(name, StringComparer.CurrentCultureIgnoreCase)
+            .ThenBy(id);
     }
 
     public static string LCatalogTallyFormat(int count, string realm, Func<string, string> localize)

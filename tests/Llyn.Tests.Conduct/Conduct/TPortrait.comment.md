@@ -1,5 +1,5 @@
 # TPortrait.cs
-Hash: `41536ea9b13219e1`
+Hash: `ec7164c2620f6d96`
 
 ## `public sealed class TPortrait`
 
@@ -9,6 +9,7 @@ A print ticket keeps what the dialog answered, and the engine turns the sheet in
 A missing or empty sheet size takes the local sheet.
 Every label and legend word is the engine's wording of a key Conduct chose.
 The fake wording answers `text:` plus the key.
+The unit names are worded the same way, one per unit.
 The formats offered and the default one come from the engine.
 Hostile engine rows still give exactly one chosen format and no `|` in a suffix.
 No rows give the markup format, no chosen row chooses the first, and many keep the first.

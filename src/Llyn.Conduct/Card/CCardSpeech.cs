@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -57,11 +58,32 @@ public sealed class CCardSpeech
     {
         if (_cCardSpeechDesk.CDeskTenure is not LTenure held)
         {
-            return new CMarker([], _cCardSpeechTyped, new CCategory([], false, false, false));
+            return new CMarker([], _cCardSpeechTyped, new CCategory([], false, false, false), []);
         }
 
         (var names, _cCardSpeechTyped, LSpeechOffer found) = held.LTenureSpeechRead(_cCardSpeechTyped);
-        return new CMarker(names, _cCardSpeechTyped, LCategoryRead(found));
+        return new CMarker(
+            names,
+            _cCardSpeechTyped,
+            LCategoryRead(found),
+            LUnitRowScan(held.LTenureUnitScan(), held.LTenureUnitRead()));
+    }
+
+    internal static LUnit LUnitRowParse(string key)
+    {
+        return key switch
+        {
+            "Unit.Content" => LUnit.LUnitContent,
+            "Unit.Function" => LUnit.LUnitFunction,
+            "Unit.Morpheme" => LUnit.LUnitMorpheme,
+            "Unit.Word" => LUnit.LUnitWord,
+            _ => throw new ArgumentOutOfRangeException(nameof(key), key, null),
+        };
+    }
+
+    private static IReadOnlyList<(string, bool)> LUnitRowScan(IReadOnlyList<LUnit> units, LUnit taken)
+    {
+        return units.Select(unit => (LEntryPort.LEngineUnitFormat(unit), unit == taken)).ToList();
     }
 
     private static CCategory LCategoryRead(LSpeechOffer offer)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace Llyn.Core;
 
@@ -36,7 +37,10 @@ public sealed record LDiweiSection(
         bool rime = string.Equals(kind, LDiwei.LDiweiRime, StringComparison.Ordinal);
         Dictionary<string, List<LDiweiLine>> sections = new(StringComparer.Ordinal);
         Dictionary<(string, string, bool), List<string>> lines = [];
-        foreach (LFanqieRow row in rows)
+        IEnumerable<LFanqieRow> ordered = rows
+            .OrderBy(row => row.LFanqieRowCharacter, LGlyphOrder.LGlyphOrderComparer)
+            .ThenBy(row => row.LFanqieRowId);
+        foreach (LFanqieRow row in ordered)
         {
             string heading = rime
                 ? hypothesis?.LHypothesisLocusFind(row.LFanqieRowInitial)?.LHypothesisLocusName ?? string.Empty
@@ -60,17 +64,17 @@ public sealed record LDiweiSection(
             LDiweiCharacterAdd(characters, row.LFanqieRowCharacter);
         }
 
-        List<string> headings = [.. sections.Keys];
-        headings.Sort((left, right) =>
-            LDiwei.LDiweiRankRead(kind, left, hypothesis).CompareTo(LDiwei.LDiweiRankRead(kind, right, hypothesis)));
+        IReadOnlyList<string> headings = sections.Keys
+            .OrderBy(heading => LDiwei.LDiweiRankRead(kind, heading, hypothesis))
+            .ThenBy(static heading => heading, LGlyphOrder.LGlyphOrderComparer)
+            .ThenBy(static heading => heading, StringComparer.Ordinal)
+            .ToList();
         List<LDiweiSection> built = new(headings.Count);
         foreach (string heading in headings)
         {
-            List<LDiweiLine> placed = sections[heading];
-            LDiweiLineSort(placed);
             built.Add(new LDiweiSection(
                 rime ? LDiweiPlaceFormat(heading, localize) : LDiweiLabelFormat(heading, localize),
-                placed,
+                LDiweiLineSort(sections[heading]),
                 LDiweiTallyScan(tallies, heading, respelled),
                 switched,
                 respelled));
@@ -99,14 +103,16 @@ public sealed record LDiweiSection(
         }
     }
 
-    private static void LDiweiLineSort(List<LDiweiLine> lines)
+    private static IReadOnlyList<LDiweiLine> LDiweiLineSort(List<LDiweiLine> lines)
     {
-        lines.Sort((left, right) =>
-        {
-            int order = LDiwei.LDiweiRankNormalize(left.LDiweiLineRank)
-                .CompareTo(LDiwei.LDiweiRankNormalize(right.LDiweiLineRank));
-            return order != 0 ? order : string.CompareOrdinal(left.LDiweiLineLabel, right.LDiweiLineLabel);
-        });
+        return lines
+            .OrderBy(static line => LDiwei.LDiweiRankNormalize(line.LDiweiLineRank))
+            .ThenBy(static line => line.LDiweiLineLabel, LGlyphOrder.LGlyphOrderComparer)
+            .ThenBy(static line => line.LDiweiLineRounded)
+            .ThenBy(
+                static line => line.LDiweiLineCharacters.FirstOrDefault() ?? string.Empty,
+                LGlyphOrder.LGlyphOrderComparer)
+            .ToList();
     }
 
     private static IReadOnlyList<LTallyRow> LDiweiTallyScan(

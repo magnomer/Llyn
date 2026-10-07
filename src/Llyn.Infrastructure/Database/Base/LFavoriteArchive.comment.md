@@ -1,5 +1,5 @@
 # LFavoriteArchive.cs
-Hash: `95bc9c08d21cd802`
+Hash: `710ded0bebc2ea1f`
 
 ## `public sealed class LFavoriteArchive : LFavoriteVault`
 
@@ -25,4 +25,5 @@ Reports whether the entry is marked.
 
 Finds the marked entries whose headword carries the query, folded for case and accent.
 An empty query returns every marked entry.
-Rows come back by headword, and the caller reorders them.
+Rows come back by headword, then language, then entry id, and the caller reorders them.
+Those tie keys are the ones `LCatalogEntry` uses, so both sides agree on equal headwords.

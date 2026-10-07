@@ -1,5 +1,5 @@
 # QLectern.cs
-Hash: `0f5767d234ae576c`
+Hash: `ace6bbd1f50a344e`
 
 ## `public sealed class QLectern`
 
@@ -94,6 +94,11 @@ Words the step under the pointer beside the stars, or the set step once the poin
 
 Draws the shown header, the speech names, and the stamp row, then gives the page to the entry.
 A section the entry left empty collapses instead of standing as a blank line.
+
+## `private void QLecternUnitRefine(string key)`
+
+Names the entry's lexical unit above its parts of speech through the key Conduct chose.
+An unchosen unit hides the line, so a bare entry shows no empty label.
 
 ## `private void QLecternFontRefine()`
 

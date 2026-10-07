@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace Llyn.Core;
 
@@ -130,6 +131,26 @@ public sealed record LFanqieRow(
         }
 
         return found.Count == 0 ? null : found;
+    }
+
+    public static IReadOnlyList<LFanqieRow> LFanqieRowSort(
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<LFanqieBook> books)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+        ArgumentNullException.ThrowIfNull(books);
+
+        List<LFanqieBook> declared = [.. books];
+        return rows
+            .OrderBy(static row => row.LFanqieRowMarked ? 0 : 1)
+            .ThenBy(static row => row.LFanqieRowRepresentative)
+            .ThenBy(row => declared.FindIndex(book => row.LFanqieRowMatch(row.LFanqieRowCharacter, book)) switch
+            {
+                < 0 => int.MaxValue,
+                int place => place,
+            })
+            .ThenBy(static row => row.LFanqieRowReading, StringComparer.Ordinal)
+            .ThenBy(static row => row.LFanqieRowId)
+            .ToList();
     }
 
     public LFanqieRow LFanqieRowFormat(string pattern)

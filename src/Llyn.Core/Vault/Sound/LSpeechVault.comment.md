@@ -1,5 +1,5 @@
 # LSpeechVault.cs
-Hash: `eb4c4d0120ad8509`
+Hash: `c61536abe2ffd869`
 
 ## `public interface LSpeechVault`
 
@@ -20,7 +20,8 @@ Reads one value by row id, or `null` when no row has it.
 ## `IReadOnlyList<LSpeechValue> LSpeechValueRead(string language);`
 
 Reads every part of speech `language` declares.
-They come in the display order the language pack listed them in.
+They come in stored order, which carries no meaning.
+`LVocabularyClerk.LSpeechRead` orders them by the pack's declared rule before any view sees them.
 Those are the presets the part-of-speech field offers.
 A language with no pack on disk declares none, which is an empty list rather than a failure.
 
@@ -37,3 +38,10 @@ Only text that names no value at all is stored as typed.
 
 Reads the parts of speech and their features the language pack of `language` declares.
 A missing pack yields an empty pack.
+
+## `void LSpeechRetirementApply(string language, LSpeechRetirement row);`
+
+Moves every link off a retired part of `language` and deletes its row.
+Part-of-speech links, inflections and features follow the target, and an entry left holding the target twice keeps one.
+Linking entries without a unit take the row's unit.
+A part already gone leaves nothing to do, so the call is safe on every start.

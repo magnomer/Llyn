@@ -70,7 +70,7 @@ public sealed record LGlyph(
     {
         ArgumentNullException.ThrowIfNull(draft);
 
-        string text = draft.LEntryDraftHeadword;
+        string text = LGlyphScan(draft.LEntryDraftHeadword).Count > 0 ? draft.LEntryDraftHeadword : string.Empty;
         foreach (LTranscriptionDraft spelled in draft.LEntryDraftTranscriptions)
         {
             if (!spelled.LTranscriptionDraftEmpty && LGlyphSchemeCheck(spelled.LTranscriptionDraftScheme))

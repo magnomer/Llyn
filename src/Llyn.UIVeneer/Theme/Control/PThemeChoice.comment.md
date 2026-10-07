@@ -1,5 +1,5 @@
 # PThemeChoice.xaml
-Hash: `3c653ed17f1fe607`
+Hash: `168b1d5620f22041`
 
 ## `<Style x:Key="Theme.Choice.Row" TargetType="Button">`
 
@@ -34,6 +34,7 @@ They offer what the language has saved and are framed only under the pointer.
 The frame is drawn outward, so a field being pointed at or written in never moves the sentence beside it.
 The frame is closed onto the text it rings, clearing it by a hairline and no more.
 A marker and a role are parted by one space, so a frame drawn outward crosses the word beside it.
+The dropdown shows at once, with no fade, so the pick never looks slow to answer.
 
 ## `<Style x:Key="Theme.Choice.Switch" TargetType="ToggleButton">`
 

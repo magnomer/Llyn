@@ -44,3 +44,9 @@ public sealed record LRequestSpeech(long LRequestDraftId, IReadOnlyList<LSpeechD
 {
     public override string LRequestKey => nameof(LRequestSpeech);
 }
+
+public sealed record LRequestUnit(long LRequestDraftId, LUnit LRequestValue)
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestUnit);
+}

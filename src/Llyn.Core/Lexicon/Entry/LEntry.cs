@@ -6,4 +6,5 @@ public sealed record LEntry(
     string LEntryLanguage,
     int LEntryGrasp,
     string? LEntryAddedUtc,
-    string? LEntryUpdatedUtc);
+    string? LEntryUpdatedUtc,
+    LUnit LEntryUnit = LUnit.LUnitEmpty);

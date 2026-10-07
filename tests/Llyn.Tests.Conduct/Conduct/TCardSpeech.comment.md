@@ -1,5 +1,5 @@
 # TCardSpeech.cs
-Hash: `9a9edbbfd904256e`
+Hash: `0254212862ecf83a`
 
 ## `public sealed class TCardSpeech`
 
@@ -10,6 +10,7 @@ An erased chip leaves while the pending text stays.
 A draft changed from elsewhere clears the pending text.
 An undone draft shows its own list, and the next add builds on it with no stale copy.
 Typing answers the draft language's parts that hold the text, each marked when held.
+A typed noun also offers pronoun, since the presets are bare roles matched anywhere in the name.
 A text matching none carries its own key.
 The read carries the same menu for the settled text, and a desk with no draft carries the empty-catalog key.
 

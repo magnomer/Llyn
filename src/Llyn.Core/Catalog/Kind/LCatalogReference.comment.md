@@ -1,5 +1,5 @@
 # LCatalogReference.cs
-Hash: `3ccbba9305c376ca`
+Hash: `cb83fbfb6db8a399`
 
 ## `public sealed record LCatalogReference(LReference LCatalogReferenceStored, string LCatalogReferenceName, string LCatalogReferenceByline, IReadOnlyList<LAuthor> LCatalogReferenceCredit, int LCatalogReferenceUsage, bool LCatalogReferenceChosen = false)`
 
@@ -33,6 +33,14 @@ Ordering by year puts the states in order first, so an unstated year is never re
 Ordering by author reads the first credit, because the credit order belongs to the Source.
 A Source with no credits is ordered by the authorship state it states.
 That is not the same as being credited.
+Rows equal under the year, the author or the name go by the shared tie `LCatalog.LCatalogNameSort`.
+That tie is the name, then the id, so storage order never decides a place.
+Rows equal under the usage go by the shared rule `LCatalog.LCatalogUsageSort`, the one the Register catalog uses.
+A citation field's offer reads this usage ordering, so equal counts there are ordered by name too.
+
+## `private static IReadOnlyList<LCatalogReference> LCatalogReferenceSort(IOrderedEnumerable<LCatalogReference> rows)`
+
+The tie every Source ordering but usage ends with, through `LCatalog.LCatalogNameSort`.
 
 ## `public bool LCatalogReferenceMatch(string query)`
 

@@ -263,24 +263,7 @@ public sealed class LReflexFetch
 
     private List<long> LReflexFetchPropagate(long entryId, IReadOnlyList<LReflex> saved, bool sweep = false)
     {
-        List<LReflexDraft> rows = new(saved.Count);
-        foreach (LReflex reflex in saved)
-        {
-            rows.Add(new LReflexDraft(
-                reflex.LReflexLanguage,
-                reflex.LReflexKind,
-                reflex.LReflexText,
-                reflex.LReflexMain,
-                reflex.LReflexId,
-                reflex.LReflexRomanization,
-                reflex.LReflexMeaning,
-                reflex.LReflexOwned,
-                reflex.LReflexNote,
-                reflex.LReflexRespelling,
-                reflex.LReflexRegion,
-                reflex.LReflexAnatomy,
-                reflex.LReflexAnchors));
-        }
+        IReadOnlyList<LReflexDraft> rows = LReflexClerk.LReflexClerkScan(saved);
 
         List<long> filled = [];
         foreach (long id in _lReflexFetchClaims.LClaimClerkHeld)
@@ -297,8 +280,10 @@ public sealed class LReflexFetch
                 continue;
             }
 
+            IReadOnlyList<LReflexDraft> sorted =
+                _lReflexFetchClerk.LReflexClerkSort(draft.LDraftContent.LEntryDraftLanguage, rows);
             _lReflexFetchClaims.LDraftSave(
-                draft with { LDraftContent = draft.LDraftContent with { LEntryDraftReflexes = rows } });
+                draft with { LDraftContent = draft.LDraftContent with { LEntryDraftReflexes = sorted } });
             filled.Add(id);
         }
 

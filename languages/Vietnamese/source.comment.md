@@ -1,5 +1,5 @@
 # source.json
-Hash: `cf64c347988db29d`
+Hash: `85ddd4983fe4e6b6`
 
 ## pack
 
@@ -7,6 +7,8 @@ Language pack for Vietnamese.
 The pack format is documented in `languages/English/source.comment.md`.
 Three varieties are declared, Northern, Central and Southern, shown by name because all three share one flag.
 Wiktionary labels them by their reference cities, Hà Nội, Huế and Saigon.
+`spaced` is false, because a Vietnamese space parts syllables, not words.
+So an entry is offered Word or Morpheme as its unit, while readings keep their separator.
 `tonal` is on, so the UI draws a contour under each reading from the tone letters it carries.
 No transcription schemes are listed, because Vietnamese is written in Latin script.
 No respelling groups are declared, so every reading shows as its source wrote it.

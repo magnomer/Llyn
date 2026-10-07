@@ -1,5 +1,5 @@
 # LLiveryClerk.cs
-Hash: `925286e30775c0d2`
+Hash: `c96f2ed774d9769d`
 
 ## `public static class LLiveryClerk`
 
@@ -22,7 +22,9 @@ An entry's language is trimmed before the match, since the courier passes trimme
 A null `stem` means the language has no series rule, so the series list stays empty.
 Otherwise it lists every series in name order with an empty query.
 Each series carries its `LStemPageRead` page and the entries `LStemEntryScan` finds for it alone.
+Those entries are in headword order, since the export has no panel setting to follow.
 A null `diwei` means the language has no fanqie book, so the category list stays empty.
 Otherwise it lists the initials, then the rimes, then the tones, each kind in name order.
 Each category carries its kind, its `LDiweiPageRead` page and the entries `LDiweiEntryScan` finds for it alone.
+Those entries are in headword order too.
 `switched`, `tallied` and `localize` pass unchanged to `LDiweiPageRead`, as `LEngineDiweiResolve` passes them.

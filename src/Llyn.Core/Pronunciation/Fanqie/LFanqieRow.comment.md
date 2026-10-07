@@ -1,5 +1,5 @@
 # LFanqieRow.cs
-Hash: `8caa3974a271e204`
+Hash: `98d612b9e92f73e1`
 
 ## `public sealed record LFanqieRow(string LFanqieRowCharacter, string LFanqieRowBook, int LFanqieRowPosition, string LFanqieRowText, string LFanqieRowInitial = "", string LFanqieRowRime = "", string LFanqieRowHeading = "", string LFanqieRowDivision = "", string LFanqieRowTone = "", bool LFanqieRowRounded = false, string? LFanqieRowSource = null, string LFanqieRowSpelling = "", string LFanqieRowReading = "", string LFanqieRowClass = "", long LFanqieRowId = 0, string LFanqieRowLabel = "", string LFanqieRowSummary = "", int LFanqieRowRepresentative = 0)`
 
@@ -15,6 +15,7 @@ The reading the hypothesis derives from them is stored beside them too, so the v
 - `LFanqieRowCharacter` — The single Han character the row places.
 - `LFanqieRowBook` — The book name of the pack row the placement came from.
 - `LFanqieRowPosition` — The row's place among the book's rows, in table order from zero.
+  It is web hit order, so it keys the upsert but never the order a view shows.
 - `LFanqieRowText` — The line the table cell was read into, tags dropped and spaces collapsed.
 - `LFanqieRowInitial` — The initial the table row is headed by, such as 疑, or empty when the book gives none.
 - `LFanqieRowRime` — The rime group the cell names, such as 模 or 真B, or empty.
@@ -87,6 +88,14 @@ The grouping follows that order, so the blocks stand as the headword spells them
 
 The rows placing `character` in `book`, or null when there are none.
 Null rather than empty lets the grouper skip a missing block in one pattern test.
+
+## `public static IReadOnlyList<LFanqieRow> LFanqieRowSort(IReadOnlyList<LFanqieRow> rows, IReadOnlyList<LFanqieBook> books)`
+
+The one declared order of fanqie rows, which every view reaches through the clerk or the grouper.
+A ranked row comes before an unranked one, and lower ranks come first.
+Then the rows follow the order the pack lists `books`, and a book the pack no longer lists goes last.
+Then the reading sorts by ordinal, and the stored id breaks the last tie only to keep the result stable.
+Fetches store rows in arrival order, so the stored order never decides what the user sees.
 
 ## `public LFanqieRow LFanqieRowFormat(string pattern)`
 

@@ -29,6 +29,25 @@ public sealed record LFrequency(
 
     public string LFrequencyFigure => LFrequencyUnit is string unit ? unit + " " + LFrequencyRaw : LFrequencyRaw;
 
+    public static IReadOnlyList<LFrequency> LFrequencySort(
+        IReadOnlyList<LFrequency> rows, IReadOnlyList<LSourceSpec> declared)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+        ArgumentNullException.ThrowIfNull(declared);
+
+        Dictionary<string, int> positions = new(StringComparer.Ordinal);
+        for (int index = 0; index < declared.Count; index++)
+        {
+            positions.TryAdd(declared[index].LSourceSpecName, index);
+        }
+
+        return rows
+            .OrderBy(row => positions.GetValueOrDefault(row.LFrequencySource, int.MaxValue))
+            .ThenBy(static row => row.LFrequencySource, LGlyphOrder.LGlyphOrderComparer)
+            .ThenBy(static row => row.LFrequencyRaw, LGlyphOrder.LGlyphOrderComparer)
+            .ToList();
+    }
+
     public static string? LFrequencyBandResolve(LSourceSpec spec, double raw)
     {
         if (LFrequencyOnceRead(spec, raw) is not double interval)

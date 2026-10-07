@@ -147,6 +147,10 @@ internal static partial class TInterface
         IReadOnlyList<LFanqieRow> rows, IReadOnlyList<LFanqieBook> books) =>
         LFanqieGroup.LFanqieGroupScan(rows, books);
 
+    internal static IReadOnlyList<LFanqieRow> TFanqieRowSort(
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<LFanqieBook> books) =>
+        LFanqieRow.LFanqieRowSort(rows, books);
+
     internal static string TFanqieReadingFormat(IReadOnlyList<LFanqieGroup> groups, string headword) =>
         LFanqieGroup.LFanqieReadingFormat(groups, headword);
 
@@ -199,4 +203,14 @@ internal static partial class TInterface
     internal static LFrequency TFrequencyUnitCreate(string source, string raw, string? band, string unit) =>
         new(source, raw, band, null, unit);
 
+    internal static LEpoch TEpochCreate(string label, string code) =>
+        new(label, code);
+
+    internal static LScriptImage TScriptImageCreate(
+        string character, string style, int position, string caption, string epoch, long id = 0) =>
+        new(character, style, position, caption, string.Empty, [], epoch, id);
+
+    internal static IReadOnlyList<LScriptImage> TScriptImageSort(
+        IReadOnlyList<LScriptImage> images, IReadOnlyList<LScriptStyle> styles, IReadOnlyList<string> spelled) =>
+        LScriptImage.LScriptImageSort(images, styles, spelled);
 }

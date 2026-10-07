@@ -1,5 +1,5 @@
 # QDisplay.cs
-Hash: `eca8f7ede19390dc`
+Hash: `63b32c249699de03`
 
 ## `internal sealed class QDisplay`
 
@@ -8,6 +8,7 @@ It is handed the view's page and a lectern, and it paints what the lectern holds
 It never loads a draft itself, and it never decides which entry is shown.
 That belongs to the browse-style panel it sits in.
 Every handler is the one adapter for its Veneer event and hands the raw value to the lectern.
+The unit line is handed to the lectern with the speech chips it heads.
 The sound strip lives in [QSounding](QSounding.comment.md), and the list item fills in [QRoster](QRoster.comment.md).
 
 ## `internal QDisplay(FrameworkElement surface)`

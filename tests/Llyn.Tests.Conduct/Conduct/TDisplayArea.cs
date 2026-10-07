@@ -39,6 +39,7 @@ public sealed class TDisplayArea
         Assert.Equal("English", shown.CLecternLanguage);
         Assert.Equal(["Noun"], shown.CLecternSpeeches);
         Assert.True(shown.CLecternMarked);
+        Assert.Equal(string.Empty, shown.CLecternUnit);
         CMarkdownBlock note = Assert.Single(shown.CLecternNote);
         Assert.Equal(["a ", "note"], note.CMarkdownBlockSpan.Select(static span => span.CMarkdownSpanText));
         Assert.True(note.CMarkdownBlockSpan[1].CMarkdownSpanItalic);

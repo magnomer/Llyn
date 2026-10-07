@@ -54,6 +54,7 @@ public static class LDraftClerkEquality
                 LMarkdown.LMarkdownNormalize(other.LEntryDraftNote),
                 StringComparison.Ordinal)
             && LSpeechMatch(one.LEntryDraftSpeeches, other.LEntryDraftSpeeches)
+            && one.LEntryDraftUnit == other.LEntryDraftUnit
             && LEntryClerkField.LFormMatch(one.LEntryDraftForms, other.LEntryDraftForms)
             && LInflectionClerk.LInflectionClerkMatch(one.LEntryDraftInflections, other.LEntryDraftInflections)
             && LCardEquality.LCardEqualityMatch(one.LEntryDraftMeanings, other.LEntryDraftMeanings)
@@ -165,19 +166,23 @@ public static class LDraftClerkEquality
     private static bool LReflexMatch(IReadOnlyList<LReflexDraft> one, IReadOnlyList<LReflexDraft> other)
     {
         one = LReflexScan(one);
-        other = LReflexScan(other);
-        if (one.Count != other.Count)
+        List<LReflexDraft> left = [.. LReflexScan(other)];
+        if (one.Count != left.Count)
         {
             return false;
         }
 
-        for (int index = 0; index < one.Count; index++)
+        foreach (LReflexDraft row in one)
         {
-            if (!LAnchor.LAnchorMatch(one[index].LReflexDraftAnchors, other[index].LReflexDraftAnchors)
-                || one[index] with { LReflexDraftAnchors = [] } != other[index] with { LReflexDraftAnchors = [] })
+            int index = left.FindIndex(held =>
+                LAnchor.LAnchorMatch(held.LReflexDraftAnchors, row.LReflexDraftAnchors)
+                && held with { LReflexDraftAnchors = [] } == row with { LReflexDraftAnchors = [] });
+            if (index < 0)
             {
                 return false;
             }
+
+            left.RemoveAt(index);
         }
 
         return true;

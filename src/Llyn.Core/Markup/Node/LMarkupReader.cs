@@ -52,6 +52,7 @@ internal static class LMarkupReader
         List<LMarkupCard> collocations = [];
         List<LMarkupEtymon> etymons = [];
         LMarkupEtymology? etymology = null;
+        LUnit unit = LUnit.LUnitEmpty;
 
         foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
@@ -65,6 +66,9 @@ internal static class LMarkupReader
                     break;
                 case "speech":
                     speeches.Add(LMarkup.LMarkupTextParse(child));
+                    break;
+                case "unit":
+                    unit = LUnitKey.LUnitKeyParse(LMarkup.LMarkupTextParse(child));
                     break;
                 case "form":
                     forms.Add(LMarkupFormParse(child, forms.Count, omissions));
@@ -116,7 +120,8 @@ internal static class LMarkupReader
             note,
             element.LMarkupNodeLine,
             etymology,
-            etymons);
+            etymons,
+            unit);
     }
 
     private static LMarkupEtymon LMarkupEtymonParse(LMarkupNode element, List<LMarkupOmission> omissions)

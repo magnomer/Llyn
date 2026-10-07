@@ -1,5 +1,5 @@
 # TCatalogExample.cs
-Hash: `38eaacf1b647d6cb`
+Hash: `94deca5620241070`
 
 ## `public sealed class TCatalogExample`
 
@@ -11,6 +11,8 @@ It covers the query, over the sentence, the translation and the cited name.
 The cited name is matched rather than the id, because the id is never shown.
 It covers the names read for the whole shelf of Sources, which one catalog fill asks for once.
 It covers the lines a shown entry's citations read, child cards included, with a gone Source written as its id.
+It covers equal usage and equal sources, which go by language, sentence and then id.
+It covers equal sentences, which go by language and then id.
 
 ## `private static LCardDraft TCatalogCardCreate(params LSentenceDraft[] sentences)`
 
@@ -19,3 +21,7 @@ Builds a card that holds only the given sentences.
 ## `private static LSentenceDraft TCatalogSentenceCreate(long? source)`
 
 Builds a sentence whose Example cites `source`, or nothing when it is null.
+
+## `private static LCatalogExample TCatalogExampleBuild(long id, string language, string text)`
+
+One browsed Example row cited once from one source, so only language, sentence and id can tell rows apart.

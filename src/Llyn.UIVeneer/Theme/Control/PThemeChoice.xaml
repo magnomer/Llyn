@@ -166,8 +166,7 @@
                             x:Name="PART_Popup"
                             MinWidth="124"
                             AllowsTransparency="True"
-                            Placement="Bottom"
-                            PopupAnimation="Fade">
+                            Placement="Bottom">
                             <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
                                 <ScrollViewer MaxHeight="220" HorizontalScrollBarVisibility="Disabled">
                                     <ItemsPresenter />

@@ -67,7 +67,8 @@ public sealed class LFanqieClerk
             entry = _lFanqieClerkEntries.LEntryRead(entryId);
         }
 
-        if (entry is null || LFanqieBookRead(entry.LEntryLanguage).Count == 0)
+        IReadOnlyList<LFanqieBook> books = entry is null ? [] : LFanqieBookRead(entry.LEntryLanguage);
+        if (entry is null || books.Count == 0)
         {
             return [];
         }
@@ -82,7 +83,7 @@ public sealed class LFanqieClerk
                 stored = _lFanqieClerkFanqie.LFanqieRead(entry.LEntryLanguage, character);
             }
 
-            foreach (LFanqieRow row in stored)
+            foreach (LFanqieRow row in LFanqieRow.LFanqieRowSort(stored, books))
             {
                 rows.Add(row.LFanqieRowFormat(pattern));
             }

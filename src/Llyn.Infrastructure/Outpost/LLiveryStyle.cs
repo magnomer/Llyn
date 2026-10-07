@@ -100,6 +100,10 @@ public static class LLiveryStyle
                 display: inline-block; height: 21px; margin-right: 6px; padding: 0 12px; border-radius: 11px;
                 background: {{soft}}; color: {{accent}}; font-size: 12px; line-height: 21px;
             }
+            .llyn .llyn-unit {
+                display: inline-block; height: 21px; margin-right: 6px; padding: 0 12px; border-radius: 11px;
+                border: 1px solid {{soft}}; color: {{muted}}; font-size: 12px; line-height: 19px;
+            }
             .llyn .llyn-frequency {
                 display: inline-block; height: 28px; padding: 0 12px; border-radius: 14px;
                 background: {{raised}}; color: {{muted}}; font-size: 12px; line-height: 28px;

@@ -77,7 +77,7 @@ public sealed class LFavoriteArchive : LFavoriteVault
             FROM favorite
             JOIN entry ON entry.entry_id = favorite.entry_parent
             WHERE lmatch(entry.headword, $query)
-            ORDER BY entry.headword;
+            ORDER BY entry.headword, entry.language, entry.entry_id;
             """;
         command.Parameters.AddWithValue("$query", query);
 

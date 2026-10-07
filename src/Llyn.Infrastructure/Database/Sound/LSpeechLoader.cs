@@ -106,7 +106,26 @@ public static class LSpeechLoader
                 LSpeechNumbersRead(row, "except") ?? []));
         }
 
-        return new LSpeechPack(values, features, morphology, paradigms);
+        return new LSpeechPack(values, features, morphology, paradigms, LSpeechRetirementScan(root));
+    }
+
+    private static IReadOnlyList<LSpeechRetirement> LSpeechRetirementScan(JsonElement root)
+    {
+        List<LSpeechRetirement> rows = [];
+        foreach (JsonElement row in LSpeechRowRead(root, "retired"))
+        {
+            if (LSpeechNumberRead(row, "id") is not long code)
+            {
+                continue;
+            }
+
+            rows.Add(new LSpeechRetirement(
+                code,
+                LSpeechNumberRead(row, "into") ?? 0,
+                LUnitKey.LUnitKeyParse(LSpeechTextRead(row, "unit"))));
+        }
+
+        return rows;
     }
 
     private static IReadOnlyList<LParadigmRule> LSpeechRuleScan(JsonElement element, string name)

@@ -1,5 +1,5 @@
 # TParadigm.cs
-Hash: `7fe3ad57dfa43ab2`
+Hash: `c6bae55e50ed8a88`
 
 ## `public sealed class TParadigm`
 
@@ -26,7 +26,9 @@ A malformed regular or except entry is ignored and the row is kept.
 
 ## `public void SpeechPackLoad_EnglishPack_DeclaresParadigms()`
 
-The shipped English pack states parents and paradigms, so the loader is read against disk and not a fixture alone.
+The shipped English pack states paradigms over bare roles.
+So the loader is read against disk and not a fixture alone.
+No part names a parent and no paradigm excepts one, since the subtypes are retired.
 
 ## `public void SpeechPackLoad_ClassicalPack_DeclaresPrincipalParts(string language, int paradigms, long genitive, int principalParts)`
 

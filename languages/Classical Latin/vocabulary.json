@@ -17,38 +17,8 @@
       "name": "Noun"
     },
     {
-      "id": 2,
-      "name": "Noun, proper",
-      "parent": 1
-    },
-    {
       "id": 3,
       "name": "Verb"
-    },
-    {
-      "id": 4,
-      "name": "Verb, transitive",
-      "parent": 3
-    },
-    {
-      "id": 5,
-      "name": "Verb, intransitive",
-      "parent": 3
-    },
-    {
-      "id": 6,
-      "name": "Verb, deponent",
-      "parent": 3
-    },
-    {
-      "id": 7,
-      "name": "Verb, semi-deponent",
-      "parent": 3
-    },
-    {
-      "id": 8,
-      "name": "Verb, impersonal",
-      "parent": 3
     },
     {
       "id": 9,
@@ -63,41 +33,6 @@
       "name": "Pronoun"
     },
     {
-      "id": 12,
-      "name": "Pronoun, personal",
-      "parent": 11
-    },
-    {
-      "id": 13,
-      "name": "Pronoun, possessive",
-      "parent": 11
-    },
-    {
-      "id": 14,
-      "name": "Pronoun, demonstrative",
-      "parent": 11
-    },
-    {
-      "id": 15,
-      "name": "Pronoun, relative",
-      "parent": 11
-    },
-    {
-      "id": 16,
-      "name": "Pronoun, interrogative",
-      "parent": 11
-    },
-    {
-      "id": 17,
-      "name": "Pronoun, reflexive",
-      "parent": 11
-    },
-    {
-      "id": 18,
-      "name": "Pronoun, indefinite",
-      "parent": 11
-    },
-    {
       "id": 19,
       "name": "Preposition"
     },
@@ -106,33 +41,8 @@
       "name": "Conjunction"
     },
     {
-      "id": 21,
-      "name": "Conjunction, coordinating",
-      "parent": 20
-    },
-    {
-      "id": 22,
-      "name": "Conjunction, subordinating",
-      "parent": 20
-    },
-    {
       "id": 23,
       "name": "Numeral"
-    },
-    {
-      "id": 24,
-      "name": "Numeral, cardinal",
-      "parent": 23
-    },
-    {
-      "id": 25,
-      "name": "Numeral, ordinal",
-      "parent": 23
-    },
-    {
-      "id": 26,
-      "name": "Numeral, distributive",
-      "parent": 23
     },
     {
       "id": 27,
@@ -141,42 +51,112 @@
     {
       "id": 28,
       "name": "Particle"
+    }
+  ],
+  "retired": [
+    {
+      "id": 2,
+      "into": 1
+    },
+    {
+      "id": 4,
+      "into": 3
+    },
+    {
+      "id": 5,
+      "into": 3
+    },
+    {
+      "id": 6,
+      "into": 3
+    },
+    {
+      "id": 7,
+      "into": 3
+    },
+    {
+      "id": 8,
+      "into": 3
+    },
+    {
+      "id": 12,
+      "into": 11
+    },
+    {
+      "id": 13,
+      "into": 11
+    },
+    {
+      "id": 14,
+      "into": 11
+    },
+    {
+      "id": 15,
+      "into": 11
+    },
+    {
+      "id": 16,
+      "into": 11
+    },
+    {
+      "id": 17,
+      "into": 11
+    },
+    {
+      "id": 18,
+      "into": 11
+    },
+    {
+      "id": 21,
+      "into": 20
+    },
+    {
+      "id": 22,
+      "into": 20
+    },
+    {
+      "id": 24,
+      "into": 23
+    },
+    {
+      "id": 25,
+      "into": 23
+    },
+    {
+      "id": 26,
+      "into": 23
     },
     {
       "id": 29,
-      "name": "Participle"
+      "into": 3
     },
     {
       "id": 30,
-      "name": "Gerund"
+      "into": 3
     },
     {
       "id": 31,
-      "name": "Supine"
+      "into": 3
     },
     {
-      "id": 32,
-      "name": "Phrase"
+      "id": 32
     },
     {
-      "id": 33,
-      "name": "Idiom"
+      "id": 33
     },
     {
-      "id": 34,
-      "name": "Proverb"
+      "id": 34
     },
     {
-      "id": 35,
-      "name": "Abbreviation"
+      "id": 35
     },
     {
       "id": 36,
-      "name": "Prefix"
+      "unit": "morpheme"
     },
     {
       "id": 37,
-      "name": "Suffix"
+      "unit": "morpheme"
     }
   ],
   "features": [
@@ -428,9 +408,6 @@
       "part": 1,
       "values": [
         11
-      ],
-      "except": [
-        2
       ]
     },
     {

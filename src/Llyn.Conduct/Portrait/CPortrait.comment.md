@@ -1,5 +1,5 @@
 # CPortrait.cs
-Hash: `d4234bdb54cf1c39`
+Hash: `4a198a9919f2bbd8`
 
 ## `internal static class CPortrait`
 
@@ -12,6 +12,7 @@ Only the panel gates call it, so every member is an `L` helper.
 ## `private static readonly string[] LPortraitLabelKeys`
 
 The wording keys of an entry page, in the order of the engine label's words.
+The four unit keys close the list, in the order the label maps them.
 
 ## `internal static IReadOnlyList<CPortraitChoice> LPortraitChoiceRead()`
 

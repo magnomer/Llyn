@@ -31,19 +31,29 @@ public sealed record LCatalogExample(
 
         return order switch
         {
-            LCatalogOrder.LCatalogOrderLanguage => [.. rows
+            LCatalogOrder.LCatalogOrderLanguage => LCatalogExampleSort(rows
                 .OrderBy(
                     row => row.LCatalogExampleStored.LExampleLanguage,
-                    StringComparer.CurrentCultureIgnoreCase)],
-            LCatalogOrder.LCatalogOrderSource => [.. rows
-                .OrderBy(row => row.LCatalogExampleSource, StringComparer.CurrentCultureIgnoreCase)],
-            LCatalogOrder.LCatalogOrderUsage => [.. rows
-                .OrderByDescending(row => row.LCatalogExampleUsage)],
-            _ => [.. rows
+                    StringComparer.CurrentCultureIgnoreCase)),
+            LCatalogOrder.LCatalogOrderSource => LCatalogExampleSort(rows
+                .OrderBy(row => row.LCatalogExampleSource, StringComparer.CurrentCultureIgnoreCase)),
+            LCatalogOrder.LCatalogOrderUsage => LCatalogExampleSort(rows
+                .OrderByDescending(row => row.LCatalogExampleUsage)),
+            _ => LCatalogExampleSort(rows
                 .OrderBy(
                     row => row.LCatalogExampleStored.LExampleText.LStateValueShow(),
-                    StringComparer.CurrentCultureIgnoreCase)],
+                    StringComparer.CurrentCultureIgnoreCase)),
         };
+    }
+
+    private static IReadOnlyList<LCatalogExample> LCatalogExampleSort(IOrderedEnumerable<LCatalogExample> rows)
+    {
+        return [.. rows
+            .ThenBy(row => row.LCatalogExampleStored.LExampleLanguage, StringComparer.CurrentCultureIgnoreCase)
+            .ThenBy(
+                row => row.LCatalogExampleStored.LExampleText.LStateValueShow(),
+                StringComparer.CurrentCultureIgnoreCase)
+            .ThenBy(row => row.LCatalogExampleStored.LExampleId)];
     }
 
     public bool LCatalogExampleMatch(string query)

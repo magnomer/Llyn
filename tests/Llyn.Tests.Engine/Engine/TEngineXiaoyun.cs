@@ -27,6 +27,25 @@ public sealed class TEngineXiaoyun
     }
 
     [Fact]
+    public void XiaoyunFind_StoredOutOfHeadwordOrder_ListsInThePanelOrder()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("""{ "language": "Fixture" }""");
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        string language = pack.TLanguageFixtureName;
+        TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, language, "蘭", "來");
+        TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
+        long onset = engine.TEngineDiweiFind(language, LDiwei.LDiweiInitial, "來")!.LDiweiId;
+        LVista reverse = engine.TEngineVistaStart("xiaoyun", LCatalogOrder.LCatalogOrderReverse);
+
+        IReadOnlyList<LVistaRow> plain = engine.TEngineXiaoyunFind(language, [onset], string.Empty);
+        IReadOnlyList<LVistaRow> reversed = engine.TEngineXiaoyunFind(language, [onset], string.Empty, reverse);
+
+        Assert.Equal(["爛", "蘭"], plain.Select(row => row.LVistaRowHeadword));
+        Assert.Equal(["蘭", "爛"], reversed.Select(row => row.LVistaRowHeadword));
+    }
+
+    [Fact]
     public void DiweiFind_StoredKey_AnswersTheCellAndItsColumn()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("""{ "language": "Fixture" }""");

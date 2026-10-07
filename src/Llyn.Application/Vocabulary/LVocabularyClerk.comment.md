@@ -1,5 +1,5 @@
 # LVocabularyClerk.cs
-Hash: `4ca949979653b67f`
+Hash: `7fa17adc50c1bf16`
 
 ## `public sealed class LVocabularyClerk`
 
@@ -24,7 +24,10 @@ Reads the root, entry, language, morphology, sentence and speech ports out of `r
 
 ## `public IReadOnlyList<LSpeechValue> LSpeechRead(string language)`
 
-Reads the parts of speech `language` declares, in the order its pack lists them.
+Reads the parts of speech `language` declares, ordered by `LSpeechPack.LSpeechPackSort`.
+So the pack's values come in pack order, and the typed ones follow alphabetically.
+Every view reaches the list through here, so no caller sorts it again.
+The pack is read once per language and kept, since a pack file does not change while the app runs.
 Those are the presets the shell's part-of-speech field offers in its dropdown.
 A language whose pack declares none returns an empty list, and the field is still editable.
 
@@ -33,7 +36,8 @@ A language whose pack declares none returns an empty list, and the field is stil
 Takes a part of speech no preset declares and makes it one of `language`'s presets.
 A name a preset already carries is returned as it stands rather than declared twice.
 Matching is on the trimmed name, without case, because the field is typed into by hand.
-A new preset takes the next free order and a negative code, outside the space a pack owns.
+A new preset takes a negative code, outside the space a pack owns.
+Its stored position is the next free one, but no view orders by it.
 It returns the preset the name now stands for, or `null` when either argument is blank.
 
 ## `public static IReadOnlyList<string> LSpeechShow(IReadOnlyList<LSpeechDraft> drafts)`
@@ -91,4 +95,5 @@ A pack names its parents by code, and the import maps each to the row id it was 
 A feature or value whose parent the pack never declared is skipped.
 Each row is keyed by its parent and code.
 So writing it again updates the wording and keeps the row id.
+The pack's retired parts are applied last, so their links move onto rows already written.
 A pack that declares no vocabulary contributes nothing and is not an error.

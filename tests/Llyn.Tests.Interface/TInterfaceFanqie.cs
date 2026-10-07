@@ -51,6 +51,9 @@ internal static class TInterfaceFanqie
             respelled,
             localize)[0];
 
+    internal static IReadOnlyList<LDiweiSection> TDiweiSectionScan(IReadOnlyList<LFanqieRow> rows) =>
+        LDiweiSection.LDiweiSectionScan(LDiwei.LDiweiInitial, rows, null, [], false, false, static _ => null);
+
     internal static LHypothesis THypothesisCreate(
         IReadOnlyDictionary<string, string> initials,
         IReadOnlyDictionary<string, string> finals,
@@ -76,4 +79,7 @@ internal static class TInterfaceFanqie
 
     internal static LHypothesisSound? THypothesisResolve(this LHypothesis hypothesis, LFanqieRow row) =>
         hypothesis.LHypothesisResolve(row);
+
+    internal static IReadOnlyList<LTallyMark> TTallyMarkScan(IReadOnlyDictionary<string, List<string>> parts) =>
+        LTallyMark.LTallyMarkScan(parts);
 }

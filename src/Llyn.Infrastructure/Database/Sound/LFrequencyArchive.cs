@@ -23,7 +23,7 @@ public sealed class LFrequencyArchive : LFrequencyVault
         using LDatabaseSession session = _lFrequencyArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
-            "SELECT source, raw, band FROM frequency WHERE entry_parent = $id ORDER BY rowid;";
+            "SELECT source, raw, band FROM frequency WHERE entry_parent = $id ORDER BY source;";
         command.Parameters.AddWithValue("$id", entryId);
 
         List<LFrequency> rows = [];

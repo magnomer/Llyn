@@ -34,6 +34,31 @@ public sealed class TEngineFanqieRank
         Assert.Equal([0, 1, 0], TFanqieRankRead(engine, entry.LEntryId, ids));
     }
 
+    [Fact]
+    public async Task FanqieRead_RanksSetOutOfStoredOrder_ListsRankedRowsFirstInRankOrder()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFanqieSource.TEngineWikiPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        Dictionary<string, string> pages = new()
+        {
+            ["https://example.test/broad"] = TEngineFanqie.TEngineFanqieBroad,
+            ["https://example.test/wiki/%E5%90%B3?raw"] = TEngineFanqieSource.TEngineFanqieWiki,
+        };
+        using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(pages));
+        LEntry entry = engine.TEngineEntrySave(TEngineFanqie.TFanqieDraftCreate("吳", pack.TLanguageFixtureName));
+        engine.TEngineFanqieStart(entry.LEntryId);
+        await TEngineFanqie.TFanqieSettle(engine, entry.LEntryId);
+        IReadOnlyList<long> ids = engine.TEngineFanqieRead(entry.LEntryId).Select(row => row.LFanqieRowId).ToList();
+
+        engine.TEngineFanqieSet(entry.LEntryId, ids[^1], 0, false);
+        engine.TEngineFanqieSet(entry.LEntryId, ids[0], 0, false);
+        IReadOnlyList<long> read = engine.TEngineFanqieRead(entry.LEntryId).Select(row => row.LFanqieRowId).ToList();
+
+        Assert.True(ids.Count >= 3);
+        Assert.Equal([ids[^1], ids[0]], read.Take(2));
+        Assert.Equal(ids.Skip(1).Take(ids.Count - 2), read.Skip(2));
+    }
+
     private static List<int> TFanqieRankRead(LEngine engine, long entryId, IReadOnlyList<long> ids)
     {
         IReadOnlyList<LFanqieRow> rows = engine.TEngineFanqieRead(entryId);

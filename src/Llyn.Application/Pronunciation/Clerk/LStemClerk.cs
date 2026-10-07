@@ -39,13 +39,16 @@ public sealed class LStemClerk
             LStemClerkRead(language), query, order, row => row.LStemKey, row => row.LStemCount);
     }
 
-    public IReadOnlyList<LEntry> LStemEntryScan(string language, IReadOnlyList<long> stemIds, string query)
+    public IReadOnlyList<LEntry> LStemEntryScan(
+        string language, IReadOnlyList<long> stemIds, string query, LCatalogOrder order)
     {
         ArgumentNullException.ThrowIfNull(stemIds);
         ArgumentNullException.ThrowIfNull(query);
 
         IReadOnlyList<long> ids = _lStemClerkStems.LStemEntryScan(language, stemIds);
-        return ids.Count == 0 ? [] : _lStemClerkEntries.LEntryScan(ids, query);
+        return ids.Count == 0
+            ? []
+            : LCatalogEntry.LCatalogEntrySort(_lStemClerkEntries.LEntryScan(ids, query), order);
     }
 
     public LStemPage LStemPageRead(LStem stem)
@@ -53,6 +56,8 @@ public sealed class LStemClerk
         ArgumentNullException.ThrowIfNull(stem);
 
         return new LStemPage(
-            stem.LStemLanguage, stem.LStemKey, _lStemClerkStems.LStemCharacterRead(stem.LStemId));
+            stem.LStemLanguage,
+            stem.LStemKey,
+            LGlyphOrder.LGlyphOrderSort(_lStemClerkStems.LStemCharacterRead(stem.LStemId)));
     }
 }

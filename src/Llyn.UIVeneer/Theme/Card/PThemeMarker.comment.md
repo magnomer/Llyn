@@ -1,5 +1,5 @@
 # PThemeMarker.xaml
-Hash: `8704e71610005034`
+Hash: `3c84c1074a2d6ff2`
 
 ## `<Style x:Key="Theme.Marker.Surface" TargetType="Border">`
 
@@ -33,3 +33,12 @@ Deportment turns the chevron and warms the ground through `QLook` rows on `PSurf
 The presets menu, lifted off the form by the same shadow the command tray wears.
 A menu that hovers over a form needs to read as above it and nothing more.
 The heavier popup shadow belongs to windows that cover their page, which this one does not.
+
+## `<Style x:Key="Theme.Unit.Dropper" TargetType="ToggleButton">`
+
+The unit chooser, a chip outlined rather than filled.
+The outline tells a choice of one apart from the filled chips of the parts of speech.
+
+## `<Style x:Key="Theme.Unit.Label" TargetType="TextBlock" BasedOn="{StaticResource Theme.Speech.Name}" />`
+
+The unit's name inside the chooser, written as a chip's name is.

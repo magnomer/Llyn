@@ -1,10 +1,11 @@
 # LReflexLoader.cs
-Hash: `c4b3ccbde2a4690f`
+Hash: `0edad7911c0ec2e7`
 
 ## `internal static class LReflexLoader`
 
 The reflex side of the pack loader.
 It reads the `reflex` list naming one fetch rule per borrowing language.
+It also reads the `order` the rows are shown in, apart from the rules.
 `LLanguageLoader` calls it.
 
 ## `private const string LReflexKey = "reflex";`
@@ -15,9 +16,20 @@ The key of the rule list.
 
 The key of a rule's romanization rewrite array.
 
+## `private const string LReflexOrderKey = "order";`
+
+The key of the declared row order.
+
 ## `public static IReadOnlyList<LReflexRule> LReflexPackScan(JsonElement root)`
 
 Every well-formed rule under `reflex`, in written order, or an empty list when the key is absent.
+
+## `public static LReflexOrder LReflexOrderRead(JsonElement root)`
+
+The row order declared under `order`, or the empty order when the key is absent.
+Its `language` list names the borrowing languages in their order.
+Its `kind` object maps a borrowing language to its kinds in their order.
+The rule list is never read for it, so reordering the rules leaves the screen alone.
 
 ## `private static LReflexRule? LReflexClauseRead(JsonElement row)`
 

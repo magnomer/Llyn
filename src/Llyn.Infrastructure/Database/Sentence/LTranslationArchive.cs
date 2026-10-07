@@ -111,7 +111,7 @@ public sealed class LTranslationArchive : LTranslationVault
             JOIN sense ON sense.sense_id = link.sense_parent
             JOIN entry ON entry.entry_id = sense.entry_parent
             WHERE link.entry_ref = $id
-            ORDER BY entry.headword, sense.position;
+            ORDER BY entry.headword, entry.language, entry.entry_id, sense.position;
             """));
         usages.AddRange(LTranslationIncomingRead(
             connection,
@@ -125,7 +125,7 @@ public sealed class LTranslationArchive : LTranslationVault
             JOIN collocation ON collocation.collocation_id = link.collocation_parent
             JOIN entry ON entry.entry_id = collocation.entry_parent
             WHERE link.entry_ref = $id
-            ORDER BY entry.headword, collocation.position;
+            ORDER BY entry.headword, entry.language, entry.entry_id, collocation.position;
             """));
 
         return usages;

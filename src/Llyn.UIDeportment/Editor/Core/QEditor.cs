@@ -21,6 +21,8 @@ internal sealed class QEditor : QChronicleHost
 
     private readonly QCategory _qCategory;
 
+    private readonly QUnit _qUnit;
+
     private CEditor _cEditor = null!;
 
     internal QEditor(FrameworkElement surface)
@@ -40,6 +42,7 @@ internal sealed class QEditor : QChronicleHost
         _qEditorSound = new QEditorSound(surface);
         _qEditorFont = new QEditorFont(surface);
         _qCategory = new QCategory(surface, _qMarker);
+        _qUnit = new QUnit(surface);
         QEditorBackward.Click += QEditorUndoObserve;
         QEditorHeadword.SetResourceReference(QField.QFieldHintProperty, "Input.Headword");
         QEditorNote.SetResourceReference(QField.QFieldHintProperty, "Input.NoteHint");
@@ -83,7 +86,8 @@ internal sealed class QEditor : QChronicleHost
         _qEditorSound.QEditorSoundIntroduce(editor, host.QWindowVolume);
         _qEditorCard.QEditorCardIntroduce(host, editor);
         _qCategory.QCategoryIntroduce(editor);
-        _qMarker.QMarkerIntroduce(editor, _qCategory);
+        _qUnit.QUnitIntroduce(editor);
+        _qMarker.QMarkerIntroduce(editor, _qCategory, _qUnit);
 
         CDesk desk = editor.CEditorDesk;
         desk.CDeskStarted += _qEditorCard.QEditorStartRefine;

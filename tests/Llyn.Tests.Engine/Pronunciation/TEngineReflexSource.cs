@@ -184,9 +184,9 @@ public sealed class TEngineReflexSource
             await TReflexFixture.TReflexFetchRead(engine, "林", pack.TLanguageFixtureName);
 
         Assert.Equal(
-            [("Xiang", "", "ʈ͡ʂən⁴¹", "zhen3", false), ("Xiang", "", "t͡sən⁴¹", "zhen3", true)],
+            [("Xiang", "", "t͡sən⁴¹", "zhen3", true), ("Xiang", "", "ʈ͡ʂən⁴¹", "zhen3", false)],
             styled.Select(TReflexFixture.TReflexRowRead));
-        Assert.Equal(["old-style", "new-style"], styled.Select(row => row.LReflexDraftNote));
+        Assert.Equal(["new-style", "old-style"], styled.Select(row => row.LReflexDraftNote));
         Assert.Equal([("Xiang", "", "lin¹³", "lin2", true)], plain.Select(TReflexFixture.TReflexRowRead));
     }
 

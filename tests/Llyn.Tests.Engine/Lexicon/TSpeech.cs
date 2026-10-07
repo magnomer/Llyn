@@ -19,7 +19,8 @@ public sealed class TSpeech
         Assert.NotNull(noun);
         Assert.Equal(1, noun.LSpeechValueCode);
         Assert.Equal("Noun", engine.TEngineSpeechRead("English", noun.LSpeechValueId)?.LSpeechValueName);
-        Assert.NotNull(engine.TSpeechValueFind("English", "Verb, transitive"));
+        Assert.NotNull(engine.TSpeechValueFind("English", "Verb"));
+        Assert.Null(engine.TSpeechValueFind("English", "Verb, transitive"));
         Assert.Null(engine.TSpeechValueFind("English", "nosuchpartofspeech"));
 
         Assert.Equal(
@@ -121,15 +122,15 @@ public sealed class TSpeech
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LEntry entry = engine.TEngineEntrySave(TSpeechDraftCreate("Verb, transitive"));
+        LEntry entry = engine.TEngineEntrySave(TSpeechDraftCreate("Verb"));
 
         LSpeech speech = Assert.Single(
             TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase).TEntrySpeechRead(entry.LEntryId));
-        Assert.Equal(engine.TSpeechValueFind("English", "Verb, transitive")!.LSpeechValueId, speech.LSpeechValueId);
+        Assert.Equal(engine.TSpeechValueFind("English", "Verb")!.LSpeechValueId, speech.LSpeechValueId);
         Assert.Null(speech.LSpeechCustom);
 
         Assert.Equal(
-            "Verb, transitive",
+            "Verb",
             Assert.Single(TInterface.TSpeechNameRead(engine.TEngineEntryLoad(entry.LEntryId)!)));
     }
 
@@ -173,9 +174,9 @@ public sealed class TSpeech
 
         LEntry entry = engine.TEngineEntrySave(TSpeechDraftCreate("Noun"));
 
-        engine.TEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Verb, intransitive"));
+        engine.TEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Adjective"));
         Assert.Equal(
-            engine.TSpeechValueFind("English", "Verb, intransitive")!.LSpeechValueId,
+            engine.TSpeechValueFind("English", "Adjective")!.LSpeechValueId,
             Assert.Single(entries.TEntrySpeechRead(entry.LEntryId)).LSpeechValueId);
 
         engine.TEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Verb, ergative"));
@@ -207,19 +208,54 @@ public sealed class TSpeech
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = engine.TEngineEntrySave(
-            TSpeechDraftCreate("Noun", "Verb, transitive", "Verb, ergative"));
+            TSpeechDraftCreate("Noun", "Verb", "Verb, ergative"));
 
         IReadOnlyList<LSpeech> speeches =
             TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase).TEntrySpeechRead(entry.LEntryId);
         Assert.Equal(3, speeches.Count);
         Assert.Equal(
-            engine.TSpeechValueFind("English", "Verb, transitive")!.LSpeechValueId,
+            engine.TSpeechValueFind("English", "Verb")!.LSpeechValueId,
             speeches[1].LSpeechValueId);
         Assert.Equal("Verb, ergative", speeches[2].LSpeechCustom);
 
         Assert.Equal(
-            ["Noun", "Verb, transitive", "Verb, ergative"],
+            ["Noun", "Verb", "Verb, ergative"],
             TInterface.TSpeechNameRead(engine.TEngineEntryLoad(entry.LEntryId)!));
+    }
+
+    [Fact]
+    public void SpeechRead_ValuesTypedOutOfOrder_ListsPackFirstThenAlphabetical()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineSpeechAdd("English", "zeugma");
+        engine.TEngineSpeechAdd("English", "Absolute");
+        engine.TEngineSpeechAdd("English", "clitic");
+
+        IReadOnlyList<string> read = engine.TEngineSpeechRead("English").Select(row => row.LSpeechValueName).ToList();
+        List<string> declared = TInterface.TSpeechPackLoad("English").LSpeechPackValues
+            .Select(row => row.LSpeechValueName)
+            .Where(read.Contains)
+            .ToList();
+        Assert.NotEmpty(declared);
+        Assert.Equal([.. declared, "Absolute", "clitic", "zeugma"], read);
+    }
+
+    [Fact]
+    public void SpeechRead_PackRowStoredOutOfPackOrder_ListsInDeclaredOrder()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        IReadOnlyList<LSpeechValue> before = engine.TEngineSpeechRead("English");
+        LSpeechValue first = before[0];
+        TInterface.TSpeechArchiveCreate(workspace.TWorkspaceDatabase).TSpeechValueCreate(
+            TInterface.TSpeechValueCreate("English", first.LSpeechValueCode, first.LSpeechValueName, 9999));
+
+        Assert.Equal(
+            before.Select(row => row.LSpeechValueId),
+            engine.TEngineSpeechRead("English").Select(row => row.LSpeechValueId));
     }
 
     [Fact]

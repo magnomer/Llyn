@@ -1,5 +1,5 @@
 # LSituationArchive.cs
-Hash: `fa71f0351f83546e`
+Hash: `980959368b84d8da`
 
 ## `public sealed partial class LSituationArchive`
 
@@ -72,7 +72,8 @@ Nothing can attach the row between them.
 
 ## `public IReadOnlyList<LSituation> LSituationRead()`
 
-Every Situation the workspace holds, in the order they were written.
+Every Situation the workspace holds, in the order they were written, only so the read is stable.
+The catalog sorts them by its own order before any view shows them.
 It includes one nothing references, which is reachable nowhere else.
 
 ## `public IReadOnlyDictionary<long, int> LSituationReferenceRead()`
@@ -88,6 +89,8 @@ The referring sides of one Situation, named rather than counted.
 A Meaning is named by its title and, standing without one, by its definition.
 A Collocation is named by its title and, standing without one, by its expression.
 The Entry each side belongs to is read with it, so a row is legible without a second query.
+Card rows sharing a headword go by language, then entry id, then place on the Entry.
+Those are the keys `LCatalogEntry` breaks entry ties by, so storage order never decides a place.
 
 ## `public void LSituationDelete(long id, bool detach)`
 

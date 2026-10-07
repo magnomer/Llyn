@@ -1,7 +1,7 @@
 # LEntry.cs
-Hash: `33c513a331042530`
+Hash: `ee052ee9cffdf320`
 
-## `public sealed record LEntry(long LEntryId, string LEntryHeadword, string LEntryLanguage, int LEntryGrasp, string? LEntryAddedUtc, string? LEntryUpdatedUtc)`
+## `public sealed record LEntry(long LEntryId, string LEntryHeadword, string LEntryLanguage, int LEntryGrasp, string? LEntryAddedUtc, string? LEntryUpdatedUtc, LUnit LEntryUnit = LUnit.LUnitEmpty)`
 
 A lexical entry, the headword record.
 It is the root that owns its written forms and parts of speech.
@@ -17,3 +17,4 @@ The headword is never identity, so two entries with the same headword stay disti
 - `LEntryGrasp` — Half-step count of how well the user knows the entry, zero when unrated, see [LGrasp](LGrasp.comment.md).
 - `LEntryAddedUtc` — Optional creation timestamp, ISO 8601 UTC.
 - `LEntryUpdatedUtc` — Optional last-modification timestamp, ISO 8601 UTC.
+- `LEntryUnit` — The lexical unit the entry stands for, see [LUnit](LUnit.comment.md).

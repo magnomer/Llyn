@@ -101,6 +101,11 @@ public interface LEntryPort
 
     IReadOnlyList<LMarkdownBlock> LEngineMarkdownParse(string? text);
 
+    static string LEngineUnitFormat(LUnit unit)
+    {
+        return LUnitClerk.LUnitFormat(unit);
+    }
+
     static bool LEngineTextMatch(string field, string shown)
     {
         return LExampleClerk.LExampleTextMatch(field, shown);

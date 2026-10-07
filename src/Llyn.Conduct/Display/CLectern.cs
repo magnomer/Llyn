@@ -11,4 +11,5 @@ public sealed record CLectern(
     bool CLecternNoted,
     string CLecternAdded,
     string CLecternUpdated,
-    bool CLecternStamped);
+    bool CLecternStamped,
+    string CLecternUnit);

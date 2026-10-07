@@ -1,5 +1,5 @@
 # PEditor.xaml
-Hash: `bc06cde5b5cc0a02`
+Hash: `c06a674cd8c47a22`
 
 ## `UserControl`
 
@@ -44,6 +44,12 @@ Editable, not a chooser.
 The switch beside it opens the language's presets, and the box takes anything typed.
 So a part of speech no pack declares can still be written down.
 Each one written becomes a chip in the list before the field.
+
+## `<ToggleButton x:Name="PUnitDropper" Style="{StaticResource Theme.Unit.Dropper}">`
+
+The lexical unit leads the part-of-speech row, since it says what kind of piece carries the roles after it.
+It is a chooser, not a field, because a language offers only two or three units.
+Its dropdown and the category dropdown show at once, with no fade, so a pick never looks slow to answer.
 
 ## `<StackPanel x:Name="PEditorSound"`
 

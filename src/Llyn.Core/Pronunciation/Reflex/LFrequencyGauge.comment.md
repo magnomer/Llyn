@@ -8,10 +8,12 @@ The rules that rank and word the sources live here, beside the frequency record 
 
 **Parameters**
 
-- `LFrequencyGaugeBand` — The star count of the first ladder band in pack order, the limit for core, one for rare.
+- `LFrequencyGaugeBand` — The star count of the first ladder band in row order.
+  Core counts the ladder's limit, and rare counts one.
   A band that is not a ladder name is passed over, so a later row can still name the band.
   It is zero when no row carries a ladder band.
-- `LFrequencyGaugeSource` — Every source's figure, one line each, in the order the sources arrive.
+- `LFrequencyGaugeSource` — Every source's figure, one line each, in the order the rows arrive.
+  Callers pass rows in `LFrequency.LFrequencySort` order, so the lines follow the pack.
 
 ## `private const string LFrequencyGaugeUnknown`
 

@@ -70,8 +70,7 @@
                             <Popup
                                 x:Name="PART_Popup"
                                 AllowsTransparency="True"
-                                Placement="Bottom"
-                                PopupAnimation="Fade">
+                                Placement="Bottom">
                                 <Border Margin="10" Style="{DynamicResource Theme.Popup.Surface}">
                                     <ScrollViewer MaxHeight="260" HorizontalScrollBarVisibility="Disabled">
                                         <ItemsPresenter />

@@ -61,7 +61,7 @@ public sealed class LMarkupClerkIntake
             foreach (LEntry stored in _lMarkupIntakeEntries.LEntryHeadwordFind(
                 entry.LMarkupEntryHeadword, entry.LMarkupEntryLanguage))
             {
-                if (_lMarkupIntakeRows.LEntryLoad(stored.LEntryId) is LEntryDraft draft)
+                if (_lMarkupIntakeEntries.LEntryClerkLoad(stored.LEntryId) is LEntryDraft draft)
                 {
                     targets.Add(LMarkupTarget.LMarkupTargetCreate(stored.LEntryId, draft));
                 }

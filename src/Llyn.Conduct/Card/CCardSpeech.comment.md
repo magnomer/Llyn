@@ -1,5 +1,5 @@
 # CCardSpeech.cs
-Hash: `8928e1c415977bae`
+Hash: `df8f15ac63716300`
 
 ## `public sealed class CCardSpeech`
 
@@ -37,3 +37,13 @@ It carries the category menu for the settled text, so one read paints the whole 
 ## `private static CCategory LCategoryRead(LSpeechOffer offer)`
 
 A plain map of the engine's offer onto the menu, holding no rule.
+
+## `internal static LUnit LUnitRowParse(string key)`
+
+The unit a menu key names, for the editor's unit gate.
+A key the menu never offered is a programming error, so it throws.
+
+## `private static IReadOnlyList<(string, bool)> LUnitRowScan(IReadOnlyList<LUnit> units, LUnit taken)`
+
+One pair per offered unit, keyed through `LEngineUnitFormat`, the held one marked.
+The read hands it out with the field, since the unit dropper heads the field's row.

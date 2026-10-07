@@ -1,5 +1,5 @@
 # TEngineFanqieRank.cs
-Hash: `2058eba04117aa36`
+Hash: `2640d00b351d0c49`
 
 ## `public sealed class TEngineFanqieRank`
 
@@ -9,6 +9,8 @@ The pack and the wiki page come from `TEngineFanqieSource`, and the Broad page f
 A rank press stores the rank the clerk resolves from the held rank and the raise flag.
 A press on an unmarked row appends it, and a raising press moves a marked row up.
 A plain press on a marked row unmarks it.
+Rows ranked against their read order lead the clerk's read, in rank order.
+The unranked rows follow in the order they read before.
 
 ## `private static List<int> TFanqieRankRead(LEngine engine, long entryId, IReadOnlyList<long> ids)`
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Llyn.Core;
 
@@ -71,18 +72,24 @@ public sealed record LFanqieGroup(
         ArgumentNullException.ThrowIfNull(books);
 
         IReadOnlyList<string> characters = LFanqieRow.LFanqieCharacterScan(rows);
+        List<LFanqieRow> ordered = [.. LFanqieRow.LFanqieRowSort(rows, books)];
         List<LFanqieGroup> groups = [];
         foreach (string character in characters)
         {
             bool first = true;
             string shown = string.Empty;
+            List<(LFanqieBook, IReadOnlyList<LFanqieRow>)> held = [];
             foreach (LFanqieBook book in books)
             {
-                if (LFanqieRow.LFanqieRowScan(rows, character, book) is not IReadOnlyList<LFanqieRow> found)
+                if (LFanqieRow.LFanqieRowScan(ordered, character, book) is IReadOnlyList<LFanqieRow> found)
                 {
-                    continue;
+                    held.Add((book, found));
                 }
+            }
 
+            foreach ((LFanqieBook book, IReadOnlyList<LFanqieRow> found) in held.OrderBy(
+                         pair => ordered.IndexOf(pair.Item2[0])))
+            {
                 string heading = first && characters.Count > 1 ? character : string.Empty;
                 string label = book.LFanqieBookMatch(shown) ? string.Empty : book.LFanqieBookName;
                 IReadOnlyList<string> stems = first && shengfu is not null

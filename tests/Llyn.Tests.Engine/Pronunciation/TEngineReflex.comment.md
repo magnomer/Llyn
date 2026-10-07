@@ -1,5 +1,5 @@
 # TEngineReflex.cs
-Hash: `b80637437cd5a090`
+Hash: `c3375cfd41eb4e18`
 
 ## `public sealed class TEngineReflex`
 
@@ -10,6 +10,7 @@ A padded language reads the same guise as the bare one.
 A guise flags a language phonemic only when its pack says so, so its respelling takes slashes.
 A blank entry language folds nothing.
 A find fetches each rule's page for the character and reads one row per match.
+Found rows list by the pack's declared order rule, the one a stored read follows.
 The format fills its slots from the named groups, and a double-bracketed piece is dropped when its group is empty.
 A `main` group that captured marks the row, and `every` keeps every match of a rule.
 A rule with `first` marks its first row when no match captured `main`, and a captured `main` wins over it.

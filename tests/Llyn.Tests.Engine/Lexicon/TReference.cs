@@ -134,6 +134,62 @@ public sealed class TReference
         Assert.Equal(3, engine.TEngineUsageRead(LOwner.LOwnerReference)[dictionary.LReferenceId]);
     }
 
+    [Fact]
+    public void ReferenceUsageRead_EqualSentence_ListsByLanguageThenId()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LReference reference = TReferenceCreate(engine, "A Dictionary");
+        LExample french = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
+            0, "French", "same sentence", null, TInterfaceState.TStateAnchorRead(reference.LReferenceId)));
+        LExample first = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
+            0, "English", "same sentence", null, TInterfaceState.TStateAnchorRead(reference.LReferenceId)));
+        LExample second = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
+            0, "English", "same sentence", null, TInterfaceState.TStateAnchorRead(reference.LReferenceId)));
+
+        Assert.Equal(
+            [first.LExampleId, second.LExampleId, french.LExampleId],
+            engine.TEngineUsageRead(reference.LReferenceId, LOwner.LOwnerReference)
+                .Select(row => row.LUsageId));
+    }
+
+    [Fact]
+    public void AuthorUsageRead_EqualSentence_ListsByLanguageThenId()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LReference reference = TReferenceCreate(engine, "A Dictionary");
+        LAuthor author = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Lee"));
+        engine.TRequestCreditApply(reference.LReferenceId, author.LAuthorId, 0);
+        LExample french = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
+            0, "French", "same sentence", null, TInterfaceState.TStateAnchorRead(reference.LReferenceId)));
+        LExample first = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
+            0, "English", "same sentence", null, TInterfaceState.TStateAnchorRead(reference.LReferenceId)));
+        LExample second = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
+            0, "English", "same sentence", null, TInterfaceState.TStateAnchorRead(reference.LReferenceId)));
+
+        Assert.Equal(
+            [first.LExampleId, second.LExampleId, french.LExampleId],
+            engine.TEngineUsageRead(author.LAuthorId, LOwner.LOwnerAuthor)
+                .Select(row => row.LUsageId));
+    }
+
+    [Fact]
+    public void AuthorFind_EqualName_ListsById()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LAuthor first = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Lee"));
+        LAuthor second = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Lee"));
+
+        Assert.Equal(
+            [first.LAuthorId, second.LAuthorId],
+            engine.TEngineAuthorFind("Lee").Select(row => row.LAuthorId));
+    }
+
     private static LEntry TReferenceEntryCreate(LEngine engine)
     {
         return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(

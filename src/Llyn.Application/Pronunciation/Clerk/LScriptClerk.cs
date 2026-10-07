@@ -49,13 +49,15 @@ public sealed class LScriptClerk
             entry = _lScriptClerkEntries.LEntryRead(entryId);
         }
 
-        if (entry is null || LScriptStyleRead(entry.LEntryLanguage).Count == 0)
+        IReadOnlyList<LScriptStyle> styles = entry is null ? [] : LScriptStyleRead(entry.LEntryLanguage);
+        if (entry is null || styles.Count == 0)
         {
             return [];
         }
 
+        IReadOnlyList<string> spelled = LGlyph.LGlyphScan(entry.LEntryHeadword);
         List<LScriptImage> images = [];
-        foreach (string character in LGlyph.LGlyphScan(entry.LEntryHeadword))
+        foreach (string character in spelled)
         {
             IReadOnlyList<LScriptImage> stored;
             lock (_lScriptClerkGate)
@@ -66,7 +68,7 @@ public sealed class LScriptClerk
             images.AddRange(stored);
         }
 
-        return images;
+        return LScriptImage.LScriptImageSort(images, styles, spelled);
     }
 
     public void LScriptClerkStart(long entryId)

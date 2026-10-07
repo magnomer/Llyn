@@ -1,10 +1,11 @@
 # TEngineInflectionFetch.cs
-Hash: `53e64e99f9e9779b`
+Hash: `54903089271b96f9`
 
 ## `public sealed class TEngineInflectionFetch`
 
 Covers the engine's inflection fetch over the shipped English pack against a stub client.
 The stub body is shaped as the Wiktionary REST HTML the pack's morphology source reads.
+The entry is a bare `Verb`, since the pack lists no verb subtypes.
 A body naming both verb forms leaves both slots specified and raises the inflection bulletin once.
 A body naming only the past leaves the past participle unknown rather than unspecified.
 A source that cannot be reached leaves both slots unspecified, stores nothing and is asked only once per session.

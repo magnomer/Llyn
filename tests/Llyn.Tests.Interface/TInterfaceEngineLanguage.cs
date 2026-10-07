@@ -31,6 +31,9 @@ internal static class TInterfaceEngineLanguage
     internal static IReadOnlyList<LFrequency> TEngineFrequencyRead(this LEngine engine, long entryId) =>
         engine.LEngineStaffHeld.LEngineStaffFrequency.LFrequencyClerkRead(entryId);
 
+    internal static LFrequencyGauge? TEngineFrequencyResolve(this LEngine engine, long entryId, string once) =>
+        engine.LEnginePronunciation.LEngineFrequencyResolve(entryId, once);
+
     internal static void TEngineFrequencyStart(this LEngine engine, long entryId)
     {
         engine.LEnginePronunciation.LEngineFrequencyStart(entryId);
@@ -85,6 +88,6 @@ internal static class TInterfaceEngineLanguage
         engine.LEngineStem.LEngineStemResolve(id);
 
     internal static IReadOnlyList<LVistaRow> TEngineKindredFind(
-        this LEngine engine, string language, IReadOnlyList<long> stemIds, string query) =>
-        engine.LEngineStem.LEngineKindredFind(language, stemIds, query);
+        this LEngine engine, string language, IReadOnlyList<long> stemIds, string query, LVista? vista = null) =>
+        engine.LEngineStem.LEngineKindredFind(language, stemIds, query, vista);
 }

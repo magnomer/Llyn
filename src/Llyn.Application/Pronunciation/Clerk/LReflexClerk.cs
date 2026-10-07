@@ -52,6 +52,42 @@ public sealed class LReflexClerk
             : _lReflexClerkLanguages.LLanguageCacheRead(language).LLanguageReflexRules;
     }
 
+    public IReadOnlyList<LReflexDraft> LReflexClerkSort(string language, IReadOnlyList<LReflexDraft> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        LReflexOrder order = string.IsNullOrWhiteSpace(language)
+            ? LReflexOrder.LReflexOrderEmpty
+            : _lReflexClerkLanguages.LLanguageCacheRead(language).LLanguageReflexOrder;
+        return order.LReflexOrderSort(rows);
+    }
+
+    public static IReadOnlyList<LReflexDraft> LReflexClerkScan(IReadOnlyList<LReflex> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        List<LReflexDraft> drafts = new(rows.Count);
+        foreach (LReflex reflex in rows)
+        {
+            drafts.Add(new LReflexDraft(
+                reflex.LReflexLanguage,
+                reflex.LReflexKind,
+                reflex.LReflexText,
+                reflex.LReflexMain,
+                reflex.LReflexId,
+                reflex.LReflexRomanization,
+                reflex.LReflexMeaning,
+                reflex.LReflexOwned,
+                reflex.LReflexNote,
+                reflex.LReflexRespelling,
+                reflex.LReflexRegion,
+                reflex.LReflexAnatomy,
+                reflex.LReflexAnchors));
+        }
+
+        return drafts;
+    }
+
     public IReadOnlyList<string> LReflexFoldedRead(string language)
     {
         return LReflexRuleRead(language)
@@ -134,7 +170,9 @@ public sealed class LReflexClerk
 
         IReadOnlyList<LReflexRule> rules = LReflexRuleRead(entry.LEntryLanguage);
         string epithet = LReflexClerkEpithet.LReflexEpithetCheck(rules)
-            ? LReflexClerkEpithet.LReflexEpithetFormat(rules, _lReflexClerkReflexes.LReflexRead(entryId))
+            ? LReflexClerkEpithet.LReflexEpithetFormat(
+                rules,
+                LReflexClerkSort(entry.LEntryLanguage, LReflexClerkScan(_lReflexClerkReflexes.LReflexRead(entryId))))
             : string.Empty;
         _lReflexClerkEntries.LEntryEpithetSave(entryId, epithet);
     }

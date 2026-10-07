@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Llyn.Core;
 
@@ -10,7 +11,8 @@ public sealed record LScriptImage(
     string LScriptImageCaption,
     string LScriptImageGloss,
     byte[] LScriptImageData,
-    string LScriptImageEpoch = "")
+    string LScriptImageEpoch = "",
+    long LScriptImageId = 0)
 {
     public bool LScriptImageMatch(string character, string style)
     {
@@ -49,5 +51,50 @@ public sealed record LScriptImage(
         }
 
         return found.Count == 0 ? null : found;
+    }
+
+    public static IReadOnlyList<LScriptImage> LScriptImageSort(
+        IReadOnlyList<LScriptImage> images, IReadOnlyList<LScriptStyle> styles, IReadOnlyList<string> spelled)
+    {
+        ArgumentNullException.ThrowIfNull(images);
+        ArgumentNullException.ThrowIfNull(styles);
+        ArgumentNullException.ThrowIfNull(spelled);
+
+        Dictionary<string, int> characters = new(StringComparer.Ordinal);
+        foreach (string character in spelled)
+        {
+            characters.TryAdd(character, characters.Count);
+        }
+
+        Dictionary<string, int> named = new(StringComparer.Ordinal);
+        Dictionary<string, Dictionary<string, int>> epochs = new(StringComparer.Ordinal);
+        foreach (LScriptStyle style in styles)
+        {
+            if (!named.TryAdd(style.LScriptStyleName, named.Count))
+            {
+                continue;
+            }
+
+            Dictionary<string, int> declared = new(StringComparer.Ordinal);
+            foreach (LEpoch epoch in style.LScriptStyleEpoch)
+            {
+                declared.TryAdd(epoch.LEpochCode, declared.Count);
+            }
+
+            epochs[style.LScriptStyleName] = declared;
+        }
+
+        return images
+            .OrderBy(image => characters.GetValueOrDefault(image.LScriptImageCharacter, int.MaxValue))
+            .ThenBy(static image => image.LScriptImageCharacter, LGlyphOrder.LGlyphOrderComparer)
+            .ThenBy(image => named.GetValueOrDefault(image.LScriptImageStyle, int.MaxValue))
+            .ThenBy(static image => image.LScriptImageStyle, StringComparer.Ordinal)
+            .ThenBy(image => image.LScriptImageEpoch.Length == 0
+                ? int.MaxValue
+                : epochs.GetValueOrDefault(image.LScriptImageStyle)?
+                    .GetValueOrDefault(image.LScriptImageEpoch, int.MaxValue - 1) ?? int.MaxValue - 1)
+            .ThenBy(static image => image.LScriptImageEpoch, StringComparer.Ordinal)
+            .ThenBy(static image => image.LScriptImageId)
+            .ToList();
     }
 }

@@ -16,10 +16,6 @@
       "name": "Noun"
     },
     {
-      "id": 2,
-      "name": "Noun, proper"
-    },
-    {
       "id": 3,
       "name": "Verb"
     },
@@ -38,30 +34,33 @@
     {
       "id": 7,
       "name": "Numeral"
+    }
+  ],
+  "retired": [
+    {
+      "id": 2,
+      "into": 1
     },
     {
       "id": 8,
-      "name": "Participle"
+      "into": 3
     },
     {
       "id": 9,
-      "name": "Infinitive"
+      "into": 3
     },
     {
       "id": 10,
-      "name": "Gerund"
+      "into": 3
     },
     {
-      "id": 11,
-      "name": "Indeclinable"
+      "id": 11
     },
     {
-      "id": 12,
-      "name": "Compound"
+      "id": 12
     },
     {
-      "id": 13,
-      "name": "Phrase"
+      "id": 13
     }
   ],
   "features": [],

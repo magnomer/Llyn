@@ -95,7 +95,10 @@ public sealed class LFrequencyClerk
             rows.Add(resolved);
         }
 
-        return rows;
+        IReadOnlyList<LSourceSpec> declared = string.IsNullOrWhiteSpace(entry.LEntryLanguage)
+            ? []
+            : _lFrequencyClerkLanguages.LLanguageCacheRead(entry.LEntryLanguage).LLanguageFrequencies;
+        return LFrequency.LFrequencySort(rows, declared);
     }
 
     public void LFrequencyClerkStart(long entryId)

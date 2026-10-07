@@ -1,5 +1,5 @@
 # TAnchor.cs
-Hash: `fd6d9f52869f25fb`
+Hash: `abde0347a025622a`
 
 ## `public sealed class TAnchor`
 
@@ -10,3 +10,4 @@ Anchors round trip sorted through the archive and the loaded draft, and an unkno
 The row scan leaves out an unstored row and marks a stored one held and estimated.
 The anchor text of a headword longer than one glyph is empty, though its row is anchored.
 The anchor request toggles one pair on one row alone, dirties the draft and commits with the entry.
+The two reflex rows read back by text, not as saved, so the anchored row reads first.

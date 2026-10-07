@@ -9,6 +9,7 @@ internal static class LReflexLoader
 {
     private const string LReflexKey = "reflex";
     private const string LReflexRecast = "recast";
+    private const string LReflexOrderKey = "order";
 
     public static IReadOnlyList<LReflexRule> LReflexPackScan(JsonElement root)
     {
@@ -30,6 +31,27 @@ internal static class LReflexLoader
         }
 
         return rules;
+    }
+
+    public static LReflexOrder LReflexOrderRead(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty(LReflexOrderKey, out JsonElement order) ||
+            order.ValueKind != JsonValueKind.Object)
+        {
+            return LReflexOrder.LReflexOrderEmpty;
+        }
+
+        Dictionary<string, IReadOnlyList<string>> kinds = new(StringComparer.Ordinal);
+        if (order.TryGetProperty("kind", out JsonElement declared) && declared.ValueKind == JsonValueKind.Object)
+        {
+            foreach (JsonProperty language in declared.EnumerateObject())
+            {
+                kinds[language.Name.Trim()] = LPack.LPackTextScan(declared, language.Name);
+            }
+        }
+
+        return new LReflexOrder(LPack.LPackTextScan(order, "language"), kinds);
     }
 
     private static LReflexRule? LReflexClauseRead(JsonElement row)

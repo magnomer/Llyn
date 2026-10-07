@@ -38,7 +38,7 @@ public sealed class LAuthorUsage
             JOIN entry ON entry.entry_id = sense.entry_parent
             WHERE credit.author_ref = $id
             GROUP BY sense.sense_id
-            ORDER BY entry.headword, sense.position;
+            ORDER BY entry.headword, entry.language, entry.entry_id, sense.position;
             """));
         usages.AddRange(LAuthorCardRead(
             connection,
@@ -55,7 +55,7 @@ public sealed class LAuthorUsage
             JOIN entry ON entry.entry_id = collocation.entry_parent
             WHERE credit.author_ref = $id
             GROUP BY collocation.collocation_id
-            ORDER BY entry.headword, collocation.position;
+            ORDER BY entry.headword, entry.language, entry.entry_id, collocation.position;
             """));
         usages.AddRange(LAuthorExampleRead(connection, id));
         return usages;
@@ -107,7 +107,7 @@ public sealed class LAuthorUsage
                 ON gloss.example_parent = example.example_id AND gloss.position = 0
             WHERE credit.author_ref = $id
             GROUP BY example.example_id
-            ORDER BY example.text;
+            ORDER BY example.text, example.language, example.example_id;
             """;
         command.Parameters.AddWithValue("$id", id);
 

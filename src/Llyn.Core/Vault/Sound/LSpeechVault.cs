@@ -13,4 +13,6 @@ public interface LSpeechVault
     LSpeechValue? LSpeechValueFind(string language, string name);
 
     LSpeechPack LSpeechLoad(string language);
+
+    void LSpeechRetirementApply(string language, LSpeechRetirement row);
 }

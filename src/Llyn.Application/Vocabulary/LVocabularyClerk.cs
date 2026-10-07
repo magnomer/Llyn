@@ -6,6 +6,7 @@ namespace Llyn.Application;
 
 public sealed class LVocabularyClerk
 {
+    private readonly Dictionary<string, LSpeechPack> _lVocabularyClerkPacks = new(StringComparer.Ordinal);
     private readonly LVault _lVocabularyClerkVault;
     private readonly LEntryVault _lVocabularyClerkEntries;
     private readonly LLanguageVault _lVocabularyClerkLanguages;
@@ -26,7 +27,14 @@ public sealed class LVocabularyClerk
 
     public IReadOnlyList<LSpeechValue> LSpeechRead(string language)
     {
-        return _lVocabularyClerkSpeeches.LSpeechValueRead(language);
+        IReadOnlyList<LSpeechValue> rows = _lVocabularyClerkSpeeches.LSpeechValueRead(language);
+        if (!_lVocabularyClerkPacks.TryGetValue(language, out LSpeechPack? pack))
+        {
+            pack = _lVocabularyClerkSpeeches.LSpeechLoad(language);
+            _lVocabularyClerkPacks[language] = pack;
+        }
+
+        return pack.LSpeechPackSort(rows);
     }
 
     public LSpeechValue? LSpeechAdd(string language, string name)
@@ -226,6 +234,11 @@ public sealed class LVocabularyClerk
                 }
 
                 morphology.LMorphologyCreate(value with { LMorphologyFeatureId = featureId });
+            }
+
+            foreach (LSpeechRetirement retirement in pack.LSpeechPackRetirements)
+            {
+                speeches.LSpeechRetirementApply(language, retirement);
             }
         }
 

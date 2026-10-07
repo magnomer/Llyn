@@ -1,5 +1,5 @@
 # LCatalog.cs
-Hash: `d1fe2f8dab2a49ea`
+Hash: `113003a013855408`
 
 ## `public static class LCatalog`
 
@@ -48,7 +48,7 @@ It is the same fold the database's `lfold` helper applies.
 A match made in memory therefore agrees with one made in a query.
 Every place that asks whether two typed wordings name one row folds both sides with this.
 
-## `public static (string LCatalogMarkLead, string LCatalogMarkText, string LCatalogMarkTail)`
+## `public static (string LCatalogMarkLead, string LCatalogMarkText, string LCatalogMarkTail) LCatalogMarkFind(string text, string word)`
 
 Splits a found text around the first place the typed word stands in it, ignoring case in the current culture.
 A picker draws the middle piece in weight, so a reader sees why the row is offered.
@@ -61,6 +61,22 @@ A text the word does not stand in reads whole as its lead.
 The count an offered row shows for how often its stored row is already used.
 A row nobody uses shows nothing, because an unused row needs no number to say so.
 Every offer that carries a usage count reads it here, so the rows agree.
+
+## `public static IReadOnlyList<LCatalogRow> LCatalogUsageSort<LCatalogRow>(IEnumerable<LCatalogRow> rows, Func<LCatalogRow, int> usage, Func<LCatalogRow, string> name, Func<LCatalogRow, long> id)`
+
+The one usage ordering for every catalog whose rows carry a usage count and a name.
+The most used row comes first.
+Equal counts go by name in the reader culture, ignoring case, then by id.
+The id comes last and only keeps the result stable, so storage order never decides a place.
+The Register, Situation and Source catalogs read it, and so do the offers built on them.
+The name and id tie is `LCatalogNameSort`, so the two orderings never drift apart.
+
+## `public static IOrderedEnumerable<LCatalogRow> LCatalogNameSort<LCatalogRow>(IOrderedEnumerable<LCatalogRow> rows, Func<LCatalogRow, string> name, Func<LCatalogRow, long> id)`
+
+The one tie for catalog rows that carry a name and an id, after whatever keys the caller ordered by.
+Rows still equal go by name in the reader culture, ignoring case, then by id.
+The id comes last and only keeps the result stable, so storage order never decides a place.
+`LCatalogUsageSort` ends with it, and so does every ordering of the Source catalog.
 
 ## `public static string LCatalogTallyFormat(int count, string realm, Func<string, string> localize)`
 

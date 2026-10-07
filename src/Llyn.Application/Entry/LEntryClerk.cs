@@ -76,7 +76,13 @@ public sealed class LEntryClerk
     public LEntryDraft? LEntryClerkLoad(long id)
     {
         LEntryDraft? draft = _lEntryClerkEntries.LEntryLoad(id);
-        return draft is null ? null : _lEntryClerkRecordings.LRecordingClerkResolve(draft);
+        return draft is null
+            ? null
+            : _lEntryClerkRecordings.LRecordingClerkResolve(draft with
+            {
+                LEntryDraftReflexes = _lEntryClerkReflexes.LReflexClerkSort(
+                    draft.LEntryDraftLanguage, draft.LEntryDraftReflexes),
+            });
     }
 
     public IReadOnlyList<LEntry> LEntryClerkFind(string query)
@@ -149,10 +155,11 @@ public sealed class LEntryClerk
     }
 
     public static IReadOnlyList<LEntry> LEntryClerkMatch(
-        IReadOnlyList<LEntry> entries, LCatalogFilter filter, string query)
+        IReadOnlyList<LEntry> entries, LCatalogFilter filter, string query, LCatalogOrder order)
     {
         ArgumentNullException.ThrowIfNull(filter);
-        return LEntryClerkMatch(filter.LCatalogFilterApply(entries, LEntryLanguageRead), query);
+        return LCatalogEntry.LCatalogEntrySort(
+            LEntryClerkMatch(filter.LCatalogFilterApply(entries, LEntryLanguageRead), query), order);
     }
 
     public LRevision LEntryClerkDelete(long id)
@@ -218,7 +225,9 @@ public sealed class LEntryClerk
 
         string language = draft.LEntryDraftLanguage;
         LEntry entry = _lEntryClerkEntries.LEntryCreate(
-            new LEntry(0, draft.LEntryDraftHeadword, language, 0, null, null), forms: [], speeches: []);
+            new LEntry(0, draft.LEntryDraftHeadword, language, 0, null, null, draft.LEntryDraftUnit),
+            forms: [],
+            speeches: []);
         List<LRevisionDelta> changes = [new LRevisionDelta(entry.LEntryId, "entry", "create", entry.LEntryHeadword)];
 
         LCardClerkField.LCardValidate(draft.LEntryDraftMeanings, collocation: false);
@@ -309,6 +318,7 @@ public sealed class LEntryClerk
             {
                 LEntryHeadword = draft.LEntryDraftHeadword,
                 LEntryLanguage = language,
+                LEntryUnit = draft.LEntryDraftUnit,
             });
         }
 

@@ -81,4 +81,19 @@ public sealed class TEntryStore
         Assert.Equal(2, entries.TEntryFind(string.Empty).Count);
         Assert.Single(entries.TEntryFind("  Äpfel "));
     }
+
+    [Fact]
+    public void EntryHeadwordFind_LanguagesStoredOutOfOrder_ListsByLanguageThenId()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
+
+        LEntry lower = entries.TEntryCreate(TInterface.TEntryCreate(0, "rosa", "latin", 0, null, null), [], []);
+        LEntry first = entries.TEntryCreate(TInterface.TEntryCreate(0, "rosa", "Latin", 0, null, null), [], []);
+        LEntry second = entries.TEntryCreate(TInterface.TEntryCreate(0, "rosa", "Latin", 0, null, null), [], []);
+
+        Assert.Equal(
+            [first.LEntryId, second.LEntryId, lower.LEntryId],
+            entries.TEntryHeadwordFind("LATIN", "rosa").Select(entry => entry.LEntryId));
+    }
 }

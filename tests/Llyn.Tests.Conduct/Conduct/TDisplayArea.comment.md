@@ -1,5 +1,5 @@
 # TDisplayArea.cs
-Hash: `df422da478ec48fa`
+Hash: `15c98e3dfce5cd7c`
 
 ## `public sealed class TDisplayArea`
 
@@ -10,6 +10,7 @@ The wing opens and chooses entries, so most cases stand on its display.
 
 A loaded entry opens once, with its headword, language, speech names, note and worded stamp ready to draw.
 The note arrives parsed, so its italic span is already a block's span.
+An entry without a unit carries an empty unit key.
 
 ## `public void DisplayEntryOpen_GoneEntry_ClosesTheView()`
 

@@ -1,5 +1,5 @@
 # LSchemaMigration.cs
-Hash: `f24ed473c9d0adf7`
+Hash: `05ad3d84636fbb0a`
 
 ## `public static class LSchemaMigration`
 
@@ -21,7 +21,7 @@ So a crash at any point leaves it whole, at one version or the other.
 A copy of the old file is kept beside it under its version, so nothing is lost to a rebuild.
 The same rebuild serves a file written by a newer build, since what this build cannot read it cannot keep.
 
-## `public const long LSchemaMigrationVersion = 75;`
+## `public const long LSchemaMigrationVersion = 76;`
 
 The schema version this build produces.
 A change to any table raises it.

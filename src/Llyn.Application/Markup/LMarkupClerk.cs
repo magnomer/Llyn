@@ -16,10 +16,12 @@ public sealed class LMarkupClerk
     private readonly LMeaningVault _lMarkupClerkMeanings;
     private readonly LReferenceVault _lMarkupClerkReferences;
     private readonly LAuthorVault _lMarkupClerkAuthors;
+    private readonly LReflexClerk _lMarkupClerkReflexes;
 
-    public LMarkupClerk(LRig rig)
+    public LMarkupClerk(LRig rig, LReflexClerk reflexes)
     {
         ArgumentNullException.ThrowIfNull(rig);
+        ArgumentNullException.ThrowIfNull(reflexes);
         _lMarkupClerkVault = rig.LRigVault;
         _lMarkupClerkMarkup = rig.LRigMarkup;
         _lMarkupClerkLanguages = rig.LRigLanguages;
@@ -29,6 +31,7 @@ public sealed class LMarkupClerk
         _lMarkupClerkMeanings = rig.LRigMeanings;
         _lMarkupClerkReferences = rig.LRigReferences;
         _lMarkupClerkAuthors = rig.LRigAuthors;
+        _lMarkupClerkReflexes = reflexes;
     }
 
     public LMarkupCargo LMarkupClerkRead(string path)
@@ -118,8 +121,10 @@ public sealed class LMarkupClerk
             transcriptions.Add(transcription with { LTranscriptionDraftId = 0, LTranscriptionDraftSeeded = false });
         }
 
-        List<LReflexDraft> reflexes = new(draft.LEntryDraftReflexes.Count);
-        foreach (LReflexDraft reflex in draft.LEntryDraftReflexes)
+        IReadOnlyList<LReflexDraft> sorted =
+            _lMarkupClerkReflexes.LReflexClerkSort(draft.LEntryDraftLanguage, draft.LEntryDraftReflexes);
+        List<LReflexDraft> reflexes = new(sorted.Count);
+        foreach (LReflexDraft reflex in sorted)
         {
             reflexes.Add(reflex with
             {
@@ -143,7 +148,8 @@ public sealed class LMarkupClerk
             draft.LEntryDraftNote,
             0,
             LMarkupEtymologyCreate(draft.LEntryDraftEtymology),
-            LMarkupEtymonCreate(draft.LEntryDraftEtymology));
+            LMarkupEtymonCreate(draft.LEntryDraftEtymology),
+            draft.LEntryDraftUnit);
     }
 
     private LMarkupEtymology? LMarkupEtymologyCreate(LEtymologyDraft etymology)

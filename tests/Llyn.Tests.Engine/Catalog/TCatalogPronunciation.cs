@@ -109,6 +109,28 @@ public sealed class TCatalogPronunciation
         Assert.Equal("[ ]", row.LCatalogPronunciationText);
     }
 
+
+    [Fact]
+    public void PronunciationSort_EqualSounds_ListsByLanguageHeadwordThenId()
+    {
+        IReadOnlyList<LCatalogPronunciation> stored =
+        [
+            TInterface.TCatalogPronunciationCreate(TInterface.TEntryCreate(3, "bank", "French", 0, null, null), "x"),
+            TInterface.TCatalogPronunciationCreate(TInterface.TEntryCreate(2, "bank", "English", 0, null, null), "x"),
+            TInterface.TCatalogPronunciationCreate(TInterface.TEntryCreate(1, "bank", "French", 0, null, null), "x"),
+            TInterface.TCatalogPronunciationCreate(TInterface.TEntryCreate(5, "ant", "French", 0, null, null), "x"),
+        ];
+
+        Assert.Equal(
+            [2L, 5L, 1L, 3L],
+            TInterface.TCatalogPronunciationSort(stored, LCatalogOrder.LCatalogOrderSound)
+                .Select(row => row.LCatalogPronunciationEntry.LEntryId));
+        Assert.Equal(
+            [5L, 2L, 1L, 3L],
+            TInterface.TCatalogPronunciationSort(stored, LCatalogOrder.LCatalogOrderHeadword)
+                .Select(row => row.LCatalogPronunciationEntry.LEntryId));
+    }
+
     private static void TCatalogPronunciationSave(LEngine engine, string headword, string? sound)
     {
         engine.TEngineEntrySave(TInterface.TEntryDraftCreate(

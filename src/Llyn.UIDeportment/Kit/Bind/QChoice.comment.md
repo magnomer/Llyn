@@ -1,5 +1,5 @@
 # QChoice.cs
-Hash: `2b16bf82f0cd5080`
+Hash: `df35e25695e58d68`
 
 ## `internal static class QChoice`
 
@@ -32,6 +32,17 @@ Ties a dropper to its popup, which markup bindings did before.
 Checking the dropper opens the popup and unchecking closes it.
 A popup that closes itself on an outside click unchecks the dropper.
 The anchor is where the popup is placed, the search bar or the dropper itself.
+
+The popup opens on the press, not the release, so it answers as soon as the button goes down.
+A button left to itself checks only on release, which reads as lag.
+The popup stays open while the dropper holds the mouse.
+Otherwise the release over the dropper would count as an outside click and close it at once.
+The release itself is swallowed, and the dropper lets the mouse go by hand.
+A button holding the mouse turns pressed on any move.
+Its own release would then click it, uncheck it and close the popup it just opened.
+Once the dropper lets the mouse go, the popup takes it and closes on the next outside click.
+A press while the popup is open never reaches the dropper, because the popup holds the mouse.
+That press only closes the popup.
 
 ## `internal static void QChoiceOrderApply(Popup dropdown, CCatalogOrder order)`
 

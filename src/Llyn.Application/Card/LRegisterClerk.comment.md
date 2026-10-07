@@ -1,5 +1,5 @@
 # LRegisterClerk.cs
-Hash: `45d08a7596eb38ec`
+Hash: `2e309e32b0860f5d`
 
 ## `public sealed class LRegisterClerk`
 
@@ -21,6 +21,8 @@ The shelf a card offers while a Register is being typed.
 It holds every Register, because a Register belongs to no language.
 `language` only names the pack whose rows are seeded before the shelf is read, so a first card sees them.
 An empty query offers the whole shelf.
+The shelf is ordered by `LCatalogRegister.LCatalogRegisterSort` under usage, most marked first, then by name.
+Storage order never decides which Registers come first.
 
 ## `public LRegisterOffer LRegisterClerkFind(string text, string language, LDraft? draft, long card)`
 
@@ -30,13 +32,15 @@ A Register whose trimmed name is blank is skipped.
 A Register the card already links by id is left out.
 No draft or no such card holds nothing, so every match is offered.
 Each row is split around the word by `LCatalog.LCatalogMarkFind`.
-At most `LCatalog.LCatalogOfferLimit` rows are kept.
+At most `LCatalog.LCatalogOfferLimit` rows are kept, taken in the shelf's usage order.
+So the most marked Registers are offered, never the earliest stored.
 The offer shows only when some Register is left.
 
 ## `public IReadOnlyList<LCatalogRegister> LRegisterClerkFind(string query, LCatalogOrder order)`
 
 The shelf the tenor panel browses, every Register counted and ordered.
 A row is answered by its name.
+The rows are ordered by `LCatalogRegister.LCatalogRegisterSort`, the one owner of the Register order.
 
 ## `public LRegister LRegisterClerkCreate(string name)`
 

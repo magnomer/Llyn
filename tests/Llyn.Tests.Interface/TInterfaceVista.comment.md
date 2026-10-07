@@ -1,5 +1,5 @@
 # TInterfaceVista.cs
-Hash: `bf1141bae110b881`
+Hash: `e5271b850e9bf0e2`
 
 ## `internal static partial class TInterface`
 
@@ -10,3 +10,4 @@ The engine no longer stores a filter or a mode.
 So the engine start relay hands it an empty filter and the reading mode.
 The posture start relay resolves both from what the posture stored, as the window does.
 Both pass the blank flag through with the same default the engine gives it.
+The xiaoyun relay takes an optional vista, so a test can pin the order the panel sets.

@@ -1,5 +1,5 @@
 # LDraftClerkEquality.cs
-Hash: `e66facd1e63d8aa9`
+Hash: `0b9b08e549d4ca65`
 
 ## `public static class LDraftClerkEquality`
 
@@ -22,6 +22,7 @@ An entry draft is compared through its content, so blank scaffolding is ignored 
 
 Field by field, whether two forms of an entry say the same thing.
 Language sits beside the headword, because changing only the tongue is still an edit.
+The lexical unit is compared too, so choosing one alone is an edit.
 The headword is compared trimmed and the note canonical, since the commit stores both that way.
 A form that differs only there would otherwise report itself changed forever.
 The lists inside are compared by their contents, since records compare them by reference.
@@ -56,7 +57,9 @@ A seeded row still blank is left out, as it is for pronunciations.
 
 ## `private static bool LReflexMatch(IReadOnlyList<LReflexDraft> one, IReadOnlyList<LReflexDraft> other)`
 
-Whether two drafts record the same reflexes in the same order, blank rows left out.
+Whether two drafts record the same reflexes in any order, blank rows left out.
+Every view lists reflexes in the pack's declared order, so row order is no change.
+So a draft held from before the order was declared does not look dirty.
 The anchors are compared by content, and the rest of the row as a record.
 
 ## `private static bool LSpeechMatch(IReadOnlyList<LSpeechDraft> one, IReadOnlyList<LSpeechDraft> other)`

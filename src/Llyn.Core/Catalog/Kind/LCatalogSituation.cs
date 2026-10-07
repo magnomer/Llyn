@@ -33,13 +33,21 @@ public sealed record LCatalogSituation(
             LCatalogOrder.LCatalogOrderKind => [.. rows
                 .OrderBy(
                     row => row.LCatalogSituationStored.LSituationKind.LStateValueShow(),
-                    StringComparer.CurrentCultureIgnoreCase)],
-            LCatalogOrder.LCatalogOrderUsage => [.. rows
-                .OrderByDescending(row => row.LCatalogSituationUsage)],
+                    StringComparer.CurrentCultureIgnoreCase)
+                .ThenBy(
+                    row => row.LCatalogSituationStored.LSituationTitle.LStateValueShow(),
+                    StringComparer.CurrentCultureIgnoreCase)
+                .ThenBy(row => row.LCatalogSituationStored.LSituationId)],
+            LCatalogOrder.LCatalogOrderUsage => LCatalog.LCatalogUsageSort(
+                rows,
+                static row => row.LCatalogSituationUsage,
+                static row => row.LCatalogSituationStored.LSituationTitle.LStateValueShow(),
+                static row => row.LCatalogSituationStored.LSituationId),
             _ => [.. rows
                 .OrderBy(
                     row => row.LCatalogSituationStored.LSituationTitle.LStateValueShow(),
-                    StringComparer.CurrentCultureIgnoreCase)],
+                    StringComparer.CurrentCultureIgnoreCase)
+                .ThenBy(row => row.LCatalogSituationStored.LSituationId)],
         };
     }
 

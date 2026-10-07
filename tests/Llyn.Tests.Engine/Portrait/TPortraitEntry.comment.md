@@ -1,5 +1,5 @@
 # TPortraitEntry.cs
-Hash: `37c8bcf75bb8e324`
+Hash: `1365a92d541c73a7`
 
 ## `public sealed class TPortraitEntry`
 
@@ -30,3 +30,7 @@ An entry that says nothing about its origin gets no heading.
 ## `public void PortraitRead_MissingEntry_Throws()`
 
 An entry that no longer stands is an error, not an empty page.
+
+## `public void PortraitRead_ChosenUnit_LeadsTheSpeechChips()`
+
+A chosen unit's word opens the speech chips, ahead of the parts of speech.

@@ -1,5 +1,5 @@
 # LFanqieClerk.cs
-Hash: `6002e953c2453046`
+Hash: `a0f3ab96ca9fc5fc`
 
 ## `public sealed class LFanqieClerk`
 
@@ -23,10 +23,13 @@ The reconstruction hypothesis the pack of `language` declares, or null.
 ## `public IReadOnlyList<LFanqieRow> LFanqieClerkRead(long entryId)`
 
 The stored rows of every character of the entry, tone formatted by the localized pattern.
+Characters follow the headword, and each character's rows follow `LFanqieRow.LFanqieRowSort` over the pack's books.
+The archive returns rows in storage order, so this is the one place the flat list gains its order.
+The portrait and the anchor picker read this flat list.
 
 ## `public IReadOnlyList<LFanqieGroup> LFanqieClerkDivide(long entryId)`
 
-The stored rows grouped by book in the pack's order.
+The stored rows grouped by book, each block placed by its first row in the declared order.
 The stored phonetic series of each character rides on that character's first block.
 
 ## `public string LFanqieClerkFormat(long entryId, string headword)`

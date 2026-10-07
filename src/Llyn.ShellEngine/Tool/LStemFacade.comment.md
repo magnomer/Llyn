@@ -1,5 +1,5 @@
 # LStemFacade.cs
-Hash: `a5e13d58789fa5b1`
+Hash: `9d4ffd1897f47a71`
 
 ## `internal sealed class LStemFacade`
 
@@ -54,6 +54,8 @@ Nothing is listed while no series is chosen.
 ## `internal IReadOnlyList<LVistaRow> LEngineKindredFind(string language, IReadOnlyList<long> stemIds, string query, LVista? vista = null)`
 
 The entry rows the series reach, built as catalog rows with the chosen one marked.
+They follow the order of `vista`, the panel's order setting, as the catalog entry list does.
+Without a vista they fall back to headword order.
 
 ## `private string LEngineLanguageRead(long? chosen)`
 

@@ -1,5 +1,5 @@
 # LFrequencyArchive.cs
-Hash: `77aaabace2baf0bc`
+Hash: `6a2ae58bf5ab16a1`
 
 ## `public sealed class LFrequencyArchive : LFrequencyVault`
 
@@ -7,7 +7,9 @@ Reads and writes the frequency rows one entry carries, one row per pack source t
 
 ## `public IReadOnlyList<LFrequency> LFrequencyRead(long entryId)`
 
-Reads the entry's rows in the order they were written, which is the pack's source order.
+Reads the entry's rows by source name, only so the result is stable.
+A refetch rewrites the rows, so write order carries no meaning.
+The engine reorders them by the pack's declared sources.
 The word interval is not stored, so the rows come back without it for the engine to derive.
 
 ## `public void LFrequencySet(long entryId, IReadOnlyList<LFrequency> rows)`

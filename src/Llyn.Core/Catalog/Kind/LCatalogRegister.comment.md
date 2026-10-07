@@ -1,5 +1,5 @@
 # LCatalogRegister.cs
-Hash: `cdd454f689f313ee`
+Hash: `6738e8767039f0da`
 
 ## `public sealed record LCatalogRegister(LRegister LCatalogRegisterStored, int LCatalogRegisterUsage, bool LCatalogRegisterChosen = false)`
 
@@ -31,6 +31,9 @@ Builds the row from the stored Register and the number of cards marked with it.
 
 Orders the rows under one ordering, and under the name where the ordering is not one a Register answers to.
 A Register nothing is marked with counts as zero, which puts it last under the usage ordering.
+Equal counts fall back to the name through the shared rule `LCatalog.LCatalogUsageSort`.
+Rows still equal go by id, which only keeps the result stable, so storage order never decides a place.
+This is the one owner of the Register order, for the tenor panel and for a card's offer alike.
 
 ## `public bool LCatalogRegisterMatch(string query)`
 

@@ -16,10 +16,6 @@
       "name": "Noun"
     },
     {
-      "id": 2,
-      "name": "Noun, proper"
-    },
-    {
       "id": 3,
       "name": "Verb"
     },
@@ -58,14 +54,18 @@
     {
       "id": 12,
       "name": "Interjection"
+    }
+  ],
+  "retired": [
+    {
+      "id": 2,
+      "into": 1
     },
     {
-      "id": 13,
-      "name": "Phrase"
+      "id": 13
     },
     {
-      "id": 14,
-      "name": "Idiom"
+      "id": 14
     }
   ],
   "features": [],

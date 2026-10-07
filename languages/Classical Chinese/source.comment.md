@@ -1,5 +1,5 @@
 # source.json
-Hash: `da3248242db9b1e6`
+Hash: `602ad2a063e6bf5b`
 
 ## pack
 
@@ -27,6 +27,10 @@ The code names a localization key under `Epoch`, so the reader meets the age in 
 A label is listed in every spelling the site uses, such as 商晚期 beside 商代晚期.
 The longer spelling wins wherever both would match, so a dynasty never stands for one of its periods.
 Bronze captions run from 商 to 戰國, and clerical and variant captions carry on through 唐.
+The table runs from the oldest age to the latest.
+A plain dynasty precedes its periods, so an undated 商 piece lists before Early Shang.
+A style lists its pictures in that order.
+A code ranks by its first row, so a new spelling of a known age may go anywhere after it.
 
 ## `fanqie`
 
@@ -94,6 +98,8 @@ The anchor dropdown marks the placements a reflex reading's tone allows.
 The reflex list names the readings of a character in the languages that borrowed it, one rule per language.
 They are fetched once per entry from the web when the entry has none.
 They are stored on the entry, where the user may correct them.
+The rule order is the fetch order only.
+The rows are shown in the order the `order` key declares.
 Each rule fetches the page with a GET and reads one row per match of its pattern.
 The named groups `text`, `kind`, `romanization`, `meaning`, `note` and `main` give the reading and what stands around it.
 The kind is printed before the reading.
@@ -185,6 +191,16 @@ The gloss of each reading is read from the box under the block.
 `vernacular (“difficult”)` becomes the note `vernacular` and the meaning `difficult`.
 Every dialect rule keeps every block, so a character with several pronunciation sections lists each section's reading.
 The first row of each is marked in common use, unless a main group already marked one.
+
+## `order`
+
+The order key declares how every view lists the reflex rows of an entry.
+Its language list puts Korean first, then Japanese, then the Chinese varieties.
+Its kind list orders the Japanese readings as Go-on, Kan-on, Tō-on, Sō-on and Kan'yō-on.
+Each kind is spelled as the Japanese rule's kind group captures it.
+Within one language and kind, the main reading comes first and the rest follow by text.
+A language or kind left out of the lists follows the declared ones by name.
+The order is applied on every read, so stored rows never need renumbering.
 
 ## `frequency[0]` 四庫全書
 

@@ -1,5 +1,5 @@
 # LCatalogSituation.cs
-Hash: `417b4e8d591233e1`
+Hash: `110dfe7ad39010ee`
 
 ## `public sealed record LCatalogSituation(LSituation LCatalogSituationStored, int LCatalogSituationUsage, bool LCatalogSituationChosen = false)`
 
@@ -34,6 +34,10 @@ Builds the row from the stored Situation and the number of places referencing it
 
 Orders the rows under one ordering, and under the title where the ordering is not one a Situation answers to.
 A Situation with no stated kind is ordered as empty, which puts it before every stated kind.
+Rows equal under the kind go by title, then id.
+Rows equal under the usage go by the shared rule `LCatalog.LCatalogUsageSort`, the one the Register catalog uses.
+A typed field's offer reads this usage ordering, so equal counts there are ordered by title too.
+The id comes last and only keeps the result stable, so storage order never decides a place.
 
 ## `public bool LCatalogSituationMatch(string query)`
 

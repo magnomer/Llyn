@@ -1,15 +1,15 @@
 # TEngineParadigm.cs
-Hash: `681b8057621a20c4`
+Hash: `bd8be2a5bb881dbc`
 
 ## `public sealed class TEngineParadigm`
 
 Covers the engine's answer to which forms an entry is expected to have.
 Most tests save an entry through the engine against the shipped English pack.
-So the parent chain, the paradigms, and the morphology rows are the real ones and not a fixture.
+So the paradigms and the morphology rows are the real ones and not a fixture.
 
-## `public void ParadigmShow_ChildOfDeclaredPart_ReturnsParentSlots()`
+## `public void ParadigmShow_DeclaredPart_ReturnsItsSlots()`
 
-A part naming a parent inherits the parent's paradigm, and the slots carry the child part, not the parent.
+A part declaring a paradigm shows its slots in the declared order, each carrying that part.
 With nothing stored every slot is unspecified.
 
 ## `public void ParadigmShow_StoredInflection_MarksSlotSpecified()`
@@ -17,10 +17,11 @@ With nothing stored every slot is unspecified.
 An appended inflection carrying a slot's morphology row answers that slot and makes it specified.
 Its neighbour stays unspecified.
 
-## `public void ParadigmShow_ExceptedPart_ReturnsNothing()`
+## `public void ParadigmShow_RetiredSubtypeName_ReturnsNothing()`
 
-A part of speech the paradigm excepts shows no slots, while a countable noun shows its one.
-Uncountable water has no plural to fill, so offering a slot for it would invite a wrong form.
+A retired subtype typed by name is a custom part, so it shows no slots.
+A noun shows its one.
+The packs list bare roles only, so no paradigm reaches a name the pack no longer declares.
 
 ## `public void ParadigmShow_CustomPart_ReturnsNothing()`
 

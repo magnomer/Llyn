@@ -1,5 +1,5 @@
 # LFrequency.cs
-Hash: `f39a12951b92e8f3`
+Hash: `0937426ee9ff34cc`
 
 ## `public sealed record LFrequency(string LFrequencySource, string LFrequencyRaw, string? LFrequencyBand, long? LFrequencyOnce = null, string? LFrequencyUnit = null)`
 
@@ -49,6 +49,13 @@ So each band name is spelled once, and the ranks cannot drift from the ladder.
 
 The band's place on the scale, from one for rare up to four for core.
 No band, or a name off the ladder, ranks zero.
+
+## `public static IReadOnlyList<LFrequency> LFrequencySort(IReadOnlyList<LFrequency> rows, IReadOnlyList<LSourceSpec> declared)`
+
+The one order every frequency list is shown in.
+Rows follow the pack's declared source order, so the gauge's first ranked row is the pack's choice.
+Sources the pack no longer declares follow, by name in codepoint order.
+The raw figure breaks a tie, so the result never depends on storage order.
 
 ## `public static string? LFrequencyBandResolve(LSourceSpec spec, double raw)`
 

@@ -12,17 +12,17 @@ namespace Llyn.Tests;
 public sealed class TEngineParadigm
 {
     [Fact]
-    public void ParadigmShow_ChildOfDeclaredPart_ReturnsParentSlots()
+    public void ParadigmShow_DeclaredPart_ReturnsItsSlots()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineMorphologySave(false);
 
-        LEntry entry = engine.TEngineEntrySave(TParadigmDraftCreate("word", "Verb, transitive"));
+        LEntry entry = engine.TEngineEntrySave(TParadigmDraftCreate("word", "Verb"));
 
         IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmShow(entry.LEntryId);
         Assert.Equal(["past", "past participle"], slots.Select(slot => slot.LParadigmSlotMorphology.LMorphologyName));
-        Assert.All(slots, slot => Assert.Equal(7, slot.LParadigmSlotSpeech.LSpeechValueCode));
+        Assert.All(slots, slot => Assert.Equal(6, slot.LParadigmSlotSpeech.LSpeechValueCode));
         Assert.All(slots, slot => Assert.Null(slot.LParadigmSlotInflection));
         Assert.All(slots, slot => Assert.Equal(LState.LStateUnspecified, slot.LParadigmSlotState));
     }
@@ -34,7 +34,7 @@ public sealed class TEngineParadigm
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineMorphologySave(false);
 
-        LEntry entry = engine.TEngineEntrySave(TParadigmDraftCreate("word", "Verb, transitive"));
+        LEntry entry = engine.TEngineEntrySave(TParadigmDraftCreate("word", "Verb"));
         LParadigmSlot past = engine.TEngineParadigmShow(entry.LEntryId)[0];
         TParadigmInflectionSave(engine, entry.LEntryId, [
             TInterfaceInflection.TInflectionCreate(
@@ -49,13 +49,13 @@ public sealed class TEngineParadigm
     }
 
     [Fact]
-    public void ParadigmShow_ExceptedPart_ReturnsNothing()
+    public void ParadigmShow_RetiredSubtypeName_ReturnsNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry water = engine.TEngineEntrySave(TParadigmDraftCreate("water", "Noun, uncountable"));
-        LEntry cat = engine.TEngineEntrySave(TParadigmDraftCreate("cat", "Noun, countable"));
+        LEntry cat = engine.TEngineEntrySave(TParadigmDraftCreate("cat", "Noun"));
 
         Assert.Empty(engine.TEngineParadigmShow(water.LEntryId));
         Assert.Single(engine.TEngineParadigmShow(cat.LEntryId));
@@ -205,7 +205,7 @@ public sealed class TEngineParadigm
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TParadigmFetchBody, gate.Task));
         engine.TEngineFrequencySave(false);
-        LEntry entry = engine.TEngineEntrySave(TParadigmDraftCreate("go", "Verb, transitive"));
+        LEntry entry = engine.TEngineEntrySave(TParadigmDraftCreate("go", "Verb"));
 
         engine.TEngineInflectionStart(entry.LEntryId);
         engine.TEngineMorphologySave(false);

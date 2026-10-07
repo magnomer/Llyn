@@ -73,6 +73,39 @@ public sealed class TCatalogSituation
                 .Select(row => row.LCatalogSituationStored.LSituationTitle.TStateValueShow()));
     }
 
+
+    [Fact]
+    public void SituationSort_EqualUsage_ListsByTitleThenId()
+    {
+        Assert.Equal(
+            [2L, 1L, 3L],
+            TInterface.TCatalogSituationSort(TCatalogSituationBuild(), LCatalogOrder.LCatalogOrderUsage)
+                .Select(row => row.LCatalogSituationStored.LSituationId));
+    }
+
+    [Fact]
+    public void SituationSort_EqualKind_ListsByTitleThenId()
+    {
+        Assert.Equal(
+            [2L, 1L, 3L],
+            TInterface.TCatalogSituationSort(TCatalogSituationBuild(), LCatalogOrder.LCatalogOrderKind)
+                .Select(row => row.LCatalogSituationStored.LSituationId));
+    }
+
+    private static IReadOnlyList<LCatalogSituation> TCatalogSituationBuild()
+    {
+        LStateValue kind = TInterfaceState.TStateValueCreate("domain");
+        return
+        [
+            TInterface.TCatalogSituationCreate(
+                TInterface.TSituationCreate(3, TInterfaceState.TStateValueCreate("bank"), null, kind), 1),
+            TInterface.TCatalogSituationCreate(
+                TInterface.TSituationCreate(1, TInterfaceState.TStateValueCreate("Bank"), null, kind), 1),
+            TInterface.TCatalogSituationCreate(
+                TInterface.TSituationCreate(2, TInterfaceState.TStateValueCreate("at home"), null, kind), 1),
+        ];
+    }
+
     private static LSituation TCatalogSituationCreate(
         LEngine engine,
         string title,

@@ -63,13 +63,16 @@ public sealed class LDiweiClerk
         return _lDiweiClerkDiwei.LDiweiFanqieRead(diwei.LDiweiId);
     }
 
-    public IReadOnlyList<LEntry> LDiweiEntryScan(string language, IReadOnlyList<long> diweiIds, string query)
+    public IReadOnlyList<LEntry> LDiweiEntryScan(
+        string language, IReadOnlyList<long> diweiIds, string query, LCatalogOrder order)
     {
         ArgumentNullException.ThrowIfNull(diweiIds);
         ArgumentNullException.ThrowIfNull(query);
 
         IReadOnlyList<long> ids = _lDiweiClerkDiwei.LDiweiEntryScan(language, diweiIds);
-        return ids.Count == 0 ? [] : _lDiweiClerkEntries.LEntryScan(ids, query);
+        return ids.Count == 0
+            ? []
+            : LCatalogEntry.LCatalogEntrySort(_lDiweiClerkEntries.LEntryScan(ids, query), order);
     }
 
     public LDiweiPage LDiweiPageRead(LDiwei diwei, bool switched, bool tallied, Func<string, string?> localize)
@@ -120,14 +123,9 @@ public sealed class LDiweiClerk
             LTallyLoad(readings[heading], row, anchored);
         }
 
-        List<string> ranking = [];
-        foreach (LReflexRule rule in LReflexRuleRead(diwei.LDiweiLanguage))
-        {
-            if (!ranking.Contains(rule.LReflexRuleLanguage, StringComparer.OrdinalIgnoreCase))
-            {
-                ranking.Add(rule.LReflexRuleLanguage);
-            }
-        }
+        LReflexOrder ranking = string.IsNullOrWhiteSpace(diwei.LDiweiLanguage)
+            ? LReflexOrder.LReflexOrderEmpty
+            : _lDiweiClerkLanguages.LLanguageCacheRead(diwei.LDiweiLanguage).LLanguageReflexOrder;
 
         List<LTally> tallies = new(order.Count);
         foreach (string heading in order)
@@ -145,13 +143,6 @@ public sealed class LDiweiClerk
         return string.IsNullOrWhiteSpace(language)
             ? null
             : _lDiweiClerkLanguages.LLanguageCacheRead(language).LLanguageHypothesis;
-    }
-
-    private IReadOnlyList<LReflexRule> LReflexRuleRead(string language)
-    {
-        return string.IsNullOrWhiteSpace(language)
-            ? []
-            : _lDiweiClerkLanguages.LLanguageCacheRead(language).LLanguageReflexRules;
     }
 
     private static string LTallyHeadingRead(string kind, LFanqieRow row, LHypothesis? hypothesis)

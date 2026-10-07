@@ -52,6 +52,9 @@ public static class LMarkupClerkUnion
             LEntryDraftEtymology = loaded.LEntryDraftEtymology.LEtymologyDraftEmpty
                 ? parsed.LEntryDraftEtymology
                 : loaded.LEntryDraftEtymology,
+            LEntryDraftUnit = loaded.LEntryDraftUnit == LUnit.LUnitEmpty
+                ? parsed.LEntryDraftUnit
+                : loaded.LEntryDraftUnit,
         };
     }
 

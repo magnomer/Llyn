@@ -1,7 +1,7 @@
 # LMarkupEntry.cs
-Hash: `e1b4805e09e19620`
+Hash: `bbcd9940ba595e69`
 
-## `public sealed record LMarkupEntry(string LMarkupEntryHeadword, string LMarkupEntryLanguage, IReadOnlyList<string>? LMarkupEntrySpeech = null, IReadOnlyList<LForm>? LMarkupEntryForm = null, IReadOnlyList<LMarkupInflection>? LMarkupEntryInflection = null, IReadOnlyList<LPronunciationDraft>? LMarkupEntryPronunciation = null, IReadOnlyList<LTranscriptionDraft>? LMarkupEntryTranscription = null, IReadOnlyList<LReflexDraft>? LMarkupEntryReflex = null, IReadOnlyList<LMarkupCard>? LMarkupEntryMeaning = null, IReadOnlyList<LMarkupCard>? LMarkupEntryCollocation = null, string LMarkupEntryNote = "", int LMarkupEntryLine = 0, LMarkupEtymology? LMarkupEntryEtymology = null, IReadOnlyList<LMarkupEtymon>? LMarkupEntryEtymon = null)`
+## `public sealed record LMarkupEntry(string LMarkupEntryHeadword, string LMarkupEntryLanguage, IReadOnlyList<string>? LMarkupEntrySpeech = null, IReadOnlyList<LForm>? LMarkupEntryForm = null, IReadOnlyList<LMarkupInflection>? LMarkupEntryInflection = null, IReadOnlyList<LPronunciationDraft>? LMarkupEntryPronunciation = null, IReadOnlyList<LTranscriptionDraft>? LMarkupEntryTranscription = null, IReadOnlyList<LReflexDraft>? LMarkupEntryReflex = null, IReadOnlyList<LMarkupCard>? LMarkupEntryMeaning = null, IReadOnlyList<LMarkupCard>? LMarkupEntryCollocation = null, string LMarkupEntryNote = "", int LMarkupEntryLine = 0, LMarkupEtymology? LMarkupEntryEtymology = null, IReadOnlyList<LMarkupEtymon>? LMarkupEntryEtymon = null, LUnit LMarkupEntryUnit = LUnit.LUnitEmpty)`
 
 One entry as a markup file carries it, with no id anywhere in it.
 Every link is by natural key, a headword and a language, and every row stands in file order.
@@ -24,6 +24,7 @@ Two entries are equal when every row is equal in order, so a round trip can be c
 - `LMarkupEntryLine` — The line the entry opened on in its file, zero for an entry built in memory.
 - `LMarkupEntryEtymology` — The narrative etymology, nothing when the entry has none.
 - `LMarkupEntryEtymon` — The direct source links in file order, empty when the entry has none.
+- `LMarkupEntryUnit` — The lexical unit the `unit` element names, unchosen when absent or unknown.
 
 ## `public string LMarkupEntryName { get; init; }`
 

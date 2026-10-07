@@ -1,5 +1,5 @@
 # CEditor.cs
-Hash: `451f4b4b238fee2a`
+Hash: `1442444288029fac`
 
 ## `public sealed class CEditor`
 
@@ -180,12 +180,9 @@ A desk that holds no tenure or fills its view takes no edit.
 Hands the chosen language to the tenure.
 A desk that holds no tenure or fills its view takes no edit.
 
-## `public void CEditorPronunciationSet(string text)`
+## `public void CEditorUnitSet(string key)`
 
-Hands the typed reading to the tenure, which writes it the way the pack shows it.
-
-## `public static bool CEditorNoteCheck(string text, string note)`
-
-The ready verdict the note field reads before it paints.
-It answers whether the typed text already holds the note, so the field keeps a line break just typed.
-The tenure owns the trim behind it.
+The user picked a unit from the menu.
+Picking the unit already held clears it, a rule the tenure keeps.
+The menu itself is read with the part-of-speech field, through `CMarkerUnits`.
+A desk that holds no tenure or fills its view takes no edit.

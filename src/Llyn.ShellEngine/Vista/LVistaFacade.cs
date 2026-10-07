@@ -104,7 +104,8 @@ internal sealed class LVistaFacade
                         LReferenceClerk.LReferenceClerkBlank with { LReferenceId = id }),
                 _ => [],
             };
-            entries = LEntryClerk.LEntryClerkMatch(entries, parent.LVistaFilter, child.LVistaQuery);
+            entries = LEntryClerk.LEntryClerkMatch(
+                entries, parent.LVistaFilter, child.LVistaQuery, child.LVistaOrder);
             return LEngineVistaBuild(entries, child.LVistaChosen);
         }
     }

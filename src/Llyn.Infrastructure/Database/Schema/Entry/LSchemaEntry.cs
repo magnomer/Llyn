@@ -23,6 +23,7 @@ public static class LSchemaEntry
                 added_utc TEXT,
                 updated_utc TEXT,
                 epithet TEXT NOT NULL DEFAULT '',
+                unit INTEGER NOT NULL DEFAULT 0 CHECK (unit BETWEEN 0 AND 4),
                 CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 

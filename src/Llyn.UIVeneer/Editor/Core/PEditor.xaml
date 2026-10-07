@@ -220,6 +220,23 @@
                 <StackPanel Grid.Row="2" UseLayoutRounding="True">
                     <WrapPanel x:Name="PMarker" Margin="12,14,0,0" Orientation="Horizontal">
 
+                        <Grid VerticalAlignment="Top">
+                            <ToggleButton x:Name="PUnitDropper" Style="{StaticResource Theme.Unit.Dropper}">
+                                <TextBlock x:Name="PUnitName" Style="{StaticResource Theme.Unit.Label}" />
+                            </ToggleButton>
+                            <Popup
+                                x:Name="PUnitDropdown"
+                                AllowsTransparency="True"
+                                HorizontalOffset="-8"
+                                Placement="Bottom"
+                                StaysOpen="False"
+                                VerticalOffset="-4">
+                                <Border MinWidth="160" Margin="8" Style="{StaticResource Theme.Marker.Menu}">
+                                    <ItemsControl x:Name="PUnitList" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Unit.Row}" />
+                                </Border>
+                            </Popup>
+                        </Grid>
+
                         <ItemsControl x:Name="PMarkerList" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Marker.Chip}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -247,7 +264,6 @@
                                 AllowsTransparency="True"
                                 HorizontalOffset="-8"
                                 Placement="Bottom"
-                                PopupAnimation="Fade"
                                 StaysOpen="False"
                                 VerticalOffset="-4">
                                 <Border MinWidth="190" MaxWidth="320" Margin="8" Style="{StaticResource Theme.Marker.Menu}">

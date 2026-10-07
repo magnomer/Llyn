@@ -53,7 +53,7 @@ public sealed class TTally
         Assert.Equal(
             ["ㄹ(2)", "l(2), n(1)"],
             tallies[1].LTallyLines.Select(line => TTallyMarkFormat(line.LTallyLineRespelling)));
-        Assert.Equal(["爛", "弄"], tallies[1].LTallyLines[1].LTallyLineIpa[0].LTallyMarkCharacters);
+        Assert.Equal(["弄", "爛"], tallies[1].LTallyLines[1].LTallyLineIpa[0].LTallyMarkCharacters);
         Assert.Equal(["弄"], tallies[1].LTallyLines[1].LTallyLineIpa[1].LTallyMarkCharacters);
     }
 
@@ -112,8 +112,8 @@ public sealed class TTally
             ]);
         archive.TDiweiApply(TTallyLanguage, "完", null);
         IReadOnlyList<LFanqieRow> rows = fanqie.TFanqieRead(TTallyLanguage, "完");
-        engine.TEntryAnchorApply(wan.LEntryId, [rows[0].LFanqieRowId], 0);
-        engine.TEntryAnchorApply(wan.LEntryId, [rows[1].LFanqieRowId], 1);
+        engine.TEntryAnchorApply(wan.LEntryId, [rows[0].LFanqieRowId], 1);
+        engine.TEntryAnchorApply(wan.LEntryId, [rows[1].LFanqieRowId], 0);
         engine.TEntryAnchorApply(wan.LEntryId, [rows[0].LFanqieRowId], 2);
         LDiwei xia = Assert.IsType<LDiwei>(engine.TEngineDiweiFind(TTallyLanguage, LDiwei.LDiweiInitial, "匣"));
         LDiwei xi = Assert.IsType<LDiwei>(engine.TEngineDiweiFind(TTallyLanguage, LDiwei.LDiweiInitial, "溪"));
@@ -187,6 +187,47 @@ public sealed class TTally
             ["ㅣㅁ(1)", "ㅣㅁ(1)", "ㅣㅁ(1)"],
             tallies.Select(tally => TTallyMarkFormat(Assert.Single(tally.LTallyLines).LTallyLineIpa)));
         Assert.Equal(["金"], tallies[1].LTallyLines[0].LTallyLineIpa[0].LTallyMarkCharacters);
+    }
+
+    [Fact]
+    public void TallyRead_KindsStoredOutOfOrder_ListsDeclaredKindOrder()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineEntrySave(TTallyDraftCreate("林", [TInterface.TReflexDraftCreate("Japanese", "Sō-on", "りん")]));
+        engine.TEngineEntrySave(TTallyDraftCreate("林", [TInterface.TReflexDraftCreate("Japanese", "Tō-on", "りむ")]));
+        TTallyDiweiPlace(workspace, [("林", "侵", "三")]);
+        TTallyAnchorApply(workspace, engine, "林");
+        LDiwei qin = Assert.IsType<LDiwei>(
+            engine.TEngineDiweiFind(TTallyLanguage, LDiwei.LDiweiRime, "侵 III"));
+
+        LTally single = Assert.Single(engine.TEngineTallyRead(qin));
+
+        Assert.Equal(["Tō-on", "Sō-on"], single.LTallyLines.Select(line => line.LTallyLineKind));
+    }
+
+    [Fact]
+    public void TallyLineScan_LanguageCaseDiffersFromDeclared_OrdersAsTheReflexList()
+    {
+        LReflexOrder order = TInterface.TReflexOrderCreate(
+            ["Xiang", "Korean"], new Dictionary<string, IReadOnlyList<string>>());
+        LAnatomy anatomy = TInterface.TAnatomyCreate("l");
+        IReadOnlyList<LReflex> stored =
+        [
+            TInterface.TReflexCreate(1, 1, 0, "korean", "lim", anatomy),
+            TInterface.TReflexCreate(2, 1, 1, "Korean", "rim", anatomy),
+            TInterface.TReflexCreate(3, 1, 2, "Xiang", "lin", anatomy),
+        ];
+
+        IReadOnlyList<LTallyLine> lines = TInterface.TTallyLineScan(
+            LDiwei.LDiweiInitial, ["林"], new Dictionary<string, IReadOnlyList<LReflex>> { ["林"] = stored }, order);
+        IReadOnlyList<LReflexDraft> listed = order.TReflexOrderSort(
+            [.. stored.Select(static row =>
+                TInterface.TReflexDraftCreate(row.LReflexLanguage, row.LReflexKind, row.LReflexText))]);
+
+        Assert.Equal(["Xiang", "Korean", "korean"], lines.Select(line => line.LTallyLineLanguage));
+        Assert.Equal(
+            listed.Select(row => row.LReflexDraftLanguage), lines.Select(line => line.LTallyLineLanguage));
     }
 
     private static LDiwei TTallyDiweiPlace(

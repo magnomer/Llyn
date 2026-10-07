@@ -1,7 +1,7 @@
 # LLanguage.cs
-Hash: `3ed927fc82fc9782`
+Hash: `9377d43acf44794b`
 
-## `public sealed record LLanguage(string? LLanguageFlag, LFont LLanguageFont, LFont LLanguageExample, IReadOnlyList<LSourceSpec> LLanguageLookupSources, IReadOnlyList<LSourceSpec> LLanguageHarvestSources, IReadOnlyList<LScheme>? LLanguageSchemes = null, bool LLanguageSeparated = true, IReadOnlyList<LVariety>? LLanguageVarieties = null, bool LLanguageVarietyFlagged = true, LFont? LLanguageGloss = null, IReadOnlyList<LRespelling>? LLanguageCleanups = null, IReadOnlyList<LRespelling>? LLanguageRespellings = null, IReadOnlyList<LSourceSpec>? LLanguageFrequencies = null, IReadOnlyList<LSourceSpec>? LLanguageMorphologies = null, bool LLanguageTonal = false, LGlyph? LLanguageGlyph = null, IReadOnlyList<LScriptStyle>? LLanguageScripts = null, IReadOnlyList<LFanqieBook>? LLanguageFanqieBooks = null, LHypothesis? LLanguageHypothesis = null, bool LLanguageSilent = false, IReadOnlyList<LReflexRule>? LLanguageReflexRules = null, bool LLanguagePhonemic = false, IReadOnlyList<LAnatomyRule>? LLanguageAnatomies = null, IReadOnlyList<LDescent>? LLanguageDescents = null, LShengfuRule? LLanguageShengfu = null)`
+## `public sealed record LLanguage(string? LLanguageFlag, LFont LLanguageFont, LFont LLanguageExample, IReadOnlyList<LSourceSpec> LLanguageLookupSources, IReadOnlyList<LSourceSpec> LLanguageHarvestSources, IReadOnlyList<LScheme>? LLanguageSchemes = null, bool LLanguageSeparated = true, IReadOnlyList<LVariety>? LLanguageVarieties = null, bool LLanguageVarietyFlagged = true, LFont? LLanguageGloss = null, IReadOnlyList<LRespelling>? LLanguageCleanups = null, IReadOnlyList<LRespelling>? LLanguageRespellings = null, IReadOnlyList<LSourceSpec>? LLanguageFrequencies = null, IReadOnlyList<LSourceSpec>? LLanguageMorphologies = null, bool LLanguageTonal = false, LGlyph? LLanguageGlyph = null, IReadOnlyList<LScriptStyle>? LLanguageScripts = null, IReadOnlyList<LFanqieBook>? LLanguageFanqieBooks = null, LHypothesis? LLanguageHypothesis = null, bool LLanguageSilent = false, IReadOnlyList<LReflexRule>? LLanguageReflexRules = null, bool LLanguagePhonemic = false, IReadOnlyList<LAnatomyRule>? LLanguageAnatomies = null, IReadOnlyList<LDescent>? LLanguageDescents = null, LShengfuRule? LLanguageShengfu = null, bool LLanguageSpaced = true, LReflexOrder? LLanguageReflexOrder = null)`
 
 A loaded language pack.
 It holds the two source lists declared for the language and its transcription schemes.
@@ -70,9 +70,14 @@ Everything language-specific arrives through this record.
   The reading view shows one row per style above the first meaning, and the order here is the row order.
   A pack that lists none carries an empty list, and no script box is shown.
 - `LLanguageFanqieBooks` — The rime books the pack lists under `fanqie`, each an [LFanqieBook](../Fanqie/LFanqieBook.comment.md) record, in written order.
-  The reading view shows one block per book under the script box, and the order here is the block order.
+  The reading view shows one block per book under the script box, in this order.
+  A book holding a ranked row moves ahead, as `LFanqieRow.LFanqieRowSort` declares.
   A pack that lists none carries an empty list, and no fanqie box is shown.
 - `LLanguageShengfu` — The phonetic-series rule the pack declares under `shengfu`, or null when it declares none.
+- `LLanguageSpaced` — Whether the language spaces its words, which decides the lexical units an entry is offered.
+  The pack states it with the top-level boolean `spaced`.
+  A pack that omits it follows `LLanguageSeparated`.
+  Vietnamese spaces syllables, not words, so it states `false` while keeping its separator.
 - `LLanguageHypothesis` — The reconstruction the pack names under `hypothesis`, held as an [LHypothesis](../Hypothesis/LHypothesis.comment.md) record.
   The fanqie box then prints each placement's reading before the placement.
   A pack that declares none carries `null`, and the box prints the placement alone.
@@ -82,6 +87,10 @@ Everything language-specific arrives through this record.
 - `LLanguageReflexRules` — The fetch rules the pack lists under `reflex`, each an [LReflexRule](../Reflex/LReflexRule.comment.md) record, in written order.
   An entry of the language with no reflex rows is filled once from these, one rule per borrowing language.
   A pack that lists none carries an empty list, and nothing is fetched or shown.
+  Their written order is the fetch order only and never the order rows are shown in.
+- `LLanguageReflexOrder` — The order the pack declares under `order` for its reflex rows, held as an [LReflexOrder](../Reflex/LReflexOrder.comment.md) record.
+  Every view lists the reflex rows of the pack's entries by it.
+  A pack that declares none carries the empty order, and the rows list by language name.
 - `LLanguagePhonemic` — Whether a respelled reading is shown between slashes, declared with the top-level key `phonemic` set to `true`.
   The respelling groups of such a pack collapse allophones, so their output is phonemic rather than phonetic.
   The brackets stay square while the original reading is shown, and in a pack that omits the key.
@@ -91,3 +100,7 @@ Everything language-specific arrives through this record.
 - `LLanguageDescents` — The tone correspondence rows the pack declares under `tone`, held as [LDescent](../Descent/LDescent.comment.md) records.
   They say which tone classes a reflex reading's contour may descend from, one row per reflex language.
   Empty for every pack but Classical Chinese, whose file `anatomy_tone.json` holds them.
+
+## `public LReflexOrder LLanguageReflexOrder { get; init; }`
+
+The declared reflex order, never null, so a pack without an `order` key sorts by the empty order.

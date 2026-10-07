@@ -23,7 +23,7 @@ public sealed record LTallyMark(string LTallyMarkText, IReadOnlyList<string> LTa
         return
         [
             .. parts
-                .Select(part => new LTallyMark(part.Key, [.. part.Value]))
+                .Select(part => new LTallyMark(part.Key, LGlyphOrder.LGlyphOrderSort(part.Value)))
                 .OrderByDescending(mark => mark.LTallyMarkCount)
                 .ThenBy(mark => mark.LTallyMarkText, StringComparer.Ordinal),
         ];

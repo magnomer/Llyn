@@ -1,5 +1,5 @@
 # LEntryClerk.cs
-Hash: `dc9c1790aed21263`
+Hash: `cb05775e957170a7`
 
 ## `public sealed class LEntryClerk`
 
@@ -27,6 +27,8 @@ Reads the entry for `id`, or `null` when no entry has that id.
 
 The entry as a draft, or `null` when no entry has that id.
 Every recording path is made absolute, so a form can play it and a draft match compares like with like.
+Its reflex rows come in the order the pack declares, through `LReflexClerkSort`.
+The entry view, the editor, Livery and the portrait all load through here, so none sees storage order.
 
 ## `public IReadOnlyList<LEntry> LEntryClerkFind(string query)`
 
@@ -86,10 +88,11 @@ The entries whose headword matches `query` by the catalog match.
 An empty or blank `query` narrows nothing.
 The engine's vista narrows a child list the same way, so it calls here.
 
-## `public static IReadOnlyList<LEntry> LEntryClerkMatch(IReadOnlyList<LEntry> entries, LCatalogFilter filter, string query)`
+## `public static IReadOnlyList<LEntry> LEntryClerkMatch(IReadOnlyList<LEntry> entries, LCatalogFilter filter, string query, LCatalogOrder order)`
 
 The entries left after the language filter, narrowed by the catalog match of `query`.
-The vista lists a catalog record's entries through this, so the shell holds no filter rule.
+They are ordered by `order` with the entry catalog's sort, so equal headwords follow its tie rule.
+The vista lists a catalog record's entries through this, so the shell holds no filter or order rule.
 
 ## `public LRevision LEntryClerkDelete(long id)`
 
@@ -138,7 +141,7 @@ The localized label of one grasp step.
 ## `public LEntry LEntryClerkSave(LEntryDraft draft, Dictionary<long, long> identity)`
 
 Saves the whole input form as one new entry.
-That is the headword row and its meanings and collocations in card order.
+That is the headword row with its lexical unit, and its meanings and collocations in card order.
 It is also its note, its inflections and its pronunciations when they carry anything.
 It is also its etymology, written in whichever of the two shapes the draft ended in.
 The note is stored as Markdown normalized by `LMarkdown`.
@@ -176,6 +179,7 @@ Applies `draft` to the entry identified by `id` and returns the stored entry as 
 A blank headword is refused before any session opens, and the headword is trimmed.
 The entry keeps its opaque id and its `added_utc`.
 Only `updated_utc` moves, and only when the draft differs from the entry as loaded with its recordings resolved.
+The headword, language and lexical unit are written together, only when the draft differs.
 A changed headword or language clears stored frequencies through the clerk.
 No stale figure then appears under the new headword.
 An id no entry carries is refused before anything is written.

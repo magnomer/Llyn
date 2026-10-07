@@ -1,5 +1,5 @@
 # TEngineXiaoyun.cs
-Hash: `7fd765c6e5c54a59`
+Hash: `ab8517408741cd07`
 
 ## `public sealed class TEngineXiaoyun`
 
@@ -7,8 +7,14 @@ The entry list of one rime table cell, read from the engine as rows ready to sho
 
 ## `public void XiaoyunFind_QueryFiltersHeadword()`
 
-An empty query lists every entry anchored at the cell, in id order.
+An empty query lists every entry anchored at the cell, in headword order.
 A query keeps only the entries whose headword carries it, and the shown name is the headword.
+
+## `public void XiaoyunFind_StoredOutOfHeadwordOrder_ListsInThePanelOrder()`
+
+The cell's entries are stored against headword order, so storage order cannot pass for it.
+Without a vista they list by headword.
+A vista set to reverse lists them by headword descending, as the panel's order setting asks.
 
 ## `public void DiweiFind_StoredKey_AnswersTheCellAndItsColumn()`
 

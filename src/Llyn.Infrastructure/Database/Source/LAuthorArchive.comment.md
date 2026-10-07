@@ -1,5 +1,5 @@
 # LAuthorArchive.cs
-Hash: `b72aa8e2a451dbf6`
+Hash: `959d148d44860a7a`
 
 ## `public sealed class LAuthorArchive : LAuthorVault`
 
@@ -39,6 +39,7 @@ The order lives on the association row.
 ## `public IReadOnlyList<LAuthor> LAuthorAllRead()`
 
 Reads every Author the workspace holds, by name.
+Authors sharing a name go by id, which only keeps the list stable.
 The Sources panel offers them for crediting, so it asks for the whole shelf at once.
 
 ## `public IReadOnlyList<LUsage> LAuthorUsageRead(long id)`

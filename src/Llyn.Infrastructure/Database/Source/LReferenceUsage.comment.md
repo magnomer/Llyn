@@ -1,5 +1,5 @@
 # LReferenceUsage.cs
-Hash: `3e8e36ca00e5472a`
+Hash: `d68eeb8d554402b3`
 
 ## `public sealed class LReferenceUsage`
 
@@ -39,6 +39,10 @@ An Example names its sentence and its first Gloss, because an Example belongs to
 The first Gloss is joined by position zero, and an Example without one reads as unspecified.
 A card holding two Examples of one Source is listed once.
 The row leads to the card rather than the citation.
+Card rows sharing a headword go by language, then entry id, then place on the Entry.
+Those are the keys `LCatalogEntry` breaks entry ties by, so storage order never decides a place.
+Example rows go by sentence, then language, then example id.
+The sentence stands where a card's headword stands, and the id comes last only to keep the list stable.
 
 ## `internal static int LReferenceUsageRead(SqliteConnection connection, long id)`
 

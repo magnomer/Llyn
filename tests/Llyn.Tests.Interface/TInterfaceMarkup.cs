@@ -40,8 +40,12 @@ internal static partial class TInterface
         LMarkupTarget.LMarkupTargetCreate(id, draft);
 
     internal static LMarkupEntry TMarkupEntryCreate(
-        string headword, string language, IReadOnlyList<LForm>? forms = null, string note = "") =>
-        new(headword, language, LMarkupEntryForm: forms, LMarkupEntryNote: note);
+        string headword,
+        string language,
+        IReadOnlyList<LForm>? forms = null,
+        string note = "",
+        LUnit unit = LUnit.LUnitEmpty) =>
+        new(headword, language, LMarkupEntryForm: forms, LMarkupEntryNote: note, LMarkupEntryUnit: unit);
 
     internal const string TMarkupPair = """
         <llyn>

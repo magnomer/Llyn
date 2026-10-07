@@ -1,5 +1,5 @@
 # vocabulary.json
-Hash: `f82c5d540b6fbcf7`
+Hash: `3e5c923996378a2f`
 
 ## file
 
@@ -9,11 +9,18 @@ Every id is an integer that never changes once published.
 
 ## `parts`
 
-The verb presets add modal and separable, which German marks in the dictionary.
-The pronoun presets add indefinite, for man and jemand.
+It lists the parts of speech, each a bare role.
+Valency and other subtypes belong to the dependence field and the morphology, not here.
 Postposition stands beside preposition, for entlang and zufolge.
-Particle stands with a modal child, for doch, mal and ja.
 No partitive article is listed, since German has none.
+
+## `retired`
+
+It lists the parts once published and since removed, so no id is ever reused.
+The import applies every row on each start, and a row whose part is already gone does nothing.
+`into` names the part that takes over the removed part's links.
+`unit` names the lexical unit set on a linking entry that has none yet.
+A row with neither drops the links.
 
 ## `features`
 

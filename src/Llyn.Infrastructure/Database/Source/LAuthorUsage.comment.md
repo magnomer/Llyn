@@ -1,5 +1,5 @@
 # LAuthorUsage.cs
-Hash: `84b9399a3cd77f2e`
+Hash: `8d37052136e2cf56`
 
 ## `public sealed class LAuthorUsage`
 
@@ -27,6 +27,9 @@ A card names its own id, the Entry it belongs to, that Entry's headword, and its
 An Example names its sentence and its first Gloss, because an Example belongs to no Entry of its own.
 The first Gloss is joined by position zero, and an Example without one reads as unspecified.
 A card is listed once however many credited Examples it holds, because the row leads to the card.
+Card rows sharing a headword go by language, then entry id, then place on the Entry.
+Those are the keys `LCatalogEntry` breaks entry ties by, so storage order never decides a place.
+Example rows go by sentence, then language, then example id, as `LReferenceUsage` lists them.
 
 The count of an Author is the Example rows, which are the citations themselves.
 The card rows are the way up to those citations rather than additions to them.

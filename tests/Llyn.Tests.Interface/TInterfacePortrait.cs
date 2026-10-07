@@ -32,7 +32,14 @@ internal static partial class TInterface
         "Situations",
         "Registers",
         "Translations",
-        "Tags");
+        "Tags",
+        new Dictionary<LUnit, string>
+        {
+            [LUnit.LUnitContent] = "Content word",
+            [LUnit.LUnitFunction] = "Function word",
+            [LUnit.LUnitMorpheme] = "Morpheme",
+            [LUnit.LUnitWord] = "Word",
+        });
 
     internal static LPortraitLink TPortraitLinkCreate(string headword, string language) =>
         new(headword, language);

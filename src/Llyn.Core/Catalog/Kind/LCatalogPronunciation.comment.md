@@ -1,5 +1,5 @@
 # LCatalogPronunciation.cs
-Hash: `d3a3fb4bb59977c8`
+Hash: `dfff5157b92f64e0`
 
 ## `public sealed record LCatalogPronunciation(LEntry LCatalogPronunciationEntry, string LCatalogPronunciationSound, string LCatalogPronunciationName = "", string LCatalogPronunciationEpithet = "", bool LCatalogPronunciationChosen = false)`
 
@@ -30,3 +30,4 @@ Orders the rows under one ordering, and under the headword where the ordering is
 An entry with no pronunciation sorts last under the sound ordering.
 It sorts first under the pending ordering, which is the one that looks for what is still missing.
 A sound is compared ordinally, because an IPA string is a sequence of symbols and not a word.
+Rows still equal go by the entry tie rule in `LCatalogEntry`, so storage order never decides a place.

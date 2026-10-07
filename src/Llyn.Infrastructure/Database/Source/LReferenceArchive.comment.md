@@ -1,5 +1,5 @@
 # LReferenceArchive.cs
-Hash: `0254751270747212`
+Hash: `ad95ee16f7fdc592`
 
 ## `public sealed class LReferenceArchive : LReferenceVault`
 
@@ -37,6 +37,11 @@ The new Reference is cited by nothing and credits no Author until one is attache
 ## `public LReference? LReferenceRead(long id)`
 
 Reads the Reference identified by `id`, or `null` when none exists.
+
+## `public IReadOnlyList<LReference> LReferenceAllRead()`
+
+Reads every Source the workspace holds, by stored title.
+Sources sharing a title, or stating none, go by id, which only keeps the list stable.
 
 ## `public IReadOnlyDictionary<long, int> LReferenceUsageRead()`
 

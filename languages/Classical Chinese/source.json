@@ -101,6 +101,14 @@
   ],
   "epoch": [
     [
+      "商代",
+      "Shang"
+    ],
+    [
+      "商",
+      "Shang"
+    ],
+    [
       "商代早期",
       "ShangEarly"
     ],
@@ -125,12 +133,8 @@
       "ShangLate"
     ],
     [
-      "商代",
-      "Shang"
-    ],
-    [
-      "商",
-      "Shang"
+      "西周",
+      "ZhouWestern"
     ],
     [
       "西周早期",
@@ -145,12 +149,12 @@
       "ZhouWesternLate"
     ],
     [
-      "西周",
-      "ZhouWestern"
-    ],
-    [
       "東周",
       "ZhouEastern"
+    ],
+    [
+      "春秋",
+      "SpringAutumn"
     ],
     [
       "春秋早期",
@@ -165,8 +169,8 @@
       "SpringAutumnLate"
     ],
     [
-      "春秋",
-      "SpringAutumn"
+      "戰國",
+      "WarringStates"
     ],
     [
       "戰國早期",
@@ -181,16 +185,20 @@
       "WarringStatesLate"
     ],
     [
-      "戰國",
-      "WarringStates"
-    ],
-    [
       "秦代",
       "Qin"
     ],
     [
       "秦",
       "Qin"
+    ],
+    [
+      "漢代",
+      "Han"
+    ],
+    [
+      "漢",
+      "Han"
     ],
     [
       "西漢",
@@ -203,14 +211,6 @@
     [
       "東漢",
       "HanEastern"
-    ],
-    [
-      "漢代",
-      "Han"
-    ],
-    [
-      "漢",
-      "Han"
     ],
     [
       "三國",
@@ -229,20 +229,20 @@
       "Shu"
     ],
     [
-      "西晉",
-      "JinWestern"
-    ],
-    [
-      "東晉",
-      "JinEastern"
-    ],
-    [
       "晉代",
       "Jin"
     ],
     [
       "晉",
       "Jin"
+    ],
+    [
+      "西晉",
+      "JinWestern"
+    ],
+    [
+      "東晉",
+      "JinEastern"
     ],
     [
       "南北朝",
@@ -444,6 +444,29 @@
       "superscript": true
     }
   ],
+  "order": {
+    "language": [
+      "Korean",
+      "Japanese",
+      "Mandarin",
+      "Cantonese",
+      "Gan",
+      "Hakka",
+      "Jin",
+      "Southern Min",
+      "Wu",
+      "Xiang"
+    ],
+    "kind": {
+      "Japanese": [
+        "Go-on",
+        "Kan-on",
+        "Tō-on",
+        "Sō-on",
+        "Kan'yō-on"
+      ]
+    }
+  },
   "hypothesis": "hypothesis.json",
   "anatomy": "anatomy.json",
   "tone": "anatomy_tone.json",

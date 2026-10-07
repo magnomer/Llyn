@@ -1,4 +1,5 @@
 using System;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.Tests;
@@ -91,4 +92,7 @@ internal static partial class TInterface
             content,
             DateTimeOffset.UtcNow);
     }
+
+    internal static bool TDraftMatch(LEntryDraft one, LEntryDraft other) =>
+        LDraftClerkEquality.LDraftMatch(one, other);
 }

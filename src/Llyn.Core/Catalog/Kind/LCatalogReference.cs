@@ -40,12 +40,12 @@ public sealed record LCatalogReference(
 
         return order switch
         {
-            LCatalogOrder.LCatalogOrderYear => [.. rows
+            LCatalogOrder.LCatalogOrderYear => LCatalogReferenceSort(rows
                 .OrderBy(row => row.LCatalogReferenceStored.LReferenceYear.LStateValueState)
                 .ThenBy(
                     row => row.LCatalogReferenceStored.LReferenceYear.LStateValueShow(),
-                    StringComparer.CurrentCultureIgnoreCase)],
-            LCatalogOrder.LCatalogOrderAuthor => [.. rows
+                    StringComparer.CurrentCultureIgnoreCase)),
+            LCatalogOrder.LCatalogOrderAuthor => LCatalogReferenceSort(rows
                 .OrderBy(row => row.LCatalogReferenceCredit.Count == 0
                     ? row.LCatalogReferenceStored.LReferenceAuthorState.LStateMarkState
                     : LState.LStateSpecified)
@@ -53,12 +53,23 @@ public sealed record LCatalogReference(
                     row => row.LCatalogReferenceCredit.Count == 0
                         ? string.Empty
                         : row.LCatalogReferenceCredit[0].LAuthorName,
-                    StringComparer.CurrentCultureIgnoreCase)],
-            LCatalogOrder.LCatalogOrderUsage => [.. rows
-                .OrderByDescending(row => row.LCatalogReferenceUsage)],
-            _ => [.. rows
-                .OrderBy(row => row.LCatalogReferenceName, StringComparer.CurrentCultureIgnoreCase)],
+                    StringComparer.CurrentCultureIgnoreCase)),
+            LCatalogOrder.LCatalogOrderUsage => LCatalog.LCatalogUsageSort(
+                rows,
+                static row => row.LCatalogReferenceUsage,
+                static row => row.LCatalogReferenceName,
+                static row => row.LCatalogReferenceStored.LReferenceId),
+            _ => LCatalogReferenceSort(rows
+                .OrderBy(row => row.LCatalogReferenceName, StringComparer.CurrentCultureIgnoreCase)),
         };
+    }
+
+    private static IReadOnlyList<LCatalogReference> LCatalogReferenceSort(IOrderedEnumerable<LCatalogReference> rows)
+    {
+        return [.. LCatalog.LCatalogNameSort(
+            rows,
+            static row => row.LCatalogReferenceName,
+            static row => row.LCatalogReferenceStored.LReferenceId)];
     }
 
     public bool LCatalogReferenceMatch(string query)

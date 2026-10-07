@@ -52,6 +52,8 @@ internal sealed class QDisplay
 
     private ItemsControl QDisplaySpeech => QContract.QContractFind<ItemsControl>(_qDisplaySurface, "PDisplaySpeech");
 
+    private TextBlock QDisplayUnit => QContract.QContractFind<TextBlock>(_qDisplaySurface, "PDisplayUnit");
+
     private StackPanel QDisplayFrequencySection =>
         QContract.QContractFind<StackPanel>(_qDisplaySurface, "PDisplayFrequencySection");
 
@@ -164,7 +166,7 @@ internal sealed class QDisplay
         lectern.QLecternStampIntroduce(QDisplayStampSection, QDisplayStampAdded, QDisplayStampUpdated);
         lectern.QLecternFrequencyIntroduce(
             QDisplayFrequencySection, QDisplayFrequencyChip, QDisplayFrequency, QDisplayFrequencyBand);
-        lectern.QLecternSpeechIntroduce(QDisplaySpeechSection, QDisplaySpeech);
+        lectern.QLecternSpeechIntroduce(QDisplaySpeechSection, QDisplaySpeech, QDisplayUnit);
         lectern.QLecternNoteIntroduce(QDisplayNoteSection, QDisplayNote);
         _qDisplaySounding.QSoundingIntroduce(host, lectern);
         lectern.QLecternSound.QLecternFanqieIntroduce(

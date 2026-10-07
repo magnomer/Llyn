@@ -17,6 +17,8 @@ internal sealed class QMarker
 
     private QCategory _qMarkerCategory = null!;
 
+    private QUnit _qMarkerUnit = null!;
+
     internal QMarker(FrameworkElement surface)
     {
         _qMarkerSurface = surface;
@@ -40,10 +42,11 @@ internal sealed class QMarker
 
     private QIconImage QMarkerIcon => QContract.QContractFind<QIconImage>(_qMarkerSurface, "PMarkerIcon");
 
-    internal void QMarkerIntroduce(CEditor editor, QCategory category)
+    internal void QMarkerIntroduce(CEditor editor, QCategory category, QUnit unit)
     {
         _cEditor = editor;
         _qMarkerCategory = category;
+        _qMarkerUnit = unit;
         editor.CEditorDraftChanged += QMarkerRefine;
     }
 
@@ -128,5 +131,6 @@ internal sealed class QMarker
         QField.QFieldTextShow(QMarkerField, marker.CMarkerTyped);
 
         _qMarkerCategory.QCategoryRefine(marker.CMarkerCategory);
+        _qMarkerUnit.QUnitRefine(marker.CMarkerUnits);
     }
 }

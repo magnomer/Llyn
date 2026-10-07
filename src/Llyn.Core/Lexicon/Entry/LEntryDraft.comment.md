@@ -1,7 +1,7 @@
 # LEntryDraft.cs
-Hash: `7c3557c606c71b35`
+Hash: `7989be6a4d21a4d8`
 
-## `public sealed record LEntryDraft(string LEntryDraftHeadword, string LEntryDraftLanguage, IReadOnlyList<LPronunciationDraft>? LEntryDraftPronunciations, string LEntryDraftNote, IReadOnlyList<LCardDraft> LEntryDraftMeanings, IReadOnlyList<LCardDraft> LEntryDraftCollocations, IReadOnlyList<LSpeechDraft>? LEntryDraftSpeeches = null, IReadOnlyList<LForm>? LEntryDraftForms = null, IReadOnlyList<LInflection>? LEntryDraftInflections = null, IReadOnlyList<LTranscriptionDraft>? LEntryDraftTranscriptions = null, IReadOnlyList<LReflexDraft>? LEntryDraftReflexes = null, LEtymologyDraft? LEntryDraftEtymology = null)`
+## `public sealed record LEntryDraft(string LEntryDraftHeadword, string LEntryDraftLanguage, IReadOnlyList<LPronunciationDraft>? LEntryDraftPronunciations, string LEntryDraftNote, IReadOnlyList<LCardDraft> LEntryDraftMeanings, IReadOnlyList<LCardDraft> LEntryDraftCollocations, IReadOnlyList<LSpeechDraft>? LEntryDraftSpeeches = null, IReadOnlyList<LForm>? LEntryDraftForms = null, IReadOnlyList<LInflection>? LEntryDraftInflections = null, IReadOnlyList<LTranscriptionDraft>? LEntryDraftTranscriptions = null, IReadOnlyList<LReflexDraft>? LEntryDraftReflexes = null, LEtymologyDraft? LEntryDraftEtymology = null, LUnit LEntryDraftUnit = LUnit.LUnitEmpty)`
 
 The whole input form as one immutable value.
 The shell reads the visual tree once, builds this, and hands it to the engine.
@@ -27,6 +27,7 @@ The entry-level detail travels as the shapes the archives store, never as flatte
 - `LEntryDraftReflexes` — Reflexes in list order, grouped by borrowing language.
   Empty when the language declares no reflex rule or nothing was fetched or typed.
 - `LEntryDraftEtymology` — What the entry says about its own origin, in either shape.
+- `LEntryDraftUnit` — The lexical unit chosen for the entry, `LUnitEmpty` until chosen.
   Never null, since an entry that says nothing carries an empty etymology draft.
 
 ## `public IReadOnlyList<string> LEntryDraftNames`

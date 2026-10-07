@@ -1,5 +1,5 @@
 # LEntryArchive.cs
-Hash: `b6fa4fa2c290140d`
+Hash: `7dcd83c47aabc1be`
 
 ## `public sealed partial class LEntryArchive : LEntryVault`
 
@@ -22,6 +22,7 @@ Binds the store to the workspace `database` it opens sessions through.
 ## `public LEntry LEntryCreate(LEntry entry, IReadOnlyList<LForm> forms, IReadOnlyList<LSpeech> speeches)`
 
 Inserts `entry` with a fresh opaque id and creation and modification timestamps.
+Its lexical unit is stored with the row.
 It writes `forms` and `speeches` as ordered child rows.
 Their entry id and position are assigned from list order.
 Returns the stored entry with its id and timestamps filled in.
@@ -45,7 +46,8 @@ Reads the entry's part-of-speech assignments, ordered by position.
 
 ## `public void LEntryUpdate(LEntry entry)`
 
-Updates the headword and metadata of the entry identified by `entry`'s id and stamps a fresh modification timestamp.
+Updates the headword, language and lexical unit of the entry identified by `entry`'s id.
+It stamps a fresh modification timestamp.
 The id, forms, and POS are untouched.
 Throws when no entry carries that id, rather than reporting success for a write that reached nothing.
 

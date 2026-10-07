@@ -1,5 +1,5 @@
 # LSpeechArchive.cs
-Hash: `3a369bef2d4375ca`
+Hash: `c9c0bb44eab4767c`
 
 ## `public sealed class LSpeechArchive : LSpeechVault`
 
@@ -25,7 +25,8 @@ Reads one value by row id, or `null` when no row has it.
 ## `public IReadOnlyList<LSpeechValue> LSpeechValueRead(string language)`
 
 Reads every part of speech `language` declares.
-They come in the display order the language pack listed them in.
+They come in stored order, which carries no meaning.
+`LVocabularyClerk.LSpeechRead` orders them by the pack's declared rule before any view sees them.
 Those are the presets the part-of-speech field offers.
 A language with no pack on disk declares none, which is an empty list rather than a failure.
 
@@ -35,14 +36,40 @@ Resolves the part of speech `name` names in `language` back to its row.
 It returns `null` when the language declares no value by that name.
 Matching is a trimmed, case-insensitive comparison of the display name.
 The name arrives as the user typed it.
-Picking "Verb, transitive" from the dropdown and typing "verb, transitive" mean the same thing.
+Picking "Verb" from the dropdown and typing "verb" mean the same thing.
 Only text that names no value at all is stored as typed.
 
 ## `public LSpeechPack LSpeechLoad(string language)`
 
 The parts of speech and features the language pack declares, read through `LSpeechLoader`.
 
+## `public void LSpeechRetirementApply(string language, LSpeechRetirement row)`
+
+Moves every link off one retired part and deletes its row, in one session.
+A target the workspace does not hold drops the links as a row without a target does.
+The unit goes on first, while the links still say which entries held the part.
+An entry that already links the target loses its retired link instead of holding the target twice.
+A dropped link leaves an inflection without a part rather than failing on the foreign key.
+The touched entries are renumbered from zero, since a removed link leaves a gap.
+
 ## Inline notes
+
+### `private static long? LSpeechRetirementFind(SqliteConnection connection, string language, long code)`
+
+The row id holding a pack code of `language`, or null when none does.
+
+### `private static List<long> LSpeechRetirementScan(SqliteConnection connection, long retired)`
+
+The entries linking the retired row, read before any link moves.
+
+### `private static void LSpeechRetirementRun(SqliteConnection connection, string text, long retired, long value)`
+
+Runs one retirement statement, `value` bound as both the target and the unit.
+
+### `private static void LSpeechPositionReset(SqliteConnection connection, long entry)`
+
+Renumbers the entry's links from zero in their order.
+They pass through negative positions first, so no step collides with the primary key.
 
 ### `private static long LSpeechCodeCreate(SqliteConnection connection, string language)`
 

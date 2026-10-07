@@ -77,11 +77,10 @@ public sealed class TParadigm
     {
         LSpeechPack pack = TInterface.TSpeechPackLoad("English");
 
-        LSpeechValue countable = Assert.Single(pack.LSpeechPackValues, row => row.LSpeechValueCode == 2);
-        Assert.Equal(1, countable.LSpeechValueParent);
+        Assert.DoesNotContain(pack.LSpeechPackValues, row => row.LSpeechValueParent != 0);
         LParadigm noun = Assert.Single(pack.LSpeechPackParadigms, row => row.LParadigmSpeechCode == 1);
         Assert.Equal([2L], noun.LParadigmMorphology);
-        Assert.Equal([3L, 4L], noun.LParadigmExcept);
+        Assert.Empty(noun.LParadigmExcept);
         Assert.NotEmpty(noun.LParadigmRegular);
     }
 
@@ -96,7 +95,7 @@ public sealed class TParadigm
         Assert.Equal(paradigms, pack.LSpeechPackParadigms.Count);
         LParadigm noun = Assert.Single(pack.LSpeechPackParadigms, row => row.LParadigmSpeechCode == 1);
         Assert.Equal([genitive], noun.LParadigmMorphology);
-        Assert.Equal([2L], noun.LParadigmExcept);
+        Assert.Empty(noun.LParadigmExcept);
         LParadigm verb = Assert.Single(pack.LSpeechPackParadigms, row => row.LParadigmSpeechCode == 3);
         Assert.Equal(principalParts, verb.LParadigmMorphology.Count);
         Assert.All(

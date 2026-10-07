@@ -15,5 +15,5 @@ The engine builds it, and a view only prints the lines it is handed.
 - `LTallyHeading` — The section the tally belongs to, or empty for neither kind.
   It is the division as the fanqie rows write it, such as `一`.
   Or it is the place name the hypothesis gives the initial, such as `labial`.
-- `LTallyLines` — One [LTallyLine](LTallyLine.comment.md) per language and kind, in the pack's reflex-rule order.
+- `LTallyLines` — One [LTallyLine](LTallyLine.comment.md) per language and kind, in the language order the pack declares under `order`.
   Empty when no character of the section has an entry with reflex rows.

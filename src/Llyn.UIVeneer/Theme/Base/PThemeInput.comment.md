@@ -1,5 +1,5 @@
 # PThemeInput.xaml
-Hash: `a527ebaae63e82f0`
+Hash: `d34f51cd8be0ce0b`
 
 Every hover, press, check and disabled look is switched by `QLook` in the deportment.
 Every template part takes its control's values through `QLook` rather than a template binding.
@@ -14,6 +14,7 @@ A field's private undo would fight it.
 
 The toggle over the whole field opens the dropdown, its check bound to the dropdown by `QLook`.
 The arrow names its asset by pack URI, since a markup extension from code would be a hook.
+The dropdown shows at once, with no fade, so the pick never looks slow to answer.
 
 ## `<Style x:Key="Theme.Input.Tab" TargetType="Button">`
 

@@ -1,5 +1,5 @@
 # LEntryLoader.cs
-Hash: `b74798386b02dc7c`
+Hash: `46b01ade96007279`
 
 ## `public sealed class LEntryLoader`
 
@@ -10,6 +10,7 @@ That shape is what a draft commit consumes, so a save and a load are inverses.
 The parts are the entry row, its meanings and collocations, its note, its pronunciations and its transcriptions.
 They include the entry's forms, its parts of speech and its inflections with their features.
 They include its reflexes and its etymology.
+They include its lexical unit, read off the entry row.
 They also include every sentence, Situation, Register, Tag, Translation, Image and Video each card carries.
 All of them arrive in stored order.
 

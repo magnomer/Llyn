@@ -1,5 +1,5 @@
 # LFanqieFacade.cs
-Hash: `1c88c33d633fbb99`
+Hash: `706640a13e16abdc`
 
 ## `internal sealed class LFanqieFacade`
 
@@ -84,6 +84,8 @@ Nothing is listed while no language declares a book.
 ## `public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, IReadOnlyList<long> diweiIds, string query, LVista? vista = null)`
 
 The entries filed under all of the diwei that match `query`, built as vista rows.
+They follow the order of `vista`, the panel's order setting, as the catalog entry list does.
+Without a vista they fall back to headword order.
 
 ## `public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(long? chosen, LVista onset, LVista rime, LVista vista)`
 

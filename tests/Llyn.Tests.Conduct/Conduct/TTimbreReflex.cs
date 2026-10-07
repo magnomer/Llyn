@@ -164,12 +164,13 @@ public sealed class TTimbreReflex
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TTimbreReflexPrepare(engine, TTimbreReflexSave(engine));
 
-        editor.CEditorTimbre.CTimbreReflexAdd(TTimbreReflexRead(editor)[0].CReflexId);
+        editor.CEditorTimbre.CTimbreReflexAdd(
+            TTimbreReflexRead(editor).First(static row => row.CReflexText == "sy").CReflexId);
 
         IReadOnlyList<CReflex> rows = TTimbreReflexRead(editor);
-        Assert.Equal(["Wu", "Wu", "Wu", "Jin"], rows.Select(static row => row.CReflexLanguage));
-        Assert.Equal(["Go-on", "Go-on", string.Empty, string.Empty], rows.Select(static row => row.CReflexKind));
-        Assert.Equal(["sy", string.Empty, "si", "sui"], rows.Select(static row => row.CReflexText));
+        Assert.Equal(["Jin", "Wu", "Wu", "Wu"], rows.Select(static row => row.CReflexLanguage));
+        Assert.Equal([string.Empty, string.Empty, "Go-on", "Go-on"], rows.Select(static row => row.CReflexKind));
+        Assert.Equal(["sui", "si", "sy", string.Empty], rows.Select(static row => row.CReflexText));
     }
 
     [Fact]
@@ -184,8 +185,8 @@ public sealed class TTimbreReflex
 
         IReadOnlyList<CReflex> rows = TTimbreReflexRead(editor);
         Assert.Equal(
-            ["Wu", "Wu", "Jin", string.Empty, string.Empty], rows.Select(static row => row.CReflexLanguage));
-        Assert.Equal(["sy", "si", "sui", string.Empty, string.Empty], rows.Select(static row => row.CReflexText));
+            ["Jin", "Wu", "Wu", string.Empty, string.Empty], rows.Select(static row => row.CReflexLanguage));
+        Assert.Equal(["sui", "si", "sy", string.Empty, string.Empty], rows.Select(static row => row.CReflexText));
     }
 
     [Fact]
@@ -197,7 +198,7 @@ public sealed class TTimbreReflex
 
         editor.CEditorTimbre.CTimbreReflexRemove(TTimbreReflexRead(editor)[1].CReflexId);
 
-        Assert.Equal(["sy", "sui"], TTimbreReflexRead(editor).Select(static row => row.CReflexText));
+        Assert.Equal(["sui", "sy"], TTimbreReflexRead(editor).Select(static row => row.CReflexText));
     }
 
     [Fact]
@@ -233,14 +234,14 @@ public sealed class TTimbreReflex
         IReadOnlyList<long> ids = TTimbreReflexRead(editor).Select(static row => row.CReflexId).ToList();
 
         Assert.Equal(
-            [new CReflexHead(ids[0], true), new CReflexHead(ids[1], false), new CReflexHead(ids[2], true)],
+            [new CReflexHead(ids[0], true), new CReflexHead(ids[1], true), new CReflexHead(ids[2], false)],
             editor.CEditorTimbre.CTimbreReflexSet(ids[1], CReflexField.CReflexFieldLanguage, "Wu").CReflexTypedHeads);
         CReflexTyped typed = editor.CEditorTimbre.CTimbreReflexSet(ids[1], CReflexField.CReflexFieldLanguage, "Jin");
         Assert.Equal(
-            [new CReflexHead(ids[0], true), new CReflexHead(ids[1], true), new CReflexHead(ids[2], false)],
+            [new CReflexHead(ids[0], true), new CReflexHead(ids[1], false), new CReflexHead(ids[2], true)],
             typed.CReflexTypedHeads);
         Assert.Equal("Jin", typed.CReflexTypedText);
-        Assert.Equal(["Wu", "Jin", "Jin"], TTimbreReflexRead(editor).Select(static row => row.CReflexLanguage));
+        Assert.Equal(["Jin", "Jin", "Wu"], TTimbreReflexRead(editor).Select(static row => row.CReflexLanguage));
     }
 
     [Fact]
@@ -257,7 +258,7 @@ public sealed class TTimbreReflex
 
         editor.CEditorDesk.CDeskPersist();
         Assert.Equal("sü", respelled.CTimbreReflexRead().CTimbreReflexRows[0].CReflexText);
-        Assert.Equal("sy", TTimbreReflexRead(editor)[0].CReflexText);
+        Assert.Equal("sui", TTimbreReflexRead(editor)[0].CReflexText);
     }
 
     [Fact]
@@ -327,9 +328,9 @@ public sealed class TTimbreReflex
 
         CReflexTyped answer = Assert.Single(typed);
         Assert.Equal(CReflexField.CReflexFieldText, answer.CReflexTypedField);
-        Assert.Equal("sy", answer.CReflexTypedText);
+        Assert.Equal("sui", answer.CReflexTypedText);
         Assert.Empty(answer.CReflexTypedHeads);
-        Assert.Equal("sy", TTimbreReflexRead(editor)[0].CReflexText);
+        Assert.Equal("sui", TTimbreReflexRead(editor)[0].CReflexText);
     }
 
     private static long TTimbreReflexSave(LEngine engine)

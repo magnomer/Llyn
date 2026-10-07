@@ -1,5 +1,6 @@
 {
   "language": "Thai",
+  "spaced": false,
   "flag": "th",
   "tonal": true,
   "font": {

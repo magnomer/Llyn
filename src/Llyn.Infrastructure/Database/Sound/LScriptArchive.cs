@@ -61,7 +61,7 @@ public sealed class LScriptArchive : LScriptVault
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT style, position, caption, gloss, data, epoch
+            SELECT style, position, caption, gloss, data, epoch, script_id
             FROM script
             WHERE language = $language AND character = $character
             ORDER BY script_id;
@@ -80,7 +80,8 @@ public sealed class LScriptArchive : LScriptVault
                 reader.GetString(2),
                 reader.GetString(3),
                 (byte[])reader.GetValue(4),
-                reader.GetString(5)));
+                reader.GetString(5),
+                reader.GetInt64(6)));
         }
 
         return images;

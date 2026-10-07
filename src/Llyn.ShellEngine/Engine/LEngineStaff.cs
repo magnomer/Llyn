@@ -95,7 +95,7 @@ internal sealed record LEngineStaff(
         LDiweiClerk diwei = new(rig, cache);
         LScriptClerk script = new(rig, cache, gate, raise);
         LWorkspaceClerk workspace = new(rig, cache, reflex, paradigm);
-        LMarkupClerk markup = new(rig);
+        LMarkupClerk markup = new(rig, reflex);
         LMarkupClerkLink link = new(rig, reference, author, trail);
         LMarkupClerkIntake intake = new(
             rig, claim, entry, lacuna, frequency, link, new LMarkupClerkDraft(rig, link));

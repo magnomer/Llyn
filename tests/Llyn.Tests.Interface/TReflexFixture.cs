@@ -11,7 +11,8 @@ internal static class TReflexFixture
 {
     internal const string TReflexPack =
         """
-        { "reflex": [
+        { "order": { "language": ["Korean", "Japanese", "Mandarin"], "kind": { "Japanese": ["Go-on", "Kan-on"] } },
+          "reflex": [
             { "language": "Korean", "url": "https://example.test/wiki/{word}",
               "match": "eumhun: (?<sense>[^ ]+) (?<sound>[^ <]+)(?: initial (?<initial>[^ <]+))?",
               "format": "{sound}[[({initial})]] | {sense}", "epithet": "{text}", "clip": "\\(.*\\)",

@@ -1,5 +1,5 @@
 # TSpeech.cs
-Hash: `f1ce4382086375ff`
+Hash: `cd1f43db2e32dd9c`
 
 ## `public sealed class TSpeech`
 
@@ -7,6 +7,17 @@ Covers the controlled vocabularies and the inflections that use them.
 The engine writes parts of speech and morphology into a workspace from the packs on disk.
 It covers a pack row rewritten in place, as a second import rewrites it.
 It covers an Entry's inflected forms appended to, moved and deleted through the inflection save.
+
+## `public void SpeechRead_ValuesTypedOutOfOrder_ListsPackFirstThenAlphabetical()`
+
+Pins the declared order of a language's parts of speech.
+The pack's values come first in pack order, and typed values follow alphabetically without case.
+The typed values are added out of order, so arrival order cannot pass for the rule.
+
+## `public void SpeechRead_PackRowStoredOutOfPackOrder_ListsInDeclaredOrder()`
+
+A pack row whose stored position moves to the end still reads in its pack place.
+So the stored position never decides what a view shows.
 
 ## `public void EntryDraftNames_UnnamedSpeech_LeavesItOut()`
 
@@ -20,9 +31,10 @@ The tables are no longer empty on a fresh workspace.
 What a language declares on disk is what the workspace holds.
 So an entry can carry a part of speech from the first save.
 
-### `Assert.NotNull(engine.TSpeechValueFind("English", "Verb, transitive"));`
+### `Assert.Null(engine.TSpeechValueFind("English", "Verb, transitive"));`
 
-The presets go finer than the bare word classes, and a subtype is a value of its own.
+The presets are bare roles, and a retired subtype is no value at all.
+Valency belongs to the dependence field, not to the part of speech.
 
 ### `"SELECT value.name FROM morphology_value value " +`
 

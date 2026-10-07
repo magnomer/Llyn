@@ -1,5 +1,5 @@
 # LReflexFetch.cs
-Hash: `aadcba8d0f38a9c7`
+Hash: `861e6e074c0aeefe`
 
 ## `public sealed class LReflexFetch`
 
@@ -53,3 +53,5 @@ Cancellation by the fetch's own token is not a failure and is not recorded.
 Copies the saved rows into every plain held draft of the entry that has no reflex rows of its own.
 A draft carrying an example, situation, reference or author is skipped.
 `sweep` overwrites drafts that have rows, for a rebuild.
+The rows are put in the order the draft's language pack declares, not the order the rules ran in.
+They become drafts through `LReflexClerk.LReflexClerkScan`, the one copy of a stored row into a draft.

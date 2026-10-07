@@ -48,6 +48,63 @@ public sealed class TDiwei
         Assert.Equal(respelled ? 1 : 2, section.LDiweiSectionTallies.Count);
     }
 
+    [Fact]
+    public void DiweiSectionScan_CharactersStoredOutOfCodepointOrder_ListsLineInCodepointOrder()
+    {
+        LDiweiSection section = Assert.Single(TInterfaceFanqie.TDiweiSectionScan(
+        [
+            TInterface.TFanqieRowCreate("\U00020000", "book", "text", "來", "寒", "寒", "一", "平", id: 1),
+            TInterface.TFanqieRowCreate("\uF900", "book", "text", "來", "寒", "寒", "一", "平", id: 2),
+            TInterface.TFanqieRowCreate("林", "book", "text", "來", "寒", "寒", "一", "平", id: 3),
+            TInterface.TFanqieRowCreate("\uF900", "book", "text", "來", "寒", "寒", "一", "平", id: 4),
+        ]));
+
+        LDiweiLine line = Assert.Single(section.LDiweiSectionLines);
+        Assert.Equal(["林", "\uF900", "\U00020000"], line.LDiweiLineCharacters);
+    }
+
+    [Fact]
+    public void DiweiSectionScan_HeadingsTiedOnRank_ListsByHeadingCodepoint()
+    {
+        IReadOnlyList<LDiweiSection> sections = TInterfaceFanqie.TDiweiSectionScan(
+            [
+                TInterface.TFanqieRowCreate("甲", "book", "text", "來", "寒", "寒", string.Empty, "平", id: 1),
+                TInterface.TFanqieRowCreate("乙", "book", "text", "來", "寒", "寒", "\U00020000", "平", id: 2),
+                TInterface.TFanqieRowCreate("丙", "book", "text", "來", "寒", "寒", "\uF900", "平", id: 3),
+                TInterface.TFanqieRowCreate("丁", "book", "text", "來", "寒", "寒", "二", "平", id: 4),
+            ]);
+
+        Assert.Equal(
+            ["二", "\uF900", "\U00020000", string.Empty], sections.Select(section => section.LDiweiSectionLabel));
+    }
+
+    [Fact]
+    public void DiweiSectionScan_LinesTiedOnRank_ListsByLabelCodepointThenUnroundedFirst()
+    {
+        LDiweiSection section = Assert.Single(TInterfaceFanqie.TDiweiSectionScan(
+        [
+            TInterface.TFanqieRowCreate("丹", "book", "text", "來", "寒", "寒", "一", "平", true, id: 1),
+            TInterface.TFanqieRowCreate("爛", "book", "text", "來", "寒", "寒", "一", "平", false, id: 2),
+            TInterface.TFanqieRowCreate("金", "book", "text", "來", "\U00020000", "\U00020000", "一", "平", id: 3),
+            TInterface.TFanqieRowCreate("林", "book", "text", "來", "\uF900", "\uF900", "一", "平", id: 4),
+            TInterface.TFanqieRowCreate("侵", "book", "text", "來", "侵", "侵", "一", "平", id: 5),
+        ]));
+
+        Assert.Equal(
+            [("侵", false), ("寒", false), ("寒", true), ("\uF900", false), ("\U00020000", false)],
+            section.LDiweiSectionLines.Select(line => (line.LDiweiLineLabel, line.LDiweiLineRounded)));
+    }
+
+    [Fact]
+    public void TallyMarkScan_CharactersStoredOutOfCodepointOrder_ListsMarkInCodepointOrder()
+    {
+        IReadOnlyList<LTallyMark> marks = TInterfaceFanqie.TTallyMarkScan(
+            new Dictionary<string, List<string>> { ["l"] = ["\U00020000", "\uF900", "林"] });
+
+        LTallyMark mark = Assert.Single(marks);
+        Assert.Equal(["林", "\uF900", "\U00020000"], mark.LTallyMarkCharacters);
+    }
+
     [Theory]
     [InlineData(null, "一")]
     [InlineData("Division {1}", "Division I")]

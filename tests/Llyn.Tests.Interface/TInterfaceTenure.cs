@@ -99,6 +99,15 @@ internal static partial class TInterface
 
     internal static LSpeechOffer TTenureSpeechSet(this LTenure tenure, string typed) => tenure.LTenureSpeechSet(typed);
 
+    internal static LUnit TTenureUnitRead(this LTenure tenure) => tenure.LTenureUnitRead();
+
+    internal static IReadOnlyList<LUnit> TTenureUnitScan(this LTenure tenure) => tenure.LTenureUnitScan();
+
+    internal static void TTenureUnitSet(this LTenure tenure, LUnit unit)
+    {
+        tenure.LTenureUnitSet(unit);
+    }
+
     internal static void TTenureIpaSet(this LTenure tenure, string text)
     {
         tenure.LTenureIpaSet(text);

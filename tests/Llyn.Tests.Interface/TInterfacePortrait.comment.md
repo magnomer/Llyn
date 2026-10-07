@@ -1,5 +1,5 @@
 # TInterfacePortrait.cs
-Hash: `ebbb3db3df9ee920`
+Hash: `282ff9bab8c30ea3`
 
 ## `internal static partial class TInterface`
 
@@ -9,6 +9,7 @@ Tests call production operations only through here, so a renamed operation break
 ## `internal static LPortraitLabel TPortraitLabelRead()`
 
 A fixed English label set, so a test asserts on known words without the localization files.
+Its unit names are English too.
 
 ## `internal static LPortraitLink TPortraitLinkCreate(string headword, string language)`
 

@@ -1,5 +1,5 @@
 # LLanguageCache.cs
-Hash: `d16ef3eec7823894`
+Hash: `b450bc1d90cc4c39`
 
 ## `public sealed class LLanguageCache`
 
@@ -58,3 +58,12 @@ Every row resolved in turn, order and ids kept.
 ## `public LEntryDraft LLanguageAnatomyRebuild(LEntryDraft content)`
 
 The draft with every reflex row resolved under its current language, run when the language changes.
+
+## `public bool LLanguageSpacedCheck(string language)`
+
+Whether the language spaces its words, which picks the lexical units it offers.
+A draft without a language yet reads as spaced, the default every pack starts from.
+
+## `public LEntryDraft LLanguageUnitRebuild(LEntryDraft content)`
+
+The draft with its lexical unit settled under its current language, run when the language changes.

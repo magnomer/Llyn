@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -82,10 +83,16 @@ public static class LReflexClerkRow
             return false;
         }
 
-        for (int index = 0; index < stored.Count; index++)
+        HashSet<long> matched = [];
+        foreach (LReflex row in current)
         {
-            if (!LAnchor.LAnchorMatch(stored[index].LReflexAnchors, current[index].LReflexAnchors)
-                || stored[index] with { LReflexAnchors = [] } != current[index] with { LReflexAnchors = [] })
+            LReflex? kept = row.LReflexId > 0 && matched.Add(row.LReflexId)
+                ? stored.FirstOrDefault(held => held.LReflexId == row.LReflexId)
+                : null;
+            if (kept is null
+                || !LAnchor.LAnchorMatch(kept.LReflexAnchors, row.LReflexAnchors)
+                || kept with { LReflexAnchors = [], LReflexPosition = 0 }
+                    != row with { LReflexAnchors = [], LReflexPosition = 0 })
             {
                 return false;
             }

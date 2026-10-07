@@ -1,5 +1,5 @@
 # TEngineReflexSource.cs
-Hash: `fade77c45d9e92e2`
+Hash: `657b16091b41c7c8`
 
 ## `public sealed class TEngineReflexSource`
 
@@ -12,6 +12,6 @@ A page listing one reading twice yields one row.
 A match capturing a `note` group hands that text as the note without any gloss pattern.
 A historical spelling equal to the current one folds into the marked row.
 A different historical or ancient spelling is its own unmarked row labelled by the note.
-A `main` group nested in the note marks the new-style row over the first.
+A `main` group nested in the note marks the new-style row over the first, and that row is listed first.
 A lone unlabelled row is still marked as the first.
 A pack pattern that times out answers no rows and not reached, so the miss is not remembered.

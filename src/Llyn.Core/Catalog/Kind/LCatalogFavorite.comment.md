@@ -1,5 +1,5 @@
 # LCatalogFavorite.cs
-Hash: `2bd0c4a411b48c86`
+Hash: `e4b9348359539796`
 
 ## `public sealed record LCatalogFavorite(LEntry LCatalogFavoriteEntry, string LCatalogFavoriteMarked)`
 
@@ -20,3 +20,4 @@ Orders the marked entries under one ordering, and under the headword otherwise.
 The store already answers which marked entries match, so only the ordering is decided here.
 Ordering by the mark reads when the mark was made, never when the entry was written.
 Ordering by grasp puts the best known entries first and breaks ties by headword.
+Rows still equal go by the entry tie rule in `LCatalogEntry`, so storage order never decides a place.

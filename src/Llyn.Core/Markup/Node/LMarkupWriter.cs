@@ -16,6 +16,8 @@ internal static class LMarkupWriter
             element.Add(LMarkupNode.LMarkupNodeCreate("speech", speech));
         }
 
+        LMarkup.LMarkupTextFormat(element, "unit", LUnitKey.LUnitKeyFormat(entry.LMarkupEntryUnit));
+
         foreach (LForm form in entry.LMarkupEntryForm)
         {
             element.Add(LMarkupFormFormat(form));

@@ -1,5 +1,5 @@
 # LTallyMark.cs
-Hash: `884a04865414a2e4`
+Hash: `834ee2f5348a4b4f`
 
 ## `public sealed record LTallyMark(string LTallyMarkText, IReadOnlyList<string> LTallyMarkCharacters)`
 
@@ -10,7 +10,7 @@ The characters are kept so the view can open a list of them from the part.
 **Parameters**
 
 - `LTallyMarkText` — The part as cut, such as `ㄹ`, `l` or `an`.
-- `LTallyMarkCharacters` — The distinct characters of the division taking it, in placement order.
+- `LTallyMarkCharacters` — The distinct characters of the division taking it.
 
 ## `public int LTallyMarkCount`
 
@@ -20,3 +20,4 @@ How many characters take the part, the printed number.
 
 The marks of one language from its parts and the characters under each, count descending, then part text.
 A missing or empty table gives no marks.
+Each mark lists its characters in code point order through `LGlyphOrder`, whatever order they were gathered in.

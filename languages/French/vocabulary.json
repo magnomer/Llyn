@@ -18,153 +18,28 @@
       "name": "Noun"
     },
     {
-      "id": 2,
-      "name": "Noun, countable",
-      "parent": 1
-    },
-    {
-      "id": 3,
-      "name": "Noun, uncountable",
-      "parent": 1
-    },
-    {
-      "id": 4,
-      "name": "Noun, proper",
-      "parent": 1
-    },
-    {
-      "id": 5,
-      "name": "Noun, collective",
-      "parent": 1
-    },
-    {
       "id": 6,
       "name": "Verb"
-    },
-    {
-      "id": 7,
-      "name": "Verb, transitive",
-      "parent": 6
-    },
-    {
-      "id": 8,
-      "name": "Verb, intransitive",
-      "parent": 6
-    },
-    {
-      "id": 9,
-      "name": "Verb, pronominal",
-      "parent": 6
-    },
-    {
-      "id": 10,
-      "name": "Verb, impersonal",
-      "parent": 6
-    },
-    {
-      "id": 11,
-      "name": "Verb, auxiliary",
-      "parent": 6
     },
     {
       "id": 12,
       "name": "Adjective"
     },
     {
-      "id": 13,
-      "name": "Adjective, attributive",
-      "parent": 12
-    },
-    {
-      "id": 14,
-      "name": "Adjective, predicative",
-      "parent": 12
-    },
-    {
       "id": 15,
       "name": "Adverb"
-    },
-    {
-      "id": 16,
-      "name": "Adverb, manner",
-      "parent": 15
-    },
-    {
-      "id": 17,
-      "name": "Adverb, degree",
-      "parent": 15
-    },
-    {
-      "id": 18,
-      "name": "Adverb, frequency",
-      "parent": 15
     },
     {
       "id": 19,
       "name": "Pronoun"
     },
     {
-      "id": 20,
-      "name": "Pronoun, personal",
-      "parent": 19
-    },
-    {
-      "id": 21,
-      "name": "Pronoun, possessive",
-      "parent": 19
-    },
-    {
-      "id": 22,
-      "name": "Pronoun, demonstrative",
-      "parent": 19
-    },
-    {
-      "id": 23,
-      "name": "Pronoun, relative",
-      "parent": 19
-    },
-    {
-      "id": 24,
-      "name": "Pronoun, interrogative",
-      "parent": 19
-    },
-    {
-      "id": 25,
-      "name": "Pronoun, reflexive",
-      "parent": 19
-    },
-    {
       "id": 26,
       "name": "Article"
     },
     {
-      "id": 27,
-      "name": "Article, definite",
-      "parent": 26
-    },
-    {
-      "id": 28,
-      "name": "Article, indefinite",
-      "parent": 26
-    },
-    {
-      "id": 29,
-      "name": "Article, partitive",
-      "parent": 26
-    },
-    {
       "id": 30,
       "name": "Determiner"
-    },
-    {
-      "id": 31,
-      "name": "Determiner, possessive",
-      "parent": 30
-    },
-    {
-      "id": 32,
-      "name": "Determiner, demonstrative",
-      "parent": 30
     },
     {
       "id": 33,
@@ -175,56 +50,150 @@
       "name": "Conjunction"
     },
     {
-      "id": 35,
-      "name": "Conjunction, coordinating",
-      "parent": 34
-    },
-    {
-      "id": 36,
-      "name": "Conjunction, subordinating",
-      "parent": 34
-    },
-    {
       "id": 37,
       "name": "Numeral"
     },
     {
+      "id": 40,
+      "name": "Interjection"
+    }
+  ],
+  "retired": [
+    {
+      "id": 2,
+      "into": 1
+    },
+    {
+      "id": 3,
+      "into": 1
+    },
+    {
+      "id": 4,
+      "into": 1
+    },
+    {
+      "id": 5,
+      "into": 1
+    },
+    {
+      "id": 7,
+      "into": 6
+    },
+    {
+      "id": 8,
+      "into": 6
+    },
+    {
+      "id": 9,
+      "into": 6
+    },
+    {
+      "id": 10,
+      "into": 6
+    },
+    {
+      "id": 11,
+      "into": 6
+    },
+    {
+      "id": 13,
+      "into": 12
+    },
+    {
+      "id": 14,
+      "into": 12
+    },
+    {
+      "id": 16,
+      "into": 15
+    },
+    {
+      "id": 17,
+      "into": 15
+    },
+    {
+      "id": 18,
+      "into": 15
+    },
+    {
+      "id": 20,
+      "into": 19
+    },
+    {
+      "id": 21,
+      "into": 19
+    },
+    {
+      "id": 22,
+      "into": 19
+    },
+    {
+      "id": 23,
+      "into": 19
+    },
+    {
+      "id": 24,
+      "into": 19
+    },
+    {
+      "id": 25,
+      "into": 19
+    },
+    {
+      "id": 27,
+      "into": 26
+    },
+    {
+      "id": 28,
+      "into": 26
+    },
+    {
+      "id": 29,
+      "into": 26
+    },
+    {
+      "id": 31,
+      "into": 30
+    },
+    {
+      "id": 32,
+      "into": 30
+    },
+    {
+      "id": 35,
+      "into": 34
+    },
+    {
+      "id": 36,
+      "into": 34
+    },
+    {
       "id": 38,
-      "name": "Numeral, cardinal",
-      "parent": 37
+      "into": 37
     },
     {
       "id": 39,
-      "name": "Numeral, ordinal",
-      "parent": 37
+      "into": 37
     },
     {
-      "id": 40,
-      "name": "Interjection"
+      "id": 41
     },
     {
-      "id": 41,
-      "name": "Phrase"
+      "id": 42
     },
     {
-      "id": 42,
-      "name": "Idiom"
+      "id": 43
     },
     {
-      "id": 43,
-      "name": "Proverb"
-    },
-    {
-      "id": 44,
-      "name": "Abbreviation"
+      "id": 44
     },
     {
       "id": 45,
-      "name": "Prefix"
+      "unit": "morpheme"
     },
     {
       "id": 46,
-      "name": "Suffix"
+      "unit": "morpheme"
     }
   ],
   "features": [
@@ -345,7 +314,6 @@
     {
       "part": 1,
       "values": [4],
-      "except": [3, 4],
       "regular": [
         ["(s|x|z)$", "$1"],
         ["(eau|au|eu)$", "$1x"],

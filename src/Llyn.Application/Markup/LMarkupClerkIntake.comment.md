@@ -1,5 +1,5 @@
 # LMarkupClerkIntake.cs
-Hash: `ae7a23985a361ea6`
+Hash: `7377d9d1d3a594c4`
 
 ## `public sealed class LMarkupClerkIntake`
 
@@ -21,6 +21,7 @@ The shell reaches that rule through it, so the shell calls no Core member for it
 The stored entries each parsed entry may join, in file order, one list per entry.
 A stored entry shares the parsed headword and language, as the entry clerk's headword find matches them.
 Each target counts its cards, so the import window shows what a replacement drops without a second read.
+A stored entry is loaded through the entry clerk, so its reflex rows come in the pack's declared order.
 
 ## `public LMarkupOutcome LMarkupClerkImport(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)`
 

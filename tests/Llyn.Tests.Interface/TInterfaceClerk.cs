@@ -231,7 +231,8 @@ internal static partial class TInterface
             new LFrequencyClerk(rig, languages, gate, TSettingsRead, static (_, _) => { }),
             new LParadigmClerk(rig),
             new LScriptClerk(rig, languages, gate, static (_, _) => { }),
-            new LMarkupClerk(rig),
+            new LMarkupClerk(
+                rig, new LReflexClerk(rig, languages, TClaimClerkCreate(rig), gate, static (_, _) => { })),
             TSettingsRead);
     }
 
@@ -288,7 +289,15 @@ internal static partial class TInterface
 
     internal static LRefusal TRefusalCreate(string reason) => new(reason);
 
-    internal static LMarkupClerk TMarkupClerkCreate(LRig rig) => new(rig);
+    internal static LMarkupClerk TMarkupClerkCreate(LRig rig) =>
+        new(
+            rig,
+            new LReflexClerk(
+                rig,
+                new LLanguageCache(rig.LRigLanguages),
+                TClaimClerkCreate(rig),
+                new object(),
+                static (_, _) => { }));
 
     internal static LMarkupCargo TMarkupClerkRead(this LMarkupClerk clerk, string path) =>
         clerk.LMarkupClerkRead(path);

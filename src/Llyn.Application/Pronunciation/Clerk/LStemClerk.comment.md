@@ -1,5 +1,5 @@
 # LStemClerk.cs
-Hash: `8e4b084b84c9e3cc`
+Hash: `aa016e21d90baf89`
 
 ## `public sealed class LStemClerk`
 
@@ -28,10 +28,14 @@ The series row of that language and key, or null while the series was never stor
 The series of the language as the xiesheng column lists them, narrowed by the query and sorted by the order.
 It delegates to the shared catalog rule in `LCatalogClerk`, so the engine only marks the chosen row.
 
-## `public IReadOnlyList<LEntry> LStemEntryScan(string language, IReadOnlyList<long> stemIds, string query)`
+## `public IReadOnlyList<LEntry> LStemEntryScan(string language, IReadOnlyList<long> stemIds, string query, LCatalogOrder order)`
 
 The entries the series reach, narrowed by the query the list was typed into.
+They come back in `order` through `LCatalogEntry.LCatalogEntrySort`, the owner every entry list shares.
+The archive reads in storage order, so no caller may show its rows unsorted.
 
 ## `public LStemPage LStemPageRead(LStem stem)`
 
 The page of one series, holding its language, its key and the characters linked to it.
+The characters follow `LGlyphOrder`, by code point, so every view lists them alike.
+The store hands them in the order their Shengfu rows were saved, which is only fetch order.

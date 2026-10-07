@@ -38,7 +38,7 @@ public sealed class TCardSpeech
         CCategory unmatched = editor.CEditorSpeech.CCardSpeechSet("zzqq");
 
         Assert.Contains(new CCategoryRow("Noun", true), held.CCategoryRows);
-        Assert.Contains(new CCategoryRow("Noun, proper", false), held.CCategoryRows);
+        Assert.Contains(new CCategoryRow("Pronoun", false), held.CCategoryRows);
         Assert.DoesNotContain(held.CCategoryRows, static row => row.CCategoryRowName == "Verb");
         Assert.Null(held.CCategoryHint);
         Assert.Empty(unmatched.CCategoryRows);

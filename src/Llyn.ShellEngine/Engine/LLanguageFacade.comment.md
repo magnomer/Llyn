@@ -1,5 +1,5 @@
 # LLanguageFacade.cs
-Hash: `da4901ce1f429249`
+Hash: `57a159c18c9816c7`
 
 ## `internal sealed class LLanguageFacade`
 
@@ -77,6 +77,11 @@ It reads the pack from the engine's cache, so a menu reopened does not reparse t
 
 Reports whether the pack asks the UI to label a reading's variety by flag rather than by name.
 It reads the cached pack as `LEngineVarietyRead` does.
+
+## `internal bool LEngineSpacedCheck(string language)`
+
+Reports whether the pack spaces its words, which picks the lexical units an entry is offered.
+An empty language reads as spaced, the default of every pack.
 
 ## `public bool LEngineFlaggedCheck(LEntryDraft draft)`
 

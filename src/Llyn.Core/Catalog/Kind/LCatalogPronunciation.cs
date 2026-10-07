@@ -29,22 +29,26 @@ public sealed record LCatalogPronunciation(
 
         return order switch
         {
-            LCatalogOrder.LCatalogOrderReverse => [.. rows
-                .OrderByDescending(
+            LCatalogOrder.LCatalogOrderReverse => [.. LCatalogEntry.LCatalogEntrySort(
+                rows.OrderByDescending(
                     row => row.LCatalogPronunciationEntry.LEntryHeadword,
-                    StringComparer.CurrentCultureIgnoreCase)],
-            LCatalogOrder.LCatalogOrderSound => [.. rows
-                .OrderBy(row => row.LCatalogPronunciationSound.Length == 0)
-                .ThenBy(row => row.LCatalogPronunciationSound, StringComparer.Ordinal)],
-            LCatalogOrder.LCatalogOrderPending => [.. rows
-                .OrderByDescending(row => row.LCatalogPronunciationSound.Length == 0)
-                .ThenBy(
+                    StringComparer.CurrentCultureIgnoreCase),
+                static row => row.LCatalogPronunciationEntry)],
+            LCatalogOrder.LCatalogOrderSound => [.. LCatalogEntry.LCatalogEntrySort(
+                rows.OrderBy(row => row.LCatalogPronunciationSound.Length == 0)
+                    .ThenBy(row => row.LCatalogPronunciationSound, StringComparer.Ordinal),
+                static row => row.LCatalogPronunciationEntry)],
+            LCatalogOrder.LCatalogOrderPending => [.. LCatalogEntry.LCatalogEntrySort(
+                rows.OrderByDescending(row => row.LCatalogPronunciationSound.Length == 0)
+                    .ThenBy(
+                        row => row.LCatalogPronunciationEntry.LEntryHeadword,
+                        StringComparer.CurrentCultureIgnoreCase),
+                static row => row.LCatalogPronunciationEntry)],
+            _ => [.. LCatalogEntry.LCatalogEntrySort(
+                rows.OrderBy(
                     row => row.LCatalogPronunciationEntry.LEntryHeadword,
-                    StringComparer.CurrentCultureIgnoreCase)],
-            _ => [.. rows
-                .OrderBy(
-                    row => row.LCatalogPronunciationEntry.LEntryHeadword,
-                    StringComparer.CurrentCultureIgnoreCase)],
+                    StringComparer.CurrentCultureIgnoreCase),
+                static row => row.LCatalogPronunciationEntry)],
         };
     }
 }

@@ -1,5 +1,5 @@
 # LScriptClerk.cs
-Hash: `f5feacc1c1ca855b`
+Hash: `0c90e8c3119a6525`
 
 ## `public sealed class LScriptClerk`
 
@@ -17,7 +17,9 @@ The script styles the pack of `language` declares, or none for a blank language.
 
 ## `public IReadOnlyList<LScriptImage> LScriptClerkRead(long entryId)`
 
-The stored images of every character of the entry.
+The stored images of every character of the entry, in the order `LScriptImageSort` declares.
+The headword's characters are handed to the sort, so the blocks follow the headword's spelling.
+Entry view, portrait and Livery all read through here, so they show one order.
 
 ## `public void LScriptClerkStart(long entryId)`
 

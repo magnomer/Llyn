@@ -255,4 +255,33 @@ internal static partial class TInterface
     internal static LFanqieRow TFanqieRowCreate(
         string character, int position, string initial, string rime, string division, string tone) =>
         new(character, "book", position, "text", initial, rime, rime, division, tone, false);
+
+    internal static LReflexOrder TReflexOrderCreate(
+        IReadOnlyList<string> languages, IReadOnlyDictionary<string, IReadOnlyList<string>> kinds) =>
+        new(languages, kinds);
+
+    internal static IReadOnlyList<LReflexDraft> TReflexOrderSort(
+        this LReflexOrder order, IReadOnlyList<LReflexDraft> rows) =>
+        order.LReflexOrderSort(rows);
+
+    internal static LReflex TReflexCreate(
+        long id, long entryId, int position, string language, string text, LAnatomy anatomy) =>
+        new(id, entryId, position, language, string.Empty, text, LReflexAnatomy: anatomy);
+
+    internal static LAnatomy TAnatomyCreate(string onset) =>
+        new(onset);
+
+    internal static IReadOnlyList<LTallyLine> TTallyLineScan(
+        string kind,
+        IReadOnlyList<string> characters,
+        IReadOnlyDictionary<string, IReadOnlyList<LReflex>> readings,
+        LReflexOrder order) =>
+        LTallyLine.LTallyLineScan(kind, characters, readings, order);
+
+    internal static IReadOnlyList<LFrequency> TFrequencySort(
+        IReadOnlyList<LFrequency> rows, IReadOnlyList<LSourceSpec> declared) =>
+        LFrequency.LFrequencySort(rows, declared);
+
+    internal static IReadOnlyList<string> TGlyphOrderSort(IReadOnlyList<string> characters) =>
+        LGlyphOrder.LGlyphOrderSort(characters);
 }

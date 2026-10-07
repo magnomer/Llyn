@@ -128,7 +128,8 @@ internal sealed class LStemFacade
     {
         lock (_lStemFacadeGate)
         {
-            IReadOnlyList<LEntry> entries = LStemFacadeStaff.LEngineStaffStem.LStemEntryScan(language, stemIds, query);
+            IReadOnlyList<LEntry> entries = LStemFacadeStaff.LEngineStaffStem.LStemEntryScan(
+                language, stemIds, query, vista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword);
             return entries.Count == 0
                 ? []
                 : _lStemFacadeEngine.LEngineVista.LEngineVistaBuild(entries, vista?.LVistaChosen);

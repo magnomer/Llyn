@@ -87,6 +87,31 @@ public sealed class TCatalogFavorite
                 .Select(favorite => favorite.LCatalogFavoriteEntry.LEntryHeadword));
     }
 
+    [Fact]
+    public void FavoriteSort_EqualHeadwords_ListsByLanguageThenId()
+    {
+        IReadOnlyList<LCatalogFavorite> stored =
+        [
+            TInterface.TCatalogFavoriteCreate(TInterface.TEntryCreate(3, "bank", "French", 0, null, null), "2026"),
+            TInterface.TCatalogFavoriteCreate(TInterface.TEntryCreate(2, "bank", "English", 0, null, null), "2026"),
+            TInterface.TCatalogFavoriteCreate(TInterface.TEntryCreate(1, "bank", "French", 0, null, null), "2026"),
+            TInterface.TCatalogFavoriteCreate(TInterface.TEntryCreate(4, "ant", "French", 0, null, null), "2026"),
+        ];
+
+        Assert.Equal(
+            [4L, 2L, 1L, 3L],
+            TInterface.TCatalogFavoriteSort(stored, LCatalogOrder.LCatalogOrderHeadword)
+                .Select(favorite => favorite.LCatalogFavoriteEntry.LEntryId));
+        Assert.Equal(
+            [2L, 4L, 1L, 3L],
+            TInterface.TCatalogFavoriteSort(stored, LCatalogOrder.LCatalogOrderLanguage)
+                .Select(favorite => favorite.LCatalogFavoriteEntry.LEntryId));
+        Assert.Equal(
+            [2L, 4L, 1L, 3L],
+            TInterface.TCatalogFavoriteSort(stored, LCatalogOrder.LCatalogOrderMarked)
+                .Select(favorite => favorite.LCatalogFavoriteEntry.LEntryId));
+    }
+
     private static void TCatalogFavoriteSave(LEngine engine, string headword, string language)
     {
         engine.TEngineFavoriteSave(TCatalogEntrySave(engine, headword, language).LEntryId);

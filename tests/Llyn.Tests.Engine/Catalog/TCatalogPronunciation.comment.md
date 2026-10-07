@@ -1,5 +1,5 @@
 # TCatalogPronunciation.cs
-Hash: `6ed56f9cde7e8f3a`
+Hash: `c560e46bc2da8cba`
 
 ## `public sealed class TCatalogPronunciation`
 
@@ -9,3 +9,7 @@ It covers the sound ordering, which puts an entry with nothing stored last.
 It covers the pending ordering, which puts that same entry first.
 It covers the row carrying its sound, because the panel shows one and orders by it.
 It covers the bracketed text, which is an empty pair of brackets where nothing is stored.
+It covers equal sounds, which go by language, then headword, then entry id.
+It covers equal headwords, which go by language and then entry id.
+So rows stored out of order never surface in storage order.
+

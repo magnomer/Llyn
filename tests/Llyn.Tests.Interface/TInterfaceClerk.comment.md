@@ -1,5 +1,5 @@
 # TInterfaceClerk.cs
-Hash: `c83a6287cecf64b9`
+Hash: `d06e9248f39c0c99`
 
 ## `internal static partial class TInterface`
 
@@ -270,7 +270,7 @@ One refusal with `reason`, for a test that wraps it.
 
 ## `internal static LMarkupClerk TMarkupClerkCreate(LRig rig)`
 
-A markup clerk over `rig`.
+A markup clerk over `rig`, with a reflex clerk of its own so an export reads the pack's reflex order.
 
 ## `internal static LMarkupCargo TMarkupClerkRead(this LMarkupClerk clerk, string path)`
 

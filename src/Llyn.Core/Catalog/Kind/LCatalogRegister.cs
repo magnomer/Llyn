@@ -42,13 +42,18 @@ public sealed record LCatalogRegister(
             LCatalogOrder.LCatalogOrderReverse => [.. rows
                 .OrderByDescending(
                     row => row.LCatalogRegisterStored.LRegisterName.LStateValueShow(),
-                    StringComparer.CurrentCultureIgnoreCase)],
-            LCatalogOrder.LCatalogOrderUsage => [.. rows
-                .OrderByDescending(row => row.LCatalogRegisterUsage)],
+                    StringComparer.CurrentCultureIgnoreCase)
+                .ThenBy(row => row.LCatalogRegisterStored.LRegisterId)],
+            LCatalogOrder.LCatalogOrderUsage => LCatalog.LCatalogUsageSort(
+                rows,
+                static row => row.LCatalogRegisterUsage,
+                static row => row.LCatalogRegisterStored.LRegisterName.LStateValueShow(),
+                static row => row.LCatalogRegisterStored.LRegisterId),
             _ => [.. rows
                 .OrderBy(
                     row => row.LCatalogRegisterStored.LRegisterName.LStateValueShow(),
-                    StringComparer.CurrentCultureIgnoreCase)],
+                    StringComparer.CurrentCultureIgnoreCase)
+                .ThenBy(row => row.LCatalogRegisterStored.LRegisterId)],
         };
     }
 

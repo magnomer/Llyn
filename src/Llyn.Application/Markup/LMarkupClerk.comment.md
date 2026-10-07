@@ -1,5 +1,5 @@
 # LMarkupClerk.cs
-Hash: `54c571d25f6b0f31`
+Hash: `9b2e17cb0c601f48`
 
 ## `public sealed class LMarkupClerk`
 
@@ -7,9 +7,10 @@ An entry is translated to and from markup here.
 The clerk holds the cargo read, the per-entry load and the export.
 The import lives in `LMarkupClerkIntake`, since it composes the entry clerk and its own resolvers.
 
-## `public LMarkupClerk(LRig rig)`
+## `public LMarkupClerk(LRig rig, LReflexClerk reflexes)`
 
 Reads the nine ports the translation reads through out of `rig`, the same instances the engine holds.
+`reflexes` is the engine's reflex clerk, kept so an export lists reflex rows in the pack's declared order.
 It opens no database of its own, so a test can hand it in-memory ports.
 
 ## `public LMarkupCargo LMarkupClerkRead(string path)`
@@ -28,6 +29,8 @@ An id no entry carries refuses the export.
 Loads the entry draft for `id` and translates every id-bearing field into names.
 Null means no entry has that id.
 Draft ids and positions are dropped, because list order carries the positions.
+Reflex rows are written in the order the pack declares, through `LReflexClerkSort`, never in storage order.
+The lexical unit is carried as the draft holds it.
 Grasp, frequency, favorite and timestamps are never read.
 Forms pass whole, since they hold no id worth hiding.
 A reflex also drops its anatomy and anchors, since the receiving engine derives the one and owns the other.
@@ -40,7 +43,7 @@ A span whose target no longer stands is left out, since an etymology span always
 
 ## `private IReadOnlyList<LMarkupEtymon> LMarkupEtymonCreate(LEtymologyDraft etymology)`
 
-The direct source links named by headword and language, in stored order.
+The direct source links named by headword and language, in the order the draft holds them.
 A link whose target no longer stands is left out.
 
 ## `private LMarkupInflection LMarkupInflectionCreate(LInflection inflection)`

@@ -106,8 +106,8 @@ internal sealed class LReflexFacade
 
     private IReadOnlyList<LFanqieRow> LEngineAnchorRead(long entryId)
     {
-        return [.. _lReflexFacadeEngine.LEngineFanqie.LEngineFanqieRead(entryId)
-            .SelectMany(static group => group.LFanqieGroupRows)];
+        _lReflexFacadeEngine.LEngineFanqie.LEngineFanqieStart(entryId);
+        return LReflexFacadeStaff.LEngineStaffFanqie.LFanqieClerkRead(entryId);
     }
 
     private LEngineStaff LReflexFacadeStaff => _lReflexFacadeEngine.LEngineStaffHeld;

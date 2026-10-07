@@ -15,7 +15,8 @@ public sealed record LEntryDraft(
     IReadOnlyList<LInflection>? LEntryDraftInflections = null,
     IReadOnlyList<LTranscriptionDraft>? LEntryDraftTranscriptions = null,
     IReadOnlyList<LReflexDraft>? LEntryDraftReflexes = null,
-    LEtymologyDraft? LEntryDraftEtymology = null)
+    LEtymologyDraft? LEntryDraftEtymology = null,
+    LUnit LEntryDraftUnit = LUnit.LUnitEmpty)
 {
     public LEtymologyDraft LEntryDraftEtymology { get; init; } = LEntryDraftEtymology ?? new LEtymologyDraft();
 
@@ -45,7 +46,7 @@ public sealed record LEntryDraft(
 
     public bool LEntryDraftNoted => LEntryDraftNote.Length > 0;
 
-    public bool LEntryDraftMarked => LEntryDraftSpeeches.Count > 0;
+    public bool LEntryDraftMarked => LEntryDraftSpeeches.Count > 0 || LEntryDraftUnit != LUnit.LUnitEmpty;
 
     public IReadOnlyList<string> LEntryDraftNames =>
         LEntryDraftSpeeches

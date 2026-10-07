@@ -1,5 +1,5 @@
 # LSpeechLoader.cs
-Hash: `a81bbd11cda0044a`
+Hash: `025348892f72e984`
 
 ## `public static class LSpeechLoader`
 
@@ -47,6 +47,11 @@ A code must be positive because user-added values take the negative range.
 
 One declared list of positive integers, or null when the property is absent, not an array, or holds anything else.
 A paradigm naming one value nothing can resolve is no paradigm at all.
+
+### `private static IReadOnlyList<LSpeechRetirement> LSpeechRetirementScan(JsonElement root)`
+
+The `retired` rows, each with its code, its `into` target or `0`, and its `unit` key.
+A row without a positive `id` is skipped.
 
 ### `private static IReadOnlyList<LParadigmRule> LSpeechRuleScan(JsonElement element, string name)`
 

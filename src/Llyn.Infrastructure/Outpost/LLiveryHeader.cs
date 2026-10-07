@@ -46,8 +46,14 @@ internal static class LLiveryHeader
         ArgumentNullException.ThrowIfNull(page);
         ArgumentNullException.ThrowIfNull(lookup);
 
-        if (page.LLiveryPageDraft.LEntryDraftNames.Count > 0)
+        string unit = LUnitKey.LUnitKeyRead(page.LLiveryPageDraft.LEntryDraftUnit);
+        if (page.LLiveryPageDraft.LEntryDraftMarked)
         {
+            if (unit.Length > 0)
+            {
+                sheet.Append("<span class=\"llyn-unit\">").Append(LLiveryTextFormat(lookup(unit))).Append("</span> ");
+            }
+
             foreach (string name in page.LLiveryPageDraft.LEntryDraftNames)
             {
                 sheet.Append("<span class=\"llyn-speech\">").Append(LLiveryTextFormat(name)).Append("</span> ");

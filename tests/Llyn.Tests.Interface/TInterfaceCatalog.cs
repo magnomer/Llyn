@@ -53,6 +53,13 @@ internal static partial class TInterface
         string language) =>
         engine.LEngineStaffHeld.LEngineStaffRegister.LRegisterClerkFind(query, language);
 
+    internal static LRegisterOffer TEngineRegisterFind(
+        this LEngine engine,
+        string text,
+        string language,
+        long card) =>
+        engine.LEngineStaffHeld.LEngineStaffRegister.LRegisterClerkFind(text, language, null, card);
+
     internal static IReadOnlyList<LTag> TEngineTagFind(
         this LEngine engine,
         string query,
@@ -104,4 +111,53 @@ internal static partial class TInterface
 
     internal static LCatalogRegister TCatalogRegisterCreate(LRegister register, int usage) =>
         LCatalogRegister.LCatalogRegisterCreate(register, usage);
+
+    internal static IReadOnlyList<LEntry> TCatalogEntrySort(IReadOnlyList<LEntry> entries, LCatalogOrder order) =>
+        LCatalogEntry.LCatalogEntrySort(entries, order);
+
+    internal static IReadOnlyList<LCatalogPronunciation> TCatalogPronunciationSort(
+        IReadOnlyList<LCatalogPronunciation> rows,
+        LCatalogOrder order) =>
+        LCatalogPronunciation.LCatalogPronunciationSort(rows, order);
+
+    internal static IReadOnlyList<LCatalogFavorite> TCatalogFavoriteSort(
+        IReadOnlyList<LCatalogFavorite> favorites,
+        LCatalogOrder order) =>
+        LCatalogFavorite.LCatalogFavoriteSort(favorites, order);
+
+    internal static IReadOnlyList<LCatalogExample> TCatalogExampleSort(
+        IReadOnlyList<LCatalogExample> rows,
+        LCatalogOrder order) =>
+        LCatalogExample.LCatalogExampleSort(rows, order);
+
+    internal static IReadOnlyList<LCatalogSituation> TCatalogSituationSort(
+        IReadOnlyList<LCatalogSituation> rows,
+        LCatalogOrder order) =>
+        LCatalogSituation.LCatalogSituationSort(rows, order);
+
+    internal static IReadOnlyList<LCatalogReference> TCatalogReferenceSort(
+        IReadOnlyList<LCatalogReference> rows,
+        LCatalogOrder order) =>
+        LCatalogReference.LCatalogReferenceSort(rows, order);
+
+    internal static IReadOnlyList<LCatalogRegister> TCatalogRegisterSort(
+        IReadOnlyList<LCatalogRegister> rows,
+        LCatalogOrder order) =>
+        LCatalogRegister.LCatalogRegisterSort(rows, order);
+
+    internal static LCatalogExample TCatalogExampleCreate(LExample stored, string source, int usage) =>
+        new(stored, source, usage);
+
+    internal static LCatalogFavorite TCatalogFavoriteCreate(LEntry entry, string marked) =>
+        new(entry, marked);
+
+    internal static LCatalogPronunciation TCatalogPronunciationCreate(LEntry entry, string sound) =>
+        new(entry, sound);
+
+    internal static LCatalogReference TCatalogReferenceCreate(
+        LReference stored, string name, string byline, int usage) =>
+        new(stored, name, byline, [], usage);
+
+    internal static LCatalogSituation TCatalogSituationCreate(LSituation stored, int usage) =>
+        new(stored, usage);
 }

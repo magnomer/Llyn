@@ -1,5 +1,5 @@
 # PMarkerTemplate.xaml
-Hash: `e803ebcae4464898`
+Hash: `4f14546c7e5ebde4`
 
 The speech marker chip of the editor, as markup alone.
 The Deportment class of the same name loads it and forwards the chip's click to the editor.
@@ -8,3 +8,8 @@ The Deportment class of the same name loads it and forwards the chip's click to 
 
 Presents one speech marker as a compact chip with the button that removes it.
 The fill writes the name and sets the close icon.
+
+## `Theme.Unit.Row`
+
+One lexical unit in the unit menu, drawn as a category row is, with a check on the held one.
+The fill names the unit through its key and wires the click.

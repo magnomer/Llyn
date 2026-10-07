@@ -1,5 +1,5 @@
 # LSchemaEntry.cs
-Hash: `a575b789019f6268`
+Hash: `4af81f3599507ef6`
 
 ## `public static class LSchemaEntry`
 
@@ -26,3 +26,7 @@ The CHECK keeps it within the ten half steps five stars hold.
 epithet is the string the lists print after the headword, derived from the reflex rows and stored.
 It is written whenever the reflex rows are, so a list reads one column and runs no rule.
 A database from before the column comes across with it blank and the engine fills it once.
+
+unit is the lexical unit the entry stands for, the number of an `LUnit` member.
+Zero means not chosen, and the CHECK keeps it within the members.
+A database from before the column comes across with every unit unchosen.

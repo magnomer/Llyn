@@ -1,5 +1,5 @@
 # vocabulary.json
-Hash: `0d0fafdc8b76f8fd`
+Hash: `21f5375b741dd344`
 
 ## file
 
@@ -22,7 +22,15 @@ People can still write a register absent from this list.
 
 ## parts
 
-These are the available parts of speech.
+These are the available parts of speech, each a bare role.
+
+## retired
+
+It lists the parts once published and since removed, so no id is ever reused.
+The import applies every row on each start, and a row whose part is already gone does nothing.
+`into` names the part that takes over the removed part's links.
+`unit` names the lexical unit set on a linking entry that has none yet.
+A row with neither drops the links.
 
 ## features and values
 

@@ -120,10 +120,16 @@ public sealed class LPortraitClerk
         LPortraitClerkCrest.LPortraitScriptAdd(sections, LPortraitScriptScan(entryId, language), label);
 
         bool respelled = _lPortraitClerkSettings().LSettingsRespelled;
+        List<string> chips = [.. LVocabularyClerk.LSpeechShow(draft.LEntryDraftSpeeches)];
+        if (label.LPortraitLabelUnit.TryGetValue(draft.LEntryDraftUnit, out string? unit))
+        {
+            chips.Insert(0, unit);
+        }
+
         return new LPortraitPage(
             draft.LEntryDraftHeadword,
             language,
-            LVocabularyClerk.LSpeechShow(draft.LEntryDraftSpeeches),
+            chips,
             sections,
             favorite,
             [
@@ -204,12 +210,19 @@ public sealed class LPortraitClerk
     public static LPortraitLabel LPortraitLabelCreate(IReadOnlyList<string> words)
     {
         ArgumentNullException.ThrowIfNull(words);
-        ArgumentOutOfRangeException.ThrowIfNotEqual(words.Count, 22);
+        ArgumentOutOfRangeException.ThrowIfNotEqual(words.Count, 26);
 
         return new LPortraitLabel(
             words[0], words[1], words[2], words[3], words[4], words[5], words[6], words[7], words[8], words[9],
             words[10], words[11], words[12], words[13], words[14], words[15], words[16], words[17], words[18],
-            words[19], words[20], words[21]);
+            words[19], words[20], words[21],
+            new Dictionary<LUnit, string>
+            {
+                [LUnit.LUnitContent] = words[22],
+                [LUnit.LUnitFunction] = words[23],
+                [LUnit.LUnitMorpheme] = words[24],
+                [LUnit.LUnitWord] = words[25],
+            });
     }
 
     public static LPortraitLegend LPortraitLegendCreate(

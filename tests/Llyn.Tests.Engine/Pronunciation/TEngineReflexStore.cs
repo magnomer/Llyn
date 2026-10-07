@@ -34,7 +34,7 @@ public sealed class TEngineReflexStore
         IReadOnlyList<LReflexDraft> read = engine.TEntryReflexRead(entry.LEntryId);
         Assert.Equal(5, read.Count);
         Assert.Equal(("Japanese", "Kan-on", "ろう", "", true), TReflexFixture.TReflexRowRead(read[2]));
-        Assert.Equal(("Mandarin", "", "nʊŋ⁵¹", "nòng", false), TReflexFixture.TReflexRowRead(read[3]));
+        Assert.Equal(("Mandarin", "", "lʊŋ⁵¹", "nòng", false), TReflexFixture.TReflexRowRead(read[3]));
         Assert.Equal("Beijing", read[3].LReflexDraftRegion);
         Assert.Equal(5, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM reflex;"));
     }
@@ -162,9 +162,9 @@ public sealed class TEngineReflexStore
             });
 
         Assert.Equal(
-            "악할 악, 미워할 오", Assert.Single(engine.TEngineIncomingRead(target.LEntryId)).LUsageEpithet);
+            "미워할 오, 악할 악", Assert.Single(engine.TEngineIncomingRead(target.LEntryId)).LUsageEpithet);
         Assert.Equal(
-            "악할 악, 미워할 오",
+            "미워할 오, 악할 악",
             TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase).TEntryEpithetRead(entry.LEntryId));
 
         engine.TEngineEpithetSave(false);
@@ -217,9 +217,43 @@ public sealed class TEngineReflexStore
 
         LDraft? held = engine.TEngineDraftRead(started.LDraftId);
         Assert.NotNull(held);
-        Assert.Equal(5, held.LDraftContent.LEntryDraftReflexes.Count);
+        Assert.Equal(
+            ["Korean", "Japanese", "Japanese", "Mandarin", "Mandarin"],
+            held.LDraftContent.LEntryDraftReflexes.Select(row => row.LReflexDraftLanguage));
+        Assert.Equal("lʊŋ⁵¹", held.LDraftContent.LEntryDraftReflexes[3].LReflexDraftText);
         Assert.All(held.LDraftContent.LEntryDraftReflexes, row => Assert.True(row.LReflexDraftId > 0));
         Assert.False(engine.TEngineDraftCheck(started.LDraftId));
+    }
+
+    private const string TReflexEpithetPack =
+        """
+        { "order": { "language": ["Japanese", "Korean"] },
+          "reflex": [
+            { "language": "Korean", "url": "https://example.test/wiki/{word}",
+              "match": "eumhun: (?<text>[^<]+)", "epithet": "{text}" },
+            { "language": "Japanese", "url": "https://example.test/wiki/{word}",
+              "match": "on: (?<text>[^<]+)", "epithet": "{text}" } ] }
+        """;
+
+    [Fact]
+    public void EpithetSave_RulesListedOutOfPackOrder_JoinsPiecesInDeclaredOrder()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexEpithetPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry entry = engine.TEngineEntrySave(
+            TReflexFixture.TReflexDraftCreate("惡", pack.TLanguageFixtureName) with
+            {
+                LEntryDraftReflexes =
+                [
+                    TInterface.TReflexDraftCreate("Korean", "", "악할 악"),
+                    TInterface.TReflexDraftCreate("Japanese", "", "あく"),
+                ],
+            });
+
+        Assert.Equal(
+            "あく, 악할 악",
+            TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase).TEntryEpithetRead(entry.LEntryId));
     }
 
     [Fact]

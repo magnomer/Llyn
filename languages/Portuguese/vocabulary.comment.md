@@ -1,5 +1,5 @@
 # vocabulary.json
-Hash: `e36ca9667bd6b832`
+Hash: `58acdd0eae49c1f5`
 
 ## file
 
@@ -17,11 +17,18 @@ Slang covers gíria such as cara and fixe.
 
 ## `parts`
 
-The verb presets add pronominal, for queixar-se, and auxiliary, for ter, haver, ser and estar.
-The pronoun presets add indefinite, for alguém, ninguém and tudo.
+It lists the parts of speech, each a bare role.
+Valency and other subtypes belong to the dependence field and the morphology, not here.
 Determiner stands beside article, for meu and este before a noun.
-Contraction stands after preposition, for do, na, pelo and dele.
 No partitive article is listed, since Portuguese has none.
+
+## `retired`
+
+It lists the parts once published and since removed, so no id is ever reused.
+The import applies every row on each start, and a row whose part is already gone does nothing.
+`into` names the part that takes over the removed part's links.
+`unit` names the lexical unit set on a linking entry that has none yet.
+A row with neither drops the links.
 
 ## `features`
 

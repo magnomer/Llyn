@@ -1,5 +1,5 @@
 # en.json
-Hash: `3041f2163d2adae0`
+Hash: `3121021ade147a96`
 
 The English interface catalog, and the language every launch starts from.
 It is embedded into `Llyn.Infrastructure` and never read from disk.
@@ -19,6 +19,7 @@ Each term is published under its capitalized key, such as `Terms.Product`, so ma
 Keys are the resource names markup binds to, grouped by a dotted prefix per area.
 A text cites a term as `{Terms.name}` or `{terms.name}`, and the capital sets the casing.
 Numbered slots like `{0}` are left for the caller to format.
+`Unit.*` names the lexical units and the unit chooser's empty state.
 A failure text is keyed `<Area>.<Action>Failed` beside its area's other texts.
 The ledger shows it when a read or a write fails.
 An area with no other texts, such as `Sentence` or `Language`, sits beside the nearest texts on the same subject.

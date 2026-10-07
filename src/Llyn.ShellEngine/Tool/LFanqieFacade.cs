@@ -180,7 +180,8 @@ internal sealed class LFanqieFacade
         lock (_lFanqieFacadeGate)
         {
             IReadOnlyList<LEntry> entries =
-                LFanqieFacadeStaff.LEngineStaffDiwei.LDiweiEntryScan(language, diweiIds, query);
+                LFanqieFacadeStaff.LEngineStaffDiwei.LDiweiEntryScan(
+                    language, diweiIds, query, vista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword);
             return entries.Count == 0
                 ? []
                 : _lFanqieFacadeEngine.LEngineVista.LEngineVistaBuild(entries, vista?.LVistaChosen);

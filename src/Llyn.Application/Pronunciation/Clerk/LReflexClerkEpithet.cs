@@ -24,22 +24,18 @@ public static class LReflexClerkEpithet
         return false;
     }
 
-    public static string LReflexEpithetFormat(IReadOnlyList<LReflexRule> rules, IReadOnlyList<LReflex> rows)
+    public static string LReflexEpithetFormat(IReadOnlyList<LReflexRule> rules, IReadOnlyList<LReflexDraft> rows)
     {
         ArgumentNullException.ThrowIfNull(rules);
         ArgumentNullException.ThrowIfNull(rows);
 
         List<string> pieces = [];
-        foreach (LReflexRule rule in rules)
+        foreach (LReflexDraft row in rows)
         {
-            if (string.IsNullOrWhiteSpace(rule.LReflexRuleEpithet))
+            foreach (LReflexRule rule in rules)
             {
-                continue;
-            }
-
-            foreach (LReflex row in rows)
-            {
-                if (!string.Equals(row.LReflexLanguage, rule.LReflexRuleLanguage, StringComparison.Ordinal))
+                if (string.IsNullOrWhiteSpace(rule.LReflexRuleEpithet)
+                    || !string.Equals(row.LReflexDraftLanguage, rule.LReflexRuleLanguage, StringComparison.Ordinal))
                 {
                     continue;
                 }
@@ -55,15 +51,17 @@ public static class LReflexClerkEpithet
         return string.Join(", ", pieces);
     }
 
-    private static string LReflexEpithetFormat(LReflexRule rule, LReflex row)
+    private static string LReflexEpithetFormat(LReflexRule rule, LReflexDraft row)
     {
         string piece = rule.LReflexRuleEpithet!
-            .Replace("{" + LReflexRule.LReflexRuleText + "}", row.LReflexText, StringComparison.Ordinal)
-            .Replace("{" + LReflexRule.LReflexRuleKind + "}", row.LReflexKind, StringComparison.Ordinal)
+            .Replace("{" + LReflexRule.LReflexRuleText + "}", row.LReflexDraftText, StringComparison.Ordinal)
+            .Replace("{" + LReflexRule.LReflexRuleKind + "}", row.LReflexDraftKind, StringComparison.Ordinal)
             .Replace(
-                "{" + LReflexRule.LReflexRuleRomanization + "}", row.LReflexRomanization, StringComparison.Ordinal)
-            .Replace("{" + LReflexRule.LReflexRuleMeaning + "}", row.LReflexMeaning, StringComparison.Ordinal)
-            .Replace("{" + LReflexRule.LReflexRuleNote + "}", row.LReflexNote, StringComparison.Ordinal);
+                "{" + LReflexRule.LReflexRuleRomanization + "}",
+                row.LReflexDraftRomanization,
+                StringComparison.Ordinal)
+            .Replace("{" + LReflexRule.LReflexRuleMeaning + "}", row.LReflexDraftMeaning, StringComparison.Ordinal)
+            .Replace("{" + LReflexRule.LReflexRuleNote + "}", row.LReflexDraftNote, StringComparison.Ordinal);
 
         if (!string.IsNullOrEmpty(rule.LReflexRuleClip))
         {

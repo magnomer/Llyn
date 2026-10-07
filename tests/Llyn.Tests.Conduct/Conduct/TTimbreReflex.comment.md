@@ -1,5 +1,5 @@
 # TTimbreReflex.cs
-Hash: `9c48cc1641de482c`
+Hash: `f7414fe64ab9a081`
 
 ## `public sealed class TTimbreReflex`
 
@@ -7,6 +7,7 @@ Covers the editor's reflex block read and its lookup start, over a real desk and
 The block carries every row, the anchor labels, the shared fold and the fetching line.
 An empty desk, a fresh draft or a refused anchor answers no anchor.
 Opening a stored entry without reflexes starts the lookup, and a reflected or fresh draft starts none.
+The rows show in the declared order the entry load gives them, here alphabetical since the language has no pack.
 The write gates add a row below the pressed one with its language and kind, or a blank row last.
 They remove a row, flip its main mark, and write each typed cell.
 A typed language answers every row's lead with the typed language standing in for the stored one.
@@ -39,7 +40,9 @@ A draft that already holds reflexes, and a fresh draft, start no lookup.
 
 ## `public void TimbreReflexAdd_PressedRow_PlacesARowOfItsLanguageAndKindBelowIt()`
 
-The new row copies the pressed row's language and kind, and lands directly below it.
+The new row copies the pressed row's language and kind, and lands directly below it inside its group.
+The test picks the pressed row by its text, so the declared order never changes which row is pressed.
+The gate finds that row by its id, so the kind it copies is the Go-on of that row.
 
 ## `public void TimbreReflexAdd_NoOrGoneRow_AppendsABlankRow()`
 
@@ -47,7 +50,7 @@ Zero or a row the draft no longer holds appends a blank row last.
 
 ## `public void TimbreReflexRemove_HeldRow_DropsIt()`
 
-A held row goes, and the rows around it stay.
+A held row goes by its id, and the rows around it stay in their shown order.
 
 ## `public void TimbreReflexToggle_HeldRow_FlipsItsMainEachTime()`
 
@@ -56,12 +59,14 @@ Each press flips the held row's main mark.
 ## `public void TimbreReflexSet_TypedLanguage_WritesItAndLeadsByTheOverlaidRows()`
 
 A typed language is written and the leads answer the rows with the typed language standing in.
+Leads follow the shown order, so a run of one language prints its name once.
 The answer names the typed language as the text the cell now holds.
 A desk holding no entry takes nothing and answers an empty cell.
 
 ## `public void TimbreReflexSet_TextOfARespelledRow_WritesTheRespelling()`
 
 Text typed into a respelled row is written as its respelling.
+The phonetic text of that row stays as stored.
 
 ## `public void TimbreReflexSet_TextOfAPlainRow_WritesThePhoneticText()`
 

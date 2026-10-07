@@ -1,5 +1,5 @@
 # LReflexClerk.cs
-Hash: `45823f4070e12a55`
+Hash: `34d7e061a5916c6d`
 
 ## `public sealed class LReflexClerk`
 
@@ -33,6 +33,19 @@ The readings of the anchored rows joined with `separator`, or empty when the row
 
 The reflex rules the pack of `language` declares, or none for a blank language.
 
+## `public IReadOnlyList<LReflexDraft> LReflexClerkSort(string language, IReadOnlyList<LReflexDraft> rows)`
+
+The rows in the order the pack of `language` declares, the one door every view's reflex rows pass.
+The rule itself is `LReflexOrderSort`, and this only finds the pack's order for it.
+A blank language or a pack without an order sorts by language name, then kind name.
+Stored positions are left alone, since the order is applied on every read.
+
+## `public static IReadOnlyList<LReflexDraft> LReflexClerkScan(IReadOnlyList<LReflex> rows)`
+
+The stored rows as drafts, every field and the stored id kept, in the order given.
+It lets stored rows pass `LReflexClerkSort`, which orders drafts.
+The fetch's copy into held drafts and the epithet both convert here, so the copy is written once.
+
 ## `public IReadOnlyList<string> LReflexFoldedRead(string language)`
 
 The languages the pack of `language` folds away, read from its reflex rules.
@@ -41,7 +54,7 @@ None for a blank language or a pack without folded rules.
 ## `public void LReflexClerkSync(long entryId, string language, IReadOnlyList<LReflexDraft> drafts, List<LRevisionDelta> changes, Dictionary<long, long> identity)`
 
 The reflexes of an entry reconciled to its draft, anatomies filled from the pack.
-An unchanged list writes nothing.
+An unchanged list writes nothing and records no revision, whatever order its rows arrive in.
 A positive id naming no stored row refuses the commit.
 A change is recorded only when something beside the anatomy moved.
 
@@ -53,3 +66,5 @@ The drafts with every positive id cleared, for a fresh entry that has no stored 
 
 Rewrites the epithet of an entry from its reflex rows and the rules of its language.
 A language whose rules declare no epithet clears it.
+The stored rows pass `LReflexClerkSort` first, so the pieces follow the pack's declared order.
+The stored position is fetch order, so it never decides where a piece stands.

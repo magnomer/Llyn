@@ -36,14 +36,15 @@ public sealed partial class LEntryArchive : LEntryVault
         {
             command.CommandText =
                 """
-                INSERT INTO entry (headword, language, added_utc, updated_utc)
-                VALUES ($headword, $language, $added, $updated)
+                INSERT INTO entry (headword, language, added_utc, updated_utc, unit)
+                VALUES ($headword, $language, $added, $updated, $unit)
                 RETURNING entry_id;
                 """;
             command.Parameters.AddWithValue("$headword", stored.LEntryHeadword);
             command.Parameters.AddWithValue("$language", stored.LEntryLanguage);
             command.Parameters.AddWithValue("$added", (object?)stored.LEntryAddedUtc ?? DBNull.Value);
             command.Parameters.AddWithValue("$updated", (object?)stored.LEntryUpdatedUtc ?? DBNull.Value);
+            command.Parameters.AddWithValue("$unit", (int)stored.LEntryUnit);
             stored = stored with { LEntryId = (long)command.ExecuteScalar()! };
         }
 
@@ -62,7 +63,7 @@ public sealed partial class LEntryArchive : LEntryVault
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
             FROM entry WHERE entry_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
@@ -142,11 +143,12 @@ public sealed partial class LEntryArchive : LEntryVault
             command.CommandText =
                 """
                 UPDATE entry
-                SET headword = $headword, language = $language, updated_utc = $updated
+                SET headword = $headword, language = $language, unit = $unit, updated_utc = $updated
                 WHERE entry_id = $id;
                 """;
             command.Parameters.AddWithValue("$headword", entry.LEntryHeadword);
             command.Parameters.AddWithValue("$language", entry.LEntryLanguage);
+            command.Parameters.AddWithValue("$unit", (int)entry.LEntryUnit);
             command.Parameters.AddWithValue("$updated", now);
             command.Parameters.AddWithValue("$id", entry.LEntryId);
             if (command.ExecuteNonQuery() == 0)
@@ -258,7 +260,8 @@ public sealed partial class LEntryArchive : LEntryVault
             reader.GetString(2),
             reader.GetInt32(3),
             reader.IsDBNull(4) ? null : reader.GetString(4),
-            reader.IsDBNull(5) ? null : reader.GetString(5));
+            reader.IsDBNull(5) ? null : reader.GetString(5),
+            (LUnit)reader.GetInt32(6));
     }
 
     private static void LEntryFormInsert(SqliteConnection connection, long id, IReadOnlyList<LForm> forms)

@@ -77,7 +77,7 @@ public sealed class LReferenceArchive : LReferenceVault
                    url_state, url,
                    author_state
             FROM reference
-            ORDER BY title;
+            ORDER BY title, reference_id;
             """;
 
         List<LReference> references = [];

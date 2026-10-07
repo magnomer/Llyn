@@ -77,7 +77,6 @@
                             MinWidth="124"
                             AllowsTransparency="True"
                             Placement="Bottom"
-                            PopupAnimation="Fade"
                             StaysOpen="False">
                             <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
                                 <ScrollViewer MaxHeight="220" HorizontalScrollBarVisibility="Disabled">

@@ -1,11 +1,13 @@
 # TEntryStore.cs
-Hash: `ff4ae80abed8d262`
+Hash: `d81f2ef0a7dc4daa`
 
 ## `public sealed class TEntryStore`
 
 Covers what an Entry owns and what it must not take with it.
 That is the cascade that removes everything beneath a deleted Entry.
 It is also the refusal to report success for an update that reached no row.
+A headword lookup lists entries tied on headword by language spelling, then by id.
+So the import window never lists its candidates in storage order alone.
 
 ## Inline notes
 

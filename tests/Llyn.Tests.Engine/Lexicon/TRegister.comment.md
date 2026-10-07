@@ -1,5 +1,5 @@
 # TRegister.cs
-Hash: `6cdba5162f4db674`
+Hash: `5bd3654d88a91a40`
 
 ## `public sealed class TRegister`
 
@@ -75,3 +75,20 @@ The icon follows the name whatever its case, since the shelf folds case too.
 ## `public void CatalogRegisterIcon_NameWithoutIcon_ReturnsPlainIcon()`
 
 A name with no icon of its own, or no name at all, wears the plain register icon.
+
+## `public void RegisterSort_EqualNames_ListsById()`
+
+Two Registers whose names differ only in case stand equal under the name and under the usage.
+The lower id leads as the last tie-break, so the result stays stable whatever order the rows arrive in.
+
+## `public void RegisterOffer_StoredBeforeTheMarkedOne_OffersMostMarkedFirstThenByName()`
+
+A card's register offer keeps only the first rows, so its order decides which Registers appear at all.
+The marked Register was stored last, yet it leads the offer.
+The unmarked ones follow by name.
+Those cut by the limit are the last by name, not the last stored.
+
+## `public void RegisterFind_EqualUsageStoredOutOfNameOrder_ListsByName()`
+
+Under the usage ordering, Registers marked equally often are listed by name, whatever their case.
+The rows were stored out of name order, so storage order would show here.

@@ -1,5 +1,5 @@
 # LLiveryStyle.cs
-Hash: `971433d40275ef43`
+Hash: `e0a76dabc146025f`
 
 ## `public static class LLiveryStyle`
 
@@ -37,6 +37,7 @@ An unrated entry's star is `muted` at 35 percent over `surface`.
 A filled star is full `accent`.
 A half star overlays its left half in full `accent` through `::before`.
 The frequency chip and the paradigm box fill with `surfaceRaised`.
+The unit chip is outlined in `accentSoft` with `muted` text, so it reads apart from the filled speech chips.
 Each frequency band class colours the chip text and its lit pips with that band's theme colour.
 The register chip takes `helper`, `helperSoft` and `helperEdge`, as the situation chip takes its own three.
 A role missing from the theme and the spare palette reads as black, which a literal-colour test would catch.

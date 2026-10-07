@@ -136,6 +136,11 @@ internal sealed class LLanguageFacade
         return LEngineLanguageLoad(language).LLanguageVarietyFlagged;
     }
 
+    internal bool LEngineSpacedCheck(string language)
+    {
+        return language.Length == 0 || LEngineLanguageLoad(language).LLanguageSpaced;
+    }
+
     public bool LEngineFlaggedCheck(LEntryDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
