@@ -1,5 +1,5 @@
 # LEngine.cs
-Hash: `6b1cb4ac532c5baf`
+Hash: `82091097c8acff43`
 
 ## `public sealed class LEngine : IDisposable`
 
@@ -39,7 +39,7 @@ Binds the engine to the ports of `rig`, already built over the workspace they st
 It neither reads nor rewrites the recorded workspace pointer.
 Host hands `factory`, which builds a rig over a folder, and `pointer`, which records the chosen folder.
 Both stay outside, since the engine names no infrastructure.
-The clerks are built first, then the settings and the rescue are read through them.
+The clerks are built first, then the settings are read through them and the rescue from the rig.
 The facades come last, so none of them can ever see an engine without its staff.
 A database this build can no longer read costs the user a launch rather than the program.
 
@@ -62,6 +62,11 @@ The facade for the markup import, built once with the others.
 ## `internal LCourierFacade LEngineCourier { get; }`
 
 The facade for the Joplin push and its access grant, which the portrait outlet forwards to.
+
+## `internal LLiveryFacade LEngineLivery { get; }`
+
+The facade for the Joplin page read, built once with the others.
+`LCourierFacade.LEngineCourierSend` hands its page read to the Joplin push.
 
 ## `internal LWorkspaceFacade LEngineWorkspace { get; }`
 
@@ -144,9 +149,10 @@ The draft facade, built once with the others like every facade.
 
 ## `private void LEngineWorkspaceOpen()`
 
-The three steps a bound workspace needs before the first read.
+The four steps a bound workspace needs before the first read.
 The controlled vocabularies come from the language packs on disk and are written into the workspace.
 The 音韻地位 categories are derived again from the stored placements and the hypothesis on disk.
+The phonetic series of every pack that declares a series source are built again.
 A workspace rebuilt from an older schema has its derived strings filled once through the workspace clerk.
 
 ## `internal object LEngineGate { get; } = new();`
@@ -214,7 +220,7 @@ It answers with the file the fault went to, or `null` when nothing could be writ
 The reason key of a refusal standing anywhere inside the failure, or null for a fault.
 The workspace clerk walks the inner chain, since the shells name no exception type.
 
-## `public (string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath)`
+## `public (string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(Exception exception, string unexpected, string recorded)`
 
 The ready notice of a failure, in the order the reasons are tried.
 A refusal answers its own reason key alone.

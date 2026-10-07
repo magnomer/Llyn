@@ -153,5 +153,7 @@ internal static class TRigFake
 
         public Task<string?> LLanguageFlagRead(string code, CancellationToken cancellation) =>
             Task.FromResult<string?>(null);
+
+        public string? LLanguageFlagFind(string code) => null;
     }
 }

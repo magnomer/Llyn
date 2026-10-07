@@ -12,7 +12,7 @@ public sealed class CCourier
 {
     private readonly CAtelier _cCourierAtelier;
 
-    private CCourierState _cCourierState = new(false, true, string.Empty);
+    private CCourierState _cCourierState = new(false, true, false, string.Empty);
 
     private CCourier(CAtelier atelier)
     {
@@ -23,7 +23,10 @@ public sealed class CCourier
 
     public static CCourier CCourierCreate(CAtelier atelier)
     {
-        return new CCourier(atelier);
+        CCourier courier = new(atelier);
+        atelier.CAtelierWorkspace.CWorkspaceOpened += courier.LCourierWarrantRaise;
+        atelier.LAtelierObserverAttach(CSubject.CSubjectSettings, _ => courier.LCourierWarrantRaise());
+        return courier;
     }
 
     public event Action<CCourierState>? CCourierChanged;
@@ -46,12 +49,12 @@ public sealed class CCourier
         string line = string.Empty;
         try
         {
-            LCourierRaise(new CCourierState(true, false, settings.LEngineTextRead("Courier.Sending")));
+            LCourierRaise(true, settings.LEngineTextRead("Courier.Sending"));
             LReceipt receipt;
             try
             {
                 receipt = await _cCourierAtelier.CAtelierPortraitPort.LEngineCourierSend(
-                    CPortrait.LPortraitLabelRead(settings), CancellationToken.None);
+                    settings.LEngineTextRead, CancellationToken.None);
             }
             catch (Exception exception)
             {
@@ -63,7 +66,7 @@ public sealed class CCourier
         }
         finally
         {
-            LCourierRaise(new CCourierState(false, true, line));
+            LCourierRaise(false, line);
         }
     }
 
@@ -77,12 +80,10 @@ public sealed class CCourier
         }
 
         LSettingsPort settings = _cCourierAtelier.CAtelierSettingsPort;
-        string line = string.Empty;
         try
         {
-            LCourierRaise(new CCourierState(true, false, settings.LEngineTextRead("Courier.Waiting")));
+            LCourierRaise(true, settings.LEngineTextRead("Courier.Waiting"));
             await _cCourierAtelier.CAtelierPortraitPort.LEngineCourierAttach(CancellationToken.None);
-            line = settings.LEngineTextRead("Courier.Attached");
         }
         catch (Exception exception)
         {
@@ -90,7 +91,7 @@ public sealed class CCourier
         }
         finally
         {
-            LCourierRaise(new CCourierState(false, true, line));
+            LCourierRaise(false, string.Empty);
         }
     }
 
@@ -104,7 +105,7 @@ public sealed class CCourier
         {
             return string.Format(
                 CultureInfo.InvariantCulture,
-                "Joplin: {0}/{1}/{2}/{3}",
+                "{0}/{1}/{2}/{3}",
                 receipt.LReceiptSaved,
                 receipt.LReceiptKept,
                 receipt.LReceiptRemoved,
@@ -129,11 +130,29 @@ public sealed class CCourier
         string failed = string.Join(", ", receipt.LReceiptFailed.Take(10));
         if (receipt.LReceiptFailed.Count > 10)
         {
-            failed += ", \u2026";
+            failed += ", …";
         }
 
         return line + " " + string.Format(
             CultureInfo.CurrentCulture, settings.LEngineTextRead("Courier.Failed"), failed);
+    }
+
+    private void LCourierWarrantRaise()
+    {
+        LCourierRaise(_cCourierState with
+        {
+            CCourierStateAttached = _cCourierAtelier.CAtelierPortraitPort.LEngineCourierCheck(),
+        });
+    }
+
+    private void LCourierRaise(bool busy, string line)
+    {
+        LCourierRaise(_cCourierState with
+        {
+            CCourierStateBusy = busy,
+            CCourierStateAllowed = !busy,
+            CCourierStateLine = line,
+        });
     }
 
     private void LCourierRaise(CCourierState state)

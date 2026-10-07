@@ -96,14 +96,16 @@ public sealed class LOutpostHttp : LOutpost
     }
 
     public async Task LOutpostFolderSave(
-        int port, string token, string id, string title, CancellationToken cancellation)
+        int port, string token, string id, string parent, string title, CancellationToken cancellation)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token);
         LOutpostSeal.LOutpostSealCheck(id);
+        ArgumentNullException.ThrowIfNull(parent);
         ArgumentNullException.ThrowIfNull(title);
 
         string address = LOutpostHttpFormat(port, "folders/" + Uri.EscapeDataString(id), token);
-        StringContent folder = LOutpostHttpFormat(new JsonObject { ["title"] = title, ["deleted_time"] = 0 });
+        StringContent folder = LOutpostHttpFormat(
+            new JsonObject { ["title"] = title, ["parent_id"] = parent, ["deleted_time"] = 0 });
         using HttpResponseMessage put = await LOutpostHttpSend(
             HttpMethod.Put, address, folder, true, true, cancellation).ConfigureAwait(false);
         if (put.StatusCode != HttpStatusCode.NotFound)
@@ -111,7 +113,8 @@ public sealed class LOutpostHttp : LOutpost
             return;
         }
 
-        StringContent created = LOutpostHttpFormat(new JsonObject { ["id"] = id, ["title"] = title });
+        StringContent created = LOutpostHttpFormat(
+            new JsonObject { ["id"] = id, ["title"] = title, ["parent_id"] = parent });
         using HttpResponseMessage post = await LOutpostHttpSend(
             HttpMethod.Post, LOutpostHttpFormat(port, "folders", token), created, true, false, cancellation)
             .ConfigureAwait(false);
@@ -165,18 +168,18 @@ public sealed class LOutpostHttp : LOutpost
         }
 
         JsonNode? answer = await LOutpostHttpParse(response, cancellation).ConfigureAwait(false);
-        return LOutpostNoteMatch(answer, folder)
+        return LOutpostNoteMatch(answer, new HashSet<string>(StringComparer.Ordinal) { folder })
             && string.Equals(LOutpostHttpParse(answer, "title"), title, StringComparison.Ordinal)
             ? LOutpostHttpParse(answer, "body")
             : null;
     }
 
     public async Task<bool> LOutpostNoteRemove(
-        int port, string token, string id, string folder, string mark, CancellationToken cancellation)
+        int port, string token, string id, IReadOnlySet<string> folders, string mark, CancellationToken cancellation)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token);
         LOutpostSeal.LOutpostSealCheck(id);
-        LOutpostSeal.LOutpostSealCheck(folder);
+        ArgumentNullException.ThrowIfNull(folders);
         ArgumentException.ThrowIfNullOrEmpty(mark);
 
         string path = "notes/" + Uri.EscapeDataString(id);
@@ -190,7 +193,7 @@ public sealed class LOutpostHttp : LOutpost
         }
 
         JsonNode? answer = await LOutpostHttpParse(read, cancellation).ConfigureAwait(false);
-        if (!LOutpostNoteMatch(answer, folder)
+        if (!LOutpostNoteMatch(answer, folders)
             || LOutpostHttpParse(answer, "body")?.StartsWith(mark, StringComparison.Ordinal) != true)
         {
             return false;
@@ -437,11 +440,11 @@ public sealed class LOutpostHttp : LOutpost
         return null;
     }
 
-    private static bool LOutpostNoteMatch(JsonNode? answer, string folder)
+    private static bool LOutpostNoteMatch(JsonNode? answer, IReadOnlySet<string> folders)
     {
         return answer is JsonObject note && note["deleted_time"] is JsonValue time
             && time.TryGetValue(out long deleted) && deleted == 0
-            && string.Equals(LOutpostHttpParse(answer, "parent_id"), folder, StringComparison.Ordinal);
+            && LOutpostHttpParse(answer, "parent_id") is string folder && folders.Contains(folder);
     }
 
     private static HttpContent LOutpostNoteBuild(LOutpostNote note)

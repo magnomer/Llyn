@@ -40,8 +40,6 @@ public interface LSettingsPort
 
     void LEngineFrequencySave(bool frequency);
 
-    void LEngineOutpostSave(string text);
-
     bool LEngineMorphologyCheck();
 
     void LEngineMorphologySave(bool morphology);

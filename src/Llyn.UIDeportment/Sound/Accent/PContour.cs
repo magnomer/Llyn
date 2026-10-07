@@ -47,16 +47,6 @@ public sealed class PContour : FrameworkElement
         typeof(PContour),
         new FrameworkPropertyMetadata(Array.Empty<int>(), PContourChangeRefine));
 
-    public static readonly DependencyProperty PContourTopProperty = PContourBrushCreate(nameof(PContourTop));
-
-    public static readonly DependencyProperty PContourHighProperty = PContourBrushCreate(nameof(PContourHigh));
-
-    public static readonly DependencyProperty PContourMidProperty = PContourBrushCreate(nameof(PContourMid));
-
-    public static readonly DependencyProperty PContourLowProperty = PContourBrushCreate(nameof(PContourLow));
-
-    public static readonly DependencyProperty PContourBottomProperty = PContourBrushCreate(nameof(PContourBottom));
-
     public static readonly DependencyProperty PContourGuideProperty = PContourBrushCreate(nameof(PContourGuide));
 
     public static readonly DependencyProperty PContourAxisProperty = PContourBrushCreate(nameof(PContourAxis));
@@ -77,11 +67,6 @@ public sealed class PContour : FrameworkElement
     {
         IsHitTestVisible = false;
         Visibility = Visibility.Collapsed;
-        SetResourceReference(PContourTopProperty, "Theme.Contour.Top");
-        SetResourceReference(PContourHighProperty, "Theme.Contour.High");
-        SetResourceReference(PContourMidProperty, "Theme.Contour.Mid");
-        SetResourceReference(PContourLowProperty, "Theme.Contour.Low");
-        SetResourceReference(PContourBottomProperty, "Theme.Contour.Bottom");
         SetResourceReference(PContourGuideProperty, "Theme.Contour.Guide");
         SetResourceReference(PContourAxisProperty, "Theme.Contour.Axis");
         SetResourceReference(PContourInkProperty, "Theme.Contour.Ink");
@@ -100,36 +85,6 @@ public sealed class PContour : FrameworkElement
     {
         get => (IReadOnlyList<int>)GetValue(PContourScaleProperty);
         set => SetValue(PContourScaleProperty, value);
-    }
-
-    public Brush PContourTop
-    {
-        get => (Brush)GetValue(PContourTopProperty);
-        set => SetValue(PContourTopProperty, value);
-    }
-
-    public Brush PContourHigh
-    {
-        get => (Brush)GetValue(PContourHighProperty);
-        set => SetValue(PContourHighProperty, value);
-    }
-
-    public Brush PContourMid
-    {
-        get => (Brush)GetValue(PContourMidProperty);
-        set => SetValue(PContourMidProperty, value);
-    }
-
-    public Brush PContourLow
-    {
-        get => (Brush)GetValue(PContourLowProperty);
-        set => SetValue(PContourLowProperty, value);
-    }
-
-    public Brush PContourBottom
-    {
-        get => (Brush)GetValue(PContourBottomProperty);
-        set => SetValue(PContourBottomProperty, value);
     }
 
     public Brush PContourGuide
@@ -260,7 +215,7 @@ public sealed class PContour : FrameworkElement
         }
 
         IReadOnlyList<Point> points = PContourPointResolve(syllable.QContourItemLevels, left);
-        Pen line = PContourLineBuild(syllable.QContourItemLevels, points);
+        Pen line = PContourLineBuild(syllable.QContourItemBrushes, points);
         for (int step = 1; step < points.Count; step++)
         {
             drawingContext.DrawLine(line, points[step - 1], points[step]);
@@ -269,9 +224,8 @@ public sealed class PContour : FrameworkElement
         Pen rim = new(PContourFrame, 1.5);
         for (int step = 0; step < points.Count; step++)
         {
-            int level = syllable.QContourItemLevels[Math.Min(step, syllable.QContourItemLevels.Count - 1)];
-            drawingContext.DrawEllipse(
-                PContourBrushRead(level), rim, points[step], PContourDotRadius, PContourDotRadius);
+            Brush ink = syllable.QContourItemBrushes[Math.Min(step, syllable.QContourItemBrushes.Count - 1)];
+            drawingContext.DrawEllipse(ink, rim, points[step], PContourDotRadius, PContourDotRadius);
         }
     }
 
@@ -297,21 +251,21 @@ public sealed class PContour : FrameworkElement
         return points;
     }
 
-    private Pen PContourLineBuild(IReadOnlyList<int> levels, IReadOnlyList<Point> points)
+    private Pen PContourLineBuild(IReadOnlyList<Brush> inks, IReadOnlyList<Point> points)
     {
         Brush brush;
-        if (levels.Count == 1)
+        if (inks.Count == 1)
         {
-            brush = PContourBrushRead(levels[0]);
+            brush = inks[0];
         }
         else
         {
             GradientStopCollection stops = [];
             double start = points[0].X;
             double span = points[^1].X - start;
-            for (int step = 0; step < levels.Count; step++)
+            for (int step = 0; step < inks.Count; step++)
             {
-                stops.Add(new GradientStop(PContourColorRead(levels[step]), (points[step].X - start) / span));
+                stops.Add(new GradientStop(PContourColorRead(inks[step]), (points[step].X - start) / span));
             }
 
             brush = new LinearGradientBrush(stops, new Point(start, 0), new Point(start + span, 0))
@@ -351,20 +305,8 @@ public sealed class PContour : FrameworkElement
         return PContourScale.TakeWhile(step => step != level).Count();
     }
 
-    private Brush PContourBrushRead(int level)
+    private static Color PContourColorRead(Brush ink)
     {
-        return PContourDepthRead(level) switch
-        {
-            0 => PContourTop,
-            1 => PContourHigh,
-            2 => PContourMid,
-            3 => PContourLow,
-            _ => PContourBottom,
-        };
-    }
-
-    private Color PContourColorRead(int level)
-    {
-        return PContourBrushRead(level) is SolidColorBrush solid ? solid.Color : Colors.Gray;
+        return ink is SolidColorBrush solid ? solid.Color : Colors.Gray;
     }
 }

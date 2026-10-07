@@ -1,5 +1,5 @@
 # LMarkupClerk.cs
-Hash: `fe3c9e1c24e27c08`
+Hash: `54c571d25f6b0f31`
 
 ## `public sealed class LMarkupClerk`
 
@@ -16,6 +16,7 @@ It opens no database of its own, so a test can hand it in-memory ports.
 
 The file at `path` parsed, entries in a language the workspace cannot load losing it with an omission.
 Twin names are applied so two entries with one headword are told apart in the intake list.
+Only entries of one language are twins.
 
 ## `public void LMarkupClerkExport(IReadOnlyList<long> ids, string path)`
 

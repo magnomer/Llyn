@@ -10,6 +10,8 @@ internal sealed class QEstablishment
 {
     private readonly FrameworkElement _qEstablishmentSurface;
 
+    private readonly QCourier _qEstablishmentCourier;
+
     private Action _qEstablishmentRelease = () => { };
 
     internal QEstablishment(FrameworkElement surface)
@@ -17,6 +19,7 @@ internal sealed class QEstablishment
         ArgumentNullException.ThrowIfNull(surface);
 
         _qEstablishmentSurface = surface;
+        _qEstablishmentCourier = new QCourier(surface);
     }
 
     private StackPanel QEstablishmentPending =>
@@ -37,6 +40,7 @@ internal sealed class QEstablishment
             QObserver.QObserverCreate<CEstablishment>(host.QWindowSurface, QEstablishmentRefine);
         host.QWindowAtelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged += heard;
         _qEstablishmentRelease = () => host.QWindowAtelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged -= heard;
+        _qEstablishmentCourier.QCourierIntroduce(host);
     }
 
     internal void QEstablishmentClose()

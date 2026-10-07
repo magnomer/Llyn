@@ -6,5 +6,4 @@ public sealed record CSettings(
     bool CSettingsFrequency,
     bool CSettingsMorphology,
     bool CSettingsEpithet,
-    int CSettingsOnline,
-    string CSettingsOutpost);
+    int CSettingsOnline);

@@ -1,5 +1,5 @@
 # LLanguageClerk.cs
-Hash: `9e87acc52cfa9048`
+Hash: `291f9818b82a4b64`
 
 ## `public sealed class LLanguageClerk`
 
@@ -81,6 +81,24 @@ The flag image path of `language`, fetched when the code is remote.
 ## `public Task<string?> LVarietyFlagRead(string language, string variety, CancellationToken cancellation)`
 
 The flag image path of one variety of `language`, or null when the variety declares none.
+
+## `public string? LLanguageFlagFind(string language)`
+
+The stored flag image path of `language`, or null when the name is blank or no file is stored.
+`LLiveryFacade.LEngineLiveryRead` calls it, so a Joplin push never fetches a flag.
+
+## `public IReadOnlyDictionary<string, string> LVarietyFlagScan(LAccentSheet sheet)`
+
+The stored flag image path of each variety in `sheet`, keyed by variety name.
+It answers none when the sheet is not flagged.
+A variety the language does not declare, or whose flag file is missing, is left out.
+`LLiveryFacade.LEngineLiveryRead` calls it with the page's accent sheet.
+
+## `private string? LEnsignFind(string? code)`
+
+The stored path for one flag code, or null for a blank code.
+A code under a trail root answers itself only when the file exists.
+Any other code asks `LLanguageVault.LLanguageFlagFind`, which never fetches.
 
 ## `private async Task<string?> LLanguageFlagResolve(string? code, CancellationToken cancellation)`
 

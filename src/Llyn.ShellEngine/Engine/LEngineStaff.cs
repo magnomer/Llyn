@@ -104,7 +104,7 @@ internal sealed record LEngineStaff(
             paradigm, script, markup, settings);
         LEnsign ensign = new(rig.LRigUsher);
         LCourierClerk courier = new(
-            rig, portrait, entry, gate, settings, exception => workspace.LWorkspaceAuditRecord(exception));
+            rig, entry, gate, settings, exception => workspace.LWorkspaceAuditRecord(exception));
 
         return new LEngineStaff(
             draft, chronicle, court, claim, tag, register, translation, reference, example,

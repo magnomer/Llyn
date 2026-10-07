@@ -1,6 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
+using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
 
@@ -43,6 +47,117 @@ internal static partial class TInterface
     internal static string TSheetFormat(LPortraitPage page, LTheme theme) => LSheet.LSheetFormat(page, theme);
 
     internal static string TOutlineFormat(LPortraitPage page) => LOutline.LOutlineFormat(page);
+
+    internal static LLiveryNote TLiveryFormat(
+        LLiveryPage page,
+        Func<string, string> lookup,
+        Func<long, string>? note = null,
+        Func<string, string, string, string>? link = null) =>
+        new LLiverySheet(TThemeLoad()).LLiveryFormat(
+            page,
+            new string('a', 32),
+            note ?? (static id => id.ToString(CultureInfo.InvariantCulture)),
+            link ?? (static (_, _, _) => string.Empty),
+            lookup);
+
+    internal static LLiveryNote TLiveryFormat(
+        LLiveryStem stem, Func<string, string> lookup, Func<long, string>? note = null) =>
+        new LLiverySheet(TThemeLoad()).LLiveryFormat(
+            stem,
+            new string('a', 32),
+            note ?? (static id => id.ToString(CultureInfo.InvariantCulture)),
+            lookup);
+
+    internal static LLiveryNote TLiveryFormat(
+        LLiveryDiwei diwei, Func<string, string> lookup, Func<long, string>? note = null) =>
+        new LLiverySheet(TThemeLoad()).LLiveryFormat(
+            diwei,
+            new string('a', 32),
+            note ?? (static id => id.ToString(CultureInfo.InvariantCulture)),
+            lookup);
+
+    internal static LLiveryNote TLiveryFormat(
+        LLiveryLanguage language, Func<string, string> lookup, Func<long, string>? note = null) =>
+        new LLiverySheet(TThemeLoad()).LLiveryFormat(
+            language,
+            new string('a', 32),
+            note ?? (static id => id.ToString(CultureInfo.InvariantCulture)),
+            lookup);
+
+    internal static Func<long, string> TCourierNoteBuild(string stamp, IReadOnlyList<LEntry> entries) =>
+        LCourierClerk.LCourierNoteBuild(new LLiverySheet(TThemeLoad()), stamp, entries);
+
+    internal static Task<LReceipt> TCourierSend(
+        LEngine engine, Func<long, LLiveryPage?> page, Func<string, LLiveryLanguage> language) =>
+        engine.LEngineStaffHeld.LEngineStaffCourier.LCourierClerkSend(
+            page, language, static key => key, CancellationToken.None);
+
+    internal static LLiveryLanguage TLiveryLanguageBuild(
+        string name,
+        IReadOnlyList<LCatalogPronunciation> pronunciation,
+        IReadOnlyList<LLiveryStem> stem,
+        IReadOnlyList<LLiveryDiwei> diwei) =>
+        new(name, pronunciation, stem, diwei);
+
+    internal static LLiveryStem TLiveryStemCreate(LStemPage page, IReadOnlyList<LEntry> entry) =>
+        new(page, entry);
+
+    internal static LStemPage TStemPageCreate(string language, string key, IReadOnlyList<string> characters) =>
+        new(language, key, characters);
+
+    internal static LLiveryDiwei TLiveryDiweiCreate(
+        string kind, string language, string key, IReadOnlyList<LEntry> entry) =>
+        new(kind, new LDiweiPage(language, key, []), entry);
+
+    internal static LDiweiSection TDiweiSectionCreate(
+        string label,
+        IReadOnlyList<LDiweiLine> lines,
+        IReadOnlyList<LTallyRow> tallies,
+        bool switched,
+        bool respelled) =>
+        new(label, lines, tallies, switched, respelled);
+
+    internal static LDiweiLine TDiweiLineCreate(
+        string reading, string label, bool rounded, int rank, IReadOnlyList<string> characters) =>
+        new(reading, label, rounded, rank, characters);
+
+    internal static LTallyMark TTallyMarkCreate(string text, IReadOnlyList<string> characters) =>
+        new(text, characters);
+
+    internal static LTallyRow TTallyRowCreate(string language, string kind, IReadOnlyList<LTallyMark> marks) =>
+        new(language, kind, marks);
+
+    internal static LTheme TThemeCreate(IReadOnlyDictionary<string, string> colors) => new(colors);
+
+    internal static string TLiveryStyleFormat(LTheme theme) => LLiveryStyle.LLiveryStyleFormat(theme);
+
+    internal static LTranslationTarget TTranslationTargetCreate(long id, string headword, string language) =>
+        new(id, headword, language);
+
+    internal static LUsage TUsageCreate(
+        long id, LOwner owner, long entryId, string headword, string language, LStateValue title) =>
+        new(id, owner, entryId, headword, language, title);
+
+    internal static LGlossDraft TGlossDraftCreate(long id, string language, LStateValue text) =>
+        new(id, language, text);
+
+    internal static LSentenceDraft TSentenceDraftCreate(LExampleDraft example) =>
+        new(example, LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnspecified);
+
+    internal static LEtymologyDraft TEtymologyDraftCreate(string text, IReadOnlyList<LMentionDraft> mentions) =>
+        new(text, mentions);
+
+    internal static LFanqieGroup TFanqieGroupCreate(
+        string heading, string label, string source, IReadOnlyList<LFanqieRow> rows, IReadOnlyList<string> stems) =>
+        new(heading, label, source, rows, stems);
+
+    internal static LScriptImage TScriptImageCreate(
+        string character, string style, int position, string caption, string gloss, byte[] data) =>
+        new(character, style, position, caption, gloss, data);
+
+    internal static LScriptGroup TScriptGroupCreate(
+        string heading, string style, string gloss, IReadOnlyList<LScriptImage> images) =>
+        new(heading, style, gloss, images);
 
     internal static string TSheetNormalize(string? text) => LSheet.LSheetNormalize(text);
 

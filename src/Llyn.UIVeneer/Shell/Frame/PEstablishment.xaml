@@ -5,18 +5,61 @@
     Height="26">
 
     <Border Background="{StaticResource Theme.Navigation}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,1,0,0">
-        <Grid Margin="18,0,18,0">
+        <Grid Margin="10,0,18,0">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel x:Name="PEstablishmentPending" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Visibility="Collapsed">
+            <StackPanel x:Name="PCourier" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button
+                    x:Name="PCourierWarrant"
+                    Height="22"
+                    Padding="8,0"
+                    VerticalAlignment="Center"
+                    Content="{DynamicResource Courier.Attach}"
+                    FontSize="11.5"
+                    Style="{StaticResource Theme.Command.Segment}" />
+                <TextBlock
+                    x:Name="PCourierBadge"
+                    Margin="6,0,2,0"
+                    VerticalAlignment="Center"
+                    FontSize="11.5"
+                    Foreground="{StaticResource Theme.Muted}"
+                    Text="{DynamicResource Courier.Connected}"
+                    Visibility="Collapsed" />
+                <Button
+                    x:Name="PCourierCommand"
+                    Height="22"
+                    Padding="8,0"
+                    VerticalAlignment="Center"
+                    Content="{DynamicResource Courier.Send}"
+                    FontSize="11.5"
+                    Style="{StaticResource Theme.Command.Segment}"
+                    ToolTip="{DynamicResource Courier.Helper}" />
+                <TextBlock
+                    x:Name="PCourierSeparator"
+                    Margin="4,0,6,0"
+                    VerticalAlignment="Center"
+                    FontSize="11.5"
+                    Foreground="{StaticResource Theme.Muted}"
+                    Text="/"
+                    Visibility="Collapsed" />
+                <TextBlock
+                    x:Name="PCourierReceipt"
+                    VerticalAlignment="Center"
+                    FontSize="11.5"
+                    Foreground="{StaticResource Theme.Muted}"
+                    TextTrimming="CharacterEllipsis" />
+            </StackPanel>
+
+            <StackPanel x:Name="PEstablishmentPending" Grid.Column="1" Margin="18,0,0,0" Orientation="Horizontal" VerticalAlignment="Center" Visibility="Collapsed">
                 <Ellipse x:Name="PEstablishmentMark" Width="7" Height="7" Margin="0,1,7,0" VerticalAlignment="Center" Fill="{StaticResource Theme.Pending}" />
                 <TextBlock x:Name="PEstablishmentUnsaved" VerticalAlignment="Center" FontSize="11.5" Foreground="{StaticResource Theme.Muted}" />
             </StackPanel>
 
-            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                 <TextBlock x:Name="PEstablishmentEntry" VerticalAlignment="Center" FontSize="11.5" Foreground="{StaticResource Theme.Muted}" />
                 <TextBlock x:Name="PEstablishmentSeparator" Margin="8,0,8,0" VerticalAlignment="Center" FontSize="11.5" Foreground="{StaticResource Theme.Muted}" Text="·" />
                 <TextBlock x:Name="PEstablishmentSize" VerticalAlignment="Center" FontSize="11.5" Foreground="{StaticResource Theme.Muted}" />

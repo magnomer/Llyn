@@ -1,5 +1,5 @@
 # QEditorSound.cs
-Hash: `e4c220f081eb2950`
+Hash: `49ffda69b9f29b44`
 
 ## `internal sealed class QEditorSound`
 
@@ -57,5 +57,6 @@ The typed text runs ahead of the draft, so the read takes the field's text.
 
 ## `private void QEditorContourRefine(IReadOnlyList<CContour> syllables)`
 
-Copies the ready syllables into the contour box's own items.
+Copies the ready syllables into the contour box's own items through `QContourInk.QContourInkBuild`.
+Each item carries the theme brush of each level, resolved from the box.
 It hands the box Conduct's scale too, so the box names no Conduct type.

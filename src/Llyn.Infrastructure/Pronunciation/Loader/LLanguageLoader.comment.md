@@ -1,5 +1,5 @@
 # LLanguageLoader.cs
-Hash: `6ad8ffd0edb7c484`
+Hash: `78676b5c4aa7215f`
 
 ## `public sealed class LLanguageLoader : LLanguageVault`
 
@@ -34,6 +34,10 @@ The packs themselves are read beside the program, not under the root.
 ## `public Task<string?> LLanguageFlagRead(string code, CancellationToken cancellation)`
 
 The port's flag read, answered by `LEnsignFileRead` in `LEnsignLoader`.
+
+## `public string? LLanguageFlagFind(string code)`
+
+The port's stored flag find, answered by `LEnsignFileFind` in `LEnsignLoader`.
 
 ## `public IReadOnlyList<string> LLanguageScan()`
 

@@ -1,5 +1,5 @@
 # TEngineVista.cs
-Hash: `edc90f30c4ba2d58`
+Hash: `321596f29cf81887`
 
 ## `public sealed class TEngineVista`
 
@@ -48,6 +48,11 @@ An ordering set on the left tab is found again there and leaves the right tab on
 
 Two entries sharing a headword are numbered by entry id, so the older is `(1)` even when listed second.
 An unshared headword is listed unnumbered.
+
+## `public void EntryFind_HeadwordAcrossLanguages_KeepsBareNames()`
+
+One headword saved in Mandarin and in Classical Chinese is listed bare twice.
+Twins number only within one language.
 
 ## `public void EntryFind_VistaChosen_MarksRow()`
 

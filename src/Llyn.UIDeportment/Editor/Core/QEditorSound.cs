@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -132,11 +131,9 @@ internal sealed class QEditorSound
 
     private void QEditorContourRefine(IReadOnlyList<CContour> syllables)
     {
-        QEditorSoundContour.PContourScale = CContour.CContourScale;
-        QEditorSoundContour.PContourSyllables = syllables
-            .Select(static syllable => new QContourItem(
-                syllable.CContourText, syllable.CContourLevels, syllable.CContourToned))
-            .ToList();
+        PContour contour = QEditorSoundContour;
+        contour.PContourScale = CContour.CContourScale;
+        contour.PContourSyllables = QContourInk.QContourInkBuild(syllables, contour);
     }
 
     private void QEditorPronunciationObserve(object sender, TextChangedEventArgs e)

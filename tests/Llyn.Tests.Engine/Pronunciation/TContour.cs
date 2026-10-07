@@ -98,6 +98,24 @@ public sealed class TContour
     }
 
     [Fact]
+    public void ContourRoleRead_ScaleLevels_PicksFiveRoles()
+    {
+        Assert.Equal(
+            [
+                LContourRole.LContourRoleTop,
+                LContourRole.LContourRoleHigh,
+                LContourRole.LContourRoleMid,
+                LContourRole.LContourRoleLow,
+                LContourRole.LContourRoleBottom,
+                LContourRole.LContourRoleBottom,
+            ],
+            new[] { 5, 4, 3, 2, 1, 0 }.Select(TInterface.TContourRoleRead));
+        Assert.Equal(
+            [LContourRole.LContourRoleMid, LContourRole.LContourRoleTop],
+            TInterface.TContourParse("ma˧˥").Single().LContourRoles);
+    }
+
+    [Fact]
     public void ContourToned_MarkedAndBareSyllables_FlagsOnlyTheMarkedOne()
     {
         IReadOnlyList<LContour> syllables = TInterface.TContourParse("ma˧˥ ma");

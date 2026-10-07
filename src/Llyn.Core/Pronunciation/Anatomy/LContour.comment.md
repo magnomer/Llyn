@@ -1,5 +1,5 @@
 # LContour.cs
-Hash: `ef6f1a72faeca12a`
+Hash: `cc791d2f4cd99776`
 
 ## `public sealed record LContour(string LContourText, IReadOnlyList<int> LContourLevels)`
 
@@ -9,9 +9,9 @@ The engine holds no language facts, so the parse knows only the IPA tone notatio
 
 **Parameters**
 
-- `LContourText` — The syllable as written, its segments followed by its tone marks.
+- `LContourText`: The syllable as written, its segments followed by its tone marks.
   A tone mark run keeps every mark, so a sandhi form such as `²¹⁴⁻²¹` stays readable.
-- `LContourLevels` — The Chao levels the marks spell, from `LContourFloor` to `LContourCeiling`, in speaking order.
+- `LContourLevels`: The Chao levels the marks spell, from `LContourFloor` to `LContourCeiling`, in speaking order.
   A level tone carries one entry and a contour tone carries one entry per turning point.
   The list is empty for a syllable without a tone or with a mark outside the five levels.
 
@@ -28,6 +28,11 @@ The highest Chao level.
 Every Chao level from the highest down to the lowest, the rungs a contour is drawn on.
 It is built from the floor and the ceiling, so the scale has one owner.
 
+## `public IReadOnlyList<LContourRole> LContourRoles => [.. LContourLevels.Select(LContourRoleRead)];`
+
+The colour role of each level, in the same order as `LContourLevels`.
+Conduct maps it into `CContour`, so the view picks no colour itself.
+
 ## `public static IReadOnlyList<LContour> LContourParse(string ipa)`
 
 Splits a reading into syllables and reads the tone of each.
@@ -42,6 +47,13 @@ A reading with no marks at all still yields its syllables, each without levels.
 ## `public static bool LContourToneCheck(IReadOnlyList<LContour> syllables)`
 
 Whether any syllable carries a tone worth drawing.
+
+## `public static LContourRole LContourRoleRead(int level)`
+
+Picks the colour role of one level by its depth on `LContourScale`.
+Depth 0 is the top role, and each step down takes the next role.
+A level outside the scale takes the bottom role.
+The view in Deportment and the Joplin writer both draw from this one pick.
 
 ## `private static IReadOnlyList<int> LContourLevelRead(string marks)`
 

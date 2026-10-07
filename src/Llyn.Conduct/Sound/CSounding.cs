@@ -277,11 +277,7 @@ public sealed class CSounding
         ArgumentNullException.ThrowIfNull(scale);
 
         return syllables
-            .Select(syllable =>
-            {
-                List<int> levels = syllable.LContourLevels.Where(level => scale.Contains(level)).ToList();
-                return new CContour(syllable.LContourText, levels, syllable.LContourToned && levels.Count > 0);
-            })
+            .Select(syllable => CContourInk.CContourInkBuild(syllable, scale))
             .ToList();
     }
 

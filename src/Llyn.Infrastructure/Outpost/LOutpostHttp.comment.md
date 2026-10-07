@@ -1,5 +1,5 @@
 # LOutpostHttp.cs
-Hash: `27707300dd5a3bdd`
+Hash: `940798660e7dbc76`
 
 ## `public sealed class LOutpostHttp : LOutpost`
 
@@ -9,6 +9,14 @@ Joplin listens nowhere else, so no other host is ever contacted.
 Every token rides in the query string, the one place the Data API reads it from.
 Every note, folder, resource and tag id passes `LOutpostSeal.LOutpostSealCheck` before any URL is built.
 So no id can bend a path toward an item Llyn never addressed.
+
+## `private static readonly HttpClient LOutpostClient`
+
+The one client every call goes through, built once from an `HttpClientHandler`.
+It never follows a redirect and never uses a proxy.
+The token rides in the URL, so it must not reach any other address.
+Its timeout is 100 seconds, since large uploads need more than the shared ten.
+The one-second ping bound per port is separate and stays.
 
 ## `private const string LOutpostBanner = "JoplinClipperServer";`
 
@@ -33,14 +41,6 @@ How long one port may take to answer a ping.
 A loopback answer is near instant, so a slower port is treated as silent.
 A search tries at most twelve ports, one second each.
 
-## `private static readonly HttpClient LOutpostClient`
-
-The one client every call goes through, built once from an `HttpClientHandler`.
-It never follows a redirect and never uses a proxy.
-The token rides in the URL, so it must not reach any other address.
-Its timeout is 100 seconds, since large uploads need more than the shared ten.
-The one-second ping bound per port is separate and stays.
-
 ## `public async Task<int?> LOutpostFind(int port, CancellationToken cancellation)`
 
 Pings `port` first and then Joplin's own range, answering the first port that names Joplin.
@@ -60,11 +60,13 @@ An accepted answer without a token, any unknown status, an error status or malfo
 Joplin forgets tickets it no longer knows, so a poll must end rather than wait forever.
 A stalled or unreachable Joplin still throws `TimeoutException`, since Joplin may simply have closed.
 
-## `public async Task LOutpostFolderSave(int port, string token, string id, string title, CancellationToken cancellation)`
+## `public async Task LOutpostFolderSave(int port, string token, string id, string parent, string title, CancellationToken cancellation)`
 
 Updates the notebook in place and creates it with the fixed id only when Joplin knows no such id.
 An `id` that is not 32 lowercase hex characters throws `ArgumentException` first.
 Trying the update first keeps a repeated push to one call.
+Both the update and the creation send `parent` as the notebook's parent.
+`parent` travels only in the body, never the URL, so it needs no id check.
 The update sends a zero deletion time so a trashed notebook comes back.
 That a zero restores the notebook is unverified against Joplin and needs a live check.
 
@@ -89,11 +91,12 @@ A note whose title differs from `title` ordinally reads as null as well.
 Such a note was moved, trashed or renamed in Joplin, and the push puts it back.
 A malformed answer still throws, so the entry fails rather than resending blindly.
 
-## `public async Task<bool> LOutpostNoteRemove(int port, string token, string id, string folder, string mark, CancellationToken cancellation)`
+## `public async Task<bool> LOutpostNoteRemove(int port, string token, string id, IReadOnlySet<string> folders, string mark, CancellationToken cancellation)`
 
-An `id` or `folder` that is not 32 lowercase hex characters throws `ArgumentException` first.
+An `id` that is not 32 lowercase hex characters throws `ArgumentException` first.
+`folders` are only compared, never placed in a URL, so they need no id check.
 It reads the note's notebook, body and deletion time before anything is deleted.
-It trashes only a note that sits untrashed in `folder` with a body starting with `mark`.
+It trashes only a note that sits untrashed in one of `folders` with a body starting with `mark`.
 Only such a note is proven to be one Llyn wrote, so no other Joplin item is ever touched.
 The delete goes without the permanent flag, so Joplin moves the note to its trash.
 It answers true only when it trashed the note.
@@ -146,9 +149,10 @@ An answer that is not a list object ends the read with what was gathered.
 
 The id of the tag whose normalized title matches `title` ignoring case, or null when none does.
 
-## `private static bool LOutpostNoteMatch(JsonNode? answer, string folder)`
+## `private static bool LOutpostNoteMatch(JsonNode? answer, IReadOnlySet<string> folders)`
 
-Whether a note answer shows a zero deletion time and sits in `folder`.
+Whether a note answer shows a zero deletion time and sits in one of `folders`.
+The read passes its one folder as a set of one.
 A missing or unreadable deletion time fails the check, so doubt never reads as present.
 The read and the trash share it, so both judge a note alike.
 

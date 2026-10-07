@@ -5,10 +5,11 @@ Hash: `a2abbd39386ba268`
 
 The tally of one push to Joplin, shown to the user when it ends.
 A failed note does not stop the push, so failures are listed rather than raised.
+A reconstruction note whose title itself failed is listed under its language name.
 
 **Parameters**
 
-- `LReceiptSaved` — How many notes were pushed.
-- `LReceiptKept` — How many notes were unchanged and skipped.
+- `LReceiptSaved` — How many entry and reconstruction notes were pushed, never the style note.
+- `LReceiptKept` — How many entry and reconstruction notes were unchanged and skipped.
 - `LReceiptRemoved` — How many notes were moved to Joplin's trash.
-- `LReceiptFailed` — The headwords whose notes failed to push.
+- `LReceiptFailed` — The entry headwords and reconstruction note titles whose notes failed to push.

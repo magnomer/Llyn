@@ -27,6 +27,7 @@ internal sealed class QSCustoms
     {
         _qsCustomsSurface = QContract.QContractSheetFind<Window>("PSCustoms");
         _qsCustomsSurface.Owner = host.QWindowSurface;
+        QLook.QLookStyleAttach(_qsCustomsSurface);
         _csCustoms = customs;
         QSCustomsList.ItemsSource = new ObservableCollection<QSCustomsItem>(customs.CSCustomsEntry.Select(
             static (entry, index) => new QSCustomsItem(
@@ -61,6 +62,7 @@ internal sealed class QSCustoms
 
         Window surface = QContract.QContractSheetFind<Window>("PSCustoms");
         surface.Owner = host.QWindowSurface;
+        QLook.QLookStyleAttach(surface);
         ItemsControl omission = QContract.QContractFind<ItemsControl>(surface, "PSCustomsOmission");
         QLookItem.QLookItemAttach(omission, QSCustomsOmissionApply);
         omission.ItemsSource = omissions

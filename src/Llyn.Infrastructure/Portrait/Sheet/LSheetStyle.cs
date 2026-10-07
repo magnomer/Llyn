@@ -133,12 +133,6 @@ public static class LSheetStyle
         (".note a", "color:var(--accent);"),
     ];
 
-    private static readonly (string, string)[] _lSheetScopeRules =
-    [
-        ("h1,h2", "border-bottom:none;padding-bottom:0;"),
-        ("ul,ol", "margin-left:0;"),
-    ];
-
     private const string LSheetStylePaper =
         "@page{margin:12mm;}@media print{body{background:#fff;}.portrait{padding:0;max-width:none;}}";
 
@@ -146,118 +140,40 @@ public static class LSheetStyle
     {
         ArgumentNullException.ThrowIfNull(theme);
 
-        return LSheetStyleBuild(theme, null);
+        return LSheetStyleBuild(theme);
     }
 
-    public static string LSheetStyleFormat(LTheme theme, string scope)
-    {
-        ArgumentNullException.ThrowIfNull(theme);
-        ArgumentNullException.ThrowIfNull(scope);
-        if (!LSheetScopeCheck(scope))
-        {
-            throw new ArgumentException("The scope must be a single class selector.", nameof(scope));
-        }
-
-        return LSheetStyleBuild(theme, scope);
-    }
-
-    private static string LSheetStyleBuild(LTheme theme, string? scope)
+    private static string LSheetStyleBuild(LTheme theme)
     {
         StringBuilder sheet = new StringBuilder();
 
-        sheet.Append(scope ?? ":root").Append('{');
-        LSheetVariableAppend(sheet, "ink", theme.LThemeRead("ink"), scope);
-        LSheetVariableAppend(sheet, "muted", theme.LThemeRead("muted"), scope);
-        LSheetVariableAppend(sheet, "canvas", theme.LThemeRead("canvas"), scope);
-        LSheetVariableAppend(sheet, "surface", theme.LThemeRead("surface"), scope);
-        LSheetVariableAppend(sheet, "line", theme.LThemeRead("line"), scope);
-        LSheetVariableAppend(sheet, "accent", theme.LThemeRead("accent"), scope);
-        LSheetVariableAppend(sheet, "accent-soft", theme.LThemeRead("accentSoft"), scope);
-        LSheetVariableAppend(sheet, "situation", theme.LThemeRead("situation"), scope);
-        LSheetVariableAppend(sheet, "situation-soft", theme.LThemeRead("situationSoft"), scope);
-        LSheetVariableAppend(sheet, "situation-edge", theme.LThemeRead("situationEdge"), scope);
-        LSheetVariableAppend(sheet, "family", theme.LThemeFamily, scope);
-        LSheetVariableAppend(sheet, "serif", theme.LThemeSerif, scope);
+        sheet.Append(":root").Append('{');
+        LSheetVariableAppend(sheet, "ink", theme.LThemeRead("ink"));
+        LSheetVariableAppend(sheet, "muted", theme.LThemeRead("muted"));
+        LSheetVariableAppend(sheet, "canvas", theme.LThemeRead("canvas"));
+        LSheetVariableAppend(sheet, "surface", theme.LThemeRead("surface"));
+        LSheetVariableAppend(sheet, "line", theme.LThemeRead("line"));
+        LSheetVariableAppend(sheet, "accent", theme.LThemeRead("accent"));
+        LSheetVariableAppend(sheet, "accent-soft", theme.LThemeRead("accentSoft"));
+        LSheetVariableAppend(sheet, "situation", theme.LThemeRead("situation"));
+        LSheetVariableAppend(sheet, "situation-soft", theme.LThemeRead("situationSoft"));
+        LSheetVariableAppend(sheet, "situation-edge", theme.LThemeRead("situationEdge"));
+        LSheetVariableAppend(sheet, "family", theme.LThemeFamily);
+        LSheetVariableAppend(sheet, "serif", theme.LThemeSerif);
         sheet.Append('}');
 
         foreach ((string selector, string body) in _lSheetStyleRules)
         {
-            sheet.Append(scope is null ? selector : LSheetScopeFormat(selector, scope))
-                .Append('{').Append(body).Append('}');
+            sheet.Append(selector).Append('{').Append(body).Append('}');
         }
 
-        if (scope is null)
-        {
-            sheet.Append(LSheetStylePaper);
-        }
-        else
-        {
-            foreach ((string selector, string body) in _lSheetScopeRules)
-            {
-                sheet.Append(LSheetScopeFormat(selector, scope)).Append('{').Append(body).Append('}');
-            }
-        }
+        sheet.Append(LSheetStylePaper);
 
         return sheet.ToString();
     }
 
-    private static void LSheetVariableAppend(StringBuilder sheet, string name, string value, string? scope)
+    private static void LSheetVariableAppend(StringBuilder sheet, string name, string value)
     {
-        sheet.Append("--").Append(name).Append(':')
-            .Append(scope is null ? value : LSheetValueNormalize(value))
-            .Append(';');
-    }
-
-    private static string LSheetValueNormalize(string value)
-    {
-        StringBuilder clean = new StringBuilder(value.Length);
-        foreach (char letter in value)
-        {
-            if (letter is not ('{' or '}' or ';' or '<' or '`'))
-            {
-                clean.Append(letter);
-            }
-        }
-
-        string text = clean.ToString();
-        while (text.Contains("/*", StringComparison.Ordinal))
-        {
-            text = text.Replace("/*", string.Empty, StringComparison.Ordinal);
-        }
-
-        return text;
-    }
-
-    private static bool LSheetScopeCheck(string scope)
-    {
-        if (scope.Length < 2 || scope[0] != '.' || !char.IsAsciiLetter(scope[1]))
-        {
-            return false;
-        }
-
-        for (int index = 2; index < scope.Length; index++)
-        {
-            char letter = scope[index];
-            if (!char.IsAsciiLetterOrDigit(letter) && letter != '-' && letter != '_')
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private static string LSheetScopeFormat(string selector, string scope)
-    {
-        switch (selector)
-        {
-            case "*":
-                return scope + "," + scope + " *";
-            case "html,body":
-            case "body":
-                return scope;
-            default:
-                return string.Join(',', Array.ConvertAll(selector.Split(','), part => scope + " " + part));
-        }
+        sheet.Append("--").Append(name).Append(':').Append(value).Append(';');
     }
 }

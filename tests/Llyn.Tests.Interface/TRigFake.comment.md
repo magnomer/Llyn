@@ -1,5 +1,5 @@
 # TRigFake.cs
-Hash: `4360138ca3b18025`
+Hash: `2c936a12183ccb92`
 
 ## `internal static class TRigFake`
 
@@ -40,6 +40,7 @@ The trail is the real system adapter, since path rules touch no disk, and the cl
 The press is a `TPress`, which records what it is handed and touches no printer.
 The warrant is a `TWarrantFake`, so no test touches the operating system store.
 The process id is one.
+The posture is a `TPostureFake` and the phonograph is a `TPhonographFake`.
 Every port not named above is a throwing stub, the livery and manifest ports among them.
 
 ## `internal static LSourceFactory TRigSourceCreate()`
@@ -86,4 +87,4 @@ Existence follows the save.
 ## `private sealed class TRigFakeLanguages : LLanguageVault`
 
 A language port listing no packs and validating no name.
-Its flag read answers none, and reading a pack throws.
+Its flag read and its stored flag find answer none, and reading a pack throws.

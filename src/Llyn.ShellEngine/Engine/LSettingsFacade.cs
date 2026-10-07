@@ -165,16 +165,6 @@ internal sealed class LSettingsFacade
         }
     }
 
-    internal void LEngineOutpostSave(string text)
-    {
-        ArgumentNullException.ThrowIfNull(text);
-        int port = LSettingsFacadeStaff.LEngineStaffWorkspace.LWorkspaceOutpostParse(text);
-        if (LEngineSettingsChange(settings => settings with { LSettingsOutpost = port }))
-        {
-            _lSettingsFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
-        }
-    }
-
     internal bool LEngineMorphologyCheck()
     {
         return LEngineSettingsRead().LSettingsMorphology;

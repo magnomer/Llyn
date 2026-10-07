@@ -84,7 +84,7 @@ public sealed class LUsageClerk
             places[index] = index;
         }
 
-        LTwin.LTwinNameApply(places, place => rows[place].LUsageHeadword,
+        LTwin.LTwinNameApply(places, place => rows[place].LUsageHeadword, place => rows[place].LUsageLanguage,
             (place, name) => named[place] = named[place] with { LUsageName = name });
         return named;
     }

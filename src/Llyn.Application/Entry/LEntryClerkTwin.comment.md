@@ -1,5 +1,5 @@
 # LEntryClerkTwin.cs
-Hash: `385aba5b4ed785b9`
+Hash: `190654e34a95c306`
 
 ## `public static class LEntryClerkTwin`
 
@@ -12,14 +12,17 @@ The engine's vista and the markup clerk number through it.
 
 The twin name of each entry, by position, numbered by entry id.
 So the older entry is `(1)` in every view.
+Only entries of one language are twins, so one headword in two languages stays bare.
 
-## `public static string[] LTwinRead<LTwinRow>(IReadOnlyList<LTwinRow> rows, Func<LTwinRow, string> name, Func<LTwinRow, long> id)`
+## `public static string[] LTwinRead<LTwinRow>(IReadOnlyList<LTwinRow> rows, Func<LTwinRow, string> name, Func<LTwinRow, string> group, Func<LTwinRow, long> id)`
 
-The same numbering over any row kind, given how to read a row's name and id.
+The same numbering over any row kind, given how to read a row's name, group and id.
+Only rows of one group are twins.
 
 ## `public static IReadOnlyList<string> LTwinNameResolve(IReadOnlyList<string> labels)`
 
 The labels made distinct in their given order, numbered where two share a name, for the compass rows.
+Labels carry no language, so they all form one group.
 
 ## `public static string LTwinNameRead(LStateValue value, string unknown, string fallback)`
 

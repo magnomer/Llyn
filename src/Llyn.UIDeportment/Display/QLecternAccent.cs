@@ -1,6 +1,5 @@
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Conduct;
@@ -27,7 +26,7 @@ public sealed class QLecternAccent
 
     private TextBlock _qLecternAccentCloser = null!;
 
-    private DependencyObject _qLecternAccentContour = null!;
+    private FrameworkElement _qLecternAccentContour = null!;
 
     private DependencyProperty _qLecternAccentSyllables = null!;
 
@@ -47,7 +46,7 @@ public sealed class QLecternAccent
         TextBlock pronunciation,
         TextBlock closer,
         ItemsControl accents,
-        DependencyObject contour,
+        FrameworkElement contour,
         DependencyProperty syllables,
         DependencyProperty scale)
     {
@@ -102,10 +101,7 @@ public sealed class QLecternAccent
         _qLecternAccentCloser.Text = accent.CLecternAccentMark.CRespellingMarkCloser;
         _qLecternAccentContour.SetValue(
             _qLecternAccentSyllables,
-            accent.CLecternAccentContour
-                .Select(static syllable => new QContourItem(
-                    syllable.CContourText, syllable.CContourLevels, syllable.CContourToned))
-                .ToList());
+            QContourInk.QContourInkBuild(accent.CLecternAccentContour, _qLecternAccentContour));
         _qLecternAccentPronunciation.Text = accent.CLecternAccentText;
         _qLecternAccentSurface.Visibility = QLook.QLookVisibleRead(accent.CLecternAccentSpoken);
         _qLecternAccentLead.SharedSizeGroup = accent.CLecternAccentSpoken ? "PReadingLabel" : null;

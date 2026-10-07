@@ -8,14 +8,19 @@ public static class LEntryClerkTwin
 {
     public static string[] LTwinRead(IReadOnlyList<LEntry> entries)
     {
-        return LTwinRead(entries, entry => entry.LEntryHeadword, entry => entry.LEntryId);
+        return LTwinRead(
+            entries, entry => entry.LEntryHeadword, entry => entry.LEntryLanguage, entry => entry.LEntryId);
     }
 
     public static string[] LTwinRead<LTwinRow>(
-        IReadOnlyList<LTwinRow> rows, Func<LTwinRow, string> name, Func<LTwinRow, long> id)
+        IReadOnlyList<LTwinRow> rows,
+        Func<LTwinRow, string> name,
+        Func<LTwinRow, string> group,
+        Func<LTwinRow, long> id)
     {
         ArgumentNullException.ThrowIfNull(rows);
         ArgumentNullException.ThrowIfNull(name);
+        ArgumentNullException.ThrowIfNull(group);
         ArgumentNullException.ThrowIfNull(id);
 
         string[] names = new string[rows.Count];
@@ -25,7 +30,7 @@ public static class LEntryClerkTwin
             places[index] = index;
         }
 
-        LTwin.LTwinNameApply(places, place => name(rows[place]),
+        LTwin.LTwinNameApply(places, place => name(rows[place]), place => group(rows[place]),
             (place, twinned) => names[place] = twinned, place => id(rows[place]));
         return names;
     }
@@ -41,7 +46,8 @@ public static class LEntryClerkTwin
             places[index] = index;
         }
 
-        LTwin.LTwinNameApply(places, place => labels[place], (place, name) => names[place] = name);
+        LTwin.LTwinNameApply(
+            places, place => labels[place], static _ => string.Empty, (place, name) => names[place] = name);
         return names;
     }
 

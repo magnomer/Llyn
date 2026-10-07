@@ -12,6 +12,7 @@ internal sealed class QSCoinage
     {
         _qsCoinageSurface = QContract.QContractSheetFind<Window>("PSCoinage");
         _qsCoinageSurface.Owner = owner;
+        QLook.QLookStyleAttach(_qsCoinageSurface);
         QSCoinageWording.TextChanged += QSCoinageWordingRefine;
         QSCoinageMint.Click += QSCoinageMintObserve;
         QSCoinageMessage.SetResourceReference(TextBlock.TextProperty, message);

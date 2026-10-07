@@ -1,5 +1,5 @@
 # LLanguageVault.cs
-Hash: `b8501aa71abf8fef`
+Hash: `dccc78c74f94d252`
 
 ## `public interface LLanguageVault`
 
@@ -26,3 +26,8 @@ The local path of the flag image for `code`, an ISO 3166-1 alpha-2 country code.
 The adapter fetches it into the workspace on first use and serves the cached copy after.
 It answers `null` when the fetch fails or the flag file cannot be written or read.
 So a missing flag never blocks the UI.
+
+## `string? LLanguageFlagFind(string code);`
+
+The local path of the flag image for `code` when the file is already stored, else `null`.
+It never fetches and never writes, so a caller that must not touch the network can ask it.

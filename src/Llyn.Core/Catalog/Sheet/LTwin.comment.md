@@ -1,5 +1,5 @@
 # LTwin.cs
-Hash: `5474b88d2ea10ff7`
+Hash: `5f5a23587a7557a9`
 
 ## `public static class LTwin`
 
@@ -10,15 +10,17 @@ The numbering is display text only, so stored names stay untouched.
 It lives in Core so the engine can number the rows it returns for a view.
 Panels that still build their own rows call it the same way.
 
-## `public static void LTwinNameApply<LTwinRow>(IReadOnlyList<LTwinRow> rows, Func<LTwinRow, string> read, Action<LTwinRow, string> write)`
+## `public static void LTwinNameApply<LTwinRow>(IReadOnlyList<LTwinRow> rows, Func<LTwinRow, string> read, Func<LTwinRow, string> group, Action<LTwinRow, string> write)`
 
 Writes each row's display name, appending `(1)`, `(2)` and so on to names more than one row carries.
+Only rows of one `group` count as twins, so entries of two languages never number each other.
+Rows with no group to tell apart pass an empty one, which makes every row one group.
 A name held by a single row is written unchanged.
 Numbers follow the order the rows are listed in, so the first row shown takes `(1)`.
 
-## `public static void LTwinNameApply<LTwinRow>(IReadOnlyList<LTwinRow> rows, Func<LTwinRow, string> read, Action<LTwinRow, string> write, Func<LTwinRow, long> rank)`
+## `public static void LTwinNameApply<LTwinRow>(IReadOnlyList<LTwinRow> rows, Func<LTwinRow, string> read, Func<LTwinRow, string> group, Action<LTwinRow, string> write, Func<LTwinRow, long> rank)`
 
 Numbers twins by ascending rank instead of list position, so a row keeps its number under any sort or filter.
 Entry lists pass the entry id, which makes the older entry `(1)` in every view.
 Rows tied on rank fall back to list order.
-Names are compared byte for byte, so case and spacing separate two names.
+Names and groups are compared byte for byte, so case and spacing separate two names.

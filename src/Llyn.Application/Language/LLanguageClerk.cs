@@ -132,6 +132,54 @@ public sealed class LLanguageClerk
         return LLanguageFlagResolve(code, cancellation);
     }
 
+    public string? LLanguageFlagFind(string language)
+    {
+        ArgumentNullException.ThrowIfNull(language);
+        return language.Trim().Length == 0 ? null : LEnsignFind(LLanguageClerkLoad(language).LLanguageFlag);
+    }
+
+    public IReadOnlyDictionary<string, string> LVarietyFlagScan(LAccentSheet sheet)
+    {
+        ArgumentNullException.ThrowIfNull(sheet);
+
+        Dictionary<string, string> flags = new(StringComparer.Ordinal);
+        if (!sheet.LAccentSheetFlagged || sheet.LAccentSheetLanguage.Trim().Length == 0)
+        {
+            return flags;
+        }
+
+        IReadOnlyList<LVariety> declared = LLanguageClerkLoad(sheet.LAccentSheetLanguage).LLanguageVarieties;
+        foreach (string variety in sheet.LAccentSheetVarieties)
+        {
+            foreach (LVariety row in declared)
+            {
+                if (string.Equals(row.LVarietyName, variety, StringComparison.Ordinal)
+                    && LEnsignFind(row.LVarietyFlag) is string path)
+                {
+                    flags[variety] = path;
+                    break;
+                }
+            }
+        }
+
+        return flags;
+    }
+
+    private string? LEnsignFind(string? code)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            return null;
+        }
+
+        if (_lLanguageClerkTrail.LTrailRootCheck(code))
+        {
+            return _lLanguageClerkTrail.LTrailPathCheck(code) ? code : null;
+        }
+
+        return _lLanguageClerkVault.LLanguageFlagFind(code);
+    }
+
     private async Task<string?> LLanguageFlagResolve(string? code, CancellationToken cancellation)
     {
         if (string.IsNullOrWhiteSpace(code))

@@ -1,5 +1,5 @@
 # LSettingsPort.cs
-Hash: `f37bcab4f687472e`
+Hash: `f137fee32ce7b52f`
 
 ## `public interface LSettingsPort`
 
@@ -41,10 +41,6 @@ It sweeps leftover drafts and recordings first, then answers the workspace state
 Opens the workspace folder in use through the shell usher.
 Conduct opens it in one call, without reading the path first.
 
-## `IReadOnlyList<string> LEngineGroupFind(IReadOnlyList<(string, IReadOnlyList<string>)> groups, string? text);`
-
-The names of the groups with a key whose interface text reads `text`, by the localization's shared match.
-
 ## `IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language);`
 
 The interface strings of one language, parsed and ready for the resource dictionary.
@@ -65,6 +61,10 @@ The interface text under `key`, or the key itself when none is loaded.
 
 The interface text under `key`, or null when none is loaded, so a caller can tell a missing text.
 
+## `IReadOnlyList<string> LEngineGroupFind(IReadOnlyList<(string, IReadOnlyList<string>)> groups, string? text);`
+
+The names of the groups with a key whose interface text reads `text`, by the localization's shared match.
+
 ## `void LEngineLocalizationSave(string language);`
 
 Persists the chosen interface language, writing only that field so a switch flipped elsewhere survives.
@@ -79,12 +79,6 @@ A settings bulletin follows when the switch changed, so the settings panel rewri
 
 Persists whether an entry's frequency is fetched from the pack's web source.
 The next fill reads the switch, so a flip neither refetches what is stored nor drops it.
-
-## `void LEngineOutpostSave(string text);`
-
-Persists the port the Joplin clipper is looked for on first, from the text the user typed.
-The engine parses it, so every medium hands raw text and shares one rule.
-Text that is not a whole number from 1 to 65535 throws an `LRefusal` with `LRefusalPort`.
 
 ## `bool LEngineMorphologyCheck();`
 

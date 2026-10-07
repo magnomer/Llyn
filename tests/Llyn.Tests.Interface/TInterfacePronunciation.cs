@@ -221,6 +221,9 @@ internal static partial class TInterface
     internal static bool TContourToneCheck(IReadOnlyList<LContour> syllables) =>
         LContour.LContourToneCheck(syllables);
 
+    internal static LContourRole TContourRoleRead(int level) =>
+        LContour.LContourRoleRead(level);
+
     internal static LFrequency TFrequencyCreate(string source, string raw, string? band) =>
         new LFrequency(source, raw, band);
 

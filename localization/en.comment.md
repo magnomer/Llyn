@@ -1,5 +1,5 @@
 # en.json
-Hash: `204ba3f632e70ee9`
+Hash: `3041f2163d2adae0`
 
 The English interface catalog, and the language every launch starts from.
 It is embedded into `Llyn.Infrastructure` and never read from disk.

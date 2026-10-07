@@ -7,7 +7,10 @@ namespace Llyn.Core;
 public static class LTwin
 {
     public static void LTwinNameApply<LTwinRow>(
-        IReadOnlyList<LTwinRow> rows, Func<LTwinRow, string> read, Action<LTwinRow, string> write)
+        IReadOnlyList<LTwinRow> rows,
+        Func<LTwinRow, string> read,
+        Func<LTwinRow, string> group,
+        Action<LTwinRow, string> write)
     {
         ArgumentNullException.ThrowIfNull(rows);
 
@@ -17,12 +20,13 @@ public static class LTwin
             order[index] = index;
         }
 
-        LTwinNameApply(rows, read, write, order);
+        LTwinNameApply(rows, read, group, write, order);
     }
 
     public static void LTwinNameApply<LTwinRow>(
         IReadOnlyList<LTwinRow> rows,
         Func<LTwinRow, string> read,
+        Func<LTwinRow, string> group,
         Action<LTwinRow, string> write,
         Func<LTwinRow, long> rank)
     {
@@ -41,38 +45,41 @@ public static class LTwin
             return result != 0 ? result : one.CompareTo(other);
         });
 
-        LTwinNameApply(rows, read, write, order);
+        LTwinNameApply(rows, read, group, write, order);
     }
 
     private static void LTwinNameApply<LTwinRow>(
         IReadOnlyList<LTwinRow> rows,
         Func<LTwinRow, string> read,
+        Func<LTwinRow, string> group,
         Action<LTwinRow, string> write,
         int[] order)
     {
         ArgumentNullException.ThrowIfNull(read);
+        ArgumentNullException.ThrowIfNull(group);
         ArgumentNullException.ThrowIfNull(write);
 
-        Dictionary<string, int> shared = new(StringComparer.Ordinal);
+        Dictionary<(string, string), int> shared = [];
         foreach (LTwinRow row in rows)
         {
-            string name = read(row);
-            shared[name] = shared.TryGetValue(name, out int seen) ? seen + 1 : 1;
+            (string, string) key = (group(row), read(row));
+            shared[key] = shared.TryGetValue(key, out int seen) ? seen + 1 : 1;
         }
 
-        Dictionary<string, int> taken = new(StringComparer.Ordinal);
+        Dictionary<(string, string), int> taken = [];
         foreach (int index in order)
         {
             LTwinRow row = rows[index];
             string name = read(row);
-            if (shared[name] < 2)
+            (string, string) key = (group(row), name);
+            if (shared[key] < 2)
             {
                 write(row, name);
                 continue;
             }
 
-            int place = taken.TryGetValue(name, out int given) ? given + 1 : 1;
-            taken[name] = place;
+            int place = taken.TryGetValue(key, out int given) ? given + 1 : 1;
+            taken[key] = place;
             write(row, name + " (" + place.ToString(CultureInfo.CurrentCulture) + ")");
         }
     }

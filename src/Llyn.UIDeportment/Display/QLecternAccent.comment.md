@@ -1,5 +1,5 @@
 # QLecternAccent.cs
-Hash: `0acaeb2d18a71c82`
+Hash: `0e98a3c8fc89d64e`
 
 ## `public sealed class QLecternAccent`
 
@@ -15,11 +15,12 @@ The contour box's syllables property, handed in by the page so the driver copies
 
 Builds the half over the display's sound area, whose reads it paints from.
 
-## `public void QLecternAccentIntroduce(UIElement surface, ColumnDefinition lead, Image flag, TextBlock label, TextBlock opener, TextBlock pronunciation, TextBlock closer, ItemsControl accents, DependencyObject contour, DependencyProperty syllables, DependencyProperty scale)`
+## `public void QLecternAccentIntroduce(UIElement surface, ColumnDefinition lead, Image flag, TextBlock label, TextBlock opener, TextBlock pronunciation, TextBlock closer, ItemsControl accents, FrameworkElement contour, DependencyProperty syllables, DependencyProperty scale)`
 
 Holds the pronunciation surface and its parts, and binds the accent list to its rows.
 `syllables` is the contour's own property, set as a value so no veneer type is named here.
 `scale` is the contour's scale property, set once here from Conduct's ready scale.
+`contour` is a framework element, so the theme brushes of its items resolve from it.
 The accent list is attached to `QAccentItem.QAccentItemRefine`, which fills each row.
 
 ## `public void QLecternAccentRefine()`
@@ -40,6 +41,7 @@ It collapses the surface and its label column, empties the rows and clears the f
 ## `private void QLecternAccentRefine(CLecternAccent accent)`
 
 Writes the primary reading in the brackets Conduct chose and sets the contour's tone.
+`QContourInk.QContourInkBuild` turns the contour into items carrying each level's theme brush.
 The surface and its label column collapse when the block has no primary reading.
 Rebuilds the accent rows, each flagged by the block's verdict.
 

@@ -194,6 +194,8 @@ public sealed class TEnsign
             TLanguageFakeAsked++;
             return TLanguageFakeFetch.Task;
         }
+
+        public string? LLanguageFlagFind(string code) => null;
     }
 
     private sealed class TUsherFake : LUsher

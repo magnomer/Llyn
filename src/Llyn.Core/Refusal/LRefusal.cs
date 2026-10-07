@@ -46,8 +46,6 @@ public sealed class LRefusal : Exception
 
     public const string LRefusalPending = "Refusal.WarrantPending";
 
-    public const string LRefusalPort = "Refusal.OutpostPort";
-
     public LRefusal(string reason)
         : base(reason)
     {

@@ -1,5 +1,5 @@
 # TEnsign.cs
-Hash: `8447c7c7fc14f81e`
+Hash: `c9df5c20e784a3b1`
 
 ## `public sealed class TEnsign`
 
@@ -11,7 +11,7 @@ Each cache case builds its own cache over a fake usher, so none touches a disk o
 The unflagged variety case and the blocked flag folder case start an engine on a temporary workspace.
 Two overlapping fills on the fake rig fetch and store a flag once.
 The engine's fill, which the settings outlet forwards to, still answers the languages over a flagged pack.
-In that case the flag folder of the pack is blocked by a file.
+In that case the flag folder of the workspace is blocked by a file.
 That disk failure is answered by the flag loader in Infrastructure, so the outlet only forwards.
 The engine runs one fill at a time, so the second finds the flag already kept.
 The fetch waits on a completion the case sets, so the overlap never depends on timing.
@@ -20,6 +20,7 @@ The fetch waits on a completion the case sets, so the overlap never depends on t
 
 Declares one variety with a flag code, and hands every fetch the one pending task the case completes.
 It counts the fetches, and scans no language, so the engine's start imports nothing.
+Its stored flag find answers none.
 
 ## `private sealed class TUsherFake : LUsher`
 

@@ -55,6 +55,14 @@ internal sealed class LEnsignLoader
         }
     }
 
+    public string? LEnsignFileFind(string code)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(code);
+
+        string path = Path.Combine(_lEnsignRoot, LEnsignFolder, LEnsignCodeNormalize(code) + LEnsignSuffix);
+        return File.Exists(path) ? path : null;
+    }
+
     private static string LEnsignCodeNormalize(string code)
     {
         foreach (char invalid in Path.GetInvalidFileNameChars())

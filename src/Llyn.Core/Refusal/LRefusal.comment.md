@@ -1,5 +1,5 @@
 # LRefusal.cs
-Hash: `b3cce9c782b6cc26`
+Hash: `97ac9729718b70d9`
 
 ## `public sealed class LRefusal : Exception`
 
@@ -44,6 +44,11 @@ Reason key for a source draft opened on a Reference that is not in the workspace
 Reason key for tentative work whose held file is no longer in the drafts folder.
 Another window may have stored or discarded it already.
 
+## `public const string LRefusalStale = "Refusal.DraftStale";`
+
+Reason key for tentative work whose id was raised in a workspace no longer open.
+The id names nothing here, and a write under it would land in the wrong place.
+
 ## `public const string LRefusalCollocation = "Refusal.CollocationNested";`
 
 A Collocation was handed a card to hold inside it.
@@ -54,11 +59,6 @@ The format cannot write such a document either, so the save refuses rather than 
 
 Reason key for a request naming a card, or a parent card, the held draft does not carry.
 An id of zero is one such card, because nothing in a draft is ever addressed by zero.
-
-## `public const string LRefusalStale = "Refusal.DraftStale";`
-
-Reason key for tentative work whose id was raised in a workspace no longer open.
-The id names nothing here, and a write under it would land in the wrong place.
 
 ## `public const string LRefusalItem = "Refusal.ItemMissing";`
 
@@ -116,11 +116,6 @@ Two runs would race over the manifest and the stored token, so the second waits 
 
 Reason key for a connect whose access request Joplin left unanswered past the polling limit.
 The user may simply not have seen the prompt, so they accept it and try again.
-
-## `public const string LRefusalPort = "Refusal.OutpostPort";`
-
-Reason key for a Joplin port the user typed that is not a whole number from 1 to 65535.
-The typed text is the user's to fix, so it reads as a refusal rather than a fault.
 
 ## `public LRefusal(string reason)`
 

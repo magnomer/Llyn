@@ -54,7 +54,10 @@ public sealed class LMarkupClerk
         }
 
         string[] names = LEntryClerkTwin.LTwinRead(
-            entries, entry => entry.LMarkupEntryHeadword, entry => entry.LMarkupEntryLine);
+            entries,
+            entry => entry.LMarkupEntryHeadword,
+            entry => entry.LMarkupEntryLanguage,
+            entry => entry.LMarkupEntryLine);
         for (int index = 0; index < entries.Count; index++)
         {
             entries[index] = entries[index] with { LMarkupEntryName = names[index] };

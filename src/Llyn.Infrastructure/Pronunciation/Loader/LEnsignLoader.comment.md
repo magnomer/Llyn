@@ -1,5 +1,5 @@
 # LEnsignLoader.cs
-Hash: `bbe110761a561bde`
+Hash: `8fdf4e9ef84e2abd`
 
 ## `internal sealed class LEnsignLoader`
 
@@ -22,6 +22,11 @@ It returns `null` as well when the flag folder or file cannot be made, read or w
 The caller then draws the name without its flag, as for a failed download.
 Any other fault still reaches the caller.
 A cancellation the caller requested still propagates.
+
+## `public string? LEnsignFileFind(string code)`
+
+The path `LEnsignFileRead` would answer for `code`, when that file already exists, else `null`.
+It creates no folder and downloads nothing.
 
 ## `private static string LEnsignCodeNormalize(string code)`
 

@@ -1,5 +1,5 @@
 # PContour.cs
-Hash: `d66cf91e6edcbf88`
+Hash: `d1846025b442df2b`
 
 ## `public sealed class PContour : FrameworkElement`
 
@@ -7,7 +7,7 @@ The tone contour box drawn under an IPA reading of a tonal language.
 It draws itself, one cell per syllable, on one guide line per level of the scale it is handed.
 Each cell carries the syllable's pitch line and the syllable as written beneath it.
 A level tone is a flat line and a contour tone bends at every level the marks spell.
-Every level owns a theme colour.
+Every level arrives with its theme brush, resolved by the Q driver from the role Core picked.
 A line between two levels fades from one colour to the other.
 The box hides itself while the language is not tonal or the reading carries no tone.
 The cells are sized so a contour is read at a glance, never as a glyph.
@@ -21,7 +21,7 @@ Conduct answers none while the language is not tonal or the reading carries no t
 
 The box starts collapsed, so it takes no room before any syllable arrives.
 It never takes the pointer, so a press lands on what lies beneath it.
-Every brush and the font are theme references, so a theme change repaints the box.
+Each brush of its own and the font are theme references, so a theme change repaints the box.
 
 ## `public IReadOnlyList<QContourItem> PContourSyllables`
 
@@ -37,11 +37,6 @@ The pitch levels the box draws a guide line for, highest first, set by the drive
 The levels of the scale, highest first.
 The first level is the top line and each next level lies one gap below.
 An empty scale draws nothing.
-
-## `public static readonly DependencyProperty PContourTopProperty`
-
-The brush of the first level of the scale, the highest pitch, read from the theme.
-`High`, `Mid` and `Low` follow it down the scale's order, and `Bottom` takes every lower level.
 
 ## `public static readonly DependencyProperty PContourGuideProperty`
 
@@ -87,10 +82,10 @@ The height the guide lines span, one gap per step of the scale.
 Shows the box while it holds syllables, and hides it otherwise.
 It then asks for a new measure and a new drawing.
 
-## `private Pen PContourLineBuild(IReadOnlyList<int> levels, IReadOnlyList<Point> points)`
+## `private Pen PContourLineBuild(IReadOnlyList<Brush> inks, IReadOnlyList<Point> points)`
 
 A pitch line is stroked with a gradient laid along the cell in absolute coordinates.
-Each turning point pins its level's colour at its own horizontal position.
+Each turning point pins its brush's colour at its own horizontal position.
 So the colour between two points is the mix of their levels, and a level tone is one solid colour.
 
 ## `private IReadOnlyList<Point> PContourPointResolve(IReadOnlyList<int> levels, double left)`
@@ -106,4 +101,8 @@ The height of a level's line, one gap per step below the top level of the scale.
 
 How many levels of the scale lie above this one, read from the scale's own order.
 The box assumes no direction and no range of levels, so a scale in another order draws as handed.
-The line height and the brush both follow this depth.
+The line height follows this depth.
+
+## `private static Color PContourColorRead(Brush ink)`
+
+The solid colour of a level's brush, for a gradient stop.

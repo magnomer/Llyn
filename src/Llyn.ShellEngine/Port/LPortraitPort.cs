@@ -22,7 +22,9 @@ public interface LPortraitPort
             IReadOnlyList<IReadOnlyList<LMarkupTarget>>,
             IReadOnlyList<LMarkupIntake>?> declare);
 
-    Task<LReceipt> LEngineCourierSend(LPortraitLabel label, CancellationToken cancellation);
+    bool LEngineCourierCheck();
+
+    Task<LReceipt> LEngineCourierSend(Func<string, string> lookup, CancellationToken cancellation);
 
     Task LEngineCourierAttach(CancellationToken cancellation);
 

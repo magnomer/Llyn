@@ -1,5 +1,5 @@
 # QSCoinage.cs
-Hash: `3733e3d9e93dd6df`
+Hash: `24970800a080e78f`
 
 ## `internal sealed class QSCoinage`
 
@@ -10,6 +10,8 @@ The window is the veneer's `PSCoinage` page, pulled fresh by contract ID and hel
 ## `private QSCoinage(Window owner, string message)`
 
 Pulls the window, sets its owner and subscribes the field and the mint button.
+A dialog is its own window, outside the main window's look reach.
+So it attaches the look to itself, or its buttons show no label and no fill.
 
 ## `private TextBlock QSCoinageMessage`
 

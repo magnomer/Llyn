@@ -149,10 +149,13 @@ internal static class QLook
         while (pending.Count > 0)
         {
             DependencyObject node = pending.Dequeue();
-            if (node is ContentPresenter { ContentTemplate: not null } presenter)
+            if (node is ContentPresenter presenter
+                && (presenter.ContentTemplate
+                    ?? presenter.ContentTemplateSelector?.SelectTemplate(presenter.Content, presenter))
+                    is DataTemplate template)
             {
                 presenter.ApplyTemplate();
-                return presenter.ContentTemplate.FindName(name, presenter) as QLookPart;
+                return template.FindName(name, presenter) as QLookPart;
             }
 
             for (int index = 0; index < VisualTreeHelper.GetChildrenCount(node); index++)

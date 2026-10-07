@@ -148,6 +148,20 @@ public sealed class TEngineVista
     }
 
     [Fact]
+    public void EntryFind_HeadwordAcrossLanguages_KeepsBareNames()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        TVistaEntryCreate(engine, "床", "Mandarin");
+        TVistaEntryCreate(engine, "床", "Classical Chinese");
+
+        LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderRecent);
+        IReadOnlyList<LVistaRow> rows = engine.TEngineEntryFind(vista);
+
+        Assert.Equal(["床", "床"], rows.Select(row => row.LVistaRowName));
+    }
+
+    [Fact]
     public void EntryFind_VistaChosen_MarksRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -1,11 +1,12 @@
 # TTimbre.cs
-Hash: `8a1aca988919aaa0`
+Hash: `583c230359c7cead`
 
 ## `public sealed class TTimbre`
 
 Covers the sound facts an editor reads for its held draft, over a fake phonology port or a workspace.
 A phonemic respelling needs a respelling pack first, and a silent pack is not spoken.
 An empty desk asks the pack for no language.
+Its top level reads the top theme brush key, chosen in Conduct from the Core colour role.
 The contour read draws only a tonal pack's toned reading, and its scale runs from five down to one.
 Levels off the scale drop and the rest keep order and repeats, and a syllable left with none is untoned.
 No syllables from the pack read none.

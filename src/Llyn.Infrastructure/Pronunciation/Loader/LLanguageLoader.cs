@@ -55,6 +55,11 @@ public sealed class LLanguageLoader : LLanguageVault
         return _lLanguageLoaderEnsign.LEnsignFileRead(code, cancellation);
     }
 
+    public string? LLanguageFlagFind(string code)
+    {
+        return _lLanguageLoaderEnsign.LEnsignFileFind(code);
+    }
+
     public static IReadOnlyList<string> LLanguageLoaderScan()
     {
         string root = Path.Combine(AppContext.BaseDirectory, LPackFile.LPackFileFolder);

@@ -12,6 +12,7 @@ internal sealed class QSLeave
     {
         _qsLeaveSurface = QContract.QContractSheetFind<Window>("PSLeave");
         _qsLeaveSurface.Owner = owner;
+        QLook.QLookStyleAttach(_qsLeaveSurface);
         QSLeaveStore.Click += QSLeaveStoreObserve;
         QSLeaveDiscard.Click += QSLeaveDiscardObserve;
         QSLeaveStay.Click += QSLeaveStayObserve;

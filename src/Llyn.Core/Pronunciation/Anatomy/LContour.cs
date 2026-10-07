@@ -15,6 +15,8 @@ public sealed record LContour(string LContourText, IReadOnlyList<int> LContourLe
 
     public bool LContourToned => LContourLevels.Count > 0;
 
+    public IReadOnlyList<LContourRole> LContourRoles => [.. LContourLevels.Select(LContourRoleRead)];
+
 
     private const string LContourSuperscript = "⁰¹²³⁴⁵⁶⁷⁸⁹";
 
@@ -71,6 +73,18 @@ public sealed record LContour(string LContourText, IReadOnlyList<int> LContourLe
         }
 
         return false;
+    }
+
+    public static LContourRole LContourRoleRead(int level)
+    {
+        return LContourScale.TakeWhile(step => step != level).Count() switch
+        {
+            0 => LContourRole.LContourRoleTop,
+            1 => LContourRole.LContourRoleHigh,
+            2 => LContourRole.LContourRoleMid,
+            3 => LContourRole.LContourRoleLow,
+            _ => LContourRole.LContourRoleBottom,
+        };
     }
 
     private static void LContourAppend(List<LContour> syllables, StringBuilder segments, StringBuilder marks)

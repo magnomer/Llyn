@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
@@ -14,6 +15,14 @@ public sealed class LLiverySheet : LLivery
 
     private const long LLiveryImageCeiling = 24L * 1024L * 1024L;
 
+    internal const string LLiveryAudioHead = "<audio controls class=\"llyn-audio\" src=\"";
+
+    private const long LLiveryAudioCeiling = 32L * 1024L * 1024L;
+
+    internal const string LLiveryVideoHead = "<video controls class=\"llyn-video\" src=\"";
+
+    private const long LLiveryVideoCeiling = 128L * 1024L * 1024L;
+
     private readonly LTheme _lLiveryTheme;
 
     public LLiverySheet(LTheme theme)
@@ -24,25 +33,71 @@ public sealed class LLiverySheet : LLivery
 
     public string LLiveryRead()
     {
-        string css = LSheetStyle.LSheetStyleFormat(_lLiveryTheme, ".llyn")
+        string css = LLiveryStyle.LLiveryStyleFormat(_lLiveryTheme)
             .Replace("`", string.Empty, StringComparison.Ordinal);
 
         return "Llyn writes this note and overwrites any edit made to it here.\n\n```css\n" + css + "\n```\n";
     }
 
-    public LLiveryNote LLiveryFormat(LPortraitPage page, string style)
+    public LLiveryNote LLiveryFormat(
+        LLiveryPage page,
+        string style,
+        Func<long, string> note,
+        Func<string, string, string, string> link,
+        Func<string, string> lookup)
     {
         ArgumentNullException.ThrowIfNull(page);
+        ArgumentNullException.ThrowIfNull(note);
+        ArgumentNullException.ThrowIfNull(link);
+        ArgumentNullException.ThrowIfNull(lookup);
 
         StringBuilder sheet = new StringBuilder();
-        sheet.Append(LLiveryMarkFormat(style)).Append("\n<div class=\"llyn\">\n");
-        LSheet.LSheetBodyAppend(sheet, page);
-        sheet.Append("</div>");
+        sheet.Append(LLiveryMarkFormat(style)).Append("\n<div class=\"llyn\">\n\n");
+        LLiveryHeader.LLiveryHeaderAppend(sheet, page, lookup);
+        LLiverySound.LLiverySoundAppend(sheet, page, lookup, _lLiveryTheme);
+        LLiveryHeader.LLiveryChipAppend(sheet, page, lookup);
+        LLiveryRime.LLiveryRimeAppend(sheet, page, link, lookup);
+        LLiveryScript.LLiveryScriptAppend(sheet, page, lookup);
+        LLiveryCard.LLiveryCardAppend(sheet, page, note, lookup);
+        LLiveryEtymology.LLiveryEtymologyAppend(sheet, page, note, lookup);
+        sheet.Append("</div>\n");
 
         Dictionary<string, LParcel> parcels = new Dictionary<string, LParcel>(StringComparer.Ordinal);
         string body = LLiveryImageApply(sheet.ToString(), parcels);
+        body = LLiveryMediaApply(body, parcels, LLiveryAudioHead, "</audio>", LLiveryAudioLoad);
+        body = LLiveryMediaApply(body, parcels, LLiveryVideoHead, "</video>", LLiveryVideoLoad);
 
-        return new LLiveryNote(LLiveryLineApply(body), [.. parcels.Values]);
+        return new LLiveryNote(body, [.. parcels.Values]);
+    }
+
+    public LLiveryNote LLiveryFormat(
+        LLiveryStem stem, string style, Func<long, string> note, Func<string, string> lookup)
+    {
+        ArgumentNullException.ThrowIfNull(stem);
+        ArgumentNullException.ThrowIfNull(note);
+        ArgumentNullException.ThrowIfNull(lookup);
+
+        return LLiverySheetBuild(style, sheet => LLiveryXiesheng.LLiveryXieshengAppend(sheet, stem, note, lookup));
+    }
+
+    public LLiveryNote LLiveryFormat(
+        LLiveryDiwei diwei, string style, Func<long, string> note, Func<string, string> lookup)
+    {
+        ArgumentNullException.ThrowIfNull(diwei);
+        ArgumentNullException.ThrowIfNull(note);
+        ArgumentNullException.ThrowIfNull(lookup);
+
+        return LLiverySheetBuild(style, sheet => LLiveryYunjing.LLiveryYunjingAppend(sheet, diwei, note, lookup));
+    }
+
+    public LLiveryNote LLiveryFormat(
+        LLiveryLanguage language, string style, Func<long, string> note, Func<string, string> lookup)
+    {
+        ArgumentNullException.ThrowIfNull(language);
+        ArgumentNullException.ThrowIfNull(note);
+        ArgumentNullException.ThrowIfNull(lookup);
+
+        return LLiverySheetBuild(style, sheet => LLiveryPhonology.LLiveryPhonologyAppend(sheet, language, note));
     }
 
     public string LLiveryMarkFormat(string style)
@@ -80,6 +135,16 @@ public sealed class LLiverySheet : LLivery
         }
 
         return Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(text.ToString())));
+    }
+
+    private LLiveryNote LLiverySheetBuild(string style, Action<StringBuilder> append)
+    {
+        StringBuilder sheet = new StringBuilder();
+        sheet.Append(LLiveryMarkFormat(style)).Append("\n<div class=\"llyn\">\n\n");
+        append(sheet);
+        sheet.Append("</div>\n");
+
+        return new LLiveryNote(sheet.ToString(), []);
     }
 
     private static void LLiveryStyleCheck(string style)
@@ -124,7 +189,7 @@ public sealed class LLiverySheet : LLivery
                         break;
                     }
 
-                    note.Append(body, done, start - done).Append("<span class=\"blank\"></span>");
+                    note.Append(body, done, start - done).Append("<span class=\"llyn-blank\"></span>");
                     done = end + 1;
                     start = body.IndexOf(LLiveryImageHead, done, StringComparison.Ordinal);
                     continue;
@@ -143,27 +208,95 @@ public sealed class LLiverySheet : LLivery
         return note.Append(body, done, body.Length - done).ToString();
     }
 
-    private static string LLiveryLineApply(string body)
+    private static string LLiveryMediaApply(
+        string body, Dictionary<string, LParcel> parcels, string head, string tail, Func<string, LParcel?> load)
     {
-        string flat = body.Replace("\r\n", "\n", StringComparison.Ordinal).Replace('\r', '\n');
-        StringBuilder note = new StringBuilder(flat.Length);
+        StringBuilder note = new StringBuilder(body.Length);
+        int done = 0;
+        int start = body.IndexOf(head, StringComparison.Ordinal);
 
-        foreach (string line in flat.Split('\n'))
+        while (start >= 0)
         {
-            if (string.IsNullOrWhiteSpace(line))
+            int open = start + head.Length;
+            int close = body.IndexOf('"', open);
+            int end = close < 0 ? -1 : body.IndexOf(tail, close, StringComparison.Ordinal);
+            if (end < 0)
             {
-                note.Append("&#10;");
-                continue;
+                break;
             }
 
-            if (note.Length > 0)
+            string path = WebUtility.HtmlDecode(body.Substring(open, close - open));
+            if (load(path) is LParcel parcel)
             {
-                note.Append('\n');
+                parcels.TryAdd(parcel.LParcelId, parcel);
+                note.Append(body, done, start - done)
+                    .Append('[').Append(parcel.LParcelTitle).Append("](:/").Append(parcel.LParcelId).Append(')');
+            }
+            else
+            {
+                int lead = start > 0 && body[start - 1] == ' ' ? start - 1 : start;
+                note.Append(body, done, lead - done);
             }
 
-            note.Append(line);
+            done = end + tail.Length;
+
+            start = body.IndexOf(head, end, StringComparison.Ordinal);
         }
 
-        return note.Append('\n').ToString();
+        return note.Append(body, done, body.Length - done).ToString();
+    }
+
+    private static LParcel? LLiveryAudioLoad(string path)
+    {
+        string suffix = Path.GetExtension(path).ToLowerInvariant();
+        string media = suffix switch
+        {
+            ".mp3" => "audio/mpeg",
+            ".wav" => "audio/wav",
+            ".ogg" => "audio/ogg",
+            ".m4a" => "audio/mp4",
+            ".flac" => "audio/flac",
+            ".opus" => "audio/opus",
+            _ => string.Empty,
+        };
+
+        return LLiveryFileLoad(path, media, "audio" + suffix, LLiveryAudioCeiling);
+    }
+
+    private static LParcel? LLiveryVideoLoad(string path)
+    {
+        string suffix = Path.GetExtension(path).ToLowerInvariant();
+        string media = suffix switch
+        {
+            ".mp4" or ".m4v" => "video/mp4",
+            ".webm" => "video/webm",
+            ".ogv" => "video/ogg",
+            ".mov" => "video/quicktime",
+            _ => string.Empty,
+        };
+
+        return LLiveryFileLoad(path, media, "video" + suffix, LLiveryVideoCeiling);
+    }
+
+    private static LParcel? LLiveryFileLoad(string path, string media, string title, long ceiling)
+    {
+        try
+        {
+            if (media.Length == 0
+                || !Path.IsPathFullyQualified(path)
+                || !File.Exists(path)
+                || new FileInfo(path).Length > ceiling)
+            {
+                return null;
+            }
+
+            byte[] data = File.ReadAllBytes(path);
+            string id = Convert.ToHexStringLower(SHA256.HashData(data))[..32];
+            return new LParcel(id, title, media, data);
+        }
+        catch (Exception failure) when (failure is IOException or UnauthorizedAccessException)
+        {
+            return null;
+        }
     }
 }

@@ -1,5 +1,5 @@
 # TInterfacePronunciation.cs
-Hash: `3ec300c368adb1ce`
+Hash: `7fcc67aa2f3671fe`
 
 ## `internal static partial class TInterface`
 
@@ -84,6 +84,10 @@ The rank, the spare stars and the ranked flag stay the gauge's own reads of that
 ## `internal static IReadOnlyList<string> TFrequencyScaleRead()`
 
 Relays `LFrequency.LFrequencyScale`, so a fact knows how many stars a full chip row holds.
+
+## `internal static LContourRole TContourRoleRead(int level)`
+
+Relays `LContour.LContourRoleRead`, the colour role pick of one contour level.
 
 ## `internal static LContour TContourCreate(string text, IReadOnlyList<int> levels)`
 

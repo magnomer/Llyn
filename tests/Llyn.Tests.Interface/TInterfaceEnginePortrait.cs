@@ -29,4 +29,10 @@ internal static class TInterfaceEnginePortrait
     internal static Task TEnginePortraitPrint(
         this LEngine engine, long id, LOwner owner, LPortraitLegend legend, LPressTicket ticket) =>
         engine.LEnginePortrait.LEnginePortraitPrint(id, owner, legend, ticket);
+
+    internal static LLiveryPage? TLiveryRead(this LEngine engine, long entryId) =>
+        engine.LEngineLivery.LEngineLiveryRead(entryId);
+
+    internal static LLiveryLanguage TLiveryRead(this LEngine engine, string language) =>
+        engine.LEngineLivery.LEngineLiveryRead(language, static key => key);
 }

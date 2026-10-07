@@ -13,4 +13,6 @@ public interface LLanguageVault
     bool LLanguageNameValidate(string? language);
 
     Task<string?> LLanguageFlagRead(string code, CancellationToken cancellation);
+
+    string? LLanguageFlagFind(string code);
 }

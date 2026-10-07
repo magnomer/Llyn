@@ -1,5 +1,5 @@
 # QLook.cs
-Hash: `37588513698d8cdb`
+Hash: `59a1d420c6eedc68`
 
 ## `internal static class QLook`
 
@@ -74,6 +74,8 @@ It also marks the view for the reach, so the state handler sees every element of
 
 Finds a named part in a control's template, else in the item template of the first presenter below it.
 The template is applied first, so a fill reaches its parts before the first layout.
+A presenter fed by a template selector keeps its own template empty.
+So the selector is asked for the template it chose, or a selected chip would never find its parts.
 
 ## `private static void QLookStateRefine(object? sender, EventArgs e)`
 

@@ -1,5 +1,5 @@
 # LWorkspaceClerk.cs
-Hash: `24584eaf703a302d`
+Hash: `97e9012a19bd2a32`
 
 ## `public sealed class LWorkspaceClerk`
 
@@ -30,13 +30,6 @@ Writes the settings.
 A vault fault is thrown on to the caller unrecorded.
 The caller restores what it held and lets the gate show the failure.
 The gate's failure policy records the fault, so it is recorded once.
-
-## `public int LWorkspaceOutpostParse(string text)`
-
-Reads the port the Joplin clipper is looked for on first, from the text the user typed.
-The text is trimmed and read with the invariant culture, so the parse never follows the locale.
-Anything not a whole number from 1 to 65535 throws an `LRefusal` with `LRefusalPort`.
-No clipper could answer on such a port.
 
 ## `public void LWorkspaceFallbackSave(LSettings settings)`
 
@@ -118,4 +111,5 @@ One entry that fails is recorded and skipped, so one bad row never blocks the wo
 ## `private void LRespellingUpdate(LEntry entry)`
 
 Fills the respelling of every pronunciation that has a reading but no respelling.
-Fills the respelling and anatomy of every reflex the same way and writes the list back only when something changed.
+Fills a missing reflex respelling the same way, and recomputes the anatomy of every reflex with text.
+The reflex list is written back only when something changed, so a settled entry costs no write.

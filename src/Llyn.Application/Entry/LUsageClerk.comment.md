@@ -1,5 +1,5 @@
 # LUsageClerk.cs
-Hash: `7498bda346e43679`
+Hash: `5ad99f6fda50ce89`
 
 ## `public sealed class LUsageClerk`
 
@@ -36,7 +36,7 @@ Nothing stores that trace, so no row can contradict the chain it is read from.
 
 ## `public static IReadOnlyList<LUsage> LUsageClerkResolve(IReadOnlyList<LUsage> rows, LEntryVault entries, bool epithet)`
 
-Twins the headwords and fills each row's epithet when `epithet` asks for it.
+Twins the headwords within each language and fills each row's epithet when `epithet` asks for it.
 The translation clerk names its incoming rows through it too.
 
 ## `private static ArgumentOutOfRangeException LUsageOwnerRaise(LOwner owner)`

@@ -1,5 +1,5 @@
 # CSounding.cs
-Hash: `96c2e6b66133345c`
+Hash: `1b401a0253916596`
 
 ## `public sealed class CSounding`
 
@@ -150,8 +150,7 @@ The editor's contour and the reading view's block share it.
 
 Maps the contour syllables into ready ones over `scale`.
 It takes the scale as a parameter, so a test can feed levels the static scale never meets.
-It drops every level outside `scale`, since the drawing has no guide line for it.
-A toned syllable left with no level is marked untoned, so a drawn pitch line always has a point.
+Each syllable is handed whole to `CContourInk.CContourInkBuild`, which keeps the levels and chooses their keys.
 
 ## `internal static IReadOnlyList<CTranscriptionDraft> CSoundingTranscriptionRead(IReadOnlyList<LTranscriptionDraft> transcriptions)`
 

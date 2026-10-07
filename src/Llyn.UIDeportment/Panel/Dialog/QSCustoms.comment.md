@@ -1,5 +1,5 @@
 # QSCustoms.cs
-Hash: `ac7464330851ec94`
+Hash: `f46c3aec793142f3`
 
 ## `internal sealed class QSCustoms`
 
@@ -19,6 +19,8 @@ The surface is handed no mode value, so the pick is read back by the row's contr
 Pulls the window over the host, lists the gate's entries and subscribes Accept and Cancel.
 Each row carries its entry's ready target ids, so the window finds nothing itself.
 Accept starts lit only when the gate finds every row ready.
+A dialog is its own window, outside the main window's look reach.
+So it attaches the look to itself, or its buttons show no label and no fill.
 
 ## `private ItemsControl QSCustomsList`
 
@@ -35,6 +37,7 @@ Shows the omissions the import reported on the window's second face.
 Each omission arrives as ready line and text, and Conduct asks only when one exists.
 The window hands its list a line and text pair of its own, so no Conduct record reaches the surface.
 The declaration's default and cancel keys are released so Close answers both.
+It attaches the look to its own window, like the constructor.
 
 ## `private void QSCustomsRowRefine(FrameworkElement container, object item, string? _)`
 

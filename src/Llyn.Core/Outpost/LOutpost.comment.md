@@ -1,5 +1,5 @@
 # LOutpost.cs
-Hash: `e4258bb9879e5c14`
+Hash: `39a63f3599c3707c`
 
 ## `public interface LOutpost`
 
@@ -28,10 +28,12 @@ The user must accept that request inside Joplin before any token exists.
 Polls the ticket from `LOutpostWarrantStart` for the user's decision.
 The token arrives only in an accepted answer.
 
-## `Task LOutpostFolderSave(int port, string token, string id, string title, CancellationToken cancellation);`
+## `Task LOutpostFolderSave(int port, string token, string id, string parent, string title, CancellationToken cancellation);`
 
-Creates or updates the notebook with that fixed id.
+Creates or updates the notebook with that fixed id, placed under the notebook `parent`.
+An empty `parent` places it at the top level.
 A fixed id lets every push land in the same notebook without searching by title.
+The save also moves the notebook back under `parent` if the user moved it in Joplin.
 
 ## `Task LOutpostNoteSave(int port, string token, LOutpostNote note, CancellationToken cancellation);`
 
@@ -46,10 +48,10 @@ The body Joplin holds for that note, but only while it sits untrashed in `folder
 It answers null for a missing, moved, renamed or trashed note, so the caller sends it again.
 That lets a push repair edits made inside Joplin, or a fresh Joplin profile.
 
-## `Task<bool> LOutpostNoteRemove(int port, string token, string id, string folder, string mark, CancellationToken cancellation);`
+## `Task<bool> LOutpostNoteRemove(int port, string token, string id, IReadOnlySet<string> folders, string mark, CancellationToken cancellation);`
 
 Moves the note to Joplin's trash rather than deleting it.
-It trashes only a note proven to be Llyn's, untrashed in `folder` with a body starting with `mark`.
+It trashes only a note proven to be Llyn's, untrashed in one of `folders` with a body starting with `mark`.
 Llyn must never act on a Joplin item it did not create.
 It answers true only when it trashed, so the caller counts nothing else.
 The user can still recover a note whose entry was removed by mistake.

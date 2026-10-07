@@ -1,5 +1,5 @@
 # LEngineStaff.cs
-Hash: `be5ae33d2207199c`
+Hash: `3fb43d45b8043e17`
 
 ## `internal sealed record LEngineStaff(...)`
 
@@ -54,5 +54,6 @@ Each facade reads its concern from this record.
 Builds the staff in dependency order over one rig.
 Fetch clerks receive the gate and the bulletin raiser supplied by the engine.
 The courier records its failures through the workspace clerk, so a failed push leaves a trace.
+The courier takes no portrait clerk, since `LLiveryFacade` hands it each page at send time.
 The frequency and lacuna fetches also receive the settings reader.
 The identity issuer receives the stale ids, so the new workspace never issues one a tenure still holds.

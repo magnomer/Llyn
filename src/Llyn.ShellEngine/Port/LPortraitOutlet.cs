@@ -33,8 +33,10 @@ public sealed class LPortraitOutlet : LPortraitPort
             IReadOnlyList<LMarkupIntake>?> declare) =>
         _lPortraitOutletEngine.LEngineMarkup.LEngineMarkupStart(path, declare);
 
-    public Task<LReceipt> LEngineCourierSend(LPortraitLabel label, CancellationToken cancellation) =>
-        _lPortraitOutletEngine.LEngineCourier.LEngineCourierSend(label, cancellation);
+    public bool LEngineCourierCheck() => _lPortraitOutletEngine.LEngineCourier.LEngineCourierCheck();
+
+    public Task<LReceipt> LEngineCourierSend(Func<string, string> lookup, CancellationToken cancellation) =>
+        _lPortraitOutletEngine.LEngineCourier.LEngineCourierSend(lookup, cancellation);
 
     public Task LEngineCourierAttach(CancellationToken cancellation) =>
         _lPortraitOutletEngine.LEngineCourier.LEngineCourierAttach(cancellation);

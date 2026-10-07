@@ -1,5 +1,5 @@
 # LVistaFacade.cs
-Hash: `2459c471ed23ff49`
+Hash: `d1115a486dbbad74`
 
 ## `internal sealed class LVistaFacade`
 
@@ -61,6 +61,7 @@ A missing vista, or a parent subject that reaches no entries, answers no rows.
 Turns entries in their listed order into rows ready to show: twin name, epithet and chosen mark.
 An entry with no epithet carries an empty one, so no reader of a row falls back on its own.
 Twins are numbered by entry id, so the older entry is `(1)` in every view.
+Only entries of one language are twins.
 The epithets come from one scan, so a long list costs one statement rather than one session per row.
 The chosen row is the one whose id equals `chosen`.
 Every catalog of entries builds its rows here, so no panel numbers twins or reads epithets itself.
@@ -74,6 +75,7 @@ The labels made distinct in their given order, numbered where two share a name, 
 
 The twin name of each entry, by position, numbered by entry id, through `LEntryClerkTwin`.
 The generic overload and the name read forward the same way for the catalog parts that still call them.
+Those rows carry no language, so the generic overload passes one empty group for all.
 
 ## `private IReadOnlyDictionary<long, string> LEngineEpithetScan(IReadOnlyList<LEntry> entries)`
 

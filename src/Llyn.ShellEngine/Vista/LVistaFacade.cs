@@ -147,7 +147,7 @@ internal sealed class LVistaFacade
     internal static string[] LEngineTwinRead<LEngineRow>(
         IReadOnlyList<LEngineRow> rows, Func<LEngineRow, string> name, Func<LEngineRow, long> id)
     {
-        return LEntryClerkTwin.LTwinRead(rows, name, id);
+        return LEntryClerkTwin.LTwinRead(rows, name, static _ => string.Empty, id);
     }
 
     internal static string LEngineNameRead(LStateValue value, string unknown, string fallback)

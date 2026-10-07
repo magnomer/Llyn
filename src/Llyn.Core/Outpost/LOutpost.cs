@@ -12,7 +12,8 @@ public interface LOutpost
 
     Task<LWarrantAnswer> LOutpostWarrantCheck(int port, string ticket, CancellationToken cancellation);
 
-    Task LOutpostFolderSave(int port, string token, string id, string title, CancellationToken cancellation);
+    Task LOutpostFolderSave(
+        int port, string token, string id, string parent, string title, CancellationToken cancellation);
 
     Task LOutpostNoteSave(int port, string token, LOutpostNote note, CancellationToken cancellation);
 
@@ -20,7 +21,7 @@ public interface LOutpost
         int port, string token, string id, string folder, string title, CancellationToken cancellation);
 
     Task<bool> LOutpostNoteRemove(
-        int port, string token, string id, string folder, string mark, CancellationToken cancellation);
+        int port, string token, string id, IReadOnlySet<string> folders, string mark, CancellationToken cancellation);
 
     Task LOutpostTagSave(
         int port, string token, string id, IReadOnlyList<string> tags, CancellationToken cancellation);

@@ -1,16 +1,23 @@
 # QEstablishment.cs
-Hash: `815cc79e3ddb3125`
+Hash: `1df74acc85733638`
 
 ## `internal sealed class QEstablishment`
 
 Drives the status bar along the foot of the window.
-Its left says whether the window holds unsaved work, and its right says how big the workspace is.
+Its left end holds the Joplin control, which `QCourier` drives.
+After it, the bar says whether the window holds unsaved work, and its right says how big the workspace is.
 It holds nothing of its own and prints what the engine answers.
 The bar itself is the veneer's `PEstablishment` page, which the window places.
 
 ## `internal QEstablishment(FrameworkElement surface)`
 
 Takes the bar the window pulled under the contract ID `PEstablishment`.
+Builds the Joplin driver over the same bar, so the window keeps one driver for it.
+
+## `private readonly QCourier _qEstablishmentCourier;`
+
+The Joplin driver at the bar's left end.
+It paints its own part from its own courier, so the status read never carries Joplin state.
 
 ## `private Action _qEstablishmentRelease = () => { };`
 
@@ -27,6 +34,7 @@ Subscribes the bar to `CWorkspaceEstablishmentChanged`, which the workspace rais
 So a change made anywhere reaches the bar without any panel telling it.
 The detach is kept for `QEstablishmentClose`.
 The observer runs on the window's thread, which is the bar's thread too.
+The Joplin driver is introduced last, still before the atelier opens, so its courier hears the first open.
 
 ## `internal void QEstablishmentClose()`
 

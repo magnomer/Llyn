@@ -1,5 +1,5 @@
 # CLedger.cs
-Hash: `48945d5042de3de2`
+Hash: `0cd9797f49ac5407`
 
 ## `public sealed class CLedger`
 
@@ -14,8 +14,6 @@ How many online lookups the Web page counts against, the frequency and the morph
 ## `private static readonly (string, string[])[] CLedgerPages =`
 
 The settings pages in the order a view lists them, each with the keys its search also reads.
-The Web page carries the Joplin group's heading, helper, port label and both button labels.
-So a search for Joplin, its port or either action finds it.
 
 ## `private string? _cLedgerWanted;`
 
@@ -64,14 +62,6 @@ The ledger is then raised again, so the driver repaints from the saved settings.
 Stores whether the frequency lookup is on.
 A failed save is shown through `envoy` as `Settings.SaveFailed`.
 The ledger is then raised again, so the driver repaints from the saved settings.
-
-## `public void CLedgerOutpostSave(string text, CEnvoy envoy)`
-
-Stores the Joplin port from the raw text the user typed.
-The engine parses and bounds it, so Conduct holds no data rule.
-A refused or failed save is shown through `envoy` as `Settings.SaveFailed`, with the refusal's own reason.
-The ledger is then raised again, so the driver repaints the stored port over the rejected text.
-A successful save raises the ledger too, so the field shows the stored port even when unchanged.
 
 ## `public void CLedgerMorphologySave(bool morphology, CEnvoy envoy)`
 
@@ -137,18 +127,7 @@ The pages the kept search shows ride along, so a settings change keeps the catal
 
 ## `private CSettings CLedgerSettingsRead()`
 
-Copies the engine's settings, with its count of online lookups and the Joplin port, into the Conduct shape.
-The port is formatted by `LLedgerOutpostFormat`.
-
-## `public string CLedgerOutpostRead()`
-
-The stored Joplin port, formatted by `LLedgerOutpostFormat` as the ledger state carries it.
-A driver reverts its field from it, so it keeps no copy of the port.
-
-## `private static string LLedgerOutpostFormat(LSettings settings)`
-
-The one map from the stored port to its text, which `CLedgerSettingsRead` and `CLedgerOutpostRead` share.
-It uses the invariant culture, so the field never shows a grouping separator.
+Copies the engine's settings, with its count of online lookups, into the Conduct shape.
 
 ## `private string CLedgerMetaRead(string child, CSettings settings)`
 

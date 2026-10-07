@@ -60,6 +60,7 @@ public sealed class TTimbre
         CContour syllable = Assert.Single(syllables);
         Assert.Equal("ma⁵⁵", syllable.CContourText);
         Assert.Equal([5, 5], syllable.CContourLevels);
+        Assert.Equal(["Theme.Contour.Top", "Theme.Contour.Top"], syllable.CContourKeys);
         Assert.True(syllable.CContourToned);
         Assert.Equal([string.Empty], asked);
     }

@@ -1,5 +1,5 @@
 # PSettings.xaml
-Hash: `eee0c27cfb1d2e53`
+Hash: `7ff2b5b41c42cce6`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -28,20 +28,16 @@ A page and its rules run the whole width of the surface, as a seam does.
 Each row caps its label column instead, so the control stands close after the text in a wide window.
 The filler column past the control takes the rest, which is why the rule can outrun the row.
 
+## `<Button x:Name="PWorkspaceDialog" ...>`
+
+The folder picker beside the path field, an icon action rather than a labelled button.
+The label survives as its tooltip.
+
 ## `<Button x:Name="PDialFolder" ...>`
 
 The action that opens the workspace folder, set at the foot of the workspace page.
 It stands with the setting it acts on rather than in a command rail over every page.
 The negative margin lines its label up with the rows above, since the button pads its own text.
-
-## `<Button x:Name="PDialWidth" ...>`
-
-The action that drops the stored panel widths, set at the foot of the layout page for the same reason.
-
-## `<Button x:Name="PWorkspaceDialog" ...>`
-
-The folder picker beside the path field, an icon action rather than a labelled button.
-The label survives as its tooltip.
 
 ## `<ComboBox x:Name="PLocalization" ...>`
 
@@ -71,29 +67,14 @@ Whether a lookup fetches the headword's inflected forms from the web.
 It stands under the frequency switch, since both govern what a lookup fetches.
 A click saves the choice to the ledger at once, with no apply step.
 
-## `<TextBox x:Name="PDialOutpost" ...>`
-
-The Joplin group closes the Web page, since a push to Joplin also reaches out to the network.
-Its field holds the port Joplin's Data API listens on, and saves on Enter or when focus leaves.
-Escape reverts it to the stored port.
-
-## `<Button x:Name="PDialWarrant" ...>`
-
-Asks Joplin to accept Llyn, which the user confirms in Joplin itself.
-It shares the folder button's segment style, so the page keeps one kind of action.
-
-## `<Button x:Name="PDialCourier" ...>`
-
-Sends every entry to Llyn's own Joplin notebook in one push.
-
-## `<TextBlock x:Name="PDialReceipt" ...>`
-
-The line the last connect or push left, empty until one has run.
-
 ## `<ToggleButton x:Name="PLayoutLinked" ...>`
 
 Whether every tab keeps the same panel widths.
 Turning it on copies the last dragged tab's widths to every other tab and saves them.
+
+## `<Button x:Name="PDialWidth" ...>`
+
+The action that drops the stored panel widths, set at the foot of the layout page like the folder action.
 
 ## Hooks
 
