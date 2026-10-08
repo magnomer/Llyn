@@ -1,9 +1,10 @@
 # COeuvre.cs
-Hash: `fade34e12fe451ae`
+Hash: `c45470e592d77b77`
 
 ## `public sealed class COeuvre`
 
-The source list of the authors panel: its rows, its query, its empty text, its tally and its colophon.
+The source list of the authors panel: its rows, its empty text, its tally and its colophon.
+The query, the empty verdict and the oeuvre vista sit in the panel's aperture.
 The rows are the Sources crediting the chosen Author, the uncredited ones under the orphan row, or all.
 It keeps a handle on the roll vista too, because the engine narrows the rows by the roll's state.
 It owns the panel over the oeuvre vista, with the Source keys and no delete scope.
@@ -29,19 +30,16 @@ The panel over the oeuvre vista, whose loaded Source raises the colophon.
 
 Answers the panel's loaded draft with the colophon sheet it shapes.
 
-## `public bool COeuvreEmpty`
-
-Whether the last rows read listed none, so it moves only when `COeuvreRowsRead` runs.
-
 ## `public string COeuvreEmptyKey`
 
 The key of the empty text: the plain empty text with no Author chosen, else unmatched while narrowed, else vacant.
+It reads narrowed when the aperture's query holds text or the roll filters any language.
 
 ## `internal void LOeuvreVistaRestore(LVista roll, LVista vista)`
 
-Binds the roll vista the rows follow and the oeuvre vista that holds the query and the chosen Source.
-The panel takes the oeuvre vista with it.
-A workspace switch hands fresh vistas, and the comb query carries over, so the driver never replays it.
+Binds the roll vista the rows follow, and hands the oeuvre vista to the panel's aperture.
+The oeuvre vista holds the query and the chosen Source.
+A workspace switch hands fresh vistas, and the aperture carries the comb query over, so the driver never replays it.
 
 ## `internal void LOeuvreObserverAttach(Action<Action> marshal)`
 
@@ -51,12 +49,9 @@ The guild attaches it after the vistas restore, so the observer stands on the fr
 
 ## `public IReadOnlyList<CCatalogReference> COeuvreRowsRead()`
 
-Reads the rows, counts them, and closes the panel when a chosen Source is no longer listed.
+Reads the rows and hands their count to the aperture.
+It closes the panel when a chosen Source is no longer listed.
 Before the vistas are restored the engine answers no rows.
-
-## `public void COeuvreQuerySet(string query)`
-
-The comb above the list, narrowing the Sources by the typed text.
 
 ## `public string COeuvreTallyRead()`
 

@@ -129,7 +129,7 @@ public sealed class TCorpusMention
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
-        corpus.CCorpusExampleCreate();
+        corpus.CCorpusDiptych.CDiptychEntryCreate();
         corpus.CCorpusDesk.TDeskDefer(
             TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterfaceState.TStateValueCreate("a dog")));
 

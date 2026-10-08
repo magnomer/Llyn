@@ -35,7 +35,7 @@ public sealed class TLibraryVista
         TLibrary.TLibraryEntrySave(engine, "stone", "English");
         TLibrary.TLibraryEntrySave(engine, "river", "English");
         CLibrary library = TLibrary.TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        library.CLibraryQuerySet("riv");
+        library.CLibraryPanel.CPanelAperture.CApertureQuerySet("riv");
 
         library.TLibraryVistaRestore();
 
@@ -60,7 +60,7 @@ public sealed class TLibraryVista
             });
         library.TLibraryVistaRestore();
         int rows = 0;
-        library.CLibraryPanel.CPanelRowsChanged += () => rows++;
+        library.CLibraryPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectReflex, 0);
 
@@ -85,7 +85,7 @@ public sealed class TLibraryVista
                 run();
             });
         int rows = 0;
-        library.CLibraryPanel.CPanelRowsChanged += () => rows++;
+        library.CLibraryPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectReflex, 0);
 
@@ -120,7 +120,7 @@ public sealed class TLibraryVista
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CLibrary library = TLibrary.TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         int rows = 0;
-        library.CLibraryPanel.CPanelRowsChanged += () => rows++;
+        library.CLibraryPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectSettings, 0);
 

@@ -58,15 +58,16 @@ public sealed class CDisplay
             drafts,
             entries.CEntryBundleEntry,
             entries.CEntryBundleGlyph,
-            phonology.CPhonologyBundleLanguage,
             phonology.CPhonologyBundleFanqie,
             phonology.CPhonologyBundleDiwei,
             phonology.CPhonologyBundleScript,
             phonology.CPhonologyBundleParadigm,
             phonology.CPhonologyBundleReflex,
-            media,
             settings,
             envoy);
+        CDisplayAccent = new CDisplayAccent(LDisplayRule, phonology.CPhonologyBundleLanguage, settings, envoy);
+        CDisplayPlayback = new CDisplayPlayback(LDisplayRule, media, settings, envoy);
+        CDisplayGrasp = new CDisplayGrasp(LDisplayRule);
         CDisplayCard = new CDisplayCard(
             LDisplayRule,
             entries.CEntryBundleCard,
@@ -86,8 +87,6 @@ public sealed class CDisplay
 
     public event Action<CBulletin>? CDisplayFavoriteChanged;
 
-    public event Action<CBulletin>? CDisplayGraspChanged;
-
     public event Action<CBulletin>? CDisplayFrequencyChanged;
 
     public event Action<CBulletin>? CDisplayParadigmChanged;
@@ -106,6 +105,12 @@ public sealed class CDisplay
 
     public CDisplaySound CDisplaySound { get; }
 
+    public CDisplayAccent CDisplayAccent { get; }
+
+    public CDisplayPlayback CDisplayPlayback { get; }
+
+    public CDisplayGrasp CDisplayGrasp { get; }
+
     public CDisplayCard CDisplayCard { get; }
 
     public CDisplayRoute CDisplayRoute { get; }
@@ -113,8 +118,6 @@ public sealed class CDisplay
     public CCompass CDisplayCompass { get; }
 
     internal LDisplay LDisplayRule { get; }
-
-    public int CDisplayGraspStep => LDisplayRule.LDisplayGraspStep;
 
     private long? LDisplayChosen => LDisplayRule.LDisplayChosen;
 
@@ -135,7 +138,7 @@ public sealed class CDisplay
         LDisplayRule.LDisplayVistaRestore(vista);
         LDisplayRule.LDisplayChosenAttach(
             CSubject.CSubjectFavorite, bulletin => CDisplayFavoriteChanged?.Invoke(bulletin));
-        LDisplayRule.LDisplayChosenAttach(CSubject.CSubjectGrasp, bulletin => CDisplayGraspChanged?.Invoke(bulletin));
+        CDisplayGrasp.LDisplayGraspAttach();
         LDisplayRule.LDisplayChosenAttach(
             CSubject.CSubjectFrequency, bulletin => CDisplayFrequencyChanged?.Invoke(bulletin));
         LDisplayRule.LDisplayChosenAttach(
@@ -246,23 +249,6 @@ public sealed class CDisplay
     {
         LDisplayRule.LDisplayFavoriteSave(LDisplayChosen, marked);
         return CDisplayFavoriteRead();
-    }
-
-    public CGrasp CDisplayGraspRead()
-    {
-        int step = LDisplayRule.LDisplayGraspRead(LDisplayChosen);
-        return new CGrasp(step, CDisplayGraspRead(step));
-    }
-
-    public string CDisplayGraspRead(int step)
-    {
-        return LDisplayRule.LDisplayGraspFormat(LDisplayChosen, step);
-    }
-
-    public CGrasp CDisplayGraspSet(int step)
-    {
-        LDisplayRule.LDisplayGraspSave(LDisplayChosen, step);
-        return CDisplayGraspRead();
     }
 
     public CFrequency? CDisplayFrequencyRead(Func<string, string> lookup)

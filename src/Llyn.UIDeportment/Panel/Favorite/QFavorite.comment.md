@@ -1,5 +1,5 @@
 # QFavorite.cs
-Hash: `cec6848cbe8158f3`
+Hash: `92aefbea141e7b3f`
 
 ## `internal sealed partial class QFavorite`
 
@@ -46,7 +46,7 @@ The button follows this answer on its own, so no panel state has to switch it.
 ## `private async void QFavoritePressObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the entry being read, as the engine portrays it.
-The panel names only the id it is showing, and the engine builds the page from stored rows.
+The panel names nothing, and the engine builds the page from stored rows.
 Nothing is read back from the screen.
 
 ## `private async void QFavoritePortraitObserve(object sender, ExecutedRoutedEventArgs e)`

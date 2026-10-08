@@ -1,5 +1,5 @@
 # TAnthologyExample.cs
-Hash: `8e6841754c13f727`
+Hash: `7b627fdeb76ed1de`
 
 ## `public sealed class TAnthologyExample`
 
@@ -11,4 +11,4 @@ The Example map divides its excerpt at linked Mentions only while the text reads
 It carries the tally it is handed, and the unknown mark as placeholder only for an unknown text.
 An unknown text is worded with the unknown mark, and a never-written one with `Example.Unwritten`.
 Only the never-written text is muted.
-The text and speaker test runs on a real workspace and builds its anthology through `TAnthology.TAnthologyPrepare`.
+The tests that need an anthology run on a real workspace and build it through `TAnthology.TAnthologyPrepare`.

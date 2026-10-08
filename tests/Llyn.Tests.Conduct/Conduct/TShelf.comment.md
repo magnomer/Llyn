@@ -1,5 +1,5 @@
 # TShelf.cs
-Hash: `1b16f5fa1d7b8129`
+Hash: `549f00f79685d6f4`
 
 ## `public sealed class TShelf`
 
@@ -21,9 +21,9 @@ An export writes only an entry on display.
 
 Builds the shelf over the atelier with its own editor, and the shelf restores both vistas itself.
 Its seam answers that the tab is in front, and its marshal runs each notice at once.
-`TShelfDraft`, `TShelfImprint`, `TShelfRoll` and `TShelfVista` share it.
+`TShelfDraft`, `TShelfImprint`, `TShelfRoll`, `TShelfVista` and `TFaultPortrait` share it.
 
 ## `internal static LEntry TShelfEntrySave(LEngine engine, string headword)`
 
 Stores one English entry with a single meaning.
-`TShelfDraft` shares it.
+`TShelfDraft` and `TFaultPortrait` share it.

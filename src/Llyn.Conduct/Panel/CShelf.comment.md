@@ -1,27 +1,32 @@
 # CShelf.cs
-Hash: `3c87607237e568ec`
+Hash: `a7b11b8b857948e1`
 
 ## `public sealed class CShelf`
 
 The sources panel's session over the Source list, the entries citing the chosen Source and two editors.
 The two vistas' chosen rows and editing flags are the panel's mode, and the drivers only follow.
+The routing between the two lists and its mode flags live in `CDiptych`, shared with the other two-list panels.
 Every gate holds only the interaction and reaches the engine through a panel, a desk or the editor.
 It asks the user and reports failures through the envoy, never through a seam a driver hands up.
-It restores both vistas itself and chooses which side prints, exports, saves or deletes.
+It restores both vistas itself and chooses which side prints or exports.
 
 ## `private CShelf(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the entry editor, the source editor, the Source panel and the entry list over the atelier's ports.
 The source editor also takes the atelier's repaint memory, for its byline's search.
-The Source panel asks the source desk before it leaves a Source, and both panels finish through `LShelfDraftFinish`.
+The Source panel asks the source desk before it leaves a Source, and both panels finish through the session.
+The session runs over the source desk and defers to the entry editor while the entry side is in front.
+The diptych is built right after it, with the source editor's open and cancel as its seams.
+Its create seam drops the source draft and opens a fresh entry citing the chosen Source.
 A cleared Source panel cancels the source draft, and an edited row opens the source editor on it.
 A loaded Source draft is shaped into its colophon through `COeuvre`'s map, with no second panel.
 A stored Source is shown again outside the scribe.
-Either desk's state change is raised as `CShelfChanged`, so a driver repaints the mode.
+The session's state change is raised as `CShelfChanged`, so a driver repaints the mode.
 The Source panel's row notices reach the entry list, whose rows follow the chosen Source.
 The source editor hears its desk notices through `marshal`.
 The shelf keeps `marshal` for the observers it attaches at each vista restore.
 The shelf's close joins the workspace's closures, so it runs when the atelier closes.
+It closes the byline first and then the session's entry editor with its playback.
 It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CShelf CShelfCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
@@ -55,15 +60,16 @@ The entry list, whose rows are the entries citing the chosen Source.
 
 The source editor, whose desk holds the Source draft while the Source panel edits.
 
-## `public bool CShelfEditorShown`
+## `public CSession CShelfSession { get; }`
 
-True while the entry side is in front and in edit mode, so the entry editor shows.
-The other mode flags follow the same two facts: which side is in front and whether it edits.
-`CShelfDisplayShown` holds for the entry side outside edit mode.
-`CShelfImprintShown` and `CShelfColophonShown` hold for the Source side, in and outside edit mode.
-`CShelfScribeChecked` holds while the side in front edits, and `CShelfViewerChecked` holds otherwise.
-`CShelfModeEnabled` holds while either panel holds a row or edits.
-`CShelfBinEnabled` holds only on the Source side, where it follows its panel.
+The draft session over the source desk, which the driver saves, undoes and redoes through.
+It asks the leave question and finishes the draft of the side in front.
+
+## `public CDiptych CShelfDiptych { get; }`
+
+The routing between the Source panel and the entry list, with the side flags the drivers paint.
+Its gates create and delete on whichever side is in front.
+Its create seam opens a fresh entry for the chosen Source, else a fresh Source is started.
 
 ## `public bool CShelfStoreEnabled`
 
@@ -74,19 +80,11 @@ Whether the desk in front, the entry editor or the Source imprint, reports its d
 True while an entry or a Source is shown outside edit mode, so there is something to print.
 `CShelfPortraitAllowed` holds only for a shown entry, since only an entry exports.
 
-## `public bool CShelfFiltered`
-
-True while the Source vista hides some language, so a driver marks its filter.
-
-## `private bool LShelfEntrySide`
-
-The entry list holds a row or edits, so the entry side is in front.
-
 ## `internal void LShelfVistaRestore()`
 
 Starts the Source vista and the entry vista through the atelier and hands them to the panels and desks.
 The entry list follows the Source vista as its parent, and the entry editor stands on the entry vista.
-The former Source vista's query is carried into the fresh one, so the driver never re-sends its text.
+The Source panel's aperture carries the former vista's query into the fresh one, so the driver never re-sends its text.
 Then the shelf attaches its own observers, and the entry list attaches its own with the shelf's answers handed in.
 The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
 
@@ -94,12 +92,8 @@ The constructor runs it last, and a workspace change runs it again through `CWor
 
 Attaches the Source list's subjects, each answered through `marshal`.
 Vista, Author, Reference, Example, Reflex and Settings notices refill the Source rows.
-An Author notice also rereads the source draft, and a Workspace notice closes both sides.
-
-## `private void LShelfWorkspaceResonate()`
-
-Closes the entry side and the Source side, as a workspace change does.
-No driver repaints on it, so it raises no event.
+An Author notice also rereads the source draft.
+A Workspace notice closes both sides through the diptych's `LDiptychEntryClose`.
 
 ## `public CShelfRoll CShelfRollRead()`
 
@@ -118,32 +112,9 @@ The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver make
 A failed flag fill shows `Source.LoadFailed` and still answers the rows with no languages.
 The driver awaits it from an event handler, where a fault would end the app.
 
-## `public void CShelfQuerySet(string query)`
-
-Hands the search text to the Source vista, which announces only a changed text.
-A workspace change carries it into the fresh vista, so the driver never re-sends it.
-
-## `public void CShelfOrderSet(CCatalogOrder? order)`
-
-Takes the chosen order, and the vista keeps its own order when none is chosen.
-
 ## `public static IReadOnlyList<CCatalogOrder> CShelfOrderRead()`
 
 The orders the Source list offers, in the order a driver lists them.
-
-## `public void CShelfFilterSet(CCatalogFilter filter)`
-
-Hands the hidden languages to the Source vista, and the posture stores them under the tab.
-The vista announces only a changed filter.
-
-## `internal bool LShelfChangeRead()`
-
-Whether either panel edits a draft that holds unsaved changes.
-
-## `internal bool LShelfLeaveConfirm()`
-
-Asks through the envoy before unsaved work goes out of sight, and answers whether to go on.
-A stored answer finishes the draft of the side in front, and a declined question stays.
 
 ## `public void CShelfReferenceSelect(long? id)`
 
@@ -163,43 +134,11 @@ Opens the clicked entry after the leave question, keeping the edit mode, and dro
 Answers the chosen entry's notice by refreshing the entry draft.
 It falls back to the chosen Source once the entry side has closed.
 
-## `public void CShelfReferenceCreate()`
-
-The fresh button after the leave question.
-With a row chosen, it opens a fresh entry already citing the chosen Source.
-With nothing chosen, it opens a fresh Source in the source editor.
-
 ## `public void CShelfScribeToggle(bool editing)`
 
 Switches the edit mode of the side in front.
 A Source side leaving edit mode drops the source draft.
 An entry side that closes falls back to the chosen Source.
-
-## `public void CShelfReferenceDelete()`
-
-Deletes the chosen Source through its panel, and does nothing on the entry side.
-
-## `private void LShelfClose()`
-
-Closes the byline and the entry editor when the atelier closes.
-It also cancels any playback the entry display still holds.
-
-## `public (bool CShelfBackward, bool CShelfForward) CShelfChronicleRead()`
-
-Whether the draft of the side in front can step back or forward.
-
-## `internal bool LShelfDraftFinish(bool store)`
-
-Finishes the draft of the side in front, storing or dropping it, and answers whether it ended.
-
-## `public void CShelfDraftSave()`
-
-Stores the draft of the side in front when it changed.
-
-## `public void CShelfDraftUndo()`
-
-Steps the draft of the side in front back.
-`CShelfDraftRedo` steps it forward.
 
 ## `public Task CShelfPortraitPrint()`
 

@@ -1,17 +1,17 @@
 # CAnthology.cs
-Hash: `cd881d2b2472c5cb`
+Hash: `eeb2c7add293d53e`
 
 ## `public sealed class CAnthology`
 
-The corpus panel's example list: the example vista it holds and the panel over it.
-It finds the rows, and takes the query, order and kind filter.
+The corpus panel's example list: the panel over the example vista.
+It finds the rows, while the panel's aperture holds the vista and takes the query, order and language filter.
 Its panel loads, edits and deletes the chosen Example, worded under the Example scope.
 It also answers the transcript's citation field and prints the chosen Example.
 
 ## `internal CAnthology(LExamplePort examples, LMentionPort mentions, LReferencePort references, LPortraitPort portraits, LSettingsPort settings, LVistaPort vistas, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam, CMention mention)`
 
 Takes the ports it reads and prints through, the corpus desk holding the transcript, and the panel's seams.
-The panel and the citation gates read a failure's ready notice through `settings` and show it through `envoy`.
+The panel and the citation gates read a failure notice through `settings` and show it through `envoy`.
 The panel asks whether the desk changed before it leaves an Example.
 `vistas` passes to the panel, which loads and deletes its chosen row through it.
 `mention` opens what a word click found.
@@ -25,22 +25,10 @@ Building it is no user action, so it is no gate on the atelier.
 
 The panel over the example vista, built once with the Example scope and the corpus seams.
 
-## `public long? CAnthologyChosen`
-
-The id of the chosen Example, or null before a vista arrives or while none is chosen.
-
-## `public bool CAnthologyFiltered`
-
-Whether the vista's kind filter hides any language, false before a vista arrives.
-
-## `internal bool LAnthologyNarrowed`
-
-Whether the query or the filter hides any row, as the vista answers it.
-
 ## `internal void LAnthologyVistaRestore(LVista vista)`
 
-Binds the list and its panel to the corpus vista a workspace start or switch hands over.
-The query the former vista held is carried into the fresh one first, as `COeuvre.LOeuvreVistaRestore` does.
+Binds the list's aperture to the corpus vista a workspace start or switch hands over.
+The aperture carries the former vista's query into the fresh one.
 
 ## `internal void LAnthologyObserverAttach(Action<Action> marshal, Action workspace)`
 
@@ -49,18 +37,6 @@ A vista notice refills the rows, since order, filter or query moved.
 A stored Example or Source refills them, because a row cites a Source.
 A reflex fill or a flipped setting rewrites the epithet beside a headword, so each refills them too.
 A workspace notice runs `workspace`, the corpus's own answer.
-
-## `public void CAnthologyQuerySet(string query)`
-
-Hands the typed query to the vista, which refills the rows.
-
-## `public void CAnthologyFilterSet(CCatalogFilter filter)`
-
-Hands the languages the filter hides to the vista.
-
-## `public void CAnthologyOrderSet(CCatalogOrder? order)`
-
-Hands a chosen ordering to the vista, which keeps its own when the sender is no order row.
 
 ## `public static IReadOnlyList<CCatalogOrder> CAnthologyOrderRead()`
 
@@ -99,7 +75,7 @@ No held transcript offers nothing, and typing a citation writes nothing.
 ## `public void CAnthologyCitationSet(long referenceId)`
 
 Points the transcript's citation at a Source the drawer offered.
-Nothing is written while the desk fills its fields.
+The engine applies it at once.
 
 ## `public void CAnthologyCitationSet(string title)`
 
@@ -151,7 +127,7 @@ It asks the example port, which owns that rule.
 ## `internal CExample LAnthologyTextShow(CExample example)`
 
 Notes that the transcript's sentence field now shows the text of `example`, and hands it back.
-The corpus calls it when the transcript fills anew, and the draft bulletin calls it on a repaint.
+The corpus calls it when the transcript fills anew, and `LAnthologyTranscriptRead` calls it when the field does not match.
 
 ## `internal CExample LAnthologyTranscriptRead(CExample example)`
 
@@ -171,7 +147,7 @@ It reads the tally from its own panel, so neither caller hands one along.
 ## `private string LAnthologyCitationRead(LDraft draft)`
 
 The ready line of the Source the draft's Example cites.
-A failed read shows `Reference.LoadFailed` and shows no line, as the old Source list read did.
+A failed read shows `Reference.LoadFailed` and answers no line.
 
 ## `internal static CExample? LAnthologyExampleRead(LExample? example, string citation, string tally)`
 

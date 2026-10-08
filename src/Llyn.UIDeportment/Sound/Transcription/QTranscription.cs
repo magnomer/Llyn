@@ -41,7 +41,7 @@ internal sealed class QTranscription
     internal void QTranscriptionIntroduce(CEditor editor)
     {
         _cEditor = editor;
-        editor.CEditorDraftChanged += QTranscriptionSheetRefine;
+        editor.CEditorEntry.CEntryDraftChanged += QTranscriptionSheetRefine;
     }
 
     private void QTranscriptionRefine(FrameworkElement container, object item, string? name)

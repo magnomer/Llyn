@@ -57,7 +57,7 @@ public sealed class TErrandNotation
         CNotationReading reading = Assert.Single(Assert.Single(ended.CNotationRollRows).CNotationItemReading);
         Assert.Equal("hɪl", reading.CNotationReadingPhonetic);
         Assert.Equal(
-            CSounding.CSoundingVarietyRead(pack.TLanguageFixtureName, "British"), reading.CNotationReadingVariety);
+            CVariety.CVarietyRead(pack.TLanguageFixtureName, "British"), reading.CNotationReadingVariety);
         Assert.False(reading.CNotationReadingFlagged);
         Assert.Equal(new CRespellingMark(false, "[", "]"), reading.CNotationReadingMark);
         Assert.Equal("Phonetician.Empty", ended.CNotationRollNotice);
@@ -106,7 +106,7 @@ public sealed class TErrandNotation
         CEditor editor = TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
         CErrand errand = editor.CEditorDesk.CDeskErrand;
         errand.CErrandRecordingStart(0);
-        editor.CEditorHeadwordSet("   ");
+        editor.CEditorEntry.CEntryHeadwordSet("   ");
 
         CNotationRoll started = errand.CErrandTranscriptionStart(0, string.Empty);
 
@@ -175,8 +175,8 @@ public sealed class TErrandNotation
         CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(null);
-        editor.CEditorLanguageSet(language);
-        editor.CEditorHeadwordSet(headword);
+        editor.CEditorEntry.CEntryLanguageSet(language);
+        editor.CEditorEntry.CEntryHeadwordSet(headword);
         return editor;
     }
 }

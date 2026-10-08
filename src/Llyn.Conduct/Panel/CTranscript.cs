@@ -44,7 +44,7 @@ public sealed class CTranscript
     {
         try
         {
-            return _cTranscriptAnthology.LAnthologyDraftRead(_cTranscriptDesk.CDeskRead());
+            return _cTranscriptAnthology.LAnthologyDraftRead(_cTranscriptDesk.CDeskDraft.CDeskDraftRead());
         }
         catch (Exception exception)
         {
@@ -75,38 +75,38 @@ public sealed class CTranscript
             return;
         }
 
-        _cTranscriptDesk.CDeskChip?.LQuillMentionAdd(0, 0, text, start, length, stored);
+        _cTranscriptDesk.CDeskDraft.CDeskDraftChip?.LQuillMentionAdd(0, 0, text, start, length, stored);
     }
 
     public void CTranscriptSilenceSet(string text, int start, int length)
     {
-        _cTranscriptDesk.CDeskChip?.LQuillMentionAdd(0, 0, text, start, length, 0);
+        _cTranscriptDesk.CDeskDraft.CDeskDraftChip?.LQuillMentionAdd(0, 0, text, start, length, 0);
     }
 
     public void CTranscriptSenseSet(string text, int start, int length, long senseId)
     {
-        _cTranscriptDesk.CDeskChip?.LQuillSenseSet(0, 0, text, start, length, senseId);
+        _cTranscriptDesk.CDeskDraft.CDeskDraftChip?.LQuillSenseSet(0, 0, text, start, length, senseId);
     }
 
     public void CTranscriptMentionRemove(long mentionId)
     {
-        _cTranscriptDesk.CDeskMention?.LQuillMentionRemove(0, 0, mentionId);
+        _cTranscriptDesk.CDeskDraft.CDeskDraftMention?.LQuillMentionRemove(0, 0, mentionId);
     }
 
     public void CTranscriptMentionRemove(string text, int start, int length)
     {
-        _cTranscriptDesk.CDeskChip?.LQuillMentionRemove(0, 0, text, start, length);
+        _cTranscriptDesk.CDeskDraft.CDeskDraftChip?.LQuillMentionRemove(0, 0, text, start, length);
     }
 
     public bool CTranscriptMentionCheck(string text, int start, int length)
     {
-        return _cTranscriptDesk.CDeskTenure is LTenure held
+        return _cTranscriptDesk.CDeskDraft.CDeskDraftTenure is LTenure held
             && new LQuillMention(held).LQuillMentionCheck(0, 0, text, start, length);
     }
 
     public bool CTranscriptSenseCheck(string text, int start, int length)
     {
-        return _cTranscriptDesk.CDeskTenure is LTenure held
+        return _cTranscriptDesk.CDeskDraft.CDeskDraftTenure is LTenure held
             && new LQuillMention(held).LQuillSenseCheck(0, 0, text, start, length);
     }
 

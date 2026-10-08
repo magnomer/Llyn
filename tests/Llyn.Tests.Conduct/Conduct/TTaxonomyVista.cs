@@ -35,13 +35,13 @@ public sealed class TTaxonomyVista
         engine.TEngineTagCreate("motion");
         engine.TEngineTagCreate("botany");
         CTaxonomy taxonomy = TTaxonomy.TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        taxonomy.CTaxonomyQuerySet("mot");
-        taxonomy.CTaxonomyMembership.CMembershipQuerySet("zzz");
+        taxonomy.CTaxonomyAperture.CApertureQuerySet("mot");
+        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureQuerySet("zzz");
 
         taxonomy.TTaxonomyVistaRestore();
 
         Assert.Equal(["motion"], taxonomy.CTaxonomyRowsRead().Select(row => row.CCatalogTagStored.CTagText));
-        Assert.Equal("Tag.Unmatched", taxonomy.CTaxonomyMembership.CMembershipEmptyKey);
+        Assert.Equal("Tag.Unmatched", taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureKey);
     }
 
     [Fact]
@@ -125,18 +125,18 @@ public sealed class TTaxonomyVista
         taxonomy.TTaxonomyTagOpen(tag);
         taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelRowOpen(hearth.LEntryId);
         List<string> seen = [];
-        taxonomy.CTaxonomyRowsChanged += () =>
+        taxonomy.CTaxonomyAperture.CApertureRowsChanged += () =>
         {
             seen.Add("tag");
             taxonomy.CTaxonomyRowsRead();
         };
-        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelRowsChanged += () => seen.Add("entry");
+        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureRowsChanged += () => seen.Add("entry");
         taxonomy.CTaxonomyWorkspaceChanged += () => seen.Add("workspace");
 
         engine.TEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
 
         Assert.False(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelBinEnabled);
-        Assert.Null(taxonomy.LTaxonomyChosen);
+        Assert.Null(taxonomy.CTaxonomyAperture.CApertureChosen);
         Assert.Equal(["entry", "tag", "entry", "workspace"], seen);
     }
 
@@ -148,7 +148,7 @@ public sealed class TTaxonomyVista
         List<string> asked = [];
         CTaxonomy taxonomy = TTaxonomyFailPrepare(engine, asked);
         int entries = 0;
-        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelRowsChanged += () => entries++;
+        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureRowsChanged += () => entries++;
 
         Assert.Empty(taxonomy.CTaxonomyRowsRead());
         Assert.Equal(["Tag.LoadFailed"], asked);
@@ -162,8 +162,8 @@ public sealed class TTaxonomyVista
         using LEngine engine = workspace.TWorkspaceEngineStart();
         List<string> asked = [];
         CTaxonomy taxonomy = TTaxonomyFailPrepare(engine, asked);
-        taxonomy.CTaxonomyRowsChanged += () => taxonomy.CTaxonomyRowsRead();
-        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelRowsChanged +=
+        taxonomy.CTaxonomyAperture.CApertureRowsChanged += () => taxonomy.CTaxonomyRowsRead();
+        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureRowsChanged +=
             () => taxonomy.CTaxonomyMembership.CMembershipRowsRead();
 
         engine.TEngineBulletinRaise(LSubject.LSubjectSettings, 0);
@@ -186,12 +186,12 @@ public sealed class TTaxonomyVista
     private static List<string> TTaxonomyWatchPrepare(CTaxonomy taxonomy)
     {
         List<string> seen = [];
-        taxonomy.CTaxonomyRowsChanged += () =>
+        taxonomy.CTaxonomyAperture.CApertureRowsChanged += () =>
         {
             seen.Add("tag");
             taxonomy.CTaxonomyRowsRead();
         };
-        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelRowsChanged += () => seen.Add("entry");
+        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureRowsChanged += () => seen.Add("entry");
         taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelChanged += () => seen.Add("draft");
         return seen;
     }

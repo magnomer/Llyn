@@ -1,5 +1,5 @@
 # QRepertoireEntry.cs
-Hash: `8ccb1ea11350865f`
+Hash: `4755d73fd6f21c93`
 
 ## `internal sealed partial class QRepertoire`
 
@@ -10,8 +10,6 @@ The mode toggle swaps that display for `PEditor`.
 The rail's new and save answer here, and the Conduct picks the side each acts on.
 The catalog and the Situation reading live in `QRepertoireBrowse.cs`.
 
-## Inline notes
-
 ## `private void QOccurrenceRefine()`
 
 Refills the middle column with the entries referencing the chosen Situation, or every Entry while none is chosen.
@@ -19,8 +17,10 @@ The engine matches the typed text and drops the hidden languages, so the panel d
 A failed read is reported by the Conduct occurrence list, which answers no rows, so the panel only fills.
 An empty result is shown rather than hidden, and its text says whether nothing references the Situation or nothing matches.
 The Conduct occurrence list picks that wording from whether its vista holds a query.
-Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
+Rows sharing a headword arrive numbered, so the reader can tell them apart.
 The shown Entry is re-marked after every fill, so its row keeps the mark across a re-filter.
+
+## Inline notes
 
 ### Occurrence vista
 
@@ -54,6 +54,6 @@ The Conduct saves an open Entry through the entry editor, and otherwise commits 
 
 ## `private void QRepertoireFreshObserve(object sender, RoutedEventArgs e)`
 
-New makes whatever the emptier panel would list, through the Conduct.
+New is answered by the Conduct, which decides what is made.
 With no Situation chosen and no Entry shown, it opens the editor on a Situation nothing has stored yet.
 With a Situation chosen, or an Entry shown, it starts a new Entry carrying that Situation instead.

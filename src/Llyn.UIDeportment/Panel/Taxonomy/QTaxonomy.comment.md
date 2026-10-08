@@ -1,5 +1,5 @@
 # QTaxonomy.cs
-Hash: `882d8199eea33655`
+Hash: `40fef92c55cef966`
 
 ## `internal sealed partial class QTaxonomy`
 
@@ -28,8 +28,12 @@ The view wraps that editor for its editor page.
 The lectern follows the panel, whose loads and clears reach the display's area, never the veneer.
 It binds its lists, attaches their row fills, and reads nothing yet.
 The Tag list answers the area's rows event, and the entry list its own panel's.
-The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
+The window fills it when the workspace opens, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.
+
+## `private void QTaxonomyStoreRefine()`
+
+Enables the store button only while the editor's draft can be stored.
 
 ## `internal void QTaxonomyExitRefine()`
 
@@ -46,7 +50,7 @@ The button follows this answer on its own, so no panel state has to switch it.
 ## `private async void QTaxonomyPressObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the entry being read, as the engine portrays it.
-The panel names only the id it is showing, and the engine builds the page from stored rows.
+The panel names nothing, and the engine builds the page from the vista and stored rows.
 Nothing is read back from the screen.
 
 ## `private async void QTaxonomyPortraitObserve(object sender, ExecutedRoutedEventArgs e)`
@@ -89,6 +93,10 @@ Walks the chronicle of the editor forward one step.
 
 Lights the two chronicle buttons only while the editor has a step to walk.
 It runs whenever the editor reports its state again.
+
+## `private bool QTaxonomyShownCheck()`
+
+Tells the panel whether the taxonomy page is on screen, so a bulletin is acted on only while shown.
 
 ## `private void QTaxonomyModeRefine()`
 

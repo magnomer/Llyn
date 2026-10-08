@@ -64,8 +64,8 @@ internal static class TInterfaceEditor
     internal static void TEditorVistaRestore(this CEditor editor, LVista vista) => editor.LEditorVistaRestore(vista);
 
     internal static CEntryDraft? TEditorDraftRead(this CEditor editor) =>
-        editor.CEditorDesk.CDeskTenure is LTenure held
-        && editor.CEditorDesk.CDeskChip is LQuillChip chip
+        editor.CEditorDesk.CDeskDraft.CDeskDraftTenure is LTenure held
+        && editor.CEditorDesk.CDeskDraft.CDeskDraftChip is LQuillChip chip
         && held.LTenureRead() is { } draft
             ? CFolio.CFolioEntryRead(
                 draft.LDraftContent,

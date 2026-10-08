@@ -1,5 +1,5 @@
 # QSpeaker.cs
-Hash: `3fa8121d57bf0834`
+Hash: `71b2daa749568f70`
 
 ## `internal sealed class QSpeaker`
 

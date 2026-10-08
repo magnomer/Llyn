@@ -28,7 +28,7 @@ public sealed class TCorpusPortrait
 
         Assert.False(File.Exists(path));
 
-        corpus.CCorpusQuotationSelect(water.LEntryId);
+        corpus.CCorpusDiptych.CDiptychChildSelect(water.LEntryId);
         await corpus.CCorpusQuotation.CQuotationPortraitExport();
 
         Assert.Contains("water", File.ReadAllText(path), StringComparison.Ordinal);

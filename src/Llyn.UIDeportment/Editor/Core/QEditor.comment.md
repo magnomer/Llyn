@@ -1,5 +1,5 @@
 # QEditor.cs
-Hash: `98a75778fbcd728c`
+Hash: `aa345e0e97c20480`
 
 ## `internal sealed class QEditor : QChronicleHost`
 
@@ -67,7 +67,7 @@ Steps the entry draft one snapshot forward again, in the same wrap.
 ## `private void QEditorDraftRefine(CEntryDraft draft)`
 
 Writes the headword and the note through `QFieldTextShow`, and a box that already holds the text keeps its caret.
-The note is written only while the ready verdict `CEditorNoteCheck` says the box does not hold it yet.
+The note is written only while the ready verdict `CEntryNoteCheck` says the box does not hold it yet.
 So a line break just typed at the end of the note survives the draft's echo.
 The command rail shows only for the editor that owns its entries, which is the input tab's.
 The reading line follows the headword just written.

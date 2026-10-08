@@ -116,22 +116,6 @@ public sealed class TPanel
     }
 
     [Fact]
-    public void PanelVistaRestore_EditingVista_SwitchesEditingOff()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CPanel panel = TInterfaceConductPanel.TPanelCreate(
-            engine, TEnvoyFake.TEnvoyCreate(true, []), "Scribe", static () => false, static _ => true);
-        LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
-        vista.TVistaEditingSet(true);
-
-        panel.TPanelVistaRestore(vista);
-
-        Assert.False(vista.LVistaEditing);
-        Assert.Same(vista, panel.TPanelVistaRead());
-    }
-
-    [Fact]
     public void PanelOrderRead_EveryEngineOrder_ReturnsTheSameNamedMirror()
     {
         LCatalogOrder[] orders = Enum.GetValues<LCatalogOrder>();

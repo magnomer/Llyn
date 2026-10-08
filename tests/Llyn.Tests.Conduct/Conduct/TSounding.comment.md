@@ -1,29 +1,11 @@
 # TSounding.cs
-Hash: `38dede1c8aeda80c`
+Hash: `12b86abc1baf7527`
 
 ## `public sealed class TSounding`
 
 Covers the editor's sound sheet gates and reads end to end, driven with no window.
 A real desk holds the entry, and fake ports let a test shape or refuse each engine answer.
-The contour cases reach the internal contour reader through the interface, with no desk at all.
-
-## `public void SoundingVarietyRead_NamedOrBlankVariety_KeysTheLabelAndTheFlag()`
-
-A named variety keys its label under `Variety.` and its flag under the ensign format.
-A blank variety has no flag key, and its label key is `Variety.` alone.
-
-## `public void SoundingContourRead_LevelsOffScale_DropsThemAndTheTone()`
-
-Every level the given scale lacks is dropped, while a repeated level on the scale stays.
-A syllable left with no level comes back untoned.
-
-## `public void SoundingContourRead_EmptyScale_LeavesEachUntoned()`
-
-An empty scale keeps every syllable's text but drops every level and every tone.
-
-## `public void SoundingContourRead_NoSyllables_AnswersNone()`
-
-No syllables give no contour, and nothing throws.
+The variety and contour maps left for their records, so `TVariety` and `TContourLevel` cover them.
 
 ## `public void SoundingFanqieRead_FreshDraft_AnswersEmpty()`
 

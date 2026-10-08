@@ -27,7 +27,7 @@ public sealed class TRepertoirePortrait
 
         Assert.False(File.Exists(path));
 
-        repertoire.CRepertoireOccurrenceSelect(hearth.LEntryId);
+        repertoire.CRepertoireDiptych.CDiptychChildSelect(hearth.LEntryId);
         await repertoire.CRepertoirePortraitExport();
 
         Assert.Equal("hearth", repertoire.CRepertoireOccurrence.TOccurrenceFileRead());

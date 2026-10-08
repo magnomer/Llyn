@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Llyn.Conduct;
 using Llyn.Core;
@@ -33,7 +31,7 @@ public sealed class TXieshengVista
         Assert.Equal(1, told);
         Assert.False(xiesheng.CXieshengStemShown);
         Assert.DoesNotContain(xiesheng.CXieshengGroveRead(), static row => row.CStemChosen);
-        Assert.Empty(xiesheng.CXieshengKindredRead());
+        Assert.Empty(xiesheng.CXieshengKindred.CEntryListRead());
     }
 
     [Fact]
@@ -46,7 +44,7 @@ public sealed class TXieshengVista
         int changed = 0;
         int rows = 0;
         xiesheng.CXieshengChanged += () => changed++;
-        xiesheng.CXieshengPanel.CPanelRowsChanged += () => rows++;
+        xiesheng.CXieshengKindred.CEntryListPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectFanqie, 0);
 
@@ -63,7 +61,7 @@ public sealed class TXieshengVista
         int changed = 0;
         int rows = 0;
         xiesheng.CXieshengChanged += () => changed++;
-        xiesheng.CXieshengPanel.CPanelRowsChanged += () => rows++;
+        xiesheng.CXieshengKindred.CEntryListPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectSettings, 0);
 
@@ -81,8 +79,8 @@ public sealed class TXieshengVista
         int rows = 0;
         int panel = 0;
         xiesheng.CXieshengChanged += () => changed++;
-        xiesheng.CXieshengPanel.CPanelRowsChanged += () => rows++;
-        xiesheng.CXieshengPanel.CPanelChanged += () => panel++;
+        xiesheng.CXieshengKindred.CEntryListPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
+        xiesheng.CXieshengKindred.CEntryListPanel.CPanelChanged += () => panel++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectEntry, 42);
 
@@ -98,15 +96,15 @@ public sealed class TXieshengVista
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         await TXiesheng.TXieshengStemSave(engine, pack.TLanguageFixtureName);
         CXiesheng xiesheng = TXiesheng.TXieshengPrepare(atelier);
-        xiesheng.CXieshengGroveFind("zzz");
-        xiesheng.CXieshengKindredFind("zzz");
+        xiesheng.CXieshengGrove.CApertureQuerySet("zzz");
+        xiesheng.CXieshengKindred.CEntryListPanel.CPanelAperture.CApertureQuerySet("zzz");
 
         xiesheng.TXieshengVistaRestore();
 
         Assert.Empty(xiesheng.CXieshengGroveRead());
-        Assert.Equal("Xiesheng.GroveUnmatched", xiesheng.CXieshengGroveKey);
+        Assert.Equal("Xiesheng.GroveUnmatched", xiesheng.CXieshengGrove.CApertureKey);
         xiesheng.TXieshengStemOpen(pack.TLanguageFixtureName, "龍");
-        Assert.Empty(xiesheng.CXieshengKindredRead());
+        Assert.Empty(xiesheng.CXieshengKindred.CEntryListRead());
         Assert.Equal("Xiesheng.KindredUnmatched", xiesheng.CXieshengKindredKey);
     }
 
@@ -171,33 +169,5 @@ public sealed class TXieshengVista
                 CCatalogOrder.CCatalogOrderUsage,
             ],
             CXiesheng.CXieshengOrderRead());
-    }
-
-    [Fact]
-    public async Task XieshengClose_ExitGate_ClosesTheEditorAndStopsTheRecording()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXiesheng.TXieshengPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = TXiesheng.TXieshengEngineStart(workspace);
-        int stopped = 0;
-        LMediaPort media = TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["LEngineRecordingStop"] = _ =>
-            {
-                stopped++;
-                return null;
-            },
-        });
-        using CAtelier atelier = TInterfaceConduct.TAtelierMediaCreate(engine, media);
-        LEntry entry = await TXiesheng.TXieshengStemSave(engine, pack.TLanguageFixtureName);
-        CXiesheng xiesheng = TXiesheng.TXieshengPrepare(atelier);
-        xiesheng.CXieshengPanel.CPanelRowOpen(entry.LEntryId);
-        xiesheng.CXieshengPanel.CPanelScribeToggle(true);
-        Assert.True(xiesheng.CXieshengEditor.CEditorDesk.CDeskHeld);
-
-        atelier.CAtelierClose();
-
-        Assert.False(xiesheng.CXieshengEditor.CEditorDesk.CDeskHeld);
-        Assert.Equal(1, stopped);
     }
 }

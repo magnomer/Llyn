@@ -29,7 +29,7 @@ internal sealed class QPlayback
     internal void QPlaybackIntroduce(CEditor editor)
     {
         _cEditor = editor;
-        editor.CEditorDraftChanged += QPlaybackRefine;
+        editor.CEditorEntry.CEntryDraftChanged += QPlaybackRefine;
     }
 
     private void QPlaybackRefine(CEntryDraft _)

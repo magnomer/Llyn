@@ -147,10 +147,10 @@ public sealed class TErrand
         Assert.Equal(
             [
                 new CClipReading(
-                    found, CSounding.CSoundingVarietyRead(string.Empty, "British"), false, "Downloader.Use",
+                    found, CVariety.CVarietyRead(string.Empty, "British"), false, "Downloader.Use",
                     true, false, false, false),
                 new CClipReading(
-                    plain, CSounding.CSoundingVarietyRead(string.Empty, string.Empty), false, "Downloader.Use",
+                    plain, CVariety.CVarietyRead(string.Empty, string.Empty), false, "Downloader.Use",
                     true, false, false, false),
             ],
             row.CClipItemReading);
@@ -194,7 +194,7 @@ public sealed class TErrand
         desk.TDeskVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
         desk.CDeskStart(null);
         desk.TDeskDefer(TInterface.TRequestHeadwordCreate(desk.CDeskId, "tomato"));
-        desk.CDeskPersist();
+        desk.CDeskDraft.CDeskDraftPersist();
         return desk;
     }
 

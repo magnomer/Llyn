@@ -1,5 +1,5 @@
 # TRepertoireVista.cs
-Hash: `1b8247dc72f1f293`
+Hash: `c805a883a8b90f6d`
 
 ## `public sealed class TRepertoireVista`
 
@@ -10,4 +10,4 @@ A create alone restores once, so the same notice after only a create raises once
 An entry notice refills the situation rows, so their tallies follow.
 A workspace notice closes the chosen Situation and tells the driver.
 A settings notice refills the situation rows through the marshal.
-Its flag-fill load answers the same rows once the fill has run.
+The flag-fill load answers the rows and their languages once the fill has run.

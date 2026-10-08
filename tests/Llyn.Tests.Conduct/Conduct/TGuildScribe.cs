@@ -18,13 +18,13 @@ public sealed class TGuildScribe
         List<string> asked = [];
         CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
-        guild.CGuildAuthorCreate();
+        guild.CGuildDiptych.CDiptychEntryCreate();
         guild.CGuildAutograph.TDeskDefer(TInterface.TAuthorNameCreate(guild.CGuildAutograph.CDeskId, "Bob"));
 
         guild.CGuildAuthorSelect(ada.LAuthorId);
 
         Assert.Equal(["Leave"], asked);
-        Assert.True(guild.CGuildAutographShown);
+        Assert.True(guild.CGuildDiptych.CDiptychParentEditing);
         Assert.False(guild.CGuildVitaHeld);
     }
 
@@ -61,13 +61,13 @@ public sealed class TGuildScribe
         List<string> asked = [];
         CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
-        guild.CGuildAuthorCreate();
+        guild.CGuildDiptych.CDiptychEntryCreate();
         guild.CGuildAutograph.TDeskDefer(TInterface.TAuthorNameCreate(guild.CGuildAutograph.CDeskId, "Bob"));
 
         guild.TGuildAuthorOpen(ada.LAuthorId);
 
         Assert.Empty(asked);
-        Assert.True(guild.CGuildAutographShown);
+        Assert.True(guild.CGuildDiptych.CDiptychParentEditing);
         Assert.True(guild.CGuildBinEnabled);
         Assert.Equal("Ada", guild.CGuildRollRead().CGuildRollVita.CVitaName);
     }
@@ -84,7 +84,7 @@ public sealed class TGuildScribe
 
         guild.CGuildScribeToggle(true);
 
-        Assert.False(guild.CGuildAutographShown);
+        Assert.False(guild.CGuildDiptych.CDiptychParentEditing);
         Assert.False(guild.CGuildPanel.CPanelBinEnabled);
         Assert.False(guild.CGuildAutograph.CDeskHeld);
     }
@@ -100,13 +100,13 @@ public sealed class TGuildScribe
 
         guild.TGuildScribeRestore(true);
 
-        Assert.False(guild.CGuildAutographShown);
+        Assert.False(guild.CGuildDiptych.CDiptychParentEditing);
 
         guild.CGuildAuthorSelect(ada.LAuthorId);
         guild.TGuildScribeRestore(true);
 
-        Assert.True(guild.CGuildAutographShown);
-        Assert.True(guild.CGuildUnionShown);
+        Assert.True(guild.CGuildDiptych.CDiptychParentEditing);
+        Assert.True(guild.CGuildUnion.CGuildUnionShown);
     }
 
     [Fact]
@@ -119,10 +119,10 @@ public sealed class TGuildScribe
         List<string> asked = [];
         CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
 
-        guild.CGuildAuthorCreate();
+        guild.CGuildDiptych.CDiptychEntryCreate();
 
-        Assert.True(guild.CGuildAutographShown);
-        Assert.False(guild.CGuildUnionShown);
+        Assert.True(guild.CGuildDiptych.CDiptychParentEditing);
+        Assert.False(guild.CGuildUnion.CGuildUnionShown);
         Assert.False(guild.CGuildStoreEnabled);
         Assert.False(guild.CGuildSession.CSessionSave());
         Assert.Equal(["Guild.NameBlank"], asked);
@@ -131,8 +131,8 @@ public sealed class TGuildScribe
 
         Assert.True(guild.CGuildStoreEnabled);
         Assert.True(guild.CGuildSession.CSessionSave());
-        Assert.True(guild.CGuildAutographShown);
-        Assert.True(guild.CGuildUnionShown);
+        Assert.True(guild.CGuildDiptych.CDiptychParentEditing);
+        Assert.True(guild.CGuildUnion.CGuildUnionShown);
         Assert.True(guild.CGuildAutograph.CDeskHeld);
         Assert.Equal(
             ["Ada"],

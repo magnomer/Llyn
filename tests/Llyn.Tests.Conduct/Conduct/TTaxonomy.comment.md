@@ -1,5 +1,5 @@
 # TTaxonomy.cs
-Hash: `d5363dada5e9fb1e`
+Hash: `4e0210c8851e9917`
 
 ## `public sealed class TTaxonomy`
 
@@ -20,12 +20,12 @@ Closing the atelier cancels the editor's held entry and stops the display's play
 ## `internal static CTaxonomy TTaxonomyPrepare(CAtelier atelier, CEnvoy envoy)`
 
 Builds the taxonomy, which restores both of its vistas itself, as the window does for the tab.
-`TTaxonomyEntry` and `TTaxonomyVista` share it.
+`TTaxonomyEntry`, `TTaxonomyVista`, `TFaultMark` and `TFaultPortrait` share it.
 
 ## `internal static LEntry TTaxonomyEntrySave(LEngine engine)`
 
 Stores one plain entry the membership list can open.
-`TTaxonomyEntry` shares it.
+`TTaxonomyEntry` and `TFaultPortrait` share it.
 
 ## `internal static void TTaxonomyChangePrepare(LEngine engine, CTaxonomy taxonomy)`
 

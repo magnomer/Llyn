@@ -8,7 +8,7 @@ namespace Llyn.UIDeportment;
 
 public sealed class QLecternAccent
 {
-    private readonly CDisplaySound _qLecternAccentArea;
+    private readonly CDisplayAccent _qLecternAccentArea;
 
     private readonly ObservableCollection<QAccentItem> _qLecternAccentRow = [];
 
@@ -30,7 +30,7 @@ public sealed class QLecternAccent
 
     private DependencyProperty _qLecternAccentSyllables = null!;
 
-    public QLecternAccent(CDisplaySound area)
+    public QLecternAccent(CDisplayAccent area)
     {
         ArgumentNullException.ThrowIfNull(area);
 
@@ -71,7 +71,7 @@ public sealed class QLecternAccent
         _qLecternAccentCloser = closer;
         _qLecternAccentContour = contour;
         _qLecternAccentSyllables = syllables;
-        contour.SetValue(scale, _qLecternAccentArea.CDisplaySoundScale);
+        contour.SetValue(scale, _qLecternAccentArea.CDisplayAccentScale);
         accents.ItemsSource = _qLecternAccentRow;
         QLookItem.QLookItemAttach(accents, QAccentItem.QAccentItemRefine);
     }
@@ -83,7 +83,7 @@ public sealed class QLecternAccent
 
     public async void QLecternEnsignRefine()
     {
-        QLecternFlagRefine(await _qLecternAccentArea.CDisplayEnsignLoad(QEnsignImage.QEnsignDraw));
+        QLecternFlagRefine(await _qLecternAccentArea.CDisplayAccentLoad(QEnsignImage.QEnsignDraw));
     }
 
     public void QLecternMuteRefine()

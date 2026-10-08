@@ -1,19 +1,19 @@
 # CXiesheng.cs
-Hash: `ac32169155803d2f`
+Hash: `964470f947356189`
 
 ## `public sealed class CXiesheng`
 
 The xiesheng panel's session, the workspace browsed by phonetic series.
-It holds the series column's vista, the entry list's vista and panel, and the entry editor.
+It holds the series column's aperture and the entry list, which owns the panel and the entry editor.
 It is the yunjing session with one column instead of two, since a series names a cell by itself.
 It restores its vistas itself, so no driver holds a port or a vista.
 
 ## `private CXiesheng(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
-Takes the atelier's ports and builds the panel's own entry editor.
-The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
-A cleared panel empties the editor, and an edited row opens in it.
-It registers its vista restore and its close with the workspace.
+Takes the atelier's ports and builds the series column's aperture and the entry list.
+The entry list builds the panel and its editor, and its change is raised as this session's change.
+It hands the list the series lookup, so the list never reads the column.
+It registers its vista restore with the workspace.
 It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CXiesheng CXieshengCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
@@ -32,18 +32,19 @@ Raised whenever a column, the page or the mode changed and the driver must copy 
 The workspace changed under the panel, after the series and the chosen entry were let go.
 The driver answers it by drawing the flags of the languages again.
 
+## `public CAperture CXieshengGrove { get; }`
+
+The series column's vista with its search, its order, its count and its empty keys.
+An empty column prints `Xiesheng.GroveEmpty`, or `Xiesheng.GroveUnmatched` while narrowed.
+
+## `public CEntryList CXieshengKindred { get; }`
+
+The entry list of the chosen series, with its panel, its editor and its press.
+An empty list under a chosen series prints `Xiesheng.KindredVacant`, or `Xiesheng.KindredUnmatched` while narrowed.
+
 ## `public event Action? CXieshengStemOpened;`
 
 Raised when a series chip's arrival starts, so the driver shows the series search empty.
-
-## `public CEditor CXieshengEditor { get; }`
-
-The entry editor the reader column opens the chosen entry in.
-The driver wraps it for the editor view and the lectern.
-
-## `public CPanel CXieshengPanel { get; }`
-
-The panel state of the entry list, with its mode, its chosen row and its draft.
 
 ## `internal bool LXieshengAllowed`
 
@@ -58,37 +59,14 @@ True while a chosen series is read as a page rather than an entry.
 
 True while the reader shows an entry for reading.
 
-## `public bool CXieshengEditorShown`
-
-True while the reader shows the editor.
-
-## `public bool CXieshengGroveEmpty`
-
-Whether the last column read found nothing, so no driver counts rows.
-
-## `public bool CXieshengKindredEmpty`
-
-Whether the last entry list read found nothing.
-
-## `public string CXieshengGroveKey`
-
-The localization key the empty series column prints, telling a narrowed column from a bare one.
-
 ## `public string CXieshengKindredKey`
 
 The localization key the empty entry list prints, telling no series chosen from a series with nothing.
-
-## `public CCatalogOrder CXieshengOrder`
-
-The ordering the series column is listed in, defaulted by the engine while no vista stands.
+A chosen series reads the list's aperture key, narrowed or not.
 
 ## `private readonly Action<Action> _cXieshengMarshal;`
 
 The medium's marshal the observers run each answer through, since only the medium knows its thread.
-
-## `private string LXieshengVacantKey`
-
-The key a chosen series with no entry prints, narrowed or not.
 
 ## `private bool LXieshengStemChosen`
 
@@ -96,19 +74,17 @@ True while the column points at a series.
 
 ## `internal void LXieshengVistaRestore()`
 
-Starts the two vistas off the window posture, the column and the entry list.
-The column is ordered by name and the list by headword until the user picks another order.
-The search text of each vista before it carries into its fresh one, so a workspace switch keeps it.
-The list's vista then goes to the panel and the editor, and every observer attaches to the fresh vistas.
+Starts the column's vista off the window posture, ordered by name until the user picks another order.
+The aperture carries the search text of the vista before into the fresh one, so a workspace switch keeps it.
+The entry list then restores its own vista, and every observer attaches to the fresh vistas.
 The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
 
-## `private void LXieshengObserverAttach(LVista grove)`
+## `private void LXieshengObserverAttach()`
 
-Attaches the panel's answers to the fresh vistas, each carried through the marshal.
+Attaches the panel's answers to the fresh column, each carried through the marshal.
 A Vista, Fanqie or Settings notice on the column raises the column and the rows again.
 A Workspace notice on the column goes to `LXieshengWorkspaceResonate`.
-The list's own Vista notice raises its rows, and an Entry notice goes to `LXieshengEntryResonate`.
-A notice on the chosen entry reads its draft again.
+The entry list then attaches its own answers to its vista.
 
 ## `public static IReadOnlyList<CCatalogOrder> CXieshengOrderRead()`
 
@@ -117,58 +93,23 @@ It needs no session, so the driver builds the menu once.
 
 ## `public IReadOnlyList<CStem> CXieshengGroveRead()`
 
-The series column as the driver copies it, counted for the empty verdict.
+The series column as the driver copies it, counted into the aperture for the empty verdict.
 The engine picks the language and answers nothing while no pack carries series.
 
-## `public IReadOnlyList<CVistaRow> CXieshengKindredRead()`
+## `private IReadOnlyList<LVistaRow> LXieshengKindredFind(LVista kindred)`
 
-The entry list of the chosen series, copied through the shared row map and counted for the empty verdict.
-A failed read shows `Xiesheng.LoadFailed` through the envoy and answers no rows, so the count reads zero.
-The load task runs this read after the flag fill, so a throw here would fault the driver.
-
-## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CXieshengKindredLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
-
-Runs the flag fill into the driver's `store`, then answers `CXieshengKindredRead` beside the loaded languages.
-The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
-A failed flag fill shows `Xiesheng.LoadFailed` and still answers the rows with no languages.
-The driver awaits it from an event handler, where a fault would end the app.
+The seam the entry list reads its rows through, the entries of the chosen series.
+It answers no rows while the column has no vista.
 
 ## `public CStemPage CXieshengStemRead()`
 
 The page of the chosen series, or the blank page while the reader shows an entry.
 It carries the headword and glyph fonts of the series language, as `CYunjingDiweiRead` does.
 
-## `public void CXieshengGroveFind(string query)`
-
-Narrows the series column to that query.
-
-## `public void CXieshengKindredFind(string query)`
-
-Narrows the entry list to that query.
-
-## `public void CXieshengGroveSet(CCatalogOrder? order)`
-
-Lists the series column in that ordering.
-The vista keeps the one it has when none is named.
-
 ## `private void LXieshengWorkspaceResonate()`
 
 Unchooses the series and clears the panel, as a workspace changes.
 It then tells the driver through `CXieshengWorkspaceChanged`.
-
-## `private void LXieshengRowsResonate()`
-
-Answers a column notice by raising the change and refreshing the panel's own rows.
-
-## `private void LXieshengEntryResonate(CBulletin bulletin)`
-
-Answers an entry notice by raising the change and handing the notice to the panel.
-
-## `private void LXieshengClose()`
-
-The panel's part of the atelier's close.
-The editor lets its draft go, then the display stops its playback.
-`CAtelierClose` runs it through the closure the constructor registers.
 
 ## `public void CXieshengStemSelect(long? id)`
 
@@ -184,7 +125,7 @@ It asks nothing, so each caller settles the leave question first.
 
 The navigation's arrival: opens the series of that language and key, the request a series chip makes.
 It first empties the series search and raises `CXieshengStemOpened`, so the driver shows it empty.
-The engine finds the series, and nothing happens for a blank key or a series never stored.
+The engine finds the series, and a blank key or a series never stored opens nothing.
 It toggles the series without the gate's leave question, since the navigation already asked it.
 After a discard the draft still reads as changed, so asking again would repeat the dialog.
 
@@ -196,25 +137,3 @@ Nothing opens while no series page shows.
 The navigation's jump asks every leave question, so the gate asks none of its own.
 The page's language and the resolve are one engine call, so the page is never read whole for its language.
 A refused resolve is shown through the catalog's one glyph failure owner, and nothing opens.
-
-## `internal string LXieshengFileRead()`
-
-The file name an export of the read entry is offered under.
-`CPortrait` reads it only once the export starts, and a failed read shows `Export.NameFailed`.
-
-## `public Task CXieshengPortraitPrint()`
-
-Prints the entry the reader holds, doing nothing while there is none.
-The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
-`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
-
-## `public Task CXieshengPortraitExport()`
-
-Exports the entry the reader holds as a portrait file.
-The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
-`CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.
-
-## `private static void LXieshengGroveAttach(LVista grove, CSubject subject, Action<CBulletin> observer)`
-
-Attaches the observer to the series column.
-The subject and bulletin maps are the panel's and the atelier's, so the driver names neither engine type.

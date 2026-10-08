@@ -36,14 +36,14 @@ public sealed class TShelfRoll
         CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LReference book = TShelfRollPrepare(engine);
         shelf.CShelfReferenceSelect(book.LReferenceId);
-        shelf.CShelfQuerySet("zzz");
+        shelf.CShelfPanel.CPanelAperture.CApertureQuerySet("zzz");
 
         CShelfRoll roll = shelf.CShelfRollRead();
 
         Assert.True(roll.CShelfRollEmpty);
         Assert.Empty(roll.CShelfRollRows);
         Assert.Equal(TInterface.TLocalizationTextRead("Source.UsageNone"), roll.CShelfRollTally);
-        Assert.False(shelf.CShelfBinEnabled);
+        Assert.False(shelf.CShelfDiptych.CDiptychBinEnabled);
     }
 
     [Fact]

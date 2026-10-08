@@ -1,5 +1,5 @@
 # TGuildMode.cs
-Hash: `291531cac0f16940`
+Hash: `8274056122aa7caa`
 
 ## `public sealed class TGuildMode`
 

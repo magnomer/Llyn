@@ -117,6 +117,6 @@ internal sealed partial class QCorpus
 
     private void QCorpusFreshObserve(object sender, RoutedEventArgs e)
     {
-        _cCorpus.CCorpusExampleCreate();
+        _cCorpus.CCorpusDiptych.CDiptychEntryCreate();
     }
 }

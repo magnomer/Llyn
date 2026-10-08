@@ -1,5 +1,5 @@
 # QCorpus.cs
-Hash: `9934a4edc15b957e`
+Hash: `49243208d01c2fdd`
 
 ## `internal sealed partial class QCorpus : QChronicleHost`
 
@@ -49,7 +49,6 @@ Only the medium knows its dispatcher, so the marshal the area runs its notices t
 It reads `_cTranscript` first, since `QTranscriptDeskIntroduce` subscribes the transcript's draft notice on it.
 The desk and the transcript show their own failures through the envoy.
 The lectern follows the quotation panel, whose loads and clears reach the display's area, never the veneer.
-Binds the panel to the window it asks for confirmations and panel switches through.
 It binds its lists and subscribes to the engine, and reads nothing yet.
 The chip line and the two Gloss lists are attached to their fills, since their templates carry no bindings.
 The transcript Gloss list takes the driver's own fill, which wires the row's handlers around the shared fill.

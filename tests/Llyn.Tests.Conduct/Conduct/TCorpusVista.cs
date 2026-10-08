@@ -34,13 +34,13 @@ public sealed class TCorpusVista
         TCorpus.TCorpusExampleSave(engine, "a cat sat");
         TCorpus.TCorpusExampleSave(engine, "a dog ran");
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        corpus.CCorpusAnthology.CAnthologyQuerySet("dog");
-        corpus.CCorpusQuotation.CQuotationQuerySet("zzz");
+        corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureQuerySet("dog");
+        corpus.CCorpusQuotation.CQuotationPanel.CPanelAperture.CApertureQuerySet("zzz");
 
         corpus.TCorpusVistaRestore();
 
         Assert.Equal(["a dog ran"], corpus.CCorpusRowsRead().Select(row => row.CCatalogExampleText));
-        Assert.Equal("Example.Unmatched", corpus.CCorpusQuotation.CQuotationEmptyKey);
+        Assert.Equal("Example.Unmatched", corpus.CCorpusQuotation.CQuotationPanel.CPanelAperture.CApertureKey);
     }
 
     [Fact]
@@ -63,8 +63,8 @@ public sealed class TCorpusVista
         corpus.TCorpusVistaRestore();
         int anthology = 0;
         int quotation = 0;
-        corpus.CCorpusAnthology.CAnthologyPanel.CPanelRowsChanged += () => anthology++;
-        corpus.CCorpusQuotation.CQuotationPanel.CPanelRowsChanged += () => quotation++;
+        corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureRowsChanged += () => anthology++;
+        corpus.CCorpusQuotation.CQuotationPanel.CPanelAperture.CApertureRowsChanged += () => quotation++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectExample, cat.LExampleId);
 
@@ -92,8 +92,8 @@ public sealed class TCorpusVista
             });
         int anthology = 0;
         int quotation = 0;
-        corpus.CCorpusAnthology.CAnthologyPanel.CPanelRowsChanged += () => anthology++;
-        corpus.CCorpusQuotation.CQuotationPanel.CPanelRowsChanged += () => quotation++;
+        corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureRowsChanged += () => anthology++;
+        corpus.CCorpusQuotation.CQuotationPanel.CPanelAperture.CApertureRowsChanged += () => quotation++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectExample, cat.LExampleId);
 
@@ -111,7 +111,7 @@ public sealed class TCorpusVista
         LEntry water = TCorpus.TCorpusEntrySave(engine);
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         int anthology = 0;
-        corpus.CCorpusAnthology.CAnthologyPanel.CPanelRowsChanged += () => anthology++;
+        corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureRowsChanged += () => anthology++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectEntry, water.LEntryId);
 
@@ -119,7 +119,7 @@ public sealed class TCorpusVista
     }
 
     [Fact]
-    public void AnthologyPanelTallyRead_QuotingEntriesAdded_WordsEachForm()
+    public void AnthologyApertureTallyRead_QuotingEntriesAdded_WordsEachForm()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -127,12 +127,12 @@ public sealed class TCorpusVista
         LExample cat = TCorpus.TCorpusExampleSave(engine, "a cat sat");
         engine.TRequestQuoteApply(TCorpus.TCorpusEntrySave(engine).LEntryId, cat.LExampleId);
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        List<string> tallies = [corpus.CCorpusAnthology.CAnthologyPanel.CPanelTallyRead()];
+        List<string> tallies = [corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureTallyRead()];
 
         corpus.TCorpusExampleOpen(cat.LExampleId);
-        tallies.Add(corpus.CCorpusAnthology.CAnthologyPanel.CPanelTallyRead());
+        tallies.Add(corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureTallyRead());
         engine.TRequestQuoteApply(TCorpus.TCorpusEntrySave(engine).LEntryId, cat.LExampleId);
-        tallies.Add(corpus.CCorpusAnthology.CAnthologyPanel.CPanelTallyRead());
+        tallies.Add(corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureTallyRead());
 
         Assert.Equal(
             [

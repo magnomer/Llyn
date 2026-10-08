@@ -1,10 +1,10 @@
 # CAtlas.cs
-Hash: `a129ff35118b9a57`
+Hash: `bd61b70482851f4b`
 
 ## `public sealed class CAtlas`
 
-The repertoire panel's situation list: the situation vista it holds and the panel over it.
-It finds the rows and their usage, and takes the query, order and language filter.
+The repertoire panel's situation list: the panel over the situation vista.
+It finds the rows and their usage, while the panel's aperture takes the query, order and language filter.
 Its panel loads, edits and deletes the chosen Situation, worded under the Situation scope.
 It also prints the listed situations.
 
@@ -19,23 +19,10 @@ Only `CRepertoire` builds it, over the atelier's ports.
 
 The panel over the situation vista, built once with the Situation scope and the repertoire seams.
 
-## `public long? CAtlasChosen`
-
-The id of the chosen Situation, or null before a vista arrives or while none is chosen.
-
-## `public bool CAtlasFiltered`
-
-Whether the vista's language filter hides any language, false before a vista arrives.
-
-## `internal bool LAtlasNarrowed`
-
-Whether the query or the filter hides any row, as the vista answers it.
-Only `CRepertoire` reads it, when an arrival lands on a hidden row.
-
 ## `internal void LAtlasVistaRestore(LVista vista)`
 
-Binds the list and its panel to the repertoire vista a workspace start or switch hands over.
-The query the former vista held is carried into the fresh one, so a switched workspace keeps the search.
+Binds the list's aperture to the repertoire vista a workspace start or switch hands over.
+The aperture carries the former vista's query into the fresh one, so a switched workspace keeps the search.
 
 ## `internal void LAtlasObserverAttach(Action<Action> marshal, Action workspace)`
 
@@ -47,18 +34,6 @@ A workspace notice runs the answer the area hands in.
 
 The orderings the list offers, in menu order.
 A driver builds its ordering menu from it once.
-
-## `public void CAtlasQuerySet(string query)`
-
-Hands the typed query to the vista, which refills the rows.
-
-## `public void CAtlasFilterSet(CCatalogFilter filter)`
-
-Hands the languages the filter hides to the vista.
-
-## `public void CAtlasOrderSet(CCatalogOrder? order)`
-
-Hands a chosen ordering to the vista, which keeps its own when the sender is no order row.
 
 ## `internal IReadOnlyList<CCatalogSituation>? LAtlasRowsRead()`
 

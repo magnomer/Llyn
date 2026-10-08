@@ -17,8 +17,6 @@ public sealed class CAtlas
 
     private readonly CEnvoy _cAtlasEnvoy;
 
-    private LVista? _cAtlasVista;
-
     internal CAtlas(
         LSituationPort situations,
         LPortraitPort portraits,
@@ -48,18 +46,10 @@ public sealed class CAtlas
 
     public CPanel CAtlasPanel { get; }
 
-    public long? CAtlasChosen => _cAtlasVista?.LVistaChosen;
-
-    public bool CAtlasFiltered => _cAtlasVista?.LVistaFiltered ?? false;
-
-    internal bool LAtlasNarrowed => _cAtlasVista?.LVistaNarrowed ?? false;
-
     internal void LAtlasVistaRestore(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
 
-        vista.LVistaQuerySet(_cAtlasVista?.LVistaQuery ?? string.Empty);
-        _cAtlasVista = vista;
         CAtlasPanel.CPanelVistaRestore(vista);
     }
 
@@ -68,24 +58,12 @@ public sealed class CAtlas
         ArgumentNullException.ThrowIfNull(marshal);
         ArgumentNullException.ThrowIfNull(workspace);
 
-        Action<CBulletin> rows = _ => marshal(CAtlasPanel.CPanelRowsResonate);
-        CAtlasPanel.CPanelObserverAttach(CSubject.CSubjectVista, rows);
-        CAtlasPanel.CPanelObserverAttach(CSubject.CSubjectWorkspace, _ => marshal(workspace));
-        CAtlasPanel.CPanelObserverAttach(CSubject.CSubjectSituation, rows);
-        CAtlasPanel.CPanelObserverAttach(CSubject.CSubjectReflex, rows);
-        CAtlasPanel.CPanelObserverAttach(CSubject.CSubjectSettings, rows);
-    }
-
-    public void CAtlasQuerySet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _cAtlasVista?.LVistaQuerySet(query);
-    }
-
-    public void CAtlasOrderSet(CCatalogOrder? order)
-    {
-        _cAtlasVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
+        Action<CBulletin> rows = _ => marshal(CAtlasPanel.CPanelAperture.CApertureRowsResonate);
+        CAtlasPanel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectVista, rows);
+        CAtlasPanel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectWorkspace, _ => marshal(workspace));
+        CAtlasPanel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectSituation, rows);
+        CAtlasPanel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectReflex, rows);
+        CAtlasPanel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectSettings, rows);
     }
 
     public static IReadOnlyList<CCatalogOrder> CAtlasOrderRead()
@@ -98,16 +76,9 @@ public sealed class CAtlas
         ];
     }
 
-    public void CAtlasFilterSet(CCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-
-        _cAtlasVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
-    }
-
     internal IReadOnlyList<CCatalogSituation>? LAtlasRowsRead()
     {
-        if (_cAtlasVista is not LVista vista)
+        if (CAtlasPanel.CPanelAperture.CApertureVista is not LVista vista)
         {
             return [];
         }
@@ -140,7 +111,9 @@ public sealed class CAtlas
             envoy,
             settings,
             chosen => _cAtlasPortraitPort.LEnginePortraitPrint(
-                _cAtlasVista, CPortrait.LPortraitLegendRead(settings, "Situation"), chosen));
+                CAtlasPanel.CPanelAperture.CApertureVista,
+                CPortrait.LPortraitLegendRead(settings, "Situation"),
+                chosen));
     }
 
     internal static CCatalogSituation LAtlasRowRead(LCatalogSituation row)

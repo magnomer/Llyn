@@ -1,5 +1,5 @@
 # TTenor.cs
-Hash: `ec757263ecfb0108`
+Hash: `738f8586d18e5c2e`
 
 ## `public sealed class TTenor`
 

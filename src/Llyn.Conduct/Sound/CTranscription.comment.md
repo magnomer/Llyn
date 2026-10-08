@@ -1,5 +1,5 @@
 # CTranscription.cs
-Hash: `71f565cd051b48c1`
+Hash: `902b69e36ea27b69`
 
 ## `public sealed class CTranscription`
 

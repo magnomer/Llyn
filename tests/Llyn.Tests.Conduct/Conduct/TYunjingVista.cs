@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Conduct;
@@ -34,7 +33,7 @@ public sealed class TYunjingVista
         Assert.False(yunjing.CYunjingDiweiShown);
         Assert.DoesNotContain(yunjing.CYunjingShengmuRead(), static row => row.CDiweiChosen);
         Assert.DoesNotContain(yunjing.CYunjingYunmuRead(), static row => row.CDiweiChosen);
-        Assert.Empty(yunjing.CYunjingXiaoyunRead());
+        Assert.Empty(yunjing.CYunjingXiaoyun.CEntryListRead());
     }
 
     [Fact]
@@ -47,21 +46,21 @@ public sealed class TYunjingVista
         TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, TYunjing.TYunjingBook, "孤", "見");
         CYunjing yunjing = TYunjing.TYunjingPrepare(atelier);
         IReadOnlyList<CDiwei> yunmu = yunjing.CYunjingYunmuRead();
-        CCatalogOrder order = yunjing.CYunjingShengmuOrder;
+        CCatalogOrder order = yunjing.CYunjingShengmu.CApertureOrder;
         int changed = 0;
         yunjing.CYunjingChanged += () => changed++;
 
-        yunjing.CYunjingShengmuFind("來");
+        yunjing.CYunjingShengmu.CApertureQuerySet("來");
 
         Assert.Equal(1, changed);
         Assert.Equal(["來"], yunjing.CYunjingShengmuRead().Select(static row => row.CDiweiKey));
         Assert.Equal(yunmu, yunjing.CYunjingYunmuRead());
 
-        yunjing.CYunjingYunmuSet(CCatalogOrder.CCatalogOrderReverse);
+        yunjing.CYunjingYunmu.CApertureOrderSet(CCatalogOrder.CCatalogOrderReverse);
 
         Assert.Equal(2, changed);
-        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, yunjing.CYunjingYunmuOrder);
-        Assert.Equal(order, yunjing.CYunjingShengmuOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, yunjing.CYunjingYunmu.CApertureOrder);
+        Assert.Equal(order, yunjing.CYunjingShengmu.CApertureOrder);
         Assert.Equal(["來"], yunjing.CYunjingShengmuRead().Select(static row => row.CDiweiKey));
     }
 
@@ -75,7 +74,7 @@ public sealed class TYunjingVista
         int changed = 0;
         int rows = 0;
         yunjing.CYunjingChanged += () => changed++;
-        yunjing.CYunjingPanel.CPanelRowsChanged += () => rows++;
+        yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectFanqie, 0);
 
@@ -92,7 +91,7 @@ public sealed class TYunjingVista
         int changed = 0;
         int rows = 0;
         yunjing.CYunjingChanged += () => changed++;
-        yunjing.CYunjingPanel.CPanelRowsChanged += () => rows++;
+        yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectSettings, 0);
         engine.TEngineBulletinRaise(LSubject.LSubjectReflex, 0);
@@ -111,8 +110,8 @@ public sealed class TYunjingVista
         int rows = 0;
         int panel = 0;
         yunjing.CYunjingChanged += () => changed++;
-        yunjing.CYunjingPanel.CPanelRowsChanged += () => rows++;
-        yunjing.CYunjingPanel.CPanelChanged += () => panel++;
+        yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
+        yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelChanged += () => panel++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectEntry, 42);
 
@@ -127,17 +126,17 @@ public sealed class TYunjingVista
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, TYunjing.TYunjingBook, "爛", "來");
         CYunjing yunjing = TYunjing.TYunjingPrepare(atelier);
-        yunjing.CYunjingShengmuFind("zzz");
-        yunjing.CYunjingYunmuFind("zzz");
-        yunjing.CYunjingXiaoyunFind("zzz");
+        yunjing.CYunjingShengmu.CApertureQuerySet("zzz");
+        yunjing.CYunjingYunmu.CApertureQuerySet("zzz");
+        yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelAperture.CApertureQuerySet("zzz");
 
         yunjing.TYunjingVistaRestore();
 
         Assert.Empty(yunjing.CYunjingShengmuRead());
-        Assert.Equal("Yunjing.ShengmuUnmatched", yunjing.CYunjingShengmuKey);
+        Assert.Equal("Yunjing.ShengmuUnmatched", yunjing.CYunjingShengmu.CApertureKey);
         Assert.Empty(yunjing.CYunjingYunmuRead());
-        Assert.Equal("Yunjing.YunmuUnmatched", yunjing.CYunjingYunmuKey);
-        Assert.Empty(yunjing.CYunjingXiaoyunRead());
+        Assert.Equal("Yunjing.YunmuUnmatched", yunjing.CYunjingYunmu.CApertureKey);
+        Assert.Empty(yunjing.CYunjingXiaoyun.CEntryListRead());
         Assert.Equal("Yunjing.XiaoyunEmpty", yunjing.CYunjingXiaoyunKey);
     }
 
@@ -190,35 +189,5 @@ public sealed class TYunjingVista
 
         Assert.Equal(1, changed);
         Assert.Equal(1, marshalled);
-    }
-
-    [Fact]
-    public void YunjingClose_ExitGate_ClosesTheEditorAndStopsTheRecording()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjing.TYunjingPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        int stopped = 0;
-        LMediaPort media = TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["LEngineRecordingStop"] = _ =>
-            {
-                stopped++;
-                return null;
-            },
-        });
-        using CAtelier atelier = TInterfaceConduct.TAtelierMediaCreate(engine, media);
-        string language = pack.TLanguageFixtureName;
-        TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
-        CYunjing yunjing = TYunjing.TYunjingPrepare(atelier);
-        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
-        yunjing.CYunjingPanel.CPanelRowOpen(Assert.Single(yunjing.CYunjingXiaoyunRead()).CVistaRowId);
-        yunjing.CYunjingPanel.CPanelScribeToggle(true);
-        Assert.True(yunjing.CYunjingEditor.CEditorDesk.CDeskHeld);
-
-        atelier.CAtelierClose();
-
-        Assert.False(yunjing.CYunjingEditor.CEditorDesk.CDeskHeld);
-        Assert.Equal(1, stopped);
     }
 }

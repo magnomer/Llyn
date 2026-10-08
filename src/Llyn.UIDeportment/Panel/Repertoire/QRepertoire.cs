@@ -238,11 +238,11 @@ internal sealed partial class QRepertoire : QChronicleHost
         _cRepertoire.CRepertoireQueryCleared += QInquestRefine;
         _cRepertoire.CRepertoireWorkspaceChanged += QRepertoireWorkspaceRefine;
         atlas.CPanelChanged += QRepertoireModeRefine;
-        atlas.CPanelRowsChanged += QAtlasRefine;
-        atlas.CPanelRowsChanged += QRepertoireTallyRefine;
+        atlas.CPanelAperture.CApertureRowsChanged += QAtlasRefine;
+        atlas.CPanelAperture.CApertureRowsChanged += QRepertoireTallyRefine;
         atlas.CPanelCleared += QVignetteClearRefine;
         occurrence.CPanelChanged += QRepertoireModeRefine;
-        occurrence.CPanelRowsChanged += QOccurrenceRefine;
+        occurrence.CPanelAperture.CApertureRowsChanged += QOccurrenceRefine;
     }
 
     private bool QRepertoireShownCheck()
@@ -252,18 +252,21 @@ internal sealed partial class QRepertoire : QChronicleHost
 
     private void QRepertoireModeRefine()
     {
-        QScenario.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireScenarioShown);
-        QVignette.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireVignetteShown);
-        _qRepertoireDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(_cRepertoire.CRepertoireDisplayShown));
-        _qRepertoireEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(_cRepertoire.CRepertoireEditorShown));
+        QScenario.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireDiptych.CDiptychParentEditing);
+        QVignette.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireDiptych.CDiptychParentShown);
+        _qRepertoireDisplay.QDisplayVisibleRefine(
+            QLook.QLookVisibleRead(_cRepertoire.CRepertoireDiptych.CDiptychChildShown));
+        _qRepertoireEditor.QEditorVisibleRefine(
+            QLook.QLookVisibleRead(_cRepertoire.CRepertoireDiptych.CDiptychChildEditing));
         QVignetteBody.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireVignetteHeld);
         QVignetteUnselected.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireVignetteBlank);
-        QRepertoireViewer.IsChecked = _cRepertoire.CRepertoireViewerChecked;
-        QRepertoireScribe.IsChecked = _cRepertoire.CRepertoireScribeChecked;
-        QRepertoireVoyage.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireViewerChecked);
-        QRepertoireChronicle.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireScribeChecked);
-        QRepertoireMode.IsEnabled = _cRepertoire.CRepertoireModeEnabled;
-        QRepertoireBin.IsEnabled = _cRepertoire.CRepertoireBinEnabled;
+        QRepertoireViewer.IsChecked = _cRepertoire.CRepertoireDiptych.CDiptychViewerChecked;
+        QRepertoireScribe.IsChecked = _cRepertoire.CRepertoireDiptych.CDiptychScribeChecked;
+        QRepertoireVoyage.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireDiptych.CDiptychViewerChecked);
+        QRepertoireChronicle.Visibility =
+            QLook.QLookVisibleRead(_cRepertoire.CRepertoireDiptych.CDiptychScribeChecked);
+        QRepertoireMode.IsEnabled = _cRepertoire.CRepertoireDiptych.CDiptychModeEnabled;
+        QRepertoireBin.IsEnabled = _cRepertoire.CRepertoireDiptych.CDiptychBinEnabled;
         QRepertoireStore.IsEnabled = _cRepertoire.CRepertoireStoreEnabled;
         QScenario.IsEnabled = _cRepertoire.CRepertoireScenarioEnabled;
         QRepertoireChronicleRefine();

@@ -28,12 +28,12 @@ public sealed class TCorpusHold
                 run();
             });
         corpus.TCorpusExampleOpen(cat.LExampleId);
-        corpus.CCorpusScribeToggle(true);
+        corpus.CCorpusDiptych.CDiptychScribeToggle(true);
         List<CExample> drafted = [];
         corpus.CCorpusTranscript.CTranscriptDraftChanged += drafted.Add;
 
         corpus.CCorpusTranscript.CTranscriptMentionAdd("a cat sat", 2, 3, 0);
-        corpus.CCorpusDesk.CDeskPersist();
+        corpus.CCorpusDesk.CDeskDraft.CDeskDraftPersist();
 
         Assert.True(marshalled > 0);
         Assert.Single(drafted);
@@ -52,7 +52,7 @@ public sealed class TCorpusHold
         List<CExample> held = [];
         corpus.CCorpusTranscriptChanged += held.Add;
         corpus.TCorpusExampleOpen(cat.LExampleId);
-        corpus.CCorpusScribeToggle(true);
+        corpus.CCorpusDiptych.CDiptychScribeToggle(true);
         CExample stored = held[^1];
 
         corpus.CCorpusSession.CSessionCancel();
@@ -86,7 +86,7 @@ public sealed class TCorpusHold
         LExample cat = TCorpus.TCorpusExampleSave(engine, "a cat sat");
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.TCorpusExampleOpen(cat.LExampleId);
-        corpus.CCorpusExampleCreate();
+        corpus.CCorpusDiptych.CDiptychEntryCreate();
         Assert.True(corpus.CCorpusEditor.CEditorDesk.CDeskHeld);
 
         atelier.CAtelierClose();

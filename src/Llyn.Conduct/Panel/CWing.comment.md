@@ -1,5 +1,5 @@
 # CWing.cs
-Hash: `f717c668586b0e54`
+Hash: `055df8485ba928fd`
 
 ## `public sealed class CWing`
 
@@ -65,7 +65,7 @@ Whether the vista holds a query, so the side shows the list and its empty notice
 
 Whether the side shows its empty notice.
 A query is held and the last rows read found nothing.
-A list not yet asked stays blank, so an unqueried side is never empty.
+An unqueried side is never empty.
 
 ## `public CCatalogOrder CWingOrder`
 

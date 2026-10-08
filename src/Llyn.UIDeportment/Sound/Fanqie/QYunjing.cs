@@ -161,8 +161,8 @@ internal sealed class QYunjing
             QYunjingShownCheck,
             host.QWindowEnvoy,
             QObserver.QObserverCreate<Action>(static run => run()));
-        CPanel panel = _cYunjing.CYunjingPanel;
-        QLectern lectern = new(_cYunjing.CYunjingEditor.CEditorDisplay, panel);
+        CPanel panel = _cYunjing.CYunjingXiaoyun.CEntryListPanel;
+        QLectern lectern = new(_cYunjing.CYunjingXiaoyun.CEntryListEditor.CEditorDisplay, panel);
         QChoice.QChoiceOrderBuild(QLadderList, "Ladder", QLadderObserve, CYunjing.CYunjingOrderRead());
         QChoice.QChoiceOrderBuild(QStairList, "Stair", QStairObserve, CYunjing.CYunjingOrderRead());
         _cYunjing.CYunjingDiweiOpened += QYunjingQueryRefine;
@@ -172,9 +172,9 @@ internal sealed class QYunjing
         _cYunjing.CYunjingChanged += QYunjingModeRefine;
         _cYunjing.CYunjingWorkspaceChanged += QYunjingWorkspaceRefine;
         panel.CPanelChanged += QYunjingModeRefine;
-        panel.CPanelRowsChanged += QXiaoyunRefine;
+        panel.CPanelAperture.CApertureRowsChanged += QXiaoyunRefine;
         panel.CPanelCleared += QYunjingDiweiRefine;
-        _cYunjing.CYunjingEditor.CEditorDesk.CDeskStateChanged += QYunjingStoreRefine;
+        _cYunjing.CYunjingXiaoyun.CEntryListEditor.CEditorDesk.CDeskStateChanged += QYunjingStoreRefine;
 
         QShengmu.ItemsSource = _qShengmuList;
         QYunmu.ItemsSource = _qYunmuList;
@@ -182,9 +182,7 @@ internal sealed class QYunjing
 
         _qYunjingDisplay.QDisplayIntroduce(host, lectern);
         _qDiwei.QDiweiIntroduce(_cYunjing);
-
-        _qYunjingEditor.QEditorIntroduce(host, _cYunjing.CYunjingEditor);
-
+        _qYunjingEditor.QEditorIntroduce(host, _cYunjing.CYunjingXiaoyun.CEntryListEditor);
         _qYunjingEditor.QEditorChronicleChanged += QYunjingChronicleRefine;
 
         _qYunjingSurface.CommandBindings.Add(
@@ -195,20 +193,21 @@ internal sealed class QYunjing
 
     private void QYunjingStoreRefine()
     {
-        QYunjingStore.IsEnabled = _cYunjing.CYunjingEditor.CEditorDesk.CDeskStorable;
+        QYunjingStore.IsEnabled =
+            _cYunjing.CYunjingXiaoyun.CEntryListEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable;
     }
 
     internal void QYunjingVistaRefine()
     {
-        QChoice.QChoiceOrderApply(QLadderDropdown, _cYunjing.CYunjingShengmuOrder);
-        QChoice.QChoiceOrderApply(QStairDropdown, _cYunjing.CYunjingYunmuOrder);
+        QChoice.QChoiceOrderApply(QLadderDropdown, _cYunjing.CYunjingShengmu.CApertureOrder);
+        QChoice.QChoiceOrderApply(QStairDropdown, _cYunjing.CYunjingYunmu.CApertureOrder);
         QYunjingModeRefine();
         QXiaoyunRefine();
     }
 
     private async void QYunjingWorkspaceRefine()
     {
-        QXiaoyunRefine((await _cYunjing.CYunjingXiaoyunLoad(QEnsignImage.QEnsignDraw)).CEnsignSheetRows);
+        QXiaoyunRefine((await _cYunjing.CYunjingXiaoyun.CEntryListLoad(QEnsignImage.QEnsignDraw)).CEnsignSheetRows);
     }
 
     private void QYunjingQueryRefine()
@@ -234,8 +233,8 @@ internal sealed class QYunjing
             PYunjingItem.PYunjingItemBuild(_cYunjing.CYunjingShengmuRead()),
             PYunjingItem.PYunjingItemMatch,
             PYunjingItem.PYunjingItemSync);
-        QShengmuEmpty.SetResourceReference(TextBlock.TextProperty, _cYunjing.CYunjingShengmuKey);
-        QShengmuEmpty.Visibility = QLook.QLookVisibleRead(_cYunjing.CYunjingShengmuEmpty);
+        QShengmuEmpty.SetResourceReference(TextBlock.TextProperty, _cYunjing.CYunjingShengmu.CApertureKey);
+        QShengmuEmpty.Visibility = QLook.QLookVisibleRead(_cYunjing.CYunjingShengmu.CApertureEmpty);
     }
 
     internal void QYunmuRefine()
@@ -245,13 +244,13 @@ internal sealed class QYunjing
             PYunjingItem.PYunjingItemBuild(_cYunjing.CYunjingYunmuRead()),
             PYunjingItem.PYunjingItemMatch,
             PYunjingItem.PYunjingItemSync);
-        QYunmuEmpty.SetResourceReference(TextBlock.TextProperty, _cYunjing.CYunjingYunmuKey);
-        QYunmuEmpty.Visibility = QLook.QLookVisibleRead(_cYunjing.CYunjingYunmuEmpty);
+        QYunmuEmpty.SetResourceReference(TextBlock.TextProperty, _cYunjing.CYunjingYunmu.CApertureKey);
+        QYunmuEmpty.Visibility = QLook.QLookVisibleRead(_cYunjing.CYunjingYunmu.CApertureEmpty);
     }
 
     private void QXiaoyunRefine()
     {
-        QXiaoyunRefine(_cYunjing.CYunjingXiaoyunRead());
+        QXiaoyunRefine(_cYunjing.CYunjingXiaoyun.CEntryListRead());
     }
 
     private void QXiaoyunRefine(IReadOnlyList<CVistaRow> rows)
@@ -262,7 +261,8 @@ internal sealed class QYunjing
             PXiaoyunItem.PXiaoyunItemMatch,
             PXiaoyunItem.PXiaoyunItemSync);
         QXiaoyunEmpty.SetResourceReference(TextBlock.TextProperty, _cYunjing.CYunjingXiaoyunKey);
-        QXiaoyunEmpty.Visibility = QLook.QLookVisibleRead(_cYunjing.CYunjingXiaoyunEmpty);
+        QXiaoyunEmpty.Visibility = QLook.QLookVisibleRead(
+            _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelAperture.CApertureEmpty);
     }
 
     internal void QYunjingDiweiRefine()
@@ -272,8 +272,8 @@ internal sealed class QYunjing
 
     private void QYunjingModeRefine()
     {
-        CPanel panel = _cYunjing.CYunjingPanel;
-        _qYunjingEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(_cYunjing.CYunjingEditorShown));
+        CPanel panel = _cYunjing.CYunjingXiaoyun.CEntryListPanel;
+        _qYunjingEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(_cYunjing.CYunjingXiaoyun.CEntryListEditing));
         _qYunjingDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(_cYunjing.CYunjingDisplayShown));
         QYunjingDiwei.Visibility = QLook.QLookVisibleRead(_cYunjing.CYunjingDiweiShown);
         QYunjingViewer.IsChecked = panel.CPanelViewerChecked;
@@ -286,22 +286,22 @@ internal sealed class QYunjing
 
     private void QPlumbObserve(object sender, TextChangedEventArgs e)
     {
-        _cYunjing.CYunjingShengmuFind(QPlumb.Text);
+        _cYunjing.CYunjingShengmu.CApertureQuerySet(QPlumb.Text);
     }
 
     private void QFathomObserve(object sender, TextChangedEventArgs e)
     {
-        _cYunjing.CYunjingYunmuFind(QFathom.Text);
+        _cYunjing.CYunjingYunmu.CApertureQuerySet(QFathom.Text);
     }
 
     private void QBeaconObserve(object sender, TextChangedEventArgs e)
     {
-        _cYunjing.CYunjingXiaoyunFind(QBeacon.Text);
+        _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelAperture.CApertureQuerySet(QBeacon.Text);
     }
 
     private void QLadderObserve(object sender, RoutedEventArgs e)
     {
-        _cYunjing.CYunjingShengmuSet(QChoice.QChoiceOrderRead(sender));
+        _cYunjing.CYunjingShengmu.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
         QLadderRefine();
     }
 
@@ -312,7 +312,7 @@ internal sealed class QYunjing
 
     private void QStairObserve(object sender, RoutedEventArgs e)
     {
-        _cYunjing.CYunjingYunmuSet(QChoice.QChoiceOrderRead(sender));
+        _cYunjing.CYunjingYunmu.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
         QStairRefine();
     }
 
@@ -330,47 +330,48 @@ internal sealed class QYunjing
 
     private void QXiaoyunObserve(object sender, RoutedEventArgs e)
     {
-        _cYunjing.CYunjingPanel.CPanelRowSelect(QSender.QSenderSourceRead<PXiaoyunItem>(e)?.PXiaoyunItemId);
+        _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelRowSelect(
+            QSender.QSenderSourceRead<PXiaoyunItem>(e)?.PXiaoyunItemId);
     }
 
     private void QYunjingFreshObserve(object sender, RoutedEventArgs e)
     {
-        _cYunjing.CYunjingPanel.CPanelEntryCreate();
+        _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelEntryCreate();
     }
 
     private void QYunjingViewerObserve(object sender, RoutedEventArgs e)
     {
-        _cYunjing.CYunjingPanel.CPanelScribeToggle(false);
+        _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelScribeToggle(false);
     }
 
     private void QYunjingScribeObserve(object sender, RoutedEventArgs e)
     {
-        _cYunjing.CYunjingPanel.CPanelScribeToggle(true);
+        _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelScribeToggle(true);
     }
 
     private void QYunjingStoreObserve(object sender, RoutedEventArgs e)
     {
-        _cYunjing.CYunjingEditor.CEditorEntrySave();
+        _cYunjing.CYunjingXiaoyun.CEntryListEditor.CEditorEntrySave();
     }
 
     private void QYunjingBinObserve(object sender, RoutedEventArgs e)
     {
-        _cYunjing.CYunjingPanel.CPanelEntryDelete();
+        _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelBin.CPanelBinDelete();
     }
 
     private void QYunjingPressRefine(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _cYunjing.CYunjingPanel.CPanelPressAllowed;
+        e.CanExecute = _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelPressAllowed;
     }
 
     private async void QYunjingPressObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        await _cYunjing.CYunjingPortraitPrint();
+        await _cYunjing.CYunjingXiaoyun.CEntryListPrint();
     }
 
     private async void QYunjingPortraitObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        await _cYunjing.CYunjingPortraitExport();
+        await _cYunjing.CYunjingXiaoyun.CEntryListExport();
     }
 
     internal void QYunjingVoyageRefine(bool past, bool future)
@@ -401,7 +402,8 @@ internal sealed class QYunjing
 
     private void QYunjingChronicleRefine()
     {
-        (bool undo, bool redo) = _cYunjing.CYunjingEditor.CEditorDesk.CDeskChronicleRead();
+        (bool undo, bool redo) =
+            _cYunjing.CYunjingXiaoyun.CEntryListEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
         QYunjingBackward.IsEnabled = undo;
         QYunjingForward.IsEnabled = redo;
     }

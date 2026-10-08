@@ -17,7 +17,7 @@ public sealed class TYunjing
     internal const string TYunjingBook = "Classical Chinese";
 
     [Fact]
-    public async Task YunjingXiaoyunLoad_FixtureCell_AnswersTheCellEntriesAfterTheFill()
+    public async Task YunjingEntryListLoad_FixtureCell_AnswersTheCellEntriesAfterTheFill()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -29,7 +29,7 @@ public sealed class TYunjing
         yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
 
         CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
-            await yunjing.CYunjingXiaoyunLoad(static (_, _) => static () => { });
+            await yunjing.CYunjingXiaoyun.CEntryListLoad(static (_, _) => static () => { });
 
         Assert.Equal(["爛"], sheet.CEnsignSheetRows.Select(static row => row.CVistaRowHeadword));
         Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), sheet.CEnsignSheetLanguages);
@@ -45,13 +45,13 @@ public sealed class TYunjing
 
         Assert.True(yunjing.LYunjingAllowed);
         Assert.Empty(yunjing.CYunjingShengmuRead());
-        Assert.True(yunjing.CYunjingShengmuEmpty);
-        Assert.Equal("Yunjing.ShengmuEmpty", yunjing.CYunjingShengmuKey);
+        Assert.True(yunjing.CYunjingShengmu.CApertureEmpty);
+        Assert.Equal("Yunjing.ShengmuEmpty", yunjing.CYunjingShengmu.CApertureKey);
         Assert.Empty(yunjing.CYunjingYunmuRead());
-        Assert.True(yunjing.CYunjingYunmuEmpty);
-        Assert.Equal("Yunjing.YunmuEmpty", yunjing.CYunjingYunmuKey);
-        Assert.Empty(yunjing.CYunjingXiaoyunRead());
-        Assert.True(yunjing.CYunjingXiaoyunEmpty);
+        Assert.True(yunjing.CYunjingYunmu.CApertureEmpty);
+        Assert.Equal("Yunjing.YunmuEmpty", yunjing.CYunjingYunmu.CApertureKey);
+        Assert.Empty(yunjing.CYunjingXiaoyun.CEntryListRead());
+        Assert.True(yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelAperture.CApertureEmpty);
         Assert.Equal("Yunjing.XiaoyunEmpty", yunjing.CYunjingXiaoyunKey);
         Assert.False(yunjing.CYunjingDiweiShown);
         Assert.True(yunjing.CYunjingDisplayShown);
@@ -70,8 +70,8 @@ public sealed class TYunjing
         Assert.Equal(["來"], yunjing.CYunjingShengmuRead().Select(static row => row.CDiweiKey));
         Assert.Equal(["寒 I"], yunjing.CYunjingYunmuRead().Select(static row => row.CDiweiKey));
         Assert.DoesNotContain(yunjing.CYunjingShengmuRead(), static row => row.CDiweiChosen);
-        Assert.False(yunjing.CYunjingShengmuEmpty);
-        Assert.Empty(yunjing.CYunjingXiaoyunRead());
+        Assert.False(yunjing.CYunjingShengmu.CApertureEmpty);
+        Assert.Empty(yunjing.CYunjingXiaoyun.CEntryListRead());
     }
 
     [Fact]
@@ -96,8 +96,8 @@ public sealed class TYunjing
         Assert.Equal(["來", "見"], yunjing.CYunjingShengmuRead().Select(static row => row.CDiweiKey));
         Assert.Equal([true, false], yunjing.CYunjingShengmuRead().Select(static row => row.CDiweiChosen));
         Assert.Equal(["寒 I"], yunjing.CYunjingYunmuRead().Select(static row => row.CDiweiKey));
-        Assert.Equal(["爛"], yunjing.CYunjingXiaoyunRead().Select(static row => row.CVistaRowHeadword));
-        Assert.False(yunjing.CYunjingXiaoyunEmpty);
+        Assert.Equal(["爛"], yunjing.CYunjingXiaoyun.CEntryListRead().Select(static row => row.CVistaRowHeadword));
+        Assert.False(yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelAperture.CApertureEmpty);
         Assert.Equal("Yunjing.XiaoyunVacant", yunjing.CYunjingXiaoyunKey);
         Assert.Equal("Yunjing.Shengmu", yunjing.CYunjingDiweiKey);
     }
@@ -141,8 +141,8 @@ public sealed class TYunjing
 
         Assert.False(yunjing.CYunjingDiweiShown);
         Assert.True(yunjing.CYunjingDisplayShown);
-        Assert.Empty(yunjing.CYunjingXiaoyunRead());
-        Assert.True(yunjing.CYunjingXiaoyunEmpty);
+        Assert.Empty(yunjing.CYunjingXiaoyun.CEntryListRead());
+        Assert.True(yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelAperture.CApertureEmpty);
         Assert.Equal("Yunjing.XiaoyunEmpty", yunjing.CYunjingXiaoyunKey);
 
         yunjing.CYunjingDiweiSelect(null, true);
@@ -164,8 +164,8 @@ public sealed class TYunjing
         CYunjing yunjing = TYunjingPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
         yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiRime, "寒 I");
         long rime = Assert.Single(yunjing.CYunjingYunmuRead()).CDiweiId;
-        yunjing.CYunjingPanel.CPanelFreshOpen();
-        yunjing.CYunjingEditor.CEditorHeadwordSet("water");
+        yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelFreshOpen();
+        yunjing.CYunjingXiaoyun.CEntryListEditor.CEditorEntry.CEntryHeadwordSet("water");
         int changed = 0;
         yunjing.CYunjingChanged += () => changed++;
 
@@ -173,8 +173,8 @@ public sealed class TYunjing
 
         Assert.Equal(["Leave"], asked);
         Assert.True(Assert.Single(yunjing.CYunjingYunmuRead()).CDiweiChosen);
-        Assert.True(yunjing.CYunjingPanel.CPanelEditing);
-        Assert.Equal("water", yunjing.CYunjingEditor.TEditorDraftRead()?.CEntryDraftHeadword);
+        Assert.True(yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelEditing);
+        Assert.Equal("water", yunjing.CYunjingXiaoyun.CEntryListEditor.TEditorDraftRead()?.CEntryDraftHeadword);
         Assert.Equal(0, changed);
     }
 
@@ -191,8 +191,8 @@ public sealed class TYunjing
         CYunjing yunjing = TYunjingPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
         yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiRime, "寒 I");
         long rime = Assert.Single(yunjing.CYunjingYunmuRead()).CDiweiId;
-        yunjing.CYunjingPanel.CPanelFreshOpen();
-        yunjing.CYunjingEditor.CEditorHeadwordSet("water");
+        yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelFreshOpen();
+        yunjing.CYunjingXiaoyun.CEntryListEditor.CEditorEntry.CEntryHeadwordSet("water");
         int changed = 0;
         yunjing.CYunjingChanged += () => changed++;
 
@@ -201,12 +201,12 @@ public sealed class TYunjing
         Assert.Equal(["Leave"], asked);
         Assert.False(yunjing.CYunjingDiweiShown);
         Assert.DoesNotContain(yunjing.CYunjingYunmuRead(), static row => row.CDiweiChosen);
-        Assert.False(yunjing.CYunjingPanel.CPanelEditing);
+        Assert.False(yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelEditing);
         Assert.Equal(1, changed);
     }
 
     [Fact]
-    public void YunjingShengmuFind_UnmatchedQuery_UnchoosesAndReadsTheUnmatchedKeys()
+    public void YunjingApertureQuerySet_UnmatchedQuery_UnchoosesAndReadsTheUnmatchedKeys()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -217,19 +217,19 @@ public sealed class TYunjing
         CYunjing yunjing = TYunjingPrepare(atelier);
         yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
 
-        yunjing.CYunjingXiaoyunFind("zzz");
+        yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelAperture.CApertureQuerySet("zzz");
 
-        Assert.Empty(yunjing.CYunjingXiaoyunRead());
+        Assert.Empty(yunjing.CYunjingXiaoyun.CEntryListRead());
         Assert.Equal("Yunjing.XiaoyunUnmatched", yunjing.CYunjingXiaoyunKey);
 
-        yunjing.CYunjingYunmuFind("zzz");
-        yunjing.CYunjingShengmuFind("zzz");
+        yunjing.CYunjingYunmu.CApertureQuerySet("zzz");
+        yunjing.CYunjingShengmu.CApertureQuerySet("zzz");
 
         Assert.Empty(yunjing.CYunjingYunmuRead());
-        Assert.Equal("Yunjing.YunmuUnmatched", yunjing.CYunjingYunmuKey);
+        Assert.Equal("Yunjing.YunmuUnmatched", yunjing.CYunjingYunmu.CApertureKey);
         Assert.Empty(yunjing.CYunjingShengmuRead());
-        Assert.True(yunjing.CYunjingShengmuEmpty);
-        Assert.Equal("Yunjing.ShengmuUnmatched", yunjing.CYunjingShengmuKey);
+        Assert.True(yunjing.CYunjingShengmu.CApertureEmpty);
+        Assert.Equal("Yunjing.ShengmuUnmatched", yunjing.CYunjingShengmu.CApertureKey);
         Assert.False(yunjing.CYunjingDiweiShown);
     }
 
@@ -243,10 +243,11 @@ public sealed class TYunjing
         string language = pack.TLanguageFixtureName;
         TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
         CYunjing yunjing = TYunjingPrepare(atelier);
-        yunjing.CYunjingShengmuFind("zzz");
-        yunjing.CYunjingYunmuFind("zzz");
+        yunjing.CYunjingShengmu.CApertureQuerySet("zzz");
+        yunjing.CYunjingYunmu.CApertureQuerySet("zzz");
         List<string> seen = [];
-        yunjing.CYunjingDiweiOpened += () => seen.Add(yunjing.CYunjingShengmuKey + " " + yunjing.CYunjingYunmuKey);
+        yunjing.CYunjingDiweiOpened += () =>
+            seen.Add(yunjing.CYunjingShengmu.CApertureKey + " " + yunjing.CYunjingYunmu.CApertureKey);
 
         yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
 
@@ -255,23 +256,23 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingShengmuSet_NullAfterAnOrder_KeepsTheChosenOne()
+    public void YunjingApertureOrderSet_NullAfterAnOrder_KeepsTheChosenOne()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CYunjing yunjing = TYunjingPrepare(atelier);
 
-        Assert.Equal(CCatalogOrder.CCatalogOrderName, yunjing.CYunjingShengmuOrder);
-        Assert.Equal(CCatalogOrder.CCatalogOrderName, yunjing.CYunjingYunmuOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderName, yunjing.CYunjingShengmu.CApertureOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderName, yunjing.CYunjingYunmu.CApertureOrder);
 
-        yunjing.CYunjingShengmuSet(CCatalogOrder.CCatalogOrderReverse);
-        yunjing.CYunjingShengmuSet(null);
-        yunjing.CYunjingYunmuSet(CCatalogOrder.CCatalogOrderUsage);
-        yunjing.CYunjingYunmuSet(null);
+        yunjing.CYunjingShengmu.CApertureOrderSet(CCatalogOrder.CCatalogOrderReverse);
+        yunjing.CYunjingShengmu.CApertureOrderSet(null);
+        yunjing.CYunjingYunmu.CApertureOrderSet(CCatalogOrder.CCatalogOrderUsage);
+        yunjing.CYunjingYunmu.CApertureOrderSet(null);
 
-        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, yunjing.CYunjingShengmuOrder);
-        Assert.Equal(CCatalogOrder.CCatalogOrderUsage, yunjing.CYunjingYunmuOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, yunjing.CYunjingShengmu.CApertureOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderUsage, yunjing.CYunjingYunmu.CApertureOrder);
     }
 
     [Fact]
@@ -285,18 +286,18 @@ public sealed class TYunjing
         TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
         CYunjing yunjing = TYunjingPrepare(atelier);
         yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
-        long entry = Assert.Single(yunjing.CYunjingXiaoyunRead()).CVistaRowId;
+        long entry = Assert.Single(yunjing.CYunjingXiaoyun.CEntryListRead()).CVistaRowId;
 
-        yunjing.CYunjingPanel.CPanelRowOpen(entry);
-        yunjing.CYunjingPanel.CPanelScribeToggle(true);
+        yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelRowOpen(entry);
+        yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelScribeToggle(true);
 
-        Assert.True(yunjing.CYunjingEditorShown);
-        Assert.Equal(entry, yunjing.CYunjingEditor.CEditorDesk.CDeskStoredRead());
+        Assert.True(yunjing.CYunjingXiaoyun.CEntryListEditing);
+        Assert.Equal(entry, yunjing.CYunjingXiaoyun.CEntryListEditor.CEditorDesk.CDeskStoredRead());
 
-        yunjing.CYunjingPanel.CPanelEntryClose();
+        yunjing.CYunjingXiaoyun.CEntryListPanel.CPanelEntryClose();
 
-        Assert.False(yunjing.CYunjingEditorShown);
-        Assert.Null(yunjing.CYunjingEditor.CEditorDesk.CDeskStoredRead());
+        Assert.False(yunjing.CYunjingXiaoyun.CEntryListEditing);
+        Assert.Null(yunjing.CYunjingXiaoyun.CEntryListEditor.CEditorDesk.CDeskStoredRead());
     }
 
     [Fact]

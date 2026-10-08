@@ -1,5 +1,5 @@
 # CMention.cs
-Hash: `e56d10daa00dc8de`
+Hash: `969c0bb4c1446e6f`
 
 ## `public sealed class CMention`
 
@@ -34,12 +34,12 @@ So a word that starts in an earlier piece than the click still places the menu o
 
 The whole text as pieces, so a driver draws every character and no gap splits into words.
 A linked piece answers true, a silent piece false, and a gap nothing.
-The reading card and the corpus excerpt divide their text while they map it, so a driver receives ready pieces.
+The corpus excerpt divides its text while it maps it, so a driver receives ready pieces.
 
 ## `internal static IReadOnlyList<CMentionPiece> LMentionPieceRead(IReadOnlyList<LMentionPiece> pieces)`
 
 Maps each engine piece to its text and its link state, leaving its offset behind.
-The corpus excerpt maps the pieces it divides, and the reading card maps the pieces its line read answers.
+The text division maps its pieces here, and the reading card maps the pieces its line read answers.
 
 ## `internal static CProspect LMentionProspectRead(CDesk desk, string word, CEnvoy envoy, LSettingsPort settings)`
 

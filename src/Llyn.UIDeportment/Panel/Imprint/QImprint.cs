@@ -111,12 +111,12 @@ internal sealed class QImprint : QChronicleHost
 
     public void QChronicleUndoObserve()
     {
-        QChronicle.QChronicleCaretRefine(_cImprint.CImprintDesk.CDeskUndo);
+        QChronicle.QChronicleCaretRefine(_cImprint.CImprintDesk.CDeskChronicle.CDeskChronicleUndo);
     }
 
     public void QChronicleRedoObserve()
     {
-        QChronicle.QChronicleCaretRefine(_cImprint.CImprintDesk.CDeskRedo);
+        QChronicle.QChronicleCaretRefine(_cImprint.CImprintDesk.CDeskChronicle.CDeskChronicleRedo);
     }
 
     private void QImprintDraftRefine(CReference reference)

@@ -1,5 +1,5 @@
 # TSoundingAnchor.cs
-Hash: `54a5e6c926d6e131`
+Hash: `9b011cab2e19ea4c`
 
 ## `public sealed class TSoundingAnchor`
 
@@ -17,7 +17,7 @@ An id the draft does not hold answers the empty menu.
 
 ## `public void SoundingAnchorOpen_FreshDraft_AnswersTheEmptyMenu()`
 
-A draft never stored has no readings, so the menu shows its notice.
+A draft never stored has no readings, so the menu is flagged empty.
 
 ## `public void SoundingAnchorSet_OpenedReflex_TiesAndUntiesTheReadingInTheDraft()`
 

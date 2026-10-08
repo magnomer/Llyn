@@ -62,16 +62,16 @@ public sealed class TOccurrence
         TOccurrenceEntrySave(engine, "stone", null);
         (COccurrence occurrence, _, _) = TOccurrencePrepare(engine);
 
-        Assert.Equal("Situation.Vacant", occurrence.COccurrenceEmptyKey);
+        Assert.Equal("Situation.Vacant", occurrence.COccurrencePanel.CPanelAperture.CApertureKey);
 
-        occurrence.COccurrenceQuerySet("zzz");
+        occurrence.COccurrencePanel.CPanelAperture.CApertureQuerySet("zzz");
 
         Assert.Empty(occurrence.COccurrenceRowsRead());
-        Assert.Equal("Situation.Unmatched", occurrence.COccurrenceEmptyKey);
+        Assert.Equal("Situation.Unmatched", occurrence.COccurrencePanel.CPanelAperture.CApertureKey);
 
-        occurrence.COccurrenceQuerySet("  ");
+        occurrence.COccurrencePanel.CPanelAperture.CApertureQuerySet("  ");
 
-        Assert.Equal("Situation.Vacant", occurrence.COccurrenceEmptyKey);
+        Assert.Equal("Situation.Vacant", occurrence.COccurrencePanel.CPanelAperture.CApertureKey);
     }
 
     [Fact]
@@ -81,9 +81,9 @@ public sealed class TOccurrence
         using LEngine engine = workspace.TWorkspaceEngineStart();
         COccurrence occurrence = TInterfaceConductPanel.TOccurrenceCreate(engine);
 
-        occurrence.COccurrenceQuerySet("zzz");
+        occurrence.COccurrencePanel.CPanelAperture.CApertureQuerySet("zzz");
 
-        Assert.Equal("Situation.Vacant", occurrence.COccurrenceEmptyKey);
+        Assert.Equal("Situation.Vacant", occurrence.COccurrencePanel.CPanelAperture.CApertureKey);
         Assert.Equal("entry", occurrence.TOccurrenceFileRead());
     }
 

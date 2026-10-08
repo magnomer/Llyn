@@ -84,7 +84,7 @@ internal sealed class CNotation
         return new CNotationReading(
             candidate.CCandidatePhonetic ?? string.Empty,
             foray.LForayReadingRead(candidate.CCandidatePhonetic, candidate.CCandidateRespelling),
-            CSounding.CSoundingVarietyRead(foray.LForayLanguage, candidate.CCandidateVariety),
+            CVariety.CVarietyRead(foray.LForayLanguage, candidate.CCandidateVariety),
             candidate.CCandidateRegional && foray.LForayFlagged,
             new CRespellingMark(shown, opener, closer));
     }

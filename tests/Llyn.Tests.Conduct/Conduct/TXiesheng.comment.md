@@ -1,11 +1,11 @@
 # TXiesheng.cs
-Hash: `f9d99bd405f46092`
+Hash: `f3f96e46afea55e2`
 
 ## `public sealed class TXiesheng`
 
 Covers the xiesheng panel's gates end to end on a real workspace.
 The series are fetched from fake pages, so nothing here reaches the web.
-Its flag-fill load answers the series entries and the catalog languages once the fill has run.
+`TEntryList` covers the entry list's load, export, scribe mode and close over this panel.
 
 The bundled series pack shows the tab, and with nothing fetched the panel lists nothing under the bare keys.
 Opening a fetched series by key lists it chosen with its count, and shows its page and entry.
@@ -18,17 +18,10 @@ A kept draft leaves the series and the draft as they were, and a discarded one c
 A glyph opens in the library tab only while a series page shows, in the language of that page.
 Unmatched queries read the unmatched keys, and a narrowed column unchooses its series.
 A null order keeps the chosen one.
-Export writes nothing until an entry is chosen, and the chosen entry leaves the page for the reader.
-An entry opened in scribe mode shows in the editor, and closing the panel empties it.
 
 ## `internal const string TXieshengPack`
 
 A pack that declares one fanqie source and one series source, each fetched from a fake page.
-
-## `public async Task XieshengKindredLoad_FetchedSeries_AnswersItsEntryAfterTheFill()`
-
-An opened series answers its one entry and the catalog's languages once the flag fill has run.
-The test hands a store that keeps nothing, so only the sheet is compared.
 
 ## `public void XieshengGroveRead_NothingFetched_ListsNothingUnderTheBareKeys()`
 
@@ -44,7 +37,7 @@ The page names the language, the key and the character, and the entry list holds
 ## `public async Task XieshengStemRead_ShownSeries_CarriesTheFontsOfTheSeriesLanguage()`
 
 The blank page read before any series opens carries no font for the headword or the glyph.
-An open series page carries the fonts the catalog reads for its language and each role.
+An open series page carries the fonts the settings port reads for its language, headword and glyph roles.
 
 ## `public async Task XieshengStemOpen_BlankOrUnknownKey_ChoosesNothing()`
 
@@ -74,7 +67,7 @@ A glyph opens nothing while no series page shows.
 With a page shown, a blank glyph still opens nothing and a character opens its entry in the library tab.
 The entry is the one the engine resolves for that character in the series language.
 
-## `public async Task XieshengGroveFind_UnmatchedQuery_ReadsTheUnmatchedKeys()`
+## `public async Task XieshengApertureQuerySet_UnmatchedQuery_ReadsTheUnmatchedKeys()`
 
 An unmatched entry query empties the entry list under its unmatched key.
 An unmatched series query empties the column under its unmatched key and unchooses the series.
@@ -84,25 +77,19 @@ An unmatched series query empties the column under its unmatched key and unchoos
 The series search is already empty when the opened notice reaches the driver.
 The series is then chosen and its page shows.
 
-## `public void XieshengGroveSet_NullAfterAnOrder_KeepsTheChosenOne()`
+## `public void XieshengApertureOrderSet_NullAfterAnOrder_KeepsTheChosenOne()`
 
 The column starts ordered by name.
 A null order after a chosen one leaves the chosen order in place.
 
-## `public async Task XieshengPortraitExport_ChosenEntry_WritesItAndNothingBefore()`
-
-Export writes no file while no entry is chosen.
-Choosing an entry leaves the series page for the reader.
-The file then holds the entry, and the offered name carries its headword.
-
-## `public async Task XieshengPanelRowOpen_ScribeOn_OpensTheEntryInTheEditorUntilClosed()`
-
-A row opened with scribe mode on shows in the editor and puts its entry on the desk.
-Closing the entry hides the editor and empties the desk.
-
 ## `internal static CXiesheng TXieshengPrepare(CAtelier atelier)`
 
 Builds the xiesheng panel over a fake envoy that answers no.
+
+## `internal static CXiesheng TXieshengPrepare(CAtelier atelier, CEnvoy envoy)`
+
+Builds the xiesheng panel over the given envoy, so a test can answer the questions the panel asks.
+`TEntryList` builds its export panel through it.
 
 ## `internal static LEngine TXieshengEngineStart(TWorkspace workspace)`
 

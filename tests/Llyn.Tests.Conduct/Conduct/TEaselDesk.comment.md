@@ -1,10 +1,10 @@
 # TEaselDesk.cs
-Hash: `2d7976f7fab3228c`
+Hash: `d44c345556e5c778`
 
 ## `public sealed class TEaselDesk`
 
 Covers the image and video gates over a desk, on the playwright's scenario and on the editor's cards.
-A pressed add appends a blank row after the rows held, and the driver hands no count.
+A pressed add appends a blank row after the rows held, and the driver hands no card.
 A removed row leaves its own list, and the owning card is found below Conduct.
 A chosen file lands at once, even under a long delay.
 A cancelled file dialog hands null, and the row stays blank.

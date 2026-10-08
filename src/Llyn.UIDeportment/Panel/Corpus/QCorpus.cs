@@ -265,10 +265,10 @@ internal sealed partial class QCorpus : QChronicleHost
         _cCorpus.CCorpusQueryCleared += QQueryClear;
         _cCorpus.CCorpusWorkspaceChanged += QCorpusWorkspaceRefine;
         anthology.CPanelChanged += QCorpusModeUpdate;
-        anthology.CPanelRowsChanged += QAnthologyRefine;
-        anthology.CPanelRowsChanged += QCorpusTallyRefine;
+        anthology.CPanelAperture.CApertureRowsChanged += QAnthologyRefine;
+        anthology.CPanelAperture.CApertureRowsChanged += QCorpusTallyRefine;
         quotation.CPanelChanged += QCorpusModeUpdate;
-        quotation.CPanelRowsChanged += QQuotationRefine;
+        quotation.CPanelAperture.CApertureRowsChanged += QQuotationRefine;
     }
 
     private bool QCorpusShownCheck()
@@ -278,18 +278,18 @@ internal sealed partial class QCorpus : QChronicleHost
 
     private void QCorpusModeUpdate()
     {
-        QTranscript.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusTranscriptShown);
-        QExcerpt.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusExcerptShown);
+        QTranscript.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusDiptych.CDiptychParentEditing);
+        QExcerpt.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusDiptych.CDiptychParentShown);
         _qCorpusDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(_cCorpus.CCorpusDisplayShown));
-        _qCorpusEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(_cCorpus.CCorpusEditorShown));
+        _qCorpusEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(_cCorpus.CCorpusDiptych.CDiptychChildEditing));
         QExcerptBody.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusExcerptHeld);
         QExcerptUnselected.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusExcerptBlank);
-        QCorpusViewer.IsChecked = _cCorpus.CCorpusViewerChecked;
-        QCorpusScribe.IsChecked = _cCorpus.CCorpusScribeChecked;
-        QCorpusVoyage.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusViewerChecked);
-        QCorpusChronicle.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusScribeChecked);
-        QCorpusMode.IsEnabled = _cCorpus.CCorpusModeEnabled;
-        QCorpusBin.IsEnabled = _cCorpus.CCorpusBinEnabled;
+        QCorpusViewer.IsChecked = _cCorpus.CCorpusDiptych.CDiptychViewerChecked;
+        QCorpusScribe.IsChecked = _cCorpus.CCorpusDiptych.CDiptychScribeChecked;
+        QCorpusVoyage.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusDiptych.CDiptychViewerChecked);
+        QCorpusChronicle.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusDiptych.CDiptychScribeChecked);
+        QCorpusMode.IsEnabled = _cCorpus.CCorpusDiptych.CDiptychModeEnabled;
+        QCorpusBin.IsEnabled = _cCorpus.CCorpusDiptych.CDiptychBinEnabled;
         QCorpusStore.IsEnabled = _cCorpus.CCorpusStoreEnabled;
         QTranscript.IsEnabled = _cCorpus.CCorpusTranscriptEnabled;
         QCorpusChronicleRefine();

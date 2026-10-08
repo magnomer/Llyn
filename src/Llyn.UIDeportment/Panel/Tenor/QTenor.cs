@@ -140,12 +140,12 @@ internal sealed partial class QTenor
             host.QWindowEnvoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         _cTenor.CTenorRegisterOpened += QGamutRegisterRefine;
-        _cTenor.CTenorRowsChanged += QGamutRefine;
+        _cTenor.CTenorAperture.CApertureRowsChanged += QGamutRefine;
         _cTenor.CTenorWorkspaceChanged += QTenorWorkspaceRefine;
         CPanel panel = _cTenor.CTenorCohort.CCohortPanel;
         QLectern lectern = new(_cTenor.CTenorEditor.CEditorDisplay, panel);
         panel.CPanelChanged += QTenorModeRefine;
-        panel.CPanelRowsChanged += QCohortRefine;
+        panel.CPanelAperture.CApertureRowsChanged += QCohortRefine;
 
         QGamut.ItemsSource = _qGamutList;
         QCohort.ItemsSource = _qCohortList;
@@ -160,7 +160,7 @@ internal sealed partial class QTenor
 
     private void QTenorStoreRefine()
     {
-        QTenorStore.IsEnabled = _cTenor.CTenorEditor.CEditorDesk.CDeskStorable;
+        QTenorStore.IsEnabled = _cTenor.CTenorEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable;
     }
 
     internal void QTenorExitRefine()
@@ -211,7 +211,7 @@ internal sealed partial class QTenor
 
     private void QTenorChronicleRefine()
     {
-        (bool undo, bool redo) = _cTenor.CTenorEditor.CEditorDesk.CDeskChronicleRead();
+        (bool undo, bool redo) = _cTenor.CTenorEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
         QTenorBackward.IsEnabled = undo;
         QTenorForward.IsEnabled = redo;
     }

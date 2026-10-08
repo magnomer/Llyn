@@ -1,10 +1,10 @@
 # CCatalog.cs
-Hash: `04bbc234a44147e3`
+Hash: `694963aaa7cffe6d`
 
 ## `public sealed class CCatalog`
 
 The reference reads every driver shares.
-They cover fonts, sentence orders, glyphs, languages, flags, meanings and articulation charts.
+They cover sentence orders, glyphs, languages, flags, meanings and articulation charts.
 It maps each engine record into its Conduct record, so a driver never names a Core type.
 It stands on the atelier's ports, and `CAtelier` hands one out on each read.
 It holds no state beyond the atelier.
@@ -12,25 +12,6 @@ It holds no state beyond the atelier.
 ## `internal CCatalog(CAtelier atelier)`
 
 Only the atelier builds it, over its own ports.
-
-## `internal static CFont LCatalogFontRead(LSettingsPort settings, string language, CFontRole role)`
-
-The one font rule, shared by every area that reads a pack's typography in its own language.
-An unsized font carries no size.
-Conduct drops a blank family, so a driver never builds a font family from nothing.
-Conduct drops a size that is not finite and positive, so a driver sets only a usable size.
-A blank language answers the font with nothing set, so the surface keeps its theme.
-A refused read is not caught here and reaches the caller.
-
-## `private static LFontRole LCatalogRoleRead(CFontRole role)`
-
-The engine role of the same name, switched name by name.
-An unknown role throws, so a role added on one side alone fails loudly.
-
-## `private static CFontSlant LCatalogSlantRead(string? style)`
-
-The slant an engine style name stands for, matched by name in any case.
-Any other name keeps the theme's slant, so a driver switches on a closed set.
 
 ## `internal static async Task<CEnsignSheet<LCatalogKind>> LCatalogEnsignLoad<LCatalogKind>(CEnvoy envoy, LSettingsPort settings, string key, Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store, Func<LCatalogKind> read)`
 

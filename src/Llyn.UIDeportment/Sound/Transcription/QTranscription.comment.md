@@ -1,5 +1,5 @@
 # QTranscription.cs
-Hash: `b213bedd6ede5d21`
+Hash: `a2b2e6fc84c1b2af`
 
 ## `internal sealed class QTranscription`
 

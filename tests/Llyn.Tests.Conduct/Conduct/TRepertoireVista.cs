@@ -34,13 +34,14 @@ public sealed class TRepertoireVista
         TRepertoire.TRepertoireSituationSave(engine, "at home");
         TRepertoire.TRepertoireSituationSave(engine, "in court");
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        repertoire.CRepertoireAtlas.CAtlasQuerySet("court");
-        repertoire.CRepertoireOccurrence.COccurrenceQuerySet("zzz");
+        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureQuerySet("court");
+        repertoire.CRepertoireOccurrence.COccurrencePanel.CPanelAperture.CApertureQuerySet("zzz");
 
         repertoire.TRepertoireVistaRestore();
 
         Assert.Equal(["in court"], repertoire.CRepertoireRowsRead().Select(row => row.CCatalogSituationTitle));
-        Assert.Equal("Situation.Unmatched", repertoire.CRepertoireOccurrence.COccurrenceEmptyKey);
+        Assert.Equal(
+            "Situation.Unmatched", repertoire.CRepertoireOccurrence.COccurrencePanel.CPanelAperture.CApertureKey);
     }
 
     [Fact]
@@ -63,8 +64,8 @@ public sealed class TRepertoireVista
         repertoire.TRepertoireVistaRestore();
         int atlas = 0;
         int occurrence = 0;
-        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += () => atlas++;
-        repertoire.CRepertoireOccurrence.COccurrencePanel.CPanelRowsChanged += () => occurrence++;
+        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureRowsChanged += () => atlas++;
+        repertoire.CRepertoireOccurrence.COccurrencePanel.CPanelAperture.CApertureRowsChanged += () => occurrence++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectSituation, home.LSituationId);
 
@@ -92,8 +93,8 @@ public sealed class TRepertoireVista
             });
         int atlas = 0;
         int occurrence = 0;
-        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += () => atlas++;
-        repertoire.CRepertoireOccurrence.COccurrencePanel.CPanelRowsChanged += () => occurrence++;
+        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureRowsChanged += () => atlas++;
+        repertoire.CRepertoireOccurrence.COccurrencePanel.CPanelAperture.CApertureRowsChanged += () => occurrence++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectSituation, home.LSituationId);
 
@@ -112,7 +113,7 @@ public sealed class TRepertoireVista
         LEntry hearth = TRepertoire.TRepertoireEntrySave(engine, "hearth", home);
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         int atlas = 0;
-        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += () => atlas++;
+        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureRowsChanged += () => atlas++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectEntry, hearth.LEntryId);
 
@@ -135,7 +136,7 @@ public sealed class TRepertoireVista
         engine.TEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
 
         Assert.True(repertoire.CRepertoireVignetteBlank);
-        Assert.Null(repertoire.CRepertoireAtlas.CAtlasChosen);
+        Assert.Null(repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureChosen);
         Assert.Equal(1, told);
     }
 
@@ -156,7 +157,7 @@ public sealed class TRepertoireVista
                 run();
             });
         int atlas = 0;
-        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += () => atlas++;
+        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureRowsChanged += () => atlas++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectSettings, 0);
 

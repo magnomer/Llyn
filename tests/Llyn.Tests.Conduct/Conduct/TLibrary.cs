@@ -23,7 +23,7 @@ public sealed class TLibrary
             atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
 
         Assert.Single(library.CLibraryRowsRead());
-        Assert.False(library.CLibraryFiltered);
+        Assert.False(library.CLibraryPanel.CPanelAperture.CApertureFiltered);
         Assert.Equal("entry", library.TLibraryFileRead());
     }
 
@@ -39,7 +39,7 @@ public sealed class TLibrary
 
         Assert.Equal(2, library.CLibraryRowsRead().Count);
 
-        library.CLibraryQuerySet("riv");
+        library.CLibraryPanel.CPanelAperture.CApertureQuerySet("riv");
 
         Assert.Equal(["river"], library.CLibraryRowsRead().Select(row => row.CVistaRowHeadword));
     }
@@ -53,13 +53,13 @@ public sealed class TLibrary
         TLibraryEntrySave(engine, "stone", "English");
         CLibrary library = TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         library.CLibraryRowsRead();
-        bool listed = library.CLibraryEmpty;
+        bool listed = library.CLibraryPanel.CPanelAperture.CApertureEmpty;
 
-        library.CLibraryQuerySet("river");
+        library.CLibraryPanel.CPanelAperture.CApertureQuerySet("river");
         library.CLibraryRowsRead();
 
         Assert.False(listed);
-        Assert.True(library.CLibraryEmpty);
+        Assert.True(library.CLibraryPanel.CPanelAperture.CApertureEmpty);
     }
 
     [Fact]
@@ -70,10 +70,10 @@ public sealed class TLibrary
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CLibrary library = TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
-        library.CLibraryOrderSet(CCatalogOrder.CCatalogOrderReverse);
-        library.CLibraryOrderSet(null);
+        library.CLibraryPanel.CPanelAperture.CApertureOrderSet(CCatalogOrder.CCatalogOrderReverse);
+        library.CLibraryPanel.CPanelAperture.CApertureOrderSet(null);
 
-        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, library.CLibraryPanel.CPanelOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, library.CLibraryPanel.CPanelAperture.CApertureOrder);
     }
 
     [Fact]
@@ -86,10 +86,10 @@ public sealed class TLibrary
         TLibraryEntrySave(engine, "maison", "French");
         CLibrary library = TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
-        library.CLibraryFilterSet(new CCatalogFilter(["English"]));
+        library.CLibraryPanel.CPanelAperture.CApertureFilterSet(new CCatalogFilter(["English"]));
 
-        Assert.True(library.CLibraryFiltered);
-        Assert.Equal(["English"], library.CLibraryPanel.CPanelFilter.CCatalogFilterHidden);
+        Assert.True(library.CLibraryPanel.CPanelAperture.CApertureFiltered);
+        Assert.Equal(["English"], library.CLibraryPanel.CPanelAperture.CApertureFilter.CCatalogFilterHidden);
         Assert.Equal(["maison"], library.CLibraryRowsRead().Select(row => row.CVistaRowHeadword));
     }
 
@@ -112,7 +112,7 @@ public sealed class TLibrary
             .Select(row => row.CVistaRowHeadword));
         Assert.Equal("water", library.TLibraryFileRead());
 
-        library.CLibraryPanel.CPanelEntryDelete();
+        library.CLibraryPanel.CPanelBin.CPanelBinDelete();
 
         Assert.Equal(0, library.CLibraryPanel.TPanelChosenRead());
         Assert.Empty(library.CLibraryRowsRead());
@@ -149,7 +149,7 @@ public sealed class TLibrary
         CLibrary library = TLibraryPrepare(atelier, envoy);
         library.CLibraryPanel.CPanelRowOpen(stone.LEntryId);
         library.CLibraryPanel.CPanelScribeToggle(true);
-        library.CLibraryEditor.CEditorHeadwordSet("stones");
+        library.CLibraryEditor.CEditorEntry.CEntryHeadwordSet("stones");
 
         bool quit = atelier.CAtelierQuitConfirm(envoy);
 

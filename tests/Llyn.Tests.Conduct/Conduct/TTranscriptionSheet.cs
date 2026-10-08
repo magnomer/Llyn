@@ -195,9 +195,9 @@ public sealed class TTranscriptionSheet
         CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         bool filling = false;
-        editor.CEditorDesk.CDeskDraftChanged += _ =>
+        editor.CEditorDesk.CDeskDraft.CDeskDraftChanged += _ =>
         {
-            filling = editor.CEditorDesk.CDeskFilling;
+            filling = editor.CEditorDesk.CDeskDraft.CDeskDraftFilling;
             editor.CEditorTranscription.CTranscriptionAdd(0);
         };
 
@@ -217,9 +217,9 @@ public sealed class TTranscriptionSheet
         CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         bool filling = false;
-        editor.CEditorDesk.CDeskDraftChanged += _ =>
+        editor.CEditorDesk.CDeskDraft.CDeskDraftChanged += _ =>
         {
-            filling = editor.CEditorDesk.CDeskFilling;
+            filling = editor.CEditorDesk.CDeskDraft.CDeskDraftFilling;
             foreach (CTranscriptionRow row in editor.CEditorTranscription.CTranscriptionRead().CTranscriptionSheetRows)
             {
                 editor.CEditorTranscription.CTranscriptionSchemeSet(
@@ -243,9 +243,9 @@ public sealed class TTranscriptionSheet
         CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         bool filling = false;
-        editor.CEditorDesk.CDeskDraftChanged += _ =>
+        editor.CEditorDesk.CDeskDraft.CDeskDraftChanged += _ =>
         {
-            filling = editor.CEditorDesk.CDeskFilling;
+            filling = editor.CEditorDesk.CDeskDraft.CDeskDraftFilling;
             foreach (CTranscriptionRow row in editor.CEditorTranscription.CTranscriptionRead().CTranscriptionSheetRows)
             {
                 editor.CEditorTranscription.CTranscriptionRemove(row.CTranscriptionRowDraft.CTranscriptionDraftId);

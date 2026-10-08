@@ -21,10 +21,10 @@ public sealed class TGuildUnion
         guild.CGuildAuthorSelect(ada.LAuthorId);
         guild.CGuildScribeToggle(true);
 
-        Assert.True(guild.CGuildAutographShown);
-        Assert.True(guild.CGuildUnionShown);
-        Assert.Equal(["Adam"], guild.CGuildUnionRead("Ad").Select(row => row.CCatalogAuthorName));
-        Assert.Empty(guild.CGuildUnionRead(" "));
+        Assert.True(guild.CGuildDiptych.CDiptychParentEditing);
+        Assert.True(guild.CGuildUnion.CGuildUnionShown);
+        Assert.Equal(["Adam"], guild.CGuildUnion.CGuildUnionRead("Ad").Select(row => row.CCatalogAuthorName));
+        Assert.Empty(guild.CGuildUnion.CGuildUnionRead(" "));
     }
 
     [Fact]
@@ -42,12 +42,12 @@ public sealed class TGuildUnion
         guild.CGuildAuthorSelect(ada.LAuthorId);
         guild.CGuildScribeToggle(true);
 
-        guild.CGuildUnionSelect(adam.LAuthorId);
+        guild.CGuildUnion.CGuildUnionSelect(adam.LAuthorId);
 
         Assert.Equal(["Guild.MergeConfirm>Ada>Adam"], asked);
         Assert.Null(engine.TEngineAuthorRead(ada.LAuthorId));
-        Assert.False(guild.CGuildAutographShown);
-        Assert.True(guild.CGuildVitaShown);
+        Assert.False(guild.CGuildDiptych.CDiptychParentEditing);
+        Assert.True(guild.CGuildDiptych.CDiptychParentShown);
         CVita vita = guild.CGuildRollRead().CGuildRollVita;
         Assert.Equal("Adam", vita.CVitaName);
         Assert.Equal(TInterface.TLocalizationTextRead("Guild.WorkOne"), vita.CVitaWork);
@@ -68,7 +68,7 @@ public sealed class TGuildUnion
         guild.CGuildScribeToggle(true);
         guild.CGuildAutograph.TDeskDefer(TInterface.TAuthorNameCreate(guild.CGuildAutograph.CDeskId, "  Ada B "));
 
-        guild.CGuildUnionSelect(adam.LAuthorId);
+        guild.CGuildUnion.CGuildUnionSelect(adam.LAuthorId);
 
         Assert.Equal(["Guild.MergeConfirm>Ada B>Adam"], asked);
     }
@@ -85,10 +85,10 @@ public sealed class TGuildUnion
         guild.CGuildAuthorSelect(ada.LAuthorId);
         guild.CGuildScribeToggle(true);
 
-        guild.CGuildUnionSelect(adam.LAuthorId);
+        guild.CGuildUnion.CGuildUnionSelect(adam.LAuthorId);
 
         Assert.NotNull(engine.TEngineAuthorRead(ada.LAuthorId));
-        Assert.True(guild.CGuildAutographShown);
+        Assert.True(guild.CGuildDiptych.CDiptychParentEditing);
         Assert.True(guild.CGuildAutograph.CDeskHeld);
     }
 }

@@ -1,19 +1,19 @@
 # CYunjing.cs
-Hash: `ca4cb1ea084c67f4`
+Hash: `4ffaeae361caa525`
 
 ## `public sealed class CYunjing`
 
 The yunjing panel's session, the workspace browsed as a rime table by onset and rime.
-It holds the initial and rime columns' vistas, the entry list's vista and panel, and the entry editor.
+It holds the initial and rime columns' apertures and the entry list, which owns the panel and the entry editor.
 It remembers which column was clicked last, since that column's cell is the one the page reads.
 It restores its vistas itself, so no driver holds a port or a vista.
 
 ## `private CYunjing(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
-Takes the atelier's ports and builds the panel's own entry editor.
-The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
-A cleared panel empties the editor, and an edited row opens in it.
-It registers its vista restore and its close with the workspace.
+Takes the atelier's ports and builds both columns' apertures and the entry list.
+The entry list builds the panel and its editor, and its change is raised as this session's change.
+It hands the list the cell lookup, so the list never reads a column.
+It registers its vista restore with the workspace.
 It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CYunjing CYunjingCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
@@ -33,18 +33,24 @@ Each column, the page and the mode answer it with their own read.
 The workspace changed under the panel, after both columns and the chosen entry were let go.
 The driver answers it by drawing the flags of the languages again.
 
+## `public CAperture CYunjingShengmu { get; }`
+
+The initial column's vista with its search, its order, its count and its empty keys.
+An empty column prints `Yunjing.ShengmuEmpty`, or `Yunjing.ShengmuUnmatched` while narrowed.
+
+## `public CAperture CYunjingYunmu { get; }`
+
+The rime column's vista with its search, its order, its count and its empty keys.
+An empty column prints `Yunjing.YunmuEmpty`, or `Yunjing.YunmuUnmatched` while narrowed.
+
+## `public CEntryList CYunjingXiaoyun { get; }`
+
+The entry list under the chosen cell, with its panel, its editor and its press.
+An empty list under a chosen cell prints `Yunjing.XiaoyunVacant`, or `Yunjing.XiaoyunUnmatched` while narrowed.
+
 ## `public event Action? CYunjingDiweiOpened;`
 
 Raised when a fanqie chip's arrival starts, so the driver shows both column searches empty.
-
-## `public CEditor CYunjingEditor { get; }`
-
-The entry editor the reader column opens the chosen entry in.
-The driver wraps it for the editor view and the lectern.
-
-## `public CPanel CYunjingPanel { get; }`
-
-The panel state of the entry list, with its mode, its chosen row and its draft.
 
 ## `internal bool LYunjingAllowed`
 
@@ -59,49 +65,14 @@ True while the chosen cell is read as a page rather than an entry.
 
 True while the reader shows an entry for reading.
 
-## `public bool CYunjingEditorShown`
-
-True while the reader shows the editor.
-
 ## `public string CYunjingDiweiKey`
 
 The localization key of the page's kind, following the column clicked last.
 
-## `public bool CYunjingShengmuEmpty`
-
-Whether the last initial column read found nothing, so no driver counts rows.
-
-## `public bool CYunjingYunmuEmpty`
-
-Whether the last rime column read found nothing.
-
-## `public bool CYunjingXiaoyunEmpty`
-
-Whether the last entry list read found nothing.
-
-## `public string CYunjingShengmuKey`
-
-The localization key the empty initial column prints, telling a narrowed column from a bare one.
-
-## `public string CYunjingYunmuKey`
-
-The localization key the empty rime column prints, telling a narrowed column from a bare one.
-
 ## `public string CYunjingXiaoyunKey`
 
 The localization key the empty entry list prints, telling no cell chosen from a cell with nothing.
-
-## `public CCatalogOrder CYunjingShengmuOrder`
-
-The ordering the initial column is listed in, defaulted by the engine while no vista stands.
-
-## `public CCatalogOrder CYunjingYunmuOrder`
-
-The ordering the rime column is listed in, defaulted by the engine while no vista stands.
-
-## `private string LYunjingVacantKey`
-
-The key a chosen cell with no entry prints, narrowed or not.
+A chosen cell reads the list's aperture key, narrowed or not.
 
 ## `private bool LYunjingDiweiChosen`
 
@@ -117,20 +88,18 @@ The vista of the column clicked last, whose cell the page and the entry list fol
 
 ## `internal void LYunjingVistaRestore()`
 
-Starts the three vistas off the window posture, the two columns and the entry list.
-The columns are ordered by name and the list by headword until the user picks another order.
-The search text of each vista before it carries into its fresh one, so a workspace switch keeps it.
-The list's vista then goes to the panel and the editor, and every observer attaches to the fresh vistas.
+Starts both columns' vistas off the window posture, ordered by name until the user picks another order.
+Each aperture carries the search text of the vista before into the fresh one, so a workspace switch keeps it.
+The entry list then restores its own vista, and every observer attaches to the fresh vistas.
 The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
 
-## `private void LYunjingObserverAttach(LVista shengmu, LVista yunmu)`
+## `private void LYunjingObserverAttach()`
 
-Attaches the panel's answers to the fresh vistas, each carried through the marshal.
+Attaches the panel's answers to the fresh columns, each carried through the marshal.
 A Vista notice on either column raises the columns and the rows again.
 A Fanqie, Settings or Reflex notice on the initial column does the same.
 A Workspace notice on the initial column goes to `LYunjingWorkspaceResonate`.
-The list's own Vista notice raises its rows, and an Entry notice goes to `LYunjingEntryResonate`.
-A notice on the chosen entry reads its draft again.
+The entry list then attaches its own answers to its vista.
 
 ## `public static IReadOnlyList<CCatalogOrder> CYunjingOrderRead()`
 
@@ -139,24 +108,16 @@ It needs no session, so the driver builds the menus once.
 
 ## `public IReadOnlyList<CDiwei> CYunjingShengmuRead()`
 
-The initial column as the driver copies it, counted for the empty verdict.
+The initial column as the driver copies it, counted into its aperture for the empty verdict.
 
 ## `public IReadOnlyList<CDiwei> CYunjingYunmuRead()`
 
-The rime column as the driver copies it, counted for the empty verdict.
+The rime column as the driver copies it, counted into its aperture for the empty verdict.
 
-## `public IReadOnlyList<CVistaRow> CYunjingXiaoyunRead()`
+## `private IReadOnlyList<LVistaRow> LYunjingXiaoyunFind(LVista xiaoyun)`
 
-The entry list under the chosen cells, copied through the shared row map and counted for the empty verdict.
-A failed read shows `Yunjing.LoadFailed` through the envoy and answers no rows, so the count reads zero.
-The load task runs this read after the flag fill, so a throw here would fault the driver.
-
-## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CYunjingXiaoyunLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
-
-Runs the flag fill into the driver's `store`, then answers `CYunjingXiaoyunRead` beside the loaded languages.
-The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
-A failed flag fill shows `Yunjing.LoadFailed` and still answers the rows with no languages.
-The driver awaits it from an event handler, where a fault would end the app.
+The seam the entry list reads its rows through, the entries under the cell the page follows.
+It answers no rows while either column has no vista.
 
 ## `public CDiweiPage CYunjingDiweiRead()`
 
@@ -164,46 +125,10 @@ The page of the chosen cell, or the blank page while the reader shows an entry.
 The engine picks the tally set, so the map only copies.
 The headword and glyph fonts of the cell language come ready, and a blank language answers no font.
 
-## `public void CYunjingShengmuFind(string query)`
-
-Narrows the initial column to that query.
-
-## `public void CYunjingYunmuFind(string query)`
-
-Narrows the rime column to that query.
-
-## `public void CYunjingXiaoyunFind(string query)`
-
-Narrows the entry list to that query.
-
-## `public void CYunjingShengmuSet(CCatalogOrder? order)`
-
-Lists the initial column in that ordering.
-The vista keeps the one it has when none is named.
-
-## `public void CYunjingYunmuSet(CCatalogOrder? order)`
-
-Lists the rime column in that ordering.
-The vista keeps the one it has when none is named.
-
 ## `private void LYunjingWorkspaceResonate()`
 
 Unchooses both columns and clears the panel, as a workspace changes.
 It then tells the driver through `CYunjingWorkspaceChanged`.
-
-## `private void LYunjingRowsResonate()`
-
-Answers a column notice by raising the change and refreshing the panel's own rows.
-
-## `private void LYunjingEntryResonate(CBulletin bulletin)`
-
-Answers an entry notice by raising the change and handing the notice to the panel.
-
-## `private void LYunjingClose()`
-
-The panel's part of the atelier's close.
-The editor lets its draft go, then the display stops its playback.
-`CAtelierClose` runs it through the closure the constructor registers.
 
 ## `public void CYunjingDiweiSelect(long? id, bool? final)`
 
@@ -220,7 +145,7 @@ It asks nothing, so each caller settles the leave question first.
 
 The navigation's arrival: opens the cell of that language, kind and key, the request a fanqie chip makes.
 It first empties both column searches and raises `CYunjingDiweiOpened`, so the driver shows them empty.
-The engine finds the cell and its column, and nothing happens for a cell never stored.
+The engine finds the cell and its column, and a cell never stored opens nothing.
 Both columns are unchosen first, so the page shows only that cell.
 It toggles the cell without the gate's leave question, since the navigation already asked it.
 After a discard the draft still reads as changed, so asking again would repeat the dialog.
@@ -240,23 +165,6 @@ The navigation's jump asks every leave question, so the gate asks none of its ow
 The page's language and the resolve are one engine call, so the page is never read whole for its language.
 A refused resolve is shown through the catalog's one glyph failure owner, and nothing opens.
 
-## `internal string LYunjingFileRead()`
-
-The file name an export of the read entry is offered under.
-`CPortrait` reads it only once the export starts, and a failed read shows `Export.NameFailed`.
-
-## `public Task CYunjingPortraitPrint()`
-
-Prints the entry the reader holds, doing nothing while there is none.
-The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
-`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
-
-## `public Task CYunjingPortraitExport()`
-
-Exports the entry the reader holds as a portrait file.
-The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
-`CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.
-
 ## `private IReadOnlyList<CDiwei> LYunjingColumnRead(LVista? vista, bool final)`
 
 One column of cells, listed in the language of the cell the page follows.
@@ -265,8 +173,3 @@ The engine picks that language and answers nothing while no pack carries rime bo
 ## `private static CDiweiSection LYunjingSectionRead(LDiweiSection section)`
 
 Copies one page section with its lines and tallies, holding no rule.
-
-## `private static void LYunjingColumnAttach(LVista column, CSubject subject, Action<CBulletin> observer)`
-
-Attaches the observer to one column.
-The subject and bulletin maps are the panel's and the atelier's, so the driver names neither engine type.

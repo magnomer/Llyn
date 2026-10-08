@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -9,15 +8,6 @@ namespace Llyn.Conduct;
 
 public sealed class CDisplaySound
 {
-    private static readonly CLecternAccent _cDisplayMute = new(
-        new CRespellingMark(false, string.Empty, string.Empty),
-        [],
-        string.Empty,
-        false,
-        CSounding.CSoundingVarietyRead(string.Empty, string.Empty),
-        [],
-        false);
-
     private static readonly CFont _cDisplayBare = new(null, null, CFontSlant.CFontSlantTheme);
 
     private static readonly CLecternAnchor _cDisplayUnanchored = new(false, new Dictionary<long, string>());
@@ -34,8 +24,6 @@ public sealed class CDisplaySound
 
     private readonly LGlyphPort _cDisplayGlyphPort;
 
-    private readonly LLanguagePort _cDisplayLanguage;
-
     private readonly LFanqiePort _cDisplayFanqie;
 
     private readonly LDiweiPort _cDisplayDiwei;
@@ -45,8 +33,6 @@ public sealed class CDisplaySound
     private readonly LParadigmPort _cDisplayParadigm;
 
     private readonly LReflexPort _cDisplayReflex;
-
-    private readonly LMediaPort _cDisplayMedia;
 
     private readonly LSettingsPort _cDisplaySettings;
 
@@ -58,13 +44,11 @@ public sealed class CDisplaySound
         LDraftPort drafts,
         LEntryPort entries,
         LGlyphPort glyphs,
-        LLanguagePort languages,
         LFanqiePort fanqies,
         LDiweiPort diweis,
         LScriptPort scripts,
         LParadigmPort paradigms,
         LReflexPort reflexes,
-        LMediaPort media,
         LSettingsPort settings,
         CEnvoy envoy)
     {
@@ -73,13 +57,11 @@ public sealed class CDisplaySound
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(glyphs);
-        ArgumentNullException.ThrowIfNull(languages);
         ArgumentNullException.ThrowIfNull(fanqies);
         ArgumentNullException.ThrowIfNull(diweis);
         ArgumentNullException.ThrowIfNull(scripts);
         ArgumentNullException.ThrowIfNull(paradigms);
         ArgumentNullException.ThrowIfNull(reflexes);
-        ArgumentNullException.ThrowIfNull(media);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
@@ -89,18 +71,14 @@ public sealed class CDisplaySound
         _cDisplayDraft = drafts;
         _cDisplayEntryPort = entries;
         _cDisplayGlyphPort = glyphs;
-        _cDisplayLanguage = languages;
         _cDisplayFanqie = fanqies;
         _cDisplayDiwei = diweis;
         _cDisplayScript = scripts;
         _cDisplayParadigm = paradigms;
         _cDisplayReflex = reflexes;
-        _cDisplayMedia = media;
         _cDisplaySettings = settings;
         _cDisplayEnvoy = envoy;
     }
-
-    public IReadOnlyList<int> CDisplaySoundScale => _cDisplayLanguage.LEngineContourScale;
 
     public event Action? CDisplayFoldChanged;
 
@@ -115,113 +93,6 @@ public sealed class CDisplaySound
     private LEntryDraft? LDisplayShown => _cDisplayVoice.LDisplayShown;
 
     private long? LDisplayEntry => _cDisplayVoice.LDisplayEntry;
-
-    public CLecternAccent CDisplayAccentRead()
-    {
-        if (LDisplayShown is not LEntryDraft shown)
-        {
-            return _cDisplayMute;
-        }
-
-        try
-        {
-            return LDisplayAccentRead(_cDisplayLanguage.LEngineAccentRead(shown));
-        }
-        catch (Exception exception)
-        {
-            _cDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
-            return _cDisplayMute;
-        }
-    }
-
-    public async Task<CLecternAccent?> CDisplayEnsignLoad(
-        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)
-    {
-        ArgumentNullException.ThrowIfNull(store);
-
-        if (LDisplayShown is not LEntryDraft shown)
-        {
-            return null;
-        }
-
-        LAccentSheet sheet;
-        try
-        {
-            sheet = await _cDisplayLanguage.LEngineAccentLoad(
-                shown, (rows, delete) => store(CCatalog.CCatalogEnsignRead(rows), delete));
-        }
-        catch (Exception exception)
-        {
-            _cDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
-            return null;
-        }
-
-        return ReferenceEquals(shown, LDisplayShown) ? LDisplayAccentRead(sheet) : null;
-    }
-
-    private CLecternAccent LDisplayAccentRead(LAccentSheet sheet)
-    {
-        string language = sheet.LAccentSheetLanguage;
-        return new CLecternAccent(
-            new CRespellingMark(sheet.LAccentSheetRespelled, sheet.LAccentSheetOpener, sheet.LAccentSheetCloser),
-            CSounding.LSoundingContourRead(sheet.LAccentSheetContour, _cDisplayLanguage.LEngineContourScale),
-            sheet.LAccentSheetPrimary.LAccentRowText,
-            sheet.LAccentSheetSpoken,
-            CSounding.CSoundingVarietyRead(language, sheet.LAccentSheetPrimary.LAccentRowVariety),
-            sheet.LAccentSheetRows.Select(row => CSounding.LSoundingAccentRead(language, row)).ToList(),
-            sheet.LAccentSheetFlagged);
-    }
-
-    public CLecternPlayback CDisplayPlaybackRead()
-    {
-        if (LDisplayShown is not LEntryDraft shown)
-        {
-            return new CLecternPlayback(false, false);
-        }
-
-        try
-        {
-            (bool recorded, bool audible) = _cDisplayMedia.LEnginePlaybackRead(shown);
-            return new CLecternPlayback(recorded, audible);
-        }
-        catch (Exception exception)
-        {
-            _cDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.LoadFailed", exception);
-            return new CLecternPlayback(false, false);
-        }
-    }
-
-    public void CDisplayPlaybackStart(double volume)
-    {
-        if (LDisplayShown is not LEntryDraft shown)
-        {
-            return;
-        }
-
-        LDisplayPlaybackStart(() => _cDisplayMedia.LEngineRecordingPlay(shown, volume));
-    }
-
-    public void CDisplayPlaybackStart(string? audio, double volume)
-    {
-        LDisplayPlaybackStart(() => _cDisplayMedia.LEngineRecordingPlay(audio, volume));
-    }
-
-    private void LDisplayPlaybackStart(Func<int> play)
-    {
-        try
-        {
-            _cDisplayVoice.LDisplayTicket = play();
-        }
-        catch (Exception exception)
-        {
-            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Sound.PlayFailed", exception);
-        }
-    }
-
-    public void CDisplayPlaybackCancel()
-    {
-        _cDisplayVoice.LDisplayPlaybackStop();
-    }
 
     public CLecternGlyph CDisplayGlyphRead()
     {
@@ -280,7 +151,7 @@ public sealed class CDisplaySound
 
         try
         {
-            return CSounding.CSoundingTranscriptionRead(_cDisplayGlyphPort.LEngineTranscriptionRead(shown));
+            return CTranscriptionDraft.CTranscriptionDraftRead(_cDisplayGlyphPort.LEngineTranscriptionRead(shown));
         }
         catch (Exception exception)
         {
@@ -405,7 +276,7 @@ public sealed class CDisplaySound
         return new CLecternParadigm(
             CSounding.CSoundingParadigmRead(
                 _cDisplayParadigm, rows, pending, _cDisplayVoice.LDisplayMorphologyRead(), false),
-            CCatalog.LCatalogFontRead(_cDisplaySettings, language, CFontRole.CFontRoleHeadword));
+            CFont.CFontRead(_cDisplaySettings, language, CFontRole.CFontRoleHeadword));
     }
 
     private IReadOnlyList<CReflex> LDisplayReflexScan()
@@ -415,7 +286,7 @@ public sealed class CDisplaySound
             return CRespelling.LRespellingReflexScan(
                 _cDisplayReflex,
                 _cDisplayHeader.CDisplayShown.CLecternLanguage,
-                CSounding.CSoundingReflexRead(_cDisplayVoice.LDisplayReflexRead()));
+                CReflexDraft.CReflexDraftRead(_cDisplayVoice.LDisplayReflexRead()));
         }
         catch (Exception exception)
         {
@@ -438,6 +309,6 @@ public sealed class CDisplaySound
 
     public CFont CDisplayFontRead(CFontRole role)
     {
-        return CCatalog.LCatalogFontRead(_cDisplaySettings, _cDisplayHeader.CDisplayShown.CLecternLanguage, role);
+        return CFont.CFontRead(_cDisplaySettings, _cDisplayHeader.CDisplayShown.CLecternLanguage, role);
     }
 }

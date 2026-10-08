@@ -110,7 +110,7 @@ public sealed class TSession
         CSession session = TInterfaceConductDesk.TSessionCreate(desk, [], static () => true, static _ => { });
         session.CSessionStart(null);
         desk.TDeskDefer(TInterface.TRequestAuthorCreate(desk.CDeskId, "Ada"));
-        desk.CDeskPersist();
+        desk.CDeskDraft.CDeskDraftPersist();
 
         Assert.True(session.CSessionChronicleRead().CDeskBackward);
 
@@ -134,7 +134,7 @@ public sealed class TSession
         CSession session = TInterfaceConductDesk.TSessionCreate(desk, [], static () => true, static _ => { });
         session.CSessionStart(null);
         desk.TDeskDefer(TInterface.TRequestAuthorCreate(desk.CDeskId, "Ada"));
-        desk.CDeskPersist();
+        desk.CDeskDraft.CDeskDraftPersist();
         engine.TEngineWorkspaceOpen(workspace.TWorkspaceFolder);
 
         session.CSessionUndo();
@@ -148,7 +148,7 @@ public sealed class TSession
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDesk desk = TSessionDeskPrepare(engine);
-        CDesk editor = TSessionDeskPrepare(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         List<string> seen = [];
         CSession session = TInterfaceConductDesk.TSessionCreate(desk, editor, static () => true, seen);
 
@@ -165,7 +165,7 @@ public sealed class TSession
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDesk desk = TSessionDeskPrepare(engine);
-        CDesk editor = TSessionDeskPrepare(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         List<string> seen = [];
         CSession session = TInterfaceConductDesk.TSessionCreate(desk, editor, static () => false, seen);
         session.CSessionStart(null);

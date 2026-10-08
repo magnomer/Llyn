@@ -1,16 +1,18 @@
 # COccurrence.cs
-Hash: `597122e097ddf069`
+Hash: `1681ee24647b97b8`
 
 ## `public sealed class COccurrence`
 
 The repertoire panel's occurrence list: the entries referencing the chosen Situation.
-It holds the vista and portrait ports, the situation vista as its roll and its own vista.
+It holds the vista and portrait ports and the situation vista as its roll.
+Its own vista sits in the panel's aperture.
 The occurrence side never deletes, so its panel has no delete scope.
 It is sealed, so its rows, labels, tickets and formats cross as Conduct shapes.
 
 ## `internal COccurrence(LVistaPort vistas, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
 Builds the list's panel under the `List.LoadFailed` key and with no delete scope.
+The empty list reads `Situation.Vacant` when nothing references the Situation, and `Situation.Unmatched` under a search.
 The change seam is the entry editor's desk, and the finish seam is the repertoire session's.
 It takes engine ports, so it stays internal to `CRepertoire`, which builds it.
 
@@ -18,26 +20,17 @@ It takes engine ports, so it stays internal to `CRepertoire`, which builds it.
 
 The panel that holds the chosen entry and the edit mode of the occurrence side.
 
-## `public string COccurrenceEmptyKey`
-
-The wording key of the empty list, chosen by whether the vista holds a query.
-No query means nothing references the Situation, and a query means nothing matched.
-
 ## `internal void LOccurrenceVistaRestore(LVista roll, LVista vista)`
 
 Takes the situation vista as the roll the rows follow, and its own vista for the panel.
 It takes engine vistas, so only the repertoire's vista restore calls it.
-The query the former vista held is carried into the fresh one, so a switched workspace keeps the search.
+The aperture carries the former query into the fresh vista, so a switched workspace keeps the search.
 
 ## `internal void LOccurrenceObserverAttach(Action<Action> marshal, Action roll, Action chosen)`
 
 Attaches the subjects that refill the entry column on the fresh vista, each answer run through the marshal.
 An entry notice selects a stored entry, refills the situation rows, and hands the chosen entry to the area.
 A vista notice raises the column's own rows.
-
-## `public void COccurrenceQuerySet(string query)`
-
-Takes the text typed into the search field as the list's query.
 
 ## `public IReadOnlyList<CVistaRow> COccurrenceRowsRead()`
 

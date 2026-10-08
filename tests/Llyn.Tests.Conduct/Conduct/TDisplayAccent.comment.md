@@ -1,11 +1,11 @@
 # TDisplayAccent.cs
-Hash: `d649d6d01fadc7d8`
+Hash: `5ee40ff6798ed4f6`
 
 ## `public sealed class TDisplayAccent`
 
 Covers the reading view's pronunciation block, read and flag load alike, on a real workspace.
-The wing opens the entry, so each case stands on its display's sound area.
-Each flag load goes through the `TInterfaceConductSound.TDisplayEnsignLoad` relay.
+The wing opens the entry, so each case stands on its display's accent area.
+Each flag load goes through the `TInterfaceConductSound.TDisplayAccentLoad` relay.
 
 ## `public void DisplayAccentRead_ShownEntry_AnswersTheBlockReadyToShow()`
 
@@ -20,20 +20,20 @@ With the switch on, the primary reading prints the respelling stored beside it.
 
 With nothing open, the block has no reading, no row and no flag.
 
-## `public async Task DisplayEnsignLoad_FlaggedPack_StoresTheVarietyFlagsAndAnswersTheBlock()`
+## `public async Task DisplayAccentLoad_FlaggedPack_StoresTheVarietyFlagsAndAnswersTheBlock()`
 
 A pack that draws its varieties as flags hands the store each flag under its language and variety.
 The block then answers again, with the pack's tone and flag verdicts.
 
-## `public async Task DisplayEnsignLoad_AnotherEntryShownMeanwhile_AnswersNothing()`
+## `public async Task DisplayAccentLoad_AnotherEntryShownMeanwhile_AnswersNothing()`
 
 An entry opened while the flags load wins, so the late load answers nothing to paint.
 
-## `public async Task DisplayEnsignLoad_StoreFails_ShowsTheLoadFailureOnce()`
+## `public async Task DisplayAccentLoad_StoreFails_ShowsTheLoadFailureOnce()`
 
 A flag store that throws shows `Sound.LoadFailed` once, and the load answers nothing.
 
-## `public async Task DisplayEnsignLoad_NothingShown_AnswersNothing()`
+## `public async Task DisplayAccentLoad_NothingShown_AnswersNothing()`
 
 With nothing open, nothing loads and nothing answers.
 

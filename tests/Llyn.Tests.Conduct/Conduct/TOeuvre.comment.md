@@ -1,5 +1,5 @@
 # TOeuvre.cs
-Hash: `f86611ea6bcbe88b`
+Hash: `b542dc705657e7e8`
 
 ## `public sealed class TOeuvre`
 

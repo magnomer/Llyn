@@ -47,7 +47,7 @@ internal sealed class QMarker
         _cEditor = editor;
         _qMarkerCategory = category;
         _qMarkerUnit = unit;
-        editor.CEditorDraftChanged += QMarkerRefine;
+        editor.CEditorEntry.CEntryDraftChanged += QMarkerRefine;
     }
 
     private void QMarkerApply(FrameworkElement container, object item, string? _)

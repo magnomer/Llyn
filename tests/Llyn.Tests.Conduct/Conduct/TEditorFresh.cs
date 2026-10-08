@@ -102,7 +102,7 @@ public sealed class TEditorFresh
         LSituation situation = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, text, text, text));
         CEditor editor = TEditor.TEditorPrepare(engine, "occurrence");
         List<CEntryDraft> shown = [];
-        editor.CEditorDraftChanged += shown.Add;
+        editor.CEditorEntry.CEntryDraftChanged += shown.Add;
 
         editor.CEditorDesk.TDeskOccurrenceStart(situation.LSituationId);
 
@@ -123,7 +123,7 @@ public sealed class TEditorFresh
         editor.CEditorDesk.TDeskOccurrenceStart(null);
 
         Assert.True(editor.CEditorDesk.CDeskHeld);
-        Assert.False(editor.CEditorDesk.CDeskChanged);
+        Assert.False(editor.CEditorDesk.CDeskDraft.CDeskDraftAltered);
     }
 
     [Fact]

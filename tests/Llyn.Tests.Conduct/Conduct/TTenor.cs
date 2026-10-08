@@ -23,8 +23,8 @@ public sealed class TTenor
         engine.TEngineRegisterCreate("formal");
 
         Assert.Single(tenor.CTenorRowsRead());
-        Assert.Null(tenor.LTenorChosen);
-        Assert.False(tenor.CTenorFiltered);
+        Assert.Null(tenor.CTenorAperture.CApertureChosen);
+        Assert.False(tenor.CTenorAperture.CApertureFiltered);
     }
 
     [Fact]
@@ -35,13 +35,13 @@ public sealed class TTenor
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
-        tenor.CTenorCohort.CCohortQuerySet(" ");
+        tenor.CTenorCohort.CCohortPanel.CPanelAperture.CApertureQuerySet(" ");
 
-        Assert.Equal("Register.Vacant", tenor.CTenorCohort.CCohortEmptyKey);
+        Assert.Equal("Register.Vacant", tenor.CTenorCohort.CCohortPanel.CPanelAperture.CApertureKey);
 
-        tenor.CTenorCohort.CCohortQuerySet("aqua");
+        tenor.CTenorCohort.CCohortPanel.CPanelAperture.CApertureQuerySet("aqua");
 
-        Assert.Equal("Register.Unmatched", tenor.CTenorCohort.CCohortEmptyKey);
+        Assert.Equal("Register.Unmatched", tenor.CTenorCohort.CCohortPanel.CPanelAperture.CApertureKey);
         Assert.Empty(tenor.CTenorCohort.CCohortRowsRead());
     }
 
@@ -55,14 +55,14 @@ public sealed class TTenor
         engine.TEngineRegisterCreate("alpha");
         engine.TEngineRegisterCreate("beta");
         int told = 0;
-        tenor.CTenorRowsChanged += () => told++;
+        tenor.CTenorAperture.CApertureRowsChanged += () => told++;
 
-        Assert.Equal(CCatalogOrder.CCatalogOrderName, tenor.CTenorOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderName, tenor.CTenorAperture.CApertureOrder);
 
-        tenor.CTenorOrderSet(CCatalogOrder.CCatalogOrderReverse);
-        tenor.CTenorOrderSet(null);
+        tenor.CTenorAperture.CApertureOrderSet(CCatalogOrder.CCatalogOrderReverse);
+        tenor.CTenorAperture.CApertureOrderSet(null);
 
-        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, tenor.CTenorOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, tenor.CTenorAperture.CApertureOrder);
         Assert.Equal(
             ["beta", "alpha"],
             tenor.CTenorRowsRead()
@@ -80,7 +80,7 @@ public sealed class TTenor
         CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         engine.TEngineRegisterCreate("formal");
 
-        tenor.CTenorQuerySet("zzz");
+        tenor.CTenorAperture.CApertureQuerySet("zzz");
 
         Assert.Empty(tenor.CTenorRowsRead());
     }
@@ -93,14 +93,14 @@ public sealed class TTenor
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
-        tenor.CTenorFilterSet(new CCatalogFilter(["Latin"]));
+        tenor.CTenorAperture.CApertureFilterSet(new CCatalogFilter(["Latin"]));
 
-        Assert.True(tenor.CTenorFiltered);
-        Assert.Equal(["Latin"], tenor.CTenorFilter.CCatalogFilterHidden);
+        Assert.True(tenor.CTenorAperture.CApertureFiltered);
+        Assert.Equal(["Latin"], tenor.CTenorAperture.CApertureFilter.CCatalogFilterHidden);
 
-        tenor.CTenorFilterSet(new CCatalogFilter([]));
+        tenor.CTenorAperture.CApertureFilterSet(new CCatalogFilter([]));
 
-        Assert.False(tenor.CTenorFiltered);
+        Assert.False(tenor.CTenorAperture.CApertureFiltered);
     }
 
     [Fact]
@@ -141,11 +141,11 @@ public sealed class TTenor
         atelier.CAtelierNavigation.CNavigationChanged += states.Add;
 
         int rows = 0;
-        tenor.CTenorRowsChanged += () => rows++;
+        tenor.CTenorAperture.CApertureRowsChanged += () => rows++;
 
         tenor.CTenorRegisterToggle(first);
 
-        Assert.Null(tenor.LTenorChosen);
+        Assert.Null(tenor.CTenorAperture.CApertureChosen);
         Assert.Equal(1, rows);
         Assert.Equal(new CVoyageState(true, false), Assert.Single(states).CNavigationStateVoyage);
     }
@@ -160,11 +160,11 @@ public sealed class TTenor
         long first = engine.TEngineRegisterCreate("formal").LRegisterId;
         List<string> seen = [];
         tenor.CTenorRegisterOpened += () => seen.Add("opened");
-        tenor.CTenorRowsChanged += () => seen.Add("rows");
+        tenor.CTenorAperture.CApertureRowsChanged += () => seen.Add("rows");
 
         tenor.TTenorRegisterOpen(first);
 
-        Assert.Equal(first, tenor.LTenorChosen);
+        Assert.Equal(first, tenor.CTenorAperture.CApertureChosen);
         Assert.Equal(["opened", "rows"], seen);
     }
 
@@ -176,11 +176,11 @@ public sealed class TTenor
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CTenor tenor = TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         long first = engine.TEngineRegisterCreate("formal").LRegisterId;
-        tenor.CTenorQuerySet("zzz");
-        tenor.CTenorCohort.CCohortQuerySet("zzz");
+        tenor.CTenorAperture.CApertureQuerySet("zzz");
+        tenor.CTenorCohort.CCohortPanel.CPanelAperture.CApertureQuerySet("zzz");
         List<string> seen = [];
         tenor.CTenorRegisterOpened += () =>
-            seen.Add(tenor.CTenorCohort.CCohortEmptyKey + " " + tenor.CTenorRowsRead().Count);
+            seen.Add(tenor.CTenorCohort.CCohortPanel.CPanelAperture.CApertureKey + " " + tenor.CTenorRowsRead().Count);
 
         tenor.TTenorRegisterOpen(first);
 

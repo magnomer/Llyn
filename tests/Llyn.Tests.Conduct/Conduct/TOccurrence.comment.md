@@ -1,5 +1,5 @@
 # TOccurrence.cs
-Hash: `493a17456ef92113`
+Hash: `536fa923acc28ac4`
 
 ## `public sealed class TOccurrence`
 

@@ -20,8 +20,6 @@ public sealed class CFootnote
 
     private LVista? _cFootnoteParent;
 
-    private LVista? _cFootnoteVista;
-
     internal CFootnote(
         LVistaPort vistas,
         LPortraitPort portraits,
@@ -46,24 +44,25 @@ public sealed class CFootnote
             envoy,
             settings,
             vistas,
-            "List.LoadFailed", null, editor.CEditorDesk.LDeskChangeCheck, finishSeam, shownSeam);
+            "List.LoadFailed",
+            null,
+            editor.CEditorDesk.LDeskChangeCheck,
+            finishSeam,
+            shownSeam,
+            "Source.Vacant",
+            "Source.Unmatched");
         CFootnotePanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         CFootnotePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
     }
 
     public CPanel CFootnotePanel { get; }
 
-    public string CFootnoteEmptyKey =>
-        _cFootnoteVista?.LVistaQueried ?? false ? "Source.Unmatched" : "Source.Vacant";
-
     internal void LFootnoteVistaRestore(LVista parent, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(parent);
         ArgumentNullException.ThrowIfNull(vista);
 
-        vista.LVistaQuerySet(_cFootnoteVista?.LVistaQuery ?? string.Empty);
         _cFootnoteParent = parent;
-        _cFootnoteVista = vista;
         CFootnotePanel.CPanelVistaRestore(vista);
     }
 
@@ -73,26 +72,19 @@ public sealed class CFootnote
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(chosen);
 
-        CFootnotePanel.CPanelObserverAttach(
+        CFootnotePanel.CPanelAperture.CApertureObserverAttach(
             CSubject.CSubjectEntry, bulletin => marshal(() => CFootnotePanel.CPanelEntryResonate(bulletin)));
-        CFootnotePanel.CPanelObserverAttach(CSubject.CSubjectEntry, _ => marshal(roll));
-        CFootnotePanel.CPanelChosenAttach(CSubject.CSubjectEntry, _ => marshal(chosen));
-        CFootnotePanel.CPanelObserverAttach(
-            CSubject.CSubjectVista, _ => marshal(CFootnotePanel.CPanelRowsResonate));
-    }
-
-    public void CFootnoteQuerySet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _cFootnoteVista?.LVistaQuerySet(query);
+        CFootnotePanel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectEntry, _ => marshal(roll));
+        CFootnotePanel.CPanelAperture.CApertureChosenAttach(CSubject.CSubjectEntry, _ => marshal(chosen));
+        CFootnotePanel.CPanelAperture.CApertureObserverAttach(
+            CSubject.CSubjectVista, _ => marshal(CFootnotePanel.CPanelAperture.CApertureRowsResonate));
     }
 
     public IReadOnlyList<CVistaRow> CFootnoteRowsRead()
     {
         try
         {
-            return _cFootnoteVistaPort.LEngineEntryFind(_cFootnoteParent, _cFootnoteVista)
+            return _cFootnoteVistaPort.LEngineEntryFind(_cFootnoteParent, CFootnotePanel.CPanelAperture.CApertureVista)
                 .Select(CCatalog.LCatalogRowRead)
                 .ToList();
         }
@@ -110,14 +102,14 @@ public sealed class CFootnote
 
     internal string LFootnoteFileRead()
     {
-        return _cFootnoteVistaPort.LEngineFileRead(_cFootnoteVista);
+        return _cFootnoteVistaPort.LEngineFileRead(CFootnotePanel.CPanelAperture.CApertureVista);
     }
 
     internal void LFootnoteEntryCreate()
     {
         long? reference = _cFootnoteParent?.LVistaChosen;
         CFootnotePanel.CPanelFreshOpen();
-        _cFootnoteEditor.CEditorDesk.LDeskFootnoteStart(reference);
+        _cFootnoteEditor.CEditorDesk.LDeskRun((drafts, vista) => drafts.LEngineFootnoteStart(vista, reference));
     }
 
     internal Task LFootnotePortraitPrint(CEnvoy envoy, LSettingsPort settings)
@@ -126,7 +118,7 @@ public sealed class CFootnote
             envoy,
             settings,
             chosen => _cFootnotePortraitPort.LEnginePortraitPrint(
-                _cFootnoteVista, CPortrait.LPortraitLabelRead(settings), chosen));
+                CFootnotePanel.CPanelAperture.CApertureVista, CPortrait.LPortraitLabelRead(settings), chosen));
     }
 
     internal Task LFootnotePortraitExport(CEnvoy envoy, LSettingsPort settings)
@@ -136,6 +128,6 @@ public sealed class CFootnote
             settings,
             LFootnoteFileRead,
             (file, medium) => _cFootnotePortraitPort.LEnginePortraitExport(
-                _cFootnoteVista, file, medium, CPortrait.LPortraitLabelRead(settings)));
+                CFootnotePanel.CPanelAperture.CApertureVista, file, medium, CPortrait.LPortraitLabelRead(settings)));
     }
 }

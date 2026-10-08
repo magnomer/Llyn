@@ -1,5 +1,5 @@
 # CReflexDraft.cs
-Hash: `020b9e48d15278bf`
+Hash: `4716820364a453aa`
 
 ## `public sealed record CReflexDraft(long CReflexDraftId, string CReflexDraftLanguage, string CReflexDraftKind, string CReflexDraftText, string CReflexDraftRespelling, string CReflexDraftRomanization, string CReflexDraftMeaning, string CReflexDraftNote, bool CReflexDraftMain, string CReflexDraftRegion, IReadOnlyList<long> CReflexDraftAnchors)`
 
@@ -18,3 +18,11 @@ One reflex of an entry, as the reflex rows show it.
 - `CReflexDraftMain`: whether the reflex is the language's main one.
 - `CReflexDraftRegion`: the region the reflex is heard in.
 - `CReflexDraftAnchors`: the fanqie readings the reflex anchors to.
+
+## `internal static IReadOnlyList<CReflexDraft> CReflexDraftRead(IReadOnlyList<LReflexDraft> reflexes)`
+
+The reflexes of a draft, shaped for the reflex rows and the lectern.
+
+## `private static CReflexDraft CReflexDraftRead(LReflexDraft reflex)`
+
+Copies every field of one engine reflex draft into its shape.

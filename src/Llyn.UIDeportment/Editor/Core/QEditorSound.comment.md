@@ -1,5 +1,5 @@
 # QEditorSound.cs
-Hash: `945b76e0379c99d7`
+Hash: `a5d068fe9eda8edc`
 
 ## `internal sealed class QEditorSound`
 

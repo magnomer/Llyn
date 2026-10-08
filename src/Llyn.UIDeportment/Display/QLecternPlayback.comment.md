@@ -1,9 +1,9 @@
 # QLecternPlayback.cs
-Hash: `f90d612b0d6aff5b`
+Hash: `82a4c89e7ee7fbf8`
 
 ## `public sealed class QLecternPlayback`
 
-The reading view's playback driver, over [CDisplaySound](../../Llyn.Conduct/Display/CDisplaySound.comment.md).
+The reading view's playback driver, over [CDisplayPlayback](../../Llyn.Conduct/Display/CDisplayPlayback.comment.md).
 It drives the play button and the volume tray, and plays at the slider the veneer hands over.
 The slider itself belongs to the window's one volume owner, [QVolume](../Media/Audio/QVolume.comment.md).
 That owner hears its moves, sets and saves the level and paints it.

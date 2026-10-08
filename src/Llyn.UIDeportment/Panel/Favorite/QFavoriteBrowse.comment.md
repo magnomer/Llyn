@@ -1,5 +1,5 @@
 # QFavoriteBrowse.cs
-Hash: `5f99ac25cc2f4c62`
+Hash: `1dde4b796e7f4c20`
 
 ## `internal sealed partial class QFavorite`
 

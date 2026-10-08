@@ -1,5 +1,5 @@
 # QPhonology.cs
-Hash: `2290df509f6a16a8`
+Hash: `a55efb5d13cc0883`
 
 ## `internal sealed class QPhonology`
 
@@ -52,7 +52,7 @@ Enables the store button only while the editor's desk can store.
 
 Answers `CPhonologyWorkspaceChanged` by drawing the flags of the new workspace's languages.
 Once the flags are in, it repaints the inventory, whose rows carry a flag.
-A failed load throws before the repaint.
+A failed flag load is reported by Conduct, and the rows are still painted without flags.
 Its one request is `CPhonologyRowsLoad`, which runs the flag fill and then answers the rows it paints.
 
 ## `private bool QPhonologyShownCheck()`

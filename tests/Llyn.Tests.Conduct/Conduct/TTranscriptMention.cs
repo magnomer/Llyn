@@ -114,7 +114,7 @@ public sealed class TTranscriptMention
         LExample cat = TCorpus.TCorpusExampleSave(engine, "a cat sat");
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.TCorpusExampleOpen(cat.LExampleId);
-        corpus.CCorpusScribeToggle(true);
+        corpus.CCorpusDiptych.CDiptychScribeToggle(true);
 
         List<CProspect> offered = [];
         corpus.CCorpusTranscript.CTranscriptMentionOffered += offered.Add;
@@ -152,7 +152,7 @@ public sealed class TTranscriptMention
         LExample stored = TCorpus.TCorpusExampleSave(engine, TMentionText);
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, envoy);
         corpus.TCorpusExampleOpen(stored.LExampleId);
-        corpus.CCorpusScribeToggle(true);
+        corpus.CCorpusDiptych.CDiptychScribeToggle(true);
         return corpus;
     }
 

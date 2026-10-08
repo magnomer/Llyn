@@ -31,7 +31,7 @@ public sealed partial class TFault
                     () => atelier.CAtelierCatalog.CCatalogEnsignLoad(envoy, static (_, _) => static () => { }));
             }),
         new(
-            "CDisplaySound.CDisplayEnsignLoad",
+            "CDisplayAccent.CDisplayAccentLoad",
             "LLanguagePort.LEngineAccentLoad",
             "Sound.LoadFailed",
             static stage =>
@@ -49,7 +49,7 @@ public sealed partial class TFault
                 CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard), true);
                 wing.CWingEntryOpen(water.LEntryId);
                 return Task.FromResult<Func<Task>>(
-                    () => wing.CWingDisplay.CDisplaySound.CDisplayEnsignLoad(static (_, _) => static () => { }));
+                    () => wing.CWingDisplay.CDisplayAccent.CDisplayAccentLoad(static (_, _) => static () => { }));
             }),
         new(
             "CErrand.CErrandEnsignLoad",
@@ -298,7 +298,7 @@ public sealed partial class TFault
                     () => tenor.CTenorRowsLoad(static (_, _) => static () => { }));
             }),
         new(
-            "CXiesheng.CXieshengKindredLoad",
+            "CEntryList.CEntryListLoad",
             "LSettingsPort.LEngineEnsignLoad",
             "Xiesheng.LoadFailed",
             static stage =>
@@ -309,10 +309,10 @@ public sealed partial class TFault
                     TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
                     static run => run());
                 return Task.FromResult<Func<Task>>(
-                    () => xiesheng.CXieshengKindredLoad(static (_, _) => static () => { }));
+                    () => xiesheng.CXieshengKindred.CEntryListLoad(static (_, _) => static () => { }));
             }),
         new(
-            "CYunjing.CYunjingXiaoyunLoad",
+            "CYunjing.CYunjingXiaoyun.CEntryListLoad",
             "LSettingsPort.LEngineEnsignLoad",
             "Yunjing.LoadFailed",
             static stage =>
@@ -323,7 +323,7 @@ public sealed partial class TFault
                     TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
                     static run => run());
                 return Task.FromResult<Func<Task>>(
-                    () => yunjing.CYunjingXiaoyunLoad(static (_, _) => static () => { }));
+                    () => yunjing.CYunjingXiaoyun.CEntryListLoad(static (_, _) => static () => { }));
             }),
         .. TFaultPortraitRows,
     ];
@@ -413,8 +413,8 @@ public sealed partial class TFault
             engine, TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(null);
-        editor.CEditorLanguageSet(pack.TLanguageFixtureName);
-        editor.CEditorHeadwordSet("hill");
+        editor.CEditorEntry.CEntryLanguageSet(pack.TLanguageFixtureName);
+        editor.CEditorEntry.CEntryHeadwordSet("hill");
         return editor;
     }
 

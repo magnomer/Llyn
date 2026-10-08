@@ -5,7 +5,7 @@ Hash: `06ea88bd1e60516f`
 
 Covers the reading view's sound area, its reads and gates alike, on a real workspace.
 The wing opens the entry, so each case stands on its display's sound area.
-The playback gates live in `TDisplaySoundPlayback`.
+The playback area's gates live in `TDisplayPlayback`.
 The fanqie, script and paradigm blocks and their clicks live in `TDisplaySoundBlock`.
 Both build their wing and entries through this class's helpers.
 

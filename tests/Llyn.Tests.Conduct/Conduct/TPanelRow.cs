@@ -155,7 +155,7 @@ public sealed class TPanelRow
         CPanel panel = TPanel.TPanelPrepare(engine, null, [], [], "Scribe", () => false);
         int rows = 0;
         int changed = 0;
-        panel.CPanelRowsChanged += () => rows++;
+        panel.CPanelAperture.CApertureRowsChanged += () => rows++;
         panel.CPanelChanged += () => changed++;
 
         panel.CPanelEntryResonate(new CBulletin(panel.TPanelChosenRead(), true));

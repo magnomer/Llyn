@@ -1,5 +1,5 @@
 # TGuildUnion.cs
-Hash: `b14bca406e287652`
+Hash: `0fd0484c73c1f0d4`
 
 ## `public sealed class TGuildUnion`
 

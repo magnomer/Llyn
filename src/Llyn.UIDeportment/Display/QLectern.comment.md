@@ -1,13 +1,18 @@
 # QLectern.cs
-Hash: `ace6bbd1f50a344e`
+Hash: `876a5995d06d3f7d`
 
 ## `public sealed class QLectern`
 
 The reading view's driver, standing between the veneer and the display's area, [CDisplay](../../Llyn.Conduct/Display/CDisplay.comment.md).
 It draws the header, the speech, frequency, note and stamp sections, and the empty notice.
-Its halves draw the rest, and each answers the area's events itself.
+Its halves draw the rest, and this class subscribes each half to the area's events.
 The area decides when an entry opens or closes, so this class only answers its events.
 The veneer names only this class, so no veneer reaches Conduct.
+
+## `public QLectern(CDisplay display)`
+
+Builds a view over `display`, with a half for the accent, sound, playback and card sections.
+It attaches to no panel, so the wing's view takes it.
 
 ## `public QLectern(CDisplay display, CPanel panel)`
 
@@ -17,12 +22,12 @@ A view following no panel, such as the wing's, takes the other constructor.
 ## `public CDisplay QLecternArea { get; }`
 
 The display's area, whose gates the view hosting this driver calls directly.
-The driver holds only this area, so no `L` type crosses into Deportment.
+The driver reaches the engine only through this area, so no `L` type crosses into Deportment.
 The compass and the card half take the areas it hands out.
 
 ## `public CDisplaySound QLecternSoundArea { get; }`
 
-The display's sound area, whose playback cancel and fanqie gate the view hosting this driver calls directly.
+The display's sound area, whose fanqie gate the view hosting this driver calls directly.
 
 ## `public QLecternCard QLecternCard { get; }`
 
@@ -30,7 +35,7 @@ The card half, built over the display, which draws the cards, incoming rows and 
 
 ## `public QLecternAccent QLecternAccent { get; }`
 
-The accent half, built over the display's sound area, which draws the primary pronunciation and the accent rows.
+The accent half, built over the display's accent area, which draws the primary pronunciation and the accent rows.
 
 ## `public QLecternSound QLecternSound { get; }`
 
@@ -38,7 +43,7 @@ The sound half, built over the display's sound area, which draws the transcripti
 
 ## `public QLecternPlayback QLecternPlayback { get; }`
 
-The playback half, built over the display's sound area, which drives the play buttons and the volume slider.
+The playback half, built over the display's playback area, which drives the play buttons and the volume slider.
 
 ## `public QCompass QLecternCompass { get; private set; } = null!;`
 
@@ -48,7 +53,7 @@ Card scrolling goes through its scroll, so a card lands where a row would put it
 ## `public void QLecternCompassIntroduce(FrameworkElement view, ScrollViewer contents, FrameworkElement header, FrameworkElement compass, UIElement surface, ToggleButton toggle, ItemsControl list)`
 
 Builds the compass over the display's compass area and the view's controls.
-The compass subscribes to them itself, so the veneer names no compass handler.
+The lectern subscribes the compass to them, so the veneer names no compass handler.
 It answers the area's open and close last, once every section's visibility is set.
 
 ## `public void QLecternIntroduce(CAtelier atelier, CEnvoy envoy, UIElement empty, UIElement contents, Action swathSeam)`
@@ -71,6 +76,19 @@ A lectern no view attached to answers nothing, since panels announce drafts in t
 Takes the headword, the language pill, the heart and the star row.
 The star row is a veneer control, so it is reached through its step and limit properties.
 The limit is set here once, from the engine's last grasp step.
+
+## `public void QLecternStampIntroduce(UIElement section, TextBlock added, TextBlock updated)`
+
+Takes the stamp section and its added and updated lines.
+The section collapses when the entry carries no stamp.
+
+## `public void QLecternFrequencyIntroduce(UIElement section, FrameworkElement chip, TextBlock name, TextBlock band)`
+
+Takes the frequency section, its chip, and the name and band lines the chip shows.
+
+## `public void QLecternSpeechIntroduce(UIElement section, ItemsControl speech, TextBlock unit)`
+
+Takes the speech section, its list of parts of speech and the line naming the lexical unit.
 
 ## `public void QLecternNoteIntroduce(UIElement section, Panel note)`
 

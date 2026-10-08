@@ -33,7 +33,7 @@ internal sealed class QGlyph
     internal void QGlyphIntroduce(CEditor editor)
     {
         _cEditor = editor;
-        editor.CEditorDraftChanged += QGlyphRefine;
+        editor.CEditorEntry.CEntryDraftChanged += QGlyphRefine;
     }
 
     private void QGlyphNotationRefine(object sender, ExecutedRoutedEventArgs e)

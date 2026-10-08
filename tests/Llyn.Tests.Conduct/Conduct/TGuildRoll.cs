@@ -40,7 +40,7 @@ public sealed class TGuildRoll
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
-        guild.CGuildQuerySet("Zed");
+        guild.CGuildPanel.CPanelAperture.CApertureQuerySet("Zed");
 
         CGuildRoll roll = guild.CGuildRollRead();
 

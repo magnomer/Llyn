@@ -38,7 +38,7 @@ public sealed class TEditor
         LEntry entry = TEditorEntryPrepare(engine);
         CEditor editor = TEditorPrepare(engine, "library");
         List<string> shown = [];
-        editor.CEditorDraftChanged += draft => shown.Add(draft.CEntryDraftHeadword);
+        editor.CEditorEntry.CEntryDraftChanged += draft => shown.Add(draft.CEntryDraftHeadword);
 
         editor.CEditorEntryOpen(entry.LEntryId);
 
@@ -52,7 +52,7 @@ public sealed class TEditor
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TEditorPrepare(engine, "input");
         editor.CEditorEntryOpen(null);
-        editor.CEditorHeadwordSet("salt");
+        editor.CEditorEntry.CEntryHeadwordSet("salt");
 
         editor.CEditorEntrySave();
 
@@ -69,13 +69,13 @@ public sealed class TEditor
         LEntry entry = TEditorEntryPrepare(engine);
         CEditor editor = TEditorPrepare(engine, "library");
         editor.CEditorEntryOpen(entry.LEntryId);
-        editor.CEditorHeadwordSet("waters");
+        editor.CEditorEntry.CEntryHeadwordSet("waters");
 
         editor.CEditorEntrySave();
 
         Assert.Equal(entry.LEntryId, editor.CEditorDesk.CDeskStoredRead());
         Assert.Equal("waters", editor.TEditorDraftRead()?.CEntryDraftHeadword);
-        Assert.False(editor.CEditorDesk.CDeskStorable);
+        Assert.False(editor.CEditorDesk.CDeskDraft.CDeskDraftStorable);
     }
 
     [Fact]
@@ -101,7 +101,7 @@ public sealed class TEditor
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TEditorPrepare(engine, "input");
         editor.CEditorEntryOpen(null);
-        editor.CEditorHeadwordSet("salt");
+        editor.CEditorEntry.CEntryHeadwordSet("salt");
 
         Assert.True(editor.TEditorFinish(true));
 
@@ -112,7 +112,7 @@ public sealed class TEditor
         Assert.True(editor.TEditorFinish(false));
 
         Assert.False(editor.CEditorDesk.CDeskHeld);
-        Assert.False(editor.CEditorDesk.CDeskRunning);
+        Assert.False(editor.CEditorDesk.CDeskChronicle.CDeskChronicleRunning);
     }
 
     [Fact]
@@ -123,77 +123,12 @@ public sealed class TEditor
         LEntry entry = TEditorEntryPrepare(engine);
         CEditor editor = TEditorPrepare(engine, "library");
         editor.CEditorEntryOpen(entry.LEntryId);
-        editor.CEditorHeadwordSet("waters");
+        editor.CEditorEntry.CEntryHeadwordSet("waters");
 
         editor.CEditorEntryUndo();
 
         Assert.Equal(entry.LEntryId, editor.CEditorDesk.CDeskStoredRead());
         Assert.Equal("water", editor.TEditorDraftRead()?.CEntryDraftHeadword);
-    }
-
-    [Fact]
-    public void HeadwordSet_ThenPersist_ChangesTheDraft()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorPrepare(engine, "input");
-        editor.CEditorEntryOpen(null);
-
-        editor.CEditorHeadwordSet("salt");
-        editor.CEditorDesk.CDeskPersist();
-
-        Assert.Equal("salt", editor.TEditorDraftRead()?.CEntryDraftHeadword);
-        Assert.True(editor.CEditorDesk.CDeskChanged);
-        Assert.True(editor.CEditorDesk.CDeskStorable);
-    }
-
-    [Fact]
-    public void NoteSet_TrailingNewlines_AreDropped()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorPrepare(engine, "input");
-        editor.CEditorEntryOpen(null);
-
-        editor.CEditorNoteSet("a note\r\n\n");
-        editor.CEditorDesk.CDeskPersist();
-
-        Assert.Equal("a note", editor.TEditorDraftRead()?.CEntryDraftNote);
-        Assert.True(CEditor.CEditorNoteCheck("a note\r\n\n", editor.TEditorDraftRead()!.CEntryDraftNote));
-        Assert.False(CEditor.CEditorNoteCheck("a note, longer", editor.TEditorDraftRead()!.CEntryDraftNote));
-    }
-
-    [Fact]
-    public void LanguageSet_Empty_KeepsTheLanguage()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorPrepare(engine, "input");
-        editor.CEditorEntryOpen(null);
-        string? before = engine.TEngineDraftRead(editor.CEditorDesk.CDeskId)?.LDraftContent.LEntryDraftLanguage;
-
-        editor.CEditorLanguageSet(string.Empty);
-
-        Assert.Equal(
-            before, engine.TEngineDraftRead(editor.CEditorDesk.CDeskId)?.LDraftContent.LEntryDraftLanguage);
-        Assert.False(editor.CEditorDesk.CDeskStorable);
-    }
-
-    [Fact]
-    public void PronunciationSet_UnrespelledLanguage_WritesThePhoneticReading()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry entry = TEditorEntryPrepare(engine);
-        CEditor editor = TEditorPrepare(engine, "library");
-        editor.CEditorEntryOpen(entry.LEntryId);
-
-        editor.CEditorPronunciationSet("ˈwɒtə");
-        editor.CEditorDesk.CDeskPersist();
-
-        Assert.Equal("ˈwɒtə", editor.CEditorPronunciationRead());
-        Assert.Equal(
-            "ˈwɒtə", editor.CEditorDesk.TDeskRead()?.LDraftContent.LEntryDraftPronunciation?.LPronunciationDraftIpa);
     }
 
     [Fact]
@@ -222,33 +157,7 @@ public sealed class TEditor
         editor.CEditorDesk.TDeskVarietySet(true, 0, string.Empty);
         editor.CEditorDesk.TDeskVarietySet(false, 0, "British");
 
-        Assert.False(editor.CEditorDesk.CDeskChanged);
-    }
-
-    [Fact]
-    public void PronunciationRead_EmptyDesk_ReadsEmpty()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorPrepare(engine, "input");
-
-        Assert.Equal(string.Empty, editor.CEditorPronunciationRead());
-        Assert.Empty(editor.CEditorEtymonRead());
-    }
-
-    [Fact]
-    public void EtymonRead_AddedSource_ListsItsHeadword()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        long cat = engine.TEngineTranslationCreate("cat", "English").LEntryId;
-        CEditor editor = TEditorPrepare(engine, "input");
-        editor.CEditorEntryOpen(null);
-
-        editor.CEditorCard.CCardEtymonAdd(cat);
-
-        CTranslationTarget etymon = Assert.Single(editor.CEditorEtymonRead());
-        Assert.Equal("cat", etymon.CTranslationTargetHeadword);
+        Assert.False(editor.CEditorDesk.CDeskDraft.CDeskDraftAltered);
     }
 
     [Fact]
@@ -258,14 +167,14 @@ public sealed class TEditor
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TEditorPrepare(engine, "input");
         bool filling = false;
-        editor.CEditorDesk.CDeskDraftChanged += _ =>
+        editor.CEditorDesk.CDeskDraft.CDeskDraftChanged += _ =>
         {
-            filling = editor.CEditorDesk.CDeskFilling;
-            editor.CEditorHeadwordSet("echo");
+            filling = editor.CEditorDesk.CDeskDraft.CDeskDraftFilling;
+            editor.CEditorEntry.CEntryHeadwordSet("echo");
         };
 
         editor.CEditorEntryOpen(null);
-        editor.CEditorDesk.CDeskPersist();
+        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
 
         Assert.True(filling);
         Assert.Equal(string.Empty, editor.TEditorDraftRead()?.CEntryDraftHeadword);

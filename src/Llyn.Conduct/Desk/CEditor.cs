@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
@@ -43,35 +42,22 @@ public sealed class CEditor
             envoy);
         CEditorFold = new CFold(settings, envoy);
         CEditorEsteem = new CEsteem(CEditorDesk, CEditorDisplay.LDisplayRule);
-        CEditorTimbre = new CTimbre(
-            CEditorDesk,
-            phonology.CPhonologyBundleLanguage,
-            phonology.CPhonologyBundleReflex,
-            CEditorDisplay.LDisplayRule,
-            drafts,
-            settings,
-            envoy);
+        CEditorTimbre = new CTimbre(CEditorDesk, phonology.CPhonologyBundleLanguage, settings, envoy);
+        CEditorKindred = new CKindred(
+            CEditorDesk, phonology.CPhonologyBundleReflex, CEditorDisplay.LDisplayRule, drafts, settings, envoy);
         CEditorPlayback = new CPlayback(CEditorDesk, media);
         CEditorSpeech = new CCardSpeech(CEditorDesk, entries.CEntryBundleEntry);
         CEditorDesk.CDeskFinished += CEditorStoredShow;
-        CEditorDesk.CDeskDraftPrepared += draft =>
-        {
-            if (CEditorDesk.CDeskTenure is LTenure held)
-            {
-                CEditorDraftChanged?.Invoke(CFolio.CFolioEntryRead(
-                    draft.LDraftContent,
-                    new LQuillChip(held, drafts).LQuillTranslationRead(draft.LDraftContent),
-                    CEditorDisplay.LDisplayRule.LDisplayMediaPort));
-            }
-        };
+        CEditorEntry = new CEntry(CEditorDesk, drafts, media);
         CEditorDesk.CDeskObserverAttach(marshal);
         CEditorEsteem.LEsteemObserverAttach(marshal);
         CEditorTimbre.LTimbreObserverAttach(marshal);
+        CEditorKindred.LKindredObserverAttach(marshal);
         CEditorSounding.LSoundingObserverAttach(marshal);
         CEditorFold.LFoldObserverAttach(marshal);
         CEditorSentence.LSentenceObserverAttach(marshal);
         CEditorDesk.CDeskVigil.LVigilObserverAttach(
-            CSubject.CSubjectSettings, _ => marshal(CEditorDesk.CDeskDraftResonate));
+            CSubject.CSubjectSettings, _ => marshal(CEditorDesk.CDeskDraft.CDeskDraftResonate));
     }
 
     public static CEditor CEditorCreate(CAtelier atelier, CEnvoy envoy)
@@ -94,9 +80,9 @@ public sealed class CEditor
         return editor;
     }
 
-    public event Action<CEntryDraft>? CEditorDraftChanged;
-
     public CDesk CEditorDesk { get; }
+
+    public CEntry CEditorEntry { get; }
 
     public CDisplay CEditorDisplay { get; }
 
@@ -111,6 +97,8 @@ public sealed class CEditor
     public CEsteem CEditorEsteem { get; }
 
     public CTimbre CEditorTimbre { get; }
+
+    public CKindred CEditorKindred { get; }
 
     public CPlayback CEditorPlayback { get; }
 
@@ -127,10 +115,6 @@ public sealed class CEditor
     public CVideo CEditorVideo => new(CEditorDesk);
 
     public bool CEditorOwned => _cEditorVista?.LVistaInput ?? false;
-
-    public string CEditorLanguage => CEditorDesk.CDeskTenure?.LTenureLanguageRead() ?? string.Empty;
-
-    private LTenure? CEditorTenure => CEditorDesk.CDeskFilling ? null : CEditorDesk.CDeskTenure;
 
     internal void LEditorVistaRestore(LVista vista)
     {
@@ -188,63 +172,5 @@ public sealed class CEditor
         }
 
         CEditorEntryOpen(id);
-    }
-
-    public string CEditorPronunciationRead()
-    {
-        return CEditorDesk.CDeskTenure is LTenure held
-            ? new LQuillPronunciation(held).LQuillPronunciationRead()
-            : string.Empty;
-    }
-
-    public IReadOnlyList<CTranslationTarget> CEditorEtymonRead()
-    {
-        return CEditorDesk.CDeskTenure is LTenure held
-            ? CFolio.CFolioTargetRead(new LQuillEtymology(held).LQuillEtymonRead())
-            : [];
-    }
-
-    public void CEditorHeadwordSet(string text)
-    {
-        if (CEditorTenure is LTenure held)
-        {
-            new LQuillEntry(held).LQuillHeadwordSet(text);
-        }
-    }
-
-    public void CEditorPronunciationSet(string text)
-    {
-        if (CEditorTenure is LTenure held)
-        {
-            new LQuillPronunciation(held).LQuillPronunciationSet(text);
-        }
-    }
-
-    public void CEditorNoteSet(string text)
-    {
-        if (CEditorTenure is LTenure held)
-        {
-            new LQuillEntry(held).LQuillNoteSet(text);
-        }
-    }
-
-    public static bool CEditorNoteCheck(string text, string note) => LQuillEntry.LQuillNoteCheck(text, note);
-
-    public void CEditorLanguageSet(string language)
-    {
-        if (CEditorTenure is LTenure held)
-        {
-            new LQuillEntry(held).LQuillLanguageSet(language);
-        }
-    }
-
-    public void CEditorUnitSet(string key)
-    {
-        ArgumentNullException.ThrowIfNull(key);
-
-        if (CEditorTenure is LTenure held)
-        {
-            new LQuillEntry(held).LQuillUnitSet(CCardSpeech.LUnitRowParse(key));
-        }
     }
 }

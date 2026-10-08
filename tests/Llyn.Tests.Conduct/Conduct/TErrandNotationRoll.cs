@@ -42,9 +42,9 @@ public sealed class TErrandNotationRoll
         Assert.Equal(
             [
                 new CNotationReading(
-                    "ˈwɔːtə", text, CSounding.CSoundingVarietyRead("English", "British"), true, mark),
+                    "ˈwɔːtə", text, CVariety.CVarietyRead("English", "British"), true, mark),
                 new CNotationReading(
-                    "ˈwɑːtɚ", "ˈwɑːtɚ", CSounding.CSoundingVarietyRead("English", string.Empty), false, mark),
+                    "ˈwɑːtɚ", "ˈwɑːtɚ", CVariety.CVarietyRead("English", string.Empty), false, mark),
             ],
             row.CNotationItemReading);
         foray.TForayCancel();

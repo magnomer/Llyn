@@ -28,7 +28,7 @@ internal sealed class LVigil
 
         LSubject held = CCatalog.LCatalogSubjectRead(subject);
         _lVigilTenureObservers.Add((held, LVigilBulletinSend));
-        _lVigilDesk.CDeskTenure?.LTenureObserverAttach(held, LVigilBulletinSend);
+        _lVigilDesk.CDeskDraft.CDeskDraftTenure?.LTenureObserverAttach(held, LVigilBulletinSend);
 
         void LVigilBulletinSend(LBulletin bulletin)
         {
@@ -42,7 +42,7 @@ internal sealed class LVigil
 
         LSubject held = CCatalog.LCatalogSubjectRead(subject);
         _lVigilDraftObservers.Add((held, LVigilBulletinSend));
-        _lVigilDesk.CDeskTenure?.LTenureDraftAttach(held, LVigilBulletinSend);
+        _lVigilDesk.CDeskDraft.CDeskDraftTenure?.LTenureDraftAttach(held, LVigilBulletinSend);
 
         void LVigilBulletinSend(LBulletin bulletin)
         {
@@ -56,7 +56,7 @@ internal sealed class LVigil
 
         LSubject held = CCatalog.LCatalogSubjectRead(subject);
         _lVigilEntryObservers.Add((held, LVigilBulletinSend));
-        _lVigilDesk.CDeskTenure?.LTenureEntryAttach(held, LVigilBulletinSend);
+        _lVigilDesk.CDeskDraft.CDeskDraftTenure?.LTenureEntryAttach(held, LVigilBulletinSend);
 
         void LVigilBulletinSend(LBulletin bulletin)
         {

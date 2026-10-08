@@ -16,10 +16,6 @@ public sealed class COeuvre
 
     private LVista? _cOeuvreRoll;
 
-    private LVista? _cOeuvreVista;
-
-    private int _cOeuvreCount;
-
     internal COeuvre(
         LEntryPort entries,
         LAuthorPort authors,
@@ -50,26 +46,23 @@ public sealed class COeuvre
 
     public CPanel COeuvrePanel { get; }
 
-    public bool COeuvreEmpty => _cOeuvreCount == 0;
-
     public string COeuvreEmptyKey => LOeuvreAuthorChosen ? LOeuvreVacantKey : "Source.Empty";
 
     private string LOeuvreVacantKey => LOeuvreNarrowed ? "Guild.Unmatched" : "Guild.Vacant";
 
     private bool LOeuvreAuthorChosen => _cOeuvreRoll?.LVistaChosen is not null;
 
-    private bool LOeuvreNarrowed => (_cOeuvreVista?.LVistaQueried ?? false) || (_cOeuvreRoll?.LVistaFiltered ?? false);
+    private bool LOeuvreNarrowed =>
+        COeuvrePanel.CPanelAperture.CApertureQueried || (_cOeuvreRoll?.LVistaFiltered ?? false);
 
-    private bool LOeuvreSourceHeld => _cOeuvreVista?.LVistaChosen is not null;
+    private bool LOeuvreSourceHeld => COeuvrePanel.CPanelAperture.CApertureVista?.LVistaChosen is not null;
 
     internal void LOeuvreVistaRestore(LVista roll, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(vista);
 
-        vista.LVistaQuerySet(_cOeuvreVista?.LVistaQuery ?? string.Empty);
         _cOeuvreRoll = roll;
-        _cOeuvreVista = vista;
         COeuvrePanel.CPanelVistaRestore(vista);
     }
 
@@ -77,14 +70,15 @@ public sealed class COeuvre
     {
         ArgumentNullException.ThrowIfNull(marshal);
 
-        COeuvrePanel.CPanelObserverAttach(CSubject.CSubjectVista, _ => marshal(COeuvrePanel.CPanelRowsResonate));
+        COeuvrePanel.CPanelAperture.CApertureObserverAttach(
+            CSubject.CSubjectVista, _ => marshal(COeuvrePanel.CPanelAperture.CApertureRowsResonate));
     }
 
     public IReadOnlyList<CCatalogReference> COeuvreRowsRead()
     {
-        IReadOnlyList<CCatalogReference> rows =
-            COeuvreReferenceRead(_cOeuvreAuthorPort.LEngineOeuvreFind(_cOeuvreRoll, _cOeuvreVista));
-        _cOeuvreCount = rows.Count;
+        IReadOnlyList<CCatalogReference> rows = COeuvreReferenceRead(
+            _cOeuvreAuthorPort.LEngineOeuvreFind(_cOeuvreRoll, COeuvrePanel.CPanelAperture.CApertureVista));
+        COeuvrePanel.CPanelAperture.CApertureCountSet(rows.Count);
         if (LOeuvreSourceHeld && !rows.Any(static row => row.CCatalogReferenceChosen))
         {
             COeuvrePanel.CPanelEntryClose();
@@ -93,16 +87,9 @@ public sealed class COeuvre
         return rows;
     }
 
-    public void COeuvreQuerySet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _cOeuvreVista?.LVistaQuerySet(query);
-    }
-
     public string COeuvreTallyRead()
     {
-        return _cOeuvreEntryPort.LEngineTallyRead(_cOeuvreVista?.LVistaChosen);
+        return _cOeuvreEntryPort.LEngineTallyRead(COeuvrePanel.CPanelAperture.CApertureVista?.LVistaChosen);
     }
 
     private void LOeuvreColophonUpdate(LDraft draft)

@@ -1,5 +1,5 @@
 # CPanel.cs
-Hash: `13494d581a574786`
+Hash: `9a7bfccdec6e4dd6`
 
 ## `public sealed class CPanel`
 
@@ -7,22 +7,17 @@ The interaction of one browsing panel, shared by every browse tab and both drive
 Its mode is the vista's editing flag and its chosen row is the vista's choice, so it copies neither.
 Every verdict a driver paints is read off the vista at the moment it is asked.
 Every question it puts to the user leaves through `CEnvoy`, so no dialog is known here.
-The rows a tab lists are the tab's own, so the panel only announces that they need re-reading.
+Its list slot is the `CAperture` it composes, and its delete is the `CPanelBin` it composes.
 The engine work is one `LVista` member per step, and the data rules stay in the engine.
 
 ## `private readonly LSettingsPort _cPanelSettingsPort;`
 
-The port a failed load or delete reads its ready notice through, before the envoy shows it.
+The port a failed load reads its ready notice through, before the envoy shows it.
 
 ## `private readonly LVistaPort _cPanelVistaPort;`
 
-The port the panel loads, tallies, counts and deletes its vista's chosen row through.
+The port the panel loads its vista's chosen row through.
 The vista holds only view state, so every stored read goes through this port.
-
-## `private readonly string? _cPanelDeleteScope;`
-
-The localization scope the delete question, its tally and its failure are worded under.
-Null says the panel never deletes, as a list that only points at entries.
 
 ## `private readonly Func<bool> _cPanelChangeSeam;`
 
@@ -38,19 +33,17 @@ A two-list tab hands in its session's finish, so the whole tab stores as one.
 Whether the panel's tab is the one in front, which only the driver's surface knows.
 It is consulted when a stored entry is announced, so a hidden tab in edit mode does not adopt it.
 
-## `internal CPanel(CEnvoy envoy, LSettingsPort settings, LVistaPort vistas, string loadKey, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
+## `internal CPanel(CEnvoy envoy, LSettingsPort settings, LVistaPort vistas, string loadKey, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam, string? vacantKey = null, string? unmatchedKey = null)`
 
 `loadKey` words every failed load and tally read, so a blank one throws.
-The panel holds no vista until `CPanelVistaRestore`, so every verdict before it reads as no row and no edit.
+It builds the aperture and the bin, handing the delete scope to the bin.
+The two empty list keys pass through to the aperture, and only lists with an empty notice give them.
+A done delete closes the panel, so the bin's `CPanelBinDeleted` is wired to `CPanelEntryClose`.
+The aperture holds no vista until `CPanelVistaRestore`, so every verdict before it reads as no row and no edit.
 
 ## `public event Action? CPanelChanged;`
 
 The mode or the loaded draft moved, so a driver reads its verdicts again.
-
-## `public event Action? CPanelRowsChanged;`
-
-A notice changed the rows, so the driver re-reads the list.
-`CPanelRowsResonate` raises it.
 
 ## `public event Action? CPanelCleared;`
 
@@ -63,12 +56,16 @@ It is internal because a draft is engine data, which no driver receives from Con
 
 ## `public event Action<long>? CPanelEdited;`
 
-The editor must show this stored entry, raised only while the panel is in edit mode.
+The editor must show this stored entry, raised as the panel enters edit mode or loads a row in it.
 
-## `internal LVista? CPanelVista`
+## `public CAperture CPanelAperture { get; }`
 
-The vista the panel stands on, or null before a restore.
-It is internal so `CGuild` can print the Source its oeuvre panel holds.
+The list slot the panel stands on, which holds its vista, rows notice, ordering, filter and tally.
+Every verdict below reads the vista through it.
+
+## `public CPanelBin CPanelBin { get; }`
+
+The delete request of the panel, which reads its vista off the aperture.
 
 ## `public bool CPanelEditing`
 
@@ -94,44 +91,12 @@ Whether the scribe side of the mode switch is ticked, which is the edit mode its
 
 Print takes a chosen row only while it is read, since a draft being written is not stored yet.
 
-## `public CCatalogOrder CPanelOrder`
-
-The vista's ordering as a driver marks it in a menu.
-The engine answers the ordering before a vista arrives.
-
-## `public CCatalogFilter CPanelFilter`
-
-The vista's language filter as a driver ticks it in a menu.
-The engine answers the filter before a vista arrives.
-
-## `public string CPanelTallyRead()`
-
-The tally chip's sentence for the chosen row, how many places cite it.
-It is one ShellEngine call, `LVistaPort.LEngineTallyRead`, worded by Core's `LCatalogTallyFormat`.
-Before a vista arrives it reads empty.
-A fresh draft has no chosen row, so it reads as cited nowhere.
-A failure shows the panel's load failure key, as its rows read does, and answers an empty chip.
-Only the situation, example and reference lists call it, since only their vistas count a tally.
-
-## `public void CPanelRowsResonate()`
-
-A notice changed the rows, so the panel tells its driver to re-read them.
-
 ## `internal void CPanelVistaRestore(LVista vista)`
 
-Takes the vista the window started for the tab.
-A vista opens with the stored split, which no control yet shows, so the split is switched off here.
+Takes the vista the window started for the tab and hands it to the aperture.
+A vista opens in its stored mode, which no control yet shows, so edit mode is switched off here.
 The navigation restores it for the tab in front once a row is chosen.
-
-## `public void CPanelObserverAttach(CSubject subject, Action<CBulletin> observer)`
-
-Attaches a driver's observer to the vista's notices on `subject`.
-Each notice is copied into a Conduct notice before the observer sees it.
-The wrapped delegate is never detached, because the vista lives as long as the tab.
-
-## `public void CPanelChosenAttach(CSubject subject, Action<CBulletin> observer)`
-
-The same as `CPanelObserverAttach`, but only for notices about the chosen row.
+Only a panel's vista is switched, so the Tag, Register and column vistas keep their stored mode.
 
 ## `internal bool LPanelChangeCheck()`
 
@@ -221,15 +186,3 @@ A stored entry re-lists the rows and repaints the mode, after the adoption below
 A tab in front, in edit mode and with no chosen row adopts the stored entry as its choice.
 That is how a fresh entry becomes the shown one, while an entry under edit keeps its row.
 It raises nothing, because the adopted entry's own notice reloads and repaints the panel next.
-
-## `public void CPanelEntryDelete()`
-
-The bin request.
-A panel without a delete scope does nothing.
-The question names how many places the delete reaches, which the vista counts.
-A refused delete is told through the envoy, and a done one closes the panel.
-
-## `private bool LPanelDeleteConfirm(string scope, int usage)`
-
-A record nothing references is a plain question.
-One something references is asked with its tally, because the delete drops those references too.

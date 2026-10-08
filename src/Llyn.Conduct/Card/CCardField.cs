@@ -15,7 +15,9 @@ public sealed class CCardField
     }
 
     private LQuillCard? CCardFieldQuill =>
-        !_cCardFieldDesk.CDeskFilling && _cCardFieldDesk.CDeskTenure is LTenure held ? new LQuillCard(held) : null;
+        !_cCardFieldDesk.CDeskDraft.CDeskDraftFilling && _cCardFieldDesk.CDeskDraft.CDeskDraftTenure is LTenure held
+            ? new LQuillCard(held)
+            : null;
 
     public void CCardTitleSet(long cardId, string text)
     {

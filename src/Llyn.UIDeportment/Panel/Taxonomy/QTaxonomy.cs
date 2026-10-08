@@ -140,12 +140,12 @@ internal sealed partial class QTaxonomy
             host.QWindowEnvoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         _cTaxonomy.CTaxonomyTagOpened += QDirectoryTagRefine;
-        _cTaxonomy.CTaxonomyRowsChanged += QDirectoryRefine;
+        _cTaxonomy.CTaxonomyAperture.CApertureRowsChanged += QDirectoryRefine;
         _cTaxonomy.CTaxonomyWorkspaceChanged += QTaxonomyWorkspaceRefine;
         CPanel panel = _cTaxonomy.CTaxonomyMembership.CMembershipPanel;
         QLectern lectern = new(_cTaxonomy.CTaxonomyEditor.CEditorDisplay, panel);
         panel.CPanelChanged += QTaxonomyModeRefine;
-        panel.CPanelRowsChanged += QMembershipRefine;
+        panel.CPanelAperture.CApertureRowsChanged += QMembershipRefine;
 
         QDirectory.ItemsSource = _qDirectoryList;
         QMembership.ItemsSource = _qMembershipList;
@@ -160,7 +160,7 @@ internal sealed partial class QTaxonomy
 
     private void QTaxonomyStoreRefine()
     {
-        QTaxonomyStore.IsEnabled = _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskStorable;
+        QTaxonomyStore.IsEnabled = _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable;
     }
 
     internal void QTaxonomyExitRefine()
@@ -211,7 +211,7 @@ internal sealed partial class QTaxonomy
 
     private void QTaxonomyChronicleRefine()
     {
-        (bool undo, bool redo) = _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskChronicleRead();
+        (bool undo, bool redo) = _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
         QTaxonomyBackward.IsEnabled = undo;
         QTaxonomyForward.IsEnabled = redo;
     }

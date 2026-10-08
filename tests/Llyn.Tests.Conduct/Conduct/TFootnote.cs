@@ -60,16 +60,16 @@ public sealed class TFootnote
         TFootnoteEntrySave(engine, "water");
         (CFootnote footnote, _, _) = TFootnotePrepare(engine, atelier);
 
-        Assert.Equal("Source.Vacant", footnote.CFootnoteEmptyKey);
+        Assert.Equal("Source.Vacant", footnote.CFootnotePanel.CPanelAperture.CApertureKey);
 
-        footnote.CFootnoteQuerySet("zzz");
+        footnote.CFootnotePanel.CPanelAperture.CApertureQuerySet("zzz");
 
         Assert.Empty(footnote.CFootnoteRowsRead());
-        Assert.Equal("Source.Unmatched", footnote.CFootnoteEmptyKey);
+        Assert.Equal("Source.Unmatched", footnote.CFootnotePanel.CPanelAperture.CApertureKey);
 
-        footnote.CFootnoteQuerySet("  ");
+        footnote.CFootnotePanel.CPanelAperture.CApertureQuerySet("  ");
 
-        Assert.Equal("Source.Vacant", footnote.CFootnoteEmptyKey);
+        Assert.Equal("Source.Vacant", footnote.CFootnotePanel.CPanelAperture.CApertureKey);
     }
 
     [Fact]

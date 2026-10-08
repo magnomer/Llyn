@@ -59,21 +59,21 @@ internal sealed class QReflex
         _cEditor = editor;
         editor.CEditorDesk.CDeskStarted += QReflexAnchorRefine;
         editor.CEditorSounding.CSoundingChanged += QReflexAnchorRefine;
-        editor.CEditorTimbre.CTimbreReflexChanged += QReflexPendingRefine;
+        editor.CEditorKindred.CKindredChanged += QReflexPendingRefine;
         editor.CEditorDisplay.CDisplaySound.CDisplayFoldChanged += QReflexFoldRefine;
-        editor.CEditorDraftChanged += QReflexRefine;
+        editor.CEditorEntry.CEntryDraftChanged += QReflexRefine;
     }
 
     private void QReflexAddObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        _cEditor.CEditorTimbre.CTimbreReflexAdd((e.Parameter as QReflexItem)?.QReflexItemId);
+        _cEditor.CEditorKindred.CKindredAdd((e.Parameter as QReflexItem)?.QReflexItemId);
     }
 
     private void QReflexRemoveObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is QReflexItem row)
         {
-            _cEditor.CEditorTimbre.CTimbreReflexRemove(row.QReflexItemId);
+            _cEditor.CEditorKindred.CKindredRemove(row.QReflexItemId);
         }
     }
 
@@ -81,7 +81,7 @@ internal sealed class QReflex
     {
         if (e.Parameter is QReflexItem row)
         {
-            _cEditor.CEditorTimbre.CTimbreReflexToggle(row.QReflexItemId);
+            _cEditor.CEditorKindred.CKindredToggle(row.QReflexItemId);
         }
     }
 
@@ -93,20 +93,20 @@ internal sealed class QReflex
 
     private void QReflexRebuildObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        _cEditor.CEditorTimbre.CTimbreReflexRebuild();
+        _cEditor.CEditorKindred.CKindredRebuild();
         QReflexPendingRefine();
     }
 
     private void QReflexTypeObserve(QReflexItem row, CReflexField field, string text)
     {
-        CReflexTyped typed = _cEditor.CEditorTimbre.CTimbreReflexSet(row.QReflexItemId, field, text);
+        CReflexTyped typed = _cEditor.CEditorKindred.CKindredSet(row.QReflexItemId, field, text);
         row.QReflexTypeRefine(typed);
         QReflexItem.QReflexLeadRefine(_qReflexItem, typed.CReflexTypedHeads);
     }
 
     private void QReflexRefine(CEntryDraft _)
     {
-        QReflexRefine(_cEditor.CEditorTimbre.CTimbreReflexRead());
+        QReflexRefine(_cEditor.CEditorKindred.CKindredRead());
     }
 
     private void QReflexRefine(CTimbreReflex reflex)
@@ -127,7 +127,7 @@ internal sealed class QReflex
 
     private void QReflexAnchorRefine()
     {
-        QReflexAnchorRefine(_cEditor.CEditorTimbre.CTimbreReflexRead().CTimbreReflexAnchor);
+        QReflexAnchorRefine(_cEditor.CEditorKindred.CKindredRead().CTimbreReflexAnchor);
     }
 
     private void QReflexAnchorRefine(CLecternAnchor anchor)
@@ -137,7 +137,7 @@ internal sealed class QReflex
 
     private void QReflexPendingRefine()
     {
-        QReflexPendingRefine(_cEditor.CEditorTimbre.CTimbreReflexPending);
+        QReflexPendingRefine(_cEditor.CEditorKindred.CKindredPending);
     }
 
     private void QReflexPendingRefine(bool pending)

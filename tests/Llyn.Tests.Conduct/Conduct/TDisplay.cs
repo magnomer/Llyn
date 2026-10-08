@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Llyn.Conduct;
 using Llyn.Core;
@@ -133,48 +132,6 @@ public sealed class TDisplay
     }
 
     [Theory]
-    [InlineData(int.MinValue, 0)]
-    [InlineData(-1, 0)]
-    [InlineData(0, 0)]
-    [InlineData(1, 1)]
-    [InlineData(7, 7)]
-    [InlineData(int.MaxValue, int.MaxValue)]
-    public void DisplayGraspStep_HostileLimit_ReadsNoneBelowZero(int limit, int read)
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CDisplay display = TInterfaceConductSound.TDisplayChosenCreate(
-            engine, TInterfaceConduct.TEntryBundleCreate(engine, TGraspPortCreate(limit, 0)), 1);
-
-        Assert.Equal(read, display.CDisplayGraspStep);
-    }
-
-    [Theory]
-    [InlineData(5, int.MinValue, 0)]
-    [InlineData(5, -1, 0)]
-    [InlineData(5, 0, 0)]
-    [InlineData(5, 1, 1)]
-    [InlineData(5, 3, 3)]
-    [InlineData(5, 5, 5)]
-    [InlineData(5, 6, 5)]
-    [InlineData(5, int.MaxValue, 5)]
-    [InlineData(0, 4, 0)]
-    [InlineData(-3, 2, 0)]
-    [InlineData(int.MinValue, int.MaxValue, 0)]
-    public void DisplayGraspRead_HostileStep_ClampsBetweenZeroAndLimit(int limit, int stored, int read)
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CDisplay display = TInterfaceConductSound.TDisplayChosenCreate(
-            engine, TInterfaceConduct.TEntryBundleCreate(engine, TGraspPortCreate(limit, stored)), 1);
-
-        CGrasp grasp = display.CDisplayGraspRead();
-
-        Assert.Equal(new CGrasp(read, read.ToString(CultureInfo.InvariantCulture)), grasp);
-        Assert.InRange(grasp.CGraspStep, 0, display.CDisplayGraspStep);
-    }
-
-    [Theory]
     [InlineData(int.MinValue, 0, CFrequencyTier.CFrequencyTierUnknown, false)]
     [InlineData(-1, 0, CFrequencyTier.CFrequencyTierUnknown, false)]
     [InlineData(0, 0, CFrequencyTier.CFrequencyTierUnknown, false)]
@@ -234,14 +191,6 @@ public sealed class TDisplay
 
         Assert.Null(display.CDisplayFrequencyRead(static key => key));
     }
-
-    internal static LGraspPort TGraspPortCreate(int limit, int stored) =>
-        TEngineFake.TEngineCreate<LGraspPort>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["get_LEngineGraspStep"] = _ => limit,
-            ["LEngineGraspRead"] = _ => stored,
-            ["LEngineGraspFormat"] = static args => ((int)args![0]!).ToString(CultureInfo.InvariantCulture),
-        });
 
     private static LPronunciationPort TFrequencyPortCreate(LFrequencyGauge? gauge) =>
         TEngineFake.TEngineCreate<LPronunciationPort>(new Dictionary<string, Func<object?[]?, object?>>

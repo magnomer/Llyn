@@ -35,7 +35,7 @@ public sealed class TFavoriteVista
         TFavoriteRoster.TFavoriteSave(engine, "stone", "English");
         TFavoriteRoster.TFavoriteSave(engine, "river", "English");
         CFavorite favorite = TFavoriteRoster.TFavoriteRosterPrepare(atelier);
-        favorite.CFavoriteQuerySet("riv");
+        favorite.CFavoritePanel.CPanelAperture.CApertureQuerySet("riv");
 
         favorite.TFavoriteVistaRestore();
 
@@ -61,7 +61,7 @@ public sealed class TFavoriteVista
             });
         favorite.TFavoriteVistaRestore();
         int rows = 0;
-        favorite.CFavoritePanel.CPanelRowsChanged += () => rows++;
+        favorite.CFavoritePanel.CPanelAperture.CApertureRowsChanged += () => rows++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectFavorite, stone.LEntryId);
 
@@ -87,7 +87,7 @@ public sealed class TFavoriteVista
                 run();
             });
         int rows = 0;
-        favorite.CFavoritePanel.CPanelRowsChanged += () => rows++;
+        favorite.CFavoritePanel.CPanelAperture.CApertureRowsChanged += () => rows++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectFavorite, stone.LEntryId);
 
@@ -122,7 +122,7 @@ public sealed class TFavoriteVista
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CFavorite favorite = TFavoriteRoster.TFavoriteRosterPrepare(atelier);
         int rows = 0;
-        favorite.CFavoritePanel.CPanelRowsChanged += () => rows++;
+        favorite.CFavoritePanel.CPanelAperture.CApertureRowsChanged += () => rows++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectSettings, 0);
 

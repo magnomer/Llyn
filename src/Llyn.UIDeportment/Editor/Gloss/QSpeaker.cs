@@ -48,13 +48,13 @@ internal sealed class QSpeaker
         _cEditor = editor;
         _cAtelier = atelier;
         _qSpeakerEnvoy = envoy;
-        editor.CEditorDraftChanged += QSpeakerRefine;
+        editor.CEditorEntry.CEntryDraftChanged += QSpeakerRefine;
         atelier.CAtelierWorkspace.CWorkspaceOpened += QSpeakerLanguageRefine;
     }
 
     private void QSpeakerRefine(CEntryDraft _)
     {
-        QSpeakerName.Text = _cEditor.CEditorLanguage;
+        QSpeakerName.Text = _cEditor.CEditorEntry.CEntryLanguage;
         QSpeakerFlagRefine();
     }
 
@@ -69,7 +69,7 @@ internal sealed class QSpeaker
 
     private void QSpeakerObserve(object sender, RoutedEventArgs e)
     {
-        _cEditor.CEditorLanguageSet(PLanguageItem.PLanguageNameRead(sender));
+        _cEditor.CEditorEntry.CEntryLanguageSet(PLanguageItem.PLanguageNameRead(sender));
         QSpeakerChoiceRefine();
     }
 
@@ -86,7 +86,7 @@ internal sealed class QSpeaker
 
     private void QSpeakerEnsignRefine()
     {
-        QEnsignImage.QEnsignFlagRefine(QSpeakerFlag, QSpeakerGlobe, _cEditor.CEditorLanguage);
+        QEnsignImage.QEnsignFlagRefine(QSpeakerFlag, QSpeakerGlobe, _cEditor.CEditorEntry.CEntryLanguage);
     }
 
     private void QSpeakerApply(FrameworkElement container, object item, string? change)

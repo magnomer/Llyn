@@ -161,7 +161,7 @@ A missing translation prints the name as the pack spells it, and a blank name pr
 
 ## `internal static void QReflexLeadRefine(IReadOnlyList<QReflexItem> rows, IReadOnlyList<CReflexHead> heads)`
 
-Pairs each row with the answer `CTimbre.CTimbreReflexSet` gave for its id and copies its lead.
+Pairs each row with the answer `CKindred.CKindredSet` gave for its id and copies its lead.
 The editor calls it while a language is typed, before the draft brings the marks back.
 
 ## `internal static void QReflexAnchorRefine(IReadOnlyList<QReflexItem> rows, bool anchorable, IReadOnlyDictionary<long, string> texts)`

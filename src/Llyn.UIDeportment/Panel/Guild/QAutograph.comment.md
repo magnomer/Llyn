@@ -1,5 +1,5 @@
 # QAutograph.cs
-Hash: `348b02db6e1169c1`
+Hash: `11e090eff8d718d9`
 
 ## `internal sealed class QAutograph`
 
@@ -18,7 +18,7 @@ Each part of the page is pulled by its contract ID through `QContract.QContractF
 
 ## `internal void QAutographIntroduce(CGuild guild)`
 
-Takes the panel the guild driver built and answers its union clear and its autograph's draft notice.
+Takes the Conduct guild the guild driver built and answers its union clear and its autograph's draft notice.
 `CGuild` attaches the desk's own bulletins at build, with the marshal `QGuild` hands it.
 
 ## `internal void QAutographTallyShow(CVita vita)`
@@ -27,12 +27,12 @@ Writes the two count chips from the vita sheet the guild read, so both sides sho
 
 ## `internal void QAutographModeUpdate()`
 
-Shows the union section or its unsaved notice by the panel's union verdict.
+Shows the union section or its unsaved notice by the guild union's verdict.
 The guild driver calls it whenever it writes its own mode.
 
 ## `private void QAutographStartRefine()`
 
-Answers `CGuildUnionCleared`, which the panel raises when a tenure starts.
+Answers `CGuildUnionCleared`, which the guild's union raises when a tenure starts.
 The union field and its list are emptied and the name takes focus.
 
 ## `private void QAutographDraftUpdate(CDraft draft)`

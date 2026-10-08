@@ -1,5 +1,5 @@
 # CClip.cs
-Hash: `afb88e0ec2d93fa0`
+Hash: `6050c76e8cea0348`
 
 ## `internal sealed class CClip`
 
@@ -29,7 +29,7 @@ The notice says searching while the search runs, and empty once it ended.
 
 ## `internal int LClipPlace(string source, int order)`
 
-Finds the row one source owns, creating it at its declared place when it has none yet.
+Finds the row at one source's declared order, creating it there when it has none yet.
 Rows stand where the language pack put the source, not where the network put it.
 Every source is asked at once, so a fast one would otherwise head a list the user did not order.
 A new row opens with the searching notice.

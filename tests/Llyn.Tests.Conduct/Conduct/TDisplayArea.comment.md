@@ -1,5 +1,5 @@
 # TDisplayArea.cs
-Hash: `15c98e3dfce5cd7c`
+Hash: `11569ba2b79af9dc`
 
 ## `public sealed class TDisplayArea`
 
@@ -38,7 +38,7 @@ A workspace swap closes the view.
 
 ## `public void DisplayVistaAttach_ChosenEntryMarked_RaisesOnlyTheFavoriteChange()`
 
-The plan subscribed on the vista routes a favourite bulletin about the chosen entry to its own event alone.
+A favourite bulletin about the chosen entry raises the favourite change and no grasp change.
 
 ## `public void DisplayFavoriteToggle_ChosenEntry_AnswersTheStoredMark()`
 
@@ -48,26 +48,21 @@ The heart's gate stores the mark and answers what the store now holds.
 
 With no entry chosen the heart stays unmarked.
 
-## `public void DisplayGraspSet_StandingStepPressedAgain_ClearsTheGrasp()`
-
-A new step is stored and answered with its wording, and the standing step pressed again clears it.
-
-## `public void DisplayGraspSet_NoEntryChosen_StoresNothing()`
-
-With no entry chosen the gate stores nothing and words nothing.
-
 ## `public void DisplayFrequencyRead_EntryWithoutFrequency_LooksUpTheOnceKeyAndAnswersNone()`
 
 Conduct chooses the one-off key for the driver's lookup, and an unranked entry shows no chip.
 
-## `private static CWing TDisplayWingPrepare(CAtelier atelier)`
+## `internal static CWing TDisplayWingPrepare(CAtelier atelier)`
 
 A wing on a fresh vista, standing on no entry.
+`TDisplayGrasp` prepares its wing here too.
 
-## `private static LEntry TDisplayEntrySave(LEngine engine, string headword)`
+## `internal static LEntry TDisplayEntrySave(LEngine engine, string headword)`
 
 Stores one English entry with a single meaning.
+`TDisplayGrasp` stores its entry here too.
 
-## `private static CAtelier TDisplayAtelierCreate(LEngine engine)`
+## `internal static CAtelier TDisplayAtelierCreate(LEngine engine)`
 
 An atelier over the real engine whose media port only answers a stop, since closing the view stops its play.
+`TDisplayGrasp` builds its atelier here too.

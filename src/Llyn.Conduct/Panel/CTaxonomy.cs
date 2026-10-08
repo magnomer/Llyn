@@ -18,8 +18,6 @@ public sealed class CTaxonomy
 
     private readonly Action<Action> _cTaxonomyMarshal;
 
-    private LVista? _cTaxonomyVista;
-
     private CTaxonomy(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -32,6 +30,8 @@ public sealed class CTaxonomy
         _cTaxonomyEnvoy = envoy;
         _cTaxonomySettingsPort = atelier.CAtelierSettingsPort;
         _cTaxonomyMarshal = marshal;
+        CTaxonomyAperture = new CAperture(
+            envoy, _cTaxonomySettingsPort, atelier.CAtelierEntryBundle.CEntryBundleVista, "Tag.LoadFailed");
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CTaxonomyEditor = editor;
         CTaxonomyMembership = new CMembership(
@@ -48,7 +48,7 @@ public sealed class CTaxonomy
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Taxonomy",
             panel.CPanelLeaveConfirm,
-            () => LTaxonomyChosen ?? 0,
+            () => CTaxonomyAperture.CApertureChosen ?? 0,
             panel.LPanelScribeRestore,
             LTaxonomyTagOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(panel.LPanelChangeCheck, editor.LEditorFinish);
@@ -63,23 +63,15 @@ public sealed class CTaxonomy
         return new CTaxonomy(atelier, shownSeam, envoy, marshal);
     }
 
+    public CAperture CTaxonomyAperture { get; }
+
     public CEditor CTaxonomyEditor { get; }
 
     public CMembership CTaxonomyMembership { get; }
 
     public event Action? CTaxonomyTagOpened;
 
-    public event Action? CTaxonomyRowsChanged;
-
     public event Action? CTaxonomyWorkspaceChanged;
-
-    internal long? LTaxonomyChosen => _cTaxonomyVista?.LVistaChosen;
-
-    public bool CTaxonomyFiltered => _cTaxonomyVista?.LVistaFiltered ?? false;
-
-    public CCatalogOrder CTaxonomyOrder => CCatalog.LCatalogOrderRead(LVista.LVistaOrderRead(_cTaxonomyVista));
-
-    public CCatalogFilter CTaxonomyFilter => CCatalog.LCatalogFilterRead(LVista.LVistaFilterRead(_cTaxonomyVista));
 
     internal void LTaxonomyVistaRestore()
     {
@@ -87,8 +79,7 @@ public sealed class CTaxonomy
             "taxonomy", CSubject.CSubjectTag, CCatalogOrder.CCatalogOrderName);
         LVista membership = _cTaxonomyAtelier.CAtelierVistaStart(
             "membership", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
-        vista.LVistaQuerySet(_cTaxonomyVista?.LVistaQuery ?? string.Empty);
-        _cTaxonomyVista = vista;
+        CTaxonomyAperture.CApertureRestore(vista);
         CTaxonomyMembership.LMembershipVistaRestore(vista, membership);
         CTaxonomyEditor.LEditorVistaRestore(membership);
         LTaxonomyObserverAttach();
@@ -96,77 +87,54 @@ public sealed class CTaxonomy
 
     private void LTaxonomyObserverAttach()
     {
-        LTaxonomySubjectAttach(CSubject.CSubjectVista, LTaxonomyRowsResonate);
-        LTaxonomySubjectAttach(CSubject.CSubjectWorkspace, LTaxonomyWorkspaceResonate);
-        LTaxonomySubjectAttach(CSubject.CSubjectTag, LTaxonomyTagResonate);
-        LTaxonomySubjectAttach(CSubject.CSubjectReflex, LTaxonomyRowsResonate);
-        LTaxonomySubjectAttach(CSubject.CSubjectSettings, LTaxonomyRowsResonate);
+        CTaxonomyAperture.CApertureObserverAttach(
+            CSubject.CSubjectVista, _ => _cTaxonomyMarshal(CTaxonomyAperture.CApertureRowsResonate));
+        CTaxonomyAperture.CApertureObserverAttach(
+            CSubject.CSubjectWorkspace, _ => _cTaxonomyMarshal(LTaxonomyWorkspaceResonate));
+        CTaxonomyAperture.CApertureObserverAttach(
+            CSubject.CSubjectTag, _ => _cTaxonomyMarshal(LTaxonomyTagResonate));
+        CTaxonomyAperture.CApertureObserverAttach(
+            CSubject.CSubjectReflex, _ => _cTaxonomyMarshal(CTaxonomyAperture.CApertureRowsResonate));
+        CTaxonomyAperture.CApertureObserverAttach(
+            CSubject.CSubjectSettings, _ => _cTaxonomyMarshal(CTaxonomyAperture.CApertureRowsResonate));
         CTaxonomyMembership.LMembershipObserverAttach(_cTaxonomyMarshal);
-        LTaxonomySubjectAttach(CSubject.CSubjectEntry, LTaxonomyRowsResonate);
-    }
-
-    private void LTaxonomySubjectAttach(CSubject subject, Action resonate)
-    {
-        _cTaxonomyVista?.LVistaObserverAttach(CCatalog.LCatalogSubjectRead(subject), _ => _cTaxonomyMarshal(resonate));
-    }
-
-    private void LTaxonomyRowsResonate()
-    {
-        CTaxonomyRowsChanged?.Invoke();
+        CTaxonomyAperture.CApertureObserverAttach(
+            CSubject.CSubjectEntry, _ => _cTaxonomyMarshal(CTaxonomyAperture.CApertureRowsResonate));
     }
 
     private void LTaxonomyWorkspaceResonate()
     {
         CTaxonomyMembership.CMembershipPanel.CPanelEntryClose();
-        _cTaxonomyVista?.LVistaSelect(null);
-        LTaxonomyRowsResonate();
+        CTaxonomyAperture.CApertureVista?.LVistaSelect(null);
+        CTaxonomyAperture.CApertureRowsResonate();
         CTaxonomyWorkspaceChanged?.Invoke();
     }
 
     private void LTaxonomyTagResonate()
     {
-        LTaxonomyRowsResonate();
+        CTaxonomyAperture.CApertureRowsResonate();
         CTaxonomyMembership.CMembershipPanel.CPanelDraftResonate();
-    }
-
-    public void CTaxonomyQuerySet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _cTaxonomyVista?.LVistaQuerySet(query);
-    }
-
-    public void CTaxonomyOrderSet(CCatalogOrder? order)
-    {
-        _cTaxonomyVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
-    }
-
-    public void CTaxonomyFilterSet(CCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-
-        _cTaxonomyVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
     public void CTaxonomyTagToggle(long id)
     {
         _cTaxonomyAtelier.CAtelierNavigation.LNavigationStationAdd();
-        _cTaxonomyVista?.LVistaToggle(id);
-        LTaxonomyRowsResonate();
+        CTaxonomyAperture.CApertureVista?.LVistaToggle(id);
+        CTaxonomyAperture.CApertureRowsResonate();
     }
 
     internal void LTaxonomyTagOpen(long id)
     {
-        _cTaxonomyVista?.LVistaSelect(id);
-        _cTaxonomyVista?.LVistaQuerySet(string.Empty);
-        CTaxonomyMembership.CMembershipQuerySet(string.Empty);
+        CTaxonomyAperture.CApertureVista?.LVistaSelect(id);
+        CTaxonomyAperture.CApertureQuerySet(string.Empty);
+        CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureQuerySet(string.Empty);
         CTaxonomyTagOpened?.Invoke();
-        LTaxonomyRowsResonate();
+        CTaxonomyAperture.CApertureRowsResonate();
     }
 
     public IReadOnlyList<CCatalogTag> CTaxonomyRowsRead()
     {
-        if (_cTaxonomyVista is not LVista vista)
+        if (CTaxonomyAperture.CApertureVista is not LVista vista)
         {
             return [];
         }
@@ -185,7 +153,7 @@ public sealed class CTaxonomy
             return [];
         }
 
-        CTaxonomyMembership.CMembershipPanel.CPanelRowsResonate();
+        CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureRowsResonate();
         return rows;
     }
 
@@ -195,7 +163,7 @@ public sealed class CTaxonomy
             _cTaxonomyEnvoy, _cTaxonomySettingsPort, "Tag.LoadFailed", store, CTaxonomyRowsRead);
 
     private bool LTaxonomyCoinageAllowed =>
-        LTaxonomyChosen is null && !CTaxonomyMembership.CMembershipPanel.CPanelBinEnabled;
+        CTaxonomyAperture.CApertureChosen is null && !CTaxonomyMembership.CMembershipPanel.CPanelBinEnabled;
 
     private void LTaxonomyTagCreate(string name)
     {
@@ -231,14 +199,14 @@ public sealed class CTaxonomy
             return;
         }
 
-        long? chosen = LTaxonomyChosen;
+        long? chosen = CTaxonomyAperture.CApertureChosen;
         CTaxonomyMembership.CMembershipPanel.CPanelFreshOpen();
-        CTaxonomyEditor.CEditorDesk.LDeskMembershipStart(chosen);
+        CTaxonomyEditor.CEditorDesk.LDeskRun((drafts, vista) => drafts.LEngineMembershipStart(vista, chosen));
     }
 
     private void LTaxonomyClose()
     {
         CTaxonomyEditor.CEditorClose();
-        CTaxonomyEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
+        CTaxonomyEditor.CEditorDisplay.CDisplayPlayback.CDisplayPlaybackCancel();
     }
 }

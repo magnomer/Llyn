@@ -62,9 +62,9 @@ public sealed class QLectern
 
         QLecternArea = display;
         QLecternSoundArea = display.CDisplaySound;
-        QLecternAccent = new QLecternAccent(display.CDisplaySound);
+        QLecternAccent = new QLecternAccent(display.CDisplayAccent);
         QLecternSound = new QLecternSound(display.CDisplaySound);
-        QLecternPlayback = new QLecternPlayback(display.CDisplaySound);
+        QLecternPlayback = new QLecternPlayback(display.CDisplayPlayback);
         QLecternCard = new QLecternCard(display);
     }
 
@@ -149,7 +149,8 @@ public sealed class QLectern
         QLecternArea.CDisplayClosed += QLecternCard.QLecternBlankRefine;
 
         QLecternArea.CDisplayFavoriteChanged += QObserver.QObserverCreate<CBulletin>(contents, QLecternFavoriteRefine);
-        QLecternArea.CDisplayGraspChanged += QObserver.QObserverCreate<CBulletin>(contents, QLecternGraspRefine);
+        QLecternArea.CDisplayGrasp.CDisplayGraspChanged +=
+            QObserver.QObserverCreate<CBulletin>(contents, QLecternGraspRefine);
         QLecternArea.CDisplayFrequencyChanged +=
             QObserver.QObserverCreate<CBulletin>(contents, QLecternFrequencyRefine);
         QLecternArea.CDisplayParadigmChanged +=
@@ -197,7 +198,7 @@ public sealed class QLectern
         _qLecternGrasp = grasp;
         _qLecternStep = step;
         _qLecternGraspLabel = graspLabel;
-        grasp.SetValue(limit, QLecternArea.CDisplayGraspStep);
+        grasp.SetValue(limit, QLecternArea.CDisplayGrasp.CDisplayGraspStep);
     }
 
     public void QLecternStampIntroduce(UIElement section, TextBlock added, TextBlock updated)
@@ -252,12 +253,12 @@ public sealed class QLectern
 
     public void QLecternGraspObserve(int step)
     {
-        QLecternGraspRefine(QLecternArea.CDisplayGraspSet(step));
+        QLecternGraspRefine(QLecternArea.CDisplayGrasp.CDisplayGraspSet(step));
     }
 
     public void QLecternHoverRefine(int pointed)
     {
-        _qLecternGraspLabel.Text = QLecternArea.CDisplayGraspRead(pointed);
+        _qLecternGraspLabel.Text = QLecternArea.CDisplayGrasp.CDisplayGraspRead(pointed);
     }
 
     private void QLecternEntryRefine()
@@ -317,7 +318,7 @@ public sealed class QLectern
 
     private void QLecternGraspRefine()
     {
-        QLecternGraspRefine(QLecternArea.CDisplayGraspRead());
+        QLecternGraspRefine(QLecternArea.CDisplayGrasp.CDisplayGraspRead());
     }
 
     private void QLecternGraspRefine(CGrasp grasp)

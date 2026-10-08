@@ -22,7 +22,7 @@ public sealed class TOeuvre
         IReadOnlyList<CCatalogReference> rows = oeuvre.COeuvreRowsRead();
 
         Assert.Equal(["Book"], rows.Select(row => row.CCatalogReferenceName));
-        Assert.False(oeuvre.COeuvreEmpty);
+        Assert.False(oeuvre.COeuvrePanel.CPanelAperture.CApertureEmpty);
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public sealed class TOeuvre
         COeuvre oeuvre = TInterfaceConductPanel.TOeuvreCreate(engine);
 
         Assert.Empty(oeuvre.COeuvreRowsRead());
-        Assert.True(oeuvre.COeuvreEmpty);
+        Assert.True(oeuvre.COeuvrePanel.CPanelAperture.CApertureEmpty);
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public sealed class TOeuvre
         string none = oeuvre.COeuvreEmptyKey;
         roll.TVistaSelect(ada.LAuthorId);
         string vacant = oeuvre.COeuvreEmptyKey;
-        oeuvre.COeuvreQuerySet("zzz");
+        oeuvre.COeuvrePanel.CPanelAperture.CApertureQuerySet("zzz");
 
         Assert.Equal("Source.Empty", none);
         Assert.Equal("Guild.Vacant", vacant);
@@ -87,7 +87,7 @@ public sealed class TOeuvre
         engine.TEngineCitationCreate("Grammar");
         (COeuvre oeuvre, _, _) = TOeuvrePrepare(engine);
 
-        oeuvre.COeuvreQuerySet("gram");
+        oeuvre.COeuvrePanel.CPanelAperture.CApertureQuerySet("gram");
 
         Assert.Equal(["Grammar"], oeuvre.COeuvreRowsRead().Select(row => row.CCatalogReferenceName));
     }
@@ -100,7 +100,7 @@ public sealed class TOeuvre
         engine.TEngineCitationCreate("Atlas");
         engine.TEngineCitationCreate("Grammar");
         (COeuvre oeuvre, _, _) = TOeuvrePrepare(engine);
-        oeuvre.COeuvreQuerySet("gram");
+        oeuvre.COeuvrePanel.CPanelAperture.CApertureQuerySet("gram");
 
         oeuvre.TOeuvreVistaRestore(
             engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderName),

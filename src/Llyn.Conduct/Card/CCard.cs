@@ -44,7 +44,8 @@ public sealed class CCard
 
         try
         {
-            return _cCardDesk.CDeskChip?.LQuillTranslationAdd(cardId, text, position) is LTranslationOffer offer
+            return _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillTranslationAdd(
+                    cardId, text, position) is LTranslationOffer offer
                 ? LCardProspectRead(offer)
                 : new CProspect(text, string.Empty, [], false, false, []);
         }
@@ -59,7 +60,7 @@ public sealed class CCard
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        if (_cCardDesk.CDeskChip is not LQuillChip chip)
+        if (_cCardDesk.CDeskDraft.CDeskDraftChip is not LQuillChip chip)
         {
             return new CProspect(text, string.Empty, [], false, false, []);
         }
@@ -84,11 +85,11 @@ public sealed class CCard
         {
             if (entryId is long stored)
             {
-                _cCardDesk.CDeskChip?.LQuillTranslationInsert(cardId, stored, position);
+                _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillTranslationInsert(cardId, stored, position);
                 return;
             }
 
-            _cCardDesk.CDeskChip?.LQuillTranslationStart(cardId, 0, headword, language, position);
+            _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillTranslationStart(cardId, 0, headword, language, position);
         }
         catch (Exception exception)
         {
@@ -100,7 +101,7 @@ public sealed class CCard
     {
         try
         {
-            _cCardDesk.CDeskChip?.LQuillTranslationRemove(cardId, entryId);
+            _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillTranslationRemove(cardId, entryId);
         }
         catch (Exception exception)
         {
@@ -128,7 +129,8 @@ public sealed class CCard
 
     public CProffer CCardReferenceFind(long cardId, long sentenceId, string text)
     {
-        return _cCardDesk.CDeskChip?.LQuillReferenceFind(cardId, sentenceId, text) is LReferenceOffer offer
+        return _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillReferenceFind(
+                cardId, sentenceId, text) is LReferenceOffer offer
             ? LCardProfferRead(offer)
             : new CProffer(text, [], false);
     }
@@ -170,7 +172,7 @@ public sealed class CCard
 
     public CSlate CCardTagAdd(long cardId, string text, int position, bool settled)
     {
-        return _cCardDesk.CDeskChip?.LQuillTagAdd(cardId, text, position, settled) is LTagOffer offer
+        return _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillTagAdd(cardId, text, position, settled) is LTagOffer offer
             ? LCardSlateRead(offer)
             : new CSlate(text, [], false);
     }
@@ -187,17 +189,18 @@ public sealed class CCard
 
     public void CCardTagInsert(long cardId, long tagId, int position)
     {
-        _cCardDesk.CDeskChip?.LQuillTagInsert(cardId, tagId, position);
+        _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillTagInsert(cardId, tagId, position);
     }
 
     public void CCardTagRemove(long cardId, long tagId)
     {
-        _cCardDesk.CDeskChip?.LQuillTagRemove(cardId, tagId);
+        _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillTagRemove(cardId, tagId);
     }
 
     public CProffer CCardSituationAdd(long cardId, string text, int position, bool settled)
     {
-        return _cCardDesk.CDeskChip?.LQuillSituationAdd(cardId, text, position, settled) is LSituationOffer offer
+        return _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillSituationAdd(
+                cardId, text, position, settled) is LSituationOffer offer
             ? LCardProfferRead(offer)
             : new CProffer(text, [], false);
     }
@@ -219,17 +222,18 @@ public sealed class CCard
 
     public void CCardSituationInsert(long cardId, long situationId, int position)
     {
-        _cCardDesk.CDeskChip?.LQuillSituationInsert(cardId, situationId, position);
+        _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillSituationInsert(cardId, situationId, position);
     }
 
     public void CCardSituationRemove(long cardId, long situationId)
     {
-        _cCardDesk.CDeskChip?.LQuillSituationRemove(cardId, situationId);
+        _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillSituationRemove(cardId, situationId);
     }
 
     public CProffer CCardRegisterAdd(long cardId, string text, int position, bool settled)
     {
-        return _cCardDesk.CDeskChip?.LQuillRegisterAdd(cardId, text, position, settled) is LRegisterOffer offer
+        return _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillRegisterAdd(
+                cardId, text, position, settled) is LRegisterOffer offer
             ? LCardProfferRead(offer)
             : new CProffer(text, [], false);
     }
@@ -247,19 +251,19 @@ public sealed class CCard
 
     public void CCardRegisterInsert(long cardId, long registerId, int position)
     {
-        _cCardDesk.CDeskChip?.LQuillRegisterInsert(cardId, registerId, position);
+        _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillRegisterInsert(cardId, registerId, position);
     }
 
     public void CCardRegisterRemove(long cardId, long registerId)
     {
-        _cCardDesk.CDeskChip?.LQuillRegisterRemove(cardId, registerId);
+        _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillRegisterRemove(cardId, registerId);
     }
 
     public void CCardCitationSet(long cardId, long sentenceId, string title)
     {
         try
         {
-            _cCardDesk.CDeskChip?.LQuillCitationResolve(cardId, sentenceId, title);
+            _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillCitationResolve(cardId, sentenceId, title);
         }
         catch (Exception exception)
         {
@@ -269,12 +273,12 @@ public sealed class CCard
 
     public void CCardEtymologySet(string text)
     {
-        _cCardDesk.CDeskEtymology?.LQuillEtymologySet(text);
+        _cCardDesk.CDeskDraft.CDeskDraftEtymology?.LQuillEtymologySet(text);
     }
 
     public IReadOnlyList<CMentionLabel> CCardEtymologyRead()
     {
-        return _cCardDesk.CDeskTenure is LTenure held
+        return _cCardDesk.CDeskDraft.CDeskDraftTenure is LTenure held
             ? CMention.LMentionLabelRead(_cCardDraftPort.LEngineEtymologyResolve(held))
             : [];
     }
@@ -287,12 +291,12 @@ public sealed class CCard
             return;
         }
 
-        _cCardDesk.CDeskEtymology?.LEtymonAdd(stored, int.MaxValue);
+        _cCardDesk.CDeskDraft.CDeskDraftEtymology?.LEtymonAdd(stored, int.MaxValue);
     }
 
     public void CCardEtymonRemove(long entryId)
     {
-        _cCardDesk.CDeskEtymology?.LEtymonRemove(entryId);
+        _cCardDesk.CDeskDraft.CDeskDraftEtymology?.LEtymonRemove(entryId);
     }
 
     public void CCardMentionSave(string text, int start, int length, long? entryId)
@@ -309,7 +313,7 @@ public sealed class CCard
     public void CCardMentionDelete(string text, int start, int length)
     {
         CCardMentionSend(
-            _cCardDesk.CDeskTenure is LTenure held
+            _cCardDesk.CDeskDraft.CDeskDraftTenure is LTenure held
                 ? new LQuillEtymology(held).LQuillEtymologyFind(_cCardDraftPort.LEngineSpanRead(text, start, length))
                 : null,
             0);
@@ -317,7 +321,7 @@ public sealed class CCard
 
     public bool CCardMentionCheck(string text, int start, int length)
     {
-        return _cCardDesk.CDeskTenure is LTenure held
+        return _cCardDesk.CDeskDraft.CDeskDraftTenure is LTenure held
             && new LQuillEtymology(held).LQuillEtymologyFind(_cCardDraftPort.LEngineSpanRead(text, start, length))
                 is not null;
     }
@@ -329,6 +333,7 @@ public sealed class CCard
             return;
         }
 
-        _cCardDesk.CDeskEtymology?.LEtymologyMentionSave(span.LMentionDraftOffset, span.LMentionDraftLength, entryId);
+        _cCardDesk.CDeskDraft.CDeskDraftEtymology?.LEtymologyMentionSave(
+            span.LMentionDraftOffset, span.LMentionDraftLength, entryId);
     }
 }

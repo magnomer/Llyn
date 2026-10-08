@@ -18,12 +18,12 @@ internal sealed partial class QRepertoire
 
     private void QInquestObserve(object sender, TextChangedEventArgs e)
     {
-        _cRepertoire.CRepertoireAtlas.CAtlasQuerySet(QInquest.Text ?? string.Empty);
+        _cRepertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureQuerySet(QInquest.Text ?? string.Empty);
     }
 
     private void QTierObserve(object sender, RoutedEventArgs e)
     {
-        _cRepertoire.CRepertoireAtlas.CAtlasOrderSet(QChoice.QChoiceOrderRead(sender));
+        _cRepertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
         QTierRefine();
     }
 
@@ -34,7 +34,8 @@ internal sealed partial class QRepertoire
 
     internal async void QRepertoireVistaRefine()
     {
-        QChoice.QChoiceOrderApply(QTierDropdown, _cRepertoire.CRepertoireAtlas.CAtlasPanel.CPanelOrder);
+        QChoice.QChoiceOrderApply(
+            QTierDropdown, _cRepertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureOrder);
         QMeshRefine();
         CEnsignSheet<IReadOnlyList<CCatalogSituation>> sheet =
             await _cRepertoire.CRepertoireRowsLoad(QEnsignImage.QEnsignDraw);
@@ -51,13 +52,17 @@ internal sealed partial class QRepertoire
 
     private void QMeshRefine()
     {
-        QMeshMark.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireAtlas.CAtlasFiltered);
+        QMeshMark.Visibility = QLook.QLookVisibleRead(
+            _cRepertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureFiltered);
     }
 
     private void QMeshListRefine(IReadOnlyList<string> languages)
     {
         QChoice.QChoiceFilterBuild(
-            QMeshList, languages, _cRepertoire.CRepertoireAtlas.CAtlasPanel.CPanelFilter, QMeshObserve);
+            QMeshList,
+            languages,
+            _cRepertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureFilter,
+            QMeshObserve);
     }
 
     private void QInquestRefine()
@@ -69,12 +74,12 @@ internal sealed partial class QRepertoire
 
     private void QSortieObserve(object sender, TextChangedEventArgs e)
     {
-        _cRepertoire.CRepertoireOccurrence.COccurrenceQuerySet(QSortie.Text);
+        _cRepertoire.CRepertoireOccurrence.COccurrencePanel.CPanelAperture.CApertureQuerySet(QSortie.Text);
     }
 
     private void QMeshObserve(object sender, RoutedEventArgs e)
     {
-        _cRepertoire.CRepertoireAtlas.CAtlasFilterSet(QChoice.QChoiceFilterRead(sender));
+        _cRepertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureFilterSet(QChoice.QChoiceFilterRead(sender));
         QMeshRefine();
     }
 
@@ -98,14 +103,15 @@ internal sealed partial class QRepertoire
 
     private void QRepertoireTallyRefine()
     {
-        string tally = _cRepertoire.CRepertoireAtlas.CAtlasPanel.CPanelTallyRead();
+        string tally = _cRepertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureTallyRead();
         QVignetteTally.Text = tally;
         QScenarioTally.Text = tally;
     }
 
     private void QAtlasObserve(object sender, RoutedEventArgs e)
     {
-        _cRepertoire.CRepertoireSituationSelect(QSender.QSenderSourceRead<QAtlasItem>(e)?.QAtlasItemId);
+        _cRepertoire.CRepertoireDiptych.CDiptychParentSelect(
+            QSender.QSenderSourceRead<QAtlasItem>(e)?.QAtlasItemId);
     }
 
     private void QAtlasItemRefine(FrameworkElement container, object item, string? _)
@@ -153,17 +159,17 @@ internal sealed partial class QRepertoire
 
     private void QRepertoireBinObserve(object sender, RoutedEventArgs e)
     {
-        _cRepertoire.CRepertoireSituationDelete();
+        _cRepertoire.CRepertoireDiptych.CDiptychEntryDelete();
     }
 
     private void QRepertoireViewerObserve(object sender, RoutedEventArgs e)
     {
-        _cRepertoire.CRepertoireScribeToggle(false);
+        _cRepertoire.CRepertoireDiptych.CDiptychScribeToggle(false);
     }
 
     private void QRepertoireScribeObserve(object sender, RoutedEventArgs e)
     {
-        _cRepertoire.CRepertoireScribeToggle(true);
+        _cRepertoire.CRepertoireDiptych.CDiptychScribeToggle(true);
     }
 
     internal void QRepertoireVoyageRefine(bool past, bool future)

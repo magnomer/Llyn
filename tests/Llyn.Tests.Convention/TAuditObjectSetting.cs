@@ -48,11 +48,11 @@ internal static class TAuditObjectSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditObjectCeiling = new Dictionary<string, int>
     {
         ["Hydra"] = 1,
-        ["Kraken"] = 5,
-        ["Spider"] = 5,
-        ["Chameleon"] = 9,
-        ["Octopus"] = 9,
-        ["Centipede"] = 29,
+        ["Kraken"] = 3,
+        ["Spider"] = 3,
+        ["Chameleon"] = 7,
+        ["Octopus"] = 6,
+        ["Centipede"] = 18,
         ["Serpent"] = 5,
         ["Hub"] = 2,
     };

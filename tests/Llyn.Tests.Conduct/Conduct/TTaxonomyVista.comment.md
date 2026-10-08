@@ -1,5 +1,5 @@
 # TTaxonomyVista.cs
-Hash: `a0d0bbfa87094dae`
+Hash: `5b2a371d5bdbce5c`
 
 ## `public sealed class TTaxonomyVista`
 
@@ -13,4 +13,4 @@ A failing Tag find shows `Tag.LoadFailed` once and raises no entry rows.
 A settings notice with both finds failing still shows `Tag.LoadFailed` only once.
 A failing membership read shows `Tag.LoadFailed` and answers no rows.
 The rows event is answered in these tests as the driver answers it, by reading the Tag list.
-Its flag-fill load answers the same rows once the fill has run.
+The flag-fill load answers the Tag rows and their languages once the fill has run.

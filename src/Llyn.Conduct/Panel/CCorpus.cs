@@ -48,20 +48,31 @@ public sealed class CCorpus
             editor.CEditorDesk.LDeskChangeCheck,
             store => CCorpusSession!.LSessionFinish(store),
             shownSeam);
-        CCorpusAnthology.CAnthologyPanel.CPanelRowsChanged += CCorpusQuotation.CQuotationPanel.CPanelRowsResonate;
+        CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureRowsChanged +=
+            CCorpusQuotation.CQuotationPanel.CPanelAperture.CApertureRowsResonate;
         CCorpusSession = new CSession(
             CCorpusDesk,
             [CCorpusQuotation.CQuotationPanel.LPanelChangeCheck, CCorpusAnthology.CAnthologyPanel.LPanelChangeCheck],
-            editor.CEditorDesk,
+            editor,
             () => CCorpusQuotation.CQuotationPanel.CPanelEditing,
             editor.LEditorFinish,
             static () => true,
-            LCorpusStoredShow);
+            LCorpusStoredShow,
+            envoy);
+        CCorpusDiptych = new CDiptych(
+            CCorpusAnthology.CAnthologyPanel,
+            CCorpusQuotation.CQuotationPanel,
+            CCorpusSession,
+            atelier.CAtelierNavigation,
+            CCorpusSession.CSessionStart,
+            CCorpusDesk.CDeskCancel,
+            LCorpusQuotationCreate);
         CCorpusSession.CSessionHeld += () =>
             CCorpusTranscriptChanged?.Invoke(
                 CCorpusAnthology.LAnthologyTextShow(
                     CCorpusTranscript.LTranscriptRead()
-                    ?? CExample.LExampleBlankRead(CCorpusAnthology.CAnthologyPanel.CPanelTallyRead())));
+                    ?? CExample.LExampleBlankRead(
+                        CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureTallyRead())));
         CCorpusSession.CSessionChanged += () => CCorpusChanged?.Invoke();
         CCorpusAnthology.CAnthologyPanel.CPanelEdited += id => CCorpusSession.CSessionStart(id);
         CCorpusAnthology.CAnthologyPanel.CPanelCleared += CCorpusSession.CSessionCancel;
@@ -72,13 +83,13 @@ public sealed class CCorpus
         CCorpusQuotation.CQuotationPanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Corpus",
-            () => LCorpusLeaveConfirm(true),
+            () => CCorpusSession.LSessionLeaveConfirm(true),
             CCorpusAnthology.CAnthologyPanel.LPanelChosenRead,
             CCorpusAnthology.CAnthologyPanel.LPanelScribeRestore,
             LCorpusExampleOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CCorpusSession.LSessionChangeCheck, CCorpusSession.LSessionFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LCorpusVistaRestore);
-        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LCorpusClose);
+        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(CCorpusSession.LSessionEditorClose);
         CCorpusTranscript.LTranscriptObserverAttach(marshal);
         LCorpusVistaRestore();
     }
@@ -110,41 +121,26 @@ public sealed class CCorpus
 
     public CQuotation CCorpusQuotation { get; }
 
-    public bool CCorpusTranscriptShown => !LCorpusQuotationSide && CCorpusAnthology.CAnthologyPanel.CPanelEditing;
-
-    public bool CCorpusExcerptShown => !LCorpusQuotationSide && !CCorpusAnthology.CAnthologyPanel.CPanelEditing;
+    public CDiptych CCorpusDiptych { get; }
 
     public bool CCorpusDisplayShown => CCorpusQuotation.CQuotationShown;
-
-    public bool CCorpusEditorShown => CCorpusQuotation.CQuotationPanel.CPanelEditing;
 
     public bool CCorpusExcerptHeld => CCorpusAnthology.CAnthologyPanel.CPanelBinEnabled;
 
     public bool CCorpusExcerptBlank => !CCorpusAnthology.CAnthologyPanel.CPanelBinEnabled;
 
-    public bool CCorpusScribeChecked => CCorpusTranscriptShown || CCorpusEditorShown;
-
-    public bool CCorpusViewerChecked => !CCorpusScribeChecked;
-
-    public bool CCorpusModeEnabled => LCorpusQuotationSide || CCorpusAnthology.CAnthologyPanel.CPanelModeEnabled;
-
-    public bool CCorpusBinEnabled => !LCorpusQuotationSide && CCorpusAnthology.CAnthologyPanel.CPanelBinEnabled;
-
     public bool CCorpusStoreEnabled =>
-        CCorpusEditorShown ? CCorpusEditor.CEditorDesk.CDeskStorable : CCorpusDesk.CDeskStorable;
+        CCorpusDiptych.CDiptychChildEditing
+            ? CCorpusEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable
+            : CCorpusDesk.CDeskDraft.CDeskDraftStorable;
 
-    public bool CCorpusTranscriptEnabled => CCorpusDesk.CDeskRunning;
+    public bool CCorpusTranscriptEnabled => CCorpusDesk.CDeskChronicle.CDeskChronicleRunning;
 
     public bool CCorpusPressAllowed => CCorpusDisplayShown || LCorpusRowShown;
 
     public bool CCorpusPortraitAllowed => CCorpusDisplayShown;
 
-    private bool LCorpusQuotationSide => CCorpusQuotation.CQuotationPanel.CPanelModeEnabled;
-
-    private bool LCorpusRowShown => CCorpusExcerptShown && CCorpusExcerptHeld;
-
-    private bool LCorpusRowHeld =>
-        CCorpusAnthology.CAnthologyPanel.CPanelBinEnabled || CCorpusQuotation.CQuotationPanel.CPanelBinEnabled;
+    private bool LCorpusRowShown => CCorpusDiptych.CDiptychParentShown && CCorpusExcerptHeld;
 
     private void LCorpusExampleUpdate(CExample? example)
     {
@@ -158,147 +154,31 @@ public sealed class CCorpus
 
     internal void LCorpusExampleOpen(long id)
     {
-        bool editing = CCorpusScribeChecked;
-        LCorpusExampleShow(id, editing);
+        bool editing = CCorpusDiptych.CDiptychScribeChecked;
+        CCorpusDiptych.LDiptychParentShow(id, editing);
         if (CCorpusExcerptHeld)
         {
             return;
         }
 
-        if (!CCorpusAnthology.LAnthologyNarrowed)
+        if (!CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureNarrowed)
         {
             return;
         }
 
         LCorpusQueryClear();
-        LCorpusExampleShow(id, editing);
-    }
-
-    private void LCorpusExampleShow(long id, bool editing)
-    {
-        CCorpusQuotation.CQuotationPanel.CPanelEntryClose();
-        CCorpusAnthology.CAnthologyPanel.CPanelScribeSet(editing);
-        CCorpusAnthology.CAnthologyPanel.CPanelRowOpen(id);
+        CCorpusDiptych.LDiptychParentShow(id, editing);
     }
 
     public CMentionOffer? CCorpusMentionFind(string text, int unit)
     {
-        return LCorpusLeaveConfirm(true) ? CCorpusAnthology.LAnthologyMentionFind(text, unit) : null;
-    }
-
-    public void CCorpusExampleSelect(long? id)
-    {
-        if (id is not long chosen)
-        {
-            return;
-        }
-
-        bool editing = CCorpusScribeChecked;
-        if (!LCorpusLeaveConfirm(false))
-        {
-            return;
-        }
-
-        _cCorpusAtelier.CAtelierNavigation.LNavigationStationAdd();
-        LCorpusExampleShow(chosen, editing);
-    }
-
-    private void LCorpusQuotationOpen(long id, bool editing)
-    {
-        if (!CCorpusQuotation.CQuotationPanel.CPanelRowOpen(id))
-        {
-            return;
-        }
-
-        CCorpusDesk.CDeskCancel();
-        CCorpusAnthology.CAnthologyPanel.CPanelScribeSet(false);
-        if (editing)
-        {
-            CCorpusQuotation.CQuotationPanel.CPanelScribeToggle(true);
-        }
-    }
-
-    public void CCorpusQuotationSelect(long? id)
-    {
-        if (id is not long chosen)
-        {
-            return;
-        }
-
-        bool editing = CCorpusScribeChecked;
-        if (!LCorpusLeaveConfirm(true))
-        {
-            return;
-        }
-
-        LCorpusQuotationOpen(chosen, editing);
-    }
-
-    public void CCorpusExampleCreate()
-    {
-        if (!LCorpusLeaveConfirm(true))
-        {
-            return;
-        }
-
-        if (LCorpusRowHeld)
-        {
-            LCorpusQuotationCreate();
-            return;
-        }
-
-        CCorpusQuotation.CQuotationPanel.CPanelEntryClose();
-        CCorpusAnthology.CAnthologyPanel.CPanelFreshOpen();
-        CCorpusSession.CSessionStart(null);
-    }
-
-    public void CCorpusScribeToggle(bool editing)
-    {
-        if (LCorpusQuotationSide)
-        {
-            CCorpusQuotation.CQuotationPanel.CPanelScribeToggle(editing);
-            if (!LCorpusQuotationSide)
-            {
-                LCorpusExampleRestore(editing);
-            }
-
-            return;
-        }
-
-        CCorpusAnthology.CAnthologyPanel.CPanelScribeToggle(editing);
-        if (!CCorpusAnthology.CAnthologyPanel.CPanelEditing)
-        {
-            CCorpusDesk.CDeskCancel();
-        }
-    }
-
-    private void LCorpusExampleRestore(bool editing)
-    {
-        if (CCorpusAnthology.CAnthologyChosen is long chosen)
-        {
-            LCorpusExampleShow(chosen, editing);
-            return;
-        }
-
-        LCorpusExampleClose();
-    }
-
-    private void LCorpusExampleClose()
-    {
-        CCorpusQuotation.CQuotationPanel.CPanelEntryClose();
-        CCorpusAnthology.CAnthologyPanel.CPanelEntryClose();
-    }
-
-    private void LCorpusClose()
-    {
-        CCorpusEditor.CEditorClose();
-        CCorpusEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
+        return CCorpusSession.LSessionLeaveConfirm(true) ? CCorpusAnthology.LAnthologyMentionFind(text, unit) : null;
     }
 
     private void LCorpusQueryClear()
     {
-        CCorpusAnthology.CAnthologyQuerySet(string.Empty);
-        CCorpusAnthology.CAnthologyFilterSet(new CCatalogFilter([]));
+        CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureQuerySet(string.Empty);
+        CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureFilterSet(new CCatalogFilter([]));
         CCorpusQueryCleared?.Invoke();
     }
 
@@ -310,48 +190,11 @@ public sealed class CCorpus
 
     private void LCorpusQuotationCreate()
     {
-        long? chosen = CCorpusAnthology.CAnthologyChosen;
+        long? chosen = CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureChosen;
         CCorpusDesk.CDeskCancel();
         CCorpusAnthology.CAnthologyPanel.CPanelScribeSet(false);
         CCorpusQuotation.CQuotationPanel.CPanelFreshOpen();
-        CCorpusEditor.CEditorDesk.LDeskQuotationStart(chosen);
-    }
-
-    internal bool LCorpusLeaveConfirm(bool shown)
-    {
-        if (!CCorpusSession.LSessionChangeCheck())
-        {
-            return true;
-        }
-
-        if (_cCorpusEnvoy.CEnvoyLeaveConfirm() is not bool store)
-        {
-            return false;
-        }
-
-        if (!store)
-        {
-            return true;
-        }
-
-        return shown ? CCorpusSession.LSessionFinish(true) : CCorpusSession.CSessionClose(true);
-    }
-
-    internal void LCorpusEntryResonate()
-    {
-        if (!CCorpusQuotation.CQuotationPanel.CPanelBinEnabled)
-        {
-            return;
-        }
-
-        bool editing = CCorpusScribeChecked;
-        CCorpusQuotation.CQuotationPanel.CPanelDraftResonate();
-        if (LCorpusQuotationSide)
-        {
-            return;
-        }
-
-        LCorpusExampleRestore(editing);
+        CCorpusEditor.CEditorDesk.LDeskRun((drafts, vista) => drafts.LEngineQuotationStart(vista, chosen));
     }
 
     public IReadOnlyList<CCatalogExample> CCorpusRowsRead()
@@ -363,7 +206,7 @@ public sealed class CCorpus
 
         if (LCorpusRowShown && !rows.Any(static row => row.CCatalogExampleChosen))
         {
-            LCorpusExampleClose();
+            CCorpusDiptych.LDiptychEntryClose();
         }
 
         return rows;
@@ -373,16 +216,6 @@ public sealed class CCorpus
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
         CCatalog.LCatalogEnsignLoad(
             _cCorpusEnvoy, _cCorpusSettingsPort, "Example.LoadFailed", store, CCorpusRowsRead);
-
-    public void CCorpusExampleDelete()
-    {
-        if (LCorpusQuotationSide)
-        {
-            return;
-        }
-
-        CCorpusAnthology.CAnthologyPanel.CPanelEntryDelete();
-    }
 
     public Task CCorpusPortraitPrint()
     {
@@ -410,12 +243,14 @@ public sealed class CCorpus
         CCorpusEditor.LEditorVistaRestore(quotation);
         CCorpusAnthology.LAnthologyObserverAttach(_cCorpusMarshal, LCorpusWorkspaceResonate);
         CCorpusQuotation.LQuotationObserverAttach(
-            _cCorpusMarshal, CCorpusAnthology.CAnthologyPanel.CPanelRowsResonate, LCorpusEntryResonate);
+            _cCorpusMarshal,
+            CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureRowsResonate,
+            CCorpusDiptych.LDiptychChildResonate);
     }
 
     private void LCorpusWorkspaceResonate()
     {
-        LCorpusExampleClose();
+        CCorpusDiptych.LDiptychEntryClose();
         CCorpusWorkspaceChanged?.Invoke();
     }
 }

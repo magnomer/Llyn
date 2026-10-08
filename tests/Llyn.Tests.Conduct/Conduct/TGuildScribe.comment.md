@@ -1,5 +1,5 @@
 # TGuildScribe.cs
-Hash: `806ab959d6708e68`
+Hash: `2e89b5a9fc71ec97`
 
 ## `public sealed class TGuildScribe`
 

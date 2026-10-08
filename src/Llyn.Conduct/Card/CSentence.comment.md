@@ -1,5 +1,5 @@
 # CSentence.cs
-Hash: `3c7dfdea807a4550`
+Hash: `b12bafb3bfc396ed`
 
 ## `public sealed class CSentence`
 

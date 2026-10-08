@@ -44,7 +44,7 @@ public sealed class TLibraryMarkup
             },
             asked));
         int refreshed = 0;
-        library.CLibraryPanel.CPanelRowsChanged += () => refreshed++;
+        library.CLibraryPanel.CPanelAperture.CApertureRowsChanged += () => refreshed++;
 
         await library.CLibraryMarkupImport();
 
@@ -115,7 +115,7 @@ public sealed class TLibraryMarkup
         string file = TInterface.TMarkupSave(workspace, TInterface.TMarkupLone);
         CLibrary library = TLibrary.TLibraryPrepare(atelier, TLibraryEnvoyCreate(file, static _ => false, asked));
         int refreshed = 0;
-        library.CLibraryPanel.CPanelRowsChanged += () => refreshed++;
+        library.CLibraryPanel.CPanelAperture.CApertureRowsChanged += () => refreshed++;
 
         await library.CLibraryMarkupImport();
 

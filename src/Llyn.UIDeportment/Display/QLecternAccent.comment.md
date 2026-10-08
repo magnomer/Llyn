@@ -1,9 +1,9 @@
 # QLecternAccent.cs
-Hash: `2e2dfdbb6bc99dc8`
+Hash: `727df8c2808953f2`
 
 ## `public sealed class QLecternAccent`
 
-The reading view's accent driver, standing between the veneer and the display's sound area, [CDisplaySound](../../Llyn.Conduct/Display/CDisplaySound.comment.md).
+The reading view's accent driver, standing between the veneer and the display's accent area, [CDisplayAccent](../../Llyn.Conduct/Display/CDisplayAccent.comment.md).
 It draws the primary pronunciation and the accent rows from the block Conduct answers ready.
 Flags come from `QEnsignImage`, and every rule of which flag or reading shows stays in Conduct and below.
 
@@ -11,9 +11,9 @@ Flags come from `QEnsignImage`, and every rule of which flag or reading shows st
 
 The contour box's syllables property, handed in by the page so the driver copies each ready contour into it.
 
-## `public QLecternAccent(CDisplaySound area)`
+## `public QLecternAccent(CDisplayAccent area)`
 
-Builds the driver over the display's sound area, whose reads it paints from.
+Builds the driver over the display's accent area, whose reads it paints from.
 
 ## `public void QLecternAccentIntroduce(UIElement surface, ColumnDefinition lead, Image flag, TextBlock label, TextBlock opener, TextBlock pronunciation, TextBlock closer, ItemsControl accents, FrameworkElement contour, DependencyProperty syllables, DependencyProperty scale)`
 

@@ -81,7 +81,7 @@ internal sealed class CClip
     {
         return new CClipReading(
             recording,
-            CSounding.CSoundingVarietyRead(
+            CVariety.CVarietyRead(
                 foray?.LForayLanguage ?? tenure?.LTenureLanguageRead() ?? string.Empty, recording.CRecordingVariety),
             foray?.LForayFlagged ?? (tenure is not null && new LQuillPronunciation(tenure).LQuillFlaggedCheck()),
             "Downloader.Use",

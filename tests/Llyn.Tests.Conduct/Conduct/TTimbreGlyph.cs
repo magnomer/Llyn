@@ -59,7 +59,7 @@ public sealed class TTimbreGlyph
         long glyph = Assert.Single(editor.CEditorTimbre.CTimbreGlyphRead().CTimbreGlyphRows).CTranscriptionDraftId;
 
         editor.CEditorTranscription.CTranscriptionSet(glyph, "韓字");
-        editor.CEditorDesk.CDeskPersist();
+        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
 
         CTimbreGlyph written = editor.CEditorTimbre.CTimbreGlyphRead();
         Assert.Equal("韓字", Assert.Single(written.CTimbreGlyphRows).CTranscriptionDraftText);
@@ -79,9 +79,9 @@ public sealed class TTimbreGlyph
         CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         bool filling = false;
-        editor.CEditorDesk.CDeskDraftChanged += _ =>
+        editor.CEditorDesk.CDeskDraft.CDeskDraftChanged += _ =>
         {
-            filling = editor.CEditorDesk.CDeskFilling;
+            filling = editor.CEditorDesk.CDeskDraft.CDeskDraftFilling;
             foreach (CTranscriptionDraft row in editor.CEditorTimbre.CTimbreGlyphRead().CTimbreGlyphRows)
             {
                 editor.CEditorTranscription.CTranscriptionSet(row.CTranscriptionDraftId, "韓字");
@@ -89,7 +89,7 @@ public sealed class TTimbreGlyph
         };
 
         editor.CEditorEntryOpen(entry);
-        editor.CEditorDesk.CDeskPersist();
+        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
 
         Assert.True(filling);
         Assert.Equal(

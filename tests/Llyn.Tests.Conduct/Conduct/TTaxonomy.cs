@@ -23,8 +23,8 @@ public sealed class TTaxonomy
         engine.TEngineTagCreate("motion");
 
         Assert.Single(taxonomy.CTaxonomyRowsRead());
-        Assert.Null(taxonomy.LTaxonomyChosen);
-        Assert.False(taxonomy.CTaxonomyFiltered);
+        Assert.Null(taxonomy.CTaxonomyAperture.CApertureChosen);
+        Assert.False(taxonomy.CTaxonomyAperture.CApertureFiltered);
     }
 
     [Fact]
@@ -35,13 +35,13 @@ public sealed class TTaxonomy
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
-        taxonomy.CTaxonomyMembership.CMembershipQuerySet(" ");
+        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureQuerySet(" ");
 
-        Assert.Equal("Tag.Vacant", taxonomy.CTaxonomyMembership.CMembershipEmptyKey);
+        Assert.Equal("Tag.Vacant", taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureKey);
 
-        taxonomy.CTaxonomyMembership.CMembershipQuerySet("aqua");
+        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureQuerySet("aqua");
 
-        Assert.Equal("Tag.Unmatched", taxonomy.CTaxonomyMembership.CMembershipEmptyKey);
+        Assert.Equal("Tag.Unmatched", taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureKey);
         Assert.Empty(taxonomy.CTaxonomyMembership.CMembershipRowsRead());
     }
 
@@ -55,14 +55,14 @@ public sealed class TTaxonomy
         engine.TEngineTagCreate("alpha");
         engine.TEngineTagCreate("beta");
         int told = 0;
-        taxonomy.CTaxonomyRowsChanged += () => told++;
+        taxonomy.CTaxonomyAperture.CApertureRowsChanged += () => told++;
 
-        Assert.Equal(CCatalogOrder.CCatalogOrderName, taxonomy.CTaxonomyOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderName, taxonomy.CTaxonomyAperture.CApertureOrder);
 
-        taxonomy.CTaxonomyOrderSet(CCatalogOrder.CCatalogOrderReverse);
-        taxonomy.CTaxonomyOrderSet(null);
+        taxonomy.CTaxonomyAperture.CApertureOrderSet(CCatalogOrder.CCatalogOrderReverse);
+        taxonomy.CTaxonomyAperture.CApertureOrderSet(null);
 
-        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, taxonomy.CTaxonomyOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, taxonomy.CTaxonomyAperture.CApertureOrder);
         Assert.Equal(
             ["beta", "alpha"],
             taxonomy.CTaxonomyRowsRead()
@@ -80,7 +80,7 @@ public sealed class TTaxonomy
         CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         engine.TEngineTagCreate("motion");
 
-        taxonomy.CTaxonomyQuerySet("zzz");
+        taxonomy.CTaxonomyAperture.CApertureQuerySet("zzz");
 
         Assert.Empty(taxonomy.CTaxonomyRowsRead());
     }
@@ -93,14 +93,14 @@ public sealed class TTaxonomy
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
-        taxonomy.CTaxonomyFilterSet(new CCatalogFilter(["Latin"]));
+        taxonomy.CTaxonomyAperture.CApertureFilterSet(new CCatalogFilter(["Latin"]));
 
-        Assert.True(taxonomy.CTaxonomyFiltered);
-        Assert.Equal(["Latin"], taxonomy.CTaxonomyFilter.CCatalogFilterHidden);
+        Assert.True(taxonomy.CTaxonomyAperture.CApertureFiltered);
+        Assert.Equal(["Latin"], taxonomy.CTaxonomyAperture.CApertureFilter.CCatalogFilterHidden);
 
-        taxonomy.CTaxonomyFilterSet(new CCatalogFilter([]));
+        taxonomy.CTaxonomyAperture.CApertureFilterSet(new CCatalogFilter([]));
 
-        Assert.False(taxonomy.CTaxonomyFiltered);
+        Assert.False(taxonomy.CTaxonomyAperture.CApertureFiltered);
     }
 
     [Fact]
@@ -184,16 +184,16 @@ public sealed class TTaxonomy
         List<CNavigationState> states = [];
         atelier.CAtelierNavigation.CNavigationChanged += states.Add;
         List<string> seen = [];
-        taxonomy.CTaxonomyRowsChanged += () =>
+        taxonomy.CTaxonomyAperture.CApertureRowsChanged += () =>
         {
             seen.Add("tag");
             taxonomy.CTaxonomyRowsRead();
         };
-        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelRowsChanged += () => seen.Add("entry");
+        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureRowsChanged += () => seen.Add("entry");
 
         taxonomy.CTaxonomyTagToggle(first);
 
-        Assert.Null(taxonomy.LTaxonomyChosen);
+        Assert.Null(taxonomy.CTaxonomyAperture.CApertureChosen);
         Assert.Equal(new CVoyageState(true, false), Assert.Single(states).CNavigationStateVoyage);
         Assert.Equal(["tag", "entry"], seen);
     }
@@ -208,11 +208,11 @@ public sealed class TTaxonomy
         long first = engine.TEngineTagCreate("motion").LTagId;
         List<string> seen = [];
         taxonomy.CTaxonomyTagOpened += () => seen.Add("opened");
-        taxonomy.CTaxonomyRowsChanged += () => seen.Add("rows");
+        taxonomy.CTaxonomyAperture.CApertureRowsChanged += () => seen.Add("rows");
 
         taxonomy.TTaxonomyTagOpen(first);
 
-        Assert.Equal(first, taxonomy.LTaxonomyChosen);
+        Assert.Equal(first, taxonomy.CTaxonomyAperture.CApertureChosen);
         Assert.Equal(["opened", "rows"], seen);
     }
 
@@ -224,11 +224,14 @@ public sealed class TTaxonomy
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         long first = engine.TEngineTagCreate("motion").LTagId;
-        taxonomy.CTaxonomyQuerySet("zzz");
-        taxonomy.CTaxonomyMembership.CMembershipQuerySet("zzz");
+        taxonomy.CTaxonomyAperture.CApertureQuerySet("zzz");
+        taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureQuerySet("zzz");
         List<string> seen = [];
         taxonomy.CTaxonomyTagOpened += () =>
-            seen.Add(taxonomy.CTaxonomyMembership.CMembershipEmptyKey + " " + taxonomy.CTaxonomyRowsRead().Count);
+            seen.Add(
+                taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureKey
+                + " "
+                + taxonomy.CTaxonomyRowsRead().Count);
 
         taxonomy.TTaxonomyTagOpen(first);
 
@@ -271,7 +274,7 @@ public sealed class TTaxonomy
         long tag = engine.TEngineTagCreate("botany").LTagId;
         taxonomy.CTaxonomyTagToggle(tag);
         taxonomy.CTaxonomyEntryCreate();
-        taxonomy.CTaxonomyEditor.CEditorHeadwordSet("fern");
+        taxonomy.CTaxonomyEditor.CEditorEntry.CEntryHeadwordSet("fern");
         taxonomy.CTaxonomyTagToggle(tag);
     }
 

@@ -1,5 +1,5 @@
 # CCard.cs
-Hash: `3827a2dfa8e0511d`
+Hash: `d8994356f833f832`
 
 ## `public sealed class CCard`
 

@@ -16,25 +16,29 @@ internal static class TInterfaceConductDesk
         new(new LDraftOutlet(engine), new LSettingsOutlet(engine), scope, envoy, origin, subject);
 
     internal static void TDeskOccurrenceStart(this CDesk desk, long? situation) =>
-        desk.LDeskOccurrenceStart(situation);
+        desk.LDeskRun((drafts, vista) => drafts.LEngineOccurrenceStart(vista, situation));
 
-    internal static void TDeskQuotationStart(this CDesk desk, long? example) => desk.LDeskQuotationStart(example);
+    internal static void TDeskQuotationStart(this CDesk desk, long? example) =>
+        desk.LDeskRun((drafts, vista) => drafts.LEngineQuotationStart(vista, example));
 
-    internal static void TDeskFootnoteStart(this CDesk desk, long? reference) => desk.LDeskFootnoteStart(reference);
+    internal static void TDeskFootnoteStart(this CDesk desk, long? reference) =>
+        desk.LDeskRun((drafts, vista) => drafts.LEngineFootnoteStart(vista, reference));
 
-    internal static void TDeskMembershipStart(this CDesk desk, long? tag) => desk.LDeskMembershipStart(tag);
+    internal static void TDeskMembershipStart(this CDesk desk, long? tag) =>
+        desk.LDeskRun((drafts, vista) => drafts.LEngineMembershipStart(vista, tag));
 
-    internal static void TDeskCohortStart(this CDesk desk, long? register) => desk.LDeskCohortStart(register);
+    internal static void TDeskCohortStart(this CDesk desk, long? register) =>
+        desk.LDeskRun((drafts, vista) => drafts.LEngineCohortStart(vista, register));
 
     internal static void TDeskVistaRestore(this CDesk desk, LVista vista) => desk.CDeskVistaRestore(vista);
 
     internal static void TDeskDefer(this CDesk desk, LRequest request) =>
-        desk.CDeskTenure?.LTenureRequestDefer(request);
+        desk.CDeskDraft.CDeskDraftTenure?.LTenureRequestDefer(request);
 
-    internal static LDraft? TDeskRead(this CDesk desk) => desk.CDeskRead();
+    internal static LDraft? TDeskRead(this CDesk desk) => desk.CDeskDraft.CDeskDraftRead();
 
     internal static IReadOnlyList<long> TDeskSentenceRead(this CDesk desk) =>
-        desk.CDeskRead() is LDraft draft
+        desk.CDeskDraft.CDeskDraftRead() is LDraft draft
             ? draft.LDraftContent.LEntryDraftMeanings.Concat(draft.LDraftContent.LEntryDraftCollocations)
                 .SelectMany(static card => card.LCardDraftSentence)
                 .Select(static sentence => sentence.LSentenceDraftId)
@@ -68,18 +72,18 @@ internal static class TInterfaceConductDesk
                 new CLedgerNoticed()));
     }
 
-    internal static LDraft? TDeskHeldRead(this CDesk desk) => desk.CDeskTenure?.LTenureRead();
+    internal static LDraft? TDeskHeldRead(this CDesk desk) => desk.CDeskDraft.CDeskDraftTenure?.LTenureRead();
 
     internal static void TDeskVarietySet(this CDesk desk, bool primary, long pronunciation, string variety)
     {
-        if (desk.CDeskTenure is LTenure held)
+        if (desk.CDeskDraft.CDeskDraftTenure is LTenure held)
         {
             new LQuillPronunciation(held).LQuillVarietySet(primary, pronunciation, variety);
         }
     }
 
     internal static LForay? TDeskForayStart(this CDesk desk, string scheme) =>
-        desk.CDeskTenure?.LTenureErrand.LErrandTranscriptionStart(0, scheme, static (_, _) => { });
+        desk.CDeskDraft.CDeskDraftTenure?.LTenureErrand.LErrandTranscriptionStart(0, scheme, static (_, _) => { });
 
     internal static bool TDeskChangeCheck(this CDesk desk) => desk.LDeskChangeCheck();
 
@@ -98,9 +102,16 @@ internal static class TInterfaceConductDesk
     internal static CSession TSessionCreate(
         CDesk desk, IReadOnlyList<Func<bool>> pending, Func<bool> readySeam, Action<long> storedSeam) =>
         new(
-            desk, pending, null, static () => false, static _ => true, readySeam, storedSeam);
+            desk,
+            pending,
+            null,
+            static () => false,
+            static _ => true,
+            readySeam,
+            storedSeam,
+            TEnvoyFake.TEnvoyCreate(false, []));
 
-    internal static CSession TSessionCreate(CDesk desk, CDesk editor, Func<bool> shownSeam, List<string> seen) =>
+    internal static CSession TSessionCreate(CDesk desk, CEditor editor, Func<bool> shownSeam, List<string> seen) =>
         new(
             desk, [], editor, shownSeam,
             store =>
@@ -108,7 +119,7 @@ internal static class TInterfaceConductDesk
                 seen.Add(store ? "Finish" : "Drop");
                 return true;
             },
-            static () => true, static _ => { });
+            static () => true, static _ => { }, TEnvoyFake.TEnvoyCreate(false, []));
 
     internal static bool TSessionChangeCheck(this CSession session) => session.LSessionChangeCheck();
 

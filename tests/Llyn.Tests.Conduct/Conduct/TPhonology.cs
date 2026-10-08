@@ -40,8 +40,8 @@ public sealed class TPhonology
             atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
 
         Assert.Single(phonology.CPhonologyRowsRead());
-        Assert.False(phonology.CPhonologyEmpty);
-        Assert.False(phonology.CPhonologyFiltered);
+        Assert.False(phonology.CPhonologyPanel.CPanelAperture.CApertureEmpty);
+        Assert.False(phonology.CPhonologyPanel.CPanelAperture.CApertureFiltered);
     }
 
     [Fact]
@@ -54,12 +54,12 @@ public sealed class TPhonology
         TPhonologyEntrySave(engine, "fire", "faɪə");
         CPhonology phonology = TPhonologyPrepare(atelier);
 
-        phonology.CPhonologyQuerySet("wat");
+        phonology.CPhonologyPanel.CPanelAperture.CApertureQuerySet("wat");
 
         Assert.Equal(
             ["water"],
             phonology.CPhonologyRowsRead().Select(row => row.CCatalogPronunciationEntry.CVistaRowHeadword));
-        Assert.False(phonology.CPhonologyEmpty);
+        Assert.False(phonology.CPhonologyPanel.CPanelAperture.CApertureEmpty);
     }
 
     [Fact]
@@ -71,10 +71,10 @@ public sealed class TPhonology
         TPhonologyEntrySave(engine, "water", "ˈwɔːtə");
         CPhonology phonology = TPhonologyPrepare(atelier);
 
-        phonology.CPhonologyQuerySet("zzz");
+        phonology.CPhonologyPanel.CPanelAperture.CApertureQuerySet("zzz");
 
         Assert.Empty(phonology.CPhonologyRowsRead());
-        Assert.True(phonology.CPhonologyEmpty);
+        Assert.True(phonology.CPhonologyPanel.CPanelAperture.CApertureEmpty);
     }
 
     [Fact]
@@ -121,10 +121,10 @@ public sealed class TPhonology
         TPhonologyEntrySave(engine, "fire", "faɪə");
         CPhonology phonology = TPhonologyPrepare(atelier);
 
-        phonology.CPhonologyOrderSet(CCatalogOrder.CCatalogOrderReverse);
-        phonology.CPhonologyOrderSet(null);
+        phonology.CPhonologyPanel.CPanelAperture.CApertureOrderSet(CCatalogOrder.CCatalogOrderReverse);
+        phonology.CPhonologyPanel.CPanelAperture.CApertureOrderSet(null);
 
-        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, phonology.CPhonologyPanel.CPanelOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, phonology.CPhonologyPanel.CPanelAperture.CApertureOrder);
         Assert.Equal(
             ["water", "fire"],
             phonology.CPhonologyRowsRead().Select(row => row.CCatalogPronunciationEntry.CVistaRowHeadword));
@@ -139,14 +139,14 @@ public sealed class TPhonology
         TPhonologyEntrySave(engine, "water", "ˈwɔːtə");
         CPhonology phonology = TPhonologyPrepare(atelier);
 
-        phonology.CPhonologyFilterSet(new CCatalogFilter(["English"]));
+        phonology.CPhonologyPanel.CPanelAperture.CApertureFilterSet(new CCatalogFilter(["English"]));
 
-        Assert.True(phonology.CPhonologyFiltered);
+        Assert.True(phonology.CPhonologyPanel.CPanelAperture.CApertureFiltered);
         Assert.Empty(phonology.CPhonologyRowsRead());
 
-        phonology.CPhonologyFilterSet(new CCatalogFilter([]));
+        phonology.CPhonologyPanel.CPanelAperture.CApertureFilterSet(new CCatalogFilter([]));
 
-        Assert.False(phonology.CPhonologyFiltered);
+        Assert.False(phonology.CPhonologyPanel.CPanelAperture.CApertureFiltered);
     }
 
     [Fact]
@@ -199,7 +199,7 @@ public sealed class TPhonology
         TPhonologyEntrySave(engine, "water", "ˈwɔːtə");
         TPhonologyEntrySave(engine, "fire", "faɪə");
         CPhonology phonology = TPhonologyPrepare(atelier);
-        phonology.CPhonologyQuerySet("wat");
+        phonology.CPhonologyPanel.CPanelAperture.CApertureQuerySet("wat");
 
         phonology.TPhonologyVistaRestore();
 
@@ -226,7 +226,7 @@ public sealed class TPhonology
             });
         phonology.TPhonologyVistaRestore();
         int rows = 0;
-        phonology.CPhonologyPanel.CPanelRowsChanged += () => rows++;
+        phonology.CPhonologyPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectReflex, 0);
 
@@ -251,7 +251,7 @@ public sealed class TPhonology
                 run();
             });
         int rows = 0;
-        phonology.CPhonologyPanel.CPanelRowsChanged += () => rows++;
+        phonology.CPhonologyPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectReflex, 0);
 
@@ -267,7 +267,7 @@ public sealed class TPhonology
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CPhonology phonology = TPhonologyPrepare(atelier);
         int rows = 0;
-        phonology.CPhonologyPanel.CPanelRowsChanged += () => rows++;
+        phonology.CPhonologyPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectSettings, 0);
 
@@ -282,9 +282,10 @@ public sealed class TPhonology
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CPhonology phonology = TPhonologyPrepare(atelier);
         List<bool> filtered = [];
-        phonology.CPhonologyPanel.CPanelRowsChanged += () => filtered.Add(phonology.CPhonologyFiltered);
+        phonology.CPhonologyPanel.CPanelAperture.CApertureRowsChanged +=
+            () => filtered.Add(phonology.CPhonologyPanel.CPanelAperture.CApertureFiltered);
 
-        phonology.CPhonologyFilterSet(new CCatalogFilter(["English"]));
+        phonology.CPhonologyPanel.CPanelAperture.CApertureFilterSet(new CCatalogFilter(["English"]));
 
         Assert.Equal([true], filtered);
     }

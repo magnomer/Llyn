@@ -56,7 +56,7 @@ public sealed class TDesk
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         CDesk desk = TDeskPrepare(engine);
         string? shown = null;
-        desk.CDeskDraftChanged += draft => shown = draft.CDraftAuthorName;
+        desk.CDeskDraft.CDeskDraftChanged += draft => shown = draft.CDraftAuthorName;
 
         desk.CDeskStart(ada.LAuthorId);
 
@@ -77,7 +77,7 @@ public sealed class TDesk
 
         Assert.False(desk.CDeskHeld);
         Assert.Null(desk.CDeskStoredRead());
-        Assert.Equal((false, false), desk.CDeskChronicleRead());
+        Assert.Equal((false, false), desk.CDeskChronicle.CDeskChronicleRead());
     }
 
     [Fact]
@@ -93,107 +93,10 @@ public sealed class TDesk
         desk.CDeskStart(null);
 
         Assert.True(desk.CDeskHeld);
-        Assert.True(desk.CDeskRunning);
+        Assert.True(desk.CDeskChronicle.CDeskChronicleRunning);
         Assert.False(desk.CDeskStored);
         Assert.Equal(1, started);
         Assert.NotNull(desk.TDeskRead());
-    }
-
-    [Fact]
-    public void Undo_AfterName_StepsBackAndRedoStepsForward()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CDesk desk = TDeskPrepare(engine);
-        desk.CDeskStart(null);
-        desk.TDeskDefer(TInterface.TRequestAuthorCreate(desk.CDeskId, "Ada"));
-        desk.CDeskPersist();
-
-        Assert.True(desk.CDeskChronicleRead().CDeskBackward);
-        Assert.True(desk.CDeskChanged);
-        Assert.True(desk.CDeskStorable);
-
-        desk.CDeskUndo();
-
-        Assert.True(desk.CDeskChronicleRead().CDeskForward);
-        Assert.Equal(string.Empty, desk.TDeskRead()?.LDraftAuthorName ?? string.Empty);
-
-        desk.CDeskRedo();
-
-        Assert.Equal("Ada", desk.TDeskRead()?.LDraftAuthorName);
-    }
-
-    [Fact]
-    public void Undo_WorkspaceChanged_ShowsTheHoldFailureOnce()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        List<string> asked = [];
-        CDesk desk = TDeskPrepare(engine, asked);
-        desk.CDeskStart(null);
-        desk.TDeskDefer(TInterface.TRequestAuthorCreate(desk.CDeskId, "Ada"));
-        desk.CDeskPersist();
-        engine.TEngineWorkspaceOpen(workspace.TWorkspaceFolder);
-        int changed = 0;
-        desk.CDeskStateChanged += () => changed++;
-
-        desk.CDeskUndo();
-
-        Assert.Equal(["Guild.HoldFailed"], asked);
-        Assert.Equal(1, changed);
-    }
-
-    [Fact]
-    public void Redo_WorkspaceChanged_ShowsTheHoldFailureOnce()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        List<string> asked = [];
-        CDesk desk = TDeskPrepare(engine, asked);
-        desk.CDeskStart(null);
-        desk.TDeskDefer(TInterface.TRequestAuthorCreate(desk.CDeskId, "Ada"));
-        desk.CDeskPersist();
-        desk.CDeskUndo();
-        engine.TEngineWorkspaceOpen(workspace.TWorkspaceFolder);
-
-        desk.CDeskRedo();
-
-        Assert.Equal(["Guild.HoldFailed"], asked);
-    }
-
-    [Fact]
-    public void DraftUpdate_HeldDraft_AnnouncesItWhileFilling()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CDesk desk = TDeskPrepare(engine);
-        desk.CDeskStart(null);
-        desk.TDeskDefer(TInterface.TRequestAuthorCreate(desk.CDeskId, "Ada"));
-        List<bool> filling = [];
-        desk.CDeskDraftChanged += _ => filling.Add(desk.CDeskFilling);
-
-        desk.CDeskDraftResonate();
-
-        Assert.Equal([true], filling);
-        Assert.False(desk.CDeskFilling);
-    }
-
-    [Fact]
-    public void StateUpdate_NotHalted_RefusesNothingAndAnnouncesState()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        List<string> refused = [];
-        CDesk desk = TDeskPrepare(engine, refused);
-        desk.CDeskStart(null);
-        int changed = 0;
-        desk.CDeskStateChanged += () => changed++;
-
-        desk.CDeskStateResonate();
-
-        Assert.False(desk.CDeskHalted);
-        Assert.Empty(refused);
-        Assert.Equal(1, changed);
     }
 
     [Fact]

@@ -147,10 +147,10 @@ internal sealed class QGuild
             QObserver.QObserverCreate<Action>(static run => run()));
         _cGuild.CGuildChanged += QGuildModeUpdate;
         _cGuild.CGuildPanel.CPanelChanged += QGuildModeUpdate;
-        _cGuild.CGuildPanel.CPanelRowsChanged += QRollRefine;
+        _cGuild.CGuildPanel.CPanelAperture.CApertureRowsChanged += QRollRefine;
         _cGuild.CGuildOeuvre.COeuvrePanel.CPanelChanged += QGuildModeUpdate;
-        _cGuild.CGuildOeuvre.COeuvrePanel.CPanelRowsChanged += QOeuvreRefine;
-        _cGuild.CGuildOeuvre.COeuvrePanel.CPanelRowsChanged += QTallyRefine;
+        _cGuild.CGuildOeuvre.COeuvrePanel.CPanelAperture.CApertureRowsChanged += QOeuvreRefine;
+        _cGuild.CGuildOeuvre.COeuvrePanel.CPanelAperture.CApertureRowsChanged += QTallyRefine;
         _cGuild.CGuildOeuvre.COeuvrePanel.CPanelCleared += _qColophon.QColophonClearRefine;
         _cGuild.CGuildOeuvre.COeuvreColophonChanged += _qColophon.QColophonRefine;
         _qVita.QVitaAttach(host, _cGuild);
@@ -169,7 +169,7 @@ internal sealed class QGuild
     internal void QGuildVistaRefine()
     {
         CGuildRoll roll = _cGuild.CGuildRollRead();
-        QChoice.QChoiceOrderApply(QEchelonDropdown, _cGuild.CGuildPanel.CPanelOrder);
+        QChoice.QChoiceOrderApply(QEchelonDropdown, _cGuild.CGuildPanel.CPanelAperture.CApertureOrder);
         QLouverBuild(roll.CGuildRollKind);
         QLouverRefine();
         QRollShow(roll);
@@ -211,7 +211,8 @@ internal sealed class QGuild
             QShelfItem.QShelfItemMatch,
             QShelfItem.QShelfItemSync);
         QOeuvreEmpty.SetResourceReference(TextBlock.TextProperty, _cGuild.CGuildOeuvre.COeuvreEmptyKey);
-        QOeuvreEmpty.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildOeuvre.COeuvreEmpty);
+        QOeuvreEmpty.Visibility = QLook.QLookVisibleRead(
+            _cGuild.CGuildOeuvre.COeuvrePanel.CPanelAperture.CApertureEmpty);
     }
 
     internal void QTallyRefine()
@@ -222,14 +223,14 @@ internal sealed class QGuild
     private void QGuildModeUpdate()
     {
         QContract.QContractFind<UserControl>(_qGuildSurface, "PAutograph").Visibility =
-            QLook.QLookVisibleRead(_cGuild.CGuildAutographShown);
+            QLook.QLookVisibleRead(_cGuild.CGuildDiptych.CDiptychParentEditing);
         QContract.QContractFind<UserControl>(_qGuildSurface, "PVita").Visibility =
-            QLook.QLookVisibleRead(_cGuild.CGuildVitaShown);
-        QGuildColophon.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildColophonShown);
-        QGuildViewer.IsChecked = _cGuild.CGuildViewerChecked;
-        QGuildScribe.IsChecked = _cGuild.CGuildScribeChecked;
-        QGuildVoyage.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildViewerChecked);
-        QGuildChronicle.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildScribeChecked);
+            QLook.QLookVisibleRead(_cGuild.CGuildDiptych.CDiptychParentShown);
+        QGuildColophon.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildDiptych.CDiptychChildSide);
+        QGuildViewer.IsChecked = _cGuild.CGuildDiptych.CDiptychViewerChecked;
+        QGuildScribe.IsChecked = _cGuild.CGuildDiptych.CDiptychScribeChecked;
+        QGuildVoyage.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildDiptych.CDiptychViewerChecked);
+        QGuildChronicle.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildDiptych.CDiptychScribeChecked);
         QGuildMode.IsEnabled = _cGuild.CGuildModeEnabled;
         QGuildBin.IsEnabled = _cGuild.CGuildBinEnabled;
         QGuildStore.IsEnabled = _cGuild.CGuildStoreEnabled;
@@ -238,27 +239,28 @@ internal sealed class QGuild
 
     private void QLouverBuild(IReadOnlyList<CReferenceKind> kinds)
     {
-        QChoice.QChoiceKindRefine(QLouverList, _cGuild.CGuildPanel.CPanelFilter, QLouverObserve, kinds);
+        QChoice.QChoiceKindRefine(
+            QLouverList, _cGuild.CGuildPanel.CPanelAperture.CApertureFilter, QLouverObserve, kinds);
     }
 
     private void QLouverRefine()
     {
-        QLouverMark.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildFiltered);
+        QLouverMark.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildPanel.CPanelAperture.CApertureFiltered);
     }
 
     private void QMusterObserve(object sender, TextChangedEventArgs e)
     {
-        _cGuild.CGuildQuerySet(QMuster.Text);
+        _cGuild.CGuildPanel.CPanelAperture.CApertureQuerySet(QMuster.Text);
     }
 
     private void QCombObserve(object sender, TextChangedEventArgs e)
     {
-        _cGuild.CGuildOeuvre.COeuvreQuerySet(QComb.Text);
+        _cGuild.CGuildOeuvre.COeuvrePanel.CPanelAperture.CApertureQuerySet(QComb.Text);
     }
 
     private void QEchelonObserve(object sender, RoutedEventArgs e)
     {
-        _cGuild.CGuildOrderSet(QChoice.QChoiceOrderRead(sender));
+        _cGuild.CGuildPanel.CPanelAperture.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
         QEchelonDropperRefine();
     }
 
@@ -269,7 +271,7 @@ internal sealed class QGuild
 
     private void QLouverObserve(object sender, RoutedEventArgs e)
     {
-        _cGuild.CGuildFilterSet(QChoice.QChoiceFilterRead(sender));
+        _cGuild.CGuildPanel.CPanelAperture.CApertureFilterSet(QChoice.QChoiceFilterRead(sender));
         QLouverRefine();
     }
 
@@ -285,7 +287,7 @@ internal sealed class QGuild
 
     private void QGuildFreshObserve(object sender, RoutedEventArgs e)
     {
-        _cGuild.CGuildAuthorCreate();
+        _cGuild.CGuildDiptych.CDiptychEntryCreate();
     }
 
     private void QGuildViewerObserve(object sender, RoutedEventArgs e)
@@ -305,12 +307,12 @@ internal sealed class QGuild
 
     private void QGuildBinObserve(object sender, RoutedEventArgs e)
     {
-        _cGuild.CGuildAuthorDelete();
+        _cGuild.CGuildDiptych.CDiptychEntryDelete();
     }
 
     private void QGuildPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _cGuild.CGuildPressAllowed;
+        e.CanExecute = _cGuild.CGuildDiptych.CDiptychChildSide;
     }
 
     private async void QGuildPressObserve(object sender, ExecutedRoutedEventArgs e)

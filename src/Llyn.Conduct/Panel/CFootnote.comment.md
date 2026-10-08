@@ -1,16 +1,18 @@
 # CFootnote.cs
-Hash: `b801457c942195a6`
+Hash: `16e868eb190fb332`
 
 ## `public sealed class CFootnote`
 
 The sources panel's entry list: the entries citing the chosen Source, or every entry while none is chosen.
-It holds the vista and portrait ports, the source vista as its parent and its own vista.
+It holds the vista and portrait ports and the source vista as its parent.
+Its own vista sits in the panel's aperture.
 The engine narrows the rows by the parent's choice, so the list decides nothing about matching.
 Its panel has no delete scope, because an entry is never deleted from this list.
 
 ## `internal CFootnote(LVistaPort vistas, LPortraitPort portraits, LSettingsPort settings, CEditor editor, CEnvoy envoy, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
 Builds the list's panel under the `List.LoadFailed` key over the shelf's entry editor.
+The empty list reads `Source.Vacant` when nothing cites the Source, and `Source.Unmatched` under a search.
 The panel asks the editor's desk before it leaves an entry, and finishes through the shelf's seam.
 A cleared panel drops the editor's draft, and an edited row opens in it.
 A fresh entry is started by `LFootnoteEntryCreate` alone, so no blank draft paints before the cited one.
@@ -20,25 +22,16 @@ It keeps `envoy` too, so a failed flag fill in `CFootnoteRowsLoad` can be shown.
 
 The panel that holds the chosen entry and the edit mode of the entry side.
 
-## `public string CFootnoteEmptyKey`
-
-The wording key of the empty list, chosen by whether the vista holds a query.
-No query means nothing cites the Source, and a query means nothing matched.
-
 ## `internal void LFootnoteVistaRestore(LVista parent, LVista vista)`
 
 Takes the source vista as the parent the rows follow, and its own vista for the panel.
-The former vista's query is carried into the fresh one before the panel takes it.
+The panel's aperture carries the former query into the fresh vista as it takes it.
 
 ## `internal void LFootnoteObserverAttach(Action<Action> marshal, Action roll, Action chosen)`
 
 Attaches the entry list's subjects, each answered through `marshal`.
 An Entry notice selects a stored entry, refills the entry rows, and hands `roll` the Source rows to refill.
 The chosen entry's notice is handed to `chosen`, and a Vista notice refills the entry rows.
-
-## `public void CFootnoteQuerySet(string query)`
-
-Takes the text typed into the rummage field as the list's query.
 
 ## `public IReadOnlyList<CVistaRow> CFootnoteRowsRead()`
 

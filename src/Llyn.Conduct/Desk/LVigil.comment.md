@@ -1,5 +1,5 @@
 # LVigil.cs
-Hash: `1a3cb2985ea5a680`
+Hash: `0f184a43ea348fd4`
 
 ## `internal sealed class LVigil`
 

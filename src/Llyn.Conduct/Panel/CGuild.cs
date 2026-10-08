@@ -20,8 +20,6 @@ public sealed class CGuild
 
     private readonly Action<Action> _cGuildMarshal;
 
-    private LVista? _cGuildVista;
-
     private CGuild(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -50,18 +48,38 @@ public sealed class CGuild
             atelier.CAtelierEntryBundle.CEntryBundleVista,
             envoy,
             shownSeam);
-        CGuildPanel.CPanelRowsChanged += CGuildOeuvre.COeuvrePanel.CPanelRowsResonate;
+        CGuildPanel.CPanelAperture.CApertureRowsChanged +=
+            CGuildOeuvre.COeuvrePanel.CPanelAperture.CApertureRowsResonate;
         CGuildSession = new CSession(
             CGuildAutograph, [CGuildPanel.LPanelChangeCheck], null, static () => false, static _ => true,
-            LGuildAutographCheck, LGuildStoredShow);
+            LGuildAutographCheck, LGuildStoredShow, envoy);
+        CGuildDiptych = new CDiptych(
+            CGuildPanel,
+            CGuildOeuvre.COeuvrePanel,
+            CGuildSession,
+            atelier.CAtelierNavigation,
+            CGuildSession.CSessionStart,
+            CGuildSession.CSessionCancel,
+            null);
         CGuildSession.CSessionChanged += () => CGuildChanged?.Invoke();
         CGuildPanel.CPanelCleared += CGuildSession.CSessionCancel;
         CGuildPanel.CPanelEdited += id => CGuildSession.CSessionStart(id);
         atelier.CAtelierNavigation.LNavigationTabAdd(
-            "Guild", LGuildLeaveConfirm, CGuildPanel.LPanelChosenRead, LGuildScribeRestore, LGuildAuthorOpen);
+            "Guild",
+            () => CGuildSession.LSessionLeaveConfirm(true),
+            CGuildPanel.LPanelChosenRead,
+            LGuildScribeRestore,
+            LGuildAuthorOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CGuildSession.LSessionChangeCheck, CGuildSession.LSessionFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LGuildVistaRestore);
-        CGuildAutograph.CDeskStarted += () => CGuildUnionCleared?.Invoke();
+        CGuildUnion = new CGuildUnion(
+            _cGuildAuthorPort,
+            envoy,
+            _cGuildSettingsPort,
+            CGuildAutograph,
+            CGuildOeuvre,
+            CGuildPanel,
+            kept => LGuildAuthorOpen(kept, false));
         CGuildAutograph.CDeskObserverAttach(marshal);
         LGuildVistaRestore();
     }
@@ -73,8 +91,6 @@ public sealed class CGuild
 
     public event Action? CGuildChanged;
 
-    public event Action? CGuildUnionCleared;
-
     public CPanel CGuildPanel { get; }
 
     public COeuvre CGuildOeuvre { get; }
@@ -83,34 +99,20 @@ public sealed class CGuild
 
     public CSession CGuildSession { get; }
 
-    public bool CGuildColophonShown => LGuildSourceSide;
+    public CDiptych CGuildDiptych { get; }
 
-    public bool CGuildAutographShown => !LGuildSourceSide && CGuildPanel.CPanelEditing;
-
-    public bool CGuildVitaShown => !LGuildSourceSide && !CGuildPanel.CPanelEditing;
+    public CGuildUnion CGuildUnion { get; }
 
     public bool CGuildVitaHeld => LGuildAuthorHeld && !CGuildPanel.CPanelEditing;
 
-    public bool CGuildViewerChecked => !CGuildPanel.CPanelEditing;
+    public bool CGuildModeEnabled => !CGuildDiptych.CDiptychChildSide && LGuildAuthorShown;
 
-    public bool CGuildScribeChecked => CGuildPanel.CPanelEditing;
-
-    public bool CGuildModeEnabled => !LGuildSourceSide && LGuildAuthorShown;
-
-    public bool CGuildBinEnabled => !LGuildSourceSide && LGuildAuthorHeld;
+    public bool CGuildBinEnabled => !CGuildDiptych.CDiptychChildSide && LGuildAuthorHeld;
 
     public bool CGuildStoreEnabled =>
-        CGuildAutographShown && CGuildAutograph.CDeskStorable;
+        CGuildDiptych.CDiptychParentEditing && CGuildAutograph.CDeskDraft.CDeskDraftStorable;
 
-    public bool CGuildPressAllowed => LGuildSourceSide;
-
-    public bool CGuildFiltered => _cGuildVista?.LVistaFiltered ?? false;
-
-    public bool CGuildUnionShown => CGuildAutograph.CDeskStored;
-
-    private bool LGuildSourceSide => CGuildOeuvre.COeuvrePanel.CPanelBinEnabled;
-
-    private long? LGuildAuthorStored => _cGuildVista?.LVistaStored;
+    private long? LGuildAuthorStored => CGuildPanel.CPanelAperture.CApertureVista?.LVistaStored;
 
     private bool LGuildAuthorHeld => LGuildAuthorStored is not null;
 
@@ -124,8 +126,6 @@ public sealed class CGuild
             "guild", CSubject.CSubjectAuthor, CCatalogOrder.CCatalogOrderName);
         LVista oeuvre = _cGuildAtelier.CAtelierVistaStart(
             "oeuvre", CSubject.CSubjectReference, CCatalogOrder.CCatalogOrderName);
-        vista.LVistaQuerySet(_cGuildVista?.LVistaQuery ?? string.Empty);
-        _cGuildVista = vista;
         CGuildPanel.CPanelVistaRestore(vista);
         CGuildOeuvre.LOeuvreVistaRestore(vista, oeuvre);
         CGuildAutograph.CDeskVistaRestore(vista);
@@ -136,13 +136,15 @@ public sealed class CGuild
     {
         CPanel panel = CGuildPanel;
         Action<CBulletin> catalog = _ => _cGuildMarshal(LGuildCatalogResonate);
-        panel.CPanelObserverAttach(CSubject.CSubjectVista, _ => _cGuildMarshal(panel.CPanelRowsResonate));
+        panel.CPanelAperture.CApertureObserverAttach(
+            CSubject.CSubjectVista, _ => _cGuildMarshal(panel.CPanelAperture.CApertureRowsResonate));
         CGuildOeuvre.LOeuvreObserverAttach(_cGuildMarshal);
-        panel.CPanelObserverAttach(CSubject.CSubjectWorkspace, _ => _cGuildMarshal(LGuildAuthorClose));
-        panel.CPanelObserverAttach(CSubject.CSubjectAuthor, catalog);
-        panel.CPanelObserverAttach(CSubject.CSubjectReference, catalog);
-        panel.CPanelObserverAttach(CSubject.CSubjectExample, catalog);
-        panel.CPanelObserverAttach(CSubject.CSubjectEntry, catalog);
+        panel.CPanelAperture.CApertureObserverAttach(
+            CSubject.CSubjectWorkspace, _ => _cGuildMarshal(CGuildDiptych.LDiptychEntryClose));
+        panel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectAuthor, catalog);
+        panel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectReference, catalog);
+        panel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectExample, catalog);
+        panel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectEntry, catalog);
     }
 
     public static IReadOnlyList<CCatalogOrder> CGuildOrderRead()
@@ -159,63 +161,24 @@ public sealed class CGuild
     public CGuildRoll CGuildRollRead()
     {
         IReadOnlyList<CCatalogAuthor> rows =
-            CGuildOeuvre.LOeuvreAuthorRead(_cGuildAuthorPort.LEngineRollFind(_cGuildVista));
+            CGuildOeuvre.LOeuvreAuthorRead(
+                _cGuildAuthorPort.LEngineRollFind(CGuildPanel.CPanelAperture.CApertureVista));
         if (LGuildRowShown && !rows.Any(static row => row.CCatalogAuthorChosen))
         {
-            LGuildAuthorClose();
+            CGuildDiptych.LDiptychEntryClose();
         }
 
         return new CGuildRoll(
             rows,
             rows.Count == 0,
-            COeuvre.LOeuvreVitaRead(_cGuildAuthorPort.LEngineVitaRead(_cGuildVista)),
+            COeuvre.LOeuvreVitaRead(_cGuildAuthorPort.LEngineVitaRead(CGuildPanel.CPanelAperture.CApertureVista)),
             CGuildOeuvre.LOeuvreKindRead());
-    }
-
-    public void CGuildQuerySet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _cGuildVista?.LVistaQuerySet(query);
-    }
-
-    public void CGuildOrderSet(CCatalogOrder? order)
-    {
-        _cGuildVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
-    }
-
-    public void CGuildFilterSet(CCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-
-        _cGuildVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
-    }
-
-    internal bool LGuildLeaveConfirm()
-    {
-        if (!CGuildSession.LSessionChangeCheck())
-        {
-            return true;
-        }
-
-        if (_cGuildEnvoy.CEnvoyLeaveConfirm() is not bool store)
-        {
-            return false;
-        }
-
-        return !store || CGuildSession.LSessionFinish(true);
-    }
-
-    private void LGuildAuthorClose()
-    {
-        CGuildOeuvre.COeuvrePanel.CPanelEntryClose();
-        CGuildPanel.CPanelEntryClose();
     }
 
     private void LGuildCatalogResonate()
     {
-        CGuildPanel.CPanelRowsResonate();
-        if (LGuildSourceSide)
+        CGuildPanel.CPanelAperture.CApertureRowsResonate();
+        if (CGuildDiptych.CDiptychChildSide)
         {
             CGuildOeuvre.COeuvrePanel.CPanelDraftResonate();
         }
@@ -230,7 +193,7 @@ public sealed class CGuild
             return;
         }
 
-        if (!LGuildLeaveConfirm())
+        if (!CGuildSession.LSessionLeaveConfirm(true))
         {
             return;
         }
@@ -254,8 +217,8 @@ public sealed class CGuild
 
     private void LGuildStoredShow(long id)
     {
-        _cGuildVista?.LVistaSelect(id);
-        CGuildPanel.CPanelRowsResonate();
+        CGuildPanel.CPanelAperture.CApertureVista?.LVistaSelect(id);
+        CGuildPanel.CPanelAperture.CApertureRowsResonate();
         CGuildSession.CSessionStart(id);
         CGuildChanged?.Invoke();
     }
@@ -267,7 +230,7 @@ public sealed class CGuild
             return;
         }
 
-        if (!LGuildLeaveConfirm())
+        if (!CGuildSession.LSessionLeaveConfirm(true))
         {
             return;
         }
@@ -277,21 +240,9 @@ public sealed class CGuild
         CGuildOeuvre.COeuvrePanel.CPanelRowOpen(id);
     }
 
-    public void CGuildAuthorCreate()
-    {
-        if (!LGuildLeaveConfirm())
-        {
-            return;
-        }
-
-        CGuildOeuvre.COeuvrePanel.CPanelEntryClose();
-        CGuildPanel.CPanelFreshOpen();
-        CGuildSession.CSessionStart(null);
-    }
-
     public void CGuildScribeToggle(bool editing)
     {
-        if (LGuildSourceSide)
+        if (CGuildDiptych.CDiptychChildSide)
         {
             return;
         }
@@ -339,19 +290,9 @@ public sealed class CGuild
         return false;
     }
 
-    public void CGuildAuthorDelete()
-    {
-        if (LGuildSourceSide)
-        {
-            return;
-        }
-
-        CGuildPanel.CPanelEntryDelete();
-    }
-
     public Task CGuildPortraitPrint()
     {
-        if (!LGuildSourceSide)
+        if (!CGuildDiptych.CDiptychChildSide)
         {
             return Task.CompletedTask;
         }
@@ -360,7 +301,7 @@ public sealed class CGuild
             _cGuildEnvoy,
             _cGuildSettingsPort,
             chosen => _cGuildPortraitPort.LEnginePortraitPrint(
-                CGuildOeuvre.COeuvrePanel.CPanelVista,
+                CGuildOeuvre.COeuvrePanel.CPanelAperture.CApertureVista,
                 CPortrait.LPortraitLegendRead(_cGuildSettingsPort, "Source"),
                 chosen));
     }
@@ -369,49 +310,6 @@ public sealed class CGuild
     {
         ArgumentNullException.ThrowIfNull(name);
 
-        CGuildAutograph.CDeskAuthor?.LQuillAuthorSet(name);
-    }
-
-    public IReadOnlyList<CCatalogAuthor> CGuildUnionRead(string typed)
-    {
-        ArgumentNullException.ThrowIfNull(typed);
-
-        return CGuildOeuvre.LOeuvreAuthorRead(_cGuildAuthorPort.LEngineUnionFind(_cGuildVista, typed));
-    }
-
-    public void CGuildUnionSelect(long? id)
-    {
-        if (id is not long kept)
-        {
-            return;
-        }
-
-        if (LGuildAuthorStored is not long author)
-        {
-            return;
-        }
-
-        if (!LGuildUnionConfirm(kept))
-        {
-            return;
-        }
-
-        try
-        {
-            _cGuildAuthorPort.LEngineAuthorAbsorb(kept, author);
-        }
-        catch (Exception exception)
-        {
-            CLedger.LLedgerFailureShow(_cGuildEnvoy, _cGuildSettingsPort, "Guild.MergeFailed", exception);
-            return;
-        }
-
-        LGuildAuthorOpen(kept, false);
-    }
-
-    private bool LGuildUnionConfirm(long kept)
-    {
-        (string dropped, string held) = _cGuildAuthorPort.LEngineUnionRead(CGuildAutograph.CDeskTenure, kept);
-        return _cGuildEnvoy.CEnvoyUnionConfirm("Guild.MergeConfirm", dropped, held);
+        CGuildAutograph.CDeskDraft.CDeskDraftAuthor?.LQuillAuthorSet(name);
     }
 }

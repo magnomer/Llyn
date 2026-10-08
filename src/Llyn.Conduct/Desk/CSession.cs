@@ -9,7 +9,7 @@ public sealed class CSession
 
     private readonly IReadOnlyList<Func<bool>> _cSessionPending;
 
-    private readonly CDesk? _cSessionEditor;
+    private readonly CEditor? _cSessionEditor;
 
     private readonly Func<bool> _cSessionShownSeam;
 
@@ -19,14 +19,17 @@ public sealed class CSession
 
     private readonly Action<long> _cSessionStoredSeam;
 
+    private readonly CEnvoy _cSessionEnvoy;
+
     internal CSession(
         CDesk desk,
         IReadOnlyList<Func<bool>> pending,
-        CDesk? editor,
+        CEditor? editor,
         Func<bool> shownSeam,
         Func<bool, bool> finishSeam,
         Func<bool> readySeam,
-        Action<long> storedSeam)
+        Action<long> storedSeam,
+        CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(pending);
@@ -34,6 +37,7 @@ public sealed class CSession
         ArgumentNullException.ThrowIfNull(finishSeam);
         ArgumentNullException.ThrowIfNull(readySeam);
         ArgumentNullException.ThrowIfNull(storedSeam);
+        ArgumentNullException.ThrowIfNull(envoy);
 
         _cSessionDesk = desk;
         _cSessionPending = pending;
@@ -42,10 +46,11 @@ public sealed class CSession
         _cSessionFinishSeam = finishSeam;
         _cSessionReadySeam = readySeam;
         _cSessionStoredSeam = storedSeam;
+        _cSessionEnvoy = envoy;
         desk.CDeskStateChanged += LSessionStateUpdate;
         if (editor is not null)
         {
-            editor.CDeskStateChanged += LSessionStateUpdate;
+            editor.CEditorDesk.CDeskStateChanged += LSessionStateUpdate;
         }
     }
 
@@ -60,7 +65,7 @@ public sealed class CSession
             return null;
         }
 
-        return _cSessionEditor;
+        return _cSessionEditor?.CEditorDesk;
     }
 
     public void CSessionStart(long? id)
@@ -147,29 +152,55 @@ public sealed class CSession
 
     public (bool CDeskBackward, bool CDeskForward) CSessionChronicleRead()
     {
-        return (CSessionEditorRead() ?? _cSessionDesk).CDeskChronicleRead();
+        return (CSessionEditorRead() ?? _cSessionDesk).CDeskChronicle.CDeskChronicleRead();
     }
 
     public void CSessionUndo()
     {
         if (CSessionEditorRead() is CDesk editor)
         {
-            editor.CDeskUndo();
+            editor.CDeskChronicle.CDeskChronicleUndo();
             return;
         }
 
-        _cSessionDesk.CDeskUndo();
+        _cSessionDesk.CDeskChronicle.CDeskChronicleUndo();
     }
 
     public void CSessionRedo()
     {
         if (CSessionEditorRead() is CDesk editor)
         {
-            editor.CDeskRedo();
+            editor.CDeskChronicle.CDeskChronicleRedo();
             return;
         }
 
-        _cSessionDesk.CDeskRedo();
+        _cSessionDesk.CDeskChronicle.CDeskChronicleRedo();
+    }
+
+    internal bool LSessionLeaveConfirm(bool shown)
+    {
+        if (!LSessionChangeCheck())
+        {
+            return true;
+        }
+
+        if (_cSessionEnvoy.CEnvoyLeaveConfirm() is not bool store)
+        {
+            return false;
+        }
+
+        if (!store)
+        {
+            return true;
+        }
+
+        return shown ? LSessionFinish(true) : CSessionClose(true);
+    }
+
+    internal void LSessionEditorClose()
+    {
+        _cSessionEditor?.CEditorClose();
+        _cSessionEditor?.CEditorDisplay.CDisplayPlayback.CDisplayPlaybackCancel();
     }
 
     internal bool LSessionChangeCheck()

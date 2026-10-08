@@ -29,7 +29,7 @@ public sealed class TTimbreEnsign
         Assert.NotNull(accent);
         Assert.True(accent.CTimbreAccentFlagged);
         Assert.Equal(
-            CSounding.CSoundingVarietyRead(pack.TLanguageFixtureName, "British"), accent.CTimbreAccentPrimary);
+            CVariety.CVarietyRead(pack.TLanguageFixtureName, "British"), accent.CTimbreAccentPrimary);
     }
 
     [Fact]
@@ -42,7 +42,7 @@ public sealed class TTimbreEnsign
 
         CTimbreAccent? accent = await editor.CEditorTimbre.CTimbreFlagRead((_, _) =>
         {
-            editor.CEditorLanguageSet("English");
+            editor.CEditorEntry.CEntryLanguageSet("English");
             return static () => { };
         });
 

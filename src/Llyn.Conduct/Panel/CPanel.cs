@@ -14,8 +14,6 @@ public sealed class CPanel
 
     private readonly string _cPanelLoadKey;
 
-    private readonly string? _cPanelDeleteScope;
-
     private readonly Func<bool> _cPanelChangeSeam;
 
     private readonly Func<bool, bool> _cPanelFinishSeam;
@@ -23,8 +21,6 @@ public sealed class CPanel
     private readonly Func<bool> _cPanelShownSeam;
 
     private Action? _cPanelStation;
-
-    private LVista? _cPanelVista;
 
     internal CPanel(
         CEnvoy envoy,
@@ -34,7 +30,9 @@ public sealed class CPanel
         string? deleteScope,
         Func<bool> changeSeam,
         Func<bool, bool> finishSeam,
-        Func<bool> shownSeam)
+        Func<bool> shownSeam,
+        string? vacantKey = null,
+        string? unmatchedKey = null)
     {
         ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(settings);
@@ -48,15 +46,15 @@ public sealed class CPanel
         _cPanelSettingsPort = settings;
         _cPanelVistaPort = vistas;
         _cPanelLoadKey = loadKey;
-        _cPanelDeleteScope = deleteScope;
         _cPanelChangeSeam = changeSeam;
         _cPanelFinishSeam = finishSeam;
         _cPanelShownSeam = shownSeam;
+        CPanelAperture = new CAperture(envoy, settings, vistas, loadKey, vacantKey, unmatchedKey);
+        CPanelBin = new CPanelBin(envoy, settings, vistas, CPanelAperture, deleteScope);
+        CPanelBin.CPanelBinDeleted += CPanelEntryClose;
     }
 
     public event Action? CPanelChanged;
-
-    public event Action? CPanelRowsChanged;
 
     public event Action? CPanelCleared;
 
@@ -64,11 +62,13 @@ public sealed class CPanel
 
     public event Action<long>? CPanelEdited;
 
-    internal LVista? CPanelVista => _cPanelVista;
+    public CAperture CPanelAperture { get; }
 
-    public bool CPanelEditing => _cPanelVista?.LVistaEditing ?? false;
+    public CPanelBin CPanelBin { get; }
 
-    public bool CPanelBinEnabled => _cPanelVista?.LVistaChosen is not null;
+    public bool CPanelEditing => CPanelAperture.CApertureVista?.LVistaEditing ?? false;
+
+    public bool CPanelBinEnabled => CPanelAperture.CApertureVista?.LVistaChosen is not null;
 
     public bool CPanelModeEnabled => CPanelBinEnabled || CPanelEditing;
 
@@ -78,53 +78,15 @@ public sealed class CPanel
 
     public bool CPanelPressAllowed => CPanelBinEnabled && !CPanelEditing;
 
-    public CCatalogOrder CPanelOrder => CCatalog.LCatalogOrderRead(LVista.LVistaOrderRead(_cPanelVista));
-
-    public CCatalogFilter CPanelFilter => CCatalog.LCatalogFilterRead(LVista.LVistaFilterRead(_cPanelVista));
-
-    public string CPanelTallyRead()
-    {
-        try
-        {
-            return _cPanelVista is null ? string.Empty : _cPanelVistaPort.LEngineTallyRead(_cPanelVista);
-        }
-        catch (Exception exception)
-        {
-            CLedger.LLedgerFailureShow(_cPanelEnvoy, _cPanelSettingsPort, _cPanelLoadKey, exception);
-            return string.Empty;
-        }
-    }
-
-    public void CPanelRowsResonate()
-    {
-        CPanelRowsChanged?.Invoke();
-    }
-
     internal void CPanelVistaRestore(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
 
-        _cPanelVista = vista;
+        CPanelAperture.CApertureRestore(vista);
         if (vista.LVistaEditing)
         {
             vista.LVistaEditingSet(false);
         }
-    }
-
-    public void CPanelObserverAttach(CSubject subject, Action<CBulletin> observer)
-    {
-        ArgumentNullException.ThrowIfNull(observer);
-
-        _cPanelVista?.LVistaObserverAttach(
-            CCatalog.LCatalogSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
-    }
-
-    public void CPanelChosenAttach(CSubject subject, Action<CBulletin> observer)
-    {
-        ArgumentNullException.ThrowIfNull(observer);
-
-        _cPanelVista?.LVistaChosenAttach(
-            CCatalog.LCatalogSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
     }
 
     internal bool LPanelChangeCheck()
@@ -154,8 +116,8 @@ public sealed class CPanel
 
     public void CPanelEntryClose()
     {
-        _cPanelVista?.LVistaSelect(null);
-        CPanelRowsResonate();
+        CPanelAperture.CApertureVista?.LVistaSelect(null);
+        CPanelAperture.CApertureRowsResonate();
         CPanelCleared?.Invoke();
         CPanelScribeSet(false);
     }
@@ -208,7 +170,10 @@ public sealed class CPanel
         CPanelScribeSet(false);
         if (CPanelBinEnabled)
         {
-            LPanelDraftShow(() => _cPanelVista is null ? null : _cPanelVistaPort.LEngineVistaLoad(_cPanelVista));
+            LPanelDraftShow(
+                () => CPanelAperture.CApertureVista is null
+                    ? null
+                    : _cPanelVistaPort.LEngineVistaLoad(CPanelAperture.CApertureVista));
             return;
         }
 
@@ -223,7 +188,7 @@ public sealed class CPanel
             return;
         }
 
-        if (_cPanelVista?.LVistaChosen is long shown)
+        if (CPanelAperture.CApertureVista?.LVistaChosen is long shown)
         {
             CPanelEdited?.Invoke(shown);
         }
@@ -233,7 +198,7 @@ public sealed class CPanel
 
     public void CPanelScribeSet(bool editing)
     {
-        _cPanelVista?.LVistaEditingSet(editing);
+        CPanelAperture.CApertureVista?.LVistaEditingSet(editing);
         CPanelChanged?.Invoke();
     }
 
@@ -262,13 +227,15 @@ public sealed class CPanel
 
     internal long LPanelChosenRead()
     {
-        return _cPanelVista?.LVistaChosen ?? 0;
+        return CPanelAperture.CApertureVista?.LVistaChosen ?? 0;
     }
 
     public bool CPanelRowOpen(long? id)
     {
         return LPanelDraftShow(
-            () => _cPanelVista is null ? null : _cPanelVistaPort.LEngineVistaLoad(_cPanelVista, id));
+            () => CPanelAperture.CApertureVista is null
+                ? null
+                : _cPanelVistaPort.LEngineVistaLoad(CPanelAperture.CApertureVista, id));
     }
 
     private bool LPanelDraftShow(Func<LDraft?> load)
@@ -284,7 +251,7 @@ public sealed class CPanel
             return false;
         }
 
-        CPanelRowsResonate();
+        CPanelAperture.CApertureRowsResonate();
         if (!CPanelBinEnabled)
         {
             CPanelEntryClose();
@@ -295,7 +262,7 @@ public sealed class CPanel
         {
             CPanelDraftChanged?.Invoke(loaded);
             CPanelChanged?.Invoke();
-            if (CPanelEditing && _cPanelVista?.LVistaChosen is long shown)
+            if (CPanelEditing && CPanelAperture.CApertureVista?.LVistaChosen is long shown)
             {
                 CPanelEdited?.Invoke(shown);
             }
@@ -309,7 +276,9 @@ public sealed class CPanel
         LDraft? draft;
         try
         {
-            draft = _cPanelVista is null ? null : _cPanelVistaPort.LEngineVistaLoad(_cPanelVista);
+            draft = CPanelAperture.CApertureVista is null
+                ? null
+                : _cPanelVistaPort.LEngineVistaLoad(CPanelAperture.CApertureVista);
         }
         catch (Exception exception)
         {
@@ -334,7 +303,7 @@ public sealed class CPanel
     {
         CPanelEntrySelect(bulletin);
         CPanelChanged?.Invoke();
-        CPanelRowsResonate();
+        CPanelAperture.CApertureRowsResonate();
     }
 
     public void CPanelEntrySelect(CBulletin bulletin)
@@ -346,38 +315,6 @@ public sealed class CPanel
             return;
         }
 
-        _cPanelVista?.LVistaSelect(bulletin.CBulletinId);
-    }
-
-    public void CPanelEntryDelete()
-    {
-        if (_cPanelDeleteScope is not string scope || _cPanelVista is not LVista vista)
-        {
-            return;
-        }
-
-        if (!LPanelDeleteConfirm(scope, _cPanelVistaPort.LEngineUsageRead(vista)))
-        {
-            return;
-        }
-
-        try
-        {
-            _cPanelVistaPort.LEngineVistaDelete(vista);
-        }
-        catch (Exception exception)
-        {
-            CLedger.LLedgerFailureShow(_cPanelEnvoy, _cPanelSettingsPort, scope + ".DeleteFailed", exception);
-            return;
-        }
-
-        CPanelEntryClose();
-    }
-
-    private bool LPanelDeleteConfirm(string scope, int usage)
-    {
-        return usage > 0
-            ? _cPanelEnvoy.CEnvoyConfirm(scope + ".DetachConfirm", scope + ".DetachCount", usage)
-            : _cPanelEnvoy.CEnvoyConfirm(scope + ".DeleteConfirm");
+        CPanelAperture.CApertureVista?.LVistaSelect(bulletin.CBulletinId);
     }
 }

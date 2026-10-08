@@ -1,5 +1,5 @@
 # CTenor.cs
-Hash: `234a3219d2b3bf5e`
+Hash: `d0ffc8daf52a39ef`
 
 ## `public sealed class CTenor`
 
@@ -10,10 +10,10 @@ It restores both vistas itself, so no driver holds a port or a vista.
 
 ## `private CTenor(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
-Builds the entry editor and the entry list over the atelier's ports.
+Builds the aperture over the register vista first, under `Register.LoadFailed`.
+Then it builds the entry editor and the entry list over the atelier's ports.
 The entry list's panel asks the editor's desk before it leaves an entry, and it finishes through the editor.
 A cleared panel cancels the editor's draft, and an edited row opens the editor on it.
-So the first draft a fresh member shows already carries the Register.
 It registers its close with the workspace beside its draft finish and its vista restore.
 It restores its vistas last, so a built area already stands on started vistas.
 
@@ -23,6 +23,13 @@ Builds the tenor over the atelier and the panel's own entry editor.
 Building it is no user action, so it is no gate on the atelier.
 `shownSeam` answers whether the tab is in front, which only the surface knows until `CNavigation` owns it.
 `marshal` carries every engine notice onto the driver's thread, and the driver hands it once.
+
+## `public CAperture CTenorAperture { get; }`
+
+The list slot of the Register list, which holds the register vista and raises the Register rows.
+Its query, ordering and filter are the Register list's, and a driver sets them through it.
+Its chosen Register is the station the voyage records.
+The entry rows follow a Register rows read, so the Register list is always read first.
 
 ## `public CEditor CTenorEditor { get; }`
 
@@ -35,12 +42,7 @@ The entry list beside the Register list, with its own panel, search and rows rea
 ## `public event Action? CTenorRegisterOpened;`
 
 Raised when an arrival or a coinage opens a Register, so the driver shows both searches empty.
-The rows event follows it, so the lists are read after the fields are emptied.
-
-## `public event Action? CTenorRowsChanged;`
-
-Raised when the Register rows may have moved, so the driver reads the Register list again.
-The entry rows follow from that read, so the Register list is always read first.
+The aperture's rows notice follows it, so the lists are read after the fields are emptied.
 
 ## `public event Action? CTenorWorkspaceChanged;`
 
@@ -58,24 +60,6 @@ The navigation's arrival: chooses the Register and empties both searches, then r
 Emptying the searches is the arrival's own, so no driver has to echo it back through the query gates.
 It raises the rows last, since the Register may be new to the list.
 
-## `public bool CTenorFiltered`
-
-Whether the register vista hides any language, as the vista answers it.
-
-## `public CCatalogOrder CTenorOrder`
-
-The ordering the Register list uses, as a driver marks it in a menu.
-The engine answers the ordering before a vista arrives.
-
-## `public CCatalogFilter CTenorFilter`
-
-The languages the Register list hides, as a driver ticks them in a menu.
-The engine answers the filter before a vista arrives.
-
-## `internal long? LTenorChosen`
-
-The Register the register vista has chosen, or null while none is, which the voyage records.
-
 ## `private bool LTenorCoinageAllowed`
 
 Whether New should name a new Register rather than start an entry.
@@ -85,7 +69,7 @@ Only the fresh gate reads it, after the leave question settled the shown entry.
 ## `internal void LTenorVistaRestore()`
 
 Starts the register vista and the cohort vista for this tab.
-Each fresh vista takes the query its forerunner held, so a switched workspace keeps both searches.
+Each aperture carries its held query into the fresh vista, so a switched workspace keeps both searches.
 The register vista is the entry list's roll, and the cohort vista goes to the entry list and the editor.
 The observers are attached to the fresh vistas last.
 The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
@@ -94,19 +78,12 @@ The constructor runs it last, and a workspace change runs it again through `CWor
 
 The tenor's subject plan, attached to each fresh pair of vistas.
 Every notice runs through the marshal, so each answer lands on the driver's thread.
-A vista, reflex, settings or entry notice on the register vista raises the rows.
+Each answer attaches to the register vista through the aperture.
+A vista, reflex, settings or entry notice on the register vista raises the aperture's rows.
 A reflex fill or a flipped setting rewrites the epithet beside a headword.
 A workspace notice and a Register notice each have their own answer.
 The entry list attaches its own observers in between, in the order the driver once used.
 A draft edit or a fetched frequency, paradigm, script or fanqie row changes no listed row, and is not attached.
-
-## `private void LTenorSubjectAttach(CSubject subject, Action resonate)`
-
-Attaches one answer to the register vista for one subject, through the marshal.
-
-## `private void LTenorRowsResonate()`
-
-Raises the Register rows, whose read then raises the entry rows.
 
 ## `private void LTenorWorkspaceResonate()`
 
@@ -118,21 +95,6 @@ A different workspace has its own Registers, so the Register this panel stood on
 
 A Register notice carries a Register id, not an entry id, so it never selects a row.
 It raises the rows, then rereads the shown entry, whose chips may carry the renamed Register.
-
-## `public void CTenorQuerySet(string query)`
-
-Hands the search text to the register vista, which announces only a changed text.
-A workspace change carries it into the fresh vista, so the driver never re-sends it.
-
-## `public void CTenorOrderSet(CCatalogOrder? order)`
-
-Orders the Register list as the user chose.
-A null order keeps the current one, which the vista decides.
-
-## `public void CTenorFilterSet(CCatalogFilter filter)`
-
-Hands the hidden languages to the register vista, and the posture stores them under the tab.
-The vista announces only a changed filter.
 
 ## `public IReadOnlyList<CCatalogRegister> CTenorRowsRead()`
 
@@ -153,7 +115,7 @@ The driver awaits it from an event handler, where a fault would end the app.
 ## `private void LTenorRegisterCreate(string name)`
 
 Makes the Register from the raw wording and opens it as an arrival does.
-The clerk below trims the wording and refuses a blank one.
+The clerk below refuses a blank wording.
 The panel is cleared first, so an unsaved fresh entry the leave check already settled does not linger.
 A refused Register is shown through `CEnvoy` as `Register.CreateFailed`, and nothing opens.
 

@@ -1,5 +1,5 @@
 # QTenor.cs
-Hash: `4a75794a51ae77ae`
+Hash: `a8a4295baca3e8e7`
 
 ## `internal sealed partial class QTenor`
 
@@ -27,6 +27,10 @@ The lectern follows the panel, whose loads and clears reach the display's area, 
 Both catalogs get their row fills here, where their sources are set.
 The area's rows, opening and workspace events are subscribed here, each to its own Refine.
 
+## `private void QTenorStoreRefine()`
+
+Enables the store button only while the editor's draft can be stored.
+
 ## `internal void QTenorExitRefine()`
 
 Releases the editor's player, so none outlives the window.
@@ -42,7 +46,7 @@ The buttons follow this answer on their own, so no panel state has to switch the
 ## `private async void QTenorPressObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the entry being read, as the engine portrays it.
-The panel names only the id it is showing, and the engine builds the page from stored rows.
+The panel names nothing, and the engine builds the page from the vista and stored rows.
 Nothing is read back from the screen.
 
 ## `private async void QTenorPortraitObserve(object sender, ExecutedRoutedEventArgs e)`
@@ -77,6 +81,10 @@ Walks the chronicle of the editor forward one step.
 
 Lights the two chronicle buttons only while the editor has a step to walk.
 It runs whenever the editor reports its state again.
+
+## `private bool QTenorShownCheck()`
+
+Tells the panel whether the tenor page is on screen, so a bulletin is acted on only while shown.
 
 ## `private void QTenorModeRefine()`
 

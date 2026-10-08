@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TPanelBin
 {
     [Fact]
-    public void PanelEntryDelete_Declined_KeepsChosenAndEntry()
+    public void PanelBinDelete_Declined_KeepsChosenAndEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -16,7 +16,7 @@ public sealed class TPanelBin
         CPanel panel = TPanel.TPanelPrepare(engine, false, asked, [], "Scribe", () => false);
         long chosen = panel.TPanelChosenRead();
 
-        panel.CPanelEntryDelete();
+        panel.CPanelBin.CPanelBinDelete();
 
         Assert.Equal(["Scribe.DeleteConfirm"], asked);
         Assert.Equal(chosen, panel.TPanelChosenRead());
@@ -24,14 +24,14 @@ public sealed class TPanelBin
     }
 
     [Fact]
-    public void PanelEntryDelete_Accepted_DropsChosenAndEntry()
+    public void PanelBinDelete_Accepted_DropsChosenAndEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CPanel panel = TPanel.TPanelPrepare(engine, true, [], [], "Scribe", () => false);
         long chosen = panel.TPanelChosenRead();
 
-        panel.CPanelEntryDelete();
+        panel.CPanelBin.CPanelBinDelete();
 
         Assert.Equal(0, panel.TPanelChosenRead());
         Assert.False(panel.CPanelBinEnabled);
@@ -39,7 +39,7 @@ public sealed class TPanelBin
     }
 
     [Fact]
-    public void PanelEntryDelete_NoScope_AsksNothing()
+    public void PanelBinDelete_NoScope_AsksNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -47,14 +47,14 @@ public sealed class TPanelBin
         CPanel panel = TPanel.TPanelPrepare(engine, true, asked, [], null, () => false);
         long chosen = panel.TPanelChosenRead();
 
-        panel.CPanelEntryDelete();
+        panel.CPanelBin.CPanelBinDelete();
 
         Assert.Empty(asked);
         Assert.NotNull(engine.TEngineEntryLoad(chosen));
     }
 
     [Fact]
-    public void PanelEntryDelete_CreditedAuthor_AsksWithTheTally()
+    public void PanelBinDelete_CreditedAuthor_AsksWithTheTally()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -76,7 +76,7 @@ public sealed class TPanelBin
         panel.TPanelVistaRestore(vista);
         vista.TVistaSelect(ada.LAuthorId);
 
-        panel.CPanelEntryDelete();
+        panel.CPanelBin.CPanelBinDelete();
 
         Assert.Equal(["Guild.DetachConfirm>Guild.DetachCount>1"], asked);
         Assert.Equal(ada.LAuthorId, panel.TPanelChosenRead());

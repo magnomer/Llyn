@@ -1,5 +1,5 @@
 # TCardSpeech.cs
-Hash: `0254212862ecf83a`
+Hash: `03126abda2e7ff3a`
 
 ## `public sealed class TCardSpeech`
 

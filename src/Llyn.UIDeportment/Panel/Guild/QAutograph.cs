@@ -48,8 +48,8 @@ internal sealed class QAutograph
     internal void QAutographIntroduce(CGuild guild)
     {
         _cGuild = guild;
-        _cGuild.CGuildUnionCleared += QAutographStartRefine;
-        _cGuild.CGuildAutograph.CDeskDraftChanged += QAutographDraftUpdate;
+        _cGuild.CGuildUnion.CGuildUnionCleared += QAutographStartRefine;
+        _cGuild.CGuildAutograph.CDeskDraft.CDeskDraftChanged += QAutographDraftUpdate;
     }
 
     internal void QAutographTallyShow(CVita vita)
@@ -62,8 +62,8 @@ internal sealed class QAutograph
 
     internal void QAutographModeUpdate()
     {
-        QAutographUnionBody.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildUnionShown);
-        QAutographUnionNotice.Visibility = QLook.QLookVisibleRead(!_cGuild.CGuildUnionShown);
+        QAutographUnionBody.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildUnion.CGuildUnionShown);
+        QAutographUnionNotice.Visibility = QLook.QLookVisibleRead(!_cGuild.CGuildUnion.CGuildUnionShown);
     }
 
     private void QAutographStartRefine()
@@ -85,7 +85,7 @@ internal sealed class QAutograph
 
     private void QAutographUnionObserve(object sender, TextChangedEventArgs e)
     {
-        QAutographUnionRefine(_cGuild.CGuildUnionRead(QAutographUnion.Text));
+        QAutographUnionRefine(_cGuild.CGuildUnion.CGuildUnionRead(QAutographUnion.Text));
     }
 
     private void QAutographUnionRefine(IReadOnlyList<CCatalogAuthor> rows)
@@ -95,6 +95,6 @@ internal sealed class QAutograph
 
     private void QAutographChoiceObserve(object sender, RoutedEventArgs e)
     {
-        _cGuild.CGuildUnionSelect(QSender.QSenderSourceRead<QRollItem>(e)?.QRollItemId);
+        _cGuild.CGuildUnion.CGuildUnionSelect(QSender.QSenderSourceRead<QRollItem>(e)?.QRollItemId);
     }
 }

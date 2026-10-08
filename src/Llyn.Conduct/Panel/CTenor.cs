@@ -18,8 +18,6 @@ public sealed class CTenor
 
     private readonly Action<Action> _cTenorMarshal;
 
-    private LVista? _cTenorVista;
-
     private CTenor(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -32,6 +30,8 @@ public sealed class CTenor
         _cTenorEnvoy = envoy;
         _cTenorSettingsPort = atelier.CAtelierSettingsPort;
         _cTenorMarshal = marshal;
+        CTenorAperture = new CAperture(
+            envoy, _cTenorSettingsPort, atelier.CAtelierEntryBundle.CEntryBundleVista, "Register.LoadFailed");
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CTenorEditor = editor;
         CTenorCohort = new CCohort(
@@ -48,7 +48,7 @@ public sealed class CTenor
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Tenor",
             panel.CPanelLeaveConfirm,
-            () => LTenorChosen ?? 0,
+            () => CTenorAperture.CApertureChosen ?? 0,
             panel.LPanelScribeRestore,
             LTenorRegisterOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(panel.LPanelChangeCheck, editor.LEditorFinish);
@@ -63,23 +63,15 @@ public sealed class CTenor
         return new CTenor(atelier, shownSeam, envoy, marshal);
     }
 
+    public CAperture CTenorAperture { get; }
+
     public CEditor CTenorEditor { get; }
 
     public CCohort CTenorCohort { get; }
 
     public event Action? CTenorRegisterOpened;
 
-    public event Action? CTenorRowsChanged;
-
     public event Action? CTenorWorkspaceChanged;
-
-    internal long? LTenorChosen => _cTenorVista?.LVistaChosen;
-
-    public bool CTenorFiltered => _cTenorVista?.LVistaFiltered ?? false;
-
-    public CCatalogOrder CTenorOrder => CCatalog.LCatalogOrderRead(LVista.LVistaOrderRead(_cTenorVista));
-
-    public CCatalogFilter CTenorFilter => CCatalog.LCatalogFilterRead(LVista.LVistaFilterRead(_cTenorVista));
 
     internal void LTenorVistaRestore()
     {
@@ -87,8 +79,7 @@ public sealed class CTenor
             "tenor", CSubject.CSubjectRegister, CCatalogOrder.CCatalogOrderName);
         LVista cohort = _cTenorAtelier.CAtelierVistaStart(
             "cohort", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
-        vista.LVistaQuerySet(_cTenorVista?.LVistaQuery ?? string.Empty);
-        _cTenorVista = vista;
+        CTenorAperture.CApertureRestore(vista);
         CTenorCohort.LCohortVistaRestore(vista, cohort);
         CTenorEditor.LEditorVistaRestore(cohort);
         LTenorObserverAttach();
@@ -96,77 +87,54 @@ public sealed class CTenor
 
     private void LTenorObserverAttach()
     {
-        LTenorSubjectAttach(CSubject.CSubjectVista, LTenorRowsResonate);
-        LTenorSubjectAttach(CSubject.CSubjectWorkspace, LTenorWorkspaceResonate);
-        LTenorSubjectAttach(CSubject.CSubjectRegister, LTenorRegisterResonate);
-        LTenorSubjectAttach(CSubject.CSubjectReflex, LTenorRowsResonate);
-        LTenorSubjectAttach(CSubject.CSubjectSettings, LTenorRowsResonate);
+        CTenorAperture.CApertureObserverAttach(
+            CSubject.CSubjectVista, _ => _cTenorMarshal(CTenorAperture.CApertureRowsResonate));
+        CTenorAperture.CApertureObserverAttach(
+            CSubject.CSubjectWorkspace, _ => _cTenorMarshal(LTenorWorkspaceResonate));
+        CTenorAperture.CApertureObserverAttach(
+            CSubject.CSubjectRegister, _ => _cTenorMarshal(LTenorRegisterResonate));
+        CTenorAperture.CApertureObserverAttach(
+            CSubject.CSubjectReflex, _ => _cTenorMarshal(CTenorAperture.CApertureRowsResonate));
+        CTenorAperture.CApertureObserverAttach(
+            CSubject.CSubjectSettings, _ => _cTenorMarshal(CTenorAperture.CApertureRowsResonate));
         CTenorCohort.LCohortObserverAttach(_cTenorMarshal);
-        LTenorSubjectAttach(CSubject.CSubjectEntry, LTenorRowsResonate);
-    }
-
-    private void LTenorSubjectAttach(CSubject subject, Action resonate)
-    {
-        _cTenorVista?.LVistaObserverAttach(CCatalog.LCatalogSubjectRead(subject), _ => _cTenorMarshal(resonate));
-    }
-
-    private void LTenorRowsResonate()
-    {
-        CTenorRowsChanged?.Invoke();
+        CTenorAperture.CApertureObserverAttach(
+            CSubject.CSubjectEntry, _ => _cTenorMarshal(CTenorAperture.CApertureRowsResonate));
     }
 
     private void LTenorWorkspaceResonate()
     {
         CTenorCohort.CCohortPanel.CPanelEntryClose();
-        _cTenorVista?.LVistaSelect(null);
-        LTenorRowsResonate();
+        CTenorAperture.CApertureVista?.LVistaSelect(null);
+        CTenorAperture.CApertureRowsResonate();
         CTenorWorkspaceChanged?.Invoke();
     }
 
     private void LTenorRegisterResonate()
     {
-        LTenorRowsResonate();
+        CTenorAperture.CApertureRowsResonate();
         CTenorCohort.CCohortPanel.CPanelDraftResonate();
-    }
-
-    public void CTenorQuerySet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _cTenorVista?.LVistaQuerySet(query);
-    }
-
-    public void CTenorOrderSet(CCatalogOrder? order)
-    {
-        _cTenorVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
-    }
-
-    public void CTenorFilterSet(CCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-
-        _cTenorVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
     public void CTenorRegisterToggle(long id)
     {
         _cTenorAtelier.CAtelierNavigation.LNavigationStationAdd();
-        _cTenorVista?.LVistaToggle(id);
-        LTenorRowsResonate();
+        CTenorAperture.CApertureVista?.LVistaToggle(id);
+        CTenorAperture.CApertureRowsResonate();
     }
 
     internal void LTenorRegisterOpen(long id)
     {
-        _cTenorVista?.LVistaSelect(id);
-        _cTenorVista?.LVistaQuerySet(string.Empty);
-        CTenorCohort.CCohortQuerySet(string.Empty);
+        CTenorAperture.CApertureVista?.LVistaSelect(id);
+        CTenorAperture.CApertureQuerySet(string.Empty);
+        CTenorCohort.CCohortPanel.CPanelAperture.CApertureQuerySet(string.Empty);
         CTenorRegisterOpened?.Invoke();
-        LTenorRowsResonate();
+        CTenorAperture.CApertureRowsResonate();
     }
 
     public IReadOnlyList<CCatalogRegister> CTenorRowsRead()
     {
-        if (_cTenorVista is not LVista vista)
+        if (CTenorAperture.CApertureVista is not LVista vista)
         {
             return [];
         }
@@ -188,7 +156,7 @@ public sealed class CTenor
             return [];
         }
 
-        CTenorCohort.CCohortPanel.CPanelRowsResonate();
+        CTenorCohort.CCohortPanel.CPanelAperture.CApertureRowsResonate();
         return rows;
     }
 
@@ -198,7 +166,7 @@ public sealed class CTenor
             _cTenorEnvoy, _cTenorSettingsPort, "Register.LoadFailed", store, CTenorRowsRead);
 
     private bool LTenorCoinageAllowed =>
-        LTenorChosen is null && !CTenorCohort.CCohortPanel.CPanelBinEnabled;
+        CTenorAperture.CApertureChosen is null && !CTenorCohort.CCohortPanel.CPanelBinEnabled;
 
     private void LTenorRegisterCreate(string name)
     {
@@ -234,14 +202,14 @@ public sealed class CTenor
             return;
         }
 
-        long? chosen = LTenorChosen;
+        long? chosen = CTenorAperture.CApertureChosen;
         CTenorCohort.CCohortPanel.CPanelFreshOpen();
-        CTenorEditor.CEditorDesk.LDeskCohortStart(chosen);
+        CTenorEditor.CEditorDesk.LDeskRun((drafts, vista) => drafts.LEngineCohortStart(vista, chosen));
     }
 
     private void LTenorClose()
     {
         CTenorEditor.CEditorClose();
-        CTenorEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
+        CTenorEditor.CEditorDisplay.CDisplayPlayback.CDisplayPlaybackCancel();
     }
 }

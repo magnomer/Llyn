@@ -41,8 +41,8 @@ public sealed class TGuildMode
 
         guild.CGuildAuthorSelect(bob.LAuthorId);
 
-        Assert.True(guild.CGuildAutographShown);
-        Assert.True(guild.CGuildScribeChecked);
+        Assert.True(guild.CGuildDiptych.CDiptychParentEditing);
+        Assert.True(guild.CGuildDiptych.CDiptychScribeChecked);
         Assert.True(guild.CGuildAutograph.CDeskHeld);
         IReadOnlyList<CCatalogAuthor> rows = guild.CGuildRollRead().CGuildRollRows;
         Assert.Equal(["Bob"], rows.Where(row => row.CCatalogAuthorChosen).Select(row => row.CCatalogAuthorName));
@@ -62,8 +62,8 @@ public sealed class TGuildMode
 
         guild.CGuildAuthorSelect(0);
 
-        Assert.False(guild.CGuildAutographShown);
-        Assert.False(guild.CGuildScribeChecked);
+        Assert.False(guild.CGuildDiptych.CDiptychParentEditing);
+        Assert.False(guild.CGuildDiptych.CDiptychScribeChecked);
         Assert.False(guild.CGuildAutograph.CDeskHeld);
     }
 
@@ -76,7 +76,7 @@ public sealed class TGuildMode
         List<string> asked = [];
         CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(true, asked));
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
-        guild.CGuildAuthorCreate();
+        guild.CGuildDiptych.CDiptychEntryCreate();
         guild.CGuildAutograph.TDeskDefer(TInterface.TAuthorNameCreate(guild.CGuildAutograph.CDeskId, "Bob"));
 
         guild.CGuildAuthorSelect(ada.LAuthorId);
@@ -85,7 +85,7 @@ public sealed class TGuildMode
         Assert.Equal(["Leave"], asked);
         Assert.Contains("Bob", rows.Select(row => row.CCatalogAuthorName));
         Assert.Equal(["Ada"], rows.Where(row => row.CCatalogAuthorChosen).Select(row => row.CCatalogAuthorName));
-        Assert.True(guild.CGuildAutographShown);
+        Assert.True(guild.CGuildDiptych.CDiptychParentEditing);
     }
 
     [Fact]
@@ -102,8 +102,8 @@ public sealed class TGuildMode
         guild.CGuildSourceSelect(null);
 
         Assert.Empty(asked);
-        Assert.False(guild.CGuildColophonShown);
-        Assert.True(guild.CGuildVitaShown);
+        Assert.False(guild.CGuildDiptych.CDiptychChildSide);
+        Assert.True(guild.CGuildDiptych.CDiptychParentShown);
     }
 
     [Fact]
@@ -121,9 +121,9 @@ public sealed class TGuildMode
 
         guild.CGuildScribeToggle(true);
 
-        Assert.True(guild.CGuildColophonShown);
-        Assert.False(guild.CGuildAutographShown);
-        Assert.False(guild.CGuildScribeChecked);
+        Assert.True(guild.CGuildDiptych.CDiptychChildSide);
+        Assert.False(guild.CGuildDiptych.CDiptychParentEditing);
+        Assert.False(guild.CGuildDiptych.CDiptychScribeChecked);
     }
 
     [Fact]
@@ -142,7 +142,7 @@ public sealed class TGuildMode
         guild.CGuildScribeToggle(false);
 
         Assert.False(guild.CGuildAutograph.CDeskHeld);
-        Assert.True(guild.CGuildVitaShown);
+        Assert.True(guild.CGuildDiptych.CDiptychParentShown);
         Assert.True(guild.CGuildVitaHeld);
     }
 
@@ -160,7 +160,7 @@ public sealed class TGuildMode
         guild.CGuildAuthorSelect(ada.LAuthorId);
         guild.CGuildSourceSelect(book.LReferenceId);
 
-        guild.CGuildAuthorDelete();
+        guild.CGuildDiptych.CDiptychEntryDelete();
 
         Assert.Empty(asked);
         Assert.NotNull(engine.TEngineAuthorRead(ada.LAuthorId));

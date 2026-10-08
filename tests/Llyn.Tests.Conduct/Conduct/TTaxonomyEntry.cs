@@ -23,7 +23,7 @@ public sealed class TTaxonomyEntry
 
         taxonomy.CTaxonomyEntryCreate();
 
-        long tag = Assert.NotNull(taxonomy.LTaxonomyChosen);
+        long tag = Assert.NotNull(taxonomy.CTaxonomyAperture.CApertureChosen);
         CCatalogTag row = Assert.Single(taxonomy.CTaxonomyRowsRead(), row => row.CCatalogTagStored.CTagId == tag);
         Assert.Equal(new CTag(tag, "motion"), row.CCatalogTagStored);
         Assert.True(row.CCatalogTagChosen);
@@ -47,7 +47,7 @@ public sealed class TTaxonomyEntry
 
         Assert.Equal(["Coinage:Coinage.Tag", "Tag.CreateFailed"], asked);
         Assert.Equal(0, opened);
-        Assert.Null(taxonomy.LTaxonomyChosen);
+        Assert.Null(taxonomy.CTaxonomyAperture.CApertureChosen);
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public sealed class TTaxonomyEntry
 
         Assert.Equal(["Coinage:Coinage.Tag"], asked);
         Assert.Equal(0, opened);
-        Assert.Null(taxonomy.LTaxonomyChosen);
+        Assert.Null(taxonomy.CTaxonomyAperture.CApertureChosen);
         Assert.Empty(taxonomy.CTaxonomyRowsRead());
         Assert.False(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
     }
@@ -83,9 +83,9 @@ public sealed class TTaxonomyEntry
         taxonomy.CTaxonomyEntryCreate();
 
         Assert.Equal(["Leave"], asked);
-        Assert.Null(taxonomy.LTaxonomyChosen);
+        Assert.Null(taxonomy.CTaxonomyAperture.CApertureChosen);
         Assert.True(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
-        Assert.True(taxonomy.CTaxonomyEditor.CEditorDesk.CDeskChanged);
+        Assert.True(taxonomy.CTaxonomyEditor.CEditorDesk.CDeskDraft.CDeskDraftAltered);
     }
 
     [Fact]
@@ -102,7 +102,7 @@ public sealed class TTaxonomyEntry
         taxonomy.CTaxonomyEntryCreate();
 
         Assert.Equal(["Leave", "Coinage:Coinage.Tag"], asked);
-        Assert.NotNull(taxonomy.LTaxonomyChosen);
+        Assert.NotNull(taxonomy.CTaxonomyAperture.CApertureChosen);
         Assert.False(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
     }
 
@@ -120,7 +120,7 @@ public sealed class TTaxonomyEntry
         taxonomy.CTaxonomyEntryCreate();
 
         Assert.Empty(asked);
-        Assert.Equal(tag.LTagId, taxonomy.LTaxonomyChosen);
+        Assert.Equal(tag.LTagId, taxonomy.CTaxonomyAperture.CApertureChosen);
         Assert.True(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
     }
 
@@ -134,7 +134,7 @@ public sealed class TTaxonomyEntry
         LTag tag = engine.TEngineTagCreate("botany");
         taxonomy.CTaxonomyTagToggle(tag.LTagId);
         List<CEntryDraft> shown = [];
-        taxonomy.CTaxonomyEditor.CEditorDraftChanged += shown.Add;
+        taxonomy.CTaxonomyEditor.CEditorEntry.CEntryDraftChanged += shown.Add;
 
         taxonomy.CTaxonomyEntryCreate();
 
@@ -142,7 +142,7 @@ public sealed class TTaxonomyEntry
         Assert.True(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
         Assert.False(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelBinEnabled);
 
-        taxonomy.CTaxonomyEditor.CEditorHeadwordSet("fern");
+        taxonomy.CTaxonomyEditor.CEditorEntry.CEntryHeadwordSet("fern");
         taxonomy.CTaxonomyEditor.CEditorEntrySave();
 
         Assert.Equal(["fern"], taxonomy.CTaxonomyMembership.CMembershipRowsRead().Select(row => row.CVistaRowHeadword));
@@ -158,12 +158,12 @@ public sealed class TTaxonomyEntry
         LEntry hearth = TTaxonomy.TTaxonomyEntrySave(engine);
         taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelRowOpen(hearth.LEntryId);
         List<CEntryDraft> shown = [];
-        taxonomy.CTaxonomyEditor.CEditorDraftChanged += shown.Add;
+        taxonomy.CTaxonomyEditor.CEditorEntry.CEntryDraftChanged += shown.Add;
 
         taxonomy.CTaxonomyEntryCreate();
 
         Assert.Empty(shown[0].CEntryDraftMeanings[0].CCardDraftTag);
-        Assert.False(taxonomy.CTaxonomyEditor.CEditorDesk.CDeskChanged);
+        Assert.False(taxonomy.CTaxonomyEditor.CEditorDesk.CDeskDraft.CDeskDraftAltered);
         Assert.True(taxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEditing);
     }
 

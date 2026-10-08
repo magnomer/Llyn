@@ -17,7 +17,7 @@ public sealed class TGuildVista
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Bob"));
         CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        guild.CGuildQuerySet("Bo");
+        guild.CGuildPanel.CPanelAperture.CApertureQuerySet("Bo");
 
         guild.TGuildVistaRestore();
 
@@ -33,7 +33,7 @@ public sealed class TGuildVista
         engine.TEngineCitationCreate("Grammar");
         engine.TEngineCitationCreate("Atlas");
         CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        guild.CGuildOeuvre.COeuvreQuerySet("gram");
+        guild.CGuildOeuvre.COeuvrePanel.CPanelAperture.CApertureQuerySet("gram");
 
         guild.TGuildVistaRestore();
 
@@ -58,7 +58,7 @@ public sealed class TGuildVista
             });
         guild.TGuildVistaRestore();
         int rows = 0;
-        guild.CGuildPanel.CPanelRowsChanged += () => rows++;
+        guild.CGuildPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
         marshalled = 0;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectAuthor, 0);
@@ -84,7 +84,7 @@ public sealed class TGuildVista
                 run();
             });
         int rows = 0;
-        guild.CGuildPanel.CPanelRowsChanged += () => rows++;
+        guild.CGuildPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
         marshalled = 0;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectAuthor, 0);
@@ -110,10 +110,10 @@ public sealed class TGuildVista
                 run();
             });
         int rows = 0;
-        guild.CGuildOeuvre.COeuvrePanel.CPanelRowsChanged += () => rows++;
+        guild.CGuildOeuvre.COeuvrePanel.CPanelAperture.CApertureRowsChanged += () => rows++;
         marshalled = 0;
 
-        guild.CGuildOeuvre.COeuvreQuerySet("gram");
+        guild.CGuildOeuvre.COeuvrePanel.CPanelAperture.CApertureQuerySet("gram");
 
         Assert.Equal(1, rows);
         Assert.Equal(1, marshalled);

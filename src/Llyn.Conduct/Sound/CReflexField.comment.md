@@ -4,7 +4,7 @@ Hash: `c82285178f656b0b`
 ## `public enum CReflexField`
 
 The cell of a reflex row a user typed into.
-The driver maps the cell it heard to one member, and `CTimbre.CTimbreReflexSet` picks the engine member that writes it.
+The driver maps the cell it heard to one member, and `CKindred.CKindredSet` picks the engine member that writes it.
 
 ## `CReflexFieldLanguage,`
 

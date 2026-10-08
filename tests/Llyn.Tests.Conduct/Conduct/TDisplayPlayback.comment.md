@@ -1,9 +1,9 @@
-# TDisplaySoundPlayback.cs
-Hash: `1df60b105975f575`
+# TDisplayPlayback.cs
+Hash: `8e945dbdedbaccf3`
 
-## `public sealed class TDisplaySoundPlayback`
+## `public sealed class TDisplayPlayback`
 
-Covers the sound area's playback gates on a real workspace.
+Covers the playback area's read and gates on a real workspace.
 The wing opens the entry.
 Where a case must see the player, a fake media port records each file and level handed to it.
 It builds its wing and entries through `TDisplaySound.TDisplayWingPrepare` and `TDisplaySound.TDisplayDraftCreate`.

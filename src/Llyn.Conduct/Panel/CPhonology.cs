@@ -20,10 +20,6 @@ public sealed class CPhonology
 
     private readonly Action<Action> _cPhonologyMarshal;
 
-    private LVista? _cPhonologyVista;
-
-    private int _cPhonologyCount;
-
     private CPhonology(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -75,16 +71,10 @@ public sealed class CPhonology
 
     public CPanel CPhonologyPanel { get; }
 
-    public bool CPhonologyEmpty => _cPhonologyCount == 0;
-
-    public bool CPhonologyFiltered => _cPhonologyVista?.LVistaFiltered ?? false;
-
     internal void LPhonologyVistaRestore()
     {
         LVista vista = _cPhonologyAtelier.CAtelierVistaStart(
             "phonology", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
-        vista.LVistaQuerySet(_cPhonologyVista?.LVistaQuery ?? string.Empty);
-        _cPhonologyVista = vista;
         CPhonologyPanel.CPanelVistaRestore(vista);
         CPhonologyEditor.LEditorVistaRestore(vista);
         LPhonologyObserverAttach();
@@ -93,14 +83,16 @@ public sealed class CPhonology
     private void LPhonologyObserverAttach()
     {
         CPanel panel = CPhonologyPanel;
-        Action<CBulletin> rows = _ => _cPhonologyMarshal(panel.CPanelRowsResonate);
-        panel.CPanelObserverAttach(CSubject.CSubjectVista, rows);
-        panel.CPanelObserverAttach(CSubject.CSubjectWorkspace, _ => _cPhonologyMarshal(LPhonologyWorkspaceResonate));
-        panel.CPanelObserverAttach(
+        Action<CBulletin> rows = _ => _cPhonologyMarshal(panel.CPanelAperture.CApertureRowsResonate);
+        panel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectVista, rows);
+        panel.CPanelAperture.CApertureObserverAttach(
+            CSubject.CSubjectWorkspace, _ => _cPhonologyMarshal(LPhonologyWorkspaceResonate));
+        panel.CPanelAperture.CApertureObserverAttach(
             CSubject.CSubjectEntry, bulletin => _cPhonologyMarshal(() => panel.CPanelEntryResonate(bulletin)));
-        panel.CPanelObserverAttach(CSubject.CSubjectReflex, rows);
-        panel.CPanelObserverAttach(CSubject.CSubjectSettings, rows);
-        panel.CPanelChosenAttach(CSubject.CSubjectEntry, _ => _cPhonologyMarshal(panel.CPanelDraftResonate));
+        panel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectReflex, rows);
+        panel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectSettings, rows);
+        panel.CPanelAperture.CApertureChosenAttach(
+            CSubject.CSubjectEntry, _ => _cPhonologyMarshal(panel.CPanelDraftResonate));
     }
 
     private void LPhonologyWorkspaceResonate()
@@ -112,7 +104,7 @@ public sealed class CPhonology
     private void LPhonologyClose()
     {
         CPhonologyEditor.CEditorClose();
-        CPhonologyEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
+        CPhonologyEditor.CEditorDisplay.CDisplayPlayback.CDisplayPlaybackCancel();
     }
 
     public static IReadOnlyList<CCatalogOrder> CPhonologyOrderRead()
@@ -131,7 +123,7 @@ public sealed class CPhonology
         IReadOnlyList<CCatalogPronunciation> rows;
         try
         {
-            rows = _cPhonologyVista is LVista vista
+            rows = CPhonologyPanel.CPanelAperture.CApertureVista is LVista vista
                 ? _cPhonologyPort.LEnginePronunciationFind(vista)
                     .Select(static row => new CCatalogPronunciation(
                         new CVistaRow(
@@ -152,7 +144,7 @@ public sealed class CPhonology
             rows = [];
         }
 
-        _cPhonologyCount = rows.Count;
+        CPhonologyPanel.CPanelAperture.CApertureCountSet(rows.Count);
         return rows;
     }
 
@@ -161,28 +153,10 @@ public sealed class CPhonology
         CCatalog.LCatalogEnsignLoad(
             _cPhonologyEnvoy, _cPhonologySettingsPort, "Sound.LoadFailed", store, CPhonologyRowsRead);
 
-    public void CPhonologyQuerySet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _cPhonologyVista?.LVistaQuerySet(query);
-    }
-
-    public void CPhonologyOrderSet(CCatalogOrder? order)
-    {
-        _cPhonologyVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
-    }
-
-    public void CPhonologyFilterSet(CCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-
-        _cPhonologyVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
-    }
-
     internal string LPhonologyFileRead()
     {
-        return _cPhonologyAtelier.CAtelierEntryBundle.CEntryBundleVista.LEngineFileRead(_cPhonologyVista);
+        return _cPhonologyAtelier.CAtelierEntryBundle.CEntryBundleVista.LEngineFileRead(
+            CPhonologyPanel.CPanelAperture.CApertureVista);
     }
 
     public Task CPhonologyPortraitPrint()
@@ -191,7 +165,9 @@ public sealed class CPhonology
             _cPhonologyEnvoy,
             _cPhonologySettingsPort,
             chosen => _cPhonologyPortraitPort.LEnginePortraitPrint(
-                _cPhonologyVista, CPortrait.LPortraitLabelRead(_cPhonologySettingsPort), chosen));
+                CPhonologyPanel.CPanelAperture.CApertureVista,
+                CPortrait.LPortraitLabelRead(_cPhonologySettingsPort),
+                chosen));
     }
 
     public Task CPhonologyPortraitExport()
@@ -201,6 +177,9 @@ public sealed class CPhonology
             _cPhonologySettingsPort,
             LPhonologyFileRead,
             (file, medium) => _cPhonologyPortraitPort.LEnginePortraitExport(
-                _cPhonologyVista, file, medium, CPortrait.LPortraitLabelRead(_cPhonologySettingsPort)));
+                CPhonologyPanel.CPanelAperture.CApertureVista,
+                file,
+                medium,
+                CPortrait.LPortraitLabelRead(_cPhonologySettingsPort)));
     }
 }

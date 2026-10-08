@@ -1,10 +1,10 @@
 # CLibrary.cs
-Hash: `564dc1ac76e4ac2a`
+Hash: `4822886c2bfea286`
 
 ## `public sealed class CLibrary`
 
-The library panel: every entry, the vista it holds and the panel over it.
-It finds the rows, and takes the query, order and language filter.
+The library panel: every entry and the panel over their vista.
+It finds the rows, while the panel's aperture takes the query, order and language filter.
 Its panel loads, edits and deletes the chosen entry, and its own editor edits it.
 It prints and exports the chosen entry, and imports a markup file into the workspace.
 
@@ -31,19 +31,10 @@ Raised once the workspace notice has closed the chosen entry, so the driver relo
 The entry editor the panel opens its chosen entry in.
 The driver wraps it for the editor view and the lectern.
 
-## `public bool CLibraryFiltered`
-
-Whether the language filter hides any language, as the vista answers it.
-
-## `public bool CLibraryEmpty`
-
-Whether the last rows read found nothing, which the list shows as its empty notice.
-The library always answers a request, so an empty list is always shown as empty.
-
 ## `internal void LLibraryVistaRestore()`
 
 Starts the library vista through the atelier, headword order before any order is saved.
-The held query is carried into the fresh vista, so a switch keeps the search.
+The aperture carries the held query into the fresh vista, so a switch keeps the search.
 The panel and the editor both take it, on a workspace start or switch.
 Then it attaches the observers for the vista, workspace, entry, reflex and settings notices through the marshal.
 The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
@@ -62,18 +53,6 @@ Answers the workspace notice by closing the chosen entry and raising `CLibraryWo
 The window's exit gate runs it, since the workspace holds it as a closure.
 It stops the editor and cancels the display's playback.
 
-## `public void CLibraryQuerySet(string query)`
-
-Takes the text typed into the search field as the vista's query.
-
-## `public void CLibraryOrderSet(CCatalogOrder? order)`
-
-Hands a chosen ordering to the vista, which keeps its own when the sender is no order row.
-
-## `public void CLibraryFilterSet(CCatalogFilter filter)`
-
-Hides the languages the user unticked in the filter menu.
-
 ## `public static IReadOnlyList<CCatalogOrder> CLibraryOrderRead()`
 
 The orderings the library offers, in the order its dropdown lists them.
@@ -83,7 +62,7 @@ The wings share them, so no driver names an engine ordering.
 
 The rows the engine returns for the vista, none before a vista arrives.
 They come already filtered, sorted, twinned and marked, so the list decides nothing about them.
-The count is kept for `CLibraryEmpty`, so the empty notice follows the rows shown.
+The count goes to the aperture's `CApertureEmpty`, so the empty notice follows the rows shown.
 A failed read shows `List.LoadFailed` through the envoy and answers no rows, so the count reads zero.
 The load task runs this read after the flag fill, so a throw here would fault the driver.
 
@@ -126,11 +105,11 @@ Any failure is shown under `List.ImportFailed`, and the engine stores every entr
 Builds the customs gate over the parsed entries and their ready targets, then asks the customs question.
 Once accepted, it reads the declared rows back from its own gate and maps each to its engine intake.
 A row's place in the answer is its entry's place in the file, so the index is the position.
-The mode maps by name, and the engine's factory drops the target of a new entry.
+The mode maps one to one, and the engine's factory drops the target of a new entry.
 
 ## `private static LMarkupMode LLibraryModeRead(CSCustomsMode mode)`
 
-Maps each declared mode to the engine's mode by name, holding no rule.
+Maps each declared mode to the engine's mode, holding no rule.
 A mode it does not know throws, so a new member cannot slip through as another.
 
 ## `private static CMarkupEntry LLibraryEntryRead(LMarkupEntry entry, IReadOnlyList<LMarkupTarget> targets)`

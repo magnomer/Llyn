@@ -7,7 +7,7 @@ namespace Llyn.UIDeportment;
 
 public sealed class QLecternPlayback
 {
-    private readonly CDisplaySound _qLecternPlaybackArea;
+    private readonly CDisplayPlayback _qLecternPlaybackArea;
 
     private UIElement _qLecternPlaybackAction = null!;
 
@@ -15,7 +15,7 @@ public sealed class QLecternPlayback
 
     private RangeBase _qLecternPlaybackVolume = null!;
 
-    public QLecternPlayback(CDisplaySound area)
+    public QLecternPlayback(CDisplayPlayback area)
     {
         ArgumentNullException.ThrowIfNull(area);
 

@@ -18,8 +18,6 @@ public sealed class COccurrence
 
     private LVista? _cOccurrenceRoll;
 
-    private LVista? _cOccurrenceVista;
-
     internal COccurrence(
         LVistaPort vistas,
         LPortraitPort portraits,
@@ -38,22 +36,26 @@ public sealed class COccurrence
         _cOccurrenceSettingsPort = settings;
         _cOccurrencePortraitPort = portraits;
         COccurrencePanel = new CPanel(
-            envoy, settings, vistas, "List.LoadFailed", null, changeSeam, finishSeam, shownSeam);
+            envoy,
+            settings,
+            vistas,
+            "List.LoadFailed",
+            null,
+            changeSeam,
+            finishSeam,
+            shownSeam,
+            "Situation.Vacant",
+            "Situation.Unmatched");
     }
 
     public CPanel COccurrencePanel { get; }
-
-    public string COccurrenceEmptyKey =>
-        _cOccurrenceVista?.LVistaQueried ?? false ? "Situation.Unmatched" : "Situation.Vacant";
 
     internal void LOccurrenceVistaRestore(LVista roll, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(vista);
 
-        vista.LVistaQuerySet(_cOccurrenceVista?.LVistaQuery ?? string.Empty);
         _cOccurrenceRoll = roll;
-        _cOccurrenceVista = vista;
         COccurrencePanel.CPanelVistaRestore(vista);
     }
 
@@ -63,25 +65,20 @@ public sealed class COccurrence
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(chosen);
 
-        COccurrencePanel.CPanelObserverAttach(
+        COccurrencePanel.CPanelAperture.CApertureObserverAttach(
             CSubject.CSubjectEntry, bulletin => marshal(() => COccurrencePanel.CPanelEntrySelect(bulletin)));
-        COccurrencePanel.CPanelObserverAttach(CSubject.CSubjectEntry, _ => marshal(roll));
-        COccurrencePanel.CPanelChosenAttach(CSubject.CSubjectEntry, _ => marshal(chosen));
-        COccurrencePanel.CPanelObserverAttach(
-            CSubject.CSubjectVista, _ => marshal(COccurrencePanel.CPanelRowsResonate));
-    }
-    public void COccurrenceQuerySet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _cOccurrenceVista?.LVistaQuerySet(query);
+        COccurrencePanel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectEntry, _ => marshal(roll));
+        COccurrencePanel.CPanelAperture.CApertureChosenAttach(CSubject.CSubjectEntry, _ => marshal(chosen));
+        COccurrencePanel.CPanelAperture.CApertureObserverAttach(
+            CSubject.CSubjectVista, _ => marshal(COccurrencePanel.CPanelAperture.CApertureRowsResonate));
     }
 
     public IReadOnlyList<CVistaRow> COccurrenceRowsRead()
     {
         try
         {
-            return _cOccurrenceVistaPort.LEngineEntryFind(_cOccurrenceRoll, _cOccurrenceVista)
+            return _cOccurrenceVistaPort.LEngineEntryFind(
+                    _cOccurrenceRoll, COccurrencePanel.CPanelAperture.CApertureVista)
                 .Select(CCatalog.LCatalogRowRead)
                 .ToList();
         }
@@ -99,7 +96,7 @@ public sealed class COccurrence
 
     internal string LOccurrenceFileRead()
     {
-        return _cOccurrenceVistaPort.LEngineFileRead(_cOccurrenceVista);
+        return _cOccurrenceVistaPort.LEngineFileRead(COccurrencePanel.CPanelAperture.CApertureVista);
     }
 
     internal Task LOccurrencePortraitPrint(CEnvoy envoy, LSettingsPort settings)
@@ -108,7 +105,7 @@ public sealed class COccurrence
             envoy,
             settings,
             chosen => _cOccurrencePortraitPort.LEnginePortraitPrint(
-                _cOccurrenceVista, CPortrait.LPortraitLabelRead(settings), chosen));
+                COccurrencePanel.CPanelAperture.CApertureVista, CPortrait.LPortraitLabelRead(settings), chosen));
     }
 
     internal Task LOccurrencePortraitExport(CEnvoy envoy, LSettingsPort settings)
@@ -118,6 +115,6 @@ public sealed class COccurrence
             settings,
             LOccurrenceFileRead,
             (file, medium) => _cOccurrencePortraitPort.LEnginePortraitExport(
-                _cOccurrenceVista, file, medium, CPortrait.LPortraitLabelRead(settings)));
+                COccurrencePanel.CPanelAperture.CApertureVista, file, medium, CPortrait.LPortraitLabelRead(settings)));
     }
 }

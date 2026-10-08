@@ -1,5 +1,5 @@
 # QReference.cs
-Hash: `c71a9d9f1a116161`
+Hash: `9976e0477e1cb062`
 
 ## `internal sealed class QReference`
 
@@ -47,6 +47,10 @@ Answers the workspace opening for the entry list, which has its own first paint.
 It awaits the same flag load, then paints the entry rows.
 Its one request is `CFootnoteRowsLoad`, which runs the flag fill and then answers the rows it paints.
 
+## `private bool QReferenceShownCheck()`
+
+Tells the shelf whether the Source page is on screen, so a bulletin is acted on only while shown.
+
 ## `internal void QReferenceExitRefine()`
 
 Releases the entry player and closes both dropdowns when the window exits.
@@ -65,7 +69,7 @@ The parameterless form reads them, and a flag-fill Refine hands in what its load
 ## `private void QFootnoteRefine()`
 
 Refills the entry list, and shows the empty text while no row stands.
-`CFootnote` chooses the text's key by whether the list is being searched.
+The aperture chooses the text's key by whether the list is being searched.
 
 ## `private void QFootnoteRefine(IReadOnlyList<CVistaRow> rows)`
 
@@ -119,3 +123,59 @@ Steps the navigation's trail back one station.
 ## `private void QReferenceAdvanceObserve(object sender, RoutedEventArgs e)`
 
 Steps the navigation's trail forward one station.
+
+## `private void QTrellisRefine()`
+
+Shows the filter mark while the vista hides any language.
+
+## `private void QSurveyObserve(object sender, TextChangedEventArgs e)`
+
+Hands the typed Source search to the query gate.
+
+## `private void QRummageObserve(object sender, TextChangedEventArgs e)`
+
+Hands the typed entry search to the entry list's query gate.
+
+## `private void QTrellisObserve(object sender, RoutedEventArgs e)`
+
+Hands the ticked languages to the filter gate, then shows the filter mark.
+
+## `private void QGradeRefine()`
+
+Unchecks the grade dropper so its popup closes after a pick.
+
+## `private void QShelfObserve(object sender, RoutedEventArgs e)`
+
+Hands the clicked Source's id to the shelf's select gate.
+
+## `private void QFootnoteObserve(object sender, RoutedEventArgs e)`
+
+Hands the clicked entry's id to the shelf's entry gate.
+
+## `private void QReferenceFreshObserve(object sender, RoutedEventArgs e)`
+
+Asks the gate for a new Source.
+
+## `private void QReferenceStoreObserve(object sender, RoutedEventArgs e)`
+
+Asks the session to save.
+
+## `private void QReferenceUndoObserve(object sender, RoutedEventArgs e)`
+
+Walks the session back one step, with the caret kept where it was.
+
+## `private void QReferenceRedoObserve(object sender, RoutedEventArgs e)`
+
+Walks the session forward one step, the mirror of the undo.
+
+## `private void QReferenceBinObserve(object sender, RoutedEventArgs e)`
+
+Asks the gate to delete the chosen Source.
+
+## `private void QReferencePortraitRefine(object sender, CanExecuteRoutedEventArgs e)`
+
+Enables the export command from the shelf's portrait verdict, which holds only while an entry is read.
+
+## `private async void QReferencePortraitObserve(object sender, ExecutedRoutedEventArgs e)`
+
+Exports the entry being read, as the engine portrays it.

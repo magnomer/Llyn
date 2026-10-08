@@ -18,11 +18,11 @@ public sealed class TCorpusScribe
         List<CExample> held = [];
         corpus.CCorpusTranscriptChanged += held.Add;
 
-        corpus.CCorpusExampleCreate();
+        corpus.CCorpusDiptych.CDiptychEntryCreate();
 
         Assert.True(corpus.CCorpusDesk.CDeskHeld);
-        Assert.True(corpus.CCorpusTranscriptShown);
-        Assert.True(corpus.CCorpusScribeChecked);
+        Assert.True(corpus.CCorpusDiptych.CDiptychParentEditing);
+        Assert.True(corpus.CCorpusDiptych.CDiptychScribeChecked);
         Assert.NotNull(held[^1]);
         Assert.NotNull(corpus.TCorpusTranscriptRead());
     }
@@ -36,18 +36,18 @@ public sealed class TCorpusScribe
         LExample cat = TCorpus.TCorpusExampleSave(engine, "a cat sat");
         List<string> asked = [];
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
-        corpus.CCorpusExampleCreate();
+        corpus.CCorpusDiptych.CDiptychEntryCreate();
         corpus.CCorpusDesk.TDeskDefer(
             TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterfaceState.TStateValueCreate("a dog")));
         int recorded = 0;
         atelier.CAtelierNavigation.CNavigationChanged += _ => recorded++;
 
-        corpus.CCorpusExampleSelect(cat.LExampleId);
+        corpus.CCorpusDiptych.CDiptychParentSelect(cat.LExampleId);
 
         Assert.Equal(0, recorded);
         Assert.Equal(["Leave"], asked);
-        Assert.True(corpus.CCorpusTranscriptShown);
-        Assert.Null(corpus.CCorpusAnthology.CAnthologyChosen);
+        Assert.True(corpus.CCorpusDiptych.CDiptychParentEditing);
+        Assert.Null(corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public sealed class TCorpusScribe
         Assert.True(corpus.TCorpusLeaveConfirm());
         Assert.Empty(asked);
 
-        corpus.CCorpusExampleCreate();
+        corpus.CCorpusDiptych.CDiptychEntryCreate();
         corpus.CCorpusDesk.TDeskDefer(
             TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterfaceState.TStateValueCreate("a dog")));
 
@@ -79,13 +79,13 @@ public sealed class TCorpusScribe
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
-        corpus.CCorpusExampleCreate();
+        corpus.CCorpusDiptych.CDiptychEntryCreate();
         corpus.CCorpusDesk.TDeskDefer(
             TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterfaceState.TStateValueCreate("a dog")));
 
         Assert.False(corpus.TCorpusLeaveConfirm());
         Assert.Equal(["Leave"], asked);
-        Assert.True(corpus.CCorpusTranscriptShown);
+        Assert.True(corpus.CCorpusDiptych.CDiptychParentEditing);
         Assert.True(corpus.CCorpusDesk.CDeskHeld);
     }
 
@@ -96,7 +96,7 @@ public sealed class TCorpusScribe
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(true, []));
-        corpus.CCorpusExampleCreate();
+        corpus.CCorpusDiptych.CDiptychEntryCreate();
         corpus.CCorpusDesk.TDeskDefer(
             TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterfaceState.TStateValueCreate("a dog")));
 
@@ -111,15 +111,15 @@ public sealed class TCorpusScribe
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        corpus.CCorpusExampleCreate();
+        corpus.CCorpusDiptych.CDiptychEntryCreate();
         corpus.CCorpusDesk.TDeskDefer(
             TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterfaceState.TStateValueCreate("a dog")));
 
         Assert.True(corpus.CCorpusSession.CSessionSave());
 
-        Assert.True(corpus.CCorpusExcerptShown);
+        Assert.True(corpus.CCorpusDiptych.CDiptychParentShown);
         Assert.True(corpus.CCorpusExcerptHeld);
-        Assert.False(corpus.CCorpusScribeChecked);
+        Assert.False(corpus.CCorpusDiptych.CDiptychScribeChecked);
     }
 
     [Fact]
@@ -132,16 +132,16 @@ public sealed class TCorpusScribe
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.TCorpusExampleOpen(cat.LExampleId);
 
-        corpus.CCorpusScribeToggle(true);
+        corpus.CCorpusDiptych.CDiptychScribeToggle(true);
 
-        Assert.True(corpus.CCorpusTranscriptShown);
+        Assert.True(corpus.CCorpusDiptych.CDiptychParentEditing);
         Assert.True(corpus.CCorpusDesk.CDeskHeld);
 
-        corpus.CCorpusScribeToggle(false);
+        corpus.CCorpusDiptych.CDiptychScribeToggle(false);
 
-        Assert.True(corpus.CCorpusExcerptShown);
+        Assert.True(corpus.CCorpusDiptych.CDiptychParentShown);
         Assert.False(corpus.CCorpusDesk.CDeskHeld);
-        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyChosen);
+        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -153,13 +153,13 @@ public sealed class TCorpusScribe
         LExample cat = TCorpus.TCorpusExampleSave(engine, "a cat sat");
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.TCorpusExampleOpen(cat.LExampleId);
-        corpus.CCorpusExampleCreate();
+        corpus.CCorpusDiptych.CDiptychEntryCreate();
 
-        corpus.CCorpusScribeToggle(false);
+        corpus.CCorpusDiptych.CDiptychScribeToggle(false);
 
-        Assert.False(corpus.CCorpusEditorShown);
-        Assert.True(corpus.CCorpusExcerptShown);
-        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyChosen);
+        Assert.False(corpus.CCorpusDiptych.CDiptychChildEditing);
+        Assert.True(corpus.CCorpusDiptych.CDiptychParentShown);
+        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -169,11 +169,11 @@ public sealed class TCorpusScribe
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        corpus.CCorpusExampleCreate();
+        corpus.CCorpusDiptych.CDiptychEntryCreate();
 
         corpus.TCorpusEntryResonate();
 
-        Assert.True(corpus.CCorpusTranscriptShown);
+        Assert.True(corpus.CCorpusDiptych.CDiptychParentEditing);
         Assert.True(corpus.CCorpusDesk.CDeskHeld);
     }
 }

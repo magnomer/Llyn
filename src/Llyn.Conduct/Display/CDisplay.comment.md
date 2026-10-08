@@ -1,15 +1,18 @@
 # CDisplay.cs
-Hash: `1863f4a0ce9286ba`
+Hash: `38514aaefa1cd87c`
 
 ## `public sealed class CDisplay`
 
 The reading view's header area.
-It owns the entry's life on the lectern, the favourite and grasp gates, and the change events its drivers answer.
+It owns the entry's life on the lectern, the favourite gate, and the change events its drivers answer.
 The editor and each wing build one, and it builds its rules and its other areas once.
 So every driver over it hears the same events.
 The lectern names the entry's lexical unit by the localization key `LEngineUnitFormat` gives.
 Drivers hold this area and the areas it hands out, never its rules, so no `L` type crosses into Deportment.
 The sound half stands on [CDisplaySound](CDisplaySound.comment.md), which reads the header here.
+The pronunciation block stands on [CDisplayAccent](CDisplayAccent.comment.md).
+The play button stands on [CDisplayPlayback](CDisplayPlayback.comment.md).
+The grasp stars stand on [CDisplayGrasp](CDisplayGrasp.comment.md).
 The card reads stand on [CDisplayCard](CDisplayCard.comment.md).
 The clicks that open another place stand on [CDisplayRoute](CDisplayRoute.comment.md).
 The floating contents stand on [CCompass](CCompass.comment.md).
@@ -34,22 +37,21 @@ The envoy a refused stamp read is shown through.
 
 ## `private readonly LSettingsPort _cDisplaySettings;`
 
-The settings port the ready notice is read from.
+The settings port the failure notice is read through.
 
 ## `internal CDisplay(LDraftPort drafts, CEntryBundle entries, CPhonologyBundle phonology, LSettingsPort settings, LMediaPort media, CEnvoy envoy, CLedgerNoticed noticed)`
 
 Only the editor and the wing build an area, over the ports and the envoy the atelier handed down.
 It builds its rules first, then the sound area over those rules and itself.
-Then it builds the card area, the route area and the compass over the same rules.
+Then it builds the accent, playback, grasp, card and route areas and the compass over the same rules.
 It reads the entry and phonology bundles and hands each part only the ports that part calls.
 It takes the atelier's repaint memory, which its rules hold for every repaint read.
 A refused read is shown through `envoy`, so every driver over this display shows it once.
-`settings` reads the ready notice the envoy shows with it.
+`settings` reads the failure notice the envoy shows.
 
 ## `public event Action? CDisplayOpened;`
 
 Raised on the calling thread once an entry opens and `CDisplayShown` holds its header.
-The panel and the wing open entries on the UI thread, so a driver answers it directly.
 
 ## `public event Action? CDisplayClosed;`
 
@@ -58,12 +60,8 @@ Raised once the shown entry closed and playback stopped, so every section emptie
 ## `public event Action<CBulletin>? CDisplayFavoriteChanged;`
 
 Raised on the engine's thread when the chosen entry's favourite changed.
-The favourite, grasp, frequency, paradigm and reflex events count only for the chosen entry.
+The favourite, frequency, paradigm and reflex events count only for the chosen entry.
 A driver marshals each onto its own thread before it reads.
-
-## `public event Action<CBulletin>? CDisplayGraspChanged;`
-
-Raised when the chosen entry's grasp step changed.
 
 ## `public event Action<CBulletin>? CDisplayFrequencyChanged;`
 
@@ -104,6 +102,21 @@ The header of the shown entry, or the blank header while nothing is shown.
 The lectern's sound area, built once here over the rules' sound half and this header area.
 A driver reaches it from this area, so it holds one C object for the whole lectern.
 
+## `public CDisplayAccent CDisplayAccent { get; }`
+
+The lectern's pronunciation area, built once here over the rules and the language port.
+The reading view and the editor's contour share its pitch scale.
+
+## `public CDisplayPlayback CDisplayPlayback { get; }`
+
+The lectern's playback area, built once here over the rules and the media port.
+Every panel that closes its editor stops this view's play through it.
+
+## `public CDisplayGrasp CDisplayGrasp { get; }`
+
+The lectern's grasp area, built once here over the rules.
+The vista restore subscribes its change event, so the stars hear only the chosen entry.
+
 ## `public CDisplayCard CDisplayCard { get; }`
 
 The lectern's card area, built once here over the rules.
@@ -125,11 +138,6 @@ It reads the floating contents and finds the place of a card.
 The display rules this area builds and calls.
 The editor's esteem, sound sheet and sound facts take them from here, so all share one shown draft.
 It stays internal, so no driver names an `L` type.
-
-## `public int CDisplayGraspStep`
-
-The last grasp step, which the star control takes as its limit so it names no engine constant.
-It is never negative, since `LDisplay` raises a negative engine limit to zero.
 
 ## `private long? LDisplayChosen`
 
@@ -193,20 +201,6 @@ Whether the chosen entry is a favorite.
 
 The gate for the heart: stores `marked` on the chosen entry, then answers the stored value.
 A refused mark thus answers the old value, and the display reports the failure.
-
-## `public CGrasp CDisplayGraspRead()`
-
-The chosen entry's grasp step with its wording.
-The step is never negative and never above `CDisplayGraspStep`, since the stars draw only that range.
-
-## `public string CDisplayGraspRead(int step)`
-
-The wording of any step, for the step under the pointer, or empty while nothing is chosen.
-
-## `public CGrasp CDisplayGraspSet(int step)`
-
-The gate for a star the reader pressed on the chosen entry, answering the stored stars.
-A press on the standing step comes back cleared, since the display's one rule owns that.
 
 ## `public CFrequency? CDisplayFrequencyRead(Func<string, string> lookup)`
 

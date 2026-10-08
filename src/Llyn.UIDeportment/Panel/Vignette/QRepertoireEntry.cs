@@ -28,13 +28,14 @@ internal sealed partial class QRepertoire
             _qOccurrenceList, fresh, QOccurrenceItem.QOccurrenceItemMatch, QOccurrenceItem.QOccurrenceItemSync);
 
         QOccurrenceEmpty.SetResourceReference(
-            TextBlock.TextProperty, _cRepertoire.CRepertoireOccurrence.COccurrenceEmptyKey);
+            TextBlock.TextProperty, _cRepertoire.CRepertoireOccurrence.COccurrencePanel.CPanelAperture.CApertureKey);
         QOccurrenceEmpty.Visibility = QLook.QLookVisibleRead(_qOccurrenceList.Count == 0);
     }
 
     private void QOccurrenceObserve(object sender, RoutedEventArgs e)
     {
-        _cRepertoire.CRepertoireOccurrenceSelect(QSender.QSenderSourceRead<QOccurrenceItem>(e)?.QOccurrenceItemId);
+        _cRepertoire.CRepertoireDiptych.CDiptychChildSelect(
+            QSender.QSenderSourceRead<QOccurrenceItem>(e)?.QOccurrenceItemId);
     }
 
     private void QOccurrenceItemRefine(FrameworkElement container, object item, string? _)
@@ -87,6 +88,6 @@ internal sealed partial class QRepertoire
 
     private void QRepertoireFreshObserve(object sender, RoutedEventArgs e)
     {
-        _cRepertoire.CRepertoireSituationCreate();
+        _cRepertoire.CRepertoireDiptych.CDiptychEntryCreate();
     }
 }

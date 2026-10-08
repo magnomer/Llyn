@@ -3,7 +3,7 @@ Hash: `2cb16d864cfce53d`
 
 ## `public sealed record CReflexTyped(CReflexField CReflexTypedField, string CReflexTypedText, IReadOnlyList<CReflexHead> CReflexTypedHeads)`
 
-The answer to one typed reflex cell, as `CTimbre.CTimbreReflexSet` gives it.
+The answer to one typed reflex cell, as `CKindred.CKindredSet` gives it.
 A driver writes its cell from this answer alone, never from what the user typed.
 
 **Parameters**

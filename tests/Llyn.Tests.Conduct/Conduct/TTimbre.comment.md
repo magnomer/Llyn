@@ -1,12 +1,12 @@
 # TTimbre.cs
-Hash: `2651acd16d770bde`
+Hash: `35fed5e1a4654c41`
 
 ## `public sealed class TTimbre`
 
 Covers the sound facts an editor reads for its held draft, over fake sound and settings ports or a workspace.
 A phonemic respelling needs a respelling pack first, and a silent pack is not spoken.
 An empty desk asks the pack for no language.
-Its top level reads the top theme brush key, chosen in Conduct from the Core colour role.
+A top level reads the key `Theme.Contour.Top`, chosen in Conduct from the Core contour role.
 The contour read draws only a tonal pack's toned reading, and its scale runs from five down to one.
 Levels off the scale drop and the rest keep order and repeats, and a syllable left with none is untoned.
 No syllables from the pack read none.
@@ -17,7 +17,7 @@ A desk filling its view takes nothing and answers the text its sheet holds for t
 Adding a pronunciation places the blank row below its accent row, or first for the primary or a gone row.
 Removing a pronunciation drops that accent row or the primary.
 The font read answers the held draft's pack typography role by role, and an empty desk the blank font.
-The flag read is covered by `TTimbreEnsign`, and the reflex block by `TTimbreReflex`.
+The flag read is covered by `TTimbreEnsign`, and the reflex block by `TKindred`.
 The playback reads are covered by `TPlayback`.
 
 ## `internal static CEditor TTimbreAccentPrepare(LEngine engine, params string[] accents)`

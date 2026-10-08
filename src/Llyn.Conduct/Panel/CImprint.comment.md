@@ -1,5 +1,5 @@
 # CImprint.cs
-Hash: `854e9a7ba13a8388`
+Hash: `6405ba82930d399e`
 
 ## `public sealed class CImprint`
 
@@ -54,10 +54,6 @@ The blank row and the byline start closed.
 ## `internal void LImprintCancel()`
 
 Drops the held draft and announces the rows, then closes the byline.
-
-## `internal void LImprintSave()`
-
-Stores the draft only when it changed, so an unchanged save keeps the draft held.
 
 ## `public CReference CImprintEmptyRead()`
 

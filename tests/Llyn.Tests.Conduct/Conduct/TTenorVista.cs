@@ -35,13 +35,13 @@ public sealed class TTenorVista
         engine.TEngineRegisterCreate("motion");
         engine.TEngineRegisterCreate("botany");
         CTenor tenor = TTenor.TTenorPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        tenor.CTenorQuerySet("mot");
-        tenor.CTenorCohort.CCohortQuerySet("zzz");
+        tenor.CTenorAperture.CApertureQuerySet("mot");
+        tenor.CTenorCohort.CCohortPanel.CPanelAperture.CApertureQuerySet("zzz");
 
         tenor.TTenorVistaRestore();
 
         Assert.Equal(["motion"], tenor.CTenorRowsRead().Select(row => row.CCatalogRegisterStored.CRegisterName));
-        Assert.Equal("Register.Unmatched", tenor.CTenorCohort.CCohortEmptyKey);
+        Assert.Equal("Register.Unmatched", tenor.CTenorCohort.CCohortPanel.CPanelAperture.CApertureKey);
     }
 
     [Fact]
@@ -125,18 +125,18 @@ public sealed class TTenorVista
         tenor.TTenorRegisterOpen(register);
         tenor.CTenorCohort.CCohortPanel.CPanelRowOpen(hearth.LEntryId);
         List<string> seen = [];
-        tenor.CTenorRowsChanged += () =>
+        tenor.CTenorAperture.CApertureRowsChanged += () =>
         {
             seen.Add("register");
             tenor.CTenorRowsRead();
         };
-        tenor.CTenorCohort.CCohortPanel.CPanelRowsChanged += () => seen.Add("entry");
+        tenor.CTenorCohort.CCohortPanel.CPanelAperture.CApertureRowsChanged += () => seen.Add("entry");
         tenor.CTenorWorkspaceChanged += () => seen.Add("workspace");
 
         engine.TEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
 
         Assert.False(tenor.CTenorCohort.CCohortPanel.CPanelBinEnabled);
-        Assert.Null(tenor.LTenorChosen);
+        Assert.Null(tenor.CTenorAperture.CApertureChosen);
         Assert.Equal(["entry", "register", "entry", "workspace"], seen);
     }
 
@@ -148,7 +148,7 @@ public sealed class TTenorVista
         List<string> asked = [];
         CTenor tenor = TTenorFailPrepare(engine, asked);
         int entries = 0;
-        tenor.CTenorCohort.CCohortPanel.CPanelRowsChanged += () => entries++;
+        tenor.CTenorCohort.CCohortPanel.CPanelAperture.CApertureRowsChanged += () => entries++;
 
         Assert.Empty(tenor.CTenorRowsRead());
         Assert.Equal(["Register.LoadFailed"], asked);
@@ -162,8 +162,8 @@ public sealed class TTenorVista
         using LEngine engine = workspace.TWorkspaceEngineStart();
         List<string> asked = [];
         CTenor tenor = TTenorFailPrepare(engine, asked);
-        tenor.CTenorRowsChanged += () => tenor.CTenorRowsRead();
-        tenor.CTenorCohort.CCohortPanel.CPanelRowsChanged +=
+        tenor.CTenorAperture.CApertureRowsChanged += () => tenor.CTenorRowsRead();
+        tenor.CTenorCohort.CCohortPanel.CPanelAperture.CApertureRowsChanged +=
             () => tenor.CTenorCohort.CCohortRowsRead();
 
         engine.TEngineBulletinRaise(LSubject.LSubjectSettings, 0);
@@ -186,12 +186,12 @@ public sealed class TTenorVista
     private static List<string> TTenorWatchPrepare(CTenor tenor)
     {
         List<string> seen = [];
-        tenor.CTenorRowsChanged += () =>
+        tenor.CTenorAperture.CApertureRowsChanged += () =>
         {
             seen.Add("register");
             tenor.CTenorRowsRead();
         };
-        tenor.CTenorCohort.CCohortPanel.CPanelRowsChanged += () => seen.Add("entry");
+        tenor.CTenorCohort.CCohortPanel.CPanelAperture.CApertureRowsChanged += () => seen.Add("entry");
         tenor.CTenorCohort.CCohortPanel.CPanelChanged += () => seen.Add("draft");
         return seen;
     }

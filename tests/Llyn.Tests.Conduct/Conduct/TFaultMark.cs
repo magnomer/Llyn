@@ -40,13 +40,13 @@ public sealed partial class TFault
                 return (() => display.CDisplayFavoriteToggle(true), () => display.CDisplayFavoriteRead());
             }),
         new(
-            "CDisplay.CDisplayGraspSet",
+            "CDisplayGrasp.CDisplayGraspSet",
             "LGraspPort.LEngineGraspSave",
             "Grasp.MarkFailed",
             static stage =>
             {
-                CDisplay display = TFaultWingOpen(stage).CWingDisplay;
-                return (() => display.CDisplayGraspSet(4), () => display.CDisplayGraspRead());
+                CDisplayGrasp grasp = TFaultWingOpen(stage).CWingDisplay.CDisplayGrasp;
+                return (() => grasp.CDisplayGraspSet(4), () => grasp.CDisplayGraspRead());
             }),
         new(
             "CDisplaySound.CDisplayFanqieSet",
@@ -109,10 +109,10 @@ public sealed partial class TFault
                 return (library.CLibraryPanel.CPanelDraftResonate, null);
             }),
         new(
-            "CTimbre.CTimbreReflexRebuild",
+            "CKindred.CKindredRebuild",
             "LReflexPort.LEngineReflexRebuild",
             "Display.ReflexRebuildFailed",
-            static stage => (TFaultDeskOpen(stage).CEditorTimbre.CTimbreReflexRebuild, null)),
+            static stage => (TFaultDeskOpen(stage).CEditorKindred.CKindredRebuild, null)),
         new(
             "CSounding.CSoundingFanqieSet",
             "LFanqiePort.LEngineFanqieSet",
@@ -182,7 +182,7 @@ public sealed partial class TFault
                 return (tenor.CTenorEntryCreate, () => tenor.CTenorRowsRead().Count);
             }),
         new(
-            "CGuild.CGuildUnionSelect",
+            "CGuildUnion.CGuildUnionSelect",
             "LAuthorPort.LEngineAuthorAbsorb",
             "Guild.MergeFailed",
             static stage =>
@@ -194,7 +194,9 @@ public sealed partial class TFault
                 LAuthor adam = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Adam"));
                 guild.CGuildAuthorSelect(ada.LAuthorId);
                 guild.CGuildScribeToggle(true);
-                return (() => guild.CGuildUnionSelect(adam.LAuthorId), () => guild.CGuildAutographShown);
+                return (
+                    () => guild.CGuildUnion.CGuildUnionSelect(adam.LAuthorId),
+                    () => guild.CGuildDiptych.CDiptychParentEditing);
             }),
     ];
 

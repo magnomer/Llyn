@@ -36,13 +36,13 @@ public sealed class TShelfVista
         engine.TEngineCitationCreate("Book");
         engine.TEngineCitationCreate("Tome");
         CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        shelf.CShelfQuerySet("Tom");
-        shelf.CShelfFootnote.CFootnoteQuerySet("zzz");
+        shelf.CShelfPanel.CPanelAperture.CApertureQuerySet("Tom");
+        shelf.CShelfFootnote.CFootnotePanel.CPanelAperture.CApertureQuerySet("zzz");
 
         shelf.TShelfVistaRestore();
 
         Assert.Equal(["Tome"], shelf.CShelfRollRead().CShelfRollRows.Select(row => row.CCatalogReferenceName));
-        Assert.Equal("Source.Unmatched", shelf.CShelfFootnote.CFootnoteEmptyKey);
+        Assert.Equal("Source.Unmatched", shelf.CShelfFootnote.CFootnotePanel.CPanelAperture.CApertureKey);
     }
 
     [Fact]
@@ -58,8 +58,8 @@ public sealed class TShelfVista
         marshalled = 0;
         int rows = 0;
         int footnotes = 0;
-        shelf.CShelfPanel.CPanelRowsChanged += () => rows++;
-        shelf.CShelfFootnote.CFootnotePanel.CPanelRowsChanged += () => footnotes++;
+        shelf.CShelfPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
+        shelf.CShelfFootnote.CFootnotePanel.CPanelAperture.CApertureRowsChanged += () => footnotes++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectReference, book.LReferenceId);
 
@@ -80,8 +80,8 @@ public sealed class TShelfVista
         marshalled = 0;
         int rows = 0;
         int footnotes = 0;
-        shelf.CShelfPanel.CPanelRowsChanged += () => rows++;
-        shelf.CShelfFootnote.CFootnotePanel.CPanelRowsChanged += () => footnotes++;
+        shelf.CShelfPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
+        shelf.CShelfFootnote.CFootnotePanel.CPanelAperture.CApertureRowsChanged += () => footnotes++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectReference, book.LReferenceId);
 
@@ -99,7 +99,7 @@ public sealed class TShelfVista
         LEntry hearth = TShelfEntrySave(engine, "hearth");
         CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         int rows = 0;
-        shelf.CShelfPanel.CPanelRowsChanged += () => rows++;
+        shelf.CShelfPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectEntry, hearth.LEntryId);
 
@@ -116,7 +116,7 @@ public sealed class TShelfVista
         int marshalled = 0;
         CShelf shelf = TShelfMarshalCreate(atelier, () => marshalled++);
         int footnotes = 0;
-        shelf.CShelfFootnote.CFootnotePanel.CPanelRowsChanged += () => footnotes++;
+        shelf.CShelfFootnote.CFootnotePanel.CPanelAperture.CApertureRowsChanged += () => footnotes++;
         marshalled = 0;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectEntry, hearth.LEntryId);
@@ -134,7 +134,7 @@ public sealed class TShelfVista
         int marshalled = 0;
         CShelf shelf = TShelfMarshalCreate(atelier, () => marshalled++);
         int rows = 0;
-        shelf.CShelfPanel.CPanelRowsChanged += () => rows++;
+        shelf.CShelfPanel.CPanelAperture.CApertureRowsChanged += () => rows++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectSettings, 0);
 
@@ -152,12 +152,12 @@ public sealed class TShelfVista
         int marshalled = 0;
         CShelf shelf = TShelfMarshalCreate(atelier, () => marshalled++);
         shelf.CShelfReferenceSelect(book.LReferenceId);
-        Assert.True(shelf.CShelfBinEnabled);
+        Assert.True(shelf.CShelfDiptych.CDiptychBinEnabled);
         marshalled = 0;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
 
-        Assert.False(shelf.CShelfBinEnabled);
+        Assert.False(shelf.CShelfDiptych.CDiptychBinEnabled);
         Assert.Equal(1, marshalled);
     }
 
@@ -217,7 +217,7 @@ public sealed class TShelfVista
         engine.TEngineBulletinRaise(LSubject.LSubjectEntry, 0);
 
         Assert.Equal("Book", Assert.Single(shown).CColophonTitle);
-        Assert.True(shelf.CShelfColophonShown);
+        Assert.True(shelf.CShelfDiptych.CDiptychParentShown);
     }
 
     [Fact]
@@ -232,8 +232,8 @@ public sealed class TShelfVista
 
         engine.TEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
 
-        Assert.False(shelf.CShelfBinEnabled);
-        Assert.False(shelf.CShelfModeEnabled);
+        Assert.False(shelf.CShelfDiptych.CDiptychBinEnabled);
+        Assert.False(shelf.CShelfDiptych.CDiptychModeEnabled);
         Assert.False(shelf.CShelfPressAllowed);
     }
 

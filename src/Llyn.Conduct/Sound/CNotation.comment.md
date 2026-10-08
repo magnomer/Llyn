@@ -1,5 +1,5 @@
 # CNotation.cs
-Hash: `4ec9616c7167b205`
+Hash: `a1ff26e37c7d40c8`
 
 ## `internal sealed class CNotation`
 

@@ -18,8 +18,6 @@ public sealed class CMembership
 
     private LVista? _cMembershipRoll;
 
-    private LVista? _cMembershipVista;
-
     internal CMembership(
         LVistaPort vistas,
         LPortraitPort portraits,
@@ -38,22 +36,26 @@ public sealed class CMembership
         _cMembershipPortraitPort = portraits;
         _cMembershipSettingsPort = settings;
         CMembershipPanel = new CPanel(
-            envoy, settings, vistas, "Tag.LoadFailed", "Scribe", changeSeam, finishSeam, shownSeam);
+            envoy,
+            settings,
+            vistas,
+            "Tag.LoadFailed",
+            "Scribe",
+            changeSeam,
+            finishSeam,
+            shownSeam,
+            "Tag.Vacant",
+            "Tag.Unmatched");
     }
 
     public CPanel CMembershipPanel { get; }
-
-    public string CMembershipEmptyKey =>
-        _cMembershipVista?.LVistaQueried ?? false ? "Tag.Unmatched" : "Tag.Vacant";
 
     internal void LMembershipVistaRestore(LVista roll, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(vista);
 
-        vista.LVistaQuerySet(_cMembershipVista?.LVistaQuery ?? string.Empty);
         _cMembershipRoll = roll;
-        _cMembershipVista = vista;
         CMembershipPanel.CPanelVistaRestore(vista);
     }
 
@@ -62,24 +64,19 @@ public sealed class CMembership
         ArgumentNullException.ThrowIfNull(marshal);
 
         CPanel panel = CMembershipPanel;
-        panel.CPanelObserverAttach(
+        panel.CPanelAperture.CApertureObserverAttach(
             CSubject.CSubjectEntry, bulletin => marshal(() => panel.CPanelEntryResonate(bulletin)));
-        panel.CPanelObserverAttach(CSubject.CSubjectVista, _ => marshal(panel.CPanelRowsResonate));
-        panel.CPanelChosenAttach(CSubject.CSubjectEntry, _ => marshal(panel.CPanelDraftResonate));
-    }
-
-    public void CMembershipQuerySet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _cMembershipVista?.LVistaQuerySet(query);
+        panel.CPanelAperture.CApertureObserverAttach(
+            CSubject.CSubjectVista, _ => marshal(panel.CPanelAperture.CApertureRowsResonate));
+        panel.CPanelAperture.CApertureChosenAttach(CSubject.CSubjectEntry, _ => marshal(panel.CPanelDraftResonate));
     }
 
     public IReadOnlyList<CVistaRow> CMembershipRowsRead()
     {
         try
         {
-            return _cMembershipVistaPort.LEngineEntryFind(_cMembershipRoll, _cMembershipVista)
+            return _cMembershipVistaPort.LEngineEntryFind(
+                    _cMembershipRoll, CMembershipPanel.CPanelAperture.CApertureVista)
                 .Select(CCatalog.LCatalogRowRead)
                 .ToList();
         }
@@ -92,7 +89,7 @@ public sealed class CMembership
 
     internal string LMembershipFileRead()
     {
-        return _cMembershipVistaPort.LEngineFileRead(_cMembershipVista);
+        return _cMembershipVistaPort.LEngineFileRead(CMembershipPanel.CPanelAperture.CApertureVista);
     }
 
     public Task CMembershipPortraitPrint()
@@ -106,7 +103,9 @@ public sealed class CMembership
             _cMembershipEnvoy,
             _cMembershipSettingsPort,
             chosen => _cMembershipPortraitPort.LEnginePortraitPrint(
-                _cMembershipVista, CPortrait.LPortraitLabelRead(_cMembershipSettingsPort), chosen));
+                CMembershipPanel.CPanelAperture.CApertureVista,
+                CPortrait.LPortraitLabelRead(_cMembershipSettingsPort),
+                chosen));
     }
 
     public Task CMembershipPortraitExport()
@@ -121,6 +120,9 @@ public sealed class CMembership
             _cMembershipSettingsPort,
             LMembershipFileRead,
             (file, medium) => _cMembershipPortraitPort.LEnginePortraitExport(
-                _cMembershipVista, file, medium, CPortrait.LPortraitLabelRead(_cMembershipSettingsPort)));
+                CMembershipPanel.CPanelAperture.CApertureVista,
+                file,
+                medium,
+                CPortrait.LPortraitLabelRead(_cMembershipSettingsPort)));
     }
 }

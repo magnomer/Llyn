@@ -1,5 +1,5 @@
 # TErrandNotationRoll.cs
-Hash: `4b62cd5ad8f3a8ae`
+Hash: `14ebd3064b0465a1`
 
 ## `public sealed class TErrandNotationRoll`
 

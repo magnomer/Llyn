@@ -30,8 +30,8 @@ public sealed class TErrandClip
         engine.TEngineDelaySet(0);
         CEditor editor = TErrandClipPrepare(engine);
         editor.CEditorEntryOpen(null);
-        editor.CEditorLanguageSet(pack.TLanguageFixtureName);
-        editor.CEditorHeadwordSet(" tomato ");
+        editor.CEditorEntry.CEntryLanguageSet(pack.TLanguageFixtureName);
+        editor.CEditorEntry.CEntryHeadwordSet(" tomato ");
         CErrand errand = editor.CEditorDesk.CDeskErrand;
         List<string> notices = [];
         TaskCompletionSource<CClipRoll> finished = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -59,7 +59,7 @@ public sealed class TErrandClip
         CClipReading reading = Assert.Single(row.CClipItemReading);
         Assert.Equal("https://example.test/gb.mp3", reading.CClipReadingRecording.CRecordingAddress);
         Assert.Equal(
-            CSounding.CSoundingVarietyRead(pack.TLanguageFixtureName, reading.CClipReadingRecording.CRecordingVariety),
+            CVariety.CVarietyRead(pack.TLanguageFixtureName, reading.CClipReadingRecording.CRecordingVariety),
             reading.CClipReadingVariety);
         Assert.False(reading.CClipReadingFlagged);
         Assert.Equal("Downloader.Use", reading.CClipReadingAction);
@@ -74,8 +74,8 @@ public sealed class TErrandClip
         engine.TEngineDelaySet(0);
         CEditor editor = TErrandClipPrepare(engine);
         editor.CEditorEntryOpen(null);
-        editor.CEditorLanguageSet("English");
-        editor.CEditorHeadwordSet("   ");
+        editor.CEditorEntry.CEntryLanguageSet("English");
+        editor.CEditorEntry.CEntryHeadwordSet("   ");
 
         CClipRoll roll = editor.CEditorDesk.CDeskErrand.CErrandRecordingStart(0);
 
@@ -106,8 +106,8 @@ public sealed class TErrandClip
         engine.TEngineDelaySet(0);
         CEditor editor = TErrandClipPrepare(engine);
         editor.CEditorEntryOpen(null);
-        editor.CEditorLanguageSet(pack.TLanguageFixtureName);
-        editor.CEditorHeadwordSet("hill");
+        editor.CEditorEntry.CEntryLanguageSet(pack.TLanguageFixtureName);
+        editor.CEditorEntry.CEntryHeadwordSet("hill");
         CErrand errand = editor.CEditorDesk.CDeskErrand;
         errand.CErrandRecordingStart(0);
         List<string> stored = [];
@@ -427,8 +427,8 @@ public sealed class TErrandClip
     private static async Task<CErrand> TErrandClipStart(CEditor editor, string language)
     {
         editor.CEditorEntryOpen(null);
-        editor.CEditorLanguageSet(language);
-        editor.CEditorHeadwordSet("hill");
+        editor.CEditorEntry.CEntryLanguageSet(language);
+        editor.CEditorEntry.CEntryHeadwordSet("hill");
         CErrand errand = editor.CEditorDesk.CDeskErrand;
         TaskCompletionSource finished = new(TaskCreationOptions.RunContinuationsAsynchronously);
         errand.CErrandClipChanged += roll =>

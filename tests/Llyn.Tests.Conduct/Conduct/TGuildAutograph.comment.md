@@ -1,5 +1,5 @@
 # TGuildAutograph.cs
-Hash: `998d9cdbf1450e85`
+Hash: `b6c5e2ce42a02875`
 
 ## `public sealed class TGuildAutograph`
 

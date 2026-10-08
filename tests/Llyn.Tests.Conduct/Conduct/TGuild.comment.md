@@ -1,5 +1,5 @@
 # TGuild.cs
-Hash: `5c22ef4b2dbd13c5`
+Hash: `0a14cdf002b0278e`
 
 ## `public sealed class TGuild`
 
@@ -18,4 +18,4 @@ The autograph desk lives in `TGuildScribe`, and the union of two Authors in `TGu
 
 Builds the panel over the atelier, and the panel restores both vistas itself.
 Its seam answers that the tab is in front, and its marshal runs each answer at once.
-Every `TGuild` sibling class builds its panel through it too.
+Every `TGuild` sibling class builds its panel through it, except where a test needs its own marshal.

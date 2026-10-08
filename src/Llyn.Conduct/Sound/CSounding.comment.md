@@ -1,11 +1,12 @@
 # CSounding.cs
-Hash: `499d5a0ef4c25685`
+Hash: `92f2278b2ae59a3f`
 
 ## `public sealed class CSounding`
 
 The sound sheet of the entry the editor holds.
 It covers the entry's rime-book groups, its script rows and its paradigm slots.
-It also holds the maps from an entry's sound rows to the shapes the drivers show.
+It also holds the maps from the fanqie, script and paradigm rows to the shapes the drivers show.
+Each smaller row's map stands on its own record, such as `CVariety` or `CReflexDraft`.
 Every read and gate works on the entry the desk has stored, so no driver passes an entry.
 A fresh draft has no stored entry, so every read answers empty and every gate does nothing.
 The open state of its boxes belongs to the user, not the entry, so `CFold` keeps it apart.
@@ -84,7 +85,7 @@ The editor's whole paradigm block, in the reading view's own shape.
 The rows are joined by the engine, and the waiting check and the morphology verdict come from the voice.
 Both verdicts stand in each slot's ready status, so the driver never reads them.
 The headword font is that of the paradigm's own language, as the reading view picks it.
-Every block's font goes through the one font rule `CCatalog.LCatalogFontRead` holds.
+Every block's font goes through the one font rule `CFont.CFontRead` holds.
 
 ## `private IReadOnlyList<LSoundingItem> LSoundingListRead<LSoundingItem>(Func<long, IReadOnlyList<LSoundingItem>> read, string key)`
 
@@ -130,33 +131,3 @@ The held flag is true for the editor, whose missing forms are held by the draft.
 Maps the row's status plainly to the text shown and the key of its tip.
 The status rule is Core's, so this map holds only the wording and the held choice.
 A held draft answers the held key where the lectern answers the lost key.
-
-## `public static CVariety CSoundingVarietyRead(string language, string variety)`
-
-A variety of the language, with the key of its label and the key of its flag.
-The label key is `Variety.` and the name, which a driver looks up and falls back to the name.
-The flag key comes from the engine, so the ensign's key format has one owner.
-
-## `internal static CAccent LSoundingAccentRead(string language, LAccentRow row)`
-
-Maps one engine accent row into the ready row, reading no rule.
-The editor's sheet and the reading view's block share it.
-
-## `internal static IReadOnlyList<CContour> LSoundingContourRead(IReadOnlyList<LContour> syllables, IReadOnlyList<int> scale)`
-
-Maps the contour syllables into ready ones over `scale`.
-The editor's contour and the reading view's block share it, each passing the language port's scale.
-It takes the scale as a parameter, so a test can feed levels the engine's scale never meets.
-Each syllable is handed whole to `CContourInk.CContourInkBuild`, which keeps the levels and chooses their keys.
-
-## `internal static IReadOnlyList<CTranscriptionDraft> CSoundingTranscriptionRead(IReadOnlyList<LTranscriptionDraft> transcriptions)`
-
-The transcriptions of a draft, shaped for the transcription rows and the lectern.
-
-## `internal static IReadOnlyList<CReflexDraft> CSoundingReflexRead(IReadOnlyList<LReflexDraft> reflexes)`
-
-The reflexes of a draft, shaped for the reflex rows and the lectern.
-
-## `private static CReflexDraft CSoundingReflexRead(LReflexDraft reflex)`
-
-Copies every field of one engine reflex draft into its shape.

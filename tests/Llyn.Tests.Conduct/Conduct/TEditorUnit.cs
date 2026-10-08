@@ -40,7 +40,7 @@ public sealed class TEditorUnit
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TEditorUnitPrepare(engine, "English");
 
-        editor.CEditorUnitSet("Unit.Function");
+        editor.CEditorEntry.CEntryUnitSet("Unit.Function");
 
         Assert.Equal(
             ("Unit.Function", true),
@@ -54,9 +54,9 @@ public sealed class TEditorUnit
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TEditorUnitPrepare(engine, "English");
-        editor.CEditorUnitSet("Unit.Morpheme");
+        editor.CEditorEntry.CEntryUnitSet("Unit.Morpheme");
 
-        editor.CEditorUnitSet("Unit.Morpheme");
+        editor.CEditorEntry.CEntryUnitSet("Unit.Morpheme");
 
         Assert.DoesNotContain(editor.CEditorSpeech.CCardSpeechRead().CMarkerUnits, static row => row.Item2);
     }
@@ -67,7 +67,7 @@ public sealed class TEditorUnit
         CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(null);
-        editor.CEditorLanguageSet(language);
+        editor.CEditorEntry.CEntryLanguageSet(language);
         return editor;
     }
 }

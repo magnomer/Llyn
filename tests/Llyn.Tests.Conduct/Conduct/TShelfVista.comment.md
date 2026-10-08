@@ -1,5 +1,5 @@
 # TShelfVista.cs
-Hash: `149ab0f0dc2e3280`
+Hash: `0a87912c5b3211cd`
 
 ## `public sealed class TShelfVista`
 
@@ -13,7 +13,7 @@ A workspace notice with a Source shown closes both sides, built through `TShelf.
 An entry notice with the entry side closed shows the chosen Source again.
 A settings notice refills the Source rows through the marshal.
 Closing the atelier cancels the entry editor's desk and stops playback.
-Its flag-fill load answers the same rows once the fill has run.
+The flag-fill load answers the roll and its languages once the fill has run.
 
 ## `private static CShelf TShelfMarshalCreate(CAtelier atelier, System.Action counted)`
 
@@ -22,4 +22,4 @@ Builds the shelf with a marshal that counts each notice it runs.
 ## `private static LEntry TShelfEntrySave(LEngine engine, string headword)`
 
 Stores one English entry with a single meaning.
-It repeats the helper in `TShelf`, which this file keeps private.
+It repeats the helper in `TShelf`.

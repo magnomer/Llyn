@@ -19,12 +19,12 @@ internal sealed partial class QFavorite
 
     private void QRecallObserve(object sender, TextChangedEventArgs e)
     {
-        _cFavorite.CFavoriteQuerySet(QRecall.Text ?? string.Empty);
+        _cFavorite.CFavoritePanel.CPanelAperture.CApertureQuerySet(QRecall.Text ?? string.Empty);
     }
 
     private void QSeriesObserve(object sender, RoutedEventArgs e)
     {
-        _cFavorite.CFavoriteOrderSet(QChoice.QChoiceOrderRead(sender));
+        _cFavorite.CFavoritePanel.CPanelAperture.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
         QSeriesDropperRefine();
     }
 
@@ -35,13 +35,13 @@ internal sealed partial class QFavorite
 
     private void QStrainerObserve(object sender, RoutedEventArgs e)
     {
-        _cFavorite.CFavoriteFilterSet(QChoice.QChoiceFilterRead(sender));
+        _cFavorite.CFavoritePanel.CPanelAperture.CApertureFilterSet(QChoice.QChoiceFilterRead(sender));
         QStrainerRefine();
     }
 
     internal async void QFavoriteVistaRefine()
     {
-        QChoice.QChoiceOrderApply(QSeriesDropdown, _cFavorite.CFavoritePanel.CPanelOrder);
+        QChoice.QChoiceOrderApply(QSeriesDropdown, _cFavorite.CFavoritePanel.CPanelAperture.CApertureOrder);
         QStrainerRefine();
         CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
             await _cFavorite.CFavoriteRowsLoad(QEnsignImage.QEnsignDraw);
@@ -52,12 +52,12 @@ internal sealed partial class QFavorite
     private void QStrainerBuild(IReadOnlyList<string> languages)
     {
         QChoice.QChoiceFilterBuild(
-            QStrainerList, languages, _cFavorite.CFavoritePanel.CPanelFilter, QStrainerObserve);
+            QStrainerList, languages, _cFavorite.CFavoritePanel.CPanelAperture.CApertureFilter, QStrainerObserve);
     }
 
     private void QStrainerRefine()
     {
-        QStrainerMark.Visibility = QLook.QLookVisibleRead(_cFavorite.CFavoriteFiltered);
+        QStrainerMark.Visibility = QLook.QLookVisibleRead(_cFavorite.CFavoritePanel.CPanelAperture.CApertureFiltered);
     }
 
     private void QRosterRefine()
@@ -151,6 +151,6 @@ internal sealed partial class QFavorite
 
     private void QFavoriteBinObserve(object sender, RoutedEventArgs e)
     {
-        _cFavorite.CFavoritePanel.CPanelEntryDelete();
+        _cFavorite.CFavoritePanel.CPanelBin.CPanelBinDelete();
     }
 }

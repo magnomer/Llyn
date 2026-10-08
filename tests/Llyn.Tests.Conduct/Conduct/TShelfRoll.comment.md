@@ -1,5 +1,5 @@
 # TShelfRoll.cs
-Hash: `bd852800b06174eb`
+Hash: `9cbd88b27104960e`
 
 ## `public sealed class TShelfRoll`
 

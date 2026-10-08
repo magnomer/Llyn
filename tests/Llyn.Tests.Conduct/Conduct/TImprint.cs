@@ -42,7 +42,7 @@ public sealed class TImprint
 
         LReference held = imprint.CImprintDesk.TDeskRead()!.LDraftReference!;
         Assert.Equal("journal", held.LReferenceKindTag);
-        Assert.True(imprint.CImprintDesk.CDeskChronicleRead().CDeskBackward);
+        Assert.True(imprint.CImprintDesk.CDeskChronicle.CDeskChronicleRead().CDeskBackward);
     }
 
     [Fact]
@@ -57,7 +57,7 @@ public sealed class TImprint
         imprint.CImprintKindSet("unspecified");
 
         Assert.False(imprint.CImprintDesk.TDeskChangeCheck());
-        Assert.False(imprint.CImprintDesk.CDeskChronicleRead().CDeskBackward);
+        Assert.False(imprint.CImprintDesk.CDeskChronicle.CDeskChronicleRead().CDeskBackward);
     }
 
     [Fact]
@@ -69,14 +69,16 @@ public sealed class TImprint
         CImprint imprint = TImprintPrepare(engine, atelier);
         LReference book = engine.TEngineCitationCreate("Book");
         imprint.TImprintOpen(book.LReferenceId);
+        CSession session =
+            TInterfaceConductDesk.TSessionCreate(imprint.CImprintDesk, [], static () => true, static _ => { });
 
-        imprint.TImprintSave();
+        session.CSessionSave();
 
         Assert.True(imprint.CImprintHeld);
         Assert.Equal(TInterface.TLocalizationTextRead("Source.UsageNone"), imprint.CImprintTallyRead());
 
         imprint.CImprintTitleSet("Tome");
-        imprint.TImprintSave();
+        session.CSessionSave();
 
         Assert.False(imprint.CImprintHeld);
         Assert.Equal("Tome", engine.TEngineReferenceRead(book.LReferenceId)?.LReferenceTitle.TStateValueShow());

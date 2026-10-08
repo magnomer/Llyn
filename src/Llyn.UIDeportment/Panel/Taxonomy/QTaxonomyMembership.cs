@@ -28,7 +28,7 @@ internal sealed partial class QTaxonomy
             _qMembershipList, fresh, QMembershipItem.QMembershipItemMatch, QMembershipItem.QMembershipItemSync);
 
         QMembershipEmpty.SetResourceReference(
-            TextBlock.TextProperty, _cTaxonomy.CTaxonomyMembership.CMembershipEmptyKey);
+            TextBlock.TextProperty, _cTaxonomy.CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureKey);
         QMembershipEmpty.Visibility = _qMembershipList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 

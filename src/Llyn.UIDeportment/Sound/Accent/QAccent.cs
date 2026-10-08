@@ -58,8 +58,8 @@ internal sealed class QAccent
     internal void QAccentIntroduce(CEditor editor)
     {
         _cEditor = editor;
-        editor.CEditorDraftChanged += QAccentRefine;
-        editor.CEditorDraftChanged += QAccentEnsignRefine;
+        editor.CEditorEntry.CEntryDraftChanged += QAccentRefine;
+        editor.CEditorEntry.CEntryDraftChanged += QAccentEnsignRefine;
     }
 
     private void QAccentAddObserve(object sender, ExecutedRoutedEventArgs e)

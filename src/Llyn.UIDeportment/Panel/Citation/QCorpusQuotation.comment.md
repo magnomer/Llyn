@@ -1,5 +1,5 @@
 # QCorpusQuotation.cs
-Hash: `538f8a684018c84c`
+Hash: `06b257cd177bdead`
 
 ## `internal sealed partial class QCorpus`
 
@@ -13,7 +13,7 @@ Refills the middle column with the rows the quotation list reads, when the list'
 The engine matches the dredge text and drops the hidden languages, so the driver decides nothing about what matches.
 A failed read is reported by the list, which answers no rows.
 An empty result is shown rather than hidden.
-Its wording key is `CQuotationEmptyKey`, chosen by whether the list holds a query.
+Its wording key is the aperture's `CApertureKey`, chosen by whether the list holds a query.
 
 ## `private void QQuotationRefine(IReadOnlyList<CVistaRow> rows)`
 
@@ -22,7 +22,7 @@ The parameterless form reads them, and a flag-fill Refine hands in what its load
 
 ## `private void QQuotationObserve(object sender, RoutedEventArgs e)`
 
-A clicked Entry row asks the gate `CCorpusQuotationSelect` to show it without leaving the tab.
+A clicked Entry row asks the corpus diptych's gate `CDiptychChildSelect` to show it without leaving the tab.
 It shows in the display or the editor, whichever the mode holds.
 
 ## `private void QQuotationApply(FrameworkElement container, object item, string? _)`

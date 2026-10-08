@@ -131,7 +131,7 @@ internal sealed partial class QFavorite
         QLectern lectern = new(_cFavorite.CFavoriteEditor.CEditorDisplay, panel);
         QChoice.QChoiceOrderBuild(QSeriesList, "Series", QSeriesObserve, CFavorite.CFavoriteOrderRead());
         panel.CPanelChanged += QFavoriteModeUpdate;
-        panel.CPanelRowsChanged += QRosterRefine;
+        panel.CPanelAperture.CApertureRowsChanged += QRosterRefine;
         _cFavorite.CFavoriteWorkspaceChanged += QFavoriteWorkspaceRefine;
 
         QRoster.ItemsSource = _qRosterList;
@@ -145,7 +145,7 @@ internal sealed partial class QFavorite
 
     private void QFavoriteStoreUpdate()
     {
-        QFavoriteStore.IsEnabled = _cFavorite.CFavoriteEditor.CEditorDesk.CDeskStorable;
+        QFavoriteStore.IsEnabled = _cFavorite.CFavoriteEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable;
     }
 
     internal void QFavoriteExitRefine()
@@ -196,7 +196,7 @@ internal sealed partial class QFavorite
 
     private void QFavoriteChronicleUpdate()
     {
-        (bool undo, bool redo) = _cFavorite.CFavoriteEditor.CEditorDesk.CDeskChronicleRead();
+        (bool undo, bool redo) = _cFavorite.CFavoriteEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
         QFavoriteBackward.IsEnabled = undo;
         QFavoriteForward.IsEnabled = redo;
     }

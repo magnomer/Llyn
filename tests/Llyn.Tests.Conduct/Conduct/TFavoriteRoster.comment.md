@@ -1,5 +1,5 @@
 # TFavoriteRoster.cs
-Hash: `52a1762dc8dae0ea`
+Hash: `8b042c7195ee1ae0`
 
 ## `public sealed class TFavoriteRoster`
 

@@ -1,5 +1,5 @@
 # CGuild.cs
-Hash: `23b44f07eca372f8`
+Hash: `8fc0e9d9ee973930`
 
 ## `public sealed class CGuild`
 
@@ -7,17 +7,22 @@ The authors panel, holding the panel state over the roll, the oeuvre beside it, 
 The tab stands on one side at a time.
 The source side is in front while a Source is chosen in the oeuvre, else the author side.
 The author side shows the vita while reading and the autograph while writing.
-The leave question is asked once for the whole tab before any switch.
+The leave question is asked once for the whole tab before any switch, through the session.
+The routing between the roll and the oeuvre and its mode flags live in `CDiptych`.
+The author union lives in `CGuildUnion`.
 The panel's delete question is worded under the Guild scope and counted by the vista.
 It asks the user through `CEnvoy` and shows every failure through it too.
 
 ## `private CGuild(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the autograph desk, the panel over the roll, the oeuvre and the draft session over the desk.
+The session asks the leave question through the envoy, and the navigation's tab and every guild gate ask it.
 It keeps the marshal, which runs each engine notice's answer on the medium's own thread.
 The panel's rows notice refreshes the oeuvre, since the oeuvre follows the chosen Author.
 A cleared panel drops the held draft, and an edited row starts one.
-A started tenure clears the union offer, raised as `CGuildUnionCleared`.
+The diptych is built right after the session, with the session's start and cancel as its seams.
+It has no create seam, so a create always starts a blank Author.
+The union is built over the autograph and the roll panel, and reopens a kept Author through `LGuildAuthorOpen`.
 The autograph desk's tenure and draft bulletins are then attached, each run through the marshal.
 It restores its vistas last, so a built area already stands on started vistas.
 
@@ -26,10 +31,6 @@ It restores its vistas last, so a built area already stands on started vistas.
 Builds the panel over the atelier's ports, as every Conduct panel is built.
 `shownSeam` answers whether the tab is in front.
 `marshal` runs each desk bulletin's answer on the medium's own thread.
-
-## `public event Action? CGuildUnionCleared;`
-
-A tenure started on the autograph, so the union search and its offer are emptied.
 
 ## `public event Action? CGuildChanged;`
 
@@ -52,17 +53,16 @@ The desk that holds the Author draft being written.
 The draft session over the autograph, which the views save, undo and redo through.
 A save refuses a blank name through `LGuildAutographCheck` before the engine is asked.
 
-## `public bool CGuildColophonShown`
+## `public CDiptych CGuildDiptych { get; }`
 
-Whether the source side is in front, which shows the colophon.
+The routing between the roll and the oeuvre, with the side flags the drivers paint.
+Its child side is the source side, which shows the colophon and allows print, since an Author has no page.
+Its parent flags show the autograph while writing and the vita while reading.
+Its gates create and delete on the author side.
 
-## `public bool CGuildAutographShown`
+## `public CGuildUnion CGuildUnion { get; }`
 
-Whether the author side is in front in writing mode, which shows the autograph.
-
-## `public bool CGuildVitaShown`
-
-Whether the author side is in front in reading mode, which shows the vita.
+The union of the written Author into a kept one, which the autograph driver reads and drives.
 
 ## `public bool CGuildVitaHeld`
 
@@ -78,34 +78,10 @@ The orphan row is chosen with nothing to read or write, so it leaves the toggle 
 The delete button is live on the author side only while a stored Author is chosen.
 The orphan row and a fresh draft hold no stored Author, so both leave it dead.
 
-## `public bool CGuildViewerChecked`
-
-Whether the reading side of the mode toggle is ticked, which is the opposite of the panel's edit mode.
-
-## `public bool CGuildScribeChecked`
-
-Whether the writing side of the mode toggle is ticked, which is the panel's edit mode.
-
 ## `public bool CGuildStoreEnabled`
 
 The store button is live on the author side while the autograph desk reports its draft storable.
 The desk's tenure answers the verdict, so the guild combines no state fields itself.
-
-## `public bool CGuildPressAllowed`
-
-Print is live only on the source side, since an Author has no page to print.
-
-## `public bool CGuildFiltered`
-
-Whether the roll's vista hides any language.
-
-## `public bool CGuildUnionShown`
-
-The union section shows only while the autograph holds a stored Author, since a fresh one has nothing to fold.
-
-## `private bool LGuildSourceSide`
-
-The source side is in front exactly when the oeuvre has a chosen row.
 
 ## `private bool LGuildRowShown`
 
@@ -126,7 +102,7 @@ Whether the author side has something to show, a stored Author or a draft being 
 ## `internal void LGuildVistaRestore()`
 
 Starts the roll and oeuvre vistas through the atelier and binds the panel, the oeuvre and the desk to them.
-The roll's held query carries into the fresh vista, as the oeuvre carries its own.
+The panel's aperture carries the roll's held query into the fresh vista, as the oeuvre carries its own.
 So the driver never replays it.
 It then attaches the observers, so a workspace change rebinds them to the fresh vistas.
 The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
@@ -135,44 +111,21 @@ The constructor runs it last, and a workspace change runs it again through `CWor
 
 The guild's observer plan, each answer run through the marshal.
 A Vista notice raises the roll, and the oeuvre attaches its own Vista plan.
-A Workspace notice closes the Author.
+A Workspace notice closes the Author through the diptych's `LDiptychEntryClose`, which raises no event.
 An Author, Reference, Example or Entry notice reads the roll and the counts again.
 
 ## `public static IReadOnlyList<CCatalogOrder> CGuildOrderRead()`
 
 The orderings of the roll's order menu, in the order the menu lists them.
-Both media build the menu from it once.
+The driver builds the menu from it once.
 
 ## `public CGuildRoll CGuildRollRead()`
 
 The roll as the view lists it, with its empty verdict, the vita and the kind menu.
 Each work count is worded through the engine.
-It closes the panel when a chosen row being read is no longer listed.
+It closes both lists through the diptych when a chosen row being read is no longer listed.
 The vita is read after that close, so it never shows an Author the panel just left.
 The engine builds the sheet, and `COeuvre.LOeuvreVitaRead` maps it to its shape.
-
-## `public void CGuildQuerySet(string query)`
-
-Takes the text typed into the search field as the roll's query.
-
-## `public void CGuildOrderSet(CCatalogOrder? order)`
-
-The order menu of the roll, where no order keeps the one the vista holds.
-
-## `public void CGuildFilterSet(CCatalogFilter filter)`
-
-Hides the languages the user unticked in the filter menu.
-
-## `internal bool LGuildLeaveConfirm()`
-
-Asks the leave question when the tab holds unsaved work, and answers whether the tab may be left.
-A store answer finishes the draft first, and a refused store keeps the tab.
-
-## `private void LGuildAuthorClose()`
-
-Closes the oeuvre and the roll panel, as a workspace change or a vanished row asks.
-The observer plan attaches it straight to the Workspace notice, since the close refreshes the rows of both panels.
-No event is raised, since the panels' own row notices repaint every list.
 
 ## `private void LGuildCatalogResonate()`
 
@@ -205,10 +158,6 @@ The autograph stored this Author, so the roll stands on it and a fresh tenure op
 
 A click on the oeuvre asks once for the tab, drops the held draft, then opens the colophon.
 
-## `public void CGuildAuthorCreate()`
-
-Starts an Author draft in the autograph with nothing chosen, after asking once for the tab.
-
 ## `public void CGuildScribeToggle(bool editing)`
 
 The mode toggle of the author side, ignored while a Source is in front.
@@ -228,10 +177,6 @@ Whether the requested mode may open, since writing needs a stored Author and rea
 Whether the held draft may be stored, telling the user `Guild.NameBlank` when the engine refuses it.
 `LDeskReadyCheck` of the desk decides, so no draft state is read here.
 
-## `public void CGuildAuthorDelete()`
-
-Deletes the chosen Author through the panel's question, and nothing while a Source is in front.
-
 ## `public Task CGuildPortraitPrint()`
 
 Prints the Source read in the colophon, since an Author has no page to print.
@@ -244,18 +189,3 @@ The reader is asked for the printer through the panel's envoy, and a decline pri
 A keystroke in the name field.
 The raw name goes to the autograph's quill, which defers it.
 Nothing is written while no tenure is held or while the desk fills its own fields.
-
-## `public IReadOnlyList<CCatalogAuthor> CGuildUnionRead(string typed)`
-
-The Authors the one being written may fold into, as the union list shows them.
-The engine drops blank text, leaves the Author itself out and caps the list.
-
-## `public void CGuildUnionSelect(long? id)`
-
-A pick in the union list asks before folding the written Author into the kept one.
-A confirmed fold reopens the kept Author on the reading side, and a failure is shown as `Guild.MergeFailed`.
-
-## `private bool LGuildUnionConfirm(long kept)`
-
-Asks the union question with the written name first and the kept name second.
-The engine reads both names off the held tenure and the kept id, which Conduct hands on unread.

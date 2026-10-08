@@ -1,5 +1,5 @@
 # TFootnote.cs
-Hash: `6ceaf31854ac1209`
+Hash: `3641cf4b0d4eff8f`
 
 ## `public sealed class TFootnote`
 

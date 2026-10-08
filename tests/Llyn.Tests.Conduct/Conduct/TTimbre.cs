@@ -89,7 +89,7 @@ public sealed class TTimbre
         Assert.Equal([false, true, false, true], syllables.Select(static syllable => syllable.CContourToned));
         Assert.All(
             syllables.SelectMany(static syllable => syllable.CContourLevels),
-            level => Assert.Contains(level, editor.CEditorDisplay.CDisplaySound.CDisplaySoundScale));
+            level => Assert.Contains(level, editor.CEditorDisplay.CDisplayAccent.CDisplayAccentScale));
     }
 
     [Fact]
@@ -146,7 +146,7 @@ public sealed class TTimbre
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TInterfaceEditor.TEditorCreate(engine);
 
-        Assert.Equal(new[] { 5, 4, 3, 2, 1 }, editor.CEditorDisplay.CDisplaySound.CDisplaySoundScale);
+        Assert.Equal(new[] { 5, 4, 3, 2, 1 }, editor.CEditorDisplay.CDisplayAccent.CDisplayAccentScale);
     }
 
     [Fact]
@@ -170,14 +170,14 @@ public sealed class TTimbre
         CTimbreAccent accent = editor.CEditorTimbre.CTimbreAccentRead();
 
         Assert.Equal(new CRespellingMark(true, "[", "]"), accent.CTimbreAccentMark);
-        Assert.Equal(CSounding.CSoundingVarietyRead("English", "British"), accent.CTimbreAccentPrimary);
+        Assert.Equal(CVariety.CVarietyRead("English", "British"), accent.CTimbreAccentPrimary);
         Assert.True(accent.CTimbreAccentFlagged);
         Assert.Equal(2, accent.CTimbreAccentRows.Count);
         CAccent row = accent.CTimbreAccentRows[0];
         Assert.Equal(spoken, row.CAccentId);
         Assert.Equal("WAH-ter", row.CAccentText);
         Assert.Equal("row.mp3", row.CAccentAudio);
-        Assert.Equal(CSounding.CSoundingVarietyRead("English", "American"), row.CAccentVariety);
+        Assert.Equal(CVariety.CVarietyRead("English", "American"), row.CAccentVariety);
         Assert.Empty(accent.CTimbreAccentRows[1].CAccentText);
     }
 
@@ -208,7 +208,7 @@ public sealed class TTimbre
         CTimbreAccent accent = timbre.CTimbreAccentRead();
 
         Assert.False(accent.CTimbreAccentMark.CRespellingMarkShown);
-        Assert.Equal(CSounding.CSoundingVarietyRead(string.Empty, string.Empty), accent.CTimbreAccentPrimary);
+        Assert.Equal(CVariety.CVarietyRead(string.Empty, string.Empty), accent.CTimbreAccentPrimary);
         Assert.Empty(accent.CTimbreAccentRows);
         Assert.False(accent.CTimbreAccentFlagged);
     }
@@ -261,10 +261,10 @@ public sealed class TTimbre
         CEditor editor = TTimbreAccentPrepare(engine, "a");
         long spoken = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
         string? answered = null;
-        editor.CEditorDesk.CDeskDraftChanged += _ =>
+        editor.CEditorDesk.CDeskDraft.CDeskDraftChanged += _ =>
             answered = editor.CEditorTimbre.CTimbreAccentSet(spoken, "b").CAccentTypedText;
 
-        editor.CEditorDesk.CDeskDraftResonate();
+        editor.CEditorDesk.CDeskDraft.CDeskDraftResonate();
 
         Assert.Equal("a", answered);
         Assert.Equal("a", Assert.Single(editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);

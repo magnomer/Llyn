@@ -157,7 +157,7 @@ internal sealed class QLibrary
     {
         _qIndex = new QIndex(view, empty);
         QLookItem.QLookItemAttach(view, QLibraryRowRefine);
-        _cLibrary.CLibraryPanel.CPanelRowsChanged += QLibraryIndexRefine;
+        _cLibrary.CLibraryPanel.CPanelAperture.CApertureRowsChanged += QLibraryIndexRefine;
     }
 
     private void QLibraryIndexRefine()
@@ -167,22 +167,22 @@ internal sealed class QLibrary
 
     private void QLibraryIndexRefine(IReadOnlyList<CVistaRow> rows)
     {
-        _qIndex.QIndexRefine(rows, _cLibrary.CLibraryEmpty);
+        _qIndex.QIndexRefine(rows, _cLibrary.CLibraryPanel.CPanelAperture.CApertureEmpty);
     }
 
     private void QLibrarySieveRefine()
     {
-        QSieveMark.Visibility = QLook.QLookVisibleRead(_cLibrary.CLibraryFiltered);
+        QSieveMark.Visibility = QLook.QLookVisibleRead(_cLibrary.CLibraryPanel.CPanelAperture.CApertureFiltered);
     }
 
     private void QLibraryStoreRefine()
     {
-        QLibraryStore.IsEnabled = _cLibrary.CLibraryEditor.CEditorDesk.CDeskStorable;
+        QLibraryStore.IsEnabled = _cLibrary.CLibraryEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable;
     }
 
     internal async void QLibraryVistaRefine()
     {
-        QChoice.QChoiceOrderApply(QOrderDropdown, _cLibrary.CLibraryPanel.CPanelOrder);
+        QChoice.QChoiceOrderApply(QOrderDropdown, _cLibrary.CLibraryPanel.CPanelAperture.CApertureOrder);
         QLibrarySieveRefine();
         CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
             await _cLibrary.CLibraryRowsLoad(QEnsignImage.QEnsignDraw);
@@ -192,7 +192,8 @@ internal sealed class QLibrary
 
     private void QSieveBuild(IReadOnlyList<string> languages)
     {
-        QChoice.QChoiceFilterBuild(QSieveList, languages, _cLibrary.CLibraryPanel.CPanelFilter, QSieveObserve);
+        QChoice.QChoiceFilterBuild(
+            QSieveList, languages, _cLibrary.CLibraryPanel.CPanelAperture.CApertureFilter, QSieveObserve);
     }
 
     private async void QLibraryWorkspaceRefine()
@@ -226,12 +227,12 @@ internal sealed class QLibrary
 
     private void QInquiryObserve(object sender, TextChangedEventArgs e)
     {
-        _cLibrary.CLibraryQuerySet(QInquiry.Text);
+        _cLibrary.CLibraryPanel.CPanelAperture.CApertureQuerySet(QInquiry.Text);
     }
 
     private void QOrderObserve(object sender, RoutedEventArgs e)
     {
-        _cLibrary.CLibraryOrderSet(QChoice.QChoiceOrderRead(sender));
+        _cLibrary.CLibraryPanel.CPanelAperture.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
         QOrderRefine();
     }
 
@@ -242,7 +243,7 @@ internal sealed class QLibrary
 
     private void QSieveObserve(object sender, RoutedEventArgs e)
     {
-        _cLibrary.CLibraryFilterSet(QChoice.QChoiceFilterRead(sender));
+        _cLibrary.CLibraryPanel.CPanelAperture.CApertureFilterSet(QChoice.QChoiceFilterRead(sender));
         QLibrarySieveRefine();
     }
 
@@ -285,7 +286,7 @@ internal sealed class QLibrary
 
     private void QLibraryBinObserve(object sender, RoutedEventArgs e)
     {
-        _cLibrary.CLibraryPanel.CPanelEntryDelete();
+        _cLibrary.CLibraryPanel.CPanelBin.CPanelBinDelete();
     }
 
     private async void QLibraryMarkupObserve(object sender, RoutedEventArgs e)
@@ -336,7 +337,7 @@ internal sealed class QLibrary
 
     private void QLibraryChronicleRefine()
     {
-        (bool undo, bool redo) = _cLibrary.CLibraryEditor.CEditorDesk.CDeskChronicleRead();
+        (bool undo, bool redo) = _cLibrary.CLibraryEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
         QLibraryBackward.IsEnabled = undo;
         QLibraryForward.IsEnabled = redo;
     }

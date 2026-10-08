@@ -22,10 +22,6 @@ public sealed class CLibrary
 
     private readonly Action<Action> _cLibraryMarshal;
 
-    private LVista? _cLibraryVista;
-
-    private int _cLibraryCount;
-
     private CLibrary(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -73,16 +69,10 @@ public sealed class CLibrary
 
     public CPanel CLibraryPanel { get; }
 
-    public bool CLibraryFiltered => _cLibraryVista?.LVistaFiltered ?? false;
-
-    public bool CLibraryEmpty => _cLibraryCount == 0;
-
     internal void LLibraryVistaRestore()
     {
         LVista vista = _cLibraryAtelier.CAtelierVistaStart(
             "library", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
-        vista.LVistaQuerySet(_cLibraryVista?.LVistaQuery ?? string.Empty);
-        _cLibraryVista = vista;
         CLibraryPanel.CPanelVistaRestore(vista);
         CLibraryEditor.LEditorVistaRestore(vista);
         LLibraryObserverAttach();
@@ -91,14 +81,16 @@ public sealed class CLibrary
     private void LLibraryObserverAttach()
     {
         CPanel panel = CLibraryPanel;
-        Action<CBulletin> rows = _ => _cLibraryMarshal(panel.CPanelRowsResonate);
-        panel.CPanelObserverAttach(CSubject.CSubjectVista, rows);
-        panel.CPanelObserverAttach(CSubject.CSubjectWorkspace, _ => _cLibraryMarshal(LLibraryWorkspaceResonate));
-        panel.CPanelObserverAttach(
+        Action<CBulletin> rows = _ => _cLibraryMarshal(panel.CPanelAperture.CApertureRowsResonate);
+        panel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectVista, rows);
+        panel.CPanelAperture.CApertureObserverAttach(
+            CSubject.CSubjectWorkspace, _ => _cLibraryMarshal(LLibraryWorkspaceResonate));
+        panel.CPanelAperture.CApertureObserverAttach(
             CSubject.CSubjectEntry, bulletin => _cLibraryMarshal(() => panel.CPanelEntryResonate(bulletin)));
-        panel.CPanelObserverAttach(CSubject.CSubjectReflex, rows);
-        panel.CPanelObserverAttach(CSubject.CSubjectSettings, rows);
-        panel.CPanelChosenAttach(CSubject.CSubjectEntry, _ => _cLibraryMarshal(panel.CPanelDraftResonate));
+        panel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectReflex, rows);
+        panel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectSettings, rows);
+        panel.CPanelAperture.CApertureChosenAttach(
+            CSubject.CSubjectEntry, _ => _cLibraryMarshal(panel.CPanelDraftResonate));
     }
 
     private void LLibraryWorkspaceResonate()
@@ -110,26 +102,7 @@ public sealed class CLibrary
     private void LLibraryClose()
     {
         CLibraryEditor.CEditorClose();
-        CLibraryEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
-    }
-
-    public void CLibraryQuerySet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _cLibraryVista?.LVistaQuerySet(query);
-    }
-
-    public void CLibraryOrderSet(CCatalogOrder? order)
-    {
-        _cLibraryVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
-    }
-
-    public void CLibraryFilterSet(CCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-
-        _cLibraryVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
+        CLibraryEditor.CEditorDisplay.CDisplayPlayback.CDisplayPlaybackCancel();
     }
 
     public static IReadOnlyList<CCatalogOrder> CLibraryOrderRead()
@@ -148,7 +121,7 @@ public sealed class CLibrary
         IReadOnlyList<CVistaRow> rows;
         try
         {
-            rows = _cLibraryVista is LVista vista
+            rows = CLibraryPanel.CPanelAperture.CApertureVista is LVista vista
                 ? _cLibraryVistaPort.LEngineEntryFind(vista).Select(CCatalog.LCatalogRowRead).ToList()
                 : [];
         }
@@ -158,7 +131,7 @@ public sealed class CLibrary
             rows = [];
         }
 
-        _cLibraryCount = rows.Count;
+        CLibraryPanel.CPanelAperture.CApertureCountSet(rows.Count);
         return rows;
     }
 
@@ -169,7 +142,7 @@ public sealed class CLibrary
 
     internal string LLibraryFileRead()
     {
-        return _cLibraryVistaPort.LEngineFileRead(_cLibraryVista);
+        return _cLibraryVistaPort.LEngineFileRead(CLibraryPanel.CPanelAperture.CApertureVista);
     }
 
     public Task CLibraryPortraitPrint()
@@ -178,7 +151,9 @@ public sealed class CLibrary
             _cLibraryEnvoy,
             _cLibrarySettingsPort,
             chosen => _cLibraryPortraitPort.LEnginePortraitPrint(
-                _cLibraryVista, CPortrait.LPortraitLabelRead(_cLibrarySettingsPort), chosen));
+                CLibraryPanel.CPanelAperture.CApertureVista,
+                CPortrait.LPortraitLabelRead(_cLibrarySettingsPort),
+                chosen));
     }
 
     public Task CLibraryPortraitExport()
@@ -188,7 +163,10 @@ public sealed class CLibrary
             _cLibrarySettingsPort,
             LLibraryFileRead,
             (file, medium) => _cLibraryPortraitPort.LEnginePortraitExport(
-                _cLibraryVista, file, medium, CPortrait.LPortraitLabelRead(_cLibrarySettingsPort)));
+                CLibraryPanel.CPanelAperture.CApertureVista,
+                file,
+                medium,
+                CPortrait.LPortraitLabelRead(_cLibrarySettingsPort)));
     }
 
     public async Task CLibraryMarkupImport()
@@ -206,7 +184,7 @@ public sealed class CLibrary
                 return;
             }
 
-            CLibraryPanel.CPanelRowsResonate();
+            CLibraryPanel.CPanelAperture.CApertureRowsResonate();
             List<CMarkupOmission> report = omissions.Select(LLibraryOmissionRead).ToList();
             if (report.Count > 0)
             {

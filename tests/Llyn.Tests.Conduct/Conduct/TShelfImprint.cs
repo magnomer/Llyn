@@ -16,7 +16,7 @@ public sealed class TShelfImprint
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Adam"));
-        shelf.CShelfReferenceCreate();
+        shelf.CShelfDiptych.CDiptychEntryCreate();
         CByline byline = shelf.CShelfImprint.CImprintByline;
         byline.CBylineWordSet("Ad", true);
         Assert.Single(byline.CBylineRowsRead());
@@ -46,10 +46,10 @@ public sealed class TShelfImprint
                 marshalled++;
                 run();
             });
-        shelf.CShelfReferenceCreate();
+        shelf.CShelfDiptych.CDiptychEntryCreate();
         CImprint imprint = shelf.CShelfImprint;
         imprint.CImprintTitleSet("Book");
-        imprint.CImprintDesk.CDeskPersist();
+        imprint.CImprintDesk.CDeskDraft.CDeskDraftPersist();
         List<string> shown = [];
         imprint.CImprintReferenceChanged += reference => shown.Add(reference.CReferenceTitle);
         marshalled = 0;

@@ -1,5 +1,5 @@
 # TInterfaceConductPanel.cs
-Hash: `30a62197f0ec53d4`
+Hash: `c7d7de34ba294c4c`
 
 ## `internal static class TInterfaceConductPanel`
 
@@ -30,11 +30,11 @@ A test thus varies only the seams it passes.
 
 ## `internal static void TPanelVistaRestore(this CPanel panel, LVista vista)`
 
-Relays the panel's restore of a saved vista, which only the navigation runs in production.
+Relays the restore of a saved vista into the panel, which only the navigation runs in production.
 
 ## `internal static LVista? TPanelVistaRead(this CPanel panel)`
 
-Reads the vista the panel currently holds, or nothing when it holds none.
+Reads the vista the panel's aperture currently holds, or nothing when it holds none.
 
 ## `internal static CCatalogOrder TPanelOrderRead(LCatalogOrder order)`
 
@@ -137,10 +137,6 @@ Relays the imprint's opening of the given record, or of a new one when the id is
 
 Relays the imprint's cancel of its open edit.
 
-## `internal static void TImprintSave(this CImprint imprint)`
-
-Relays the imprint's save of its open edit.
-
 ## `internal static IReadOnlyList<CReferenceKind> TImprintKindRead(IReadOnlyList<(string LReferenceKindTag, string LReferenceKindKey)> rows)`
 
 Relays the imprint's kind menu map, so a fact feeds hostile kind rows.
@@ -151,7 +147,43 @@ Builds one Latin entry row with the given id, epithet and chosen mark.
 
 ## `internal static string TFavoriteFileRead(this CFavorite favorite)`
 
-Relays a panel's internal offered file name, as the siblings below do for their panels.
+Relays a panel's internal offered file name, as the sections below do for the other panels.
+
+## `internal static string TLibraryFileRead(this CLibrary library)`
+
+Relays the library panel's internal offered file name.
+
+## `internal static string TPhonologyFileRead(this CPhonology phonology)`
+
+Relays the phonology panel's internal offered file name.
+
+## `internal static string TMembershipFileRead(this CMembership membership)`
+
+Relays the membership panel's internal offered file name.
+
+## `internal static string TCohortFileRead(this CCohort cohort)`
+
+Relays the cohort panel's internal offered file name.
+
+## `internal static string TXieshengFileRead(this CXiesheng xiesheng)`
+
+Relays the xiesheng panel's offered file name through its kindred list.
+
+## `internal static string TYunjingFileRead(this CYunjing yunjing)`
+
+Relays the yunjing panel's offered file name through its xiaoyun list.
+
+## `internal static string TQuotationFileRead(this CQuotation quotation)`
+
+Relays the quotation panel's internal offered file name.
+
+## `internal static string TOccurrenceFileRead(this COccurrence occurrence)`
+
+Relays the occurrence list's internal offered file name.
+
+## `internal static string TFootnoteFileRead(this CFootnote footnote)`
+
+Relays the footnote panel's internal offered file name.
 
 ## `internal static long TPanelChosenRead(this CPanel panel)`
 
@@ -175,7 +207,7 @@ Relays the repertoire's leave question as the navigation asks it when the tab is
 
 ## `internal static bool TShelfLeaveConfirm(this CShelf shelf)`
 
-Relays the sources tab's leave question.
+Relays the sources tab's leave question, which its session asks.
 
 ## `internal static bool TShelfChangeRead(this CShelf shelf)`
 
@@ -194,7 +226,7 @@ Relays the transcript's read of the Example the corpus desk holds, through `CCor
 
 ## `internal static void TCorpusEntryResonate(this CCorpus corpus)`
 
-Relays the corpus's answer to the chosen entry's notice, which its quotation observers run.
+Relays the corpus diptych's answer to the chosen entry's notice, which the quotation observers run.
 
 ## `internal static bool TCorpusLeaveConfirm(this CCorpus corpus)`
 

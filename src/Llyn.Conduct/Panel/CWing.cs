@@ -185,7 +185,7 @@ public sealed class CWing
 
     private void LWingClose()
     {
-        CWingDisplay.CDisplaySound.CDisplayPlaybackCancel();
+        CWingDisplay.CDisplayPlayback.CDisplayPlaybackCancel();
     }
 
     private void LWingBulletinSend(CBulletin bulletin)

@@ -1,5 +1,5 @@
 # QReflex.cs
-Hash: `47fe684c518cfb4d`
+Hash: `dcd2e0b6a8d474a1`
 
 ## `internal sealed class QReflex`
 
@@ -8,7 +8,7 @@ The rows are the same rows the reading view prints, with bare fields where it pr
 The romanization, meaning and note each have a field after the reading.
 The region is only a hover on the language field.
 The folded languages hide under the same fold the view has, and the fold state is shared with it.
-Every change goes through a `CTimbre` gate, and the rows are rebuilt from the draft it answers with.
+Every change goes through a `CKindred` gate, and the rows are rebuilt from the draft it answers with.
 
 ## `internal void QReflexIntroduce(CEditor editor)`
 
@@ -16,17 +16,17 @@ Holds the Conduct editor and subscribes the draft, desk start, sounding, reflex 
 
 ## `private void QReflexAddObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Hands the row the plus was pressed on to `CTimbre.CTimbreReflexAdd`, or null for the header's plus.
+Hands the row the plus was pressed on to `CKindred.CKindredAdd`, or null for the header's plus.
 Null is Conduct's word for no row, so no magic id is sent.
 The clerk places the new row and gives it the pressed row's language and kind.
 
 ## `private void QReflexRemoveObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Hands the row the minus was pressed on to `CTimbre.CTimbreReflexRemove`.
+Hands the row the minus was pressed on to `CKindred.CKindredRemove`.
 
 ## `private void QReflexMainObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Hands the row the star was pressed on to `CTimbre.CTimbreReflexToggle`, which flips its main mark.
+Hands the row the star was pressed on to `CKindred.CKindredToggle`, which flips its main mark.
 
 ## `private void QReflexRebuildRefine(object sender, ExecutedRoutedEventArgs e)`
 
@@ -35,12 +35,17 @@ So the button stays where it was pressed while the rows are fetched.
 
 ## `private void QReflexRebuildObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Hands the fetch-again press to `CTimbre.CTimbreReflexRebuild`, then repaints the fetching line.
+Hands the fetch-again press to `CKindred.CKindredRebuild`, then repaints the fetching line.
 The gate does nothing for a draft not yet stored, and the repaint then lets the table size go.
+
+## `private void QReflexTypeObserve(QReflexItem row, CReflexField field, string text)`
+
+Hands the typed cell to `CKindred.CKindredSet`, then writes its answer back to the row.
+The lead marks of every row are taken from the same answer.
 
 ## `private void QReflexRefine(CEntryDraft _)`
 
-Answers the draft bulletin by painting the ready block `CTimbre.CTimbreReflexRead` answers.
+Answers the draft bulletin by painting the ready block `CKindred.CKindredRead` answers.
 The bulletin's draft is not read, since the block comes whole from Conduct.
 
 ## `private void QReflexRefine(CTimbreReflex reflex)`
@@ -59,7 +64,7 @@ Writes every row's ready anchor label and whether a row may be anchored at all.
 
 ## `private void QReflexPendingRefine()`
 
-Answers the reflex bulletin by painting the fetching line from `CTimbre.CTimbreReflexPending`.
+Answers the reflex bulletin by painting the fetching line from `CKindred.CKindredPending`.
 
 ## `private void QReflexPendingRefine(bool pending)`
 

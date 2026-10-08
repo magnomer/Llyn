@@ -43,8 +43,8 @@ internal sealed class QEtymologyEditor
     {
         _cEditor = editor;
         _cAtelier = atelier;
-        editor.CEditorDraftChanged += QEtymologyRefine;
-        editor.CEditorDraftChanged += QEtymologyMentionRefine;
+        editor.CEditorEntry.CEntryDraftChanged += QEtymologyRefine;
+        editor.CEditorEntry.CEntryDraftChanged += QEtymologyMentionRefine;
     }
 
     internal static void QEtymologyCaretRefine(PEtymon caret)
@@ -55,7 +55,7 @@ internal sealed class QEtymologyEditor
     private void QEtymologyRefine(CEntryDraft draft)
     {
         QEtymologyField.QEtymologyText = draft.CEntryDraftEtymology.CEtymologyDraftText;
-        QEtymologyField.QEtymologySourceShow(_cEditor.CEditorEtymonRead()
+        QEtymologyField.QEtymologySourceShow(_cEditor.CEditorEntry.CEntryEtymonRead()
             .Select(static target => new PEtymon(
                 target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage))
             .ToList(),

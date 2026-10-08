@@ -19,7 +19,7 @@ public sealed class TAtlas
         CAtlas atlas = TAtlasPrepare(engine, atelier);
 
         Assert.Empty(atlas.TAtlasRowsRead()!);
-        Assert.Null(atlas.CAtlasChosen);
+        Assert.Null(atlas.CAtlasPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public sealed class TAtlas
         CAtlas atlas = TAtlasPrepare(engine, atelier);
         atlas.TAtlasVistaRestore(engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName));
 
-        atlas.CAtlasQuerySet("court");
+        atlas.CAtlasPanel.CPanelAperture.CApertureQuerySet("court");
 
         Assert.Equal(["in court"], atlas.TAtlasRowsRead()!.Select(row => row.CCatalogSituationTitle));
     }
@@ -68,10 +68,10 @@ public sealed class TAtlas
         CAtlas atlas = TAtlasPrepare(engine, atelier);
         atlas.TAtlasVistaRestore(engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName));
 
-        atlas.CAtlasOrderSet(CCatalogOrder.CCatalogOrderKind);
-        atlas.CAtlasOrderSet(null);
+        atlas.CAtlasPanel.CPanelAperture.CApertureOrderSet(CCatalogOrder.CCatalogOrderKind);
+        atlas.CAtlasPanel.CPanelAperture.CApertureOrderSet(null);
 
-        Assert.Equal(CCatalogOrder.CCatalogOrderKind, atlas.CAtlasPanel.CPanelOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderKind, atlas.CAtlasPanel.CPanelAperture.CApertureOrder);
     }
 
     [Fact]
@@ -83,14 +83,14 @@ public sealed class TAtlas
         CAtlas atlas = TAtlasPrepare(engine, atelier);
         atlas.TAtlasVistaRestore(engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName));
 
-        atlas.CAtlasFilterSet(new CCatalogFilter(["English"]));
+        atlas.CAtlasPanel.CPanelAperture.CApertureFilterSet(new CCatalogFilter(["English"]));
 
-        Assert.True(atlas.CAtlasFiltered);
-        Assert.Equal(["English"], atlas.CAtlasPanel.CPanelFilter.CCatalogFilterHidden);
+        Assert.True(atlas.CAtlasPanel.CPanelAperture.CApertureFiltered);
+        Assert.Equal(["English"], atlas.CAtlasPanel.CPanelAperture.CApertureFilter.CCatalogFilterHidden);
     }
 
     [Fact]
-    public void AtlasPanelTallyRead_CitedSituationChosen_WordsItsTally()
+    public void AtlasApertureTallyRead_CitedSituationChosen_WordsItsTally()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -113,13 +113,13 @@ public sealed class TAtlas
                 1)],
             []));
         CAtlas atlas = TAtlasPrepare(engine, atelier);
-        List<string> tallies = [atlas.CAtlasPanel.CPanelTallyRead()];
+        List<string> tallies = [atlas.CAtlasPanel.CPanelAperture.CApertureTallyRead()];
         LVista vista = engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName);
         atlas.TAtlasVistaRestore(vista);
-        tallies.Add(atlas.CAtlasPanel.CPanelTallyRead());
+        tallies.Add(atlas.CAtlasPanel.CPanelAperture.CApertureTallyRead());
 
         vista.TVistaSelect(home.LSituationId);
-        tallies.Add(atlas.CAtlasPanel.CPanelTallyRead());
+        tallies.Add(atlas.CAtlasPanel.CPanelAperture.CApertureTallyRead());
 
         Assert.Equal(
             [
@@ -271,7 +271,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasPanelTallyRead_EngineRefuses_ShowsTheLoadFailureAndAnswersEmpty()
+    public void AtlasApertureTallyRead_EngineRefuses_ShowsTheLoadFailureAndAnswersEmpty()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -290,7 +290,7 @@ public sealed class TAtlas
             static _ => true);
         atlas.TAtlasVistaRestore(engine.TEngineVistaStart("occurrence", LCatalogOrder.LCatalogOrderHeadword));
 
-        Assert.Equal(string.Empty, atlas.CAtlasPanel.CPanelTallyRead());
+        Assert.Equal(string.Empty, atlas.CAtlasPanel.CPanelAperture.CApertureTallyRead());
         Assert.Equal(["Situation.LoadFailed"], asked);
     }
 

@@ -23,13 +23,14 @@ public sealed class CCardSpeech
         _cCardSpeechPort = entries;
     }
 
-    private LTenure? CCardSpeechTenure => _cCardSpeechDesk.CDeskFilling ? null : _cCardSpeechDesk.CDeskTenure;
+    private LTenure? CCardSpeechTenure =>
+        _cCardSpeechDesk.CDeskDraft.CDeskDraftFilling ? null : _cCardSpeechDesk.CDeskDraft.CDeskDraftTenure;
 
     public CCategory CCardSpeechSet(string typed)
     {
         ArgumentNullException.ThrowIfNull(typed);
 
-        if (CCardSpeechTenure is null || _cCardSpeechDesk.CDeskSpeech is not LQuillSpeech speech)
+        if (CCardSpeechTenure is null || _cCardSpeechDesk.CDeskDraft.CDeskDraftSpeech is not LQuillSpeech speech)
         {
             return new CCategory([], false, false, false);
         }
@@ -42,7 +43,7 @@ public sealed class CCardSpeech
     {
         ArgumentNullException.ThrowIfNull(name);
 
-        if (CCardSpeechTenure is null || _cCardSpeechDesk.CDeskSpeech is not LQuillSpeech speech)
+        if (CCardSpeechTenure is null || _cCardSpeechDesk.CDeskDraft.CDeskDraftSpeech is not LQuillSpeech speech)
         {
             return;
         }
@@ -57,14 +58,14 @@ public sealed class CCardSpeech
 
         if (CCardSpeechTenure is not null)
         {
-            _cCardSpeechDesk.CDeskSpeech?.LQuillSpeechRemove(name, _cCardSpeechTyped);
+            _cCardSpeechDesk.CDeskDraft.CDeskDraftSpeech?.LQuillSpeechRemove(name, _cCardSpeechTyped);
         }
     }
 
     public CMarker CCardSpeechRead()
     {
-        if (_cCardSpeechDesk.CDeskTenure is not LTenure held
-            || _cCardSpeechDesk.CDeskSpeech is not LQuillSpeech speech)
+        if (_cCardSpeechDesk.CDeskDraft.CDeskDraftTenure is not LTenure held
+            || _cCardSpeechDesk.CDeskDraft.CDeskDraftSpeech is not LQuillSpeech speech)
         {
             return new CMarker([], _cCardSpeechTyped, new CCategory([], false, false, false), []);
         }

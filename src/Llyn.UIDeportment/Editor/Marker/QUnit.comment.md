@@ -1,5 +1,5 @@
 # QUnit.cs
-Hash: `2bc48fc810d65367`
+Hash: `14fc9a800d0ff0a2`
 
 ## `internal sealed class QUnit`
 

@@ -4,7 +4,7 @@ Hash: `3998d9c0c905ba2f`
 ## `internal static class CContourInk`
 
 Turns one Core contour syllable into the ready `CContour` with a theme brush key per level.
-`CSounding.LSoundingContourRead` hands it each syllable, so the drawing only looks the key up.
+`CContour.CContourRead` hands it each syllable, so the drawing only looks the key up.
 
 ## `internal static CContour CContourInkBuild(LContour syllable, IReadOnlyList<int> scale)`
 

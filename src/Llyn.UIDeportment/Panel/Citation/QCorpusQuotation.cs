@@ -27,13 +27,15 @@ internal sealed partial class QCorpus
         QSplice.QSpliceRefine(
             _qQuotationList, fresh, QQuotationItem.QQuotationItemMatch, QQuotationItem.QQuotationItemSync);
 
-        QQuotationEmpty.SetResourceReference(TextBlock.TextProperty, _cCorpus.CCorpusQuotation.CQuotationEmptyKey);
+        QQuotationEmpty.SetResourceReference(
+            TextBlock.TextProperty, _cCorpus.CCorpusQuotation.CQuotationPanel.CPanelAperture.CApertureKey);
         QQuotationEmpty.Visibility = QLook.QLookVisibleRead(_qQuotationList.Count == 0);
     }
 
     private void QQuotationObserve(object sender, RoutedEventArgs e)
     {
-        _cCorpus.CCorpusQuotationSelect(QSender.QSenderSourceRead<QQuotationItem>(e)?.QQuotationItemId);
+        _cCorpus.CCorpusDiptych.CDiptychChildSelect(
+            QSender.QSenderSourceRead<QQuotationItem>(e)?.QQuotationItemId);
     }
 
     private void QQuotationApply(FrameworkElement container, object item, string? _)

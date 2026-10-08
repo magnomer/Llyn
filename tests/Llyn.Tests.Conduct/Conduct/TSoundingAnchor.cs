@@ -25,7 +25,7 @@ public sealed class TSoundingAnchor
         (long entry, long fanqie) = TSoundingAnchorPlace(engine, workspace, pack.TLanguageFixtureName);
         CEditor editor = TSoundingAnchorPrepare(engine, entry);
         CSoundingAnchor anchor = CSoundingAnchor.CSoundingAnchorCreate(editor);
-        long reflex = editor.CEditorTimbre.CTimbreReflexRead().CTimbreReflexRows.Single().CReflexId;
+        long reflex = editor.CEditorKindred.CKindredRead().CTimbreReflexRows.Single().CReflexId;
 
         CAnchor menu = anchor.CSoundingAnchorOpen(reflex);
         CAnchor unknown = anchor.CSoundingAnchorOpen(reflex + 1000);
@@ -59,15 +59,15 @@ public sealed class TSoundingAnchor
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TSoundingAnchorPrepare(engine, TSoundingAnchorSave(engine));
         CSoundingAnchor anchor = CSoundingAnchor.CSoundingAnchorCreate(editor);
-        long reflex = editor.CEditorTimbre.CTimbreReflexRead().CTimbreReflexRows.Single().CReflexId;
+        long reflex = editor.CEditorKindred.CKindredRead().CTimbreReflexRows.Single().CReflexId;
         anchor.CSoundingAnchorOpen(reflex);
 
         anchor.CSoundingAnchorSet(7, true);
-        IReadOnlyList<long> tied = editor.CEditorTimbre.CTimbreReflexRead().CTimbreReflexRows.Single().CReflexAnchors;
+        IReadOnlyList<long> tied = editor.CEditorKindred.CKindredRead().CTimbreReflexRows.Single().CReflexAnchors;
         anchor.CSoundingAnchorSet(7, false);
 
         Assert.Equal([7L], tied);
-        Assert.Empty(editor.CEditorTimbre.CTimbreReflexRead().CTimbreReflexRows.Single().CReflexAnchors);
+        Assert.Empty(editor.CEditorKindred.CKindredRead().CTimbreReflexRows.Single().CReflexAnchors);
     }
 
     [Fact]
@@ -77,14 +77,14 @@ public sealed class TSoundingAnchor
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TSoundingAnchorPrepare(engine, TSoundingAnchorSave(engine));
         CSoundingAnchor anchor = CSoundingAnchor.CSoundingAnchorCreate(editor);
-        long reflex = editor.CEditorTimbre.CTimbreReflexRead().CTimbreReflexRows.Single().CReflexId;
+        long reflex = editor.CEditorKindred.CKindredRead().CTimbreReflexRows.Single().CReflexId;
         anchor.CSoundingAnchorOpen(reflex);
 
         anchor.CSoundingAnchorClose();
         anchor.CSoundingAnchorSet(7, true);
 
-        Assert.Empty(editor.CEditorTimbre.CTimbreReflexRead().CTimbreReflexRows.Single().CReflexAnchors);
-        Assert.False(editor.CEditorDesk.CDeskChanged);
+        Assert.Empty(editor.CEditorKindred.CKindredRead().CTimbreReflexRows.Single().CReflexAnchors);
+        Assert.False(editor.CEditorDesk.CDeskDraft.CDeskDraftAltered);
     }
 
     private static (long, long) TSoundingAnchorPlace(LEngine engine, TWorkspace workspace, string language)

@@ -1,5 +1,5 @@
 # TShelfImprint.cs
-Hash: `06a2b4bd0f6e7843`
+Hash: `35bdb3a43e8334c3`
 
 ## `public sealed class TShelfImprint`
 

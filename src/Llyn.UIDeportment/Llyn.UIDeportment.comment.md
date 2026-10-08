@@ -70,7 +70,7 @@ Every panel area moves to the veneer by the same steps, first proven on taxonomy
   Its maps are internal statics on its Conduct owner, as in `CAtlas`.
   A map shared by every panel sits on `CPanel` in Conduct.
 - A choice the view made over controller answers becomes a Conduct verdict, such as `CPanelPressAllowed`.
-- A controller that names WPF types splits in two, as `LLibrary` did.
+- A controller that names WPF types splits in two.
   Its WPF half joins the driver, and its engine half stays a sealed controller.
   A driver never holds a vista, since only handles escape the Truth audit.
 - Sealed-controller tests stay in `Llyn.Tests.Windows` while their controllers sit in a Windows project.
@@ -97,7 +97,7 @@ A panel's edit requests are built in ShellEngine, over the tenure the desk holds
   `LQuillAuthor` takes the Author name the guild types, through `LQuillAuthorSet`.
   `LQuillExample`, `LQuillSentence` and `LQuillMention` build the corpus Example's text, language, citation, Gloss rows and Mentions.
 - Which member runs for a field is the caller's decision.
-- `CDesk` exposes the holders as properties such as `CDeskEasel`, `CDeskAuthor` and `CDeskExample`.
+- `CDeskDraft` exposes the holders as properties such as `CDeskDraftEasel`, `CDeskDraftAuthor` and `CDeskDraftExample`.
   Each is null while no tenure is held, and most are null while the desk fills its controls.
 - A member takes ids and .NET values, and names no engine type in its parameters.
 - It reads the draft from its tenure without a flush, and builds the request and each written state inside.

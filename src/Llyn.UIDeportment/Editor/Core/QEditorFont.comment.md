@@ -1,5 +1,5 @@
 # QEditorFont.cs
-Hash: `e89ab12291d54996`
+Hash: `8bf9161ebdd9d2b7`
 
 ## `internal sealed class QEditorFont`
 

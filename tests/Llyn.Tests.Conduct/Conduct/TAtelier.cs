@@ -344,7 +344,7 @@ public sealed class TAtelier
         });
         CEditor editor = atelier.CAtelierInputCreate(envoy);
         editor.CEditorEntryOpen(null);
-        editor.CEditorHeadwordSet("water");
+        editor.CEditorEntry.CEntryHeadwordSet("water");
 
         atelier.CAtelierWorkspace.CWorkspaceChange(second.TWorkspaceFolder, envoy);
 
@@ -365,7 +365,7 @@ public sealed class TAtelier
         CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
         CEditor editor = atelier.CAtelierInputCreate(envoy);
         editor.CEditorEntryOpen(null);
-        editor.CEditorHeadwordSet("water");
+        editor.CEditorEntry.CEntryHeadwordSet("water");
         atelier.CAtelierWorkspace.TWorkspaceDraftAdd(static () => false, store => { closed.Add(store); return true; });
 
         bool quit = atelier.CAtelierQuitConfirm(envoy);

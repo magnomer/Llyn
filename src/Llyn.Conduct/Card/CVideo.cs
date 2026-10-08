@@ -15,22 +15,22 @@ public sealed class CVideo
 
     public void CVideoLocationSet(long videoId, string location)
     {
-        _cVideoDesk.CDeskEasel?.LEaselVideoSet(videoId, location, true);
+        _cVideoDesk.CDeskDraft.CDeskDraftEasel?.LEaselVideoSet(videoId, location, true);
     }
 
     public void CVideoSpanSet(long videoId, string span)
     {
-        _cVideoDesk.CDeskEasel?.LEaselSpanSet(videoId, span);
+        _cVideoDesk.CDeskDraft.CDeskDraftEasel?.LEaselSpanSet(videoId, span);
     }
 
     public void CVideoAdd(long? cardId)
     {
-        _cVideoDesk.CDeskEasel?.LEaselVideoAdd(cardId ?? 0);
+        _cVideoDesk.CDeskDraft.CDeskDraftEasel?.LEaselVideoAdd(cardId ?? 0);
     }
 
     public void CVideoRemove(long videoId)
     {
-        _cVideoDesk.CDeskEasel?.LEaselVideoRemove(videoId);
+        _cVideoDesk.CDeskDraft.CDeskDraftEasel?.LEaselVideoRemove(videoId);
     }
 
     public void CVideoFileSet(long videoId, string? file)
@@ -40,6 +40,6 @@ public sealed class CVideo
             return;
         }
 
-        _cVideoDesk.CDeskEasel?.LEaselVideoSet(videoId, file, false);
+        _cVideoDesk.CDeskDraft.CDeskDraftEasel?.LEaselVideoSet(videoId, file, false);
     }
 }

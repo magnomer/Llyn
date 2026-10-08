@@ -1,5 +1,5 @@
 # QYunjing.cs
-Hash: `a194b6ad1dbe9581`
+Hash: `96c99078f39513fc`
 
 ## `internal sealed class QYunjing`
 
@@ -22,7 +22,7 @@ Each named part of the page is pulled through `QContract` under the page's own `
 
 ## `internal void QYunjingIntroduce(QWindow host)`
 
-Builds the Conduct session, wraps its editor, and subscribes the notices.
+Builds the Conduct session, wraps its entry list's editor, and subscribes the notices.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 The lectern is built here to follow the panel, so the session names no driver type.
 Both order menus are built once from `CYunjingOrderRead`, since the offered orders need no session.
@@ -47,8 +47,8 @@ Answers the area's workspace change by drawing the flags of the languages again.
 The area has already let both columns and the chosen entry go.
 Once the flags are in, it repaints the entry list, the only list whose rows carry a flag.
 So rows built while the load ran, after a cell was chosen, gain their flags.
-A failed load throws before the repaint, as the old load before the reset did.
-Its one request is `CYunjingXiaoyunLoad`, which runs the flag fill and then answers the rows it paints.
+A failed flag load is reported by Conduct, and the rows are still painted without flags.
+Its one request is the entry list's `CEntryListLoad`, which runs the flag fill and then answers the rows it paints.
 
 ## `private void QYunjingQueryRefine()`
 

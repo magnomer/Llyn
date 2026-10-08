@@ -20,8 +20,6 @@ public sealed class CFavorite
 
     private readonly Action<Action> _cFavoriteMarshal;
 
-    private LVista? _cFavoriteVista;
-
     private CFavorite(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -68,14 +66,10 @@ public sealed class CFavorite
 
     public CPanel CFavoritePanel { get; }
 
-    public bool CFavoriteFiltered => _cFavoriteVista?.LVistaFiltered ?? false;
-
     internal void LFavoriteVistaRestore()
     {
         LVista vista = _cFavoriteAtelier.CAtelierVistaStart(
             "favorite", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
-        vista.LVistaQuerySet(_cFavoriteVista?.LVistaQuery ?? string.Empty);
-        _cFavoriteVista = vista;
         CFavoritePanel.CPanelVistaRestore(vista);
         CFavoriteEditor.LEditorVistaRestore(vista);
         LFavoriteObserverAttach();
@@ -84,16 +78,19 @@ public sealed class CFavorite
     private void LFavoriteObserverAttach()
     {
         CPanel panel = CFavoritePanel;
-        Action<CBulletin> rows = _ => _cFavoriteMarshal(panel.CPanelRowsResonate);
-        panel.CPanelObserverAttach(CSubject.CSubjectVista, rows);
-        panel.CPanelObserverAttach(CSubject.CSubjectWorkspace, _ => _cFavoriteMarshal(LFavoriteWorkspaceResonate));
-        panel.CPanelObserverAttach(CSubject.CSubjectGrasp, _ => _cFavoriteMarshal(LFavoriteGraspResonate));
-        panel.CPanelObserverAttach(
+        Action<CBulletin> rows = _ => _cFavoriteMarshal(panel.CPanelAperture.CApertureRowsResonate);
+        panel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectVista, rows);
+        panel.CPanelAperture.CApertureObserverAttach(
+            CSubject.CSubjectWorkspace, _ => _cFavoriteMarshal(LFavoriteWorkspaceResonate));
+        panel.CPanelAperture.CApertureObserverAttach(
+            CSubject.CSubjectGrasp, _ => _cFavoriteMarshal(LFavoriteGraspResonate));
+        panel.CPanelAperture.CApertureObserverAttach(
             CSubject.CSubjectEntry, bulletin => _cFavoriteMarshal(() => panel.CPanelEntryResonate(bulletin)));
-        panel.CPanelObserverAttach(CSubject.CSubjectFavorite, rows);
-        panel.CPanelObserverAttach(CSubject.CSubjectReflex, rows);
-        panel.CPanelObserverAttach(CSubject.CSubjectSettings, rows);
-        panel.CPanelChosenAttach(CSubject.CSubjectEntry, _ => _cFavoriteMarshal(panel.CPanelDraftResonate));
+        panel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectFavorite, rows);
+        panel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectReflex, rows);
+        panel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectSettings, rows);
+        panel.CPanelAperture.CApertureChosenAttach(
+            CSubject.CSubjectEntry, _ => _cFavoriteMarshal(panel.CPanelDraftResonate));
     }
 
     private void LFavoriteWorkspaceResonate()
@@ -105,34 +102,15 @@ public sealed class CFavorite
     private void LFavoriteClose()
     {
         CFavoriteEditor.CEditorClose();
-        CFavoriteEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
+        CFavoriteEditor.CEditorDisplay.CDisplayPlayback.CDisplayPlaybackCancel();
     }
 
     private void LFavoriteGraspResonate()
     {
-        if (CFavoritePanel.CPanelOrder == CCatalogOrder.CCatalogOrderGrasp)
+        if (CFavoritePanel.CPanelAperture.CApertureOrder == CCatalogOrder.CCatalogOrderGrasp)
         {
-            CFavoritePanel.CPanelRowsResonate();
+            CFavoritePanel.CPanelAperture.CApertureRowsResonate();
         }
-    }
-
-    public void CFavoriteQuerySet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _cFavoriteVista?.LVistaQuerySet(query);
-    }
-
-    public void CFavoriteOrderSet(CCatalogOrder? order)
-    {
-        _cFavoriteVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
-    }
-
-    public void CFavoriteFilterSet(CCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-
-        _cFavoriteVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
     public static IReadOnlyList<CCatalogOrder> CFavoriteOrderRead()
@@ -149,7 +127,7 @@ public sealed class CFavorite
 
     public IReadOnlyList<CVistaRow> CFavoriteRowsRead()
     {
-        if (_cFavoriteVista is not LVista vista)
+        if (CFavoritePanel.CPanelAperture.CApertureVista is not LVista vista)
         {
             return [];
         }
@@ -172,7 +150,8 @@ public sealed class CFavorite
 
     internal string LFavoriteFileRead()
     {
-        return _cFavoriteAtelier.CAtelierEntryBundle.CEntryBundleVista.LEngineFileRead(_cFavoriteVista);
+        return _cFavoriteAtelier.CAtelierEntryBundle.CEntryBundleVista.LEngineFileRead(
+            CFavoritePanel.CPanelAperture.CApertureVista);
     }
 
     public Task CFavoritePortraitPrint()
@@ -181,7 +160,9 @@ public sealed class CFavorite
             _cFavoriteEnvoy,
             _cFavoriteSettingsPort,
             chosen => _cFavoritePortraitPort.LEnginePortraitPrint(
-                _cFavoriteVista, CPortrait.LPortraitLabelRead(_cFavoriteSettingsPort), chosen));
+                CFavoritePanel.CPanelAperture.CApertureVista,
+                CPortrait.LPortraitLabelRead(_cFavoriteSettingsPort),
+                chosen));
     }
 
     public Task CFavoritePortraitExport()
@@ -191,6 +172,9 @@ public sealed class CFavorite
             _cFavoriteSettingsPort,
             LFavoriteFileRead,
             (file, medium) => _cFavoritePortraitPort.LEnginePortraitExport(
-                _cFavoriteVista, file, medium, CPortrait.LPortraitLabelRead(_cFavoriteSettingsPort)));
+                CFavoritePanel.CPanelAperture.CApertureVista,
+                file,
+                medium,
+                CPortrait.LPortraitLabelRead(_cFavoriteSettingsPort)));
     }
 }

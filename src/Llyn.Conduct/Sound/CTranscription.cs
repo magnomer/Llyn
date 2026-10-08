@@ -19,13 +19,13 @@ public sealed class CTranscription
 
     public CTranscriptionSheet CTranscriptionRead()
     {
-        if (_cTranscriptionDesk.CDeskTenure is not LTenure held
+        if (_cTranscriptionDesk.CDeskDraft.CDeskDraftTenure is not LTenure held
             || new LQuillTranscription(held).LQuillTranscriptionRead() is not LTranscriptionSheet sheet)
         {
             return new CTranscriptionSheet(false, false, []);
         }
 
-        IReadOnlyList<CTranscriptionDraft> drafts = CSounding.CSoundingTranscriptionRead(
+        IReadOnlyList<CTranscriptionDraft> drafts = CTranscriptionDraft.CTranscriptionDraftRead(
             sheet.LTranscriptionSheetRows.Select(static row => row.LTranscriptionRowDraft).ToList());
         return new CTranscriptionSheet(
             sheet.LTranscriptionSheetShown,
@@ -43,23 +43,23 @@ public sealed class CTranscription
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        _cTranscriptionDesk.CDeskTranscription?.LQuillTranscriptionSet(transcription, text);
+        _cTranscriptionDesk.CDeskDraft.CDeskDraftTranscription?.LQuillTranscriptionSet(transcription, text);
     }
 
     public void CTranscriptionSchemeSet(long transcription, string scheme)
     {
         ArgumentNullException.ThrowIfNull(scheme);
 
-        _cTranscriptionDesk.CDeskTranscription?.LTranscriptionSchemeSet(transcription, scheme);
+        _cTranscriptionDesk.CDeskDraft.CDeskDraftTranscription?.LTranscriptionSchemeSet(transcription, scheme);
     }
 
     public void CTranscriptionAdd(long? transcription)
     {
-        _cTranscriptionDesk.CDeskTranscription?.LQuillTranscriptionAdd(transcription ?? 0);
+        _cTranscriptionDesk.CDeskDraft.CDeskDraftTranscription?.LQuillTranscriptionAdd(transcription ?? 0);
     }
 
     public void CTranscriptionRemove(long transcription)
     {
-        _cTranscriptionDesk.CDeskTranscription?.LQuillTranscriptionRemove(transcription);
+        _cTranscriptionDesk.CDeskDraft.CDeskDraftTranscription?.LQuillTranscriptionRemove(transcription);
     }
 }

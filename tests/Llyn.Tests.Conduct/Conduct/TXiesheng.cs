@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Llyn.Conduct;
@@ -40,25 +39,6 @@ public sealed class TXiesheng
     private static readonly TimeSpan TXieshengPatience = TimeSpan.FromSeconds(5);
 
     [Fact]
-    public async Task XieshengKindredLoad_FetchedSeries_AnswersItsEntryAfterTheFill()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = TXieshengEngineStart(workspace);
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        string language = pack.TLanguageFixtureName;
-        LEntry entry = await TXieshengStemSave(engine, language);
-        CXiesheng xiesheng = TXieshengPrepare(atelier);
-        xiesheng.TXieshengStemOpen(language, "龍");
-
-        CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
-            await xiesheng.CXieshengKindredLoad(static (_, _) => static () => { });
-
-        Assert.Equal(entry.LEntryId, Assert.Single(sheet.CEnsignSheetRows).CVistaRowId);
-        Assert.Equal(atelier.CAtelierCatalog.CCatalogLanguageRead(), sheet.CEnsignSheetLanguages);
-    }
-
-    [Fact]
     public void XieshengGroveRead_NothingFetched_ListsNothingUnderTheBareKeys()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -68,10 +48,10 @@ public sealed class TXiesheng
 
         Assert.True(xiesheng.LXieshengAllowed);
         Assert.Empty(xiesheng.CXieshengGroveRead());
-        Assert.True(xiesheng.CXieshengGroveEmpty);
-        Assert.Equal("Xiesheng.GroveEmpty", xiesheng.CXieshengGroveKey);
-        Assert.Empty(xiesheng.CXieshengKindredRead());
-        Assert.True(xiesheng.CXieshengKindredEmpty);
+        Assert.True(xiesheng.CXieshengGrove.CApertureEmpty);
+        Assert.Equal("Xiesheng.GroveEmpty", xiesheng.CXieshengGrove.CApertureKey);
+        Assert.Empty(xiesheng.CXieshengKindred.CEntryListRead());
+        Assert.True(xiesheng.CXieshengKindred.CEntryListPanel.CPanelAperture.CApertureEmpty);
         Assert.Equal("Xiesheng.KindredEmpty", xiesheng.CXieshengKindredKey);
         Assert.True(xiesheng.CXieshengStemRead().CStemPageEmpty);
         Assert.False(xiesheng.CXieshengStemShown);
@@ -101,8 +81,8 @@ public sealed class TXiesheng
         CStemPage page = xiesheng.CXieshengStemRead();
         Assert.Equal((language, "龍"), (page.CStemPageLanguage, page.CStemPageKey));
         Assert.Equal(["龍"], page.CStemPageCharacters);
-        Assert.Equal(entry.LEntryId, Assert.Single(xiesheng.CXieshengKindredRead()).CVistaRowId);
-        Assert.False(xiesheng.CXieshengKindredEmpty);
+        Assert.Equal(entry.LEntryId, Assert.Single(xiesheng.CXieshengKindred.CEntryListRead()).CVistaRowId);
+        Assert.False(xiesheng.CXieshengKindred.CEntryListPanel.CPanelAperture.CApertureEmpty);
         Assert.Equal("Xiesheng.KindredVacant", xiesheng.CXieshengKindredKey);
     }
 
@@ -124,10 +104,10 @@ public sealed class TXiesheng
         Assert.Equal(new CFont(null, null, CFontSlant.CFontSlantTheme), blank.CStemPageFont);
         Assert.Equal(new CFont(null, null, CFontSlant.CFontSlantTheme), blank.CStemPageGlyph);
         Assert.Equal(
-            TInterfaceFont.TCatalogFontRead(atelier.CAtelierSettingsPort, language, CFontRole.CFontRoleHeadword),
+            TInterfaceFont.TFontRead(atelier.CAtelierSettingsPort, language, CFontRole.CFontRoleHeadword),
             page.CStemPageFont);
         Assert.Equal(
-            TInterfaceFont.TCatalogFontRead(atelier.CAtelierSettingsPort, language, CFontRole.CFontRoleGlyph),
+            TInterfaceFont.TFontRead(atelier.CAtelierSettingsPort, language, CFontRole.CFontRoleGlyph),
             page.CStemPageGlyph);
     }
 
@@ -170,12 +150,12 @@ public sealed class TXiesheng
         xiesheng.CXieshengStemSelect(stem);
 
         Assert.True(xiesheng.CXieshengStemShown);
-        Assert.Single(xiesheng.CXieshengKindredRead());
+        Assert.Single(xiesheng.CXieshengKindred.CEntryListRead());
 
         engine.TEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
 
         Assert.False(xiesheng.CXieshengStemShown);
-        Assert.Empty(xiesheng.CXieshengKindredRead());
+        Assert.Empty(xiesheng.CXieshengKindred.CEntryListRead());
     }
 
     [Fact]
@@ -191,8 +171,8 @@ public sealed class TXiesheng
         CXiesheng xiesheng = TXieshengPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
         xiesheng.TXieshengStemOpen(language, "龍");
         long stem = Assert.Single(xiesheng.CXieshengGroveRead()).CStemId;
-        xiesheng.CXieshengPanel.CPanelFreshOpen();
-        xiesheng.CXieshengEditor.CEditorHeadwordSet("water");
+        xiesheng.CXieshengKindred.CEntryListPanel.CPanelFreshOpen();
+        xiesheng.CXieshengKindred.CEntryListEditor.CEditorEntry.CEntryHeadwordSet("water");
         int changed = 0;
         xiesheng.CXieshengChanged += () => changed++;
 
@@ -200,8 +180,8 @@ public sealed class TXiesheng
 
         Assert.Equal(["Leave"], asked);
         Assert.True(Assert.Single(xiesheng.CXieshengGroveRead()).CStemChosen);
-        Assert.True(xiesheng.CXieshengPanel.CPanelEditing);
-        Assert.Equal("water", xiesheng.CXieshengEditor.TEditorDraftRead()?.CEntryDraftHeadword);
+        Assert.True(xiesheng.CXieshengKindred.CEntryListEditing);
+        Assert.Equal("water", xiesheng.CXieshengKindred.CEntryListEditor.TEditorDraftRead()?.CEntryDraftHeadword);
         Assert.Equal(0, changed);
     }
 
@@ -218,8 +198,8 @@ public sealed class TXiesheng
         CXiesheng xiesheng = TXieshengPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
         xiesheng.TXieshengStemOpen(language, "龍");
         long stem = Assert.Single(xiesheng.CXieshengGroveRead()).CStemId;
-        xiesheng.CXieshengPanel.CPanelFreshOpen();
-        xiesheng.CXieshengEditor.CEditorHeadwordSet("water");
+        xiesheng.CXieshengKindred.CEntryListPanel.CPanelFreshOpen();
+        xiesheng.CXieshengKindred.CEntryListEditor.CEditorEntry.CEntryHeadwordSet("water");
         int changed = 0;
         xiesheng.CXieshengChanged += () => changed++;
 
@@ -228,7 +208,7 @@ public sealed class TXiesheng
         Assert.Equal(["Leave"], asked);
         Assert.False(xiesheng.CXieshengStemShown);
         Assert.DoesNotContain(xiesheng.CXieshengGroveRead(), static row => row.CStemChosen);
-        Assert.False(xiesheng.CXieshengPanel.CPanelEditing);
+        Assert.False(xiesheng.CXieshengKindred.CEntryListEditing);
         Assert.Equal(1, changed);
     }
 
@@ -258,7 +238,7 @@ public sealed class TXiesheng
     }
 
     [Fact]
-    public async Task XieshengGroveFind_UnmatchedQuery_ReadsTheUnmatchedKeys()
+    public async Task XieshengApertureQuerySet_UnmatchedQuery_ReadsTheUnmatchedKeys()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -269,16 +249,16 @@ public sealed class TXiesheng
         CXiesheng xiesheng = TXieshengPrepare(atelier);
         xiesheng.TXieshengStemOpen(language, "龍");
 
-        xiesheng.CXieshengKindredFind("zzz");
+        xiesheng.CXieshengKindred.CEntryListPanel.CPanelAperture.CApertureQuerySet("zzz");
 
-        Assert.Empty(xiesheng.CXieshengKindredRead());
+        Assert.Empty(xiesheng.CXieshengKindred.CEntryListRead());
         Assert.Equal("Xiesheng.KindredUnmatched", xiesheng.CXieshengKindredKey);
 
-        xiesheng.CXieshengGroveFind("zzz");
+        xiesheng.CXieshengGrove.CApertureQuerySet("zzz");
 
         Assert.Empty(xiesheng.CXieshengGroveRead());
-        Assert.True(xiesheng.CXieshengGroveEmpty);
-        Assert.Equal("Xiesheng.GroveUnmatched", xiesheng.CXieshengGroveKey);
+        Assert.True(xiesheng.CXieshengGrove.CApertureEmpty);
+        Assert.Equal("Xiesheng.GroveUnmatched", xiesheng.CXieshengGrove.CApertureKey);
         Assert.False(xiesheng.CXieshengStemShown);
     }
 
@@ -292,9 +272,9 @@ public sealed class TXiesheng
         string language = pack.TLanguageFixtureName;
         await TXieshengStemSave(engine, language);
         CXiesheng xiesheng = TXieshengPrepare(atelier);
-        xiesheng.CXieshengGroveFind("zzz");
+        xiesheng.CXieshengGrove.CApertureQuerySet("zzz");
         List<string> seen = [];
-        xiesheng.CXieshengStemOpened += () => seen.Add(xiesheng.CXieshengGroveKey);
+        xiesheng.CXieshengStemOpened += () => seen.Add(xiesheng.CXieshengGrove.CApertureKey);
 
         xiesheng.TXieshengStemOpen(language, "龍");
 
@@ -303,68 +283,19 @@ public sealed class TXiesheng
     }
 
     [Fact]
-    public void XieshengGroveSet_NullAfterAnOrder_KeepsTheChosenOne()
+    public void XieshengApertureOrderSet_NullAfterAnOrder_KeepsTheChosenOne()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CXiesheng xiesheng = TXieshengPrepare(atelier);
 
-        Assert.Equal(CCatalogOrder.CCatalogOrderName, xiesheng.CXieshengOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderName, xiesheng.CXieshengGrove.CApertureOrder);
 
-        xiesheng.CXieshengGroveSet(CCatalogOrder.CCatalogOrderReverse);
-        xiesheng.CXieshengGroveSet(null);
+        xiesheng.CXieshengGrove.CApertureOrderSet(CCatalogOrder.CCatalogOrderReverse);
+        xiesheng.CXieshengGrove.CApertureOrderSet(null);
 
-        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, xiesheng.CXieshengOrder);
-    }
-
-    [Fact]
-    public async Task XieshengPortraitExport_ChosenEntry_WritesItAndNothingBefore()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = TXieshengEngineStart(workspace);
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        string language = pack.TLanguageFixtureName;
-        LEntry entry = await TXieshengStemSave(engine, language);
-        string path = Path.Combine(workspace.TWorkspaceFolder, "dragon.md");
-        CXiesheng xiesheng = TXieshengPrepare(
-            atelier, TEnvoyFake.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
-
-        await xiesheng.CXieshengPortraitExport();
-
-        Assert.False(File.Exists(path));
-
-        xiesheng.TXieshengStemOpen(language, "龍");
-        xiesheng.CXieshengPanel.CPanelRowSelect(entry.LEntryId);
-        await xiesheng.CXieshengPortraitExport();
-
-        Assert.Contains("龍", File.ReadAllText(path), StringComparison.Ordinal);
-        Assert.Contains("龍", xiesheng.TXieshengFileRead(), StringComparison.Ordinal);
-        Assert.False(xiesheng.CXieshengStemShown);
-        Assert.True(xiesheng.CXieshengDisplayShown);
-    }
-
-    [Fact]
-    public async Task XieshengPanelRowOpen_ScribeOn_OpensTheEntryInTheEditorUntilClosed()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = TXieshengEngineStart(workspace);
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        LEntry entry = await TXieshengStemSave(engine, pack.TLanguageFixtureName);
-        CXiesheng xiesheng = TXieshengPrepare(atelier);
-
-        xiesheng.CXieshengPanel.CPanelRowOpen(entry.LEntryId);
-        xiesheng.CXieshengPanel.CPanelScribeToggle(true);
-
-        Assert.True(xiesheng.CXieshengEditorShown);
-        Assert.Equal(entry.LEntryId, xiesheng.CXieshengEditor.CEditorDesk.CDeskStoredRead());
-
-        xiesheng.CXieshengPanel.CPanelEntryClose();
-
-        Assert.False(xiesheng.CXieshengEditorShown);
-        Assert.Null(xiesheng.CXieshengEditor.CEditorDesk.CDeskStoredRead());
+        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, xiesheng.CXieshengGrove.CApertureOrder);
     }
 
     internal static CXiesheng TXieshengPrepare(CAtelier atelier)
@@ -372,7 +303,7 @@ public sealed class TXiesheng
         return TXieshengPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
     }
 
-    private static CXiesheng TXieshengPrepare(CAtelier atelier, CEnvoy envoy)
+    internal static CXiesheng TXieshengPrepare(CAtelier atelier, CEnvoy envoy)
     {
         CXiesheng xiesheng = CXiesheng.CXieshengCreate(atelier, static () => true, envoy, static run => run());
         return xiesheng;

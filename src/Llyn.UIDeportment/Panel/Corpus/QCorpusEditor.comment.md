@@ -1,5 +1,5 @@
 # QCorpusEditor.cs
-Hash: `4664a65dd6d46d87`
+Hash: `0ac970b796c262b4`
 
 ## `internal sealed partial class QCorpus`
 
@@ -74,4 +74,4 @@ The citation field is repainted only when its carried line changed, as `_qTransc
 
 ## `private void QCorpusFreshObserve(object sender, RoutedEventArgs e)`
 
-New asks the gate `CCorpusExampleCreate`, which decides between a fresh Example and a new quotation.
+New asks the diptych's gate `CDiptychEntryCreate`, which decides between a fresh Example and a new quotation.

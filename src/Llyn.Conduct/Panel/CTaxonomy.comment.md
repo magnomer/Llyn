@@ -1,5 +1,5 @@
 # CTaxonomy.cs
-Hash: `fe824e1ad6cec897`
+Hash: `a3abd244bea7e477`
 
 ## `public sealed class CTaxonomy`
 
@@ -10,10 +10,10 @@ It restores both vistas itself, so no driver holds a port or a vista.
 
 ## `private CTaxonomy(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
-Builds the entry editor and the entry list over the atelier's ports.
+Builds the aperture over the tag vista first, under `Tag.LoadFailed`.
+Then it builds the entry editor and the entry list over the atelier's ports.
 The entry list's panel asks the editor's desk before it leaves an entry, and it finishes through the editor.
 A cleared panel cancels the editor's draft, and an edited row opens the editor on it.
-So the first draft a fresh member shows already carries the Tag.
 It registers its close with the workspace beside its draft finish and its vista restore.
 It restores its vistas last, so a built area already stands on started vistas.
 
@@ -23,6 +23,13 @@ Builds the taxonomy over the atelier and the panel's own entry editor.
 Building it is no user action, so it is no gate on the atelier.
 `shownSeam` answers whether the tab is in front, which only the surface knows until `CNavigation` owns it.
 `marshal` carries every engine notice onto the driver's thread, and the driver hands it once.
+
+## `public CAperture CTaxonomyAperture { get; }`
+
+The list slot of the Tag list, which holds the tag vista and raises the Tag rows.
+Its query, ordering and filter are the Tag list's, and a driver sets them through it.
+Its chosen Tag is the station the voyage records.
+The entry rows follow a Tag rows read, so the Tag list is always read first.
 
 ## `public CEditor CTaxonomyEditor { get; }`
 
@@ -35,12 +42,7 @@ The entry list beside the Tag list, with its own panel, search and rows read.
 ## `public event Action? CTaxonomyTagOpened;`
 
 Raised when an arrival or a coinage opens a Tag, so the driver shows both searches empty.
-The rows event follows it, so the lists are read after the fields are emptied.
-
-## `public event Action? CTaxonomyRowsChanged;`
-
-Raised when the Tag rows may have moved, so the driver reads the Tag list again.
-The entry rows follow from that read, so the Tag list is always read first.
+The aperture's rows notice follows it, so the lists are read after the fields are emptied.
 
 ## `public event Action? CTaxonomyWorkspaceChanged;`
 
@@ -58,24 +60,6 @@ The navigation's arrival: chooses the Tag and empties both searches, then raises
 Emptying the searches is the arrival's own, so no driver has to echo it back through the query gates.
 It raises the rows last, since the Tag may be new to the list.
 
-## `public bool CTaxonomyFiltered`
-
-Whether the tag vista hides any language, as the vista answers it.
-
-## `public CCatalogOrder CTaxonomyOrder`
-
-The ordering the Tag list uses, as a driver marks it in a menu.
-The engine answers the ordering before a vista arrives.
-
-## `public CCatalogFilter CTaxonomyFilter`
-
-The languages the Tag list hides, as a driver ticks them in a menu.
-The engine answers the filter before a vista arrives.
-
-## `internal long? LTaxonomyChosen`
-
-The Tag the tag vista has chosen, or null while none is, which the voyage records.
-
 ## `private bool LTaxonomyCoinageAllowed`
 
 Whether New should name a new Tag rather than start an entry.
@@ -85,7 +69,7 @@ Only the fresh gate reads it, after the leave question settled the shown entry.
 ## `internal void LTaxonomyVistaRestore()`
 
 Starts the tag vista and the membership vista for this tab.
-Each fresh vista takes the query its forerunner held, so a switched workspace keeps both searches.
+Each aperture carries its held query into the fresh vista, so a switched workspace keeps both searches.
 The tag vista is the entry list's roll, and the membership vista goes to the entry list and the editor.
 The observers are attached to the fresh vistas last.
 The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
@@ -94,19 +78,12 @@ The constructor runs it last, and a workspace change runs it again through `CWor
 
 The taxonomy's subject plan, attached to each fresh pair of vistas.
 Every notice runs through the marshal, so each answer lands on the driver's thread.
-A vista, reflex, settings or entry notice on the tag vista raises the rows.
+Each answer attaches to the tag vista through the aperture.
+A vista, reflex, settings or entry notice on the tag vista raises the aperture's rows.
 A reflex fill or a flipped setting rewrites the epithet beside a headword.
 A workspace notice and a Tag notice each have their own answer.
 The entry list attaches its own observers in between, in the order the driver once used.
 A draft edit or a fetched frequency, paradigm, script or fanqie row changes no listed row, and is not attached.
-
-## `private void LTaxonomySubjectAttach(CSubject subject, Action resonate)`
-
-Attaches one answer to the tag vista for one subject, through the marshal.
-
-## `private void LTaxonomyRowsResonate()`
-
-Raises the Tag rows, whose read then raises the entry rows.
 
 ## `private void LTaxonomyWorkspaceResonate()`
 
@@ -118,21 +95,6 @@ A different workspace has its own Tags, so the Tag this panel stood on may not e
 
 A Tag notice carries a Tag id, not an entry id, so it never selects a row.
 It raises the rows, then rereads the shown entry, whose chips may carry the renamed Tag.
-
-## `public void CTaxonomyQuerySet(string query)`
-
-Hands the search text to the tag vista, which announces only a changed text.
-A workspace change carries it into the fresh vista, so the driver never re-sends it.
-
-## `public void CTaxonomyOrderSet(CCatalogOrder? order)`
-
-Orders the Tag list as the user chose.
-A null order keeps the current one, which the vista decides.
-
-## `public void CTaxonomyFilterSet(CCatalogFilter filter)`
-
-Hands the hidden languages to the tag vista, and the posture stores them under the tab.
-The vista announces only a changed filter.
 
 ## `public IReadOnlyList<CCatalogTag> CTaxonomyRowsRead()`
 
@@ -153,7 +115,7 @@ The driver awaits it from an event handler, where a fault would end the app.
 ## `private void LTaxonomyTagCreate(string name)`
 
 Makes the Tag from the raw wording and opens it as an arrival does.
-The clerk below trims the wording and refuses a blank one.
+The clerk below refuses a blank wording.
 The panel is cleared first, so an unsaved fresh entry the leave check already settled does not linger.
 A refused Tag is shown through `CEnvoy` as `Tag.CreateFailed`, and nothing opens.
 

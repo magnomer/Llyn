@@ -16,7 +16,7 @@ public sealed class TCardSpeech
         CEditor editor = TCardSpeechPrepare(engine);
 
         CCategory offered = editor.CEditorSpeech.CCardSpeechSet(" verb");
-        editor.CEditorDesk.CDeskPersist();
+        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
 
         Assert.True(offered.CCategoryShown);
         Assert.Equal(["verb"], TSpeechNamesRead(editor));
@@ -92,7 +92,7 @@ public sealed class TCardSpeech
 
         editor.CEditorSpeech.CCardSpeechAdd("   ");
 
-        Assert.False(editor.CEditorDesk.CDeskChanged);
+        Assert.False(editor.CEditorDesk.CDeskDraft.CDeskDraftAltered);
         Assert.Empty(editor.CEditorSpeech.CCardSpeechRead().CMarkerSpeeches);
     }
 
@@ -138,7 +138,7 @@ public sealed class TCardSpeech
         CEditor editor = TCardSpeechPrepare(engine);
         editor.CEditorSpeech.CCardSpeechAdd("Noun");
 
-        editor.CEditorDesk.CDeskUndo();
+        editor.CEditorDesk.CDeskChronicle.CDeskChronicleUndo();
         CMarker undone = editor.CEditorSpeech.CCardSpeechRead();
         editor.CEditorSpeech.CCardSpeechAdd("Verb");
 
@@ -153,14 +153,14 @@ public sealed class TCardSpeech
         CEditor editor = TInterfaceEditor.TEditorCreate(engine);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(null);
-        editor.CEditorLanguageSet("English");
+        editor.CEditorEntry.CEntryLanguageSet("English");
         editor.CEditorSpeech.CCardSpeechRead();
         return editor;
     }
 
     private static string[] TSpeechNamesRead(CEditor editor)
     {
-        editor.CEditorDesk.CDeskPersist();
+        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
         return editor.CEditorDesk.TDeskRead()!.LDraftContent.LEntryDraftSpeeches
             .Select(static speech => speech.LSpeechDraftName)
             .ToArray();

@@ -114,7 +114,7 @@ public sealed class TEsteem
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEsteem esteem = TInterfaceConductDesk.TEsteemCreate(
-            engine, TDisplay.TGraspPortCreate(limit, 0), TEsteemStoredPrepare(engine));
+            engine, TDisplayGrasp.TGraspPortCreate(limit, 0), TEsteemStoredPrepare(engine));
 
         Assert.Equal(read, esteem.CEsteemGraspStep);
     }
@@ -136,7 +136,7 @@ public sealed class TEsteem
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEsteem esteem = TInterfaceConductDesk.TEsteemCreate(
-            engine, TDisplay.TGraspPortCreate(limit, stored), TEsteemStoredPrepare(engine));
+            engine, TDisplayGrasp.TGraspPortCreate(limit, stored), TEsteemStoredPrepare(engine));
 
         Assert.Equal(read, esteem.CEsteemGrasp);
         Assert.InRange(esteem.CEsteemGrasp, 0, esteem.CEsteemGraspStep);

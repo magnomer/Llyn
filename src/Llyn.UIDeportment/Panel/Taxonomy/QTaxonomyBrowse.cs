@@ -20,17 +20,17 @@ internal sealed partial class QTaxonomy
 
     private void QExplorationObserve(object sender, TextChangedEventArgs e)
     {
-        _cTaxonomy.CTaxonomyQuerySet(QExploration.Text ?? string.Empty);
+        _cTaxonomy.CTaxonomyAperture.CApertureQuerySet(QExploration.Text ?? string.Empty);
     }
 
     private void QScoutObserve(object sender, TextChangedEventArgs e)
     {
-        _cTaxonomy.CTaxonomyMembership.CMembershipQuerySet(QScout.Text);
+        _cTaxonomy.CTaxonomyMembership.CMembershipPanel.CPanelAperture.CApertureQuerySet(QScout.Text);
     }
 
     private void QFunnelObserve(object sender, RoutedEventArgs e)
     {
-        _cTaxonomy.CTaxonomyOrderSet(QChoice.QChoiceOrderRead(sender));
+        _cTaxonomy.CTaxonomyAperture.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
         QFunnelDropperRefine();
     }
 
@@ -41,7 +41,7 @@ internal sealed partial class QTaxonomy
 
     private void QLatticeObserve(object sender, RoutedEventArgs e)
     {
-        _cTaxonomy.CTaxonomyFilterSet(QChoice.QChoiceFilterRead(sender));
+        _cTaxonomy.CTaxonomyAperture.CApertureFilterSet(QChoice.QChoiceFilterRead(sender));
         QLatticeRefine();
     }
 
@@ -55,7 +55,7 @@ internal sealed partial class QTaxonomy
                 CCatalogOrder.CCatalogOrderName,
                 CCatalogOrder.CCatalogOrderReverse,
             ]);
-        QChoice.QChoiceOrderApply(QFunnelDropdown, _cTaxonomy.CTaxonomyOrder);
+        QChoice.QChoiceOrderApply(QFunnelDropdown, _cTaxonomy.CTaxonomyAperture.CApertureOrder);
         QLatticeRefine();
         CEnsignSheet<IReadOnlyList<CCatalogTag>> sheet =
             await _cTaxonomy.CTaxonomyRowsLoad(QEnsignImage.QEnsignDraw);
@@ -65,12 +65,14 @@ internal sealed partial class QTaxonomy
 
     private void QLatticeListRefine(IReadOnlyList<string> languages)
     {
-        QChoice.QChoiceFilterBuild(QLatticeList, languages, _cTaxonomy.CTaxonomyFilter, QLatticeObserve);
+        QChoice.QChoiceFilterBuild(
+            QLatticeList, languages, _cTaxonomy.CTaxonomyAperture.CApertureFilter, QLatticeObserve);
     }
 
     private void QLatticeRefine()
     {
-        QLatticeMark.Visibility = _cTaxonomy.CTaxonomyFiltered ? Visibility.Visible : Visibility.Collapsed;
+        QLatticeMark.Visibility = _cTaxonomy.CTaxonomyAperture.CApertureFiltered
+            ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void QDirectoryRefine()
@@ -159,6 +161,6 @@ internal sealed partial class QTaxonomy
 
     private void QTaxonomyBinObserve(object sender, RoutedEventArgs e)
     {
-        _cTaxonomy.CTaxonomyMembership.CMembershipPanel.CPanelEntryDelete();
+        _cTaxonomy.CTaxonomyMembership.CMembershipPanel.CPanelBin.CPanelBinDelete();
     }
 }

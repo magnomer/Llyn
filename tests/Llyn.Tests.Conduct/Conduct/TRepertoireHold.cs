@@ -26,12 +26,12 @@ public sealed class TRepertoireHold
                 marshalled++;
                 run();
             });
-        repertoire.CRepertoireSituationCreate();
+        repertoire.CRepertoireDiptych.CDiptychEntryCreate();
         List<CScenario> drafted = [];
         repertoire.CRepertoirePlaywright.CPlaywrightDraftChanged += drafted.Add;
 
         TRepertoire.TRepertoireTitleDefer(repertoire);
-        repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskPersist();
+        repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskDraft.CDeskDraftPersist();
 
         Assert.True(marshalled > 0);
         Assert.Equal("in court", drafted[^1].CScenarioDraft.CSituationDraftTitle.CStateValueText);
@@ -45,7 +45,7 @@ public sealed class TRepertoireHold
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         engine.TEngineDelaySet(0);
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        repertoire.CRepertoireSituationCreate();
+        repertoire.CRepertoireDiptych.CDiptychEntryCreate();
 
         CScenarioLine typed = repertoire.CRepertoirePlaywright.CPlaywrightTitleSet("in court");
         CScenarioLine cleared = repertoire.CRepertoirePlaywright.CPlaywrightDescriptionSet(string.Empty);
@@ -66,7 +66,7 @@ public sealed class TRepertoireHold
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         engine.TEngineDelaySet(0);
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        repertoire.CRepertoireSituationCreate();
+        repertoire.CRepertoireDiptych.CDiptychEntryCreate();
 
         CScenarioLine typed = repertoire.CRepertoirePlaywright.CPlaywrightKindSet("formal");
         string kind = repertoire.TRepertoireScenarioRead()!.CSituationDraftKind.CStateValueText;
@@ -89,7 +89,7 @@ public sealed class TRepertoireHold
         List<CScenario> held = [];
         repertoire.CRepertoirePlaywright.CPlaywrightScenarioChanged += held.Add;
         repertoire.TRepertoireSituationOpen(home.LSituationId);
-        repertoire.CRepertoireScribeToggle(true);
+        repertoire.CRepertoireDiptych.CDiptychScribeToggle(true);
         CScenario stored = held[^1];
 
         repertoire.CRepertoireSession.CSessionCancel();
@@ -130,8 +130,8 @@ public sealed class TRepertoireHold
         LSituation home = TRepertoire.TRepertoireSituationSave(engine, "at home");
         LEntry hearth = TRepertoire.TRepertoireEntrySave(engine, "hearth", home);
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        repertoire.CRepertoireOccurrenceSelect(hearth.LEntryId);
-        repertoire.CRepertoireScribeToggle(true);
+        repertoire.CRepertoireDiptych.CDiptychChildSelect(hearth.LEntryId);
+        repertoire.CRepertoireDiptych.CDiptychScribeToggle(true);
         Assert.True(repertoire.CRepertoireEditor.CEditorDesk.CDeskHeld);
 
         atelier.CAtelierClose();

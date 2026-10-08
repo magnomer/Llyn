@@ -1,5 +1,5 @@
 # CMembership.cs
-Hash: `3e17fc089a86d709`
+Hash: `cbad96e2279b9428`
 
 ## `public sealed class CMembership`
 
@@ -9,21 +9,17 @@ It is shaped like `CQuotation`, and the taxonomy owns it as `CCorpus` owns its q
 ## `internal CMembership(LVistaPort vistas, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
 Builds the panel over the membership vista, which reports a failed load as `Tag.LoadFailed`.
+Its empty list reads `Tag.Unmatched` under a search and `Tag.Vacant` without one.
 The panel asks the editor's desk before it leaves an entry, and it finishes through the editor.
 
 ## `public CPanel CMembershipPanel { get; }`
 
 The shared panel state over the membership vista: the chosen entry, the scribe mode, the bin and the leave guard.
 
-## `public string CMembershipEmptyKey`
-
-The localization key for the empty entry list.
-The engine says whether the search holds text, so a search reads as unmatched and no search as vacant.
-
 ## `internal void LMembershipVistaRestore(LVista roll, LVista vista)`
 
-Takes the fresh tag vista as its roll and the fresh membership vista as its own.
-The fresh vista takes the query its forerunner held, so a switched workspace keeps the search.
+Takes the fresh tag vista as its roll and hands the fresh membership vista to the panel's aperture.
+The aperture carries the held query into it, so a switched workspace keeps the search.
 
 ## `internal void LMembershipObserverAttach(Action<Action> marshal)`
 
@@ -32,14 +28,14 @@ An entry notice goes to the panel, whose chosen row it may name.
 A vista notice raises the entry rows alone, since only the entry search moved.
 A notice on the chosen entry rereads its draft.
 
-## `public void CMembershipQuerySet(string query)`
-
-Narrows the entries of the chosen Tag by the text typed in the entry search.
-
 ## `public IReadOnlyList<CVistaRow> CMembershipRowsRead()`
 
 The entries under the chosen Tag, or every entry while none is chosen, as the engine narrows them.
 A failed read shows `Tag.LoadFailed` through the envoy and answers no rows.
+
+## `internal string LMembershipFileRead()`
+
+The file name an export of the shown entry is offered under, read from the membership vista.
 
 ## `public Task CMembershipPortraitPrint()`
 

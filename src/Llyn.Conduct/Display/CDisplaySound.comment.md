@@ -1,20 +1,17 @@
 # CDisplaySound.cs
-Hash: `3e930bd130a5071d`
+Hash: `d705d21e721a8ada`
 
 ## `public sealed class CDisplaySound`
 
-The reading view's sound area, holding the gates and reads of its pronunciation, playback, glyph and sound blocks.
+The reading view's sound area, holding the gates and reads of its glyph, reflex, rime-book, script and paradigm blocks.
 It is split from [CDisplay](CDisplay.comment.md) by role, since the header keeps its own area.
+The pronunciation block went to [CDisplayAccent](CDisplayAccent.comment.md), and playback to [CDisplayPlayback](CDisplayPlayback.comment.md).
 The header area builds one over the rules' sound half and itself.
 So every driver over that area hears the same events.
 It holds no state of its own.
-The shown draft, the fold and the latest play stay in [LDisplaySound](LDisplaySound.comment.md).
+The shown draft and the fold stay in [LDisplaySound](LDisplaySound.comment.md).
 The shown language and headword come from the header's C record, so no engine record is read for them.
 Every read answers the empty block while nothing is shown, so a late notice paints what a close painted.
-
-## `private static readonly CLecternAccent _cDisplayMute`
-
-The pronunciation block while nothing is shown or the pack refused, with no reading, row or flag.
 
 ## `private static readonly CFont _cDisplayBare`
 
@@ -24,19 +21,14 @@ The font with nothing set, so a block with nothing shown keeps its theme.
 
 The anchors while nothing is shown or the engine refused, with no row anchored.
 
-## `internal CDisplaySound(LDisplay display, CDisplay header, LDraftPort drafts, LEntryPort entries, LGlyphPort glyphs, LLanguagePort languages, LFanqiePort fanqies, LDiweiPort diweis, LScriptPort scripts, LParadigmPort paradigms, LReflexPort reflexes, LMediaPort media, LSettingsPort settings, CEnvoy envoy)`
+## `internal CDisplaySound(LDisplay display, CDisplay header, LDraftPort drafts, LEntryPort entries, LGlyphPort glyphs, LFanqiePort fanqies, LDiweiPort diweis, LScriptPort scripts, LParadigmPort paradigms, LReflexPort reflexes, LSettingsPort settings, CEnvoy envoy)`
 
 Only the header area builds its sound area, over the ports and the envoy the atelier handed down.
 It takes the sound half and the atelier's repaint memory from `display`, so the width did not grow.
 Every read below shows its failure through that memory, since it runs on every repaint.
 `glyphs` reads the glyph row and transcriptions, and `entries` opens the entry a glyph cell names.
 Each sound block reads through its own narrow port, so no block reaches a slice it never shows.
-The play and fanqie gates answer a user act, so they show every failure.
-
-## `public IReadOnlyList<int> CDisplaySoundScale`
-
-The pitch levels a tone contour draws, highest first, one guide line each.
-It comes from the language port, so the scale keeps the one owner that parses the levels.
+The fanqie gate answers a user act, so it shows every failure.
 
 ## `public event Action? CDisplayFoldChanged;`
 
@@ -66,55 +58,6 @@ The shown draft the sound half holds, passed unread to the engine.
 ## `private long? LDisplayEntry`
 
 The shown entry's id, which every phonology read is made for.
-
-## `public CLecternAccent CDisplayAccentRead()`
-
-The shown entry's pronunciation block, ready to draw.
-The engine answers the readings, the brackets and the pack's verdicts in one read.
-Conduct only chooses each variety's label key through `CSounding.CSoundingVarietyRead`.
-Nothing shown answers the mute block, and a refused read shows `Sound.LoadFailed` once and answers it too.
-
-## `public async Task<CLecternAccent?> CDisplayEnsignLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
-
-The load a driver starts once an entry opened, for the flags its pronunciation block draws.
-The engine picks the varieties and loads nothing when the pack shows no flags.
-`store` is the driver's own image store, handed the rows through the one flag map.
-It answers the block again once the flags are in, so the driver repaints its rows.
-Another entry shown meanwhile wins, so a late load answers null and paints nothing.
-A failed load shows `Sound.LoadFailed` once and answers null, like `CDisplayAccentRead`.
-
-## `private CLecternAccent LDisplayAccentRead(LAccentSheet sheet)`
-
-Maps the engine's block into the Conduct record, reading no rule.
-The contour is drawn over the language port's scale, so the method reads the instance.
-
-## `public CLecternPlayback CDisplayPlaybackRead()`
-
-The play button and volume tray verdicts for the shown entry.
-The engine answers both, so Conduct reads no audio field.
-A refused read shows `Sound.LoadFailed` once and hides both.
-
-## `public void CDisplayPlaybackStart(double volume)`
-
-The gate for the play button.
-It plays the shown draft's own recording at the level the driver's slider shows.
-The engine picks the file from the draft, so Conduct reads no field of it.
-
-## `public void CDisplayPlaybackStart(string? audio, double volume)`
-
-The gate for an accent row's play command.
-It plays that row's recording at the slider's level.
-
-## `private void LDisplayPlaybackStart(Func<int> play)`
-
-Runs one play and keeps its ticket in the sound half, so a later stop reaches this play alone.
-A refused play shows `Sound.PlayFailed` every time and keeps the old ticket.
-
-## `public void CDisplayPlaybackCancel()`
-
-The gate for a view going away.
-It stops this view's own play.
-A sound another view started plays on.
 
 ## `public CLecternGlyph CDisplayGlyphRead()`
 
@@ -204,5 +147,5 @@ It hands the map this view's envoy, settings and repaint memory, so a refusal sh
 
 ## `public CFont CDisplayFontRead(CFontRole role)`
 
-The font of `role` in the shown language, through the catalog's one font rule.
+The font of `role` in the shown language, through the one font rule `CFont.CFontRead` holds.
 The reading view paints its headword and its example cards from it, so no driver hands a language back.

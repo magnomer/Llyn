@@ -53,7 +53,7 @@ public sealed class CSentence
 
     public void CSentenceAdd(long cardId, int below)
     {
-        if (_cSentenceDesk.CDeskTenure?.LTenureRead() is not LDraft held
+        if (_cSentenceDesk.CDeskDraft.CDeskDraftTenure?.LTenureRead() is not LDraft held
             || held.LDraftContent.LEntryDraftMeanings
                 .Concat(held.LDraftContent.LEntryDraftCollocations)
                 .FirstOrDefault(card => card.LCardDraftId == cardId) is not LCardDraft card
@@ -63,52 +63,52 @@ public sealed class CSentence
             return;
         }
 
-        _cSentenceDesk.CDeskSentence?.LQuillSentenceAdd(cardId, below + 1);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LQuillSentenceAdd(cardId, below + 1);
     }
 
     public void CSentenceRemove(long cardId, long sentenceId)
     {
-        _cSentenceDesk.CDeskSentence?.LQuillSentenceRemove(cardId, sentenceId);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LQuillSentenceRemove(cardId, sentenceId);
     }
 
     public void CSentenceTextSet(long cardId, long sentenceId, string text)
     {
-        _cSentenceDesk.CDeskSentence?.LQuillSentenceSet(cardId, sentenceId, text);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LQuillSentenceSet(cardId, sentenceId, text);
     }
 
     public void CSentenceParticleSet(long cardId, long sentenceId, string text)
     {
-        _cSentenceDesk.CDeskSentence?.LSentenceParticleSet(cardId, sentenceId, text);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceParticleSet(cardId, sentenceId, text);
     }
 
     public void CSentenceDependenceSet(long cardId, long sentenceId, string text)
     {
-        _cSentenceDesk.CDeskSentence?.LSentenceDependenceSet(cardId, sentenceId, text);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceDependenceSet(cardId, sentenceId, text);
     }
 
     public void CSentenceCitationSet(long cardId, long sentenceId, long referenceId)
     {
-        _cSentenceDesk.CDeskSentence?.LSentenceCitationSet(cardId, sentenceId, referenceId);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceCitationSet(cardId, sentenceId, referenceId);
     }
 
     public void CSentenceGlossSet(long cardId, long sentenceId, long glossId, string text)
     {
-        _cSentenceDesk.CDeskSentence?.LSentenceGlossSet(cardId, sentenceId, glossId, null, text);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceGlossSet(cardId, sentenceId, glossId, null, text);
     }
 
     public void CSentenceLanguageSet(long cardId, long sentenceId, long glossId, string language)
     {
-        _cSentenceDesk.CDeskSentence?.LSentenceGlossSet(cardId, sentenceId, glossId, language, null);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceGlossSet(cardId, sentenceId, glossId, language, null);
     }
 
     public void CSentenceGlossAdd(long cardId, long sentenceId)
     {
-        _cSentenceDesk.CDeskSentence?.LQuillGlossAdd(cardId, sentenceId);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LQuillGlossAdd(cardId, sentenceId);
     }
 
     public void CSentenceGlossRemove(long cardId, long sentenceId, long glossId)
     {
-        _cSentenceDesk.CDeskSentence?.LSentenceGlossRemove(cardId, sentenceId, glossId);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceGlossRemove(cardId, sentenceId, glossId);
     }
 
     public void CSentenceMentionAdd(long cardId, long sentenceId, string text, int start, int length, long? entryId)
@@ -119,38 +119,38 @@ public sealed class CSentence
             return;
         }
 
-        _cSentenceDesk.CDeskChip?.LQuillMentionAdd(cardId, sentenceId, text, start, length, stored);
+        _cSentenceDesk.CDeskDraft.CDeskDraftChip?.LQuillMentionAdd(cardId, sentenceId, text, start, length, stored);
     }
 
     public void CSentenceSilenceSet(long cardId, long sentenceId, string text, int start, int length)
     {
-        _cSentenceDesk.CDeskChip?.LQuillMentionAdd(cardId, sentenceId, text, start, length, 0);
+        _cSentenceDesk.CDeskDraft.CDeskDraftChip?.LQuillMentionAdd(cardId, sentenceId, text, start, length, 0);
     }
 
     public void CSentenceSenseSet(long cardId, long sentenceId, string text, int start, int length, long senseId)
     {
-        _cSentenceDesk.CDeskChip?.LQuillSenseSet(cardId, sentenceId, text, start, length, senseId);
+        _cSentenceDesk.CDeskDraft.CDeskDraftChip?.LQuillSenseSet(cardId, sentenceId, text, start, length, senseId);
     }
 
     public void CSentenceMentionRemove(long cardId, long sentenceId, long mentionId)
     {
-        _cSentenceDesk.CDeskMention?.LQuillMentionRemove(cardId, sentenceId, mentionId);
+        _cSentenceDesk.CDeskDraft.CDeskDraftMention?.LQuillMentionRemove(cardId, sentenceId, mentionId);
     }
 
     public void CSentenceMentionRemove(long cardId, long sentenceId, string text, int start, int length)
     {
-        _cSentenceDesk.CDeskChip?.LQuillMentionRemove(cardId, sentenceId, text, start, length);
+        _cSentenceDesk.CDeskDraft.CDeskDraftChip?.LQuillMentionRemove(cardId, sentenceId, text, start, length);
     }
 
     public bool CSentenceMentionCheck(long cardId, long sentenceId, string text, int start, int length)
     {
-        return _cSentenceDesk.CDeskTenure is LTenure held
+        return _cSentenceDesk.CDeskDraft.CDeskDraftTenure is LTenure held
             && new LQuillMention(held).LQuillMentionCheck(cardId, sentenceId, text, start, length);
     }
 
     public bool CSentenceSenseCheck(long cardId, long sentenceId, string text, int start, int length)
     {
-        return _cSentenceDesk.CDeskTenure is LTenure held
+        return _cSentenceDesk.CDeskDraft.CDeskDraftTenure is LTenure held
             && new LQuillMention(held).LQuillSenseCheck(cardId, sentenceId, text, start, length);
     }
 
@@ -171,7 +171,7 @@ public sealed class CSentence
 
     public IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> CSentenceMentionRead()
     {
-        if (_cSentenceDesk.CDeskTenure is not LTenure held || held.LTenureRead() is not LDraft draft)
+        if (_cSentenceDesk.CDeskDraft.CDeskDraftTenure is not LTenure held || held.LTenureRead() is not LDraft draft)
         {
             return new Dictionary<long, IReadOnlyList<CMentionLabel>>();
         }
@@ -190,7 +190,7 @@ public sealed class CSentence
 
     public CSentenceFrame CSentenceFrameRead()
     {
-        string language = _cSentenceDesk.CDeskTenure?.LTenureLanguageRead() ?? string.Empty;
+        string language = _cSentenceDesk.CDeskDraft.CDeskDraftTenure?.LTenureLanguageRead() ?? string.Empty;
         return new CSentenceFrame(
             CCatalog.CCatalogOrderRead(_cSentencePort.LEngineOrderRead(language)),
             _cSentenceNoticed.LLedgerRepaintRead(

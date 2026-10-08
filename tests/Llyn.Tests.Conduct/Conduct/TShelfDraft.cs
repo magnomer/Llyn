@@ -18,7 +18,7 @@ public sealed class TShelfDraft
         List<string> asked = [];
         CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
         LReference book = engine.TEngineCitationCreate("Book");
-        shelf.CShelfReferenceCreate();
+        shelf.CShelfDiptych.CDiptychEntryCreate();
         shelf.CShelfImprint.CImprintTitleSet("Tome");
         int recorded = 0;
         atelier.CAtelierNavigation.CNavigationChanged += _ => recorded++;
@@ -28,8 +28,8 @@ public sealed class TShelfDraft
         Assert.Equal(0, recorded);
         Assert.Equal(["Leave"], asked);
         Assert.True(shelf.TShelfChangeRead());
-        Assert.True(shelf.CShelfImprintShown);
-        Assert.False(shelf.CShelfBinEnabled);
+        Assert.True(shelf.CShelfDiptych.CDiptychParentEditing);
+        Assert.False(shelf.CShelfDiptych.CDiptychBinEnabled);
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public sealed class TShelfDraft
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> asked = [];
         CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(true, asked));
-        shelf.CShelfReferenceCreate();
+        shelf.CShelfDiptych.CDiptychEntryCreate();
         shelf.CShelfImprint.CImprintTitleSet("Tome");
 
         Assert.True(shelf.TShelfLeaveConfirm());
@@ -48,8 +48,8 @@ public sealed class TShelfDraft
         Assert.Equal(["Leave"], asked);
         Assert.False(shelf.TShelfChangeRead());
         Assert.Contains(shelf.CShelfRollRead().CShelfRollRows, row => row.CCatalogReferenceName == "Tome");
-        Assert.True(shelf.CShelfColophonShown);
-        Assert.True(shelf.CShelfBinEnabled);
+        Assert.True(shelf.CShelfDiptych.CDiptychParentShown);
+        Assert.True(shelf.CShelfDiptych.CDiptychBinEnabled);
     }
 
     [Fact]
@@ -73,22 +73,22 @@ public sealed class TShelfDraft
         engine.TEngineDelaySet(0);
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        shelf.CShelfReferenceCreate();
+        shelf.CShelfDiptych.CDiptychEntryCreate();
         shelf.CShelfImprint.CImprintTitleSet("Tome");
 
         Assert.True(shelf.CShelfStoreEnabled);
-        Assert.True(shelf.CShelfChronicleRead().CShelfBackward);
+        Assert.True(shelf.CShelfSession.CSessionChronicleRead().CDeskBackward);
 
-        shelf.CShelfDraftUndo();
+        shelf.CShelfSession.CSessionUndo();
 
-        Assert.False(shelf.CShelfChronicleRead().CShelfBackward);
-        Assert.True(shelf.CShelfChronicleRead().CShelfForward);
+        Assert.False(shelf.CShelfSession.CSessionChronicleRead().CDeskBackward);
+        Assert.True(shelf.CShelfSession.CSessionChronicleRead().CDeskForward);
 
-        shelf.CShelfDraftRedo();
-        shelf.CShelfDraftSave();
+        shelf.CShelfSession.CSessionRedo();
+        shelf.CShelfSession.CSessionSave();
 
         Assert.False(shelf.CShelfImprint.CImprintHeld);
-        Assert.True(shelf.CShelfColophonShown);
+        Assert.True(shelf.CShelfDiptych.CDiptychParentShown);
         Assert.Contains(
             shelf.CShelfRollRead().CShelfRollRows,
             row => row.CCatalogReferenceName == "Tome" && row.CCatalogReferenceChosen);
@@ -101,7 +101,7 @@ public sealed class TShelfDraft
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        shelf.CShelfReferenceCreate();
+        shelf.CShelfDiptych.CDiptychEntryCreate();
         shelf.CShelfImprint.CImprintTitleSet("Tome");
 
         Assert.True(shelf.TShelfDraftFinish(false));
@@ -120,7 +120,7 @@ public sealed class TShelfDraft
         CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
         shelf.CShelfReferenceSelect(book.LReferenceId);
-        shelf.CShelfReferenceCreate();
+        shelf.CShelfDiptych.CDiptychEntryCreate();
 
         Assert.True(shelf.CShelfEditor.CEditorDesk.CDeskHeld);
 
@@ -139,14 +139,14 @@ public sealed class TShelfDraft
         List<string> asked = [];
         CShelf shelf = TShelf.TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
         LEntry water = TShelf.TShelfEntrySave(engine, "water");
-        shelf.CShelfReferenceCreate();
+        shelf.CShelfDiptych.CDiptychEntryCreate();
         shelf.CShelfImprint.CImprintTitleSet("Tome");
 
         shelf.CShelfEntrySelect(water.LEntryId);
 
         Assert.Equal(["Leave"], asked);
-        Assert.True(shelf.CShelfImprintShown);
-        Assert.False(shelf.CShelfDisplayShown);
+        Assert.True(shelf.CShelfDiptych.CDiptychParentEditing);
+        Assert.False(shelf.CShelfDiptych.CDiptychChildShown);
         Assert.True(shelf.TShelfChangeRead());
     }
 }

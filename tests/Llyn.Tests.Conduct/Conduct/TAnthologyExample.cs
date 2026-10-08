@@ -19,7 +19,7 @@ public sealed class TAnthologyExample
         desk.CDeskStart(null);
 
         string hint = anthology.CAnthologyTextSet("a cat");
-        desk.CDeskPersist();
+        desk.CDeskDraft.CDeskDraftPersist();
         anthology.CAnthologySpeakerSet("French");
 
         CExample? held = anthology.TAnthologyDraftRead(desk.TDeskRead());

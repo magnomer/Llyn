@@ -22,7 +22,7 @@ public sealed class TEditorField
         editor.CEditorField.CCardTitleSet(sheet, "Heat");
         editor.CEditorField.CCardExpressionSet(sheet, "on fire");
         editor.CEditorField.CCardMeaningSet(sheet, "burning");
-        editor.CEditorDesk.CDeskPersist();
+        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
 
         CCardDraft card = editor.TEditorDraftRead()!.CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
         Assert.Equal("Heat", card.CCardDraftTitle.CStateWordingText);
@@ -59,9 +59,9 @@ public sealed class TEditorField
         long sheet = TEditorSheetAdd(editor);
         editor.CEditorCard.CCardTranslationInsert(sheet, chat, string.Empty, string.Empty, 0);
         List<CEntryDraft> shown = [];
-        editor.CEditorDraftChanged += shown.Add;
+        editor.CEditorEntry.CEntryDraftChanged += shown.Add;
 
-        editor.CEditorDesk.CDeskDraftResonate();
+        editor.CEditorDesk.CDeskDraft.CDeskDraftResonate();
 
         CCardDraft card = shown[^1].CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
         Assert.Equal(["chat"], card.CCardDraftTranslation.Select(static target => target.CTranslationTargetHeadword));
@@ -88,7 +88,7 @@ public sealed class TEditorField
         long image = TEditorCardRead(editor, sheet).CCardDraftImage[0].CImageDraftId;
 
         editor.CEditorImage.CImageLocationSet(image, "cat.png");
-        editor.CEditorDesk.CDeskPersist();
+        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
 
         Assert.Equal("cat.png", TEditorCardRead(editor, sheet).CCardDraftImage[0].CImageDraftLocation.CStateValueShown);
     }
@@ -105,7 +105,7 @@ public sealed class TEditorField
 
         editor.CEditorVideo.CVideoLocationSet(video, "cat.mp4");
         editor.CEditorVideo.CVideoSpanSet(video, "0:01-0:03");
-        editor.CEditorDesk.CDeskPersist();
+        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
 
         CVideoDraft row = TEditorCardRead(editor, sheet).CCardDraftVideo[0];
         Assert.Equal("cat.mp4", row.CVideoDraftLocation.CStateValueShown);
@@ -125,7 +125,7 @@ public sealed class TEditorField
         long gloss = TEditorGlossRead(editor, sheet)[0].CGlossDraftId;
 
         editor.CEditorSentence.CSentenceGlossSet(sheet, sentence, gloss, "le chat");
-        editor.CEditorDesk.CDeskPersist();
+        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
 
         Assert.Equal("le chat", TEditorGlossRead(editor, sheet)[0].CGlossDraftText.CStateValueShown);
     }
@@ -193,7 +193,7 @@ public sealed class TEditorField
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TEditorFieldPrepare(engine);
-        editor.CEditorHeadwordSet("water");
+        editor.CEditorEntry.CEntryHeadwordSet("water");
         editor.CEditorDesk.CDeskErrand.CErrandRecordingStart(0);
 
         editor.CEditorClose();
@@ -202,7 +202,7 @@ public sealed class TEditorField
         Assert.Null(await editor.CEditorDesk.CDeskErrand.CErrandPreviewStart(
             new CRecording("Tagged", "https://example.test/gb.mp3", 0, true, "British")));
         Assert.Null(editor.CEditorDesk.CDeskStoredRead());
-        Assert.Equal(string.Empty, editor.CEditorLanguage);
+        Assert.Equal(string.Empty, editor.CEditorEntry.CEntryLanguage);
     }
 
     [Fact]
@@ -229,9 +229,9 @@ public sealed class TEditorField
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CEditor editor = TEditorFieldPrepare(engine);
 
-        editor.CEditorLanguageSet("English");
+        editor.CEditorEntry.CEntryLanguageSet("English");
 
-        Assert.Equal("English", editor.CEditorLanguage);
+        Assert.Equal("English", editor.CEditorEntry.CEntryLanguage);
     }
 
     [Fact]
@@ -260,10 +260,10 @@ public sealed class TEditorField
             marshalled++;
             run();
         });
-        editor.CEditorDraftChanged += _ => shown++;
+        editor.CEditorEntry.CEntryDraftChanged += _ => shown++;
 
-        editor.CEditorHeadwordSet("water");
-        editor.CEditorDesk.CDeskPersist();
+        editor.CEditorEntry.CEntryHeadwordSet("water");
+        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
 
         Assert.True(marshalled > 0);
         Assert.True(shown > 0);
@@ -300,7 +300,7 @@ public sealed class TEditorField
         editor.CEditorDesk.TDeskDefer(TInterface.TSentenceAdditionCreate(editor.CEditorDesk.CDeskId, sheet, 0));
         long sentence = TEditorCardRead(editor, sheet).CCardDraftSentence[0].CSentenceDraftId;
         editor.CEditorSentence.CSentenceTextSet(sheet, sentence, "the cat sat");
-        editor.CEditorDesk.CDeskPersist();
+        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
         return sentence;
     }
 

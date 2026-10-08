@@ -15,17 +15,17 @@ public sealed class CImage
 
     public void CImageLocationSet(long imageId, string location)
     {
-        _cImageDesk.CDeskEasel?.LEaselImageSet(imageId, location, true);
+        _cImageDesk.CDeskDraft.CDeskDraftEasel?.LEaselImageSet(imageId, location, true);
     }
 
     public void CImageAdd(long? cardId)
     {
-        _cImageDesk.CDeskEasel?.LEaselImageAdd(cardId ?? 0);
+        _cImageDesk.CDeskDraft.CDeskDraftEasel?.LEaselImageAdd(cardId ?? 0);
     }
 
     public void CImageRemove(long imageId)
     {
-        _cImageDesk.CDeskEasel?.LEaselImageRemove(imageId);
+        _cImageDesk.CDeskDraft.CDeskDraftEasel?.LEaselImageRemove(imageId);
     }
 
     public void CImageFileSet(long imageId, string? file)
@@ -35,6 +35,6 @@ public sealed class CImage
             return;
         }
 
-        _cImageDesk.CDeskEasel?.LEaselImageSet(imageId, file, false);
+        _cImageDesk.CDeskDraft.CDeskDraftEasel?.LEaselImageSet(imageId, file, false);
     }
 }

@@ -18,11 +18,11 @@ public sealed class TRepertoireScribe
         List<CScenario> held = [];
         repertoire.CRepertoirePlaywright.CPlaywrightScenarioChanged += held.Add;
 
-        repertoire.CRepertoireSituationCreate();
+        repertoire.CRepertoireDiptych.CDiptychEntryCreate();
 
         Assert.True(repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskHeld);
-        Assert.True(repertoire.CRepertoireScenarioShown);
-        Assert.True(repertoire.CRepertoireScribeChecked);
+        Assert.True(repertoire.CRepertoireDiptych.CDiptychParentEditing);
+        Assert.True(repertoire.CRepertoireDiptych.CDiptychScribeChecked);
         Assert.NotNull(held[^1]);
         Assert.NotNull(repertoire.TRepertoireScenarioRead());
     }
@@ -36,17 +36,17 @@ public sealed class TRepertoireScribe
         LSituation home = TRepertoire.TRepertoireSituationSave(engine, "at home");
         List<string> asked = [];
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(true, asked));
-        repertoire.CRepertoireSituationCreate();
+        repertoire.CRepertoireDiptych.CDiptychEntryCreate();
         TRepertoire.TRepertoireTitleDefer(repertoire);
         int recorded = 0;
         atelier.CAtelierNavigation.CNavigationChanged += _ => recorded++;
 
-        repertoire.CRepertoireSituationSelect(home.LSituationId);
+        repertoire.CRepertoireDiptych.CDiptychParentSelect(home.LSituationId);
 
         Assert.Equal(1, recorded);
         Assert.Equal(["Leave"], asked);
         Assert.Equal(2, repertoire.CRepertoireRowsRead().Count);
-        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);
+        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -58,17 +58,17 @@ public sealed class TRepertoireScribe
         LSituation home = TRepertoire.TRepertoireSituationSave(engine, "at home");
         List<string> asked = [];
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
-        repertoire.CRepertoireSituationCreate();
+        repertoire.CRepertoireDiptych.CDiptychEntryCreate();
         TRepertoire.TRepertoireTitleDefer(repertoire);
         int recorded = 0;
         atelier.CAtelierNavigation.CNavigationChanged += _ => recorded++;
 
-        repertoire.CRepertoireSituationSelect(home.LSituationId);
+        repertoire.CRepertoireDiptych.CDiptychParentSelect(home.LSituationId);
 
         Assert.Equal(0, recorded);
         Assert.Equal(["Leave"], asked);
-        Assert.True(repertoire.CRepertoireScenarioShown);
-        Assert.Null(repertoire.CRepertoireAtlas.CAtlasChosen);
+        Assert.True(repertoire.CRepertoireDiptych.CDiptychParentEditing);
+        Assert.Null(repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -81,14 +81,14 @@ public sealed class TRepertoireScribe
         LEntry hearth = TRepertoire.TRepertoireEntrySave(engine, "hearth", home);
         List<string> asked = [];
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
-        repertoire.CRepertoireSituationCreate();
+        repertoire.CRepertoireDiptych.CDiptychEntryCreate();
         TRepertoire.TRepertoireTitleDefer(repertoire);
 
-        repertoire.CRepertoireOccurrenceSelect(hearth.LEntryId);
+        repertoire.CRepertoireDiptych.CDiptychChildSelect(hearth.LEntryId);
 
         Assert.Equal(["Leave"], asked);
-        Assert.True(repertoire.CRepertoireScenarioShown);
-        Assert.False(repertoire.CRepertoireDisplayShown);
+        Assert.True(repertoire.CRepertoireDiptych.CDiptychParentEditing);
+        Assert.False(repertoire.CRepertoireDiptych.CDiptychChildShown);
     }
 
     [Fact]
@@ -103,7 +103,7 @@ public sealed class TRepertoireScribe
         Assert.True(repertoire.TRepertoireLeaveConfirm());
         Assert.Empty(asked);
 
-        repertoire.CRepertoireSituationCreate();
+        repertoire.CRepertoireDiptych.CDiptychEntryCreate();
         TRepertoire.TRepertoireTitleDefer(repertoire);
 
         Assert.True(repertoire.TRepertoireLeaveConfirm());
@@ -119,11 +119,11 @@ public sealed class TRepertoireScribe
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(null, []));
-        repertoire.CRepertoireSituationCreate();
+        repertoire.CRepertoireDiptych.CDiptychEntryCreate();
         TRepertoire.TRepertoireTitleDefer(repertoire);
 
         Assert.False(repertoire.TRepertoireLeaveConfirm());
-        Assert.True(repertoire.CRepertoireScenarioShown);
+        Assert.True(repertoire.CRepertoireDiptych.CDiptychParentEditing);
         Assert.True(repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskHeld);
     }
 
@@ -134,14 +134,14 @@ public sealed class TRepertoireScribe
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        repertoire.CRepertoireSituationCreate();
+        repertoire.CRepertoireDiptych.CDiptychEntryCreate();
         TRepertoire.TRepertoireTitleDefer(repertoire);
 
         Assert.True(repertoire.CRepertoireSession.CSessionSave());
 
-        Assert.True(repertoire.CRepertoireVignetteShown);
+        Assert.True(repertoire.CRepertoireDiptych.CDiptychParentShown);
         Assert.True(repertoire.CRepertoireVignetteHeld);
-        Assert.False(repertoire.CRepertoireScribeChecked);
+        Assert.False(repertoire.CRepertoireDiptych.CDiptychScribeChecked);
         Assert.Single(repertoire.CRepertoireRowsRead());
     }
 
@@ -155,16 +155,16 @@ public sealed class TRepertoireScribe
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         repertoire.TRepertoireSituationOpen(home.LSituationId);
 
-        repertoire.CRepertoireScribeToggle(true);
+        repertoire.CRepertoireDiptych.CDiptychScribeToggle(true);
 
-        Assert.True(repertoire.CRepertoireScenarioShown);
+        Assert.True(repertoire.CRepertoireDiptych.CDiptychParentEditing);
         Assert.True(repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskHeld);
 
-        repertoire.CRepertoireScribeToggle(false);
+        repertoire.CRepertoireDiptych.CDiptychScribeToggle(false);
 
-        Assert.True(repertoire.CRepertoireVignetteShown);
+        Assert.True(repertoire.CRepertoireDiptych.CDiptychParentShown);
         Assert.False(repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskHeld);
-        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);
+        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -176,13 +176,13 @@ public sealed class TRepertoireScribe
         LSituation home = TRepertoire.TRepertoireSituationSave(engine, "at home");
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         repertoire.TRepertoireSituationOpen(home.LSituationId);
-        repertoire.CRepertoireSituationCreate();
+        repertoire.CRepertoireDiptych.CDiptychEntryCreate();
 
-        repertoire.CRepertoireScribeToggle(false);
+        repertoire.CRepertoireDiptych.CDiptychScribeToggle(false);
 
-        Assert.False(repertoire.CRepertoireEditorShown);
-        Assert.True(repertoire.CRepertoireVignetteShown);
-        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);
+        Assert.False(repertoire.CRepertoireDiptych.CDiptychChildEditing);
+        Assert.True(repertoire.CRepertoireDiptych.CDiptychParentShown);
+        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -192,11 +192,11 @@ public sealed class TRepertoireScribe
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        repertoire.CRepertoireSituationCreate();
+        repertoire.CRepertoireDiptych.CDiptychEntryCreate();
 
         engine.TEngineBulletinRaise(LSubject.LSubjectEntry, 0);
 
-        Assert.True(repertoire.CRepertoireScenarioShown);
+        Assert.True(repertoire.CRepertoireDiptych.CDiptychParentEditing);
         Assert.True(repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskHeld);
     }
 }

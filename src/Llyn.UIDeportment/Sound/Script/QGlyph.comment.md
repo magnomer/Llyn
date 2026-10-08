@@ -1,5 +1,5 @@
 # QGlyph.cs
-Hash: `1010ad846cfa3633`
+Hash: `c8e31e9d8d21c32e`
 
 ## `internal sealed class QGlyph`
 

@@ -40,7 +40,7 @@ public sealed class CImprint
         _cImprintAuthorPort = authors;
         CImprintDesk = new CDesk(drafts, settings, "Source", envoy);
         CImprintByline = new CByline(this, drafts, noticed);
-        CImprintDesk.CDeskDraftPrepared += LImprintDraftShow;
+        CImprintDesk.CDeskDraft.CDeskDraftPrepared += LImprintDraftShow;
         CImprintDesk.CDeskObserverAttach(marshal);
     }
 
@@ -72,16 +72,6 @@ public sealed class CImprint
         CImprintByline.CBylineClose();
     }
 
-    internal void LImprintSave()
-    {
-        if (!CImprintDesk.LDeskChangeCheck())
-        {
-            return;
-        }
-
-        CImprintDesk.CDeskFinish(true);
-    }
-
     public CReference CImprintEmptyRead()
     {
         return LImprintReferenceRead(_cImprintReferencePort.LEngineImprintRead(null));
@@ -96,33 +86,33 @@ public sealed class CImprint
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        CImprintDesk.CDeskReference?.LReferenceTitleSet(text);
+        CImprintDesk.CDeskDraft.CDeskDraftReference?.LReferenceTitleSet(text);
     }
 
     public void CImprintYearSet(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        CImprintDesk.CDeskReference?.LReferenceYearSet(text);
+        CImprintDesk.CDeskDraft.CDeskDraftReference?.LReferenceYearSet(text);
     }
 
     public void CImprintUrlSet(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        CImprintDesk.CDeskReference?.LReferenceUrlSet(text);
+        CImprintDesk.CDeskDraft.CDeskDraftReference?.LReferenceUrlSet(text);
     }
 
     public void CImprintNoteSet(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        CImprintDesk.CDeskReference?.LReferenceNoteSet(text);
+        CImprintDesk.CDeskDraft.CDeskDraftReference?.LReferenceNoteSet(text);
     }
 
     public void CImprintKindSet(string? tag)
     {
-        CImprintDesk.CDeskReference?.LReferenceKindSet(tag);
+        CImprintDesk.CDeskDraft.CDeskDraftReference?.LReferenceKindSet(tag);
     }
 
     public IReadOnlyList<CReferenceKind> CImprintKindRead()
@@ -143,7 +133,7 @@ public sealed class CImprint
 
     public IReadOnlyList<CAuthorRow> CImprintCreditRead()
     {
-        List<CAuthorRow> rows = _cImprintAuthorPort.LEngineCreditRead(CImprintDesk.CDeskTenure)
+        List<CAuthorRow> rows = _cImprintAuthorPort.LEngineCreditRead(CImprintDesk.CDeskDraft.CDeskDraftTenure)
             .Select(static row => new CAuthorRow(
                 row.LAuthorRowId,
                 row.LAuthorRowName,
@@ -216,7 +206,7 @@ public sealed class CImprint
             return;
         }
 
-        CImprintDesk.CDeskReference?.LReferenceAuthorRemove(author);
+        CImprintDesk.CDeskDraft.CDeskDraftReference?.LReferenceAuthorRemove(author);
     }
 
     public void CImprintAuthorMove(int? position, long? id, int step)
@@ -236,7 +226,7 @@ public sealed class CImprint
             return;
         }
 
-        CImprintDesk.CDeskReference?.LReferenceAuthorMove(author, at + step);
+        CImprintDesk.CDeskDraft.CDeskDraftReference?.LReferenceAuthorMove(author, at + step);
     }
 
     public bool CImprintAuthorFinish(int? position, long? id, string? text, long? chosen)
@@ -287,7 +277,7 @@ public sealed class CImprint
     {
         int blank = _cImprintBlankAt;
         _cImprintBlankAt = -1;
-        if (CImprintDesk.CDeskReference?.LReferenceAuthorInsert(picked, at, author) == true)
+        if (CImprintDesk.CDeskDraft.CDeskDraftReference?.LReferenceAuthorInsert(picked, at, author) == true)
         {
             return;
         }
@@ -301,7 +291,7 @@ public sealed class CImprint
         CImprintByline.CBylineClose();
         int blank = _cImprintBlankAt;
         _cImprintBlankAt = -1;
-        if (CImprintDesk.CDeskReference?.LReferenceAuthorAdd(text, at, author) == true)
+        if (CImprintDesk.CDeskDraft.CDeskDraftReference?.LReferenceAuthorAdd(text, at, author) == true)
         {
             return;
         }

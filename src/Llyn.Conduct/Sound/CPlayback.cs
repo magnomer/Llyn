@@ -20,7 +20,7 @@ public sealed class CPlayback
 
     public CTimbrePlayback CPlaybackRead()
     {
-        if (_cPlaybackDesk.CDeskTenure?.LTenureRead() is not { } held)
+        if (_cPlaybackDesk.CDeskDraft.CDeskDraftTenure?.LTenureRead() is not { } held)
         {
             return new CTimbrePlayback(null, false);
         }
@@ -36,8 +36,9 @@ public sealed class CPlayback
 
     public Uri? CPlaybackAccentStart(long accent)
     {
-        return !_cPlaybackDesk.CDeskFilling && _cPlaybackDesk.CDeskTenure is LTenure held
-            ? new LQuillPronunciation(held).LQuillAudioResolve(accent)
+        return !_cPlaybackDesk.CDeskDraft.CDeskDraftFilling
+            && _cPlaybackDesk.CDeskDraft.CDeskDraftTenure is LTenure held
+            ?new LQuillPronunciation(held).LQuillAudioResolve(accent)
             : null;
     }
 }

@@ -1,5 +1,5 @@
 # QCorpusBrowse.cs
-Hash: `eebf0f6ffdef1b36`
+Hash: `c9d6da06b3be9443`
 
 ## `internal sealed partial class QCorpus`
 
@@ -23,7 +23,7 @@ Each keystroke hands the search text to the vista, whose announcement refills th
 
 ## `private void QRankObserve(object sender, RoutedEventArgs e)`
 
-A chosen ordering goes to the gate `CAnthologyOrderSet`, which saves and announces it.
+A chosen ordering goes to the gate `CApertureOrderSet`, which announces it.
 The dropdown then closes.
 
 ## `private void QRankDropperRefine()`
@@ -65,7 +65,7 @@ Each keystroke hands the dredge text to the quotation vista, whose announcement 
 
 ## `private void QGauzeObserve(object sender, RoutedEventArgs e)`
 
-The ticked languages are read off the clicked box's menu and handed to the gate `CAnthologyFilterSet`.
+The ticked languages are read off the clicked box's menu and handed to the gate `CApertureFilterSet`.
 The mark on the button is then redrawn from the vista.
 
 ## `private void QAnthologyRefine()`
@@ -81,13 +81,13 @@ The parameterless form reads them, and a flag-fill Refine hands in what its load
 
 ## `private void QCorpusTallyRefine()`
 
-Rewrites both tally chips from `CPanelTallyRead` when the catalog's rows change.
+Rewrites both tally chips from `CApertureTallyRead` when the catalog's rows change.
 A quotation added elsewhere refills the catalog, so its count shows at once.
 Both chips show the chosen Example's count, since only one of them is in view.
 
 ## `private void QAnthologyObserve(object sender, RoutedEventArgs e)`
 
-A clicked row asks the gate `CCorpusExampleSelect` to select it.
+A clicked row asks the corpus diptych's gate `CDiptychParentSelect` to select it.
 The gate asks about unsaved work first, and records the station only when the move goes ahead.
 
 ## `private void QAnthologyApply(FrameworkElement container, object item, string? _)`
@@ -98,7 +98,7 @@ The click is subscribed once per row, removed first so a refill never doubles it
 
 ## `private void QCorpusBinObserve(object sender, RoutedEventArgs e)`
 
-Hands the delete to the gate `CCorpusExampleDelete`, which acts only while an Example and not an Entry is shown.
+Hands the delete to the diptych's gate `CDiptychEntryDelete`, which acts only while an Example and not an Entry is shown.
 
 ## `private void QCorpusStoreObserve(object sender, RoutedEventArgs e)`
 
@@ -106,7 +106,7 @@ The rail's save, standing for whichever editor is in front.
 
 ## `private void QCorpusViewerObserve(object sender, RoutedEventArgs e)`
 
-Puts whichever side the corpus stands on back on its reading page, through `CCorpusScribeToggle`.
+Puts whichever side the corpus stands on back on its reading page, through the diptych's `CDiptychScribeToggle`.
 The viewer and scribe segments have their own handlers, so no control decides the request.
 
 ## `private void QCorpusScribeObserve(object sender, RoutedEventArgs e)`

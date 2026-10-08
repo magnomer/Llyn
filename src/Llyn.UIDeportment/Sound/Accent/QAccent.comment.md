@@ -1,5 +1,5 @@
 # QAccent.cs
-Hash: `d3efcc8157b61323`
+Hash: `b0a2a3e881766ea3`
 
 ## `internal sealed class QAccent`
 
@@ -55,7 +55,11 @@ Hands the pressed row's id to the play gate and its answer to the playback Refin
 
 Plays the address on the editor's player, handed in at build.
 A null answer plays nothing, since the engine cleared the gone file and the draft bulletin repaints the row.
-A file the player then refuses reaches the user through the sound driver's one failure subscription.
+A file the player then refuses reaches the user through the editor sound's one failure subscription.
+
+## `private void QAccentTypeObserve(QAccentItem row, string text)`
+
+Hands the typed text and the row's id to the accent gate, and shows the text it answers.
 
 ## `private UIElement QAccentAnchorRead(ExecutedRoutedEventArgs e)`
 

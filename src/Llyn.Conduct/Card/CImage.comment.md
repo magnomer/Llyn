@@ -1,5 +1,5 @@
 # CImage.cs
-Hash: `19ccfc7dfe8ae5a4`
+Hash: `3945020400f272c3`
 
 ## `public sealed class CImage`
 

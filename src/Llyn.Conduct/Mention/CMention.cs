@@ -72,7 +72,7 @@ public sealed class CMention
 
         try
         {
-            return desk.CDeskChip?.LQuillMentionFind(word) is LTranslationOffer offer
+            return desk.CDeskDraft.CDeskDraftChip?.LQuillMentionFind(word) is LTranslationOffer offer
                 ? CCard.LCardProspectRead(offer)
                 : new CProspect(word, string.Empty, [], false, false, []);
         }
@@ -90,7 +90,7 @@ public sealed class CMention
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(desk);
 
-        if (desk.CDeskTenure is not LTenure held)
+        if (desk.CDeskDraft.CDeskDraftTenure is not LTenure held)
         {
             return null;
         }
@@ -119,7 +119,7 @@ public sealed class CMention
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(desk);
 
-        if (desk.CDeskTenure is not LTenure held)
+        if (desk.CDeskDraft.CDeskDraftTenure is not LTenure held)
         {
             return [];
         }

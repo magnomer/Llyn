@@ -1,5 +1,5 @@
 # QTaxonomyMembership.cs
-Hash: `0c249cfbb6d2e493`
+Hash: `4069842860dcf6d9`
 
 ## `internal sealed partial class QTaxonomy`
 
@@ -13,14 +13,12 @@ A clicked row hands its entry's id raw to the row gate, or null when it carries 
 The gate ignores null, asks the leave question and opens the row.
 This panel attaches no station, so the gate records none.
 
-## Inline notes
-
-### `private void QMembershipRefine()`
+## `private void QMembershipRefine()`
 
 Answers the entry list's rows event, which every successful Tag read also raises.
 So the list follows the catalog, because the chosen Tag may have just changed or vanished.
 The first paint arrives the same way, from the catalog's read after the flags are loaded.
-Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
+Rows sharing a headword arrive numbered, so the reader can tell them apart.
 Conduct picks the empty line's key from whether the entry search holds text.
 A failed read has already been shown by the area, which then answers no rows.
 

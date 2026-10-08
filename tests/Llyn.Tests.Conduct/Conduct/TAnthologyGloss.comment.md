@@ -1,5 +1,5 @@
 # TAnthologyGloss.cs
-Hash: `4e52200096a7133b`
+Hash: `9359d7893d79d281`
 
 ## `public sealed class TAnthologyGloss`
 

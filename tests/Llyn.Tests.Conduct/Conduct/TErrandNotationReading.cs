@@ -111,13 +111,13 @@ public sealed class TErrandNotationReading
         errand.CErrandReadingSet("hɪl", "British");
         errand.CErrandTranscriptionStart(0, string.Empty);
         bool filling = false;
-        editor.CEditorDesk.CDeskDraftChanged += _ =>
+        editor.CEditorDesk.CDeskDraft.CDeskDraftChanged += _ =>
         {
-            filling = editor.CEditorDesk.CDeskFilling;
+            filling = editor.CEditorDesk.CDeskDraft.CDeskDraftFilling;
             errand.CErrandReadingSet("hɪl", "British");
         };
 
-        editor.CEditorDesk.CDeskDraftResonate();
+        editor.CEditorDesk.CDeskDraft.CDeskDraftResonate();
 
         Assert.True(filling);
         Assert.Equal(

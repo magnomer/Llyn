@@ -27,7 +27,8 @@ internal sealed partial class QTenor
         QSplice.QSpliceRefine(
             _qCohortList, fresh, QCohortItem.QCohortItemMatch, QCohortItem.QCohortItemSync);
 
-        QCohortEmpty.SetResourceReference(TextBlock.TextProperty, _cTenor.CTenorCohort.CCohortEmptyKey);
+        QCohortEmpty.SetResourceReference(
+            TextBlock.TextProperty, _cTenor.CTenorCohort.CCohortPanel.CPanelAperture.CApertureKey);
         QCohortEmpty.Visibility = _qCohortList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 

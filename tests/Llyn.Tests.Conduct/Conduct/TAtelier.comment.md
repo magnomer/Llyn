@@ -1,5 +1,5 @@
 # TAtelier.cs
-Hash: `2ec46642b47174e4`
+Hash: `b04275d3860ed961`
 
 ## `public sealed class TAtelier`
 

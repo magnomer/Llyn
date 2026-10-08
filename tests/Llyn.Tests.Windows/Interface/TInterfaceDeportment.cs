@@ -20,7 +20,7 @@ internal static class TInterfaceDeportment
     internal static QLectern TLecternCreate(CEditor editor) => new(editor.CEditorDisplay);
 
     internal static (bool CDeskBackward, bool CDeskForward) TDeskChronicleRead(this CDesk desk) =>
-        desk.CDeskChronicleRead();
+        desk.CDeskChronicle.CDeskChronicleRead();
 
     internal static QPosture TPostureCreate(string root)
     {

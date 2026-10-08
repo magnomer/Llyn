@@ -22,16 +22,16 @@ public sealed class TDisplayAccent
         CWing wing = TDisplayWingPrepare(atelier, []);
         wing.CWingEntryOpen(water.LEntryId);
 
-        CLecternAccent accent = wing.CWingDisplay.CDisplaySound.CDisplayAccentRead();
+        CLecternAccent accent = wing.CWingDisplay.CDisplayAccent.CDisplayAccentRead();
 
         Assert.Equal(new CRespellingMark(false, "[", "]"), accent.CLecternAccentMark);
         Assert.Empty(accent.CLecternAccentContour);
         Assert.Equal("ˈwɔːtə", accent.CLecternAccentText);
         Assert.True(accent.CLecternAccentSpoken);
-        Assert.Equal(CSounding.CSoundingVarietyRead("English", "British"), accent.CLecternAccentPrimary);
+        Assert.Equal(CVariety.CVarietyRead("English", "British"), accent.CLecternAccentPrimary);
         CAccent row = Assert.Single(accent.CLecternAccentRows);
         Assert.Equal("ˈwɑːtɚ", row.CAccentText);
-        Assert.Equal(CSounding.CSoundingVarietyRead("English", "American"), row.CAccentVariety);
+        Assert.Equal(CVariety.CVarietyRead("English", "American"), row.CAccentVariety);
         Assert.True(accent.CLecternAccentFlagged);
     }
 
@@ -48,7 +48,7 @@ public sealed class TDisplayAccent
         IReadOnlyList<LPronunciationDraft> stored =
             wing.CWingDisplay.LDisplayRule.LDisplaySound.LDisplayShown!.LEntryDraftPronunciations;
 
-        CLecternAccent accent = wing.CWingDisplay.CDisplaySound.CDisplayAccentRead();
+        CLecternAccent accent = wing.CWingDisplay.CDisplayAccent.CDisplayAccentRead();
 
         Assert.Equal(new CRespellingMark(true, "[", "]"), accent.CLecternAccentMark);
         Assert.NotEqual("ˈweɪtə", accent.CLecternAccentText);
@@ -63,7 +63,7 @@ public sealed class TDisplayAccent
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CWing wing = TDisplayWingPrepare(atelier, []);
 
-        CLecternAccent accent = wing.CWingDisplay.CDisplaySound.CDisplayAccentRead();
+        CLecternAccent accent = wing.CWingDisplay.CDisplayAccent.CDisplayAccentRead();
 
         Assert.Empty(accent.CLecternAccentText);
         Assert.False(accent.CLecternAccentSpoken);
@@ -72,7 +72,7 @@ public sealed class TDisplayAccent
     }
 
     [Fact]
-    public async Task DisplayEnsignLoad_FlaggedPack_StoresTheVarietyFlagsAndAnswersTheBlock()
+    public async Task DisplayAccentLoad_FlaggedPack_StoresTheVarietyFlagsAndAnswersTheBlock()
     {
         using TLanguageFixture pack = TDisplayPackCreate();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -83,7 +83,7 @@ public sealed class TDisplayAccent
         wing.CWingEntryOpen(hill.LEntryId);
         List<string> stored = [];
 
-        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.TDisplayEnsignLoad((rows, _) =>
+        CLecternAccent? accent = await wing.CWingDisplay.CDisplayAccent.TDisplayAccentLoad((rows, _) =>
         {
             stored.AddRange(rows.Select(static row => row.CEnsignRowKey));
             return static () => { };
@@ -96,11 +96,11 @@ public sealed class TDisplayAccent
         Assert.Equal("a˥", syllable.CContourText);
         Assert.Equal([5], syllable.CContourLevels);
         Assert.Equal(
-            CSounding.CSoundingVarietyRead(pack.TLanguageFixtureName, "British"), accent.CLecternAccentPrimary);
+            CVariety.CVarietyRead(pack.TLanguageFixtureName, "British"), accent.CLecternAccentPrimary);
     }
 
     [Fact]
-    public async Task DisplayEnsignLoad_AnotherEntryShownMeanwhile_AnswersNothing()
+    public async Task DisplayAccentLoad_AnotherEntryShownMeanwhile_AnswersNothing()
     {
         using TLanguageFixture pack = TDisplayPackCreate();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -111,7 +111,7 @@ public sealed class TDisplayAccent
         CWing wing = TDisplayWingPrepare(atelier, []);
         wing.CWingEntryOpen(hill.LEntryId);
 
-        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.TDisplayEnsignLoad((_, _) =>
+        CLecternAccent? accent = await wing.CWingDisplay.CDisplayAccent.TDisplayAccentLoad((_, _) =>
         {
             wing.CWingEntryOpen(dale.LEntryId);
             return static () => { };
@@ -121,7 +121,7 @@ public sealed class TDisplayAccent
     }
 
     [Fact]
-    public async Task DisplayEnsignLoad_StoreFails_ShowsTheLoadFailureOnce()
+    public async Task DisplayAccentLoad_StoreFails_ShowsTheLoadFailureOnce()
     {
         using TLanguageFixture pack = TDisplayPackCreate();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -132,7 +132,7 @@ public sealed class TDisplayAccent
         CWing wing = TDisplayWingPrepare(atelier, asked);
         wing.CWingEntryOpen(hill.LEntryId);
 
-        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.TDisplayEnsignLoad(
+        CLecternAccent? accent = await wing.CWingDisplay.CDisplayAccent.TDisplayAccentLoad(
             (_, _) => throw new InvalidOperationException("The flags cannot be stored."));
 
         Assert.Null(accent);
@@ -140,14 +140,14 @@ public sealed class TDisplayAccent
     }
 
     [Fact]
-    public async Task DisplayEnsignLoad_NothingShown_AnswersNothing()
+    public async Task DisplayAccentLoad_NothingShown_AnswersNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CWing wing = TDisplayWingPrepare(atelier, []);
 
-        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.TDisplayEnsignLoad(
+        CLecternAccent? accent = await wing.CWingDisplay.CDisplayAccent.TDisplayAccentLoad(
             (_, _) => throw new InvalidOperationException("Nothing is shown, so nothing loads."));
 
         Assert.Null(accent);

@@ -187,7 +187,7 @@ public sealed class TDisplayArea
         List<CBulletin> favorites = [];
         int grasps = 0;
         area.CDisplayFavoriteChanged += favorites.Add;
-        area.CDisplayGraspChanged += _ => grasps++;
+        area.CDisplayGrasp.CDisplayGraspChanged += _ => grasps++;
 
         area.CDisplayFavoriteToggle(true);
 
@@ -223,46 +223,6 @@ public sealed class TDisplayArea
     }
 
     [Fact]
-    public void DisplayGraspSet_StandingStepPressedAgain_ClearsTheGrasp()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TDisplayAtelierCreate(engine);
-        LEntry water = TDisplayEntrySave(engine, "water");
-        CWing wing = TDisplayWingPrepare(atelier);
-        CDisplay area = wing.CWingDisplay;
-        wing.CWingEntryOpen(water.LEntryId);
-
-        CGrasp six = area.CDisplayGraspSet(6);
-        Assert.Equal(6, six.CGraspStep);
-        Assert.Equal(area.CDisplayGraspRead(6), six.CGraspLabel);
-        Assert.Equal(6, wing.CWingDisplay.TDisplayGraspRead(water.LEntryId));
-
-        area.CDisplayGraspSet(3);
-        Assert.Equal(3, engine.TEngineGraspRead(water.LEntryId));
-
-        Assert.Equal(0, area.CDisplayGraspSet(3).CGraspStep);
-        Assert.Equal(0, engine.TEngineGraspRead(water.LEntryId));
-    }
-
-    [Fact]
-    public void DisplayGraspSet_NoEntryChosen_StoresNothing()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TDisplayAtelierCreate(engine);
-        LEntry water = TDisplayEntrySave(engine, "water");
-        CWing wing = TDisplayWingPrepare(atelier);
-        CDisplay area = wing.CWingDisplay;
-
-        CGrasp grasp = area.CDisplayGraspSet(4);
-
-        Assert.Equal(new CGrasp(0, string.Empty), grasp);
-        Assert.Empty(area.CDisplayGraspRead(4));
-        Assert.Equal(0, engine.TEngineGraspRead(water.LEntryId));
-    }
-
-    [Fact]
     public void DisplayFrequencyRead_EntryWithoutFrequency_LooksUpTheOnceKeyAndAnswersNone()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -283,7 +243,7 @@ public sealed class TDisplayArea
         Assert.Equal(["Frequency.Once"], keys);
     }
 
-    private static CAtelier TDisplayAtelierCreate(LEngine engine) =>
+    internal static CAtelier TDisplayAtelierCreate(LEngine engine) =>
         TInterfaceConduct.TAtelierCreate(
             engine,
             TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
@@ -291,13 +251,13 @@ public sealed class TDisplayArea
                 ["LEngineRecordingStop"] = _ => null,
             }));
 
-    private static CWing TDisplayWingPrepare(CAtelier atelier)
+    internal static CWing TDisplayWingPrepare(CAtelier atelier)
     {
         CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         return wing;
     }
 
-    private static LEntry TDisplayEntrySave(LEngine engine, string headword) =>
+    internal static LEntry TDisplayEntrySave(LEngine engine, string headword) =>
         engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             headword, "English", string.Empty, string.Empty, [TInterface.TCardCreate("a thing", 1)], []));
 }

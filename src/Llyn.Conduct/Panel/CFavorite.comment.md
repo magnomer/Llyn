@@ -1,10 +1,10 @@
 # CFavorite.cs
-Hash: `f604fd794fac0923`
+Hash: `c9dcb0ad9b87b64e`
 
 ## `public sealed class CFavorite`
 
-The favorites panel: the marked entries, the vista it holds and the panel over it.
-It finds the rows, and takes the query, order and language filter.
+The favorites panel: the marked entries and the panel over their vista.
+It finds the rows, while the panel's aperture takes the query, order and language filter.
 Its panel loads, edits and deletes the chosen entry, and its own editor edits it.
 It also prints and exports the chosen entry.
 
@@ -37,15 +37,11 @@ The driver wraps it for the editor view and the lectern.
 
 The panel over the favorite vista, worded under the `Scribe` scope and finishing through the editor.
 
-## `public bool CFavoriteFiltered`
-
-Whether the language filter hides any language, as the vista answers it.
-
 ## `internal void LFavoriteVistaRestore()`
 
 Starts the favorite vista through the atelier, headword order before any order is saved.
 The panel and the editor both take it, on a workspace start or switch.
-The query the former vista held is carried into the fresh one, so the search box stays true.
+The aperture carries the former vista's query into the fresh one, so the search box stays true.
 Then it attaches the area's observers on the fresh vista only.
 The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
 
@@ -70,18 +66,6 @@ The driver releases only its recording player.
 
 Answers a grasp notice by refreshing the rows, but only while they are ordered by grasp.
 A grasp change in any other order moves no row, so the list is left alone.
-
-## `public void CFavoriteQuerySet(string query)`
-
-Hands the typed query to the vista, which refills the rows.
-
-## `public void CFavoriteFilterSet(CCatalogFilter filter)`
-
-Hands the languages the filter hides to the vista.
-
-## `public void CFavoriteOrderSet(CCatalogOrder? order)`
-
-Hands a chosen ordering to the vista, which keeps its own when the sender is no order row.
 
 ## `public static IReadOnlyList<CCatalogOrder> CFavoriteOrderRead()`
 

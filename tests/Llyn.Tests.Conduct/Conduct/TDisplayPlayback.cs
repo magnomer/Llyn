@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Llyn.Tests;
 
-public sealed class TDisplaySoundPlayback
+public sealed class TDisplayPlayback
 {
     [Fact]
     public void DisplayPlaybackRead_AccentWithAudioOnly_ShowsTheTrayButNotTheButton()
@@ -16,7 +16,7 @@ public sealed class TDisplaySoundPlayback
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TInterfaceConduct.TMediaCreate(engine));
         CWing wing = TDisplaySound.TDisplayWingPrepare(atelier, []);
-        CLecternPlayback blank = wing.CWingDisplay.CDisplaySound.CDisplayPlaybackRead();
+        CLecternPlayback blank = wing.CWingDisplay.CDisplayPlayback.CDisplayPlaybackRead();
         LEntry water = engine.TEngineEntrySave(TDisplaySound.TDisplayDraftCreate("water", "English", []) with
         {
             LEntryDraftPronunciations =
@@ -27,7 +27,7 @@ public sealed class TDisplaySoundPlayback
         });
         wing.CWingEntryOpen(water.LEntryId);
 
-        CLecternPlayback playback = wing.CWingDisplay.CDisplaySound.CDisplayPlaybackRead();
+        CLecternPlayback playback = wing.CWingDisplay.CDisplayPlayback.CDisplayPlaybackRead();
 
         Assert.Equal(new CLecternPlayback(false, false), blank);
         Assert.Equal(new CLecternPlayback(false, true), playback);
@@ -57,7 +57,7 @@ public sealed class TDisplaySoundPlayback
                 },
             }));
         CWing wing = TDisplaySound.TDisplayWingPrepare(atelier, []);
-        CDisplaySound area = wing.CWingDisplay.CDisplaySound;
+        CDisplayPlayback area = wing.CWingDisplay.CDisplayPlayback;
         area.CDisplayPlaybackStart(0.5);
         wing.CWingEntryOpen(TDisplaySound.TDisplayEnglishSave(engine).LEntryId);
 
@@ -83,7 +83,7 @@ public sealed class TDisplaySoundPlayback
         CWing wing = TDisplaySound.TDisplayWingPrepare(atelier, []);
         wing.CWingEntryOpen(TDisplaySound.TDisplayEnglishSave(engine).LEntryId);
 
-        wing.CWingDisplay.CDisplaySound.CDisplayPlaybackCancel();
+        wing.CWingDisplay.CDisplayPlayback.CDisplayPlaybackCancel();
 
         Assert.Equal("water", wing.CWingDisplay.CDisplayShown.CLecternHeadword);
     }

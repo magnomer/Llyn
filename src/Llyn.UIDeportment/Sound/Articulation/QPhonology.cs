@@ -161,8 +161,8 @@ internal sealed class QPhonology
         QLectern lectern = new(_cPhonology.CPhonologyEditor.CEditorDisplay, panel);
         QChoice.QChoiceOrderBuild(QSequenceList, "Sequence", QSequenceObserve, CPhonology.CPhonologyOrderRead());
         panel.CPanelChanged += QPhonologyModeRefine;
-        panel.CPanelRowsChanged += QInventoryRefine;
-        panel.CPanelRowsChanged += QLensRefine;
+        panel.CPanelAperture.CApertureRowsChanged += QInventoryRefine;
+        panel.CPanelAperture.CApertureRowsChanged += QLensRefine;
         _cPhonology.CPhonologyWorkspaceChanged += QPhonologyWorkspaceRefine;
         _cPhonology.CPhonologyEditor.CEditorDesk.CDeskStateChanged += QPhonologyStoreRefine;
 
@@ -183,12 +183,12 @@ internal sealed class QPhonology
 
     private void QPhonologyStoreRefine()
     {
-        QPhonologyStore.IsEnabled = _cPhonology.CPhonologyEditor.CEditorDesk.CDeskStorable;
+        QPhonologyStore.IsEnabled = _cPhonology.CPhonologyEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable;
     }
 
     internal async void QPhonologyVistaRefine()
     {
-        QChoice.QChoiceOrderApply(QSequenceDropdown, _cPhonology.CPhonologyPanel.CPanelOrder);
+        QChoice.QChoiceOrderApply(QSequenceDropdown, _cPhonology.CPhonologyPanel.CPanelAperture.CApertureOrder);
         QLensRefine();
         CEnsignSheet<IReadOnlyList<CCatalogPronunciation>> sheet =
             await _cPhonology.CPhonologyRowsLoad(QEnsignImage.QEnsignDraw);
@@ -198,7 +198,8 @@ internal sealed class QPhonology
 
     private void QLensListRefine(IReadOnlyList<string> languages)
     {
-        QChoice.QChoiceFilterBuild(QLensList, languages, _cPhonology.CPhonologyPanel.CPanelFilter, QLensObserve);
+        QChoice.QChoiceFilterBuild(
+            QLensList, languages, _cPhonology.CPhonologyPanel.CPanelAperture.CApertureFilter, QLensObserve);
     }
 
     private async void QPhonologyWorkspaceRefine()
@@ -228,7 +229,7 @@ internal sealed class QPhonology
             QInventoryItem.QInventoryItemBuild(rows),
             QInventoryItem.QInventoryItemMatch,
             QInventoryItem.QInventoryItemSync);
-        QInventoryEmpty.Visibility = QLook.QLookVisibleRead(_cPhonology.CPhonologyEmpty);
+        QInventoryEmpty.Visibility = QLook.QLookVisibleRead(_cPhonology.CPhonologyPanel.CPanelAperture.CApertureEmpty);
     }
 
     private void QPhonologyModeRefine()
@@ -246,7 +247,7 @@ internal sealed class QPhonology
 
     private void QLensRefine()
     {
-        QLensMark.Visibility = QLook.QLookVisibleRead(_cPhonology.CPhonologyFiltered);
+        QLensMark.Visibility = QLook.QLookVisibleRead(_cPhonology.CPhonologyPanel.CPanelAperture.CApertureFiltered);
     }
 
     private void QArticulationFoldRefine(object sender, RoutedEventArgs e)
@@ -258,12 +259,12 @@ internal sealed class QPhonology
 
     private void QProbeObserve(object sender, TextChangedEventArgs e)
     {
-        _cPhonology.CPhonologyQuerySet(QProbe.Text);
+        _cPhonology.CPhonologyPanel.CPanelAperture.CApertureQuerySet(QProbe.Text);
     }
 
     private void QSequenceObserve(object sender, RoutedEventArgs e)
     {
-        _cPhonology.CPhonologyOrderSet(QChoice.QChoiceOrderRead(sender));
+        _cPhonology.CPhonologyPanel.CPanelAperture.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
         QSequenceRefine();
     }
 
@@ -274,7 +275,7 @@ internal sealed class QPhonology
 
     private void QLensObserve(object sender, RoutedEventArgs e)
     {
-        _cPhonology.CPhonologyFilterSet(QChoice.QChoiceFilterRead(sender));
+        _cPhonology.CPhonologyPanel.CPanelAperture.CApertureFilterSet(QChoice.QChoiceFilterRead(sender));
     }
 
     private void QInventoryObserve(object sender, RoutedEventArgs e)
@@ -305,7 +306,7 @@ internal sealed class QPhonology
 
     private void QPhonologyBinObserve(object sender, RoutedEventArgs e)
     {
-        _cPhonology.CPhonologyPanel.CPanelEntryDelete();
+        _cPhonology.CPhonologyPanel.CPanelBin.CPanelBinDelete();
     }
 
     private void QPhonologyPressRefine(object sender, CanExecuteRoutedEventArgs e)
@@ -351,7 +352,7 @@ internal sealed class QPhonology
 
     private void QPhonologyChronicleRefine()
     {
-        (bool undo, bool redo) = _cPhonology.CPhonologyEditor.CEditorDesk.CDeskChronicleRead();
+        (bool undo, bool redo) = _cPhonology.CPhonologyEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
         QPhonologyBackward.IsEnabled = undo;
         QPhonologyForward.IsEnabled = redo;
     }

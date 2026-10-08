@@ -18,8 +18,6 @@ public sealed class CCohort
 
     private LVista? _cCohortRoll;
 
-    private LVista? _cCohortVista;
-
     internal CCohort(
         LVistaPort vistas,
         LPortraitPort portraits,
@@ -38,22 +36,26 @@ public sealed class CCohort
         _cCohortPortraitPort = portraits;
         _cCohortSettingsPort = settings;
         CCohortPanel = new CPanel(
-            envoy, settings, vistas, "Register.LoadFailed", "Scribe", changeSeam, finishSeam, shownSeam);
+            envoy,
+            settings,
+            vistas,
+            "Register.LoadFailed",
+            "Scribe",
+            changeSeam,
+            finishSeam,
+            shownSeam,
+            "Register.Vacant",
+            "Register.Unmatched");
     }
 
     public CPanel CCohortPanel { get; }
-
-    public string CCohortEmptyKey =>
-        _cCohortVista?.LVistaQueried ?? false ? "Register.Unmatched" : "Register.Vacant";
 
     internal void LCohortVistaRestore(LVista roll, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(vista);
 
-        vista.LVistaQuerySet(_cCohortVista?.LVistaQuery ?? string.Empty);
         _cCohortRoll = roll;
-        _cCohortVista = vista;
         CCohortPanel.CPanelVistaRestore(vista);
     }
 
@@ -62,24 +64,18 @@ public sealed class CCohort
         ArgumentNullException.ThrowIfNull(marshal);
 
         CPanel panel = CCohortPanel;
-        panel.CPanelObserverAttach(
+        panel.CPanelAperture.CApertureObserverAttach(
             CSubject.CSubjectEntry, bulletin => marshal(() => panel.CPanelEntryResonate(bulletin)));
-        panel.CPanelObserverAttach(CSubject.CSubjectVista, _ => marshal(panel.CPanelRowsResonate));
-        panel.CPanelChosenAttach(CSubject.CSubjectEntry, _ => marshal(panel.CPanelDraftResonate));
-    }
-
-    public void CCohortQuerySet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _cCohortVista?.LVistaQuerySet(query);
+        panel.CPanelAperture.CApertureObserverAttach(
+            CSubject.CSubjectVista, _ => marshal(panel.CPanelAperture.CApertureRowsResonate));
+        panel.CPanelAperture.CApertureChosenAttach(CSubject.CSubjectEntry, _ => marshal(panel.CPanelDraftResonate));
     }
 
     public IReadOnlyList<CVistaRow> CCohortRowsRead()
     {
         try
         {
-            return _cCohortVistaPort.LEngineEntryFind(_cCohortRoll, _cCohortVista)
+            return _cCohortVistaPort.LEngineEntryFind(_cCohortRoll, CCohortPanel.CPanelAperture.CApertureVista)
                 .Select(CCatalog.LCatalogRowRead)
                 .ToList();
         }
@@ -92,7 +88,7 @@ public sealed class CCohort
 
     internal string LCohortFileRead()
     {
-        return _cCohortVistaPort.LEngineFileRead(_cCohortVista);
+        return _cCohortVistaPort.LEngineFileRead(CCohortPanel.CPanelAperture.CApertureVista);
     }
 
     public Task CCohortPortraitPrint()
@@ -106,7 +102,9 @@ public sealed class CCohort
             _cCohortEnvoy,
             _cCohortSettingsPort,
             chosen => _cCohortPortraitPort.LEnginePortraitPrint(
-                _cCohortVista, CPortrait.LPortraitLabelRead(_cCohortSettingsPort), chosen));
+                CCohortPanel.CPanelAperture.CApertureVista,
+                CPortrait.LPortraitLabelRead(_cCohortSettingsPort),
+                chosen));
     }
 
     public Task CCohortPortraitExport()
@@ -121,6 +119,9 @@ public sealed class CCohort
             _cCohortSettingsPort,
             LCohortFileRead,
             (file, medium) => _cCohortPortraitPort.LEnginePortraitExport(
-                _cCohortVista, file, medium, CPortrait.LPortraitLabelRead(_cCohortSettingsPort)));
+                CCohortPanel.CPanelAperture.CApertureVista,
+                file,
+                medium,
+                CPortrait.LPortraitLabelRead(_cCohortSettingsPort)));
     }
 }

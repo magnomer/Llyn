@@ -60,9 +60,9 @@ internal static class TInterfaceConductSound
     internal static bool TDisplayFavoriteRead(this CDisplay display, long? entry) =>
         display.LDisplayRule.LDisplayFavoriteRead(entry);
 
-    internal static Task<CLecternAccent?> TDisplayEnsignLoad(
-        this CDisplaySound sound, Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
-        sound.CDisplayEnsignLoad(store);
+    internal static Task<CLecternAccent?> TDisplayAccentLoad(
+        this CDisplayAccent accent, Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
+        accent.CDisplayAccentLoad(store);
 
     internal static CSounding TSoundingCreate(
         CDesk desk, CPhonologyBundle phonology, CEnvoy envoy, LSettingsPort? pack = null)
@@ -94,9 +94,9 @@ internal static class TInterfaceConductSound
             envoy);
     }
 
-    internal static IReadOnlyList<CContour> TSoundingContourRead(
+    internal static IReadOnlyList<CContour> TContourRead(
         IReadOnlyList<LContour> syllables, IReadOnlyList<int> scale) =>
-        CSounding.LSoundingContourRead(syllables, scale);
+        CContour.CContourRead(syllables, scale);
 
     internal static CFold TFoldCreate(LSettingsPort settings, CEnvoy envoy) => new(settings, envoy);
 
@@ -107,10 +107,9 @@ internal static class TInterfaceConductSound
     internal static string TRespellingResolve(CRespellingMark mark, string phonetic, string? respelling) =>
         CRespelling.LRespellingResolve(mark, phonetic, respelling);
 
-    internal static CTimbre TTimbreCreate(CEditor editor, CPhonologyBundle phonology, LDraftPort drafts) =>
+    internal static CKindred TKindredCreate(CEditor editor, CPhonologyBundle phonology, LDraftPort drafts) =>
         new(
             editor.CEditorDesk,
-            phonology.CPhonologyBundleLanguage,
             phonology.CPhonologyBundleReflex,
             editor.CEditorDisplay.LDisplayRule,
             drafts,

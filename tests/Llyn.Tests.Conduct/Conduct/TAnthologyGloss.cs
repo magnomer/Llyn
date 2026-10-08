@@ -18,9 +18,9 @@ public sealed class TAnthologyGloss
         CAnthology anthology = TAnthology.TAnthologyPrepare(engine, atelier, out CDesk desk);
         desk.CDeskStart(null);
         desk.TDeskDefer(TInterface.TGlossAdditionCreate(desk.CDeskId, 0, 0, "French", 0));
-        desk.CDeskPersist();
+        desk.CDeskDraft.CDeskDraftPersist();
         desk.TDeskDefer(TInterface.TGlossAdditionCreate(desk.CDeskId, 0, 0, "German", 1));
-        desk.CDeskPersist();
+        desk.CDeskDraft.CDeskDraftPersist();
 
         anthology.CAnthologyGlossAdd(0);
 
@@ -38,7 +38,7 @@ public sealed class TAnthologyGloss
         CAnthology anthology = TAnthology.TAnthologyPrepare(engine, atelier, out CDesk desk);
         desk.CDeskStart(null);
         desk.TDeskDefer(TInterface.TGlossAdditionCreate(desk.CDeskId, 0, 0, "French", 0));
-        desk.CDeskPersist();
+        desk.CDeskDraft.CDeskDraftPersist();
 
         anthology.CAnthologyGlossAdd(0);
         anthology.CAnthologyGlossAdd(-1);
@@ -86,13 +86,13 @@ public sealed class TAnthologyGloss
         CAnthology anthology = TAnthology.TAnthologyPrepare(engine, atelier, out CDesk desk);
         desk.CDeskStart(null);
         desk.TDeskDefer(TInterface.TGlossAdditionCreate(desk.CDeskId, 0, 0, "French", 0));
-        desk.CDeskPersist();
+        desk.CDeskDraft.CDeskDraftPersist();
         desk.TDeskDefer(TInterface.TGlossAdditionCreate(desk.CDeskId, 0, 0, "German", 1));
-        desk.CDeskPersist();
+        desk.CDeskDraft.CDeskDraftPersist();
         IReadOnlyList<CGlossDraft> added = TAnthologyGlossRead(anthology, desk);
 
         anthology.CAnthologyGlossSet(added[1].CGlossDraftId, "die Katze");
-        desk.CDeskPersist();
+        desk.CDeskDraft.CDeskDraftPersist();
         anthology.CAnthologyLanguageSet(added[1].CGlossDraftId, "Dutch");
         anthology.CAnthologyGlossRemove(added[0].CGlossDraftId);
 

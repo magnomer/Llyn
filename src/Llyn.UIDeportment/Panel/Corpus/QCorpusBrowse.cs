@@ -21,12 +21,12 @@ internal sealed partial class QCorpus
 
     private void QQueryObserve(object sender, TextChangedEventArgs e)
     {
-        _cCorpus.CCorpusAnthology.CAnthologyQuerySet(QQuery.Text ?? string.Empty);
+        _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureQuerySet(QQuery.Text ?? string.Empty);
     }
 
     private void QRankObserve(object sender, RoutedEventArgs e)
     {
-        _cCorpus.CCorpusAnthology.CAnthologyOrderSet(QChoice.QChoiceOrderRead(sender));
+        _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
         QRankDropperRefine();
     }
 
@@ -37,7 +37,8 @@ internal sealed partial class QCorpus
 
     internal async void QCorpusVistaRefine()
     {
-        QChoice.QChoiceOrderApply(QRankDropdown, _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelOrder);
+        QChoice.QChoiceOrderApply(
+            QRankDropdown, _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureOrder);
         QGauzeRefine();
         CEnsignSheet<IReadOnlyList<CCatalogExample>> sheet =
             await _cCorpus.CCorpusRowsLoad(QEnsignImage.QEnsignDraw);
@@ -54,13 +55,17 @@ internal sealed partial class QCorpus
 
     private void QGauzeRefine()
     {
-        QGauzeMark.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusAnthology.CAnthologyFiltered);
+        QGauzeMark.Visibility = QLook.QLookVisibleRead(
+            _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureFiltered);
     }
 
     private void QGauzeBuild(IReadOnlyList<string> languages)
     {
         QChoice.QChoiceFilterBuild(
-            QGauzeList, languages, _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelFilter, QGauzeObserve);
+            QGauzeList,
+            languages,
+            _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureFilter,
+            QGauzeObserve);
     }
 
     private void QQueryClear()
@@ -72,12 +77,12 @@ internal sealed partial class QCorpus
 
     private void QDredgeObserve(object sender, TextChangedEventArgs e)
     {
-        _cCorpus.CCorpusQuotation.CQuotationQuerySet(QDredge.Text);
+        _cCorpus.CCorpusQuotation.CQuotationPanel.CPanelAperture.CApertureQuerySet(QDredge.Text);
     }
 
     private void QGauzeObserve(object sender, RoutedEventArgs e)
     {
-        _cCorpus.CCorpusAnthology.CAnthologyFilterSet(QChoice.QChoiceFilterRead(sender));
+        _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureFilterSet(QChoice.QChoiceFilterRead(sender));
         QGauzeRefine();
     }
 
@@ -102,14 +107,15 @@ internal sealed partial class QCorpus
 
     private void QCorpusTallyRefine()
     {
-        string tally = _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelTallyRead();
+        string tally = _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureTallyRead();
         QExcerptTally.Text = tally;
         QTranscriptTally.Text = tally;
     }
 
     private void QAnthologyObserve(object sender, RoutedEventArgs e)
     {
-        _cCorpus.CCorpusExampleSelect(QSender.QSenderSourceRead<QAnthologyItem>(e)?.QAnthologyItemId);
+        _cCorpus.CCorpusDiptych.CDiptychParentSelect(
+            QSender.QSenderSourceRead<QAnthologyItem>(e)?.QAnthologyItemId);
     }
 
     private void QAnthologyApply(FrameworkElement container, object item, string? _)
@@ -157,7 +163,7 @@ internal sealed partial class QCorpus
 
     private void QCorpusBinObserve(object sender, RoutedEventArgs e)
     {
-        _cCorpus.CCorpusExampleDelete();
+        _cCorpus.CCorpusDiptych.CDiptychEntryDelete();
     }
 
     private void QCorpusStoreObserve(object sender, RoutedEventArgs e)
@@ -167,12 +173,12 @@ internal sealed partial class QCorpus
 
     private void QCorpusViewerObserve(object sender, RoutedEventArgs e)
     {
-        _cCorpus.CCorpusScribeToggle(false);
+        _cCorpus.CCorpusDiptych.CDiptychScribeToggle(false);
     }
 
     private void QCorpusScribeObserve(object sender, RoutedEventArgs e)
     {
-        _cCorpus.CCorpusScribeToggle(true);
+        _cCorpus.CCorpusDiptych.CDiptychScribeToggle(true);
     }
 
     internal void QCorpusVoyageShow(bool past, bool future)

@@ -27,9 +27,9 @@ public sealed class TShelf
         shelf.CShelfReferenceSelect(book.LReferenceId);
 
         Assert.Equal(1, recorded);
-        Assert.True(shelf.CShelfColophonShown);
-        Assert.True(shelf.CShelfBinEnabled);
-        Assert.False(shelf.CShelfDisplayShown);
+        Assert.True(shelf.CShelfDiptych.CDiptychParentShown);
+        Assert.True(shelf.CShelfDiptych.CDiptychBinEnabled);
+        Assert.False(shelf.CShelfDiptych.CDiptychChildShown);
         Assert.Equal("Book", shown?.CColophonTitle);
         Assert.Equal(
             ["Book"],
@@ -50,15 +50,15 @@ public sealed class TShelf
         LReference book = engine.TEngineCitationCreate("Book");
         shelf.CShelfReferenceSelect(book.LReferenceId);
         List<CEntryDraft> shown = [];
-        shelf.CShelfEditor.CEditorDraftChanged += shown.Add;
+        shelf.CShelfEditor.CEditorEntry.CEntryDraftChanged += shown.Add;
 
-        shelf.CShelfReferenceCreate();
+        shelf.CShelfDiptych.CDiptychEntryCreate();
 
         CExampleDraft? cited = shown[0].CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;
         Assert.Equal(book.LReferenceId, cited?.CExampleDraftReference);
-        Assert.True(shelf.CShelfEditorShown);
-        Assert.False(shelf.CShelfBinEnabled);
-        Assert.True(shelf.CShelfModeEnabled);
+        Assert.True(shelf.CShelfDiptych.CDiptychChildEditing);
+        Assert.False(shelf.CShelfDiptych.CDiptychBinEnabled);
+        Assert.True(shelf.CShelfDiptych.CDiptychModeEnabled);
         Assert.False(shelf.CShelfImprint.CImprintHeld);
     }
 
@@ -70,12 +70,12 @@ public sealed class TShelf
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
-        shelf.CShelfReferenceCreate();
+        shelf.CShelfDiptych.CDiptychEntryCreate();
 
         Assert.True(shelf.CShelfImprint.CImprintHeld);
         Assert.False(shelf.CShelfImprint.CImprintDesk.CDeskStored);
-        Assert.True(shelf.CShelfImprintShown);
-        Assert.True(shelf.CShelfScribeChecked);
+        Assert.True(shelf.CShelfDiptych.CDiptychParentEditing);
+        Assert.True(shelf.CShelfDiptych.CDiptychScribeChecked);
         Assert.False(shelf.CShelfStoreEnabled);
     }
 
@@ -92,21 +92,21 @@ public sealed class TShelf
 
         shelf.CShelfEntrySelect(water.LEntryId);
 
-        Assert.True(shelf.CShelfDisplayShown);
-        Assert.False(shelf.CShelfBinEnabled);
+        Assert.True(shelf.CShelfDiptych.CDiptychChildShown);
+        Assert.False(shelf.CShelfDiptych.CDiptychBinEnabled);
         Assert.False(shelf.CShelfImprint.CImprintHeld);
         Assert.True(shelf.CShelfPortraitAllowed);
 
         shelf.CShelfScribeToggle(true);
 
-        Assert.True(shelf.CShelfEditorShown);
+        Assert.True(shelf.CShelfDiptych.CDiptychChildEditing);
 
-        shelf.CShelfReferenceCreate();
+        shelf.CShelfDiptych.CDiptychEntryCreate();
         shelf.CShelfScribeToggle(false);
 
-        Assert.True(shelf.CShelfColophonShown);
-        Assert.True(shelf.CShelfBinEnabled);
-        Assert.True(shelf.CShelfViewerChecked);
+        Assert.True(shelf.CShelfDiptych.CDiptychParentShown);
+        Assert.True(shelf.CShelfDiptych.CDiptychBinEnabled);
+        Assert.True(shelf.CShelfDiptych.CDiptychViewerChecked);
     }
 
     [Fact]
@@ -121,16 +121,16 @@ public sealed class TShelf
         shelf.CShelfReferenceSelect(book.LReferenceId);
         shelf.CShelfEntrySelect(water.LEntryId);
 
-        shelf.CShelfReferenceDelete();
+        shelf.CShelfDiptych.CDiptychEntryDelete();
 
         Assert.Contains(shelf.CShelfRollRead().CShelfRollRows, row => row.CCatalogReferenceName == "Book");
 
         shelf.CShelfFootnote.CFootnotePanel.CPanelScribeToggle(false);
         shelf.CShelfReferenceSelect(book.LReferenceId);
-        shelf.CShelfReferenceDelete();
+        shelf.CShelfDiptych.CDiptychEntryDelete();
 
         Assert.DoesNotContain(shelf.CShelfRollRead().CShelfRollRows, row => row.CCatalogReferenceName == "Book");
-        Assert.False(shelf.CShelfBinEnabled);
+        Assert.False(shelf.CShelfDiptych.CDiptychBinEnabled);
     }
 
     [Fact]
@@ -154,16 +154,16 @@ public sealed class TShelf
             CShelf.CShelfOrderRead());
         foreach (CCatalogOrder order in CShelf.CShelfOrderRead())
         {
-            shelf.CShelfOrderSet(order);
+            shelf.CShelfPanel.CPanelAperture.CApertureOrderSet(order);
 
             Assert.Equal(listed, shelf.CShelfRollRead().CShelfRollRows.Count);
-            Assert.Equal(order, shelf.CShelfPanel.CPanelOrder);
+            Assert.Equal(order, shelf.CShelfPanel.CPanelAperture.CApertureOrder);
         }
 
-        shelf.CShelfOrderSet(CCatalogOrder.CCatalogOrderName);
-        shelf.CShelfOrderSet(null);
+        shelf.CShelfPanel.CPanelAperture.CApertureOrderSet(CCatalogOrder.CCatalogOrderName);
+        shelf.CShelfPanel.CPanelAperture.CApertureOrderSet(null);
 
-        Assert.Equal(CCatalogOrder.CCatalogOrderName, shelf.CShelfPanel.CPanelOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderName, shelf.CShelfPanel.CPanelAperture.CApertureOrder);
         Assert.Equal(
             ["Alpha", "Beta"],
             shelf.CShelfRollRead().CShelfRollRows
@@ -181,11 +181,11 @@ public sealed class TShelf
         LReference book = engine.TEngineCitationCreate("Book");
         shelf.CShelfReferenceSelect(book.LReferenceId);
 
-        shelf.CShelfQuerySet("zzz");
+        shelf.CShelfPanel.CPanelAperture.CApertureQuerySet("zzz");
 
         Assert.Empty(shelf.CShelfRollRead().CShelfRollRows);
         Assert.True(shelf.CShelfRollRead().CShelfRollEmpty);
-        Assert.False(shelf.CShelfBinEnabled);
+        Assert.False(shelf.CShelfDiptych.CDiptychBinEnabled);
     }
 
     [Fact]
@@ -196,14 +196,14 @@ public sealed class TShelf
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CShelf shelf = TShelfPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
-        shelf.CShelfFilterSet(new CCatalogFilter(["Latin"]));
+        shelf.CShelfPanel.CPanelAperture.CApertureFilterSet(new CCatalogFilter(["Latin"]));
 
-        Assert.True(shelf.CShelfFiltered);
-        Assert.Equal(["Latin"], shelf.CShelfPanel.CPanelFilter.CCatalogFilterHidden);
+        Assert.True(shelf.CShelfPanel.CPanelAperture.CApertureFiltered);
+        Assert.Equal(["Latin"], shelf.CShelfPanel.CPanelAperture.CApertureFilter.CCatalogFilterHidden);
 
-        shelf.CShelfFilterSet(new CCatalogFilter([]));
+        shelf.CShelfPanel.CPanelAperture.CApertureFilterSet(new CCatalogFilter([]));
 
-        Assert.False(shelf.CShelfFiltered);
+        Assert.False(shelf.CShelfPanel.CPanelAperture.CApertureFiltered);
     }
 
     [Fact]
@@ -218,15 +218,15 @@ public sealed class TShelf
 
         shelf.CShelfScribeToggle(true);
 
-        Assert.True(shelf.CShelfImprintShown);
+        Assert.True(shelf.CShelfDiptych.CDiptychParentEditing);
         Assert.True(shelf.CShelfImprint.CImprintHeld);
-        Assert.True(shelf.CShelfScribeChecked);
+        Assert.True(shelf.CShelfDiptych.CDiptychScribeChecked);
 
         shelf.CShelfScribeToggle(false);
 
-        Assert.True(shelf.CShelfColophonShown);
+        Assert.True(shelf.CShelfDiptych.CDiptychParentShown);
         Assert.False(shelf.CShelfImprint.CImprintHeld);
-        Assert.True(shelf.CShelfViewerChecked);
+        Assert.True(shelf.CShelfDiptych.CDiptychViewerChecked);
     }
 
     [Fact]

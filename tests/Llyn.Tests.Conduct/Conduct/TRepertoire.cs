@@ -18,14 +18,14 @@ public sealed class TRepertoire
         CRepertoire repertoire = TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         repertoire.TRepertoireSituationOpen(home.LSituationId);
         List<CEntryDraft> shown = [];
-        repertoire.CRepertoireEditor.CEditorDraftChanged += shown.Add;
+        repertoire.CRepertoireEditor.CEditorEntry.CEntryDraftChanged += shown.Add;
 
-        repertoire.CRepertoireSituationCreate();
+        repertoire.CRepertoireDiptych.CDiptychEntryCreate();
 
-        Assert.True(repertoire.CRepertoireEditorShown);
-        Assert.False(repertoire.CRepertoireVignetteShown);
+        Assert.True(repertoire.CRepertoireDiptych.CDiptychChildEditing);
+        Assert.False(repertoire.CRepertoireDiptych.CDiptychParentShown);
         Assert.False(repertoire.CRepertoirePlaywright.LPlaywrightDesk.CDeskHeld);
-        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);
+        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureChosen);
         Assert.Contains(
             shown[0].CEntryDraftMeanings[0].CCardDraftSituation,
             row => row.CSituationDraftId == home.LSituationId);
@@ -44,7 +44,7 @@ public sealed class TRepertoire
 
         repertoire.TRepertoireSituationOpen(home.LSituationId);
 
-        Assert.True(repertoire.CRepertoireVignetteShown);
+        Assert.True(repertoire.CRepertoireDiptych.CDiptychParentShown);
         Assert.True(repertoire.CRepertoireVignetteHeld);
         Assert.True(repertoire.CRepertoirePressAllowed);
         Assert.False(repertoire.CRepertoirePortraitAllowed);
@@ -60,8 +60,9 @@ public sealed class TRepertoire
         LSituation home = TRepertoireSituationSave(engine, "at home");
         TRepertoireSituationSave(engine, "in court");
         CRepertoire repertoire = TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        repertoire.CRepertoireAtlas.CAtlasQuerySet("court");
-        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += () => repertoire.CRepertoireRowsRead();
+        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureQuerySet("court");
+        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureRowsChanged +=
+            () => repertoire.CRepertoireRowsRead();
         int cleared = 0;
         repertoire.CRepertoireQueryCleared += () => cleared++;
 
@@ -69,7 +70,7 @@ public sealed class TRepertoire
 
         Assert.Equal(1, cleared);
         Assert.Equal(2, repertoire.CRepertoireRowsRead().Count);
-        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);
+        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureChosen);
         Assert.True(repertoire.CRepertoireVignetteHeld);
     }
 
@@ -85,12 +86,12 @@ public sealed class TRepertoire
         int recorded = 0;
         atelier.CAtelierNavigation.CNavigationChanged += _ => recorded++;
 
-        repertoire.CRepertoireSituationSelect(home.LSituationId);
-        repertoire.CRepertoireSituationSelect(null);
+        repertoire.CRepertoireDiptych.CDiptychParentSelect(home.LSituationId);
+        repertoire.CRepertoireDiptych.CDiptychParentSelect(null);
 
         Assert.Equal(1, recorded);
         Assert.Empty(asked);
-        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);
+        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -104,13 +105,13 @@ public sealed class TRepertoire
         CRepertoire repertoire = TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         repertoire.TRepertoireSituationOpen(home.LSituationId);
 
-        repertoire.CRepertoireOccurrenceSelect(hearth.LEntryId);
+        repertoire.CRepertoireDiptych.CDiptychChildSelect(hearth.LEntryId);
 
-        Assert.False(repertoire.CRepertoireVignetteShown);
-        Assert.True(repertoire.CRepertoireDisplayShown);
+        Assert.False(repertoire.CRepertoireDiptych.CDiptychParentShown);
+        Assert.True(repertoire.CRepertoireDiptych.CDiptychChildShown);
         Assert.True(repertoire.CRepertoirePortraitAllowed);
-        Assert.False(repertoire.CRepertoireBinEnabled);
-        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);
+        Assert.False(repertoire.CRepertoireDiptych.CDiptychBinEnabled);
+        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -126,8 +127,8 @@ public sealed class TRepertoire
         engine.TEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
 
         Assert.True(repertoire.CRepertoireVignetteBlank);
-        Assert.False(repertoire.CRepertoireDisplayShown);
-        Assert.Null(repertoire.CRepertoireAtlas.CAtlasChosen);
+        Assert.False(repertoire.CRepertoireDiptych.CDiptychChildShown);
+        Assert.Null(repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -140,12 +141,12 @@ public sealed class TRepertoire
         LEntry hearth = TRepertoireEntrySave(engine, "hearth", home);
         CRepertoire repertoire = TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         repertoire.TRepertoireSituationOpen(home.LSituationId);
-        repertoire.CRepertoireOccurrenceSelect(hearth.LEntryId);
+        repertoire.CRepertoireDiptych.CDiptychChildSelect(hearth.LEntryId);
 
         engine.TEngineBulletinRaise(LSubject.LSubjectEntry, 0);
 
-        Assert.True(repertoire.CRepertoireDisplayShown);
-        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);
+        Assert.True(repertoire.CRepertoireDiptych.CDiptychChildShown);
+        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -162,11 +163,11 @@ public sealed class TRepertoire
         Assert.Equal(2, repertoire.CRepertoireRowsRead().Count);
         Assert.True(repertoire.CRepertoireVignetteHeld);
 
-        repertoire.CRepertoireAtlas.CAtlasQuerySet("court");
+        repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureQuerySet("court");
 
         Assert.Single(repertoire.CRepertoireRowsRead());
         Assert.True(repertoire.CRepertoireVignetteBlank);
-        Assert.Null(repertoire.CRepertoireAtlas.CAtlasChosen);
+        Assert.Null(repertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -180,7 +181,7 @@ public sealed class TRepertoire
         CRepertoire repertoire = TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(true, asked));
         repertoire.TRepertoireSituationOpen(home.LSituationId);
 
-        repertoire.CRepertoireSituationDelete();
+        repertoire.CRepertoireDiptych.CDiptychEntryDelete();
 
         Assert.Equal(["Situation.DeleteConfirm"], asked);
         Assert.Empty(repertoire.CRepertoireRowsRead());
@@ -198,13 +199,13 @@ public sealed class TRepertoire
         List<string> asked = [];
         CRepertoire repertoire = TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(true, asked));
         repertoire.TRepertoireSituationOpen(home.LSituationId);
-        repertoire.CRepertoireOccurrenceSelect(hearth.LEntryId);
+        repertoire.CRepertoireDiptych.CDiptychChildSelect(hearth.LEntryId);
 
-        repertoire.CRepertoireSituationDelete();
+        repertoire.CRepertoireDiptych.CDiptychEntryDelete();
 
         Assert.Empty(asked);
         Assert.Single(repertoire.CRepertoireRowsRead());
-        Assert.True(repertoire.CRepertoireDisplayShown);
+        Assert.True(repertoire.CRepertoireDiptych.CDiptychChildShown);
     }
 
     internal static CRepertoire TRepertoirePrepare(CAtelier atelier, CEnvoy envoy)

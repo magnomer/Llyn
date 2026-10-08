@@ -1,5 +1,5 @@
 # TAuditDeportmentSetting.cs
-Hash: `4c299fdf4e2ca765`
+Hash: `d08de0ecfac4818b`
 
 ## `internal static class TAuditDeportmentSetting`
 

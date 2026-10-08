@@ -68,7 +68,8 @@ public sealed class CSounding
 
     private long? LSoundingEntry => _cSoundingDesk.CDeskStoredRead();
 
-    private string LSoundingLanguage => _cSoundingDesk.CDeskTenure?.LTenureLanguageRead() ?? string.Empty;
+    private string LSoundingLanguage =>
+        _cSoundingDesk.CDeskDraft.CDeskDraftTenure?.LTenureLanguageRead() ?? string.Empty;
 
     public CSoundingFanqie CSoundingFanqieRead()
     {
@@ -80,7 +81,7 @@ public sealed class CSounding
             entry is not null
             && _cSoundingNoticed.LLedgerRepaintRead(_cSoundingEnvoy, _cSoundingSettingsPort,
                 () => _cSoundingFanqiePort.LEngineBookCheck(LSoundingLanguage), false, "Display.BookFailed"),
-            CCatalog.LCatalogFontRead(_cSoundingSettingsPort, LSoundingLanguage, CFontRole.CFontRoleGlyph));
+            CFont.CFontRead(_cSoundingSettingsPort, LSoundingLanguage, CFontRole.CFontRoleGlyph));
     }
 
     public string CSoundingReadingRead(string headword)
@@ -122,7 +123,7 @@ public sealed class CSounding
             entry is not null
             && _cSoundingNoticed.LLedgerRepaintRead(_cSoundingEnvoy, _cSoundingSettingsPort,
                 () => _cSoundingScriptPort.LEngineStyleCheck(LSoundingLanguage), false, "Display.StyleFailed"),
-            CCatalog.LCatalogFontRead(_cSoundingSettingsPort, LSoundingLanguage, CFontRole.CFontRoleGlyph));
+            CFont.CFontRead(_cSoundingSettingsPort, LSoundingLanguage, CFontRole.CFontRoleGlyph));
     }
 
     public void CSoundingScriptResolve()
@@ -142,7 +143,7 @@ public sealed class CSounding
         return new CLecternParadigm(
             CSoundingParadigmRead(
                 _cSoundingParadigmPort, rows, pending, _cSoundingVoice.LDisplayMorphologyRead(), true),
-            CCatalog.LCatalogFontRead(_cSoundingSettingsPort, language, CFontRole.CFontRoleHeadword));
+            CFont.CFontRead(_cSoundingSettingsPort, language, CFontRole.CFontRoleHeadword));
     }
 
     private IReadOnlyList<LSoundingItem> LSoundingListRead<LSoundingItem>(
@@ -261,69 +262,5 @@ public sealed class CSounding
                 row.LParadigmRowPart, row.LParadigmRowName, "…", "Paradigm.Absent"),
             _ => throw new ArgumentOutOfRangeException(nameof(status)),
         };
-    }
-
-    public static CVariety CSoundingVarietyRead(string language, string variety)
-    {
-        ArgumentNullException.ThrowIfNull(variety);
-
-        return new CVariety(
-            variety, string.Concat("Variety.", variety), LSettingsPort.LEngineEnsignFormat(language, variety));
-    }
-
-    internal static CAccent LSoundingAccentRead(string language, LAccentRow row)
-    {
-        ArgumentNullException.ThrowIfNull(row);
-
-        return new CAccent(
-            row.LAccentRowId,
-            CSoundingVarietyRead(language, row.LAccentRowVariety),
-            row.LAccentRowText,
-            row.LAccentRowAudio);
-    }
-
-    internal static IReadOnlyList<CContour> LSoundingContourRead(
-        IReadOnlyList<LContour> syllables, IReadOnlyList<int> scale)
-    {
-        ArgumentNullException.ThrowIfNull(syllables);
-        ArgumentNullException.ThrowIfNull(scale);
-
-        return syllables
-            .Select(syllable => CContourInk.CContourInkBuild(syllable, scale))
-            .ToList();
-    }
-
-    internal static IReadOnlyList<CTranscriptionDraft> CSoundingTranscriptionRead(
-        IReadOnlyList<LTranscriptionDraft> transcriptions)
-    {
-        ArgumentNullException.ThrowIfNull(transcriptions);
-
-        return transcriptions
-            .Select(static row => new CTranscriptionDraft(
-                row.LTranscriptionDraftId, row.LTranscriptionDraftScheme, row.LTranscriptionDraftText))
-            .ToList();
-    }
-
-    internal static IReadOnlyList<CReflexDraft> CSoundingReflexRead(IReadOnlyList<LReflexDraft> reflexes)
-    {
-        ArgumentNullException.ThrowIfNull(reflexes);
-
-        return reflexes.Select(CSoundingReflexRead).ToList();
-    }
-
-    private static CReflexDraft CSoundingReflexRead(LReflexDraft reflex)
-    {
-        return new CReflexDraft(
-            reflex.LReflexDraftId,
-            reflex.LReflexDraftLanguage,
-            reflex.LReflexDraftKind,
-            reflex.LReflexDraftText,
-            reflex.LReflexDraftRespelling,
-            reflex.LReflexDraftRomanization,
-            reflex.LReflexDraftMeaning,
-            reflex.LReflexDraftNote,
-            reflex.LReflexDraftMain,
-            reflex.LReflexDraftRegion,
-            reflex.LReflexDraftAnchors);
     }
 }

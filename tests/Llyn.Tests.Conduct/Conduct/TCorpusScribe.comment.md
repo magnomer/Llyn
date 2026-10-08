@@ -1,5 +1,5 @@
 # TCorpusScribe.cs
-Hash: `4806612163c4e8e4`
+Hash: `8ecc1fd49b2fdcb7`
 
 ## `public sealed class TCorpusScribe`
 

@@ -1,5 +1,5 @@
 # TYunjingPortrait.cs
-Hash: `410e0b708aa26692`
+Hash: `1a706ef195a9944b`
 
 ## `public sealed class TYunjingPortrait`
 

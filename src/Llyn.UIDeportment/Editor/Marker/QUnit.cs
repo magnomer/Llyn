@@ -84,7 +84,7 @@ internal sealed class QUnit
         if (sender is FrameworkElement { DataContext: QUnitItem item })
         {
             QUnitDropper.IsChecked = false;
-            _cEditor.CEditorUnitSet(item.QUnitItemKey);
+            _cEditor.CEditorEntry.CEntryUnitSet(item.QUnitItemKey);
         }
     }
 }

@@ -47,16 +47,26 @@ public sealed class CRepertoire
             editor.CEditorDesk.LDeskChangeCheck,
             store => CRepertoireSession!.LSessionFinish(store),
             shownSeam);
-        CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += CRepertoireOccurrence.COccurrencePanel.CPanelRowsResonate;
+        CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureRowsChanged +=
+            CRepertoireOccurrence.COccurrencePanel.CPanelAperture.CApertureRowsResonate;
         CRepertoireSession = new CSession(
             CRepertoirePlaywright.LPlaywrightDesk,
             [CRepertoireOccurrence.COccurrencePanel.LPanelChangeCheck, CRepertoireAtlas.CAtlasPanel.LPanelChangeCheck],
-            editor.CEditorDesk,
+            editor,
             () => CRepertoireOccurrence.COccurrencePanel.CPanelEditing,
             editor.LEditorFinish,
             static () => true,
-            LRepertoireStoredShow);
-        CRepertoireSession.CSessionHeld += CRepertoirePlaywright.LPlaywrightHeldResonate;
+            LRepertoireStoredShow,
+            envoy);
+        CRepertoireDiptych = new CDiptych(
+            CRepertoireAtlas.CAtlasPanel,
+            CRepertoireOccurrence.COccurrencePanel,
+            CRepertoireSession,
+            atelier.CAtelierNavigation,
+            CRepertoireSession.CSessionStart,
+            CRepertoirePlaywright.LPlaywrightDesk.CDeskCancel,
+            LRepertoireOccurrenceCreate);
+        CRepertoireSession.CSessionHeld +=CRepertoirePlaywright.LPlaywrightHeldResonate;
         CRepertoireSession.CSessionChanged += () => CRepertoireChanged?.Invoke();
         CRepertoireAtlas.CAtlasPanel.CPanelEdited += id => CRepertoireSession.CSessionStart(id);
         CRepertoireAtlas.CAtlasPanel.CPanelCleared += CRepertoireSession.CSessionCancel;
@@ -68,14 +78,14 @@ public sealed class CRepertoire
         CRepertoireOccurrence.COccurrencePanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Repertoire",
-            () => LRepertoireLeaveConfirm(true),
+            () => CRepertoireSession.LSessionLeaveConfirm(true),
             CRepertoireAtlas.CAtlasPanel.LPanelChosenRead,
             CRepertoireAtlas.CAtlasPanel.LPanelScribeRestore,
             LRepertoireSituationOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(
             CRepertoireSession.LSessionChangeCheck, CRepertoireSession.LSessionFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LRepertoireVistaRestore);
-        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LRepertoireClose);
+        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(CRepertoireSession.LSessionEditorClose);
         LRepertoireVistaRestore();
     }
 
@@ -103,59 +113,30 @@ public sealed class CRepertoire
 
     public COccurrence CRepertoireOccurrence { get; }
 
-    public bool CRepertoireScenarioShown =>
-        !LRepertoireOccurrenceSide && CRepertoireAtlas.CAtlasPanel.CPanelEditing;
-
-    public bool CRepertoireVignetteShown =>
-        !LRepertoireOccurrenceSide && !CRepertoireAtlas.CAtlasPanel.CPanelEditing;
-
-    public bool CRepertoireDisplayShown =>
-        LRepertoireOccurrenceSide && !CRepertoireOccurrence.COccurrencePanel.CPanelEditing;
-
-    public bool CRepertoireEditorShown => CRepertoireOccurrence.COccurrencePanel.CPanelEditing;
+    public CDiptych CRepertoireDiptych { get; }
 
     public bool CRepertoireVignetteHeld => CRepertoireAtlas.CAtlasPanel.CPanelBinEnabled;
 
     public bool CRepertoireVignetteBlank => !CRepertoireAtlas.CAtlasPanel.CPanelBinEnabled;
 
-    public bool CRepertoireScribeChecked => CRepertoireScenarioShown || CRepertoireEditorShown;
-
-    public bool CRepertoireViewerChecked => !CRepertoireScribeChecked;
-
-    public bool CRepertoireModeEnabled =>
-        LRepertoireOccurrenceSide || CRepertoireAtlas.CAtlasPanel.CPanelModeEnabled;
-
-    public bool CRepertoireBinEnabled =>
-        !LRepertoireOccurrenceSide && CRepertoireAtlas.CAtlasPanel.CPanelBinEnabled;
-
     public bool CRepertoireStoreEnabled =>
-        CRepertoireEditorShown
-            ? CRepertoireEditor.CEditorDesk.CDeskStorable
-            : CRepertoirePlaywright.LPlaywrightDesk.CDeskStorable;
+        CRepertoireDiptych.CDiptychChildEditing
+            ? CRepertoireEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable
+            : CRepertoirePlaywright.LPlaywrightDesk.CDeskDraft.CDeskDraftStorable;
 
-    public bool CRepertoireScenarioEnabled => CRepertoirePlaywright.LPlaywrightDesk.CDeskRunning;
+    public bool CRepertoireScenarioEnabled =>
+        CRepertoirePlaywright.LPlaywrightDesk.CDeskChronicle.CDeskChronicleRunning;
 
-    public bool CRepertoirePressAllowed => CRepertoireDisplayShown || LRepertoireRowShown;
+    public bool CRepertoirePressAllowed => CRepertoireDiptych.CDiptychChildShown || LRepertoireRowShown;
 
-    public bool CRepertoirePortraitAllowed => CRepertoireDisplayShown;
+    public bool CRepertoirePortraitAllowed => CRepertoireDiptych.CDiptychChildShown;
 
-    private bool LRepertoireOccurrenceSide => CRepertoireOccurrence.COccurrencePanel.CPanelModeEnabled;
-
-    private bool LRepertoireRowShown => CRepertoireVignetteShown && CRepertoireVignetteHeld;
-
-    private bool LRepertoireRowHeld =>
-        CRepertoireAtlas.CAtlasPanel.CPanelBinEnabled || CRepertoireOccurrence.COccurrencePanel.CPanelBinEnabled;
+    private bool LRepertoireRowShown => CRepertoireDiptych.CDiptychParentShown && CRepertoireVignetteHeld;
 
     private void LRepertoireWorkspaceResonate()
     {
-        LRepertoireSituationClose();
+        CRepertoireDiptych.LDiptychEntryClose();
         CRepertoireWorkspaceChanged?.Invoke();
-    }
-
-    private void LRepertoireClose()
-    {
-        CRepertoireEditor.CEditorClose();
-        CRepertoireEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
     }
 
     private void LRepertoireVignetteShow(CSituation? situation)
@@ -170,136 +151,26 @@ public sealed class CRepertoire
 
     internal void LRepertoireSituationOpen(long id)
     {
-        bool editing = CRepertoireScribeChecked;
-        LRepertoireSituationShow(id, editing);
+        bool editing = CRepertoireDiptych.CDiptychScribeChecked;
+        CRepertoireDiptych.LDiptychParentShow(id, editing);
         if (CRepertoireVignetteHeld)
         {
             return;
         }
 
-        if (!CRepertoireAtlas.LAtlasNarrowed)
+        if (!CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureNarrowed)
         {
             return;
         }
 
         LRepertoireQueryClear();
-        LRepertoireSituationShow(id, editing);
-    }
-
-    private void LRepertoireSituationShow(long id, bool editing)
-    {
-        CRepertoireOccurrence.COccurrencePanel.CPanelEntryClose();
-        CRepertoireAtlas.CAtlasPanel.CPanelScribeSet(editing);
-        CRepertoireAtlas.CAtlasPanel.CPanelRowOpen(id);
-    }
-
-    public void CRepertoireSituationSelect(long? id)
-    {
-        if (id is not long chosen)
-        {
-            return;
-        }
-
-        bool editing = CRepertoireScribeChecked;
-        if (!LRepertoireLeaveConfirm(false))
-        {
-            return;
-        }
-
-        _cRepertoireAtelier.CAtelierNavigation.LNavigationStationAdd();
-        LRepertoireSituationShow(chosen, editing);
-    }
-
-    private void LRepertoireOccurrenceOpen(long id, bool editing)
-    {
-        if (!CRepertoireOccurrence.COccurrencePanel.CPanelRowOpen(id))
-        {
-            return;
-        }
-
-        CRepertoirePlaywright.LPlaywrightDesk.CDeskCancel();
-        CRepertoireAtlas.CAtlasPanel.CPanelScribeSet(false);
-        if (editing)
-        {
-            CRepertoireOccurrence.COccurrencePanel.CPanelScribeToggle(true);
-        }
-    }
-
-    public void CRepertoireOccurrenceSelect(long? id)
-    {
-        if (id is not long chosen)
-        {
-            return;
-        }
-
-        bool editing = CRepertoireScribeChecked;
-        if (!LRepertoireLeaveConfirm(true))
-        {
-            return;
-        }
-
-        LRepertoireOccurrenceOpen(chosen, editing);
-    }
-
-    public void CRepertoireSituationCreate()
-    {
-        if (!LRepertoireLeaveConfirm(true))
-        {
-            return;
-        }
-
-        if (LRepertoireRowHeld)
-        {
-            LRepertoireOccurrenceCreate();
-            return;
-        }
-
-        CRepertoireOccurrence.COccurrencePanel.CPanelEntryClose();
-        CRepertoireAtlas.CAtlasPanel.CPanelFreshOpen();
-        CRepertoireSession.CSessionStart(null);
-    }
-
-    public void CRepertoireScribeToggle(bool editing)
-    {
-        if (LRepertoireOccurrenceSide)
-        {
-            CRepertoireOccurrence.COccurrencePanel.CPanelScribeToggle(editing);
-            if (!LRepertoireOccurrenceSide)
-            {
-                LRepertoireSituationRestore(editing);
-            }
-
-            return;
-        }
-
-        CRepertoireAtlas.CAtlasPanel.CPanelScribeToggle(editing);
-        if (!CRepertoireAtlas.CAtlasPanel.CPanelEditing)
-        {
-            CRepertoirePlaywright.LPlaywrightDesk.CDeskCancel();
-        }
-    }
-
-    private void LRepertoireSituationRestore(bool editing)
-    {
-        if (CRepertoireAtlas.CAtlasChosen is long chosen)
-        {
-            LRepertoireSituationShow(chosen, editing);
-            return;
-        }
-
-        LRepertoireSituationClose();
-    }
-
-    private void LRepertoireSituationClose()
-    {
-        CRepertoireOccurrence.COccurrencePanel.CPanelEntryClose();
-        CRepertoireAtlas.CAtlasPanel.CPanelEntryClose();
+        CRepertoireDiptych.LDiptychParentShow(id, editing);
     }
 
     private void LRepertoireQueryClear()
     {
-        CRepertoireAtlas.CAtlasQuerySet(string.Empty);
-        CRepertoireAtlas.CAtlasFilterSet(new CCatalogFilter([]));
+        CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureQuerySet(string.Empty);
+        CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureFilterSet(new CCatalogFilter([]));
         CRepertoireQueryCleared?.Invoke();
     }
 
@@ -311,48 +182,11 @@ public sealed class CRepertoire
 
     private void LRepertoireOccurrenceCreate()
     {
-        long? chosen = CRepertoireAtlas.CAtlasChosen;
+        long? chosen = CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureChosen;
         CRepertoirePlaywright.LPlaywrightDesk.CDeskCancel();
         CRepertoireAtlas.CAtlasPanel.CPanelScribeSet(false);
         CRepertoireOccurrence.COccurrencePanel.CPanelFreshOpen();
-        CRepertoireEditor.CEditorDesk.LDeskOccurrenceStart(chosen);
-    }
-
-    internal bool LRepertoireLeaveConfirm(bool shown)
-    {
-        if (!CRepertoireSession.LSessionChangeCheck())
-        {
-            return true;
-        }
-
-        if (_cRepertoireEnvoy.CEnvoyLeaveConfirm() is not bool store)
-        {
-            return false;
-        }
-
-        if (!store)
-        {
-            return true;
-        }
-
-        return shown ? CRepertoireSession.LSessionFinish(true) : CRepertoireSession.CSessionClose(true);
-    }
-
-    private void LRepertoireEntryResonate()
-    {
-        if (!CRepertoireOccurrence.COccurrencePanel.CPanelBinEnabled)
-        {
-            return;
-        }
-
-        bool editing = CRepertoireScribeChecked;
-        CRepertoireOccurrence.COccurrencePanel.CPanelDraftResonate();
-        if (LRepertoireOccurrenceSide)
-        {
-            return;
-        }
-
-        LRepertoireSituationRestore(editing);
+        CRepertoireEditor.CEditorDesk.LDeskRun((drafts, vista) => drafts.LEngineOccurrenceStart(vista, chosen));
     }
 
     public IReadOnlyList<CCatalogSituation> CRepertoireRowsRead()
@@ -364,7 +198,7 @@ public sealed class CRepertoire
 
         if (LRepertoireRowShown && !rows.Any(static row => row.CCatalogSituationChosen))
         {
-            LRepertoireSituationClose();
+            CRepertoireDiptych.LDiptychEntryClose();
         }
 
         return rows;
@@ -375,19 +209,9 @@ public sealed class CRepertoire
         CCatalog.LCatalogEnsignLoad(
             _cRepertoireEnvoy, _cRepertoireSettingsPort, "Situation.LoadFailed", store, CRepertoireRowsRead);
 
-    public void CRepertoireSituationDelete()
-    {
-        if (LRepertoireOccurrenceSide)
-        {
-            return;
-        }
-
-        CRepertoireAtlas.CAtlasPanel.CPanelEntryDelete();
-    }
-
     public Task CRepertoirePortraitPrint()
     {
-        if (CRepertoireDisplayShown)
+        if (CRepertoireDiptych.CDiptychChildShown)
         {
             return CRepertoireOccurrence.LOccurrencePortraitPrint(
                 _cRepertoireEnvoy, _cRepertoireSettingsPort);
@@ -422,6 +246,8 @@ public sealed class CRepertoire
         CRepertoireEditor.LEditorVistaRestore(occurrence);
         CRepertoireAtlas.LAtlasObserverAttach(_cRepertoireMarshal, LRepertoireWorkspaceResonate);
         CRepertoireOccurrence.LOccurrenceObserverAttach(
-            _cRepertoireMarshal, CRepertoireAtlas.CAtlasPanel.CPanelRowsResonate, LRepertoireEntryResonate);
+            _cRepertoireMarshal,
+            CRepertoireAtlas.CAtlasPanel.CPanelAperture.CApertureRowsResonate,
+            CRepertoireDiptych.LDiptychChildResonate);
     }
 }

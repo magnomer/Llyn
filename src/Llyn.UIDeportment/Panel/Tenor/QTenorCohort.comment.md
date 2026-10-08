@@ -1,5 +1,5 @@
 # QTenorCohort.cs
-Hash: `3caf7111cfb0941c`
+Hash: `a171fcac12ce6acb`
 
 ## `internal sealed partial class QTenor`
 
@@ -13,13 +13,11 @@ A clicked row hands its entry's id raw to the row gate, or null when it carries 
 The gate ignores null, asks the leave question and opens the row.
 This panel attaches no station, so the gate records none.
 
-## Inline notes
-
-### `private void QCohortRefine()`
+## `private void QCohortRefine()`
 
 Answers the panel's rows event, which the area raises after a successful Register read.
 The Entries are never refilled on their own, because the chosen Register may have just changed or vanished.
-A Register carrying no id stands for the whole workspace, which is what the engine reads an empty id as.
+With no Register chosen the engine is handed id zero, and it decides what that lists.
 A failed read has already been shown by the area, which then answers no rows.
 Conduct picks the empty line's key from whether the entry search holds text.
 

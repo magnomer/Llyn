@@ -5,12 +5,13 @@ Hash: `a3518ef3fc5aff0d`
 
 The reading view's sound state: the shown draft, its entry, the reflex fold and the latest play.
 The gates and reads over it stand on [CDisplaySound](CDisplaySound.comment.md), which holds no state of its own.
+The pronunciation reads stand on [CDisplayAccent](CDisplayAccent.comment.md), and the play gates on [CDisplayPlayback](CDisplayPlayback.comment.md).
 A list read or check the engine refuses answers empty or false, so a section draws nothing.
 Every refused read it catches raises `LDisplaySoundFailed` with its text key, so none passes unseen.
 Every refused send raises `LDisplayMarkFailed` instead, since a send follows a show the user caused.
 The engine owns the player, so the view holds no player of its own.
 It keeps its latest play's ticket, so it never stops another view's sound.
-The editor's [CTimbre](../Sound/CTimbre.comment.md) reads the fold and the reflex check here, and asks for a rebuild.
+The editor's [CKindred](../Sound/CKindred.comment.md) reads the fold and the reflex check here, and asks for a rebuild.
 So the fold is one state, shared by the reading view and the editor.
 The editor's sound sheet, [CSounding](../Sound/CSounding.comment.md), reads the morphology verdict here too.
 Only Conduct reads it, so the drivers are offered no Core draft.
@@ -22,7 +23,7 @@ Each check or rebuild goes through the one narrow port that owns its rows.
 
 ## `internal LEntryDraft? LDisplayShown`
 
-The shown draft, which the lectern's area, its sound area and its compass read.
+The shown draft, which the lectern's areas and its compass read.
 
 ## `internal long? LDisplayEntry`
 

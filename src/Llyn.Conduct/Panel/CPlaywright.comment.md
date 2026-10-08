@@ -1,5 +1,5 @@
 # CPlaywright.cs
-Hash: `51aeb1220e132b2c`
+Hash: `8241b3343680f28d`
 
 ## `public sealed class CPlaywright`
 

@@ -12,5 +12,7 @@ public sealed record LFont(
         _ => null,
     };
 
-    public double? LFontSized => LFontSize > 0 ? LFontSize : null;
+    public string? LFontFace => string.IsNullOrWhiteSpace(LFontFamily) ? null : LFontFamily;
+
+    public double? LFontSized => double.IsFinite(LFontSize) && LFontSize > 0 ? LFontSize : null;
 }

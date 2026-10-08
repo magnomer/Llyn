@@ -1,10 +1,10 @@
 # CPhonology.cs
-Hash: `eabca468101140c4`
+Hash: `24c97fa1cb0defa4`
 
 ## `public sealed class CPhonology`
 
-The phonology panel's session: every entry with its primary pronunciation, the vista and the entry editor.
-It finds the rows, and takes the query, order and language filter.
+The phonology panel's session: every entry with its primary pronunciation, the panel and the entry editor.
+It finds the rows, while the panel's aperture takes the query, order and language filter.
 Its panel loads, edits and deletes the chosen entry, and its own editor edits it.
 It restores its vista itself, so no driver holds a port or a vista.
 
@@ -20,7 +20,7 @@ It restores its vistas last, so a built area already stands on started vistas.
 
 Builds the panel over the atelier, so the driver hands it no port.
 Building it is no user action, so it is no gate on the atelier.
-`shownSeam` answers whether the tab is in front, which only the surface knows until `CNavigation` owns it.
+`shownSeam` answers whether the tab is in front, which only the surface knows.
 `marshal` carries every engine notice onto the driver's thread, so the driver holds no observer.
 
 ## `public event Action? CPhonologyWorkspaceChanged;`
@@ -33,18 +33,10 @@ The driver answers it by drawing the flags of the languages again.
 The entry editor the panel opens its chosen entry in.
 The driver wraps it for the editor view and the lectern.
 
-## `public bool CPhonologyEmpty`
-
-Whether the last rows read found nothing, so the empty notice is a verdict and no driver counts rows.
-
-## `public bool CPhonologyFiltered`
-
-Whether the language filter hides any language, as the vista answers it.
-
 ## `internal void LPhonologyVistaRestore()`
 
 Starts the phonology vista, ordered by headword until the user picks another order.
-The search text of the vista before it carries into the fresh one, so a workspace switch keeps it.
+The aperture carries the former vista's search text into the fresh one, so a workspace switch keeps it.
 The vista then goes to the panel and the editor, and the panel's observers attach to it.
 The constructor runs it last, and a workspace change runs it again through `CWorkspace`.
 
@@ -76,6 +68,7 @@ The rows the engine returns for the vista, already filtered, sorted, twinned and
 Each maps plainly to its shape: the entry as a `CVistaRow` and the sound beside it.
 The engine fills every epithet, so the map copies it as it stands.
 It answers nothing before the vista is restored.
+The count goes to the aperture's `CApertureEmpty`, so no driver counts rows.
 A failed read shows `Sound.LoadFailed` through the envoy and answers no rows, so the count reads zero.
 The load task runs this read after the flag fill, so a throw here would fault the driver.
 
@@ -85,19 +78,6 @@ Runs the flag fill into the driver's `store`, then answers `CPhonologyRowsRead` 
 The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver makes one request.
 A failed flag fill shows `Sound.LoadFailed` and still answers the rows with no languages.
 The driver awaits it from an event handler, where a fault would end the app.
-
-## `public void CPhonologyQuerySet(string query)`
-
-Takes the text typed into the search field as the vista's query.
-
-## `public void CPhonologyOrderSet(CCatalogOrder? order)`
-
-Orders the rows as the user chose.
-A null order keeps the current one, which the vista decides.
-
-## `public void CPhonologyFilterSet(CCatalogFilter filter)`
-
-Hides the languages the user unticked in the filter menu.
 
 ## `internal string LPhonologyFileRead()`
 

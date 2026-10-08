@@ -1,5 +1,5 @@
 # QGuild.cs
-Hash: `f1560e95fdec1e69`
+Hash: `b6938af5030c7112`
 
 ## `internal sealed class QGuild`
 
@@ -22,7 +22,7 @@ Each part of the page is pulled by its contract ID through `QContract.QContractF
 
 Builds the panel's Conduct with the window's envoy, subscribes its notices, and wires the two lists.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
-It hands the panel to the vita and the autograph drivers, which answer their own notices.
+It hands the Conduct guild to the vita and the autograph drivers, which answer their own notices.
 The panel itself attaches its autograph desk's bulletins and its vista observers.
 The order menu is built here once, from the orderings Conduct offers.
 The print command binding is added last, so no can-execute query ever meets a panel not yet built.

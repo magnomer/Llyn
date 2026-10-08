@@ -13,7 +13,7 @@ namespace Llyn.Tests;
 public sealed class TYunjingPortrait
 {
     [Fact]
-    public async Task YunjingPortraitExport_ChosenEntry_WritesItAndNothingBefore()
+    public async Task YunjingEntryListExport_ChosenEntry_WritesItAndNothingBefore()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjing.TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -25,13 +25,14 @@ public sealed class TYunjingPortrait
         CYunjing yunjing = TYunjing.TYunjingPrepare(
             atelier, TEnvoyFake.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
 
-        await yunjing.CYunjingPortraitExport();
+        CEntryList xiaoyun = yunjing.CYunjingXiaoyun;
+        await xiaoyun.CEntryListExport();
 
         Assert.False(File.Exists(path));
 
         yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
-        yunjing.CYunjingPanel.CPanelRowSelect(Assert.Single(yunjing.CYunjingXiaoyunRead()).CVistaRowId);
-        await yunjing.CYunjingPortraitExport();
+        xiaoyun.CEntryListPanel.CPanelRowSelect(Assert.Single(xiaoyun.CEntryListRead()).CVistaRowId);
+        await xiaoyun.CEntryListExport();
 
         Assert.Contains("爛", File.ReadAllText(path), StringComparison.Ordinal);
         Assert.Contains("爛", yunjing.TYunjingFileRead(), StringComparison.Ordinal);
@@ -40,14 +41,14 @@ public sealed class TYunjingPortrait
     }
 
     [Fact]
-    public void YunjingPortraitPrint_NoEntryChosen_PrintsNothing()
+    public void YunjingEntryListPrint_NoEntryChosen_PrintsNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CYunjing yunjing = TYunjing.TYunjingPrepare(atelier);
+        CEntryList xiaoyun = TYunjing.TYunjingPrepare(atelier).CYunjingXiaoyun;
 
-        Assert.False(yunjing.CYunjingPanel.CPanelPressAllowed);
-        Assert.Same(Task.CompletedTask, yunjing.CYunjingPortraitPrint());
+        Assert.False(xiaoyun.CEntryListPanel.CPanelPressAllowed);
+        Assert.Same(Task.CompletedTask, xiaoyun.CEntryListPrint());
     }
 }

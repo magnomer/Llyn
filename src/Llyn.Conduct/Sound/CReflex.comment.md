@@ -42,13 +42,13 @@ Whether the row is hidden, true for a folded row while the fold is closed.
 ## `internal string LReflexFieldRead(CReflexField field)`
 
 The text the row shows in the cell `field`.
-`CTimbre.CTimbreReflexSet` answers it for an edit it did not take.
+`CKindred.CKindredSet` answers it for an edit it did not take.
 
 ## `internal static IReadOnlyList<bool> LReflexLeadRead(IReadOnlyList<string> languages)`
 
 Whether each row opens a run of one language, so the language prints once per run.
 The scan marks its rows by it.
-`CTimbre.CTimbreReflexSet` asks it again while a language is typed, since a row leads by position.
+`CKindred.CKindredSet` asks it again while a language is typed, since a row leads by position.
 
 ## `internal static CLecternAnchor LReflexAnchorRead(CEnvoy envoy, LSettingsPort settings, CLedgerNoticed noticed, LDraftPort drafts, long? entry, string headword, IReadOnlyList<CReflex> rows)`
 

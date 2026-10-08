@@ -1,5 +1,5 @@
 # QImprint.cs
-Hash: `a433407099c9601d`
+Hash: `5ec4348fb74cf1cd`
 
 ## `internal sealed class QImprint : QChronicleHost`
 
@@ -15,7 +15,7 @@ It answers the window's undo and redo keys as `QChronicleHost`, attached to its 
 Takes the page and pulls each part through `QContract.QContractFind`.
 Seats the credit list.
 Subscribes the four fields, typing, keys and focus of the credit list, and its hover and focus.
-Ties the kind chip to its list and attaches the credit and byline item fills.
+Ties the kind chip to its menu and attaches the credit and byline item fills.
 The credit fill subscribes the row's four handles and is followed by the handle update.
 The byline fill subscribes this driver's press handler on each row.
 The byline popup places itself under its field through the shared field helper.

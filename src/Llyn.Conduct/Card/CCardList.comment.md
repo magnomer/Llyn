@@ -1,5 +1,5 @@
 # CCardList.cs
-Hash: `0eba8a22f49a6e1b`
+Hash: `836537bdfa93b55b`
 
 ## `public sealed class CCardList`
 
@@ -31,7 +31,7 @@ A card alone in its list is kept by the clerk's rule, so the view sends every pr
 ## `public void CCardMove(long cardId, int place)`
 
 The move gate for a drag, which hands the place its geometry found.
-A place is the index of a card in the list `CEditorDraftChanged` last handed out.
+A place is the index of a card in the list `CEntryDraftChanged` last handed out.
 That list is in the order `CFolio` sets, so the gate maps the place through `CFolio.CFolioPlaceRead`.
 A place outside the handed list sends nothing.
 The card clerk judges the engine index, so a stale card or an unchanged place sends nothing.

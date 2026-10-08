@@ -38,13 +38,16 @@ public sealed class CPlaywright
     public CVideo CPlaywrightVideo => new(LPlaywrightDesk);
 
     private LQuillSituation? LPlaywrightQuill =>
-        !LPlaywrightDesk.CDeskFilling && LPlaywrightDesk.CDeskTenure is LTenure held ? new LQuillSituation(held) : null;
+        !LPlaywrightDesk.CDeskDraft.CDeskDraftFilling && LPlaywrightDesk.CDeskDraft.CDeskDraftTenure is LTenure held
+            ? new LQuillSituation(held)
+            : null;
 
     internal CSituationDraft? LPlaywrightScenarioRead()
     {
         try
         {
-            return CAtlas.LAtlasDraftRead(LPlaywrightDesk.CDeskRead(), _cPlaywrightAtelier.CAtelierMediaPort);
+            return CAtlas.LAtlasDraftRead(
+                LPlaywrightDesk.CDeskDraft.CDeskDraftRead(), _cPlaywrightAtelier.CAtelierMediaPort);
         }
         catch (Exception exception)
         {

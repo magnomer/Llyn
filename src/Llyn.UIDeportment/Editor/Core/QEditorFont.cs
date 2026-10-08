@@ -27,10 +27,10 @@ internal sealed class QEditorFont
     internal void QEditorFontIntroduce(CEditor editor)
     {
         _cEditor = editor;
-        editor.CEditorDraftChanged += QEditorHeadwordRefine;
-        editor.CEditorDraftChanged += QEditorExampleRefine;
-        editor.CEditorDraftChanged += QEditorGlossRefine;
-        editor.CEditorDraftChanged += QEditorGlyphRefine;
+        editor.CEditorEntry.CEntryDraftChanged += QEditorHeadwordRefine;
+        editor.CEditorEntry.CEntryDraftChanged += QEditorExampleRefine;
+        editor.CEditorEntry.CEntryDraftChanged += QEditorGlossRefine;
+        editor.CEditorEntry.CEntryDraftChanged += QEditorGlyphRefine;
     }
 
     private void QEditorHeadwordRefine(CEntryDraft _)

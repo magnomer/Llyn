@@ -1,5 +1,5 @@
 # TRepertoireScribe.cs
-Hash: `6d1f9967a6fd7607`
+Hash: `c33d7758ddf1ec02`
 
 ## `public sealed class TRepertoireScribe`
 

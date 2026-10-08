@@ -20,20 +20,6 @@ public sealed class CDesk
 
     private LVista? _cDeskVista;
 
-    private LTenure? _cDeskTenure;
-
-    private LErrand? _cDeskErrandEngine;
-
-    private LEasel? _cDeskEasel;
-
-    private LQuillChip? _cDeskChip;
-
-    private LQuillSpeech? _cDeskSpeech;
-
-    private bool _cDeskFilling;
-
-    private bool _cDeskHalted;
-
     internal CDesk(LDraftPort drafts, LSettingsPort settings, string scope, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(drafts);
@@ -45,6 +31,9 @@ public sealed class CDesk
         _cDeskSettings = settings;
         _cDeskScope = scope;
         _cDeskEnvoy = envoy;
+        CDeskDraft = new CDeskDraft(drafts, settings, scope, envoy);
+        CDeskChronicle = new CDeskChronicle(CDeskDraft, settings, scope, envoy);
+        CDeskChronicle.CDeskChronicleChanged += () => CDeskStateChanged?.Invoke();
         CDeskErrand = new CErrand(this);
         CDeskVigil = new LVigil(this);
     }
@@ -61,70 +50,27 @@ public sealed class CDesk
 
     public event Action? CDeskStarted;
 
-    internal event Action<LDraft>? CDeskDraftPrepared;
-
-    public event Action<CDraft>? CDeskDraftChanged;
-
     public event Action? CDeskStateChanged;
 
     public event Action<long>? CDeskFinished;
 
-    internal LErrand? CDeskErrandEngine => CDeskFilling ? null : _cDeskErrandEngine;
+    public CDeskDraft CDeskDraft { get; }
 
-    internal LQuillReference? CDeskReference =>
-        !CDeskFilling && _cDeskTenure is LTenure held ? new LQuillReference(held) : null;
-
-    internal LQuillAuthor? CDeskAuthor =>
-        !CDeskFilling && _cDeskTenure is LTenure held ? new LQuillAuthor(held) : null;
-
-    internal LQuillExample? CDeskExample =>
-        !CDeskFilling && _cDeskTenure is LTenure held ? new LQuillExample(held) : null;
-
-    internal LQuillSentence? CDeskSentence =>
-        !CDeskFilling && _cDeskTenure is LTenure held ? new LQuillSentence(held) : null;
-
-    internal LQuillMention? CDeskMention =>
-        !CDeskFilling && _cDeskTenure is LTenure held ? new LQuillMention(held) : null;
-
-    internal LQuillTranscription? CDeskTranscription =>
-        !CDeskFilling && _cDeskTenure is LTenure held ? new LQuillTranscription(held) : null;
-
-    internal LQuillEtymology? CDeskEtymology =>
-        !CDeskFilling && _cDeskTenure is LTenure held ? new LQuillEtymology(held) : null;
-
-    internal LEasel? CDeskEasel => CDeskFilling ? null : _cDeskEasel;
-
-    internal LQuillChip? CDeskChip => CDeskFilling ? null : _cDeskChip;
-
-    internal LQuillSpeech? CDeskSpeech => _cDeskSpeech;
+    public CDeskChronicle CDeskChronicle { get; }
 
     public CErrand CDeskErrand { get; }
 
     internal LVigil CDeskVigil { get; }
 
-    public bool CDeskHeld => _cDeskTenure is not null;
+    public bool CDeskHeld => CDeskDraft.CDeskDraftTenure is not null;
 
-    public bool CDeskFilling => _cDeskFilling;
-
-    public long CDeskId => _cDeskTenure?.LTenureId ?? 0;
+    public long CDeskId => CDeskDraft.CDeskDraftTenure?.LTenureId ?? 0;
 
     public bool CDeskStored => CDeskStoredRead() is not null;
 
-    public bool CDeskChanged => _cDeskTenure?.LTenureGauge.LTenureGaugeRead() is { LTenureStateChanged: true };
-
-    public bool CDeskStorable => _cDeskTenure?.LTenureGauge.LTenureGaugeStorable ?? false;
-
-    public bool CDeskHalted => _cDeskTenure?.LTenureGauge.LTenureGaugeRead() is { LTenureStateHalted: true };
-
-    public bool CDeskRunning => CDeskHeld && !CDeskHalted;
-
-    private bool CDeskStalling => CDeskHalted && !_cDeskHalted;
-
-    internal LTenure? CDeskTenure => _cDeskTenure;
-
     public void CDeskObserverAttach(Action<Action> marshal)
     {
-        CDeskObserverAttach(marshal, CDeskDraftResonate);
+        CDeskObserverAttach(marshal, CDeskDraft.CDeskDraftResonate);
     }
 
     public void CDeskObserverAttach(Action<Action> marshal, Action drafted)
@@ -132,7 +78,7 @@ public sealed class CDesk
         ArgumentNullException.ThrowIfNull(marshal);
         ArgumentNullException.ThrowIfNull(drafted);
 
-        CDeskVigil.LVigilDraftAttach(CSubject.CSubjectTenure, _ => marshal(CDeskStateResonate));
+        CDeskVigil.LVigilDraftAttach(CSubject.CSubjectTenure, _ => marshal(CDeskChronicle.CDeskChronicleResonate));
         CDeskVigil.LVigilDraftAttach(CSubject.CSubjectDraft, _ => marshal(drafted));
         CDeskErrand.LErrandObserverAttach(marshal);
     }
@@ -165,72 +111,14 @@ public sealed class CDesk
         }
     }
 
-    internal void LDeskOccurrenceStart(long? situation)
+    internal void LDeskRun(Func<LDraftPort, LVista, LTenure> start)
     {
+        ArgumentNullException.ThrowIfNull(start);
+
         bool dropped = LDeskTenureClear();
         if (_cDeskVista is LVista vista)
         {
-            CDeskStartRun(() => _cDeskPort.LEngineOccurrenceStart(vista, situation));
-            return;
-        }
-
-        if (dropped)
-        {
-            CDeskStateChanged?.Invoke();
-        }
-    }
-
-    internal void LDeskQuotationStart(long? example)
-    {
-        bool dropped = LDeskTenureClear();
-        if (_cDeskVista is LVista vista)
-        {
-            CDeskStartRun(() => _cDeskPort.LEngineQuotationStart(vista, example));
-            return;
-        }
-
-        if (dropped)
-        {
-            CDeskStateChanged?.Invoke();
-        }
-    }
-
-    internal void LDeskFootnoteStart(long? reference)
-    {
-        bool dropped = LDeskTenureClear();
-        if (_cDeskVista is LVista vista)
-        {
-            CDeskStartRun(() => _cDeskPort.LEngineFootnoteStart(vista, reference));
-            return;
-        }
-
-        if (dropped)
-        {
-            CDeskStateChanged?.Invoke();
-        }
-    }
-
-    internal void LDeskMembershipStart(long? tag)
-    {
-        bool dropped = LDeskTenureClear();
-        if (_cDeskVista is LVista vista)
-        {
-            CDeskStartRun(() => _cDeskPort.LEngineMembershipStart(vista, tag));
-            return;
-        }
-
-        if (dropped)
-        {
-            CDeskStateChanged?.Invoke();
-        }
-    }
-
-    internal void LDeskCohortStart(long? register)
-    {
-        bool dropped = LDeskTenureClear();
-        if (_cDeskVista is LVista vista)
-        {
-            CDeskStartRun(() => _cDeskPort.LEngineCohortStart(vista, register));
+            CDeskStartRun(() => start(_cDeskPort, vista));
             return;
         }
 
@@ -245,12 +133,8 @@ public sealed class CDesk
         try
         {
             LTenure started = start();
-            _cDeskTenure = started;
-            _cDeskErrandEngine = started.LTenureErrand;
-            _cDeskEasel = new LEasel(started);
-            _cDeskChip = new LQuillChip(started, _cDeskPort);
-            _cDeskSpeech = new LQuillSpeech(started);
-            _cDeskHalted = false;
+            CDeskDraft.LDeskDraftSet(started);
+            CDeskChronicle.LDeskChronicleClear();
             CDeskVigil.LVigilApply(started);
             CDeskStarted?.Invoke();
         }
@@ -262,141 +146,23 @@ public sealed class CDesk
             return;
         }
 
-        CDeskDraftResonate();
+        CDeskDraft.CDeskDraftResonate();
         CDeskStateChanged?.Invoke();
-    }
-
-    internal LDraft? CDeskRead()
-    {
-        if (_cDeskTenure is not LTenure held)
-        {
-            return null;
-        }
-
-        held.LTenurePersist();
-        return held.LTenureRead();
     }
 
     public long? CDeskStoredRead()
     {
-        return _cDeskTenure?.LTenureStoredRead();
-    }
-
-    public void CDeskDraftResonate()
-    {
-        if (CDeskFilling)
-        {
-            return;
-        }
-
-        try
-        {
-            CDeskDraftShow(CDeskPrepare());
-        }
-        catch (Exception exception)
-        {
-            CLedger.LLedgerFailureShow(_cDeskEnvoy, _cDeskSettings, _cDeskScope + ".LoadFailed", exception);
-        }
-    }
-
-    private LDraft? CDeskPrepare()
-    {
-        if (_cDeskTenure is not LTenure held)
-        {
-            return null;
-        }
-
-        held.LTenurePersist();
-        return held.LTenurePrepare();
-    }
-
-    private void CDeskDraftShow(LDraft? draft)
-    {
-        if (draft is null)
-        {
-            return;
-        }
-
-        _cDeskFilling = true;
-        try
-        {
-            CDeskDraftPrepared?.Invoke(draft);
-            CDeskDraftChanged?.Invoke(new CDraft(draft.LDraftAuthorName));
-        }
-        finally
-        {
-            _cDeskFilling = false;
-        }
-    }
-
-    public void CDeskStateResonate()
-    {
-        if (CDeskStalling)
-        {
-            _cDeskEnvoy.CEnvoyFailureShow(_cDeskScope + ".HoldFailed");
-        }
-
-        _cDeskHalted = CDeskHalted;
-        CDeskStateChanged?.Invoke();
-    }
-
-    public void CDeskPersist()
-    {
-        if (CDeskFilling)
-        {
-            return;
-        }
-
-        _cDeskTenure?.LTenurePersist();
+        return CDeskDraft.CDeskDraftTenure?.LTenureStoredRead();
     }
 
     internal bool LDeskChangeCheck()
     {
-        return _cDeskTenure?.LTenureChangeCheck() ?? false;
+        return CDeskDraft.CDeskDraftTenure?.LTenureChangeCheck() ?? false;
     }
 
     internal bool LDeskReadyCheck()
     {
-        return _cDeskTenure?.LTenureReadyCheck() ?? false;
-    }
-
-    public (bool CDeskBackward, bool CDeskForward) CDeskChronicleRead()
-    {
-        if (_cDeskTenure is not LTenure held)
-        {
-            return (false, false);
-        }
-
-        LTenureState state = held.LTenureGauge.LTenureGaugeRead();
-        return (state.LTenureStateBackward, state.LTenureStateForward);
-    }
-
-    public void CDeskUndo()
-    {
-        try
-        {
-            _cDeskTenure?.LTenureUndo();
-        }
-        catch (Exception exception)
-        {
-            CLedger.LLedgerFailureShow(_cDeskEnvoy, _cDeskSettings, _cDeskScope + ".HoldFailed", exception);
-        }
-
-        CDeskStateChanged?.Invoke();
-    }
-
-    public void CDeskRedo()
-    {
-        try
-        {
-            _cDeskTenure?.LTenureRedo();
-        }
-        catch (Exception exception)
-        {
-            CLedger.LLedgerFailureShow(_cDeskEnvoy, _cDeskSettings, _cDeskScope + ".HoldFailed", exception);
-        }
-
-        CDeskStateChanged?.Invoke();
+        return CDeskDraft.CDeskDraftTenure?.LTenureReadyCheck() ?? false;
     }
 
     public bool CDeskFinish(bool store)
@@ -408,7 +174,7 @@ public sealed class CDesk
     {
         ArgumentNullException.ThrowIfNull(stored);
 
-        if (_cDeskTenure is not LTenure held)
+        if (CDeskDraft.CDeskDraftTenure is not LTenure held)
         {
             return true;
         }
@@ -424,11 +190,7 @@ public sealed class CDesk
             return false;
         }
 
-        _cDeskTenure = null;
-        _cDeskErrandEngine = null;
-        _cDeskEasel = null;
-        _cDeskChip = null;
-        _cDeskSpeech = null;
+        CDeskDraft.LDeskDraftClear();
         CDeskStateChanged?.Invoke();
         if (kept is long id)
         {
@@ -470,16 +232,12 @@ public sealed class CDesk
 
     private bool LDeskTenureClear()
     {
-        if (_cDeskTenure is not LTenure held)
+        if (CDeskDraft.CDeskDraftTenure is not LTenure held)
         {
             return false;
         }
 
-        _cDeskTenure = null;
-        _cDeskErrandEngine = null;
-        _cDeskEasel = null;
-        _cDeskChip = null;
-        _cDeskSpeech = null;
+        CDeskDraft.LDeskDraftClear();
         held.LTenureCancel();
         return true;
     }

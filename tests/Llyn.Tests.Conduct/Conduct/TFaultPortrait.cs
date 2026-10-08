@@ -121,14 +121,14 @@ public sealed partial class TFault
             "Print.Failed",
             static stage => Task.FromResult<Func<Task>>(TFaultShelfStart(stage).CShelfPortraitPrint)),
         new(
-            "CXiesheng.CXieshengPortraitExport",
+            "CEntryList.CEntryListExport",
             "LPortraitPort.LEnginePortraitExport",
             "Export.Failed",
             static stage => Task.FromResult<Func<Task>>(CXiesheng.CXieshengCreate(
                 TFaultAtelierStart(stage), static () => true, TFaultEnvoyCreate(stage), static run => run())
-                .CXieshengPortraitExport)),
+                .CXieshengKindred.CEntryListExport)),
         new(
-            "CXiesheng.CXieshengPortraitPrint",
+            "CEntryList.CEntryListPrint",
             "LPortraitPort.LEnginePortraitPrint",
             "Print.Failed",
             static async stage =>
@@ -142,17 +142,18 @@ public sealed partial class TFault
                 CXiesheng xiesheng = CXiesheng.CXieshengCreate(
                     atelier, static () => true, TFaultEnvoyCreate(stage), static run => run());
                 xiesheng.TXieshengStemOpen(language, "龍");
-                xiesheng.CXieshengPanel.CPanelRowSelect(entry.LEntryId);
-                return xiesheng.CXieshengPortraitPrint;
+                xiesheng.CXieshengKindred.CEntryListPanel.CPanelRowSelect(entry.LEntryId);
+                return xiesheng.CXieshengKindred.CEntryListPrint;
             }),
         new(
-            "CYunjing.CYunjingPortraitExport",
+            "CYunjing.CYunjingXiaoyun.CEntryListExport",
             "LPortraitPort.LEnginePortraitExport",
             "Export.Failed",
             static stage => Task.FromResult<Func<Task>>(
-                TYunjing.TYunjingPrepare(TFaultAtelierStart(stage), TFaultEnvoyCreate(stage)).CYunjingPortraitExport)),
+                TYunjing.TYunjingPrepare(TFaultAtelierStart(stage), TFaultEnvoyCreate(stage))
+                    .CYunjingXiaoyun.CEntryListExport)),
         new(
-            "CYunjing.CYunjingPortraitPrint",
+            "CYunjing.CYunjingXiaoyun.CEntryListPrint",
             "LPortraitPort.LEnginePortraitPrint",
             "Print.Failed",
             static stage =>
@@ -165,8 +166,9 @@ public sealed partial class TFault
                 TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
                 CYunjing yunjing = TYunjing.TYunjingPrepare(atelier, TFaultEnvoyCreate(stage));
                 yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
-                yunjing.CYunjingPanel.CPanelRowSelect(Assert.Single(yunjing.CYunjingXiaoyunRead()).CVistaRowId);
-                return Task.FromResult<Func<Task>>(yunjing.CYunjingPortraitPrint);
+                CEntryList xiaoyun = yunjing.CYunjingXiaoyun;
+                xiaoyun.CEntryListPanel.CPanelRowSelect(Assert.Single(xiaoyun.CEntryListRead()).CVistaRowId);
+                return Task.FromResult<Func<Task>>(xiaoyun.CEntryListPrint);
             }),
     ];
 
@@ -214,7 +216,7 @@ public sealed partial class TFault
         engine.TRequestQuoteApply(water.LEntryId, cat.LExampleId);
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TFaultEnvoyCreate(stage));
         corpus.TCorpusExampleOpen(cat.LExampleId);
-        corpus.CCorpusQuotationSelect(water.LEntryId);
+        corpus.CCorpusDiptych.CDiptychChildSelect(water.LEntryId);
         return corpus;
     }
 
@@ -226,7 +228,7 @@ public sealed partial class TFault
         LEntry hearth = TRepertoire.TRepertoireEntrySave(engine, "hearth", home);
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TFaultEnvoyCreate(stage));
         repertoire.TRepertoireSituationOpen(home.LSituationId);
-        repertoire.CRepertoireOccurrenceSelect(hearth.LEntryId);
+        repertoire.CRepertoireDiptych.CDiptychChildSelect(hearth.LEntryId);
         return repertoire;
     }
 

@@ -22,14 +22,14 @@ public sealed class TTenorEntry
 
         tenor.CTenorEntryCreate();
 
-        long register = Assert.NotNull(tenor.LTenorChosen);
+        long register = Assert.NotNull(tenor.CTenorAperture.CApertureChosen);
         CCatalogRegister row = Assert.Single(
             tenor.CTenorRowsRead(), row => row.CCatalogRegisterStored.CRegisterId == register);
         Assert.Equal(new CRegister(register, "formal"), row.CCatalogRegisterStored);
         Assert.Equal(0, row.CCatalogRegisterUsage);
         Assert.Equal("register/formal", row.CCatalogRegisterIcon);
         Assert.True(row.CCatalogRegisterChosen);
-        Assert.Equal(register, tenor.LTenorChosen);
+        Assert.Equal(register, tenor.CTenorAperture.CApertureChosen);
         Assert.Equal(1, opened);
         Assert.Equal(["Coinage:Coinage.Register"], asked);
         Assert.False(tenor.CTenorCohort.CCohortPanel.CPanelEditing);
@@ -50,7 +50,7 @@ public sealed class TTenorEntry
 
         Assert.Equal(["Coinage:Coinage.Register", "Register.CreateFailed"], asked);
         Assert.Equal(0, opened);
-        Assert.Null(tenor.LTenorChosen);
+        Assert.Null(tenor.CTenorAperture.CApertureChosen);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public sealed class TTenorEntry
 
         Assert.Equal(["Coinage:Coinage.Register"], asked);
         Assert.Equal(0, opened);
-        Assert.Null(tenor.LTenorChosen);
+        Assert.Null(tenor.CTenorAperture.CApertureChosen);
         Assert.False(tenor.CTenorCohort.CCohortPanel.CPanelEditing);
     }
 
@@ -85,9 +85,9 @@ public sealed class TTenorEntry
         tenor.CTenorEntryCreate();
 
         Assert.Equal(["Leave"], asked);
-        Assert.Null(tenor.LTenorChosen);
+        Assert.Null(tenor.CTenorAperture.CApertureChosen);
         Assert.True(tenor.CTenorCohort.CCohortPanel.CPanelEditing);
-        Assert.True(tenor.CTenorEditor.CEditorDesk.CDeskChanged);
+        Assert.True(tenor.CTenorEditor.CEditorDesk.CDeskDraft.CDeskDraftAltered);
     }
 
     [Fact]
@@ -103,7 +103,7 @@ public sealed class TTenorEntry
         tenor.CTenorEntryCreate();
 
         Assert.Equal(["Leave", "Coinage:Coinage.Register"], asked);
-        Assert.NotNull(tenor.LTenorChosen);
+        Assert.NotNull(tenor.CTenorAperture.CApertureChosen);
         Assert.False(tenor.CTenorCohort.CCohortPanel.CPanelEditing);
     }
 
@@ -121,7 +121,7 @@ public sealed class TTenorEntry
         tenor.CTenorEntryCreate();
 
         Assert.Empty(asked);
-        Assert.Equal(register.LRegisterId, tenor.LTenorChosen);
+        Assert.Equal(register.LRegisterId, tenor.CTenorAperture.CApertureChosen);
         Assert.True(tenor.CTenorCohort.CCohortPanel.CPanelEditing);
     }
 
@@ -135,7 +135,7 @@ public sealed class TTenorEntry
         LRegister register = engine.TEngineRegisterCreate("formal");
         tenor.TTenorRegisterOpen(register.LRegisterId);
         List<CEntryDraft> shown = [];
-        tenor.CTenorEditor.CEditorDraftChanged += shown.Add;
+        tenor.CTenorEditor.CEditorEntry.CEntryDraftChanged += shown.Add;
 
         tenor.CTenorEntryCreate();
 
@@ -144,7 +144,7 @@ public sealed class TTenorEntry
         Assert.True(tenor.CTenorCohort.CCohortPanel.CPanelEditing);
         Assert.False(tenor.CTenorCohort.CCohortPanel.CPanelBinEnabled);
 
-        tenor.CTenorEditor.CEditorHeadwordSet("fern");
+        tenor.CTenorEditor.CEditorEntry.CEntryHeadwordSet("fern");
         tenor.CTenorEditor.CEditorEntrySave();
 
         Assert.Equal(["fern"], tenor.CTenorCohort.CCohortRowsRead().Select(row => row.CVistaRowHeadword));
@@ -160,12 +160,12 @@ public sealed class TTenorEntry
         LEntry hearth = TTenorEntrySave(engine);
         tenor.CTenorCohort.CCohortPanel.CPanelRowOpen(hearth.LEntryId);
         List<CEntryDraft> shown = [];
-        tenor.CTenorEditor.CEditorDraftChanged += shown.Add;
+        tenor.CTenorEditor.CEditorEntry.CEntryDraftChanged += shown.Add;
 
         tenor.CTenorEntryCreate();
 
         Assert.Empty(shown[0].CEntryDraftMeanings[0].CCardDraftRegister);
-        Assert.False(tenor.CTenorEditor.CEditorDesk.CDeskChanged);
+        Assert.False(tenor.CTenorEditor.CEditorDesk.CDeskDraft.CDeskDraftAltered);
         Assert.True(tenor.CTenorCohort.CCohortPanel.CPanelEditing);
     }
 
@@ -242,7 +242,7 @@ public sealed class TTenorEntry
         long register = engine.TEngineRegisterCreate("casual").LRegisterId;
         tenor.CTenorRegisterToggle(register);
         tenor.CTenorEntryCreate();
-        tenor.CTenorEditor.CEditorHeadwordSet("fern");
+        tenor.CTenorEditor.CEditorEntry.CEntryHeadwordSet("fern");
         tenor.CTenorRegisterToggle(register);
     }
 }

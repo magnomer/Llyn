@@ -1,5 +1,5 @@
 # TCorpus.cs
-Hash: `499591202df0dddd`
+Hash: `0d88f7649ee45fc0`
 
 ## `public sealed class TCorpus`
 
@@ -18,7 +18,7 @@ The marshal, the held Example and the window's exit gate live in `TCorpusHold`.
 
 Builds the corpus over the atelier with its own editor, and the corpus restores both vistas itself.
 Its seam answers that the tab is in front, and its marshal runs each desk notice at once.
-Every `TCorpus` sibling class and `TQuotation` build their corpus through it.
+Most corpus test classes, `TQuotation`, `TFaultPortrait` and `TTranscriptMention` build their corpus through it.
 
 ## `internal static LExample TCorpusExampleSave(LEngine engine, string text)`
 

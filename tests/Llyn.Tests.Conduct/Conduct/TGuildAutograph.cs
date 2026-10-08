@@ -17,7 +17,7 @@ public sealed class TGuildAutograph
         engine.TEngineDelaySet(0);
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        guild.CGuildAuthorCreate();
+        guild.CGuildDiptych.CDiptychEntryCreate();
 
         guild.CGuildNameSet("Ada");
 
@@ -53,7 +53,7 @@ public sealed class TGuildAutograph
         CGuild guild = TGuild.TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         int cleared = 0;
-        guild.CGuildUnionCleared += () => cleared++;
+        guild.CGuildUnion.CGuildUnionCleared += () => cleared++;
 
         guild.CGuildAuthorSelect(ada.LAuthorId);
 
@@ -80,11 +80,11 @@ public sealed class TGuildAutograph
                 marshalled++;
                 run();
             });
-        guild.CGuildAuthorCreate();
+        guild.CGuildDiptych.CDiptychEntryCreate();
         guild.CGuildNameSet("Ada");
-        guild.CGuildAutograph.CDeskPersist();
+        guild.CGuildAutograph.CDeskDraft.CDeskDraftPersist();
         List<string> shown = [];
-        guild.CGuildAutograph.CDeskDraftChanged += draft => shown.Add(draft.CDraftAuthorName);
+        guild.CGuildAutograph.CDeskDraft.CDeskDraftChanged += draft => shown.Add(draft.CDraftAuthorName);
         marshalled = 0;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectDraft, guild.CGuildAutograph.CDeskId);

@@ -1,5 +1,5 @@
 # TTimbreEnsign.cs
-Hash: `5e58c5093663fd9e`
+Hash: `1f71c4fb7aaa93d1`
 
 ## `public sealed class TTimbreEnsign`
 

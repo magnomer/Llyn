@@ -320,7 +320,7 @@ public sealed class TEaselDesk
     private static CRepertoire TEaselScenarioPrepare(CAtelier atelier)
     {
         CRepertoire repertoire = TRepertoire.TRepertoirePrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        repertoire.CRepertoireSituationCreate();
+        repertoire.CRepertoireDiptych.CDiptychEntryCreate();
         return repertoire;
     }
 

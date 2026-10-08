@@ -1,5 +1,5 @@
 # TLibraryVista.cs
-Hash: `bbea1b556e48e4a9`
+Hash: `3ea7f5cc6a857b72`
 
 ## `public sealed class TLibraryVista`
 

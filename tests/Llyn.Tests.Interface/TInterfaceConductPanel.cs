@@ -34,7 +34,7 @@ internal static class TInterfaceConductPanel
 
     internal static void TPanelVistaRestore(this CPanel panel, LVista vista) => panel.CPanelVistaRestore(vista);
 
-    internal static LVista? TPanelVistaRead(this CPanel panel) => panel.CPanelVista;
+    internal static LVista? TPanelVistaRead(this CPanel panel) => panel.CPanelAperture.CApertureVista;
 
     internal static CCatalogOrder TPanelOrderRead(LCatalogOrder order) => CCatalog.LCatalogOrderRead(order);
 
@@ -138,8 +138,6 @@ internal static class TInterfaceConductPanel
 
     internal static void TImprintCancel(this CImprint imprint) => imprint.LImprintCancel();
 
-    internal static void TImprintSave(this CImprint imprint) => imprint.LImprintSave();
-
     internal static IReadOnlyList<CReferenceKind> TImprintKindRead(
         IReadOnlyList<(string LReferenceKindTag, string LReferenceKindKey)> rows) =>
         CImprint.LImprintKindRead(rows);
@@ -157,9 +155,9 @@ internal static class TInterfaceConductPanel
 
     internal static string TCohortFileRead(this CCohort cohort) => cohort.LCohortFileRead();
 
-    internal static string TXieshengFileRead(this CXiesheng xiesheng) => xiesheng.LXieshengFileRead();
+    internal static string TXieshengFileRead(this CXiesheng xiesheng) => xiesheng.CXieshengKindred.LEntryListResolve();
 
-    internal static string TYunjingFileRead(this CYunjing yunjing) => yunjing.LYunjingFileRead();
+    internal static string TYunjingFileRead(this CYunjing yunjing) => yunjing.CYunjingXiaoyun.LEntryListResolve();
 
     internal static string TQuotationFileRead(this CQuotation quotation) => quotation.LQuotationFileRead();
 
@@ -176,17 +174,17 @@ internal static class TInterfaceConductPanel
     internal static void TGuildScribeRestore(this CGuild guild, bool editing) => guild.LGuildScribeRestore(editing);
 
     internal static bool TRepertoireLeaveConfirm(this CRepertoire repertoire) =>
-        repertoire.LRepertoireLeaveConfirm(true);
+        repertoire.CRepertoireSession.LSessionLeaveConfirm(true);
 
-    internal static bool TShelfLeaveConfirm(this CShelf shelf) => shelf.LShelfLeaveConfirm();
+    internal static bool TShelfLeaveConfirm(this CShelf shelf) => shelf.CShelfSession.LSessionLeaveConfirm(true);
 
-    internal static bool TShelfChangeRead(this CShelf shelf) => shelf.LShelfChangeRead();
+    internal static bool TShelfChangeRead(this CShelf shelf) => shelf.CShelfSession.LSessionChangeCheck();
 
-    internal static bool TShelfDraftFinish(this CShelf shelf, bool store) => shelf.LShelfDraftFinish(store);
+    internal static bool TShelfDraftFinish(this CShelf shelf, bool store) => shelf.CShelfSession.LSessionFinish(store);
 
     internal static CExample? TCorpusTranscriptRead(this CCorpus corpus) => corpus.CCorpusTranscript.LTranscriptRead();
 
-    internal static void TCorpusEntryResonate(this CCorpus corpus) => corpus.LCorpusEntryResonate();
+    internal static void TCorpusEntryResonate(this CCorpus corpus) => corpus.CCorpusDiptych.LDiptychChildResonate();
 
-    internal static bool TCorpusLeaveConfirm(this CCorpus corpus) => corpus.LCorpusLeaveConfirm(true);
+    internal static bool TCorpusLeaveConfirm(this CCorpus corpus) => corpus.CCorpusSession.LSessionLeaveConfirm(true);
 }

@@ -42,7 +42,7 @@ public sealed class TGuild
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Bob"));
 
-        guild.CGuildQuerySet("Bo");
+        guild.CGuildPanel.CPanelAperture.CApertureQuerySet("Bo");
 
         Assert.Equal(["Bob"], guild.CGuildRollRead().CGuildRollRows.Select(row => row.CCatalogAuthorName));
     }
@@ -55,10 +55,10 @@ public sealed class TGuild
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CGuild guild = TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
-        guild.CGuildOrderSet(CCatalogOrder.CCatalogOrderReverse);
-        guild.CGuildOrderSet(null);
+        guild.CGuildPanel.CPanelAperture.CApertureOrderSet(CCatalogOrder.CCatalogOrderReverse);
+        guild.CGuildPanel.CPanelAperture.CApertureOrderSet(null);
 
-        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, guild.CGuildPanel.CPanelOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, guild.CGuildPanel.CPanelAperture.CApertureOrder);
     }
 
     [Fact]
@@ -69,10 +69,10 @@ public sealed class TGuild
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CGuild guild = TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
 
-        guild.CGuildFilterSet(new CCatalogFilter(["Book"]));
+        guild.CGuildPanel.CPanelAperture.CApertureFilterSet(new CCatalogFilter(["Book"]));
 
-        Assert.True(guild.CGuildFiltered);
-        Assert.Equal(["Book"], guild.CGuildPanel.CPanelFilter.CCatalogFilterHidden);
+        Assert.True(guild.CGuildPanel.CPanelAperture.CApertureFiltered);
+        Assert.Equal(["Book"], guild.CGuildPanel.CPanelAperture.CApertureFilter.CCatalogFilterHidden);
     }
 
     [Fact]
@@ -108,7 +108,7 @@ public sealed class TGuild
         guild.CGuildAuthorSelect(ada.LAuthorId);
         CVita vita = guild.CGuildRollRead().CGuildRollVita;
 
-        Assert.True(guild.CGuildVitaShown);
+        Assert.True(guild.CGuildDiptych.CDiptychParentShown);
         Assert.True(guild.CGuildVitaHeld);
         Assert.True(guild.CGuildModeEnabled);
         Assert.True(guild.CGuildBinEnabled);
@@ -172,10 +172,9 @@ public sealed class TGuild
 
         guild.CGuildSourceSelect(book.LReferenceId);
 
-        Assert.True(guild.CGuildColophonShown);
-        Assert.False(guild.CGuildVitaShown);
+        Assert.True(guild.CGuildDiptych.CDiptychChildSide);
+        Assert.False(guild.CGuildDiptych.CDiptychParentShown);
         Assert.False(guild.CGuildModeEnabled);
-        Assert.True(guild.CGuildPressAllowed);
         Assert.Equal("Book", shown?.CColophonTitle);
     }
 
@@ -207,7 +206,7 @@ public sealed class TGuild
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         guild.CGuildAuthorSelect(ada.LAuthorId);
 
-        guild.CGuildAuthorDelete();
+        guild.CGuildDiptych.CDiptychEntryDelete();
 
         Assert.Equal(["Guild.DeleteConfirm"], asked);
         Assert.Null(engine.TEngineAuthorRead(ada.LAuthorId));
@@ -239,7 +238,7 @@ public sealed class TGuild
         CGuild guild = TGuildPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         int refreshed = 0;
         int changed = 0;
-        guild.CGuildPanel.CPanelRowsChanged += () => refreshed++;
+        guild.CGuildPanel.CPanelAperture.CApertureRowsChanged += () => refreshed++;
         guild.CGuildChanged += () => changed++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectAuthor, 0);
@@ -259,7 +258,7 @@ public sealed class TGuild
         Task printed = guild.CGuildPortraitPrint();
 
         Assert.Same(Task.CompletedTask, printed);
-        Assert.False(guild.CGuildPressAllowed);
+        Assert.False(guild.CGuildDiptych.CDiptychChildSide);
     }
 
     internal static CGuild TGuildPrepare(CAtelier atelier, CEnvoy envoy)

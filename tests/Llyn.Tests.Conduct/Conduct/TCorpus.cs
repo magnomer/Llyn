@@ -18,14 +18,14 @@ public sealed class TCorpus
         CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.TCorpusExampleOpen(cat.LExampleId);
         List<CEntryDraft> shown = [];
-        corpus.CCorpusEditor.CEditorDraftChanged += shown.Add;
+        corpus.CCorpusEditor.CEditorEntry.CEntryDraftChanged += shown.Add;
 
-        corpus.CCorpusExampleCreate();
+        corpus.CCorpusDiptych.CDiptychEntryCreate();
 
-        Assert.True(corpus.CCorpusEditorShown);
-        Assert.False(corpus.CCorpusExcerptShown);
+        Assert.True(corpus.CCorpusDiptych.CDiptychChildEditing);
+        Assert.False(corpus.CCorpusDiptych.CDiptychParentShown);
         Assert.False(corpus.CCorpusDesk.CDeskHeld);
-        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyChosen);
+        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureChosen);
         Assert.Equal(
             "a cat sat",
             shown[0].CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample?.CExampleDraftText
@@ -45,7 +45,7 @@ public sealed class TCorpus
 
         corpus.TCorpusExampleOpen(cat.LExampleId);
 
-        Assert.True(corpus.CCorpusExcerptShown);
+        Assert.True(corpus.CCorpusDiptych.CDiptychParentShown);
         Assert.True(corpus.CCorpusExcerptHeld);
         Assert.True(corpus.CCorpusPressAllowed);
         Assert.False(corpus.CCorpusPortraitAllowed);
@@ -61,8 +61,8 @@ public sealed class TCorpus
         LExample cat = TCorpusExampleSave(engine, "a cat sat");
         TCorpusExampleSave(engine, "a dog ran");
         CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
-        corpus.CCorpusAnthology.CAnthologyQuerySet("dog");
-        corpus.CCorpusAnthology.CAnthologyPanel.CPanelRowsChanged += () => corpus.CCorpusRowsRead();
+        corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureQuerySet("dog");
+        corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureRowsChanged += () => corpus.CCorpusRowsRead();
         int cleared = 0;
         corpus.CCorpusQueryCleared += () => cleared++;
 
@@ -70,7 +70,7 @@ public sealed class TCorpus
 
         Assert.Equal(1, cleared);
         Assert.Equal(2, corpus.CCorpusRowsRead().Count);
-        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyChosen);
+        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureChosen);
         Assert.True(corpus.CCorpusExcerptHeld);
     }
 
@@ -86,12 +86,12 @@ public sealed class TCorpus
         int recorded = 0;
         atelier.CAtelierNavigation.CNavigationChanged += _ => recorded++;
 
-        corpus.CCorpusExampleSelect(cat.LExampleId);
-        corpus.CCorpusExampleSelect(null);
+        corpus.CCorpusDiptych.CDiptychParentSelect(cat.LExampleId);
+        corpus.CCorpusDiptych.CDiptychParentSelect(null);
 
         Assert.Equal(1, recorded);
         Assert.Empty(asked);
-        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyChosen);
+        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -106,13 +106,13 @@ public sealed class TCorpus
         CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.TCorpusExampleOpen(cat.LExampleId);
 
-        corpus.CCorpusQuotationSelect(water.LEntryId);
+        corpus.CCorpusDiptych.CDiptychChildSelect(water.LEntryId);
 
-        Assert.False(corpus.CCorpusExcerptShown);
+        Assert.False(corpus.CCorpusDiptych.CDiptychParentShown);
         Assert.True(corpus.CCorpusDisplayShown);
         Assert.True(corpus.CCorpusPortraitAllowed);
-        Assert.False(corpus.CCorpusBinEnabled);
-        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyChosen);
+        Assert.False(corpus.CCorpusDiptych.CDiptychBinEnabled);
+        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -131,7 +131,7 @@ public sealed class TCorpus
 
         Assert.True(corpus.CCorpusExcerptBlank);
         Assert.False(corpus.CCorpusDisplayShown);
-        Assert.Null(corpus.CCorpusAnthology.CAnthologyChosen);
+        Assert.Null(corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureChosen);
         Assert.Equal(1, told);
     }
 
@@ -146,12 +146,12 @@ public sealed class TCorpus
         engine.TRequestQuoteApply(water.LEntryId, cat.LExampleId);
         CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.TCorpusExampleOpen(cat.LExampleId);
-        corpus.CCorpusQuotationSelect(water.LEntryId);
+        corpus.CCorpusDiptych.CDiptychChildSelect(water.LEntryId);
 
         corpus.TCorpusEntryResonate();
 
         Assert.True(corpus.CCorpusDisplayShown);
-        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyChosen);
+        Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -168,11 +168,11 @@ public sealed class TCorpus
         Assert.Equal(2, corpus.CCorpusRowsRead().Count);
         Assert.True(corpus.CCorpusExcerptHeld);
 
-        corpus.CCorpusAnthology.CAnthologyQuerySet("dog");
+        corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureQuerySet("dog");
 
         Assert.Single(corpus.CCorpusRowsRead());
         Assert.True(corpus.CCorpusExcerptBlank);
-        Assert.Null(corpus.CCorpusAnthology.CAnthologyChosen);
+        Assert.Null(corpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -186,7 +186,7 @@ public sealed class TCorpus
         CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(true, asked));
         corpus.TCorpusExampleOpen(cat.LExampleId);
 
-        corpus.CCorpusExampleDelete();
+        corpus.CCorpusDiptych.CDiptychEntryDelete();
 
         Assert.Equal(["Example.DeleteConfirm"], asked);
         Assert.Empty(corpus.CCorpusAnthology.TAnthologyRowsRead());
@@ -205,9 +205,9 @@ public sealed class TCorpus
         List<string> asked = [];
         CCorpus corpus = TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(true, asked));
         corpus.TCorpusExampleOpen(cat.LExampleId);
-        corpus.CCorpusQuotationSelect(water.LEntryId);
+        corpus.CCorpusDiptych.CDiptychChildSelect(water.LEntryId);
 
-        corpus.CCorpusExampleDelete();
+        corpus.CCorpusDiptych.CDiptychEntryDelete();
 
         Assert.Empty(asked);
         Assert.Single(corpus.CCorpusAnthology.TAnthologyRowsRead());

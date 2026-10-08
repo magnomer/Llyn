@@ -1,5 +1,5 @@
 # TFaultMark.cs
-Hash: `0836c875d7041967`
+Hash: `951623606cecb82c`
 
 ## `public sealed partial class TFault`
 
@@ -15,7 +15,7 @@ Tag and register creation read back the panel's row count, which a created row w
 The union select reads back whether the autograph shows, since a merge would close it.
 Fold rows fault `LSettingsVault.LSettingsSave`, so the engine's own rollback is under test.
 Their read-back is the settings field the gate writes, read from the engine.
-Rank, rebuild and sound start rows read nothing back, since no gate read answers the engine work.
+Fanqie set, rebuild and sound start rows read nothing back, since no gate read answers the engine work.
 Sound start is reached through the wing open, the display resonate, and the panel open and resonate.
 Other gates reach it only through these, so they hold no row of their own.
 The display resonate and panel resonate rows open the entry first, so a chosen entry exists to reload.
@@ -27,7 +27,7 @@ Stores a plain English entry and answers its id, the entry every mark row writes
 ## `private static CEditor TFaultDeskOpen(TFaultStage stage)`
 
 Builds an editor over the faulted atelier and opens a stored entry in a library vista.
-Esteem, sounding and timbre gates act only on a stored entry, so a fresh draft would reach no port.
+Esteem, sounding and reflex gates act only on a stored entry, so a fresh draft would reach no port.
 
 ## `private static CWing TFaultWingOpen(TFaultStage stage)`
 

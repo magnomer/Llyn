@@ -107,7 +107,7 @@ internal sealed class QEditorSound
 
     internal void QEditorPronunciationRefine(CEntryDraft _)
     {
-        QField.QFieldTextShow(QEditorSoundField, _cEditor.CEditorPronunciationRead());
+        QField.QFieldTextShow(QEditorSoundField, _cEditor.CEditorEntry.CEntryPronunciationRead());
     }
 
     internal void QEditorTimbreRefine(CEntryDraft _)
@@ -132,12 +132,12 @@ internal sealed class QEditorSound
     private void QEditorContourRefine(IReadOnlyList<CContour> syllables)
     {
         PContour contour = QEditorSoundContour;
-        contour.PContourScale = _cEditor.CEditorDisplay.CDisplaySound.CDisplaySoundScale;
+        contour.PContourScale = _cEditor.CEditorDisplay.CDisplayAccent.CDisplayAccentScale;
         contour.PContourSyllables = QContourInk.QContourInkBuild(syllables, contour);
     }
 
     private void QEditorPronunciationObserve(object sender, TextChangedEventArgs e)
     {
-        _cEditor.CEditorPronunciationSet(QEditorSoundField.Text);
+        _cEditor.CEditorEntry.CEntryPronunciationSet(QEditorSoundField.Text);
     }
 }

@@ -1,5 +1,5 @@
 # TFavoriteVista.cs
-Hash: `79d21d081878f79c`
+Hash: `0ae74b0abbb2328e`
 
 ## `public sealed class TFavoriteVista`
 

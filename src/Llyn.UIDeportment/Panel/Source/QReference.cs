@@ -164,13 +164,13 @@ internal sealed class QReference
         QLectern lectern = new(_cShelf.CShelfEditor.CEditorDisplay, footnote);
         _cShelf.CShelfChanged += QReferenceModeRefine;
         _cShelf.CShelfPanel.CPanelChanged += QReferenceModeRefine;
-        _cShelf.CShelfPanel.CPanelRowsChanged += QShelfRefine;
-        _cShelf.CShelfPanel.CPanelRowsChanged += _qImprint.QImprintTallyRefine;
+        _cShelf.CShelfPanel.CPanelAperture.CApertureRowsChanged += QShelfRefine;
+        _cShelf.CShelfPanel.CPanelAperture.CApertureRowsChanged += _qImprint.QImprintTallyRefine;
         _cShelf.CShelfPanel.CPanelCleared += _qImprint.QImprintClearRefine;
         _cShelf.CShelfPanel.CPanelCleared += _qColophon.QColophonClearRefine;
         _cShelf.CShelfColophonChanged += _qColophon.QColophonRefine;
         _cShelf.CShelfFootnote.CFootnotePanel.CPanelChanged += QReferenceModeRefine;
-        _cShelf.CShelfFootnote.CFootnotePanel.CPanelRowsChanged += QFootnoteRefine;
+        _cShelf.CShelfFootnote.CFootnotePanel.CPanelAperture.CApertureRowsChanged += QFootnoteRefine;
 
         QChoice.QChoiceOrderBuild(QGradeList, "Grade", QGradeObserve, CShelf.CShelfOrderRead());
         QShelf.ItemsSource = _qShelfList;
@@ -189,7 +189,7 @@ internal sealed class QReference
 
     internal async void QReferenceVistaRefine()
     {
-        QChoice.QChoiceOrderApply(QGradeDropdown, _cShelf.CShelfPanel.CPanelOrder);
+        QChoice.QChoiceOrderApply(QGradeDropdown, _cShelf.CShelfPanel.CPanelAperture.CApertureOrder);
         QTrellisRefine();
         CEnsignSheet<CShelfRoll> sheet =
             await _cShelf.CShelfRollLoad(QEnsignImage.QEnsignDraw);
@@ -244,29 +244,30 @@ internal sealed class QReference
             QFootnoteItem.QFootnoteItemBuild(rows),
             QFootnoteItem.QFootnoteItemMatch,
             QFootnoteItem.QFootnoteItemSync);
-        QFootnoteEmpty.SetResourceReference(TextBlock.TextProperty, _cShelf.CShelfFootnote.CFootnoteEmptyKey);
+        QFootnoteEmpty.SetResourceReference(
+            TextBlock.TextProperty, _cShelf.CShelfFootnote.CFootnotePanel.CPanelAperture.CApertureKey);
         QFootnoteEmpty.Visibility = QLook.QLookVisibleRead(_qFootnoteList.Count == 0);
     }
 
     private void QReferenceModeRefine()
     {
-        _qReferenceEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(_cShelf.CShelfEditorShown));
-        _qReferenceDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(_cShelf.CShelfDisplayShown));
-        QReferenceImprint.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfImprintShown);
-        QReferenceColophon.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfColophonShown);
-        QReferenceViewer.IsChecked = _cShelf.CShelfViewerChecked;
-        QReferenceScribe.IsChecked = _cShelf.CShelfScribeChecked;
-        QReferenceVoyage.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfViewerChecked);
-        QReferenceChronicle.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfScribeChecked);
-        QReferenceMode.IsEnabled = _cShelf.CShelfModeEnabled;
-        QReferenceBin.IsEnabled = _cShelf.CShelfBinEnabled;
+        _qReferenceEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(_cShelf.CShelfDiptych.CDiptychChildEditing));
+        _qReferenceDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(_cShelf.CShelfDiptych.CDiptychChildShown));
+        QReferenceImprint.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfDiptych.CDiptychParentEditing);
+        QReferenceColophon.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfDiptych.CDiptychParentShown);
+        QReferenceViewer.IsChecked = _cShelf.CShelfDiptych.CDiptychViewerChecked;
+        QReferenceScribe.IsChecked = _cShelf.CShelfDiptych.CDiptychScribeChecked;
+        QReferenceVoyage.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfDiptych.CDiptychViewerChecked);
+        QReferenceChronicle.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfDiptych.CDiptychScribeChecked);
+        QReferenceMode.IsEnabled = _cShelf.CShelfDiptych.CDiptychModeEnabled;
+        QReferenceBin.IsEnabled = _cShelf.CShelfDiptych.CDiptychBinEnabled;
         QReferenceStore.IsEnabled = _cShelf.CShelfStoreEnabled;
         QReferenceChronicleRefine();
     }
 
     private void QReferenceChronicleRefine()
     {
-        (bool undo, bool redo) = _cShelf.CShelfChronicleRead();
+        (bool undo, bool redo) = _cShelf.CShelfSession.CSessionChronicleRead();
         QReferenceBackward.IsEnabled = undo;
         QReferenceForward.IsEnabled = redo;
     }
@@ -289,33 +290,34 @@ internal sealed class QReference
 
     private void QTrellisRefine()
     {
-        QTrellisMark.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfFiltered);
+        QTrellisMark.Visibility = QLook.QLookVisibleRead(_cShelf.CShelfPanel.CPanelAperture.CApertureFiltered);
     }
 
     private void QTrellisListRefine(IReadOnlyList<string> languages)
     {
-        QChoice.QChoiceFilterBuild(QTrellisList, languages, _cShelf.CShelfPanel.CPanelFilter, QTrellisObserve);
+        QChoice.QChoiceFilterBuild(
+            QTrellisList, languages, _cShelf.CShelfPanel.CPanelAperture.CApertureFilter, QTrellisObserve);
     }
 
     private void QSurveyObserve(object sender, TextChangedEventArgs e)
     {
-        _cShelf.CShelfQuerySet(QSurvey.Text);
+        _cShelf.CShelfPanel.CPanelAperture.CApertureQuerySet(QSurvey.Text);
     }
 
     private void QRummageObserve(object sender, TextChangedEventArgs e)
     {
-        _cShelf.CShelfFootnote.CFootnoteQuerySet(QRummage.Text);
+        _cShelf.CShelfFootnote.CFootnotePanel.CPanelAperture.CApertureQuerySet(QRummage.Text);
     }
 
     private void QTrellisObserve(object sender, RoutedEventArgs e)
     {
-        _cShelf.CShelfFilterSet(QChoice.QChoiceFilterRead(sender));
+        _cShelf.CShelfPanel.CPanelAperture.CApertureFilterSet(QChoice.QChoiceFilterRead(sender));
         QTrellisRefine();
     }
 
     private void QGradeObserve(object sender, RoutedEventArgs e)
     {
-        _cShelf.CShelfOrderSet(QChoice.QChoiceOrderRead(sender));
+        _cShelf.CShelfPanel.CPanelAperture.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
         QGradeRefine();
     }
 
@@ -336,7 +338,7 @@ internal sealed class QReference
 
     private void QReferenceFreshObserve(object sender, RoutedEventArgs e)
     {
-        _cShelf.CShelfReferenceCreate();
+        _cShelf.CShelfDiptych.CDiptychEntryCreate();
     }
 
     private void QReferenceViewerObserve(object sender, RoutedEventArgs e)
@@ -351,22 +353,22 @@ internal sealed class QReference
 
     private void QReferenceStoreObserve(object sender, RoutedEventArgs e)
     {
-        _cShelf.CShelfDraftSave();
+        _cShelf.CShelfSession.CSessionSave();
     }
 
     private void QReferenceUndoObserve(object sender, RoutedEventArgs e)
     {
-        QChronicle.QChronicleCaretRefine(_cShelf.CShelfDraftUndo);
+        QChronicle.QChronicleCaretRefine(_cShelf.CShelfSession.CSessionUndo);
     }
 
     private void QReferenceRedoObserve(object sender, RoutedEventArgs e)
     {
-        QChronicle.QChronicleCaretRefine(_cShelf.CShelfDraftRedo);
+        QChronicle.QChronicleCaretRefine(_cShelf.CShelfSession.CSessionRedo);
     }
 
     private void QReferenceBinObserve(object sender, RoutedEventArgs e)
     {
-        _cShelf.CShelfReferenceDelete();
+        _cShelf.CShelfDiptych.CDiptychEntryDelete();
     }
 
     private void QReferencePressRefine(object sender, CanExecuteRoutedEventArgs e)

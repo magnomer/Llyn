@@ -18,8 +18,6 @@ public sealed class CQuotation
 
     private LVista? _cQuotationRoll;
 
-    private LVista? _cQuotationVista;
-
     internal CQuotation(
         LVistaPort vistas,
         LPortraitPort portraits,
@@ -38,24 +36,28 @@ public sealed class CQuotation
         _cQuotationSettingsPort = settings;
         _cQuotationPortraitPort = portraits;
         CQuotationPanel = new CPanel(
-            envoy, settings, vistas, "List.LoadFailed", null, changeSeam, finishSeam, shownSeam);
+            envoy,
+            settings,
+            vistas,
+            "List.LoadFailed",
+            null,
+            changeSeam,
+            finishSeam,
+            shownSeam,
+            "Example.Vacant",
+            "Example.Unmatched");
     }
 
     public CPanel CQuotationPanel { get; }
 
     public bool CQuotationShown => CQuotationPanel.CPanelModeEnabled && !CQuotationPanel.CPanelEditing;
 
-    public string CQuotationEmptyKey =>
-        _cQuotationVista?.LVistaQueried ?? false ? "Example.Unmatched" : "Example.Vacant";
-
     internal void LQuotationVistaRestore(LVista roll, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(vista);
 
-        vista.LVistaQuerySet(_cQuotationVista?.LVistaQuery ?? string.Empty);
         _cQuotationRoll = roll;
-        _cQuotationVista = vista;
         CQuotationPanel.CPanelVistaRestore(vista);
     }
 
@@ -65,26 +67,19 @@ public sealed class CQuotation
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(chosen);
 
-        CQuotationPanel.CPanelObserverAttach(
+        CQuotationPanel.CPanelAperture.CApertureObserverAttach(
             CSubject.CSubjectEntry, bulletin => marshal(() => CQuotationPanel.CPanelEntrySelect(bulletin)));
-        CQuotationPanel.CPanelObserverAttach(CSubject.CSubjectEntry, _ => marshal(roll));
-        CQuotationPanel.CPanelChosenAttach(CSubject.CSubjectEntry, _ => marshal(chosen));
-        CQuotationPanel.CPanelObserverAttach(
-            CSubject.CSubjectVista, _ => marshal(CQuotationPanel.CPanelRowsResonate));
-    }
-
-    public void CQuotationQuerySet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _cQuotationVista?.LVistaQuerySet(query);
+        CQuotationPanel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectEntry, _ => marshal(roll));
+        CQuotationPanel.CPanelAperture.CApertureChosenAttach(CSubject.CSubjectEntry, _ => marshal(chosen));
+        CQuotationPanel.CPanelAperture.CApertureObserverAttach(
+            CSubject.CSubjectVista, _ => marshal(CQuotationPanel.CPanelAperture.CApertureRowsResonate));
     }
 
     public IReadOnlyList<CVistaRow> CQuotationRowsRead()
     {
         try
         {
-            return _cQuotationVistaPort.LEngineEntryFind(_cQuotationRoll, _cQuotationVista)
+            return _cQuotationVistaPort.LEngineEntryFind(_cQuotationRoll, CQuotationPanel.CPanelAperture.CApertureVista)
                 .Select(CCatalog.LCatalogRowRead)
                 .ToList();
         }
@@ -102,7 +97,7 @@ public sealed class CQuotation
 
     internal string LQuotationFileRead()
     {
-        return _cQuotationVistaPort.LEngineFileRead(_cQuotationVista);
+        return _cQuotationVistaPort.LEngineFileRead(CQuotationPanel.CPanelAperture.CApertureVista);
     }
 
     internal Task LQuotationPortraitPrint(CEnvoy envoy, LSettingsPort settings)
@@ -111,7 +106,7 @@ public sealed class CQuotation
             envoy,
             settings,
             chosen => _cQuotationPortraitPort.LEnginePortraitPrint(
-                _cQuotationVista, CPortrait.LPortraitLabelRead(settings), chosen));
+                CQuotationPanel.CPanelAperture.CApertureVista, CPortrait.LPortraitLabelRead(settings), chosen));
     }
 
     public Task CQuotationPortraitExport()
@@ -126,6 +121,9 @@ public sealed class CQuotation
             _cQuotationSettingsPort,
             LQuotationFileRead,
             (file, medium) => _cQuotationPortraitPort.LEnginePortraitExport(
-                _cQuotationVista, file, medium, CPortrait.LPortraitLabelRead(_cQuotationSettingsPort)));
+                CQuotationPanel.CPanelAperture.CApertureVista,
+                file,
+                medium,
+                CPortrait.LPortraitLabelRead(_cQuotationSettingsPort)));
     }
 }

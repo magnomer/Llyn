@@ -19,7 +19,7 @@ public sealed class TAnthology
         CAnthology anthology = TAnthologyPrepare(engine, atelier, out _);
 
         Assert.Empty(anthology.TAnthologyRowsRead());
-        Assert.Null(anthology.CAnthologyChosen);
+        Assert.Null(anthology.CAnthologyPanel.CPanelAperture.CApertureChosen);
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public sealed class TAnthology
     }
 
     [Fact]
-    public void AnthologyPanelTallyRead_EngineRefuses_ShowsTheLoadFailureAndAnswersEmpty()
+    public void AnthologyApertureTallyRead_EngineRefuses_ShowsTheLoadFailureAndAnswersEmpty()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -68,7 +68,7 @@ public sealed class TAnthology
         CAnthology anthology = TInterfaceConductPanel.TAnthologyCreate(atelier, desk, envoy);
         anthology.TAnthologyVistaRestore(engine.TEngineVistaStart("occurrence", LCatalogOrder.LCatalogOrderHeadword));
 
-        Assert.Equal(string.Empty, anthology.CAnthologyPanel.CPanelTallyRead());
+        Assert.Equal(string.Empty, anthology.CAnthologyPanel.CPanelAperture.CApertureTallyRead());
         Assert.Equal(["Example.LoadFailed"], asked);
     }
 
@@ -96,7 +96,7 @@ public sealed class TAnthology
         CAnthology anthology = TAnthologyPrepare(engine, atelier, out _);
         anthology.TAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
 
-        anthology.CAnthologyQuerySet("dog");
+        anthology.CAnthologyPanel.CPanelAperture.CApertureQuerySet("dog");
 
         Assert.Equal(["a dog ran"], anthology.TAnthologyRowsRead().Select(row => row.CCatalogExampleText));
     }
@@ -110,10 +110,10 @@ public sealed class TAnthology
         CAnthology anthology = TAnthologyPrepare(engine, atelier, out _);
         anthology.TAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
 
-        anthology.CAnthologyOrderSet(CCatalogOrder.CCatalogOrderUsage);
-        anthology.CAnthologyOrderSet(null);
+        anthology.CAnthologyPanel.CPanelAperture.CApertureOrderSet(CCatalogOrder.CCatalogOrderUsage);
+        anthology.CAnthologyPanel.CPanelAperture.CApertureOrderSet(null);
 
-        Assert.Equal(CCatalogOrder.CCatalogOrderUsage, anthology.CAnthologyPanel.CPanelOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderUsage, anthology.CAnthologyPanel.CPanelAperture.CApertureOrder);
     }
 
     [Fact]
@@ -125,10 +125,10 @@ public sealed class TAnthology
         CAnthology anthology = TAnthologyPrepare(engine, atelier, out _);
         anthology.TAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
 
-        anthology.CAnthologyFilterSet(new CCatalogFilter(["English"]));
+        anthology.CAnthologyPanel.CPanelAperture.CApertureFilterSet(new CCatalogFilter(["English"]));
 
-        Assert.True(anthology.CAnthologyFiltered);
-        Assert.Equal(["English"], anthology.CAnthologyPanel.CPanelFilter.CCatalogFilterHidden);
+        Assert.True(anthology.CAnthologyPanel.CPanelAperture.CApertureFiltered);
+        Assert.Equal(["English"], anthology.CAnthologyPanel.CPanelAperture.CApertureFilter.CCatalogFilterHidden);
     }
 
     internal static CAnthology TAnthologyPrepare(LEngine engine, CAtelier atelier, out CDesk desk)

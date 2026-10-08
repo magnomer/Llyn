@@ -20,7 +20,7 @@ public sealed class TFavoriteRoster
             atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
 
         Assert.Single(favorite.CFavoriteRowsRead());
-        Assert.False(favorite.CFavoriteFiltered);
+        Assert.False(favorite.CFavoritePanel.CPanelAperture.CApertureFiltered);
         Assert.Equal("entry", favorite.TFavoriteFileRead());
     }
 
@@ -47,7 +47,7 @@ public sealed class TFavoriteRoster
         TFavoriteSave(engine, "river", "English");
         CFavorite favorite = TFavoriteRosterPrepare(atelier);
 
-        favorite.CFavoriteQuerySet("riv");
+        favorite.CFavoritePanel.CPanelAperture.CApertureQuerySet("riv");
 
         Assert.Equal(["river"], favorite.CFavoriteRowsRead().Select(row => row.CVistaRowHeadword));
     }
@@ -60,10 +60,10 @@ public sealed class TFavoriteRoster
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CFavorite favorite = TFavoriteRosterPrepare(atelier);
 
-        favorite.CFavoriteOrderSet(CCatalogOrder.CCatalogOrderReverse);
-        favorite.CFavoriteOrderSet(null);
+        favorite.CFavoritePanel.CPanelAperture.CApertureOrderSet(CCatalogOrder.CCatalogOrderReverse);
+        favorite.CFavoritePanel.CPanelAperture.CApertureOrderSet(null);
 
-        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, favorite.CFavoritePanel.CPanelOrder);
+        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, favorite.CFavoritePanel.CPanelAperture.CApertureOrder);
     }
 
     [Fact]
@@ -76,10 +76,10 @@ public sealed class TFavoriteRoster
         TFavoriteSave(engine, "maison", "French");
         CFavorite favorite = TFavoriteRosterPrepare(atelier);
 
-        favorite.CFavoriteFilterSet(new CCatalogFilter(["English"]));
+        favorite.CFavoritePanel.CPanelAperture.CApertureFilterSet(new CCatalogFilter(["English"]));
 
-        Assert.True(favorite.CFavoriteFiltered);
-        Assert.Equal(["English"], favorite.CFavoritePanel.CPanelFilter.CCatalogFilterHidden);
+        Assert.True(favorite.CFavoritePanel.CPanelAperture.CApertureFiltered);
+        Assert.Equal(["English"], favorite.CFavoritePanel.CPanelAperture.CApertureFilter.CCatalogFilterHidden);
         Assert.Equal(["maison"], favorite.CFavoriteRowsRead().Select(row => row.CVistaRowHeadword));
     }
 
@@ -92,13 +92,13 @@ public sealed class TFavoriteRoster
         LEntry stone = TFavoriteSave(engine, "stone", "English");
         CFavorite favorite = TFavoriteRosterPrepare(atelier);
         int refreshed = 0;
-        favorite.CFavoritePanel.CPanelRowsChanged += () => refreshed++;
+        favorite.CFavoritePanel.CPanelAperture.CApertureRowsChanged += () => refreshed++;
 
         engine.TEngineBulletinRaise(LSubject.LSubjectGrasp, stone.LEntryId);
 
         Assert.Equal(0, refreshed);
 
-        favorite.CFavoriteOrderSet(CCatalogOrder.CCatalogOrderGrasp);
+        favorite.CFavoritePanel.CPanelAperture.CApertureOrderSet(CCatalogOrder.CCatalogOrderGrasp);
         refreshed = 0;
         engine.TEngineBulletinRaise(LSubject.LSubjectGrasp, stone.LEntryId);
 

@@ -1,5 +1,5 @@
 # QXiesheng.cs
-Hash: `e7c953ed60fa2222`
+Hash: `a083f4c37a2f0027`
 
 ## `internal sealed class QXiesheng`
 
@@ -22,7 +22,7 @@ Each named part of the page is pulled through `QContract.QContractFind`.
 
 ## `internal void QXieshengIntroduce(QWindow host)`
 
-Builds the Conduct session, wraps its editor, and subscribes the notices.
+Builds the Conduct session, wraps its entry list's editor, and subscribes the notices.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 The lectern is built here to follow the panel, so the session names no driver type.
 It builds the ordering menu of the series column once, from the orders the session offers.
@@ -45,8 +45,8 @@ Answers the area's workspace change by drawing the flags of the languages again.
 The area has already let the series and the chosen entry go.
 Once the flags are in, it repaints the entry list, whose rows carry a flag.
 So rows built while the load ran, after a series was chosen, gain their flags.
-A failed load throws before the repaint, as the old load before the reset did.
-Its one request is `CXieshengKindredLoad`, which runs the flag fill and then answers the rows it paints.
+A failed flag load is reported by Conduct, and the rows are still painted without flags.
+Its one request is the entry list's `CEntryListLoad`, which runs the flag fill and then answers the rows it paints.
 
 ## `private void QLodestarRefine()`
 

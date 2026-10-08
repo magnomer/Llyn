@@ -1,5 +1,5 @@
 # TPhonology.cs
-Hash: `312a17addf11abe8`
+Hash: `06c42fc6f4067d71`
 
 ## `public sealed class TPhonology`
 
@@ -7,7 +7,7 @@ Covers the phonology panel's gates end to end on a real workspace.
 A fresh area already stands on its vista, so it lists the stored entry and reads unfiltered.
 A query narrows the rows, and an unmatched one reads empty.
 The chosen entry marks its row alone.
-Each row copies the entry, its twin name, its empty epithet, its sound and its bracketed text.
+Each row copies the entry, its name, its empty epithet, its sound and its bracketed text.
 A null order keeps the chosen one, and a hidden language marks the panel filtered until cleared.
 Export writes nothing until an entry is chosen, then writes it under its headword.
 An entry opened in scribe mode shows in the editor, and closing the panel empties it.
@@ -22,3 +22,11 @@ Its flag-fill load answers the same rows once the fill has run.
 ## `private static CPhonology TPhonologyPrepare(CAtelier atelier)`
 
 Builds the phonology panel, which restores its vista itself, as the window does for the tab.
+
+## `private static CPhonology TPhonologyPrepare(CAtelier atelier, CEnvoy envoy)`
+
+Builds the same panel over the given envoy.
+
+## `private static LEntry TPhonologyEntrySave(LEngine engine, string headword, string sound)`
+
+Stores one English entry with a single card under the headword and sound.

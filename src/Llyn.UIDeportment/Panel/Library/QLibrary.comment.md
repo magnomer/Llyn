@@ -1,5 +1,5 @@
 # QLibrary.cs
-Hash: `bd63b1dc345865f5`
+Hash: `4be0de25f56b7a43`
 
 ## `internal sealed class QLibrary`
 
@@ -54,6 +54,10 @@ The parameterless form reads them, and a flag-fill Refine hands in what its load
 ## `private void QLibrarySieveRefine()`
 
 Shows the mark on the sieve button while the vista hides any language.
+
+## `private void QLibraryStoreRefine()`
+
+Enables the store button only while the editor's draft can be stored.
 
 ## `internal async void QLibraryVistaRefine()`
 

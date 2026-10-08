@@ -37,7 +37,8 @@ public sealed class CErrand
         _cErrandClip.LClipStart();
         try
         {
-            _cErrandRecording = LErrandRecordingRun(_cErrandDesk.CDeskTenure, target ?? 0, LErrandHarvestSend);
+            _cErrandRecording = LErrandRecordingRun(
+                _cErrandDesk.CDeskDraft.CDeskDraftTenure, target ?? 0, LErrandHarvestSend);
             if (_cErrandRecording is null)
             {
                 _cErrandClip.LClipFinish();
@@ -86,7 +87,7 @@ public sealed class CErrand
         try
         {
             _cErrandTranscription = LErrandTranscriptionRun(
-                _cErrandDesk.CDeskTenure, target ?? 0, scheme, LErrandLookupSend);
+                _cErrandDesk.CDeskDraft.CDeskDraftTenure, target ?? 0, scheme, LErrandLookupSend);
             if (_cErrandTranscription is null)
             {
                 _cErrandNotation.LNotationFinish();
@@ -130,7 +131,7 @@ public sealed class CErrand
     {
         if (_cErrandTranscription is LForay foray)
         {
-            _cErrandDesk.CDeskErrandEngine?.LErrandReadingSet(foray, phonetic, variety);
+            _cErrandDesk.CDeskDraft.CDeskDraftErrand?.LErrandReadingSet(foray, phonetic, variety);
         }
     }
 
@@ -147,7 +148,7 @@ public sealed class CErrand
 
         if (step.CHarvestStepRecording is CRecording recording)
         {
-            _cErrandClip.LClipRecordingAdd(recording, _cErrandRecording, _cErrandDesk.CDeskTenure);
+            _cErrandClip.LClipRecordingAdd(recording, _cErrandRecording, _cErrandDesk.CDeskDraft.CDeskDraftTenure);
             CErrandClipChanged?.Invoke(_cErrandClip.LClipRead());
             return;
         }

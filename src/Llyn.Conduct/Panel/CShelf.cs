@@ -20,8 +20,6 @@ public sealed class CShelf
 
     private readonly Action<Action> _cShelfMarshal;
 
-    private LVista? _cShelfVista;
-
     private CShelf(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -51,32 +49,59 @@ public sealed class CShelf
             _cShelfSettingsPort,
             atelier.CAtelierEntryBundle.CEntryBundleVista,
             "Source.LoadFailed", "Source",
-            CShelfImprint.CImprintDesk.LDeskChangeCheck, LShelfDraftFinish, shownSeam);
+            CShelfImprint.CImprintDesk.LDeskChangeCheck,
+            store => CShelfSession!.LSessionFinish(store),
+            shownSeam);
         CShelfFootnote = new CFootnote(
             atelier.CAtelierEntryBundle.CEntryBundleVista,
             atelier.CAtelierPortraitPort,
             atelier.CAtelierSettingsPort,
             editor,
             envoy,
-            LShelfDraftFinish,
+            store => CShelfSession!.LSessionFinish(store),
             shownSeam);
-        CShelfPanel.CPanelRowsChanged += CShelfFootnote.CFootnotePanel.CPanelRowsResonate;
+        CShelfSession = new CSession(
+            CShelfImprint.CImprintDesk,
+            [CShelfPanel.LPanelChangeCheck, CShelfFootnote.CFootnotePanel.LPanelChangeCheck],
+            editor,
+            () => CShelfDiptych!.CDiptychChildSide,
+            editor.LEditorFinish,
+            static () => true,
+            id => CShelfDiptych!.LDiptychParentShow(id, false),
+            envoy);
+        CShelfDiptych = new CDiptych(
+            CShelfPanel,
+            CShelfFootnote.CFootnotePanel,
+            CShelfSession,
+            atelier.CAtelierNavigation,
+            CShelfImprint.LImprintOpen,
+            CShelfImprint.LImprintCancel,
+            () =>
+            {
+                LShelfSourceHide();
+                CShelfFootnote.LFootnoteEntryCreate();
+            });
+        CShelfPanel.CPanelAperture.CApertureRowsChanged +=
+            CShelfFootnote.CFootnotePanel.CPanelAperture.CApertureRowsResonate;
         CShelfPanel.CPanelCleared += CShelfImprint.LImprintCancel;
         CShelfPanel.CPanelEdited += id => CShelfImprint.LImprintOpen(id);
         CShelfPanel.CPanelDraftChanged +=
             draft => CShelfColophonChanged?.Invoke(COeuvre.LOeuvreColophonRead(_cShelfReferencePort, draft));
-        CShelfImprint.CImprintDesk.CDeskFinished += id => LShelfSourceOpen(id, false);
-        CShelfImprint.CImprintDesk.CDeskStateChanged += () => CShelfChanged?.Invoke();
-        editor.CEditorDesk.CDeskStateChanged += () => CShelfChanged?.Invoke();
+        CShelfImprint.CImprintDesk.CDeskFinished += id => CShelfDiptych.LDiptychParentShow(id, false);
+        CShelfSession.CSessionChanged += () => CShelfChanged?.Invoke();
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Reference",
-            LShelfLeaveConfirm,
+            () => CShelfSession.LSessionLeaveConfirm(true),
             CShelfPanel.LPanelChosenRead,
             CShelfPanel.LPanelScribeRestore,
             LShelfReferenceOpen);
-        atelier.CAtelierWorkspace.LWorkspaceDraftAdd(LShelfChangeRead, LShelfDraftFinish);
+        atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CShelfSession.LSessionChangeCheck, CShelfSession.LSessionFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LShelfVistaRestore);
-        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LShelfClose);
+        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(() =>
+        {
+            CShelfImprint.CImprintByline.CBylineClose();
+            CShelfSession.LSessionEditorClose();
+        });
         LShelfVistaRestore();
     }
 
@@ -97,43 +122,21 @@ public sealed class CShelf
 
     public CImprint CShelfImprint { get; }
 
-    public bool CShelfEditorShown => LShelfEntrySide && CShelfFootnote.CFootnotePanel.CPanelEditing;
+    public CSession CShelfSession { get; }
 
-    public bool CShelfDisplayShown => LShelfEntrySide && !CShelfFootnote.CFootnotePanel.CPanelEditing;
-
-    public bool CShelfImprintShown => !LShelfEntrySide && CShelfPanel.CPanelEditing;
-
-    public bool CShelfColophonShown => !LShelfEntrySide && !CShelfPanel.CPanelEditing;
-
-    public bool CShelfViewerChecked => !LShelfEditing;
-
-    public bool CShelfScribeChecked => LShelfEditing;
-
-    public bool CShelfModeEnabled =>
-        CShelfPanel.CPanelModeEnabled || CShelfFootnote.CFootnotePanel.CPanelModeEnabled;
-
-    public bool CShelfBinEnabled => !LShelfEntrySide && CShelfPanel.CPanelBinEnabled;
+    public CDiptych CShelfDiptych { get; }
 
     public bool CShelfStoreEnabled =>
-        (LShelfEntrySide ? CShelfEditor.CEditorDesk : CShelfImprint.CImprintDesk).CDeskStorable;
+        (CShelfDiptych.CDiptychChildSide ? CShelfEditor.CEditorDesk : CShelfImprint.CImprintDesk)
+            .CDeskDraft.CDeskDraftStorable;
 
     public bool CShelfPressAllowed => CShelfFootnote.CFootnotePanel.CPanelPressAllowed || LShelfSourcePrintable;
 
     public bool CShelfPortraitAllowed => CShelfFootnote.CFootnotePanel.CPanelPressAllowed;
 
-    public bool CShelfFiltered => _cShelfVista?.LVistaFiltered ?? false;
-
-    private bool LShelfEntrySide => CShelfFootnote.CFootnotePanel.CPanelModeEnabled;
-
-    private bool LShelfEditing =>
-        LShelfEntrySide ? CShelfFootnote.CFootnotePanel.CPanelEditing : CShelfPanel.CPanelEditing;
-
-    private bool LShelfSourcePrintable => !LShelfEntrySide && CShelfPanel.CPanelPressAllowed;
+    private bool LShelfSourcePrintable => !CShelfDiptych.CDiptychChildSide && CShelfPanel.CPanelPressAllowed;
 
     private bool LShelfSourceShown => CShelfPanel.CPanelBinEnabled && !CShelfPanel.CPanelEditing;
-
-    private bool LShelfRowChosen =>
-        CShelfPanel.CPanelBinEnabled || CShelfFootnote.CFootnotePanel.CPanelBinEnabled;
 
     internal void LShelfVistaRestore()
     {
@@ -141,34 +144,28 @@ public sealed class CShelf
             "reference", CSubject.CSubjectReference, CCatalogOrder.CCatalogOrderName);
         LVista footnote = _cShelfAtelier.CAtelierVistaStart(
             "footnote", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
-        vista.LVistaQuerySet(_cShelfVista?.LVistaQuery ?? string.Empty);
-        _cShelfVista = vista;
         CShelfPanel.CPanelVistaRestore(vista);
         CShelfFootnote.LFootnoteVistaRestore(vista, footnote);
         CShelfImprint.CImprintDesk.CDeskVistaRestore(vista);
         CShelfEditor.LEditorVistaRestore(footnote);
         LShelfObserverAttach();
-        CShelfFootnote.LFootnoteObserverAttach(_cShelfMarshal, CShelfPanel.CPanelRowsResonate, LShelfEntryResonate);
+        CShelfFootnote.LFootnoteObserverAttach(
+            _cShelfMarshal, CShelfPanel.CPanelAperture.CApertureRowsResonate, LShelfEntryResonate);
     }
 
     private void LShelfObserverAttach()
     {
-        Action<CBulletin> rows = _ => _cShelfMarshal(CShelfPanel.CPanelRowsResonate);
-        CShelfPanel.CPanelObserverAttach(CSubject.CSubjectVista, rows);
-        CShelfPanel.CPanelObserverAttach(CSubject.CSubjectWorkspace, _ => _cShelfMarshal(LShelfWorkspaceResonate));
-        CShelfPanel.CPanelObserverAttach(
-            CSubject.CSubjectAuthor, _ => _cShelfMarshal(CShelfImprint.CImprintDesk.CDeskDraftResonate));
-        CShelfPanel.CPanelObserverAttach(CSubject.CSubjectAuthor, rows);
-        CShelfPanel.CPanelObserverAttach(CSubject.CSubjectReference, rows);
-        CShelfPanel.CPanelObserverAttach(CSubject.CSubjectExample, rows);
-        CShelfPanel.CPanelObserverAttach(CSubject.CSubjectReflex, rows);
-        CShelfPanel.CPanelObserverAttach(CSubject.CSubjectSettings, rows);
-    }
-
-    private void LShelfWorkspaceResonate()
-    {
-        CShelfFootnote.CFootnotePanel.CPanelEntryClose();
-        CShelfPanel.CPanelEntryClose();
+        Action<CBulletin> rows = _ => _cShelfMarshal(CShelfPanel.CPanelAperture.CApertureRowsResonate);
+        CShelfPanel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectVista, rows);
+        CShelfPanel.CPanelAperture.CApertureObserverAttach(
+            CSubject.CSubjectWorkspace, _ => _cShelfMarshal(CShelfDiptych.LDiptychEntryClose));
+        CShelfPanel.CPanelAperture.CApertureObserverAttach(
+            CSubject.CSubjectAuthor, _ => _cShelfMarshal(CShelfImprint.CImprintDesk.CDeskDraft.CDeskDraftResonate));
+        CShelfPanel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectAuthor, rows);
+        CShelfPanel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectReference, rows);
+        CShelfPanel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectExample, rows);
+        CShelfPanel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectReflex, rows);
+        CShelfPanel.CPanelAperture.CApertureObserverAttach(CSubject.CSubjectSettings, rows);
     }
 
     public CShelfRoll CShelfRollRead()
@@ -177,7 +174,9 @@ public sealed class CShelf
         try
         {
             rows = COeuvre.COeuvreReferenceRead(
-                _cShelfVista is LVista vista ? _cShelfReferencePort.LEngineReferenceFind(vista) : []);
+                CShelfPanel.CPanelAperture.CApertureVista is LVista vista
+                    ? _cShelfReferencePort.LEngineReferenceFind(vista)
+                    : []);
         }
         catch (Exception exception)
         {
@@ -190,25 +189,13 @@ public sealed class CShelf
             CShelfPanel.CPanelEntryClose();
         }
 
-        return new CShelfRoll(rows, rows.Count == 0, CShelfPanel.CPanelTallyRead());
+        return new CShelfRoll(rows, rows.Count == 0, CShelfPanel.CPanelAperture.CApertureTallyRead());
     }
 
     public Task<CEnsignSheet<CShelfRoll>> CShelfRollLoad(
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
         CCatalog.LCatalogEnsignLoad(
             _cShelfEnvoy, _cShelfSettingsPort, "Source.LoadFailed", store, CShelfRollRead);
-
-    public void CShelfQuerySet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _cShelfVista?.LVistaQuerySet(query);
-    }
-
-    public void CShelfOrderSet(CCatalogOrder? order)
-    {
-        _cShelfVista?.LVistaOrderSet(CCatalog.LCatalogOrderRead(order));
-    }
 
     public static IReadOnlyList<CCatalogOrder> CShelfOrderRead()
     {
@@ -221,64 +208,30 @@ public sealed class CShelf
         ];
     }
 
-    public void CShelfFilterSet(CCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-
-        _cShelfVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
-    }
-
-    internal bool LShelfChangeRead()
-    {
-        return CShelfPanel.LPanelChangeCheck() || CShelfFootnote.CFootnotePanel.LPanelChangeCheck();
-    }
-
-    internal bool LShelfLeaveConfirm()
-    {
-        if (!LShelfChangeRead())
-        {
-            return true;
-        }
-
-        if (_cShelfEnvoy.CEnvoyLeaveConfirm() is not bool store)
-        {
-            return false;
-        }
-
-        return !store || LShelfDraftFinish(true);
-    }
-
     public void CShelfReferenceSelect(long? id)
     {
-        if (id is null)
+        if (id is not long chosen)
         {
             return;
         }
 
-        if (!LShelfLeaveConfirm())
+        if (!CShelfSession.LSessionLeaveConfirm(true))
         {
             return;
         }
 
         _cShelfAtelier.CAtelierNavigation.LNavigationStationAdd();
-        LShelfSourceOpen(id, LShelfEditing);
+        CShelfDiptych.LDiptychParentShow(chosen, CShelfDiptych.CDiptychScribeChecked);
     }
 
     internal void LShelfReferenceOpen(long id)
     {
-        LShelfSourceOpen(id, LShelfEditing);
-    }
-
-    private void LShelfSourceOpen(long? id, bool editing)
-    {
-        CShelfFootnote.CFootnotePanel.CPanelEntryClose();
-        CShelfPanel.CPanelScribeSet(editing);
-        CShelfPanel.CPanelRowOpen(id);
+        CShelfDiptych.LDiptychParentShow(id, CShelfDiptych.CDiptychScribeChecked);
     }
 
     private void LShelfSourceShow()
     {
-        CShelfPanel.CPanelRowOpen(_cShelfVista?.LVistaChosen);
+        CShelfPanel.CPanelRowOpen(CShelfPanel.CPanelAperture.CApertureChosen);
     }
 
     private void LShelfSourceHide()
@@ -294,12 +247,12 @@ public sealed class CShelf
             return;
         }
 
-        if (!LShelfLeaveConfirm())
+        if (!CShelfSession.LSessionLeaveConfirm(true))
         {
             return;
         }
 
-        LShelfEntryOpen(id, LShelfEditing);
+        LShelfEntryOpen(id, CShelfDiptych.CDiptychScribeChecked);
     }
 
     private void LShelfEntryOpen(long? id, bool editing)
@@ -312,7 +265,7 @@ public sealed class CShelf
     private void LShelfEntryResonate()
     {
         CShelfFootnote.CFootnotePanel.CPanelDraftResonate();
-        if (LShelfEntrySide)
+        if (CShelfDiptych.CDiptychChildSide)
         {
             return;
         }
@@ -320,28 +273,9 @@ public sealed class CShelf
         LShelfSourceShow();
     }
 
-    public void CShelfReferenceCreate()
-    {
-        if (!LShelfLeaveConfirm())
-        {
-            return;
-        }
-
-        if (LShelfRowChosen)
-        {
-            LShelfSourceHide();
-            CShelfFootnote.LFootnoteEntryCreate();
-            return;
-        }
-
-        CShelfFootnote.CFootnotePanel.CPanelEntryClose();
-        CShelfPanel.CPanelFreshOpen();
-        CShelfImprint.LImprintOpen(null);
-    }
-
     public void CShelfScribeToggle(bool editing)
     {
-        if (LShelfEntrySide)
+        if (CShelfDiptych.CDiptychChildSide)
         {
             LShelfFootnoteSet(editing);
             return;
@@ -357,76 +291,12 @@ public sealed class CShelf
     private void LShelfFootnoteSet(bool editing)
     {
         CShelfFootnote.CFootnotePanel.CPanelScribeToggle(editing);
-        if (LShelfEntrySide)
+        if (CShelfDiptych.CDiptychChildSide)
         {
             return;
         }
 
         LShelfSourceShow();
-    }
-
-    public void CShelfReferenceDelete()
-    {
-        if (LShelfEntrySide)
-        {
-            return;
-        }
-
-        CShelfPanel.CPanelEntryDelete();
-    }
-
-    private void LShelfClose()
-    {
-        CShelfImprint.CImprintByline.CBylineClose();
-        CShelfEditor.CEditorClose();
-        CShelfEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
-    }
-
-    public (bool CShelfBackward, bool CShelfForward) CShelfChronicleRead()
-    {
-        return LShelfEntrySide
-            ? CShelfEditor.CEditorDesk.CDeskChronicleRead()
-            : CShelfImprint.CImprintDesk.CDeskChronicleRead();
-    }
-
-    internal bool LShelfDraftFinish(bool store)
-    {
-        return LShelfEntrySide
-            ? CShelfEditor.LEditorFinish(store)
-            : CShelfImprint.CImprintDesk.CDeskFinish(store);
-    }
-
-    public void CShelfDraftSave()
-    {
-        if (LShelfEntrySide)
-        {
-            CShelfEditor.CEditorEntrySave();
-            return;
-        }
-
-        CShelfImprint.LImprintSave();
-    }
-
-    public void CShelfDraftUndo()
-    {
-        if (LShelfEntrySide)
-        {
-            CShelfEditor.CEditorDesk.CDeskUndo();
-            return;
-        }
-
-        CShelfImprint.CImprintDesk.CDeskUndo();
-    }
-
-    public void CShelfDraftRedo()
-    {
-        if (LShelfEntrySide)
-        {
-            CShelfEditor.CEditorDesk.CDeskRedo();
-            return;
-        }
-
-        CShelfImprint.CImprintDesk.CDeskRedo();
     }
 
     public Task CShelfPortraitPrint()
@@ -442,7 +312,9 @@ public sealed class CShelf
                 _cShelfEnvoy,
                 _cShelfSettingsPort,
                 chosen => _cShelfPortraitPort.LEnginePortraitPrint(
-                    _cShelfVista, CPortrait.LPortraitLegendRead(_cShelfSettingsPort, "Source"), chosen));
+                    CShelfPanel.CPanelAperture.CApertureVista,
+                    CPortrait.LPortraitLegendRead(_cShelfSettingsPort, "Source"),
+                    chosen));
         }
 
         return Task.CompletedTask;

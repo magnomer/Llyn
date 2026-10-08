@@ -20,17 +20,17 @@ internal sealed partial class QTenor
 
     private void QSoundingObserve(object sender, TextChangedEventArgs e)
     {
-        _cTenor.CTenorQuerySet(QSounding.Text ?? string.Empty);
+        _cTenor.CTenorAperture.CApertureQuerySet(QSounding.Text ?? string.Empty);
     }
 
     private void QQuestObserve(object sender, TextChangedEventArgs e)
     {
-        _cTenor.CTenorCohort.CCohortQuerySet(QQuest.Text);
+        _cTenor.CTenorCohort.CCohortPanel.CPanelAperture.CApertureQuerySet(QQuest.Text);
     }
 
     private void QDegreeObserve(object sender, RoutedEventArgs e)
     {
-        _cTenor.CTenorOrderSet(QChoice.QChoiceOrderRead(sender));
+        _cTenor.CTenorAperture.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
         QDegreeDropperRefine();
     }
 
@@ -41,7 +41,7 @@ internal sealed partial class QTenor
 
     private void QGrilleObserve(object sender, RoutedEventArgs e)
     {
-        _cTenor.CTenorFilterSet(QChoice.QChoiceFilterRead(sender));
+        _cTenor.CTenorAperture.CApertureFilterSet(QChoice.QChoiceFilterRead(sender));
         QGrilleRefine();
     }
 
@@ -56,7 +56,7 @@ internal sealed partial class QTenor
                 CCatalogOrder.CCatalogOrderReverse,
                 CCatalogOrder.CCatalogOrderUsage,
             ]);
-        QChoice.QChoiceOrderApply(QDegreeDropdown, _cTenor.CTenorOrder);
+        QChoice.QChoiceOrderApply(QDegreeDropdown, _cTenor.CTenorAperture.CApertureOrder);
         QGrilleRefine();
         CEnsignSheet<IReadOnlyList<CCatalogRegister>> sheet =
             await _cTenor.CTenorRowsLoad(QEnsignImage.QEnsignDraw);
@@ -66,12 +66,12 @@ internal sealed partial class QTenor
 
     private void QGrilleListRefine(IReadOnlyList<string> languages)
     {
-        QChoice.QChoiceFilterBuild(QGrilleList, languages, _cTenor.CTenorFilter, QGrilleObserve);
+        QChoice.QChoiceFilterBuild(QGrilleList, languages, _cTenor.CTenorAperture.CApertureFilter, QGrilleObserve);
     }
 
     private void QGrilleRefine()
     {
-        QGrilleMark.Visibility = _cTenor.CTenorFiltered ? Visibility.Visible : Visibility.Collapsed;
+        QGrilleMark.Visibility = _cTenor.CTenorAperture.CApertureFiltered ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void QGamutRefine()
@@ -164,6 +164,6 @@ internal sealed partial class QTenor
 
     private void QTenorBinObserve(object sender, RoutedEventArgs e)
     {
-        _cTenor.CTenorCohort.CCohortPanel.CPanelEntryDelete();
+        _cTenor.CTenorCohort.CCohortPanel.CPanelBin.CPanelBinDelete();
     }
 }

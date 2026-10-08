@@ -81,16 +81,16 @@ public sealed class TQuotation
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         corpus.TCorpusExampleOpen(cat.LExampleId);
 
-        Assert.Equal("Example.Vacant", corpus.CCorpusQuotation.CQuotationEmptyKey);
+        Assert.Equal("Example.Vacant", corpus.CCorpusQuotation.CQuotationPanel.CPanelAperture.CApertureKey);
 
-        corpus.CCorpusQuotation.CQuotationQuerySet("zzz");
+        corpus.CCorpusQuotation.CQuotationPanel.CPanelAperture.CApertureQuerySet("zzz");
 
         Assert.Empty(corpus.CCorpusQuotation.CQuotationRowsRead());
-        Assert.Equal("Example.Unmatched", corpus.CCorpusQuotation.CQuotationEmptyKey);
+        Assert.Equal("Example.Unmatched", corpus.CCorpusQuotation.CQuotationPanel.CPanelAperture.CApertureKey);
 
-        corpus.CCorpusQuotation.CQuotationQuerySet("  ");
+        corpus.CCorpusQuotation.CQuotationPanel.CPanelAperture.CApertureQuerySet("  ");
 
-        Assert.Equal("Example.Vacant", corpus.CCorpusQuotation.CQuotationEmptyKey);
+        Assert.Equal("Example.Vacant", corpus.CCorpusQuotation.CQuotationPanel.CPanelAperture.CApertureKey);
     }
 
     [Fact]
@@ -107,7 +107,7 @@ public sealed class TQuotation
 
         Assert.Equal("entry", corpus.CCorpusQuotation.TQuotationFileRead());
 
-        corpus.CCorpusQuotationSelect(water.LEntryId);
+        corpus.CCorpusDiptych.CDiptychChildSelect(water.LEntryId);
 
         Assert.Equal("water", corpus.CCorpusQuotation.TQuotationFileRead());
     }

@@ -16,7 +16,9 @@ public sealed class CCardList
     }
 
     private LQuillCard? CCardListQuill =>
-        !_cCardListDesk.CDeskFilling && _cCardListDesk.CDeskTenure is LTenure held ? new LQuillCard(held) : null;
+        !_cCardListDesk.CDeskDraft.CDeskDraftFilling && _cCardListDesk.CDeskDraft.CDeskDraftTenure is LTenure held
+            ? new LQuillCard(held)
+            : null;
 
     public void CCardMeaningAdd()
     {
@@ -36,7 +38,7 @@ public sealed class CCardList
     public void CCardMove(long cardId, int place)
     {
         if (CCardListQuill is LQuillCard quill
-            && _cCardListDesk.CDeskTenure?.LTenureRead() is LDraft held
+            && _cCardListDesk.CDeskDraft.CDeskDraftTenure?.LTenureRead() is LDraft held
             && CFolio.CFolioPlaceRead(held.LDraftContent, cardId, place) is int target)
         {
             quill.LQuillCardMove(cardId, target);
@@ -47,7 +49,7 @@ public sealed class CCardList
     {
         ArgumentNullException.ThrowIfNull(ordinal);
 
-        if (_cCardListDesk.CDeskTenure?.LTenureRead() is LDraft held
+        if (_cCardListDesk.CDeskDraft.CDeskDraftTenure?.LTenureRead() is LDraft held
             && CFolio.CFolioOrdinalRead(held.LDraftContent, cardId, ordinal) is int place)
         {
             CCardMove(cardId, place);

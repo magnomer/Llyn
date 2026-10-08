@@ -136,7 +136,9 @@ public sealed class TImprintCredit
         Assert.Equal(["Ada"], imprint.CImprintCreditRead().Select(row => row.CAuthorRowName));
 
         imprint.CImprintTitleSet("Book");
-        imprint.TImprintSave();
+        CSession session =
+            TInterfaceConductDesk.TSessionCreate(imprint.CImprintDesk, [], static () => true, static _ => { });
+        session.CSessionSave();
 
         Assert.Equal(["Ada"], engine.TEngineAuthorFind(string.Empty).Select(author => author.LAuthorName));
     }

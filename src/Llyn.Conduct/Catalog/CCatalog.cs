@@ -19,44 +19,6 @@ public sealed class CCatalog
         _cCatalogAtelier = atelier;
     }
 
-    internal static CFont LCatalogFontRead(LSettingsPort settings, string language, CFontRole role)
-    {
-        ArgumentNullException.ThrowIfNull(settings);
-
-        if (string.IsNullOrWhiteSpace(language))
-        {
-            return new CFont(null, null, CFontSlant.CFontSlantTheme);
-        }
-
-        LFont font = settings.LEngineFontRead(language, LCatalogRoleRead(role));
-        return new CFont(
-            string.IsNullOrWhiteSpace(font.LFontFamily) ? null : font.LFontFamily,
-            font.LFontSized is double size && double.IsFinite(size) && size > 0 ? size : null,
-            LCatalogSlantRead(font.LFontStyle));
-    }
-
-    private static CFontSlant LCatalogSlantRead(string? style)
-    {
-        return style?.ToLowerInvariant() switch
-        {
-            "italic" => CFontSlant.CFontSlantItalic,
-            "oblique" => CFontSlant.CFontSlantOblique,
-            _ => CFontSlant.CFontSlantTheme,
-        };
-    }
-
-    private static LFontRole LCatalogRoleRead(CFontRole role)
-    {
-        return role switch
-        {
-            CFontRole.CFontRoleHeadword => LFontRole.LFontRoleHeadword,
-            CFontRole.CFontRoleExample => LFontRole.LFontRoleExample,
-            CFontRole.CFontRoleGloss => LFontRole.LFontRoleGloss,
-            CFontRole.CFontRoleGlyph => LFontRole.LFontRoleGlyph,
-            _ => throw new ArgumentOutOfRangeException(nameof(role), role, null),
-        };
-    }
-
     internal static CSentenceOrder CCatalogOrderRead(LSentenceOrder order)
     {
         return order.LSentenceOrderParticle is 0 or 1

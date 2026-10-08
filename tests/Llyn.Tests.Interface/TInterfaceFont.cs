@@ -10,6 +10,6 @@ internal static class TInterfaceFont
 
     internal static LFont TFontCreate(string family, double size, string style) => new(family, size, style);
 
-    internal static CFont TCatalogFontRead(LSettingsPort settings, string language, CFontRole role) =>
-        CCatalog.LCatalogFontRead(settings, language, role);
+    internal static CFont TFontRead(LSettingsPort settings, string language, CFontRole role) =>
+        CFont.CFontRead(settings, language, role);
 }

@@ -1,5 +1,5 @@
 # TCorpusPortrait.cs
-Hash: `27e09aa3148dc8cb`
+Hash: `e4f3a91ae8cfb9bb`
 
 ## `public sealed class TCorpusPortrait`
 
