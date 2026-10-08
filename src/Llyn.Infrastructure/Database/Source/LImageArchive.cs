@@ -8,11 +8,17 @@ namespace Llyn.Infrastructure;
 public sealed class LImageArchive : LImageVault
 {
     private readonly LDatabase _lImageArchiveDatabase;
+    private readonly LDatabaseLink _lImageMeaningLink;
+    private readonly LDatabaseLink _lImageCollocationLink;
+    private readonly LDatabaseLink _lImageSituationLink;
 
     public LImageArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
         _lImageArchiveDatabase = database;
+        _lImageMeaningLink = new LDatabaseLink(database, "sense_image", "sense_parent", "image_ref");
+        _lImageCollocationLink = new LDatabaseLink(database, "collocation_image", "collocation_parent", "image_ref");
+        _lImageSituationLink = new LDatabaseLink(database, "situation_image", "situation_parent", "image_ref");
     }
 
     public LImage LImageCreate(LImage image)
@@ -84,87 +90,74 @@ public sealed class LImageArchive : LImageVault
 
     public void LImageMeaningAttach(long meaningId, long imageId, int position)
     {
-        LImageReferenceAttach("sense_image", "sense_parent", meaningId, imageId, position);
+        _lImageMeaningLink.LDatabaseLinkAttach(meaningId, imageId, position);
     }
 
     public void LImageCollocationAttach(long collocationId, long imageId, int position)
     {
-        LImageReferenceAttach("collocation_image", "collocation_parent", collocationId, imageId, position);
+        _lImageCollocationLink.LDatabaseLinkAttach(collocationId, imageId, position);
     }
 
     public void LImageSituationAttach(long situationId, long imageId, int position)
     {
-        LImageReferenceAttach("situation_image", "situation_parent", situationId, imageId, position);
+        _lImageSituationLink.LDatabaseLinkAttach(situationId, imageId, position);
     }
 
     public void LImageMeaningDetach(long meaningId, long imageId)
     {
-        LImageReferenceDetach("sense_image", "sense_parent", meaningId, imageId);
+        _lImageMeaningLink.LDatabaseLinkDetach(meaningId, imageId);
     }
 
     public void LImageCollocationDetach(long collocationId, long imageId)
     {
-        LImageReferenceDetach("collocation_image", "collocation_parent", collocationId, imageId);
+        _lImageCollocationLink.LDatabaseLinkDetach(collocationId, imageId);
     }
 
     public void LImageSituationDetach(long situationId, long imageId)
     {
-        LImageReferenceDetach("situation_image", "situation_parent", situationId, imageId);
+        _lImageSituationLink.LDatabaseLinkDetach(situationId, imageId);
     }
 
-    private void LImageReferenceAttach(string table, string column, long referrerId, long imageId, int position)
+    public Dictionary<long, List<LImageDraft>> LImageSituationScan()
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(imageId);
-
         using LDatabaseSession session = _lImageArchiveDatabase.LDatabaseSessionStart();
-        SqliteConnection connection = session.LDatabaseSessionConnection;
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT link.situation_parent, image.image_id, image.location_state, image.location
+            FROM situation_image link
+            JOIN image ON image.image_id = link.image_ref
+            ORDER BY link.situation_parent, link.position;
+            """;
 
-        string scope = $"{column} = $owner";
-        IReadOnlyList<long> current = LDatabaseOrder.LDatabaseOrderRead(
-            connection, table, scope, referrerId, "image_ref");
-
-        using (SqliteCommand command = connection.CreateCommand())
+        Dictionary<long, List<LImageDraft>> grouped = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
         {
-            command.CommandText =
-                $"""
-                INSERT INTO {table} ({column}, image_ref, position)
-                VALUES ($referrer, $image, $position)
-                ON CONFLICT ({column}, image_ref) DO NOTHING;
-                """;
-            command.Parameters.AddWithValue("$referrer", referrerId);
-            command.Parameters.AddWithValue("$image", imageId);
-            command.Parameters.AddWithValue("$position", current.Count);
-            command.ExecuteNonQuery();
+            long parent = reader.GetInt64(0);
+            if (!grouped.TryGetValue(parent, out List<LImageDraft>? rows))
+            {
+                rows = [];
+                grouped.Add(parent, rows);
+            }
+
+            rows.Add(new LImageDraft(LStateColumn.LStateColumnRead(reader, 2), reader.GetInt64(1)));
         }
 
-        LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, referrerId, "image_ref",
-            LDatabaseOrder.LDatabaseOrderInsert(current, imageId, position));
-
-        session.LDatabaseSessionCommit();
+        return grouped;
     }
 
-    private void LImageReferenceDetach(string table, string column, long referrerId, long imageId)
+    public void LImageSituationClear(long situationId)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(imageId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(situationId);
 
         using LDatabaseSession session = _lImageArchiveDatabase.LDatabaseSessionStart();
-        SqliteConnection connection = session.LDatabaseSessionConnection;
-        string scope = $"{column} = $owner";
-
-        using (SqliteCommand command = connection.CreateCommand())
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
-            command.CommandText = $"DELETE FROM {table} WHERE {column} = $referrer AND image_ref = $image;";
-            command.Parameters.AddWithValue("$referrer", referrerId);
-            command.Parameters.AddWithValue("$image", imageId);
+            command.CommandText = "DELETE FROM situation_image WHERE situation_parent = $situation;";
+            command.Parameters.AddWithValue("$situation", situationId);
             command.ExecuteNonQuery();
         }
-
-        LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, referrerId, "image_ref",
-            LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrerId, "image_ref"));
 
         session.LDatabaseSessionCommit();
     }

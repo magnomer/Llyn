@@ -42,11 +42,11 @@ internal sealed class LLiveryFacade
                 updated,
                 accent,
                 engine.LEngineReflex.LEngineGuiseRead(language, reflexes),
-                staff.LEngineStaffReflex.LReflexFoldedRead(language),
+                staff.LEngineStaffLanguage.LLanguageStaffReflex.LReflexFoldedRead(language),
                 engine.LEngineLanguage.LEngineTranscriptionRead(draft),
                 engine.LEngineLanguage.LEngineGlyphRead(language),
                 engine.LEngineLanguage.LEngineGlyphDivide(draft),
-                staff.LEngineStaffFrequency.LFrequencyClerkRead(entryId, fetch: false),
+                staff.LEngineStaffLanguage.LLanguageStaffFrequency.LFrequencyClerkRead(entryId, fetch: false),
                 engine.LEngineVocabulary.LEngineParadigmScan(entryId),
                 engine.LEngineFanqie.LEngineFanqieDivide(entryId),
                 engine.LEngineLanguage.LEngineScriptDivide(entryId),
@@ -54,8 +54,8 @@ internal sealed class LLiveryFacade
                 engine.LEngineReference.LEngineCitationRead(draft),
                 engine.LEngineCard.LEngineIncomingRead(entryId),
                 engine.LEngineCard.LEngineEtymonRead(draft),
-                staff.LEngineStaffLanguage.LLanguageFlagFind,
-                staff.LEngineStaffLanguage.LVarietyFlagScan(accent));
+                staff.LEngineStaffLanguage.LLanguageStaffLanguage.LLanguageFlagFind,
+                staff.LEngineStaffLanguage.LLanguageStaffLanguage.LVarietyFlagScan(accent));
         }
     }
 
@@ -70,10 +70,12 @@ internal sealed class LLiveryFacade
             LEngineStaff staff = LLiveryFacadeStaff;
             return LLiveryClerk.LLiveryClerkBuild(
                 language,
-                staff.LEngineStaffPronunciation.LPronunciationClerkFind(
+                staff.LEngineStaffLanguage.LLanguageStaffPronunciation.LPronunciationClerkFind(
                     string.Empty, LCatalogOrder.LCatalogOrderName),
-                staff.LEngineStaffShengfu.LShengfuRuleRead(language) is null ? null : staff.LEngineStaffStem,
-                engine.LEngineFanqie.LEngineBookCheck(language) ? staff.LEngineStaffDiwei : null,
+                staff.LEngineStaffLanguage.LLanguageStaffShengfu.LShengfuRuleRead(language) is null
+                    ? null
+                    : staff.LEngineStaffLanguage.LLanguageStaffStem,
+                engine.LEngineFanqie.LEngineBookCheck(language) ? staff.LEngineStaffLanguage.LLanguageStaffDiwei : null,
                 engine.LEngineSettings.LEngineRespellingCheck(language),
                 engine.LEngineSettingsHeld.LSettingsTally,
                 localize);

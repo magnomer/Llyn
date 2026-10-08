@@ -25,7 +25,8 @@ public sealed record CLeaf(
         string mark,
         IReadOnlyDictionary<long, string> citations,
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
-        LMediaPort media)
+        LMediaPort media,
+        LExamplePort examples)
     {
         ArgumentNullException.ThrowIfNull(cards);
         ArgumentNullException.ThrowIfNull(targets);
@@ -41,7 +42,7 @@ public sealed record CLeaf(
                 card.LCardDraftTag.Select(CLeafChip.LLeafChipRead).ToList(),
                 CFolio.CFolioTargetRead(targets.GetValueOrDefault(card.LCardDraftId, [])),
                 card.LCardDraftSentence
-                    .Select(sentence => CLeafLine.LLeafLineRead(sentence, order, mark, citations))
+                    .Select(sentence => CLeafLine.LLeafLineRead(sentence, order, mark, citations, examples))
                     .ToList(),
                 CFolio.CFolioImageRead(card.LCardDraftImage, media),
                 CFolio.CFolioVideoRead(card.LCardDraftVideo, media)))

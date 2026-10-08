@@ -10,7 +10,7 @@ public sealed class CTenor
 {
     private readonly CAtelier _cTenorAtelier;
 
-    private readonly LEntryPort _cTenorEntryPort;
+    private readonly LRegisterPort _cTenorRegisterPort;
 
     private readonly CEnvoy _cTenorEnvoy;
 
@@ -28,14 +28,14 @@ public sealed class CTenor
         ArgumentNullException.ThrowIfNull(marshal);
 
         _cTenorAtelier = atelier;
-        _cTenorEntryPort = atelier.CAtelierEntryPort;
+        _cTenorRegisterPort = atelier.CAtelierEntryBundle.CEntryBundleRegister;
         _cTenorEnvoy = envoy;
         _cTenorSettingsPort = atelier.CAtelierSettingsPort;
         _cTenorMarshal = marshal;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CTenorEditor = editor;
         CTenorCohort = new CCohort(
-            atelier.CAtelierEntryPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             atelier.CAtelierPortraitPort,
             _cTenorSettingsPort,
             envoy,
@@ -174,7 +174,7 @@ public sealed class CTenor
         IReadOnlyList<CCatalogRegister> rows;
         try
         {
-            rows = _cTenorEntryPort.LEngineRegisterFind(vista)
+            rows = _cTenorRegisterPort.LEngineRegisterFind(vista)
                 .Select(static row => new CCatalogRegister(
                     CCard.LCardRegisterRead(row.LCatalogRegisterStored),
                     row.LCatalogRegisterUsage,
@@ -205,7 +205,7 @@ public sealed class CTenor
         long id;
         try
         {
-            id = _cTenorEntryPort.LEngineRegisterCreate(name).LRegisterId;
+            id = _cTenorRegisterPort.LEngineRegisterCreate(name).LRegisterId;
         }
         catch (Exception exception)
         {

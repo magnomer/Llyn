@@ -132,7 +132,7 @@ internal sealed class QEditorSound
     private void QEditorContourRefine(IReadOnlyList<CContour> syllables)
     {
         PContour contour = QEditorSoundContour;
-        contour.PContourScale = CContour.CContourScale;
+        contour.PContourScale = _cEditor.CEditorDisplay.CDisplaySound.CDisplaySoundScale;
         contour.PContourSyllables = QContourInk.QContourInkBuild(syllables, contour);
     }
 

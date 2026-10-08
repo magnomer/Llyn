@@ -1,5 +1,5 @@
 # QCorpusEditor.cs
-Hash: `737f9ed49ee18c48`
+Hash: `9daf9a3ca7a57136`
 
 ## `internal sealed partial class QCorpus`
 
@@ -63,15 +63,15 @@ Paints the sentence field's placeholder from the key Conduct chose.
 Fills every field from the held sentence, which is the blank Example when no draft stands.
 The chip line is redrawn from the sentence's Mentions along with the fields.
 The language is taken as the sentence carries it, an empty one included.
-The tally chip paints the sentence the Example carries, the chosen Example's count.
+The tally chip shows the tally the Example carries.
 
 ## `private void QTranscriptDraftRefine(CExample example)`
 
 Redraws each field from the held sentence only where the field says something else.
-Whether the text differs is the `CAnthology.CAnthologyTextCheck` verdict, so a bulletin never moves the caret.
+Whether the text differs is the corpus anthology's `CAnthologyTextCheck` verdict, so a bulletin never moves the caret.
 The speaker chip is painted on every bulletin, since painting the same language changes nothing.
 The citation field is repainted only when its carried line changed, as `_qTranscriptCitation` states.
 
 ## `private void QCorpusFreshObserve(object sender, RoutedEventArgs e)`
 
-New makes whatever the emptier panel would list, and the gate `CCorpusExampleCreate` decides which.
+New asks the gate `CCorpusExampleCreate`, which decides between a fresh Example and a new quotation.

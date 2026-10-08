@@ -17,7 +17,7 @@ public sealed class TPortraitClerk
         LPressTicket ticket = TInterface.TPressTicketCreate("Paper Printer", false, 1);
 
         LPortraitPage page = clerk.TPortraitClerkRead(water.LEntryId, TInterface.TPortraitLabelRead());
-        await clerk.TPortraitClerkPrint(page, ticket);
+        await TInterface.TPortraitPressCreate(rig).TPortraitClerkPrint(page, ticket);
 
         Assert.Equal("water", page.LPortraitPageTitle);
         Assert.Contains("water", workspace.TWorkspacePress.TPressHtml);

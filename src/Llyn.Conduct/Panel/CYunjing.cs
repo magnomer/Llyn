@@ -11,7 +11,9 @@ public sealed class CYunjing
 {
     private readonly CAtelier _cYunjingAtelier;
 
-    private readonly LPhonologyPort _cYunjingPort;
+    private readonly LFanqiePort _cYunjingFanqiePort;
+
+    private readonly LDiweiPort _cYunjingDiweiPort;
 
     private readonly LPortraitPort _cYunjingPortraitPort;
 
@@ -43,7 +45,8 @@ public sealed class CYunjing
         ArgumentNullException.ThrowIfNull(marshal);
 
         _cYunjingAtelier = atelier;
-        _cYunjingPort = atelier.CAtelierPhonologyPort;
+        _cYunjingFanqiePort = atelier.CAtelierPhonologyBundle.CPhonologyBundleFanqie;
+        _cYunjingDiweiPort = atelier.CAtelierPhonologyBundle.CPhonologyBundleDiwei;
         _cYunjingPortraitPort = atelier.CAtelierPortraitPort;
         _cYunjingEnvoy = envoy;
         _cYunjingSettingsPort = atelier.CAtelierSettingsPort;
@@ -53,6 +56,7 @@ public sealed class CYunjing
         CYunjingPanel = new CPanel(
             envoy,
             _cYunjingSettingsPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             "Yunjing.LoadFailed",
             "Scribe",
             editor.CEditorDesk.LDeskChangeCheck,
@@ -91,7 +95,7 @@ public sealed class CYunjing
 
     public event Action? CYunjingDiweiOpened;
 
-    internal bool LYunjingAllowed => _cYunjingPort.LEngineBookCheck();
+    internal bool LYunjingAllowed => _cYunjingFanqiePort.LEngineBookCheck();
 
     public bool CYunjingDiweiShown => LYunjingDiweiChosen && !CYunjingPanel.CPanelModeEnabled;
 
@@ -190,7 +194,7 @@ public sealed class CYunjing
         {
             rows =
                 _cYunjingShengmu is LVista onset && _cYunjingYunmu is LVista rime && _cYunjingXiaoyun is LVista xiaoyun
-                    ? _cYunjingPort.LEngineXiaoyunFind(LYunjingSide?.LVistaChosen, onset, rime, xiaoyun)
+                    ? _cYunjingDiweiPort.LEngineXiaoyunFind(LYunjingSide?.LVistaChosen, onset, rime, xiaoyun)
                         .Select(CCatalog.LCatalogRowRead)
                         .ToList()
                     : [];
@@ -212,7 +216,7 @@ public sealed class CYunjing
 
     public CDiweiPage CYunjingDiweiRead()
     {
-        LDiweiPage page = _cYunjingPort.LEngineDiweiResolve(
+        LDiweiPage page = _cYunjingDiweiPort.LEngineDiweiResolve(
             CYunjingDiweiShown ? LYunjingSide?.LVistaChosen : null, _cYunjingSettingsPort.LEngineTextFind);
         return new CDiweiPage(
             page.LDiweiPageLanguage,
@@ -293,6 +297,16 @@ public sealed class CYunjing
             return;
         }
 
+        if (!CYunjingPanel.CPanelLeaveConfirm())
+        {
+            return;
+        }
+
+        LYunjingDiweiToggle(cell, rime);
+    }
+
+    private void LYunjingDiweiToggle(long cell, bool rime)
+    {
         _cYunjingFinal = rime;
         LYunjingSide?.LVistaToggle(cell);
         CYunjingPanel.CPanelEntryClose();
@@ -309,14 +323,14 @@ public sealed class CYunjing
         _cYunjingYunmu?.LVistaQuerySet(string.Empty);
         CYunjingDiweiOpened?.Invoke();
 
-        if (_cYunjingPort.LEngineDiweiFind(language, kind, key) is not (long cell, bool rime))
+        if (_cYunjingDiweiPort.LEngineDiweiFind(language, kind, key) is not (long cell, bool rime))
         {
             return;
         }
 
         _cYunjingShengmu?.LVistaSelect(null);
         _cYunjingYunmu?.LVistaSelect(null);
-        CYunjingDiweiSelect(cell, rime);
+        LYunjingDiweiToggle(cell, rime);
     }
 
     public void CYunjingTallyToggle(bool? respelled)
@@ -328,7 +342,7 @@ public sealed class CYunjing
 
         try
         {
-            _cYunjingPort.LEngineTallySave(chosen);
+            _cYunjingSettingsPort.LEngineTallySave(chosen);
         }
         catch (Exception exception)
         {
@@ -353,7 +367,7 @@ public sealed class CYunjing
         if (CCatalog.LCatalogGlyphOpen(
                 _cYunjingEnvoy,
                 _cYunjingSettingsPort,
-                () => _cYunjingPort.LEngineDiweiResolve(LYunjingSide?.LVistaChosen, character))
+                () => _cYunjingDiweiPort.LEngineDiweiResolve(LYunjingSide?.LVistaChosen, character))
             is long entry)
         {
             _cYunjingAtelier.CAtelierNavigation.CNavigationEntryOpen(entry);
@@ -362,7 +376,7 @@ public sealed class CYunjing
 
     internal string LYunjingFileRead()
     {
-        return LVista.LVistaFileRead(_cYunjingXiaoyun);
+        return _cYunjingAtelier.CAtelierEntryBundle.CEntryBundleVista.LEngineFileRead(_cYunjingXiaoyun);
     }
 
     public Task CYunjingPortraitPrint()
@@ -392,7 +406,7 @@ public sealed class CYunjing
     private IReadOnlyList<CDiwei> LYunjingColumnRead(LVista? vista, bool final)
     {
         return vista is LVista column
-            ? _cYunjingPort.LEngineDiweiFind(column, LYunjingSide?.LVistaChosen, final)
+            ? _cYunjingDiweiPort.LEngineDiweiFind(column, LYunjingSide?.LVistaChosen, final)
                 .Select(static row => new CDiwei(
                     row.LDiweiId, row.LDiweiKey, row.LDiweiCount, row.LDiweiFinal, row.LDiweiChosen))
                 .ToList()

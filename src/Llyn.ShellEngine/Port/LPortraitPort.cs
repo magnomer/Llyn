@@ -38,22 +38,23 @@ public interface LPortraitPort
         LPressSide side,
         LPressInk ink)
     {
-        return LPortraitClerk.LPortraitTicketCreate(printer, width, height, landscape, copies, collated, side, ink);
+        return LPortraitClerkPress.LPortraitTicketCreate(
+            printer, width, height, landscape, copies, collated, side, ink);
     }
 
     static LPortraitLabel LEngineLabelRead(IReadOnlyList<string> words)
     {
-        return LPortraitClerk.LPortraitLabelCreate(words);
+        return LPortraitClerkLabel.LPortraitLabelCreate(words);
     }
 
     static IReadOnlyList<(LPortraitMedium, string, bool)> LEngineMediumRead()
     {
-        return LPortraitClerk.LPortraitMediumRead();
+        return LPortraitClerkPress.LPortraitMediumRead();
     }
 
     static IReadOnlyList<string> LEngineKindRead()
     {
-        return LPortraitClerk.LPortraitKindRead();
+        return LPortraitClerkLabel.LPortraitKindRead();
     }
 
     static LMarkupIntake LEngineIntakeRead(int index, LMarkupMode mode, long target)
@@ -63,6 +64,6 @@ public interface LPortraitPort
 
     static LPortraitLegend LEngineLegendRead(IReadOnlyList<string> words, IReadOnlyDictionary<string, string> kinds)
     {
-        return LPortraitClerk.LPortraitLegendCreate(words, kinds);
+        return LPortraitClerkLabel.LPortraitLegendCreate(words, kinds);
     }
 }

@@ -1,14 +1,14 @@
 # COccurrence.cs
-Hash: `8370ec9a5b2f7923`
+Hash: `597122e097ddf069`
 
 ## `public sealed class COccurrence`
 
 The repertoire panel's occurrence list: the entries referencing the chosen Situation.
-It holds the entry and portrait ports, the situation vista as its roll and its own vista.
+It holds the vista and portrait ports, the situation vista as its roll and its own vista.
 The occurrence side never deletes, so its panel has no delete scope.
 It is sealed, so its rows, labels, tickets and formats cross as Conduct shapes.
 
-## `internal COccurrence(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
+## `internal COccurrence(LVistaPort vistas, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
 Builds the list's panel under the `List.LoadFailed` key and with no delete scope.
 The change seam is the entry editor's desk, and the finish seam is the repertoire session's.

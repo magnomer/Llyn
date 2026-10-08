@@ -1,5 +1,5 @@
 # CDesk.cs
-Hash: `d75ca28c514a357d`
+Hash: `08eea11e2c602f95`
 
 ## `public sealed class CDesk`
 
@@ -52,9 +52,9 @@ Only the finish without a stored action raises it.
 
 The settings port the ledger reads a failure's notice through.
 
-## `private LQuill? _cDeskQuill;`
+## `private LErrand? _cDeskErrandEngine;`
 
-The text edits of the held tenure, built when a tenure starts and dropped when it ends.
+The reading writes of the held tenure, taken from it when a tenure starts and dropped when it ends.
 
 ## `private LEasel? _cDeskEasel;`
 
@@ -64,11 +64,51 @@ The media edits of the held tenure, built when a tenure starts and dropped when 
 
 The chip row edits of the held tenure, built when a tenure starts and dropped when it ends.
 
-## `internal LQuill? CDeskQuill`
+## `private LQuillSpeech? _cDeskSpeech;`
 
-The held tenure's text edits, so no driver builds a text request.
+The part of speech edits of the held tenure, built when a tenure starts and dropped when it ends.
+The quill keeps the pending part typed into the field, so the desk holds one per tenure.
+
+## `internal LErrand? CDeskErrandEngine`
+
+The held tenure's reading writes, which the errand's lookup ends in.
 It is null while no tenure is held or while the desk fills its controls.
 A fill echoes values the draft already holds, so nothing is written back.
+
+## `internal LQuillReference? CDeskReference`
+
+A fresh quill of the held Source's typed edits, so no gate builds a request.
+It is null while no tenure is held or while the desk fills its controls.
+
+## `internal LQuillAuthor? CDeskAuthor`
+
+A fresh quill of the held Author's typed name.
+It is null while no tenure is held or while the desk fills its controls.
+
+## `internal LQuillExample? CDeskExample`
+
+A fresh quill of the held Example's own fields.
+It is null while no tenure is held or while the desk fills its controls.
+
+## `internal LQuillSentence? CDeskSentence`
+
+A fresh quill of the sentence rows and glosses, the held Example's glosses among them.
+It is null while no tenure is held or while the desk fills its controls.
+
+## `internal LQuillMention? CDeskMention`
+
+A fresh quill that drops one Mention by id.
+It is null while no tenure is held or while the desk fills its controls.
+
+## `internal LQuillTranscription? CDeskTranscription`
+
+A fresh quill of the held entry's transcription rows.
+It is null while no tenure is held or while the desk fills its controls.
+
+## `internal LQuillEtymology? CDeskEtymology`
+
+A fresh quill of the held entry's etymology narrative, links and spans.
+It is null while no tenure is held or while the desk fills its controls.
 
 ## `internal LEasel? CDeskEasel`
 
@@ -79,6 +119,12 @@ It is null while no tenure is held or while the desk fills its controls.
 
 The held tenure's chip row edits: tags, situations, registers and translations of a card.
 It is null while no tenure is held or while the desk fills its controls.
+
+## `internal LQuillSpeech? CDeskSpeech`
+
+The held tenure's part of speech edits, null while no tenure is held.
+It stays open while the desk fills its controls, since the field read runs then.
+Each edit gate checks the fill itself.
 
 ## `public CErrand CDeskErrand { get; }`
 
@@ -133,7 +179,7 @@ Whether a tenure is held, whether or not it still takes requests.
 
 ## `private void CDeskStartRun(Func<LTenure> start)`
 
-Runs the given start and builds the quill, easel and chip over the tenure it returns.
+Runs the given start and builds the errand engine, easel, chip and speech quills over the tenure it returns.
 The vigil applies its observers to the new tenure before the start is announced.
 A failing start leaves the desk empty and shows the scope's `LoadFailed` notice.
 
@@ -256,6 +302,11 @@ Whether the held draft can step back and forward, or neither while nothing is he
 Steps the held draft back, then announces the change of state.
 A failed step is shown under the scope's `HoldFailed` key and still announces.
 `CDeskRedo` steps it forward the same way.
+
+## `public void CDeskRedo()`
+
+Steps the held draft forward, then announces the change of state.
+A failed step is shown under the scope's `HoldFailed` key and still announces.
 
 ## `private bool CDeskUnreadableConfirm()`
 

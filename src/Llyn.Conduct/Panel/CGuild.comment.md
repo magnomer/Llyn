@@ -1,5 +1,5 @@
 # CGuild.cs
-Hash: `cf367860b406a640`
+Hash: `414dd67eee9cdfc9`
 
 ## `public sealed class CGuild`
 
@@ -35,10 +35,34 @@ A tenure started on the autograph, so the union search and its offer are emptied
 
 A verdict moved without a panel notice, so the buttons and areas are read again.
 
+## `public CPanel CGuildPanel { get; }`
+
+The panel over the roll, which holds the chosen Author and the mode of the author side.
+
+## `public COeuvre CGuildOeuvre { get; }`
+
+The source list beside the roll, which follows the chosen Author.
+
+## `public CDesk CGuildAutograph { get; }`
+
+The desk that holds the Author draft being written.
+
 ## `public CSession CGuildSession { get; }`
 
 The draft session over the autograph, which the views save, undo and redo through.
 A save refuses a blank name through `LGuildAutographCheck` before the engine is asked.
+
+## `public bool CGuildColophonShown`
+
+Whether the source side is in front, which shows the colophon.
+
+## `public bool CGuildAutographShown`
+
+Whether the author side is in front in writing mode, which shows the autograph.
+
+## `public bool CGuildVitaShown`
+
+Whether the author side is in front in reading mode, which shows the vita.
 
 ## `public bool CGuildVitaHeld`
 
@@ -54,6 +78,14 @@ The orphan row is chosen with nothing to read or write, so it leaves the toggle 
 The delete button is live on the author side only while a stored Author is chosen.
 The orphan row and a fresh draft hold no stored Author, so both leave it dead.
 
+## `public bool CGuildViewerChecked`
+
+Whether the reading side of the mode toggle is ticked, which is the opposite of the panel's edit mode.
+
+## `public bool CGuildScribeChecked`
+
+Whether the writing side of the mode toggle is ticked, which is the panel's edit mode.
+
 ## `public bool CGuildStoreEnabled`
 
 The store button is live on the author side while the autograph desk reports its draft storable.
@@ -62,6 +94,10 @@ The desk's tenure answers the verdict, so the guild combines no state fields its
 ## `public bool CGuildPressAllowed`
 
 Print is live only on the source side, since an Author has no page to print.
+
+## `public bool CGuildFiltered`
+
+Whether the roll's vista hides any language.
 
 ## `public bool CGuildUnionShown`
 
@@ -73,7 +109,7 @@ The source side is in front exactly when the oeuvre has a chosen row.
 
 ## `private bool LGuildRowShown`
 
-A stored row is chosen and read, not written, so a roll that drops it closes the panel.
+A row is chosen and read, not written, so a roll that drops it closes the panel.
 
 ## `internal void LGuildVistaRestore()`
 
@@ -102,11 +138,18 @@ Each work count is worded through the engine.
 It closes the panel when a chosen row being read is no longer listed.
 The vita is read after that close, so it never shows an Author the panel just left.
 The engine builds the sheet, and `COeuvre.LOeuvreVitaRead` maps it to its shape.
-The same sheet feeds the count chips of the autograph, which show the Author being written.
+
+## `public void CGuildQuerySet(string query)`
+
+Takes the text typed into the search field as the roll's query.
 
 ## `public void CGuildOrderSet(CCatalogOrder? order)`
 
 The order menu of the roll, where no order keeps the one the vista holds.
+
+## `public void CGuildFilterSet(CCatalogFilter filter)`
+
+Hides the languages the user unticked in the filter menu.
 
 ## `internal bool LGuildLeaveConfirm()`
 

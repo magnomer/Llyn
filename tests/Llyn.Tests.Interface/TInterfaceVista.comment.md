@@ -1,5 +1,5 @@
 # TInterfaceVista.cs
-Hash: `e5271b850e9bf0e2`
+Hash: `e272569324a332f8`
 
 ## `internal static partial class TInterface`
 

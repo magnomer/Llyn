@@ -1,9 +1,9 @@
 # TInterfaceCitation.cs
-Hash: `61b64b8ba579cfe3`
+Hash: `2279924024e7c9bf`
 
 ## `internal static class TInterfaceCitation`
 
-The relays that build a desk, an imprint and a card over engine ports that fail on the Source calls.
+The relays that build a desk, an imprint and a card over engine ports whose Source or Author call fails.
 It also reads the corpus list's internal draft map.
 Each relay is transparent and carries no test logic of its own.
 

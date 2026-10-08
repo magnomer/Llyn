@@ -1,9 +1,9 @@
 # TTimbre.cs
-Hash: `583c230359c7cead`
+Hash: `8f34b7a9feefbed0`
 
 ## `public sealed class TTimbre`
 
-Covers the sound facts an editor reads for its held draft, over a fake phonology port or a workspace.
+Covers the sound facts an editor reads for its held draft, over fake sound and settings ports or a workspace.
 A phonemic respelling needs a respelling pack first, and a silent pack is not spoken.
 An empty desk asks the pack for no language.
 Its top level reads the top theme brush key, chosen in Conduct from the Core colour role.
@@ -32,5 +32,11 @@ An editor holding a draft in `language` whose primary reading carries the Britis
 
 ## `internal static CTimbre TTimbrePrepare(Dictionary<string, Func<object?[]?, object?>> answers)`
 
-Builds an editor over stub ports and a phonology port answering `answers`, and hands back its sound facts.
+Builds an editor through `TTimbreEditorPrepare` and hands back its sound facts.
 `TTimbreEnsign` builds its empty desk here too.
+
+## `internal static CEditor TTimbreEditorPrepare(Dictionary<string, Func<object?[]?, object?>> answers)`
+
+Builds an editor over stub ports, with its sound and settings ports answering `answers`.
+The respelling checks sit on the settings port, so one map answers every sound fact.
+A fact that compares levels with the display's scale reads the editor itself.

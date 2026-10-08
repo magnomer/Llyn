@@ -7,7 +7,7 @@ internal static partial class TInterface
 {
     internal static LAuthor TEngineAuthorCreate(this LEngine engine, LAuthor author)
     {
-        LAuthor created = engine.LEngineStaffHeld.LEngineStaffAuthor.LAuthorClerkCreate(author);
+        LAuthor created = engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkCreate(author);
         engine.LEngineBulletinRaise(LSubject.LSubjectAuthor, created.LAuthorId);
         return created;
     }
@@ -16,7 +16,7 @@ internal static partial class TInterface
         engine.LEngineAuthor.LEngineAuthorRead(id);
 
     internal static IReadOnlyList<LAuthor> TEngineAuthorFind(this LEngine engine, string query) =>
-        engine.LEngineStaffHeld.LEngineStaffAuthor.LAuthorClerkFind(query);
+        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkFind(query);
 
     internal static IReadOnlyList<LCatalogAuthor> TEngineAuthorFind(
         this LEngine engine,
@@ -25,7 +25,7 @@ internal static partial class TInterface
         engine.LEngineAuthor.LEngineAuthorFind(query, order);
 
     internal static IReadOnlyList<LFellow> TEngineFellowFind(this LEngine engine, long authorId) =>
-        engine.LEngineStaffHeld.LEngineStaffAuthor.LFellowFind(authorId);
+        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffAuthor.LFellowFind(authorId);
 
     internal static (string LUnionDropped, string LUnionKept) TEngineUnionRead(
         this LEngine engine,
@@ -54,7 +54,7 @@ internal static partial class TInterface
 
     internal static void TEngineAuthorUpdate(this LEngine engine, LAuthor author)
     {
-        engine.LEngineStaffHeld.LEngineStaffAuthor.LAuthorClerkUpdate(author);
+        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkUpdate(author);
         engine.LEngineBulletinRaise(LSubject.LSubjectAuthor, author.LAuthorId);
     }
 
@@ -67,13 +67,13 @@ internal static partial class TInterface
         engine.LEngineReference.LEngineReferenceCommit(id);
 
     internal static LReference TEngineReferenceCreate(this LEngine engine, LReference reference) =>
-        engine.LEngineStaffHeld.LEngineStaffReference.LReferenceClerkCreate(reference);
+        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffReference.LReferenceClerkCreate(reference);
 
     internal static LDraft TEngineReferenceStart(this LEngine engine, string origin, long? referenceId) =>
         engine.LEngineReference.LEngineReferenceStart(origin, referenceId);
 
     internal static IReadOnlyList<LReference> TEngineReferenceRead(this LEngine engine) =>
-        engine.LEngineStaffHeld.LEngineStaffReference.LReferenceClerkRead();
+        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffReference.LReferenceClerkRead();
 
     internal static LReference? TEngineReferenceRead(this LEngine engine, long id) =>
         engine.LEngineReference.LEngineReferenceRead(id);

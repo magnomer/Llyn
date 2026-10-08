@@ -1,5 +1,5 @@
 # LDraftClerkMention.cs
-Hash: `92f65b3c37dd4274`
+Hash: `40b3a0ded1f2c470`
 
 ## `public sealed class LDraftClerkMention`
 
@@ -10,6 +10,11 @@ The text handlers of both panels call the shift routine here, so a Mention follo
 ## `public LDraftClerkMention(LEntryVault entries, LMeaningVault meanings, LIdentity identity)`
 
 Holds the two shelves a link is checked against and the issuer that names a new Mention.
+
+## `public LDraft? LMentionApply(LDraft draft, LRequest request)`
+
+Routes every Mention request to its handler, and answers null for any other request.
+The clerk then hands that request on to the Glosses.
 
 ## `public LDraft LMentionAdd(LDraft draft, LRequestMentionAddition request)`
 

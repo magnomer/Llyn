@@ -1,5 +1,5 @@
 # TSounding.cs
-Hash: `6a41bc1d28f532eb`
+Hash: `83b7f38902407095`
 
 ## `public sealed class TSounding`
 
@@ -10,7 +10,7 @@ The contour cases reach the internal contour reader through the interface, with 
 ## `public void SoundingVarietyRead_NamedOrBlankVariety_KeysTheLabelAndTheFlag()`
 
 A named variety keys its label under `Variety.` and its flag under the ensign format.
-A blank variety has no flag key, and its label key finds no text.
+A blank variety has no flag key, and its label key is `Variety.` alone.
 
 ## `public void SoundingContourRead_LevelsOffScale_DropsThemAndTheTone()`
 

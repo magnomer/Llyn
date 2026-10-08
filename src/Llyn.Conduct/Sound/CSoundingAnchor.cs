@@ -8,26 +8,30 @@ public sealed class CSoundingAnchor
 {
     private readonly CDesk _cSoundingAnchorDesk;
 
+    private readonly CTimbre _cSoundingAnchorTimbre;
+
     private long? _cSoundingAnchorReflex;
 
-    internal CSoundingAnchor(CDesk desk)
+    internal CSoundingAnchor(CDesk desk, CTimbre timbre)
     {
         ArgumentNullException.ThrowIfNull(desk);
+        ArgumentNullException.ThrowIfNull(timbre);
 
         _cSoundingAnchorDesk = desk;
+        _cSoundingAnchorTimbre = timbre;
     }
 
     public static CSoundingAnchor CSoundingAnchorCreate(CEditor editor)
     {
         ArgumentNullException.ThrowIfNull(editor);
 
-        return new CSoundingAnchor(editor.CEditorDesk);
+        return new CSoundingAnchor(editor.CEditorDesk, editor.CEditorTimbre);
     }
 
     public CAnchor CSoundingAnchorOpen(long reflex)
     {
         _cSoundingAnchorReflex = reflex;
-        IReadOnlyList<CAnchorRow> rows = (_cSoundingAnchorDesk.CDeskTenure?.LTenureAnchorScan(reflex) ?? [])
+        IReadOnlyList<CAnchorRow> rows = (_cSoundingAnchorTimbre.LTimbreQuill?.LQuillAnchorScan(reflex) ?? [])
             .Select(static row => new CAnchorRow(
                 row.LAnchorRowFanqie.LFanqieRowId,
                 row.LAnchorRowFanqie.LFanqieRowSummary,
@@ -41,7 +45,7 @@ public sealed class CSoundingAnchor
     {
         if (_cSoundingAnchorReflex is long reflex)
         {
-            _cSoundingAnchorDesk.CDeskQuill?.LQuillAnchorSet(reflex, fanqie, anchored);
+            _cSoundingAnchorTimbre.LTimbreQuill?.LReflexAnchorSet(reflex, fanqie, anchored);
         }
     }
 

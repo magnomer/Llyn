@@ -10,6 +10,8 @@ public sealed class CPanel
 
     private readonly LSettingsPort _cPanelSettingsPort;
 
+    private readonly LVistaPort _cPanelVistaPort;
+
     private readonly string _cPanelLoadKey;
 
     private readonly string? _cPanelDeleteScope;
@@ -27,6 +29,7 @@ public sealed class CPanel
     internal CPanel(
         CEnvoy envoy,
         LSettingsPort settings,
+        LVistaPort vistas,
         string loadKey,
         string? deleteScope,
         Func<bool> changeSeam,
@@ -35,6 +38,7 @@ public sealed class CPanel
     {
         ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(vistas);
         ArgumentException.ThrowIfNullOrWhiteSpace(loadKey);
         ArgumentNullException.ThrowIfNull(changeSeam);
         ArgumentNullException.ThrowIfNull(finishSeam);
@@ -42,6 +46,7 @@ public sealed class CPanel
 
         _cPanelEnvoy = envoy;
         _cPanelSettingsPort = settings;
+        _cPanelVistaPort = vistas;
         _cPanelLoadKey = loadKey;
         _cPanelDeleteScope = deleteScope;
         _cPanelChangeSeam = changeSeam;
@@ -81,7 +86,7 @@ public sealed class CPanel
     {
         try
         {
-            return _cPanelVista?.LVistaTallyRead() ?? string.Empty;
+            return _cPanelVista is null ? string.Empty : _cPanelVistaPort.LEngineTallyRead(_cPanelVista);
         }
         catch (Exception exception)
         {
@@ -203,7 +208,7 @@ public sealed class CPanel
         CPanelScribeSet(false);
         if (CPanelBinEnabled)
         {
-            LPanelDraftShow(() => _cPanelVista?.LVistaLoad());
+            LPanelDraftShow(() => _cPanelVista is null ? null : _cPanelVistaPort.LEngineVistaLoad(_cPanelVista));
             return;
         }
 
@@ -262,7 +267,8 @@ public sealed class CPanel
 
     public bool CPanelRowOpen(long? id)
     {
-        return LPanelDraftShow(() => _cPanelVista?.LVistaLoad(id));
+        return LPanelDraftShow(
+            () => _cPanelVista is null ? null : _cPanelVistaPort.LEngineVistaLoad(_cPanelVista, id));
     }
 
     private bool LPanelDraftShow(Func<LDraft?> load)
@@ -303,7 +309,7 @@ public sealed class CPanel
         LDraft? draft;
         try
         {
-            draft = _cPanelVista?.LVistaLoad();
+            draft = _cPanelVista is null ? null : _cPanelVistaPort.LEngineVistaLoad(_cPanelVista);
         }
         catch (Exception exception)
         {
@@ -350,14 +356,14 @@ public sealed class CPanel
             return;
         }
 
-        if (!LPanelDeleteConfirm(scope, vista.LVistaUsageRead()))
+        if (!LPanelDeleteConfirm(scope, _cPanelVistaPort.LEngineUsageRead(vista)))
         {
             return;
         }
 
         try
         {
-            vista.LVistaDelete();
+            _cPanelVistaPort.LEngineVistaDelete(vista);
         }
         catch (Exception exception)
         {

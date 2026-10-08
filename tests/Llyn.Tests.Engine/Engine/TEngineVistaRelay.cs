@@ -52,11 +52,11 @@ public sealed class TEngineVistaRelay
         engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
         LVista vista = engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderName);
 
-        int none = vista.TVistaUsageRead();
+        int none = engine.TVistaUsageRead(vista);
         vista.TVistaSelect(ada.LAuthorId);
 
         Assert.Equal(0, none);
-        Assert.Equal(1, vista.TVistaUsageRead());
+        Assert.Equal(1, engine.TVistaUsageRead(vista));
     }
 
     [Fact]
@@ -70,6 +70,6 @@ public sealed class TEngineVistaRelay
 
         vista.TVistaSelect(entry.LEntryId);
 
-        Assert.Equal(0, vista.TVistaUsageRead());
+        Assert.Equal(0, engine.TVistaUsageRead(vista));
     }
 }

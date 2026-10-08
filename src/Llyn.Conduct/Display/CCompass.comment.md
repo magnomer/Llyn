@@ -1,5 +1,5 @@
 # CCompass.cs
-Hash: `bbba0058301e553a`
+Hash: `f7691238f1a64c4f`
 
 ## `public sealed class CCompass`
 
@@ -18,9 +18,13 @@ The rules' sound half, which holds the shown draft the rows and the card place a
 The atelier's repaint memory, held by the display's rules.
 The compass reads on a repaint, so a lasting name fault shows once.
 
-## `private readonly LEntryPort _cCompassPort;`
+## `private readonly LEntryPort _cCompassEntryPort;`
 
-The entry port the twin names are resolved through.
+The entry port a card is placed in its list through.
+
+## `private readonly LVistaPort _cCompassVistaPort;`
+
+The vista port the twin names are resolved through.
 
 ## `private readonly LSettingsPort _cCompassSettings;`
 
@@ -30,7 +34,7 @@ The settings port the ready notice is read from.
 
 The envoy a refused name lookup is shown through.
 
-## `internal CCompass(LDisplay display, LEntryPort entries, LSettingsPort settings, CEnvoy envoy)`
+## `internal CCompass(LDisplay display, LEntryPort entries, LVistaPort vistas, LSettingsPort settings, CEnvoy envoy)`
 
 Only the display builds it, over its rules and the ports the atelier handed down.
 It keeps the rules' sound half and repaint memory, since both live as long as the rules.

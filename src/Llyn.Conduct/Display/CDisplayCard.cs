@@ -10,26 +10,40 @@ public sealed class CDisplayCard
 {
     private readonly LDisplay _cDisplayRule;
 
-    private readonly LEntryPort _cDisplayPort;
+    private readonly LCardPort _cDisplayCardPort;
 
-    private readonly LPhonologyPort _cDisplayPhonology;
+    private readonly LReferencePort _cDisplayReferencePort;
+
+    private readonly LExamplePort _cDisplayExamplePort;
+
+    private readonly LSentencePort _cDisplaySentence;
 
     private readonly LSettingsPort _cDisplaySettings;
 
     private readonly CEnvoy _cDisplayEnvoy;
 
     internal CDisplayCard(
-        LDisplay display, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, CEnvoy envoy)
+        LDisplay display,
+        LCardPort cards,
+        LReferencePort references,
+        LExamplePort examples,
+        LSentencePort sentences,
+        LSettingsPort settings,
+        CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(display);
-        ArgumentNullException.ThrowIfNull(entries);
-        ArgumentNullException.ThrowIfNull(phonology);
+        ArgumentNullException.ThrowIfNull(cards);
+        ArgumentNullException.ThrowIfNull(references);
+        ArgumentNullException.ThrowIfNull(examples);
+        ArgumentNullException.ThrowIfNull(sentences);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _cDisplayRule = display;
-        _cDisplayPort = entries;
-        _cDisplayPhonology = phonology;
+        _cDisplayCardPort = cards;
+        _cDisplayReferencePort = references;
+        _cDisplayExamplePort = examples;
+        _cDisplaySentence = sentences;
         _cDisplaySettings = settings;
         _cDisplayEnvoy = envoy;
     }
@@ -51,8 +65,9 @@ public sealed class CDisplayCard
         string mark = _cDisplaySettings.LEngineTextRead("Display.Unknown");
         LMediaPort media = _cDisplayRule.LDisplayMediaPort;
         return new CLecternCard(
-            CLeaf.LLeafRead(shown.LEntryDraftMeanings, order, mark, citations, targets, media),
-            CLeaf.LLeafRead(shown.LEntryDraftCollocations, order, mark, citations, targets, media),
+            CLeaf.LLeafRead(shown.LEntryDraftMeanings, order, mark, citations, targets, media, _cDisplayExamplePort),
+            CLeaf.LLeafRead(
+                shown.LEntryDraftCollocations, order, mark, citations, targets, media, _cDisplayExamplePort),
             shown.LEntryDraftDefined,
             shown.LEntryDraftCollocated);
     }
@@ -61,7 +76,7 @@ public sealed class CDisplayCard
     {
         try
         {
-            return _cDisplayPort.LEngineTranslationRead(shown);
+            return _cDisplayCardPort.LEngineTranslationRead(shown);
         }
         catch (Exception exception)
         {
@@ -75,7 +90,7 @@ public sealed class CDisplayCard
     {
         try
         {
-            return _cDisplayPhonology.LEngineOrderRead(language);
+            return _cDisplaySentence.LEngineOrderRead(language);
         }
         catch (Exception exception)
         {
@@ -88,7 +103,7 @@ public sealed class CDisplayCard
     {
         try
         {
-            return _cDisplayPort.LEngineCitationRead(shown);
+            return _cDisplayReferencePort.LEngineCitationRead(shown);
         }
         catch (Exception exception)
         {
@@ -106,7 +121,7 @@ public sealed class CDisplayCard
 
         try
         {
-            return _cDisplayPort.LEngineIncomingRead(id).Select(COeuvre.COeuvreUsageRead).ToList();
+            return _cDisplayCardPort.LEngineIncomingRead(id).Select(COeuvre.COeuvreUsageRead).ToList();
         }
         catch (Exception exception)
         {
@@ -125,7 +140,7 @@ public sealed class CDisplayCard
         LEtymologyResult etymology;
         try
         {
-            etymology = _cDisplayPort.LEngineEtymologyRead(shown);
+            etymology = _cDisplayCardPort.LEngineEtymologyRead(shown);
         }
         catch (Exception exception)
         {

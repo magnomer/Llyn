@@ -9,7 +9,11 @@ namespace Llyn.Conduct;
 
 public sealed class CAnthology
 {
-    private readonly LEntryPort _cAnthologyEntryPort;
+    private readonly LExamplePort _cAnthologyExamplePort;
+
+    private readonly LMentionPort _cAnthologyMentionPort;
+
+    private readonly LReferencePort _cAnthologyReferencePort;
 
     private readonly LPortraitPort _cAnthologyPortraitPort;
 
@@ -24,23 +28,30 @@ public sealed class CAnthology
     private LVista? _cAnthologyVista;
 
     internal CAnthology(
-        LEntryPort entries,
+        LExamplePort examples,
+        LMentionPort mentions,
+        LReferencePort references,
         LPortraitPort portraits,
         LSettingsPort settings,
+        LVistaPort vistas,
         CDesk desk,
         Func<bool> shownSeam,
         CEnvoy envoy,
         Func<bool, bool> finishSeam,
         CMention mention)
     {
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(examples);
+        ArgumentNullException.ThrowIfNull(mentions);
+        ArgumentNullException.ThrowIfNull(references);
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(mention);
 
-        _cAnthologyEntryPort = entries;
+        _cAnthologyExamplePort = examples;
+        _cAnthologyMentionPort = mentions;
+        _cAnthologyReferencePort = references;
         _cAnthologyPortraitPort = portraits;
         _cAnthologyDesk = desk;
         _cAnthologyEnvoy = envoy;
@@ -49,6 +60,7 @@ public sealed class CAnthology
         CAnthologyPanel = new CPanel(
             envoy,
             settings,
+            vistas,
             "Example.LoadFailed", "Example", desk.LDeskChangeCheck, finishSeam, shownSeam);
     }
 
@@ -58,9 +70,12 @@ public sealed class CAnthology
         ArgumentNullException.ThrowIfNull(atelier);
 
         return new CAnthology(
-            atelier.CAtelierEntryPort,
+            atelier.CAtelierEntryBundle.CEntryBundleExample,
+            atelier.CAtelierEntryBundle.CEntryBundleMention,
+            atelier.CAtelierEntryBundle.CEntryBundleReference,
             atelier.CAtelierPortraitPort,
             atelier.CAtelierSettingsPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             desk,
             shownSeam,
             envoy,
@@ -138,7 +153,7 @@ public sealed class CAnthology
 
         try
         {
-            return _cAnthologyEntryPort
+            return _cAnthologyExamplePort
                 .LEngineExampleFind(
                     vista,
                     _cAnthologySettingsPort.LEngineTextRead("Display.Unknown"),
@@ -163,7 +178,8 @@ public sealed class CAnthology
             }
 
             int offset = _cAnthologyMention.LMentionOffsetRead(text, unit);
-            CMentionResult found = CMention.CMentionResultRead(_cAnthologyEntryPort.LEngineMentionFind(chosen, offset));
+            CMentionResult found = CMention.CMentionResultRead(
+                _cAnthologyMentionPort.LEngineMentionFind(chosen, offset));
             return _cAnthologyMention.LMentionResultOpen(found, text);
         }
         catch (Exception exception)
@@ -193,7 +209,7 @@ public sealed class CAnthology
 
     public void CAnthologyCitationSet(long referenceId)
     {
-        _cAnthologyDesk.CDeskQuill?.LQuillReferenceSet(referenceId);
+        _cAnthologyDesk.CDeskExample?.LExampleReferenceSet(referenceId);
     }
 
     public void CAnthologyCitationSet(string title)
@@ -210,38 +226,36 @@ public sealed class CAnthology
         }
     }
 
-    private LTenure? CAnthologyTenure => _cAnthologyDesk.CDeskFilling ? null : _cAnthologyDesk.CDeskTenure;
-
     public void CAnthologyGlossSet(long glossId, string text)
     {
-        _cAnthologyDesk.CDeskQuill?.LQuillGlossSet(0, 0, glossId, null, text);
+        _cAnthologyDesk.CDeskSentence?.LSentenceGlossSet(0, 0, glossId, null, text);
     }
 
     public void CAnthologyLanguageSet(long glossId, string language)
     {
-        _cAnthologyDesk.CDeskQuill?.LQuillGlossSet(0, 0, glossId, language, null);
+        _cAnthologyDesk.CDeskSentence?.LSentenceGlossSet(0, 0, glossId, language, null);
     }
 
     public void CAnthologyGlossAdd(int below)
     {
-        CAnthologyTenure?.LTenureGlossInsert(0, 0, below + 1);
+        _cAnthologyDesk.CDeskSentence?.LQuillGlossInsert(0, 0, below + 1);
     }
 
     public bool CAnthologyGlossPrepare()
     {
-        return CAnthologyTenure?.LTenureGlossPrepare(0, 0) == true;
+        return _cAnthologyDesk.CDeskSentence?.LQuillGlossPrepare(0, 0) == true;
     }
 
     public void CAnthologyGlossRemove(long glossId)
     {
-        _cAnthologyDesk.CDeskQuill?.LQuillGlossRemove(0, 0, glossId);
+        _cAnthologyDesk.CDeskSentence?.LSentenceGlossRemove(0, 0, glossId);
     }
 
     public string CAnthologyTextSet(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        _cAnthologyDesk.CDeskQuill?.LQuillExampleSet(text);
+        _cAnthologyDesk.CDeskExample?.LQuillExampleSet(text);
         return CExample.LExampleHintRead(false);
     }
 
@@ -249,14 +263,14 @@ public sealed class CAnthology
     {
         ArgumentNullException.ThrowIfNull(language);
 
-        _cAnthologyDesk.CDeskQuill?.LQuillSpeakerSet(language);
+        _cAnthologyDesk.CDeskExample?.LExampleSpeakerSet(language);
     }
 
-    public static bool CAnthologyTextCheck(string text, CStateValue value)
+    public bool CAnthologyTextCheck(string text, CStateValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
 
-        return LEntryPort.LEngineTextMatch(text, value.CStateValueText);
+        return _cAnthologyExamplePort.LEngineTextMatch(text, value.CStateValueText);
     }
 
     internal CExample? LAnthologyDraftRead(LDraft? draft)
@@ -270,7 +284,7 @@ public sealed class CAnthology
     {
         try
         {
-            return _cAnthologyEntryPort.LEngineCitationRead(draft);
+            return _cAnthologyReferencePort.LEngineCitationRead(draft);
         }
         catch (Exception exception)
         {

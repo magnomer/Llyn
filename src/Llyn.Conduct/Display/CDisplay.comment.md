@@ -1,5 +1,5 @@
 # CDisplay.cs
-Hash: `e80ebbe50e051e15`
+Hash: `1863f4a0ce9286ba`
 
 ## `public sealed class CDisplay`
 
@@ -20,9 +20,13 @@ It holds no state beyond the shown header.
 
 The header while nothing is shown, every field empty.
 
-## `private readonly LEntryPort _cDisplayPort;`
+## `private readonly LEntryPort _cDisplayEntryPort;`
 
-The entry port the stamp and the note parse go through.
+The entry port the stamp and the unit wording go through.
+
+## `private readonly LMarkdownPort _cDisplayMarkdownPort;`
+
+The markdown port the note parse goes through.
 
 ## `private readonly CEnvoy _cDisplayEnvoy;`
 
@@ -32,11 +36,12 @@ The envoy a refused stamp read is shown through.
 
 The settings port the ready notice is read from.
 
-## `internal CDisplay(LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media, CEnvoy envoy, CLedgerNoticed noticed)`
+## `internal CDisplay(LDraftPort drafts, CEntryBundle entries, CPhonologyBundle phonology, LSettingsPort settings, LMediaPort media, CEnvoy envoy, CLedgerNoticed noticed)`
 
 Only the editor and the wing build an area, over the ports and the envoy the atelier handed down.
 It builds its rules first, then the sound area over those rules and itself.
 Then it builds the card area, the route area and the compass over the same rules.
+It reads the entry and phonology bundles and hands each part only the ports that part calls.
 It takes the atelier's repaint memory, which its rules hold for every repaint read.
 A refused read is shown through `envoy`, so every driver over this display shows it once.
 `settings` reads the ready notice the envoy shows with it.

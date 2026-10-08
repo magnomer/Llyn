@@ -32,7 +32,7 @@ public sealed partial class TFault
             }),
         new(
             "CDisplaySound.CDisplayEnsignLoad",
-            "LPhonologyPort.LEngineAccentLoad",
+            "LLanguagePort.LEngineAccentLoad",
             "Sound.LoadFailed",
             static stage =>
             {

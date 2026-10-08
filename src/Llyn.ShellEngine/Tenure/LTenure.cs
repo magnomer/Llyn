@@ -1,16 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
 using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-public sealed partial class LTenure
+public sealed class LTenure
 {
-    private static readonly LTenureState LTenureStateHalted = new(false, null, false, false, true);
-
-    private static readonly LTenureState LTenureStateEnded = new(false, null, false, false, false);
-
     private readonly object _lTenureGate = new();
 
     private readonly object _lTenureTurn = new();
@@ -21,17 +18,32 @@ public sealed partial class LTenure
 
     private readonly LTenureQueue _lTenureQueue;
 
+    private readonly LBulletinRoster _lTenureRoster = new(null);
+
+    private int _lTenurePreparing;
+
+    private LDraft? _lTenureKept;
+
+    private int _lTenureRound;
+
     internal LTenure(LEngine engine, LSubject subject, long id)
     {
         _lEngine = engine;
         _lTenureSubject = subject;
         LTenureId = id;
-        _lTenureQueue = new(engine, id, _lTenureGate, _lTenureTurn, LTenureStateRaise);
-        _lTenureLast = LTenureStateRead();
+        _lTenureQueue = new(engine, id, _lTenureGate, _lTenureTurn, () => LTenureGauge?.LTenureGaugeRaise());
+        LTenureGauge = new(engine, id, _lTenureGate, _lTenureQueue);
+        LTenureErrand = new(engine, this, _lTenureGate);
         _lEngine.LEngineObserverAttach(LTenureBulletinHandle);
     }
 
     public long LTenureId { get; }
+
+    public LTenureGauge LTenureGauge { get; }
+
+    public LErrand LTenureErrand { get; }
+
+    internal LEngine LTenureEngine => _lEngine;
 
     public LDraft? LTenureRead()
     {
@@ -49,56 +61,6 @@ public sealed partial class LTenure
     public string LTenureLanguageRead()
     {
         return LTenureRead()?.LDraftContent.LEntryDraftLanguage ?? string.Empty;
-    }
-
-    public LTenureState LTenureStateRead()
-    {
-        long revision;
-        lock (_lEngine.LEngineGate)
-        {
-            revision = _lEngine.LEngineRevision;
-        }
-
-        bool halted;
-        lock (_lTenureGate)
-        {
-            if (_lTenureQueue.LTenureQueueEnded)
-            {
-                return LTenureStateEnded;
-            }
-
-            halted = _lTenureQueue.LTenureQueueFault is not null;
-            if (!halted && _lTenureState is LTenureState kept && _lTenureStateRevision == revision)
-            {
-                return kept;
-            }
-        }
-
-        try
-        {
-            bool changed = _lEngine.LEngineDraft.LEngineDraftCheck(LTenureId, out string? refusal);
-            LTenureState state = new(
-                changed,
-                refusal,
-                !halted && _lEngine.LEngineRequest.LEngineUndoCheck(LTenureId),
-                !halted && _lEngine.LEngineRequest.LEngineRedoCheck(LTenureId),
-                halted);
-            lock (_lTenureGate)
-            {
-                if (!halted && _lTenureQueue.LTenureQueueLive)
-                {
-                    _lTenureState = state;
-                    _lTenureStateRevision = revision;
-                }
-            }
-
-            return state;
-        }
-        catch (Exception exception)
-        {
-            _lTenureQueue.LTenureQueueSuspend(exception);
-            return LTenureStateHalted;
-        }
     }
 
     public void LTenureRequestDefer(LRequest request)
@@ -145,49 +107,13 @@ public sealed partial class LTenure
     public bool LTenureReadyCheck()
     {
         LTenurePersist();
-        return LTenureReadyCheck(LTenureStateRead());
+        return LTenureGauge.LTenureGaugeCheck(LTenureGauge.LTenureGaugeRead());
     }
 
     public bool LTenureChangeCheck()
     {
         LTenurePersist();
-        return LTenureStateRead().LTenureStateChanged;
-    }
-
-    public bool LTenureStorable =>
-        LTenureStateRead() is { LTenureStateChanged: true } state && LTenureReadyCheck(state);
-
-    private static bool LTenureReadyCheck(LTenureState state) => state.LTenureStateRefusal is null;
-
-    public void LTenureHeadwordSet(string text)
-    {
-        LTenureRequestDefer(new LRequestHeadword(LTenureId, text));
-    }
-
-    public void LTenureNoteSet(string text)
-    {
-        ArgumentNullException.ThrowIfNull(text);
-
-        LTenureRequestDefer(new LRequestNote(LTenureId, LTenureNoteResolve(text)));
-    }
-
-    public static bool LTenureNoteCheck(string text, string note)
-    {
-        ArgumentNullException.ThrowIfNull(text);
-
-        return string.Equals(LTenureNoteResolve(text), note, StringComparison.Ordinal);
-    }
-
-    private static string LTenureNoteResolve(string text) => text.TrimEnd('\r', '\n');
-
-    public void LTenureLanguageSet(string language)
-    {
-        ArgumentNullException.ThrowIfNull(language);
-
-        if (language.Length > 0)
-        {
-            LTenureRequestApply(new LRequestLanguage(LTenureId, language));
-        }
+        return LTenureGauge.LTenureGaugeRead().LTenureStateChanged;
     }
 
     public LDraft? LTenureUndo()
@@ -211,14 +137,14 @@ public sealed partial class LTenure
         }
 
         _lEngine.LEngineDraft.LEngineDraftSweep(LTenureId);
-        LTenureStateRaise();
+        LTenureGauge.LTenureGaugeRaise();
     }
 
     public void LTenureCancel()
     {
         lock (_lTenureGate)
         {
-            LTenureForayStop();
+            LTenureErrand.LErrandStop();
             if (!_lTenureQueue.LTenureQueueClose())
             {
                 return;
@@ -235,7 +161,7 @@ public sealed partial class LTenure
         }
         finally
         {
-            LTenureStateRaise();
+            LTenureGauge.LTenureGaugeRaise();
         }
     }
 
@@ -285,13 +211,199 @@ public sealed partial class LTenure
             }
             lock (_lTenureGate)
             {
-                LTenureForayStop();
+                LTenureErrand.LErrandStop();
                 _lTenureQueue.LTenureQueueClose();
             }
 
             LTenureObserverClear();
-            LTenureStateRaise();
+            LTenureGauge.LTenureGaugeRaise();
             return stored;
+        }
+    }
+
+    public void LTenureObserverAttach(LSubject subject, Action<LBulletin> observer)
+    {
+        LTenureObserverInsert(subject, observer, null);
+    }
+
+    public void LTenureDraftAttach(LSubject subject, Action<LBulletin> observer)
+    {
+        LTenureObserverInsert(subject, observer, LTenureId);
+    }
+
+    public void LTenureEntryAttach(LSubject subject, Action<LBulletin> observer)
+    {
+        ArgumentNullException.ThrowIfNull(observer);
+        if (LTenureRead()?.LDraftStored is long id)
+        {
+            LTenureObserverInsert(subject, observer, id);
+        }
+    }
+
+    private void LTenureObserverInsert(LSubject subject, Action<LBulletin> observer, long? id)
+    {
+        ArgumentNullException.ThrowIfNull(observer);
+        lock (_lTenureGate)
+        {
+            if (!_lTenureQueue.LTenureQueueEnded)
+            {
+                _lTenureRoster.LBulletinRosterAttach(subject, observer, id);
+            }
+        }
+    }
+
+    private void LTenureBulletinHandle(LBulletin bulletin)
+    {
+        (LSubject?, Action<LBulletin>, long?)[] snapshot;
+        lock (_lTenureGate)
+        {
+            if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
+            {
+                LTenureKeptClear();
+            }
+
+            if (_lTenureQueue.LTenureQueueEnded)
+            {
+                return;
+            }
+
+            if (_lTenurePreparing > 0 && bulletin.LBulletinSubject == LSubject.LSubjectDraft
+                && bulletin.LBulletinId == LTenureId)
+            {
+                return;
+            }
+
+            snapshot = _lTenureRoster.LBulletinRosterRead();
+        }
+
+        _lTenureRoster.LBulletinRosterDispatch(bulletin, snapshot);
+    }
+
+    private const int LTenurePrepareRounds = 3;
+
+    public LDraft? LTenurePrepare()
+    {
+        return LTenurePrepare(LTenureDraftPrepare);
+    }
+
+    private void LTenureDraftPrepare()
+    {
+        if (_lTenureSubject != LSubject.LSubjectEntry)
+        {
+            return;
+        }
+
+        int rounds = 0;
+        while (rounds++ < LTenurePrepareRounds && LTenureDraftApply())
+        {
+        }
+    }
+
+    private bool LTenureDraftApply()
+    {
+        IReadOnlyList<LRequest> requests = _lEngine.LEngineDraft.LEngineDraftPrepare(LTenureId);
+        foreach (LRequest request in requests)
+        {
+            LTenureRequestApply(request);
+        }
+
+        return requests.Count > 0;
+    }
+
+    public LDraft? LTenurePrepare(Action prepare)
+    {
+        ArgumentNullException.ThrowIfNull(prepare);
+        lock (_lTenureTurn)
+        {
+            lock (_lTenureGate)
+            {
+                if (_lTenureQueue.LTenureQueueEnded)
+                {
+                    return null;
+                }
+
+                _lTenurePreparing++;
+            }
+
+            try
+            {
+                prepare();
+                return LTenureRead();
+            }
+            finally
+            {
+                lock (_lTenureGate)
+                {
+                    _lTenurePreparing--;
+                    LTenureKeptClear();
+                }
+            }
+        }
+    }
+
+    public long? LTenureStoredRead()
+    {
+        try
+        {
+            return LTenureRead()?.LDraftStored;
+        }
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
+        {
+            return null;
+        }
+    }
+
+    internal LDraft? LTenureKeptRead()
+    {
+        int round;
+        lock (_lTenureGate)
+        {
+            if (_lTenureQueue.LTenureQueueEnded)
+            {
+                return null;
+            }
+
+            if (_lTenureKept is LDraft kept)
+            {
+                return kept;
+            }
+
+            round = _lTenureRound;
+        }
+
+        LDraft? read;
+        try
+        {
+            read = _lEngine.LEngineDraft.LEngineDraftRead(LTenureId);
+        }
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
+        {
+            return null;
+        }
+
+        lock (_lTenureGate)
+        {
+            if (round == _lTenureRound)
+            {
+                _lTenureKept = read;
+            }
+        }
+
+        return read;
+    }
+
+    private void LTenureKeptClear()
+    {
+        _lTenureKept = null;
+        _lTenureRound++;
+    }
+
+    private void LTenureObserverClear()
+    {
+        _lEngine.LEngineObserverDetach(LTenureBulletinHandle);
+        lock (_lTenureGate)
+        {
+            _lTenureRoster.LBulletinRosterClear();
         }
     }
 }

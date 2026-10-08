@@ -11,7 +11,7 @@ public sealed class CXiesheng
 {
     private readonly CAtelier _cXieshengAtelier;
 
-    private readonly LPhonologyPort _cXieshengPort;
+    private readonly LStemPort _cXieshengPort;
 
     private readonly LPortraitPort _cXieshengPortraitPort;
 
@@ -37,7 +37,7 @@ public sealed class CXiesheng
         ArgumentNullException.ThrowIfNull(marshal);
 
         _cXieshengAtelier = atelier;
-        _cXieshengPort = atelier.CAtelierPhonologyPort;
+        _cXieshengPort = atelier.CAtelierPhonologyBundle.CPhonologyBundleStem;
         _cXieshengPortraitPort = atelier.CAtelierPortraitPort;
         _cXieshengSettingsPort = atelier.CAtelierSettingsPort;
         _cXieshengEnvoy = envoy;
@@ -47,6 +47,7 @@ public sealed class CXiesheng
         CXieshengPanel = new CPanel(
             envoy,
             _cXieshengSettingsPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             "Xiesheng.LoadFailed",
             "Scribe",
             editor.CEditorDesk.LDeskChangeCheck,
@@ -247,6 +248,16 @@ public sealed class CXiesheng
             return;
         }
 
+        if (!CXieshengPanel.CPanelLeaveConfirm())
+        {
+            return;
+        }
+
+        LXieshengStemToggle(stem);
+    }
+
+    private void LXieshengStemToggle(long stem)
+    {
         _cXieshengGrove?.LVistaToggle(stem);
         CXieshengPanel.CPanelEntryClose();
         CXieshengChanged?.Invoke();
@@ -265,7 +276,7 @@ public sealed class CXiesheng
         }
 
         _cXieshengGrove?.LVistaSelect(null);
-        CXieshengStemSelect(stem);
+        LXieshengStemToggle(stem);
     }
 
     public void CXieshengGlyphSelect(string? character)
@@ -292,7 +303,7 @@ public sealed class CXiesheng
 
     internal string LXieshengFileRead()
     {
-        return LVista.LVistaFileRead(_cXieshengKindred);
+        return _cXieshengAtelier.CAtelierEntryBundle.CEntryBundleVista.LEngineFileRead(_cXieshengKindred);
     }
 
     public Task CXieshengPortraitPrint()

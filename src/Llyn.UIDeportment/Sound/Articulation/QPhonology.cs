@@ -175,6 +175,7 @@ internal sealed class QPhonology
         _qPhonologyEditor.QEditorChronicleChanged += QPhonologyChronicleRefine;
 
         _qArticulation.QArticulationIntroduce(
+            host.QWindowAtelier.CAtelierCatalog,
             QProbe,
             QContract.QContractFind<TextBox>(
                 QContract.QContractFind<FrameworkElement>(_qPhonologySurface, "PEditor"), "PPronunciationField"));

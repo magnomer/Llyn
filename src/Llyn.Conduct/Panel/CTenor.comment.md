@@ -1,5 +1,5 @@
 # CTenor.cs
-Hash: `ea0f459516a416f2`
+Hash: `234a3219d2b3bf5e`
 
 ## `public sealed class CTenor`
 
@@ -57,6 +57,20 @@ It raises the rows, since choosing a Register announces nothing in the engine.
 The navigation's arrival: chooses the Register and empties both searches, then raises `CTenorRegisterOpened`.
 Emptying the searches is the arrival's own, so no driver has to echo it back through the query gates.
 It raises the rows last, since the Register may be new to the list.
+
+## `public bool CTenorFiltered`
+
+Whether the register vista hides any language, as the vista answers it.
+
+## `public CCatalogOrder CTenorOrder`
+
+The ordering the Register list uses, as a driver marks it in a menu.
+The engine answers the ordering before a vista arrives.
+
+## `public CCatalogFilter CTenorFilter`
+
+The languages the Register list hides, as a driver ticks them in a menu.
+The engine answers the filter before a vista arrives.
 
 ## `internal long? LTenorChosen`
 

@@ -1,9 +1,9 @@
 # TFaultMark.cs
-Hash: `bb64ff8be190e646`
+Hash: `0836c875d7041967`
 
 ## `public sealed partial class TFault`
 
-The second half of the synchronous fault sweep, holding the entry, display, panel and sound write gates.
+The second half of the synchronous fault sweep, holding the mark, sound, fold, creation and merge gates.
 It keeps `TFaultWrite.cs` within the line limit, and the rows join the sweep there.
 
 ## `private static IReadOnlyList<TFaultWrite> TFaultMarkRows =>`
@@ -35,5 +35,5 @@ Builds a wing over the faulted atelier and opens a stored entry, so its display 
 
 ## `private static CEnvoy TFaultConsentCreate(TFaultStage stage, string? wording) =>`
 
-An envoy that answers every question yes and the coinage question with `wording`, unrecorded.
+An envoy that answers every confirmation yes and the coinage question with `wording`.
 It records only failure keys, so the sweep sees the gate's notice alone.

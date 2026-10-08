@@ -1,5 +1,5 @@
 # TReflex.cs
-Hash: `833e8e72d9a88107`
+Hash: `578eb13e89da40e0`
 
 ## `public sealed class TReflex`
 
@@ -25,3 +25,4 @@ A row is found in a draft by its id alone, and an id of zero is refused.
 A row with a language alone already counts as a change to the draft.
 It also covers the `reflex` element of the markup.
 The romanization, meaning, ownership, note, region and main mark survive a round trip.
+A saved region and note read back through the entry, the store, the markup export and the portrait line.

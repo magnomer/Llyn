@@ -301,9 +301,11 @@ public sealed class QReflexItem : INotifyPropertyChanged
         switch (typed.CReflexTypedField)
         {
             case CReflexField.CReflexFieldLanguage:
+                _qReflexItemTitle = typed.CReflexTypedKey;
                 QReflexValueRefine(ref _qReflexItemLanguage, text, nameof(QReflexItemHead), nameof(QReflexItemLabel));
                 break;
             case CReflexField.CReflexFieldKind:
+                _qReflexItemRubric = typed.CReflexTypedKey;
                 QReflexValueRefine(ref _qReflexItemKind, text, nameof(QReflexItemKind), nameof(QReflexItemTag));
                 break;
             case CReflexField.CReflexFieldText:

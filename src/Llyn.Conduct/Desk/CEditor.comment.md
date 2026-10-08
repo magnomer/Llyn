@@ -1,10 +1,11 @@
 # CEditor.cs
-Hash: `1442444288029fac`
+Hash: `813cbd004e38e64b`
 
 ## `public sealed class CEditor`
 
 The entry editor's session holds the desk it sits at and every entry-level gate and read.
-It opens an entry or a fresh draft, stores, drops typing, and hands each field edit to the tenure.
+It opens an entry or a fresh draft, stores and drops typing.
+It hands each field edit to a quill over the tenure.
 The atelier builds it over its ports, so no driver holds a port for the editor.
 Every driver edits an entry through the same gates.
 
@@ -17,12 +18,13 @@ The vista of the tab the editor serves, which says whether it is the input tab's
 Whether the draft being stored stood on no entry, written just before each finish.
 A fresh store on the input tab reopens a blank draft, while every other store reopens what was stored.
 
-## `internal CEditor(LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media, CEnvoy envoy, CLedgerNoticed noticed)`
+## `internal CEditor(LDraftPort drafts, CEntryBundle entries, CPhonologyBundle phonology, LSettingsPort settings, LMediaPort media, CEnvoy envoy, CLedgerNoticed noticed)`
 
 Every editor's desk takes the `Input` scope, so its failure notices use the input wording on any tab.
 It takes the atelier's repaint memory, which nothing else here can reach, and widens by that one argument.
 The display, the sentence gates and the sound sheet show their repaint read failures through it.
 The sound facts take `envoy` too, so a failed flag load shows its notice.
+It reads the entry and phonology bundles and hands each child only the ports it calls.
 
 ## `public static CEditor CEditorCreate(CAtelier atelier, CEnvoy envoy)`
 
@@ -74,7 +76,12 @@ Closing is one user action, and the order of the cancels is the editor's.
 
 The held entry was read again, so a driver writes its controls from it.
 It carries the content the desk prepared, never a second read of the draft.
-The tenure resolves the cards' link targets for that same content, so every card paints its links ready.
+The chip quill resolves the cards' link targets for that same content, so every card paints its links ready.
+
+## `public CDesk CEditorDesk { get; }`
+
+The desk this editor sits at, built over the `Input` scope.
+Every area of the editor shares it, so all of them edit the same held draft.
 
 ## `public CDisplay CEditorDisplay { get; }`
 
@@ -167,22 +174,31 @@ The etymons of the held entry, as the etymology field lists them.
 
 ## `public void CEditorHeadwordSet(string text)`
 
-Hands the typed headword to the tenure.
+Hands the typed headword to an entry quill over the held tenure.
+A desk that holds no tenure or fills its view takes no edit.
+
+## `public void CEditorPronunciationSet(string text)`
+
+Hands the typed reading to a pronunciation quill over the held tenure.
 A desk that holds no tenure or fills its view takes no edit.
 
 ## `public void CEditorNoteSet(string text)`
 
-Hands the typed note to the tenure.
+Hands the typed note to an entry quill over the held tenure.
 A desk that holds no tenure or fills its view takes no edit.
+
+## `public static bool CEditorNoteCheck(string text, string note)`
+
+Whether the held note already equals what the typed text resolves to, as the entry quill judges.
 
 ## `public void CEditorLanguageSet(string language)`
 
-Hands the chosen language to the tenure.
+Hands the chosen language to an entry quill over the held tenure.
 A desk that holds no tenure or fills its view takes no edit.
 
 ## `public void CEditorUnitSet(string key)`
 
 The user picked a unit from the menu.
-Picking the unit already held clears it, a rule the tenure keeps.
+Picking the unit already held clears it, a rule the entry quill keeps.
 The menu itself is read with the part-of-speech field, through `CMarkerUnits`.
 A desk that holds no tenure or fills its view takes no edit.

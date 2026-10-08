@@ -1,9 +1,9 @@
 # TPortraitClerk.cs
-Hash: `e3daf217c7f0f374`
+Hash: `744a7374f7a0f0c0`
 
 ## `public sealed class TPortraitClerk`
 
-The portrait clerk composed over a real rig with the fake press.
+The portrait clerk composes a page over a real rig, and the press clerk prints it to the fake press.
 
 ## `public async Task PortraitClerkPrint_EntryPage_HandsTheSheetAndTheTicketToThePress()`
 

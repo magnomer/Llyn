@@ -14,6 +14,20 @@ public sealed class LDraftClerkGloss
         _lDraftClerkIdentity = identity;
     }
 
+    public LDraft? LGlossApply(LDraft draft, LRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        return request switch
+        {
+            LRequestGlossAddition sent => LGlossAdd(draft, sent),
+            LRequestGlossRemoval sent => LGlossRemove(draft, sent),
+            LRequestGlossText sent => LGlossChange(draft, sent),
+            LRequestGlossLanguage sent => LGlossChange(draft, sent),
+            _ => null,
+        };
+    }
+
     public LDraft LGlossAdd(LDraft draft, LRequestGlossAddition request)
     {
         ArgumentNullException.ThrowIfNull(request);

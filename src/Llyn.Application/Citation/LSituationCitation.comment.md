@@ -1,17 +1,17 @@
 # LSituationCitation.cs
-Hash: `650057024a7bd88f`
+Hash: `4c94190b8ce67d40`
 
 ## `public sealed class LSituationCitation`
 
 The start, commit and check of a held Situation, one kind of the citation protocol.
 `LCitationClerk` builds and holds it beside the three other kinds.
 
-## `public LSituationCitation(LRig rig, LIdentity identity, LClaimClerk claims, LSituationClerk situations, LEntryClerk entries)`
+## `public LSituationCitation(LRig rig, LIdentity identity, LClaimClerk claims, LSituationClerk situations, LRevisionClerk revisions)`
 
 Reads the vault out of `rig` for the session a commit opens.
 The issuer names a new Situation and its media rows.
 The claim clerk holds and finishes the draft.
-The Situation clerk writes the row, and the entry clerk records the revision.
+The Situation clerk writes the row, and the revision clerk records the revision.
 
 ## `public LDraft LSituationCitationStart(string origin, long? situationId)`
 

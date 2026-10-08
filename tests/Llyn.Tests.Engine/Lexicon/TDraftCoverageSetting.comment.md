@@ -1,5 +1,5 @@
 # TDraftCoverageSetting.cs
-Hash: `b32933f7a969dd6f`
+Hash: `8672a7a16dcee0bf`
 
 ## `internal static class TDraftCoverageSetting`
 
@@ -46,7 +46,7 @@ Names the portrait shows another way or never prints.
 
 ## `public static readonly string[] TDraftMarkup`
 
-The path patterns of the markup side, in Core and the markup clerk.
+The path patterns of the markup side, in Core and the four markup clerk files.
 A field a draft carries must be read in one of these files, or waived.
 
 ## `public static readonly string[] TMarkupWaiver`

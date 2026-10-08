@@ -1,18 +1,18 @@
 # CAtelier.cs
-Hash: `748c4d2ad0df0105`
+Hash: `15468d116f3149fb`
 
 ## `public sealed class CAtelier : IDisposable`
 
 Conduct's root: the working session over one workspace, which Host builds and hands to a driver.
-It holds the six engine ports and the session's posture.
+It holds the engine ports, the entry bundle and the session's posture.
 Its gates are the medium-free actions no single panel owns.
 Those are opening, quitting and closing the session, bulletins, vista start, volume and split.
 The workspace path read, the status read and the folder location opener sit here too.
 GUI-only state such as window geometry and panel widths never reaches it.
 
-## `internal CAtelier(LPosture posture, LDraftPort drafts, LEntryPort entries, LSettingsPort settings, LPhonologyPort phonology, LMediaPort media, LPortraitPort portraits)`
+## `internal CAtelier(LPosture posture, LDraftPort drafts, CEntryBundle entries, LSettingsPort settings, CPhonologyBundle phonology, LMediaPort media, LPortraitPort portraits)`
 
-Takes the posture and the six ports Host builds over one engine.
+Takes the posture, the ports, the entry bundle and the phonology bundle Host builds over one engine.
 It is internal, so no driver can build a root of its own.
 
 ## `public CMention CAtelierMention { get; }`
@@ -48,18 +48,19 @@ It is internal, since the posture is an engine handle.
 A transitional handle for the deportments not yet moved into Conduct.
 It is internal, since every port is an engine handle no driver may hold.
 
-## `internal LEntryPort CAtelierEntryPort { get; }`
+## `internal CEntryBundle CAtelierEntryBundle { get; }`
 
-The entry port the Conduct areas find, load and mark entries through.
+The entry ports the Conduct areas find, load and mark entries through.
+An area builder hands each constructor only the ports it calls.
 
 ## `internal LSettingsPort CAtelierSettingsPort { get; }`
 
 The settings port, which also words every key and reads every failure notice.
 The ledger, the workspace and a courier built over the atelier all stand on it.
 
-## `internal LPhonologyPort CAtelierPhonologyPort { get; }`
+## `internal CPhonologyBundle CAtelierPhonologyBundle { get; }`
 
-The phonology port the pronunciation areas read through.
+The phonology bundle whose sound and script ports the pronunciation areas read through.
 
 ## `internal LMediaPort CAtelierMediaPort { get; }`
 
@@ -192,7 +193,7 @@ Closes the session through `CAtelierClose`, for a host or a test that holds the 
 
 Hands `observer` only the bulletins about `subject`, and answers the detach.
 The Conduct subject is mapped by name to the engine's, and the compare is between engine values.
-Only the ledger hears through it, since every view now answers a Conduct event.
+The ledger and the courier hear through it, since every view now answers a Conduct event.
 
 ## `internal Action LAtelierObserverAdd(Action<LBulletin> sent)`
 

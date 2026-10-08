@@ -1,5 +1,5 @@
 # CRespelling.cs
-Hash: `ca506af293f608c4`
+Hash: `cfc0ee8f72ea8f63`
 
 ## `public static class CRespelling`
 
@@ -7,7 +7,7 @@ The respelling rules of the reflex rows: which form of a reading a driver prints
 It holds no state, so it is static and the atelier builds nothing for it.
 A found reading's mark and text come ready from the errand's search instead.
 
-## `internal static IReadOnlyList<CReflex> LRespellingReflexScan(LPhonologyPort phonology, string language, IReadOnlyList<CReflexDraft> reflexes)`
+## `internal static IReadOnlyList<CReflex> LRespellingReflexScan(LReflexPort port, string language, IReadOnlyList<CReflexDraft> reflexes)`
 
 The reflex rows of an entry in `language`, in order, each ready to show.
 One engine read answers every row's switch, phonemic mark and fold.

@@ -137,8 +137,8 @@ public sealed class TSounding
         List<string> notices = [];
         CSounding sounding = TInterfaceEditor.TEditorCreate(
                 TEngineFake.TEngineStubCreate<LDraftPort>(),
-                TEngineFake.TEngineStubCreate<LEntryPort>(),
-                TEngineFake.TEngineStubCreate<LPhonologyPort>(),
+                TInterfaceConduct.TEntryBundleCreate([]),
+                TInterfaceConduct.TPhonologyBundleCreate([]),
                 TInterfaceConduct.TSettingsCreate(),
                 TEngineFake.TEngineStubCreate<LMediaPort>(),
                 TEnvoyFake.TEnvoyCreate(false, notices))
@@ -324,8 +324,8 @@ public sealed class TSounding
     {
         CSounding sounding = TInterfaceEditor.TEditorCreate(
                 TEngineFake.TEngineStubCreate<LDraftPort>(),
-                TEngineFake.TEngineStubCreate<LEntryPort>(),
-                TEngineFake.TEngineCreate<LPhonologyPort>(new Dictionary<string, Func<object?[]?, object?>>
+                TInterfaceConduct.TEntryBundleCreate([]),
+                TInterfaceConduct.TPhonologyBundleCreate(new Dictionary<string, Func<object?[]?, object?>>
                 {
                     ["LEngineBookCheck"] = _ => true,
                     ["LEngineStyleCheck"] = _ => true,
@@ -413,7 +413,7 @@ public sealed class TSounding
     {
         return TInterfaceConductSound.TSoundingCreate(
             editor.CEditorDesk,
-            TEngineFake.TEngineCreate<LPhonologyPort>(answers),
+            TInterfaceConduct.TPhonologyBundleCreate(answers),
             TEnvoyFake.TEnvoyCreate(false, notices),
             pack);
     }

@@ -1,5 +1,5 @@
 # CXiesheng.cs
-Hash: `0ac0ab0f096b6665`
+Hash: `ac32169155803d2f`
 
 ## `public sealed class CXiesheng`
 
@@ -173,12 +173,20 @@ The editor lets its draft go, then the display stops its playback.
 ## `public void CXieshengStemSelect(long? id)`
 
 Toggles that series as the chosen one and clears whatever entry was read.
+An unsaved draft is first put to the leave question, and nothing changes when the user keeps it.
+
+## `private void LXieshengStemToggle(long stem)`
+
+Toggles the series, clears the entry read, and tells the driver.
+It asks nothing, so each caller settles the leave question first.
 
 ## `internal void LXieshengStemOpen(string language, string? key)`
 
 The navigation's arrival: opens the series of that language and key, the request a series chip makes.
 It first empties the series search and raises `CXieshengStemOpened`, so the driver shows it empty.
 The engine finds the series, and nothing happens for a blank key or a series never stored.
+It toggles the series without the gate's leave question, since the navigation already asked it.
+After a discard the draft still reads as changed, so asking again would repeat the dialog.
 
 ## `public void CXieshengGlyphSelect(string? character)`
 

@@ -1,12 +1,12 @@
 # TVistaLoading.cs
-Hash: `904ecacd94f6d945`
+Hash: `56d6934dd158f892`
 
 ## `public sealed class TVistaLoading`
 
 Loading and deleting follow the selected row's kind.
 Entry views open or delete the chosen Entry.
 Catalog views load their own subject without opening an editing draft.
-Deletion detaches the view before removing supported subjects.
+Deleting a supported catalog subject drops the citations to it and keeps the citing Entry.
 Missing or cleared selections return no draft.
 Structural views never mistake their selection for an Entry.
 

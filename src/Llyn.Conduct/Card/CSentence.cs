@@ -10,7 +10,7 @@ public sealed class CSentence
 {
     private readonly CDesk _cSentenceDesk;
 
-    private readonly LPhonologyPort _cSentencePhonologyPort;
+    private readonly LSentencePort _cSentencePort;
 
     private readonly LDraftPort _cSentenceDraftPort;
 
@@ -22,28 +22,26 @@ public sealed class CSentence
 
     internal CSentence(
         CDesk desk,
-        LPhonologyPort phonology,
+        LSentencePort sentences,
         LDraftPort drafts,
         LSettingsPort settings,
         CEnvoy envoy,
         CLedgerNoticed noticed)
     {
         ArgumentNullException.ThrowIfNull(desk);
-        ArgumentNullException.ThrowIfNull(phonology);
+        ArgumentNullException.ThrowIfNull(sentences);
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(noticed);
 
         _cSentenceDesk = desk;
-        _cSentencePhonologyPort = phonology;
+        _cSentencePort = sentences;
         _cSentenceDraftPort = drafts;
         _cSentenceSettingsPort = settings;
         _cSentenceEnvoy = envoy;
         _cSentenceNoticed = noticed;
     }
-
-    private LTenure? CSentenceTenure => _cSentenceDesk.CDeskFilling ? null : _cSentenceDesk.CDeskTenure;
 
     public event Action? CSentenceReferenceChanged;
 
@@ -65,52 +63,52 @@ public sealed class CSentence
             return;
         }
 
-        _cSentenceDesk.CDeskQuill?.LQuillSentenceAdd(cardId, below + 1);
+        _cSentenceDesk.CDeskSentence?.LQuillSentenceAdd(cardId, below + 1);
     }
 
     public void CSentenceRemove(long cardId, long sentenceId)
     {
-        _cSentenceDesk.CDeskQuill?.LQuillSentenceRemove(cardId, sentenceId);
+        _cSentenceDesk.CDeskSentence?.LQuillSentenceRemove(cardId, sentenceId);
     }
 
     public void CSentenceTextSet(long cardId, long sentenceId, string text)
     {
-        _cSentenceDesk.CDeskQuill?.LQuillSentenceSet(cardId, sentenceId, text);
+        _cSentenceDesk.CDeskSentence?.LQuillSentenceSet(cardId, sentenceId, text);
     }
 
     public void CSentenceParticleSet(long cardId, long sentenceId, string text)
     {
-        _cSentenceDesk.CDeskQuill?.LQuillParticleSet(cardId, sentenceId, text);
+        _cSentenceDesk.CDeskSentence?.LSentenceParticleSet(cardId, sentenceId, text);
     }
 
     public void CSentenceDependenceSet(long cardId, long sentenceId, string text)
     {
-        _cSentenceDesk.CDeskQuill?.LQuillDependenceSet(cardId, sentenceId, text);
+        _cSentenceDesk.CDeskSentence?.LSentenceDependenceSet(cardId, sentenceId, text);
     }
 
     public void CSentenceCitationSet(long cardId, long sentenceId, long referenceId)
     {
-        _cSentenceDesk.CDeskQuill?.LQuillCitationSet(cardId, sentenceId, referenceId);
+        _cSentenceDesk.CDeskSentence?.LSentenceCitationSet(cardId, sentenceId, referenceId);
     }
 
     public void CSentenceGlossSet(long cardId, long sentenceId, long glossId, string text)
     {
-        _cSentenceDesk.CDeskQuill?.LQuillGlossSet(cardId, sentenceId, glossId, null, text);
+        _cSentenceDesk.CDeskSentence?.LSentenceGlossSet(cardId, sentenceId, glossId, null, text);
     }
 
     public void CSentenceLanguageSet(long cardId, long sentenceId, long glossId, string language)
     {
-        _cSentenceDesk.CDeskQuill?.LQuillGlossSet(cardId, sentenceId, glossId, language, null);
+        _cSentenceDesk.CDeskSentence?.LSentenceGlossSet(cardId, sentenceId, glossId, language, null);
     }
 
     public void CSentenceGlossAdd(long cardId, long sentenceId)
     {
-        CSentenceTenure?.LTenureGlossAdd(cardId, sentenceId);
+        _cSentenceDesk.CDeskSentence?.LQuillGlossAdd(cardId, sentenceId);
     }
 
     public void CSentenceGlossRemove(long cardId, long sentenceId, long glossId)
     {
-        _cSentenceDesk.CDeskQuill?.LQuillGlossRemove(cardId, sentenceId, glossId);
+        _cSentenceDesk.CDeskSentence?.LSentenceGlossRemove(cardId, sentenceId, glossId);
     }
 
     public void CSentenceMentionAdd(long cardId, long sentenceId, string text, int start, int length, long? entryId)
@@ -136,7 +134,7 @@ public sealed class CSentence
 
     public void CSentenceMentionRemove(long cardId, long sentenceId, long mentionId)
     {
-        _cSentenceDesk.CDeskQuill?.LQuillMentionRemove(cardId, sentenceId, mentionId);
+        _cSentenceDesk.CDeskMention?.LQuillMentionRemove(cardId, sentenceId, mentionId);
     }
 
     public void CSentenceMentionRemove(long cardId, long sentenceId, string text, int start, int length)
@@ -146,12 +144,14 @@ public sealed class CSentence
 
     public bool CSentenceMentionCheck(long cardId, long sentenceId, string text, int start, int length)
     {
-        return _cSentenceDesk.CDeskTenure?.LTenureMentionCheck(cardId, sentenceId, text, start, length) is true;
+        return _cSentenceDesk.CDeskTenure is LTenure held
+            && new LQuillMention(held).LQuillMentionCheck(cardId, sentenceId, text, start, length);
     }
 
     public bool CSentenceSenseCheck(long cardId, long sentenceId, string text, int start, int length)
     {
-        return _cSentenceDesk.CDeskTenure?.LTenureSenseCheck(cardId, sentenceId, text, start, length) is true;
+        return _cSentenceDesk.CDeskTenure is LTenure held
+            && new LQuillMention(held).LQuillSenseCheck(cardId, sentenceId, text, start, length);
     }
 
     public CMentionSense? CSentenceSenseRead(
@@ -192,17 +192,17 @@ public sealed class CSentence
     {
         string language = _cSentenceDesk.CDeskTenure?.LTenureLanguageRead() ?? string.Empty;
         return new CSentenceFrame(
-            CCatalog.CCatalogOrderRead(_cSentencePhonologyPort.LEngineOrderRead(language)),
+            CCatalog.CCatalogOrderRead(_cSentencePort.LEngineOrderRead(language)),
             _cSentenceNoticed.LLedgerRepaintRead(
                 _cSentenceEnvoy,
                 _cSentenceSettingsPort,
-                () => _cSentencePhonologyPort.LEngineParticleRead(language),
+                () => _cSentencePort.LEngineParticleRead(language),
                 [],
                 "Sentence.ParticleFailed"),
             _cSentenceNoticed.LLedgerRepaintRead(
                 _cSentenceEnvoy,
                 _cSentenceSettingsPort,
-                () => _cSentencePhonologyPort.LEngineDependenceRead(language),
+                () => _cSentencePort.LEngineDependenceRead(language),
                 [],
                 "Sentence.DependenceFailed"));
     }

@@ -1,13 +1,14 @@
 # LExampleFacade.cs
-Hash: `588c0b415541b53d`
+Hash: `9c7f277209975a65`
 
-## `internal sealed class LExampleFacade`
+## `public sealed class LExampleFacade : LExamplePort`
 
 The engine's facade for Examples.
 An Example is independent data owned by nothing, so both card sides may reference the same one.
 Every read and write goes through the example clerk under the gate, and every change is announced here.
 The vista overload stays here, because a vista is the shell's and the twin names are numbered per panel.
 The sentence draft starts and commits here too, through the `LExampleCitation` the citation clerk holds.
+It implements the example port itself, so Host hands it to Conduct with no outlet between.
 
 ## `public LExampleFacade(LEngine engine)`
 
@@ -42,3 +43,13 @@ An Example that is gone is refused before a file is written, so no draft can poi
 
 Turns a held sentence into a stored Example, announces it and returns it.
 An id from a closed workspace is refused before anything is written.
+
+## `public bool LEngineTextMatch(string field, string shown)`
+
+Whether a field showing `field` already shows the text `shown`, a blank field reading as nothing recorded.
+The example clerk owns the rule.
+
+## `public (string, IReadOnlyList<LMentionPiece>, string) LEngineLineRead(LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)`
+
+The frame, the sentence divided around its Mentions and the Source line a reading card shows for one sentence row.
+The example clerk composes them, so the display and the portrait share one rule.

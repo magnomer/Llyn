@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-internal sealed class LExampleFacade
+public sealed class LExampleFacade : LExamplePort
 {
     private readonly LEngine _lExampleFacadeEngine;
     private readonly object _lExampleFacadeGate;
@@ -22,7 +23,7 @@ internal sealed class LExampleFacade
     {
         lock (_lExampleFacadeGate)
         {
-            return LExampleFacadeStaff.LEngineStaffExample.LExampleClerkRead(id);
+            return LExampleFacadeStaff.LEngineStaffCatalog.LCatalogStaffExample.LExampleClerkRead(id);
         }
     }
 
@@ -30,7 +31,7 @@ internal sealed class LExampleFacade
     {
         lock (_lExampleFacadeGate)
         {
-            return LExampleFacadeStaff.LEngineStaffExample.LExampleClerkFind(query, order);
+            return LExampleFacadeStaff.LEngineStaffCatalog.LCatalogStaffExample.LExampleClerkFind(query, order);
         }
     }
 
@@ -58,11 +59,22 @@ internal sealed class LExampleFacade
         return rows;
     }
 
+    public bool LEngineTextMatch(string field, string shown)
+    {
+        return LExampleClerk.LExampleTextMatch(field, shown);
+    }
+
+    public (string, IReadOnlyList<LMentionPiece>, string) LEngineLineRead(
+        LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)
+    {
+        return LExampleClerk.LExampleLineRead(sentence, order, mark, citations);
+    }
+
     internal void LEngineExampleDelete(long id, bool detach)
     {
         lock (_lExampleFacadeGate)
         {
-            LExampleFacadeStaff.LEngineStaffExample.LExampleClerkDelete(id, detach);
+            LExampleFacadeStaff.LEngineStaffCatalog.LCatalogStaffExample.LExampleClerkDelete(id, detach);
         }
 
         _lExampleFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectExample, id);
@@ -73,7 +85,7 @@ internal sealed class LExampleFacade
         lock (_lExampleFacadeGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(origin);
-            return LExampleFacadeStaff.LEngineStaffCitation.LCitationClerkExample
+            return LExampleFacadeStaff.LEngineStaffEntry.LEntryStaffCitation.LCitationClerkExample
                 .LExampleCitationStart(origin, exampleId);
         }
     }
@@ -85,7 +97,8 @@ internal sealed class LExampleFacade
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             _lExampleFacadeEngine.LEngineDraft.LEngineDraftValidate(id);
-            settled = LExampleFacadeStaff.LEngineStaffCitation.LCitationClerkExample.LExampleCitationCommit(id);
+            settled = LExampleFacadeStaff.LEngineStaffEntry.LEntryStaffCitation
+                .LCitationClerkExample.LExampleCitationCommit(id);
         }
 
         _lExampleFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectExample, settled.LExampleId);

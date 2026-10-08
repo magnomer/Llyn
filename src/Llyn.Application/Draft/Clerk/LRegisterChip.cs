@@ -17,6 +17,21 @@ public sealed class LRegisterChip
         _lRegisterChipIdentity = identity;
     }
 
+    public LEntryDraft? LRegisterChipApply(LEntryDraft content, LRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+
+        return request switch
+        {
+            LRequestRegisterAddition sent => LRegisterChipAdd(content, sent),
+            LRequestRegisterPick sent => LRegisterChipInsert(content, sent),
+            LRequestRegisterRemoval sent => LRegisterChipRemove(content, sent),
+            LRequestRegisterShift sent => LRegisterChipMove(content, sent),
+            LRequestRegisterName sent => LRegisterChipChange(content, sent),
+            _ => null,
+        };
+    }
+
     public LEntryDraft LRegisterChipAdd(LEntryDraft content, LRequestRegisterAddition request)
     {
         ArgumentNullException.ThrowIfNull(request);

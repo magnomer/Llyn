@@ -1,5 +1,5 @@
 # CDisplayRoute.cs
-Hash: `b781ff7bdc86f8e2`
+Hash: `201c643682b60ca1`
 
 ## `public sealed class CDisplayRoute`
 
@@ -12,9 +12,9 @@ It holds no state beyond the atelier's mention area.
 
 The rules' sound half, which holds the shown draft a word is found in.
 
-## `private readonly LEntryPort _cDisplayPort;`
+## `private readonly LMentionPort _cDisplayMentionPort;`
 
-The entry port both word finds go through.
+The mention port both word finds and the link read go through.
 
 ## `private readonly LSettingsPort _cDisplaySettings;`
 
@@ -28,7 +28,7 @@ The envoy a refused find is shown through.
 
 The atelier's mention area, null until the navigation is attached.
 
-## `internal CDisplayRoute(LDisplay display, LEntryPort entries, LSettingsPort settings, CEnvoy envoy)`
+## `internal CDisplayRoute(LDisplay display, LMentionPort mentions, LSettingsPort settings, CEnvoy envoy)`
 
 Only the display builds it, over its rules and the ports the atelier handed down.
 It keeps the rules' sound half, since that half holds the shown draft.

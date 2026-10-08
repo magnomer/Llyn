@@ -1,5 +1,5 @@
 # CSounding.cs
-Hash: `1b401a0253916596`
+Hash: `499d5a0ef4c25685`
 
 ## `public sealed class CSounding`
 
@@ -19,9 +19,9 @@ Every mark gate announces the change, or shows the refusal under its own notice 
 Hears the tenure's fanqie subject and raises `CSoundingChanged` on the driver's thread.
 A fanqie changed elsewhere refreshes the editor as a fanqie set here does.
 
-## `internal CSounding(CDesk desk, LPhonologyPort phonology, LSettingsPort settings, LDisplay display, CEnvoy envoy)`
+## `internal CSounding(CDesk desk, LFanqiePort fanqies, LDiweiPort diweis, LScriptPort scripts, LParadigmPort paradigms, LSettingsPort settings, LDisplay display, CEnvoy envoy)`
 
-Takes the editor's desk and the phonology port every sound read goes through.
+Takes the editor's desk and the four narrow ports its rime-book, rime-cell, script and paradigm reads go through.
 A refused load shows through `envoy`, with the ready notice `settings` reads.
 The waiting checks and the morphology verdict come from the voice of `display`, the editor's display.
 The repaint memory comes from `display` too, so the constructor takes no further parameter.
@@ -118,9 +118,10 @@ Epoch codes come from pack data, so they form an open set and stay a string.
 The key is kept only when `settings` finds a wording for it.
 Otherwise the epoch is empty, so a driver never looks up a key that has no text.
 
-## `internal static IReadOnlyList<CParadigmSlot> CSoundingParadigmRead(IReadOnlyList<LParadigmRow> rows, bool pending, bool enabled, bool held)`
+## `internal static IReadOnlyList<CParadigmSlot> CSoundingParadigmRead(LParadigmPort paradigms, IReadOnlyList<LParadigmRow> rows, bool pending, bool enabled, bool held)`
 
 Shapes each paradigm row the engine joined.
+The status of each row comes from `paradigms`, so the rule keeps its one owner in the engine.
 The lectern calls it too, so no driver groups slots.
 The held flag is true for the editor, whose missing forms are held by the draft.
 
@@ -141,15 +142,11 @@ The flag key comes from the engine, so the ensign's key format has one owner.
 Maps one engine accent row into the ready row, reading no rule.
 The editor's sheet and the reading view's block share it.
 
-## `internal static IReadOnlyList<CContour> LSoundingContourRead(IReadOnlyList<LContour> syllables)`
-
-Maps the engine's contour syllables into ready ones over `CContour.CContourScale`.
-The editor's contour and the reading view's block share it.
-
 ## `internal static IReadOnlyList<CContour> LSoundingContourRead(IReadOnlyList<LContour> syllables, IReadOnlyList<int> scale)`
 
 Maps the contour syllables into ready ones over `scale`.
-It takes the scale as a parameter, so a test can feed levels the static scale never meets.
+The editor's contour and the reading view's block share it, each passing the language port's scale.
+It takes the scale as a parameter, so a test can feed levels the engine's scale never meets.
 Each syllable is handed whole to `CContourInk.CContourInkBuild`, which keeps the levels and chooses their keys.
 
 ## `internal static IReadOnlyList<CTranscriptionDraft> CSoundingTranscriptionRead(IReadOnlyList<LTranscriptionDraft> transcriptions)`
@@ -159,7 +156,6 @@ The transcriptions of a draft, shaped for the transcription rows and the lectern
 ## `internal static IReadOnlyList<CReflexDraft> CSoundingReflexRead(IReadOnlyList<LReflexDraft> reflexes)`
 
 The reflexes of a draft, shaped for the reflex rows and the lectern.
-The tone travels as text, so no driver reads an anatomy.
 
 ## `private static CReflexDraft CSoundingReflexRead(LReflexDraft reflex)`
 

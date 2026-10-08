@@ -10,6 +10,10 @@ public sealed class CImprint
 {
     private readonly LEntryPort _cImprintEntryPort;
 
+    private readonly LReferencePort _cImprintReferencePort;
+
+    private readonly LAuthorPort _cImprintAuthorPort;
+
     private int _cImprintBlankAt = -1;
 
     private int _cImprintCount;
@@ -17,6 +21,8 @@ public sealed class CImprint
     internal CImprint(
         LDraftPort drafts,
         LEntryPort entries,
+        LReferencePort references,
+        LAuthorPort authors,
         LSettingsPort settings,
         CEnvoy envoy,
         CLedgerNoticed noticed,
@@ -24,10 +30,14 @@ public sealed class CImprint
     {
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(references);
+        ArgumentNullException.ThrowIfNull(authors);
         ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(marshal);
 
         _cImprintEntryPort = entries;
+        _cImprintReferencePort = references;
+        _cImprintAuthorPort = authors;
         CImprintDesk = new CDesk(drafts, settings, "Source", envoy);
         CImprintByline = new CByline(this, drafts, noticed);
         CImprintDesk.CDeskDraftPrepared += LImprintDraftShow;
@@ -74,7 +84,7 @@ public sealed class CImprint
 
     public CReference CImprintEmptyRead()
     {
-        return LImprintReferenceRead(_cImprintEntryPort.LEngineImprintRead(null));
+        return LImprintReferenceRead(_cImprintReferencePort.LEngineImprintRead(null));
     }
 
     public string CImprintTallyRead()
@@ -86,38 +96,38 @@ public sealed class CImprint
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        CImprintDesk.CDeskQuill?.LQuillTitleSet(text);
+        CImprintDesk.CDeskReference?.LReferenceTitleSet(text);
     }
 
     public void CImprintYearSet(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        CImprintDesk.CDeskQuill?.LQuillYearSet(text);
+        CImprintDesk.CDeskReference?.LReferenceYearSet(text);
     }
 
     public void CImprintUrlSet(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        CImprintDesk.CDeskQuill?.LQuillUrlSet(text);
+        CImprintDesk.CDeskReference?.LReferenceUrlSet(text);
     }
 
     public void CImprintNoteSet(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        CImprintDesk.CDeskQuill?.LQuillNoteSet(text);
+        CImprintDesk.CDeskReference?.LReferenceNoteSet(text);
     }
 
     public void CImprintKindSet(string? tag)
     {
-        CImprintDesk.CDeskQuill?.LQuillKindSet(tag);
+        CImprintDesk.CDeskReference?.LReferenceKindSet(tag);
     }
 
-    public static IReadOnlyList<CReferenceKind> CImprintKindRead()
+    public IReadOnlyList<CReferenceKind> CImprintKindRead()
     {
-        return LImprintKindRead(LEntryPort.LEngineKindRead());
+        return LImprintKindRead(_cImprintReferencePort.LEngineKindRead());
     }
 
     internal static IReadOnlyList<CReferenceKind> LImprintKindRead(
@@ -133,7 +143,7 @@ public sealed class CImprint
 
     public IReadOnlyList<CAuthorRow> CImprintCreditRead()
     {
-        List<CAuthorRow> rows = _cImprintEntryPort.LEngineCreditRead(CImprintDesk.CDeskTenure)
+        List<CAuthorRow> rows = _cImprintAuthorPort.LEngineCreditRead(CImprintDesk.CDeskTenure)
             .Select(static row => new CAuthorRow(
                 row.LAuthorRowId,
                 row.LAuthorRowName,
@@ -206,7 +216,7 @@ public sealed class CImprint
             return;
         }
 
-        CImprintDesk.CDeskQuill?.LQuillAuthorRemove(author);
+        CImprintDesk.CDeskReference?.LReferenceAuthorRemove(author);
     }
 
     public void CImprintAuthorMove(int? position, long? id, int step)
@@ -226,7 +236,7 @@ public sealed class CImprint
             return;
         }
 
-        CImprintDesk.CDeskQuill?.LQuillAuthorMove(author, at + step);
+        CImprintDesk.CDeskReference?.LReferenceAuthorMove(author, at + step);
     }
 
     public bool CImprintAuthorFinish(int? position, long? id, string? text, long? chosen)
@@ -277,7 +287,7 @@ public sealed class CImprint
     {
         int blank = _cImprintBlankAt;
         _cImprintBlankAt = -1;
-        if (CImprintDesk.CDeskQuill?.LQuillAuthorInsert(picked, at, author) == true)
+        if (CImprintDesk.CDeskReference?.LReferenceAuthorInsert(picked, at, author) == true)
         {
             return;
         }
@@ -291,7 +301,7 @@ public sealed class CImprint
         CImprintByline.CBylineClose();
         int blank = _cImprintBlankAt;
         _cImprintBlankAt = -1;
-        if (CImprintDesk.CDeskQuill?.LQuillAuthorAdd(text, at, author) == true)
+        if (CImprintDesk.CDeskReference?.LReferenceAuthorAdd(text, at, author) == true)
         {
             return;
         }
@@ -316,7 +326,7 @@ public sealed class CImprint
     private void LImprintDraftShow(LDraft draft)
     {
         CImprintChanged?.Invoke();
-        CImprintReferenceChanged?.Invoke(LImprintReferenceRead(_cImprintEntryPort.LEngineImprintRead(draft)));
+        CImprintReferenceChanged?.Invoke(LImprintReferenceRead(_cImprintReferencePort.LEngineImprintRead(draft)));
     }
 
     private static CReference LImprintReferenceRead(LImprint sheet)

@@ -10,21 +10,37 @@ public sealed class COeuvre
 {
     private readonly LEntryPort _cOeuvreEntryPort;
 
+    private readonly LAuthorPort _cOeuvreAuthorPort;
+
+    private readonly LReferencePort _cOeuvreReferencePort;
+
     private LVista? _cOeuvreRoll;
 
     private LVista? _cOeuvreVista;
 
     private int _cOeuvreCount;
 
-    internal COeuvre(LEntryPort entries, LSettingsPort settings, CEnvoy envoy, Func<bool> shownSeam)
+    internal COeuvre(
+        LEntryPort entries,
+        LAuthorPort authors,
+        LReferencePort references,
+        LSettingsPort settings,
+        LVistaPort vistas,
+        CEnvoy envoy,
+        Func<bool> shownSeam)
     {
         ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(authors);
+        ArgumentNullException.ThrowIfNull(references);
         ArgumentNullException.ThrowIfNull(settings);
 
         _cOeuvreEntryPort = entries;
+        _cOeuvreAuthorPort = authors;
+        _cOeuvreReferencePort = references;
         COeuvrePanel = new CPanel(
             envoy,
             settings,
+            vistas,
             "Source.LoadFailed", null,
             static () => false, static _ => true, shownSeam);
         COeuvrePanel.CPanelDraftChanged += LOeuvreColophonUpdate;
@@ -67,7 +83,7 @@ public sealed class COeuvre
     public IReadOnlyList<CCatalogReference> COeuvreRowsRead()
     {
         IReadOnlyList<CCatalogReference> rows =
-            COeuvreReferenceRead(_cOeuvreEntryPort.LEngineOeuvreFind(_cOeuvreRoll, _cOeuvreVista));
+            COeuvreReferenceRead(_cOeuvreAuthorPort.LEngineOeuvreFind(_cOeuvreRoll, _cOeuvreVista));
         _cOeuvreCount = rows.Count;
         if (LOeuvreSourceHeld && !rows.Any(static row => row.CCatalogReferenceChosen))
         {
@@ -91,14 +107,19 @@ public sealed class COeuvre
 
     private void LOeuvreColophonUpdate(LDraft draft)
     {
-        COeuvreColophonChanged?.Invoke(LOeuvreColophonRead(_cOeuvreEntryPort, draft));
+        COeuvreColophonChanged?.Invoke(LOeuvreColophonRead(_cOeuvreReferencePort, draft));
     }
 
-    internal static CColophon LOeuvreColophonRead(LEntryPort entries, LDraft draft)
+    internal static CColophon LOeuvreColophonRead(LReferencePort references, LDraft draft)
     {
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(references);
 
-        return LOeuvreColophonRead(entries.LEngineColophonRead(draft));
+        return LOeuvreColophonRead(references.LEngineColophonRead(draft));
+    }
+
+    public IReadOnlyList<CReferenceKind> COeuvreKindRead()
+    {
+        return CImprint.LImprintKindRead(_cOeuvreReferencePort.LEngineKindRead());
     }
 
     private static CColophon LOeuvreColophonRead(LColophon sheet)
@@ -131,7 +152,7 @@ public sealed class COeuvre
             .Select(row => new CCatalogAuthor(
                 row.LCatalogAuthorStored.LAuthorId,
                 row.LCatalogAuthorName,
-                _cOeuvreEntryPort.LEngineWorkFormat(row.LCatalogAuthorWork),
+                _cOeuvreAuthorPort.LEngineWorkFormat(row.LCatalogAuthorWork),
                 row.LCatalogAuthorCount,
                 row.LCatalogAuthorStored.LAuthorStored ? "guild" : "unlink",
                 row.LCatalogAuthorChosen))

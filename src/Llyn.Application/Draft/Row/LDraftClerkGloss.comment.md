@@ -1,5 +1,5 @@
 # LDraftClerkGloss.cs
-Hash: `23cda3d8e4c46055`
+Hash: `92c491993bdf9de1`
 
 ## `public sealed class LDraftClerkGloss`
 
@@ -9,6 +9,11 @@ Every handler edits the Gloss list of one Example draft and hands the rest of th
 ## `public LDraftClerkGloss(LIdentity identity)`
 
 Holds the issuer that names a new Gloss, the only service a Gloss edit needs.
+
+## `public LDraft? LGlossApply(LDraft draft, LRequest request)`
+
+Routes every Gloss request to its handler, and answers null for any other request.
+The clerk then hands that request on to the situation fields.
 
 ## `public LDraft LGlossAdd(LDraft draft, LRequestGlossAddition request)`
 

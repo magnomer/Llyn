@@ -1,18 +1,18 @@
 # QPhonology.cs
-Hash: `3087fb812da33e33`
+Hash: `2290df509f6a16a8`
 
 ## `internal sealed class QPhonology`
 
 Drives the phonology panel and forwards what the user asks of it.
 Every branch it once carried lives in Conduct's `CPhonology` and the `CPanel` it holds.
 The search, the ordering, the inventory, the read-only display and the editor are all wired here.
-The panel itself is the veneer's `QPhonology` page, which the window places.
+The panel itself is the veneer's `PPhonology` page, which the window places.
 It names no Core type, since its rows arrive as `CCatalogPronunciation`.
 
 ## `internal QPhonology(UserControl surface)`
 
-Takes the page the window pulled under the contract ID `QPhonology`.
-It builds the articulation driver over the nested `QArticulation` page, as a parent driver builds a nested one.
+Takes the page the window pulled under the contract ID `PPhonology`.
+It builds the articulation driver over the nested `PArticulation` page, as a parent driver builds a nested one.
 It adds the print and export command bindings to the page and points the two buttons at those commands.
 It ties the droppers to their popups, sets every icon, and attaches the row fills.
 Row clicks are taken on the inventory, and every button and search field is subscribed here.
@@ -44,11 +44,15 @@ Its one request is `CPhonologyRowsLoad`, which runs the flag fill and then answe
 
 Fills the filter menu with the languages the flag load answered, each ticked by the panel's filter.
 
+## `private void QPhonologyStoreRefine()`
+
+Enables the store button only while the editor's desk can store.
+
 ## `private async void QPhonologyWorkspaceRefine()`
 
 Answers `CPhonologyWorkspaceChanged` by drawing the flags of the new workspace's languages.
 Once the flags are in, it repaints the inventory, whose rows carry a flag.
-A failed load throws before the repaint, as the old load before the entry close did.
+A failed load throws before the repaint.
 Its one request is `CPhonologyRowsLoad`, which runs the flag fill and then answers the rows it paints.
 
 ## `private bool QPhonologyShownCheck()`
@@ -69,6 +73,10 @@ Refills the inventory from the rows the deportment reads, spliced so the list ke
 
 Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
 The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
+
+## `private void QLensRefine()`
+
+Shows the filter mark while the panel is filtered.
 
 ## `private void QPhonologyModeRefine()`
 
@@ -99,6 +107,7 @@ The engine writes the document from stored rows.
 ### `_qArticulation.QArticulationIntroduce(`
 
 The aid is given both fields a phonetic character is typed into.
+It is given the atelier's catalog too, which reads both charts the aid lays out.
 The search comes first, because a reader who opens the charts with nothing focused is looking a pronunciation up.
 The editor's field takes over as soon as the reader focuses it.
 The editor's field is pulled from the editor's Veneer by its contract ID `PPronunciationField`.
@@ -137,6 +146,26 @@ Hands the reading mode to the scribe gate, so the viewer button needs no compari
 ## `private void QPhonologyScribeObserve(object sender, RoutedEventArgs e)`
 
 Hands the writing mode to the scribe gate.
+
+## `private void QProbeObserve(object sender, TextChangedEventArgs e)`
+
+Hands the typed search to the query gate.
+
+## `private void QInventoryObserve(object sender, RoutedEventArgs e)`
+
+Hands the clicked row's id to the panel's row select.
+
+## `private void QPhonologyFreshObserve(object sender, RoutedEventArgs e)`
+
+Asks the panel for a new entry.
+
+## `private void QPhonologyStoreObserve(object sender, RoutedEventArgs e)`
+
+Asks the editor to save the entry.
+
+## `private void QPhonologyBinObserve(object sender, RoutedEventArgs e)`
+
+Asks the panel to delete the chosen entry.
 
 ## `private void QSequenceObserve(object sender, RoutedEventArgs e)`
 

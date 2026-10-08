@@ -1,5 +1,5 @@
 # CImprint.cs
-Hash: `4649fce23c8999d5`
+Hash: `854e9a7ba13a8388`
 
 ## `public sealed class CImprint`
 
@@ -9,12 +9,13 @@ The credit rows are the engine's, and the only credit state kept here is where t
 Every request is built by the desk's quill, so the editor names no request.
 `CShelf` builds it over the atelier's ports.
 
-## `internal CImprint(LDraftPort drafts, LEntryPort entries, LSettingsPort settings, CEnvoy envoy, CLedgerNoticed noticed, Action<Action> marshal)`
+## `internal CImprint(LDraftPort drafts, LEntryPort entries, LReferencePort references, LAuthorPort authors, LSettingsPort settings, CEnvoy envoy, CLedgerNoticed noticed, Action<Action> marshal)`
 
 Builds the desk under the `Source` scope, and the byline over the same draft port.
 It takes the atelier's repaint memory only to hand it to the byline, which has no other way to it.
 The desk's prepared draft is announced as the reference notice.
 The desk hears its tenure and draft notices through `marshal`, so no driver wires them.
+`entries` words the tally, `references` the sheets and kind menu, and `authors` the credits.
 
 ## `public event Action? CImprintChanged;`
 
@@ -77,13 +78,13 @@ While the desk fills its fields from a notice, no quill is offered and nothing i
 
 Hands the picked menu tag to the quill, which sends the kind at once.
 
-## `public static IReadOnlyList<CReferenceKind> CImprintKindRead()`
+## `public IReadOnlyList<CReferenceKind> CImprintKindRead()`
 
 The kind menu the driver builds once, each option's tag and key already decided by the engine.
-It is static, since the menu is the same for every Source and needs no desk.
+It reads the menu through the reference port, which is the same for every Source.
 Every tag appears once, since the read drops a repeated tag and keeps its first kind.
 So a driver can pair each option to its tag without meeting two radios for one kind.
-It hands the engine's static kind list to `LImprintKindRead`, which holds that rule.
+It hands the engine's kind list to `LImprintKindRead`, which holds that rule.
 
 ## `internal static IReadOnlyList<CReferenceKind> LImprintKindRead(IReadOnlyList<(string LReferenceKindTag, string LReferenceKindKey)> rows)`
 

@@ -1,5 +1,5 @@
 # CPhonology.cs
-Hash: `853f365cb5d7f8ab`
+Hash: `eabca468101140c4`
 
 ## `public sealed class CPhonology`
 
@@ -86,10 +86,22 @@ The shared rule `CCatalog.LCatalogEnsignLoad` orders the two, so the driver make
 A failed flag fill shows `Sound.LoadFailed` and still answers the rows with no languages.
 The driver awaits it from an event handler, where a fault would end the app.
 
+## `public void CPhonologyQuerySet(string query)`
+
+Takes the text typed into the search field as the vista's query.
+
 ## `public void CPhonologyOrderSet(CCatalogOrder? order)`
 
 Orders the rows as the user chose.
 A null order keeps the current one, which the vista decides.
+
+## `public void CPhonologyFilterSet(CCatalogFilter filter)`
+
+Hides the languages the user unticked in the filter menu.
+
+## `internal string LPhonologyFileRead()`
+
+The file name an export of the chosen entry is offered under, read from the phonology vista.
 
 ## `public Task CPhonologyPortraitPrint()`
 
@@ -100,7 +112,7 @@ The reader is asked for the printer through the panel's envoy, and a decline pri
 
 ## `public Task CPhonologyPortraitExport()`
 
-The file is offered under the entry's headword, as `LVista.LVistaFileRead` words it.
+The file is offered under the entry's headword, as `LVistaPort.LEngineFileRead` words it.
 `CPortrait` reads that name only once the export starts, and a failed read shows `Export.NameFailed`.
 The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.

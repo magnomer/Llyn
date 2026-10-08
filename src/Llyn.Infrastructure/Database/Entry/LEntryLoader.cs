@@ -26,6 +26,8 @@ public sealed class LEntryLoader
             return null;
         }
 
+        LEntryLoaderCard cards = new(_lEntryLoaderDatabase);
+        LEntryLoaderReading readings = new(_lEntryLoaderDatabase);
         LEntryArchive entries = new(_lEntryLoaderDatabase);
         IReadOnlyList<LSpeechDraft> speeches = LEntrySpeechFormat(entries.LEntrySpeechRead(id));
         IReadOnlyList<LForm> forms = entries.LEntryFormRead(id);
@@ -33,37 +35,13 @@ public sealed class LEntryLoader
             new LInflectionArchive(_lEntryLoaderDatabase).LInflectionRead(id);
 
         LNote? note = new LNoteArchive(_lEntryLoaderDatabase).LNoteRead(id);
-        IReadOnlyList<LPronunciationDraft> pronunciations = LEntrySoundRead(id);
-        IReadOnlyList<LTranscriptionDraft> transcriptions = LEntrySpellingRead(id);
-        IReadOnlyList<LReflexDraft> reflexes = LEntryReflexRead(id);
+        IReadOnlyList<LPronunciationDraft> pronunciations = readings.LEntrySoundRead(id);
+        IReadOnlyList<LTranscriptionDraft> transcriptions = readings.LEntrySpellingRead(id);
+        IReadOnlyList<LReflexDraft> reflexes = readings.LEntryReflexRead(id);
         LEtymologyDraft etymology = LEntryEtymologyRead(id);
 
-        Dictionary<long, List<LMeaning>> senses = [];
-        foreach (LMeaning meaning in new LMeaningArchive(_lEntryLoaderDatabase).LMeaningRead(id))
-        {
-            long parent = meaning.LMeaningParentId ?? 0;
-            if (!senses.TryGetValue(parent, out List<LMeaning>? group))
-            {
-                group = [];
-                senses[parent] = group;
-            }
-
-            group.Add(meaning);
-        }
-
-        IReadOnlyList<LCardDraft> meaningCards = LEntryChildRead(senses, 0);
-
-        List<LCardDraft> collocationCards = [];
-        foreach (LCollocation collocation in new LCollocationArchive(_lEntryLoaderDatabase).LCollocationRead(id))
-        {
-            collocationCards.Add(LEntryCardRead(
-                collocation.LCollocationId,
-                collocation: true,
-                collocation.LCollocationPosition + 1,
-                collocation.LCollocationTitle,
-                collocation.LCollocationExpression,
-                collocation.LCollocationMeaning));
-        }
+        IReadOnlyList<LCardDraft> meaningCards = cards.LEntryMeaningRead(id);
+        IReadOnlyList<LCardDraft> collocationCards = cards.LEntryCollocationRead(id);
 
         return new LEntryDraft(
             entry.LEntryHeadword,
@@ -81,67 +59,6 @@ public sealed class LEntryLoader
             entry.LEntryUnit);
     }
 
-    private IReadOnlyList<LCardDraft> LEntryChildRead(
-        IReadOnlyDictionary<long, List<LMeaning>> senses, long parentId)
-    {
-        if (!senses.TryGetValue(parentId, out List<LMeaning>? group))
-        {
-            return [];
-        }
-
-        List<LCardDraft> cards = new(group.Count);
-        foreach (LMeaning meaning in group)
-        {
-            cards.Add(LEntryCardRead(
-                meaning.LMeaningId,
-                collocation: false,
-                meaning.LMeaningPosition + 1,
-                meaning.LMeaningTitle,
-                LStateValue.LStateValueUnspecified,
-                meaning.LMeaningDefinition) with
-            {
-                LCardDraftChild = LEntryChildRead(senses, meaning.LMeaningId),
-            });
-        }
-
-        return cards;
-    }
-
-    private IReadOnlyList<LPronunciationDraft> LEntrySoundRead(long id)
-    {
-        LPronunciationArchive pronunciations = new(_lEntryLoaderDatabase);
-        List<LPronunciationDraft> drafts = [];
-        foreach (LPronunciation pronunciation in pronunciations.LPronunciationRead(id))
-        {
-            LPronunciationAudio? audio = pronunciations.LPronunciationAudioRead(pronunciation.LPronunciationId);
-            drafts.Add(new LPronunciationDraft(
-                pronunciation.LPronunciationIpa ?? string.Empty,
-                pronunciation.LPronunciationSyllables,
-                audio?.LPronunciationAudioFile ?? string.Empty,
-                audio?.LPronunciationAudioSource,
-                pronunciation.LPronunciationId,
-                pronunciation.LPronunciationVariety ?? string.Empty,
-                LPronunciationDraftRespelling: pronunciation.LPronunciationRespelling ?? string.Empty));
-        }
-
-        return drafts;
-    }
-
-    private IReadOnlyList<LTranscriptionDraft> LEntrySpellingRead(long id)
-    {
-        List<LTranscriptionDraft> drafts = [];
-        LTranscriptionArchive transcriptions = new(_lEntryLoaderDatabase);
-        foreach (LTranscription transcription in transcriptions.LTranscriptionRead(id))
-        {
-            drafts.Add(new LTranscriptionDraft(
-                transcription.LTranscriptionScheme,
-                transcription.LTranscriptionText,
-                transcription.LTranscriptionId));
-        }
-
-        return drafts;
-    }
-
     private LEtymologyDraft LEntryEtymologyRead(long id)
     {
         LEtymologyArchive etymologies = new(_lEntryLoaderDatabase);
@@ -152,30 +69,6 @@ public sealed class LEntryLoader
         }
 
         return LEtymologyDraft.LEtymologyDraftCreate(etymologies.LEtymologyRead(id), targets);
-    }
-
-    private IReadOnlyList<LReflexDraft> LEntryReflexRead(long id)
-    {
-        List<LReflexDraft> drafts = [];
-        foreach (LReflex reflex in new LReflexArchive(_lEntryLoaderDatabase).LReflexRead(id))
-        {
-            drafts.Add(new LReflexDraft(
-                reflex.LReflexLanguage,
-                reflex.LReflexKind,
-                reflex.LReflexText,
-                reflex.LReflexMain,
-                reflex.LReflexId,
-                reflex.LReflexRomanization,
-                reflex.LReflexMeaning,
-                reflex.LReflexOwned,
-                reflex.LReflexNote,
-                reflex.LReflexRespelling,
-                reflex.LReflexRegion,
-                reflex.LReflexAnatomy,
-                reflex.LReflexAnchors));
-        }
-
-        return drafts;
     }
 
     private IReadOnlyList<LSpeechDraft> LEntrySpeechFormat(IReadOnlyList<LSpeech> speeches)
@@ -200,140 +93,5 @@ public sealed class LEntryLoader
         }
 
         return named;
-    }
-
-    private LCardDraft LEntryCardRead(
-        long ownerId,
-        bool collocation,
-        int position,
-        LStateValue title,
-        LStateValue expression,
-        LStateValue meaning)
-    {
-        LSituationArchive situations = new(_lEntryLoaderDatabase);
-        LRegisterArchive registers = new(_lEntryLoaderDatabase);
-        LTagArchive tags = new(_lEntryLoaderDatabase);
-        LTranslationArchive translations = new(_lEntryLoaderDatabase);
-        LImageArchive images = new(_lEntryLoaderDatabase);
-        LVideoArchive videos = new(_lEntryLoaderDatabase);
-        LSentenceArchive sentences = new(_lEntryLoaderDatabase);
-
-        return new LCardDraft(
-            title,
-            expression,
-            meaning,
-            LEntrySentenceRead(
-                collocation
-                    ? sentences.LSentenceCollocationRead(ownerId)
-                    : sentences.LSentenceMeaningRead(ownerId)),
-            LEntrySituationRead(
-                collocation
-                    ? situations.LSituationCollocationRead(ownerId)
-                    : situations.LSituationMeaningRead(ownerId)),
-            LEntryRegisterRead(
-                collocation ? registers.LRegisterCollocationRead(ownerId) : registers.LRegisterMeaningRead(ownerId)),
-            LEntryTranslationRead(
-                collocation
-                    ? translations.LTranslationCollocationRead(ownerId)
-                    : translations.LTranslationMeaningRead(ownerId)),
-            LEntryTagRead(
-                collocation ? tags.LTagCollocationRead(ownerId) : tags.LTagMeaningRead(ownerId)),
-            LEntryImageRead(
-                collocation ? images.LImageCollocationRead(ownerId) : images.LImageMeaningRead(ownerId)),
-            LEntryVideoRead(
-                collocation ? videos.LVideoCollocationRead(ownerId) : videos.LVideoMeaningRead(ownerId)),
-            position,
-            ownerId);
-    }
-
-    private static IReadOnlyList<LSentenceDraft> LEntrySentenceRead(IReadOnlyList<LSentence> sentences)
-    {
-        List<LSentenceDraft> drafts = new(sentences.Count);
-        foreach (LSentence sentence in sentences)
-        {
-            drafts.Add(new LSentenceDraft(
-                LEntryExampleRead(sentence.LSentenceExample),
-                sentence.LSentenceParticle,
-                sentence.LSentenceDependence,
-                sentence.LSentenceId));
-        }
-
-        return drafts;
-    }
-
-    private static LExampleDraft? LEntryExampleRead(LExample? example)
-    {
-        return example is null ? null : LExampleDraft.LExampleDraftCreate(example);
-    }
-
-    private static IReadOnlyList<LSituationDraft> LEntrySituationRead(IReadOnlyList<LSituation> situations)
-    {
-        List<LSituationDraft> drafts = new(situations.Count);
-        foreach (LSituation situation in situations)
-        {
-            drafts.Add(new LSituationDraft(
-                situation.LSituationTitle,
-                situation.LSituationId,
-                situation.LSituationDescription,
-                situation.LSituationKind));
-        }
-
-        return drafts;
-    }
-
-    private static IReadOnlyList<LRegisterDraft> LEntryRegisterRead(IReadOnlyList<LRegister> registers)
-    {
-        List<LRegisterDraft> drafts = new(registers.Count);
-        foreach (LRegister register in registers)
-        {
-            drafts.Add(new LRegisterDraft(register.LRegisterName, register.LRegisterId));
-        }
-
-        return drafts;
-    }
-
-    private static IReadOnlyList<LImageDraft> LEntryImageRead(IReadOnlyList<LImage> images)
-    {
-        List<LImageDraft> rows = new(images.Count);
-        foreach (LImage image in images)
-        {
-            rows.Add(new LImageDraft(image.LImageLocation, image.LImageId));
-        }
-
-        return rows;
-    }
-
-    private static IReadOnlyList<LVideoDraft> LEntryVideoRead(IReadOnlyList<LVideo> videos)
-    {
-        List<LVideoDraft> rows = new(videos.Count);
-        foreach (LVideo video in videos)
-        {
-            rows.Add(new LVideoDraft(video.LVideoLocation, video.LVideoSpan, video.LVideoId));
-        }
-
-        return rows;
-    }
-
-    private static IReadOnlyList<long> LEntryTranslationRead(
-        IReadOnlyList<LTranslation> translations)
-    {
-        List<long> ids = new(translations.Count);
-        foreach (LTranslation translation in translations)
-        {
-            ids.Add(translation.LTranslationEntryId);
-        }
-
-        return ids;
-    }
-
-    private static IReadOnlyList<LTagDraft> LEntryTagRead(IReadOnlyList<LTag> tags)
-    {
-        List<LTagDraft> drafts = new(tags.Count);
-        foreach (LTag tag in tags)
-        {
-            drafts.Add(new LTagDraft(tag.LTagId, tag.LTagText));
-        }
-
-        return drafts;
     }
 }

@@ -4,7 +4,7 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-internal sealed class LSituationFacade
+public sealed class LSituationFacade : LSituationPort
 {
     private readonly LEngine _lSituationFacadeEngine;
     private readonly object _lSituationFacadeGate;
@@ -20,7 +20,7 @@ internal sealed class LSituationFacade
     {
         lock (_lSituationFacadeGate)
         {
-            return LSituationFacadeStaff.LEngineStaffSituation.LSituationClerkFind(query, order);
+            return LSituationFacadeStaff.LEngineStaffCatalog.LCatalogStaffSituation.LSituationClerkFind(query, order);
         }
     }
 
@@ -31,7 +31,8 @@ internal sealed class LSituationFacade
         LDraft? draft = held.LTenureRead();
         lock (_lSituationFacadeGate)
         {
-            return LSituationFacadeStaff.LEngineStaffSituation.LSituationClerkFind(text, draft, card);
+            return LSituationFacadeStaff.LEngineStaffCatalog.LCatalogStaffSituation
+                .LSituationClerkFind(text, draft, card);
         }
     }
 
@@ -64,7 +65,7 @@ internal sealed class LSituationFacade
     {
         lock (_lSituationFacadeGate)
         {
-            return LSituationFacadeStaff.LEngineStaffSituation.LSituationClerkRead(id);
+            return LSituationFacadeStaff.LEngineStaffCatalog.LCatalogStaffSituation.LSituationClerkRead(id);
         }
     }
 
@@ -72,7 +73,7 @@ internal sealed class LSituationFacade
     {
         lock (_lSituationFacadeGate)
         {
-            LSituationFacadeStaff.LEngineStaffSituation.LSituationClerkDelete(id, detach);
+            LSituationFacadeStaff.LEngineStaffCatalog.LCatalogStaffSituation.LSituationClerkDelete(id, detach);
         }
 
         _lSituationFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectSituation, id);
@@ -83,7 +84,7 @@ internal sealed class LSituationFacade
         lock (_lSituationFacadeGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(origin);
-            return LSituationFacadeStaff.LEngineStaffCitation.LCitationClerkSituation
+            return LSituationFacadeStaff.LEngineStaffEntry.LEntryStaffCitation.LCitationClerkSituation
                 .LSituationCitationStart(origin, situationId);
         }
     }
@@ -95,7 +96,8 @@ internal sealed class LSituationFacade
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             _lSituationFacadeEngine.LEngineDraft.LEngineDraftValidate(id);
-            settled = LSituationFacadeStaff.LEngineStaffCitation.LCitationClerkSituation.LSituationCitationCommit(id);
+            settled = LSituationFacadeStaff.LEngineStaffEntry.LEntryStaffCitation
+                .LCitationClerkSituation.LSituationCitationCommit(id);
         }
 
         _lSituationFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectSituation, settled.LSituationId);

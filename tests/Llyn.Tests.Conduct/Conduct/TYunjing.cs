@@ -152,6 +152,60 @@ public sealed class TYunjing
     }
 
     [Fact]
+    public void YunjingDiweiSelect_UnsavedDraftKept_ChangesNothing()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        string language = pack.TLanguageFixtureName;
+        TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
+        List<string> asked = [];
+        CYunjing yunjing = TYunjingPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
+        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiRime, "寒 I");
+        long rime = Assert.Single(yunjing.CYunjingYunmuRead()).CDiweiId;
+        yunjing.CYunjingPanel.CPanelFreshOpen();
+        yunjing.CYunjingEditor.CEditorHeadwordSet("water");
+        int changed = 0;
+        yunjing.CYunjingChanged += () => changed++;
+
+        yunjing.CYunjingDiweiSelect(rime, true);
+
+        Assert.Equal(["Leave"], asked);
+        Assert.True(Assert.Single(yunjing.CYunjingYunmuRead()).CDiweiChosen);
+        Assert.True(yunjing.CYunjingPanel.CPanelEditing);
+        Assert.Equal("water", yunjing.CYunjingEditor.TEditorDraftRead()?.CEntryDraftHeadword);
+        Assert.Equal(0, changed);
+    }
+
+    [Fact]
+    public void YunjingDiweiSelect_UnsavedDraftDiscarded_TogglesAndCloses()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        string language = pack.TLanguageFixtureName;
+        TXiaoyunFixture.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
+        List<string> asked = [];
+        CYunjing yunjing = TYunjingPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
+        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiRime, "寒 I");
+        long rime = Assert.Single(yunjing.CYunjingYunmuRead()).CDiweiId;
+        yunjing.CYunjingPanel.CPanelFreshOpen();
+        yunjing.CYunjingEditor.CEditorHeadwordSet("water");
+        int changed = 0;
+        yunjing.CYunjingChanged += () => changed++;
+
+        yunjing.CYunjingDiweiSelect(rime, true);
+
+        Assert.Equal(["Leave"], asked);
+        Assert.False(yunjing.CYunjingDiweiShown);
+        Assert.DoesNotContain(yunjing.CYunjingYunmuRead(), static row => row.CDiweiChosen);
+        Assert.False(yunjing.CYunjingPanel.CPanelEditing);
+        Assert.Equal(1, changed);
+    }
+
+    [Fact]
     public void YunjingShengmuFind_UnmatchedQuery_UnchoosesAndReadsTheUnmatchedKeys()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);

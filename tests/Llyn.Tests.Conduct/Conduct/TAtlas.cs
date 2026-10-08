@@ -280,9 +280,10 @@ public sealed class TAtlas
         CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
 
         CAtlas atlas = new(
-            atelier.CAtelierEntryPort,
+            atelier.CAtelierEntryBundle.CEntryBundleSituation,
             atelier.CAtelierPortraitPort,
             atelier.CAtelierSettingsPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             TInterfaceConductDesk.TDeskCreate(engine, "Situation", envoy, "Repertoire", CSubject.CSubjectSituation),
             static () => true,
             envoy,
@@ -307,9 +308,10 @@ public sealed class TAtlas
         CDesk desk = TInterfaceConductDesk.TDeskCreate(
             engine, "Situation", envoy, "Repertoire", CSubject.CSubjectSituation);
         return new CAtlas(
-            atelier.CAtelierEntryPort,
+            atelier.CAtelierEntryBundle.CEntryBundleSituation,
             atelier.CAtelierPortraitPort,
             atelier.CAtelierSettingsPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             desk,
             static () => true,
             envoy,

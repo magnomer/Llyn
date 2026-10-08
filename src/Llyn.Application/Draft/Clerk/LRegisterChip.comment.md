@@ -1,5 +1,5 @@
 # LRegisterChip.cs
-Hash: `22ec952482a79fe4`
+Hash: `72a87d561d0a4de9`
 
 ## `public sealed class LRegisterChip`
 
@@ -10,6 +10,11 @@ A rename is made by the Register's id and reaches every card holding it.
 ## `public LRegisterChip(LRegisterVault registers, LIdentity identity)`
 
 Holds the shelf a Register is looked up on and the issuer that names a new one.
+
+## `public LEntryDraft? LRegisterChipApply(LEntryDraft content, LRequest request)`
+
+Routes every Register chip request to its handler, and answers null for any other request.
+The clerk then hands that request on to the tag chips.
 
 ## `public LEntryDraft LRegisterChipAdd(LEntryDraft content, LRequestRegisterAddition request)`
 
@@ -22,6 +27,14 @@ A name the card already shows is nothing to add, so a typed duplicate leaves the
 ## `public LEntryDraft LRegisterChipInsert(LEntryDraft content, LRequestRegisterPick request)`
 
 Copies the stored register under its own id into the card, unless the card already holds it.
+
+## `public static LEntryDraft LRegisterChipRemove(LEntryDraft content, LRequestRegisterRemoval request)`
+
+Drops the register carrying the id from the card, and refuses when the card holds none.
+
+## `public static LEntryDraft LRegisterChipMove(LEntryDraft content, LRequestRegisterShift request)`
+
+Moves the register carrying the id to the place asked for, and refuses when the card holds none.
 
 ## `public static LEntryDraft LRegisterChipChange(LEntryDraft content, LRequestRegisterName request)`
 

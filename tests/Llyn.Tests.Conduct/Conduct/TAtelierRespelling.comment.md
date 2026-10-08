@@ -1,9 +1,9 @@
 # TAtelierRespelling.cs
-Hash: `d3245f831154e7dc`
+Hash: `fc28d02e710e06f0`
 
 ## `public sealed class TAtelierRespelling`
 
-Covers the reflex rules the respelling helpers own, over a fake phonology port.
+Covers the reflex rules the respelling helpers own, over a fake reflex port.
 A reflex stands between slashes whenever its language is phonemic, and bare otherwise.
 A reflex row answers ready to show, its text resolved and its fold read in the same engine call.
 Each reflex row is marked as leading its run of one language.

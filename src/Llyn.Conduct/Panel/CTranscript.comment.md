@@ -1,5 +1,5 @@
 # CTranscript.cs
-Hash: `37e9eb79827357fc`
+Hash: `54e5200c8c167cf6`
 
 ## `public sealed class CTranscript`
 
@@ -37,7 +37,6 @@ A throw reports `Example.HoldFailed` through the envoy and reads as null.
 The Example carries the anthology panel's tally, which `LAnthologyDraftRead` reads itself.
 `CTranscriptDraftChanged` hands it on each draft bulletin, so the desk never hands a driver a draft.
 Its callers are the transcript's own draft notice and the corpus's session-held handler.
-A test relay calls it too.
 
 ## `private void LTranscriptDraftResonate()`
 
@@ -47,7 +46,7 @@ A notice with no Example to show raises nothing, so the driver never redraws fro
 ## `public void CTranscriptMentionOpen(string word)`
 
 The gate that opens the transcript's mention picker, for the selected word as the user gave it.
-It searches in the held Example's own language, through `CMention.LMentionProspectRead`.
+It reads the offer through `CMention.LMentionProspectRead`, and a failed read shows `Mention.FindFailed`.
 The offer is raised as `CTranscriptMentionOffered`, which the corpus editor's picker paints.
 
 ## `public void CTranscriptMentionAdd(string text, int start, int length, long? entryId)`
@@ -98,4 +97,4 @@ A failed read shows `Mention.FindFailed`, through the shared read in `CMention`.
 ## `public IReadOnlyList<CMentionLabel> CTranscriptMentionRead()`
 
 The chip line under the transcript, ready to paint, from the draft the transcript's desk holds.
-A silent chip carries its own word key, and a failed read shows `Mention.FindFailed` and answers no chips.
+A failed read shows `Mention.FindFailed` and answers no chips.

@@ -1,14 +1,14 @@
 # CTimbre.cs
-Hash: `5961ec2915db7d98`
+Hash: `b325e50eb3b482fa`
 
 ## `public sealed class CTimbre`
 
 The sound facts of the entry an editor holds, as the editor shows or offers them.
 The pack facts are read for the held draft's language, and the waiting reflexes from the editor's display.
-The editor builds it over its desk, its display, its phonology, draft and settings ports, and its envoy.
+The editor builds it over its desk, its display, its language, reflex, draft and settings ports, and its envoy.
 So it keeps no copy.
 
-## `internal CTimbre(CDesk desk, LPhonologyPort phonology, LDisplay display, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy)`
+## `internal CTimbre(CDesk desk, LLanguagePort languages, LReflexPort reflexes, LDisplay display, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy)`
 
 Takes `envoy`, so a failed flag load shows its notice through `CLedger`.
 It starts the reflex lookup whenever the desk prepares a draft.
@@ -26,6 +26,7 @@ Whether the held entry's reflex lookup is still running, so the reflex block sho
 
 The tone contour of `ipa` as typed, in the held draft's language.
 It is empty when the language is not tonal or the reading carries no tone, which hides the contour.
+The levels are drawn over the language port's scale, the one the reading view uses.
 The editor reads it on every keystroke, since the typed text runs ahead of the draft.
 
 ## `public CAccentTyped CTimbreAccentSet(long accent, string text)`
@@ -101,7 +102,7 @@ A refused scan is not caught here.
 
 Starts the reflex lookup whenever the desk prepares a draft, before the editor's bulletin repaints.
 So the first paint of a stored entry without reflexes already shows the fetching line.
-The tenure decides whether a lookup is due.
+A reflex quill over the held tenure decides whether a lookup is due.
 A failure is not caught here, so it reaches the desk's draft load and shows its `LoadFailed` notice.
 
 ## `public void CTimbreReflexRebuild()`
@@ -169,6 +170,7 @@ The stored entry the held draft stands on, or null for a fresh draft or an empty
 The held draft's tenure for a write, or null while the desk fills its view.
 So a row the render writes raises no request.
 
-## `private LQuillReflex? LTimbreQuill`
+## `internal LQuillReflex? LTimbreQuill`
 
-The reflex row edits over the writing tenure and the editor's phonology port, or null while the desk fills.
+The reflex row edits over the writing tenure and the editor's reflex port, or null while the desk fills.
+It is internal so `CSoundingAnchor` sends its anchor edit through the same quill.

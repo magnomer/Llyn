@@ -1,14 +1,14 @@
 # CQuotation.cs
-Hash: `f72cbc5e632fceb4`
+Hash: `686e8a9b8d1b5f01`
 
 ## `public sealed class CQuotation`
 
 The corpus panel's quotation list: the entries quoting the chosen Example.
-It holds the entry and portrait ports, the example vista as its roll and its own vista.
+It holds the vista and portrait ports, the example vista as its roll and its own vista.
 The corpus builds it and restores its vistas, so no driver holds a port or a vista.
 It is sealed, so its rows, labels, tickets and formats cross as Conduct shapes.
 
-## `internal CQuotation(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
+## `internal CQuotation(LVistaPort vistas, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
 Builds the list's panel under the `List.LoadFailed` key and with no delete scope.
 The change seam is the entry editor's desk, and the finish seam is the corpus session's.

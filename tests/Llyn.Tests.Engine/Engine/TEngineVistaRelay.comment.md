@@ -1,5 +1,5 @@
 # TEngineVistaRelay.cs
-Hash: `0b2dfd37ce1ff770`
+Hash: `b4e9f899151dd3c6`
 
 ## `public sealed class TEngineVistaRelay`
 
@@ -12,7 +12,7 @@ A panel with no vista yet reads the headword order.
 
 ## `public void VistaStoredCheck_OrphanRowOrNone_IsNotStored()`
 
-No row and the zero row the engine words itself name no stored record, and a positive id does.
+No row and the zero row name no stored record, and a positive id does.
 
 ## `public void VistaFilterRead_NoVista_ReadsEmptyFilter()`
 
@@ -29,4 +29,4 @@ An Author reaches the Sources that credit it, and nothing while no row is chosen
 
 ## `public void VistaUsageRead_ChosenEntry_CountsNothing()`
 
-A chosen entry is referenced by no other record, so its count is zero.
+A chosen entry that no other record refers to counts zero.

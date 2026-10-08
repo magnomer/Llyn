@@ -1,12 +1,12 @@
 # CCohort.cs
-Hash: `18788fe757db38d5`
+Hash: `e316db681e1bcb34`
 
 ## `public sealed class CCohort`
 
 The tenor's entry list: the entries carrying the chosen Register, and the one the reader stands on.
 It is shaped like `CQuotation`, and the tenor owns it as `CCorpus` owns its quotation.
 
-## `internal CCohort(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
+## `internal CCohort(LVistaPort vistas, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
 Builds the panel over the cohort vista, which reports a failed load as `Register.LoadFailed`.
 The panel asks the editor's desk before it leaves an entry, and it finishes through the editor.
@@ -41,6 +41,10 @@ Narrows the entries of the chosen Register by the text typed in the entry search
 The entries under the chosen Register, or every entry while none is chosen, as the engine narrows them.
 A failed read shows `Register.LoadFailed` through the envoy and answers no rows.
 
+## `internal string LCohortFileRead()`
+
+The file name the export offers for the shown entry, as `LVistaPort.LEngineFileRead` words it.
+
 ## `public Task CCohortPortraitPrint()`
 
 Prints the shown entry, and does nothing while none is shown outside edit mode.
@@ -50,7 +54,7 @@ The reader is asked for the printer through the envoy, and a decline prints noth
 
 ## `public Task CCohortPortraitExport()`
 
-The file is offered under the entry's headword, as `LVista.LVistaFileRead` words it.
+The file is offered under the entry's headword, as `LVistaPort.LEngineFileRead` words it.
 `CPortrait` reads that name only once the export starts, and a failed read shows `Export.NameFailed`.
 The reader is asked for the file and format through the envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the envoy.

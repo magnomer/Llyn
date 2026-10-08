@@ -68,7 +68,7 @@ public sealed class TTimbre
     [Fact]
     public void TimbreContourRead_LevelsOffScale_DropsThemAndTheTone()
     {
-        CTimbre timbre = TTimbrePrepare(new()
+        CEditor editor = TTimbreEditorPrepare(new()
         {
             ["LEngineContourRead"] = _ => new List<LContour>
             {
@@ -79,7 +79,7 @@ public sealed class TTimbre
             },
         });
 
-        IReadOnlyList<CContour> syllables = timbre.CTimbreContourRead("a b c");
+        IReadOnlyList<CContour> syllables = editor.CEditorTimbre.CTimbreContourRead("a b c");
 
         Assert.Equal(["a", "b", string.Empty, "c"], syllables.Select(static syllable => syllable.CContourText));
         Assert.Empty(syllables[0].CContourLevels);
@@ -89,7 +89,7 @@ public sealed class TTimbre
         Assert.Equal([false, true, false, true], syllables.Select(static syllable => syllable.CContourToned));
         Assert.All(
             syllables.SelectMany(static syllable => syllable.CContourLevels),
-            static level => Assert.Contains(level, CContour.CContourScale));
+            level => Assert.Contains(level, editor.CEditorDisplay.CDisplaySound.CDisplaySoundScale));
     }
 
     [Fact]
@@ -142,7 +142,11 @@ public sealed class TTimbre
     [Fact]
     public void ContourScale_ChaoLevels_RunsFromFiveDownToOne()
     {
-        Assert.Equal(new[] { 5, 4, 3, 2, 1 }, CContour.CContourScale);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+
+        Assert.Equal(new[] { 5, 4, 3, 2, 1 }, editor.CEditorDisplay.CDisplaySound.CDisplaySoundScale);
     }
 
     [Fact]
@@ -375,12 +379,16 @@ public sealed class TTimbre
 
     internal static CTimbre TTimbrePrepare(Dictionary<string, Func<object?[]?, object?>> answers)
     {
+        return TTimbreEditorPrepare(answers).CEditorTimbre;
+    }
+
+    internal static CEditor TTimbreEditorPrepare(Dictionary<string, Func<object?[]?, object?>> answers)
+    {
         return TInterfaceEditor.TEditorCreate(
-                TEngineFake.TEngineStubCreate<LDraftPort>(),
-                TEngineFake.TEngineStubCreate<LEntryPort>(),
-                TEngineFake.TEngineCreate<LPhonologyPort>(answers),
-                TEngineFake.TEngineStubCreate<LSettingsPort>(),
-                TEngineFake.TEngineStubCreate<LMediaPort>())
-            .CEditorTimbre;
+            TEngineFake.TEngineStubCreate<LDraftPort>(),
+            TInterfaceConduct.TEntryBundleCreate([]),
+            TInterfaceConduct.TPhonologyBundleCreate(answers),
+            TEngineFake.TEngineCreate<LSettingsPort>(answers),
+            TEngineFake.TEngineStubCreate<LMediaPort>());
     }
 }

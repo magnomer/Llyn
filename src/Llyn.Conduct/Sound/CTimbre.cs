@@ -11,7 +11,9 @@ public sealed class CTimbre
 {
     private readonly CDesk _cTimbreDesk;
 
-    private readonly LPhonologyPort _cTimbrePhonologyPort;
+    private readonly LLanguagePort _cTimbreLanguagePort;
+
+    private readonly LReflexPort _cTimbreReflexPort;
 
     private readonly LDisplay _cTimbreDisplay;
 
@@ -23,21 +25,24 @@ public sealed class CTimbre
 
     internal CTimbre(
         CDesk desk,
-        LPhonologyPort phonology,
+        LLanguagePort languages,
+        LReflexPort reflexes,
         LDisplay display,
         LDraftPort drafts,
         LSettingsPort settings,
         CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(desk);
-        ArgumentNullException.ThrowIfNull(phonology);
+        ArgumentNullException.ThrowIfNull(languages);
+        ArgumentNullException.ThrowIfNull(reflexes);
         ArgumentNullException.ThrowIfNull(display);
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _cTimbreDesk = desk;
-        _cTimbrePhonologyPort = phonology;
+        _cTimbreLanguagePort = languages;
+        _cTimbreReflexPort = reflexes;
         _cTimbreDisplay = display;
         _cTimbreDraftPort = drafts;
         _cTimbreSettingsPort = settings;
@@ -51,17 +56,18 @@ public sealed class CTimbre
 
     public event Action? CTimbreReflexChanged;
 
-    public bool CTimbreSpoken => !_cTimbrePhonologyPort.LEngineSilentCheck(LTimbreLanguage);
+    public bool CTimbreSpoken => !_cTimbreLanguagePort.LEngineSilentCheck(LTimbreLanguage);
 
     public bool CTimbrePhonemic =>
-        _cTimbrePhonologyPort.LEngineRespellingCheck(LTimbreLanguage)
-        && _cTimbrePhonologyPort.LEnginePhonemicCheck(LTimbreLanguage);
+        _cTimbreSettingsPort.LEngineRespellingCheck(LTimbreLanguage)
+        && _cTimbreSettingsPort.LEnginePhonemicCheck(LTimbreLanguage);
 
     public bool CTimbreReflexPending => _cTimbreDisplay.LDisplaySound.LDisplayReflexCheck(LTimbreEntry);
 
     public IReadOnlyList<CContour> CTimbreContourRead(string ipa)
     {
-        return CSounding.LSoundingContourRead(_cTimbrePhonologyPort.LEngineContourRead(LTimbreLanguage, ipa));
+        return CSounding.LSoundingContourRead(
+            _cTimbreLanguagePort.LEngineContourRead(LTimbreLanguage, ipa), _cTimbreLanguagePort.LEngineContourScale);
     }
 
     public CAccentTyped CTimbreAccentSet(long accent, string text)
@@ -73,7 +79,7 @@ public sealed class CTimbre
             return new CAccentTyped(LTimbreAccentFind(accent));
         }
 
-        held.LTenureAccentSet(accent, text);
+        new LQuillPronunciation(held).LQuillAccentSet(accent, text);
         return new CAccentTyped(text);
     }
 
@@ -86,20 +92,24 @@ public sealed class CTimbre
 
     public void CTimbrePronunciationAdd(long? accent)
     {
-        LTimbreTenure?.LTenurePronunciationAdd(accent ?? 0);
+        if (LTimbreTenure is LTenure held)
+        {
+            new LQuillPronunciation(held).LQuillPronunciationAdd(accent ?? 0);
+        }
     }
 
     public void CTimbrePronunciationRemove(long? accent)
     {
-        if (accent is long held)
+        if (accent is long held && LTimbreTenure is LTenure tenure)
         {
-            LTimbreTenure?.LTenurePronunciationRemove(held);
+            new LQuillPronunciation(tenure).LQuillPronunciationRemove(held);
         }
     }
 
     public CTimbreAccent CTimbreAccentRead()
     {
-        return _cTimbreDesk.CDeskTenure?.LTenureAccentRead() is { } sheet
+        return _cTimbreDesk.CDeskTenure is LTenure held
+            && new LQuillPronunciation(held).LQuillAccentRead() is { } sheet
             ? LTimbreAccentRead(sheet)
             : new CTimbreAccent(
                 new CRespellingMark(false, string.Empty, string.Empty),
@@ -120,7 +130,8 @@ public sealed class CTimbre
 
         try
         {
-            return await held.LTenureAccentLoad((rows, delete) => store(CCatalog.CCatalogEnsignRead(rows), delete))
+            return await new LQuillPronunciation(held).LQuillAccentLoad(
+                        (rows, delete) => store(CCatalog.CCatalogEnsignRead(rows), delete))
                     is LAccentSheet sheet
                 && ReferenceEquals(held, _cTimbreDesk.CDeskTenure)
                 ? LTimbreAccentRead(sheet)
@@ -150,7 +161,8 @@ public sealed class CTimbre
 
     public CTimbreGlyph CTimbreGlyphRead()
     {
-        return _cTimbreDesk.CDeskTenure?.LTenureGlyphRead() is LGlyphBlock block
+        return _cTimbreDesk.CDeskTenure is LTenure held
+            && new LQuillPronunciation(held).LQuillGlyphRead() is LGlyphBlock block
             ? new CTimbreGlyph(
                 block.LGlyphBlockShown,
                 block.LGlyphBlockSourced,
@@ -169,11 +181,11 @@ public sealed class CTimbre
 
         LEntryDraft content = draft.LDraftContent;
         IReadOnlyList<CReflex> rows = CRespelling.LRespellingReflexScan(
-            _cTimbrePhonologyPort,
+            _cTimbreReflexPort,
             content.LEntryDraftLanguage,
             CSounding.CSoundingReflexRead(content.LEntryDraftReflexes));
         return new CTimbreReflex(
-            held.LTenureReflexCheck(),
+            new LQuillReflex(held, _cTimbreReflexPort).LQuillReflexCheck(),
             rows,
             CReflex.LReflexAnchorRead(
                 _cTimbreEnvoy,
@@ -189,7 +201,10 @@ public sealed class CTimbre
 
     private void LTimbreReflexStart(LDraft _)
     {
-        _cTimbreDesk.CDeskTenure?.LTenureReflexStart();
+        if (_cTimbreDesk.CDeskTenure is LTenure held)
+        {
+            new LQuillReflex(held, _cTimbreReflexPort).LQuillReflexStart();
+        }
     }
 
     public void CTimbreReflexRebuild()
@@ -278,6 +293,6 @@ public sealed class CTimbre
 
     private LTenure? LTimbreTenure => _cTimbreDesk.CDeskFilling ? null : _cTimbreDesk.CDeskTenure;
 
-    private LQuillReflex? LTimbreQuill =>
-        LTimbreTenure is LTenure held ? new LQuillReflex(held, _cTimbrePhonologyPort) : null;
+    internal LQuillReflex? LTimbreQuill =>
+        LTimbreTenure is LTenure held ? new LQuillReflex(held, _cTimbreReflexPort) : null;
 }

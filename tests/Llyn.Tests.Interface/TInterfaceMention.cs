@@ -18,7 +18,7 @@ internal static class TInterfaceMention
         });
         return new CSentence(
             desk,
-            new LPhonologyOutlet(engine),
+            engine.LEngineVocabulary,
             drafts,
             new LSettingsOutlet(engine),
             envoy,
@@ -34,7 +34,7 @@ internal static class TInterfaceMention
         });
         return new CSentence(
             desk,
-            new LPhonologyOutlet(engine),
+            engine.LEngineVocabulary,
             drafts,
             new LSettingsOutlet(engine),
             envoy,
@@ -46,14 +46,18 @@ internal static class TInterfaceMention
 
     internal static IReadOnlyList<CCatalogExample>? TAnthologyFailRead(LEngine engine, CAtelier atelier, CEnvoy envoy)
     {
-        LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["LEngineExampleFind"] = _ => throw new InvalidOperationException("no examples"),
-        });
+        LExamplePort examples = TEngineFake.TEngineCreate<LExamplePort>(
+            new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineExampleFind"] = _ => throw new InvalidOperationException("no examples"),
+            });
         CAnthology anthology = new(
-            entries,
+            examples,
+            engine.LEngineMention,
+            engine.LEngineReference,
             new LPortraitOutlet(engine),
             new LSettingsOutlet(engine),
+            engine.LEngineVista,
             TInterfaceConductDesk.TDeskCreate(engine, "Example", envoy),
             static () => true,
             envoy,
@@ -66,16 +70,21 @@ internal static class TInterfaceMention
     internal static CMentionOffer? TAnthologyMentionFind(
         LEngine engine, CAtelier atelier, CEnvoy envoy, long? chosen, IReadOnlyList<long>? found)
     {
-        LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["LEngineMentionFind"] = _ => found is null
-                ? throw new InvalidOperationException("no words")
-                : new LMentionResult(2, null, [.. found.Select(id => new LTranslationTarget(id, "cat", "English"))]),
-        });
+        LMentionPort mentions = TEngineFake.TEngineCreate<LMentionPort>(
+            new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineMentionFind"] = _ => found is null
+                    ? throw new InvalidOperationException("no words")
+                    : new LMentionResult(
+                        2, null, [.. found.Select(id => new LTranslationTarget(id, "cat", "English"))]),
+            });
         CAnthology anthology = new(
-            entries,
+            engine.LEngineExample,
+            mentions,
+            engine.LEngineReference,
             new LPortraitOutlet(engine),
             new LSettingsOutlet(engine),
+            engine.LEngineVista,
             TInterfaceConductDesk.TDeskCreate(engine, "Example", envoy),
             static () => true,
             envoy,
@@ -101,38 +110,40 @@ internal static class TInterfaceMention
 
     internal static CMentionOffer? TDisplayMentionFind(LEngine engine, CAtelier atelier, CEnvoy envoy, long shown)
     {
-        LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["LEngineMentionFind"] = _ => throw new InvalidOperationException("no words"),
-        });
-        CDisplay display = TDisplayCreate(engine, atelier, envoy, entries, shown);
+        LMentionPort mentions = TEngineFake.TEngineCreate<LMentionPort>(
+            new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineMentionFind"] = _ => throw new InvalidOperationException("no words"),
+            });
+        CDisplay display = TDisplayCreate(engine, atelier, envoy, mentions, shown);
         return display.CDisplayRoute.CDisplayMentionFind(1, "water", 1);
     }
 
     internal static int? TDisplayOffsetRead(LEngine engine, CAtelier atelier, long shown, string text, int unit)
     {
         int? heard = null;
-        LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["LEngineMentionFind"] = args =>
+        LMentionPort mentions = TEngineFake.TEngineCreate<LMentionPort>(
+            new Dictionary<string, Func<object?[]?, object?>>
             {
-                heard = (int)args![2]!;
-                throw new InvalidOperationException("no words");
-            },
-        });
+                ["LEngineMentionFind"] = args =>
+                {
+                    heard = (int)args![2]!;
+                    throw new InvalidOperationException("no words");
+                },
+            });
         CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, []);
-        CDisplay display = TDisplayCreate(engine, atelier, envoy, entries, shown);
+        CDisplay display = TDisplayCreate(engine, atelier, envoy, mentions, shown);
         display.CDisplayRoute.CDisplayMentionFind(1, text, unit);
         return heard;
     }
 
     private static CDisplay TDisplayCreate(
-        LEngine engine, CAtelier atelier, CEnvoy envoy, LEntryPort entries, long shown)
+        LEngine engine, CAtelier atelier, CEnvoy envoy, LMentionPort mentions, long shown)
     {
         CDisplay display = new(
             new LDraftOutlet(engine),
-            entries,
-            new LPhonologyOutlet(engine),
+            TInterfaceConduct.TEntryBundleCreate(engine, mentions),
+            TInterfaceConduct.TPhonologyBundleCreate(engine),
             new LSettingsOutlet(engine),
             TEngineFake.TEngineStubCreate<LMediaPort>(),
             envoy,
@@ -153,12 +164,12 @@ internal static class TInterfaceMention
 
     internal static IReadOnlyList<CVistaRow> TQuotationFailRead(LEngine engine, CEnvoy envoy)
     {
-        LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
+        LVistaPort vistas = TEngineFake.TEngineCreate<LVistaPort>(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineEntryFind"] = _ => throw new InvalidOperationException("no entries"),
         });
         return new CQuotation(
-            entries,
+            vistas,
             new LPortraitOutlet(engine),
             new LSettingsOutlet(engine),
             envoy,
@@ -169,12 +180,12 @@ internal static class TInterfaceMention
 
     internal static IReadOnlyList<CVistaRow> TOccurrenceFailRead(LEngine engine, CEnvoy envoy)
     {
-        LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
+        LVistaPort vistas = TEngineFake.TEngineCreate<LVistaPort>(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineEntryFind"] = _ => throw new InvalidOperationException("no entries"),
         });
         return new COccurrence(
-            entries,
+            vistas,
             new LPortraitOutlet(engine),
             new LSettingsOutlet(engine),
             envoy,

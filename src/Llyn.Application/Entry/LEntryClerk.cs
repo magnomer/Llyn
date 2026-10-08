@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -12,9 +11,7 @@ public sealed class LEntryClerk
     private readonly LEtymologyVault _lEntryClerkEtymologies;
     private readonly LFrequencyClerk _lEntryClerkFrequencies;
     private readonly LNoteVault _lEntryClerkNotes;
-    private readonly LRevisionVault _lEntryClerkRevisions;
     private readonly LTombstoneVault _lEntryClerkTombstones;
-    private readonly LWorkspaceVault _lEntryClerkWorkspaces;
     private readonly LCardClerk _lEntryClerkCards;
     private readonly LMeaningClerk _lEntryClerkMeanings;
     private readonly LVocabularyClerk _lEntryClerkVocabulary;
@@ -24,6 +21,7 @@ public sealed class LEntryClerk
     private readonly LTranscriptionClerk _lEntryClerkTranscriptions;
     private readonly LReflexClerk _lEntryClerkReflexes;
     private readonly LRecordingClerk _lEntryClerkRecordings;
+    private readonly LRevisionClerk _lEntryClerkRevisions;
 
     public LEntryClerk(
         LRig rig,
@@ -36,7 +34,8 @@ public sealed class LEntryClerk
         LTranscriptionClerk transcriptions,
         LReflexClerk reflexes,
         LRecordingClerk recordings,
-        LFrequencyClerk frequencies)
+        LFrequencyClerk frequencies,
+        LRevisionClerk revisions)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(cards);
@@ -49,14 +48,13 @@ public sealed class LEntryClerk
         ArgumentNullException.ThrowIfNull(reflexes);
         ArgumentNullException.ThrowIfNull(recordings);
         ArgumentNullException.ThrowIfNull(frequencies);
+        ArgumentNullException.ThrowIfNull(revisions);
         _lEntryClerkVault = rig.LRigVault;
         _lEntryClerkEntries = rig.LRigEntries;
         _lEntryClerkEtymologies = rig.LRigEtymologies;
         _lEntryClerkFrequencies = frequencies;
         _lEntryClerkNotes = rig.LRigNotes;
-        _lEntryClerkRevisions = rig.LRigRevisions;
         _lEntryClerkTombstones = rig.LRigTombstones;
-        _lEntryClerkWorkspaces = rig.LRigWorkspaces;
         _lEntryClerkCards = cards;
         _lEntryClerkMeanings = meanings;
         _lEntryClerkVocabulary = vocabulary;
@@ -66,6 +64,7 @@ public sealed class LEntryClerk
         _lEntryClerkTranscriptions = transcriptions;
         _lEntryClerkReflexes = reflexes;
         _lEntryClerkRecordings = recordings;
+        _lEntryClerkRevisions = revisions;
     }
 
     public LEntry? LEntryClerkRead(long id)
@@ -85,83 +84,6 @@ public sealed class LEntryClerk
             });
     }
 
-    public IReadOnlyList<LEntry> LEntryClerkFind(string query)
-    {
-        return _lEntryClerkEntries.LEntryFind(query);
-    }
-
-    public IReadOnlyList<LEntry> LEntryHeadwordFind(string headword, string language)
-    {
-        ArgumentNullException.ThrowIfNull(headword);
-        ArgumentNullException.ThrowIfNull(language);
-        return _lEntryClerkEntries.LEntryHeadwordFind(language.Trim(), headword.Trim());
-    }
-
-    public IReadOnlyList<LEntry> LEntryClerkFind(string query, LCatalogOrder order)
-    {
-        return LCatalogEntry.LCatalogEntrySort(_lEntryClerkEntries.LEntryFind(query), order);
-    }
-
-    public IReadOnlyList<LEntry> LEntryClerkFind(string query, LCatalogOrder order, LCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-        return filter.LCatalogFilterApply(LEntryClerkFind(query, order), LEntryLanguageRead);
-    }
-
-    private static string? LEntryLanguageRead(LEntry entry)
-    {
-        return entry.LEntryLanguage;
-    }
-
-    public IReadOnlyList<LEntry> LEntryClerkFind(LTag tag)
-    {
-        ArgumentNullException.ThrowIfNull(tag);
-        return _lEntryClerkEntries.LEntryTagFind(tag.LTagId);
-    }
-
-    public IReadOnlyList<LEntry> LEntryClerkFind(LRegister register)
-    {
-        ArgumentNullException.ThrowIfNull(register);
-        return _lEntryClerkEntries.LEntryRegisterFind(register.LRegisterId);
-    }
-
-    public IReadOnlyList<LEntry> LEntryClerkFind(LSituation situation)
-    {
-        ArgumentNullException.ThrowIfNull(situation);
-        return _lEntryClerkEntries.LEntrySituationFind(situation.LSituationId);
-    }
-
-    public IReadOnlyList<LEntry> LEntryClerkFind(LExample example)
-    {
-        ArgumentNullException.ThrowIfNull(example);
-        return _lEntryClerkEntries.LEntryExampleFind(example.LExampleId);
-    }
-
-    public IReadOnlyList<LEntry> LEntryClerkFind(LReference reference)
-    {
-        ArgumentNullException.ThrowIfNull(reference);
-        return _lEntryClerkEntries.LEntryReferenceFind(reference.LReferenceId);
-    }
-
-    public static IReadOnlyList<LEntry> LEntryClerkMatch(IReadOnlyList<LEntry> entries, string query)
-    {
-        ArgumentNullException.ThrowIfNull(entries);
-        ArgumentNullException.ThrowIfNull(query);
-
-        string trimmed = query.Trim();
-        return trimmed.Length == 0
-            ? entries
-            : [.. entries.Where(entry => LCatalog.LCatalogTextMatch(entry.LEntryHeadword, trimmed))];
-    }
-
-    public static IReadOnlyList<LEntry> LEntryClerkMatch(
-        IReadOnlyList<LEntry> entries, LCatalogFilter filter, string query, LCatalogOrder order)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-        return LCatalogEntry.LCatalogEntrySort(
-            LEntryClerkMatch(filter.LCatalogFilterApply(entries, LEntryLanguageRead), query), order);
-    }
-
     public LRevision LEntryClerkDelete(long id)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
@@ -172,47 +94,11 @@ public sealed class LEntryClerk
         _lEntryClerkEntries.LEntryDelete(id);
 
         LRevisionDelta change = new(id, "entry", "delete", deleted?.LEntryHeadword);
-        LRevision revision = _lEntryClerkRevisions.LRevisionRecord([change]);
+        LRevision revision = _lEntryClerkRevisions.LRevisionClerkRecord([change]);
         _lEntryClerkTombstones.LTombstoneRecord(id, revision.LRevisionId);
-        LWorkspaceState state = _lEntryClerkWorkspaces.LWorkspaceStateRead();
-        _lEntryClerkWorkspaces.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
 
         session.LVaultSessionCommit();
         return revision;
-    }
-
-    public static int LEntryGraspStep => LGrasp.LGraspStep;
-
-    public static string LEntryGraspFormat(int step)
-    {
-        return LLocalization.QLocalizationTextRead(LGrasp.LGraspKeyRead(step));
-    }
-
-    public void LEntryGraspSet(long entryId, int grasp)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
-        if (!LGrasp.LGraspCheck(grasp))
-        {
-            throw new ArgumentOutOfRangeException(nameof(grasp));
-        }
-
-        _lEntryClerkEntries.LEntryGraspSet(entryId, grasp);
-    }
-
-    public IReadOnlyDictionary<long, string> LEntryEpithetScan(IReadOnlyList<long> ids)
-    {
-        ArgumentNullException.ThrowIfNull(ids);
-        return _lEntryClerkEntries.LEntryEpithetScan(ids);
-    }
-
-    public long LEntryCountRead()
-    {
-        return _lEntryClerkEntries.LEntryCountRead();
-    }
-
-    public long LWorkspaceSizeRead()
-    {
-        return _lEntryClerkWorkspaces.LWorkspaceSizeRead();
     }
 
     public LEntry LEntryClerkSave(LEntryDraft draft, Dictionary<long, long> identity)
@@ -269,7 +155,7 @@ public sealed class LEntryClerk
         LEntryClerkEtymology.LEtymologyUpdate(_lEntryClerkEtymologies, entry.LEntryId, draft, changes);
         _lEntryClerkParadigms.LParadigmClerkUpdate(entry);
 
-        LRevisionRecord(changes);
+        _lEntryClerkRevisions.LRevisionClerkRecord(changes);
 
         session.LVaultSessionCommit();
         return entry;
@@ -287,7 +173,7 @@ public sealed class LEntryClerk
         LEntry updated = LEntryClerkSave(id, draft, identity, changes);
         if (changes.Count > 0)
         {
-            LRevisionRecord(changes);
+            _lEntryClerkRevisions.LRevisionClerkRecord(changes);
         }
 
         session.LVaultSessionCommit();
@@ -348,20 +234,6 @@ public sealed class LEntryClerk
         _lEntryClerkParadigms.LParadigmClerkUpdate(updated);
         session.LVaultSessionCommit();
         return updated;
-    }
-
-    public LRevision LRevisionRecord(IReadOnlyList<LRevisionDelta> changes)
-    {
-        ArgumentNullException.ThrowIfNull(changes);
-
-        using LVaultSession session = _lEntryClerkVault.LVaultSessionStart();
-
-        LRevision revision = _lEntryClerkRevisions.LRevisionRecord(changes);
-        LWorkspaceState state = _lEntryClerkWorkspaces.LWorkspaceStateRead();
-        _lEntryClerkWorkspaces.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
-
-        session.LVaultSessionCommit();
-        return revision;
     }
 
     private static void LHeadwordValidate(LEntryDraft draft)

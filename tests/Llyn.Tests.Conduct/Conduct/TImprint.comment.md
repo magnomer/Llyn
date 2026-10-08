@@ -1,5 +1,5 @@
 # TImprint.cs
-Hash: `d839bd530ce8a154`
+Hash: `e5dd5fa28f16b82e`
 
 ## `public sealed class TImprint`
 
@@ -15,6 +15,6 @@ A cancel drops the draft and closes the byline with one notice.
 
 ## `internal static CImprint TImprintPrepare(LEngine engine, CAtelier atelier)`
 
-Builds the editor through `TInterfaceCitation.TImprintCreate` over the atelier and a source vista, as the sources panel does.
+Builds the editor through `TInterfaceCitation.TImprintCreate` over the atelier and a source vista.
 Its marshal runs each desk notice at once.
 The credit and byline suites share it.

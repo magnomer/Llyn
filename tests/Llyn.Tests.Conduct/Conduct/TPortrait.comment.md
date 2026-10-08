@@ -1,11 +1,11 @@
 # TPortrait.cs
-Hash: `ec7164c2620f6d96`
+Hash: `a4a535be4630cb1c`
 
 ## `public sealed class TPortrait`
 
 Covers what every panel's print and export gate shares through `CPortrait`.
 The export format, the print side and the ink map by name, and an unknown member throws.
-A print ticket keeps what the dialog answered, and the engine turns the sheet into inches.
+A print ticket keeps what the dialog answered, with the sheet in inches.
 A missing or empty sheet size takes the local sheet.
 Every label and legend word is the engine's wording of a key Conduct chose.
 The fake wording answers `text:` plus the key.

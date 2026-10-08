@@ -1,5 +1,5 @@
 # CWing.cs
-Hash: `e1dba255ba19cdd0`
+Hash: `f717c668586b0e54`
 
 ## `public sealed class CWing`
 
@@ -13,6 +13,10 @@ The driver owns the match list, the focus and the lectern that paints the displa
 ## `private readonly bool _cWingLeft;`
 
 Whether this is the left side, which names its vista's tab and its slot in the workspace state.
+
+## `private readonly LVistaPort _cWingVistaPort;`
+
+The vista port the side's entry rows are read through.
 
 ## `private CWing(CAtelier atelier, CEnvoy envoy, bool left)`
 

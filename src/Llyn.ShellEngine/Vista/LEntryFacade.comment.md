@@ -1,11 +1,13 @@
 # LEntryFacade.cs
-Hash: `37a7d05ce7733652`
+Hash: `94a8f704f109d84e`
 
-## `internal sealed class LEntryFacade`
+## `public sealed class LEntryFacade : LEntryPort, LGraspPort`
 
 The engine's facade for entry.
-Every call takes the engine's gate and hands the work to `LEntryClerk`, which holds the rules.
-The glyph resolve and the grasp, epithet, establishment and usage reads sit here, each one call on an entry.
+Every clerk call takes the engine's gate and hands the work to the clerk holding the rules.
+The lifecycle goes to `LEntryClerk`, searches to `LEntryQueryClerk` and the grasp to `LGraspClerk`.
+The glyph resolve and the grasp, establishment and usage reads sit here, each one call on an entry.
+It implements the entry and grasp ports itself, so Host hands it to Conduct with no outlet between.
 
 ## `public LEntryFacade(LEngine engine)`
 
@@ -27,8 +29,8 @@ A missing or unreadable stamp answers empty.
 
 ## `public IReadOnlyList<LEntry> LEngineEntryFind(string query, LCatalogOrder order, LCatalogFilter filter)`
 
-The clerk's search under the gate.
-Every other `LEngineEntryFind` overload is the same relay for the clerk's overload of the same shape.
+The query clerk's search under the gate.
+Every other `LEngineEntryFind` overload is the same relay for the query clerk's overload of the same shape.
 
 ## `public LEntryDraft? LEngineEntryLoad(long id)`
 
@@ -49,15 +51,16 @@ A row the reflex fetch left blank stays out of a reading view.
 
 The entry `character` stands for in `language`, made when none exists yet.
 Only an exact headword in that language counts, so a Mandarin entry of the same character is never taken.
+The candidates come from the query clerk's search on the headword.
 Creation goes through `LEngineTranslationCreate`, so the revision is recorded and the frequency fetch starts.
 
-## `public int LEngineGraspStep => LEntryClerk.LEntryGraspStep;`
+## `public int LEngineGraspStep`
 
 The last grasp step, handed out so the shells draw the stars without naming the Core constant.
 
 ## `public string LEngineGraspFormat(int step)`
 
-The localized label of one grasp step, through the entry clerk.
+The localized label of one grasp step, through the grasp clerk.
 
 ## `public int LEngineGraspRead(long entryId)`
 
@@ -66,14 +69,14 @@ A missing entry reads zero, the same as an entry never rated.
 
 ## `public void LEngineGraspSave(long entryId, int grasp)`
 
-The clerk writes the grasp under the gate, then a Grasp bulletin is raised for the entry.
+The grasp clerk writes the grasp under the gate, then a Grasp bulletin is raised for the entry.
 
 ## `public LEstablishment LEngineEstablishmentRead()`
 
 Counts the held drafts that differ from their origin, the stored entries and the database bytes.
 Only drafts this engine holds are counted.
 Each held draft is measured as the leave dialog measures it, so the bar and the dialog cannot disagree.
-The counts come from the clerk, since only the held drafts are the engine's own.
+The entry count comes from the query clerk and the bytes from the workspace clerk.
 
 ## `public IReadOnlyDictionary<long, int> LEngineUsageRead(LOwner owner)`
 
@@ -90,3 +93,13 @@ The usage clerk's citation line for one Source, Example or Situation under the g
 ## `public IReadOnlyList<LUsage> LEngineUsageRead(long id, LOwner owner)`
 
 The usage clerk's itemized rows under the gate, with the epithet the settings ask for.
+
+## `public string LEngineUnitFormat(LUnit unit)`
+
+The localization key that names a lexical unit, empty when none is chosen.
+The unit clerk owns the wording.
+
+## `public (LOwner, int)? LEngineCardFind(LEntryDraft draft, long id)`
+
+Which card list of `draft` holds the card `id`, and at which place, or null when neither does.
+The card clerk scans the draft, so the facade only answers the port.

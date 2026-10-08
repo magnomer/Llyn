@@ -1,5 +1,5 @@
 # LCitationClerk.cs
-Hash: `39736932219914eb`
+Hash: `719e7a45d58a0b0f`
 
 ## `public sealed class LCitationClerk`
 
@@ -16,11 +16,11 @@ Every edit in between is a request, applied by `LDraftClerk` for all kinds alike
 The claim, the sweep and the discard are one for all kinds, and live in `LClaimClerk`.
 The rows themselves are written through the clerk of each kind.
 
-## `public LCitationClerk(LRig rig, LIdentity identity, LClaimClerk claims, LAuthorClerk authors, LExampleClerk examples, LReferenceClerk references, LSituationClerk situations, LEntryClerk entries)`
+## `public LCitationClerk(LRig rig, LIdentity identity, LClaimClerk claims, LAuthorClerk authors, LExampleClerk examples, LReferenceClerk references, LSituationClerk situations, LEntryClerk entries, LRevisionClerk revisions)`
 
 Builds the four kind owners from `rig`, the issuer, the claim clerk and the kind clerks.
-The entry clerk records every revision, so the history is one list whatever kind was stored.
-It also loads the entry a draft starts from or is checked against.
+`revisions` goes to every kind owner, so the history is one list whatever kind was stored.
+The entry clerk loads the entry a draft starts from or is checked against.
 
 ## `public LAuthorCitation LCitationClerkAuthor { get; }`
 
@@ -54,8 +54,3 @@ An entry draft compares to the stored entry as loaded, or to the blank draft in 
 
 Whether a draft of any kind still says exactly what its stored origin says, so a sweep may drop it.
 A draft whose origin is gone is not a leftover.
-
-## `internal static void LRevisionRecord(LEntryClerk entries, long target, string subject, bool fresh, string? summary)`
-
-Records one revision naming the stored row, as a create when `fresh` and an update otherwise.
-Every kind owner records through this one call, so the four commits share one rule.

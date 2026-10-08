@@ -1,5 +1,5 @@
 # LSettingsFacade.cs
-Hash: `fbd41b7efbcb940e`
+Hash: `96664971ae9c079b`
 
 ## `internal sealed class LSettingsFacade`
 

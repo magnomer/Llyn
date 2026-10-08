@@ -13,6 +13,8 @@ public sealed class CWing
 
     private readonly bool _cWingLeft;
 
+    private readonly LVistaPort _cWingVistaPort;
+
     private LVista? _cWingVista;
 
     private IReadOnlyList<CVistaRow> _cWingRows = [];
@@ -24,11 +26,12 @@ public sealed class CWing
 
         _cWingAtelier = atelier;
         _cWingEnvoy = envoy;
+        _cWingVistaPort = atelier.CAtelierEntryBundle.CEntryBundleVista;
         _cWingLeft = left;
         CWingDisplay = new CDisplay(
             atelier.CAtelierDraftPort,
-            atelier.CAtelierEntryPort,
-            atelier.CAtelierPhonologyPort,
+            atelier.CAtelierEntryBundle,
+            atelier.CAtelierPhonologyBundle,
             atelier.CAtelierSettingsPort,
             atelier.CAtelierMediaPort,
             envoy,
@@ -140,7 +143,11 @@ public sealed class CWing
         }
 
         LWingEntryLoad(chosen);
-        _cWingVista?.LVistaSideSave();
+        if (_cWingVista is not null)
+        {
+            _cWingVistaPort.LEngineSideSave(_cWingVista);
+        }
+
         return true;
     }
 
@@ -149,7 +156,7 @@ public sealed class CWing
         try
         {
             _cWingRows = _cWingVista is LVista vista
-                ? _cWingAtelier.CAtelierEntryPort.LEngineEntryFind(vista).Select(CCatalog.LCatalogRowRead).ToList()
+                ? _cWingVistaPort.LEngineEntryFind(vista).Select(CCatalog.LCatalogRowRead).ToList()
                 : [];
         }
         catch (Exception exception)

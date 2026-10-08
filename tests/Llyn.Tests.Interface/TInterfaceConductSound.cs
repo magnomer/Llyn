@@ -14,8 +14,12 @@ internal static class TInterfaceConductSound
         CReflex.LReflexLeadRead(languages);
 
     internal static LDisplaySound TDisplaySoundCreate(LEngine engine) => new(
-        new LEntryOutlet(engine),
-        new LPhonologyOutlet(engine),
+        engine.LEngineEntry,
+        engine.LEngineLanguage,
+        engine.LEngineReflex,
+        engine.LEngineFanqie,
+        engine.LEngineLanguage,
+        engine.LEngineVocabulary,
         new LMediaOutlet(engine),
         new LSettingsOutlet(engine));
 
@@ -31,12 +35,12 @@ internal static class TInterfaceConductSound
     internal static IReadOnlyList<LReflexDraft> TDisplayReflexRead(this LDisplaySound sound) =>
         sound.LDisplayReflexRead();
 
-    internal static CDisplay TDisplayChosenCreate(LEngine engine, LEntryPort entries, long chosen)
+    internal static CDisplay TDisplayChosenCreate(LEngine engine, CEntryBundle entries, long chosen)
     {
         CDisplay display = new(
             new LDraftOutlet(engine),
             entries,
-            new LPhonologyOutlet(engine),
+            TInterfaceConduct.TPhonologyBundleCreate(engine),
             new LSettingsOutlet(engine),
             TEngineFake.TEngineStubCreate<LMediaPort>(),
             TEnvoyFake.TEnvoyCreate(false, []),
@@ -61,17 +65,28 @@ internal static class TInterfaceConductSound
         sound.CDisplayEnsignLoad(store);
 
     internal static CSounding TSoundingCreate(
-        CDesk desk, LPhonologyPort phonology, CEnvoy envoy, LSettingsPort? pack = null)
+        CDesk desk, CPhonologyBundle phonology, CEnvoy envoy, LSettingsPort? pack = null)
     {
         LSettingsPort settings = pack ?? TInterfaceConduct.TSettingsCreate();
         return new(
             desk,
-            phonology,
+            phonology.CPhonologyBundleFanqie,
+            phonology.CPhonologyBundleDiwei,
+            phonology.CPhonologyBundleScript,
+            phonology.CPhonologyBundleParadigm,
             settings,
             new LDisplay(
                 TEngineFake.TEngineStubCreate<LDraftPort>(),
                 TEngineFake.TEngineStubCreate<LEntryPort>(),
-                phonology,
+                TEngineFake.TEngineStubCreate<LFavoritePort>(),
+                TEngineFake.TEngineStubCreate<LVistaPort>(),
+                TEngineFake.TEngineStubCreate<LGraspPort>(),
+                TEngineFake.TEngineStubCreate<LPronunciationPort>(),
+                phonology.CPhonologyBundleLanguage,
+                phonology.CPhonologyBundleReflex,
+                phonology.CPhonologyBundleFanqie,
+                phonology.CPhonologyBundleScript,
+                phonology.CPhonologyBundleParadigm,
                 settings,
                 TEngineFake.TEngineStubCreate<LMediaPort>(),
                 envoy,
@@ -86,16 +101,17 @@ internal static class TInterfaceConductSound
     internal static CFold TFoldCreate(LSettingsPort settings, CEnvoy envoy) => new(settings, envoy);
 
     internal static IReadOnlyList<CReflex> TRespellingReflexScan(
-        LPhonologyPort phonology, string language, IReadOnlyList<CReflexDraft> reflexes) =>
-        CRespelling.LRespellingReflexScan(phonology, language, reflexes);
+        LReflexPort port, string language, IReadOnlyList<CReflexDraft> reflexes) =>
+        CRespelling.LRespellingReflexScan(port, language, reflexes);
 
     internal static string TRespellingResolve(CRespellingMark mark, string phonetic, string? respelling) =>
         CRespelling.LRespellingResolve(mark, phonetic, respelling);
 
-    internal static CTimbre TTimbreCreate(CEditor editor, LPhonologyPort phonology, LDraftPort drafts) =>
+    internal static CTimbre TTimbreCreate(CEditor editor, CPhonologyBundle phonology, LDraftPort drafts) =>
         new(
             editor.CEditorDesk,
-            phonology,
+            phonology.CPhonologyBundleLanguage,
+            phonology.CPhonologyBundleReflex,
             editor.CEditorDisplay.LDisplayRule,
             drafts,
             TInterfaceConduct.TSettingsCreate(),

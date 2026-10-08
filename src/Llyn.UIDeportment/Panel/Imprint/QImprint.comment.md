@@ -1,5 +1,5 @@
 # QImprint.cs
-Hash: `53a3bedb295e03ee`
+Hash: `a433407099c9601d`
 
 ## `internal sealed class QImprint : QChronicleHost`
 
@@ -13,7 +13,7 @@ It answers the window's undo and redo keys as `QChronicleHost`, attached to its 
 ## `internal QImprint(UserControl surface)`
 
 Takes the page and pulls each part through `QContract.QContractFind`.
-Seats the credit list, and builds the kind menu once from `CImprint.CImprintKindRead`.
+Seats the credit list.
 Subscribes the four fields, typing, keys and focus of the credit list, and its hover and focus.
 Ties the kind chip to its list and attaches the credit and byline item fills.
 The credit fill subscribes the row's four handles and is followed by the handle update.
@@ -23,6 +23,7 @@ The byline popup places itself under its field through the shared field helper.
 ## `internal void QImprintIntroduce(CImprint imprint)`
 
 Takes the source editor the shelf composed and listens to its notices and its byline.
+It builds the kind menu once from the editor's `CImprintKindRead`, since the menu is read through the editor's port.
 It calls no gate, so the panel's introduce hands the engine one request only.
 
 ## `internal void QImprintCloseRefine()`
@@ -40,6 +41,14 @@ Writes how many places cite the stored Source, as the editor answers it.
 The Source panel also runs it whenever the shelf rows change.
 A citation made elsewhere moves the count without a new draft.
 
+## `public void QChronicleUndoObserve()`
+
+Walks the desk back one step, with the caret kept where it was.
+
+## `public void QChronicleRedoObserve()`
+
+Walks the desk forward one step, the mirror of the undo.
+
 ## `private void QImprintDraftRefine(CReference reference)`
 
 Writes the four fields, their placeholders, the kind chip and the tally from the Source the imprint announced.
@@ -50,6 +59,10 @@ The framework ignores a write of the same text.
 
 Splices the credit rows, so a row that kept its Author and place keeps its field.
 The unsaved notice shows while no draft is held.
+
+## `private void QAuthorFocusRefine()`
+
+Gives the keyboard to the blank credit row once the rows are spliced, when Conduct announces the focus.
 
 ## `private void QAuthorShelfIntroduce(FrameworkElement container)`
 
@@ -70,6 +83,10 @@ The frame takes the field's width as its least width, as the markup once bound i
 
 A picked kind option, whose tag goes raw to `CImprintKindSet`.
 It then hands off to `QImprintKindRefine`, which shuts the chip.
+
+## `private void QImprintKindRefine()`
+
+Shuts the kind chip so its menu closes after a pick.
 
 ## `private void QAuthorAddObserve(object sender, RoutedEventArgs e)`
 

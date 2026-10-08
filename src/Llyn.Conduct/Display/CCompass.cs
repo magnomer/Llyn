@@ -13,22 +13,27 @@ public sealed class CCompass
 
     private readonly CLedgerNoticed _cCompassNoticed;
 
-    private readonly LEntryPort _cCompassPort;
+    private readonly LEntryPort _cCompassEntryPort;
+
+    private readonly LVistaPort _cCompassVistaPort;
 
     private readonly LSettingsPort _cCompassSettings;
 
     private readonly CEnvoy _cCompassEnvoy;
 
-    internal CCompass(LDisplay display, LEntryPort entries, LSettingsPort settings, CEnvoy envoy)
+    internal CCompass(
+        LDisplay display, LEntryPort entries, LVistaPort vistas, LSettingsPort settings, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(display);
         ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(vistas);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _cCompassVoice = display.LDisplaySound;
         _cCompassNoticed = display.LDisplayNoticed;
-        _cCompassPort = entries;
+        _cCompassEntryPort = entries;
+        _cCompassVistaPort = vistas;
         _cCompassSettings = settings;
         _cCompassEnvoy = envoy;
     }
@@ -36,7 +41,7 @@ public sealed class CCompass
     public (CCompassPart, int)? CCompassCardFind(long id)
     {
         if (_cCompassVoice.LDisplayShown is not LEntryDraft shown
-            || LEntryPort.LEngineCardFind(shown, id) is not (LOwner owner, _))
+            || _cCompassEntryPort.LEngineCardFind(shown, id) is not (LOwner owner, _))
         {
             return null;
         }
@@ -117,7 +122,7 @@ public sealed class CCompass
     {
         try
         {
-            return _cCompassPort.LEngineNameResolve(labels);
+            return _cCompassVistaPort.LEngineNameResolve(labels);
         }
         catch (Exception exception)
         {

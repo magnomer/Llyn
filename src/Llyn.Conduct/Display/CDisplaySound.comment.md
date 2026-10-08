@@ -1,5 +1,5 @@
 # CDisplaySound.cs
-Hash: `7f035f09a19f0b1b`
+Hash: `3e930bd130a5071d`
 
 ## `public sealed class CDisplaySound`
 
@@ -24,12 +24,19 @@ The font with nothing set, so a block with nothing shown keeps its theme.
 
 The anchors while nothing is shown or the engine refused, with no row anchored.
 
-## `internal CDisplaySound(LDisplay display, CDisplay header, LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LMediaPort media, LSettingsPort settings, CEnvoy envoy)`
+## `internal CDisplaySound(LDisplay display, CDisplay header, LDraftPort drafts, LEntryPort entries, LGlyphPort glyphs, LLanguagePort languages, LFanqiePort fanqies, LDiweiPort diweis, LScriptPort scripts, LParadigmPort paradigms, LReflexPort reflexes, LMediaPort media, LSettingsPort settings, CEnvoy envoy)`
 
 Only the header area builds its sound area, over the ports and the envoy the atelier handed down.
 It takes the sound half and the atelier's repaint memory from `display`, so the width did not grow.
 Every read below shows its failure through that memory, since it runs on every repaint.
+`glyphs` reads the glyph row and transcriptions, and `entries` opens the entry a glyph cell names.
+Each sound block reads through its own narrow port, so no block reaches a slice it never shows.
 The play and fanqie gates answer a user act, so they show every failure.
+
+## `public IReadOnlyList<int> CDisplaySoundScale`
+
+The pitch levels a tone contour draws, highest first, one guide line each.
+It comes from the language port, so the scale keeps the one owner that parses the levels.
 
 ## `public event Action? CDisplayFoldChanged;`
 
@@ -70,15 +77,16 @@ Nothing shown answers the mute block, and a refused read shows `Sound.LoadFailed
 ## `public async Task<CLecternAccent?> CDisplayEnsignLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
 The load a driver starts once an entry opened, for the flags its pronunciation block draws.
-The engine picks the varieties and loads nothing for a pack that names them.
+The engine picks the varieties and loads nothing when the pack shows no flags.
 `store` is the driver's own image store, handed the rows through the one flag map.
 It answers the block again once the flags are in, so the driver repaints its rows.
 Another entry shown meanwhile wins, so a late load answers null and paints nothing.
 A failed load shows `Sound.LoadFailed` once and answers null, like `CDisplayAccentRead`.
 
-## `private static CLecternAccent LDisplayAccentRead(LAccentSheet sheet)`
+## `private CLecternAccent LDisplayAccentRead(LAccentSheet sheet)`
 
 Maps the engine's block into the Conduct record, reading no rule.
+The contour is drawn over the language port's scale, so the method reads the instance.
 
 ## `public CLecternPlayback CDisplayPlaybackRead()`
 

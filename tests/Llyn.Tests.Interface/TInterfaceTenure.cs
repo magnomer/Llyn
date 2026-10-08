@@ -32,7 +32,7 @@ internal static partial class TInterface
         tenure.LTenureRead();
 
     internal static LTenureState TTenureStateRead(this LTenure tenure) =>
-        tenure.LTenureStateRead();
+        tenure.LTenureGauge.LTenureGaugeRead();
 
     internal static void TTenureRequestDefer(this LTenure tenure, LRequest request)
     {
@@ -54,7 +54,7 @@ internal static partial class TInterface
 
     internal static bool TTenureChangeCheck(this LTenure tenure) => tenure.LTenureChangeCheck();
 
-    internal static bool TTenureStorableRead(this LTenure tenure) => tenure.LTenureStorable;
+    internal static bool TTenureStorableRead(this LTenure tenure) => tenure.LTenureGauge.LTenureGaugeStorable;
 
     internal static LDraft? TTenureUndo(this LTenure tenure) =>
         tenure.LTenureUndo();
@@ -77,44 +77,46 @@ internal static partial class TInterface
 
     internal static void TTenureGlossInsert(this LTenure tenure, int position)
     {
-        tenure.LTenureGlossInsert(0, 0, position);
+        new LQuillSentence(tenure).LQuillGlossInsert(0, 0, position);
     }
 
     internal static void TTenureHeadwordSet(this LTenure tenure, string text)
     {
-        tenure.LTenureHeadwordSet(text);
+        new LQuillEntry(tenure).LQuillHeadwordSet(text);
     }
 
     internal static void TTenureNoteSet(this LTenure tenure, string text)
     {
-        tenure.LTenureNoteSet(text);
+        new LQuillEntry(tenure).LQuillNoteSet(text);
     }
 
-    internal static bool TTenureNoteCheck(string text, string note) => LTenure.LTenureNoteCheck(text, note);
+    internal static bool TTenureNoteCheck(string text, string note) => LQuillEntry.LQuillNoteCheck(text, note);
 
     internal static void TTenureLanguageSet(this LTenure tenure, string language)
     {
-        tenure.LTenureLanguageSet(language);
+        new LQuillEntry(tenure).LQuillLanguageSet(language);
     }
 
-    internal static LSpeechOffer TTenureSpeechSet(this LTenure tenure, string typed) => tenure.LTenureSpeechSet(typed);
+    internal static LSpeechOffer TTenureSpeechSet(this LTenure tenure, string typed) =>
+        new LQuillSpeech(tenure).LQuillSpeechSet(typed);
 
-    internal static LUnit TTenureUnitRead(this LTenure tenure) => tenure.LTenureUnitRead();
+    internal static LUnit TTenureUnitRead(this LTenure tenure) => new LQuillEntry(tenure).LQuillUnitRead();
 
-    internal static IReadOnlyList<LUnit> TTenureUnitScan(this LTenure tenure) => tenure.LTenureUnitScan();
+    internal static IReadOnlyList<LUnit> TTenureUnitScan(this LTenure tenure) =>
+        new LQuillEntry(tenure).LQuillUnitScan();
 
     internal static void TTenureUnitSet(this LTenure tenure, LUnit unit)
     {
-        tenure.LTenureUnitSet(unit);
+        new LQuillEntry(tenure).LQuillUnitSet(unit);
     }
 
     internal static void TTenureIpaSet(this LTenure tenure, string text)
     {
-        tenure.LTenureIpaSet(text);
+        new LQuillPronunciation(tenure).LQuillIpaSet(text);
     }
 
     internal static void TTenureRespellingSet(this LTenure tenure, string text)
     {
-        tenure.LTenureRespellingSet(text);
+        new LQuillPronunciation(tenure).LQuillRespellingSet(text);
     }
 }

@@ -1,5 +1,5 @@
 # LDisplay.cs
-Hash: `55e2815852ae5f9b`
+Hash: `044f063134de4a8d`
 
 ## `internal sealed class LDisplay`
 
@@ -10,9 +10,10 @@ That area builds this class and holds it, so this class holds only the rules the
 Most members forward one read or one mark request to the ports, so the view never holds an engine.
 A refused read or mark reaches the user through the envoy the panel handed over.
 
-## `internal LDisplay(LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media, CEnvoy envoy, CLedgerNoticed noticed)`
+## `internal LDisplay(LDraftPort drafts, LEntryPort entries, LFavoritePort favorites, LVistaPort vistas, LGraspPort grasps, LPronunciationPort pronunciations, LLanguagePort languages, LReflexPort reflexes, LFanqiePort fanqies, LScriptPort scripts, LParadigmPort paradigms, LSettingsPort settings, LMediaPort media, CEnvoy envoy, CLedgerNoticed noticed)`
 
 Builds the sound half once, so the area and the sound area over it share one shown draft.
+The five sound ports pass straight to the sound half, which alone calls them.
 It takes the atelier's repaint memory, so a read failing on every repaint shows its notice once.
 The sound half's read failures go through that memory, and its failed sends show every time.
 No vista is held yet, so the display stands on no entry until `LDisplayVistaRestore`.
@@ -33,9 +34,25 @@ So they share one memory.
 The port a card's picture addresses are resolved through.
 The lectern's cards and the editor's draft read it, so both carry the same ready address.
 
-## `private readonly LEntryPort _lEntryPort;`
+## `private readonly LEntryPort _lDisplayEntryPort;`
 
-The entry port every read and mark of this class goes through.
+The entry port the shown entry is loaded through.
+
+## `private readonly LFavoritePort _lDisplayFavoritePort;`
+
+The favourite port the favourite mark is read and toggled through.
+
+## `private readonly LVistaPort _lDisplayVistaPort;`
+
+The port the shown entry is loaded through from the display's vista.
+
+## `private readonly LGraspPort _lDisplayGraspPort;`
+
+The grasp port the grasp is read, worded and saved through.
+
+## `private readonly LPronunciationPort _lDisplayPronunciationPort;`
+
+The pronunciation port the frequency gauge is resolved through.
 
 ## `private LVista? _lDisplayVista;`
 

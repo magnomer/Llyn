@@ -1,5 +1,5 @@
 # CLibrary.cs
-Hash: `fea9c453765587b2`
+Hash: `564dc1ac76e4ac2a`
 
 ## `public sealed class CLibrary`
 
@@ -62,9 +62,17 @@ Answers the workspace notice by closing the chosen entry and raising `CLibraryWo
 The window's exit gate runs it, since the workspace holds it as a closure.
 It stops the editor and cancels the display's playback.
 
+## `public void CLibraryQuerySet(string query)`
+
+Takes the text typed into the search field as the vista's query.
+
 ## `public void CLibraryOrderSet(CCatalogOrder? order)`
 
 Hands a chosen ordering to the vista, which keeps its own when the sender is no order row.
+
+## `public void CLibraryFilterSet(CCatalogFilter filter)`
+
+Hides the languages the user unticked in the filter menu.
 
 ## `public static IReadOnlyList<CCatalogOrder> CLibraryOrderRead()`
 
@@ -74,7 +82,7 @@ The wings share them, so no driver names an engine ordering.
 ## `public IReadOnlyList<CVistaRow> CLibraryRowsRead()`
 
 The rows the engine returns for the vista, none before a vista arrives.
-They come already filtered, sorted, numbered and marked, so the list decides nothing about them.
+They come already filtered, sorted, twinned and marked, so the list decides nothing about them.
 The count is kept for `CLibraryEmpty`, so the empty notice follows the rows shown.
 A failed read shows `List.LoadFailed` through the envoy and answers no rows, so the count reads zero.
 The load task runs this read after the flag fill, so a throw here would fault the driver.
@@ -131,7 +139,7 @@ Copies what the customs question shows of one parsed entry and its engine-found 
 
 ## `private static CMarkupTarget LLibraryTargetRead(LMarkupTarget target)`
 
-Copies one engine-found target with its card counts, holding no rule.
+Copies one engine-found target with its meaning and collocation counts, holding no rule.
 
 ## `private static CMarkupOmission LLibraryOmissionRead(LMarkupOmission omission)`
 

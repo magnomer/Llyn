@@ -1,5 +1,5 @@
 # CAtlas.cs
-Hash: `bc38d0661c268d83`
+Hash: `a129ff35118b9a57`
 
 ## `public sealed class CAtlas`
 
@@ -8,11 +8,24 @@ It finds the rows and their usage, and takes the query, order and language filte
 Its panel loads, edits and deletes the chosen Situation, worded under the Situation scope.
 It also prints the listed situations.
 
-## `internal CAtlas(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)`
+## `internal CAtlas(LSituationPort situations, LPortraitPort portraits, LSettingsPort settings, LVistaPort vistas, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)`
 
 Takes the ports it reads and prints through, the repertoire desk holding the situation, and the panel's seams.
 The panel asks whether the desk changed before it leaves a Situation.
+`vistas` passes to the panel, which loads and deletes its chosen row through it.
 Only `CRepertoire` builds it, over the atelier's ports.
+
+## `public CPanel CAtlasPanel { get; }`
+
+The panel over the situation vista, built once with the Situation scope and the repertoire seams.
+
+## `public long? CAtlasChosen`
+
+The id of the chosen Situation, or null before a vista arrives or while none is chosen.
+
+## `public bool CAtlasFiltered`
+
+Whether the vista's language filter hides any language, false before a vista arrives.
 
 ## `internal bool LAtlasNarrowed`
 
@@ -34,6 +47,14 @@ A workspace notice runs the answer the area hands in.
 
 The orderings the list offers, in menu order.
 A driver builds its ordering menu from it once.
+
+## `public void CAtlasQuerySet(string query)`
+
+Hands the typed query to the vista, which refills the rows.
+
+## `public void CAtlasFilterSet(CCatalogFilter filter)`
+
+Hands the languages the filter hides to the vista.
 
 ## `public void CAtlasOrderSet(CCatalogOrder? order)`
 
@@ -65,9 +86,9 @@ The kind and the count arrive worded, so no driver words either.
 
 Maps the Situation a draft carries to its shape, and a missing draft or Situation to null.
 It is a plain map with no rule, so it stays in Conduct, since ShellEngine cannot name a Conduct shape.
-`CRepertoire` hands it the desk's draft unread, and the scenario fills from it.
+`CPlaywright` hands it the desk's draft unread, and the scenario fills from it.
 
-## `internal static CSituation? LAtlasSituationRead(LDraft? draft, LMediaPort media, LEntryPort entries)`
+## `internal static CSituation? LAtlasSituationRead(LDraft? draft, LMediaPort media, LMarkdownPort markdown)`
 
 Maps the Situation a loaded atlas draft carries to the vignette's ready page, and a missing one to null.
 It only chooses keys.

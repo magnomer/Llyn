@@ -64,6 +64,11 @@ public interface LSettingsPort
 
     IReadOnlyList<string> LEngineLanguageRead();
 
+    bool LEnginePhonemicCheck(string language);
+
+    bool LEngineRespellingCheck(string language);
+
+    void LEngineTallySave(bool respelled);
 
     static string LEngineEnsignFormat(string language, string variety)
     {

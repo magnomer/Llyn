@@ -1,9 +1,10 @@
 # TEasel.cs
-Hash: `2baca4a0e726cc15`
+Hash: `f85c1bca81bff00c`
 
 ## `public sealed class TEasel`
 
 The easel's media edits, one fact per member, each over a fresh situation tenure.
+The child card facts hold a fresh entry instead, since only an entry has cards.
 
 ## `private const int TEaselHold = 600000;`
 
@@ -17,6 +18,10 @@ An added picture row starts with no location.
 
 An added picture row is dropped by its id.
 
+## `public void ImageRemove_ChildCard_DropsIt()`
+
+A picture row on a child card is dropped by its id, since the card find walks the children.
+
 ## `public void ImageSet_Deferred_WritesOnlyAfterFlush()`
 
 A typed location waits in the queue and lands on the flush.
@@ -28,6 +33,10 @@ An added video row starts with no location.
 ## `public void VideoRemove_AddedRow_DropsIt()`
 
 An added video row is dropped by its id.
+
+## `public void VideoRemove_ChildCard_DropsIt()`
+
+A video row on a child card is dropped by its id, as the picture row is.
 
 ## `public void VideoSet_ChosenFile_WritesAtOnce()`
 

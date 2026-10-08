@@ -1,5 +1,5 @@
 # CAnthology.cs
-Hash: `9c87fa1ee183b59c`
+Hash: `ca63053592587dad`
 
 ## `public sealed class CAnthology`
 
@@ -8,17 +8,30 @@ It finds the rows, and takes the query, order and kind filter.
 Its panel loads, edits and deletes the chosen Example, worded under the Example scope.
 It also answers the transcript's citation field and prints the chosen Example.
 
-## `internal CAnthology(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam, CMention mention)`
+## `internal CAnthology(LExamplePort examples, LMentionPort mentions, LReferencePort references, LPortraitPort portraits, LSettingsPort settings, LVistaPort vistas, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam, CMention mention)`
 
 Takes the ports it reads and prints through, the corpus desk holding the transcript, and the panel's seams.
 The panel and the citation gates read a failure's ready notice through `settings` and show it through `envoy`.
 The panel asks whether the desk changed before it leaves an Example.
+`vistas` passes to the panel, which loads and deletes its chosen row through it.
 `mention` opens what a word click found.
 
 ## `internal static CAnthology LAnthologyCreate(CAtelier atelier, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)`
 
 Builds the list over the atelier's ports, so the driver hands it no port.
 Building it is no user action, so it is no gate on the atelier.
+
+## `public CPanel CAnthologyPanel { get; }`
+
+The panel over the example vista, built once with the Example scope and the corpus seams.
+
+## `public long? CAnthologyChosen`
+
+The id of the chosen Example, or null before a vista arrives or while none is chosen.
+
+## `public bool CAnthologyFiltered`
+
+Whether the vista's kind filter hides any language, false before a vista arrives.
 
 ## `internal bool LAnthologyNarrowed`
 
@@ -36,6 +49,14 @@ A vista notice refills the rows, since order, filter or query moved.
 A stored Example or Source refills them, because a row cites a Source.
 A reflex fill or a flipped setting rewrites the epithet beside a headword, so each refills them too.
 A workspace notice runs `workspace`, the corpus's own answer.
+
+## `public void CAnthologyQuerySet(string query)`
+
+Hands the typed query to the vista, which refills the rows.
+
+## `public void CAnthologyFilterSet(CCatalogFilter filter)`
+
+Hands the languages the filter hides to the vista.
 
 ## `public void CAnthologyOrderSet(CCatalogOrder? order)`
 
@@ -86,10 +107,6 @@ Points the transcript's citation at the Source the engine resolves the typed tit
 The engine reads the Source cited now off the held draft, so an unchanged title keeps it.
 A failure shows `Reference.CreateFailed` and leaves the citation as it was.
 
-## `private LTenure? CAnthologyTenure`
-
-The held transcript draft, or null while the desk fills one, as the quill reads then.
-
 ## `public void CAnthologyGlossSet(long glossId, string text)`
 
 The transcript's gloss text, deferred like the sentence text.
@@ -125,11 +142,11 @@ Without a held tenure it writes nothing and still answers the key.
 The gate for picking the transcript's speaker language, sent at once through the desk's quill.
 The chip changes when the draft bulletin returns, as the corpus gloss gates do.
 
-## `public static bool CAnthologyTextCheck(string text, CStateValue value)`
+## `public bool CAnthologyTextCheck(string text, CStateValue value)`
 
 Whether a field showing `text` already shows `value`, as the engine would store the field.
 The transcript keeps a matching field untouched, so a bulletin never moves the caret.
-It is static, since it reads no state of the list.
+It asks the example port, which the anthology holds, so a driver reaches it through the corpus.
 
 ## `internal CExample? LAnthologyDraftRead(LDraft? draft)`
 

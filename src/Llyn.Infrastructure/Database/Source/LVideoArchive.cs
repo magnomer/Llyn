@@ -176,6 +176,54 @@ public sealed class LVideoArchive : LVideoVault
         session.LDatabaseSessionCommit();
     }
 
+    public Dictionary<long, List<LVideoDraft>> LVideoSituationScan()
+    {
+        using LDatabaseSession session = _lVideoArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT link.situation_parent, video.video_id,
+                   video.location_state, video.location, video.span_state, video.span
+            FROM situation_video link
+            JOIN video ON video.video_id = link.video_ref
+            ORDER BY link.situation_parent, link.position;
+            """;
+
+        Dictionary<long, List<LVideoDraft>> grouped = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            long parent = reader.GetInt64(0);
+            if (!grouped.TryGetValue(parent, out List<LVideoDraft>? rows))
+            {
+                rows = [];
+                grouped.Add(parent, rows);
+            }
+
+            rows.Add(new LVideoDraft(
+                LStateColumn.LStateColumnRead(reader, 2),
+                LStateColumn.LStateColumnRead(reader, 4),
+                reader.GetInt64(1)));
+        }
+
+        return grouped;
+    }
+
+    public void LVideoSituationClear(long situationId)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(situationId);
+
+        using LDatabaseSession session = _lVideoArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText = "DELETE FROM situation_video WHERE situation_parent = $situation;";
+            command.Parameters.AddWithValue("$situation", situationId);
+            command.ExecuteNonQuery();
+        }
+
+        session.LDatabaseSessionCommit();
+    }
+
     private IReadOnlyList<LVideo> LVideoReferrerRead(string table, string column, long referrerId)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);

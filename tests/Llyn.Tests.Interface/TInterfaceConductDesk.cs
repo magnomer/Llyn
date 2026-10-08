@@ -42,7 +42,7 @@ internal static class TInterfaceConductDesk
                 .ToList()
             : [];
 
-    internal static CEsteem TEsteemCreate(LEngine engine, LEntryPort entries, long stored)
+    internal static CEsteem TEsteemCreate(LEngine engine, LGraspPort grasps, long stored)
     {
         CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, []);
         CDesk desk = TDeskCreate(engine, "Input", envoy);
@@ -52,8 +52,16 @@ internal static class TInterfaceConductDesk
             desk,
             new LDisplay(
                 new LDraftOutlet(engine),
-                entries,
-                new LPhonologyOutlet(engine),
+                engine.LEngineEntry,
+                engine.LEngineVista,
+                engine.LEngineVista,
+                grasps,
+                engine.LEnginePronunciation,
+                engine.LEngineLanguage,
+                engine.LEngineReflex,
+                engine.LEngineFanqie,
+                engine.LEngineLanguage,
+                engine.LEngineVocabulary,
                 new LSettingsOutlet(engine),
                 TEngineFake.TEngineStubCreate<LMediaPort>(),
                 envoy,
@@ -62,11 +70,16 @@ internal static class TInterfaceConductDesk
 
     internal static LDraft? TDeskHeldRead(this CDesk desk) => desk.CDeskTenure?.LTenureRead();
 
-    internal static void TDeskVarietySet(this CDesk desk, bool primary, long pronunciation, string variety) =>
-        desk.CDeskTenure?.LTenureVarietySet(primary, pronunciation, variety);
+    internal static void TDeskVarietySet(this CDesk desk, bool primary, long pronunciation, string variety)
+    {
+        if (desk.CDeskTenure is LTenure held)
+        {
+            new LQuillPronunciation(held).LQuillVarietySet(primary, pronunciation, variety);
+        }
+    }
 
     internal static LForay? TDeskForayStart(this CDesk desk, string scheme) =>
-        desk.CDeskTenure?.LTenureTranscriptionStart(0, scheme, static (_, _) => { });
+        desk.CDeskTenure?.LTenureErrand.LErrandTranscriptionStart(0, scheme, static (_, _) => { });
 
     internal static bool TDeskChangeCheck(this CDesk desk) => desk.LDeskChangeCheck();
 

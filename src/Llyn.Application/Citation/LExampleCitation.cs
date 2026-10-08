@@ -9,21 +9,21 @@ public sealed class LExampleCitation
     private readonly LIdentity _lExampleCitationIdentity;
     private readonly LClaimClerk _lExampleCitationClaims;
     private readonly LExampleClerk _lExampleCitationExamples;
-    private readonly LEntryClerk _lExampleCitationEntries;
+    private readonly LRevisionClerk _lExampleCitationRevisions;
 
     public LExampleCitation(
-        LRig rig, LIdentity identity, LClaimClerk claims, LExampleClerk examples, LEntryClerk entries)
+        LRig rig, LIdentity identity, LClaimClerk claims, LExampleClerk examples, LRevisionClerk revisions)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(claims);
         ArgumentNullException.ThrowIfNull(examples);
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(revisions);
         _lExampleCitationVault = rig.LRigVault;
         _lExampleCitationIdentity = identity;
         _lExampleCitationClaims = claims;
         _lExampleCitationExamples = examples;
-        _lExampleCitationEntries = entries;
+        _lExampleCitationRevisions = revisions;
     }
 
     public LDraft LExampleCitationStart(string origin, long? exampleId)
@@ -63,8 +63,8 @@ public sealed class LExampleCitation
                 stored = _lExampleCitationExamples.LExampleClerkRead(draft.LDraftEntryId) ?? written;
             }
 
-            LCitationClerk.LRevisionRecord(
-                _lExampleCitationEntries, stored.LExampleId, "example", fresh, stored.LExampleText.LStateValueShow());
+            _lExampleCitationRevisions.LRevisionClerkRecord(
+                stored.LExampleId, "example", fresh, stored.LExampleText.LStateValueShow());
             session.LVaultSessionCommit();
         }
 

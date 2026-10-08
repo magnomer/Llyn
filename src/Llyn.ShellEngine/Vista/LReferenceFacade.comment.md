@@ -1,7 +1,7 @@
 # LReferenceFacade.cs
-Hash: `c373a7aaf2862ba0`
+Hash: `31f1de87abe6d765`
 
-## `internal sealed class LReferenceFacade`
+## `public sealed class LReferenceFacade : LReferencePort`
 
 The bibliographic half of the engine.
 A Reference is the work an Example is drawn from.
@@ -9,6 +9,7 @@ A citation is a reference to a row, never ownership of it.
 Every read and write goes through the reference clerk under the gate, and every change is announced here.
 The vista overload stays here, because a vista is the shell's and the twin names are numbered per panel.
 The source draft starts and commits here too, through the `LReferenceCitation` the citation clerk holds.
+It implements the reference port itself, so Host hands it to Conduct with no outlet between.
 
 ## `public LReferenceFacade(LEngine engine)`
 
@@ -53,7 +54,7 @@ Deletes the Reference and announces it, with `detach` clearing every citation fi
 The reference clerk's read sheet of a Source draft, under the gate.
 The citation line counts the Source the draft holds, which is the one its panel has chosen.
 
-## `public static LImprint LEngineImprintRead(LDraft? draft)`
+## `public LImprint LEngineImprintRead(LDraft? draft)`
 
 The reference clerk's edit sheet of a Source draft, or of a blank Source with no draft.
 It reads no store, so it takes no gate.
@@ -75,3 +76,12 @@ A Reference that is gone is refused before a file is written, so no draft can po
 
 Turns a held Reference into a stored one, announces it and returns it.
 An id from a closed workspace is refused before anything is written.
+
+## `public IReadOnlyList<LCatalogReference> LEngineReferenceFind()`
+
+Every Source as the whole shelf lists it, ordered by author.
+
+## `public IReadOnlyList<(string LReferenceKindTag, string LReferenceKindKey)> LEngineKindRead()`
+
+The kind menu of the source editor, each option's tag and localization key, in menu order.
+The reference clerk owns the menu, which is the same for every Source.

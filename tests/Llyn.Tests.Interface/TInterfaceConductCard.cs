@@ -9,13 +9,13 @@ namespace Llyn.Tests;
 internal static class TInterfaceConductCard
 {
     internal static CCard TCardCreate(LEngine engine, CDesk desk, CEnvoy envoy) => new(
-        desk, new LDraftOutlet(engine), new LEntryOutlet(engine), new LSettingsOutlet(engine), envoy);
+        desk, new LDraftOutlet(engine), engine.LEngineReference, new LSettingsOutlet(engine), envoy);
 
     internal static CCardList TCardListCreate(CDesk desk) => new(desk);
 
     internal static CSentence TSentenceCreate(LEngine engine, CDesk desk) => new(
         desk,
-        new LPhonologyOutlet(engine),
+        engine.LEngineVocabulary,
         new LDraftOutlet(engine),
         TInterfaceConduct.TSettingsCreate(),
         TEnvoyFake.TEnvoyCreate(false, []),

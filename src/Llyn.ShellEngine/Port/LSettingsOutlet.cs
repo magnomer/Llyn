@@ -18,11 +18,12 @@ public sealed class LSettingsOutlet : LSettingsPort
 
     public LSettings LEngineSettingsRead() => _lSettingsOutletEngine.LEngineSettings.LEngineSettingsRead();
 
-    public string LEngineWorkspaceRead() => _lSettingsOutletEngine.LEngineWorkspaceRead();
+    public string LEngineWorkspaceRead() => _lSettingsOutletEngine.LEngineWorkspace.LEngineWorkspaceRead();
 
-    public string LEngineWorkspaceFormat() => _lSettingsOutletEngine.LEngineWorkspaceFormat();
+    public string LEngineWorkspaceFormat() => _lSettingsOutletEngine.LEngineWorkspace.LEngineWorkspaceFormat();
 
-    public bool LEngineWorkspaceCheck(string chosen) => _lSettingsOutletEngine.LEngineWorkspaceCheck(chosen);
+    public bool LEngineWorkspaceCheck(string chosen) =>
+        _lSettingsOutletEngine.LEngineWorkspace.LEngineWorkspaceCheck(chosen);
 
     public LWorkspaceState LEngineWorkspaceChange(string chosen) =>
         _lSettingsOutletEngine.LEngineWorkspace.LEngineWorkspaceChange(chosen);
@@ -76,7 +77,7 @@ public sealed class LSettingsOutlet : LSettingsPort
 
     public (string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(
         Exception exception, string unexpected, string recorded) =>
-        _lSettingsOutletEngine.LEngineFailureRead(exception, unexpected, recorded);
+        _lSettingsOutletEngine.LEngineWorkspace.LEngineFailureRead(exception, unexpected, recorded);
 
     public LFont LEngineFontRead(string language, LFontRole role) =>
         _lSettingsOutletEngine.LEngineLanguage.LEngineFontRead(language, role);
@@ -90,4 +91,11 @@ public sealed class LSettingsOutlet : LSettingsPort
 
     public IReadOnlyList<string> LEngineLanguageRead() => _lSettingsOutletEngine.LEngineLanguage.LEngineLanguageRead();
 
+    public bool LEnginePhonemicCheck(string language) =>
+        _lSettingsOutletEngine.LEngineSettings.LEnginePhonemicCheck(language);
+
+    public bool LEngineRespellingCheck(string language) =>
+        _lSettingsOutletEngine.LEngineSettings.LEngineRespellingCheck(language);
+
+    public void LEngineTallySave(bool respelled) => _lSettingsOutletEngine.LEngineSettings.LEngineTallySave(respelled);
 }

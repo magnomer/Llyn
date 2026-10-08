@@ -17,6 +17,45 @@ public sealed class LSituationChip
         _lSituationChipIdentity = identity;
     }
 
+    public static LDraft? LSituationChipApply(LDraft draft, LRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        return request switch
+        {
+            LRequestSituationTitle sent => LSituationChipChange(
+                draft,
+                sent.LRequestSituationId,
+                situation => situation with { LSituationTitle = LStateValue.LStateValueRead(sent.LRequestValue) }),
+            LRequestSituationDescription sent => LSituationChipChange(
+                draft,
+                sent.LRequestSituationId,
+                situation => situation with
+                {
+                    LSituationDescription = LStateValue.LStateValueRead(sent.LRequestValue),
+                }),
+            LRequestSituationKind sent => LSituationChipChange(
+                draft,
+                sent.LRequestSituationId,
+                situation => situation with { LSituationKind = LStateValue.LStateValueRead(sent.LRequestValue) }),
+            _ => null,
+        };
+    }
+
+    public LEntryDraft? LSituationChipApply(LEntryDraft content, LRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+
+        return request switch
+        {
+            LRequestSituationAddition sent => LSituationChipAdd(content, sent),
+            LRequestSituationPick sent => LSituationChipInsert(content, sent),
+            LRequestSituationRemoval sent => LSituationChipRemove(content, sent),
+            LRequestSituationShift sent => LSituationChipMove(content, sent),
+            _ => null,
+        };
+    }
+
     public LEntryDraft LSituationChipAdd(LEntryDraft content, LRequestSituationAddition request)
     {
         ArgumentNullException.ThrowIfNull(request);

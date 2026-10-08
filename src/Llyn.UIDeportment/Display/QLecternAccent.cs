@@ -71,7 +71,7 @@ public sealed class QLecternAccent
         _qLecternAccentCloser = closer;
         _qLecternAccentContour = contour;
         _qLecternAccentSyllables = syllables;
-        contour.SetValue(scale, CContour.CContourScale);
+        contour.SetValue(scale, _qLecternAccentArea.CDisplaySoundScale);
         accents.ItemsSource = _qLecternAccentRow;
         QLookItem.QLookItemAttach(accents, QAccentItem.QAccentItemRefine);
     }

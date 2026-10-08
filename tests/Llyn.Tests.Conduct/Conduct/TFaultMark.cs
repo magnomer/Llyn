@@ -12,7 +12,7 @@ public sealed partial class TFault
     [
         new(
             "CEsteem.CEsteemFavoriteSet",
-            "LEntryPort.LEngineFavoriteSave",
+            "LFavoritePort.LEngineFavoriteSave",
             "Favorite.MarkFailed",
             static stage =>
             {
@@ -23,7 +23,7 @@ public sealed partial class TFault
             }),
         new(
             "CEsteem.CEsteemGraspSet",
-            "LEntryPort.LEngineGraspSave",
+            "LGraspPort.LEngineGraspSave",
             "Grasp.MarkFailed",
             static stage =>
             {
@@ -32,7 +32,7 @@ public sealed partial class TFault
             }),
         new(
             "CDisplay.CDisplayFavoriteToggle",
-            "LEntryPort.LEngineFavoriteSave",
+            "LFavoritePort.LEngineFavoriteSave",
             "Favorite.MarkFailed",
             static stage =>
             {
@@ -41,7 +41,7 @@ public sealed partial class TFault
             }),
         new(
             "CDisplay.CDisplayGraspSet",
-            "LEntryPort.LEngineGraspSave",
+            "LGraspPort.LEngineGraspSave",
             "Grasp.MarkFailed",
             static stage =>
             {
@@ -50,7 +50,7 @@ public sealed partial class TFault
             }),
         new(
             "CDisplaySound.CDisplayFanqieSet",
-            "LPhonologyPort.LEngineFanqieSet",
+            "LFanqiePort.LEngineFanqieSet",
             "Display.FanqieRepresentativeFailed",
             static stage =>
             {
@@ -59,12 +59,12 @@ public sealed partial class TFault
             }),
         new(
             "CDisplay.CDisplayEntryResonate",
-            "LPhonologyPort.LEngineSoundStart",
+            "LLanguagePort.LEngineSoundStart",
             "Sound.StartFailed",
             static stage => (TFaultWingOpen(stage).CWingDisplay.CDisplayEntryResonate, null)),
         new(
             "CWing.CWingEntryOpen",
-            "LPhonologyPort.LEngineSoundStart",
+            "LLanguagePort.LEngineSoundStart",
             "Sound.StartFailed",
             static stage =>
             {
@@ -76,7 +76,7 @@ public sealed partial class TFault
             }),
         new(
             "CPanel.CPanelRowOpen",
-            "LPhonologyPort.LEngineSoundStart",
+            "LLanguagePort.LEngineSoundStart",
             "Sound.StartFailed",
             static stage =>
             {
@@ -93,7 +93,7 @@ public sealed partial class TFault
             }),
         new(
             "CPanel.CPanelDraftResonate",
-            "LPhonologyPort.LEngineSoundStart",
+            "LLanguagePort.LEngineSoundStart",
             "Sound.StartFailed",
             static stage =>
             {
@@ -110,12 +110,12 @@ public sealed partial class TFault
             }),
         new(
             "CTimbre.CTimbreReflexRebuild",
-            "LPhonologyPort.LEngineReflexRebuild",
+            "LReflexPort.LEngineReflexRebuild",
             "Display.ReflexRebuildFailed",
             static stage => (TFaultDeskOpen(stage).CEditorTimbre.CTimbreReflexRebuild, null)),
         new(
             "CSounding.CSoundingFanqieSet",
-            "LPhonologyPort.LEngineFanqieSet",
+            "LFanqiePort.LEngineFanqieSet",
             "Display.FanqieRepresentativeFailed",
             static stage =>
             {
@@ -124,12 +124,12 @@ public sealed partial class TFault
             }),
         new(
             "CSounding.CSoundingFanqieResolve",
-            "LPhonologyPort.LEngineFanqieRebuild",
+            "LFanqiePort.LEngineFanqieRebuild",
             "Display.FanqieRebuildFailed",
             static stage => (TFaultDeskOpen(stage).CEditorSounding.CSoundingFanqieResolve, null)),
         new(
             "CSounding.CSoundingScriptResolve",
-            "LPhonologyPort.LEngineScriptRebuild",
+            "LScriptPort.LEngineScriptRebuild",
             "Display.ScriptRebuildFailed",
             static stage => (TFaultDeskOpen(stage).CEditorSounding.CSoundingScriptResolve, null)),
         new(
@@ -164,7 +164,7 @@ public sealed partial class TFault
             }),
         new(
             "CTaxonomy.CTaxonomyEntryCreate",
-            "LEntryPort.LEngineTagCreate",
+            "LTagPort.LEngineTagCreate",
             "Tag.CreateFailed",
             static stage =>
             {
@@ -174,7 +174,7 @@ public sealed partial class TFault
             }),
         new(
             "CTenor.CTenorEntryCreate",
-            "LEntryPort.LEngineRegisterCreate",
+            "LRegisterPort.LEngineRegisterCreate",
             "Register.CreateFailed",
             static stage =>
             {
@@ -183,7 +183,7 @@ public sealed partial class TFault
             }),
         new(
             "CGuild.CGuildUnionSelect",
-            "LEntryPort.LEngineAuthorAbsorb",
+            "LAuthorPort.LEngineAuthorAbsorb",
             "Guild.MergeFailed",
             static stage =>
             {

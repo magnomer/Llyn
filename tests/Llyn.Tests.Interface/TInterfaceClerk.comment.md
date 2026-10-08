@@ -1,5 +1,5 @@
 # TInterfaceClerk.cs
-Hash: `d06e9248f39c0c99`
+Hash: `44610c22fd15081d`
 
 ## `internal static partial class TInterface`
 
@@ -198,6 +198,7 @@ The one request kind the production code never declares.
 ## `internal static LEntryClerk TEntryClerkCreate(LRig rig)`
 
 An entry clerk over `rig` with every clerk it composes, the transcription, reflex and recording clerks included.
+Its translation and entry clerks each stamp through their own revision clerk over the same rig.
 The reflex clerk gets a throwaway gate and a bulletin that goes nowhere.
 
 ## `internal static LRecordingClerk TRecordingClerkCreate(LRig rig)`
@@ -207,10 +208,15 @@ A recording clerk over `rig` with a fresh language cache, trail clerk and claim 
 ## `internal static LMarkupClerkIntake TMarkupIntakeCreate(LRig rig)`
 
 The markup intake with the clerk graph an import needs, built over `rig`.
+The revision and query clerks it adds read the same rig, so the import stamps where the test reads.
 
 ## `internal static LPortraitClerk TPortraitClerkCreate(LRig rig)`
 
 The portrait clerk with every clerk a page composes from, built over `rig`.
+
+## `internal static LPortraitClerkPress TPortraitPressCreate(LRig rig)`
+
+The press clerk over `rig`, which saves and prints a composed page.
 
 ## `private static LSettings TSettingsRead()`
 
@@ -270,15 +276,21 @@ One refusal with `reason`, for a test that wraps it.
 
 ## `internal static LMarkupClerk TMarkupClerkCreate(LRig rig)`
 
-A markup clerk over `rig`, with a reflex clerk of its own so an export reads the pack's reflex order.
+A markup clerk over `rig`, exporting through the entry clerk `TMarkupExportCreate` builds.
+
+## `internal static LMarkupClerkEntry TMarkupExportCreate(LRig rig)`
+
+A markup entry clerk over `rig`, with a reflex clerk of its own.
+So an export reads the pack's reflex order.
+One example clerk serves both its card clerk and itself, as in the engine.
 
 ## `internal static LMarkupCargo TMarkupClerkRead(this LMarkupClerk clerk, string path)`
 
 Relays the cargo read of the markup clerk.
 
-## `internal static LMarkupEntry? TMarkupClerkLoad(this LMarkupClerk clerk, long id)`
+## `internal static LMarkupEntry? TMarkupClerkLoad(this LMarkupClerkEntry clerk, long id)`
 
-Relays the per-entry load of the markup clerk.
+Relays the per-entry load of the markup entry clerk.
 
 ## `internal static LMarkupOutcome TMarkupClerkImport(this LMarkupClerkIntake clerk, LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)`
 
@@ -288,9 +300,9 @@ Relays the import of the markup intake.
 
 Relays the entry page of the portrait clerk.
 
-## `internal static Task TPortraitClerkPrint(this LPortraitClerk clerk, LPortraitPage page, LPressTicket ticket)`
+## `internal static Task TPortraitClerkPrint(this LPortraitClerkPress clerk, LPortraitPage page, LPressTicket ticket)`
 
-Relays the print of the portrait clerk.
+Relays the print of the press clerk.
 
 ## `internal static LEntry TEntryClerkSave(this LEntryClerk clerk, LEntryDraft draft)`
 
@@ -298,7 +310,7 @@ Relays the entry clerk's save of a draft with no extra changes.
 
 ## `internal static LTranslationClerk TTranslationClerkCreate(LRig rig)`
 
-The translation clerk over `rig`.
+The translation clerk over `rig`, stamping through a revision clerk over the same rig.
 
 ## `internal static IReadOnlyList<LEntry> TTranslationClerkFind(this LTranslationClerk clerk, string query, long? entryId)`
 
@@ -320,9 +332,9 @@ Creates a bare entry with the headword and language of `entry`, as a translation
 
 Relays the entry clerk's read of one entry, or `null`.
 
-## `internal static IReadOnlyList<LEntry> TEntryClerkFind(this LEntryClerk clerk, string query, LCatalogOrder order)`
+## `internal static IReadOnlyList<LEntry> TEntryQueryFind(this LRig rig, string query, LCatalogOrder order)`
 
-Relays the entry clerk's find of entries for a query in the given order.
+Relays the query clerk's find of entries for a query in the given order, over a query clerk on `rig`.
 
 ## `internal static LRevision TEntryClerkDelete(this LEntryClerk clerk, long id)`
 

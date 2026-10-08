@@ -10,7 +10,9 @@ public sealed class CDisplay
     private static readonly CLectern _cDisplayBlank = new(
         string.Empty, string.Empty, [], false, [], false, string.Empty, string.Empty, false, string.Empty);
 
-    private readonly LEntryPort _cDisplayPort;
+    private readonly LEntryPort _cDisplayEntryPort;
+
+    private readonly LMarkdownPort _cDisplayMarkdownPort;
 
     private readonly CEnvoy _cDisplayEnvoy;
 
@@ -18,8 +20,8 @@ public sealed class CDisplay
 
     internal CDisplay(
         LDraftPort drafts,
-        LEntryPort entries,
-        LPhonologyPort phonology,
+        CEntryBundle entries,
+        CPhonologyBundle phonology,
         LSettingsPort settings,
         LMediaPort media,
         CEnvoy envoy,
@@ -30,14 +32,52 @@ public sealed class CDisplay
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
-        LDisplayRule = new LDisplay(drafts, entries, phonology, settings, media, envoy, noticed);
-        _cDisplayPort = entries;
+        LDisplayRule = new LDisplay(
+            drafts,
+            entries.CEntryBundleEntry,
+            entries.CEntryBundleFavorite,
+            entries.CEntryBundleVista,
+            entries.CEntryBundleGrasp,
+            entries.CEntryBundlePronunciation,
+            phonology.CPhonologyBundleLanguage,
+            phonology.CPhonologyBundleReflex,
+            phonology.CPhonologyBundleFanqie,
+            phonology.CPhonologyBundleScript,
+            phonology.CPhonologyBundleParadigm,
+            settings,
+            media,
+            envoy,
+            noticed);
+        _cDisplayEntryPort = entries.CEntryBundleEntry;
+        _cDisplayMarkdownPort = entries.CEntryBundleMarkdown;
         _cDisplayEnvoy = envoy;
         _cDisplaySettings = settings;
-        CDisplaySound = new CDisplaySound(LDisplayRule, this, drafts, entries, phonology, media, settings, envoy);
-        CDisplayCard = new CDisplayCard(LDisplayRule, entries, phonology, settings, envoy);
-        CDisplayRoute = new CDisplayRoute(LDisplayRule, entries, settings, envoy);
-        CDisplayCompass = new CCompass(LDisplayRule, entries, settings, envoy);
+        CDisplaySound = new CDisplaySound(
+            LDisplayRule,
+            this,
+            drafts,
+            entries.CEntryBundleEntry,
+            entries.CEntryBundleGlyph,
+            phonology.CPhonologyBundleLanguage,
+            phonology.CPhonologyBundleFanqie,
+            phonology.CPhonologyBundleDiwei,
+            phonology.CPhonologyBundleScript,
+            phonology.CPhonologyBundleParadigm,
+            phonology.CPhonologyBundleReflex,
+            media,
+            settings,
+            envoy);
+        CDisplayCard = new CDisplayCard(
+            LDisplayRule,
+            entries.CEntryBundleCard,
+            entries.CEntryBundleReference,
+            entries.CEntryBundleExample,
+            phonology.CPhonologyBundleSentence,
+            settings,
+            envoy);
+        CDisplayRoute = new CDisplayRoute(LDisplayRule, entries.CEntryBundleMention, settings, envoy);
+        CDisplayCompass = new CCompass(
+            LDisplayRule, entries.CEntryBundleEntry, entries.CEntryBundleVista, settings, envoy);
     }
 
     public event Action? CDisplayOpened;
@@ -152,12 +192,12 @@ public sealed class CDisplay
             draft.LEntryDraftLanguage,
             draft.LEntryDraftNames,
             draft.LEntryDraftMarked,
-            CMarkdown.LMarkdownParse(_cDisplayPort, draft.LEntryDraftNote),
+            CMarkdown.LMarkdownParse(_cDisplayMarkdownPort, draft.LEntryDraftNote),
             draft.LEntryDraftNoted,
             stamp.Item2,
             stamp.Item3,
             stamp.Item1,
-            LEntryPort.LEngineUnitFormat(draft.LEntryDraftUnit));
+            _cDisplayEntryPort.LEngineUnitFormat(draft.LEntryDraftUnit));
         CDisplayOpened?.Invoke();
     }
 
@@ -165,7 +205,7 @@ public sealed class CDisplay
     {
         try
         {
-            return _cDisplayPort.LEngineStampRead(id);
+            return _cDisplayEntryPort.LEngineStampRead(id);
         }
         catch (Exception exception)
         {

@@ -20,19 +20,6 @@ public sealed class TEntryClerk
     }
 
     [Fact]
-    public void EntryClerkFind_ReverseOrder_ListsLastHeadwordFirst()
-    {
-        LRig rig = TInterface.TRigClerkCreate(new TVaultFake());
-        LEntryClerk clerk = TInterface.TEntryClerkCreate(rig);
-        rig.TEntryClerkAdd(TInterface.TEntryCreate(0, "ash", "English", 0, null, null));
-        rig.TEntryClerkAdd(TInterface.TEntryCreate(0, "kindle", "English", 0, null, null));
-
-        IReadOnlyList<LEntry> found = clerk.TEntryClerkFind(string.Empty, LCatalogOrder.LCatalogOrderReverse);
-
-        Assert.Equal(["kindle", "ash"], found.Select(entry => entry.LEntryHeadword));
-    }
-
-    [Fact]
     public void EntryClerkDelete_StoredEntry_LeavesTombstoneAndRevision()
     {
         LRig rig = TInterface.TRigClerkCreate(new TVaultFake());

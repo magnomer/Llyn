@@ -31,15 +31,16 @@ public sealed class CRepertoire
         CRepertoireEditor = editor;
         CRepertoirePlaywright = new CPlaywright(atelier, envoy, marshal);
         CRepertoireAtlas = new CAtlas(
-            atelier.CAtelierEntryPort,
+            atelier.CAtelierEntryBundle.CEntryBundleSituation,
             atelier.CAtelierPortraitPort,
             atelier.CAtelierSettingsPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             CRepertoirePlaywright.LPlaywrightDesk,
             shownSeam,
             envoy,
             store => CRepertoireSession!.LSessionFinish(store));
         CRepertoireOccurrence = new COccurrence(
-            atelier.CAtelierEntryPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             atelier.CAtelierPortraitPort,
             atelier.CAtelierSettingsPort,
             envoy,
@@ -61,7 +62,8 @@ public sealed class CRepertoire
         CRepertoireAtlas.CAtlasPanel.CPanelCleared += CRepertoireSession.CSessionCancel;
         CRepertoireAtlas.CAtlasPanel.CPanelDraftChanged +=
             draft => LRepertoireVignetteShow(
-                CAtlas.LAtlasSituationRead(draft, atelier.CAtelierMediaPort, atelier.CAtelierEntryPort));
+                CAtlas.LAtlasSituationRead(
+                    draft, atelier.CAtelierMediaPort, atelier.CAtelierEntryBundle.CEntryBundleMarkdown));
         CRepertoireOccurrence.COccurrencePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         CRepertoireOccurrence.COccurrencePanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         atelier.CAtelierNavigation.LNavigationTabAdd(

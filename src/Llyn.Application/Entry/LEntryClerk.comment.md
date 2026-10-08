@@ -1,10 +1,11 @@
 # LEntryClerk.cs
-Hash: `cb05775e957170a7`
+Hash: `06bf58d2d2997e19`
 
 ## `public sealed class LEntryClerk`
 
 The interactor over the entry lifecycle the engine does not own itself.
-An Entry is created, read, searched for, loaded back as a draft and deleted with the history that leaves.
+An Entry is created, read, loaded back as a draft and deleted with the history that leaves.
+Searching lives in `LEntryQueryClerk` and the grasp in `LGraspClerk`, since neither is part of the lifecycle.
 It runs over the ports of one rig and holds no gate, no observer and no cache.
 The engine calls it under its own gate and raises the bulletin a save or a delete deserves.
 The delete is the shape every spanning operation here follows.
@@ -12,10 +13,11 @@ That shape is several stores, one session, one decision.
 The commit of a draft into an entry is here too.
 It is composed out of the clerks for each part of an entry.
 
-## `public LEntryClerk(LRig rig, LCardClerk cards, LMeaningClerk meanings, LVocabularyClerk vocabulary, LInflectionClerk inflections, LParadigmClerk paradigms, LPronunciationClerk pronunciations, LTranscriptionClerk transcriptions, LReflexClerk reflexes, LRecordingClerk recordings, LFrequencyClerk frequencies)`
+## `public LEntryClerk(LRig rig, LCardClerk cards, LMeaningClerk meanings, LVocabularyClerk vocabulary, LInflectionClerk inflections, LParadigmClerk paradigms, LPronunciationClerk pronunciations, LTranscriptionClerk transcriptions, LReflexClerk reflexes, LRecordingClerk recordings, LFrequencyClerk frequencies, LRevisionClerk revisions)`
 
 Reads the ports the lifecycle touches out of `rig` and takes the frequency clerk for clearing a renamed entry.
-The ports are the root, the entries, the etymologies, the notes, the revisions, the tombstones and the workspace row.
+The ports are the root, the entries, the etymologies, the notes and the tombstones.
+The revision clerk handed in records every revision and moves the workspace row onto it.
 The eight part clerks handed in write the parts of an entry a commit spans.
 The recording clerk resolves the recording paths of a loaded draft.
 
@@ -29,70 +31,6 @@ The entry as a draft, or `null` when no entry has that id.
 Every recording path is made absolute, so a form can play it and a draft match compares like with like.
 Its reflex rows come in the order the pack declares, through `LReflexClerkSort`.
 The entry view, the editor, Livery and the portrait all load through here, so none sees storage order.
-
-## `public IReadOnlyList<LEntry> LEntryClerkFind(string query)`
-
-Returns the entries whose headword contains `query`, ordered by headword.
-It returns every entry when `query` is empty or all whitespace.
-Matching is a contains whose case is folded over the whole of Unicode.
-So an accented headword is found typed in either case.
-
-## `public IReadOnlyList<LEntry> LEntryHeadwordFind(string headword, string language)`
-
-The stored entries with the headword in the language, both trimmed.
-
-## `public IReadOnlyList<LEntry> LEntryClerkFind(string query, LCatalogOrder order)`
-
-The entries answering `query`, in `order`.
-The store answers which entries match, and the ordering is applied over what it returned.
-
-## `public IReadOnlyList<LEntry> LEntryClerkFind(string query, LCatalogOrder order, LCatalogFilter filter)`
-
-The ordered search with the entries in a hidden language left out.
-The library panel lists through this, so the filter is applied here and never in the shell.
-
-## `private static string? LEntryLanguageRead(LEntry entry)`
-
-The language an entry is filtered by.
-Both filtered lookups share it, so the filter never reads the language two ways.
-
-## `public IReadOnlyList<LEntry> LEntryClerkFind(LTag tag)`
-
-Returns the entries carrying `tag`, matched by its id, ordered by headword.
-A zero id stands for no tag chosen and returns every entry.
-The overload takes a tag rather than text so the two searches cannot be confused.
-
-## `public IReadOnlyList<LEntry> LEntryClerkFind(LRegister register)`
-
-Returns the entries marked with `register`, matched by its id, ordered by headword.
-
-## `public IReadOnlyList<LEntry> LEntryClerkFind(LSituation situation)`
-
-Returns the entries referencing `situation`, matched by its id, ordered by headword.
-A zero id stands for no situation chosen and returns every entry.
-
-## `public IReadOnlyList<LEntry> LEntryClerkFind(LExample example)`
-
-Returns the entries quoting `example`, matched by its id, ordered by headword.
-A zero id stands for no example chosen and returns every entry.
-
-## `public IReadOnlyList<LEntry> LEntryClerkFind(LReference reference)`
-
-Returns the entries citing `reference`, matched by its id, ordered by headword.
-A card cites a Source through the Example it holds, so the walk goes through that Example.
-A zero id stands for no source chosen and returns every entry.
-
-## `public static IReadOnlyList<LEntry> LEntryClerkMatch(IReadOnlyList<LEntry> entries, string query)`
-
-The entries whose headword matches `query` by the catalog match.
-An empty or blank `query` narrows nothing.
-The engine's vista narrows a child list the same way, so it calls here.
-
-## `public static IReadOnlyList<LEntry> LEntryClerkMatch(IReadOnlyList<LEntry> entries, LCatalogFilter filter, string query, LCatalogOrder order)`
-
-The entries left after the language filter, narrowed by the catalog match of `query`.
-They are ordered by `order` with the entry catalog's sort, so equal headwords follow its tie rule.
-The vista lists a catalog record's entries through this, so the shell holds no filter or order rule.
 
 ## `public LRevision LEntryClerkDelete(long id)`
 
@@ -111,32 +49,6 @@ All four writes share one session, so they are one transaction.
 Either all land or none of them do.
 Without it a failure part-way would leave an entry deleted with no tombstone naming it.
 That is history that no longer describes the file.
-
-## `public void LEntryGraspSet(long entryId, int grasp)`
-
-Writes the user's grasp onto the entry.
-The range is checked before any write, so a bad value reaches neither the store nor a subscriber.
-No revision is recorded, because a rating is a reading mark and not an edit of the word.
-
-## `public IReadOnlyDictionary<long, string> LEntryEpithetScan(IReadOnlyList<long> ids)`
-
-The epithet of every listed entry that has one, keyed by id, in one session.
-
-## `public long LEntryCountRead()`
-
-How many entries the workspace holds.
-
-## `public long LWorkspaceSizeRead()`
-
-The bytes of the main database file, for the status bar.
-
-## `public static int LEntryGraspStep`
-
-The number of grasp steps, for the shell to draw.
-
-## `public static string LEntryGraspFormat(int step)`
-
-The localized label of one grasp step.
 
 ## `public LEntry LEntryClerkSave(LEntryDraft draft, Dictionary<long, long> identity)`
 
@@ -193,11 +105,6 @@ Every part is compared before it is written.
 That is the forms, the parts of speech, the inflections, the note, the pronunciations, the transcriptions and the reflexes.
 A field that did not change writes no row and records no revision change.
 The etymology is written after the rest, and the paradigms are refreshed last.
-
-## `public LRevision LRevisionRecord(IReadOnlyList<LRevisionDelta> changes)`
-
-Records one revision holding `changes` and points the workspace row at it.
-Every save and delete moves that pointer, so the current revision is read from where it is recorded.
 
 ## `private static void LHeadwordValidate(LEntryDraft draft)`
 

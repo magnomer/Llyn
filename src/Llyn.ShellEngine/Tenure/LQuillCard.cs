@@ -46,4 +46,28 @@ public sealed class LQuillCard
                 new LRequestCardShift(_lQuillCardTenure.LTenureId, card, 0, target));
         }
     }
+
+    public void LCardTitleSet(long card, string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillCardTenure.LTenureRequestDefer(
+            new LRequestCardTitle(_lQuillCardTenure.LTenureId, card, new LStateWritten(text)));
+    }
+
+    public void LCardExpressionSet(long card, string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillCardTenure.LTenureRequestDefer(
+            new LRequestCardExpression(_lQuillCardTenure.LTenureId, card, new LStateWritten(text)));
+    }
+
+    public void LCardMeaningSet(long card, string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillCardTenure.LTenureRequestDefer(
+            new LRequestCardMeaning(_lQuillCardTenure.LTenureId, card, new LStateWritten(text)));
+    }
 }

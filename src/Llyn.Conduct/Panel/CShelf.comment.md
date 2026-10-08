@@ -1,5 +1,5 @@
 # CShelf.cs
-Hash: `7e96acdc1a6fd630`
+Hash: `3c87607237e568ec`
 
 ## `public sealed class CShelf`
 

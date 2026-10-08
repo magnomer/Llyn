@@ -12,23 +12,23 @@ public sealed class CCard
 
     private readonly LDraftPort _cCardDraftPort;
 
-    private readonly LEntryPort _cCardEntryPort;
+    private readonly LReferencePort _cCardReferencePort;
 
     private readonly LSettingsPort _cCardSettingsPort;
 
     private readonly CEnvoy _cCardEnvoy;
 
-    internal CCard(CDesk desk, LDraftPort drafts, LEntryPort entries, LSettingsPort settings, CEnvoy envoy)
+    internal CCard(CDesk desk, LDraftPort drafts, LReferencePort references, LSettingsPort settings, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(drafts);
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(references);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _cCardDesk = desk;
         _cCardDraftPort = drafts;
-        _cCardEntryPort = entries;
+        _cCardReferencePort = references;
         _cCardSettingsPort = settings;
         _cCardEnvoy = envoy;
     }
@@ -152,7 +152,7 @@ public sealed class CCard
     {
         try
         {
-            return COeuvre.COeuvreReferenceRead(_cCardEntryPort.LEngineReferenceFind());
+            return COeuvre.COeuvreReferenceRead(_cCardReferencePort.LEngineReferenceFind());
         }
         catch (Exception exception)
         {
@@ -269,7 +269,7 @@ public sealed class CCard
 
     public void CCardEtymologySet(string text)
     {
-        _cCardDesk.CDeskQuill?.LQuillEtymologySet(text);
+        _cCardDesk.CDeskEtymology?.LQuillEtymologySet(text);
     }
 
     public IReadOnlyList<CMentionLabel> CCardEtymologyRead()
@@ -287,12 +287,12 @@ public sealed class CCard
             return;
         }
 
-        _cCardDesk.CDeskQuill?.LQuillEtymonAdd(stored, int.MaxValue);
+        _cCardDesk.CDeskEtymology?.LEtymonAdd(stored, int.MaxValue);
     }
 
     public void CCardEtymonRemove(long entryId)
     {
-        _cCardDesk.CDeskQuill?.LQuillEtymonRemove(entryId);
+        _cCardDesk.CDeskEtymology?.LEtymonRemove(entryId);
     }
 
     public void CCardMentionSave(string text, int start, int length, long? entryId)
@@ -309,13 +309,17 @@ public sealed class CCard
     public void CCardMentionDelete(string text, int start, int length)
     {
         CCardMentionSend(
-            _cCardDesk.CDeskTenure?.LTenureEtymologyFind(_cCardDraftPort.LEngineSpanRead(text, start, length)), 0);
+            _cCardDesk.CDeskTenure is LTenure held
+                ? new LQuillEtymology(held).LQuillEtymologyFind(_cCardDraftPort.LEngineSpanRead(text, start, length))
+                : null,
+            0);
     }
 
     public bool CCardMentionCheck(string text, int start, int length)
     {
-        return _cCardDesk.CDeskTenure?.LTenureEtymologyFind(_cCardDraftPort.LEngineSpanRead(text, start, length))
-            is not null;
+        return _cCardDesk.CDeskTenure is LTenure held
+            && new LQuillEtymology(held).LQuillEtymologyFind(_cCardDraftPort.LEngineSpanRead(text, start, length))
+                is not null;
     }
 
     private void CCardMentionSend(LMentionDraft? span, long entryId)
@@ -325,6 +329,6 @@ public sealed class CCard
             return;
         }
 
-        _cCardDesk.CDeskQuill?.LQuillMentionSave(span.LMentionDraftOffset, span.LMentionDraftLength, entryId);
+        _cCardDesk.CDeskEtymology?.LEtymologyMentionSave(span.LMentionDraftOffset, span.LMentionDraftLength, entryId);
     }
 }

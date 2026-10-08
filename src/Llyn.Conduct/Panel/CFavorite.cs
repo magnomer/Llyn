@@ -10,7 +10,7 @@ public sealed class CFavorite
 {
     private readonly CAtelier _cFavoriteAtelier;
 
-    private readonly LEntryPort _cFavoriteEntryPort;
+    private readonly LFavoritePort _cFavoritePort;
 
     private readonly LPortraitPort _cFavoritePortraitPort;
 
@@ -28,7 +28,7 @@ public sealed class CFavorite
         ArgumentNullException.ThrowIfNull(marshal);
 
         _cFavoriteAtelier = atelier;
-        _cFavoriteEntryPort = atelier.CAtelierEntryPort;
+        _cFavoritePort = atelier.CAtelierEntryBundle.CEntryBundleFavorite;
         _cFavoritePortraitPort = atelier.CAtelierPortraitPort;
         _cFavoriteEnvoy = envoy;
         _cFavoriteSettingsPort = atelier.CAtelierSettingsPort;
@@ -38,6 +38,7 @@ public sealed class CFavorite
         CFavoritePanel = new CPanel(
             envoy,
             _cFavoriteSettingsPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             "Favorite.LoadFailed", "Scribe", editor.CEditorDesk.LDeskChangeCheck, editor.LEditorFinish,
             shownSeam);
         CFavoritePanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
@@ -155,7 +156,7 @@ public sealed class CFavorite
 
         try
         {
-            return _cFavoriteEntryPort.LEngineFavoriteFind(vista).Select(CCatalog.LCatalogRowRead).ToList();
+            return _cFavoritePort.LEngineFavoriteFind(vista).Select(CCatalog.LCatalogRowRead).ToList();
         }
         catch (Exception exception)
         {
@@ -171,7 +172,7 @@ public sealed class CFavorite
 
     internal string LFavoriteFileRead()
     {
-        return LVista.LVistaFileRead(_cFavoriteVista);
+        return _cFavoriteAtelier.CAtelierEntryBundle.CEntryBundleVista.LEngineFileRead(_cFavoriteVista);
     }
 
     public Task CFavoritePortraitPrint()

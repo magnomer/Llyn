@@ -6,7 +6,15 @@ namespace Llyn.Conduct;
 
 internal sealed class LDisplay
 {
-    private readonly LEntryPort _lEntryPort;
+    private readonly LEntryPort _lDisplayEntryPort;
+
+    private readonly LFavoritePort _lDisplayFavoritePort;
+
+    private readonly LVistaPort _lDisplayVistaPort;
+
+    private readonly LGraspPort _lDisplayGraspPort;
+
+    private readonly LPronunciationPort _lDisplayPronunciationPort;
 
     private readonly CEnvoy _lDisplayEnvoy;
 
@@ -19,22 +27,39 @@ internal sealed class LDisplay
     internal LDisplay(
         LDraftPort drafts,
         LEntryPort entries,
-        LPhonologyPort phonology,
+        LFavoritePort favorites,
+        LVistaPort vistas,
+        LGraspPort grasps,
+        LPronunciationPort pronunciations,
+        LLanguagePort languages,
+        LReflexPort reflexes,
+        LFanqiePort fanqies,
+        LScriptPort scripts,
+        LParadigmPort paradigms,
         LSettingsPort settings,
         LMediaPort media,
         CEnvoy envoy,
         CLedgerNoticed noticed)
     {
         ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(favorites);
+        ArgumentNullException.ThrowIfNull(vistas);
+        ArgumentNullException.ThrowIfNull(grasps);
+        ArgumentNullException.ThrowIfNull(pronunciations);
         ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(noticed);
 
-        _lEntryPort = entries;
+        _lDisplayEntryPort = entries;
+        _lDisplayFavoritePort = favorites;
+        _lDisplayVistaPort = vistas;
+        _lDisplayGraspPort = grasps;
+        _lDisplayPronunciationPort = pronunciations;
         _lDisplayEnvoy = envoy;
         _lDisplaySettings = settings;
         LDisplayNoticed = noticed;
         LDisplayMediaPort = media;
-        LDisplaySound = new LDisplaySound(entries, phonology, media, settings);
+        LDisplaySound = new LDisplaySound(
+            entries, languages, reflexes, fanqies, scripts, paradigms, media, settings);
         LDisplaySound.LDisplaySoundFailed +=
             (key, exception) => noticed.LLedgerRepaintShow(envoy, settings, key, exception);
         LDisplaySound.LDisplayMarkFailed +=
@@ -75,7 +100,9 @@ internal sealed class LDisplay
         LEntryDraft? draft;
         try
         {
-            draft = _lDisplayVista?.LVistaLoad()?.LDraftContent;
+            draft = _lDisplayVista is null
+                ? null
+                : _lDisplayVistaPort.LEngineVistaLoad(_lDisplayVista)?.LDraftContent;
         }
         catch (Exception exception)
         {
@@ -88,7 +115,7 @@ internal sealed class LDisplay
 
     internal LEntryDraft? LDisplayEntryLoad(long id)
     {
-        LEntryDraft? loaded = _lEntryPort.LEngineEntryLoad(id);
+        LEntryDraft? loaded = _lDisplayEntryPort.LEngineEntryLoad(id);
         _lDisplayVista?.LVistaSelect(loaded is null ? null : id);
         return loaded;
     }
@@ -102,7 +129,7 @@ internal sealed class LDisplay
 
         try
         {
-            return _lEntryPort.LEngineFavoriteCheck(id);
+            return _lDisplayFavoritePort.LEngineFavoriteCheck(id);
         }
         catch (Exception exception)
         {
@@ -122,11 +149,11 @@ internal sealed class LDisplay
         {
             if (marked)
             {
-                _lEntryPort.LEngineFavoriteSave(id);
+                _lDisplayFavoritePort.LEngineFavoriteSave(id);
             }
             else
             {
-                _lEntryPort.LEngineFavoriteDelete(id);
+                _lDisplayFavoritePort.LEngineFavoriteDelete(id);
             }
         }
         catch (Exception exception)
@@ -135,13 +162,13 @@ internal sealed class LDisplay
         }
     }
 
-    internal int LDisplayGraspStep => Math.Max(0, _lEntryPort.LEngineGraspStep);
+    internal int LDisplayGraspStep => Math.Max(0, _lDisplayGraspPort.LEngineGraspStep);
 
     internal string LDisplayGraspFormat(long? entry, int step)
     {
         return entry is null
             ? string.Empty
-            : _lEntryPort.LEngineGraspFormat(step);
+            : _lDisplayGraspPort.LEngineGraspFormat(step);
     }
 
     internal int LDisplayGraspRead(long? entry)
@@ -153,7 +180,7 @@ internal sealed class LDisplay
 
         try
         {
-            int step = Math.Clamp(_lEntryPort.LEngineGraspRead(id), 0, LDisplayGraspStep);
+            int step = Math.Clamp(_lDisplayGraspPort.LEngineGraspRead(id), 0, LDisplayGraspStep);
             _lDisplayGrasp = (id, step);
             return step;
         }
@@ -174,7 +201,7 @@ internal sealed class LDisplay
         int kept = _lDisplayGrasp == (id, step) ? 0 : step;
         try
         {
-            _lEntryPort.LEngineGraspSave(id, kept);
+            _lDisplayGraspPort.LEngineGraspSave(id, kept);
             _lDisplayGrasp = (id, kept);
         }
         catch (Exception exception)
@@ -193,7 +220,7 @@ internal sealed class LDisplay
         LFrequencyGauge? gauge;
         try
         {
-            gauge = _lEntryPort.LEngineFrequencyResolve(id, once);
+            gauge = _lDisplayPronunciationPort.LEngineFrequencyResolve(id, once);
         }
         catch (Exception exception)
         {

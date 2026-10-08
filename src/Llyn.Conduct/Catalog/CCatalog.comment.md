@@ -1,5 +1,5 @@
 # CCatalog.cs
-Hash: `f5741c0fcbda3333`
+Hash: `5b6a9160f4473bc6`
 
 ## `public sealed class CCatalog`
 
@@ -21,7 +21,6 @@ Conduct drops a blank family, so a driver never builds a font family from nothin
 Conduct drops a size that is not finite and positive, so a driver sets only a usable size.
 A blank language answers the font with nothing set, so the surface keeps its theme.
 A refused read is not caught here and reaches the caller.
-The engine catches the pack failure it expects lower down.
 
 ## `private static LFontRole LCatalogRoleRead(CFontRole role)`
 
@@ -78,15 +77,15 @@ It reads the settings port from its atelier, which `CLedger.LLedgerFailureShow` 
 Maps the engine's Meaning rows to sense-menu rows by name, with no rule of its own.
 The shared sense read in `CMention` uses it.
 
-## `public static CArticulation CCatalogConsonantRead()`
+## `public CArticulation CCatalogConsonantRead()`
 
 The IPA consonant chart of the input aid, ready to build.
-It needs no session, so a driver reads it while it builds the aid.
+It is read through the atelier's pronunciation port, so the chart keeps its one owner in the engine.
 
-## `public static CArticulation CCatalogVowelRead()`
+## `public CArticulation CCatalogVowelRead()`
 
 The IPA vowel chart of the input aid, ready to build.
-It needs no session, so a driver reads it while it builds the aid.
+It is read through the atelier's pronunciation port, as the consonant chart is.
 
 ## `internal static CArticulation LCatalogArticulationRead(LArticulation chart)`
 
@@ -128,5 +127,5 @@ The engine subject a driver's subject names, mapped member by member by name lik
 ## `internal static CVistaRow LCatalogRowRead(LVistaRow row)`
 
 The Conduct copy of one entry a vista lists, carrying its chosen flag.
-Every entry list and the translation offer map through here, so the copy has one home.
+The entry lists and the translation offer map through here, so the copy has one home.
 It copies the engine's empty epithet as it stands, so the map holds no fallback.

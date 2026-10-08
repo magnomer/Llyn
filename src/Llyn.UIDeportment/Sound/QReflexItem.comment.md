@@ -1,5 +1,5 @@
 # QReflexItem.cs
-Hash: `b38363f3db0126e5`
+Hash: `074d998969cf1720`
 
 ## `public sealed class QReflexItem : INotifyPropertyChanged`
 
@@ -45,6 +45,11 @@ The opener Conduct chose for the row's language.
 ## `public string QReflexItemCloser`
 
 The closer Conduct chose for the row's language.
+
+## `public event PropertyChangedEventHandler? PropertyChanged;`
+
+The binding's only notice that a property changed, raised through `QReflexChangeRefine`.
+It names the property and carries no request.
 
 ## `internal event Action<QReflexItem, CReflexField, string>? QReflexItemTyped`
 
@@ -107,7 +112,7 @@ Writing it sends the language through `QReflexItemTyped`, so typing into a blank
 ## `public string QReflexItemLabel`
 
 The localized language on a lead row, or nothing beneath it, for the reading view.
-A typed language keeps the last key until the draft comes back with the new one.
+A typed language takes its key from the gate's answer, so the label follows the edit at once.
 
 ## `public string QReflexItemArea`
 
@@ -135,8 +140,9 @@ Sets one named text of a row, in the accent colour for a row in common use.
 
 ## `internal void QReflexStateRefine(CReflex reflex)`
 
-Takes every value of a ready reflex in place.
-So a changed mark, fold or anchor set needs no new row.
+Takes every value of a ready reflex in place, except its anchors.
+So a changed mark or fold needs no new row.
+The anchor labels arrive apart, through `QReflexAnchorRefine`.
 It keeps the reflex and copies its label keys and its lead.
 The respelled mark is taken before the text, so the text arrives under the mark it is shown with.
 Each field announces only a real change, and no announcement sends a request.
@@ -146,6 +152,7 @@ Each field announces only a real change, and no announcement sends a request.
 Writes the one cell the gate's answer names with the text the gate says it holds.
 It is the edit path's only writer, so the row never keeps a typed copy of its own.
 The binding reads the cell back after the write, so the editor shows the answer.
+A language or kind cell also takes the answer's key, so the label and tag name the typed text.
 
 ## `private static string QReflexLabelRefine(string key, string name)`
 

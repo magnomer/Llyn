@@ -5,7 +5,7 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-internal sealed class LDraftFacade
+public sealed class LDraftFacade : LMarkdownPort
 {
     private readonly LEngine _lDraftFacadeEngine;
     private readonly object _lDraftFacadeGate;
@@ -30,7 +30,7 @@ internal sealed class LDraftFacade
         {
             IReadOnlyList<string> languages = _lDraftFacadeEngine.LEngineLanguage.LEngineLanguageRead();
             string language = languages.Count > 0 ? languages[0] : string.Empty;
-            return LDraftFacadeStaff.LEngineStaffCitation.LEntryStart(origin, entryId, language);
+            return LDraftFacadeStaff.LEngineStaffEntry.LEntryStaffCitation.LEntryStart(origin, entryId, language);
         }
     }
 
@@ -93,7 +93,7 @@ internal sealed class LDraftFacade
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
-            return LDraftFacadeStaff.LEngineStaffClaim.LDraftRead(id);
+            return LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LDraftRead(id);
         }
     }
 
@@ -103,7 +103,7 @@ internal sealed class LDraftFacade
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
-            LDraftFacadeStaff.LEngineStaffClaim.LClaimClerkDelete(id);
+            LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LClaimClerkDelete(id);
             _lDraftFacadeEngine.LEngineTrove.LTroveClear(id);
         }
 
@@ -127,7 +127,7 @@ internal sealed class LDraftFacade
 
             LEngineDraftValidate(id);
 
-            LDraft? draft = LDraftFacadeStaff.LEngineStaffClaim.LDraftRead(id);
+            LDraft? draft = LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LDraftRead(id);
             if (draft is null)
             {
                 return false;
@@ -142,7 +142,7 @@ internal sealed class LDraftFacade
     {
         lock (_lDraftFacadeGate)
         {
-            return LDraftFacadeStaff.LEngineStaffCitation.LCitationDraftCheck(draft);
+            return LDraftFacadeStaff.LEngineStaffEntry.LEntryStaffCitation.LCitationDraftCheck(draft);
         }
     }
 
@@ -154,7 +154,7 @@ internal sealed class LDraftFacade
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
 
-            saved = LDraftFacadeStaff.LEngineStaffClaim.LDraftSweep(id);
+            saved = LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LDraftSweep(id);
         }
 
         _lDraftFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectDraft, saved.LDraftId);
@@ -169,7 +169,7 @@ internal sealed class LDraftFacade
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
 
-            outcome = LDraftFacadeStaff.LEngineStaffOutcome.LOutcomeClerkCommit(id, raised);
+            outcome = LDraftFacadeStaff.LEngineStaffEntry.LEntryStaffOutcome.LOutcomeClerkCommit(id, raised);
             _lDraftFacadeEngine.LEngineTrove.LTroveClear(id);
         }
 
@@ -192,7 +192,7 @@ internal sealed class LDraftFacade
                 return;
             }
 
-            LDraftFacadeStaff.LEngineStaffClaim.LClaimClerkCancel(id);
+            LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LClaimClerkCancel(id);
             _lDraftFacadeEngine.LEngineTrove.LTroveClear(id);
         }
 
@@ -204,12 +204,12 @@ internal sealed class LDraftFacade
         lock (_lDraftFacadeGate)
         {
             _lDraftFacadeEngine.LEngineRevision++;
-            LDraftFacadeStaff.LEngineStaffClaim.LClaimClerkSweep();
+            LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LClaimClerkSweep();
 
-            foreach (LDraft draft in LDraftFacadeStaff.LEngineStaffClaim.LDraftScan())
+            foreach (LDraft draft in LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LDraftScan())
             {
-                if (LDraftFacadeStaff.LEngineStaffClaim.LClaimClerkHeld.Contains(draft.LDraftId)
-                    || LDraftFacadeStaff.LEngineStaffClaim.LClaimForeignCheck(draft.LDraftId))
+                if (LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LClaimClerkHeld.Contains(draft.LDraftId)
+                    || LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LClaimForeignCheck(draft.LDraftId))
                 {
                     continue;
                 }
@@ -218,15 +218,15 @@ internal sealed class LDraftFacade
                 {
                     if (!LEngineDraftCheck(draft))
                     {
-                        LDraftFacadeStaff.LEngineStaffClaim.LClaimClerkCancel(draft.LDraftId);
+                        LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LClaimClerkCancel(draft.LDraftId);
                     }
 
                     continue;
                 }
 
-                if (LDraftFacadeStaff.LEngineStaffCitation.LCitationLeftoverCheck(draft))
+                if (LDraftFacadeStaff.LEngineStaffEntry.LEntryStaffCitation.LCitationLeftoverCheck(draft))
                 {
-                    LDraftFacadeStaff.LEngineStaffClaim.LClaimClerkCancel(draft.LDraftId);
+                    LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LClaimClerkCancel(draft.LDraftId);
                 }
             }
         }
@@ -244,7 +244,7 @@ internal sealed class LDraftFacade
     {
         lock (_lDraftFacadeGate)
         {
-            return LDraftFacadeStaff.LEngineStaffClaim.LDraftLoad(id);
+            return LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LDraftLoad(id);
         }
     }
 }

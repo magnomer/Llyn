@@ -16,12 +16,22 @@ public sealed class LForay
 
     private readonly CancellationTokenSource _lForayCancellation = new();
 
+    private readonly LQuillPronunciation _lForayPronunciation;
+
     private bool _lForayCancelled;
 
-    internal LForay(LEngine engine, LTenure tenure, string word, string language, long target, string scheme)
+    internal LForay(
+        LEngine engine,
+        LTenure tenure,
+        LQuillPronunciation pronunciation,
+        string word,
+        string language,
+        long target,
+        string scheme)
     {
         _lEngine = engine;
         _lForayTenure = tenure;
+        _lForayPronunciation = pronunciation;
         LForayWord = word;
         LForayLanguage = language;
         LForayTarget = target;
@@ -97,7 +107,7 @@ public sealed class LForay
             ? new LRequestAudio(draft, path, recording.LRecordingSource)
             : new LRequestPronunciationAudio(draft, LForayTarget, path, recording.LRecordingSource);
         _lForayTenure.LTenureRequestApply(request);
-        _lForayTenure.LTenureVarietySet(LForayPrimary, LForayTarget, recording.LRecordingVariety);
+        _lForayPronunciation.LQuillVarietySet(LForayPrimary, LForayTarget, recording.LRecordingVariety);
         return true;
     }
 
@@ -166,7 +176,7 @@ public sealed class LForay
         }
         catch (Exception exception)
         {
-            _lEngine.LEngineAuditRecord(exception);
+            _lEngine.LEngineWorkspace.LEngineAuditRecord(exception);
             if (!token.IsCancellationRequested)
             {
                 try
@@ -175,7 +185,7 @@ public sealed class LForay
                 }
                 catch (Exception ending)
                 {
-                    _lEngine.LEngineAuditRecord(ending);
+                    _lEngine.LEngineWorkspace.LEngineAuditRecord(ending);
                 }
             }
         }

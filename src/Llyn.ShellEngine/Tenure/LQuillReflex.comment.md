@@ -1,21 +1,21 @@
 # LQuillReflex.cs
-Hash: `829c5d2bb19cfa43`
+Hash: `a9fff8a4c16834c1`
 
 ## `public sealed class LQuillReflex`
 
-The reflex row edits of one tenure, each building exactly one request.
-A reflex row has six typed cells, so the edits get their own quill beside `LQuill`, as `LQuillSituation` does.
-The row's language respells its text, which needs the phonology port.
+The reflex row edits of one tenure, each building exactly one request, and the reflex reads they need.
+A reflex row has six typed cells and its fanqie anchors, so its edits get their own quill.
+The row's language respells its text, which needs the reflex port.
 
 ## `private readonly LTenure _lQuillReflexTenure;`
 
 The tenure every request is built for and handed to.
 
-## `private readonly LPhonologyPort _lQuillReflexPhonology;`
+## `private readonly LReflexPort _lQuillReflexPort;`
 
 The port whose reflex guise tells whether a row's language respells.
 
-## `public LQuillReflex(LTenure tenure, LPhonologyPort phonology)`
+## `public LQuillReflex(LTenure tenure, LReflexPort reflexes)`
 
 Builds the quill over one tenure, which it never swaps.
 
@@ -58,7 +58,30 @@ Defers the typed meaning of row `reflex`.
 
 Defers the typed note of row `reflex`.
 
+## `public void LReflexAnchorSet(long reflex, long fanqie, bool anchored)`
+
+Ties or unties one reflex row and one fanqie row, sent at once.
+
+## `public bool LQuillReflexCheck()`
+
+Whether the held draft shows its reflex box.
+A draft already holding reflex rows shows them even when its pack lists no reflex rules.
+So stored rows never vanish when a pack drops its rules.
+
+## `public void LQuillReflexStart()`
+
+Starts the reflex lookup for the held draft's stored entry while the draft holds no reflex row.
+A draft never stored, or one already reflected, starts nothing.
+The reflex clerk refuses a second lookup for the same entry itself.
+
+## `public IReadOnlyList<LAnchorRow> LQuillAnchorScan(long reflex)`
+
+The stored fanqie rows the reflex row `reflex` may anchor to, each marked when the row holds it.
+The row's tone is compared under the draft language's tone classes.
+A draft never stored, an unknown row or a refused read answers empty, so the menu shows its notice.
+Any other failure of the scan reaches the caller.
+
 ## `private bool LQuillRespellingCheck(long reflex)`
 
-Whether row `reflex` prints its respelling, by the same guise the row scan reads.
+Whether row `reflex` prints its respelling, by the guise the reflex port answers for its language.
 A row the draft no longer holds reads false.

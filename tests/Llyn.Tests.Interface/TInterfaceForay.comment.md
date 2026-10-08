@@ -1,5 +1,5 @@
 # TInterfaceForay.cs
-Hash: `f71d74a9bee614fc`
+Hash: `c27bc21fc41ef185`
 
 ## `internal static partial class TInterface`
 

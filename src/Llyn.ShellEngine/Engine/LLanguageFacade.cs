@@ -8,7 +8,7 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-internal sealed class LLanguageFacade
+public sealed class LLanguageFacade : LGlyphPort, LScriptPort, LLanguagePort
 {
     private readonly LEngine _lLanguageFacadeEngine;
     private readonly object _lLanguageFacadeGate;
@@ -25,7 +25,7 @@ internal sealed class LLanguageFacade
     {
         lock (_lLanguageFacadeGate)
         {
-            return LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageClerkRead();
+            return LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage.LLanguageClerkRead();
         }
     }
 
@@ -59,7 +59,7 @@ internal sealed class LLanguageFacade
         LLanguageClerk languages;
         lock (_lLanguageFacadeGate)
         {
-            languages = LLanguageFacadeStaff.LEngineStaffLanguage;
+            languages = LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage;
         }
 
         return languages.LLanguageFlagRead(language, cancellation);
@@ -71,7 +71,7 @@ internal sealed class LLanguageFacade
         await _lLanguageFacadeEnsign.WaitAsync().ConfigureAwait(true);
         try
         {
-            LEnsign ensign = LLanguageFacadeStaff.LEngineStaffEnsign;
+            LEnsign ensign = LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffEnsign;
             IReadOnlyList<string> languages = LEngineLanguageRead();
             string[] missing = ensign.LEnsignMissingRead(languages, out int age);
             if (missing.Length == 0)
@@ -108,7 +108,7 @@ internal sealed class LLanguageFacade
         await _lLanguageFacadeEnsign.WaitAsync().ConfigureAwait(true);
         try
         {
-            LEnsign ensign = LLanguageFacadeStaff.LEngineStaffEnsign;
+            LEnsign ensign = LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffEnsign;
             string[] missing = ensign.LEnsignMissingRead(keyed.Keys, out int age);
             if (missing.Length == 0)
             {
@@ -166,7 +166,7 @@ internal sealed class LLanguageFacade
         LLanguageClerk languages;
         lock (_lLanguageFacadeGate)
         {
-            languages = LLanguageFacadeStaff.LEngineStaffLanguage;
+            languages = LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage;
         }
 
         LAccentRow primary = languages.LLanguageAccentRead(draft.LEntryDraftPronunciation, respelled);
@@ -206,7 +206,7 @@ internal sealed class LLanguageFacade
         LLanguageClerk languages;
         lock (_lLanguageFacadeGate)
         {
-            languages = LLanguageFacadeStaff.LEngineStaffLanguage;
+            languages = LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage;
         }
 
         return languages.LLanguageContourRead(language, ipa);
@@ -222,7 +222,7 @@ internal sealed class LLanguageFacade
         LLanguageClerk languages;
         lock (_lLanguageFacadeGate)
         {
-            languages = LLanguageFacadeStaff.LEngineStaffLanguage;
+            languages = LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage;
         }
 
         return languages.LVarietyFlagRead(language, variety, cancellation);
@@ -233,7 +233,7 @@ internal sealed class LLanguageFacade
         LLanguageClerk languages;
         lock (_lLanguageFacadeGate)
         {
-            languages = LLanguageFacadeStaff.LEngineStaffLanguage;
+            languages = LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage;
         }
 
         return languages.LLanguageClerkLoad(language);
@@ -243,13 +243,13 @@ internal sealed class LLanguageFacade
     {
         lock (_lLanguageFacadeGate)
         {
-            return LLanguageFacadeStaff.LEngineStaffScript.LScriptStyleRead(language);
+            return LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffScript.LScriptStyleRead(language);
         }
     }
 
     public void LEngineScriptStart(long entryId)
     {
-        LLanguageFacadeStaff.LEngineStaffScript.LScriptClerkStart(entryId);
+        LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffScript.LScriptClerkStart(entryId);
     }
 
     public IReadOnlyList<LTranscriptionDraft> LEngineTranscriptionRead(LEntryDraft draft)
@@ -257,7 +257,7 @@ internal sealed class LLanguageFacade
         LLanguageClerk languages;
         lock (_lLanguageFacadeGate)
         {
-            languages = LLanguageFacadeStaff.LEngineStaffLanguage;
+            languages = LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage;
         }
 
         return languages.LLanguageTranscriptionRead(draft);
@@ -268,10 +268,17 @@ internal sealed class LLanguageFacade
         LLanguageClerk languages;
         lock (_lLanguageFacadeGate)
         {
-            languages = LLanguageFacadeStaff.LEngineStaffLanguage;
+            languages = LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage;
         }
 
         return languages.LLanguageGlyphRead(draft);
+    }
+
+    LGlyph? LGlyphPort.LEngineGlyphRead(LEntryDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        return LEngineGlyphRead(draft.LEntryDraftLanguage);
     }
 
     public LGlyph? LEngineGlyphRead(string language)
@@ -279,7 +286,7 @@ internal sealed class LLanguageFacade
         LLanguageClerk languages;
         lock (_lLanguageFacadeGate)
         {
-            languages = LLanguageFacadeStaff.LEngineStaffLanguage;
+            languages = LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage;
         }
 
         return languages.LLanguageGlyphLoad(language);
@@ -290,11 +297,13 @@ internal sealed class LLanguageFacade
         LLanguageClerk languages;
         lock (_lLanguageFacadeGate)
         {
-            languages = LLanguageFacadeStaff.LEngineStaffLanguage;
+            languages = LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage;
         }
 
         return languages.LLanguageGlyphDivide(draft);
     }
+
+    public IReadOnlyList<int> LEngineContourScale => LLanguageClerk.LLanguageContourScale;
 
     public void LEngineSoundStart(long entryId)
     {
@@ -311,12 +320,12 @@ internal sealed class LLanguageFacade
 
     public void LEngineScriptRebuild(long entryId)
     {
-        LLanguageFacadeStaff.LEngineStaffScript.LScriptClerkRebuild(entryId);
+        LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffScript.LScriptClerkRebuild(entryId);
     }
 
     public IReadOnlyList<LScriptGroup> LEngineScriptDivide(long entryId)
     {
-        return LLanguageFacadeStaff.LEngineStaffScript.LScriptClerkDivide(entryId);
+        return LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffScript.LScriptClerkDivide(entryId);
     }
 
     public IReadOnlyList<LScriptGroup> LEngineScriptRead(long entryId)
@@ -327,7 +336,7 @@ internal sealed class LLanguageFacade
 
     public bool LEngineScriptCheck(long entryId)
     {
-        return LLanguageFacadeStaff.LEngineStaffScript.LScriptClerkCheck(entryId);
+        return LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffScript.LScriptClerkCheck(entryId);
     }
 
     private LEngineStaff LLanguageFacadeStaff => _lLanguageFacadeEngine.LEngineStaffHeld;

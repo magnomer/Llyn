@@ -109,7 +109,7 @@ internal static partial class TInterface
         TCourtClerkCreate(rig, new LIdentity(rig.LRigWorkspaces), new LChronicleClerk(rig));
 
     private static LCourtClerk TCourtClerkCreate(LRig rig, LIdentity identity, LChronicleClerk chronicle) =>
-        new(rig, identity, chronicle, new LTranslationClerk(rig));
+        new(rig, identity, chronicle, new LTranslationClerk(rig, new LRevisionClerk(rig)));
 
     internal static LDraft TClaimClerkStart(this LClaimClerk clerk, string origin, long entryId) =>
         clerk.LClaimClerkStart(clerk.LDraftCreate(origin, entryId, LClaimClerk.LDraftBlank));
@@ -175,7 +175,7 @@ internal static partial class TInterface
     {
         LTagClerk tags = new(rig);
         LRegisterClerk registers = new(rig);
-        LTranslationClerk translations = new(rig);
+        LTranslationClerk translations = new(rig, new LRevisionClerk(rig));
         LExampleClerk examples = new(rig, new LReferenceClerk(rig));
         LCardClerk cards = new(rig, tags, registers, translations, examples);
         LParadigmClerk paradigms = new(rig);
@@ -192,7 +192,8 @@ internal static partial class TInterface
             new LTranscriptionClerk(rig, languages),
             new LReflexClerk(rig, languages, claims, new object(), static (_, _) => { }),
             new LRecordingClerk(rig, languages, new LTrailClerk(rig), claims),
-            new LFrequencyClerk(rig, languages, new object(), TSettingsRead, static (_, _) => { }));
+            new LFrequencyClerk(rig, languages, new object(), TSettingsRead, static (_, _) => { }),
+            new LRevisionClerk(rig));
     }
 
     internal static LRecordingClerk TRecordingClerkCreate(LRig rig) =>
@@ -208,6 +209,8 @@ internal static partial class TInterface
             rig,
             claims,
             entries,
+            new LRevisionClerk(rig),
+            new LEntryQueryClerk(rig),
             new LLacunaClerk(
                 rig, languages, new LParadigmClerk(rig), claims, new object(), TSettingsRead, static (_, _) => { }),
             new LFrequencyClerk(rig, languages, new object(), TSettingsRead, static (_, _) => { }),
@@ -220,21 +223,20 @@ internal static partial class TInterface
         LLanguageCache languages = new(rig.LRigLanguages);
         object gate = new();
         return new LPortraitClerk(
-            rig,
             new LLanguageClerk(rig, languages, new LTrailClerk(rig)),
             TEntryClerkCreate(rig),
             new LVocabularyClerk(rig),
-            new LTranslationClerk(rig),
+            new LTranslationClerk(rig, new LRevisionClerk(rig)),
             new LReferenceClerk(rig),
             new LFavoriteClerk(rig),
             new LFanqieClerk(rig, languages, gate, static (_, _) => { }),
             new LFrequencyClerk(rig, languages, gate, TSettingsRead, static (_, _) => { }),
             new LParadigmClerk(rig),
             new LScriptClerk(rig, languages, gate, static (_, _) => { }),
-            new LMarkupClerk(
-                rig, new LReflexClerk(rig, languages, TClaimClerkCreate(rig), gate, static (_, _) => { })),
             TSettingsRead);
     }
+
+    internal static LPortraitClerkPress TPortraitPressCreate(LRig rig) => new(rig);
 
     private static LSettings TSettingsRead() => TSettingsCreate("en");
 
@@ -289,20 +291,27 @@ internal static partial class TInterface
 
     internal static LRefusal TRefusalCreate(string reason) => new(reason);
 
-    internal static LMarkupClerk TMarkupClerkCreate(LRig rig) =>
-        new(
+    internal static LMarkupClerk TMarkupClerkCreate(LRig rig) => new(rig, TMarkupExportCreate(rig));
+
+    internal static LMarkupClerkEntry TMarkupExportCreate(LRig rig)
+    {
+        LMarkupClerkExample example = new(rig);
+        return new LMarkupClerkEntry(
             rig,
             new LReflexClerk(
                 rig,
                 new LLanguageCache(rig.LRigLanguages),
                 TClaimClerkCreate(rig),
                 new object(),
-                static (_, _) => { }));
+                static (_, _) => { }),
+            new LMarkupClerkCard(rig, example),
+            example);
+    }
 
     internal static LMarkupCargo TMarkupClerkRead(this LMarkupClerk clerk, string path) =>
         clerk.LMarkupClerkRead(path);
 
-    internal static LMarkupEntry? TMarkupClerkLoad(this LMarkupClerk clerk, long id) => clerk.LMarkupLoad(id);
+    internal static LMarkupEntry? TMarkupClerkLoad(this LMarkupClerkEntry clerk, long id) => clerk.LMarkupLoad(id);
 
     internal static LMarkupOutcome TMarkupClerkImport(
         this LMarkupClerkIntake clerk, LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes) =>
@@ -311,13 +320,13 @@ internal static partial class TInterface
     internal static LPortraitPage TPortraitClerkRead(this LPortraitClerk clerk, long entryId, LPortraitLabel label) =>
         clerk.LPortraitClerkRead(entryId, label);
 
-    internal static Task TPortraitClerkPrint(this LPortraitClerk clerk, LPortraitPage page, LPressTicket ticket) =>
+    internal static Task TPortraitClerkPrint(this LPortraitClerkPress clerk, LPortraitPage page, LPressTicket ticket) =>
         clerk.LPortraitClerkPrint(page, ticket);
 
     internal static LEntry TEntryClerkSave(this LEntryClerk clerk, LEntryDraft draft) =>
         clerk.LEntryClerkSave(draft, []);
 
-    internal static LTranslationClerk TTranslationClerkCreate(LRig rig) => new(rig);
+    internal static LTranslationClerk TTranslationClerkCreate(LRig rig) => new(rig, new LRevisionClerk(rig));
 
     internal static IReadOnlyList<LEntry> TTranslationClerkFind(
         this LTranslationClerk clerk, string query, long? entryId) =>
@@ -329,12 +338,13 @@ internal static partial class TInterface
     internal static string? TTranslationWordRead(string text) => LTranslationClerk.LTranslationWordRead(text);
 
     internal static LEntry TEntryClerkAdd(this LRig rig, LEntry entry) =>
-        new LTranslationClerk(rig).LTranslationClerkCreate(entry.LEntryHeadword, entry.LEntryLanguage);
+        new LTranslationClerk(rig, new LRevisionClerk(rig))
+            .LTranslationClerkCreate(entry.LEntryHeadword, entry.LEntryLanguage);
 
     internal static LEntry? TEntryClerkRead(this LEntryClerk clerk, long id) => clerk.LEntryClerkRead(id);
 
-    internal static IReadOnlyList<LEntry> TEntryClerkFind(this LEntryClerk clerk, string query, LCatalogOrder order) =>
-        clerk.LEntryClerkFind(query, order);
+    internal static IReadOnlyList<LEntry> TEntryQueryFind(this LRig rig, string query, LCatalogOrder order) =>
+        new LEntryQueryClerk(rig).LEntryFind(query, order);
 
     internal static LRevision TEntryClerkDelete(this LEntryClerk clerk, long id) => clerk.LEntryClerkDelete(id);
 

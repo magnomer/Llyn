@@ -1,5 +1,5 @@
 # PContour.cs
-Hash: `d1846025b442df2b`
+Hash: `2c22c21e13cf4b82`
 
 ## `public sealed class PContour : FrameworkElement`
 
@@ -63,19 +63,41 @@ The brush the box is outlined with, read from the theme.
 
 The phonetic family the syllable text is set in, read from the theme.
 
+## `public Brush PContourGuide`
+
+The guide line brush, tied by the constructor to the theme's guide colour.
+
+## `public Brush PContourAxis`
+
+The level digit brush, tied by the constructor to the theme's axis colour.
+
+## `public Brush PContourInk`
+
+The syllable text brush, tied by the constructor to the theme's ink colour.
+
+## `public Brush PContourFrame`
+
+The fill and dot rim brush, tied by the constructor to the theme's frame colour.
+
+## `public Brush PContourEdge`
+
+The outline brush, tied by the constructor to the theme's edge colour.
+
+## `public FontFamily PContourFont`
+
+The face of the level digits and the syllable text, tied by the constructor to the theme's phonetic family.
+
 ## `protected override Size MeasureOverride(Size availableSize)`
 
 The box asks for its full width, one cell per syllable, and never shrinks to fit.
 A shrunken contour would read as a glyph, which is what the box exists to avoid.
+The size is read from a `QContourPlot` built from the current scale and syllable count.
 
 ## `protected override void OnRender(DrawingContext drawingContext)`
 
 Draws nothing until both the syllables and the scale are present.
+One `QContourPlot` built from the scale and the syllable count places the guides and every cell.
 The frame goes first and the guides next, so every pitch line sits on top of them.
-
-## `private double PContourPlotHeight`
-
-The height the guide lines span, one gap per step of the scale.
 
 ## `private void PContourRefine()`
 
@@ -87,21 +109,6 @@ It then asks for a new measure and a new drawing.
 A pitch line is stroked with a gradient laid along the cell in absolute coordinates.
 Each turning point pins its brush's colour at its own horizontal position.
 So the colour between two points is the mix of their levels, and a level tone is one solid colour.
-
-## `private IReadOnlyList<Point> PContourPointResolve(IReadOnlyList<int> levels, double left)`
-
-The turning points spread evenly across the cell, inset from both edges.
-A single level yields two points at the same height, so a level tone is drawn across the whole cell.
-
-## `private double PContourLevelResolve(int level)`
-
-The height of a level's line, one gap per step below the top level of the scale.
-
-## `private int PContourDepthRead(int level)`
-
-How many levels of the scale lie above this one, read from the scale's own order.
-The box assumes no direction and no range of levels, so a scale in another order draws as handed.
-The line height follows this depth.
 
 ## `private static Color PContourColorRead(Brush ink)`
 

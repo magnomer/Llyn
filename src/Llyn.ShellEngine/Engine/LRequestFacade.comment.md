@@ -1,5 +1,5 @@
 # LRequestFacade.cs
-Hash: `bb20f83448ca8d5e`
+Hash: `db1b0a95e3b01c3f`
 
 ## `internal sealed class LRequestFacade`
 
@@ -29,7 +29,7 @@ The bulletin is raised outside the gate, after the file is written.
 Drops the recordings a headword or language change made wrong, comparing the applied draft with the held one.
 A new language makes every recording on the entry audio in the wrong language, so all of them go.
 A new spelling drops only a recording fetched this draft, since a stored one is the entry's own.
-This stays in the engine because only the engine can load the stored entry with its recordings resolved.
+It loads the stored entry through the entry facade, so the entry's own recordings survive.
 
 ## `private void LEngineChronicleRecord(LDraft held, LDraft saved, LRequest? request)`
 

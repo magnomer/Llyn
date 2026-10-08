@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -11,6 +12,8 @@ public sealed class LQuillChip
 
     private readonly LDraftPort _lQuillChipDrafts;
 
+    private readonly LQuillMention _lQuillChipMention;
+
     public LQuillChip(LTenure tenure, LDraftPort drafts)
     {
         ArgumentNullException.ThrowIfNull(tenure);
@@ -18,6 +21,7 @@ public sealed class LQuillChip
 
         _lQuillChipTenure = tenure;
         _lQuillChipDrafts = drafts;
+        _lQuillChipMention = new LQuillMention(tenure);
     }
 
     public LTagOffer LQuillTagAdd(long card, string text, int position, bool settled)
@@ -204,6 +208,27 @@ public sealed class LQuillChip
         }
     }
 
+    public IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LQuillTranslationRead(LEntryDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        IReadOnlyList<LCardDraft> cards = [.. draft.LEntryDraftMeanings, .. draft.LEntryDraftCollocations];
+        List<long> ids = cards.SelectMany(static card => card.LCardDraftTranslation).Distinct().ToList();
+        IReadOnlyList<LTranslationTarget> read;
+        try
+        {
+            read = ids.Count == 0
+                ? []
+                : _lQuillChipTenure.LTenureEngine.LEngineCard.LEngineTargetRead(_lQuillChipTenure.LTenureId, ids);
+        }
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
+        {
+            read = [];
+        }
+
+        return LCardFacade.LEngineTranslationResolve(cards, read);
+    }
+
     public LTranslationOffer LQuillMentionFind(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
@@ -231,7 +256,7 @@ public sealed class LQuillChip
         ArgumentNullException.ThrowIfNull(text);
 
         _lQuillChipTenure.LTenurePersist();
-        if (_lQuillChipTenure.LTenureMentionFind(card, sentence, _lQuillChipDrafts.LEngineSpanRead(text, start, length))
+        if (_lQuillChipMention.LQuillMentionFind(card, sentence, _lQuillChipDrafts.LEngineSpanRead(text, start, length))
             is not LMentionDraft found)
         {
             return;
@@ -246,7 +271,7 @@ public sealed class LQuillChip
         ArgumentNullException.ThrowIfNull(text);
 
         _lQuillChipTenure.LTenurePersist();
-        if (_lQuillChipTenure.LTenureMentionFind(card, sentence, _lQuillChipDrafts.LEngineSpanRead(text, start, length))
+        if (_lQuillChipMention.LQuillMentionFind(card, sentence, _lQuillChipDrafts.LEngineSpanRead(text, start, length))
             is not LMentionDraft found)
         {
             return;

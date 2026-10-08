@@ -9,13 +9,13 @@ namespace Llyn.Conduct;
 public static class CRespelling
 {
     internal static IReadOnlyList<CReflex> LRespellingReflexScan(
-        LPhonologyPort phonology, string language, IReadOnlyList<CReflexDraft> reflexes)
+        LReflexPort port, string language, IReadOnlyList<CReflexDraft> reflexes)
     {
-        ArgumentNullException.ThrowIfNull(phonology);
+        ArgumentNullException.ThrowIfNull(port);
         ArgumentNullException.ThrowIfNull(reflexes);
 
         IReadOnlyList<string> languages = reflexes.Select(static reflex => reflex.CReflexDraftLanguage).ToList();
-        IReadOnlyList<LReflexGuise> guises = phonology.LEngineGuiseRead(language, languages);
+        IReadOnlyList<LReflexGuise> guises = port.LEngineGuiseRead(language, languages);
         IReadOnlyList<bool> leads = CReflex.LReflexLeadRead(languages);
         return reflexes.Select((reflex, index) => LRespellingReflexRead(reflex, guises[index], leads[index])).ToList();
     }

@@ -7,8 +7,8 @@ namespace Llyn.Tests;
 
 internal static class TInterfaceMarkdown
 {
-    internal static LEntryPort TMarkdownPortCreate() =>
-        TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
+    internal static LMarkdownPort TMarkdownPortCreate() =>
+        TEngineFake.TEngineCreate<LMarkdownPort>(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineMarkdownParse"] = args => TInterface.TMarkdownParse((string?)args![0]),
         });

@@ -1,5 +1,5 @@
 # CPanel.cs
-Hash: `9effaf5eb143dc66`
+Hash: `13494d581a574786`
 
 ## `public sealed class CPanel`
 
@@ -13,6 +13,11 @@ The engine work is one `LVista` member per step, and the data rules stay in the 
 ## `private readonly LSettingsPort _cPanelSettingsPort;`
 
 The port a failed load or delete reads its ready notice through, before the envoy shows it.
+
+## `private readonly LVistaPort _cPanelVistaPort;`
+
+The port the panel loads, tallies, counts and deletes its vista's chosen row through.
+The vista holds only view state, so every stored read goes through this port.
 
 ## `private readonly string? _cPanelDeleteScope;`
 
@@ -33,7 +38,7 @@ A two-list tab hands in its session's finish, so the whole tab stores as one.
 Whether the panel's tab is the one in front, which only the driver's surface knows.
 It is consulted when a stored entry is announced, so a hidden tab in edit mode does not adopt it.
 
-## `internal CPanel(CEnvoy envoy, LSettingsPort settings, string loadKey, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
+## `internal CPanel(CEnvoy envoy, LSettingsPort settings, LVistaPort vistas, string loadKey, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
 `loadKey` words every failed load and tally read, so a blank one throws.
 The panel holds no vista until `CPanelVistaRestore`, so every verdict before it reads as no row and no edit.
@@ -41,6 +46,11 @@ The panel holds no vista until `CPanelVistaRestore`, so every verdict before it 
 ## `public event Action? CPanelChanged;`
 
 The mode or the loaded draft moved, so a driver reads its verdicts again.
+
+## `public event Action? CPanelRowsChanged;`
+
+A notice changed the rows, so the driver re-reads the list.
+`CPanelRowsResonate` raises it.
 
 ## `public event Action? CPanelCleared;`
 
@@ -60,9 +70,25 @@ The editor must show this stored entry, raised only while the panel is in edit m
 The vista the panel stands on, or null before a restore.
 It is internal so `CGuild` can print the Source its oeuvre panel holds.
 
+## `public bool CPanelEditing`
+
+Whether the vista is in edit mode, false before a vista arrives.
+
 ## `public bool CPanelBinEnabled`
 
 Live while a row is chosen, so owners read it as the panel's chosen-row fact too.
+
+## `public bool CPanelModeEnabled`
+
+Whether the mode switch is live, which needs a chosen row or the edit mode already on.
+
+## `public bool CPanelViewerChecked`
+
+Whether the viewer side of the mode switch is ticked, which is the opposite of the edit mode.
+
+## `public bool CPanelScribeChecked`
+
+Whether the scribe side of the mode switch is ticked, which is the edit mode itself.
 
 ## `public bool CPanelPressAllowed`
 
@@ -81,7 +107,7 @@ The engine answers the filter before a vista arrives.
 ## `public string CPanelTallyRead()`
 
 The tally chip's sentence for the chosen row, how many places cite it.
-It is one ShellEngine call, `LVista.LVistaTallyRead`, worded by Core's `LCatalogTallyFormat`.
+It is one ShellEngine call, `LVistaPort.LEngineTallyRead`, worded by Core's `LCatalogTallyFormat`.
 Before a vista arrives it reads empty.
 A fresh draft has no chosen row, so it reads as cited nowhere.
 A failure shows the panel's load failure key, as its rows read does, and answers an empty chip.

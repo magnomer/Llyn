@@ -9,7 +9,15 @@ internal sealed class LDisplaySound
 {
     private readonly LEntryPort _lEntryPort;
 
-    private readonly LPhonologyPort _lPhonologyPort;
+    private readonly LLanguagePort _lLanguagePort;
+
+    private readonly LReflexPort _lReflexPort;
+
+    private readonly LFanqiePort _lFanqiePort;
+
+    private readonly LScriptPort _lScriptPort;
+
+    private readonly LParadigmPort _lParadigmPort;
 
     private readonly LMediaPort _lMediaPort;
 
@@ -23,15 +31,31 @@ internal sealed class LDisplaySound
 
     private LEntryDraft? _lDisplaySoundReflex;
 
-    internal LDisplaySound(LEntryPort entries, LPhonologyPort phonology, LMediaPort media, LSettingsPort settings)
+    internal LDisplaySound(
+        LEntryPort entries,
+        LLanguagePort languages,
+        LReflexPort reflexes,
+        LFanqiePort fanqies,
+        LScriptPort scripts,
+        LParadigmPort paradigms,
+        LMediaPort media,
+        LSettingsPort settings)
     {
         ArgumentNullException.ThrowIfNull(entries);
-        ArgumentNullException.ThrowIfNull(phonology);
+        ArgumentNullException.ThrowIfNull(languages);
+        ArgumentNullException.ThrowIfNull(reflexes);
+        ArgumentNullException.ThrowIfNull(fanqies);
+        ArgumentNullException.ThrowIfNull(scripts);
+        ArgumentNullException.ThrowIfNull(paradigms);
         ArgumentNullException.ThrowIfNull(media);
         ArgumentNullException.ThrowIfNull(settings);
 
         _lEntryPort = entries;
-        _lPhonologyPort = phonology;
+        _lLanguagePort = languages;
+        _lReflexPort = reflexes;
+        _lFanqiePort = fanqies;
+        _lScriptPort = scripts;
+        _lParadigmPort = paradigms;
         _lMediaPort = media;
         _lSettingsPort = settings;
     }
@@ -55,7 +79,7 @@ internal sealed class LDisplaySound
         _lDisplaySoundEntry = id;
         _lDisplaySoundDraft = draft;
         _lDisplaySoundReflex = null;
-        LDisplayMarkSend(_lPhonologyPort.LEngineSoundStart, id, "Sound.StartFailed");
+        LDisplayMarkSend(_lLanguagePort.LEngineSoundStart, id, "Sound.StartFailed");
     }
 
     internal void LDisplaySoundClear()
@@ -96,27 +120,27 @@ internal sealed class LDisplaySound
 
     internal bool LDisplayReflexCheck(long? id)
     {
-        return LDisplayPendingRead(_lPhonologyPort.LEngineReflexCheck, id);
+        return LDisplayPendingRead(_lReflexPort.LEngineReflexCheck, id);
     }
 
     internal void LDisplayReflexRebuild(long? id)
     {
-        LDisplayMarkSend(_lPhonologyPort.LEngineReflexRebuild, id, "Display.ReflexRebuildFailed");
+        LDisplayMarkSend(_lReflexPort.LEngineReflexRebuild, id, "Display.ReflexRebuildFailed");
     }
 
     internal bool LDisplayFanqieCheck(long? id)
     {
-        return LDisplayPendingRead(_lPhonologyPort.LEngineFanqieCheck, id);
+        return LDisplayPendingRead(_lFanqiePort.LEngineFanqieCheck, id);
     }
 
     internal bool LDisplayScriptCheck(long? id)
     {
-        return LDisplayPendingRead(_lPhonologyPort.LEngineScriptCheck, id);
+        return LDisplayPendingRead(_lScriptPort.LEngineScriptCheck, id);
     }
 
     internal bool LDisplayParadigmCheck(long? id)
     {
-        return LDisplayPendingRead(_lPhonologyPort.LEngineInflectionCheck, id);
+        return LDisplayPendingRead(_lParadigmPort.LEngineInflectionCheck, id);
     }
 
     internal bool LDisplayMorphologyRead()

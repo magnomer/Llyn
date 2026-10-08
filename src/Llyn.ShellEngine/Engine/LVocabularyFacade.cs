@@ -5,7 +5,7 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-internal sealed class LVocabularyFacade
+public sealed class LVocabularyFacade : LParadigmPort, LSentencePort
 {
     private readonly LEngine _lVocabularyFacadeEngine;
     private readonly object _lVocabularyFacadeGate;
@@ -21,7 +21,7 @@ internal sealed class LVocabularyFacade
     {
         lock (_lVocabularyFacadeGate)
         {
-            return LVocabularyFacadeStaff.LEngineStaffVocabulary.LSpeechRead(language);
+            return LVocabularyFacadeStaff.LEngineStaffLanguage.LLanguageStaffVocabulary.LSpeechRead(language);
         }
     }
 
@@ -29,7 +29,7 @@ internal sealed class LVocabularyFacade
     {
         lock (_lVocabularyFacadeGate)
         {
-            return LVocabularyFacadeStaff.LEngineStaffVocabulary.LSpeechAdd(language, name);
+            return LVocabularyFacadeStaff.LEngineStaffLanguage.LLanguageStaffVocabulary.LSpeechAdd(language, name);
         }
     }
 
@@ -37,7 +37,7 @@ internal sealed class LVocabularyFacade
     {
         lock (_lVocabularyFacadeGate)
         {
-            return LVocabularyFacadeStaff.LEngineStaffVocabulary.LSentenceOrderRead(language);
+            return LVocabularyFacadeStaff.LEngineStaffLanguage.LLanguageStaffVocabulary.LSentenceOrderRead(language);
         }
     }
 
@@ -45,7 +45,7 @@ internal sealed class LVocabularyFacade
     {
         lock (_lVocabularyFacadeGate)
         {
-            return LVocabularyFacadeStaff.LEngineStaffVocabulary.LSentenceParticleRead(language);
+            return LVocabularyFacadeStaff.LEngineStaffLanguage.LLanguageStaffVocabulary.LSentenceParticleRead(language);
         }
     }
 
@@ -53,20 +53,21 @@ internal sealed class LVocabularyFacade
     {
         lock (_lVocabularyFacadeGate)
         {
-            return LVocabularyFacadeStaff.LEngineStaffVocabulary.LSentenceDependenceRead(language);
+            return LVocabularyFacadeStaff.LEngineStaffLanguage.LLanguageStaffVocabulary
+                .LSentenceDependenceRead(language);
         }
     }
 
     internal void LEngineLanguageImport()
     {
-        LVocabularyFacadeStaff.LEngineStaffVocabulary.LLanguageImport();
+        LVocabularyFacadeStaff.LEngineStaffLanguage.LLanguageStaffVocabulary.LLanguageImport();
     }
 
     public IReadOnlyList<LParadigmRow> LEngineParadigmScan(long entryId)
     {
         lock (_lVocabularyFacadeGate)
         {
-            return LVocabularyFacadeStaff.LEngineStaffParadigm.LParadigmRowRead(entryId);
+            return LVocabularyFacadeStaff.LEngineStaffLanguage.LLanguageStaffParadigm.LParadigmRowRead(entryId);
         }
     }
 
@@ -74,18 +75,23 @@ internal sealed class LVocabularyFacade
     {
         lock (_lVocabularyFacadeGate)
         {
-            return LVocabularyFacadeStaff.LEngineStaffParadigm.LParadigmLanguageRead(entryId);
+            return LVocabularyFacadeStaff.LEngineStaffLanguage.LLanguageStaffParadigm.LParadigmLanguageRead(entryId);
         }
+    }
+
+    public LParadigmStatus LEngineParadigmCheck(LParadigmRow row, bool pending, bool enabled)
+    {
+        return LParadigmClerk.LParadigmClerkCheck(row, pending, enabled);
     }
 
     public bool LEngineInflectionCheck(long entryId)
     {
-        return LVocabularyFacadeStaff.LEngineStaffLacuna.LLacunaClerkCheck(entryId);
+        return LVocabularyFacadeStaff.LEngineStaffLanguage.LLanguageStaffLacuna.LLacunaClerkCheck(entryId);
     }
 
     public void LEngineInflectionStart(long entryId)
     {
-        LVocabularyFacadeStaff.LEngineStaffLacuna.LLacunaClerkStart(entryId);
+        LVocabularyFacadeStaff.LEngineStaffLanguage.LLanguageStaffLacuna.LLacunaClerkStart(entryId);
     }
     private LEngineStaff LVocabularyFacadeStaff => _lVocabularyFacadeEngine.LEngineStaffHeld;
 }

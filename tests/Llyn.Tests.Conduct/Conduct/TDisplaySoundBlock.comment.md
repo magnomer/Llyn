@@ -1,5 +1,5 @@
 # TDisplaySoundBlock.cs
-Hash: `524ced6fd40f0f05`
+Hash: `0e4aa288043249f2`
 
 ## `public sealed class TDisplaySoundBlock`
 
@@ -38,7 +38,7 @@ A blank key of either kind raises nothing and answers false.
 
 ## `public void DisplayFanqieSet_ShownEntry_SetsTheRankForTheShownEntry()`
 
-Setting a rank before any entry is shown reaches the gate with nothing.
+Setting a rank before any entry is shown calls nothing.
 After entry 7 is shown, setting rank 2 with the raise flag hands the gate `7,3,2,True`.
 
 ## Inline notes

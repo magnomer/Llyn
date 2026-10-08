@@ -1,9 +1,10 @@
 # LReflexFacade.cs
-Hash: `788abb9b304e1b64`
+Hash: `3658c47c750cc452`
 
-## `internal sealed class LReflexFacade`
+## `public sealed class LReflexFacade : LReflexPort`
 
 The engine's facade for reflex, wrapping the clerk's anchors and rules, the fetch the clerk holds, row guises and tones.
+It implements the reflex port itself, so Host hands it to Conduct with no outlet between.
 
 ## `public LReflexFacade(LEngine engine)`
 
@@ -41,7 +42,7 @@ The reflex rules of a language.
 ## `public IReadOnlyList<LReflexGuise> LEngineGuiseRead(string language, IReadOnlyList<string> reflexes)`
 
 How each reflex row prints, one answer per language in `reflexes`, in order.
-Each row language is trimmed before the settings and the fold set are asked.
+Each row language is trimmed before the settings are asked and the fold set is searched.
 The fold set is the one the pack of the entry's `language` declares.
 
 ## `private LReflexGuise LEngineGuiseBuild(string reflex, IReadOnlyList<string> folded)`

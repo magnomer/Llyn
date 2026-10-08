@@ -1,5 +1,5 @@
 # TCatalog.cs
-Hash: `4396160af60bc1c6`
+Hash: `977198d6cce63060`
 
 ## `public sealed class TCatalog`
 
@@ -20,4 +20,4 @@ The shared fill rule reads an area's rows only once the fill completes.
 The case holds the fill open with a completion it sets itself.
 A fill that faults or throws shows the handed key through the envoy and answers no languages.
 The rows are still read, so both cases expect the rows beside an empty language list.
-On a workspace the flag load answers the same languages the catalog reads, which the favorites filter offers.
+On a workspace the flag load answers the same languages the catalog reads.

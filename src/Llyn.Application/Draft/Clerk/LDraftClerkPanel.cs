@@ -18,6 +18,48 @@ public sealed class LDraftClerkPanel
         _lDraftClerkIdentity = identity;
     }
 
+    public LDraft? LPanelApply(LDraft draft, LRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        return request switch
+        {
+            LRequestExampleText sent => LExampleChange(
+                draft,
+                example => LDraftClerkMention.LMentionUpdate(example, LStateValue.LStateValueRead(sent.LRequestValue))),
+            LRequestExampleLanguage sent => LExampleChange(
+                draft, example => example with { LExampleLanguage = sent.LRequestLanguage ?? string.Empty }),
+            LRequestExampleReference sent => LExampleChange(
+                draft,
+                example => example with { LExampleSource = LStateAnchor.LStateAnchorRead(sent.LRequestReferenceId) }),
+            LRequestReferenceTitle sent => LReferenceChange(
+                draft,
+                reference => reference with { LReferenceTitle = LStateValue.LStateValueRead(sent.LRequestValue) }),
+            LRequestReferenceYear sent => LReferenceChange(
+                draft,
+                reference => reference with { LReferenceYear = LStateValue.LStateValueRead(sent.LRequestValue) }),
+            LRequestReferenceKind sent => LReferenceChange(
+                draft, reference => reference with { LReferenceKind = sent.LRequestKind }),
+            LRequestReferenceNote sent => LReferenceChange(
+                draft,
+                reference => reference with { LReferenceNote = LStateValue.LStateValueRead(sent.LRequestValue) }),
+            LRequestReferenceUrl sent => LReferenceChange(
+                draft, reference => reference with { LReferenceUrl = LStateValue.LStateValueRead(sent.LRequestValue) }),
+            LRequestAuthorState sent => LReferenceChange(
+                draft,
+                reference => reference with
+                {
+                    LReferenceAuthorState = LStateMark.LStateMarkRead(sent.LRequestState),
+                }),
+            LRequestAuthorAddition sent => LAuthorAdd(draft, sent),
+            LRequestAuthorPick sent => LAuthorInsert(draft, sent),
+            LRequestAuthorRemoval sent => LAuthorRemove(draft, sent.LRequestAuthorId),
+            LRequestAuthorShift sent => LAuthorMove(draft, sent),
+            LRequestAuthorName sent => LAuthorChange(draft, sent.LRequestText),
+            _ => null,
+        };
+    }
+
     public static LDraft LExampleChange(LDraft draft, Func<LExample, LExample> change)
     {
         ArgumentNullException.ThrowIfNull(draft);

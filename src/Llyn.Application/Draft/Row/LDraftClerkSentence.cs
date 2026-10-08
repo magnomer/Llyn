@@ -17,6 +17,46 @@ public sealed class LDraftClerkSentence
         _lDraftClerkIdentity = identity;
     }
 
+    public LEntryDraft? LSentenceApply(LEntryDraft content, LRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+
+        return request switch
+        {
+            LRequestSentenceAddition sent => LSentenceAdd(content, sent),
+            LRequestSentenceRemoval sent => LSentenceRemove(content, sent),
+            LRequestSentenceShift sent => LSentenceMove(content, sent),
+            LRequestSentenceExample sent => LSentenceSelect(content, sent),
+            LRequestSentenceText sent => LExampleChange(
+                content,
+                sent.LRequestCardId,
+                sent.LRequestSentenceId,
+                example => LDraftClerkMention.LMentionUpdate(example, LStateValue.LStateValueRead(sent.LRequestValue))),
+            LRequestSentenceParticle sent => LSentenceChange(
+                content,
+                sent.LRequestCardId,
+                sent.LRequestSentenceId,
+                sentence => sentence with { LSentenceDraftParticle = LStateValue.LStateValueRead(sent.LRequestValue) }),
+            LRequestSentenceDependence sent => LSentenceChange(
+                content,
+                sent.LRequestCardId,
+                sent.LRequestSentenceId,
+                sentence => sentence with
+                {
+                    LSentenceDraftDependence = LStateValue.LStateValueRead(sent.LRequestValue),
+                }),
+            LRequestSentenceReference sent => LExampleChange(
+                content,
+                sent.LRequestCardId,
+                sent.LRequestSentenceId,
+                example => example with
+                {
+                    LExampleDraftReference = LStateAnchor.LStateAnchorRead(sent.LRequestReferenceId),
+                }),
+            _ => null,
+        };
+    }
+
     public LEntryDraft LSentenceAdd(LEntryDraft content, LRequestSentenceAddition request)
     {
         ArgumentNullException.ThrowIfNull(request);

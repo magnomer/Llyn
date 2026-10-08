@@ -21,14 +21,14 @@ internal sealed class LMarkupFacade
 
     public LMarkupCargo LEngineMarkupRead(string path)
     {
-        return LMarkupFacadeStaff.LEngineStaffMarkup.LMarkupClerkRead(path);
+        return LMarkupFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffMarkup.LMarkupClerkRead(path);
     }
 
     public IReadOnlyList<IReadOnlyList<LMarkupTarget>> LEngineMarkupFind(IReadOnlyList<LMarkupEntry> entries)
     {
         lock (_lMarkupFacadeGate)
         {
-            return LMarkupFacadeStaff.LEngineStaffIntake.LMarkupTargetFind(entries);
+            return LMarkupFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffIntake.LMarkupTargetFind(entries);
         }
     }
 
@@ -58,7 +58,7 @@ internal sealed class LMarkupFacade
         lock (_lMarkupFacadeGate)
         {
             _lMarkupFacadeEngine.LEngineRevision++;
-            return LMarkupFacadeStaff.LEngineStaffIntake.LMarkupClerkImport(cargo, intakes);
+            return LMarkupFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffIntake.LMarkupClerkImport(cargo, intakes);
         }
     }
 }

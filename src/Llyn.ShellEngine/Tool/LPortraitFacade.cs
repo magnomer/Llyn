@@ -20,7 +20,8 @@ internal sealed class LPortraitFacade
     {
         lock (_lPortraitFacadeGate)
         {
-            return LPortraitFacadeStaff.LEngineStaffPortrait.LPortraitClerkRead(entryId, label);
+            return LPortraitFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffPortrait
+                .LPortraitClerkRead(entryId, label);
         }
     }
 
@@ -33,10 +34,13 @@ internal sealed class LPortraitFacade
         {
             LPortraitPage? page = owner switch
             {
-                LOwner.LOwnerExample => LPortraitFacadeStaff.LEngineStaffExample.LExampleClerkRead(id, legend),
-                LOwner.LOwnerReference => LPortraitFacadeStaff.LEngineStaffReference.LReferenceClerkRead(id, legend),
-                LOwner.LOwnerSituation => LPortraitFacadeStaff.LEngineStaffSituation.LSituationClerkRead(id, legend),
-                _ => throw LEngine.LEngineOwnerRaise(owner),
+                LOwner.LOwnerExample => LPortraitFacadeStaff.LEngineStaffCatalog.LCatalogStaffExample
+                    .LExampleClerkRead(id, legend),
+                LOwner.LOwnerReference => LPortraitFacadeStaff.LEngineStaffCatalog.LCatalogStaffReference
+                    .LReferenceClerkRead(id, legend),
+                LOwner.LOwnerSituation => LPortraitFacadeStaff.LEngineStaffCatalog.LCatalogStaffSituation
+                    .LSituationClerkRead(id, legend),
+                _ => throw LCardFacade.LEngineOwnerRaise(owner),
             };
 
             return page ?? throw new InvalidOperationException("The page no longer stands in the workspace.");
@@ -54,13 +58,13 @@ internal sealed class LPortraitFacade
         {
             lock (_lPortraitFacadeGate)
             {
-                LPortraitFacadeStaff.LEngineStaffPortrait.LPortraitMarkupExport(entryId, path);
+                LPortraitFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffMarkup.LMarkupClerkExport([entryId], path);
             }
 
             return Task.CompletedTask;
         }
 
-        return LPortraitFacadeStaff.LEngineStaffPortrait.LPortraitClerkExport(
+        return LPortraitFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffPress.LPortraitClerkExport(
             LEnginePortraitRead(entryId, label), path, format);
     }
 
@@ -70,7 +74,7 @@ internal sealed class LPortraitFacade
         ArgumentNullException.ThrowIfNull(label);
         ArgumentNullException.ThrowIfNull(ticket);
 
-        return LPortraitFacadeStaff.LEngineStaffPortrait
+        return LPortraitFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffPress
             .LPortraitClerkPrint(LEnginePortraitRead(entryId, label), ticket);
     }
 
@@ -110,7 +114,7 @@ internal sealed class LPortraitFacade
     {
         ArgumentNullException.ThrowIfNull(ticket);
 
-        return LPortraitFacadeStaff.LEngineStaffPortrait
+        return LPortraitFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffPress
             .LPortraitClerkPrint(LEnginePortraitRead(id, owner, legend), ticket);
     }
 

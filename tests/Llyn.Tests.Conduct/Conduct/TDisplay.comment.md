@@ -1,5 +1,5 @@
 # TDisplay.cs
-Hash: `4f39d9bb35fa41a0`
+Hash: `0b8a56a250585dc2`
 
 ## `public sealed class TDisplay`
 
@@ -63,15 +63,15 @@ The band stays non-negative and the source passes through.
 
 An engine that answers no gauge reads no frequency, so the chip hides.
 
-## `internal static LEntryPort TGraspPortCreate(int limit, int stored)`
+## `internal static LGraspPort TGraspPortCreate(int limit, int stored)`
 
-A fake entry port answering only the grasp limit, the stored step and the step's wording.
+A fake grasp port answering only the grasp limit, the stored step and the step's wording.
 The wording is the step itself, so a fact sees which step was worded.
 `TEsteem` fakes its grasp reads here too.
 
-## `private static LEntryPort TFrequencyPortCreate(LFrequencyGauge? gauge)`
+## `private static LPronunciationPort TFrequencyPortCreate(LFrequencyGauge? gauge)`
 
-A fake entry port answering only the frequency read, with `gauge` for every entry.
+A fake pronunciation port answering only the frequency read, with `gauge` for every entry.
 
 ## `private static LEntryDraft TDisplayDraftCreate(IReadOnlyList<LReflexDraft> reflexes)`
 

@@ -150,6 +150,11 @@ public sealed class LWorkspaceClerk
         _lWorkspaceClerkWorkspaces.LWorkspaceStateSave(state);
     }
 
+    public long LWorkspaceSizeRead()
+    {
+        return _lWorkspaceClerkWorkspaces.LWorkspaceSizeRead();
+    }
+
     public bool LWorkspacePostureRead(string name, out LPostureState? state)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);

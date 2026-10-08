@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
@@ -9,22 +8,6 @@ namespace Llyn.UIDeportment;
 
 public sealed class PContour : FrameworkElement
 {
-    private const double PContourPadding = 14;
-
-    private const double PContourAxisWidth = 18;
-
-    private const double PContourCellWidth = 76;
-
-    private const double PContourCellGap = 10;
-
-    private const double PContourCellInset = 12;
-
-    private const double PContourLevelGap = 18;
-
-    private const double PContourLabelGap = 8;
-
-    private const double PContourLabelHeight = 24;
-
     private const double PContourLabelSize = 15;
 
     private const double PContourAxisSize = 10;
@@ -123,15 +106,9 @@ public sealed class PContour : FrameworkElement
         set => SetValue(PContourFontProperty, value);
     }
 
-    private double PContourPlotHeight => Math.Max(0, PContourScale.Count - 1) * PContourLevelGap;
-
     protected override Size MeasureOverride(Size availableSize)
     {
-        int count = Math.Max(1, PContourSyllables.Count);
-        double width = 2 * PContourPadding + PContourAxisWidth
-            + count * PContourCellWidth + (count - 1) * PContourCellGap;
-        double height = 2 * PContourPadding + PContourPlotHeight + PContourLabelGap + PContourLabelHeight;
-        return new Size(width, height);
+        return new QContourPlot(PContourScale, PContourSyllables.Count).QContourPlotSize;
     }
 
     protected override void OnRender(DrawingContext drawingContext)
@@ -142,11 +119,12 @@ public sealed class PContour : FrameworkElement
             return;
         }
 
+        QContourPlot plot = new(PContourScale, PContourSyllables.Count);
         PContourFrameDraw(drawingContext);
-        PContourGuideDraw(drawingContext);
+        PContourGuideDraw(drawingContext, plot);
         for (int index = 0; index < PContourSyllables.Count; index++)
         {
-            PContourCellDraw(drawingContext, PContourSyllables[index], index);
+            PContourCellDraw(drawingContext, plot, PContourSyllables[index], index);
         }
     }
 
@@ -181,14 +159,14 @@ public sealed class PContour : FrameworkElement
             PContourFrame, new Pen(PContourEdge, 1), frame, PContourCornerRadius, PContourCornerRadius);
     }
 
-    private void PContourGuideDraw(DrawingContext drawingContext)
+    private void PContourGuideDraw(DrawingContext drawingContext, QContourPlot plot)
     {
-        double left = PContourPadding + PContourAxisWidth;
-        double right = RenderSize.Width - PContourPadding;
+        double left = plot.QContourLeftRead(0);
+        double right = plot.QContourRightRead(RenderSize.Width);
         Pen guide = new(PContourGuide, 1);
         foreach (int level in PContourScale)
         {
-            double y = Math.Round(PContourLevelResolve(level)) + 0.5;
+            double y = Math.Round(plot.QContourLevelResolve(level)) + 0.5;
             drawingContext.DrawLine(guide, new Point(left, y), new Point(right, y));
 
             FormattedText digit = PContourTextBuild(
@@ -197,13 +175,13 @@ public sealed class PContour : FrameworkElement
         }
     }
 
-    private void PContourCellDraw(DrawingContext drawingContext, QContourItem syllable, int index)
+    private void PContourCellDraw(DrawingContext drawingContext, QContourPlot plot, QContourItem syllable, int index)
     {
-        double left = PContourPadding + PContourAxisWidth + index * (PContourCellWidth + PContourCellGap);
-        double top = PContourPadding + PContourPlotHeight + PContourLabelGap;
+        double left = plot.QContourLeftRead(index);
+        double top = plot.QContourLabelTop;
 
         FormattedText label = PContourTextBuild(syllable.QContourItemText, PContourLabelSize, PContourInk);
-        label.MaxTextWidth = PContourCellWidth;
+        label.MaxTextWidth = QContourPlot.QContourCellWidth;
         label.MaxLineCount = 1;
         label.Trimming = TextTrimming.CharacterEllipsis;
         label.TextAlignment = TextAlignment.Center;
@@ -214,7 +192,7 @@ public sealed class PContour : FrameworkElement
             return;
         }
 
-        IReadOnlyList<Point> points = PContourPointResolve(syllable.QContourItemLevels, left);
+        IReadOnlyList<Point> points = plot.QContourPointResolve(syllable.QContourItemLevels, index);
         Pen line = PContourLineBuild(syllable.QContourItemBrushes, points);
         for (int step = 1; step < points.Count; step++)
         {
@@ -227,28 +205,6 @@ public sealed class PContour : FrameworkElement
             Brush ink = syllable.QContourItemBrushes[Math.Min(step, syllable.QContourItemBrushes.Count - 1)];
             drawingContext.DrawEllipse(ink, rim, points[step], PContourDotRadius, PContourDotRadius);
         }
-    }
-
-    private IReadOnlyList<Point> PContourPointResolve(IReadOnlyList<int> levels, double left)
-    {
-        double start = left + PContourCellInset;
-        double span = PContourCellWidth - 2 * PContourCellInset;
-        List<Point> points = [];
-        if (levels.Count == 1)
-        {
-            double y = PContourLevelResolve(levels[0]);
-            points.Add(new Point(start, y));
-            points.Add(new Point(start + span, y));
-            return points;
-        }
-
-        for (int step = 0; step < levels.Count; step++)
-        {
-            double x = start + span * step / (levels.Count - 1);
-            points.Add(new Point(x, PContourLevelResolve(levels[step])));
-        }
-
-        return points;
     }
 
     private Pen PContourLineBuild(IReadOnlyList<Brush> inks, IReadOnlyList<Point> points)
@@ -293,16 +249,6 @@ public sealed class PContour : FrameworkElement
             size,
             brush,
             VisualTreeHelper.GetDpi(this).PixelsPerDip);
-    }
-
-    private double PContourLevelResolve(int level)
-    {
-        return PContourPadding + PContourDepthRead(level) * PContourLevelGap;
-    }
-
-    private int PContourDepthRead(int level)
-    {
-        return PContourScale.TakeWhile(step => step != level).Count();
     }
 
     private static Color PContourColorRead(Brush ink)

@@ -271,8 +271,8 @@ public sealed class TTranscriptionSheet
     {
         return TInterfaceEditor.TEditorCreate(
                 TEngineFake.TEngineStubCreate<LDraftPort>(),
-                TEngineFake.TEngineStubCreate<LEntryPort>(),
-                TEngineFake.TEngineStubCreate<LPhonologyPort>(),
+                TInterfaceConduct.TEntryBundleCreate([]),
+                TInterfaceConduct.TPhonologyBundleCreate([]),
                 TEngineFake.TEngineStubCreate<LSettingsPort>(),
                 TEngineFake.TEngineStubCreate<LMediaPort>())
             .CEditorTranscription;

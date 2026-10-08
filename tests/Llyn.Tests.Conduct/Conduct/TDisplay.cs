@@ -143,7 +143,8 @@ public sealed class TDisplay
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CDisplay display = TInterfaceConductSound.TDisplayChosenCreate(engine, TGraspPortCreate(limit, 0), 1);
+        CDisplay display = TInterfaceConductSound.TDisplayChosenCreate(
+            engine, TInterfaceConduct.TEntryBundleCreate(engine, TGraspPortCreate(limit, 0)), 1);
 
         Assert.Equal(read, display.CDisplayGraspStep);
     }
@@ -165,7 +166,7 @@ public sealed class TDisplay
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDisplay display = TInterfaceConductSound.TDisplayChosenCreate(
-            engine, TGraspPortCreate(limit, stored), 1);
+            engine, TInterfaceConduct.TEntryBundleCreate(engine, TGraspPortCreate(limit, stored)), 1);
 
         CGrasp grasp = display.CDisplayGraspRead();
 
@@ -187,7 +188,10 @@ public sealed class TDisplay
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDisplay display = TInterfaceConductSound.TDisplayChosenCreate(
-            engine, TFrequencyPortCreate(TInterface.TFrequencyGaugeCreate(band, string.Empty)), 1);
+            engine,
+            TInterfaceConduct.TEntryBundleCreate(
+                engine, TFrequencyPortCreate(TInterface.TFrequencyGaugeCreate(band, string.Empty))),
+            1);
         int row = TInterface.TFrequencyScaleRead().Count;
 
         CFrequency? frequency = display.CDisplayFrequencyRead(static key => key);
@@ -203,7 +207,10 @@ public sealed class TDisplay
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDisplay display = TInterfaceConductSound.TDisplayChosenCreate(
-            engine, TFrequencyPortCreate(TInterface.TFrequencyGaugeCreate(band, "src")), 1);
+            engine,
+            TInterfaceConduct.TEntryBundleCreate(
+                engine, TFrequencyPortCreate(TInterface.TFrequencyGaugeCreate(band, "src"))),
+            1);
         CFrequency? frequency = null;
 
         Exception? thrown = Record.Exception(() => { frequency = display.CDisplayFrequencyRead(static key => key); });
@@ -222,21 +229,22 @@ public sealed class TDisplay
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CDisplay display = TInterfaceConductSound.TDisplayChosenCreate(engine, TFrequencyPortCreate(null), 1);
+        CDisplay display = TInterfaceConductSound.TDisplayChosenCreate(
+            engine, TInterfaceConduct.TEntryBundleCreate(engine, TFrequencyPortCreate(null)), 1);
 
         Assert.Null(display.CDisplayFrequencyRead(static key => key));
     }
 
-    internal static LEntryPort TGraspPortCreate(int limit, int stored) =>
-        TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
+    internal static LGraspPort TGraspPortCreate(int limit, int stored) =>
+        TEngineFake.TEngineCreate<LGraspPort>(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["get_LEngineGraspStep"] = _ => limit,
             ["LEngineGraspRead"] = _ => stored,
             ["LEngineGraspFormat"] = static args => ((int)args![0]!).ToString(CultureInfo.InvariantCulture),
         });
 
-    private static LEntryPort TFrequencyPortCreate(LFrequencyGauge? gauge) =>
-        TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
+    private static LPronunciationPort TFrequencyPortCreate(LFrequencyGauge? gauge) =>
+        TEngineFake.TEngineCreate<LPronunciationPort>(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineFrequencyResolve"] = _ => gauge,
         });

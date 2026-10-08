@@ -17,7 +17,7 @@ public sealed class TQuill
         engine.TEngineDelaySet(0);
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectAuthor, null);
 
-        tenure.TQuillCreate().TQuillAuthorSet("Ada");
+        tenure.TQuillAuthorCreate().TQuillAuthorSet("Ada");
 
         Assert.Equal("Ada", tenure.TTenureRead()!.LDraftAuthorName);
         Assert.True(tenure.TTenureStateRead().LTenureStateChanged);
@@ -30,7 +30,7 @@ public sealed class TQuill
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTenure tenure = TQuillExampleStart(engine, TInterfaceState.TStateValueResolve(null, true));
 
-        tenure.TQuillCreate().TQuillExampleSet("a dog");
+        tenure.TQuillExampleCreate().TQuillExampleSet("a dog");
 
         LExample held = tenure.TTenureRead()!.LDraftExample!;
         Assert.Equal("a dog", held.LExampleText.TStateValueShow());
@@ -45,7 +45,7 @@ public sealed class TQuill
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTenure tenure = TQuillExampleStart(engine, TInterfaceState.TStateValueCreate("a cat"));
 
-        tenure.TQuillCreate().TQuillSpeakerSet("French");
+        tenure.TQuillExampleCreate().TQuillSpeakerSet("French");
 
         Assert.Equal("French", tenure.TTenureRead()!.LDraftExample!.LExampleLanguage);
     }
@@ -65,7 +65,7 @@ public sealed class TQuill
             LStateMark.LStateMarkUnspecified));
         LTenure tenure = TQuillExampleStart(engine, TInterfaceState.TStateValueCreate("a cat"));
 
-        tenure.TQuillCreate().TQuillReferenceSet(reference.LReferenceId);
+        tenure.TQuillExampleCreate().TQuillReferenceSet(reference.LReferenceId);
 
         Assert.Equal(
             reference.LReferenceId, tenure.TTenureRead()!.LDraftExample!.LExampleSource.TStateAnchorShow());
@@ -90,7 +90,7 @@ public sealed class TQuill
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTenure tenure = TQuillExampleStart(engine, TInterfaceState.TStateValueCreate("a cat"));
-        LQuill quill = tenure.TQuillCreate();
+        LQuillSentence quill = tenure.TQuillSentenceCreate();
 
         tenure.TTenureGlossInsert(0);
         quill.TQuillGlossRemove(Assert.Single(tenure.TTenureRead()!.LDraftExample!.LExampleGloss).LGlossId);
@@ -105,7 +105,7 @@ public sealed class TQuill
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineDelaySet(0);
         LTenure tenure = TQuillExampleStart(engine, TInterfaceState.TStateValueCreate("a cat"));
-        LQuill quill = tenure.TQuillCreate();
+        LQuillSentence quill = tenure.TQuillSentenceCreate();
 
         tenure.TTenureGlossInsert(0);
         long gloss = Assert.Single(tenure.TTenureRead()!.LDraftExample!.LExampleGloss).LGlossId;
@@ -145,7 +145,7 @@ public sealed class TQuill
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTenure tenure = TQuillEntryStart(engine);
 
-        tenure.TQuillCreate().TQuillEtymologySet("from Latin");
+        tenure.TQuillEtymologyCreate().TQuillEtymologySet("from Latin");
 
         Assert.Equal("from Latin", tenure.TTenureRead()!.LDraftContent.LEntryDraftEtymology.LEtymologyDraftText);
     }
@@ -158,7 +158,7 @@ public sealed class TQuill
         long cat = engine.TEngineTranslationCreate("cattus", "Latin").LEntryId;
         long dog = engine.TEngineTranslationCreate("canis", "Latin").LEntryId;
         LTenure tenure = TQuillEntryStart(engine);
-        LQuill quill = tenure.TQuillCreate();
+        LQuillEtymology quill = tenure.TQuillEtymologyCreate();
 
         quill.TQuillEtymonAdd(cat, int.MaxValue);
         quill.TQuillEtymonAdd(dog, 0);
@@ -173,7 +173,7 @@ public sealed class TQuill
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long cat = engine.TEngineTranslationCreate("cattus", "Latin").LEntryId;
         LTenure tenure = TQuillEntryStart(engine);
-        LQuill quill = tenure.TQuillCreate();
+        LQuillEtymology quill = tenure.TQuillEtymologyCreate();
         quill.TQuillEtymonAdd(cat, int.MaxValue);
 
         quill.TQuillEtymonRemove(cat);
@@ -188,7 +188,7 @@ public sealed class TQuill
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long cat = engine.TEngineTranslationCreate("cattus", "Latin").LEntryId;
         LTenure tenure = TQuillEntryStart(engine);
-        LQuill quill = tenure.TQuillCreate();
+        LQuillEtymology quill = tenure.TQuillEtymologyCreate();
         quill.TQuillEtymologySet("from cattus");
 
         quill.TQuillMentionSave(5, 6, cat);
@@ -212,7 +212,7 @@ public sealed class TQuill
         LDraft rowed = engine.TEngineRequestApply(TInterface.TSentenceAdditionCreate(tenure.LTenureId, card, 0));
         long sentence = TInterface.TRequestCardFind(rowed.LDraftContent, card).LCardDraftSentence[0].LSentenceDraftId;
 
-        tenure.TQuillCreate().TQuillCitationSet(card, sentence, notes.LReferenceId);
+        tenure.TQuillSentenceCreate().TQuillCitationSet(card, sentence, notes.LReferenceId);
 
         LExampleDraft? example = TInterface.TRequestCardFind(tenure.TTenureRead()!.LDraftContent, card)
             .LCardDraftSentence[0].LSentenceDraftExample;

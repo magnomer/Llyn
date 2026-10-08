@@ -1,5 +1,5 @@
 # LVista.cs
-Hash: `4e732b64a9d1d126`
+Hash: `e25b5a4e56ad7afb`
 
 ## `public sealed class LVista`
 
@@ -26,19 +26,20 @@ The posture stores it as the split every tab opens on next time.
 
 ## `private readonly LEngine _lEngine;`
 
-The engine that loads the draft, saves the side and raises the bulletin.
+The engine that raises the vista bulletin.
 
 ## `private readonly object _lVistaGate = new();`
 
 Guards the observer lists and the chosen row against a bulletin raised on a worker thread.
 
-## `private readonly List<(LSubject, Action<LBulletin>)> _lVistaObservers = [];`
+## `private readonly LBulletinRoster _lVistaRoster = new(null);`
 
 The observers reached for every bulletin of their subject, in the order they were attached.
 
-## `private readonly List<(LSubject, Action<LBulletin>)> _lVistaChosenObservers = [];`
+## `private readonly LBulletinRoster _lVistaChosenRoster;`
 
 The observers reached only when the bulletin names the chosen row or no row at all.
+The constructor builds it over `LVistaChosenCheck`, which needs the vista itself.
 
 ## `internal LVista(LEngine engine, long id, string tab, LSubject? subject, LCatalogOrder order, LCatalogFilter filter, bool blank, bool editing)`
 
@@ -88,7 +89,7 @@ No ordering keeps the one the vista has, so a sender that is no order row change
 ## `public void LVistaFilterSet(LCatalogFilter filter)`
 
 Takes the filter and announces the move, which the posture stores under the tab.
-Two filters compare by the list they hold, so the same list built twice still announces.
+Two filters are equal only when they hold the same list object, so an equal list built twice still announces.
 
 ## `public void LVistaFilterSet(IReadOnlyList<string> hidden)`
 
@@ -128,24 +129,18 @@ The chosen observers are reached after every plain observer, so a plain one that
 The engine's announcement, forwarded to the observers whose subject it names.
 Internal, because the engine attaches this method group at the start and detaches it when the tab is replaced.
 A vista bulletin for another vista is dropped at the door.
-Both lists are copied under the gate and the calls are made outside it, as the engine does.
-The chosen row is read afresh before each chosen observer, so a selection made a moment ago counts.
+Both rosters are copied in one gate hold and dispatched outside it, as the engine does.
+Plain observers are reached first, then chosen ones.
+
+## `private bool LVistaChosenCheck(LBulletin bulletin)`
+
+The chosen roster's filter, asked afresh before each chosen observer.
+So a selection made a moment ago by an earlier observer counts.
 
 ## `public LSubject? LVistaSubject { get; }`
 
 The stored subject represented by this tab, named by the panel that started it.
 Structural sound tables pass no subject and cannot load or delete records.
-
-## `public LDraft? LVistaLoad()`
-
-Loads the selected subject into a read-only snapshot without opening an editing session.
-The snapshot carries its content in the matching draft member and has no draft identity.
-A stored choice that no longer loads is dropped here, so a panel never branches on the missing answer.
-
-## `public LDraft? LVistaLoad(long? id)`
-
-Selects the row and loads it, restoring the previous choice when the load throws.
-So a failed click leaves the panel where it stood, and no caller keeps the prior choice.
 
 ## `public long? LVistaStored`
 
@@ -175,14 +170,6 @@ Whether the tab is the input tab.
 
 Whether the filter or the query narrows the rows, so a panel asks one question instead of combining two.
 
-## `public static string LVistaFileRead(LVista? vista)`
-
-The file name an export of the vista's entry is offered under is the headword with barred characters replaced.
-The trail port of the vista's engine says which characters are barred, so the vista reads no file rule itself.
-A missing vista, or a blank headword, is offered as `entry`.
-A failed load is not caught here.
-It travels up to the export gate.
-
 ## `public static LCatalogOrder LVistaOrderRead(LVista? vista)`
 
 The ordering a panel shows, headword order before a vista arrives.
@@ -190,32 +177,6 @@ The ordering a panel shows, headword order before a vista arrives.
 ## `public static LCatalogFilter LVistaFilterRead(LVista? vista)`
 
 The filter a panel shows, the shared empty filter before a vista arrives.
-
-## `public void LVistaSideSave()`
-
-Writes the chosen entry to the left or right slot of the workspace state, whichever side the vista's tab names.
-The next run reopens each duplex side on the entry it last showed.
-The vista itself says which side it is, so no caller copies that.
-
-## `public string LVistaTallyRead()`
-
-The citation line of the chosen stored record, ready to show.
-An Example, a Situation and a Source have one, and any other vista refuses.
-No stored record reads as cited nowhere.
-
-## `public int LVistaUsageRead()`
-
-How many places the chosen stored record reaches, which a delete would drop.
-An Example, a Situation and a Source count the entries that cite them.
-An Author counts the Sources crediting it.
-Any other subject, or no stored choice, reaches nothing.
-
-## `public LRevision? LVistaDelete()`
-
-Deletes the selected record of the vista's subject and clears the selection afterwards.
-Only an entry delete records a revision, so every other subject answers null after deleting.
-A catalog record is detached from every owner first, as the panel already confirmed the usage.
-Tag, register and structural vistas delete nothing and answer null.
 
 ## `public bool LVistaEditing { get; private set; }`
 

@@ -1,5 +1,5 @@
 # LDraftClerkSentence.cs
-Hash: `e8d6a8a561714ed1`
+Hash: `0e5e7ed4ec851b28`
 
 ## `public sealed class LDraftClerkSentence`
 
@@ -11,9 +11,23 @@ The Example inside it is named only when it has something to say.
 
 Holds the shelf a stored Example is picked from and the issuer that names a new row.
 
+## `public LEntryDraft? LSentenceApply(LEntryDraft content, LRequest request)`
+
+Routes every sentence row request to its handler, and answers null for any other request.
+An Example or Source request naming card or sentence zero is resolved by the clerk before it reaches here.
+The clerk then hands any other request on to the situation chips.
+
 ## `public LEntryDraft LSentenceAdd(LEntryDraft content, LRequestSentenceAddition request)`
 
 A new row with a minted id, no Example and an empty frame, at the place asked for.
+
+## `public static LEntryDraft LSentenceRemove(LEntryDraft content, LRequestSentenceRemoval request)`
+
+Drops the row carrying the id from the card, and refuses when the card holds none.
+
+## `public static LEntryDraft LSentenceMove(LEntryDraft content, LRequestSentenceShift request)`
+
+Moves the row carrying the id to the place asked for, and refuses when the card holds none.
 
 ## `public LEntryDraft LSentenceSelect(LEntryDraft content, LRequestSentenceExample request)`
 

@@ -106,7 +106,10 @@ public sealed class TImprint
     [Fact]
     public void ImprintKindRead_Menu_OffersEachKindWithItsTagAndKeyInMenuOrder()
     {
-        IReadOnlyList<CReferenceKind> menu = CImprint.CImprintKindRead();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        IReadOnlyList<CReferenceKind> menu = TImprintPrepare(engine, atelier).CImprintKindRead();
 
         Assert.Equal(
             ["unspecified", "book", "journal", "article", "web", "video", "audio", "picture", "other", "unknown"],

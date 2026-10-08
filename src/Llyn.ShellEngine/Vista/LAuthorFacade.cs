@@ -5,7 +5,7 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-internal sealed class LAuthorFacade
+public sealed class LAuthorFacade : LAuthorPort
 {
     private const int LAuthorFacadeLimit = 8;
 
@@ -25,7 +25,7 @@ internal sealed class LAuthorFacade
     {
         lock (_lAuthorFacadeGate)
         {
-            return LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkFind(query, order);
+            return LAuthorFacadeStaff.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkFind(query, order);
         }
     }
 
@@ -33,7 +33,7 @@ internal sealed class LAuthorFacade
     {
         lock (_lAuthorFacadeGate)
         {
-            return LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkFind(id);
+            return LAuthorFacadeStaff.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkFind(id);
         }
     }
 
@@ -41,7 +41,7 @@ internal sealed class LAuthorFacade
     {
         lock (_lAuthorFacadeGate)
         {
-            return LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkFind(query, except, limit);
+            return LAuthorFacadeStaff.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkFind(query, except, limit);
         }
     }
 
@@ -93,7 +93,7 @@ internal sealed class LAuthorFacade
         LDraft? draft = held?.LTenureRead();
         lock (_lAuthorFacadeGate)
         {
-            return LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorUnionRead(draft, kept);
+            return LAuthorFacadeStaff.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorUnionRead(draft, kept);
         }
     }
 
@@ -105,7 +105,7 @@ internal sealed class LAuthorFacade
             : [];
         lock (_lAuthorFacadeGate)
         {
-            return LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorVitaRead(
+            return LAuthorFacadeStaff.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorVitaRead(
                 author, usages, _lAuthorFacadeEngine.LEngineSettings.LEngineTextRead);
         }
     }
@@ -150,7 +150,8 @@ internal sealed class LAuthorFacade
     {
         lock (_lAuthorFacadeGate)
         {
-            return LAuthorFacadeStaff.LEngineStaffReference.LReferenceOeuvreFind(author, query, kind, order);
+            return LAuthorFacadeStaff.LEngineStaffCatalog.LCatalogStaffReference
+                .LReferenceOeuvreFind(author, query, kind, order);
         }
     }
 
@@ -163,7 +164,7 @@ internal sealed class LAuthorFacade
     {
         lock (_lAuthorFacadeGate)
         {
-            LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkAbsorb(kept, dropped);
+            LAuthorFacadeStaff.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkAbsorb(kept, dropped);
         }
 
         _lAuthorFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectAuthor, dropped);
@@ -174,7 +175,7 @@ internal sealed class LAuthorFacade
     {
         lock (_lAuthorFacadeGate)
         {
-            return LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkRead(id);
+            return LAuthorFacadeStaff.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkRead(id);
         }
     }
 
@@ -199,7 +200,8 @@ internal sealed class LAuthorFacade
 
         lock (_lAuthorFacadeGate)
         {
-            return LAuthorFacadeStaff.LEngineStaffAuthor.LBylineFind(credited, query, LAuthorFacadeLimit);
+            return LAuthorFacadeStaff.LEngineStaffCatalog.LCatalogStaffAuthor
+                .LBylineFind(credited, query, LAuthorFacadeLimit);
         }
     }
 
@@ -208,7 +210,7 @@ internal sealed class LAuthorFacade
         return LAuthorClerk.LBylineRead(text);
     }
 
-    public static IReadOnlyList<LAuthorRow> LEngineCreditRead(LTenure? held)
+    public IReadOnlyList<LAuthorRow> LEngineCreditRead(LTenure? held)
     {
         held?.LTenurePersist();
         return LAuthorClerk.LAuthorCreditRead(held?.LTenureRead());
@@ -218,7 +220,7 @@ internal sealed class LAuthorFacade
     {
         lock (_lAuthorFacadeGate)
         {
-            return LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkRead(ownerId, owner);
+            return LAuthorFacadeStaff.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkRead(ownerId, owner);
         }
     }
 
@@ -226,7 +228,7 @@ internal sealed class LAuthorFacade
     {
         lock (_lAuthorFacadeGate)
         {
-            LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkDelete(id, detach);
+            LAuthorFacadeStaff.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkDelete(id, detach);
         }
 
         _lAuthorFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectAuthor, id);
@@ -237,7 +239,8 @@ internal sealed class LAuthorFacade
         lock (_lAuthorFacadeGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(origin);
-            return LAuthorFacadeStaff.LEngineStaffCitation.LCitationClerkAuthor.LAuthorCitationStart(origin, authorId);
+            return LAuthorFacadeStaff.LEngineStaffEntry.LEntryStaffCitation
+                .LCitationClerkAuthor.LAuthorCitationStart(origin, authorId);
         }
     }
 
@@ -248,7 +251,8 @@ internal sealed class LAuthorFacade
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             _lAuthorFacadeEngine.LEngineDraft.LEngineDraftValidate(id);
-            settled = LAuthorFacadeStaff.LEngineStaffCitation.LCitationClerkAuthor.LAuthorCitationCommit(id);
+            settled = LAuthorFacadeStaff.LEngineStaffEntry.LEntryStaffCitation
+                .LCitationClerkAuthor.LAuthorCitationCommit(id);
         }
 
         _lAuthorFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectAuthor, settled.LAuthorId);

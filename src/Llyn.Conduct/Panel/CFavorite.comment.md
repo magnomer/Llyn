@@ -1,5 +1,5 @@
 # CFavorite.cs
-Hash: `4f207394b84147ad`
+Hash: `f604fd794fac0923`
 
 ## `public sealed class CFavorite`
 
@@ -32,6 +32,10 @@ The driver reloads its language flags on it.
 
 The entry editor the panel opens its chosen entry in.
 The driver wraps it for the editor view and the lectern.
+
+## `public CPanel CFavoritePanel { get; }`
+
+The panel over the favorite vista, worded under the `Scribe` scope and finishing through the editor.
 
 ## `public bool CFavoriteFiltered`
 
@@ -66,6 +70,14 @@ The driver releases only its recording player.
 
 Answers a grasp notice by refreshing the rows, but only while they are ordered by grasp.
 A grasp change in any other order moves no row, so the list is left alone.
+
+## `public void CFavoriteQuerySet(string query)`
+
+Hands the typed query to the vista, which refills the rows.
+
+## `public void CFavoriteFilterSet(CCatalogFilter filter)`
+
+Hands the languages the filter hides to the vista.
 
 ## `public void CFavoriteOrderSet(CCatalogOrder? order)`
 

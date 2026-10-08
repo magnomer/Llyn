@@ -1,16 +1,16 @@
 # LAuthorCitation.cs
-Hash: `ada286dfd2c61e8f`
+Hash: `41c8fed28c3f1b8c`
 
 ## `public sealed class LAuthorCitation`
 
 The start, commit and check of a held Author, one kind of the citation protocol.
 `LCitationClerk` builds and holds it beside the three other kinds.
 
-## `public LAuthorCitation(LRig rig, LClaimClerk claims, LAuthorClerk authors, LEntryClerk entries)`
+## `public LAuthorCitation(LRig rig, LClaimClerk claims, LAuthorClerk authors, LRevisionClerk revisions)`
 
 Reads the vault out of `rig` for the session a commit opens.
 The claim clerk holds and finishes the draft, and the Author clerk writes the row.
-The entry clerk records the revision.
+The revision clerk records the revision.
 
 ## `public LDraft LAuthorCitationStart(string origin, long? authorId)`
 

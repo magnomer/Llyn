@@ -10,7 +10,7 @@ public sealed class CMembership
 {
     private readonly CEnvoy _cMembershipEnvoy;
 
-    private readonly LEntryPort _cMembershipEntryPort;
+    private readonly LVistaPort _cMembershipVistaPort;
 
     private readonly LPortraitPort _cMembershipPortraitPort;
 
@@ -21,7 +21,7 @@ public sealed class CMembership
     private LVista? _cMembershipVista;
 
     internal CMembership(
-        LEntryPort entries,
+        LVistaPort vistas,
         LPortraitPort portraits,
         LSettingsPort settings,
         CEnvoy envoy,
@@ -29,15 +29,16 @@ public sealed class CMembership
         Func<bool, bool> finishSeam,
         Func<bool> shownSeam)
     {
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(vistas);
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
 
         _cMembershipEnvoy = envoy;
-        _cMembershipEntryPort = entries;
+        _cMembershipVistaPort = vistas;
         _cMembershipPortraitPort = portraits;
         _cMembershipSettingsPort = settings;
-        CMembershipPanel = new CPanel(envoy, settings, "Tag.LoadFailed", "Scribe", changeSeam, finishSeam, shownSeam);
+        CMembershipPanel = new CPanel(
+            envoy, settings, vistas, "Tag.LoadFailed", "Scribe", changeSeam, finishSeam, shownSeam);
     }
 
     public CPanel CMembershipPanel { get; }
@@ -78,7 +79,7 @@ public sealed class CMembership
     {
         try
         {
-            return _cMembershipEntryPort.LEngineEntryFind(_cMembershipRoll, _cMembershipVista)
+            return _cMembershipVistaPort.LEngineEntryFind(_cMembershipRoll, _cMembershipVista)
                 .Select(CCatalog.LCatalogRowRead)
                 .ToList();
         }
@@ -91,7 +92,7 @@ public sealed class CMembership
 
     internal string LMembershipFileRead()
     {
-        return LVista.LVistaFileRead(_cMembershipVista);
+        return _cMembershipVistaPort.LEngineFileRead(_cMembershipVista);
     }
 
     public Task CMembershipPortraitPrint()

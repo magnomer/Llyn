@@ -21,10 +21,11 @@ internal static class TInterfaceConductPanel
         CCatalog.LCatalogArticulationRead(new LArticulation(headers, sides, cells));
 
     internal static CPanel TPanelCreate(
-        CEnvoy envoy, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam) =>
+        LEngine engine, CEnvoy envoy, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam) =>
         new(
             envoy,
             TInterfaceConduct.TSettingsCreate(),
+            engine.LEngineVista,
             "List.LoadFailed",
             deleteScope,
             changeSeam,
@@ -45,8 +46,11 @@ internal static class TInterfaceConductPanel
 
     internal static COeuvre TOeuvreCreate(LEngine engine) =>
         new(
-            new LEntryOutlet(engine),
+            engine.LEngineEntry,
+            engine.LEngineAuthor,
+            engine.LEngineReference,
             new LSettingsOutlet(engine),
+            engine.LEngineVista,
             TEnvoyFake.TEnvoyCreate(true, []),
             static () => true);
 
@@ -57,7 +61,7 @@ internal static class TInterfaceConductPanel
         this COeuvre oeuvre, IReadOnlyList<LCatalogAuthor> rows) => oeuvre.LOeuvreAuthorRead(rows);
 
     internal static COccurrence TOccurrenceCreate(LEngine engine) => new(
-        new LEntryOutlet(engine),
+        engine.LEngineVista,
         new LPortraitOutlet(engine),
         new LSettingsOutlet(engine),
         TEnvoyFake.TEnvoyCreate(false, []),
@@ -74,14 +78,16 @@ internal static class TInterfaceConductPanel
 
     internal static IReadOnlyList<CCatalogSituation>? TAtlasFailRead(LEngine engine, CEnvoy envoy)
     {
-        LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["LEngineSituationFind"] = _ => throw new InvalidOperationException("no situations"),
-        });
+        LSituationPort situations = TEngineFake.TEngineCreate<LSituationPort>(
+            new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineSituationFind"] = _ => throw new InvalidOperationException("no situations"),
+            });
         CAtlas atlas = new(
-            entries,
+            situations,
             new LPortraitOutlet(engine),
             new LSettingsOutlet(engine),
+            engine.LEngineVista,
             TInterfaceConductDesk.TDeskCreate(engine, "Situation", envoy, "Repertoire", CSubject.CSubjectSituation),
             static () => true,
             envoy,

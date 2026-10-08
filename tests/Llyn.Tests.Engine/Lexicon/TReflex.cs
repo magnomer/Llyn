@@ -206,7 +206,7 @@ public sealed class TReflex
         Assert.Equal(("Shanghai", "literary"), (stored.LReflexRegion, stored.LReflexNote));
 
         LMarkupEntry exported = Assert.IsType<LMarkupEntry>(
-            TInterface.TMarkupClerkCreate(rig).TMarkupClerkLoad(entry.LEntryId));
+            TInterface.TMarkupExportCreate(rig).TMarkupClerkLoad(entry.LEntryId));
         LReflexDraft marked = Assert.Single(exported.LMarkupEntryReflex);
         Assert.Equal(("Shanghai", "literary"), (marked.LReflexDraftRegion, marked.LReflexDraftNote));
 
@@ -385,7 +385,7 @@ public sealed class TReflex
         LPortraitPage portrait = TInterface.TPortraitClerkCreate(rig)
             .TPortraitClerkRead(entry.LEntryId, TInterface.TPortraitLabelRead());
         LMarkupEntry exported = Assert.IsType<LMarkupEntry>(
-            TInterface.TMarkupClerkCreate(rig).TMarkupClerkLoad(entry.LEntryId));
+            TInterface.TMarkupExportCreate(rig).TMarkupClerkLoad(entry.LEntryId));
 
         Assert.Equal(declared, shown.Select(row => row.LReflexDraftLanguage));
         Assert.Equal(["롱", "ろう", "ら", "る", "nʊŋ⁵¹", "lʊŋ⁶", "ŋu"], shown.Select(row => row.LReflexDraftText));

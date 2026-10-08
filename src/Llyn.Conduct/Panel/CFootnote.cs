@@ -8,7 +8,7 @@ namespace Llyn.Conduct;
 
 public sealed class CFootnote
 {
-    private readonly LEntryPort _cFootnoteEntryPort;
+    private readonly LVistaPort _cFootnoteVistaPort;
 
     private readonly LPortraitPort _cFootnotePortraitPort;
 
@@ -23,7 +23,7 @@ public sealed class CFootnote
     private LVista? _cFootnoteVista;
 
     internal CFootnote(
-        LEntryPort entries,
+        LVistaPort vistas,
         LPortraitPort portraits,
         LSettingsPort settings,
         CEditor editor,
@@ -31,13 +31,13 @@ public sealed class CFootnote
         Func<bool, bool> finishSeam,
         Func<bool> shownSeam)
     {
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(vistas);
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(editor);
         ArgumentNullException.ThrowIfNull(envoy);
 
-        _cFootnoteEntryPort = entries;
+        _cFootnoteVistaPort = vistas;
         _cFootnotePortraitPort = portraits;
         _cFootnoteSettingsPort = settings;
         _cFootnoteEditor = editor;
@@ -45,6 +45,7 @@ public sealed class CFootnote
         CFootnotePanel = new CPanel(
             envoy,
             settings,
+            vistas,
             "List.LoadFailed", null, editor.CEditorDesk.LDeskChangeCheck, finishSeam, shownSeam);
         CFootnotePanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         CFootnotePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
@@ -91,7 +92,7 @@ public sealed class CFootnote
     {
         try
         {
-            return _cFootnoteEntryPort.LEngineEntryFind(_cFootnoteParent, _cFootnoteVista)
+            return _cFootnoteVistaPort.LEngineEntryFind(_cFootnoteParent, _cFootnoteVista)
                 .Select(CCatalog.LCatalogRowRead)
                 .ToList();
         }
@@ -109,7 +110,7 @@ public sealed class CFootnote
 
     internal string LFootnoteFileRead()
     {
-        return LVista.LVistaFileRead(_cFootnoteVista);
+        return _cFootnoteVistaPort.LEngineFileRead(_cFootnoteVista);
     }
 
     internal void LFootnoteEntryCreate()

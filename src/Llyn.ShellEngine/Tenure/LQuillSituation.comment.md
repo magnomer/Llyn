@@ -4,9 +4,8 @@ Hash: `dacb4ab21213311a`
 ## `public sealed class LQuillSituation`
 
 The typed edits of the scenario form on one tenure: its title, kind and description.
-It sits beside `LQuill` by role, since the quill is at its member limit.
-The quill's own title and kind edits belong to the source form.
-Its members keep the `LQuill` base, as `LQuillCard`'s do.
+It is one of the per-subject quills, beside `LQuillReference` for the source form.
+Its members keep the `LQuill` name base the other quills share.
 
 ## `private readonly LTenure _lQuillSituationTenure;`
 

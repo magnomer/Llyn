@@ -1,10 +1,15 @@
 # QEnvoy.cs
-Hash: `0ffd24c91a4a117d`
+Hash: `da58f762afed9c1b`
 
 ## `internal sealed class QEnvoy : CEnvoy`
 
 The GUI's answer to Conduct's user-question port.
 It puts up a message box over the main window, worded from the key Conduct chose.
+
+## `private const double QEnvoyInch = 96.0;`
+
+The device-independent pixels in one inch, the unit the print dialog measures a sheet in.
+The conversion stays here, so Conduct and the engine only ever see inches.
 
 ## `internal QEnvoy(Window surface, QWindow host)`
 
@@ -67,7 +72,7 @@ The dialog's title stays here, since only a windowed chooser has one.
 
 Opens the printer dialog and answers what the reader chose, or null when they cancelled.
 Everything the dialog offers is carried: printer, sheet, turn, copies, collation, sides and color.
-The sheet is carried as the dialog measured it, and the engine turns it into inches.
+The sheet is carried in inches, turned from the pixels the dialog measured it in.
 A choice the dialog left unsaid maps to the default the printer applies on its own.
 A dialog that raises, as with the spooler down, is reported by the gate as `Print.Failed`.
 

@@ -1,26 +1,27 @@
 # QArticulation.cs
-Hash: `bcbef32d8a85b281`
+Hash: `f19830a05be5219e`
 
-## `internal sealed partial class QArticulation`
+## `internal sealed class QArticulation`
 
 Drives the IPA input aid.
 It holds the two charts and the one thing they do, which is insert a character.
-The charts themselves are built in the two files beside this one.
-The aid itself is the veneer's `QArticulation` page, nested in the phonology page.
+Both charts are laid out by one builder, since only the table and the chart differ.
+The aid itself is the veneer's `PArticulation` page, nested in the phonology page.
 
 ## `internal QArticulation(UserControl surface)`
 
-Takes the page `QPhonology` pulled under the contract ID `QArticulation`.
+Takes the page `QPhonology` pulled under the contract ID `PArticulation`.
 It registers the page's own styles with `QLook`, so the glyph chip lights on hover and press.
-It subscribes the lane's size change, then builds both charts.
+It subscribes the lane's size change, and builds no chart until the catalog arrives.
 
 ## `private ScrollViewer QArticulationLane`
 
 Each named part is pulled from the page by its contract ID on every read.
 
-## `internal void QArticulationIntroduce(params TextBox[] fields)`
+## `internal void QArticulationIntroduce(CCatalog catalog, params TextBox[] fields)`
 
-Names the pronunciation fields this aid may type into.
+Builds the vowel chart and then the consonant chart from `catalog`, which reads them through the engine.
+Then it names the pronunciation fields this aid may type into.
 The aid follows the keyboard between them and types into the one last focused.
 So it is tied to no single field instance and needs no rewiring when the editor reopens.
 
@@ -50,6 +51,15 @@ The consonant chart is the one that moves, because the vowel chart is the narrow
 The widths come from what each card asked for rather than from what it was given.
 The lane measures its content unbounded, so those widths stay the natural ones in either arrangement.
 A chart not yet measured is left alone, so an early size change does not stack the charts by mistake.
+
+### `private void QArticulationChartIntroduce(Grid table, CArticulation chart)`
+
+Builds one chart's controls once, from Conduct's ready `CArticulation`, so the aid only lays it out.
+The vowel chart comes from `CCatalogVowelRead`.
+Its rows are tongue height and its columns are tongue backness, as the IPA chart arranges them.
+A vowel cell holds the unrounded vowel and then the rounded one.
+The pulmonic consonant chart comes from `CCatalogConsonantRead`.
+Its rows are manner of articulation and its columns are place of articulation.
 
 ### `private Grid QArticulationTableBuild(Grid table, int columns, int rows)`
 

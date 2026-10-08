@@ -26,7 +26,7 @@ internal sealed class LTenureQueue
     internal LTenureQueue(LEngine engine, long id, object gate, object turn, Action observer)
     {
         _lTenureQueueEngine = engine;
-        _lTenureQueueChronicle = engine.LEngineStaffHeld.LEngineStaffChronicle;
+        _lTenureQueueChronicle = engine.LEngineStaffHeld.LEngineStaffClaim.LClaimStaffChronicle;
         _lTenureQueueId = id;
         _lTenureQueueGate = gate;
         _lTenureQueueTurn = turn;

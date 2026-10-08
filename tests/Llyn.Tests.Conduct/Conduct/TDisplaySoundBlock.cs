@@ -162,7 +162,7 @@ public sealed class TDisplaySoundBlock
         List<string> set = [];
         CEditor editor = TInterfaceEditor.TEditorCreate(
             engine,
-            TEngineFake.TEngineCreate<LPhonologyPort>(new Dictionary<string, Func<object?[]?, object?>>
+            TInterfaceConduct.TPhonologyBundleCreate(new Dictionary<string, Func<object?[]?, object?>>
             {
                 ["LEngineSoundStart"] = _ => null,
                 ["LEngineFanqieSet"] = args =>

@@ -1,12 +1,12 @@
 # CMembership.cs
-Hash: `64028e7aaa6989ee`
+Hash: `3e17fc089a86d709`
 
 ## `public sealed class CMembership`
 
 The taxonomy's entry list: the entries carrying the chosen Tag, and the one the reader stands on.
 It is shaped like `CQuotation`, and the taxonomy owns it as `CCorpus` owns its quotation.
 
-## `internal CMembership(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
+## `internal CMembership(LVistaPort vistas, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
 Builds the panel over the membership vista, which reports a failed load as `Tag.LoadFailed`.
 The panel asks the editor's desk before it leaves an entry, and it finishes through the editor.
@@ -50,7 +50,7 @@ The reader is asked for the printer through the envoy, and a decline prints noth
 
 ## `public Task CMembershipPortraitExport()`
 
-The file is offered under the entry's headword, as `LVista.LVistaFileRead` words it.
+The file is offered under the entry's headword, as `LVistaPort.LEngineFileRead` words it.
 `CPortrait` reads that name only once the export starts, and a failed read shows `Export.NameFailed`.
 The reader is asked for the file and format through the envoy, and a decline exports nothing.
 `CPortrait` words the page through the engine and shows `Export.Failed` through the envoy.

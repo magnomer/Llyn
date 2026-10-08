@@ -1,10 +1,10 @@
 # LWorkspaceClerk.cs
-Hash: `97e9012a19bd2a32`
+Hash: `85eae6a7bb58e0e2`
 
 ## `public sealed class LWorkspaceClerk`
 
 The workspace-level ports of one rig behind one clerk.
-Settings, audit, posture, workspace state, localization, the clock and the post-migration refill live here.
+Settings, audit, posture, workspace state and size, localization, the clock and the post-migration refill live here.
 The open sequence is static, so the engine can test a new rig before it swaps any field.
 
 ## `public LWorkspaceClerk(LRig rig, LLanguageCache languages, LReflexClerk reflexes, LParadigmClerk paradigms)`
@@ -86,6 +86,10 @@ The workspace state row.
 ## `public void LWorkspaceStateSave(LWorkspaceState state)`
 
 Writes the workspace state row.
+
+## `public long LWorkspaceSizeRead()`
+
+The bytes of the main database file, for the status bar.
 
 ## `public bool LWorkspacePostureRead(string name, out LPostureState? state)`
 

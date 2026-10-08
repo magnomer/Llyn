@@ -4,62 +4,68 @@ namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
-    internal static LQuill TQuillCreate(this LTenure tenure) => new(tenure);
+    internal static LQuillAuthor TQuillAuthorCreate(this LTenure tenure) => new(tenure);
 
-    internal static void TQuillAuthorSet(this LQuill quill, string name)
+    internal static LQuillExample TQuillExampleCreate(this LTenure tenure) => new(tenure);
+
+    internal static LQuillSentence TQuillSentenceCreate(this LTenure tenure) => new(tenure);
+
+    internal static LQuillEtymology TQuillEtymologyCreate(this LTenure tenure) => new(tenure);
+
+    internal static void TQuillAuthorSet(this LQuillAuthor quill, string name)
     {
         quill.LQuillAuthorSet(name);
     }
 
-    internal static void TQuillExampleSet(this LQuill quill, string text)
+    internal static void TQuillExampleSet(this LQuillExample quill, string text)
     {
         quill.LQuillExampleSet(text);
     }
 
-    internal static void TQuillSpeakerSet(this LQuill quill, string language)
+    internal static void TQuillSpeakerSet(this LQuillExample quill, string language)
     {
-        quill.LQuillSpeakerSet(language);
+        quill.LExampleSpeakerSet(language);
     }
 
-    internal static void TQuillReferenceSet(this LQuill quill, long reference)
+    internal static void TQuillReferenceSet(this LQuillExample quill, long reference)
     {
-        quill.LQuillReferenceSet(reference);
+        quill.LExampleReferenceSet(reference);
     }
 
 
-    internal static void TQuillGlossRemove(this LQuill quill, long gloss)
+    internal static void TQuillGlossRemove(this LQuillSentence quill, long gloss)
     {
-        quill.LQuillGlossRemove(0, 0, gloss);
+        quill.LSentenceGlossRemove(0, 0, gloss);
     }
 
-    internal static void TQuillGlossSet(this LQuill quill, long gloss, string? language, string? text)
+    internal static void TQuillGlossSet(this LQuillSentence quill, long gloss, string? language, string? text)
     {
-        quill.LQuillGlossSet(0, 0, gloss, language, text);
+        quill.LSentenceGlossSet(0, 0, gloss, language, text);
     }
 
-    internal static void TQuillEtymologySet(this LQuill quill, string text)
+    internal static void TQuillEtymologySet(this LQuillEtymology quill, string text)
     {
         quill.LQuillEtymologySet(text);
     }
 
-    internal static void TQuillEtymonAdd(this LQuill quill, long entry, int position)
+    internal static void TQuillEtymonAdd(this LQuillEtymology quill, long entry, int position)
     {
-        quill.LQuillEtymonAdd(entry, position);
+        quill.LEtymonAdd(entry, position);
     }
 
-    internal static void TQuillEtymonRemove(this LQuill quill, long entry)
+    internal static void TQuillEtymonRemove(this LQuillEtymology quill, long entry)
     {
-        quill.LQuillEtymonRemove(entry);
+        quill.LEtymonRemove(entry);
     }
 
-    internal static void TQuillMentionSave(this LQuill quill, int offset, int length, long entry)
+    internal static void TQuillMentionSave(this LQuillEtymology quill, int offset, int length, long entry)
     {
-        quill.LQuillMentionSave(offset, length, entry);
+        quill.LEtymologyMentionSave(offset, length, entry);
     }
 
-    internal static void TQuillCitationSet(this LQuill quill, long card, long sentence, long reference)
+    internal static void TQuillCitationSet(this LQuillSentence quill, long card, long sentence, long reference)
     {
-        quill.LQuillCitationSet(card, sentence, reference);
+        quill.LSentenceCitationSet(card, sentence, reference);
     }
 
     internal static LQuillChip TQuillChipCreate(this LTenure tenure, LDraftPort drafts) => new(tenure, drafts);

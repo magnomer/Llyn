@@ -1,15 +1,22 @@
 # LDraftClerkPanel.cs
-Hash: `50e4dd9f45a7bff0`
+Hash: `184b5dd53dfe60c0`
 
 ## `public sealed class LDraftClerkPanel`
 
-The requests of the drafts that hold no entry: the sentence panel and the source panel.
+The requests of the drafts that hold no entry: the sentence panel, the source panel and the authors panel.
 Each edits the one field of the draft that carries its kind, and refuses a draft of another kind.
 The situation panel shares the situation routines with the chips and is not here.
 
 ## `public LDraftClerkPanel(LAuthorVault authors, LIdentity identity)`
 
 Holds the shelf a credit is looked up on and the issuer that names a new Author.
+
+## `public LDraft? LPanelApply(LDraft draft, LRequest request)`
+
+Routes every sentence, source and credit request to its handler, and answers null for any other request.
+The clerk then hands that request on to the Mentions.
+The example and source panels edit their own field of the draft, and the credits edit its author list.
+The authors panel renames the one Author its draft holds.
 
 ## `public static LDraft LExampleChange(LDraft draft, Func<LExample, LExample> change)`
 

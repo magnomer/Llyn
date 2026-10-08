@@ -1,60 +1,25 @@
 # LEngineStaff.cs
-Hash: `f0f38339e0962cb5`
+Hash: `828d5b3b4e3d5a16`
 
 ## `internal sealed record LEngineStaff(...)`
 
 The record keeps every clerk and engine helper that belongs to the current rig.
+The clerks sit in five group records, each one concern a reader finds by name.
 The engine swaps one record when the workspace changes.
-Each facade reads its concern from this record.
+Each facade reads its concern from this record through the group that owns it.
 
 **Parameters**
 
-- `LEngineStaffDraft` manages held drafts.
-- `LEngineStaffChronicle` manages draft history.
-- `LEngineStaffCourt` manages links from a held draft to a target not yet stored.
-- `LEngineStaffClaim` manages held claims.
-- `LEngineStaffTag` manages tags.
-- `LEngineStaffRegister` manages registers.
-- `LEngineStaffTranslation` manages translation links.
-- `LEngineStaffReference` manages references.
-- `LEngineStaffExample` manages examples.
-- `LEngineStaffSituation` manages situations.
-- `LEngineStaffMeaning` manages meaning operations.
-- `LEngineStaffMention` manages text mentions.
-- `LEngineStaffUsage` manages usage records.
-- `LEngineStaffVocabulary` manages vocabulary rows.
-- `LEngineStaffParadigm` manages paradigms.
-- `LEngineStaffPronunciation` manages pronunciations.
-- `LEngineStaffTrail` manages workspace trails.
-- `LEngineStaffLanguage` manages language data.
-- `LEngineStaffRecording` manages recordings.
-- `LEngineStaffTranscription` manages transcriptions.
-- `LEngineStaffReflex` manages reflexes.
-- `LEngineStaffEntry` manages entries.
-- `LEngineStaffLacuna` fetches missing inflected forms and records the lacunae left.
-- `LEngineStaffFrequency` manages frequency data.
-- `LEngineStaffOutcome` runs the commit round of an entry draft.
-- `LEngineStaffAuthor` manages authors.
-- `LEngineStaffFavorite` manages favorites.
-- `LEngineStaffCitation` manages citations.
-- `LEngineStaffFanqie` manages fanqie data.
-- `LEngineStaffShengfu` manages a character's phonetic series, its 聲符.
-- `LEngineStaffStem` manages stems.
-- `LEngineStaffDiwei` manages 音韻地位 placements.
-- `LEngineStaffScript` manages script data.
-- `LEngineStaffWorkspace` manages workspace state.
-- `LEngineStaffMarkup` translates an entry to and from markup.
-- `LEngineStaffIntake` imports markup.
-- `LEngineStaffPortrait` builds portraits.
-- `LEngineStaffEnsign` manages language flags.
-- `LEngineStaffCourier` pushes entries into Joplin.
+- `LEngineStaffCatalog` holds the clerks for the catalog rows a card or citation names.
+- `LEngineStaffClaim` holds the clerks for held drafts and their claims.
+- `LEngineStaffLanguage` holds the clerks for language data and the background fetches.
+- `LEngineStaffEntry` holds the clerks for the entry lifecycle, its search and its citations.
+- `LEngineStaffWorkspace` holds the clerks for workspace state, markup, portraits and the Joplin push.
 
-## `internal static LEngineStaff LEngineStaffBuild(...)`
+## `internal static LEngineStaff LEngineStaffBuild(LRig rig, object gate, Action<LSubject, long> raise, Func<LSettings> settings, IReadOnlySet<long> retired)`
 
 Builds the staff in dependency order over one rig.
-Fetch clerks receive the gate and the bulletin raiser supplied by the engine.
-The courier records its failures through the workspace clerk, so a failed push leaves a trace.
-The courier takes no portrait clerk, since `LLiveryFacade` hands it each page at send time.
-The frequency and lacuna fetches also receive the settings reader.
-The markup clerk receives the reflex clerk, so an exported entry lists its reflexes in the pack's declared order.
+It makes the identity issuer, the language cache and the revision clerk the groups share.
+Each group is built after every group it reads a clerk from.
 The identity issuer receives the stale ids, so the new workspace never issues one a tenure still holds.
+One revision clerk stamps for the translation, entry, citation and intake clerks, so history stays one list.

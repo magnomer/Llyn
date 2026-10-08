@@ -1,5 +1,5 @@
 # LQuillChip.cs
-Hash: `ff1d421919aac7dd`
+Hash: `ccf49aacacdd2de8`
 
 ## `public sealed class LQuillChip`
 
@@ -16,6 +16,10 @@ The tenure every request is built for and handed to.
 ## `private readonly LDraftPort _lQuillChipDrafts;`
 
 The draft port that resolves a typed translation and finds every dropdown's stored rows.
+
+## `private readonly LQuillMention _lQuillChipMention;`
+
+The Mention finds over the same tenure, which the sense set and the span unlink start from.
 
 ## `public LQuillChip(LTenure tenure, LDraftPort drafts)`
 
@@ -76,12 +80,13 @@ An Entry of zero marks the span as standing for nothing, which the silence comma
 Narrows the Mention a selection lies inside to one sense of its Entry, sent at once.
 Pending typing is persisted first, so the Mention is found against the text the field shows.
 A selection inside no Mention sends nothing.
+`LQuillMention.LQuillMentionFind` finds the Mention, so every span find reads the same kept draft.
 
 ## `public void LQuillMentionRemove(long card, long sentence, string text, int start, int length)`
 
 Drops the Mention a selection lies inside, sent at once.
 Pending typing is persisted first, and a selection inside no Mention sends nothing.
-A chip's own unlink names its Mention by id through `LQuill.LQuillMentionRemove` instead.
+A chip's own unlink names its Mention by id through `LQuillMention.LQuillMentionRemove` instead.
 
 ## `public LReferenceOffer LQuillReferenceFind(long card, long sentence, string text)`
 
@@ -111,7 +116,7 @@ Links each completed word of the typed list that resolves to exactly one entry, 
 The held draft's own stored entry is never its own translation, so the resolve leaves it out.
 A word that resolves to no entry, or to several, stays in the text the answer keeps.
 The answer also offers the Entries the kept word matches, with none chosen while the user types.
-The order of the resolves, the links and the search is the engine's, so a driver makes one call.
+The order of the resolves, the links and the search is fixed here, so a driver makes one call.
 
 ## `public LTranslationOffer LQuillTranslationFind(string text)`
 
@@ -144,6 +149,16 @@ A stored entry has no court row, and nothing more happens.
 A tentative one loses its court row and the draft it was holding, which no other draft can name.
 A court or draft that cannot be read or dropped throws to the caller, which shows the failure.
 Left silent, it would orphan both.
+
+## `public IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LQuillTranslationRead(LEntryDraft draft)`
+
+The link targets of every meaning and collocation of the draft, keyed by card id.
+Each card answers its targets in the order the card lists them.
+One engine read resolves every card's links, so a paint asks nothing per card.
+A target the engine no longer finds is left out, so the chip row never shows a blank.
+A refused read answers every card empty, so the cards still draw.
+Any other failure reaches the caller.
+Every card of the draft gets a key, so the map to the editor's cards never misses one.
 
 ## `private LTagOffer LQuillTagFind(long card, string kept)`
 

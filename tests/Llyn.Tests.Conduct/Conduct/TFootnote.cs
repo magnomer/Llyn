@@ -113,7 +113,7 @@ public sealed class TFootnote
         CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, []);
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CFootnote footnote = new(
-            atelier.CAtelierEntryPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             atelier.CAtelierPortraitPort,
             atelier.CAtelierSettingsPort,
             editor,

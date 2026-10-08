@@ -1,5 +1,5 @@
 # TInterfaceConduct.cs
-Hash: `7bf0f1de56bd3ce9`
+Hash: `6741689657c5e5a3`
 
 ## `internal static class TInterfaceConduct`
 
@@ -22,9 +22,42 @@ The draft port is a fake that sweeps nothing, since the fake rig holds no drafts
 
 ## `internal static CAtelier TAtelierFaultCreate(LEngine engine, string member, bool thrown)`
 
-Builds the atelier over every real outlet on `engine`, each wrapped by `TEngineFault` on `member`.
+Builds the atelier over every real outlet and facade on `engine`, each wrapped by `TEngineFault` on `member`.
 Only the port declaring `member` faults it, so the fault sweep reaches the real engine everywhere else.
 `thrown` picks a throw over a faulted task, as the sweep runs both.
+
+## `internal static CEntryBundle TEntryBundleCreate(LEngine engine)`
+
+The bundle Host builds, every port the facade on `engine` that owns it.
+
+## `internal static CEntryBundle TEntryBundleCreate(LEngine engine, object swap)`
+
+The same bundle, with `swap` in place of every port it implements.
+A fake made for one port thus stands in for that port alone.
+
+## `internal static CEntryBundle TEntryBundleCreate(LEngine engine, string member, bool thrown)`
+
+Every facade port on `engine`, each wrapped by `TEngineFault` on `member`.
+Only the port declaring `member` faults it, so a fault key names the narrow port.
+
+## `internal static CEntryBundle TEntryBundleCreate(Dictionary<string, Func<object?[]?, object?>> answers)`
+
+Every port a fake answering from `answers`, so an empty map gives a bundle of bare stubs.
+
+## `internal static CPhonologyBundle TPhonologyBundleCreate(LEngine engine)`
+
+The phonology bundle Host builds, every port the facade on `engine` that owns it.
+
+## `internal static CPhonologyBundle TPhonologyBundleCreate(LEngine engine, string member, bool thrown)`
+
+Every sound facade port on `engine`, each wrapped by `TEngineFault` on `member`.
+Only the port declaring `member` faults it, so a fault key names the narrow port.
+
+## `internal static CPhonologyBundle TPhonologyBundleCreate(Dictionary<string, Func<object?[]?, object?>> answers)`
+
+Every sound port a fake answering from `answers`, so one map answers each port a fact reaches.
+The scale, the cell kind and the paradigm status answer by the engine's own rule unless `answers` names them.
+Those were rules with no engine state, so a fake keeps them true without a test naming them.
 
 ## `internal static LSettingsPort TSettingsOutletCreate(LEngine engine) => new LSettingsOutlet(engine);`
 
@@ -47,7 +80,7 @@ A fact can then hold the bulletin observers the draft port is handed and send a 
 
 ## `internal static CAtelier TAtelierCreate(LEngine engine, Dictionary<string, Func<object?[]?, object?>> answers)`
 
-Builds an atelier whose draft, entry and phonology ports answer from `answers`, for the text gates.
+Builds an atelier whose draft, bundled entry and bundled sound ports answer from `answers`, for the text gates.
 The settings and portrait ports are outlets on `engine`, and the media port answers from `answers` too.
 It adds the leftover sweep and the recording stop, so disposing the atelier needs no answer from the test.
 

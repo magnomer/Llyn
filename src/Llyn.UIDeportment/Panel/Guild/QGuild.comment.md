@@ -1,5 +1,5 @@
 # QGuild.cs
-Hash: `259eaa224d5899b6`
+Hash: `839d14f293955308`
 
 ## `internal sealed class QGuild`
 
@@ -10,7 +10,7 @@ The roll and the oeuvre are served here, and the vita and the autograph have dri
 
 ## `internal QGuild(UserControl surface)`
 
-Takes the guild page as its surface and builds a driver for each of its two nested pages.
+Takes the guild page as its surface and builds a driver for each nested page and for the colophon.
 It points the print button at its command, ties both droppers to their popups, and sets every icon.
 It subscribes every click, both search fields and both list clicks, and attaches the roll and oeuvre fills.
 
@@ -40,9 +40,14 @@ The search fields keep their text, since Conduct carried the queries into the fr
 
 Closes the dropdowns, so nothing stays open over a window that is going.
 
+## `private bool QGuildShownCheck()`
+
+Tells the panel whether the guild page is on screen, so a bulletin is acted on only while shown.
+
 ## `private void QLouverBuild()`
 
 Builds the kind menu from the filter the roll now holds, since a fresh vista holds none.
+The options come from the oeuvre's `COeuvreKindRead`, so the guild reads them through its own port.
 
 ## `private void QLouverRefine()`
 
@@ -118,9 +123,13 @@ Asks the session to save.
 
 Asks the gate to delete the chosen Author.
 
+## `private void QGuildPressCheck(object sender, CanExecuteRoutedEventArgs e)`
+
+Allows the print command only while the gate says the colophon side is shown.
+
 ## `private async void QGuildPressObserve(object sender, ExecutedRoutedEventArgs e)`
 
-Prints the Source read in the colophon on the printer the gate asks for.
+Prints the Source chosen in the oeuvre on the printer the gate asks for.
 The gate words the page with the Source legend.
 
 ## `internal void QGuildVoyageShow(bool past, bool future)`

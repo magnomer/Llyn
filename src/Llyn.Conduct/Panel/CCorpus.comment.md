@@ -1,5 +1,5 @@
 # CCorpus.cs
-Hash: `69b7780648810cc6`
+Hash: `fe9aaf52abac9240`
 
 ## `public sealed class CCorpus`
 
@@ -66,6 +66,20 @@ The desk holding the transcript, under the `Example` scope.
 It is internal, so a driver reads the transcript and `CCorpusTranscriptEnabled` instead.
 The tests still reach it, since Conduct shows them its internals.
 
+## `public CEditor CCorpusEditor { get; }`
+
+The entry editor of the quotation side, built by the corpus over the atelier.
+Its desk holds the quotation entry, and the session defers to it while the quotation list edits.
+
+## `public CSession CCorpusSession { get; }`
+
+The session over the transcript desk, the editor's desk and the two lists' leave checks.
+Its held and changed events reach the driver as the corpus's transcript and changed events.
+
+## `public CAnthology CCorpusAnthology { get; }`
+
+The example list and its panel, built over the corpus desk.
+
 ## `public CTranscript CCorpusTranscript { get; }`
 
 The transcript's held Example and its Mention gates, over the corpus desk and anthology.
@@ -96,6 +110,10 @@ The other mode flags follow the same two facts, which side is in front and wheth
 
 Print takes an entry on display or a chosen Example on the excerpt.
 Export, as `CCorpusPortraitAllowed` says, takes only an entry on display.
+
+## `public bool CCorpusPortraitAllowed`
+
+Whether export is allowed, which holds only while an entry is on display.
 
 ## `private bool LCorpusQuotationSide`
 

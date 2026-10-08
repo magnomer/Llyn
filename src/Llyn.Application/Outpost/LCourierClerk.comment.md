@@ -1,5 +1,5 @@
 # LCourierClerk.cs
-Hash: `c9225fc0bf1ae9dd`
+Hash: `0bc6c226f4e1a932`
 
 ## `public sealed class LCourierClerk`
 
@@ -56,9 +56,10 @@ The wait before each poll, so a connect asks Joplin about once a second.
 
 One while a push or attach runs anywhere in the process, set by compare-and-swap so two callers never both start.
 
-## `public LCourierClerk(LRig rig, LEntryClerk entry, object gate, Func<LSettings> settings, Action<Exception> fault)`
+## `public LCourierClerk(LRig rig, LEntryQueryClerk entry, object gate, Func<LSettings> settings, Action<Exception> fault)`
 
 Reads the Joplin, livery, manifest, warrant, workspace and language ports out of `rig`.
+`entry` lists every stored entry a push sends, under `gate`.
 `settings` is read at each push, so a new port or token applies without a restart.
 `fault` receives every caught failure before it is turned into a refusal or skipped, which the engine records.
 So a failure leaves a trace beyond the receipt.

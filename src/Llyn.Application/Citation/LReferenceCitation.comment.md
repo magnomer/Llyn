@@ -1,17 +1,17 @@
 # LReferenceCitation.cs
-Hash: `063db9078cb801da`
+Hash: `22b01c63bf1fb4b6`
 
 ## `public sealed class LReferenceCitation`
 
 The start, commit and check of a held Reference, one kind of the citation protocol.
 `LCitationClerk` builds and holds it beside the three other kinds.
 
-## `public LReferenceCitation(LRig rig, LIdentity identity, LClaimClerk claims, LAuthorClerk authors, LReferenceClerk references, LEntryClerk entries)`
+## `public LReferenceCitation(LRig rig, LIdentity identity, LClaimClerk claims, LAuthorClerk authors, LReferenceClerk references, LRevisionClerk revisions)`
 
 Reads the vault out of `rig` for the session a commit opens.
 The issuer names a new Reference and the claim clerk holds and finishes the draft.
 The Reference clerk writes the row and the Author clerk writes its credits.
-The entry clerk records the revision.
+The revision clerk records the revision.
 
 ## `public LDraft LReferenceCitationStart(string origin, long? referenceId)`
 

@@ -30,7 +30,8 @@ internal sealed class LSettingsFacade
     {
         lock (_lSettingsFacadeGate)
         {
-            return LSettingsFacadeStaff.LEngineStaffWorkspace.LWorkspacePostureRead(name, out state);
+            return LSettingsFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace
+                .LWorkspacePostureRead(name, out state);
         }
     }
 
@@ -38,7 +39,8 @@ internal sealed class LSettingsFacade
     {
         lock (_lSettingsFacadeGate)
         {
-            return LSettingsFacadeStaff.LEngineStaffWorkspace.LWorkspacePostureSave(name, state, out fault);
+            return LSettingsFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace
+                .LWorkspacePostureSave(name, state, out fault);
         }
     }
 
@@ -46,7 +48,7 @@ internal sealed class LSettingsFacade
     {
         lock (_lSettingsFacadeGate)
         {
-            return LSettingsFacadeStaff.LEngineStaffWorkspace.LWorkspaceClockRead();
+            return LSettingsFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceClockRead();
         }
     }
 
@@ -54,7 +56,7 @@ internal sealed class LSettingsFacade
     {
         lock (_lSettingsFacadeGate)
         {
-            return LSettingsFacadeStaff.LEngineStaffTrail.LTrailNameNormalize(name);
+            return LSettingsFacadeStaff.LEngineStaffLanguage.LLanguageStaffTrail.LTrailNameNormalize(name);
         }
     }
 
@@ -62,7 +64,8 @@ internal sealed class LSettingsFacade
     {
         lock (_lSettingsFacadeGate)
         {
-            return LSettingsFacadeStaff.LEngineStaffWorkspace.LWorkspaceLocalizationLoad(language);
+            return LSettingsFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace
+                .LWorkspaceLocalizationLoad(language);
         }
     }
 
@@ -102,7 +105,7 @@ internal sealed class LSettingsFacade
     {
         lock (_lSettingsFacadeGate)
         {
-            return LSettingsFacadeStaff.LEngineStaffLanguage.LLanguageRespellingCheck(
+            return LSettingsFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage.LLanguageRespellingCheck(
                 language, _lSettingsFacadeEngine.LEngineSettingsHeld.LSettingsRespelled);
         }
     }
@@ -111,7 +114,7 @@ internal sealed class LSettingsFacade
     {
         lock (_lSettingsFacadeGate)
         {
-            return LSettingsFacadeStaff.LEngineStaffLanguage.LLanguagePronunciationRead(
+            return LSettingsFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage.LLanguagePronunciationRead(
                 draft, _lSettingsFacadeEngine.LEngineSettingsHeld.LSettingsRespelled);
         }
     }
@@ -119,7 +122,7 @@ internal sealed class LSettingsFacade
     {
         lock (_lSettingsFacadeGate)
         {
-            return LSettingsFacadeStaff.LEngineStaffLanguage.LLanguagePhonemicCheck(language);
+            return LSettingsFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage.LLanguagePhonemicCheck(language);
         }
     }
 
@@ -178,7 +181,7 @@ internal sealed class LSettingsFacade
             changed = LEngineSettingsChange(settings => settings with { LSettingsMorphology = morphology });
             if (changed && !morphology)
             {
-                LSettingsFacadeStaff.LEngineStaffLacuna.LLacunaClerkClear();
+                LSettingsFacadeStaff.LEngineStaffLanguage.LLanguageStaffLacuna.LLacunaClerkClear();
             }
         }
 
@@ -202,7 +205,7 @@ internal sealed class LSettingsFacade
             _lSettingsFacadeEngine.LEngineSettingsHeld = changed;
             try
             {
-                LSettingsFacadeStaff.LEngineStaffWorkspace.LWorkspaceSettingsSave(changed);
+                LSettingsFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceSettingsSave(changed);
             }
             catch
             {

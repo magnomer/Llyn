@@ -1,18 +1,18 @@
 # LDraftFacade.cs
-Hash: `a2cafadaa7f190c0`
+Hash: `2aa7ffa52ec5b261`
 
-## `internal sealed class LDraftFacade`
+## `public sealed class LDraftFacade : LMarkdownPort`
 
 The engine facade for drafts, so the shell never opens the drafts folder itself.
 The files, the claims and the held set are `LClaimClerk`'s, and every call here reaches them through it.
 An id raised here belongs to the workspace that raised it, so a workspace change marks every held id stale.
 Every call naming an id is checked against that mark, which is the one fact the clerk cannot know.
-The entry commit stays here, because the entry save still runs the transcription and reflex syncs beside it.
-The dirty check of an entry draft stays here too.
-Only the engine loads an entry with its audio resolved.
+The commit round and the dirty check belong to the outcome and citation clerks.
+This facade only takes the gate around them.
 These are primitives, and `LTenure` in `LTenure.cs` is the session object that sequences them for a panel.
-The sentence, situation, source and author starts and commits live beside their kind's reads.
+The example, situation, reference and author starts and commits live in those kinds' facades.
 Every edit in between is a request, applied in `LRequestFacade.cs` for all kinds alike.
+It implements the markdown port itself, so Host hands it to Conduct with no outlet between.
 
 ## `public LDraftFacade(LEngine engine)`
 
@@ -91,6 +91,7 @@ Releasing it is how the stale set shrinks as the old tenures close.
 Cancels every unheld draft that says nothing its origin does not.
 A draft with no entry is cancelled when it is blank.
 One with an entry is cancelled when the citation clerk finds it equal to the entry.
+A draft this engine holds, or another running program claims, is never touched.
 It announces nothing, so it moves the engine revision itself.
 A swept draft can settle a court into a held draft, so no tenure may keep its state across it.
 

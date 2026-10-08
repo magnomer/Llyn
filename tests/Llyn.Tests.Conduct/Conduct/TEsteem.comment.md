@@ -15,7 +15,7 @@ Any stored step the engine answers reads between zero and that limit.
 
 ## `private static long TEsteemStoredPrepare(LEngine engine)`
 
-Stores one English entry, and answers its id, so the marks open it over a fake entry port.
+Stores one English entry, and answers its id, so the marks open it over a fake grasp port.
 
 ## `private static LEntry TEsteemEntryPrepare(LEngine engine)`
 

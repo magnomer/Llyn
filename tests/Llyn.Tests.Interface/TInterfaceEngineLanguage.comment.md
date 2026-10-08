@@ -1,5 +1,5 @@
 # TInterfaceEngineLanguage.cs
-Hash: `8ba8aab88334eb6e`
+Hash: `aa0b113ae9c40506`
 
 ## `internal static class TInterfaceEngineLanguage`
 
@@ -15,7 +15,7 @@ The kindred relay takes an optional vista, so a test can pin the order the panel
 The engine hands the rows to a callback, so the relay keeps them and answers them once the load ends.
 The overload for one language and its varieties keeps them the same way.
 
-## `internal static Task<IReadOnlyList<string>> TEngineEnsignLoad(`
+## `internal static Task<IReadOnlyList<string>> TEngineEnsignLoad(this LEngine engine, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
 
 Hands the test's own `store` to the engine's fill and answers the languages the fill returns.
 It is the call the settings outlet forwards to, so a test reads both the stored rows and the answer.

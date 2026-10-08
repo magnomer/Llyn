@@ -5,7 +5,7 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-internal sealed class LStemFacade
+public sealed class LStemFacade : LStemPort
 {
     private readonly LEngine _lStemFacadeEngine;
     private readonly object _lStemFacadeGate;
@@ -21,7 +21,7 @@ internal sealed class LStemFacade
     {
         lock (_lStemFacadeGate)
         {
-            return LStemFacadeStaff.LEngineStaffStem.LStemClerkRead(id);
+            return LStemFacadeStaff.LEngineStaffLanguage.LLanguageStaffStem.LStemClerkRead(id);
         }
     }
 
@@ -34,7 +34,7 @@ internal sealed class LStemFacade
 
         lock (_lStemFacadeGate)
         {
-            return LStemFacadeStaff.LEngineStaffStem.LStemClerkFind(language, key)?.LStemId;
+            return LStemFacadeStaff.LEngineStaffLanguage.LLanguageStaffStem.LStemClerkFind(language, key)?.LStemId;
         }
     }
 
@@ -69,7 +69,7 @@ internal sealed class LStemFacade
         LStemClerk stems;
         lock (_lStemFacadeGate)
         {
-            stems = LStemFacadeStaff.LEngineStaffStem;
+            stems = LStemFacadeStaff.LEngineStaffLanguage.LLanguageStaffStem;
         }
 
         List<LStem> rows = [];
@@ -93,8 +93,10 @@ internal sealed class LStemFacade
     {
         lock (_lStemFacadeGate)
         {
-            LStem? stem = LStemFacadeStaff.LEngineStaffStem.LStemClerkRead(id);
-            return stem is null ? LStemPage.LStemPageBlank : LStemFacadeStaff.LEngineStaffStem.LStemPageRead(stem);
+            LStem? stem = LStemFacadeStaff.LEngineStaffLanguage.LLanguageStaffStem.LStemClerkRead(id);
+            return stem is null
+                ? LStemPage.LStemPageBlank
+                : LStemFacadeStaff.LEngineStaffLanguage.LLanguageStaffStem.LStemPageRead(stem);
         }
     }
 
@@ -103,7 +105,7 @@ internal sealed class LStemFacade
         LStem? stem;
         lock (_lStemFacadeGate)
         {
-            stem = LStemFacadeStaff.LEngineStaffStem.LStemClerkRead(id);
+            stem = LStemFacadeStaff.LEngineStaffLanguage.LLanguageStaffStem.LStemClerkRead(id);
         }
 
         return _lStemFacadeEngine.LEngineEntry.LEngineGlyphResolve(
@@ -128,7 +130,7 @@ internal sealed class LStemFacade
     {
         lock (_lStemFacadeGate)
         {
-            IReadOnlyList<LEntry> entries = LStemFacadeStaff.LEngineStaffStem.LStemEntryScan(
+            IReadOnlyList<LEntry> entries = LStemFacadeStaff.LEngineStaffLanguage.LLanguageStaffStem.LStemEntryScan(
                 language, stemIds, query, vista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword);
             return entries.Count == 0
                 ? []
@@ -145,7 +147,7 @@ internal sealed class LStemFacade
     {
         lock (_lStemFacadeGate)
         {
-            return LStemFacadeStaff.LEngineStaffShengfu.LShengfuRuleRead(language) is not null;
+            return LStemFacadeStaff.LEngineStaffLanguage.LLanguageStaffShengfu.LShengfuRuleRead(language) is not null;
         }
     }
 

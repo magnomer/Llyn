@@ -12,8 +12,8 @@ public sealed class CEditor
 
     internal CEditor(
         LDraftPort drafts,
-        LEntryPort entries,
-        LPhonologyPort phonology,
+        CEntryBundle entries,
+        CPhonologyBundle phonology,
         LSettingsPort settings,
         LMediaPort media,
         CEnvoy envoy,
@@ -27,14 +27,30 @@ public sealed class CEditor
 
         CEditorDesk = new CDesk(drafts, settings, "Input", envoy);
         CEditorDisplay = new CDisplay(drafts, entries, phonology, settings, media, envoy, noticed);
-        CEditorCard = new CCard(CEditorDesk, drafts, entries, settings, envoy);
-        CEditorSentence = new CSentence(CEditorDesk, phonology, drafts, settings, envoy, noticed);
-        CEditorSounding = new CSounding(CEditorDesk, phonology, settings, CEditorDisplay.LDisplayRule, envoy);
+        CEditorCard = new CCard(CEditorDesk, drafts, entries.CEntryBundleReference, settings, envoy);
+        CEditorSentence = new CSentence(
+            CEditorDesk, phonology.CPhonologyBundleSentence, drafts, settings, envoy, noticed);
+        CEditorSounding = new CSounding(
+            CEditorDesk,
+            phonology.CPhonologyBundleFanqie,
+            phonology.CPhonologyBundleDiwei,
+            phonology.CPhonologyBundleScript,
+            phonology.CPhonologyBundleParadigm,
+            settings,
+            CEditorDisplay.LDisplayRule,
+            envoy);
         CEditorFold = new CFold(settings, envoy);
         CEditorEsteem = new CEsteem(CEditorDesk, CEditorDisplay.LDisplayRule);
-        CEditorTimbre = new CTimbre(CEditorDesk, phonology, CEditorDisplay.LDisplayRule, drafts, settings, envoy);
+        CEditorTimbre = new CTimbre(
+            CEditorDesk,
+            phonology.CPhonologyBundleLanguage,
+            phonology.CPhonologyBundleReflex,
+            CEditorDisplay.LDisplayRule,
+            drafts,
+            settings,
+            envoy);
         CEditorPlayback = new CPlayback(CEditorDesk, media);
-        CEditorSpeech = new CCardSpeech(CEditorDesk);
+        CEditorSpeech = new CCardSpeech(CEditorDesk, entries.CEntryBundleEntry);
         CEditorDesk.CDeskFinished += CEditorStoredShow;
         CEditorDesk.CDeskDraftPrepared += draft =>
         {
@@ -42,7 +58,7 @@ public sealed class CEditor
             {
                 CEditorDraftChanged?.Invoke(CFolio.CFolioEntryRead(
                     draft.LDraftContent,
-                    held.LTenureTranslationRead(draft.LDraftContent),
+                    new LQuillChip(held, drafts).LQuillTranslationRead(draft.LDraftContent),
                     CEditorDisplay.LDisplayRule.LDisplayMediaPort));
             }
         };
@@ -54,8 +70,8 @@ public sealed class CEditor
 
         CEditor editor = new(
             atelier.CAtelierDraftPort,
-            atelier.CAtelierEntryPort,
-            atelier.CAtelierPhonologyPort,
+            atelier.CAtelierEntryBundle,
+            atelier.CAtelierPhonologyBundle,
             atelier.CAtelierSettingsPort,
             atelier.CAtelierMediaPort,
             envoy,
@@ -179,40 +195,59 @@ public sealed class CEditor
 
     public string CEditorPronunciationRead()
     {
-        return CEditorDesk.CDeskTenure?.LTenurePronunciationRead() ?? string.Empty;
+        return CEditorDesk.CDeskTenure is LTenure held
+            ? new LQuillPronunciation(held).LQuillPronunciationRead()
+            : string.Empty;
     }
 
     public IReadOnlyList<CTranslationTarget> CEditorEtymonRead()
     {
-        return CEditorDesk.CDeskTenure is LTenure held ? CFolio.CFolioTargetRead(held.LTenureEtymonRead()) : [];
+        return CEditorDesk.CDeskTenure is LTenure held
+            ? CFolio.CFolioTargetRead(new LQuillEtymology(held).LQuillEtymonRead())
+            : [];
     }
 
     public void CEditorHeadwordSet(string text)
     {
-        CEditorTenure?.LTenureHeadwordSet(text);
+        if (CEditorTenure is LTenure held)
+        {
+            new LQuillEntry(held).LQuillHeadwordSet(text);
+        }
     }
 
     public void CEditorPronunciationSet(string text)
     {
-        CEditorTenure?.LTenurePronunciationSet(text);
+        if (CEditorTenure is LTenure held)
+        {
+            new LQuillPronunciation(held).LQuillPronunciationSet(text);
+        }
     }
 
     public void CEditorNoteSet(string text)
     {
-        CEditorTenure?.LTenureNoteSet(text);
+        if (CEditorTenure is LTenure held)
+        {
+            new LQuillEntry(held).LQuillNoteSet(text);
+        }
     }
 
-    public static bool CEditorNoteCheck(string text, string note) => LTenure.LTenureNoteCheck(text, note);
+    public static bool CEditorNoteCheck(string text, string note) => LQuillEntry.LQuillNoteCheck(text, note);
 
     public void CEditorLanguageSet(string language)
     {
-        CEditorTenure?.LTenureLanguageSet(language);
+        if (CEditorTenure is LTenure held)
+        {
+            new LQuillEntry(held).LQuillLanguageSet(language);
+        }
     }
 
     public void CEditorUnitSet(string key)
     {
         ArgumentNullException.ThrowIfNull(key);
 
-        CEditorTenure?.LTenureUnitSet(CCardSpeech.LUnitRowParse(key));
+        if (CEditorTenure is LTenure held)
+        {
+            new LQuillEntry(held).LQuillUnitSet(CCardSpeech.LUnitRowParse(key));
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace Llyn.Conduct;
 
 public sealed class CAtlas
 {
-    private readonly LEntryPort _cAtlasEntryPort;
+    private readonly LSituationPort _cAtlasSituationPort;
 
     private readonly LPortraitPort _cAtlasPortraitPort;
 
@@ -20,27 +20,29 @@ public sealed class CAtlas
     private LVista? _cAtlasVista;
 
     internal CAtlas(
-        LEntryPort entries,
+        LSituationPort situations,
         LPortraitPort portraits,
         LSettingsPort settings,
+        LVistaPort vistas,
         CDesk desk,
         Func<bool> shownSeam,
         CEnvoy envoy,
         Func<bool, bool> finishSeam)
     {
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(situations);
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _cAtlasEnvoy = envoy;
-        _cAtlasEntryPort = entries;
+        _cAtlasSituationPort = situations;
         _cAtlasPortraitPort = portraits;
         _cAtlasSettingsPort = settings;
         CAtlasPanel = new CPanel(
             envoy,
             settings,
+            vistas,
             "Situation.LoadFailed", "Situation", desk.LDeskChangeCheck, finishSeam, shownSeam);
     }
 
@@ -112,7 +114,7 @@ public sealed class CAtlas
 
         try
         {
-            return _cAtlasEntryPort
+            return _cAtlasSituationPort
                 .LEngineSituationFind(
                     vista,
                     _cAtlasSettingsPort.LEngineTextRead("Display.Unknown"),
@@ -166,7 +168,7 @@ public sealed class CAtlas
             : null;
     }
 
-    internal static CSituation? LAtlasSituationRead(LDraft? draft, LMediaPort media, LEntryPort entries)
+    internal static CSituation? LAtlasSituationRead(LDraft? draft, LMediaPort media, LMarkdownPort markdown)
     {
         if (draft?.LDraftSituation is not LSituation situation)
         {
@@ -178,7 +180,7 @@ public sealed class CAtlas
             CStateWording.LStateWordingRead(CFolio.CFolioStateRead(situation.LSituationTitle), "Situation.Untitled"),
             CStateWording.LStateWordingRead(CFolio.CFolioStateRead(situation.LSituationKind), null),
             CStateWording.LStateWordingRead(description, null),
-            CMarkdown.LMarkdownParse(entries, description.CStateValueText),
+            CMarkdown.LMarkdownParse(markdown, description.CStateValueText),
             CFolio.CFolioImageRead(situation.LSituationImageFilled, media),
             CFolio.CFolioVideoRead(situation.LSituationVideoFilled, media));
     }

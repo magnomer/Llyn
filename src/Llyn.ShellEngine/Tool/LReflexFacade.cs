@@ -8,7 +8,7 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-internal sealed class LReflexFacade
+public sealed class LReflexFacade : LReflexPort
 {
     private readonly LEngine _lReflexFacadeEngine;
     private readonly object _lReflexFacadeGate;
@@ -57,7 +57,7 @@ internal sealed class LReflexFacade
     {
         lock (_lReflexFacadeGate)
         {
-            return LReflexFacadeStaff.LEngineStaffReflex.LReflexRuleRead(language);
+            return LReflexFacadeStaff.LEngineStaffLanguage.LLanguageStaffReflex.LReflexRuleRead(language);
         }
     }
 
@@ -68,7 +68,7 @@ internal sealed class LReflexFacade
         IReadOnlyList<string> folded;
         lock (_lReflexFacadeGate)
         {
-            folded = LReflexFacadeStaff.LEngineStaffReflex.LReflexFoldedRead(language);
+            folded = LReflexFacadeStaff.LEngineStaffLanguage.LLanguageStaffReflex.LReflexFoldedRead(language);
         }
 
         return reflexes.Select(reflex => LEngineGuiseBuild(reflex.Trim(), folded)).ToList();
@@ -76,17 +76,18 @@ internal sealed class LReflexFacade
 
     public void LEngineReflexStart(long entryId)
     {
-        LReflexFacadeStaff.LEngineStaffReflex.LReflexClerkFetch.LReflexFetchStart(entryId);
+        LReflexFacadeStaff.LEngineStaffLanguage.LLanguageStaffReflex.LReflexClerkFetch.LReflexFetchStart(entryId);
     }
 
     public void LEngineReflexRebuild(long entryId)
     {
-        LReflexFacadeStaff.LEngineStaffReflex.LReflexClerkFetch.LReflexFetchRebuild(entryId);
+        LReflexFacadeStaff.LEngineStaffLanguage.LLanguageStaffReflex.LReflexClerkFetch.LReflexFetchRebuild(entryId);
     }
 
     public bool LEngineReflexCheck(long entryId)
     {
-        return LReflexFacadeStaff.LEngineStaffReflex.LReflexClerkFetch.LReflexFetchCheck(entryId);
+        return LReflexFacadeStaff.LEngineStaffLanguage.LLanguageStaffReflex
+            .LReflexClerkFetch.LReflexFetchCheck(entryId);
     }
 
     public IReadOnlyList<LDescent> LEngineDescentRead(string language)
@@ -107,7 +108,7 @@ internal sealed class LReflexFacade
     private IReadOnlyList<LFanqieRow> LEngineAnchorRead(long entryId)
     {
         _lReflexFacadeEngine.LEngineFanqie.LEngineFanqieStart(entryId);
-        return LReflexFacadeStaff.LEngineStaffFanqie.LFanqieClerkRead(entryId);
+        return LReflexFacadeStaff.LEngineStaffLanguage.LLanguageStaffFanqie.LFanqieClerkRead(entryId);
     }
 
     private LEngineStaff LReflexFacadeStaff => _lReflexFacadeEngine.LEngineStaffHeld;

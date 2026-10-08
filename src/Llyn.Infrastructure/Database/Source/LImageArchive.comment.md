@@ -1,5 +1,5 @@
 # LImageArchive.cs
-Hash: `3e72bea858510071`
+Hash: `fce87a0f29147ecf`
 
 ## `public sealed class LImageArchive : LImageVault`
 
@@ -11,8 +11,7 @@ Attaching and detaching therefore only ever write association rows.
 Detaching leaves the Image and its other references untouched.
 Updating rewrites the location and never the id.
 
-A referrer's order is a unique index.
-So attaching and detaching renumber that referrer's whole set through `LDatabaseOrder`.
+Each association table is held as one `LDatabaseLink`, which renumbers a referrer's whole set on every write.
 A caller names the index it wants.
 It never has to find a free position or leave a gap behind.
 
@@ -72,3 +71,13 @@ The Image and every other reference stay.
 
 Drops a Situation's reference and closes the gap it leaves.
 The Image and every other reference stay.
+
+## `public Dictionary<long, List<LImageDraft>> LImageSituationScan()`
+
+Every situation-to-image link joined to its Image, ordered by parent and position, bucketed by parent.
+The Situation store fills a whole list from it in one query rather than one per Situation.
+
+## `public void LImageSituationClear(long situationId)`
+
+Drops every Image link of one Situation, and leaves the Image rows standing.
+The Situation store calls it inside its delete, so the session nests into that one.

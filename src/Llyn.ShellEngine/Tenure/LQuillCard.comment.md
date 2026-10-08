@@ -1,12 +1,11 @@
 # LQuillCard.cs
-Hash: `f149000d0f9be6b3`
+Hash: `91b9a85c69afb98f`
 
 ## `public sealed class LQuillCard`
 
-The card list edits of one tenure: adding, removing and moving whole cards, each building one request.
-It sits beside `LQuill` by role, since the quill is at its member limit.
-The rules live in `LDraftClerkCard`, and this type only reads the draft and sends.
-Its members keep the `LQuill` base, as `LQuillChip`'s do.
+The card edits of one tenure, each building one request.
+It adds, removes and moves whole cards, and takes a card's typed title, expression and definition.
+The list rules live in `LDraftClerkCard`, and this type only reads the draft and sends.
 
 ## `private readonly LTenure _lQuillCardTenure;`
 
@@ -30,3 +29,15 @@ Shifts one card to a place in its own list, sent at once.
 The card clerk answers whether that place is a move at all.
 A card the draft lacks, a place outside its list, or the place it holds sends nothing.
 So a drag hands every place its geometry finds, and only a real move becomes a request.
+
+## `public void LCardTitleSet(long card, string text)`
+
+Defers a card's typed title, so each keystroke joins one undo step.
+
+## `public void LCardExpressionSet(long card, string text)`
+
+Defers a card's typed expression, like its title.
+
+## `public void LCardMeaningSet(long card, string text)`
+
+Defers a card's typed definition, like its title.

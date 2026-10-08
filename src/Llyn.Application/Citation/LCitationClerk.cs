@@ -19,7 +19,8 @@ public sealed class LCitationClerk
         LExampleClerk examples,
         LReferenceClerk references,
         LSituationClerk situations,
-        LEntryClerk entries)
+        LEntryClerk entries,
+        LRevisionClerk revisions)
     {
         ArgumentNullException.ThrowIfNull(claims);
         ArgumentNullException.ThrowIfNull(examples);
@@ -31,10 +32,10 @@ public sealed class LCitationClerk
         _lCitationClerkReferences = references;
         _lCitationClerkSituations = situations;
         _lCitationClerkEntries = entries;
-        LCitationClerkAuthor = new LAuthorCitation(rig, claims, authors, entries);
-        LCitationClerkExample = new LExampleCitation(rig, identity, claims, examples, entries);
-        LCitationClerkReference = new LReferenceCitation(rig, identity, claims, authors, references, entries);
-        LCitationClerkSituation = new LSituationCitation(rig, identity, claims, situations, entries);
+        LCitationClerkAuthor = new LAuthorCitation(rig, claims, authors, revisions);
+        LCitationClerkExample = new LExampleCitation(rig, identity, claims, examples, revisions);
+        LCitationClerkReference = new LReferenceCitation(rig, identity, claims, authors, references, revisions);
+        LCitationClerkSituation = new LSituationCitation(rig, identity, claims, situations, revisions);
     }
 
     public LAuthorCitation LCitationClerkAuthor { get; }
@@ -118,10 +119,5 @@ public sealed class LCitationClerk
 
         LEntryDraft? stored = _lCitationClerkEntries.LEntryClerkLoad(draft.LDraftEntryId);
         return stored is not null && LDraftClerkEquality.LDraftMatch(stored, draft.LDraftContent);
-    }
-
-    internal static void LRevisionRecord(LEntryClerk entries, long target, string subject, bool fresh, string? summary)
-    {
-        entries.LRevisionRecord([new LRevisionDelta(target, subject, fresh ? "create" : "update", summary)]);
     }
 }

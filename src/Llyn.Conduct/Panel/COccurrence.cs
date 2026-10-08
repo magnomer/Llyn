@@ -10,7 +10,7 @@ public sealed class COccurrence
 {
     private readonly CEnvoy _cOccurrenceEnvoy;
 
-    private readonly LEntryPort _cOccurrenceEntryPort;
+    private readonly LVistaPort _cOccurrenceVistaPort;
 
     private readonly LPortraitPort _cOccurrencePortraitPort;
 
@@ -21,7 +21,7 @@ public sealed class COccurrence
     private LVista? _cOccurrenceVista;
 
     internal COccurrence(
-        LEntryPort entries,
+        LVistaPort vistas,
         LPortraitPort portraits,
         LSettingsPort settings,
         CEnvoy envoy,
@@ -29,15 +29,16 @@ public sealed class COccurrence
         Func<bool, bool> finishSeam,
         Func<bool> shownSeam)
     {
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(vistas);
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
 
         _cOccurrenceEnvoy = envoy;
-        _cOccurrenceEntryPort = entries;
+        _cOccurrenceVistaPort = vistas;
         _cOccurrenceSettingsPort = settings;
         _cOccurrencePortraitPort = portraits;
-        COccurrencePanel = new CPanel(envoy, settings, "List.LoadFailed", null, changeSeam, finishSeam, shownSeam);
+        COccurrencePanel = new CPanel(
+            envoy, settings, vistas, "List.LoadFailed", null, changeSeam, finishSeam, shownSeam);
     }
 
     public CPanel COccurrencePanel { get; }
@@ -80,7 +81,7 @@ public sealed class COccurrence
     {
         try
         {
-            return _cOccurrenceEntryPort.LEngineEntryFind(_cOccurrenceRoll, _cOccurrenceVista)
+            return _cOccurrenceVistaPort.LEngineEntryFind(_cOccurrenceRoll, _cOccurrenceVista)
                 .Select(CCatalog.LCatalogRowRead)
                 .ToList();
         }
@@ -98,7 +99,7 @@ public sealed class COccurrence
 
     internal string LOccurrenceFileRead()
     {
-        return LVista.LVistaFileRead(_cOccurrenceVista);
+        return _cOccurrenceVistaPort.LEngineFileRead(_cOccurrenceVista);
     }
 
     internal Task LOccurrencePortraitPrint(CEnvoy envoy, LSettingsPort settings)

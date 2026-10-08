@@ -11,7 +11,7 @@ public sealed class LReferenceCitation
     private readonly LClaimClerk _lReferenceCitationClaims;
     private readonly LAuthorClerk _lReferenceCitationAuthors;
     private readonly LReferenceClerk _lReferenceCitationReferences;
-    private readonly LEntryClerk _lReferenceCitationEntries;
+    private readonly LRevisionClerk _lReferenceCitationRevisions;
 
     public LReferenceCitation(
         LRig rig,
@@ -19,20 +19,20 @@ public sealed class LReferenceCitation
         LClaimClerk claims,
         LAuthorClerk authors,
         LReferenceClerk references,
-        LEntryClerk entries)
+        LRevisionClerk revisions)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(claims);
         ArgumentNullException.ThrowIfNull(authors);
         ArgumentNullException.ThrowIfNull(references);
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(revisions);
         _lReferenceCitationVault = rig.LRigVault;
         _lReferenceCitationIdentity = identity;
         _lReferenceCitationClaims = claims;
         _lReferenceCitationAuthors = authors;
         _lReferenceCitationReferences = references;
-        _lReferenceCitationEntries = entries;
+        _lReferenceCitationRevisions = revisions;
     }
 
     public LDraft LReferenceCitationStart(string origin, long? referenceId)
@@ -75,8 +75,7 @@ public sealed class LReferenceCitation
             }
 
             _lReferenceCitationAuthors.LAuthorReferenceSave(stored.LReferenceId, draft.LDraftAuthor);
-            LCitationClerk.LRevisionRecord(
-                _lReferenceCitationEntries,
+            _lReferenceCitationRevisions.LRevisionClerkRecord(
                 stored.LReferenceId,
                 "reference",
                 fresh,

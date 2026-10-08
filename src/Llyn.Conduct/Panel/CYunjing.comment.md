@@ -1,5 +1,5 @@
 # CYunjing.cs
-Hash: `353317163d2e1dce`
+Hash: `ca4cb1ea084c67f4`
 
 ## `public sealed class CYunjing`
 
@@ -209,6 +209,12 @@ The editor lets its draft go, then the display stops its playback.
 
 Toggles that cell in its column and makes that column the one the page follows.
 Whatever entry was read is cleared.
+An unsaved draft is first put to the leave question, and nothing changes when the user keeps it.
+
+## `private void LYunjingDiweiToggle(long cell, bool rime)`
+
+Makes the cell's column the followed one, toggles the cell, clears the entry read, and tells the driver.
+It asks nothing, so each caller settles the leave question first.
 
 ## `internal void LYunjingDiweiOpen(string language, string kind, string key)`
 
@@ -216,6 +222,8 @@ The navigation's arrival: opens the cell of that language, kind and key, the req
 It first empties both column searches and raises `CYunjingDiweiOpened`, so the driver shows them empty.
 The engine finds the cell and its column, and nothing happens for a cell never stored.
 Both columns are unchosen first, so the page shows only that cell.
+It toggles the cell without the gate's leave question, since the navigation already asked it.
+After a discard the draft still reads as changed, so asking again would repeat the dialog.
 
 ## `public void CYunjingTallyToggle(bool? respelled)`
 

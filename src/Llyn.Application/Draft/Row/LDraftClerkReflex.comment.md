@@ -15,11 +15,12 @@ Holds the pack cache a row is respelled and cut through and the issuer that name
 ## `public LEntryDraft? LReflexApply(LEntryDraft content, LRequest request)`
 
 Routes every reflex request to its handler, and answers null for any other request.
-The clerk then hands that request on to the card lists.
-A language, text or respelling request respells the row and recuts its anatomy under the entry's own language.
+The clerk then hands that request on to the etymology rows.
+A language or text request respells the row under its own language and recuts its anatomy under the entry's language.
+A respelling request keeps the respelling typed and recuts the anatomy.
 A romanization or note request replaces that one text of the named row.
 A meaning request also marks the row as user-owned so the meaning survives a rebuild.
-The region only comes from the fetch.
+No request edits the region, which the fetch and the markup import supply.
 An anchor request ties or unties the named row and one fanqie row.
 The row's other anchors stand as they were.
 

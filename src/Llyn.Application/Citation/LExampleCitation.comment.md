@@ -1,16 +1,16 @@
 # LExampleCitation.cs
-Hash: `1d239544b9b6979b`
+Hash: `f309cf4a2c952285`
 
 ## `public sealed class LExampleCitation`
 
 The start, commit and check of a held sentence, one kind of the citation protocol.
 `LCitationClerk` builds and holds it beside the three other kinds.
 
-## `public LExampleCitation(LRig rig, LIdentity identity, LClaimClerk claims, LExampleClerk examples, LEntryClerk entries)`
+## `public LExampleCitation(LRig rig, LIdentity identity, LClaimClerk claims, LExampleClerk examples, LRevisionClerk revisions)`
 
 Reads the vault out of `rig` for the session a commit opens.
 The issuer names a new sentence and the claim clerk holds and finishes the draft.
-The Example clerk writes the row, and the entry clerk records the revision.
+The Example clerk writes the row, and the revision clerk records the revision.
 
 ## `public LDraft LExampleCitationStart(string origin, long? exampleId)`
 

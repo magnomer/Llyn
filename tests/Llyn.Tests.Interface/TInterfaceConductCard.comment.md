@@ -1,5 +1,5 @@
 # TInterfaceConductCard.cs
-Hash: `ee9cf72ea3595fe5`
+Hash: `75f7cb9336fb9156`
 
 ## `internal static class TInterfaceConductCard`
 
@@ -18,7 +18,7 @@ Builds the card list gates over `desk`, as the editor does on every use.
 
 ## `internal static CSentence TSentenceCreate(LEngine engine, CDesk desk)`
 
-Builds the sentence gates over `desk` with real phonology and draft outlets on `engine`.
+Builds the sentence gates over `desk` with the engine's vocabulary facade and a real draft outlet.
 Its settings port is the shared fake, and its envoy answers no to every question.
 It holds a fresh repaint memory of its own.
 

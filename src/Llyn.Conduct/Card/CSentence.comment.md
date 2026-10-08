@@ -1,5 +1,5 @@
 # CSentence.cs
-Hash: `2f3d42b194f89225`
+Hash: `3c7dfdea807a4550`
 
 ## `public sealed class CSentence`
 
@@ -9,15 +9,11 @@ The rules about the rows live in the Application clerk, so no gate trims or clam
 The add gate alone checks its row index, since Conduct defines what that index means.
 Most gates do nothing while the desk is filling a draft, since the quill reads null then.
 
-## `internal CSentence(CDesk desk, LPhonologyPort phonology, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy, CLedgerNoticed noticed)`
+## `internal CSentence(CDesk desk, LSentencePort sentences, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy, CLedgerNoticed noticed)`
 
-Builds the gates over the editor's desk and the phonology port.
+Builds the gates over the editor's desk and the sentence port.
 The draft port reads the chip lines, and the settings port with the envoy reports a failed read.
-It takes the atelier's repaint memory, which it has no other way to, for its list reads.
-
-## `private LTenure? CSentenceTenure`
-
-The held draft, or null while the desk fills one, as the quill reads then.
+It takes the atelier's repaint memory for its list reads.
 
 ## `public event Action? CSentenceReferenceChanged;`
 

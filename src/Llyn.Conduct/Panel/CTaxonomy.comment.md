@@ -1,5 +1,5 @@
 # CTaxonomy.cs
-Hash: `f700aebbcdb8566c`
+Hash: `fe824e1ad6cec897`
 
 ## `public sealed class CTaxonomy`
 
@@ -57,6 +57,20 @@ It raises the rows, since choosing a Tag announces nothing in the engine.
 The navigation's arrival: chooses the Tag and empties both searches, then raises `CTaxonomyTagOpened`.
 Emptying the searches is the arrival's own, so no driver has to echo it back through the query gates.
 It raises the rows last, since the Tag may be new to the list.
+
+## `public bool CTaxonomyFiltered`
+
+Whether the tag vista hides any language, as the vista answers it.
+
+## `public CCatalogOrder CTaxonomyOrder`
+
+The ordering the Tag list uses, as a driver marks it in a menu.
+The engine answers the ordering before a vista arrives.
+
+## `public CCatalogFilter CTaxonomyFilter`
+
+The languages the Tag list hides, as a driver ticks them in a menu.
+The engine answers the filter before a vista arrives.
 
 ## `internal long? LTaxonomyChosen`
 

@@ -27,7 +27,9 @@ internal static class TInterfaceCitation
 
     internal static CImprint TImprintCreate(CAtelier atelier, CEnvoy envoy) => new(
         atelier.CAtelierDraftPort,
-        atelier.CAtelierEntryPort,
+        atelier.CAtelierEntryBundle.CEntryBundleEntry,
+        atelier.CAtelierEntryBundle.CEntryBundleReference,
+        atelier.CAtelierEntryBundle.CEntryBundleAuthor,
         atelier.CAtelierSettingsPort,
         envoy,
         atelier.CAtelierLedger.LLedgerRepaint,
@@ -46,7 +48,9 @@ internal static class TInterfaceCitation
         });
         return new CImprint(
             drafts,
-            new LEntryOutlet(engine),
+            engine.LEngineEntry,
+            engine.LEngineReference,
+            engine.LEngineAuthor,
             new LSettingsOutlet(engine),
             envoy,
             new CLedgerNoticed(),
@@ -58,10 +62,11 @@ internal static class TInterfaceCitation
 
     internal static CCard TCardFailCreate(LEngine engine, CDesk desk, CEnvoy envoy)
     {
-        LEntryPort entries = TEngineFake.TEngineCreate<LEntryPort>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["LEngineReferenceFind"] = _ => throw new InvalidOperationException("no sources"),
-        });
-        return new CCard(desk, new LDraftOutlet(engine), entries, new LSettingsOutlet(engine), envoy);
+        LReferencePort references = TEngineFake.TEngineCreate<LReferencePort>(
+            new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineReferenceFind"] = _ => throw new InvalidOperationException("no sources"),
+            });
+        return new CCard(desk, new LDraftOutlet(engine), references, new LSettingsOutlet(engine), envoy);
     }
 }

@@ -233,7 +233,7 @@ internal sealed class QGuild
     private void QLouverBuild()
     {
         QChoice.QChoiceKindRefine(
-            QLouverList, _cGuild.CGuildPanel.CPanelFilter, QLouverObserve, CImprint.CImprintKindRead());
+            QLouverList, _cGuild.CGuildPanel.CPanelFilter, QLouverObserve, _cGuild.CGuildOeuvre.COeuvreKindRead());
     }
 
     private void QLouverRefine()

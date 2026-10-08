@@ -1,7 +1,7 @@
 # LAuthorFacade.cs
-Hash: `c69cee68d2df65a9`
+Hash: `ec9c030cd952ec95`
 
-## `internal sealed class LAuthorFacade`
+## `public sealed class LAuthorFacade : LAuthorPort`
 
 The engine's facade for Authors.
 It provides the workspace browsed by the people its Sources credit.
@@ -9,6 +9,7 @@ Reads and writes go through the staff clerks under the gate.
 Every change is announced here.
 The vista overloads stay here, because a vista is the shell's and the twin names are numbered per panel.
 The author draft starts and commits here too, through the `LAuthorCitation` the citation clerk holds.
+It implements the author port itself, so Host hands it to Conduct with no outlet between.
 
 ## `public LAuthorFacade(LEngine engine)`
 
@@ -95,7 +96,7 @@ Every other failure reaches the caller.
 
 The author clerk's byline word for a typed credit.
 
-## `public static IReadOnlyList<LAuthorRow> LEngineCreditRead(LTenure? held)`
+## `public IReadOnlyList<LAuthorRow> LEngineCreditRead(LTenure? held)`
 
 The credit rows of the held draft, after its deferred requests are applied.
 The author clerk reads them, and no held draft has none.

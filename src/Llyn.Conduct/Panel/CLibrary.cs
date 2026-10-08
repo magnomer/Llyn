@@ -12,7 +12,7 @@ public sealed class CLibrary
 {
     private readonly CAtelier _cLibraryAtelier;
 
-    private readonly LEntryPort _cLibraryEntryPort;
+    private readonly LVistaPort _cLibraryVistaPort;
 
     private readonly LPortraitPort _cLibraryPortraitPort;
 
@@ -33,7 +33,7 @@ public sealed class CLibrary
         ArgumentNullException.ThrowIfNull(marshal);
 
         _cLibraryAtelier = atelier;
-        _cLibraryEntryPort = atelier.CAtelierEntryPort;
+        _cLibraryVistaPort = atelier.CAtelierEntryBundle.CEntryBundleVista;
         _cLibraryPortraitPort = atelier.CAtelierPortraitPort;
         _cLibrarySettingsPort = atelier.CAtelierSettingsPort;
         _cLibraryEnvoy = envoy;
@@ -43,6 +43,7 @@ public sealed class CLibrary
         CLibraryPanel = new CPanel(
             envoy,
             _cLibrarySettingsPort,
+            _cLibraryVistaPort,
             "List.LoadFailed", "Scribe", editor.CEditorDesk.LDeskChangeCheck, editor.LEditorFinish,
             shownSeam);
         CLibraryPanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
@@ -148,7 +149,7 @@ public sealed class CLibrary
         try
         {
             rows = _cLibraryVista is LVista vista
-                ? _cLibraryEntryPort.LEngineEntryFind(vista).Select(CCatalog.LCatalogRowRead).ToList()
+                ? _cLibraryVistaPort.LEngineEntryFind(vista).Select(CCatalog.LCatalogRowRead).ToList()
                 : [];
         }
         catch (Exception exception)
@@ -168,7 +169,7 @@ public sealed class CLibrary
 
     internal string LLibraryFileRead()
     {
-        return LVista.LVistaFileRead(_cLibraryVista);
+        return _cLibraryVistaPort.LEngineFileRead(_cLibraryVista);
     }
 
     public Task CLibraryPortraitPrint()

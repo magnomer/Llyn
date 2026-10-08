@@ -6,7 +6,7 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-internal sealed class LCardFacade
+public sealed class LCardFacade : LCardPort, LTagPort, LRegisterPort
 {
     private readonly LEngine _lCardFacadeEngine;
     private readonly object _lCardFacadeGate;
@@ -25,10 +25,10 @@ internal sealed class LCardFacade
         {
             if (owner != LOwner.LOwnerEntry)
             {
-                throw LEngine.LEngineOwnerRaise(owner);
+                throw LEngineOwnerRaise(owner);
             }
 
-            return LCardFacadeStaff.LEngineStaffMeaning.LMeaningClerkScan(ownerId);
+            return LCardFacadeStaff.LEngineStaffEntry.LEntryStaffMeaning.LMeaningClerkScan(ownerId);
         }
     }
 
@@ -46,7 +46,7 @@ internal sealed class LCardFacade
     {
         ArgumentNullException.ThrowIfNull(held);
 
-        return held.LTenureSenseRead(card, sentence, text, start, length) is long entry
+        return new LQuillMention(held).LQuillSenseRead(card, sentence, text, start, length) is long entry
             ? LEngineMeaningRead(entry, key)
             : null;
     }
@@ -55,7 +55,7 @@ internal sealed class LCardFacade
     {
         lock (_lCardFacadeGate)
         {
-            return LCardFacadeStaff.LEngineStaffTag.LTagClerkRead();
+            return LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTag.LTagClerkRead();
         }
     }
 
@@ -63,7 +63,7 @@ internal sealed class LCardFacade
     {
         lock (_lCardFacadeGate)
         {
-            return LCardFacadeStaff.LEngineStaffTag.LTagClerkFind(query, order);
+            return LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTag.LTagClerkFind(query, order);
         }
     }
 
@@ -74,7 +74,7 @@ internal sealed class LCardFacade
         LDraft? draft = held.LTenureRead();
         lock (_lCardFacadeGate)
         {
-            return LCardFacadeStaff.LEngineStaffTag.LTagClerkFind(text, draft, card);
+            return LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTag.LTagClerkFind(text, draft, card);
         }
     }
 
@@ -103,7 +103,7 @@ internal sealed class LCardFacade
         LTag created;
         lock (_lCardFacadeGate)
         {
-            created = LCardFacadeStaff.LEngineStaffTag.LTagClerkCreate(text);
+            created = LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTag.LTagClerkCreate(text);
         }
 
         _lCardFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectTag, created.LTagId);
@@ -118,7 +118,8 @@ internal sealed class LCardFacade
         string language = held.LTenureLanguageRead();
         lock (_lCardFacadeGate)
         {
-            return LCardFacadeStaff.LEngineStaffRegister.LRegisterClerkFind(text, language, draft, card);
+            return LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffRegister
+                .LRegisterClerkFind(text, language, draft, card);
         }
     }
 
@@ -126,7 +127,7 @@ internal sealed class LCardFacade
     {
         lock (_lCardFacadeGate)
         {
-            return LCardFacadeStaff.LEngineStaffRegister.LRegisterClerkFind(query, order);
+            return LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffRegister.LRegisterClerkFind(query, order);
         }
     }
 
@@ -155,7 +156,7 @@ internal sealed class LCardFacade
         LRegister created;
         lock (_lCardFacadeGate)
         {
-            created = LCardFacadeStaff.LEngineStaffRegister.LRegisterClerkCreate(name);
+            created = LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffRegister.LRegisterClerkCreate(name);
         }
 
         _lCardFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectRegister, created.LRegisterId);
@@ -173,7 +174,7 @@ internal sealed class LCardFacade
         lock (_lCardFacadeGate)
         {
             IReadOnlyList<LEntry> entries =
-                LCardFacadeStaff.LEngineStaffTranslation.LTranslationClerkFind(word, null);
+                LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTranslation.LTranslationClerkFind(word, null);
             rows = _lCardFacadeEngine.LEngineVista.LEngineVistaBuild(entries, null);
         }
 
@@ -189,7 +190,7 @@ internal sealed class LCardFacade
         lock (_lCardFacadeGate)
         {
             IReadOnlyList<LEntry> entries =
-                LCardFacadeStaff.LEngineStaffTranslation.LTranslationMentionFind(word, draft);
+                LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTranslation.LTranslationMentionFind(word, draft);
             return _lCardFacadeEngine.LEngineVista.LEngineVistaBuild(entries, null);
         }
     }
@@ -198,7 +199,8 @@ internal sealed class LCardFacade
     {
         lock (_lCardFacadeGate)
         {
-            return LCardFacadeStaff.LEngineStaffTranslation.LTranslationClerkResolve(word, entryId);
+            return LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTranslation
+                .LTranslationClerkResolve(word, entryId);
         }
     }
 
@@ -207,7 +209,8 @@ internal sealed class LCardFacade
         LEntry entry;
         lock (_lCardFacadeGate)
         {
-            entry = LCardFacadeStaff.LEngineStaffTranslation.LTranslationClerkCreate(headword, language);
+            entry = LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTranslation
+                .LTranslationClerkCreate(headword, language);
             _lCardFacadeEngine.LEnginePronunciation.LEngineFrequencyStart(entry.LEntryId);
         }
 
@@ -219,7 +222,7 @@ internal sealed class LCardFacade
     {
         lock (_lCardFacadeGate)
         {
-            return LCardFacadeStaff.LEngineStaffTranslation.LTranslationTargetRead(ids);
+            return LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTranslation.LTranslationTargetRead(ids);
         }
     }
 
@@ -278,8 +281,8 @@ internal sealed class LCardFacade
     {
         lock (_lCardFacadeGate)
         {
-            return LCardFacadeStaff.LEngineStaffTranslation.LTranslationTargetRead(
-                ownerId, ids, LCardFacadeStaff.LEngineStaffCourt.LCourtClerkScan(ownerId));
+            return LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTranslation.LTranslationTargetRead(
+                ownerId, ids, LCardFacadeStaff.LEngineStaffClaim.LClaimStaffCourt.LCourtClerkScan(ownerId));
         }
     }
 
@@ -287,8 +290,14 @@ internal sealed class LCardFacade
     {
         lock (_lCardFacadeGate)
         {
-            return LCardFacadeStaff.LEngineStaffTranslation.LTranslationIncomingRead(
+            return LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTranslation.LTranslationIncomingRead(
                 entryId, _lCardFacadeEngine.LEngineSettingsHeld.LSettingsEpithet);
         }
+    }
+
+    internal static ArgumentOutOfRangeException LEngineOwnerRaise(LOwner owner)
+    {
+        return new ArgumentOutOfRangeException(
+            nameof(owner), owner, "This entity has no reference from that kind of row.");
     }
 }

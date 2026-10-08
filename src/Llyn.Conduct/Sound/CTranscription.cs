@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
 
@@ -18,7 +19,8 @@ public sealed class CTranscription
 
     public CTranscriptionSheet CTranscriptionRead()
     {
-        if (_cTranscriptionDesk.CDeskTenure?.LTenureTranscriptionRead() is not LTranscriptionSheet sheet)
+        if (_cTranscriptionDesk.CDeskTenure is not LTenure held
+            || new LQuillTranscription(held).LQuillTranscriptionRead() is not LTranscriptionSheet sheet)
         {
             return new CTranscriptionSheet(false, false, []);
         }
@@ -41,23 +43,23 @@ public sealed class CTranscription
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        _cTranscriptionDesk.CDeskQuill?.LQuillTranscriptionSet(transcription, text);
+        _cTranscriptionDesk.CDeskTranscription?.LQuillTranscriptionSet(transcription, text);
     }
 
     public void CTranscriptionSchemeSet(long transcription, string scheme)
     {
         ArgumentNullException.ThrowIfNull(scheme);
 
-        _cTranscriptionDesk.CDeskQuill?.LQuillSchemeSet(transcription, scheme);
+        _cTranscriptionDesk.CDeskTranscription?.LTranscriptionSchemeSet(transcription, scheme);
     }
 
     public void CTranscriptionAdd(long? transcription)
     {
-        _cTranscriptionDesk.CDeskQuill?.LQuillTranscriptionAdd(transcription ?? 0);
+        _cTranscriptionDesk.CDeskTranscription?.LQuillTranscriptionAdd(transcription ?? 0);
     }
 
     public void CTranscriptionRemove(long transcription)
     {
-        _cTranscriptionDesk.CDeskQuill?.LQuillTranscriptionRemove(transcription);
+        _cTranscriptionDesk.CDeskTranscription?.LQuillTranscriptionRemove(transcription);
     }
 }

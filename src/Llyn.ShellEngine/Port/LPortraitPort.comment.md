@@ -1,5 +1,5 @@
 # LPortraitPort.cs
-Hash: `b690d7c5ba3fe999`
+Hash: `eb3189d082c968ad`
 
 ## `public interface LPortraitPort`
 
@@ -15,14 +15,14 @@ Prints the entry the vista has chosen, and does nothing when the vista holds no 
 
 ## `Task LEnginePortraitPrint(LVista? vista, LPortraitLegend legend, LPressTicket ticket);`
 
-Prints the Example, Situation or Source a catalog vista has chosen.
+Prints the Example, Situation or Source a catalog vista has chosen, and does nothing when none is chosen.
 Any other subject is a caller mistake and throws.
 
 ## `Task LEnginePortraitExport(LVista? vista, string path, LPortraitMedium format, LPortraitLabel label);`
 
 Exports the entry the vista has chosen to `path`, and does nothing when the vista holds no entry.
 
-## `Task<IReadOnlyList<LMarkupOmission>?> LEngineMarkupStart(string path, Func< IReadOnlyList<LMarkupEntry>, IReadOnlyList<IReadOnlyList<LMarkupTarget>>, IReadOnlyList<LMarkupIntake>?> declare)`
+## `Task<IReadOnlyList<LMarkupOmission>?> LEngineMarkupStart(string path, Func< IReadOnlyList<LMarkupEntry>, IReadOnlyList<IReadOnlyList<LMarkupTarget>>, IReadOnlyList<LMarkupIntake>?> declare);`
 
 Reads the markup file, asks `declare` for the intakes, then stores the cargo.
 The read and the store run on a worker thread, while `declare` runs back on the caller's thread.
@@ -36,7 +36,7 @@ Whether a Joplin token is stored, so the shell words its Joplin control as conne
 ## `Task<LReceipt> LEngineCourierSend(Func<string, string> lookup, CancellationToken cancellation);`
 
 Pushes every entry into Joplin one way, worded through `lookup`.
-The receipt counts what was saved, kept, removed and failed.
+The receipt counts what was saved, kept and removed, and lists what failed.
 A token Joplin refuses is dropped from the settings before the refusal is thrown.
 
 ## `Task LEngineCourierAttach(CancellationToken cancellation);`
@@ -47,6 +47,7 @@ The caller never sees the raw token, so it cannot leak into a view.
 ## `static LPressTicket LEngineTicketRead(string printer, double? width, double? height, bool landscape, int copies, bool collated, LPressSide side, LPressInk ink)`
 
 The engine ticket a print dialog's answer stands for, with the local sheet when no size was named.
+The sheet size arrives in inches, since the driver converts the unit its dialog measures in.
 The statics build the records a print or export takes from plain values, so Conduct builds no engine record.
 
 ## `static LPortraitLabel LEngineLabelRead(IReadOnlyList<string> words)`

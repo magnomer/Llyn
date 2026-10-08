@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
-internal sealed partial class QArticulation
+internal sealed class QArticulation
 {
     private const double QArticulationGap = 12;
 
@@ -24,9 +25,6 @@ internal sealed partial class QArticulation
         QLook.QLookStyleAttach(surface);
 
         QArticulationLane.SizeChanged += QArticulationLaneRefine;
-
-        QVowelIntroduce();
-        QConsonantIntroduce();
     }
 
     private ScrollViewer QArticulationLane =>
@@ -62,8 +60,12 @@ internal sealed partial class QArticulation
             : new Thickness(0, QArticulationGap, 0, 0);
     }
 
-    internal void QArticulationIntroduce(params TextBox[] fields)
+    internal void QArticulationIntroduce(CCatalog catalog, params TextBox[] fields)
     {
+        ArgumentNullException.ThrowIfNull(catalog);
+
+        QArticulationChartIntroduce(QVowel, catalog.CCatalogVowelRead());
+        QArticulationChartIntroduce(QConsonant, catalog.CCatalogConsonantRead());
         foreach (TextBox field in fields)
         {
             _qArticulationTarget.Add(field);
@@ -111,6 +113,26 @@ internal sealed partial class QArticulation
         }
 
         return _qArticulationTarget.Find(field => field is { IsEnabled: true, IsVisible: true });
+    }
+
+    private void QArticulationChartIntroduce(Grid table, CArticulation chart)
+    {
+        QArticulationTableBuild(table, chart.CArticulationHeaders.Count, chart.CArticulationSides.Count);
+
+        for (int column = 0; column < chart.CArticulationHeaders.Count; column++)
+        {
+            QArticulationHeaderPlace(table, chart.CArticulationHeaders[column], column);
+        }
+
+        for (int row = 0; row < chart.CArticulationSides.Count; row++)
+        {
+            QArticulationSidePlace(table, chart.CArticulationSides[row], row);
+
+            for (int column = 0; column < chart.CArticulationCells[row].Count; column++)
+            {
+                QArticulationCellPlace(table, chart.CArticulationCells[row][column], column, row);
+            }
+        }
     }
 
     private Grid QArticulationTableBuild(Grid table, int columns, int rows)

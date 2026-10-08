@@ -68,9 +68,11 @@ internal static partial class TInterface
 
     internal static void TVistaEditingSet(this LVista vista, bool editing) => vista.LVistaEditingSet(editing);
 
-    internal static LDraft? TVistaLoad(this LVista vista) => vista.LVistaLoad();
+    internal static LDraft? TVistaLoad(this LEngine engine, LVista vista) =>
+        engine.LEngineVista.LEngineVistaLoad(vista);
 
-    internal static string TVistaFileRead(LVista? vista) => LVista.LVistaFileRead(vista);
+    internal static string TVistaFileRead(this LEngine engine, LVista? vista) =>
+        engine.LEngineVista.LEngineFileRead(vista);
 
     internal static bool TVistaStoredCheck(long? id) => LVista.LVistaStoredCheck(id);
 
@@ -81,9 +83,11 @@ internal static partial class TInterface
     internal static void TVistaFilterSet(this LVista vista, IReadOnlyList<string> hidden) =>
         vista.LVistaFilterSet(hidden);
 
-    internal static int TVistaUsageRead(this LVista vista) => vista.LVistaUsageRead();
+    internal static int TVistaUsageRead(this LEngine engine, LVista vista) =>
+        engine.LEngineVista.LEngineUsageRead(vista);
 
-    internal static LRevision? TVistaDelete(this LVista vista) => vista.LVistaDelete();
+    internal static LRevision? TVistaDelete(this LEngine engine, LVista vista) =>
+        engine.LEngineVista.LEngineVistaDelete(vista);
 
     internal static IReadOnlyList<LVistaRow> TEngineEntryFind(this LEngine engine, LVista parent, LVista child) =>
         engine.LEngineVista.LEngineEntryFind(parent, child);
@@ -106,10 +110,10 @@ internal static partial class TInterface
     internal static IReadOnlyList<LCatalogRegister> TEngineRegisterFind(this LEngine engine, LVista vista) =>
         engine.LEngineCard.LEngineRegisterFind(vista);
 
-    internal static bool TTenureFlaggedCheck(this LTenure tenure) => tenure.LTenureFlaggedCheck();
+    internal static bool TTenureFlaggedCheck(this LTenure tenure) => new LQuillPronunciation(tenure).LQuillFlaggedCheck();
 
     internal static LTranscriptionSheet? TTenureTranscriptionRead(this LTenure tenure) =>
-        tenure.LTenureTranscriptionRead();
+        new LQuillTranscription(tenure).LQuillTranscriptionRead();
 
     internal static bool TEngineFlaggedCheck(this LEngine engine, LEntryDraft draft) =>
         engine.LEngineLanguage.LEngineFlaggedCheck(draft);

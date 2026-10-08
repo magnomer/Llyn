@@ -1,13 +1,14 @@
 # LCardFacade.cs
-Hash: `6f3d0b6c7b94ffc9`
+Hash: `ea7d34124c77ecdd`
 
-## `internal sealed class LCardFacade`
+## `public sealed class LCardFacade : LCardPort, LTagPort, LRegisterPort`
 
 The engine's facade for cards, over Meanings, Collocations, Tags, Registers and Translations.
 A call that reaches a clerk takes the gate and hands the work to the clerk owning the rows.
 The facade stays because the shell calls the engine, and the engine alone holds the gate and the observers.
 Which side an id names arrives as an `LOwner` rather than in the method's name.
 Only an Entry holds Meanings, so any other side is refused here.
+It implements the card, tag and register ports itself, so Host hands it to Conduct with no outlet between.
 
 ## `public LCardFacade(LEngine engine)`
 
@@ -87,6 +88,11 @@ The Entries a mention of `word` in the held draft may name, built into vista row
 The held draft names the language, so no caller passes one.
 The draft is read before the gate is taken, as the tenure guards itself.
 
+## `public LEntry? LEngineTranslationResolve(string word, long? entryId)`
+
+The one Entry whose whole headword reads as `word`, or null when none or several do, under the gate.
+The Entry `entryId` names is left out, because a card may not translate its own Entry.
+
 ## `internal LEntry LEngineTranslationCreate(string headword, string language)`
 
 The translation clerk's stub create under the gate.
@@ -131,3 +137,9 @@ The engine reads the draft's court links and hands them to the clerk, which answ
 ## `public IReadOnlyList<LUsage> LEngineIncomingRead(long entryId)`
 
 Every card of either kind that links to the Entry, with the epithet the settings ask for.
+
+## `internal static ArgumentOutOfRangeException LEngineOwnerRaise(LOwner owner)`
+
+The one failure for a side an entity has no association table for.
+Returned rather than thrown so a switch arm can throw it.
+The card and portrait facades both throw it.

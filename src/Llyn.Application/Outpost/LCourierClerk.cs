@@ -32,7 +32,7 @@ public sealed class LCourierClerk
     private readonly LWarrant _lCourierClerkWarrant;
     private readonly LWorkspaceVault _lCourierClerkWorkspaces;
     private readonly LLanguageVault _lCourierClerkLanguages;
-    private readonly LEntryClerk _lCourierClerkEntry;
+    private readonly LEntryQueryClerk _lCourierClerkEntry;
     private readonly object _lCourierClerkGate;
     private readonly Func<LSettings> _lCourierClerkSettings;
     private readonly Action<Exception> _lCourierClerkFault;
@@ -40,7 +40,7 @@ public sealed class LCourierClerk
 
     public LCourierClerk(
         LRig rig,
-        LEntryClerk entry,
+        LEntryQueryClerk entry,
         object gate,
         Func<LSettings> settings,
         Action<Exception> fault)
@@ -238,7 +238,7 @@ public sealed class LCourierClerk
         {
             manifest = _lCourierClerkManifest.LManifestRead();
             realm = _lCourierClerkWorkspaces.LWorkspaceRealmRead();
-            entries = _lCourierClerkEntry.LEntryClerkFind(string.Empty);
+            entries = _lCourierClerkEntry.LEntryFind(string.Empty);
         }
 
         Dictionary<string, string> shelves = new(StringComparer.Ordinal);

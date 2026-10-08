@@ -16,7 +16,7 @@ public sealed class TAtelierRespelling
     [InlineData(true, true, "/")]
     public void RespellingReflexScan_Modes_SlashesOnlyPhonemic(bool respelled, bool phonemic, string slash)
     {
-        LPhonologyPort phonology = TEngineFake.TEngineCreate<LPhonologyPort>(
+        LReflexPort phonology = TEngineFake.TEngineCreate<LReflexPort>(
             new Dictionary<string, Func<object?[]?, object?>>
             {
                 ["LEngineGuiseRead"] = _ => new[] { TInterface.TReflexGuiseCreate(respelled, phonemic, false) },
@@ -33,7 +33,7 @@ public sealed class TAtelierRespelling
     public void RespellingReflexScan_TwoRows_AnswersEachRowReadyToShow()
     {
         List<object?[]?> asked = [];
-        LPhonologyPort phonology = TEngineFake.TEngineCreate<LPhonologyPort>(
+        LReflexPort phonology = TEngineFake.TEngineCreate<LReflexPort>(
             new Dictionary<string, Func<object?[]?, object?>>
             {
                 ["LEngineGuiseRead"] = args =>

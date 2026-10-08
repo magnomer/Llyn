@@ -1,11 +1,11 @@
 # TInterfaceConductDesk.cs
-Hash: `303f53e2b7d13a4d`
+Hash: `49040a4617afd845`
 
 ## `internal static class TInterfaceConductDesk`
 
 The relays for Conduct's desk area, its session and its errand.
 They build a desk or a session and reach the desk's starts, its tenure and the errand's maps.
-They read the held draft's sentence ids and build the editor's marks over an entry port a fact fakes.
+They read the held draft's sentence ids and build the editor's marks over a grasp port a fact fakes.
 Each relay is transparent and carries no test logic of its own.
 
 ## `internal static CDesk TDeskCreate(LEngine engine, string scope, CEnvoy envoy)`
@@ -29,11 +29,12 @@ Starts a fresh entry already citing the Example, as the corpus's new quotation d
 The ids of every sentence row on the held draft's meaning and collocation cards, in ascending order.
 It answers none with no draft held, so a fact names no engine draft member itself.
 
-## `internal static CEsteem TEsteemCreate(LEngine engine, LEntryPort entries, long stored)`
+## `internal static CEsteem TEsteemCreate(LEngine engine, LGraspPort grasps, long stored)`
 
 Builds the editor's marks over a real desk holding the stored entry `stored`, as the editor does.
 The desk is an Input desk bound to a fresh library vista, over a real draft outlet.
-Its display rules ask `entries`, so a fake lets a fact answer the grasp reads with hostile values.
+Its display rules ask `grasps`, so a fake lets a fact answer the grasp reads with hostile values.
+The other display ports are the engine's own facades.
 Its envoy answers no and records nothing, and its media port is a bare stub.
 
 ## `internal static CSession TSessionCreate(CDesk desk, IReadOnlyList<Func<bool>> pending, Func<bool> readySeam, Action<long> storedSeam)`

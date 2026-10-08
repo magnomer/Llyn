@@ -12,7 +12,7 @@ public sealed class CGuild
 
     private readonly CEnvoy _cGuildEnvoy;
 
-    private readonly LEntryPort _cGuildEntryPort;
+    private readonly LAuthorPort _cGuildAuthorPort;
 
     private readonly LPortraitPort _cGuildPortraitPort;
 
@@ -31,7 +31,7 @@ public sealed class CGuild
 
         _cGuildAtelier = atelier;
         _cGuildEnvoy = envoy;
-        _cGuildEntryPort = atelier.CAtelierEntryPort;
+        _cGuildAuthorPort = atelier.CAtelierEntryBundle.CEntryBundleAuthor;
         _cGuildPortraitPort = atelier.CAtelierPortraitPort;
         _cGuildSettingsPort = atelier.CAtelierSettingsPort;
         _cGuildMarshal = marshal;
@@ -39,9 +39,17 @@ public sealed class CGuild
         CGuildPanel = new CPanel(
             envoy,
             _cGuildSettingsPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             "Guild.LoadFailed", "Guild",
             CGuildAutograph.LDeskChangeCheck, store => CGuildSession!.LSessionFinish(store), shownSeam);
-        CGuildOeuvre = new COeuvre(atelier.CAtelierEntryPort, atelier.CAtelierSettingsPort, envoy, shownSeam);
+        CGuildOeuvre = new COeuvre(
+            atelier.CAtelierEntryBundle.CEntryBundleEntry,
+            atelier.CAtelierEntryBundle.CEntryBundleAuthor,
+            atelier.CAtelierEntryBundle.CEntryBundleReference,
+            atelier.CAtelierSettingsPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
+            envoy,
+            shownSeam);
         CGuildPanel.CPanelRowsChanged += CGuildOeuvre.COeuvrePanel.CPanelRowsResonate;
         CGuildSession = new CSession(
             CGuildAutograph, [CGuildPanel.LPanelChangeCheck], null, static () => false, static _ => true,
@@ -151,7 +159,7 @@ public sealed class CGuild
     public CGuildRoll CGuildRollRead()
     {
         IReadOnlyList<CCatalogAuthor> rows =
-            CGuildOeuvre.LOeuvreAuthorRead(_cGuildEntryPort.LEngineRollFind(_cGuildVista));
+            CGuildOeuvre.LOeuvreAuthorRead(_cGuildAuthorPort.LEngineRollFind(_cGuildVista));
         if (LGuildRowShown && !rows.Any(static row => row.CCatalogAuthorChosen))
         {
             LGuildAuthorClose();
@@ -160,7 +168,7 @@ public sealed class CGuild
         return new CGuildRoll(
             rows,
             rows.Count == 0,
-            COeuvre.LOeuvreVitaRead(_cGuildEntryPort.LEngineVitaRead(_cGuildVista)));
+            COeuvre.LOeuvreVitaRead(_cGuildAuthorPort.LEngineVitaRead(_cGuildVista)));
     }
 
     public void CGuildQuerySet(string query)
@@ -360,14 +368,14 @@ public sealed class CGuild
     {
         ArgumentNullException.ThrowIfNull(name);
 
-        CGuildAutograph.CDeskQuill?.LQuillAuthorSet(name);
+        CGuildAutograph.CDeskAuthor?.LQuillAuthorSet(name);
     }
 
     public IReadOnlyList<CCatalogAuthor> CGuildUnionRead(string typed)
     {
         ArgumentNullException.ThrowIfNull(typed);
 
-        return CGuildOeuvre.LOeuvreAuthorRead(_cGuildEntryPort.LEngineUnionFind(_cGuildVista, typed));
+        return CGuildOeuvre.LOeuvreAuthorRead(_cGuildAuthorPort.LEngineUnionFind(_cGuildVista, typed));
     }
 
     public void CGuildUnionSelect(long? id)
@@ -389,7 +397,7 @@ public sealed class CGuild
 
         try
         {
-            _cGuildEntryPort.LEngineAuthorAbsorb(kept, author);
+            _cGuildAuthorPort.LEngineAuthorAbsorb(kept, author);
         }
         catch (Exception exception)
         {
@@ -402,7 +410,7 @@ public sealed class CGuild
 
     private bool LGuildUnionConfirm(long kept)
     {
-        (string dropped, string held) = _cGuildEntryPort.LEngineUnionRead(CGuildAutograph.CDeskTenure, kept);
+        (string dropped, string held) = _cGuildAuthorPort.LEngineUnionRead(CGuildAutograph.CDeskTenure, kept);
         return _cGuildEnvoy.CEnvoyUnionConfirm("Guild.MergeConfirm", dropped, held);
     }
 }

@@ -22,7 +22,7 @@ public sealed class TMarkupClerkImporting
         List<LMarkupEntry> exported = [];
         foreach (long id in workspace.TWorkspaceColumnRead("SELECT entry_id FROM entry ORDER BY entry_id;"))
         {
-            exported.Add(Assert.IsType<LMarkupEntry>(markup.TMarkupClerkLoad(id)));
+            exported.Add(Assert.IsType<LMarkupEntry>(TInterface.TMarkupExportCreate(rig).TMarkupClerkLoad(id)));
         }
 
         Assert.Equal(TInterface.TMarkupFormat(cargo.LMarkupCargoEntry), TInterface.TMarkupFormat(exported));

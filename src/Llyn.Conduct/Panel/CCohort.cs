@@ -10,7 +10,7 @@ public sealed class CCohort
 {
     private readonly CEnvoy _cCohortEnvoy;
 
-    private readonly LEntryPort _cCohortEntryPort;
+    private readonly LVistaPort _cCohortVistaPort;
 
     private readonly LPortraitPort _cCohortPortraitPort;
 
@@ -21,7 +21,7 @@ public sealed class CCohort
     private LVista? _cCohortVista;
 
     internal CCohort(
-        LEntryPort entries,
+        LVistaPort vistas,
         LPortraitPort portraits,
         LSettingsPort settings,
         CEnvoy envoy,
@@ -29,16 +29,16 @@ public sealed class CCohort
         Func<bool, bool> finishSeam,
         Func<bool> shownSeam)
     {
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(vistas);
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
 
         _cCohortEnvoy = envoy;
-        _cCohortEntryPort = entries;
+        _cCohortVistaPort = vistas;
         _cCohortPortraitPort = portraits;
         _cCohortSettingsPort = settings;
         CCohortPanel = new CPanel(
-            envoy, settings, "Register.LoadFailed", "Scribe", changeSeam, finishSeam, shownSeam);
+            envoy, settings, vistas, "Register.LoadFailed", "Scribe", changeSeam, finishSeam, shownSeam);
     }
 
     public CPanel CCohortPanel { get; }
@@ -79,7 +79,7 @@ public sealed class CCohort
     {
         try
         {
-            return _cCohortEntryPort.LEngineEntryFind(_cCohortRoll, _cCohortVista)
+            return _cCohortVistaPort.LEngineEntryFind(_cCohortRoll, _cCohortVista)
                 .Select(CCatalog.LCatalogRowRead)
                 .ToList();
         }
@@ -92,7 +92,7 @@ public sealed class CCohort
 
     internal string LCohortFileRead()
     {
-        return LVista.LVistaFileRead(_cCohortVista);
+        return _cCohortVistaPort.LEngineFileRead(_cCohortVista);
     }
 
     public Task CCohortPortraitPrint()

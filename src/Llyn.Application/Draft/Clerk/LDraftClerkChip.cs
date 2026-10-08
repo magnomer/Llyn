@@ -17,6 +17,34 @@ public sealed class LDraftClerkChip
         _lDraftClerkIdentity = identity;
     }
 
+    public LEntryDraft? LTagApply(LEntryDraft content, LRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+
+        return request switch
+        {
+            LRequestTagAddition sent => LTagAdd(content, sent),
+            LRequestTagPick sent => LTagInsert(content, sent),
+            LRequestTagRemoval sent => LTagRemove(content, sent),
+            LRequestTagShift sent => LTagMove(content, sent),
+            LRequestTagText sent => LTagChange(content, sent),
+            _ => null,
+        };
+    }
+
+    public static LEntryDraft? LTranslationApply(LEntryDraft content, LRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+
+        return request switch
+        {
+            LRequestTranslationPick sent => LTranslationInsert(content, sent),
+            LRequestTranslationRemoval sent => LTranslationRemove(content, sent),
+            LRequestTranslationShift sent => LTranslationMove(content, sent),
+            _ => null,
+        };
+    }
+
     public LEntryDraft LTagAdd(LEntryDraft content, LRequestTagAddition request)
     {
         ArgumentNullException.ThrowIfNull(request);

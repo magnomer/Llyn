@@ -93,7 +93,7 @@ internal sealed partial class QCorpus
     {
         QTranscriptTeardown();
 
-        if (!CAnthology.CAnthologyTextCheck(QTranscriptText.Text, example.CExampleText))
+        if (!_cCorpus.CCorpusAnthology.CAnthologyTextCheck(QTranscriptText.Text, example.CExampleText))
         {
             QTranscriptText.Text = example.CExampleText.CStateValueText;
         }

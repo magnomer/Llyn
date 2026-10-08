@@ -1,5 +1,5 @@
 # LDraftClerkMedia.cs
-Hash: `acfdfc7d76de3b97`
+Hash: `9ecb2b5075228d05`
 
 ## `public sealed class LDraftClerkMedia`
 
@@ -12,10 +12,12 @@ The list edits are written once over a bare list, so a card and a Situation shar
 
 Holds the two shelves a pick is read from and the issuer that names a new row.
 
-## `public LSituation? LSituationDispatch(LSituation situation, LRequest request)`
+## `public LDraft? LSituationDispatch(LDraft draft, LRequest request)`
 
-Routes a media request to the image list or the video list of a held Situation.
-Answers null for any other request, so the draft switch goes on to its own kinds.
+Routes a media request to the image list or the video list of the Situation the draft holds.
+Answers null for a draft without a Situation or for any other request.
+It runs first, so a media request on a Situation draft never reaches a card.
+The card id such a request carries is ignored there, because a Situation draft holds no card.
 
 ## `private IReadOnlyList<LImageDraft>? LImageApply(IReadOnlyList<LImageDraft> images, LRequest request)`
 
@@ -24,9 +26,11 @@ An addition is a new row with the location sent and a minted id, at the place as
 A pick copies the stored image under its own id, unless the list already holds it.
 A location change on a row the list does not hold is refused as an item.
 
-## `public LEntryDraft LImageApply(LEntryDraft content, long cardId, LRequest request)`
+## `public LEntryDraft? LImageApply(LEntryDraft content, LRequest request)`
 
-The same list edit applied to the image list of one card.
+The same list edit applied to the image list of the card the request names.
+A location change reaches every card holding the picture instead.
+Answers null for any other request, so the clerk hands it on to the video rows.
 
 ## `private LImageDraft LImageRead(long id)`
 
@@ -43,7 +47,8 @@ A card the draft lacks answers zero, and the addition then refuses it.
 
 ## `public static long? LImageCardFind(LDraft draft, long imageId)`
 
-The card holding the picture row, found among the Meanings and then the Collocations.
+The card holding the picture row, found among the Meanings, their children and then the Collocations.
+A child card counts, so a picture on a child can be removed like any other.
 A Situation draft answers card zero, since its rows hang on the draft itself.
 A row no card holds answers null.
 
@@ -54,9 +59,11 @@ An addition is a new row with the location sent, no span and a minted id.
 A pick copies the stored video under its own id, unless the list already holds it.
 The location and the span change through the same routine with a different lambda.
 
-## `public LEntryDraft LVideoApply(LEntryDraft content, long cardId, LRequest request)`
+## `public LEntryDraft? LVideoApply(LEntryDraft content, LRequest request)`
 
-The same list edit applied to the video list of one card.
+The same list edit applied to the video list of the card the request names.
+A location or span change reaches every card holding the video instead.
+Answers null for any other request, so the clerk refuses it as a kind it does not apply.
 
 ## `private LVideoDraft LVideoRead(long id)`
 

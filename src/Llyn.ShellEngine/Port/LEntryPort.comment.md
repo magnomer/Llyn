@@ -1,178 +1,41 @@
 # LEntryPort.cs
-Hash: `8cfae1a4bed916c0`
+Hash: `c26f5d2b58d9b842`
 
 ## `public interface LEntryPort`
 
-The slice of the engine a deportment sees when it reads stored records.
-It finds and reads entries, the catalog rows of every tab, and the per-entry marks a reader shows.
-The marks are favourite, grasp, frequency, incoming links, mentions and glyphs.
-The catalog side finds and creates tags, registers, situations, examples, references and authors.
-The pure facts a panel draws with travel here too: the grasp step and wording, twin names and markdown blocks.
-Everything here reads or writes committed records, apart from the few reads that name a held draft.
-`LEntryOutlet` implements it today, and the entry clerk takes it over when the parts are dismantled.
-
-## `IReadOnlyList<LVistaRow> LEngineEntryFind(LVista vista);`
-
-The entry rows the vista lists, with its query, order and filter applied.
-A blank vista with nothing typed answers no rows.
-
-## `IReadOnlyList<LVistaRow> LEngineEntryFind(LVista? parent, LVista? child);`
-
-The entry rows of a child list narrowed by the parent catalog's choice, as the footnote and cohort lists read.
+The slice of the engine a deportment sees when it loads one stored entry.
+It loads the entry, reads its stamps, its Source tally and its written reflexes.
+It also opens the entry a glyph cell names, words a lexical unit and places a card in its list.
+`LEntryFacade` implements it itself, so no outlet forwards between Conduct and the engine.
+Member names keep the engine's `LEngine*` form.
 
 ## `LEntryDraft? LEngineEntryLoad(long id);`
 
 The stored entry as a draft, or null when it no longer stands.
 Its recordings come resolved to absolute paths.
 
-## `int LEngineGraspStep { get; }`
-
-The last grasp step, the limit a star control draws to.
-
-## `int LEngineGraspRead(long entryId);`
-
-The grasp stored on the entry, in half steps.
-A missing entry reads zero, the same as one never rated.
-
-## `void LEngineGraspSave(long entryId, int grasp);`
-
-Writes the grasp, then raises a Grasp bulletin for the entry.
-
-## `LFrequencyGauge? LEngineFrequencyResolve(long entryId, string once);`
-
-The entry's frequency gathered into one answer, or null when it has none.
-The `once` text words a word interval.
-
-## `IReadOnlyList<LUsage> LEngineIncomingRead(long entryId);`
-
-Every card of either kind that links to the entry, with the epithet the settings ask for.
-
-## `IReadOnlyList<LGlyphCell> LEngineGlyphDivide(LEntryDraft draft);`
-
-The cells of the draft's glyph row, empty when its language declares no glyph section.
-
-## `LGlyph? LEngineGlyphRead(LEntryDraft draft);`
-
-The glyph section of the draft's language, so a reader hands the draft unread.
-
-## `long LEngineGlyphResolve(string character, string language);`
-
-The id of the entry a glyph cell opens, made when none exists yet.
-
-## `IReadOnlyList<LTranscriptionDraft> LEngineTranscriptionRead(LEntryDraft draft);`
-
-The filled transcription rows a reading view lists, without the glyph row.
-
-## `IReadOnlyList<LReflexDraft> LEngineReflexRead(LEntryDraft draft);`
-
-The written reflex rows of the draft, which a reading view lists.
-
-## `IReadOnlyList<LCatalogTag> LEngineTagFind(LVista vista);`
-
-The Tags the taxonomy panel's vista lists, with its query and order.
-The vista's language filter is not applied, since it hides entries, not Tags.
-A vista whose chosen Tag no longer answers is deselected.
-
-## `IReadOnlyList<LCatalogAuthor> LEngineRollFind(LVista? vista);`
-
-The Authors of the authors panel's roll, headed by the uncredited row, and none while the vista is missing.
-
-## `IReadOnlyList<LCatalogAuthor> LEngineUnionFind(LVista? roll, string typed);`
-
-The Authors the stored Author of the roll may be folded into, matched by `typed` and capped.
-
-## `(string LUnionDropped, string LUnionKept) LEngineUnionRead(LTenure? held, long kept);`
-
-The held draft's written Author name and the kept Author's name, as the union question shows them.
-
-## `LVita LEngineVitaRead(LVista? roll);`
-
-The read sheet of the Author the roll stands on, or the sheet of nobody.
-
-## `void LEngineAuthorAbsorb(long kept, long dropped);`
-
-Folds the Author `dropped` into `kept` and deletes the dropped row.
-Observers hear both ids, so a panel standing on the dropped Author moves to the kept one.
-
-## `IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista? roll, LVista? oeuvre);`
-
-The Sources of the authors panel's oeuvre, and none while either vista is missing.
-
-## `string LEngineWorkFormat(int count);`
-
-An Author's work count as the roll shows it.
-
-## `LColophon LEngineColophonRead(LDraft draft);`
-
-The read sheet of a Source draft, with the citation line of the Source it holds.
-
-## `LImprint LEngineImprintRead(LDraft? draft);`
-
-The edit sheet of a Source draft, or of a blank Source with no draft.
-
-## `IReadOnlyList<LAuthorRow> LEngineCreditRead(LTenure? held);`
-
-The credit rows of the held Source draft, after its deferred requests are applied.
-
-## `string LEngineTallyRead(long? reference);`
-
-The citation line of one Source, worded as none when no Source is given.
-
-## `IReadOnlyList<string> LEngineNameResolve(IReadOnlyList<string> labels);`
-
-The labels made distinct in their given order, numbered where two share a name.
-
-## `IReadOnlyList<LCatalogReference> LEngineReferenceFind();`
-
-Every Source as the whole shelf lists it, ordered by author.
-
-## `static string LEngineUnitFormat(LUnit unit)`
-
-The localization key that names a lexical unit, empty when none is chosen.
-It is static, since Conduct maps a unit while it builds a row and needs no port for it.
-
-## `static bool LEngineTextMatch(string field, string shown)`
-
-Whether a field showing `field` already shows the text `shown`, a blank field reading as nothing recorded.
-It is static, since it reads no record and a Conduct verdict holds no port for it.
-
 ## `(bool, string, string) LEngineStampRead(long entryId);`
 
 Whether an entry is stored, with its worded creation and update times, empty once it is gone.
 The engine parses and words the stored stamps, so Conduct only copies them.
 
-## `static IReadOnlyList<(string LReferenceKindTag, string LReferenceKindKey)> LEngineKindRead()`
+## `string LEngineTallyRead(long? reference);`
 
-The kind menu of the source editor, each option's tag and localization key, in menu order.
-It is static, since the menu is the same for every Source and needs no port.
+The usage tally line of one Source, worded as none when no Source is given.
 
-## `static long? LEngineLinkRead(long? link)`
+## `IReadOnlyList<LReflexDraft> LEngineReflexRead(LEntryDraft draft);`
 
-The entry a clicked link names, or null when it names none.
-A link names its entry only through a stored id, so an empty id names nothing.
-It is static, since it reads only what the click hands over.
+The written reflex rows of the draft, which a reading view lists.
 
-## `static (string, IReadOnlyList<LMentionPiece>, string) LEngineLineRead(LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)`
+## `long LEngineGlyphResolve(string character, string language);`
 
-The frame, the sentence divided around its Mentions and the Source line a reading card shows for one sentence row.
-The clerk composes them, so the display and the portrait share one rule.
-It is static, since it reads only the row, the order and the lines the caller holds.
+The id of the entry a glyph cell opens, made when none exists yet.
 
-## `IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(LEntryDraft shown);`
+## `string LEngineUnitFormat(LUnit unit);`
 
-The link targets of every meaning and collocation of the shown entry, keyed by card id.
-Every card of the entry has a key, so a reader never checks for a missing card.
+The localization key that names a lexical unit, empty when none is chosen.
 
-## `static (LOwner, int)? LEngineCardFind(LEntryDraft draft, long id)`
+## `(LOwner, int)? LEngineCardFind(LEntryDraft draft, long id);`
 
 Which card list of `draft` holds the card `id`, and at which place, or null when neither does.
-It is static, since it reads only the draft the caller holds.
-
-## `IReadOnlyDictionary<long, string> LEngineCitationRead(LEntryDraft shown);`
-
-The citation line of every Source the shown entry cites, child cards included.
-A Source that is gone reads as its bare id.
-
-## `string LEngineCitationRead(LDraft? draft);`
-
-The citation line of the Source the draft's own Example cites, and empty for no draft or no citation.
+It reads only the draft the caller holds.

@@ -130,7 +130,7 @@ public sealed class CErrand
     {
         if (_cErrandTranscription is LForay foray)
         {
-            _cErrandDesk.CDeskQuill?.LQuillReadingSet(foray, phonetic, variety);
+            _cErrandDesk.CDeskErrandEngine?.LErrandReadingSet(foray, phonetic, variety);
         }
     }
 
@@ -272,7 +272,7 @@ public sealed class CErrand
 
     private static LForay? LErrandRecordingRun(LTenure? tenure, long target, Action<LHarvestStep> sink)
     {
-        return tenure?.LTenureRecordingStart(target, sink);
+        return tenure?.LTenureErrand.LErrandRecordingStart(target, sink);
     }
 
     private static Task LErrandEnsignRun(
@@ -285,7 +285,7 @@ public sealed class CErrand
     private static LForay? LErrandTranscriptionRun(
         LTenure? tenure, long target, string scheme, Action<LForay, LLookupStep> sink)
     {
-        return tenure?.LTenureTranscriptionStart(target, scheme, sink);
+        return tenure?.LTenureErrand.LErrandTranscriptionStart(target, scheme, sink);
     }
 
     private static void CErrandForayStop(LForay? foray)

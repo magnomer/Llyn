@@ -179,6 +179,60 @@ public sealed class TXiesheng
     }
 
     [Fact]
+    public async Task XieshengStemSelect_UnsavedDraftKept_ChangesNothing()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = TXieshengEngineStart(workspace);
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        string language = pack.TLanguageFixtureName;
+        await TXieshengStemSave(engine, language);
+        List<string> asked = [];
+        CXiesheng xiesheng = TXieshengPrepare(atelier, TEnvoyFake.TEnvoyCreate(null, asked));
+        xiesheng.TXieshengStemOpen(language, "龍");
+        long stem = Assert.Single(xiesheng.CXieshengGroveRead()).CStemId;
+        xiesheng.CXieshengPanel.CPanelFreshOpen();
+        xiesheng.CXieshengEditor.CEditorHeadwordSet("water");
+        int changed = 0;
+        xiesheng.CXieshengChanged += () => changed++;
+
+        xiesheng.CXieshengStemSelect(stem);
+
+        Assert.Equal(["Leave"], asked);
+        Assert.True(Assert.Single(xiesheng.CXieshengGroveRead()).CStemChosen);
+        Assert.True(xiesheng.CXieshengPanel.CPanelEditing);
+        Assert.Equal("water", xiesheng.CXieshengEditor.TEditorDraftRead()?.CEntryDraftHeadword);
+        Assert.Equal(0, changed);
+    }
+
+    [Fact]
+    public async Task XieshengStemSelect_UnsavedDraftDiscarded_TogglesAndCloses()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = TXieshengEngineStart(workspace);
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        string language = pack.TLanguageFixtureName;
+        await TXieshengStemSave(engine, language);
+        List<string> asked = [];
+        CXiesheng xiesheng = TXieshengPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
+        xiesheng.TXieshengStemOpen(language, "龍");
+        long stem = Assert.Single(xiesheng.CXieshengGroveRead()).CStemId;
+        xiesheng.CXieshengPanel.CPanelFreshOpen();
+        xiesheng.CXieshengEditor.CEditorHeadwordSet("water");
+        int changed = 0;
+        xiesheng.CXieshengChanged += () => changed++;
+
+        xiesheng.CXieshengStemSelect(stem);
+
+        Assert.Equal(["Leave"], asked);
+        Assert.False(xiesheng.CXieshengStemShown);
+        Assert.DoesNotContain(xiesheng.CXieshengGroveRead(), static row => row.CStemChosen);
+        Assert.False(xiesheng.CXieshengPanel.CPanelEditing);
+        Assert.Equal(1, changed);
+    }
+
+    [Fact]
     public async Task XieshengGlyphSelect_StemShown_OpensTheGlyphEntryInTheSeriesLanguage()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);

@@ -1,5 +1,5 @@
 # CLeaf.cs
-Hash: `4886754981725d5d`
+Hash: `deecc6de15b19b21`
 
 ## `public sealed record CLeaf(int CLeafPosition, CStateWording CLeafTitle, CStateWording CLeafExpression, CStateWording CLeafMeaning, IReadOnlyList<CLeafChip> CLeafSituation, IReadOnlyList<CLeafChip> CLeafRegister, IReadOnlyList<CLeafChip> CLeafTag, IReadOnlyList<CTranslationTarget> CLeafTranslation, IReadOnlyList<CLeafLine> CLeafSentence, IReadOnlyList<CImageDraft> CLeafImage, IReadOnlyList<CVideoDraft> CLeafVideo)`
 
@@ -21,7 +21,7 @@ Every text arrives worded and every row arrives mapped, so the leaf fill only lo
 - `CLeafImage`: the picture rows, each carrying whether its location is empty.
 - `CLeafVideo`: the video rows, each carrying whether its location is empty.
 
-## `internal static IReadOnlyList<CLeaf> LLeafRead(IReadOnlyList<LCardDraft> cards, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets, LMediaPort media)`
+## `internal static IReadOnlyList<CLeaf> LLeafRead(IReadOnlyList<LCardDraft> cards, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets, LMediaPort media, LExamplePort examples)`
 
 Maps the shown entry's cards of one list to their ready form.
 The cards come in the order `CFolio.CFolioOrderRead` sets, the order the editor's list shows.
@@ -31,3 +31,4 @@ Each card's links are its own entry of the target map, which the engine keys by 
 A card missing from the map has no links, since a refused target read answers an empty map.
 The rules stay below, so this map only pairs and chooses no key but the unknown mark's.
 Each picture row carries the address `media` resolves, so the page loads it without asking.
+Each sentence line is composed through `examples`.

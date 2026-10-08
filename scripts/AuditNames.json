@@ -84,7 +84,7 @@
       "tests/Llyn.Tests.Convention": ["T"],
       "tests/Llyn.Tests.Windows": ["T"]
     },
-    "prefixCeiling": 57,
+    "prefixCeiling": 56,
     "sealedTurfs": [
       "src/Llyn.Conduct"
     ],

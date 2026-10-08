@@ -29,7 +29,7 @@ internal static class TInterfaceEngineLanguage
         engine.LEngineLanguage.LEngineEnsignLoad(store);
 
     internal static IReadOnlyList<LFrequency> TEngineFrequencyRead(this LEngine engine, long entryId) =>
-        engine.LEngineStaffHeld.LEngineStaffFrequency.LFrequencyClerkRead(entryId);
+        engine.LEngineStaffHeld.LEngineStaffLanguage.LLanguageStaffFrequency.LFrequencyClerkRead(entryId);
 
     internal static LFrequencyGauge? TEngineFrequencyResolve(this LEngine engine, long entryId, string once) =>
         engine.LEnginePronunciation.LEngineFrequencyResolve(entryId, once);
@@ -48,7 +48,7 @@ internal static class TInterfaceEngineLanguage
         engine.LEngineVocabulary.LEngineInflectionCheck(entryId);
 
     internal static IReadOnlyList<LScriptImage> TEngineScriptRead(this LEngine engine, long entryId) =>
-        engine.LEngineStaffHeld.LEngineStaffScript.LScriptClerkRead(entryId);
+        engine.LEngineStaffHeld.LEngineStaffLanguage.LLanguageStaffScript.LScriptClerkRead(entryId);
 
     internal static bool TEngineScriptCheck(this LEngine engine, long entryId) =>
         engine.LEngineLanguage.LEngineScriptCheck(entryId);

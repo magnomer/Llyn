@@ -66,6 +66,9 @@ internal static class TInterfaceDeportment
     internal static void TReflexFoldRefine(IReadOnlyList<QReflexItem> rows, ToggleButton fold, bool opened) =>
         QReflexItem.QReflexFoldRefine(rows, fold, opened);
 
+    internal static void TReflexTypeRefine(QReflexItem row, CReflexField field, string text) =>
+        row.QReflexTypeRefine(new CReflexTyped(field, text, []));
+
     internal static object TCardCreate()
     {
         CStateWording blank = new(string.Empty, null, false, null);

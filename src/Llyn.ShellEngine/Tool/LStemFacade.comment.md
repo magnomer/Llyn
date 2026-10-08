@@ -1,9 +1,10 @@
 # LStemFacade.cs
-Hash: `9d4ffd1897f47a71`
+Hash: `eef857729e096d69`
 
-## `internal sealed class LStemFacade`
+## `public sealed class LStemFacade : LStemPort`
 
 The engine's facade for stem, the phonetic series the xiesheng panel browses by.
+It implements the stem port itself, so Host hands it to Conduct with no outlet between.
 It reads the series and the entries they reach, and composes one series page.
 The links themselves are written where a series is stored, so nothing here writes.
 

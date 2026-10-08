@@ -7,11 +7,11 @@ namespace Llyn.Conduct;
 
 internal static class CMarkdown
 {
-    internal static IReadOnlyList<CMarkdownBlock> LMarkdownParse(LEntryPort entries, string? text)
+    internal static IReadOnlyList<CMarkdownBlock> LMarkdownParse(LMarkdownPort markdown, string? text)
     {
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(markdown);
 
-        IReadOnlyList<LMarkdownBlock> blocks = entries.LEngineMarkdownParse(text);
+        IReadOnlyList<LMarkdownBlock> blocks = markdown.LEngineMarkdownParse(text);
         List<CMarkdownBlock> read = new(blocks.Count);
         foreach (LMarkdownBlock block in blocks)
         {

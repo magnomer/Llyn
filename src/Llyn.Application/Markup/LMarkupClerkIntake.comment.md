@@ -1,15 +1,16 @@
 # LMarkupClerkIntake.cs
-Hash: `7377d9d1d3a594c4`
+Hash: `6d9858cd352adeb8`
 
 ## `public sealed class LMarkupClerkIntake`
 
 The import of a parsed markup cargo under the reader's intake choices.
 Every entry is created or rewritten in one session and one revision, the held mentions settled at the end.
 
-## `public LMarkupClerkIntake(LRig rig, LClaimClerk claims, LEntryClerk entries, LLacunaClerk lacunae, LFrequencyClerk frequencies, LMarkupClerkLink link, LMarkupClerkDraft draft)`
+## `public LMarkupClerkIntake(LRig rig, LClaimClerk claims, LEntryClerk entries, LRevisionClerk revisions, LEntryQueryClerk query, LLacunaClerk lacunae, LFrequencyClerk frequencies, LMarkupClerkLink link, LMarkupClerkDraft draft)`
 
 Reads the vault and the entry, meaning and mention ports out of `rig`.
 Keeps the clerks the import writes through.
+`revisions` stamps the one revision an import records, and `query` finds the stored entries a parsed one may join.
 
 ## `public static LMarkupIntake LMarkupIntakeCreate(int index, LMarkupMode mode, long target)`
 
@@ -19,7 +20,7 @@ The shell reaches that rule through it, so the shell calls no Core member for it
 ## `public IReadOnlyList<IReadOnlyList<LMarkupTarget>> LMarkupTargetFind(IReadOnlyList<LMarkupEntry> entries)`
 
 The stored entries each parsed entry may join, in file order, one list per entry.
-A stored entry shares the parsed headword and language, as the entry clerk's headword find matches them.
+A stored entry shares the parsed headword and language, as the query clerk's headword find matches them.
 Each target counts its cards, so the import window shows what a replacement drops without a second read.
 A stored entry is loaded through the entry clerk, so its reflex rows come in the pack's declared order.
 

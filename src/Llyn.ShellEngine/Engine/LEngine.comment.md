@@ -1,5 +1,5 @@
 # LEngine.cs
-Hash: `82091097c8acff43`
+Hash: `e78be1163a2dc6ff`
 
 ## `public sealed class LEngine : IDisposable`
 
@@ -11,9 +11,9 @@ The first two stream one answer to the caller that asked.
 The third announces a change to everyone.
 
 The deportment never holds the engine itself.
-It holds the six `L*Port` slices under `Port/`, cut by concern so each later clerk implements one.
-Each sealed `L*Outlet` implements one port and forwards its members to this engine.
-The veneer window hands those outlets in.
+It holds the `L*Port` slices under `Port/`, cut by concern so each facade implements the ones it serves.
+Four sealed `L*Outlet` classes implement the ports no single facade serves and forward their members to this engine.
+`LHost` hands those outlets and the facades in.
 
 The engine is serialised behind `LEngineGate`.
 Every public entry point holds a single lock for the whole of its work.
@@ -38,12 +38,11 @@ Each sealed facade holds the engine and uses its gate to call a clerk.
 Binds the engine to the ports of `rig`, already built over the workspace they stand on.
 It neither reads nor rewrites the recorded workspace pointer.
 Host hands `factory`, which builds a rig over a folder, and `pointer`, which records the chosen folder.
-Both stay outside, since the engine names no infrastructure.
-The clerks are built first, then the settings are read through them and the rescue from the rig.
+Both stay outside, since the engine names no infrastructure, and pass on to the workspace facade.
+The clerks are built first, then the settings are read through them.
 The facades come last, so none of them can ever see an engine without its staff.
-A database this build can no longer read costs the user a launch rather than the program.
 
-## `internal LVistaFacade LEngineVista { get; }`
+## `public LVistaFacade LEngineVista { get; }`
 
 Owns the vista registry and serves the entry and favorite rows shown by each catalog tab.
 
@@ -51,7 +50,7 @@ Owns the vista registry and serves the entry and favorite rows shown by each cat
 
 The facade that starts and commits draft holds, each driven by an `LTenure`.
 
-## `internal LMentionFacade LEngineMention { get; }`
+## `public LMentionFacade LEngineMention { get; }`
 
 The facade for mentions inside sentences and etymologies, built once with the others.
 
@@ -68,35 +67,39 @@ The facade for the Joplin push and its access grant, which the portrait outlet f
 The facade for the Joplin page read, built once with the others.
 `LCourierFacade.LEngineCourierSend` hands its page read to the Joplin push.
 
-## `internal LWorkspaceFacade LEngineWorkspace { get; }`
+## `public LWorkspaceFacade LEngineWorkspace { get; }`
 
 The facade for workspace state and trail operations, built once with the others.
 
-## `internal LReflexFacade LEngineReflex { get; }`
+## `public LReflexFacade LEngineReflex { get; }`
 
 The facade for reflexes and the reflex fetch, built once with the others.
+It is public, since Host hands it to Conduct as the reflex port.
 
 ## `internal LPortraitFacade LEnginePortrait { get; }`
 
 The facade for printing and exporting portraits, built once with the others.
 
-## `internal LStemFacade LEngineStem { get; }`
+## `public LStemFacade LEngineStem { get; }`
 
 The facade for the phonetic series the xiesheng panel browses, built once with the others.
+It is public, since Host hands it to Conduct as the stem port.
 
-## `internal LFanqieFacade LEngineFanqie { get; }`
+## `public LFanqieFacade LEngineFanqie { get; }`
 
 The facade for the fanqie and diwei reads, built once with the others.
+It is public, since Host hands it to Conduct as the fanqie and diwei ports.
 
-## `internal LLanguageFacade LEngineLanguage { get; }`
+## `public LLanguageFacade LEngineLanguage { get; }`
 
 The facade for language packs, built once with the others.
 
-## `internal LVocabularyFacade LEngineVocabulary { get; }`
+## `public LVocabularyFacade LEngineVocabulary { get; }`
 
 The facade for vocabularies, inflections and paradigms, built once with the others.
+It is public, since Host hands it to Conduct as the paradigm and sentence ports.
 
-## `internal LPronunciationFacade LEnginePronunciation { get; }`
+## `public LPronunciationFacade LEnginePronunciation { get; }`
 
 The facade for pronunciations, recordings, lookups, transcriptions and frequencies, built once with the others.
 
@@ -108,27 +111,27 @@ The facade for settings, built once with the others.
 
 The facade that applies one edit request at a time to a held draft.
 
-## `internal LAuthorFacade LEngineAuthor { get; }`
+## `public LAuthorFacade LEngineAuthor { get; }`
 
 The facade for authors, built once with the others.
 
-## `internal LExampleFacade LEngineExample { get; }`
+## `public LExampleFacade LEngineExample { get; }`
 
 The facade for examples, built once with the others.
 
-## `internal LReferenceFacade LEngineReference { get; }`
+## `public LReferenceFacade LEngineReference { get; }`
 
 The facade for references, built once with the others.
 
-## `internal LSituationFacade LEngineSituation { get; }`
+## `public LSituationFacade LEngineSituation { get; }`
 
 The facade for situations, built once with the others.
 
-## `internal LCardFacade LEngineCard { get; }`
+## `public LCardFacade LEngineCard { get; }`
 
 The facade for cards, over meanings, collocations, tags, registers and translations.
 
-## `internal LEntryFacade LEngineEntry { get; }`
+## `public LEntryFacade LEngineEntry { get; }`
 
 The facade for entries, built once with the others.
 
@@ -143,7 +146,7 @@ It is read under the gate, so a caller outside the gate still sees one whole rec
 The current settings snapshot, read under the gate.
 The fetch clerks hold this reader, so it exists before any facade does.
 
-## `internal LDraftFacade LEngineDraft { get; }`
+## `public LDraftFacade LEngineDraft { get; }`
 
 The draft facade, built once with the others like every facade.
 
@@ -151,8 +154,9 @@ The draft facade, built once with the others like every facade.
 
 The four steps a bound workspace needs before the first read.
 The controlled vocabularies come from the language packs on disk and are written into the workspace.
-The 音韻地位 categories are derived again from the stored placements and the hypothesis on disk.
+The 音韻地位 categories are derived again from the stored fanqie rows and the hypothesis on disk.
 The phonetic series of every pack that declares a series source are built again.
+`LLanguageStaff.LLanguageStaffApply` runs those two steps on the language group.
 A workspace rebuilt from an older schema has its derived strings filled once through the workspace clerk.
 
 ## `internal object LEngineGate { get; } = new();`
@@ -183,6 +187,7 @@ A facade that writes without announcing moves it by hand, so no kept state outli
 
 Subscribes `observer` to future announcements.
 An already attached delegate is not added a second time.
+It names no subject or id, so it hears every announcement.
 
 ## `public void LEngineObserverDetach(Action<LBulletin> observer)`
 
@@ -192,57 +197,15 @@ Stops announcing to `observer`, so a closed surface is never called again.
 
 Announces one stored change to every subscriber.
 The revision moves first, even with nobody listening, because a tenure reads it whether or not it subscribed.
-The list is copied under the gate, then callbacks run outside it, so a subscriber can detach without disturbing iteration.
+The `LBulletinRoster` is copied under the gate, then dispatched outside it.
+So a subscriber can detach without disturbing iteration.
 Announcements happen when a stored record is finished, so an import announces once after all its records are written.
 
-## `public LDoctorRescue LEngineRescueRead()`
+## `internal void LEngineRigApply(LRig rig)`
 
-Reports what the workspace doctor had to do to the database this engine opened.
-The engine holds the answer rather than raising it, because the shell asks once the engine exists.
-The answer is replaced when `LEngineRigApply` opens another workspace.
-
-## `public string LEngineWorkspaceRead()`
-
-Returns the current workspace folder, where the user's settings and database are stored.
-The folder is kept apart from the workspace facade, which serves the workspace row.
-
-## `public string LEngineWorkspaceFormat()`
-
-The workspace folder's own name, for the settings ledger, and the full path when the root has none.
-
-## `public string? LEngineAuditRecord(Exception exception)`
-
-Writes one unexpected fault into the open workspace's audit log through the workspace clerk.
-It answers with the file the fault went to, or `null` when nothing could be written.
-
-## `public string? LEngineNoticeRead(Exception exception)`
-
-The reason key of a refusal standing anywhere inside the failure, or null for a fault.
-The workspace clerk walks the inner chain, since the shells name no exception type.
-
-## `public (string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(Exception exception, string unexpected, string recorded)`
-
-The ready notice of a failure, in the order the reasons are tried.
-A refusal answers its own reason key alone.
-A fault is written to the audit log and answers `unexpected`, with `recorded` and the file when the write succeeded.
-Conduct hands both wording keys down, so the engine chooses no wording of its own.
-
-## `public bool LEngineWorkspaceCheck(string chosen)`
-
-Whether `chosen` names a workspace other than the one in use, by the workspace clerk's rule.
-Conduct asks it before the leave question, so a blank or unchanged path asks nothing.
-
-## `public void LEngineWorkspaceChange(string chosen)`
-
-Moves the engine onto the folder `chosen` names, trimmed by the clerk, then records it as the workspace.
-A choice that names no other workspace throws, since the check comes first.
-The pointer is written only after the move succeeds, so a folder that fails never becomes the next launch's workspace.
-
-## `public void LEngineRigApply(LRig rig)`
-
-Moves the engine onto the workspace `rig` was built over, without touching the workspace pointer.
-`LEngineWorkspaceChange` builds the rig and writes the pointer after.
-The new rig's rescue and settings are read through the clerk's static open steps before anything here changes.
+Moves the engine's clerks, caches and settings onto the workspace `rig` was built over.
+`LWorkspaceFacade.LEngineRigApply` calls it under the gate, and keeps the folder, the rescue and the bulletin.
+The new rig's settings are read through the clerk's static open step before anything here changes.
 A folder that cannot be opened therefore leaves the old clerks and caches untouched.
 A workspace that already holds a settings file is opened on its own settings.
 One without any receives the current settings and has them written.
@@ -252,18 +215,8 @@ The drafts this engine claimed are forgotten with the old folder and each id is 
 The old recording clerk stops its playback, since the shared phonograph outlives it.
 A shell still holding one is refused instead of writing here.
 The pending fetches of the old clerks are cancelled, and the flag cache and the trove are cleared.
-The move is then announced, so every surface holding a stored record learns that all of it is stale.
-
-## `private void LEngineFetchClear()`
-
-Cancels every pending fetch of the six fetching clerks, on a rig apply and on dispose.
-The reflex fetch is reached through the reflex clerk that holds it.
-
-## `internal static ArgumentOutOfRangeException LEngineOwnerRaise(LOwner owner)`
-
-The one failure for a side an entity has no association table for.
-Returned rather than thrown so a switch arm can throw it.
 
 ## `public void Dispose()`
 
 Cancels every pending fetch, so a closed engine leaves no task writing into the workspace.
+`LLanguageStaff.LLanguageStaffClear` does the cancelling, since the language group holds every fetching clerk.

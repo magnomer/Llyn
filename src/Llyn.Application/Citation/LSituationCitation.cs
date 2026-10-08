@@ -10,21 +10,21 @@ public sealed class LSituationCitation
     private readonly LIdentity _lSituationCitationIdentity;
     private readonly LClaimClerk _lSituationCitationClaims;
     private readonly LSituationClerk _lSituationCitationSituations;
-    private readonly LEntryClerk _lSituationCitationEntries;
+    private readonly LRevisionClerk _lSituationCitationRevisions;
 
     public LSituationCitation(
-        LRig rig, LIdentity identity, LClaimClerk claims, LSituationClerk situations, LEntryClerk entries)
+        LRig rig, LIdentity identity, LClaimClerk claims, LSituationClerk situations, LRevisionClerk revisions)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(claims);
         ArgumentNullException.ThrowIfNull(situations);
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(revisions);
         _lSituationCitationVault = rig.LRigVault;
         _lSituationCitationIdentity = identity;
         _lSituationCitationClaims = claims;
         _lSituationCitationSituations = situations;
-        _lSituationCitationEntries = entries;
+        _lSituationCitationRevisions = revisions;
     }
 
     public LDraft LSituationCitationStart(string origin, long? situationId)
@@ -65,8 +65,7 @@ public sealed class LSituationCitation
                 stored = _lSituationCitationSituations.LSituationClerkRead(draft.LDraftEntryId) ?? written;
             }
 
-            LCitationClerk.LRevisionRecord(
-                _lSituationCitationEntries,
+            _lSituationCitationRevisions.LRevisionClerkRecord(
                 stored.LSituationId,
                 "situation",
                 fresh,

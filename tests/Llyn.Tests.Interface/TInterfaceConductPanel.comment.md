@@ -1,5 +1,5 @@
 # TInterfaceConductPanel.cs
-Hash: `bf45a50780b3defa`
+Hash: `17e65368827045cd`
 
 ## `internal static class TInterfaceConductPanel`
 
@@ -21,9 +21,10 @@ Relays the catalog's map of an engine entry row.
 Builds an IPA chart from `headers`, `sides` and `cells` and relays the catalog's map of it.
 A fact thus feeds a hostile chart without building the engine record itself.
 
-## `internal static CPanel TPanelCreate(CEnvoy envoy, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam)`
+## `internal static CPanel TPanelCreate(LEngine engine, CEnvoy envoy, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam)`
 
 Builds a bare panel over the fake settings port, with the given delete scope and change and finish seams.
+The engine's vista facade is its vista port, so a restored vista loads and deletes for real.
 Its load-failed key is fixed and its last seam always answers yes.
 A test thus varies only the seams it passes.
 
@@ -54,7 +55,7 @@ Relays the catalog's map of a shown subject into the stored one.
 
 ## `internal static COeuvre TOeuvreCreate(LEngine engine)`
 
-Builds the oeuvre over a real entry outlet on `engine`, as the guild does.
+Builds the oeuvre over the real entry, author and reference facades on `engine`, as the guild does.
 
 ## `internal static void TOeuvreVistaRestore(this COeuvre oeuvre, LVista roll, LVista vista)`
 
@@ -82,7 +83,7 @@ Reads the atlas rows through its internal helper, without the repertoire's stale
 
 ## `internal static IReadOnlyList<CCatalogSituation>? TAtlasFailRead(LEngine engine, CEnvoy envoy)`
 
-Reads the atlas rows over an entry port whose situation find throws, and answers what the read answers.
+Reads the atlas rows over a situation port whose situation find throws, and answers what the read answers.
 
 ## `internal static CSituationDraft? TAtlasDraftRead(LSituation? situation)`
 
@@ -184,7 +185,7 @@ It answers whether the finish went through.
 ## `internal static CExample? TCorpusTranscriptRead(this CCorpus corpus)`
 
 Relays the transcript's read of the Example the corpus desk holds, through `CCorpusTranscript`.
-`CCorpusTranscriptChanged` and `CTranscriptDraftChanged` hand that same read on.
+`CTranscriptDraftChanged` hands that same read on, and `CCorpusTranscriptChanged` hands it on or the blank Example.
 
 ## `internal static void TCorpusEntryResonate(this CCorpus corpus)`
 

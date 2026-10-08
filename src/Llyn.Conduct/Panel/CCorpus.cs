@@ -41,7 +41,7 @@ public sealed class CCorpus
         CCorpusTranscript = new CTranscript(
             CCorpusDesk, CCorpusAnthology, atelier.CAtelierDraftPort, atelier.CAtelierSettingsPort, envoy);
         CCorpusQuotation = new CQuotation(
-            atelier.CAtelierEntryPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             atelier.CAtelierPortraitPort,
             atelier.CAtelierSettingsPort,
             envoy,

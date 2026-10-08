@@ -1,5 +1,5 @@
 # TTimbreReflex.cs
-Hash: `f7414fe64ab9a081`
+Hash: `80d01bd3616da757`
 
 ## `public sealed class TTimbreReflex`
 
@@ -60,7 +60,7 @@ Each press flips the held row's main mark.
 
 A typed language is written and the leads answer the rows with the typed language standing in.
 Leads follow the shown order, so a run of one language prints its name once.
-The answer names the typed language as the text the cell now holds.
+The answer names the typed language as the text the cell now holds, with the key it is labelled under.
 A desk holding no entry takes nothing and answers an empty cell.
 
 ## `public void TimbreReflexSet_TextOfARespelledRow_WritesTheRespelling()`
@@ -100,6 +100,6 @@ Builds an editor over the library vista and opens the entry.
 
 Saves an entry with the reflex rows the test names.
 
-### `private static LPhonologyPort TTimbreGuisePrepare(bool respelled = false)`
+### `private static CPhonologyBundle TTimbreGuisePrepare(bool respelled = false)`
 
 Fakes the guise answer so every row is respelled or plain as the test needs.

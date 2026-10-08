@@ -12,6 +12,8 @@ public sealed class LMarkupClerkIntake
     private readonly LMentionVault _lMarkupIntakeMentions;
     private readonly LClaimClerk _lMarkupIntakeClaims;
     private readonly LEntryClerk _lMarkupIntakeEntries;
+    private readonly LRevisionClerk _lMarkupIntakeRevisions;
+    private readonly LEntryQueryClerk _lMarkupIntakeQuery;
     private readonly LLacunaClerk _lMarkupIntakeLacunae;
     private readonly LFrequencyClerk _lMarkupIntakeFrequencies;
     private readonly LMarkupClerkLink _lMarkupIntakeLink;
@@ -21,6 +23,8 @@ public sealed class LMarkupClerkIntake
         LRig rig,
         LClaimClerk claims,
         LEntryClerk entries,
+        LRevisionClerk revisions,
+        LEntryQueryClerk query,
         LLacunaClerk lacunae,
         LFrequencyClerk frequencies,
         LMarkupClerkLink link,
@@ -29,6 +33,8 @@ public sealed class LMarkupClerkIntake
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(claims);
         ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(revisions);
+        ArgumentNullException.ThrowIfNull(query);
         ArgumentNullException.ThrowIfNull(lacunae);
         ArgumentNullException.ThrowIfNull(frequencies);
         ArgumentNullException.ThrowIfNull(link);
@@ -39,6 +45,8 @@ public sealed class LMarkupClerkIntake
         _lMarkupIntakeMentions = rig.LRigMentions;
         _lMarkupIntakeClaims = claims;
         _lMarkupIntakeEntries = entries;
+        _lMarkupIntakeRevisions = revisions;
+        _lMarkupIntakeQuery = query;
         _lMarkupIntakeLacunae = lacunae;
         _lMarkupIntakeFrequencies = frequencies;
         _lMarkupIntakeLink = link;
@@ -58,7 +66,7 @@ public sealed class LMarkupClerkIntake
         foreach (LMarkupEntry entry in entries)
         {
             List<LMarkupTarget> targets = [];
-            foreach (LEntry stored in _lMarkupIntakeEntries.LEntryHeadwordFind(
+            foreach (LEntry stored in _lMarkupIntakeQuery.LEntryHeadwordFind(
                 entry.LMarkupEntryHeadword, entry.LMarkupEntryLanguage))
             {
                 if (_lMarkupIntakeEntries.LEntryClerkLoad(stored.LEntryId) is LEntryDraft draft)
@@ -155,7 +163,7 @@ public sealed class LMarkupClerkIntake
             }
 
             LMarkupMentionSettle(held, identity, named, omissions);
-            _lMarkupIntakeEntries.LRevisionRecord(changes);
+            _lMarkupIntakeRevisions.LRevisionClerkRecord(changes);
 
             session.LVaultSessionCommit();
         }

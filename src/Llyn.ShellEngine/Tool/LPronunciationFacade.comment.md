@@ -1,11 +1,12 @@
 # LPronunciationFacade.cs
-Hash: `82acd942575f91df`
+Hash: `aea2d21921d6e47e`
 
-## `internal sealed class LPronunciationFacade`
+## `public sealed class LPronunciationFacade : LPronunciationPort`
 
 The engine's facade for pronunciation rows, recordings, lookups, transcriptions and frequencies.
 Most calls take the gate and call the pronunciation, recording, transcription or frequency clerk.
 The session trove that remembers a lookup or harvest stays here, since a session is an engine fact.
+It implements the pronunciation port itself, so Host hands it to Conduct with no outlet between.
 
 ## `private readonly LEngine _lPronunciationFacadeEngine;`
 
@@ -66,13 +67,11 @@ The variety of the draft row `target` names, the first row's for zero, empty out
 ## `internal Task<string?> LEngineRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)`
 
 Stores a harvested recording under the workspace and answers its path.
-Null only when nothing was saved, as the clerk answers.
 A failed fetch or file write reaches the caller as the clerk's vault fault, still unrecorded.
 
 ## `public Task<string?> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation)`
 
 Fetches a recording to a playable local file without storing it.
-Null only when nothing was prepared, as the clerk answers.
 A failed fetch or file write reaches the caller as the clerk's vault fault, still unrecorded.
 
 ## `public void LEngineRecordingSweep()`
@@ -125,6 +124,15 @@ The scheme names of a language.
 The lookup of `word` under one scheme, its steps sent through `receiver`.
 It is replayed from the trove when the session already asked.
 A blank scheme throws.
+
+## `public LArticulation LEngineConsonantRead()`
+
+The IPA consonant chart, which the pronunciation clerk builds with no gate.
+It reads no workspace state, so the input aid can lay it out at any time.
+
+## `public LArticulation LEngineVowelRead()`
+
+The IPA vowel chart, read the same way as the consonant chart.
 
 ## `public LFrequencyGauge? LEngineFrequencyResolve(long entryId, string once)`
 

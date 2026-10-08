@@ -1,5 +1,5 @@
 # LCourierFacade.cs
-Hash: `ced7866615e30c6e`
+Hash: `0937b2b477c1e1e4`
 
 ## `internal sealed class LCourierFacade`
 

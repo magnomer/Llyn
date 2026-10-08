@@ -1,5 +1,5 @@
 # CClip.cs
-Hash: `7155f0365f5b121d`
+Hash: `afb88e0ec2d93fa0`
 
 ## `internal sealed class CClip`
 
@@ -44,7 +44,7 @@ An empty answer after a recording has landed changes nothing, so a found row nev
 ## `private static CClipReading LClipReadingRead(LForay? foray, LTenure? tenure, CRecording recording)`
 
 Gives one recording its variety keys under the search's language and flag mode.
-A step can land before the start returns its foray, so the held tenure answers then.
+A step can land before the start returns its foray, so a pronunciation quill over the held tenure answers then.
 A new reading is ready to take and shows no preview state.
 
 ## `internal void LClipPreviewStart(CRecording recording)`

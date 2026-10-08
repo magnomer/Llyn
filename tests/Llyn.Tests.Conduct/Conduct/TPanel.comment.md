@@ -1,5 +1,5 @@
 # TPanel.cs
-Hash: `5bbbb81ae50d994c`
+Hash: `4be8b881c1cb5166`
 
 ## `public sealed class TPanel`
 
@@ -9,7 +9,7 @@ Keeping stays in the scribe, storing finishes the draft, and discarding shows th
 A clean editor never asks, and entering the scribe hands the chosen row to the editor.
 The fresh gate drops the chosen row and opens the scribe on nothing.
 Restoring the scribe needs a row, and a restored vista opens in the viewer.
-The order, subject and filter maps carry every member by name.
+The order and subject maps carry every member by name, and the filter map carries its hidden languages.
 Row choice and stored-entry notices live in `TPanelRow`, and the delete gate in `TPanelBin`.
 
 ## `internal static CPanel TPanelPrepare(LEngine engine, bool? answer, List<string> asked, List<bool> finished, string? scope, Func<bool> change)`

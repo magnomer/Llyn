@@ -241,6 +241,7 @@ public sealed class TTimbreReflex
             [new CReflexHead(ids[0], true), new CReflexHead(ids[1], false), new CReflexHead(ids[2], true)],
             typed.CReflexTypedHeads);
         Assert.Equal("Jin", typed.CReflexTypedText);
+        Assert.Equal("Reflex.Jin", typed.CReflexTypedKey);
         Assert.Equal(["Jin", "Jin", "Wu"], TTimbreReflexRead(editor).Select(static row => row.CReflexLanguage));
     }
 
@@ -376,9 +377,9 @@ public sealed class TTimbreReflex
             reflexes: reflexes)).LEntryId;
     }
 
-    private static LPhonologyPort TTimbreGuisePrepare(bool respelled = false)
+    private static CPhonologyBundle TTimbreGuisePrepare(bool respelled = false)
     {
-        return TEngineFake.TEngineCreate<LPhonologyPort>(new Dictionary<string, Func<object?[]?, object?>>
+        return TInterfaceConduct.TPhonologyBundleCreate(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineGuiseRead"] = args => ((IReadOnlyList<string>)args![1]!)
                 .Select(_ => TInterface.TReflexGuiseCreate(respelled, false, true))

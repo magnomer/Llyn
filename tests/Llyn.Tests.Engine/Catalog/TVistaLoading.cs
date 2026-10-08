@@ -17,15 +17,17 @@ public sealed class TVistaLoading
         LVista vista = engine.TEngineVistaStart(tab, LCatalogOrder.LCatalogOrderName);
         vista.TVistaSelect(entry.LEntryId);
         Assert.Null(vista.LVistaSubject);
-        Assert.Null(vista.TVistaLoad());
-        Assert.Null(vista.TVistaDelete());
+        Assert.Null(engine.TVistaLoad(vista));
+        Assert.Null(engine.TVistaDelete(vista));
         Assert.NotNull(engine.TEngineEntryLoad(entry.LEntryId));
     }
 
     [Fact]
     public void FileRead_NoVista_ReturnsEntry()
     {
-        Assert.Equal("entry", TInterface.TVistaFileRead(null));
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        Assert.Equal("entry", engine.TVistaFileRead(null));
     }
 
     [Fact]
@@ -37,7 +39,7 @@ public sealed class TVistaLoading
         LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderName);
         vista.TVistaSelect(entry.LEntryId);
 
-        Assert.Equal("wa_ter", TInterface.TVistaFileRead(vista));
+        Assert.Equal("wa_ter", engine.TVistaFileRead(vista));
     }
 
     [Theory]
@@ -56,19 +58,19 @@ public sealed class TVistaLoading
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("water", "English", "", "", [], []));
         LVista vista = engine.TEngineVistaStart(tab, LCatalogOrder.LCatalogOrderHeadword);
-        Assert.Null(vista.TVistaLoad());
-        Assert.Null(vista.TVistaDelete());
+        Assert.Null(engine.TVistaLoad(vista));
+        Assert.Null(engine.TVistaDelete(vista));
 
         vista.TVistaSelect(entry.LEntryId);
-        Assert.Equal("water", vista.TVistaLoad()!.LDraftContent.LEntryDraftHeadword);
-        Assert.NotNull(vista.TVistaDelete());
+        Assert.Equal("water", engine.TVistaLoad(vista)!.LDraftContent.LEntryDraftHeadword);
+        Assert.NotNull(engine.TVistaDelete(vista));
         Assert.Null(vista.LVistaChosen);
         Assert.Null(engine.TEngineEntryLoad(entry.LEntryId));
 
         vista.TVistaSelect(entry.LEntryId);
-        Assert.Null(vista.TVistaLoad());
+        Assert.Null(engine.TVistaLoad(vista));
         vista.TVistaSelect(null);
-        Assert.Null(vista.TVistaLoad());
+        Assert.Null(engine.TVistaLoad(vista));
     }
 
     [Fact]
@@ -108,9 +110,9 @@ public sealed class TVistaLoading
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LVista vista = engine.TEngineVistaStart(tab, LCatalogOrder.LCatalogOrderName);
         vista.TVistaSelect(long.MaxValue);
-        Assert.Null(vista.TVistaLoad());
+        Assert.Null(engine.TVistaLoad(vista));
         vista.TVistaSelect(null);
-        Assert.Null(vista.TVistaLoad());
+        Assert.Null(engine.TVistaLoad(vista));
     }
 
     [Fact]
@@ -150,13 +152,13 @@ public sealed class TVistaLoading
 
         LVista taxonomy = engine.TEngineVistaStart("taxonomy", LCatalogOrder.LCatalogOrderName);
         taxonomy.TVistaSelect(tag.LTagId);
-        Assert.Null(taxonomy.TVistaDelete());
+        Assert.Null(engine.TVistaDelete(taxonomy));
         Assert.Equal(tag.LTagId, taxonomy.LVistaChosen);
         Assert.Contains(engine.TEngineTagRead(), row => row.LTagId == tag.LTagId);
 
         LVista tenor = engine.TEngineVistaStart("tenor", LCatalogOrder.LCatalogOrderName);
         tenor.TVistaSelect(register.LRegisterId);
-        Assert.Null(tenor.TVistaDelete());
+        Assert.Null(engine.TVistaDelete(tenor));
         Assert.Equal(register.LRegisterId, tenor.LVistaChosen);
         Assert.Contains(
             engine.TEngineRegisterFind(tenor), row => row.LCatalogRegisterStored.LRegisterId == register.LRegisterId);
@@ -166,7 +168,7 @@ public sealed class TVistaLoading
     {
         LVista vista = engine.TEngineVistaStart(tab, LCatalogOrder.LCatalogOrderName);
         vista.TVistaSelect(id);
-        LRevision? revision = vista.TVistaDelete();
+        LRevision? revision = engine.TVistaDelete(vista);
         Assert.Null(vista.LVistaChosen);
         return revision;
     }
@@ -175,7 +177,7 @@ public sealed class TVistaLoading
     {
         LVista vista = engine.TEngineVistaStart(tab, LCatalogOrder.LCatalogOrderName);
         vista.TVistaSelect(id);
-        LDraft draft = Assert.IsType<LDraft>(vista.TVistaLoad());
+        LDraft draft = Assert.IsType<LDraft>(engine.TVistaLoad(vista));
         Assert.Equal(0, draft.LDraftId);
         return draft;
     }

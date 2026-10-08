@@ -1,5 +1,5 @@
 # CErrand.cs
-Hash: `9c755cc857aa739f`
+Hash: `7bfe466848af1cfc`
 
 ## `public sealed class CErrand`
 
@@ -135,7 +135,6 @@ A taken recording then reads saved, even when the draft moved on and nothing was
 Only an attached recording closes the popup.
 A failed download offers another try.
 The download failure reaches the catch, which shows the recording notice through `LDeskFailureShow`.
-The clerk has already written a vault fault to the audit log.
 The foray answers null only when nothing was saved, which offers the retry without a notice.
 
 ## `public void CErrandCancel()`
@@ -154,3 +153,11 @@ The tenure and the forays arrive as parameters, so no field decides the start.
 Copies an engine recording into its Conduct shape, or none for none.
 The overload over `CRecording` copies it back, since the clip saves and plays what it listed.
 `CErrandCandidateRead` copies a reading out the same way.
+
+## `internal static LRecording CErrandRecordingRead(CRecording recording)`
+
+Copies a Conduct recording back into the engine shape the foray fetches and takes.
+
+## `internal static CCandidate? CErrandCandidateRead(LCandidate? candidate)`
+
+Copies an engine reading into its Conduct shape, or none for none.

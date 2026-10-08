@@ -90,6 +90,9 @@ internal static class TDraftCoverageSetting
     [
         "src/Llyn.Core/Markup/*.cs",
         "src/Llyn.Application/Markup/LMarkupClerk.cs",
+        "src/Llyn.Application/Markup/LMarkupClerkEntry.cs",
+        "src/Llyn.Application/Markup/LMarkupClerkCard.cs",
+        "src/Llyn.Application/Markup/LMarkupClerkExample.cs",
     ];
 
     public static readonly string[] TMarkupWaiver =

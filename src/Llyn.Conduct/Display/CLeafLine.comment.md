@@ -1,5 +1,5 @@
 # CLeafLine.cs
-Hash: `1d18a14305c141da`
+Hash: `6e7cb04876fe7741`
 
 ## `public sealed record CLeafLine(string CLeafLineHead, long CLeafLineSentence, IReadOnlyList<CMentionPiece> CLeafLinePiece, string CLeafLineCitation, IReadOnlyList<CGlossDraft> CLeafLineGloss)`
 
@@ -15,9 +15,9 @@ One example line of a reading card, ready to paint.
 - `CLeafLineCitation`: the cited Source's line, empty when the row cites none.
 - `CLeafLineGloss`: the sentence rendered in other languages, in the order the Example keeps them.
 
-## `internal static CLeafLine LLeafLineRead(LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)`
+## `internal static CLeafLine LLeafLineRead(LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations, LExamplePort examples)`
 
 Maps one sentence row to its line.
-The engine composes the frame, the sentence and the Source line, by the rule the portrait prints by.
+The engine composes the frame, the sentence and the Source line through `examples`, by the rule the portrait prints by.
 The sentence arrives divided around its Mentions in that same one call.
-A row quoting no Example answers its empty Mentions and Glosses from the row itself.
+A row quoting no Example has no text to divide and no Source line.

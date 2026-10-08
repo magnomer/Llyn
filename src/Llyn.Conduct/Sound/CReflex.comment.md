@@ -1,5 +1,5 @@
 # CReflex.cs
-Hash: `72e315d2f582cc8a`
+Hash: `226f6693a43e8ed7`
 
 ## `public sealed record CReflex(long CReflexId, string CReflexLanguage, string CReflexKind, string CReflexText, string CReflexRomanization, string CReflexMeaning, string CReflexNote, bool CReflexMain, string CReflexRegion, IReadOnlyList<long> CReflexAnchors, CRespellingMark CReflexMark, bool CReflexFolded, bool CReflexLead)`
 
@@ -60,7 +60,8 @@ No stored entry or a refusal answers no anchor.
 A refusal also shows `Display.AnchorFailed` through `envoy`, once through `noticed`, since both callers read on a repaint.
 Each caller passes its own envoy and `settings`, as `CCatalog.LCatalogGlyphOpen` takes them.
 
-## `private static string LReflexKeyRead(string name)`
+## `internal static string LReflexKeyRead(string name)`
 
 The key a reflex language or kind is labelled under, `Reflex.` plus the name.
 A blank name keys nothing a catalog holds, so a driver prints it as it stands.
+`CReflexTyped` keys a typed language or kind by the same rule, so a typed label matches a stored one.

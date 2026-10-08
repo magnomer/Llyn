@@ -5,7 +5,7 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-internal sealed class LMentionFacade
+public sealed class LMentionFacade : LMentionPort
 {
     private readonly LEngine _lMentionFacadeEngine;
     private readonly object _lMentionFacadeGate;
@@ -23,7 +23,7 @@ internal sealed class LMentionFacade
     {
         lock (_lMentionFacadeGate)
         {
-            return LMentionFacadeStaff.LEngineStaffMention.LMentionClerkFind(exampleId, offset);
+            return LMentionFacadeStaff.LEngineStaffCatalog.LCatalogStaffMention.LMentionClerkFind(exampleId, offset);
         }
     }
 
@@ -31,7 +31,8 @@ internal sealed class LMentionFacade
     {
         lock (_lMentionFacadeGate)
         {
-            return LMentionFacadeStaff.LEngineStaffMention.LMentionClerkFind(shown, sentence, offset);
+            return LMentionFacadeStaff.LEngineStaffCatalog.LCatalogStaffMention
+                .LMentionClerkFind(shown, sentence, offset);
         }
     }
 
@@ -39,8 +40,13 @@ internal sealed class LMentionFacade
     {
         lock (_lMentionFacadeGate)
         {
-            return LMentionFacadeStaff.LEngineStaffMention.LMentionEtymologyFind(shown, offset);
+            return LMentionFacadeStaff.LEngineStaffCatalog.LCatalogStaffMention.LMentionEtymologyFind(shown, offset);
         }
+    }
+
+    public long? LEngineLinkRead(long? link)
+    {
+        return link is long id && id != 0 ? id : null;
     }
 
     public int LEngineUnitRead(string text, int offset)
@@ -70,7 +76,7 @@ internal sealed class LMentionFacade
         LDraft? draft = held.LTenureRead();
         lock (_lMentionFacadeGate)
         {
-            return LMentionFacadeStaff.LEngineStaffMention.LMentionEtymologyResolve(draft);
+            return LMentionFacadeStaff.LEngineStaffCatalog.LCatalogStaffMention.LMentionEtymologyResolve(draft);
         }
     }
 
@@ -81,7 +87,8 @@ internal sealed class LMentionFacade
         LDraft? draft = held.LTenureRead();
         lock (_lMentionFacadeGate)
         {
-            return LMentionFacadeStaff.LEngineStaffMention.LMentionClerkResolve(draft, card, sentence);
+            return LMentionFacadeStaff.LEngineStaffCatalog.LCatalogStaffMention
+                .LMentionClerkResolve(draft, card, sentence);
         }
     }
 
@@ -92,7 +99,7 @@ internal sealed class LMentionFacade
         LDraft? draft = held.LTenureRead();
         lock (_lMentionFacadeGate)
         {
-            return LMentionFacadeStaff.LEngineStaffMention.LMentionClerkResolve(draft);
+            return LMentionFacadeStaff.LEngineStaffCatalog.LCatalogStaffMention.LMentionClerkResolve(draft);
         }
     }
 }

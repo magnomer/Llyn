@@ -31,9 +31,14 @@ public sealed class TAnthologyExample
     [Fact]
     public void AnthologyTextCheck_BlankField_MatchesAnEmptyText()
     {
-        Assert.True(CAnthology.CAnthologyTextCheck("  ", CStateValue.CStateValueEmpty));
-        Assert.True(CAnthology.CAnthologyTextCheck("a cat", new CStateValue("a cat", false)));
-        Assert.False(CAnthology.CAnthologyTextCheck("a cat ", new CStateValue("a cat", false)));
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CAnthology anthology = TAnthology.TAnthologyPrepare(engine, atelier, out _);
+
+        Assert.True(anthology.CAnthologyTextCheck("  ", CStateValue.CStateValueEmpty));
+        Assert.True(anthology.CAnthologyTextCheck("a cat", new CStateValue("a cat", false)));
+        Assert.False(anthology.CAnthologyTextCheck("a cat ", new CStateValue("a cat", false)));
     }
 
     [Fact]

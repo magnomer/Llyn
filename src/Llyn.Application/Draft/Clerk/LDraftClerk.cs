@@ -6,7 +6,7 @@ namespace Llyn.Application;
 public sealed class LDraftClerk
 {
     private readonly LIdentity _lDraftClerkIdentity;
-    private readonly LLanguageCache _lDraftClerkLanguages;
+    private readonly LDraftClerkEntry _lDraftClerkEntry;
     private readonly LDraftClerkChip _lDraftClerkChip;
     private readonly LSituationChip _lDraftClerkSituation;
     private readonly LRegisterChip _lDraftClerkRegister;
@@ -26,7 +26,7 @@ public sealed class LDraftClerk
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(languages);
         _lDraftClerkIdentity = identity;
-        _lDraftClerkLanguages = languages;
+        _lDraftClerkEntry = new LDraftClerkEntry(languages);
         _lDraftClerkChip = new LDraftClerkChip(rig.LRigTags, identity);
         _lDraftClerkSituation = new LSituationChip(rig.LRigSituations, identity);
         _lDraftClerkRegister = new LRegisterChip(rig.LRigRegisters, identity);
@@ -51,70 +51,12 @@ public sealed class LDraftClerk
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentNullException.ThrowIfNull(request);
 
-        if (draft.LDraftSituation is LSituation held
-            && _lDraftClerkMedia.LSituationDispatch(held, request) is LSituation dispatched)
-        {
-            return draft with { LDraftSituation = dispatched };
-        }
-
-        return request switch
-        {
-            LRequestExampleText sent => LDraftClerkPanel.LExampleChange(
-                draft,
-                example => LDraftClerkMention.LMentionUpdate(example, LStateValue.LStateValueRead(sent.LRequestValue))),
-            LRequestMentionAddition sent => _lDraftClerkMention.LMentionAdd(draft, sent),
-            LRequestMentionRemoval sent => LDraftClerkMention.LMentionRemove(draft, sent),
-            LRequestMentionSense sent => _lDraftClerkMention.LMentionChange(draft, sent),
-            LRequestGlossAddition sent => _lDraftClerkGloss.LGlossAdd(draft, sent),
-            LRequestGlossRemoval sent => LDraftClerkGloss.LGlossRemove(draft, sent),
-            LRequestGlossText sent => LDraftClerkGloss.LGlossChange(draft, sent),
-            LRequestGlossLanguage sent => LDraftClerkGloss.LGlossChange(draft, sent),
-            LRequestExampleLanguage sent => LDraftClerkPanel.LExampleChange(
-                draft, example => example with { LExampleLanguage = sent.LRequestLanguage ?? string.Empty }),
-            LRequestExampleReference sent => LDraftClerkPanel.LExampleChange(
-                draft,
-                example => example with { LExampleSource = LStateAnchor.LStateAnchorRead(sent.LRequestReferenceId) }),
-            LRequestReferenceTitle sent => LDraftClerkPanel.LReferenceChange(
-                draft,
-                reference => reference with { LReferenceTitle = LStateValue.LStateValueRead(sent.LRequestValue) }),
-            LRequestReferenceYear sent => LDraftClerkPanel.LReferenceChange(
-                draft,
-                reference => reference with { LReferenceYear = LStateValue.LStateValueRead(sent.LRequestValue) }),
-            LRequestReferenceKind sent => LDraftClerkPanel.LReferenceChange(
-                draft, reference => reference with { LReferenceKind = sent.LRequestKind }),
-            LRequestReferenceNote sent => LDraftClerkPanel.LReferenceChange(
-                draft,
-                reference => reference with { LReferenceNote = LStateValue.LStateValueRead(sent.LRequestValue) }),
-            LRequestReferenceUrl sent => LDraftClerkPanel.LReferenceChange(
-                draft, reference => reference with { LReferenceUrl = LStateValue.LStateValueRead(sent.LRequestValue) }),
-            LRequestAuthorState sent => LDraftClerkPanel.LReferenceChange(
-                draft,
-                reference => reference with
-                {
-                    LReferenceAuthorState = LStateMark.LStateMarkRead(sent.LRequestState),
-                }),
-            LRequestAuthorAddition sent => _lDraftClerkPanel.LAuthorAdd(draft, sent),
-            LRequestAuthorPick sent => _lDraftClerkPanel.LAuthorInsert(draft, sent),
-            LRequestAuthorRemoval sent => LDraftClerkPanel.LAuthorRemove(draft, sent.LRequestAuthorId),
-            LRequestAuthorShift sent => LDraftClerkPanel.LAuthorMove(draft, sent),
-            LRequestAuthorName sent => LDraftClerkPanel.LAuthorChange(draft, sent.LRequestText),
-            LRequestSituationTitle sent => LSituationChip.LSituationChipChange(
-                draft,
-                sent.LRequestSituationId,
-                situation => situation with { LSituationTitle = LStateValue.LStateValueRead(sent.LRequestValue) }),
-            LRequestSituationDescription sent => LSituationChip.LSituationChipChange(
-                draft,
-                sent.LRequestSituationId,
-                situation => situation with
-                {
-                    LSituationDescription = LStateValue.LStateValueRead(sent.LRequestValue),
-                }),
-            LRequestSituationKind sent => LSituationChip.LSituationChipChange(
-                draft,
-                sent.LRequestSituationId,
-                situation => situation with { LSituationKind = LStateValue.LStateValueRead(sent.LRequestValue) }),
-            _ => draft with { LDraftContent = LDraftClerkApply(draft.LDraftContent, request) },
-        };
+        return _lDraftClerkMedia.LSituationDispatch(draft, request)
+            ?? _lDraftClerkPanel.LPanelApply(draft, request)
+            ?? _lDraftClerkMention.LMentionApply(draft, request)
+            ?? _lDraftClerkGloss.LGlossApply(draft, request)
+            ?? LSituationChip.LSituationChipApply(draft, request)
+            ?? draft with { LDraftContent = LDraftClerkApply(draft.LDraftContent, request) };
     }
 
     public LEntryDraft LDraftClerkApply(LEntryDraft content, LRequest request)
@@ -122,56 +64,12 @@ public sealed class LDraftClerk
         ArgumentNullException.ThrowIfNull(content);
         ArgumentNullException.ThrowIfNull(request);
 
-        return request switch
-        {
-            LRequestHeadword sent => content with { LEntryDraftHeadword = sent.LRequestText ?? string.Empty },
-            LRequestLanguage sent => _lDraftClerkLanguages.LLanguageUnitRebuild(
-                _lDraftClerkLanguages.LLanguageAnatomyRebuild(
-                    _lDraftClerkLanguages.LLanguageRespellingRebuild(
-                        content with { LEntryDraftLanguage = sent.LRequestText ?? string.Empty }))),
-            LRequestNote sent => content with { LEntryDraftNote = sent.LRequestText ?? string.Empty },
-            LRequestSpeech sent => content with { LEntryDraftSpeeches = sent.LRequestSpeeches ?? [] },
-            LRequestUnit sent => content with { LEntryDraftUnit = sent.LRequestValue },
-            LRequestCardAddition sent => LCardInsert(content, sent),
-            LRequestCardRemoval sent => LDraftClerkCard.LCardRemove(content, sent.LRequestCardId),
-            LRequestCardShift sent => LDraftClerkCard.LCardMove(content, sent),
-            LRequestCardTitle sent => LDraftClerkCard.LCardChange(
-                content,
-                sent.LRequestCardId,
-                card => card with { LCardDraftTitle = LStateValue.LStateValueRead(sent.LRequestValue) }),
-            LRequestCardExpression sent => LDraftClerkCard.LCardChange(
-                content,
-                sent.LRequestCardId,
-                card => card with { LCardDraftExpression = LStateValue.LStateValueRead(sent.LRequestValue) }),
-            LRequestCardMeaning sent => LDraftClerkCard.LCardChange(
-                content,
-                sent.LRequestCardId,
-                card => card with { LCardDraftMeaning = LStateValue.LStateValueRead(sent.LRequestValue) }),
-            _ => _lDraftClerkReading.LReadingApply(content, request)
-                ?? _lDraftClerkReflex.LReflexApply(content, request)
-                ?? _lDraftClerkEtymology.LEtymologyApply(content, request)
-                ?? LDraftListApply(content, request),
-        };
-    }
-
-    private LEntryDraft LCardInsert(LEntryDraft content, LRequestCardAddition request)
-    {
-        LCardDraft card = new(
-            LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            0,
-            _lDraftClerkIdentity.LIdentityCreate());
-
-        return LDraftClerkCard.LCardInsert(
-            content, request.LRequestKind, request.LRequestParentId, request.LRequestPosition, card);
+        return _lDraftClerkEntry.LEntryApply(content, request)
+            ?? LDraftClerkCard.LCardApply(content, request, _lDraftClerkIdentity)
+            ?? _lDraftClerkReading.LReadingApply(content, request)
+            ?? _lDraftClerkReflex.LReflexApply(content, request)
+            ?? _lDraftClerkEtymology.LEtymologyApply(content, request)
+            ?? LDraftListApply(content, request);
     }
 
     private LEntryDraft LDraftListApply(LEntryDraft content, LRequest request)
@@ -192,71 +90,14 @@ public sealed class LDraftClerk
                 content, sent.LRequestCardId, id => sent with { LRequestSentenceId = id }),
             LRequestSentenceReference { LRequestSentenceId: 0 } sent => LSentenceResolve(
                 content, sent.LRequestCardId, id => sent with { LRequestSentenceId = id }),
-            LRequestSentenceAddition sent => _lDraftClerkSentence.LSentenceAdd(content, sent),
-            LRequestSentenceRemoval sent => LDraftClerkSentence.LSentenceRemove(content, sent),
-            LRequestSentenceShift sent => LDraftClerkSentence.LSentenceMove(content, sent),
-            LRequestSentenceExample sent => _lDraftClerkSentence.LSentenceSelect(content, sent),
-            LRequestSentenceText sent => _lDraftClerkSentence.LExampleChange(
-                content,
-                sent.LRequestCardId,
-                sent.LRequestSentenceId,
-                example => LDraftClerkMention.LMentionUpdate(example, LStateValue.LStateValueRead(sent.LRequestValue))),
-            LRequestSentenceParticle sent => LDraftClerkSentence.LSentenceChange(
-                content,
-                sent.LRequestCardId,
-                sent.LRequestSentenceId,
-                sentence => sentence with { LSentenceDraftParticle = LStateValue.LStateValueRead(sent.LRequestValue) }),
-            LRequestSentenceDependence sent => LDraftClerkSentence.LSentenceChange(
-                content,
-                sent.LRequestCardId,
-                sent.LRequestSentenceId,
-                sentence => sentence with
-                {
-                    LSentenceDraftDependence = LStateValue.LStateValueRead(sent.LRequestValue),
-                }),
-            LRequestSentenceReference sent => _lDraftClerkSentence.LExampleChange(
-                content,
-                sent.LRequestCardId,
-                sent.LRequestSentenceId,
-                example => example with
-                {
-                    LExampleDraftReference = LStateAnchor.LStateAnchorRead(sent.LRequestReferenceId),
-                }),
-            LRequestSituationAddition sent => _lDraftClerkSituation.LSituationChipAdd(content, sent),
-            LRequestSituationPick sent => _lDraftClerkSituation.LSituationChipInsert(content, sent),
-            LRequestSituationRemoval sent => LSituationChip.LSituationChipRemove(content, sent),
-            LRequestSituationShift sent => LSituationChip.LSituationChipMove(content, sent),
-            LRequestRegisterAddition sent => _lDraftClerkRegister.LRegisterChipAdd(content, sent),
-            LRequestRegisterPick sent => _lDraftClerkRegister.LRegisterChipInsert(content, sent),
-            LRequestRegisterRemoval sent => LRegisterChip.LRegisterChipRemove(content, sent),
-            LRequestRegisterShift sent => LRegisterChip.LRegisterChipMove(content, sent),
-            LRequestRegisterName sent => LRegisterChip.LRegisterChipChange(content, sent),
-            LRequestTagAddition sent => _lDraftClerkChip.LTagAdd(content, sent),
-            LRequestTagPick sent => _lDraftClerkChip.LTagInsert(content, sent),
-            LRequestTagRemoval sent => LDraftClerkChip.LTagRemove(content, sent),
-            LRequestTagShift sent => LDraftClerkChip.LTagMove(content, sent),
-            LRequestTagText sent => LDraftClerkChip.LTagChange(content, sent),
-            LRequestTranslationPick sent => LDraftClerkChip.LTranslationInsert(content, sent),
-            LRequestTranslationRemoval sent => LDraftClerkChip.LTranslationRemove(content, sent),
-            LRequestTranslationShift sent => LDraftClerkChip.LTranslationMove(content, sent),
-            LRequestImageAddition sent => _lDraftClerkMedia.LImageApply(content, sent.LRequestCardId, sent),
-            LRequestImagePick sent => _lDraftClerkMedia.LImageApply(content, sent.LRequestCardId, sent),
-            LRequestImageRemoval sent => _lDraftClerkMedia.LImageApply(content, sent.LRequestCardId, sent),
-            LRequestImageShift sent => _lDraftClerkMedia.LImageApply(content, sent.LRequestCardId, sent),
-            LRequestImageLocation sent => LDraftClerkMedia.LImageChange(content, sent),
-            LRequestVideoAddition sent => _lDraftClerkMedia.LVideoApply(content, sent.LRequestCardId, sent),
-            LRequestVideoPick sent => _lDraftClerkMedia.LVideoApply(content, sent.LRequestCardId, sent),
-            LRequestVideoRemoval sent => _lDraftClerkMedia.LVideoApply(content, sent.LRequestCardId, sent),
-            LRequestVideoShift sent => _lDraftClerkMedia.LVideoApply(content, sent.LRequestCardId, sent),
-            LRequestVideoLocation sent => LDraftClerkMedia.LVideoChange(
-                content,
-                sent.LRequestVideoId,
-                video => video with { LVideoDraftLocation = LStateValue.LStateValueRead(sent.LRequestValue) }),
-            LRequestVideoSpan sent => LDraftClerkMedia.LVideoChange(
-                content,
-                sent.LRequestVideoId,
-                video => video with { LVideoDraftSpan = LStateValue.LStateValueRead(sent.LRequestValue) }),
-            _ => throw new ArgumentException("The request kind is not one the clerk applies.", nameof(request)),
+            _ => _lDraftClerkSentence.LSentenceApply(content, request)
+                ?? _lDraftClerkSituation.LSituationChipApply(content, request)
+                ?? _lDraftClerkRegister.LRegisterChipApply(content, request)
+                ?? _lDraftClerkChip.LTagApply(content, request)
+                ?? LDraftClerkChip.LTranslationApply(content, request)
+                ?? _lDraftClerkMedia.LImageApply(content, request)
+                ?? _lDraftClerkMedia.LVideoApply(content, request)
+                ?? throw new ArgumentException("The request kind is not one the clerk applies.", nameof(request)),
         };
     }
 
@@ -264,7 +105,8 @@ public sealed class LDraftClerk
     {
         if (content.LEntryDraftMeanings.Count == 0)
         {
-            content = LCardInsert(content, new LRequestCardAddition(0, LCardKind.LCardKindMeaning, 0, 0));
+            content = LDraftClerkCard.LCardInsert(
+                content, new LRequestCardAddition(0, LCardKind.LCardKindMeaning, 0, 0), _lDraftClerkIdentity);
         }
 
         return LDraftListApply(content, retarget(content.LEntryDraftMeanings[0].LCardDraftId));

@@ -1,5 +1,5 @@
 # CDisplayCard.cs
-Hash: `f0a0586ff8aa8b25`
+Hash: `ea488158eb31ab7f`
 
 ## `public sealed class CDisplayCard`
 
@@ -13,13 +13,21 @@ It holds no state of its own.
 
 The display rules the shown draft, the chosen entry, the media port and the repaint memory come from.
 
-## `private readonly LEntryPort _cDisplayPort;`
+## `private readonly LCardPort _cDisplayCardPort;`
 
-The entry port the link targets, Source lines, usages and etymology are read through.
+The card port the link targets, usages and etymology are read through.
 
-## `private readonly LPhonologyPort _cDisplayPhonology;`
+## `private readonly LReferencePort _cDisplayReferencePort;`
 
-The phonology port the sentence order is read from.
+The reference port the Source lines are read through.
+
+## `private readonly LExamplePort _cDisplayExamplePort;`
+
+The example port each sentence line is composed through.
+
+## `private readonly LSentencePort _cDisplaySentence;`
+
+The sentence port the sentence order is read from.
 
 ## `private readonly LSettingsPort _cDisplaySettings;`
 
@@ -29,7 +37,7 @@ The settings port the ready notice and the unknown mark are read from.
 
 The envoy a refused read is shown through.
 
-## `internal CDisplayCard(LDisplay display, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, CEnvoy envoy)`
+## `internal CDisplayCard(LDisplay display, LCardPort cards, LReferencePort references, LExamplePort examples, LSentencePort sentences, LSettingsPort settings, CEnvoy envoy)`
 
 Only the display builds it, over its rules and the ports the atelier handed down.
 It takes the rules whole, since the shown draft and the chosen entry change after it is built.

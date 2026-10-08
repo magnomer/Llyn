@@ -7,7 +7,7 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-internal sealed class LEntryFacade
+public sealed class LEntryFacade : LEntryPort, LGraspPort
 {
     private readonly LEngine _lEntryFacadeEngine;
     private readonly object _lEntryFacadeGate;
@@ -25,7 +25,7 @@ internal sealed class LEntryFacade
     {
         lock (_lEntryFacadeGate)
         {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkRead(id);
+            return LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffEntry.LEntryClerkRead(id);
         }
     }
 
@@ -52,7 +52,7 @@ internal sealed class LEntryFacade
     {
         lock (_lEntryFacadeGate)
         {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(query, order, filter);
+            return LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(query, order, filter);
         }
     }
 
@@ -60,7 +60,7 @@ internal sealed class LEntryFacade
     {
         lock (_lEntryFacadeGate)
         {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(tag);
+            return LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(tag);
         }
     }
 
@@ -68,7 +68,7 @@ internal sealed class LEntryFacade
     {
         lock (_lEntryFacadeGate)
         {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(register);
+            return LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(register);
         }
     }
 
@@ -76,7 +76,7 @@ internal sealed class LEntryFacade
     {
         lock (_lEntryFacadeGate)
         {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(situation);
+            return LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(situation);
         }
     }
 
@@ -84,7 +84,7 @@ internal sealed class LEntryFacade
     {
         lock (_lEntryFacadeGate)
         {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(example);
+            return LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(example);
         }
     }
 
@@ -92,7 +92,7 @@ internal sealed class LEntryFacade
     {
         lock (_lEntryFacadeGate)
         {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(reference);
+            return LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(reference);
         }
     }
 
@@ -100,7 +100,7 @@ internal sealed class LEntryFacade
     {
         lock (_lEntryFacadeGate)
         {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkLoad(id);
+            return LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffEntry.LEntryClerkLoad(id);
         }
     }
 
@@ -109,7 +109,7 @@ internal sealed class LEntryFacade
         LRevision recorded;
         lock (_lEntryFacadeGate)
         {
-            recorded = LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkDelete(id);
+            recorded = LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffEntry.LEntryClerkDelete(id);
         }
 
         _lEntryFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectEntry, id);
@@ -131,7 +131,7 @@ internal sealed class LEntryFacade
         string headword = character.Trim();
         lock (_lEntryFacadeGate)
         {
-            foreach (LEntry entry in LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(headword))
+            foreach (LEntry entry in LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(headword))
             {
                 if (string.Equals(entry.LEntryHeadword, headword, StringComparison.Ordinal)
                     && string.Equals(entry.LEntryLanguage, language, StringComparison.Ordinal))
@@ -144,11 +144,26 @@ internal sealed class LEntryFacade
         }
     }
 
-    public int LEngineGraspStep => LEntryClerk.LEntryGraspStep;
+    long LEntryPort.LEngineGlyphResolve(string character, string language)
+    {
+        return LEngineGlyphResolve(character, language).LEntryId;
+    }
+
+    public string LEngineUnitFormat(LUnit unit)
+    {
+        return LUnitClerk.LUnitFormat(unit);
+    }
+
+    public (LOwner, int)? LEngineCardFind(LEntryDraft draft, long id)
+    {
+        return LDraftClerkCard.LCardOwnerFind(draft, id);
+    }
+
+    public int LEngineGraspStep => LGraspClerk.LGraspClerkStep;
 
     public string LEngineGraspFormat(int step)
     {
-        return LEntryClerk.LEntryGraspFormat(step);
+        return LGraspClerk.LGraspClerkFormat(step);
     }
 
     public int LEngineGraspRead(long entryId)
@@ -156,7 +171,7 @@ internal sealed class LEntryFacade
         lock (_lEntryFacadeGate)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkRead(entryId)?.LEntryGrasp ?? 0;
+            return LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffEntry.LEntryClerkRead(entryId)?.LEntryGrasp ?? 0;
         }
     }
 
@@ -164,7 +179,7 @@ internal sealed class LEntryFacade
     {
         lock (_lEntryFacadeGate)
         {
-            LEntryFacadeStaff.LEngineStaffEntry.LEntryGraspSet(entryId, grasp);
+            LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffGrasp.LGraspClerkSet(entryId, grasp);
         }
 
         _lEntryFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectGrasp, entryId);
@@ -175,7 +190,7 @@ internal sealed class LEntryFacade
         lock (_lEntryFacadeGate)
         {
             int unsaved = 0;
-            foreach (long id in LEntryFacadeStaff.LEngineStaffClaim.LClaimClerkHeld)
+            foreach (long id in LEntryFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LClaimClerkHeld)
             {
                 if (_lEntryFacadeEngine.LEngineDraft.LEngineDraftCheck(id))
                 {
@@ -185,8 +200,8 @@ internal sealed class LEntryFacade
 
             return new LEstablishment(
                 unsaved,
-                LEntryFacadeStaff.LEngineStaffEntry.LEntryCountRead(),
-                LEntryFacadeStaff.LEngineStaffEntry.LWorkspaceSizeRead());
+                LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryCountRead(),
+                LEntryFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceSizeRead());
         }
     }
 
@@ -194,7 +209,7 @@ internal sealed class LEntryFacade
     {
         lock (_lEntryFacadeGate)
         {
-            return LEntryFacadeStaff.LEngineStaffUsage.LUsageClerkRead(owner);
+            return LEntryFacadeStaff.LEngineStaffCatalog.LCatalogStaffUsage.LUsageClerkRead(owner);
         }
     }
 
@@ -207,7 +222,7 @@ internal sealed class LEntryFacade
     {
         lock (_lEntryFacadeGate)
         {
-            return LEntryFacadeStaff.LEngineStaffUsage.LUsageTallyRead(id, owner);
+            return LEntryFacadeStaff.LEngineStaffCatalog.LCatalogStaffUsage.LUsageTallyRead(id, owner);
         }
     }
 
@@ -216,7 +231,7 @@ internal sealed class LEntryFacade
         lock (_lEntryFacadeGate)
         {
             bool epithet = _lEntryFacadeEngine.LEngineSettingsHeld.LSettingsEpithet;
-            return LEntryFacadeStaff.LEngineStaffUsage.LUsageClerkRead(id, owner, epithet);
+            return LEntryFacadeStaff.LEngineStaffCatalog.LCatalogStaffUsage.LUsageClerkRead(id, owner, epithet);
         }
     }
 }

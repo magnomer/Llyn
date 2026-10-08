@@ -31,22 +31,45 @@ Thread thread = new(() =>
         LDoctor.LDoctorBusyCheck,
         engine =>
         {
-            bootstrap.QBootstrapFaultIntroduce(engine.LEngineAuditRecord);
+            bootstrap.QBootstrapFaultIntroduce(engine.LEngineWorkspace.LEngineAuditRecord);
             LSettingsOutlet settings = new(engine);
             bootstrap.QBootstrapCatalogApply(
                 () => LLocalization.LLocalizationDefaultCheck(settings.LEngineSettingsRead().LSettingsLocalization),
                 () => settings.LEngineLocalizationLoad(
                     LLocalization.LLocalizationNormalize(settings.LEngineSettingsRead().LSettingsLocalization)));
-            LDoctorRescue rescue = engine.LEngineRescueRead();
+            LDoctorRescue rescue = engine.LEngineWorkspace.LEngineRescueRead();
             bootstrap.QBootstrapRescueConsult(
                 rescue.LDoctorRescueDone, rescue.LDoctorRescueBackup, rescue.LDoctorRescueReason);
 
             bootstrap.QBootstrapWindowShow(new QWindow(new CAtelier(
                 new LPosture(engine),
                 new LDraftOutlet(engine),
-                new LEntryOutlet(engine),
+                new CEntryBundle(
+                    engine.LEngineEntry,
+                    engine.LEngineEntry,
+                    engine.LEngineVista,
+                    engine.LEngineVista,
+                    engine.LEngineCard,
+                    engine.LEngineCard,
+                    engine.LEngineCard,
+                    engine.LEngineMention,
+                    engine.LEngineLanguage,
+                    engine.LEngineSituation,
+                    engine.LEngineExample,
+                    engine.LEngineReference,
+                    engine.LEngineAuthor,
+                    engine.LEngineDraft,
+                    engine.LEnginePronunciation),
                 settings,
-                new LPhonologyOutlet(engine),
+                new CPhonologyBundle(
+                    engine.LEngineFanqie,
+                    engine.LEngineFanqie,
+                    engine.LEngineLanguage,
+                    engine.LEngineLanguage,
+                    engine.LEngineReflex,
+                    engine.LEngineVocabulary,
+                    engine.LEngineVocabulary,
+                    engine.LEngineStem),
                 new LMediaOutlet(engine),
                 new LPortraitOutlet(engine))));
             code = application.Run();

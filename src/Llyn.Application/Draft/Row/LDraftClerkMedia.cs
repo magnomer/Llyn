@@ -21,18 +21,23 @@ public sealed class LDraftClerkMedia
         _lDraftClerkIdentity = identity;
     }
 
-    public LSituation? LSituationDispatch(LSituation situation, LRequest request)
+    public LDraft? LSituationDispatch(LDraft draft, LRequest request)
     {
-        ArgumentNullException.ThrowIfNull(situation);
+        ArgumentNullException.ThrowIfNull(draft);
+
+        if (draft.LDraftSituation is not LSituation situation)
+        {
+            return null;
+        }
 
         if (LImageApply(situation.LSituationImage, request) is IReadOnlyList<LImageDraft> images)
         {
-            return situation with { LSituationImage = images };
+            return draft with { LDraftSituation = situation with { LSituationImage = images } };
         }
 
         if (LVideoApply(situation.LSituationVideo, request) is IReadOnlyList<LVideoDraft> videos)
         {
-            return situation with { LSituationVideo = videos };
+            return draft with { LDraftSituation = situation with { LSituationVideo = videos } };
         }
 
         return null;
@@ -67,10 +72,31 @@ public sealed class LDraftClerkMedia
         };
     }
 
-    public LEntryDraft LImageApply(LEntryDraft content, long cardId, LRequest request)
+    public LEntryDraft? LImageApply(LEntryDraft content, LRequest request)
     {
-        return LDraftClerkCard.LCardChange(
-            content, cardId, card => card with { LCardDraftImage = LImageApply(card.LCardDraftImage, request)! });
+        ArgumentNullException.ThrowIfNull(content);
+
+        return request switch
+        {
+            LRequestImageAddition sent => LDraftClerkCard.LCardChange(
+                content,
+                sent.LRequestCardId,
+                card => card with { LCardDraftImage = LImageApply(card.LCardDraftImage, sent)! }),
+            LRequestImagePick sent => LDraftClerkCard.LCardChange(
+                content,
+                sent.LRequestCardId,
+                card => card with { LCardDraftImage = LImageApply(card.LCardDraftImage, sent)! }),
+            LRequestImageRemoval sent => LDraftClerkCard.LCardChange(
+                content,
+                sent.LRequestCardId,
+                card => card with { LCardDraftImage = LImageApply(card.LCardDraftImage, sent)! }),
+            LRequestImageShift sent => LDraftClerkCard.LCardChange(
+                content,
+                sent.LRequestCardId,
+                card => card with { LCardDraftImage = LImageApply(card.LCardDraftImage, sent)! }),
+            LRequestImageLocation sent => LImageChange(content, sent),
+            _ => null,
+        };
     }
 
     private LImageDraft LImageRead(long id)
@@ -122,9 +148,8 @@ public sealed class LDraftClerkMedia
             return 0;
         }
 
-        return draft.LDraftContent.LEntryDraftMeanings
-            .Concat(draft.LDraftContent.LEntryDraftCollocations)
-            .FirstOrDefault(card => card.LCardDraftImage.Any(row => row.LImageDraftId == imageId))
+        return LDraftClerkCard.LCardFind(
+                draft.LDraftContent, card => card.LCardDraftImage.Any(row => row.LImageDraftId == imageId))
             ?.LCardDraftId;
     }
 
@@ -165,10 +190,38 @@ public sealed class LDraftClerkMedia
         };
     }
 
-    public LEntryDraft LVideoApply(LEntryDraft content, long cardId, LRequest request)
+    public LEntryDraft? LVideoApply(LEntryDraft content, LRequest request)
     {
-        return LDraftClerkCard.LCardChange(
-            content, cardId, card => card with { LCardDraftVideo = LVideoApply(card.LCardDraftVideo, request)! });
+        ArgumentNullException.ThrowIfNull(content);
+
+        return request switch
+        {
+            LRequestVideoAddition sent => LDraftClerkCard.LCardChange(
+                content,
+                sent.LRequestCardId,
+                card => card with { LCardDraftVideo = LVideoApply(card.LCardDraftVideo, sent)! }),
+            LRequestVideoPick sent => LDraftClerkCard.LCardChange(
+                content,
+                sent.LRequestCardId,
+                card => card with { LCardDraftVideo = LVideoApply(card.LCardDraftVideo, sent)! }),
+            LRequestVideoRemoval sent => LDraftClerkCard.LCardChange(
+                content,
+                sent.LRequestCardId,
+                card => card with { LCardDraftVideo = LVideoApply(card.LCardDraftVideo, sent)! }),
+            LRequestVideoShift sent => LDraftClerkCard.LCardChange(
+                content,
+                sent.LRequestCardId,
+                card => card with { LCardDraftVideo = LVideoApply(card.LCardDraftVideo, sent)! }),
+            LRequestVideoLocation sent => LVideoChange(
+                content,
+                sent.LRequestVideoId,
+                video => video with { LVideoDraftLocation = LStateValue.LStateValueRead(sent.LRequestValue) }),
+            LRequestVideoSpan sent => LVideoChange(
+                content,
+                sent.LRequestVideoId,
+                video => video with { LVideoDraftSpan = LStateValue.LStateValueRead(sent.LRequestValue) }),
+            _ => null,
+        };
     }
 
     private LVideoDraft LVideoRead(long id)
@@ -209,9 +262,8 @@ public sealed class LDraftClerkMedia
             return 0;
         }
 
-        return draft.LDraftContent.LEntryDraftMeanings
-            .Concat(draft.LDraftContent.LEntryDraftCollocations)
-            .FirstOrDefault(card => card.LCardDraftVideo.Any(row => row.LVideoDraftId == videoId))
+        return LDraftClerkCard.LCardFind(
+                draft.LDraftContent, card => card.LCardDraftVideo.Any(row => row.LVideoDraftId == videoId))
             ?.LCardDraftId;
     }
 

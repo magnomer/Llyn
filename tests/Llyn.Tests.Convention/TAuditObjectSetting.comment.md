@@ -1,5 +1,5 @@
 # TAuditObjectSetting.cs
-Hash: `ee688e46fbd9a053`
+Hash: `5f483fb071473fa1`
 
 ## `internal static class TAuditObjectSetting`
 
@@ -11,6 +11,10 @@ The ratchet holds every name ending in `Limit`, so its values may only fall.
 Raising a limit spares more types, which would loosen the audit.
 Every limit is reached at its value or above.
 Kraken has no dictionary, since it reuses the Serpent, Centipede, Octopus and Spider limits.
+
+## `public const int TAuditGeneration = 21;`
+
+The generation of the audit settings, kept by hand beside the ceilings.
 
 ## `public const bool TAuditObjectEnforced = true;`
 

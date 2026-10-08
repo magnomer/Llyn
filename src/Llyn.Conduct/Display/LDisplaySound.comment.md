@@ -1,5 +1,5 @@
 # LDisplaySound.cs
-Hash: `c5d7f66185665506`
+Hash: `a3518ef3fc5aff0d`
 
 ## `internal sealed class LDisplaySound`
 
@@ -15,9 +15,10 @@ So the fold is one state, shared by the reading view and the editor.
 The editor's sound sheet, [CSounding](../Sound/CSounding.comment.md), reads the morphology verdict here too.
 Only Conduct reads it, so the drivers are offered no Core draft.
 
-## `internal LDisplaySound(LEntryPort entries, LPhonologyPort phonology, LMediaPort media, LSettingsPort settings)`
+## `internal LDisplaySound(LEntryPort entries, LLanguagePort languages, LReflexPort reflexes, LFanqiePort fanqies, LScriptPort scripts, LParadigmPort paradigms, LMediaPort media, LSettingsPort settings)`
 
 Holds the ports the state's own reads, fetch starts and play stops go through.
+Each check or rebuild goes through the one narrow port that owns its rows.
 
 ## `internal LEntryDraft? LDisplayShown`
 
@@ -25,7 +26,7 @@ The shown draft, which the lectern's area, its sound area and its compass read.
 
 ## `internal long? LDisplayEntry`
 
-The id of the shown entry, which every phonology read and fetch request is made for.
+The id of the shown entry, which every sound read and fetch request is made for.
 
 ## `internal bool LDisplayFoldOpened`
 

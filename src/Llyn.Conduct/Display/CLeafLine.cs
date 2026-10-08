@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -12,10 +13,16 @@ public sealed record CLeafLine(
     IReadOnlyList<CGlossDraft> CLeafLineGloss)
 {
     internal static CLeafLine LLeafLineRead(
-        LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)
+        LSentenceDraft sentence,
+        LSentenceOrder order,
+        string mark,
+        IReadOnlyDictionary<long, string> citations,
+        LExamplePort examples)
     {
+        ArgumentNullException.ThrowIfNull(examples);
+
         (string head, IReadOnlyList<LMentionPiece> pieces, string citation) =
-            LEntryPort.LEngineLineRead(sentence, order, mark, citations);
+            examples.LEngineLineRead(sentence, order, mark, citations);
         return new CLeafLine(
             head,
             sentence.LSentenceDraftId,

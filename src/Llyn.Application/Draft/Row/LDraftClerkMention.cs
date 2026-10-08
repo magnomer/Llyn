@@ -21,6 +21,19 @@ public sealed class LDraftClerkMention
         _lDraftClerkIdentity = identity;
     }
 
+    public LDraft? LMentionApply(LDraft draft, LRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        return request switch
+        {
+            LRequestMentionAddition sent => LMentionAdd(draft, sent),
+            LRequestMentionRemoval sent => LMentionRemove(draft, sent),
+            LRequestMentionSense sent => LMentionChange(draft, sent),
+            _ => null,
+        };
+    }
+
     public LDraft LMentionAdd(LDraft draft, LRequestMentionAddition request)
     {
         ArgumentNullException.ThrowIfNull(request);

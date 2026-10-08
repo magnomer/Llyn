@@ -12,9 +12,9 @@ public sealed class CAtelier : IDisposable
     internal CAtelier(
         LPosture posture,
         LDraftPort drafts,
-        LEntryPort entries,
+        CEntryBundle entries,
         LSettingsPort settings,
-        LPhonologyPort phonology,
+        CPhonologyBundle phonology,
         LMediaPort media,
         LPortraitPort portraits)
     {
@@ -28,9 +28,9 @@ public sealed class CAtelier : IDisposable
 
         CAtelierPosture = posture;
         CAtelierDraftPort = drafts;
-        CAtelierEntryPort = entries;
+        CAtelierEntryBundle = entries;
         CAtelierSettingsPort = settings;
-        CAtelierPhonologyPort = phonology;
+        CAtelierPhonologyBundle = phonology;
         CAtelierMediaPort = media;
         CAtelierPortraitPort = portraits;
         CAtelierMention = new CMention(this);
@@ -53,11 +53,11 @@ public sealed class CAtelier : IDisposable
 
     internal LDraftPort CAtelierDraftPort { get; }
 
-    internal LEntryPort CAtelierEntryPort { get; }
+    internal CEntryBundle CAtelierEntryBundle { get; }
 
     internal LSettingsPort CAtelierSettingsPort { get; }
 
-    internal LPhonologyPort CAtelierPhonologyPort { get; }
+    internal CPhonologyBundle CAtelierPhonologyBundle { get; }
 
     internal LMediaPort CAtelierMediaPort { get; }
 

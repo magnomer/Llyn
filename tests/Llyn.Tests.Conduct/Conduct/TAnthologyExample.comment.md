@@ -1,5 +1,5 @@
 # TAnthologyExample.cs
-Hash: `318f4dc932176e49`
+Hash: `a7398e563a097137`
 
 ## `public sealed class TAnthologyExample`
 

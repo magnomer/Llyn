@@ -1,7 +1,7 @@
 # LLanguageFacade.cs
-Hash: `57a159c18c9816c7`
+Hash: `8d941e9301c4d313`
 
-## `internal sealed class LLanguageFacade`
+## `public sealed class LLanguageFacade : LGlyphPort, LScriptPort, LLanguagePort`
 
 The engine facade for language packs.
 Everything the shell asks about a language as such is answered here.
@@ -9,7 +9,9 @@ That is the packs on disk, a pack's typography, its flag, and its regional varie
 Each pack is read once through the language clerk's cache, so no lookup parses the file again.
 The clerk is rebuilt with the workspace, since a pack's source lists belong to the folder it was read from.
 The shell never reaches into the `languages/` folder itself.
-The script facades sit here too, since a script style is a fact of the pack.
+The script reads sit here too, since a script style is a fact of the pack.
+It implements the glyph, script and language ports itself, so Host hands it to Conduct with no outlet between.
+The port reads the glyph section from a draft, so that member is implemented explicitly beside the language read.
 
 ## `private readonly SemaphoreSlim _lLanguageFacadeEnsign`
 
@@ -38,14 +40,14 @@ A settings file names a language the workspace may lack, so the pick checks the 
 ## `public LFont LEngineFontRead(string language, LFontRole role)`
 
 The typography the pack declares for one role: the headword, an example line, a gloss, or a glyph chip.
-The glyph role falls back to the example typography, so a chip stays serif when the section names no font.
+The glyph role falls back to the example typography when the section names no font.
 
 ## `public Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)`
 
 Returns the local path to the given language's flag image, for the UI to display beside it.
 It returns `null` when the pack declares no flag or the download fails.
-The pack declares only an ISO country code.
-The engine downloads the matching flag from the flag-icons set and caches it in the workspace.
+The pack declares a country code or a path inside the workspace.
+The engine uses a path as it stands and downloads a code from the flag-icons set into the workspace.
 So the UI never reaches into the `languages/` folder itself.
 
 ## `public async Task<IReadOnlyList<string>> LEngineEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
@@ -159,6 +161,10 @@ The language clerk loads it, and the gate is taken only to read the clerk field.
 
 The cells of the draft's glyph row, through the language clerk.
 The gate is taken only to read the clerk field, as for the glyph block.
+
+## `public IReadOnlyList<int> LEngineContourScale`
+
+The pitch levels a tone contour draws, highest first, passed up from the rule that parses the levels.
 
 ## `public void LEngineSoundStart(long entryId)`
 

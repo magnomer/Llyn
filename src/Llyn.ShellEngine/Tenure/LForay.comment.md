@@ -1,12 +1,12 @@
 # LForay.cs
-Hash: `1af5649d49e9e2aa`
+Hash: `8a42cc5bb1840b57`
 
 ## `public sealed class LForay`
 
 One in-flight recording or transcription search a tenure started for its draft.
 It keeps the word, language, target row and scheme the search was asked with, and the cancellation that ends it.
 The menu that asked reads those back instead of copying them into fields of its own.
-The tenure makes one, cancels the last of its kind, and cancels both current ones when it ends.
+The tenure's `LErrand` makes one, cancels the last of its kind, and cancels both current ones when the tenure ends.
 The search is not awaited by the caller, because the listener hears its end.
 
 ## `private readonly LEngine _lEngine;`
@@ -21,13 +21,18 @@ The tenure that started the search, whose draft the pick is written into.
 
 The one cancellation the search runs under.
 
+## `private readonly LQuillPronunciation _lForayPronunciation;`
+
+The errand's pronunciation quill, which writes the variety of a saved recording.
+It is shared with the errand, so a foray builds no quill of its own.
+
 ## `private bool _lForayCancelled;`
 
 Whether the cancellation was already pulled, so pulling it twice disposes nothing twice.
 
-## `internal LForay(LEngine engine, LTenure tenure, string word, string language, long target, string scheme)`
+## `internal LForay(LEngine engine, LTenure tenure, LQuillPronunciation pronunciation, string word, string language, long target, string scheme)`
 
-Made by the tenure alone, with the language read off its draft at that moment.
+Made by the tenure's `LErrand` alone, with the language read off its draft at that moment.
 Whether the pack shows its varieties as flags is asked here once, so a landing row need not ask.
 
 ## `public long LForayTarget { get; }`

@@ -7,7 +7,7 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-internal sealed class LVistaFacade
+public sealed class LVistaFacade : LFavoritePort, LVistaPort
 {
     private readonly LEngine _lVistaFacadeEngine;
     private readonly object _lVistaFacadeGate;
@@ -104,7 +104,7 @@ internal sealed class LVistaFacade
                         LReferenceClerk.LReferenceClerkBlank with { LReferenceId = id }),
                 _ => [],
             };
-            entries = LEntryClerk.LEntryClerkMatch(
+            entries = LEntryQueryClerk.LEntryMatch(
                 entries, parent.LVistaFilter, child.LVistaQuery, child.LVistaOrder);
             return LEngineVistaBuild(entries, child.LVistaChosen);
         }
@@ -169,14 +169,15 @@ internal sealed class LVistaFacade
             ids[index] = entries[index].LEntryId;
         }
 
-        return _lVistaFacadeEngine.LEngineStaffHeld.LEngineStaffEntry.LEntryEpithetScan(ids);
+        return _lVistaFacadeEngine.LEngineStaffHeld.LEngineStaffEntry.LEntryStaffQuery.LEntryEpithetScan(ids);
     }
 
     public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order, LCatalogFilter filter)
     {
         lock (_lVistaFacadeGate)
         {
-            return _lVistaFacadeEngine.LEngineStaffHeld.LEngineStaffFavorite.LFavoriteClerkFind(query, order, filter);
+            return _lVistaFacadeEngine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffFavorite
+                .LFavoriteClerkFind(query, order, filter);
         }
     }
 
@@ -202,7 +203,8 @@ internal sealed class LVistaFacade
     {
         lock (_lVistaFacadeGate)
         {
-            return _lVistaFacadeEngine.LEngineStaffHeld.LEngineStaffFavorite.LFavoriteClerkCheck(entryId);
+            return _lVistaFacadeEngine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffFavorite
+                .LFavoriteClerkCheck(entryId);
         }
     }
 
@@ -210,7 +212,7 @@ internal sealed class LVistaFacade
     {
         lock (_lVistaFacadeGate)
         {
-            _lVistaFacadeEngine.LEngineStaffHeld.LEngineStaffFavorite.LFavoriteClerkSave(entryId);
+            _lVistaFacadeEngine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffFavorite.LFavoriteClerkSave(entryId);
         }
 
         _lVistaFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectFavorite, entryId);
@@ -220,52 +222,185 @@ internal sealed class LVistaFacade
     {
         lock (_lVistaFacadeGate)
         {
-            _lVistaFacadeEngine.LEngineStaffHeld.LEngineStaffFavorite.LFavoriteClerkDelete(entryId);
+            _lVistaFacadeEngine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffFavorite
+                .LFavoriteClerkDelete(entryId);
         }
 
         _lVistaFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectFavorite, entryId);
     }
 
-    internal LDraft? LEngineVistaLoad(LVista vista)
+    public LDraft? LEngineVistaLoad(LVista vista)
     {
+        ArgumentNullException.ThrowIfNull(vista);
+
+        LDraft? loaded = null;
         lock (_lVistaFacadeGate)
         {
-            if (vista.LVistaChosen is not long id || id <= 0)
+            if (vista.LVistaChosen is long id && id > 0)
             {
-                return null;
+                LDraft draft = new(0, vista.LVistaTab, id, LClaimClerk.LDraftBlank,
+                    _lVistaFacadeEngine.LEngineSettings.LEngineStampRead());
+                loaded = vista.LVistaSubject switch
+                {
+                    LSubject.LSubjectEntry =>
+                        _lVistaFacadeEngine.LEngineEntry.LEngineEntryLoad(id) is LEntryDraft entry
+                        ? draft with { LDraftContent = entry } : null,
+                    LSubject.LSubjectExample =>
+                        _lVistaFacadeEngine.LEngineExample.LEngineExampleRead(id) is LExample example
+                        ? draft with { LDraftExample = example } : null,
+                    LSubject.LSubjectSituation =>
+                        _lVistaFacadeEngine.LEngineSituation.LEngineSituationRead(id) is LSituation situation
+                        ? draft with { LDraftSituation = situation } : null,
+                    LSubject.LSubjectReference =>
+                        _lVistaFacadeEngine.LEngineReference.LEngineReferenceRead(id) is LReference reference
+                        ? draft with
+                        {
+                            LDraftReference = reference,
+                            LDraftAuthor =
+                                _lVistaFacadeEngine.LEngineAuthor.LEngineAuthorRead(id, LOwner.LOwnerReference),
+                        }
+                        : null,
+                    LSubject.LSubjectAuthor =>
+                        _lVistaFacadeEngine.LEngineAuthor.LEngineAuthorRead(id) is LAuthor author
+                        ? draft with { LDraftAuthorHeld = author } : null,
+                    LSubject.LSubjectTag => _lVistaFacadeEngine.LEngineCard.LEngineTagRead()
+                        .FirstOrDefault(row => row.LTagId == id) is not null
+                        ? draft : null,
+                    LSubject.LSubjectRegister => _lVistaFacadeEngine.LEngineCard.LEngineRegisterFind(
+                        string.Empty, LCatalogOrder.LCatalogOrderName)
+                        .FirstOrDefault(row => row.LCatalogRegisterStored.LRegisterId == id) is not null
+                        ? draft : null,
+                    _ => null,
+                };
             }
-
-            LDraft draft = new(0, vista.LVistaTab, id, LClaimClerk.LDraftBlank,
-                _lVistaFacadeEngine.LEngineSettings.LEngineStampRead());
-            return vista.LVistaSubject switch
-            {
-                LSubject.LSubjectEntry => _lVistaFacadeEngine.LEngineEntry.LEngineEntryLoad(id) is LEntryDraft entry
-                    ? draft with { LDraftContent = entry } : null,
-                LSubject.LSubjectExample =>
-                    _lVistaFacadeEngine.LEngineExample.LEngineExampleRead(id) is LExample example
-                    ? draft with { LDraftExample = example } : null,
-                LSubject.LSubjectSituation =>
-                    _lVistaFacadeEngine.LEngineSituation.LEngineSituationRead(id) is LSituation situation
-                    ? draft with { LDraftSituation = situation } : null,
-                LSubject.LSubjectReference =>
-                    _lVistaFacadeEngine.LEngineReference.LEngineReferenceRead(id) is LReference reference
-                    ? draft with
-                    {
-                        LDraftReference = reference,
-                        LDraftAuthor = _lVistaFacadeEngine.LEngineAuthor.LEngineAuthorRead(id, LOwner.LOwnerReference),
-                    }
-                    : null,
-                LSubject.LSubjectAuthor => _lVistaFacadeEngine.LEngineAuthor.LEngineAuthorRead(id) is LAuthor author
-                    ? draft with { LDraftAuthorHeld = author } : null,
-                LSubject.LSubjectTag =>
-                    _lVistaFacadeEngine.LEngineCard.LEngineTagRead().FirstOrDefault(row => row.LTagId == id) is not null
-                    ? draft : null,
-                LSubject.LSubjectRegister => _lVistaFacadeEngine.LEngineCard.LEngineRegisterFind(
-                    string.Empty, LCatalogOrder.LCatalogOrderName)
-                    .FirstOrDefault(row => row.LCatalogRegisterStored.LRegisterId == id) is not null
-                    ? draft : null,
-                _ => null,
-            };
         }
+
+        if (loaded is null && vista.LVistaStored is not null)
+        {
+            vista.LVistaSelect(null);
+        }
+
+        return loaded;
+    }
+
+    public LDraft? LEngineVistaLoad(LVista vista, long? id)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+
+        long? prior = vista.LVistaChosen;
+        vista.LVistaSelect(id);
+        try
+        {
+            return LEngineVistaLoad(vista);
+        }
+        catch (Exception)
+        {
+            vista.LVistaSelect(prior);
+            throw;
+        }
+    }
+
+    public string LEngineFileRead(LVista? vista)
+    {
+        string headword = vista is null
+            ? string.Empty
+            : LEngineVistaLoad(vista)?.LDraftContent.LEntryDraftHeadword ?? string.Empty;
+        string trimmed = headword.Trim();
+        return trimmed.Length == 0 || vista is null
+            ? "entry"
+            : _lVistaFacadeEngine.LEngineSettings.LEngineTrailNormalize(trimmed);
+    }
+
+    public void LEngineSideSave(LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+
+        if (vista.LVistaLeft)
+        {
+            _lVistaFacadeEngine.LEngineWorkspace.LEngineLeftSave(vista.LVistaChosen);
+            return;
+        }
+
+        _lVistaFacadeEngine.LEngineWorkspace.LEngineRightSave(vista.LVistaChosen);
+    }
+
+    public int LEngineUsageRead(LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+
+        if (vista.LVistaStored is not long id)
+        {
+            return 0;
+        }
+
+        return vista.LVistaSubject switch
+        {
+            LSubject.LSubjectExample =>
+                _lVistaFacadeEngine.LEngineEntry.LEngineUsageRead(LOwner.LOwnerExample).GetValueOrDefault(id),
+            LSubject.LSubjectSituation =>
+                _lVistaFacadeEngine.LEngineEntry.LEngineUsageRead(LOwner.LOwnerSituation).GetValueOrDefault(id),
+            LSubject.LSubjectReference =>
+                _lVistaFacadeEngine.LEngineEntry.LEngineUsageRead(LOwner.LOwnerReference).GetValueOrDefault(id),
+            LSubject.LSubjectAuthor =>
+                _lVistaFacadeEngine.LEngineAuthor.LEngineAuthorFind(id)?.LCatalogAuthorWork ?? 0,
+            _ => 0,
+        };
+    }
+
+    public string LEngineTallyRead(LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+
+        LOwner owner = vista.LVistaSubject switch
+        {
+            LSubject.LSubjectExample => LOwner.LOwnerExample,
+            LSubject.LSubjectSituation => LOwner.LOwnerSituation,
+            LSubject.LSubjectReference => LOwner.LOwnerReference,
+            _ => throw new InvalidOperationException("The vista lists nothing a tally counts."),
+        };
+        return _lVistaFacadeEngine.LEngineEntry.LEngineTallyRead(vista.LVistaStored, owner);
+    }
+
+    public LRevision? LEngineVistaDelete(LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+
+        if (vista.LVistaChosen is not long id || id <= 0)
+        {
+            return null;
+        }
+
+        LRevision? revision;
+        switch (vista.LVistaSubject)
+        {
+            case LSubject.LSubjectEntry:
+                revision = _lVistaFacadeEngine.LEngineEntry.LEngineEntryDelete(id);
+                break;
+            case LSubject.LSubjectExample:
+                _lVistaFacadeEngine.LEngineExample.LEngineExampleDelete(id, true);
+                revision = null;
+                break;
+            case LSubject.LSubjectSituation:
+                _lVistaFacadeEngine.LEngineSituation.LEngineSituationDelete(id, true);
+                revision = null;
+                break;
+            case LSubject.LSubjectReference:
+                _lVistaFacadeEngine.LEngineReference.LEngineReferenceDelete(id, true);
+                revision = null;
+                break;
+            case LSubject.LSubjectAuthor:
+                _lVistaFacadeEngine.LEngineAuthor.LEngineAuthorDelete(id, true);
+                revision = null;
+                break;
+            default:
+                return null;
+        }
+
+        if (vista.LVistaChosen == id)
+        {
+            vista.LVistaSelect(null);
+        }
+
+        return revision;
     }
 }

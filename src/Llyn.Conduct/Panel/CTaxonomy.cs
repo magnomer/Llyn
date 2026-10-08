@@ -10,7 +10,7 @@ public sealed class CTaxonomy
 {
     private readonly CAtelier _cTaxonomyAtelier;
 
-    private readonly LEntryPort _cTaxonomyEntryPort;
+    private readonly LTagPort _cTaxonomyTagPort;
 
     private readonly CEnvoy _cTaxonomyEnvoy;
 
@@ -28,14 +28,14 @@ public sealed class CTaxonomy
         ArgumentNullException.ThrowIfNull(marshal);
 
         _cTaxonomyAtelier = atelier;
-        _cTaxonomyEntryPort = atelier.CAtelierEntryPort;
+        _cTaxonomyTagPort = atelier.CAtelierEntryBundle.CEntryBundleTag;
         _cTaxonomyEnvoy = envoy;
         _cTaxonomySettingsPort = atelier.CAtelierSettingsPort;
         _cTaxonomyMarshal = marshal;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CTaxonomyEditor = editor;
         CTaxonomyMembership = new CMembership(
-            atelier.CAtelierEntryPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             atelier.CAtelierPortraitPort,
             _cTaxonomySettingsPort,
             envoy,
@@ -174,7 +174,7 @@ public sealed class CTaxonomy
         IReadOnlyList<CCatalogTag> rows;
         try
         {
-            rows = _cTaxonomyEntryPort.LEngineTagFind(vista)
+            rows = _cTaxonomyTagPort.LEngineTagFind(vista)
                 .Select(static row => new CCatalogTag(
                     CCard.LCardTagRead(row.LCatalogTagStored), row.LCatalogTagChosen))
                 .ToList();
@@ -202,7 +202,7 @@ public sealed class CTaxonomy
         long id;
         try
         {
-            id = _cTaxonomyEntryPort.LEngineTagCreate(name).LTagId;
+            id = _cTaxonomyTagPort.LEngineTagCreate(name).LTagId;
         }
         catch (Exception exception)
         {

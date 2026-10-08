@@ -1,5 +1,5 @@
 # LSettingsPort.cs
-Hash: `f137fee32ce7b52f`
+Hash: `51a353156079b8b2`
 
 ## `public interface LSettingsPort`
 
@@ -7,7 +7,7 @@ The slice of the engine the window and the settings panel see.
 It reads and saves the settings, the workspace path, the workspace state and the interface language.
 It also words a failure into a notice, and loads fonts and flags.
 The interface texts are read through it, so a deportment names no localization.
-Nothing here touches an entry or a draft.
+Nothing here changes an entry or a draft.
 `LSettingsOutlet` implements it today, and a settings clerk takes it over when the parts are dismantled.
 
 ## `LSettings LEngineSettingsRead();`
@@ -64,6 +64,7 @@ The interface text under `key`, or null when none is loaded, so a caller can tel
 ## `IReadOnlyList<string> LEngineGroupFind(IReadOnlyList<(string, IReadOnlyList<string>)> groups, string? text);`
 
 The names of the groups with a key whose interface text reads `text`, by the localization's shared match.
+Blank `text` names every group.
 
 ## `void LEngineLocalizationSave(string language);`
 
@@ -110,7 +111,7 @@ A real change raises `LEngineFoldChanged`.
 A saved fold state changed, heard by every editor over the same engine.
 It reaches only the fold switches, so no panel refills for a box opened elsewhere.
 
-## `(string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath)`
+## `(string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(Exception exception, string unexpected, string recorded);`
 
 The ready notice of a failure, which is a refusal's reason key or `unexpected` with `recorded` and the audit file.
 One call reads the reason and writes the fault, so Conduct decides nothing about the exception.
@@ -120,7 +121,7 @@ One call reads the reason and writes the fault, so Conduct decides nothing about
 The typography the pack declares for one role, or a blank font so the theme's own stands.
 The glyph role falls back to the example typography.
 
-## `Task<IReadOnlyList<string>> LEngineEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
+## `Task<IReadOnlyList<string>> LEngineEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store);`
 
 Fetches the flag of every language the cache has not yet asked, then hands the newly kept rows to `store`.
 It answers the loaded languages it read, so a language menu fills from the same load.
@@ -136,7 +137,20 @@ Each held draft is measured as the leave dialog measures it, so the two cannot d
 ## `IReadOnlyList<string> LEngineLanguageRead();`
 
 The names of the languages with a pack on disk.
-The engine keeps the list until the workspace changes, since a fresh scan per entry switch stalled the UI.
+The engine keeps the list until the workspace changes, so an entry switch never scans the disk again.
+
+## `bool LEnginePhonemicCheck(string language);`
+
+Whether the language's respelling is phonemic, so the reading field shows it between slashes.
+
+## `bool LEngineRespellingCheck(string language);`
+
+Whether respellings show for `language`, which needs the setting on and respelling groups in the pack.
+
+## `void LEngineTallySave(bool respelled);`
+
+Persists whether a category page's tally lines print the respelling set.
+The page reads the switch on every fill, so the choice survives a restart and a category change.
 
 ## `static string LEngineEnsignFormat(string language, string variety)`
 

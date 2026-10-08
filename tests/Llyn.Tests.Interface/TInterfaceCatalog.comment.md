@@ -1,10 +1,10 @@
 # TInterfaceCatalog.cs
-Hash: `3b7ce4f0cf18de8f`
+Hash: `9c07b3d7f2881a02`
 
 ## `internal static partial class TInterface`
 
 The relay for the browsing seam: the find call of each browsed kind, and the catalog vocabulary.
-Each relay delegates to one engine or Core operation and returns what that operation returned.
+Each relay delegates to one engine or Core operation, or builds one row, and returns the result.
 `TCardChildSet` is one exception, since it builds the card itself.
 `TEngineCitationCreate` is the other, which creates the reference, raises a reference bulletin and returns the stored reference.
 The orderings and the matches under test are reached only here, so no test body calls them itself.

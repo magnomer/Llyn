@@ -1,5 +1,5 @@
 # CRepertoire.cs
-Hash: `87646a6a456f6ca5`
+Hash: `2a09a91ce7883ff6`
 
 ## `public sealed class CRepertoire`
 
@@ -47,10 +47,23 @@ Raised once an arrival drops the query and the language filter, so a driver empt
 
 The atelier the two vistas start through on every restore.
 
+## `public CEditor CRepertoireEditor { get; }`
+
+The entry editor of the occurrence side, which the driver wraps for its editor page.
+
 ## `public CPlaywright CRepertoirePlaywright { get; }`
 
 The Situation scenario's editor, whose desk the atlas and the session run on.
 Drivers reach the scenario's gates and notices through it, as they reach the entry's through `CRepertoireEditor`.
+
+## `public CSession CRepertoireSession { get; }`
+
+The draft session over the playwright's desk, which the views save, undo and redo through.
+It defers to the entry editor while the occurrence list edits.
+
+## `public CAtlas CRepertoireAtlas { get; }`
+
+The situation list, whose panel runs on the playwright's desk.
 
 ## `public COccurrence CRepertoireOccurrence { get; }`
 

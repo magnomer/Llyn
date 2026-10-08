@@ -1,17 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Llyn.Core;
 
 namespace Llyn.Application;
 
 public sealed class LPortraitClerk
 {
-    private const double LPortraitInch = 96.0;
-
-    private readonly LPortraitVault _lPortraitClerkPortraits;
-    private readonly LPress _lPortraitClerkPress;
     private readonly LLanguageClerk _lPortraitClerkLanguages;
     private readonly LEntryClerk _lPortraitClerkEntries;
     private readonly LVocabularyClerk _lPortraitClerkVocabulary;
@@ -22,11 +16,9 @@ public sealed class LPortraitClerk
     private readonly LFrequencyClerk _lPortraitClerkFrequencies;
     private readonly LParadigmClerk _lPortraitClerkParadigms;
     private readonly LScriptClerk _lPortraitClerkScripts;
-    private readonly LMarkupClerk _lPortraitClerkMarkup;
     private readonly Func<LSettings> _lPortraitClerkSettings;
 
     public LPortraitClerk(
-        LRig rig,
         LLanguageClerk languages,
         LEntryClerk entries,
         LVocabularyClerk vocabulary,
@@ -37,10 +29,8 @@ public sealed class LPortraitClerk
         LFrequencyClerk frequencies,
         LParadigmClerk paradigms,
         LScriptClerk scripts,
-        LMarkupClerk markup,
         Func<LSettings> settings)
     {
-        ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(languages);
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(vocabulary);
@@ -51,10 +41,7 @@ public sealed class LPortraitClerk
         ArgumentNullException.ThrowIfNull(frequencies);
         ArgumentNullException.ThrowIfNull(paradigms);
         ArgumentNullException.ThrowIfNull(scripts);
-        ArgumentNullException.ThrowIfNull(markup);
         ArgumentNullException.ThrowIfNull(settings);
-        _lPortraitClerkPortraits = rig.LRigPortrait;
-        _lPortraitClerkPress = rig.LRigPress;
         _lPortraitClerkLanguages = languages;
         _lPortraitClerkEntries = entries;
         _lPortraitClerkVocabulary = vocabulary;
@@ -65,7 +52,6 @@ public sealed class LPortraitClerk
         _lPortraitClerkFrequencies = frequencies;
         _lPortraitClerkParadigms = paradigms;
         _lPortraitClerkScripts = scripts;
-        _lPortraitClerkMarkup = markup;
         _lPortraitClerkSettings = settings;
     }
 
@@ -144,104 +130,6 @@ public sealed class LPortraitClerk
                     _lPortraitClerkLanguages.LLanguagePhonemicCheck,
                     fanqie),
             ]);
-    }
-
-    public async Task LPortraitClerkExport(LPortraitPage portrait, string path, LPortraitMedium format)
-    {
-        ArgumentNullException.ThrowIfNull(portrait);
-        ArgumentException.ThrowIfNullOrWhiteSpace(path);
-
-        if (format == LPortraitMedium.LPortraitMediumPdf)
-        {
-            await _lPortraitClerkPress.LPressSave(_lPortraitClerkPortraits.LPortraitSheetFormat(portrait), path)
-                .ConfigureAwait(false);
-            return;
-        }
-
-        _lPortraitClerkPortraits.LPortraitSave(portrait, format, path);
-    }
-
-    public void LPortraitMarkupExport(long entryId, string path)
-    {
-        _lPortraitClerkMarkup.LMarkupClerkExport([entryId], path);
-    }
-
-    public Task LPortraitClerkPrint(LPortraitPage page, LPressTicket ticket)
-    {
-        ArgumentNullException.ThrowIfNull(page);
-        ArgumentNullException.ThrowIfNull(ticket);
-
-        return _lPortraitClerkPress.LPressPrint(_lPortraitClerkPortraits.LPortraitSheetFormat(page), ticket);
-    }
-
-    public static LPressTicket LPortraitTicketCreate(
-        string printer,
-        double? width,
-        double? height,
-        bool landscape,
-        int copies,
-        bool collated,
-        LPressSide side,
-        LPressInk ink)
-    {
-        LPressPaper paper = width is > 0 and double across && height is > 0 and double down
-            ? new LPressPaper(across / LPortraitInch, down / LPortraitInch)
-            : LPressPaper.LPressPaperLocal;
-        return new LPressTicket(printer, paper, landscape, copies, collated, side, ink);
-    }
-
-    public static IReadOnlyList<(LPortraitMedium, string, bool)> LPortraitMediumRead()
-    {
-        return
-        [
-            (LPortraitMedium.LPortraitMediumMarkup, ".llx", false),
-            (LPortraitMedium.LPortraitMediumHtml, ".html", true),
-            (LPortraitMedium.LPortraitMediumMarkdown, ".md", false),
-            (LPortraitMedium.LPortraitMediumDocx, ".docx", false),
-            (LPortraitMedium.LPortraitMediumPdf, ".pdf", false),
-        ];
-    }
-
-    public static IReadOnlyList<string> LPortraitKindRead()
-    {
-        return Enum.GetValues<LReferenceKind>().Select(LReference.LReferenceKindResolve).ToList();
-    }
-
-    public static LPortraitLabel LPortraitLabelCreate(IReadOnlyList<string> words)
-    {
-        ArgumentNullException.ThrowIfNull(words);
-        ArgumentOutOfRangeException.ThrowIfNotEqual(words.Count, 26);
-
-        return new LPortraitLabel(
-            words[0], words[1], words[2], words[3], words[4], words[5], words[6], words[7], words[8], words[9],
-            words[10], words[11], words[12], words[13], words[14], words[15], words[16], words[17], words[18],
-            words[19], words[20], words[21],
-            new Dictionary<LUnit, string>
-            {
-                [LUnit.LUnitContent] = words[22],
-                [LUnit.LUnitFunction] = words[23],
-                [LUnit.LUnitMorpheme] = words[24],
-                [LUnit.LUnitWord] = words[25],
-            });
-    }
-
-    public static LPortraitLegend LPortraitLegendCreate(
-        IReadOnlyList<string> words, IReadOnlyDictionary<string, string> kinds)
-    {
-        ArgumentNullException.ThrowIfNull(words);
-        ArgumentNullException.ThrowIfNull(kinds);
-        ArgumentOutOfRangeException.ThrowIfNotEqual(words.Count, 13);
-
-        Dictionary<LReferenceKind, string> worded = [];
-        foreach (LReferenceKind kind in Enum.GetValues<LReferenceKind>())
-        {
-            worded[kind] = kinds.GetValueOrDefault(
-                LReference.LReferenceKindResolve(kind), LReference.LReferenceKindFormat(kind));
-        }
-
-        return new LPortraitLegend(
-            words[0], words[1], words[2], words[3], words[4], words[5], words[6], words[7], words[8], words[9],
-            words[10], words[11], words[12], worded);
     }
 
     private IReadOnlyDictionary<long, LPortraitLink> LPortraitTargetScan(IReadOnlyList<long> ids)

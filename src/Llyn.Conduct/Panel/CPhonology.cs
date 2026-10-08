@@ -10,7 +10,7 @@ public sealed class CPhonology
 {
     private readonly CAtelier _cPhonologyAtelier;
 
-    private readonly LPhonologyPort _cPhonologyPort;
+    private readonly LPronunciationPort _cPhonologyPort;
 
     private readonly LPortraitPort _cPhonologyPortraitPort;
 
@@ -32,7 +32,7 @@ public sealed class CPhonology
         ArgumentNullException.ThrowIfNull(marshal);
 
         _cPhonologyAtelier = atelier;
-        _cPhonologyPort = atelier.CAtelierPhonologyPort;
+        _cPhonologyPort = atelier.CAtelierEntryBundle.CEntryBundlePronunciation;
         _cPhonologyPortraitPort = atelier.CAtelierPortraitPort;
         _cPhonologySettingsPort = atelier.CAtelierSettingsPort;
         _cPhonologyEnvoy = envoy;
@@ -42,6 +42,7 @@ public sealed class CPhonology
         CPhonologyPanel = new CPanel(
             envoy,
             _cPhonologySettingsPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             "Sound.LoadFailed",
             "Scribe",
             editor.CEditorDesk.LDeskChangeCheck,
@@ -181,7 +182,7 @@ public sealed class CPhonology
 
     internal string LPhonologyFileRead()
     {
-        return LVista.LVistaFileRead(_cPhonologyVista);
+        return _cPhonologyAtelier.CAtelierEntryBundle.CEntryBundleVista.LEngineFileRead(_cPhonologyVista);
     }
 
     public Task CPhonologyPortraitPrint()

@@ -5,14 +5,19 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed partial class LSituationArchive : LSituationVault
+public sealed class LSituationArchive : LSituationVault
 {
     private readonly LDatabase _lSituationArchiveDatabase;
+    private readonly LDatabaseLink _lSituationMeaningLink;
+    private readonly LDatabaseLink _lSituationCollocationLink;
 
     public LSituationArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
         _lSituationArchiveDatabase = database;
+        _lSituationMeaningLink = new LDatabaseLink(database, "sense_situation", "sense_parent", "situation_ref");
+        _lSituationCollocationLink = new LDatabaseLink(
+            database, "collocation_situation", "collocation_parent", "situation_ref");
     }
 
     public LSituation LSituationCreate(LSituation situation)
@@ -117,6 +122,26 @@ public sealed partial class LSituationArchive : LSituationVault
         }
 
         session.LDatabaseSessionCommit();
+    }
+
+    public void LSituationMeaningAttach(long meaningId, long situationId, int position)
+    {
+        _lSituationMeaningLink.LDatabaseLinkAttach(meaningId, situationId, position);
+    }
+
+    public void LSituationCollocationAttach(long collocationId, long situationId, int position)
+    {
+        _lSituationCollocationLink.LDatabaseLinkAttach(collocationId, situationId, position);
+    }
+
+    public void LSituationMeaningDetach(long meaningId, long situationId)
+    {
+        _lSituationMeaningLink.LDatabaseLinkDetach(meaningId, situationId);
+    }
+
+    public void LSituationCollocationDetach(long collocationId, long situationId)
+    {
+        _lSituationCollocationLink.LDatabaseLinkDetach(collocationId, situationId);
     }
 
     public int LSituationReferenceRead(long id)
@@ -245,8 +270,8 @@ public sealed partial class LSituationArchive : LSituationVault
 
         if (detach)
         {
-            LSituationLinkDelete(connection, "sense_situation", id);
-            LSituationLinkDelete(connection, "collocation_situation", id);
+            _lSituationMeaningLink.LDatabaseLinkDelete(id);
+            _lSituationCollocationLink.LDatabaseLinkDelete(id);
         }
 
         int references = LSituationReferenceRead(connection, id);
@@ -256,8 +281,8 @@ public sealed partial class LSituationArchive : LSituationVault
                 $"Situation {id} is still referenced {references} time(s); detach every reference before deleting it.");
         }
 
-        LSituationMediaDelete(connection, "situation_image", id);
-        LSituationMediaDelete(connection, "situation_video", id);
+        new LImageArchive(_lSituationArchiveDatabase).LImageSituationClear(id);
+        new LVideoArchive(_lSituationArchiveDatabase).LVideoSituationClear(id);
 
         using (SqliteCommand command = connection.CreateCommand())
         {
@@ -295,5 +320,90 @@ public sealed partial class LSituationArchive : LSituationVault
         }
 
         return LSituationMediaRead(read);
+    }
+
+    private IReadOnlyList<LSituation> LSituationReferrerRead(string table, string column, long referrerId)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
+
+        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            $"""
+            SELECT situation.situation_id, situation.title_state, situation.title,
+                   situation.description_state, situation.description,
+                   situation.kind_state, situation.kind
+            FROM {table} link
+            JOIN situation ON situation.situation_id = link.situation_ref
+            WHERE link.{column} = $referrer
+            ORDER BY link.position;
+            """;
+        command.Parameters.AddWithValue("$referrer", referrerId);
+
+        List<LSituation> situations = [];
+        using (SqliteDataReader reader = command.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                situations.Add(new LSituation(
+                    reader.GetInt64(0),
+                    LStateColumn.LStateColumnRead(reader, 1),
+                    LStateColumn.LStateColumnRead(reader, 3),
+                    LStateColumn.LStateColumnRead(reader, 5)));
+            }
+        }
+
+        return LSituationMediaRead(situations);
+    }
+
+    private IReadOnlyList<LSituation> LSituationMediaRead(List<LSituation> situations)
+    {
+        if (situations.Count == 0)
+        {
+            return situations;
+        }
+
+        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
+
+        Dictionary<long, List<LImageDraft>> images =
+            new LImageArchive(_lSituationArchiveDatabase).LImageSituationScan();
+        Dictionary<long, List<LVideoDraft>> videos =
+            new LVideoArchive(_lSituationArchiveDatabase).LVideoSituationScan();
+
+        for (int index = 0; index < situations.Count; index++)
+        {
+            LSituation situation = situations[index];
+            situations[index] = situation with
+            {
+                LSituationImage = images.TryGetValue(situation.LSituationId, out List<LImageDraft>? imageRows)
+                    ? imageRows
+                    : [],
+                LSituationVideo = videos.TryGetValue(situation.LSituationId, out List<LVideoDraft>? videoRows)
+                    ? videoRows
+                    : [],
+            };
+        }
+
+        return situations;
+    }
+
+    private LSituation LSituationMediaRead(LSituation situation)
+    {
+        LImageArchive images = new(_lSituationArchiveDatabase);
+        LVideoArchive videos = new(_lSituationArchiveDatabase);
+
+        List<LImageDraft> imageRows = [];
+        foreach (LImage image in images.LImageSituationRead(situation.LSituationId))
+        {
+            imageRows.Add(new LImageDraft(image.LImageLocation, image.LImageId));
+        }
+
+        List<LVideoDraft> videoRows = [];
+        foreach (LVideo video in videos.LVideoSituationRead(situation.LSituationId))
+        {
+            videoRows.Add(new LVideoDraft(video.LVideoLocation, video.LVideoSpan, video.LVideoId));
+        }
+
+        return situation with { LSituationImage = imageRows, LSituationVideo = videoRows };
     }
 }

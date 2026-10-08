@@ -1,5 +1,5 @@
 # QEditorSound.cs
-Hash: `49ffda69b9f29b44`
+Hash: `945b76e0379c99d7`
 
 ## `internal sealed class QEditorSound`
 
@@ -21,7 +21,7 @@ The measuring twin follows the field's text and hint, where a style binding and 
 
 Hands the Conduct editor to each sound driver, and the anchor menu its anchor over the same desk.
 The volume slider and the player are attached to the window's one volume owner.
-The player's failure is subscribed here once, since the clip, the accents and the tray share it.
+The player's failure is subscribed here once, since the clip, the accents and the playback share it.
 
 ## `private void QEditorFailureRefine(object? sender, ExceptionEventArgs e)`
 
@@ -43,7 +43,6 @@ The reading line follows the headword the field holds.
 
 Writes the primary reading as the editor reads it, respelled when the pack respells.
 The draft is ignored, since only the editor knows the respelling.
-The guarded write leaves the caret of a box being typed into alone.
 
 ## `internal void QEditorTimbreRefine(CEntryDraft _)`
 

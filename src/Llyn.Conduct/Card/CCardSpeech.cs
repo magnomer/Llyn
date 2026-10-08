@@ -10,13 +10,17 @@ public sealed class CCardSpeech
 {
     private readonly CDesk _cCardSpeechDesk;
 
+    private readonly LEntryPort _cCardSpeechPort;
+
     private string _cCardSpeechTyped = string.Empty;
 
-    internal CCardSpeech(CDesk desk)
+    internal CCardSpeech(CDesk desk, LEntryPort entries)
     {
         ArgumentNullException.ThrowIfNull(desk);
+        ArgumentNullException.ThrowIfNull(entries);
 
         _cCardSpeechDesk = desk;
+        _cCardSpeechPort = entries;
     }
 
     private LTenure? CCardSpeechTenure => _cCardSpeechDesk.CDeskFilling ? null : _cCardSpeechDesk.CDeskTenure;
@@ -25,48 +29,53 @@ public sealed class CCardSpeech
     {
         ArgumentNullException.ThrowIfNull(typed);
 
-        if (CCardSpeechTenure is not LTenure held)
+        if (CCardSpeechTenure is null || _cCardSpeechDesk.CDeskSpeech is not LQuillSpeech speech)
         {
             return new CCategory([], false, false, false);
         }
 
         _cCardSpeechTyped = typed;
-        return LCategoryRead(held.LTenureSpeechSet(typed));
+        return LCategoryRead(speech.LQuillSpeechSet(typed));
     }
 
     public void CCardSpeechAdd(string name)
     {
         ArgumentNullException.ThrowIfNull(name);
 
-        if (CCardSpeechTenure is not LTenure held)
+        if (CCardSpeechTenure is null || _cCardSpeechDesk.CDeskSpeech is not LQuillSpeech speech)
         {
             return;
         }
 
         _cCardSpeechTyped = string.Empty;
-        held.LTenureSpeechAdd(name);
+        speech.LQuillSpeechAdd(name);
     }
 
     public void CCardSpeechRemove(string name)
     {
         ArgumentNullException.ThrowIfNull(name);
 
-        CCardSpeechTenure?.LTenureSpeechRemove(name, _cCardSpeechTyped);
+        if (CCardSpeechTenure is not null)
+        {
+            _cCardSpeechDesk.CDeskSpeech?.LQuillSpeechRemove(name, _cCardSpeechTyped);
+        }
     }
 
     public CMarker CCardSpeechRead()
     {
-        if (_cCardSpeechDesk.CDeskTenure is not LTenure held)
+        if (_cCardSpeechDesk.CDeskTenure is not LTenure held
+            || _cCardSpeechDesk.CDeskSpeech is not LQuillSpeech speech)
         {
             return new CMarker([], _cCardSpeechTyped, new CCategory([], false, false, false), []);
         }
 
-        (var names, _cCardSpeechTyped, LSpeechOffer found) = held.LTenureSpeechRead(_cCardSpeechTyped);
+        (var names, _cCardSpeechTyped, LSpeechOffer found) = speech.LQuillSpeechRead(_cCardSpeechTyped);
+        LQuillEntry entry = new(held);
         return new CMarker(
             names,
             _cCardSpeechTyped,
             LCategoryRead(found),
-            LUnitRowScan(held.LTenureUnitScan(), held.LTenureUnitRead()));
+            LUnitRowScan(entry.LQuillUnitScan(), entry.LQuillUnitRead()));
     }
 
     internal static LUnit LUnitRowParse(string key)
@@ -81,9 +90,9 @@ public sealed class CCardSpeech
         };
     }
 
-    private static IReadOnlyList<(string, bool)> LUnitRowScan(IReadOnlyList<LUnit> units, LUnit taken)
+    private IReadOnlyList<(string, bool)> LUnitRowScan(IReadOnlyList<LUnit> units, LUnit taken)
     {
-        return units.Select(unit => (LEntryPort.LEngineUnitFormat(unit), unit == taken)).ToList();
+        return units.Select(unit => (_cCardSpeechPort.LEngineUnitFormat(unit), unit == taken)).ToList();
     }
 
     private static CCategory LCategoryRead(LSpeechOffer offer)

@@ -1,5 +1,5 @@
 # CContour.cs
-Hash: `205200c0414720a2`
+Hash: `8c9840e0cfeed9e7`
 
 ## `public sealed record CContour(string CContourText, IReadOnlyList<int> CContourLevels, IReadOnlyList<string> CContourKeys, bool CContourToned)`
 
@@ -11,13 +11,6 @@ A toned syllable always keeps at least one level, so its pitch line always has a
 **Parameters**
 
 - `CContourText`: the syllable as written beneath its cell.
-- `CContourLevels`: the pitch levels the tone marks spell, in order, each one a level of `CContourScale`.
+- `CContourLevels`: the pitch levels the tone marks spell, in order, each one a level of `CDisplaySound.CDisplaySoundScale`.
 - `CContourKeys`: the theme brush key of each level, in the same order as `CContourLevels`, chosen in Conduct.
 - `CContourToned`: whether the syllable carries a tone with at least one level, which draws its pitch line.
-
-## `public static IReadOnlyList<int> CContourScale`
-
-The pitch levels of the scale, highest first, one guide line each from the top of the box down.
-The first level is the top line and each next one lies a step below.
-So the drawing only scales those steps to pixels.
-It comes from the rule that parses the levels, so the scale has one owner.

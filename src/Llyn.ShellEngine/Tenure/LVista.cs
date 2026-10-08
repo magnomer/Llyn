@@ -11,15 +11,16 @@ public sealed class LVista
 
     private readonly object _lVistaGate = new();
 
-    private readonly List<(LSubject, Action<LBulletin>)> _lVistaObservers = [];
+    private readonly LBulletinRoster _lVistaRoster = new(null);
 
-    private readonly List<(LSubject, Action<LBulletin>)> _lVistaChosenObservers = [];
+    private readonly LBulletinRoster _lVistaChosenRoster;
 
     internal LVista(
         LEngine engine, long id, string tab, LSubject? subject, LCatalogOrder order, LCatalogFilter filter,
         bool blank, bool editing)
     {
         _lEngine = engine;
+        _lVistaChosenRoster = new LBulletinRoster(LVistaChosenCheck);
         LVistaId = id;
         LVistaTab = tab;
         LVistaOrder = order;
@@ -71,41 +72,6 @@ public sealed class LVista
 
     public bool LVistaInput => string.Equals(LVistaTab, "input", StringComparison.Ordinal);
 
-    public LDraft? LVistaLoad()
-    {
-        LDraft? draft = _lEngine.LEngineVista.LEngineVistaLoad(this);
-        if (draft is null && LVistaStored is not null)
-        {
-            LVistaSelect(null);
-        }
-
-        return draft;
-    }
-
-    public LDraft? LVistaLoad(long? id)
-    {
-        long? prior = LVistaChosen;
-        LVistaSelect(id);
-        try
-        {
-            return LVistaLoad();
-        }
-        catch (Exception)
-        {
-            LVistaSelect(prior);
-            throw;
-        }
-    }
-
-    public static string LVistaFileRead(LVista? vista)
-    {
-        string headword = vista?.LVistaLoad()?.LDraftContent.LEntryDraftHeadword ?? string.Empty;
-        string trimmed = headword.Trim();
-        return trimmed.Length == 0 || vista is null
-            ? "entry"
-            : vista._lEngine.LEngineSettings.LEngineTrailNormalize(trimmed);
-    }
-
     public static LCatalogOrder LVistaOrderRead(LVista? vista)
     {
         return vista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword;
@@ -114,90 +80,6 @@ public sealed class LVista
     public static LCatalogFilter LVistaFilterRead(LVista? vista)
     {
         return vista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty;
-    }
-
-    public void LVistaSideSave()
-    {
-        if (LVistaLeft)
-        {
-            _lEngine.LEngineWorkspace.LEngineLeftSave(LVistaChosen);
-            return;
-        }
-
-        _lEngine.LEngineWorkspace.LEngineRightSave(LVistaChosen);
-    }
-
-    public int LVistaUsageRead()
-    {
-        if (LVistaStored is not long id)
-        {
-            return 0;
-        }
-
-        return LVistaSubject switch
-        {
-            LSubject.LSubjectExample =>
-                _lEngine.LEngineEntry.LEngineUsageRead(LOwner.LOwnerExample).GetValueOrDefault(id),
-            LSubject.LSubjectSituation =>
-                _lEngine.LEngineEntry.LEngineUsageRead(LOwner.LOwnerSituation).GetValueOrDefault(id),
-            LSubject.LSubjectReference =>
-                _lEngine.LEngineEntry.LEngineUsageRead(LOwner.LOwnerReference).GetValueOrDefault(id),
-            LSubject.LSubjectAuthor => _lEngine.LEngineAuthor.LEngineAuthorFind(id)?.LCatalogAuthorWork ?? 0,
-            _ => 0,
-        };
-    }
-
-    public string LVistaTallyRead()
-    {
-        LOwner owner = LVistaSubject switch
-        {
-            LSubject.LSubjectExample => LOwner.LOwnerExample,
-            LSubject.LSubjectSituation => LOwner.LOwnerSituation,
-            LSubject.LSubjectReference => LOwner.LOwnerReference,
-            _ => throw new InvalidOperationException("The vista lists nothing a tally counts."),
-        };
-        return _lEngine.LEngineEntry.LEngineTallyRead(LVistaStored, owner);
-    }
-
-    public LRevision? LVistaDelete()
-    {
-        if (LVistaChosen is not long id || id <= 0)
-        {
-            return null;
-        }
-
-        LRevision? revision;
-        switch (LVistaSubject)
-        {
-            case LSubject.LSubjectEntry:
-                revision = _lEngine.LEngineEntry.LEngineEntryDelete(id);
-                break;
-            case LSubject.LSubjectExample:
-                _lEngine.LEngineExample.LEngineExampleDelete(id, true);
-                revision = null;
-                break;
-            case LSubject.LSubjectSituation:
-                _lEngine.LEngineSituation.LEngineSituationDelete(id, true);
-                revision = null;
-                break;
-            case LSubject.LSubjectReference:
-                _lEngine.LEngineReference.LEngineReferenceDelete(id, true);
-                revision = null;
-                break;
-            case LSubject.LSubjectAuthor:
-                _lEngine.LEngineAuthor.LEngineAuthorDelete(id, true);
-                revision = null;
-                break;
-            default:
-                return null;
-        }
-
-        if (LVistaChosen == id)
-        {
-            LVistaSelect(null);
-        }
-
-        return revision;
     }
 
     public void LVistaEditingSet(bool editing)
@@ -280,7 +162,7 @@ public sealed class LVista
 
         lock (_lVistaGate)
         {
-            _lVistaObservers.Add((subject, observer));
+            _lVistaRoster.LBulletinRosterAttach(subject, observer, null);
         }
     }
 
@@ -290,7 +172,7 @@ public sealed class LVista
 
         lock (_lVistaGate)
         {
-            _lVistaChosenObservers.Add((subject, observer));
+            _lVistaChosenRoster.LBulletinRosterAttach(subject, observer, null);
         }
     }
 
@@ -301,39 +183,26 @@ public sealed class LVista
             return;
         }
 
-        (LSubject, Action<LBulletin>)[] observers;
-        (LSubject, Action<LBulletin>)[] chosenObservers;
+        (LSubject?, Action<LBulletin>, long?)[] snapshot;
+        (LSubject?, Action<LBulletin>, long?)[] chosenSnapshot;
         lock (_lVistaGate)
         {
-            observers = [.. _lVistaObservers];
-            chosenObservers = [.. _lVistaChosenObservers];
+            snapshot = _lVistaRoster.LBulletinRosterRead();
+            chosenSnapshot = _lVistaChosenRoster.LBulletinRosterRead();
         }
 
-        foreach ((LSubject subject, Action<LBulletin> observer) in observers)
+        _lVistaRoster.LBulletinRosterDispatch(bulletin, snapshot);
+        _lVistaChosenRoster.LBulletinRosterDispatch(bulletin, chosenSnapshot);
+    }
+
+    private bool LVistaChosenCheck(LBulletin bulletin)
+    {
+        long? chosen;
+        lock (_lVistaGate)
         {
-            if (subject == bulletin.LBulletinSubject)
-            {
-                observer(bulletin);
-            }
+            chosen = LVistaChosen;
         }
 
-        foreach ((LSubject subject, Action<LBulletin> observer) in chosenObservers)
-        {
-            if (subject != bulletin.LBulletinSubject)
-            {
-                continue;
-            }
-
-            long? chosen;
-            lock (_lVistaGate)
-            {
-                chosen = LVistaChosen;
-            }
-
-            if (bulletin.LBulletinId <= 0 || bulletin.LBulletinId == chosen)
-            {
-                observer(bulletin);
-            }
-        }
+        return bulletin.LBulletinId <= 0 || bulletin.LBulletinId == chosen;
     }
 }

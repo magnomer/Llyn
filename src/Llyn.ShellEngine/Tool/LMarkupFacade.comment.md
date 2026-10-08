@@ -1,9 +1,9 @@
 # LMarkupFacade.cs
-Hash: `7e79b77953644a77`
+Hash: `f9310bce436363ee`
 
 ## `internal sealed class LMarkupFacade`
 
-The engine's facade for markup cargo reads, imports, exports and entry matching.
+The engine's facade for markup cargo reads, imports and entry matching.
 `LEngineMarkupStart` runs a whole import in its order, reading and storing on a pool thread.
 
 ## `public LMarkupFacade(LEngine engine)`
@@ -12,7 +12,7 @@ Stores the engine and its gate.
 
 ## `public LMarkupCargo LEngineMarkupRead(string path)`
 
-The file at `path` parsed into a cargo, unknown languages omitted and twin names applied.
+The file at `path` parsed into a cargo, an unknown language blanked and noted, and twin names applied.
 
 ## `public IReadOnlyList<IReadOnlyList<LMarkupTarget>> LEngineMarkupFind(IReadOnlyList<LMarkupEntry> entries)`
 

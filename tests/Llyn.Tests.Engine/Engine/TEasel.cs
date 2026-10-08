@@ -36,6 +36,31 @@ public sealed class TEasel
     }
 
     [Fact]
+    public void ImageRemove_ChildCard_DropsIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
+        long draft = tenure.TTenureRead()!.LDraftId;
+        tenure.TTenureRequestApply(
+            TInterface.TRequestAdditionCreate(draft, LCardKind.LCardKindMeaning, 0, int.MaxValue));
+        long meaning = tenure.TTenureRead()!.LDraftContent.LEntryDraftMeanings[^1].LCardDraftId;
+        tenure.TTenureRequestApply(
+            TInterface.TRequestAdditionCreate(draft, LCardKind.LCardKindMeaning, meaning, int.MaxValue));
+        long child = TInterface.TRequestCardFind(tenure.TTenureRead()!.LDraftContent, meaning)
+            .LCardDraftChild[^1].LCardDraftId;
+        LEasel easel = tenure.TEaselCreate();
+
+        easel.TEaselImageAdd(child);
+        long image = TInterface.TRequestCardFind(tenure.TTenureRead()!.LDraftContent, child)
+            .LCardDraftImage[0].LImageDraftId;
+        easel.TEaselImageRemove(image);
+
+        Assert.Empty(TInterface.TRequestCardFind(tenure.TTenureRead()!.LDraftContent, child).LCardDraftImage);
+    }
+
+    [Fact]
     public void ImageSet_Deferred_WritesOnlyAfterFlush()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -81,6 +106,31 @@ public sealed class TEasel
         easel.TEaselVideoRemove(tenure.TTenureRead()!.LDraftSituation!.LSituationVideo[0].LVideoDraftId);
 
         Assert.Empty(tenure.TTenureRead()!.LDraftSituation!.LSituationVideo);
+    }
+
+    [Fact]
+    public void VideoRemove_ChildCard_DropsIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
+        long draft = tenure.TTenureRead()!.LDraftId;
+        tenure.TTenureRequestApply(
+            TInterface.TRequestAdditionCreate(draft, LCardKind.LCardKindMeaning, 0, int.MaxValue));
+        long meaning = tenure.TTenureRead()!.LDraftContent.LEntryDraftMeanings[^1].LCardDraftId;
+        tenure.TTenureRequestApply(
+            TInterface.TRequestAdditionCreate(draft, LCardKind.LCardKindMeaning, meaning, int.MaxValue));
+        long child = TInterface.TRequestCardFind(tenure.TTenureRead()!.LDraftContent, meaning)
+            .LCardDraftChild[^1].LCardDraftId;
+        LEasel easel = tenure.TEaselCreate();
+
+        easel.TEaselVideoAdd(child);
+        long video = TInterface.TRequestCardFind(tenure.TTenureRead()!.LDraftContent, child)
+            .LCardDraftVideo[0].LVideoDraftId;
+        easel.TEaselVideoRemove(video);
+
+        Assert.Empty(TInterface.TRequestCardFind(tenure.TTenureRead()!.LDraftContent, child).LCardDraftVideo);
     }
 
     [Fact]

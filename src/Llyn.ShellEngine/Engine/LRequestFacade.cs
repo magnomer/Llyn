@@ -28,8 +28,9 @@ internal sealed class LRequestFacade
             ArgumentOutOfRangeException.ThrowIfZero(request.LRequestDraftId);
             _lRequestFacadeEngine.LEngineDraft.LEngineDraftValidate(request.LRequestDraftId);
 
-            LDraft held = LRequestFacadeStaff.LEngineStaffClaim.LClaimClerkLoad(request.LRequestDraftId);
-            LDraft draft = LRequestFacadeStaff.LEngineStaffDraft.LDraftClerkApply(held, request);
+            LDraft held = LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffClaim
+                .LClaimClerkLoad(request.LRequestDraftId);
+            LDraft draft = LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffDraft.LDraftClerkApply(held, request);
             if (request is LRequestHeadword or LRequestLanguage)
             {
                 draft = LEngineAudioClear(held, draft);
@@ -37,7 +38,8 @@ internal sealed class LRequestFacade
 
             saved = draft with
             {
-                LDraftContent = LRequestFacadeStaff.LEngineStaffDraft.LDraftClerkNormalize(draft.LDraftContent),
+                LDraftContent = LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffDraft
+                    .LDraftClerkNormalize(draft.LDraftContent),
             };
             if (saved == held)
             {
@@ -45,7 +47,7 @@ internal sealed class LRequestFacade
             }
 
             LEngineChronicleRecord(held, saved, request);
-            LRequestFacadeStaff.LEngineStaffClaim.LDraftSave(saved);
+            LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LDraftSave(saved);
         }
 
         _lRequestFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectDraft, saved.LDraftId);
@@ -80,7 +82,7 @@ internal sealed class LRequestFacade
             return;
         }
 
-        LRequestFacadeStaff.LEngineStaffChronicle.LChronicleClerkRecord(held, saved, request);
+        LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffChronicle.LChronicleClerkRecord(held, saved, request);
     }
 
     internal LDraft? LEngineChronicleUndo(long id)
@@ -90,7 +92,7 @@ internal sealed class LRequestFacade
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             _lRequestFacadeEngine.LEngineDraft.LEngineDraftValidate(id);
-            restored = LRequestFacadeStaff.LEngineStaffChronicle.LChronicleClerkUndo(id);
+            restored = LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffChronicle.LChronicleClerkUndo(id);
         }
 
         if (restored is not null)
@@ -108,7 +110,7 @@ internal sealed class LRequestFacade
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             _lRequestFacadeEngine.LEngineDraft.LEngineDraftValidate(id);
-            restored = LRequestFacadeStaff.LEngineStaffChronicle.LChronicleClerkRedo(id);
+            restored = LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffChronicle.LChronicleClerkRedo(id);
         }
 
         if (restored is not null)
@@ -123,7 +125,7 @@ internal sealed class LRequestFacade
     {
         lock (_lRequestFacadeGate)
         {
-            return LRequestFacadeStaff.LEngineStaffChronicle.LChronicleUndoCheck(id);
+            return LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffChronicle.LChronicleUndoCheck(id);
         }
     }
 
@@ -131,7 +133,7 @@ internal sealed class LRequestFacade
     {
         lock (_lRequestFacadeGate)
         {
-            return LRequestFacadeStaff.LEngineStaffChronicle.LChronicleRedoCheck(id);
+            return LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffChronicle.LChronicleRedoCheck(id);
         }
     }
 
@@ -140,7 +142,8 @@ internal sealed class LRequestFacade
     {
         lock (_lRequestFacadeGate)
         {
-            return LRequestFacadeStaff.LEngineStaffCourt.LCourtClerkSave(ownerId, targetId, headword, language);
+            return LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffCourt
+                .LCourtClerkSave(ownerId, targetId, headword, language);
         }
     }
 
@@ -158,7 +161,7 @@ internal sealed class LRequestFacade
 
             try
             {
-                LRequestFacadeStaff.LEngineStaffClaim.LDraftSave(target with
+                LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LDraftSave(target with
                 {
                     LDraftContent = target.LDraftContent with
                     {
@@ -181,7 +184,7 @@ internal sealed class LRequestFacade
     {
         lock (_lRequestFacadeGate)
         {
-            LRequestFacadeStaff.LEngineStaffCourt.LCourtClerkDelete(linkId);
+            LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffCourt.LCourtClerkDelete(linkId);
         }
     }
 
@@ -189,7 +192,7 @@ internal sealed class LRequestFacade
     {
         lock (_lRequestFacadeGate)
         {
-            return LRequestFacadeStaff.LEngineStaffCourt.LCourtClerkFind(ownerId, targetId);
+            return LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffCourt.LCourtClerkFind(ownerId, targetId);
         }
     }
 }

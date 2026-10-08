@@ -9,8 +9,8 @@ What the print dialog answered, as a driver's envoy answers the gate's question.
 **Parameters**
 
 - `CPressTicketPrinter`: the chosen printer's full name.
-- `CPressTicketWidth`: the sheet width as the dialog measured it, in device-independent pixels, or none.
-- `CPressTicketHeight`: the sheet height as the dialog measured it, in device-independent pixels, or none.
+- `CPressTicketWidth`: the sheet width in inches, or none.
+- `CPressTicketHeight`: the sheet height in inches, or none.
 - `CPressTicketLandscape`: whether the sheet is turned on its side.
 - `CPressTicketCopies`: how many copies to print.
 - `CPressTicketCollated`: whether copies are printed as whole sets.

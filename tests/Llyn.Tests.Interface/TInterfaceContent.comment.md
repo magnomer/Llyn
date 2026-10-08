@@ -1,5 +1,5 @@
 # TInterfaceContent.cs
-Hash: `3d7a7a268171ad6a`
+Hash: `3ad0f31bd1e10148`
 
 ## `internal static partial class TInterface`
 
@@ -18,7 +18,7 @@ The inflections of a stored entry as the entry form loads them, in their stored 
 
 ## `internal static LEntry TEntryInflectionSave(this LEngine engine, long entryId, IReadOnlyList<LInflection> inflections)`
 
-Rewrites the inflections of a stored entry through the entry update, the only seam that writes them.
+Rewrites the inflections of a stored entry through the entry update.
 The update also regrades each form against its paradigm.
 
 ## `internal static LSpeechValue? TSpeechValueFind(this LEngine engine, string language, string name)`
@@ -32,7 +32,7 @@ A test takes a morphology id from here, as the paradigm grid does.
 
 ## `internal static IReadOnlyList<LReflexDraft> TEntryReflexRead(this LEngine engine, long entryId)`
 
-The reflex rows of a stored entry as the entry form loads them, in their stored order.
+The reflex rows of a stored entry, sorted as the entry form loads them.
 
 ## `internal static LEntry TEntryAnchorApply(this LEngine engine, long entryId, IReadOnlyList<long> anchors, int? position = null)`
 

@@ -1,14 +1,14 @@
 # CFootnote.cs
-Hash: `4e3511a2d1404f2a`
+Hash: `b801457c942195a6`
 
 ## `public sealed class CFootnote`
 
 The sources panel's entry list: the entries citing the chosen Source, or every entry while none is chosen.
-It holds the entry and portrait ports, the source vista as its parent and its own vista.
+It holds the vista and portrait ports, the source vista as its parent and its own vista.
 The engine narrows the rows by the parent's choice, so the list decides nothing about matching.
 Its panel has no delete scope, because an entry is never deleted from this list.
 
-## `internal CFootnote(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, CEditor editor, CEnvoy envoy, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
+## `internal CFootnote(LVistaPort vistas, LPortraitPort portraits, LSettingsPort settings, CEditor editor, CEnvoy envoy, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
 Builds the list's panel under the `List.LoadFailed` key over the shelf's entry editor.
 The panel asks the editor's desk before it leaves an entry, and finishes through the shelf's seam.

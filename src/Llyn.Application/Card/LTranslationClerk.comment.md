@@ -1,5 +1,5 @@
 # LTranslationClerk.cs
-Hash: `7e6bf3fb60f67730`
+Hash: `2c320cd1c37a167b`
 
 ## `public sealed class LTranslationClerk`
 
@@ -14,9 +14,10 @@ So no caller works out which links were added and which were taken away.
 Which side an id names arrives as a `collocation` flag, which the engine derives from its `LOwner`.
 It runs over the ports of one rig and raises no bulletin and starts no fetch, which the engine keeps.
 
-## `public LTranslationClerk(LRig rig)`
+## `public LTranslationClerk(LRig rig, LRevisionClerk revisions)`
 
-Reads the root, entry, revision, workspace and translation ports out of `rig`.
+Reads the root, entry and translation ports out of `rig`.
+`revisions` records the revision a new stub leaves and moves the workspace row onto it.
 
 ## `public IReadOnlyList<LTranslation> LTranslationClerkRead(long ownerId, bool collocation)`
 

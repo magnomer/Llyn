@@ -18,7 +18,7 @@ internal static class TInterfaceEngineWorkspace
     }
 
     internal static string TEngineWorkspaceRead(this LEngine engine) =>
-        engine.LEngineWorkspaceRead();
+        engine.LEngineWorkspace.LEngineWorkspaceRead();
 
     internal static void TEngineFolderOpen(this LEngine engine)
     {
@@ -29,7 +29,7 @@ internal static class TInterfaceEngineWorkspace
 
     internal static void TEngineWorkspaceOpen(this LEngine engine, string path)
     {
-        engine.LEngineRigApply(LRigFactory.LRigFactoryBuild(
+        engine.LEngineWorkspace.LEngineRigApply(LRigFactory.LRigFactoryBuild(
             path,
             TPronunciationHelper.TSourceClientCreate(string.Empty, HttpStatusCode.NotFound),
             new LUsherFile(),
@@ -41,11 +41,11 @@ internal static class TInterfaceEngineWorkspace
 
     internal static void TEngineRigApply(this LEngine engine, LRig rig)
     {
-        engine.LEngineRigApply(rig);
+        engine.LEngineWorkspace.LEngineRigApply(rig);
     }
 
     internal static LDoctorRescue TEngineRescueRead(this LEngine engine) =>
-        engine.LEngineRescueRead();
+        engine.LEngineWorkspace.LEngineRescueRead();
 
     internal static LEstablishment TEngineEstablishmentRead(this LEngine engine) =>
         engine.LEngineEntry.LEngineEstablishmentRead();
@@ -68,13 +68,13 @@ internal static class TInterfaceEngineWorkspace
     }
 
     internal static Uri? TEngineLocationResolve(this LEngine engine, string location) =>
-        engine.LEngineStaffHeld.LEngineStaffTrail.LTrailClerkResolve(location);
+        engine.LEngineStaffHeld.LEngineStaffLanguage.LLanguageStaffTrail.LTrailClerkResolve(location);
 
     internal static Uri? TEngineLocationRead(this LEngine engine, string location) =>
         engine.LEngineWorkspace.LEngineLocationRead(location);
 
     internal static string TEngineWorkspaceFormat(this LEngine engine) =>
-        engine.LEngineWorkspaceFormat();
+        engine.LEngineWorkspace.LEngineWorkspaceFormat();
 
     internal static long? TEngineRevisionRead(this LEngine engine) =>
         engine.LEngineWorkspace.LEngineStateRead().LWorkspaceStateRevision;

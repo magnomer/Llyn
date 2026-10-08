@@ -96,7 +96,7 @@ internal static partial class TInterface
 
     internal static Task<LReceipt> TCourierSend(
         LEngine engine, Func<long, LLiveryPage?> page, Func<string, LLiveryLanguage> language) =>
-        engine.LEngineStaffHeld.LEngineStaffCourier.LCourierClerkSend(
+        engine.LEngineStaffHeld.LEngineStaffWorkspace.LWorkspaceStaffCourier.LCourierClerkSend(
             page, language, static key => key, CancellationToken.None);
 
     internal static LLiveryLanguage TLiveryLanguageBuild(

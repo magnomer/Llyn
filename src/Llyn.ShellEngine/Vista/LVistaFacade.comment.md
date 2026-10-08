@@ -1,13 +1,14 @@
 # LVistaFacade.cs
-Hash: `2781b8b1fe99e640`
+Hash: `084e072a233f0993`
 
-## `internal sealed class LVistaFacade`
+## `public sealed class LVistaFacade : LFavoritePort, LVistaPort`
 
 Where a panel asks for a vista, the engine's view state for one catalog tab.
 It is also where the panel asks for the rows that vista lists.
-Before this every browse panel kept its own order and filter fields and applied them itself.
-Now the engine holds the four choices and returns rows already filtered, sorted, numbered and marked.
+No browse panel keeps its own order and filter fields or applies them itself.
+The engine holds the choices and returns rows already filtered, sorted, numbered and marked.
 The facade keeps the vista registry and delegates stored data to the engine's other facades and staff.
+It implements the favourite and vista ports itself, so Host hands it to Conduct with no outlet between.
 
 ## `private readonly LEngine _lVistaFacadeEngine`
 
@@ -55,7 +56,7 @@ The rows are built by the shared builder under one lock.
 The entries the record chosen in a catalog vista reaches, listed in the child vista beside it.
 The parent's language filter applies, since a catalog's filter hides languages from its chosen record's entries.
 The child's query narrows the rows, and the child's chosen row is marked.
-The entry clerk's match filters, narrows and orders the rows by the child's ordering, as the catalog list does.
+The query clerk's match filters, narrows and orders the rows by the child's ordering, as the catalog list does.
 So equal headwords go by the entry tie rule, never by the order the store returned them.
 A missing vista, or a parent subject that reaches no entries, answers no rows.
 
@@ -68,7 +69,7 @@ Only entries of one language are twins.
 The epithets come from one scan, so a long list costs one statement rather than one session per row.
 The chosen row is the one whose id equals `chosen`.
 Every catalog of entries builds its rows here, so no panel numbers twins or reads epithets itself.
-Called under the lock.
+It takes the lock for the epithet scan.
 
 ## `public IReadOnlyList<string> LEngineNameResolve(IReadOnlyList<string> labels)`
 
@@ -77,8 +78,16 @@ The labels made distinct in their given order, numbered where two share a name, 
 ## `private static string[] LEngineTwinRead(IReadOnlyList<LEntry> entries)`
 
 The twin name of each entry, by position, numbered by entry id, through `LEntryClerkTwin`.
-The generic overload and the name read forward the same way for the catalog parts that still call them.
-Those rows carry no language, so the generic overload passes one empty group for all.
+
+## `internal static string[] LEngineTwinRead<LEngineRow>(IReadOnlyList<LEngineRow> rows, Func<LEngineRow, string> name, Func<LEngineRow, long> id)`
+
+The twin name of each row, by position, numbered by row id, through `LEntryClerkTwin`.
+Those rows carry no language, so one empty group serves all of them.
+
+## `internal static string LEngineNameRead(LStateValue value, string unknown, string fallback)`
+
+The name a state value shows, through `LEntryClerkTwin`.
+An unknown state reads as `unknown`, and a value that shows nothing reads as `fallback`.
 
 ## `private IReadOnlyDictionary<long, string> LEngineEpithetScan(IReadOnlyList<LEntry> entries)`
 
@@ -87,7 +96,7 @@ Called under the lock.
 
 ## `public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order, LCatalogFilter filter)`
 
-The same list with the marked entries in a hidden language left out.
+The marked entries matching the query in the given order, with those in a hidden language left out.
 
 ## `public IReadOnlyList<LVistaRow> LEngineFavoriteFind(LVista vista)`
 
@@ -109,9 +118,49 @@ Marking changes no lexical data and keeps the entry's identity.
 Unmarks the entry and announces it.
 The entry stands, still reachable through the entry catalog.
 
-## `internal LDraft? LEngineVistaLoad(LVista vista)`
+## `public LDraft? LEngineVistaLoad(LVista vista)`
 
-Loads the selected record according to the vista subject under the engine gate.
+Loads the vista's selected record according to its subject under the engine gate.
 The result is a snapshot, with no claim file, editing identity, or registered tenure.
 Reference snapshots include credits.
 Tag and register loads carry no record, only the proof the chosen row still exists.
+A stored choice that no longer loads is dropped here, so a panel never branches on the missing answer.
+
+## `public LDraft? LEngineVistaLoad(LVista vista, long? id)`
+
+Selects the row and loads it, restoring the previous choice when the load throws.
+So a failed click leaves the panel where it stood, and no caller keeps the prior choice.
+
+## `public string LEngineFileRead(LVista? vista)`
+
+The file name an export of the vista's entry is offered under is the headword with barred characters replaced.
+The engine's settings facade says which characters are barred, so the vista reads no file rule itself.
+A missing vista, or a blank headword, is offered as `entry`.
+A failed load is not caught here.
+It travels up to the export gate.
+
+## `public void LEngineSideSave(LVista vista)`
+
+Writes the chosen entry to the left or right slot of the workspace state, whichever side the vista's tab names.
+The next run reopens each duplex side on the entry it last showed.
+The vista itself says which side it is, so no caller copies that.
+
+## `public int LEngineUsageRead(LVista vista)`
+
+How many places the vista's chosen stored record reaches, which a delete would drop.
+An Example, a Situation and a Source count the entries that cite them.
+An Author counts the Sources crediting it.
+Any other subject, or no stored choice, reaches nothing.
+
+## `public string LEngineTallyRead(LVista vista)`
+
+The citation line of the vista's chosen stored record, ready to show.
+An Example, a Situation and a Source have one, and any other vista refuses.
+No stored record reads as cited nowhere.
+
+## `public LRevision? LEngineVistaDelete(LVista vista)`
+
+Deletes the vista's selected record of its subject and clears the selection afterwards.
+Only an entry delete records a revision, so every other subject answers null after deleting.
+A catalog record is detached from every owner first, as the panel already confirmed the usage.
+Tag, register and structural vistas delete nothing and answer null.

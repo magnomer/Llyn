@@ -14,18 +14,21 @@ public sealed class CCardField
         _cCardFieldDesk = desk;
     }
 
+    private LQuillCard? CCardFieldQuill =>
+        !_cCardFieldDesk.CDeskFilling && _cCardFieldDesk.CDeskTenure is LTenure held ? new LQuillCard(held) : null;
+
     public void CCardTitleSet(long cardId, string text)
     {
-        _cCardFieldDesk.CDeskQuill?.LQuillTitleSet(cardId, text);
+        CCardFieldQuill?.LCardTitleSet(cardId, text);
     }
 
     public void CCardExpressionSet(long cardId, string text)
     {
-        _cCardFieldDesk.CDeskQuill?.LQuillExpressionSet(cardId, text);
+        CCardFieldQuill?.LCardExpressionSet(cardId, text);
     }
 
     public void CCardMeaningSet(long cardId, string text)
     {
-        _cCardFieldDesk.CDeskQuill?.LQuillMeaningSet(cardId, text);
+        CCardFieldQuill?.LCardMeaningSet(cardId, text);
     }
 }

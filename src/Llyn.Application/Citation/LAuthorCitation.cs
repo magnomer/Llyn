@@ -8,18 +8,18 @@ public sealed class LAuthorCitation
     private readonly LVault _lAuthorCitationVault;
     private readonly LClaimClerk _lAuthorCitationClaims;
     private readonly LAuthorClerk _lAuthorCitationAuthors;
-    private readonly LEntryClerk _lAuthorCitationEntries;
+    private readonly LRevisionClerk _lAuthorCitationRevisions;
 
-    public LAuthorCitation(LRig rig, LClaimClerk claims, LAuthorClerk authors, LEntryClerk entries)
+    public LAuthorCitation(LRig rig, LClaimClerk claims, LAuthorClerk authors, LRevisionClerk revisions)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(claims);
         ArgumentNullException.ThrowIfNull(authors);
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(revisions);
         _lAuthorCitationVault = rig.LRigVault;
         _lAuthorCitationClaims = claims;
         _lAuthorCitationAuthors = authors;
-        _lAuthorCitationEntries = entries;
+        _lAuthorCitationRevisions = revisions;
     }
 
     public LDraft LAuthorCitationStart(string origin, long? authorId)
@@ -62,8 +62,7 @@ public sealed class LAuthorCitation
                 _lAuthorCitationAuthors.LAuthorClerkUpdate(stored);
             }
 
-            LCitationClerk.LRevisionRecord(
-                _lAuthorCitationEntries, stored.LAuthorId, "author", fresh, stored.LAuthorName);
+            _lAuthorCitationRevisions.LRevisionClerkRecord(stored.LAuthorId, "author", fresh, stored.LAuthorName);
             session.LVaultSessionCommit();
         }
 

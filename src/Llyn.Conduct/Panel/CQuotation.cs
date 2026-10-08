@@ -10,7 +10,7 @@ public sealed class CQuotation
 {
     private readonly CEnvoy _cQuotationEnvoy;
 
-    private readonly LEntryPort _cQuotationEntryPort;
+    private readonly LVistaPort _cQuotationVistaPort;
 
     private readonly LPortraitPort _cQuotationPortraitPort;
 
@@ -21,7 +21,7 @@ public sealed class CQuotation
     private LVista? _cQuotationVista;
 
     internal CQuotation(
-        LEntryPort entries,
+        LVistaPort vistas,
         LPortraitPort portraits,
         LSettingsPort settings,
         CEnvoy envoy,
@@ -29,15 +29,16 @@ public sealed class CQuotation
         Func<bool, bool> finishSeam,
         Func<bool> shownSeam)
     {
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(vistas);
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
 
         _cQuotationEnvoy = envoy;
-        _cQuotationEntryPort = entries;
+        _cQuotationVistaPort = vistas;
         _cQuotationSettingsPort = settings;
         _cQuotationPortraitPort = portraits;
-        CQuotationPanel = new CPanel(envoy, settings, "List.LoadFailed", null, changeSeam, finishSeam, shownSeam);
+        CQuotationPanel = new CPanel(
+            envoy, settings, vistas, "List.LoadFailed", null, changeSeam, finishSeam, shownSeam);
     }
 
     public CPanel CQuotationPanel { get; }
@@ -83,7 +84,7 @@ public sealed class CQuotation
     {
         try
         {
-            return _cQuotationEntryPort.LEngineEntryFind(_cQuotationRoll, _cQuotationVista)
+            return _cQuotationVistaPort.LEngineEntryFind(_cQuotationRoll, _cQuotationVista)
                 .Select(CCatalog.LCatalogRowRead)
                 .ToList();
         }
@@ -101,7 +102,7 @@ public sealed class CQuotation
 
     internal string LQuotationFileRead()
     {
-        return LVista.LVistaFileRead(_cQuotationVista);
+        return _cQuotationVistaPort.LEngineFileRead(_cQuotationVista);
     }
 
     internal Task LQuotationPortraitPrint(CEnvoy envoy, LSettingsPort settings)

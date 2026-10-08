@@ -6,6 +6,54 @@ namespace Llyn.Application;
 
 public static class LDraftClerkCard
 {
+    public static LEntryDraft? LCardApply(LEntryDraft content, LRequest request, LIdentity identity)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+
+        return request switch
+        {
+            LRequestCardAddition sent => LCardInsert(content, sent, identity),
+            LRequestCardRemoval sent => LCardRemove(content, sent.LRequestCardId),
+            LRequestCardShift sent => LCardMove(content, sent),
+            LRequestCardTitle sent => LCardChange(
+                content,
+                sent.LRequestCardId,
+                card => card with { LCardDraftTitle = LStateValue.LStateValueRead(sent.LRequestValue) }),
+            LRequestCardExpression sent => LCardChange(
+                content,
+                sent.LRequestCardId,
+                card => card with { LCardDraftExpression = LStateValue.LStateValueRead(sent.LRequestValue) }),
+            LRequestCardMeaning sent => LCardChange(
+                content,
+                sent.LRequestCardId,
+                card => card with { LCardDraftMeaning = LStateValue.LStateValueRead(sent.LRequestValue) }),
+            _ => null,
+        };
+    }
+
+    public static LEntryDraft LCardInsert(LEntryDraft content, LRequestCardAddition request, LIdentity identity)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(identity);
+
+        LCardDraft card = new(
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified,
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            0,
+            identity.LIdentityCreate());
+
+        return LCardInsert(
+            content, request.LRequestKind, request.LRequestParentId, request.LRequestPosition, card);
+    }
+
     public static LEntryDraft LCardInsert(
         LEntryDraft content, LCardKind kind, long parentId, int position, LCardDraft card)
     {
@@ -229,22 +277,51 @@ public static class LDraftClerkCard
 
     public static LCardDraft? LCardFind(LEntryDraft content, long id)
     {
-        ArgumentNullException.ThrowIfNull(content);
-
-        return LCardFind(content.LEntryDraftMeanings, id)
-            ?? LCardFind(content.LEntryDraftCollocations, id);
+        return LCardFind(content, card => card.LCardDraftId == id);
     }
 
-    private static LCardDraft? LCardFind(IReadOnlyList<LCardDraft> cards, long id)
+    public static LCardDraft? LCardFind(LEntryDraft content, Func<LCardDraft, bool> match)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+        ArgumentNullException.ThrowIfNull(match);
+
+        return LCardFind(content.LEntryDraftMeanings, match)
+            ?? LCardFind(content.LEntryDraftCollocations, match);
+    }
+
+    public static (LOwner, int)? LCardOwnerFind(LEntryDraft draft, long id)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        for (int index = 0; index < draft.LEntryDraftMeanings.Count; index++)
+        {
+            if (draft.LEntryDraftMeanings[index].LCardDraftId == id)
+            {
+                return (LOwner.LOwnerMeaning, index);
+            }
+        }
+
+        for (int index = 0; index < draft.LEntryDraftCollocations.Count; index++)
+        {
+            if (draft.LEntryDraftCollocations[index].LCardDraftId == id)
+            {
+                return (LOwner.LOwnerCollocation, index);
+            }
+        }
+
+        return null;
+    }
+
+    private static LCardDraft? LCardFind(IReadOnlyList<LCardDraft> cards, Func<LCardDraft, bool> match)
     {
         foreach (LCardDraft card in cards)
         {
-            if (card.LCardDraftId == id)
+            if (match(card))
             {
                 return card;
             }
 
-            if (LCardFind(card.LCardDraftChild, id) is LCardDraft nested)
+            if (LCardFind(card.LCardDraftChild, match) is LCardDraft nested)
             {
                 return nested;
             }

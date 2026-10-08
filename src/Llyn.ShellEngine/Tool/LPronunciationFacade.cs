@@ -8,7 +8,7 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-internal sealed class LPronunciationFacade
+public sealed class LPronunciationFacade : LPronunciationPort
 {
     private readonly LEngine _lPronunciationFacadeEngine;
     private readonly object _lPronunciationFacadeGate;
@@ -26,7 +26,8 @@ internal sealed class LPronunciationFacade
     {
         lock (_lPronunciationFacadeGate)
         {
-            return LPronunciationFacadeStaff.LEngineStaffPronunciation.LPronunciationClerkFind(query, order);
+            return LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffPronunciation
+                .LPronunciationClerkFind(query, order);
         }
     }
 
@@ -86,13 +87,14 @@ internal sealed class LPronunciationFacade
             held = _lPronunciationFacadeEngine.LEngineTrove.LTroveCandidateRead(session, word, language);
             if (held is null)
             {
-                scan = LPronunciationFacadeStaff.LEngineStaffTranscription.LTranscriptionClerkFind(
-                    word, language, receiver, cancellation);
+                scan = LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffTranscription
+                    .LTranscriptionClerkFind(word, language, receiver, cancellation);
             }
         }
 
         return scan is null
-            ? LPronunciationFacadeStaff.LEngineStaffTranscription.LTranscriptionClerkPublish(held!, language, receiver)
+            ? LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffTranscription
+                .LTranscriptionClerkPublish(held!, language, receiver)
             : LEngineTroveSave(scan, session, word, language, null);
     }
 
@@ -134,7 +136,7 @@ internal sealed class LPronunciationFacade
             held = _lPronunciationFacadeEngine.LEngineTrove.LTroveRecordingRead(session, word, language);
             if (held is null)
             {
-                scan = LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkFind(
+                scan = LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffRecording.LRecordingClerkFind(
                     word, language, variety, listener, cancellation);
             }
         }
@@ -191,7 +193,7 @@ internal sealed class LPronunciationFacade
         LRecordingClerk recordings;
         lock (_lPronunciationFacadeGate)
         {
-            recordings = LPronunciationFacadeStaff.LEngineStaffRecording;
+            recordings = LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffRecording;
         }
 
         return recordings.LRecordingClerkSave(recording, word, language, cancellation);
@@ -202,7 +204,7 @@ internal sealed class LPronunciationFacade
         LRecordingClerk recordings;
         lock (_lPronunciationFacadeGate)
         {
-            recordings = LPronunciationFacadeStaff.LEngineStaffRecording;
+            recordings = LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffRecording;
         }
 
         return recordings.LRecordingClerkPrepare(recording, cancellation);
@@ -212,7 +214,7 @@ internal sealed class LPronunciationFacade
     {
         lock (_lPronunciationFacadeGate)
         {
-            LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkSweep();
+            LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffRecording.LRecordingClerkSweep();
         }
     }
 
@@ -220,7 +222,7 @@ internal sealed class LPronunciationFacade
     {
         lock (_lPronunciationFacadeGate)
         {
-            return LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkExist(file);
+            return LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffRecording.LRecordingClerkExist(file);
         }
     }
 
@@ -228,7 +230,8 @@ internal sealed class LPronunciationFacade
     {
         lock (_lPronunciationFacadeGate)
         {
-            return LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkPlay(file, volume);
+            return LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffRecording
+                .LRecordingClerkPlay(file, volume);
         }
     }
 
@@ -264,19 +267,19 @@ internal sealed class LPronunciationFacade
 
     public void LEngineRecordingStop(int ticket)
     {
-        LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkStop(ticket);
+        LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffRecording.LRecordingClerkStop(ticket);
     }
 
     public void LEngineVolumeSet(double volume)
     {
-        LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkAdjust(volume);
+        LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffRecording.LRecordingClerkAdjust(volume);
     }
 
     public IReadOnlyList<string> LEngineSchemeRead(string language)
     {
         lock (_lPronunciationFacadeGate)
         {
-            return LPronunciationFacadeStaff.LEngineStaffTranscription.LSchemeRead(language);
+            return LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffTranscription.LSchemeRead(language);
         }
     }
 
@@ -298,8 +301,8 @@ internal sealed class LPronunciationFacade
             held = _lPronunciationFacadeEngine.LEngineTrove.LTroveTranscriptionRead(session, word, language, scheme);
             if (held is null)
             {
-                scan = LPronunciationFacadeStaff.LEngineStaffTranscription.LTranscriptionClerkFind(
-                    word, language, scheme, receiver, cancellation);
+                scan = LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffTranscription
+                    .LTranscriptionClerkFind(word, language, scheme, receiver, cancellation);
             }
         }
 
@@ -308,13 +311,24 @@ internal sealed class LPronunciationFacade
             : LEngineTroveSave(scan, session, word, language, scheme);
     }
 
+    public LArticulation LEngineConsonantRead()
+    {
+        return LPronunciationClerk.LPronunciationConsonantRead();
+    }
+
+    public LArticulation LEngineVowelRead()
+    {
+        return LPronunciationClerk.LPronunciationVowelRead();
+    }
+
     public LFrequencyGauge? LEngineFrequencyResolve(long entryId, string once)
     {
-        return LPronunciationFacadeStaff.LEngineStaffFrequency.LFrequencyClerkResolve(entryId, once);
+        return LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffFrequency
+            .LFrequencyClerkResolve(entryId, once);
     }
 
     internal void LEngineFrequencyStart(long entryId)
     {
-        LPronunciationFacadeStaff.LEngineStaffFrequency.LFrequencyClerkStart(entryId);
+        LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffFrequency.LFrequencyClerkStart(entryId);
     }
 }

@@ -1,9 +1,10 @@
 # LFanqieFacade.cs
-Hash: `706640a13e16abdc`
+Hash: `f17eaaf838c83e11`
 
-## `internal sealed class LFanqieFacade`
+## `public sealed class LFanqieFacade : LFanqiePort, LDiweiPort`
 
 The engine's facade for fanqie, wrapping the fanqie, diwei and tally reads of the fanqie and diwei clerks.
+It implements the fanqie and diwei ports itself, so Host hands it to Conduct with no outlet between.
 The vista-shaped finds stay here, since a vista is an engine handle.
 
 ## `public LFanqieFacade(LEngine engine)`
@@ -33,7 +34,7 @@ The rows grouped by book.
 ## `public IReadOnlyList<LFanqieGroup> LEngineFanqieRead(long entryId)`
 
 The rows grouped by book, after starting the fetch of every character still missing.
-The start comes first, so a character fetched long ago is never fetched twice.
+The start skips a character whose rows are stored, so a character fetched long ago is never fetched twice.
 
 ## `public string LEngineReadingRead(long entryId, string headword)`
 
@@ -52,6 +53,11 @@ Fetches every character of the entry again, its series along with its rows.
 ## `public bool LEngineFanqieCheck(long entryId)`
 
 Whether a fetch of rows or of a series is pending for any character of the entry.
+
+## `public string? LEngineDiweiRead(bool initial, string key)`
+
+The kind of the cell a pressed fanqie key opens, or none for a blank key.
+The diwei clerk owns the rule, and the facade only flips the initial flag into the clerk's final one.
 
 ## `public LDiwei? LEngineDiweiRead(long? id)`
 

@@ -63,7 +63,7 @@ public sealed class TPortrait
     public void PortraitTicketRead_NamedSheet_CarriesTheDialogAnswer()
     {
         LPressTicket ticket = TInterfaceConductPortrait.TPortraitTicketRead(new CPressTicket(
-            "Office", 816.0, 1056.0, true, 2, false, CPressSide.CPressSideLong, CPressInk.CPressInkGray));
+            "Office", 8.5, 11.0, true, 2, false, CPressSide.CPressSideLong, CPressInk.CPressInkGray));
 
         Assert.Equal("Office", ticket.LPressTicketPrinter);
         Assert.Equal(8.5, ticket.LPressTicketPaper.LPressPaperWidth);
@@ -86,7 +86,7 @@ public sealed class TPortrait
     public void PortraitTicketRead_EmptySide_TakesTheLocalSheet()
     {
         LPressTicket ticket = TInterfaceConductPortrait.TPortraitTicketRead(new CPressTicket(
-            "Office", 0.0, 1056.0, false, 1, true, CPressSide.CPressSideDefault, CPressInk.CPressInkDefault));
+            "Office", 0.0, 11.0, false, 1, true, CPressSide.CPressSideDefault, CPressInk.CPressInkDefault));
 
         Assert.Equal(LPressPaper.LPressPaperLocal, ticket.LPressTicketPaper);
     }

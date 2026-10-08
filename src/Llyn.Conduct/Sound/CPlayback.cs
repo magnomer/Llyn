@@ -36,6 +36,8 @@ public sealed class CPlayback
 
     public Uri? CPlaybackAccentStart(long accent)
     {
-        return _cPlaybackDesk.CDeskFilling ? null : _cPlaybackDesk.CDeskTenure?.LTenureAudioResolve(accent);
+        return !_cPlaybackDesk.CDeskFilling && _cPlaybackDesk.CDeskTenure is LTenure held
+            ? new LQuillPronunciation(held).LQuillAudioResolve(accent)
+            : null;
     }
 }

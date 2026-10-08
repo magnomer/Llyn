@@ -1,7 +1,5 @@
-using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using Llyn.Conduct;
 
@@ -15,14 +13,7 @@ internal sealed class QCardDrag
 
     private CEditor _cEditor = null!;
 
-    private PCard? _qCardDragCard;
-    private ItemsControl? _qCardDragHost;
-    private PCardGhost? _qCardDragGhost;
-
-    private double _qCardDragOrigin;
-    private double _qCardDragGrab;
-
-    private double _qCardDragHeight;
+    private QCardGesture? _qCardDragGesture;
 
     internal QCardDrag(FrameworkElement surface)
     {
@@ -62,18 +53,14 @@ internal sealed class QCardDrag
             return;
         }
 
-        _qCardDragCard = card;
-        _qCardDragHost = host;
-        _qCardDragOrigin = e.GetPosition(host).Y;
-        _qCardDragGrab = _qCardDragOrigin - container.TranslatePoint(new Point(0, 0), host).Y;
-        _qCardDragHeight = container.ActualHeight;
+        _qCardDragGesture = new QCardGesture(card, card.PCardId, host, container, e.GetPosition(host).Y);
 
         host.CaptureMouse();
     }
 
     private void QCardDragUpdate(object sender, MouseEventArgs e)
     {
-        if (_qCardDragHost is null || _qCardDragCard is null)
+        if (_qCardDragGesture is not QCardGesture gesture)
         {
             return;
         }
@@ -84,115 +71,26 @@ internal sealed class QCardDrag
             return;
         }
 
-        double pointer = e.GetPosition(_qCardDragHost).Y;
-        double top = pointer - _qCardDragGrab;
-
-        QCardDragShow(sender, e, pointer, top);
-
-        if (_qCardDragHost is null)
+        if (!gesture.QCardGestureShow(e))
         {
+            QCardDragReset(sender, e);
             return;
         }
 
-        QCardDragMove(top);
-    }
+        int target = gesture.QCardGestureResolve(e);
 
-    private void QCardDragShow(object sender, MouseEventArgs e, double pointer, double top)
-    {
-        if (_qCardDragGhost is null)
-        {
-            if (Math.Abs(pointer - _qCardDragOrigin) < SystemParameters.MinimumVerticalDragDistance)
-            {
-                return;
-            }
-
-            _qCardDragGhost = QCardDragBuild();
-
-            if (_qCardDragGhost is null)
-            {
-                QCardDragReset(sender, e);
-                return;
-            }
-        }
-
-        _qCardDragGhost.PCardGhostTop = top;
-    }
-
-    private PCardGhost? QCardDragBuild()
-    {
-        ItemsControl host = _qCardDragHost!;
-
-        if (host.ItemContainerGenerator.ContainerFromItem(_qCardDragCard) is not FrameworkElement container)
-        {
-            return null;
-        }
-
-        AdornerLayer? layer = AdornerLayer.GetAdornerLayer(host);
-
-        if (layer is null)
-        {
-            return null;
-        }
-
-        var ghost = new PCardGhost(host, container, container.TranslatePoint(new Point(0, 0), host).X);
-        layer.Add(ghost);
-
-        return ghost;
-    }
-
-    private void QCardDragMove(double top)
-    {
-        ItemsControl host = _qCardDragHost!;
-        int current = host.Items.IndexOf(_qCardDragCard);
-        double bottom = top + _qCardDragHeight;
-        int target = current;
-
-        for (int index = 0; index < host.Items.Count; index++)
-        {
-            if (host.ItemContainerGenerator.ContainerFromIndex(index) is not FrameworkElement container)
-            {
-                continue;
-            }
-
-            double middle = container.TranslatePoint(new Point(0, 0), host).Y + (container.ActualHeight / 2);
-
-            if (index < current && top < middle)
-            {
-                target = index;
-                break;
-            }
-
-            if (index > current && bottom > middle)
-            {
-                target = index;
-            }
-        }
-
-        _cEditor.CEditorList.CCardMove(_qCardDragCard!.PCardId, target);
+        _cEditor.CEditorList.CCardMove(gesture.QCardGestureId, target);
     }
 
     private void QCardDragReset(object sender, MouseEventArgs e)
     {
-        if (_qCardDragHost is null)
+        if (_qCardDragGesture is not QCardGesture gesture)
         {
             return;
         }
 
-        ItemsControl host = _qCardDragHost;
-        PCardGhost? ghost = _qCardDragGhost;
+        _qCardDragGesture = null;
 
-        _qCardDragHost = null;
-        _qCardDragGhost = null;
-        _qCardDragCard = null;
-
-        if (ghost is not null)
-        {
-            AdornerLayer.GetAdornerLayer(host)?.Remove(ghost);
-        }
-
-        if (host.IsMouseCaptured)
-        {
-            host.ReleaseMouseCapture();
-        }
+        gesture.QCardGestureClear();
     }
 }

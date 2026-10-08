@@ -1,10 +1,12 @@
 # LMentionFacade.cs
-Hash: `d4c352210a3b3aba`
+Hash: `7260a6dd7fc3edd3`
 
-## `internal sealed class LMentionFacade`
+## `public sealed class LMentionFacade : LMentionPort`
 
 The engine's facade for mention operations.
-Every call takes the gate and hands the work to `LMentionClerk`, which holds the rules.
+Every find and resolve takes the gate and hands the work to `LMentionClerk`, which holds the rules.
+The span and offset reads are pure and take no gate.
+It implements the mention port itself, so Host hands it to Conduct with no outlet between.
 
 ## `public LMentionFacade(LEngine engine)`
 
@@ -53,3 +55,8 @@ The draft is read before the gate is taken, as the other held reads do.
 
 The clerk's mention lines for every sentence row of the held draft, under the gate.
 The draft is read before the gate is taken, as the other held reads do.
+
+## `public long? LEngineLinkRead(long? link)`
+
+The entry a clicked link names, or null when it names none.
+A link names its entry only through a stored id, so an empty id names nothing.

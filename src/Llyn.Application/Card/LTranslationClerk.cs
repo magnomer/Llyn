@@ -8,17 +8,16 @@ public sealed class LTranslationClerk
 {
     private readonly LVault _lTranslationClerkVault;
     private readonly LEntryVault _lTranslationClerkEntries;
-    private readonly LRevisionVault _lTranslationClerkRevisions;
-    private readonly LWorkspaceVault _lTranslationClerkWorkspaces;
+    private readonly LRevisionClerk _lTranslationClerkRevisions;
     private readonly LTranslationVault _lTranslationClerkTranslations;
 
-    public LTranslationClerk(LRig rig)
+    public LTranslationClerk(LRig rig, LRevisionClerk revisions)
     {
         ArgumentNullException.ThrowIfNull(rig);
+        ArgumentNullException.ThrowIfNull(revisions);
         _lTranslationClerkVault = rig.LRigVault;
         _lTranslationClerkEntries = rig.LRigEntries;
-        _lTranslationClerkRevisions = rig.LRigRevisions;
-        _lTranslationClerkWorkspaces = rig.LRigWorkspaces;
+        _lTranslationClerkRevisions = revisions;
         _lTranslationClerkTranslations = rig.LRigTranslations;
     }
 
@@ -164,9 +163,7 @@ public sealed class LTranslationClerk
             speeches: []);
 
         LRevisionDelta change = new(entry.LEntryId, "entry", "create", entry.LEntryHeadword);
-        LRevision revision = _lTranslationClerkRevisions.LRevisionRecord([change]);
-        LWorkspaceState state = _lTranslationClerkWorkspaces.LWorkspaceStateRead();
-        _lTranslationClerkWorkspaces.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
+        _lTranslationClerkRevisions.LRevisionClerkRecord([change]);
 
         session.LVaultSessionCommit();
         return entry;

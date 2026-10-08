@@ -90,7 +90,7 @@ public sealed class CTranscript
 
     public void CTranscriptMentionRemove(long mentionId)
     {
-        _cTranscriptDesk.CDeskQuill?.LQuillMentionRemove(0, 0, mentionId);
+        _cTranscriptDesk.CDeskMention?.LQuillMentionRemove(0, 0, mentionId);
     }
 
     public void CTranscriptMentionRemove(string text, int start, int length)
@@ -100,12 +100,14 @@ public sealed class CTranscript
 
     public bool CTranscriptMentionCheck(string text, int start, int length)
     {
-        return _cTranscriptDesk.CDeskTenure?.LTenureMentionCheck(0, 0, text, start, length) is true;
+        return _cTranscriptDesk.CDeskTenure is LTenure held
+            && new LQuillMention(held).LQuillMentionCheck(0, 0, text, start, length);
     }
 
     public bool CTranscriptSenseCheck(string text, int start, int length)
     {
-        return _cTranscriptDesk.CDeskTenure?.LTenureSenseCheck(0, 0, text, start, length) is true;
+        return _cTranscriptDesk.CDeskTenure is LTenure held
+            && new LQuillMention(held).LQuillSenseCheck(0, 0, text, start, length);
     }
 
     public CMentionSense? CTranscriptSenseRead(string text, int start, int length)

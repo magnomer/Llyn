@@ -10,15 +10,15 @@ public sealed class LQuillReflex
 {
     private readonly LTenure _lQuillReflexTenure;
 
-    private readonly LPhonologyPort _lQuillReflexPhonology;
+    private readonly LReflexPort _lQuillReflexPort;
 
-    public LQuillReflex(LTenure tenure, LPhonologyPort phonology)
+    public LQuillReflex(LTenure tenure, LReflexPort reflexes)
     {
         ArgumentNullException.ThrowIfNull(tenure);
-        ArgumentNullException.ThrowIfNull(phonology);
+        ArgumentNullException.ThrowIfNull(reflexes);
 
         _lQuillReflexTenure = tenure;
-        _lQuillReflexPhonology = phonology;
+        _lQuillReflexPort = reflexes;
     }
 
     public void LQuillReflexAdd(long reflex)
@@ -103,11 +103,58 @@ public sealed class LQuillReflex
         _lQuillReflexTenure.LTenureRequestDefer(new LRequestReflexNote(_lQuillReflexTenure.LTenureId, reflex, note));
     }
 
+    public void LReflexAnchorSet(long reflex, long fanqie, bool anchored)
+    {
+        _lQuillReflexTenure.LTenureRequestApply(
+            new LRequestReflexAnchor(_lQuillReflexTenure.LTenureId, reflex, fanqie, anchored));
+    }
+
+    public bool LQuillReflexCheck()
+    {
+        return _lQuillReflexTenure.LTenureEngine.LEngineReflex.LEngineReflexRead(
+                _lQuillReflexTenure.LTenureLanguageRead()).Count > 0
+            || _lQuillReflexTenure.LTenureRead()?.LDraftContent.LEntryDraftReflected == true;
+    }
+
+    public void LQuillReflexStart()
+    {
+        if (_lQuillReflexTenure.LTenureRead() is { LDraftStored: long stored } held
+            && !held.LDraftContent.LEntryDraftReflected)
+        {
+            _lQuillReflexTenure.LTenureEngine.LEngineReflex.LEngineReflexStart(stored);
+        }
+    }
+
+    public IReadOnlyList<LAnchorRow> LQuillAnchorScan(long reflex)
+    {
+        LDraft? held = _lQuillReflexTenure.LTenureRead();
+        if (held?.LDraftStored is not long stored)
+        {
+            return [];
+        }
+
+        try
+        {
+            return LDraftClerkReflex.LReflexFind(held.LDraftContent, reflex) is LReflexDraft row
+                ? _lQuillReflexTenure.LTenureEngine.LEngineReflex.LEngineAnchorScan(
+                    stored,
+                    row.LReflexDraftAnchors,
+                    held.LDraftContent.LEntryDraftLanguage,
+                    row.LReflexDraftLanguage,
+                    row.LReflexDraftAnatomy.LAnatomyToneIpa)
+                : [];
+        }
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
+        {
+            return [];
+        }
+    }
+
     private bool LQuillRespellingCheck(long reflex)
     {
         return _lQuillReflexTenure.LTenureRead()?.LDraftContent is LEntryDraft content
             && LDraftClerkReflex.LReflexFind(content, reflex) is LReflexDraft row
-            && _lQuillReflexPhonology
+            && _lQuillReflexPort
                 .LEngineGuiseRead(content.LEntryDraftLanguage, [row.LReflexDraftLanguage])[0]
                 .LReflexGuiseRespelled;
     }

@@ -20,7 +20,7 @@ internal sealed class LCourierFacade
 
     public bool LEngineCourierCheck()
     {
-        return LCourierFacadeStaff.LEngineStaffCourier.LCourierClerkCheck();
+        return LCourierFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffCourier.LCourierClerkCheck();
     }
 
     public async Task<LReceipt> LEngineCourierSend(Func<string, string> lookup, CancellationToken cancellation)
@@ -28,7 +28,7 @@ internal sealed class LCourierFacade
         try
         {
             LEngine engine = _lCourierFacadeEngine;
-            return await LCourierFacadeStaff.LEngineStaffCourier.LCourierClerkSend(
+            return await LCourierFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffCourier.LCourierClerkSend(
                 engine.LEngineLivery.LEngineLiveryRead,
                 language => engine.LEngineLivery.LEngineLiveryRead(language, engine.LEngineSettings.LEngineTextFind),
                 lookup,
@@ -44,7 +44,8 @@ internal sealed class LCourierFacade
 
     public async Task LEngineCourierAttach(CancellationToken cancellation)
     {
-        string hidden = await LCourierFacadeStaff.LEngineStaffCourier.LCourierClerkAttach(cancellation)
+        string hidden = await LCourierFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffCourier
+            .LCourierClerkAttach(cancellation)
             .ConfigureAwait(false);
         if (_lCourierFacadeEngine.LEngineSettings.LEngineSettingsChange(
                 settings => settings with { LSettingsWarrant = hidden }))

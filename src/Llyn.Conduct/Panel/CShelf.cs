@@ -12,7 +12,7 @@ public sealed class CShelf
 
     private readonly CEnvoy _cShelfEnvoy;
 
-    private readonly LEntryPort _cShelfEntryPort;
+    private readonly LReferencePort _cShelfReferencePort;
 
     private readonly LPortraitPort _cShelfPortraitPort;
 
@@ -31,7 +31,7 @@ public sealed class CShelf
 
         _cShelfAtelier = atelier;
         _cShelfEnvoy = envoy;
-        _cShelfEntryPort = atelier.CAtelierEntryPort;
+        _cShelfReferencePort = atelier.CAtelierEntryBundle.CEntryBundleReference;
         _cShelfPortraitPort = atelier.CAtelierPortraitPort;
         _cShelfSettingsPort = atelier.CAtelierSettingsPort;
         _cShelfMarshal = marshal;
@@ -39,7 +39,9 @@ public sealed class CShelf
         CShelfEditor = editor;
         CShelfImprint = new CImprint(
             atelier.CAtelierDraftPort,
-            atelier.CAtelierEntryPort,
+            atelier.CAtelierEntryBundle.CEntryBundleEntry,
+            atelier.CAtelierEntryBundle.CEntryBundleReference,
+            atelier.CAtelierEntryBundle.CEntryBundleAuthor,
             atelier.CAtelierSettingsPort,
             envoy,
             atelier.CAtelierLedger.LLedgerRepaint,
@@ -47,10 +49,11 @@ public sealed class CShelf
         CShelfPanel = new CPanel(
             envoy,
             _cShelfSettingsPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             "Source.LoadFailed", "Source",
             CShelfImprint.CImprintDesk.LDeskChangeCheck, LShelfDraftFinish, shownSeam);
         CShelfFootnote = new CFootnote(
-            atelier.CAtelierEntryPort,
+            atelier.CAtelierEntryBundle.CEntryBundleVista,
             atelier.CAtelierPortraitPort,
             atelier.CAtelierSettingsPort,
             editor,
@@ -61,7 +64,7 @@ public sealed class CShelf
         CShelfPanel.CPanelCleared += CShelfImprint.LImprintCancel;
         CShelfPanel.CPanelEdited += id => CShelfImprint.LImprintOpen(id);
         CShelfPanel.CPanelDraftChanged +=
-            draft => CShelfColophonChanged?.Invoke(COeuvre.LOeuvreColophonRead(_cShelfEntryPort, draft));
+            draft => CShelfColophonChanged?.Invoke(COeuvre.LOeuvreColophonRead(_cShelfReferencePort, draft));
         CShelfImprint.CImprintDesk.CDeskFinished += id => LShelfSourceOpen(id, false);
         CShelfImprint.CImprintDesk.CDeskStateChanged += () => CShelfChanged?.Invoke();
         editor.CEditorDesk.CDeskStateChanged += () => CShelfChanged?.Invoke();
@@ -174,7 +177,7 @@ public sealed class CShelf
         try
         {
             rows = COeuvre.COeuvreReferenceRead(
-                _cShelfVista is LVista vista ? _cShelfEntryPort.LEngineReferenceFind(vista) : []);
+                _cShelfVista is LVista vista ? _cShelfReferencePort.LEngineReferenceFind(vista) : []);
         }
         catch (Exception exception)
         {

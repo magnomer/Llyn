@@ -8,39 +8,35 @@ namespace Llyn.ShellEngine;
 public sealed class LEngine : IDisposable
 {
     internal object LEngineGate { get; } = new();
-    internal LVistaFacade LEngineVista { get; }
+    public LVistaFacade LEngineVista { get; }
     internal LTenureFacade LEngineTenure { get; }
-    internal LMentionFacade LEngineMention { get; }
+    public LMentionFacade LEngineMention { get; }
     internal LMarkupFacade LEngineMarkup { get; }
     internal LCourierFacade LEngineCourier { get; }
     internal LLiveryFacade LEngineLivery { get; }
-    internal LWorkspaceFacade LEngineWorkspace { get; }
-    internal LReflexFacade LEngineReflex { get; }
+    public LWorkspaceFacade LEngineWorkspace { get; }
+    public LReflexFacade LEngineReflex { get; }
     internal LPortraitFacade LEnginePortrait { get; }
-    internal LStemFacade LEngineStem { get; }
-    internal LFanqieFacade LEngineFanqie { get; }
-    internal LLanguageFacade LEngineLanguage { get; }
-    internal LVocabularyFacade LEngineVocabulary { get; }
-    internal LPronunciationFacade LEnginePronunciation { get; }
-    internal LDraftFacade LEngineDraft { get; }
+    public LStemFacade LEngineStem { get; }
+    public LFanqieFacade LEngineFanqie { get; }
+    public LLanguageFacade LEngineLanguage { get; }
+    public LVocabularyFacade LEngineVocabulary { get; }
+    public LPronunciationFacade LEnginePronunciation { get; }
+    public LDraftFacade LEngineDraft { get; }
     internal LSettingsFacade LEngineSettings { get; }
     internal LRequestFacade LEngineRequest { get; }
-    internal LAuthorFacade LEngineAuthor { get; }
-    internal LExampleFacade LEngineExample { get; }
-    internal LReferenceFacade LEngineReference { get; }
-    internal LSituationFacade LEngineSituation { get; }
-    internal LCardFacade LEngineCard { get; }
-    internal LEntryFacade LEngineEntry { get; }
+    public LAuthorFacade LEngineAuthor { get; }
+    public LExampleFacade LEngineExample { get; }
+    public LReferenceFacade LEngineReference { get; }
+    public LSituationFacade LEngineSituation { get; }
+    public LCardFacade LEngineCard { get; }
+    public LEntryFacade LEngineEntry { get; }
     internal LTrove LEngineTrove { get; } = new();
     internal LSettings LEngineSettingsHeld { get; set; }
     internal HashSet<long> LEngineDraftStale { get; } = [];
     internal long LEngineRevision { get; set; }
-    private readonly List<Action<LBulletin>> _lEngineObservers = [];
-    private readonly Func<string, LRig> _lEngineFactory;
-    private readonly Action<string> _lEnginePointer;
+    private readonly LBulletinRoster _lEngineRoster = new(null);
     private LEngineStaff _lEngineStaff;
-    private string _lEngineFolder;
-    private LDoctorRescue _lEngineRescue;
 
     public LEngine(LRig rig, Func<string, LRig> factory, Action<string> pointer)
     {
@@ -48,14 +44,9 @@ public sealed class LEngine : IDisposable
         ArgumentNullException.ThrowIfNull(factory);
         ArgumentNullException.ThrowIfNull(pointer);
 
-        _lEngineFactory = factory;
-        _lEnginePointer = pointer;
-
-        _lEngineFolder = rig.LRigWorkspace;
         _lEngineStaff = LEngineStaff.LEngineStaffBuild(
             rig, LEngineGate, LEngineBulletinRaise, LEngineSettingsRead, LEngineDraftStale);
-        LEngineSettingsHeld = _lEngineStaff.LEngineStaffWorkspace.LWorkspaceSettingsRead();
-        _lEngineRescue = LWorkspaceClerk.LWorkspaceRescueCreate(rig);
+        LEngineSettingsHeld = _lEngineStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceSettingsRead();
 
         LEngineVista = new LVistaFacade(this);
         LEngineDraft = new LDraftFacade(this);
@@ -72,7 +63,7 @@ public sealed class LEngine : IDisposable
         LEngineMarkup = new LMarkupFacade(this);
         LEngineCourier = new LCourierFacade(this);
         LEngineLivery = new LLiveryFacade(this);
-        LEngineWorkspace = new LWorkspaceFacade(this);
+        LEngineWorkspace = new LWorkspaceFacade(this, rig, factory, pointer);
         LEngineReflex = new LReflexFacade(this);
         LEnginePortrait = new LPortraitFacade(this);
         LEngineStem = new LStemFacade(this);
@@ -105,132 +96,49 @@ public sealed class LEngine : IDisposable
     private void LEngineWorkspaceOpen()
     {
         LEngineVocabulary.LEngineLanguageImport();
-        _lEngineStaff.LEngineStaffFanqie.LDiweiApply();
-        _lEngineStaff.LEngineStaffShengfu.LStemApply();
-        if (_lEngineStaff.LEngineStaffWorkspace.LWorkspaceClerkMigrated)
+        _lEngineStaff.LEngineStaffLanguage.LLanguageStaffApply();
+        if (_lEngineStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceClerkMigrated)
         {
-            _lEngineStaff.LEngineStaffWorkspace.LWorkspaceClerkUpdate();
+            _lEngineStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceClerkUpdate();
         }
     }
 
-    public LDoctorRescue LEngineRescueRead()
-    {
-        lock (LEngineGate)
-        {
-            return _lEngineRescue;
-        }
-    }
-
-    public string LEngineWorkspaceRead()
-    {
-        lock (LEngineGate)
-        {
-            return _lEngineFolder;
-        }
-    }
-
-    public string LEngineWorkspaceFormat()
-    {
-        lock (LEngineGate)
-        {
-            return _lEngineStaff.LEngineStaffTrail.LWorkspaceFormat();
-        }
-    }
-
-    public string? LEngineAuditRecord(Exception exception)
-    {
-        lock (LEngineGate)
-        {
-            return _lEngineStaff.LEngineStaffWorkspace.LWorkspaceAuditRecord(exception);
-        }
-    }
-
-    public string? LEngineNoticeRead(Exception exception)
-    {
-        return LWorkspaceClerk.LWorkspaceNoticeRead(exception);
-    }
-
-    public (string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(
-        Exception exception, string unexpected, string recorded)
-    {
-        if (LEngineNoticeRead(exception) is string notice)
-        {
-            return (notice, null, null);
-        }
-
-        return LEngineAuditRecord(exception) is string path ? (unexpected, recorded, path) : (unexpected, null, null);
-    }
-
-    public bool LEngineWorkspaceCheck(string chosen)
-    {
-        return LWorkspaceClerk.LWorkspaceChosenRead(chosen, LEngineWorkspaceRead()) is not null;
-    }
-
-    public void LEngineWorkspaceChange(string chosen)
-    {
-        string path = LWorkspaceClerk.LWorkspaceChosenRead(chosen, LEngineWorkspaceRead())
-            ?? throw new ArgumentException("The chosen folder names no other workspace.", nameof(chosen));
-
-        LEngineRigApply(_lEngineFactory(path));
-        _lEnginePointer(path);
-    }
-
-    public void LEngineRigApply(LRig rig)
+    internal void LEngineRigApply(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
 
         lock (LEngineGate)
         {
-            LDoctorRescue rescue = LWorkspaceClerk.LWorkspaceRescueCreate(rig);
             LSettings settings = LWorkspaceClerk.LWorkspaceSettingsRead(rig, LEngineSettingsHeld, out bool settled);
 
-            foreach (long held in _lEngineStaff.LEngineStaffClaim.LClaimClerkHeld)
+            foreach (long held in _lEngineStaff.LEngineStaffClaim.LClaimStaffClaim.LClaimClerkHeld)
             {
                 LEngineDraftStale.Add(held);
             }
 
-            _lEngineStaff.LEngineStaffRecording.LRecordingClerkClear();
-            LEngineFetchClear();
-            _lEngineStaff.LEngineStaffEnsign.LEnsignClear();
+            _lEngineStaff.LEngineStaffLanguage.LLanguageStaffRecording.LRecordingClerkClear();
+            _lEngineStaff.LEngineStaffLanguage.LLanguageStaffClear();
+            _lEngineStaff.LEngineStaffLanguage.LLanguageStaffEnsign.LEnsignClear();
             LEngineTrove.LTroveClear();
 
             LEngineSettingsHeld = settings;
-            _lEngineRescue = rescue;
-            _lEngineFolder = rig.LRigWorkspace;
             _lEngineStaff = LEngineStaff.LEngineStaffBuild(
                 rig, LEngineGate, LEngineBulletinRaise, LEngineSettingsRead, LEngineDraftStale);
             if (!settled)
             {
-                _lEngineStaff.LEngineStaffWorkspace.LWorkspaceFallbackSave(LEngineSettingsHeld);
+                _lEngineStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceFallbackSave(
+                    LEngineSettingsHeld);
             }
 
             LEngineWorkspaceOpen();
         }
-
-        LEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
-    }
-
-    private void LEngineFetchClear()
-    {
-        _lEngineStaff.LEngineStaffFrequency.LFrequencyClerkClear();
-        _lEngineStaff.LEngineStaffLacuna.LLacunaClerkClear();
-        _lEngineStaff.LEngineStaffScript.LScriptClerkClear();
-        _lEngineStaff.LEngineStaffFanqie.LFanqieClerkClear();
-        _lEngineStaff.LEngineStaffShengfu.LShengfuClerkClear();
-        _lEngineStaff.LEngineStaffReflex.LReflexClerkFetch.LReflexFetchClear();
-    }
-
-    internal static ArgumentOutOfRangeException LEngineOwnerRaise(LOwner owner)
-    {
-        return new ArgumentOutOfRangeException(
-            nameof(owner), owner, "This entity has no reference from that kind of row.");
     }
 
     public void Dispose()
     {
         lock (LEngineGate)
         {
-            LEngineFetchClear();
+            _lEngineStaff.LEngineStaffLanguage.LLanguageStaffClear();
         }
     }
 
@@ -240,9 +148,9 @@ public sealed class LEngine : IDisposable
 
         lock (LEngineGate)
         {
-            if (!_lEngineObservers.Contains(observer))
+            if (!_lEngineRoster.LBulletinRosterCheck(observer))
             {
-                _lEngineObservers.Add(observer);
+                _lEngineRoster.LBulletinRosterAttach(null, observer, null);
             }
         }
     }
@@ -253,28 +161,23 @@ public sealed class LEngine : IDisposable
 
         lock (LEngineGate)
         {
-            _lEngineObservers.Remove(observer);
+            _lEngineRoster.LBulletinRosterDetach(observer);
         }
     }
 
     internal void LEngineBulletinRaise(LSubject subject, long id)
     {
-        Action<LBulletin>[] observers;
+        (LSubject?, Action<LBulletin>, long?)[] snapshot;
         lock (LEngineGate)
         {
             LEngineRevision++;
-            if (_lEngineObservers.Count == 0)
+            snapshot = _lEngineRoster.LBulletinRosterRead();
+            if (snapshot.Length == 0)
             {
                 return;
             }
-
-            observers = [.. _lEngineObservers];
         }
 
-        LBulletin bulletin = new(subject, id);
-        foreach (Action<LBulletin> observer in observers)
-        {
-            observer(bulletin);
-        }
+        _lEngineRoster.LBulletinRosterDispatch(new LBulletin(subject, id), snapshot);
     }
 }

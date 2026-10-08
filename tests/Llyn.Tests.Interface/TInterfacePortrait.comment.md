@@ -1,5 +1,5 @@
 # TInterfacePortrait.cs
-Hash: `282ff9bab8c30ea3`
+Hash: `857a882955dffc9e`
 
 ## `internal static partial class TInterface`
 

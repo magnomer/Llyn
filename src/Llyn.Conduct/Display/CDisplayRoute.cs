@@ -8,7 +8,7 @@ public sealed class CDisplayRoute
 {
     private readonly LDisplaySound _cDisplayVoice;
 
-    private readonly LEntryPort _cDisplayPort;
+    private readonly LMentionPort _cDisplayMentionPort;
 
     private readonly LSettingsPort _cDisplaySettings;
 
@@ -16,15 +16,15 @@ public sealed class CDisplayRoute
 
     private CMention? _cDisplayMention;
 
-    internal CDisplayRoute(LDisplay display, LEntryPort entries, LSettingsPort settings, CEnvoy envoy)
+    internal CDisplayRoute(LDisplay display, LMentionPort mentions, LSettingsPort settings, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(display);
-        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(mentions);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _cDisplayVoice = display.LDisplaySound;
-        _cDisplayPort = entries;
+        _cDisplayMentionPort = mentions;
         _cDisplaySettings = settings;
         _cDisplayEnvoy = envoy;
     }
@@ -46,7 +46,7 @@ public sealed class CDisplayRoute
             return true;
         }
 
-        if (LEntryPort.LEngineLinkRead(link) is not long id)
+        if (_cDisplayMentionPort.LEngineLinkRead(link) is not long id)
         {
             return false;
         }
@@ -69,13 +69,13 @@ public sealed class CDisplayRoute
     public CMentionOffer? CDisplayMentionFind(long sentence, string text, int unit)
     {
         return LDisplayMentionOpen(
-            text, unit, (shown, offset) => _cDisplayPort.LEngineMentionFind(shown, sentence, offset));
+            text, unit, (shown, offset) => _cDisplayMentionPort.LEngineMentionFind(shown, sentence, offset));
     }
 
     public CMentionOffer? CDisplayEtymologyFind(string text, int unit)
     {
         return LDisplayMentionOpen(
-            text, unit, (shown, offset) => _cDisplayPort.LEngineEtymologyFind(shown, offset));
+            text, unit, (shown, offset) => _cDisplayMentionPort.LEngineEtymologyFind(shown, offset));
     }
 
     private CMentionOffer? LDisplayMentionOpen(

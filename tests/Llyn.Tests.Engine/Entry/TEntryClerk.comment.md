@@ -1,5 +1,5 @@
 # TEntryClerk.cs
-Hash: `0df26bf92ed21602`
+Hash: `16a67fe2e7556e44`
 
 ## `public sealed class TEntryClerk`
 
@@ -7,11 +7,7 @@ Covers the entry clerk on its own, over a rig of fakes and no engine.
 
 ## `public void EntryClerkRead_AfterCreate_ReturnsStoredEntry()`
 
-An entry created through the clerk is read back under the id the vault gave it.
-
-## `public void EntryClerkFind_ReverseOrder_ListsLastHeadwordFirst()`
-
-The ordering is applied over what the vault answered, so a reverse order lists the later headword first.
+An entry added to the vault is read back through the clerk under the id the vault gave it.
 
 ## `public void EntryClerkDelete_StoredEntry_LeavesTombstoneAndRevision()`
 

@@ -97,7 +97,7 @@ public sealed record CReflex(
         }
     }
 
-    private static string LReflexKeyRead(string name)
+    internal static string LReflexKeyRead(string name)
     {
         return string.Concat("Reflex.", name);
     }

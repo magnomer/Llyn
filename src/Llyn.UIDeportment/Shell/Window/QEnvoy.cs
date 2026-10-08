@@ -11,6 +11,8 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QEnvoy : CEnvoy
 {
+    private const double QEnvoyInch = 96.0;
+
     private readonly Window _qEnvoySurface;
 
     private readonly QWindow _qEnvoyHost;
@@ -155,8 +157,8 @@ internal sealed class QEnvoy : CEnvoy
 
         return new CPressTicket(
             dialog.PrintQueue.FullName,
-            chosen.PageMediaSize?.Width,
-            chosen.PageMediaSize?.Height,
+            chosen.PageMediaSize?.Width / QEnvoyInch,
+            chosen.PageMediaSize?.Height / QEnvoyInch,
             chosen.PageOrientation is PageOrientation.Landscape or PageOrientation.ReverseLandscape,
             chosen.CopyCount ?? 1,
             chosen.Collation != Collation.Uncollated,

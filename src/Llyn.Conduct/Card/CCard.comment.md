@@ -1,5 +1,5 @@
 # CCard.cs
-Hash: `441ce73235e550a5`
+Hash: `3827a2dfa8e0511d`
 
 ## `public sealed class CCard`
 
@@ -12,11 +12,12 @@ The maps from engine drafts to their shapes sit on `CFolio`.
 It holds only the desk and the ports it was given.
 The editor owns one and hands it to the card views beside the desk.
 
-## `internal CCard(CDesk desk, LDraftPort drafts, LEntryPort entries, LSettingsPort settings, CEnvoy envoy)`
+## `internal CCard(CDesk desk, LDraftPort drafts, LReferencePort references, LSettingsPort settings, CEnvoy envoy)`
 
 Takes the editor's desk, so an etymology request lands on the held draft.
 A failed translation shows through `envoy`, with the ready notice `settings` reads.
 Only the editor builds one, so the constructor is internal.
+`references` lists every Source the reference dropper offers.
 
 ## `public CProspect CCardTranslationAdd(long cardId, string text, int position)`
 

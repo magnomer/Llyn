@@ -1,7 +1,7 @@
 # LSituationArchive.cs
-Hash: `980959368b84d8da`
+Hash: `45350088e1333a39`
 
-## `public sealed partial class LSituationArchive`
+## `public sealed class LSituationArchive : LSituationVault`
 
 Persists Situations, independent data no Entry, Meaning, or Collocation owns.
 A Situation is created once with an opaque id.
@@ -10,15 +10,14 @@ Each association carries the position the Situation takes for that referrer alon
 Attaching and detaching therefore only ever write association rows.
 Detaching leaves the Situation and its other references untouched.
 Updating rewrites the visible title, description, and kind, and never the id.
-`LSituationDelete` refuses to run while any reference remains.
+`LSituationDelete` refuses to run while any reference remains, unless it is asked to detach them first.
 
 A Situation shows Images and Videos the way a Meaning does, through `situation_image` and `situation_video`.
-Every read fills the two lists, and create and update write them back.
+Every read fills the two lists.
 The Image and Video rows themselves go through `LImageArchive` and `LVideoArchive`.
 This store only settles which rows the Situation references and in what order.
 
-A referrer's order is a unique index.
-So attaching and detaching renumber that referrer's whole set through `LDatabaseOrder`.
+Each association table is held as one `LDatabaseLink`, which owns the ordered attach, detach and delete.
 A caller names the index it wants.
 It never has to find a free position or leave a gap behind.
 
@@ -32,7 +31,6 @@ Inserts `situation` with a fresh opaque id and returns the stored Situation with
 The new Situation is referenced by nothing until it is attached to a referrer.
 Its Images and Videos are not written here.
 The engine settles them after the row exists, as it does for a card.
-The stored rows come back with their ids.
 
 ## `public LSituation? LSituationRead(long id)`
 
@@ -54,6 +52,24 @@ The id and every reference pointing at it are untouched.
 So an update never changes where the Situation appears or in what order.
 Throws when no Situation carries that id.
 
+## `public void LSituationMeaningAttach(long meaningId, long situationId, int position)`
+
+References an existing Situation from a Meaning at `position` in that Meaning's order.
+
+## `public void LSituationCollocationAttach(long collocationId, long situationId, int position)`
+
+References an existing Situation from a Collocation at `position` in that Collocation's order.
+
+## `public void LSituationMeaningDetach(long meaningId, long situationId)`
+
+Removes a Meaning's reference to a Situation.
+The Situation and its other references survive.
+
+## `public void LSituationCollocationDetach(long collocationId, long situationId)`
+
+Removes a Collocation's reference to a Situation.
+The Situation and its other references survive.
+
 ## `public int LSituationReferenceRead(long id)`
 
 Counts the references that still point at the Situation identified by `id`.
@@ -69,6 +85,25 @@ No store of its own has to know which association tables exist.
 The same count on a connection the caller already holds.
 So a guard and the delete it guards run in one transaction.
 Nothing can attach the row between them.
+
+### `private IReadOnlyList<LSituation> LSituationReferrerRead(string table, string column, long referrerId)`
+
+Reads the Situations one referrer holds through its association table, ordered by position.
+The two public readers differ only in the table and column they name.
+Both are store-owned literals, so composing them into the statement opens no injection seam.
+
+### `private IReadOnlyList<LSituation> LSituationMediaRead(List<LSituation> situations)`
+
+Fills the media lists of a whole list in two queries, one per link table, grouped by parent in memory.
+The Image and Video stores each scan their own link table.
+A list read serves the catalog, the chip resolver and every card's chips, and those run on each keystroke.
+Two queries per situation there would cost hundreds of round trips per key, so the list never asks per row.
+
+### `private LSituation LSituationMediaRead(LSituation situation)`
+
+Fills the two media lists of one Situation from the Image and Video stores.
+Each list keeps the order the Situation holds.
+The nested sessions share the open connection, so a read stays one transaction.
 
 ## `public IReadOnlyList<LSituation> LSituationRead()`
 
@@ -98,3 +133,6 @@ Deletes the Situation, first dropping every reference to it when `detach` is ask
 Detaching, counting and deleting share one session.
 Between any two of them the answer to whether something still references the row can change.
 Without `detach` the count still refuses the delete, which is the guard a card edit relies on.
+The links' own sessions and the media clears nest inside this one, so the guard holds.
+The media clears drop the Situation's Image and Video links before its row goes.
+The cascade would do it too, but the store never leans on one it can state.

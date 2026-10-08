@@ -144,8 +144,8 @@ public sealed class TPlayback
     {
         return TInterfaceEditor.TEditorCreate(
                 TEngineFake.TEngineStubCreate<LDraftPort>(),
-                TEngineFake.TEngineStubCreate<LEntryPort>(),
-                TEngineFake.TEngineStubCreate<LPhonologyPort>(),
+                TInterfaceConduct.TEntryBundleCreate([]),
+                TInterfaceConduct.TPhonologyBundleCreate([]),
                 TEngineFake.TEngineStubCreate<LSettingsPort>(),
                 TEngineFake.TEngineStubCreate<LMediaPort>())
             .CEditorPlayback;

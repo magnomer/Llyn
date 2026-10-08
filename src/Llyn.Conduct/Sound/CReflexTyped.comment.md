@@ -1,5 +1,5 @@
 # CReflexTyped.cs
-Hash: `935837db9afc0585`
+Hash: `2cb16d864cfce53d`
 
 ## `public sealed record CReflexTyped(CReflexField CReflexTypedField, string CReflexTypedText, IReadOnlyList<CReflexHead> CReflexTypedHeads)`
 
@@ -12,3 +12,8 @@ A driver writes its cell from this answer alone, never from what the user typed.
 - `CReflexTypedText`: the text the cell now holds.
   It is the typed text when the gate took it, else the text the draft holds.
 - `CReflexTypedHeads`: every row's lead while a language is typed, else empty.
+
+## `public string CReflexTypedKey`
+
+The localization key the answered text is labelled under, by the rule of `CReflex.CReflexLanguageKey`.
+A driver relabels a typed language or kind from it, so the label never names the previous text.

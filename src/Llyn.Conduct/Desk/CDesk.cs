@@ -22,11 +22,13 @@ public sealed class CDesk
 
     private LTenure? _cDeskTenure;
 
-    private LQuill? _cDeskQuill;
+    private LErrand? _cDeskErrandEngine;
 
     private LEasel? _cDeskEasel;
 
     private LQuillChip? _cDeskChip;
+
+    private LQuillSpeech? _cDeskSpeech;
 
     private bool _cDeskFilling;
 
@@ -67,11 +69,34 @@ public sealed class CDesk
 
     public event Action<long>? CDeskFinished;
 
-    internal LQuill? CDeskQuill => CDeskFilling ? null : _cDeskQuill;
+    internal LErrand? CDeskErrandEngine => CDeskFilling ? null : _cDeskErrandEngine;
+
+    internal LQuillReference? CDeskReference =>
+        !CDeskFilling && _cDeskTenure is LTenure held ? new LQuillReference(held) : null;
+
+    internal LQuillAuthor? CDeskAuthor =>
+        !CDeskFilling && _cDeskTenure is LTenure held ? new LQuillAuthor(held) : null;
+
+    internal LQuillExample? CDeskExample =>
+        !CDeskFilling && _cDeskTenure is LTenure held ? new LQuillExample(held) : null;
+
+    internal LQuillSentence? CDeskSentence =>
+        !CDeskFilling && _cDeskTenure is LTenure held ? new LQuillSentence(held) : null;
+
+    internal LQuillMention? CDeskMention =>
+        !CDeskFilling && _cDeskTenure is LTenure held ? new LQuillMention(held) : null;
+
+    internal LQuillTranscription? CDeskTranscription =>
+        !CDeskFilling && _cDeskTenure is LTenure held ? new LQuillTranscription(held) : null;
+
+    internal LQuillEtymology? CDeskEtymology =>
+        !CDeskFilling && _cDeskTenure is LTenure held ? new LQuillEtymology(held) : null;
 
     internal LEasel? CDeskEasel => CDeskFilling ? null : _cDeskEasel;
 
     internal LQuillChip? CDeskChip => CDeskFilling ? null : _cDeskChip;
+
+    internal LQuillSpeech? CDeskSpeech => _cDeskSpeech;
 
     public CErrand CDeskErrand { get; }
 
@@ -85,11 +110,11 @@ public sealed class CDesk
 
     public bool CDeskStored => CDeskStoredRead() is not null;
 
-    public bool CDeskChanged => _cDeskTenure?.LTenureStateRead() is { LTenureStateChanged: true };
+    public bool CDeskChanged => _cDeskTenure?.LTenureGauge.LTenureGaugeRead() is { LTenureStateChanged: true };
 
-    public bool CDeskStorable => _cDeskTenure?.LTenureStorable ?? false;
+    public bool CDeskStorable => _cDeskTenure?.LTenureGauge.LTenureGaugeStorable ?? false;
 
-    public bool CDeskHalted => _cDeskTenure?.LTenureStateRead() is { LTenureStateHalted: true };
+    public bool CDeskHalted => _cDeskTenure?.LTenureGauge.LTenureGaugeRead() is { LTenureStateHalted: true };
 
     public bool CDeskRunning => CDeskHeld && !CDeskHalted;
 
@@ -221,9 +246,10 @@ public sealed class CDesk
         {
             LTenure started = start();
             _cDeskTenure = started;
-            _cDeskQuill = new LQuill(started);
+            _cDeskErrandEngine = started.LTenureErrand;
             _cDeskEasel = new LEasel(started);
             _cDeskChip = new LQuillChip(started, _cDeskPort);
+            _cDeskSpeech = new LQuillSpeech(started);
             _cDeskHalted = false;
             CDeskVigil.LVigilApply(started);
             CDeskStarted?.Invoke();
@@ -341,7 +367,7 @@ public sealed class CDesk
             return (false, false);
         }
 
-        LTenureState state = held.LTenureStateRead();
+        LTenureState state = held.LTenureGauge.LTenureGaugeRead();
         return (state.LTenureStateBackward, state.LTenureStateForward);
     }
 
@@ -399,9 +425,10 @@ public sealed class CDesk
         }
 
         _cDeskTenure = null;
-        _cDeskQuill = null;
+        _cDeskErrandEngine = null;
         _cDeskEasel = null;
         _cDeskChip = null;
+        _cDeskSpeech = null;
         CDeskStateChanged?.Invoke();
         if (kept is long id)
         {
@@ -449,9 +476,10 @@ public sealed class CDesk
         }
 
         _cDeskTenure = null;
-        _cDeskQuill = null;
+        _cDeskErrandEngine = null;
         _cDeskEasel = null;
         _cDeskChip = null;
+        _cDeskSpeech = null;
         held.LTenureCancel();
         return true;
     }

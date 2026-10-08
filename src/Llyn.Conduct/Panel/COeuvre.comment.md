@@ -1,5 +1,5 @@
 # COeuvre.cs
-Hash: `7843882abffd22dd`
+Hash: `e3aeda489707cf87`
 
 ## `public sealed class COeuvre`
 
@@ -9,10 +9,12 @@ It keeps a handle on the roll vista too, because the engine narrows the rows by 
 It owns the panel over the oeuvre vista, with the Source keys and no delete scope.
 It also holds the reference, author, vita and usage maps that other lists share.
 
-## `internal COeuvre(LEntryPort entries, LSettingsPort settings, CEnvoy envoy, Func<bool> shownSeam)`
+## `internal COeuvre(LEntryPort entries, LAuthorPort authors, LReferencePort references, LSettingsPort settings, LVistaPort vistas, CEnvoy envoy, Func<bool> shownSeam)`
 
-Builds the oeuvre over the entry port, with its panel asking through `envoy`.
+Builds the oeuvre over its ports, with its panel asking through `envoy`.
+`authors` lists the Sources and words the work count, `entries` words the tally and `references` reads the sheets.
 The panel reads a failure's ready notice through `settings`.
+`vistas` passes to the panel, which loads and deletes its chosen row through it.
 The panel never edits, so it holds no changes and stores nothing on leaving.
 
 ## `public event Action<CColophon>? COeuvreColophonChanged;`
@@ -60,10 +62,15 @@ The comb above the list, narrowing the Sources by the typed text.
 
 The citation sentence for the chosen Source, which the engine counts and words.
 
-## `internal static CColophon LOeuvreColophonRead(LEntryPort entries, LDraft draft)`
+## `internal static CColophon LOeuvreColophonRead(LReferencePort references, LDraft draft)`
 
 The colophon of a Source draft, which the engine builds with its tally and this class shapes.
 It is static, so the shelf reads its sheet through the same map without a second panel.
+
+## `public IReadOnlyList<CReferenceKind> COeuvreKindRead()`
+
+The kind menu the authors panel's filter lists, read through the oeuvre's reference port.
+It hands the engine's kind list to `CImprint.LImprintKindRead`, so both menus drop a repeated tag alike.
 
 ## `internal IReadOnlyList<CCatalogAuthor> LOeuvreAuthorRead(IReadOnlyList<LCatalogAuthor> rows)`
 
@@ -78,12 +85,12 @@ Maps the vita the engine built to its shape, with its fellows and citing places.
 ## `internal static CUsage COeuvreUsageRead(LUsage usage)`
 
 Maps one citing place to its shape.
-The lectern's usage rows build through it too, so both lists word a place alike.
+The reading view's incoming rows build through it too, so both lists word a place alike.
 
 ## `internal static IReadOnlyList<CCatalogReference> COeuvreReferenceRead(IReadOnlyList<LCatalogReference> rows)`
 
-The one map for reference rows, shared with the card, the anthology and the shelf.
-The authors and the year arrive worded, and an unset one reads `Source.Unset` in both lists that show them.
+The one map for reference rows, shared with the card and the shelf.
+An unset author or year reads `Source.Unset`.
 
 ## `private static CStateValue LOeuvreCreditRead(string? credit, bool uncertain)`
 

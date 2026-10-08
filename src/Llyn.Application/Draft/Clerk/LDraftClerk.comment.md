@@ -1,17 +1,18 @@
 # LDraftClerk.cs
-Hash: `8c9833bd3b159859`
+Hash: `c8e28dce53fcafa4`
 
 ## `public sealed class LDraftClerk`
 
 The interactor that applies one `LRequest` to one held draft over the ports of a rig.
 A form sends one edit at a time, and the clerk answers with a new draft, never a mutated one.
-Each request kind is applied by a pure function, one per kind, returning a new draft or new content.
+Each request is applied by a function that returns a new draft or new content.
 Cards and the rows inside them are addressed by id wherever they nest, never by place.
 So a form and the clerk cannot disagree about which item is meant.
 The clerk holds no gate, no observer and no file.
 The engine keeps those and calls the clerk under its own gate.
-The entry-level fields and the card body are applied here.
-The lists inside a card are applied by the concern classes beside this one, one per former engine part.
+Each request family is applied by the concern class that owns it, beside this one.
+Each such class answers null for a request not its own, so the clerk asks them in turn.
+The clerk keeps only their construction, the default card and sentence targets, and the order they are asked in.
 A clerk is built over one rig and is rebuilt when the engine takes a new rig.
 It reads no port after construction that the rig did not hand it.
 
@@ -25,38 +26,27 @@ Neither is a port, so the engine hands them in beside the rig.
 
 ## `public LEntryDraft LDraftClerkNormalize(LEntryDraft content)`
 
-The content with every blank row dropped and every unidentified row given an id, through the mint.
+The content with every unidentified row given an id, through the mint.
+The mint also drops the blank rows of the kinds it treats as nothing.
 
 ## `public LDraft LDraftClerkApply(LDraft draft, LRequest request)`
 
-The switch over the kinds that reach past the entry content.
-The example and source panels edit their own field of the draft, and the credits edit its author list.
-The authors panel renames the one Author its draft holds.
-A situation field request may mean the panel's situation or a chip, so it is routed by id.
-A media request on a draft holding a Situation lands on that Situation's lists before the switch runs.
-The card id such a request carries is ignored there, because a Situation draft holds no card.
-Everything else is a change to the entry content and falls through to the content switch.
-A headword or language change drops no recording here.
-The engine does that after the apply, since only it can read the stored entry the draft edits.
+Asks the owners of the kinds that reach past the entry content, in turn.
+Situation media go first, then the sentence, source and credit panels, Mentions, Glosses and situation fields.
+Everything else is a change to the entry content and falls through to the content chain.
 
 ## `public LEntryDraft LDraftClerkApply(LEntryDraft content, LRequest request)`
 
-One switch over the entry and card kinds, ending in the reading, reflex, etymology and list switches in turn.
-A language change derives every respelling again and recuts every reflex row under the new pack.
-It also settles the lexical unit to one the new language offers.
-A kind no switch knows is a programming error, not a refusal, since no form can send one.
+Asks the entry fields, the cards, the reading, reflex and etymology rows, and then the card lists, in turn.
+A kind no owner knows is a programming error, not a refusal, since no form can send one.
 A null text or value is read as empty.
 So a request can never leave a null where the draft holds text.
 
-## `private LEntryDraft LCardInsert(LEntryDraft content, LRequestCardAddition request)`
-
-Mints the id of the new card here rather than leaving it to the normalize.
-The answer must name the card, and a card named at birth cannot be confused with one named later.
-
 ## `private LEntryDraft LDraftListApply(LEntryDraft content, LRequest request)`
 
-The switch over every list kind inside a card.
-A kind it does not know is a programming error, not a refusal, since no form can send one.
+Settles a request naming card or sentence zero onto a default target first.
+Every other kind goes to the sentence, situation, Register, tag, translation, picture and video owners in turn.
+A kind none of them knows is a programming error, not a refusal, since no form can send one.
 
 ## `private LEntryDraft LCardResolve(LEntryDraft content, Func<long, LRequest> retarget)`
 
