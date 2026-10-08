@@ -1,5 +1,5 @@
 # TTranscriptionSheet.cs
-Hash: `d9a9b0013a0f1c42`
+Hash: `d8f93562bbf98ce6`
 
 ## `public sealed class TTranscriptionSheet`
 

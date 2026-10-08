@@ -145,16 +145,12 @@ public sealed class CCatalog
         return rows.Select(static row => new CMeaning(row.LMeaningId, row.LMeaningName, row.LMeaningDepth)).ToList();
     }
 
-    public CArticulation CCatalogConsonantRead()
+    public CArticulationAid CCatalogAidRead()
     {
-        return LCatalogArticulationRead(
-            _cCatalogAtelier.CAtelierEntryBundle.CEntryBundlePronunciation.LEngineConsonantRead());
-    }
-
-    public CArticulation CCatalogVowelRead()
-    {
-        return LCatalogArticulationRead(
-            _cCatalogAtelier.CAtelierEntryBundle.CEntryBundlePronunciation.LEngineVowelRead());
+        LPronunciationPort pronunciation = _cCatalogAtelier.CAtelierEntryBundle.CEntryBundlePronunciation;
+        return new CArticulationAid(
+            LCatalogArticulationRead(pronunciation.LEngineVowelRead()),
+            LCatalogArticulationRead(pronunciation.LEngineConsonantRead()));
     }
 
     internal static CArticulation LCatalogArticulationRead(LArticulation chart)

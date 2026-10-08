@@ -1,5 +1,5 @@
 # CAnthology.cs
-Hash: `ca63053592587dad`
+Hash: `cd881d2b2472c5cb`
 
 ## `public sealed class CAnthology`
 
@@ -136,17 +136,29 @@ The gate for the cross on a transcript gloss row.
 The gate for typing into the transcript's sentence field, handing the raw text to the desk's quill, which defers it.
 It answers the placeholder key for typed text, since typing ends an unknown mark.
 Without a held tenure it writes nothing and still answers the key.
+It keeps `text` as the text the field shows, which `LAnthologyTranscriptRead` compares against.
 
 ## `public void CAnthologySpeakerSet(string language)`
 
 The gate for picking the transcript's speaker language, sent at once through the desk's quill.
 The chip changes when the draft bulletin returns, as the corpus gloss gates do.
 
-## `public bool CAnthologyTextCheck(string text, CStateValue value)`
+## `internal bool LAnthologyTextCheck(string text, CStateValue value)`
 
 Whether a field showing `text` already shows `value`, as the engine would store the field.
-The transcript keeps a matching field untouched, so a bulletin never moves the caret.
-It asks the example port, which the anthology holds, so a driver reaches it through the corpus.
+It asks the example port, which owns that rule.
+
+## `internal CExample LAnthologyTextShow(CExample example)`
+
+Notes that the transcript's sentence field now shows the text of `example`, and hands it back.
+The corpus calls it when the transcript fills anew, and the draft bulletin calls it on a repaint.
+
+## `internal CExample LAnthologyTranscriptRead(CExample example)`
+
+The Example a draft bulletin hands the transcript, with `CExampleTextKept` set when the field already matches.
+The match is `LAnthologyTextCheck` against the text the field is known to show.
+A field that does not match is repainted, so that text becomes the one shown.
+So the driver only maps the verdict, and a bulletin never moves the caret.
 
 ## `internal CExample? LAnthologyDraftRead(LDraft? draft)`
 
@@ -170,3 +182,7 @@ The plain text is divided at those Mentions here, so the excerpt draws ready pie
 ## `private static CCatalogExample LAnthologyRowRead(LCatalogExample row)`
 
 Maps one found Example to its row, with the text the engine worded.
+
+## `private static CGlossDraft LAnthologyGlossRead(LGloss gloss)`
+
+Maps one stored gloss to its shape, with the text as the transcript shows it.

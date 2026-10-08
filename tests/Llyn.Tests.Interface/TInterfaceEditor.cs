@@ -1,3 +1,4 @@
+using System;
 using Llyn.Conduct;
 using Llyn.ShellEngine;
 
@@ -12,7 +13,18 @@ internal static class TInterfaceEditor
         new LSettingsOutlet(engine),
         new LMediaOutlet(engine),
         TEnvoyFake.TEnvoyCreate(false, []),
-        new CLedgerNoticed());
+        new CLedgerNoticed(),
+        static run => run());
+
+    internal static CEditor TEditorCreate(LEngine engine, Action<Action> marshal) => new(
+        new LDraftOutlet(engine),
+        TInterfaceConduct.TEntryBundleCreate(engine),
+        TInterfaceConduct.TPhonologyBundleCreate(engine),
+        new LSettingsOutlet(engine),
+        new LMediaOutlet(engine),
+        TEnvoyFake.TEnvoyCreate(false, []),
+        new CLedgerNoticed(),
+        marshal);
 
     internal static CEditor TEditorCreate(LEngine engine, CEnvoy envoy) => new(
         new LDraftOutlet(engine),
@@ -21,7 +33,8 @@ internal static class TInterfaceEditor
         new LSettingsOutlet(engine),
         new LMediaOutlet(engine),
         envoy,
-        new CLedgerNoticed());
+        new CLedgerNoticed(),
+        static run => run());
 
     internal static CEditor TEditorCreate(LEngine engine, CPhonologyBundle phonology) =>
         TEditorCreate(
@@ -32,7 +45,11 @@ internal static class TInterfaceEditor
             TEngineFake.TEngineStubCreate<LMediaPort>());
 
     internal static CEditor TEditorCreate(
-        LDraftPort drafts, CEntryBundle entries, CPhonologyBundle phonology, LSettingsPort settings, LMediaPort media) =>
+        LDraftPort drafts,
+        CEntryBundle entries,
+        CPhonologyBundle phonology,
+        LSettingsPort settings,
+        LMediaPort media) =>
         TEditorCreate(drafts, entries, phonology, settings, media, TEnvoyFake.TEnvoyCreate(false, []));
 
     internal static CEditor TEditorCreate(
@@ -42,7 +59,7 @@ internal static class TInterfaceEditor
         LSettingsPort settings,
         LMediaPort media,
         CEnvoy envoy) =>
-        new(drafts, entries, phonology, settings, media, envoy, new CLedgerNoticed());
+        new(drafts, entries, phonology, settings, media, envoy, new CLedgerNoticed(), static run => run());
 
     internal static void TEditorVistaRestore(this CEditor editor, LVista vista) => editor.LEditorVistaRestore(vista);
 

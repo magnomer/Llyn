@@ -64,8 +64,9 @@ internal sealed class QArticulation
     {
         ArgumentNullException.ThrowIfNull(catalog);
 
-        QArticulationChartIntroduce(QVowel, catalog.CCatalogVowelRead());
-        QArticulationChartIntroduce(QConsonant, catalog.CCatalogConsonantRead());
+        CArticulationAid aid = catalog.CCatalogAidRead();
+        QArticulationChartIntroduce(QVowel, aid.CArticulationAidVowel);
+        QArticulationChartIntroduce(QConsonant, aid.CArticulationAidConsonant);
         foreach (TextBox field in fields)
         {
             _qArticulationTarget.Add(field);

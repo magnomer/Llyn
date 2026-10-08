@@ -1,5 +1,5 @@
 # CEditor.cs
-Hash: `813cbd004e38e64b`
+Hash: `8584deed5f9d64de`
 
 ## `public sealed class CEditor`
 
@@ -18,17 +18,21 @@ The vista of the tab the editor serves, which says whether it is the input tab's
 Whether the draft being stored stood on no entry, written just before each finish.
 A fresh store on the input tab reopens a blank draft, while every other store reopens what was stored.
 
-## `internal CEditor(LDraftPort drafts, CEntryBundle entries, CPhonologyBundle phonology, LSettingsPort settings, LMediaPort media, CEnvoy envoy, CLedgerNoticed noticed)`
+## `internal CEditor(LDraftPort drafts, CEntryBundle entries, CPhonologyBundle phonology, LSettingsPort settings, LMediaPort media, CEnvoy envoy, CLedgerNoticed noticed, Action<Action> marshal)`
 
 Every editor's desk takes the `Input` scope, so its failure notices use the input wording on any tab.
 It takes the atelier's repaint memory, which nothing else here can reach, and widens by that one argument.
-The display, the sentence gates and the sound sheet show their repaint read failures through it.
+The display and the sentence gates show their repaint read failures through it.
 The sound facts take `envoy` too, so a failed flag load shows its notice.
 It reads the entry and phonology bundles and hands each child only the ports it calls.
+It hands the marshal once, last, to the desk and each area that listens, so no driver attaches one.
+Each area then raises its own change event on the UI thread when the engine announces its subject.
+The folds hear the settings port's own fold event rather than a subject.
+A settings change reads the held draft again, since the draft's shown form depends on the settings.
 
 ## `public static CEditor CEditorCreate(CAtelier atelier, CEnvoy envoy)`
 
-Builds an entry editor over the atelier's ports and repaint memory, asking its questions through `envoy`.
+Builds an entry editor over the atelier's ports, repaint memory and marshal, asking its questions through `envoy`.
 Each tab that edits entries holds its own, so no driver ever holds a port for it.
 Building a session is composition, not a user action, so it is no gate.
 The editor's display and sounding open what they are asked to through the atelier's navigation.
@@ -58,18 +62,11 @@ The video rows of the cards, built fresh over the desk.
 
 The held draft's language, or empty while no draft is held.
 
-## `public void CEditorObserverAttach(Action<Action> marshal)`
-
-Hands every area of the editor the driver's marshal once.
-Each area then raises its own change event on the driver's thread when the engine announces its subject.
-The folds hear the settings port's own fold event rather than a subject.
-A settings change reads the held draft again, since the draft's shown form depends on the settings.
-
 ## `public void CEditorClose()`
 
 The editor closes with its view.
 The folds' handler leaves the engine event first, so a closed editor hears no other editor's fold.
-The held draft is let go, then every running search.
+The held draft is let go, then every running errand is cancelled.
 Closing is one user action, and the order of the cancels is the editor's.
 
 ## `public event Action<CEntryDraft>? CEditorDraftChanged;`

@@ -6,18 +6,14 @@ namespace Llyn.Conduct;
 
 public sealed class CSoundingAnchor
 {
-    private readonly CDesk _cSoundingAnchorDesk;
-
     private readonly CTimbre _cSoundingAnchorTimbre;
 
     private long? _cSoundingAnchorReflex;
 
-    internal CSoundingAnchor(CDesk desk, CTimbre timbre)
+    internal CSoundingAnchor(CTimbre timbre)
     {
-        ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(timbre);
 
-        _cSoundingAnchorDesk = desk;
         _cSoundingAnchorTimbre = timbre;
     }
 
@@ -25,7 +21,7 @@ public sealed class CSoundingAnchor
     {
         ArgumentNullException.ThrowIfNull(editor);
 
-        return new CSoundingAnchor(editor.CEditorDesk, editor.CEditorTimbre);
+        return new CSoundingAnchor(editor.CEditorTimbre);
     }
 
     public CAnchor CSoundingAnchorOpen(long reflex)

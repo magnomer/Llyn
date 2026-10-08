@@ -5,4 +5,5 @@ namespace Llyn.Conduct;
 public sealed record CGuildRoll(
     IReadOnlyList<CCatalogAuthor> CGuildRollRows,
     bool CGuildRollEmpty,
-    CVita CGuildRollVita);
+    CVita CGuildRollVita,
+    IReadOnlyList<CReferenceKind> CGuildRollKind);

@@ -1,5 +1,5 @@
 # TCatalog.cs
-Hash: `977198d6cce63060`
+Hash: `73cac26756ec30bf`
 
 ## `public sealed class TCatalog`
 

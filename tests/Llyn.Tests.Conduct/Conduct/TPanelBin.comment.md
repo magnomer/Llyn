@@ -1,5 +1,5 @@
 # TPanelBin.cs
-Hash: `afe1d542de7187cc`
+Hash: `1502101005d6d47e`
 
 ## `public sealed class TPanelBin`
 

@@ -1,5 +1,5 @@
 # QArticulation.cs
-Hash: `f19830a05be5219e`
+Hash: `a8a9ef4c9bc85fdc`
 
 ## `internal sealed class QArticulation`
 
@@ -20,7 +20,7 @@ Each named part is pulled from the page by its contract ID on every read.
 
 ## `internal void QArticulationIntroduce(CCatalog catalog, params TextBox[] fields)`
 
-Builds the vowel chart and then the consonant chart from `catalog`, which reads them through the engine.
+Builds the vowel chart and then the consonant chart from one `catalog` read of both.
 Then it names the pronunciation fields this aid may type into.
 The aid follows the keyboard between them and types into the one last focused.
 So it is tied to no single field instance and needs no rewiring when the editor reopens.
@@ -55,10 +55,10 @@ A chart not yet measured is left alone, so an early size change does not stack t
 ### `private void QArticulationChartIntroduce(Grid table, CArticulation chart)`
 
 Builds one chart's controls once, from Conduct's ready `CArticulation`, so the aid only lays it out.
-The vowel chart comes from `CCatalogVowelRead`.
+The vowel chart comes from `CArticulationAidVowel` of `CCatalogAidRead`.
 Its rows are tongue height and its columns are tongue backness, as the IPA chart arranges them.
 A vowel cell holds the unrounded vowel and then the rounded one.
-The pulmonic consonant chart comes from `CCatalogConsonantRead`.
+The pulmonic consonant chart comes from `CArticulationAidConsonant` of the same read.
 Its rows are manner of articulation and its columns are place of articulation.
 
 ### `private Grid QArticulationTableBuild(Grid table, int columns, int rows)`

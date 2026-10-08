@@ -110,7 +110,8 @@ internal static partial class TInterface
     internal static IReadOnlyList<LCatalogRegister> TEngineRegisterFind(this LEngine engine, LVista vista) =>
         engine.LEngineCard.LEngineRegisterFind(vista);
 
-    internal static bool TTenureFlaggedCheck(this LTenure tenure) => new LQuillPronunciation(tenure).LQuillFlaggedCheck();
+    internal static bool TTenureFlaggedCheck(this LTenure tenure) =>
+        new LQuillPronunciation(tenure).LQuillFlaggedCheck();
 
     internal static LTranscriptionSheet? TTenureTranscriptionRead(this LTenure tenure) =>
         new LQuillTranscription(tenure).LQuillTranscriptionRead();

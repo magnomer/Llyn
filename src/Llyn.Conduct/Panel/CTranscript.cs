@@ -57,7 +57,7 @@ public sealed class CTranscript
     {
         if (LTranscriptRead() is CExample example)
         {
-            CTranscriptDraftChanged?.Invoke(example);
+            CTranscriptDraftChanged?.Invoke(_cTranscriptAnthology.LAnthologyTranscriptRead(example));
         }
     }
 

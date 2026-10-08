@@ -3,7 +3,7 @@ using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
 
-public sealed class CPhonologyBundle
+internal sealed class CPhonologyBundle
 {
     internal CPhonologyBundle(
         LFanqiePort fanqies,
@@ -34,19 +34,19 @@ public sealed class CPhonologyBundle
         CPhonologyBundleStem = stems;
     }
 
-    public LFanqiePort CPhonologyBundleFanqie { get; }
+    internal LFanqiePort CPhonologyBundleFanqie { get; }
 
-    public LDiweiPort CPhonologyBundleDiwei { get; }
+    internal LDiweiPort CPhonologyBundleDiwei { get; }
 
-    public LScriptPort CPhonologyBundleScript { get; }
+    internal LScriptPort CPhonologyBundleScript { get; }
 
-    public LLanguagePort CPhonologyBundleLanguage { get; }
+    internal LLanguagePort CPhonologyBundleLanguage { get; }
 
-    public LReflexPort CPhonologyBundleReflex { get; }
+    internal LReflexPort CPhonologyBundleReflex { get; }
 
-    public LParadigmPort CPhonologyBundleParadigm { get; }
+    internal LParadigmPort CPhonologyBundleParadigm { get; }
 
-    public LSentencePort CPhonologyBundleSentence { get; }
+    internal LSentencePort CPhonologyBundleSentence { get; }
 
-    public LStemPort CPhonologyBundleStem { get; }
+    internal LStemPort CPhonologyBundleStem { get; }
 }

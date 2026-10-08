@@ -117,7 +117,7 @@ public sealed class COeuvre
         return LOeuvreColophonRead(references.LEngineColophonRead(draft));
     }
 
-    public IReadOnlyList<CReferenceKind> COeuvreKindRead()
+    internal IReadOnlyList<CReferenceKind> LOeuvreKindRead()
     {
         return CImprint.LImprintKindRead(_cOeuvreReferencePort.LEngineKindRead());
     }

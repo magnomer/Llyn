@@ -51,6 +51,7 @@ internal static class TAuditEngineSetting
                 "LQuillTranscription",
                 "LQuillEtymology",
                 "LErrand",
+                "LTenureGauge",
                 "LQuillEntry",
                 "LQuillPronunciation",
                 "LQuillSpeech",

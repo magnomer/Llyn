@@ -45,11 +45,11 @@
   },
   "ceiling": {
     "hydra": 1,
-    "kraken": 4,
-    "spider": 4,
+    "kraken": 5,
+    "spider": 5,
     "chameleon": 9,
-    "octopus": 5,
-    "centipede": 27,
+    "octopus": 9,
+    "centipede": 29,
     "serpent": 5,
     "hub": 2
   },

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Llyn.Conduct;
 using Llyn.ShellEngine;
@@ -146,7 +147,11 @@ public sealed class TPlayback
                 TEngineFake.TEngineStubCreate<LDraftPort>(),
                 TInterfaceConduct.TEntryBundleCreate([]),
                 TInterfaceConduct.TPhonologyBundleCreate([]),
-                TEngineFake.TEngineStubCreate<LSettingsPort>(),
+                TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
+                {
+                    ["add_LEngineFoldChanged"] = _ => null,
+                    ["remove_LEngineFoldChanged"] = _ => null,
+                }),
                 TEngineFake.TEngineStubCreate<LMediaPort>())
             .CEditorPlayback;
     }

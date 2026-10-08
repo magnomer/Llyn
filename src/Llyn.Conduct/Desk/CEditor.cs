@@ -17,13 +17,15 @@ public sealed class CEditor
         LSettingsPort settings,
         LMediaPort media,
         CEnvoy envoy,
-        CLedgerNoticed noticed)
+        CLedgerNoticed noticed,
+        Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(media);
+        ArgumentNullException.ThrowIfNull(marshal);
 
         CEditorDesk = new CDesk(drafts, settings, "Input", envoy);
         CEditorDisplay = new CDisplay(drafts, entries, phonology, settings, media, envoy, noticed);
@@ -62,6 +64,14 @@ public sealed class CEditor
                     CEditorDisplay.LDisplayRule.LDisplayMediaPort));
             }
         };
+        CEditorDesk.CDeskObserverAttach(marshal);
+        CEditorEsteem.LEsteemObserverAttach(marshal);
+        CEditorTimbre.LTimbreObserverAttach(marshal);
+        CEditorSounding.LSoundingObserverAttach(marshal);
+        CEditorFold.LFoldObserverAttach(marshal);
+        CEditorSentence.LSentenceObserverAttach(marshal);
+        CEditorDesk.CDeskVigil.LVigilObserverAttach(
+            CSubject.CSubjectSettings, _ => marshal(CEditorDesk.CDeskDraftResonate));
     }
 
     public static CEditor CEditorCreate(CAtelier atelier, CEnvoy envoy)
@@ -75,7 +85,8 @@ public sealed class CEditor
             atelier.CAtelierSettingsPort,
             atelier.CAtelierMediaPort,
             envoy,
-            atelier.CAtelierLedger.LLedgerRepaint);
+            atelier.CAtelierLedger.LLedgerRepaint,
+            atelier.CAtelierMarshal);
         editor.CEditorDisplay.LDisplayNavigationAttach(atelier.CAtelierNavigation, atelier.CAtelierMention);
         editor.CEditorSounding.LSoundingDiweiChosen +=
             (language, kind, key) => atelier.CAtelierNavigation.LNavigationDiweiOpen(language, kind, key);
@@ -120,20 +131,6 @@ public sealed class CEditor
     public string CEditorLanguage => CEditorDesk.CDeskTenure?.LTenureLanguageRead() ?? string.Empty;
 
     private LTenure? CEditorTenure => CEditorDesk.CDeskFilling ? null : CEditorDesk.CDeskTenure;
-
-    public void CEditorObserverAttach(Action<Action> marshal)
-    {
-        ArgumentNullException.ThrowIfNull(marshal);
-
-        CEditorDesk.CDeskObserverAttach(marshal);
-        CEditorEsteem.LEsteemObserverAttach(marshal);
-        CEditorTimbre.LTimbreObserverAttach(marshal);
-        CEditorSounding.LSoundingObserverAttach(marshal);
-        CEditorFold.LFoldObserverAttach(marshal);
-        CEditorSentence.LSentenceObserverAttach(marshal);
-        CEditorDesk.CDeskVigil.LVigilObserverAttach(
-            CSubject.CSubjectSettings, _ => marshal(CEditorDesk.CDeskDraftResonate));
-    }
 
     internal void LEditorVistaRestore(LVista vista)
     {

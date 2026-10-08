@@ -1,5 +1,5 @@
 # TFold.cs
-Hash: `abbb3ef129196abd`
+Hash: `a87ab88fb1984399`
 
 ## `public sealed class TFold`
 

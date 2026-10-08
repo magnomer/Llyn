@@ -103,8 +103,6 @@ internal sealed class QEditor : QChronicleHost
         editor.CEditorDraftChanged += _qEditorCard.QEditorMeaningRefine;
         editor.CEditorDraftChanged += _qEditorCard.QEditorCollocationRefine;
         editor.CEditorDraftChanged += _qEditorCard.QEditorCardSentence.QSentenceMentionRefine;
-
-        editor.CEditorObserverAttach(QObserver.QObserverCreate<Action>(static run => run()));
     }
 
     internal void QEditorVisibleRefine(Visibility visible)

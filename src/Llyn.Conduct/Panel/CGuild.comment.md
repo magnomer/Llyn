@@ -1,5 +1,5 @@
 # CGuild.cs
-Hash: `414dd67eee9cdfc9`
+Hash: `23b44f07eca372f8`
 
 ## `public sealed class CGuild`
 
@@ -111,6 +111,18 @@ The source side is in front exactly when the oeuvre has a chosen row.
 
 A row is chosen and read, not written, so a roll that drops it closes the panel.
 
+## `private long? LGuildAuthorStored`
+
+The id of the chosen Author while it is stored, else null for no choice and for the orphan row.
+
+## `private bool LGuildAuthorHeld`
+
+Whether a stored Author is chosen.
+
+## `private bool LGuildAuthorShown`
+
+Whether the author side has something to show, a stored Author or a draft being written.
+
 ## `internal void LGuildVistaRestore()`
 
 Starts the roll and oeuvre vistas through the atelier and binds the panel, the oeuvre and the desk to them.
@@ -133,7 +145,7 @@ Both media build the menu from it once.
 
 ## `public CGuildRoll CGuildRollRead()`
 
-The roll as the view lists it, with its empty verdict and the vita.
+The roll as the view lists it, with its empty verdict, the vita and the kind menu.
 Each work count is worded through the engine.
 It closes the panel when a chosen row being read is no longer listed.
 The vita is read after that close, so it never shows an Author the panel just left.
@@ -206,6 +218,10 @@ Leaving the autograph drops its held draft after the panel state has reloaded th
 ## `internal void LGuildScribeRestore(bool editing)`
 
 Reopens the side the last session ended on, but only the reading side while no Author is stored.
+
+## `private bool LGuildEditCheck(bool editing)`
+
+Whether the requested mode may open, since writing needs a stored Author and reading needs none.
 
 ## `private bool LGuildAutographCheck()`
 

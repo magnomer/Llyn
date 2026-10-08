@@ -123,6 +123,9 @@ internal static class TInterfaceConductPanel
     internal static IReadOnlyList<CCatalogExample> TAnthologyRowsRead(this CAnthology anthology) =>
         anthology.LAnthologyRowsRead() ?? throw new InvalidOperationException("The rows read failed.");
 
+    internal static bool TAnthologyTextCheck(this CAnthology anthology, string text, CStateValue value) =>
+        anthology.LAnthologyTextCheck(text, value);
+
     internal static CExample? TAnthologyExampleRead(LExample? example, string citation, string tally) =>
         CAnthology.LAnthologyExampleRead(example, citation, tally);
 

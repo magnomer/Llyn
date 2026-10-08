@@ -264,6 +264,7 @@
       "LQuillTranscription",
       "LQuillEtymology",
       "LErrand",
+      "LTenureGauge",
       "LQuillEntry",
       "LQuillPronunciation",
       "LQuillSpeech"
@@ -476,6 +477,7 @@
       "CReflexField",
       "CContour",
       "CArticulation",
+      "CArticulationAid",
       "CScreen",
       "CCandidate",
       "CMarkupTarget",
@@ -693,6 +695,7 @@
       "CReflexField",
       "CContour",
       "CArticulation",
+      "CArticulationAid",
       "CScreen",
       "CCandidate",
       "CMarkupTarget",

@@ -1,5 +1,5 @@
 # CTranscript.cs
-Hash: `54e5200c8c167cf6`
+Hash: `82b887d339d72c5b`
 
 ## `public sealed class CTranscript`
 
@@ -41,6 +41,7 @@ Its callers are the transcript's own draft notice and the corpus's session-held 
 ## `private void LTranscriptDraftResonate()`
 
 Answers the desk's draft notice with the held Example read afresh.
+The anthology's `LAnthologyTranscriptRead` marks whether the sentence field already shows its text.
 A notice with no Example to show raises nothing, so the driver never redraws from nothing.
 
 ## `public void CTranscriptMentionOpen(string word)`

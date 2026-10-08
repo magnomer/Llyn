@@ -1,5 +1,5 @@
 # CCatalog.cs
-Hash: `5b6a9160f4473bc6`
+Hash: `04bbc234a44147e3`
 
 ## `public sealed class CCatalog`
 
@@ -77,15 +77,11 @@ It reads the settings port from its atelier, which `CLedger.LLedgerFailureShow` 
 Maps the engine's Meaning rows to sense-menu rows by name, with no rule of its own.
 The shared sense read in `CMention` uses it.
 
-## `public CArticulation CCatalogConsonantRead()`
+## `public CArticulationAid CCatalogAidRead()`
 
-The IPA consonant chart of the input aid, ready to build.
-It is read through the atelier's pronunciation port, so the chart keeps its one owner in the engine.
-
-## `public CArticulation CCatalogVowelRead()`
-
-The IPA vowel chart of the input aid, ready to build.
-It is read through the atelier's pronunciation port, as the consonant chart is.
+Both IPA charts of the input aid, ready to build.
+The aid builds both charts at once, so one read answers that moment.
+They are read through the atelier's pronunciation port, so each chart keeps its one owner in the engine.
 
 ## `internal static CArticulation LCatalogArticulationRead(LArticulation chart)`
 

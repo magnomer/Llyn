@@ -3,7 +3,7 @@ using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
 
-public sealed class CEntryBundle
+internal sealed class CEntryBundle
 {
     internal CEntryBundle(
         LEntryPort entries,
@@ -55,33 +55,33 @@ public sealed class CEntryBundle
         CEntryBundlePronunciation = pronunciations;
     }
 
-    public LEntryPort CEntryBundleEntry { get; }
+    internal LEntryPort CEntryBundleEntry { get; }
 
-    public LGraspPort CEntryBundleGrasp { get; }
+    internal LGraspPort CEntryBundleGrasp { get; }
 
-    public LFavoritePort CEntryBundleFavorite { get; }
+    internal LFavoritePort CEntryBundleFavorite { get; }
 
-    public LVistaPort CEntryBundleVista { get; }
+    internal LVistaPort CEntryBundleVista { get; }
 
-    public LCardPort CEntryBundleCard { get; }
+    internal LCardPort CEntryBundleCard { get; }
 
-    public LTagPort CEntryBundleTag { get; }
+    internal LTagPort CEntryBundleTag { get; }
 
-    public LRegisterPort CEntryBundleRegister { get; }
+    internal LRegisterPort CEntryBundleRegister { get; }
 
-    public LMentionPort CEntryBundleMention { get; }
+    internal LMentionPort CEntryBundleMention { get; }
 
-    public LGlyphPort CEntryBundleGlyph { get; }
+    internal LGlyphPort CEntryBundleGlyph { get; }
 
-    public LSituationPort CEntryBundleSituation { get; }
+    internal LSituationPort CEntryBundleSituation { get; }
 
-    public LExamplePort CEntryBundleExample { get; }
+    internal LExamplePort CEntryBundleExample { get; }
 
-    public LReferencePort CEntryBundleReference { get; }
+    internal LReferencePort CEntryBundleReference { get; }
 
-    public LAuthorPort CEntryBundleAuthor { get; }
+    internal LAuthorPort CEntryBundleAuthor { get; }
 
-    public LMarkdownPort CEntryBundleMarkdown { get; }
+    internal LMarkdownPort CEntryBundleMarkdown { get; }
 
-    public LPronunciationPort CEntryBundlePronunciation { get; }
+    internal LPronunciationPort CEntryBundlePronunciation { get; }
 }

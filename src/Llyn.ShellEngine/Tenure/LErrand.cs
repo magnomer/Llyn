@@ -161,7 +161,8 @@ public sealed class LErrand
         _lErrandPronunciation.LQuillVarietySet(foray.LForayPrimary, target, variety);
     }
 
-    private static bool LErrandRowCheck<LErrandRow>(IReadOnlyList<LErrandRow>? rows, long id, Func<LErrandRow, long> key)
+    private static bool LErrandRowCheck<LErrandRow>(
+        IReadOnlyList<LErrandRow>? rows, long id, Func<LErrandRow, long> key)
     {
         return rows is not null && id != 0 && LDraftClerkList.LDraftListFind(rows, id, key) >= 0;
     }

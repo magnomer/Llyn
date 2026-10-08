@@ -59,8 +59,9 @@ public sealed class CCorpus
             LCorpusStoredShow);
         CCorpusSession.CSessionHeld += () =>
             CCorpusTranscriptChanged?.Invoke(
-                CCorpusTranscript.LTranscriptRead()
-                ?? CExample.LExampleBlankRead(CCorpusAnthology.CAnthologyPanel.CPanelTallyRead()));
+                CCorpusAnthology.LAnthologyTextShow(
+                    CCorpusTranscript.LTranscriptRead()
+                    ?? CExample.LExampleBlankRead(CCorpusAnthology.CAnthologyPanel.CPanelTallyRead())));
         CCorpusSession.CSessionChanged += () => CCorpusChanged?.Invoke();
         CCorpusAnthology.CAnthologyPanel.CPanelEdited += id => CCorpusSession.CSessionStart(id);
         CCorpusAnthology.CAnthologyPanel.CPanelCleared += CCorpusSession.CSessionCancel;

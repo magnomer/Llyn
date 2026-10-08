@@ -1,5 +1,5 @@
 # COeuvre.cs
-Hash: `e3aeda489707cf87`
+Hash: `fade34e12fe451ae`
 
 ## `public sealed class COeuvre`
 
@@ -67,10 +67,15 @@ The citation sentence for the chosen Source, which the engine counts and words.
 The colophon of a Source draft, which the engine builds with its tally and this class shapes.
 It is static, so the shelf reads its sheet through the same map without a second panel.
 
-## `public IReadOnlyList<CReferenceKind> COeuvreKindRead()`
+## `internal IReadOnlyList<CReferenceKind> LOeuvreKindRead()`
 
 The kind menu the authors panel's filter lists, read through the oeuvre's reference port.
+Only `CGuild.CGuildRollRead` calls it, so the roll answer carries the menu.
 It hands the engine's kind list to `CImprint.LImprintKindRead`, so both menus drop a repeated tag alike.
+
+## `private static CColophon LOeuvreColophonRead(LColophon sheet)`
+
+Maps the engine's colophon sheet to its shape, field by field, with no rule of its own.
 
 ## `internal IReadOnlyList<CCatalogAuthor> LOeuvreAuthorRead(IReadOnlyList<LCatalogAuthor> rows)`
 

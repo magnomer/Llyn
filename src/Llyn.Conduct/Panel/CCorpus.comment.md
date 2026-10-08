@@ -1,5 +1,5 @@
 # CCorpus.cs
-Hash: `fe9aaf52abac9240`
+Hash: `086cec49d20fc9ae`
 
 ## `public sealed class CCorpus`
 
@@ -38,6 +38,7 @@ Raised when the desk or the entry editor changes state, so a driver repaints the
 
 Raised with the Example the desk holds after a start.
 After a cancel, a refused start or a failed read it carries the blank Example, never null.
+The anthology's `LAnthologyTextShow` notes its text as the one the sentence field now shows.
 
 ## `public event Action<CExample>? CCorpusExampleChanged;`
 
@@ -59,6 +60,14 @@ Every engine notice the corpus answers runs through it, since only the medium kn
 ## `private readonly CAtelier _cCorpusAtelier`
 
 The atelier the two vistas start through on every restore.
+
+## `private readonly CEnvoy _cCorpusEnvoy`
+
+The envoy through which the corpus asks the leave question and shows the print failures.
+
+## `private readonly LSettingsPort _cCorpusSettingsPort`
+
+The settings port that words the corpus's failure notices and the print legend.
 
 ## `internal CDesk CCorpusDesk { get; }`
 
@@ -243,7 +252,7 @@ The driver awaits it from an event handler, where a fault would end the app.
 
 Deletes the chosen Example through the anthology panel, which asks the envoy first.
 It does nothing on the quotation side, whose panel has no delete scope.
-A failure reads `Example.DeleteFailed`, the delete key `CAnthology` hands its panel.
+A failure shows `Example.DeleteFailed`, worded from the `Example` scope `CAnthology` hands its panel.
 
 ## `public Task CCorpusPortraitPrint()`
 

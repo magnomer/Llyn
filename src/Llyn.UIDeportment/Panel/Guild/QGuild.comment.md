@@ -1,5 +1,5 @@
 # QGuild.cs
-Hash: `839d14f293955308`
+Hash: `f1560e95fdec1e69`
 
 ## `internal sealed class QGuild`
 
@@ -32,7 +32,8 @@ The print command binding is added last, so no can-execute query ever meets a pa
 Answers the workspace opening, after Conduct has restored the vistas and their observers.
 It only paints.
 It marks the held order, builds the kind menu from the held filter, and shows the filter mark.
-It then lists the roll once.
+It reads the roll once, and that answer carries the kind menu too.
+It then lists the roll from the same answer.
 The window subscribes the oeuvre's rows and the colophon's tally to the same opening, one member per list.
 The search fields keep their text, since Conduct carried the queries into the fresh vistas.
 
@@ -44,10 +45,10 @@ Closes the dropdowns, so nothing stays open over a window that is going.
 
 Tells the panel whether the guild page is on screen, so a bulletin is acted on only while shown.
 
-## `private void QLouverBuild()`
+## `private void QLouverBuild(IReadOnlyList<CReferenceKind> kinds)`
 
 Builds the kind menu from the filter the roll now holds, since a fresh vista holds none.
-The options come from the oeuvre's `COeuvreKindRead`, so the guild reads them through its own port.
+The options `kinds` come with the roll answer, which reads them through the oeuvre's port.
 
 ## `private void QLouverRefine()`
 
@@ -59,9 +60,14 @@ Unchecks the order dropper so its popup closes after a pick.
 
 ## `private void QRollRefine()`
 
+Reads the roll answer once and hands it to `QRollShow`.
+It answers the roll's rows notice, so it takes the `Refine` ending.
+
+## `private void QRollShow(CGuildRoll roll)`
+
 Paints the one roll answer: the rows, the empty notice, the vita and the autograph's count chips.
 The vita comes with the rows, so the same Author feeds both without a second read.
-It answers the roll's rows notice and the workspace opening, so it takes the `Refine` ending.
+The workspace opening hands it the roll it already read.
 
 ## `internal void QOeuvreRefine()`
 

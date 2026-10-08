@@ -16,7 +16,8 @@ public sealed class CAtelier : IDisposable
         LSettingsPort settings,
         CPhonologyBundle phonology,
         LMediaPort media,
-        LPortraitPort portraits)
+        LPortraitPort portraits,
+        Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(posture);
         ArgumentNullException.ThrowIfNull(drafts);
@@ -25,6 +26,7 @@ public sealed class CAtelier : IDisposable
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(media);
         ArgumentNullException.ThrowIfNull(portraits);
+        ArgumentNullException.ThrowIfNull(marshal);
 
         CAtelierPosture = posture;
         CAtelierDraftPort = drafts;
@@ -33,6 +35,7 @@ public sealed class CAtelier : IDisposable
         CAtelierPhonologyBundle = phonology;
         CAtelierMediaPort = media;
         CAtelierPortraitPort = portraits;
+        CAtelierMarshal = marshal;
         CAtelierMention = new CMention(this);
         CAtelierNavigation = new CNavigation(this);
         CAtelierLedger = new CLedger(this);
@@ -62,6 +65,8 @@ public sealed class CAtelier : IDisposable
     internal LMediaPort CAtelierMediaPort { get; }
 
     internal LPortraitPort CAtelierPortraitPort { get; }
+
+    internal Action<Action> CAtelierMarshal { get; }
 
     internal LVista CAtelierVistaStart(string tab, CSubject? subject, CCatalogOrder fallback, bool blank = false)
     {

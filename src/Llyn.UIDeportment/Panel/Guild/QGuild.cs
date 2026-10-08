@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -167,10 +168,11 @@ internal sealed class QGuild
 
     internal void QGuildVistaRefine()
     {
+        CGuildRoll roll = _cGuild.CGuildRollRead();
         QChoice.QChoiceOrderApply(QEchelonDropdown, _cGuild.CGuildPanel.CPanelOrder);
-        QLouverBuild();
+        QLouverBuild(roll.CGuildRollKind);
         QLouverRefine();
-        QRollRefine();
+        QRollShow(roll);
     }
 
     internal void QGuildClose()
@@ -186,7 +188,11 @@ internal sealed class QGuild
 
     private void QRollRefine()
     {
-        CGuildRoll roll = _cGuild.CGuildRollRead();
+        QRollShow(_cGuild.CGuildRollRead());
+    }
+
+    private void QRollShow(CGuildRoll roll)
+    {
         QSplice.QSpliceRefine(
             _qRollList,
             QRollItem.QRollItemBuild(roll.CGuildRollRows),
@@ -230,10 +236,9 @@ internal sealed class QGuild
         _qAutograph.QAutographModeUpdate();
     }
 
-    private void QLouverBuild()
+    private void QLouverBuild(IReadOnlyList<CReferenceKind> kinds)
     {
-        QChoice.QChoiceKindRefine(
-            QLouverList, _cGuild.CGuildPanel.CPanelFilter, QLouverObserve, _cGuild.CGuildOeuvre.COeuvreKindRead());
+        QChoice.QChoiceKindRefine(QLouverList, _cGuild.CGuildPanel.CPanelFilter, QLouverObserve, kinds);
     }
 
     private void QLouverRefine()

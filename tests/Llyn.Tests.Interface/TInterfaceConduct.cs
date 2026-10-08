@@ -21,7 +21,8 @@ internal static class TInterfaceConduct
             ["LEngineLocationRead"] = _ => null,
             ["LEngineScreenRead"] = _ => null,
         }),
-        new LPortraitOutlet(engine));
+        new LPortraitOutlet(engine),
+        static run => run());
 
     internal static CAtelier TAtelierCreate(LEngine engine, LMediaPort media) => new(
         new LPosture(engine),
@@ -33,7 +34,8 @@ internal static class TInterfaceConduct
         new LSettingsOutlet(engine),
         TPhonologyBundleCreate(engine),
         media,
-        new LPortraitOutlet(engine));
+        new LPortraitOutlet(engine),
+        static run => run());
 
     internal static CAtelier TAtelierFaultCreate(LEngine engine, string member, bool thrown) => new(
         new LPosture(engine),
@@ -42,7 +44,8 @@ internal static class TInterfaceConduct
         TEngineFault.TEngineFaultCreate<LSettingsPort>(new LSettingsOutlet(engine), member, thrown),
         TPhonologyBundleCreate(engine, member, thrown),
         TEngineFault.TEngineFaultCreate<LMediaPort>(new LMediaOutlet(engine), member, thrown),
-        TEngineFault.TEngineFaultCreate<LPortraitPort>(new LPortraitOutlet(engine), member, thrown));
+        TEngineFault.TEngineFaultCreate<LPortraitPort>(new LPortraitOutlet(engine), member, thrown),
+        static run => run());
 
     internal static CEntryBundle TEntryBundleCreate(LEngine engine) => TEntryBundleCreate(engine, new object());
 
@@ -144,7 +147,8 @@ internal static class TInterfaceConduct
         new LSettingsOutlet(engine),
         TPhonologyBundleCreate(engine),
         media,
-        new LPortraitOutlet(engine));
+        new LPortraitOutlet(engine),
+        static run => run());
 
     internal static CAtelier TAtelierCreate(LEngine engine, LSettingsPort settings) => new(
         new LPosture(engine),
@@ -158,7 +162,8 @@ internal static class TInterfaceConduct
         settings,
         TPhonologyBundleCreate(engine),
         TEngineFake.TEngineStubCreate<LMediaPort>(),
-        new LPortraitOutlet(engine));
+        new LPortraitOutlet(engine),
+        static run => run());
 
     internal static CAtelier TAtelierCreate(LEngine engine, LSettingsPort settings, LDraftPort drafts) => new(
         new LPosture(engine),
@@ -167,12 +172,18 @@ internal static class TInterfaceConduct
         settings,
         TPhonologyBundleCreate(engine),
         TEngineFake.TEngineStubCreate<LMediaPort>(),
-        new LPortraitOutlet(engine));
+        new LPortraitOutlet(engine),
+        static run => run());
 
     internal static CAtelier TAtelierCreate(LEngine engine, Dictionary<string, Func<object?[]?, object?>> answers)
     {
         answers["LEngineLeftoverSweep"] = _ => null;
         answers["LEngineRecordingStop"] = _ => null;
+        answers.TryAdd("LEngineSideSave", args =>
+        {
+            engine.LEngineVista.LEngineSideSave((LVista)args![0]!);
+            return null;
+        });
         return new CAtelier(
             new LPosture(engine),
             TEngineFake.TEngineCreate<LDraftPort>(answers),
@@ -180,7 +191,8 @@ internal static class TInterfaceConduct
             new LSettingsOutlet(engine),
             TPhonologyBundleCreate(answers),
             TEngineFake.TEngineCreate<LMediaPort>(answers),
-            new LPortraitOutlet(engine));
+            new LPortraitOutlet(engine),
+        static run => run());
     }
 
     internal static LMediaPort TMediaCreate(LEngine engine) => new LMediaOutlet(engine);
@@ -198,6 +210,8 @@ internal static class TInterfaceConduct
             ["LEngineFailureRead"] = args => ((string)args![1]!, (string?)null, (string?)null),
             ["LEngineTextRead"] = args => (string)args![0]!,
             ["LEngineFontRead"] = _ => new LFont(null, 0),
+            ["add_LEngineFoldChanged"] = _ => null,
+            ["remove_LEngineFoldChanged"] = _ => null,
         });
 
     internal static CVoyageState TVoyageRead(this CVoyage voyage) => voyage.LVoyageRead();

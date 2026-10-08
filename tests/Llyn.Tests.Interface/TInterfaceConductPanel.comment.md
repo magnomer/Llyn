@@ -1,5 +1,5 @@
 # TInterfaceConductPanel.cs
-Hash: `17e65368827045cd`
+Hash: `30a62197f0ec53d4`
 
 ## `internal static class TInterfaceConductPanel`
 
@@ -113,6 +113,10 @@ Hands the example list its vista through the internal helper the corpus calls.
 Reads the example rows through their internal helper, without the corpus's stale-selection close.
 A failed read throws, so a test never mistakes a failure for an empty list.
 
+## `internal static bool TAnthologyTextCheck(this CAnthology anthology, string text, CStateValue value)`
+
+Asks the anthology's internal text match whether a field showing `text` already shows `value`.
+
 ## `internal static CExample? TAnthologyExampleRead(LExample? example, string citation, string tally)`
 
 Maps a stored Example and a ready citation line through the list's internal helper.
@@ -185,7 +189,8 @@ It answers whether the finish went through.
 ## `internal static CExample? TCorpusTranscriptRead(this CCorpus corpus)`
 
 Relays the transcript's read of the Example the corpus desk holds, through `CCorpusTranscript`.
-`CTranscriptDraftChanged` hands that same read on, and `CCorpusTranscriptChanged` hands it on or the blank Example.
+`CTranscriptDraftChanged` hands that read on, marked kept when the field already shows its text.
+`CCorpusTranscriptChanged` hands it on marked shown, or hands the blank Example.
 
 ## `internal static void TCorpusEntryResonate(this CCorpus corpus)`
 

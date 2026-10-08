@@ -1,5 +1,5 @@
 # TEditorField.cs
-Hash: `8c76c5432157c1ba`
+Hash: `b291a292b2a1046c`
 
 ## `public sealed class TEditorField`
 
@@ -20,7 +20,11 @@ The observers the editor attaches show the draft through the marshal the driver 
 
 ## `internal static CEditor TEditorFieldPrepare(LEngine engine)`
 
-Builds an input editor with no delay and opens a fresh draft in it.
+Builds an input editor whose marshal runs each action at once.
+
+## `internal static CEditor TEditorFieldPrepare(LEngine engine, Action<Action> marshal)`
+
+Builds an input editor with no delay and the given marshal, and opens a fresh draft in it.
 
 ## `internal static long TEditorSheetAdd(CEditor editor)`
 

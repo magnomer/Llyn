@@ -273,7 +273,11 @@ public sealed class TTranscriptionSheet
                 TEngineFake.TEngineStubCreate<LDraftPort>(),
                 TInterfaceConduct.TEntryBundleCreate([]),
                 TInterfaceConduct.TPhonologyBundleCreate([]),
-                TEngineFake.TEngineStubCreate<LSettingsPort>(),
+                TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
+                {
+                    ["add_LEngineFoldChanged"] = _ => null,
+                    ["remove_LEngineFoldChanged"] = _ => null,
+                }),
                 TEngineFake.TEngineStubCreate<LMediaPort>())
             .CEditorTranscription;
     }

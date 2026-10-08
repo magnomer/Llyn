@@ -70,7 +70,8 @@ public sealed class TPanelBin
                 return false;
             },
         });
-        CPanel panel = TInterfaceConductPanel.TPanelCreate(engine, envoy, "Guild", static () => false, static _ => true);
+        CPanel panel = TInterfaceConductPanel.TPanelCreate(
+            engine, envoy, "Guild", static () => false, static _ => true);
         LVista vista = engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderName);
         panel.TPanelVistaRestore(vista);
         vista.TVistaSelect(ada.LAuthorId);

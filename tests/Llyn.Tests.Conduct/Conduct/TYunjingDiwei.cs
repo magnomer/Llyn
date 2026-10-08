@@ -104,11 +104,7 @@ public sealed class TYunjingDiwei
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        Dictionary<string, Func<object?[]?, object?>> refusing = new()
-        {
-            ["LEngineTallySave"] = _ => throw new InvalidOperationException("The settings file is unreadable."),
-        };
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, refusing);
+        using CAtelier atelier = TInterfaceConduct.TAtelierFaultCreate(engine, "LSettingsPort.LEngineTallySave", true);
         List<string> notices = [];
         CYunjing yunjing = TYunjing.TYunjingPrepare(atelier, TEnvoyFake.TEnvoyCreate(false, notices));
         int changed = 0;

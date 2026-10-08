@@ -36,9 +36,9 @@ public sealed class TAnthologyExample
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CAnthology anthology = TAnthology.TAnthologyPrepare(engine, atelier, out _);
 
-        Assert.True(anthology.CAnthologyTextCheck("  ", CStateValue.CStateValueEmpty));
-        Assert.True(anthology.CAnthologyTextCheck("a cat", new CStateValue("a cat", false)));
-        Assert.False(anthology.CAnthologyTextCheck("a cat ", new CStateValue("a cat", false)));
+        Assert.True(anthology.TAnthologyTextCheck("  ", CStateValue.CStateValueEmpty));
+        Assert.True(anthology.TAnthologyTextCheck("a cat", new CStateValue("a cat", false)));
+        Assert.False(anthology.TAnthologyTextCheck("a cat ", new CStateValue("a cat", false)));
     }
 
     [Fact]

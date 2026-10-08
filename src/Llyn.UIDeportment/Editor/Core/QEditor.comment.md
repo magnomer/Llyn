@@ -1,5 +1,5 @@
 # QEditor.cs
-Hash: `f201331fe101ab48`
+Hash: `98a75778fbcd728c`
 
 ## `internal sealed class QEditor : QChronicleHost`
 
@@ -40,7 +40,7 @@ It then subscribes each of the editor's notices to one Refine of a part.
 Every subscriber makes at most one Conduct read, so a notice fans out here and never inside a member.
 The draft's writes follow the order the draft once showed in, so the sentence frame precedes the cards.
 The sentence frame and mention chips stay here, since their order against the card Refines matters.
-The editor's own subjects arrive as area events through the one marshal handed to `CEditorObserverAttach`.
+The editor's own subjects arrive as area events through the marshal Host handed the atelier.
 
 ## `internal void QEditorVisibleRefine(Visibility visible)`
 
@@ -66,7 +66,7 @@ Steps the entry draft one snapshot forward again, in the same wrap.
 
 ## `private void QEditorDraftRefine(CEntryDraft draft)`
 
-Writes the headword and the note through the guarded writes, so a box being typed into keeps its caret.
+Writes the headword and the note through `QFieldTextShow`, and a box that already holds the text keeps its caret.
 The note is written only while the ready verdict `CEditorNoteCheck` says the box does not hold it yet.
 So a line break just typed at the end of the note survives the draft's echo.
 The command rail shows only for the editor that owns its entries, which is the input tab's.

@@ -1,5 +1,5 @@
 # QCorpusEditor.cs
-Hash: `9daf9a3ca7a57136`
+Hash: `4664a65dd6d46d87`
 
 ## `internal sealed partial class QCorpus`
 
@@ -68,7 +68,7 @@ The tally chip shows the tally the Example carries.
 ## `private void QTranscriptDraftRefine(CExample example)`
 
 Redraws each field from the held sentence only where the field says something else.
-Whether the text differs is the corpus anthology's `CAnthologyTextCheck` verdict, so a bulletin never moves the caret.
+Whether the text differs is the Example's `CExampleTextKept` verdict from Conduct, so a bulletin never moves the caret.
 The speaker chip is painted on every bulletin, since painting the same language changes nothing.
 The citation field is repainted only when its carried line changed, as `_qTranscriptCitation` states.
 

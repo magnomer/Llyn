@@ -14,13 +14,13 @@ namespace Llyn.Tests;
 public sealed class TCatalog
 {
     [Fact]
-    public void CatalogConsonantRead_PulmonicChart_KeysEveryHeaderAndSplitsEveryCell()
+    public void CatalogAidRead_PulmonicChart_KeysEveryHeaderAndSplitsEveryCell()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
 
-        CArticulation chart = atelier.CAtelierCatalog.CCatalogConsonantRead();
+        CArticulation chart = atelier.CAtelierCatalog.CCatalogAidRead().CArticulationAidConsonant;
 
         Assert.Equal(11, chart.CArticulationHeaders.Count);
         Assert.Equal("Articulation.Bilabial", chart.CArticulationHeaders[0]);
@@ -38,13 +38,13 @@ public sealed class TCatalog
     }
 
     [Fact]
-    public void CatalogVowelRead_TrapezoidChart_KeysEveryHeaderAndSplitsEveryCell()
+    public void CatalogAidRead_TrapezoidChart_KeysEveryHeaderAndSplitsEveryCell()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
 
-        CArticulation chart = atelier.CAtelierCatalog.CCatalogVowelRead();
+        CArticulation chart = atelier.CAtelierCatalog.CCatalogAidRead().CArticulationAidVowel;
 
         Assert.Equal(["Articulation.Front", "Articulation.Central", "Articulation.Back"], chart.CArticulationHeaders);
         Assert.Equal(7, chart.CArticulationSides.Count);

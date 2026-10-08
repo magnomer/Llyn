@@ -17,6 +17,8 @@ public sealed record CExample(
         ? "Display.Unknown"
         : CExampleText.CStateValueShown is null ? "Example.Unwritten" : null;
 
+    public bool CExampleTextKept { get; init; }
+
     public bool CExampleMuted => !CExampleText.CStateValueUncertain && CExampleText.CStateValueShown is null;
 
     internal static string LExampleHintRead(bool uncertain)

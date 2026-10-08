@@ -214,6 +214,7 @@ internal static class TAuditDemeanorSetting
                 "CReflexField",
                 "CContour",
                 "CArticulation",
+                "CArticulationAid",
                 "CScreen",
                 "CCandidate",
                 "CMarkupTarget",

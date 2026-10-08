@@ -217,7 +217,6 @@ public sealed class TAtelier
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild() with { LRigSettings = throwing });
         LSettings before = engine.TEngineSettingsRead();
         CEditor second = TInterfaceEditor.TEditorCreate(engine);
-        second.CEditorObserverAttach(static run => run());
         int changed = 0;
         second.CEditorFold.CFoldChanged += () => changed++;
 

@@ -1,5 +1,5 @@
 # TInterfaceConduct.cs
-Hash: `6741689657c5e5a3`
+Hash: `761d4512f16f1974`
 
 ## `internal static class TInterfaceConduct`
 
@@ -83,6 +83,7 @@ A fact can then hold the bulletin observers the draft port is handed and send a 
 Builds an atelier whose draft, bundled entry and bundled sound ports answer from `answers`, for the text gates.
 The settings and portrait ports are outlets on `engine`, and the media port answers from `answers` too.
 It adds the leftover sweep and the recording stop, so disposing the atelier needs no answer from the test.
+It also relays the side save to the real `engine`, so a stored side survives a fake vista port.
 
 ## `internal static LMediaPort TMediaCreate(LEngine engine) => new LMediaOutlet(engine);`
 
@@ -96,6 +97,7 @@ The card and atlas map relays hand it on, so a fact without an engine still read
 ## `internal static LSettingsPort TSettingsCreate() =>`
 
 A settings port that answers only failure notices, text keys and fonts.
+It also takes the fold event's subscribe and unsubscribe, since the editor attaches to that event.
 A notice reads as the unexpected key it is handed, and a text key as the key itself.
 A test thus sees which wording a gate chose.
 A font reads as one with nothing set, as for a language whose pack sets none.

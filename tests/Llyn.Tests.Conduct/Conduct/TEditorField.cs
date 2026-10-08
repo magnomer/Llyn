@@ -212,7 +212,6 @@ public sealed class TEditorField
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CFold toggled = TEditorFieldPrepare(engine).CEditorFold;
         CEditor editor = TEditorFieldPrepare(engine);
-        editor.CEditorObserverAttach(static run => run());
         int changed = 0;
         editor.CEditorFold.CFoldChanged += () => changed++;
         editor.CEditorClose();
@@ -254,10 +253,9 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorFieldPrepare(engine);
         int marshalled = 0;
         int shown = 0;
-        editor.CEditorObserverAttach(run =>
+        CEditor editor = TEditorFieldPrepare(engine, run =>
         {
             marshalled++;
             run();
@@ -273,8 +271,13 @@ public sealed class TEditorField
 
     internal static CEditor TEditorFieldPrepare(LEngine engine)
     {
+        return TEditorFieldPrepare(engine, static run => run());
+    }
+
+    internal static CEditor TEditorFieldPrepare(LEngine engine, Action<Action> marshal)
+    {
         engine.TEngineDelaySet(0);
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        CEditor editor = TInterfaceEditor.TEditorCreate(engine, marshal);
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
         editor.CEditorEntryOpen(null);
         return editor;

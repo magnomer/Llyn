@@ -15,7 +15,8 @@ public sealed class TFold
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CFold fold = TFoldEditorPrepare(engine, null).CEditorFold;
+        CFold fold = TInterfaceConductSound.TFoldCreate(
+            TInterfaceConduct.TSettingsOutletCreate(engine), TEnvoyFake.TEnvoyCreate(false, []));
         int changed = 0;
         fold.CFoldChanged += () => changed++;
 
@@ -55,7 +56,6 @@ public sealed class TFold
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CFold toggled = TFoldEditorPrepare(engine, null).CEditorFold;
         CEditor second = TFoldEditorPrepare(engine, null);
-        second.CEditorObserverAttach(static run => run());
         int changed = 0;
         second.CEditorFold.CFoldChanged += () => changed++;
 
@@ -75,7 +75,6 @@ public sealed class TFold
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CFold toggled = TFoldEditorPrepare(engine, null).CEditorFold;
         CEditor second = TFoldEditorPrepare(engine, null);
-        second.CEditorObserverAttach(static run => run());
         int changed = 0;
         second.CEditorFold.CFoldChanged += () => changed++;
 

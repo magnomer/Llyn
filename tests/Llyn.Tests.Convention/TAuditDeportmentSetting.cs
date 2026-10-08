@@ -214,6 +214,7 @@ internal static class TAuditDeportmentSetting
                 "CReflexField",
                 "CContour",
                 "CArticulation",
+                "CArticulationAid",
                 "CScreen",
                 "CCandidate",
                 "CMarkupTarget",

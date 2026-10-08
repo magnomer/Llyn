@@ -1,5 +1,5 @@
 # CAtelier.cs
-Hash: `15468d116f3149fb`
+Hash: `6557a281d8393e54`
 
 ## `public sealed class CAtelier : IDisposable`
 
@@ -10,9 +10,10 @@ Those are opening, quitting and closing the session, bulletins, vista start, vol
 The workspace path read, the status read and the folder location opener sit here too.
 GUI-only state such as window geometry and panel widths never reaches it.
 
-## `internal CAtelier(LPosture posture, LDraftPort drafts, CEntryBundle entries, LSettingsPort settings, CPhonologyBundle phonology, LMediaPort media, LPortraitPort portraits)`
+## `internal CAtelier(LPosture posture, LDraftPort drafts, CEntryBundle entries, LSettingsPort settings, CPhonologyBundle phonology, LMediaPort media, LPortraitPort portraits, Action<Action> marshal)`
 
 Takes the posture, the ports, the entry bundle and the phonology bundle Host builds over one engine.
+It also takes the marshal Host builds on the UI thread, a construction dependency like a port.
 It is internal, so no driver can build a root of its own.
 
 ## `public CMention CAtelierMention { get; }`
@@ -69,6 +70,11 @@ The media port that plays sound, sets the volume and opens locations.
 ## `internal LPortraitPort CAtelierPortraitPort { get; }`
 
 The portrait port, through which the courier pushes to Joplin and connects to it.
+
+## `internal Action<Action> CAtelierMarshal { get; }`
+
+The marshal that moves engine notices onto the UI thread, handed over once at construction.
+Every editor the atelier or a panel area builds takes it, so no driver attaches a marshal.
 
 ## `public CEditor CAtelierInputCreate(CEnvoy envoy)`
 

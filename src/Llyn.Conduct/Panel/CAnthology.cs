@@ -27,6 +27,8 @@ public sealed class CAnthology
 
     private LVista? _cAnthologyVista;
 
+    private string _cAnthologyTextShown = string.Empty;
+
     internal CAnthology(
         LExamplePort examples,
         LMentionPort mentions,
@@ -256,6 +258,7 @@ public sealed class CAnthology
         ArgumentNullException.ThrowIfNull(text);
 
         _cAnthologyDesk.CDeskExample?.LQuillExampleSet(text);
+        _cAnthologyTextShown = text;
         return CExample.LExampleHintRead(false);
     }
 
@@ -266,11 +269,28 @@ public sealed class CAnthology
         _cAnthologyDesk.CDeskExample?.LExampleSpeakerSet(language);
     }
 
-    public bool CAnthologyTextCheck(string text, CStateValue value)
+    internal bool LAnthologyTextCheck(string text, CStateValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
 
         return _cAnthologyExamplePort.LEngineTextMatch(text, value.CStateValueText);
+    }
+
+    internal CExample LAnthologyTextShow(CExample example)
+    {
+        ArgumentNullException.ThrowIfNull(example);
+
+        _cAnthologyTextShown = example.CExampleText.CStateValueText;
+        return example;
+    }
+
+    internal CExample LAnthologyTranscriptRead(CExample example)
+    {
+        ArgumentNullException.ThrowIfNull(example);
+
+        return LAnthologyTextCheck(_cAnthologyTextShown, example.CExampleText)
+            ? example with { CExampleTextKept = true }
+            : LAnthologyTextShow(example);
     }
 
     internal CExample? LAnthologyDraftRead(LDraft? draft)

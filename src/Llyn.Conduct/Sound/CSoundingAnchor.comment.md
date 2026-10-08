@@ -1,5 +1,5 @@
 # CSoundingAnchor.cs
-Hash: `d11df5c356a67af9`
+Hash: `a130b046675f544f`
 
 ## `public sealed class CSoundingAnchor`
 
@@ -19,7 +19,7 @@ The reflex row the open menu edits, or null while the menu is closed.
 
 ## `public static CSoundingAnchor CSoundingAnchorCreate(CEditor editor)`
 
-The anchor menu over the desk and timbre of `editor`, built by the driver that shows that editor.
+The anchor menu over the timbre of `editor`, built by the driver that shows that editor.
 It stands outside `CSounding`, whose reads hold no selection, and outside `CEditor`, whose gates are the entry's.
 
 ## `public CAnchor CSoundingAnchorOpen(long reflex)`

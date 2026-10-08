@@ -168,7 +168,8 @@ public sealed class CGuild
         return new CGuildRoll(
             rows,
             rows.Count == 0,
-            COeuvre.LOeuvreVitaRead(_cGuildAuthorPort.LEngineVitaRead(_cGuildVista)));
+            COeuvre.LOeuvreVitaRead(_cGuildAuthorPort.LEngineVitaRead(_cGuildVista)),
+            CGuildOeuvre.LOeuvreKindRead());
     }
 
     public void CGuildQuerySet(string query)

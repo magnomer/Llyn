@@ -1,5 +1,5 @@
 # CExample.cs
-Hash: `432033e6ca4b834f`
+Hash: `7317a90f9bef8534`
 
 ## `public sealed record CExample(string CExampleLanguage, CStateValue CExampleText, long? CExampleSource, string CExampleCitation, string CExampleTally, IReadOnlyList<CGlossDraft> CExampleGloss, IReadOnlyList<CMentionPiece> CExamplePiece)`
 
@@ -24,6 +24,12 @@ The key of the sentence field's placeholder, which Conduct chooses and the drive
 The key the excerpt words instead of the text, which Conduct chooses and the driver looks up.
 An unknown text reads the unknown mark, and a never-written one reads `Example.Unwritten`.
 Null while the text itself shows.
+
+## `public bool CExampleTextKept`
+
+Whether the transcript's sentence field already shows this text, as the engine would store it.
+The anthology sets it on a draft bulletin, so the driver keeps the field and never moves the caret.
+It stays false on every other read, so the driver paints the text.
 
 ## `public bool CExampleMuted`
 

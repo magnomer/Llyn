@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Threading;
 using Llyn.Application;
@@ -71,7 +72,8 @@ Thread thread = new(() =>
                     engine.LEngineVocabulary,
                     engine.LEngineStem),
                 new LMediaOutlet(engine),
-                new LPortraitOutlet(engine))));
+                new LPortraitOutlet(engine),
+                QObserver.QObserverCreate<Action>(static run => run()))));
             code = application.Run();
             engine.Dispose();
         });

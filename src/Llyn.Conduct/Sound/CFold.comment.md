@@ -18,7 +18,7 @@ The editor's envoy, through which a failed save shows its notice.
 ## `private Action? _cFoldObserver;`
 
 The fold handler the attach built, held so the same delegate can be removed.
-Before the driver attaches it is null, so an early attach or detach does nothing.
+A fold built without its editor keeps it null, so its attach and detach do nothing.
 
 ## `internal CFold(LSettingsPort settings, CEnvoy envoy)`
 
@@ -32,7 +32,7 @@ A closed editor hears only its own gates until it opens again, since its close t
 
 ## `internal void LFoldObserverAttach(Action<Action> marshal)`
 
-Hears the settings port's `LEngineFoldChanged` and raises `CFoldChanged` on the driver's thread.
+Hears the settings port's `LEngineFoldChanged` and raises `CFoldChanged` through the editor's marshal.
 A fold toggled in another editor so repaints this editor's switches too.
 On a real change the editor that toggled hears it twice, which repaints the same state.
 The settings bulletin is not used, since it refills the whole draft and every panel.
